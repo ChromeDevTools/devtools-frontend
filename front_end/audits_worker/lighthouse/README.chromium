@@ -6,3 +6,7 @@ Security Critical: no
 
 This directory contains Chromium's version of lighthouse with tests, demo and sources removed.
 
+The locales/ folder is not bundled with audits_worker_module.js. Instead, the files are hosted separately
+on the remote server. The appropriate locale file will be fetched and its content registered with lighthouse
+before running audits.
+More info on the lighthouse localization process: https://docs.google.com/document/d/1jnt3BqKB-4q3AE94UWFA0Gqspx8Sd_jivlB7gQMlmfk/edit

@@ -1,0 +1,1541 @@
+{
+  "lighthouse-core/audits/accessibility/accesskeys.js | description": {
+    "message": "Các phím truy cập cho phép người dùng chuyển nhanh đến một phần của trang. Để di chuyển đúng cách, mỗi phím truy cập phải là duy nhất. [Tìm hiểu thêm](https://web.dev/accesskeys/)."
+  },
+  "lighthouse-core/audits/accessibility/accesskeys.js | failureTitle": {
+    "message": "Các giá trị của `[accesskey]` không phải là duy nhất"
+  },
+  "lighthouse-core/audits/accessibility/accesskeys.js | title": {
+    "message": "Các giá trị của `[accesskey]` là duy nhất"
+  },
+  "lighthouse-core/audits/accessibility/aria-allowed-attr.js | description": {
+    "message": "Mỗi `role` của Ứng dụng Internet phong phú dễ dùng (ARIA) hỗ trợ một tập hợp con cụ thể các thuộc tính `aria-*`. Nếu không trùng khớp, các thuộc tính `aria-*` sẽ bị vô hiệu. [Tìm hiểu thêm](https://web.dev/aria-allowed-attr/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-allowed-attr.js | failureTitle": {
+    "message": "Các thuộc tính `[aria-*]` không khớp với vai trò tương ứng"
+  },
+  "lighthouse-core/audits/accessibility/aria-allowed-attr.js | title": {
+    "message": "Các thuộc tính `[aria-*]` khớp với vai trò tương ứng"
+  },
+  "lighthouse-core/audits/accessibility/aria-required-attr.js | description": {
+    "message": "Một số vai trò ARIA có các thuộc tính bắt buộc mô tả trạng thái của phần tử cho trình đọc màn hình. [Tìm hiểu thêm](https://web.dev/aria-required-attr/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-required-attr.js | failureTitle": {
+    "message": "`[role]` không có tất cả các thuộc tính `[aria-*]` bắt buộc"
+  },
+  "lighthouse-core/audits/accessibility/aria-required-attr.js | title": {
+    "message": "`[role]` có tất cả các thuộc tính `[aria-*]` bắt buộc"
+  },
+  "lighthouse-core/audits/accessibility/aria-required-children.js | description": {
+    "message": "Một số vai trò mẹ của Ứng dụng Internet phong phú dễ dùng (ARIA) phải chứa vai trò con cụ thể để thực hiện các chức năng hỗ trợ tiếp cận chủ định tương ứng. [Tìm hiểu thêm](https://web.dev/aria-required-children/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-required-children.js | failureTitle": {
+    "message": "Thiếu các phần tử có `[role]` yêu cầu phải có vai trò con `[role]` cụ thể."
+  },
+  "lighthouse-core/audits/accessibility/aria-required-children.js | title": {
+    "message": "Các phần tử có `[role]` yêu cầu phải có phần tử con `[role]` cụ thể đang hiện diện"
+  },
+  "lighthouse-core/audits/accessibility/aria-required-parent.js | description": {
+    "message": "Các vai trò mẹ cụ thể phải chứa một số vai trò con của Ứng dụng Internet phong phú dễ dùng (ARIA) để thực hiện đúng cách các chức năng hỗ trợ tiếp cận chủ định tương ứng. [Tìm hiểu thêm](https://web.dev/aria-required-parent/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-required-parent.js | failureTitle": {
+    "message": "`[role]` không có trong phần tử mẹ bắt buộc tương ứng"
+  },
+  "lighthouse-core/audits/accessibility/aria-required-parent.js | title": {
+    "message": "`[role]` có trong phần tử mẹ bắt buộc tương ứng"
+  },
+  "lighthouse-core/audits/accessibility/aria-roles.js | description": {
+    "message": "Các vai trò của Ứng dụng Internet phong phú dễ dùng (ARIA) phải có giá trị hợp lệ để thực hiện những chức năng hỗ trợ tiếp cận chủ định tương ứng. [Tìm hiểu thêm](https://web.dev/aria-roles/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-roles.js | failureTitle": {
+    "message": "Các giá trị của `[role]` là không hợp lệ"
+  },
+  "lighthouse-core/audits/accessibility/aria-roles.js | title": {
+    "message": "Các giá trị của `[role]` là hợp lệ"
+  },
+  "lighthouse-core/audits/accessibility/aria-valid-attr-value.js | description": {
+    "message": "Các công nghệ hỗ trợ, chẳng hạn như trình đọc màn hình, không thể diễn giải thuộc tính của Ứng dụng Internet phong phú dễ dùng (ARIA) có giá trị không hợp lệ. [Tìm hiểu thêm](https://web.dev/aria-valid-attr-value/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-valid-attr-value.js | failureTitle": {
+    "message": "Giá trị của các thuộc tính `[aria-*]` là không hợp lệ"
+  },
+  "lighthouse-core/audits/accessibility/aria-valid-attr-value.js | title": {
+    "message": "Các thuộc tính `[aria-*]` có giá trị hợp lệ"
+  },
+  "lighthouse-core/audits/accessibility/aria-valid-attr.js | description": {
+    "message": "Các công nghệ hỗ trợ, chẳng hạn như trình đọc màn hình, không thể diễn giải các thuộc tính của Ứng dụng Internet phong phú dễ dùng (ARIA) có tên không hợp lệ. [Tìm hiểu thêm](https://web.dev/aria-valid-attr/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-valid-attr.js | failureTitle": {
+    "message": "Các thuộc tính `[aria-*]` là không hợp lệ hoặc bị sai chính tả"
+  },
+  "lighthouse-core/audits/accessibility/aria-valid-attr.js | title": {
+    "message": "Các thuộc tính `[aria-*]` là hợp lệ và không bị sai chính tả"
+  },
+  "lighthouse-core/audits/accessibility/audio-caption.js | description": {
+    "message": "Phụ đề giúp người điếc hoặc người dùng khiếm thính có thể sử dụng các phần tử âm thanh, cung cấp cho họ những thông tin quan trọng như ai đang nói chuyện, những người đó đang nói gì và các thông tin khác không phải lời nói. [Tìm hiểu thêm](https://web.dev/audio-caption/)."
+  },
+  "lighthouse-core/audits/accessibility/audio-caption.js | failureTitle": {
+    "message": "Các phần tử `<audio>` bị thiếu phần tử `<track>` có `[kind=\"captions\"]`."
+  },
+  "lighthouse-core/audits/accessibility/audio-caption.js | title": {
+    "message": "Các phần tử `<audio>` chứa phần tử `<track>` có `[kind=\"captions\"]`"
+  },
+  "lighthouse-core/audits/accessibility/axe-audit.js | failingElementsHeader": {
+    "message": "Các phần tử không đạt"
+  },
+  "lighthouse-core/audits/accessibility/button-name.js | description": {
+    "message": "Khi một nút không có tên có thể tiếp cận, trình đọc màn hình sẽ thông báo đó là \"nút\", khiến người dùng trình đọc màn hình không sử dụng được nút này. [Tìm hiểu thêm](https://web.dev/button-name/)."
+  },
+  "lighthouse-core/audits/accessibility/button-name.js | failureTitle": {
+    "message": "Các nút không có tên có thể tiếp cận được"
+  },
+  "lighthouse-core/audits/accessibility/button-name.js | title": {
+    "message": "Các nút có tên tiếp cận được"
+  },
+  "lighthouse-core/audits/accessibility/bypass.js | description": {
+    "message": "Bằng việc thêm các cách bỏ qua nội dung lặp lại, người dùng bàn phím có thể khám phá trang một cách hiệu quả hơn. [Tìm hiểu thêm](https://web.dev/bypass/)."
+  },
+  "lighthouse-core/audits/accessibility/bypass.js | failureTitle": {
+    "message": "Trang này không chứa tiêu đề, đường dẫn liên kết bỏ qua hoặc vùng mốc"
+  },
+  "lighthouse-core/audits/accessibility/bypass.js | title": {
+    "message": "Trang này chứa tiêu đề, phần tử liên kết bỏ qua hoặc vùng mốc"
+  },
+  "lighthouse-core/audits/accessibility/color-contrast.js | description": {
+    "message": "Nhiều người dùng gặp khó khăn khi đọc hoặc không thể đọc được văn bản có độ tương phản thấp. [Tìm hiểu thêm](https://web.dev/color-contrast/)."
+  },
+  "lighthouse-core/audits/accessibility/color-contrast.js | failureTitle": {
+    "message": "Màu nền trước và nền sau không có đủ tỷ lệ tương phản."
+  },
+  "lighthouse-core/audits/accessibility/color-contrast.js | title": {
+    "message": "Màu nền trước và nền sau có đủ tỷ lệ tương phản"
+  },
+  "lighthouse-core/audits/accessibility/definition-list.js | description": {
+    "message": "Khi danh sách định nghĩa không được đánh dấu đúng cách, thì trình đọc màn hình có thể tạo ra thông báo gây nhầm lẫn hoặc không chính xác. [Tìm hiểu thêm](https://web.dev/definition-list/)."
+  },
+  "lighthouse-core/audits/accessibility/definition-list.js | failureTitle": {
+    "message": "`<dl>` không chỉ chứa các nhóm `<dt>` và `<dd>` được sắp xếp đúng cách, các phần tử `<script>` hoặc `<template>`."
+  },
+  "lighthouse-core/audits/accessibility/definition-list.js | title": {
+    "message": "`<dl>` chỉ chứa các nhóm `<dt>` và `<dd>` được sắp xếp đúng cách, các phần tử `<script>` hoặc `<template>`."
+  },
+  "lighthouse-core/audits/accessibility/dlitem.js | description": {
+    "message": "Các mục trong danh sách định nghĩa (`<dt>` và `<dd>`) phải được đưa vào một phần tử `<dl>` mẹ để đảm bảo rằng trình đọc màn hình có thể thông báo đúng cách các mục này. [Tìm hiểu thêm](https://web.dev/dlitem/)."
+  },
+  "lighthouse-core/audits/accessibility/dlitem.js | failureTitle": {
+    "message": "Các phần tử `<dl>` không bao gồm những mục trong danh sách định nghĩa"
+  },
+  "lighthouse-core/audits/accessibility/dlitem.js | title": {
+    "message": "Các phần tử `<dl>` chứa mục trong danh sách định nghĩa"
+  },
+  "lighthouse-core/audits/accessibility/document-title.js | description": {
+    "message": "Tiêu đề giúp người dùng trình đọc màn hình nắm được thông tin tổng quan về trang, và giúp người dùng công cụ tìm kiếm chủ yếu dựa vào tiêu đề này xác định xem một trang có liên quan đến nội dung tìm kiếm của họ hay không. [Tìm hiểu thêm](https://web.dev/document-title/)."
+  },
+  "lighthouse-core/audits/accessibility/document-title.js | failureTitle": {
+    "message": "Tài liệu không có phần tử `<title>`"
+  },
+  "lighthouse-core/audits/accessibility/document-title.js | title": {
+    "message": "Tài liệu có phần tử `<title>`"
+  },
+  "lighthouse-core/audits/accessibility/duplicate-id.js | description": {
+    "message": "Giá trị của thuộc tính id phải là duy nhất, có như vậy công nghệ hỗ trợ mới không bỏ qua các điểm dữ liệu khác. [Tìm hiểu thêm](https://web.dev/duplicate-id/)."
+  },
+  "lighthouse-core/audits/accessibility/duplicate-id.js | failureTitle": {
+    "message": "Các thuộc tính `[id]` trên trang không phải là duy nhất"
+  },
+  "lighthouse-core/audits/accessibility/duplicate-id.js | title": {
+    "message": "Các thuộc tính `[id]` trên trang là duy nhất"
+  },
+  "lighthouse-core/audits/accessibility/frame-title.js | description": {
+    "message": "Người dùng trình đọc màn hình dựa vào tiêu đề khung để mô tả nội dung của khung. [Tìm hiểu thêm](https://web.dev/frame-title/)."
+  },
+  "lighthouse-core/audits/accessibility/frame-title.js | failureTitle": {
+    "message": "Phần tử `<frame>` hoặc `<iframe>` không có tiêu đề"
+  },
+  "lighthouse-core/audits/accessibility/frame-title.js | title": {
+    "message": "Các phần tử `<frame>` hoặc `<iframe>` có tiêu đề"
+  },
+  "lighthouse-core/audits/accessibility/html-has-lang.js | description": {
+    "message": "Nếu một trang chưa chỉ định thuộc tính ngôn ngữ, thì trình đọc màn hình sẽ xem như trang đó đang hiển thị bằng ngôn ngữ mặc định mà người dùng chọn khi thiết lập trình đọc màn hình. Nếu trên thực tế, trang đó không hiển thị bằng ngôn ngữ mặc định, tức là trình đọc màn hình có thể thông báo sai về văn bản của trang đó. [Tìm hiểu thêm](https://web.dev/html-has-lang/)."
+  },
+  "lighthouse-core/audits/accessibility/html-has-lang.js | failureTitle": {
+    "message": "Phần tử `<html>` chưa có thuộc tính `[lang]`"
+  },
+  "lighthouse-core/audits/accessibility/html-has-lang.js | title": {
+    "message": "Phần tử `<html>` có thuộc tính `[lang]`"
+  },
+  "lighthouse-core/audits/accessibility/html-lang-valid.js | description": {
+    "message": "Việc chỉ định [BCP 47 language](https://www.w3.org/International/questions/qa-choosing-language-tags#question) hợp lệ sẽ giúp trình đọc màn hình thông báo văn bản đúng cách. [Tìm hiểu thêm](https://web.dev/html-lang-valid/)."
+  },
+  "lighthouse-core/audits/accessibility/html-lang-valid.js | failureTitle": {
+    "message": "Thuộc tính `[lang]` của phần tử `<html>` không có giá trị hợp lệ."
+  },
+  "lighthouse-core/audits/accessibility/html-lang-valid.js | title": {
+    "message": "Thuộc tính `[lang]` của phần tử `<html>` có giá trị hợp lệ"
+  },
+  "lighthouse-core/audits/accessibility/image-alt.js | description": {
+    "message": "Các phần tử thông tin nên là đoạn văn bản thay thế ngắn, có tính mô tả. Có thể bỏ qua phần tử trang trí bằng một thuộc tính alt trống. [Tìm hiểu thêm](https://web.dev/image-alt/)."
+  },
+  "lighthouse-core/audits/accessibility/image-alt.js | failureTitle": {
+    "message": "Phần tử hình ảnh không có thuộc tính `[alt]`"
+  },
+  "lighthouse-core/audits/accessibility/image-alt.js | title": {
+    "message": "Các phần tử hình ảnh có thuộc tính `[alt]`"
+  },
+  "lighthouse-core/audits/accessibility/input-image-alt.js | description": {
+    "message": "Khi dùng một hình ảnh làm nút `<input>`, thì việc cung cấp văn bản thay thế có thể giúp người dùng trình đọc màn hình hiểu rõ mục đích của nút đó. [Tìm hiểu thêm](https://web.dev/input-image-alt/)."
+  },
+  "lighthouse-core/audits/accessibility/input-image-alt.js | failureTitle": {
+    "message": "Các phần tử `<input type=\"image\">` không có văn bản `[alt]`"
+  },
+  "lighthouse-core/audits/accessibility/input-image-alt.js | title": {
+    "message": "Các phần tử `<input type=\"image\">` có văn bản `[alt]`"
+  },
+  "lighthouse-core/audits/accessibility/label.js | description": {
+    "message": "Các nhãn đảm bảo rằng những công nghệ hỗ trợ, chẳng hạn như trình đọc màn hình, thông báo các biện pháp kiểm soát biểu mẫu đúng cách. [Tìm hiểu thêm](https://web.dev/label/)."
+  },
+  "lighthouse-core/audits/accessibility/label.js | failureTitle": {
+    "message": "Các phần tử biểu mẫu không có nhãn liên kết"
+  },
+  "lighthouse-core/audits/accessibility/label.js | title": {
+    "message": "Các phần tử biểu mẫu có nhãn liên quan"
+  },
+  "lighthouse-core/audits/accessibility/layout-table.js | description": {
+    "message": "Bảng đang dùng cho mục đích bố cục không nên bao gồm phần tử dữ liệu, chẳng hạn như th, phần tử chú thích hoặc thuộc tính tóm tắt, vì điều này có thể tạo ra trải nghiệm gây bối rối cho người dùng trình đọc màn hình. [Tìm hiểu thêm](https://web.dev/layout-table/)."
+  },
+  "lighthouse-core/audits/accessibility/layout-table.js | failureTitle": {
+    "message": "Các phần tử `<table>` dạng trình bày không tránh sử dụng `<th>`, `<caption>` hoặc thuộc tính `[summary]`."
+  },
+  "lighthouse-core/audits/accessibility/layout-table.js | title": {
+    "message": "Các phần tử `<table>` dạng trình bày tránh sử dụng `<th>`, `<caption>` hoặc thuộc tính `[summary]`."
+  },
+  "lighthouse-core/audits/accessibility/link-name.js | description": {
+    "message": "Văn bản liên kết (và văn bản thay thế cho hình ảnh, khi dùng làm đường dẫn liên kết) có thể thấy rõ, duy nhất và có thể lấy tiêu điểm sẽ cải thiện trải nghiệm khám phá cho người dùng trình đọc màn hình. [Tìm hiểu thêm](https://web.dev/link-name/)."
+  },
+  "lighthouse-core/audits/accessibility/link-name.js | failureTitle": {
+    "message": "Các phần tử liên kết không có tên có thể nhận rõ"
+  },
+  "lighthouse-core/audits/accessibility/link-name.js | title": {
+    "message": "Các phần tử liên kết có tên có thể nhận rõ"
+  },
+  "lighthouse-core/audits/accessibility/list.js | description": {
+    "message": "Các trình đọc màn hình có cách riêng để thông báo về danh sách. Khi danh sách có cấu trúc phù hợp, trình đọc màn hình sẽ thông báo về danh sách chính xác hơn. [Tìm hiểu thêm](https://web.dev/list/)."
+  },
+  "lighthouse-core/audits/accessibility/list.js | failureTitle": {
+    "message": "Danh sách không chỉ chứa các phần tử `<li>` và phần tử hỗ trợ tập lệnh (`<script>` và `<template>`)."
+  },
+  "lighthouse-core/audits/accessibility/list.js | title": {
+    "message": "Danh sách chỉ chứa các phần tử `<li>` và phần tử hỗ trợ tập lệnh (`<script>` và `<template>`)."
+  },
+  "lighthouse-core/audits/accessibility/listitem.js | description": {
+    "message": "Trình đọc màn hình yêu cầu các mục danh sách (`<li>`) phải có trong một `<ul>` hoặc `<ol>` mẹ để được thông báo đúng cách. [Tìm hiểu thêm](https://web.dev/listitem/)."
+  },
+  "lighthouse-core/audits/accessibility/listitem.js | failureTitle": {
+    "message": "Các mục trong danh sách (`<li>`) không có trong phần tử `<ul>` hoặc `<ol>` mẹ."
+  },
+  "lighthouse-core/audits/accessibility/listitem.js | title": {
+    "message": "Các mục trong danh sách (`<li>`) có trong phần tử mẹ `<ul>` hoặc `<ol>`"
+  },
+  "lighthouse-core/audits/accessibility/meta-refresh.js | description": {
+    "message": "Người dùng không muốn trang tự động làm mới. Khi trang tự động làm mới, tiêu điểm sẽ quay về đầu trang. Người dùng có thể cảm thấy khó chịu hoặc bị nhầm lẫn nếu gặp trường hợp này. [Tìm hiểu thêm](https://web.dev/meta-refresh/)."
+  },
+  "lighthouse-core/audits/accessibility/meta-refresh.js | failureTitle": {
+    "message": "Tài liệu này sử dụng `<meta http-equiv=\"refresh\">`"
+  },
+  "lighthouse-core/audits/accessibility/meta-refresh.js | title": {
+    "message": "Tài liệu này không dùng `<meta http-equiv=\"refresh\">`"
+  },
+  "lighthouse-core/audits/accessibility/meta-viewport.js | description": {
+    "message": "Việc tắt tính năng thu phóng sẽ gây trở ngại cho những người dùng có thị lực kém bị lệ thuộc vào chức năng phóng to màn hình để thấy rõ nội dung trang web. [Tìm hiểu thêm](https://web.dev/meta-viewport/)."
+  },
+  "lighthouse-core/audits/accessibility/meta-viewport.js | failureTitle": {
+    "message": "`[user-scalable=\"no\"]` được dùng trong phần tử `<meta name=\"viewport\">` hoặc thuộc tính `[maximum-scale]` nhỏ hơn 5."
+  },
+  "lighthouse-core/audits/accessibility/meta-viewport.js | title": {
+    "message": "`[user-scalable=\"no\"]` không được sử dụng trong phần tử `<meta name=\"viewport\">` và thuộc tính `[maximum-scale]` không nhỏ hơn 5."
+  },
+  "lighthouse-core/audits/accessibility/object-alt.js | description": {
+    "message": "Trình đọc màn hình không thể dịch nội dung không ở dạng văn bản. Khi bạn thêm văn bản thay thế vào các phần tử `<object>`, trình đọc màn hình sẽ truyền đạt được ý nghĩa cho người dùng. [Tìm hiểu thêm](https://web.dev/object-alt/)."
+  },
+  "lighthouse-core/audits/accessibility/object-alt.js | failureTitle": {
+    "message": "Các phần tử `<object>` không có văn bản `[alt]`"
+  },
+  "lighthouse-core/audits/accessibility/object-alt.js | title": {
+    "message": "Các phần tử `<object>` có văn bản `[alt]`"
+  },
+  "lighthouse-core/audits/accessibility/tabindex.js | description": {
+    "message": "Giá trị lớn hơn 0 ngụ ý thứ tự di chuyển rõ ràng. Mặc dù hợp lệ về mặt kỹ thuật nhưng điều này thường tạo ra trải nghiệm khó chịu cho những người dùng bị lệ thuộc vào công nghệ hỗ trợ. [Tìm hiểu thêm](https://web.dev/tabindex/)."
+  },
+  "lighthouse-core/audits/accessibility/tabindex.js | failureTitle": {
+    "message": "Một số phần tử có giá trị `[tabindex]` lớn hơn 0"
+  },
+  "lighthouse-core/audits/accessibility/tabindex.js | title": {
+    "message": "Không phần tử nào có giá trị `[tabindex]` lớn hơn 0"
+  },
+  "lighthouse-core/audits/accessibility/td-headers-attr.js | description": {
+    "message": "Trình đọc màn hình có các tính năng giúp người dùng dễ sử dụng bảng hơn. Việc đảm bảo các ô `<td>` sử dụng thuộc tính `[headers]` chỉ tham chiếu các ô khác trong cùng bảng có thể cải thiện trải nghiệm của người dùng trình đọc màn hình. [Tìm hiểu thêm](https://web.dev/td-headers-attr/)."
+  },
+  "lighthouse-core/audits/accessibility/td-headers-attr.js | failureTitle": {
+    "message": "Các ô trong một phần tử `<table>` sử dụng thuộc tính `[headers]` tham chiếu các ô khác trong chính bảng đó."
+  },
+  "lighthouse-core/audits/accessibility/td-headers-attr.js | title": {
+    "message": "Các ô trong phần tử `<table>` dùng thuộc tính `[headers]` chỉ tham chiếu các ô khác trong chính bảng đó."
+  },
+  "lighthouse-core/audits/accessibility/th-has-data-cells.js | description": {
+    "message": "Trình đọc màn hình có các tính năng giúp người dùng dễ sử dụng bảng hơn. Việc đảm bảo tiêu đề bảng luôn tham chiếu đến một nhóm ô nào đó có thể cải thiện trải nghiệm của người dùng trình đọc màn hình. [Tìm hiểu thêm](https://web.dev/th-has-data-cells/)."
+  },
+  "lighthouse-core/audits/accessibility/th-has-data-cells.js | failureTitle": {
+    "message": "Các phần tử `<th>` và phần tử có `[role=\"columnheader\"/\"rowheader\"]` không chứa các ô dữ liệu mà các phần tử đó mô tả."
+  },
+  "lighthouse-core/audits/accessibility/th-has-data-cells.js | title": {
+    "message": "Các phần tử `<th>` và phần tử có `[role=\"columnheader\"/\"rowheader\"]` chứa các ô dữ liệu mà các phần tử này mô tả."
+  },
+  "lighthouse-core/audits/accessibility/valid-lang.js | description": {
+    "message": "Việc chỉ định một [BCP 47 language](https://www.w3.org/International/questions/qa-choosing-language-tags#question) hợp lệ cho các phần tử sẽ giúp trình đọc màn hình phát âm văn bản chính xác. [Tìm hiểu thêm](https://web.dev/valid-lang/)."
+  },
+  "lighthouse-core/audits/accessibility/valid-lang.js | failureTitle": {
+    "message": "Các thuộc tính `[lang]` không có giá trị hợp lệ"
+  },
+  "lighthouse-core/audits/accessibility/valid-lang.js | title": {
+    "message": "Các thuộc tính `[lang]` có giá trị hợp lệ"
+  },
+  "lighthouse-core/audits/accessibility/video-caption.js | description": {
+    "message": "Video có phụ đề có thể giúp người dùng bị khiếm thính và nặng tai dễ dàng tiếp cận nội dung video hơn. [Tìm hiểu thêm](https://web.dev/video-caption/)."
+  },
+  "lighthouse-core/audits/accessibility/video-caption.js | failureTitle": {
+    "message": "Các phần tử `<video>` không chứa phần tử `<track>` có `[kind=\"captions\"]`."
+  },
+  "lighthouse-core/audits/accessibility/video-caption.js | title": {
+    "message": "Các phần tử `<video>` chứa phần tử `<track>` có `[kind=\"captions\"]`"
+  },
+  "lighthouse-core/audits/accessibility/video-description.js | description": {
+    "message": "Phần mô tả âm thanh cung cấp thông tin liên quan cho video mà phần hội thoại không thể làm được, chẳng hạn như cảnh và biểu cảm khuôn mặt. [Tìm hiểu thêm](https://web.dev/video-description/)."
+  },
+  "lighthouse-core/audits/accessibility/video-description.js | failureTitle": {
+    "message": "Các phần tử `<video>` không chứa phần tử `<track>` có `[kind=\"description\"]`."
+  },
+  "lighthouse-core/audits/accessibility/video-description.js | title": {
+    "message": "Các phần tử `<video>` chứa phần tử `<track>` có `[kind=\"description\"]`"
+  },
+  "lighthouse-core/audits/apple-touch-icon.js | description": {
+    "message": "Hãy xác định `apple-touch-icon` để hiển thị đúng cách trên iOS khi người dùng thêm một ứng dụng web tiến bộ vào màn hình chính. Thuộc tính này phải trỏ đến ảnh PNG vuông có kích thước 192px (hoặc 180px) ở dạng không trong suốt. [Tìm hiểu thêm](https://developers.google.com/web/fundamentals/design-and-ux/browser-customization/)"
+  },
+  "lighthouse-core/audits/apple-touch-icon.js | failureTitle": {
+    "message": "Chưa cung cấp `apple-touch-icon` hợp lệ"
+  },
+  "lighthouse-core/audits/apple-touch-icon.js | precomposedWarning": {
+    "message": "`apple-touch-icon-precomposed` đã lỗi thời, nên dùng `apple-touch-icon`."
+  },
+  "lighthouse-core/audits/apple-touch-icon.js | title": {
+    "message": "Hãy cung cấp `apple-touch-icon` hợp lệ"
+  },
+  "lighthouse-core/audits/bootup-time.js | chromeExtensionsWarning": {
+    "message": "Các tiện ích của Chrome ảnh hưởng tiêu cực đến hiệu suất tải của trang này. Hãy thử kiểm tra trang ở chế độ ẩn danh hoặc từ một hồ sơ trên Chrome không có tiện ích."
+  },
+  "lighthouse-core/audits/bootup-time.js | columnScriptEval": {
+    "message": "Đánh giá tập lệnh"
+  },
+  "lighthouse-core/audits/bootup-time.js | columnScriptParse": {
+    "message": "Phân tích cú pháp tập lệnh"
+  },
+  "lighthouse-core/audits/bootup-time.js | columnTotal": {
+    "message": "Tổng thời gian của CPU"
+  },
+  "lighthouse-core/audits/bootup-time.js | description": {
+    "message": "Hãy cân nhắc giảm thời gian dùng để phân tích cú pháp, biên soạn và thực thi JS. Bạn có thể giải quyết vấn đề này bằng cách phân phối các tải trọng JS nhỏ hơn. [Tìm hiểu thêm](https://developers.google.com/web/tools/lighthouse/audits/bootup)."
+  },
+  "lighthouse-core/audits/bootup-time.js | failureTitle": {
+    "message": "Giảm thời gian thực thi JavaScript"
+  },
+  "lighthouse-core/audits/bootup-time.js | title": {
+    "message": "Thời gian thực thi JavaScript"
+  },
+  "lighthouse-core/audits/byte-efficiency/efficient-animated-content.js | description": {
+    "message": "Ảnh GIF lớn không có hiệu quả trong việc phân phối nội dung động. Hãy cân nhắc sử dụng video MPEG4/WebM cho ảnh động và PNG/WebP cho ảnh tĩnh thay vì ảnh GIF để tiết kiệm dữ liệu mạng. [Tìm hiểu thêm](https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/replace-animated-gifs-with-video/)"
+  },
+  "lighthouse-core/audits/byte-efficiency/efficient-animated-content.js | title": {
+    "message": "Sử dụng các định dạng video cho nội dung động"
+  },
+  "lighthouse-core/audits/byte-efficiency/offscreen-images.js | description": {
+    "message": "Hãy cân nhắc tải từng phần các hình ảnh ẩn và nằm ngoài màn hình sau khi tải xong tất cả tài nguyên quan trọng nhằm giảm thời gian tương tác. [Tìm hiểu thêm](https://developers.google.com/web/tools/lighthouse/audits/offscreen-images)."
+  },
+  "lighthouse-core/audits/byte-efficiency/offscreen-images.js | title": {
+    "message": "Trì hoãn tải các hình ảnh ngoài màn hình"
+  },
+  "lighthouse-core/audits/byte-efficiency/render-blocking-resources.js | description": {
+    "message": "Các tài nguyên đang chặn lần hiển thị đầu tiên của trang. Hãy cân nhắc phân phối nội dòng JS/Biểu định kiểu xếp chồng (CSS) quan trọng và trì hoãn mọi JS/kiểu không quan trọng. [Tìm hiểu thêm](https://developers.google.com/web/tools/lighthouse/audits/blocking-resources)."
+  },
+  "lighthouse-core/audits/byte-efficiency/render-blocking-resources.js | title": {
+    "message": "Loại bỏ các tài nguyên chặn hiển thị"
+  },
+  "lighthouse-core/audits/byte-efficiency/total-byte-weight.js | description": {
+    "message": "Tải trọng mạng lớn gây tốn kém cho người dùng và thường khiến thời gian tải lâu. [Tìm hiểu thêm](https://developers.google.com/web/tools/lighthouse/audits/network-payloads)."
+  },
+  "lighthouse-core/audits/byte-efficiency/total-byte-weight.js | displayValue": {
+    "message": "Tổng kích thước là {totalBytes, number, bytes} KB"
+  },
+  "lighthouse-core/audits/byte-efficiency/total-byte-weight.js | failureTitle": {
+    "message": "Tránh các tài nguyên lớn trên mạng"
+  },
+  "lighthouse-core/audits/byte-efficiency/total-byte-weight.js | title": {
+    "message": "Tránh tài nguyên lớn trên mạng"
+  },
+  "lighthouse-core/audits/byte-efficiency/unminified-css.js | description": {
+    "message": "Việc giảm kích thước tệp Biểu định kiểu xếp chồng (CSS) có thể giảm kích thước tải trọng mạng. [Tìm hiểu thêm](https://developers.google.com/web/tools/lighthouse/audits/minify-css)."
+  },
+  "lighthouse-core/audits/byte-efficiency/unminified-css.js | title": {
+    "message": "Rút gọn CSS"
+  },
+  "lighthouse-core/audits/byte-efficiency/unminified-javascript.js | description": {
+    "message": "Việc giảm kích thước tệp JavaScript có thể giảm kích thước tải trọng và thời gian phân tích cú pháp tập lệnh. [Tìm hiểu thêm](https://developers.google.com/speed/docs/insights/MinifyResources)."
+  },
+  "lighthouse-core/audits/byte-efficiency/unminified-javascript.js | title": {
+    "message": "Rút gọn JavaScript"
+  },
+  "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | description": {
+    "message": "Hãy xóa các quy tắc vô hiệu khỏi biểu định kiểu và trì hoãn tải Biểu định kiểu xếp chồng (CSS) không dùng cho nội dung trong màn hình đầu tiên để giảm số byte không cần thiết mà hoạt động mạng sử dụng. [Tìm hiểu thêm](https://developers.google.com/web/tools/lighthouse/audits/unused-css)."
+  },
+  "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | title": {
+    "message": "Xóa biểu định kiểu xếp chồng (CSS) không dùng"
+  },
+  "lighthouse-core/audits/byte-efficiency/unused-javascript.js | description": {
+    "message": "Xóa JavaScript không dùng để giảm số byte tiêu tốn vào hoạt động mạng."
+  },
+  "lighthouse-core/audits/byte-efficiency/unused-javascript.js | title": {
+    "message": "Xóa JavaScript không dùng"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-long-cache-ttl.js | description": {
+    "message": "Bộ nhớ đệm có thời gian hữu dụng dài có thể giúp tăng tốc số lượt truy cập lặp lại vào trang của bạn. [Tìm hiểu thêm](https://developers.google.com/web/tools/lighthouse/audits/cache-policy)."
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-long-cache-ttl.js | displayValue": {
+    "message": "{itemCount,plural, =1{Đã tìm thấy 1 tài nguyên}other{Đã tìm thấy # tài nguyên}}"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-long-cache-ttl.js | failureTitle": {
+    "message": "Phân phối các nội dung tĩnh bằng chính sách bộ nhớ đệm hiệu quả"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-long-cache-ttl.js | title": {
+    "message": "Sử dụng chính sách bộ nhớ đệm hiệu quả cho các nội dung tĩnh"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-optimized-images.js | description": {
+    "message": "Hình ảnh được tối ưu hóa sẽ tải nhanh hơn và tiêu tốn ít dữ liệu di động hơn. [Tìm hiểu thêm](https://developers.google.com/web/tools/lighthouse/audits/optimize-images)."
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-optimized-images.js | title": {
+    "message": "Mã hóa hình ảnh hiệu quả"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | description": {
+    "message": "Phân phát hình ảnh có kích thước phù hợp để tiết kiệm dữ liệu di động và cải thiện thời gian tải. [Tìm hiểu thêm](https://developers.google.com/web/tools/lighthouse/audits/oversized-images)."
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | title": {
+    "message": "Thay đổi kích thước hình ảnh cho phù hợp"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-text-compression.js | description": {
+    "message": "Phải phân phát các tài nguyên dựa trên văn bản ở định dạng nén (gzip, deflate hoặc brotli) để giảm thiểu tổng số byte mạng. [Tìm hiểu thêm](https://developers.google.com/web/tools/lighthouse/audits/text-compression)."
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-text-compression.js | title": {
+    "message": "Bật tính năng nén văn bản"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-webp-images.js | description": {
+    "message": "Các định dạng hình ảnh như JPEG 2000, JPEG XR và WebP thường nén tốt hơn PNG hoặc JPEG, tức là tải xuống nhanh hơn và tiêu tốn ít dữ liệu hơn. [Tìm hiểu thêm](https://developers.google.com/web/tools/lighthouse/audits/webp)."
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-webp-images.js | title": {
+    "message": "Phân phối hình ảnh ở định dạng mới và hiệu quả hơn"
+  },
+  "lighthouse-core/audits/content-width.js | description": {
+    "message": "Nếu chiều rộng của nội dung trong ứng dụng không khớp với chiều rộng của khung nhìn, thì ứng dụng có thể không được tối ưu hóa cho màn hình thiết bị di động. [Tìm hiểu thêm](https://developers.google.com/web/tools/lighthouse/audits/content-sized-correctly-for-viewport)"
+  },
+  "lighthouse-core/audits/content-width.js | explanation": {
+    "message": "Kích thước khung nhìn {innerWidth}px không khớp với kích thước cửa sổ {outerWidth}px."
+  },
+  "lighthouse-core/audits/content-width.js | failureTitle": {
+    "message": "Kích thước của nội dung không phù hợp với khung nhìn"
+  },
+  "lighthouse-core/audits/content-width.js | title": {
+    "message": "Kích thước của nội dung phù hợp với khung nhìn"
+  },
+  "lighthouse-core/audits/critical-request-chains.js | description": {
+    "message": "Các Chuỗi yêu cầu quan trọng dưới đây cho bạn biết những tài nguyên có mức độ ưu tiên cao sẽ được tải. Hãy cân nhắc giảm độ dài chuỗi, giảm kích thước tài nguyên tải xuống hoặc trì hoãn tải xuống các tài nguyên không cần thiết để cải thiện tốc độ tải trang. [Tìm hiểu thêm](https://developers.google.com/web/tools/lighthouse/audits/critical-request-chains)."
+  },
+  "lighthouse-core/audits/critical-request-chains.js | displayValue": {
+    "message": "{itemCount,plural, =1{Đã tìm thấy 1 chuỗi}other{Đã tìm thấy # chuỗi}}"
+  },
+  "lighthouse-core/audits/critical-request-chains.js | title": {
+    "message": "Giảm thiểu độ sâu của các yêu cầu quan trọng"
+  },
+  "lighthouse-core/audits/deprecations.js | columnDeprecate": {
+    "message": "Không dùng nữa/Cảnh báo"
+  },
+  "lighthouse-core/audits/deprecations.js | columnLine": {
+    "message": "Dòng"
+  },
+  "lighthouse-core/audits/deprecations.js | description": {
+    "message": "Cuối cùng, các API không dùng nữa sẽ bị xóa khỏi trình duyệt. [Tìm hiểu thêm](https://web.dev/deprecations)."
+  },
+  "lighthouse-core/audits/deprecations.js | displayValue": {
+    "message": "{itemCount,plural, =1{Tìm thấy 1 cảnh báo}other{Tìm thấy # cảnh báo}}"
+  },
+  "lighthouse-core/audits/deprecations.js | failureTitle": {
+    "message": "Sử dụng các API không dùng nữa"
+  },
+  "lighthouse-core/audits/deprecations.js | title": {
+    "message": "Tránh các API không dùng nữa"
+  },
+  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | description": {
+    "message": "Bộ nhớ đệm của ứng dụng không còn dùng nữa. [Tìm hiểu thêm](https://web.dev/appcache-manifest)."
+  },
+  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | displayValue": {
+    "message": "Tìm thấy \"{AppCacheManifest}\""
+  },
+  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | failureTitle": {
+    "message": "Dùng bộ nhớ đệm của ứng dụng"
+  },
+  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | title": {
+    "message": "Tránh sử dụng bộ nhớ đệm của ứng dụng"
+  },
+  "lighthouse-core/audits/dobetterweb/doctype.js | description": {
+    "message": "Khi bạn chỉ định loại tài liệu, trình duyệt sẽ không chuyển sang chế độ tương thích ngược. [Tìm hiểu thêm](https://web.dev/doctype)"
+  },
+  "lighthouse-core/audits/dobetterweb/doctype.js | explanationBadDoctype": {
+    "message": "Tên loại tài liệu phải là chuỗi `html` viết thường"
+  },
+  "lighthouse-core/audits/dobetterweb/doctype.js | explanationNoDoctype": {
+    "message": "Tài liệu phải chứa một loại tài liệu"
+  },
+  "lighthouse-core/audits/dobetterweb/doctype.js | explanationPublicId": {
+    "message": "publicId lẽ ra phải là một chuỗi trống"
+  },
+  "lighthouse-core/audits/dobetterweb/doctype.js | explanationSystemId": {
+    "message": "systemId lẽ ra phải là một chuỗi trống"
+  },
+  "lighthouse-core/audits/dobetterweb/doctype.js | failureTitle": {
+    "message": "Trang thiếu loại tài liệu HTML nên đã kích hoạt chế độ tương thích ngược"
+  },
+  "lighthouse-core/audits/dobetterweb/doctype.js | title": {
+    "message": "Trang có loại tài liệu HTML"
+  },
+  "lighthouse-core/audits/dobetterweb/dom-size.js | columnElement": {
+    "message": "Phần tử"
+  },
+  "lighthouse-core/audits/dobetterweb/dom-size.js | columnStatistic": {
+    "message": "Thống kê"
+  },
+  "lighthouse-core/audits/dobetterweb/dom-size.js | columnValue": {
+    "message": "Giá trị"
+  },
+  "lighthouse-core/audits/dobetterweb/dom-size.js | description": {
+    "message": "Các kỹ sư trình duyệt khuyến cáo rằng các trang không nên chứa quá 1.500 phần tử DOM. Tốt nhất là có độ sâu của cây nhỏ hơn 32 phần tử và có ít hơn 60 phần tử con/phần tử mẹ. Một DOM lớn có thể làm tăng mức sử dụng bộ nhớ, khiến [các phép tính về kiểu](https://developers.google.com/web/fundamentals/performance/rendering/reduce-the-scope-and-complexity-of-style-calculations) dài hơn, đồng thời tạo ra [các quy trình trình bày lại bố cục](https://developers.google.com/speed/articles/reflow) tốn kém. [Tìm hiểu thêm](https://web.dev/dom-size)."
+  },
+  "lighthouse-core/audits/dobetterweb/dom-size.js | displayValue": {
+    "message": "{itemCount,plural, =1{1 phần tử}other{# phần tử}}"
+  },
+  "lighthouse-core/audits/dobetterweb/dom-size.js | failureTitle": {
+    "message": "Tránh kích thước DOM quá lớn"
+  },
+  "lighthouse-core/audits/dobetterweb/dom-size.js | statisticDOMDepth": {
+    "message": "Độ sâu DOM tối đa"
+  },
+  "lighthouse-core/audits/dobetterweb/dom-size.js | statisticDOMElements": {
+    "message": "Tổng số các phần tử DOM"
+  },
+  "lighthouse-core/audits/dobetterweb/dom-size.js | statisticDOMWidth": {
+    "message": "Phần tử con tối đa"
+  },
+  "lighthouse-core/audits/dobetterweb/dom-size.js | title": {
+    "message": "Tránh kích thước DOM quá lớn"
+  },
+  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | columnRel": {
+    "message": "Rel"
+  },
+  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | columnTarget": {
+    "message": "Mục tiêu"
+  },
+  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | description": {
+    "message": "Thêm `rel=\"noopener\"` hoặc `rel=\"noreferrer\"` vào mọi đường dẫn liên kết ngoài để cải thiện hiệu suất và ngăn chặn các lỗ hổng bảo mật. [Tìm hiểu thêm](https://web.dev/external-anchors-use-rel-noopener)."
+  },
+  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | failureTitle": {
+    "message": "Các đường dẫn liên kết đến các trang đích trên nhiều nguồn gốc là không an toàn"
+  },
+  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | title": {
+    "message": "Các đường dẫn liên kết đến các trang đích trên nhiều nguồn gốc là an toàn"
+  },
+  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | warning": {
+    "message": "Không thể xác định trang đích cho phần tử neo ({anchorHTML}). Nếu không dùng làm siêu liên kết, hãy cân nhắc xóa target=_blank."
+  },
+  "lighthouse-core/audits/dobetterweb/geolocation-on-start.js | description": {
+    "message": "Các trang web yêu cầu vị trí của người dùng mà không cung cấp ngữ cảnh sẽ khiến người dùng không tin tưởng hoặc bối rối. Hãy cân nhắc liên kết yêu cầu với hành động của người dùng. [Tìm hiểu thêm](https://web.dev/geolocation-on-start)."
+  },
+  "lighthouse-core/audits/dobetterweb/geolocation-on-start.js | failureTitle": {
+    "message": "Yêu cầu quyền truy cập vị trí địa lý khi tải trang"
+  },
+  "lighthouse-core/audits/dobetterweb/geolocation-on-start.js | title": {
+    "message": "Tránh yêu cầu quyền truy cập vị trí địa lý khi tải trang"
+  },
+  "lighthouse-core/audits/dobetterweb/js-libraries.js | columnVersion": {
+    "message": "Phiên bản"
+  },
+  "lighthouse-core/audits/dobetterweb/js-libraries.js | description": {
+    "message": "Phát hiện tất cả thư viện giao diện người dùng JavaScript trên trang này. [Tìm hiểu thêm](https://web.dev/js-libraries)"
+  },
+  "lighthouse-core/audits/dobetterweb/js-libraries.js | title": {
+    "message": "Thư viện JavaScript phát hiện được"
+  },
+  "lighthouse-core/audits/dobetterweb/no-document-write.js | description": {
+    "message": "Đối với những người dùng có kết nối chậm, các tập lệnh bên ngoài tự động được đưa vào qua `document.write()` có thể làm trang tải chậm hàng chục giây. [Tìm hiểu thêm](https://web.dev/no-document-write)."
+  },
+  "lighthouse-core/audits/dobetterweb/no-document-write.js | failureTitle": {
+    "message": "Sử dụng `document.write()`"
+  },
+  "lighthouse-core/audits/dobetterweb/no-document-write.js | title": {
+    "message": "Tránh `document.write()`"
+  },
+  "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | columnSeverity": {
+    "message": "Mức độ nghiêm trọng cao nhất"
+  },
+  "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | columnVersion": {
+    "message": "Phiên bản thư viện"
+  },
+  "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | columnVuln": {
+    "message": "Số lượng lỗ hổng"
+  },
+  "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | description": {
+    "message": "Một số tập lệnh của bên thứ ba có thể chứa các lỗ hổng bảo mật đã biết mà kẻ tấn công dễ dàng xác định và khai thác. [Tìm hiểu thêm](https://web.dev/no-vulnerable-libraries)."
+  },
+  "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | displayValue": {
+    "message": "{itemCount,plural, =1{Phát hiện thấy 1 lỗ hổng}other{Phát hiện thấy # lỗ hổng}}"
+  },
+  "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | failureTitle": {
+    "message": "Bao gồm các thư viện giao diện người dùng JavaScript có những lỗ hổng bảo mật đã biết"
+  },
+  "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | rowSeverityHigh": {
+    "message": "Cao"
+  },
+  "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | rowSeverityLow": {
+    "message": "Thấp"
+  },
+  "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | rowSeverityMedium": {
+    "message": "Trung bình"
+  },
+  "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | title": {
+    "message": "Tránh các thư viện giao diện người dùng JavaScript có lỗ hổng bảo mật đã biết"
+  },
+  "lighthouse-core/audits/dobetterweb/notification-on-start.js | description": {
+    "message": "Các trang web gửi thông báo không có ngữ cảnh sẽ khiến người dùng không tin tưởng hoặc bối rối. Hãy cân nhắc liên kết yêu cầu với cử chỉ của người dùng. [Tìm hiểu thêm](https://web.dev/notification-on-start)."
+  },
+  "lighthouse-core/audits/dobetterweb/notification-on-start.js | failureTitle": {
+    "message": "Yêu cầu quyền truy cập thông báo khi tải trang"
+  },
+  "lighthouse-core/audits/dobetterweb/notification-on-start.js | title": {
+    "message": "Tránh yêu cầu quyền truy cập thông báo khi tải trang"
+  },
+  "lighthouse-core/audits/dobetterweb/password-inputs-can-be-pasted-into.js | columnFailingElem": {
+    "message": "Các phần tử không đạt"
+  },
+  "lighthouse-core/audits/dobetterweb/password-inputs-can-be-pasted-into.js | description": {
+    "message": "Việc ngăn dán mật khẩu sẽ làm giảm tác dụng của chính sách bảo mật hiệu quả. [Tìm hiểu thêm](https://web.dev/password-inputs-can-be-pasted-into)."
+  },
+  "lighthouse-core/audits/dobetterweb/password-inputs-can-be-pasted-into.js | failureTitle": {
+    "message": "Ngăn người dùng dán vào các trường mật khẩu"
+  },
+  "lighthouse-core/audits/dobetterweb/password-inputs-can-be-pasted-into.js | title": {
+    "message": "Cho phép người dùng dán vào các trường mật khẩu"
+  },
+  "lighthouse-core/audits/dobetterweb/uses-http2.js | columnProtocol": {
+    "message": "Giao thức"
+  },
+  "lighthouse-core/audits/dobetterweb/uses-http2.js | description": {
+    "message": "HTTP/2 mang lại nhiều lợi ích hơn HTTP/1.1, trong đó có tiêu đề nhị phân, đa hợp và máy chủ tự quyết. [Tìm hiểu thêm](https://web.dev/uses-http2)."
+  },
+  "lighthouse-core/audits/dobetterweb/uses-http2.js | displayValue": {
+    "message": "{itemCount,plural, =1{Chưa phân phát 1 yêu cầu qua HTTP/2}other{Chưa phân phát # yêu cầu qua HTTP/2}}"
+  },
+  "lighthouse-core/audits/dobetterweb/uses-http2.js | failureTitle": {
+    "message": "Không sử dụng HTTP/2 cho tất cả các tài nguyên của trang web"
+  },
+  "lighthouse-core/audits/dobetterweb/uses-http2.js | title": {
+    "message": "Sử dụng HTTP/2 cho các tài nguyên của chính trang web"
+  },
+  "lighthouse-core/audits/dobetterweb/uses-passive-event-listeners.js | description": {
+    "message": "Hãy cân nhắc đánh dấu trình xử lý sự kiện chạm và di chuyển con lăn là `passive` để cải thiện hiệu suất cuộn trên trang. [Tìm hiểu thêm](https://web.dev/uses-passive-event-listeners)."
+  },
+  "lighthouse-core/audits/dobetterweb/uses-passive-event-listeners.js | failureTitle": {
+    "message": "Không sử dụng trình nghe bị động để cải thiện hiệu suất cuộn"
+  },
+  "lighthouse-core/audits/dobetterweb/uses-passive-event-listeners.js | title": {
+    "message": "Sử dụng trình nghe bị động để cải thiện hiệu suất cuộn"
+  },
+  "lighthouse-core/audits/errors-in-console.js | columnDesc": {
+    "message": "Nội dung mô tả"
+  },
+  "lighthouse-core/audits/errors-in-console.js | description": {
+    "message": "Các lỗi được ghi vào bảng điều khiển là những sự cố chưa giải quyết. Những sự cố này có thể do lỗi yêu cầu mạng và các vấn đề khác của trình duyệt gây ra. [Tìm hiểu thêm](https://web.dev/errors-in-console)"
+  },
+  "lighthouse-core/audits/errors-in-console.js | failureTitle": {
+    "message": "Đã ghi lỗi của trình duyệt vào bảng điều khiển"
+  },
+  "lighthouse-core/audits/errors-in-console.js | title": {
+    "message": "Chưa ghi lỗi nào của trình duyệt vào bảng điều khiển"
+  },
+  "lighthouse-core/audits/font-display.js | description": {
+    "message": "Sử dụng tính năng Biểu định kiểu xếp chồng (CSS) hiển thị phông chữ để đảm bảo văn bản hiển thị với người dùng khi phông chữ web đang tải. [Tìm hiểu thêm](https://developers.google.com/web/updates/2016/02/font-display)."
+  },
+  "lighthouse-core/audits/font-display.js | failureTitle": {
+    "message": "Đảm bảo văn bản vẫn hiển thị trong khi tải phông chữ web"
+  },
+  "lighthouse-core/audits/font-display.js | title": {
+    "message": "Tất cả văn bản vẫn hiển thị trong khi tải phông chữ web"
+  },
+  "lighthouse-core/audits/font-display.js | undeclaredFontURLWarning": {
+    "message": "Lighthouse không thể tự động kiểm tra giá trị hiển thị phông chữ cho URL sau: {fontURL}."
+  },
+  "lighthouse-core/audits/image-aspect-ratio.js | columnActual": {
+    "message": "Tỷ lệ khung hình (Thực tế)"
+  },
+  "lighthouse-core/audits/image-aspect-ratio.js | columnDisplayed": {
+    "message": "Tỷ lệ khung hình (Hiển thị)"
+  },
+  "lighthouse-core/audits/image-aspect-ratio.js | description": {
+    "message": "Kích thước hiển thị của hình ảnh phải khớp với tỷ lệ khung hình tự nhiên. [Tìm hiểu thêm](https://web.dev/image-aspect-ratio)."
+  },
+  "lighthouse-core/audits/image-aspect-ratio.js | failureTitle": {
+    "message": "Hiển thị hình ảnh có tỷ lệ khung hình không chính xác"
+  },
+  "lighthouse-core/audits/image-aspect-ratio.js | title": {
+    "message": "Hiển thị hình ảnh có tỷ lệ khung hình chính xác"
+  },
+  "lighthouse-core/audits/image-aspect-ratio.js | warningCompute": {
+    "message": "Thông tin kích thước hình ảnh không hợp lệ {url}"
+  },
+  "lighthouse-core/audits/installable-manifest.js | description": {
+    "message": "Các trình duyệt có thể chủ động nhắc người dùng thêm ứng dụng của bạn vào màn hình chính để tăng mức độ tương tác. [Tìm hiểu thêm](https://developers.google.com/web/tools/lighthouse/audits/install-prompt)"
+  },
+  "lighthouse-core/audits/installable-manifest.js | failureTitle": {
+    "message": "Tệp kê khai ứng dụng web không đáp ứng các yêu cầu về khả năng cài đặt"
+  },
+  "lighthouse-core/audits/installable-manifest.js | title": {
+    "message": "Tệp kê khai ứng dụng web đáp ứng các yêu cầu về khả năng cài đặt"
+  },
+  "lighthouse-core/audits/is-on-https.js | columnInsecureURL": {
+    "message": "URL không an toàn"
+  },
+  "lighthouse-core/audits/is-on-https.js | description": {
+    "message": "Bạn phải bảo vệ tất cả các trang web bằng HTTPS, kể cả những trang web không xử lý dữ liệu nhạy cảm. HTTPS ngăn kẻ xâm nhập can thiệp hoặc vô tình biết được nội dung trao đổi giữa ứng dụng và người dùng của bạn, đồng thời là điều kiện tiên quyết nếu bạn muốn dùng HTTP/2 và nhiều API nền tảng web mới. [Tìm hiểu thêm](https://web.dev/is-on-https)."
+  },
+  "lighthouse-core/audits/is-on-https.js | displayValue": {
+    "message": "{itemCount,plural, =1{Tìm thấy 1 yêu cầu không an toàn}other{Tìm thấy # yêu cầu không an toàn}}"
+  },
+  "lighthouse-core/audits/is-on-https.js | failureTitle": {
+    "message": "Không sử dụng HTTPS"
+  },
+  "lighthouse-core/audits/is-on-https.js | title": {
+    "message": "Sử dụng HTTPS"
+  },
+  "lighthouse-core/audits/load-fast-enough-for-pwa.js | description": {
+    "message": "Tốc độ tải trang nhanh trên mạng di động giúp mang đến trải nghiệm tích cực cho người dùng thiết bị di động. [Tìm hiểu thêm](https://developers.google.com/web/tools/lighthouse/audits/fast-3g)."
+  },
+  "lighthouse-core/audits/load-fast-enough-for-pwa.js | displayValueText": {
+    "message": "Tương tác ở giây thứ {timeInMs, number, seconds}"
+  },
+  "lighthouse-core/audits/load-fast-enough-for-pwa.js | displayValueTextWithOverride": {
+    "message": "Tương tác trên mạng di động mô phỏng ở giây thứ {timeInMs, number, seconds}"
+  },
+  "lighthouse-core/audits/load-fast-enough-for-pwa.js | explanationLoadSlow": {
+    "message": "Trang của bạn tải quá chậm và không tương tác trong vòng 10 giây. Hãy xem các cơ hội và thông tin chẩn đoán trong phần \"Hiệu suất\" để tìm hiểu cách cải thiện."
+  },
+  "lighthouse-core/audits/load-fast-enough-for-pwa.js | failureTitle": {
+    "message": "Tốc độ tải trang không đủ nhanh trên mạng di động"
+  },
+  "lighthouse-core/audits/load-fast-enough-for-pwa.js | title": {
+    "message": "Tốc độ tải trang đủ nhanh trên mạng di động"
+  },
+  "lighthouse-core/audits/mainthread-work-breakdown.js | columnCategory": {
+    "message": "Danh mục"
+  },
+  "lighthouse-core/audits/mainthread-work-breakdown.js | description": {
+    "message": "Hãy xem xét giảm thời gian dùng để phân tích cú pháp, biên soạn và thực thi JS. Bạn có thể giải quyết vấn đề này bằng cách phân phối các tải trọng JS nhỏ hơn."
+  },
+  "lighthouse-core/audits/mainthread-work-breakdown.js | failureTitle": {
+    "message": "Giảm thiểu công việc theo chuỗi chính"
+  },
+  "lighthouse-core/audits/mainthread-work-breakdown.js | title": {
+    "message": "Giảm thiểu công việc theo chuỗi chính"
+  },
+  "lighthouse-core/audits/manual/pwa-cross-browser.js | description": {
+    "message": "Để tiếp cận nhiều người dùng nhất, các trang web phải hoạt động trên mọi trình duyệt chính. [Tìm hiểu thêm](https://developers.google.com/web/progressive-web-apps/checklist#site-works-cross-browser)"
+  },
+  "lighthouse-core/audits/manual/pwa-cross-browser.js | title": {
+    "message": "Trang web hoạt động trên nhiều trình duyệt"
+  },
+  "lighthouse-core/audits/manual/pwa-each-page-has-url.js | description": {
+    "message": "Đảm bảo từng trang có thể liên kết sâu qua URL và URL là duy nhất, có như vậy thì mới chia sẻ được trên mạng xã hội. [Tìm hiểu thêm](https://developers.google.com/web/progressive-web-apps/checklist#each-page-has-a-url)"
+  },
+  "lighthouse-core/audits/manual/pwa-each-page-has-url.js | title": {
+    "message": "Mỗi trang có một URL"
+  },
+  "lighthouse-core/audits/manual/pwa-page-transitions.js | description": {
+    "message": "Quá trình chuyển tiếp phải diễn ra ngay khi bạn nhấn vào, kể cả khi mạng chậm, một yếu tố then chốt để tăng hiệu suất cảm nhận. [Tìm hiểu thêm](https://developers.google.com/web/progressive-web-apps/checklist#page-transitions-dont-feel-like-they-block-on-the-network)"
+  },
+  "lighthouse-core/audits/manual/pwa-page-transitions.js | title": {
+    "message": "Quá trình chuyển tiếp trang không bị chậm trễ do mạng"
+  },
+  "lighthouse-core/audits/metrics/estimated-input-latency.js | description": {
+    "message": "Thời gian chờ nhập thông tin theo ước tính là thời gian ước tính mà ứng dụng cần để phản hồi thông tin do người dùng nhập (tính bằng mili giây) trong khoảng thời gian 5 giây tải nhiều trang nhất. Nếu người dùng phải chờ quá 50 mili giây, thì ứng dụng của bạn bị coi là chạy chậm. [Tìm hiểu thêm](https://developers.google.com/web/tools/lighthouse/audits/estimated-input-latency)."
+  },
+  "lighthouse-core/audits/metrics/estimated-input-latency.js | title": {
+    "message": "Thời gian chờ nhập thông tin theo ước tính"
+  },
+  "lighthouse-core/audits/metrics/first-contentful-paint.js | description": {
+    "message": "Chỉ số Hiển thị nội dung đầu tiên đánh dấu thời điểm hiển thị văn bản hoặc hình ảnh đầu tiên. [Tìm hiểu thêm](https://developers.google.com/web/tools/lighthouse/audits/first-contentful-paint)."
+  },
+  "lighthouse-core/audits/metrics/first-contentful-paint.js | title": {
+    "message": "Hình ảnh có nội dung đầu tiên"
+  },
+  "lighthouse-core/audits/metrics/first-cpu-idle.js | description": {
+    "message": "Chỉ số CPU nhàn rỗi đầu tiên đánh dấu thời điểm đầu tiên chuỗi chính của trang không phải xử lý quá nhiều thông tin nhập vào. [Tìm hiểu thêm](https://developers.google.com/web/tools/lighthouse/audits/first-interactive)."
+  },
+  "lighthouse-core/audits/metrics/first-cpu-idle.js | title": {
+    "message": "CPU nhàn rỗi đầu tiên"
+  },
+  "lighthouse-core/audits/metrics/first-meaningful-paint.js | description": {
+    "message": "Chỉ số Hiển thị nội dung đầu tiên đo lường thời điểm hiển thị nội dung chính của trang. [Tìm hiểu thêm](https://developers.google.com/web/tools/lighthouse/audits/first-meaningful-paint)."
+  },
+  "lighthouse-core/audits/metrics/first-meaningful-paint.js | title": {
+    "message": "Hình ảnh có ý nghĩa đầu tiên"
+  },
+  "lighthouse-core/audits/metrics/interactive.js | description": {
+    "message": "Thời điểm tương tác là khoảng thời gian mà trang cần để trở nên hoàn toàn tương tác. [Tìm hiểu thêm](https://developers.google.com/web/tools/lighthouse/audits/consistently-interactive)."
+  },
+  "lighthouse-core/audits/metrics/interactive.js | title": {
+    "message": "Thời điểm tương tác"
+  },
+  "lighthouse-core/audits/metrics/max-potential-fid.js | description": {
+    "message": "Thời gian phản hồi lần tương tác đầu tiên tối đa mà người dùng có thể gặp phải là thời gian thực hiện nhiệm vụ lâu nhất (tính bằng mili giây). [Tìm hiểu thêm](https://developers.google.com/web/updates/2018/05/first-input-delay)."
+  },
+  "lighthouse-core/audits/metrics/max-potential-fid.js | title": {
+    "message": "Thời gian phản hồi lần tương tác đầu tiên tối đa có thể"
+  },
+  "lighthouse-core/audits/metrics/speed-index.js | description": {
+    "message": "Chỉ số tốc độ cho biết nội dung của một trang hiển thị nhanh chóng đến mức nào. [Tìm hiểu thêm](https://developers.google.com/web/tools/lighthouse/audits/speed-index)."
+  },
+  "lighthouse-core/audits/metrics/speed-index.js | title": {
+    "message": "Chỉ số tốc độ"
+  },
+  "lighthouse-core/audits/metrics/total-blocking-time.js | description": {
+    "message": "Tổng tất cả các khoảng thời gian giữa thời điểm Hiển thị nội dung đầu tiên (FCP) và Thời điểm tương tác khi thời gian nhiệm vụ vượt quá 50 mili giây được biểu thị bằng đơn vị mili giây."
+  },
+  "lighthouse-core/audits/metrics/total-blocking-time.js | title": {
+    "message": "Tổng thời gian chặn"
+  },
+  "lighthouse-core/audits/network-rtt.js | description": {
+    "message": "Thời gian trọn vòng (RTT) của mạng có ảnh hưởng lớn đến hiệu suất. Nếu mất nhiều thời gian trọn vòng (RTT) để đến một nguồn gốc, tức là máy chủ càng gần người dùng thì hiệu quả càng cao. [Tìm hiểu thêm](https://hpbn.co/primer-on-latency-and-bandwidth/)."
+  },
+  "lighthouse-core/audits/network-rtt.js | title": {
+    "message": "Thời gian trọn vòng của mạng"
+  },
+  "lighthouse-core/audits/network-server-latency.js | description": {
+    "message": "Thời gian chờ của máy chủ có thể ảnh hưởng đến hiệu suất của trang web. Nếu máy chủ của một nguồn gốc có thời gian chờ cao, tức là máy chủ bị quá tải hoặc có hiệu suất phụ trợ thấp. [Tìm hiểu thêm](https://hpbn.co/primer-on-web-performance/#analyzing-the-resource-waterfall)."
+  },
+  "lighthouse-core/audits/network-server-latency.js | title": {
+    "message": "Thời gian dưới nền của máy chủ"
+  },
+  "lighthouse-core/audits/offline-start-url.js | description": {
+    "message": "Trình chạy dịch vụ giúp ứng dụng web của bạn hoạt động ổn định trong điều kiện mạng chập chờn. [Tìm hiểu thêm](https://developers.google.com/web/tools/lighthouse/audits/http-200-when-offline)"
+  },
+  "lighthouse-core/audits/offline-start-url.js | failureTitle": {
+    "message": "`start_url` không phản hồi kèm mã trạng thái 200 khi không có mạng"
+  },
+  "lighthouse-core/audits/offline-start-url.js | title": {
+    "message": "`start_url` phản hồi kèm mã trạng thái 200 khi không có mạng"
+  },
+  "lighthouse-core/audits/offline-start-url.js | warningCantStart": {
+    "message": "Lighthouse không đọc được `start_url` trong tệp kê khai. Do đó, `start_url` được giả định là URL của tài liệu. Thông báo lỗi: '{manifestWarning}'."
+  },
+  "lighthouse-core/audits/performance-budget.js | columnOverBudget": {
+    "message": "Vượt ngân sách"
+  },
+  "lighthouse-core/audits/performance-budget.js | description": {
+    "message": "Đảm bảo số lượng và quy mô của yêu cầu mạng thấp hơn mục tiêu đặt ra của ngân sách hiệu suất đã cung cấp. [Tìm hiểu thêm](https://developers.google.com/web/tools/lighthouse/audits/budgets)."
+  },
+  "lighthouse-core/audits/performance-budget.js | requestCountOverBudget": {
+    "message": "{count,plural, =1{1 yêu cầu}other{# yêu cầu}}"
+  },
+  "lighthouse-core/audits/performance-budget.js | title": {
+    "message": "Ngân sách hiệu suất"
+  },
+  "lighthouse-core/audits/redirects-http.js | description": {
+    "message": "Nếu bạn thiết lập HTTPS từ trước, hãy nhớ chuyển hướng toàn bộ lưu lượng truy cập HTTP tới HTTPS để bật các tính năng web an toàn cho tất cả người dùng. [Tìm hiểu thêm](https://developers.google.com/web/tools/lighthouse/audits/http-redirects-to-https)"
+  },
+  "lighthouse-core/audits/redirects-http.js | failureTitle": {
+    "message": "Không chuyển hướng lưu lượng truy cập HTTP tới HTTPS"
+  },
+  "lighthouse-core/audits/redirects-http.js | title": {
+    "message": "Chuyển hướng lưu lượng truy cập HTTP tới HTTPS"
+  },
+  "lighthouse-core/audits/redirects.js | description": {
+    "message": "Các lần chuyển hướng sẽ làm giảm tốc độ tải trang. [Tìm hiểu thêm](https://developers.google.com/web/tools/lighthouse/audits/redirects)."
+  },
+  "lighthouse-core/audits/redirects.js | title": {
+    "message": "Tránh chuyển hướng trang nhiều lần"
+  },
+  "lighthouse-core/audits/resource-summary.js | description": {
+    "message": "Để thiết lập ngân sách cho số lượng và quy mô của tài nguyên trang, hãy thêm tệp budget.json. [Tìm hiểu thêm](https://developers.google.com/web/tools/lighthouse/audits/budgets)."
+  },
+  "lighthouse-core/audits/resource-summary.js | displayValue": {
+    "message": "{requestCount,plural, =1{1 yêu cầu • {byteCount, number, bytes} KB}other{# yêu cầu • {byteCount, number, bytes} KB}}"
+  },
+  "lighthouse-core/audits/resource-summary.js | title": {
+    "message": "Giảm số lượng yêu cầu và chuyển những tài nguyên có kích thước nhỏ"
+  },
+  "lighthouse-core/audits/seo/canonical.js | description": {
+    "message": "Phần tử liên kết chính tắc đề xuất URL nào nên hiển thị trong kết quả tìm kiếm. [Tìm hiểu thêm](https://web.dev/canonical)."
+  },
+  "lighthouse-core/audits/seo/canonical.js | explanationConflict": {
+    "message": "Nhiều URL xung đột ({urlList})"
+  },
+  "lighthouse-core/audits/seo/canonical.js | explanationDifferentDomain": {
+    "message": "Trỏ đến một miền khác ({url})"
+  },
+  "lighthouse-core/audits/seo/canonical.js | explanationInvalid": {
+    "message": "URL không hợp lệ ({url})."
+  },
+  "lighthouse-core/audits/seo/canonical.js | explanationPointsElsewhere": {
+    "message": "Trỏ đến một vị trí `hreflang` khác ({url})"
+  },
+  "lighthouse-core/audits/seo/canonical.js | explanationRelative": {
+    "message": "URL tương đối ({url})"
+  },
+  "lighthouse-core/audits/seo/canonical.js | explanationRoot": {
+    "message": "Trỏ đến URL gốc của miền (trang chủ) thay vì trang nội dung tương đương"
+  },
+  "lighthouse-core/audits/seo/canonical.js | failureTitle": {
+    "message": "Tài liệu không có `rel=canonical` hợp lệ"
+  },
+  "lighthouse-core/audits/seo/canonical.js | title": {
+    "message": "Tài liệu có `rel=canonical` hợp lệ"
+  },
+  "lighthouse-core/audits/seo/font-size.js | description": {
+    "message": "Cỡ chữ dưới 12 pixel là quá nhỏ và khó đọc, buộc khách truy cập trên thiết bị di động phải “chụm để thu phóng” mới đọc được. Tốt nhất là hơn 60% văn bản trên trang có cỡ chữ lớn hơn hoặc bằng 12 pixel. [Tìm hiểu thêm](https://web.dev/font-size)."
+  },
+  "lighthouse-core/audits/seo/font-size.js | displayValue": {
+    "message": "{decimalProportion, number, extendedPercent} văn bản dễ đọc"
+  },
+  "lighthouse-core/audits/seo/font-size.js | explanationViewport": {
+    "message": "Văn bản không đọc được vì không có thẻ meta viewport nào được tối ưu hóa cho màn hình thiết bị di động."
+  },
+  "lighthouse-core/audits/seo/font-size.js | explanationWithDisclaimer": {
+    "message": "Văn bản có tỷ lệ {decimalProportion, number, extendedPercent} là quá nhỏ (căn cứ vào mẫu {decimalProportionVisited, number, extendedPercent})."
+  },
+  "lighthouse-core/audits/seo/font-size.js | failureTitle": {
+    "message": "Tài liệu không sử dụng cỡ chữ dễ đọc"
+  },
+  "lighthouse-core/audits/seo/font-size.js | title": {
+    "message": "Tài liệu sử dụng cỡ chữ dễ đọc"
+  },
+  "lighthouse-core/audits/seo/hreflang.js | description": {
+    "message": "Các phần tử liên kết hreflang cho công cụ tìm kiếm biết nên liệt kê phiên bản trang nào trong kết quả tìm kiếm cho một ngôn ngữ hoặc khu vực cụ thể. [Tìm hiểu thêm](https://web.dev/hreflang)."
+  },
+  "lighthouse-core/audits/seo/hreflang.js | failureTitle": {
+    "message": "Tài liệu không có `hreflang` hợp lệ"
+  },
+  "lighthouse-core/audits/seo/hreflang.js | title": {
+    "message": "Tài liệu có `hreflang` hợp lệ"
+  },
+  "lighthouse-core/audits/seo/http-status-code.js | description": {
+    "message": "Các trang có mã trạng thái HTTP không thành công có thể được lập chỉ mục không chính xác. [Tìm hiểu thêm](https://web.dev/http-status-code)."
+  },
+  "lighthouse-core/audits/seo/http-status-code.js | failureTitle": {
+    "message": "Trang có mã trạng thái HTTP không thành công"
+  },
+  "lighthouse-core/audits/seo/http-status-code.js | title": {
+    "message": "Trang có mã trạng thái HTTP thành công"
+  },
+  "lighthouse-core/audits/seo/is-crawlable.js | description": {
+    "message": "Các công cụ tìm kiếm không thể đưa trang của bạn vào kết quả tìm kiếm nếu bạn không cấp cho các công cụ này quyền thu thập thông tin của trang. [Tìm hiểu thêm](https://web.dev/is-crawable)."
+  },
+  "lighthouse-core/audits/seo/is-crawlable.js | failureTitle": {
+    "message": "Trang bị chặn lập chỉ mục"
+  },
+  "lighthouse-core/audits/seo/is-crawlable.js | title": {
+    "message": "Trang không bị chặn lập chỉ mục"
+  },
+  "lighthouse-core/audits/seo/link-text.js | description": {
+    "message": "Văn bản mô tả trên đường dẫn liên kết giúp công cụ tìm kiếm hiểu được nội dung của bạn. [Tìm hiểu thêm](https://web.dev/link-text)."
+  },
+  "lighthouse-core/audits/seo/link-text.js | displayValue": {
+    "message": "{itemCount,plural, =1{Đã tìm thấy 1 liên kết}other{Đã tìm thấy # liên kết}}"
+  },
+  "lighthouse-core/audits/seo/link-text.js | failureTitle": {
+    "message": "Các phần tử liên kết không có văn bản mô tả"
+  },
+  "lighthouse-core/audits/seo/link-text.js | title": {
+    "message": "Các phần tử liên kết có văn bản mô tả"
+  },
+  "lighthouse-core/audits/seo/manual/structured-data.js | description": {
+    "message": "Chạy [Công cụ kiểm tra dữ liệu có cấu trúc](https://search.google.com/structured-data/testing-tool/) và [Công cụ khử lỗi dữ liệu có cấu trúc](http://linter.structured-data.org/) để xác thực loại dữ liệu này. [Tìm hiểu thêm](https://web.dev/structured-data)."
+  },
+  "lighthouse-core/audits/seo/manual/structured-data.js | title": {
+    "message": "Dữ liệu có cấu trúc là hợp lệ"
+  },
+  "lighthouse-core/audits/seo/meta-description.js | description": {
+    "message": "Bạn có thể thêm phần mô tả meta vào kết quả tìm kiếm để tóm tắt ngắn gọn nội dung trang. [Tìm hiểu thêm](https://web.dev/meta-description)."
+  },
+  "lighthouse-core/audits/seo/meta-description.js | explanation": {
+    "message": "Văn bản mô tả hiện đang trống."
+  },
+  "lighthouse-core/audits/seo/meta-description.js | failureTitle": {
+    "message": "Tài liệu không có phần mô tả meta"
+  },
+  "lighthouse-core/audits/seo/meta-description.js | title": {
+    "message": "Tài liệu có phần mô tả meta"
+  },
+  "lighthouse-core/audits/seo/plugins.js | description": {
+    "message": "Các công cụ tìm kiếm không thể lập chỉ mục nội dung plugin và nhiều thiết bị hạn chế hoặc không hỗ trợ plugin. [Tìm hiểu thêm](https://web.dev/plugins)."
+  },
+  "lighthouse-core/audits/seo/plugins.js | failureTitle": {
+    "message": "Tài liệu sử dụng plugin"
+  },
+  "lighthouse-core/audits/seo/plugins.js | title": {
+    "message": "Tài liệu tránh sử dụng plugin"
+  },
+  "lighthouse-core/audits/seo/robots-txt.js | description": {
+    "message": "Nếu định dạng của tệp robots.txt không đúng, thì trình thu thập thông tin có thể không hiểu được cách bạn muốn thu thập thông tin hoặc lập chỉ mục trang web. [Tìm hiểu thêm](https://web.dev/robots-txt)"
+  },
+  "lighthouse-core/audits/seo/robots-txt.js | displayValueHttpBadCode": {
+    "message": "Yêu cầu robots.txt trả về trạng thái HTTP: {statusCode}"
+  },
+  "lighthouse-core/audits/seo/robots-txt.js | displayValueValidationError": {
+    "message": "{itemCount,plural, =1{Đã tìm thấy 1 lỗi}other{Đã tìm thấy # lỗi}}"
+  },
+  "lighthouse-core/audits/seo/robots-txt.js | explanation": {
+    "message": "Lighthouse không tải được tệp robots.txt xuống"
+  },
+  "lighthouse-core/audits/seo/robots-txt.js | failureTitle": {
+    "message": "robots.txt không hợp lệ"
+  },
+  "lighthouse-core/audits/seo/robots-txt.js | title": {
+    "message": "robots.txt hợp lệ"
+  },
+  "lighthouse-core/audits/seo/tap-targets.js | description": {
+    "message": "Các phần tử tương tác, chẳng hạn như nút và phần tử liên kết, nên có kích thước đủ lớn (48x48 pixel) và khoảng cách xung quanh các phần tử này đủ để nhấn mà không chồng chéo lên các phần tử khác. [Tìm hiểu thêm](https://web.dev/tap-targets)."
+  },
+  "lighthouse-core/audits/seo/tap-targets.js | displayValue": {
+    "message": "{decimalProportion, number, percent} mục tiêu nhấn có kích thước phù hợp"
+  },
+  "lighthouse-core/audits/seo/tap-targets.js | explanationViewportMetaNotOptimized": {
+    "message": "Mục tiêu nhấn có kích thước quá nhỏ do không có thẻ meta viewport nào được tối ưu hóa cho màn hình thiết bị di động"
+  },
+  "lighthouse-core/audits/seo/tap-targets.js | failureTitle": {
+    "message": "Các mục tiêu nhấn có kích thước không phù hợp"
+  },
+  "lighthouse-core/audits/seo/tap-targets.js | overlappingTargetHeader": {
+    "message": "Mục tiêu chồng chéo"
+  },
+  "lighthouse-core/audits/seo/tap-targets.js | tapTargetHeader": {
+    "message": "Mục tiêu nhấn"
+  },
+  "lighthouse-core/audits/seo/tap-targets.js | title": {
+    "message": "Mục tiêu nhấn có kích thước phù hợp"
+  },
+  "lighthouse-core/audits/service-worker.js | description": {
+    "message": "Trình chạy dịch vụ là công nghệ cho phép ứng dụng của bạn dùng nhiều tính năng của Ứng dụng web tiến bộ, chẳng hạn như thêm vào màn hình chính khi không có mạng và thông báo đẩy. [Tìm hiểu thêm](https://developers.google.com/web/tools/lighthouse/audits/registered-service-worker)"
+  },
+  "lighthouse-core/audits/service-worker.js | explanationBadManifest": {
+    "message": "Trang này do một trình chạy dịch vụ kiểm soát. Tuy nhiên, không tìm thấy `start_url` vì tệp kê khai không thể phân tích cú pháp thành tệp JSON hợp lệ"
+  },
+  "lighthouse-core/audits/service-worker.js | explanationBadStartUrl": {
+    "message": "Trang này do một trình chạy dịch vụ kiểm soát. Tuy nhiên, `start_url` ({startUrl}) không thuộc phạm vi kiểm soát của trình chạy này ({scopeUrl})"
+  },
+  "lighthouse-core/audits/service-worker.js | explanationNoManifest": {
+    "message": "Trang này do một trình chạy dịch vụ kiểm soát. Tuy nhiên, không tìm thấy `start_url` vì không tìm nạp được tệp kê khai."
+  },
+  "lighthouse-core/audits/service-worker.js | explanationOutOfScope": {
+    "message": "Nguồn gốc này có tối thiểu một trình chạy dịch vụ. Tuy nhiên, trang ({pageUrl}) không thuộc phạm vi kiểm soát của các trình chạy này."
+  },
+  "lighthouse-core/audits/service-worker.js | failureTitle": {
+    "message": "Không đăng ký một trình chạy dịch vụ kiểm soát trang và `start_url`"
+  },
+  "lighthouse-core/audits/service-worker.js | title": {
+    "message": "Đăng ký một trình chạy dịch vụ kiểm soát trang và `start_url`"
+  },
+  "lighthouse-core/audits/splash-screen.js | description": {
+    "message": "Màn hình chờ theo chủ đề giúp đảm bảo người dùng có trải nghiệm chất lượng cao khi chạy ứng dụng từ màn hình chính. [Tìm hiểu thêm](https://developers.google.com/web/tools/lighthouse/audits/custom-splash-screen)"
+  },
+  "lighthouse-core/audits/splash-screen.js | failureTitle": {
+    "message": "Chưa được định cấu hình cho màn hình chờ tùy chỉnh"
+  },
+  "lighthouse-core/audits/splash-screen.js | title": {
+    "message": "Đã định cấu hình cho màn hình chờ tùy chỉnh"
+  },
+  "lighthouse-core/audits/themed-omnibox.js | description": {
+    "message": "Bạn có thể đặt màu chủ đề cho thanh địa chỉ trên trình duyệt để phù hợp với trang web của mình. [Tìm hiểu thêm](https://developers.google.com/web/tools/lighthouse/audits/address-bar)"
+  },
+  "lighthouse-core/audits/themed-omnibox.js | failureTitle": {
+    "message": "Không đặt màu chủ đề cho thanh địa chỉ."
+  },
+  "lighthouse-core/audits/themed-omnibox.js | title": {
+    "message": "Đặt màu chủ đề cho thanh địa chỉ."
+  },
+  "lighthouse-core/audits/third-party-summary.js | columnBlockingTime": {
+    "message": "Thời gian chặn chuỗi chính"
+  },
+  "lighthouse-core/audits/third-party-summary.js | columnThirdParty": {
+    "message": "Bên thứ ba"
+  },
+  "lighthouse-core/audits/third-party-summary.js | description": {
+    "message": "Mã của bên thứ ba có thể tác động đáng kể đến hiệu suất tải. Hãy hạn chế số nhà cung cấp bên thứ ba dư thừa và cố gắng tải mã của bên thứ ba sau khi trang của bạn hoàn thành phần lớn quá trình tải. [Tìm hiểu thêm](https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/loading-third-party-javascript/)."
+  },
+  "lighthouse-core/audits/third-party-summary.js | displayValue": {
+    "message": "Mã của bên thứ ba đã chặn chuỗi chính trong {timeInMs, number, milliseconds} mili giây"
+  },
+  "lighthouse-core/audits/third-party-summary.js | failureTitle": {
+    "message": "Giảm mức ảnh hưởng của mã bên thứ ba"
+  },
+  "lighthouse-core/audits/third-party-summary.js | title": {
+    "message": "Việc sử dụng mã của bên thứ ba"
+  },
+  "lighthouse-core/audits/time-to-first-byte.js | description": {
+    "message": "Chỉ số Thời gian cho byte đầu tiên xác định thời gian máy chủ của bạn gửi phản hồi. [Tìm hiểu thêm](https://developers.google.com/web/tools/lighthouse/audits/ttfb)."
+  },
+  "lighthouse-core/audits/time-to-first-byte.js | displayValue": {
+    "message": "Tài liệu gốc mất {timeInMs, number, milliseconds} mili giây"
+  },
+  "lighthouse-core/audits/time-to-first-byte.js | failureTitle": {
+    "message": "Giảm thời gian phản hồi của máy chủ (TTFB)"
+  },
+  "lighthouse-core/audits/time-to-first-byte.js | title": {
+    "message": "Thời gian phản hồi của máy chủ chậm (TTFB)"
+  },
+  "lighthouse-core/audits/user-timings.js | columnDuration": {
+    "message": "Thời lượng"
+  },
+  "lighthouse-core/audits/user-timings.js | columnStartTime": {
+    "message": "Thời gian bắt đầu"
+  },
+  "lighthouse-core/audits/user-timings.js | columnType": {
+    "message": "Loại"
+  },
+  "lighthouse-core/audits/user-timings.js | description": {
+    "message": "Hãy cân nhắc trang bị API Thời gian người dùng cho ứng dụng để đo lường hiệu suất thực tế của ứng dụng trong trải nghiệm người dùng chính. [Tìm hiểu thêm](https://developers.google.com/web/tools/lighthouse/audits/user-timing)."
+  },
+  "lighthouse-core/audits/user-timings.js | displayValue": {
+    "message": "{itemCount,plural, =1{1 dấu thời gian người dùng}other{# dấu thời gian người dùng}}"
+  },
+  "lighthouse-core/audits/user-timings.js | title": {
+    "message": "Các thời điểm cụ thể và khoảng thời gian được ghi lại bằng API Thời gian người dùng"
+  },
+  "lighthouse-core/audits/uses-rel-preconnect.js | crossoriginWarning": {
+    "message": "Tìm thấy <link> kết nối trước cho \"{securityOrigin}\" nhưng trình duyệt không sử dụng phần tử liên kết này. Hãy kiểm tra để đảm bảo rằng bạn đang sử dụng thuộc tính `crossorigin` đúng cách."
+  },
+  "lighthouse-core/audits/uses-rel-preconnect.js | description": {
+    "message": "Hãy cân nhắc thêm các gợi ý về tài nguyên `preconnect` hoặc `dns-prefetch` để thiết lập kết nối sớm tới những nguồn gốc quan trọng của bên thứ ba. [Tìm hiểu thêm](https://developers.google.com/web/fundamentals/performance/resource-prioritization#preconnect)"
+  },
+  "lighthouse-core/audits/uses-rel-preconnect.js | title": {
+    "message": "Kết nối trước với các tên miền bắt buộc"
+  },
+  "lighthouse-core/audits/uses-rel-preload.js | crossoriginWarning": {
+    "message": "Tìm thấy <link> tải trước cho \"{preloadURL}\" nhưng trình duyệt không sử dụng phần tử liên kết này. Hãy kiểm tra để đảm bảo rằng bạn đang sử dụng thuộc tính `crossorigin` đúng cách."
+  },
+  "lighthouse-core/audits/uses-rel-preload.js | description": {
+    "message": "Hãy cân nhắc sử dụng `<link rel=preload>` để ưu tiên tìm nạp các tài nguyên đang được yêu cầu vào một thời điểm khác trong quá trình tải trang. [Tìm hiểu thêm](https://developers.google.com/web/tools/lighthouse/audits/preload)."
+  },
+  "lighthouse-core/audits/uses-rel-preload.js | title": {
+    "message": "Tải trước các yêu cầu chính"
+  },
+  "lighthouse-core/audits/viewport.js | description": {
+    "message": "Thêm thẻ `<meta name=\"viewport\">` để tối ưu hóa ứng dụng của bạn cho màn hình thiết bị di động. [Tìm hiểu thêm](https://developers.google.com/web/tools/lighthouse/audits/has-viewport-meta-tag)"
+  },
+  "lighthouse-core/audits/viewport.js | explanationNoTag": {
+    "message": "Không tìm thấy thẻ `<meta name=\"viewport\">`"
+  },
+  "lighthouse-core/audits/viewport.js | failureTitle": {
+    "message": "Không có thẻ `<meta name=\"viewport\">` có `width` hoặc `initial-scale`"
+  },
+  "lighthouse-core/audits/viewport.js | title": {
+    "message": "Có thẻ `<meta name=\"viewport\">` có `width` hoặc `initial-scale`"
+  },
+  "lighthouse-core/audits/without-javascript.js | description": {
+    "message": "Ứng dụng của bạn phải hiển thị nội dung nào đó khi JavaScript bị tắt, ngay cả khi đó chỉ là cảnh báo cho người dùng biết phải có JavaScript mới dùng được ứng dụng. [Tìm hiểu thêm](https://developers.google.com/web/tools/lighthouse/audits/no-js)."
+  },
+  "lighthouse-core/audits/without-javascript.js | explanation": {
+    "message": "Phần nội dung trang phải hiển thị nội dung nào đó ngay cả khi không tải được tập lệnh"
+  },
+  "lighthouse-core/audits/without-javascript.js | failureTitle": {
+    "message": "Không cung cấp nội dung dự phòng khi JavaScript không hoạt động"
+  },
+  "lighthouse-core/audits/without-javascript.js | title": {
+    "message": "Chứa nội dung nào đó khi JavaScript không hoạt động"
+  },
+  "lighthouse-core/audits/works-offline.js | description": {
+    "message": "Nếu bạn đang tạo một Ứng dụng web tiến bộ, hãy cân nhắc dùng trình chạy dịch vụ để ứng dụng có thể hoạt động khi không có mạng. [Tìm hiểu thêm](https://developers.google.com/web/tools/lighthouse/audits/http-200-when-offline)"
+  },
+  "lighthouse-core/audits/works-offline.js | failureTitle": {
+    "message": "Trang hiện tại không phản hồi kèm mã trạng thái 200 khi không có mạng"
+  },
+  "lighthouse-core/audits/works-offline.js | title": {
+    "message": "Trang hiện tại phản hồi kèm mã trạng thái 200 khi không có mạng"
+  },
+  "lighthouse-core/audits/works-offline.js | warningNoLoad": {
+    "message": "Trang này có thể không tải được khi không có mạng vì URL kiểm tra ({requested}) đã được chuyển hướng tới \"{final}\". Hãy thử kiểm tra trực tiếp URL thứ hai."
+  },
+  "lighthouse-core/config/default-config.js | a11yAriaGroupDescription": {
+    "message": "Đây là những cơ hội giúp cải thiện việc sử dụng ARIA trong ứng dụng của bạn, nhờ đó có thể nâng cao trải nghiệm cho người dùng công nghệ hỗ trợ, chẳng hạn như trình đọc màn hình."
+  },
+  "lighthouse-core/config/default-config.js | a11yAriaGroupTitle": {
+    "message": "ARIA"
+  },
+  "lighthouse-core/config/default-config.js | a11yAudioVideoGroupDescription": {
+    "message": "Đây là các cơ hội để cung cấp nội dung thay thế cho âm thanh và video. Điều này có thể cải thiện trải nghiệm của người dùng khiếm thính hoặc khiếm thị."
+  },
+  "lighthouse-core/config/default-config.js | a11yAudioVideoGroupTitle": {
+    "message": "Âm thanh và video"
+  },
+  "lighthouse-core/config/default-config.js | a11yBestPracticesGroupDescription": {
+    "message": "Những mục này nêu bật các phương pháp hay nhất thường dùng cho hỗ trợ tiếp cận"
+  },
+  "lighthouse-core/config/default-config.js | a11yBestPracticesGroupTitle": {
+    "message": "Các phương pháp hay nhất"
+  },
+  "lighthouse-core/config/default-config.js | a11yCategoryDescription": {
+    "message": "Các hoạt động kiểm tra này giúp xác định cơ hội [cải thiện khả năng hỗ trợ tiếp cận của ứng dụng web](https://developers.google.com/web/fundamentals/accessibility). Các hoạt động này chỉ có thể tự động phát hiện một phần vấn đề liên quan đến khả năng hỗ trợ tiếp cận, do đó, bạn nên kiểm tra cả theo cách thủ công."
+  },
+  "lighthouse-core/config/default-config.js | a11yCategoryManualDescription": {
+    "message": "Các mục này nằm trong vùng không thể sử dụng công cụ kiểm tra tự động. Tìm hiểu thêm trong hướng dẫn của chúng tôi về cách [đánh giá khả năng hỗ trợ tiếp cận](https://developers.google.com/web/fundamentals/accessibility/how-to-review)."
+  },
+  "lighthouse-core/config/default-config.js | a11yCategoryTitle": {
+    "message": "Hỗ trợ tiếp cận"
+  },
+  "lighthouse-core/config/default-config.js | a11yColorContrastGroupDescription": {
+    "message": "Đây là các cơ hội giúp cải thiện độ dễ đọc cho nội dung của bạn."
+  },
+  "lighthouse-core/config/default-config.js | a11yColorContrastGroupTitle": {
+    "message": "Độ tương phản"
+  },
+  "lighthouse-core/config/default-config.js | a11yLanguageGroupDescription": {
+    "message": "Đây là những cơ hội giúp cải thiện khả năng diễn giải của người dùng đối với nội dung của bạn ở các ngôn ngữ khác nhau."
+  },
+  "lighthouse-core/config/default-config.js | a11yLanguageGroupTitle": {
+    "message": "Quốc tế hóa và bản địa hóa"
+  },
+  "lighthouse-core/config/default-config.js | a11yNamesLabelsGroupDescription": {
+    "message": "Đây là những cơ hội giúp cải thiện chức năng diễn giải ngữ nghĩa của các biện pháp kiểm soát trong ứng dụng của bạn. Điều này có thể nâng cao trải nghiệm cho những người dùng công nghệ hỗ trợ, chẳng hạn như trình đọc màn hình."
+  },
+  "lighthouse-core/config/default-config.js | a11yNamesLabelsGroupTitle": {
+    "message": "Tên và nhãn"
+  },
+  "lighthouse-core/config/default-config.js | a11yNavigationGroupDescription": {
+    "message": "Đây là các cơ hội để cải thiện khả năng điều hướng bằng bàn phím trong ứng dụng của bạn."
+  },
+  "lighthouse-core/config/default-config.js | a11yNavigationGroupTitle": {
+    "message": "Điều hướng"
+  },
+  "lighthouse-core/config/default-config.js | a11yTablesListsVideoGroupDescription": {
+    "message": "Đây là các cơ hội để cải thiện trải nghiệm đọc dữ liệu trong bảng hoặc danh sách bằng công nghệ hỗ trợ, chẳng hạn như trình đọc màn hình."
+  },
+  "lighthouse-core/config/default-config.js | a11yTablesListsVideoGroupTitle": {
+    "message": "Bảng và danh sách"
+  },
+  "lighthouse-core/config/default-config.js | bestPracticesCategoryTitle": {
+    "message": "Phương pháp hay nhất"
+  },
+  "lighthouse-core/config/default-config.js | budgetsGroupDescription": {
+    "message": "Phần Ngân sách hiệu suất đặt ra tiêu chuẩn về hiệu suất của trang web."
+  },
+  "lighthouse-core/config/default-config.js | budgetsGroupTitle": {
+    "message": "Ngân sách"
+  },
+  "lighthouse-core/config/default-config.js | diagnosticsGroupDescription": {
+    "message": "Thông tin bổ sung về hiệu suất của ứng dụng. Những số liệu này không [trực tiếp ảnh hưởng](https://github.com/GoogleChrome/lighthouse/blob/d2ec9ffbb21de9ad1a0f86ed24575eda32c796f0/docs/scoring.md#how-are-the-scores-weighted) đến Điểm hiệu suất."
+  },
+  "lighthouse-core/config/default-config.js | diagnosticsGroupTitle": {
+    "message": "Chẩn đoán"
+  },
+  "lighthouse-core/config/default-config.js | firstPaintImprovementsGroupDescription": {
+    "message": "Khía cạnh quan trọng nhất của hiệu suất là tốc độ hiển thị pixel nhanh chóng trên màn hình. Các chỉ số chính: Hình ảnh có nội dung đầu tiên, Hình ảnh có ý nghĩa đầu tiên"
+  },
+  "lighthouse-core/config/default-config.js | firstPaintImprovementsGroupTitle": {
+    "message": "Các thao tác để cải thiện thời gian hiển thị hình ảnh đầu tiên"
+  },
+  "lighthouse-core/config/default-config.js | loadOpportunitiesGroupDescription": {
+    "message": "Những đề xuất này có thể giúp trang của bạn tải nhanh hơn, chứ không [trực tiếp ảnh hưởng](https://github.com/GoogleChrome/lighthouse/blob/d2ec9ffbb21de9ad1a0f86ed24575eda32c796f0/docs/scoring.md#how-are-the-scores-weighted) đến Điểm hiệu suất."
+  },
+  "lighthouse-core/config/default-config.js | loadOpportunitiesGroupTitle": {
+    "message": "Cơ hội"
+  },
+  "lighthouse-core/config/default-config.js | metricGroupTitle": {
+    "message": "Các chỉ số"
+  },
+  "lighthouse-core/config/default-config.js | overallImprovementsGroupDescription": {
+    "message": "Cải thiện trải nghiệm tải tổng thể để trang phản hồi và sẵn sàng cho bạn sử dụng sớm nhất có thể. Các số liệu chính: Thời điểm tương tác, Chỉ số tốc độ"
+  },
+  "lighthouse-core/config/default-config.js | overallImprovementsGroupTitle": {
+    "message": "Các thao tác để cải thiện hiệu suất tổng thể"
+  },
+  "lighthouse-core/config/default-config.js | performanceCategoryTitle": {
+    "message": "Hiệu suất"
+  },
+  "lighthouse-core/config/default-config.js | pwaCategoryDescription": {
+    "message": "Những hoạt động kiểm tra này sẽ xác thực các khía cạnh của một Ứng dụng web tiến bộ. [Tìm hiểu thêm](https://developers.google.com/web/progressive-web-apps/checklist)."
+  },
+  "lighthouse-core/config/default-config.js | pwaCategoryManualDescription": {
+    "message": "Bạn phải tiến hành những hoạt động kiểm tra mà Lighthouse không tự động thực hiện trong [Danh sách kiểm tra ứng dụng web tiến bộ (PWA)](https://developers.google.com/web/progressive-web-apps/checklist). Các hoạt động kiểm tra này không ảnh hưởng đến điểm số của bạn, nhưng bạn phải xác minh theo cách thủ công."
+  },
+  "lighthouse-core/config/default-config.js | pwaCategoryTitle": {
+    "message": "Ứng dụng web tiến bộ"
+  },
+  "lighthouse-core/config/default-config.js | pwaFastReliableGroupTitle": {
+    "message": "Nhanh và đáng tin cậy"
+  },
+  "lighthouse-core/config/default-config.js | pwaInstallableGroupTitle": {
+    "message": "Có thể cài đặt"
+  },
+  "lighthouse-core/config/default-config.js | pwaOptimizedGroupTitle": {
+    "message": "PWA đã tối ưu hóa"
+  },
+  "lighthouse-core/config/default-config.js | seoCategoryDescription": {
+    "message": "Các hoạt động kiểm tra này đảm bảo rằng trang của bạn được tối ưu hóa cho thứ hạng trong kết quả của công cụ tìm kiếm. Những yếu tố bổ sung mà Lighthouse không kiểm tra có thể ảnh hưởng đến thứ hạng của bạn trong kết quả tìm kiếm. [Tìm hiểu thêm](https://support.google.com/webmasters/answer/35769)."
+  },
+  "lighthouse-core/config/default-config.js | seoCategoryManualDescription": {
+    "message": "Chạy những trình xác thực bổ sung này trên trang web của bạn để xem thêm các phương pháp hay nhất dành cho quy trình Tối ưu hóa cho công cụ tìm kiếm (SEO)."
+  },
+  "lighthouse-core/config/default-config.js | seoCategoryTitle": {
+    "message": "SEO"
+  },
+  "lighthouse-core/config/default-config.js | seoContentGroupDescription": {
+    "message": "Định dạng HTML sao cho các trình thu thập thông tin có thể hiểu rõ hơn nội dung trong ứng dụng của bạn."
+  },
+  "lighthouse-core/config/default-config.js | seoContentGroupTitle": {
+    "message": "Các phương pháp hay nhất về nội dung"
+  },
+  "lighthouse-core/config/default-config.js | seoCrawlingGroupDescription": {
+    "message": "Để xuất hiện trong kết quả tìm kiếm, các trình thu thập thông tin cần quyền truy cập vào ứng dụng của bạn."
+  },
+  "lighthouse-core/config/default-config.js | seoCrawlingGroupTitle": {
+    "message": "Thu thập thông tin và lập chỉ mục"
+  },
+  "lighthouse-core/config/default-config.js | seoMobileGroupDescription": {
+    "message": "Đảm bảo các trang của bạn thân thiện với thiết bị di động để người dùng có thể đọc các trang nội dung mà không cần phải chụm hoặc thu phóng. [Tìm hiểu thêm](https://developers.google.com/search/mobile-sites/)."
+  },
+  "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
+    "message": "Thân thiện với thiết bị di động"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnCacheTTL": {
+    "message": "Thời gian tồn tại (TTL) của bộ nhớ đệm"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnLocation": {
+    "message": "Vị trí"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnName": {
+    "message": "Tên"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnRequests": {
+    "message": "Số yêu cầu"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnResourceType": {
+    "message": "Loại tài nguyên"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnSize": {
+    "message": "Kích thước"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnTimeSpent": {
+    "message": "Thời gian sử dụng"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnTransferSize": {
+    "message": "Kích thước cần chuyển"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnURL": {
+    "message": "URL"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnWastedBytes": {
+    "message": "Lượng dữ liệu có thể tiết kiệm được"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnWastedMs": {
+    "message": "Thời gian có thể tiết kiệm được"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | displayValueByteSavings": {
+    "message": "Lượng dữ liệu có thể tiết kiệm được là {wastedBytes, number, bytes} KB"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | displayValueMsSavings": {
+    "message": "Thời gian có thể tiết kiệm được là {wastedMs, number, milliseconds} mili giây"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | documentResourceType": {
+    "message": "Tài liệu"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | fontResourceType": {
+    "message": "Phông chữ"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | imageResourceType": {
+    "message": "Hình ảnh"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | mediaResourceType": {
+    "message": "Nội dung nghe nhìn"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | ms": {
+    "message": "{timeInMs, number, milliseconds} mili giây"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | otherResourceType": {
+    "message": "Khác"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | scriptResourceType": {
+    "message": "Tập lệnh"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | seconds": {
+    "message": "{timeInMs, number, seconds} giây"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | stylesheetResourceType": {
+    "message": "Biểu định kiểu"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | thirdPartyResourceType": {
+    "message": "Bên thứ ba"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | totalResourceType": {
+    "message": "Tổng"
+  },
+  "lighthouse-core/lib/lh-error.js | badTraceRecording": {
+    "message": "Đã xảy ra lỗi khi ghi dấu vết quá trình tải trang của bạn. Vui lòng chạy lại Lighthouse. ({errorCode})"
+  },
+  "lighthouse-core/lib/lh-error.js | criTimeout": {
+    "message": "Đã hết thời gian chờ kết nối với Giao thức của trình gỡ lỗi ban đầu ban đầu."
+  },
+  "lighthouse-core/lib/lh-error.js | didntCollectScreenshots": {
+    "message": "Chrome không thu thập được bất kỳ ảnh chụp màn hình nào trong quá trình tải trang. Hãy đảm bảo trang có nội dung hiển thị, sau đó thử chạy lại Lighthouse. ({errorCode})"
+  },
+  "lighthouse-core/lib/lh-error.js | dnsFailure": {
+    "message": "Máy chủ DNS không thể phân giải miền đã cung cấp."
+  },
+  "lighthouse-core/lib/lh-error.js | erroredRequiredArtifact": {
+    "message": "Trình thu thập {artifactName} bắt buộc đã gặp lỗi: {errorMessage}"
+  },
+  "lighthouse-core/lib/lh-error.js | internalChromeError": {
+    "message": "Đã xảy ra lỗi Chrome nội bộ. Vui lòng khởi động lại Chrome và thử chạy lại Lighthouse."
+  },
+  "lighthouse-core/lib/lh-error.js | missingRequiredArtifact": {
+    "message": "Trình thu thập {artifactName} bắt buộc không chạy."
+  },
+  "lighthouse-core/lib/lh-error.js | pageLoadFailed": {
+    "message": "Lighthouse không thể tải trang bạn đã yêu cầu một cách đáng tin cậy. Hãy đảm bảo bạn đang kiểm tra URL chính xác và máy chủ đang phản hồi tất cả các yêu cầu đúng cách."
+  },
+  "lighthouse-core/lib/lh-error.js | pageLoadFailedHung": {
+    "message": "Lighthouse không thể tải URL bạn yêu cầu một cách đáng tin cậy vì trang này đã ngừng phản hồi."
+  },
+  "lighthouse-core/lib/lh-error.js | pageLoadFailedInsecure": {
+    "message": "URL bạn cung cấp không có chứng chỉ bảo mật hợp lệ. {securityMessages}"
+  },
+  "lighthouse-core/lib/lh-error.js | pageLoadFailedInterstitial": {
+    "message": "Chrome đã ngăn tải trang có quảng cáo xen kẽ. Hãy đảm bảo bạn đang kiểm tra URL chính xác và máy chủ đang phản hồi tất cả các yêu cầu đúng cách."
+  },
+  "lighthouse-core/lib/lh-error.js | pageLoadFailedWithDetails": {
+    "message": "Lighthouse không thể tải trang bạn đã yêu cầu một cách đáng tin cậy. Hãy đảm bảo bạn đang kiểm tra URL chính xác và máy chủ đang phản hồi tất cả các yêu cầu đúng cách. (Chi tiết: {errorDetails})"
+  },
+  "lighthouse-core/lib/lh-error.js | pageLoadFailedWithStatusCode": {
+    "message": "Lighthouse không thể tải trang bạn đã yêu cầu một cách đáng tin cậy. Hãy đảm bảo bạn đang kiểm tra URL chính xác và máy chủ đang phản hồi tất cả các yêu cầu đúng cách. (Mã trạng thái: {statusCode})"
+  },
+  "lighthouse-core/lib/lh-error.js | pageLoadTookTooLong": {
+    "message": "Thời gian tải trang quá lâu. Hãy thực hiện các khuyến nghị trong báo cáo để giảm thời gian tải trang rồi thử chạy lại Lighthouse. ({errorCode})"
+  },
+  "lighthouse-core/lib/lh-error.js | protocolTimeout": {
+    "message": "Quá trình chờ phản hồi của giao thức DevTools đã vượt quá thời gian phân bổ. (Phương thức: {protocolMethod})"
+  },
+  "lighthouse-core/lib/lh-error.js | requestContentTimeout": {
+    "message": "Quá trình tìm nạp nội dung tài nguyên đã vượt quá thời gian phân bổ"
+  },
+  "lighthouse-core/lib/lh-error.js | urlInvalid": {
+    "message": "URL bạn cung cấp có vẻ không hợp lệ."
+  },
+  "lighthouse-core/report/html/renderer/util.js | auditGroupExpandTooltip": {
+    "message": "Hiển thị kết quả kiểm tra"
+  },
+  "lighthouse-core/report/html/renderer/util.js | crcInitialNavigation": {
+    "message": "Điều hướng ban đầu"
+  },
+  "lighthouse-core/report/html/renderer/util.js | crcLongestDurationLabel": {
+    "message": "Độ trễ tối đa của đường dẫn quan trọng:"
+  },
+  "lighthouse-core/report/html/renderer/util.js | errorLabel": {
+    "message": "Lỗi!"
+  },
+  "lighthouse-core/report/html/renderer/util.js | errorMissingAuditInfo": {
+    "message": "Lỗi báo cáo: không có thông tin kiểm tra"
+  },
+  "lighthouse-core/report/html/renderer/util.js | labDataTitle": {
+    "message": "Dữ liệu của phòng thí nghiệm"
+  },
+  "lighthouse-core/report/html/renderer/util.js | lsPerformanceCategoryDescription": {
+    "message": "Kết quả phân tích [Lighthouse](https://developers.google.com/web/tools/lighthouse/) cho trang hiện tại dựa trên một mạng di động mô phỏng. Các giá trị chỉ là ước tính và có thể thay đổi."
+  },
+  "lighthouse-core/report/html/renderer/util.js | manualAuditsGroupTitle": {
+    "message": "Các mục bổ sung cần kiểm tra theo cách thủ công"
+  },
+  "lighthouse-core/report/html/renderer/util.js | notApplicableAuditsGroupTitle": {
+    "message": "Không áp dụng"
+  },
+  "lighthouse-core/report/html/renderer/util.js | opportunityResourceColumnLabel": {
+    "message": "Cơ hội"
+  },
+  "lighthouse-core/report/html/renderer/util.js | opportunitySavingsColumnLabel": {
+    "message": "Thời lượng tiết kiệm được theo ước tính"
+  },
+  "lighthouse-core/report/html/renderer/util.js | passedAuditsGroupTitle": {
+    "message": "Số lần kiểm tra đạt yêu cầu"
+  },
+  "lighthouse-core/report/html/renderer/util.js | snippetCollapseButtonLabel": {
+    "message": "Thu gọn đoạn mã"
+  },
+  "lighthouse-core/report/html/renderer/util.js | snippetExpandButtonLabel": {
+    "message": "Mở rộng đoạn mã"
+  },
+  "lighthouse-core/report/html/renderer/util.js | thirdPartyResourcesLabel": {
+    "message": "Hiển thị tài nguyên của bên thứ ba"
+  },
+  "lighthouse-core/report/html/renderer/util.js | toplevelWarningsMessage": {
+    "message": "Đã xảy ra sự cố ảnh hưởng đến lần chạy Lighthouse này:"
+  },
+  "lighthouse-core/report/html/renderer/util.js | varianceDisclaimer": {
+    "message": "Các giá trị chỉ là ước tính và có thể thay đổi. Điểm hiệu suất [chỉ căn cứ vào các chỉ số này](https://github.com/GoogleChrome/lighthouse/blob/d2ec9ffbb21de9ad1a0f86ed24575eda32c796f0/docs/scoring.md#how-are-the-scores-weighted)."
+  },
+  "lighthouse-core/report/html/renderer/util.js | warningAuditsGroupTitle": {
+    "message": "Đã vượt qua bài kiểm tra nhưng có cảnh báo"
+  },
+  "lighthouse-core/report/html/renderer/util.js | warningHeader": {
+    "message": "Cảnh báo: "
+  },
+  "stack-packs/packs/wordpress.js | efficient_animated_content": {
+    "message": "Hãy cân nhắc tải tệp GIF lên một dịch vụ mà nhờ đó, tệp GIF có thể được nhúng ở dạng video HTML5."
+  },
+  "stack-packs/packs/wordpress.js | offscreen_images": {
+    "message": "Cài đặt một [plugin tải từng phần của WordPress](https://wordpress.org/plugins/search/lazy+load/) để trì hoãn mọi hình ảnh ngoài màn hình, hoặc chuyển sang một giao diện cung cấp chức năng đó. Ngoài ra, hãy cân nhắc sử dụng [plugin AMP (Accelerated Mobile Pages)](https://wordpress.org/plugins/amp/)."
+  },
+  "stack-packs/packs/wordpress.js | render_blocking_resources": {
+    "message": "Có một số plugin của WordPress có thể giúp bạn [đưa phần tử quan trọng vào nội tuyến](https://wordpress.org/plugins/search/critical+css/) hoặc [trì hoãn tài nguyên ít quan trọng hơn](https://wordpress.org/plugins/search/defer+css+javascript/). Xin lưu ý rằng những phương thức tối ưu hóa mà các plugin này cung cấp có thể làm gián đoạn tính năng của giao diện hoặc plugin, do đó, có thể bạn cần thay đổi mã."
+  },
+  "stack-packs/packs/wordpress.js | time_to_first_byte": {
+    "message": "Giao diện, plugin và thông số máy chủ đều tác động đến thời gian phản hồi của máy chủ. Hãy cân nhắc tìm một giao diện được tối ưu hóa, lựa chọn cẩn thận một plugin tối ưu hóa và/hoặc nâng cấp máy chủ."
+  },
+  "stack-packs/packs/wordpress.js | total_byte_weight": {
+    "message": "Hãy cân nhắc hiển thị phần trích dẫn trong danh sách bài đăng (ví dụ như qua thẻ thêm), giảm số lượng bài đăng hiển thị trên một trang cụ thể, chia các bài đăng dài thành nhiều trang hoặc sử dụng một plugin để tải nhận xét theo từng phần."
+  },
+  "stack-packs/packs/wordpress.js | unminified_css": {
+    "message": "Một số [plugin của WordPress](https://wordpress.org/plugins/search/minify+css/) có thể làm tăng tốc độ của trang web bằng cách ghép, giảm kích thước và nén kiểu. Bạn cũng có thể dùng quy trình tạo để tiến hành thu nhỏ trước, nếu có thể."
+  },
+  "stack-packs/packs/wordpress.js | unminified_javascript": {
+    "message": "Một số [plugin của WordPress](https://wordpress.org/plugins/search/minify+javascript/) có thể làm tăng tốc độ của trang web bằng cách ghép, giảm kích thước và nén tập lệnh. Ngoài ra, bạn nên dùng quy trình tạo để tiến hành thu nhỏ trước, nếu có thể."
+  },
+  "stack-packs/packs/wordpress.js | unused_css_rules": {
+    "message": "Hãy cân nhắc giảm hoặc chuyển đổi số lượng [plugin của WordPress](https://wordpress.org/plugins/) tải Biểu định kiểu xếp chồng (CSS) không dùng đến trong trang của bạn. Để xác định các plugin đang thêm Biểu định kiểu xếp chồng (CSS) không liên quan, hãy thử chạy [phạm vi của mã](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) trong Chrome DevTools. Bạn có thể xác định giao diện/plugin gây ra tình trạng này từ URL của biểu định kiểu. Hãy chú ý đến những plugin có nhiều biểu định kiểu trong danh sách. Những plugin này có nhiều màu đỏ trong phạm vi của mã. Một plugin chỉ nên thêm một biểu định kiểu vào hàng đợi nếu biểu định kiểu đó thực sự được sử dụng trên trang."
+  },
+  "stack-packs/packs/wordpress.js | unused_javascript": {
+    "message": "Hãy cân nhắc giảm hoặc chuyển đổi số lượng [plugin của WordPress](https://wordpress.org/plugins/) tải JavaScript không dùng đến trong trang của bạn. Để xác định các plugin đang thêm JS không liên quan, hãy thử chạy [phạm vi của mã](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) trong Chrome DevTools. Bạn có thể xác định giao diện/plugin gây ra tình trạng này từ URL của tập lệnh. Hãy chú ý đến những plugin có nhiều tập lệnh trong danh sách. Những plugin này có nhiều màu đỏ trong phạm vi của mã. Một plugin chỉ nên thêm một tập lệnh vào hàng đợi nếu tập lệnh đó thực sự được dùng trên trang."
+  },
+  "stack-packs/packs/wordpress.js | uses_long_cache_ttl": {
+    "message": "Hãy đọc về [Bộ nhớ đệm của trình duyệt trong WordPress](https://codex.wordpress.org/WordPress_Optimization#Browser_Caching)."
+  },
+  "stack-packs/packs/wordpress.js | uses_optimized_images": {
+    "message": "Hãy cân nhắc sử dụng một [plugin tối ưu hóa hình ảnh của WordPress](https://wordpress.org/plugins/search/optimize+images/) có khả năng nén hình ảnh mà vẫn đảm bảo chất lượng."
+  },
+  "stack-packs/packs/wordpress.js | uses_responsive_images": {
+    "message": "Trực tiếp tải hình ảnh lên thông qua [thư viện nội dung đa phương tiện](https://codex.wordpress.org/Media_Library_Screen) để đảm bảo có các kích thước hình ảnh theo yêu cầu, sau đó chèn hình ảnh từ thư viện nội dung đa phương tiện hoặc sử dụng tiện ích hình ảnh để đảm bảo sử dụng kích thước hình ảnh tối ưu (bao gồm cả các kích thước dành cho điểm ngắt thích ứng). Tránh sử dụng hình ảnh có `Full Size` trừ khi những hình ảnh đó có kích thước phù hợp. [Tìm hiểu thêm](https://codex.wordpress.org/Inserting_Images_into_Posts_and_Pages#Image_Size)."
+  },
+  "stack-packs/packs/wordpress.js | uses_text_compression": {
+    "message": "Bạn có thể bật tính năng nén văn bản trong cấu hình máy chủ web."
+  },
+  "stack-packs/packs/wordpress.js | uses_webp_images": {
+    "message": "Hãy cân nhắc sử dụng một [plugin](https://wordpress.org/plugins/search/convert+webp/) hoặc dịch vụ tự động chuyển các hình ảnh đã tải lên sang định dạng tối ưu."
+  }
+}

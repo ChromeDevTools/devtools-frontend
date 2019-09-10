@@ -1,0 +1,1541 @@
+{
+  "lighthouse-core/audits/accessibility/accesskeys.js | description": {
+    "message": "[Åççéšš ķéýš ļéţ ûšéŕš qûîçķļý ƒöçûš å þåŕţ öƒ ţĥé þåĝé. Föŕ þŕöþéŕ ñåvîĝåţîöñ, éåçĥ åççéšš ķéý mûšţ бé ûñîqûé. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://web.dev/accesskeys/)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty]"
+  },
+  "lighthouse-core/audits/accessibility/accesskeys.js | failureTitle": {
+    "message": "[ᐅ`[accesskey]`ᐊ våļûéš åŕé ñöţ ûñîqûé one two three four five six]"
+  },
+  "lighthouse-core/audits/accessibility/accesskeys.js | title": {
+    "message": "[ᐅ`[accesskey]`ᐊ våļûéš åŕé ûñîqûé one two three four five]"
+  },
+  "lighthouse-core/audits/accessibility/aria-allowed-attr.js | description": {
+    "message": "[Éåçĥ ÅŔÎÅ ᐅ`role`ᐊ šûþþöŕţš å šþéçîƒîç šûбšéţ öƒ ᐅ`aria-*`ᐊ åţţŕîбûţéš. Mîšmåţçĥîñĝ ţĥéšé îñvåļîðåţéš ţĥé ᐅ`aria-*`ᐊ åţţŕîбûţéš. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://web.dev/aria-allowed-attr/)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty]"
+  },
+  "lighthouse-core/audits/accessibility/aria-allowed-attr.js | failureTitle": {
+    "message": "[ᐅ`[aria-*]`ᐊ åţţŕîбûţéš ðö ñöţ måţçĥ ţĥéîŕ ŕöļéš one two three four five six seven eight]"
+  },
+  "lighthouse-core/audits/accessibility/aria-allowed-attr.js | title": {
+    "message": "[ᐅ`[aria-*]`ᐊ åţţŕîбûţéš måţçĥ ţĥéîŕ ŕöļéš one two three four five six seven]"
+  },
+  "lighthouse-core/audits/accessibility/aria-required-attr.js | description": {
+    "message": "[Šömé ÅŔÎÅ ŕöļéš ĥåvé ŕéqûîŕéð åţţŕîбûţéš ţĥåţ ðéšçŕîбé ţĥé šţåţé öƒ ţĥé éļéméñţ ţö šçŕééñ ŕéåðéŕš. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://web.dev/aria-required-attr/)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen]"
+  },
+  "lighthouse-core/audits/accessibility/aria-required-attr.js | failureTitle": {
+    "message": "[ᐅ`[role]`ᐊš ðö ñöţ ĥåvé åļļ ŕéqûîŕéð ᐅ`[aria-*]`ᐊ åţţŕîбûţéš one two three four five six seven eight nine]"
+  },
+  "lighthouse-core/audits/accessibility/aria-required-attr.js | title": {
+    "message": "[ᐅ`[role]`ᐊš ĥåvé åļļ ŕéqûîŕéð ᐅ`[aria-*]`ᐊ åţţŕîбûţéš one two three four five six seven eight]"
+  },
+  "lighthouse-core/audits/accessibility/aria-required-children.js | description": {
+    "message": "[Šömé ÅŔÎÅ þåŕéñţ ŕöļéš mûšţ çöñţåîñ šþéçîƒîç çĥîļð ŕöļéš ţö þéŕƒöŕm ţĥéîŕ îñţéñðéð åççéššîбîļîţý ƒûñçţîöñš. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://web.dev/aria-required-children/)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen]"
+  },
+  "lighthouse-core/audits/accessibility/aria-required-children.js | failureTitle": {
+    "message": "[Éļéméñţš ŵîţĥ ᐅ`[role]`ᐊ ţĥåţ ŕéqûîŕé šþéçîƒîç çĥîļðŕéñ ᐅ`[role]`ᐊš, åŕé mîššîñĝ. one two three four five six seven eight nine ten eleven twelve thirteen]"
+  },
+  "lighthouse-core/audits/accessibility/aria-required-children.js | title": {
+    "message": "[Éļéméñţš ŵîţĥ ᐅ`[role]`ᐊ ţĥåţ ŕéqûîŕé šþéçîƒîç çĥîļðŕéñ ᐅ`[role]`ᐊš, åŕé þŕéšéñţ one two three four five six seven eight nine ten eleven twelve thirteen]"
+  },
+  "lighthouse-core/audits/accessibility/aria-required-parent.js | description": {
+    "message": "[Šömé ÅŔÎÅ çĥîļð ŕöļéš mûšţ бé çöñţåîñéð бý šþéçîƒîç þåŕéñţ ŕöļéš ţö þŕöþéŕļý þéŕƒöŕm ţĥéîŕ îñţéñðéð åççéššîбîļîţý ƒûñçţîöñš. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://web.dev/aria-required-parent/)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone]"
+  },
+  "lighthouse-core/audits/accessibility/aria-required-parent.js | failureTitle": {
+    "message": "[ᐅ`[role]`ᐊš åŕé ñöţ çöñţåîñéð бý ţĥéîŕ ŕéqûîŕéð þåŕéñţ éļéméñţ one two three four five six seven eight nine ten eleven]"
+  },
+  "lighthouse-core/audits/accessibility/aria-required-parent.js | title": {
+    "message": "[ᐅ`[role]`ᐊš åŕé çöñţåîñéð бý ţĥéîŕ ŕéqûîŕéð þåŕéñţ éļéméñţ one two three four five six seven eight nine ten eleven]"
+  },
+  "lighthouse-core/audits/accessibility/aria-roles.js | description": {
+    "message": "[ÅŔÎÅ ŕöļéš mûšţ ĥåvé våļîð våļûéš îñ öŕðéŕ ţö þéŕƒöŕm ţĥéîŕ îñţéñðéð åççéššîбîļîţý ƒûñçţîöñš. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://web.dev/aria-roles/)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen]"
+  },
+  "lighthouse-core/audits/accessibility/aria-roles.js | failureTitle": {
+    "message": "[ᐅ`[role]`ᐊ våļûéš åŕé ñöţ våļîð one two three four five]"
+  },
+  "lighthouse-core/audits/accessibility/aria-roles.js | title": {
+    "message": "[ᐅ`[role]`ᐊ våļûéš åŕé våļîð one two three four five]"
+  },
+  "lighthouse-core/audits/accessibility/aria-valid-attr-value.js | description": {
+    "message": "[Åššîšţîvé ţéçĥñöļöĝîéš, ļîķé šçŕééñ ŕéåðéŕš, çåñ'ţ îñţéŕþŕéţ ÅŔÎÅ åţţŕîбûţéš ŵîţĥ îñvåļîð våļûéš. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://web.dev/aria-valid-attr-value/)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen]"
+  },
+  "lighthouse-core/audits/accessibility/aria-valid-attr-value.js | failureTitle": {
+    "message": "[ᐅ`[aria-*]`ᐊ åţţŕîбûţéš ðö ñöţ ĥåvé våļîð våļûéš one two three four five six seven eight]"
+  },
+  "lighthouse-core/audits/accessibility/aria-valid-attr-value.js | title": {
+    "message": "[ᐅ`[aria-*]`ᐊ åţţŕîбûţéš ĥåvé våļîð våļûéš one two three four five six seven]"
+  },
+  "lighthouse-core/audits/accessibility/aria-valid-attr.js | description": {
+    "message": "[Åššîšţîvé ţéçĥñöļöĝîéš, ļîķé šçŕééñ ŕéåðéŕš, çåñ'ţ îñţéŕþŕéţ ÅŔÎÅ åţţŕîбûţéš ŵîţĥ îñvåļîð ñåméš. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://web.dev/aria-valid-attr/)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen]"
+  },
+  "lighthouse-core/audits/accessibility/aria-valid-attr.js | failureTitle": {
+    "message": "[ᐅ`[aria-*]`ᐊ åţţŕîбûţéš åŕé ñöţ våļîð öŕ mîššþéļļéð one two three four five six seven eight nine]"
+  },
+  "lighthouse-core/audits/accessibility/aria-valid-attr.js | title": {
+    "message": "[ᐅ`[aria-*]`ᐊ åţţŕîбûţéš åŕé våļîð åñð ñöţ mîššþéļļéð one two three four five six seven eight nine]"
+  },
+  "lighthouse-core/audits/accessibility/audio-caption.js | description": {
+    "message": "[Çåþţîöñš måķé åûðîö éļéméñţš ûšåбļé ƒöŕ ðéåƒ öŕ ĥéåŕîñĝ-îmþåîŕéð ûšéŕš, þŕövîðîñĝ çŕîţîçåļ îñƒöŕmåţîöñ šûçĥ åš ŵĥö îš ţåļķîñĝ, ŵĥåţ ţĥéý'ŕé šåýîñĝ, åñð öţĥéŕ ñöñ-šþééçĥ îñƒöŕmåţîöñ. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://web.dev/audio-caption/)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix twentyseven]"
+  },
+  "lighthouse-core/audits/accessibility/audio-caption.js | failureTitle": {
+    "message": "[ᐅ`<audio>`ᐊ éļéméñţš åŕé mîššîñĝ å ᐅ`<track>`ᐊ éļéméñţ ŵîţĥ ᐅ`[kind=\"captions\"]`ᐊ. one two three four five six seven eight nine ten]"
+  },
+  "lighthouse-core/audits/accessibility/audio-caption.js | title": {
+    "message": "[ᐅ`<audio>`ᐊ éļéméñţš çöñţåîñ å ᐅ`<track>`ᐊ éļéméñţ ŵîţĥ ᐅ`[kind=\"captions\"]`ᐊ one two three four five six seven eight nine]"
+  },
+  "lighthouse-core/audits/accessibility/axe-audit.js | failingElementsHeader": {
+    "message": "[Fåîļîñĝ Éļéméñţš one two]"
+  },
+  "lighthouse-core/audits/accessibility/button-name.js | description": {
+    "message": "[Ŵĥéñ å бûţţöñ ðöéšñ'ţ ĥåvé åñ åççéššîбļé ñåmé, šçŕééñ ŕéåðéŕš åññöûñçé îţ åš \"бûţţöñ\", måķîñĝ îţ ûñûšåбļé ƒöŕ ûšéŕš ŵĥö ŕéļý öñ šçŕééñ ŕéåðéŕš. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://web.dev/button-name/)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree]"
+  },
+  "lighthouse-core/audits/accessibility/button-name.js | failureTitle": {
+    "message": "[Бûţţöñš ðö ñöţ ĥåvé åñ åççéššîбļé ñåmé one two three four five six seven eight]"
+  },
+  "lighthouse-core/audits/accessibility/button-name.js | title": {
+    "message": "[Бûţţöñš ĥåvé åñ åççéššîбļé ñåmé one two three four five six seven]"
+  },
+  "lighthouse-core/audits/accessibility/bypass.js | description": {
+    "message": "[Åððîñĝ ŵåýš ţö бýþåšš ŕéþéţîţîvé çöñţéñţ ļéţš ķéýбöåŕð ûšéŕš ñåvîĝåţé ţĥé þåĝé möŕé éƒƒîçîéñţļý. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://web.dev/bypass/)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen]"
+  },
+  "lighthouse-core/audits/accessibility/bypass.js | failureTitle": {
+    "message": "[Ţĥé þåĝé ðöéš ñöţ çöñţåîñ å ĥéåðîñĝ, šķîþ ļîñķ, öŕ ļåñðmåŕķ ŕéĝîöñ one two three four five six seven eight nine ten eleven twelve thirteen]"
+  },
+  "lighthouse-core/audits/accessibility/bypass.js | title": {
+    "message": "[Ţĥé þåĝé çöñţåîñš å ĥéåðîñĝ, šķîþ ļîñķ, öŕ ļåñðmåŕķ ŕéĝîöñ one two three four five six seven eight nine ten eleven twelve]"
+  },
+  "lighthouse-core/audits/accessibility/color-contrast.js | description": {
+    "message": "[Ļöŵ-çöñţŕåšţ ţéxţ îš ðîƒƒîçûļţ öŕ îmþöššîбļé ƒöŕ måñý ûšéŕš ţö ŕéåð. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://web.dev/color-contrast/)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen]"
+  },
+  "lighthouse-core/audits/accessibility/color-contrast.js | failureTitle": {
+    "message": "[Бåçķĝŕöûñð åñð ƒöŕéĝŕöûñð çöļöŕš ðö ñöţ ĥåvé å šûƒƒîçîéñţ çöñţŕåšţ ŕåţîö. one two three four five six seven eight nine ten eleven twelve thirteen fourteen]"
+  },
+  "lighthouse-core/audits/accessibility/color-contrast.js | title": {
+    "message": "[Бåçķĝŕöûñð åñð ƒöŕéĝŕöûñð çöļöŕš ĥåvé å šûƒƒîçîéñţ çöñţŕåšţ ŕåţîö one two three four five six seven eight nine ten eleven twelve thirteen]"
+  },
+  "lighthouse-core/audits/accessibility/definition-list.js | description": {
+    "message": "[Ŵĥéñ ðéƒîñîţîöñ ļîšţš åŕé ñöţ þŕöþéŕļý måŕķéð ûþ, šçŕééñ ŕéåðéŕš måý þŕöðûçé çöñƒûšîñĝ öŕ îñåççûŕåţé öûţþûţ. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://web.dev/definition-list/)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty]"
+  },
+  "lighthouse-core/audits/accessibility/definition-list.js | failureTitle": {
+    "message": "[ᐅ`<dl>`ᐊ'š ðö ñöţ çöñţåîñ öñļý þŕöþéŕļý-öŕðéŕéð ᐅ`<dt>`ᐊ åñð ᐅ`<dd>`ᐊ ĝŕöûþš, ᐅ`<script>`ᐊ öŕ ᐅ`<template>`ᐊ éļéméñţš. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen]"
+  },
+  "lighthouse-core/audits/accessibility/definition-list.js | title": {
+    "message": "[ᐅ`<dl>`ᐊ'š çöñţåîñ öñļý þŕöþéŕļý-öŕðéŕéð ᐅ`<dt>`ᐊ åñð ᐅ`<dd>`ᐊ ĝŕöûþš, ᐅ`<script>`ᐊ öŕ ᐅ`<template>`ᐊ éļéméñţš. one two three four five six seven eight nine ten eleven twelve thirteen fourteen]"
+  },
+  "lighthouse-core/audits/accessibility/dlitem.js | description": {
+    "message": "[Ðéƒîñîţîöñ ļîšţ îţémš (ᐅ`<dt>`ᐊ åñð ᐅ`<dd>`ᐊ) mûšţ бé ŵŕåþþéð îñ å þåŕéñţ ᐅ`<dl>`ᐊ éļéméñţ ţö éñšûŕé ţĥåţ šçŕééñ ŕéåðéŕš çåñ þŕöþéŕļý åññöûñçé ţĥém. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://web.dev/dlitem/)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo]"
+  },
+  "lighthouse-core/audits/accessibility/dlitem.js | failureTitle": {
+    "message": "[Ðéƒîñîţîöñ ļîšţ îţémš åŕé ñöţ ŵŕåþþéð îñ ᐅ`<dl>`ᐊ éļéméñţš one two three four five six seven eight nine ten eleven]"
+  },
+  "lighthouse-core/audits/accessibility/dlitem.js | title": {
+    "message": "[Ðéƒîñîţîöñ ļîšţ îţémš åŕé ŵŕåþþéð îñ ᐅ`<dl>`ᐊ éļéméñţš one two three four five six seven eight nine ten]"
+  },
+  "lighthouse-core/audits/accessibility/document-title.js | description": {
+    "message": "[Ţĥé ţîţļé ĝîvéš šçŕééñ ŕéåðéŕ ûšéŕš åñ övéŕvîéŵ öƒ ţĥé þåĝé, åñð šéåŕçĥ éñĝîñé ûšéŕš ŕéļý öñ îţ ĥéåvîļý ţö ðéţéŕmîñé îƒ å þåĝé îš ŕéļévåñţ ţö ţĥéîŕ šéåŕçĥ. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://web.dev/document-title/)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour]"
+  },
+  "lighthouse-core/audits/accessibility/document-title.js | failureTitle": {
+    "message": "[Ðöçûméñţ ðöéšñ'ţ ĥåvé å ᐅ`<title>`ᐊ éļéméñţ one two three four five six seven eight]"
+  },
+  "lighthouse-core/audits/accessibility/document-title.js | title": {
+    "message": "[Ðöçûméñţ ĥåš å ᐅ`<title>`ᐊ éļéméñţ one two three four five six]"
+  },
+  "lighthouse-core/audits/accessibility/duplicate-id.js | description": {
+    "message": "[Ţĥé våļûé öƒ åñ îð åţţŕîбûţé mûšţ бé ûñîqûé ţö þŕévéñţ öţĥéŕ îñšţåñçéš ƒŕöm бéîñĝ övéŕļööķéð бý åššîšţîvé ţéçĥñöļöĝîéš. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://web.dev/duplicate-id/)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone]"
+  },
+  "lighthouse-core/audits/accessibility/duplicate-id.js | failureTitle": {
+    "message": "[ᐅ`[id]`ᐊ åţţŕîбûţéš öñ ţĥé þåĝé åŕé ñöţ ûñîqûé one two three four five six seven eight nine]"
+  },
+  "lighthouse-core/audits/accessibility/duplicate-id.js | title": {
+    "message": "[ᐅ`[id]`ᐊ åţţŕîбûţéš öñ ţĥé þåĝé åŕé ûñîqûé one two three four five six seven eight]"
+  },
+  "lighthouse-core/audits/accessibility/frame-title.js | description": {
+    "message": "[Šçŕééñ ŕéåðéŕ ûšéŕš ŕéļý öñ ƒŕåmé ţîţļéš ţö ðéšçŕîбé ţĥé çöñţéñţš öƒ ƒŕåméš. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://web.dev/frame-title/)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen]"
+  },
+  "lighthouse-core/audits/accessibility/frame-title.js | failureTitle": {
+    "message": "[ᐅ`<frame>`ᐊ öŕ ᐅ`<iframe>`ᐊ éļéméñţš ðö ñöţ ĥåvé å ţîţļé one two three four five six seven eight]"
+  },
+  "lighthouse-core/audits/accessibility/frame-title.js | title": {
+    "message": "[ᐅ`<frame>`ᐊ öŕ ᐅ`<iframe>`ᐊ éļéméñţš ĥåvé å ţîţļé one two three four five six seven]"
+  },
+  "lighthouse-core/audits/accessibility/html-has-lang.js | description": {
+    "message": "[Îƒ å þåĝé ðöéšñ'ţ šþéçîƒý å ļåñĝ åţţŕîбûţé, å šçŕééñ ŕéåðéŕ åššûméš ţĥåţ ţĥé þåĝé îš îñ ţĥé ðéƒåûļţ ļåñĝûåĝé ţĥåţ ţĥé ûšéŕ çĥöšé ŵĥéñ šéţţîñĝ ûþ ţĥé šçŕééñ ŕéåðéŕ. Îƒ ţĥé þåĝé îšñ'ţ åçţûåļļý îñ ţĥé ðéƒåûļţ ļåñĝûåĝé, ţĥéñ ţĥé šçŕééñ ŕéåðéŕ mîĝĥţ ñöţ åññöûñçé ţĥé þåĝé'š ţéxţ çöŕŕéçţļý. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://web.dev/html-has-lang/)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix twentyseven twentyeight twentynine thirty thirtyone thirtytwo thirtythree thirtyfour thirtyfive thirtysix]"
+  },
+  "lighthouse-core/audits/accessibility/html-has-lang.js | failureTitle": {
+    "message": "[ᐅ`<html>`ᐊ éļéméñţ ðöéš ñöţ ĥåvé å ᐅ`[lang]`ᐊ åţţŕîбûţé one two three four five six seven eight nine]"
+  },
+  "lighthouse-core/audits/accessibility/html-has-lang.js | title": {
+    "message": "[ᐅ`<html>`ᐊ éļéméñţ ĥåš å ᐅ`[lang]`ᐊ åţţŕîбûţé one two three four five six seven]"
+  },
+  "lighthouse-core/audits/accessibility/html-lang-valid.js | description": {
+    "message": "[Šþéçîƒýîñĝ å våļîð ᐅ[ᐊБÇÞ 47 ļåñĝûåĝéᐅ](https://www.w3.org/International/questions/qa-choosing-language-tags#question)ᐊ ĥéļþš šçŕééñ ŕéåðéŕš åññöûñçé ţéxţ þŕöþéŕļý. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://web.dev/html-lang-valid/)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen]"
+  },
+  "lighthouse-core/audits/accessibility/html-lang-valid.js | failureTitle": {
+    "message": "[ᐅ`<html>`ᐊ éļéméñţ ðöéš ñöţ ĥåvé å våļîð våļûé ƒöŕ îţš ᐅ`[lang]`ᐊ åţţŕîбûţé. one two three four five six seven eight nine ten eleven twelve]"
+  },
+  "lighthouse-core/audits/accessibility/html-lang-valid.js | title": {
+    "message": "[ᐅ`<html>`ᐊ éļéméñţ ĥåš å våļîð våļûé ƒöŕ îţš ᐅ`[lang]`ᐊ åţţŕîбûţé one two three four five six seven eight nine ten eleven]"
+  },
+  "lighthouse-core/audits/accessibility/image-alt.js | description": {
+    "message": "[Îñƒöŕmåţîvé éļéméñţš šĥöûļð åîm ƒöŕ šĥöŕţ, ðéšçŕîþţîvé åļţéŕñåţé ţéxţ. Ðéçöŕåţîvé éļéméñţš çåñ бé îĝñöŕéð ŵîţĥ åñ émþţý åļţ åţţŕîбûţé. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://web.dev/image-alt/)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo]"
+  },
+  "lighthouse-core/audits/accessibility/image-alt.js | failureTitle": {
+    "message": "[Îmåĝé éļéméñţš ðö ñöţ ĥåvé ᐅ`[alt]`ᐊ åţţŕîбûţéš one two three four five six seven eight nine]"
+  },
+  "lighthouse-core/audits/accessibility/image-alt.js | title": {
+    "message": "[Îmåĝé éļéméñţš ĥåvé ᐅ`[alt]`ᐊ åţţŕîбûţéš one two three four five six seven]"
+  },
+  "lighthouse-core/audits/accessibility/input-image-alt.js | description": {
+    "message": "[Ŵĥéñ åñ îmåĝé îš бéîñĝ ûšéð åš åñ ᐅ`<input>`ᐊ бûţţöñ, þŕövîðîñĝ åļţéŕñåţîvé ţéxţ çåñ ĥéļþ šçŕééñ ŕéåðéŕ ûšéŕš ûñðéŕšţåñð ţĥé þûŕþöšé öƒ ţĥé бûţţöñ. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://web.dev/input-image-alt/)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree]"
+  },
+  "lighthouse-core/audits/accessibility/input-image-alt.js | failureTitle": {
+    "message": "[ᐅ`<input type=\"image\">`ᐊ éļéméñţš ðö ñöţ ĥåvé ᐅ`[alt]`ᐊ ţéxţ one two three four five six seven]"
+  },
+  "lighthouse-core/audits/accessibility/input-image-alt.js | title": {
+    "message": "[ᐅ`<input type=\"image\">`ᐊ éļéméñţš ĥåvé ᐅ`[alt]`ᐊ ţéxţ one two three four five six]"
+  },
+  "lighthouse-core/audits/accessibility/label.js | description": {
+    "message": "[Ļåбéļš éñšûŕé ţĥåţ ƒöŕm çöñţŕöļš åŕé åññöûñçéð þŕöþéŕļý бý åššîšţîvé ţéçĥñöļöĝîéš, ļîķé šçŕééñ ŕéåðéŕš. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://web.dev/label/)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen]"
+  },
+  "lighthouse-core/audits/accessibility/label.js | failureTitle": {
+    "message": "[Föŕm éļéméñţš ðö ñöţ ĥåvé åššöçîåţéð ļåбéļš one two three four five six seven eight nine]"
+  },
+  "lighthouse-core/audits/accessibility/label.js | title": {
+    "message": "[Föŕm éļéméñţš ĥåvé åššöçîåţéð ļåбéļš one two three four five six seven eight]"
+  },
+  "lighthouse-core/audits/accessibility/layout-table.js | description": {
+    "message": "[Å ţåбļé бéîñĝ ûšéð ƒöŕ ļåýöûţ þûŕþöšéš šĥöûļð ñöţ îñçļûðé ðåţå éļéméñţš, šûçĥ åš ţĥé ţĥ öŕ çåþţîöñ éļéméñţš öŕ ţĥé šûmmåŕý åţţŕîбûţé, бéçåûšé ţĥîš çåñ çŕéåţé å çöñƒûšîñĝ éxþéŕîéñçé ƒöŕ šçŕééñ ŕéåðéŕ ûšéŕš. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://web.dev/layout-table/)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix twentyseven twentyeight twentynine]"
+  },
+  "lighthouse-core/audits/accessibility/layout-table.js | failureTitle": {
+    "message": "[Þŕéšéñţåţîöñåļ ᐅ`<table>`ᐊ éļéméñţš ðö ñöţ åvöîð ûšîñĝ ᐅ`<th>`ᐊ, ᐅ`<caption>`ᐊ öŕ ţĥé ᐅ`[summary]`ᐊ åţţŕîбûţé. one two three four five six seven eight nine ten eleven twelve thirteen fourteen]"
+  },
+  "lighthouse-core/audits/accessibility/layout-table.js | title": {
+    "message": "[Þŕéšéñţåţîöñåļ ᐅ`<table>`ᐊ éļéméñţš åvöîð ûšîñĝ ᐅ`<th>`ᐊ, ᐅ`<caption>`ᐊ öŕ ţĥé ᐅ`[summary]`ᐊ åţţŕîбûţé. one two three four five six seven eight nine ten eleven twelve thirteen]"
+  },
+  "lighthouse-core/audits/accessibility/link-name.js | description": {
+    "message": "[Ļîñķ ţéxţ (åñð åļţéŕñåţé ţéxţ ƒöŕ îmåĝéš, ŵĥéñ ûšéð åš ļîñķš) ţĥåţ îš ðîšçéŕñîбļé, ûñîqûé, åñð ƒöçûšåбļé îmþŕövéš ţĥé ñåvîĝåţîöñ éxþéŕîéñçé ƒöŕ šçŕééñ ŕéåðéŕ ûšéŕš. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://web.dev/link-name/)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive]"
+  },
+  "lighthouse-core/audits/accessibility/link-name.js | failureTitle": {
+    "message": "[Ļîñķš ðö ñöţ ĥåvé å ðîšçéŕñîбļé ñåmé one two three four five six seven eight]"
+  },
+  "lighthouse-core/audits/accessibility/link-name.js | title": {
+    "message": "[Ļîñķš ĥåvé å ðîšçéŕñîбļé ñåmé one two three four five six seven]"
+  },
+  "lighthouse-core/audits/accessibility/list.js | description": {
+    "message": "[Šçŕééñ ŕéåðéŕš ĥåvé å šþéçîƒîç ŵåý öƒ åññöûñçîñĝ ļîšţš. Éñšûŕîñĝ þŕöþéŕ ļîšţ šţŕûçţûŕé åîðš šçŕééñ ŕéåðéŕ öûţþûţ. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://web.dev/list/)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty]"
+  },
+  "lighthouse-core/audits/accessibility/list.js | failureTitle": {
+    "message": "[Ļîšţš ðö ñöţ çöñţåîñ öñļý ᐅ`<li>`ᐊ éļéméñţš åñð šçŕîþţ šûþþöŕţîñĝ éļéméñţš (ᐅ`<script>`ᐊ åñð ᐅ`<template>`ᐊ). one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen]"
+  },
+  "lighthouse-core/audits/accessibility/list.js | title": {
+    "message": "[Ļîšţš çöñţåîñ öñļý ᐅ`<li>`ᐊ éļéméñţš åñð šçŕîþţ šûþþöŕţîñĝ éļéméñţš (ᐅ`<script>`ᐊ åñð ᐅ`<template>`ᐊ). one two three four five six seven eight nine ten eleven twelve thirteen fourteen]"
+  },
+  "lighthouse-core/audits/accessibility/listitem.js | description": {
+    "message": "[Šçŕééñ ŕéåðéŕš ŕéqûîŕé ļîšţ îţémš (ᐅ`<li>`ᐊ) ţö бé çöñţåîñéð ŵîţĥîñ å þåŕéñţ ᐅ`<ul>`ᐊ öŕ ᐅ`<ol>`ᐊ ţö бé åññöûñçéð þŕöþéŕļý. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://web.dev/listitem/)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty]"
+  },
+  "lighthouse-core/audits/accessibility/listitem.js | failureTitle": {
+    "message": "[Ļîšţ îţémš (ᐅ`<li>`ᐊ) åŕé ñöţ çöñţåîñéð ŵîţĥîñ ᐅ`<ul>`ᐊ öŕ ᐅ`<ol>`ᐊ þåŕéñţ éļéméñţš. one two three four five six seven eight nine ten eleven twelve thirteen]"
+  },
+  "lighthouse-core/audits/accessibility/listitem.js | title": {
+    "message": "[Ļîšţ îţémš (ᐅ`<li>`ᐊ) åŕé çöñţåîñéð ŵîţĥîñ ᐅ`<ul>`ᐊ öŕ ᐅ`<ol>`ᐊ þåŕéñţ éļéméñţš one two three four five six seven eight nine ten eleven twelve thirteen]"
+  },
+  "lighthouse-core/audits/accessibility/meta-refresh.js | description": {
+    "message": "[Ûšéŕš ðö ñöţ éxþéçţ å þåĝé ţö ŕéƒŕéšĥ åûţömåţîçåļļý, åñð ðöîñĝ šö ŵîļļ mövé ƒöçûš бåçķ ţö ţĥé ţöþ öƒ ţĥé þåĝé. Ţĥîš måý çŕéåţé å ƒŕûšţŕåţîñĝ öŕ çöñƒûšîñĝ éxþéŕîéñçé. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://web.dev/meta-refresh/)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive]"
+  },
+  "lighthouse-core/audits/accessibility/meta-refresh.js | failureTitle": {
+    "message": "[Ţĥé ðöçûméñţ ûšéš ᐅ`<meta http-equiv=\"refresh\">`ᐊ one two three four five]"
+  },
+  "lighthouse-core/audits/accessibility/meta-refresh.js | title": {
+    "message": "[Ţĥé ðöçûméñţ ðöéš ñöţ ûšé ᐅ`<meta http-equiv=\"refresh\">`ᐊ one two three four five six seven]"
+  },
+  "lighthouse-core/audits/accessibility/meta-viewport.js | description": {
+    "message": "[Ðîšåбļîñĝ žöömîñĝ îš þŕöбļémåţîç ƒöŕ ûšéŕš ŵîţĥ ļöŵ vîšîöñ ŵĥö ŕéļý öñ šçŕééñ måĝñîƒîçåţîöñ ţö þŕöþéŕļý šéé ţĥé çöñţéñţš öƒ å ŵéб þåĝé. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://web.dev/meta-viewport/)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree]"
+  },
+  "lighthouse-core/audits/accessibility/meta-viewport.js | failureTitle": {
+    "message": "[ᐅ`[user-scalable=\"no\"]`ᐊ îš ûšéð îñ ţĥé ᐅ`<meta name=\"viewport\">`ᐊ éļéméñţ öŕ ţĥé ᐅ`[maximum-scale]`ᐊ åţţŕîбûţé îš ļéšš ţĥåñ 5. one two three four five six seven eight nine ten eleven twelve thirteen]"
+  },
+  "lighthouse-core/audits/accessibility/meta-viewport.js | title": {
+    "message": "[ᐅ`[user-scalable=\"no\"]`ᐊ îš ñöţ ûšéð îñ ţĥé ᐅ`<meta name=\"viewport\">`ᐊ éļéméñţ åñð ţĥé ᐅ`[maximum-scale]`ᐊ åţţŕîбûţé îš ñöţ ļéšš ţĥåñ 5. one two three four five six seven eight nine ten eleven twelve thirteen fourteen]"
+  },
+  "lighthouse-core/audits/accessibility/object-alt.js | description": {
+    "message": "[Šçŕééñ ŕéåðéŕš çåññöţ ţŕåñšļåţé ñöñ-ţéxţ çöñţéñţ. Åððîñĝ åļţ ţéxţ ţö ᐅ`<object>`ᐊ éļéméñţš ĥéļþš šçŕééñ ŕéåðéŕš çöñvéý méåñîñĝ ţö ûšéŕš. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://web.dev/object-alt/)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo]"
+  },
+  "lighthouse-core/audits/accessibility/object-alt.js | failureTitle": {
+    "message": "[ᐅ`<object>`ᐊ éļéméñţš ðö ñöţ ĥåvé ᐅ`[alt]`ᐊ ţéxţ one two three four five six seven]"
+  },
+  "lighthouse-core/audits/accessibility/object-alt.js | title": {
+    "message": "[ᐅ`<object>`ᐊ éļéméñţš ĥåvé ᐅ`[alt]`ᐊ ţéxţ one two three four five six]"
+  },
+  "lighthouse-core/audits/accessibility/tabindex.js | description": {
+    "message": "[Å våļûé ĝŕéåţéŕ ţĥåñ 0 îmþļîéš åñ éxþļîçîţ ñåvîĝåţîöñ öŕðéŕîñĝ. Åļţĥöûĝĥ ţéçĥñîçåļļý våļîð, ţĥîš öƒţéñ çŕéåţéš ƒŕûšţŕåţîñĝ éxþéŕîéñçéš ƒöŕ ûšéŕš ŵĥö ŕéļý öñ åššîšţîvé ţéçĥñöļöĝîéš. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://web.dev/tabindex/)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix twentyseven]"
+  },
+  "lighthouse-core/audits/accessibility/tabindex.js | failureTitle": {
+    "message": "[Šömé éļéméñţš ĥåvé å ᐅ`[tabindex]`ᐊ våļûé ĝŕéåţéŕ ţĥåñ 0 one two three four five six seven eight nine]"
+  },
+  "lighthouse-core/audits/accessibility/tabindex.js | title": {
+    "message": "[Ñö éļéméñţ ĥåš å ᐅ`[tabindex]`ᐊ våļûé ĝŕéåţéŕ ţĥåñ 0 one two three four five six seven eight nine]"
+  },
+  "lighthouse-core/audits/accessibility/td-headers-attr.js | description": {
+    "message": "[Šçŕééñ ŕéåðéŕš ĥåvé ƒéåţûŕéš ţö måķé ñåvîĝåţîñĝ ţåбļéš éåšîéŕ. Éñšûŕîñĝ ᐅ`<td>`ᐊ çéļļš ûšîñĝ ţĥé ᐅ`[headers]`ᐊ åţţŕîбûţé öñļý ŕéƒéŕ ţö öţĥéŕ çéļļš îñ ţĥé šåmé ţåбļé måý îmþŕövé ţĥé éxþéŕîéñçé ƒöŕ šçŕééñ ŕéåðéŕ ûšéŕš. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://web.dev/td-headers-attr/)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix twentyseven twentyeight]"
+  },
+  "lighthouse-core/audits/accessibility/td-headers-attr.js | failureTitle": {
+    "message": "[Çéļļš îñ å ᐅ`<table>`ᐊ éļéméñţ ţĥåţ ûšé ţĥé ᐅ`[headers]`ᐊ åţţŕîбûţé ŕéƒéŕš ţö öţĥéŕ çéļļš öƒ ţĥåţ šåmé ţåбļé. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen]"
+  },
+  "lighthouse-core/audits/accessibility/td-headers-attr.js | title": {
+    "message": "[Çéļļš îñ å ᐅ`<table>`ᐊ éļéméñţ ţĥåţ ûšé ţĥé ᐅ`[headers]`ᐊ åţţŕîбûţé öñļý ŕéƒéŕ ţö öţĥéŕ çéļļš öƒ ţĥåţ šåmé ţåбļé. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen]"
+  },
+  "lighthouse-core/audits/accessibility/th-has-data-cells.js | description": {
+    "message": "[Šçŕééñ ŕéåðéŕš ĥåvé ƒéåţûŕéš ţö måķé ñåvîĝåţîñĝ ţåбļéš éåšîéŕ. Éñšûŕîñĝ ţåбļé ĥéåðéŕš åļŵåýš ŕéƒéŕ ţö šömé šéţ öƒ çéļļš måý îmþŕövé ţĥé éxþéŕîéñçé ƒöŕ šçŕééñ ŕéåðéŕ ûšéŕš. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://web.dev/th-has-data-cells/)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix]"
+  },
+  "lighthouse-core/audits/accessibility/th-has-data-cells.js | failureTitle": {
+    "message": "[ᐅ`<th>`ᐊ éļéméñţš åñð éļéméñţš ŵîţĥ ᐅ`[role=\"columnheader\"/\"rowheader\"]`ᐊ ðö ñöţ ĥåvé ðåţå çéļļš ţĥéý ðéšçŕîбé. one two three four five six seven eight nine ten eleven twelve thirteen]"
+  },
+  "lighthouse-core/audits/accessibility/th-has-data-cells.js | title": {
+    "message": "[ᐅ`<th>`ᐊ éļéméñţš åñð éļéméñţš ŵîţĥ ᐅ`[role=\"columnheader\"/\"rowheader\"]`ᐊ ĥåvé ðåţå çéļļš ţĥéý ðéšçŕîбé. one two three four five six seven eight nine ten eleven twelve thirteen]"
+  },
+  "lighthouse-core/audits/accessibility/valid-lang.js | description": {
+    "message": "[Šþéçîƒýîñĝ å våļîð ᐅ[ᐊБÇÞ 47 ļåñĝûåĝéᐅ](https://www.w3.org/International/questions/qa-choosing-language-tags#question)ᐊ öñ éļéméñţš ĥéļþš éñšûŕé ţĥåţ ţéxţ îš þŕöñöûñçéð çöŕŕéçţļý бý å šçŕééñ ŕéåðéŕ. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://web.dev/valid-lang/)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone]"
+  },
+  "lighthouse-core/audits/accessibility/valid-lang.js | failureTitle": {
+    "message": "[ᐅ`[lang]`ᐊ åţţŕîбûţéš ðö ñöţ ĥåvé å våļîð våļûé one two three four five six seven eight]"
+  },
+  "lighthouse-core/audits/accessibility/valid-lang.js | title": {
+    "message": "[ᐅ`[lang]`ᐊ åţţŕîбûţéš ĥåvé å våļîð våļûé one two three four five six seven]"
+  },
+  "lighthouse-core/audits/accessibility/video-caption.js | description": {
+    "message": "[Ŵĥéñ å vîðéö þŕövîðéš å çåþţîöñ îţ îš éåšîéŕ ƒöŕ ðéåƒ åñð ĥéåŕîñĝ îmþåîŕéð ûšéŕš ţö åççéšš îţš îñƒöŕmåţîöñ. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://web.dev/video-caption/)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen]"
+  },
+  "lighthouse-core/audits/accessibility/video-caption.js | failureTitle": {
+    "message": "[ᐅ`<video>`ᐊ éļéméñţš ðö ñöţ çöñţåîñ å ᐅ`<track>`ᐊ éļéméñţ ŵîţĥ ᐅ`[kind=\"captions\"]`ᐊ. one two three four five six seven eight nine ten eleven]"
+  },
+  "lighthouse-core/audits/accessibility/video-caption.js | title": {
+    "message": "[ᐅ`<video>`ᐊ éļéméñţš çöñţåîñ å ᐅ`<track>`ᐊ éļéméñţ ŵîţĥ ᐅ`[kind=\"captions\"]`ᐊ one two three four five six seven eight nine]"
+  },
+  "lighthouse-core/audits/accessibility/video-description.js | description": {
+    "message": "[Åûðîö ðéšçŕîþţîöñš þŕövîðé ŕéļévåñţ îñƒöŕmåţîöñ ƒöŕ vîðéöš ţĥåţ ðîåļöĝûé çåññöţ, šûçĥ åš ƒåçîåļ éxþŕéššîöñš åñð šçéñéš. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://web.dev/video-description/)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone]"
+  },
+  "lighthouse-core/audits/accessibility/video-description.js | failureTitle": {
+    "message": "[ᐅ`<video>`ᐊ éļéméñţš ðö ñöţ çöñţåîñ å ᐅ`<track>`ᐊ éļéméñţ ŵîţĥ ᐅ`[kind=\"description\"]`ᐊ. one two three four five six seven eight nine ten eleven]"
+  },
+  "lighthouse-core/audits/accessibility/video-description.js | title": {
+    "message": "[ᐅ`<video>`ᐊ éļéméñţš çöñţåîñ å ᐅ`<track>`ᐊ éļéméñţ ŵîţĥ ᐅ`[kind=\"description\"]`ᐊ one two three four five six seven eight nine]"
+  },
+  "lighthouse-core/audits/apple-touch-icon.js | description": {
+    "message": "[Föŕ îðéåļ åþþéåŕåñçé öñ îÖŠ ŵĥéñ ûšéŕš åðð å þŕöĝŕéššîvé ŵéб åþþ ţö ţĥé ĥömé šçŕééñ, ðéƒîñé åñ ᐅ`apple-touch-icon`ᐊ. Îţ mûšţ þöîñţ ţö å ñöñ-ţŕåñšþåŕéñţ 192þx (öŕ 180þx) šqûåŕé ÞÑĜ. ᐅ[ᐊĻéåŕñ Möŕéᐅ](https://developers.google.com/web/fundamentals/design-and-ux/browser-customization/)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive]"
+  },
+  "lighthouse-core/audits/apple-touch-icon.js | failureTitle": {
+    "message": "[Ðöéš ñöţ þŕövîðé å våļîð ᐅ`apple-touch-icon`ᐊ one two three four five six]"
+  },
+  "lighthouse-core/audits/apple-touch-icon.js | precomposedWarning": {
+    "message": "[ᐅ`apple-touch-icon-precomposed`ᐊ îš öûţ öƒ ðåţé; ᐅ`apple-touch-icon`ᐊ îš þŕéƒéŕŕéð. one two three four five six seven eight]"
+  },
+  "lighthouse-core/audits/apple-touch-icon.js | title": {
+    "message": "[Þŕövîðéš å våļîð ᐅ`apple-touch-icon`ᐊ one two three four five]"
+  },
+  "lighthouse-core/audits/bootup-time.js | chromeExtensionsWarning": {
+    "message": "[Çĥŕömé éxţéñšîöñš ñéĝåţîvéļý åƒƒéçţéð ţĥîš þåĝé'š ļöåð þéŕƒöŕmåñçé. Ţŕý åûðîţîñĝ ţĥé þåĝé îñ îñçöĝñîţö möðé öŕ ƒŕöm å Çĥŕömé þŕöƒîļé ŵîţĥöûţ éxţéñšîöñš. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo]"
+  },
+  "lighthouse-core/audits/bootup-time.js | columnScriptEval": {
+    "message": "[Šçŕîþţ Évåļûåţîöñ one two three]"
+  },
+  "lighthouse-core/audits/bootup-time.js | columnScriptParse": {
+    "message": "[Šçŕîþţ Þåŕšé one two]"
+  },
+  "lighthouse-core/audits/bootup-time.js | columnTotal": {
+    "message": "[Ţöţåļ ÇÞÛ Ţîmé one two]"
+  },
+  "lighthouse-core/audits/bootup-time.js | description": {
+    "message": "[Çöñšîðéŕ ŕéðûçîñĝ ţĥé ţîmé šþéñţ þåŕšîñĝ, çömþîļîñĝ, åñð éxéçûţîñĝ ĴŠ. Ýöû måý ƒîñð ðéļîvéŕîñĝ šmåļļéŕ ĴŠ þåýļöåðš ĥéļþš ŵîţĥ ţĥîš. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://developers.google.com/web/tools/lighthouse/audits/bootup)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo]"
+  },
+  "lighthouse-core/audits/bootup-time.js | failureTitle": {
+    "message": "[Ŕéðûçé ĴåvåŠçŕîþţ éxéçûţîöñ ţîmé one two three four five six seven]"
+  },
+  "lighthouse-core/audits/bootup-time.js | title": {
+    "message": "[ĴåvåŠçŕîþţ éxéçûţîöñ ţîmé one two three]"
+  },
+  "lighthouse-core/audits/byte-efficiency/efficient-animated-content.js | description": {
+    "message": "[Ļåŕĝé ĜÎFš åŕé îñéƒƒîçîéñţ ƒöŕ ðéļîvéŕîñĝ åñîmåţéð çöñţéñţ. Çöñšîðéŕ ûšîñĝ MÞÉĜ4/ŴéбM vîðéöš ƒöŕ åñîmåţîöñš åñð ÞÑĜ/ŴéбÞ ƒöŕ šţåţîç îmåĝéš îñšţéåð öƒ ĜÎF ţö šåvé ñéţŵöŕķ бýţéš. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/replace-animated-gifs-with-video/)ᐊ one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix]"
+  },
+  "lighthouse-core/audits/byte-efficiency/efficient-animated-content.js | title": {
+    "message": "[Ûšé vîðéö ƒöŕmåţš ƒöŕ åñîmåţéð çöñţéñţ one two three four five six seven eight]"
+  },
+  "lighthouse-core/audits/byte-efficiency/offscreen-images.js | description": {
+    "message": "[Çöñšîðéŕ ļåžý-ļöåðîñĝ öƒƒšçŕééñ åñð ĥîððéñ îmåĝéš åƒţéŕ åļļ çŕîţîçåļ ŕéšöûŕçéš ĥåvé ƒîñîšĥéð ļöåðîñĝ ţö ļöŵéŕ ţîmé ţö îñţéŕåçţîvé. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://developers.google.com/web/tools/lighthouse/audits/offscreen-images)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo]"
+  },
+  "lighthouse-core/audits/byte-efficiency/offscreen-images.js | title": {
+    "message": "[Ðéƒéŕ öƒƒšçŕééñ îmåĝéš one two three]"
+  },
+  "lighthouse-core/audits/byte-efficiency/render-blocking-resources.js | description": {
+    "message": "[Ŕéšöûŕçéš åŕé бļöçķîñĝ ţĥé ƒîŕšţ þåîñţ öƒ ýöûŕ þåĝé. Çöñšîðéŕ ðéļîvéŕîñĝ çŕîţîçåļ ĴŠ/ÇŠŠ îñļîñé åñð ðéƒéŕŕîñĝ åļļ ñöñ-çŕîţîçåļ ĴŠ/šţýļéš. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://developers.google.com/web/tools/lighthouse/audits/blocking-resources)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree]"
+  },
+  "lighthouse-core/audits/byte-efficiency/render-blocking-resources.js | title": {
+    "message": "[Éļîmîñåţé ŕéñðéŕ-бļöçķîñĝ ŕéšöûŕçéš one two three four]"
+  },
+  "lighthouse-core/audits/byte-efficiency/total-byte-weight.js | description": {
+    "message": "[Ļåŕĝé ñéţŵöŕķ þåýļöåðš çöšţ ûšéŕš ŕéåļ möñéý åñð åŕé ĥîĝĥļý çöŕŕéļåţéð ŵîţĥ ļöñĝ ļöåð ţîméš. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://developers.google.com/web/tools/lighthouse/audits/network-payloads)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen]"
+  },
+  "lighthouse-core/audits/byte-efficiency/total-byte-weight.js | displayValue": {
+    "message": "[Ţöţåļ šîžé ŵåš ᐅ{totalBytes, number, bytes}ᐊ ĶБ one two three four five]"
+  },
+  "lighthouse-core/audits/byte-efficiency/total-byte-weight.js | failureTitle": {
+    "message": "[Åvöîð éñöŕmöûš ñéţŵöŕķ þåýļöåðš one two three four five six seven]"
+  },
+  "lighthouse-core/audits/byte-efficiency/total-byte-weight.js | title": {
+    "message": "[Åvöîðš éñöŕmöûš ñéţŵöŕķ þåýļöåðš one two three four five six seven]"
+  },
+  "lighthouse-core/audits/byte-efficiency/unminified-css.js | description": {
+    "message": "[Mîñîƒýîñĝ ÇŠŠ ƒîļéš çåñ ŕéðûçé ñéţŵöŕķ þåýļöåð šîžéš. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://developers.google.com/web/tools/lighthouse/audits/minify-css)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen]"
+  },
+  "lighthouse-core/audits/byte-efficiency/unminified-css.js | title": {
+    "message": "[Mîñîƒý ÇŠŠ one two]"
+  },
+  "lighthouse-core/audits/byte-efficiency/unminified-javascript.js | description": {
+    "message": "[Mîñîƒýîñĝ ĴåvåŠçŕîþţ ƒîļéš çåñ ŕéðûçé þåýļöåð šîžéš åñð šçŕîþţ þåŕšé ţîmé. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://developers.google.com/speed/docs/insights/MinifyResources)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen]"
+  },
+  "lighthouse-core/audits/byte-efficiency/unminified-javascript.js | title": {
+    "message": "[Mîñîƒý ĴåvåŠçŕîþţ one two three]"
+  },
+  "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | description": {
+    "message": "[Ŕémövé ðéåð ŕûļéš ƒŕöm šţýļéšĥééţš åñð ðéƒéŕ ţĥé ļöåðîñĝ öƒ ÇŠŠ ñöţ ûšéð ƒöŕ åбövé-ţĥé-ƒöļð çöñţéñţ ţö ŕéðûçé ûññéçéššåŕý бýţéš çöñšûméð бý ñéţŵöŕķ åçţîvîţý. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://developers.google.com/web/tools/lighthouse/audits/unused-css)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour]"
+  },
+  "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | title": {
+    "message": "[Ŕémövé ûñûšéð ÇŠŠ one two three]"
+  },
+  "lighthouse-core/audits/byte-efficiency/unused-javascript.js | description": {
+    "message": "[Ŕémövé ûñûšéð ĴåvåŠçŕîþţ ţö ŕéðûçé бýţéš çöñšûméð бý ñéţŵöŕķ åçţîvîţý. one two three four five six seven eight nine ten eleven twelve thirteen]"
+  },
+  "lighthouse-core/audits/byte-efficiency/unused-javascript.js | title": {
+    "message": "[Ŕémövé ûñûšéð ĴåvåŠçŕîþţ one two three]"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-long-cache-ttl.js | description": {
+    "message": "[Å ļöñĝ çåçĥé ļîƒéţîmé çåñ šþééð ûþ ŕéþéåţ vîšîţš ţö ýöûŕ þåĝé. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://developers.google.com/web/tools/lighthouse/audits/cache-policy)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen]"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-long-cache-ttl.js | displayValue": {
+    "message": "{itemCount,plural, =1{[1 ŕéšöûŕçé ƒöûñð one two]}other{[# ŕéšöûŕçéš ƒöûñð one two three]}}"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-long-cache-ttl.js | failureTitle": {
+    "message": "[Šéŕvé šţåţîç åššéţš ŵîţĥ åñ éƒƒîçîéñţ çåçĥé þöļîçý one two three four five six seven eight nine ten eleven]"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-long-cache-ttl.js | title": {
+    "message": "[Ûšéš éƒƒîçîéñţ çåçĥé þöļîçý öñ šţåţîç åššéţš one two three four five six seven eight nine]"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-optimized-images.js | description": {
+    "message": "[Öþţîmîžéð îmåĝéš ļöåð ƒåšţéŕ åñð çöñšûmé ļéšš çéļļûļåŕ ðåţå. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://developers.google.com/web/tools/lighthouse/audits/optimize-images)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen]"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-optimized-images.js | title": {
+    "message": "[Éƒƒîçîéñţļý éñçöðé îmåĝéš one two three]"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | description": {
+    "message": "[Šéŕvé îmåĝéš ţĥåţ åŕé åþþŕöþŕîåţéļý-šîžéð ţö šåvé çéļļûļåŕ ðåţå åñð îmþŕövé ļöåð ţîmé. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://developers.google.com/web/tools/lighthouse/audits/oversized-images)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen]"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | title": {
+    "message": "[Þŕöþéŕļý šîžé îmåĝéš one two three]"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-text-compression.js | description": {
+    "message": "[Ţéxţ-бåšéð ŕéšöûŕçéš šĥöûļð бé šéŕvéð ŵîţĥ çömþŕéššîöñ (ĝžîþ, ðéƒļåţé öŕ бŕöţļî) ţö mîñîmîžé ţöţåļ ñéţŵöŕķ бýţéš. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://developers.google.com/web/tools/lighthouse/audits/text-compression)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty]"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-text-compression.js | title": {
+    "message": "[Éñåбļé ţéxţ çömþŕéššîöñ one two three]"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-webp-images.js | description": {
+    "message": "[Îmåĝé ƒöŕmåţš ļîķé ĴÞÉĜ 2000, ĴÞÉĜ XŔ, åñð ŴéбÞ öƒţéñ þŕövîðé бéţţéŕ çömþŕéššîöñ ţĥåñ ÞÑĜ öŕ ĴÞÉĜ, ŵĥîçĥ méåñš ƒåšţéŕ ðöŵñļöåðš åñð ļéšš ðåţå çöñšûmþţîöñ. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://developers.google.com/web/tools/lighthouse/audits/webp)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour]"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-webp-images.js | title": {
+    "message": "[Šéŕvé îmåĝéš îñ ñéxţ-ĝéñ ƒöŕmåţš one two three four five six seven]"
+  },
+  "lighthouse-core/audits/content-width.js | description": {
+    "message": "[Îƒ ţĥé ŵîðţĥ öƒ ýöûŕ åþþ'š çöñţéñţ ðöéšñ'ţ måţçĥ ţĥé ŵîðţĥ öƒ ţĥé vîéŵþöŕţ, ýöûŕ åþþ mîĝĥţ ñöţ бé öþţîmîžéð ƒöŕ möбîļé šçŕééñš. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://developers.google.com/web/tools/lighthouse/audits/content-sized-correctly-for-viewport)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo]"
+  },
+  "lighthouse-core/audits/content-width.js | explanation": {
+    "message": "[Ţĥé vîéŵþöŕţ šîžé öƒ ᐅ{innerWidth}ᐊþx ðöéš ñöţ måţçĥ ţĥé ŵîñðöŵ šîžé öƒ ᐅ{outerWidth}ᐊþx. one two three four five six seven eight nine ten eleven twelve thirteen]"
+  },
+  "lighthouse-core/audits/content-width.js | failureTitle": {
+    "message": "[Çöñţéñţ îš ñöţ šîžéð çöŕŕéçţļý ƒöŕ ţĥé vîéŵþöŕţ one two three four five six seven eight nine ten]"
+  },
+  "lighthouse-core/audits/content-width.js | title": {
+    "message": "[Çöñţéñţ îš šîžéð çöŕŕéçţļý ƒöŕ ţĥé vîéŵþöŕţ one two three four five six seven eight nine]"
+  },
+  "lighthouse-core/audits/critical-request-chains.js | description": {
+    "message": "[Ţĥé Çŕîţîçåļ Ŕéqûéšţ Çĥåîñš бéļöŵ šĥöŵ ýöû ŵĥåţ ŕéšöûŕçéš åŕé ļöåðéð ŵîţĥ å ĥîĝĥ þŕîöŕîţý. Çöñšîðéŕ ŕéðûçîñĝ ţĥé ļéñĝţĥ öƒ çĥåîñš, ŕéðûçîñĝ ţĥé ðöŵñļöåð šîžé öƒ ŕéšöûŕçéš, öŕ ðéƒéŕŕîñĝ ţĥé ðöŵñļöåð öƒ ûññéçéššåŕý ŕéšöûŕçéš ţö îmþŕövé þåĝé ļöåð. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://developers.google.com/web/tools/lighthouse/audits/critical-request-chains)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix twentyseven twentyeight twentynine thirty thirtyone thirtytwo thirtythree]"
+  },
+  "lighthouse-core/audits/critical-request-chains.js | displayValue": {
+    "message": "{itemCount,plural, =1{[1 çĥåîñ ƒöûñð one two]}other{[# çĥåîñš ƒöûñð one two]}}"
+  },
+  "lighthouse-core/audits/critical-request-chains.js | title": {
+    "message": "[Mîñîmîžé Çŕîţîçåļ Ŕéqûéšţš Ðéþţĥ one two three four five six seven]"
+  },
+  "lighthouse-core/audits/deprecations.js | columnDeprecate": {
+    "message": "[Ðéþŕéçåţîöñ / Ŵåŕñîñĝ one two three]"
+  },
+  "lighthouse-core/audits/deprecations.js | columnLine": {
+    "message": "[Ļîñé one]"
+  },
+  "lighthouse-core/audits/deprecations.js | description": {
+    "message": "[Ðéþŕéçåţéð ÅÞÎš ŵîļļ évéñţûåļļý бé ŕémövéð ƒŕöm ţĥé бŕöŵšéŕ. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://web.dev/deprecations)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen]"
+  },
+  "lighthouse-core/audits/deprecations.js | displayValue": {
+    "message": "{itemCount,plural, =1{[1 ŵåŕñîñĝ ƒöûñð one two]}other{[# ŵåŕñîñĝš ƒöûñð one two]}}"
+  },
+  "lighthouse-core/audits/deprecations.js | failureTitle": {
+    "message": "[Ûšéš ðéþŕéçåţéð ÅÞÎš one two three]"
+  },
+  "lighthouse-core/audits/deprecations.js | title": {
+    "message": "[Åvöîðš ðéþŕéçåţéð ÅÞÎš one two three]"
+  },
+  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | description": {
+    "message": "[Åþþļîçåţîöñ Çåçĥé îš ðéþŕéçåţéð. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://web.dev/appcache-manifest)ᐊ. one two three four five six seven eight nine ten eleven]"
+  },
+  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | displayValue": {
+    "message": "[Föûñð \"ᐅ{AppCacheManifest}ᐊ\" one two three]"
+  },
+  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | failureTitle": {
+    "message": "[Ûšéš Åþþļîçåţîöñ Çåçĥé one two three]"
+  },
+  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | title": {
+    "message": "[Åvöîðš Åþþļîçåţîöñ Çåçĥé one two three]"
+  },
+  "lighthouse-core/audits/dobetterweb/doctype.js | description": {
+    "message": "[Šþéçîƒýîñĝ å ðöçţýþé þŕévéñţš ţĥé бŕöŵšéŕ ƒŕöm šŵîţçĥîñĝ ţö qûîŕķš-möðé. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://web.dev/doctype)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen]"
+  },
+  "lighthouse-core/audits/dobetterweb/doctype.js | explanationBadDoctype": {
+    "message": "[Ðöçţýþé ñåmé mûšţ бé ţĥé ļöŵéŕçåšé šţŕîñĝ ᐅ`html`ᐊ one two three four five six seven eight nine]"
+  },
+  "lighthouse-core/audits/dobetterweb/doctype.js | explanationNoDoctype": {
+    "message": "[Ðöçûméñţ mûšţ çöñţåîñ å ðöçţýþé one two three four five six seven]"
+  },
+  "lighthouse-core/audits/dobetterweb/doctype.js | explanationPublicId": {
+    "message": "[Éxþéçţéð þûбļîçÎð ţö бé åñ émþţý šţŕîñĝ one two three four five six seven eight]"
+  },
+  "lighthouse-core/audits/dobetterweb/doctype.js | explanationSystemId": {
+    "message": "[Éxþéçţéð šýšţémÎð ţö бé åñ émþţý šţŕîñĝ one two three four five six seven eight]"
+  },
+  "lighthouse-core/audits/dobetterweb/doctype.js | failureTitle": {
+    "message": "[Þåĝé ļåçķš ţĥé ĤŢMĻ ðöçţýþé, ţĥûš ţŕîĝĝéŕîñĝ qûîŕķš-möðé one two three four five six seven eight nine ten eleven]"
+  },
+  "lighthouse-core/audits/dobetterweb/doctype.js | title": {
+    "message": "[Þåĝé ĥåš ţĥé ĤŢMĻ ðöçţýþé one two three four five six]"
+  },
+  "lighthouse-core/audits/dobetterweb/dom-size.js | columnElement": {
+    "message": "[Éļéméñţ one]"
+  },
+  "lighthouse-core/audits/dobetterweb/dom-size.js | columnStatistic": {
+    "message": "[Šţåţîšţîç one two]"
+  },
+  "lighthouse-core/audits/dobetterweb/dom-size.js | columnValue": {
+    "message": "[Våļûé one]"
+  },
+  "lighthouse-core/audits/dobetterweb/dom-size.js | description": {
+    "message": "[Бŕöŵšéŕ éñĝîñééŕš ŕéçömméñð þåĝéš çöñţåîñ ƒéŵéŕ ţĥåñ ~1,500 ÐÖM éļéméñţš. Ţĥé šŵééţ šþöţ îš å ţŕéé ðéþţĥ < 32 éļéméñţš åñð ƒéŵéŕ ţĥåñ 60 çĥîļðŕéñ/þåŕéñţ éļéméñţ. Å ļåŕĝé ÐÖM çåñ îñçŕéåšé mémöŕý ûšåĝé, çåûšé ļöñĝéŕ ᐅ[ᐊšţýļé çåļçûļåţîöñšᐅ](https://developers.google.com/web/fundamentals/performance/rendering/reduce-the-scope-and-complexity-of-style-calculations)ᐊ, åñð þŕöðûçé çöšţļý ᐅ[ᐊļåýöûţ ŕéƒļöŵšᐅ](https://developers.google.com/speed/articles/reflow)ᐊ. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://web.dev/dom-size)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix twentyseven twentyeight twentynine thirty thirtyone thirtytwo thirtythree thirtyfour thirtyfive thirtysix]"
+  },
+  "lighthouse-core/audits/dobetterweb/dom-size.js | displayValue": {
+    "message": "{itemCount,plural, =1{[1 éļéméñţ one two]}other{[# éļéméñţš one two]}}"
+  },
+  "lighthouse-core/audits/dobetterweb/dom-size.js | failureTitle": {
+    "message": "[Åvöîð åñ éxçéššîvé ÐÖM šîžé one two three four five six]"
+  },
+  "lighthouse-core/audits/dobetterweb/dom-size.js | statisticDOMDepth": {
+    "message": "[Måxîmûm ÐÖM Ðéþţĥ one two three]"
+  },
+  "lighthouse-core/audits/dobetterweb/dom-size.js | statisticDOMElements": {
+    "message": "[Ţöţåļ ÐÖM Éļéméñţš one two three]"
+  },
+  "lighthouse-core/audits/dobetterweb/dom-size.js | statisticDOMWidth": {
+    "message": "[Måxîmûm Çĥîļð Éļéméñţš one two three]"
+  },
+  "lighthouse-core/audits/dobetterweb/dom-size.js | title": {
+    "message": "[Åvöîðš åñ éxçéššîvé ÐÖM šîžé one two three four five six]"
+  },
+  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | columnRel": {
+    "message": "[Ŕéļ one]"
+  },
+  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | columnTarget": {
+    "message": "[Ţåŕĝéţ one]"
+  },
+  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | description": {
+    "message": "[Åðð ᐅ`rel=\"noopener\"`ᐊ öŕ ᐅ`rel=\"noreferrer\"`ᐊ ţö åñý éxţéŕñåļ ļîñķš ţö îmþŕövé þéŕƒöŕmåñçé åñð þŕévéñţ šéçûŕîţý vûļñéŕåбîļîţîéš. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://web.dev/external-anchors-use-rel-noopener)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen]"
+  },
+  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | failureTitle": {
+    "message": "[Ļîñķš ţö çŕöšš-öŕîĝîñ ðéšţîñåţîöñš åŕé ûñšåƒé one two three four five six seven eight nine]"
+  },
+  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | title": {
+    "message": "[Ļîñķš ţö çŕöšš-öŕîĝîñ ðéšţîñåţîöñš åŕé šåƒé one two three four five six seven eight nine]"
+  },
+  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | warning": {
+    "message": "[Ûñåбļé ţö ðéţéŕmîñé ţĥé ðéšţîñåţîöñ ƒöŕ åñçĥöŕ (ᐅ{anchorHTML}ᐊ). Îƒ ñöţ ûšéð åš å ĥýþéŕļîñķ, çöñšîðéŕ ŕémövîñĝ ţåŕĝéţ=_бļåñķ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen]"
+  },
+  "lighthouse-core/audits/dobetterweb/geolocation-on-start.js | description": {
+    "message": "[Ûšéŕš åŕé mîšţŕûšţƒûļ öƒ öŕ çöñƒûšéð бý šîţéš ţĥåţ ŕéqûéšţ ţĥéîŕ ļöçåţîöñ ŵîţĥöûţ çöñţéxţ. Çöñšîðéŕ ţýîñĝ ţĥé ŕéqûéšţ ţö å ûšéŕ åçţîöñ îñšţéåð. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://web.dev/geolocation-on-start)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree]"
+  },
+  "lighthouse-core/audits/dobetterweb/geolocation-on-start.js | failureTitle": {
+    "message": "[Ŕéqûéšţš ţĥé ĝéöļöçåţîöñ þéŕmîššîöñ öñ þåĝé ļöåð one two three four five six seven eight nine ten]"
+  },
+  "lighthouse-core/audits/dobetterweb/geolocation-on-start.js | title": {
+    "message": "[Åvöîðš ŕéqûéšţîñĝ ţĥé ĝéöļöçåţîöñ þéŕmîššîöñ öñ þåĝé ļöåð one two three four five six seven eight nine ten eleven twelve]"
+  },
+  "lighthouse-core/audits/dobetterweb/js-libraries.js | columnVersion": {
+    "message": "[Véŕšîöñ one]"
+  },
+  "lighthouse-core/audits/dobetterweb/js-libraries.js | description": {
+    "message": "[Åļļ ƒŕöñţ-éñð ĴåvåŠçŕîþţ ļîбŕåŕîéš ðéţéçţéð öñ ţĥé þåĝé. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://web.dev/js-libraries)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen]"
+  },
+  "lighthouse-core/audits/dobetterweb/js-libraries.js | title": {
+    "message": "[Ðéţéçţéð ĴåvåŠçŕîþţ ļîбŕåŕîéš one two three four]"
+  },
+  "lighthouse-core/audits/dobetterweb/no-document-write.js | description": {
+    "message": "[Föŕ ûšéŕš öñ šļöŵ çöññéçţîöñš, éxţéŕñåļ šçŕîþţš ðýñåmîçåļļý îñĵéçţéð vîå ᐅ`document.write()`ᐊ çåñ ðéļåý þåĝé ļöåð бý ţéñš öƒ šéçöñðš. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://web.dev/no-document-write)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone]"
+  },
+  "lighthouse-core/audits/dobetterweb/no-document-write.js | failureTitle": {
+    "message": "[Ûšéš ᐅ`document.write()`ᐊ one two]"
+  },
+  "lighthouse-core/audits/dobetterweb/no-document-write.js | title": {
+    "message": "[Åvöîðš ᐅ`document.write()`ᐊ one two three]"
+  },
+  "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | columnSeverity": {
+    "message": "[Ĥîĝĥéšţ Šévéŕîţý one two]"
+  },
+  "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | columnVersion": {
+    "message": "[Ļîбŕåŕý Véŕšîöñ one two]"
+  },
+  "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | columnVuln": {
+    "message": "[Vûļñéŕåбîļîţý Çöûñţ one two three]"
+  },
+  "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | description": {
+    "message": "[Šömé ţĥîŕð-þåŕţý šçŕîþţš måý çöñţåîñ ķñöŵñ šéçûŕîţý vûļñéŕåбîļîţîéš ţĥåţ åŕé éåšîļý îðéñţîƒîéð åñð éxþļöîţéð бý åţţåçķéŕš. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://web.dev/no-vulnerable-libraries)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone]"
+  },
+  "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | displayValue": {
+    "message": "{itemCount,plural, =1{[1 vûļñéŕåбîļîţý ðéţéçţéð one two three]}other{[# vûļñéŕåбîļîţîéš ðéţéçţéð one two three]}}"
+  },
+  "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | failureTitle": {
+    "message": "[Îñçļûðéš ƒŕöñţ-éñð ĴåvåŠçŕîþţ ļîбŕåŕîéš ŵîţĥ ķñöŵñ šéçûŕîţý vûļñéŕåбîļîţîéš one two three four five six seven eight nine ten eleven twelve thirteen fourteen]"
+  },
+  "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | rowSeverityHigh": {
+    "message": "[Ĥîĝĥ one]"
+  },
+  "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | rowSeverityLow": {
+    "message": "[Ļöŵ one]"
+  },
+  "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | rowSeverityMedium": {
+    "message": "[Méðîûm one]"
+  },
+  "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | title": {
+    "message": "[Åvöîðš ƒŕöñţ-éñð ĴåvåŠçŕîþţ ļîбŕåŕîéš ŵîţĥ ķñöŵñ šéçûŕîţý vûļñéŕåбîļîţîéš one two three four five six seven eight nine ten eleven twelve thirteen fourteen]"
+  },
+  "lighthouse-core/audits/dobetterweb/notification-on-start.js | description": {
+    "message": "[Ûšéŕš åŕé mîšţŕûšţƒûļ öƒ öŕ çöñƒûšéð бý šîţéš ţĥåţ ŕéqûéšţ ţö šéñð ñöţîƒîçåţîöñš ŵîţĥöûţ çöñţéxţ. Çöñšîðéŕ ţýîñĝ ţĥé ŕéqûéšţ ţö ûšéŕ ĝéšţûŕéš îñšţéåð. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://web.dev/notification-on-start)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour]"
+  },
+  "lighthouse-core/audits/dobetterweb/notification-on-start.js | failureTitle": {
+    "message": "[Ŕéqûéšţš ţĥé ñöţîƒîçåţîöñ þéŕmîššîöñ öñ þåĝé ļöåð one two three four five six seven eight nine ten]"
+  },
+  "lighthouse-core/audits/dobetterweb/notification-on-start.js | title": {
+    "message": "[Åvöîðš ŕéqûéšţîñĝ ţĥé ñöţîƒîçåţîöñ þéŕmîššîöñ öñ þåĝé ļöåð one two three four five six seven eight nine ten eleven twelve]"
+  },
+  "lighthouse-core/audits/dobetterweb/password-inputs-can-be-pasted-into.js | columnFailingElem": {
+    "message": "[Fåîļîñĝ Éļéméñţš one two]"
+  },
+  "lighthouse-core/audits/dobetterweb/password-inputs-can-be-pasted-into.js | description": {
+    "message": "[Þŕévéñţîñĝ þåššŵöŕð þåšţîñĝ ûñðéŕmîñéš ĝööð šéçûŕîţý þöļîçý. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://web.dev/password-inputs-can-be-pasted-into)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen]"
+  },
+  "lighthouse-core/audits/dobetterweb/password-inputs-can-be-pasted-into.js | failureTitle": {
+    "message": "[Þŕévéñţš ûšéŕš ţö þåšţé îñţö þåššŵöŕð ƒîéļðš one two three four five six seven eight nine]"
+  },
+  "lighthouse-core/audits/dobetterweb/password-inputs-can-be-pasted-into.js | title": {
+    "message": "[Åļļöŵš ûšéŕš ţö þåšţé îñţö þåššŵöŕð ƒîéļðš one two three four five six seven eight nine]"
+  },
+  "lighthouse-core/audits/dobetterweb/uses-http2.js | columnProtocol": {
+    "message": "[Þŕöţöçöļ one]"
+  },
+  "lighthouse-core/audits/dobetterweb/uses-http2.js | description": {
+    "message": "[ĤŢŢÞ/2 öƒƒéŕš måñý бéñéƒîţš övéŕ ĤŢŢÞ/1.1, îñçļûðîñĝ бîñåŕý ĥéåðéŕš, mûļţîþļéxîñĝ, åñð šéŕvéŕ þûšĥ. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://web.dev/uses-http2)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen]"
+  },
+  "lighthouse-core/audits/dobetterweb/uses-http2.js | displayValue": {
+    "message": "{itemCount,plural, =1{[1 ŕéqûéšţ ñöţ šéŕvéð vîå ĤŢŢÞ/2 one two three four five six seven]}other{[# ŕéqûéšţš ñöţ šéŕvéð vîå ĤŢŢÞ/2 one two three four five six seven]}}"
+  },
+  "lighthouse-core/audits/dobetterweb/uses-http2.js | failureTitle": {
+    "message": "[Ðöéš ñöţ ûšé ĤŢŢÞ/2 ƒöŕ åļļ öƒ îţš ŕéšöûŕçéš one two three four five six seven eight nine]"
+  },
+  "lighthouse-core/audits/dobetterweb/uses-http2.js | title": {
+    "message": "[Ûšéš ĤŢŢÞ/2 ƒöŕ îţš öŵñ ŕéšöûŕçéš one two three four five six seven]"
+  },
+  "lighthouse-core/audits/dobetterweb/uses-passive-event-listeners.js | description": {
+    "message": "[Çöñšîðéŕ måŕķîñĝ ýöûŕ ţöûçĥ åñð ŵĥééļ évéñţ ļîšţéñéŕš åš ᐅ`passive`ᐊ ţö îmþŕövé ýöûŕ þåĝé'š šçŕöļļ þéŕƒöŕmåñçé. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://web.dev/uses-passive-event-listeners)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen]"
+  },
+  "lighthouse-core/audits/dobetterweb/uses-passive-event-listeners.js | failureTitle": {
+    "message": "[Ðöéš ñöţ ûšé þåššîvé ļîšţéñéŕš ţö îmþŕövé šçŕöļļîñĝ þéŕƒöŕmåñçé one two three four five six seven eight nine ten eleven twelve]"
+  },
+  "lighthouse-core/audits/dobetterweb/uses-passive-event-listeners.js | title": {
+    "message": "[Ûšéš þåššîvé ļîšţéñéŕš ţö îmþŕövé šçŕöļļîñĝ þéŕƒöŕmåñçé one two three four five six seven eight nine ten eleven]"
+  },
+  "lighthouse-core/audits/errors-in-console.js | columnDesc": {
+    "message": "[Ðéšçŕîþţîöñ one two]"
+  },
+  "lighthouse-core/audits/errors-in-console.js | description": {
+    "message": "[Éŕŕöŕš ļöĝĝéð ţö ţĥé çöñšöļé îñðîçåţé ûñŕéšöļvéð þŕöбļémš. Ţĥéý çåñ çömé ƒŕöm ñéţŵöŕķ ŕéqûéšţ ƒåîļûŕéš åñð öţĥéŕ бŕöŵšéŕ çöñçéŕñš. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://web.dev/errors-in-console)ᐊ one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo]"
+  },
+  "lighthouse-core/audits/errors-in-console.js | failureTitle": {
+    "message": "[Бŕöŵšéŕ éŕŕöŕš ŵéŕé ļöĝĝéð ţö ţĥé çöñšöļé one two three four five six seven eight nine]"
+  },
+  "lighthouse-core/audits/errors-in-console.js | title": {
+    "message": "[Ñö бŕöŵšéŕ éŕŕöŕš ļöĝĝéð ţö ţĥé çöñšöļé one two three four five six seven eight]"
+  },
+  "lighthouse-core/audits/font-display.js | description": {
+    "message": "[Ļévéŕåĝé ţĥé ƒöñţ-ðîšþļåý ÇŠŠ ƒéåţûŕé ţö éñšûŕé ţéxţ îš ûšéŕ-vîšîбļé ŵĥîļé ŵéбƒöñţš åŕé ļöåðîñĝ. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://developers.google.com/web/updates/2016/02/font-display)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen]"
+  },
+  "lighthouse-core/audits/font-display.js | failureTitle": {
+    "message": "[Éñšûŕé ţéxţ ŕémåîñš vîšîбļé ðûŕîñĝ ŵéбƒöñţ ļöåð one two three four five six seven eight nine ten]"
+  },
+  "lighthouse-core/audits/font-display.js | title": {
+    "message": "[Åļļ ţéxţ ŕémåîñš vîšîбļé ðûŕîñĝ ŵéбƒöñţ ļöåðš one two three four five six seven eight nine]"
+  },
+  "lighthouse-core/audits/font-display.js | undeclaredFontURLWarning": {
+    "message": "[Ļîĝĥţĥöûšé ŵåš ûñåбļé ţö åûţömåţîçåļļý çĥéçķ ţĥé ƒöñţ-ðîšþļåý våļûé ƒöŕ ţĥé ƒöļļöŵîñĝ ÛŔĻ: ᐅ{fontURL}ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen]"
+  },
+  "lighthouse-core/audits/image-aspect-ratio.js | columnActual": {
+    "message": "[Åšþéçţ Ŕåţîö (Åçţûåļ) one two three]"
+  },
+  "lighthouse-core/audits/image-aspect-ratio.js | columnDisplayed": {
+    "message": "[Åšþéçţ Ŕåţîö (Ðîšþļåýéð) one two three]"
+  },
+  "lighthouse-core/audits/image-aspect-ratio.js | description": {
+    "message": "[Îmåĝé ðîšþļåý ðîméñšîöñš šĥöûļð måţçĥ ñåţûŕåļ åšþéçţ ŕåţîö. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://web.dev/image-aspect-ratio)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen]"
+  },
+  "lighthouse-core/audits/image-aspect-ratio.js | failureTitle": {
+    "message": "[Ðîšþļåýš îmåĝéš ŵîţĥ îñçöŕŕéçţ åšþéçţ ŕåţîö one two three four five six seven eight nine]"
+  },
+  "lighthouse-core/audits/image-aspect-ratio.js | title": {
+    "message": "[Ðîšþļåýš îmåĝéš ŵîţĥ çöŕŕéçţ åšþéçţ ŕåţîö one two three four five six seven eight nine]"
+  },
+  "lighthouse-core/audits/image-aspect-ratio.js | warningCompute": {
+    "message": "[Îñvåļîð îmåĝé šîžîñĝ îñƒöŕmåţîöñ ᐅ{url}ᐊ one two three four five six seven eight]"
+  },
+  "lighthouse-core/audits/installable-manifest.js | description": {
+    "message": "[Бŕöŵšéŕš çåñ þŕöåçţîvéļý þŕömþţ ûšéŕš ţö åðð ýöûŕ åþþ ţö ţĥéîŕ ĥöméšçŕééñ, ŵĥîçĥ çåñ ļéåð ţö ĥîĝĥéŕ éñĝåĝéméñţ. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://developers.google.com/web/tools/lighthouse/audits/install-prompt)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty]"
+  },
+  "lighthouse-core/audits/installable-manifest.js | failureTitle": {
+    "message": "[Ŵéб åþþ måñîƒéšţ ðöéš ñöţ mééţ ţĥé îñšţåļļåбîļîţý ŕéqûîŕéméñţš one two three four five six seven eight nine ten eleven twelve]"
+  },
+  "lighthouse-core/audits/installable-manifest.js | title": {
+    "message": "[Ŵéб åþþ måñîƒéšţ mééţš ţĥé îñšţåļļåбîļîţý ŕéqûîŕéméñţš one two three four five six seven eight nine ten eleven]"
+  },
+  "lighthouse-core/audits/is-on-https.js | columnInsecureURL": {
+    "message": "[Îñšéçûŕé ÛŔĻ one two]"
+  },
+  "lighthouse-core/audits/is-on-https.js | description": {
+    "message": "[Åļļ šîţéš šĥöûļð бé þŕöţéçţéð ŵîţĥ ĤŢŢÞŠ, évéñ öñéš ţĥåţ ðöñ'ţ ĥåñðļé šéñšîţîvé ðåţå. ĤŢŢÞŠ þŕévéñţš îñţŕûðéŕš ƒŕöm ţåmþéŕîñĝ ŵîţĥ öŕ þåššîvéļý ļîšţéñîñĝ îñ öñ ţĥé çömmûñîçåţîöñš бéţŵééñ ýöûŕ åþþ åñð ýöûŕ ûšéŕš, åñð îš å þŕéŕéqûîšîţé ƒöŕ ĤŢŢÞ/2 åñð måñý ñéŵ ŵéб þļåţƒöŕm ÅÞÎš. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://web.dev/is-on-https)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix twentyseven twentyeight twentynine thirty thirtyone thirtytwo thirtythree thirtyfour thirtyfive thirtysix]"
+  },
+  "lighthouse-core/audits/is-on-https.js | displayValue": {
+    "message": "{itemCount,plural, =1{[1 îñšéçûŕé ŕéqûéšţ ƒöûñð one two three four five]}other{[# îñšéçûŕé ŕéqûéšţš ƒöûñð one two three four five six]}}"
+  },
+  "lighthouse-core/audits/is-on-https.js | failureTitle": {
+    "message": "[Ðöéš ñöţ ûšé ĤŢŢÞŠ one two three four]"
+  },
+  "lighthouse-core/audits/is-on-https.js | title": {
+    "message": "[Ûšéš ĤŢŢÞŠ one two]"
+  },
+  "lighthouse-core/audits/load-fast-enough-for-pwa.js | description": {
+    "message": "[Å ƒåšţ þåĝé ļöåð övéŕ å çéļļûļåŕ ñéţŵöŕķ éñšûŕéš å ĝööð möбîļé ûšéŕ éxþéŕîéñçé. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://developers.google.com/web/tools/lighthouse/audits/fast-3g)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen]"
+  },
+  "lighthouse-core/audits/load-fast-enough-for-pwa.js | displayValueText": {
+    "message": "[Îñţéŕåçţîvé åţ ᐅ{timeInMs, number, seconds}ᐊ š one two three four five]"
+  },
+  "lighthouse-core/audits/load-fast-enough-for-pwa.js | displayValueTextWithOverride": {
+    "message": "[Îñţéŕåçţîvé öñ šîmûļåţéð möбîļé ñéţŵöŕķ åţ ᐅ{timeInMs, number, seconds}ᐊ š one two three four five six seven eight nine ten]"
+  },
+  "lighthouse-core/audits/load-fast-enough-for-pwa.js | explanationLoadSlow": {
+    "message": "[Ýöûŕ þåĝé ļöåðš ţöö šļöŵļý åñð îš ñöţ îñţéŕåçţîvé ŵîţĥîñ 10 šéçöñðš. Ļööķ åţ ţĥé öþþöŕţûñîţîéš åñð ðîåĝñöšţîçš îñ ţĥé \"Þéŕƒöŕmåñçé\" šéçţîöñ ţö ļéåŕñ ĥöŵ ţö îmþŕövé. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree]"
+  },
+  "lighthouse-core/audits/load-fast-enough-for-pwa.js | failureTitle": {
+    "message": "[Þåĝé ļöåð îš ñöţ ƒåšţ éñöûĝĥ öñ möбîļé ñéţŵöŕķš one two three four five six seven eight nine ten]"
+  },
+  "lighthouse-core/audits/load-fast-enough-for-pwa.js | title": {
+    "message": "[Þåĝé ļöåð îš ƒåšţ éñöûĝĥ öñ möбîļé ñéţŵöŕķš one two three four five six seven eight nine]"
+  },
+  "lighthouse-core/audits/mainthread-work-breakdown.js | columnCategory": {
+    "message": "[Çåţéĝöŕý one]"
+  },
+  "lighthouse-core/audits/mainthread-work-breakdown.js | description": {
+    "message": "[Çöñšîðéŕ ŕéðûçîñĝ ţĥé ţîmé šþéñţ þåŕšîñĝ, çömþîļîñĝ åñð éxéçûţîñĝ ĴŠ. Ýöû måý ƒîñð ðéļîvéŕîñĝ šmåļļéŕ ĴŠ þåýļöåðš ĥéļþš ŵîţĥ ţĥîš. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty]"
+  },
+  "lighthouse-core/audits/mainthread-work-breakdown.js | failureTitle": {
+    "message": "[Mîñîmîžé måîñ-ţĥŕéåð ŵöŕķ one two three]"
+  },
+  "lighthouse-core/audits/mainthread-work-breakdown.js | title": {
+    "message": "[Mîñîmîžéš måîñ-ţĥŕéåð ŵöŕķ one two three]"
+  },
+  "lighthouse-core/audits/manual/pwa-cross-browser.js | description": {
+    "message": "[Ţö ŕéåçĥ ţĥé möšţ ñûmбéŕ öƒ ûšéŕš, šîţéš šĥöûļð ŵöŕķ åçŕöšš évéŕý måĵöŕ бŕöŵšéŕ. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://developers.google.com/web/progressive-web-apps/checklist#site-works-cross-browser)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen]"
+  },
+  "lighthouse-core/audits/manual/pwa-cross-browser.js | title": {
+    "message": "[Šîţé ŵöŕķš çŕöšš-бŕöŵšéŕ one two three]"
+  },
+  "lighthouse-core/audits/manual/pwa-each-page-has-url.js | description": {
+    "message": "[Éñšûŕé îñðîvîðûåļ þåĝéš åŕé ðééþ ļîñķåбļé vîå ÛŔĻ åñð ţĥåţ ÛŔĻš åŕé ûñîqûé ƒöŕ ţĥé þûŕþöšé öƒ šĥåŕéåбîļîţý öñ šöçîåļ méðîå. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://developers.google.com/web/progressive-web-apps/checklist#each-page-has-a-url)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone]"
+  },
+  "lighthouse-core/audits/manual/pwa-each-page-has-url.js | title": {
+    "message": "[Éåçĥ þåĝé ĥåš å ÛŔĻ one two three four]"
+  },
+  "lighthouse-core/audits/manual/pwa-page-transitions.js | description": {
+    "message": "[Ţŕåñšîţîöñš šĥöûļð ƒééļ šñåþþý åš ýöû ţåþ åŕöûñð, évéñ öñ å šļöŵ ñéţŵöŕķ, å ķéý ţö þéŕçéîvéð þéŕƒöŕmåñçé. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://developers.google.com/web/progressive-web-apps/checklist#page-transitions-dont-feel-like-they-block-on-the-network)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen]"
+  },
+  "lighthouse-core/audits/manual/pwa-page-transitions.js | title": {
+    "message": "[Þåĝé ţŕåñšîţîöñš ðöñ'ţ ƒééļ ļîķé ţĥéý бļöçķ öñ ţĥé ñéţŵöŕķ one two three four five six seven eight nine ten eleven twelve]"
+  },
+  "lighthouse-core/audits/metrics/estimated-input-latency.js | description": {
+    "message": "[Éšţîmåţéð Îñþûţ Ļåţéñçý îš åñ éšţîmåţé öƒ ĥöŵ ļöñĝ ýöûŕ åþþ ţåķéš ţö ŕéšþöñð ţö ûšéŕ îñþûţ, îñ mîļļîšéçöñðš, ðûŕîñĝ ţĥé бûšîéšţ 5š ŵîñðöŵ öƒ þåĝé ļöåð. Îƒ ýöûŕ ļåţéñçý îš ĥîĝĥéŕ ţĥåñ 50 mš, ûšéŕš måý þéŕçéîvé ýöûŕ åþþ åš ļåĝĝý. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://developers.google.com/web/tools/lighthouse/audits/estimated-input-latency)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix twentyseven twentyeight twentynine thirty thirtyone]"
+  },
+  "lighthouse-core/audits/metrics/estimated-input-latency.js | title": {
+    "message": "[Éšţîmåţéð Îñþûţ Ļåţéñçý one two three]"
+  },
+  "lighthouse-core/audits/metrics/first-contentful-paint.js | description": {
+    "message": "[Fîŕšţ Çöñţéñţƒûļ Þåîñţ måŕķš ţĥé ţîmé åţ ŵĥîçĥ ţĥé ƒîŕšţ ţéxţ öŕ îmåĝé îš þåîñţéð. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://developers.google.com/web/tools/lighthouse/audits/first-contentful-paint)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen]"
+  },
+  "lighthouse-core/audits/metrics/first-contentful-paint.js | title": {
+    "message": "[Fîŕšţ Çöñţéñţƒûļ Þåîñţ one two three]"
+  },
+  "lighthouse-core/audits/metrics/first-cpu-idle.js | description": {
+    "message": "[Fîŕšţ ÇÞÛ Îðļé måŕķš ţĥé ƒîŕšţ ţîmé åţ ŵĥîçĥ ţĥé þåĝé'š måîñ ţĥŕéåð îš qûîéţ éñöûĝĥ ţö ĥåñðļé îñþûţ. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://developers.google.com/web/tools/lighthouse/audits/first-interactive)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen]"
+  },
+  "lighthouse-core/audits/metrics/first-cpu-idle.js | title": {
+    "message": "[Fîŕšţ ÇÞÛ Îðļé one two]"
+  },
+  "lighthouse-core/audits/metrics/first-meaningful-paint.js | description": {
+    "message": "[Fîŕšţ Méåñîñĝƒûļ Þåîñţ méåšûŕéš ŵĥéñ ţĥé þŕîmåŕý çöñţéñţ öƒ å þåĝé îš vîšîбļé. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://developers.google.com/web/tools/lighthouse/audits/first-meaningful-paint)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen]"
+  },
+  "lighthouse-core/audits/metrics/first-meaningful-paint.js | title": {
+    "message": "[Fîŕšţ Méåñîñĝƒûļ Þåîñţ one two three]"
+  },
+  "lighthouse-core/audits/metrics/interactive.js | description": {
+    "message": "[Ţîmé ţö îñţéŕåçţîvé îš ţĥé åmöûñţ öƒ ţîmé îţ ţåķéš ƒöŕ ţĥé þåĝé ţö бéçömé ƒûļļý îñţéŕåçţîvé. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://developers.google.com/web/tools/lighthouse/audits/consistently-interactive)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen]"
+  },
+  "lighthouse-core/audits/metrics/interactive.js | title": {
+    "message": "[Ţîmé ţö Îñţéŕåçţîvé one two three]"
+  },
+  "lighthouse-core/audits/metrics/max-potential-fid.js | description": {
+    "message": "[Ţĥé måxîmûm þöţéñţîåļ Fîŕšţ Îñþûţ Ðéļåý ţĥåţ ýöûŕ ûšéŕš çöûļð éxþéŕîéñçé îš ţĥé ðûŕåţîöñ, îñ mîļļîšéçöñðš, öƒ ţĥé ļöñĝéšţ ţåšķ. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://developers.google.com/web/updates/2018/05/first-input-delay)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo]"
+  },
+  "lighthouse-core/audits/metrics/max-potential-fid.js | title": {
+    "message": "[Måx Þöţéñţîåļ Fîŕšţ Îñþûţ Ðéļåý one two three four five six seven]"
+  },
+  "lighthouse-core/audits/metrics/speed-index.js | description": {
+    "message": "[Šþééð Îñðéx šĥöŵš ĥöŵ qûîçķļý ţĥé çöñţéñţš öƒ å þåĝé åŕé vîšîбļý þöþûļåţéð. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://developers.google.com/web/tools/lighthouse/audits/speed-index)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen]"
+  },
+  "lighthouse-core/audits/metrics/speed-index.js | title": {
+    "message": "[Šþééð Îñðéx one two]"
+  },
+  "lighthouse-core/audits/metrics/total-blocking-time.js | description": {
+    "message": "[Šûm öƒ åļļ ţîmé þéŕîöðš бéţŵééñ FÇÞ åñð Ţîmé ţö Îñţéŕåçţîvé, ŵĥéñ ţåšķ ļéñĝţĥ éxçééðéð 50mš, éxþŕéššéð îñ mîļļîšéçöñðš. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen]"
+  },
+  "lighthouse-core/audits/metrics/total-blocking-time.js | title": {
+    "message": "[Ţöţåļ Бļöçķîñĝ Ţîmé one two three]"
+  },
+  "lighthouse-core/audits/network-rtt.js | description": {
+    "message": "[Ñéţŵöŕķ ŕöûñð ţŕîþ ţîméš (ŔŢŢ) ĥåvé å ļåŕĝé îmþåçţ öñ þéŕƒöŕmåñçé. Îƒ ţĥé ŔŢŢ ţö åñ öŕîĝîñ îš ĥîĝĥ, îţ'š åñ îñðîçåţîöñ ţĥåţ šéŕvéŕš çļöšéŕ ţö ţĥé ûšéŕ çöûļð îmþŕövé þéŕƒöŕmåñçé. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://hpbn.co/primer-on-latency-and-bandwidth/)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix]"
+  },
+  "lighthouse-core/audits/network-rtt.js | title": {
+    "message": "[Ñéţŵöŕķ Ŕöûñð Ţŕîþ Ţîméš one two three four five]"
+  },
+  "lighthouse-core/audits/network-server-latency.js | description": {
+    "message": "[Šéŕvéŕ ļåţéñçîéš çåñ îmþåçţ ŵéб þéŕƒöŕmåñçé. Îƒ ţĥé šéŕvéŕ ļåţéñçý öƒ åñ öŕîĝîñ îš ĥîĝĥ, îţ'š åñ îñðîçåţîöñ ţĥé šéŕvéŕ îš övéŕļöåðéð öŕ ĥåš þööŕ бåçķéñð þéŕƒöŕmåñçé. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://hpbn.co/primer-on-web-performance/#analyzing-the-resource-waterfall)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive]"
+  },
+  "lighthouse-core/audits/network-server-latency.js | title": {
+    "message": "[Šéŕvéŕ Бåçķéñð Ļåţéñçîéš one two three]"
+  },
+  "lighthouse-core/audits/offline-start-url.js | description": {
+    "message": "[Å šéŕvîçé ŵöŕķéŕ éñåбļéš ýöûŕ ŵéб åþþ ţö бé ŕéļîåбļé îñ ûñþŕéðîçţåбļé ñéţŵöŕķ çöñðîţîöñš. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://developers.google.com/web/tools/lighthouse/audits/http-200-when-offline)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen]"
+  },
+  "lighthouse-core/audits/offline-start-url.js | failureTitle": {
+    "message": "[ᐅ`start_url`ᐊ ðöéš ñöţ ŕéšþöñð ŵîţĥ å 200 ŵĥéñ öƒƒļîñé one two three four five six seven eight nine]"
+  },
+  "lighthouse-core/audits/offline-start-url.js | title": {
+    "message": "[ᐅ`start_url`ᐊ ŕéšþöñðš ŵîţĥ å 200 ŵĥéñ öƒƒļîñé one two three four five six seven eight]"
+  },
+  "lighthouse-core/audits/offline-start-url.js | warningCantStart": {
+    "message": "[Ļîĝĥţĥöûšé çöûļðñ'ţ ŕéåð ţĥé ᐅ`start_url`ᐊ ƒŕöm ţĥé måñîƒéšţ. Åš å ŕéšûļţ, ţĥé ᐅ`start_url`ᐊ ŵåš åššûméð ţö бé ţĥé ðöçûméñţ'š ÛŔĻ. Éŕŕöŕ méššåĝé: 'ᐅ{manifestWarning}ᐊ'. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty]"
+  },
+  "lighthouse-core/audits/performance-budget.js | columnOverBudget": {
+    "message": "[Övéŕ Бûðĝéţ one two]"
+  },
+  "lighthouse-core/audits/performance-budget.js | description": {
+    "message": "[Ķééþ ţĥé qûåñţîţý åñð šîžé öƒ ñéţŵöŕķ ŕéqûéšţš ûñðéŕ ţĥé ţåŕĝéţš šéţ бý ţĥé þŕövîðéð þéŕƒöŕmåñçé бûðĝéţ. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://developers.google.com/web/tools/lighthouse/audits/budgets)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen]"
+  },
+  "lighthouse-core/audits/performance-budget.js | requestCountOverBudget": {
+    "message": "{count,plural, =1{[1 ŕéqûéšţ one two]}other{[# ŕéqûéšţš one two]}}"
+  },
+  "lighthouse-core/audits/performance-budget.js | title": {
+    "message": "[Þéŕƒöŕmåñçé бûðĝéţ one two three]"
+  },
+  "lighthouse-core/audits/redirects-http.js | description": {
+    "message": "[Îƒ ýöû'vé åļŕéåðý šéţ ûþ ĤŢŢÞŠ, måķé šûŕé ţĥåţ ýöû ŕéðîŕéçţ åļļ ĤŢŢÞ ţŕåƒƒîç ţö ĤŢŢÞŠ îñ öŕðéŕ ţö éñåбļé šéçûŕé ŵéб ƒéåţûŕéš ƒöŕ åļļ ýöûŕ ûšéŕš. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://developers.google.com/web/tools/lighthouse/audits/http-redirects-to-https)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree]"
+  },
+  "lighthouse-core/audits/redirects-http.js | failureTitle": {
+    "message": "[Ðöéš ñöţ ŕéðîŕéçţ ĤŢŢÞ ţŕåƒƒîç ţö ĤŢŢÞŠ one two three four five six seven eight]"
+  },
+  "lighthouse-core/audits/redirects-http.js | title": {
+    "message": "[Ŕéðîŕéçţš ĤŢŢÞ ţŕåƒƒîç ţö ĤŢŢÞŠ one two three four five six seven]"
+  },
+  "lighthouse-core/audits/redirects.js | description": {
+    "message": "[Ŕéðîŕéçţš îñţŕöðûçé åððîţîöñåļ ðéļåýš бéƒöŕé ţĥé þåĝé çåñ бé ļöåðéð. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://developers.google.com/web/tools/lighthouse/audits/redirects)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen]"
+  },
+  "lighthouse-core/audits/redirects.js | title": {
+    "message": "[Åvöîð mûļţîþļé þåĝé ŕéðîŕéçţš one two three four five six seven]"
+  },
+  "lighthouse-core/audits/resource-summary.js | description": {
+    "message": "[Ţö šéţ бûðĝéţš ƒöŕ ţĥé qûåñţîţý åñð šîžé öƒ þåĝé ŕéšöûŕçéš, åðð å бûðĝéţ.ĵšöñ ƒîļé. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://developers.google.com/web/tools/lighthouse/audits/budgets)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen]"
+  },
+  "lighthouse-core/audits/resource-summary.js | displayValue": {
+    "message": "{requestCount,plural, =1{[1 ŕéqûéšţ • ᐅ{byteCount, number, bytes}ᐊ ĶБ one two three four]}other{[# ŕéqûéšţš • ᐅ{byteCount, number, bytes}ᐊ ĶБ one two three four]}}"
+  },
+  "lighthouse-core/audits/resource-summary.js | title": {
+    "message": "[Ķééþ ŕéqûéšţ çöûñţš ļöŵ åñð ţŕåñšƒéŕ šîžéš šmåļļ one two three four five six seven eight nine ten]"
+  },
+  "lighthouse-core/audits/seo/canonical.js | description": {
+    "message": "[Çåñöñîçåļ ļîñķš šûĝĝéšţ ŵĥîçĥ ÛŔĻ ţö šĥöŵ îñ šéåŕçĥ ŕéšûļţš. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://web.dev/canonical)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen]"
+  },
+  "lighthouse-core/audits/seo/canonical.js | explanationConflict": {
+    "message": "[Mûļţîþļé çöñƒļîçţîñĝ ÛŔĻš (ᐅ{urlList}ᐊ) one two three four five six seven]"
+  },
+  "lighthouse-core/audits/seo/canonical.js | explanationDifferentDomain": {
+    "message": "[Þöîñţš ţö å ðîƒƒéŕéñţ ðömåîñ (ᐅ{url}ᐊ) one two three four five six seven]"
+  },
+  "lighthouse-core/audits/seo/canonical.js | explanationInvalid": {
+    "message": "[Îñvåļîð ÛŔĻ (ᐅ{url}ᐊ) one two three four]"
+  },
+  "lighthouse-core/audits/seo/canonical.js | explanationPointsElsewhere": {
+    "message": "[Þöîñţš ţö åñöţĥéŕ ᐅ`hreflang`ᐊ ļöçåţîöñ (ᐅ{url}ᐊ) one two three four five six seven eight]"
+  },
+  "lighthouse-core/audits/seo/canonical.js | explanationRelative": {
+    "message": "[Ŕéļåţîvé ÛŔĻ (ᐅ{url}ᐊ) one two three four]"
+  },
+  "lighthouse-core/audits/seo/canonical.js | explanationRoot": {
+    "message": "[Þöîñţš ţö ţĥé ðömåîñ'š ŕööţ ÛŔĻ (ţĥé ĥöméþåĝé), îñšţéåð öƒ åñ éqûîvåļéñţ þåĝé öƒ çöñţéñţ one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen]"
+  },
+  "lighthouse-core/audits/seo/canonical.js | failureTitle": {
+    "message": "[Ðöçûméñţ ðöéš ñöţ ĥåvé å våļîð ᐅ`rel=canonical`ᐊ one two three four five six seven]"
+  },
+  "lighthouse-core/audits/seo/canonical.js | title": {
+    "message": "[Ðöçûméñţ ĥåš å våļîð ᐅ`rel=canonical`ᐊ one two three four five]"
+  },
+  "lighthouse-core/audits/seo/font-size.js | description": {
+    "message": "[Föñţ šîžéš ļéšš ţĥåñ 12þx åŕé ţöö šmåļļ ţö бé ļéĝîбļé åñð ŕéqûîŕé möбîļé vîšîţöŕš ţö “þîñçĥ ţö žööm” îñ öŕðéŕ ţö ŕéåð. Šţŕîvé ţö ĥåvé >60% oƒ þåĝé ţéxţ ≥12þx. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://web.dev/font-size)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive]"
+  },
+  "lighthouse-core/audits/seo/font-size.js | displayValue": {
+    "message": "[ᐅ{decimalProportion, number, extendedPercent}ᐊ ļéĝîбļé ţéxţ one two three four]"
+  },
+  "lighthouse-core/audits/seo/font-size.js | explanationViewport": {
+    "message": "[Ţéxţ îš îļļéĝîбļé бéçåûšé ţĥéŕé'š ñö vîéŵþöŕţ méţå ţåĝ öþţîmîžéð ƒöŕ möбîļé šçŕééñš. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen]"
+  },
+  "lighthouse-core/audits/seo/font-size.js | explanationWithDisclaimer": {
+    "message": "[ᐅ{decimalProportion, number, extendedPercent}ᐊ öƒ ţéxţ îš ţöö šmåļļ (бåšéð öñ ᐅ{decimalProportionVisited, number, extendedPercent}ᐊ šåmþļé). one two three four five six seven eight nine ten]"
+  },
+  "lighthouse-core/audits/seo/font-size.js | failureTitle": {
+    "message": "[Ðöçûméñţ ðöéšñ'ţ ûšé ļéĝîбļé ƒöñţ šîžéš one two three four five six seven eight]"
+  },
+  "lighthouse-core/audits/seo/font-size.js | title": {
+    "message": "[Ðöçûméñţ ûšéš ļéĝîбļé ƒöñţ šîžéš one two three four five six seven]"
+  },
+  "lighthouse-core/audits/seo/hreflang.js | description": {
+    "message": "[ĥŕéƒļåñĝ ļîñķš ţéļļ šéåŕçĥ éñĝîñéš ŵĥåţ véŕšîöñ öƒ å þåĝé ţĥéý šĥöûļð ļîšţ îñ šéåŕçĥ ŕéšûļţš ƒöŕ å ĝîvéñ ļåñĝûåĝé öŕ ŕéĝîöñ. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://web.dev/hreflang)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone]"
+  },
+  "lighthouse-core/audits/seo/hreflang.js | failureTitle": {
+    "message": "[Ðöçûméñţ ðöéšñ'ţ ĥåvé å våļîð ᐅ`hreflang`ᐊ one two three four five six seven]"
+  },
+  "lighthouse-core/audits/seo/hreflang.js | title": {
+    "message": "[Ðöçûméñţ ĥåš å våļîð ᐅ`hreflang`ᐊ one two three four five]"
+  },
+  "lighthouse-core/audits/seo/http-status-code.js | description": {
+    "message": "[Þåĝéš ŵîţĥ ûñšûççéššƒûļ ĤŢŢÞ šţåţûš çöðéš måý ñöţ бé îñðéxéð þŕöþéŕļý. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://web.dev/http-status-code)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen]"
+  },
+  "lighthouse-core/audits/seo/http-status-code.js | failureTitle": {
+    "message": "[Þåĝé ĥåš ûñšûççéššƒûļ ĤŢŢÞ šţåţûš çöðé one two three four five six seven eight]"
+  },
+  "lighthouse-core/audits/seo/http-status-code.js | title": {
+    "message": "[Þåĝé ĥåš šûççéššƒûļ ĤŢŢÞ šţåţûš çöðé one two three four five six seven eight]"
+  },
+  "lighthouse-core/audits/seo/is-crawlable.js | description": {
+    "message": "[Šéåŕçĥ éñĝîñéš åŕé ûñåбļé ţö îñçļûðé ýöûŕ þåĝéš îñ šéåŕçĥ ŕéšûļţš îƒ ţĥéý ðöñ'ţ ĥåvé þéŕmîššîöñ ţö çŕåŵļ ţĥém. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://web.dev/is-crawable)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty]"
+  },
+  "lighthouse-core/audits/seo/is-crawlable.js | failureTitle": {
+    "message": "[Þåĝé îš бļöçķéð ƒŕöm îñðéxîñĝ one two three four five six seven]"
+  },
+  "lighthouse-core/audits/seo/is-crawlable.js | title": {
+    "message": "[Þåĝé îšñ’ţ бļöçķéð ƒŕöm îñðéxîñĝ one two three four five six seven]"
+  },
+  "lighthouse-core/audits/seo/link-text.js | description": {
+    "message": "[Ðéšçŕîþţîvé ļîñķ ţéxţ ĥéļþš šéåŕçĥ éñĝîñéš ûñðéŕšţåñð ýöûŕ çöñţéñţ. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://web.dev/link-text)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen]"
+  },
+  "lighthouse-core/audits/seo/link-text.js | displayValue": {
+    "message": "{itemCount,plural, =1{[1 ļîñķ ƒöûñð one two]}other{[# ļîñķš ƒöûñð one two]}}"
+  },
+  "lighthouse-core/audits/seo/link-text.js | failureTitle": {
+    "message": "[Ļîñķš ðö ñöţ ĥåvé ðéšçŕîþţîvé ţéxţ one two three four five six seven]"
+  },
+  "lighthouse-core/audits/seo/link-text.js | title": {
+    "message": "[Ļîñķš ĥåvé ðéšçŕîþţîvé ţéxţ one two three four five six]"
+  },
+  "lighthouse-core/audits/seo/manual/structured-data.js | description": {
+    "message": "[Ŕûñ ţĥé ᐅ[ᐊŠţŕûçţûŕéð Ðåţå Ţéšţîñĝ Ţööļᐅ](https://search.google.com/structured-data/testing-tool/)ᐊ åñð ţĥé ᐅ[ᐊŠţŕûçţûŕéð Ðåţå Ļîñţéŕᐅ](http://linter.structured-data.org/)ᐊ ţö våļîðåţé šţŕûçţûŕéð ðåţå. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://web.dev/structured-data)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty]"
+  },
+  "lighthouse-core/audits/seo/manual/structured-data.js | title": {
+    "message": "[Šţŕûçţûŕéð ðåţå îš våļîð one two three four five]"
+  },
+  "lighthouse-core/audits/seo/meta-description.js | description": {
+    "message": "[Méţå ðéšçŕîþţîöñš måý бé îñçļûðéð îñ šéåŕçĥ ŕéšûļţš ţö çöñçîšéļý šûmmåŕîžé þåĝé çöñţéñţ. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://web.dev/meta-description)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen]"
+  },
+  "lighthouse-core/audits/seo/meta-description.js | explanation": {
+    "message": "[Ðéšçŕîþţîöñ ţéxţ îš émþţý. one two three four five six]"
+  },
+  "lighthouse-core/audits/seo/meta-description.js | failureTitle": {
+    "message": "[Ðöçûméñţ ðöéš ñöţ ĥåvé å méţå ðéšçŕîþţîöñ one two three four five six seven eight nine]"
+  },
+  "lighthouse-core/audits/seo/meta-description.js | title": {
+    "message": "[Ðöçûméñţ ĥåš å méţå ðéšçŕîþţîöñ one two three four five six seven]"
+  },
+  "lighthouse-core/audits/seo/plugins.js | description": {
+    "message": "[Šéåŕçĥ éñĝîñéš çåñ'ţ îñðéx þļûĝîñ çöñţéñţ, åñð måñý ðévîçéš ŕéšţŕîçţ þļûĝîñš öŕ ðöñ'ţ šûþþöŕţ ţĥém. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://web.dev/plugins)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen]"
+  },
+  "lighthouse-core/audits/seo/plugins.js | failureTitle": {
+    "message": "[Ðöçûméñţ ûšéš þļûĝîñš one two three]"
+  },
+  "lighthouse-core/audits/seo/plugins.js | title": {
+    "message": "[Ðöçûméñţ åvöîðš þļûĝîñš one two three]"
+  },
+  "lighthouse-core/audits/seo/robots-txt.js | description": {
+    "message": "[Îƒ ýöûŕ ŕöбöţš.ţxţ ƒîļé îš måļƒöŕméð, çŕåŵļéŕš måý ñöţ бé åбļé ţö ûñðéŕšţåñð ĥöŵ ýöû ŵåñţ ýöûŕ ŵéбšîţé ţö бé çŕåŵļéð öŕ îñðéxéð. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://web.dev/robots-txt)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo]"
+  },
+  "lighthouse-core/audits/seo/robots-txt.js | displayValueHttpBadCode": {
+    "message": "[Ŕéqûéšţ ƒöŕ ŕöбöţš.ţxţ ŕéţûŕñéð ĤŢŢÞ šţåţûš: ᐅ{statusCode}ᐊ one two three four five six seven eight nine ten]"
+  },
+  "lighthouse-core/audits/seo/robots-txt.js | displayValueValidationError": {
+    "message": "{itemCount,plural, =1{[1 éŕŕöŕ ƒöûñð one two]}other{[# éŕŕöŕš ƒöûñð one two]}}"
+  },
+  "lighthouse-core/audits/seo/robots-txt.js | explanation": {
+    "message": "[Ļîĝĥţĥöûšé ŵåš ûñåбļé ţö ðöŵñļöåð å ŕöбöţš.ţxţ ƒîļé one two three four five six seven eight nine ten eleven]"
+  },
+  "lighthouse-core/audits/seo/robots-txt.js | failureTitle": {
+    "message": "[ŕöбöţš.ţxţ îš ñöţ våļîð one two three four five]"
+  },
+  "lighthouse-core/audits/seo/robots-txt.js | title": {
+    "message": "[ŕöбöţš.ţxţ îš våļîð one two three]"
+  },
+  "lighthouse-core/audits/seo/tap-targets.js | description": {
+    "message": "[Îñţéŕåçţîvé éļéméñţš ļîķé бûţţöñš åñð ļîñķš šĥöûļð бé ļåŕĝé éñöûĝĥ (48x48þx), åñð ĥåvé éñöûĝĥ šþåçé åŕöûñð ţĥém, ţö бé éåšý éñöûĝĥ ţö ţåþ ŵîţĥöûţ övéŕļåþþîñĝ öñţö öţĥéŕ éļéméñţš. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://web.dev/tap-targets)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix]"
+  },
+  "lighthouse-core/audits/seo/tap-targets.js | displayValue": {
+    "message": "[ᐅ{decimalProportion, number, percent}ᐊ åþþŕöþŕîåţéļý šîžéð ţåþ ţåŕĝéţš one two three four five six seven eight]"
+  },
+  "lighthouse-core/audits/seo/tap-targets.js | explanationViewportMetaNotOptimized": {
+    "message": "[Ţåþ ţåŕĝéţš åŕé ţöö šmåļļ бéçåûšé ţĥéŕé'š ñö vîéŵþöŕţ méţå ţåĝ öþţîmîžéð ƒöŕ möбîļé šçŕééñš one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen]"
+  },
+  "lighthouse-core/audits/seo/tap-targets.js | failureTitle": {
+    "message": "[Ţåþ ţåŕĝéţš åŕé ñöţ šîžéð åþþŕöþŕîåţéļý one two three four five six seven eight]"
+  },
+  "lighthouse-core/audits/seo/tap-targets.js | overlappingTargetHeader": {
+    "message": "[Övéŕļåþþîñĝ Ţåŕĝéţ one two three]"
+  },
+  "lighthouse-core/audits/seo/tap-targets.js | tapTargetHeader": {
+    "message": "[Ţåþ Ţåŕĝéţ one two]"
+  },
+  "lighthouse-core/audits/seo/tap-targets.js | title": {
+    "message": "[Ţåþ ţåŕĝéţš åŕé šîžéð åþþŕöþŕîåţéļý one two three four five six seven eight]"
+  },
+  "lighthouse-core/audits/service-worker.js | description": {
+    "message": "[Ţĥé šéŕvîçé ŵöŕķéŕ îš ţĥé ţéçĥñöļöĝý ţĥåţ éñåбļéš ýöûŕ åþþ ţö ûšé måñý Þŕöĝŕéššîvé Ŵéб Åþþ ƒéåţûŕéš, šûçĥ åš öƒƒļîñé, åðð ţö ĥöméšçŕééñ, åñð þûšĥ ñöţîƒîçåţîöñš. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://developers.google.com/web/tools/lighthouse/audits/registered-service-worker)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive]"
+  },
+  "lighthouse-core/audits/service-worker.js | explanationBadManifest": {
+    "message": "[Ţĥîš þåĝé îš çöñţŕöļļéð бý å šéŕvîçé ŵöŕķéŕ, ĥöŵévéŕ ñö ᐅ`start_url`ᐊ ŵåš ƒöûñð бéçåûšé måñîƒéšţ ƒåîļéð ţö þåŕšé åš våļîð ĴŠÖÑ one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen]"
+  },
+  "lighthouse-core/audits/service-worker.js | explanationBadStartUrl": {
+    "message": "[Ţĥîš þåĝé îš çöñţŕöļļéð бý å šéŕvîçé ŵöŕķéŕ, ĥöŵévéŕ ţĥé ᐅ`start_url`ᐊ (ᐅ{startUrl}ᐊ) îš ñöţ îñ ţĥé šéŕvîçé ŵöŕķéŕ'š šçöþé (ᐅ{scopeUrl}ᐊ) one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen]"
+  },
+  "lighthouse-core/audits/service-worker.js | explanationNoManifest": {
+    "message": "[Ţĥîš þåĝé îš çöñţŕöļļéð бý å šéŕvîçé ŵöŕķéŕ, ĥöŵévéŕ ñö ᐅ`start_url`ᐊ ŵåš ƒöûñð бéçåûšé ñö måñîƒéšţ ŵåš ƒéţçĥéð. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen]"
+  },
+  "lighthouse-core/audits/service-worker.js | explanationOutOfScope": {
+    "message": "[Ţĥîš öŕîĝîñ ĥåš öñé öŕ möŕé šéŕvîçé ŵöŕķéŕš, ĥöŵévéŕ ţĥé þåĝé (ᐅ{pageUrl}ᐊ) îš ñöţ îñ šçöþé. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen]"
+  },
+  "lighthouse-core/audits/service-worker.js | failureTitle": {
+    "message": "[Ðöéš ñöţ ŕéĝîšţéŕ å šéŕvîçé ŵöŕķéŕ ţĥåţ çöñţŕöļš þåĝé åñð ᐅ`start_url`ᐊ one two three four five six seven eight nine ten eleven twelve]"
+  },
+  "lighthouse-core/audits/service-worker.js | title": {
+    "message": "[Ŕéĝîšţéŕš å šéŕvîçé ŵöŕķéŕ ţĥåţ çöñţŕöļš þåĝé åñð ᐅ`start_url`ᐊ one two three four five six seven eight nine ten eleven]"
+  },
+  "lighthouse-core/audits/splash-screen.js | description": {
+    "message": "[Å ţĥéméð šþļåšĥ šçŕééñ éñšûŕéš å ĥîĝĥ-qûåļîţý éxþéŕîéñçé ŵĥéñ ûšéŕš ļåûñçĥ ýöûŕ åþþ ƒŕöm ţĥéîŕ ĥöméšçŕééñš. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://developers.google.com/web/tools/lighthouse/audits/custom-splash-screen)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen]"
+  },
+  "lighthouse-core/audits/splash-screen.js | failureTitle": {
+    "message": "[Îš ñöţ çöñƒîĝûŕéð ƒöŕ å çûšţöm šþļåšĥ šçŕééñ one two three four five six seven eight nine]"
+  },
+  "lighthouse-core/audits/splash-screen.js | title": {
+    "message": "[Çöñƒîĝûŕéð ƒöŕ å çûšţöm šþļåšĥ šçŕééñ one two three four five six seven eight]"
+  },
+  "lighthouse-core/audits/themed-omnibox.js | description": {
+    "message": "[Ţĥé бŕöŵšéŕ åððŕéšš бåŕ çåñ бé ţĥéméð ţö måţçĥ ýöûŕ šîţé. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://developers.google.com/web/tools/lighthouse/audits/address-bar)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen]"
+  },
+  "lighthouse-core/audits/themed-omnibox.js | failureTitle": {
+    "message": "[Ðöéš ñöţ šéţ å ţĥémé çöļöŕ ƒöŕ ţĥé åððŕéšš бåŕ. one two three four five six seven eight nine ten]"
+  },
+  "lighthouse-core/audits/themed-omnibox.js | title": {
+    "message": "[Šéţš å ţĥémé çöļöŕ ƒöŕ ţĥé åððŕéšš бåŕ. one two three four five six seven eight]"
+  },
+  "lighthouse-core/audits/third-party-summary.js | columnBlockingTime": {
+    "message": "[Måîñ-Ţĥŕéåð Бļöçķîñĝ Ţîmé one two three]"
+  },
+  "lighthouse-core/audits/third-party-summary.js | columnThirdParty": {
+    "message": "[Ţĥîŕð-Þåŕţý one two]"
+  },
+  "lighthouse-core/audits/third-party-summary.js | description": {
+    "message": "[Ţĥîŕð-þåŕţý çöðé çåñ šîĝñîƒîçåñţļý îmþåçţ ļöåð þéŕƒöŕmåñçé. Ļîmîţ ţĥé ñûmбéŕ öƒ ŕéðûñðåñţ ţĥîŕð-þåŕţý þŕövîðéŕš åñð ţŕý ţö ļöåð ţĥîŕð-þåŕţý çöðé åƒţéŕ ýöûŕ þåĝé ĥåš þŕîmåŕîļý ƒîñîšĥéð ļöåðîñĝ. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/loading-third-party-javascript/)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix twentyseven twentyeight]"
+  },
+  "lighthouse-core/audits/third-party-summary.js | displayValue": {
+    "message": "[Ţĥîŕð-þåŕţý çöðé бļöçķéð ţĥé måîñ ţĥŕéåð ƒöŕ ᐅ{timeInMs, number, milliseconds}ᐊ mš one two three four five six seven eight nine ten eleven]"
+  },
+  "lighthouse-core/audits/third-party-summary.js | failureTitle": {
+    "message": "[Ŕéðûçé ţĥé îmþåçţ öƒ ţĥîŕð-þåŕţý çöðé one two three four five six seven eight]"
+  },
+  "lighthouse-core/audits/third-party-summary.js | title": {
+    "message": "[Ţĥîŕð-Þåŕţý ûšåĝé one two three]"
+  },
+  "lighthouse-core/audits/time-to-first-byte.js | description": {
+    "message": "[Ţîmé Ţö Fîŕšţ Бýţé îðéñţîƒîéš ţĥé ţîmé åţ ŵĥîçĥ ýöûŕ šéŕvéŕ šéñðš å ŕéšþöñšé. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://developers.google.com/web/tools/lighthouse/audits/ttfb)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen]"
+  },
+  "lighthouse-core/audits/time-to-first-byte.js | displayValue": {
+    "message": "[Ŕööţ ðöçûméñţ ţööķ ᐅ{timeInMs, number, milliseconds}ᐊ mš one two three four five six]"
+  },
+  "lighthouse-core/audits/time-to-first-byte.js | failureTitle": {
+    "message": "[Ŕéðûçé šéŕvéŕ ŕéšþöñšé ţîméš (ŢŢFБ) one two three four five six seven eight]"
+  },
+  "lighthouse-core/audits/time-to-first-byte.js | title": {
+    "message": "[Šéŕvéŕ ŕéšþöñšé ţîméš åŕé ļöŵ (ŢŢFБ) one two three four five six seven eight]"
+  },
+  "lighthouse-core/audits/user-timings.js | columnDuration": {
+    "message": "[Ðûŕåţîöñ one]"
+  },
+  "lighthouse-core/audits/user-timings.js | columnStartTime": {
+    "message": "[Šţåŕţ Ţîmé one two]"
+  },
+  "lighthouse-core/audits/user-timings.js | columnType": {
+    "message": "[Ţýþé one]"
+  },
+  "lighthouse-core/audits/user-timings.js | description": {
+    "message": "[Çöñšîðéŕ îñšţŕûméñţîñĝ ýöûŕ åþþ ŵîţĥ ţĥé Ûšéŕ Ţîmîñĝ ÅÞÎ ţö méåšûŕé ýöûŕ åþþ'š ŕéåļ-ŵöŕļð þéŕƒöŕmåñçé ðûŕîñĝ ķéý ûšéŕ éxþéŕîéñçéš. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://developers.google.com/web/tools/lighthouse/audits/user-timing)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo]"
+  },
+  "lighthouse-core/audits/user-timings.js | displayValue": {
+    "message": "{itemCount,plural, =1{[1 ûšéŕ ţîmîñĝ one two]}other{[# ûšéŕ ţîmîñĝš one two]}}"
+  },
+  "lighthouse-core/audits/user-timings.js | title": {
+    "message": "[Ûšéŕ Ţîmîñĝ måŕķš åñð méåšûŕéš one two three four five six seven]"
+  },
+  "lighthouse-core/audits/uses-rel-preconnect.js | crossoriginWarning": {
+    "message": "[Å þŕéçöññéçţ <link> ŵåš ƒöûñð ƒöŕ \"ᐅ{securityOrigin}ᐊ\" бûţ ŵåš ñöţ ûšéð бý ţĥé бŕöŵšéŕ. Çĥéçķ ţĥåţ ýöû åŕé ûšîñĝ ţĥé ᐅ`crossorigin`ᐊ åţţŕîбûţé þŕöþéŕļý. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen]"
+  },
+  "lighthouse-core/audits/uses-rel-preconnect.js | description": {
+    "message": "[Çöñšîðéŕ åððîñĝ ᐅ`preconnect`ᐊ öŕ ᐅ`dns-prefetch`ᐊ ŕéšöûŕçé ĥîñţš ţö éšţåбļîšĥ éåŕļý çöññéçţîöñš ţö îmþöŕţåñţ ţĥîŕð-þåŕţý öŕîĝîñš. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://developers.google.com/web/fundamentals/performance/resource-prioritization#preconnect)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen]"
+  },
+  "lighthouse-core/audits/uses-rel-preconnect.js | title": {
+    "message": "[Þŕéçöññéçţ ţö ŕéqûîŕéð öŕîĝîñš one two three four five six seven]"
+  },
+  "lighthouse-core/audits/uses-rel-preload.js | crossoriginWarning": {
+    "message": "[Å þŕéļöåð <link> ŵåš ƒöûñð ƒöŕ \"ᐅ{preloadURL}ᐊ\" бûţ ŵåš ñöţ ûšéð бý ţĥé бŕöŵšéŕ. Çĥéçķ ţĥåţ ýöû åŕé ûšîñĝ ţĥé ᐅ`crossorigin`ᐊ åţţŕîбûţé þŕöþéŕļý. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen]"
+  },
+  "lighthouse-core/audits/uses-rel-preload.js | description": {
+    "message": "[Çöñšîðéŕ ûšîñĝ ᐅ`<link rel=preload>`ᐊ ţö þŕîöŕîţîžé ƒéţçĥîñĝ ŕéšöûŕçéš ţĥåţ åŕé çûŕŕéñţļý ŕéqûéšţéð ļåţéŕ îñ þåĝé ļöåð. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://developers.google.com/web/tools/lighthouse/audits/preload)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen]"
+  },
+  "lighthouse-core/audits/uses-rel-preload.js | title": {
+    "message": "[Þŕéļöåð ķéý ŕéqûéšţš one two three]"
+  },
+  "lighthouse-core/audits/viewport.js | description": {
+    "message": "[Åðð å ᐅ`<meta name=\"viewport\">`ᐊ ţåĝ ţö öþţîmîžé ýöûŕ åþþ ƒöŕ möбîļé šçŕééñš. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://developers.google.com/web/tools/lighthouse/audits/has-viewport-meta-tag)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen]"
+  },
+  "lighthouse-core/audits/viewport.js | explanationNoTag": {
+    "message": "[Ñö ᐅ`<meta name=\"viewport\">`ᐊ ţåĝ ƒöûñð one two three four]"
+  },
+  "lighthouse-core/audits/viewport.js | failureTitle": {
+    "message": "[Ðöéš ñöţ ĥåvé å ᐅ`<meta name=\"viewport\">`ᐊ ţåĝ ŵîţĥ ᐅ`width`ᐊ öŕ ᐅ`initial-scale`ᐊ one two three four five six seven eight]"
+  },
+  "lighthouse-core/audits/viewport.js | title": {
+    "message": "[Ĥåš å ᐅ`<meta name=\"viewport\">`ᐊ ţåĝ ŵîţĥ ᐅ`width`ᐊ öŕ ᐅ`initial-scale`ᐊ one two three four five six seven]"
+  },
+  "lighthouse-core/audits/without-javascript.js | description": {
+    "message": "[Ýöûŕ åþþ šĥöûļð ðîšþļåý šömé çöñţéñţ ŵĥéñ ĴåvåŠçŕîþţ îš ðîšåбļéð, évéñ îƒ îţ'š ĵûšţ å ŵåŕñîñĝ ţö ţĥé ûšéŕ ţĥåţ ĴåvåŠçŕîþţ îš ŕéqûîŕéð ţö ûšé ţĥé åþþ. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://developers.google.com/web/tools/lighthouse/audits/no-js)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour]"
+  },
+  "lighthouse-core/audits/without-javascript.js | explanation": {
+    "message": "[Ţĥé þåĝé бöðý šĥöûļð ŕéñðéŕ šömé çöñţéñţ îƒ îţš šçŕîþţš åŕé ñöţ åvåîļåбļé. one two three four five six seven eight nine ten eleven twelve thirteen fourteen]"
+  },
+  "lighthouse-core/audits/without-javascript.js | failureTitle": {
+    "message": "[Ðöéš ñöţ þŕövîðé ƒåļļбåçķ çöñţéñţ ŵĥéñ ĴåvåŠçŕîþţ îš ñöţ åvåîļåбļé one two three four five six seven eight nine ten eleven twelve thirteen]"
+  },
+  "lighthouse-core/audits/without-javascript.js | title": {
+    "message": "[Çöñţåîñš šömé çöñţéñţ ŵĥéñ ĴåvåŠçŕîþţ îš ñöţ åvåîļåбļé one two three four five six seven eight nine ten eleven]"
+  },
+  "lighthouse-core/audits/works-offline.js | description": {
+    "message": "[Îƒ ýöû'ŕé бûîļðîñĝ å Þŕöĝŕéššîvé Ŵéб Åþþ, çöñšîðéŕ ûšîñĝ å šéŕvîçé ŵöŕķéŕ šö ţĥåţ ýöûŕ åþþ çåñ ŵöŕķ öƒƒļîñé. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://developers.google.com/web/tools/lighthouse/audits/http-200-when-offline)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty]"
+  },
+  "lighthouse-core/audits/works-offline.js | failureTitle": {
+    "message": "[Çûŕŕéñţ þåĝé ðöéš ñöţ ŕéšþöñð ŵîţĥ å 200 ŵĥéñ öƒƒļîñé one two three four five six seven eight nine ten eleven]"
+  },
+  "lighthouse-core/audits/works-offline.js | title": {
+    "message": "[Çûŕŕéñţ þåĝé ŕéšþöñðš ŵîţĥ å 200 ŵĥéñ öƒƒļîñé one two three four five six seven eight nine]"
+  },
+  "lighthouse-core/audits/works-offline.js | warningNoLoad": {
+    "message": "[Ţĥé þåĝé måý ñöţ бé ļöåðîñĝ öƒƒļîñé бéçåûšé ýöûŕ ţéšţ ÛŔĻ (ᐅ{requested}ᐊ) ŵåš ŕéðîŕéçţéð ţö \"ᐅ{final}ᐊ\". Ţŕý ţéšţîñĝ ţĥé šéçöñð ÛŔĻ ðîŕéçţļý. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen]"
+  },
+  "lighthouse-core/config/default-config.js | a11yAriaGroupDescription": {
+    "message": "[Ţĥéšé åŕé öþþöŕţûñîţîéš ţö îmþŕövé ţĥé ûšåĝé öƒ ÅŔÎÅ îñ ýöûŕ åþþļîçåţîöñ ŵĥîçĥ måý éñĥåñçé ţĥé éxþéŕîéñçé ƒöŕ ûšéŕš öƒ åššîšţîvé ţéçĥñöļöĝý, ļîķé å šçŕééñ ŕéåðéŕ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree]"
+  },
+  "lighthouse-core/config/default-config.js | a11yAriaGroupTitle": {
+    "message": "[ÅŔÎÅ one]"
+  },
+  "lighthouse-core/config/default-config.js | a11yAudioVideoGroupDescription": {
+    "message": "[Ţĥéšé åŕé öþþöŕţûñîţîéš ţö þŕövîðé åļţéŕñåţîvé çöñţéñţ ƒöŕ åûðîö åñð vîðéö. Ţĥîš måý îmþŕövé ţĥé éxþéŕîéñçé ƒöŕ ûšéŕš ŵîţĥ ĥéåŕîñĝ öŕ vîšîöñ îmþåîŕméñţš. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree]"
+  },
+  "lighthouse-core/config/default-config.js | a11yAudioVideoGroupTitle": {
+    "message": "[Åûðîö åñð vîðéö one two]"
+  },
+  "lighthouse-core/config/default-config.js | a11yBestPracticesGroupDescription": {
+    "message": "[Ţĥéšé îţémš ĥîĝĥļîĝĥţ çömmöñ åççéššîбîļîţý бéšţ þŕåçţîçéš. one two three four five six seven eight nine ten eleven twelve]"
+  },
+  "lighthouse-core/config/default-config.js | a11yBestPracticesGroupTitle": {
+    "message": "[Бéšţ þŕåçţîçéš one two]"
+  },
+  "lighthouse-core/config/default-config.js | a11yCategoryDescription": {
+    "message": "[Ţĥéšé çĥéçķš ĥîĝĥļîĝĥţ öþþöŕţûñîţîéš ţö ᐅ[ᐊîmþŕövé ţĥé åççéššîбîļîţý öƒ ýöûŕ ŵéб åþþᐅ](https://developers.google.com/web/fundamentals/accessibility)ᐊ. Öñļý å šûбšéţ öƒ åççéššîбîļîţý îššûéš çåñ бé åûţömåţîçåļļý ðéţéçţéð šö måñûåļ ţéšţîñĝ îš åļšö éñçöûŕåĝéð. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix]"
+  },
+  "lighthouse-core/config/default-config.js | a11yCategoryManualDescription": {
+    "message": "[Ţĥéšé îţémš åððŕéšš åŕéåš ŵĥîçĥ åñ åûţömåţéð ţéšţîñĝ ţööļ çåññöţ çövéŕ. Ļéåŕñ möŕé îñ öûŕ ĝûîðé öñ ᐅ[ᐊçöñðûçţîñĝ åñ åççéššîбîļîţý ŕévîéŵᐅ](https://developers.google.com/web/fundamentals/accessibility/how-to-review)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone]"
+  },
+  "lighthouse-core/config/default-config.js | a11yCategoryTitle": {
+    "message": "[Åççéššîбîļîţý one two]"
+  },
+  "lighthouse-core/config/default-config.js | a11yColorContrastGroupDescription": {
+    "message": "[Ţĥéšé åŕé öþþöŕţûñîţîéš ţö îmþŕövé ţĥé ļéĝîбîļîţý öƒ ýöûŕ çöñţéñţ. one two three four five six seven eight nine ten eleven twelve thirteen]"
+  },
+  "lighthouse-core/config/default-config.js | a11yColorContrastGroupTitle": {
+    "message": "[Çöñţŕåšţ one]"
+  },
+  "lighthouse-core/config/default-config.js | a11yLanguageGroupDescription": {
+    "message": "[Ţĥéšé åŕé öþþöŕţûñîţîéš ţö îmþŕövé ţĥé îñţéŕþŕéţåţîöñ öƒ ýöûŕ çöñţéñţ бý ûšéŕš îñ ðîƒƒéŕéñţ ļöçåļéš. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen]"
+  },
+  "lighthouse-core/config/default-config.js | a11yLanguageGroupTitle": {
+    "message": "[Îñţéŕñåţîöñåļîžåţîöñ åñð ļöçåļîžåţîöñ one two three four]"
+  },
+  "lighthouse-core/config/default-config.js | a11yNamesLabelsGroupDescription": {
+    "message": "[Ţĥéšé åŕé öþþöŕţûñîţîéš ţö îmþŕövé ţĥé šémåñţîçš öƒ ţĥé çöñţŕöļš îñ ýöûŕ åþþļîçåţîöñ. Ţĥîš måý éñĥåñçé ţĥé éxþéŕîéñçé ƒöŕ ûšéŕš öƒ åššîšţîvé ţéçĥñöļöĝý, ļîķé å šçŕééñ ŕéåðéŕ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour]"
+  },
+  "lighthouse-core/config/default-config.js | a11yNamesLabelsGroupTitle": {
+    "message": "[Ñåméš åñð ļåбéļš one two]"
+  },
+  "lighthouse-core/config/default-config.js | a11yNavigationGroupDescription": {
+    "message": "[Ţĥéšé åŕé öþþöŕţûñîţîéš ţö îmþŕövé ķéýбöåŕð ñåvîĝåţîöñ îñ ýöûŕ åþþļîçåţîöñ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen]"
+  },
+  "lighthouse-core/config/default-config.js | a11yNavigationGroupTitle": {
+    "message": "[Ñåvîĝåţîöñ one two]"
+  },
+  "lighthouse-core/config/default-config.js | a11yTablesListsVideoGroupDescription": {
+    "message": "[Ţĥéšé åŕé öþþöŕţûñîţîéš ţö ţö îmþŕövé ţĥé éxþéŕîéñçé öƒ ŕéåðîñĝ ţåбûļåŕ öŕ ļîšţ ðåţå ûšîñĝ åššîšţîvé ţéçĥñöļöĝý, ļîķé å šçŕééñ ŕéåðéŕ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone]"
+  },
+  "lighthouse-core/config/default-config.js | a11yTablesListsVideoGroupTitle": {
+    "message": "[Ţåбļéš åñð ļîšţš one two]"
+  },
+  "lighthouse-core/config/default-config.js | bestPracticesCategoryTitle": {
+    "message": "[Бéšţ Þŕåçţîçéš one two]"
+  },
+  "lighthouse-core/config/default-config.js | budgetsGroupDescription": {
+    "message": "[Þéŕƒöŕmåñçé бûðĝéţš šéţ šţåñðåŕðš ƒöŕ ţĥé þéŕƒöŕmåñçé öƒ ýöûŕ šîţé. one two three four five six seven eight nine ten eleven twelve thirteen]"
+  },
+  "lighthouse-core/config/default-config.js | budgetsGroupTitle": {
+    "message": "[Бûðĝéţš one]"
+  },
+  "lighthouse-core/config/default-config.js | diagnosticsGroupDescription": {
+    "message": "[Möŕé îñƒöŕmåţîöñ åбöûţ ţĥé þéŕƒöŕmåñçé öƒ ýöûŕ åþþļîçåţîöñ. Ţĥéšé ñûmбéŕš ðöñ'ţ ᐅ[ᐊðîŕéçţļý åƒƒéçţᐅ](https://github.com/GoogleChrome/lighthouse/blob/d2ec9ffbb21de9ad1a0f86ed24575eda32c796f0/docs/scoring.md#how-are-the-scores-weighted)ᐊ ţĥé Þéŕƒöŕmåñçé šçöŕé. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen]"
+  },
+  "lighthouse-core/config/default-config.js | diagnosticsGroupTitle": {
+    "message": "[Ðîåĝñöšţîçš one two]"
+  },
+  "lighthouse-core/config/default-config.js | firstPaintImprovementsGroupDescription": {
+    "message": "[Ţĥé möšţ çŕîţîçåļ åšþéçţ öƒ þéŕƒöŕmåñçé îš ĥöŵ qûîçķļý þîxéļš åŕé ŕéñðéŕéð öñšçŕééñ. Ķéý méţŕîçš: Fîŕšţ Çöñţéñţƒûļ Þåîñţ, Fîŕšţ Méåñîñĝƒûļ Þåîñţ one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo]"
+  },
+  "lighthouse-core/config/default-config.js | firstPaintImprovementsGroupTitle": {
+    "message": "[Fîŕšţ Þåîñţ Îmþŕövéméñţš one two three]"
+  },
+  "lighthouse-core/config/default-config.js | loadOpportunitiesGroupDescription": {
+    "message": "[Ţĥéšé šûĝĝéšţîöñš çåñ ĥéļþ ýöûŕ þåĝé ļöåð ƒåšţéŕ. Ţĥéý ðöñ'ţ ᐅ[ᐊðîŕéçţļý åƒƒéçţᐅ](https://github.com/GoogleChrome/lighthouse/blob/d2ec9ffbb21de9ad1a0f86ed24575eda32c796f0/docs/scoring.md#how-are-the-scores-weighted)ᐊ ţĥé Þéŕƒöŕmåñçé šçöŕé. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen]"
+  },
+  "lighthouse-core/config/default-config.js | loadOpportunitiesGroupTitle": {
+    "message": "[Öþþöŕţûñîţîéš one two]"
+  },
+  "lighthouse-core/config/default-config.js | metricGroupTitle": {
+    "message": "[Méţŕîçš one]"
+  },
+  "lighthouse-core/config/default-config.js | overallImprovementsGroupDescription": {
+    "message": "[Éñĥåñçé ţĥé övéŕåļļ ļöåðîñĝ éxþéŕîéñçé, šö ţĥé þåĝé îš ŕéšþöñšîvé åñð ŕéåðý ţö ûšé åš šööñ åš þöššîбļé. Ķéý méţŕîçš: Ţîmé ţö Îñţéŕåçţîvé, Šþééð Îñðéx one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo]"
+  },
+  "lighthouse-core/config/default-config.js | overallImprovementsGroupTitle": {
+    "message": "[Övéŕåļļ Îmþŕövéméñţš one two three]"
+  },
+  "lighthouse-core/config/default-config.js | performanceCategoryTitle": {
+    "message": "[Þéŕƒöŕmåñçé one two]"
+  },
+  "lighthouse-core/config/default-config.js | pwaCategoryDescription": {
+    "message": "[Ţĥéšé çĥéçķš våļîðåţé ţĥé åšþéçţš öƒ å Þŕöĝŕéššîvé Ŵéб Åþþ. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://developers.google.com/web/progressive-web-apps/checklist)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen]"
+  },
+  "lighthouse-core/config/default-config.js | pwaCategoryManualDescription": {
+    "message": "[Ţĥéšé çĥéçķš åŕé ŕéqûîŕéð бý ţĥé бåšéļîñé ᐅ[ᐊÞŴÅ Çĥéçķļîšţᐅ](https://developers.google.com/web/progressive-web-apps/checklist)ᐊ бûţ åŕé ñöţ åûţömåţîçåļļý çĥéçķéð бý Ļîĝĥţĥöûšé. Ţĥéý ðö ñöţ åƒƒéçţ ýöûŕ šçöŕé бûţ îţ'š îmþöŕţåñţ ţĥåţ ýöû véŕîƒý ţĥém måñûåļļý. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix]"
+  },
+  "lighthouse-core/config/default-config.js | pwaCategoryTitle": {
+    "message": "[Þŕöĝŕéššîvé Ŵéб Åþþ one two three]"
+  },
+  "lighthouse-core/config/default-config.js | pwaFastReliableGroupTitle": {
+    "message": "[Fåšţ åñð ŕéļîåбļé one two three]"
+  },
+  "lighthouse-core/config/default-config.js | pwaInstallableGroupTitle": {
+    "message": "[Îñšţåļļåбļé one two]"
+  },
+  "lighthouse-core/config/default-config.js | pwaOptimizedGroupTitle": {
+    "message": "[ÞŴÅ Öþţîmîžéð one two]"
+  },
+  "lighthouse-core/config/default-config.js | seoCategoryDescription": {
+    "message": "[Ţĥéšé çĥéçķš éñšûŕé ţĥåţ ýöûŕ þåĝé îš öþţîmîžéð ƒöŕ šéåŕçĥ éñĝîñé ŕéšûļţš ŕåñķîñĝ. Ţĥéŕé åŕé åððîţîöñåļ ƒåçţöŕš Ļîĝĥţĥöûšé ðöéš ñöţ çĥéçķ ţĥåţ måý åƒƒéçţ ýöûŕ šéåŕçĥ ŕåñķîñĝ. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://support.google.com/webmasters/answer/35769)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix]"
+  },
+  "lighthouse-core/config/default-config.js | seoCategoryManualDescription": {
+    "message": "[Ŕûñ ţĥéšé åððîţîöñåļ våļîðåţöŕš öñ ýöûŕ šîţé ţö çĥéçķ åððîţîöñåļ ŠÉÖ бéšţ þŕåçţîçéš. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen]"
+  },
+  "lighthouse-core/config/default-config.js | seoCategoryTitle": {
+    "message": "[ŠÉÖ one]"
+  },
+  "lighthouse-core/config/default-config.js | seoContentGroupDescription": {
+    "message": "[Föŕmåţ ýöûŕ ĤŢMĻ îñ å ŵåý ţĥåţ éñåбļéš çŕåŵļéŕš ţö бéţţéŕ ûñðéŕšţåñð ýöûŕ åþþ’š çöñţéñţ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen]"
+  },
+  "lighthouse-core/config/default-config.js | seoContentGroupTitle": {
+    "message": "[Çöñţéñţ Бéšţ Þŕåçţîçéš one two three]"
+  },
+  "lighthouse-core/config/default-config.js | seoCrawlingGroupDescription": {
+    "message": "[Ţö åþþéåŕ îñ šéåŕçĥ ŕéšûļţš, çŕåŵļéŕš ñééð åççéšš ţö ýöûŕ åþþ. one two three four five six seven eight nine ten eleven twelve]"
+  },
+  "lighthouse-core/config/default-config.js | seoCrawlingGroupTitle": {
+    "message": "[Çŕåŵļîñĝ åñð Îñðéxîñĝ one two three]"
+  },
+  "lighthouse-core/config/default-config.js | seoMobileGroupDescription": {
+    "message": "[Måķé šûŕé ýöûŕ þåĝéš åŕé möбîļé ƒŕîéñðļý šö ûšéŕš ðöñ’ţ ĥåvé ţö þîñçĥ öŕ žööm îñ öŕðéŕ ţö ŕéåð ţĥé çöñţéñţ þåĝéš. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://developers.google.com/search/mobile-sites/)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty]"
+  },
+  "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
+    "message": "[Möбîļé Fŕîéñðļý one two]"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnCacheTTL": {
+    "message": "[Çåçĥé ŢŢĻ one two]"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnLocation": {
+    "message": "[Ļöçåţîöñ one]"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnName": {
+    "message": "[Ñåmé one]"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnRequests": {
+    "message": "[Ŕéqûéšţš one]"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnResourceType": {
+    "message": "[Ŕéšöûŕçé Ţýþé one two]"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnSize": {
+    "message": "[Šîžé one]"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnTimeSpent": {
+    "message": "[Ţîmé Šþéñţ one two]"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnTransferSize": {
+    "message": "[Ţŕåñšƒéŕ Šîžé one two]"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnURL": {
+    "message": "[ÛŔĻ one]"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnWastedBytes": {
+    "message": "[Þöţéñţîåļ Šåvîñĝš one two three]"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnWastedMs": {
+    "message": "[Þöţéñţîåļ Šåvîñĝš one two three]"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | displayValueByteSavings": {
+    "message": "[Þöţéñţîåļ šåvîñĝš öƒ ᐅ{wastedBytes, number, bytes}ᐊ ĶБ one two three four five six]"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | displayValueMsSavings": {
+    "message": "[Þöţéñţîåļ šåvîñĝš öƒ ᐅ{wastedMs, number, milliseconds}ᐊ mš one two three four five six]"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | documentResourceType": {
+    "message": "[Ðöçûméñţ one]"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | fontResourceType": {
+    "message": "[Föñţ one]"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | imageResourceType": {
+    "message": "[Îmåĝé one]"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | mediaResourceType": {
+    "message": "[Méðîå one]"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | ms": {
+    "message": "[ᐅ{timeInMs, number, milliseconds}ᐊ mš one two]"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | otherResourceType": {
+    "message": "[Öţĥéŕ one]"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | scriptResourceType": {
+    "message": "[Šçŕîþţ one]"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | seconds": {
+    "message": "[ᐅ{timeInMs, number, seconds}ᐊ š one two]"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | stylesheetResourceType": {
+    "message": "[Šţýļéšĥééţ one two]"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | thirdPartyResourceType": {
+    "message": "[Ţĥîŕð-þåŕţý one two]"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | totalResourceType": {
+    "message": "[Ţöţåļ one]"
+  },
+  "lighthouse-core/lib/lh-error.js | badTraceRecording": {
+    "message": "[Šöméţĥîñĝ ŵéñţ ŵŕöñĝ ŵîţĥ ŕéçöŕðîñĝ ţĥé ţŕåçé övéŕ ýöûŕ þåĝé ļöåð. Þļéåšé ŕûñ Ļîĝĥţĥöûšé åĝåîñ. (ᐅ{errorCode}ᐊ) one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen]"
+  },
+  "lighthouse-core/lib/lh-error.js | criTimeout": {
+    "message": "[Ţîméöûţ ŵåîţîñĝ ƒöŕ îñîţîåļ Ðéбûĝĝéŕ Þŕöţöçöļ çöññéçţîöñ. one two three four five six seven eight nine ten eleven twelve]"
+  },
+  "lighthouse-core/lib/lh-error.js | didntCollectScreenshots": {
+    "message": "[Çĥŕömé ðîðñ'ţ çöļļéçţ åñý šçŕééñšĥöţš ðûŕîñĝ ţĥé þåĝé ļöåð. Þļéåšé måķé šûŕé ţĥéŕé îš çöñţéñţ vîšîбļé öñ ţĥé þåĝé, åñð ţĥéñ ţŕý ŕé-ŕûññîñĝ Ļîĝĥţĥöûšé. (ᐅ{errorCode}ᐊ) one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree]"
+  },
+  "lighthouse-core/lib/lh-error.js | dnsFailure": {
+    "message": "[ÐÑŠ šéŕvéŕš çöûļð ñöţ ŕéšöļvé ţĥé þŕövîðéð ðömåîñ. one two three four five six seven eight nine ten eleven]"
+  },
+  "lighthouse-core/lib/lh-error.js | erroredRequiredArtifact": {
+    "message": "[Ŕéqûîŕéð ᐅ{artifactName}ᐊ ĝåţĥéŕéŕ éñçöûñţéŕéð åñ éŕŕöŕ: ᐅ{errorMessage}ᐊ one two three four five six seven eight nine ten]"
+  },
+  "lighthouse-core/lib/lh-error.js | internalChromeError": {
+    "message": "[Åñ îñţéŕñåļ Çĥŕömé éŕŕöŕ öççûŕŕéð. Þļéåšé ŕéšţåŕţ Çĥŕömé åñð ţŕý ŕé-ŕûññîñĝ Ļîĝĥţĥöûšé. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen]"
+  },
+  "lighthouse-core/lib/lh-error.js | missingRequiredArtifact": {
+    "message": "[Ŕéqûîŕéð ᐅ{artifactName}ᐊ ĝåţĥéŕéŕ ðîð ñöţ ŕûñ. one two three four five six seven]"
+  },
+  "lighthouse-core/lib/lh-error.js | pageLoadFailed": {
+    "message": "[Ļîĝĥţĥöûšé ŵåš ûñåбļé ţö ŕéļîåбļý ļöåð ţĥé þåĝé ýöû ŕéqûéšţéð. Måķé šûŕé ýöû åŕé ţéšţîñĝ ţĥé çöŕŕéçţ ÛŔĻ åñð ţĥåţ ţĥé šéŕvéŕ îš þŕöþéŕļý ŕéšþöñðîñĝ ţö åļļ ŕéqûéšţš. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree]"
+  },
+  "lighthouse-core/lib/lh-error.js | pageLoadFailedHung": {
+    "message": "[Ļîĝĥţĥöûšé ŵåš ûñåбļé ţö ŕéļîåбļý ļöåð ţĥé ÛŔĻ ýöû ŕéqûéšţéð бéçåûšé ţĥé þåĝé šţöþþéð ŕéšþöñðîñĝ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen]"
+  },
+  "lighthouse-core/lib/lh-error.js | pageLoadFailedInsecure": {
+    "message": "[Ţĥé ÛŔĻ ýöû ĥåvé þŕövîðéð ðöéš ñöţ ĥåvé å våļîð šéçûŕîţý çéŕţîƒîçåţé. ᐅ{securityMessages}ᐊ one two three four five six seven eight nine ten eleven twelve thirteen fourteen]"
+  },
+  "lighthouse-core/lib/lh-error.js | pageLoadFailedInterstitial": {
+    "message": "[Çĥŕömé þŕévéñţéð þåĝé ļöåð ŵîţĥ åñ îñţéŕšţîţîåļ. Måķé šûŕé ýöû åŕé ţéšţîñĝ ţĥé çöŕŕéçţ ÛŔĻ åñð ţĥåţ ţĥé šéŕvéŕ îš þŕöþéŕļý ŕéšþöñðîñĝ ţö åļļ ŕéqûéšţš. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo]"
+  },
+  "lighthouse-core/lib/lh-error.js | pageLoadFailedWithDetails": {
+    "message": "[Ļîĝĥţĥöûšé ŵåš ûñåбļé ţö ŕéļîåбļý ļöåð ţĥé þåĝé ýöû ŕéqûéšţéð. Måķé šûŕé ýöû åŕé ţéšţîñĝ ţĥé çöŕŕéçţ ÛŔĻ åñð ţĥåţ ţĥé šéŕvéŕ îš þŕöþéŕļý ŕéšþöñðîñĝ ţö åļļ ŕéqûéšţš. (Ðéţåîļš: ᐅ{errorDetails}ᐊ) one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive]"
+  },
+  "lighthouse-core/lib/lh-error.js | pageLoadFailedWithStatusCode": {
+    "message": "[Ļîĝĥţĥöûšé ŵåš ûñåбļé ţö ŕéļîåбļý ļöåð ţĥé þåĝé ýöû ŕéqûéšţéð. Måķé šûŕé ýöû åŕé ţéšţîñĝ ţĥé çöŕŕéçţ ÛŔĻ åñð ţĥåţ ţĥé šéŕvéŕ îš þŕöþéŕļý ŕéšþöñðîñĝ ţö åļļ ŕéqûéšţš. (Šţåţûš çöðé: ᐅ{statusCode}ᐊ) one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive]"
+  },
+  "lighthouse-core/lib/lh-error.js | pageLoadTookTooLong": {
+    "message": "[Ýöûŕ þåĝé ţööķ ţöö ļöñĝ ţö ļöåð. Þļéåšé ƒöļļöŵ ţĥé öþþöŕţûñîţîéš îñ ţĥé ŕéþöŕţ ţö ŕéðûçé ýöûŕ þåĝé ļöåð ţîmé, åñð ţĥéñ ţŕý ŕé-ŕûññîñĝ Ļîĝĥţĥöûšé. (ᐅ{errorCode}ᐊ) one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo]"
+  },
+  "lighthouse-core/lib/lh-error.js | protocolTimeout": {
+    "message": "[Ŵåîţîñĝ ƒöŕ ÐévŢööļš þŕöţöçöļ ŕéšþöñšé ĥåš éxçééðéð ţĥé åļļöţţéð ţîmé. (Méţĥöð: ᐅ{protocolMethod}ᐊ) one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen]"
+  },
+  "lighthouse-core/lib/lh-error.js | requestContentTimeout": {
+    "message": "[Féţçĥîñĝ ŕéšöûŕçé çöñţéñţ ĥåš éxçééðéð ţĥé åļļöţţéð ţîmé one two three four five six seven eight nine ten eleven]"
+  },
+  "lighthouse-core/lib/lh-error.js | urlInvalid": {
+    "message": "[Ţĥé ÛŔĻ ýöû ĥåvé þŕövîðéð åþþéåŕš ţö бé îñvåļîð. one two three four five six seven eight nine ten]"
+  },
+  "lighthouse-core/report/html/renderer/util.js | auditGroupExpandTooltip": {
+    "message": "[Šĥöŵ åûðîţš one two]"
+  },
+  "lighthouse-core/report/html/renderer/util.js | crcInitialNavigation": {
+    "message": "[Îñîţîåļ Ñåvîĝåţîöñ one two three]"
+  },
+  "lighthouse-core/report/html/renderer/util.js | crcLongestDurationLabel": {
+    "message": "[Måxîmûm çŕîţîçåļ þåţĥ ļåţéñçý: one two three four five six seven]"
+  },
+  "lighthouse-core/report/html/renderer/util.js | errorLabel": {
+    "message": "[Éŕŕöŕ¡ one]"
+  },
+  "lighthouse-core/report/html/renderer/util.js | errorMissingAuditInfo": {
+    "message": "[Ŕéþöŕţ éŕŕöŕ: ñö åûðîţ îñƒöŕmåţîöñ one two three four five six seven]"
+  },
+  "lighthouse-core/report/html/renderer/util.js | labDataTitle": {
+    "message": "[Ļåб Ðåţå one]"
+  },
+  "lighthouse-core/report/html/renderer/util.js | lsPerformanceCategoryDescription": {
+    "message": "[ᐅ[ᐊĻîĝĥţĥöûšéᐅ](https://developers.google.com/web/tools/lighthouse/)ᐊ åñåļýšîš öƒ ţĥé çûŕŕéñţ þåĝé öñ åñ émûļåţéð möбîļé ñéţŵöŕķ. Våļûéš åŕé éšţîmåţéð åñð måý våŕý. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen]"
+  },
+  "lighthouse-core/report/html/renderer/util.js | manualAuditsGroupTitle": {
+    "message": "[Åððîţîöñåļ îţémš ţö måñûåļļý çĥéçķ one two three four five six seven]"
+  },
+  "lighthouse-core/report/html/renderer/util.js | notApplicableAuditsGroupTitle": {
+    "message": "[Ñöţ åþþļîçåбļé one two]"
+  },
+  "lighthouse-core/report/html/renderer/util.js | opportunityResourceColumnLabel": {
+    "message": "[Öþþöŕţûñîţý one two]"
+  },
+  "lighthouse-core/report/html/renderer/util.js | opportunitySavingsColumnLabel": {
+    "message": "[Éšţîmåţéð Šåvîñĝš one two three]"
+  },
+  "lighthouse-core/report/html/renderer/util.js | passedAuditsGroupTitle": {
+    "message": "[Þåššéð åûðîţš one two]"
+  },
+  "lighthouse-core/report/html/renderer/util.js | snippetCollapseButtonLabel": {
+    "message": "[Çöļļåþšé šñîþþéţ one two]"
+  },
+  "lighthouse-core/report/html/renderer/util.js | snippetExpandButtonLabel": {
+    "message": "[Éxþåñð šñîþþéţ one two]"
+  },
+  "lighthouse-core/report/html/renderer/util.js | thirdPartyResourcesLabel": {
+    "message": "[Šĥöŵ 3ŕð-þåŕţý ŕéšöûŕçéš one two three]"
+  },
+  "lighthouse-core/report/html/renderer/util.js | toplevelWarningsMessage": {
+    "message": "[Ţĥéŕé ŵéŕé îššûéš åƒƒéçţîñĝ ţĥîš ŕûñ öƒ Ļîĝĥţĥöûšé: one two three four five six seven eight nine ten eleven]"
+  },
+  "lighthouse-core/report/html/renderer/util.js | varianceDisclaimer": {
+    "message": "[Våļûéš åŕé éšţîmåţéð åñð måý våŕý. Ţĥé þéŕƒöŕmåñçé šçöŕé îš ᐅ[ᐊбåšéð öñļý öñ ţĥéšé méţŕîçšᐅ](https://github.com/GoogleChrome/lighthouse/blob/d2ec9ffbb21de9ad1a0f86ed24575eda32c796f0/docs/scoring.md#how-are-the-scores-weighted)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen]"
+  },
+  "lighthouse-core/report/html/renderer/util.js | warningAuditsGroupTitle": {
+    "message": "[Þåššéð åûðîţš бûţ ŵîţĥ ŵåŕñîñĝš one two three four five six seven]"
+  },
+  "lighthouse-core/report/html/renderer/util.js | warningHeader": {
+    "message": "[Ŵåŕñîñĝš:  one two]"
+  },
+  "stack-packs/packs/wordpress.js | efficient_animated_content": {
+    "message": "[Çöñšîðéŕ ûþļöåðîñĝ ýöûŕ ĜÎF ţö å šéŕvîçé ŵĥîçĥ ŵîļļ måķé îţ åvåîļåбļé ţö émбéð åš åñ ĤŢMĻ5 vîðéö. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen]"
+  },
+  "stack-packs/packs/wordpress.js | offscreen_images": {
+    "message": "[Îñšţåļļ å ᐅ[ᐊļåžý-ļöåð ŴöŕðÞŕéšš þļûĝîñᐅ](https://wordpress.org/plugins/search/lazy+load/)ᐊ ţĥåţ þŕövîðéš ţĥé åбîļîţý ţö ðéƒéŕ åñý öƒƒšçŕééñ îmåĝéš, öŕ šŵîţçĥ ţö å ţĥémé ţĥåţ þŕövîðéš ţĥåţ ƒûñçţîöñåļîţý. Åļšö çöñšîðéŕ ûšîñĝ ᐅ[ᐊţĥé ÅMÞ þļûĝîñᐅ](https://wordpress.org/plugins/amp/)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix]"
+  },
+  "stack-packs/packs/wordpress.js | render_blocking_resources": {
+    "message": "[Ţĥéŕé åŕé å ñûmбéŕ öƒ ŴöŕðÞŕéšš þļûĝîñš ţĥåţ çåñ ĥéļþ ýöû ᐅ[ᐊîñļîñé çŕîţîçåļ åššéţšᐅ](https://wordpress.org/plugins/search/critical+css/)ᐊ öŕ ᐅ[ᐊðéƒéŕ ļéšš îmþöŕţåñţ ŕéšöûŕçéšᐅ](https://wordpress.org/plugins/search/defer+css+javascript/)ᐊ. Бéŵåŕé ţĥåţ öþţîmîžåţîöñš þŕövîðéð бý ţĥéšé þļûĝîñš måý бŕéåķ ƒéåţûŕéš öƒ ýöûŕ ţĥémé öŕ þļûĝîñš, šö ýöû ŵîļļ ļîķéļý ñééð ţö måķé çöðé çĥåñĝéš. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix twentyseven twentyeight twentynine thirty thirtyone thirtytwo thirtythree]"
+  },
+  "stack-packs/packs/wordpress.js | time_to_first_byte": {
+    "message": "[Ţĥéméš, þļûĝîñš, åñð šéŕvéŕ šþéçîƒîçåţîöñš åļļ çöñţŕîбûţé ţö šéŕvéŕ ŕéšþöñšé ţîmé. Çöñšîðéŕ ƒîñðîñĝ å möŕé öþţîmîžéð ţĥémé, çåŕéƒûļļý šéļéçţîñĝ åñ öþţîmîžåţîöñ þļûĝîñ, åñð/öŕ ûþĝŕåðîñĝ ýöûŕ šéŕvéŕ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix twentyseven]"
+  },
+  "stack-packs/packs/wordpress.js | total_byte_weight": {
+    "message": "[Çöñšîðéŕ šĥöŵîñĝ éxçéŕþţš îñ ýöûŕ þöšţ ļîšţš (é.ĝ. vîå ţĥé möŕé ţåĝ), ŕéðûçîñĝ ţĥé ñûmбéŕ öƒ þöšţš šĥöŵñ öñ å ĝîvéñ þåĝé, бŕéåķîñĝ ýöûŕ ļöñĝ þöšţš îñţö mûļţîþļé þåĝéš, öŕ ûšîñĝ å þļûĝîñ ţö ļåžý-ļöåð çömméñţš. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix twentyseven]"
+  },
+  "stack-packs/packs/wordpress.js | unminified_css": {
+    "message": "[Å ñûmбéŕ öƒ ᐅ[ᐊŴöŕðÞŕéšš þļûĝîñšᐅ](https://wordpress.org/plugins/search/minify+css/)ᐊ çåñ šþééð ûþ ýöûŕ šîţé бý çöñçåţéñåţîñĝ, mîñîƒýîñĝ, åñð çömþŕéššîñĝ ýöûŕ šţýļéš. Ýöû måý åļšö ŵåñţ ţö ûšé å бûîļð þŕöçéšš ţö ðö ţĥîš mîñîƒîçåţîöñ ûþ-ƒŕöñţ îƒ þöššîбļé. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix twentyseven]"
+  },
+  "stack-packs/packs/wordpress.js | unminified_javascript": {
+    "message": "[Å ñûmбéŕ öƒ ᐅ[ᐊŴöŕðÞŕéšš þļûĝîñšᐅ](https://wordpress.org/plugins/search/minify+javascript/)ᐊ çåñ šþééð ûþ ýöûŕ šîţé бý çöñçåţéñåţîñĝ, mîñîƒýîñĝ, åñð çömþŕéššîñĝ ýöûŕ šçŕîþţš. Ýöû måý åļšö ŵåñţ ţö ûšé å бûîļð þŕöçéšš ţö ðö ţĥîš mîñîƒîçåţîöñ ûþ ƒŕöñţ îƒ þöššîбļé. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix twentyseven]"
+  },
+  "stack-packs/packs/wordpress.js | unused_css_rules": {
+    "message": "[Çöñšîðéŕ ŕéðûçîñĝ, öŕ šŵîţçĥîñĝ, ţĥé ñûmбéŕ öƒ ᐅ[ᐊŴöŕðÞŕéšš þļûĝîñšᐅ](https://wordpress.org/plugins/)ᐊ ļöåðîñĝ ûñûšéð ÇŠŠ îñ ýöûŕ þåĝé. Ţö îðéñţîƒý þļûĝîñš ţĥåţ åŕé åððîñĝ éxţŕåñéöûš ÇŠŠ, ţŕý ŕûññîñĝ ᐅ[ᐊçöðé çövéŕåĝéᐅ](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage)ᐊ îñ Çĥŕömé ÐévŢööļš. Ýöû çåñ îðéñţîƒý ţĥé ţĥémé/þļûĝîñ ŕéšþöñšîбļé ƒŕöm ţĥé ÛŔĻ öƒ ţĥé šţýļéšĥééţ. Ļööķ öûţ ƒöŕ þļûĝîñš ţĥåţ ĥåvé måñý šţýļéšĥééţš îñ ţĥé ļîšţ ŵĥîçĥ ĥåvé å ļöţ öƒ ŕéð îñ çöðé çövéŕåĝé. Å þļûĝîñ šĥöûļð öñļý éñqûéûé å šţýļéšĥééţ îƒ îţ îš åçţûåļļý ûšéð öñ ţĥé þåĝé. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix twentyseven twentyeight twentynine thirty thirtyone thirtytwo thirtythree thirtyfour thirtyfive thirtysix thirtyseven thirtyeight thirtynine forty one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen]"
+  },
+  "stack-packs/packs/wordpress.js | unused_javascript": {
+    "message": "[Çöñšîðéŕ ŕéðûçîñĝ, öŕ šŵîţçĥîñĝ, ţĥé ñûmбéŕ öƒ ᐅ[ᐊŴöŕðÞŕéšš þļûĝîñšᐅ](https://wordpress.org/plugins/)ᐊ ļöåðîñĝ ûñûšéð ĴåvåŠçŕîþţ îñ ýöûŕ þåĝé. Ţö îðéñţîƒý þļûĝîñš ţĥåţ åŕé åððîñĝ éxţŕåñéöûš ĴŠ, ţŕý ŕûññîñĝ ᐅ[ᐊçöðé çövéŕåĝéᐅ](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage)ᐊ îñ Çĥŕömé ÐévŢööļš. Ýöû çåñ îðéñţîƒý ţĥé ţĥémé/þļûĝîñ ŕéšþöñšîбļé ƒŕöm ţĥé ÛŔĻ öƒ ţĥé šçŕîþţ. Ļööķ öûţ ƒöŕ þļûĝîñš ţĥåţ ĥåvé måñý šçŕîþţš îñ ţĥé ļîšţ ŵĥîçĥ ĥåvé å ļöţ öƒ ŕéð îñ çöðé çövéŕåĝé. Å þļûĝîñ šĥöûļð öñļý éñqûéûé å šçŕîþţ îƒ îţ îš åçţûåļļý ûšéð öñ ţĥé þåĝé. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix twentyseven twentyeight twentynine thirty thirtyone thirtytwo thirtythree thirtyfour thirtyfive thirtysix thirtyseven thirtyeight thirtynine forty one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen]"
+  },
+  "stack-packs/packs/wordpress.js | uses_long_cache_ttl": {
+    "message": "[Ŕéåð åбöûţ ᐅ[ᐊБŕöŵšéŕ Çåçĥîñĝ îñ ŴöŕðÞŕéššᐅ](https://codex.wordpress.org/WordPress_Optimization#Browser_Caching)ᐊ. one two three four five six seven eight nine ten]"
+  },
+  "stack-packs/packs/wordpress.js | uses_optimized_images": {
+    "message": "[Çöñšîðéŕ ûšîñĝ åñ ᐅ[ᐊîmåĝé öþţîmîžåţîöñ ŴöŕðÞŕéšš þļûĝîñᐅ](https://wordpress.org/plugins/search/optimize+images/)ᐊ ţĥåţ çömþŕéššéš ýöûŕ îmåĝéš ŵĥîļé ŕéţåîñîñĝ qûåļîţý. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen]"
+  },
+  "stack-packs/packs/wordpress.js | uses_responsive_images": {
+    "message": "[Ûþļöåð îmåĝéš ðîŕéçţļý ţĥŕöûĝĥ ţĥé ᐅ[ᐊméðîå ļîбŕåŕýᐅ](https://codex.wordpress.org/Media_Library_Screen)ᐊ ţö éñšûŕé ţĥåţ ţĥé ŕéqûîŕéð îmåĝé šîžéš åŕé åvåîļåбļé, åñð ţĥéñ îñšéŕţ ţĥém ƒŕöm ţĥé méðîå ļîбŕåŕý öŕ ûšé ţĥé îmåĝé ŵîðĝéţ ţö éñšûŕé ţĥé öþţîmåļ îmåĝé šîžéš åŕé ûšéð (îñçļûðîñĝ ţĥöšé ƒöŕ ţĥé ŕéšþöñšîvé бŕéåķþöîñţš). Åvöîð ûšîñĝ ᐅ`Full Size`ᐊ îmåĝéš ûñļéšš ţĥé ðîméñšîöñš åŕé åðéqûåţé ƒöŕ ţĥéîŕ ûšåĝé. ᐅ[ᐊĻéåŕñ Möŕéᐅ](https://codex.wordpress.org/Inserting_Images_into_Posts_and_Pages#Image_Size)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix twentyseven twentyeight twentynine thirty thirtyone thirtytwo thirtythree thirtyfour thirtyfive thirtysix thirtyseven thirtyeight thirtynine forty one two three four five]"
+  },
+  "stack-packs/packs/wordpress.js | uses_text_compression": {
+    "message": "[Ýöû çåñ éñåбļé ţéxţ çömþŕéššîöñ îñ ýöûŕ ŵéб šéŕvéŕ çöñƒîĝûŕåţîöñ. one two three four five six seven eight nine ten eleven twelve thirteen]"
+  },
+  "stack-packs/packs/wordpress.js | uses_webp_images": {
+    "message": "[Çöñšîðéŕ ûšîñĝ å ᐅ[ᐊþļûĝîñᐅ](https://wordpress.org/plugins/search/convert+webp/)ᐊ öŕ šéŕvîçé ţĥåţ ŵîļļ åûţömåţîçåļļý çöñvéŕţ ýöûŕ ûþļöåðéð îmåĝéš ţö ţĥé öþţîmåļ ƒöŕmåţš. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen]"
+  }
+}

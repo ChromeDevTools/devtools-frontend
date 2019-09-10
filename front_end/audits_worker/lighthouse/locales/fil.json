@@ -1,0 +1,1541 @@
+{
+  "lighthouse-core/audits/accessibility/accesskeys.js | description": {
+    "message": "Hinahayaan ng mga access key ang mga user na mabilis na makatuon sa isang bahagi ng page. Para sa maayos na navigation, natatangi dapat ang bawat access key. [Matuto pa](https://web.dev/accesskeys/)."
+  },
+  "lighthouse-core/audits/accessibility/accesskeys.js | failureTitle": {
+    "message": "Hindi natatangi ang mga value na `[accesskey]`"
+  },
+  "lighthouse-core/audits/accessibility/accesskeys.js | title": {
+    "message": "Natatangi ang mga value ng `[accesskey]`"
+  },
+  "lighthouse-core/audits/accessibility/aria-allowed-attr.js | description": {
+    "message": "Sinusuportahan ng bawat `role` ng ARIA ang isang partikular na subset ng mga attribute na `aria-*`. Kapag hindi pinagtugma ang mga ito, magiging invalid ang mga attribute na `aria-*`. [Matuto pa](https://web.dev/aria-allowed-attr/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-allowed-attr.js | failureTitle": {
+    "message": "Hindi tumutugma ang mga attribute na `[aria-*]` sa mga tungkulin ng mga ito"
+  },
+  "lighthouse-core/audits/accessibility/aria-allowed-attr.js | title": {
+    "message": "Tumutugma ang mga attribute na `[aria-*]` sa mga tungkulin ng mga ito"
+  },
+  "lighthouse-core/audits/accessibility/aria-required-attr.js | description": {
+    "message": "Ang ilang tungkulin ng ARIA ay may mga kinakailangang attribute na naglalarawan sa status ng element sa mga screen reader. [Matuto pa](https://web.dev/aria-required-attr/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-required-attr.js | failureTitle": {
+    "message": "May mga kulang na kinakailangang attribute na `[aria-*]` ang mga `[role]`"
+  },
+  "lighthouse-core/audits/accessibility/aria-required-attr.js | title": {
+    "message": "Mayroon ng lahat ng kinakailangang attribute na `[aria-*]` ang mga `[role]`"
+  },
+  "lighthouse-core/audits/accessibility/aria-required-children.js | description": {
+    "message": "Dapat maglaman ang ilang parent role ng ARIA ng mga partikular na child role para maisagawa nito ang mga nilalayong function sa pagiging accessible. [Matuto pa](https://web.dev/aria-required-children/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-required-children.js | failureTitle": {
+    "message": "Nawawala ang mga element na may `[role]` na nangangailangan ng mga partikular na child `[role]`."
+  },
+  "lighthouse-core/audits/accessibility/aria-required-children.js | title": {
+    "message": "May mga element na may `[role]` na nangangailangan ng mga partikular na child `[role]`"
+  },
+  "lighthouse-core/audits/accessibility/aria-required-parent.js | description": {
+    "message": "Ang ilang child role ng ARIA ay laman dapat ng mga partikular na parent role para maayos na maisagawa ang mga nilalayong function sa pagiging accessible. [Matuto pa](https://web.dev/aria-required-parent/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-required-parent.js | failureTitle": {
+    "message": "Hindi nakapaloob ang mga `[role]` sa kinakailangang parent element ng mga ito"
+  },
+  "lighthouse-core/audits/accessibility/aria-required-parent.js | title": {
+    "message": "Nakapaloob ang mga `[role]` sa kinakailangang pangunahing element ng mga ito"
+  },
+  "lighthouse-core/audits/accessibility/aria-roles.js | description": {
+    "message": "Dapat ay may mga valid na value ang mga tungkulin ng ARIA para maisagawa ang mga nilalayong function sa pagiging accessible. [Matuto pa](https://web.dev/aria-roles/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-roles.js | failureTitle": {
+    "message": "Hindi valid ang mga value ng `[role]`"
+  },
+  "lighthouse-core/audits/accessibility/aria-roles.js | title": {
+    "message": "Valid ang mga value ng `[role]`"
+  },
+  "lighthouse-core/audits/accessibility/aria-valid-attr-value.js | description": {
+    "message": "Hindi mauunawaan ng mga nakakatulong na teknolohiya, gaya ng mga screen reader, ang mga attribute ng ARIA na may mga invalid na value. [Matuto pa](https://web.dev/aria-valid-attr-value/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-valid-attr-value.js | failureTitle": {
+    "message": "Walang valid na value ang mga attribute na`[aria-*]`"
+  },
+  "lighthouse-core/audits/accessibility/aria-valid-attr-value.js | title": {
+    "message": "May valid na value ang mga attribute na `[aria-*]`"
+  },
+  "lighthouse-core/audits/accessibility/aria-valid-attr.js | description": {
+    "message": "Hindi mauunawaan ng mga nakakatulong na teknolohiya, gaya ng mga screen reader, ang mga attribute ng ARIA na may mga invalid na pangalan. [Matuto pa](https://web.dev/aria-valid-attr/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-valid-attr.js | failureTitle": {
+    "message": "Hindi valid o hindi mali ang spelling ng mga attribute na `[aria-*]`"
+  },
+  "lighthouse-core/audits/accessibility/aria-valid-attr.js | title": {
+    "message": "Valid at hindi mali ang spelling ng mga attribute na `[aria-*]`"
+  },
+  "lighthouse-core/audits/accessibility/audio-caption.js | description": {
+    "message": "Ginagawang kapaki-pakinabang ng mga caption ang mga element ng audio para sa mga user na bingi o may problema sa pandinig, nagbibigay ng mahalagang impormasyon gaya ng kung sino ang nagsasalita, ano ang kanilang sinasabi, at iba pang hindi binibigkas na impormasyon. [Matuto pa](https://web.dev/audio-caption/)."
+  },
+  "lighthouse-core/audits/accessibility/audio-caption.js | failureTitle": {
+    "message": "May kulang na element na `<track>` na may `[kind=\"captions\"]` ang mga element na `<audio>`"
+  },
+  "lighthouse-core/audits/accessibility/audio-caption.js | title": {
+    "message": "Naglalaman ng element na `<track>` na may `[kind=\"captions\"]` ang mga element na `<audio>`"
+  },
+  "lighthouse-core/audits/accessibility/axe-audit.js | failingElementsHeader": {
+    "message": "Mga Hindi Nakapasang Element"
+  },
+  "lighthouse-core/audits/accessibility/button-name.js | description": {
+    "message": "Kapag walang naa-access na pangalan ang isang button, iaanunsyo ito ng mga screen reader bilang \"button,\" kaya naman hindi ito magagamit ng mga user na umaasa sa mga screen reader. [Matuto pa](https://web.dev/button-name/)."
+  },
+  "lighthouse-core/audits/accessibility/button-name.js | failureTitle": {
+    "message": "Walang naa-access na pangalan ang mga button"
+  },
+  "lighthouse-core/audits/accessibility/button-name.js | title": {
+    "message": "May naa-access na pangalan ang mga button"
+  },
+  "lighthouse-core/audits/accessibility/bypass.js | description": {
+    "message": "Kapag nagdagdag ng mga paraan para i-bypass ang paulit-ulit na content, mas madaling makakapag-navigate sa page ang mga user ng keyboard. [Matuto pa](https://web.dev/bypass/)."
+  },
+  "lighthouse-core/audits/accessibility/bypass.js | failureTitle": {
+    "message": "Walang heading, link ng paglaktaw, o rehiyon ng landmark ang page"
+  },
+  "lighthouse-core/audits/accessibility/bypass.js | title": {
+    "message": "Ang page ay naglalaman ng heading, link ng paglaktaw, o rehiyon ng landmark"
+  },
+  "lighthouse-core/audits/accessibility/color-contrast.js | description": {
+    "message": "Mahirap o imposibleng mabasa ng maraming user ang text na mababa ang contrast. [Matuto pa](https://web.dev/color-contrast/)."
+  },
+  "lighthouse-core/audits/accessibility/color-contrast.js | failureTitle": {
+    "message": "Kulang ang ratio ng contrast ng mga kulay ng background at foreground."
+  },
+  "lighthouse-core/audits/accessibility/color-contrast.js | title": {
+    "message": "May sapat na ratio ng contrast ang mga kulay ng background at foreground"
+  },
+  "lighthouse-core/audits/accessibility/definition-list.js | description": {
+    "message": "Kapag hindi naka-mark up nang maayos ang mga listahan ng kahulugan, puwedeng gumawa ng nakakalito o hindi tumpak na output ang mga screen reader. [Matuto pa](https://web.dev/definition-list/)."
+  },
+  "lighthouse-core/audits/accessibility/definition-list.js | failureTitle": {
+    "message": "Hindi naglalaman ang `<dl>` ng mga nakaayos lang na pangkat na `<dt>` at `<dd>`, mga element na `<script>` o `<template>`."
+  },
+  "lighthouse-core/audits/accessibility/definition-list.js | title": {
+    "message": "Naglalaman ang `<dl>` ng mga nakaayos lang na `<dt>` at mga `<dd>` na pangkat, `<script>` o mga `<template>` na element."
+  },
+  "lighthouse-core/audits/accessibility/dlitem.js | description": {
+    "message": "Nakapaloob dapat ang mga item sa listahan ng kahulugan (`<dt>` at `<dd>`) sa isang parent element na `<dl>` para matiyak na maayos na maiaanunsyo ng mga screen reader ang mga ito. [Matuto pa](https://web.dev/dlitem/)."
+  },
+  "lighthouse-core/audits/accessibility/dlitem.js | failureTitle": {
+    "message": "Hindi nakapaloob sa mga element na `<dl>` ang mga item sa listahan ng kahulugan"
+  },
+  "lighthouse-core/audits/accessibility/dlitem.js | title": {
+    "message": "Nakapaloob sa mga element na `<dl>` ang mga item sa listahan ng kahulugan"
+  },
+  "lighthouse-core/audits/accessibility/document-title.js | description": {
+    "message": "Binibigyan ng pamagat ang mga user ng screen reader ng pangkalahatang-ideya ng page, at lubos na umaasa rito ang mga user ng search engine para matukoy kung may kaugnayan ang isang page sa kanilang paghahanap. [Matuto pa](https://web.dev/document-title/)."
+  },
+  "lighthouse-core/audits/accessibility/document-title.js | failureTitle": {
+    "message": "Walang element na `<title>` ang dokumento"
+  },
+  "lighthouse-core/audits/accessibility/document-title.js | title": {
+    "message": "May `<title>` na element ang dokumento"
+  },
+  "lighthouse-core/audits/accessibility/duplicate-id.js | description": {
+    "message": "Natatangi dapat ang value ng id attribute para hindi makaligtaan ng mga nakakatulong na teknolohiya ang iba pang instance. [Matuto pa](https://web.dev/duplicate-id/)."
+  },
+  "lighthouse-core/audits/accessibility/duplicate-id.js | failureTitle": {
+    "message": "Hindi natatangi ang mga attribute na `[id]`"
+  },
+  "lighthouse-core/audits/accessibility/duplicate-id.js | title": {
+    "message": "Natatangi ang mga attribute na `[id]` sa page"
+  },
+  "lighthouse-core/audits/accessibility/frame-title.js | description": {
+    "message": "Umaasa ang mga user ng screen reader sa mga pamagat ng frame para ilarawan ang mga content ng mga frame. [Matuto pa](https://web.dev/frame-title/)."
+  },
+  "lighthouse-core/audits/accessibility/frame-title.js | failureTitle": {
+    "message": "Walang pamagat ang mga element na`<frame>` o `<iframe>`"
+  },
+  "lighthouse-core/audits/accessibility/frame-title.js | title": {
+    "message": "May pamagat ang mga elemento na`<frame>` o `<iframe>`"
+  },
+  "lighthouse-core/audits/accessibility/html-has-lang.js | description": {
+    "message": "Kung hindi tutukoy ng lang attribute ang isang page, ipagpapalagay ng screen reader na ang page ay nasa default na wikang pinili ng user noong sine-set up ang screen reader. Kung wala talaga sa default na wika ang page, puwedeng hindi maianunsyo nang tama ng screen reader ang text ng page. [Matuto pa](https://web.dev/html-has-lang/)."
+  },
+  "lighthouse-core/audits/accessibility/html-has-lang.js | failureTitle": {
+    "message": "Walang attribute na `[lang]` ang element na `<html>`"
+  },
+  "lighthouse-core/audits/accessibility/html-has-lang.js | title": {
+    "message": "Ang `<html>` na element ay may attribute na `[lang]`"
+  },
+  "lighthouse-core/audits/accessibility/html-lang-valid.js | description": {
+    "message": "Ang pagtukoy ng valid na [wika ng BCP 47](https://www.w3.org/International/questions/qa-choosing-language-tags#question) ay nakakatulong na maianunsyo nang maayos ang text. [Matuto pa](https://web.dev/html-lang-valid/)."
+  },
+  "lighthouse-core/audits/accessibility/html-lang-valid.js | failureTitle": {
+    "message": "Walang valid na value ang element na `<html>` para sa attribute nitong `[lang]`."
+  },
+  "lighthouse-core/audits/accessibility/html-lang-valid.js | title": {
+    "message": "May valid na value ang element na `<html>` para sa `[lang]` na attribute nito"
+  },
+  "lighthouse-core/audits/accessibility/image-alt.js | description": {
+    "message": "Layunin dapat ng mga nagbibigay-impormasyong element na magkaroon ng maikli at naglalarawang alternatibong text. Puwedeng balewalain ang mga palamuting element sa pamamagitan ng walang lamang kahaliling attribute. [Matuto pa](https://web.dev/image-alt/)."
+  },
+  "lighthouse-core/audits/accessibility/image-alt.js | failureTitle": {
+    "message": "Walang attribute na `[alt]` ang mga element ng larawan"
+  },
+  "lighthouse-core/audits/accessibility/image-alt.js | title": {
+    "message": "May mga attribute na `[alt]` ang mga element na larawan"
+  },
+  "lighthouse-core/audits/accessibility/input-image-alt.js | description": {
+    "message": "Kapag gumagamit ng larawan bilang button na `<input>`, makakatulong sa mga user ng screen reader ang pagbibigay ng alternatibong text na maunawaan kung para saan ang button. [Matuto pa](https://web.dev/input-image-alt/)."
+  },
+  "lighthouse-core/audits/accessibility/input-image-alt.js | failureTitle": {
+    "message": "Walang text na `[alt]` ang mga element na `<input type=\"image\">`"
+  },
+  "lighthouse-core/audits/accessibility/input-image-alt.js | title": {
+    "message": "May text na `[alt]` ang mga element na `<input type=\"image\">`"
+  },
+  "lighthouse-core/audits/accessibility/label.js | description": {
+    "message": "Tinitiyak ng mga label na maayos na inaanunsyo ang mga kontrol ng form ng mga nakakatulong na teknolohiya, tulad ng mga screen reader. [Matuto pa](https://web.dev/label/)."
+  },
+  "lighthouse-core/audits/accessibility/label.js | failureTitle": {
+    "message": "Walang nauugnay na label ang mga element ng form"
+  },
+  "lighthouse-core/audits/accessibility/label.js | title": {
+    "message": "May mga nauugnay na label ang mga element ng form"
+  },
+  "lighthouse-core/audits/accessibility/layout-table.js | description": {
+    "message": "Dapat ay walang kasamang element ng data ang isang talahanayang ginagamit para sa mga layunin ng layout, gaya ng th o mga element ng caption o attribute ng buod, dahil puwede itong gumawa ng nakakalitong karanasan para sa mga user ng screen reader. [Matuto pa](https://web.dev/layout-table/)."
+  },
+  "lighthouse-core/audits/accessibility/layout-table.js | failureTitle": {
+    "message": "Hindi iniiwasan ng mga pang-presentation na element na `<table>` ang paggamit ng attribute na `<th>`, `<caption>` o `[summary]`."
+  },
+  "lighthouse-core/audits/accessibility/layout-table.js | title": {
+    "message": "Iniiwasan ng mga pang-presentation na element na `<table>` ang paggamit ng attribute na `<th>`, `<caption>` o `[summary]`."
+  },
+  "lighthouse-core/audits/accessibility/link-name.js | description": {
+    "message": "Pinapahusay ng text ng link (at alternatibong text para sa mga larawan, kapag ginamit bilang mga link) na nakikita, natatangi, at nafo-focus ang karanasan sa navigation para sa mga user ng screen reader. [Matuto pa](https://web.dev/link-name/)."
+  },
+  "lighthouse-core/audits/accessibility/link-name.js | failureTitle": {
+    "message": "Walang nakikitang pangalan ang mga link"
+  },
+  "lighthouse-core/audits/accessibility/link-name.js | title": {
+    "message": "May nakikitang pangalan ang mga link"
+  },
+  "lighthouse-core/audits/accessibility/list.js | description": {
+    "message": "May partikular na paraan ng pag-aanunsyo ng mga listahan ang mga screen reader. Makakatulong sa output ng screen reader ang pagtiyak na maayos ang istruktura ng listahan. [Matuto pa](https://web.dev/list/)."
+  },
+  "lighthouse-core/audits/accessibility/list.js | failureTitle": {
+    "message": "Hindi lang naglalaman ang listahan ng mga element na `<li>` at element na sumusuporta sa script (`<script>` at `<template>`)."
+  },
+  "lighthouse-core/audits/accessibility/list.js | title": {
+    "message": "Naglalaman lang ang mga listahan ng mga element na `<li>` at element na sumusuporta sa script (`<script>` at `<template>`)."
+  },
+  "lighthouse-core/audits/accessibility/listitem.js | description": {
+    "message": "Kailangang nakapaloob sa parent `<ul>` o `<ol>` ang mga item sa listahan `<li>` para maayos itong maianunsyo ng mga screen reader. [Matuto pa](https://web.dev/listitem/)."
+  },
+  "lighthouse-core/audits/accessibility/listitem.js | failureTitle": {
+    "message": "Hindi nakapaloob ang mga item sa listahan (`<li>`) sa mga parent element na `<ul>` o `<ol>`."
+  },
+  "lighthouse-core/audits/accessibility/listitem.js | title": {
+    "message": "Nakapaloob ang mga item sa listahan (`<li>`) sa mga pangunahing element na `<ul>` o `<ol>`"
+  },
+  "lighthouse-core/audits/accessibility/meta-refresh.js | description": {
+    "message": "Hindi inaasahan ng mga user na awtomatikong magre-refresh ang isang page, at babalik sa itaas ng page ang focus kapag ginawa ito. Puwede itong gumawa ng nakakainis o nakakalitong karanasan. [Matuto pa](https://web.dev/meta-refresh/)."
+  },
+  "lighthouse-core/audits/accessibility/meta-refresh.js | failureTitle": {
+    "message": "Gumagamit ng `<meta http-equiv=\"refresh\">` ang dokumento"
+  },
+  "lighthouse-core/audits/accessibility/meta-refresh.js | title": {
+    "message": "Hindi gumagamit ng `<meta http-equiv=\"refresh\">` ang dokumento"
+  },
+  "lighthouse-core/audits/accessibility/meta-viewport.js | description": {
+    "message": "Problema ang pag-disable ng pag-zoom para sa mga user na malabo ang paningin na umaasa sa pag-magnify ng screen para maayos na makita ang mga content ng isang web page. [Matuto pa](https://web.dev/meta-viewport/)."
+  },
+  "lighthouse-core/audits/accessibility/meta-viewport.js | failureTitle": {
+    "message": "Ginagamit ang `[user-scalable=\"no\"]` sa element na `<meta name=\"viewport\">` o `[maximum-scale]` na attribute na mas mababa sa 5."
+  },
+  "lighthouse-core/audits/accessibility/meta-viewport.js | title": {
+    "message": "Hindi ginagamit ang `[user-scalable=\"no\"]` sa element na `<meta name=\"viewport\">` at hindi mas mababa sa 5 ang attribute na `[maximum-scale]`."
+  },
+  "lighthouse-core/audits/accessibility/object-alt.js | description": {
+    "message": "Hindi makakapag-translate ng hindi text na content ang mga screen reader. Kapag nagdagdag ng alt text sa mga element na `<object>`, matutulungan ang mga screen reader sa pagpaparating ng kahulugan sa mga user. [Matuto pa](https://web.dev/object-alt/)."
+  },
+  "lighthouse-core/audits/accessibility/object-alt.js | failureTitle": {
+    "message": "Walang text na `[alt]` ang mga element na `<object>`"
+  },
+  "lighthouse-core/audits/accessibility/object-alt.js | title": {
+    "message": "May text na `[alt]` ang mga element na `<object>`"
+  },
+  "lighthouse-core/audits/accessibility/tabindex.js | description": {
+    "message": "Nagpapahiwatig ng tahasang pagsasaayos ng navigation ang value na mas mataas sa 0. Bagama't kung tutuusin ay valid ito, madalas itong nagdudulot ng mga nakakainis na karanasan para sa mga user na umaasa sa mga nakakatulong na teknolohiya. [Matuto pa](https://web.dev/tabindex/)."
+  },
+  "lighthouse-core/audits/accessibility/tabindex.js | failureTitle": {
+    "message": "Ang ilang element ay may value ng `[tabindex]` na mas mataas sa 0"
+  },
+  "lighthouse-core/audits/accessibility/tabindex.js | title": {
+    "message": "Walang element na may value na `[tabindex]` na mas mataas sa 0"
+  },
+  "lighthouse-core/audits/accessibility/td-headers-attr.js | description": {
+    "message": "May mga feature ang mga screen reader na mas nagpapadali ng pag-navigate sa mga talahanayan. Kapag tiniyak na ang mga cell na `<td>` na gumagamit sa attribute na `[headers]` ay tumutukoy lang sa iba pang cell sa talahanayang ding iyon, puwedeng mapaganda ang karanasan para sa mga user ng screen reader. [Matuto pa](https://web.dev/td-headers-attr/)."
+  },
+  "lighthouse-core/audits/accessibility/td-headers-attr.js | failureTitle": {
+    "message": "Tumutukoy sa iba pang cell sa kaparehong talahanayan ang mga cell sa isang element na `<table>` na gumagamit sa attribute na `[headers]`"
+  },
+  "lighthouse-core/audits/accessibility/td-headers-attr.js | title": {
+    "message": "Ang mga cell sa isang element na `<table>` na gumagamit sa attribute na `[headers]` ay tumutukoy lang sa iba pang cell sa talahanayang ding iyon."
+  },
+  "lighthouse-core/audits/accessibility/th-has-data-cells.js | description": {
+    "message": "May mga feature ang mga screen reader na mas nagpapadali ng pag-navigate sa mga talahanayan. Kapag tiniyak na ang mga header ng talahanayan ay tumutukoy sa ilang hanay ng mga cell, puwedeng mapahusay ang karanasan para sa mga user ng screen reader. [Matuto pa](https://web.dev/th-has-data-cells/)."
+  },
+  "lighthouse-core/audits/accessibility/th-has-data-cells.js | failureTitle": {
+    "message": "Ang mga element na `<th>` at element na may `[role=\"columnheader\"/\"rowheader\"]` ay walang cell ng data na inilalarawan ng mga ito."
+  },
+  "lighthouse-core/audits/accessibility/th-has-data-cells.js | title": {
+    "message": "May mga inilalarawang cell ng data ang mga element na `<th>` at element na may `[role=\"columnheader\"/\"rowheader\"]`."
+  },
+  "lighthouse-core/audits/accessibility/valid-lang.js | description": {
+    "message": "Ang pagtukoy ng valid na [wika ng BCP 47](https://www.w3.org/International/questions/qa-choosing-language-tags#question) sa mga element ay nakakatulong sa pagtiyak na tama ang pagbigkas ng screen reader sa text. [Matuto pa](https://web.dev/valid-lang/)."
+  },
+  "lighthouse-core/audits/accessibility/valid-lang.js | failureTitle": {
+    "message": "Walang valid na value ang mga attribute na `[lang]`"
+  },
+  "lighthouse-core/audits/accessibility/valid-lang.js | title": {
+    "message": "May valid na value ang mga attribute na `[lang]`"
+  },
+  "lighthouse-core/audits/accessibility/video-caption.js | description": {
+    "message": "Kapag nagbigay ng caption ang isang video, mas madaling maa-access ng mga user na bingi at may problema sa pandinig ang impormasyon nito. [Matuto pa](https://web.dev/video-caption/)."
+  },
+  "lighthouse-core/audits/accessibility/video-caption.js | failureTitle": {
+    "message": "Hindi naglalaman ng element na `<track>` na may `[kind=\"captions\"]` ang mga element na `<video>`"
+  },
+  "lighthouse-core/audits/accessibility/video-caption.js | title": {
+    "message": "Naglalaman ng element na `<track>` na may `[kind=\"captions\"]` ang mga element na `<video>`"
+  },
+  "lighthouse-core/audits/accessibility/video-description.js | description": {
+    "message": "Nagbibigay ang mga audio na paglalarawan ng may kaugnayang impormasyon para sa mga video na hindi magagawa ng dialogue, gaya ng mga expression ng mukha at eksena. [Matuto pa](https://web.dev/video-description/)."
+  },
+  "lighthouse-core/audits/accessibility/video-description.js | failureTitle": {
+    "message": "Hindi naglalaman ng element na `<track>` na may `[kind=\"description\"]` ang mga element na `<video>`"
+  },
+  "lighthouse-core/audits/accessibility/video-description.js | title": {
+    "message": "Naglalaman ng element na `<track>` na may `[kind=\"description\"]` ang mga element na `<video>`"
+  },
+  "lighthouse-core/audits/apple-touch-icon.js | description": {
+    "message": "Para sa magandang hitsura sa iOS kapag nagdagdag ang mga user ng progressive web app sa home screen, tumukoy ng isang `apple-touch-icon`. Dapat itong nakadirekta sa isang hindi transparent na kuwadradong 192px (o 180px) PNG. [Matuto Pa](https://developers.google.com/web/fundamentals/design-and-ux/browser-customization/)."
+  },
+  "lighthouse-core/audits/apple-touch-icon.js | failureTitle": {
+    "message": "Hindi nagbibigay ng valid na `apple-touch-icon`"
+  },
+  "lighthouse-core/audits/apple-touch-icon.js | precomposedWarning": {
+    "message": "Hindi napapanahon ang `apple-touch-icon-precomposed`; mas gusto ang `apple-touch-icon`."
+  },
+  "lighthouse-core/audits/apple-touch-icon.js | title": {
+    "message": "Nagbibigay ng valid na `apple-touch-icon`"
+  },
+  "lighthouse-core/audits/bootup-time.js | chromeExtensionsWarning": {
+    "message": "Nagkaroon ng negatibong epekto ang mga extension ng Chrome sa performance ng pag-load ng page na ito. Subukang i-audit ang page sa incognito mode o mula sa isang profile sa Chrome nang walang extension."
+  },
+  "lighthouse-core/audits/bootup-time.js | columnScriptEval": {
+    "message": "Pagsusuri ng Script"
+  },
+  "lighthouse-core/audits/bootup-time.js | columnScriptParse": {
+    "message": "Pag-parse ng Script"
+  },
+  "lighthouse-core/audits/bootup-time.js | columnTotal": {
+    "message": "Kabuuang Oras ng CPU"
+  },
+  "lighthouse-core/audits/bootup-time.js | description": {
+    "message": "Pag-isipang bawasan ang oras na ginugugol sa pag-parse, pag-compile, at pagpapagana ng JS. Puwedeng mapansin mong nakakatulong dito ang paghahatid ng mas maliliit na payload ng JS. [Matuto pa](https://developers.google.com/web/tools/lighthouse/audits/bootup)."
+  },
+  "lighthouse-core/audits/bootup-time.js | failureTitle": {
+    "message": "Pabilisin ang pagpapagana ng JavaScript"
+  },
+  "lighthouse-core/audits/bootup-time.js | title": {
+    "message": "Bilis ng pagpapagana ng JavaScript"
+  },
+  "lighthouse-core/audits/byte-efficiency/efficient-animated-content.js | description": {
+    "message": "Hindi mahusay ang malalaking GIF sa paghahatid ng animated na content. Pag-isipang gumamit ng mga MPEG4/WebM na video para sa mga animation at PNG/WebP para sa mga static na larawan sa halip na GIF para makatipid ng mga byte ng network. [Matuto pa](https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/replace-animated-gifs-with-video/)"
+  },
+  "lighthouse-core/audits/byte-efficiency/efficient-animated-content.js | title": {
+    "message": "Gumamit ng mga format ng video para sa animated na content"
+  },
+  "lighthouse-core/audits/byte-efficiency/offscreen-images.js | description": {
+    "message": "Pag-isipang i-lazy load ang mga larawang wala sa screen at nakatago kapag tapos nang mag-load ang lahat ng mahalagang resource para mapabilis ang oras bago maging interactive. [Matuto pa](https://developers.google.com/web/tools/lighthouse/audits/offscreen-images)."
+  },
+  "lighthouse-core/audits/byte-efficiency/offscreen-images.js | title": {
+    "message": "Ipagpaliban ang mga larawang wala sa screen"
+  },
+  "lighthouse-core/audits/byte-efficiency/render-blocking-resources.js | description": {
+    "message": "Bina-block ng mga resource ang first paint ng iyong page. Pag-isipang ihatid ang mahalagang JS/CSS inline at ipagpaliban ang lahat ng hindi mahalagang JS/istilo. [Matuto pa](https://developers.google.com/web/tools/lighthouse/audits/blocking-resources)."
+  },
+  "lighthouse-core/audits/byte-efficiency/render-blocking-resources.js | title": {
+    "message": "Alisin ang mga resource na nagba-block ng pag-render"
+  },
+  "lighthouse-core/audits/byte-efficiency/total-byte-weight.js | description": {
+    "message": "Napapagastos ang mga user sa malalaking payload ng network, at malaki ang kaugnayan ng mga ito sa matagal na pag-load. [Matuto pa](https://developers.google.com/web/tools/lighthouse/audits/network-payloads)."
+  },
+  "lighthouse-core/audits/byte-efficiency/total-byte-weight.js | displayValue": {
+    "message": "Ang kabuuang laki ay {totalBytes, number, bytes} KB"
+  },
+  "lighthouse-core/audits/byte-efficiency/total-byte-weight.js | failureTitle": {
+    "message": "Iwasan ang malalaking payload ng network"
+  },
+  "lighthouse-core/audits/byte-efficiency/total-byte-weight.js | title": {
+    "message": "Umiiwas sa malalaking payload ng network"
+  },
+  "lighthouse-core/audits/byte-efficiency/unminified-css.js | description": {
+    "message": "Puwedeng bawasan ng pagpapaliit ng mga file ng CSS ang laki ng payload ng network. [Matuto pa](https://developers.google.com/web/tools/lighthouse/audits/minify-css)."
+  },
+  "lighthouse-core/audits/byte-efficiency/unminified-css.js | title": {
+    "message": "Paliitin ang CSS"
+  },
+  "lighthouse-core/audits/byte-efficiency/unminified-javascript.js | description": {
+    "message": "Puwedeng bawasan ng pagpapaliit ng mga file ng JavaScript ang laki ng payload at oras ng pag-parse ng script. [Matuto pa](https://developers.google.com/speed/docs/insights/MinifyResources)."
+  },
+  "lighthouse-core/audits/byte-efficiency/unminified-javascript.js | title": {
+    "message": "Paliitin ang JavaScript"
+  },
+  "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | description": {
+    "message": "Alisin ang mga hindi na gumaganang panuntunan sa mga stylesheet at ipagpaliban ang pag-load ng CSS na hindi ginagamit para sa content sa itaas ng fold para mabawasan ang mga hindi kinakailangang byte na nakokonsumo ng aktibidad sa network. [Matuto pa](https://developers.google.com/web/tools/lighthouse/audits/unused-css)."
+  },
+  "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | title": {
+    "message": "Alisin ang hindi ginagamit na CSS"
+  },
+  "lighthouse-core/audits/byte-efficiency/unused-javascript.js | description": {
+    "message": "Alisin ang hindi nagamit na JavaScript para mabawasan ang mga byte na nakokonsumo ng aktibidad sa network."
+  },
+  "lighthouse-core/audits/byte-efficiency/unused-javascript.js | title": {
+    "message": "Alisin ang hindi nagamit na JavaScript"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-long-cache-ttl.js | description": {
+    "message": "Puwedeng mapabilis ng mahabang lifetime ng cache ang mga umuulit na pagbisita sa iyong page. [Matuto pa](https://developers.google.com/web/tools/lighthouse/audits/cache-policy)."
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-long-cache-ttl.js | displayValue": {
+    "message": "{itemCount,plural, =1{Nakakita ng 1 resource}one{Nakakita ng # resource}other{Nakakita ng # na resource}}"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-long-cache-ttl.js | failureTitle": {
+    "message": "Maghatid ng mga static na asset nang may mahusay na patakaran sa cache"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-long-cache-ttl.js | title": {
+    "message": "Gumagamit ng mahusay na patakaran sa cache sa mga static na asset"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-optimized-images.js | description": {
+    "message": "Mas mabilis mag-load ang mga na-optimize na larawan at mas kaunti ang nakokonsumong cellular data ng mga ito. [Matuto pa](https://developers.google.com/web/tools/lighthouse/audits/optimize-images)."
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-optimized-images.js | title": {
+    "message": "Mahusay na mag-encode ng mga larawan"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | description": {
+    "message": "Maghatid ng mga larawang naaangkop ang laki para makatipid sa cellular data at mapabilis ang pag-load. [Matuto pa](https://developers.google.com/web/tools/lighthouse/audits/oversized-images)."
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | title": {
+    "message": "Iangkop ang laki ng mga larawan"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-text-compression.js | description": {
+    "message": "Dapat maghatid ang mga text-based na resource nang may compression (gzip, deflate, o brotli) para mabawasan ang kabuuang mga byte ng network. [Matuto pa](https://developers.google.com/web/tools/lighthouse/audits/text-compression)."
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-text-compression.js | title": {
+    "message": "I-enable ang compression ng text"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-webp-images.js | description": {
+    "message": "Kadalasan, mas mahusay ang pag-compress ng mga format ng larawan gaya ng JPEG 2000, JPEG XR, at WebP kaysa sa pag-compress ng PNG o JPEG, kaya mas mabilis ang pag-download at mas kaunti ang nakokonsumong data. [Matuto pa](https://developers.google.com/web/tools/lighthouse/audits/webp)."
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-webp-images.js | title": {
+    "message": "Maghatid ng mga larawan sa mga makabagong format"
+  },
+  "lighthouse-core/audits/content-width.js | description": {
+    "message": "Kung hindi tumutugma ang lapad ng content ng iyong app sa lapad ng viewport, puwedeng hindi ma-optimize ang app mo para sa mga screen ng mobile. [Matuto pa](https://developers.google.com/web/tools/lighthouse/audits/content-sized-correctly-for-viewport)."
+  },
+  "lighthouse-core/audits/content-width.js | explanation": {
+    "message": "Hindi tumutugma ang laki ng viewport na {innerWidth}px sa laki ng window na {outerWidth}px."
+  },
+  "lighthouse-core/audits/content-width.js | failureTitle": {
+    "message": "Hindi tama ang laki ng content para sa viewport"
+  },
+  "lighthouse-core/audits/content-width.js | title": {
+    "message": "Tama ang laki ng content para sa viewport"
+  },
+  "lighthouse-core/audits/critical-request-chains.js | description": {
+    "message": "Ipinapakita sa iyo ng Mga Chain ng Mahahalagang Kahilingan kung anong mga resource ang nilo-load nang may mataas na priyoridad. Pag-isipang paikliin ang mga chain, paliitin ang mga dina-download na resource, o ipagpaliban ang pag-download ng mga hindi kinakailangang resource para mapabilis ang pag-load ng page. [Matuto pa](https://developers.google.com/web/tools/lighthouse/audits/critical-request-chains)."
+  },
+  "lighthouse-core/audits/critical-request-chains.js | displayValue": {
+    "message": "{itemCount,plural, =1{Nakakita ng 1 chain}one{Nakakita ng # chain}other{Nakakita ng # na chain}}"
+  },
+  "lighthouse-core/audits/critical-request-chains.js | title": {
+    "message": "I-minimize ang Lalim ng Mahahalagang Kahilingan"
+  },
+  "lighthouse-core/audits/deprecations.js | columnDeprecate": {
+    "message": "Paghinto sa Paggamit / Babala"
+  },
+  "lighthouse-core/audits/deprecations.js | columnLine": {
+    "message": "Linya"
+  },
+  "lighthouse-core/audits/deprecations.js | description": {
+    "message": "Aalisin sa browser ang mga hindi na ginagamit na API sa paglaon. [Matuto pa](https://web.dev/deprecations)."
+  },
+  "lighthouse-core/audits/deprecations.js | displayValue": {
+    "message": "{itemCount,plural, =1{May nakitang 1 babala}one{May nakitang # babala}other{May nakitang # na babala}}"
+  },
+  "lighthouse-core/audits/deprecations.js | failureTitle": {
+    "message": "Gumagamit ng mga hindi na ginagamit na API"
+  },
+  "lighthouse-core/audits/deprecations.js | title": {
+    "message": "Iniiwasan ang mga hindi na ginagamit na API"
+  },
+  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | description": {
+    "message": "Hindi na ginagamit ang Cache ng Application. [Matuto pa](https://web.dev/appcache-manifest)."
+  },
+  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | displayValue": {
+    "message": "Nakita ang \"{AppCacheManifest}\""
+  },
+  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | failureTitle": {
+    "message": "Gumagamit ng Cache ng Application"
+  },
+  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | title": {
+    "message": "Iniiwasan ang Application Cache"
+  },
+  "lighthouse-core/audits/dobetterweb/doctype.js | description": {
+    "message": "Ang pagtukoy ng doctype ay pumipigil sa browser na lumipat sa quirks-mode. [Matuto pa](https://web.dev/doctype)."
+  },
+  "lighthouse-core/audits/dobetterweb/doctype.js | explanationBadDoctype": {
+    "message": "Ang pangalan ng doctype ay dapat ang nasa maliliit na titik na string na `html`"
+  },
+  "lighthouse-core/audits/dobetterweb/doctype.js | explanationNoDoctype": {
+    "message": "Dapat maglaman ng doctype ang dokumento"
+  },
+  "lighthouse-core/audits/dobetterweb/doctype.js | explanationPublicId": {
+    "message": "Walang lamang string ang inaasahang publicId"
+  },
+  "lighthouse-core/audits/dobetterweb/doctype.js | explanationSystemId": {
+    "message": "Walang lamang string ang inaasahang systemId"
+  },
+  "lighthouse-core/audits/dobetterweb/doctype.js | failureTitle": {
+    "message": "Walang HTML na doctype ang page, at dahil dito, na-trigger nito ang quirks-mode"
+  },
+  "lighthouse-core/audits/dobetterweb/doctype.js | title": {
+    "message": "May HTML na doctype ang page"
+  },
+  "lighthouse-core/audits/dobetterweb/dom-size.js | columnElement": {
+    "message": "Elemento"
+  },
+  "lighthouse-core/audits/dobetterweb/dom-size.js | columnStatistic": {
+    "message": "Istatistika"
+  },
+  "lighthouse-core/audits/dobetterweb/dom-size.js | columnValue": {
+    "message": "Value"
+  },
+  "lighthouse-core/audits/dobetterweb/dom-size.js | description": {
+    "message": "Inirerekomenda ng mga engineer ng browser ang mga page na naglalaman ng mas kaunti sa ~1,500 element ng DOM. Ang pinakamainam ay isang lalim ng tree na < 32 element at mas kaunti sa 60 child/parent na element. Kapag malaki ang DOM, puwedeng tumaas ang paggamit ng memory, magdulot ng mas mahahabang [pagkalkula ng istilo](https://developers.google.com/web/fundamentals/performance/rendering/reduce-the-scope-and-complexity-of-style-calculations), at makagawa ng mamahaling [mga reflow ng layout](https://developers.google.com/speed/articles/reflow). [Matuto pa](https://web.dev/dom-size)."
+  },
+  "lighthouse-core/audits/dobetterweb/dom-size.js | displayValue": {
+    "message": "{itemCount,plural, =1{1 element}one{# element}other{# na element}}"
+  },
+  "lighthouse-core/audits/dobetterweb/dom-size.js | failureTitle": {
+    "message": "Umiwas sa masyadong malaking DOM"
+  },
+  "lighthouse-core/audits/dobetterweb/dom-size.js | statisticDOMDepth": {
+    "message": "Maximum na Lalim ng DOM"
+  },
+  "lighthouse-core/audits/dobetterweb/dom-size.js | statisticDOMElements": {
+    "message": "Kabuuang Element ng DOM"
+  },
+  "lighthouse-core/audits/dobetterweb/dom-size.js | statisticDOMWidth": {
+    "message": "Maximum na Mga Child na Elemento"
+  },
+  "lighthouse-core/audits/dobetterweb/dom-size.js | title": {
+    "message": "Umiiwas sa masyadong malaking DOM"
+  },
+  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | columnRel": {
+    "message": "Rel"
+  },
+  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | columnTarget": {
+    "message": "Target"
+  },
+  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | description": {
+    "message": "Idagdag ang `rel=\"noopener\"` o `rel=\"noreferrer\"` sa anumang external na link para pahusayin ang performance at pigilan ang mga kahinaan sa seguridad. [Matuto pa](https://web.dev/external-anchors-use-rel-noopener)."
+  },
+  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | failureTitle": {
+    "message": "Hindi ligtas ang mga link sa mga cross-origin na destinasyon"
+  },
+  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | title": {
+    "message": "Ligtas ang mga link sa mga cross-origin na destinasyon"
+  },
+  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | warning": {
+    "message": "Hindi matukoy ang destinasyon para sa anchor na ({anchorHTML}). Kung hindi ginagamit bilang hyperlink, pag-isipang alisin ang target=_blank."
+  },
+  "lighthouse-core/audits/dobetterweb/geolocation-on-start.js | description": {
+    "message": "Walang tiwala o nalilito ang mga user sa mga site na humihiling ng kanilang lokasyon nang walang konteksto. Sa halip ay pag-isipang iugnay ang kahilingan sa pagkilos ng user. [Matuto pa](https://web.dev/geolocation-on-start)."
+  },
+  "lighthouse-core/audits/dobetterweb/geolocation-on-start.js | failureTitle": {
+    "message": "Humihiling ng pahintulot sa geolocation sa pag-load ng page"
+  },
+  "lighthouse-core/audits/dobetterweb/geolocation-on-start.js | title": {
+    "message": "Iniiwasan ang paghiling ng pahintulot sa geolocation sa pag-load ng page"
+  },
+  "lighthouse-core/audits/dobetterweb/js-libraries.js | columnVersion": {
+    "message": "Bersyon"
+  },
+  "lighthouse-core/audits/dobetterweb/js-libraries.js | description": {
+    "message": "Lahat ng front-end na library ng JavaScript na natukoy sa page. [Matuto pa](https://web.dev/js-libraries)."
+  },
+  "lighthouse-core/audits/dobetterweb/js-libraries.js | title": {
+    "message": "Natukoy na mga library ng JavaScript"
+  },
+  "lighthouse-core/audits/dobetterweb/no-document-write.js | description": {
+    "message": "Para sa mga user na may mabagal na koneksyon, puwedeng maantala ang pag-load ng page dahil sa mga external na script na dynamic na inilagay sa pamamagitan ng `document.write()`. [Matuto pa](https://web.dev/no-document-write)."
+  },
+  "lighthouse-core/audits/dobetterweb/no-document-write.js | failureTitle": {
+    "message": "Gumagamit ng `document.write()`"
+  },
+  "lighthouse-core/audits/dobetterweb/no-document-write.js | title": {
+    "message": "Umiiwas sa `document.write()`"
+  },
+  "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | columnSeverity": {
+    "message": "Pinakamataas na Kalalaan"
+  },
+  "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | columnVersion": {
+    "message": "Bersyon ng Library"
+  },
+  "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | columnVuln": {
+    "message": "Bilang ng Kahinaan"
+  },
+  "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | description": {
+    "message": "Puwedeng maglaman ng mga kilalang kahinaan sa seguridad ang ilang script ng third party na madaling natutukoy at nasasamantala ng mga nang-aatake. [Matuto pa](https://web.dev/no-vulnerable-libraries)."
+  },
+  "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | displayValue": {
+    "message": "{itemCount,plural, =1{1 kahinaan ang natukoy}one{# kahinaan ang natukoy}other{# na kahinaan ang natukoy}}"
+  },
+  "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | failureTitle": {
+    "message": "May mga kasamang front-end na library ng JavaScript na may mga kilalang kahinaan sa seguridad"
+  },
+  "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | rowSeverityHigh": {
+    "message": "Mataas"
+  },
+  "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | rowSeverityLow": {
+    "message": "Mababa"
+  },
+  "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | rowSeverityMedium": {
+    "message": "Katamtaman"
+  },
+  "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | title": {
+    "message": "Umiiwas sa mga front-end na library ng JavaScript na may mga kilalang kahinaan sa seguridad"
+  },
+  "lighthouse-core/audits/dobetterweb/notification-on-start.js | description": {
+    "message": "Walang tiwala o nalilito ang mga user sa mga site na humihiling na magpadala ng mga notification nang walang konteksto. Sa halip ay pag-isipang iugnay ang kahilingan sa mga galaw ng user. [Matuto pa](https://web.dev/notification-on-start)."
+  },
+  "lighthouse-core/audits/dobetterweb/notification-on-start.js | failureTitle": {
+    "message": "Humihiling ng pahintulot sa notification sa pag-load ng page"
+  },
+  "lighthouse-core/audits/dobetterweb/notification-on-start.js | title": {
+    "message": "Iniiwasan ang paghiling ng pahintulot sa notification sa pag-load ng page"
+  },
+  "lighthouse-core/audits/dobetterweb/password-inputs-can-be-pasted-into.js | columnFailingElem": {
+    "message": "Mga Hindi Nakapasang Element"
+  },
+  "lighthouse-core/audits/dobetterweb/password-inputs-can-be-pasted-into.js | description": {
+    "message": "Pinapahina ng paghadlang sa pag-paste ng password ang magandang patakarang panseguridad. [Matuto pa](https://web.dev/password-inputs-can-be-pasted-into)."
+  },
+  "lighthouse-core/audits/dobetterweb/password-inputs-can-be-pasted-into.js | failureTitle": {
+    "message": "Pinipigilan ang mga user na mag-paste sa mga field ng password"
+  },
+  "lighthouse-core/audits/dobetterweb/password-inputs-can-be-pasted-into.js | title": {
+    "message": "Pinapayagan ang mga user na mag-paste sa mga field ng password"
+  },
+  "lighthouse-core/audits/dobetterweb/uses-http2.js | columnProtocol": {
+    "message": "Protocol"
+  },
+  "lighthouse-core/audits/dobetterweb/uses-http2.js | description": {
+    "message": "Nag-aalok ang HTTP/2 ng mas maraming benepisyo kaysa sa HTTP/1.1, kasama ang mga binary header, multiplexing, at server push. [Matuto pa](https://web.dev/uses-http2)."
+  },
+  "lighthouse-core/audits/dobetterweb/uses-http2.js | displayValue": {
+    "message": "{itemCount,plural, =1{1 kahilingan ang hindi naihatid sa pamamagitan ng HTTP/2}one{# kahilingan ang hindi naihatid sa pamamagitan ng HTTP/2}other{# na kahilingan ang hindi naihatid sa pamamagitan ng HTTP/2}}"
+  },
+  "lighthouse-core/audits/dobetterweb/uses-http2.js | failureTitle": {
+    "message": "Hindi gumagamit ng HTTP/2 para sa lahat ng resource nito"
+  },
+  "lighthouse-core/audits/dobetterweb/uses-http2.js | title": {
+    "message": "Hindi gumagamit ng HTTP/2 para sa mga sarili nitong resource"
+  },
+  "lighthouse-core/audits/dobetterweb/uses-passive-event-listeners.js | description": {
+    "message": "Pag-isipang markahan ang iyong pan-detect ng event sa pagpindot at wheel bilang `passive` para mapahusay ang performance sa pag-scroll ng iyong page. [Matuto pa](https://web.dev/uses-passive-event-listeners)."
+  },
+  "lighthouse-core/audits/dobetterweb/uses-passive-event-listeners.js | failureTitle": {
+    "message": "Hindi gumagamit ng mga passive na listener para pahusayin ang performance sa pag-scroll"
+  },
+  "lighthouse-core/audits/dobetterweb/uses-passive-event-listeners.js | title": {
+    "message": "Gumagamit ng mga passive na listener para pahusayin ang performance sa pag-scroll"
+  },
+  "lighthouse-core/audits/errors-in-console.js | columnDesc": {
+    "message": "Paglalarawan"
+  },
+  "lighthouse-core/audits/errors-in-console.js | description": {
+    "message": "Nagsasaad ng mga hindi naresolbang problema ang mga error na naka-log sa console. Puwedeng manggaling ang mga ito sa mga hindi nagawang kahilingan sa network at iba pang alalahanin sa browser. [Matuto pa](https://web.dev/errors-in-console)"
+  },
+  "lighthouse-core/audits/errors-in-console.js | failureTitle": {
+    "message": "Na-log sa console ang mga error sa browser"
+  },
+  "lighthouse-core/audits/errors-in-console.js | title": {
+    "message": "Walang naka-log na mga error sa browser sa console"
+  },
+  "lighthouse-core/audits/font-display.js | description": {
+    "message": "Gamitin ang feature na font-display ng CSS para matiyak na nakikita ng user ang text habang nilo-load ang mga webfont. [Matuto pa](https://developers.google.com/web/updates/2016/02/font-display)."
+  },
+  "lighthouse-core/audits/font-display.js | failureTitle": {
+    "message": "Tiyaking patuloy na nakikita ang text sa pag-load ng webfont"
+  },
+  "lighthouse-core/audits/font-display.js | title": {
+    "message": "Patuloy na nakikita ang lahat ng text sa pag-load ng webfont"
+  },
+  "lighthouse-core/audits/font-display.js | undeclaredFontURLWarning": {
+    "message": "Hindi awtomatikong nasuri ng Lighthouse ang value na font-display para sa sumusunod na URL: {fontURL}."
+  },
+  "lighthouse-core/audits/image-aspect-ratio.js | columnActual": {
+    "message": "Aspect Ratio (Aktwal)"
+  },
+  "lighthouse-core/audits/image-aspect-ratio.js | columnDisplayed": {
+    "message": "Aspect Ratio (Ipinakita)"
+  },
+  "lighthouse-core/audits/image-aspect-ratio.js | description": {
+    "message": "Dapat na tumugma ang mga dimensyon ng display ng larawan sa natural na aspect ratio. [Matuto pa](https://web.dev/image-aspect-ratio)."
+  },
+  "lighthouse-core/audits/image-aspect-ratio.js | failureTitle": {
+    "message": "Ipinapakita ang mga larawang may maling aspect ratio"
+  },
+  "lighthouse-core/audits/image-aspect-ratio.js | title": {
+    "message": "Ipinapakita ang mga larawang may tamang aspect ratio"
+  },
+  "lighthouse-core/audits/image-aspect-ratio.js | warningCompute": {
+    "message": "Invalid ang laki ng larawan ng impormasyon {url}"
+  },
+  "lighthouse-core/audits/installable-manifest.js | description": {
+    "message": "Puwedeng proactive na i-prompt ng mga browser ang mga user para idagdag ang iyong app sa kanilang homescreen, na maaaring magresulta sa mas mataas na pakikipag-ugnayan. [Matuto pa](https://developers.google.com/web/tools/lighthouse/audits/install-prompt)."
+  },
+  "lighthouse-core/audits/installable-manifest.js | failureTitle": {
+    "message": "Hindi natutugunan ng manifest ng web app ang mga kinakailangan sa pag-install"
+  },
+  "lighthouse-core/audits/installable-manifest.js | title": {
+    "message": "Natutugunan ng manifest ng web app ang mga kinakailangan sa pag-install"
+  },
+  "lighthouse-core/audits/is-on-https.js | columnInsecureURL": {
+    "message": "Hindi secure na URL"
+  },
+  "lighthouse-core/audits/is-on-https.js | description": {
+    "message": "Dapat protektahan gamit ang HTTPS ang lahat ng site, kahit ang mga hindi nangangasiwa ng sensitibong data. Pinipigilan ng HTTPS ang mga nanghihimasok na makialam o tahimik na makinig sa mga pakikipag-ugnayan sa pagitan ng iyong app at mga user, at isa itong prerequisite para sa HTTP/2 at maraming bagong API ng web platform. [Matuto pa](https://web.dev/is-on-https)."
+  },
+  "lighthouse-core/audits/is-on-https.js | displayValue": {
+    "message": "{itemCount,plural, =1{1 hindi secure na kahilingan ang nakita}one{# hindi secure na kahilingan ang nakita}other{# na hindi secure na kahilingan ang nakita}}"
+  },
+  "lighthouse-core/audits/is-on-https.js | failureTitle": {
+    "message": "Hindi gumagamit ng HTTPS"
+  },
+  "lighthouse-core/audits/is-on-https.js | title": {
+    "message": "Gumagamit ng HTTPS"
+  },
+  "lighthouse-core/audits/load-fast-enough-for-pwa.js | description": {
+    "message": "Kapag mabilis ang pag-load ng page sa cellular network, nagkakaroon ng magandang karanasan ng user sa mobile. [Matuto pa](https://developers.google.com/web/tools/lighthouse/audits/fast-3g)."
+  },
+  "lighthouse-core/audits/load-fast-enough-for-pwa.js | displayValueText": {
+    "message": "Interactive sa {timeInMs, number, seconds} s"
+  },
+  "lighthouse-core/audits/load-fast-enough-for-pwa.js | displayValueTextWithOverride": {
+    "message": "Interactive sa naka-simulate na mobile network sa loob ng {timeInMs, number, seconds} s"
+  },
+  "lighthouse-core/audits/load-fast-enough-for-pwa.js | explanationLoadSlow": {
+    "message": "Masyadong mabagal mag-load ang iyong page at hindi interactive sa loob ng 10 segundo. Tingnan ang mga pagkakataon at diagnostic sa seksyong \"Performance\" para matutunan kung paano magpahusay."
+  },
+  "lighthouse-core/audits/load-fast-enough-for-pwa.js | failureTitle": {
+    "message": "Hindi sapat ang bilis ng pag-load ng page sa mga mobile network"
+  },
+  "lighthouse-core/audits/load-fast-enough-for-pwa.js | title": {
+    "message": "Sapat ang bilis ng pag-load ng page sa mga mobile network"
+  },
+  "lighthouse-core/audits/mainthread-work-breakdown.js | columnCategory": {
+    "message": "Kategorya"
+  },
+  "lighthouse-core/audits/mainthread-work-breakdown.js | description": {
+    "message": "Pag-isipang bawasan ang oras na ginugugol sa pag-parse, pag-compile, at pagpapagana ng JS. Maaaring mapansin mong nakakatulong dito ang paghahatid ng mas maliliit na payload ng JS."
+  },
+  "lighthouse-core/audits/mainthread-work-breakdown.js | failureTitle": {
+    "message": "Bawasan ang gawain sa pangunahing thread"
+  },
+  "lighthouse-core/audits/mainthread-work-breakdown.js | title": {
+    "message": "Binabawasan ang gawain sa pangunahing thread"
+  },
+  "lighthouse-core/audits/manual/pwa-cross-browser.js | description": {
+    "message": "Para maabot ang pinakamaraming bilang nguser, dapat gumana ang mga site sa bawat pangunahing browser. [Matuto pa](https://developers.google.com/web/progressive-web-apps/checklist#site-works-cross-browser)."
+  },
+  "lighthouse-core/audits/manual/pwa-cross-browser.js | title": {
+    "message": "Gumagana ang site sa cross-browser"
+  },
+  "lighthouse-core/audits/manual/pwa-each-page-has-url.js | description": {
+    "message": "Tiyaking nali-link nang malalim ang mga indibidwal na page sa pamamagitan ng URL at natatangi ang mga URL para sa pagbabahagi sa social media. [Matuto pa](https://developers.google.com/web/progressive-web-apps/checklist#each-page-has-a-url)."
+  },
+  "lighthouse-core/audits/manual/pwa-each-page-has-url.js | title": {
+    "message": "May URL ang bawat page"
+  },
+  "lighthouse-core/audits/manual/pwa-page-transitions.js | description": {
+    "message": "Mabilis dapat ang dating ng mga transition habang nagta-tap ka sa paligid, kahit nasa mabagal na network, isang susi sa kapansin-pansing performance. [Matuto pa](https://developers.google.com/web/progressive-web-apps/checklist#page-transitions-dont-feel-like-they-block-on-the-network)."
+  },
+  "lighthouse-core/audits/manual/pwa-page-transitions.js | title": {
+    "message": "Mukhang hindi nagba-block sa network ang mga transition ng page"
+  },
+  "lighthouse-core/audits/metrics/estimated-input-latency.js | description": {
+    "message": "Ang Tinantyang Latency ng Input ay isang pagtatantya ng bilis ng pagtugon ng iyong app sa input ng user, na nasa millisecond, sa pinakaabalang 5 segundong palugit ng pag-load ng page. Kung mas mataas kaysa sa 50 ms ang iyong latency, puwedeng ituring ng mga user na mabagal ang app mo. [Matuto pa](https://developers.google.com/web/tools/lighthouse/audits/estimated-input-latency)."
+  },
+  "lighthouse-core/audits/metrics/estimated-input-latency.js | title": {
+    "message": "Tinatayang Latency ng Input"
+  },
+  "lighthouse-core/audits/metrics/first-contentful-paint.js | description": {
+    "message": "Minamarkahan ng First Contentful Paint ang tagal bago ma-paint ang unang text o larawan. [Matuto pa](https://developers.google.com/web/tools/lighthouse/audits/first-contentful-paint)."
+  },
+  "lighthouse-core/audits/metrics/first-contentful-paint.js | title": {
+    "message": "First Contentful Paint"
+  },
+  "lighthouse-core/audits/metrics/first-cpu-idle.js | description": {
+    "message": "Minamarkahan ng First CPU Idle ang unang beses kung kailan hindi abala ang pangunahing thread ng page at puwede itong mangasiwa ng input. [Matuto pa](https://developers.google.com/web/tools/lighthouse/audits/first-interactive)."
+  },
+  "lighthouse-core/audits/metrics/first-cpu-idle.js | title": {
+    "message": "First CPU Idle"
+  },
+  "lighthouse-core/audits/metrics/first-meaningful-paint.js | description": {
+    "message": "Sinusukat ng First Meaningful Paint ang bilis ng pagpapakita ng pangunahing content ng isang page. [Matuto pa](https://developers.google.com/web/tools/lighthouse/audits/first-meaningful-paint)."
+  },
+  "lighthouse-core/audits/metrics/first-meaningful-paint.js | title": {
+    "message": "First Meaningful Paint"
+  },
+  "lighthouse-core/audits/metrics/interactive.js | description": {
+    "message": "Ang oras bago maging interactive ay ang haba ng oras na inaabot bago maging ganap na interactive ang page. [Matuto pa](https://developers.google.com/web/tools/lighthouse/audits/consistently-interactive)."
+  },
+  "lighthouse-core/audits/metrics/interactive.js | title": {
+    "message": "Time to Interactive"
+  },
+  "lighthouse-core/audits/metrics/max-potential-fid.js | description": {
+    "message": "Ang maximum na potensyal na First Input Delay na puwedeng maranasan ng iyong mga user ay ang tagal, na nasa millisecond, ng pinakamahabang gawain. [Matuto pa](https://developers.google.com/web/updates/2018/05/first-input-delay)."
+  },
+  "lighthouse-core/audits/metrics/max-potential-fid.js | title": {
+    "message": "Max na Potensyal na First Input Delay"
+  },
+  "lighthouse-core/audits/metrics/speed-index.js | description": {
+    "message": "Ipinapakita ng Speed Index ang bilis ng nakikitang pag-populate ng mga content ng isang page. [Matuto pa](https://developers.google.com/web/tools/lighthouse/audits/speed-index)."
+  },
+  "lighthouse-core/audits/metrics/speed-index.js | title": {
+    "message": "Speed Index"
+  },
+  "lighthouse-core/audits/metrics/total-blocking-time.js | description": {
+    "message": "Kabuuan ng lahat ng yugto ng panahon sa pagitan ng FCP at Oras bago maging Interactive, kapag lumampas ang haba ng gawain sa 50ms, ipinahayag sa milliseconds."
+  },
+  "lighthouse-core/audits/metrics/total-blocking-time.js | title": {
+    "message": "Kabuuang Oras ng Pag-block"
+  },
+  "lighthouse-core/audits/network-rtt.js | description": {
+    "message": "Malaki ang epekto ng mga round trip time (RTT) ng network sa performance. Kung mataas ang RTT sa isang pinagmulan, isa itong palatandaan na mapapahusay ng mga server na malapit sa user ang performance. [Matuto pa](https://hpbn.co/primer-on-latency-and-bandwidth/)."
+  },
+  "lighthouse-core/audits/network-rtt.js | title": {
+    "message": "Mga Round Trip Time ng Network"
+  },
+  "lighthouse-core/audits/network-server-latency.js | description": {
+    "message": "Puwedeng makaapekto sa performance sa web ang mga latency ng server. Kung mataas ang latency ng server ng isang pinagmulan, ito ay palatandaang na-overload ang server o hindi mahusay ang performance nito sa backend. [Matuto pa](https://hpbn.co/primer-on-web-performance/#analyzing-the-resource-waterfall)."
+  },
+  "lighthouse-core/audits/network-server-latency.js | title": {
+    "message": "Mga Latency sa Backend ng Server"
+  },
+  "lighthouse-core/audits/offline-start-url.js | description": {
+    "message": "Ine-enable ng isang service worker ang iyong web app para maging maaasahan sa mga pabagu-bagong kundisyon ng network. [Matuto pa](https://developers.google.com/web/tools/lighthouse/audits/http-200-when-offline)."
+  },
+  "lighthouse-core/audits/offline-start-url.js | failureTitle": {
+    "message": "Hindi tumutugon ang `start_url` gamit ang 200 kapag offline"
+  },
+  "lighthouse-core/audits/offline-start-url.js | title": {
+    "message": "Tumutugon ang `start_url` gamit ang 200 kapag offline"
+  },
+  "lighthouse-core/audits/offline-start-url.js | warningCantStart": {
+    "message": "Hindi mabasa ng Lighthouse ang `start_url` na galing sa manifest. Dahil dito, ipinagpapalagay ang `start_url` bilang URL ng dokumento. Mensahe ng error: '{manifestWarning}'."
+  },
+  "lighthouse-core/audits/performance-budget.js | columnOverBudget": {
+    "message": "Lampas sa Badyet"
+  },
+  "lighthouse-core/audits/performance-budget.js | description": {
+    "message": "Panatilihin ang dami at laki ng mga kahilingan sa network sa ilalim ng mga target na itinakda ng ibinigay na badyet sa performance. [Matuto pa](https://developers.google.com/web/tools/lighthouse/audits/budgets)."
+  },
+  "lighthouse-core/audits/performance-budget.js | requestCountOverBudget": {
+    "message": "{count,plural, =1{1 kahilingan}one{# kahilingan}other{# na kahilingan}}"
+  },
+  "lighthouse-core/audits/performance-budget.js | title": {
+    "message": "Badyet sa performance"
+  },
+  "lighthouse-core/audits/redirects-http.js | description": {
+    "message": "Kung na-set up mo na ang HTTPS, tiyaking iyong na-redirect sa HTTPS ang lahat ng trapiko sa HTTP para ma-enable ang mga ligtas na feature sa web para sa lahat ng user mo. [Matuto pa](https://developers.google.com/web/tools/lighthouse/audits/http-redirects-to-https)."
+  },
+  "lighthouse-core/audits/redirects-http.js | failureTitle": {
+    "message": "Hindi nire-redirect sa HTTPS ang trapiko sa HTTP"
+  },
+  "lighthouse-core/audits/redirects-http.js | title": {
+    "message": "Nire-redirect sa HTTPS ang trapiko sa HTTP"
+  },
+  "lighthouse-core/audits/redirects.js | description": {
+    "message": "Nagpapasimula ang mga pag-redirect ng mga karagdagang pagkaantala bago ma-load ang page. [Matuto pa](https://developers.google.com/web/tools/lighthouse/audits/redirects)."
+  },
+  "lighthouse-core/audits/redirects.js | title": {
+    "message": "Iwasan ang mga pag-redirect sa maraming page"
+  },
+  "lighthouse-core/audits/resource-summary.js | description": {
+    "message": "Para magtakda ng mga badyet para sa dami at laki ng mga resource ng page, magdagdag ng budget.json na file. [Matuto pa](https://developers.google.com/web/tools/lighthouse/audits/budgets)."
+  },
+  "lighthouse-core/audits/resource-summary.js | displayValue": {
+    "message": "{requestCount,plural, =1{1 kahilingan • {byteCount, number, bytes} KB}one{# kahilingan • {byteCount, number, bytes} KB}other{# na kahilingan • {byteCount, number, bytes} KB}}"
+  },
+  "lighthouse-core/audits/resource-summary.js | title": {
+    "message": "Panatilihing mababa ang mga bilang ng kahilingan at maliit ang mga paglipat"
+  },
+  "lighthouse-core/audits/seo/canonical.js | description": {
+    "message": "Iminumungkahi ng mga canonical na link kung aling URL ang ipapakita sa mga resulta ng paghahanap. [Matuto pa](https://web.dev/canonical)."
+  },
+  "lighthouse-core/audits/seo/canonical.js | explanationConflict": {
+    "message": "Maraming URL ang hindi magkakatugma ({urlList})"
+  },
+  "lighthouse-core/audits/seo/canonical.js | explanationDifferentDomain": {
+    "message": "Tumuturo sa ibang domain ({url})"
+  },
+  "lighthouse-core/audits/seo/canonical.js | explanationInvalid": {
+    "message": "Invalid na URL ({url})"
+  },
+  "lighthouse-core/audits/seo/canonical.js | explanationPointsElsewhere": {
+    "message": "Tumuturo sa ibang lokasyon ng `hreflang` ({url})"
+  },
+  "lighthouse-core/audits/seo/canonical.js | explanationRelative": {
+    "message": "Relatibong URL ({url})"
+  },
+  "lighthouse-core/audits/seo/canonical.js | explanationRoot": {
+    "message": "Tumuturo sa root URL ng domain (ang homepage), sa halip na sa katumbas na page ng content"
+  },
+  "lighthouse-core/audits/seo/canonical.js | failureTitle": {
+    "message": "Walang valid na `rel=canonical` ang dokumento"
+  },
+  "lighthouse-core/audits/seo/canonical.js | title": {
+    "message": "May valid na `rel=canonical` ang dokumento"
+  },
+  "lighthouse-core/audits/seo/font-size.js | description": {
+    "message": "Ang mga laki ng font na mas mababa sa 12px ay masyadong maliit para mabasa at kinakailangan ng mga bisita sa mobile na “mag-pinch para mag-zoom in” para mabasa ito. Subukang gawing ≥12px ang >60% ng text sa page. [Matuto pa](https://web.dev/font-size)."
+  },
+  "lighthouse-core/audits/seo/font-size.js | displayValue": {
+    "message": "{decimalProportion, number, extendedPercent} nababasang text"
+  },
+  "lighthouse-core/audits/seo/font-size.js | explanationViewport": {
+    "message": "Hindi nababasa ang text dahil walang viewport meta tag na naka-optimize para sa mga screen ng mobile."
+  },
+  "lighthouse-core/audits/seo/font-size.js | explanationWithDisclaimer": {
+    "message": "Masyadong maliit ang {decimalProportion, number, extendedPercent} ng text (batay sa sample na {decimalProportionVisited, number, extendedPercent})."
+  },
+  "lighthouse-core/audits/seo/font-size.js | failureTitle": {
+    "message": "Hindi gumagamit ng mga nababasang laki ng font ang dokumento"
+  },
+  "lighthouse-core/audits/seo/font-size.js | title": {
+    "message": "Gumagamit ng mga nababasang laki ng font ang dokumento"
+  },
+  "lighthouse-core/audits/seo/hreflang.js | description": {
+    "message": "Sinasabi ng mga link na hreflang sa mga search engine kung anong bersyon ng isang page ang dapat ilista ng mga ito sa mga resulta ng paghahanap para sa isang partikular na wika o rehiyon. [Matuto pa](https://web.dev/hreflang)."
+  },
+  "lighthouse-core/audits/seo/hreflang.js | failureTitle": {
+    "message": "Walang valid na `hreflang` ang dokumento"
+  },
+  "lighthouse-core/audits/seo/hreflang.js | title": {
+    "message": "May valid na `hreflang` ang dokumento"
+  },
+  "lighthouse-core/audits/seo/http-status-code.js | description": {
+    "message": "Puwedeng hindi ma-index nang maayos ang mga page na may mga hindi matagumpay na status code ng HTTP. [Matuto pa](https://web.dev/http-status-code)."
+  },
+  "lighthouse-core/audits/seo/http-status-code.js | failureTitle": {
+    "message": "Hindi matagumpay ang status code ng HTML ng page"
+  },
+  "lighthouse-core/audits/seo/http-status-code.js | title": {
+    "message": "Matagumpay ang status code ng HTTP ng page"
+  },
+  "lighthouse-core/audits/seo/is-crawlable.js | description": {
+    "message": "Hindi maisasama ng mga search engine ang iyong mga page sa mga resulta ng paghahanap kung walang pahintulot ang mga ito na i-crawl ang mga iyon. [Matuto pa](https://web.dev/is-crawable)."
+  },
+  "lighthouse-core/audits/seo/is-crawlable.js | failureTitle": {
+    "message": "Naka-block ang page mula sa pag-index"
+  },
+  "lighthouse-core/audits/seo/is-crawlable.js | title": {
+    "message": "Hindi naka-block ang page mula sa pag-index"
+  },
+  "lighthouse-core/audits/seo/link-text.js | description": {
+    "message": "Nakakatulong ang naglalarawang text ng link sa mga search engine na maunawaan ang iyong content. [Matuto pa](https://web.dev/link-text)."
+  },
+  "lighthouse-core/audits/seo/link-text.js | displayValue": {
+    "message": "{itemCount,plural, =1{May nakitang 1 link}one{May nakitang # link}other{May nakitang # na link}}"
+  },
+  "lighthouse-core/audits/seo/link-text.js | failureTitle": {
+    "message": "Walang naglalarawang text ang mga link"
+  },
+  "lighthouse-core/audits/seo/link-text.js | title": {
+    "message": "May naglalarawang text ang mga link"
+  },
+  "lighthouse-core/audits/seo/manual/structured-data.js | description": {
+    "message": "Patakbuhin ang [Tool sa Pag-test ng Structured Data](https://search.google.com/structured-data/testing-tool/) at ang [Structured Data Linter](http://linter.structured-data.org/) para i-validate ang structured data. [Matuto pa](https://web.dev/structured-data)."
+  },
+  "lighthouse-core/audits/seo/manual/structured-data.js | title": {
+    "message": "Valid ang structured data"
+  },
+  "lighthouse-core/audits/seo/meta-description.js | description": {
+    "message": "Puwedeng magsama ng mga paglalarawan ng meta sa mga resulta ng paghahanap para makapagbigay ng maikling buod ng content ng page. [Matuto pa](https://web.dev/meta-description)."
+  },
+  "lighthouse-core/audits/seo/meta-description.js | explanation": {
+    "message": "Walang laman ang text ng paglalarawan."
+  },
+  "lighthouse-core/audits/seo/meta-description.js | failureTitle": {
+    "message": "Walang paglalarawan ng meta ang dokumento"
+  },
+  "lighthouse-core/audits/seo/meta-description.js | title": {
+    "message": "May paglalarawan ng meta ang dokumento"
+  },
+  "lighthouse-core/audits/seo/plugins.js | description": {
+    "message": "Hindi nai-index ng mga search engine ang content ng plugin, at maraming device ang naglilimita sa mga plugin o hindi sumusuporta sa mga ito. [Matuto pa](https://web.dev/plugins)."
+  },
+  "lighthouse-core/audits/seo/plugins.js | failureTitle": {
+    "message": "Gumagamit ng mga plugin ang dokumento"
+  },
+  "lighthouse-core/audits/seo/plugins.js | title": {
+    "message": "Iniiwasan ng dokumento ang mga plugin"
+  },
+  "lighthouse-core/audits/seo/robots-txt.js | description": {
+    "message": "Kung sira ang iyong robots.txt, puwedeng hindi maunawaan ng mga crawler kung paano mo gustong ma-crawl o ma-index ang iyong website. [Matuto pa](https://web.dev/robots-txt)."
+  },
+  "lighthouse-core/audits/seo/robots-txt.js | displayValueHttpBadCode": {
+    "message": "Ang kahilingan para sa robots.txt ay nagbalik ng status ng HTTP na: {statusCode}"
+  },
+  "lighthouse-core/audits/seo/robots-txt.js | displayValueValidationError": {
+    "message": "{itemCount,plural, =1{May nakitang 1 error}one{May nakitang # error}other{May nakitang # na error}}"
+  },
+  "lighthouse-core/audits/seo/robots-txt.js | explanation": {
+    "message": "Hindi nakapag-download ng robots.txt file ang Lighthouse"
+  },
+  "lighthouse-core/audits/seo/robots-txt.js | failureTitle": {
+    "message": "Hindi valid ang robots.txt"
+  },
+  "lighthouse-core/audits/seo/robots-txt.js | title": {
+    "message": "Valid ang robots.txt"
+  },
+  "lighthouse-core/audits/seo/tap-targets.js | description": {
+    "message": "Sapat dapat ang laki (48x48px) at mayroon dapat sapat na espasyo sa paligid ang mga interactive na element gaya ng mga button at link, para madaling ma-tap ang mga ito nang hindi nag-o-overlap sa iba pang element. [Matuto pa](https://web.dev/tap-targets)."
+  },
+  "lighthouse-core/audits/seo/tap-targets.js | displayValue": {
+    "message": "{decimalProportion, number, percent} ng mga target sa pag-tap ang may angkop na laki"
+  },
+  "lighthouse-core/audits/seo/tap-targets.js | explanationViewportMetaNotOptimized": {
+    "message": "Masyadong maliit ang mga target ng pag-tap dahil walang viewport meta tag na naka-optimize para sa mga screen ng mobile"
+  },
+  "lighthouse-core/audits/seo/tap-targets.js | failureTitle": {
+    "message": "Hindi angkop ang laki ng mga target ng pag-tap"
+  },
+  "lighthouse-core/audits/seo/tap-targets.js | overlappingTargetHeader": {
+    "message": "Nag-o-overlap na Target"
+  },
+  "lighthouse-core/audits/seo/tap-targets.js | tapTargetHeader": {
+    "message": "Target ng Pag-tap"
+  },
+  "lighthouse-core/audits/seo/tap-targets.js | title": {
+    "message": "Angkop ang laki ng mga target ng pag-tap"
+  },
+  "lighthouse-core/audits/service-worker.js | description": {
+    "message": "Ang service worker ay ang teknolohiyang nag-e-enable sa iyong app na gumamit ng maraming feature ng Progressive Web App, gaya ng offline, pagdaragdag sa homescreen, at mga push notification. [Matuto pa](https://developers.google.com/web/tools/lighthouse/audits/registered-service-worker)."
+  },
+  "lighthouse-core/audits/service-worker.js | explanationBadManifest": {
+    "message": "Kinokontrol ng isang service worker ang page na ito, gayunpaman, walang nakitang `start_url` dahil hindi na-parse ang manifest bilang valid na JSON"
+  },
+  "lighthouse-core/audits/service-worker.js | explanationBadStartUrl": {
+    "message": "Kinokontrol ng isang service worker ang page na ito, gayunpaman, wala ang `start_url` ({startUrl}) sa saklaw ng service worker ({scopeUrl})"
+  },
+  "lighthouse-core/audits/service-worker.js | explanationNoManifest": {
+    "message": "Kinokontrol ng isang service worker ang page na ito, gayunpaman, walang nakitang `start_url` dahil walang nakuhang manifest."
+  },
+  "lighthouse-core/audits/service-worker.js | explanationOutOfScope": {
+    "message": "May isa o higit pang service worker ang origin na ito, gayunpaman, wala sa saklaw ang page ({pageUrl})."
+  },
+  "lighthouse-core/audits/service-worker.js | failureTitle": {
+    "message": "Hindi nagrerehistro ng service worker na kumokontrol sa page at `start_url`"
+  },
+  "lighthouse-core/audits/service-worker.js | title": {
+    "message": "Nagrerehistro ng service worker na kumokontrol sa page at `start_url`"
+  },
+  "lighthouse-core/audits/splash-screen.js | description": {
+    "message": "Tinititiyak ng isang splash screen na may tema ang mataas na kalidad na karanasan kapag inilunsad ng mga user ang iyong app sa kanilang mga homescreen. [Matuto pa](https://developers.google.com/web/tools/lighthouse/audits/custom-splash-screen)."
+  },
+  "lighthouse-core/audits/splash-screen.js | failureTitle": {
+    "message": "Hindi naka-configure para sa custom na splash screen"
+  },
+  "lighthouse-core/audits/splash-screen.js | title": {
+    "message": "Naka-configure para sa custom na splash screen"
+  },
+  "lighthouse-core/audits/themed-omnibox.js | description": {
+    "message": "Puwedeng lagyan ng tema ang address bar ng browser para tumugma sa iyong site. [Matuto pa](https://developers.google.com/web/tools/lighthouse/audits/address-bar)."
+  },
+  "lighthouse-core/audits/themed-omnibox.js | failureTitle": {
+    "message": "Hindi nagtatakda ng kulay ng tema para sa address bar."
+  },
+  "lighthouse-core/audits/themed-omnibox.js | title": {
+    "message": "Nagtatakda ng kulay ng tema para sa address bar."
+  },
+  "lighthouse-core/audits/third-party-summary.js | columnBlockingTime": {
+    "message": "Oras ng Pag-block ng Pangunahing Thread"
+  },
+  "lighthouse-core/audits/third-party-summary.js | columnThirdParty": {
+    "message": "Third-Party"
+  },
+  "lighthouse-core/audits/third-party-summary.js | description": {
+    "message": "Puwedeng lubos na makaapekto ang code ng third party sa performance ng pag-load. Limitahan ang bilang ng paulit-ulit na mga third-party na provider at subukang i-load ang code ng third party pagkatapos ng pangunahing pag-load ng iyong page. [Matuto pa](https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/loading-third-party-javascript/)."
+  },
+  "lighthouse-core/audits/third-party-summary.js | displayValue": {
+    "message": "Na-block ng third-party na code ang pangunahing thread sa loob ng {timeInMs, number, milliseconds} ms"
+  },
+  "lighthouse-core/audits/third-party-summary.js | failureTitle": {
+    "message": "Bawasan ang epekto ng third-party na code"
+  },
+  "lighthouse-core/audits/third-party-summary.js | title": {
+    "message": "Paggamit ng Third Party"
+  },
+  "lighthouse-core/audits/time-to-first-byte.js | description": {
+    "message": "Tinutukoy ng Time To First Byte ang tagal bago makapagpadala ng tugon ang iyong server. [Matuto pa](https://developers.google.com/web/tools/lighthouse/audits/ttfb)."
+  },
+  "lighthouse-core/audits/time-to-first-byte.js | displayValue": {
+    "message": "Inabot nang {timeInMs, number, milliseconds} ms ang root na dokumento"
+  },
+  "lighthouse-core/audits/time-to-first-byte.js | failureTitle": {
+    "message": "Pabilisin ang pagtugon ng server (TTFB)"
+  },
+  "lighthouse-core/audits/time-to-first-byte.js | title": {
+    "message": "Masyadong matagal ang pagtugon ng server (TTFB)"
+  },
+  "lighthouse-core/audits/user-timings.js | columnDuration": {
+    "message": "Tagal"
+  },
+  "lighthouse-core/audits/user-timings.js | columnStartTime": {
+    "message": "Oras ng Pagsisimula"
+  },
+  "lighthouse-core/audits/user-timings.js | columnType": {
+    "message": "Uri"
+  },
+  "lighthouse-core/audits/user-timings.js | description": {
+    "message": "Pag-isipang gumamit ng User Timing API sa iyong app para sukatin ang makatotohanang performance ng app mo sa mahahalagang karanasan ng user. [Matuto pa](https://developers.google.com/web/tools/lighthouse/audits/user-timing)."
+  },
+  "lighthouse-core/audits/user-timings.js | displayValue": {
+    "message": "{itemCount,plural, =1{1 timing ng user}one{# timing ng user}other{# na timing ng user}}"
+  },
+  "lighthouse-core/audits/user-timings.js | title": {
+    "message": "Mga marka at sukat ng User Timing"
+  },
+  "lighthouse-core/audits/uses-rel-preconnect.js | crossoriginWarning": {
+    "message": "May nakitang preconnect na <link> para sa \"{securityOrigin}\" pero hindi ito ginamit ng browser. Tingnan kung ginagamit mo nang maayos ang attribute na `crossorigin`."
+  },
+  "lighthouse-core/audits/uses-rel-preconnect.js | description": {
+    "message": "Pag-isipang magdagdag ng mga hint ng resource na `preconnect` o `dns-prefetch` para magtakda ng mga paunang koneksyon sa mahahalagang third-party na pinagmulan. [Matuto pa](https://developers.google.com/web/fundamentals/performance/resource-prioritization#preconnect)."
+  },
+  "lighthouse-core/audits/uses-rel-preconnect.js | title": {
+    "message": "Mag-preconnect sa mga kinakailangang origin"
+  },
+  "lighthouse-core/audits/uses-rel-preload.js | crossoriginWarning": {
+    "message": "May nakitang preload na <link> para sa \"{preloadURL}\" pero hindi ito ginamit ng browser. Tingnan kung ginagamit mo nang maayos ang attribute na `crossorigin`."
+  },
+  "lighthouse-core/audits/uses-rel-preload.js | description": {
+    "message": "Pag-isipang gumamit ng `<link rel=preload>` para mabigyang-priyoridad ang pagkuha ng mga resource na kasalukuyang hinihiling sa huling bahagi ng pag-load ng page. [Matuto pa](https://developers.google.com/web/tools/lighthouse/audits/preload)."
+  },
+  "lighthouse-core/audits/uses-rel-preload.js | title": {
+    "message": "I-preload ang mahahalagang kahilingan"
+  },
+  "lighthouse-core/audits/viewport.js | description": {
+    "message": "Magdagdag ng tag na `<meta name=\"viewport\">` para i-optimize ang iyong app para sa mga screen ng mobile. [Matuto pa](https://developers.google.com/web/tools/lighthouse/audits/has-viewport-meta-tag)."
+  },
+  "lighthouse-core/audits/viewport.js | explanationNoTag": {
+    "message": "Walang nahanap na tag na `<meta name=\"viewport\">`"
+  },
+  "lighthouse-core/audits/viewport.js | failureTitle": {
+    "message": "Walang tag na `<meta name=\"viewport\">` na may `width` o `initial-scale`"
+  },
+  "lighthouse-core/audits/viewport.js | title": {
+    "message": "May tag na `<meta name=\"viewport\">` na may `width` o `initial-scale`"
+  },
+  "lighthouse-core/audits/without-javascript.js | description": {
+    "message": "Dapat magpakita ng ilang content ang iyong app kapag naka-disable ang JavaScript, kahit isang babala lang ito sa user na kinakailangan ang Javascript para magamit ang app. [Matuto pa](https://developers.google.com/web/tools/lighthouse/audits/no-js)."
+  },
+  "lighthouse-core/audits/without-javascript.js | explanation": {
+    "message": "Dapat mag-render ng ilang content ang nilalaman ng page kung hindi available ang mga script nito."
+  },
+  "lighthouse-core/audits/without-javascript.js | failureTitle": {
+    "message": "Hindi nagbibigay ng fallback na content kapag hindi available ang JavaScript"
+  },
+  "lighthouse-core/audits/without-javascript.js | title": {
+    "message": "Naglalaman ng ilang content kapag hindi available ang JavaScript"
+  },
+  "lighthouse-core/audits/works-offline.js | description": {
+    "message": "Kung bumubuo ka ng Progressive Web App, pag-isipang gumamit ng isang service worker para puwedeng gumana ang iyong app offline. [Matuto pa](https://developers.google.com/web/tools/lighthouse/audits/http-200-when-offline)."
+  },
+  "lighthouse-core/audits/works-offline.js | failureTitle": {
+    "message": "Hindi tumutugon ang kasalukuyang page gamit ang 200 kapag offline"
+  },
+  "lighthouse-core/audits/works-offline.js | title": {
+    "message": "Tumutugon ang kasalukuyang page gamit ang 200 kapag offline"
+  },
+  "lighthouse-core/audits/works-offline.js | warningNoLoad": {
+    "message": "Puwedeng hindi naglo-load ang page offline dahil na-redirect ang iyong pansubok na URL ({requested}) sa \"{final}\". Subukang suriin ang pangalawang URL nang direkta."
+  },
+  "lighthouse-core/config/default-config.js | a11yAriaGroupDescription": {
+    "message": "Mga pagkakataon ito na pahusayin ang paggamit ng ARIA sa iyong application na maaaring mapahusay ang karanasan para sa mga user ng nakakatulong na teknolohiya, tulad ng screen reader."
+  },
+  "lighthouse-core/config/default-config.js | a11yAriaGroupTitle": {
+    "message": "ARIA"
+  },
+  "lighthouse-core/config/default-config.js | a11yAudioVideoGroupDescription": {
+    "message": "Ito ay mga pagkakataong magbigay ng alternatibong content para sa audio at video. Puwede nitong mapaganda ang karanasan para sa mga user na may mga problema sa paningin o pandinig."
+  },
+  "lighthouse-core/config/default-config.js | a11yAudioVideoGroupTitle": {
+    "message": "Audio at video"
+  },
+  "lighthouse-core/config/default-config.js | a11yBestPracticesGroupDescription": {
+    "message": "Hina-highlight ng mga item na ito ang mga karaniwang pinakamahusay na kagawian sa pagiging accessible."
+  },
+  "lighthouse-core/config/default-config.js | a11yBestPracticesGroupTitle": {
+    "message": "Pinakamahuhusay na kagawian"
+  },
+  "lighthouse-core/config/default-config.js | a11yCategoryDescription": {
+    "message": "Hina-highlight ng mga pagsusuring ito ang mga pagkakataong [gawing mas accessible ng iyong web app](https://developers.google.com/web/fundamentals/accessibility). Isang subset lang ng mga isyu sa pagiging accessible ang awtomatikong matutukoy kaya hinihikayat din ang manual na pagsusuri."
+  },
+  "lighthouse-core/config/default-config.js | a11yCategoryManualDescription": {
+    "message": "Tinutugunan ng mga item na ito ang mga bahaging hindi masasakop ng naka-automate na tool sa pagsusuri. Matuto pa sa aming gabay sa [pagsasagawa ng pagsusuri sa pagiging accessible](https://developers.google.com/web/fundamentals/accessibility/how-to-review)."
+  },
+  "lighthouse-core/config/default-config.js | a11yCategoryTitle": {
+    "message": "Pagiging accessible"
+  },
+  "lighthouse-core/config/default-config.js | a11yColorContrastGroupDescription": {
+    "message": "Mga pagkakataon ito na pahusayin ang pagiging nababasa ng iyong content."
+  },
+  "lighthouse-core/config/default-config.js | a11yColorContrastGroupTitle": {
+    "message": "Contrast"
+  },
+  "lighthouse-core/config/default-config.js | a11yLanguageGroupDescription": {
+    "message": "Mga pagkakataon ito na pahusayin ang pagsasalin ng mga user sa iyong content sa iba't ibang lokal."
+  },
+  "lighthouse-core/config/default-config.js | a11yLanguageGroupTitle": {
+    "message": "Pag-internationalize at pag-localize"
+  },
+  "lighthouse-core/config/default-config.js | a11yNamesLabelsGroupDescription": {
+    "message": "Mga pagkakataon ito ng pahusayin ang mga semantic ng mga kontrol sa iyong application. Maaari nitong pahusayin ang karanasan para sa mga user ng nakakatulong na teknolohiya, tulad ng screen reader."
+  },
+  "lighthouse-core/config/default-config.js | a11yNamesLabelsGroupTitle": {
+    "message": "Mga pangalan at label"
+  },
+  "lighthouse-core/config/default-config.js | a11yNavigationGroupDescription": {
+    "message": "Ito ay mga pagkakataong pahusayin ang pag-navigate gamit ang keyboard sa iyong application."
+  },
+  "lighthouse-core/config/default-config.js | a11yNavigationGroupTitle": {
+    "message": "Navigation"
+  },
+  "lighthouse-core/config/default-config.js | a11yTablesListsVideoGroupDescription": {
+    "message": "Ito ay mga pagkakataon para pagandahin ang karanasan ng pagbabasa ng data na nasa talahanayan o listahan gamit ang nakakatulong na teknolohiya, gaya ng screen reader."
+  },
+  "lighthouse-core/config/default-config.js | a11yTablesListsVideoGroupTitle": {
+    "message": "Mga talahanayan at listahan"
+  },
+  "lighthouse-core/config/default-config.js | bestPracticesCategoryTitle": {
+    "message": "Pinakamahuhusay na Kagawian"
+  },
+  "lighthouse-core/config/default-config.js | budgetsGroupDescription": {
+    "message": "Nagtatakda ng mga pamantayan para sa performance ng iyong site ang mga badyet ng performance."
+  },
+  "lighthouse-core/config/default-config.js | budgetsGroupTitle": {
+    "message": "Mga Badyet"
+  },
+  "lighthouse-core/config/default-config.js | diagnosticsGroupDescription": {
+    "message": "Higit pang impormasyon tungkol sa performance ng iyong application. Ang mga numerong ito ay hindi [direktang makakaapekto ](https://github.com/GoogleChrome/lighthouse/blob/d2ec9ffbb21de9ad1a0f86ed24575eda32c796f0/docs/scoring.md#how-are-the-scores-weighted) sa score sa Performance."
+  },
+  "lighthouse-core/config/default-config.js | diagnosticsGroupTitle": {
+    "message": "Mga Diagnostic"
+  },
+  "lighthouse-core/config/default-config.js | firstPaintImprovementsGroupDescription": {
+    "message": "Ang pinakamahalagang aspeto ng performance ay ang bilis ng pag-render ng mga pixel sa screen. Mahahalagang sukatan: First Contentful Paint, First Meaningful Paint"
+  },
+  "lighthouse-core/config/default-config.js | firstPaintImprovementsGroupTitle": {
+    "message": "Mga Pagpapahusay sa First Paint"
+  },
+  "lighthouse-core/config/default-config.js | loadOpportunitiesGroupDescription": {
+    "message": "Puwedeng makatulong ang mga suhestyon na ito na mapabilis ang pag-load ng iyong page. Hindi [direktang nakakaapekto](https://github.com/GoogleChrome/lighthouse/blob/d2ec9ffbb21de9ad1a0f86ed24575eda32c796f0/docs/scoring.md#how-are-the-scores-weighted) ang mga ito sa score sa Performance."
+  },
+  "lighthouse-core/config/default-config.js | loadOpportunitiesGroupTitle": {
+    "message": "Mga Pagkakataon"
+  },
+  "lighthouse-core/config/default-config.js | metricGroupTitle": {
+    "message": "Mga Sukatan"
+  },
+  "lighthouse-core/config/default-config.js | overallImprovementsGroupDescription": {
+    "message": "Pagandahin ang pangkalahatang karanasan sa pag-load para bumilis ang pagtugon ng page at magamit ito kaagad. Mahahalagang sukatan: Time to Interactive, Speed Index"
+  },
+  "lighthouse-core/config/default-config.js | overallImprovementsGroupTitle": {
+    "message": "Mga Pangkalahatang Pagpapahusay"
+  },
+  "lighthouse-core/config/default-config.js | performanceCategoryTitle": {
+    "message": "Performance"
+  },
+  "lighthouse-core/config/default-config.js | pwaCategoryDescription": {
+    "message": "Vina-validate ng mga pagsusuring ito ang mga aspeto ng isang Progressive Web App. [Matuto pa](https://developers.google.com/web/progressive-web-apps/checklist)."
+  },
+  "lighthouse-core/config/default-config.js | pwaCategoryManualDescription": {
+    "message": "Kinakailangan ang mga pagsusuring ito ng baseline na [Checklist ng PWA ](https://developers.google.com/web/progressive-web-apps/checklist) pero hindi awtomatikong sinusuri ng Lighthouse. Hindi nakakaapekto ang mga ito sa iyong score pero mahalagang ma-verify mo ang mga ito nang manual."
+  },
+  "lighthouse-core/config/default-config.js | pwaCategoryTitle": {
+    "message": "Progressive Web App"
+  },
+  "lighthouse-core/config/default-config.js | pwaFastReliableGroupTitle": {
+    "message": "Mabilis at maaasahan"
+  },
+  "lighthouse-core/config/default-config.js | pwaInstallableGroupTitle": {
+    "message": "Nai-install"
+  },
+  "lighthouse-core/config/default-config.js | pwaOptimizedGroupTitle": {
+    "message": "Na-optimize ang PWA"
+  },
+  "lighthouse-core/config/default-config.js | seoCategoryDescription": {
+    "message": "Tinitiyak ng mga pagsusuring ito na naka-optimize ang iyong page para sa ranking ng mga resulta ng search engine. May mga karagdagang salik na hindi sinusuri ng Lighthouse na puwedeng makaapekto sa iyong ranking sa paghahanap. [Matuto pa](https://support.google.com/webmasters/answer/35769)."
+  },
+  "lighthouse-core/config/default-config.js | seoCategoryManualDescription": {
+    "message": "Paganahin ang mga karagdagang validator na ito sa iyong site para tingnan ang karagdagang pinakamahuhusay na kagawian sa SEO."
+  },
+  "lighthouse-core/config/default-config.js | seoCategoryTitle": {
+    "message": "SEO"
+  },
+  "lighthouse-core/config/default-config.js | seoContentGroupDescription": {
+    "message": "I-format ang iyong HTML sa paraang nag-e-enable sa mga crawler na mas maunawaan ang content ng app mo."
+  },
+  "lighthouse-core/config/default-config.js | seoContentGroupTitle": {
+    "message": "Pinakamahuhusay na Kagawian sa Content"
+  },
+  "lighthouse-core/config/default-config.js | seoCrawlingGroupDescription": {
+    "message": "Para lumabas sa mga resulta ng paghahanap, kailangan ng mga crawler ng access sa iyong app."
+  },
+  "lighthouse-core/config/default-config.js | seoCrawlingGroupTitle": {
+    "message": "Pag-crawl at Pag-index"
+  },
+  "lighthouse-core/config/default-config.js | seoMobileGroupDescription": {
+    "message": "Tiyaking pang-mobile ang iyong mga page para hindi na kailangang mag-pinch o mag-zoom in ng mga user para mabasa ang mga page ng content. [Matuto pa](https://developers.google.com/search/mobile-sites/)."
+  },
+  "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
+    "message": "Pang-mobile"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnCacheTTL": {
+    "message": "TTL ng Cache"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnLocation": {
+    "message": "Lokasyon"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnName": {
+    "message": "Pangalan"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnRequests": {
+    "message": "Mga Kahilingan"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnResourceType": {
+    "message": "Uri ng Resource"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnSize": {
+    "message": "Laki"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnTimeSpent": {
+    "message": "Oras na Ginugol"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnTransferSize": {
+    "message": "Laki ng Paglipat"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnURL": {
+    "message": "URL"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnWastedBytes": {
+    "message": "Puwedeng Matipid"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnWastedMs": {
+    "message": "Puwedeng Matipid"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | displayValueByteSavings": {
+    "message": "Puwedeng makatipid ng {wastedBytes, number, bytes} KB"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | displayValueMsSavings": {
+    "message": "Puwedeng makatipid ng {wastedMs, number, milliseconds} ms"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | documentResourceType": {
+    "message": "Dokumento"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | fontResourceType": {
+    "message": "Font"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | imageResourceType": {
+    "message": "Larawan"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | mediaResourceType": {
+    "message": "Media"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | ms": {
+    "message": "{timeInMs, number, milliseconds} ms"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | otherResourceType": {
+    "message": "Iba pa"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | scriptResourceType": {
+    "message": "Script"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | seconds": {
+    "message": "{timeInMs, number, seconds} s"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | stylesheetResourceType": {
+    "message": "Stylesheet"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | thirdPartyResourceType": {
+    "message": "Third-party"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | totalResourceType": {
+    "message": "Kabuuan"
+  },
+  "lighthouse-core/lib/lh-error.js | badTraceRecording": {
+    "message": "Nagkaroon ng problema sa pag-record ng trace sa pag-load ng iyong page. Paganahin ulit ang Lighthouse. ({errorCode})"
+  },
+  "lighthouse-core/lib/lh-error.js | criTimeout": {
+    "message": "Nag-timeout habang naghihintay para sa paunang koneksyon sa Protocol ng Debugger."
+  },
+  "lighthouse-core/lib/lh-error.js | didntCollectScreenshots": {
+    "message": "Hindi nangolekta ang Chrome ng anumang screenshot habang nilo-load ang page. Pakitiyak na may nakikitang content sa page, at pagkatapos ay subukang paganahin ulit ang Lighthouse. ({errorCode})"
+  },
+  "lighthouse-core/lib/lh-error.js | dnsFailure": {
+    "message": "Hindi malutas ng mga DNS server ang ibinigay na domain."
+  },
+  "lighthouse-core/lib/lh-error.js | erroredRequiredArtifact": {
+    "message": "Ang kinakailangang gatherer na {artifactName} ay nagkaroon ng error: {errorMessage}"
+  },
+  "lighthouse-core/lib/lh-error.js | internalChromeError": {
+    "message": "Nagkaroon ng internal na error sa Chrome. Paki-restart ang Chrome at subukang muling paganahin ang Lighthouse."
+  },
+  "lighthouse-core/lib/lh-error.js | missingRequiredArtifact": {
+    "message": "Hindi tumakbo ang kinakailangang gatherer na {artifactName}."
+  },
+  "lighthouse-core/lib/lh-error.js | pageLoadFailed": {
+    "message": "Hindi na-load nang maayos ng Lighthouse ang page na hiniling mo. Tiyaking tamang URL ang sinusubukan mo at tumutugon nang maayos ang server sa lahat ng kahilingan."
+  },
+  "lighthouse-core/lib/lh-error.js | pageLoadFailedHung": {
+    "message": "Hindi na-load nang maayos ng Lighthouse ang URL na hiniling mo dahil huminto sa pagtugon ang page."
+  },
+  "lighthouse-core/lib/lh-error.js | pageLoadFailedInsecure": {
+    "message": "Walang valid na panseguridad na certificate ang URL na ibinigay mo. {securityMessages}"
+  },
+  "lighthouse-core/lib/lh-error.js | pageLoadFailedInterstitial": {
+    "message": "Pinigilan ng Chrome ang pag-load ng page gamit ang interstitial. Tiyaking tamang URL ang sinusubukan mo at tumutugon nang maayos ang server sa lahat ng kahilingan."
+  },
+  "lighthouse-core/lib/lh-error.js | pageLoadFailedWithDetails": {
+    "message": "Hindi na-load nang maayos ng Lighthouse ang page na hiniling mo. Tiyaking tamang URL ang sinusubukan mo at tumutugon nang maayos ang server sa lahat ng kahilingan. (Mga Detalye: {errorDetails})"
+  },
+  "lighthouse-core/lib/lh-error.js | pageLoadFailedWithStatusCode": {
+    "message": "Hindi na-load nang maayos ng Lighthouse ang page na hiniling mo. Tiyaking tamang URL ang sinusubukan mo at tumutugon nang maayos ang server sa lahat ng kahilingan. (Status code: {statusCode})"
+  },
+  "lighthouse-core/lib/lh-error.js | pageLoadTookTooLong": {
+    "message": "Masyadong matagal na na-load ang iyong page. Pakisunod ang mga pagkakataon sa ulat para mabawasan ang tagal ng pag-load ng iyong page, at pagkatapos ay paganahin ulit ang Lighthouse. ({errorCode})"
+  },
+  "lighthouse-core/lib/lh-error.js | protocolTimeout": {
+    "message": "Lumampas na sa nakalaang oras ang paghihintay ng tugon ng DevTools protocol. (Pamamaraan: {protocolMethod})"
+  },
+  "lighthouse-core/lib/lh-error.js | requestContentTimeout": {
+    "message": "Lumampas na sa nakalaang panahon ang pag-fetch ng content ng resource"
+  },
+  "lighthouse-core/lib/lh-error.js | urlInvalid": {
+    "message": "Mukhang invalid ang URL na ibinigay mo."
+  },
+  "lighthouse-core/report/html/renderer/util.js | auditGroupExpandTooltip": {
+    "message": "Ipakita ang mga pag-audit"
+  },
+  "lighthouse-core/report/html/renderer/util.js | crcInitialNavigation": {
+    "message": "Unang Navigation"
+  },
+  "lighthouse-core/report/html/renderer/util.js | crcLongestDurationLabel": {
+    "message": "Maximum na latency ng critical path:"
+  },
+  "lighthouse-core/report/html/renderer/util.js | errorLabel": {
+    "message": "Nagka-error!"
+  },
+  "lighthouse-core/report/html/renderer/util.js | errorMissingAuditInfo": {
+    "message": "Error sa ulat: walang impormasyon sa pag-audit"
+  },
+  "lighthouse-core/report/html/renderer/util.js | labDataTitle": {
+    "message": "Data ng Lab"
+  },
+  "lighthouse-core/report/html/renderer/util.js | lsPerformanceCategoryDescription": {
+    "message": "Ang pagsusuri ng [Lighthouse](https://developers.google.com/web/tools/lighthouse/) ng kasalukuyang page sa isang na-emulate na mobile network. Tinantya at puwedeng mag-iba ang mga value."
+  },
+  "lighthouse-core/report/html/renderer/util.js | manualAuditsGroupTitle": {
+    "message": "Mga karagdagang item na manual na susuriin"
+  },
+  "lighthouse-core/report/html/renderer/util.js | notApplicableAuditsGroupTitle": {
+    "message": "Hindi naaangkop"
+  },
+  "lighthouse-core/report/html/renderer/util.js | opportunityResourceColumnLabel": {
+    "message": "Pagkakataon"
+  },
+  "lighthouse-core/report/html/renderer/util.js | opportunitySavingsColumnLabel": {
+    "message": "Tinatayang Matitipid"
+  },
+  "lighthouse-core/report/html/renderer/util.js | passedAuditsGroupTitle": {
+    "message": "Mga pumasang pag-audit"
+  },
+  "lighthouse-core/report/html/renderer/util.js | snippetCollapseButtonLabel": {
+    "message": "I-collapse ang snippet"
+  },
+  "lighthouse-core/report/html/renderer/util.js | snippetExpandButtonLabel": {
+    "message": "I-expand ang snippet"
+  },
+  "lighthouse-core/report/html/renderer/util.js | thirdPartyResourcesLabel": {
+    "message": "Ipakita ang mga resource ng 3rd party"
+  },
+  "lighthouse-core/report/html/renderer/util.js | toplevelWarningsMessage": {
+    "message": "May mga isyung nakakaapekto sa pagpapatakbong ito ng Lighthouse:"
+  },
+  "lighthouse-core/report/html/renderer/util.js | varianceDisclaimer": {
+    "message": "Tinantya at puwedeng mag-iba ang mga value. [Batay lang sa mga sukatang ito ](https://github.com/GoogleChrome/lighthouse/blob/d2ec9ffbb21de9ad1a0f86ed24575eda32c796f0/docs/scoring.md#how-are-the-scores-weighted) ang score sa performance."
+  },
+  "lighthouse-core/report/html/renderer/util.js | warningAuditsGroupTitle": {
+    "message": "Pumasa sa mga pag-audit ngunit may mga babala"
+  },
+  "lighthouse-core/report/html/renderer/util.js | warningHeader": {
+    "message": "Mga Babala: "
+  },
+  "stack-packs/packs/wordpress.js | efficient_animated_content": {
+    "message": "Pag-isipang i-upload ang iyong GIF sa isang serbisyo kung saan gagawin itong available para i-embed bilang HTML5 video."
+  },
+  "stack-packs/packs/wordpress.js | offscreen_images": {
+    "message": "Mag-install ng [lazy-load na plugin sa WordPress](https://wordpress.org/plugins/search/lazy+load/) na nagbibigay ng kakayahang ipagpaliban ang anumang offscreen na larawan, o lumipat sa isang temang nagbibigay ng functionality. Pag-isipan ding gamiting [ang AMP na plugin](https://wordpress.org/plugins/amp/)."
+  },
+  "stack-packs/packs/wordpress.js | render_blocking_resources": {
+    "message": "May ilang plugin sa WordPress na makakatulong sa iyong [i-inline ang mahahalagang asset](https://wordpress.org/plugins/search/critical+css/) o [ipagpaliban ang hindi masyadong mahahalagang resource](https://wordpress.org/plugins/search/defer+css+javascript/). Tandaang puwedeng makasira sa mga feature ng iyong tema o mga plugin ang mga pag-optimize na mula sa mga plugin na ito, kaya malamang na kakailanganin mong gumawa ng mga pagbabago sa code."
+  },
+  "stack-packs/packs/wordpress.js | time_to_first_byte": {
+    "message": "Nakakaapekto ang mga tema, plugin, at detalye ng server sa oras ng pagtugon ng server. Pag-isipang maghanap ng mas naka-optimize na tema, maingat na pumili ng plugin sa pag-optimize, at/o i-upgrade ang iyong server."
+  },
+  "stack-packs/packs/wordpress.js | total_byte_weight": {
+    "message": "Pag-isipang magpakita ng mga sipi sa iyong mga listahan ng post (hal. sa pamamagitan ng tag na higit pa), bawasan ang bilang ng post na ipinapakita sa isang page, hatiin ang mahahaba mong post sa maraming page, o gumamit ng plugin sa mga lazy-load na komento."
+  },
+  "stack-packs/packs/wordpress.js | unminified_css": {
+    "message": "Puwedeng pabilisin ng ilang [plugin sa WordPress](https://wordpress.org/plugins/search/minify+css/) ang iyong site sa pamamagitan ng pagsasama-sama, pagpapaliit, at pagko-compress ng mga istilo mo. Puwede ka ring gumamit ng proseso ng pagbuo para gawin ang pagpapaliit na ito nang mas maaga kung posible."
+  },
+  "stack-packs/packs/wordpress.js | unminified_javascript": {
+    "message": "Puwedeng pabilisin ng ilang [plugin sa WordPress](https://wordpress.org/plugins/search/minify+javascript/) ang iyong site sa pamamagitan ng pagsasama-sama, pagpapaliit, at pagko-compress ng mga script mo. Puwede ka ring gumamit ng proseso ng pagbuo para gawin ang pagpapaliit na ito nang mas maaga kung posible."
+  },
+  "stack-packs/packs/wordpress.js | unused_css_rules": {
+    "message": "Pag-isipang bawasan, o baguhin, ang bilang ng [mga plugin sa WordPress](https://wordpress.org/plugins/) na naglo-load ng mga hindi ginagamit na CSS sa iyong page. Para tukuyin ang mga plugin na nagdaragdag ng mga hindi nauugnay na CSS, subukang patakbuhin ang [sakop ng code](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) sa Chrome DevTools. Puwede mong tukuyin ang tema/plugin na sanhi nito mula sa URL ng stylesheet. Abangan ang mga plugin na maraming stylesheet sa listahang maraming pula sa sakop ng code. Dapat lang i-enqueue ng plugin ang isang stylesheet kung talagang ginagamit ito sa page."
+  },
+  "stack-packs/packs/wordpress.js | unused_javascript": {
+    "message": "Pag-isipang bawasan, o baguhin, ang bilang ng [mga plugin sa WordPress](https://wordpress.org/plugins/) na naglo-load ng mga hindi ginagamit na JavaScript sa iyong page. Para tukuyin ang mga plugin na nagdaragdag ng mga hindi nauugnay na JS, subukang patakbuhin ang [sakop ng code](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) sa Chrome DevTools. Puwede mong tukuyin ang tema/plugin na sanhi nito mula sa URL ng script. Abangan ang mga plugin na maraming script sa listahang may maraming pula sa sakop ng code. Dapat lang i-enqueue ng plugin ang isang script kung talagang ginagamit ito sa page."
+  },
+  "stack-packs/packs/wordpress.js | uses_long_cache_ttl": {
+    "message": "Magbasa tungkol sa [Pag-cache ng Browser sa WordPress](https://codex.wordpress.org/WordPress_Optimization#Browser_Caching)."
+  },
+  "stack-packs/packs/wordpress.js | uses_optimized_images": {
+    "message": "Pag-isipang gumamit ng [plugin sa WordPress para sa pag-optimize ng larawan](https://wordpress.org/plugins/search/optimize+images/) na nagko-compress ng iyong mga larawan habang pinapanatili ang kalidad."
+  },
+  "stack-packs/packs/wordpress.js | uses_responsive_images": {
+    "message": "Direktang i-upload ang mga larawan sa pamamagitan ng [library ng media](https://codex.wordpress.org/Media_Library_Screen) para tiyaking available ang mga kinakailangang laki ng larawan, at pagkatapos ay ilagay ang mga ito mula sa library ng media o gamitin ang widget ng larawan para tiyaking ginagamit ang mga pinakaangkop na laki ng larawan (kabilang ang para sa mga tumutugong breakpoint). Iwasang gamitin ang mga larawang nasa `Full Size` maliban kung sapat ang mga dimensyon para sa paggamit ng mga ito. [Matuto Pa](https://codex.wordpress.org/Inserting_Images_into_Posts_and_Pages#Image_Size)."
+  },
+  "stack-packs/packs/wordpress.js | uses_text_compression": {
+    "message": "Puwede mong i-enable ang pag-compress ng text sa configuration ng iyong server sa web."
+  },
+  "stack-packs/packs/wordpress.js | uses_webp_images": {
+    "message": "Pag-isipang gumamit ng [plugin](https://wordpress.org/plugins/search/convert+webp/) o serbisyong awtomatikong magko-convert ng iyong mga na-upload na larawan sa mga optimal na format."
+  }
+}

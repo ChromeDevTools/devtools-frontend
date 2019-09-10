@@ -120,17 +120,29 @@
   <message name="IDS_DEVTOOLS_526d688f37a86d3c3f27d0c5016eb71d" desc="Text of orientation reset button in Sensors View of the Device Toolbar">
     Reset
   </message>
+  <message name="IDS_DEVTOOLS_5466ee572bcbc75830d044e66ab429bc" desc="City name in Geolocations Settings">
+    Shanghai
+  </message>
   <message name="IDS_DEVTOOLS_58cc7602635a11277aa7531e14b32c97" desc="Text in Sensors View of the Device Toolbar">
     Portrait upside down
   </message>
   <message name="IDS_DEVTOOLS_59c06928c1dcdb1a687bf21d73e53a09" desc="Text in Device Mode Toolbar of the Device Toolbar">
     Show device frame
   </message>
+  <message name="IDS_DEVTOOLS_59ead8d1e124ccfb79f3ace06f43e703" desc="City name in Geolocations Settings">
+    London
+  </message>
+  <message name="IDS_DEVTOOLS_5b4f1c0e2bd8bc1ba726cd51dd70c1a6" desc="City name in Geolocations Settings">
+    Mountain View
+  </message>
   <message name="IDS_DEVTOOLS_614103b76fd0d9de068d69034fb6f987" desc="Text in Device Mode View of the Device Toolbar">
     (<ph name="THIS__MODEL_DEVICE___TITLE">$1s<ex>iPhone X</ex></ph>)
   </message>
   <message name="IDS_DEVTOOLS_6149711fb8edc5e2adeea7aa63ee11ff" desc="Text in Device Mode Toolbar of the Device Toolbar">
     150%
+  </message>
+  <message name="IDS_DEVTOOLS_62413a57c5e3dc51177995fa175d3286" desc="City name in Geolocations Settings">
+    Tokyo
   </message>
   <message name="IDS_DEVTOOLS_62759e0d418d7391bf2d54e70cbcc05d" desc="Text in Device Mode Toolbar of the Device Toolbar">
     Remove device type
@@ -171,8 +183,14 @@
   <message name="IDS_DEVTOOLS_7b4b2de0aae3a60aa3cf502a19f9c748" desc="Error message in the Devices settings pane that declares that the device name input must not be empty">
     Device name cannot be empty.
   </message>
+  <message name="IDS_DEVTOOLS_7e35e74e610188414ad24235dd787c78" desc="City name in Geolocations Settings">
+    Moscow
+  </message>
   <message name="IDS_DEVTOOLS_7f163d0494446906a484df67e90c1d6b" desc="Text in Device Mode Toolbar of the Device Toolbar">
     Hide device frame
+  </message>
+  <message name="IDS_DEVTOOLS_7fc2515293d99e95b1745e81d6abbdf4" desc="City name in Geolocations Settings">
+    São Paulo
   </message>
   <message name="IDS_DEVTOOLS_815dff01257e5ef182b25d4c1ef0a7a0" desc="Text in Device Mode Toolbar of the Device Toolbar">
     Landscape
@@ -194,6 +212,9 @@
   </message>
   <message name="IDS_DEVTOOLS_8d7b5211545faceef57a041ee56a2f5e" desc="Title of an action in the emulation tool to capture full height screenshot">
     Capture full size screenshot
+  </message>
+  <message name="IDS_DEVTOOLS_8ebaad59980c95ade797c903761fa815" desc="City name in Geolocations Settings">
+    Mumbai
   </message>
   <message name="IDS_DEVTOOLS_901bc0a4714ff81c24943a50e620de71" desc="Text in Devices Settings Tab of the Device Toolbar">
     User agent string
@@ -312,6 +333,9 @@
   <message name="IDS_DEVTOOLS_eccbc87e4b5ce2fe28308fd9f2a7baf3" desc="Text in Device Mode Toolbar of the Device Toolbar">
     3
   </message>
+  <message name="IDS_DEVTOOLS_ee1611b61f5688e70c12b40684dbb395" desc="City name in Geolocations Settings">
+    Berlin
+  </message>
   <message name="IDS_DEVTOOLS_ee1cab1975e28575b1631ee8fc4ea749" desc="Title of an action in the emulation tool to capture node screenshot">
     Capture node screenshot
   </message>
@@ -329,6 +353,9 @@
   </message>
   <message name="IDS_DEVTOOLS_f2a72a44f7b7d30829c0405ed2385345" desc="Text in Device Mode View of the Device Toolbar">
     Mobile S
+  </message>
+  <message name="IDS_DEVTOOLS_f4334fdfa1c728eae375fe781e2e2d9d" desc="City name in Geolocations Settings">
+    San Francisco
   </message>
   <message name="IDS_DEVTOOLS_f819de81247be4a5428dc0e169de28b8" desc="Text in Device Mode Toolbar of the Device Toolbar">
     75%

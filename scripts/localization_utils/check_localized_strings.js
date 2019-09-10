@@ -115,6 +115,11 @@ function parseLocalizableStringFromModuleJson(fileContent, filePath) {
           if (option.text !== undefined)
             addString(option.text, option.text, filePath);
         }
+      } else if (key === 'defaultValue' && Array.isArray(extension[key])) {
+        for (const defaultVal of extension[key]) {
+          if (defaultVal.title)
+            addString(defaultVal.title, defaultVal.title, filePath);
+        }
       }
     }
   }

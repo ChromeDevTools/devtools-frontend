@@ -210,4 +210,10 @@
   <message name="IDS_DEVTOOLS_fd63c694ddc8073cf10bb8025aa9aaaf" desc="Text in Layer Details View of the Layers panel">
     Layer for scrollbar.
   </message>
+  <message name="IDS_DEVTOOLS_a3ed19b48390aad906de764e0476142d" desc="Text for a checkbox in the toolbar of the Layers panel to show the paints of the page">
+    Paints
+  </message>
+  <message name="IDS_DEVTOOLS_4f6faa156251f75fbefe3270d94a7a28" desc="Text for a checkbox in the toolbar of the Layers panel to show the area of slow scroll rect">
+    Slow scroll rects
+  </message>
 </grit-part>

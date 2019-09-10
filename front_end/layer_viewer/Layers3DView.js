@@ -678,10 +678,10 @@ LayerViewer.Layers3DView = class extends UI.VBox {
   _initToolbar() {
     this._panelToolbar = this._transformController.toolbar();
     this.contentElement.appendChild(this._panelToolbar.element);
-    this._showSlowScrollRectsSetting =
-        this._createVisibilitySetting('Slow scroll rects', 'frameViewerShowSlowScrollRects', true, this._panelToolbar);
+    this._showSlowScrollRectsSetting = this._createVisibilitySetting(
+        ls`Slow scroll rects`, 'frameViewerShowSlowScrollRects', true, this._panelToolbar);
     this._showPaintsSetting =
-        this._createVisibilitySetting('Paints', 'frameViewerShowPaints', true, this._panelToolbar);
+        this._createVisibilitySetting(ls`Paints`, 'frameViewerShowPaints', true, this._panelToolbar);
     this._showPaintsSetting.addChangeListener(this._updatePaints, this);
     Common.moduleSetting('frameViewerHideChromeWindow').addChangeListener(this._update, this);
   }

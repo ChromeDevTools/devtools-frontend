@@ -52,6 +52,8 @@ Profiler.ProfilesPanel = class extends UI.PanelWithSidebar {
 
     this._sidebarTree.appendChild(this.profilesItemTreeElement);
 
+    this._sidebarTree.element.addEventListener('keydown', this._onKeyDown.bind(this), false);
+
     this.profileViews = createElement('div');
     this.profileViews.id = 'profile-views';
     this.profileViews.classList.add('vbox');
@@ -94,8 +96,6 @@ Profiler.ProfilesPanel = class extends UI.PanelWithSidebar {
 
     this._createFileSelectorElement();
     this.element.addEventListener('contextmenu', this._handleContextMenuEvent.bind(this), false);
-
-    this.contentElement.addEventListener('keydown', this._onKeyDown.bind(this), false);
 
     SDK.targetManager.addEventListener(SDK.TargetManager.Events.SuspendStateChanged, this._onSuspendStateChanged, this);
     UI.context.addFlavorChangeListener(SDK.CPUProfilerModel, this._updateProfileTypeSpecificUI, this);

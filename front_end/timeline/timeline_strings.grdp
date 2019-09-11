@@ -352,6 +352,9 @@ Click the reload button <ph name="RELOADBUTTON">$3s<ex>reload</ex></ph> or hit <
   <message name="IDS_DEVTOOLS_55b4b48b80795ee9b6a3220ca415786d" desc="Text in Timeline UIUtils of the Performance panel">
     Schedule Style Recalculation
   </message>
+  <message name="IDS_DEVTOOLS_571d0a86e3e15c23eb715c4e8b46b7b8" desc="Text in Timeline UIUtils of the Performance panel">
+    ''' (<ph name="NETWORKDURATIONSTR">$1s<ex>1ms</ex></ph> <ph name="CACHEORNETWORKLABEL">$2s<ex>network transfer</ex></ph> + <ph name="PROCESSINGDURATIONSTR">$3s<ex>1ms</ex></ph> resource loading)
+  </message>
   <message name="IDS_DEVTOOLS_57f06e0eceb273507ade79baf8d3a2d4" desc="Text in Timeline UIUtils of the Performance panel">
     Tap Begin
   </message>
@@ -813,6 +816,9 @@ Then, zoom and pan the timeline with the mousewheel or <ph name="NAVIGATENODE">$
   <message name="IDS_DEVTOOLS_d5e3345f0d0b507c8993b1ca0e0ac2c4" desc="Text in Timeline UIUtils of the Performance panel">
     First Paint
   </message>
+  <message name="IDS_DEVTOOLS_d5f967961bccf06a9eb7989d69d94a15" desc="Text in Timeline UIUtils of the Performance panel">
+    network transfer
+  </message>
   <message name="IDS_DEVTOOLS_d84fe3f1d290e4855cc0487b5ea18a4a" desc="Text in Timeline UIUtils of the Performance panel">
     Pinch Begin
   </message>
@@ -824,6 +830,9 @@ Then, zoom and pan the timeline with the mousewheel or <ph name="NAVIGATENODE">$
   </message>
   <message name="IDS_DEVTOOLS_d97477d6d8a838ead9348185bb5b6742" desc="Text in Timeline Flame Chart Data Provider of the Performance panel">
     Thread
+  </message>
+  <message name="IDS_DEVTOOLS_d97db6efa26ba3b28be1f0d597f1d759" desc="Text in Timeline UIUtils of the Performance panel">
+    load from cache
   </message>
   <message name="IDS_DEVTOOLS_da3c710f68f0c891ecad19dcbf2ab349" desc="Text in Timeline UIUtils of the Performance panel">
     Console Time

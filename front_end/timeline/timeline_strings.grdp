@@ -160,6 +160,9 @@ Click the reload button <ph name="RELOADBUTTON">$3s<ex>reload</ex></ph> or hit <
   <message name="IDS_DEVTOOLS_24aa4117da86c41684ad25742832dfa6" desc="Text in Timeline UIUtils of the Performance panel">
     Async
   </message>
+  <message name="IDS_DEVTOOLS_24ed51e784c08847f2c1bafe1a6428a4" desc="Text in Timeline UIUtils of the Performance panel">
+    Will Send Request
+  </message>
   <message name="IDS_DEVTOOLS_25a5e1f05232eae2d3a9c1ff4cb83869" desc="Text in Timeline UIUtils of the Performance panel">
     Function Call
   </message>

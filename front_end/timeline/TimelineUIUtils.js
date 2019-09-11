@@ -104,6 +104,7 @@ Timeline.TimelineUIUtils = class {
     eventStyles[type.TimeStamp] = new Timeline.TimelineRecordStyle(ls`Timestamp`, scripting);
     eventStyles[type.ConsoleTime] = new Timeline.TimelineRecordStyle(ls`Console Time`, scripting);
     eventStyles[type.UserTiming] = new Timeline.TimelineRecordStyle(ls`User Timing`, scripting);
+    eventStyles[type.ResourceWillSendRequest] = new Timeline.TimelineRecordStyle(ls`Will Send Request`, loading);
     eventStyles[type.ResourceSendRequest] = new Timeline.TimelineRecordStyle(ls`Send Request`, loading);
     eventStyles[type.ResourceReceiveResponse] = new Timeline.TimelineRecordStyle(ls`Receive Response`, loading);
     eventStyles[type.ResourceFinish] = new Timeline.TimelineRecordStyle(ls`Finish Loading`, loading);
@@ -523,6 +524,7 @@ Timeline.TimelineUIUtils = class {
       case recordType.WebSocketSendHandshakeRequest:
       case recordType.WebSocketReceiveHandshakeResponse:
       case recordType.WebSocketDestroy:
+      case recordType.ResourceWillSendRequest:
       case recordType.ResourceSendRequest:
       case recordType.ResourceReceivedData:
       case recordType.ResourceReceiveResponse:
@@ -630,6 +632,7 @@ Timeline.TimelineUIUtils = class {
       case recordType.DecodeLazyPixelRef:
       case recordType.XHRReadyStateChange:
       case recordType.XHRLoad:
+      case recordType.ResourceWillSendRequest:
       case recordType.ResourceSendRequest:
       case recordType.ResourceReceivedData:
       case recordType.ResourceReceiveResponse:
@@ -828,6 +831,7 @@ Timeline.TimelineUIUtils = class {
       case recordTypes.FireAnimationFrame:
         contentHelper.appendTextRow(ls`Callback ID`, eventData['id']);
         break;
+      case recordTypes.ResourceWillSendRequest:
       case recordTypes.ResourceSendRequest:
       case recordTypes.ResourceReceiveResponse:
       case recordTypes.ResourceReceivedData:

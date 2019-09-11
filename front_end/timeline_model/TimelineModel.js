@@ -951,6 +951,13 @@ TimelineModel.TimelineModel = class {
       return;
     }
 
+    if (event.name === TimelineModel.TimelineModel.RecordType.ResourceWillSendRequest) {
+      const requestId = event.args['data']['requestId'];
+      if (typeof requestId === 'string')
+        this._requestsFromBrowser.set(requestId, event);
+      return;
+    }
+
     if (event.hasCategory(SDK.TracingModel.DevToolsMetadataEventCategory) && event.args['data']) {
       const data = event.args['data'];
       if (event.name === TimelineModel.TimelineModel.DevToolsMetadataEvent.TracingStartedInBrowser) {
@@ -1074,6 +1081,8 @@ TimelineModel.TimelineModel = class {
     /** @type {!Map<string, !TimelineModel.TimelineModel.PageFrame>} */
     this._pageFrames = new Map();
     this._mainFrame = null;
+    /** @type {!Map<string, !SDK.TracingModel.Event>} */
+    this._requestsFromBrowser = new Map();
 
     this._minimumRecordTime = 0;
     this._maximumRecordTime = 0;
@@ -1171,8 +1180,8 @@ TimelineModel.TimelineModel = class {
     const zeroStartRequestsList = [];
     const types = TimelineModel.TimelineModel.RecordType;
     const resourceTypes = new Set([
-      types.ResourceSendRequest, types.ResourceReceiveResponse, types.ResourceReceivedData, types.ResourceFinish,
-      types.ResourceMarkAsCached
+      types.ResourceWillSendRequest, types.ResourceSendRequest, types.ResourceReceiveResponse,
+      types.ResourceReceivedData, types.ResourceFinish, types.ResourceMarkAsCached
     ]);
     const events = this.inspectedTargetEvents();
     for (let i = 0; i < events.length; ++i) {
@@ -1180,6 +1189,11 @@ TimelineModel.TimelineModel = class {
       if (!resourceTypes.has(e.name))
         continue;
       const id = TimelineModel.TimelineModel.globalEventId(e, 'requestId');
+      if (e.name === types.ResourceSendRequest && this._requestsFromBrowser.has(e.args.data.requestId))
+        addRequest(this._requestsFromBrowser.get(e.args.data.requestId), id);
+      addRequest(e, id);
+    }
+    function addRequest(e, id) {
       let request = requests.get(id);
       if (request) {
         request.addEvent(e);
@@ -1267,6 +1281,7 @@ TimelineModel.TimelineModel.RecordType = {
   ConsoleTime: 'ConsoleTime',
   UserTiming: 'UserTiming',
 
+  ResourceWillSendRequest: 'ResourceWillSendRequest',
   ResourceSendRequest: 'ResourceSendRequest',
   ResourceReceiveResponse: 'ResourceReceiveResponse',
   ResourceReceivedData: 'ResourceReceivedData',
@@ -1522,7 +1537,10 @@ TimelineModel.TimelineModel.NetworkRequest = class {
    * @param {!SDK.TracingModel.Event} event
    */
   constructor(event) {
-    this.startTime = event.name === TimelineModel.TimelineModel.RecordType.ResourceSendRequest ? event.startTime : 0;
+    const recordType = TimelineModel.TimelineModel.RecordType;
+    const isInitial =
+        event.name === recordType.ResourceSendRequest || event.name === recordType.ResourceWillSendRequest;
+    this.startTime = isInitial ? event.startTime : 0;
     this.endTime = Infinity;
     this.encodedDataLength = 0;
     this.decodedBodyLength = 0;

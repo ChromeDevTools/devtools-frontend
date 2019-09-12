@@ -526,6 +526,7 @@ SDK.DebuggerModel = class extends SDK.SDKModel {
   async _pausedScript(
       callFrames, reason, auxData, breakpointIds, asyncStackTrace, asyncStackTraceId, asyncCallStackTraceId) {
     if (asyncCallStackTraceId) {
+      // Note: this is only to support old backends. Newer ones do not send asyncCallStackTraceId.
       SDK.DebuggerModel._scheduledPauseOnAsyncCall = asyncCallStackTraceId;
       const promises = [];
       for (const model of SDK.DebuggerModel._debuggerIdToModel.values())

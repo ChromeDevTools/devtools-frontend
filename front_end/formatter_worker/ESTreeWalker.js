@@ -129,6 +129,7 @@ FormatterWorker.ESTreeWalker._walkOrder = {
   'ParenthesizedExpression': ['expression'],
   'Program': ['body'],
   'Property': ['key', 'value'],
+  'RestElement': ['argument'],
   'ReturnStatement': ['argument'],
   'SequenceExpression': ['expressions'],
   'SpreadElement': ['argument'],

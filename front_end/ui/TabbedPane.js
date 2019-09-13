@@ -551,10 +551,12 @@ UI.TabbedPane = class extends UI.VBox {
   _createDropDownButton() {
     const dropDownContainer = createElementWithClass('div', 'tabbed-pane-header-tabs-drop-down-container');
     const chevronIcon = UI.Icon.create('largeicon-chevron', 'chevron-icon');
-    UI.ARIAUtils.markAsButton(dropDownContainer);
+    UI.ARIAUtils.markAsMenuButton(dropDownContainer);
     UI.ARIAUtils.setAccessibleName(dropDownContainer, ls`More tabs`);
+    dropDownContainer.tabIndex = 0;
     dropDownContainer.appendChild(chevronIcon);
     dropDownContainer.addEventListener('click', this._dropDownClicked.bind(this));
+    dropDownContainer.addEventListener('keydown', this._dropDownKeydown.bind(this));
     dropDownContainer.addEventListener('mousedown', event => {
       if (event.which !== 1 || this._triggerDropDownTimeout)
         return;
@@ -583,6 +585,16 @@ UI.TabbedPane = class extends UI.VBox {
           tab.title, this._dropDownMenuItemSelected.bind(this, tab), this._tabsHistory[0] === tab);
     }
     menu.show();
+  }
+
+  /**
+   * @param {!Event} event
+   */
+  _dropDownKeydown(event) {
+    if (isEnterOrSpaceKey(event)) {
+      this._dropDownButton.click();
+      event.consume(true);
+    }
   }
 
   /**

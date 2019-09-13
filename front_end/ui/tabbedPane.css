@@ -170,16 +170,14 @@
     display: block;
 }
 
-.tabbed-pane-header-tabs-drop-down-container:hover {
+.tabbed-pane-header-tabs-drop-down-container:hover,
+.tabbed-pane-header-tabs-drop-down-container[data-keyboard-focus="true"]:focus {
     background-color: rgb(229, 229, 229);
+    opacity: 1.0;
 }
 
 .tabbed-pane-header-tabs-drop-down-container.measuring {
     visibility: hidden;
-}
-
-.tabbed-pane-header-tabs-drop-down-container:hover {
-    opacity: 1.0;
 }
 
 .tabbed-pane-header-tabs-drop-down-container:active {

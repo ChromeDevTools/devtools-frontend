@@ -168,6 +168,13 @@ UI.ARIAUtils.markAsHeading = function(element, level) {
 
 /**
  * @param {!Element} element
+ */
+UI.ARIAUtils.markAsPoliteLiveRegion = function(element) {
+  element.setAttribute('aria-live', 'polite');
+};
+
+/**
+ * @param {!Element} element
  * @param {?string} placeholder
  */
 UI.ARIAUtils.setPlaceholder = function(element, placeholder) {

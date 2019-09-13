@@ -106,11 +106,12 @@ Network.RequestCookiesView = class extends UI.Widget {
       if (this._showFilteredOutCookiesSetting.get()) {
         const blockedRequestCookies = this._request.blockedRequestCookies().slice();
         for (const blockedCookie of blockedRequestCookies) {
-          requestCookieToBlockedReasons.set(
-              blockedCookie.cookie, [{
-                attribute: SDK.NetworkRequest.cookieBlockedReasonToAttribute(blockedCookie.blockedReason),
-                uiString: SDK.NetworkRequest.cookieBlockedReasonToUiString(blockedCookie.blockedReason)
-              }]);
+          requestCookieToBlockedReasons.set(blockedCookie.cookie, blockedCookie.blockedReasons.map(blockedReason => {
+            return {
+              attribute: SDK.NetworkRequest.cookieBlockedReasonToAttribute(blockedReason),
+              uiString: SDK.NetworkRequest.cookieBlockedReasonToUiString(blockedReason)
+            };
+          }));
           requestCookies.push(blockedCookie.cookie);
         }
       }
@@ -157,17 +158,18 @@ Network.RequestCookiesView = class extends UI.Widget {
       for (const blockedCookie of this._request.blockedResponseCookies()) {
         const parsedCookies = SDK.CookieParser.parseSetCookie(blockedCookie.cookieLine);
         if (!parsedCookies.length ||
-            blockedCookie.blockedReason === Protocol.Network.SetCookieBlockedReason.SyntaxError) {
+            blockedCookie.blockedReasons.includes(Protocol.Network.SetCookieBlockedReason.SyntaxError)) {
           malformedResponseCookies.push(blockedCookie);
           continue;
         }
 
         const cookie = parsedCookies[0];
-        responseCookieToBlockedReasons.set(
-            cookie, [{
-              attribute: SDK.NetworkRequest.setCookieBlockedReasonToAttribute(blockedCookie.blockedReason),
-              uiString: SDK.NetworkRequest.setCookieBlockedReasonToUiString(blockedCookie.blockedReason)
-            }]);
+        responseCookieToBlockedReasons.set(cookie, blockedCookie.blockedReasons.map(blockedReason => {
+          return {
+            attribute: SDK.NetworkRequest.setCookieBlockedReasonToAttribute(blockedReason),
+            uiString: SDK.NetworkRequest.setCookieBlockedReasonToUiString(blockedReason)
+          };
+        }));
         responseCookies.push(cookie);
       }
     }
@@ -210,7 +212,8 @@ Network.RequestCookiesView = class extends UI.Widget {
         const icon = UI.Icon.create('smallicon-error', '');
         listItem.appendChild(icon);
         listItem.createTextChild(malformedCookie.cookieLine);
-        listItem.title = SDK.NetworkRequest.setCookieBlockedReasonToUiString(malformedCookie.blockedReason);
+        listItem.title =
+            SDK.NetworkRequest.setCookieBlockedReasonToUiString(Protocol.Network.SetCookieBlockedReason.SyntaxError);
       }
     } else {
       this._malformedResponseCookiesTitle.classList.add('hidden');

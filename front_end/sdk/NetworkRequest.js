@@ -1541,7 +1541,7 @@ SDK.NetworkRequest.setCookieBlockedReasonToAttribute = function(blockedReason) {
 
 /**
  * @typedef {!{
- *   blockedReason: !Protocol.Network.CookieBlockedReason,
+ *   blockedReasons: !Array<!Protocol.Network.CookieBlockedReason>,
  *   cookie: !SDK.Cookie
  * }}
  */
@@ -1557,7 +1557,7 @@ SDK.NetworkRequest.ExtraRequestInfo;
 
 /**
  * @typedef {!{
- *   blockedReason: !Protocol.Network.SetCookieBlockedReason,
+ *   blockedReasons: !Array<!Protocol.Network.SetCookieBlockedReason>,
  *   cookieLine: string,
  *   cookie: ?SDK.Cookie
  * }}

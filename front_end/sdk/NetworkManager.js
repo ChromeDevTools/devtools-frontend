@@ -787,7 +787,7 @@ SDK.NetworkDispatcher = class {
     const extraRequestInfo = {
       blockedRequestCookies: blockedCookies.map(blockedCookie => {
         return {
-          blockedReason: blockedCookie.blockedReason,
+          blockedReasons: blockedCookie.blockedReasons,
           cookie: SDK.Cookie.fromProtocolCookie(blockedCookie.cookie)
         };
       }),
@@ -808,7 +808,7 @@ SDK.NetworkDispatcher = class {
     const extraResponseInfo = {
       blockedResponseCookies: blockedCookies.map(blockedCookie => {
         return {
-          blockedReason: blockedCookie.blockedReason,
+          blockedReasons: blockedCookie.blockedReasons,
           cookieLine: blockedCookie.cookieLine,
           cookie: blockedCookie.cookie ? SDK.Cookie.fromProtocolCookie(blockedCookie.cookie) : null
         };

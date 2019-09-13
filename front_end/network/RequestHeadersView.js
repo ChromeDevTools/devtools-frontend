@@ -457,11 +457,11 @@ Network.RequestHeadersView = class extends UI.VBox {
       headersTreeElement.appendChild(cautionTreeElement);
     }
 
-    /** @type {!Map<string, !Protocol.Network.SetCookieBlockedReason>} */
-    const blockedCookieLineToReason = new Map();
+    /** @type {!Map<string, !Array<!Protocol.Network.SetCookieBlockedReason>>} */
+    const blockedCookieLineToReasons = new Map();
     if (blockedResponseCookies) {
       blockedResponseCookies.forEach(blockedCookie => {
-        blockedCookieLineToReason.set(blockedCookie.cookieLine, blockedCookie.blockedReason);
+        blockedCookieLineToReasons.set(blockedCookie.cookieLine, blockedCookie.blockedReasons);
       });
     }
 
@@ -472,11 +472,18 @@ Network.RequestHeadersView = class extends UI.VBox {
       headerTreeElement[Network.RequestHeadersView._headerNameSymbol] = headers[i].name;
 
       if (headers[i].name.toLowerCase() === 'set-cookie') {
-        const matchingBlockedReason = blockedCookieLineToReason.get(headers[i].value);
-        if (matchingBlockedReason) {
+        const matchingBlockedReasons = blockedCookieLineToReasons.get(headers[i].value);
+        if (matchingBlockedReasons) {
           const icon = UI.Icon.create('smallicon-warning', '');
           headerTreeElement.listItemElement.appendChild(icon);
-          icon.title = SDK.NetworkRequest.setCookieBlockedReasonToUiString(matchingBlockedReason);
+
+          let titleText = '';
+          for (const blockedReason of matchingBlockedReasons) {
+            if (titleText)
+              titleText += '\n';
+            titleText += SDK.NetworkRequest.setCookieBlockedReasonToUiString(blockedReason);
+          }
+          icon.title = titleText;
         }
       }
 

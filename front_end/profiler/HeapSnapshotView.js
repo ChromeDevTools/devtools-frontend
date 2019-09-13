@@ -542,7 +542,7 @@ Profiler.HeapSnapshotView = class extends UI.SimpleView {
     const promise = this._perspectives[perspectiveIndex].masterGrid(this).once(
         Profiler.HeapSnapshotSortableDataGrid.Events.ContentShown);
 
-    const option = this._perspectiveSelect.options().find(option => option.value === perspectiveIndex);
+    const option = this._perspectiveSelect.options().find(option => option.value === String(perspectiveIndex));
     this._perspectiveSelect.select(/** @type {!Element} */ (option));
     this._changePerspective(perspectiveIndex);
     return promise;

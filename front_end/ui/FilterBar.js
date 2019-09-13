@@ -377,21 +377,16 @@ UI.NamedBitSetFilterUI = class extends Common.Object {
     const element = /** @type {?Element} */ (event.target);
     if (!element)
       return;
-    if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') {
-      if (this._keyFocusNextBit(element, true)) {
-        event.consume(true);
-        return;
-      }
-    } else if (event.key === 'ArrowRight' || event.key === 'ArrowDown') {
-      if (this._keyFocusNextBit(element, false)) {
-        event.consume(true);
-        return;
-      }
-    } else if (!isEnterOrSpaceKey(event)) {
-      return;
-    }
 
-    this._onTypeFilterClicked(event);
+    if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') {
+      if (this._keyFocusNextBit(element, true /* selectPrevious */))
+        event.consume(true);
+    } else if (event.key === 'ArrowRight' || event.key === 'ArrowDown') {
+      if (this._keyFocusNextBit(element, false /* selectPrevious */))
+        event.consume(true);
+    } else if (isEnterOrSpaceKey(event)) {
+      this._onTypeFilterClicked(event);
+    }
   }
 
   /**

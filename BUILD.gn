@@ -959,6 +959,7 @@ lighthouse_locale_files = [
 all_devtools_files += lighthouse_locale_files
 
 devtools_test_files = [
+  "//third_party/axe-core/axe.js",
   "front_end/accessibility_test_runner/AccessibilityPaneTestRunner.js",
   "front_end/accessibility_test_runner/module.json",
   "front_end/application_test_runner/AppcacheTestRunner.js",

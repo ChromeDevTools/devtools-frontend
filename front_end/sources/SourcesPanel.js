@@ -887,6 +887,7 @@ Sources.SourcesPanel = class extends UI.Panel {
 
     // Create vertical box with stack.
     const vbox = new UI.VBox();
+    vbox.element.appendChild(this._debugToolbar.element);
     vbox.element.appendChild(this._debugToolbarDrawer);
     vbox.setMinimumAndPreferredSizes(25, 25, Sources.SourcesPanel.minToolbarWidth, 100);
     this._sidebarPaneStack = UI.viewManager.createStackLocation(this._revealDebuggerSidebar.bind(this));
@@ -894,7 +895,6 @@ Sources.SourcesPanel = class extends UI.Panel {
     this._sidebarPaneStack.widget().show(vbox.element);
     this._sidebarPaneStack.widget().element.appendChild(this._debuggerPausedMessage.element());
     this._sidebarPaneStack.appendApplicableItems('sources.sidebar-top');
-    vbox.element.appendChild(this._debugToolbar.element);
 
     if (this._threadsSidebarPane)
       this._sidebarPaneStack.showView(this._threadsSidebarPane);

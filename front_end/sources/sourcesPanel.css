@@ -51,9 +51,13 @@
 }
 
 .scripts-debug-toolbar-drawer > [is=dt-checkbox] {
-    display: flex;
+    display: none;
     padding-left: 3px;
     height: 28px;
+}
+
+.scripts-debug-toolbar-drawer.expanded > [is=dt-checkbox] {
+    display: flex;
 }
 
 .cursor-auto {

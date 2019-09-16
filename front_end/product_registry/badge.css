@@ -21,6 +21,10 @@
   display: none;
 }
 
+:host-context(.-theme-with-dark-background) .product-registry-badge::before {
+  color: #000;
+}
+
 .product-registry-badge-title {
   padding-left: 4px;
 }

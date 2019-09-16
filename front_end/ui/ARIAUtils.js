@@ -238,6 +238,13 @@ UI.ARIAUtils.setChecked = function(element, value) {
 
 /**
  * @param {!Element} element
+ */
+UI.ARIAUtils.setCheckboxAsIndeterminate = function(element) {
+  element.setAttribute('aria-checked', 'mixed');
+};
+
+/**
+ * @param {!Element} element
  * @param {boolean} value
  */
 UI.ARIAUtils.setExpanded = function(element, value) {

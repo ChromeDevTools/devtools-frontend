@@ -18,7 +18,7 @@
     word-wrap: break-word;
     position: relative;
     min-height: 15px;
-    line-height: 15px;
+    line-height: 1.36;
 }
 
 .elements-disclosure li.parent {

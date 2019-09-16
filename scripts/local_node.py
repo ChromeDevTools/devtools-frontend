@@ -12,6 +12,8 @@ SCRIPTS_PATH = path.dirname(path.abspath(__file__))
 THIRD_PARTY_PATH = path.join(SCRIPTS_PATH, '..', '..', '..', '..')
 NODE_PATH = path.join(THIRD_PARTY_PATH, 'node')
 ESLINT_PATH = path.join(THIRD_PARTY_PATH, 'devtools-node-modules', 'third_party', 'node_modules', 'eslint', 'bin', 'eslint.js')
+KARMA_PATH = path.join(THIRD_PARTY_PATH, 'devtools-node-modules', 'third_party', 'node_modules', 'karma', 'bin', 'karma')
+NODE_MODULES_PATH = path.join(THIRD_PARTY_PATH, 'devtools-node-modules', 'third_party', 'node_modules')
 
 try:
     old_sys_path = sys.path[:]
@@ -27,3 +29,11 @@ def node_path():
 
 def eslint_path():
     return ESLINT_PATH
+
+
+def karma_path():
+    return KARMA_PATH
+
+
+def node_modules_path():
+    return NODE_MODULES_PATH

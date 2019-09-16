@@ -61,11 +61,11 @@ One-time setup:
 npm run setup-dtrun
 ```
 
-Now, you can use any of the following commands by simply doing: `dtrun test`. 
+Now, you can use any of the following commands by simply doing: `dtrun test`.
 
 In addition, you no longer need to pass double dashes (e.g. `--`) before you pass in the flags. So you can do: `dtrun test -d inspector/test.html`.
 
-#### `npm run format` 
+#### `npm run format`
 Formats your code using clang-format
 
 ### `npm run format-py`
@@ -85,8 +85,8 @@ npm test -- inspector/sources inspector/console
 
 # debug a specific test. Any one of:
 npm run debug-test inspector/cookie-resource-match.html
-npm test -- --debug-devtools inspector/cookie-resource-match.html 
-npm test -- -d inspector/cookie-resource-match.html 
+npm test -- --debug-devtools inspector/cookie-resource-match.html
+npm test -- -d inspector/cookie-resource-match.html
 
 # pass in additional flags to the test harness
 npm test -- -f --child-processes=16
@@ -99,15 +99,15 @@ npm test -- --time-out-ms=6000000 <test_path>
 
 #### `--fetch-content-shell`
 ```
-# If you're using a full chromium checkout and have a compiled content shell, 
-# this will fetch a pre-compiled content shell. This is useful if you 
+# If you're using a full chromium checkout and have a compiled content shell,
+# this will fetch a pre-compiled content shell. This is useful if you
 # haven't compiled your content shell recently
 npm test -- --fetch-content-shell
 ```
 
 #### `--target=SUB_DIRECTORY_NAME`
 ```
-# If you're using a build sub-directory that's not out/Release, 
+# If you're using a build sub-directory that's not out/Release,
 # such as out/Default, then use --target=SUB_DIRECTORY_NAME
 npm test -- --target=Default
 ```
@@ -127,3 +127,17 @@ npm test -- --target=Default
   [@ChromeDevTools]: http://twitter.com/ChromeDevTools
   [@DevToolsCommits]: http://twitter.com/DevToolsCommits
   [all open DevTools tickets]: https://bugs.chromium.org/p/chromium/issues/list?can=2&q=component%3APlatform%3EDevTools&sort=&groupby=&colspec=ID+Stars+Owner+Summary+Modified+Opened
+
+### Tests
+The tests are run through Karma.
+
+```
+python scripts/run_tests.py
+```
+
+You can also specify with which Chrome binary to run tests by setting the
+`chrome-binary` variable.
+
+```
+python scripts/run_tests.py --chrome-binary=/path/to/chromium/build/chromium
+```

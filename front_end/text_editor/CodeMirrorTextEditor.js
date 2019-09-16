@@ -42,6 +42,9 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
     this.registerRequiredCSS('cm/codemirror.css');
     this.registerRequiredCSS('text_editor/cmdevtools.css');
 
+    const {indentWithTabs, indentUnit} =
+        TextEditor.CodeMirrorTextEditor._getIndentation(Common.moduleSetting('textEditorIndent').get());
+
     this._codeMirror = new CodeMirror(this.element, {
       devtoolsAccessibleName: options.devtoolsAccessibleName,
       lineNumbers: options.lineNumbers,
@@ -50,7 +53,8 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
       styleSelectedText: true,
       electricChars: true,
       styleActiveLine: true,
-      indentUnit: 4,
+      indentUnit,
+      indentWithTabs,
       lineWrapping: options.lineWrapping,
       lineWiseCopyCut: false,
       tabIndex: 0,
@@ -60,6 +64,8 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
     this._codeMirrorElement = this.element.lastElementChild;
 
     this._codeMirror._codeMirrorTextEditor = this;
+
+    Common.moduleSetting('textEditorIndent').addChangeListener(this._updateIndentSize.bind(this));
 
     CodeMirror.keyMap['devtools-common'] = {
       'Left': 'goCharLeft',
@@ -72,7 +78,7 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
       'PageDown': 'goSmartPageDown',
       'Delete': 'delCharAfter',
       'Backspace': 'delCharBefore',
-      'Tab': 'defaultTab',
+      'Tab': 'UserIndent',
       'Shift-Tab': 'indentLessOrPass',
       'Enter': 'newlineAndIndent',
       'Ctrl-Space': 'autocomplete',
@@ -231,6 +237,15 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
    */
   static moveCamelRightCommand(shift, codeMirror) {
     codeMirror._codeMirrorTextEditor._doCamelCaseMovement(1, shift);
+  }
+
+  /**
+   * @param {string} indentationValue
+   */
+  static _getIndentation(indentationValue) {
+    const indentWithTabs = /\t/.test(indentationValue);
+    const indentUnit = indentWithTabs ? 4 : indentationValue.length;
+    return {indentWithTabs, indentUnit};
   }
 
   /**
@@ -686,6 +701,17 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
 
   _disableLongLinesMode() {
     this._codeMirror.setOption('styleSelectedText', true);
+  }
+
+  /**
+   * @param {!{data: *}} updatedValue
+   */
+  _updateIndentSize(updatedValue) {
+    const {indentWithTabs, indentUnit} =
+        TextEditor.CodeMirrorTextEditor._getIndentation(/** @type {string} */ (updatedValue.data));
+
+    this._codeMirror.setOption('indentUnit', indentUnit);
+    this._codeMirror.setOption('indentWithTabs', indentWithTabs);
   }
 
   /**
@@ -1344,6 +1370,23 @@ CodeMirror.commands.selectCamelLeft = TextEditor.CodeMirrorTextEditor.moveCamelL
 
 CodeMirror.commands.moveCamelRight = TextEditor.CodeMirrorTextEditor.moveCamelRightCommand.bind(null, false);
 CodeMirror.commands.selectCamelRight = TextEditor.CodeMirrorTextEditor.moveCamelRightCommand.bind(null, true);
+
+/**
+ * @param {!CodeMirror} codeMirror
+ */
+CodeMirror.commands.UserIndent = function(codeMirror) {
+  const ranges = codeMirror.listSelections();
+  if (ranges.length === 0)
+    return;
+
+  if (codeMirror.somethingSelected()) {
+    codeMirror.indentSelection('add');
+    return;
+  }
+
+  const indentation = Common.moduleSetting('textEditorIndent').get();
+  codeMirror.replaceSelection(indentation);
+};
 
 /**
  * @param {!CodeMirror} codeMirror

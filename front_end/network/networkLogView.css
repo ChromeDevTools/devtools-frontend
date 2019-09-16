@@ -131,7 +131,10 @@
 }
 
 .network-error-row,
-.network-error-row .network-cell-subtitle {
+.network-error-row .network-cell-subtitle ,
+.network-log-grid.data-grid tr.selected.network-error-row,
+.network-log-grid.data-grid tr.selected.network-error-row .network-cell-subtitle,
+.network-log-grid.data-grid tr.selected.network-error-row .network-dim-cell {
     color: rgb(230, 0, 0);
 }
 

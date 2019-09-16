@@ -1224,6 +1224,25 @@ Network.NetworkLogView = class extends UI.VBox {
       const manager = SDK.multitargetNetworkManager;
       let patterns = manager.blockedPatterns();
 
+      /**
+       * @param {string} url
+       */
+      function addBlockedURL(url) {
+        patterns.push({enabled: true, url: url});
+        manager.setBlockedPatterns(patterns);
+        manager.setBlockingEnabled(true);
+        UI.viewManager.showView('network.blocked-urls');
+      }
+
+      /**
+       * @param {string} url
+       */
+      function removeBlockedURL(url) {
+        patterns = patterns.filter(pattern => pattern.url !== url);
+        manager.setBlockedPatterns(patterns);
+        UI.viewManager.showView('network.blocked-urls');
+      }
+
       const urlWithoutScheme = request.parsedURL.urlWithoutScheme();
       if (urlWithoutScheme && !patterns.find(pattern => pattern.url === urlWithoutScheme)) {
         contextMenu.debugSection().appendItem(
@@ -1247,25 +1266,6 @@ Network.NetworkLogView = class extends UI.VBox {
       if (SDK.NetworkManager.canReplayRequest(request)) {
         contextMenu.debugSection().appendItem(
             Common.UIString('Replay XHR'), SDK.NetworkManager.replayRequest.bind(null, request));
-      }
-
-      /**
-       * @param {string} url
-       */
-      function addBlockedURL(url) {
-        patterns.push({enabled: true, url: url});
-        manager.setBlockedPatterns(patterns);
-        manager.setBlockingEnabled(true);
-        UI.viewManager.showView('network.blocked-urls');
-      }
-
-      /**
-       * @param {string} url
-       */
-      function removeBlockedURL(url) {
-        patterns = patterns.filter(pattern => pattern.url !== url);
-        manager.setBlockedPatterns(patterns);
-        UI.viewManager.showView('network.blocked-urls');
       }
     }
   }

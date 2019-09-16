@@ -407,7 +407,7 @@ TestRunner._evaluateInPageCounter = 0;
 
 /**
  * @param {string} code
- * @return {!Promise<{response: !SDK.RemoteObject,
+ * @return {!Promise<undefined|{response: (!SDK.RemoteObject|undefined),
  *   exceptionDetails: (!Protocol.Runtime.ExceptionDetails|undefined)}>}
  */
 TestRunner._evaluateInPage = async function(code) {
@@ -877,17 +877,17 @@ TestRunner.dumpObjectPropertyTreeElement = function(treeElement) {
 };
 
 /**
- * @param {symbol} event
+ * @param {symbol} eventName
  * @param {!Common.Object} obj
  * @param {function(?):boolean=} condition
  * @return {!Promise}
  */
-TestRunner.waitForEvent = function(event, obj, condition) {
+TestRunner.waitForEvent = function(eventName, obj, condition) {
   condition = condition || function() {
     return true;
   };
   return new Promise(resolve => {
-    obj.addEventListener(event, onEventFired);
+    obj.addEventListener(eventName, onEventFired);
 
     /**
      * @param {!Common.Event} event
@@ -895,7 +895,7 @@ TestRunner.waitForEvent = function(event, obj, condition) {
     function onEventFired(event) {
       if (!condition(event.data))
         return;
-      obj.removeEventListener(event, onEventFired);
+      obj.removeEventListener(eventName, onEventFired);
       resolve(event.data);
     }
   });

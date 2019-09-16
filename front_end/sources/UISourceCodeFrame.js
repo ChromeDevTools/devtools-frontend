@@ -74,11 +74,11 @@ Sources.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
     this._initializeUISourceCode();
 
     /**
-     * @return {!Promise<?string>}
+     * @return {!Promise<string>}
      */
     function workingCopy() {
       if (uiSourceCode.isDirty())
-        return /** @type {!Promise<?string>} */ (Promise.resolve(uiSourceCode.workingCopy()));
+        return Promise.resolve(uiSourceCode.workingCopy());
       return uiSourceCode.requestContent();
     }
   }

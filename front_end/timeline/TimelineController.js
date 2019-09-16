@@ -181,7 +181,7 @@ Timeline.TimelineController = class {
   /**
    * @param {string} categories
    * @param {boolean=} enableJSSampling
-   * @return {!Promise<!Object>}
+   * @return {!Promise<!Object|undefined>}
    */
   async _startRecordingWithCategories(categories, enableJSSampling) {
     // There might be a significant delay in the beginning of timeline recording

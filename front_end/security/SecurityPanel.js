@@ -510,7 +510,7 @@ Security.SecurityPanelSidebarTree = class extends UI.TreeOutlineInShadow {
   }
 };
 
-/** @enum */
+/** @enum {symbol} */
 Security.SecurityPanelSidebarTree.OriginGroup = {
   MainOrigin: Symbol('MainOrigin'),
   NonSecure: Symbol('NonSecure'),

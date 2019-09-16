@@ -63,7 +63,8 @@ Network.RequestPreviewView = class extends Network.RequestResponseView {
     if (!whitelist.has(this.request.mimeType))
       return null;
 
-    const content = contentData.encoded ? window.atob(contentData.content) : contentData.content;
+    const content = contentData.encoded ? window.atob(/** @type {string} */ (contentData.content)) :
+                                          /** @type {string} */ (contentData.content);
 
     // http://crbug.com/767393 - DevTools should recognize JSON regardless of the content type
     const jsonView = await SourceFrame.JSONView.createView(content);

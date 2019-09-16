@@ -386,7 +386,7 @@ SDK.ResourceTreeModel = class extends SDK.SDKModel {
   }
 
   /**
-   * @return {!Promise<?{currentIndex: number, entries: !Protocol.Page.NavigationEntry}>}
+   * @return {!Promise<?{currentIndex: number, entries: !Array<!Protocol.Page.NavigationEntry>}>}
    */
   async navigationHistory() {
     const response = await this._agent.invoke_getNavigationHistory({});

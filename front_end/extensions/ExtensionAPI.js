@@ -240,7 +240,7 @@ function injectedExtensionAPI(extensionInfo, inspectedTabId, themeName, keysToFo
       return panels[name];
     }
     for (const panel in panels)
-      this.__defineGetter__(panel, panelGetter.bind(null, panel));
+      Object.defineProperty(this, panel, {get: panelGetter.bind(null, panel), enumerable: true});
     this.applyStyleSheet = function(styleSheet) {
       extensionServer.sendRequest({command: commands.ApplyStyleSheet, styleSheet: styleSheet});
     };
@@ -361,30 +361,26 @@ function injectedExtensionAPI(extensionInfo, inspectedTabId, themeName, keysToFo
   const EventSink = declareInterfaceClass(EventSinkImpl);
   const ExtensionPanel = declareInterfaceClass(ExtensionPanelImpl);
   const ExtensionSidebarPane = declareInterfaceClass(ExtensionSidebarPaneImpl);
-  const PanelWithSidebar = declareInterfaceClass(PanelWithSidebarImpl);
+  /**
+   * @constructor
+   * @param {string} hostPanelName
+   */
+  const PanelWithSidebarClass = declareInterfaceClass(PanelWithSidebarImpl);
   const Request = declareInterfaceClass(RequestImpl);
   const Resource = declareInterfaceClass(ResourceImpl);
   const TraceSession = declareInterfaceClass(TraceSessionImpl);
 
-  /**
-   * @constructor
-   * @extends {PanelWithSidebar}
-   */
-  function ElementsPanel() {
-    PanelWithSidebar.call(this, 'elements');
+  class ElementsPanel extends PanelWithSidebarClass {
+    constructor() {
+      super('elements');
+    }
   }
 
-  ElementsPanel.prototype = {__proto__: PanelWithSidebar.prototype};
-
-  /**
-   * @constructor
-   * @extends {PanelWithSidebar}
-   */
-  function SourcesPanel() {
-    PanelWithSidebar.call(this, 'sources');
+  class SourcesPanel extends PanelWithSidebarClass {
+    constructor() {
+      super('sources');
+    }
   }
-
-  SourcesPanel.prototype = {__proto__: PanelWithSidebar.prototype};
 
   /**
    * @constructor
@@ -779,7 +775,7 @@ function injectedExtensionAPI(extensionInfo, inspectedTabId, themeName, keysToFo
 
   // Only expose tabId on chrome.devtools.inspectedWindow, not webInspector.inspectedWindow.
   chrome.devtools.inspectedWindow = {};
-  chrome.devtools.inspectedWindow.__defineGetter__('tabId', getTabId);
+  Object.defineProperty(chrome.devtools.inspectedWindow, 'tabId', {get: getTabId});
   chrome.devtools.inspectedWindow.__proto__ = coreAPI.inspectedWindow;
   chrome.devtools.network = coreAPI.network;
   chrome.devtools.panels = coreAPI.panels;

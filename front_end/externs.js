@@ -653,56 +653,6 @@ CodeMirror.defineMIME = function(mime, mode) {};
 /** @type {boolean} */
 window.dispatchStandaloneTestRunnerMessages;
 
-/**
- * Inserts the given HTML Element into the node at the location.
- * @param {string} where Where to insert the HTML text, one of 'beforeBegin',
- *     'afterBegin', 'beforeEnd', 'afterEnd'.
- * @param {!Element} element DOM Element to insert.
- * @return {?Element} The element that was inserted, or null, if the
- *     insertion failed.
- * @see https://dom.spec.whatwg.org/#dom-element-insertadjacentelement
- */
-Node.prototype.insertAdjacentElement = function(where, element) {};
-
-/**
- * @param {Array.<Object>} keyframes
- * @param {number|Object} timing
- * @return {Object}
- */
-Element.prototype.animate = function(keyframes, timing) {};
-
-/**
- * @param {...!Node} nodes
- * @return {undefined}
- * @see https://dom.spec.whatwg.org/#dom-parentnode-append
- */
-Element.prototype.append = function(nodes) {};
-
-/**
- * @param {...!Node} nodes
- * @return {undefined}
- * @see https://dom.spec.whatwg.org/#dom-parentnode-prepend
- */
-Element.prototype.prepend = function(nodes) {};
-
-/**
- * @override
- * @param {string} type
- * @param {(!EventListener|!function (!Event): (boolean|undefined)|null)} listener
- * @param {(boolean|!{capture: (boolean|undefined), once: (boolean|undefined), passive: (boolean|undefined)})=} options
- * @this {EventTarget}
- */
-Element.prototype.addEventListener = function(type, listener, options) {};
-
-/**
- * @override
- * @param {string} type
- * @param {(!EventListener|!function (!Event): (boolean|undefined)|null)} listener
- * @param {(boolean|!{capture: (boolean|undefined), once: (boolean|undefined), passive: (boolean|undefined)})=} options
- * @this {EventTarget}
- */
-Element.prototype.removeEventListener = function(type, listener, options) {};
-
 const acorn = {
   /**
    * @param {string} text
@@ -1141,7 +1091,8 @@ ReportRenderer.RunnerResultArtifacts;
  * @typedef {{
  *     lhr: !ReportRenderer.ReportJSON,
  *     artifacts: ReportRenderer.RunnerResultArtifacts,
- *     report: string
+ *     report: string,
+ *     stack: string
  * }}
  */
 ReportRenderer.RunnerResult;
@@ -1196,20 +1147,6 @@ DetailsRenderer.NodeDetailsJSON;
  * }}
  */
 DetailsRenderer.OpportunitySummary;
-
-
-// Clipboard API
-
-/** @constructor */
-const Clipboard = function() {};
-/**
- * @param {string} data
- * @return {!Promise}
- */
-Clipboard.prototype.writeText = function(data) {};
-
-/** @type {Clipboard} */
-Navigator.prototype.clipboard;
 
 const Lighthouse = {};
 

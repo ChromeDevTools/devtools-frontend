@@ -37,6 +37,9 @@ UI.View.prototype = {
    */
   widget() {},
 
+  /**
+   * @return {!Promise|undefined}
+   */
   disposeView() {}
 };
 

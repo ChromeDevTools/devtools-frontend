@@ -189,7 +189,7 @@ EventListeners.frameworkEventListeners = function(object) {
   function convertToInternalHandlers(pageInternalHandlersObject) {
     return SDK.RemoteArray.objectAsArray(pageInternalHandlersObject)
         .map(toTargetFunction)
-        .then(SDK.RemoteArray.createFromRemoteObjects);
+        .then(SDK.RemoteArray.createFromRemoteObjects.bind(null));
   }
 
   /**

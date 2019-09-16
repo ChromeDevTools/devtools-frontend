@@ -35,7 +35,7 @@
  */
 SourceFrame.SourceFrame = class extends UI.SimpleView {
   /**
-   * @param {function(): !Promise<?string>} lazyContent
+   * @param {function(): !Promise<string>} lazyContent
    * @param {!UI.TextEditor.Options=} codeMirrorOptions
    */
   constructor(lazyContent, codeMirrorOptions) {

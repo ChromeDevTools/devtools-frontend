@@ -329,7 +329,7 @@ Common.ParsedURL = class {
       return this._dataURLDisplayName;
     if (!this.isDataURL())
       return '';
-    this._dataURLDisplayName = this.url.trimEnd(20);
+    this._dataURLDisplayName = this.url.trimEndWithMaxLength(20);
     return this._dataURLDisplayName;
   }
 

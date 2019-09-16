@@ -113,6 +113,9 @@ Profiler.CPUProfileType = class extends Profiler.ProfileType {
     return '.cpuprofile';
   }
 
+  /**
+   * @override
+   */
   get buttonTooltip() {
     return this._recording ? Common.UIString('Stop CPU profiling') : Common.UIString('Start CPU profiling');
   }
@@ -131,10 +134,16 @@ Profiler.CPUProfileType = class extends Profiler.ProfileType {
     }
   }
 
+  /**
+   * @override
+   */
   get treeItemTitle() {
     return Common.UIString('CPU PROFILES');
   }
 
+  /**
+   * @override
+   */
   get description() {
     return Common.UIString('CPU profiles show where the execution time is spent in your page\'s JavaScript functions.');
   }

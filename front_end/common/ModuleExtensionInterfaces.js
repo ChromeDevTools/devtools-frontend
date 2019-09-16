@@ -91,6 +91,9 @@ Common.QueryParamHandler.prototype = {
 Common.Runnable = function() {};
 
 Common.Runnable.prototype = {
+  /**
+   * @return {!Promise}
+   */
   run() {}
 };
 

@@ -274,7 +274,6 @@ Bindings.CompilerScriptMapping = class {
   }
 
   /**
-   * @override
    * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {number} lineNumber
    * @return {boolean}

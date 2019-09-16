@@ -40,7 +40,7 @@ Timeline.TimelineLoader = class {
     loader._totalSize = file.size;
     fileReader.read(loader).then(success => {
       if (!success)
-        this._reportErrorAndCancelLoading(fileReader.error().message);
+        loader._reportErrorAndCancelLoading(fileReader.error().message);
     });
     return loader;
   }
@@ -198,7 +198,7 @@ Timeline.TimelineLoader = class {
   /**
    * @override
    */
-  close() {
+  async close() {
     if (!this._client)
       return;
     this._client.processingStarted();

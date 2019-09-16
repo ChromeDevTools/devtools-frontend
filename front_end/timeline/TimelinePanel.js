@@ -337,6 +337,9 @@ Timeline.TimelinePanel = class extends UI.Panel {
     contextMenu.show();
   }
 
+  /**
+   * @suppress {deprecated}
+   */
   async _saveToFile() {
     if (this._state !== Timeline.TimelinePanel.State.Idle)
       return;

@@ -80,7 +80,7 @@ Profiler.ProfileHeader = class extends Common.Object {
 
   /**
    * @param {!File} file
-   * @return {!Promise<?Error>}
+   * @return {!Promise<?Error|?FileError>}
    */
   loadFromFile(file) {
     throw new Error('Not implemented');

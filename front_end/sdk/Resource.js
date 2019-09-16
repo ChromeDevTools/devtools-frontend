@@ -188,11 +188,11 @@ SDK.Resource = class {
 
   /**
    * @override
-   * @return {!Promise<?string>}
+   * @return {!Promise<string>}
    */
   requestContent() {
     if (typeof this._content !== 'undefined')
-      return Promise.resolve(this._content);
+      return Promise.resolve(/** @type {string} */ (this._content));
 
     let callback;
     const promise = new Promise(fulfill => callback = fulfill);

@@ -1190,7 +1190,7 @@ SDK.DOMModel = class extends SDK.SDKModel {
   }
 
   /**
-   * @return {!Promise<!SDK.DOMDocument>}
+   * @return {!Promise<?SDK.DOMDocument>}
    */
   async _requestDocument() {
     const documentPayload = await this._agent.getDocument();

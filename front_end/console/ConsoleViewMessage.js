@@ -798,7 +798,7 @@ Console.ConsoleViewMessage = class {
           if (type === 'string' || subtype === 'regexp')
             description = object.description.trimMiddle(maxLength);
           else
-            description = object.description.trimEnd(maxLength);
+            description = object.description.trimEndWithMaxLength(maxLength);
         }
         rootElement.appendChild(this._previewFormatter.renderPropertyPreview(type, subtype, description));
       }

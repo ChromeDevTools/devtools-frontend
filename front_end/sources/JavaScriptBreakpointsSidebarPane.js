@@ -134,7 +134,7 @@ Sources.JavaScriptBreakpointsSidebarPane = class extends UI.ThrottledWidget {
       const lineText = text.lineAt(lineNumber);
       const maxSnippetLength = 200;
       snippetElement.textContent =
-          lineText.substring(showColumn ? uiLocation.columnNumber : 0).trimEnd(maxSnippetLength);
+          lineText.substring(showColumn ? uiLocation.columnNumber : 0).trimEndWithMaxLength(maxSnippetLength);
     }
   }
 

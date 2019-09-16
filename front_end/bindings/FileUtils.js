@@ -215,7 +215,7 @@ Bindings.FileOutputStream = class {
   /**
    * @override
    */
-  close() {
+  async close() {
     this._closed = true;
     if (this._writeCallbacks.length)
       return;

@@ -737,7 +737,7 @@ Extensions.ExtensionServer = class extends Common.Object {
   /**
    * @param {string} eventTopic
    * @param {!Object} eventTarget
-   * @param {string} frontendEventType
+   * @param {symbol} frontendEventType
    * @param {function(!Common.Event)} handler
    */
   _registerAutosubscriptionHandler(eventTopic, eventTarget, frontendEventType, handler) {
@@ -749,7 +749,7 @@ Extensions.ExtensionServer = class extends Common.Object {
   /**
    * @param {string} eventTopic
    * @param {!Function} modelClass
-   * @param {string} frontendEventType
+   * @param {symbol} frontendEventType
    * @param {function(!Common.Event)} handler
    */
   _registerAutosubscriptionTargetManagerHandler(eventTopic, modelClass, frontendEventType, handler) {

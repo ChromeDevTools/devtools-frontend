@@ -90,7 +90,7 @@ UI.Icon = class extends HTMLSpanElement {
 
 UI.Icon._positionRegex = /^[a-z][1-9][0-9]*$/;
 
-/** @typedef {{position: string, spritesheet: string, isMask: (boolean|undefined)}} */
+/** @typedef {{position: string, spritesheet: string, isMask: (boolean|undefined), coordinates: ({x: number, y: number}|undefined), invert: (boolean|undefined)}} */
 UI.Icon.Descriptor;
 
 /** @typedef {{cellWidth: number, cellHeight: number, padding: number}} */

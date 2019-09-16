@@ -243,7 +243,7 @@ ProtocolMonitor.ProtocolMonitor.ProtocolNode = class extends DataGrid.SortableDa
       case 'request': {
         const cell = this.createTD(columnId);
         const obj = SDK.RemoteObject.fromLocalObject(this.data[columnId]);
-        cell.textContent = obj.description.trimEnd(50);
+        cell.textContent = obj.description.trimEndWithMaxLength(50);
         cell.classList.add('source-code');
         return cell;
       }

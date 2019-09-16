@@ -287,7 +287,7 @@ Profiler.HeapSnapshotSortableDataGrid = class extends DataGrid.DataGrid {
   }
 };
 
-/** @enum {symbol} */
+/** @override @suppress {checkPrototypalTypes} @enum {symbol} */
 Profiler.HeapSnapshotSortableDataGrid.Events = {
   ContentShown: Symbol('ContentShown'),
   SortingComplete: Symbol('SortingComplete')
@@ -666,7 +666,7 @@ Profiler.HeapSnapshotRetainmentDataGrid = class extends Profiler.HeapSnapshotCon
   }
 };
 
-/** @enum {symbol} */
+/** @override @suppress {checkPrototypalTypes} @enum {symbol} */
 Profiler.HeapSnapshotRetainmentDataGrid.Events = {
   ExpandRetainersComplete: Symbol('ExpandRetainersComplete')
 };

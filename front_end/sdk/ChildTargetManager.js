@@ -185,7 +185,7 @@ SDK.ChildTargetManager = class extends SDK.SDKModel {
   }
 
   /**
-   * @param {function(!Object)} onMessage
+   * @param {function((!Object|string))} onMessage
    * @return {!Promise<!Protocol.Connection>}
    */
   async createParallelConnection(onMessage) {
@@ -207,7 +207,7 @@ SDK.ChildTargetManager = class extends SDK.SDKModel {
   async _createParallelConnectionAndSessionForTarget(target, targetId) {
     const targetAgent = target.targetAgent();
     const targetRouter = target.router();
-    const sessionId = await targetAgent.attachToTarget(targetId, true /* flatten */);
+    const sessionId = /** @type {string} */ (await targetAgent.attachToTarget(targetId, true /* flatten */));
     const connection = new SDK.ParallelConnection(targetRouter.connection(), sessionId);
     targetRouter.registerSession(target, sessionId, connection);
     connection.setOnDisconnect(async () => {

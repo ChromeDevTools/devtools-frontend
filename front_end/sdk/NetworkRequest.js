@@ -1093,10 +1093,10 @@ SDK.NetworkRequest = class extends Common.Object {
 
   /**
    * @override
-   * @return {!Promise<?string>}
+   * @return {!Promise<string>}
    */
   async requestContent() {
-    return (await this.contentData()).content;
+    return /** @type {string} */ ((await this.contentData()).content);
   }
 
   /**

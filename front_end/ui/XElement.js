@@ -6,6 +6,9 @@
  * @extends {HTMLElement}
  */
 UI.XElement = class extends HTMLElement {
+  /**
+   * @override
+   */
   static get observedAttributes() {
     return [
       'flex',          'padding',     'padding-top',      'padding-bottom', 'padding-left',
@@ -61,9 +64,11 @@ UI._XBox = class extends UI.XElement {
     this.style.setProperty('justify-content', 'flex-start');
   }
 
+  /**
+   * @override
+   */
   static get observedAttributes() {
-    // TODO(dgozman): should be super.observedAttributes, but does not compile.
-    return UI.XElement.observedAttributes.concat(['x-start', 'x-center', 'x-stretch', 'x-baseline', 'justify-content']);
+    return super.observedAttributes.concat(['x-start', 'x-center', 'x-stretch', 'x-baseline', 'justify-content']);
   }
 
   /**

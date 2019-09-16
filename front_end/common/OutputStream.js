@@ -14,6 +14,9 @@ Common.OutputStream.prototype = {
    */
   write(data) {},
 
+  /**
+   * @return {!Promise}
+   */
   close() {}
 };
 

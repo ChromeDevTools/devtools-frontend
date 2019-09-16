@@ -119,7 +119,7 @@ UI.GlassPane = class {
   }
 
   /**
-   * @param {boolean} behavior
+   * @param {!UI.GlassPane.MarginBehavior} behavior
    */
   setMarginBehavior(behavior) {
     this._marginBehavior = behavior;

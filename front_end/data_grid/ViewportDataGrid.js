@@ -17,10 +17,13 @@ DataGrid.ViewportDataGrid = class extends DataGrid.DataGrid {
     super(columnsArray, editCallback, deleteCallback, refreshCallback);
 
     this._onScrollBound = this._onScroll.bind(this);
-    this._scrollContainer.addEventListener('scroll', this._onScrollBound, true);
+    this.scrollContainer.addEventListener('scroll', this._onScrollBound, true);
 
     /** @type {!Array.<!DataGrid.ViewportDataGridNode>} */
     this._visibleNodes = [];
+    /**
+     * @type {boolean}
+     */
     this._inline = false;
 
     this._stickToBottom = false;
@@ -58,9 +61,12 @@ DataGrid.ViewportDataGrid = class extends DataGrid.DataGrid {
    * @param {!Element} scrollContainer
    */
   setScrollContainer(scrollContainer) {
-    this._scrollContainer.removeEventListener('scroll', this._onScrollBound, true);
+    this.scrollContainer.removeEventListener('scroll', this._onScrollBound, true);
+    /**
+     * @suppress {accessControls}
+     */
     this._scrollContainer = scrollContainer;
-    this._scrollContainer.addEventListener('scroll', this._onScrollBound, true);
+    this.scrollContainer.addEventListener('scroll', this._onScrollBound, true);
   }
 
   /**
@@ -68,7 +74,7 @@ DataGrid.ViewportDataGrid = class extends DataGrid.DataGrid {
    */
   onResize() {
     if (this._stickToBottom)
-      this._scrollContainer.scrollTop = this._scrollContainer.scrollHeight - this._scrollContainer.clientHeight;
+      this.scrollContainer.scrollTop = this.scrollContainer.scrollHeight - this.scrollContainer.clientHeight;
     this.scheduleUpdate();
     super.onResize();
   }
@@ -84,8 +90,8 @@ DataGrid.ViewportDataGrid = class extends DataGrid.DataGrid {
    * @param {?Event} event
    */
   _onScroll(event) {
-    this._stickToBottom = this._scrollContainer.isScrolledToBottom();
-    if (this._lastScrollTop !== this._scrollContainer.scrollTop)
+    this._stickToBottom = this.scrollContainer.isScrolledToBottom();
+    if (this._lastScrollTop !== this.scrollContainer.scrollTop)
       this.scheduleUpdate(true);
   }
 
@@ -101,7 +107,7 @@ DataGrid.ViewportDataGrid = class extends DataGrid.DataGrid {
    */
   scheduleUpdate(isFromUser) {
     if (this._stickToBottom && isFromUser)
-      this._stickToBottom = this._scrollContainer.isScrolledToBottom();
+      this._stickToBottom = this.scrollContainer.isScrolledToBottom();
     this._updateIsFromUser = this._updateIsFromUser || isFromUser;
     if (this._updateAnimationFrameId)
       return;
@@ -177,8 +183,8 @@ DataGrid.ViewportDataGrid = class extends DataGrid.DataGrid {
       delete this._updateAnimationFrameId;
     }
 
-    const clientHeight = this._scrollContainer.clientHeight;
-    let scrollTop = this._scrollContainer.scrollTop;
+    const clientHeight = this.scrollContainer.clientHeight;
+    let scrollTop = this.scrollContainer.scrollTop;
     const currentScrollTop = scrollTop;
     const maxScrollTop = Math.max(0, this._contentHeight() - clientHeight);
     if (!this._updateIsFromUser && this._stickToBottom)
@@ -225,7 +231,7 @@ DataGrid.ViewportDataGrid = class extends DataGrid.DataGrid {
     this.setVerticalPadding(viewportState.topPadding, viewportState.bottomPadding);
     this._lastScrollTop = scrollTop;
     if (scrollTop !== currentScrollTop)
-      this._scrollContainer.scrollTop = scrollTop;
+      this.scrollContainer.scrollTop = scrollTop;
     const contentFits =
         viewportState.contentHeight <= clientHeight && viewportState.topPadding + viewportState.bottomPadding === 0;
     if (contentFits !== this.element.classList.contains('data-grid-fits-viewport')) {
@@ -249,17 +255,20 @@ DataGrid.ViewportDataGrid = class extends DataGrid.DataGrid {
       fromY += nodes[i].nodeSelfHeight();
     const toY = fromY + node.nodeSelfHeight();
 
-    let scrollTop = this._scrollContainer.scrollTop;
+    let scrollTop = this.scrollContainer.scrollTop;
     if (scrollTop > fromY) {
       scrollTop = fromY;
       this._stickToBottom = false;
-    } else if (scrollTop + this._scrollContainer.offsetHeight < toY) {
-      scrollTop = toY - this._scrollContainer.offsetHeight;
+    } else if (scrollTop + this.scrollContainer.offsetHeight < toY) {
+      scrollTop = toY - this.scrollContainer.offsetHeight;
     }
-    this._scrollContainer.scrollTop = scrollTop;
+    this.scrollContainer.scrollTop = scrollTop;
   }
 };
 
+/**
+ * @override @suppress {checkPrototypalTypes} @enum {symbol}
+ */
 DataGrid.ViewportDataGrid.Events = {
   ViewportCalculated: Symbol('ViewportCalculated')
 };
@@ -342,7 +351,7 @@ DataGrid.ViewportDataGridNode = class extends DataGrid.DataGridNode {
       }
       const node = children[depth][counters[depth]++];
       flatNodes.push(node);
-      if (node._expanded && node.children.length) {
+      if (node.expanded && node.children.length) {
         depth++;
         children[depth] = node.children;
         counters[depth] = 0;
@@ -376,7 +385,7 @@ DataGrid.ViewportDataGridNode = class extends DataGrid.DataGridNode {
       this.setHasChildren(true);
     this.children.splice(index, 0, child);
     child.recalculateSiblings(index);
-    if (this._expanded)
+    if (this.expanded)
       this.dataGrid.scheduleUpdateStructure();
   }
 
@@ -400,7 +409,7 @@ DataGrid.ViewportDataGridNode = class extends DataGrid.DataGridNode {
 
     if (!this.children.length)
       this.setHasChildren(false);
-    if (this._expanded)
+    if (this.expanded)
       this.dataGrid.scheduleUpdateStructure();
   }
 
@@ -415,7 +424,7 @@ DataGrid.ViewportDataGridNode = class extends DataGrid.DataGridNode {
       this.children[i]._unlink();
     this.children = [];
 
-    if (this._expanded)
+    if (this.expanded)
       this.dataGrid.scheduleUpdateStructure();
   }
 
@@ -429,9 +438,12 @@ DataGrid.ViewportDataGridNode = class extends DataGrid.DataGridNode {
    * @override
    */
   collapse() {
-    if (!this._expanded)
+    if (!this.expanded)
       return;
     this.clearFlatNodes();
+    /**
+     * @suppress {accessControls}
+     */
     this._expanded = false;
     if (this.existingElement())
       this.existingElement().classList.remove('expanded');
@@ -442,7 +454,7 @@ DataGrid.ViewportDataGridNode = class extends DataGrid.DataGridNode {
    * @override
    */
   expand() {
-    if (this._expanded)
+    if (this.expanded)
       return;
     this.dataGrid._stickToBottom = false;
     this.clearFlatNodes();

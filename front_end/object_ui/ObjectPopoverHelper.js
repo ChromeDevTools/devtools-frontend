@@ -51,7 +51,7 @@ ObjectUI.ObjectPopoverHelper = class {
    * @return {!Promise<?ObjectUI.ObjectPopoverHelper>}
    */
   static async buildObjectPopover(result, popover) {
-    const description = result.description.trimEnd(ObjectUI.ObjectPopoverHelper.MaxPopoverTextLength);
+    const description = result.description.trimEndWithMaxLength(ObjectUI.ObjectPopoverHelper.MaxPopoverTextLength);
     let popoverContentElement = null;
     if (result.type === 'object') {
       let linkifier = null;
@@ -115,7 +115,8 @@ ObjectUI.ObjectPopoverHelper = class {
     let linkifier = null;
     if (sourceURL) {
       linkifier = new Components.Linkifier();
-      linkContainer.appendChild(linkifier.linkifyRawLocation(rawLocation, sourceURL));
+      linkContainer.appendChild(
+          linkifier.linkifyRawLocation(/** @type {!SDK.DebuggerModel.Location} */ (rawLocation), sourceURL));
     }
     container.appendChild(popoverContentElement);
     popover.contentElement.appendChild(container);

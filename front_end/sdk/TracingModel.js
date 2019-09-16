@@ -534,6 +534,7 @@ SDK.TracingModel.Event = class {
   }
 
   /**
+   * @this {null}
    * @param {!SDK.TracingManager.EventPayload} payload
    * @param {!SDK.TracingModel.Thread} thread
    * @return {!SDK.TracingModel.Event}
@@ -643,6 +644,8 @@ SDK.TracingModel.ObjectSnapshot = class extends SDK.TracingModel.Event {
   }
 
   /**
+   * @override
+   * @this {null}
    * @param {!SDK.TracingManager.EventPayload} payload
    * @param {!SDK.TracingModel.Thread} thread
    * @return {!SDK.TracingModel.ObjectSnapshot}

@@ -117,7 +117,9 @@ SDK.PaintProfilerSnapshot = class {
    */
   async commandLog() {
     const log = await this._paintProfilerModel._layerTreeAgent.snapshotCommandLog(this._id);
-    return log && log.map((entry, index) => new SDK.PaintProfilerLogItem(entry, index));
+    return log &&
+        log.map(
+            (entry, index) => new SDK.PaintProfilerLogItem(/** @type {!SDK.RawPaintProfilerLogItem} */ (entry), index));
   }
 };
 

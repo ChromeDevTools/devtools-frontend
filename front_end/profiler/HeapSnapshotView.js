@@ -1043,6 +1043,9 @@ Profiler.HeapSnapshotProfileType = class extends Profiler.ProfileType {
     return '.heapsnapshot';
   }
 
+  /**
+   * @override
+   */
   get buttonTooltip() {
     return Common.UIString('Take heap snapshot');
   }
@@ -1065,10 +1068,16 @@ Profiler.HeapSnapshotProfileType = class extends Profiler.ProfileType {
     return false;
   }
 
+  /**
+   * @override
+   */
   get treeItemTitle() {
     return Common.UIString('HEAP SNAPSHOTS');
   }
 
+  /**
+   * @override
+   */
   get description() {
     return Common.UIString(
         'Heap snapshot profiles show memory distribution among your page\'s JavaScript objects and related DOM nodes.');
@@ -1225,6 +1234,9 @@ Profiler.TrackingHeapSnapshotProfileType = class extends Profiler.HeapSnapshotPr
     return true;
   }
 
+  /**
+   * @override
+   */
   get buttonTooltip() {
     return this._recording ? ls`Stop recording heap profile` : ls`Start recording heap profile`;
   }
@@ -1322,10 +1334,16 @@ Profiler.TrackingHeapSnapshotProfileType = class extends Profiler.HeapSnapshotPr
     return '.heaptimeline';
   }
 
+  /**
+   * @override
+   */
   get treeItemTitle() {
     return ls`ALLOCATION TIMELINES`;
   }
 
+  /**
+   * @override
+   */
   get description() {
     return ls`
         Allocation timelines show instrumented JavaScript memory allocations over time.
@@ -1357,6 +1375,9 @@ Profiler.TrackingHeapSnapshotProfileType = class extends Profiler.HeapSnapshotPr
   }
 };
 
+/**
+ * @override
+ */
 Profiler.TrackingHeapSnapshotProfileType.TypeId = 'HEAP-RECORD';
 
 Profiler.TrackingHeapSnapshotProfileType.HeapStatsUpdate = 'HeapStatsUpdate';
@@ -1590,7 +1611,7 @@ Profiler.HeapProfileHeader = class extends Profiler.ProfileHeader {
   /**
    * @override
    * @param {!File} file
-   * @return {!Promise<?Error>}
+   * @return {!Promise<?FileError>}
    */
   async loadFromFile(file) {
     this.updateStatus(Common.UIString('Loading\u2026'), true);

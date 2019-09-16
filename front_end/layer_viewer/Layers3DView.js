@@ -1180,7 +1180,7 @@ LayerViewer.LayerTextureManager.Tile = class {
     this._gl = glContext;
     this.scale = scale;
     const imageURL = await this.snapshot.replay(scale);
-    const image = imageURL && await UI.loadImage(imageURL);
-    this.texture = image && LayerViewer.LayerTextureManager._createTextureForImage(glContext, image);
+    const image = imageURL ? await UI.loadImage(imageURL) : null;
+    this.texture = image ? LayerViewer.LayerTextureManager._createTextureForImage(glContext, image) : null;
   }
 };

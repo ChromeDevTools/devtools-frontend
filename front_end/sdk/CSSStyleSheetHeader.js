@@ -35,7 +35,7 @@ SDK.CSSStyleSheetHeader = class {
     if (!this._originalContentProvider) {
       const lazyContent = this._cssModel.originalStyleSheetText.bind(this._cssModel, this);
       this._originalContentProvider = new Common.StaticContentProvider(
-          this.contentURL(), this.contentType(), /** @type {function():!Promise<?string>} */ (lazyContent));
+          this.contentURL(), this.contentType(), /** @type {function():!Promise<string>} */ (lazyContent));
     }
     return this._originalContentProvider;
   }
@@ -125,10 +125,10 @@ SDK.CSSStyleSheetHeader = class {
 
   /**
    * @override
-   * @return {!Promise<?string>}
+   * @return {!Promise<string>}
    */
   requestContent() {
-    return this._cssModel.getStyleSheetText(this.id);
+    return /** @type {!Promise<string>} */ (this._cssModel.getStyleSheetText(this.id));
   }
 
   /**

@@ -248,6 +248,9 @@ Profiler.SamplingHeapProfileTypeBase = class extends Profiler.ProfileType {
     return '.heapprofile';
   }
 
+  /**
+   * @override
+   */
   get buttonTooltip() {
     return this._recording ? ls`Stop heap profiling` : ls`Start heap profiling`;
   }
@@ -338,10 +341,16 @@ Profiler.SamplingHeapProfileType = class extends Profiler.SamplingHeapProfileTyp
     this._updateIntervalMs = 200;
   }
 
+  /**
+   * @override
+   */
   get treeItemTitle() {
     return ls`SAMPLING PROFILES`;
   }
 
+  /**
+   * @override
+   */
   get description() {
     return ls`Record memory allocations using sampling method.
               This profile type has minimal performance overhead and can be used for long running operations.
@@ -387,7 +396,7 @@ Profiler.SamplingHeapProfileType = class extends Profiler.SamplingHeapProfileTyp
 
 Profiler.SamplingHeapProfileType.TypeId = 'SamplingHeap';
 
-/** @enum {symbol} */
+/** @override @suppress {checkPrototypalTypes} @enum {symbol} */
 Profiler.SamplingHeapProfileType.Events = {
   RecordingStopped: Symbol('RecordingStopped'),
   StatsUpdate: Symbol('StatsUpdate')
@@ -402,10 +411,16 @@ Profiler.SamplingNativeHeapProfileType = class extends Profiler.SamplingHeapProf
     Profiler.SamplingNativeHeapProfileType.instance = this;
   }
 
+  /**
+   * @override
+   */
   get treeItemTitle() {
     return ls`NATIVE SAMPLING PROFILES`;
   }
 
+  /**
+   * @override
+   */
   get description() {
     return ls`Allocation profiles show sampled native memory allocations from the renderer process.`;
   }
@@ -447,10 +462,16 @@ Profiler.SamplingNativeHeapSnapshotType = class extends Profiler.SamplingHeapPro
     return true;
   }
 
+  /**
+   * @override
+   */
   get treeItemTitle() {
     return ls`NATIVE SNAPSHOTS`;
   }
 
+  /**
+   * @override
+   */
   get description() {
     return ls`Native memory snapshots show sampled native allocations in the renderer process since start up.
               Chrome has to be started with --memlog=all flag. Check flags at chrome://flags`;
@@ -485,7 +506,7 @@ Profiler.SamplingNativeHeapSnapshotType = class extends Profiler.SamplingHeapPro
     const recordedProfile = this.profileBeingRecorded();
     if (recordedProfile) {
       console.assert(protocolProfile);
-      recordedProfile.setProtocolProfile(protocolProfile);
+      recordedProfile.setProtocolProfile(/** @type {!Protocol.Profiler.Profile} */ (protocolProfile));
       recordedProfile.updateStatus('');
       this.setProfileBeingRecorded(null);
     }

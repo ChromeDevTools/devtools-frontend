@@ -248,7 +248,7 @@ Console.ConsoleContextSelector = class {
     const element = createElementWithClass('div');
     const shadowRoot = UI.createShadowRootWithCoreStyles(element, 'console/consoleContextSelector.css');
     const title = shadowRoot.createChild('div', 'title');
-    title.createTextChild(this.titleFor(item).trimEnd(100));
+    title.createTextChild(this.titleFor(item).trimEndWithMaxLength(100));
     const subTitle = shadowRoot.createChild('div', 'subtitle');
     const badgeElement = this._badgeFor(item);
     if (badgeElement) {

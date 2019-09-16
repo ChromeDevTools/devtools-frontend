@@ -329,7 +329,7 @@ SDK.HARLog.Entry = class {
   }
 
   /**
-   * @return {!Promise<!Object>}
+   * @return {!Promise<?Object>}
    */
   async _buildPostData() {
     const postData = await this._request.requestFormData();

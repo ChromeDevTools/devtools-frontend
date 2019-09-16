@@ -1618,7 +1618,7 @@ UI.trimTextMiddle = function(context, text, maxWidth) {
  * @return {string}
  */
 UI.trimTextEnd = function(context, text, maxWidth) {
-  return UI.trimText(context, text, maxWidth, (text, width) => text.trimEnd(width));
+  return UI.trimText(context, text, maxWidth, (text, width) => text.trimEndWithMaxLength(width));
 };
 
 /**
@@ -1828,7 +1828,7 @@ UI.ThemeSupport = class {
     output.push(':');
     const items = value.replace(Common.Color.Regex, '\0$1\0').split('\0');
     for (let i = 0; i < items.length; ++i)
-      output.push(this.patchColorText(items[i], colorUsage));
+      output.push(this.patchColorText(items[i], /** @type {!UI.ThemeSupport.ColorUsage} */ (colorUsage)));
     if (style.getPropertyPriority(name))
       output.push(' !important');
     output.push(';');

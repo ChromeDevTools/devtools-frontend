@@ -5,11 +5,16 @@
 TimelineModel.TimelineProfileTree = {};
 
 /**
+ * @typedef {Map<string|symbol, !TimelineModel.TimelineProfileTree.Node>}
+ */
+TimelineModel.TimelineProfileTree.ChildrenCache;
+
+/**
  * @unrestricted
  */
 TimelineModel.TimelineProfileTree.Node = class {
   /**
-   * @param {string} id
+   * @param {string|symbol} id
    * @param {?SDK.TracingModel.Event} event
    */
   constructor(id, event) {
@@ -17,7 +22,7 @@ TimelineModel.TimelineProfileTree.Node = class {
     this.totalTime = 0;
     /** @type {number} */
     this.selfTime = 0;
-    /** @type {string} */
+    /** @type {string|symbol} */
     this.id = id;
     /** @type {?SDK.TracingModel.Event} */
     this.event = event;
@@ -44,7 +49,7 @@ TimelineModel.TimelineProfileTree.Node = class {
   }
 
   /**
-   * @return {!Map<string, !TimelineModel.TimelineProfileTree.Node>}
+   * @return {!TimelineModel.TimelineProfileTree.ChildrenCache}
    */
   children() {
     throw 'Not implemented';
@@ -67,7 +72,7 @@ TimelineModel.TimelineProfileTree.Node = class {
 
 TimelineModel.TimelineProfileTree.TopDownNode = class extends TimelineModel.TimelineProfileTree.Node {
   /**
-   * @param {string} id
+   * @param {string|symbol} id
    * @param {?SDK.TracingModel.Event} event
    * @param {?TimelineModel.TimelineProfileTree.TopDownNode} parent
    */
@@ -90,14 +95,14 @@ TimelineModel.TimelineProfileTree.TopDownNode = class extends TimelineModel.Time
 
   /**
    * @override
-   * @return {!Map<string, !TimelineModel.TimelineProfileTree.Node>}
+   * @return {!TimelineModel.TimelineProfileTree.ChildrenCache}
    */
   children() {
     return this._children || this._buildChildren();
   }
 
   /**
-   * @return {!Map<string, !TimelineModel.TimelineProfileTree.Node>}
+   * @return {!TimelineModel.TimelineProfileTree.ChildrenCache}
    */
   _buildChildren() {
     /** @type {!Array<!TimelineModel.TimelineProfileTree.TopDownNode>} */
@@ -105,7 +110,7 @@ TimelineModel.TimelineProfileTree.TopDownNode = class extends TimelineModel.Time
     for (let node = this; node.parent && !node._isGroupNode; node = node.parent)
       path.push(/** @type {!TimelineModel.TimelineProfileTree.TopDownNode} */ (node));
     path.reverse();
-    /** @type {!Map<string, !TimelineModel.TimelineProfileTree.Node>} */
+    /** @type {!TimelineModel.TimelineProfileTree.ChildrenCache} */
     const children = new Map();
     const self = this;
     const root = this._root;
@@ -239,14 +244,14 @@ TimelineModel.TimelineProfileTree.TopDownRootNode = class extends TimelineModel.
 
   /**
    * @override
-   * @return {!Map<string, !TimelineModel.TimelineProfileTree.Node>}
+   * @return {!TimelineModel.TimelineProfileTree.ChildrenCache}
    */
   children() {
     return this._children || this._grouppedTopNodes();
   }
 
   /**
-   * @return {!Map<string, !TimelineModel.TimelineProfileTree.Node>}
+   * @return {!TimelineModel.TimelineProfileTree.ChildrenCache}
    */
   _grouppedTopNodes() {
     const flatNodes = super.children();
@@ -281,7 +286,7 @@ TimelineModel.TimelineProfileTree.BottomUpRootNode = class extends TimelineModel
    */
   constructor(events, textFilter, filters, startTime, endTime, eventGroupIdCallback) {
     super('', null);
-    /** @type {?Map<string, !TimelineModel.TimelineProfileTree.Node>} */
+    /** @type {?TimelineModel.TimelineProfileTree.ChildrenCache} */
     this._children = null;
     this._events = events;
     this._textFilter = textFilter;
@@ -301,20 +306,20 @@ TimelineModel.TimelineProfileTree.BottomUpRootNode = class extends TimelineModel
   }
 
   /**
-   * @param {!Map<string, !TimelineModel.TimelineProfileTree.Node>} children
-   * @return {!Map<string, !TimelineModel.TimelineProfileTree.Node>}
+   * @param {!TimelineModel.TimelineProfileTree.ChildrenCache} children
+   * @return {!TimelineModel.TimelineProfileTree.ChildrenCache}
    */
   _filterChildren(children) {
     for (const [id, child] of children) {
       if (child.event && !this._textFilter.accept(child.event))
-        children.delete(/** @type {string} */ (id));
+        children.delete(/** @type {string|symbol} */ (id));
     }
     return children;
   }
 
   /**
    * @override
-   * @return {!Map<string, !TimelineModel.TimelineProfileTree.Node>}
+   * @return {!TimelineModel.TimelineProfileTree.ChildrenCache}
    */
   children() {
     if (!this._children)
@@ -323,13 +328,13 @@ TimelineModel.TimelineProfileTree.BottomUpRootNode = class extends TimelineModel
   }
 
   /**
-   * @return {!Map<string, !TimelineModel.TimelineProfileTree.Node>}
+   * @return {!TimelineModel.TimelineProfileTree.ChildrenCache}
    */
   _ungrouppedTopNodes() {
     const root = this;
     const startTime = this._startTime;
     const endTime = this._endTime;
-    /** @type {!Map<string, !TimelineModel.TimelineProfileTree.Node>} */
+    /** @type {!TimelineModel.TimelineProfileTree.ChildrenCache} */
     const nodeById = new Map();
     /** @type {!Array<number>} */
     const selfTimeStack = [endTime - startTime];
@@ -382,7 +387,7 @@ TimelineModel.TimelineProfileTree.BottomUpRootNode = class extends TimelineModel
   }
 
   /**
-   * @return {!Map<string, !TimelineModel.TimelineProfileTree.Node>}
+   * @return {!TimelineModel.TimelineProfileTree.ChildrenCache}
    */
   _grouppedTopNodes() {
     const flatNodes = this._ungrouppedTopNodes();
@@ -438,7 +443,7 @@ TimelineModel.TimelineProfileTree.GroupNode = class extends TimelineModel.Timeli
 
   /**
    * @override
-   * @return {!Map<string, !TimelineModel.TimelineProfileTree.Node>}
+   * @return {!TimelineModel.TimelineProfileTree.ChildrenCache}
    */
   children() {
     return this._children;
@@ -458,7 +463,7 @@ TimelineModel.TimelineProfileTree.BottomUpNode = class extends TimelineModel.Tim
     this.parent = parent;
     this._root = root;
     this._depth = (parent._depth || 0) + 1;
-    /** @type {?Map<string, !TimelineModel.TimelineProfileTree.Node>} */
+    /** @type {?TimelineModel.TimelineProfileTree.ChildrenCache} */
     this._cachedChildren = null;
     this._hasChildren = hasChildren;
   }
@@ -477,7 +482,7 @@ TimelineModel.TimelineProfileTree.BottomUpNode = class extends TimelineModel.Tim
 
   /**
    * @override
-   * @return {!Map<string, !TimelineModel.TimelineProfileTree.Node>}
+   * @return {!TimelineModel.TimelineProfileTree.ChildrenCache}
    */
   children() {
     if (this._cachedChildren)
@@ -488,7 +493,7 @@ TimelineModel.TimelineProfileTree.BottomUpNode = class extends TimelineModel.Tim
     const eventIdStack = [];
     /** @type {!Array<!SDK.TracingModel.Event>} */
     const eventStack = [];
-    /** @type {!Map<string, !TimelineModel.TimelineProfileTree.Node>} */
+    /** @type {!TimelineModel.TimelineProfileTree.ChildrenCache} */
     const nodeById = new Map();
     const startTime = this._root._startTime;
     const endTime = this._root._endTime;

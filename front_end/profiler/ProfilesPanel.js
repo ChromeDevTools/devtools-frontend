@@ -597,10 +597,10 @@ Profiler.ProfileSidebarTreeElement = class extends UI.TreeElement {
     this._iconElement = createElementWithClass('div', 'icon');
     this._titlesElement = createElementWithClass('div', 'titles no-subtitle');
     this._titleContainer = this._titlesElement.createChild('span', 'title-container');
-    this._titleElement = this._titleContainer.createChild('span', 'title');
+    this.titleElement = this._titleContainer.createChild('span', 'title');
     this._subtitleElement = this._titlesElement.createChild('span', 'subtitle');
 
-    this._titleElement.textContent = profile.title;
+    this.titleElement.textContent = profile.title;
     this._className = className;
     this._small = false;
     this._dataDisplayDelegate = dataDisplayDelegate;
@@ -738,7 +738,7 @@ Profiler.ProfileSidebarTreeElement = class extends UI.TreeElement {
    * @param {string} title
    */
   setMainTitle(title) {
-    this._titleElement.textContent = title;
+    this.titleElement.textContent = title;
   }
 };
 

@@ -65,7 +65,7 @@ Network.RequestResponseView = class extends UI.VBox {
   /**
    * @protected
    * @param {!SDK.NetworkRequest} request
-   * @return {!Promise<?UI.SearchableView>}
+   * @return {!Promise<?UI.Widget>}
    */
   static async sourceViewForRequest(request) {
     let sourceView = request[Network.RequestResponseView._sourceViewSymbol];

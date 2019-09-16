@@ -76,7 +76,7 @@ Extensions.ExtensionView = class extends UI.Widget {
   }
 
   _onLoad() {
-    const frames = /** @type {!Array.<!Window>} */ (window.frames);
+    const frames = window.frames;
     this._frameIndex = Array.prototype.indexOf.call(frames, this._iframe.contentWindow);
     if (this.isShowing())
       this._server.notifyViewShown(this._id, this._frameIndex);

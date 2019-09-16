@@ -701,15 +701,17 @@ Timeline.AggregatedTimelineTreeView = class extends Timeline.TimelineTreeView {
                           categories['other'].color;
     const unattributed = Common.UIString('[unattributed]');
 
+    const id = typeof node.id === 'symbol' ? undefined : node.id;
+
     switch (this._groupBySetting.get()) {
       case Timeline.AggregatedTimelineTreeView.GroupBy.Category: {
-        const category = categories[node.id] || categories['other'];
+        const category = id ? categories[id] || categories['other'] : unattributed;
         return {name: category.title, color: category.color};
       }
 
       case Timeline.AggregatedTimelineTreeView.GroupBy.Domain:
       case Timeline.AggregatedTimelineTreeView.GroupBy.Subdomain: {
-        let domainName = this._beautifyDomainName(node.id);
+        let domainName = id ? this._beautifyDomainName(id) : undefined;
         if (domainName) {
           const productName = this._productByEvent(/** @type {!SDK.TracingModel.Event} */ (node.event));
           if (productName)
@@ -742,7 +744,7 @@ Timeline.AggregatedTimelineTreeView = class extends Timeline.TimelineTreeView {
         break;
 
       case Timeline.AggregatedTimelineTreeView.GroupBy.Frame: {
-        const frame = this._model.timelineModel().pageFrameById(node.id);
+        const frame = id ? this._model.timelineModel().pageFrameById(id) : undefined;
         const frameName = frame ? Timeline.TimelineUIUtils.displayNameForFrame(frame, 80) : Common.UIString('Page');
         return {name: frameName, color: color};
       }
@@ -750,7 +752,7 @@ Timeline.AggregatedTimelineTreeView = class extends Timeline.TimelineTreeView {
       default:
         console.assert(false, 'Unexpected grouping type');
     }
-    return {name: node.id || unattributed, color: color};
+    return {name: id || unattributed, color: color};
   }
 
   /**
@@ -919,7 +921,7 @@ Timeline.AggregatedTimelineTreeView = class extends Timeline.TimelineTreeView {
       return;
     if (!node.isGroupNode())
       return;
-    const frame = this._model.timelineModel().pageFrameById(node.id);
+    const frame = this._model.timelineModel().pageFrameById(/** @type {string} */ (node.id));
     if (!frame || !frame.ownerNode)
       return;
     contextMenu.appendApplicableItems(frame.ownerNode);

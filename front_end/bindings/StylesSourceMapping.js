@@ -325,7 +325,7 @@ Bindings.StyleFile = class {
 
   /**
    * @override
-   * @return {!Promise<?string>}
+   * @return {!Promise<string>}
    */
   requestContent() {
     return this._headers.firstValue().originalContentProvider().requestContent();

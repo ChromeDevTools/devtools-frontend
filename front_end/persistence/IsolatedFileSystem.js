@@ -357,7 +357,7 @@ Persistence.IsolatedFileSystem = class extends Persistence.PlatformFileSystem {
       }
       let result;
       try {
-        result = reader.result;
+        result = /** @type {string} */ (reader.result);
       } catch (e) {
         result = null;
         console.error('Can\'t read file: ' + path + ': ' + e);

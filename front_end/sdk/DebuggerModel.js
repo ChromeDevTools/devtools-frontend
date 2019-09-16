@@ -286,7 +286,7 @@ SDK.DebuggerModel = class extends SDK.SDKModel {
     });
     if (response[Protocol.Error])
       return {locations: [], breakpointId: null};
-    let locations;
+    let locations = [];
     if (response.locations)
       locations = response.locations.map(payload => SDK.DebuggerModel.Location.fromPayload(this, payload));
     return {locations: locations, breakpointId: response.breakpointId};
@@ -310,7 +310,7 @@ SDK.DebuggerModel = class extends SDK.SDKModel {
         return {locations: [], breakpointId: null};
       return this._setBreakpointBySourceId(scriptId, lineNumber, columnNumber, condition);
     }
-    let locations;
+    let locations = [];
     if (response.locations)
       locations = response.locations.map(payload => SDK.DebuggerModel.Location.fromPayload(this, payload));
     return {locations: locations, breakpointId: response.breakpointId};
@@ -1170,6 +1170,7 @@ SDK.DebuggerModel.BreakLocation = class extends SDK.DebuggerModel.Location {
   }
 
   /**
+   * @override
    * @param {!SDK.DebuggerModel} debuggerModel
    * @param {!Protocol.Debugger.BreakLocation} payload
    * @return {!SDK.DebuggerModel.BreakLocation}

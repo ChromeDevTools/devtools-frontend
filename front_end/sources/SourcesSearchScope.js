@@ -344,7 +344,7 @@ Sources.FileBasedSearchResult = class {
    */
   matchRevealable(index) {
     const match = this._searchMatches[index];
-    return this._uiSourceCode.uiLocation(match.lineNumber, match.columnNumber);
+    return this._uiSourceCode.uiLocation(match.lineNumber, undefined);
   }
 
   /**

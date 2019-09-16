@@ -74,7 +74,7 @@ SDK.HeapProfilerModel = class extends SDK.SDKModel {
    * @return {!Promise<!SDK.HeapProfilerModel.NativeHeapProfile>}
    */
   async stopNativeSampling() {
-    const rawProfile = await this._memoryAgent.getSamplingProfile();
+    const rawProfile = /** @type {!Protocol.Memory.SamplingProfile} */ (await this._memoryAgent.getSamplingProfile());
     this._memoryAgent.stopSampling();
     return this._convertNativeProfile(rawProfile);
   }
@@ -83,7 +83,8 @@ SDK.HeapProfilerModel = class extends SDK.SDKModel {
    * @return {!Promise<!SDK.HeapProfilerModel.NativeHeapProfile>}
    */
   async takeNativeSnapshot() {
-    const rawProfile = await this._memoryAgent.getAllTimeSamplingProfile();
+    const rawProfile =
+        /** @type {!Protocol.Memory.SamplingProfile} */ (await this._memoryAgent.getAllTimeSamplingProfile());
     return this._convertNativeProfile(rawProfile);
   }
 
@@ -91,7 +92,8 @@ SDK.HeapProfilerModel = class extends SDK.SDKModel {
    * @return {!Promise<!SDK.HeapProfilerModel.NativeHeapProfile>}
    */
   async takeNativeBrowserSnapshot() {
-    const rawProfile = await this._memoryAgent.getBrowserSamplingProfile();
+    const rawProfile =
+        /** @type {!Protocol.Memory.SamplingProfile} */ (await this._memoryAgent.getBrowserSamplingProfile());
     return this._convertNativeProfile(rawProfile);
   }
 
@@ -235,6 +237,7 @@ SDK.HeapProfilerModel.Events = {
 };
 
 /**
+ * @implements {Protocol.Profiler.Profile}
  * @extends {Protocol.HeapProfiler.SamplingHeapProfile}
  */
 SDK.HeapProfilerModel.NativeHeapProfile = class {

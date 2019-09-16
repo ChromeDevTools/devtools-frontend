@@ -389,7 +389,7 @@ Bindings.ResourceMapping.Binding = class {
 
   /**
    * @override
-   * @return {!Promise<?string>}
+   * @return {!Promise<string>}
    */
   requestContent() {
     return this._resources.firstValue().requestContent();

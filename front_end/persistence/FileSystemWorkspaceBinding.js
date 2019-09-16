@@ -299,7 +299,7 @@ Persistence.FileSystemWorkspaceBinding.FileSystem = class extends Workspace.Proj
   /**
    * @override
    * @param {!Workspace.UISourceCode} uiSourceCode
-   * @param {function(?string, boolean)} callback
+   * @param {function(?string,boolean)} callback
    */
   requestFileContent(uiSourceCode, callback) {
     const filePath = this._filePathForUISourceCode(uiSourceCode);

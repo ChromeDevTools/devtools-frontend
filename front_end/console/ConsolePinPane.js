@@ -259,7 +259,7 @@ Console.ConsolePin = class extends Common.Object {
     this._lastNode = node || null;
 
     const isError = result && result.exceptionDetails && !SDK.RuntimeModel.isSideEffectFailure(result);
-    this._pinElement.classList.toggle('error-level', isError);
+    this._pinElement.classList.toggle('error-level', !!isError);
   }
 };
 

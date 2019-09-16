@@ -54,7 +54,7 @@ Audits.ProtocolService = class extends Common.Object {
   }
 
   /**
-   * @param {!Object} message
+   * @param {(!Object|string)} message
    */
   _dispatchProtocolMessage(message) {
     this._send('dispatchProtocolMessage', {message: JSON.stringify(message)});

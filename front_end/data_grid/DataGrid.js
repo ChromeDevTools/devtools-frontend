@@ -131,7 +131,7 @@ DataGrid.DataGrid = class extends Common.Object {
    */
   static setElementText(element, newText, longText) {
     if (longText && newText.length > 1000) {
-      element.textContent = newText.trimEnd(1000);
+      element.textContent = newText.trimEndWithMaxLength(1000);
       element.title = newText;
       element[DataGrid.DataGrid._longTextSymbol] = newText;
     } else {
@@ -1290,7 +1290,7 @@ DataGrid.DataGridNode = class extends Common.Object {
     super();
     /** @type {?Element} */
     this._element = null;
-    /** @type {boolean} */
+    /** @protected @type {boolean} @suppress {accessControls} */
     this._expanded = false;
     /** @type {boolean} */
     this._selected = false;

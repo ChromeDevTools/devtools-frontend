@@ -82,7 +82,7 @@ Bindings.TempFile = class {
       Common.console.error('Failed to read from temp file: ' + error.message);
     }
 
-    return reader.result;
+    return /** @type {?string} */ (reader.result);
   }
 
   /**

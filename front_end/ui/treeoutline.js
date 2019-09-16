@@ -377,7 +377,8 @@ UI.TreeElement = class {
     this._boundOnBlur = this._onBlur.bind(this);
 
     this._listItemNode = createElement('li');
-    this._titleElement = this._listItemNode.createChild('span', 'tree-element-title');
+    /** @protected */
+    this.titleElement = this._listItemNode.createChild('span', 'tree-element-title');
     this._listItemNode.treeElement = this;
     if (title)
       this.title = title;
@@ -628,13 +629,6 @@ UI.TreeElement = class {
     return this._listItemNode;
   }
 
-  /**
-   * @return {!Element}
-   */
-  titleElement() {
-    return this._titleElement;
-  }
-
   get childrenListElement() {
     return this._childrenListNode;
   }
@@ -655,17 +649,17 @@ UI.TreeElement = class {
     this._title = x;
 
     if (typeof x === 'string') {
-      this._titleElement.textContent = x;
+      this.titleElement.textContent = x;
       this.tooltip = x;
     } else {
-      this._titleElement = x;
+      this.titleElement = x;
       this.tooltip = '';
     }
 
     this._listItemNode.removeChildren();
     if (this._leadingIconsElement)
       this._listItemNode.appendChild(this._leadingIconsElement);
-    this._listItemNode.appendChild(this._titleElement);
+    this._listItemNode.appendChild(this.titleElement);
     if (this._trailingIconsElement)
       this._listItemNode.appendChild(this._trailingIconsElement);
     this._ensureSelection();
@@ -686,8 +680,8 @@ UI.TreeElement = class {
    * @param {!UI.InplaceEditor.Config} editingConfig
    */
   startEditingTitle(editingConfig) {
-    UI.InplaceEditor.startEditing(this._titleElement, editingConfig);
-    this.treeOutline._shadowRoot.getSelection().selectAllChildren(this._titleElement);
+    UI.InplaceEditor.startEditing(/** @type {!Element} */ (this.titleElement), editingConfig);
+    this.treeOutline._shadowRoot.getSelection().selectAllChildren(this.titleElement);
   }
 
   /**
@@ -699,7 +693,7 @@ UI.TreeElement = class {
     if (!this._leadingIconsElement) {
       this._leadingIconsElement = createElementWithClass('div', 'leading-icons');
       this._leadingIconsElement.classList.add('icons-container');
-      this._listItemNode.insertBefore(this._leadingIconsElement, this._titleElement);
+      this._listItemNode.insertBefore(this._leadingIconsElement, this.titleElement);
       this._ensureSelection();
     }
     this._leadingIconsElement.removeChildren();

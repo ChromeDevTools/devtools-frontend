@@ -1445,7 +1445,7 @@ Elements.ElementsTreeOutline._treeOutlineSymbol = Symbol('treeOutline');
 /** @typedef {{node: !SDK.DOMNode, isCut: boolean}} */
 Elements.ElementsTreeOutline.ClipboardData;
 
-/** @enum {symbol} */
+/** @override @suppress {checkPrototypalTypes} @enum {symbol} */
 Elements.ElementsTreeOutline.Events = {
   SelectedNodeChanged: Symbol('SelectedNodeChanged'),
   ElementsTreeUpdated: Symbol('ElementsTreeUpdated')

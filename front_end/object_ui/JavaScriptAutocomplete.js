@@ -34,7 +34,7 @@ ObjectUI.JavaScriptAutocomplete = class {
 
   /**
    * @param {string} fullText
-   * @return {!Promise<?{args: !Array<!Array<string>>, argumentIndex: number}>}
+   * @return {!Promise<?{args: !Array<!Array<string>>, argumentIndex: number}|undefined>}
    */
   async argumentsHint(fullText) {
     const functionCall = await Formatter.formatterWorkerPool().findLastFunctionCall(fullText);
@@ -73,7 +73,7 @@ ObjectUI.JavaScriptAutocomplete = class {
             timeout: functionCall.possibleSideEffects ? 500 : undefined
           },
           /* userGesture */ false, /* awaitPromise */ false);
-      return (result && !result.exceptionDetails) ? result.object : null;
+      return (result && !result.exceptionDetails && result.object) ? result.object : null;
     }, functionCall.functionName);
     executionContext.runtimeModel.releaseObjectGroup('argumentsHint');
     if (!args.length || (args.length === 1 && !args[0].length))
@@ -157,7 +157,7 @@ ObjectUI.JavaScriptAutocomplete = class {
             result[result.length] = object.constructor.name;
         }
         return result;
-      });
+      }, []);
     }
     for (const proto of protoNames) {
       const instanceSignatures = javaScriptMetadata.signaturesForInstanceMethod(name, proto);
@@ -363,7 +363,7 @@ ObjectUI.JavaScriptAutocomplete = class {
             /* userGesture */ false,
             /* awaitPromise */ false);
         if (evaluateResult.object && !evaluateResult.exceptionDetails)
-          completions = evaluateResult.object.value || [];
+          completions = /** @type {!Iterable} */ (evaluateResult.object.value) || [];
       }
       executionContext.runtimeModel.releaseObjectGroup('completion');
 

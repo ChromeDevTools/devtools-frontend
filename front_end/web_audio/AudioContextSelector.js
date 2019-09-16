@@ -78,7 +78,7 @@ WebAudio.AudioContextSelector = class extends Common.Object {
     const element = createElementWithClass('div');
     const shadowRoot = UI.createShadowRootWithCoreStyles(element, 'web_audio/audioContextSelector.css');
     const title = shadowRoot.createChild('div', 'title');
-    title.createTextChild(this.titleFor(item).trimEnd(100));
+    title.createTextChild(this.titleFor(item).trimEndWithMaxLength(100));
     return element;
   }
 

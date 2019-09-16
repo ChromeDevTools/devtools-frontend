@@ -135,7 +135,7 @@ SDK.Script = class {
 
   /**
    * @override
-   * @return {!Promise<?string>}
+   * @return {!Promise<string>}
    */
   async requestContent() {
     if (this._source)

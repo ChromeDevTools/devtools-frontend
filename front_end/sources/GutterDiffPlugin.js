@@ -21,6 +21,7 @@ Sources.GutterDiffPlugin = class extends Sources.UISourceCodeFrame.Plugin {
   }
 
   /**
+   * @override
    * @param {!Workspace.UISourceCode} uiSourceCode
    * @return {boolean}
    */

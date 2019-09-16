@@ -9,7 +9,7 @@ Common.StaticContentProvider = class {
   /**
    * @param {string} contentURL
    * @param {!Common.ResourceType} contentType
-   * @param {function():!Promise<?string>} lazyContent
+   * @param {function():!Promise<string>} lazyContent
    */
   constructor(contentURL, contentType, lazyContent) {
     this._contentURL = contentURL;
@@ -54,7 +54,7 @@ Common.StaticContentProvider = class {
 
   /**
    * @override
-   * @return {!Promise<?string>}
+   * @return {!Promise<string>}
    */
   requestContent() {
     return this._lazyContent();

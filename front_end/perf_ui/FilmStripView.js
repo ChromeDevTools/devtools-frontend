@@ -161,7 +161,7 @@ PerfUI.FilmStripView = class extends UI.HBox {
   }
 
   /**
-   * @param {string} eventName
+   * @param {string|symbol} eventName
    * @param {number} timestamp
    */
   _onMouseEvent(eventName, timestamp) {

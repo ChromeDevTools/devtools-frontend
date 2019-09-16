@@ -50,6 +50,7 @@ UI.XLink = class extends UI.XElement {
   }
 
   /**
+   * @override
    * @return {!Array<string>}
    */
   static get observedAttributes() {

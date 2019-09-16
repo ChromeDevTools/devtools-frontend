@@ -92,7 +92,7 @@ SourceFrame.BinaryResourceViewFactory = class {
    * @return {!SourceFrame.ResourceSourceFrame}
    */
   createUtf8View() {
-    const utf8fn = /** @type {function():!Promise<?string>} */ (this.utf8.bind(this));
+    const utf8fn = this.utf8.bind(this);
     const utf8ContentProvider = new Common.StaticContentProvider(this._contentUrl, this._resourceType, utf8fn);
     return new SourceFrame.ResourceSourceFrame(
         utf8ContentProvider,

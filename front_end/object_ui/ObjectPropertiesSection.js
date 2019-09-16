@@ -193,7 +193,7 @@ ObjectUI.ObjectPropertiesSection = class extends UI.TreeOutlineInShadow {
     } else {
       addElements('\u0192', text, nameAndArguments(text));
     }
-    valueElement.title = description.trimEnd(500);
+    valueElement.title = description.trimEndWithMaxLength(500);
     return valueElement;
 
     /**
@@ -221,7 +221,7 @@ ObjectUI.ObjectPropertiesSection = class extends UI.TreeOutlineInShadow {
       if (prefix.length)
         valueElement.createChild('span', 'object-value-function-prefix').textContent = prefix + ' ';
       if (includePreview)
-        valueElement.createTextChild(body.trim().trimEnd(maxFunctionBodyLength));
+        valueElement.createTextChild(body.trim().trimEndWithMaxLength(maxFunctionBodyLength));
       else
         valueElement.createTextChild(abbreviation.replace(/\n/g, ' '));
     }

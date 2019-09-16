@@ -29,13 +29,13 @@
  */
 Common.Object = class {
   constructor() {
-    /** @type {(!Map<symbol, !Array<!Common.Object._listenerCallbackTuple>>|undefined)} */
+    /** @type {(!Map<string|symbol, !Array<!Common.Object._listenerCallbackTuple>>|undefined)} */
     this._listeners;
   }
 
   /**
    * @override
-   * @param {symbol} eventType
+   * @param {string|symbol} eventType
    * @param {function(!Common.Event)} listener
    * @param {!Object=} thisObject
    * @return {!Common.EventTarget.EventDescriptor}
@@ -69,7 +69,7 @@ Common.Object = class {
 
   /**
    * @override
-   * @param {symbol} eventType
+   * @param {string|symbol} eventType
    * @param {function(!Common.Event)} listener
    * @param {!Object=} thisObject
    */
@@ -92,7 +92,7 @@ Common.Object = class {
 
   /**
    * @override
-   * @param {symbol} eventType
+   * @param {string|symbol} eventType
    * @return {boolean}
    */
   hasEventListeners(eventType) {
@@ -101,7 +101,7 @@ Common.Object = class {
 
   /**
    * @override
-   * @param {symbol} eventType
+   * @param {string|symbol} eventType
    * @param {*=} eventData
    */
   dispatchEventToListeners(eventType, eventData) {
@@ -133,7 +133,7 @@ Common.Object._listenerCallbackTuple;
 Common.EventTarget = function() {};
 
 /**
- * @typedef {!{eventTarget: !Common.EventTarget, eventType: symbol, thisObject: (!Object|undefined), listener: function(!Common.Event)}}
+ * @typedef {!{eventTarget: !Common.EventTarget, eventType: (string|symbol), thisObject: (!Object|undefined), listener: function(!Common.Event)}}
  */
 Common.EventTarget.EventDescriptor;
 
@@ -163,7 +163,7 @@ Common.EventTarget.prototype = {
   once(eventType) {},
 
   /**
-   * @param {symbol} eventType
+   * @param {string|symbol} eventType
    * @param {function(!Common.Event)} listener
    * @param {!Object=} thisObject
    */

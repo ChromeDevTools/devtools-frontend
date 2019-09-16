@@ -546,7 +546,7 @@ CookieTable.DataGridNode = class extends DataGrid.DataGridNode {
     if (this._blockedReasons) {
       for (const blockedReason of this._blockedReasons) {
         const attributeMatches = blockedReason.attribute === /** @type {!SDK.Cookie.Attributes} */ (columnId);
-        const useNameColumn = !blockedReason.attribute && columnId === SDK.Cookie.Attribute.Name;
+        const useNameColumn = !blockedReason.attribute && columnId === SDK.Cookie.Attributes.Name;
         if (attributeMatches || useNameColumn) {
           if (blockedReasonString)
             blockedReasonString += '\n';

@@ -175,7 +175,7 @@ Resources.ServiceWorkersView = class extends UI.VBox {
       else
         section._section.hideWidget();
     }
-    this.contentElement.classList.toggle('service-worker-has-current', hasThis);
+    this.contentElement.classList.toggle('service-worker-has-current', !!hasThis);
     this._otherWorkers.classList.toggle('hidden', !hasOthers);
     this._updateListVisibility();
   }

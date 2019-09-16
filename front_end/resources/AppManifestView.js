@@ -184,7 +184,7 @@ Resources.AppManifestView = class extends UI.VBox {
 
   /**
    * @param {?string} url
-   * @return {!Promise<?Image>}
+   * @return {!Promise<?Element>}
    */
   async _loadImage(url) {
     const image = createElement('img');

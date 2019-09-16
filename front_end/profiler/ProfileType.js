@@ -143,7 +143,7 @@ Profiler.ProfileType = class extends Common.Object {
 
   /**
    * @param {!File} file
-   * @return {!Promise<?Error>}
+   * @return {!Promise<?Error|?FileError>}
    */
   loadFromFile(file) {
     let name = file.name;

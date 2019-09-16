@@ -49,7 +49,7 @@ Common.ContentProvider.prototype = {
   contentEncoded() {},
 
   /**
-   * @return {!Promise<?string>}
+   * @return {!Promise<string>}
    */
   requestContent() {},
 

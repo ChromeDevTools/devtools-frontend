@@ -59,6 +59,13 @@ public final class MethodAnnotationChecker extends ContextTrackingChecker {
         Set<String> formalParamNames = new HashSet<>();
         for (int i = 0; i < function.parameterNames.size(); ++i) {
             String paramName = function.parameterNames.get(i);
+            /**
+             * Varargs can be specified as `...varargs`, but will be named as
+             * `varargs` in the JSDoc
+             */
+            if (paramName.startsWith("...")) {
+                paramName = paramName.substring(3);
+            }
             if (!formalParamNames.add(paramName)) {
                 reportErrorAtNodeStart(function.functionNode,
                         String.format("Duplicate function argument name: %s", paramName));

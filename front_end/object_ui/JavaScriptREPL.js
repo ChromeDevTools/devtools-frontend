@@ -93,7 +93,7 @@ ObjectUI.JavaScriptREPL = class {
     if (preview && type === 'object' && subtype !== 'node') {
       formatter.appendObjectPreview(fragment, preview, false /* isEntry */);
     } else {
-      const nonObjectPreview = formatter.renderPropertyPreview(type, subtype, description.trimEnd(400));
+      const nonObjectPreview = formatter.renderPropertyPreview(type, subtype, description.trimEndWithMaxLength(400));
       fragment.appendChild(nonObjectPreview);
     }
     return fragment;

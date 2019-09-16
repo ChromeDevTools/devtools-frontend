@@ -151,8 +151,9 @@ Coverage.CoverageModel = class extends SDK.SDKModel {
         for (const range of func.ranges)
           ranges.push(range);
       }
-      const subentry =
-          this._addCoverage(script, script.contentLength, script.lineOffset, script.columnOffset, ranges, type);
+      const subentry = this._addCoverage(
+          script, script.contentLength, script.lineOffset, script.columnOffset, ranges,
+          /** @type {!Coverage.CoverageType} */ (type));
       if (subentry)
         updatedEntries.push(subentry);
     }

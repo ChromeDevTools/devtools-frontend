@@ -67,7 +67,7 @@ SDK.CompilerSourceMappingContentProvider = class {
 
   /**
    * @override
-   * @return {!Promise<?string>}
+   * @return {!Promise<string>}
    */
   requestContent() {
     let callback;

@@ -56,7 +56,7 @@ Workspace.UISourceCode = class extends Common.Object {
     }
 
     this._contentType = contentType;
-    /** @type {?Promise<?string>} */
+    /** @type {?Promise<string>} */
     this._requestContentPromise = null;
     /** @type {?Multimap<string, !Workspace.UISourceCode.LineMarker>} */
     this._decorations = null;
@@ -142,7 +142,7 @@ Workspace.UISourceCode = class extends Common.Object {
         name = decodeURI(name);
     } catch (e) {
     }
-    return skipTrim ? name : name.trimEnd(100);
+    return skipTrim ? name : name.trimEndWithMaxLength(100);
   }
 
   /**
@@ -235,14 +235,14 @@ Workspace.UISourceCode = class extends Common.Object {
 
   /**
    * @override
-   * @return {!Promise<?string>}
+   * @return {!Promise<string>}
    */
   requestContent() {
     if (this._requestContentPromise)
       return this._requestContentPromise;
 
     if (this._contentLoaded) {
-      this._requestContentPromise = Promise.resolve(this._content);
+      this._requestContentPromise = Promise.resolve(this._content || '');
     } else {
       let fulfill;
       this._requestContentPromise = new Promise(x => fulfill = x);

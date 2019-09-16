@@ -511,7 +511,7 @@ Elements.ElementsTreeElement = class extends UI.TreeElement {
 
     // Place it here so that all "Copy"-ing items stick together.
     const copyMenu = contextMenu.clipboardSection().appendSubMenuItem(Common.UIString('Copy'));
-    const createShortcut = UI.KeyboardShortcut.shortcutToString;
+    const createShortcut = UI.KeyboardShortcut.shortcutToString.bind(null);
     const modifier = UI.KeyboardShortcut.Modifiers.CtrlOrMeta;
     const treeOutline = this.treeOutline;
     let menuItem;

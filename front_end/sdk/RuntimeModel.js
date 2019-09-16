@@ -55,6 +55,7 @@ SDK.RuntimeModel = class extends SDK.SDKModel {
 
   /**
    * @param {!SDK.RuntimeModel.EvaluationResult} response
+   * @return {boolean}
    */
   static isSideEffectFailure(response) {
     const exceptionDetails = !response[Protocol.Error] && response.exceptionDetails;
@@ -239,7 +240,7 @@ SDK.RuntimeModel = class extends SDK.SDKModel {
    * @param {string} sourceURL
    * @param {boolean} persistScript
    * @param {number} executionContextId
-   * @return {?Promise<!SDK.RuntimeModel.CompileScriptResult>}
+   * @return {!Promise<?SDK.RuntimeModel.CompileScriptResult>}
    */
   async compileScript(expression, sourceURL, persistScript, executionContextId) {
     const response = await this._agent.invoke_compileScript({

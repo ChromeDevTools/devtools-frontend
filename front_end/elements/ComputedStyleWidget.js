@@ -359,7 +359,7 @@ Elements.ComputedStyleWidget = class extends UI.ThrottledWidget {
       child.hidden = !matched;
       hasMatch |= matched;
     }
-    this._noMatchesElement.classList.toggle('hidden', hasMatch);
+    this._noMatchesElement.classList.toggle('hidden', !!hasMatch);
   }
 };
 

@@ -198,6 +198,8 @@ SDK.CSSMetadata = class {
    * @return {string}
    */
   canonicalPropertyName(name) {
+    if (this.isCustomProperty(name))
+      return name;
     name = name.toLowerCase();
     if (!name || name.length < 9 || name.charAt(0) !== '-')
       return name;

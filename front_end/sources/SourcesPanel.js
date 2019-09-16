@@ -889,7 +889,9 @@ Sources.SourcesPanel = class extends UI.Panel {
     const vbox = new UI.VBox();
     vbox.element.appendChild(this._debugToolbar.element);
     vbox.element.appendChild(this._debugToolbarDrawer);
-    vbox.setMinimumAndPreferredSizes(25, 25, Sources.SourcesPanel.minToolbarWidth, 100);
+
+    vbox.setMinimumAndPreferredSizes(
+        Sources.SourcesPanel.minToolbarWidth, 25, Sources.SourcesPanel.minToolbarWidth, 100);
     this._sidebarPaneStack = UI.viewManager.createStackLocation(this._revealDebuggerSidebar.bind(this));
     this._sidebarPaneStack.widget().element.classList.add('overflow-auto');
     this._sidebarPaneStack.widget().show(vbox.element);

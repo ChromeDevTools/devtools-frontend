@@ -59,6 +59,7 @@ PerfUI.FilmStripView = class extends UI.HBox {
     element.title = Common.UIString('Doubleclick to zoom image. Click to view preceding requests.');
     element.createChild('div', 'time').textContent = Number.millisToString(time - this._zeroTime);
     const imageElement = element.createChild('div', 'thumbnail').createChild('img');
+    imageElement.alt = ls`Screenshot`;
     element.addEventListener(
         'mousedown', this._onMouseEvent.bind(this, PerfUI.FilmStripView.Events.FrameSelected, time), false);
     element.addEventListener(

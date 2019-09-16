@@ -796,14 +796,14 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
     let iconElement;
     if (this._request.resourceType() === Common.resourceTypes.Image) {
       const previewImage = createElementWithClass('img', 'image-network-icon-preview');
-      UI.ARIAUtils.setAccessibleName(previewImage, this._request.resourceType().title());
+      previewImage.alt = this._request.resourceType().title();
       this._request.populateImageSource(previewImage);
 
       iconElement = createElementWithClass('div', 'icon');
       iconElement.appendChild(previewImage);
     } else {
       iconElement = createElementWithClass('img', 'icon');
-      UI.ARIAUtils.setAccessibleName(iconElement, this._request.resourceType().title());
+      iconElement.alt = this._request.resourceType().title();
     }
     iconElement.classList.add(this._request.resourceType().name());
 

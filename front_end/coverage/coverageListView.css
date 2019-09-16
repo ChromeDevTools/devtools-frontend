@@ -43,11 +43,11 @@
 }
 
 .data-grid td .bar-unused-size {
-  background-color: #E57373;
+  background-color: #EE442F;
 }
 
 .data-grid td .bar-used-size {
-  background-color: #81C784;
+  background-color: #63ACBE;
 }
 
 .data-grid td .percent-value {

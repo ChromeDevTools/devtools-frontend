@@ -437,7 +437,7 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
 .CodeMirror .text-editor-coverage-unused-marker {
     text-align: right;
     padding-right: 2px;
-    background-color: #E57373;
+    background-color: #EE442F;
 }
 
 .CodeMirror .text-editor-coverage-unused-marker::after {
@@ -447,7 +447,7 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
 .CodeMirror .text-editor-coverage-used-marker {
     text-align: right;
     padding-right: 2px;
-    background-color: #81C784;
+    background-color: #63ACBE;
 }
 
 .CodeMirror .text-editor-coverage-used-marker::after {

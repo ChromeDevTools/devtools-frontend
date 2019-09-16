@@ -166,7 +166,7 @@ input {
     color: inherit;
 }
 
-:host-context(.-theme-with-dark-background) input[type="checkbox"]::not(.-theme-preserve) {
+:host-context(.-theme-with-dark-background) input[type="checkbox"]:not(.-theme-preserve) {
     -webkit-filter: invert(80%);
 }
 

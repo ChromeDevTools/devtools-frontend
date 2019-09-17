@@ -403,7 +403,6 @@ SDK.CSSMetadata._colorAwareProperties = new Set([
   'column-rule',
   'column-rule-color',
   'fill',
-  'list-style',
   'list-style-image',
   'outline',
   'outline-color',

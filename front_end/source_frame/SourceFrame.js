@@ -415,8 +415,13 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
   _simplifyMimeType(content, mimeType) {
     if (!mimeType)
       return '';
+    // There are plenty of instances where TSX/JSX files are served with out the trailing x, i.e. JSX with a 'js' suffix
+    // which breaks the formatting. Therefore, if the mime type is TypeScript or JavaScript, we switch to the TSX/JSX
+    // superset so that we don't break formatting.
+    if (mimeType.indexOf('typescript') >= 0)
+      return 'text/typescript-jsx';
     if (mimeType.indexOf('javascript') >= 0 || mimeType.indexOf('jscript') >= 0 || mimeType.indexOf('ecmascript') >= 0)
-      return 'text/javascript';
+      return 'text/jsx';
     // A hack around the fact that files with "php" extension might be either standalone or html embedded php scripts.
     if (mimeType === 'text/x-php' && content.match(/\<\?.*\?\>/g))
       return 'application/x-httpd-php';

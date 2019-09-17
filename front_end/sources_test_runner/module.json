@@ -5,6 +5,7 @@
     "workspace",
     "source_frame",
     "text_utils",
+    "cm_modes",
     "browser_debugger"
   ],
   "scripts": [

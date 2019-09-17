@@ -934,7 +934,6 @@ Elements.ElementsTreeOutline = class extends UI.TreeOutline {
 
       style = document.createElement('style');
       style.id = styleTagId;
-      style.type = 'text/css';
       style.textContent = rule;
 
       localRoot.appendChild(style);

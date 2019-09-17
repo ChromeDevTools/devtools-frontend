@@ -1457,7 +1457,6 @@
    */
   function createStyleElement(styleText) {
     const style = document.createElement('style');
-    style.type = 'text/css';
     style.textContent = styleText;
     return style;
   }

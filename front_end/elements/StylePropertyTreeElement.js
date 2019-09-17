@@ -1028,7 +1028,7 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
       return;
 
     const hasBeenEditedIncrementally = this._hasBeenEditedIncrementally;
-    styleText = styleText.replace(/[\u00a0\t]/g, ' ').trim();  // Replace &nbsp; with whitespace.
+    styleText = styleText.replace(/[\xA0\t]/g, ' ').trim();  // Replace &nbsp; with whitespace.
     if (!styleText.length && majorChange && this._newProperty && !hasBeenEditedIncrementally) {
       // The user deleted everything and never applied a new property value via Up/Down scrolling/live editing, so remove the tree element and update.
       this.parent.removeChild(this);

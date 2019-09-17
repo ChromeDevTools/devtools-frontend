@@ -58,7 +58,7 @@ ObjectUI.RemoteObjectPreviewFormatter = class {
         text = hideDescription ? '' : description;
       }
       if (text.length > 0)
-        parentElement.createChild('span', 'object-description').textContent = text + '\u00a0';
+        parentElement.createChild('span', 'object-description').textContent = text + '\xA0';
     }
 
     const propertiesElement = parentElement.createChild('span', 'object-properties-preview');
@@ -70,7 +70,7 @@ ObjectUI.RemoteObjectPreviewFormatter = class {
     else
       this._appendObjectPropertiesPreview(propertiesElement, preview);
     if (preview.overflow) {
-      const ellipsisText = propertiesElement.textContent.length > 1 ? ',\u00a0\u2026' : '\u2026';
+      const ellipsisText = propertiesElement.textContent.length > 1 ? ',\xA0\u2026' : '\u2026';
       propertiesElement.createChild('span').textContent = ellipsisText;
     }
     propertiesElement.createTextChild(isArrayOrTypedArray ? ']' : '}');

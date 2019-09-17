@@ -289,7 +289,7 @@ Accessibility.AXNodePropertyTreePropertyElement = class extends Accessibility.AX
 
     this.appendNameElement(this._property.name);
 
-    this.listItemElement.createChild('span', 'separator').textContent = ':\u00A0';
+    this.listItemElement.createChild('span', 'separator').textContent = ':\xA0';
 
     this.appendValueElement(this._property.value);
   }
@@ -428,14 +428,14 @@ Accessibility.AXValueSourceTreeElement = class extends Accessibility.AXNodePrope
 
     this.appendSourceNameElement(this._source);
 
-    this.listItemElement.createChild('span', 'separator').textContent = ':\u00a0';
+    this.listItemElement.createChild('span', 'separator').textContent = ':\xA0';
 
     if (this._source.attributeValue) {
       this.appendValueElement(this._source.attributeValue);
-      this.listItemElement.createTextChild('\u00a0');
+      this.listItemElement.createTextChild('\xA0');
     } else if (this._source.nativeSourceValue) {
       this.appendValueElement(this._source.nativeSourceValue);
-      this.listItemElement.createTextChild('\u00a0');
+      this.listItemElement.createTextChild('\xA0');
       if (this._source.value)
         this.appendValueElement(this._source.value);
     } else if (this._source.value) {
@@ -547,10 +547,10 @@ Accessibility.AXNodeIgnoredReasonTreeElement = class extends Accessibility.AXNod
     let reasonElement = null;
     switch (reason) {
       case 'activeModalDialog':
-        reasonElement = UI.formatLocalized('Element is hidden by active modal dialog:\u00a0', []);
+        reasonElement = UI.formatLocalized('Element is hidden by active modal dialog:\xA0', []);
         break;
       case 'ancestorIsLeafNode':
-        reasonElement = UI.formatLocalized('Ancestor\'s children are all presentational:\u00a0', []);
+        reasonElement = UI.formatLocalized('Ancestor\'s children are all presentational:\xA0', []);
         break;
       case 'ariaHiddenElement': {
         const ariaHiddenSpan = createElement('span', 'source-code').textContent = 'aria-hidden';
@@ -560,7 +560,7 @@ Accessibility.AXNodeIgnoredReasonTreeElement = class extends Accessibility.AXNod
       case 'ariaHiddenSubtree': {
         const ariaHiddenSpan = createElement('span', 'source-code').textContent = 'aria-hidden';
         const trueSpan = createElement('span', 'source-code').textContent = 'true';
-        reasonElement = UI.formatLocalized('%s is %s on ancestor:\u00a0', [ariaHiddenSpan, trueSpan]);
+        reasonElement = UI.formatLocalized('%s is %s on ancestor:\xA0', [ariaHiddenSpan, trueSpan]);
         break;
       }
       case 'emptyAlt':
@@ -573,16 +573,16 @@ Accessibility.AXNodeIgnoredReasonTreeElement = class extends Accessibility.AXNod
         reasonElement = UI.formatLocalized('Element is inert.', []);
         break;
       case 'inertSubtree':
-        reasonElement = UI.formatLocalized('Element is in an inert subtree from\u00a0', []);
+        reasonElement = UI.formatLocalized('Element is in an inert subtree from\xA0', []);
         break;
       case 'inheritsPresentation':
-        reasonElement = UI.formatLocalized('Element inherits presentational role from\u00a0', []);
+        reasonElement = UI.formatLocalized('Element inherits presentational role from\xA0', []);
         break;
       case 'labelContainer':
-        reasonElement = UI.formatLocalized('Part of label element:\u00a0', []);
+        reasonElement = UI.formatLocalized('Part of label element:\xA0', []);
         break;
       case 'labelFor':
-        reasonElement = UI.formatLocalized('Label for\u00a0', []);
+        reasonElement = UI.formatLocalized('Label for\xA0', []);
         break;
       case 'notRendered':
         reasonElement = UI.formatLocalized('Element is not rendered.', []);
@@ -599,7 +599,7 @@ Accessibility.AXNodeIgnoredReasonTreeElement = class extends Accessibility.AXNod
         reasonElement = UI.formatLocalized('Element is presentational.', []);
         break;
       case 'staticTextUsedAsNameFor':
-        reasonElement = UI.formatLocalized('Static text node is used as name for\u00a0', []);
+        reasonElement = UI.formatLocalized('Static text node is used as name for\xA0', []);
         break;
       case 'uninteresting':
         reasonElement = UI.formatLocalized('Element not interesting for accessibility.', []);

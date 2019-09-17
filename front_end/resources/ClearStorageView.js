@@ -220,7 +220,7 @@ Resources.ClearStorageView = class extends UI.ThrottledWidget {
       return;
     }
     this._quotaRow.textContent = Common.UIString(
-        '%s used out of %s storage quota.\u00a0', Number.bytesToString(response.usage),
+        '%s used out of %s storage quota.\xA0', Number.bytesToString(response.usage),
         Number.bytesToString(response.quota));
     if (response.quota < 125829120) {  // 120 MB
       this._quotaRow.title = ls`Storage quota is limited in Incognito mode`;

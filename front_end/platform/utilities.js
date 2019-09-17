@@ -1021,7 +1021,7 @@ self.countRegexMatches = function(regex, content) {
  * @return {string}
  */
 self.spacesPadding = function(spacesCount) {
-  return '\u00a0'.repeat(spacesCount);
+  return '\xA0'.repeat(spacesCount);
 };
 
 /**

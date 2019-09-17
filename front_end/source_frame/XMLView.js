@@ -297,7 +297,7 @@ SourceFrame.XMLView.Node = class extends UI.TreeElement {
         for (let i = 0; i < attributes.length; ++i) {
           const attributeNode = attributes.item(i);
           titleItems.push(
-              '\u00a0', 'shadow-xml-view-tag', attributeNode.name, 'shadow-xml-view-attribute-name', '="',
+              '\xA0', 'shadow-xml-view-tag', attributeNode.name, 'shadow-xml-view-attribute-name', '="',
               'shadow-xml-view-tag', attributeNode.value, 'shadow-xml-view-attribute-value', '"',
               'shadow-xml-view-tag');
         }

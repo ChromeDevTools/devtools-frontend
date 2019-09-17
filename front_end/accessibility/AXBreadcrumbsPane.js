@@ -327,7 +327,7 @@ Accessibility.AXBreadcrumb = class {
     } else {
       this._appendRoleElement(this._axNode.role());
       if (this._axNode.name() && this._axNode.name().value) {
-        this._nodeWrapper.createChild('span', 'separator').textContent = '\u00A0';
+        this._nodeWrapper.createChild('span', 'separator').textContent = '\xA0';
         this._appendNameElement(/** @type {string} */ (this._axNode.name().value));
       }
     }

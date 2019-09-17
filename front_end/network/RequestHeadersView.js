@@ -224,7 +224,7 @@ Network.RequestHeadersView = class extends UI.VBox {
     paramsTreeElement.listItemElement.createTextChild(title);
 
     const headerCount = createElementWithClass('span', 'header-count');
-    headerCount.textContent = Common.UIString('\u00A0(%d)', params.length);
+    headerCount.textContent = Common.UIString('\xA0(%d)', params.length);
     paramsTreeElement.listItemElement.appendChild(headerCount);
 
     /**
@@ -430,7 +430,7 @@ Network.RequestHeadersView = class extends UI.VBox {
     headersTreeElement.listItemElement.removeChildren();
     headersTreeElement.listItemElement.createTextChild(title);
 
-    const headerCount = Common.UIString('\u00A0(%d)', headersLength);
+    const headerCount = Common.UIString('\xA0(%d)', headersLength);
     headersTreeElement.listItemElement.createChild('span', 'header-count').textContent = headerCount;
   }
 

@@ -76,7 +76,7 @@ Accessibility.ARIAAttributesTreeElement = class extends UI.TreeElement {
   _populateListItem() {
     this.listItemElement.removeChildren();
     this.appendNameElement(this._attribute.name);
-    this.listItemElement.createChild('span', 'separator').textContent = ':\u00A0';
+    this.listItemElement.createChild('span', 'separator').textContent = ':\xA0';
     this.appendAttributeValueElement(this._attribute.value);
   }
 

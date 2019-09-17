@@ -93,7 +93,7 @@ async function parseLocalizableStringsFromFile(filePath) {
   if (path.basename(filePath) === 'module.json')
     return parseLocalizableStringFromModuleJson(fileContent, filePath);
 
-  const ast = esprima.parseModule(fileContent, {loc: true});
+  const ast = esprima.parse(fileContent, {loc: true});
   for (const node of ast.body)
     parseLocalizableStringFromNode(node, filePath);
 }

@@ -121,6 +121,14 @@ UI.ARIAUtils.markAsMenuItem = function(element) {
 };
 
 /**
+ * @param {!Element} element
+ */
+UI.ARIAUtils.markAsMenuItemSubMenu = function(element) {
+  UI.ARIAUtils.markAsMenuItem(element);
+  element.setAttribute('aria-haspopup', true);
+};
+
+/**
  * Must contain children whose role is option.
  * @param {!Element} element
  */

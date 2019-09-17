@@ -157,7 +157,7 @@ UI.SoftContextMenu = class {
     const menuItemElement = createElementWithClass('div', 'soft-context-menu-item');
     menuItemElement._subItems = item.subItems;
     menuItemElement.tabIndex = -1;
-    UI.ARIAUtils.markAsMenuItem(menuItemElement);
+    UI.ARIAUtils.markAsMenuItemSubMenu(menuItemElement);
 
     // Occupy the same space on the left in all items.
     const checkMarkElement = UI.Icon.create('smallicon-checkmark', 'soft-context-menu-item-checkmark');

@@ -157,6 +157,16 @@ Host.UserMetrics._PanelCodes = {
   security: 16,
   js_profiler: 17,
   audits: 18,
+  'drawer-coverage': 19,
+  'drawer-protocol-monitor': 20,
+  'drawer-remote-devices': 21,
+  'drawer-web-audio': 22,
+  'drawer-changes.changes': 23,
+  'drawer-performance.monitor': 24,
+  'drawer-release-note': 25,
+  'drawer-live_heap_profile': 26,
+  'drawer-sources.quick': 27,
+  'drawer-network.blocked-urls': 28,
 };
 
 /** @type {!Host.UserMetrics} */

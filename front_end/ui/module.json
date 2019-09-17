@@ -54,12 +54,15 @@
         "SuggestBox.js",
         "TabbedPane.js",
         "UIUtils.js",
-        "ARIAUtils.js",
         "ZoomManager.js",
         "ShortcutsScreen.js",
         "Geometry.js",
         "XLink.js",
         "XWidget.js"
+    ],
+    "modules": [
+        "ARIAUtils.js",
+        "UI.js"
     ],
     "resources": [
         "checkboxTextLabel.css",

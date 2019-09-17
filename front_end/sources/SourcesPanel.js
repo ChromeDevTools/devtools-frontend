@@ -65,7 +65,6 @@ Sources.SourcesPanel = class extends UI.Panel {
     const initialNavigatorWidth = 225;
     this.editorView = new UI.SplitWidget(true, false, 'sourcesPanelNavigatorSplitViewState', initialNavigatorWidth);
     this.editorView.enableShowModeSaving();
-    this.editorView.element.tabIndex = 0;
     this._splitWidget.setMainWidget(this.editorView);
 
     // Create navigator tabbed pane with toolbar.

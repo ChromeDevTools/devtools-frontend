@@ -28,7 +28,7 @@ Snippets.SnippetFileSystem = class extends Persistence.PlatformFileSystem {
     const nextId = this._lastSnippetIdentifierSetting.get() + 1;
     this._lastSnippetIdentifierSetting.set(nextId);
 
-    const snippetName = `Script snippet #${nextId}`;
+    const snippetName = ls`Script snippet #${nextId}`;
     const snippets = this._snippetsSetting.get();
     snippets.push({name: snippetName, content: ''});
     this._snippetsSetting.set(snippets);

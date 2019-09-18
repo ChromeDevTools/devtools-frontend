@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <grit-part>
+  <message name="IDS_DEVTOOLS_a8c377be97611cba090c400b4b54f753" desc="Default snippet name when a new snippet is created in the Sources panel">
+    Script snippet #<ph name="NEXTID">$1s<ex>1</ex></ph>
+  </message>
   <message name="IDS_DEVTOOLS_e0fe9b9cadde935642ad15a85c79d7b1" desc="Text in Snippets Quick Open of the Sources panel when opening snippets">
     No snippets found.
   </message>

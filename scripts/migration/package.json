@@ -1,0 +1,11 @@
+{
+  "devDependencies": {
+    "@types/node": "^12.7.1",
+    "recast": "^0.18.2",
+    "typescript": "^3.6.3"
+  },
+  "scripts": {
+    "build": "tsc",
+    "migrate": "node refactor-to-es-module.js"
+  }
+}

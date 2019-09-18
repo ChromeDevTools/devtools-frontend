@@ -99,9 +99,6 @@
   <message name="IDS_DEVTOOLS_46a64c89d66d278297b6346c60f67e2c" desc="Tooltip text that appears when hovering over the 'Value description' attribute name under the Computed Properties section in the Accessibility pane of the Elements pane">
     A human-readable version of the value of a range widget (where necessary).
   </message>
-  <message name="IDS_DEVTOOLS_49ee3087348e8d44e1feda1917443987" desc="Accessibility attribute name that appears under the Computed Properties section in the Accessibility pane of the Elements pane">
-    Name
-  </message>
   <message name="IDS_DEVTOOLS_4ada42850cc2d4e41f3da5254ec2feee" desc="Reason element in Accessibility Node View of the Accessibility panel">
     Element is inert.
   </message>
@@ -150,12 +147,6 @@
   <message name="IDS_DEVTOOLS_674d8a03d6bb22d48dff01565c2b10a3" desc="Accessibility attribute name that appears under the Computed Properties section in the Accessibility pane of the Elements pane">
     Owns
   </message>
-  <message name="IDS_DEVTOOLS_689202409e48743b914713f96d93947c" desc="Accessibility attribute name that appears under the Computed Properties section in the Accessibility pane of the Elements pane">
-    Value
-  </message>
-  <message name="IDS_DEVTOOLS_6a26f548831e6a8c26bfbbd9f6ec61e0" desc="Accessibility attribute name that appears under the Computed Properties section in the Accessibility pane of the Elements pane">
-    Help
-  </message>
   <message name="IDS_DEVTOOLS_73f3b04d99cdbbfb2045ad2285986d77" desc="Accessibility attribute name that appears under the Computed Properties section in the Accessibility pane of the Elements pane">
     Maximum value
   </message>
@@ -194,9 +185,6 @@
   </message>
   <message name="IDS_DEVTOOLS_91b442d385b54e1418d81adc34871053" desc="Accessibility attribute name that appears under the Computed Properties section in the Accessibility pane of the Elements pane">
     Selected
-  </message>
-  <message name="IDS_DEVTOOLS_939aaa05e0943b39eab3a34fd609384d" desc="A context menu item in the AXBreadcrumbs Pane of the Accessibility panel">
-    Scroll into view
   </message>
   <message name="IDS_DEVTOOLS_953f80ed9077d40149a8e68448f09e47" desc="Accessibility attribute name that appears under the Computed Properties section in the Accessibility pane of the Elements pane">
     From label (wrapped)
@@ -243,9 +231,6 @@
   <message name="IDS_DEVTOOLS_a858dfbc32e2169e89668adf8e997f6f" desc="Text in Accessibility Node View of the Accessibility panel">
     No accessibility node
   </message>
-  <message name="IDS_DEVTOOLS_abbd64f40c34c537d3a571af068fce29" desc="Accessibility attribute name that appears under the Computed Properties section in the Accessibility pane of the Elements pane">
-    Orientation
-  </message>
   <message name="IDS_DEVTOOLS_aff2b966e54c2212e86343d2bb8d3f88" desc="Reason element in Accessibility Node View of the Accessibility panel">
     Part of label element: '''
   </message>
@@ -261,9 +246,6 @@
   <message name="IDS_DEVTOOLS_b459bb2b480be9a5043f103bbc2f1d49" desc="Tooltip text that appears when hovering over the 'Checked' attribute name under the Computed Properties section in the Accessibility pane of the Elements pane">
     Whether this checkbox, radio button or tree item is checked, unchecked, or mixed (e.g. has both checked and un-checked children).
   </message>
-  <message name="IDS_DEVTOOLS_b5a7adde1af5c87d7fd797b6245c2a39" desc="Accessibility attribute name that appears under the Computed Properties section in the Accessibility pane of the Elements pane">
-    Description
-  </message>
   <message name="IDS_DEVTOOLS_b651efdb98a5d6bd2b3935d0c3f4a5e2" desc="Accessibility attribute name that appears under the Computed Properties section in the Accessibility pane of the Elements pane">
     Required
   </message>
@@ -272,9 +254,6 @@
   </message>
   <message name="IDS_DEVTOOLS_b9db1026019a8730b64397052a61ded0" desc="Accessibility attribute name that appears under the Computed Properties section in the Accessibility pane of the Elements pane">
     Atomic (live regions)
-  </message>
-  <message name="IDS_DEVTOOLS_b9f5c797ebbf55adccdd8539a65a0241" desc="Accessibility attribute name that appears under the Computed Properties section in the Accessibility pane of the Elements pane">
-    Disabled
   </message>
   <message name="IDS_DEVTOOLS_bb129d779ae1ffda5fda12070a4a142b" desc="Tooltip text that appears when hovering over the 'From caption' attribute name under the Computed Properties section in the Accessibility pane of the Elements pane">
     Value from figcaption element.
@@ -341,9 +320,6 @@
   </message>
   <message name="IDS_DEVTOOLS_e0dcc9aef6db5e61e4102efdf5d54378" desc="Text in Accessibility Node View of the Accessibility panel">
     Invalid source.
-  </message>
-  <message name="IDS_DEVTOOLS_e0e4fc6213e8b3593495a7260c3a4c2e" desc="Title of the 'Accessibility' tool in the sidebar of the elements tool">
-    Accessibility
   </message>
   <message name="IDS_DEVTOOLS_e1312fc3ec5859447389668b721d932f" desc="Tooltip text that appears when hovering over the 'Pressed' attribute name under the Computed Properties section in the Accessibility pane of the Elements pane">
     Whether this toggle button is currently in a pressed state.

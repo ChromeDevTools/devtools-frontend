@@ -33,9 +33,6 @@
   <message name="IDS_DEVTOOLS_43f244627bf87f76a0dee86f364df473" desc="Checkbox subtitle for 'Layout Shift Regions' in the Rendering tool">
     Highlights areas of the page (blue) that were shifted. May not be suitable for people prone to photosensitive epilepsy.
   </message>
-  <message name="IDS_DEVTOOLS_482a4dca0bbd8fcdda5acc6f95f3c279" desc="A title of the 'DevTools' setting category">
-    DevTools
-  </message>
   <message name="IDS_DEVTOOLS_53f2f05226edcd77bd4351cb27d07ba8" desc="Text in Rendering Options">
     Highlights frames (red) detected to be ads.
   </message>
@@ -72,26 +69,17 @@
   <message name="IDS_DEVTOOLS_960568e27eb66ea554c3be4cfbefe3d0" desc="Text in Rendering Options">
     Layer borders
   </message>
-  <message name="IDS_DEVTOOLS_a02c83a7dbd96295beaefb72c2bee2de" desc="Text in Inspector Main">
-    Main
-  </message>
   <message name="IDS_DEVTOOLS_a15932c4dfbbcbc1ac6f5c27c6fa530f" desc="Text in Rendering Options">
     Highlights elements (teal) that can slow down scrolling, including touch &amp; wheel event handlers and other main-thread scrolling situations.
   </message>
   <message name="IDS_DEVTOOLS_a4c766a2e6eb33e7575331b6affd9778" desc="Checkbox subtitle for 'Paint flashing' in the Rendering tool">
     Highlights areas of the page (green) that need to be repainted. May not be suitable for people prone to photosensitive epilepsy.
   </message>
-  <message name="IDS_DEVTOOLS_a6e8f9aed2ac6481dc25a18a33342d03" desc="Title of the Rendering tool in the bottom drawer">
-    Rendering
-  </message>
   <message name="IDS_DEVTOOLS_cb835af5f855f79e8611dd3f8fec6aac" desc="Title of an action in the inspector main tool to reload">
     Reload page
   </message>
   <message name="IDS_DEVTOOLS_d543dbe64db0c952d6e13c9519218b3e" desc="Title of an action in the inspector main tool to hard reload">
     Hard reload page
-  </message>
-  <message name="IDS_DEVTOOLS_ef95393ad48336d7c3543625354a3d56" desc="Text in Rendering Options">
-    Highlight ad frames
   </message>
   <message name="IDS_DEVTOOLS_f23c9ba06e7123f0b4c906de90fbcc9f" desc="Title of a setting under the DevTools category that can be invoked through the Command Menu">
     Auto-open DevTools for popups

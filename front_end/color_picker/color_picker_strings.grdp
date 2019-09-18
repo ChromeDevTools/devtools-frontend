@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <grit-part>
-  <message name="IDS_DEVTOOLS_146ffe2fd9fa5bec3b63b52543793ec7" desc="Tooltip text that appears when hovering over the smallicon expand more button in the Contrast Details of the Color Picker">
-    Show more
-  </message>
   <message name="IDS_DEVTOOLS_158eabad9d23e8a99bbcfd6f411c575f" desc="A context menu item in the Spectrum of the Color Picker">
     Remove color
   </message>
@@ -38,12 +35,6 @@
   </message>
   <message name="IDS_DEVTOOLS_bbe0cb0a04956e97e8fc70f519d10e0d" desc="Color element title in Spectrum of the Color Picker">
     <ph name="PALETTE_COLORS_I_">$1s<ex>#9c1724</ex></ph>. Long-click to show alternate shades.
-  </message>
-  <message name="IDS_DEVTOOLS_c74ea6dbff701bfa23819583c52ebd97" desc="Title of expand button in contrast details of the color picker">
-    Show less
-  </message>
-  <message name="IDS_DEVTOOLS_ce82e07fa1f0521f5cee30e368fe2e73" desc="Text in Contrast Details of the Color Picker">
-    : <ph name="AA_TOFIXED___">$1s<ex>3.0</ex></ph>
   </message>
   <message name="IDS_DEVTOOLS_d1e2107b34fa404fabd54bcce4fd858f" desc="Tooltip text that appears when hovering over the largeicon add button in the Spectrum of the Color Picker">
     Add to palette

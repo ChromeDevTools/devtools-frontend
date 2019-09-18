@@ -3,9 +3,6 @@
   <message name="IDS_DEVTOOLS_05dedc41542c728955023577fd58be7a" desc="Text for screen reader to announce a collapsed group">
     <ph name="GROUPNAME">$1s<ex>Network</ex></ph> collapsed
   </message>
-  <message name="IDS_DEVTOOLS_105078d294d30c978ca2badf7f376934" desc="Title of a setting under the Performance category that can be invoked through the Command Menu">
-    Scroll
-  </message>
   <message name="IDS_DEVTOOLS_28d0edd045e05cf5af64e35ae0c4c6ef" desc="Text in Network Priorities of the Performance panel">
     Low
   </message>
@@ -17,9 +14,6 @@
   </message>
   <message name="IDS_DEVTOOLS_3f21c340f01b96cb3325a5d38ece9da6" desc="Title of a setting under the Memory category in Settings">
     Live memory allocation annotations
-  </message>
-  <message name="IDS_DEVTOOLS_4789f23283b3a61f858b641a1bef19a3" desc="A title of the 'Memory' setting category">
-    Memory
   </message>
   <message name="IDS_DEVTOOLS_4a6d0345e7b6cfcf339237b9cf2d27b4" desc="Title of a setting under the Performance category in Settings">
     Flamechart mouse wheel action:
@@ -53,9 +47,6 @@
   </message>
   <message name="IDS_DEVTOOLS_90c96ccfe47a731972d5e64deb5fea36" desc="Title of a setting under the Memory category that can be invoked through the Command Menu">
     Hide live memory allocation annotations
-  </message>
-  <message name="IDS_DEVTOOLS_ab57fd0432e25d5b3013133a1c910d56" desc="Units in Line Level Profile of the Performance panel">
-    KB
   </message>
   <message name="IDS_DEVTOOLS_b5b8e20937205384be7b9e0c29a28fdb" desc="Text in Network Priorities of the Performance panel">
     Lowest

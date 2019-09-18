@@ -1,9 +1,3 @@
 <?xml version="1.0" encoding="utf-8"?>
 <grit-part>
-  <message name="IDS_DEVTOOLS_3ec365dd533ddb7ef3d1c111186ce872" desc="Text in Layers Panel of the Layers panel">
-    Details
-  </message>
-  <message name="IDS_DEVTOOLS_87bfda183c4f851a101e97bbb1bbace7" desc="Title of the 'Layers' tool">
-    Layers
-  </message>
 </grit-part>

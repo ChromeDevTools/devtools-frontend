@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <grit-part>
-  <message name="IDS_DEVTOOLS_b1d75786654fa93f10c31c3b544bbd03" desc="Title of the Filtered List WidgetProvider of Quick Open">
-    Run snippet
-  </message>
   <message name="IDS_DEVTOOLS_e0fe9b9cadde935642ad15a85c79d7b1" desc="Text in Snippets Quick Open of the Sources panel when opening snippets">
     No snippets found.
   </message>

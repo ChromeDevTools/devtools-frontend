@@ -30,7 +30,4 @@
   <message name="IDS_DEVTOOLS_f550ec70278cc72604795d91ff8dcd30" desc="Text in Changes View of the Changes tab">
     Binary data
   </message>
-  <message name="IDS_DEVTOOLS_fa6711f918fe2018131a4ad0380b9e56" desc="Tooltip in Changes Sidebar of the Changes tab">
-    <ph name="THIS_UISOURCECODE_DISPLAYNAME__">$1s<ex>compile.html</ex></ph> (from source map)
-  </message>
 </grit-part>

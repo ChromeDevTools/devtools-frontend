@@ -33,9 +33,6 @@
   <message name="IDS_DEVTOOLS_2a2924d1d77c00d27ce2509c34861804" desc="Text in Layer Details View of the Layers panel">
     Layer for clip.
   </message>
-  <message name="IDS_DEVTOOLS_2ae207ddfe5cd256a768769d93a879e5" desc="Paint profiler button text content in Layer Details View of the Layers panel">
-    Paint Profiler
-  </message>
   <message name="IDS_DEVTOOLS_2ca2308d45c04266f0fb51786e407287" desc="Text in Layer Details View of the Layers panel">
     Composition due to association with an element with CSS filters applied and composited descendants.
   </message>
@@ -47,9 +44,6 @@
   </message>
   <message name="IDS_DEVTOOLS_398b889c147f3b2cb3c674cfb07315b5" desc="Text in Layer Details View of the Layers panel">
     Composition due to association with an element with opacity applied and composited descendants.
-  </message>
-  <message name="IDS_DEVTOOLS_3f03ed88ee58335aa3df453443b9c8bc" desc="Progress banner text content in Paint Profiler View of the Layers panel">
-    Profiling…
   </message>
   <message name="IDS_DEVTOOLS_441f5e043a240bac8dca50f90f7be3de" desc="Text in DView of the Layers panel">
     repaints on scroll
@@ -137,9 +131,6 @@
   </message>
   <message name="IDS_DEVTOOLS_9b8379825de60ccb900acf83934e1409" desc="Text in Layer View Host of the Layers panel">
     Show internal layers
-  </message>
-  <message name="IDS_DEVTOOLS_9dffbf69ffba8bc38bc4e01abf4b1675" desc="Text in Paint Profiler View of the Layers panel">
-    Text
   </message>
   <message name="IDS_DEVTOOLS_a673813c8d6c5f511cc4d80830fc4503" desc="Text in DView of the Layers panel">
     Can&apos;t display layers,

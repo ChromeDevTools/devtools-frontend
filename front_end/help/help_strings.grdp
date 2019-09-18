@@ -15,7 +15,4 @@
   <message name="IDS_DEVTOOLS_91770f038cd944a1d3b9b347edeb2b10" desc="Title of the 'What's New' tool in the bottom drawer">
     What&apos;s New
   </message>
-  <message name="IDS_DEVTOOLS_a1c58e94227389415de133efdf78ea6e" desc="A title of the 'Appearance' setting category">
-    Appearance
-  </message>
 </grit-part>

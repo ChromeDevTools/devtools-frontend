@@ -9,15 +9,6 @@
   <message name="IDS_DEVTOOLS_2448f896f98bcda2db043a999a00e1d2" desc="Cell text content in Protocol Monitor of the Protocol Monitor tab">
     <ph name="THIS_DATA_COLUMNID_">$1s<ex>30</ex></ph> ms
   </message>
-  <message name="IDS_DEVTOOLS_5b6cf869265c13af8566f192b4ab3d2a" desc="A context menu item in the Protocol Monitor of the Protocol Monitor tab">
-    Documentation
-  </message>
-  <message name="IDS_DEVTOOLS_6a0d9eaee314c567fd72fb97ee707a36" desc="Tooltip text that appears when hovering over largeicon start recording button in Protocol Monitor of the Protocol Monitor tab">
-    Record
-  </message>
-  <message name="IDS_DEVTOOLS_a3d5de3eac8bb00ae86fd1a1005f1500" desc="Text in Protocol Monitor of the Protocol Monitor tab">
-    Timestamp
-  </message>
   <message name="IDS_DEVTOOLS_a854885880458e27324853c6f46e28f7" desc="Text in Protocol Monitor of the Protocol Monitor tab">
     No message selected
   </message>

@@ -12,9 +12,6 @@
   <message name="IDS_DEVTOOLS_17f66753218a6a1e2762c6a60db3d7c4" desc="Text in Throttling Presets of the Network panel">
     Mid-tier mobile
   </message>
-  <message name="IDS_DEVTOOLS_26ae7bdd1d6fb8c4886e6fde8d12601c" desc="Text in Throttling Settings Tab of the Network panel">
-    Latency
-  </message>
   <message name="IDS_DEVTOOLS_275e2c1079aeffdb5f4e22580127b95b" desc="Text in Throttling Settings Tab of the Network panel">
     <ph name="CONDITIONS_LATENCY">$1d<ex>3</ex></ph>ms
   </message>
@@ -41,9 +38,6 @@
   </message>
   <message name="IDS_DEVTOOLS_8493534a13107469ea63be99410bebfa" desc="Title of an action in the network conditions tool to network low end mobile">
     Enable slow 3G throttling
-  </message>
-  <message name="IDS_DEVTOOLS_8d9da4bc0e49a50e09ac9f7e56789d39" desc="Text in Throttling Manager of the Network panel">
-    Offline
   </message>
   <message name="IDS_DEVTOOLS_8fd93ea382b6642f13ff291b76f5bc85" desc="Text in Throttling Settings Tab of the Network panel">
     Profile Name
@@ -86,9 +80,6 @@
   </message>
   <message name="IDS_DEVTOOLS_eb81441fe20963ff9e8e69c5b32fc625" desc="Text in Mobile Throttling Selector of the Network panel">
     Presets
-  </message>
-  <message name="IDS_DEVTOOLS_ee33e909372d935d190f4fcb2a92d542" desc="Text in Throttling Settings Tab of the Network panel">
-    ms
   </message>
   <message name="IDS_DEVTOOLS_f410c3f1a07f566591283f599701e4ab" desc="Text in Throttling Manager of the Network panel">
     Add…

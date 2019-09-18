@@ -3,14 +3,8 @@
   <message name="IDS_DEVTOOLS_013cf261f9ccf5d4f027bc001d0d1d0c" desc="Text in Linkifier">
     (unknown)
   </message>
-  <message name="IDS_DEVTOOLS_0b484cfcf50c8fabff48c0aad426f544" desc="Text in Dock Controller">
-    Dock to left
-  </message>
   <message name="IDS_DEVTOOLS_131c97f8ba5bc0277386d660a18f13b6" desc="Text in Linkifier">
     Reveal in <ph name="DESTINATION">$1s<ex>Sources panel</ex></ph>
-  </message>
-  <message name="IDS_DEVTOOLS_393c3f5ea8ad35c02691d507bdbb31b0" desc="Text in Linkifier">
-    Reveal
   </message>
   <message name="IDS_DEVTOOLS_7f52f5f786eb8d9bf9e56ce89fb3db3a" desc="Show all link text content in JSPresentation Utils">
     Show 1 more frame
@@ -18,26 +12,11 @@
   <message name="IDS_DEVTOOLS_908ae571a925e675f5c55619aa16a99b" desc="Description in Image Preview">
     <ph name="RENDEREDWIDTH">$1s<ex>500</ex></ph> × <ph name="RENDEREDHEIGHT">$2s<ex>300</ex></ph> pixels (intrinsic: <ph name="INTRINSICWIDTH">$3s<ex>200</ex></ph> × <ph name="INTRINSICHEIGHT">$4s<ex>100</ex></ph> pixels)
   </message>
-  <message name="IDS_DEVTOOLS_93898e12951c906e5286ccb36d980ce5" desc="A context menu item in the JSPresentation Utils">
-    Blackbox script
-  </message>
-  <message name="IDS_DEVTOOLS_9df22f196a33acd0b372fe502de51211" desc="Text in Linkifier">
-    auto
-  </message>
   <message name="IDS_DEVTOOLS_a498f0751d1221223efb0defc71cc804" desc="Description in Image Preview">
     <ph name="RENDEREDWIDTH">$1s<ex>500</ex></ph> × <ph name="RENDEREDHEIGHT">$2s<ex>500</ex></ph> pixels
   </message>
-  <message name="IDS_DEVTOOLS_b9dee6bade160c89fb7f0e539d453513" desc="Text in Dock Controller">
-    Dock to bottom
-  </message>
-  <message name="IDS_DEVTOOLS_c3fe109bf99ade2d76a55e5737015e3e" desc="A context menu item in the JSPresentation Utils">
-    Stop blackboxing
-  </message>
   <message name="IDS_DEVTOOLS_c850ae12703fa2b00eeaf8445ecf00ef" desc="Show all link text content in JSPresentation Utils">
     Show <ph name="TOTALHIDDENCALLFRAMESCOUNT">$1s<ex>2</ex></ph> more frames
-  </message>
-  <message name="IDS_DEVTOOLS_d3d2e617335f08df83599665eef8a418" desc="Tooltip text that appears when hovering over the largeicon delete button in the Dock Controller">
-    Close
   </message>
   <message name="IDS_DEVTOOLS_e3de40c656e1189770049db9846b69df" desc="Text on the remote debugging window to indicate the connection is lost">
     WebSocket disconnected
@@ -47,11 +26,5 @@
   </message>
   <message name="IDS_DEVTOOLS_e6cd0f8a4fe4fb9e08505b784e48caa2" desc="Text in Linkifier">
     Link handling:
-  </message>
-  <message name="IDS_DEVTOOLS_f53944c3a55bdb5ad65c6226e358a626" desc="Text in Dock Controller">
-    Undock into separate window
-  </message>
-  <message name="IDS_DEVTOOLS_fe7fb037b290768d6a6be30b237e183d" desc="Text in Dock Controller">
-    Dock to right
   </message>
 </grit-part>

@@ -15,9 +15,6 @@
   <message name="IDS_DEVTOOLS_04c247c2ba261c7511e4f479728bd7ea" desc="Title of a setting under the Console category that can be invoked through the Command Menu">
     Do not treat evaluation as user activation
   </message>
-  <message name="IDS_DEVTOOLS_0511551e6cf7d61acd9b62f9304efa93" desc="Tooltip text that appears on the setting when hovering over it in Console View of the Console panel">
-    Do not clear log on page reload / navigation
-  </message>
   <message name="IDS_DEVTOOLS_07213a0161f52846ab198be103b5ab43" desc="Text in Console Sidebar of the Console panel">
     errors
   </message>
@@ -33,17 +30,11 @@
   <message name="IDS_DEVTOOLS_0bbce02e304562c295a1d57d66c296d3" desc="Text in Console View Message of the Console panel">
     &lt;URL&gt;
   </message>
-  <message name="IDS_DEVTOOLS_0eaadb4fcb48a0a0ed7bc9868be9fbaa" desc="Accessible name in Console View Message of the Console panel">
-    Warning
-  </message>
   <message name="IDS_DEVTOOLS_0fa06588bd5c83bd6f3b1734eefc6b16" desc="Text in Console View of the Console panel">
     Hide messages from <ph name="NEW_COMMON_PARSEDURL_CONSOLEMESSAGE_URL__DISPLAYNAME">$1s<ex>index.js</ex></ph>
   </message>
   <message name="IDS_DEVTOOLS_1a37d25ba6689d174f51ba8e2425fde6" desc="Filter name in Console Sidebar of the Console panel">
     &lt;other&gt;
-  </message>
-  <message name="IDS_DEVTOOLS_1ebc7540a5327b857144f04cf1435b4e" desc="A context menu item in the Console View of the Console panel">
-    Replay XHR
   </message>
   <message name="IDS_DEVTOOLS_26649c8f3cadc9c0170f2443e6fc0252" desc="Text in Console View Message of the Console panel">
     &lt;attribute&gt;
@@ -102,17 +93,8 @@
   <message name="IDS_DEVTOOLS_4cad9e20fde3f8991c5dd1d6a0fe13e7" desc="A context menu item in the Console Pin Pane of the Console panel">
     Remove expression
   </message>
-  <message name="IDS_DEVTOOLS_4d1b0b75a9737b7dcdc3a15a84fe856b" desc="Title of search progress indicator in console view of the console panel">
-    Searching…
-  </message>
   <message name="IDS_DEVTOOLS_53f0fca28a013c116a1df533d9bdf764" desc="Message text in Console View Message of the Console panel">
     [Deprecation] <ph name="MESSAGETEXT">$1s<ex>console.log(1)</ex></ph>
-  </message>
-  <message name="IDS_DEVTOOLS_5ef0c737746fae2ca90e66c39333f8f6" desc="Sdk console message message level error of level Labels in Console View of the Console panel">
-    Errors
-  </message>
-  <message name="IDS_DEVTOOLS_5f8442a46861496e9d2a3d11be13692b" desc="Title of progress indicator in console view of the console panel">
-    Writing file…
   </message>
   <message name="IDS_DEVTOOLS_6047a6c9fb775557639afb3fbc90b4e7" desc="Text in Console View of the Console panel">
     Log levels
@@ -144,23 +126,11 @@
   <message name="IDS_DEVTOOLS_7be1a30a7758269755609f1f7434d828" desc="Title of a setting under the Console category that can be invoked through the Command Menu">
     Group similar messages in console
   </message>
-  <message name="IDS_DEVTOOLS_84d0c431d1472a0609d69b39dcb3a287" desc="Text in Console View Message of the Console panel">
-    (index)
-  </message>
-  <message name="IDS_DEVTOOLS_902b0d55fddef6f8d651fe1035b7d4bd" desc="Accessible name in Console View Message of the Console panel">
-    Error
-  </message>
   <message name="IDS_DEVTOOLS_93977f1310f482395375a9950b512462" desc="Title of a setting under the Console category that can be invoked through the Command Menu">
     Eagerly evaluate console prompt text
   </message>
   <message name="IDS_DEVTOOLS_95c74dafb449d894014c2eb1d80ded01" desc="A context menu item in the Console Pin Pane of the Console panel">
     Edit expression
-  </message>
-  <message name="IDS_DEVTOOLS_9aae9fe27dbf2db0ad90762b5b59d3a7" desc="Title of an action in the console tool to clear">
-    Clear console
-  </message>
-  <message name="IDS_DEVTOOLS_9d8c209e49e328528c39c273798e98c9" desc="A context menu item in the Console View of the Console panel">
-    Save as...
   </message>
   <message name="IDS_DEVTOOLS_a092483ed730ed040e5df5776dca49e5" desc="Title of a setting under the Console category in Settings">
     Log XMLHttpRequests
@@ -194,9 +164,6 @@
   </message>
   <message name="IDS_DEVTOOLS_bafd7322c6e97d25b6299b5d6fe8920b" desc="Text in Console Sidebar of the Console panel">
     No
-  </message>
-  <message name="IDS_DEVTOOLS_bccaa4aa80831b76c11240a16447975f" desc="Title of the 'Console' tool in the bottom drawer">
-    Console
   </message>
   <message name="IDS_DEVTOOLS_c0274fa278f2e0dfef862234e0eb9b8b" desc="Element text content in Console View Message of the Console panel">
     &lt;exception&gt;
@@ -242,9 +209,6 @@
   </message>
   <message name="IDS_DEVTOOLS_d7746aa6b562c73487a4015eef3244e9" desc="Text in Console Context Selector of the Console panel">
     IFrame
-  </message>
-  <message name="IDS_DEVTOOLS_d7778d0c64b6ba21494c97f77a66885a" desc="Text in Console View of the Console panel">
-    Filter
   </message>
   <message name="IDS_DEVTOOLS_d779282283c011149d163edbcd5e5f11" desc="Side effect label title in Console Pin Pane of the Console panel">
     Evaluate, allowing side effects

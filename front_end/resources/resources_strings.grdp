@@ -52,9 +52,6 @@ table is empty.
   <message name="IDS_DEVTOOLS_29104d3ede0231043a4b92a90b9c2873" desc="Title of needs refresh in indexed dbviews of the application panel">
     Some entries may have been modified
   </message>
-  <message name="IDS_DEVTOOLS_2b81bb9b3deebcbfa05edad7a845005a" desc="Text in Application Panel Sidebar of the Application panel">
-    Frames
-  </message>
   <message name="IDS_DEVTOOLS_2bf0a735c3ff964861a2b55319edd355" desc="Text in Clear Storage View of the Application panel">
     Unregister service workers
   </message>
@@ -88,9 +85,6 @@ table is empty.
   <message name="IDS_DEVTOOLS_3eab5d12656f2f4462f6594019e77355" desc="Text in Database Table View of the Application panel">
     Visible columns
   </message>
-  <message name="IDS_DEVTOOLS_3edf8ca26a1ec14dd6e91dd277ae1de6" desc="Text in Background Service View of the Application panel">
-    Origin
-  </message>
   <message name="IDS_DEVTOOLS_458efe6e41ed41835b8d84b28db3f394" desc="Filter label text content in Service Workers View of the Application panel">
     Service workers from other origins
   </message>
@@ -105,12 +99,6 @@ table is empty.
   </message>
   <message name="IDS_DEVTOOLS_536cf547cb6ecfe32be6ed3ffdabf893" desc="Text of button in Clear Storage View of the Application panel">
     Clear site data
-  </message>
-  <message name="IDS_DEVTOOLS_53cd8180752335dce4f9b9ed493ef58d" desc="Image alt in App Manifest View of the Application panel">
-    Image from <ph name="URL">$1s<ex>example.com</ex></ph>
-  </message>
-  <message name="IDS_DEVTOOLS_54f664c70c22054ea0d8d26fc3997ce7" desc="Connectivity icon text content in Application Cache Items View of the Application panel">
-    Online
   </message>
   <message name="IDS_DEVTOOLS_55bce575c41275ddaf5fbd1beb7d6018" desc="Text in Service Workers View of the Application panel">
     #<ph name="INSTALLING_ID">$1s<ex>2</ex></ph> trying to install
@@ -239,9 +227,6 @@ read the &quot;<ph name="THIS_TABLENAME">$1s<ex>database</ex></ph>&quot; table.
   <message name="IDS_DEVTOOLS_a274f4d4670213a9045ce258c6c56b80" desc="Text in Background Service View of the Application panel">
     Notifications
   </message>
-  <message name="IDS_DEVTOOLS_a4ecfc70574394990cf17bd83df499f7" desc="Text in Background Service View of the Application panel">
-    Event
-  </message>
   <message name="IDS_DEVTOOLS_a7d5ee58baead2f3bc229d3d9c047875" desc="Text in Service Workers View of the Application panel">
     Unregister service worker
   </message>
@@ -286,9 +271,6 @@ read the &quot;<ph name="THIS_TABLENAME">$1s<ex>database</ex></ph>&quot; table.
   </message>
   <message name="IDS_DEVTOOLS_bb8839cf9d324a22591ff426c28c5345" desc="Tooltip text that appears when hovering over the largeicon play button in the Indexed DBViews of the Application panel">
     Show next page
-  </message>
-  <message name="IDS_DEVTOOLS_be8545ae7ab0276e15898aae7acfbd7a" desc="Text in Application Cache Items View of the Application panel">
-    Resource
   </message>
   <message name="IDS_DEVTOOLS_bebc9b50966d8d2bd1913a3c25b707d4" desc="Text in Indexed DBViews of the Application panel">
     Data may be stale
@@ -412,9 +394,6 @@ read the &quot;<ph name="THIS_TABLENAME">$1s<ex>database</ex></ph>&quot; table.
   </message>
   <message name="IDS_DEVTOOLS_ef399b2d446bb37b7c32ad2cc1b6045b" desc="Text in Service Workers View of the Application panel">
     stop
-  </message>
-  <message name="IDS_DEVTOOLS_f31bbdd1b3e85bccd652680e16935819" desc="Text in Service Workers View of the Application panel">
-    Source
   </message>
   <message name="IDS_DEVTOOLS_fb1508747fe448fd8b006e923ba1c3ef" desc="Text in Background Service View of the Application panel">
     Payment Handler

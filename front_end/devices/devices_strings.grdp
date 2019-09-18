@@ -81,9 +81,6 @@
   <message name="IDS_DEVTOOLS_bcca96534b404f08faf65d76be6aa782" desc="Text in Devices View of the Remote Devices tab">
     1 device detected.
   </message>
-  <message name="IDS_DEVTOOLS_c03ca67dda321195d74c951097f240c6" desc="Text of a DOM element in Devices View of the Remote Devices tab">
-    Devices
-  </message>
   <message name="IDS_DEVTOOLS_c3bf447eabe632720a3aa1a7ce401274" desc="Text of the new tab button in Devices View of the Remote Devices tab">
     Open
   </message>
@@ -105,17 +102,11 @@
   <message name="IDS_DEVTOOLS_e1f70f4a4265cb51c1b219aa60eaa441" desc="New tab input placeholder in Devices View of the Remote Devices tab">
     Enter URL
   </message>
-  <message name="IDS_DEVTOOLS_e24ee2487879116dcab772c0ac4fe341" desc="A context menu item in the Devices View of the Remote Devices tab">
-    Focus
-  </message>
   <message name="IDS_DEVTOOLS_ed725244eec042fa550990c608639b38" desc="Text in Devices View of the Remote Devices tab">
     Define the listening port on your device that maps to a port accessible from your development machine. Read <ph name="DOCUMENTATIONLINK">$1s<ex>documentation link</ex></ph> for more.
   </message>
   <message name="IDS_DEVTOOLS_f114563447e4786042d7e7ce05f1157c" desc="Text in Devices View of the Remote Devices tab">
     Device port (3333)
-  </message>
-  <message name="IDS_DEVTOOLS_f4f70727dc34561dfde1a3c529b6205c" desc="Discovery list item text content in Devices View of the Remote Devices tab">
-    Settings
   </message>
   <message name="IDS_DEVTOOLS_fa5ef75cf38d69be2973c570c1d47b29" desc="Error message for device port input box when add port forwarding rule">
     Device port must be a number

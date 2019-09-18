@@ -283,9 +283,6 @@ Click the reload button <ph name="RELOADBUTTON">$3s<ex>reload</ex></ph> or hit <
   <message name="IDS_DEVTOOLS_44ff4e8748811d0661f820aeb28ecaf4" desc="Text in Timeline UIUtils of the Performance panel">
     XHR Ready State Change
   </message>
-  <message name="IDS_DEVTOOLS_46a2a41cc6e552044816a2d04634545d" desc="Text in Timeline UIUtils of the Performance panel">
-    State
-  </message>
   <message name="IDS_DEVTOOLS_46fa564bb1eed5cd3992cac85e8f094b" desc="Title of show screenshots setting in timeline panel of the performance panel">
     Screenshots
   </message>
@@ -502,9 +499,6 @@ Click the reload button <ph name="RELOADBUTTON">$3s<ex>reload</ex></ph> or hit <
   <message name="IDS_DEVTOOLS_7ac6c415cd08c0ba2c0a1f54c0a62a52" desc="Text in Timeline UIUtils of the Performance panel">
     ''' (from push)
   </message>
-  <message name="IDS_DEVTOOLS_7b3a6b02f467b95f2b5267aa94708c07" desc="Text in Timeline Flame Chart Data Provider of the Performance panel">
-    Thread <ph name="__THREADINDEX">$1s<ex>2</ex></ph>
-  </message>
   <message name="IDS_DEVTOOLS_80a4b8755d836d50c19e6eefb976bc2e" desc="Text in Timeline UIUtils of the Performance panel">
     <ph name="SELFCATEGORY_TITLE">$1s<ex>blink.console</ex></ph> (self)
   </message>
@@ -611,9 +605,6 @@ Then, zoom and pan the timeline with the mousewheel or <ph name="NAVIGATENODE">$
   </message>
   <message name="IDS_DEVTOOLS_97c091732895087b8900d81105e54446" desc="Text in Timeline UIUtils of the Performance panel">
     Frame Start (main thread)
-  </message>
-  <message name="IDS_DEVTOOLS_997a8c473db4f81c5fb3d5900030d44d" desc="Text in Timeline History Manager of the Performance panel">
-    (no recordings)
   </message>
   <message name="IDS_DEVTOOLS_9a2837081f4b4cd67f625bd8e7567383" desc="Text in Timeline UIUtils of the Performance panel">
     Compile Script

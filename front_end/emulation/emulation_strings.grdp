@@ -48,12 +48,6 @@
   <message name="IDS_DEVTOOLS_2496af30b64c3a4ff21e8505ea439a73" desc="Text in Device Mode Toolbar of the Device Toolbar">
     50%
   </message>
-  <message name="IDS_DEVTOOLS_29260f495ba8adcc62fd1307c758ff4e" desc="Text in Device Mode Toolbar of the Device Toolbar">
-    Show rulers
-  </message>
-  <message name="IDS_DEVTOOLS_29296fcb28eb4edf5d0049b6cac7bbd1" desc="Text in Device Mode Toolbar of the Device Toolbar">
-    <ph name="THIS__MODEL_SCALE________">$1.0f<ex>13.0</ex></ph>%%
-  </message>
   <message name="IDS_DEVTOOLS_29eaeee66d8210c1261d748071fb7b0a" desc="Text in Sensors View of the Device Toolbar">
     Landscape right
   </message>
@@ -68,9 +62,6 @@
   </message>
   <message name="IDS_DEVTOOLS_31d0615d58891f425fd66979cfa5193b" desc="Error message in the Devices settings pane that declares the maximum value for the width input">
     Width must be less than or equal to <ph name="EMULATION_DEVICEMODEMODEL_MAXDEVICESIZE">$1s<ex>9999</ex></ph>.
-  </message>
-  <message name="IDS_DEVTOOLS_323d4eb70b252acb4a04eaf9e0882597" desc="Text in Sensors View of the Device Toolbar">
-    Geolocation
   </message>
   <message name="IDS_DEVTOOLS_32954654ac8fe66a1d09be19001de2d4" desc="Width input title in Device Mode Toolbar of the Device Toolbar">
     Width
@@ -108,14 +99,8 @@
   <message name="IDS_DEVTOOLS_414b730ab2cf9123d9230740864ffeec" desc="A context menu item in the Device Mode Toolbar of the Device Toolbar">
     Close DevTools
   </message>
-  <message name="IDS_DEVTOOLS_4252b72e6ebcd4d4b4c2e46a786f03d2" desc="Title of scale item in device mode toolbar of the device toolbar">
-    Zoom
-  </message>
   <message name="IDS_DEVTOOLS_45f80006d304f294d6c1de50c244856e" desc="Text of add geolocations button in Geolocations Settings Tab of the Device Toolbar">
     Add location...
-  </message>
-  <message name="IDS_DEVTOOLS_4dab36ac83853282fc0d7bae20c19e90" desc="Title of more options button in device mode toolbar of the device toolbar">
-    More options
   </message>
   <message name="IDS_DEVTOOLS_526d688f37a86d3c3f27d0c5016eb71d" desc="Text of orientation reset button in Sensors View of the Device Toolbar">
     Reset
@@ -155,9 +140,6 @@
   </message>
   <message name="IDS_DEVTOOLS_673a7b89eb57bf2bf891306c98cbecc3" desc="Error message in the Geolocations settings pane that declares that the value for the latitude input must be a number">
     Latitude must be a number
-  </message>
-  <message name="IDS_DEVTOOLS_6adf97f83acf6453d4a6a4b1070f3754" desc="Text in Device Mode Toolbar of the Device Toolbar">
-    None
   </message>
   <message name="IDS_DEVTOOLS_6e641146898080ed83f3007cd712f58f" desc="Error message in the Devices settings pane that declares the maximum value for the device pixel ratio input">
     Device pixel ratio must be less than or equal to <ph name="EMULATION_DEVICEMODEMODEL_MAXDEVICESCALEFACTOR">$1s<ex>10</ex></ph>.
@@ -347,9 +329,6 @@
   </message>
   <message name="IDS_DEVTOOLS_f01ee7fedba5e392f6f9adab7ec0c74a" desc="Error message in the Geolocations settings pane that declares the location name input must not be empty">
     Location name cannot be empty
-  </message>
-  <message name="IDS_DEVTOOLS_f0f31c9700c6b10d8a20dc487b2ae6a8" desc="Text in Sensors View of the Device Toolbar">
-    Touch
   </message>
   <message name="IDS_DEVTOOLS_f2a72a44f7b7d30829c0405ed2385345" desc="Text in Device Mode View of the Device Toolbar">
     Mobile S

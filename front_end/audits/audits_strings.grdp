@@ -18,9 +18,6 @@
   <message name="IDS_DEVTOOLS_1421c82f3616812789ac346b1638e39d" desc="Text of audits start button in Audits Start View">
     Run audits
   </message>
-  <message name="IDS_DEVTOOLS_1583d36995134f9120fac115c08e0174" desc="Text in Audits Status View">
-    Loading…
-  </message>
   <message name="IDS_DEVTOOLS_15a895a381c23eff5397d8b1f318a726" desc="Text in Audits Controller">
     No network or CPU throttling used. (Useful when not evaluating performance)
   </message>
@@ -39,9 +36,6 @@
   <message name="IDS_DEVTOOLS_2046d43f4cc1f59c06f764da2ca2355a" desc="Status text in the Audits panel">
     The print popup window is open. Please close it to continue.
   </message>
-  <message name="IDS_DEVTOOLS_2310408a63388fe57e3a4177168a8798" desc="Text in Audits Controller">
-    Desktop
-  </message>
   <message name="IDS_DEVTOOLS_24e8ca2483129261096ba8ba0fbcd247" desc="Fast fact in the pop-up dialog when lighthouse is running in the Audits panel">
     70% of mobile pages take nearly 7 seconds for the visual content above the fold to display on the screen. [Source: Think with Google]
   </message>
@@ -54,14 +48,8 @@
   <message name="IDS_DEVTOOLS_3b7e043f46813f1d8ffbd462eb77fb6c" desc="Text in Audits Controller">
     How long does this app take to show content and become usable
   </message>
-  <message name="IDS_DEVTOOLS_3e3f8a3abd60f2389b744ca8ed0aa4d9" desc="Text in Audits Controller">
-    No throttling
-  </message>
   <message name="IDS_DEVTOOLS_3ee3aab0791156ff1d5e0481ed4589b2" desc="Text in Audits Controller">
     Applied Slow 4G, 4x CPU Slowdown
-  </message>
-  <message name="IDS_DEVTOOLS_41fdb410354e76ef7674f98e1cc84c8f" desc="Text in Audits Start View labeling throttling configration control group">
-    Throttling
   </message>
   <message name="IDS_DEVTOOLS_47e2dbd37d8d524f5c4105a96db27b59" desc="Fast fact in the pop-up dialog when lighthouse is running in the Audits panel">
     75% of global mobile users in 2016 were on 2G or 3G [Source: GSMA Mobile]
@@ -123,9 +111,6 @@
   <message name="IDS_DEVTOOLS_7bd1e4f7363173e2c8329551ca4d38cc" desc="New audit item label in Audits Report Selector">
     (new audit)
   </message>
-  <message name="IDS_DEVTOOLS_87d17f4624a514e81dc7c8e016a7405c" desc="Text in Audits Controller">
-    Mobile
-  </message>
   <message name="IDS_DEVTOOLS_88450f419690173d62fb0a30fb29a951" desc="Text in Audits Status View">
     Auditing <ph name="PAGEHOST">$1s<ex>github.com</ex></ph>
   </message>
@@ -140,9 +125,6 @@
   </message>
   <message name="IDS_DEVTOOLS_93c09fb3e06297a9b9504113fa5915ea" desc="Fast fact in the pop-up dialog when lighthouse is running in the Audits panel">
     BBC has seen a loss of 10% of their users for every extra second of page load [Source: WPO Stats]
-  </message>
-  <message name="IDS_DEVTOOLS_9446a98ad14416153cc4d45ab8b531bf" desc="Text in Audits Controller">
-    Performance
   </message>
   <message name="IDS_DEVTOOLS_a3456af9cc3d7cf0c2e288f889f050b7" desc="Fast fact in the pop-up dialog when lighthouse is running in the Audits panel">
     If a site takes &gt;1 second to become interactive, users lose attention, and their perception of completing the page task is broken [Source: Google Developers Blog]
@@ -162,9 +144,6 @@
   <message name="IDS_DEVTOOLS_b29bb7427a05d89f1dae6ab5459e2d5c" desc="Fast fact in the pop-up dialog when lighthouse is running in the Audits panel">
     By reducing the response size of JSON needed for displaying comments, Instagram saw increased impressions [Source: WPO Stats]
   </message>
-  <message name="IDS_DEVTOOLS_bc28aa52ba5b534ad9d198157c375d67" desc="Text in Audits Controller">
-    Clear storage
-  </message>
   <message name="IDS_DEVTOOLS_bcf2457dd80557dd7ebdc1504b6149e6" desc="Text in Audits Controller">
     Does this page follow best practices for modern web development
   </message>
@@ -177,17 +156,11 @@
   <message name="IDS_DEVTOOLS_d2f618fd63c7c2028cd527f60e761bc6" desc="Text when lighthouse is loading the page in the Audits panel">
     Lighthouse is loading your page with mobile emulation.
   </message>
-  <message name="IDS_DEVTOOLS_d59048f21fd887ad520398ce677be586" desc="Text in Audits Start View">
-    Learn more
-  </message>
   <message name="IDS_DEVTOOLS_d88946b678e4c2f251d4e292e8142291" desc="Text in Audits Controller">
     SEO
   </message>
   <message name="IDS_DEVTOOLS_deeacee140c7d3a451440dd0e206e256" desc="Text in Audits Start View">
     Identify and fix common problems that affect your site&apos;s performance, accessibility, and user experience.
-  </message>
-  <message name="IDS_DEVTOOLS_e0ac20adce6ffee48c7151b070aa5737" desc="Text in Audits Start View labeling device configration control group">
-    Device
   </message>
   <message name="IDS_DEVTOOLS_e339ef3bcd3e92466fa83dc21e690a5b" desc="Fast fact in the pop-up dialog when lighthouse is running in the Audits panel">
     As the number of elements on a page increases from 400 to 6,000, the probability of conversion drops 95%. [Source: Think with Google]
@@ -200,9 +173,6 @@
   </message>
   <message name="IDS_DEVTOOLS_e9fe69c2de7c38bbe442e38780d20081" desc="Fast fact in the pop-up dialog when lighthouse is running in the Audits panel">
     53% of all site visits are abandoned if page load takes more than 3 seconds [Source: Google DoubleClick blog]
-  </message>
-  <message name="IDS_DEVTOOLS_ea4788705e6873b424c65e91c2846b19" desc="Text of the cancel button in Audits Status View">
-    Cancel
   </message>
   <message name="IDS_DEVTOOLS_ea60ba1496b05c6a5816fb75d0665c8d" desc="Text of a DOM element in Audits Status View">
     If this issue is reproducible, please report it at the Lighthouse GitHub repo.

@@ -72,20 +72,11 @@
   <message name="IDS_DEVTOOLS_365fee797b55ffeac84d2ba82507b721" desc="Text in Styles Sidebar Pane of the Elements panel">
     user agent stylesheet
   </message>
-  <message name="IDS_DEVTOOLS_3afbd9828e011526955ca93b48b57524" desc="A title of the 'Screenshot' action category">
-    Screenshot
-  </message>
-  <message name="IDS_DEVTOOLS_3bb3e8c8a24891ba0f7608bcc96f8b0a" desc="Text in Elements Panel of the Elements panel">
-    Frame
-  </message>
   <message name="IDS_DEVTOOLS_3e255d6c811a40b9ad197fedeadc342c" desc="Text in Platform Fonts Widget of the Elements panel">
     Local file
   </message>
   <message name="IDS_DEVTOOLS_3e9bec182c7495247f5f93d3881d630b" desc="Text in Element State Pane Widget of the Elements panel">
     :hov
-  </message>
-  <message name="IDS_DEVTOOLS_3f8f88e3686b2345cecc9530e19e6172" desc="A context menu item in the Elements Tree Outline of the Elements panel">
-    Store as global variable
   </message>
   <message name="IDS_DEVTOOLS_417117e823d14c9b7c6533e4b04600a6" desc="Text in Elements Breadcrumbs of the Elements panel">
     (text)
@@ -114,17 +105,8 @@
   <message name="IDS_DEVTOOLS_4ca94080ccbd5784f5fe296bf1ae3e12" desc="Title of the 'Event Listeners' tool in the sidebar of the elements tool">
     Event Listeners
   </message>
-  <message name="IDS_DEVTOOLS_4cf8e5f6ffbb182b5d480cbabae6a028" desc="A context menu item in the Elements Tree Element of the Elements panel">
-    Edit attribute
-  </message>
   <message name="IDS_DEVTOOLS_4d9468d79ef34f71ba78a28688fa5d31" desc="Alternative title text of a setting in Event Listeners Widget of the Elements panel">
     Ancestors
-  </message>
-  <message name="IDS_DEVTOOLS_5134111907df828fc575c69e22480c1e" desc="Text in Elements Tree Element of the Elements panel">
-    Hide element
-  </message>
-  <message name="IDS_DEVTOOLS_539dddc574d3cd85ba73df93df7a76d0" desc="Title of the Stack Trace widget in the Elements panel">
-    Stack Trace
   </message>
   <message name="IDS_DEVTOOLS_581b87189d0bd86aa707e42553032a3e" desc="Element text content in Elements Tree Element of the Elements panel">
     Children:
@@ -138,23 +120,14 @@
   <message name="IDS_DEVTOOLS_5c6236c705b0086fbbdb2df3133f8a06" desc="Title of a setting under the Elements category in Settings">
     Reveal DOM node on hover
   </message>
-  <message name="IDS_DEVTOOLS_5de39fa1bce4bbf9232597a2120bc4d4" desc="Swatch icon element title in Color Swatch Popover Icon of the Elements panel">
-    Open cubic bezier editor.
-  </message>
   <message name="IDS_DEVTOOLS_5eeb03a9c080c299d4804ac765c818c2" desc="No matches element text content in Styles Sidebar Pane of the Elements panel">
     No matching selector or style
-  </message>
-  <message name="IDS_DEVTOOLS_5fb63579fc981698f97d55bfecb213ea" desc="A context menu item in the Elements Tree Element of the Elements panel">
-    Copy
   </message>
   <message name="IDS_DEVTOOLS_6053f828a109e7d9da3690a7416e4eec" desc="Text in Elements Tree Element of the Elements panel">
     Copy XPath
   </message>
   <message name="IDS_DEVTOOLS_605e072850e19521394f8bad7082acf4" desc="Text of a DOM element in Element State Pane Widget of the Elements panel">
     Force element state
-  </message>
-  <message name="IDS_DEVTOOLS_63041e09c8660107e507c9c27c08199c" desc="A context menu item in the Elements Tree Element of the Elements panel">
-    Expand recursively
   </message>
   <message name="IDS_DEVTOOLS_686676f33cf19ca00788564f43b992cb" desc="Aria accessible name in Computed Style Widget of the Elements panel">
     Filter Computed Styles
@@ -231,23 +204,14 @@
   <message name="IDS_DEVTOOLS_a98895bde5922dd43c82ad7050abc05a" desc="Tooltip text that appears on the setting when hovering over it in Event Listeners Widget of the Elements panel">
     Show listeners on the ancestors
   </message>
-  <message name="IDS_DEVTOOLS_aa56a2e65d8106aef3c61e4f6bf94fdb" desc="A title of the 'Elements' @UI.ViewLocationResolver category">
-    Elements
-  </message>
   <message name="IDS_DEVTOOLS_abdf882c25e08d9ba219fe33f17591fe" desc="Link text content in Elements Tree Outline of the Elements panel">
     reveal
-  </message>
-  <message name="IDS_DEVTOOLS_acc24772ac31677d076f17d9002b57cd" desc="A context menu item in the Elements Tree Element of the Elements panel">
-    Collapse children
   </message>
   <message name="IDS_DEVTOOLS_ad4ac01e4a5688063dace5ba5d0f04de" desc="Tooltip text that appears when hovering over the largeicon add button in the Styles Sidebar Pane of the Elements panel">
     Insert Style Rule Below
   </message>
   <message name="IDS_DEVTOOLS_b0351810a5721f657b088608865849dd" desc="Text in Styles Sidebar Pane of the Elements panel">
     via inspector
-  </message>
-  <message name="IDS_DEVTOOLS_b1c94ca2fbc3e78fc30069c8d0f01680" desc="Text in Event Listeners Widget of the Elements panel">
-    All
   </message>
   <message name="IDS_DEVTOOLS_b70cdb878a204fecf91c7dd1af312421" desc="Text in Metrics Sidebar Pane of the Elements panel">
     padding

@@ -19,9 +19,6 @@ Click the reload button <ph name="RELOAD_BUTTON_ICON">$2s<ex>reload button icon<
   <message name="IDS_DEVTOOLS_5bc06f5800d415cc95e1349edbaca425" desc="Text in Coverage List View of the Coverage tab">
     JS
   </message>
-  <message name="IDS_DEVTOOLS_6525b37c568c526bde7c02fac8195c73" desc="Unused percents span text content in Coverage List View of the Coverage tab">
-    <ph name="UNUSEDSIZE___THIS__COVERAGEINFO_SIZE________">$1.1f<ex>20.1</ex></ph> %%
-  </message>
   <message name="IDS_DEVTOOLS_73af525212a812236f1a3618e9cfa717" desc="Tooltip text that appears when hovering over the largeicon download button in the Coverage View of the Coverage tab">
     Export...
   </message>
@@ -44,9 +41,6 @@ Click the reload button <ph name="RELOAD_BUTTON_ICON">$2s<ex>reload button icon<
   <message name="IDS_DEVTOOLS_9841bdc50c4226cb6ec5db76494249e6" desc="Title of the 'Coverage' tool in the bottom drawer">
     Coverage
   </message>
-  <message name="IDS_DEVTOOLS_a1fa27779242b4902f7ae3bdd5c6d508" desc="Text in Coverage List View of the Coverage tab">
-    Type
-  </message>
   <message name="IDS_DEVTOOLS_bca27ccb808f436cd1ce828dd47604b7" desc="Title of an action in the coverage tool to start with reload">
     Start instrumenting coverage and reload page
   </message>
@@ -55,8 +49,5 @@ Click the reload button <ph name="RELOAD_BUTTON_ICON">$2s<ex>reload button icon<
   </message>
   <message name="IDS_DEVTOOLS_d98bd5257b9f29c266777264411735a3" desc="Tooltip text that appears on the setting when hovering over it in Coverage View of the Coverage tab">
     Include extension content scripts
-  </message>
-  <message name="IDS_DEVTOOLS_e6b391a8d2c4d45902a23a8b6585703d" desc="Text in Coverage List View of the Coverage tab">
-    URL
   </message>
 </grit-part>

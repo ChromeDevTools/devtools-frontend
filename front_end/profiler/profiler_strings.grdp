@@ -3,9 +3,6 @@
   <message name="IDS_DEVTOOLS_00018e8c8fc32e1ec073c0cdbadb5575" desc="Text in Heap Profile View of a profiler tool">
     <ph name="NUMBER_WITHTHOUSANDSSEPARATOR_VALUE________">$1s<ex>1,021</ex></ph> KB
   </message>
-  <message name="IDS_DEVTOOLS_007c41a9025be2c8e14b496ed3ee00f8" desc="A context menu item in the Profiles Panel of a profiler tool">
-    Save…
-  </message>
   <message name="IDS_DEVTOOLS_02184526968aa861a744df910647fcf0" desc="Text in Heap Snapshot Data Grids of a profiler tool">
     Freed Size
   </message>
@@ -36,9 +33,6 @@
   <message name="IDS_DEVTOOLS_0aa6f4210bf373c95eda00232e93cd98" desc="Text in Heap Snapshot Data Grids of a profiler tool">
     Distance
   </message>
-  <message name="IDS_DEVTOOLS_11a755d598c0c417f9a36758c3da7481" desc="Control button text content in Profile Launcher View of a profiler tool">
-    Stop
-  </message>
   <message name="IDS_DEVTOOLS_13b5bfe96f3e2fe411c9f66f4a582adf" desc="Text in Heap Snapshot Grid Nodes of a profiler tool">
     in
   </message>
@@ -57,20 +51,8 @@
   <message name="IDS_DEVTOOLS_1d36783e12317ed400ebeddeb072a27b" desc="Text in Profile View of a profiler tool">
     Chart
   </message>
-  <message name="IDS_DEVTOOLS_1eaeeaeb638fdf7f6eeb047abbfd0f1a" desc="Text in CPUProfile View of a profiler tool">
-    Self Time
-  </message>
-  <message name="IDS_DEVTOOLS_1f1e990a1d2ba8ab4dd873a192237c30" desc="Text in CPUProfile View of a profiler tool">
-    <ph name="VALUE">$1.1f<ex>30.1</ex></ph> ms
-  </message>
   <message name="IDS_DEVTOOLS_27c0ad7a8ff8f9df8e13bb2d974c95d0" desc="Text in Heap Snapshot View of a profiler tool">
     Allocation
-  </message>
-  <message name="IDS_DEVTOOLS_290612199861c31d1036b185b4e69b75" desc="Text in Heap Snapshot Data Grids of a profiler tool">
-    Summary
-  </message>
-  <message name="IDS_DEVTOOLS_2ce2fc341b0bd9219a3634ff43a90bde" desc="Alternate text read when describing the size of a memory allocation and its percentage of heap.">
-    <ph name="THIS_DATA_COLUMNID_">$1s<ex>1 613 680</ex></ph>, <ph name="THIS_DATA_PERCENTCOLUMN_">$2s<ex>44 %</ex></ph>
   </message>
   <message name="IDS_DEVTOOLS_2d7b69664bc4226fb198124fb707e57c" desc="Text in Heap Profile View of a profiler tool">
     Snapshot <ph name="THIS_NEXTPROFILEUID__">$1s<ex>1</ex></ph>
@@ -92,9 +74,6 @@
   </message>
   <message name="IDS_DEVTOOLS_35066690e799cd4e59123262e41b29c5" desc="Text in CPUProfile View of a profiler tool">
     Stop CPU profiling
-  </message>
-  <message name="IDS_DEVTOOLS_36917e785bd31d786ab9dd7790a9a4c2" desc="Text in Live Heap Profile View of a profiler tool">
-    JS Heap
   </message>
   <message name="IDS_DEVTOOLS_3a9619400e054970a7ab8b67c4ce5109" desc="Tooltip text that appears when hovering over the largeicon refresh button in the Profile View of a profiler tool">
     Restore all functions
@@ -196,9 +175,6 @@
     Native memory snapshots show sampled native allocations in the renderer process since start up.
               Chrome has to be started with --memlog=all flag. Check flags at chrome://flags
   </message>
-  <message name="IDS_DEVTOOLS_6bb61b1a929f2a0186f2671cd8258bd9" desc="Warning icon title in Profile Data Grid of a profiler tool">
-    Not optimized: <ph name="THIS__DEOPTREASON">$1s<ex>Optimized too many times</ex></ph>
-  </message>
   <message name="IDS_DEVTOOLS_6d27e30b2f09c2a451a6d123c1a35805" desc="Text in Profiles Panel of a profiler tool">
     Run <ph name="_">$1d<ex>2</ex></ph>
   </message>
@@ -247,9 +223,6 @@
   <message name="IDS_DEVTOOLS_85000e6433d4ac4033e6d7f5a3466f92" desc="A context menu item in the Heap Profiler Panel of a profiler tool">
     Reveal in Summary view
   </message>
-  <message name="IDS_DEVTOOLS_86408593c34af77fdd90df932f8b5261" desc="Text in Heap Snapshot Data Grids of a profiler tool">
-    Function
-  </message>
   <message name="IDS_DEVTOOLS_86a699c935e3e7e36e334bb61a336f02" desc="Text in Heap Profile View of a profiler tool">
     Start heap profiling
   </message>
@@ -297,9 +270,6 @@
   <message name="IDS_DEVTOOLS_9e854bf5f75e670228f33f9fe857793d" desc="Text in Heap Snapshot Data Grids of a profiler tool">
     Size of the object plus the graph it retains in bytes
   </message>
-  <message name="IDS_DEVTOOLS_9f29da220ed82809ec5dd70af4e52904" desc="Text in CPUProfile View of a profiler tool">
-    Total Time
-  </message>
   <message name="IDS_DEVTOOLS_a6122a65eaa676f700ae68d393054a37" desc="Control button text content in Profile Launcher View of a profiler tool">
     Start
   </message>
@@ -317,9 +287,6 @@
   </message>
   <message name="IDS_DEVTOOLS_a97cce5b0a66cd7d7b7b7d2e06b7605c" desc="Text in Profiles Panel of a profiler tool">
     Can&apos;t load file. Supported file extensions: &apos;<ph name="ARRAY_FROM_EXTENSIONS__JOIN________">$1s<ex>'.js', '.json'</ex></ph>&apos;.
-  </message>
-  <message name="IDS_DEVTOOLS_aab112fba39c10ed5df335ae0e47f329" desc="Text in CPUProfile View of a profiler tool">
-    Not optimized
   </message>
   <message name="IDS_DEVTOOLS_ad49e602302b1ca117245c4f19ef4450" desc="Retaining paths title text content in Heap Snapshot View of a profiler tool">
     Retainers
@@ -353,9 +320,6 @@
   </message>
   <message name="IDS_DEVTOOLS_c33e404a441c6ba9648f88af3c68a1ca" desc="Text in Heap Snapshot View of a profiler tool">
     Statistics
-  </message>
-  <message name="IDS_DEVTOOLS_c9cc8cce247e49bae79f15173ce97354" desc="Save link element text content in Profiles Panel of a profiler tool">
-    Save
   </message>
   <message name="IDS_DEVTOOLS_ca0dbad92a874b2f69b549293387925e" desc="Text in Heap Snapshot View of a profiler tool">
     Code
@@ -433,9 +397,6 @@
   <message name="IDS_DEVTOOLS_ef15fd2f45e6bb5ce57587895ba64f93" desc="Text in Heap Profile View of a profiler tool">
     Browser
   </message>
-  <message name="IDS_DEVTOOLS_f19dbf2edb3a0bd74b0524d960ff21eb" desc="Text of button in Profile Launcher View of a profiler tool">
-    Load
-  </message>
   <message name="IDS_DEVTOOLS_f3e40bc520cf1f22e4d36d5c5f8d2618" desc="Text in Heap Snapshot Grid Nodes of a profiler tool">
     User object reachable from window
   </message>
@@ -453,9 +414,6 @@
   </message>
   <message name="IDS_DEVTOOLS_fbbe8b507083defdbfe14a341551c77b" desc="Text in CPUProfile View of a profiler tool">
     CPU profiles show where the execution time is spent in your page&apos;s JavaScript functions.
-  </message>
-  <message name="IDS_DEVTOOLS_fdbd92f0c6b67291ca954b74885d434e" desc="Text in Heap Profile View of a profiler tool">
-    Profile <ph name="TYPE_NEXTPROFILEUID__">$1d<ex>2</ex></ph>
   </message>
   <message name="IDS_DEVTOOLS_ffd4ebcdf9ad139d4cd2c84d853f4f34" desc="Text in Heap Profile View of a profiler tool">
     Total Size (bytes)

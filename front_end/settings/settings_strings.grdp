@@ -3,9 +3,6 @@
   <message name="IDS_DEVTOOLS_0f653ae68147586eb189d7baf37a696a" desc="Text of button in Settings Screen of the Settings">
     Restore defaults and reload
   </message>
-  <message name="IDS_DEVTOOLS_29e9d8e295b1d5b3002d2d3d5baa4c37" desc="Text in Settings Screen of the Settings">
-    Shortcuts
-  </message>
   <message name="IDS_DEVTOOLS_2cce43a6505a5d1bdf7ea98bf7fd1bc8" desc="Blackbox label in Framework Blackbox Settings Tab of the Settings">
     Blackbox
   </message>
@@ -41,9 +38,6 @@
   </message>
   <message name="IDS_DEVTOOLS_c745d3ac390f120535d734cd14e2f6aa" desc="Blackbox content scripts title in Framework Blackbox Settings Tab of the Settings">
     Blackbox content scripts (extension scripts in the page)
-  </message>
-  <message name="IDS_DEVTOOLS_c9deece3e6de26d07ef6409b96f21fd0" desc="Title of Blackboxing settings">
-    Blackboxing
   </message>
   <message name="IDS_DEVTOOLS_d0834fcec6337785ee749c8f5464f6f6" desc="Text in Settings Screen of the Settings">
     Preferences

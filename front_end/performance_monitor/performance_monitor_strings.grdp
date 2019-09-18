@@ -30,7 +30,4 @@
   <message name="IDS_DEVTOOLS_e99180abf47a8b3a856e0bcb2656990a" desc="Text in Performance Monitor of the Performance monitor tab">
     Paused
   </message>
-  <message name="IDS_DEVTOOLS_f28128b38efbc6134dc40751ee21fd29" desc="Text in Performance Monitor of the Performance monitor tab">
-    Documents
-  </message>
 </grit-part>

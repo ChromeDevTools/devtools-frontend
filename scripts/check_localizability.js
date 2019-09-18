@@ -49,6 +49,7 @@ async function main() {
       filePaths = process.argv.slice(2);
     await Promise.all(filePathPromises);
 
+    filePaths.push(localizationUtils.SHARED_STRINGS_PATH);
     const auditFilePromises = filePaths.map(filePath => auditFileForLocalizability(filePath, errors));
     await Promise.all(auditFilePromises);
   } catch (err) {

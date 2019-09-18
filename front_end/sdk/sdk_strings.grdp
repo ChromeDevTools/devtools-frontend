@@ -201,9 +201,6 @@
   <message name="IDS_DEVTOOLS_9028784c589c0c809700c7fbc66a5d96" desc="Text in Network Manager">
     Resource interpreted as <ph name="NETWORKREQUEST_RESOURCETYPE___TITLE__">$1s<ex>application</ex></ph> but transferred with MIME type <ph name="NETWORKREQUEST_MIMETYPE">$2s<ex>image</ex></ph>: &quot;<ph name="NETWORKREQUEST_URL__">$3s<ex>https://example.com</ex></ph>&quot;.
   </message>
-  <message name="IDS_DEVTOOLS_90da6f38945a1c7e7ba11e3adcbe6919" desc="Title of a setting under the Debugger category that can be invoked through the Command Menu">
-    Pause on exceptions
-  </message>
   <message name="IDS_DEVTOOLS_9108ae673b7efa9620aec771edc9d4de" desc="Text in the Event Listener Breakpoints Panel of the JavaScript Debugger in the Sources Panel">
     setTimeout fired
   </message>
@@ -215,9 +212,6 @@
   </message>
   <message name="IDS_DEVTOOLS_93dee6366d66361f36985cf5c88346aa" desc="Text in the Event Listener Breakpoints Panel of the JavaScript Debugger in the Sources Panel">
     Create AudioContext
-  </message>
-  <message name="IDS_DEVTOOLS_95bbad55f11c237ed89546e748093ba7" desc="Text in the Event Listener Breakpoints Panel of the JavaScript Debugger in the Sources Panel">
-    Request Animation Frame
   </message>
   <message name="IDS_DEVTOOLS_96d008db67fc0b5551a926842bbb6a71" desc="Text in DOMDebugger Model">
     Notification
@@ -252,9 +246,6 @@
   <message name="IDS_DEVTOOLS_ae0d59f889c8a03301b9adb5ff1f5bd2" desc="Tooltip to explain why a cookie was blocked">
     This set-cookie had the &quot;SameSite=Strict&quot; attribute but came from a cross-origin response. This includes navigation requests intitiated by other origins.
   </message>
-  <message name="IDS_DEVTOOLS_af4bb376939e77df0e7c2332b837a866" desc="Text in Debugger Model">
-    Closure
-  </message>
   <message name="IDS_DEVTOOLS_b1d4660db82a3d7b85dca58e8635ce13" desc="Tooltip to explain why a cookie was blocked">
     This set-cookie had the &quot;SameSite=Lax&quot; attribute but came from a cross-origin response.
   </message>
@@ -276,12 +267,6 @@
   <message name="IDS_DEVTOOLS_ba50636875d999db0c9218b48b23027d" desc="Title of a setting under the Debugger category that can be invoked through the Command Menu">
     Do not capture async stack traces
   </message>
-  <message name="IDS_DEVTOOLS_ba5b676ccf658f863ef2e3df082ee262" desc="Text in the Event Listener Breakpoints Panel of the JavaScript Debugger in the Sources Panel">
-    Animation Frame Fired
-  </message>
-  <message name="IDS_DEVTOOLS_bc955333ff170762be4971a8fde558cf" desc="Text in DOMDebugger Model">
-    WebAudio
-  </message>
   <message name="IDS_DEVTOOLS_c432f4e5fdec5760a2f06b38f646168e" desc="Text in Console Model">
     Profile &apos;<ph name="DATA_TITLE">$1s<ex>title</ex></ph>&apos; started.
   </message>
@@ -294,9 +279,6 @@
   <message name="IDS_DEVTOOLS_c89686a387d2b12b3c729ce35a0bcb5b" desc="Text in DOMDebugger Model">
     Window
   </message>
-  <message name="IDS_DEVTOOLS_c9ad95228aa735bdda1aebf38da022af" desc="Text in DOMDebugger Model">
-    Parse
-  </message>
   <message name="IDS_DEVTOOLS_ccab918ce9f085b521a52ac13f653c0b" desc="Tooltip to explain why a cookie was blocked">
     An unknown error was encountered when trying to send this cookie.
   </message>
@@ -306,14 +288,8 @@
   <message name="IDS_DEVTOOLS_d24a22fef757966373800aa9795458dc" desc="Text in Source Map">
     ? [sm]
   </message>
-  <message name="IDS_DEVTOOLS_d31827f0a164d52b636bb1f71ca4a351" desc="Text in the Event Listener Breakpoints Panel of the JavaScript Debugger in the Sources Panel">
-    Cancel Animation Frame
-  </message>
   <message name="IDS_DEVTOOLS_d4fad802fc7bf0248d34c685533bd56f" desc="Title of a setting under the Network category that can be invoked through the Command Menu">
     Disable request blocking
-  </message>
-  <message name="IDS_DEVTOOLS_d6b6b668dbca9d4fe774bb654226ebe3" desc="Text in DOMDebugger Model">
-    Animation
   </message>
   <message name="IDS_DEVTOOLS_dcd9c13c4f8ae68ea7ae92edf9191264" desc="Text in Server Timing">
     Deprecated syntax found. Please use: &lt;name&gt;;dur=&lt;duration&gt;;desc=&lt;description&gt;
@@ -335,9 +311,6 @@
   </message>
   <message name="IDS_DEVTOOLS_e485c975c1d6c17d9dfd81128b83f63a" desc="Text in the Event Listener Breakpoints Panel of the JavaScript Debugger in the Sources Panel">
     Set innerHTML
-  </message>
-  <message name="IDS_DEVTOOLS_e55f75a29310d7b60f7ac1d390c8ae42" desc="Text in Debugger Model">
-    Module
   </message>
   <message name="IDS_DEVTOOLS_e69d85cd1acdf030f0cede48b61d7720" desc="Title of a setting under the Rendering category that can be invoked through the Command Menu">
     Hide scroll performance bottlenecks

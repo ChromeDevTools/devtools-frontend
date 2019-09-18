@@ -67,6 +67,7 @@
       <part file="../ui/ui_strings.grdp" />
       <part file="../web_audio/web_audio_strings.grdp" />
       <part file="../workspace/workspace_strings.grdp" />
+      <part file="shared_strings.grdp" />
     </messages>
   </release>
 </grit>

@@ -15,9 +15,6 @@
   <message name="IDS_DEVTOOLS_5fe41afb268c87f4f56027023d3e6406" desc="Text in Animation Timeline of the Animation Inspector">
     <ph name="PLAYBACKRATE______">$1s<ex>50</ex></ph>%
   </message>
-  <message name="IDS_DEVTOOLS_81aa2078d1eceede831b2976dbf32e62" desc="Tooltip text that appears when hovering over the largeicon clear button in the Animation Timeline of the Animation Inspector">
-    Clear all
-  </message>
   <message name="IDS_DEVTOOLS_96952fa958a61d47ed4dee3f2c3dee64" desc="Tooltip text that appears when hovering over largeicon pause button in Animation Timeline of the Animation Inspector">
     Pause all
   </message>

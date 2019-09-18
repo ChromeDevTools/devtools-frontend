@@ -1,0 +1,586 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Strings in this file are shared, i.e. they appear multiple times. -->
+<grit-part>
+  <message name="IDS_DEVTOOLS_007c41a9025be2c8e14b496ed3ee00f8" desc="Text to save an item">
+    Save…
+  </message>
+  <message name="IDS_DEVTOOLS_0511551e6cf7d61acd9b62f9304efa93" desc="Tooltip text that appears on the setting to preserve log when hovering over the item">
+    Do not clear log on page reload / navigation
+  </message>
+  <message name="IDS_DEVTOOLS_0b484cfcf50c8fabff48c0aad426f544" desc="Text to dock the DevTools to the left of the browser tab">
+    Dock to left
+  </message>
+  <message name="IDS_DEVTOOLS_0ca08f8f4a8a19f7f1ae87c119494327" desc="Title as part of a tool to override existing configurations">
+    Overrides
+  </message>
+  <message name="IDS_DEVTOOLS_0eaadb4fcb48a0a0ed7bc9868be9fbaa" desc="Text to indicate an item is a warning">
+    Warning
+  </message>
+  <message name="IDS_DEVTOOLS_0f44e9e39cbe2f22bd1bd7b6070cf13d" desc="Text to enable blocking of network requests">
+    Enable request blocking
+  </message>
+  <message name="IDS_DEVTOOLS_105078d294d30c978ca2badf7f376934" desc="The action to scroll">
+    Scroll
+  </message>
+  <message name="IDS_DEVTOOLS_1063e38cb53d94d386f21227fcd84717" desc="Label for an item to remove something">
+    Remove
+  </message>
+  <message name="IDS_DEVTOOLS_11a755d598c0c417f9a36758c3da7481" desc="Text of an item that stops the running task">
+    Stop
+  </message>
+  <message name="IDS_DEVTOOLS_13348442cc6a27032d2b4aa28b75a5d3" desc="Title of a search bar or tool">
+    Search
+  </message>
+  <message name="IDS_DEVTOOLS_146ffe2fd9fa5bec3b63b52543793ec7" desc="Text to show more content">
+    Show more
+  </message>
+  <message name="IDS_DEVTOOLS_1583d36995134f9120fac115c08e0174" desc="Text when something is loading">
+    Loading…
+  </message>
+  <message name="IDS_DEVTOOLS_16f78b9465f03f7ec5a03c24918fbde3" desc="Status code of an event">
+    Status Code
+  </message>
+  <message name="IDS_DEVTOOLS_193cfc9be3b995831c6af2fea6650e60" desc="Text that refers to one or a group of webpages">
+    Page
+  </message>
+  <message name="IDS_DEVTOOLS_1eaeeaeb638fdf7f6eeb047abbfd0f1a" desc="Time of a single activity, as opposed to the total time">
+    Self Time
+  </message>
+  <message name="IDS_DEVTOOLS_1ebc7540a5327b857144f04cf1435b4e" desc="Text to replay an XHR request">
+    Replay XHR
+  </message>
+  <message name="IDS_DEVTOOLS_1f1e990a1d2ba8ab4dd873a192237c30" desc="Time in miliseconds">
+    <ph name="VALUE">$1.1f<ex>30.1</ex></ph> ms
+  </message>
+  <message name="IDS_DEVTOOLS_22b6fe30dec1ae9c09480cce01cd4065" desc="Text to run commands">
+    Run command
+  </message>
+  <message name="IDS_DEVTOOLS_2310408a63388fe57e3a4177168a8798" desc="Text for the desktop platform, as opposed to mobile">
+    Desktop
+  </message>
+  <message name="IDS_DEVTOOLS_26ae7bdd1d6fb8c4886e6fde8d12601c" desc="Text for the latency of a task">
+    Latency
+  </message>
+  <message name="IDS_DEVTOOLS_290612199861c31d1036b185b4e69b75" desc="Text for the summary view">
+    Summary
+  </message>
+  <message name="IDS_DEVTOOLS_29260f495ba8adcc62fd1307c758ff4e" desc="Text to show the measuring rulers on the target">
+    Show rulers
+  </message>
+  <message name="IDS_DEVTOOLS_29296fcb28eb4edf5d0049b6cac7bbd1" desc="Text for a percentage value">
+    <ph name="SCALE">$1.0f<ex>13.0</ex></ph>%%
+  </message>
+  <message name="IDS_DEVTOOLS_29e9d8e295b1d5b3002d2d3d5baa4c37" desc="Text for keyboard shortcuts">
+    Shortcuts
+  </message>
+  <message name="IDS_DEVTOOLS_2ab5656e27a0ed871c8de44368f807c6" desc="Title of the styles side pane in Elements panel">
+    Styles Pane
+  </message>
+  <message name="IDS_DEVTOOLS_2ae207ddfe5cd256a768769d93a879e5" desc="Title of the paint profiler, old name of the performance pane">
+    Paint Profiler
+  </message>
+  <message name="IDS_DEVTOOLS_2b81bb9b3deebcbfa05edad7a845005a" desc="Text for rendering frames">
+    Frames
+  </message>
+  <message name="IDS_DEVTOOLS_2bbc845892f400626baab5af687527c5" desc="Text for the start time of an activity">
+    Start Time
+  </message>
+  <message name="IDS_DEVTOOLS_2ce2fc341b0bd9219a3634ff43a90bde" desc="Generic text with two placeholders separated by a comma">
+    <ph name="ITEM_LABEL">$1s<ex>1 613 680</ex></ph>, <ph name="CHECKEDSTATE">$2s<ex>44 %</ex></ph>
+  </message>
+  <message name="IDS_DEVTOOLS_2f04f3e6eee339eeb0ddb6c39606424d" desc="Text for searching with regular expressinn">
+    Use Regular Expression
+  </message>
+  <message name="IDS_DEVTOOLS_31fde7b05ac8952dacf4af8a704074ec" desc="Text for previewing items">
+    Preview
+  </message>
+  <message name="IDS_DEVTOOLS_323d4eb70b252acb4a04eaf9e0882597" desc="Title for a group of cities">
+    Geolocation
+  </message>
+  <message name="IDS_DEVTOOLS_340641a167ad6da1bcb4016357f4695d" desc="Title for a type of source files">
+    Content scripts
+  </message>
+  <message name="IDS_DEVTOOLS_36917e785bd31d786ab9dd7790a9a4c2" desc="Text for a heap profile type">
+    JS Heap
+  </message>
+  <message name="IDS_DEVTOOLS_382b0f5185773fa0f67a8ed8056c7759" desc="Text for something not available">
+    N/A
+  </message>
+  <message name="IDS_DEVTOOLS_393c3f5ea8ad35c02691d507bdbb31b0" desc="Text for revealing an item in its destination">
+    Reveal
+  </message>
+  <message name="IDS_DEVTOOLS_3afbd9828e011526955ca93b48b57524" desc="Text for one or a group of screenshots">
+    Screenshot
+  </message>
+  <message name="IDS_DEVTOOLS_3bb3e8c8a24891ba0f7608bcc96f8b0a" desc="Text for a rendering frame">
+    Frame
+  </message>
+  <message name="IDS_DEVTOOLS_3e3f8a3abd60f2389b744ca8ed0aa4d9" desc="Text for no network throttling">
+    No throttling
+  </message>
+  <message name="IDS_DEVTOOLS_3ec365dd533ddb7ef3d1c111186ce872" desc="Text for the details of something">
+    Details
+  </message>
+  <message name="IDS_DEVTOOLS_3edf8ca26a1ec14dd6e91dd277ae1de6" desc="Text for the origin of something">
+    Origin
+  </message>
+  <message name="IDS_DEVTOOLS_3f03ed88ee58335aa3df453443b9c8bc" desc="Text to indicate the progress of a profile">
+    Profiling…
+  </message>
+  <message name="IDS_DEVTOOLS_3f8f88e3686b2345cecc9530e19e6172" desc="Text to store an HTML element or JavaScript variable or expression result as a global variable">
+    Store as global variable
+  </message>
+  <message name="IDS_DEVTOOLS_41fdb410354e76ef7674f98e1cc84c8f" desc="Text for throttling the network">
+    Throttling
+  </message>
+  <message name="IDS_DEVTOOLS_4252b72e6ebcd4d4b4c2e46a786f03d2" desc="Text for zooming in">
+    Zoom
+  </message>
+  <message name="IDS_DEVTOOLS_46a2a41cc6e552044816a2d04634545d" desc="The current state of an item">
+    State
+  </message>
+  <message name="IDS_DEVTOOLS_4789f23283b3a61f858b641a1bef19a3" desc="Text for the memory of the page">
+    Memory
+  </message>
+  <message name="IDS_DEVTOOLS_47bda3033cb8fe0e76c45c293db011b5" desc="Text to indicate there are no breakpoints">
+    No breakpoints
+  </message>
+  <message name="IDS_DEVTOOLS_482a4dca0bbd8fcdda5acc6f95f3c279" desc="Title of the DevTools">
+    DevTools
+  </message>
+  <message name="IDS_DEVTOOLS_49ee3087348e8d44e1feda1917443987" desc="Text for the name of something">
+    Name
+  </message>
+  <message name="IDS_DEVTOOLS_4bd7c2ff07dcc66801a9368957d4bff8" desc="Text for the initiator of something">
+    Initiator
+  </message>
+  <message name="IDS_DEVTOOLS_4c3880bb027f159e801041b1021e88e8" desc="Text for one or a group of functions">
+    Method
+  </message>
+  <message name="IDS_DEVTOOLS_4cf8e5f6ffbb182b5d480cbabae6a028" desc="Text to modify the attribute of an item">
+    Edit attribute
+  </message>
+  <message name="IDS_DEVTOOLS_4cfa6c981549e990fe2344e4c805405e" desc="Text to find an item">
+    Find
+  </message>
+  <message name="IDS_DEVTOOLS_4d1b0b75a9737b7dcdc3a15a84fe856b" desc="Text to indicate the searching is in progress">
+    Searching…
+  </message>
+  <message name="IDS_DEVTOOLS_4dab36ac83853282fc0d7bae20c19e90" desc="Text to show more options">
+    More options
+  </message>
+  <message name="IDS_DEVTOOLS_502996d9790340c5fd7b86a5b93b1c9f" desc="Text to show the priority of an item">
+    Priority
+  </message>
+  <message name="IDS_DEVTOOLS_5134111907df828fc575c69e22480c1e" desc="Text to hide an element">
+    Hide element
+  </message>
+  <message name="IDS_DEVTOOLS_51360304ea03557e79bdf5ff9cd2e234" desc="Text for the issuer of an item">
+    Issuer
+  </message>
+  <message name="IDS_DEVTOOLS_52b3bc5e77aa070243c36cd40a4d6b6d" desc="Text for autocompletion">
+    Autocompletion
+  </message>
+  <message name="IDS_DEVTOOLS_539dddc574d3cd85ba73df93df7a76d0" desc="Text for the execution stack trace">
+    Stack Trace
+  </message>
+  <message name="IDS_DEVTOOLS_53cd8180752335dce4f9b9ed493ef58d" desc="Text to indicate the source of an image">
+    Image from <ph name="URL">$1s<ex>example.com</ex></ph>
+  </message>
+  <message name="IDS_DEVTOOLS_54f664c70c22054ea0d8d26fc3997ce7" desc="Text to indicate the network connectivity is online">
+    Online
+  </message>
+  <message name="IDS_DEVTOOLS_597b56e53847cd6a4712ac183f61fa68" desc="Text for web cookies">
+    Cookies
+  </message>
+  <message name="IDS_DEVTOOLS_59cc7cb8dfb2491cc5dfe8ebc546d797" desc="Text to pretty print a file">
+    Pretty print
+  </message>
+  <message name="IDS_DEVTOOLS_5a0a64ecca63ba9a006b6397cbdc2b8c" desc="Text to go to a given line">
+    Go to line
+  </message>
+  <message name="IDS_DEVTOOLS_5b6cf869265c13af8566f192b4ab3d2a" desc="Text for the documentation of something">
+    Documentation
+  </message>
+  <message name="IDS_DEVTOOLS_5de39fa1bce4bbf9232597a2120bc4d4" desc="Text to open the cubic bezier editor">
+    Open cubic bezier editor.
+  </message>
+  <message name="IDS_DEVTOOLS_5ef0c737746fae2ca90e66c39333f8f6" desc="Text for errors">
+    Errors
+  </message>
+  <message name="IDS_DEVTOOLS_5f0ea62e5bc9f795512ef292ff162a2a" desc="Text to disable cache while DevTools is open">
+    Disable cache (while DevTools is open)
+  </message>
+  <message name="IDS_DEVTOOLS_5f8442a46861496e9d2a3d11be13692b" desc="Text to indicate DevTools is writing to a file">
+    Writing file…
+  </message>
+  <message name="IDS_DEVTOOLS_5fb63579fc981698f97d55bfecb213ea" desc="Text for copying">
+    Copy
+  </message>
+  <message name="IDS_DEVTOOLS_63041e09c8660107e507c9c27c08199c" desc="Text to expand something recursively">
+    Expand recursively
+  </message>
+  <message name="IDS_DEVTOOLS_6311ae17c1ee52b36e68aaf4ad066387" desc="Text for other types of items">
+    Other
+  </message>
+  <message name="IDS_DEVTOOLS_63a6a88c066880c5ac42394a22803ca6" desc="Text to refresh the page">
+    Refresh
+  </message>
+  <message name="IDS_DEVTOOLS_6525b37c568c526bde7c02fac8195c73" desc="Text for percentage">
+    <ph name="PERCENTAGE">$1.1f<ex>20.1</ex></ph> %%
+  </message>
+  <message name="IDS_DEVTOOLS_65b4c7424dd695c30efa73da8396c90c" desc="Title of the Profiler tool">
+    Profiler
+  </message>
+  <message name="IDS_DEVTOOLS_689202409e48743b914713f96d93947c" desc="Text for the value of something">
+    Value
+  </message>
+  <message name="IDS_DEVTOOLS_6a0d9eaee314c567fd72fb97ee707a36" desc="Text to record a series of actions for analysis">
+    Record
+  </message>
+  <message name="IDS_DEVTOOLS_6a26f548831e6a8c26bfbbd9f6ec61e0" desc="Text for the viewing the help options">
+    Help
+  </message>
+  <message name="IDS_DEVTOOLS_6adf97f83acf6453d4a6a4b1070f3754" desc="Text to show there is nothing">
+    None
+  </message>
+  <message name="IDS_DEVTOOLS_6ba3a9ac3e0d57683c56299484b7ee3b" desc="Text to remove all breakpoints">
+    Remove all breakpoints
+  </message>
+  <message name="IDS_DEVTOOLS_6bb61b1a929f2a0186f2671cd8258bd9" desc="Text to show something is not optimized">
+    Not optimized: <ph name="REASON">$1s<ex>Optimized too many times</ex></ph>
+  </message>
+  <message name="IDS_DEVTOOLS_6f6cb72d544962fa333e2e34ce64f719" desc="Text for the size of something">
+    Size
+  </message>
+  <message name="IDS_DEVTOOLS_74540c79e377bea903e1023a46df5574" desc="Text to open a file">
+    Open file
+  </message>
+  <message name="IDS_DEVTOOLS_787ae37366b7a8c53f381abfd315c647" desc="Text that refers to the Elements Panel">
+    Elements Panel
+  </message>
+  <message name="IDS_DEVTOOLS_7a2ccf251ecb20b2b84ce0e3c3f72a29" desc="Text to show something is secure">
+    Secure
+  </message>
+  <message name="IDS_DEVTOOLS_7b3a6b02f467b95f2b5267aa94708c07" desc="Text for the name of a thread of the page">
+    Thread <ph name="TID">$1s<ex>1</ex></ph>
+  </message>
+  <message name="IDS_DEVTOOLS_7d341c08fd102f0b86285b5ff2e26ea7" desc="Text with two placeholders separated by a colon">
+    <ph name="BREAKPOINT_TYPE_LABEL">$1s<ex>Node removed</ex></ph>: <ph name="LINKIFIED_CONTENT">$2s<ex>div#id1</ex></ph>
+  </message>
+  <message name="IDS_DEVTOOLS_8166a4b3fb4979da3a24ed21ced7fdf7" desc="Text for an option to learn more about something">
+    Learn more
+  </message>
+  <message name="IDS_DEVTOOLS_81aa2078d1eceede831b2976dbf32e62" desc="Text to clear everything">
+    Clear all
+  </message>
+  <message name="IDS_DEVTOOLS_84d0c431d1472a0609d69b39dcb3a287" desc="Text for the index of something">
+    (index)
+  </message>
+  <message name="IDS_DEVTOOLS_850985cd851d0fe440f03f77762e2590" desc="Text for the network request Content-Length header">
+    Content-Length
+  </message>
+  <message name="IDS_DEVTOOLS_86408593c34af77fdd90df932f8b5261" desc="Text for a programming function">
+    Function
+  </message>
+  <message name="IDS_DEVTOOLS_87bfda183c4f851a101e97bbb1bbace7" desc="Title of the Layers tool">
+    Layers
+  </message>
+  <message name="IDS_DEVTOOLS_87d17f4624a514e81dc7c8e016a7405c" desc="Text for the mobile platform, as opposed to desktop">
+    Mobile
+  </message>
+  <message name="IDS_DEVTOOLS_883d7615c4d2de3fa1218f1298c46d0e" desc="Text for network request headers">
+    Headers
+  </message>
+  <message name="IDS_DEVTOOLS_884680dd63eae99eab1a407133df66b7" desc="Text to view a security certificate">
+    View certificate
+  </message>
+  <message name="IDS_DEVTOOLS_888a77f5ac0748b6c8001822417df8b6" desc="Text for security or network protocol">
+    Protocol
+  </message>
+  <message name="IDS_DEVTOOLS_8d9da4bc0e49a50e09ac9f7e56789d39" desc="Text to indicate the network connectivity is offline">
+    Offline
+  </message>
+  <message name="IDS_DEVTOOLS_902b0d55fddef6f8d651fe1035b7d4bd" desc="Text for errors">
+    Error
+  </message>
+  <message name="IDS_DEVTOOLS_90da6f38945a1c7e7ba11e3adcbe6919" desc="Text for pausing the debugger on exceptions">
+    Pause on exceptions
+  </message>
+  <message name="IDS_DEVTOOLS_93898e12951c906e5286ccb36d980ce5" desc="Text for scripts that should not be stepped into when debugging">
+    Blackbox script
+  </message>
+  <message name="IDS_DEVTOOLS_939aaa05e0943b39eab3a34fd609384d" desc="Text to scroll the displayed content into view">
+    Scroll into view
+  </message>
+  <message name="IDS_DEVTOOLS_9446a98ad14416153cc4d45ab8b531bf" desc="Text for the performance of something">
+    Performance
+  </message>
+  <message name="IDS_DEVTOOLS_95bbad55f11c237ed89546e748093ba7" desc="Text for the request animation frame event">
+    Request Animation Frame
+  </message>
+  <message name="IDS_DEVTOOLS_96b0141273eabab320119c467cdcaf17" desc="Text for sum">
+    Total
+  </message>
+  <message name="IDS_DEVTOOLS_96e9bc575b5d3ed541113a249da8bd24" desc="Text to take screenshots">
+    Capture screenshots
+  </message>
+  <message name="IDS_DEVTOOLS_997a8c473db4f81c5fb3d5900030d44d" desc="Text that shows there is no recording">
+    (no recordings)
+  </message>
+  <message name="IDS_DEVTOOLS_9aae9fe27dbf2db0ad90762b5b59d3a7" desc="Text to clear the console">
+    Clear console
+  </message>
+  <message name="IDS_DEVTOOLS_9d8c209e49e328528c39c273798e98c9" desc="Text to save content as a specific file type">
+    Save as...
+  </message>
+  <message name="IDS_DEVTOOLS_9df22f196a33acd0b372fe502de51211" desc="Text short for automatic">
+    auto
+  </message>
+  <message name="IDS_DEVTOOLS_9dffbf69ffba8bc38bc4e01abf4b1675" desc="Generic label for any text">
+    Text
+  </message>
+  <message name="IDS_DEVTOOLS_9e65b51e82f2a9b9f72ebe3e083582bb" desc="Text to show an item is empty">
+    (empty)
+  </message>
+  <message name="IDS_DEVTOOLS_9f29da220ed82809ec5dd70af4e52904" desc="Text for the total time of something">
+    Total Time
+  </message>
+  <message name="IDS_DEVTOOLS_a02c83a7dbd96295beaefb72c2bee2de" desc="Text that refers to the main target">
+    Main
+  </message>
+  <message name="IDS_DEVTOOLS_a1c58e94227389415de133efdf78ea6e" desc="Text for DevTools appearance">
+    Appearance
+  </message>
+  <message name="IDS_DEVTOOLS_a1fa27779242b4902f7ae3bdd5c6d508" desc="Text that refers to some types">
+    Type
+  </message>
+  <message name="IDS_DEVTOOLS_a2e4822a98337283e39f7b60acf85ec9" desc="Text to show an item is empty">
+    empty
+  </message>
+  <message name="IDS_DEVTOOLS_a3d5de3eac8bb00ae86fd1a1005f1500" desc="Text for timestamps of items">
+    Timestamp
+  </message>
+  <message name="IDS_DEVTOOLS_a4ecfc70574394990cf17bd83df499f7" desc="Text that refers to some events">
+    Event
+  </message>
+  <message name="IDS_DEVTOOLS_a6e8f9aed2ac6481dc25a18a33342d03" desc="Title of the Rendering tool">
+    Rendering
+  </message>
+  <message name="IDS_DEVTOOLS_a76d4ef5f3f6a672bbfab2865563e530" desc="Text that refers to the time">
+    Time
+  </message>
+  <message name="IDS_DEVTOOLS_aa56a2e65d8106aef3c61e4f6bf94fdb" desc="Title of the Elements Panel">
+    Elements
+  </message>
+  <message name="IDS_DEVTOOLS_aab112fba39c10ed5df335ae0e47f329" desc="Text that indicates something is not optimized">
+    Not optimized
+  </message>
+  <message name="IDS_DEVTOOLS_ab57fd0432e25d5b3013133a1c910d56" desc="A unit">
+    KB
+  </message>
+  <message name="IDS_DEVTOOLS_abbd64f40c34c537d3a571af068fce29" desc="Text for the orientation of something">
+    Orientation
+  </message>
+  <message name="IDS_DEVTOOLS_ac70412e939d72a9234cdebb1af5867b" desc="Text that refers to a file path">
+    Path
+  </message>
+  <message name="IDS_DEVTOOLS_acc24772ac31677d076f17d9002b57cd" desc="Text to collapse children of a parent group">
+    Collapse children
+  </message>
+  <message name="IDS_DEVTOOLS_af4bb376939e77df0e7c2332b837a866" desc="Text that refers to closure as a programming term">
+    Closure
+  </message>
+  <message name="IDS_DEVTOOLS_af9ccba3ec4346e3acf785f9bea514d8" desc="Text to show a tool or panel">
+    Show <ph name="EXTENSION_TITLE">$1s<ex>Audits</ex></ph>
+  </message>
+  <message name="IDS_DEVTOOLS_afb4ea732ebcf8bd51a3d99a1b8909a8" desc="Text to show something is linked to another">
+    Linked to <ph name="PATH">$1s<ex>example.url</ex></ph>
+  </message>
+  <message name="IDS_DEVTOOLS_b1c94ca2fbc3e78fc30069c8d0f01680" desc="Text for everything">
+    All
+  </message>
+  <message name="IDS_DEVTOOLS_b1d75786654fa93f10c31c3b544bbd03" desc="Text to run a code snippet">
+    Run snippet
+  </message>
+  <message name="IDS_DEVTOOLS_b2844b8e17ecaaeae68d018fe9418af0" desc="Text to indicate the expiry date">
+    Valid until
+  </message>
+  <message name="IDS_DEVTOOLS_b4e79b551a1ceae24b7de243ab1fd27c" desc="Text to add a breakpoint">
+    Add breakpoint
+  </message>
+  <message name="IDS_DEVTOOLS_b5a7adde1af5c87d7fd797b6245c2a39" desc="Text for the description of something">
+    Description
+  </message>
+  <message name="IDS_DEVTOOLS_b6434258c743f8673997b5aeb3721c27" desc="Text that refers to the network request method">
+    Request Method
+  </message>
+  <message name="IDS_DEVTOOLS_b94d8a074eddd267702810179875737f" desc="Text that refers to the debugger">
+    Debugger
+  </message>
+  <message name="IDS_DEVTOOLS_b9dee6bade160c89fb7f0e539d453513" desc="Text to dock the DevTools to the bottom of the browser tab">
+    Dock to bottom
+  </message>
+  <message name="IDS_DEVTOOLS_b9f5c797ebbf55adccdd8539a65a0241" desc="Text to indicate something is not enabled">
+    Disabled
+  </message>
+  <message name="IDS_DEVTOOLS_ba5b676ccf658f863ef2e3df082ee262" desc="Text for the event that an animation frame is fired">
+    Animation Frame Fired
+  </message>
+  <message name="IDS_DEVTOOLS_bc28aa52ba5b534ad9d198157c375d67" desc="Text to clear storage of the web page">
+    Clear storage
+  </message>
+  <message name="IDS_DEVTOOLS_bc955333ff170762be4971a8fde558cf" desc="Title of the WebAudio tool">
+    WebAudio
+  </message>
+  <message name="IDS_DEVTOOLS_bccaa4aa80831b76c11240a16447975f" desc="Title of the Console tool">
+    Console
+  </message>
+  <message name="IDS_DEVTOOLS_be8545ae7ab0276e15898aae7acfbd7a" desc="Text that refers to the resources of the web page">
+    Resource
+  </message>
+  <message name="IDS_DEVTOOLS_c03ca67dda321195d74c951097f240c6" desc="Title of the Devices tab">
+    Devices
+  </message>
+  <message name="IDS_DEVTOOLS_c2cc7082a89c1ad6631a2f66af5f00c0" desc="Text that refers to the network connection">
+    Connection
+  </message>
+  <message name="IDS_DEVTOOLS_c3fe109bf99ade2d76a55e5737015e3e" desc="Text to stop preventing the debugger from stepping into library code">
+    Stop blackboxing
+  </message>
+  <message name="IDS_DEVTOOLS_c74ea6dbff701bfa23819583c52ebd97" desc="Text to show less content">
+    Show less
+  </message>
+  <message name="IDS_DEVTOOLS_c7892ebbb139886662c6f2fc8c450710" desc="Text that refers to the subject of a security certificate">
+    Subject
+  </message>
+  <message name="IDS_DEVTOOLS_c949475bc69a57c419ac976fe8870652" desc="Text to search by matching case of the input">
+    Match Case
+  </message>
+  <message name="IDS_DEVTOOLS_c9ad95228aa735bdda1aebf38da022af" desc="Text to parse something">
+    Parse
+  </message>
+  <message name="IDS_DEVTOOLS_c9cc8cce247e49bae79f15173ce97354" desc="Text to save something">
+    Save
+  </message>
+  <message name="IDS_DEVTOOLS_c9deece3e6de26d07ef6409b96f21fd0" desc="Title of Blackboxing settings">
+    Blackboxing
+  </message>
+  <message name="IDS_DEVTOOLS_ce82e07fa1f0521f5cee30e368fe2e73" desc="Text that starts with a colon and includes a placeholder">
+    : <ph name="AA_NUMBER">$1s<ex>3.0</ex></ph>
+  </message>
+  <message name="IDS_DEVTOOLS_d31827f0a164d52b636bb1f71ca4a351" desc="Text to cancel the animation frame">
+    Cancel Animation Frame
+  </message>
+  <message name="IDS_DEVTOOLS_d3d2e617335f08df83599665eef8a418" desc="Text to close something">
+    Close
+  </message>
+  <message name="IDS_DEVTOOLS_d59048f21fd887ad520398ce677be586" desc="Text that is usually a hyperlink to more documentation">
+    Learn more
+  </message>
+  <message name="IDS_DEVTOOLS_d5bfaaca8e28f8b9b9211038f86a4494" desc="Text to remove a breakpoint">
+    Remove breakpoint
+  </message>
+  <message name="IDS_DEVTOOLS_d64ed3e9c10229648e069f56e32f4c8e" desc="Text for a network response">
+    Response
+  </message>
+  <message name="IDS_DEVTOOLS_d6b6b668dbca9d4fe774bb654226ebe3" desc="Text that refers to the animation of the web page">
+    Animation
+  </message>
+  <message name="IDS_DEVTOOLS_d7778d0c64b6ba21494c97f77a66885a" desc="Text to filter result items">
+    Filter
+  </message>
+  <message name="IDS_DEVTOOLS_dc30bc0c7914db5918da4263fce93ad2" desc="Text to clear content">
+    Clear
+  </message>
+  <message name="IDS_DEVTOOLS_e02d2ae03de9d493df2b6b2d2813d302" desc="Text for the duration of something">
+    Duration
+  </message>
+  <message name="IDS_DEVTOOLS_e0ac20adce6ffee48c7151b070aa5737" desc="Text that refers to device such as a phone">
+    Device
+  </message>
+  <message name="IDS_DEVTOOLS_e0e4fc6213e8b3593495a7260c3a4c2e" desc="Text for accessibility of the web page">
+    Accessibility
+  </message>
+  <message name="IDS_DEVTOOLS_e24ee2487879116dcab772c0ac4fe341" desc="Text to focus on something">
+    Focus
+  </message>
+  <message name="IDS_DEVTOOLS_e55f75a29310d7b60f7ac1d390c8ae42" desc="Text for a module, the programming concept">
+    Module
+  </message>
+  <message name="IDS_DEVTOOLS_e576c23d915755d83e2d1f47bd9f6c22" desc="Text to show no results have been found">
+    No results found
+  </message>
+  <message name="IDS_DEVTOOLS_e6b391a8d2c4d45902a23a8b6585703d" desc="Text for web URLs">
+    URL
+  </message>
+  <message name="IDS_DEVTOOLS_e77fef0167598bb39846637ac3915f4e" desc="Text to clear everything">
+    Clear All
+  </message>
+  <message name="IDS_DEVTOOLS_ea4788705e6873b424c65e91c2846b19" desc="Text to cancel something">
+    Cancel
+  </message>
+  <message name="IDS_DEVTOOLS_eae639a70006feff484a39363c977e24" desc="Text for the domain of a website">
+    Domain
+  </message>
+  <message name="IDS_DEVTOOLS_eb0f48a107df1a0f343d4cd513b555e6" desc="Text for a security certificate">
+    Certificate
+  </message>
+  <message name="IDS_DEVTOOLS_eb902cf204f3e4dfffeb56d92a9b5c26" desc="Text to show since when an item is valid">
+    Valid from
+  </message>
+  <message name="IDS_DEVTOOLS_ec211f7c20af43e742bf2570c3cb84f9" desc="Text to add something">
+    Add
+  </message>
+  <message name="IDS_DEVTOOLS_ec53a8c4f07baed5d8825072c89799be" desc="Text for the status of something">
+    Status
+  </message>
+  <message name="IDS_DEVTOOLS_edd24cce7afedea5a1b2f90675880687" desc="Text to preserve the log after refreshing">
+    Preserve log
+  </message>
+  <message name="IDS_DEVTOOLS_ee33e909372d935d190f4fcb2a92d542" desc="The milisecond unit">
+    ms
+  </message>
+  <message name="IDS_DEVTOOLS_eec89088ee408b80387155272b113256" desc="Title of the Network tool">
+    Network
+  </message>
+  <message name="IDS_DEVTOOLS_ef95393ad48336d7c3543625354a3d56" desc="Text to highlight the rendering frames for ads">
+    Highlight ad frames
+  </message>
+  <message name="IDS_DEVTOOLS_f0f31c9700c6b10d8a20dc487b2ae6a8" desc="Text for the touch type to simulate on a device">
+    Touch
+  </message>
+  <message name="IDS_DEVTOOLS_f19dbf2edb3a0bd74b0524d960ff21eb" desc="Text to load something">
+    Load
+  </message>
+  <message name="IDS_DEVTOOLS_f28128b38efbc6134dc40751ee21fd29" desc="Text for documents, a type of resources">
+    Documents
+  </message>
+  <message name="IDS_DEVTOOLS_f2a6c498fb90ee345d997f888fce3b18" desc="Text to delete something">
+    Delete
+  </message>
+  <message name="IDS_DEVTOOLS_f31bbdd1b3e85bccd652680e16935819" desc="Text for the source of something">
+    Source
+  </message>
+  <message name="IDS_DEVTOOLS_f4f70727dc34561dfde1a3c529b6205c" desc="Title for a setting">
+    Settings
+  </message>
+  <message name="IDS_DEVTOOLS_f53944c3a55bdb5ad65c6226e358a626" desc="Text to undock the DevTools">
+    Undock into separate window
+  </message>
+  <message name="IDS_DEVTOOLS_f907e651164789346ae0a1e257c462d8" desc="Label for a group of JavaScript files">
+    Script
+  </message>
+  <message name="IDS_DEVTOOLS_fa6711f918fe2018131a4ad0380b9e56" desc="Name of an item from source map">
+    <ph name="DISPLAY_NAME">$1s<ex>compile.html</ex></ph> (from source map)
+  </message>
+  <message name="IDS_DEVTOOLS_fb61758d0f0fda4ba867c3d5a46c16a7" desc="Name of the Sources panel">
+    Sources
+  </message>
+  <message name="IDS_DEVTOOLS_fdbd92f0c6b67291ca954b74885d434e" desc="Name of a profile">
+    Profile <ph name="NUMBER">$1d<ex>2</ex></ph>
+  </message>
+  <message name="IDS_DEVTOOLS_fe7fb037b290768d6a6be30b237e183d" desc="Text to dock the DevTools to the right of the browser tab">
+    Dock to right
+  </message>
+</grit-part>

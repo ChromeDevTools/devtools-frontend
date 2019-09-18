@@ -39,9 +39,6 @@
   <message name="IDS_DEVTOOLS_ab130072b340b847d8d45ec45d191c3b" desc="Text of a DOM element in Workspace Settings Tab of the Workspace settings in Settings">
     Mappings are inferred automatically.
   </message>
-  <message name="IDS_DEVTOOLS_afb4ea732ebcf8bd51a3d99a1b8909a8" desc="Text in Isolated File System of the Workspace settings in Settings">
-    Linked to <ph name="PATH">$1s<ex>example.url</ex></ph>
-  </message>
   <message name="IDS_DEVTOOLS_cf703cce77386955bfbff86f6ad9be03" desc="Text in Isolated File System Manager of the Workspace settings in Settings">
     Unable to add filesystem: <ph name="ERRORMESSAGE">$1s<ex>folder does not exist</ex></ph>
   </message>
@@ -53,9 +50,6 @@
   </message>
   <message name="IDS_DEVTOOLS_e2b63f5cab4f80fb6745f2f941105371" desc="Title of a setting under the Persistence category in Settings">
     Enable Local Overrides
-  </message>
-  <message name="IDS_DEVTOOLS_ec211f7c20af43e742bf2570c3cb84f9" desc="Text of add button in Edit File System View of the Workspace settings in Settings">
-    Add
   </message>
   <message name="IDS_DEVTOOLS_fddede572fa09e1b1bb28504d8c43343" desc="Text in Edit File System View of the Workspace settings in Settings">
     Folder path

@@ -165,17 +165,11 @@
   <message name="IDS_DEVTOOLS_520d0db389f362bf79ef56ca0af3dcab" desc="Tooltip text that appears when hovering over the largeicon pretty print button in the Inplace Formatter Editor Action of the Sources panel">
     Format
   </message>
-  <message name="IDS_DEVTOOLS_52b3bc5e77aa070243c36cd40a4d6b6d" desc="Title of a setting under the Sources category in Settings">
-    Autocompletion
-  </message>
   <message name="IDS_DEVTOOLS_58943fa26a94bc86f7f45106080e4496" desc="Title of an action under the Debugger category that can be invoked through the Command Menu">
     Resume script execution
   </message>
   <message name="IDS_DEVTOOLS_590d0b32e1139c6c3bcb0f99ed978dff" desc="Text in Debugger Paused Message of the Sources panel">
     subtree modifications
-  </message>
-  <message name="IDS_DEVTOOLS_5a0a64ecca63ba9a006b6397cbdc2b8c" desc="Title of the Filtered List WidgetProvider of Quick Open">
-    Go to line
   </message>
   <message name="IDS_DEVTOOLS_5a3bb6a64da384e59876cd0bc00a6eae" desc="Unblackbox link text content in Debugger Plugin of the Sources panel">
     Unblackbox this script

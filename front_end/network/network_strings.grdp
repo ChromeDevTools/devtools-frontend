@@ -36,9 +36,6 @@
   <message name="IDS_DEVTOOLS_0db377921f4ce762c62526131097968f" desc="Text in Request Headers View of the Network panel">
     General
   </message>
-  <message name="IDS_DEVTOOLS_0f44e9e39cbe2f22bd1bd7b6070cf13d" desc="Text in Blocked URLs Pane of the Network panel">
-    Enable request blocking
-  </message>
   <message name="IDS_DEVTOOLS_0f591b1d87c91e77d4fa11dc6e44288c" desc="Text in Network Item View of the Network panel">
     Request and response timeline
   </message>
@@ -53,9 +50,6 @@
   </message>
   <message name="IDS_DEVTOOLS_12881f9e98bb240671bc3e1787d64a03" desc="Title of a setting under the Network category that can be invoked through the Command Menu">
     Color code by resource type
-  </message>
-  <message name="IDS_DEVTOOLS_16f78b9465f03f7ec5a03c24918fbde3" desc="Text in Request Headers View of the Network panel">
-    Status Code
   </message>
   <message name="IDS_DEVTOOLS_1854180b02f297deebed0ec452090842" desc="Cell title in Network Data Grid Node of the Network panel">
     Served from memory cache, resource size: <ph name="RESOURCESIZE">$1s<ex>50 B</ex></ph>
@@ -99,9 +93,6 @@
   <message name="IDS_DEVTOOLS_29d37bdcfeb74d25d56bcf841866ae32" desc="Cell title in Network Data Grid Node of the Network panel">
     Served from ServiceWorker, resource size: <ph name="RESOURCESIZE">$1s<ex>4 B</ex></ph>
   </message>
-  <message name="IDS_DEVTOOLS_2bbc845892f400626baab5af687527c5" desc="Text in Network Log View Columns of the Network panel">
-    Start Time
-  </message>
   <message name="IDS_DEVTOOLS_2d13df6f8b5e4c5af9f87e0dc39df69d" desc="Text in Network Data Grid Node of the Network panel">
     Pending
   </message>
@@ -116,9 +107,6 @@
   </message>
   <message name="IDS_DEVTOOLS_31977081ea2c828cc70e6151ab5d7da8" desc="Text in Request Headers View of the Network panel">
     view decoded
-  </message>
-  <message name="IDS_DEVTOOLS_31fde7b05ac8952dacf4af8a704074ec" desc="Text in Network Item View of the Network panel">
-    Preview
   </message>
   <message name="IDS_DEVTOOLS_336439019ce67912717a20d54298bf24" desc="Text in Request Timing View of the Network panel">
     Receiving Push
@@ -198,12 +186,6 @@
   <message name="IDS_DEVTOOLS_4a7ba0d17eafde708ca8f5f34debcfef" desc="Text in Network Log View of the Network panel">
     <ph name="TRANSFERSIZE">$1s<ex>4</ex></ph> B transferred
   </message>
-  <message name="IDS_DEVTOOLS_4bd7c2ff07dcc66801a9368957d4bff8" desc="Text in Network Log View Columns of the Network panel">
-    Initiator
-  </message>
-  <message name="IDS_DEVTOOLS_4c3880bb027f159e801041b1021e88e8" desc="Text in Network Log View Columns of the Network panel">
-    Method
-  </message>
   <message name="IDS_DEVTOOLS_4dea2ac78e9450e62e96c166ef9f5d4c" desc="Text in Network Log View Columns of the Network panel">
     Manage Header Columns…
   </message>
@@ -216,14 +198,8 @@
   <message name="IDS_DEVTOOLS_5023e5b1d1c02cf168a9a67dda6d2d87" desc="Text in Network Panel of the Network panel">
     Show overview
   </message>
-  <message name="IDS_DEVTOOLS_502996d9790340c5fd7b86a5b93b1c9f" desc="Text in Network Log View Columns of the Network panel">
-    Priority
-  </message>
   <message name="IDS_DEVTOOLS_5101cdda28ea3097ac00cdbfdcedc353" desc="Title of a setting under the Network category that can be invoked through the Command Menu">
     Use default colors
-  </message>
-  <message name="IDS_DEVTOOLS_51360304ea03557e79bdf5ff9cd2e234" desc="Text in Signed Exchange Info View of the Network panel">
-    Issuer
   </message>
   <message name="IDS_DEVTOOLS_53fa249ce3d02c8a686b657b31d02ee7" desc="Text in Network Log View of the Network panel">
     Copy response
@@ -246,17 +222,11 @@
   <message name="IDS_DEVTOOLS_59535aed1e49266dfd0b93172f5a7242" desc="Text in Network Panel of the Network panel">
     Group by frame
   </message>
-  <message name="IDS_DEVTOOLS_597b56e53847cd6a4712ac183f61fa68" desc="Text in Network Item View of the Network panel">
-    Cookies
-  </message>
   <message name="IDS_DEVTOOLS_5cb98890f19c13e5fce52287187d9803" desc="Text in Network Log View of the Network panel">
     <ph name="SELECTEDNODENUMBER">$1s<ex>3</ex></ph> / <ph name="NODECOUNT">$2s<ex>5</ex></ph> requests
   </message>
   <message name="IDS_DEVTOOLS_5e2f683aacb9d5f3635b3f88583dec80" desc="Text in Network Config View of the Network panel">
     Custom...
-  </message>
-  <message name="IDS_DEVTOOLS_5f0ea62e5bc9f795512ef292ff162a2a" desc="Tooltip text that appears on the setting when hovering over it in Network Panel of the Network panel">
-    Disable cache (while DevTools is open)
   </message>
   <message name="IDS_DEVTOOLS_5f903b8316b9649547e1b3ceef934183" desc="Title of an action in the network tool to toggle recording">
     Stop recording network log
@@ -266,9 +236,6 @@
   </message>
   <message name="IDS_DEVTOOLS_619d32de7168c6e770464dfc43e374d1" desc="Text in Request Headers View of the Network panel">
     Request Headers
-  </message>
-  <message name="IDS_DEVTOOLS_6311ae17c1ee52b36e68aaf4ad066387" desc="Cell title in Network Data Grid Node of the Network panel">
-    Other
   </message>
   <message name="IDS_DEVTOOLS_6490fac2ddb40e1e2a7e0c43fb661c7b" desc="Text in Request Preview View of the Network panel">
     Failed to load response data
@@ -351,17 +318,11 @@
   <message name="IDS_DEVTOOLS_814f9c3c7e7aa04c21f2e61f5b2dcf18" desc="Text in Network Log View of the Network panel">
     Copy response headers
   </message>
-  <message name="IDS_DEVTOOLS_8166a4b3fb4979da3a24ed21ced7fdf7" desc="Text in Signed Exchange Info View of the Network panel">
-    Learn more
-  </message>
   <message name="IDS_DEVTOOLS_827452688eed02a12178e96f924ac529" desc="Text in Network Log View Columns of the Network panel">
     Scheme
   </message>
   <message name="IDS_DEVTOOLS_838c672414343cdd527a63d910fb132c" desc="Text in Network Log View of the Network panel">
     Hide data URLs
-  </message>
-  <message name="IDS_DEVTOOLS_850985cd851d0fe440f03f77762e2590" desc="Text in Network Log View Columns of the Network panel">
-    Content-Length
   </message>
   <message name="IDS_DEVTOOLS_8644fe7afb1a31ea7274f5ee90dff50b" desc="Text in Request Headers View of the Network panel">
     view URL encoded
@@ -371,15 +332,6 @@
   </message>
   <message name="IDS_DEVTOOLS_881e9a305ce80960413ab7f227ef879e" desc="Text in Network Config View of the Network panel">
     User agent
-  </message>
-  <message name="IDS_DEVTOOLS_883d7615c4d2de3fa1218f1298c46d0e" desc="Text in Network Item View of the Network panel">
-    Headers
-  </message>
-  <message name="IDS_DEVTOOLS_884680dd63eae99eab1a407133df66b7" desc="View cert link text content in Signed Exchange Info View of the Network panel">
-    View certificate
-  </message>
-  <message name="IDS_DEVTOOLS_888a77f5ac0748b6c8001822417df8b6" desc="Text in Network Log View Columns of the Network panel">
-    Protocol
   </message>
   <message name="IDS_DEVTOOLS_889f316cd1f0ac68f8ea3052e8568061" desc="Text in Network Log View of the Network panel">
     Copy as PowerShell
@@ -438,14 +390,8 @@
   <message name="IDS_DEVTOOLS_94966d90747b97d1f0f206c98a8b1ac3" desc="Text in Resource Web Socket Frame View of the Network panel">
     Send
   </message>
-  <message name="IDS_DEVTOOLS_96b0141273eabab320119c467cdcaf17" desc="Text in Request Timing View of the Network panel">
-    Total
-  </message>
   <message name="IDS_DEVTOOLS_96d960cc2b3394824ebfbf25bb960a90" desc="Text in Resource Web Socket Frame View of the Network panel">
     <ph name="LOCALIZEDDESCRIPTION">$1s<ex>Text Message</ex></ph> (Opcode <ph name="OPCODE">$2s<ex>0</ex></ph>, mask)
-  </message>
-  <message name="IDS_DEVTOOLS_96e9bc575b5d3ed541113a249da8bd24" desc="Text in Network Panel of the Network panel">
-    Capture screenshots
   </message>
   <message name="IDS_DEVTOOLS_97b7320892b0db86ff1d8dc28ba1af95" desc="Text in Network Log View of the Network panel">
     Are you sure you want to clear browser cache?
@@ -483,9 +429,6 @@
   <message name="IDS_DEVTOOLS_9e08e91089d39bc26c4c57e9780c2f60" desc="Text in Request Headers View of the Network panel">
     (from memory cache)
   </message>
-  <message name="IDS_DEVTOOLS_9e65b51e82f2a9b9f72ebe3e083582bb" desc="Text in Request Headers View of the Network panel">
-    (empty)
-  </message>
   <message name="IDS_DEVTOOLS_9ffaf77e2c524827dff95993361e7115" desc="Text in Network Item View of the Network panel">
     Raw response data
   </message>
@@ -519,9 +462,6 @@
   <message name="IDS_DEVTOOLS_a74e6894e1f36ce12a6773b9a6b9aea8" desc="Text in Network Log View of the Network panel">
     <ph name="NODECOUNT">$1s<ex>6</ex></ph> requests
   </message>
-  <message name="IDS_DEVTOOLS_a76d4ef5f3f6a672bbfab2865563e530" desc="Text in Event Source Messages View of the Network panel">
-    Time
-  </message>
   <message name="IDS_DEVTOOLS_a976624c5265b8187b19aea9df9230eb" desc="Title of a setting under the Network category in Settings">
     Color-code resource types
   </message>
@@ -552,14 +492,8 @@
   <message name="IDS_DEVTOOLS_b1f63146853f7f450d8622aae6a73408" desc="Text in Network Log View of the Network panel">
     Copy as cURL (bash)
   </message>
-  <message name="IDS_DEVTOOLS_b2844b8e17ecaaeae68d018fe9418af0" desc="Text in Signed Exchange Info View of the Network panel">
-    Valid until
-  </message>
   <message name="IDS_DEVTOOLS_b4774747599df05309e1de2e2734dd3e" desc="Text in Request Timing View of the Network panel">
     Request to ServiceWorker
-  </message>
-  <message name="IDS_DEVTOOLS_b6434258c743f8673997b5aeb3721c27" desc="Text in Request Headers View of the Network panel">
-    Request Method
   </message>
   <message name="IDS_DEVTOOLS_b72ac10807b29c77f5b7e4b80ea40414" desc="Text in Request Timing View of the Network panel">
     Explanation
@@ -594,9 +528,6 @@
   <message name="IDS_DEVTOOLS_c0c7145bdb8a2311e11528eaacf7f41d" desc="Tooltip to explain what request cookies are">
     Cookies that were sent to the server in the &apos;cookie&apos; header of the request
   </message>
-  <message name="IDS_DEVTOOLS_c2cc7082a89c1ad6631a2f66af5f00c0" desc="Text in Network Log View Columns of the Network panel">
-    Connection
-  </message>
   <message name="IDS_DEVTOOLS_c3c14eb17a6cf9c6120f381790ed06eb" desc="Text in Network Log View of the Network panel">
     Copy all as PowerShell
   </message>
@@ -608,9 +539,6 @@
   </message>
   <message name="IDS_DEVTOOLS_c6f969f563d21beac9731f177053484c" desc="Text in Network Log View of the Network panel">
     <ph name="SELECTEDRESOURCESIZE">$1s<ex>40</ex></ph> B / <ph name="RESOURCESIZE">$2s<ex>50</ex></ph> B resources
-  </message>
-  <message name="IDS_DEVTOOLS_c7892ebbb139886662c6f2fc8c450710" desc="Text in Signed Exchange Info View of the Network panel">
-    Subject
   </message>
   <message name="IDS_DEVTOOLS_c81e295bfd7fbaec6257ea14992f4643" desc="Text in Network Item View of the Network panel">
     Request and response cookies
@@ -648,9 +576,6 @@
   <message name="IDS_DEVTOOLS_d3b69e993f4e9bf9c479c7e794ede387" desc="Text in Network Item View of the Network panel">
     Timing
   </message>
-  <message name="IDS_DEVTOOLS_d64ed3e9c10229648e069f56e32f4c8e" desc="Text in Network Item View of the Network panel">
-    Response
-  </message>
   <message name="IDS_DEVTOOLS_d76e44f856d0114826e7436a630a3fa7" desc="Text of a DOM element in Network Data Grid Node of the Network panel">
     (signed-exchange)
   </message>
@@ -665,9 +590,6 @@
   </message>
   <message name="IDS_DEVTOOLS_db67b2de0114bd82fe1383aa067fa6b2" desc="A context menu item in the Network Log View of the Network panel">
     Unblock <ph name="CROPPEDURL">$1s<ex>example.com</ex></ph>
-  </message>
-  <message name="IDS_DEVTOOLS_dc30bc0c7914db5918da4263fce93ad2" desc="Tooltip text that appears when hovering over the largeicon clear button in the Network Panel of the Network panel">
-    Clear
   </message>
   <message name="IDS_DEVTOOLS_dc5d60b066d9a30e68dd648dcabf8579" desc="Text in Request Cookies View of the Network panel">
     This request has no cookies.
@@ -693,9 +615,6 @@
   <message name="IDS_DEVTOOLS_df080c10e2e9f1e98c180fe2645f6132" desc="Text in Request Headers View of the Network panel">
     Request URL
   </message>
-  <message name="IDS_DEVTOOLS_e02d2ae03de9d493df2b6b2d2813d302" desc="Text that labels the length of time a network request took.">
-    Duration
-  </message>
   <message name="IDS_DEVTOOLS_e12d71bcdc8fd61f60b6fdccb4b5fedd" desc="Latency download total format in Network Time Calculator of the Network panel">
     <ph name="PH1">$1s<ex>20ms</ex></ph> latency, <ph name="PH2">$2s<ex>20ms</ex></ph> download (<ph name="PH3">$3s<ex>40ms</ex></ph> total)
   </message>
@@ -717,23 +636,11 @@
   <message name="IDS_DEVTOOLS_e6fb9da54f521b9c33d41121d4fcd35c" desc="Text of a DOM element in Network Data Grid Node of the Network panel">
     (memory cache)
   </message>
-  <message name="IDS_DEVTOOLS_e77fef0167598bb39846637ac3915f4e" desc="Tooltip text that appears when hovering over the largeicon clear button in the Resource Web Socket Frame View of the Network panel">
-    Clear All
-  </message>
   <message name="IDS_DEVTOOLS_ea52c36203c5f99c3ce2442d531b1a22" desc="Text in Request Timing View of the Network panel">
     SSL
   </message>
   <message name="IDS_DEVTOOLS_eb0bd7de3ba805621bf9e03e4d16b510" desc="Text of a DOM element in Request Timing View of the Network panel">
     Queued at <ph name="CALCULATOR_FORMATVALUE_REQUEST_ISSUETIME______">$1s<ex>120.39ms</ex></ph>
-  </message>
-  <message name="IDS_DEVTOOLS_eb0f48a107df1a0f343d4cd513b555e6" desc="Text in Signed Exchange Info View of the Network panel">
-    Certificate
-  </message>
-  <message name="IDS_DEVTOOLS_eb902cf204f3e4dfffeb56d92a9b5c26" desc="Text in Signed Exchange Info View of the Network panel">
-    Valid from
-  </message>
-  <message name="IDS_DEVTOOLS_ec53a8c4f07baed5d8825072c89799be" desc="Text in Network Log View Columns of the Network panel">
-    Status
   </message>
   <message name="IDS_DEVTOOLS_ec559fc895e8cc77ef0c4d6fdff5bdcb" desc="Text in Request Headers View of the Network panel">
     Form Data
@@ -782,9 +689,6 @@
   </message>
   <message name="IDS_DEVTOOLS_f9069c6541beaac49cce4b2542069f02" desc="Text in Request Headers View of the Network panel">
     Referrer Policy
-  </message>
-  <message name="IDS_DEVTOOLS_f907e651164789346ae0a1e257c462d8" desc="Text in Network Data Grid Node of the Network panel">
-    Script
   </message>
   <message name="IDS_DEVTOOLS_f95d3d09fc16ae9294fbef87ac8d17cb" desc="Text in Network Data Grid Node of the Network panel">
     (pending)

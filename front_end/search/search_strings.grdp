@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <grit-part>
-  <message name="IDS_DEVTOOLS_2f04f3e6eee339eeb0ddb6c39606424d" desc="Text in Search View of the Search tab">
-    Use Regular Expression
-  </message>
   <message name="IDS_DEVTOOLS_44b4e531d5b06deb40b631e4aa3c7e36" desc="Text in Search Results Pane of the Search tab">
     Show <ph name="MATCHESLEFTCOUNT">$1d<ex>2</ex></ph> more
   </message>
@@ -20,9 +17,6 @@
   </message>
   <message name="IDS_DEVTOOLS_c440d4f6fc7dd9239ada58277b900249" desc="Search results message element text content in Search View of the Search tab">
     Found <ph name="THIS__SEARCHMATCHESCOUNT">$1d<ex>2</ex></ph> matching lines in 1 file.
-  </message>
-  <message name="IDS_DEVTOOLS_c949475bc69a57c419ac976fe8870652" desc="Text in Search View of the Search tab">
-    Match Case
   </message>
   <message name="IDS_DEVTOOLS_d1e64da6074bf343a0a6bd2cd6515189" desc="Text in Search View of the Search tab">
     Indexing interrupted.

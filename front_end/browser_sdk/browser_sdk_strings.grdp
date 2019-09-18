@@ -6,10 +6,4 @@
   <message name="IDS_DEVTOOLS_6aed54027cf3a260de904a43cf439cc9" desc="Title of a setting under the Network category that can be invoked through the Command Menu">
     Preserve log on page reload / navigation
   </message>
-  <message name="IDS_DEVTOOLS_edd24cce7afedea5a1b2f90675880687" desc="Title of a setting under the Network category in Settings">
-    Preserve log
-  </message>
-  <message name="IDS_DEVTOOLS_eec89088ee408b80387155272b113256" desc="A title of the 'Network' setting category">
-    Network
-  </message>
 </grit-part>

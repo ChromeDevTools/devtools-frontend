@@ -18,7 +18,4 @@
   <message name="IDS_DEVTOOLS_ef61fb324d729c341ea8ab9901e23566" desc="A context menu item in the Data Grid of a data grid">
     Add new
   </message>
-  <message name="IDS_DEVTOOLS_f2a6c498fb90ee345d997f888fce3b18" desc="A context menu item in the Data Grid of a data grid">
-    Delete
-  </message>
 </grit-part>

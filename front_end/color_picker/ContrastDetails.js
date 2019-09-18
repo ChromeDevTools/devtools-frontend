@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-ColorPicker.ContrastDetails = class {
+ColorPicker.ContrastDetails = class extends Common.Object {
   /**
    * @param {!ColorPicker.ContrastInfo} contrastInfo
    * @param {!Element} contentElement
@@ -10,6 +10,7 @@ ColorPicker.ContrastDetails = class {
    * @param {function()} expandedChangedCallback
    */
   constructor(contrastInfo, contentElement, toggleMainColorPickerCallback, expandedChangedCallback) {
+    super();
     /** @type {!ColorPicker.ContrastInfo} */
     this._contrastInfo = contrastInfo;
 
@@ -80,7 +81,7 @@ ColorPicker.ContrastDetails = class {
     this._bgColorPickerButton =
         new UI.ToolbarToggle(Common.UIString('Toggle background color picker'), 'largeicon-eyedropper');
     this._bgColorPickerButton.addEventListener(
-        UI.ToolbarButton.Events.Click, this._toggleBackgroundColorPicker.bind(this, undefined));
+        UI.ToolbarButton.Events.Click, this._toggleBackgroundColorPicker.bind(this, undefined, true));
     pickerToolbar.appendToolbarItem(this._bgColorPickerButton);
     this._bgColorPickedBound = this._bgColorPicked.bind(this);
 
@@ -222,12 +223,32 @@ ColorPicker.ContrastDetails = class {
   }
 
   /**
-   * @param {boolean=} enabled
+   * @returns {boolean}
    */
-  _toggleBackgroundColorPicker(enabled) {
+  backgroundColorPickerEnabled() {
+    return this._bgColorPickerButton.toggled();
+  }
+
+  /**
+   * @param {boolean} enabled
+   */
+
+  toggleBackgroundColorPicker(enabled) {
+    this._toggleBackgroundColorPicker(enabled, false);
+  }
+
+  /**
+   * @param {boolean=} enabled
+   * @param {boolean=} shouldTriggerEvent
+   */
+  _toggleBackgroundColorPicker(enabled, shouldTriggerEvent = true) {
     if (enabled === undefined)
       enabled = !this._bgColorPickerButton.toggled();
     this._bgColorPickerButton.setToggled(enabled);
+
+    if (shouldTriggerEvent)
+      this.dispatchEventToListeners(ColorPicker.ContrastDetails.Events.BackgroundColorPickerWillBeToggled, enabled);
+
     InspectorFrontendHost.setEyeDropperActive(enabled);
     if (enabled) {
       InspectorFrontendHost.events.addEventListener(
@@ -249,6 +270,10 @@ ColorPicker.ContrastDetails = class {
     this._toggleBackgroundColorPicker(false);
     InspectorFrontendHost.bringToFront();
   }
+};
+
+ColorPicker.ContrastDetails.Events = {
+  BackgroundColorPickerWillBeToggled: Symbol('BackgroundColorPickerWillBeToggled')
 };
 
 ColorPicker.ContrastDetails.Swatch = class {

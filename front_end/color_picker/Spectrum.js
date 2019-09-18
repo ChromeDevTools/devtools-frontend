@@ -122,6 +122,9 @@ ColorPicker.Spectrum = class extends UI.VBox {
       this._contrastDetails = new ColorPicker.ContrastDetails(
           this._contrastInfo, this.contentElement, this._toggleColorPicker.bind(this),
           this._contrastPanelExpanded.bind(this));
+
+      this._contrastDetailsBackgroundColorPickedToggledBound =
+          this._contrastDetailsBackgroundColorPickedToggled.bind(this);
     }
 
     this.element.classList.add('flex-none');
@@ -216,6 +219,11 @@ ColorPicker.Spectrum = class extends UI.VBox {
 
       this._innerSetColor(hsva, '', undefined /* colorName */, undefined, ColorPicker.Spectrum._ChangeSource.Other);
     }
+  }
+
+  _contrastDetailsBackgroundColorPickedToggled({data: enabled}) {
+    if (enabled)
+      this._toggleColorPicker(false);
   }
 
   _contrastPanelExpanded() {
@@ -844,6 +852,12 @@ ColorPicker.Spectrum = class extends UI.VBox {
     this._innerSetColor(
         undefined, undefined, undefined /* colorName */, undefined, ColorPicker.Spectrum._ChangeSource.Model);
     this._toggleColorPicker(true);
+
+    if (this._contrastDetails) {
+      this._contrastDetails.addEventListener(
+          ColorPicker.ContrastDetails.Events.BackgroundColorPickerWillBeToggled,
+          this._contrastDetailsBackgroundColorPickedToggledBound);
+    }
   }
 
   /**
@@ -851,6 +865,11 @@ ColorPicker.Spectrum = class extends UI.VBox {
    */
   willHide() {
     this._toggleColorPicker(false);
+    if (this._contrastDetails) {
+      this._contrastDetails.removeEventListener(
+          ColorPicker.ContrastDetails.Events.BackgroundColorPickerWillBeToggled,
+          this._contrastDetailsBackgroundColorPickedToggledBound);
+    }
   }
 
   /**
@@ -861,6 +880,12 @@ ColorPicker.Spectrum = class extends UI.VBox {
     if (enabled === undefined)
       enabled = !this._colorPickerButton.toggled();
     this._colorPickerButton.setToggled(enabled);
+
+    // This is to make sure that only one picker is open at a time
+    // Also have a look at this._contrastDetailsBackgroundColorPickedToggled
+    if (this._contrastDetails && enabled && this._contrastDetails.backgroundColorPickerEnabled())
+      this._contrastDetails.toggleBackgroundColorPicker(false);
+
     InspectorFrontendHost.setEyeDropperActive(enabled);
     if (enabled) {
       InspectorFrontendHost.events.addEventListener(

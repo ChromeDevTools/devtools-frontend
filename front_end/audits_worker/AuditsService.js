@@ -5,6 +5,7 @@
 /**
  * @interface
  */
+// eslint-disable-next-line
 const LighthousePort = class {
   /**
    * @param {!string} eventName, 'message', 'close'

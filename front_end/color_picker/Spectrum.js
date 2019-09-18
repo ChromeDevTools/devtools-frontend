@@ -147,7 +147,7 @@ ColorPicker.Spectrum = class extends UI.VBox {
     UI.ARIAUtils.markAsButton(paletteSwitcher);
     UI.ARIAUtils.setAccessibleName(paletteSwitcher, ls`Preview palettes`);
     paletteSwitcher.tabIndex = 0;
-    onInvokeElement(paletteSwitcher, event => {
+    self.onInvokeElement(paletteSwitcher, event => {
       this._togglePalettePanel(true);
       event.consume(true);
     });
@@ -533,7 +533,7 @@ ColorPicker.Spectrum = class extends UI.VBox {
       previewElement.appendChild(this._createPaletteColor(palette.colors[i], palette.colorNames[i]));
     for (; i < colorsPerPreviewRow; i++)
       previewElement.createChild('div', 'spectrum-palette-color empty-color');
-    onInvokeElement(previewElement, event => {
+    self.onInvokeElement(previewElement, event => {
       this._paletteSelected(palette);
       event.consume(true);
     });

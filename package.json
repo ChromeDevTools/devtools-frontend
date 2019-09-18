@@ -35,6 +35,10 @@
   "bugs": {
     "url": "https://bugs.chromium.org/p/chromium/issues/list?can=2&q=component:Platform%3EDevTools%20&sort=-opened&colspec=ID%20Stars%20Owner%20Summary%20Modified%20Opened"
   },
+  "type": "module",
+  "files": [
+    "front_end/**/*.mjs"
+  ],
   "homepage": "https://devtools.chrome.com",
   "devDependencies": {
     "ajv": "^5.1.5"

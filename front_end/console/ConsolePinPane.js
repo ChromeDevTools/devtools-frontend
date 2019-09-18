@@ -101,7 +101,7 @@ Console.ConsolePin = class extends Common.Object {
   constructor(expression, pinPane) {
     super();
     const deletePinIcon = UI.Icon.create('smallicon-cross', 'console-delete-pin');
-    onInvokeElement(deletePinIcon, () => pinPane._removePin(this));
+    self.onInvokeElement(deletePinIcon, () => pinPane._removePin(this));
     deletePinIcon.tabIndex = 0;
     UI.ARIAUtils.setAccessibleName(deletePinIcon, ls`Remove expression`);
     UI.ARIAUtils.markAsButton(deletePinIcon);

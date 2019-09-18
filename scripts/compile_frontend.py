@@ -77,6 +77,7 @@ DEVTOOLS_FRONTEND_PATH = path.join(DEVTOOLS_PATH, 'front_end')
 GLOBAL_EXTERNS_FILE = to_platform_path(path.join(DEVTOOLS_FRONTEND_PATH, 'externs.js'))
 DEFAULT_PROTOCOL_EXTERNS_FILE = path.join(DEVTOOLS_FRONTEND_PATH, 'protocol_externs.js')
 RUNTIME_FILE = to_platform_path(path.join(DEVTOOLS_FRONTEND_PATH, 'Runtime.js'))
+ROOT_MODULE_FILE = to_platform_path(path.join(DEVTOOLS_FRONTEND_PATH, 'root.js'))
 
 CLOSURE_COMPILER_JAR = to_platform_path(path.join(SCRIPTS_PATH, 'closure', 'compiler.jar'))
 CLOSURE_RUNNER_JAR = to_platform_path(path.join(SCRIPTS_PATH, 'closure', 'closure_runner', 'closure_runner.jar'))
@@ -279,6 +280,8 @@ def prepare_closure_frontend_compile(temp_devtools_path, descriptors, namespace_
         namespace_externs_path,
         '--js',
         RUNTIME_FILE,
+        '--js',
+        ROOT_MODULE_FILE,
     ]
 
     all_files = descriptors.all_compiled_files()

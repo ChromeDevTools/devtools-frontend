@@ -129,6 +129,8 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
       'Ctrl-D': 'delCharAfter',
       'Ctrl-K': 'killLine',
       'Ctrl-T': 'transposeChars',
+      'Ctrl-P': 'goLineUp',
+      'Ctrl-N': 'goLineDown',
       'Shift-Ctrl-Left': 'selectCamelLeft',
       'Shift-Ctrl-Right': 'selectCamelRight',
       'Cmd-Left': 'goLineStartSmart',

@@ -286,7 +286,7 @@ EventListeners.ObjectEventListenerBar = class extends UI.TreeElement {
    * @param {!Components.Linkifier} linkifier
    */
   _setTitle(object, linkifier) {
-    const title = this.listItemElement.createChild('span');
+    const title = this.listItemElement.createChild('span', 'event-listener-details');
     const subtitle = this.listItemElement.createChild('span', 'event-listener-tree-subtitle');
     subtitle.appendChild(linkifier.linkifyRawLocation(this._eventListener.location(), this._eventListener.sourceURL()));
 

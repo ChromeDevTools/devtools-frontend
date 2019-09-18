@@ -7,8 +7,9 @@
 .tree-outline-disclosure li {
     padding: 2px 0 0 5px;
     overflow: hidden;
-    display: list-item;
+    display: flex;
     min-height: 17px;
+    align-items: baseline;
 }
 
 .tree-outline-disclosure > li {
@@ -32,9 +33,19 @@
     color: rgb(136, 19, 145);
 }
 
+.tree-outline-disclosure .object-value-node {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.event-listener-details {
+    display: flex;
+}
+
 .event-listener-tree-subtitle {
     float: right;
     margin-left: 5px;
+    flex-shrink: 0;
 }
 
 .event-listener-button {
@@ -43,12 +54,15 @@
     border-radius: 3px;
     border: 1px solid #c3c3c3;
     margin-left: 10px;
-    display: none;
+    display: block;
     cursor: pointer;
+    opacity: 0.8;
+    flex-shrink: 0;
 }
 
 .event-listener-button:hover {
     background-color: #e0e0e0;
+    opacity: 1;
 }
 
 .tree-outline-disclosure li:hover .event-listener-button {

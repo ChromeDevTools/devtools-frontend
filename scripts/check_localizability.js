@@ -285,7 +285,7 @@ async function auditFileForLocalizability(filePath, errors) {
   if (path.extname(filePath) === '.grdp')
     return auditGrdpFile(filePath, fileContent, errors);
 
-  const ast = esprima.parseModule(fileContent, {loc: true});
+  const ast = esprima.parse(fileContent, {loc: true});
 
   const relativeFilePath = localizationUtils.getRelativeFilePathFromSrc(filePath);
   for (const node of ast.body)

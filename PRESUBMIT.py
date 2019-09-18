@@ -79,7 +79,7 @@ def _CheckFormat(input_api, output_api):
     # Also fix semicolon to avoid confusing clang-format.
     eslint_process = popen([
         local_node.node_path(),
-        local_node.eslint_path(), '--no-eslintrc', '--fix', '--env=es6', '--parser-options=ecmaVersion:9,sourceType:module',
+        local_node.eslint_path(), '--no-eslintrc', '--fix', '--env=es6', '--parser-options=ecmaVersion:9',
         '--rule={"curly": [2, "multi-or-nest", "consistent"], "semi": 2}'
     ] + affected_files)
     eslint_process.communicate()

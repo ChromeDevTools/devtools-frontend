@@ -200,29 +200,25 @@ SDK.Target = class extends Protocol.TargetBase {
   /**
    * @return {!Promise}
    */
-  suspend() {
+  async suspend() {
     if (this._isSuspended)
       return Promise.resolve();
     this._isSuspended = true;
 
-    const promises = [];
-    for (const model of this.models().values())
-      promises.push(model.suspendModel());
-    return Promise.all(promises);
+    await Promise.all(Array.from(this.models().values(), m => m.preSuspendModel()));
+    await Promise.all(Array.from(this.models().values(), m => m.suspendModel()));
   }
 
   /**
    * @return {!Promise}
    */
-  resume() {
+  async resume() {
     if (!this._isSuspended)
       return Promise.resolve();
     this._isSuspended = false;
 
-    const promises = [];
-    for (const model of this.models().values())
-      promises.push(model.resumeModel());
-    return Promise.all(promises);
+    await Promise.all(Array.from(this.models().values(), m => m.resumeModel()));
+    await Promise.all(Array.from(this.models().values(), m => m.postResumeModel()));
   }
 
   /**
@@ -287,6 +283,15 @@ SDK.SDKModel = class extends Common.Object {
   }
 
   /**
+   * Override this method to perform tasks that are required to suspend the
+   * model and that still need other models in an unsuspended state.
+   * @return {!Promise}
+   */
+  preSuspendModel() {
+    return Promise.resolve();
+  }
+
+  /**
    * @return {!Promise}
    */
   suspendModel() {
@@ -297,6 +302,15 @@ SDK.SDKModel = class extends Common.Object {
    * @return {!Promise}
    */
   resumeModel() {
+    return Promise.resolve();
+  }
+
+  /**
+   * Override this method to perform tasks that are required to after resuming
+   * the model and that require all models already in an unsuspended state.
+   * @return {!Promise}
+   */
+  postResumeModel() {
     return Promise.resolve();
   }
 

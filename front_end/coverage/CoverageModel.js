@@ -57,13 +57,15 @@ Coverage.CoverageModel = class extends SDK.SDKModel {
   /**
    * @return {!Promise<!Array<!Coverage.CoverageInfo>>}
    */
-  stop() {
-    const pollPromise = this.poll();
+  async stop() {
+    const result = await this.poll();
+    const promises = [];
     if (this._cpuProfilerModel)
-      this._cpuProfilerModel.stopPreciseCoverage();
+      promises.push(this._cpuProfilerModel.stopPreciseCoverage());
     if (this._cssModel)
-      this._cssModel.stopCoverage();
-    return pollPromise;
+      promises.push(this._cssModel.stopCoverage());
+    await Promise.all(promises);
+    return result;
   }
 
   reset() {

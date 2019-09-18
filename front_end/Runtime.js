@@ -150,6 +150,20 @@ var Runtime = class {  // eslint-disable-line
   }
 
   /**
+   * @param {string} scriptName
+   * @param {string=} base
+   * @return {string}
+   */
+  static getResourceURL(scriptName, base) {
+    const sourceURL = (base || self._importScriptPathPrefix) + scriptName;
+    const schemaIndex = sourceURL.indexOf('://') + 3;
+    let pathIndex = sourceURL.indexOf('/', schemaIndex);
+    if (pathIndex === -1)
+      pathIndex = sourceURL.length;
+    return sourceURL.substring(0, pathIndex) + Runtime.normalizePath(sourceURL.substring(pathIndex));
+  }
+
+  /**
    * @param {!Array.<string>} scriptNames
    * @param {string=} base
    * @return {!Promise.<undefined>}
@@ -163,13 +177,7 @@ var Runtime = class {  // eslint-disable-line
     let scriptToEval = 0;
     for (let i = 0; i < scriptNames.length; ++i) {
       const scriptName = scriptNames[i];
-      let sourceURL = (base || self._importScriptPathPrefix) + scriptName;
-
-      const schemaIndex = sourceURL.indexOf('://') + 3;
-      let pathIndex = sourceURL.indexOf('/', schemaIndex);
-      if (pathIndex === -1)
-        pathIndex = sourceURL.length;
-      sourceURL = sourceURL.substring(0, pathIndex) + Runtime.normalizePath(sourceURL.substring(pathIndex));
+      const sourceURL = Runtime.getResourceURL(scriptName, base);
 
       if (_loadedScripts[sourceURL])
         continue;
@@ -389,6 +397,14 @@ var Runtime = class {  // eslint-disable-line
     Runtime._remoteBase = 'http://localhost:8000/inspector-sources/';
     if (Runtime.queryParam('debugFrontend'))
       Runtime._remoteBase += 'debug/';
+  }
+
+  /**
+   * @param {string} moduleName
+   * @return {!Runtime.Module}
+   */
+  module(moduleName) {
+    return this._modulesMap[moduleName];
   }
 
   /**
@@ -788,6 +804,16 @@ Runtime.Module = class {
    */
   _remoteBase() {
     return !Runtime.queryParam('debugFrontend') && this._descriptor.remote && Runtime._remoteBase || undefined;
+  }
+
+  /**
+   * @param {string} resourceName
+   * @return {!Promise.<string>}
+   */
+  fetchResource(resourceName) {
+    const base = this._remoteBase();
+    const sourceURL = Runtime.getResourceURL(this._modularizeURL(resourceName), base);
+    return base ? Runtime.loadResourcePromiseWithFallback(sourceURL) : Runtime.loadResourcePromise(sourceURL);
   }
 
   /**

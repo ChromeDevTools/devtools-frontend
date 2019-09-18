@@ -1502,8 +1502,9 @@ Profiler.HeapProfileHeader = class extends Profiler.ProfileHeader {
 
     if (HeapSnapshotModel.HeapSnapshotProgressEvent.Update !== eventName)
       return;
-    const subtitle = /** @type {string} */ (data);
-    this.updateStatus(subtitle);
+    const serializedMessage = /** @type {string} */ (data);
+    const messageObject = Common.deserializeUIString(serializedMessage);
+    this.updateStatus(ls(messageObject.messageParts, messageObject.values));
   }
 
   /**

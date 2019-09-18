@@ -42,6 +42,28 @@ Common.UIString = function(string, vararg) {
 
 /**
  * @param {string} string
+ * @param {?ArrayLike} values
+ * @return {string}
+ */
+Common.serializeUIString = function(string, values = []) {
+  const messageParts = [string];
+  const serializedMessage = {messageParts, values};
+  return JSON.stringify(serializedMessage);
+};
+
+/**
+ * @param {string} serializedMessage
+ * @return {*}
+ */
+Common.deserializeUIString = function(serializedMessage) {
+  if (!serializedMessage)
+    return {};
+
+  return JSON.parse(serializedMessage);
+};
+
+/**
+ * @param {string} string
  * @return {string}
  */
 Common.localize = function(string) {

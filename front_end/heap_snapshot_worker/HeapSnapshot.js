@@ -756,7 +756,7 @@ HeapSnapshotWorker.HeapSnapshotProgress = class {
    * @param {string} status
    */
   updateStatus(status) {
-    this._sendUpdateEvent(Common.UIString(status));
+    this._sendUpdateEvent(Common.serializeUIString(status));
   }
 
   /**
@@ -766,7 +766,7 @@ HeapSnapshotWorker.HeapSnapshotProgress = class {
    */
   updateProgress(title, value, total) {
     const percentValue = ((total ? (value / total) : 0) * 100).toFixed(0);
-    this._sendUpdateEvent(Common.UIString(title, percentValue));
+    this._sendUpdateEvent(Common.serializeUIString(title, [percentValue]));
   }
 
   /**
@@ -779,12 +779,12 @@ HeapSnapshotWorker.HeapSnapshotProgress = class {
   }
 
   /**
-   * @param {string} text
+   * @param {string} serializedText
    */
-  _sendUpdateEvent(text) {
+  _sendUpdateEvent(serializedText) {
     // May be undefined in tests.
     if (this._dispatcher)
-      this._dispatcher.sendEvent(HeapSnapshotModel.HeapSnapshotProgressEvent.Update, text);
+      this._dispatcher.sendEvent(HeapSnapshotModel.HeapSnapshotProgressEvent.Update, serializedText);
   }
 };
 

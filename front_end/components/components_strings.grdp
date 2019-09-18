@@ -6,6 +6,9 @@
   <message name="IDS_DEVTOOLS_131c97f8ba5bc0277386d660a18f13b6" desc="Text in Linkifier">
     Reveal in <ph name="DESTINATION">$1s<ex>Sources panel</ex></ph>
   </message>
+  <message name="IDS_DEVTOOLS_3b9e0551f1ed4b83f205b7f1d26dde5c" desc="Alt text description of an image's source">
+    unknown source
+  </message>
   <message name="IDS_DEVTOOLS_7f52f5f786eb8d9bf9e56ce89fb3db3a" desc="Show all link text content in JSPresentation Utils">
     Show 1 more frame
   </message>

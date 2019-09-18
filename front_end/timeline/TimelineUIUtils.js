@@ -748,10 +748,12 @@ Timeline.TimelineUIUtils = class {
       if (typeof event[Timeline.TimelineUIUtils._previewElementSymbol] === 'undefined') {
         let previewElement = null;
         const url = TimelineModel.TimelineData.forEvent(event).url;
-        if (url)
-          previewElement = await Components.ImagePreview.build(target, url, false);
-        else if (TimelineModel.TimelineData.forEvent(event).picture)
+        if (url) {
+          previewElement = await Components.ImagePreview.build(
+              target, url, false, {imageAltText: Components.ImagePreview.defaultAltTextForImageURL(url)});
+        } else if (TimelineModel.TimelineData.forEvent(event).picture) {
           previewElement = await Timeline.TimelineUIUtils.buildPicturePreviewContent(event, target);
+        }
         event[Timeline.TimelineUIUtils._previewElementSymbol] = previewElement;
       }
 
@@ -1259,8 +1261,10 @@ Timeline.TimelineUIUtils = class {
       }
     }
 
-    if (!request.previewElement && request.url && target)
-      request.previewElement = await Components.ImagePreview.build(target, request.url, false);
+    if (!request.previewElement && request.url && target) {
+      request.previewElement = await Components.ImagePreview.build(
+          target, request.url, false, {imageAltText: Components.ImagePreview.defaultAltTextForImageURL(request.url)});
+    }
     if (request.previewElement)
       contentHelper.appendElementRow(ls`Preview`, request.previewElement);
     return contentHelper.fragment;
@@ -1503,6 +1507,7 @@ Timeline.TimelineUIUtils = class {
     container.classList.add('image-preview-container', 'vbox', 'link');
     const img = container.createChild('img');
     img.src = imageURL;
+    img.alt = Components.ImagePreview.defaultAltTextForImageURL(imageURL);
     const paintProfilerButton = container.createChild('a');
     paintProfilerButton.textContent = ls`Paint Profiler`;
     container.addEventListener(

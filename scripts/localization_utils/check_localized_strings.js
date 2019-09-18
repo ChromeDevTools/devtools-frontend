@@ -94,9 +94,20 @@ async function parseLocalizableStringsFromFile(filePath) {
   if (path.basename(filePath) === 'module.json')
     return parseLocalizableStringFromModuleJson(fileContent, filePath);
 
-  const ast = esprima.parseModule(fileContent, {loc: true});
-  for (const node of ast.body)
+  let ast;
+  try {
+    ast = esprima.parseModule(fileContent, {loc: true});
+  } catch (e) {
+    throw new Error(
+        `DevTools localization parser failed:\n${localizationUtils.getRelativeFilePathFromSrc(filePath)}: ${
+            e.message}` +
+        `\nThis error is likely due to unsupported JavaScript features.` +
+        ` Such features are not supported by eslint either and will cause presubmit to fail.` +
+        ` Please update the code and use official JavaScript features.`);
+  }
+  for (const node of ast.body) {
     parseLocalizableStringFromNode(node, filePath);
+  }
 }
 
 function parseLocalizableStringFromModuleJson(fileContent, filePath) {

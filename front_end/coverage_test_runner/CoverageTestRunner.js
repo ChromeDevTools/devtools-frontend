@@ -24,9 +24,28 @@ CoverageTestRunner.stopCoverage = function() {
 /**
  * @return {!Promise}
  */
+CoverageTestRunner.suspendCoverageModel = async function() {
+  const coverageView = self.runtime.sharedInstance(Coverage.CoverageView);
+  await coverageView._model.preSuspendModel();
+  await coverageView._model.suspendModel();
+};
+
+/**
+ * @return {!Promise}
+ */
+CoverageTestRunner.resumeCoverageModel = async function() {
+  const coverageView = self.runtime.sharedInstance(Coverage.CoverageView);
+  await coverageView._model.resumeModel();
+  await coverageView._model.postResumeModel();
+};
+
+
+/**
+ * @return {!Promise}
+ */
 CoverageTestRunner.pollCoverage = function() {
   const coverageView = self.runtime.sharedInstance(Coverage.CoverageView);
-  return coverageView._poll();
+  return coverageView._model._takeAllCoverage();
 };
 
 /**

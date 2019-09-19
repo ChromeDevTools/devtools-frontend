@@ -17,6 +17,13 @@ Coverage.CoverageType = {
   JavaScriptCoarse: (1 << 2),
 };
 
+/** @enum {symbol} */
+Coverage.SuspensionState = {
+  Active: Symbol('Active'),
+  Suspending: Symbol('Suspending'),
+  Suspended: Symbol('Suspended')
+};
+
 Coverage.CoverageModel = class extends SDK.SDKModel {
   /**
    * @param {!SDK.Target} target
@@ -33,12 +40,23 @@ Coverage.CoverageModel = class extends SDK.SDKModel {
     this._coverageByContentProvider = new Map();
     /** @type {?Promise<!Array<!Protocol.Profiler.ScriptCoverage>>} */
     this._bestEffortCoveragePromise = null;
+
+    /** @type {!Coverage.SuspensionState} */
+    this._suspensionState = Coverage.SuspensionState.Active;
+    /** @type {?number} */
+    this._pollTimer = null;
+    /** @type {?Promise} */
+    this._currentPollPromise = null;
+    /** @type {?boolean} */
+    this._shouldResumePollingOnResume = false;
   }
 
   /**
    * @return {!Promise<boolean>}
    */
   async start() {
+    if (this._suspensionState !== Coverage.SuspensionState.Active)
+      throw Error('Cannot start CoverageModel while it is not active.');
     const promises = [];
     if (this._cssModel) {
       // Note there's no JS coverage since JS won't ever return
@@ -55,17 +73,16 @@ Coverage.CoverageModel = class extends SDK.SDKModel {
   }
 
   /**
-   * @return {!Promise<!Array<!Coverage.CoverageInfo>>}
+   * @return {!Promise}
    */
   async stop() {
-    const result = await this.poll();
+    await this.stopPolling();
     const promises = [];
     if (this._cpuProfilerModel)
       promises.push(this._cpuProfilerModel.stopPreciseCoverage());
     if (this._cssModel)
       promises.push(this._cssModel.stopCoverage());
     await Promise.all(promises);
-    return result;
   }
 
   reset() {
@@ -74,11 +91,99 @@ Coverage.CoverageModel = class extends SDK.SDKModel {
   }
 
   /**
-   * @return {!Promise<!Array<!Coverage.CoverageInfo>>}
+   * @return {!Promise}
    */
-  async poll() {
-    const updates = await Promise.all([this._takeCSSCoverage(), this._takeJSCoverage()]);
-    return updates[0].concat(updates[1]);
+  async startPolling() {
+    if (this._currentPollPromise || this._suspensionState !== Coverage.SuspensionState.Active)
+      return;
+    await this._pollLoop();
+  }
+
+  /**
+   * @return {!Promise}
+   */
+  async _pollLoop() {
+    const coveragePollingPeriodMs = 700;
+    this._clearTimer();
+    this._currentPollPromise = this._pollAndCallback();
+    await this._currentPollPromise;
+    if (this._suspensionState === Coverage.SuspensionState.Active)
+      this._pollTimer = setTimeout(() => this._pollLoop(), coveragePollingPeriodMs);
+  }
+
+  async stopPolling() {
+    this._clearTimer();
+    await this._currentPollPromise;
+    this._currentPollPromise = null;
+    // Do one last poll to get the final data.
+    await this._pollAndCallback();
+  }
+
+  /**
+   * @return {!Promise<undefined>}
+   */
+  async _pollAndCallback() {
+    if (this._suspensionState === Coverage.SuspensionState.Suspended)
+      return;
+    const updates = await this._takeAllCoverage();
+    // This conditional should never trigger, as all intended ways to stop
+    // polling are awaiting the `_currentPollPromise` before suspending.
+    console.assert(
+        this._suspensionState !== Coverage.SuspensionState.Suspended, 'CoverageModel was suspended while polling.');
+    if (updates.length)
+      this.dispatchEventToListeners(Coverage.CoverageModel.Events.CoverageUpdated, updates);
+  }
+
+  _clearTimer() {
+    if (this._pollTimer) {
+      clearTimeout(this._pollTimer);
+      this._pollTimer = null;
+    }
+  }
+
+  /**
+   * Stops polling as preparation for suspension. This function is idempotent
+   * due because it changes the state to suspending.
+   * @override
+   * @return {!Promise<undefined>}
+   */
+  async preSuspendModel() {
+    if (this._suspensionState !== Coverage.SuspensionState.Active)
+      return;
+    this._suspensionState = Coverage.SuspensionState.Suspending;
+    if (this._currentPollPromise) {
+      await this.stopPolling();
+      this._shouldResumePollingOnResume = true;
+    }
+  }
+
+  /**
+   * @override
+   * @return {!Promise<undefined>}
+   */
+  async suspendModel() {
+    this._suspensionState = Coverage.SuspensionState.Suspended;
+  }
+
+  /**
+   * @override
+   * @return {!Promise<undefined>}
+   */
+  async resumeModel() {
+    this._suspensionState = Coverage.SuspensionState.Active;
+  }
+
+  /**
+   * Restarts polling after suspension. Note that the function is idempotent
+   * because starting polling is idempotent.
+   * @override
+   * @return {!Promise<undefined>}
+   */
+  async postResumeModel() {
+    if (this._shouldResumePollingOnResume) {
+      await this.startPolling();
+      this._shouldResumePollingOnResume = false;
+    }
   }
 
   /**
@@ -114,6 +219,14 @@ Coverage.CoverageModel = class extends SDK.SDKModel {
       if (!urlEntry._coverageInfoByLocation.size)
         this._coverageByURL.delete(entry.url());
     }
+  }
+
+  /**
+   * @return {!Promise<!Array<!Coverage.CoverageInfo>>}
+   */
+  async _takeAllCoverage() {
+    const [updatesCSS, updatesJS] = await Promise.all([this._takeCSSCoverage(), this._takeJSCoverage()]);
+    return [...updatesCSS, ...updatesJS];
   }
 
   /**
@@ -349,6 +462,13 @@ Coverage.CoverageModel = class extends SDK.SDKModel {
     await fos.write(JSON.stringify(result, undefined, 2));
     fos.close();
   }
+};
+
+SDK.SDKModel.register(Coverage.CoverageModel, SDK.Target.Capability.None, false);
+
+/** @enum {symbol} */
+Coverage.CoverageModel.Events = {
+  CoverageUpdated: Symbol('CoverageUpdated')
 };
 
 Coverage.URLCoverageInfo = class {

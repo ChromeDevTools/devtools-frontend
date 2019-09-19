@@ -1,3 +1,7 @@
+// Copyright 2019 The Chromium Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
 import { parse, print, types } from 'recast';
 import fs from 'fs';
 import path from 'path';
@@ -16,9 +20,11 @@ function capitalizeFirstLetter(string: string) {
 const b = types.builders;
 
 function createReplacementDeclaration(propertyName: IdentifierKind, declaration: any): any {
+  // UI.ARIAUtils.Foo = class {} -> export class Foo {}
   if (declaration.type === 'ClassExpression') {
     return b.exportDeclaration(false, b.classDeclaration(propertyName, declaration.body));
   }
+  // UI.ARIAUtils.Foo = expression; -> export const Foo = expression;
   if (declaration.type === 'Literal' || declaration.type.endsWith('Expression')) {
     return b.exportNamedDeclaration(b.variableDeclaration("const", [b.variableDeclarator(propertyName, declaration)]));
   }
@@ -39,10 +45,16 @@ function rewriteSource(source: string, refactoringNamespace: string, refactoring
   const ast = parse(source);
 
   ast.program.body = ast.program.body.map((expression: any) => {
+    // UI.ARIAUtils.Foo = 5;
     if (expression.type === 'ExpressionStatement') {
+      // UI.ARIAUtils.Foo = 5
       if (expression.expression.type === 'AssignmentExpression') {
         const assignment = expression.expression;
+
+        // UI.ARIAUtils.Foo
         if (assignment.left.type === 'MemberExpression') {
+          // UI.ARIAUtils.Foo -> UI.ARIAUtils
+          // UI.ARIAUtils.Nested.Foo -> UI.ARIAUtils
           const topLevelAssignment = getTopLevelMemberExpression(assignment.left);
 
           // If there is a nested export, such as `UI.ARIAUtils.Nested.Field`
@@ -50,27 +62,33 @@ function rewriteSource(source: string, refactoringNamespace: string, refactoring
             // Exports itself. E.g. `UI.ARIAUtils = <...>`
             if (assignment.left.object.name === refactoringNamespace && assignment.left.property.name === refactoringFileName) {
               const {declaration} = createReplacementDeclaration(assignment.left.property, assignment.right);
+              // If it is a variable declaration, we need to use the actual variabledeclator. E.g.:
+              // UI.ARIAUtils = 5; -> export ARIAUtils = 5; instead of "export const ARIAUtils = 5;"
               const declarationStatement = b.exportDefaultDeclaration(declaration.type === 'VariableDeclaration' ? declaration.declarations[0].init : declaration);
-              
+
               declarationStatement.comments = expression.comments;
 
               if (needToObjectAssign) {
                 console.error(`Multiple exports with the same name is invalid!`);
               }
 
+              // Since there is a default export (E.g. UI.ARIAUtils and UI.ARIAUtils.Foo), we need to assign Foo to UI.ARIAUtils to make sure that reference keeps on working
               needToObjectAssign = true;
 
               return declarationStatement;
             }
+
             console.error(`Nested field "${assignment.left.property.name}" detected! Requires manual changes.`);
             return expression;
           }
-          
+
           const propertyName = assignment.left.property;
           const {object, property} = topLevelAssignment;
 
           if (object.type === 'Identifier' && property.type === 'Identifier') {
+            // UI
             const namespace = object.name;
+            // ARIAUtils
             const fileName = property.name;
 
             if (namespace === refactoringNamespace && fileName === refactoringFileName) {
@@ -94,18 +112,18 @@ function rewriteSource(source: string, refactoringNamespace: string, refactoring
   const legacyNamespaceName = b.memberExpression(b.identifier('self'), b.identifier(refactoringNamespace), false);
   const legacyNamespaceOr = b.logicalExpression("||", legacyNamespaceName, b.objectExpression([]));
   ast.program.body.push(b.expressionStatement.from({expression: b.assignmentExpression('=', legacyNamespaceName, legacyNamespaceOr), comments: [b.commentBlock('Legacy exported object', true, false)]}));
-  
+
   // self.UI.ARIAUtils = {properties};
   const legacyNamespaceExport = b.memberExpression(b.identifier('self'), b.memberExpression(b.identifier(refactoringNamespace), b.identifier(refactoringFileName), false), false);
   let exportedObjectProperties: ExpressionKind = b.objectExpression(exportedMembers.map(prop => b.objectProperty.from({key: prop, value: prop, shorthand: true })));
 
-  // self.UI.ARIAUtils = Object.assign(ARIAUtils, {properties})
   if (needToObjectAssign) {
+    // self.UI.ARIAUtils = Object.assign(ARIAUtils, {properties})
     exportedObjectProperties = b.callExpression(b.memberExpression(b.identifier('Object'), b.identifier('assign'), false), [b.identifier(refactoringFileName), exportedObjectProperties]);
   }
 
   ast.program.body.push(b.expressionStatement(b.assignmentExpression('=', legacyNamespaceExport, exportedObjectProperties)));
-  
+
   return print(ast).code;
 }
 

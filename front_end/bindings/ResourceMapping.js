@@ -111,6 +111,23 @@ Bindings.ResourceMapping = class {
   }
 
   /**
+   * @param {!Workspace.UILocation} uiLocation
+   * @return {!Array<!SDK.CSSLocation>}
+   */
+  uiLocationToCSSLocations(uiLocation) {
+    if (!uiLocation.uiSourceCode[Bindings.ResourceMapping._symbol])
+      return [];
+    const target = Bindings.NetworkProject.targetForUISourceCode(uiLocation.uiSourceCode);
+    if (!target)
+      return [];
+    const cssModel = target.model(SDK.CSSModel);
+    if (!cssModel)
+      return [];
+    return cssModel.createRawLocationsByURL(
+        uiLocation.uiSourceCode.url(), uiLocation.lineNumber, uiLocation.columnNumber);
+  }
+
+  /**
    * @param {!SDK.Target} target
    */
   _resetForTest(target) {

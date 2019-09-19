@@ -238,10 +238,13 @@ Bindings.CSSWorkspaceBinding.ModelInfo = class {
    * @return {!Array<!SDK.CSSLocation>}
    */
   _uiLocationToRawLocations(uiLocation) {
-    const rawLocations = this._sassSourceMapping.uiLocationToRawLocations(uiLocation);
+    let rawLocations = this._sassSourceMapping.uiLocationToRawLocations(uiLocation);
     if (rawLocations.length)
       return rawLocations;
-    return this._stylesSourceMapping.uiLocationToRawLocations(uiLocation);
+    rawLocations = this._stylesSourceMapping.uiLocationToRawLocations(uiLocation);
+    if (rawLocations.length)
+      return rawLocations;
+    return Bindings.resourceMapping.uiLocationToCSSLocations(uiLocation);
   }
 
   _dispose() {

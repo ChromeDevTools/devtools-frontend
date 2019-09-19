@@ -22,9 +22,6 @@ Coverage.CoverageDecorationManager = class {
     this._textByProvider = new Map();
     /** @type {!Multimap<!Common.ContentProvider, !Workspace.UISourceCode>} */
     this._uiSourceCodeByContentProvider = new Multimap();
-    // TODO(crbug.com/720162): get rid of this, use bindings.
-    /** @type {!WeakMap<!Workspace.UISourceCode, !Array<!SDK.CSSStyleSheetHeader>>} */
-    this._documentUISouceCodeToStylesheets = new WeakMap();
 
     for (const uiSourceCode of Workspace.workspace.uiSourceCodes())
       uiSourceCode.addLineDecoration(0, Coverage.CoverageDecorationManager._decoratorType, this);
@@ -146,6 +143,8 @@ Coverage.CoverageDecorationManager = class {
       for (let location of locations) {
         const script = location.script();
         if (script.isInlineScript() && contentType.isDocument()) {
+          // TODO(chromium:1005789): Remove this check, once the bindings only return locations that actually belong to
+          // the script they claim to belong to.
           if (comparePositions(script.lineOffset, script.columnOffset, location.lineNumber, location.columnNumber) >
                   0 ||
               comparePositions(script.endLine, script.endColumn, location.lineNumber, location.columnNumber) <= 0) {
@@ -167,14 +166,20 @@ Coverage.CoverageDecorationManager = class {
       }
     }
     if (contentType.isStyleSheet() || contentType.isDocument()) {
-      const rawStyleLocations = contentType.isDocument() ?
-          this._documentUILocationToCSSRawLocations(uiSourceCode, line, column) :
+      const rawStyleLocations =
           Bindings.cssWorkspaceBinding.uiLocationToRawLocations(new Workspace.UILocation(uiSourceCode, line, column));
       for (const location of rawStyleLocations) {
         const header = location.header();
         if (!header)
           continue;
         if (header.isInline && contentType.isDocument()) {
+          // TODO(chromium:1005789): Remove this check, once the bindings only return locations that actually belong to
+          // the CSS header they claim to belong to.
+          if (comparePositions(header.startLine, header.startColumn, location.lineNumber, location.columnNumber) > 0) {
+            // TODO(chromium:1005708): Also check that the location is still inside the script once we have the line:column
+            // for the end of the inline script.
+            continue;
+          }
           location.lineNumber -= header.startLine;
           if (!location.lineNumber)
             location.columnNumber -= header.startColumn;
@@ -200,51 +205,6 @@ Coverage.CoverageDecorationManager = class {
       return aLine - bLine || aColumn - bColumn;
     }
     return result;
-  }
-
-  /**
-   * TODO(crbug.com/720162): get rid of this, use bindings.
-   *
-   * @param {!Workspace.UISourceCode} uiSourceCode
-   * @param {number} line
-   * @param {number} column
-   * @return {!Array<!SDK.CSSLocation>}
-   */
-  _documentUILocationToCSSRawLocations(uiSourceCode, line, column) {
-    let stylesheets = this._documentUISouceCodeToStylesheets.get(uiSourceCode);
-    if (!stylesheets) {
-      stylesheets = [];
-      const cssModel = this._coverageModel.target().model(SDK.CSSModel);
-      if (!cssModel)
-        return [];
-      for (const headerId of cssModel.styleSheetIdsForURL(uiSourceCode.url())) {
-        const header = cssModel.styleSheetHeaderForId(headerId);
-        if (header)
-          stylesheets.push(header);
-      }
-      stylesheets.sort(stylesheetComparator);
-      this._documentUISouceCodeToStylesheets.set(uiSourceCode, stylesheets);
-    }
-    const endIndex =
-        stylesheets.upperBound(undefined, (unused, header) => line - header.startLine || column - header.startColumn);
-    if (!endIndex)
-      return [];
-    const locations = [];
-    const last = stylesheets[endIndex - 1];
-    for (let index = endIndex - 1; index >= 0 && stylesheets[index].startLine === last.startLine &&
-         stylesheets[index].startColumn === last.startColumn;
-         --index)
-      locations.push(new SDK.CSSLocation(stylesheets[index], line, column));
-
-    return locations;
-    /**
-     * @param {!SDK.CSSStyleSheetHeader} a
-     * @param {!SDK.CSSStyleSheetHeader} b
-     * @return {number}
-     */
-    function stylesheetComparator(a, b) {
-      return a.startLine - b.startLine || a.startColumn - b.startColumn || a.id.localeCompare(b.id);
-    }
   }
 
   /**

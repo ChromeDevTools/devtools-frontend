@@ -275,10 +275,7 @@ Sources.SourceFormatter.StyleMapping = class {
    */
   _setSourceMappingEnabled(formatData, enable) {
     const original = formatData.originalSourceCode;
-    const rawLocations = Bindings.cssWorkspaceBinding.uiLocationToRawLocations(original.uiLocation(0, 0));
-    const headers = rawLocations.map(rawLocation => rawLocation.header()).filter(header => !!header);
-    if (!headers.length)
-      return;
+    const headers = this._headersForUISourceCode(original);
     if (enable) {
       original[this._headersSymbol] = headers;
       headers.forEach(header => header[Sources.SourceFormatData._formatDataSymbol] = formatData);
@@ -287,6 +284,25 @@ Sources.SourceFormatter.StyleMapping = class {
       headers.forEach(header => delete header[Sources.SourceFormatData._formatDataSymbol]);
     }
     headers.forEach(header => Bindings.cssWorkspaceBinding.updateLocations(header));
+  }
+
+  /**
+   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @return {!Array<!SDK.CSSStyleSheetHeader>}
+   */
+  _headersForUISourceCode(uiSourceCode) {
+    if (uiSourceCode.contentType() === Common.resourceTypes.Document) {
+      const target = Bindings.NetworkProject.targetForUISourceCode(uiSourceCode);
+      const cssModel = target && target.model(SDK.CSSModel);
+      if (cssModel) {
+        return cssModel.headersForSourceURL(uiSourceCode.url())
+            .filter(header => header.isInline && !header.hasSourceURL);
+      }
+    } else if (uiSourceCode.contentType().isStyleSheet()) {
+      const rawLocations = Bindings.cssWorkspaceBinding.uiLocationToRawLocations(uiSourceCode.uiLocation(0, 0));
+      return rawLocations.map(rawLocation => rawLocation.header()).filter(header => !!header);
+    }
+    return [];
   }
 };
 

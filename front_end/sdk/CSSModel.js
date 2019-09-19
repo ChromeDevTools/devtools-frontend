@@ -67,6 +67,52 @@ SDK.CSSModel = class extends SDK.SDKModel {
   }
 
   /**
+   * @param {string} sourceURL
+   * @return {!Array<!SDK.CSSStyleSheetHeader>}
+   */
+  headersForSourceURL(sourceURL) {
+    const headers = [];
+    for (const headerId of this.styleSheetIdsForURL(sourceURL)) {
+      const header = this.styleSheetHeaderForId(headerId);
+      if (header)
+        headers.push(header);
+    }
+    return headers;
+  }
+
+  /**
+   * @param {string} sourceURL
+   * @param {number} lineNumber
+   * @param {number} columnNumber
+   * @return {!Array<!SDK.CSSLocation>}
+   */
+  createRawLocationsByURL(sourceURL, lineNumber, columnNumber) {
+    const headers = this.headersForSourceURL(sourceURL);
+    headers.sort(stylesheetComparator);
+    const compareToArgLocation = (_, header) => lineNumber - header.startLine || columnNumber - header.startColumn;
+    const endIndex = headers.upperBound(undefined, compareToArgLocation);
+    if (!endIndex)
+      return [];
+    const locations = [];
+    const last = headers[endIndex - 1];
+    for (let index = endIndex - 1;
+         index >= 0 && headers[index].startLine === last.startLine && headers[index].startColumn === last.startColumn;
+         --index)
+      locations.push(new SDK.CSSLocation(headers[index], lineNumber, columnNumber));
+
+
+    return locations;
+    /**
+     * @param {!SDK.CSSStyleSheetHeader} a
+     * @param {!SDK.CSSStyleSheetHeader} b
+     * @return {number}
+     */
+    function stylesheetComparator(a, b) {
+      return a.startLine - b.startLine || a.startColumn - b.startColumn || a.id.localeCompare(b.id);
+    }
+  }
+
+  /**
    * @return {!SDK.SourceMapManager<!SDK.CSSStyleSheetHeader>}
    */
   sourceMapManager() {

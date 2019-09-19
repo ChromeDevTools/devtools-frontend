@@ -117,18 +117,14 @@ def _CheckDevtoolsLocalization(input_api, output_api):  # pylint: disable=invali
 
 
 def _CheckDevtoolsStyle(input_api, output_api):
-    affected_front_end_files = _getAffectedFrontEndFiles(input_api)
-    if len(affected_front_end_files) > 0:
-        lint_path = input_api.os_path.join(input_api.PresubmitLocalPath(), "scripts", "lint_javascript.py")
-        process = input_api.subprocess.Popen(
-            [input_api.python_executable, lint_path] + affected_front_end_files,
-            stdout=input_api.subprocess.PIPE,
-            stderr=input_api.subprocess.STDOUT)
-        out, _ = process.communicate()
-        if process.returncode != 0:
-            return [output_api.PresubmitError(out)]
-        return [output_api.PresubmitNotifyResult(out)]
-    return []
+    lint_path = input_api.os_path.join(input_api.PresubmitLocalPath(), "scripts", "lint_javascript.py")
+    process = input_api.subprocess.Popen([input_api.python_executable, lint_path],
+                                         stdout=input_api.subprocess.PIPE,
+                                         stderr=input_api.subprocess.STDOUT)
+    out, _ = process.communicate()
+    if process.returncode != 0:
+        return [output_api.PresubmitError(out)]
+    return [output_api.PresubmitNotifyResult(out)]
 
 
 def _CompileDevtoolsFrontend(input_api, output_api):

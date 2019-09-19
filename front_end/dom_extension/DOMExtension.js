@@ -814,13 +814,13 @@ Node.prototype.getComponentRoot = function() {
  * @param {!Element} element
  * @param {function(!Event)} callback
  */
-function onInvokeElement(element, callback) {
+self.onInvokeElement = function(element, callback) {
   element.addEventListener('keydown', event => {
     if (self.isEnterOrSpaceKey(event))
       callback(event);
   });
   element.addEventListener('click', event => callback(event));
-}
+};
 
 /**
  * @param {!Event} event

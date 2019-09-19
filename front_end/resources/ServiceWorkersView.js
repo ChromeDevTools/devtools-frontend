@@ -37,7 +37,7 @@ Resources.ServiceWorkersView = class extends UI.VBox {
     this._otherSWFilter.setAttribute('aria-checked', false);
     const filterLabel = this._otherSWFilter.createChild('label', 'service-worker-filter-label');
     filterLabel.textContent = Common.UIString('Service workers from other origins');
-    onInvokeElement(this._otherSWFilter, event => {
+    self.onInvokeElement(this._otherSWFilter, event => {
       if (event.target === this._otherSWFilter || event.target === filterLabel)
         this._toggleFilter();
     });
@@ -437,7 +437,7 @@ Resources.ServiceWorkersView.Section = class {
       errorsLabel.classList.add('link');
       errorsLabel.tabIndex = 0;
       UI.ARIAUtils.setAccessibleName(errorsLabel, ls`${this._registration.errors.length} registration errors`);
-      onInvokeElement(errorsLabel, () => Common.console.show());
+      self.onInvokeElement(errorsLabel, () => Common.console.show());
       name.appendChild(errorsLabel);
     }
     this._sourceField.createChild('div', 'report-field-value-subtitle').textContent =

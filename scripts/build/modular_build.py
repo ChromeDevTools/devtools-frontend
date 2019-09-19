@@ -76,7 +76,7 @@ class Descriptors:
         for name in self.sorted_modules():
             module = self.modules[name]
             skipped_files = set(module.get('skip_compilation', []))
-            for script in module.get('scripts', []):
+            for script in module.get('scripts', []) + module.get('modules', []):
                 if script not in skipped_files:
                     files[path.normpath(path.join(self.application_dir, name, script))] = True
         return files.keys()

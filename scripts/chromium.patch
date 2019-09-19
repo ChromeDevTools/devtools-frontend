@@ -1,0 +1,184 @@
+diff --git a/DEPS b/DEPS
+index 546c79bf0c61..3f25656ea33a 100644
+--- a/DEPS
++++ b/DEPS
+@@ -240,6 +240,10 @@ vars = {
+   # and whatever else without interference from each other.
+   'devtools_node_modules_revision': '499e57bfea8a4f8e8373321f2c99632372553e56',
+   # Three lines of non-changing comments so that
++  # the commit queue can handle CLs rolling devtools-frontend
++  # and whatever else without interference from each other.
++  'devtools_frontend_revision': '4175f4339ebc2c6ff392ccccfaeea7b62741f4eb',
++  # Three lines of non-changing comments so that
+   # the commit queue can handle CLs rolling libprotobuf-mutator
+   # and whatever else without interference from each other.
+   'libprotobuf-mutator': '439e81f8f4847ec6e2bf11b3aa634a5d8485633d',
+@@ -892,6 +896,9 @@ deps = {
+   'src/third_party/devtools-node-modules':
+     Var('chromium_git') + '/external/github.com/ChromeDevTools/devtools-node-modules' + '@' + Var('devtools_node_modules_revision'),
+
++  'src/third_party/devtools-frontend':
++    Var('chromium_git') + '/devtools/devtools-frontend' + '@' + Var('devtools_frontend_revision'),
++
+   'src/third_party/dom_distiller_js/dist':
+     Var('chromium_git') + '/chromium/dom-distiller/dist.git' + '@' + '3093c3e238768ab27ff756bd7563ccbb12129d9f',
+
+diff --git a/PRESUBMIT.py b/PRESUBMIT.py
+index 6f5b5b8b5334..6a0b2cbcaaf0 100644
+--- a/PRESUBMIT.py
++++ b/PRESUBMIT.py
+@@ -17,6 +17,7 @@ _EXCLUDED_PATHS = (
+     r"^skia[\\/].*",
+     r"^third_party[\\/]blink[\\/].*",
+     r"^third_party[\\/]breakpad[\\/].*",
++    r"^third_party[\\/]devtools-frontend[\\/].*",
+     # sqlite is an imported third party dependency.
+     r"^third_party[\\/]sqlite[\\/].*",
+     r"^v8[\\/].*",
+diff --git a/chrome/browser/flag-metadata.json b/chrome/browser/flag-metadata.json
+index 17195be4677a..b914c63b654d 100644
+--- a/chrome/browser/flag-metadata.json
++++ b/chrome/browser/flag-metadata.json
+@@ -1186,7 +1186,7 @@
+   },
+   {
+     "name": "enable-devtools-experiments",
+-    "owners": [ "//third_party/blink/renderer/devtools/OWNERS" ],
++    "owners": [ "//third_party/devtools-frontend/OWNERS" ],
+     // This is a catch-all for ongoing devtools experiments.
+     "expiry_milestone": -1
+   },
+diff --git a/chrome/browser/resources/chromeos/chromevox/run_jsbundler.gni b/chrome/browser/resources/chromeos/chromevox/run_jsbundler.gni
+index 0ae15629e8bc..6fa243b100bb 100644
+--- a/chrome/browser/resources/chromeos/chromevox/run_jsbundler.gni
++++ b/chrome/browser/resources/chromeos/chromevox/run_jsbundler.gni
+@@ -16,7 +16,7 @@ jsbundler_modules = rebase_path([
+                                 ".",
+                                 "$closure_library_dir/../bin/build")
+ jsbundler_modules +=
+-    [ "//third_party/blink/renderer/devtools/scripts/build/rjsmin.py" ]
++    [ "//third_party/devtools-frontend/scripts/build/rjsmin.py" ]
+
+ template("run_jsbundler") {
+   assert(defined(invoker.mode))
+diff --git a/chrome/browser/resources/chromeos/chromevox/tools/jsbundler.py b/chrome/browser/resources/chromeos/chromevox/tools/jsbundler.py
+index 38c1a8481be4..72f173bba736 100755
+--- a/chrome/browser/resources/chromeos/chromevox/tools/jsbundler.py
++++ b/chrome/browser/resources/chromeos/chromevox/tools/jsbundler.py
+@@ -41,7 +41,7 @@ _SCRIPT_DIR = os.path.realpath(os.path.dirname(__file__))
+ _CHROME_SOURCE = os.path.realpath(
+     os.path.join(_SCRIPT_DIR, *[os.path.pardir] * 6))
+ sys.path.insert(0, os.path.join(
+-    _CHROME_SOURCE, 'third_party/blink/renderer/devtools/scripts/build'))
++    _CHROME_SOURCE, 'third_party/devtools-frontend/scripts/build'))
+ sys.path.insert(0, os.path.join(
+     _CHROME_SOURCE, ('third_party/chromevox/third_party/' +
+                      'closure-library/closure/bin/build')))
+diff --git a/docs/chromoting_android_hacking.md b/docs/chromoting_android_hacking.md
+index 4ff112f55df7..dfd77cbc7e9e 100644
+--- a/docs/chromoting_android_hacking.md
++++ b/docs/chromoting_android_hacking.md
+@@ -80,8 +80,8 @@ display log messages to the `LogCat` pane.
+ <classpathentry kind="src" path="remoting/android/java/src"/>
+ <classpathentry kind="src" path="remoting/android/apk/src"/>
+ <classpathentry kind="src" path="remoting/android/javatests/src"/>
+-<classpathentry kind="src" path="third_party/blink/renderer/devtools/scripts/jsdoc-validator/src"/>
+-<classpathentry kind="src" path="third_party/blink/renderer/devtools/scripts/compiler-runner/src"/>
++<classpathentry kind="src" path="third_party/devtools-frontend/scripts/jsdoc-validator/src"/>
++<classpathentry kind="src" path="third_party/devtools-frontend/scripts/compiler-runner/src"/>
+ <classpathentry kind="src" path="third_party/webrtc/voice_engine/test/android/android_test/src"/>
+ <classpathentry kind="src" path="third_party/webrtc/modules/video_capture/android/java/src"/>
+ <classpathentry kind="src" path="third_party/webrtc/modules/video_render/android/java/src"/>
+diff --git a/docs/ui/ui_devtools/index.md b/docs/ui/ui_devtools/index.md
+index 29dc0a47b9f3..79bf4d546171 100644
+--- a/docs/ui/ui_devtools/index.md
++++ b/docs/ui/ui_devtools/index.md
+@@ -5,7 +5,7 @@ currently supported on Linux, Windows, Mac, and ChromeOS.
+
+ * [Old Ash Doc](https://www.chromium.org/developers/how-tos/inspecting-ash)
+ * [Backend Source Code](https://cs.chromium.org/chromium/src/components/ui_devtools/)
+-* [Inspector Frontend Source Code](https://cs.chromium.org/chromium/src/third_party/blink/renderer/devtools/front_end/)
++* [Inspector Frontend Source Code](https://chromium.googlesource.com/devtools/devtools-frontend)
+
+ ## How to run
+
+diff --git a/testing/buildbot/gn_isolate_map.pyl b/testing/buildbot/gn_isolate_map.pyl
+index 8bf82e7b2dfd..8f0c6224dae4 100644
+--- a/testing/buildbot/gn_isolate_map.pyl
++++ b/testing/buildbot/gn_isolate_map.pyl
+@@ -1012,17 +1012,17 @@
+   },
+   "devtools_closure_compile": {
+     "args": [
+-      "../../third_party/blink/renderer/devtools/scripts/compile_frontend.py",
++      "../../third_party/devtools-frontend/scripts/compile_frontend.py",
+     ],
+-    "label": "//third_party/blink/renderer/devtools:devtools_closure_compile",
++    "label": "//third_party/devtools-frontend:devtools_closure_compile",
+     "script": "//testing/scripts/run_devtools_check.py",
+     "type": "script",
+   },
+   "devtools_eslint": {
+     "args": [
+-      "../../third_party/blink/renderer/devtools/scripts/lint_javascript.py",
++      "../../third_party/devtools-frontend/scripts/lint_javascript.py",
+     ],
+-    "label": "//third_party/blink/renderer/devtools:devtools_eslint",
++    "label": "//third_party/devtools-frontend:devtools_eslint",
+     "script": "//testing/scripts/run_devtools_check.py",
+     "type": "script",
+   },
+diff --git a/third_party/blink/public/public_features.gni b/third_party/blink/public/public_features.gni
+index c4834efc30d1..f596ba74ca6e 100644
+--- a/third_party/blink/public/public_features.gni
++++ b/third_party/blink/public/public_features.gni
+@@ -13,7 +13,7 @@ declare_args() {
+
+   # If external_devtools_frontend is set to true, use DevTools frontend that is
+   # pulled as external dependency.
+-  external_devtools_frontend = false
++  external_devtools_frontend = true
+ }
+
+ # Unhandled Tap enable means Contextual Search aka Tap to Search.
+diff --git a/third_party/blink/web_tests/inspector-protocol/heap-profiler/resources/heap-snapshot-common.js b/third_party/blink/web_tests/inspector-protocol/heap-profiler/resources/heap-snapshot-common.js
+index ff6c2ff5328b..9bbffcbdb3d9 100644
+--- a/third_party/blink/web_tests/inspector-protocol/heap-profiler/resources/heap-snapshot-common.js
++++ b/third_party/blink/web_tests/inspector-protocol/heap-profiler/resources/heap-snapshot-common.js
+@@ -7,17 +7,17 @@
+   // This script is supposed to be evaluated in inspector-protocol/heap-profiler tests
+   // and the relative paths below are relative to that location.
+   await testRunner.loadScriptModule(
+-      '../../../../blink/renderer/devtools/front_end/platform/utilities.js');
++      '../../../../devtools-frontend/front_end/platform/utilities.js');
+   await testRunner.loadScriptModule(
+-      '../../../../blink/renderer/devtools/front_end/common/UIString.js');
++      '../../../../devtools-frontend/front_end/common/UIString.js');
+   await testRunner.loadScriptModule(
+-      '../../../../blink/renderer/devtools/front_end/heap_snapshot_model/HeapSnapshotModel.js');
++      '../../../../devtools-frontend/front_end/heap_snapshot_model/HeapSnapshotModel.js');
+   await testRunner.loadScriptModule(
+-      '../../../../blink/renderer/devtools/front_end/heap_snapshot_worker/HeapSnapshot.js');
++      '../../../../devtools-frontend/front_end/heap_snapshot_worker/HeapSnapshot.js');
+   await testRunner.loadScriptModule(
+-      '../../../../blink/renderer/devtools/front_end/text_utils/TextUtils.js');
++      '../../../../devtools-frontend/front_end/text_utils/TextUtils.js');
+   await testRunner.loadScriptModule(
+-      '../../../../blink/renderer/devtools/front_end/heap_snapshot_worker/HeapSnapshotLoader.js');
++      '../../../../devtools-frontend/front_end/heap_snapshot_worker/HeapSnapshotLoader.js');
+
+   // Expose the (de)serialize code from Common because the worker expects it on self.
+   // TODO(https://crbug.com/680046) Remove the dupe code below.
+diff --git a/tools/gritsettings/translation_expectations.pyl b/tools/gritsettings/translation_expectations.pyl
+index 7dc85b2ddb3a..2ca4cf1d885b 100644
+--- a/tools/gritsettings/translation_expectations.pyl
++++ b/tools/gritsettings/translation_expectations.pyl
+@@ -95,7 +95,7 @@
+     "cloud_print/virtual_driver/win/install/virtual_driver_setup_resources.grd": "Separate release process",
+     "components/components_locale_settings.grd": "Not UI strings; localized separately",
+     "components/omnibox/resources/omnibox_resources.grd": "Not UI strings; localized separately",
+-    "third_party/blink/renderer/devtools/front_end/langpacks/devtools_ui_strings.grd" : "Devtools UI strings that are optionally enabled by browser.",
++    "third_party/devtools-frontend/front_end/langpacks/devtools_ui_strings.grd" : "Devtools UI strings that are optionally enabled by browser.",
+     "tools/grit/grit/testdata/buildinfo.grd": "Test data",
+     "tools/grit/grit/testdata/chrome/app/generated_resources.grd": "Test data",
+     "tools/grit/grit/testdata/substitute.grd": "Test data",

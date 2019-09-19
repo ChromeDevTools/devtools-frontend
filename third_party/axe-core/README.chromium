@@ -1,0 +1,22 @@
+Name: AXE-CORE Accessibility Audit
+Short Name: axe-core
+URL: https://github.com/dequelabs/axe-core/
+Version: 0
+Date: Mon Jul 24 12:17:05 2017
+Revision: d02dba3223fefe525438330e40b5da5de81eeeb5
+License: MPL 2.0
+License File: LICENSE
+Security Critical: no
+
+Description:
+Accessibility engine for automated Web UI testing. This will be used to run
+automated accessibility tests in web-ui.
+This includes the axe.d.ts file so developers can reference the type definitions
+of the aXe audit in code search and function documentation.
+
+Local Modifications:
+  1 Checked out the origin/shadowDOM branch
+  2 Created build
+  3 New files:
+      README.chromium
+      OWNERS

@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 // TODO(1011259): switch to true.
-let external_devtools_frontend = false;
+let external_devtools_frontend = true;
 let node_modules_path = external_devtools_frontend
     ? ''
     : '../../../../third_party/devtools-node-modules/third_party/node_modules/';
@@ -36,7 +36,7 @@ module.exports = function(config) {
       compilerOptions: {
         target: 'esnext',
         module: 'esnext',
-        typeRoots: [node_modules_path + '@types']
+        typeRoots: external_devtools_frontend ? undefined : [node_modules_path + '@types']
       },
       coverageOptions: {
         instrumentation: false

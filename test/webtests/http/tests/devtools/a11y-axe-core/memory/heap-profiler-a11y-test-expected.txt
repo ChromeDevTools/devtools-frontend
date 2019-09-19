@@ -1,0 +1,2 @@
+Tests accessibility in heap profiler using the axe-core linter.
+aXe violations: []

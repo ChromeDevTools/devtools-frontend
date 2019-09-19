@@ -1,0 +1,29 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var BundleItem = /** @class */ (function () {
+    function BundleItem(moduleName, filename, source, sourceMap, dependencies) {
+        if (dependencies === void 0) { dependencies = []; }
+        this.moduleName = moduleName;
+        this.filename = filename;
+        this.source = source;
+        this.sourceMap = sourceMap;
+        this.dependencies = dependencies;
+        this.transformedScript = false;
+    }
+    BundleItem.prototype.isNpmModule = function () {
+        return this.moduleName.charAt(0) !== "." && this.moduleName.charAt(0) !== "/";
+    };
+    BundleItem.prototype.isScript = function () {
+        return (this.filename && /\.(js|jsx|ts|tsx)$/.test(this.filename))
+            || this.transformedScript;
+    };
+    BundleItem.prototype.isTypingsFile = function () {
+        return this.filename && /\.d\.ts$/.test(this.filename);
+    };
+    BundleItem.prototype.isTypescriptFile = function () {
+        return this.filename && !this.isTypingsFile() && /\.(ts|tsx)$/.test(this.filename);
+    };
+    return BundleItem;
+}());
+exports.BundleItem = BundleItem;
+//# sourceMappingURL=bundle-item.js.map

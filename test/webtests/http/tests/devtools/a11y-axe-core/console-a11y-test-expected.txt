@@ -1,0 +1,2 @@
+Tests accessibility in the console using the axe-core linter.
+aXe violations: []

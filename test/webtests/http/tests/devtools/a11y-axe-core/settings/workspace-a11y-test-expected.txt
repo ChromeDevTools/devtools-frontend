@@ -1,0 +1,2 @@
+Tests accessibility in the settings workspace view using the axe-core linter.
+aXe violations: []

@@ -1,7 +1,6 @@
 # Copyright 2016 The Chromium Authors. All rights reserved.
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
-
 """
 This ensures that each front-end module does not accidentally rely on a module
 that isn't listed as a transitive dependency in the module.json.

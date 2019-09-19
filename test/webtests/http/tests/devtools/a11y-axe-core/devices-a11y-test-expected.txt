@@ -1,0 +1,2 @@
+Tests accessibility in the remote-devices landing page using the axe-core linter.
+aXe violations: []

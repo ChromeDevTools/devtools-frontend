@@ -40,6 +40,7 @@ from build import modular_build
 from build import generate_protocol_externs
 
 import dependency_preprocessor
+import devtools_paths
 import utils
 
 try:
@@ -70,9 +71,10 @@ def to_platform_path_exact(filepath):
 
 SCRIPTS_PATH = path.dirname(path.abspath(__file__))
 DEVTOOLS_PATH = path.dirname(SCRIPTS_PATH)
-INSPECTOR_PATH = path.join(path.dirname(DEVTOOLS_PATH), 'core', 'inspector')
+ROOT_PATH = devtools_paths.root_path()
+BROWSER_PROTOCOL_PATH = path.join(ROOT_PATH, 'third_party', 'blink', 'renderer', 'core', 'inspector', 'browser_protocol.pdl')
 # TODO(dgozman): move these checks to v8.
-V8_INCLUDE_PATH = path.normpath(path.join(path.dirname(DEVTOOLS_PATH), os.pardir, os.pardir, os.pardir, 'v8', 'include'))
+JS_PROTOCOL_PATH = path.join(ROOT_PATH, 'v8', 'include', 'js_protocol.pdl')
 DEVTOOLS_FRONTEND_PATH = path.join(DEVTOOLS_PATH, 'front_end')
 GLOBAL_EXTERNS_FILE = to_platform_path(path.join(DEVTOOLS_FRONTEND_PATH, 'externs.js'))
 DEFAULT_PROTOCOL_EXTERNS_FILE = path.join(DEVTOOLS_FRONTEND_PATH, 'protocol_externs.js')
@@ -348,8 +350,7 @@ def main():
     if args.protocol_externs_file:
         protocol_externs_file = args.protocol_externs_file
     else:
-        generate_protocol_externs.generate_protocol_externs(protocol_externs_file, path.join(
-            INSPECTOR_PATH, 'browser_protocol.pdl'), path.join(V8_INCLUDE_PATH, 'js_protocol.pdl'))
+        generate_protocol_externs.generate_protocol_externs(protocol_externs_file, BROWSER_PROTOCOL_PATH, JS_PROTOCOL_PATH)
     loader = modular_build.DescriptorLoader(DEVTOOLS_FRONTEND_PATH)
     descriptors = loader.load_applications(APPLICATION_DESCRIPTORS)
     modules_by_name = descriptors.modules

@@ -2,6 +2,10 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
+"""
+Helper script to update CodeMirror from upstream.
+"""
+
 import argparse
 import glob
 import os
@@ -9,19 +13,16 @@ import shutil
 import subprocess
 import sys
 
-
 def parse_options(cli_args):
     parser = argparse.ArgumentParser(description='Roll CodeMirror')
     parser.add_argument('cm_dir', help='CodeMirror directory')
     parser.add_argument('devtools_dir', help='DevTools directory')
     return parser.parse_args(cli_args)
 
-
 def run_npm(options):
     print 'Building CodeMirror in %s' % os.path.abspath(options.cm_dir)
     subprocess.check_output(['npm', 'install'], cwd=options.cm_dir, stderr=subprocess.PIPE)
     subprocess.check_output(['npm', 'run', 'build'], cwd=options.cm_dir, stderr=subprocess.PIPE)
-
 
 def copy_lib_files(options):
     print 'Copying codemirror.js and codemirror.css'
@@ -78,7 +79,6 @@ def find_and_copy_js_files(source_dir, target_dir, filter_fn):
         print 'Copying %s from %s' % (target_file, source_file)
         shutil.copyfile(source_file, target_file)
 
-
 def copy_cm_files(options):
     source_dir = os.path.join(options.cm_dir, 'addon')
     target_dir = os.path.join(options.devtools_dir, 'front_end', 'cm')
@@ -87,7 +87,6 @@ def copy_cm_files(options):
         return f.endswith('.js') and f != 'codemirror.js'
 
     find_and_copy_js_files(source_dir, target_dir, cm_filter)
-
 
 def copy_cm_modes_files(options):
     source_dir = os.path.join(options.cm_dir, 'mode')
@@ -98,7 +97,6 @@ def copy_cm_modes_files(options):
 
     find_and_copy_js_files(source_dir, target_dir, cm_modes_filter)
 
-
 def copy_cm_web_modes_files(options):
     source_dir = os.path.join(options.cm_dir, 'mode')
     target_dir = os.path.join(options.devtools_dir, 'front_end', 'cm_web_modes')
@@ -107,7 +105,6 @@ def copy_cm_web_modes_files(options):
         return f.endswith('.js')
 
     find_and_copy_js_files(source_dir, target_dir, cm_web_modes_filter)
-
 
 if __name__ == '__main__':
     OPTIONS = parse_options(sys.argv[1:])

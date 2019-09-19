@@ -36,11 +36,11 @@ try:
 except ImportError:
     import simplejson as json
 
-sys.path.append(
-    path.normpath(
-        path.join(
-            path.dirname(path.abspath(__file__)),
-            os.pardir, os.pardir, os.pardir, os.pardir, os.pardir, 'inspector_protocol')))
+sys.path.append(path.dirname(path.abspath(__file__)))
+
+from devtools_paths import third_party_path
+
+sys.path.append(path.join(third_party_path(), 'inspector_protocol'))
 import pdl  # pylint: disable=F0401
 
 type_traits = {
@@ -173,8 +173,8 @@ def generate_protocol_externs(output_path, file1, file2):
                 output_file.write(" * @return {!Promise<%s>}\n" % out_param_type)
 
                 output_file.write(" */\n")
-                output_file.write("Protocol.%sAgent.prototype.%s = function(%s) {};\n" %
-                                  (domain_name, command["name"], ", ".join(params)))
+                output_file.write(
+                    "Protocol.%sAgent.prototype.%s = function(%s) {};\n" % (domain_name, command["name"], ", ".join(params)))
 
                 request_object_properties = []
                 request_type = "Protocol.%sAgent.%sRequest" % (domain_name, to_title_case(command["name"]))
@@ -200,8 +200,7 @@ def generate_protocol_externs(output_path, file1, file2):
                 output_file.write(" * @param {!%s} obj\n" % request_type)
                 output_file.write(" * @return {!Promise<!%s>}" % response_type)
                 output_file.write(" */\n")
-                output_file.write("Protocol.%sAgent.prototype.invoke_%s = function(obj) {};\n" %
-                                  (domain_name, command["name"]))
+                output_file.write("Protocol.%sAgent.prototype.invoke_%s = function(obj) {};\n" % (domain_name, command["name"]))
 
         if "types" in domain:
             for type in domain["types"]:
@@ -219,18 +218,18 @@ def generate_protocol_externs(output_path, file1, file2):
                             else:
                                 typedef_args.append("%s:(%s%s)" % (property["name"], param_type(domain_name, property), suffix))
                     if (typedef_args):
-                        output_file.write("\n/** @typedef {!{%s}} */\nProtocol.%s.%s;\n" %
-                                          (", ".join(typedef_args), domain_name, type["id"]))
+                        output_file.write(
+                            "\n/** @typedef {!{%s}} */\nProtocol.%s.%s;\n" % (", ".join(typedef_args), domain_name, type["id"]))
                     else:
                         output_file.write("\n/** @typedef {!Object} */\nProtocol.%s.%s;\n" % (domain_name, type["id"]))
                 elif type["type"] == "string" and "enum" in type:
                     output_file.write(generate_enum("Protocol.%s.%s" % (domain_name, type["id"]), type))
                 elif type["type"] == "array":
-                    output_file.write("\n/** @typedef {!Array<!%s>} */\nProtocol.%s.%s;\n" %
-                                      (param_type(domain_name, type["items"]), domain_name, type["id"]))
+                    output_file.write("\n/** @typedef {!Array<!%s>} */\nProtocol.%s.%s;\n" % (param_type(
+                        domain_name, type["items"]), domain_name, type["id"]))
                 else:
-                    output_file.write("\n/** @typedef {%s} */\nProtocol.%s.%s;\n" %
-                                      (type_traits[type["type"]], domain_name, type["id"]))
+                    output_file.write(
+                        "\n/** @typedef {%s} */\nProtocol.%s.%s;\n" % (type_traits[type["type"]], domain_name, type["id"]))
 
         if domain_name in ["Runtime", "Debugger", "HeapProfiler"]:
             output_file.write("/** @constructor */\n")
@@ -250,8 +249,8 @@ def generate_protocol_externs(output_path, file1, file2):
                             params.append(param["name"])
                             output_file.write(" * @param {%s} %s\n" % (param_type(domain_name, param), param["name"]))
                     output_file.write(" */\n")
-                output_file.write("Protocol.%sDispatcher.prototype.%s = function(%s) {};\n" %
-                                  (domain_name, event["name"], ", ".join(params)))
+                output_file.write(
+                    "Protocol.%sDispatcher.prototype.%s = function(%s) {};\n" % (domain_name, event["name"], ", ".join(params)))
 
     for domain in domains:
         domain_name = domain["domain"]

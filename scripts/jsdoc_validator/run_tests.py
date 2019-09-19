@@ -23,7 +23,8 @@ validator_jar_file = rel_to_abs(jar_name)
 golden_file = os.path.join(tests_path, 'golden.dat')
 
 test_files = [
-    os.path.join(tests_path, f) for f in os.listdir(tests_path)
+    os.path.join(tests_path, f)
+    for f in os.listdir(tests_path)
     if f.endswith('.js') and os.path.isfile(os.path.join(tests_path, f))
 ]
 

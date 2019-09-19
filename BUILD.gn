@@ -6,7 +6,7 @@ import("//build/config/features.gni")
 import("//third_party/blink/public/public_features.gni")
 import("//third_party/blink/renderer/core/core.gni")
 
-if (!external_devtools_frontend) {
+if (external_devtools_frontend) {
   all_devtools_files = [
     "front_end/accessibility/AccessibilityModel.js",
     "front_end/accessibility/accessibilityNode.css",
@@ -1528,8 +1528,6 @@ if (!external_devtools_frontend) {
 
   #-------------------------------------------------------------------------------
 
-  visibility = [ "//third_party/blink/*" ]
-
   group("devtools_all_files") {
     data = all_devtools_files + all_devtools_modules
     deps = [
@@ -1816,6 +1814,7 @@ if (!external_devtools_frontend) {
       "scripts/closure/",
       "scripts/compile_frontend.py",
       "scripts/dependency_preprocessor.py",
+      "scripts/devtools_paths.py",
       "scripts/jsdoc_validator/",
       "scripts/special_case_namespaces.json",
       "scripts/utils.py",
@@ -1835,12 +1834,31 @@ if (!external_devtools_frontend) {
         ".eslintignore",
         ".eslintrc.js",
         "front_end/",
-        "scripts/lint_javascript.py",
+        "node_modules/",
         "scripts/devtools_paths.py",
+        "scripts/lint_javascript.py",
         "//testing/scripts/common.py",
         "//testing/scripts/run_devtools_check.py",
         "//testing/xvfb.py",
-        "//third_party/devtools-node-modules/",
+        "//third_party/node/node.py",
+        "//third_party/node/linux/node-linux-x64/",
+      ]
+    }
+
+    group("devtools_unit_tests") {
+      data = [
+        # Needed for isolate script to execute.
+        "front_end/",
+        "karma.conf.js",
+        "node_modules/",
+        "scripts/devtools_paths.py",
+        "scripts/run_tests.py",
+        "tests/",
+        "third_party/chrome/",
+        "tsconfig.json",
+        "//testing/scripts/common.py",
+        "//testing/scripts/run_devtools_check.py",
+        "//testing/xvfb.py",
         "//third_party/node/node.py",
         "//third_party/node/linux/node-linux-x64/",
       ]

@@ -127,7 +127,6 @@ class ReleaseBuilder(object):
             self._write_include_tags(descriptors.extends, output)
         output.write(self._generate_include_tag(descriptors.application_name + '.js'))
 
-
     def _build_html(self):
         html_name = self.app_file('html')
         output = StringIO()
@@ -203,8 +202,8 @@ class ReleaseBuilder(object):
                 deps = set(desc.get('dependencies', []))
                 non_autostart_deps = deps & non_autostart
                 if len(non_autostart_deps):
-                    bail_error('Non-autostart dependencies specified for the autostarted module "%s": %s' %
-                               (name, non_autostart_deps))
+                    bail_error(
+                        'Non-autostart dependencies specified for the autostarted module "%s": %s' % (name, non_autostart_deps))
                 namespace = self._map_module_to_namespace(name)
                 output.write('\n/* Module %s */\n' % name)
                 output.write('\nself[\'%s\'] = self[\'%s\'] || {};\n' % (namespace, namespace))

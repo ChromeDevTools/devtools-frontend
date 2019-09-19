@@ -500,8 +500,8 @@ function getAndReportResourcesToAdd() {
   errorStr += 'Please refer to auto-generated message(s) below and modify as needed.\n\n';
 
   // Example error message:
-  // third_party/blink/renderer/devtools/front_end/network/NetworkDataGridNode.js Line 973: ls`(disk cache)`
-  // Add a new message tag for this string to third_party\blink\renderer\devtools\front_end\network\network_strings.grdp
+  // third_party/devtools-frontend/front_end/network/NetworkDataGridNode.js Line 973: ls`(disk cache)`
+  // Add a new message tag for this string to third_party\devtools-frontend\front_end\network\network_strings.grdp
   // <message name="IDS_DEVTOOLS_ad86890fb40822a3b12627efaca4ecd7" desc="Fill in the description.">
   //   (disk cache)
   // </message>
@@ -523,7 +523,7 @@ function getAndReportResourcesToRemove() {
   let errorStr =
       '\nThe message(s) associated with the following IDS key(s) should be removed from its GRD/GRDP file(s):\n';
   // Example error message:
-  // third_party/blink/renderer/devtools/front_end/accessibility/accessibility_strings.grdp Line 300: IDS_DEVTOOLS_c9bbad3047af039c14d0e7ec957bb867
+  // third_party/devtools-frontend/front_end/accessibility/accessibility_strings.grdp Line 300: IDS_DEVTOOLS_c9bbad3047af039c14d0e7ec957bb867
   for (const [ids, messages] of keysToRemoveFromGRD) {
     messages.forEach(
         message => errorStr += `${localizationUtils.getRelativeFilePathFromSrc(message.grdpPath)}${

@@ -21,9 +21,9 @@ def root_path():
     if path.basename(PARENT_PATH) == 'renderer':
         # Chromium repository
         return path.dirname(path.dirname(path.dirname(PARENT_PATH)))
-    elif path.basename(PARENT_PATH) == 'third_party':
+    elif path.basename(PARENT_PATH) == 'devtools-frontend':
         # External repository, integrated build
-        return path.dirname(PARENT_PATH)
+        return path.dirname(path.dirname(PARENT_PATH))
     else:
         # External repository, standalone build
         return ABS_DEVTOOLS_PATH
@@ -49,16 +49,7 @@ DEVTOOLS_ROOT_PATH = path.join(path.dirname(__file__), '..')
 
 
 def node_modules_path():
-    SCRIPTS_PATH = path.dirname(path.abspath(__file__))
-    ABS_DEVTOOLS_PATH = path.dirname(SCRIPTS_PATH)
-    PARENT_PATH = path.dirname(ABS_DEVTOOLS_PATH)
-    # TODO(1011259): remove Chromium repository handling
-    if path.basename(PARENT_PATH) == 'renderer':
-        # While in Chromium repo, node modules are hosted in //third_party/devtools-node-modules.
-        return path.join(root_path(), 'third_party', 'devtools-node-modules', 'third_party', 'node_modules')
-    else:
-        # In the external repo, node modules are hosted in root.
-        return path.join(root_path(), 'node_modules')
+    return path.join(DEVTOOLS_ROOT_PATH, 'node_modules')
 
 
 def eslint_path():

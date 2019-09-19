@@ -173,15 +173,24 @@ def _CheckCSSViolations(input_api, output_api):
                 results.append(output_api.PresubmitError(("%s:%d uses ::shadow selector") % (f.LocalPath(), line_number)))
     return results
 
+def _CommonChecks(input_api, output_api):
+  """Checks common to both upload and commit."""
+  results = []
+  results.extend(input_api.canned_checks.CheckOwnersFormat(input_api, output_api))
+  results.extend(input_api.canned_checks.CheckOwners(input_api, output_api))
+  results.extend(input_api.canned_checks.CheckChangeHasNoCrAndHasOnlyOneEol(input_api, output_api))
+  results.extend(input_api.canned_checks.CheckChangeHasNoStrayWhitespace(input_api, output_api))
+  results.extend(input_api.canned_checks.CheckGenderNeutral(input_api, output_api))
+  results.extend(_CheckDevtoolsLocalizableResources(input_api, output_api))
+  results.extend(_CheckDevtoolsLocalization(input_api, output_api))
+  return results
 
 def CheckChangeOnUpload(input_api, output_api):
     results = []
+    results.extend(_CommonChecks(input_api, output_api))
     results.extend(_CheckBuildGN(input_api, output_api))
     results.extend(_CheckFormat(input_api, output_api))
-    results.extend(_CheckDevtoolsLocalizableResources(input_api, output_api))
-    results.extend(_CheckDevtoolsLocalization(input_api, output_api))
     results.extend(_CheckDevtoolsStyle(input_api, output_api))
-    results.extend(_CompileDevtoolsFrontend(input_api, output_api))
     results.extend(_CheckOptimizeSVGHashes(input_api, output_api))
     results.extend(_CheckCSSViolations(input_api, output_api))
     return results
@@ -189,8 +198,9 @@ def CheckChangeOnUpload(input_api, output_api):
 
 def CheckChangeOnCommit(input_api, output_api):
     results = []
-    results.extend(_CheckDevtoolsLocalizableResources(input_api, output_api))
-    results.extend(_CheckDevtoolsLocalization(input_api, output_api))
+    results.extend(_CommonChecks(input_api, output_api))
+    results.extend(input_api.canned_checks.CheckChangeHasDescription(
+      input_api, output_api))
     return results
 
 

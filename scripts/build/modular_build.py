@@ -192,8 +192,8 @@ class DescriptorLoader:
                     bail_error('Module "%s" (dependency of "%s") not listed in application descriptor %s' %
                                (dep, module['name'], application_descriptor_filename))
 
-        return Descriptors(
-            application_descriptor_name, self.application_dir, application_descriptor, module_descriptors, extends, has_html)
+        return Descriptors(application_descriptor_name, self.application_dir, application_descriptor, module_descriptors, extends,
+                           has_html)
 
     def _read_module_descriptor(self, module_name, application_descriptor_filename):
         json_filename = path.join(self.application_dir, module_name, 'module.json')

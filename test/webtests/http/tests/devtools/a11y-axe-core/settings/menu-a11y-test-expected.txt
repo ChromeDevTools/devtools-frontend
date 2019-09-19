@@ -1,0 +1,2 @@
+Tests accessibility in the settings menu using the axe-core linter.
+aXe violations: []

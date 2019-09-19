@@ -1,0 +1,134 @@
+#!/usr/bin/env python
+
+from __future__ import print_function
+
+import argparse
+import os
+import subprocess
+import sys
+
+
+is_python3 = bool(sys.version_info.major == 3)
+has_python34 = False
+verbose = False
+repo_dir = os.path.abspath(os.path.dirname(__file__))
+path_to_cov = os.path.join(repo_dir, 'tools', 'cov.py')
+
+
+def call(*args, **kwargs):
+    if verbose:
+        print(' '.join(args[0]))
+    ret = subprocess.call(*args, **kwargs)
+    if ret != 0:
+        sys.exit(ret)
+
+
+def main(argv):
+    parser = argparse.ArgumentParser(prog='run')
+    parser.add_argument('--no3', action='store_true',
+                        help='Do not run the tests under Python 3.')
+    parser.add_argument('-v', '--verbose', action='store_true')
+    subps = parser.add_subparsers()
+
+    subp = subps.add_parser('build', help='build the package')
+    subp.set_defaults(func=run_build)
+
+    subp = subps.add_parser('clean', help='Remove any local files.')
+    subp.set_defaults(func=run_clean)
+
+    subp = subps.add_parser('coverage',
+                            help='Run the tests and report code coverage.')
+    subp.set_defaults(func=run_coverage)
+
+    subp = subps.add_parser('develop',
+                             help='Install a symlinked package locally.')
+    subp.set_defaults(func=run_develop)
+    subp.add_argument('--system', action='store_true',
+                      help=('Install to the system site-package dir '
+                            'rather than the user\'s (requires root).'))
+
+    subp = subps.add_parser('format',
+                            help='Reformat the source code.')
+    subp.set_defaults(func=run_format)
+
+    subp = subps.add_parser('help',
+                            help='Get help on a subcommand.')
+    subp.add_argument(nargs='?', action='store', dest='subcommand',
+                      help='The command to get help for.')
+    subp.set_defaults(func=run_help)
+
+    subp = subps.add_parser('install',
+                            help='build the package and install locally.')
+    subp.set_defaults(func=run_install)
+    subp.add_argument('--system', action='store_true',
+                      help=('Install to the system site-package dir '
+                            'rather than the user\'s (requires root).'))
+
+    subp = subps.add_parser('lint',
+                            help='run lint over the source')
+    subp.set_defaults(func=run_lint)
+
+    subp = subps.add_parser('tests',
+                            help='run the tests')
+    subp.set_defaults(func=run_tests)
+
+    args = parser.parse_args(argv)
+
+    global verbose
+    if args.verbose:
+        verbose = True
+    global has_python34
+    if not args.no3:
+        try:
+            ver = subprocess.check_output(['python3', '--version'])
+            has_python34 = ver.split()[1] >= '3.4'
+        except:
+            pass
+    args.func(args)
+
+
+def run_build(args):
+    call([sys.executable, 'setup.py', 'build', '--quiet'])
+
+
+def run_clean(args):
+    call(['git', 'clean', '-fxd'])
+
+
+def run_coverage(args):
+    call(['typ', '-c', 'json5'])
+
+
+def run_develop(args):
+    call([sys.executable, 'setup.py', 'develop'])
+
+
+def run_format(args):
+    call('autopep8 --in-place *.py */*.py */*/*.py', shell=True)
+
+
+def run_help(args):
+    if args.subcommand:
+        main([args.subcommand, '--help'])
+    main(['--help'])
+
+
+def run_install(args):
+    if args.system:
+        argv = []
+    else:
+        argv = ['--user']
+    call([sys.executable, 'setup.py', 'install'] + argv)
+
+
+def run_lint(args):
+    call('pylint --rcfile=pylintrc */*.py */*/*.py', shell=True)
+    call('pep8 *.py */*.py */*/*.py', shell=True)
+
+
+def run_tests(args):
+    call(['typ', 'json5'])
+
+
+if __name__ == '__main__':
+    sys.exit(main(sys.argv[1:]))

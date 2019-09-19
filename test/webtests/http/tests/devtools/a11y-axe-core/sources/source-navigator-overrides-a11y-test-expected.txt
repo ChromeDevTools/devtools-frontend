@@ -1,0 +1,3 @@
+Tests accessibility in the Sources panel Navigator pane Overrides tab using axe-core.
+ [dimmed]
+aXe violations: []

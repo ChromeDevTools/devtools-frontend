@@ -75,6 +75,14 @@ UI.SoftContextMenu = class {
 
     if (!this._parentMenu) {
       this._hideOnUserGesture = event => {
+        // If a user clicks on any submenu, prevent the menu system from closing.
+        let subMenu = this._subMenu;
+        while (subMenu) {
+          if (subMenu._contextMenuElement === event.path[0])
+            return;
+          subMenu = subMenu._subMenu;
+        }
+
         this.discard();
         event.consume(true);
       };

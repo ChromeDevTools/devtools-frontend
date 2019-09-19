@@ -413,6 +413,7 @@ UI.TabbedPane = class extends UI.VBox {
       tab.tooltip = tabTooltip;
     if (tab.title !== tabTitle) {
       tab.title = tabTitle;
+      UI.ARIAUtils.setAccessibleName(tab.tabElement, tabTitle);
       this._updateTabElements();
     }
   }

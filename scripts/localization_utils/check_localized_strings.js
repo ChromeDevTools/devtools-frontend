@@ -132,6 +132,12 @@ function parseLocalizableStringFromModuleJson(fileContent, filePath) {
           if (defaultVal.title)
             addString(defaultVal.title, defaultVal.title, filePath);
         }
+      } else if (key === 'tags' && extension[key]) {
+        const tagsList = extension[key].split(',');
+        for (let tag of tagsList) {
+          tag = tag.trim();
+          addString(tag, tag, filePath);
+        }
       }
     }
   }

@@ -45,11 +45,17 @@
   <message name="IDS_DEVTOOLS_4d1c8263ba1036754f8db14a98f9f006" desc="A context menu item in the Devices View of the Remote Devices tab">
     Reload
   </message>
+  <message name="IDS_DEVTOOLS_532c28d5412dd75bf975fb951c740a30" desc="A tag of Remote Devices tool that can be searched in the command menu">
+    mobile
+  </message>
   <message name="IDS_DEVTOOLS_588c54a3158082418d50afdfce55f954" desc="Error message for device port input box when add port forwarding rule">
     Device port numbers can only be used once
   </message>
   <message name="IDS_DEVTOOLS_62e8d0a52dd33aa2b6548f7056739421" desc="Error message for device port input box when add port forwarding rule">
     Device port number field is required
+  </message>
+  <message name="IDS_DEVTOOLS_62ed973d963913bb55111a7b8116ace1" desc="A tag of Remote Devices tool that can be searched in the command menu">
+    usb
   </message>
   <message name="IDS_DEVTOOLS_67afa587522e088dedac9f252362d16a" desc="Text in Devices View of the Remote Devices tab">
     Discover USB devices
@@ -80,6 +86,9 @@
   </message>
   <message name="IDS_DEVTOOLS_bcca96534b404f08faf65d76be6aa782" desc="Text in Devices View of the Remote Devices tab">
     1 device detected.
+  </message>
+  <message name="IDS_DEVTOOLS_c31b32364ce19ca8fcd150a417ecce58" desc="A tag of Remote Devices tool that can be searched in the command menu">
+    <ph name="LOCKED_1">android</ph>
   </message>
   <message name="IDS_DEVTOOLS_c3bf447eabe632720a3aa1a7ce401274" desc="Text of the new tab button in Devices View of the Remote Devices tab">
     Open

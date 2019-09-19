@@ -18,4 +18,7 @@
   <message name="IDS_DEVTOOLS_ed6b1cccfa7455e9506ff7e5127e1df4" desc="Text in Node Connections Panel of the Sources panel when debugging a Node.js app">
     Specify network endpoint and DevTools will connect to it automatically. Read <ph name="DOCUMENTATIONLINK">$1s<ex>Node.js debugging guide</ex></ph> to learn more.
   </message>
+  <message name="IDS_DEVTOOLS_36c4536996ca5615dcf9911f068786dc" desc="A tag of Node.js Connection Panel that can be searched in the command menu">
+    <ph name="LOCKED_1">node</ph>
+  </message>
 </grit-part>

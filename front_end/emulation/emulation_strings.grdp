@@ -9,6 +9,9 @@
   <message name="IDS_DEVTOOLS_0c78cd3aa4c94a64675bc6aa77802843" desc="Text in Sensors View of the Device Toolbar">
     Device-based
   </message>
+  <message name="IDS_DEVTOOLS_0e1275697d4c40b4b0640fbfa3907afa" desc="A tag of Sensors tool that can be searched in the command menu">
+    accelerometer
+  </message>
   <message name="IDS_DEVTOOLS_0eb264d46c88af61e587c18f60662df0" desc="Title of device scale item in device mode toolbar of the device toolbar">
     Device pixel ratio
   </message>
@@ -240,6 +243,9 @@
   <message name="IDS_DEVTOOLS_a88789aba0125292a7a2b8774a979b37" desc="Title of Geolocations settings">
     Geolocations
   </message>
+  <message name="IDS_DEVTOOLS_a9c9b04b4bb57da48b29b4f40ffb2e89" desc="A tag of Sensors tool that can be searched in the command menu">
+    device orientation
+  </message>
   <message name="IDS_DEVTOOLS_af29aa178ae43211319e28f627e96590" desc="Title of an action in the emulation tool to show sensors">
     Sensors
   </message>
@@ -248,6 +254,9 @@
   </message>
   <message name="IDS_DEVTOOLS_b1596787a9a32a2626743258abf34e80" desc="Text in Sensors View of the Device Toolbar">
     Landscape left
+  </message>
+  <message name="IDS_DEVTOOLS_b22a74a48cd2f1d35dac23d239312139" desc="A tag of Sensors tool that can be searched in the command menu">
+    geolocation
   </message>
   <message name="IDS_DEVTOOLS_b2b22e112d16f958f75ea888f9ce8eeb" desc="Text in Sensors View of the Device Toolbar">
     Display down

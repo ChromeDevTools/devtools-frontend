@@ -30,4 +30,7 @@
   <message name="IDS_DEVTOOLS_f579f693ac9ecb3fb9e822bf32028e13" desc="Text in Audio Context Content Builder">
     Sample Rate
   </message>
+  <message name="IDS_DEVTOOLS_a5ca0b5894324f8bb54bb9fffad29d1e" desc="A tags of WebAudio tool that can be searched in the command menu">
+    audio
+  </message>
 </grit-part>

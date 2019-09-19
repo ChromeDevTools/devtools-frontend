@@ -54,6 +54,9 @@
   <message name="IDS_DEVTOOLS_a808cbcba081a943f4faedda831298b5" desc="Text in Throttling Settings Tab of the Network panel">
     kb/s
   </message>
+  <message name="IDS_DEVTOOLS_b19f08b5e9906febcc6a8c717035f8ed" desc="A tag of Network related actions that can be searched in the command menu">
+    throttling
+  </message>
   <message name="IDS_DEVTOOLS_b27fdc01c81857f96f3d5d37d323bcb6" desc="Title of an action in the network conditions tool to network mid tier mobile">
     Enable fast 3G throttling
   </message>

@@ -9,11 +9,17 @@
   <message name="IDS_DEVTOOLS_03ad5ac9c1a313e19064670f92981353" desc="Text of the add button in Workspace Settings Tab of the Workspace settings in Settings">
     Add folder…
   </message>
+  <message name="IDS_DEVTOOLS_10573b873d2fa5a365d558a45e328e47" desc="A tag of Enable Local Overrides setting that can be searched in the command menu">
+    request
+  </message>
   <message name="IDS_DEVTOOLS_14f221497f99c10993cd293628adeefd" desc="A context menu item in the Persistence Actions of the Workspace settings in Settings">
     Open in containing folder
   </message>
   <message name="IDS_DEVTOOLS_17d5f7dcd4ef6b9702a8b2ac7d237e5b" desc="Title of a setting under the Persistence category that can be invoked through the Command Menu">
     Enable override network requests
+  </message>
+  <message name="IDS_DEVTOOLS_1c5594ed57047449210c4b4d803f7787" desc="A tag of Enable Local Overrides setting that can be searched in the command menu">
+    interception
   </message>
   <message name="IDS_DEVTOOLS_25ee7702f0b5dbe737d8f0f2ba3ce591" desc="A context menu item in the Persistence Actions of the Workspace settings in Settings">
     Save for overrides
@@ -29,6 +35,9 @@
   </message>
   <message name="IDS_DEVTOOLS_62def4422771353f5e30763d92474b43" desc="Text in Persistence Utils of the Workspace settings in Settings">
     Linked to source map: <ph name="BINDING_NETWORK_URL___TRIMMIDDLE_____">$1s<ex>example.url</ex></ph>
+  </message>
+  <message name="IDS_DEVTOOLS_7b4639e8d528d7a3eedafe23e9cdfee1" desc="A tag of Enable Local Overrides setting that can be searched in the command menu">
+    rewrite
   </message>
   <message name="IDS_DEVTOOLS_8cf868306a4e5f1b685566867ff0e31d" desc="Error message when a file system path is identical to an existing path.">
     Enter a unique path
@@ -50,6 +59,9 @@
   </message>
   <message name="IDS_DEVTOOLS_e2b63f5cab4f80fb6745f2f941105371" desc="Title of a setting under the Persistence category in Settings">
     Enable Local Overrides
+  </message>
+  <message name="IDS_DEVTOOLS_e3b3f56615d1e5f2608d2f1130a7ef54" desc="A tag of Enable Local Overrides setting that can be searched in the command menu">
+    override
   </message>
   <message name="IDS_DEVTOOLS_fddede572fa09e1b1bb28504d8c43343" desc="Text in Edit File System View of the Workspace settings in Settings">
     Folder path

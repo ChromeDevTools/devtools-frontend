@@ -20,8 +20,13 @@ QuickOpen.CommandMenu = class {
    * @return {!QuickOpen.CommandMenu.Command}
    */
   static createCommand(category, keys, title, shortcut, executeHandler, availableHandler) {
-    // Separate keys by null character, to prevent fuzzy matching from matching across them.
-    const key = keys.replace(/,/g, '\0');
+    // Get localized keys and separate by null character to prevent fuzzy matching from matching across them.
+    const keyList = keys.split(',');
+    let key = '';
+    keyList.forEach(k => {
+      key += (ls(k.trim()) + '\0');
+    });
+
     return new QuickOpen.CommandMenu.Command(category, title, key, shortcut, executeHandler, availableHandler);
   }
 

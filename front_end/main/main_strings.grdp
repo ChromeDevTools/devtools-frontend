@@ -18,6 +18,9 @@
   <message name="IDS_DEVTOOLS_1cf59b16fd253d6ff4bbee7c237cea0d" desc="Text in Main">
     Show console
   </message>
+  <message name="IDS_DEVTOOLS_2ac43aa43bf473f9a9c09b4b608619d3" desc="A tag of theme preference settings that can be searched in the command menu">
+    light
+  </message>
   <message name="IDS_DEVTOOLS_2ad9d63b69c4a10a5cc9cad923133bc4" desc="A drop-down menu option to dock to bottom">
     Bottom
   </message>
@@ -89,6 +92,9 @@
   </message>
   <message name="IDS_DEVTOOLS_a18366b217ebf811ad1886e4f4f865b2" desc="A drop-down menu option to switch to dark theme">
     Dark
+  </message>
+  <message name="IDS_DEVTOOLS_a82fd95db10ff25dfad39f07372ebe37" desc="A tag of theme preference settings that can be searched in the command menu">
+    dark
   </message>
   <message name="IDS_DEVTOOLS_a9e4402481bd9b8e36752bf731f67eb6" desc="Title of a setting under the Appearance category in Settings">
     Theme:

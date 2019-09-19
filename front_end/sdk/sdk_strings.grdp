@@ -351,4 +351,7 @@
   <message name="IDS_DEVTOOLS_ff92304ed0236a5f972fd90e9b47fae4" desc="Text in Server Timing">
     Unrecognized parameter &quot;<ph name="PARAMNAME">$1s<ex>https</ex></ph>&quot;.
   </message>
+  <message name="IDS_DEVTOOLS_1b1cc7f086b3f074da452bc3129981eb" desc="A tag of Emulate CSS screen media type setting that can be searched in the command menu">
+    query
+  </message>
 </grit-part>

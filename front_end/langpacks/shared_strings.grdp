@@ -7,6 +7,9 @@
   <message name="IDS_DEVTOOLS_0511551e6cf7d61acd9b62f9304efa93" desc="Tooltip text that appears on the setting to preserve log when hovering over the item">
     Do not clear log on page reload / navigation
   </message>
+  <message name="IDS_DEVTOOLS_07ba8a9247a0f91e025d8036a28c3b56" desc="A tag of Application Panel that can be searched in the command menu">
+    pwa
+  </message>
   <message name="IDS_DEVTOOLS_0b484cfcf50c8fabff48c0aad426f544" desc="Text to dock the DevTools to the left of the browser tab">
     Dock to left
   </message>
@@ -306,6 +309,12 @@
   </message>
   <message name="IDS_DEVTOOLS_90da6f38945a1c7e7ba11e3adcbe6919" desc="Text for pausing the debugger on exceptions">
     Pause on exceptions
+  </message>
+  <message name="IDS_DEVTOOLS_913f9c49dcb544e2087cee284f4a00b7" desc="A tag of Mobile related settings that can be searched in the command menu">
+    device
+  </message>
+  <message name="IDS_DEVTOOLS_91e02cd2b8621d0c05197f645668c5c4" desc="A tag of Group Network by frame setting that can be searched in the command menu">
+    network
   </message>
   <message name="IDS_DEVTOOLS_93898e12951c906e5286ccb36d980ce5" desc="Text for scripts that should not be stepped into when debugging">
     Blackbox script

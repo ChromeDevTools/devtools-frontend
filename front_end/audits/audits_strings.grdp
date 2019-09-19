@@ -180,4 +180,7 @@
   <message name="IDS_DEVTOOLS_f3ddea8173e7a06f7a6a5dadc234fd3d" desc="Text in the pop-up dialog when lighthouse is auditing in the Audits panel">
     Almost there! Lighthouse is now generating your report.
   </message>
+  <message name="IDS_DEVTOOLS_fad0ce221c826eede253cb0956ca0700" desc="A search term referring to the linting application named Lighthouse that can be entered in the command menu">
+    <ph name="LOCKED_1">lighthouse</ph>
+  </message>
 </grit-part>

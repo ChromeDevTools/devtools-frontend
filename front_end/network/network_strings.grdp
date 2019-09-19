@@ -9,6 +9,9 @@
   <message name="IDS_DEVTOOLS_02d56cf7754ce16d7ce0193fbca7c90a" desc="Text in Network Config View of the Network panel">
     Caching
   </message>
+  <message name="IDS_DEVTOOLS_0382c94481db9197dd5a72ea4bdd2ff0" desc="A tag of Network Conditions tool that can be searched in the command menu">
+    disk cache
+  </message>
   <message name="IDS_DEVTOOLS_040c4b52a3c06c6067fac76c4c7c3a2c" desc="Title of the 'Network conditions' tool in the bottom drawer">
     Network conditions
   </message>
@@ -51,6 +54,9 @@
   <message name="IDS_DEVTOOLS_12881f9e98bb240671bc3e1787d64a03" desc="Title of a setting under the Network category that can be invoked through the Command Menu">
     Color code by resource type
   </message>
+  <message name="IDS_DEVTOOLS_1826c1f3d66791128e1f73f876147f2f" desc="A tag of Network color-code resource types that can be searched in the command menu">
+    color code
+  </message>
   <message name="IDS_DEVTOOLS_1854180b02f297deebed0ec452090842" desc="Cell title in Network Data Grid Node of the Network panel">
     Served from memory cache, resource size: <ph name="RESOURCESIZE">$1s<ex>50 B</ex></ph>
   </message>
@@ -71,6 +77,9 @@
   </message>
   <message name="IDS_DEVTOOLS_1cb07ce276f37ba2acdfb8605aaefbb8" desc="Text in Network Log View of the Network panel">
     <ph name="RESOURCESIZE">$1s<ex>10</ex></ph> B resources
+  </message>
+  <message name="IDS_DEVTOOLS_1cf0226d974af378b6aa6070bb2a37c3" desc="A tag of Network Conditions tool that can be searched in the command menu">
+    network throttling
   </message>
   <message name="IDS_DEVTOOLS_1dc4a71b18d2c3a1442267136158128e" desc="Text in Network Log View of the Network panel">
     Copy all as cURL (cmd)
@@ -393,6 +402,9 @@
   <message name="IDS_DEVTOOLS_96d960cc2b3394824ebfbf25bb960a90" desc="Text in Resource Web Socket Frame View of the Network panel">
     <ph name="LOCALIZEDDESCRIPTION">$1s<ex>Text Message</ex></ph> (Opcode <ph name="OPCODE">$2s<ex>0</ex></ph>, mask)
   </message>
+  <message name="IDS_DEVTOOLS_9777b991eb3f0c11b20bab298b6a3077" desc="A tag of Network color-code resource types that can be searched in the command menu">
+    resource type
+  </message>
   <message name="IDS_DEVTOOLS_97b7320892b0db86ff1d8dc28ba1af95" desc="Text in Network Log View of the Network panel">
     Are you sure you want to clear browser cache?
   </message>
@@ -528,6 +540,9 @@
   <message name="IDS_DEVTOOLS_c0c7145bdb8a2311e11528eaacf7f41d" desc="Tooltip to explain what request cookies are">
     Cookies that were sent to the server in the &apos;cookie&apos; header of the request
   </message>
+  <message name="IDS_DEVTOOLS_c0635a52980f98eff8adf2279c8ad8e0" desc="A tag of Network Conditions tool that can be searched in the command menu">
+    <ph name="LOCKED_1">useragent</ph>
+  </message>
   <message name="IDS_DEVTOOLS_c3c14eb17a6cf9c6120f381790ed06eb" desc="Text in Network Log View of the Network panel">
     Copy all as PowerShell
   </message>
@@ -588,6 +603,9 @@
   <message name="IDS_DEVTOOLS_d8e381f360a750d29368d3ec51346006" desc="Label for response cookies with invalid syntax">
     Malformed Response Cookies
   </message>
+  <message name="IDS_DEVTOOLS_db0f6f37ebeb6ea09489124345af2a45" desc="A tag of Group Network by frame setting that can be searched in the command menu">
+    group
+  </message>
   <message name="IDS_DEVTOOLS_db67b2de0114bd82fe1383aa067fa6b2" desc="A context menu item in the Network Log View of the Network panel">
     Unblock <ph name="CROPPEDURL">$1s<ex>example.com</ex></ph>
   </message>
@@ -596,6 +614,9 @@
   </message>
   <message name="IDS_DEVTOOLS_dc66e209093fbef0daa224f2b6401b39" desc="Text in Request Timing View of the Network panel">
     Request/Response
+  </message>
+  <message name="IDS_DEVTOOLS_dcf3e36ee8115282aad46485cab6a4be" desc="A tag of Group Network by frame setting that can be searched in the command menu">
+    <ph name="LOCKED_1">frame</ph>
   </message>
   <message name="IDS_DEVTOOLS_dd47445f60115097d07d4cf2e61d933b" desc="Text of a DOM element in Request Timing View of the Network panel">
     CAUTION: request is not finished yet!
@@ -662,6 +683,9 @@
   </message>
   <message name="IDS_DEVTOOLS_f15c1cae7882448b3fb0404682e17e61" desc="Text in Network Log View Columns of the Network panel">
     Content
+  </message>
+  <message name="IDS_DEVTOOLS_f2a4bb0e0bae2587046fb2bd377f3922" desc="A tag of Network Conditions tool that can be searched in the command menu">
+    <ph name="LOCKED_1">user agent</ph>
   </message>
   <message name="IDS_DEVTOOLS_f312b3f268931a1367de22756237b197" desc="Text in Network Item View of the Network panel">
     Headers and request body

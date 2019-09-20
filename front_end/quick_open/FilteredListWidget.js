@@ -22,6 +22,7 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
     this.registerRequiredCSS('quick_open/filteredListWidget.css');
 
     this._promptElement = this.contentElement.createChild('div', 'filtered-list-widget-input');
+    UI.ARIAUtils.setAccessibleName(this._promptElement, ls`Quick open prompt`);
     this._promptElement.setAttribute('spellcheck', 'false');
     this._promptElement.setAttribute('contenteditable', 'plaintext-only');
     this._prompt = new UI.TextPrompt();
@@ -96,13 +97,15 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
 
   /**
    * @param {string} placeholder
+   * @param {string=} ariaPlaceholder
    */
-  setPlaceholder(placeholder) {
-    this._prompt.setPlaceholder(placeholder);
+  setPlaceholder(placeholder, ariaPlaceholder) {
+    this._prompt.setPlaceholder(placeholder, ariaPlaceholder);
   }
 
   showAsDialog() {
     this._dialog = new UI.Dialog();
+    UI.ARIAUtils.setAccessibleName(this._dialog.contentElement, ls`Quick open`);
     this._dialog.setMaxContentSize(new UI.Size(504, 340));
     this._dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.SetExactWidthMaxHeight);
     this._dialog.setContentPosition(null, 22);
@@ -435,8 +438,10 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
   _updateNotFoundMessage(hasItems) {
     this._list.element.classList.toggle('hidden', !hasItems);
     this._notFoundElement.classList.toggle('hidden', hasItems);
-    if (!hasItems)
+    if (!hasItems) {
       this._notFoundElement.textContent = this._provider.notFoundText(this._cleanValue());
+      UI.ARIAUtils.alert(this._notFoundElement.textContent, this._notFoundElement);
+    }
   }
 
   _onInput() {

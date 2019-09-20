@@ -201,11 +201,14 @@ UI.TextPrompt = class extends Common.Object {
 
   /**
    * @param {string} placeholder
+   * @param {string=} ariaPlaceholder
    */
-  setPlaceholder(placeholder) {
+  setPlaceholder(placeholder, ariaPlaceholder) {
     if (placeholder) {
       this._element.setAttribute('data-placeholder', placeholder);
-      UI.ARIAUtils.setPlaceholder(this._element, placeholder);
+      // TODO(https://github.com/nvaccess/nvda/issues/10164): Remove ariaPlaceholder once the NVDA bug is fixed
+      // ariaPlaceholder and placeholder may differ, like in case the placeholder contains a '?'
+      UI.ARIAUtils.setPlaceholder(this._element, ariaPlaceholder || placeholder);
     } else {
       this._element.removeAttribute('data-placeholder');
       UI.ARIAUtils.setPlaceholder(this._element, null);

@@ -3,6 +3,15 @@
   <message name="IDS_DEVTOOLS_06f884351ae9dbaaca31602b74d0ed4e" desc="Text in Quick Open of the Command Menu">
     Type &apos;?&apos; to see available commands
   </message>
+  <message name="IDS_DEVTOOLS_532ce4f18bb96f70d8ee338082ad7ed0" desc="Title of quick open dialog">
+    Quick open
+  </message>
+  <message name="IDS_DEVTOOLS_c986e2ac993abbee8febcc7e21ebb4d8" desc="Aria-placeholder text for quick open dialog prompt">
+    Type question mark to see available commands
+  </message>
+  <message name="IDS_DEVTOOLS_db1accfc3285ca06387a9b35f80523a7" desc="Aria label for quick open dialog prompt">
+    Quick open prompt
+  </message>
   <message name="IDS_DEVTOOLS_8bb9829a676055080c3d4507e0b5f201" desc="Text in Command Menu of the Command Menu">
     No commands found
   </message>

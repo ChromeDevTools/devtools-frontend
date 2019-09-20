@@ -23,7 +23,8 @@ QuickOpen.QuickOpen = class {
     const filteredListWidget =
         new QuickOpen.FilteredListWidget(null, this._history, quickOpen._queryChanged.bind(quickOpen));
     quickOpen._filteredListWidget = filteredListWidget;
-    filteredListWidget.setPlaceholder(Common.UIString('Type \'?\' to see available commands'));
+    filteredListWidget.setPlaceholder(
+        ls`Type '?' to see available commands`, ls`Type question mark to see available commands`);
     filteredListWidget.showAsDialog();
     filteredListWidget.setQuery(query);
   }

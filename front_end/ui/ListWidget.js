@@ -272,9 +272,6 @@ UI.ListWidget.Editor = class {
 
     this._contentElement = this.element.createChild('div', 'editor-content');
 
-    this._errorMessageContainer = this.element.createChild('div', 'list-widget-input-validation-error');
-    UI.ARIAUtils.markAsAlert(this._errorMessageContainer);
-
     const buttonsRow = this.element.createChild('div', 'editor-buttons');
     this._commitButton = UI.createTextButton('', this._commitClicked.bind(this), '', true /* primary */);
     buttonsRow.appendChild(this._commitButton);
@@ -282,6 +279,9 @@ UI.ListWidget.Editor = class {
     this._cancelButton.addEventListener(
         'keydown', onKeyDown.bind(null, isEnterKey, this._cancelClicked.bind(this)), false);
     buttonsRow.appendChild(this._cancelButton);
+
+    this._errorMessageContainer = this.element.createChild('div', 'list-widget-input-validation-error');
+    UI.ARIAUtils.markAsAlert(this._errorMessageContainer);
 
     /**
      * @param {function(!Event):boolean} predicate

@@ -130,11 +130,13 @@ Formatter.FormatterSourceMapping.prototype = {
   originalToFormatted(lineNumber, columnNumber) {},
 
   /**
+   * TODO(1005708): Remove the offset parameter once end positions of inline CSS is known.
    * @param {number} lineNumber
    * @param {number=} columnNumber
+   * @param {number=} offset
    * @return {!Array.<number>}
    */
-  formattedToOriginal(lineNumber, columnNumber) {}
+  formattedToOriginal(lineNumber, columnNumber, offset) {}
 };
 
 /**
@@ -153,12 +155,14 @@ Formatter.IdentityFormatterSourceMapping = class {
   }
 
   /**
+   * TODO(1005708): Remove the offset parameter once end positions of inline CSS is known.
    * @override
    * @param {number} lineNumber
    * @param {number=} columnNumber
+   * @param {number=} offset
    * @return {!Array.<number>}
    */
-  formattedToOriginal(lineNumber, columnNumber) {
+  formattedToOriginal(lineNumber, columnNumber, offset) {
     return [lineNumber, columnNumber || 0];
   }
 };
@@ -194,16 +198,18 @@ Formatter.FormatterSourceMappingImpl = class {
   }
 
   /**
+   * TODO(chromium:1005708): Remove the offset parameter once end positions of inline CSS is known.
    * @override
    * @param {number} lineNumber
    * @param {number=} columnNumber
+   * @param {number=} offset
    * @return {!Array.<number>}
    */
-  formattedToOriginal(lineNumber, columnNumber) {
+  formattedToOriginal(lineNumber, columnNumber, offset) {
     const formattedPosition =
         Formatter.Formatter.locationToPosition(this._formattedLineEndings, lineNumber, columnNumber || 0);
     const originalPosition = this._convertPosition(this._mapping.formatted, this._mapping.original, formattedPosition);
-    return Formatter.Formatter.positionToLocation(this._originalLineEndings, originalPosition || 0);
+    return Formatter.Formatter.positionToLocation(this._originalLineEndings, (originalPosition || 0) + (offset || 0));
   }
 
   /**

@@ -107,7 +107,9 @@ Bindings.ResourceMapping = class {
     if (!debuggerModel)
       return [];
     const location = debuggerModel.createRawLocationByURL(uiSourceCode.url(), lineNumber, columnNumber);
-    return location ? [location] : [];
+    if (location && location.script().containsLocation(lineNumber, columnNumber))
+      return [location];
+    return [];
   }
 
   /**

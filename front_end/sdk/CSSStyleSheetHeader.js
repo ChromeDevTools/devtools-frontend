@@ -100,6 +100,25 @@ SDK.CSSStyleSheetHeader = class {
   }
 
   /**
+   * Checks whether the position is in this style sheet. Assumes that the
+   * position's columnNumber is consistent with line endings.
+   * TODO(chromium:1005708): Ensure that this object knows its end position,
+   * and remove {line,column}NumberOfCSSEnd parameters.
+   * @param {number} lineNumber
+   * @param {number} columnNumber
+   * @param {number} lineNumberOfCSSEnd
+   * @param {number} columnNumberOfCSSEnd
+   * @return {boolean}
+   */
+  containsLocation(lineNumber, columnNumber, lineNumberOfCSSEnd, columnNumberOfCSSEnd) {
+    const afterStart =
+        (lineNumber === this.startLine && columnNumber >= this.startColumn) || lineNumber > this.startLine;
+    const beforeEnd =
+        lineNumber < lineNumberOfCSSEnd || (lineNumber === lineNumberOfCSSEnd && columnNumber <= columnNumberOfCSSEnd);
+    return afterStart && beforeEnd;
+  }
+
+  /**
    * @override
    * @return {string}
    */

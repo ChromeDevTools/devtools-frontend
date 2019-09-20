@@ -140,29 +140,19 @@ Coverage.CoverageDecorationManager = class {
     if (contentType.hasScripts()) {
       let locations = Bindings.debuggerWorkspaceBinding.uiLocationToRawLocations(uiSourceCode, line, column);
       locations = locations.filter(location => !!location.script());
-      for (let location of locations) {
+      for (const location of locations) {
         const script = location.script();
         if (script.isInlineScript() && contentType.isDocument()) {
-          // TODO(chromium:1005789): Remove this check, once the bindings only return locations that actually belong to
-          // the script they claim to belong to.
-          if (comparePositions(script.lineOffset, script.columnOffset, location.lineNumber, location.columnNumber) >
-                  0 ||
-              comparePositions(script.endLine, script.endColumn, location.lineNumber, location.columnNumber) <= 0) {
-            location = null;
-          } else {
-            location.lineNumber -= script.lineOffset;
-            if (!location.lineNumber)
-              location.columnNumber -= script.columnOffset;
-          }
+          location.lineNumber -= script.lineOffset;
+          if (!location.lineNumber)
+            location.columnNumber -= script.columnOffset;
         }
-        if (location) {
-          result.push({
-            id: `js:${location.scriptId}`,
-            contentProvider: location.script(),
-            line: location.lineNumber,
-            column: location.columnNumber
-          });
-        }
+        result.push({
+          id: `js:${location.scriptId}`,
+          contentProvider: location.script(),
+          line: location.lineNumber,
+          column: location.columnNumber
+        });
       }
     }
     if (contentType.isStyleSheet() || contentType.isDocument()) {
@@ -173,13 +163,6 @@ Coverage.CoverageDecorationManager = class {
         if (!header)
           continue;
         if (header.isInline && contentType.isDocument()) {
-          // TODO(chromium:1005789): Remove this check, once the bindings only return locations that actually belong to
-          // the CSS header they claim to belong to.
-          if (comparePositions(header.startLine, header.startColumn, location.lineNumber, location.columnNumber) > 0) {
-            // TODO(chromium:1005708): Also check that the location is still inside the script once we have the line:column
-            // for the end of the inline script.
-            continue;
-          }
           location.lineNumber -= header.startLine;
           if (!location.lineNumber)
             location.columnNumber -= header.startColumn;
@@ -192,19 +175,7 @@ Coverage.CoverageDecorationManager = class {
         });
       }
     }
-    result.sort(Coverage.CoverageDecorationManager._compareLocations);
-
-    /**
-     * @param {number} aLine
-     * @param {number} aColumn
-     * @param {number} bLine
-     * @param {number} bColumn
-     * @return {number}
-     */
-    function comparePositions(aLine, aColumn, bLine, bColumn) {
-      return aLine - bLine || aColumn - bColumn;
-    }
-    return result;
+    return result.sort(Coverage.CoverageDecorationManager._compareLocations);
   }
 
   /**

@@ -261,6 +261,13 @@ SDK.Script = class {
         {scriptId: this.scriptId, positions});
     return !response[Protocol.Error];
   }
+
+  containsLocation(lineNumber, columnNumber) {
+    const afterStart =
+        (lineNumber === this.lineOffset && columnNumber >= this.columnOffset) || lineNumber > this.lineOffset;
+    const beforeEnd = lineNumber < this.endLine || (lineNumber === this.endLine && columnNumber <= this.endColumn);
+    return afterStart && beforeEnd;
+  }
 };
 
 SDK.Script.sourceURLRegex = /^[\040\t]*\/\/[@#] sourceURL=\s*(\S*?)\s*$/m;

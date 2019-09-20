@@ -182,12 +182,10 @@ Sources.SourceFormatter.ScriptMapping = class {
     const formatData = Sources.SourceFormatData._for(uiSourceCode);
     if (!formatData)
       return [];
-    const originalLocation = formatData.mapping.formattedToOriginal(lineNumber, columnNumber);
-    const scripts = this._scriptsForUISourceCode(formatData.originalSourceCode);
-    if (!scripts.length)
-      return [];
-    return scripts.map(
-        script => script.debuggerModel.createRawLocation(script, originalLocation[0], originalLocation[1]));
+    const [originalLine, originalColumn] = formatData.mapping.formattedToOriginal(lineNumber, columnNumber);
+    const scripts = this._scriptsForUISourceCode(formatData.originalSourceCode)
+                        .filter(script => script.containsLocation(originalLine, originalColumn));
+    return scripts.map(script => script.debuggerModel.createRawLocation(script, originalLine, originalColumn));
   }
 
   /**
@@ -264,9 +262,20 @@ Sources.SourceFormatter.StyleMapping = class {
     const formatData = Sources.SourceFormatData._for(uiLocation.uiSourceCode);
     if (!formatData)
       return [];
-    const originalLocation = formatData.mapping.formattedToOriginal(uiLocation.lineNumber, uiLocation.columnNumber);
+    const [originalLine, originalColumn] =
+        formatData.mapping.formattedToOriginal(uiLocation.lineNumber, uiLocation.columnNumber);
     const headers = formatData.originalSourceCode[this._headersSymbol];
-    return headers.map(header => new SDK.CSSLocation(header, originalLocation[0], originalLocation[1]));
+    const locations = [];
+    for (const header of headers) {
+      // TODO(chromium:1005708): Remove this computation and use the end location from `header` once the back-end provides it.
+      const [formattedStartLine, formattedStartColumn] =
+          formatData.mapping.originalToFormatted(header.startLine, header.startColumn);
+      const [originalEndLine, originalEndColumn] =
+          formatData.mapping.formattedToOriginal(formattedStartLine, formattedStartColumn, header.contentLength);
+      if (header.containsLocation(originalLine, originalColumn, originalEndLine, originalEndColumn))
+        locations.push(new SDK.CSSLocation(header, originalLine, originalColumn));
+    }
+    return locations;
   }
 
   /**

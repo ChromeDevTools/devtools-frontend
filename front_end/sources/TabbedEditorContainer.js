@@ -552,7 +552,8 @@ Sources.TabbedEditorContainer = class extends Common.Object {
     const tabId = this._tabIds.get(uiSourceCode);
     if (tabId) {
       const title = this._titleForFile(uiSourceCode);
-      this._tabbedPane.changeTabTitle(tabId, title);
+      const tooltip = this._tooltipForFile(uiSourceCode);
+      this._tabbedPane.changeTabTitle(tabId, title, tooltip);
       let icon = null;
       if (Persistence.persistence.hasUnsavedCommittedChanges(uiSourceCode)) {
         icon = UI.Icon.create('smallicon-warning');

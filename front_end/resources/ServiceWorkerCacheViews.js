@@ -55,7 +55,7 @@ Resources.ServiceWorkerCacheView = class extends UI.SimpleView {
     this._deleteSelectedButton.addEventListener(UI.ToolbarButton.Events.Click, () => this._deleteButtonClicked(null));
     editorToolbar.appendToolbarItem(this._deleteSelectedButton);
 
-    const entryPathFilterBox = new UI.ToolbarInput(ls`Filter by Path`, 1);
+    const entryPathFilterBox = new UI.ToolbarInput(ls`Filter by Path`, '', 1);
     editorToolbar.appendToolbarItem(entryPathFilterBox);
     const entryPathFilterThrottler = new Common.Throttler(300);
     this._entryPathFilter = '';

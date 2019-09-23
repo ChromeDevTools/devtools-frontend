@@ -16,7 +16,7 @@ Resources.StorageItemsView = class extends UI.VBox {
 
     this._mainToolbar = new UI.Toolbar('top-resources-toolbar', this.element);
 
-    this._filterItem = new UI.ToolbarInput(Common.UIString('Filter'), 0.4);
+    this._filterItem = new UI.ToolbarInput(Common.UIString('Filter'), '', 0.4);
     this._filterItem.addEventListener(UI.ToolbarInput.Event.TextChanged, this._filterChanged, this);
 
     const toolbarSeparator = new UI.ToolbarSeparator();

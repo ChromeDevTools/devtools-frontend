@@ -69,6 +69,9 @@
   <message name="IDS_DEVTOOLS_08db5f30f625a406882862b8a29b1bc6" desc="Text in Timeline UIUtils of the Performance panel">
     Major GC
   </message>
+  <message name="IDS_DEVTOOLS_099ca81d7a70c42447d89e172198ba5d" desc="Aria-label for filter bar in Event Log view">
+    Filter event log
+  </message>
   <message name="IDS_DEVTOOLS_09d66464ad53e6080988ad30824ea023" desc="Text in Timeline Flame Chart Data Provider of the Performance panel">
     Frame — <ph name="TRACK_URL">$1s<ex>https://example.com</ex></ph>
   </message>
@@ -424,6 +427,9 @@ Click the reload button <ph name="RELOADBUTTON">$3s<ex>reload</ex></ph> or hit <
   <message name="IDS_DEVTOOLS_66f1aed235ade25269a561e81cbbb43a" desc="Text in Timeline UIUtils of the Performance panel">
     Scripting
   </message>
+  <message name="IDS_DEVTOOLS_6734ebb8322bff404034f6ebbcc0d2fb" desc="Aria-label for filter bar in Call Tree view">
+    Filter call tree
+  </message>
   <message name="IDS_DEVTOOLS_67eed98f4bc75c4ab261b79a0e2c52cd" desc="Text in Timeline UIUtils of the Performance panel">
     Cache Rejected
   </message>
@@ -717,6 +723,9 @@ Then, zoom and pan the timeline with the mousewheel or <ph name="NAVIGATENODE">$
   <message name="IDS_DEVTOOLS_be85f6b3661854c85ddbde4c1429b2a2" desc="Text in Timeline UIUtils of the Performance panel">
     (<ph name="CLIP___">$1s<ex>2</ex></ph>, <ph name="CLIP___">$2s<ex>2</ex></ph>)
   </message>
+  <message name="IDS_DEVTOOLS_be87d8c3de2675bbc53f9442af9d8feb" desc="Aria-label for grouping combo box in Timeline Details View">
+    Group by
+  </message>
   <message name="IDS_DEVTOOLS_be97c5beb33f5316b2c221bfbb95852b" desc="Text in Timeline UIUtils of the Performance panel">
     MIME Type
   </message>
@@ -809,6 +818,9 @@ Then, zoom and pan the timeline with the mousewheel or <ph name="NAVIGATENODE">$
   </message>
   <message name="IDS_DEVTOOLS_d5f967961bccf06a9eb7989d69d94a15" desc="Text in Timeline UIUtils of the Performance panel">
     network transfer
+  </message>
+  <message name="IDS_DEVTOOLS_d6ef31f5b235ec815c3b62fc6f236804" desc="Aria-label for the filter bar in Bottom-Up view">
+    Filter bottom-up
   </message>
   <message name="IDS_DEVTOOLS_d84fe3f1d290e4855cc0487b5ea18a4a" desc="Text in Timeline UIUtils of the Performance panel">
     Pinch Begin

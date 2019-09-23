@@ -48,6 +48,13 @@ Timeline.TimelineTreeView = class extends UI.VBox {
   }
 
   /**
+   * @return {string}
+   */
+  getToolbarInputAccessiblePlaceHolder() {
+    return '';
+  }
+
+  /**
    * @protected
    * @return {?Timeline.PerformanceModel} model
    */
@@ -156,7 +163,7 @@ Timeline.TimelineTreeView = class extends UI.VBox {
    * @param {!UI.Toolbar} toolbar
    */
   populateToolbar(toolbar) {
-    this._textFilterUI = new UI.ToolbarInput(Common.UIString('Filter'));
+    this._textFilterUI = new UI.ToolbarInput(Common.UIString('Filter'), this.getToolbarInputAccessiblePlaceHolder());
     this._textFilterUI.addEventListener(UI.ToolbarInput.Event.TextChanged, textFilterChanged, this);
     toolbar.appendToolbarItem(this._textFilterUI);
 
@@ -253,6 +260,9 @@ Timeline.TimelineTreeView = class extends UI.VBox {
     this._updateDetailsForSelection();
     if (this._searchableView)
       this._searchableView.refreshSearch();
+    const rootNode = this._dataGrid.rootNode();
+    if (rootNode.children.length > 0)
+      rootNode.children[0].select();
   }
 
   /**
@@ -396,10 +406,11 @@ Timeline.TimelineTreeView = class extends UI.VBox {
    * @param {!DataGrid.DataGridNode} gridNode
    */
   _onContextMenu(contextMenu, gridNode) {
+    if (gridNode._linkElement && !contextMenu.containsTarget(gridNode._linkElement))
+      contextMenu.appendApplicableItems(gridNode._linkElement);
     const profileNode = gridNode._profileNode;
-    if (!profileNode)
-      return;
-    this._appendContextMenuItems(contextMenu, profileNode);
+    if (profileNode)
+      this._appendContextMenuItems(contextMenu, profileNode);
   }
 
   /**
@@ -494,6 +505,7 @@ Timeline.TimelineTreeView.GridNode = class extends DataGrid.SortableDataGridNode
     this._grandTotalTime = grandTotalTime;
     this._maxSelfTime = maxSelfTime;
     this._maxTotalTime = maxTotalTime;
+    this._linkElement = null;
   }
 
   /**
@@ -532,10 +544,13 @@ Timeline.TimelineTreeView.GridNode = class extends DataGrid.SortableDataGridNode
         container.createChild('div', 'activity-warning').title = Common.UIString('Not optimized: %s', deoptReason);
 
       name.textContent = Timeline.TimelineUIUtils.eventTitle(event);
-      const link = this._treeView._linkifyLocation(event);
-      if (link)
-        container.createChild('div', 'activity-link').appendChild(link);
-      icon.style.backgroundColor = Timeline.TimelineUIUtils.eventColor(event);
+      this._linkElement = this._treeView._linkifyLocation(event);
+      if (this._linkElement)
+        container.createChild('div', 'activity-link').appendChild(this._linkElement);
+      const eventStyle = Timeline.TimelineUIUtils.eventStyle(event);
+      const eventCategory = eventStyle.category;
+      UI.ARIAUtils.setAccessibleName(icon, eventCategory.title);
+      icon.style.backgroundColor = eventCategory.color;
     }
     return cell;
   }
@@ -665,7 +680,7 @@ Timeline.AggregatedTimelineTreeView = class extends Timeline.TimelineTreeView {
     super.updateContents(selection);
     const rootNode = this._dataGrid.rootNode();
     if (rootNode.children.length)
-      rootNode.children[0].revealAndSelect();
+      rootNode.children[0].select();
   }
 
   _updateExtensionResolver() {
@@ -772,7 +787,8 @@ Timeline.AggregatedTimelineTreeView = class extends Timeline.TimelineTreeView {
       {label: Common.UIString('Group by Subdomain'), value: groupBy.Subdomain},
       {label: Common.UIString('Group by URL'), value: groupBy.URL},
     ];
-    toolbar.appendToolbarItem(new UI.ToolbarSettingComboBox(options, this._groupBySetting));
+    toolbar.appendToolbarItem(
+        new UI.ToolbarSettingComboBox(options, this._groupBySetting, undefined /* optGroup */, ls`Group by`));
     toolbar.appendSpacer();
     toolbar.appendToolbarItem(this._splitWidget.createShowHideSidebarButton(Common.UIString('heaviest stack')));
   }
@@ -972,6 +988,14 @@ Timeline.CallTreeTimelineTreeView = class extends Timeline.AggregatedTimelineTre
 
   /**
    * @override
+   * @return {string}
+   */
+  getToolbarInputAccessiblePlaceHolder() {
+    return ls`Filter call tree`;
+  }
+
+  /**
+   * @override
    * @return {!TimelineModel.TimelineProfileTree.Node}
    */
   _buildTree() {
@@ -987,6 +1011,14 @@ Timeline.BottomUpTimelineTreeView = class extends Timeline.AggregatedTimelineTre
   constructor() {
     super();
     this._dataGrid.markColumnAsSortedBy('self', DataGrid.DataGrid.Order.Descending);
+  }
+
+  /**
+   * @override
+   * @return {string}
+   */
+  getToolbarInputAccessiblePlaceHolder() {
+    return ls`Filter bottom-up`;
   }
 
   /**

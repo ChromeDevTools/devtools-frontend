@@ -39,7 +39,7 @@ Resources.DatabaseTableView = class extends UI.SimpleView {
 
     this.refreshButton = new UI.ToolbarButton(Common.UIString('Refresh'), 'largeicon-refresh');
     this.refreshButton.addEventListener(UI.ToolbarButton.Events.Click, this._refreshButtonClicked, this);
-    this._visibleColumnsInput = new UI.ToolbarInput(Common.UIString('Visible columns'), 1);
+    this._visibleColumnsInput = new UI.ToolbarInput(Common.UIString('Visible columns'), '', 1);
     this._visibleColumnsInput.addEventListener(UI.ToolbarInput.Event.TextChanged, this._onVisibleColumnsChanged, this);
   }
 

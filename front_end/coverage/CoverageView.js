@@ -42,7 +42,7 @@ Coverage.CoverageView = class extends UI.VBox {
     /** @type {?RegExp} */
     this._textFilterRegExp = null;
     toolbar.appendSeparator();
-    this._filterInput = new UI.ToolbarInput(Common.UIString('URL filter'), 0.4, 1);
+    this._filterInput = new UI.ToolbarInput(Common.UIString('URL filter'), '', 0.4, 1);
     this._filterInput.setEnabled(false);
     this._filterInput.addEventListener(UI.ToolbarInput.Event.TextChanged, this._onFilterChanged, this);
     toolbar.appendToolbarItem(this._filterInput);

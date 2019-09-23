@@ -45,6 +45,14 @@ Timeline.EventsTimelineTreeView = class extends Timeline.TimelineTreeView {
 
   /**
    * @override
+   * @return {string}
+   */
+  getToolbarInputAccessiblePlaceHolder() {
+    return ls`Filter event log`;
+  }
+
+  /**
+   * @override
    * @return {!TimelineModel.TimelineProfileTree.Node}
    */
   _buildTree() {

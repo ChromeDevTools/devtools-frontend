@@ -1238,7 +1238,7 @@ Console.ConsoleViewFilter = class {
     const filterKeys = Object.values(Console.ConsoleFilter.FilterType);
     this._suggestionBuilder = new UI.FilterSuggestionBuilder(filterKeys);
     this._textFilterUI = new UI.ToolbarInput(
-        Common.UIString('Filter'), 0.2, 1, Common.UIString('e.g. /event\\d/ -cdn url:a.com'),
+        Common.UIString('Filter'), '', 0.2, 1, Common.UIString('e.g. /event\\d/ -cdn url:a.com'),
         this._suggestionBuilder.completions.bind(this._suggestionBuilder));
     this._textFilterSetting = Common.settings.createSetting('console.textFilter', '');
     if (this._textFilterSetting.get())

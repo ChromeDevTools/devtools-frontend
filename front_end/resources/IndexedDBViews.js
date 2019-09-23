@@ -222,7 +222,7 @@ Resources.IDBDataView = class extends UI.SimpleView {
     this._pageForwardButton.addEventListener(UI.ToolbarButton.Events.Click, this._pageForwardButtonClicked, this);
     editorToolbar.appendToolbarItem(this._pageForwardButton);
 
-    this._keyInput = new UI.ToolbarInput(ls`Start from key`, 0.5);
+    this._keyInput = new UI.ToolbarInput(ls`Start from key`, '', 0.5);
     this._keyInput.addEventListener(UI.ToolbarInput.Event.TextChanged, this._updateData.bind(this, false));
     editorToolbar.appendToolbarItem(this._keyInput);
     editorToolbar.appendToolbarItem(new UI.ToolbarSeparator());

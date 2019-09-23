@@ -60,8 +60,8 @@ ProtocolMonitor.ProtocolMonitor = class extends UI.VBox {
     this._filterParser = new TextUtils.FilterParser(keys);
     this._suggestionBuilder = new UI.FilterSuggestionBuilder(keys);
 
-    this._textFilterUI =
-        new UI.ToolbarInput(ls`Filter`, 1, .2, '', this._suggestionBuilder.completions.bind(this._suggestionBuilder));
+    this._textFilterUI = new UI.ToolbarInput(
+        ls`Filter`, '', 1, .2, '', this._suggestionBuilder.completions.bind(this._suggestionBuilder));
     this._textFilterUI.addEventListener(UI.ToolbarInput.Event.TextChanged, event => {
       const query = /** @type {string} */ (event.data);
       const filters = this._filterParser.parse(query);

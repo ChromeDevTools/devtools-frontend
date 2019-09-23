@@ -499,6 +499,14 @@ UI.ContextMenu = class extends UI.ContextSubMenu {
 
   /**
    * @param {!Object} target
+   * @return {boolean}
+   */
+  containsTarget(target) {
+    return this._pendingTargets.indexOf(target) >= 0;
+  }
+
+  /**
+   * @param {!Object} target
    */
   appendApplicableItems(target) {
     this._pendingPromises.push(self.runtime.allInstances(UI.ContextMenu.Provider, target));

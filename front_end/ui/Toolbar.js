@@ -558,12 +558,13 @@ UI.ToolbarButton.Events = {
 UI.ToolbarInput = class extends UI.ToolbarItem {
   /**
    * @param {string} placeholder
+   * @param {string=} accessiblePlaceholder
    * @param {number=} growFactor
    * @param {number=} shrinkFactor
    * @param {string=} tooltip
    * @param {(function(string, string, boolean=):!Promise<!UI.SuggestBox.Suggestions>)=} completions
    */
-  constructor(placeholder, growFactor, shrinkFactor, tooltip, completions) {
+  constructor(placeholder, accessiblePlaceholder, growFactor, shrinkFactor, tooltip, completions) {
     super(createElementWithClass('div', 'toolbar-input'));
 
     const internalPromptElement = this.element.createChild('div', 'toolbar-input-prompt');
@@ -577,7 +578,7 @@ UI.ToolbarInput = class extends UI.ToolbarItem {
     this._prompt.initialize(completions || (() => Promise.resolve([])), ' ');
     if (tooltip)
       this._prompt.setTitle(tooltip);
-    this._prompt.setPlaceholder(placeholder);
+    this._prompt.setPlaceholder(placeholder, accessiblePlaceholder);
     this._prompt.addEventListener(UI.TextPrompt.Events.TextChanged, this._onChangeCallback.bind(this));
 
     if (growFactor)
@@ -971,12 +972,15 @@ UI.ToolbarSettingComboBox = class extends UI.ToolbarComboBox {
    * @param {!Array<!{value: string, label: string}>} options
    * @param {!Common.Setting} setting
    * @param {string=} optGroup
+   * @param {string=} accessibleName
    */
-  constructor(options, setting, optGroup) {
+  constructor(options, setting, optGroup, accessibleName) {
     super(null);
     this._setting = setting;
     this._options = options;
     this._selectElement.addEventListener('change', this._valueChanged.bind(this), false);
+    if (accessibleName)
+      UI.ARIAUtils.setAccessibleName(this._selectElement, accessibleName);
     if (optGroup) {
       const optGroupElement = this._selectElement.createChild('optgroup');
       optGroupElement.label = optGroup;

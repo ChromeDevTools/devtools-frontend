@@ -43,7 +43,7 @@ Resources.ServiceWorkersView = class extends UI.VBox {
     });
 
     const toolbar = new UI.Toolbar('service-worker-filter-toolbar', this._otherSWFilter);
-    this._filter = new UI.ToolbarInput(ls`Filter service worker`, 1);
+    this._filter = new UI.ToolbarInput(ls`Filter service worker`, '', 1);
     this._filter.addEventListener(UI.ToolbarInput.Event.TextChanged, () => this._filterChanged());
     toolbar.appendToolbarItem(this._filter);
 

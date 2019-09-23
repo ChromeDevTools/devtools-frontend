@@ -223,7 +223,7 @@ Sources.SourceFormatter.ScriptMapping = class {
     }
     if (uiSourceCode.contentType().isScript()) {
       const rawLocations = Bindings.debuggerWorkspaceBinding.uiLocationToRawLocations(uiSourceCode, 0, 0);
-      return rawLocations.map(location => location.script());
+      return rawLocations.map(location => location.script()).filter(script => !!script);
     }
     return [];
   }

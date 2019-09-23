@@ -18,9 +18,6 @@
   <message name="IDS_DEVTOOLS_01ea16e89d02c33ef2a6a5db67665e0a" desc="Text in Timeline Flame Chart Data Provider of the Performance panel">
     Main — <ph name="TRACK_URL">$1s<ex>example.com</ex></ph>
   </message>
-  <message name="IDS_DEVTOOLS_02a3a357710cc2a5dfdfb74ed012fb59" desc="Text in Timeline UIUtils of the Performance panel">
-    Url
-  </message>
   <message name="IDS_DEVTOOLS_04cbdd8baeb482d9ff2e48b186479a06" desc="Text in Timeline UIUtils of the Performance panel">
     Streaming Wasm Response
   </message>

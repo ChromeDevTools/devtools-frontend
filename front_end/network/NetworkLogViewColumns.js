@@ -654,16 +654,11 @@ Network.NetworkLogViewColumns._defaultColumns = [
     subtitle: Common.UIString('Path'),
     visible: true,
     weight: 20,
+    hideable: false,
     nonSelectable: false,
     alwaysVisible: true,
     sortingFunction: Network.NetworkRequestNode.NameComparator
   },
-  {
-    id: 'path',
-    title: ls`Path`,
-    sortingFunction: Network.NetworkRequestNode.RequestPropertyComparator.bind(null, 'path')
-  },
-  {id: 'url', title: ls`Url`, sortingFunction: Network.NetworkRequestNode.RequestPropertyComparator.bind(null, 'url')},
   {
     id: 'method',
     title: Common.UIString('Method'),

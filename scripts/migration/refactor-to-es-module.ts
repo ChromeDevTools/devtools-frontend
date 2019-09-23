@@ -6,7 +6,7 @@ import { parse, print, types } from 'recast';
 import fs from 'fs';
 import path from 'path';
 import { promisify } from 'util';
-import { IdentifierKind, MemberExpressionKind, ExpressionKind } from 'ast-types/gen/kinds';
+import { IdentifierKind, MemberExpressionKind, ExpressionKind, CommentKind } from 'ast-types/gen/kinds';
 
 const readFile = promisify(fs.readFile);
 const writeFile = promisify(fs.writeFile);
@@ -40,8 +40,7 @@ function getTopLevelMemberExpression(expression: MemberExpressionKind): any {
 }
 
 function rewriteSource(source: string, refactoringNamespace: string, refactoringFileName: string) {
-  const exportedMembers: IdentifierKind[] = [];
-  let needToObjectAssign = false;
+  const exportedMembers: {prop: IdentifierKind, comments: CommentKind[]}[] = [];
   const ast = parse(source);
 
   ast.program.body = ast.program.body.map((expression: any) => {
@@ -68,22 +67,18 @@ function rewriteSource(source: string, refactoringNamespace: string, refactoring
 
               declarationStatement.comments = expression.comments;
 
-              if (needToObjectAssign) {
-                console.error(`Multiple exports with the same name is invalid!`);
-              }
-
-              // Since there is a default export (E.g. UI.ARIAUtils and UI.ARIAUtils.Foo), we need to assign Foo to UI.ARIAUtils to make sure that reference keeps on working
-              needToObjectAssign = true;
-
               return declarationStatement;
             }
 
             console.error(`Nested field "${assignment.left.property.name}" detected! Requires manual changes.`);
+            expression.comments = expression.comments || [];
+            expression.comments.push(b.commentLine(' TODO(http://crbug.com/1006759): Fix exported symbol'));
             return expression;
           }
 
           const propertyName = assignment.left.property;
           const {object, property} = topLevelAssignment;
+
 
           if (object.type === 'Identifier' && property.type === 'Identifier') {
             // UI
@@ -95,7 +90,7 @@ function rewriteSource(source: string, refactoringNamespace: string, refactoring
               const declaration = createReplacementDeclaration(propertyName, assignment.right);
 
               if (declaration) {
-                exportedMembers.push(propertyName);
+                exportedMembers.push({prop: propertyName, comments: expression.comments || [b.commentLine(' TODO(http://crbug.com/1006759): Add type information if necessary')]});
                 declaration.comments = expression.comments;
                 return declaration;
               }
@@ -109,20 +104,40 @@ function rewriteSource(source: string, refactoringNamespace: string, refactoring
   });
 
   // self.UI = self.UI || {};
-  const legacyNamespaceName = b.memberExpression(b.identifier('self'), b.identifier(refactoringNamespace), false);
-  const legacyNamespaceOr = b.logicalExpression("||", legacyNamespaceName, b.objectExpression([]));
-  ast.program.body.push(b.expressionStatement.from({expression: b.assignmentExpression('=', legacyNamespaceName, legacyNamespaceOr), comments: [b.commentBlock('Legacy exported object', true, false)]}));
-
-  // self.UI.ARIAUtils = {properties};
-  const legacyNamespaceExport = b.memberExpression(b.identifier('self'), b.memberExpression(b.identifier(refactoringNamespace), b.identifier(refactoringFileName), false), false);
-  let exportedObjectProperties: ExpressionKind = b.objectExpression(exportedMembers.map(prop => b.objectProperty.from({key: prop, value: prop, shorthand: true })));
-
-  if (needToObjectAssign) {
-    // self.UI.ARIAUtils = Object.assign(ARIAUtils, {properties})
-    exportedObjectProperties = b.callExpression(b.memberExpression(b.identifier('Object'), b.identifier('assign'), false), [b.identifier(refactoringFileName), exportedObjectProperties]);
+  {
+    const legacyNamespaceName = b.memberExpression(b.identifier('self'), b.identifier(refactoringNamespace), false);
+    const legacyNamespaceOr = b.logicalExpression("||", legacyNamespaceName, b.objectExpression([]));
+    ast.program.body.push(b.expressionStatement.from({expression: b.assignmentExpression('=', legacyNamespaceName, legacyNamespaceOr), comments: [b.commentBlock('Legacy exported object', true, false)]}));
   }
 
-  ast.program.body.push(b.expressionStatement(b.assignmentExpression('=', legacyNamespaceExport, exportedObjectProperties)));
+  // UI = UI || {};
+  const legacyNamespaceName = b.identifier(refactoringNamespace)
+  {
+    const legacyNamespaceOr = b.logicalExpression("||", legacyNamespaceName, b.objectExpression([]));
+    ast.program.body.push(b.expressionStatement.from({expression: b.assignmentExpression('=', legacyNamespaceName, legacyNamespaceOr), comments: [b.commentBlock('Legacy exported object', true, false)]}));
+  }
+
+  // UI.ARIAUtils = ARIAUtils;
+  const legacyNamespaceExport = b.memberExpression(b.identifier(refactoringNamespace), b.identifier(refactoringFileName), false);
+
+  ast.program.body.push(b.expressionStatement(b.assignmentExpression.from({
+    operator: '=',
+    left: legacyNamespaceExport,
+    right: b.identifier(refactoringFileName),
+    comments: [b.commentLine(' TODO(http://crbug.com/1006759): Add type information if necessary')]
+  })));
+
+  // UI.ARIAUtils.Foo = Foo;
+  exportedMembers.forEach(({prop, comments}) => {
+    const legacyExportedProperty = b.memberExpression(legacyNamespaceExport, b.identifier(prop.name), false);
+
+    ast.program.body.push(b.expressionStatement(b.assignmentExpression.from({
+      operator: '=',
+      left: legacyExportedProperty,
+      right: b.identifier(prop.name),
+      comments,
+    })));
+  });
 
   return print(ast).code;
 }

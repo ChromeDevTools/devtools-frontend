@@ -181,6 +181,9 @@
   <message name="IDS_DEVTOOLS_6db0d0f1832acb4a56fc82f2317e61e6" desc="Text in Profile View of a profiler tool">
     Parsing…
   </message>
+  <message name="IDS_DEVTOOLS_6de06ad67fbc56af1a7a5b16a41d2f2c" desc="Aria-label for profiles view combobox in memory tool">
+    Profile view mode
+  </message>
   <message name="IDS_DEVTOOLS_6e9dd9cf5419fd65f433f1e4bbc5e6ad" desc="Text in Heap Profile View of a profiler tool">
     SAMPLING PROFILES
   </message>

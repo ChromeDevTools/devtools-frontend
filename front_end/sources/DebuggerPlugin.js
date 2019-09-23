@@ -654,6 +654,7 @@ Sources.DebuggerPlugin = class extends Sources.UISourceCodeFrame.Plugin {
         this._createNewBreakpoint(editorLineNumber, result.condition, true);
     });
     this._textEditor.addDecoration(decorationElement, editorLineNumber);
+    dialog.markAsExternallyManaged();
     dialog.show(decorationElement);
   }
 

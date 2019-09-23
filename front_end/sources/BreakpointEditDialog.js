@@ -48,6 +48,7 @@ Sources.BreakpointEditDialog = class extends UI.Widget {
       this._editor.configureAutocomplete(ObjectUI.JavaScriptAutocompleteConfig.createConfigForEditor(this._editor));
       if (oldCondition)
         this._editor.setText(oldCondition);
+      this._editor.widget().markAsExternallyManaged();
       this._editor.widget().show(this.contentElement);
       this._editor.setSelection(this._editor.fullRange());
       this._editor.widget().focus();

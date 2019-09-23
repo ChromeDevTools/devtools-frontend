@@ -308,7 +308,8 @@ UI.Widget = class extends Common.Object {
 
     // Reparent
     if (this.element.parentElement !== parentElement) {
-      UI.Widget._incrementWidgetCounter(parentElement, this.element);
+      if (!this._externallyManaged)
+        UI.Widget._incrementWidgetCounter(parentElement, this.element);
       if (insertBefore)
         UI.Widget._originalInsertBefore.call(parentElement, this.element, insertBefore);
       else
@@ -585,6 +586,19 @@ UI.Widget = class extends Common.Object {
       this._parentWidget.invalidateConstraints();
     else
       this.doLayout();
+  }
+
+  // Excludes the widget from being tracked by its parents/ancestors via
+  // __widgetCounter because the widget is being handled by external code.
+  // Widgets marked as being externally managed are responsible for
+  // finishing out their own lifecycle (i.e. calling detach() before being
+  // removed from the DOM). This is e.g. used for CodeMirror.
+  //
+  // Also note that this must be called before the widget is shown so that
+  // so that its ancestor's __widgetCounter is not incremented.
+  markAsExternallyManaged() {
+    UI.Widget.__assert(!this._parentWidget, 'Attempt to mark widget as externally managed after insertion to the DOM');
+    this._externallyManaged = true;
   }
 };
 

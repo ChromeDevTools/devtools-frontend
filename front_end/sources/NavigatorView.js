@@ -755,15 +755,17 @@ Sources.NavigatorView = class extends UI.VBox {
 
     const contextMenu = new UI.ContextMenu(event);
 
-    Sources.NavigatorView.appendSearchItem(contextMenu, path);
+    if (project.type() === Workspace.projectTypes.FileSystem) {
+      Sources.NavigatorView.appendSearchItem(contextMenu, path);
 
-    const folderPath = Common.ParsedURL.urlToPlatformPath(
-        Persistence.FileSystemWorkspaceBinding.completeURL(project, path), Host.isWin());
-    contextMenu.revealSection().appendItem(
-        Common.UIString('Open folder'), () => InspectorFrontendHost.showItemInFolder(folderPath));
-    if (project.canCreateFile()) {
-      contextMenu.defaultSection().appendItem(
-          Common.UIString('New file'), this._handleContextMenuCreate.bind(this, project, path));
+      const folderPath = Common.ParsedURL.urlToPlatformPath(
+          Persistence.FileSystemWorkspaceBinding.completeURL(project, path), Host.isWin());
+      contextMenu.revealSection().appendItem(
+          Common.UIString('Open folder'), () => InspectorFrontendHost.showItemInFolder(folderPath));
+      if (project.canCreateFile()) {
+        contextMenu.defaultSection().appendItem(
+            Common.UIString('New file'), this._handleContextMenuCreate.bind(this, project, path));
+      }
     }
 
     if (project.canExcludeFolder(path)) {

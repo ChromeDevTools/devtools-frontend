@@ -310,7 +310,8 @@ Persistence.Automapping = class {
    */
   _createBinding(networkSourceCode) {
     if (networkSourceCode.url().startsWith('file://') || networkSourceCode.url().startsWith('snippet://')) {
-      const fileSourceCode = this._fileSystemUISourceCodes.get(networkSourceCode.url());
+      const decodedUrl = decodeURI(networkSourceCode.url());
+      const fileSourceCode = this._fileSystemUISourceCodes.get(decodedUrl);
       const status =
           fileSourceCode ? new Persistence.AutomappingStatus(networkSourceCode, fileSourceCode, false) : null;
       return Promise.resolve(status);
@@ -322,8 +323,9 @@ Persistence.Automapping = class {
 
     if (networkPath.endsWith('/'))
       networkPath += 'index.html';
+    const urlDecodedNetworkPath = decodeURI(networkPath);
     const similarFiles =
-        this._filesIndex.similarFiles(networkPath).map(path => this._fileSystemUISourceCodes.get(path));
+        this._filesIndex.similarFiles(urlDecodedNetworkPath).map(path => this._fileSystemUISourceCodes.get(path));
     if (!similarFiles.length)
       return Promise.resolve(/** @type {?Persistence.AutomappingStatus} */ (null));
 

@@ -912,34 +912,34 @@ HeapSnapshotWorker.HeapSnapshot = class {
     this._firstDominatedNodeIndex = new Uint32Array(this.nodeCount + 1);
     this._dominatedNodes = new Uint32Array(this.nodeCount - 1);
 
-    this._progress.updateStatus('Building edge indexes\u2026');
+    this._progress.updateStatus(ls`Building edge indexes\u2026`);
     this._buildEdgeIndexes();
-    this._progress.updateStatus('Building retainers\u2026');
+    this._progress.updateStatus(ls`Building retainers\u2026`);
     this._buildRetainers();
-    this._progress.updateStatus('Calculating node flags\u2026');
+    this._progress.updateStatus(ls`Calculating node flags\u2026`);
     this.calculateFlags();
-    this._progress.updateStatus('Calculating distances\u2026');
+    this._progress.updateStatus(ls`Calculating distances\u2026`);
     this.calculateDistances();
-    this._progress.updateStatus('Building postorder index\u2026');
+    this._progress.updateStatus(ls`Building postorder index\u2026`);
     const result = this._buildPostOrderIndex();
     // Actually it is array that maps node ordinal number to dominator node ordinal number.
-    this._progress.updateStatus('Building dominator tree\u2026');
+    this._progress.updateStatus(ls`Building dominator tree\u2026`);
     this._dominatorsTree =
         this._buildDominatorTree(result.postOrderIndex2NodeOrdinal, result.nodeOrdinal2PostOrderIndex);
-    this._progress.updateStatus('Calculating retained sizes\u2026');
+    this._progress.updateStatus(ls`Calculating retained sizes\u2026`);
     this._calculateRetainedSizes(result.postOrderIndex2NodeOrdinal);
-    this._progress.updateStatus('Building dominated nodes\u2026');
+    this._progress.updateStatus(ls`Building dominated nodes\u2026`);
     this._buildDominatedNodes();
-    this._progress.updateStatus('Calculating statistics\u2026');
+    this._progress.updateStatus(ls`Calculating statistics\u2026`);
     this.calculateStatistics();
-    this._progress.updateStatus('Calculating samples\u2026');
+    this._progress.updateStatus(ls`Calculating samples\u2026`);
     this._buildSamples();
-    this._progress.updateStatus('Building locations\u2026');
+    this._progress.updateStatus(ls`Building locations\u2026`);
     this._buildLocationMap();
-    this._progress.updateStatus('Finished processing.');
+    this._progress.updateStatus(ls`Finished processing.`);
 
     if (this._profile.snapshot.trace_function_count) {
-      this._progress.updateStatus('Building allocation statistics\u2026');
+      this._progress.updateStatus(ls`Building allocation statistics\u2026`);
       const nodes = this.nodes;
       const nodesLength = nodes.length;
       const nodeFieldCount = this._nodeFieldCount;
@@ -956,7 +956,7 @@ HeapSnapshotWorker.HeapSnapshot = class {
         stats.ids.push(node.id());
       }
       this._allocationProfile = new HeapSnapshotWorker.AllocationProfile(this._profile, liveObjects);
-      this._progress.updateStatus('Done');
+      this._progress.updateStatus(ls`Done`);
     }
   }
 

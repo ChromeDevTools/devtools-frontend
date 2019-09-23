@@ -1,10 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <grit-part>
+  <message name="IDS_DEVTOOLS_0f705e2ea0d470cf4e78f85ce73abc3c" desc="Text to indicate the status of a heap snapshot in the Performance Pane">
+    Calculating samples…
+  </message>
+  <message name="IDS_DEVTOOLS_15e828e7c9470740e5da2bd96f26809f" desc="Text to indicate the status of a heap snapshot in the Performance Pane">
+    Building locations…
+  </message>
+  <message name="IDS_DEVTOOLS_1e6dbaafd43ee6c7ce436757c5563160" desc="Text to indicate the status of a heap snapshot in the Performance Pane">
+    Building retainers…
+  </message>
   <message name="IDS_DEVTOOLS_239026e523e6f9780426e03637c5b4a4" desc="Text in Heap Snapshot Loader of the Memory panel when taking a heap snapshot">
     Loading strings…
   </message>
+  <message name="IDS_DEVTOOLS_42b1c19d788d56dae8f4274ae0e06388" desc="Text to indicate the status of a heap snapshot in the Performance Pane">
+    Building dominated nodes…
+  </message>
+  <message name="IDS_DEVTOOLS_508b42300b35ed4e3062adf330b76aad" desc="Text to indicate the status of a heap snapshot in the Performance Pane">
+    Building dominator tree…
+  </message>
+  <message name="IDS_DEVTOOLS_58d7770bfad35df21bae2d5820e3be52" desc="Text to indicate the status of a heap snapshot in the Performance Pane">
+    Building edge indexes…
+  </message>
   <message name="IDS_DEVTOOLS_58e8a5ca400f834526b09d680ddbc5d5" desc="Text in Heap Snapshot Loader of the Memory panel when taking a heap snapshot">
     Loading samples…
+  </message>
+  <message name="IDS_DEVTOOLS_5e3a0ca620683b8428b4dbda33bf1f5d" desc="Text to indicate the status of a heap snapshot in the Performance Pane">
+    Finished processing.
   </message>
   <message name="IDS_DEVTOOLS_6a542856aa30e3e814eaed146e67b2fd" desc="Text in Heap Snapshot Loader of the Memory panel when taking a heap snapshot">
     Loading nodes… <ph name="PH1">$1d<ex>38</ex></ph>%%
@@ -12,8 +33,17 @@
   <message name="IDS_DEVTOOLS_7da2f27d62adf93b01c2c041f37667b9" desc="Text in Heap Snapshot Loader of the Memory panel when taking a heap snapshot">
     Processing snapshot…
   </message>
+  <message name="IDS_DEVTOOLS_82e20e6748434e5048a36bf2d4b33578" desc="Text to indicate the status of a heap snapshot in the Performance Pane">
+    Calculating retained sizes…
+  </message>
   <message name="IDS_DEVTOOLS_84c0ec1ee2bc769daf265e63bd793201" desc="Text in Heap Snapshot Loader of the Memory panel when taking a heap snapshot">
     Loading snapshot info…
+  </message>
+  <message name="IDS_DEVTOOLS_93093f55895541ab4360826523fe066e" desc="Text to indicate the status of a heap snapshot in the Performance Pane">
+    Building postorder index…
+  </message>
+  <message name="IDS_DEVTOOLS_991feea6b04d59d7115962d5427a64fe" desc="Text to indicate the status of a heap snapshot in the Performance Pane">
+    Calculating node flags…
   </message>
   <message name="IDS_DEVTOOLS_9bdae72f224411b7f1027a2c5c7c519b" desc="Text in Heap Snapshot Loader of the Memory panel when taking a heap snapshot">
     Loading locations…
@@ -21,7 +51,22 @@
   <message name="IDS_DEVTOOLS_b0da59cea23d810234b75c2357748ad3" desc="Text in Heap Snapshot Loader of the Memory panel when taking a heap snapshot">
     Loading edges… <ph name="PH1">$1d<ex>30</ex></ph>%%
   </message>
+  <message name="IDS_DEVTOOLS_bfb105e5a3da1a90bd1eb98b4fa36f3f" desc="Text to indicate the status of a heap snapshot in the Performance Pane">
+    Calculating statistics…
+  </message>
+  <message name="IDS_DEVTOOLS_d0622d0589a212a59cf8b5859e58c670" desc="Text to indicate the status of a heap snapshot in the Performance Pane">
+    Calculating distances…
+  </message>
   <message name="IDS_DEVTOOLS_d67d63eca2747a30e1ffaeb04389c0bb" desc="Text in Heap Snapshot Loader of the Memory panel when taking a heap snapshot">
     Loading allocation traces… <ph name="PH1">$1d<ex>30</ex></ph>%%
+  </message>
+  <message name="IDS_DEVTOOLS_d86c288a983db9a91432d2d13386170f" desc="Text to indicate the status of a heap snapshot in the Performance Pane">
+    Building allocation statistics…
+  </message>
+  <message name="IDS_DEVTOOLS_f92965e2c8a7afb3c1b9a5c09a263636" desc="Text to indicate the status of a heap snapshot in the Performance Pane">
+    Done
+  </message>
+  <message name="IDS_DEVTOOLS_fae03f5c27a9765eec716f3e6c600945" desc="Text to indicate the status of a heap snapshot in the Performance Pane">
+    Parsing strings…
   </message>
 </grit-part>

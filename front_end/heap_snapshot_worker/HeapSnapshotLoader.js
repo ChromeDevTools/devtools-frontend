@@ -109,7 +109,7 @@ HeapSnapshotWorker.HeapSnapshotLoader = class {
   }
 
   _parseStringsArray() {
-    this._progress.updateStatus('Parsing strings\u2026');
+    this._progress.updateStatus(ls`Parsing strings\u2026`);
     const closingBracketIndex = this._json.lastIndexOf(']');
     if (closingBracketIndex === -1)
       throw new Error('Incomplete JSON');

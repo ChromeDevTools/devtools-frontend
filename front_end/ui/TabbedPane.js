@@ -308,9 +308,10 @@ UI.TabbedPane = class extends UI.VBox {
   /**
    * @param {string} id
    * @param {boolean=} userGesture
+   * @param {boolean=} forceFocus
    * @return {boolean}
    */
-  selectTab(id, userGesture) {
+  selectTab(id, userGesture, forceFocus) {
     if (this._currentTabLocked)
       return false;
     const focused = this._viewHasFocus();
@@ -330,7 +331,7 @@ UI.TabbedPane = class extends UI.VBox {
     this._tabsHistory.splice(0, 0, tab);
 
     this._updateTabElements();
-    if (focused)
+    if (focused || forceFocus)
       this.focus();
 
     const eventData = {tabId: id, view: tab.view, isUserGesture: userGesture};
@@ -603,7 +604,7 @@ UI.TabbedPane = class extends UI.VBox {
    */
   _dropDownMenuItemSelected(tab) {
     this._lastSelectedOverflowTab = tab;
-    this.selectTab(tab.id, true);
+    this.selectTab(tab.id, true, true);
   }
 
   _totalWidth() {

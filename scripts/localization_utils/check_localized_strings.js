@@ -188,6 +188,12 @@ function validateGrdpFile(dir, grdpFiles, grdFileContent, shouldAutoFix, renameF
  * Parse localizable resources.
  */
 async function parseLocalizableResourceMaps() {
+  if (frontendStrings.size === 0 && IDSkeys.size === 0)
+    await parseLocalizableResourceMapsHelper();
+  return [frontendStrings, IDSkeys];
+}
+
+async function parseLocalizableResourceMapsHelper() {
   const grdpToFiles = new Map();
   const dirs = devtoolsFrontendDirs || await localizationUtils.getChildDirectoriesFromDirectory(devtoolsFrontendPath);
   const grdpToFilesPromises = dirs.map(dir => {
@@ -485,7 +491,7 @@ function addMessage(expectedIDSKey, actualIDSKey, grdpPath, line, description) {
  * with grdp <message>s and report error of resources to add,
  * remove or modify.
  */
-async function getAndReportResourcesToAdd() {
+function getAndReportResourcesToAdd() {
   const keysToAddToGRD = getMessagesToAdd();
   if (keysToAddToGRD.size === 0)
     return;
@@ -625,8 +631,6 @@ function getLongestDescription(messages) {
 }
 
 module.exports = {
-  frontendStrings,
-  IDSkeys,
   parseLocalizableResourceMaps,
   getAndReportIDSKeysToModify,
   getAndReportResourcesToAdd,

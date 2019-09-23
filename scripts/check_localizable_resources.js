@@ -33,7 +33,7 @@ async function main() {
     if (shouldAutoFix)
       await autofix(error);
     else
-      await getErrors(error);
+      getErrors();
   } catch (e) {
     console.log(e.stack);
     console.log(`Error: ${e.message}`);
@@ -43,11 +43,12 @@ async function main() {
 
 main();
 
-async function getErrors(existingError) {
-  const toAddError = await checkLocalizedStrings.getAndReportResourcesToAdd();
+function getErrors(existingError) {
+  const toAddError = checkLocalizedStrings.getAndReportResourcesToAdd();
   const toModifyError = checkLocalizedStrings.getAndReportIDSKeysToModify();
   const toRemoveError = checkLocalizedStrings.getAndReportResourcesToRemove();
-  let error = `${existingError}\n${toAddError || ''}${toModifyError || ''}${toRemoveError || ''}`;
+  let error =
+      `${existingError ? `${existingError}\n` : ''}${toAddError || ''}${toModifyError || ''}${toRemoveError || ''}`;
 
   if (error === '') {
     console.log('DevTools localizable resources checker passed.');

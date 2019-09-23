@@ -13,7 +13,6 @@
  */
 
 const fs = require('fs');
-const path = require('path');
 const {promisify} = require('util');
 const writeFileAsync = promisify(fs.writeFile);
 const appendFileAsync = promisify(fs.appendFile);
@@ -25,12 +24,16 @@ const grdpFileEnd = '</grit-part>';
 
 async function main() {
   try {
-    await checkLocalizedStrings.parseLocalizableResourceMaps();
+    const shouldAutoFix = process.argv.includes('--autofix');
+    const error = await checkLocalizedStrings.validateGrdAndGrdpFiles(shouldAutoFix);
+    if (error !== '' && !shouldAutoFix)
+      throw new Error(error);
 
-    if (process.argv.includes('--autofix'))
-      await autofix();
+    await checkLocalizedStrings.parseLocalizableResourceMaps();
+    if (shouldAutoFix)
+      await autofix(error);
     else
-      await getErrors();
+      await getErrors(error);
   } catch (e) {
     console.log(e.stack);
     console.log(`Error: ${e.message}`);
@@ -40,11 +43,11 @@ async function main() {
 
 main();
 
-async function getErrors() {
+async function getErrors(existingError) {
   const toAddError = await checkLocalizedStrings.getAndReportResourcesToAdd();
   const toModifyError = checkLocalizedStrings.getAndReportIDSKeysToModify();
   const toRemoveError = checkLocalizedStrings.getAndReportResourcesToRemove();
-  let error = `${toAddError || ''}${toModifyError || ''}${toRemoveError || ''}`;
+  let error = `${existingError}\n${toAddError || ''}${toModifyError || ''}${toRemoveError || ''}`;
 
   if (error === '') {
     console.log('DevTools localizable resources checker passed.');
@@ -56,20 +59,25 @@ async function getErrors() {
   throw new Error(error);
 }
 
-async function autofix() {
+async function autofix(existingError) {
   const keysToAddToGRD = checkLocalizedStrings.getMessagesToAdd();
   const keysToRemoveFromGRD = checkLocalizedStrings.getMessagesToRemove();
   const resourceAdded = await addResourcesToGRDP(keysToAddToGRD, keysToRemoveFromGRD);
   const resourceModified = await modifyResourcesInGRDP();
   const resourceRemoved = await removeResourcesFromGRDP(keysToRemoveFromGRD);
 
-  if (!resourceAdded && !resourceRemoved && !resourceModified) {
+  if (!resourceAdded && !resourceRemoved && !resourceModified && existingError === '') {
     console.log('DevTools localizable resources checker passed.');
     return;
   }
 
   let message =
-      'Found changes to localizable DevTools strings.\nDevTools localizable resources checker has updated the appropriate grdp file(s).';
+      'Found changes to localizable DevTools resources.\nDevTools localizable resources checker has updated the appropriate grd/grdp file(s).';
+  if (existingError !== '') {
+    message +=
+        `\nGrd/Grdp files have been updated. Please verify the updated grdp files and/or the <part> file references in ${
+            localizationUtils.getRelativeFilePathFromSrc(localizationUtils.GRD_PATH)} are correct.`;
+  }
   if (resourceAdded)
     message += '\nManually write a description for any new <message> entries.';
   if (resourceRemoved && duplicateRemoved(keysToRemoveFromGRD))
@@ -124,8 +132,7 @@ async function addResourcesToGRDP(keysToAddToGRD, keysToRemoveFromGRD) {
 
       // Create a new grdp file and reference it in the parent grd file
       promises.push(appendFileAsync(grdpFilePath, `${grdpFileStart}${grdpMessagesToAdd}${grdpFileEnd}`));
-      grdpFilePathsToAdd.push(
-          path.relative(path.dirname(localizationUtils.GRD_PATH), grdpFilePath).split(path.sep).join('/'));
+      grdpFilePathsToAdd.push(grdpFilePath);
       continue;
     }
 
@@ -162,43 +169,9 @@ async function addResourcesToGRDP(keysToAddToGRD, keysToRemoveFromGRD) {
 
     promises.push(writeFileAsync(grdpFilePath, newGrdpFileContent));
   }
-  promises.push(addChildGRDPFilePathsToGRD(grdpFilePathsToAdd.sort()));
+  promises.push(localizationUtils.addChildGRDPFilePathsToGRD(grdpFilePathsToAdd.sort()));
   await Promise.all(promises);
   return true;
-}
-
-async function addChildGRDPFilePathsToGRD(relativeGrdpFilePaths) {
-  function createPartFileEntry(relativeGrdpFilePath) {
-    return `      <part file="${relativeGrdpFilePath}" />\n`;
-  }
-
-  const grdFileContent = await localizationUtils.parseFileContent(localizationUtils.GRD_PATH);
-  const grdLines = grdFileContent.split('\n');
-
-  let newGrdFileContent = '';
-  for (let i = 0; i < grdLines.length; i++) {
-    const grdLine = grdLines[i];
-    // match[0]: full match
-    // match[1]: relative grdp file path
-    const match = grdLine.match(/<part file="(.*?)"/);
-    if (match) {
-      const relativeGrdpFilePathsRemaining = [];
-      for (const relativeGrdpFilePath of relativeGrdpFilePaths) {
-        if (relativeGrdpFilePath < match[1])
-          newGrdFileContent += createPartFileEntry(relativeGrdpFilePath);
-        else
-          relativeGrdpFilePathsRemaining.push(relativeGrdpFilePath);
-      }
-      relativeGrdpFilePaths = relativeGrdpFilePathsRemaining;
-    } else if (grdLine.includes('</messages>')) {
-      for (const relativeGrdpFilePath of relativeGrdpFilePaths)
-        newGrdFileContent += createPartFileEntry(relativeGrdpFilePath);
-    }
-    newGrdFileContent += grdLine;
-    if (i < grdLines.length - 1)
-      newGrdFileContent += '\n';
-  }
-  return writeFileAsync(localizationUtils.GRD_PATH, newGrdFileContent);
 }
 
 // Return true if any resources are updated

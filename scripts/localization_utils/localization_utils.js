@@ -9,6 +9,7 @@ const path = require('path');
 const readFileAsync = promisify(fs.readFile);
 const readDirAsync = promisify(fs.readdir);
 const statAsync = promisify(fs.stat);
+const writeFileAsync = promisify(fs.writeFile);
 
 const esprimaTypes = {
   BI_EXPR: 'BinaryExpression',
@@ -253,7 +254,7 @@ function createGrdpMessage(ids, stringObj) {
 }
 
 function getIDSKey(str) {
-  return `${IDSPrefix}${md5(str)}`
+  return `${IDSPrefix}${md5(str)}`;
 }
 
 // Get line number in the file of a character at given index
@@ -262,17 +263,67 @@ function lineNumberOfIndex(str, index) {
   return stringToIndex.split('\n').length;
 }
 
+// Relative file path from grdp file with back slash replaced with forward slash
+function getRelativeGrdpPath(grdpPath) {
+  return path.relative(path.dirname(GRD_PATH), grdpPath).split(path.sep).join('/');
+}
+
+function getAbsoluteGrdpPath(relativeGrdpFilePath) {
+  return path.resolve(path.dirname(GRD_PATH), relativeGrdpFilePath);
+}
+
+// Create a <part> entry, given absolute path of a grdp file
+function createPartFileEntry(grdpFilePath) {
+  const relativeGrdpFilePath = getRelativeGrdpPath(grdpFilePath);
+  return `      <part file="${relativeGrdpFilePath}" />\n`;
+}
+
+// grdpFilePaths are sorted and are absolute file paths
+async function addChildGRDPFilePathsToGRD(grdpFilePaths) {
+  const grdFileContent = await parseFileContent(GRD_PATH);
+  const grdLines = grdFileContent.split('\n');
+
+  let newGrdFileContent = '';
+  for (let i = 0; i < grdLines.length; i++) {
+    const grdLine = grdLines[i];
+    // match[0]: full match
+    // match[1]: relative grdp file path
+    const match = grdLine.match(/<part file="(.*?)"/);
+    if (match) {
+      const grdpFilePathsRemaining = [];
+      for (const grdpFilePath of grdpFilePaths) {
+        if (grdpFilePath < getAbsoluteGrdpPath(match[1]))
+          newGrdFileContent += createPartFileEntry(grdpFilePath);
+        else
+          grdpFilePathsRemaining.push(grdpFilePath);
+      }
+      grdpFilePaths = grdpFilePathsRemaining;
+    } else if (grdLine.includes('</messages>')) {
+      for (const grdpFilePath of grdpFilePaths)
+        newGrdFileContent += createPartFileEntry(grdpFilePath);
+    }
+    newGrdFileContent += grdLine;
+    if (i < grdLines.length - 1)
+      newGrdFileContent += '\n';
+  }
+  return writeFileAsync(GRD_PATH, newGrdFileContent);
+}
+
 module.exports = {
+  addChildGRDPFilePathsToGRD,
   createGrdpMessage,
+  createPartFileEntry,
   escodegen,
   esprima,
   esprimaTypes,
+  getAbsoluteGrdpPath,
   getChildDirectoriesFromDirectory,
   getFilesFromDirectory,
   getIDSKey,
   getLocalizationCase,
   getLocationMessage,
   getRelativeFilePathFromSrc,
+  getRelativeGrdpPath,
   GRD_PATH,
   IDSPrefix,
   isLocalizationCall,

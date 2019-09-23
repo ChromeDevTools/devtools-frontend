@@ -103,7 +103,7 @@ Profiler.ProfileView = class extends UI.SimpleView {
     ]);
 
     const options =
-        new Map(viewTypes.map(type => [type, this.viewSelectComboBox.createOption(optionNames.get(type), '', type)]));
+        new Map(viewTypes.map(type => [type, this.viewSelectComboBox.createOption(optionNames.get(type), type)]));
     const optionName = this._viewType.get() || viewTypes[0];
     const option = options.get(optionName) || options.get(viewTypes[0]);
     this.viewSelectComboBox.select(option);

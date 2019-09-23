@@ -436,9 +436,6 @@ Click the reload button <ph name="RELOADBUTTON">$3s<ex>reload</ex></ph> or hit <
   <message name="IDS_DEVTOOLS_6a389f626da11df07508bf251de59c23" desc="Text in Timeline UIUtils of the Performance panel">
     Frame Start
   </message>
-  <message name="IDS_DEVTOOLS_6aafe894685594a908a8996d68e88028" desc="Text in Events Timeline Tree View of the Performance panel">
-    Hide records shorter than <ph name="DURATIONMS">$1d<ex>2</ex></ph> ms
-  </message>
   <message name="IDS_DEVTOOLS_6c906c5f560faeb38f51683bc22fb212" desc="Text in Timeline Tree View of the Performance panel">
     Group by Subdomain
   </message>
@@ -842,9 +839,6 @@ Then, zoom and pan the timeline with the mousewheel or <ph name="NAVIGATENODE">$
   </message>
   <message name="IDS_DEVTOOLS_dc16531c312e4d4c024ffd577d123887" desc="Text in Counters Graph of the Performance panel">
     Listeners
-  </message>
-  <message name="IDS_DEVTOOLS_dc63e2b8b0f6f66d3dd2dc5d49483eec" desc="Text in Events Timeline Tree View of the Performance panel">
-    Show all records
   </message>
   <message name="IDS_DEVTOOLS_dd694dc279a5fbefed6a8323c15f4e67" desc="Text in Timeline UIUtils of the Performance panel">
     Cancel Idle Callback

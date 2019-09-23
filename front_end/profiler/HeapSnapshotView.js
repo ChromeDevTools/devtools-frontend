@@ -657,7 +657,7 @@ Profiler.HeapSnapshotView = class extends UI.SimpleView {
     this._perspectiveSelect.removeOptions();
     this._perspectives.forEach((perspective, index) => {
       if (multipleSnapshots || perspective !== this._comparisonPerspective)
-        this._perspectiveSelect.createOption(perspective.title(), '', String(index));
+        this._perspectiveSelect.createOption(perspective.title(), String(index));
     });
   }
 

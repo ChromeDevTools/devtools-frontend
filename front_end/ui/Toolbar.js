@@ -887,15 +887,12 @@ UI.ToolbarComboBox = class extends UI.ToolbarItem {
 
   /**
    * @param {string} label
-   * @param {string=} title
    * @param {string=} value
    * @return {!Element}
    */
-  createOption(label, title, value) {
+  createOption(label, value) {
     const option = this._selectElement.createChild('option');
     option.text = label;
-    if (title)
-      option.title = title;
     if (typeof value !== 'undefined')
       option.value = value;
     return option;
@@ -971,7 +968,7 @@ UI.ToolbarComboBox = class extends UI.ToolbarItem {
  */
 UI.ToolbarSettingComboBox = class extends UI.ToolbarComboBox {
   /**
-   * @param {!Array<!{value: string, label: string, title: string}>} options
+   * @param {!Array<!{value: string, label: string}>} options
    * @param {!Common.Setting} setting
    * @param {string=} optGroup
    */
@@ -992,14 +989,14 @@ UI.ToolbarSettingComboBox = class extends UI.ToolbarComboBox {
   }
 
   /**
-   * @param {!Array<!{value: string, label: string, title: string}>} options
+   * @param {!Array<!{value: string, label: string}>} options
    */
   setOptions(options) {
     this._options = options;
     this._optionContainer.removeChildren();
     for (let i = 0; i < options.length; ++i) {
       const dataOption = options[i];
-      const option = this.createOption(dataOption.label, dataOption.title, dataOption.value);
+      const option = this.createOption(dataOption.label, dataOption.value);
       this._optionContainer.appendChild(option);
       if (this._setting.get() === dataOption.value)
         this.setSelectedIndex(i);

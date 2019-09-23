@@ -63,7 +63,7 @@ Elements.EventListenersWidget = class extends UI.ThrottledWidget {
      * @this {Elements.EventListenersWidget}
      */
     function addDispatchFilterOption(name, value) {
-      const option = dispatchFilter.createOption(name, '', value);
+      const option = dispatchFilter.createOption(name, value);
       if (value === this._dispatchFilterBySetting.get())
         dispatchFilter.select(option);
     }

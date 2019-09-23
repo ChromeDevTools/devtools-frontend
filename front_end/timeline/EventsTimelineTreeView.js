@@ -163,8 +163,6 @@ Timeline.EventsTimelineTreeView.Filters = class extends Common.Object {
     for (const durationMs of Timeline.EventsTimelineTreeView.Filters._durationFilterPresetsMs) {
       durationFilterUI.addOption(durationFilterUI.createOption(
           durationMs ? Common.UIString('\u2265 %d\xa0ms', durationMs) : Common.UIString('All'),
-          durationMs ? Common.UIString('Hide records shorter than %d\xa0ms', durationMs) :
-                       Common.UIString('Show all records'),
           String(durationMs)));
     }
     UI.ARIAUtils.setAccessibleName(durationFilterUI.selectElement(), ls`Duration filter`);

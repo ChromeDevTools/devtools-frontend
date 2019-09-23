@@ -43,7 +43,7 @@ Network.BinaryResourceView = class extends UI.VBox {
     this._binaryViewTypeCombobox = new UI.ToolbarComboBox(this._binaryViewTypeChanged.bind(this));
     for (const viewObject of this._binaryViewObjects) {
       this._binaryViewTypeCombobox.addOption(
-          this._binaryViewTypeCombobox.createOption(viewObject.label, viewObject.label, viewObject.type));
+          this._binaryViewTypeCombobox.createOption(viewObject.label, viewObject.type));
     }
     this._toolbar.appendToolbarItem(this._binaryViewTypeCombobox);
 

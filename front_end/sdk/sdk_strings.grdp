@@ -30,6 +30,9 @@
   <message name="IDS_DEVTOOLS_1a4157cb54ce78ee862a88ecd1a66916" desc="Tooltip to explain why a cookie was blocked">
     This set-cookie used the &quot;__Secure-&quot; or &quot;__Host-&quot; prefix in its name and broke the additional rules applied to cookies with these prefixes as defined in https://tools.ietf.org/html/draft-west-cookie-prefixes-05.
   </message>
+  <message name="IDS_DEVTOOLS_1ee85f6c60017a7f0646ba8dc5824de6" desc="Service worker running status displayed in the Service Workers view in the Application panel">
+    starting
+  </message>
   <message name="IDS_DEVTOOLS_21070fd87b02611a5426d726a70a5502" desc="Text in Server Timing">
     No value found for parameter &quot;<ph name="PARAMNAME">$1s<ex>https</ex></ph>&quot;.
   </message>
@@ -71,6 +74,9 @@
   </message>
   <message name="IDS_DEVTOOLS_38fe155e13d77298cfd5688c3378fa85" desc="Title of a setting under the Rendering category that can be invoked through the Command Menu">
     Emulate CSS screen media type
+  </message>
+  <message name="IDS_DEVTOOLS_3b2a3c8ed19fc3647432e72885d633e7" desc="Service worker running status displayed in the Service Workers view in the Application panel">
+    stopping
   </message>
   <message name="IDS_DEVTOOLS_3b563524fdb17b4a86590470d40bef74" desc="Text in DOMDebugger Model">
     Media
@@ -167,6 +173,9 @@
   </message>
   <message name="IDS_DEVTOOLS_7121afd196f5c52bef488d5a0f4c097b" desc="Text in the Event Listener Breakpoints Panel of the JavaScript Debugger in the Sources Panel">
     Script First Statement
+  </message>
+  <message name="IDS_DEVTOOLS_75101dcdfc88455bcafc9e53e0b06689" desc="Service worker running status displayed in the Service Workers view in the Application panel">
+    running
   </message>
   <message name="IDS_DEVTOOLS_77454122d17d16885c51c0d57f5c7bd3" desc="Tooltip to explain why a cookie was blocked">
     This cookie had the &quot;SameSite=Strict&quot; attribute and the request was made on on a different site. This includes navigation requests initiated by other sites.
@@ -326,6 +335,9 @@
   </message>
   <message name="IDS_DEVTOOLS_eff8d530f562a22a45fbf1ee83299353" desc="Title of a setting under the Rendering category that can be invoked through the Command Menu">
     Show scroll performance bottlenecks
+  </message>
+  <message name="IDS_DEVTOOLS_f0a0bfe6bc7d2c58d2989034f83183e0" desc="Service worker running status displayed in the Service Workers view in the Application panel">
+    stopped
   </message>
   <message name="IDS_DEVTOOLS_f107ac919ab14339cdb22cd00fccd215" desc="Title of a setting under the Rendering category that can be invoked through the Command Menu">
     Show paint flashing rectangles

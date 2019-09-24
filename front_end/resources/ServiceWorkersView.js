@@ -471,9 +471,9 @@ Resources.ServiceWorkersView.Section = class {
 
     if (active) {
       this._updateSourceField(active);
+      const localizedRunningStatus = SDK.ServiceWorkerVersion.RunningStatus[active.runningStatus];
       const activeEntry = this._addVersion(
-          versionsStack, 'service-worker-active-circle',
-          Common.UIString('#%s activated and is %s', active.id, active.runningStatus));
+          versionsStack, 'service-worker-active-circle', ls`#${active.id} activated and is ${localizedRunningStatus}`);
 
       if (active.isRunning() || active.isStarting()) {
         this._createLink(activeEntry, Common.UIString('stop'), this._stopButtonClicked.bind(this, active.id));

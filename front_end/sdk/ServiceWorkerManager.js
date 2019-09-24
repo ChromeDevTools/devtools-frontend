@@ -444,6 +444,16 @@ SDK.ServiceWorkerVersion = class {
 };
 
 /**
+ * @type {!Object<string, string>}
+ */
+SDK.ServiceWorkerVersion.RunningStatus = {
+  [Protocol.ServiceWorker.ServiceWorkerVersionRunningStatus.Running]: ls`running`,
+  [Protocol.ServiceWorker.ServiceWorkerVersionRunningStatus.Starting]: ls`starting`,
+  [Protocol.ServiceWorker.ServiceWorkerVersionRunningStatus.Stopped]: ls`stopped`,
+  [Protocol.ServiceWorker.ServiceWorkerVersionRunningStatus.Stopping]: ls`stopping`,
+};
+
+/**
  * @enum {string}
  */
 SDK.ServiceWorkerVersion.Modes = {

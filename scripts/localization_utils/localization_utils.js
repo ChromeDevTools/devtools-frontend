@@ -36,7 +36,7 @@ const THIRD_PARTY_PATH = path.resolve(__dirname, '..', '..', '..', '..', '..');
 const SRC_PATH = path.resolve(THIRD_PARTY_PATH, '..');
 const GRD_PATH = path.resolve(__dirname, '..', '..', 'front_end', 'langpacks', 'devtools_ui_strings.grd');
 const SHARED_STRINGS_PATH = path.resolve(__dirname, '..', '..', 'front_end', 'langpacks', 'shared_strings.grdp');
-const REPO_NODE_MODULES_PATH = path.resolve(THIRD_PARTY_PATH, 'node', 'node_modules');
+const REPO_NODE_MODULES_PATH = path.resolve(THIRD_PARTY_PATH, 'devtools-node-modules', 'third_party', 'node_modules');
 const escodegen = require(path.resolve(REPO_NODE_MODULES_PATH, 'escodegen'));
 const esprima = require(path.resolve(REPO_NODE_MODULES_PATH, 'esprima'));
 

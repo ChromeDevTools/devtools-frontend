@@ -787,8 +787,7 @@ Timeline.AggregatedTimelineTreeView = class extends Timeline.TimelineTreeView {
       {label: Common.UIString('Group by Subdomain'), value: groupBy.Subdomain},
       {label: Common.UIString('Group by URL'), value: groupBy.URL},
     ];
-    toolbar.appendToolbarItem(
-        new UI.ToolbarSettingComboBox(options, this._groupBySetting, undefined /* optGroup */, ls`Group by`));
+    toolbar.appendToolbarItem(new UI.ToolbarSettingComboBox(options, this._groupBySetting, ls`Group by`));
     toolbar.appendSpacer();
     toolbar.appendToolbarItem(this._splitWidget.createShowHideSidebarButton(Common.UIString('heaviest stack')));
   }

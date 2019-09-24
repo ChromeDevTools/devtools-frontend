@@ -766,12 +766,10 @@ UI.ToolbarSettingToggle = class extends UI.ToolbarToggle {
    * @param {!Common.Setting} setting
    * @param {string} glyph
    * @param {string} title
-   * @param {string=} toggledTitle
    */
-  constructor(setting, glyph, title, toggledTitle) {
+  constructor(setting, glyph, title) {
     super(title, glyph);
     this._defaultTitle = title;
-    this._toggledTitle = toggledTitle || title;
     this._setting = setting;
     this._settingChanged();
     this._setting.addChangeListener(this._settingChanged, this);
@@ -780,7 +778,7 @@ UI.ToolbarSettingToggle = class extends UI.ToolbarToggle {
   _settingChanged() {
     const toggled = this._setting.get();
     this.setToggled(toggled);
-    this.setTitle(toggled ? this._toggledTitle : this._defaultTitle);
+    this.setTitle(this._defaultTitle);
   }
 
   /**
@@ -971,23 +969,15 @@ UI.ToolbarSettingComboBox = class extends UI.ToolbarComboBox {
   /**
    * @param {!Array<!{value: string, label: string}>} options
    * @param {!Common.Setting} setting
-   * @param {string=} optGroup
    * @param {string=} accessibleName
    */
-  constructor(options, setting, optGroup, accessibleName) {
+  constructor(options, setting, accessibleName) {
     super(null);
-    this._setting = setting;
     this._options = options;
+    this._setting = setting;
     this._selectElement.addEventListener('change', this._valueChanged.bind(this), false);
     if (accessibleName)
       UI.ARIAUtils.setAccessibleName(this._selectElement, accessibleName);
-    if (optGroup) {
-      const optGroupElement = this._selectElement.createChild('optgroup');
-      optGroupElement.label = optGroup;
-      this._optionContainer = optGroupElement;
-    } else {
-      this._optionContainer = this._selectElement;
-    }
     this.setOptions(options);
     setting.addChangeListener(this._settingChanged, this);
   }
@@ -997,11 +987,11 @@ UI.ToolbarSettingComboBox = class extends UI.ToolbarComboBox {
    */
   setOptions(options) {
     this._options = options;
-    this._optionContainer.removeChildren();
+    this._selectElement.removeChildren();
     for (let i = 0; i < options.length; ++i) {
       const dataOption = options[i];
       const option = this.createOption(dataOption.label, dataOption.value);
-      this._optionContainer.appendChild(option);
+      this._selectElement.appendChild(option);
       if (this._setting.get() === dataOption.value)
         this.setSelectedIndex(i);
     }

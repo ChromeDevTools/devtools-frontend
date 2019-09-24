@@ -99,6 +99,15 @@ Coverage.CoverageListView = class extends UI.VBox {
       this._sortingChanged();
   }
 
+  selectByUrl(url) {
+    for (const [info, node] of this._nodeForCoverageInfo.entries()) {
+      if (info.url() === url) {
+        node.revealAndSelect();
+        break;
+      }
+    }
+  }
+
   _onOpenedNode() {
     this._revealSourceForSelectedNode();
   }

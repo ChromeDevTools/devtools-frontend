@@ -46,7 +46,7 @@ SourceFrame.SourcesTextEditor = class extends TextEditor.CodeMirrorTextEditor {
     this._tokenHighlighter = new SourceFrame.SourcesTextEditor.TokenHighlighter(this, this.codeMirror());
 
     /** @type {!Array<string>} */
-    this._gutters = ['CodeMirror-linenumbers'];
+    this._gutters = [SourceFrame.SourcesTextEditor.lineNumbersGutterType];
     this.codeMirror().setOption('gutters', this._gutters.slice());
 
     this.codeMirror().setOption('electricChars', false);
@@ -323,11 +323,8 @@ SourceFrame.SourcesTextEditor = class extends TextEditor.CodeMirrorTextEditor {
     return classNames.indexOf(className) !== -1;
   }
 
-  _gutterClick(instance, lineNumber, gutter, event) {
-    if (gutter !== 'CodeMirror-linenumbers')
-      return;
-    this.dispatchEventToListeners(
-        SourceFrame.SourcesTextEditor.Events.GutterClick, {lineNumber: lineNumber, event: event});
+  _gutterClick(instance, lineNumber, gutterType, event) {
+    this.dispatchEventToListeners(SourceFrame.SourcesTextEditor.Events.GutterClick, {gutterType, lineNumber, event});
   }
 
   _contextMenu(event) {
@@ -634,7 +631,7 @@ SourceFrame.SourcesTextEditor = class extends TextEditor.CodeMirrorTextEditor {
   }
 };
 
-/** @typedef {{lineNumber: number, event: !Event}} */
+/** @typedef {{gutterType: string, lineNumber: number, event: !Event}} */
 SourceFrame.SourcesTextEditor.GutterClickEventData;
 
 /** @enum {symbol} */
@@ -935,3 +932,4 @@ SourceFrame.SourcesTextEditor.TokenHighlighter = class {
 
 SourceFrame.SourcesTextEditor.LinesToScanForIndentationGuessing = 1000;
 SourceFrame.SourcesTextEditor.MaximumNumberOfWhitespacesPerSingleSpan = 16;
+SourceFrame.SourcesTextEditor.lineNumbersGutterType = 'CodeMirror-linenumbers';

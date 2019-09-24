@@ -239,6 +239,10 @@ Coverage.CoverageView = class extends UI.VBox {
       return;
     this._model.exportReport(fos);
   }
+
+  selectCoverageItemByUrl(url) {
+    this._listView.selectByUrl(url);
+  }
 };
 
 Coverage.CoverageView._extensionBindingsURLPrefix = 'extensions::';

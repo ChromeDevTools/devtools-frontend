@@ -13,6 +13,9 @@ module.exports = function(config) {
     },{
       pattern: 'tests/**/*.ts',
       type: 'module'
+    }, {
+      pattern: 'tests/**/*.js',
+      type: 'module'
     }],
 
     reporters: ["dots"],

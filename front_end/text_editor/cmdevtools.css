@@ -309,15 +309,6 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
     background-color: rgb(171, 191, 254);
 }
 
-.cm-execution-line .CodeMirror-linenumber::after {
-    position: absolute;
-    top:-1px;
-    bottom:-1px;
-    right:-1.5em;
-    content:"";
-    border-right: 1px solid rgb(64, 115, 244);
-}
-
 :host-context(.-theme-with-dark-background) .cm-execution-line,
 .-theme-with-dark-background .cm-execution-line {
     background-color: #14522b;

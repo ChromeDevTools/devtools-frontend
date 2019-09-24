@@ -109,7 +109,14 @@ Coverage.CoverageView = class extends UI.VBox {
     if (enable)
       this._startRecording(false);
     else
-      this._stopRecording();
+      this.stopRecording();
+  }
+
+  async ensureRecordingStarted() {
+    const enable = !this._toggleRecordAction.toggled();
+
+    if (enable)
+      await this._startRecording(false);
   }
 
   /**
@@ -153,7 +160,7 @@ Coverage.CoverageView = class extends UI.VBox {
     this._updateViews(event.data);
   }
 
-  async _stopRecording() {
+  async stopRecording() {
     if (this._resourceTreeModel) {
       this._resourceTreeModel.removeEventListener(
           SDK.ResourceTreeModel.Events.MainFrameNavigated, this._onMainFrameNavigated, this);

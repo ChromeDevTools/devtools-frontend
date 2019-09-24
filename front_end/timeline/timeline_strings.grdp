@@ -663,6 +663,9 @@ Then, zoom and pan the timeline with the mousewheel or <ph name="NAVIGATENODE">$
   <message name="IDS_DEVTOOLS_aed0e2bd848c2ac9dddb03d8c21c67b6" desc="Text in Timeline UIUtils of the Performance panel">
     Touch Cancel
   </message>
+  <message name="IDS_DEVTOOLS_af812f467030e02c8bc8a81b4db8e562" desc="Text in Timeline Panel of the Performance panel">
+    Record coverage with performance trace
+  </message>
   <message name="IDS_DEVTOOLS_b030f7d30297555390c6d2d23af55fa1" desc="Text in Timeline History Manager of the Performance panel">
     moments
   </message>

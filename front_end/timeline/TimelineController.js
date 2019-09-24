@@ -373,7 +373,8 @@ Timeline.TimelineController.Client.prototype = {
  * @typedef {!{
  *   enableJSSampling: (boolean|undefined),
  *   capturePictures: (boolean|undefined),
- *   captureFilmStrip: (boolean|undefined)
+ *   captureFilmStrip: (boolean|undefined),
+ *   startCoverage: (boolean|undefined)
  * }}
  */
 Timeline.TimelineController.RecordingOptions;

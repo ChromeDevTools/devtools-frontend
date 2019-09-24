@@ -121,6 +121,7 @@ Main.Main = class {
     Runtime.experiments.register('liveHeapProfile', 'Live heap profile', true);
     Runtime.experiments.register('nativeHeapProfiler', 'Native memory sampling heap profiler', true);
     Runtime.experiments.register('protocolMonitor', 'Protocol Monitor');
+    Runtime.experiments.register('recordCoverageWithPerformanceTracing', 'Record coverage while performance tracing');
     Runtime.experiments.register('samplingHeapProfilerTimeline', 'Sampling heap profiler timeline', true);
     Runtime.experiments.register('sourceDiff', 'Source diff');
     Runtime.experiments.register('splitInDrawer', 'Split in drawer', true);

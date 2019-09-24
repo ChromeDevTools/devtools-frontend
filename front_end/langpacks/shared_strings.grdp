@@ -334,6 +334,9 @@
   <message name="IDS_DEVTOOLS_96e9bc575b5d3ed541113a249da8bd24" desc="Text to take screenshots">
     Capture screenshots
   </message>
+  <message name="IDS_DEVTOOLS_9841bdc50c4226cb6ec5db76494249e6" desc="Title of the 'Coverage' tool in the bottom drawer">
+    Coverage
+  </message>
   <message name="IDS_DEVTOOLS_997a8c473db4f81c5fb3d5900030d44d" desc="Text that shows there is no recording">
     (no recordings)
   </message>

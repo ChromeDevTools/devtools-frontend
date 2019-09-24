@@ -18,7 +18,7 @@ CoverageTestRunner.startCoverage = async function() {
  */
 CoverageTestRunner.stopCoverage = function() {
   const coverageView = self.runtime.sharedInstance(Coverage.CoverageView);
-  return coverageView._stopRecording();
+  return coverageView.stopRecording();
 };
 
 /**

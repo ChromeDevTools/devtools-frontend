@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <grit-part>
+  <message name="IDS_DEVTOOLS_008aa5b6435af8504757085a92b2eb28" desc="An option in the user agent dropdown menu in the Network conditions tool">
+    <ph name="LOCKED_1">Microsoft Edge (EdgeHTML) — XBox</ph>
+  </message>
   <message name="IDS_DEVTOOLS_0194336f90a2b1de65553e3bec01becd" desc="Text in Network Log View of the Network panel">
     Copy as fetch
   </message>
@@ -17,6 +20,9 @@
   </message>
   <message name="IDS_DEVTOOLS_059f48d76d79fe0727740d75dc81fa94" desc="Text in Network Log View of the Network panel">
     <ph name="SELECTEDTRANSFERSIZE">$1s<ex>25</ex></ph> B / <ph name="TRANSFERSIZE">$2s<ex>25</ex></ph> B transferred
+  </message>
+  <message name="IDS_DEVTOOLS_05ffb3b626077843c5f71d13185391d8" desc="An option in the user agent dropdown menu in the Network conditions tool">
+    <ph name="LOCKED_1">Safari — iPad iOS 9</ph>
   </message>
   <message name="IDS_DEVTOOLS_06337a0bc6e91b2adb10567bee4d6f14" desc="Text in Network Log View of the Network panel">
     Copy all as HAR
@@ -36,6 +42,9 @@
   <message name="IDS_DEVTOOLS_0bcc4ec10c2e4cee4b9bbabd48501304" desc="Text in Resource Web Socket Frame View of the Network panel">
     Select message to browse its content.
   </message>
+  <message name="IDS_DEVTOOLS_0c1ac4502b106b89cbf1d3850f44ae12" desc="An option in the user agent dropdown menu in the Network conditions tool">
+    <ph name="LOCKED_1">Android (4.0.2) Browser — Galaxy Nexus</ph>
+  </message>
   <message name="IDS_DEVTOOLS_0db377921f4ce762c62526131097968f" desc="Text in Request Headers View of the Network panel">
     General
   </message>
@@ -53,6 +62,12 @@
   </message>
   <message name="IDS_DEVTOOLS_12881f9e98bb240671bc3e1787d64a03" desc="Title of a setting under the Network category that can be invoked through the Command Menu">
     Color code by resource type
+  </message>
+  <message name="IDS_DEVTOOLS_16c32be3b42643aee708e7ccdd52c9f4" desc="An option in the user agent dropdown menu in the Network conditions tool">
+    <ph name="LOCKED_1">Microsoft Edge — Android Mobile</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_17439cab6b197fcaff231614384c9dcc" desc="An option in the user agent dropdown menu in the Network conditions tool">
+    <ph name="LOCKED_1">Opera (Presto) — Windows</ph>
   </message>
   <message name="IDS_DEVTOOLS_1826c1f3d66791128e1f73f876147f2f" desc="A tag of Network color-code resource types that can be searched in the command menu">
     color code
@@ -72,6 +87,9 @@
   <message name="IDS_DEVTOOLS_1b581452e4e1158b75e514c99a760431" desc="Text in Request Headers View of the Network panel">
     Request Payload
   </message>
+  <message name="IDS_DEVTOOLS_1ba63dd21ea9a100c54e9f5ed8a0d469" desc="An option in the user agent dropdown menu in the Network conditions tool">
+    <ph name="LOCKED_1">UC Browser — Windows Phone</ph>
+  </message>
   <message name="IDS_DEVTOOLS_1c047e32d57295a9f0319976c543162e" desc="Text in Network Data Grid Node of the Network panel">
     (blocked:<ph name="REASON">$1s<ex>mixed-content</ex></ph>)
   </message>
@@ -81,11 +99,23 @@
   <message name="IDS_DEVTOOLS_1cf0226d974af378b6aa6070bb2a37c3" desc="A tag of Network Conditions tool that can be searched in the command menu">
     network throttling
   </message>
+  <message name="IDS_DEVTOOLS_1d420bebb54e53a8d8a4d809576b58d5" desc="An option in the user agent dropdown menu in the Network conditions tool">
+    <ph name="LOCKED_1">Chrome — Mac</ph>
+  </message>
   <message name="IDS_DEVTOOLS_1dc4a71b18d2c3a1442267136158128e" desc="Text in Network Log View of the Network panel">
     Copy all as cURL (cmd)
   </message>
   <message name="IDS_DEVTOOLS_1eb445fa6bd078346bf63ecac35fa77c" desc="Text in Binary Resource View of the Network panel">
     Base64
+  </message>
+  <message name="IDS_DEVTOOLS_20ed2e30da35e48e723855c8e14bfdf1" desc="An option in the user agent dropdown menu in the Network conditions tool">
+    <ph name="LOCKED_1">Microsoft Edge — Android Tablet</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_21fd2e738b03921c90da8ac98319a04b" desc="An option in the user agent dropdown menu in the Network conditions tool">
+    <ph name="LOCKED_1">Chrome — Windows</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_22f3e616a52e25632d98fd53d3f821ed" desc="An option in the user agent dropdown menu in the Network conditions tool">
+    <ph name="LOCKED_1">Safari — Mac</ph>
   </message>
   <message name="IDS_DEVTOOLS_2537b3e6907e17001b7cdf121cd39dc0" desc="Text in Request Headers View of the Network panel">
     (from ServiceWorker)
@@ -101,6 +131,9 @@
   </message>
   <message name="IDS_DEVTOOLS_29d37bdcfeb74d25d56bcf841866ae32" desc="Cell title in Network Data Grid Node of the Network panel">
     Served from ServiceWorker, resource size: <ph name="RESOURCESIZE">$1s<ex>4 B</ex></ph>
+  </message>
+  <message name="IDS_DEVTOOLS_2ad7f735dd6d0dedb0d010a612854a17" desc="An option in the user agent dropdown menu in the Network conditions tool">
+    <ph name="LOCKED_1">Internet Explorer 8</ph>
   </message>
   <message name="IDS_DEVTOOLS_2d13df6f8b5e4c5af9f87e0dc39df69d" desc="Text in Network Data Grid Node of the Network panel">
     Pending
@@ -135,6 +168,9 @@
   <message name="IDS_DEVTOOLS_37bb3bd9caf5dafb7c8f9eccb3b9800e" desc="Text in Request Headers View of the Network panel">
     (unable to decode value)
   </message>
+  <message name="IDS_DEVTOOLS_37eabd36dcdd3c4f4586c88a7354d10d" desc="An option in the user agent dropdown menu in the Network conditions tool">
+    <ph name="LOCKED_1">Microsoft Edge (Chromium) — Windows</ph>
+  </message>
   <message name="IDS_DEVTOOLS_383fc50a38f1666adc3f06d0bdf71467" desc="Text in Network Log View of the Network panel">
     Are you sure you want to clear browser cookies?
   </message>
@@ -159,6 +195,15 @@
   <message name="IDS_DEVTOOLS_3e0dc7bd31f5ad41b900fef5b7aba791" desc="Title of a setting under the Network category that can be invoked through the Command Menu">
     Don&apos;t group network log items by frame
   </message>
+  <message name="IDS_DEVTOOLS_3ebfafd757759c5e0081920b36450c58" desc="An option in the user agent dropdown menu in the Network conditions tool">
+    <ph name="LOCKED_1">Firefox — Android Mobile</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_408f8a4ecdacbe1d9989b800a0c12936" desc="An option in the user agent dropdown menu in the Network conditions tool">
+    <ph name="LOCKED_1">Internet Explorer 11</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_4145ea54b6f576d7646d6a68eb39813f" desc="An option in the user agent dropdown menu in the Network conditions tool">
+    <ph name="LOCKED_1">Opera (Presto) — Mac</ph>
+  </message>
   <message name="IDS_DEVTOOLS_41de6d6cfb8953c021bbe4ba0701c8a1" desc="Text in Network Item View of the Network panel">
     Messages
   </message>
@@ -173,6 +218,9 @@
   </message>
   <message name="IDS_DEVTOOLS_44749712dbec183e983dcd78a7736c41" desc="Text in Signed Exchange Info View of the Network panel">
     Date
+  </message>
+  <message name="IDS_DEVTOOLS_44bea05ea1f4af197ad4b6453e04a0eb" desc="An option in the user agent dropdown menu in the Network conditions tool">
+    <ph name="LOCKED_1">Firefox — Android Tablet</ph>
   </message>
   <message name="IDS_DEVTOOLS_4566ce384ed4a889beb6f6432d5906d7" desc="The UI destination when right clicking an item that can be revealed">
     Network panel
@@ -207,11 +255,17 @@
   <message name="IDS_DEVTOOLS_5023e5b1d1c02cf168a9a67dda6d2d87" desc="Text in Network Panel of the Network panel">
     Show overview
   </message>
+  <message name="IDS_DEVTOOLS_50de9bc68c93dc32d8c7c90593471760" desc="A group title in the user agent dropdown menu in the Network conditions tool">
+    <ph name="LOCKED_1">Safari</ph>
+  </message>
   <message name="IDS_DEVTOOLS_5101cdda28ea3097ac00cdbfdcedc353" desc="Title of a setting under the Network category that can be invoked through the Command Menu">
     Use default colors
   </message>
   <message name="IDS_DEVTOOLS_53fa249ce3d02c8a686b657b31d02ee7" desc="Text in Network Log View of the Network panel">
     Copy response
+  </message>
+  <message name="IDS_DEVTOOLS_549fae23948f165d8dbb68c9a17b8c44" desc="An option in the user agent dropdown menu in the Network conditions tool">
+    <ph name="LOCKED_1">Chrome — Android Mobile</ph>
   </message>
   <message name="IDS_DEVTOOLS_5639d3df5aea3d9e78027b843ee3cbb2" desc="Text in Resource Web Socket Frame View of the Network panel">
     Receive
@@ -231,8 +285,14 @@
   <message name="IDS_DEVTOOLS_59535aed1e49266dfd0b93172f5a7242" desc="Text in Network Panel of the Network panel">
     Group by frame
   </message>
+  <message name="IDS_DEVTOOLS_59f2df528ff5c941c8d6308288a83141" desc="An option in the user agent dropdown menu in the Network conditions tool">
+    <ph name="LOCKED_1">Chrome — iPad</ph>
+  </message>
   <message name="IDS_DEVTOOLS_5cb98890f19c13e5fce52287187d9803" desc="Text in Network Log View of the Network panel">
     <ph name="SELECTEDNODENUMBER">$1s<ex>3</ex></ph> / <ph name="NODECOUNT">$2s<ex>5</ex></ph> requests
+  </message>
+  <message name="IDS_DEVTOOLS_5d849c6c271a039aba239a13132c5dd5" desc="An option in the user agent dropdown menu in the Network conditions tool">
+    <ph name="LOCKED_1">Firefox — Mac</ph>
   </message>
   <message name="IDS_DEVTOOLS_5e2f683aacb9d5f3635b3f88583dec80" desc="Text in Network Config View of the Network panel">
     Custom...
@@ -264,6 +324,9 @@
   <message name="IDS_DEVTOOLS_6a98894cd6b4628f0b5117412aab083e" desc="Text in Network Log View Columns of the Network panel">
     Cache-Control
   </message>
+  <message name="IDS_DEVTOOLS_6b41d86d21d49c95f5b106fb2ed95762" desc="An option in the user agent dropdown menu in the Network conditions tool">
+    <ph name="LOCKED_1">Internet Explorer 10</ph>
+  </message>
   <message name="IDS_DEVTOOLS_6c2a1bf87fb84c91fc7e1120f4e3d0c7" desc="Text in Request Timing View of the Network panel">
     Content Download
   </message>
@@ -279,11 +342,17 @@
   <message name="IDS_DEVTOOLS_6e68a529a38966508d348e9f65d7ea31" desc="Title of an action in the network tool to toggle recording">
     Record network log
   </message>
+  <message name="IDS_DEVTOOLS_71f5989793ddede100da3fde07d1f9f9" desc="An option in the user agent dropdown menu in the Network conditions tool">
+    <ph name="LOCKED_1">Opera Mini — iOS</ph>
+  </message>
   <message name="IDS_DEVTOOLS_71fb2761cd2a446400a8069fe16cd45e" desc="A context menu item in the Network Log View of the Network panel">
     Block request domain
   </message>
   <message name="IDS_DEVTOOLS_722e6ea747a62b7f93bb017d3dd04cbd" desc="Op codes continuation frame of map in Resource Web Socket Frame View of the Network panel">
     Continuation Frame
+  </message>
+  <message name="IDS_DEVTOOLS_f5a6d40aab4d260009df79b7dab7e6a0" desc="An option in the user agent dropdown menu in the Network conditions tool">
+    <ph name="LOCKED_1">Microsoft Edge — iPhone</ph>
   </message>
   <message name="IDS_DEVTOOLS_72d569ab3718d10a89315f80cf05cc73" desc="Title of a setting under the Network category in Settings">
     Group network log by frame
@@ -294,8 +363,14 @@
   <message name="IDS_DEVTOOLS_7543ba96bb16a5f17f8fb25bdd995d3f" desc="Text in Binary Resource View of the Network panel">
     Copy as Base64
   </message>
+  <message name="IDS_DEVTOOLS_763f7f1aec350cd1a46238d1d5c3c229" desc="A group title in the user agent dropdown menu in the Network conditions tool">
+    <ph name="LOCKED_1">Firefox</ph>
+  </message>
   <message name="IDS_DEVTOOLS_76669aaf74dda2a59e3c363da10c3faf" desc="Text in Request Timing View of the Network panel">
     Reading Push
+  </message>
+  <message name="IDS_DEVTOOLS_77c0ed7e4536e1c251279fa0c90bca50" desc="An option in the user agent dropdown menu in the Network conditions tool">
+    <ph name="LOCKED_1">Microsoft Edge (EdgeHTML) — Windows</ph>
   </message>
   <message name="IDS_DEVTOOLS_77f02f5047451625e1c6bb24884cdfe6" desc="Text in Binary Resource View of the Network panel">
     Copied as Hex
@@ -309,6 +384,12 @@
   <message name="IDS_DEVTOOLS_795f3202b17cb6bc3d4b771d8c6c9eaf" desc="Reason in Network Data Grid Node of the Network panel">
     other
   </message>
+  <message name="IDS_DEVTOOLS_7a4feae759066e44a88f2e6610d5a757" desc="An option in the user agent dropdown menu in the Network conditions tool">
+    <ph name="LOCKED_1">Opera — Mac</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_7a8cfc6a08f7d15e1d612ea47e68b67c" desc="An option in the user agent dropdown menu in the Network conditions tool">
+    <ph name="LOCKED_1">Internet Explorer 7</ph>
+  </message>
   <message name="IDS_DEVTOOLS_7b5bea45778433caf34b0ba556a7d93b" desc="Text in Network Data Grid Node of the Network panel">
     (failed)
   </message>
@@ -321,11 +402,20 @@
   <message name="IDS_DEVTOOLS_7e1c4c7b01e0fd0ad1e89ca7512f353e" desc="Op codes ping frame of map in Resource Web Socket Frame View of the Network panel">
     Ping Message
   </message>
+  <message name="IDS_DEVTOOLS_7e2709c4d40a9827390281d60aae22a7" desc="An option in the user agent dropdown menu in the Network conditions tool">
+    <ph name="LOCKED_1">Firefox — iPhone</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_7ee22334256f1cf5538adc052ebf96bf" desc="An option in the user agent dropdown menu in the Network conditions tool">
+    <ph name="LOCKED_1">Safari — iPhone iOS 9</ph>
+  </message>
   <message name="IDS_DEVTOOLS_804910399e8d26511871e33416ccd127" desc="Cell title in Network Data Grid Node of the Network panel">
     Served from disk cache, resource size: <ph name="RESOURCESIZE">$1s<ex>10 B</ex></ph>
   </message>
   <message name="IDS_DEVTOOLS_814f9c3c7e7aa04c21f2e61f5b2dcf18" desc="Text in Network Log View of the Network panel">
     Copy response headers
+  </message>
+  <message name="IDS_DEVTOOLS_81c1f883582dfa740bba882106414bd3" desc="An option in the user agent dropdown menu in the Network conditions tool">
+    <ph name="LOCKED_1">BlackBerry — PlayBook 2.1</ph>
   </message>
   <message name="IDS_DEVTOOLS_827452688eed02a12178e96f924ac529" desc="Text in Network Log View Columns of the Network panel">
     Scheme
@@ -411,6 +501,12 @@
   <message name="IDS_DEVTOOLS_97f0a2ba508f8299c686818366ad712a" desc="Text in Network Data Grid Node of the Network panel">
     (data)
   </message>
+  <message name="IDS_DEVTOOLS_9813946564c3a3698618ad520f6d1e69" desc="A group title in the user agent dropdown menu in the Network conditions tool">
+    <ph name="LOCKED_1">BlackBerry</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_9825e566e3304756959d9ba52b5903d3" desc="An option in the user agent dropdown menu in the Network conditions tool">
+    <ph name="LOCKED_1">Chrome — Android Tablet</ph>
+  </message>
   <message name="IDS_DEVTOOLS_985187565936a7c1e02c9f96852c0f9a" desc="Reason in Network Data Grid Node of the Network panel">
     subresource-filter
   </message>
@@ -419,6 +515,9 @@
   </message>
   <message name="IDS_DEVTOOLS_986491ef3610ed7ef82bd863e4ee00a2" desc="Title of the 'Request blocking' tool in the bottom drawer">
     Request blocking
+  </message>
+  <message name="IDS_DEVTOOLS_986c37480b1f1c2e443504b38b6361b4" desc="A group title in the user agent dropdown menu in the Network conditions tool">
+    <ph name="LOCKED_1">Chrome</ph>
   </message>
   <message name="IDS_DEVTOOLS_9979c41f94d4d232c06b4c87f2d0f951" desc="Text in Network Data Grid Node of the Network panel">
     Push / '''
@@ -453,6 +552,12 @@
   <message name="IDS_DEVTOOLS_a09b75f1cd4e3d54099fa8e14ff5056d" desc="From service worker format in Network Time Calculator of the Network panel">
     <ph name="PH1">$1s<ex>20ms latency</ex></ph> (from ServiceWorker)
   </message>
+  <message name="IDS_DEVTOOLS_a12a6481ad87f558622dcf0a1a87982a" desc="An option in the user agent dropdown menu in the Network conditions tool">
+    <ph name="LOCKED_1">UC Browser — Android Mobile</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_a16761bfe43337abda8aedb823fe0a10" desc="An option in the user agent dropdown menu in the Network conditions tool">
+    <ph name="LOCKED_1">BlackBerry — 9900</ph>
+  </message>
   <message name="IDS_DEVTOOLS_a217246afb12245a032617715f81923b" desc="Text in Network Manage Custom Headers View of the Network panel">
     Manage Header Columns
   </message>
@@ -465,6 +570,9 @@
   <message name="IDS_DEVTOOLS_a299d2f506523f8104dc4202de7b0c64" desc="Tooltip text that appears when hovering over the largeicon download button in the Network Panel of the Network panel">
     Export HAR...
   </message>
+  <message name="IDS_DEVTOOLS_a5c41f715c1b8a880253846c025624e9" desc="A group title in the user agent dropdown menu in the Network conditions tool">
+    <ph name="LOCKED_1">Microsoft Edge</ph>
+  </message>
   <message name="IDS_DEVTOOLS_a5d6e0224f694699dde6d1bd34d608bd" desc="Text in Network Log View of the Network panel">
     Copy as cURL
   </message>
@@ -473,6 +581,9 @@
   </message>
   <message name="IDS_DEVTOOLS_a74e6894e1f36ce12a6773b9a6b9aea8" desc="Text in Network Log View of the Network panel">
     <ph name="NODECOUNT">$1s<ex>6</ex></ph> requests
+  </message>
+  <message name="IDS_DEVTOOLS_a956e985535b8d57732d14dfa0e4c71a" desc="A group title in the user agent dropdown menu in the Network conditions tool">
+    <ph name="LOCKED_1">Opera</ph>
   </message>
   <message name="IDS_DEVTOOLS_a976624c5265b8187b19aea9df9230eb" desc="Title of a setting under the Network category in Settings">
     Color-code resource types
@@ -483,6 +594,9 @@
   <message name="IDS_DEVTOOLS_ac5eb504b5a840271e066bf6fd3000b8" desc="Text in Request Headers View of the Network panel">
     view parsed
   </message>
+  <message name="IDS_DEVTOOLS_ac90a9ac36eb64388ce0e0a9047b295c" desc="An option in the user agent dropdown menu in the Network conditions tool">
+    <ph name="LOCKED_1">Android (2.3) Browser — Nexus S</ph>
+  </message>
   <message name="IDS_DEVTOOLS_ad86890fb40822a3b12627efaca4ecd7" desc="Text of a DOM element in Network Data Grid Node of the Network panel">
     (disk cache)
   </message>
@@ -491,6 +605,9 @@
   </message>
   <message name="IDS_DEVTOOLS_ae3b3df9970b49b6523e608759bc957d" desc="Text in Binary Resource View of the Network panel">
     UTF-8
+  </message>
+  <message name="IDS_DEVTOOLS_ae89abb57630fcbd1af25cfc6684a5ff" desc="An option in the user agent dropdown menu in the Network conditions tool">
+    <ph name="LOCKED_1">Opera Mobile — Android Mobile</ph>
   </message>
   <message name="IDS_DEVTOOLS_af0a229a0c5be77de07889743db3b409" desc="Text in Binary Resource View of the Network panel">
     Copied as UTF-8
@@ -501,6 +618,15 @@
   <message name="IDS_DEVTOOLS_b021df6aac4654c454f46c77646e745f" desc="Text in Signed Exchange Info View of the Network panel">
     Label
   </message>
+  <message name="IDS_DEVTOOLS_b04f746dac7a367d85c411341b6673f6" desc="A group title in the user agent dropdown menu in the Network conditions tool">
+    <ph name="LOCKED_1">Googlebot</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_b08687e344501a098d281a89e77aff6b" desc="An option in the user agent dropdown menu in the Network conditions tool">
+    <ph name="LOCKED_1">Opera — Windows</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_b1b2ed29de5b9a2a8cf8ba5cf9e52624" desc="An option in the user agent dropdown menu in the Network conditions tool">
+    <ph name="LOCKED_1">Chrome — Chrome OS</ph>
+  </message>
   <message name="IDS_DEVTOOLS_b1f63146853f7f450d8622aae6a73408" desc="Text in Network Log View of the Network panel">
     Copy as cURL (bash)
   </message>
@@ -509,6 +635,9 @@
   </message>
   <message name="IDS_DEVTOOLS_b72ac10807b29c77f5b7e4b80ea40414" desc="Text in Request Timing View of the Network panel">
     Explanation
+  </message>
+  <message name="IDS_DEVTOOLS_b87b6ab319ae2ed428153cd7b6441a90" desc="An option in the user agent dropdown menu in the Network conditions tool">
+    <ph name="LOCKED_1">Firefox — iPad</ph>
   </message>
   <message name="IDS_DEVTOOLS_b926fd82158cde57655d0cd1dd8dbc70" desc="Text in Request Headers View of the Network panel">
     Query String Parameters
@@ -543,6 +672,9 @@
   <message name="IDS_DEVTOOLS_c0635a52980f98eff8adf2279c8ad8e0" desc="A tag of Network Conditions tool that can be searched in the command menu">
     <ph name="LOCKED_1">useragent</ph>
   </message>
+  <message name="IDS_DEVTOOLS_c14108bc627e61f0e445dda0ff029f58" desc="An option in the user agent dropdown menu in the Network conditions tool">
+    <ph name="LOCKED_1">Chrome — iPhone</ph>
+  </message>
   <message name="IDS_DEVTOOLS_c3c14eb17a6cf9c6120f381790ed06eb" desc="Text in Network Log View of the Network panel">
     Copy all as PowerShell
   </message>
@@ -561,8 +693,14 @@
   <message name="IDS_DEVTOOLS_c84718b71b8ad70dde23736e79e25e83" desc="Op codes pong frame of map in Resource Web Socket Frame View of the Network panel">
     Pong Message
   </message>
+  <message name="IDS_DEVTOOLS_c89585ee0469e9a3824828ae8961555b" desc="An option in the user agent dropdown menu in the Network conditions tool">
+    <ph name="LOCKED_1">Microsoft Edge (Chromium) — Mac</ph>
+  </message>
   <message name="IDS_DEVTOOLS_c91a577b72313356fad611c55f43c10f" desc="Text in Network Log View Columns of the Network panel">
     End Time
+  </message>
+  <message name="IDS_DEVTOOLS_caae91004cd7ecb81b25a7c4536e289f" desc="An option in the user agent dropdown menu in the Network conditions tool">
+    <ph name="LOCKED_1">UC Browser — iOS</ph>
   </message>
   <message name="IDS_DEVTOOLS_cb64a2679b345ae476ea3a7fb6a70080" desc="Op codes binary frame of map in Resource Web Socket Frame View of the Network panel">
     Binary Message
@@ -588,8 +726,14 @@
   <message name="IDS_DEVTOOLS_d0e5383d7c91948cfab6cacccec8812d" desc="Text in Request Headers View of the Network panel">
     (from signed-exchange)
   </message>
+  <message name="IDS_DEVTOOLS_d21a4ca270bc9a879992b4b3d9510a60" desc="A group title in the user agent dropdown menu in the Network conditions tool">
+    <ph name="LOCKED_1">UC Browser</ph>
+  </message>
   <message name="IDS_DEVTOOLS_d3b69e993f4e9bf9c479c7e794ede387" desc="Text in Network Item View of the Network panel">
     Timing
+  </message>
+  <message name="IDS_DEVTOOLS_d6c3c06d819624b743db87f8e1384f58" desc="An option in the user agent dropdown menu in the Network conditions tool">
+    <ph name="LOCKED_1">Firefox — Windows</ph>
   </message>
   <message name="IDS_DEVTOOLS_d76e44f856d0114826e7436a630a3fa7" desc="Text of a DOM element in Network Data Grid Node of the Network panel">
     (signed-exchange)
@@ -657,11 +801,23 @@
   <message name="IDS_DEVTOOLS_e6fb9da54f521b9c33d41121d4fcd35c" desc="Text of a DOM element in Network Data Grid Node of the Network panel">
     (memory cache)
   </message>
+  <message name="IDS_DEVTOOLS_e84e30b9390cdb64db6db2c9ab87846d" desc="A group title in the user agent dropdown menu in the Network conditions tool">
+    <ph name="LOCKED_1">Android</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_e930f2148ae22be78152a04aa1a290b7" desc="An option in the user agent dropdown menu in the Network conditions tool">
+    <ph name="LOCKED_1">BlackBerry — BB10</ph>
+  </message>
   <message name="IDS_DEVTOOLS_ea52c36203c5f99c3ce2442d531b1a22" desc="Text in Request Timing View of the Network panel">
     SSL
   </message>
   <message name="IDS_DEVTOOLS_eb0bd7de3ba805621bf9e03e4d16b510" desc="Text of a DOM element in Request Timing View of the Network panel">
     Queued at <ph name="CALCULATOR_FORMATVALUE_REQUEST_ISSUETIME______">$1s<ex>120.39ms</ex></ph>
+  </message>
+  <message name="IDS_DEVTOOLS_ebe4f447bd3316e4f81ab2a6d2f26810" desc="A group title in the user agent dropdown menu in the Network conditions tool">
+    <ph name="LOCKED_1">Internet Explorer</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_ec0492b0eb0336c99c83c68f109b3561" desc="An option in the user agent dropdown menu in the Network conditions tool">
+    <ph name="LOCKED_1">Microsoft Edge — iPad</ph>
   </message>
   <message name="IDS_DEVTOOLS_ec559fc895e8cc77ef0c4d6fdff5bdcb" desc="Text in Request Headers View of the Network panel">
     Form Data
@@ -731,5 +887,11 @@
   </message>
   <message name="IDS_DEVTOOLS_fe1bc3eb2f3e1a9a90b5401eb6baa5b9" desc="Text in Network Log View of the Network panel">
     Copy all as cURL
+  </message>
+  <message name="IDS_DEVTOOLS_fec7b18500d718dc2ba515971366d74e" desc="An option in the user agent dropdown menu in the Network conditions tool">
+    <ph name="LOCKED_1">Internet Explorer 9</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_fef333b290196b891e522e03e5c9fd06" desc="An option in the user agent dropdown menu in the Network conditions tool">
+    <ph name="LOCKED_1">Googlebot Smartphone</ph>
   </message>
 </grit-part>

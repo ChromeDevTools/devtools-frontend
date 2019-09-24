@@ -290,8 +290,9 @@ EventListeners.ObjectEventListenerBar = class extends UI.TreeElement {
     const subtitle = this.listItemElement.createChild('span', 'event-listener-tree-subtitle');
     subtitle.appendChild(linkifier.linkifyRawLocation(this._eventListener.location(), this._eventListener.sourceURL()));
 
-    title.appendChild(
-        ObjectUI.ObjectPropertiesSection.createValueElement(object, false /* wasThrown */, false /* showPreview */));
+    this._valueTitle =
+        ObjectUI.ObjectPropertiesSection.createValueElement(object, false /* wasThrown */, false /* showPreview */);
+    title.appendChild(this._valueTitle);
 
     if (this._eventListener.canRemove()) {
       const deleteButton = title.createChild('span', 'event-listener-button');
@@ -347,5 +348,17 @@ EventListeners.ObjectEventListenerBar = class extends UI.TreeElement {
    */
   eventListener() {
     return this._eventListener;
+  }
+
+  /**
+   * @override
+   */
+  onenter() {
+    if (this._valueTitle) {
+      this._valueTitle.click();
+      return true;
+    }
+
+    return false;
   }
 };

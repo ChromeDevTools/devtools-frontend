@@ -799,16 +799,17 @@ Security.SecurityOriginView = class extends UI.VBox {
     originDisplay.appendChild(Security.SecurityPanel.createHighlightedUrl(origin, originState.securityState));
 
     const originNetworkDiv = titleSection.createChild('div', 'view-network-button');
-    const originNetworkButton = UI.createTextButton('View requests in Network Panel', e => {
+    const originNetworkLink = originNetworkDiv.createChild('span', 'devtools-link origin-button');
+    originNetworkLink.textContent = ls`View requests in Network Panel`;
+    originNetworkLink.addEventListener('click', e => {
       e.consume();
       const parsedURL = new Common.ParsedURL(origin);
       Network.NetworkPanel.revealAndFilter([
         {filterType: Network.NetworkLogView.FilterType.Domain, filterValue: parsedURL.host},
         {filterType: Network.NetworkLogView.FilterType.Scheme, filterValue: parsedURL.scheme}
       ]);
-    }, 'origin-button');
-    UI.ARIAUtils.markAsLink(originNetworkButton);
-    originNetworkDiv.appendChild(originNetworkButton);
+    });
+    UI.ARIAUtils.markAsLink(originNetworkLink);
 
     if (originState.securityDetails) {
       const connectionSection = this.element.createChild('div', 'origin-view-section');
@@ -976,13 +977,19 @@ Security.SecurityOriginView = class extends UI.VBox {
         function toggleSANTruncation() {
           if (sanDiv.classList.contains('truncated-san')) {
             sanDiv.classList.remove('truncated-san');
+            truncatedSANToggle.classList.remove('show-more');
+            truncatedSANToggle.classList.add('show-less');
             truncatedSANToggle.textContent = ls`Show less`;
           } else {
             sanDiv.classList.add('truncated-san');
+            truncatedSANToggle.classList.add('show-more');
+            truncatedSANToggle.classList.remove('show-less');
             truncatedSANToggle.textContent = ls`Show more (${sanList.length} total)`;
           }
         }
-        const truncatedSANToggle = UI.createTextButton(ls`Show more (${sanList.length} total)`, toggleSANTruncation);
+
+        const truncatedSANToggle = sanDiv.createChild('span', 'devtools-link');
+        truncatedSANToggle.addEventListener('click', toggleSANTruncation);
         sanDiv.appendChild(truncatedSANToggle);
         toggleSANTruncation();
       }

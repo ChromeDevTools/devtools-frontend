@@ -39,7 +39,7 @@
 
 .security-origin-view .origin-display {
     font-size: 12px;
-    padding-left: 38px;
+    padding-left: 32px;
     display: flex;
     align-items: center;
 }
@@ -52,7 +52,7 @@
     display: inline-block;
     vertical-align: middle;
     position: absolute;
-    left: 16px;
+    left: 13px;
 }
 
 .security-origin-view .origin-view-section-title {
@@ -118,8 +118,29 @@
 
 .origin-button {
     margin-top: 4px;
+    margin-left: 0;
 }
 
 .origin-view-section:last-child  {
     border-bottom:none;
+}
+
+.devtools-link {
+    display: inline-flex;
+}
+
+.devtools-link.show-less:after,
+.devtools-link.show-more:after {
+    content: '';
+    width: 0;
+    height: 0;
+    border: 4px solid transparent;
+    border-top-color:rgb(17, 85, 204);
+    align-self: center;
+    transform: translateY(25%);
+    margin-left: 8px;
+}
+
+.devtools-link.show-less:after {
+    transform: rotate(180deg) translateY(25%);
 }

@@ -129,6 +129,9 @@
   <message name="IDS_DEVTOOLS_d42c8bbf1d0f4a65f4dec450f2bc4439" desc="Text in Security Panel of the Security panel">
     Key exchange
   </message>
+  <message name="IDS_DEVTOOLS_daa52ee980b16f68bc0d3a9b5cc8deb7" desc="Text in Security Panel of the Security panel">
+    View requests in Network Panel
+  </message>
   <message name="IDS_DEVTOOLS_decb9f523d4cf5dc037b61cb555e6bf3" desc="Not secure div text content in Security Panel of the Security panel">
     Not secure
   </message>

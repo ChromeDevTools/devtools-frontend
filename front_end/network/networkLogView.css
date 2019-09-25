@@ -135,9 +135,15 @@
 .network-log-grid.data-grid tr.selected.network-error-row,
 .network-log-grid.data-grid tr.selected.network-error-row .network-cell-subtitle,
 .network-log-grid.data-grid tr.selected.network-error-row .network-dim-cell {
-    color: rgb(230, 0, 0);
+    color: rgb(230, 0, 0) !important;
 }
 
+.network-log-grid.data-grid:focus tr.selected.network-error-row,
+.network-log-grid.data-grid:focus tr.selected.network-error-row .network-cell-subtitle,
+.network-log-grid.data-grid:focus tr.selected.network-error-row .network-dim-cell {
+    background: hsl(0, 100%, 97%) !important;
+    color: rgb(230, 0, 0) !important;
+}
 .initiator-column .devtools-link {
     color: inherit;
 }

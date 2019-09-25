@@ -31,7 +31,7 @@
 /**
  * @unrestricted
  */
-Common.Settings = class {
+export default class Settings {
   /**
    * @param {!Common.SettingsStorage} globalStorage
    * @param {!Common.SettingsStorage} localStorage
@@ -164,12 +164,12 @@ Common.Settings = class {
     }
     return this._globalStorage;
   }
-};
+}
 
 /**
  * @unrestricted
  */
-Common.SettingsStorage = class {
+export class SettingsStorage {
   /**
    * @param {!Object} object
    * @param {function(string, string)=} setCallback
@@ -244,13 +244,13 @@ Common.SettingsStorage = class {
     for (let i = 0; i < 10 && i < keys.length; ++i)
       Common.console.log('Setting: \'' + keys[i] + '\', size: ' + sizes[keys[i]]);
   }
-};
+}
 
 /**
  * @template V
  * @unrestricted
  */
-Common.Setting = class {
+export class Setting {
   /**
    * @param {!Common.Settings} settings
    * @param {string} name
@@ -376,12 +376,12 @@ Common.Setting = class {
     Common.console.error(errorMessage);
     this._storage._dumpSizes();
   }
-};
+}
 
 /**
  * @unrestricted
  */
-Common.RegExpSetting = class extends Common.Setting {
+export class RegExpSetting extends Setting {
   /**
    * @param {!Common.Settings} settings
    * @param {string} name
@@ -448,12 +448,12 @@ Common.RegExpSetting = class extends Common.Setting {
     }
     return this._regex;
   }
-};
+}
 
 /**
  * @unrestricted
  */
-Common.VersionController = class {
+export class VersionController {
   updateVersion() {
     const localStorageVersion =
         window.localStorage ? window.localStorage[Common.VersionController._currentVersionName] : 0;
@@ -877,20 +877,12 @@ Common.VersionController = class {
     if (breakpointsSetting.get().length > maxBreakpointsCount)
       breakpointsSetting.set([]);
   }
-};
-
-Common.VersionController._currentVersionName = 'inspectorVersion';
-Common.VersionController.currentVersion = 28;
-
-/**
- * @type {!Common.Settings}
- */
-Common.settings;
+}
 
 /**
  * @enum {symbol}
  */
-Common.SettingStorageType = {
+export const SettingStorageType = {
   Global: Symbol('Global'),
   Local: Symbol('Local'),
   Session: Symbol('Session')
@@ -900,14 +892,58 @@ Common.SettingStorageType = {
  * @param {string} settingName
  * @return {!Common.Setting}
  */
-Common.moduleSetting = function(settingName) {
+export function moduleSetting(settingName) {
   return Common.settings.moduleSetting(settingName);
-};
+}
 
 /**
  * @param {string} settingName
  * @return {!Common.Setting}
  */
-Common.settingForTest = function(settingName) {
+export function settingForTest(settingName) {
   return Common.settings.settingForTest(settingName);
-};
+}
+
+/* Legacy exported object */
+self.Common = self.Common || {};
+Common = Common || {};
+
+/**
+ * @constructor
+ */
+Common.Settings = Settings;
+
+/**
+ * @constructor
+ */
+Common.SettingsStorage = SettingsStorage;
+
+/**
+ * @constructor
+ */
+Common.Setting = Setting;
+
+/**
+ * @constructor
+ */
+Common.RegExpSetting = RegExpSetting;
+Common.settingForTest = settingForTest;
+
+/**
+ * @constructor
+ */
+Common.VersionController = VersionController;
+Common.moduleSetting = moduleSetting;
+
+/**
+ * @enum {symbol}
+ */
+Common.SettingStorageType = SettingStorageType;
+
+Common.VersionController._currentVersionName = 'inspectorVersion';
+Common.VersionController.currentVersion = 28;
+
+/**
+ * @type {!Common.Settings}
+ */
+Common.settings;

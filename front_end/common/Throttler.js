@@ -1,10 +1,11 @@
 // Copyright 2014 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
 /**
  * @unrestricted
  */
-Common.Throttler = class {
+export default class Throttler {
   /**
    * @param {number} timeout
    */
@@ -108,7 +109,13 @@ Common.Throttler = class {
   _getTime() {
     return window.performance.now();
   }
-};
+}
+
+/* Legacy exported object */
+self.Common = self.Common || {};
+Common = Common || {};
+
+Common.Throttler = Throttler;
 
 /** @typedef {function(!Error=)} */
 Common.Throttler.FinishCallback;

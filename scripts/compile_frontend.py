@@ -279,9 +279,9 @@ def prepare_closure_frontend_compile(temp_devtools_path, descriptors, namespace_
         '--externs',
         namespace_externs_path,
         '--js',
-        RUNTIME_FILE,
-        '--js',
         ROOT_MODULE_FILE,
+        '--js',
+        RUNTIME_FILE,
     ]
 
     all_files = descriptors.all_compiled_files()
@@ -318,7 +318,6 @@ def generate_namespace_externs(modules_by_name):
     namespace_externs_file = tempfile.NamedTemporaryFile(mode='wt', delete=False)
     try:
         for namespace in namespaces:
-            namespace_externs_file.write('/** @const */\n')
             namespace_externs_file.write('var %s = {};\n' % namespace)
     finally:
         namespace_externs_file.close()

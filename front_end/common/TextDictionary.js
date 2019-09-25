@@ -31,7 +31,7 @@
 /**
  * @unrestricted
  */
-Common.TextDictionary = class {
+export default class TextDictionary {
   constructor() {
     /** @type {!Map<string, number>} */
     this._words = new Map();
@@ -92,4 +92,10 @@ Common.TextDictionary = class {
     this._words.clear();
     this._index.clear();
   }
-};
+}
+
+/* Legacy exported object */
+self.Common = self.Common || {};
+Common = Common || {};
+
+Common.TextDictionary = TextDictionary;

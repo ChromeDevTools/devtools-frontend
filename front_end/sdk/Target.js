@@ -198,15 +198,16 @@ SDK.Target = class extends Protocol.TargetBase {
   }
 
   /**
+   * @param {string=} reason - optionally provide a reason, so models can respond accordingly
    * @return {!Promise}
    */
-  async suspend() {
+  async suspend(reason) {
     if (this._isSuspended)
       return Promise.resolve();
     this._isSuspended = true;
 
-    await Promise.all(Array.from(this.models().values(), m => m.preSuspendModel()));
-    await Promise.all(Array.from(this.models().values(), m => m.suspendModel()));
+    await Promise.all(Array.from(this.models().values(), m => m.preSuspendModel(reason)));
+    await Promise.all(Array.from(this.models().values(), m => m.suspendModel(reason)));
   }
 
   /**
@@ -285,16 +286,18 @@ SDK.SDKModel = class extends Common.Object {
   /**
    * Override this method to perform tasks that are required to suspend the
    * model and that still need other models in an unsuspended state.
+   * @param {string=} reason - optionally provide a reason, the model can respond accordingly
    * @return {!Promise}
    */
-  preSuspendModel() {
+  preSuspendModel(reason) {
     return Promise.resolve();
   }
 
   /**
+   * @param {string=} reason - optionally provide a reason, the model can respond accordingly
    * @return {!Promise}
    */
-  suspendModel() {
+  suspendModel(reason) {
     return Promise.resolve();
   }
 

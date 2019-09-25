@@ -187,7 +187,7 @@ Timeline.TimelineController = class {
     // There might be a significant delay in the beginning of timeline recording
     // caused by starting CPU profiler, that needs to traverse JS heap to collect
     // all the functions data.
-    await SDK.targetManager.suspendAllTargets();
+    await SDK.targetManager.suspendAllTargets('performance-timeline');
     if (enableJSSampling && Runtime.queryParam('timelineTracingJSProfileDisabled'))
       await this._startProfilingOnAllModels();
     if (!this._tracingManager)

@@ -19,14 +19,15 @@ SDK.TargetManager = class extends Common.Object {
   }
 
   /**
+   * @param {string=} reason - optionally provide a reason, so targets can respond accordingly
    * @return {!Promise}
    */
-  suspendAllTargets() {
+  suspendAllTargets(reason) {
     if (this._isSuspended)
       return Promise.resolve();
     this._isSuspended = true;
     this.dispatchEventToListeners(SDK.TargetManager.Events.SuspendStateChanged);
-    return Promise.all(this._targets.map(target => target.suspend()));
+    return Promise.all(this._targets.map(target => target.suspend(reason)));
   }
 
   /**

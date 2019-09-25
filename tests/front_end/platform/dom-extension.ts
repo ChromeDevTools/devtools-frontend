@@ -5,6 +5,14 @@
 const { assert } = chai;
 import '../../../front_end/dom_extension/DOMExtension.js';
 
+declare global {
+    function createElementWithClass(tagName: string, className?: string, content?: string): HTMLElement;
+
+    interface HTMLElement {
+        traverseNextNode(node: HTMLElement): HTMLElement;
+        createChild(tagName: string, className?: string, content?: string): HTMLElement;
+    }
+}
 
 function createSlot(parent, name) {
     const slot = parent.createChild('slot');

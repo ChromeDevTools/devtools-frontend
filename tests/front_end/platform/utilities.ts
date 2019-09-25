@@ -15,7 +15,6 @@ declare global {
     upperBound(value: T, comparator?: (a: T, b: T) => number): number;
     lowerBound(value: T, comparator?: (a: T, b: T) => number): number;
     binaryIndexOf(value: T, comparator: (a: T, b: T) => number): number;
-    qselect(idx: number): number;
     sortRange(comparator: (a: T, b: T) => number, leftBound: number, rightBound: number, sortWindowLeft: number, sortWindowRight: number): T[];
   }
 
@@ -160,28 +159,6 @@ describe('Utilities', () => {
       testArray(testArrays[i], false);
       testArray(testArrays[i], true);
     }
-  });
-
-  it('q selects', () => {
-    let testArrays =
-        [[], [0], [0, 0, 0, 0, 0, 0, 0, 0], [4, 3, 2, 1], [1, 2, 3, 4, 5], [-1, 3, 2, 7, 7, 7, 10, 12, 3, 4, -1, 2]];
-
-    function testArray(array: number[]) {
-      function compare(a: number, b: number) {
-        return a - b;
-      }
-      const sorted = array.slice(0).sort(compare);
-      const reference = {min: sorted[0], median: sorted[Math.floor(sorted.length / 2)], max: sorted[sorted.length - 1]};
-      const actual = {
-        min: array.slice(0).qselect(0),
-        median: array.slice(0).qselect(Math.floor(array.length / 2)),
-        max: array.slice(0).qselect(array.length - 1)
-      };
-
-      assert.deepStrictEqual(reference, actual);
-    }
-    for (let i = 0, l = testArrays.length; i < l; ++i)
-      testArray(testArrays[i]);
   });
 
   it('sorts ranges', () => {

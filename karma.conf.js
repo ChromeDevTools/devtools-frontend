@@ -32,16 +32,19 @@ module.exports = function(config) {
       compilerOptions: {
         target: "esnext",
         module: "esnext",
-        typeRoots: ["./third_party/devtools-node-modules/third_party/node_modules/@types"]
+        typeRoots: ["../../../../third_party/devtools-node-modules/third_party/node_modules/@types"]
       },
       coverageOptions: {
         instrumentation: false
       },
       bundlerOptions: {
         resolve: {
-          directories: ["./third_party/devtools-node-modules/third_party/node_modules"]
+          directories: ["../../../../third_party/devtools-node-modules/third_party/node_modules"]
         }
-      }
+      },
+      exclude: [
+        "scripts"
+      ]
     },
 
     proxies: {

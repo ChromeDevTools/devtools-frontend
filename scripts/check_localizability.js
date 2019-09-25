@@ -46,7 +46,7 @@ async function main() {
     if (process.argv[2] === '-a')
       filePathPromises.push(localizationUtils.getFilesFromDirectory(frontendPath, filePaths, ['.js']));
     else
-      filePaths = process.argv.slice(2);
+      filePaths = process.argv.slice(2).filter(localizationUtils.shouldParseDirectory);
     await Promise.all(filePathPromises);
 
     filePaths.push(localizationUtils.SHARED_STRINGS_PATH);

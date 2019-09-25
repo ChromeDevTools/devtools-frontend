@@ -23,8 +23,8 @@ const esprimaTypes = {
   TEMP_LITERAL: 'TemplateLiteral'
 };
 
-const excludeFiles = ['lighthouse-dt-bundle.js', 'Tests.js'];
-const excludeDirs = ['test_runner', 'Images', 'langpacks', 'node_modules'];
+const excludeFiles = ['Tests.js'];
+const excludeDirs = ['test_runner', 'Images', 'langpacks', 'node_modules', 'lighthouse'];
 const cppSpecialCharactersMap = {
   '"': '\\"',
   '\\': '\\\\',
@@ -333,5 +333,6 @@ module.exports = {
   SHARED_STRINGS_PATH,
   sanitizeStringIntoCppFormat,
   sanitizeStringIntoFrontendFormat,
+  shouldParseDirectory,
   verifyFunctionCallee
 };

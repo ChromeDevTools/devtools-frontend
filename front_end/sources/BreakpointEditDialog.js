@@ -31,7 +31,7 @@ Sources.BreakpointEditDialog = class extends UI.Widget {
     const toolbar = new UI.Toolbar('source-frame-breakpoint-toolbar', this.contentElement);
     toolbar.appendText(`Line ${editorLineNumber + 1}:`);
 
-    this._typeSelector = new UI.ToolbarComboBox(this._onTypeChanged.bind(this));
+    this._typeSelector = new UI.ToolbarComboBox(this._onTypeChanged.bind(this), ls`Breakpoint type`);
     this._typeSelector.createOption(ls`Breakpoint`, Sources.BreakpointEditDialog.BreakpointType.Breakpoint);
     const conditionalOption = this._typeSelector.createOption(
         ls`Conditional breakpoint`, Sources.BreakpointEditDialog.BreakpointType.Conditional);

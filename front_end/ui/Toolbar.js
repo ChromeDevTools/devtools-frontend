@@ -833,9 +833,10 @@ UI.ToolbarItem.ItemsProvider.prototype = {
 UI.ToolbarComboBox = class extends UI.ToolbarItem {
   /**
    * @param {?function(!Event)} changeHandler
+   * @param {string} title
    * @param {string=} className
    */
-  constructor(changeHandler, className) {
+  constructor(changeHandler, title, className) {
     super(createElementWithClass('span', 'toolbar-select-container'));
 
     this._selectElement = this.element.createChild('select', 'toolbar-item');
@@ -843,17 +844,10 @@ UI.ToolbarComboBox = class extends UI.ToolbarItem {
     this.element.appendChild(dropdownArrowIcon);
     if (changeHandler)
       this._selectElement.addEventListener('change', changeHandler, false);
-    if (className)
-      this._selectElement.classList.add(className);
-  }
-
-  /**
-   * @override
-   * @param {string} title
-   */
-  setTitle(title) {
     UI.ARIAUtils.setAccessibleName(this._selectElement, title);
     super.setTitle(title);
+    if (className)
+      this._selectElement.classList.add(className);
   }
 
   /**
@@ -969,15 +963,13 @@ UI.ToolbarSettingComboBox = class extends UI.ToolbarComboBox {
   /**
    * @param {!Array<!{value: string, label: string}>} options
    * @param {!Common.Setting} setting
-   * @param {string=} accessibleName
+   * @param {string} accessibleName
    */
   constructor(options, setting, accessibleName) {
-    super(null);
+    super(null, accessibleName);
     this._options = options;
     this._setting = setting;
     this._selectElement.addEventListener('change', this._valueChanged.bind(this), false);
-    if (accessibleName)
-      UI.ARIAUtils.setAccessibleName(this._selectElement, accessibleName);
     this.setOptions(options);
     setting.addChangeListener(this._settingChanged, this);
   }

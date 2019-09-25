@@ -6,8 +6,7 @@ Audits.ReportSelector = class {
   constructor(renderNewAuditView) {
     this._renderNewAuditView = renderNewAuditView;
     this._newAuditItem = createElement('option');
-    this._comboBox = new UI.ToolbarComboBox(this._handleChange.bind(this), 'audits-report');
-    this._comboBox.setTitle(ls`Reports`);
+    this._comboBox = new UI.ToolbarComboBox(this._handleChange.bind(this), ls`Reports`, 'audits-report');
     this._comboBox.setMaxWidth(180);
     this._comboBox.setMinWidth(140);
     this._itemByOptionElement = new Map();

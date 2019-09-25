@@ -133,14 +133,14 @@ Profiler.HeapSnapshotView = class extends UI.SimpleView {
       this._perspectives.push(new Profiler.HeapSnapshotView.AllocationPerspective());
     this._perspectives.push(new Profiler.HeapSnapshotView.StatisticsPerspective());
 
-    this._perspectiveSelect = new UI.ToolbarComboBox(this._onSelectedPerspectiveChanged.bind(this));
+    this._perspectiveSelect = new UI.ToolbarComboBox(this._onSelectedPerspectiveChanged.bind(this), ls`Perspective`);
     this._updatePerspectiveOptions();
 
-    this._baseSelect = new UI.ToolbarComboBox(this._changeBase.bind(this));
+    this._baseSelect = new UI.ToolbarComboBox(this._changeBase.bind(this), ls`Base snapshot`);
     this._baseSelect.setVisible(false);
     this._updateBaseOptions();
 
-    this._filterSelect = new UI.ToolbarComboBox(this._changeFilter.bind(this));
+    this._filterSelect = new UI.ToolbarComboBox(this._changeFilter.bind(this), ls`Filter`);
     this._filterSelect.setVisible(false);
     this._updateFilterOptions();
 

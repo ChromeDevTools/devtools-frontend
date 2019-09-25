@@ -319,7 +319,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
    * @return {!UI.ToolbarComboBox}
    */
   _createNetworkConditionsSelect() {
-    const toolbarItem = new UI.ToolbarComboBox(null);
+    const toolbarItem = new UI.ToolbarComboBox(null, ls`Network conditions`);
     toolbarItem.setMaxWidth(140);
     MobileThrottling.throttlingManager().decorateSelectWithNetworkThrottling(toolbarItem.selectElement());
     return toolbarItem;

@@ -63,6 +63,9 @@
   <message name="IDS_DEVTOOLS_1f15646f60fc3c1dea747963f02d51ac" desc="Text in Sources Panel of the Sources panel">
     Group by folder
   </message>
+  <message name="IDS_DEVTOOLS_1fbbb6684f67ee895ff5dc2e429697ce" desc="Screen reader label for a select box that chooses the breakpoint type in the Sources panel when editing a breakpoint">
+    Breakpoint type
+  </message>
   <message name="IDS_DEVTOOLS_216a9080bf22a993b2d7f9331d34cc68" desc="Text in Sources Panel of the Sources panel">
     Don&apos;t pause on exceptions
   </message>

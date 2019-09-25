@@ -15,9 +15,6 @@
   <message name="IDS_DEVTOOLS_0382c94481db9197dd5a72ea4bdd2ff0" desc="A tag of Network Conditions tool that can be searched in the command menu">
     disk cache
   </message>
-  <message name="IDS_DEVTOOLS_040c4b52a3c06c6067fac76c4c7c3a2c" desc="Title of the 'Network conditions' tool in the bottom drawer">
-    Network conditions
-  </message>
   <message name="IDS_DEVTOOLS_059f48d76d79fe0727740d75dc81fa94" desc="Text in Network Log View of the Network panel">
     <ph name="SELECTEDTRANSFERSIZE">$1s<ex>25</ex></ph> B / <ph name="TRANSFERSIZE">$2s<ex>25</ex></ph> B transferred
   </message>
@@ -179,6 +176,9 @@
   </message>
   <message name="IDS_DEVTOOLS_3b83f6ae91bb21147fd97b8b8229287f" desc="Text in Signed Exchange Info View of the Network panel">
     Certificate URL
+  </message>
+  <message name="IDS_DEVTOOLS_3b8fa30c5cdb1ef67ffdd3bf7ba9ff4b" desc="Screen reader label for a select box that chooses how to display binary data in the Network panel">
+    Binary view type
   </message>
   <message name="IDS_DEVTOOLS_3c06899dae839e1ca3051475a2b8fa05" desc="Text in Request Preview View of the Network panel">
     Preview not available

@@ -167,13 +167,12 @@ Timeline.EventsTimelineTreeView.Filters = class extends Common.Object {
    * @param {!UI.Toolbar} toolbar
    */
   populateToolbar(toolbar) {
-    const durationFilterUI = new UI.ToolbarComboBox(durationFilterChanged.bind(this));
+    const durationFilterUI = new UI.ToolbarComboBox(durationFilterChanged.bind(this), ls`Duration filter`);
     for (const durationMs of Timeline.EventsTimelineTreeView.Filters._durationFilterPresetsMs) {
       durationFilterUI.addOption(durationFilterUI.createOption(
           durationMs ? Common.UIString('\u2265 %d\xa0ms', durationMs) : Common.UIString('All'),
           String(durationMs)));
     }
-    UI.ARIAUtils.setAccessibleName(durationFilterUI.selectElement(), ls`Duration filter`);
     toolbar.appendToolbarItem(durationFilterUI);
 
     const categoryFiltersUI = {};

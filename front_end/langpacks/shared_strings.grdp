@@ -4,6 +4,9 @@
   <message name="IDS_DEVTOOLS_007c41a9025be2c8e14b496ed3ee00f8" desc="Text to save an item">
     Save…
   </message>
+  <message name="IDS_DEVTOOLS_040c4b52a3c06c6067fac76c4c7c3a2c" desc="Title of the 'Network conditions' tool in the bottom drawer">
+    Network conditions
+  </message>
   <message name="IDS_DEVTOOLS_0511551e6cf7d61acd9b62f9304efa93" desc="Tooltip text that appears on the setting to preserve log when hovering over the item">
     Do not clear log on page reload / navigation
   </message>

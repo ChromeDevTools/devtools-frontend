@@ -64,7 +64,7 @@ Network.ResourceWebSocketFrameView = class extends UI.VBox {
     this._clearAllButton.addEventListener(UI.ToolbarButton.Events.Click, this._clearFrames, this);
     this._mainToolbar.appendToolbarItem(this._clearAllButton);
 
-    this._filterTypeCombobox = new UI.ToolbarComboBox(this._updateFilterSetting.bind(this));
+    this._filterTypeCombobox = new UI.ToolbarComboBox(this._updateFilterSetting.bind(this), ls`Filter`);
     for (const filterItem of Network.ResourceWebSocketFrameView._filterTypes) {
       const option = this._filterTypeCombobox.createOption(filterItem.label, filterItem.name);
       this._filterTypeCombobox.addOption(option);

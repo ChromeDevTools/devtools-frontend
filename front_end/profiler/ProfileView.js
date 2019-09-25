@@ -33,8 +33,7 @@ Profiler.ProfileView = class extends UI.SimpleView {
     this.dataGrid.addEventListener(DataGrid.DataGrid.Events.SelectedNode, this._nodeSelected.bind(this, true));
     this.dataGrid.addEventListener(DataGrid.DataGrid.Events.DeselectedNode, this._nodeSelected.bind(this, false));
 
-    this.viewSelectComboBox = new UI.ToolbarComboBox(this._changeView.bind(this));
-    this.viewSelectComboBox.setTitle(ls`Profile view mode`);
+    this.viewSelectComboBox = new UI.ToolbarComboBox(this._changeView.bind(this), ls`Profile view mode`);
 
     this.focusButton = new UI.ToolbarButton(Common.UIString('Focus selected function'), 'largeicon-visibility');
     this.focusButton.setEnabled(false);

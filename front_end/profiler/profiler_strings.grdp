@@ -66,6 +66,9 @@
   <message name="IDS_DEVTOOLS_2f318b400ebcb22420251535452efef0" desc="Text in Heap Snapshot View of a profiler tool">
     Containment
   </message>
+  <message name="IDS_DEVTOOLS_2f31c2eec148687f0ae649ecf35af762" desc="Screen reader label for a select box that chooses the snapshot to use as a base in the Memory panel when vieweing a Heap Snapshot">
+    Base snapshot
+  </message>
   <message name="IDS_DEVTOOLS_30f4a219667bb46c6fc92f3d665a866c" desc="aria label for javascript VM instances target list in heap profiler">
     JavaScript VM instances
   </message>
@@ -281,6 +284,9 @@
   </message>
   <message name="IDS_DEVTOOLS_a7bd935a88c629dc11c52e0c16c2a8a0" desc="Text in Heap Snapshot Grid Nodes of a profiler tool">
     <ph name="DISTANCE">$1d<ex>2</ex></ph>
+  </message>
+  <message name="IDS_DEVTOOLS_a80420eef88d11f77532f1b9cb467fa3" desc="Screen reader label for a select box that chooses the perspective in the Memory panel when vieweing a Heap Snapshot">
+    Perspective
   </message>
   <message name="IDS_DEVTOOLS_a8445619abd08f3ba0ebfcb31183f7f9" desc="Text in Heap Snapshot Grid Nodes of a profiler tool">
     −

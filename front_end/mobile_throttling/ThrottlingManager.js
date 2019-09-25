@@ -215,7 +215,7 @@ MobileThrottling.ThrottlingManager = class extends Common.Object {
    */
   createCPUThrottlingSelector() {
     const control = new UI.ToolbarComboBox(
-        event => this.setCPUThrottlingRate(this._cpuThrottlingRates[event.target.selectedIndex]));
+        event => this.setCPUThrottlingRate(this._cpuThrottlingRates[event.target.selectedIndex]), ls`CPU throttling`);
     this._cpuThrottlingControls.add(control);
     const currentRate = this._cpuThrottlingRate;
 

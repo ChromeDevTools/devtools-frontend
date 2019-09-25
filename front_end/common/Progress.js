@@ -27,47 +27,51 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 /**
  * @interface
  */
-Common.Progress = function() {};
-
-Common.Progress.prototype = {
+export default class Progress {
   /**
    * @param {number} totalWork
    */
-  setTotalWork(totalWork) {},
+  setTotalWork(totalWork) {
+  }
 
   /**
    * @param {string} title
    */
-  setTitle(title) {},
+  setTitle(title) {
+  }
 
   /**
    * @param {number} worked
    * @param {string=} title
    */
-  setWorked(worked, title) {},
+  setWorked(worked, title) {
+  }
 
   /**
    * @param {number=} worked
    */
-  worked(worked) {},
+  worked(worked) {
+  }
 
-  done() {},
+  done() {
+  }
 
   /**
    * @return {boolean}
    */
   isCanceled() {
     return false;
-  },
-};
+  }
+}
 
 /**
  * @unrestricted
  */
-Common.CompositeProgress = class {
+export class CompositeProgress {
   /**
    * @param {!Common.Progress} parent
    */
@@ -107,13 +111,13 @@ Common.CompositeProgress = class {
     }
     this._parent.setWorked(done / totalWeights);
   }
-};
+}
 
 /**
  * @implements {Common.Progress}
  * @unrestricted
  */
-Common.SubProgress = class {
+export class SubProgress {
   /**
    * @param {!Common.CompositeProgress} composite
    * @param {number=} weight
@@ -176,13 +180,13 @@ Common.SubProgress = class {
   worked(worked) {
     this.setWorked(this._worked + (worked || 1));
   }
-};
+}
 
 /**
  * @implements {Common.Progress}
  * @unrestricted
  */
-Common.ProgressProxy = class {
+export class ProgressProxy {
   /**
    * @param {?Common.Progress} delegate
    * @param {function()=} doneCallback
@@ -246,4 +250,28 @@ Common.ProgressProxy = class {
     if (this._delegate)
       this._delegate.worked(worked);
   }
-};
+}
+
+/* Legacy exported object */
+self.Common = self.Common || {};
+Common = Common || {};
+
+/**
+ * @interface
+ */
+Common.Progress = Progress;
+
+/**
+ * @constructor
+ */
+Common.CompositeProgress = CompositeProgress;
+
+/**
+ * @constructor
+ */
+Common.SubProgress = SubProgress;
+
+/**
+ * @constructor
+ */
+Common.ProgressProxy = ProgressProxy;

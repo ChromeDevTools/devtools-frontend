@@ -5,7 +5,7 @@
  * @template T
  * @unrestricted
  */
-Common.CharacterIdMap = class {
+export default class CharacterIdMap {
   constructor() {
     /** @type {!Map<T, string>} */
     this._elementToCharacter = new Map();
@@ -40,4 +40,13 @@ Common.CharacterIdMap = class {
       return null;
     return object;
   }
-};
+}
+
+/* Legacy exported object */
+self.Common = self.Common || {};
+Common = Common || {};
+
+/**
+ * @constructor
+ */
+Common.CharacterIdMap = CharacterIdMap;

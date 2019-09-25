@@ -5,25 +5,25 @@
 /**
  * @interface
  */
-Common.OutputStream = function() {};
-
-Common.OutputStream.prototype = {
+export class OutputStream {
   /**
    * @param {string} data
    * @return {!Promise}
    */
-  write(data) {},
+  async write(data) {
+  }
 
   /**
    * @return {!Promise}
    */
-  close() {}
-};
+  async close() {
+  }
+}
 
 /**
  * @implements {Common.OutputStream}
  */
-Common.StringOutputStream = class {
+export default class StringOutputStream {
   constructor() {
     this._data = '';
   }
@@ -40,7 +40,7 @@ Common.StringOutputStream = class {
   /**
    * @override
    */
-  close() {
+  async close() {
   }
 
   /**
@@ -49,4 +49,14 @@ Common.StringOutputStream = class {
   data() {
     return this._data;
   }
-};
+}
+
+/* Legacy exported object */
+self.Common = self.Common || {};
+Common = Common || {};
+
+/**
+ * @interface
+ */
+Common.OutputStream = OutputStream;
+Common.StringOutputStream = StringOutputStream;

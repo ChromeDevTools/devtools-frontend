@@ -3,12 +3,10 @@
         "text_utils",
         "platform"
     ],
-    "modules": [
-        "common.js",
-        "EventTarget.js",
-        "Object.js",
+    "scripts": [
         "Worker.js",
         "TextDictionary.js",
+        "Object.js",
         "Color.js",
         "Console.js",
         "ContentProvider.js",
@@ -17,20 +15,12 @@
         "ResourceType.js",
         "Settings.js",
         "StaticContentProvider.js",
+        "OutputStream.js",
         "SegmentedRange.js",
         "Throttler.js",
         "Trie.js",
         "UIString.js",
-        "Revealer.js",
-        "App.js",
-        "AppProvider.js",
-        "JavaScriptMetaData.js",
-        "Linkifier.js",
-        "QueryParamHandler.js",
-        "Revealer.js",
-        "Runnable.js",
-        "StringOutputStream.js",
+        "ModuleExtensionInterfaces.js",
         "CharacterIdMap.js"
-    ],
-    "scripts": []
+    ]
 }

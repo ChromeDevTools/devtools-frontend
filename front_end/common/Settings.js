@@ -31,7 +31,7 @@
 /**
  * @unrestricted
  */
-export default class Settings {
+Common.Settings = class {
   /**
    * @param {!Common.SettingsStorage} globalStorage
    * @param {!Common.SettingsStorage} localStorage
@@ -164,12 +164,12 @@ export default class Settings {
     }
     return this._globalStorage;
   }
-}
+};
 
 /**
  * @unrestricted
  */
-export class SettingsStorage {
+Common.SettingsStorage = class {
   /**
    * @param {!Object} object
    * @param {function(string, string)=} setCallback
@@ -244,13 +244,13 @@ export class SettingsStorage {
     for (let i = 0; i < 10 && i < keys.length; ++i)
       Common.console.log('Setting: \'' + keys[i] + '\', size: ' + sizes[keys[i]]);
   }
-}
+};
 
 /**
  * @template V
  * @unrestricted
  */
-export class Setting {
+Common.Setting = class {
   /**
    * @param {!Common.Settings} settings
    * @param {string} name
@@ -376,12 +376,12 @@ export class Setting {
     Common.console.error(errorMessage);
     this._storage._dumpSizes();
   }
-}
+};
 
 /**
  * @unrestricted
  */
-export class RegExpSetting extends Setting {
+Common.RegExpSetting = class extends Common.Setting {
   /**
    * @param {!Common.Settings} settings
    * @param {string} name
@@ -448,12 +448,12 @@ export class RegExpSetting extends Setting {
     }
     return this._regex;
   }
-}
+};
 
 /**
  * @unrestricted
  */
-export class VersionController {
+Common.VersionController = class {
   updateVersion() {
     const localStorageVersion =
         window.localStorage ? window.localStorage[Common.VersionController._currentVersionName] : 0;
@@ -877,12 +877,20 @@ export class VersionController {
     if (breakpointsSetting.get().length > maxBreakpointsCount)
       breakpointsSetting.set([]);
   }
-}
+};
+
+Common.VersionController._currentVersionName = 'inspectorVersion';
+Common.VersionController.currentVersion = 28;
+
+/**
+ * @type {!Common.Settings}
+ */
+Common.settings;
 
 /**
  * @enum {symbol}
  */
-export const SettingStorageType = {
+Common.SettingStorageType = {
   Global: Symbol('Global'),
   Local: Symbol('Local'),
   Session: Symbol('Session')
@@ -892,58 +900,14 @@ export const SettingStorageType = {
  * @param {string} settingName
  * @return {!Common.Setting}
  */
-export function moduleSetting(settingName) {
+Common.moduleSetting = function(settingName) {
   return Common.settings.moduleSetting(settingName);
-}
+};
 
 /**
  * @param {string} settingName
  * @return {!Common.Setting}
  */
-export function settingForTest(settingName) {
+Common.settingForTest = function(settingName) {
   return Common.settings.settingForTest(settingName);
-}
-
-/* Legacy exported object */
-self.Common = self.Common || {};
-Common = Common || {};
-
-/**
- * @constructor
- */
-Common.Settings = Settings;
-
-/**
- * @constructor
- */
-Common.SettingsStorage = SettingsStorage;
-
-/**
- * @constructor
- */
-Common.Setting = Setting;
-
-/**
- * @constructor
- */
-Common.RegExpSetting = RegExpSetting;
-Common.settingForTest = settingForTest;
-
-/**
- * @constructor
- */
-Common.VersionController = VersionController;
-Common.moduleSetting = moduleSetting;
-
-/**
- * @enum {symbol}
- */
-Common.SettingStorageType = SettingStorageType;
-
-Common.VersionController._currentVersionName = 'inspectorVersion';
-Common.VersionController.currentVersion = 28;
-
-/**
- * @type {!Common.Settings}
- */
-Common.settings;
+};

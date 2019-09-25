@@ -4,7 +4,7 @@
 /**
  * @unrestricted
  */
-export class Segment {
+Common.Segment = class {
   /**
    * @param {number} begin
    * @param {number} end
@@ -25,12 +25,12 @@ export class Segment {
   intersects(that) {
     return this.begin < that.end && that.begin < this.end;
   }
-}
+};
 
 /**
  * @unrestricted
  */
-export default class SegmentedRange {
+Common.SegmentedRange = class {
   /**
    * @param {(function(!Common.Segment, !Common.Segment): ?Common.Segment)=} mergeCallback
    */
@@ -108,18 +108,4 @@ export default class SegmentedRange {
     merged.end = Math.max(first.end, second.end);
     return merged;
   }
-}
-
-/* Legacy exported object */
-self.Common = self.Common || {};
-Common = Common || {};
-
-/**
- * @constructor
- */
-Common.Segment = Segment;
-
-/**
- * @constructor
- */
-Common.SegmentedRange = SegmentedRange;
+};

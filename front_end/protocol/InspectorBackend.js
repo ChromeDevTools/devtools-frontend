@@ -28,10 +28,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * @typedef {string}
- * @suppress {checkTypes}
- */
+/** @typedef {string} */
 Protocol.Error = Symbol('Protocol.Error');
 
 /**

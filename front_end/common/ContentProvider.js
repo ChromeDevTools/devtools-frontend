@@ -30,30 +30,28 @@
 /**
  * @interface
  */
-export default class ContentProvider {
+Common.ContentProvider = function() {};
+
+Common.ContentProvider.prototype = {
   /**
    * @return {string}
    */
-  contentURL() {
-  }
+  contentURL() {},
 
   /**
    * @return {!Common.ResourceType}
    */
-  contentType() {
-  }
+  contentType() {},
 
   /**
    * @return {!Promise<boolean>}
    */
-  contentEncoded() {
-  }
+  contentEncoded() {},
 
   /**
    * @return {!Promise<string>}
    */
-  requestContent() {
-  }
+  requestContent() {},
 
   /**
    * @param {string} query
@@ -62,12 +60,12 @@ export default class ContentProvider {
    * @return {!Promise<!Array<!Common.ContentProvider.SearchMatch>>}
    */
   searchInContent(query, caseSensitive, isRegex) {}
-}
+};
 
 /**
  * @unrestricted
  */
-export class SearchMatch {
+Common.ContentProvider.SearchMatch = class {
   /**
    * @param {number} lineNumber
    * @param {string} lineContent
@@ -76,7 +74,7 @@ export class SearchMatch {
     this.lineNumber = lineNumber;
     this.lineContent = lineContent;
   }
-}
+};
 
 /**
  * @param {string} content
@@ -85,7 +83,7 @@ export class SearchMatch {
  * @param {boolean} isRegex
  * @return {!Array.<!Common.ContentProvider.SearchMatch>}
  */
-export const performSearchInContent = function(content, query, caseSensitive, isRegex) {
+Common.ContentProvider.performSearchInContent = function(content, query, caseSensitive, isRegex) {
   const regex = createSearchRegex(query, caseSensitive, isRegex);
 
   const text = new TextUtils.Text(content);
@@ -106,7 +104,7 @@ export const performSearchInContent = function(content, query, caseSensitive, is
  * @param {?string=} charset
  * @return {?string}
  */
-export const contentAsDataURL = function(content, mimeType, contentEncoded, charset) {
+Common.ContentProvider.contentAsDataURL = function(content, mimeType, contentEncoded, charset) {
   const maxDataUrlSize = 1024 * 1024;
   if (content === null || content.length > maxDataUrlSize)
     return null;
@@ -114,19 +112,3 @@ export const contentAsDataURL = function(content, mimeType, contentEncoded, char
   return 'data:' + mimeType + (charset ? ';charset=' + charset : '') + (contentEncoded ? ';base64' : '') + ',' +
       content;
 };
-
-/* Legacy exported object */
-self.Common = self.Common || {};
-Common = Common || {};
-
-/**
- * @interface
- */
-Common.ContentProvider = ContentProvider;
-
-/**
- * @constructor
- */
-Common.ContentProvider.SearchMatch = SearchMatch;
-Common.ContentProvider.performSearchInContent = performSearchInContent;
-Common.ContentProvider.contentAsDataURL = contentAsDataURL;

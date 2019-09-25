@@ -5,7 +5,7 @@
  * @implements {Common.ContentProvider}
  * @unrestricted
  */
-export default class StaticContentProvider {
+Common.StaticContentProvider = class {
   /**
    * @param {string} contentURL
    * @param {!Common.ResourceType} contentType
@@ -71,13 +71,4 @@ export default class StaticContentProvider {
     const content = await this._lazyContent();
     return content ? Common.ContentProvider.performSearchInContent(content, query, caseSensitive, isRegex) : [];
   }
-}
-
-/* Legacy exported object */
-self.Common = self.Common || {};
-Common = Common || {};
-
-/**
- * @constructor
- */
-Common.StaticContentProvider = StaticContentProvider;
+};

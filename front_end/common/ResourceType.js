@@ -30,11 +30,11 @@
 /**
  * @unrestricted
  */
-export default class ResourceType {
+Common.ResourceType = class {
   /**
    * @param {string} name
    * @param {string} title
-   * @param {!ResourceCategory} category
+   * @param {!Common.ResourceCategory} category
    * @param {boolean} isTextType
    */
   constructor(name, title, category, isTextType) {
@@ -46,45 +46,45 @@ export default class ResourceType {
 
   /**
    * @param {string} mimeType
-   * @return {!ResourceType}
+   * @return {!Common.ResourceType}
    */
   static fromMimeType(mimeType) {
     if (mimeType.startsWith('text/html'))
-      return resourceTypes.Document;
+      return Common.resourceTypes.Document;
     if (mimeType.startsWith('text/css'))
-      return resourceTypes.Stylesheet;
+      return Common.resourceTypes.Stylesheet;
     if (mimeType.startsWith('image/'))
-      return resourceTypes.Image;
+      return Common.resourceTypes.Image;
     if (mimeType.startsWith('text/'))
-      return resourceTypes.Script;
+      return Common.resourceTypes.Script;
 
     if (mimeType.includes('font'))
-      return resourceTypes.Font;
+      return Common.resourceTypes.Font;
     if (mimeType.includes('script'))
-      return resourceTypes.Script;
+      return Common.resourceTypes.Script;
     if (mimeType.includes('octet'))
-      return resourceTypes.Other;
+      return Common.resourceTypes.Other;
     if (mimeType.includes('application'))
-      return resourceTypes.Script;
+      return Common.resourceTypes.Script;
 
-    return resourceTypes.Other;
+    return Common.resourceTypes.Other;
   }
 
   /**
    * @param {string} url
-   * @return {?ResourceType}
+   * @return {?Common.ResourceType}
    */
   static fromURL(url) {
-    return ResourceType._resourceTypeByExtension.get(Common.ParsedURL.extractExtension(url)) || null;
+    return Common.ResourceType._resourceTypeByExtension.get(Common.ParsedURL.extractExtension(url)) || null;
   }
 
   /**
    * @param {string} name
-   * @return {?ResourceType}
+   * @return {?Common.ResourceType}
    */
   static fromName(name) {
-    for (const resourceTypeId in resourceTypes) {
-      const resourceType = resourceTypes[resourceTypeId];
+    for (const resourceTypeId in Common.resourceTypes) {
+      const resourceType = Common.resourceTypes[resourceTypeId];
       if (resourceType.name() === name)
         return resourceType;
     }
@@ -97,11 +97,11 @@ export default class ResourceType {
    */
   static mimeFromURL(url) {
     const name = Common.ParsedURL.extractName(url);
-    if (ResourceType._mimeTypeByName.has(name))
-      return ResourceType._mimeTypeByName.get(name);
+    if (Common.ResourceType._mimeTypeByName.has(name))
+      return Common.ResourceType._mimeTypeByName.get(name);
 
     const ext = Common.ParsedURL.extractExtension(url).toLowerCase();
-    return ResourceType._mimeTypeByExtension.get(ext);
+    return Common.ResourceType._mimeTypeByExtension.get(ext);
   }
 
   /**
@@ -109,7 +109,7 @@ export default class ResourceType {
    * @return {string|undefined}
    */
   static mimeFromExtension(ext) {
-    return ResourceType._mimeTypeByExtension.get(ext);
+    return Common.ResourceType._mimeTypeByExtension.get(ext);
   }
 
   /**
@@ -127,7 +127,7 @@ export default class ResourceType {
   }
 
   /**
-   * @return {!ResourceCategory}
+   * @return {!Common.ResourceCategory}
    */
   category() {
     return this._category;
@@ -202,12 +202,12 @@ export default class ResourceType {
       return 'text/css';
     return '';
   }
-}
+};
 
 /**
  * @unrestricted
  */
-export class ResourceCategory {
+Common.ResourceCategory = class {
   /**
    * @param {string} title
    * @param {string} shortTitle
@@ -216,68 +216,67 @@ export class ResourceCategory {
     this.title = title;
     this.shortTitle = shortTitle;
   }
-}
+};
 
-/**
- * @enum {!ResourceCategory}
- */
-export const resourceCategories = {
-  XHR: new ResourceCategory('XHR and Fetch', 'XHR'),
-  Script: new ResourceCategory('Scripts', 'JS'),
-  Stylesheet: new ResourceCategory('Stylesheets', 'CSS'),
-  Image: new ResourceCategory('Images', 'Img'),
-  Media: new ResourceCategory('Media', 'Media'),
-  Font: new ResourceCategory('Fonts', 'Font'),
-  Document: new ResourceCategory('Documents', 'Doc'),
-  WebSocket: new ResourceCategory('WebSockets', 'WS'),
-  Manifest: new ResourceCategory('Manifest', 'Manifest'),
-  Other: new ResourceCategory('Other', 'Other')
+Common.resourceCategories = {
+  XHR: new Common.ResourceCategory('XHR and Fetch', 'XHR'),
+  Script: new Common.ResourceCategory('Scripts', 'JS'),
+  Stylesheet: new Common.ResourceCategory('Stylesheets', 'CSS'),
+  Image: new Common.ResourceCategory('Images', 'Img'),
+  Media: new Common.ResourceCategory('Media', 'Media'),
+  Font: new Common.ResourceCategory('Fonts', 'Font'),
+  Document: new Common.ResourceCategory('Documents', 'Doc'),
+  WebSocket: new Common.ResourceCategory('WebSockets', 'WS'),
+  Manifest: new Common.ResourceCategory('Manifest', 'Manifest'),
+  Other: new Common.ResourceCategory('Other', 'Other')
 };
 
 /**
  * Keep these in sync with WebCore::InspectorPageAgent::resourceTypeJson
- * @enum {!ResourceType}
+ * @enum {!Common.ResourceType}
  */
-export const resourceTypes = {
-  XHR: new ResourceType('xhr', 'XHR', resourceCategories.XHR, true),
-  Fetch: new ResourceType('fetch', 'Fetch', resourceCategories.XHR, true),
-  EventSource: new ResourceType('eventsource', 'EventSource', resourceCategories.XHR, true),
-  Script: new ResourceType('script', 'Script', resourceCategories.Script, true),
-  Stylesheet: new ResourceType('stylesheet', 'Stylesheet', resourceCategories.Stylesheet, true),
-  Image: new ResourceType('image', 'Image', resourceCategories.Image, false),
-  Media: new ResourceType('media', 'Media', resourceCategories.Media, false),
-  Font: new ResourceType('font', 'Font', resourceCategories.Font, false),
-  Document: new ResourceType('document', 'Document', resourceCategories.Document, true),
-  TextTrack: new ResourceType('texttrack', 'TextTrack', resourceCategories.Other, true),
-  WebSocket: new ResourceType('websocket', 'WebSocket', resourceCategories.WebSocket, false),
-  Other: new ResourceType('other', 'Other', resourceCategories.Other, false),
-  SourceMapScript: new ResourceType('sm-script', 'Script', resourceCategories.Script, true),
-  SourceMapStyleSheet: new ResourceType('sm-stylesheet', 'Stylesheet', resourceCategories.Stylesheet, true),
-  Manifest: new ResourceType('manifest', 'Manifest', resourceCategories.Manifest, true),
-  SignedExchange: new ResourceType('signed-exchange', 'SignedExchange', resourceCategories.Other, false),
+Common.resourceTypes = {
+  XHR: new Common.ResourceType('xhr', 'XHR', Common.resourceCategories.XHR, true),
+  Fetch: new Common.ResourceType('fetch', 'Fetch', Common.resourceCategories.XHR, true),
+  EventSource: new Common.ResourceType('eventsource', 'EventSource', Common.resourceCategories.XHR, true),
+  Script: new Common.ResourceType('script', 'Script', Common.resourceCategories.Script, true),
+  Stylesheet: new Common.ResourceType('stylesheet', 'Stylesheet', Common.resourceCategories.Stylesheet, true),
+  Image: new Common.ResourceType('image', 'Image', Common.resourceCategories.Image, false),
+  Media: new Common.ResourceType('media', 'Media', Common.resourceCategories.Media, false),
+  Font: new Common.ResourceType('font', 'Font', Common.resourceCategories.Font, false),
+  Document: new Common.ResourceType('document', 'Document', Common.resourceCategories.Document, true),
+  TextTrack: new Common.ResourceType('texttrack', 'TextTrack', Common.resourceCategories.Other, true),
+  WebSocket: new Common.ResourceType('websocket', 'WebSocket', Common.resourceCategories.WebSocket, false),
+  Other: new Common.ResourceType('other', 'Other', Common.resourceCategories.Other, false),
+  SourceMapScript: new Common.ResourceType('sm-script', 'Script', Common.resourceCategories.Script, true),
+  SourceMapStyleSheet:
+      new Common.ResourceType('sm-stylesheet', 'Stylesheet', Common.resourceCategories.Stylesheet, true),
+  Manifest: new Common.ResourceType('manifest', 'Manifest', Common.resourceCategories.Manifest, true),
+  SignedExchange: new Common.ResourceType('signed-exchange', 'SignedExchange', Common.resourceCategories.Other, false),
 };
 
 
-export const _mimeTypeByName = new Map([
+Common.ResourceType._mimeTypeByName = new Map([
   // CoffeeScript
   ['Cakefile', 'text/x-coffeescript']
 ]);
 
-export const _resourceTypeByExtension = new Map([
-  ['js', resourceTypes.Script], ['mjs', resourceTypes.Script],
+Common.ResourceType._resourceTypeByExtension = new Map([
+  ['js', Common.resourceTypes.Script], ['mjs', Common.resourceTypes.Script],
 
-  ['css', resourceTypes.Stylesheet], ['xsl', resourceTypes.Stylesheet],
+  ['css', Common.resourceTypes.Stylesheet], ['xsl', Common.resourceTypes.Stylesheet],
 
-  ['jpeg', resourceTypes.Image], ['jpg', resourceTypes.Image], ['svg', resourceTypes.Image],
-  ['gif', resourceTypes.Image], ['png', resourceTypes.Image], ['ico', resourceTypes.Image],
-  ['tiff', resourceTypes.Image], ['tif', resourceTypes.Image], ['bmp', resourceTypes.Image],
+  ['jpeg', Common.resourceTypes.Image], ['jpg', Common.resourceTypes.Image], ['svg', Common.resourceTypes.Image],
+  ['gif', Common.resourceTypes.Image], ['png', Common.resourceTypes.Image], ['ico', Common.resourceTypes.Image],
+  ['tiff', Common.resourceTypes.Image], ['tif', Common.resourceTypes.Image], ['bmp', Common.resourceTypes.Image],
 
-  ['webp', resourceTypes.Media],
+  ['webp', Common.resourceTypes.Media],
 
-  ['ttf', resourceTypes.Font], ['otf', resourceTypes.Font], ['ttc', resourceTypes.Font], ['woff', resourceTypes.Font]
+  ['ttf', Common.resourceTypes.Font], ['otf', Common.resourceTypes.Font], ['ttc', Common.resourceTypes.Font],
+  ['woff', Common.resourceTypes.Font]
 ]);
 
-export const _mimeTypeByExtension = new Map([
+Common.ResourceType._mimeTypeByExtension = new Map([
   // Web extensions
   ['js', 'text/javascript'], ['mjs', 'text/javascript'], ['css', 'text/css'], ['html', 'text/html'],
   ['htm', 'text/html'], ['xml', 'application/xml'], ['xsl', 'application/xml'],
@@ -347,31 +346,3 @@ export const _mimeTypeByExtension = new Map([
   // Font
   ['ttf', 'font/opentype'], ['otf', 'font/opentype'], ['ttc', 'font/opentype'], ['woff', 'application/font-woff']
 ]);
-
-/* Legacy exported object */
-self.Common = self.Common || {};
-Common = Common || {};
-
-/**
- * @enum {!ResourceType}
- */
-Common.resourceTypes = resourceTypes;
-
-/**
- * @enum {!ResourceCategory}
- */
-Common.resourceCategories = resourceCategories;
-
-/**
- * @constructor
- */
-Common.ResourceCategory = ResourceCategory;
-
-/**
- * @constructor
- */
-Common.ResourceType = ResourceType;
-
-Common.ResourceType._mimeTypeByName = _mimeTypeByName;
-Common.ResourceType._resourceTypeByExtension = _resourceTypeByExtension;
-Common.ResourceType._mimeTypeByExtension = _mimeTypeByExtension;

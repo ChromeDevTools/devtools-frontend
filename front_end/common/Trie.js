@@ -4,7 +4,7 @@
 /**
  * @unrestricted
  */
-export default class Trie {
+Common.Trie = class {
   constructor() {
     this.clear();
   }
@@ -132,10 +132,4 @@ export default class Trie {
     /** @type {!Array<number>} */
     this._freeNodes = [];
   }
-}
-
-/* Legacy exported object */
-self.Common = self.Common || {};
-Common = Common || {};
-
-Common.Trie = Trie;
+};

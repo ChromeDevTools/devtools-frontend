@@ -27,7 +27,7 @@
  * @implements {Common.EventTarget}
  * @unrestricted
  */
-export default class ObjectWrapper {
+Common.Object = class {
   constructor() {
     /** @type {(!Map<string|symbol, !Array<!Common.Object._listenerCallbackTuple>>|undefined)} */
     this._listeners;
@@ -115,18 +115,69 @@ export default class ObjectWrapper {
         listeners[i].listener.call(listeners[i].thisObject, event);
     }
   }
-}
-
-/* Legacy exported object */
-self.Common = self.Common || {};
-Common = Common || {};
+};
 
 /**
- * @constructor
+ * @typedef {!{data: *}}
  */
-Common.Object = ObjectWrapper;
+Common.Event;
 
 /**
  * @typedef {!{thisObject: (!Object|undefined), listener: function(!Common.Event), disposed: (boolean|undefined)}}
  */
 Common.Object._listenerCallbackTuple;
+
+/**
+ * @interface
+ */
+Common.EventTarget = function() {};
+
+/**
+ * @typedef {!{eventTarget: !Common.EventTarget, eventType: (string|symbol), thisObject: (!Object|undefined), listener: function(!Common.Event)}}
+ */
+Common.EventTarget.EventDescriptor;
+
+/**
+ * @param {!Array<!Common.EventTarget.EventDescriptor>} eventList
+ */
+Common.EventTarget.removeEventListeners = function(eventList) {
+  for (const eventInfo of eventList)
+    eventInfo.eventTarget.removeEventListener(eventInfo.eventType, eventInfo.listener, eventInfo.thisObject);
+  // Do not hold references on unused event descriptors.
+  eventList.splice(0);
+};
+
+Common.EventTarget.prototype = {
+  /**
+   * @param {symbol} eventType
+   * @param {function(!Common.Event)} listener
+   * @param {!Object=} thisObject
+   * @return {!Common.EventTarget.EventDescriptor}
+   */
+  addEventListener(eventType, listener, thisObject) {},
+
+  /**
+   * @param {symbol} eventType
+   * @return {!Promise<*>}
+   */
+  once(eventType) {},
+
+  /**
+   * @param {string|symbol} eventType
+   * @param {function(!Common.Event)} listener
+   * @param {!Object=} thisObject
+   */
+  removeEventListener(eventType, listener, thisObject) {},
+
+  /**
+   * @param {symbol} eventType
+   * @return {boolean}
+   */
+  hasEventListeners(eventType) {},
+
+  /**
+   * @param {symbol} eventType
+   * @param {*=} eventData
+   */
+  dispatchEventToListeners(eventType, eventData) {},
+};

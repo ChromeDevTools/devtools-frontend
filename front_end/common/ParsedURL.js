@@ -29,7 +29,7 @@
 /**
  * @unrestricted
  */
-export default class ParsedURL {
+Common.ParsedURL = class {
   /**
    * @param {string} url
    */
@@ -388,7 +388,8 @@ export default class ParsedURL {
       return this.url.substring(this.scheme.length + 3);
     return this.url;
   }
-}
+};
+
 
 /**
  * @return {?Common.ParsedURL}
@@ -399,12 +400,3 @@ String.prototype.asParsedURL = function() {
     return parsedURL;
   return null;
 };
-
-/* Legacy exported object */
-self.Common = self.Common || {};
-Common = Common || {};
-
-/**
- * @constructor
- */
-Common.ParsedURL = ParsedURL;

@@ -4,7 +4,7 @@
 /**
  * @unrestricted
  */
-export default class Console extends Common.Object {
+Common.Console = class extends Common.Object {
   constructor() {
     super();
     /** @type {!Array.<!Common.Console.Message>} */
@@ -61,17 +61,17 @@ export default class Console extends Common.Object {
   showPromise() {
     return Common.Revealer.reveal(this);
   }
-}
+};
 
 /** @enum {symbol} */
-export const Events = {
+Common.Console.Events = {
   MessageAdded: Symbol('messageAdded')
 };
 
 /**
  * @enum {string}
  */
-export const MessageLevel = {
+Common.Console.MessageLevel = {
   Info: 'info',
   Warning: 'warning',
   Error: 'error'
@@ -80,7 +80,7 @@ export const MessageLevel = {
 /**
  * @unrestricted
  */
-export class Message {
+Common.Console.Message = class {
   /**
    * @param {string} text
    * @param {!Common.Console.MessageLevel} level
@@ -93,28 +93,6 @@ export class Message {
     this.timestamp = (typeof timestamp === 'number') ? timestamp : Date.now();
     this.show = show;
   }
-}
+};
 
-/* Legacy exported object */
-self.Common = self.Common || {};
-Common = Common || {};
-
-Common.console = new Console();
-
-/**
- * @constructor
- */
-Common.Console = Console;
-
-/** @enum {symbol} */
-Common.Console.Events = Events;
-
-/**
- * @enum {string}
- */
-Common.Console.MessageLevel = MessageLevel;
-
-/**
- * @constructor
- */
-Common.Console.Message = Message;
+Common.console = new Common.Console();

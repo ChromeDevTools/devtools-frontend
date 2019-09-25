@@ -29,55 +29,57 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+self['Common'] = self['Common'] || {};
+
 /**
  * @param {string} string
  * @param {...*} vararg
  * @return {string}
  */
-export default function UIString(string, vararg) {
+Common.UIString = function(string, vararg) {
   return String.vsprintf(Common.localize(string), Array.prototype.slice.call(arguments, 1));
-}
+};
 
 /**
  * @param {string} string
  * @param {?ArrayLike} values
  * @return {string}
  */
-export function serializeUIString(string, values = []) {
+Common.serializeUIString = function(string, values = []) {
   const messageParts = [string];
   const serializedMessage = {messageParts, values};
   return JSON.stringify(serializedMessage);
-}
+};
 
 /**
  * @param {string} serializedMessage
  * @return {*}
  */
-export function deserializeUIString(serializedMessage) {
+Common.deserializeUIString = function(serializedMessage) {
   if (!serializedMessage)
     return {};
 
   return JSON.parse(serializedMessage);
-}
+};
 
 /**
  * @param {string} string
  * @return {string}
  */
-export function localize(string) {
+Common.localize = function(string) {
   return string;
-}
+};
 
 /**
  * @unrestricted
  */
-export class UIStringFormat {
+Common.UIStringFormat = class {
   /**
    * @param {string} format
    */
   constructor(format) {
     /** @type {string} */
-    this._localizedFormat = localize(format);
+    this._localizedFormat = Common.localize(format);
     /** @type {!Array.<!Object>} */
     this._tokenizedFormat = String.tokenizeFormatString(this._localizedFormat, String.standardFormatters);
   }
@@ -102,7 +104,10 @@ export class UIStringFormat {
             this._tokenizedFormat)
         .formattedResult;
   }
-}
+};
+
+/** @type {!WeakMap<!Array<string>, string>} */
+Common._substitutionStrings = new WeakMap();
 
 /**
  * @param {!Array<string>|string} strings
@@ -119,20 +124,3 @@ self.ls = function(strings, vararg) {
   }
   return Common.UIString(substitutionString, ...Array.prototype.slice.call(arguments, 1));
 };
-
-/* Legacy exported object */
-self.Common = self.Common || {};
-Common = Common || {};
-
-/**
- * @constructor
- */
-Common.UIStringFormat = UIStringFormat;
-
-Common.UIString = UIString;
-Common.serializeUIString = serializeUIString;
-Common.deserializeUIString = deserializeUIString;
-Common.localize = localize;
-
-/** @type {!WeakMap<!Array<string>, string>} */
-Common._substitutionStrings = new WeakMap();

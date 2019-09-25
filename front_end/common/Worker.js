@@ -31,7 +31,7 @@
 /**
  * @unrestricted
  */
-export default class WorkerWrapper {
+Common.Worker = class {
   /**
    * @param {string} appName
    */
@@ -91,13 +91,4 @@ export default class WorkerWrapper {
   set onerror(listener) {
     this._workerPromise.then(worker => worker.onerror = listener);
   }
-}
-
-/* Legacy exported object */
-self.Common = self.Common || {};
-Common = Common || {};
-
-/**
- * @constructor
- */
-Common.Worker = WorkerWrapper;
+};

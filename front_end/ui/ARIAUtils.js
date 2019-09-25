@@ -46,12 +46,10 @@ export function markAsCheckbox(element) {
 
 /**
  * @param {!Element} element
- * @param {boolean=} modal
  */
-export function markAsDialog(element, modal) {
+export function markAsModalDialog(element) {
   element.setAttribute('role', 'dialog');
-  if (modal)
-    element.setAttribute('aria-modal', 'true');
+  element.setAttribute('aria-modal', 'true');
 }
 
 /**
@@ -452,7 +450,7 @@ self.UI.ARIAUtils = {
   markAsAlert,
   markAsButton,
   markAsCheckbox,
-  markAsDialog,
+  markAsModalDialog,
   markAsGroup,
   markAsLink,
   markAsMenuButton,

@@ -37,6 +37,13 @@ Timeline.PerformanceModel = class extends Common.Object {
   }
 
   /**
+   * @return {?SDK.Target}
+   */
+  mainTarget() {
+    return this._mainTarget;
+  }
+
+  /**
    * @param {number} time
    */
   setRecordStartTime(time) {

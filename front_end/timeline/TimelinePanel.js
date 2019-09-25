@@ -430,6 +430,8 @@ Timeline.TimelinePanel = class extends UI.Panel {
       this._overviewControls.push(new Timeline.TimelineFilmStripOverview());
     if (this._showMemorySetting.get())
       this._overviewControls.push(new Timeline.TimelineEventOverviewMemory());
+    if (this._startCoverage.get())
+      this._overviewControls.push(new Timeline.TimelineEventOverviewCoverage());
     for (const control of this._overviewControls)
       control.setModel(this._performanceModel);
     this._overviewPane.setOverviewControls(this._overviewControls);
@@ -771,7 +773,8 @@ Timeline.TimelinePanel = class extends UI.Panel {
     if (this._startCoverage.get()) {
       UI.viewManager.showView('coverage')
           .then(() => UI.viewManager.view('coverage').widget())
-          .then(widget => widget.stopRecording());
+          .then(widget => widget.stopRecording())
+          .then(() => this._updateOverviewControls());
     }
   }
 

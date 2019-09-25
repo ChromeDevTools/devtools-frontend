@@ -704,3 +704,113 @@ Timeline.Quantizer = class {
     this._remainder = this._quantDuration - interval;
   }
 };
+
+/**
+ * @unrestricted
+ */
+Timeline.TimelineEventOverviewCoverage = class extends Timeline.TimelineEventOverview {
+  constructor() {
+    super('coverage', Common.UIString('COVERAGE'));
+    this._heapSizeLabel = this.element.createChild('div', 'timeline-overview-coverage-label');
+  }
+
+  resetHeapSizeLabels() {
+    this._heapSizeLabel.textContent = '';
+  }
+
+  /**
+   * @override
+   * @param {?Timeline.PerformanceModel} model
+   */
+  setModel(model) {
+    super.setModel(model);
+    if (this._model)
+      this._coverageModel = model.mainTarget().model(Coverage.CoverageModel);
+  }
+
+  /**
+   * @override
+   */
+  update() {
+    super.update();
+    const ratio = window.devicePixelRatio;
+
+    if (!this._coverageModel)
+      return;
+
+    let total = 0;
+    let total_used = 0;
+    const usedByTimestamp = new Map();
+    for (const urlInfo of this._coverageModel.entries()) {
+      for (const info of urlInfo.entries()) {
+        total += info.size();
+        for (const [stamp, used] of info.usedByTimestamp()) {
+          total_used += used;
+          if (!usedByTimestamp.has(stamp))
+            usedByTimestamp.set(stamp, used);
+          else
+            usedByTimestamp.set(stamp, usedByTimestamp.get(stamp) + used);
+        }
+      }
+    }
+    const percentUsed = total ? Math.round(100 * total_used / total) : 0;
+    const lowerOffset = 3 * ratio;
+
+    const minTime = this._model.recordStartTime();
+    const maxTime =
+        minTime + (this._model.timelineModel().maximumRecordTime() - this._model.timelineModel().minimumRecordTime());
+
+    const lineWidth = 1;
+    const width = this.width();
+    const height = this.height() - lowerOffset;
+    const xFactor = width / (maxTime - minTime);
+    const yFactor = (height - lineWidth) / Math.max(total, 1);
+
+
+    let y = 0;
+    const ctx = this.context();
+    const heightBeyondView = height + lowerOffset + lineWidth;
+    ctx.translate(0.5, 0.5);
+    ctx.beginPath();
+    ctx.moveTo(-lineWidth, heightBeyondView);
+
+    ctx.lineTo(-lineWidth, height - y);
+
+    const entries = Array.from(usedByTimestamp.entries()).sort((a, b) => a[0] - b[0]);
+    let cummulative_used = 0;
+    for (const [stamp, used] of entries) {
+      if (stamp > maxTime)
+        break;
+      const x = (stamp - minTime) * xFactor;
+      cummulative_used += used;
+      y = cummulative_used * yFactor;
+      ctx.lineTo(x, height - y);
+    }
+
+
+    ctx.lineTo(width + lineWidth, height - y);
+    ctx.lineTo(width + lineWidth, heightBeyondView);
+    ctx.closePath();
+
+    ctx.fillStyle = 'hsla(220, 90%, 70%, 0.2)';
+    ctx.fill();
+    ctx.lineWidth = lineWidth;
+    ctx.strokeStyle = 'hsl(220, 90%, 70%)';
+    ctx.stroke();
+
+    cummulative_used = 0;
+    for (const [stamp, used] of entries) {
+      if (stamp > maxTime)
+        break;
+      cummulative_used += used;
+      ctx.beginPath();
+      const x = (stamp - minTime) * xFactor;
+      ctx.arc(x, height - cummulative_used * yFactor, 2 * lineWidth, 0, 2 * Math.PI, false);
+      ctx.closePath();
+      ctx.stroke();
+      ctx.fill();
+    }
+
+    this._heapSizeLabel.textContent = `${percentUsed}% used`;
+  }
+};

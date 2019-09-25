@@ -240,6 +240,21 @@
     line-height: 18px;
 }
 
+#timeline-overview-coverage {
+    flex-basis: 20px;
+}
+
+.timeline-overview-coverage-label {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    font-size: 9px;
+    color: #888;
+    white-space: nowrap;
+    padding: 0 4px;
+    background-color: hsla(0, 0%, 100%, 0.8);
+}
+
 .timeline-details {
     vertical-align: top;
 }

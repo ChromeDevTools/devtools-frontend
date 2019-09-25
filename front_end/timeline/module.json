@@ -220,6 +220,7 @@
     ],
     "dependencies": [
         "components",
+        "coverage",
         "layer_viewer",
         "timeline_model",
         "perf_ui",

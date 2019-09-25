@@ -639,6 +639,9 @@ Then, zoom and pan the timeline with the mousewheel or <ph name="NAVIGATENODE">$
   <message name="IDS_DEVTOOLS_a580a76abe8b0912889d80f5c4cb9559" desc="Text in Timeline Tree View of the Performance panel">
     Group by Product
   </message>
+  <message name="IDS_DEVTOOLS_a5d91e1697b7c75863fb9c6163a3446e" desc="Text in Timeline Event Overview of the Performance panel">
+    COVERAGE
+  </message>
   <message name="IDS_DEVTOOLS_a6f22a2373839a1d417d7a4078f0383a" desc="Text in Timeline Panel of the Performance panel">
     - CPU throttling is enabled
   </message>

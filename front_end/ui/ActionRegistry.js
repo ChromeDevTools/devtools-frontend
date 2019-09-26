@@ -155,7 +155,7 @@ UI.Action = class extends Common.Object {
    * @return {string}
    */
   category() {
-    return this._extension.descriptor()['category'] || '';
+    return ls(this._extension.descriptor()['category'] || '');
   }
 
   /**
@@ -176,7 +176,7 @@ UI.Action = class extends Common.Object {
    * @return {string}
    */
   title() {
-    let title = this._extension.title();
+    let title = this._extension.title() || '';
     const options = this._extension.descriptor()['options'];
     if (options) {
       for (const pair of options) {
@@ -184,7 +184,7 @@ UI.Action = class extends Common.Object {
           title = pair['title'];
       }
     }
-    return title;
+    return ls(title);
   }
 
   /**

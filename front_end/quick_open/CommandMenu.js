@@ -42,7 +42,7 @@ QuickOpen.CommandMenu = class {
     const tags = extension.descriptor()['tags'] || '';
     const setting = Common.settings.moduleSetting(extension.descriptor()['settingName']);
     return QuickOpen.CommandMenu.createCommand(
-        category, tags, title, '', setting.set.bind(setting, value), availableHandler);
+        ls(category), tags, title, '', setting.set.bind(setting, value), availableHandler);
 
     /**
      * @return {boolean}
@@ -87,7 +87,7 @@ QuickOpen.CommandMenu = class {
     for (const extension of viewExtensions) {
       const category = locations.get(extension.descriptor()['location']);
       if (category)
-        this._commands.push(QuickOpen.CommandMenu.createRevealViewCommand(extension, category));
+        this._commands.push(QuickOpen.CommandMenu.createRevealViewCommand(extension, ls(category)));
     }
 
     // Populate whitelisted settings.
@@ -97,7 +97,7 @@ QuickOpen.CommandMenu = class {
       if (!options || !extension.descriptor()['category'])
         continue;
       for (const pair of options)
-        this._commands.push(QuickOpen.CommandMenu.createSettingCommand(extension, pair['title'], pair['value']));
+        this._commands.push(QuickOpen.CommandMenu.createSettingCommand(extension, ls(pair['title']), pair['value']));
     }
   }
 

@@ -1322,7 +1322,7 @@ Network.NetworkLogView = class extends UI.VBox {
   }
 
   async _copyAllPowerShellCommand() {
-    const commands = this._generateAllPowerShellCommand(SDK.networkLog.requests());
+    const commands = await this._generateAllPowerShellCommand(SDK.networkLog.requests());
     InspectorFrontendHost.copyText(commands);
   }
 

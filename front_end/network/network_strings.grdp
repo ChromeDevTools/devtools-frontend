@@ -864,6 +864,9 @@
   <message name="IDS_DEVTOOLS_f6d1d4157b75f9b68298f7df187a177c" desc="Text in Network Log View of the Network panel">
     Finish: <ph name="NUMBER_SECONDSTOSTRING_MAXTIME___BASETIME_">$1s<ex>120ms</ex></ph>
   </message>
+  <message name="IDS_DEVTOOLS_f6ff4cc9a6290608b928788dd6972b75" desc="Text in Request Headers View of the Network Panel">
+    No request cookies were sent.
+  </message>
   <message name="IDS_DEVTOOLS_f750833a940ae1ba3cd75b86d520fda3" desc="From cache format in Network Time Calculator of the Network panel">
     <ph name="PH1">$1s<ex>20ms latency</ex></ph> (from cache)
   </message>

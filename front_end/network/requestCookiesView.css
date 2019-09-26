@@ -22,7 +22,7 @@
     display: inline-block;
 }
 
-.request-cookies-view .cookie-table {
+.request-cookies-view .cookies-panel-item {
     margin-top: 6px;
     margin-bottom: 16px;
     flex: none;
@@ -32,8 +32,11 @@
     background-color: yellow;
 }
 
-td.flagged-cookie-attribute-cell .cookie-warning-icon {
+.cookie-warning-icon {
     margin-right: 4px;
+}
+
+td.flagged-cookie-attribute-cell .cookie-warning-icon {
     filter: grayscale();
 }
 

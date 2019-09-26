@@ -15,7 +15,8 @@ ProtocolMonitor.ProtocolMonitor = class extends UI.VBox {
       {id: 'direction', title: ls`Direction`, visible: false, sortable: true, hideable: true, weight: 30},
       {id: 'request', title: ls`Request`, visible: true, hideable: true, weight: 60},
       {id: 'response', title: ls`Response`, visible: true, hideable: true, weight: 60},
-      {id: 'timestamp', title: ls`Timestamp`, visible: false, sortable: true, hideable: true, weight: 30}
+      {id: 'timestamp', title: ls`Timestamp`, visible: false, sortable: true, hideable: true, weight: 30},
+      {id: 'target', title: ls`Target`, visible: false, sortable: true, hideable: true, weight: 30}
     ];
 
     this.registerRequiredCSS('protocol_monitor/protocolMonitor.css');
@@ -180,7 +181,21 @@ ProtocolMonitor.ProtocolMonitor = class extends UI.VBox {
     }
   }
 
-  _messageRecieved(message) {
+  /**
+   * @param {?SDK.Target} target
+   * @return {string}
+   */
+  _targetToString(target) {
+    if (!target)
+      return '';
+    return target.decorateLabel(`${target.name()} ${target === SDK.targetManager.mainTarget() ? '' : target.id()}`);
+  }
+
+  /**
+   * @param {!Object} message
+   * @param {?Protocol.TargetBase} target
+   */
+  _messageRecieved(message, target) {
     if ('id' in message) {
       const node = this._nodeForId[message.id];
       if (!node)
@@ -192,26 +207,35 @@ ProtocolMonitor.ProtocolMonitor = class extends UI.VBox {
         this._infoWidget.render(node.data);
       return;
     }
+
+    const sdkTarget = /** @type {?SDK.Target} */ (target);
     const node = new ProtocolMonitor.ProtocolMonitor.ProtocolNode({
       method: message.method,
       direction: 'recieved',
       response: message.params,
       timestamp: Date.now() - this._startTime,
-      request: ''
+      request: '',
+      target: this._targetToString(sdkTarget)
     });
     this._nodes.push(node);
     if (this._filter(node))
       this._dataGrid.insertChild(node);
   }
 
-  _messageSent(message) {
+  /**
+   * @param {{domain: string, method: string, params: !Object, id: number}} message
+   * @param {?Protocol.TargetBase} target
+   */
+  _messageSent(message, target) {
+    const sdkTarget = /** @type {?SDK.Target} */ (target);
     const node = new ProtocolMonitor.ProtocolMonitor.ProtocolNode({
       method: message.method,
       direction: 'sent',
       request: message.params,
       timestamp: Date.now() - this._startTime,
       response: '(pending)',
-      id: message.id
+      id: message.id,
+      target: this._targetToString(sdkTarget)
     });
     this._nodeForId[message.id] = node;
     this._nodes.push(node);

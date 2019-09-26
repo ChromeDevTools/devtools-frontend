@@ -237,13 +237,13 @@ Protocol.test = {
 
   /**
    * Set to get notified about any messages sent over protocol.
-   * @type {?function({domain: string, method: string, params: !Object, id: number})}
+   * @type {?function({domain: string, method: string, params: !Object, id: number}, ?Protocol.TargetBase)}
    */
   onMessageSent: null,
 
   /**
    * Set to get notified about any messages received over protocol.
-   * @type {?function(!Object)}
+   * @type {?function(!Object, ?Protocol.TargetBase)}
    */
   onMessageReceived: null,
 };
@@ -318,6 +318,17 @@ Protocol.SessionRouter = class {
   }
 
   /**
+   * @param {string} sessionId
+   * @return {?Protocol.TargetBase}
+   */
+  _getTargetBySessionId(sessionId) {
+    const session = this._sessions.get(sessionId ? sessionId : '');
+    if (!session)
+      return null;
+    return session.target;
+  }
+
+  /**
    * @return {number}
    */
   _nextMessageId() {
@@ -353,7 +364,9 @@ Protocol.SessionRouter = class {
 
     if (Protocol.test.onMessageSent) {
       const paramsObject = JSON.parse(JSON.stringify(params || {}));
-      Protocol.test.onMessageSent({domain, method, params: /** @type {!Object} */ (paramsObject), id: messageId});
+      Protocol.test.onMessageSent(
+          {domain, method, params: /** @type {!Object} */ (paramsObject), id: messageId},
+          this._getTargetBySessionId(sessionId));
     }
 
     ++this._pendingResponsesCount;
@@ -380,7 +393,8 @@ Protocol.SessionRouter = class {
 
     if (Protocol.test.onMessageReceived) {
       const messageObjectCopy = JSON.parse((typeof message === 'string') ? message : JSON.stringify(message));
-      Protocol.test.onMessageReceived(/** @type {!Object} */ (messageObjectCopy));
+      Protocol.test.onMessageReceived(
+          /** @type {!Object} */ (messageObjectCopy), this._getTargetBySessionId(messageObjectCopy.sessionId));
     }
 
     const messageObject = /** @type {!Object} */ ((typeof message === 'string') ? JSON.parse(message) : message);

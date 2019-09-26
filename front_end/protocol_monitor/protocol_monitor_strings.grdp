@@ -15,4 +15,7 @@
   <message name="IDS_DEVTOOLS_c2474d3f42e95aac175f984da6d91cf5" desc="Title of the 'Protocol monitor' tool in the bottom drawer">
     Protocol monitor
   </message>
+  <message name="IDS_DEVTOOLS_c41a31890959544c6523af684561abe5" desc="Text in Protocol Monitor of the Protocol Monitor tab">
+    Target
+  </message>
 </grit-part>

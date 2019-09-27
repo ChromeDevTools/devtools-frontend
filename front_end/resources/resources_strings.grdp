@@ -218,6 +218,9 @@ read the &quot;<ph name="THIS_TABLENAME">$1s<ex>database</ex></ph>&quot; table.
   <message name="IDS_DEVTOOLS_9dce9dd0f39a17c2e029174f5bc86ef9" desc="Text in Background Service View of the Application panel">
     Background Sync
   </message>
+  <message name="IDS_DEVTOOLS_9ea4dd36a0094fc33b5ea341a1f909ee" desc="Text in Cookie Items View of the Application panel">
+    Select a cookie to preview it value
+  </message>
   <message name="IDS_DEVTOOLS_9ff9f5649294f7200b671d6389d17d9a" desc="Text in Application Panel Sidebar of the Application panel">
     multiEntry
   </message>

@@ -538,6 +538,7 @@ all_devtools_files = [
   "front_end/resources/clearStorageView.css",
   "front_end/resources/ClearStorageView.js",
   "front_end/resources/CookieItemsView.js",
+  "front_end/resources/cookieItemsView.css",
   "front_end/resources/DatabaseModel.js",
   "front_end/resources/DatabaseQueryView.js",
   "front_end/resources/DatabaseTableView.js",

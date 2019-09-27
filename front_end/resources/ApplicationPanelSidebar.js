@@ -495,8 +495,11 @@ Resources.ApplicationPanelSidebar = class extends UI.VBox {
     this._panel.showView(view);
   }
 
-  _updateDatabaseTables(event) {
-    const database = event.data;
+  /**
+   * @param {!Common.Event} event
+   */
+  async _updateDatabaseTables(event) {
+    const database = /** @type {!Resources.Database} */ (event.data);
 
     if (!database)
       return;
@@ -513,20 +516,21 @@ Resources.ApplicationPanelSidebar = class extends UI.VBox {
 
     const tableNamesHash = {};
     const panel = this._panel;
-    function tableNamesCallback(tableNames) {
-      const tableNamesLength = tableNames.length;
-      for (let i = 0; i < tableNamesLength; ++i)
-        tableNamesHash[tableNames[i]] = true;
+    const tableNames = await database.tableNames();
+    const tableNamesLength = tableNames.length;
 
-      for (const tableName in tableViews) {
-        if (!(tableName in tableNamesHash)) {
-          if (panel.visibleView === tableViews[tableName])
-            panel.showView(null);
-          delete tableViews[tableName];
-        }
+    for (let i = 0; i < tableNamesLength; ++i)
+      tableNamesHash[tableNames[i]] = true;
+
+    for (const tableName in tableViews) {
+      if (!(tableName in tableNamesHash)) {
+        if (panel.visibleView === tableViews[tableName])
+          panel.showView(null);
+        delete tableViews[tableName];
       }
     }
-    database.getTableNames(tableNamesCallback);
+
+    await databasesTreeElement.updateChildren();
   }
 
   /**
@@ -863,10 +867,11 @@ Resources.DatabaseTreeElement = class extends Resources.BaseStorageTreeElement {
    * @override
    */
   onexpand() {
-    this._updateChildren();
+    this.updateChildren();
   }
 
-  async _updateChildren() {
+  async updateChildren() {
+    this.removeChildren();
     const tableNames = await this._database.tableNames();
     for (const tableName of tableNames)
       this.appendChild(new Resources.DatabaseTableTreeElement(this._sidebar, this._database, tableName));

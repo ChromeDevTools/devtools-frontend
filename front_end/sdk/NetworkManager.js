@@ -328,8 +328,8 @@ SDK.NetworkDispatcher = class {
       networkRequest.setTransferSize(response.encodedDataLength);
 
     if (response.requestHeaders && !networkRequest.hasExtraRequestInfo()) {
-      // TODO(http://crbug.com/991471): Stop using response.requestHeaders and
-      //   response.requestHeadersText once service workers and shared workers
+      // TODO(http://crbug.com/1004979): Stop using response.requestHeaders and
+      //   response.requestHeadersText once shared workers
       //   emit Network.*ExtraInfo events for their network requests.
       networkRequest.setRequestHeaders(this._headersMapToHeadersArray(response.requestHeaders));
       networkRequest.setRequestHeadersText(response.requestHeadersText || '');

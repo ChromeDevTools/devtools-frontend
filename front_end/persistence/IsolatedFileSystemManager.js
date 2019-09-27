@@ -43,19 +43,19 @@ Persistence.IsolatedFileSystemManager = class extends Common.Object {
     this._progresses = new Map();
 
     InspectorFrontendHost.events.addEventListener(
-        InspectorFrontendHostAPI.Events.FileSystemRemoved, this._onFileSystemRemoved, this);
+        Host.InspectorFrontendHostAPI.Events.FileSystemRemoved, this._onFileSystemRemoved, this);
     InspectorFrontendHost.events.addEventListener(
-        InspectorFrontendHostAPI.Events.FileSystemAdded, this._onFileSystemAdded, this);
+        Host.InspectorFrontendHostAPI.Events.FileSystemAdded, this._onFileSystemAdded, this);
     InspectorFrontendHost.events.addEventListener(
-        InspectorFrontendHostAPI.Events.FileSystemFilesChangedAddedRemoved, this._onFileSystemFilesChanged, this);
+        Host.InspectorFrontendHostAPI.Events.FileSystemFilesChangedAddedRemoved, this._onFileSystemFilesChanged, this);
     InspectorFrontendHost.events.addEventListener(
-        InspectorFrontendHostAPI.Events.IndexingTotalWorkCalculated, this._onIndexingTotalWorkCalculated, this);
+        Host.InspectorFrontendHostAPI.Events.IndexingTotalWorkCalculated, this._onIndexingTotalWorkCalculated, this);
     InspectorFrontendHost.events.addEventListener(
-        InspectorFrontendHostAPI.Events.IndexingWorked, this._onIndexingWorked, this);
+        Host.InspectorFrontendHostAPI.Events.IndexingWorked, this._onIndexingWorked, this);
     InspectorFrontendHost.events.addEventListener(
-        InspectorFrontendHostAPI.Events.IndexingDone, this._onIndexingDone, this);
+        Host.InspectorFrontendHostAPI.Events.IndexingDone, this._onIndexingDone, this);
     InspectorFrontendHost.events.addEventListener(
-        InspectorFrontendHostAPI.Events.SearchCompleted, this._onSearchCompleted, this);
+        Host.InspectorFrontendHostAPI.Events.SearchCompleted, this._onSearchCompleted, this);
 
     this._initExcludePatterSetting();
 
@@ -71,7 +71,7 @@ Persistence.IsolatedFileSystemManager = class extends Common.Object {
     let fulfill;
     const promise = new Promise(f => fulfill = f);
     InspectorFrontendHost.events.addEventListener(
-        InspectorFrontendHostAPI.Events.FileSystemsLoaded, onFileSystemsLoaded, this);
+        Host.InspectorFrontendHostAPI.Events.FileSystemsLoaded, onFileSystemsLoaded, this);
     InspectorFrontendHost.requestFileSystems();
     return promise;
 

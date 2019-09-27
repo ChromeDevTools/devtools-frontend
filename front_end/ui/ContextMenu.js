@@ -368,7 +368,7 @@ UI.ContextMenu = class extends UI.ContextSubMenu {
   }
 
   static initialize() {
-    InspectorFrontendHost.events.addEventListener(InspectorFrontendHostAPI.Events.SetUseSoftMenu, setUseSoftMenu);
+    InspectorFrontendHost.events.addEventListener(Host.InspectorFrontendHostAPI.Events.SetUseSoftMenu, setUseSoftMenu);
     /**
      * @param {!Common.Event} event
      */
@@ -447,9 +447,9 @@ UI.ContextMenu = class extends UI.ContextSubMenu {
        */
       function listenToEvents() {
         InspectorFrontendHost.events.addEventListener(
-            InspectorFrontendHostAPI.Events.ContextMenuCleared, this._menuCleared, this);
+            Host.InspectorFrontendHostAPI.Events.ContextMenuCleared, this._menuCleared, this);
         InspectorFrontendHost.events.addEventListener(
-            InspectorFrontendHostAPI.Events.ContextMenuItemSelected, this._onItemSelected, this);
+            Host.InspectorFrontendHostAPI.Events.ContextMenuItemSelected, this._onItemSelected, this);
       }
 
       // showContextMenuAtPoint call above synchronously issues a clear event for previous context menu (if any),
@@ -492,9 +492,9 @@ UI.ContextMenu = class extends UI.ContextSubMenu {
 
   _menuCleared() {
     InspectorFrontendHost.events.removeEventListener(
-        InspectorFrontendHostAPI.Events.ContextMenuCleared, this._menuCleared, this);
+        Host.InspectorFrontendHostAPI.Events.ContextMenuCleared, this._menuCleared, this);
     InspectorFrontendHost.events.removeEventListener(
-        InspectorFrontendHostAPI.Events.ContextMenuItemSelected, this._onItemSelected, this);
+        Host.InspectorFrontendHostAPI.Events.ContextMenuItemSelected, this._onItemSelected, this);
   }
 
   /**

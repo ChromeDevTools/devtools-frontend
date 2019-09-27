@@ -236,11 +236,11 @@ Main.Main = class {
     // TODO: we should not access actions from other modules.
     if (toggleSearchNodeAction) {
       InspectorFrontendHost.events.addEventListener(
-          InspectorFrontendHostAPI.Events.EnterInspectElementMode,
+          Host.InspectorFrontendHostAPI.Events.EnterInspectElementMode,
           toggleSearchNodeAction.execute.bind(toggleSearchNodeAction), this);
     }
     InspectorFrontendHost.events.addEventListener(
-        InspectorFrontendHostAPI.Events.RevealSourceLine, this._revealSourceLine, this);
+        Host.InspectorFrontendHostAPI.Events.RevealSourceLine, this._revealSourceLine, this);
 
     UI.inspectorView.createToolbars();
     InspectorFrontendHost.loadCompleted();

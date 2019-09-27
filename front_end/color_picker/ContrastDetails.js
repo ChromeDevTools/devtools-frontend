@@ -252,10 +252,10 @@ ColorPicker.ContrastDetails = class extends Common.Object {
     InspectorFrontendHost.setEyeDropperActive(enabled);
     if (enabled) {
       InspectorFrontendHost.events.addEventListener(
-          InspectorFrontendHostAPI.Events.EyeDropperPickedColor, this._bgColorPickedBound);
+          Host.InspectorFrontendHostAPI.Events.EyeDropperPickedColor, this._bgColorPickedBound);
     } else {
       InspectorFrontendHost.events.removeEventListener(
-          InspectorFrontendHostAPI.Events.EyeDropperPickedColor, this._bgColorPickedBound);
+          Host.InspectorFrontendHostAPI.Events.EyeDropperPickedColor, this._bgColorPickedBound);
     }
   }
 

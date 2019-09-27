@@ -83,7 +83,7 @@ Extensions.ExtensionServer = class extends Common.Object {
     window.addEventListener('message', this._onWindowMessage.bind(this), false);  // Only for main window.
 
     InspectorFrontendHost.events.addEventListener(
-        InspectorFrontendHostAPI.Events.SetInspectedTabId, this._setInspectedTabId, this);
+        Host.InspectorFrontendHostAPI.Events.SetInspectedTabId, this._setInspectedTabId, this);
 
     this._initExtensions();
   }

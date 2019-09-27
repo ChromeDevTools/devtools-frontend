@@ -44,13 +44,12 @@ Devices.DevicesView = class extends UI.VBox {
     this._selectSidebarListItem(this._discoveryListItem, this._discoveryView);
 
     InspectorFrontendHost.events.addEventListener(
-        InspectorFrontendHostAPI.Events.DevicesUpdated, this._devicesUpdated, this);
+        Host.InspectorFrontendHostAPI.Events.DevicesUpdated, this._devicesUpdated, this);
     InspectorFrontendHost.events.addEventListener(
-        InspectorFrontendHostAPI.Events.DevicesDiscoveryConfigChanged, this._devicesDiscoveryConfigChanged, this);
+        Host.InspectorFrontendHostAPI.Events.DevicesDiscoveryConfigChanged, this._devicesDiscoveryConfigChanged, this);
     InspectorFrontendHost.events.addEventListener(
-        InspectorFrontendHostAPI.Events.DevicesPortForwardingStatusChanged, this._devicesPortForwardingStatusChanged,
-        this);
-
+        Host.InspectorFrontendHostAPI.Events.DevicesPortForwardingStatusChanged,
+        this._devicesPortForwardingStatusChanged, this);
   }
 
   /**

@@ -889,10 +889,10 @@ ColorPicker.Spectrum = class extends UI.VBox {
     InspectorFrontendHost.setEyeDropperActive(enabled);
     if (enabled) {
       InspectorFrontendHost.events.addEventListener(
-          InspectorFrontendHostAPI.Events.EyeDropperPickedColor, this._colorPickedBound);
+          Host.InspectorFrontendHostAPI.Events.EyeDropperPickedColor, this._colorPickedBound);
     } else {
       InspectorFrontendHost.events.removeEventListener(
-          InspectorFrontendHostAPI.Events.EyeDropperPickedColor, this._colorPickedBound);
+          Host.InspectorFrontendHostAPI.Events.EyeDropperPickedColor, this._colorPickedBound);
     }
   }
 

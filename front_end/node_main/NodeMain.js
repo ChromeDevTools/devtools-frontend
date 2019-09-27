@@ -39,7 +39,7 @@ NodeMain.NodeChildTargetManager = class extends SDK.SDKModel {
     this._targetAgent.setDiscoverTargets(true);
 
     InspectorFrontendHost.events.addEventListener(
-        InspectorFrontendHostAPI.Events.DevicesDiscoveryConfigChanged, this._devicesDiscoveryConfigChanged, this);
+        Host.InspectorFrontendHostAPI.Events.DevicesDiscoveryConfigChanged, this._devicesDiscoveryConfigChanged, this);
     InspectorFrontendHost.setDevicesUpdatesEnabled(false);
     InspectorFrontendHost.setDevicesUpdatesEnabled(true);
   }
@@ -64,7 +64,7 @@ NodeMain.NodeChildTargetManager = class extends SDK.SDKModel {
    */
   dispose() {
     InspectorFrontendHost.events.removeEventListener(
-        InspectorFrontendHostAPI.Events.DevicesDiscoveryConfigChanged, this._devicesDiscoveryConfigChanged, this);
+        Host.InspectorFrontendHostAPI.Events.DevicesDiscoveryConfigChanged, this._devicesDiscoveryConfigChanged, this);
 
     for (const sessionId of this._childTargets.keys())
       this.detachedFromTarget(sessionId, undefined);

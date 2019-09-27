@@ -7,7 +7,7 @@
 UI.ForwardedInputEventHandler = class {
   constructor() {
     InspectorFrontendHost.events.addEventListener(
-        InspectorFrontendHostAPI.Events.KeyEventUnhandled, this._onKeyEventUnhandled, this);
+        Host.InspectorFrontendHostAPI.Events.KeyEventUnhandled, this._onKeyEventUnhandled, this);
   }
 
   /**

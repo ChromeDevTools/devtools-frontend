@@ -14,7 +14,7 @@ NodeMain.NodeConnectionsPanel = class extends UI.Panel {
     image.src = 'https://nodejs.org/static/images/logos/nodejs-new-pantone-black.png';
 
     InspectorFrontendHost.events.addEventListener(
-        InspectorFrontendHostAPI.Events.DevicesDiscoveryConfigChanged, this._devicesDiscoveryConfigChanged, this);
+        Host.InspectorFrontendHostAPI.Events.DevicesDiscoveryConfigChanged, this._devicesDiscoveryConfigChanged, this);
 
     /** @type {!Adb.Config} */
     this._config;

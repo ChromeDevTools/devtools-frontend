@@ -93,7 +93,7 @@ UI.InspectorView = class extends UI.VBox {
     this._drawerSplitWidget.setMainWidget(this._tabbedPane);
 
     this._keyDownBound = this._keyDown.bind(this);
-    InspectorFrontendHost.events.addEventListener(InspectorFrontendHostAPI.Events.ShowPanel, showPanel.bind(this));
+    InspectorFrontendHost.events.addEventListener(Host.InspectorFrontendHostAPI.Events.ShowPanel, showPanel.bind(this));
 
     /**
      * @this {UI.InspectorView}

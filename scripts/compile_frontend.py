@@ -358,9 +358,7 @@ def main():
 
     devtools_js_compile_command = closure_compiler_command + [
         '--externs',
-        to_platform_path(GLOBAL_EXTERNS_FILE), '--externs',
-        to_platform_path(path.join(DEVTOOLS_FRONTEND_PATH, 'host', 'InspectorFrontendHostAPI.js')),
-        '--jscomp_off=externsValidation', '--js',
+        to_platform_path(GLOBAL_EXTERNS_FILE), '--jscomp_off=externsValidation', '--js',
         to_platform_path(path.join(DEVTOOLS_FRONTEND_PATH, 'devtools_compatibility.js'))
     ]
     devtools_js_compile_proc = popen(devtools_js_compile_command)

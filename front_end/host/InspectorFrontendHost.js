@@ -50,6 +50,11 @@ Host.InspectorFrontendHostStub = class {
      * @type {!Map<string, !Array<string>>}
      */
     this._urlsBeingSaved = new Map();
+
+    /**
+     * @type {!Common.EventTarget}
+     */
+    this.events;
   }
 
   /**
@@ -128,10 +133,12 @@ Host.InspectorFrontendHostStub = class {
 
   /**
    * @override
-   * @param {string} text
+   * @param {?(string|undefined)} text
    * @suppressGlobalPropertiesCheck
    */
   copyText(text) {
+    if (text === undefined || text === null)
+      return;
     if (navigator.clipboard) {
       navigator.clipboard.writeText(text);
     } else if (document.queryCommandSupported('copy')) {
@@ -175,7 +182,7 @@ Host.InspectorFrontendHostStub = class {
       this._urlsBeingSaved.set(url, buffer);
     }
     buffer.push(content);
-    this.events.dispatchEventToListeners(InspectorFrontendHostAPI.Events.SavedURL, {url, fileSystemPath: url});
+    this.events.dispatchEventToListeners(Host.InspectorFrontendHostAPI.Events.SavedURL, {url, fileSystemPath: url});
   }
 
   /**
@@ -186,7 +193,7 @@ Host.InspectorFrontendHostStub = class {
   append(url, content) {
     const buffer = this._urlsBeingSaved.get(url);
     buffer.push(content);
-    this.events.dispatchEventToListeners(InspectorFrontendHostAPI.Events.AppendedToURL, url);
+    this.events.dispatchEventToListeners(Host.InspectorFrontendHostAPI.Events.AppendedToURL, url);
   }
 
   /**
@@ -239,7 +246,7 @@ Host.InspectorFrontendHostStub = class {
    * @override
    */
   requestFileSystems() {
-    this.events.dispatchEventToListeners(InspectorFrontendHostAPI.Events.FileSystemsLoaded, []);
+    this.events.dispatchEventToListeners(Host.InspectorFrontendHostAPI.Events.FileSystemsLoaded, []);
   }
 
   /**
@@ -496,7 +503,7 @@ Host.InspectorFrontendAPIImpl = class {
     this._debugFrontend =
         !!Runtime.queryParam('debugFrontend') || (window['InspectorTest'] && window['InspectorTest']['debugTest']);
 
-    const descriptors = InspectorFrontendHostAPI.EventDescriptors;
+    const descriptors = Host.InspectorFrontendAPIImpl.EventDescriptors;
     for (let i = 0; i < descriptors.length; ++i)
       this[descriptors[i][1]] = this._dispatch.bind(this, descriptors[i][0], descriptors[i][2], descriptors[i][3]);
   }
@@ -544,8 +551,47 @@ Host.InspectorFrontendAPIImpl = class {
   }
 };
 
+Host.InspectorFrontendAPIImpl.EventDescriptors = [
+  [Host.InspectorFrontendHostAPI.Events.AppendedToURL, 'appendedToURL', ['url']],
+  [Host.InspectorFrontendHostAPI.Events.CanceledSaveURL, 'canceledSaveURL', ['url']],
+  [Host.InspectorFrontendHostAPI.Events.ContextMenuCleared, 'contextMenuCleared', []],
+  [Host.InspectorFrontendHostAPI.Events.ContextMenuItemSelected, 'contextMenuItemSelected', ['id']],
+  [Host.InspectorFrontendHostAPI.Events.DeviceCountUpdated, 'deviceCountUpdated', ['count']],
+  [Host.InspectorFrontendHostAPI.Events.DevicesDiscoveryConfigChanged, 'devicesDiscoveryConfigChanged', ['config']],
+  [
+    Host.InspectorFrontendHostAPI.Events.DevicesPortForwardingStatusChanged, 'devicesPortForwardingStatusChanged',
+    ['status']
+  ],
+  [Host.InspectorFrontendHostAPI.Events.DevicesUpdated, 'devicesUpdated', ['devices']],
+  [Host.InspectorFrontendHostAPI.Events.DispatchMessage, 'dispatchMessage', ['messageObject']],
+  [Host.InspectorFrontendHostAPI.Events.DispatchMessageChunk, 'dispatchMessageChunk', ['messageChunk', 'messageSize']],
+  [Host.InspectorFrontendHostAPI.Events.EnterInspectElementMode, 'enterInspectElementMode', []],
+  [Host.InspectorFrontendHostAPI.Events.EyeDropperPickedColor, 'eyeDropperPickedColor', ['color']],
+  [Host.InspectorFrontendHostAPI.Events.FileSystemsLoaded, 'fileSystemsLoaded', ['fileSystems']],
+  [Host.InspectorFrontendHostAPI.Events.FileSystemRemoved, 'fileSystemRemoved', ['fileSystemPath']],
+  [Host.InspectorFrontendHostAPI.Events.FileSystemAdded, 'fileSystemAdded', ['errorMessage', 'fileSystem']],
+  [
+    Host.InspectorFrontendHostAPI.Events.FileSystemFilesChangedAddedRemoved, 'fileSystemFilesChangedAddedRemoved',
+    ['changed', 'added', 'removed']
+  ],
+  [
+    Host.InspectorFrontendHostAPI.Events.IndexingTotalWorkCalculated, 'indexingTotalWorkCalculated',
+    ['requestId', 'fileSystemPath', 'totalWork']
+  ],
+  [Host.InspectorFrontendHostAPI.Events.IndexingWorked, 'indexingWorked', ['requestId', 'fileSystemPath', 'worked']],
+  [Host.InspectorFrontendHostAPI.Events.IndexingDone, 'indexingDone', ['requestId', 'fileSystemPath']],
+  [Host.InspectorFrontendHostAPI.Events.KeyEventUnhandled, 'keyEventUnhandled', ['event']],
+  [Host.InspectorFrontendHostAPI.Events.ReloadInspectedPage, 'reloadInspectedPage', ['hard']],
+  [Host.InspectorFrontendHostAPI.Events.RevealSourceLine, 'revealSourceLine', ['url', 'lineNumber', 'columnNumber']],
+  [Host.InspectorFrontendHostAPI.Events.SavedURL, 'savedURL', ['url', 'fileSystemPath']],
+  [Host.InspectorFrontendHostAPI.Events.SearchCompleted, 'searchCompleted', ['requestId', 'fileSystemPath', 'files']],
+  [Host.InspectorFrontendHostAPI.Events.SetInspectedTabId, 'setInspectedTabId', ['tabId']],
+  [Host.InspectorFrontendHostAPI.Events.SetUseSoftMenu, 'setUseSoftMenu', ['useSoftMenu']],
+  [Host.InspectorFrontendHostAPI.Events.ShowPanel, 'showPanel', ['panelName']]
+];
+
 /**
- * @type {!InspectorFrontendHostAPI}
+ * @type {!Host.InspectorFrontendHostStub}
  */
 let InspectorFrontendHost = window.InspectorFrontendHost;
 (function() {
@@ -578,11 +624,6 @@ let InspectorFrontendHost = window.InspectorFrontendHost;
   initializeInspectorFrontendHost();
   window.InspectorFrontendAPI = new Host.InspectorFrontendAPIImpl();
 })();
-
-/**
- * @type {!Common.EventTarget}
- */
-InspectorFrontendHost.events;
 
 /**
  * @param {!Object<string, string>=} prefs

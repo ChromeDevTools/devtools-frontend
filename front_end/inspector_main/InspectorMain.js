@@ -38,7 +38,7 @@ InspectorMain.InspectorMain = class extends Common.Object {
     new InspectorMain.BackendSettingsSync();
     new MobileThrottling.NetworkPanelIndicator();
 
-    InspectorFrontendHost.events.addEventListener(InspectorFrontendHostAPI.Events.ReloadInspectedPage, event => {
+    InspectorFrontendHost.events.addEventListener(Host.InspectorFrontendHostAPI.Events.ReloadInspectedPage, event => {
       const hard = /** @type {boolean} */ (event.data);
       SDK.ResourceTreeModel.reloadAllPages(hard);
     });

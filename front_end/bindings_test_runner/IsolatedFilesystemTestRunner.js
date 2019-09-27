@@ -43,7 +43,7 @@ BindingsTestRunner.TestFileSystem.prototype = {
     BindingsTestRunner.TestFileSystem._instances[this.fileSystemPath] = this;
 
     InspectorFrontendHost.events.dispatchEventToListeners(
-        InspectorFrontendHostAPI.Events.FileSystemAdded,
+        Host.InspectorFrontendHostAPI.Events.FileSystemAdded,
         {fileSystem: {fileSystemPath: this.fileSystemPath, fileSystemName: this.fileSystemPath, type}});
 
     Persistence.isolatedFileSystemManager.addEventListener(
@@ -64,7 +64,7 @@ BindingsTestRunner.TestFileSystem.prototype = {
   reportRemoved: function() {
     delete BindingsTestRunner.TestFileSystem._instances[this.fileSystemPath];
     InspectorFrontendHost.events.dispatchEventToListeners(
-        InspectorFrontendHostAPI.Events.FileSystemRemoved, this.fileSystemPath);
+        Host.InspectorFrontendHostAPI.Events.FileSystemRemoved, this.fileSystemPath);
   },
 
   addFile: function(path, content, lastModified) {
@@ -124,7 +124,7 @@ BindingsTestRunner.TestFileSystem.Entry.prototype = {
     child.parent = null;
 
     InspectorFrontendHost.events.dispatchEventToListeners(
-        InspectorFrontendHostAPI.Events.FileSystemFilesChangedAddedRemoved,
+        Host.InspectorFrontendHostAPI.Events.FileSystemFilesChangedAddedRemoved,
         {changed: [], added: [], removed: [fullPath]});
 
     success();
@@ -149,7 +149,7 @@ BindingsTestRunner.TestFileSystem.Entry.prototype = {
     const fullPath = this._fileSystem.fileSystemPath + child.fullPath;
 
     InspectorFrontendHost.events.dispatchEventToListeners(
-        InspectorFrontendHostAPI.Events.FileSystemFilesChangedAddedRemoved,
+        Host.InspectorFrontendHostAPI.Events.FileSystemFilesChangedAddedRemoved,
         {changed: [], added: [fullPath], removed: []});
 
     return child;
@@ -162,7 +162,7 @@ BindingsTestRunner.TestFileSystem.Entry.prototype = {
     const fullPath = this._fileSystem.fileSystemPath + this.fullPath;
 
     InspectorFrontendHost.events.dispatchEventToListeners(
-        InspectorFrontendHostAPI.Events.FileSystemFilesChangedAddedRemoved,
+        Host.InspectorFrontendHostAPI.Events.FileSystemFilesChangedAddedRemoved,
         {changed: [fullPath], added: [], removed: []});
   },
 

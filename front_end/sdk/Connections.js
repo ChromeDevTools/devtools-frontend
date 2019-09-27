@@ -13,9 +13,9 @@ SDK.MainConnection = class {
     this._messageSize = 0;
     this._eventListeners = [
       InspectorFrontendHost.events.addEventListener(
-          InspectorFrontendHostAPI.Events.DispatchMessage, this._dispatchMessage, this),
+          Host.InspectorFrontendHostAPI.Events.DispatchMessage, this._dispatchMessage, this),
       InspectorFrontendHost.events.addEventListener(
-          InspectorFrontendHostAPI.Events.DispatchMessageChunk, this._dispatchMessageChunk, this),
+          Host.InspectorFrontendHostAPI.Events.DispatchMessageChunk, this._dispatchMessageChunk, this),
     ];
   }
 

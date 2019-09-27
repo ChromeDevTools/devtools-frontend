@@ -740,12 +740,21 @@ Timeline.TimelineEventOverviewCoverage = class extends Timeline.TimelineEventOve
 
     let total = 0;
     let total_used = 0;
+    /** @type {!Map<!Coverage.CoverageInfo>} */
     const usedByTimestamp = new Map();
+    /** @type {!Map<!Coverage.CoverageInfo>} */
+    const totalByTimestamp = new Map();
     for (const urlInfo of this._coverageModel.entries()) {
       for (const info of urlInfo.entries()) {
         total += info.size();
         for (const [stamp, used] of info.usedByTimestamp()) {
           total_used += used;
+
+          if (!totalByTimestamp.has(stamp))
+            totalByTimestamp.set(stamp, new Set());
+
+          totalByTimestamp.get(stamp).add(info);
+
           if (!usedByTimestamp.has(stamp))
             usedByTimestamp.set(stamp, used);
           else
@@ -753,6 +762,26 @@ Timeline.TimelineEventOverviewCoverage = class extends Timeline.TimelineEventOve
         }
       }
     }
+
+    /** @type {!Set<!Coverage.CoverageInfo>} */
+    const seen = new Set();
+    /** @type {!Map<number, number>} */
+    const coverageByTimestamp = new Map();
+    let sumTotal = 0, sumUsed = 0;
+
+    const sortedByTimestamp = Array.from(totalByTimestamp.entries()).sort((a, b) => a[0] - b[0]);
+    for (const [stamp, infos] of sortedByTimestamp) {
+      for (const info of infos.values()) {
+        if (seen.has(info))
+          continue;
+
+        seen.add(info);
+        sumTotal += info.size();
+      }
+      sumUsed += usedByTimestamp.get(stamp);
+      coverageByTimestamp.set(stamp, sumUsed / sumTotal);
+    }
+
     const percentUsed = total ? Math.round(100 * total_used / total) : 0;
     const lowerOffset = 3 * ratio;
 
@@ -764,48 +793,41 @@ Timeline.TimelineEventOverviewCoverage = class extends Timeline.TimelineEventOve
     const width = this.width();
     const height = this.height() - lowerOffset;
     const xFactor = width / (maxTime - minTime);
-    const yFactor = (height - lineWidth) / Math.max(total, 1);
+    const yFactor = height - lineWidth;
 
-
-    let y = 0;
+    let yOffset = 0;
     const ctx = this.context();
     const heightBeyondView = height + lowerOffset + lineWidth;
     ctx.translate(0.5, 0.5);
     ctx.beginPath();
     ctx.moveTo(-lineWidth, heightBeyondView);
 
-    ctx.lineTo(-lineWidth, height - y);
+    ctx.lineTo(-lineWidth, height - yOffset);
 
-    const entries = Array.from(usedByTimestamp.entries()).sort((a, b) => a[0] - b[0]);
-    let cummulative_used = 0;
-    for (const [stamp, used] of entries) {
+    for (const [stamp, coverage] of coverageByTimestamp) {
       if (stamp > maxTime)
         break;
       const x = (stamp - minTime) * xFactor;
-      cummulative_used += used;
-      y = cummulative_used * yFactor;
-      ctx.lineTo(x, height - y);
+      yOffset = coverage * yFactor;
+      ctx.lineTo(x, height - yOffset);
     }
 
-
-    ctx.lineTo(width + lineWidth, height - y);
+    ctx.lineTo(width + lineWidth, height - yOffset);
     ctx.lineTo(width + lineWidth, heightBeyondView);
     ctx.closePath();
-
     ctx.fillStyle = 'hsla(220, 90%, 70%, 0.2)';
     ctx.fill();
     ctx.lineWidth = lineWidth;
     ctx.strokeStyle = 'hsl(220, 90%, 70%)';
     ctx.stroke();
 
-    cummulative_used = 0;
-    for (const [stamp, used] of entries) {
+    for (const [stamp, coverage] of coverageByTimestamp) {
       if (stamp > maxTime)
         break;
-      cummulative_used += used;
       ctx.beginPath();
       const x = (stamp - minTime) * xFactor;
-      ctx.arc(x, height - cummulative_used * yFactor, 2 * lineWidth, 0, 2 * Math.PI, false);
+      const y = height - coverage * yFactor;
+      ctx.arc(x, y, 2 * lineWidth, 0, 2 * Math.PI, false);
       ctx.closePath();
       ctx.stroke();
       ctx.fill();

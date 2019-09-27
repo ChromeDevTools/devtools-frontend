@@ -48,7 +48,7 @@
 .object-value-string,
 .object-value-regexp,
 .object-value-symbol {
-    white-space: pre;
+    white-space: pre !important;
     unicode-bidi: -webkit-isolate;
     color: rgb(196, 26, 22);
 }

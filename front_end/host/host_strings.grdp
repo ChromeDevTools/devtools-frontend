@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <grit-part>
   <message name="IDS_DEVTOOLS_92bb7e733a12d24684262f046afcc2fd" desc="Document title in Inspector Frontend Host of the DevTools window">
-    DevTools - <ph name="URL_REPLACE___HTTPS____________">$1s<ex>example.com</ex></ph>
+    <ph name="LOCKED_1">DevTools</ph> - <ph name="URL_REPLACE___HTTPS____________">$1s<ex>example.com</ex></ph>
   </message>
 </grit-part>

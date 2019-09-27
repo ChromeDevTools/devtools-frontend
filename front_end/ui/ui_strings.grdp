@@ -85,7 +85,7 @@
     Step out
   </message>
   <message name="IDS_DEVTOOLS_44ac014b674d7d86a04702e6fd1fa858" desc="Text in a dialog box showing how to reconnect to DevTools when remote debugging has been terminated">
-    Reconnect when ready by reopening DevTools.
+    Reconnect when ready by reopening <ph name="LOCKED_1">DevTools</ph>.
   </message>
   <message name="IDS_DEVTOOLS_45b471827af8ba9628e1914afbb13980" desc="Minutes format in UIUtils">
     <ph name="PH1">$1.1f<ex>2.2</ex></ph> min
@@ -136,13 +136,13 @@
     Save profile
   </message>
   <message name="IDS_DEVTOOLS_63e29f78b2e7788d9234a5790897fa71" desc="Text in dialog box when the target page crashed">
-    DevTools was disconnected from the page.
+    <ph name="LOCKED_1">DevTools</ph> was disconnected from the page.
   </message>
   <message name="IDS_DEVTOOLS_650654cb12c12b00e68b4384e0aede82" desc="Aria alert to read the suggestion for the suggestion box when typing in text editor">
     <ph name="THIS__ONLYCOMPLETION_TEXT">$1s<ex>name</ex></ph>, suggestion
   </message>
   <message name="IDS_DEVTOOLS_678b7bbae3b9b67cee8bce1fac3067d7" desc="Text for a hyperlink to the shortcut documentation in Shortcuts page">
-    Full list of DevTools keyboard shortcuts and gestures
+    Full list of <ph name="LOCKED_1">DevTools</ph> keyboard shortcuts and gestures
   </message>
   <message name="IDS_DEVTOOLS_6e0e121820384f135321cb766273f4da" desc="Text in the Shortcuts page to explain a keyboard shortcut (soft undo in text editor)">
     Soft undo
@@ -178,7 +178,7 @@
     Zoom in
   </message>
   <message name="IDS_DEVTOOLS_7cf206a681131cf4d86fc190f2d9ad27" desc="Text on a button to reconnect Devtools when remote debugging terminated">
-    Reconnect DevTools
+    Reconnect <ph name="LOCKED_1">DevTools</ph>
   </message>
   <message name="IDS_DEVTOOLS_7dce122004969d56ae2e0245cb754d35" desc="Text on a button to start editing text">
     Edit
@@ -193,7 +193,7 @@
     Layers Panel
   </message>
   <message name="IDS_DEVTOOLS_86e8f8f8327d28b74e5bd3ab581f77ee" desc="Text that appears when hover over the filter bar in the Network tool">
-    e.g. /small[\d]+/ url:a.com/b
+    e.g. <ph name="LOCKED_1">/small[\d]+/ url:a.com/b</ph>
   </message>
   <message name="IDS_DEVTOOLS_89345110b204ed302eddff2ddbd0f4d9" desc="Text in the Shortcuts page to explain a keyboard shortcut (enable toggle breakpoint shortcut in debugger)">
     Toggle breakpoint enabled
@@ -235,7 +235,7 @@
     Toggle all breakpoints
   </message>
   <message name="IDS_DEVTOOLS_a950da8e902568f9a6879abe4313efe7" desc="Text content of content element">
-    Once page is reloaded, DevTools will automatically reconnect.
+    Once page is reloaded, <ph name="LOCKED_1">DevTools</ph> will automatically reconnect.
   </message>
   <message name="IDS_DEVTOOLS_ad91a1da588ce256d30b1af38f78f84e" desc="Accessibility label for unchecked items in the SoftContextMenu">
     unchecked

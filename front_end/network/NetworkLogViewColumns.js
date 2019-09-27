@@ -749,7 +749,9 @@ Network.NetworkLogViewColumns._defaultColumns = [
   {
     id: 'connection',
     isResponseHeader: true,
-    title: Common.UIString('Connection'),
+    // until IDs are supported for strings, the placeholder is used to workaround the limitation that
+    // having multiple translations for a string is not supported
+    title: ls`${'Connection'}`,
     sortingFunction: Network.NetworkRequestNode.ResponseHeaderStringComparator.bind(null, 'connection')
   },
   {

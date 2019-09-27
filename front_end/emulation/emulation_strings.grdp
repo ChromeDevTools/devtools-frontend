@@ -100,7 +100,7 @@
     Latitude
   </message>
   <message name="IDS_DEVTOOLS_414b730ab2cf9123d9230740864ffeec" desc="A context menu item in the Device Mode Toolbar of the Device Toolbar">
-    Close DevTools
+    Close <ph name="LOCKED_1">DevTools</ph>
   </message>
   <message name="IDS_DEVTOOLS_45f80006d304f294d6c1de50c244856e" desc="Text of add geolocations button in Geolocations Settings Tab of the Device Toolbar">
     Add location...

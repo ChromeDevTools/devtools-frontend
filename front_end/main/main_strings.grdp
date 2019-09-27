@@ -49,7 +49,7 @@
     Go to the panel to the left/right
   </message>
   <message name="IDS_DEVTOOLS_586740a88e6502850bc64f9f2d04d380" desc="Title element title in Main">
-    Placement of DevTools relative to the page. (<ph name="TOGGLEDOCKSIDESHORCUTS____NAME">$1s<ex>Ctrl+Shift+D</ex></ph> to restore last position)
+    Placement of <ph name="LOCKED_1">DevTools</ph> relative to the page. (<ph name="TOGGLEDOCKSIDESHORCUTS____NAME">$1s<ex>Ctrl+Shift+D</ex></ph> to restore last position)
   </message>
   <message name="IDS_DEVTOOLS_5bf4a92da989a6943e3fed84f18c3f0f" desc="Text in the Shortcuts page in settings to explain a keyboard shortcut">
     Search across all sources

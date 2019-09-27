@@ -301,7 +301,7 @@
     Stop recording network log
   </message>
   <message name="IDS_DEVTOOLS_611a2b5dcde004cf68ffd56345584d40" desc="Text in Network Log View Columns of the Network panel">
-    ETag
+    <ph name="LOCKED_1">ETag</ph>
   </message>
   <message name="IDS_DEVTOOLS_619d32de7168c6e770464dfc43e374d1" desc="Text in Request Headers View of the Network panel">
     Request Headers
@@ -322,7 +322,7 @@
     Header Name
   </message>
   <message name="IDS_DEVTOOLS_6a98894cd6b4628f0b5117412aab083e" desc="Text in Network Log View Columns of the Network panel">
-    Cache-Control
+    <ph name="LOCKED_1">Cache-Control</ph>
   </message>
   <message name="IDS_DEVTOOLS_6b41d86d21d49c95f5b106fb2ed95762" desc="An option in the user agent dropdown menu in the Network conditions tool">
     <ph name="LOCKED_1">Internet Explorer 10</ph>
@@ -439,7 +439,7 @@
     Set Cookies
   </message>
   <message name="IDS_DEVTOOLS_8c074f405ad9737b1b59d35d6aab7cab" desc="Text in Network Log View Columns of the Network panel">
-    Last-Modified
+    <ph name="LOCKED_1">Last-Modified</ph>
   </message>
   <message name="IDS_DEVTOOLS_8c09001c99ecb6fdd8d6023fcf039054" desc="Text in Signed Exchange Info View of the Network panel">
     Signature
@@ -529,7 +529,7 @@
     Parser
   </message>
   <message name="IDS_DEVTOOLS_9aa1b03934893d7134a660af4204f2a9" desc="Text in Network Log View Columns of the Network panel">
-    Server
+    <ph name="LOCKED_1">Server</ph>
   </message>
   <message name="IDS_DEVTOOLS_9c1ab57e621c2bb257798752dbbe6f14" desc="Text in Request Headers View of the Network panel">
     view source
@@ -658,7 +658,7 @@
     mixed-content
   </message>
   <message name="IDS_DEVTOOLS_bd9176ee57c46268a853e038b133966a" desc="Text in Network Log View Columns of the Network panel">
-    Keep-Alive
+    <ph name="LOCKED_1">Keep-Alive</ph>
   </message>
   <message name="IDS_DEVTOOLS_bdaacef16991cfa4cf17a388579e7c06" desc="Text in Network Item View of the Network panel">
     EventStream
@@ -670,7 +670,7 @@
     Cookies that were sent to the server in the &apos;cookie&apos; header of the request
   </message>
   <message name="IDS_DEVTOOLS_c0635a52980f98eff8adf2279c8ad8e0" desc="A tag of Network Conditions tool that can be searched in the command menu">
-    <ph name="LOCKED_1">useragent</ph>
+    useragent
   </message>
   <message name="IDS_DEVTOOLS_c14108bc627e61f0e445dda0ff029f58" desc="An option in the user agent dropdown menu in the Network conditions tool">
     <ph name="LOCKED_1">Chrome — iPhone</ph>
@@ -742,7 +742,7 @@
     Record (<ph name="RECORDNODE">$1s<ex>Ctrl + E</ex></ph>) to display network activity.
   </message>
   <message name="IDS_DEVTOOLS_d82a834165b99c4ea0969316296a2bc2" desc="Text in Network Log View Columns of the Network panel">
-    Vary
+    <ph name="LOCKED_1">Vary</ph>
   </message>
   <message name="IDS_DEVTOOLS_d8e381f360a750d29368d3ec51346006" desc="Label for response cookies with invalid syntax">
     Malformed Response Cookies
@@ -760,7 +760,7 @@
     Request/Response
   </message>
   <message name="IDS_DEVTOOLS_dcf3e36ee8115282aad46485cab6a4be" desc="A tag of Group Network by frame setting that can be searched in the command menu">
-    <ph name="LOCKED_1">frame</ph>
+    frame
   </message>
   <message name="IDS_DEVTOOLS_dd47445f60115097d07d4cf2e61d933b" desc="Text of a DOM element in Request Timing View of the Network panel">
     CAUTION: request is not finished yet!
@@ -826,7 +826,7 @@
     Started at <ph name="CALCULATOR_FORMATVALUE_REQUEST_STARTTIME____">$1s<ex>120.39ms</ex></ph>
   </message>
   <message name="IDS_DEVTOOLS_edfffa5a1ffba7492b25869813e7e15e" desc="Text in Network Log View Columns of the Network panel">
-    Content-Encoding
+    <ph name="LOCKED_1">Content-Encoding</ph>
   </message>
   <message name="IDS_DEVTOOLS_ef110dd7355d7315c73995a47fe77dfd" desc="Text in Request Timing View of the Network panel">
     DNS Lookup
@@ -841,7 +841,7 @@
     Content
   </message>
   <message name="IDS_DEVTOOLS_f2a4bb0e0bae2587046fb2bd377f3922" desc="A tag of Network Conditions tool that can be searched in the command menu">
-    <ph name="LOCKED_1">user agent</ph>
+    user agent
   </message>
   <message name="IDS_DEVTOOLS_f312b3f268931a1367de22756237b197" desc="Text in Network Item View of the Network panel">
     Headers and request body

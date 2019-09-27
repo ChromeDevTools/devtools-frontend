@@ -4,7 +4,7 @@
     Add connection
   </message>
   <message name="IDS_DEVTOOLS_3fd49f986cbd5dd3148c27c9aaaaa700" desc="Text in Node Connections Panel of the Sources panel when debugging a Node.js app">
-    Network address (e.g. localhost:9229)
+    Network address (e.g. <ph name="LOCKED_1">localhost:9229</ph>)
   </message>
   <message name="IDS_DEVTOOLS_43d755260901476a60e28982f36b2913" desc="Text in Node Connections Panel of the Sources panel when debugging a Node.js app">
     Node.js debugging guide
@@ -16,9 +16,9 @@
     Node.js: <ph name="TARGETINFO_URL">$1s<ex>example.com</ex></ph>
   </message>
   <message name="IDS_DEVTOOLS_ed6b1cccfa7455e9506ff7e5127e1df4" desc="Text in Node Connections Panel of the Sources panel when debugging a Node.js app">
-    Specify network endpoint and DevTools will connect to it automatically. Read <ph name="DOCUMENTATIONLINK">$1s<ex>Node.js debugging guide</ex></ph> to learn more.
+    Specify network endpoint and <ph name="LOCKED_1">DevTools</ph> will connect to it automatically. Read <ph name="DOCUMENTATIONLINK">$1s<ex>Node.js debugging guide</ex></ph> to learn more.
   </message>
   <message name="IDS_DEVTOOLS_36c4536996ca5615dcf9911f068786dc" desc="A tag of Node.js Connection Panel that can be searched in the command menu">
-    <ph name="LOCKED_1">node</ph>
+    node
   </message>
 </grit-part>

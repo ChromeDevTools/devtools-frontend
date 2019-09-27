@@ -61,7 +61,7 @@
     [Violation] <ph name="MESSAGETEXT">$1s<ex>console.log(1)</ex></ph>
   </message>
   <message name="IDS_DEVTOOLS_375855385115b292f160b5131495003d" desc="Message element text content in Console View Message of the Console panel">
-    console.clear() was prevented due to &apos;Preserve log&apos;
+    <ph name="LOCKED_1">console.clear()</ph> was prevented due to &apos;Preserve log&apos;
   </message>
   <message name="IDS_DEVTOOLS_383b1deb90603a79d86f3ae82e55a9e2" desc="Text in Console View of the Console panel">
     <ph name="THIS__HIDDENBYFILTERCOUNT">$1s<ex>3</ex></ph> hidden
@@ -235,7 +235,7 @@
     JavaScript context: <ph name="THIS_TITLEFOR_ITEM_">$1s<ex>top</ex></ph>
   </message>
   <message name="IDS_DEVTOOLS_eacaf2bd1c1414e5086cf04573e154ef" desc="Text in Console View of the Console panel">
-    e.g. /event\d/ -cdn url:a.com
+    e.g. <ph name="LOCKED_1">/event\d/ -cdn url:a.com</ph>
   </message>
   <message name="IDS_DEVTOOLS_ebfab4df1bb91688c62d4523eba870a5" desc="Title of a setting under the Console category in Settings">
     Evaluate triggers user activation

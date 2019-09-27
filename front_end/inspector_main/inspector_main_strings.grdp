@@ -13,7 +13,7 @@
     Paint flashing
   </message>
   <message name="IDS_DEVTOOLS_0ef16a6645018dec4609e392c7e9bda1" desc="Title of a setting under the DevTools category that can be invoked through the Command Menu">
-    Do not auto-open DevTools for popups
+    Do not auto-open <ph name="LOCKED_1">DevTools</ph> for popups
   </message>
   <message name="IDS_DEVTOOLS_1808fb32cf4e8a03daa326b48d4246eb" desc="Title of a setting under the Appearance category in Settings">
     Disable paused state overlay
@@ -46,7 +46,7 @@
     Hit-test borders
   </message>
   <message name="IDS_DEVTOOLS_7e9495c56e55fa2c5236512bf80e5d2b" desc="Title of a setting under the Appearance category in Settings">
-    Don&apos;t show Chrome Data Saver warning
+    Don&apos;t show <ph name="LOCKED_1">Chrome Data Saver</ph> warning
   </message>
   <message name="IDS_DEVTOOLS_8339f28e0c74e2c821b05332280c754b" desc="Title of a setting under the Network category in Settings">
     Force ad blocking on this site
@@ -55,7 +55,7 @@
     Navigation
   </message>
   <message name="IDS_DEVTOOLS_8634af2a16e41305fc8dca2d67360810" desc="Title of button in inspector main">
-    Open dedicated DevTools for Node.js
+    Open dedicated <ph name="LOCKED_1">DevTools</ph> for Node.js
   </message>
   <message name="IDS_DEVTOOLS_86f849e1a655c2df19f28cb3dfe07bc9" desc="Title of a setting under the Network category that can be invoked through the Command Menu">
     Block ads on this site
@@ -82,6 +82,6 @@
     Hard reload page
   </message>
   <message name="IDS_DEVTOOLS_f23c9ba06e7123f0b4c906de90fbcc9f" desc="Title of a setting under the DevTools category that can be invoked through the Command Menu">
-    Auto-open DevTools for popups
+    Auto-open <ph name="LOCKED_1">DevTools</ph> for popups
   </message>
 </grit-part>

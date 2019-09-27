@@ -176,7 +176,7 @@
   </message>
   <message name="IDS_DEVTOOLS_6b59ba1fcfd868474cae169876f9cbfa" desc="Text in Heap Profile View of a profiler tool">
     Native memory snapshots show sampled native allocations in the renderer process since start up.
-              Chrome has to be started with --memlog=all flag. Check flags at chrome://flags
+              <ph name="LOCKED_1">Chrome</ph> has to be started with <ph name="LOCKED_2">--memlog=all</ph> flag. Check flags at <ph name="LOCKED_1">chrome://flags</ph>
   </message>
   <message name="IDS_DEVTOOLS_6d27e30b2f09c2a451a6d123c1a35805" desc="Text in Profiles Panel of a profiler tool">
     Run <ph name="_">$1d<ex>2</ex></ph>

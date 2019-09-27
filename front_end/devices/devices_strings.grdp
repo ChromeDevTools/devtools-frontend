@@ -4,7 +4,7 @@
     Port Forwarding:
   </message>
   <message name="IDS_DEVTOOLS_034fd013261994214d1e8cb42571d191" desc="Text in Devices View of the Remote Devices tab">
-    Need help? Read Chrome <ph name="DOCUMENTATIONLINK">$1s<ex>documentation link</ex></ph>.
+    Need help? Read <ph name="LOCKED_1">Chrome</ph> <ph name="DOCUMENTATIONLINK">$1s<ex>documentation link</ex></ph>.
   </message>
   <message name="IDS_DEVTOOLS_03fc5c0bd59679c442b86074c7a7cc3a" desc="Text in Devices View of the Remote Devices tab">
     Port forwarding

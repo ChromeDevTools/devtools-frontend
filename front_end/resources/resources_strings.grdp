@@ -237,7 +237,7 @@ read the &quot;<ph name="THIS_TABLENAME">$1s<ex>database</ex></ph>&quot; table.
     Cache Storage
   </message>
   <message name="IDS_DEVTOOLS_a9cd2046f50376846feaa11c68e56e2f" desc="Inform users that DevTools are recording/waiting for events in the Periodic Background Sync tool of the Application panel">
-    DevTools will record all <ph name="FEATURENAME">$1s<ex>Background Fetch</ex></ph> activity for up to 3 days, even when closed.
+    <ph name="LOCKED_1">DevTools</ph> will record all <ph name="FEATURENAME">$1s<ex>Background Fetch</ex></ph> activity for up to 3 days, even when closed.
   </message>
   <message name="IDS_DEVTOOLS_ab0cf104f39708eabd07b8cb67e149ba" desc="Text in Application Panel Sidebar of the Application panel">
     Cache
@@ -270,7 +270,7 @@ read the &quot;<ph name="THIS_TABLENAME">$1s<ex>database</ex></ph>&quot; table.
     Display
   </message>
   <message name="IDS_DEVTOOLS_ba8d2e1eca2bf52ab3cd0202d4d04c07" desc="Text in Service Workers View of the Application panel">
-    Test push message from DevTools.
+    Test push message from <ph name="LOCKED_1">DevTools</ph>.
   </message>
   <message name="IDS_DEVTOOLS_bb8839cf9d324a22591ff426c28c5345" desc="Tooltip text that appears when hovering over the largeicon play button in the Indexed DBViews of the Application panel">
     Show next page

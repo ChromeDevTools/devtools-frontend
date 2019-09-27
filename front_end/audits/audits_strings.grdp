@@ -13,7 +13,7 @@
     💡 <ph name="THIS__FASTFACTSQUEUED_FASTFACTINDEX_">$1s<ex>75% of global mobile users in 2016 were on 2G or 3G [Source: GSMA Mobile]</ex></ph>
   </message>
   <message name="IDS_DEVTOOLS_1076f1bac69647c846ac3b822b133518" desc="Fast fact in the pop-up dialog when lighthouse is running in the Audits panel">
-    The average user device costs less than 200 USD. [Source: International Data Corporation]
+    The average user device costs less than 200 USD. [Source: <ph name="LOCKED_1">International Data Corporation</ph>]
   </message>
   <message name="IDS_DEVTOOLS_1421c82f3616812789ac346b1638e39d" desc="Text of audits start button in Audits Start View">
     Run audits
@@ -25,25 +25,25 @@
     View Trace
   </message>
   <message name="IDS_DEVTOOLS_169ece87d3c6b79c2c8d69892927857c" desc="Fast fact in the pop-up dialog when lighthouse is running in the Audits panel">
-    19 seconds is the average time a mobile web page takes to load on a 3G connection [Source: Google DoubleClick blog]
+    19 seconds is the average time a mobile web page takes to load on a 3G connection [Source: <ph name="LOCKED_1">Google DoubleClick blog</ph>]
   </message>
   <message name="IDS_DEVTOOLS_17de62900ceac9101c8814b4c4874328" desc="Text in Audits Controller">
     Apply mobile emulation during auditing
   </message>
   <message name="IDS_DEVTOOLS_193c4edb3ab576449959f6710e017a49" desc="Text in Audits Controller">
-    Typical DevTools throttling, with actual traffic shaping and CPU slowdown applied
+    Typical <ph name="LOCKED_1">DevTools</ph> throttling, with actual traffic shaping and CPU slowdown applied
   </message>
   <message name="IDS_DEVTOOLS_2046d43f4cc1f59c06f764da2ca2355a" desc="Status text in the Audits panel">
     The print popup window is open. Please close it to continue.
   </message>
   <message name="IDS_DEVTOOLS_24e8ca2483129261096ba8ba0fbcd247" desc="Fast fact in the pop-up dialog when lighthouse is running in the Audits panel">
-    70% of mobile pages take nearly 7 seconds for the visual content above the fold to display on the screen. [Source: Think with Google]
+    70% of mobile pages take nearly 7 seconds for the visual content above the fold to display on the screen. [Source: <ph name="LOCKED_1">Think with Google</ph>]
   </message>
   <message name="IDS_DEVTOOLS_2a96c07a6c11ca7add2b1ffde86efe25" desc="Text in Audits Controller">
-    Can only audit HTTP/HTTPS pages and Chrome extensions. Navigate to a different page to start an audit.
+    Can only audit HTTP/HTTPS pages and <ph name="LOCKED_1">Chrome</ph> extensions. Navigate to a different page to start an audit.
   </message>
   <message name="IDS_DEVTOOLS_39680b3025b1f8d881f9d983623bf071" desc="Text in Audits Status View">
-    Lighthouse is loading your page
+    <ph name="LOCKED_1">Lighthouse</ph> is loading your page
   </message>
   <message name="IDS_DEVTOOLS_3b7e043f46813f1d8ffbd462eb77fb6c" desc="Text in Audits Controller">
     How long does this app take to show content and become usable
@@ -52,13 +52,13 @@
     Applied Slow 4G, 4x CPU Slowdown
   </message>
   <message name="IDS_DEVTOOLS_47e2dbd37d8d524f5c4105a96db27b59" desc="Fast fact in the pop-up dialog when lighthouse is running in the Audits panel">
-    75% of global mobile users in 2016 were on 2G or 3G [Source: GSMA Mobile]
+    75% of global mobile users in 2016 were on 2G or 3G [Source: <ph name="LOCKED_1">GSMA Mobile</ph>]
   </message>
   <message name="IDS_DEVTOOLS_48d24d11c7c71282366fe2007d4cee3b" desc="Text in Audits Controller">
     Throttling is simulated, resulting in faster audit runs with similar measurement accuracy
   </message>
   <message name="IDS_DEVTOOLS_4ab5093468559edd5940ac59f1c6ac02" desc="Text in Audits Status View">
-    Try to navigate to the URL in a fresh Chrome profile without any other tabs or extensions open and try again.
+    Try to navigate to the URL in a fresh <ph name="LOCKED_1">Chrome</ph> profile without any other tabs or extensions open and try again.
   </message>
   <message name="IDS_DEVTOOLS_55f562701dc2cc775f9adc0478644b2a" desc="Tooltip text that appears when hovering over the largeicon add button in the Audits Panel">
     Perform an audit…
@@ -67,13 +67,13 @@
     Cancelling
   </message>
   <message name="IDS_DEVTOOLS_56846b99d193dbbd252ddca10d29aff4" desc="Text when lighthouse is loading the page in the Audits panel">
-    Lighthouse is loading your page with throttling to measure performance on a mobile device on 3G.
+    <ph name="LOCKED_1">Lighthouse</ph> is loading your page with throttling to measure performance on a mobile device on 3G.
   </message>
   <message name="IDS_DEVTOOLS_5a73519018eaaacb7882caf8f0971ac1" desc="Fast fact in the pop-up dialog when lighthouse is running in the Audits panel">
-    1MB takes a minimum of 5 seconds to download on a typical 3G connection [Source: WebPageTest and DevTools 3G definition].
+    1MB takes a minimum of 5 seconds to download on a typical 3G connection [Source: <ph name="LOCKED_1">WebPageTest</ph> and <ph name="LOCKED_2">DevTools</ph> 3G definition].
   </message>
   <message name="IDS_DEVTOOLS_5f0c08bc61549e7455c9e8b46bfe9aa9" desc="Fast fact in the pop-up dialog when lighthouse is running in the Audits panel">
-    70% of mobile pages weigh over 1MB, 36% over 2MB, and 12% over 4MB. [Source: Think with Google]
+    70% of mobile pages weigh over 1MB, 36% over 2MB, and 12% over 4MB. [Source: <ph name="LOCKED_1">Think with Google</ph>]
   </message>
   <message name="IDS_DEVTOOLS_64a64ca70e7a909a5a96c07082070bfc" desc="Text of a DOM element in Audits Status View">
     Ah, sorry! We ran into an error.
@@ -91,22 +91,22 @@
     Multiple tabs are being controlled by the same service worker. Close your other tabs on the same origin to audit this page.
   </message>
   <message name="IDS_DEVTOOLS_6e394d18cb68d551f58fa35f4dfc70bb" desc="Fast fact in the pop-up dialog when lighthouse is running in the Audits panel">
-    As page load time increases from one second to seven seconds, the probability of a mobile site visitor bouncing increases 113%. [Source: Think with Google]
+    As page load time increases from one second to seven seconds, the probability of a mobile site visitor bouncing increases 113%. [Source: <ph name="LOCKED_1">Think with Google</ph>]
   </message>
   <message name="IDS_DEVTOOLS_72c4a2e545d220fd8c9ead876a59a89d" desc="Text in Audits Controller">
     Is this page optimized for search engine results ranking
   </message>
   <message name="IDS_DEVTOOLS_73351c316c7866b1c5730af9c82b5ab3" desc="Text when lighthouse is loading the page in the Audits panel">
-    Lighthouse is loading your page with throttling to measure performance on a slow desktop on 3G.
+    <ph name="LOCKED_1">Lighthouse</ph> is loading your page with throttling to measure performance on a slow desktop on 3G.
   </message>
   <message name="IDS_DEVTOOLS_7387b82b5b5cbc317147961ff45142c5" desc="Fast fact in the pop-up dialog when lighthouse is running in the Audits panel">
-    Walmart saw a 1% increase in revenue for every 100ms improvement in page load [Source: WPO Stats]
+    Walmart saw a 1% increase in revenue for every 100ms improvement in page load [Source: <ph name="LOCKED_1">WPO Stats</ph>]
   </message>
   <message name="IDS_DEVTOOLS_77d52e376f0c781e4f0d908f6d0b7ff2" desc="Fast fact in the pop-up dialog when lighthouse is running in the Audits panel">
-    Lighthouse only simulates mobile performance; to measure performance on a real device, try WebPageTest.org [Source: Lighthouse team]
+    <ph name="LOCKED_1">Lighthouse</ph> only simulates mobile performance; to measure performance on a real device, try WebPageTest.org [Source: <ph name="LOCKED_2">Lighthouse</ph> team]
   </message>
   <message name="IDS_DEVTOOLS_78b8123c78d60b80d6a09618ad56c2cb" desc="Fast fact in the pop-up dialog when lighthouse is running in the Audits panel">
-    Rebuilding Pinterest pages for performance increased conversion rates by 15% [Source: WPO Stats]
+    Rebuilding Pinterest pages for performance increased conversion rates by 15% [Source: <ph name="LOCKED_1">WPO Stats</ph>]
   </message>
   <message name="IDS_DEVTOOLS_7bd1e4f7363173e2c8329551ca4d38cc" desc="New audit item label in Audits Report Selector">
     (new audit)
@@ -115,22 +115,22 @@
     Auditing <ph name="PAGEHOST">$1s<ex>github.com</ex></ph>
   </message>
   <message name="IDS_DEVTOOLS_8eb7115e5b4ba55f56931ec24c789f9e" desc="Text in Audits Status View">
-    Lighthouse is warming up…
+    <ph name="LOCKED_1">Lighthouse</ph> is warming up…
   </message>
   <message name="IDS_DEVTOOLS_8fe967af0fb77d0261a6ead91bcd607f" desc="Text in Audits Controller">
     Reset storage (localStorage, IndexedDB, etc) before auditing. (Good for performance &amp; PWA testing)
   </message>
   <message name="IDS_DEVTOOLS_9103edac10b1749db57ca27386ff29dc" desc="Text when lighthouse is loading the page in the Audits panel">
-    Lighthouse is loading your page.
+    <ph name="LOCKED_1">Lighthouse</ph> is loading your page.
   </message>
   <message name="IDS_DEVTOOLS_93c09fb3e06297a9b9504113fa5915ea" desc="Fast fact in the pop-up dialog when lighthouse is running in the Audits panel">
-    BBC has seen a loss of 10% of their users for every extra second of page load [Source: WPO Stats]
+    BBC has seen a loss of 10% of their users for every extra second of page load [Source: <ph name="LOCKED_1">WPO Stats</ph>]
   </message>
   <message name="IDS_DEVTOOLS_a3456af9cc3d7cf0c2e288f889f050b7" desc="Fast fact in the pop-up dialog when lighthouse is running in the Audits panel">
-    If a site takes &gt;1 second to become interactive, users lose attention, and their perception of completing the page task is broken [Source: Google Developers Blog]
+    If a site takes &gt;1 second to become interactive, users lose attention, and their perception of completing the page task is broken [Source: <ph name="LOCKED_1">Google Developers Blog</ph>]
   </message>
   <message name="IDS_DEVTOOLS_a99169b94755be554b65f8dcc2c2b842" desc="Text in the pop-up dialog when lighthouse is gathering information in the Audits panel">
-    Lighthouse is gathering information about the page to compute your score.
+    <ph name="LOCKED_1">Lighthouse</ph> is gathering information about the page to compute your score.
   </message>
   <message name="IDS_DEVTOOLS_b002a564ceda05dbdf012a48a145d0d3" desc="Status header in the Audits panel">
     Printing
@@ -142,7 +142,7 @@
     Does this page meet the standard of a Progressive Web App
   </message>
   <message name="IDS_DEVTOOLS_b29bb7427a05d89f1dae6ab5459e2d5c" desc="Fast fact in the pop-up dialog when lighthouse is running in the Audits panel">
-    By reducing the response size of JSON needed for displaying comments, Instagram saw increased impressions [Source: WPO Stats]
+    By reducing the response size of JSON needed for displaying comments, Instagram saw increased impressions [Source: <ph name="LOCKED_1">WPO Stats</ph>]
   </message>
   <message name="IDS_DEVTOOLS_bcf2457dd80557dd7ebdc1504b6149e6" desc="Text in Audits Controller">
     Does this page follow best practices for modern web development
@@ -154,7 +154,7 @@
     Reports
   </message>
   <message name="IDS_DEVTOOLS_d2f618fd63c7c2028cd527f60e761bc6" desc="Text when lighthouse is loading the page in the Audits panel">
-    Lighthouse is loading your page with mobile emulation.
+    <ph name="LOCKED_1">Lighthouse</ph> is loading your page with mobile emulation.
   </message>
   <message name="IDS_DEVTOOLS_d88946b678e4c2f251d4e292e8142291" desc="Text in Audits Controller">
     SEO
@@ -163,22 +163,22 @@
     Identify and fix common problems that affect your site&apos;s performance, accessibility, and user experience.
   </message>
   <message name="IDS_DEVTOOLS_e339ef3bcd3e92466fa83dc21e690a5b" desc="Fast fact in the pop-up dialog when lighthouse is running in the Audits panel">
-    As the number of elements on a page increases from 400 to 6,000, the probability of conversion drops 95%. [Source: Think with Google]
+    As the number of elements on a page increases from 400 to 6,000, the probability of conversion drops 95%. [Source: <ph name="LOCKED_1">Think with Google</ph>]
   </message>
   <message name="IDS_DEVTOOLS_e499f5109f685235e6280179fe22beec" desc="Text that appears when user drag and drop something (for example, a file) in Audits Panel">
     Drop audit file here
   </message>
   <message name="IDS_DEVTOOLS_e8e1638b0449b103a9fdcee6c12d700c" desc="Fast fact in the pop-up dialog when lighthouse is running in the Audits panel">
-    14 seconds is the average time a mobile web page takes to load on a 4G connection [Source: Google DoubleClick blog]
+    14 seconds is the average time a mobile web page takes to load on a 4G connection [Source: <ph name="LOCKED_1">Google DoubleClick blog</ph>]
   </message>
   <message name="IDS_DEVTOOLS_e9fe69c2de7c38bbe442e38780d20081" desc="Fast fact in the pop-up dialog when lighthouse is running in the Audits panel">
-    53% of all site visits are abandoned if page load takes more than 3 seconds [Source: Google DoubleClick blog]
+    53% of all site visits are abandoned if page load takes more than 3 seconds [Source: <ph name="LOCKED_1">Google DoubleClick blog</ph>]
   </message>
   <message name="IDS_DEVTOOLS_ea60ba1496b05c6a5816fb75d0665c8d" desc="Text of a DOM element in Audits Status View">
-    If this issue is reproducible, please report it at the Lighthouse GitHub repo.
+    If this issue is reproducible, please report it at the <ph name="LOCKED_1">Lighthouse</ph> <ph name="LOCKED_2">GitHub</ph> repo.
   </message>
   <message name="IDS_DEVTOOLS_f3ddea8173e7a06f7a6a5dadc234fd3d" desc="Text in the pop-up dialog when lighthouse is auditing in the Audits panel">
-    Almost there! Lighthouse is now generating your report.
+    Almost there! <ph name="LOCKED_1">Lighthouse</ph> is now generating your report.
   </message>
   <message name="IDS_DEVTOOLS_fad0ce221c826eede253cb0956ca0700" desc="A search term referring to the linting application named Lighthouse that can be entered in the command menu">
     <ph name="LOCKED_1">lighthouse</ph>

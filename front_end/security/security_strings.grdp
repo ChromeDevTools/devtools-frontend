@@ -97,7 +97,7 @@
     View <ph name="FILTERREQUESTCOUNT">$1d<ex>2</ex></ph> requests in Network Panel
   </message>
   <message name="IDS_DEVTOOLS_a10edd2a3893a9ba446fb26e7c27556a" desc="Text in Security Panel of the Security panel">
-    This request complies with Chrome&apos;s Certificate Transparency policy.
+    This request complies with <ph name="LOCKED_1">Chrome</ph>&apos;s Certificate Transparency policy.
   </message>
   <message name="IDS_DEVTOOLS_a2b16c6b3db371738d0e5c3f3ba2b54d" desc="Text in Security Panel of the Security panel">
     This response was loaded from cache. Some security details might be missing.
@@ -115,7 +115,7 @@
     Show more (<ph name="SANLIST_LENGTH">$1s<ex>2</ex></ph> total)
   </message>
   <message name="IDS_DEVTOOLS_b92f649b203ca680d444432324771186" desc="Text in Security Panel of the Security panel">
-    This request does not comply with Chrome&apos;s Certificate Transparency policy.
+    This request does not comply with <ph name="LOCKED_1">Chrome</ph>&apos;s Certificate Transparency policy.
   </message>
   <message name="IDS_DEVTOOLS_c3db8a95444ea6caa45cc7dcb6e78d64" desc="Summary div text content in Security Panel of the Security panel">
     Security overview

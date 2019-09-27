@@ -4,99 +4,99 @@
     Laptop with MDPI screen
   </message>
   <message name="IDS_DEVTOOLS_079a3d134d2387adc52b2b3895f85e55" desc="Title of the iPhone X device">
-    iPhone X
+    <ph name="LOCKED_1">iPhone X</ph>
   </message>
   <message name="IDS_DEVTOOLS_0d1160fe394d87ddbc2ca8e7cc25379d" desc="Title of the Laptop with touch device">
     Laptop with touch
   </message>
   <message name="IDS_DEVTOOLS_0e5aeadd53726e96d7d9faa671b423ae" desc="Title of the Kindle Fire HDX device">
-    Kindle Fire HDX
+    <ph name="LOCKED_1">Kindle Fire HDX</ph>
   </message>
   <message name="IDS_DEVTOOLS_1b9018182a49e16ba85bb095f224867c" desc="Title of the iPad device">
-    iPad
+    <ph name="LOCKED_1">iPad</ph>
   </message>
   <message name="IDS_DEVTOOLS_2235bd527cc1684230b1db146c570a9d" desc="Title of the Pixel 2 device">
-    Pixel 2
+    <ph name="LOCKED_1">Pixel 2</ph>
   </message>
   <message name="IDS_DEVTOOLS_2c17ed2506add59c15ea763801cfafb1" desc="Title of the Nexus 6 device">
-    Nexus 6
+    <ph name="LOCKED_1">Nexus 6</ph>
   </message>
   <message name="IDS_DEVTOOLS_2d1fbe61c136940101281ec1df805c01" desc="Title of the Nexus 5 device">
-    Nexus 5
+    <ph name="LOCKED_1">Nexus 5</ph>
   </message>
   <message name="IDS_DEVTOOLS_2d9a25096b47a022c95787ab90308d6b" desc="Title of the LG Optimus L70 device">
-    LG Optimus L70
+    <ph name="LOCKED_1">LG Optimus L70</ph>
   </message>
   <message name="IDS_DEVTOOLS_4a321c67ad4bac0f3386f5e257b1fba3" desc="Title of the Laptop with HiDPI screen device">
     Laptop with HiDPI screen
   </message>
   <message name="IDS_DEVTOOLS_6247fa438881677e5f910b89db1974a7" desc="Title of the Nokia N9 device">
-    Nokia N9
+    <ph name="LOCKED_1">Nokia N9</ph>
   </message>
   <message name="IDS_DEVTOOLS_659810deafc0279869114daf8446ef4a" desc="Title of the Nexus 10 device">
-    Nexus 10
+    <ph name="LOCKED_1">Nexus 10</ph>
   </message>
   <message name="IDS_DEVTOOLS_6d9131a4a569108e7d19038b27111c86" desc="Title of the Nexus 5X device">
-    Nexus 5X
+    <ph name="LOCKED_1">Nexus 5X</ph>
   </message>
   <message name="IDS_DEVTOOLS_71e3580e3c3a03f17798ebccaad9e6cb" desc="Title of the Nexus 7 device">
-    Nexus 7
+    <ph name="LOCKED_1">Nexus 7</ph>
   </message>
   <message name="IDS_DEVTOOLS_71f859515e31ad9bb417977247315f0a" desc="Title of the iPad Pro device">
-    iPad Pro
+    <ph name="LOCKED_1">iPad Pro</ph>
   </message>
   <message name="IDS_DEVTOOLS_76c4064f51952f873baa0f9a201b49a3" desc="Title of the Nokia Lumia 520 device">
-    Nokia Lumia 520
+    <ph name="LOCKED_1">Nokia Lumia 520</ph>
   </message>
   <message name="IDS_DEVTOOLS_8be08fbcf1f787159e451a97a7c1cc90" desc="Title of the iPhone 6/7/8 Plus device">
-    iPhone 6/7/8 Plus
+    <ph name="LOCKED_1">iPhone 6/7/8 Plus</ph>
   </message>
   <message name="IDS_DEVTOOLS_8d0c6a99bcfbb75724c123476d683d3f" desc="Title of the iPhone 4 device">
-    iPhone 4
+    <ph name="LOCKED_1">iPhone 4</ph>
   </message>
   <message name="IDS_DEVTOOLS_99d1a0f994cdce14eea8b6ae823d5a76" desc="Title of the Galaxy S III device">
-    Galaxy S III
+    <ph name="LOCKED_1">Galaxy S III</ph>
   </message>
   <message name="IDS_DEVTOOLS_a75624548994321c1cc7173b9933438b" desc="Title of the Microsoft Lumia 550 device">
-    Microsoft Lumia 550
+    <ph name="LOCKED_1">Microsoft Lumia 550</ph>
   </message>
   <message name="IDS_DEVTOOLS_aa5fa1bdadb078da054c34752031a5e9" desc="Title of the iPhone 6/7/8 device">
-    iPhone 6/7/8
+    <ph name="LOCKED_1">iPhone 6/7/8</ph>
   </message>
   <message name="IDS_DEVTOOLS_b9e5554cdd9d9f2d3df1f30914b617c2" desc="Title of the Galaxy Note 3 device">
-    Galaxy Note 3
+    <ph name="LOCKED_1">Galaxy Note 3</ph>
   </message>
   <message name="IDS_DEVTOOLS_be6a9d69eff86af39e5a73345c585da6" desc="Title of the iPad Mini device">
-    iPad Mini
+    <ph name="LOCKED_1">iPad Mini</ph>
   </message>
   <message name="IDS_DEVTOOLS_c99b8431589c0273278e87ebf44a7fd6" desc="Title of the iPhone 5/SE device">
-    iPhone 5/SE
+    <ph name="LOCKED_1">iPhone 5/SE</ph>
   </message>
   <message name="IDS_DEVTOOLS_cc810fb8b8bc7c7d6a8327f0e7b2aead" desc="Title of the Nexus 6P device">
-    Nexus 6P
+    <ph name="LOCKED_1">Nexus 6P</ph>
   </message>
   <message name="IDS_DEVTOOLS_d4f2f5453f28c5fd35c68f52e4da07cd" desc="Title of the BlackBerry Z30 device">
-    BlackBerry Z30
+    <ph name="LOCKED_1">BlackBerry Z30</ph>
   </message>
   <message name="IDS_DEVTOOLS_d6162eb3dd4dc5a9bc67222e24f19b25" desc="Title of the Nexus 4 device">
-    Nexus 4
+    <ph name="LOCKED_1">Nexus 4</ph>
   </message>
   <message name="IDS_DEVTOOLS_d8860bf736e83cfb5c13ee82a8f61a43" desc="Title of the Microsoft Lumia 950 device">
-    Microsoft Lumia 950
+    <ph name="LOCKED_1">Microsoft Lumia 950</ph>
   </message>
   <message name="IDS_DEVTOOLS_dfd6e576e036db4f857c8c03c977d975" desc="Title of the Galaxy Note II device">
-    Galaxy Note II
+    <ph name="LOCKED_1">Galaxy Note II</ph>
   </message>
   <message name="IDS_DEVTOOLS_e0261d2f1730ebff89bbde9a4bc74ac5" desc="Title of the JioPhone 2 device">
-    JioPhone 2
+    <ph name="LOCKED_1">JioPhone 2</ph>
   </message>
   <message name="IDS_DEVTOOLS_e770076f957c87605ff906d0ed2c4b52" desc="Title of the Blackberry PlayBook device">
-    Blackberry PlayBook
+    <ph name="LOCKED_1">Blackberry PlayBook</ph>
   </message>
   <message name="IDS_DEVTOOLS_eb850446088fbc75e974788cc2b39caa" desc="Title of the Pixel 2 XL device">
-    Pixel 2 XL
+    <ph name="LOCKED_1">Pixel 2 XL</ph>
   </message>
   <message name="IDS_DEVTOOLS_f8896f769d62b6102e48039154c4ca5e" desc="Title of the Galaxy S5 device">
-    Galaxy S5
+    <ph name="LOCKED_1">Galaxy S5</ph>
   </message>
 </grit-part>

@@ -89,7 +89,7 @@
 Click the reload button <ph name="RELOADBUTTON">$3s<ex>reload</ex></ph> or hit <ph name="RELOADKEY">$4s<ex>Ctrl + R</ex></ph> to record the page load.
   </message>
   <message name="IDS_DEVTOOLS_0e8dfe937d359c7df31b16ea7e9cca81" desc="Title of a setting under the Performance category in Settings">
-    Hide chrome frame in Layers view
+    Hide <ph name="LOCKED_1">chrome</ph> frame in Layers view
   </message>
   <message name="IDS_DEVTOOLS_10aab9f12eca6bca3a6215914bab2745" desc="Text in Timeline UIUtils of the Performance panel">
     Allotted Time
@@ -123,9 +123,6 @@ Click the reload button <ph name="RELOADBUTTON">$3s<ex>reload</ex></ph> or hit <
   </message>
   <message name="IDS_DEVTOOLS_1b2c363066d5912ae8b27a1527f3d45e" desc="Text in Timeline Tree View of the Performance panel">
     Group by Domain
-  </message>
-  <message name="IDS_DEVTOOLS_1c481aa99d081c32182011a758f73d33" desc="Duration text in the Performance panel">
-    <ph name="DURATIONTEXT">$1s<ex>100ms (at 200ms)</ex></ph>
   </message>
   <message name="IDS_DEVTOOLS_1e3eaaac8d3c9cffea8ee7f03a8a6121" desc="Text in Timeline UIUtils of the Performance panel">
     DOMContentLoaded Event
@@ -482,7 +479,7 @@ Click the reload button <ph name="RELOADBUTTON">$3s<ex>reload</ex></ph> or hit <
     Decrypt
   </message>
   <message name="IDS_DEVTOOLS_76e815d5323a5f3c80a3d186c416e92b" desc="Text in Timeline Tree View of the Performance panel">
-    [Chrome extensions overhead]
+    [<ph name="LOCKED_1">Chrome</ph> extensions overhead]
   </message>
   <message name="IDS_DEVTOOLS_76ecb02d1f339c2dd6f14c41ead368c1" desc="Span text content in Timeline UIUtils of the Performance panel">
     Handler took <ph name="NUMBER_MILLISTOSTRING_EVENT_DURATION__TRUE_">$1s<ex>10ms</ex></ph>
@@ -691,7 +688,7 @@ Then, zoom and pan the timeline with the mousewheel or <ph name="NAVIGATENODE">$
     Layout root
   </message>
   <message name="IDS_DEVTOOLS_b3bfefedfa27aa11e79f637b22b16d09" desc="Text in Timeline Tree View of the Performance panel">
-    [V8 Runtime]
+    [<ph name="LOCKED_1">V8</ph> Runtime]
   </message>
   <message name="IDS_DEVTOOLS_b49fe3f49a656887d446c2da3851a88a" desc="Text in Timeline UIUtils of the Performance panel">
     Network request

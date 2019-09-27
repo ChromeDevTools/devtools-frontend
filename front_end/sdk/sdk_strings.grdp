@@ -91,7 +91,7 @@
     Hide frames per second (FPS) meter
   </message>
   <message name="IDS_DEVTOOLS_3ff9f750075f426831f71818a8f4ff12" desc="Text in Network Manager">
-    Request was blocked by DevTools: &quot;<ph name="NETWORKREQUEST_URL__">$1s<ex>https://example.com</ex></ph>&quot;.
+    Request was blocked by <ph name="LOCKED_1">DevTools</ph>: &quot;<ph name="NETWORKREQUEST_URL__">$1s<ex>https://example.com</ex></ph>&quot;.
   </message>
   <message name="IDS_DEVTOOLS_40dba446b661ae69dea3a8e026f76dfd" desc="Title of a setting under the Rendering category that can be invoked through the Command Menu">
     Hide paint flashing rectangles
@@ -157,7 +157,7 @@
     Show hit-test borders
   </message>
   <message name="IDS_DEVTOOLS_6948a469c79f7dd5426e4f291cba3db1" desc="Text in Network Log">
-    Chrome Data Saver
+    <ph name="LOCKED_1">Chrome Data Saver</ph>
   </message>
   <message name="IDS_DEVTOOLS_6ce4d85a628a88bbdb3ac24a8e5a9c2e" desc="Text in DOMDebugger Model">
     Keyboard
@@ -346,7 +346,7 @@
     Mouse
   </message>
   <message name="IDS_DEVTOOLS_f6137609f4decf877ede5bd3a3125629" desc="Text in CPUProfile Data Model">
-    DevTools: CPU profile parser is fixing <ph name="COUNT">$1s<ex>2</ex></ph> missing samples.
+    <ph name="LOCKED_1">DevTools</ph>: CPU profile parser is fixing <ph name="COUNT">$1s<ex>2</ex></ph> missing samples.
   </message>
   <message name="IDS_DEVTOOLS_f7531e2d0ea27233ce00b5f01c5bf335" desc="A drop-down menu option to emulate css print media type">
     print

@@ -151,7 +151,7 @@
     Override page assets with files from a local folder
   </message>
   <message name="IDS_DEVTOOLS_49a4a1505587da9f4475db7ee9958853" desc="Text in Sources Navigator of the Sources panel">
-    Sync changes in DevTools with the local filesystem
+    Sync changes in <ph name="LOCKED_1">DevTools</ph> with the local filesystem
   </message>
   <message name="IDS_DEVTOOLS_4b3812a22a58f04fb5a0598658a3bd27" desc="Title of the Filtered List WidgetProvider of Quick Open">
     Go to symbol
@@ -385,7 +385,7 @@
     Remove other breakpoints
   </message>
   <message name="IDS_DEVTOOLS_b9947e230aa5ac451e3b0649bdb1c7fc" desc="Event return value in Sources View of the Sources panel">
-    DevTools have unsaved changes that will be permanently lost.
+    <ph name="LOCKED_1">DevTools</ph> have unsaved changes that will be permanently lost.
   </message>
   <message name="IDS_DEVTOOLS_bb9f288b958ce8c8d250cb392e2f1309" desc="Text in Debugger Plugin of the Sources panel">
     You can click the <ph name="TOOLBAR_ELEMENT">$1s<ex>{}</ex></ph> button on the bottom status bar, and continue debugging with the new formatted source.

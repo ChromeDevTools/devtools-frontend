@@ -49,6 +49,9 @@
   <message name="IDS_DEVTOOLS_193cfc9be3b995831c6af2fea6650e60" desc="Text that refers to one or a group of webpages">
     Page
   </message>
+  <message name="IDS_DEVTOOLS_1c481aa99d081c32182011a758f73d33" desc="Text that only contain a placeholder">
+    <ph name="DURATIONTEXT">$1s<ex>100ms (at 200ms)</ex></ph>
+  </message>
   <message name="IDS_DEVTOOLS_1eaeeaeb638fdf7f6eeb047abbfd0f1a" desc="Time of a single activity, as opposed to the total time">
     Self Time
   </message>
@@ -152,7 +155,7 @@
     No breakpoints
   </message>
   <message name="IDS_DEVTOOLS_482a4dca0bbd8fcdda5acc6f95f3c279" desc="Title of the DevTools">
-    DevTools
+    <ph name="LOCKED_1">DevTools</ph>
   </message>
   <message name="IDS_DEVTOOLS_49ee3087348e8d44e1feda1917443987" desc="Text for the name of something">
     Name
@@ -215,7 +218,7 @@
     Errors
   </message>
   <message name="IDS_DEVTOOLS_5f0ea62e5bc9f795512ef292ff162a2a" desc="Text to disable cache while DevTools is open">
-    Disable cache (while DevTools is open)
+    Disable cache (while <ph name="LOCKED_1">DevTools</ph> is open)
   </message>
   <message name="IDS_DEVTOOLS_5f8442a46861496e9d2a3d11be13692b" desc="Text to indicate DevTools is writing to a file">
     Writing file…
@@ -284,7 +287,7 @@
     (index)
   </message>
   <message name="IDS_DEVTOOLS_850985cd851d0fe440f03f77762e2590" desc="Text for the network request Content-Length header">
-    Content-Length
+    <ph name="LOCKED_1">Content-Length</ph>
   </message>
   <message name="IDS_DEVTOOLS_86408593c34af77fdd90df932f8b5261" desc="Text for a programming function">
     Function

@@ -245,6 +245,7 @@ limitations under the License.
       width: var(--topbar-logo-size);
       height: var(--topbar-logo-size);
       user-select: none;
+      flex: none;
     }
     .lh-topbar__logo .shape {
       fill: var(--report-text-color);
@@ -254,6 +255,9 @@ limitations under the License.
       margin: var(--topbar-padding);
       text-decoration: none;
       color: var(--report-text-color);
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
     }
 
     .lh-tools {
@@ -366,22 +370,22 @@ limitations under the License.
     <a href="" class="lh-topbar__url" target="_blank" rel="noopener"></a>
 
     <div class="lh-tools">
-      <button class="report-icon report-icon--share lh-tools__button" title="Tools menu" aria-label="Toggle report tools menu">
+      <button id="lh-tools-button" class="report-icon report-icon--share lh-tools__button" title="Tools menu" aria-label="Toggle report tools menu" aria-haspopup="menu" aria-expanded="false" aria-controls="lh-tools-dropdown">
         <svg width="100%" height="100%" viewBox="0 0 24 24">
             <path d="M0 0h24v24H0z" fill="none"/>
             <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
         </svg>
       </button>
-      <div class="lh-tools__dropdown">
+      <div id="lh-tools-dropdown" role="menu" class="lh-tools__dropdown" aria-labelledby="lh-tools-button">
          <!-- TODO(i18n): localize tools dropdown -->
-        <a href="#" class="report-icon report-icon--print" data-action="print-summary">Print Summary</a>
-        <a href="#" class="report-icon report-icon--print" data-action="print-expanded">Print Expanded</a>
-        <a href="#" class="report-icon report-icon--copy" data-action="copy">Copy JSON</a>
-        <a href="#" class="report-icon report-icon--download" data-action="save-html">Save as HTML</a>
-        <a href="#" class="report-icon report-icon--download" data-action="save-json">Save as JSON</a>
-        <a href="#" class="report-icon report-icon--open lh-tools--viewer" data-action="open-viewer">Open in Viewer</a>
-        <a href="#" class="report-icon report-icon--open lh-tools--gist" data-action="save-gist">Save as Gist</a>
-        <a href="#" class="report-icon report-icon--dark" data-action="toggle-dark">Toggle Dark Theme</a>
+        <a role="menuitem" tabindex="-1" href="#" class="report-icon report-icon--print" data-action="print-summary">Print Summary</a>
+        <a role="menuitem" tabindex="-1" href="#" class="report-icon report-icon--print" data-action="print-expanded">Print Expanded</a>
+        <a role="menuitem" tabindex="-1" href="#" class="report-icon report-icon--copy" data-action="copy">Copy JSON</a>
+        <a role="menuitem" tabindex="-1" href="#" class="report-icon report-icon--download" data-action="save-html">Save as HTML</a>
+        <a role="menuitem" tabindex="-1" href="#" class="report-icon report-icon--download" data-action="save-json">Save as JSON</a>
+        <a role="menuitem" tabindex="-1" href="#" class="report-icon report-icon--open lh-tools--viewer" data-action="open-viewer">Open in Viewer</a>
+        <a role="menuitem" tabindex="-1" href="#" class="report-icon report-icon--open lh-tools--gist" data-action="save-gist">Save as Gist</a>
+        <a role="menuitem" tabindex="-1" href="#" class="report-icon report-icon--dark" data-action="toggle-dark">Toggle Dark Theme</a>
       </div>
     </div>
   </div>

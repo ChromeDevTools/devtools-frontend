@@ -262,6 +262,10 @@
 .lh-devtools.lh-root {
   height: 100%;
 }
+.lh-devtools.lh-root img {
+  /* Override devtools default 'min-width: 0' so svg without size in a flexbox isn't collapsed. */
+  min-width: auto;
+}
 .lh-devtools .lh-container {
   overflow-y: scroll;
   height: calc(100% - var(--topbar-height));
@@ -1161,11 +1165,6 @@
   width: var(--gauge-wrapper-width);
 }
 
-.lh-scores-header .lh-gauge--pwa__wrapper {
-  /* Can remove when this bug is resolved: https://bugs.chromium.org/p/chromium/issues/detail?id=942097 */
-  will-change: transform;
-}
-
 .lh-scorescale {
   display: inline-flex;
   margin: 12px auto 0 auto;
@@ -1389,6 +1388,11 @@
   width: var(--image-preview-size);
   height: var(--image-preview-size);
   display: block;
+}
+
+.lh-unknown pre {
+  overflow: scroll;
+  border: solid 1px var(--color-gray-200);
 }
 
 .lh-text__url > a {

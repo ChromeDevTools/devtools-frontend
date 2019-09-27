@@ -192,7 +192,7 @@ class Util {
    */
   static formatNumber(number, granularity = 0.1) {
     const coarseValue = Math.round(number / granularity) * granularity;
-    return coarseValue.toLocaleString(Util.numberDateLocale);
+    return Util.numberFormatter.format(coarseValue);
   }
 
   /**
@@ -201,8 +201,7 @@ class Util {
    * @return {string}
    */
   static formatBytesToKB(size, granularity = 0.1) {
-    const kbs = (Math.round(size / 1024 / granularity) * granularity)
-      .toLocaleString(Util.numberDateLocale);
+    const kbs = Util.numberFormatter.format(Math.round(size / 1024 / granularity) * granularity);
     return `${kbs}${NBSP}KB`;
   }
 
@@ -213,7 +212,7 @@ class Util {
    */
   static formatMilliseconds(ms, granularity = 10) {
     const coarseTime = Math.round(ms / granularity) * granularity;
-    return `${coarseTime.toLocaleString(Util.numberDateLocale)}${NBSP}ms`;
+    return `${Util.numberFormatter.format(coarseTime)}${NBSP}ms`;
   }
 
   /**
@@ -223,7 +222,7 @@ class Util {
    */
   static formatSeconds(ms, granularity = 0.1) {
     const coarseTime = Math.round(ms / 1000 / granularity) * granularity;
-    return `${coarseTime.toLocaleString(Util.numberDateLocale)}${NBSP}s`;
+    return `${Util.numberFormatter.format(coarseTime)}${NBSP}s`;
   }
 
   /**
@@ -278,6 +277,73 @@ class Util {
     });
 
     return parts.join(' ');
+  }
+
+  /**
+   * Split a string by markdown code spans (enclosed in `backticks`), splitting
+   * into segments that were enclosed in backticks (marked as `isCode === true`)
+   * and those that outside the backticks (`isCode === false`).
+   * @param {string} text
+   * @return {Array<{isCode: true, text: string}|{isCode: false, text: string}>}
+   */
+  static splitMarkdownCodeSpans(text) {
+    /** @type {Array<{isCode: true, text: string}|{isCode: false, text: string}>} */
+    const segments = [];
+
+    // Split on backticked code spans.
+    const parts = text.split(/`(.*?)`/g);
+    for (let i = 0; i < parts.length; i ++) {
+      const text = parts[i];
+
+      // Empty strings are an artifact of splitting, not meaningful.
+      if (!text) continue;
+
+      // Alternates between plain text and code segments.
+      const isCode = i % 2 !== 0;
+      segments.push({
+        isCode,
+        text,
+      });
+    }
+
+    return segments;
+  }
+
+  /**
+   * Split a string on markdown links (e.g. [some link](https://...)) into
+   * segments of plain text that weren't part of a link (marked as
+   * `isLink === false`), and segments with text content and a URL that did make
+   * up a link (marked as `isLink === true`).
+   * @param {string} text
+   * @return {Array<{isLink: true, text: string, linkHref: string}|{isLink: false, text: string}>}
+   */
+  static splitMarkdownLink(text) {
+    /** @type {Array<{isLink: true, text: string, linkHref: string}|{isLink: false, text: string}>} */
+    const segments = [];
+
+    const parts = text.split(/\[([^\]]+?)\]\((https?:\/\/.*?)\)/g);
+    while (parts.length) {
+      // Shift off the same number of elements as the pre-split and capture groups.
+      const [preambleText, linkText, linkHref] = parts.splice(0, 3);
+
+      if (preambleText) { // Skip empty text as it's an artifact of splitting, not meaningful.
+        segments.push({
+          isLink: false,
+          text: preambleText,
+        });
+      }
+
+      // Append link if there are any.
+      if (linkText && linkHref) {
+        segments.push({
+          isLink: true,
+          text: linkText,
+          linkHref,
+        });
+      }
+    }
+
+    return segments;
   }
 
   /**
@@ -489,10 +555,11 @@ class Util {
    * @param {LH.Locale} locale
    */
   static setNumberDateLocale(locale) {
-    Util.numberDateLocale = locale;
-
     // When testing, use a locale with more exciting numeric formatting
-    if (Util.numberDateLocale === 'en-XA') Util.numberDateLocale = 'de';
+    if (locale === 'en-XA') locale = 'de';
+
+    Util.numberDateLocale = locale;
+    Util.numberFormatter = new Intl.NumberFormat(locale);
   }
 
   /**
@@ -550,6 +617,12 @@ class Util {
  * @type {LH.Locale}
  */
 Util.numberDateLocale = 'en';
+
+/**
+ * This value stays in sync with Util.numberDateLocale.
+ * @type {Intl.NumberFormat}
+ */
+Util.numberFormatter = new Intl.NumberFormat(Util.numberDateLocale);
 
 /**
  * Report-renderer-specific strings.
@@ -626,7 +699,7 @@ if (typeof module !== 'undefined' && module.exports) {
  */
 'use strict';
 
-/* globals URL self */
+/* globals URL self Util */
 
 /** @typedef {HTMLElementTagNameMap & {[id: string]: HTMLElement}} HTMLElementByTagName */
 
@@ -727,52 +800,47 @@ class DOM {
   convertMarkdownLinkSnippets(text) {
     const element = this.createElement('span');
 
-    // Split on markdown links (e.g. [some link](https://...)).
-    const parts = text.split(/\[([^\]]*?)\]\((https?:\/\/.*?)\)/g);
-
-    while (parts.length) {
-      // Pop off the same number of elements as there are capture groups.
-      const [preambleText, linkText, linkHref] = parts.splice(0, 3);
-      element.appendChild(this._document.createTextNode(preambleText));
-
-      // Append link if there are any.
-      if (linkText && linkHref) {
-        const url = new URL(linkHref);
-
-        const DEVELOPERS_GOOGLE_ORIGIN = 'https://developers.google.com';
-        if (url.origin === DEVELOPERS_GOOGLE_ORIGIN) {
-          url.searchParams.set('utm_source', 'lighthouse');
-          url.searchParams.set('utm_medium', this._lighthouseChannel);
-        }
-
-        const a = this.createElement('a');
-        a.rel = 'noopener';
-        a.target = '_blank';
-        a.textContent = linkText;
-        a.href = url.href;
-        element.appendChild(a);
+    for (const segment of Util.splitMarkdownLink(text)) {
+      if (!segment.isLink) {
+        // Plain text segment.
+        element.appendChild(this._document.createTextNode(segment.text));
+        continue;
       }
+
+      // Otherwise, append any links found.
+      const url = new URL(segment.linkHref);
+
+      const DOCS_ORIGINS = ['https://developers.google.com', 'https://web.dev'];
+      if (DOCS_ORIGINS.includes(url.origin)) {
+        url.searchParams.set('utm_source', 'lighthouse');
+        url.searchParams.set('utm_medium', this._lighthouseChannel);
+      }
+
+      const a = this.createElement('a');
+      a.rel = 'noopener';
+      a.target = '_blank';
+      a.textContent = segment.text;
+      a.href = url.href;
+      element.appendChild(a);
     }
 
     return element;
   }
 
   /**
-   * @param {string} text
+   * @param {string} markdownText
    * @return {Element}
    */
-  convertMarkdownCodeSnippets(text) {
+  convertMarkdownCodeSnippets(markdownText) {
     const element = this.createElement('span');
 
-    const parts = text.split(/`(.*?)`/g); // Split on markdown code slashes
-    while (parts.length) {
-      // Pop off the same number of elements as there are capture groups.
-      const [preambleText, codeText] = parts.splice(0, 2);
-      element.appendChild(this._document.createTextNode(preambleText));
-      if (codeText) {
+    for (const segment of Util.splitMarkdownCodeSpans(markdownText)) {
+      if (segment.isCode) {
         const pre = this.createElement('code');
-        pre.textContent = codeText;
+        pre.textContent = segment.text;
         element.appendChild(pre);
+      } else {
+        element.appendChild(this._document.createTextNode(segment.text));
       }
     }
 
@@ -836,27 +904,18 @@ if (typeof module !== 'undefined' && module.exports) {
 }
 ;
 /*
-Details Element Polyfill 2.2.0
-Copyright © 2018 Javan Makhmali
+Details Element Polyfill 2.4.0
+Copyright © 2019 Javan Makhmali
  */
 (function() {
   "use strict";
   var element = document.createElement("details");
-  element.innerHTML = "<summary>a</summary>b";
-  element.setAttribute("style", "position: absolute; left: -9999px");
+  var elementIsNative = typeof HTMLDetailsElement != "undefined" && element instanceof HTMLDetailsElement;
   var support = {
-    open: "open" in element && elementExpands(),
+    open: "open" in element || elementIsNative,
     toggle: "ontoggle" in element
   };
-  function elementExpands() {
-    (document.body || document.documentElement).appendChild(element);
-    var closedHeight = element.offsetHeight;
-    element.open = true;
-    var openedHeight = element.offsetHeight;
-    element.parentNode.removeChild(element);
-    return closedHeight != openedHeight;
-  }
-  var styles = '\ndetails, summary {\n  display: block;\n}\ndetails:not([open]) > *:not(summary) {\n  display: none;\n}\ndetails > summary::before {\n  content: "►";\n  padding-right: 0.3rem;\n  font-size: 0.6rem;\n  cursor: default;\n}\ndetails[open] > summary::before {\n  content: "▼";\n}\n';
+  var styles = '\ndetails, summary {\n  display: block;\n}\ndetails:not([open]) > *:not(summary) {\n  display: none;\n}\nsummary::before {\n  content: "►";\n  padding-right: 0.3rem;\n  font-size: 0.6rem;\n  cursor: default;\n}\n[open] > summary::before {\n  content: "▼";\n}\n';
   var _ref = [], forEach = _ref.forEach, slice = _ref.slice;
   if (!support.open) {
     polyfillStyles();
@@ -946,7 +1005,7 @@ Copyright © 2018 Javan Makhmali
         forEach.call(mutations, function(mutation) {
           var target = mutation.target, attributeName = mutation.attributeName;
           if (target.tagName == "DETAILS" && attributeName == "open") {
-            triggerToggle(toggle);
+            triggerToggle(target);
           }
         });
       }).observe(document.documentElement, {
@@ -1018,7 +1077,7 @@ Copyright © 2018 Javan Makhmali
   }
   function triggerToggle(element) {
     var event = document.createEvent("Event");
-    event.initEvent("toggle", true, false);
+    event.initEvent("toggle", false, false);
     element.dispatchEvent(event);
   }
   function findElementsWithTagName(root, tagName) {
@@ -1104,9 +1163,9 @@ class DetailsRenderer {
         return null;
 
       default: {
-        // @ts-ignore tsc thinks this unreachable, but ts-ignore for error message just in case.
-        const detailsType = details.type;
-        throw new Error(`Unknown type: ${detailsType}`);
+        // @ts-ignore tsc thinks this is unreachable, but be forward compatible
+        // with new unexpected detail types.
+        return this._renderUnknown(details.type, details);
       }
     }
   }
@@ -1230,6 +1289,22 @@ class DetailsRenderer {
   }
 
   /**
+   * @param {string} type
+   * @param {*} value
+   */
+  _renderUnknown(type, value) {
+    // eslint-disable-next-line no-console
+    console.error(`Unknown details type: ${type}`, value);
+    const element = this._dom.createElement('details', 'lh-unknown');
+    this._dom.createChildOf(element, 'summary').textContent =
+      `We don't know how to render audit details of type \`${type}\`. ` +
+      'The Lighthouse version that collected this data is likely newer than the Lighthouse ' +
+      'version of the report renderer. Expand for the raw JSON.';
+    this._dom.createChildOf(element, 'pre').textContent = JSON.stringify(value, null, 2);
+    return element;
+  }
+
+  /**
    * Render a details item value for embedding in a table. Renders the value
    * based on the heading's valueType, unless the value itself has a `type`
    * property to override it.
@@ -1259,7 +1334,7 @@ class DetailsRenderer {
           return this.renderTextURL(value.value);
         }
         default: {
-          throw new Error(`Unknown valueType: ${value.type}`);
+          return this._renderUnknown(value.type, value);
         }
       }
     }
@@ -1308,7 +1383,7 @@ class DetailsRenderer {
         }
       }
       default: {
-        throw new Error(`Unknown valueType: ${heading.valueType}`);
+        return this._renderUnknown(heading.valueType, value);
       }
     }
   }
@@ -2201,10 +2276,10 @@ class ReportUIFeatures {
     this._document = this._dom.document();
     /** @type {ParentNode} */
     this._templateContext = this._dom.document();
+    /** @type {DropDown} */
+    this._dropDown = new DropDown(this._dom);
     /** @type {boolean} */
     this._copyAttempt = false;
-    /** @type {HTMLElement} */
-    this.toolsButton; // eslint-disable-line no-unused-expressions
     /** @type {HTMLElement} */
     this.topbarEl; // eslint-disable-line no-unused-expressions
     /** @type {HTMLElement} */
@@ -2216,9 +2291,7 @@ class ReportUIFeatures {
 
     this.onMediaQueryChange = this.onMediaQueryChange.bind(this);
     this.onCopy = this.onCopy.bind(this);
-    this.onToolsButtonClick = this.onToolsButtonClick.bind(this);
-    this.onToolAction = this.onToolAction.bind(this);
-    this.onKeyDown = this.onKeyDown.bind(this);
+    this.onDropDownMenuClick = this.onDropDownMenuClick.bind(this);
     this.onKeyUp = this.onKeyUp.bind(this);
     this.onChevronClick = this.onChevronClick.bind(this);
     this.collapseAllDetails = this.collapseAllDetails.bind(this);
@@ -2236,7 +2309,7 @@ class ReportUIFeatures {
     this.json = report;
 
     this._setupMediaQueryListeners();
-    this._setupToolsButton();
+    this._dropDown.setup(this.onDropDownMenuClick);
     this._setupThirdPartyFilter();
     this._setUpCollapseDetailsAfterPrinting();
     this._resetUIState();
@@ -2358,14 +2431,6 @@ class ReportUIFeatures {
   onMediaQueryChange(mql) {
     const root = this._dom.find('.lh-root', this._document);
     root.classList.toggle('lh-narrow', mql.matches);
-  }
-
-  _setupToolsButton() {
-    this.toolsButton = this._dom.find('.lh-tools__button', this._document);
-    this.toolsButton.addEventListener('click', this.onToolsButtonClick);
-
-    const dropdown = this._dom.find('.lh-tools__dropdown', this._document);
-    dropdown.addEventListener('click', this.onToolAction);
   }
 
   _setupThirdPartyFilter() {
@@ -2536,27 +2601,13 @@ class ReportUIFeatures {
     }
   }
 
-  closeToolsDropdown() {
-    this.toolsButton.classList.remove('active');
-  }
-
-  /**
-   * Click handler for tools button.
-   * @param {Event} e
-   */
-  onToolsButtonClick(e) {
-    e.preventDefault();
-    this.toolsButton.classList.toggle('active');
-    this._document.addEventListener('keydown', this.onKeyDown);
-  }
-
   /**
    * Resets the state of page before capturing the page for export.
    * When the user opens the exported HTML page, certain UI elements should
    * be in their closed state (not opened) and the templates should be unstamped.
    */
   _resetUIState() {
-    this.closeToolsDropdown();
+    this._dropDown.close();
     this._dom.resetTemplates();
   }
 
@@ -2564,7 +2615,7 @@ class ReportUIFeatures {
    * Handler for tool button.
    * @param {Event} e
    */
-  onToolAction(e) {
+  onDropDownMenuClick(e) {
     e.preventDefault();
 
     const el = /** @type {?Element} */ (e.target);
@@ -2579,12 +2630,10 @@ class ReportUIFeatures {
         break;
       case 'print-summary':
         this.collapseAllDetails();
-        this.closeToolsDropdown();
         this._print();
         break;
       case 'print-expanded':
         this.expandAllDetails();
-        this.closeToolsDropdown();
         this._print();
         break;
       case 'save-json': {
@@ -2618,22 +2667,11 @@ class ReportUIFeatures {
       }
     }
 
-    this.closeToolsDropdown();
-    this._document.removeEventListener('keydown', this.onKeyDown);
+    this._dropDown.close();
   }
 
   _print() {
     self.print();
-  }
-
-  /**
-   * Keydown handler for the document.
-   * @param {KeyboardEvent} e
-   */
-  onKeyDown(e) {
-    if (e.keyCode === 27) { // ESC
-      this.closeToolsDropdown();
-    }
   }
 
   /**
@@ -2643,7 +2681,7 @@ class ReportUIFeatures {
   onKeyUp(e) {
     // Ctrl+P - Expands audit details when user prints via keyboard shortcut.
     if ((e.ctrlKey || e.metaKey) && e.keyCode === 80) {
-      this.closeToolsDropdown();
+      this._dropDown.close();
     }
   }
 
@@ -2804,6 +2842,196 @@ class ReportUIFeatures {
     // Mutate at end to avoid layout thrashing.
     this.highlightEl.style.transform = `translate(${offset}px)`;
     this.stickyHeaderEl.classList.toggle('lh-sticky-header--visible', showStickyHeader);
+  }
+}
+
+class DropDown {
+  /**
+   * @param {DOM} dom
+   */
+  constructor(dom) {
+    /** @type {DOM} */
+    this._dom = dom;
+    /** @type {HTMLElement} */
+    this._toggleEl; // eslint-disable-line no-unused-expressions
+    /** @type {HTMLElement} */
+    this._menuEl; // eslint-disable-line no-unused-expressions
+
+    this.onDocumentKeyDown = this.onDocumentKeyDown.bind(this);
+    this.onToggleClick = this.onToggleClick.bind(this);
+    this.onToggleKeydown = this.onToggleKeydown.bind(this);
+    this.onMenuKeydown = this.onMenuKeydown.bind(this);
+
+    this._getNextMenuItem = this._getNextMenuItem.bind(this);
+    this._getNextSelectableNode = this._getNextSelectableNode.bind(this);
+    this._getPreviousMenuItem = this._getPreviousMenuItem.bind(this);
+  }
+
+  /**
+   * @param {function(MouseEvent): any} menuClickHandler
+   */
+  setup(menuClickHandler) {
+    this._toggleEl = this._dom.find('.lh-tools__button', this._dom.document());
+    this._toggleEl.addEventListener('click', this.onToggleClick);
+    this._toggleEl.addEventListener('keydown', this.onToggleKeydown);
+
+    this._menuEl = this._dom.find('.lh-tools__dropdown', this._dom.document());
+    this._menuEl.addEventListener('keydown', this.onMenuKeydown);
+    this._menuEl.addEventListener('click', menuClickHandler);
+  }
+
+  close() {
+    this._toggleEl.classList.remove('active');
+    this._toggleEl.setAttribute('aria-expanded', 'false');
+    if (this._menuEl.contains(this._dom.document().activeElement)) {
+      // Refocus on the tools button if the drop down last had focus
+      this._toggleEl.focus();
+    }
+    this._dom.document().removeEventListener('keydown', this.onDocumentKeyDown);
+  }
+
+  /**
+   * @param {HTMLElement} firstFocusElement
+   */
+  open(firstFocusElement) {
+    if (this._toggleEl.classList.contains('active')) {
+      // If the drop down is already open focus on the element
+      firstFocusElement.focus();
+    } else {
+      // Wait for drop down transition to complete so options are focusable.
+      this._menuEl.addEventListener('transitionend', () => {
+        firstFocusElement.focus();
+      }, {once: true});
+    }
+
+    this._toggleEl.classList.add('active');
+    this._toggleEl.setAttribute('aria-expanded', 'true');
+    this._dom.document().addEventListener('keydown', this.onDocumentKeyDown);
+  }
+
+  /**
+   * Click handler for tools button.
+   * @param {Event} e
+   */
+  onToggleClick(e) {
+    e.preventDefault();
+    e.stopImmediatePropagation();
+
+    if (this._toggleEl.classList.contains('active')) {
+      this.close();
+    } else {
+      this.open(this._getNextMenuItem());
+    }
+  }
+
+  /**
+   * Handler for tool button.
+   * @param {KeyboardEvent} e
+   */
+  onToggleKeydown(e) {
+    switch (e.code) {
+      case 'ArrowUp':
+        e.preventDefault();
+        this.open(this._getPreviousMenuItem());
+        break;
+      case 'ArrowDown':
+      case 'Enter':
+      case ' ':
+        e.preventDefault();
+        this.open(this._getNextMenuItem());
+        break;
+      default:
+       // no op
+    }
+  }
+
+  /**
+   * Handler for tool DropDown.
+   * @param {KeyboardEvent} e
+   */
+  onMenuKeydown(e) {
+    const el = /** @type {?HTMLElement} */ (e.target);
+
+    switch (e.code) {
+      case 'ArrowUp':
+        e.preventDefault();
+        this._getPreviousMenuItem(el).focus();
+        break;
+      case 'ArrowDown':
+        e.preventDefault();
+        this._getNextMenuItem(el).focus();
+        break;
+      case 'Home':
+        e.preventDefault();
+        this._getNextMenuItem().focus();
+        break;
+      case 'End':
+        e.preventDefault();
+        this._getPreviousMenuItem().focus();
+        break;
+      default:
+       // no op
+    }
+  }
+
+  /**
+   * Keydown handler for the document.
+   * @param {KeyboardEvent} e
+   */
+  onDocumentKeyDown(e) {
+    if (e.keyCode === 27) { // ESC
+      this.close();
+    }
+  }
+
+  /**
+   * @param {Array<Node>} allNodes
+   * @param {?Node=} startNode
+   * @returns {Node}
+   */
+  _getNextSelectableNode(allNodes, startNode) {
+    const nodes = allNodes.filter((node) => {
+      if (!(node instanceof HTMLElement)) {
+        return false;
+      }
+
+      // 'Save as Gist' option may be disabled.
+      if (node.hasAttribute('disabled')) {
+        return false;
+      }
+
+      // 'Save as Gist' option may have display none.
+      if (window.getComputedStyle(node).display === 'none') {
+        return false;
+      }
+
+      return true;
+    });
+
+    let nextIndex = startNode ? (nodes.indexOf(startNode) + 1) : 0;
+    if (nextIndex >= nodes.length) {
+      nextIndex = 0;
+    }
+
+    return nodes[nextIndex];
+  }
+
+  /**
+   * @param {?Element=} startEl
+   * @returns {HTMLElement}
+   */
+  _getNextMenuItem(startEl) {
+    const nodes = Array.from(this._menuEl.childNodes);
+    return /** @type {HTMLElement} */ (this._getNextSelectableNode(nodes, startEl));
+  }
+
+  /**
+   * @param {?Element=} startEl
+   * @returns {HTMLElement}
+   */
+  _getPreviousMenuItem(startEl) {
+    const nodes = Array.from(this._menuEl.childNodes).reverse();
+    return /** @type {HTMLElement} */ (this._getNextSelectableNode(nodes, startEl));
   }
 }
 
@@ -3410,8 +3638,8 @@ class PerformanceCategoryRenderer extends CategoryRenderer {
 
     // Metric descriptions toggle.
     const toggleTmpl = this.dom.cloneTemplate('#tmpl-lh-metrics-toggle', this.templateContext);
-    const toggleEl = this.dom.find('.lh-metrics-toggle', toggleTmpl);
-    metricAuditsEl.append(...toggleEl.childNodes);
+    const _toggleEl = this.dom.find('.lh-metrics-toggle', toggleTmpl);
+    metricAuditsEl.append(..._toggleEl.childNodes);
 
     const metricAudits = category.auditRefs.filter(audit => audit.group === 'metrics');
     const keyMetrics = metricAudits.filter(a => a.weight >= 3);
@@ -3810,6 +4038,7 @@ class ReportRenderer {
     const el = this._dom.cloneTemplate('#tmpl-lh-topbar', this._templateContext);
     const metadataUrl = /** @type {HTMLAnchorElement} */ (this._dom.find('.lh-topbar__url', el));
     metadataUrl.href = metadataUrl.textContent = report.finalUrl;
+    metadataUrl.title = report.finalUrl;
     return el;
   }
 

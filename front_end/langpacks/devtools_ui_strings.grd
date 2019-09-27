@@ -24,6 +24,7 @@
       <part file="../console_counters/console_counters_strings.grdp" />
       <part file="../cookie_table/cookie_table_strings.grdp" />
       <part file="../coverage/coverage_strings.grdp" />
+      <part file="../css_overview/css_overview_strings.grdp" />
       <part file="../data_grid/data_grid_strings.grdp" />
       <part file="../devices/devices_strings.grdp" />
       <part file="../elements/elements_strings.grdp" />

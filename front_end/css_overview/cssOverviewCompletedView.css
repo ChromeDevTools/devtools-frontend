@@ -1,0 +1,81 @@
+/**
+ * Copyright 2019 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+.overview-completed-view {
+  overflow: auto;
+}
+
+.overview-completed-view .summary ul,
+.overview-completed-view .colors ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.overview-completed-view .summary ul {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 140px);
+  grid-gap: 16px;
+}
+
+.overview-completed-view .colors ul li {
+  display: inline-block;
+  padding: 0;
+  margin: 0 0 16px 0;
+}
+
+.overview-completed-view .summary ul li {
+  display: flex;
+  flex-direction: column;
+  grid-column-start: auto;
+}
+
+.overview-completed-view li .label {
+  font-size: 12px;
+  padding-bottom: 2px;
+}
+
+.overview-completed-view li .value {
+  font-size: 17px;
+}
+
+.overview-completed-view ul li span {
+  font-weight: bold;
+}
+
+.block {
+  width: 65px;
+  height: 25px;
+  border-radius: 3px;
+  margin-right: 16px;
+}
+
+.block-title {
+  padding-top: 4px;
+  font-size: 12px;
+  color: #303942;
+  text-transform: uppercase;
+  letter-spacing: 0;
+}
+
+.results-section {
+  flex-shrink: 0;
+  padding: 28px;
+  border-bottom: 1px solid #E6E6E6;
+}
+
+.results-section h1 {
+  font-size: 15px;
+  font-weight: normal;
+  padding: 0;
+  margin: 0 0 20px 0;
+}
+
+.results-section.colors h2 {
+  margin-top: 20px;
+  font-size: 13px;
+  font-weight: normal;
+}

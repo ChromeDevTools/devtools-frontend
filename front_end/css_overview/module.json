@@ -1,0 +1,34 @@
+{
+  "extensions": [
+      {
+          "type": "view",
+          "location": "panel",
+          "id": "cssoverview",
+          "title": "CSS Overview",
+          "className": "CssOverview.CSSOverviewPanel",
+          "order": 95,
+          "experiment": "cssOverview"
+      }
+  ],
+  "dependencies": [
+      "elements",
+      "ui",
+      "sdk"
+  ],
+  "scripts": [
+      "CSSOverviewController.js",
+      "CSSOverviewModel.js",
+      "CSSOverviewStartView.js",
+      "CSSOverviewProcessingView.js",
+      "CSSOverviewCompletedView.js",
+      "CSSOverviewSidebarPanel.js",
+      "CSSOverviewPanel.js"
+    ],
+  "resources": [
+      "cssOverview.css",
+      "cssOverviewStartView.css",
+      "cssOverviewProcessingView.css",
+      "cssOverviewCompletedView.css",
+      "cssOverviewSidebarPanel.css"
+  ]
+}

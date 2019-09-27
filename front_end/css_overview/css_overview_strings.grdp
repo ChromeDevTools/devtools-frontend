@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<grit-part>
+  <message name="IDS_DEVTOOLS_01ac702a8b31775d1cdbc30ec453e611" desc="Label for the number of non-simple selectors in the CSS Overview report">
+    Non-simple selectors
+  </message>
+  <message name="IDS_DEVTOOLS_1049ae5279b7a1b50dddec905ed992df" desc="Label for the number ofstyle rules in CSS Overview report">
+    Style rules
+  </message>
+  <message name="IDS_DEVTOOLS_196c5897880c864a303527f5d8e7cb77" desc="Label for unique background colors in the CSS Overview report">
+    Unique background colors: <ph name="BACKGROUNDCOLORS_LENGTH">$1s<ex>17</ex></ph>
+  </message>
+  <message name="IDS_DEVTOOLS_1f1621cad66c8f661842bf9392d8559b" desc="Label for the summary in the CSS Overview report">
+    Overview summary
+  </message>
+  <message name="IDS_DEVTOOLS_23717568804f63f75e7596dcced3119e" desc="Label for the number of universal selectors in the CSS Overview report">
+    Universal selectors
+  </message>
+  <message name="IDS_DEVTOOLS_396ea220fc4d34d57a5a505de918bdde" desc="Singular of 'document element' in the processing update message">
+    document element
+  </message>
+  <message name="IDS_DEVTOOLS_4b3e6e4359cfb882a3b8b551f38a92c7" desc="Label for unique text colors in the CSS Overview Panel">
+    Unique text colors: <ph name="TEXTCOLORS_LENGTH">$1s<ex>32</ex></ph>
+  </message>
+  <message name="IDS_DEVTOOLS_52798275481d47b10f5b8e31310b155e" desc="Label for the update message in the processing stage of CSS Overview">
+    Processed <ph name="THIS__FORMATTER_FORMAT_HANDLED_">$1s<ex>23</ex></ph> of <ph name="THIS__FORMATTER_FORMAT_TOTAL_">$2s<ex>1,223</ex></ph> <ph name="ELEMENTSTOTAL">$3s<ex>document elements</ex></ph>.
+  </message>
+  <message name="IDS_DEVTOOLS_5d50889672f6f860d14f502de3de1957" desc="Title of colors subsection in the CSS Overview Panel">
+    Colors
+  </message>
+  <message name="IDS_DEVTOOLS_62d79b9db9edfb64bd8c538cb9ed0190" desc="Label for the number of media rules in the CSS Overview report">
+    Media rules
+  </message>
+  <message name="IDS_DEVTOOLS_6ad170a0581c9c116ca254758bd0c5b9" desc="Label for the number of ID selectors in the CSS Overview report">
+    ID selectors
+  </message>
+  <message name="IDS_DEVTOOLS_811b0dc0576a9743353448d08b400f45" desc="Label for the number of Attribute selectors in the CSS Overview report">
+    Attribute selectors
+  </message>
+  <message name="IDS_DEVTOOLS_8781fdba66e6cf7177ce03ea3db8a35a" desc="Label for the number of class selectors in the CSS Overview report">
+    Class selectors
+  </message>
+  <message name="IDS_DEVTOOLS_8a2d39bc733e82310760e2767889673a" desc="Title of the CSS Overview Panel">
+    CSS Overview
+  </message>
+  <message name="IDS_DEVTOOLS_95d366a44bd7bad09d9916e05b512cc6" desc="Label for the number of External stylesheets in the CSS Overview report">
+    External stylesheets
+  </message>
+  <message name="IDS_DEVTOOLS_a9427e421abd9fd7ba45212c25ba55a5" desc="Plural of 'document element' in the processing update message">
+    document elements
+  </message>
+  <message name="IDS_DEVTOOLS_aff1062318f6d07520a0feba60f3f253" desc="Label for the number of type selectors in the CSS Overview report">
+    Type selectors
+  </message>
+  <message name="IDS_DEVTOOLS_cd9c2b5232bcbda828c542a9f5306f8e" desc="Label for the 'Elements processed' button in the CSS Overview report">
+    Elements processed
+  </message>
+  <message name="IDS_DEVTOOLS_d4a993a4b0d13c2cc4ce9387af1604ce" desc="Label for the 'Clear overview' button in the CSS Overview report">
+    Clear overview
+  </message>
+  <message name="IDS_DEVTOOLS_e9c6934e961dad71d311f68c679dfd3b" desc="Label for the capture button in the CSS Overview Panel">
+    Capture overview
+  </message>
+  <message name="IDS_DEVTOOLS_f1637e0528f8c9d37be5de8b50fd2926" desc="Label for the number of inline style elements in the CSS Overview report">
+    Inline style elements
+  </message>
+</grit-part>

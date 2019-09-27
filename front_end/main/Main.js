@@ -116,6 +116,7 @@ Main.Main = class {
     Runtime.experiments.register(
         'backgroundServicesPeriodicBackgroundSync', 'Background services section for Periodic Background Sync');
     Runtime.experiments.register('blackboxJSFramesOnTimeline', 'Blackbox JavaScript frames on Timeline', true);
+    Runtime.experiments.register('cssOverview', 'CSS Overview');
     Runtime.experiments.register('emptySourceMapAutoStepping', 'Empty sourcemap auto-stepping');
     Runtime.experiments.register('inputEventsOnTimelineOverview', 'Input events on Timeline overview', true);
     Runtime.experiments.register('liveHeapProfile', 'Live heap profile', true);

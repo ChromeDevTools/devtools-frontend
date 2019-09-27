@@ -1,0 +1,33 @@
+/**
+ * Copyright 2019 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+.overview-sidebar-panel {
+  overflow: auto;
+  display: flex;
+  background: #F3F3F3;
+}
+
+.overview-sidebar-panel-item {
+  height: 30px;
+  padding-left: 30px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.overview-sidebar-panel-item:hover,
+.overview-sidebar-panel-item:focus {
+  background: rgb(234, 234, 234);
+}
+
+.overview-sidebar-panel-item.selected {
+  background: #1A73E8;
+  color: #FFFFFF;
+}
+
+.overview-toolbar {
+  border-bottom: 1px solid rgb(204, 204, 204);
+}

@@ -647,6 +647,12 @@ UI.openLinkExternallyLabel = function() {
 UI.copyLinkAddressLabel = function() {
   return Common.UIString('Copy link address');
 };
+/**
+ * @return {string}
+ */
+UI.copyLinkAddressWithCredentialsLabel = function() {
+  return Common.UIString('Copy as Credentials');
+};
 
 /**
  * @return {string}

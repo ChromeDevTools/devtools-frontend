@@ -550,7 +550,8 @@ SDK.RuntimeModel.CompileScriptResult;
  *    returnByValue: (boolean|undefined),
  *    generatePreview: (boolean|undefined),
  *    throwOnSideEffect: (boolean|undefined),
- *    timeout: (number|undefined)
+ *    timeout: (number|undefined),
+ *    disableBreaks: (boolean|undefined)
  *  }}
  */
 SDK.RuntimeModel.EvaluationOptions;
@@ -823,7 +824,8 @@ SDK.ExecutionContext = class {
       userGesture: userGesture,
       awaitPromise: awaitPromise,
       throwOnSideEffect: options.throwOnSideEffect,
-      timeout: options.timeout
+      timeout: options.timeout,
+      disableBreaks: options.disableBreaks
     });
 
     const error = response[Protocol.Error];

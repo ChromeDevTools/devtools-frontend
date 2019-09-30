@@ -63,7 +63,8 @@ ObjectUI.JavaScriptREPL = class {
       includeCommandLineAPI: true,
       throwOnSideEffect: throwOnSideEffect,
       timeout: timeout,
-      objectGroup: objectGroup
+      objectGroup: objectGroup,
+      disableBreaks: true
     };
     const result = await executionContext.evaluate(
         options, false /* userGesture */, wrappedResult.preprocessed /* awaitPromise */);

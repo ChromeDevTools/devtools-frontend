@@ -13,15 +13,13 @@ module.exports = function(config) {
     },{
       pattern: 'tests/**/*.ts',
       type: 'module'
-    }, {
-      pattern: 'tests/**/*.js',
-      type: 'module'
     }],
 
-    reporters: ["dots"],
+    reporters: ["dots", "coverage-istanbul"],
 
     preprocessors: {
-      './tests/**/*.ts': ['karma-typescript']
+      './tests/**/*.ts': ['karma-typescript'],
+      './front_end/common/*.js': ['karma-coverage-istanbul-instrumenter']
     },
 
     browsers: ["ChromeHeadless"],
@@ -55,8 +53,19 @@ module.exports = function(config) {
       "karma-chrome-launcher",
       "karma-mocha",
       "karma-chai",
-      "karma-typescript"
+      "karma-typescript",
+      require('../../../../third_party/devtools-node-modules/third_party/node_modules/karma-coverage-istanbul-instrumenter'),
+      require('../../../../third_party/devtools-node-modules/third_party/node_modules/karma-coverage-istanbul-reporter')
     ],
+
+    coverageIstanbulInstrumenter: {
+      esModules: true
+    },
+
+    coverageIstanbulReporter: {
+      reports: ["text", "html"],
+      dir: "karma-coverage"
+    },
 
     singleRun: true
   };

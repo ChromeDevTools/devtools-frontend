@@ -25,8 +25,9 @@ export default class Throttler {
   _processCompleted() {
     this._lastCompleteTime = this._getTime();
     this._isRunningProcess = false;
-    if (this._process)
+    if (this._process) {
       this._innerSchedule(false);
+    }
     this._processCompletedForTests();
   }
 
@@ -76,12 +77,15 @@ export default class Throttler {
    * @param {boolean} forceTimerUpdate
    */
   _innerSchedule(forceTimerUpdate) {
-    if (this._isRunningProcess)
+    if (this._isRunningProcess) {
       return;
-    if (this._processTimeout && !forceTimerUpdate)
+    }
+    if (this._processTimeout && !forceTimerUpdate) {
       return;
-    if (this._processTimeout)
+    }
+    if (this._processTimeout) {
       this._clearTimeout(this._processTimeout);
+    }
 
     const timeout = this._asSoonAsPossible ? 0 : this._timeout;
     this._processTimeout = this._setTimeout(this._onTimeout.bind(this), timeout);

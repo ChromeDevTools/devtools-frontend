@@ -106,18 +106,21 @@ Search.SearchView = class extends UI.VBox {
    * @param {boolean=} searchImmediately
    */
   async toggle(queryCandidate, searchImmediately) {
-    if (queryCandidate)
+    if (queryCandidate) {
       this._search.value = queryCandidate;
-    if (this.isShowing())
+    }
+    if (this.isShowing()) {
       this.focus();
-    else
+    } else {
       this._focusOnShow = true;
+    }
 
     this._initScope();
-    if (searchImmediately)
+    if (searchImmediately) {
       this._onAction();
-    else
+    } else {
       this._startIndexing();
+    }
   }
 
   /**
@@ -148,10 +151,12 @@ Search.SearchView = class extends UI.VBox {
     this._progressIndicator = null;
     this._isIndexing = false;
     this._indexingFinished(finished);
-    if (!finished)
+    if (!finished) {
       this._pendingSearchConfig = null;
-    if (!this._pendingSearchConfig)
+    }
+    if (!this._pendingSearchConfig) {
       return;
+    }
     const searchConfig = this._pendingSearchConfig;
     this._pendingSearchConfig = null;
     this._innerStartSearch(searchConfig);
@@ -159,8 +164,9 @@ Search.SearchView = class extends UI.VBox {
 
   _startIndexing() {
     this._isIndexing = true;
-    if (this._progressIndicator)
+    if (this._progressIndicator) {
       this._progressIndicator.done();
+    }
     this._progressIndicator = new UI.ProgressIndicator();
     this._searchMessageElement.textContent = Common.UIString('Indexing\u2026');
     this._progressIndicator.show(this._searchProgressPlaceholderElement);
@@ -178,15 +184,17 @@ Search.SearchView = class extends UI.VBox {
    * @param {!Search.SearchResult} searchResult
    */
   _onSearchResult(searchId, searchResult) {
-    if (searchId !== this._searchId || !this._progressIndicator)
+    if (searchId !== this._searchId || !this._progressIndicator) {
       return;
+    }
     if (this._progressIndicator && this._progressIndicator.isCanceled()) {
       this._onIndexingFinished();
       return;
     }
     this._addSearchResult(searchResult);
-    if (!searchResult.matchesCount())
+    if (!searchResult.matchesCount()) {
       return;
+    }
     if (!this._searchResultsPane) {
       this._searchResultsPane = new Search.SearchResultsPane(/** @type {!Search.SearchConfig} */ (this._searchConfig));
       this._showPane(this._searchResultsPane);
@@ -199,10 +207,12 @@ Search.SearchView = class extends UI.VBox {
    * @param {boolean} finished
    */
   _onSearchFinished(searchId, finished) {
-    if (searchId !== this._searchId || !this._progressIndicator)
+    if (searchId !== this._searchId || !this._progressIndicator) {
       return;
-    if (!this._searchResultsPane)
+    }
+    if (!this._searchResultsPane) {
       this._nothingFound();
+    }
     this._searchFinished(finished);
     this._searchConfig = null;
   }
@@ -214,15 +224,17 @@ Search.SearchView = class extends UI.VBox {
     this._resetSearch();
     ++this._searchId;
     this._initScope();
-    if (!this._isIndexing)
+    if (!this._isIndexing) {
       this._startIndexing();
+    }
     this._pendingSearchConfig = searchConfig;
   }
 
   _innerStartSearch(searchConfig) {
     this._searchConfig = searchConfig;
-    if (this._progressIndicator)
+    if (this._progressIndicator) {
       this._progressIndicator.done();
+    }
     this._progressIndicator = new UI.ProgressIndicator();
     this._searchStarted(this._progressIndicator);
     this._searchScope.performSearch(
@@ -237,10 +249,12 @@ Search.SearchView = class extends UI.VBox {
   }
 
   _stopSearch() {
-    if (this._progressIndicator && !this._isIndexing)
+    if (this._progressIndicator && !this._isIndexing) {
       this._progressIndicator.cancel();
-    if (this._searchScope)
+    }
+    if (this._searchScope) {
       this._searchScope.stopSearch();
+    }
     this._searchConfig = null;
   }
 
@@ -249,8 +263,9 @@ Search.SearchView = class extends UI.VBox {
    */
   _searchStarted(progressIndicator) {
     this._resetCounters();
-    if (!this._searchingView)
+    if (!this._searchingView) {
       this._searchingView = new UI.EmptyWidget(Common.UIString('Searching\u2026'));
+    }
     this._showPane(this._searchingView);
     this._searchMessageElement.textContent = Common.UIString('Searching\u2026');
     progressIndicator.show(this._searchProgressPlaceholderElement);
@@ -284,10 +299,12 @@ Search.SearchView = class extends UI.VBox {
    * @param {?UI.Widget} panel
    */
   _showPane(panel) {
-    if (this._visiblePane)
+    if (this._visiblePane) {
       this._visiblePane.detach();
-    if (panel)
+    }
+    if (panel) {
       panel.show(this._searchResultsElement);
+    }
     this._visiblePane = panel;
   }
 
@@ -298,8 +315,9 @@ Search.SearchView = class extends UI.VBox {
   }
 
   _nothingFound() {
-    if (!this._notFoundView)
+    if (!this._notFoundView) {
       this._notFoundView = new UI.EmptyWidget(Common.UIString('No matches found.'));
+    }
     this._showPane(this._notFoundView);
     this._searchResultsMessageElement.textContent = Common.UIString('No matches found.');
   }
@@ -311,8 +329,9 @@ Search.SearchView = class extends UI.VBox {
     const matchesCount = searchResult.matchesCount();
     this._searchMatchesCount += matchesCount;
     this._searchResultsCount++;
-    if (matchesCount)
+    if (matchesCount) {
       this._nonEmptySearchResultsCount++;
+    }
     this._updateSearchResultsMessage();
   }
 
@@ -363,8 +382,9 @@ Search.SearchView = class extends UI.VBox {
 
   _onAction() {
     const searchConfig = this._buildSearchConfig();
-    if (!searchConfig.query() || !searchConfig.query().length)
+    if (!searchConfig.query() || !searchConfig.query().length) {
       return;
+    }
     this._save();
     this._startSearch(searchConfig);
   }

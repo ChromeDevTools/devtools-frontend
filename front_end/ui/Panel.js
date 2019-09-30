@@ -71,10 +71,11 @@ UI.Panel = class extends UI.VBox {
    */
   showInfobar(infobar) {
     infobar.setCloseCallback(this._onInfobarClosed.bind(this, infobar));
-    if (this.element.firstChild)
+    if (this.element.firstChild) {
       this.element.insertBefore(infobar.element, this.element.firstChild);
-    else
+    } else {
       this.element.appendChild(infobar.element);
+    }
     infobar.setParentView(this);
     this.doResize();
   }

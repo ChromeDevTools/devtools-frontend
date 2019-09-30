@@ -68,8 +68,9 @@ Persistence.EditFileSystemView = class extends UI.VBox {
   }
 
   _update() {
-    if (this._muteUpdate)
+    if (this._muteUpdate) {
       return;
+    }
 
     this._excludedFoldersList.clear();
     this._excludedFolders = [];
@@ -143,8 +144,9 @@ Persistence.EditFileSystemView = class extends UI.VBox {
    * @return {!UI.ListWidget.Editor}
    */
   _createExcludedFolderEditor() {
-    if (this._excludedFolderEditor)
+    if (this._excludedFolderEditor) {
       return this._excludedFolderEditor;
+    }
 
     const editor = new UI.ListWidget.Editor();
     this._excludedFolderEditor = editor;
@@ -169,14 +171,16 @@ Persistence.EditFileSystemView = class extends UI.VBox {
     function pathPrefixValidator(item, index, input) {
       const prefix = this._normalizePrefix(input.value.trim());
 
-      if (!prefix)
+      if (!prefix) {
         return {valid: false, errorMessage: ls`Enter a path`};
+      }
 
       const configurableCount =
           Persistence.isolatedFileSystemManager.fileSystem(this._fileSystemPath).excludedFolders().size;
       for (let i = 0; i < configurableCount; ++i) {
-        if (i !== index && this._excludedFolders[i] === prefix)
+        if (i !== index && this._excludedFolders[i] === prefix) {
           return {valid: false, errorMessage: ls`Enter a unique path`};
+        }
       }
       return {valid: true};
     }
@@ -187,8 +191,9 @@ Persistence.EditFileSystemView = class extends UI.VBox {
    * @return {string}
    */
   _normalizePrefix(prefix) {
-    if (!prefix)
+    if (!prefix) {
       return '';
+    }
     return prefix + (prefix[prefix.length - 1] === '/' ? '' : '/');
   }
 };

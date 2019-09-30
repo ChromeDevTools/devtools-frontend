@@ -131,8 +131,9 @@ SDKTestRunner.PageMock = class {
   reload() {
     this._fireEvent('Page.frameStartedLoading', {frameId: this._mainFrame.id});
 
-    for (const context of this._executionContexts)
+    for (const context of this._executionContexts) {
       this._fireEvent('Runtime.executionContextDestroyed', {executionContextId: context.id});
+    }
 
 
     this._scripts = [];
@@ -141,8 +142,9 @@ SDKTestRunner.PageMock = class {
     this._fireEvent('Runtime.executionContextsCleared', {});
     this._executionContexts.push(this._createExecutionContext(this._mainFrame, false));
 
-    for (const context of this._executionContexts)
+    for (const context of this._executionContexts) {
       this._fireEvent('Runtime.executionContextCreated', {context: context});
+    }
 
 
     this._fireEvent('Page.frameNavigated', {frame: this._mainFrame});
@@ -169,8 +171,9 @@ SDKTestRunner.PageMock = class {
     this._enabledDomains.add('Debugger');
     this._sendResponse(id, {});
 
-    for (const script of this._scripts)
+    for (const script of this._scripts) {
       this._fireEvent('Debugger.scriptParsed', script);
+    }
   }
 
   _debuggerGetScriptSource(id, params) {
@@ -189,8 +192,9 @@ SDKTestRunner.PageMock = class {
     this._enabledDomains.add('Runtime');
     this._sendResponse(id, {});
 
-    for (const context of this._executionContexts)
+    for (const context of this._executionContexts) {
       this._fireEvent('Runtime.executionContextCreated', {context: context});
+    }
   }
 
   _pageEnable(id, params) {
@@ -207,8 +211,9 @@ SDKTestRunner.PageMock = class {
   _isSupportedDomain(methodName) {
     const domain = methodName.split('.')[0];
 
-    if (domain === 'Page')
+    if (domain === 'Page') {
       return this._type === SDK.Target.Type.Frame;
+    }
 
     return true;
   }
@@ -216,15 +221,17 @@ SDKTestRunner.PageMock = class {
   _dispatch(sessionId, id, methodName, params) {
     if (sessionId) {
       const child = this._children.get(sessionId);
-      if (child)
+      if (child) {
         child._dispatch('', id, methodName, params);
+      }
       return;
     }
 
     const handler = (this._isSupportedDomain(methodName) ? this._dispatchMap[methodName] : null);
 
-    if (handler)
+    if (handler) {
       return handler.call(this, id, params);
+    }
 
     this._sendResponse(
         id, undefined, {message: 'Can\'t handle command ' + methodName, code: Protocol.DevToolsStubErrorCode});
@@ -243,8 +250,9 @@ SDKTestRunner.PageMock = class {
   _fireEvent(methodName, params) {
     const domain = methodName.split('.')[0];
 
-    if (!this._enabledDomains.has(domain))
+    if (!this._enabledDomains.has(domain)) {
       return;
+    }
 
     const message = {method: methodName, params: params};
     if (this._root) {

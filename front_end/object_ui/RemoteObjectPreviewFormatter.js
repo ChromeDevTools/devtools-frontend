@@ -20,15 +20,17 @@ ObjectUI.RemoteObjectPreviewFormatter = class {
     function sortValue(property) {
       // TODO(einbinder) expose whether preview properties are actually internal.
       const internalName = ObjectUI.RemoteObjectPreviewFormatter._internalName;
-      if (property.name === internalName.PromiseStatus)
+      if (property.name === internalName.PromiseStatus) {
         return 1;
-      else if (property.name === internalName.PromiseValue)
+      } else if (property.name === internalName.PromiseValue) {
         return 2;
-      else if (property.name === internalName.GeneratorStatus || property.name === internalName.PrimitiveValue)
+      } else if (property.name === internalName.GeneratorStatus || property.name === internalName.PrimitiveValue) {
         return 3;
+      }
       // TODO(einbinder) expose whether preview properties are actually private.
-      else if (property.type !== 'function' && !property.name.startsWith('#'))
+      else if (property.type !== 'function' && !property.name.startsWith('#')) {
         return 4;
+      }
       return 5;
     }
   }
@@ -57,18 +59,20 @@ ObjectUI.RemoteObjectPreviewFormatter = class {
         const hideDescription = description === 'Object';
         text = hideDescription ? '' : description;
       }
-      if (text.length > 0)
+      if (text.length > 0) {
         parentElement.createChild('span', 'object-description').textContent = text + '\xA0';
+      }
     }
 
     const propertiesElement = parentElement.createChild('span', 'object-properties-preview');
     propertiesElement.createTextChild(isArrayOrTypedArray ? '[' : '{');
-    if (preview.entries)
+    if (preview.entries) {
       this._appendEntriesPreview(propertiesElement, preview);
-    else if (isArrayOrTypedArray)
+    } else if (isArrayOrTypedArray) {
       this._appendArrayPropertiesPreview(propertiesElement, preview);
-    else
+    } else {
       this._appendObjectPropertiesPreview(propertiesElement, preview);
+    }
     if (preview.overflow) {
       const ellipsisText = propertiesElement.textContent.length > 1 ? ',\xA0\u2026' : '\u2026';
       propertiesElement.createChild('span').textContent = ellipsisText;
@@ -82,8 +86,9 @@ ObjectUI.RemoteObjectPreviewFormatter = class {
    */
   _abbreviateFullQualifiedClassName(description) {
     const abbreviatedDescription = description.split('.');
-    for (let i = 0; i < abbreviatedDescription.length - 1; ++i)
+    for (let i = 0; i < abbreviatedDescription.length - 1; ++i) {
       abbreviatedDescription[i] = abbreviatedDescription[i].trimMiddle(3);
+    }
     return abbreviatedDescription.join('.');
   }
 
@@ -96,8 +101,9 @@ ObjectUI.RemoteObjectPreviewFormatter = class {
     const properties = preview.properties.filter(p => p.type !== 'accessor')
                            .sort(ObjectUI.RemoteObjectPreviewFormatter._objectPropertyComparator);
     for (let i = 0; i < properties.length; ++i) {
-      if (i > 0)
+      if (i > 0) {
         parentElement.createTextChild(', ');
+      }
 
       const property = properties[i];
       const name = property.name;
@@ -149,8 +155,9 @@ ObjectUI.RemoteObjectPreviewFormatter = class {
      */
     function toArrayIndex(name) {
       const index = name >>> 0;
-      if (String(index) === name && index < arrayLength)
+      if (String(index) === name && index < arrayLength) {
         return index;
+      }
       return -1;
     }
 
@@ -159,8 +166,9 @@ ObjectUI.RemoteObjectPreviewFormatter = class {
     let lastNonEmptyArrayIndex = -1;
     let elementsAdded = false;
     for (let i = 0; i < indexProperties.length; ++i) {
-      if (elementsAdded)
+      if (elementsAdded) {
         parentElement.createTextChild(', ');
+      }
 
       const property = indexProperties[i];
       const index = toArrayIndex(property.name);
@@ -178,14 +186,16 @@ ObjectUI.RemoteObjectPreviewFormatter = class {
     }
 
     if (canShowGaps && arrayLength - lastNonEmptyArrayIndex > 1) {
-      if (elementsAdded)
+      if (elementsAdded) {
         parentElement.createTextChild(', ');
+      }
       appendUndefined(arrayLength);
     }
 
     for (let i = 0; i < otherProperties.length; ++i) {
-      if (elementsAdded)
+      if (elementsAdded) {
         parentElement.createTextChild(', ');
+      }
 
       const property = otherProperties[i];
       parentElement.appendChild(this._renderDisplayName(property.name));
@@ -211,8 +221,9 @@ ObjectUI.RemoteObjectPreviewFormatter = class {
    */
   _appendEntriesPreview(parentElement, preview) {
     for (let i = 0; i < preview.entries.length; ++i) {
-      if (i > 0)
+      if (i > 0) {
         parentElement.createTextChild(', ');
+      }
 
       const entry = preview.entries[i];
       if (entry.key) {
@@ -276,8 +287,9 @@ ObjectUI.RemoteObjectPreviewFormatter = class {
 
     if (type === 'object' && !subtype) {
       let preview = this._abbreviateFullQualifiedClassName(description);
-      if (preview === 'Object')
+      if (preview === 'Object') {
         preview = '{\u2026}';
+      }
       span.textContent = preview;
       span.title = description;
       return span;
@@ -303,8 +315,10 @@ ObjectUI.RemoteObjectPreviewFormatter._internalName = {
 ObjectUI.RemoteObjectPreviewFormatter.createSpansForNodeTitle = function(container, nodeTitle) {
   const match = nodeTitle.match(/([^#.]+)(#[^.]+)?(\..*)?/);
   container.createChild('span', 'webkit-html-tag-name').textContent = match[1];
-  if (match[2])
+  if (match[2]) {
     container.createChild('span', 'webkit-html-attribute-value').textContent = match[2];
-  if (match[3])
+  }
+  if (match[3]) {
     container.createChild('span', 'webkit-html-attribute-name').textContent = match[3];
+  }
 };

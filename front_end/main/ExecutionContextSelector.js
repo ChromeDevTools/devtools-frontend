@@ -40,8 +40,9 @@ Main.ExecutionContextSelector = class {
      */
     function deferred() {
       // We always want the second context for the service worker targets.
-      if (!this._context.flavor(SDK.Target))
+      if (!this._context.flavor(SDK.Target)) {
         this._context.setFlavor(SDK.Target, runtimeModel.target());
+      }
     }
   }
 
@@ -51,12 +52,14 @@ Main.ExecutionContextSelector = class {
    */
   modelRemoved(runtimeModel) {
     const currentExecutionContext = this._context.flavor(SDK.ExecutionContext);
-    if (currentExecutionContext && currentExecutionContext.runtimeModel === runtimeModel)
+    if (currentExecutionContext && currentExecutionContext.runtimeModel === runtimeModel) {
       this._currentExecutionContextGone();
+    }
 
     const models = this._targetManager.models(SDK.RuntimeModel);
-    if (this._context.flavor(SDK.Target) === runtimeModel.target() && models.length)
+    if (this._context.flavor(SDK.Target) === runtimeModel.target() && models.length) {
       this._context.setFlavor(SDK.Target, models[0].target());
+    }
   }
 
   /**
@@ -66,8 +69,9 @@ Main.ExecutionContextSelector = class {
     const newContext = /** @type {?SDK.ExecutionContext} */ (event.data);
     if (newContext) {
       this._context.setFlavor(SDK.Target, newContext.target());
-      if (!this._ignoreContextChanged)
+      if (!this._ignoreContextChanged) {
         this._lastSelectedContextId = this._contextPersistentId(newContext);
+      }
     }
   }
 
@@ -86,22 +90,26 @@ Main.ExecutionContextSelector = class {
     const newTarget = /** @type {?SDK.Target} */ (event.data);
     const currentContext = this._context.flavor(SDK.ExecutionContext);
 
-    if (!newTarget || (currentContext && currentContext.target() === newTarget))
+    if (!newTarget || (currentContext && currentContext.target() === newTarget)) {
       return;
+    }
 
     const runtimeModel = newTarget.model(SDK.RuntimeModel);
     const executionContexts = runtimeModel ? runtimeModel.executionContexts() : [];
-    if (!executionContexts.length)
+    if (!executionContexts.length) {
       return;
+    }
 
     let newContext = null;
     for (let i = 0; i < executionContexts.length && !newContext; ++i) {
-      if (this._shouldSwitchToContext(executionContexts[i]))
+      if (this._shouldSwitchToContext(executionContexts[i])) {
         newContext = executionContexts[i];
+      }
     }
     for (let i = 0; i < executionContexts.length && !newContext; ++i) {
-      if (this._isDefaultContext(executionContexts[i]))
+      if (this._isDefaultContext(executionContexts[i])) {
         newContext = executionContexts[i];
+      }
     }
     this._ignoreContextChanged = true;
     this._context.setFlavor(SDK.ExecutionContext, newContext || executionContexts[0]);
@@ -113,10 +121,12 @@ Main.ExecutionContextSelector = class {
    * @return {boolean}
    */
   _shouldSwitchToContext(executionContext) {
-    if (this._lastSelectedContextId && this._lastSelectedContextId === this._contextPersistentId(executionContext))
+    if (this._lastSelectedContextId && this._lastSelectedContextId === this._contextPersistentId(executionContext)) {
       return true;
-    if (!this._lastSelectedContextId && this._isDefaultContext(executionContext))
+    }
+    if (!this._lastSelectedContextId && this._isDefaultContext(executionContext)) {
       return true;
+    }
     return false;
   }
 
@@ -125,14 +135,17 @@ Main.ExecutionContextSelector = class {
    * @return {boolean}
    */
   _isDefaultContext(executionContext) {
-    if (!executionContext.isDefault || !executionContext.frameId)
+    if (!executionContext.isDefault || !executionContext.frameId) {
       return false;
-    if (executionContext.target().parentTarget())
+    }
+    if (executionContext.target().parentTarget()) {
       return false;
+    }
     const resourceTreeModel = executionContext.target().model(SDK.ResourceTreeModel);
     const frame = resourceTreeModel && resourceTreeModel.frameForId(executionContext.frameId);
-    if (frame && frame.isTopFrame())
+    if (frame && frame.isTopFrame()) {
       return true;
+    }
     return false;
   }
 
@@ -148,8 +161,9 @@ Main.ExecutionContextSelector = class {
    */
   _onExecutionContextDestroyed(event) {
     const executionContext = /** @type {!SDK.ExecutionContext}*/ (event.data);
-    if (this._context.flavor(SDK.ExecutionContext) === executionContext)
+    if (this._context.flavor(SDK.ExecutionContext) === executionContext) {
       this._currentExecutionContextGone();
+    }
   }
 
   /**
@@ -159,8 +173,9 @@ Main.ExecutionContextSelector = class {
     const runtimeModel = /** @type {!SDK.RuntimeModel} */ (event.data);
     const executionContexts = runtimeModel.executionContexts();
     for (let i = 0; i < executionContexts.length; i++) {
-      if (this._switchContextIfNecessary(executionContexts[i]))
+      if (this._switchContextIfNecessary(executionContexts[i])) {
         break;
+      }
     }
   }
 

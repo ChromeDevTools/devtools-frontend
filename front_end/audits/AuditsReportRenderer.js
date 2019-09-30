@@ -11,14 +11,16 @@ Audits.ReportRenderer = class extends ReportRenderer {
    * @param {!ReportRenderer.RunnerResultArtifacts=} artifacts
    */
   static addViewTraceButton(el, artifacts) {
-    if (!artifacts || !artifacts.traces || !artifacts.traces.defaultPass)
+    if (!artifacts || !artifacts.traces || !artifacts.traces.defaultPass) {
       return;
+    }
 
     const container = el.querySelector('.lh-audit-group');
     const columnsEl = container.querySelector('.lh-columns');
     // There will be no columns if just the PWA category.
-    if (!columnsEl)
+    if (!columnsEl) {
       return;
+    }
 
     const defaultPassTrace = artifacts.traces.defaultPass;
     const timelineButton = UI.createTextButton(Common.UIString('View Trace'), onViewTraceClick, 'view-trace');
@@ -41,16 +43,19 @@ Audits.ReportRenderer = class extends ReportRenderer {
     for (const origElement of el.getElementsByClassName('lh-node')) {
       /** @type {!DetailsRenderer.NodeDetailsJSON} */
       const detailsItem = origElement.dataset;
-      if (!detailsItem.path)
+      if (!detailsItem.path) {
         continue;
+      }
 
       const nodeId = await domModel.pushNodeByPathToFrontend(detailsItem.path);
 
-      if (!nodeId)
+      if (!nodeId) {
         continue;
+      }
       const node = domModel.nodeForId(nodeId);
-      if (!node)
+      if (!node) {
         continue;
+      }
 
       const element = await Common.Linkifier.linkify(node, {tooltip: detailsItem.snippet});
       origElement.title = '';
@@ -63,8 +68,9 @@ Audits.ReportRenderer = class extends ReportRenderer {
    * @param {!Element} el
    */
   static handleDarkMode(el) {
-    if (UI.themeSupport.themeName() === 'dark')
+    if (UI.themeSupport.themeName() === 'dark') {
       el.classList.add('dark');
+    }
   }
 };
 
@@ -130,13 +136,15 @@ Audits.ReportUIFeatures = class extends ReportUIFeatures {
     // Linkified nodes are shadow elements, which aren't exposed via `cloneNode`.
     await Audits.ReportRenderer.linkifyNodeDetails(clonedReport);
 
-    if (this._beforePrint)
+    if (this._beforePrint) {
       this._beforePrint();
+    }
     printWindow.focus();
     printWindow.print();
     printWindow.close();
-    if (this._afterPrint)
+    if (this._afterPrint) {
       this._afterPrint();
+    }
   }
 
   /**

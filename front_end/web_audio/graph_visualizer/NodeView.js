@@ -78,8 +78,9 @@ WebAudio.GraphVisualizer.NodeView = class {
   getPortsByType(type) {
     const result = [];
     this.ports.forEach(port => {
-      if (port.type === type)
+      if (port.type === type) {
         result.push(port);
+      }
     });
     return result;
   }
@@ -235,8 +236,9 @@ WebAudio.GraphVisualizer.NodeLabelGenerator = class {
    */
   generateLabel(nodeType) {
     // To make the label concise, remove the suffix "Node" from the nodeType.
-    if (nodeType.endsWith('Node'))
+    if (nodeType.endsWith('Node')) {
       nodeType = nodeType.slice(0, nodeType.length - 4);
+    }
 
     // Also, use an integer to replace the long UUID.
     this._totalNumberOfNodes += 1;
@@ -252,8 +254,9 @@ WebAudio.GraphVisualizer.NodeLabelGenerator = class {
  * @return {number}
  */
 WebAudio.GraphVisualizer.measureTextWidth = (text, fontStyle) => {
-  if (!WebAudio.GraphVisualizer._contextForFontTextMeasuring)
+  if (!WebAudio.GraphVisualizer._contextForFontTextMeasuring) {
     WebAudio.GraphVisualizer._contextForFontTextMeasuring = createElement('canvas').getContext('2d');
+  }
 
   const context = WebAudio.GraphVisualizer._contextForFontTextMeasuring;
   context.save();

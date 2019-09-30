@@ -103,8 +103,9 @@ SDK.CompilerSourceMappingContentProvider = class {
    */
   async searchInContent(query, caseSensitive, isRegex) {
     const content = await this.requestContent();
-    if (typeof content !== 'string')
+    if (typeof content !== 'string') {
       return [];
+    }
     return Common.ContentProvider.performSearchInContent(content, query, caseSensitive, isRegex);
   }
 };

@@ -59,8 +59,9 @@ CssOverview.CSSOverviewModel = class extends SDK.SDKModel {
     const {result} = await this._runtimeAgent.invoke_evaluate({expression, returnByValue: true});
 
     // TODO(paullewis): Handle errors properly.
-    if (result.type !== 'object')
+    if (result.type !== 'object') {
       return;
+    }
 
     return result.value;
   }
@@ -79,15 +80,17 @@ CssOverview.CSSOverviewModel = class extends SDK.SDKModel {
     };
 
     const matches = await this._cssAgent.invoke_getMatchedStylesForNode({nodeId});
-    if (!matches || !matches.matchedCSSRules || !matches.matchedCSSRules.length)
+    if (!matches || !matches.matchedCSSRules || !matches.matchedCSSRules.length) {
       return;
+    }
 
     matches.matchedCSSRules.forEach(cssRule => {
       const {matchingSelectors} = cssRule;
       const {origin, selectorList} = cssRule.rule;
       const isExternalSheet = origin === 'regular';
-      if (!isExternalSheet || !selectorList)
+      if (!isExternalSheet || !selectorList) {
         return;
+      }
 
 
       const selectors = matchingSelectors.map(idx => selectorList.selectors[idx]);
@@ -113,10 +116,11 @@ CssOverview.CSSOverviewModel = class extends SDK.SDKModel {
             } else {
               // Type or non-simple selector.
               const specialChars = /[#\.:\[\]|\+>~]/;
-              if (specialChars.test(selector))
+              if (specialChars.test(selector)) {
                 stats.nonSimple.add(selector);
-              else
+              } else {
                 stats.type.add(selector);
+              }
             }
           }
         }

@@ -23,14 +23,16 @@ Coverage.CoverageDecorationManager = class {
     /** @type {!Multimap<!Common.ContentProvider, !Workspace.UISourceCode>} */
     this._uiSourceCodeByContentProvider = new Multimap();
 
-    for (const uiSourceCode of Workspace.workspace.uiSourceCodes())
+    for (const uiSourceCode of Workspace.workspace.uiSourceCodes()) {
       uiSourceCode.addLineDecoration(0, Coverage.CoverageDecorationManager._decoratorType, this);
+    }
     Workspace.workspace.addEventListener(Workspace.Workspace.Events.UISourceCodeAdded, this._onUISourceCodeAdded, this);
   }
 
   reset() {
-    for (const uiSourceCode of Workspace.workspace.uiSourceCodes())
+    for (const uiSourceCode of Workspace.workspace.uiSourceCodes()) {
       uiSourceCode.removeDecorationsForType(Coverage.CoverageDecorationManager._decoratorType);
+    }
   }
 
   dispose() {
@@ -58,8 +60,9 @@ Coverage.CoverageDecorationManager = class {
   async usageByLine(uiSourceCode) {
     const result = [];
     const content = await uiSourceCode.requestContent();
-    if (!content)
+    if (!content) {
       return [];
+    }
     const sourceText = new TextUtils.Text(/** @type {string} */ (content));
     await this._updateTexts(uiSourceCode, sourceText);
     const lineEndings = sourceText.lineEndings();
@@ -75,25 +78,32 @@ Coverage.CoverageDecorationManager = class {
       for (let startIndex = 0, endIndex = 0; startIndex < startLocations.length; ++startIndex) {
         const start = startLocations[startIndex];
         while (endIndex < endLocations.length &&
-               Coverage.CoverageDecorationManager._compareLocations(start, endLocations[endIndex]) >= 0)
+               Coverage.CoverageDecorationManager._compareLocations(start, endLocations[endIndex]) >= 0) {
           ++endIndex;
-        if (endIndex >= endLocations.length || endLocations[endIndex].id !== start.id)
+        }
+        if (endIndex >= endLocations.length || endLocations[endIndex].id !== start.id) {
           continue;
+        }
         const end = endLocations[endIndex++];
         const text = this._textByProvider.get(end.contentProvider);
-        if (!text)
+        if (!text) {
           continue;
+        }
         const textValue = text.value();
         let startOffset = Math.min(text.offsetFromPosition(start.line, start.column), textValue.length - 1);
         let endOffset = Math.min(text.offsetFromPosition(end.line, end.column), textValue.length - 1);
-        while (startOffset <= endOffset && /\s/.test(textValue[startOffset]))
+        while (startOffset <= endOffset && /\s/.test(textValue[startOffset])) {
           ++startOffset;
-        while (startOffset <= endOffset && /\s/.test(textValue[endOffset]))
+        }
+        while (startOffset <= endOffset && /\s/.test(textValue[endOffset])) {
           --endOffset;
-        if (startOffset <= endOffset)
+        }
+        if (startOffset <= endOffset) {
           used = this._coverageModel.usageForRange(end.contentProvider, startOffset, endOffset);
-        if (used)
+        }
+        if (used) {
           break;
+        }
       }
       result.push(used);
     }
@@ -109,8 +119,9 @@ Coverage.CoverageDecorationManager = class {
     const promises = [];
     for (let line = 0; line < text.lineCount(); ++line) {
       for (const entry of this._rawLocationsForSourceLocation(uiSourceCode, line, 0)) {
-        if (this._textByProvider.has(entry.contentProvider))
+        if (this._textByProvider.has(entry.contentProvider)) {
           continue;
+        }
         this._textByProvider.set(entry.contentProvider, null);
         this._uiSourceCodeByContentProvider.set(entry.contentProvider, uiSourceCode);
         promises.push(this._updateTextForProvider(entry.contentProvider));
@@ -144,8 +155,9 @@ Coverage.CoverageDecorationManager = class {
         const script = location.script();
         if (script.isInlineScript() && contentType.isDocument()) {
           location.lineNumber -= script.lineOffset;
-          if (!location.lineNumber)
+          if (!location.lineNumber) {
             location.columnNumber -= script.columnOffset;
+          }
         }
         result.push({
           id: `js:${location.scriptId}`,
@@ -160,12 +172,14 @@ Coverage.CoverageDecorationManager = class {
           Bindings.cssWorkspaceBinding.uiLocationToRawLocations(new Workspace.UILocation(uiSourceCode, line, column));
       for (const location of rawStyleLocations) {
         const header = location.header();
-        if (!header)
+        if (!header) {
           continue;
+        }
         if (header.isInline && contentType.isDocument()) {
           location.lineNumber -= header.startLine;
-          if (!location.lineNumber)
+          if (!location.lineNumber) {
             location.columnNumber -= header.startColumn;
+          }
         }
         result.push({
           id: `css:${location.styleSheetId}`,
@@ -232,12 +246,14 @@ Coverage.CoverageView.LineDecorator = class {
   _innerDecorate(uiSourceCode, textEditor, lineUsage) {
     const gutterType = Coverage.CoverageView.LineDecorator._gutterType;
     this._uninstallGutter(textEditor);
-    if (lineUsage.length)
+    if (lineUsage.length) {
       this._installGutter(textEditor, uiSourceCode.url());
+    }
     for (let line = 0; line < lineUsage.length; ++line) {
       // Do not decorate the line if we don't have data.
-      if (typeof lineUsage[line] !== 'boolean')
+      if (typeof lineUsage[line] !== 'boolean') {
         continue;
+      }
       const className = lineUsage[line] ? 'text-editor-coverage-used-marker' : 'text-editor-coverage-unused-marker';
       const gutterElement = createElementWithClass('div', className);
       textEditor.setGutterDecoration(line, gutterType, gutterElement);
@@ -251,8 +267,9 @@ Coverage.CoverageView.LineDecorator = class {
   makeGutterClickHandler(url) {
     function handleGutterClick(event) {
       const eventData = /** @type {!SourceFrame.SourcesTextEditor.GutterClickEventData} */ (event.data);
-      if (eventData.gutterType !== Coverage.CoverageView.LineDecorator._gutterType)
+      if (eventData.gutterType !== Coverage.CoverageView.LineDecorator._gutterType) {
         return;
+      }
       const coverageViewId = 'coverage';
       UI.viewManager.showView(coverageViewId).then(() => UI.viewManager.view(coverageViewId).widget()).then(widget => {
         const matchFormattedSuffix = url.match(/(.*):formatted$/);

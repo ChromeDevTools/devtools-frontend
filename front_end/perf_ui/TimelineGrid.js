@@ -65,10 +65,12 @@ PerfUI.TimelineGrid = class {
 
     const logGridSliceTime = Math.ceil(Math.log(gridSliceTime) / Math.LN10);
     gridSliceTime = Math.pow(10, logGridSliceTime);
-    if (gridSliceTime * pixelsPerTime >= 5 * minGridSlicePx)
+    if (gridSliceTime * pixelsPerTime >= 5 * minGridSlicePx) {
       gridSliceTime = gridSliceTime / 5;
-    if (gridSliceTime * pixelsPerTime >= 2 * minGridSlicePx)
+    }
+    if (gridSliceTime * pixelsPerTime >= 2 * minGridSlicePx) {
       gridSliceTime = gridSliceTime / 2;
+    }
 
     const firstDividerTime =
         Math.ceil((calculator.minimumBoundary() - calculator.zeroTime()) / gridSliceTime) * gridSliceTime +
@@ -79,14 +81,16 @@ PerfUI.TimelineGrid = class {
     lastDividerTime += minGridSlicePx / pixelsPerTime;
     dividersCount = Math.ceil((lastDividerTime - firstDividerTime) / gridSliceTime);
 
-    if (!gridSliceTime)
+    if (!gridSliceTime) {
       dividersCount = 0;
+    }
 
     const offsets = [];
     for (let i = 0; i < dividersCount; ++i) {
       const time = firstDividerTime + gridSliceTime * i;
-      if (calculator.computePosition(time) < freeZoneAtLeft)
+      if (calculator.computePosition(time) < freeZoneAtLeft) {
         continue;
+      }
       offsets.push({position: Math.floor(calculator.computePosition(time)), time: time});
     }
 
@@ -141,8 +145,9 @@ PerfUI.TimelineGrid = class {
       const text = formatTimeFunction(offsetInfo.time);
       const textWidth = context.measureText(text).width;
       const textPosition = offsetInfo.position - textWidth - paddingRight;
-      if (!freeZoneAtLeft || freeZoneAtLeft < textPosition)
+      if (!freeZoneAtLeft || freeZoneAtLeft < textPosition) {
         context.fillText(text, textPosition, paddingTop);
+      }
     }
     context.restore();
   }
@@ -229,8 +234,9 @@ PerfUI.TimelineGrid = class {
    */
   addEventDividers(dividers) {
     this._gridHeaderElement.removeChild(this._eventDividersElement);
-    for (const divider of dividers)
+    for (const divider of dividers) {
       this._eventDividersElement.appendChild(divider);
+    }
     this._gridHeaderElement.appendChild(this._eventDividersElement);
   }
 

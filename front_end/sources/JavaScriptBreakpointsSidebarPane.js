@@ -91,8 +91,9 @@ Sources.JavaScriptBreakpointsSidebarPane = class extends UI.ThrottledWidget {
       promises.push(
           this._resetEntry(/** @type {!Element}*/ (entry), uiLocation, isSelected, hasEnabled, hasDisabled, showCoumn));
       entry[Sources.JavaScriptBreakpointsSidebarPane._breakpointLocationsSymbol] = locations;
-      if (isSelected)
+      if (isSelected) {
         shouldShowView = true;
+      }
       entry = entry.nextSibling;
     }
     while (entry) {
@@ -100,8 +101,9 @@ Sources.JavaScriptBreakpointsSidebarPane = class extends UI.ThrottledWidget {
       entry.remove();
       entry = next;
     }
-    if (shouldShowView)
+    if (shouldShowView) {
       UI.viewManager.showView('sources.jsBreakpoints');
+    }
     this._listElement.classList.toggle(
         'breakpoints-list-deactivated', !Common.moduleSetting('breakpointsActive').get());
     return Promise.all(promises).then(() => this._didUpdateForTest());
@@ -144,8 +146,9 @@ Sources.JavaScriptBreakpointsSidebarPane = class extends UI.ThrottledWidget {
    */
   _breakpointLocations(event) {
     const node = event.target.enclosingNodeOrSelfWithClass('breakpoint-entry');
-    if (!node)
+    if (!node) {
       return [];
+    }
     return node[Sources.JavaScriptBreakpointsSidebarPane._breakpointLocationsSymbol] || [];
   }
 
@@ -155,8 +158,9 @@ Sources.JavaScriptBreakpointsSidebarPane = class extends UI.ThrottledWidget {
   _breakpointCheckboxClicked(event) {
     const breakpoints = this._breakpointLocations(event).map(breakpointLocation => breakpointLocation.breakpoint);
     const newState = event.target.checkboxElement.checked;
-    for (const breakpoint of breakpoints)
+    for (const breakpoint of breakpoints) {
       breakpoint.setEnabled(newState);
+    }
     event.consume();
   }
 
@@ -167,11 +171,13 @@ Sources.JavaScriptBreakpointsSidebarPane = class extends UI.ThrottledWidget {
     const uiLocations = this._breakpointLocations(event).map(breakpointLocation => breakpointLocation.uiLocation);
     let uiLocation = null;
     for (const uiLocationCandidate of uiLocations) {
-      if (!uiLocation || uiLocationCandidate.columnNumber < uiLocation.columnNumber)
+      if (!uiLocation || uiLocationCandidate.columnNumber < uiLocation.columnNumber) {
         uiLocation = uiLocationCandidate;
+      }
     }
-    if (uiLocation)
+    if (uiLocation) {
       Common.Revealer.reveal(uiLocation);
+    }
   }
 
   /**
@@ -212,13 +218,15 @@ Sources.JavaScriptBreakpointsSidebarPane = class extends UI.ThrottledWidget {
    * @param {boolean} toggleState
    */
   _toggleAllBreakpoints(toggleState) {
-    for (const breakpointLocation of this._breakpointManager.allBreakpointLocations())
+    for (const breakpointLocation of this._breakpointManager.allBreakpointLocations()) {
       breakpointLocation.breakpoint.setEnabled(toggleState);
+    }
   }
 
   _removeAllBreakpoints() {
-    for (const breakpointLocation of this._breakpointManager.allBreakpointLocations())
+    for (const breakpointLocation of this._breakpointManager.allBreakpointLocations()) {
       breakpointLocation.breakpoint.remove(false /* keepInStorage */);
+    }
   }
 
   /**
@@ -226,8 +234,9 @@ Sources.JavaScriptBreakpointsSidebarPane = class extends UI.ThrottledWidget {
    */
   _removeOtherBreakpoints(selectedBreakpoints) {
     for (const breakpointLocation of this._breakpointManager.allBreakpointLocations()) {
-      if (!selectedBreakpoints.has(breakpointLocation.breakpoint))
+      if (!selectedBreakpoints.has(breakpointLocation.breakpoint)) {
         breakpointLocation.breakpoint.remove(false /* keepInStorage */);
+      }
     }
   }
 

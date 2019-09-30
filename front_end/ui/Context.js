@@ -17,12 +17,14 @@ UI.Context = class {
    */
   setFlavor(flavorType, flavorValue) {
     const value = this._flavors.get(flavorType) || null;
-    if (value === flavorValue)
+    if (value === flavorValue) {
       return;
-    if (flavorValue)
+    }
+    if (flavorValue) {
       this._flavors.set(flavorType, flavorValue);
-    else
+    } else {
       this._flavors.remove(flavorType);
+    }
 
     this._dispatchFlavorChange(flavorType, flavorValue);
   }
@@ -40,8 +42,9 @@ UI.Context = class {
       }
     }
     const dispatcher = this._eventDispatchers.get(flavorType);
-    if (!dispatcher)
+    if (!dispatcher) {
       return;
+    }
     dispatcher.dispatchEventToListeners(UI.Context.Events.FlavorChanged, flavorValue);
   }
 
@@ -66,11 +69,13 @@ UI.Context = class {
    */
   removeFlavorChangeListener(flavorType, listener, thisObject) {
     const dispatcher = this._eventDispatchers.get(flavorType);
-    if (!dispatcher)
+    if (!dispatcher) {
       return;
+    }
     dispatcher.removeEventListener(UI.Context.Events.FlavorChanged, listener, thisObject);
-    if (!dispatcher.hasEventListeners(UI.Context.Events.FlavorChanged))
+    if (!dispatcher.hasEventListeners(UI.Context.Events.FlavorChanged)) {
       this._eventDispatchers.remove(flavorType);
+    }
   }
 
   /**
@@ -98,8 +103,9 @@ UI.Context = class {
 
     const availableFlavors = this.flavors();
     extensions.forEach(function(extension) {
-      if (self.runtime.isExtensionApplicableToContextTypes(extension, availableFlavors))
+      if (self.runtime.isExtensionApplicableToContextTypes(extension, availableFlavors)) {
         targetExtensionSet.add(extension);
+      }
     });
 
     return targetExtensionSet;

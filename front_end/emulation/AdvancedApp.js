@@ -15,8 +15,9 @@ Emulation.AdvancedApp = class {
    * @return {!Emulation.AdvancedApp}
    */
   static _instance() {
-    if (!Emulation.AdvancedApp._appInstance)
+    if (!Emulation.AdvancedApp._appInstance) {
       Emulation.AdvancedApp._appInstance = new Emulation.AdvancedApp();
+    }
     return Emulation.AdvancedApp._appInstance;
   }
 
@@ -56,11 +57,13 @@ Emulation.AdvancedApp = class {
    * @param {!Common.Event} event
    */
   _openToolboxWindow(event) {
-    if (/** @type {string} */ (event.data.to) !== Components.DockController.State.Undocked)
+    if (/** @type {string} */ (event.data.to) !== Components.DockController.State.Undocked) {
       return;
+    }
 
-    if (this._toolboxWindow)
+    if (this._toolboxWindow) {
       return;
+    }
 
     const url = window.location.href.replace('devtools_app.html', 'toolbox.html');
     this._toolboxWindow = window.open(url, undefined);
@@ -82,10 +85,11 @@ Emulation.AdvancedApp = class {
   }
 
   _updateDeviceModeView() {
-    if (this._isDocked())
+    if (this._isDocked()) {
       this._rootSplitWidget.setMainWidget(this._deviceModeView);
-    else if (this._toolboxRootView)
+    } else if (this._toolboxRootView) {
       this._deviceModeView.show(this._toolboxRootView.element);
+    }
   }
 
   /**
@@ -125,8 +129,9 @@ Emulation.AdvancedApp = class {
    */
   _onAfterDockSideChange(event) {
     // We may get here on the first dock side change while loading without BeforeDockSideChange.
-    if (!this._changingDockSide)
+    if (!this._changingDockSide) {
       return;
+    }
     if (/** @type {string} */ (event.data.from) === Components.DockController.State.Undocked) {
       // Restore docked layout in case of smooth transition.
       this._updateForDocked(/** @type {string} */ (event.data.to));
@@ -169,13 +174,16 @@ Emulation.AdvancedApp = class {
    * @param {!Common.Event} event
    */
   _onSetInspectedPageBounds(event) {
-    if (this._changingDockSide)
+    if (this._changingDockSide) {
       return;
+    }
     const window = this._inspectedPagePlaceholder.element.window();
-    if (!window.innerWidth || !window.innerHeight)
+    if (!window.innerWidth || !window.innerHeight) {
       return;
-    if (!this._inspectedPagePlaceholder.isShowing())
+    }
+    if (!this._inspectedPagePlaceholder.isShowing()) {
       return;
+    }
     const bounds = /** @type {{x: number, y: number, width: number, height: number}} */ (event.data);
     console.timeStamp('AdvancedApp.setInspectedPageBounds');
     InspectorFrontendHost.setInspectedPageBounds(bounds);

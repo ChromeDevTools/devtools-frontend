@@ -13,8 +13,9 @@ PerfUI.LiveHeapProfile = class {
     this._loadEventCallback = () => {};
     this._setting = Common.settings.moduleSetting('memoryLiveHeapProfile');
     this._setting.addChangeListener(event => event.data ? this._startProfiling() : this._stopProfiling());
-    if (this._setting.get())
+    if (this._setting.get()) {
       this._startProfiling();
+    }
   }
 
   /**
@@ -40,8 +41,9 @@ PerfUI.LiveHeapProfile = class {
   }
 
   async _startProfiling() {
-    if (this._running)
+    if (this._running) {
       return;
+    }
     this._running = true;
     const sessionId = this._sessionId;
     SDK.targetManager.observeModels(SDK.HeapProfilerModel, this);
@@ -51,13 +53,15 @@ PerfUI.LiveHeapProfile = class {
     do {
       const models = SDK.targetManager.models(SDK.HeapProfilerModel);
       const profiles = await Promise.all(models.map(model => model.getSamplingProfile()));
-      if (sessionId !== this._sessionId)
+      if (sessionId !== this._sessionId) {
         break;
+      }
       const lineLevelProfile = self.runtime.sharedInstance(PerfUI.LineLevelProfile.Memory);
       lineLevelProfile.reset();
       for (let i = 0; i < profiles.length; ++i) {
-        if (profiles[i])
+        if (profiles[i]) {
           lineLevelProfile.appendHeapProfile(profiles[i], models[i].target());
+        }
       }
       await Promise.race([
         new Promise(r => setTimeout(r, Host.isUnderTest() ? 10 : 5000)), new Promise(r => this._loadEventCallback = r)
@@ -67,14 +71,16 @@ PerfUI.LiveHeapProfile = class {
     SDK.targetManager.unobserveModels(SDK.HeapProfilerModel, this);
     SDK.targetManager.removeModelListener(
         SDK.ResourceTreeModel, SDK.ResourceTreeModel.Events.Load, this._loadEventFired, this);
-    for (const model of SDK.targetManager.models(SDK.HeapProfilerModel))
+    for (const model of SDK.targetManager.models(SDK.HeapProfilerModel)) {
       model.stopSampling();
+    }
     self.runtime.sharedInstance(PerfUI.LineLevelProfile.Memory).reset();
   }
 
   _stopProfiling() {
-    if (!this._running)
+    if (!this._running) {
       return;
+    }
     this._running = 0;
     this._sessionId++;
   }

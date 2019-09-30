@@ -57,8 +57,9 @@ InlineEditor.ColorSwatch = class extends HTMLSpanElement {
 
       case cf.HSL:
       case cf.HSLA:
-        if (color.nickname())
+        if (color.nickname()) {
           return cf.Nickname;
+        }
         return color.detectHEXFormat();
 
       case cf.ShortHEX:
@@ -148,8 +149,9 @@ InlineEditor.ColorSwatch = class extends HTMLSpanElement {
    * @param {!Event} event
    */
   _handleClick(event) {
-    if (!event.shiftKey)
+    if (!event.shiftKey) {
       return;
+    }
     event.target.parentNode.parentNode.host.toggleNextFormat();
     event.consume(true);
   }
@@ -253,8 +255,9 @@ InlineEditor.CSSShadowSwatch = class extends HTMLSpanElement {
     for (let i = 0; i < results.length; i++) {
       const result = results[i];
       if (result.regexIndex === 1) {
-        if (!this._colorSwatch)
+        if (!this._colorSwatch) {
           this._colorSwatch = InlineEditor.ColorSwatch.create();
+        }
         this._colorSwatch.setColor(model.color());
         this._contentElement.appendChild(this._colorSwatch);
       } else {

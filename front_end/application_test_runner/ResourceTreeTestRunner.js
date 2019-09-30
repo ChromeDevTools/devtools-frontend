@@ -11,10 +11,11 @@ ApplicationTestRunner.dumpResources = function(formatter) {
   const results = [];
 
   function formatterWrapper(resource) {
-    if (formatter)
+    if (formatter) {
       results.push({resource: resource, text: formatter(resource)});
-    else
+    } else {
       results.push({resource: resource, text: resource.url});
+    }
   }
 
   TestRunner.resourceTreeModel.forAllResources(formatterWrapper);
@@ -25,8 +26,9 @@ ApplicationTestRunner.dumpResources = function(formatter) {
 
   results.sort(comparator);
 
-  for (let i = 0; i < results.length; ++i)
+  for (let i = 0; i < results.length; ++i) {
     TestRunner.addResult(results[i].text);
+  }
 };
 
 ApplicationTestRunner.dumpResourcesURLMap = function() {
@@ -38,32 +40,37 @@ ApplicationTestRunner.dumpResourcesURLMap = function() {
   }
 
   function comparator(result1, result2) {
-    if (result1.url > result2.url)
+    if (result1.url > result2.url) {
       return 1;
+    }
 
-    if (result2.url > result1.url)
+    if (result2.url > result1.url) {
       return -1;
+    }
 
     return 0;
   }
 
   results.sort(comparator);
 
-  for (let i = 0; i < results.length; ++i)
+  for (let i = 0; i < results.length; ++i) {
     TestRunner.addResult(results[i].url + ' == ' + results[i].resource.url);
+  }
 };
 
 ApplicationTestRunner.dumpResourcesTree = function() {
   function dump(treeItem, prefix) {
-    if (typeof treeItem._resetBubble === 'function')
+    if (typeof treeItem._resetBubble === 'function') {
       treeItem._resetBubble();
+    }
 
     TestRunner.addResult(prefix + treeItem.listItemElement.textContent);
     treeItem.expand();
     const children = treeItem.children();
 
-    for (let i = 0; children && i < children.length; ++i)
+    for (let i = 0; children && i < children.length; ++i) {
       dump(children[i], prefix + '    ');
+    }
   }
 
   dump(UI.panels.resources._sidebar._resourcesSection._treeElement, '');

@@ -69,6 +69,7 @@ def js_lint(files_list=None):
         to_platform_path_exact(eslintconfig_path),
         "--ignore-path",
         to_platform_path_exact(eslintignore_path),
+        "--fix",
     ] + files_list
 
     eslint_proc = popen(exec_command, cwd=devtools_path)

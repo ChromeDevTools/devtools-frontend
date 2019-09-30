@@ -15,8 +15,9 @@ Animation.AnimationUI = class {
     this._timeline = timeline;
     this._parentElement = parentElement;
 
-    if (this._animation.source().keyframesRule())
+    if (this._animation.source().keyframesRule()) {
       this._keyframes = this._animation.source().keyframesRule().keyframes();
+    }
 
     this._nameElement = parentElement.createChild('div', 'animation-name');
     this._nameElement.textContent = this._animation.name();
@@ -81,8 +82,9 @@ Animation.AnimationUI = class {
    */
   _drawAnimationLine(iteration, parentElement) {
     const cache = this._cachedElements[iteration];
-    if (!cache.animationLine)
+    if (!cache.animationLine) {
       cache.animationLine = this._createLine(parentElement, 'animation-line');
+    }
     cache.animationLine.setAttribute(
         'x2',
         (this._duration() * this._timeline.pixelMsRatio() + Animation.AnimationUI.Options.AnimationMargin).toFixed(2));
@@ -133,21 +135,24 @@ Animation.AnimationUI = class {
     circle.style.stroke = this._color;
     circle.setAttribute('r', Animation.AnimationUI.Options.AnimationMargin / 2);
 
-    if (keyframeIndex <= 0)
+    if (keyframeIndex <= 0) {
       circle.style.fill = this._color;
+    }
 
     this._cachedElements[iteration].keyframePoints[keyframeIndex] = circle;
 
-    if (!attachEvents)
+    if (!attachEvents) {
       return;
+    }
 
     let eventType;
-    if (keyframeIndex === 0)
+    if (keyframeIndex === 0) {
       eventType = Animation.AnimationUI.MouseEvents.StartEndpointMove;
-    else if (keyframeIndex === -1)
+    } else if (keyframeIndex === -1) {
       eventType = Animation.AnimationUI.MouseEvents.FinishEndpointMove;
-    else
+    } else {
       eventType = Animation.AnimationUI.MouseEvents.KeyframeMove;
+    }
     UI.installDragHandle(
         circle, this._mouseDown.bind(this, eventType, keyframeIndex), this._mouseMove.bind(this),
         this._mouseUp.bind(this), 'ew-resize');
@@ -198,8 +203,9 @@ Animation.AnimationUI = class {
       group.removeChildren();
       /** @const */ const offsetMap = {'start': 0, 'middle': 0.5, 'end': 1};
       /** @const */ const offsetWeight = offsetMap[stepFunction.stepAtPosition];
-      for (let i = 0; i < stepFunction.steps; i++)
+      for (let i = 0; i < stepFunction.steps; i++) {
         createStepLine(group, (i + offsetWeight) * width / stepFunction.steps, this._color);
+      }
     }
   }
 
@@ -222,21 +228,25 @@ Animation.AnimationUI = class {
     }
 
     this._renderIteration(this._activeIntervalGroup, 0);
-    if (!this._tailGroup)
+    if (!this._tailGroup) {
       this._tailGroup = this._activeIntervalGroup.createSVGChild('g', 'animation-tail-iterations');
+    }
     const iterationWidth = this._duration() * this._timeline.pixelMsRatio();
     let iteration;
     for (iteration = 1;
          iteration < this._animation.source().iterations() && iterationWidth * (iteration - 1) < this._timeline.width();
-         iteration++)
+         iteration++) {
       this._renderIteration(this._tailGroup, iteration);
-    while (iteration < this._cachedElements.length)
+    }
+    while (iteration < this._cachedElements.length) {
       this._cachedElements.pop().group.remove();
+    }
   }
 
   _renderTransition() {
-    if (!this._cachedElements[0])
+    if (!this._cachedElements[0]) {
       this._cachedElements[0] = {animationLine: null, keyframePoints: {}, keyframeRender: {}, group: null};
+    }
     this._drawAnimationLine(0, this._activeIntervalGroup);
     this._renderKeyframe(
         0, 0, this._activeIntervalGroup, Animation.AnimationUI.Options.AnimationMargin,
@@ -266,8 +276,9 @@ Animation.AnimationUI = class {
           Animation.AnimationUI.Options.AnimationMargin;
       const width = this._duration() * (this._offset(i + 1) - this._offset(i)) * this._timeline.pixelMsRatio();
       this._renderKeyframe(iteration, i, group, leftDistance, width, this._keyframes[i].easing());
-      if (i || (!i && iteration === 0))
+      if (i || (!i && iteration === 0)) {
         this._drawPoint(iteration, group, leftDistance, i, iteration === 0);
+      }
     }
     this._drawPoint(
         iteration, group,
@@ -281,8 +292,9 @@ Animation.AnimationUI = class {
   _delay() {
     let delay = this._animation.source().delay();
     if (this._mouseEventType === Animation.AnimationUI.MouseEvents.AnimationDrag ||
-        this._mouseEventType === Animation.AnimationUI.MouseEvents.StartEndpointMove)
+        this._mouseEventType === Animation.AnimationUI.MouseEvents.StartEndpointMove) {
       delay += this._movementInMs;
+    }
     // FIXME: add support for negative start delay
     return Math.max(0, delay);
   }
@@ -292,10 +304,11 @@ Animation.AnimationUI = class {
    */
   _duration() {
     let duration = this._animation.source().duration();
-    if (this._mouseEventType === Animation.AnimationUI.MouseEvents.FinishEndpointMove)
+    if (this._mouseEventType === Animation.AnimationUI.MouseEvents.FinishEndpointMove) {
       duration += this._movementInMs;
-    else if (this._mouseEventType === Animation.AnimationUI.MouseEvents.StartEndpointMove)
-      duration -= Math.max(this._movementInMs, -this._animation.source().delay());  // Cannot have negative delay
+    } else if (this._mouseEventType === Animation.AnimationUI.MouseEvents.StartEndpointMove) {
+      duration -= Math.max(this._movementInMs, -this._animation.source().delay());
+    }  // Cannot have negative delay
     return Math.max(0, duration);
   }
 
@@ -320,16 +333,19 @@ Animation.AnimationUI = class {
    * @param {!Event} event
    */
   _mouseDown(mouseEventType, keyframeIndex, event) {
-    if (event.buttons === 2)
+    if (event.buttons === 2) {
       return false;
-    if (this._svg.enclosingNodeOrSelfWithClass('animation-node-removed'))
+    }
+    if (this._svg.enclosingNodeOrSelfWithClass('animation-node-removed')) {
       return false;
+    }
     this._mouseEventType = mouseEventType;
     this._keyframeMoved = keyframeIndex;
     this._downMouseX = event.clientX;
     event.consume(true);
-    if (this._node)
+    if (this._node) {
       Common.Revealer.reveal(this._node);
+    }
     return true;
   }
 
@@ -338,8 +354,9 @@ Animation.AnimationUI = class {
    */
   _mouseMove(event) {
     this._movementInMs = (event.clientX - this._downMouseX) / this._timeline.pixelMsRatio();
-    if (this._delay() + this._duration() > this._timeline.duration() * 0.8)
+    if (this._delay() + this._duration() > this._timeline.duration() * 0.8) {
       this._timeline.setDuration(this._timeline.duration() * 1.2);
+    }
     this.redraw();
   }
 
@@ -350,10 +367,11 @@ Animation.AnimationUI = class {
     this._movementInMs = (event.clientX - this._downMouseX) / this._timeline.pixelMsRatio();
 
     // Commit changes
-    if (this._mouseEventType === Animation.AnimationUI.MouseEvents.KeyframeMove)
+    if (this._mouseEventType === Animation.AnimationUI.MouseEvents.KeyframeMove) {
       this._keyframes[this._keyframeMoved].setOffset(this._offset(this._keyframeMoved));
-    else
+    } else {
       this._animation.setTiming(this._duration(), this._delay());
+    }
 
     this._movementInMs = 0;
     this.redraw();
@@ -371,8 +389,9 @@ Animation.AnimationUI = class {
      * @param {?SDK.RemoteObject} remoteObject
      */
     function showContextMenu(remoteObject) {
-      if (!remoteObject)
+      if (!remoteObject) {
         return;
+      }
       const contextMenu = new UI.ContextMenu(event);
       contextMenu.appendApplicableItems(remoteObject);
       contextMenu.show();

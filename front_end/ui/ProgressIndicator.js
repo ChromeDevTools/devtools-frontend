@@ -58,8 +58,9 @@ UI.ProgressIndicator = class {
    * @override
    */
   done() {
-    if (this._isDone)
+    if (this._isDone) {
       return;
+    }
     this._isDone = true;
     this.element.remove();
   }
@@ -100,8 +101,9 @@ UI.ProgressIndicator = class {
   setWorked(worked, title) {
     this._worked = worked;
     this._progressElement.value = worked;
-    if (title)
+    if (title) {
       this.setTitle(title);
+    }
   }
 
   /**

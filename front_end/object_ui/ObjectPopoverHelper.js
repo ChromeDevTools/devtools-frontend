@@ -39,10 +39,12 @@ ObjectUI.ObjectPopoverHelper = class {
   }
 
   dispose() {
-    if (this._resultHighlightedAsDOM)
+    if (this._resultHighlightedAsDOM) {
       SDK.OverlayModel.hideDOMNodeHighlight();
-    if (this._linkifier)
+    }
+    if (this._linkifier) {
       this._linkifier.dispose();
+    }
   }
 
   /**
@@ -89,10 +91,11 @@ ObjectUI.ObjectPopoverHelper = class {
     const valueElement = popoverContentElement.createChild('span', 'monospace object-value-' + result.type);
     valueElement.style.whiteSpace = 'pre';
 
-    if (result.type === 'string')
+    if (result.type === 'string') {
       valueElement.createTextChildren(`"${description}"`);
-    else if (result.type !== 'function')
+    } else if (result.type !== 'function') {
       valueElement.textContent = description;
+    }
 
     if (result.type !== 'function') {
       popover.contentElement.appendChild(popoverContentElement);
@@ -101,8 +104,9 @@ ObjectUI.ObjectPopoverHelper = class {
 
     ObjectUI.ObjectPropertiesSection.formatObjectAsFunction(result, valueElement, true);
     const response = await result.debuggerModel().functionDetailsPromise(result);
-    if (!response)
+    if (!response) {
       return null;
+    }
 
     const container = createElementWithClass('div', 'object-popover-container');
     const title = container.createChild('div', 'function-popover-title source-code');

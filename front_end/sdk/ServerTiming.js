@@ -22,8 +22,9 @@ SDK.ServerTiming = class {
    */
   static parseHeaders(headers) {
     const rawServerTimingHeaders = headers.filter(item => item.name.toLowerCase() === 'server-timing');
-    if (!rawServerTimingHeaders.length)
+    if (!rawServerTimingHeaders.length) {
       return null;
+    }
 
     const serverTimings = rawServerTimingHeaders.reduce((memo, header) => {
       const timing = this.createFromHeaderValue(header.value);
@@ -48,8 +49,9 @@ SDK.ServerTiming = class {
     function consumeDelimiter(char) {
       console.assert(char.length === 1);
       trimLeadingWhiteSpace();
-      if (valueString.charAt(0) !== char)
+      if (valueString.charAt(0) !== char) {
         return false;
+      }
 
       valueString = valueString.substring(1);
       return true;
@@ -57,16 +59,18 @@ SDK.ServerTiming = class {
     function consumeToken() {
       // https://tools.ietf.org/html/rfc7230#appendix-B
       const result = /^(?:\s*)([\w!#$%&'*+\-.^`|~]+)(?:\s*)(.*)/.exec(valueString);
-      if (!result)
+      if (!result) {
         return null;
+      }
 
       valueString = result[2];
       return result[1];
     }
     function consumeTokenOrQuotedString() {
       trimLeadingWhiteSpace();
-      if (valueString.charAt(0) === '"')
+      if (valueString.charAt(0) === '"') {
         return consumeQuotedString();
+      }
 
       return consumeToken();
     }
@@ -97,8 +101,9 @@ SDK.ServerTiming = class {
     }
     function consumeExtraneous() {
       const result = /([,;].*)/.exec(valueString);
-      if (result)
+      if (result) {
         valueString = result[1];
+      }
     }
 
     const result = [];
@@ -106,13 +111,15 @@ SDK.ServerTiming = class {
     while ((name = consumeToken()) !== null) {
       const entry = {name};
 
-      if (valueString.charAt(0) === '=')
+      if (valueString.charAt(0) === '=') {
         this.showWarning(ls`Deprecated syntax found. Please use: <name>;dur=<duration>;desc=<description>`);
+      }
 
       while (consumeDelimiter(';')) {
         let paramName;
-        if ((paramName = consumeToken()) === null)
+        if ((paramName = consumeToken()) === null) {
           continue;
+        }
 
         paramName = paramName.toLowerCase();
         const parseParameter = this.getParserForParameter(paramName);
@@ -130,8 +137,9 @@ SDK.ServerTiming = class {
             continue;
           }
 
-          if (paramValue === null)
+          if (paramValue === null) {
             this.showWarning(ls`No value found for parameter \"${paramName}\".`);
+          }
 
           parseParameter.call(this, entry, paramValue);
         } else {
@@ -141,12 +149,14 @@ SDK.ServerTiming = class {
       }
 
       result.push(entry);
-      if (!consumeDelimiter(','))
+      if (!consumeDelimiter(',')) {
         break;
+      }
     }
 
-    if (valueString.length)
+    if (valueString.length) {
       this.showWarning(ls`Extraneous trailing characters.`);
+    }
     return result;
   }
 

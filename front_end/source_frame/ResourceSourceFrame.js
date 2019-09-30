@@ -39,8 +39,9 @@ SourceFrame.ResourceSourceFrame = class extends SourceFrame.SourceFrame {
   constructor(resource, autoPrettyPrint, codeMirrorOptions) {
     super(async () => {
       let content = await resource.requestContent();
-      if (await resource.contentEncoded())
+      if (await resource.contentEncoded()) {
         content = window.atob(content);
+      }
       return content;
     }, codeMirrorOptions);
     this._resource = resource;
@@ -95,8 +96,9 @@ SourceFrame.ResourceSourceFrame.SearchableContainer = class extends UI.VBox {
     searchableView.show(this.contentElement);
 
     const toolbar = new UI.Toolbar('toolbar', this.contentElement);
-    for (const item of sourceFrame.syncToolbarItems())
+    for (const item of sourceFrame.syncToolbarItems()) {
       toolbar.appendToolbarItem(item);
+    }
   }
 
   /**

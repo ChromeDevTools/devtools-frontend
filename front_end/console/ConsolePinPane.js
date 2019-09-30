@@ -13,16 +13,18 @@ Console.ConsolePinPane = class extends UI.ThrottledWidget {
     /** @type {!Set<!Console.ConsolePin>} */
     this._pins = new Set();
     this._pinsSetting = Common.settings.createLocalSetting('consolePins', []);
-    for (const expression of this._pinsSetting.get())
+    for (const expression of this._pinsSetting.get()) {
       this.addPin(expression);
+    }
   }
 
   /**
    * @override
    */
   willHide() {
-    for (const pin of this._pins)
+    for (const pin of this._pins) {
       pin.setHovered(false);
+    }
   }
 
   _savePins() {
@@ -50,8 +52,9 @@ Console.ConsolePinPane = class extends UI.ThrottledWidget {
   }
 
   _removeAllPins() {
-    for (const pin of this._pins)
+    for (const pin of this._pins) {
       this._removePin(pin);
+    }
   }
 
   /**
@@ -72,8 +75,9 @@ Console.ConsolePinPane = class extends UI.ThrottledWidget {
     this.contentElement.appendChild(pin.element());
     this._pins.add(pin);
     this._savePins();
-    if (userGesture)
+    if (userGesture) {
       pin.focus();
+    }
     this.update();
   }
 
@@ -81,10 +85,12 @@ Console.ConsolePinPane = class extends UI.ThrottledWidget {
    * @override
    */
   doUpdate() {
-    if (!this._pins.size || !this.isShowing())
+    if (!this._pins.size || !this.isShowing()) {
       return Promise.resolve();
-    if (this.isShowing())
+    }
+    if (this.isShowing()) {
       this.update();
+    }
     const updatePromises = Array.from(this._pins, pin => pin.updatePreview());
     return Promise.all(updatePromises).then(this._updatedForTest.bind(this));
   }
@@ -157,14 +163,16 @@ Console.ConsolePin = class extends Common.Object {
           event.consume();
           return;
         }
-        if (event.keyCode === UI.KeyboardShortcut.Keys.Esc.code)
+        if (event.keyCode === UI.KeyboardShortcut.Keys.Esc.code) {
           this._editor.setText(this._committedExpression);
+        }
       }, true);
       this._editor.widget().element.addEventListener('focusout', event => {
         const text = this._editor.text();
         const trimmedText = text.trim();
-        if (text.length !== trimmedText.length)
+        if (text.length !== trimmedText.length) {
           this._editor.setText(trimmedText);
+        }
         this._committedExpression = trimmedText;
         pinPane._savePins();
         this._editor.setSelection(TextUtils.TextRange.createFromLocation(Infinity, Infinity));
@@ -176,11 +184,13 @@ Console.ConsolePin = class extends Common.Object {
    * @param {boolean} hovered
    */
   setHovered(hovered) {
-    if (this._hovered === hovered)
+    if (this._hovered === hovered) {
       return;
+    }
     this._hovered = hovered;
-    if (!hovered && this._lastNode)
+    if (!hovered && this._lastNode) {
       SDK.OverlayModel.hideDOMNodeHighlight();
+    }
   }
 
   /**
@@ -218,8 +228,9 @@ Console.ConsolePin = class extends Common.Object {
    * @return {!Promise}
    */
   async updatePreview() {
-    if (!this._editor)
+    if (!this._editor) {
       return;
+    }
     const text = this._editor.textWithCurrentSuggestion().trim();
     const isEditing = this._pinElement.hasFocus();
     const throwOnSideEffect = isEditing && text !== this._committedExpression;
@@ -227,8 +238,9 @@ Console.ConsolePin = class extends Common.Object {
     const executionContext = UI.context.flavor(SDK.ExecutionContext);
     const {preview, result} = await ObjectUI.JavaScriptREPL.evaluateAndBuildPreview(
         text, throwOnSideEffect, timeout, !isEditing /* allowErrors */, 'console');
-    if (this._lastResult && this._lastExecutionContext)
+    if (this._lastResult && this._lastExecutionContext) {
       this._lastExecutionContext.runtimeModel.releaseEvaluationResult(this._lastResult);
+    }
     this._lastResult = result || null;
     this._lastExecutionContext = executionContext || null;
 
@@ -248,13 +260,15 @@ Console.ConsolePin = class extends Common.Object {
     }
 
     let node = null;
-    if (result && result.object && result.object.type === 'object' && result.object.subtype === 'node')
+    if (result && result.object && result.object.type === 'object' && result.object.subtype === 'node') {
       node = result.object;
+    }
     if (this._hovered) {
-      if (node)
+      if (node) {
         SDK.OverlayModel.highlightObjectAsDOMNode(node);
-      else if (this._lastNode)
+      } else if (this._lastNode) {
         SDK.OverlayModel.hideDOMNodeHighlight();
+      }
     }
     this._lastNode = node || null;
 

@@ -24,8 +24,9 @@ Elements.ElementsTreeElementHighlighter = class {
    * @param {!Common.Event} event
    */
   _highlightNode(event) {
-    if (!Common.moduleSetting('highlightNodeOnHoverInOverlay').get())
+    if (!Common.moduleSetting('highlightNodeOnHoverInOverlay').get()) {
       return;
+    }
 
     const domNode = /** @type {!SDK.DOMNode} */ (event.data);
 
@@ -53,8 +54,9 @@ Elements.ElementsTreeElementHighlighter = class {
     if (this._currentHighlightedElement) {
       let currentTreeElement = this._currentHighlightedElement;
       while (currentTreeElement !== this._alreadyExpandedParentElement) {
-        if (currentTreeElement.expanded)
+        if (currentTreeElement.expanded) {
           currentTreeElement.collapse();
+        }
 
         currentTreeElement = currentTreeElement.parent;
       }
@@ -66,8 +68,9 @@ Elements.ElementsTreeElementHighlighter = class {
       let deepestExpandedParent = node;
       const treeElementSymbol = this._treeOutline.treeElementSymbol();
       while (deepestExpandedParent &&
-             (!deepestExpandedParent[treeElementSymbol] || !deepestExpandedParent[treeElementSymbol].expanded))
+             (!deepestExpandedParent[treeElementSymbol] || !deepestExpandedParent[treeElementSymbol].expanded)) {
         deepestExpandedParent = deepestExpandedParent.parentNode;
+      }
 
       this._alreadyExpandedParentElement =
           deepestExpandedParent ? deepestExpandedParent[treeElementSymbol] : this._treeOutline.rootElement();
@@ -76,15 +79,17 @@ Elements.ElementsTreeElementHighlighter = class {
 
     this._currentHighlightedElement = treeElement;
     this._treeOutline.setHoverEffect(treeElement);
-    if (treeElement)
+    if (treeElement) {
       treeElement.reveal(true);
+    }
 
     this._isModifyingTreeOutline = false;
   }
 
   _clearState() {
-    if (this._isModifyingTreeOutline)
+    if (this._isModifyingTreeOutline) {
       return;
+    }
 
     delete this._currentHighlightedElement;
     delete this._alreadyExpandedParentElement;

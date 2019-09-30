@@ -47,16 +47,18 @@ UI.Infobar = class {
    * @return {?UI.Infobar}
    */
   static create(type, text, disableSetting) {
-    if (disableSetting && disableSetting.get())
+    if (disableSetting && disableSetting.get()) {
       return null;
+    }
     return new UI.Infobar(type, text, disableSetting);
   }
 
   dispose() {
     this.element.remove();
     this._onResize();
-    if (this._closeCallback)
+    if (this._closeCallback) {
       this._closeCallback.call(null);
+    }
   }
 
   /**
@@ -82,8 +84,9 @@ UI.Infobar = class {
   }
 
   _onResize() {
-    if (this._parentView)
+    if (this._parentView) {
       this._parentView.doResize();
+    }
   }
 
   _onDisable() {

@@ -55,8 +55,9 @@ Components.Linkifier = class {
     console.assert(!Components.Linkifier._decorator, 'Cannot re-register link decorator.');
     Components.Linkifier._decorator = decorator;
     decorator.addEventListener(Components.LinkDecorator.Events.LinkIconChanged, onLinkIconChanged);
-    for (const linkifier of Components.Linkifier._instances)
+    for (const linkifier of Components.Linkifier._instances) {
       linkifier._updateAllAnchorDecorations();
+    }
 
     /**
      * @param {!Common.Event} event
@@ -64,15 +65,17 @@ Components.Linkifier = class {
     function onLinkIconChanged(event) {
       const uiSourceCode = /** @type {!Workspace.UISourceCode} */ (event.data);
       const links = uiSourceCode[Components.Linkifier._sourceCodeAnchors] || [];
-      for (const link of links)
+      for (const link of links) {
         Components.Linkifier._updateLinkDecorations(link);
+      }
     }
   }
 
   _updateAllAnchorDecorations() {
     for (const anchors of this._anchorsByTarget.values()) {
-      for (const anchor of anchors)
+      for (const anchor of anchors) {
         Components.Linkifier._updateLinkDecorations(anchor);
+      }
     }
   }
 
@@ -82,8 +85,9 @@ Components.Linkifier = class {
    */
   static _bindUILocation(anchor, uiLocation) {
     Components.Linkifier._linkInfo(anchor).uiLocation = uiLocation;
-    if (!uiLocation)
+    if (!uiLocation) {
       return;
+    }
     const uiSourceCode = uiLocation.uiSourceCode;
     let sourceCodeAnchors = uiSourceCode[Components.Linkifier._sourceCodeAnchors];
     if (!sourceCodeAnchors) {
@@ -98,14 +102,16 @@ Components.Linkifier = class {
    */
   static _unbindUILocation(anchor) {
     const info = Components.Linkifier._linkInfo(anchor);
-    if (!info.uiLocation)
+    if (!info.uiLocation) {
       return;
+    }
 
     const uiSourceCode = info.uiLocation.uiSourceCode;
     info.uiLocation = null;
     const sourceCodeAnchors = uiSourceCode[Components.Linkifier._sourceCodeAnchors];
-    if (sourceCodeAnchors)
+    if (sourceCodeAnchors) {
       sourceCodeAnchors.delete(anchor);
+    }
   }
 
   /**
@@ -155,17 +161,20 @@ Components.Linkifier = class {
           sourceURL,
           {className: classes, lineNumber: lineNumber, columnNumber: columnNumber, maxLength: this._maxLength});
     }
-    if (!target || target.isDisposed())
+    if (!target || target.isDisposed()) {
       return fallbackAnchor;
+    }
     const debuggerModel = target.model(SDK.DebuggerModel);
-    if (!debuggerModel)
+    if (!debuggerModel) {
       return fallbackAnchor;
+    }
 
     const rawLocation =
         (scriptId ? debuggerModel.createRawLocationByScriptId(scriptId, lineNumber, columnNumber || 0) : null) ||
         debuggerModel.createRawLocationByURL(sourceURL, lineNumber, columnNumber || 0);
-    if (!rawLocation)
+    if (!rawLocation) {
       return fallbackAnchor;
+    }
 
     const anchor = Components.Linkifier._createLink('', classes || '');
     const info = Components.Linkifier._linkInfo(anchor);
@@ -236,13 +245,15 @@ Components.Linkifier = class {
       columnNumber: topFrame.columnNumber,
       maxLength: this._maxLength
     });
-    if (target.isDisposed())
+    if (target.isDisposed()) {
       return fallbackAnchor;
+    }
 
     const debuggerModel = target.model(SDK.DebuggerModel);
     const rawLocations = debuggerModel.createRawLocationsByStackTrace(stackTrace);
-    if (rawLocations.length === 0)
+    if (rawLocations.length === 0) {
       return fallbackAnchor;
+    }
 
     const anchor = Components.Linkifier._createLink('', classes || '');
     const info = Components.Linkifier._linkInfo(anchor);
@@ -283,8 +294,9 @@ Components.Linkifier = class {
   }
 
   dispose() {
-    for (const target of this._anchorsByTarget.keysArray())
+    for (const target of this._anchorsByTarget.keysArray()) {
       this.targetRemoved(target);
+    }
     SDK.targetManager.unobserveTargets(this);
     Components.Linkifier._instances.delete(this);
   }
@@ -296,16 +308,18 @@ Components.Linkifier = class {
   _updateAnchor(anchor, liveLocation) {
     Components.Linkifier._unbindUILocation(anchor);
     const uiLocation = liveLocation.uiLocation();
-    if (!uiLocation)
+    if (!uiLocation) {
       return;
+    }
 
     Components.Linkifier._bindUILocation(anchor, uiLocation);
     const text = uiLocation.linkText(true /* skipTrim */);
     Components.Linkifier._setTrimmedText(anchor, text, this._maxLength);
 
     let titleText = uiLocation.uiSourceCode.url();
-    if (typeof uiLocation.lineNumber === 'number')
+    if (typeof uiLocation.lineNumber === 'number') {
       titleText += ':' + (uiLocation.lineNumber + 1);
+    }
     anchor.title = titleText;
     anchor.classList.toggle('webkit-html-blackbox-link', liveLocation.isBlackboxed());
     Components.Linkifier._updateLinkDecorations(anchor);
@@ -316,12 +330,15 @@ Components.Linkifier = class {
    */
   static _updateLinkDecorations(anchor) {
     const info = Components.Linkifier._linkInfo(anchor);
-    if (!info || !info.enableDecorator)
+    if (!info || !info.enableDecorator) {
       return;
-    if (!Components.Linkifier._decorator || !info.uiLocation)
+    }
+    if (!Components.Linkifier._decorator || !info.uiLocation) {
       return;
-    if (info.icon && info.icon.parentElement)
+    }
+    if (info.icon && info.icon.parentElement) {
       anchor.removeChild(info.icon);
+    }
     const icon = Components.Linkifier._decorator.linkIcon(info.uiLocation.uiSourceCode);
     if (icon) {
       icon.style.setProperty('margin-right', '2px');
@@ -350,15 +367,18 @@ Components.Linkifier = class {
     }
 
     let linkText = text || Bindings.displayNameForURL(url);
-    if (typeof lineNumber === 'number' && !text)
+    if (typeof lineNumber === 'number' && !text) {
       linkText += ':' + (lineNumber + 1);
+    }
     const title = linkText !== url ? url : '';
     const link = Components.Linkifier._createLink(linkText, className, maxLength, title, url, preventClick);
     const info = Components.Linkifier._linkInfo(link);
-    if (typeof lineNumber === 'number')
+    if (typeof lineNumber === 'number') {
       info.lineNumber = lineNumber;
-    if (typeof columnNumber === 'number')
+    }
+    if (typeof columnNumber === 'number') {
       info.columnNumber = columnNumber;
+    }
     return link;
   }
 
@@ -386,10 +406,12 @@ Components.Linkifier = class {
   static _createLink(text, className, maxLength, title, href, preventClick) {
     const link = createElementWithClass('span', className);
     link.classList.add('devtools-link');
-    if (title)
+    if (title) {
       link.title = title;
-    if (href)
+    }
+    if (href) {
       link.href = href;
+    }
     Components.Linkifier._setTrimmedText(link, text, maxLength);
     link[Components.Linkifier._infoSymbol] = {
       icon: null,
@@ -404,12 +426,14 @@ Components.Linkifier = class {
     };
     if (!preventClick) {
       link.addEventListener('click', event => {
-        if (Components.Linkifier._handleClick(event))
+        if (Components.Linkifier._handleClick(event)) {
           event.consume(true);
+        }
       }, false);
       link.addEventListener('keydown', event => {
-        if (isEnterKey(event) && Components.Linkifier._handleClick(event))
+        if (isEnterKey(event) && Components.Linkifier._handleClick(event)) {
           event.consume(true);
+        }
       }, false);
     } else {
       link.classList.add('devtools-link-prevent-click');
@@ -471,8 +495,9 @@ Components.Linkifier = class {
         rightIndex++;
         leftIndex++;
       }
-      if (leftIndex > 0 && string.codePointAt(leftIndex - 1) >= 0x10000)
+      if (leftIndex > 0 && string.codePointAt(leftIndex - 1) >= 0x10000) {
         leftIndex--;
+      }
       return [string.substring(0, leftIndex), string.substring(leftIndex, rightIndex), string.substring(rightIndex)];
     }
   }
@@ -499,8 +524,9 @@ Components.Linkifier = class {
    */
   static _handleClick(event) {
     const link = /** @type {!Element} */ (event.currentTarget);
-    if (UI.isBeingEdited(/** @type {!Node} */ (event.target)) || link.hasSelection())
+    if (UI.isBeingEdited(/** @type {!Node} */ (event.target)) || link.hasSelection()) {
       return false;
+    }
     const actions = Components.Linkifier._linkActions(link);
     if (actions.length) {
       actions[0].handler.call(null);
@@ -553,8 +579,9 @@ Components.Linkifier = class {
   static _linkActions(link) {
     const info = Components.Linkifier._linkInfo(link);
     const result = [];
-    if (!info)
+    if (!info) {
       return result;
+    }
 
     let url = '';
     let uiLocation = null;
@@ -588,10 +615,11 @@ Components.Linkifier = class {
           title: Common.UIString('Open using %s', title),
           handler: handler.bind(null, contentProvider, lineNumber)
         };
-        if (title === Components.Linkifier._linkHandlerSetting().get())
+        if (title === Components.Linkifier._linkHandlerSetting().get()) {
           result.unshift(action);
-        else
+        } else {
           result.push(action);
+        }
       }
     }
     if (resource || info.url) {
@@ -689,12 +717,14 @@ Components.Linkifier.LinkContextMenuProvider = class {
    */
   appendApplicableItems(event, contextMenu, target) {
     let targetNode = /** @type {!Node} */ (target);
-    while (targetNode && !targetNode[Components.Linkifier._infoSymbol])
+    while (targetNode && !targetNode[Components.Linkifier._infoSymbol]) {
       targetNode = targetNode.parentNodeOrShadowHost();
+    }
     const link = /** @type {?Element} */ (targetNode);
     const actions = Components.Linkifier._linkActions(link);
-    for (const action of actions)
+    for (const action of actions) {
       contextMenu.section(action.section).appendItem(action.title, action.handler);
+    }
   }
 };
 
@@ -752,8 +782,9 @@ Components.Linkifier.ContentProviderContextMenuProvider = class {
    */
   appendApplicableItems(event, contextMenu, target) {
     const contentProvider = /** @type {!Common.ContentProvider} */ (target);
-    if (!contentProvider.contentURL())
+    if (!contentProvider.contentURL()) {
       return;
+    }
 
     contextMenu.revealSection().appendItem(
         UI.openLinkExternallyLabel(), () => InspectorFrontendHost.openInNewTab(contentProvider.contentURL()));
@@ -762,8 +793,9 @@ Components.Linkifier.ContentProviderContextMenuProvider = class {
       contextMenu.revealSection().appendItem(
           Common.UIString('Open using %s', title), handler.bind(null, contentProvider, 0));
     }
-    if (contentProvider instanceof SDK.NetworkRequest)
+    if (contentProvider instanceof SDK.NetworkRequest) {
       return;
+    }
 
     contextMenu.clipboardSection().appendItem(
         UI.copyLinkAddressLabel(), () => InspectorFrontendHost.copyText(contentProvider.contentURL()));

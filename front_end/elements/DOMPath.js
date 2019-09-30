@@ -10,8 +10,9 @@ Elements.DOMPath = {};
  * @return {string}
  */
 Elements.DOMPath.fullQualifiedSelector = function(node, justSelector) {
-  if (node.nodeType() !== Node.ELEMENT_NODE)
+  if (node.nodeType() !== Node.ELEMENT_NODE) {
     return node.localName() || node.nodeName().toLowerCase();
+  }
   return Elements.DOMPath.cssPath(node, justSelector);
 };
 
@@ -21,18 +22,21 @@ Elements.DOMPath.fullQualifiedSelector = function(node, justSelector) {
  * @return {string}
  */
 Elements.DOMPath.cssPath = function(node, optimized) {
-  if (node.nodeType() !== Node.ELEMENT_NODE)
+  if (node.nodeType() !== Node.ELEMENT_NODE) {
     return '';
+  }
 
   const steps = [];
   let contextNode = node;
   while (contextNode) {
     const step = Elements.DOMPath._cssPathStep(contextNode, !!optimized, contextNode === node);
-    if (!step)
-      break;  // Error - bail out early.
-    steps.push(step);
-    if (step.optimized)
+    if (!step) {
       break;
+    }  // Error - bail out early.
+    steps.push(step);
+    if (step.optimized) {
+      break;
+    }
     contextNode = contextNode.parentNode;
   }
 
@@ -47,8 +51,9 @@ Elements.DOMPath.cssPath = function(node, optimized) {
 Elements.DOMPath.canGetJSPath = function(node) {
   let wp = node;
   while (wp) {
-    if (wp.ancestorShadowRoot() && wp.ancestorShadowRoot().shadowRootType() !== SDK.DOMNode.ShadowRootTypes.Open)
+    if (wp.ancestorShadowRoot() && wp.ancestorShadowRoot().shadowRootType() !== SDK.DOMNode.ShadowRootTypes.Open) {
       return false;
+    }
     wp = wp.ancestorShadowHost();
   }
   return true;
@@ -60,8 +65,9 @@ Elements.DOMPath.canGetJSPath = function(node) {
  * @return {string}
  */
 Elements.DOMPath.jsPath = function(node, optimized) {
-  if (node.nodeType() !== Node.ELEMENT_NODE)
+  if (node.nodeType() !== Node.ELEMENT_NODE) {
     return '';
+  }
 
   const path = [];
   let wp = node;
@@ -73,10 +79,11 @@ Elements.DOMPath.jsPath = function(node, optimized) {
   let result = '';
   for (let i = 0; i < path.length; ++i) {
     const string = JSON.stringify(path[i]);
-    if (i)
+    if (i) {
       result += `.shadowRoot.querySelector(${string})`;
-    else
+    } else {
       result += `document.querySelector(${string})`;
+    }
   }
   return result;
 };
@@ -88,24 +95,29 @@ Elements.DOMPath.jsPath = function(node, optimized) {
  * @return {?Elements.DOMPath.Step}
  */
 Elements.DOMPath._cssPathStep = function(node, optimized, isTargetNode) {
-  if (node.nodeType() !== Node.ELEMENT_NODE)
+  if (node.nodeType() !== Node.ELEMENT_NODE) {
     return null;
+  }
 
   const id = node.getAttribute('id');
   if (optimized) {
-    if (id)
+    if (id) {
       return new Elements.DOMPath.Step(idSelector(id), true);
+    }
     const nodeNameLower = node.nodeName().toLowerCase();
-    if (nodeNameLower === 'body' || nodeNameLower === 'head' || nodeNameLower === 'html')
+    if (nodeNameLower === 'body' || nodeNameLower === 'head' || nodeNameLower === 'html') {
       return new Elements.DOMPath.Step(node.nodeNameInCorrectCase(), true);
+    }
   }
   const nodeName = node.nodeNameInCorrectCase();
 
-  if (id)
+  if (id) {
     return new Elements.DOMPath.Step(nodeName + idSelector(id), true);
+  }
   const parent = node.parentNode;
-  if (!parent || parent.nodeType() === Node.DOCUMENT_NODE)
+  if (!parent || parent.nodeType() === Node.DOCUMENT_NODE) {
     return new Elements.DOMPath.Step(nodeName, true);
+  }
 
   /**
    * @param {!SDK.DOMNode} node
@@ -113,8 +125,9 @@ Elements.DOMPath._cssPathStep = function(node, optimized, isTargetNode) {
    */
   function prefixedElementClassNames(node) {
     const classAttribute = node.getAttribute('class');
-    if (!classAttribute)
+    if (!classAttribute) {
       return [];
+    }
 
     return classAttribute.split(/\s+/g).filter(Boolean).map(function(name) {
       // The prefix is required to store "__proto__" in a object-based map.
@@ -138,17 +151,20 @@ Elements.DOMPath._cssPathStep = function(node, optimized, isTargetNode) {
   const siblings = parent.children();
   for (let i = 0; (ownIndex === -1 || !needsNthChild) && i < siblings.length; ++i) {
     const sibling = siblings[i];
-    if (sibling.nodeType() !== Node.ELEMENT_NODE)
+    if (sibling.nodeType() !== Node.ELEMENT_NODE) {
       continue;
+    }
     elementIndex += 1;
     if (sibling === node) {
       ownIndex = elementIndex;
       continue;
     }
-    if (needsNthChild)
+    if (needsNthChild) {
       continue;
-    if (sibling.nodeNameInCorrectCase() !== nodeName)
+    }
+    if (sibling.nodeNameInCorrectCase() !== nodeName) {
       continue;
+    }
 
     needsClassNames = true;
     const ownClassNames = new Set(prefixedOwnClassNamesArray);
@@ -159,8 +175,9 @@ Elements.DOMPath._cssPathStep = function(node, optimized, isTargetNode) {
     const siblingClassNamesArray = prefixedElementClassNames(sibling);
     for (let j = 0; j < siblingClassNamesArray.length; ++j) {
       const siblingClass = siblingClassNamesArray[j];
-      if (!ownClassNames.has(siblingClass))
+      if (!ownClassNames.has(siblingClass)) {
         continue;
+      }
       ownClassNames.delete(siblingClass);
       if (!ownClassNames.size) {
         needsNthChild = true;
@@ -171,13 +188,15 @@ Elements.DOMPath._cssPathStep = function(node, optimized, isTargetNode) {
 
   let result = nodeName;
   if (isTargetNode && nodeName.toLowerCase() === 'input' && node.getAttribute('type') && !node.getAttribute('id') &&
-      !node.getAttribute('class'))
+      !node.getAttribute('class')) {
     result += '[type=' + CSS.escape(node.getAttribute('type')) + ']';
+  }
   if (needsNthChild) {
     result += ':nth-child(' + (ownIndex + 1) + ')';
   } else if (needsClassNames) {
-    for (const prefixedName of prefixedOwnClassNamesArray)
+    for (const prefixedName of prefixedOwnClassNamesArray) {
       result += '.' + CSS.escape(prefixedName.slice(1));
+    }
   }
 
   return new Elements.DOMPath.Step(result, false);
@@ -189,18 +208,21 @@ Elements.DOMPath._cssPathStep = function(node, optimized, isTargetNode) {
  * @return {string}
  */
 Elements.DOMPath.xPath = function(node, optimized) {
-  if (node.nodeType() === Node.DOCUMENT_NODE)
+  if (node.nodeType() === Node.DOCUMENT_NODE) {
     return '/';
+  }
 
   const steps = [];
   let contextNode = node;
   while (contextNode) {
     const step = Elements.DOMPath._xPathValue(contextNode, optimized);
-    if (!step)
-      break;  // Error - bail out early.
-    steps.push(step);
-    if (step.optimized)
+    if (!step) {
       break;
+    }  // Error - bail out early.
+    steps.push(step);
+    if (step.optimized) {
+      break;
+    }
     contextNode = contextNode.parentNode;
   }
 
@@ -216,13 +238,15 @@ Elements.DOMPath.xPath = function(node, optimized) {
 Elements.DOMPath._xPathValue = function(node, optimized) {
   let ownValue;
   const ownIndex = Elements.DOMPath._xPathIndex(node);
-  if (ownIndex === -1)
-    return null;  // Error.
+  if (ownIndex === -1) {
+    return null;
+  }  // Error.
 
   switch (node.nodeType()) {
     case Node.ELEMENT_NODE:
-      if (optimized && node.getAttribute('id'))
+      if (optimized && node.getAttribute('id')) {
         return new Elements.DOMPath.Step('//*[@id="' + node.getAttribute('id') + '"]', true);
+      }
       ownValue = node.localName();
       break;
     case Node.ATTRIBUTE_NODE:
@@ -246,8 +270,9 @@ Elements.DOMPath._xPathValue = function(node, optimized) {
       break;
   }
 
-  if (ownIndex > 0)
+  if (ownIndex > 0) {
     ownValue += '[' + ownIndex + ']';
+  }
 
   return new Elements.DOMPath.Step(ownValue, node.nodeType() === Node.DOCUMENT_NODE);
 };
@@ -259,14 +284,17 @@ Elements.DOMPath._xPathValue = function(node, optimized) {
 Elements.DOMPath._xPathIndex = function(node) {
   // Returns -1 in case of error, 0 if no siblings matching the same expression, <XPath index among the same expression-matching sibling nodes> otherwise.
   function areNodesSimilar(left, right) {
-    if (left === right)
+    if (left === right) {
       return true;
+    }
 
-    if (left.nodeType() === Node.ELEMENT_NODE && right.nodeType() === Node.ELEMENT_NODE)
+    if (left.nodeType() === Node.ELEMENT_NODE && right.nodeType() === Node.ELEMENT_NODE) {
       return left.localName() === right.localName();
+    }
 
-    if (left.nodeType() === right.nodeType())
+    if (left.nodeType() === right.nodeType()) {
       return true;
+    }
 
     // XPath treats CDATA as text nodes.
     const leftType = left.nodeType() === Node.CDATA_SECTION_NODE ? Node.TEXT_NODE : left.nodeType();
@@ -275,8 +303,9 @@ Elements.DOMPath._xPathIndex = function(node) {
   }
 
   const siblings = node.parentNode ? node.parentNode.children() : null;
-  if (!siblings)
-    return 0;  // Root node - no siblings.
+  if (!siblings) {
+    return 0;
+  }  // Root node - no siblings.
   let hasSameNamedElements;
   for (let i = 0; i < siblings.length; ++i) {
     if (areNodesSimilar(node, siblings[i]) && siblings[i] !== node) {
@@ -284,13 +313,15 @@ Elements.DOMPath._xPathIndex = function(node) {
       break;
     }
   }
-  if (!hasSameNamedElements)
+  if (!hasSameNamedElements) {
     return 0;
+  }
   let ownIndex = 1;  // XPath indices start with 1.
   for (let i = 0; i < siblings.length; ++i) {
     if (areNodesSimilar(node, siblings[i])) {
-      if (siblings[i] === node)
+      if (siblings[i] === node) {
         return ownIndex;
+      }
       ++ownIndex;
     }
   }

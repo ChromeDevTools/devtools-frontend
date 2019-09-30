@@ -20,8 +20,9 @@ Sources.ScriptFormatterEditorAction = class {
     this._updateButton(uiSourceCode);
 
     if (this._isFormatableScript(uiSourceCode) && this._pathsToFormatOnLoad.has(uiSourceCode.url()) &&
-        !Sources.sourceFormatter.hasFormatted(uiSourceCode))
+        !Sources.sourceFormatter.hasFormatted(uiSourceCode)) {
       this._showFormatted(uiSourceCode);
+    }
   }
 
   /**
@@ -31,11 +32,13 @@ Sources.ScriptFormatterEditorAction = class {
     const uiSourceCode = /** @type {!Workspace.UISourceCode} */ (event.data.uiSourceCode);
     const wasSelected = /** @type {boolean} */ (event.data.wasSelected);
 
-    if (wasSelected)
+    if (wasSelected) {
       this._updateButton(null);
+    }
     const original = Sources.sourceFormatter.discardFormattedUISourceCode(uiSourceCode);
-    if (original)
+    if (original) {
       this._pathsToFormatOnLoad.delete(original.url());
+    }
   }
 
   /**
@@ -51,8 +54,9 @@ Sources.ScriptFormatterEditorAction = class {
    * @return {!UI.ToolbarButton}
    */
   button(sourcesView) {
-    if (this._button)
+    if (this._button) {
       return this._button;
+    }
 
     this._sourcesView = sourcesView;
     this._sourcesView.addEventListener(Sources.SourcesView.Events.EditorSelected, this._editorSelected.bind(this));
@@ -70,14 +74,18 @@ Sources.ScriptFormatterEditorAction = class {
    * @return {boolean}
    */
   _isFormatableScript(uiSourceCode) {
-    if (!uiSourceCode)
+    if (!uiSourceCode) {
       return false;
-    if (uiSourceCode.project().canSetFileContent())
+    }
+    if (uiSourceCode.project().canSetFileContent()) {
       return false;
-    if (uiSourceCode.project().type() === Workspace.projectTypes.Formatter)
+    }
+    if (uiSourceCode.project().type() === Workspace.projectTypes.Formatter) {
       return false;
-    if (Persistence.persistence.binding(uiSourceCode))
+    }
+    if (Persistence.persistence.binding(uiSourceCode)) {
       return false;
+    }
     return uiSourceCode.contentType().hasScripts();
   }
 
@@ -86,8 +94,9 @@ Sources.ScriptFormatterEditorAction = class {
    */
   _toggleFormatScriptSource(event) {
     const uiSourceCode = this._sourcesView.currentUISourceCode();
-    if (!this._isFormatableScript(uiSourceCode))
+    if (!this._isFormatableScript(uiSourceCode)) {
       return;
+    }
     this._pathsToFormatOnLoad.add(uiSourceCode.url());
     this._showFormatted(uiSourceCode);
   }
@@ -97,8 +106,9 @@ Sources.ScriptFormatterEditorAction = class {
    */
   async _showFormatted(uiSourceCode) {
     const formatData = await Sources.sourceFormatter.format(uiSourceCode);
-    if (uiSourceCode !== this._sourcesView.currentUISourceCode())
+    if (uiSourceCode !== this._sourcesView.currentUISourceCode()) {
       return;
+    }
     const sourceFrame = this._sourcesView.viewForFile(uiSourceCode);
     let start = [0, 0];
     if (sourceFrame) {

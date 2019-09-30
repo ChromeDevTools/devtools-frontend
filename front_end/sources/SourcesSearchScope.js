@@ -48,22 +48,27 @@ Sources.SourcesSearchScope = class {
    * @return {number}
    */
   static _filesComparator(uiSourceCode1, uiSourceCode2) {
-    if (uiSourceCode1.isDirty() && !uiSourceCode2.isDirty())
+    if (uiSourceCode1.isDirty() && !uiSourceCode2.isDirty()) {
       return -1;
-    if (!uiSourceCode1.isDirty() && uiSourceCode2.isDirty())
+    }
+    if (!uiSourceCode1.isDirty() && uiSourceCode2.isDirty()) {
       return 1;
+    }
     const isFileSystem1 = uiSourceCode1.project().type() === Workspace.projectTypes.FileSystem &&
         !Persistence.persistence.binding(uiSourceCode1);
     const isFileSystem2 = uiSourceCode2.project().type() === Workspace.projectTypes.FileSystem &&
         !Persistence.persistence.binding(uiSourceCode2);
-    if (isFileSystem1 !== isFileSystem2)
+    if (isFileSystem1 !== isFileSystem2) {
       return isFileSystem1 ? 1 : -1;
+    }
     const url1 = uiSourceCode1.url();
     const url2 = uiSourceCode2.url();
-    if (url1 && !url2)
+    if (url1 && !url2) {
       return -1;
-    if (!url1 && url2)
+    }
+    if (!url1 && url2) {
       return 1;
+    }
     return String.naturalOrderComparator(uiSourceCode1.fullDisplayName(), uiSourceCode2.fullDisplayName());
   }
 
@@ -90,12 +95,15 @@ Sources.SourcesSearchScope = class {
     const searchInAnonymousAndContentScripts = Common.moduleSetting('searchInAnonymousAndContentScripts').get();
 
     return Workspace.workspace.projects().filter(project => {
-      if (project.type() === Workspace.projectTypes.Service)
+      if (project.type() === Workspace.projectTypes.Service) {
         return false;
-      if (!searchInAnonymousAndContentScripts && project.isServiceProject())
+      }
+      if (!searchInAnonymousAndContentScripts && project.isServiceProject()) {
         return false;
-      if (!searchInAnonymousAndContentScripts && project.type() === Workspace.projectTypes.ContentScripts)
+      }
+      if (!searchInAnonymousAndContentScripts && project.type() === Workspace.projectTypes.ContentScripts) {
         return false;
+      }
       return true;
     });
   }
@@ -145,15 +153,19 @@ Sources.SourcesSearchScope = class {
     const uiSourceCodes = project.uiSourceCodes();
     for (let i = 0; i < uiSourceCodes.length; ++i) {
       const uiSourceCode = uiSourceCodes[i];
-      if (!uiSourceCode.contentType().isTextType())
+      if (!uiSourceCode.contentType().isTextType()) {
         continue;
+      }
       const binding = Persistence.persistence.binding(uiSourceCode);
-      if (binding && binding.network === uiSourceCode)
+      if (binding && binding.network === uiSourceCode) {
         continue;
-      if (dirtyOnly && !uiSourceCode.isDirty())
+      }
+      if (dirtyOnly && !uiSourceCode.isDirty()) {
         continue;
-      if (searchConfig.filePathMatchesFileQuery(uiSourceCode.fullDisplayName()))
+      }
+      if (searchConfig.filePathMatchesFileQuery(uiSourceCode.fullDisplayName())) {
         result.push(uiSourceCode.url());
+      }
     }
     result.sort(String.naturalOrderComparator);
     return result;
@@ -180,11 +192,13 @@ Sources.SourcesSearchScope = class {
     const uiSourceCodes = [];
     for (const file of files) {
       const uiSourceCode = project.uiSourceCodeForURL(file);
-      if (!uiSourceCode)
+      if (!uiSourceCode) {
         continue;
+      }
       const script = Bindings.DefaultScriptMapping.scriptForUISourceCode(uiSourceCode);
-      if (script && !script.isAnonymousScript())
+      if (script && !script.isAnonymousScript()) {
         continue;
+      }
       uiSourceCodes.push(uiSourceCode);
     }
     uiSourceCodes.sort(Sources.SourcesSearchScope._filesComparator);
@@ -216,18 +230,20 @@ Sources.SourcesSearchScope = class {
     const maxFileContentRequests = 20;
     let callbacksLeft = 0;
 
-    for (let i = 0; i < maxFileContentRequests && i < files.length; ++i)
+    for (let i = 0; i < maxFileContentRequests && i < files.length; ++i) {
       scheduleSearchInNextFileOrFinish.call(this);
+    }
 
     /**
      * @param {!Workspace.UISourceCode} uiSourceCode
      * @this {Sources.SourcesSearchScope}
      */
     function searchInNextFile(uiSourceCode) {
-      if (uiSourceCode.isDirty())
+      if (uiSourceCode.isDirty()) {
         contentLoaded.call(this, uiSourceCode, uiSourceCode.workingCopy());
-      else
+      } else {
         uiSourceCode.requestContent().then(contentLoaded.bind(this, uiSourceCode));
+      }
     }
 
     /**

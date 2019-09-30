@@ -62,8 +62,9 @@ Audits.ProtocolService = class extends Common.Object {
 
   _initWorker() {
     this._backendPromise = Services.serviceManager.createAppService('audits_worker', 'AuditsService').then(backend => {
-      if (this._backend)
+      if (this._backend) {
         return;
+      }
       this._backend = backend;
       this._backend.on('statusUpdate', result => this._status(result.message));
       this._backend.on('sendProtocolMessage', result => this._sendProtocolMessage(result.message));
@@ -83,8 +84,9 @@ Audits.ProtocolService = class extends Common.Object {
    * @return {!Promise<!ReportRenderer.RunnerResult>}
    */
   _send(method, params) {
-    if (!this._backendPromise)
+    if (!this._backendPromise) {
       this._initWorker();
+    }
 
     return this._backendPromise.then(_ => this._backend.send(method, params));
   }

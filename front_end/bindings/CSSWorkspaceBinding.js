@@ -61,15 +61,18 @@ Bindings.CSSWorkspaceBinding = class {
    */
   propertyUILocation(cssProperty, forName) {
     const style = cssProperty.ownerStyle;
-    if (!style || style.type !== SDK.CSSStyleDeclaration.Type.Regular || !style.styleSheetId)
+    if (!style || style.type !== SDK.CSSStyleDeclaration.Type.Regular || !style.styleSheetId) {
       return null;
+    }
     const header = style.cssModel().styleSheetHeaderForId(style.styleSheetId);
-    if (!header)
+    if (!header) {
       return null;
+    }
 
     const range = forName ? cssProperty.nameRange() : cssProperty.valueRange();
-    if (!range)
+    if (!range) {
       return null;
+    }
 
     const lineNumber = range.startLine;
     const columnNumber = range.startColumn;
@@ -85,8 +88,9 @@ Bindings.CSSWorkspaceBinding = class {
   rawLocationToUILocation(rawLocation) {
     for (let i = this._sourceMappings.length - 1; i >= 0; --i) {
       const uiLocation = this._sourceMappings[i].rawLocationToUILocation(rawLocation);
-      if (uiLocation)
+      if (uiLocation) {
         return uiLocation;
+      }
     }
     return this._modelToInfo.get(rawLocation.cssModel())._rawLocationToUILocation(rawLocation);
   }
@@ -98,12 +102,14 @@ Bindings.CSSWorkspaceBinding = class {
   uiLocationToRawLocations(uiLocation) {
     for (let i = this._sourceMappings.length - 1; i >= 0; --i) {
       const rawLocations = this._sourceMappings[i].uiLocationToRawLocations(uiLocation);
-      if (rawLocations.length)
+      if (rawLocations.length) {
         return rawLocations;
+      }
     }
     const rawLocations = [];
-    for (const modelInfo of this._modelToInfo.values())
+    for (const modelInfo of this._modelToInfo.values()) {
       rawLocations.pushAll(modelInfo._uiLocationToRawLocations(uiLocation));
+    }
     return rawLocations;
   }
 
@@ -178,18 +184,20 @@ Bindings.CSSWorkspaceBinding.ModelInfo = class {
    * @param {!Bindings.CSSWorkspaceBinding.LiveLocation} location
    */
   _disposeLocation(location) {
-    if (location._header)
+    if (location._header) {
       this._locations.delete(location._header, location);
-    else
+    } else {
       this._unboundLocations.delete(location._url, location);
+    }
   }
 
   /**
    * @param {!SDK.CSSStyleSheetHeader} header
    */
   _updateLocations(header) {
-    for (const location of this._locations.get(header))
+    for (const location of this._locations.get(header)) {
       location.update();
+    }
   }
 
   /**
@@ -197,8 +205,9 @@ Bindings.CSSWorkspaceBinding.ModelInfo = class {
    */
   _styleSheetAdded(event) {
     const header = /** @type {!SDK.CSSStyleSheetHeader} */ (event.data);
-    if (!header.sourceURL)
+    if (!header.sourceURL) {
       return;
+    }
 
     for (const location of this._unboundLocations.get(header.sourceURL)) {
       location._header = header;
@@ -239,11 +248,13 @@ Bindings.CSSWorkspaceBinding.ModelInfo = class {
    */
   _uiLocationToRawLocations(uiLocation) {
     let rawLocations = this._sassSourceMapping.uiLocationToRawLocations(uiLocation);
-    if (rawLocations.length)
+    if (rawLocations.length) {
       return rawLocations;
+    }
     rawLocations = this._stylesSourceMapping.uiLocationToRawLocations(uiLocation);
-    if (rawLocations.length)
+    if (rawLocations.length) {
       return rawLocations;
+    }
     return Bindings.resourceMapping.uiLocationToCSSLocations(uiLocation);
   }
 
@@ -278,8 +289,9 @@ Bindings.CSSWorkspaceBinding.LiveLocation = class extends Bindings.LiveLocationW
    * @return {?Workspace.UILocation}
    */
   uiLocation() {
-    if (!this._header)
+    if (!this._header) {
       return null;
+    }
     const rawLocation = new SDK.CSSLocation(this._header, this._lineNumber, this._columnNumber);
     return Bindings.cssWorkspaceBinding.rawLocationToUILocation(rawLocation);
   }

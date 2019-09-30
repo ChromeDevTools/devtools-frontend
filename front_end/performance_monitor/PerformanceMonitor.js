@@ -39,8 +39,9 @@ PerformanceMonitor.PerformanceMonitor = class extends UI.HBox {
    * @override
    */
   wasShown() {
-    if (!this._model)
+    if (!this._model) {
       return;
+    }
     SDK.targetManager.addEventListener(SDK.TargetManager.Events.SuspendStateChanged, this._suspendStateChanged, this);
     this._model.enable();
     this._suspendStateChanged();
@@ -50,8 +51,9 @@ PerformanceMonitor.PerformanceMonitor = class extends UI.HBox {
    * @override
    */
   willHide() {
-    if (!this._model)
+    if (!this._model) {
       return;
+    }
     SDK.targetManager.removeEventListener(
         SDK.TargetManager.Events.SuspendStateChanged, this._suspendStateChanged, this);
     this._stopPolling();
@@ -63,11 +65,13 @@ PerformanceMonitor.PerformanceMonitor = class extends UI.HBox {
    * @param {!SDK.PerformanceMetricsModel} model
    */
   modelAdded(model) {
-    if (this._model)
+    if (this._model) {
       return;
+    }
     this._model = model;
-    if (this.isShowing())
+    if (this.isShowing()) {
       this.wasShown();
+    }
   }
 
   /**
@@ -75,19 +79,22 @@ PerformanceMonitor.PerformanceMonitor = class extends UI.HBox {
    * @param {!SDK.PerformanceMetricsModel} model
    */
   modelRemoved(model) {
-    if (this._model !== model)
+    if (this._model !== model) {
       return;
-    if (this.isShowing())
+    }
+    if (this.isShowing()) {
       this.willHide();
+    }
     this._model = null;
   }
 
   _suspendStateChanged() {
     const suspended = SDK.targetManager.allTargetsSuspended();
-    if (suspended)
+    if (suspended) {
       this._stopPolling();
-    else
+    } else {
       this._startPolling();
+    }
     this.contentElement.classList.toggle('suspended', suspended);
   }
 
@@ -121,7 +128,9 @@ PerformanceMonitor.PerformanceMonitor = class extends UI.HBox {
     // Multiply by 2 as the pollInterval has some jitter and to have some extra samples if window is resized.
     const maxCount = Math.ceil(millisPerWidth / this._pollIntervalMs * 2);
     if (this._metricsBuffer.length > maxCount * 2)  // Multiply by 2 to have a hysteresis.
+    {
       this._metricsBuffer.splice(0, this._metricsBuffer.length - maxCount);
+    }
     this._controlPane.updateMetrics(metrics);
   }
 
@@ -133,8 +142,9 @@ PerformanceMonitor.PerformanceMonitor = class extends UI.HBox {
     ctx.save();
     ctx.translate(0, this._scaleHeight);  // Reserve space for the scale bar.
     for (const chartInfo of this._controlPane.charts()) {
-      if (!this._controlPane.isActive(chartInfo.metrics[0].name))
+      if (!this._controlPane.isActive(chartInfo.metrics[0].name)) {
         continue;
+      }
       this._drawChart(ctx, chartInfo, this._graphHeight);
       ctx.translate(0, this._graphHeight);
     }
@@ -154,13 +164,15 @@ PerformanceMonitor.PerformanceMonitor = class extends UI.HBox {
     const currentTime = Date.now() / 1000;
     for (let sec = Math.ceil(currentTime);; --sec) {
       const x = this._width - ((currentTime - sec) * 1000 - this._pollIntervalMs) * this._pixelsPerMs;
-      if (x < -50)
+      if (x < -50) {
         break;
+      }
       ctx.beginPath();
       ctx.moveTo(x, 0);
       ctx.lineTo(x, this._height);
-      if (sec >= 0 && sec % labelDistanceSeconds === 0)
+      if (sec >= 0 && sec % labelDistanceSeconds === 0) {
         ctx.fillText(new Date(sec * 1000).toLocaleTimeString(), x + 4, 12);
+      }
       ctx.strokeStyle = sec % labelDistanceSeconds ? lightGray : this._gridColor;
       ctx.stroke();
     }
@@ -212,8 +224,9 @@ PerformanceMonitor.PerformanceMonitor = class extends UI.HBox {
    * @return {number}
    */
   _calcMax(chartInfo) {
-    if (chartInfo.max)
+    if (chartInfo.max) {
       return chartInfo.max;
+    }
     const width = this._width;
     const startTime = performance.now() - this._pollIntervalMs - width / this._pixelsPerMs;
     let max = -Infinity;
@@ -222,12 +235,14 @@ PerformanceMonitor.PerformanceMonitor = class extends UI.HBox {
         const metrics = this._metricsBuffer[i];
         const value = metrics.metrics.get(metricInfo.name);
         max = Math.max(max, value);
-        if (metrics.timestamp < startTime)
+        if (metrics.timestamp < startTime) {
           break;
+        }
       }
     }
-    if (!this._metricsBuffer.length)
+    if (!this._metricsBuffer.length) {
       return 10;
+    }
 
     const base10 = Math.pow(10, Math.floor(Math.log10(max)));
     max = Math.ceil(max / base10 / 2) * base10 * 2;
@@ -246,8 +261,9 @@ PerformanceMonitor.PerformanceMonitor = class extends UI.HBox {
   _drawVerticalGrid(ctx, height, max, info) {
     let base = Math.pow(10, Math.floor(Math.log10(max)));
     const firstDigit = Math.floor(max / base);
-    if (firstDigit !== 1 && firstDigit % 2 === 1)
+    if (firstDigit !== 1 && firstDigit % 2 === 1) {
       base *= 2;
+    }
     let scaleValue = Math.floor(max / base) * base;
 
     const span = max;
@@ -293,8 +309,9 @@ PerformanceMonitor.PerformanceMonitor = class extends UI.HBox {
     const path = new Path2D();
     const topPadding = 18;
     const visibleHeight = height - topPadding;
-    if (visibleHeight < 1)
+    if (visibleHeight < 1) {
       return path;
+    }
     const span = scaleMax;
     const metricName = metricInfo.name;
     const pixelsPerMs = this._pixelsPerMs;
@@ -332,8 +349,9 @@ PerformanceMonitor.PerformanceMonitor = class extends UI.HBox {
       }
       lastX = x;
       lastY = y;
-      if (timestamp < startTime)
+      if (timestamp < startTime) {
         break;
+      }
     }
     return path;
 
@@ -359,8 +377,9 @@ PerformanceMonitor.PerformanceMonitor = class extends UI.HBox {
   _recalcChartHeight() {
     let height = this._scaleHeight;
     for (const chartInfo of this._controlPane.charts()) {
-      if (this._controlPane.isActive(chartInfo.metrics[0].name))
+      if (this._controlPane.isActive(chartInfo.metrics[0].name)) {
         height += this._graphHeight;
+      }
     }
     this._height = Math.ceil(height * window.devicePixelRatio);
     this._canvas.height = this._height;
@@ -436,8 +455,9 @@ PerformanceMonitor.PerformanceMonitor.ControlPane = class extends Common.Object 
       {title: Common.UIString('Style recalcs / sec'), metrics: [{name: 'RecalcStyleCount', color: 'deeppink'}]}
     ];
     for (const info of this._chartsInfo) {
-      for (const metric of info.metrics)
+      for (const metric of info.metrics) {
         metric.color = UI.themeSupport.patchColorText(metric.color, UI.ThemeSupport.ColorUsage.Foreground);
+      }
     }
 
     /** @type {!Map<string, !PerformanceMonitor.PerformanceMonitor.MetricIndicator>} */
@@ -456,10 +476,11 @@ PerformanceMonitor.PerformanceMonitor.ControlPane = class extends Common.Object 
    * @param {boolean} active
    */
   _onToggle(chartName, active) {
-    if (active)
+    if (active) {
       this._enabledCharts.add(chartName);
-    else
+    } else {
       this._enabledCharts.delete(chartName);
+    }
     this._enabledChartsSetting.set(Array.from(this._enabledCharts));
     this.dispatchEventToListeners(PerformanceMonitor.PerformanceMonitor.ControlPane.Events.MetricChanged);
   }
@@ -484,8 +505,9 @@ PerformanceMonitor.PerformanceMonitor.ControlPane = class extends Common.Object 
    */
   updateMetrics(metrics) {
     for (const name of this._indicators.keys()) {
-      if (metrics.has(name))
+      if (metrics.has(name)) {
         this._indicators.get(name).setValue(metrics.get(name));
+      }
     }
   }
 };
@@ -564,8 +586,9 @@ PerformanceMonitor.PerformanceMonitor.MetricIndicator = class {
    */
   _handleKeypress(event) {
     const keyboardEvent = /** @type {!KeyboardEvent} */ (event);
-    if (keyboardEvent.key === ' ' || keyboardEvent.key === 'Enter')
+    if (keyboardEvent.key === ' ' || keyboardEvent.key === 'Enter') {
       this._toggleIndicator();
+    }
   }
 };
 

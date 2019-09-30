@@ -14,8 +14,9 @@ function flattenRuleRanges(rule) {
   for (let i = 0; i < medias.length; ++i) {
     const media = medias[i];
 
-    if (!media.range)
+    if (!media.range) {
       continue;
+    }
 
     ranges.push({range: media.range, name: 'media #' + i});
   }
@@ -23,14 +24,16 @@ function flattenRuleRanges(rule) {
   for (let i = 0; i < rule.selectors.length; ++i) {
     const selector = rule.selectors[i];
 
-    if (!selector.range)
+    if (!selector.range) {
       continue;
+    }
 
     ranges.push({range: selector.range, name: 'selector #' + i});
   }
 
-  if (rule.style.range)
+  if (rule.style.range) {
     ranges.push({range: rule.style.range, name: 'style range'});
+  }
 
 
   const properties = rule.style.allProperties();
@@ -38,8 +41,9 @@ function flattenRuleRanges(rule) {
   for (let i = 0; i < properties.length; ++i) {
     const property = properties[i];
 
-    if (!property.range)
+    if (!property.range) {
       continue;
+    }
 
     ranges.push({range: property.range, name: 'property >>' + property.text + '<<'});
   }
@@ -120,8 +124,9 @@ ElementsTestRunner.getMatchedRules = function() {
     for (const section of block.sections) {
       const rule = section.style().parentRule;
 
-      if (rule)
+      if (rule) {
         rules.push(rule);
+      }
     }
   }
 

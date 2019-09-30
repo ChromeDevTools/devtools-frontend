@@ -47,13 +47,15 @@ Emulation.EmulatedDevice = class {
        */
       function parseValue(object, key, type, defaultValue) {
         if (typeof object !== 'object' || object === null || !object.hasOwnProperty(key)) {
-          if (typeof defaultValue !== 'undefined')
+          if (typeof defaultValue !== 'undefined') {
             return defaultValue;
+          }
           throw new Error('Emulated device is missing required property \'' + key + '\'');
         }
         const value = object[key];
-        if (typeof value !== type || value === null)
+        if (typeof value !== type || value === null) {
           throw new Error('Emulated device property \'' + key + '\' has wrong type \'' + typeof value + '\'');
+        }
         return value;
       }
 
@@ -64,8 +66,9 @@ Emulation.EmulatedDevice = class {
        */
       function parseIntValue(object, key) {
         const value = /** @type {number} */ (parseValue(object, key, 'number'));
-        if (value !== Math.abs(value))
+        if (value !== Math.abs(value)) {
           throw new Error('Emulated device value \'' + key + '\' must be integer');
+        }
         return value;
       }
 
@@ -88,19 +91,22 @@ Emulation.EmulatedDevice = class {
 
         result.width = parseIntValue(json, 'width');
         if (result.width < 0 || result.width > Emulation.DeviceModeModel.MaxDeviceSize ||
-            result.width < Emulation.DeviceModeModel.MinDeviceSize)
+            result.width < Emulation.DeviceModeModel.MinDeviceSize) {
           throw new Error('Emulated device has wrong width: ' + result.width);
+        }
 
         result.height = parseIntValue(json, 'height');
         if (result.height < 0 || result.height > Emulation.DeviceModeModel.MaxDeviceSize ||
-            result.height < Emulation.DeviceModeModel.MinDeviceSize)
+            result.height < Emulation.DeviceModeModel.MinDeviceSize) {
           throw new Error('Emulated device has wrong height: ' + result.height);
+        }
 
         const outlineInsets = parseValue(json['outline'], 'insets', 'object', null);
         if (outlineInsets) {
           result.outlineInsets = parseInsets(outlineInsets);
-          if (result.outlineInsets.left < 0 || result.outlineInsets.top < 0)
+          if (result.outlineInsets.left < 0 || result.outlineInsets.top < 0) {
             throw new Error('Emulated device has wrong outline insets');
+          }
           result.outlineImage = /** @type {string} */ (parseValue(json['outline'], 'image', 'string'));
         }
         return /** @type {!Emulation.EmulatedDevice.Orientation} */ (result);
@@ -113,39 +119,45 @@ Emulation.EmulatedDevice = class {
       result.userAgent = SDK.MultitargetNetworkManager.patchUserAgentWithChromeVersion(rawUserAgent);
 
       const capabilities = parseValue(json, 'capabilities', 'object', []);
-      if (!Array.isArray(capabilities))
+      if (!Array.isArray(capabilities)) {
         throw new Error('Emulated device capabilities must be an array');
+      }
       result.capabilities = [];
       for (let i = 0; i < capabilities.length; ++i) {
-        if (typeof capabilities[i] !== 'string')
+        if (typeof capabilities[i] !== 'string') {
           throw new Error('Emulated device capability must be a string');
+        }
         result.capabilities.push(capabilities[i]);
       }
 
       result.deviceScaleFactor = /** @type {number} */ (parseValue(json['screen'], 'device-pixel-ratio', 'number'));
-      if (result.deviceScaleFactor < 0 || result.deviceScaleFactor > 100)
+      if (result.deviceScaleFactor < 0 || result.deviceScaleFactor > 100) {
         throw new Error('Emulated device has wrong deviceScaleFactor: ' + result.deviceScaleFactor);
+      }
 
       result.vertical = parseOrientation(parseValue(json['screen'], 'vertical', 'object'));
       result.horizontal = parseOrientation(parseValue(json['screen'], 'horizontal', 'object'));
 
       const modes = parseValue(json, 'modes', 'object', []);
-      if (!Array.isArray(modes))
+      if (!Array.isArray(modes)) {
         throw new Error('Emulated device modes must be an array');
+      }
       result.modes = [];
       for (let i = 0; i < modes.length; ++i) {
         const mode = {};
         mode.title = /** @type {string} */ (parseValue(modes[i], 'title', 'string'));
         mode.orientation = /** @type {string} */ (parseValue(modes[i], 'orientation', 'string'));
         if (mode.orientation !== Emulation.EmulatedDevice.Vertical &&
-            mode.orientation !== Emulation.EmulatedDevice.Horizontal)
+            mode.orientation !== Emulation.EmulatedDevice.Horizontal) {
           throw new Error('Emulated device mode has wrong orientation \'' + mode.orientation + '\'');
+        }
         const orientation = result.orientationByName(mode.orientation);
         mode.insets = parseInsets(parseValue(modes[i], 'insets', 'object'));
         if (mode.insets.top < 0 || mode.insets.left < 0 || mode.insets.right < 0 || mode.insets.bottom < 0 ||
             mode.insets.top + mode.insets.bottom > orientation.height ||
-            mode.insets.left + mode.insets.right > orientation.width)
+            mode.insets.left + mode.insets.right > orientation.width) {
           throw new Error('Emulated device mode \'' + mode.title + '\'has wrong mode insets');
+        }
 
         mode.image = /** @type {string} */ (parseValue(modes[i], 'image', 'string', null));
         result.modes.push(mode);
@@ -169,10 +181,12 @@ Emulation.EmulatedDevice = class {
   static deviceComparator(device1, device2) {
     const order1 = (device1._extension && device1._extension.descriptor()['order']) || -1;
     const order2 = (device2._extension && device2._extension.descriptor()['order']) || -1;
-    if (order1 > order2)
+    if (order1 > order2) {
       return 1;
-    if (order2 > order1)
+    }
+    if (order2 > order1) {
       return -1;
+    }
     return device1.title < device2.title ? -1 : (device1.title > device2.title ? 1 : 0);
   }
 
@@ -197,8 +211,9 @@ Emulation.EmulatedDevice = class {
   modesForOrientation(orientation) {
     const result = [];
     for (let index = 0; index < this.modes.length; index++) {
-      if (this.modes[index].orientation === orientation)
+      if (this.modes[index].orientation === orientation) {
         result.push(this.modes[index]);
+      }
     }
     return result;
   }
@@ -228,8 +243,9 @@ Emulation.EmulatedDevice = class {
       mode['insets']['top'] = this.modes[i].insets.top;
       mode['insets']['right'] = this.modes[i].insets.right;
       mode['insets']['bottom'] = this.modes[i].insets.bottom;
-      if (this.modes[i].image)
+      if (this.modes[i].image) {
         mode['image'] = this.modes[i].image;
+      }
       json['modes'].push(mode);
     }
 
@@ -264,10 +280,12 @@ Emulation.EmulatedDevice = class {
    * @return {string}
    */
   modeImage(mode) {
-    if (!mode.image)
+    if (!mode.image) {
       return '';
-    if (!this._extension)
+    }
+    if (!this._extension) {
       return mode.image;
+    }
     return this._extension.module().substituteURL(mode.image);
   }
 
@@ -277,10 +295,12 @@ Emulation.EmulatedDevice = class {
    */
   outlineImage(mode) {
     const orientation = this.orientationByName(mode.orientation);
-    if (!orientation.outlineImage)
+    if (!orientation.outlineImage) {
       return '';
-    if (!this._extension)
+    }
+    if (!this._extension) {
       return orientation.outlineImage;
+    }
     return this._extension.module().substituteURL(orientation.outlineImage);
   }
 
@@ -296,8 +316,9 @@ Emulation.EmulatedDevice = class {
    * @return {boolean}
    */
   show() {
-    if (this._show === Emulation.EmulatedDevice._Show.Default)
+    if (this._show === Emulation.EmulatedDevice._Show.Default) {
       return this._showByDefault;
+    }
     return this._show === Emulation.EmulatedDevice._Show.Always;
   }
 
@@ -377,16 +398,18 @@ Emulation.EmulatedDevicesList = class extends Common.Object {
     this._customSetting = Common.settings.createSetting('customEmulatedDeviceList', []);
     /** @type {!Array.<!Emulation.EmulatedDevice>} */
     this._custom = [];
-    if (!this._listFromJSONV1(this._customSetting.get(), this._custom))
+    if (!this._listFromJSONV1(this._customSetting.get(), this._custom)) {
       this.saveCustomDevices();
+    }
   }
 
   /**
    * @return {!Emulation.EmulatedDevicesList}
    */
   static instance() {
-    if (!Emulation.EmulatedDevicesList._instance)
+    if (!Emulation.EmulatedDevicesList._instance) {
       Emulation.EmulatedDevicesList._instance = new Emulation.EmulatedDevicesList();
+    }
     return /** @type {!Emulation.EmulatedDevicesList} */ (Emulation.EmulatedDevicesList._instance);
   }
 
@@ -409,8 +432,9 @@ Emulation.EmulatedDevicesList = class extends Common.Object {
    * @return {boolean}
    */
   _listFromJSONV1(jsonArray, result) {
-    if (!Array.isArray(jsonArray))
+    if (!Array.isArray(jsonArray)) {
       return false;
+    }
     let success = true;
     for (let i = 0; i < jsonArray.length; ++i) {
       const device = Emulation.EmulatedDevice.fromJSONV1(jsonArray[i]);
@@ -493,13 +517,15 @@ Emulation.EmulatedDevicesList = class extends Common.Object {
    */
   _copyShowValues(from, to) {
     const deviceById = new Map();
-    for (let i = 0; i < from.length; ++i)
+    for (let i = 0; i < from.length; ++i) {
       deviceById.set(from[i].title, from[i]);
+    }
 
     for (let i = 0; i < to.length; ++i) {
       const title = to[i].title;
-      if (deviceById.has(title))
+      if (deviceById.has(title)) {
         to[i].copyShowFrom(/** @type {!Emulation.EmulatedDevice} */ (deviceById.get(title)));
+      }
     }
   }
 };

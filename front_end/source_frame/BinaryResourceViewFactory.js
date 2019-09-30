@@ -105,8 +105,9 @@ SourceFrame.BinaryResourceViewFactory = class {
    */
   static uint8ArrayToHexString(uint8Array) {
     let output = '';
-    for (let i = 0; i < uint8Array.length; i++)
+    for (let i = 0; i < uint8Array.length; i++) {
       output += SourceFrame.BinaryResourceViewFactory.numberToHex(uint8Array[i], 2);
+    }
     return output;
   }
 
@@ -117,8 +118,9 @@ SourceFrame.BinaryResourceViewFactory = class {
    */
   static numberToHex(number, padding) {
     let hex = number.toString(16);
-    while (hex.length < padding)
+    while (hex.length < padding) {
       hex = '0' + hex;
+    }
     return hex;
   }
 

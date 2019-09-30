@@ -29,8 +29,9 @@
  * @return {string}
  */
 Host.platform = function() {
-  if (!Host._platform)
+  if (!Host._platform) {
     Host._platform = InspectorFrontendHost.platform();
+  }
   return Host._platform;
 };
 
@@ -38,8 +39,9 @@ Host.platform = function() {
  * @return {boolean}
  */
 Host.isMac = function() {
-  if (typeof Host._isMac === 'undefined')
+  if (typeof Host._isMac === 'undefined') {
     Host._isMac = Host.platform() === 'mac';
+  }
 
   return Host._isMac;
 };
@@ -48,8 +50,9 @@ Host.isMac = function() {
  * @return {boolean}
  */
 Host.isWin = function() {
-  if (typeof Host._isWin === 'undefined')
+  if (typeof Host._isWin === 'undefined') {
     Host._isWin = Host.platform() === 'windows';
+  }
 
   return Host._isWin;
 };
@@ -58,8 +61,9 @@ Host.isWin = function() {
  * @return {boolean}
  */
 Host.isCustomDevtoolsFrontend = function() {
-  if (typeof Host._isCustomDevtoolsFronend === 'undefined')
+  if (typeof Host._isCustomDevtoolsFronend === 'undefined') {
     Host._isCustomDevtoolsFronend = window.location.toString().startsWith('devtools://devtools/custom/');
+  }
   return Host._isCustomDevtoolsFronend;
 };
 
@@ -67,8 +71,9 @@ Host.isCustomDevtoolsFrontend = function() {
  * @return {string}
  */
 Host.fontFamily = function() {
-  if (Host._fontFamily)
+  if (Host._fontFamily) {
     return Host._fontFamily;
+  }
   switch (Host.platform()) {
     case 'linux':
       Host._fontFamily = 'Roboto, Ubuntu, Arial, sans-serif';

@@ -45,15 +45,17 @@ QuickOpen.QuickOpen = class {
    */
   _queryChanged(query) {
     const prefix = this._prefixes.find(prefix => query.startsWith(prefix));
-    if (typeof prefix !== 'string' || this._prefix === prefix)
+    if (typeof prefix !== 'string' || this._prefix === prefix) {
       return;
+    }
 
     this._prefix = prefix;
     this._filteredListWidget.setPrefix(prefix);
     this._filteredListWidget.setProvider(null);
     this._providers.get(prefix)().then(provider => {
-      if (this._prefix !== prefix)
+      if (this._prefix !== prefix) {
         return;
+      }
       this._filteredListWidget.setProvider(provider);
       this._providerLoadedForTest(provider);
     });

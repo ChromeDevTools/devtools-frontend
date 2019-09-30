@@ -23,8 +23,9 @@ Sources.BreakpointEditDialog = class extends UI.Widget {
     const logpointPrefix = Sources.BreakpointEditDialog.LogpointPrefix;
     const logpointSuffix = Sources.BreakpointEditDialog._LogpointSuffix;
     this._isLogpoint = oldCondition.startsWith(logpointPrefix) && oldCondition.endsWith(logpointSuffix);
-    if (this._isLogpoint)
+    if (this._isLogpoint) {
       oldCondition = oldCondition.substring(logpointPrefix.length, oldCondition.length - logpointSuffix.length);
+    }
     this._isLogpoint = this._isLogpoint || preferLogpoint;
 
     this.element.classList.add('sources-edit-breakpoint-dialog');
@@ -46,16 +47,18 @@ Sources.BreakpointEditDialog = class extends UI.Widget {
       this._updatePlaceholder();
       this._editor.widget().element.classList.add('condition-editor');
       this._editor.configureAutocomplete(ObjectUI.JavaScriptAutocompleteConfig.createConfigForEditor(this._editor));
-      if (oldCondition)
+      if (oldCondition) {
         this._editor.setText(oldCondition);
+      }
       this._editor.widget().markAsExternallyManaged();
       this._editor.widget().show(this.contentElement);
       this._editor.setSelection(this._editor.fullRange());
       this._editor.widget().focus();
       this._editor.widget().element.addEventListener('keydown', this._onKeyDown.bind(this), true);
       this.contentElement.addEventListener('blur', event => {
-        if (event.relatedTarget && !event.relatedTarget.isSelfOrDescendant(this.element))
+        if (event.relatedTarget && !event.relatedTarget.isSelfOrDescendant(this.element)) {
           this._finishEditing(true);
+        }
       }, true);
     });
   }
@@ -93,13 +96,15 @@ Sources.BreakpointEditDialog = class extends UI.Widget {
    * @param {boolean} committed
    */
   _finishEditing(committed) {
-    if (this._finished)
+    if (this._finished) {
       return;
+    }
     this._finished = true;
     this._editor.widget().detach();
     let condition = this._editor.text();
-    if (this._isLogpoint)
+    if (this._isLogpoint) {
       condition = Sources.BreakpointEditDialog._conditionForLogpoint(condition);
+    }
     this._onFinish({committed, condition});
   }
 
@@ -110,13 +115,15 @@ Sources.BreakpointEditDialog = class extends UI.Widget {
     if (isEnterKey(event) && !event.shiftKey) {
       event.consume(true);
       const expression = this._editor.text();
-      if (event.ctrlKey || await ObjectUI.JavaScriptAutocomplete.isExpressionComplete(expression))
+      if (event.ctrlKey || await ObjectUI.JavaScriptAutocomplete.isExpressionComplete(expression)) {
         this._finishEditing(true);
-      else
+      } else {
         this._editor.newlineAndIndent();
+      }
     }
-    if (isEscKey(event))
+    if (isEscKey(event)) {
       this._finishEditing(false);
+    }
   }
 };
 

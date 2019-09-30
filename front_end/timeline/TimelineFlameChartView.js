@@ -92,8 +92,9 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
   _updateColorMapper() {
     /** @type {!Map<string, string>} */
     this._urlToColorCache = new Map();
-    if (!this._model)
+    if (!this._model) {
       return;
+    }
     const colorByProduct = this._groupBySetting.get() === Timeline.AggregatedTimelineTreeView.GroupBy.Product;
     this._mainDataProvider.setEventColorMapping(
         colorByProduct ? this._colorByProductForEvent.bind(this) : Timeline.TimelineUIUtils.eventColor);
@@ -146,8 +147,9 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
    * @param {?PerfUI.FlameChart.Group} group
    */
   updateSelectedGroup(flameChart, group) {
-    if (flameChart !== this._mainFlameChart)
+    if (flameChart !== this._mainFlameChart) {
       return;
+    }
     const track = group ? this._mainDataProvider.groupTrack(group) : null;
     this._selectedTrack = track;
     this._updateTrack();
@@ -157,8 +159,9 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
    * @param {?Timeline.PerformanceModel} model
    */
   setModel(model) {
-    if (model === this._model)
+    if (model === this._model) {
       return;
+    }
     Common.EventTarget.removeEventListeners(this._eventListeners);
     this._model = model;
     this._selectedTrack = null;
@@ -203,11 +206,13 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
   }
 
   _appendExtensionData() {
-    if (!this._model)
+    if (!this._model) {
       return;
+    }
     const extensions = this._model.extensionInfo();
-    while (this._nextExtensionIndex < extensions.length)
+    while (this._nextExtensionIndex < extensions.length) {
       this._mainDataProvider.appendExtensionEvents(extensions[this._nextExtensionIndex++]);
+    }
     this._mainFlameChart.scheduleUpdate();
   }
 
@@ -218,15 +223,18 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
     SDK.OverlayModel.hideDOMNodeHighlight();
     const entryIndex = /** @type {number} */ (commonEvent.data);
     const event = this._mainDataProvider.eventByIndex(entryIndex);
-    if (!event)
+    if (!event) {
       return;
+    }
     const target = this._model && this._model.timelineModel().targetByEvent(event);
-    if (!target)
+    if (!target) {
       return;
+    }
     const timelineData = TimelineModel.TimelineData.forEvent(event);
     const backendNodeId = timelineData.backendNodeId;
-    if (!backendNodeId)
+    if (!backendNodeId) {
       return;
+    }
     new SDK.DeferredDOMNode(target, backendNodeId).highlight();
   }
 
@@ -236,10 +244,11 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
   highlightEvent(event) {
     const entryIndex =
         event ? this._mainDataProvider.entryIndexForSelection(Timeline.TimelineSelection.fromTraceEvent(event)) : -1;
-    if (entryIndex >= 0)
+    if (entryIndex >= 0) {
       this._mainFlameChart.highlightEntry(entryIndex);
-    else
+    } else {
       this._mainFlameChart.hideHighlight();
+    }
   }
 
   /**
@@ -258,17 +267,19 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
     this._networkFlameChartGroupExpansionSetting.addChangeListener(this.resizeToPreferredHeights, this);
     this._showMemoryGraphSetting.addChangeListener(this._updateCountersGraphToggle, this);
     Bindings.blackboxManager.addChangeListener(this._boundRefresh);
-    if (this._needsResizeToPreferredHeights)
+    if (this._needsResizeToPreferredHeights) {
       this.resizeToPreferredHeights();
+    }
     this._mainFlameChart.scheduleUpdate();
     this._networkFlameChart.scheduleUpdate();
   }
 
   _updateCountersGraphToggle() {
-    if (this._showMemoryGraphSetting.get())
+    if (this._showMemoryGraphSetting.get()) {
       this._chartSplitWidget.showBoth();
-    else
+    } else {
       this._chartSplitWidget.hideSidebar();
+    }
   }
 
   /**
@@ -279,8 +290,9 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
     this._mainFlameChart.setSelectedEntry(index);
     index = this._networkDataProvider.entryIndexForSelection(selection);
     this._networkFlameChart.setSelectedEntry(index);
-    if (this._detailsView)
+    if (this._detailsView) {
       this._detailsView.setSelection(selection);
+    }
   }
 
   /**
@@ -290,8 +302,9 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
   _onEntrySelected(dataProvider, event) {
     const entryIndex = /** @type{number} */ (event.data);
     if (Runtime.experiments.isEnabled('timelineEventInitiators') && dataProvider === this._mainDataProvider) {
-      if (this._mainDataProvider.buildFlowForInitiator(entryIndex))
+      if (this._mainDataProvider.buildFlowForInitiator(entryIndex)) {
         this._mainFlameChart.scheduleUpdate();
+      }
     }
     this._delegate.select(dataProvider.createSelection(entryIndex));
   }
@@ -322,8 +335,9 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
    * @override
    */
   jumpToNextSearchResult() {
-    if (!this._searchResults || !this._searchResults.length)
+    if (!this._searchResults || !this._searchResults.length) {
       return;
+    }
     const index = typeof this._selectedSearchResult !== 'undefined' ?
         this._searchResults.indexOf(this._selectedSearchResult) :
         -1;
@@ -334,8 +348,9 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
    * @override
    */
   jumpToPreviousSearchResult() {
-    if (!this._searchResults || !this._searchResults.length)
+    if (!this._searchResults || !this._searchResults.length) {
       return;
+    }
     const index =
         typeof this._selectedSearchResult !== 'undefined' ? this._searchResults.indexOf(this._selectedSearchResult) : 0;
     this._selectSearchResult(mod(index - 1, this._searchResults.length));
@@ -374,17 +389,20 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
     const oldSelectedSearchResult = this._selectedSearchResult;
     delete this._selectedSearchResult;
     this._searchResults = [];
-    if (!this._searchRegex || !this._model)
+    if (!this._searchRegex || !this._model) {
       return;
+    }
     const regExpFilter = new Timeline.TimelineFilters.RegExp(this._searchRegex);
     const window = this._model.window();
     this._searchResults = this._mainDataProvider.search(window.left, window.right, regExpFilter);
     this._searchableView.updateSearchMatchesCount(this._searchResults.length);
-    if (!shouldJump || !this._searchResults.length)
+    if (!shouldJump || !this._searchResults.length) {
       return;
+    }
     let selectedIndex = this._searchResults.indexOf(oldSelectedSearchResult);
-    if (selectedIndex === -1)
+    if (selectedIndex === -1) {
       selectedIndex = jumpBackwards ? this._searchResults.length - 1 : 0;
+    }
     this._selectSearchResult(selectedIndex);
   }
 
@@ -392,8 +410,9 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
    * @override
    */
   searchCanceled() {
-    if (typeof this._selectedSearchResult !== 'undefined')
+    if (typeof this._selectedSearchResult !== 'undefined') {
       this._delegate.select(null);
+    }
     delete this._searchResults;
     delete this._selectedSearchResult;
     delete this._searchRegex;
@@ -466,8 +485,9 @@ Timeline.TimelineFlameChartMarker = class {
    * @return {?string}
    */
   title() {
-    if (this._style.lowPriority)
+    if (this._style.lowPriority) {
       return null;
+    }
     const startTime = Number.millisToString(this._startOffset);
     return ls`${this._style.title} at ${startTime}`;
   }
@@ -482,8 +502,9 @@ Timeline.TimelineFlameChartMarker = class {
   draw(context, x, height, pixelsPerMillisecond) {
     const lowPriorityVisibilityThresholdInPixelsPerMs = 4;
 
-    if (this._style.lowPriority && pixelsPerMillisecond < lowPriorityVisibilityThresholdInPixelsPerMs)
+    if (this._style.lowPriority && pixelsPerMillisecond < lowPriorityVisibilityThresholdInPixelsPerMs) {
       return;
+    }
 
     context.save();
     if (this._style.tall) {

@@ -135,8 +135,9 @@ NodeMain.NodeConnectionsView = class extends UI.VBox {
    */
   commitEdit(rule, editor, isNew) {
     rule.address = editor.control('address').value.trim();
-    if (isNew)
+    if (isNew) {
       this._networkDiscoveryConfig.push(rule);
+    }
     this._update();
   }
 
@@ -155,8 +156,9 @@ NodeMain.NodeConnectionsView = class extends UI.VBox {
    * @return {!UI.ListWidget.Editor<!Adb.PortForwardingRule>}
    */
   _createEditor() {
-    if (this._editor)
+    if (this._editor) {
       return this._editor;
+    }
 
     const editor = new UI.ListWidget.Editor();
     this._editor = editor;
@@ -174,8 +176,9 @@ NodeMain.NodeConnectionsView = class extends UI.VBox {
      */
     function addressValidator(rule, index, input) {
       const match = input.value.trim().match(/^([a-zA-Z0-9\.\-_]+):(\d+)$/);
-      if (!match)
+      if (!match) {
         return {valid: false};
+      }
       const port = parseInt(match[2], 10);
       return {valid: port <= 65535};
     }

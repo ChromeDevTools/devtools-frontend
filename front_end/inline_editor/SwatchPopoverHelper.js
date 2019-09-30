@@ -23,8 +23,9 @@ InlineEditor.SwatchPopoverHelper = class extends Common.Object {
    * @param {!Event} event
    */
   _onFocusOut(event) {
-    if (!event.relatedTarget || event.relatedTarget.isSelfOrDescendant(this._view.contentElement))
+    if (!event.relatedTarget || event.relatedTarget.isSelfOrDescendant(this._view.contentElement)) {
       return;
+    }
     this._hideProxy();
   }
 
@@ -42,8 +43,9 @@ InlineEditor.SwatchPopoverHelper = class extends Common.Object {
    */
   show(view, anchorElement, hiddenCallback) {
     if (this._popover.isShowing()) {
-      if (this._anchorElement === anchorElement)
+      if (this._anchorElement === anchorElement) {
         return;
+      }
 
       // Reopen the picker for another anchor element.
       this.hide(true);
@@ -69,16 +71,18 @@ InlineEditor.SwatchPopoverHelper = class extends Common.Object {
     this._popover.setContentAnchorBox(this._anchorElement.boxInWindow());
     this._popover.show(this._anchorElement.ownerDocument);
     this._view.contentElement.addEventListener('focusout', this._boundFocusOut, false);
-    if (!this._focusRestorer)
+    if (!this._focusRestorer) {
       this._focusRestorer = new UI.WidgetFocusRestorer(this._view);
+    }
   }
 
   /**
    * @param {boolean=} commitEdit
    */
   hide(commitEdit) {
-    if (this._isHidden)
+    if (this._isHidden) {
       return;
+    }
     const document = this._popover.element.ownerDocument;
     this._isHidden = true;
     this._popover.hide();
@@ -86,8 +90,9 @@ InlineEditor.SwatchPopoverHelper = class extends Common.Object {
     document.removeEventListener('mousedown', this._hideProxy, false);
     document.defaultView.removeEventListener('resize', this._hideProxy, false);
 
-    if (this._hiddenCallback)
+    if (this._hiddenCallback) {
       this._hiddenCallback.call(null, !!commitEdit);
+    }
 
     this._focusRestorer.restore();
     delete this._anchorElement;

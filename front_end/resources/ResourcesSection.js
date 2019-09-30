@@ -24,8 +24,9 @@ Resources.ResourcesSection = class {
     const mainTarget = SDK.targetManager.mainTarget();
     const resourceTreeModel = mainTarget && mainTarget.model(SDK.ResourceTreeModel);
     const mainFrame = resourceTreeModel && resourceTreeModel.mainFrame;
-    if (mainFrame)
+    if (mainFrame) {
       this._frameAdded(mainFrame);
+    }
   }
 
   /**
@@ -34,11 +35,13 @@ Resources.ResourcesSection = class {
    */
   static _getParentFrame(frame) {
     const parentFrame = frame.parentFrame;
-    if (parentFrame)
+    if (parentFrame) {
       return parentFrame;
+    }
     const parentTarget = frame.resourceTreeModel().target().parentTarget();
-    if (!parentTarget)
+    if (!parentTarget) {
       return null;
+    }
     return parentTarget.model(SDK.ResourceTreeModel).mainFrame;
   }
 
@@ -47,14 +50,17 @@ Resources.ResourcesSection = class {
    * @return {boolean}
    */
   _expandFrame(frame) {
-    if (!frame)
+    if (!frame) {
       return false;
+    }
     let treeElement = this._treeElementForFrameId.get(frame.id);
-    if (!treeElement && !this._expandFrame(Resources.ResourcesSection._getParentFrame(frame)))
+    if (!treeElement && !this._expandFrame(Resources.ResourcesSection._getParentFrame(frame))) {
       return false;
+    }
     treeElement = this._treeElementForFrameId.get(frame.id);
-    if (!treeElement)
+    if (!treeElement) {
       return false;
+    }
     treeElement.expand();
     return true;
   }
@@ -66,11 +72,13 @@ Resources.ResourcesSection = class {
    * @return {!Promise}
    */
   async revealResource(resource, line, column) {
-    if (!this._expandFrame(resource.frame()))
+    if (!this._expandFrame(resource.frame())) {
       return;
+    }
     const resourceTreeElement = Resources.FrameResourceTreeElement.forResource(resource);
-    if (resourceTreeElement)
+    if (resourceTreeElement) {
       await resourceTreeElement.revealResource(line, column);
+    }
   }
 
   /**
@@ -79,8 +87,9 @@ Resources.ResourcesSection = class {
   _frameAdded(frame) {
     const parentFrame = Resources.ResourcesSection._getParentFrame(frame);
     const parentTreeElement = parentFrame ? this._treeElementForFrameId.get(parentFrame.id) : this._treeElement;
-    if (!parentTreeElement)
+    if (!parentTreeElement) {
       return;
+    }
     const frameTreeElement = new Resources.FrameTreeElement(this, frame);
     this._treeElementForFrameId.set(frame.id, frameTreeElement);
     parentTreeElement.appendChild(frameTreeElement);
@@ -91,12 +100,14 @@ Resources.ResourcesSection = class {
    */
   _frameDetached(frame) {
     const frameTreeElement = this._treeElementForFrameId.get(frame.id);
-    if (!frameTreeElement)
+    if (!frameTreeElement) {
       return;
+    }
 
     this._treeElementForFrameId.remove(frame.id);
-    if (frameTreeElement.parent)
+    if (frameTreeElement.parent) {
       frameTreeElement.parent.removeChild(frameTreeElement);
+    }
   }
 
   /**
@@ -104,8 +115,9 @@ Resources.ResourcesSection = class {
    */
   _frameNavigated(frame) {
     const frameTreeElement = this._treeElementForFrameId.get(frame.id);
-    if (frameTreeElement)
+    if (frameTreeElement) {
       frameTreeElement.frameNavigated(frame);
+    }
   }
 
   /**
@@ -190,11 +202,13 @@ Resources.FrameTreeElement = class extends Resources.BaseStorageTreeElement {
    * @param {!SDK.Resource} resource
    */
   appendResource(resource) {
-    if (!this._populated)
+    if (!this._populated) {
       return;
+    }
     const statusCode = resource['statusCode'];
-    if (statusCode >= 301 && statusCode <= 303)
+    if (statusCode >= 301 && statusCode <= 303) {
       return;
+    }
 
     const resourceType = resource.resourceType();
     const categoryName = resourceType.name();
@@ -224,18 +238,21 @@ Resources.FrameTreeElement = class extends Resources.BaseStorageTreeElement {
    * @param {!UI.TreeElement} treeElement
    */
   appendChild(treeElement) {
-    if (!this._populated)
+    if (!this._populated) {
       return;
+    }
     this._insertInPresentationOrder(this, treeElement);
   }
 
   _insertInPresentationOrder(parentTreeElement, childTreeElement) {
     // Insert in the alphabetical order, first frames, then resources. Document resource goes last.
     function typeWeight(treeElement) {
-      if (treeElement instanceof Resources.StorageCategoryTreeElement)
+      if (treeElement instanceof Resources.StorageCategoryTreeElement) {
         return 2;
-      if (treeElement instanceof Resources.FrameTreeElement)
+      }
+      if (treeElement instanceof Resources.FrameTreeElement) {
         return 1;
+      }
       return 3;
     }
 
@@ -244,20 +261,22 @@ Resources.FrameTreeElement = class extends Resources.BaseStorageTreeElement {
       const typeWeight2 = typeWeight(treeElement2);
 
       let result;
-      if (typeWeight1 > typeWeight2)
+      if (typeWeight1 > typeWeight2) {
         result = 1;
-      else if (typeWeight1 < typeWeight2)
+      } else if (typeWeight1 < typeWeight2) {
         result = -1;
-      else
+      } else {
         result = treeElement1.titleAsText().localeCompare(treeElement2.titleAsText());
+      }
       return result;
     }
 
     const childCount = parentTreeElement.childCount();
     let i;
     for (i = 0; i < childCount; ++i) {
-      if (compare(childTreeElement, parentTreeElement.childAt(i)) < 0)
+      if (compare(childTreeElement, parentTreeElement.childAt(i)) < 0) {
         break;
+      }
     }
     parentTreeElement.insertChild(childTreeElement, i);
   }
@@ -268,10 +287,12 @@ Resources.FrameTreeElement = class extends Resources.BaseStorageTreeElement {
    */
   async onpopulate() {
     this._populated = true;
-    for (const child of this._frame.childFrames)
+    for (const child of this._frame.childFrames) {
       this._section._frameAdded(child);
-    for (const resource of this._frame.resources())
+    }
+    for (const resource of this._frame.resources()) {
       this.appendResource(resource);
+    }
   }
 };
 
@@ -311,12 +332,14 @@ Resources.FrameResourceTreeElement = class extends Resources.BaseStorageTreeElem
    * @return {!Promise<!UI.Widget>}
    */
   _preparePreview() {
-    if (this._previewPromise)
+    if (this._previewPromise) {
       return this._previewPromise;
+    }
     const viewPromise = SourceFrame.PreviewFactory.createPreview(this._resource, this._resource.mimeType);
     this._previewPromise = viewPromise.then(view => {
-      if (view)
+      if (view) {
         return view;
+      }
       return new UI.EmptyWidget(this._resource.url);
     });
     return this._previewPromise;
@@ -374,8 +397,9 @@ Resources.FrameResourceTreeElement = class extends Resources.BaseStorageTreeElem
   async revealResource(line, column) {
     this.revealAndSelect(true);
     const view = await this._panel.scheduleShowView(this._preparePreview());
-    if (!(view instanceof SourceFrame.ResourceSourceFrame) || typeof line !== 'number')
+    if (!(view instanceof SourceFrame.ResourceSourceFrame) || typeof line !== 'number') {
       return;
+    }
     view.revealPosition(line, column, true);
   }
 };

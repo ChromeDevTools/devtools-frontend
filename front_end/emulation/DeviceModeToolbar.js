@@ -117,8 +117,9 @@ Emulation.DeviceModeToolbar = class {
      * @return {{valid: boolean, errorMessage: (string|undefined)}}
      */
     function validateHeight(value) {
-      if (!value)
+      if (!value) {
         return {valid: true};
+      }
       return Emulation.DeviceModeModel.heightValidator(value);
     }
   }
@@ -317,8 +318,9 @@ Emulation.DeviceModeToolbar = class {
      * @param {boolean=} disabled
      */
     function appendToggleItem(section, setting, title1, title2, disabled) {
-      if (typeof disabled === 'undefined')
+      if (typeof disabled === 'undefined') {
         disabled = model.type() === Emulation.DeviceModeModel.Type.None;
+      }
       section.appendItem(setting.get() ? title1 : title2, setting.set.bind(setting, !setting.get()), disabled);
     }
   }
@@ -407,8 +409,9 @@ Emulation.DeviceModeToolbar = class {
      * @this {Emulation.DeviceModeToolbar}
      */
     function appendGroup(devices) {
-      if (!devices.length)
+      if (!devices.length) {
         return;
+      }
       const section = contextMenu.section();
       for (const device of devices) {
         section.appendCheckboxItem(
@@ -422,15 +425,17 @@ Emulation.DeviceModeToolbar = class {
    */
   _deviceListChanged() {
     const device = this._model.device();
-    if (!device)
+    if (!device) {
       return;
+    }
 
     const devices = this._allDevices();
     if (devices.indexOf(device) === -1) {
-      if (devices.length)
+      if (devices.length) {
         this._emulateDevice(devices[0]);
-      else
+      } else {
         this._model.emulate(Emulation.DeviceModeModel.Type.Responsive, null, null);
+      }
     }
   }
 
@@ -481,13 +486,15 @@ Emulation.DeviceModeToolbar = class {
      */
     function addOrientation(orientation, title) {
       const modes = device.modesForOrientation(orientation);
-      if (!modes.length)
+      if (!modes.length) {
         return;
+      }
       if (modes.length === 1) {
         addMode(modes[0], title);
       } else {
-        for (let index = 0; index < modes.length; index++)
+        for (let index = 0; index < modes.length; index++) {
           addMode(modes[index], title + ' \u2013 ' + modes[index].title);
+        }
       }
     }
 
@@ -556,10 +563,12 @@ Emulation.DeviceModeToolbar = class {
     }
 
     let deviceItemTitle = Common.UIString('None');
-    if (this._model.type() === Emulation.DeviceModeModel.Type.Responsive)
+    if (this._model.type() === Emulation.DeviceModeModel.Type.Responsive) {
       deviceItemTitle = Common.UIString('Responsive');
-    if (this._model.type() === Emulation.DeviceModeModel.Type.Device)
+    }
+    if (this._model.type() === Emulation.DeviceModeModel.Type.Device) {
       deviceItemTitle = this._model.device().title;
+    }
     this._deviceSelectItem.setText(deviceItemTitle);
 
     if (this._model.device() !== this._cachedModelDevice) {

@@ -38,8 +38,9 @@ WebAudio.AudioContextSelector = class extends Common.Object {
     this._items.insert(this._items.length, context);
 
     // Select if this is the first item.
-    if (this._items.length === 1)
+    if (this._items.length === 1) {
       this._dropDown.selectItem(context);
+    }
   }
 
   /**
@@ -48,8 +49,9 @@ WebAudio.AudioContextSelector = class extends Common.Object {
   contextDestroyed(event) {
     const contextId = /** @type {!Protocol.WebAudio.GraphObjectId} */ (event.data);
     const contextIndex = this._items.findIndex(context => context.contextId === contextId);
-    if (contextIndex > -1)
+    if (contextIndex > -1) {
       this._items.remove(contextIndex);
+    }
   }
 
   /**
@@ -64,8 +66,9 @@ WebAudio.AudioContextSelector = class extends Common.Object {
 
       // If the changed context is currently selected by user. Re-select it
       // because the actual element is replaced with a new one.
-      if (this._selectedContext && this._selectedContext.contextId === changedContext.contextId)
+      if (this._selectedContext && this._selectedContext.contextId === changedContext.contextId) {
         this._dropDown.selectItem(changedContext);
+      }
     }
   }
 
@@ -86,8 +89,9 @@ WebAudio.AudioContextSelector = class extends Common.Object {
    * @return {?Protocol.WebAudio.BaseAudioContext}
    */
   selectedContext() {
-    if (!this._selectedContext)
+    if (!this._selectedContext) {
       return null;
+    }
 
     return this._selectedContext;
   }
@@ -100,10 +104,12 @@ WebAudio.AudioContextSelector = class extends Common.Object {
    * @param {?Element} toElement
    */
   highlightedItemChanged(from, to, fromElement, toElement) {
-    if (fromElement)
+    if (fromElement) {
       fromElement.classList.remove('highlighted');
-    if (toElement)
+    }
+    if (toElement) {
       toElement.classList.add('highlighted');
+    }
   }
 
   /**
@@ -120,12 +126,14 @@ WebAudio.AudioContextSelector = class extends Common.Object {
    * @param {?Protocol.WebAudio.BaseAudioContext} item
    */
   itemSelected(item) {
-    if (!item)
+    if (!item) {
       return;
+    }
 
     // It's possible that no context is selected yet.
-    if (!this._selectedContext || this._selectedContext.contextId !== item.contextId)
+    if (!this._selectedContext || this._selectedContext.contextId !== item.contextId) {
       this._selectedContext = item;
+    }
 
     this.dispatchEventToListeners(WebAudio.AudioContextSelector.Events.ContextSelected, item);
   }

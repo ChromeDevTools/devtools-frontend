@@ -42,8 +42,9 @@ SDK.Target = class extends Protocol.TargetBase {
       case SDK.Target.Type.ServiceWorker:
         this._capabilitiesMask = SDK.Target.Capability.JS | SDK.Target.Capability.Log | SDK.Target.Capability.Network |
             SDK.Target.Capability.Target | SDK.Target.Capability.Inspector;
-        if (!parentTarget)
+        if (!parentTarget) {
           this._capabilitiesMask |= SDK.Target.Capability.Browser;
+        }
         break;
       case SDK.Target.Type.Worker:
         this._capabilitiesMask = SDK.Target.Capability.JS | SDK.Target.Capability.Log | SDK.Target.Capability.Network |
@@ -70,8 +71,9 @@ SDK.Target = class extends Protocol.TargetBase {
     const registered = Array.from(SDK.SDKModel._registeredModels.keys());
     for (const modelClass of registered) {
       const info = SDK.SDKModel._registeredModels.get(modelClass);
-      if (info.autostart || required.has(modelClass))
+      if (info.autostart || required.has(modelClass)) {
         this.model(modelClass);
+      }
     }
     this._creatingModels = false;
   }
@@ -145,8 +147,9 @@ SDK.Target = class extends Protocol.TargetBase {
   dispose(reason) {
     super.dispose(reason);
     this._targetManager.removeTarget(this);
-    for (const model of this._modelByConstructor.valuesArray())
+    for (const model of this._modelByConstructor.valuesArray()) {
       model.dispose();
+    }
   }
 
   /**
@@ -157,13 +160,15 @@ SDK.Target = class extends Protocol.TargetBase {
   model(modelClass) {
     if (!this._modelByConstructor.get(modelClass)) {
       const info = SDK.SDKModel._registeredModels.get(modelClass);
-      if (info === undefined)
+      if (info === undefined) {
         throw 'Model class is not registered @' + new Error().stack;
+      }
       if ((this._capabilitiesMask & info.capabilities) === info.capabilities) {
         const model = new modelClass(this);
         this._modelByConstructor.set(modelClass, model);
-        if (!this._creatingModels)
+        if (!this._creatingModels) {
           this._targetManager.modelAdded(this, modelClass, model);
+        }
       }
     }
     return this._modelByConstructor.get(modelClass) || null;
@@ -190,11 +195,13 @@ SDK.Target = class extends Protocol.TargetBase {
     this._inspectedURL = inspectedURL;
     const parsedURL = inspectedURL.asParsedURL();
     this._inspectedURLName = parsedURL ? parsedURL.lastPathComponentWithFragment() : '#' + this._id;
-    if (!this.parentTarget())
+    if (!this.parentTarget()) {
       InspectorFrontendHost.inspectedURLChanged(inspectedURL || '');
+    }
     this._targetManager.dispatchEventToListeners(SDK.TargetManager.Events.InspectedURLChanged, this);
-    if (!this._name)
+    if (!this._name) {
       this._targetManager.dispatchEventToListeners(SDK.TargetManager.Events.NameChanged, this);
+    }
   }
 
   /**
@@ -202,8 +209,9 @@ SDK.Target = class extends Protocol.TargetBase {
    * @return {!Promise}
    */
   async suspend(reason) {
-    if (this._isSuspended)
+    if (this._isSuspended) {
       return Promise.resolve();
+    }
     this._isSuspended = true;
 
     await Promise.all(Array.from(this.models().values(), m => m.preSuspendModel(reason)));
@@ -214,8 +222,9 @@ SDK.Target = class extends Protocol.TargetBase {
    * @return {!Promise}
    */
   async resume() {
-    if (!this._isSuspended)
+    if (!this._isSuspended) {
       return Promise.resolve();
+    }
     this._isSuspended = false;
 
     await Promise.all(Array.from(this.models().values(), m => m.resumeModel()));
@@ -328,8 +337,9 @@ SDK.SDKModel = class extends Common.Object {
  * @param {boolean} autostart
  */
 SDK.SDKModel.register = function(modelClass, capabilities, autostart) {
-  if (!SDK.SDKModel._registeredModels)
+  if (!SDK.SDKModel._registeredModels) {
     SDK.SDKModel._registeredModels = new Map();
+  }
   SDK.SDKModel._registeredModels.set(modelClass, {capabilities: capabilities, autostart: autostart});
 };
 

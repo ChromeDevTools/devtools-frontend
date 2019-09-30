@@ -8,8 +8,9 @@
  */
 
 BindingsTestRunner.cleanupURL = function(url) {
-  if (!url.startsWith('debugger://'))
+  if (!url.startsWith('debugger://')) {
     return url;
+  }
 
   return url.replace(/VM\d+/g, 'VM[XXX]');
 };
@@ -31,8 +32,9 @@ BindingsTestRunner.dumpWorkspace = function(previousSnapshot) {
     let index = 0;
 
     for (const entry of diff) {
-      if (entry[0] === Diff.Diff.Operation.Delete)
+      if (entry[0] === Diff.Diff.Operation.Delete) {
         continue;
+      }
 
       if (entry[0] === Diff.Diff.Operation.Equal) {
         index += entry[1].length;
@@ -40,8 +42,9 @@ BindingsTestRunner.dumpWorkspace = function(previousSnapshot) {
       }
 
       // eslint-disable-next-line no-unused-vars
-      for (const line of entry[1])
+      for (const line of entry[1]) {
         isAdded[index++] = true;
+      }
     }
 
     const addedEntries = diff.filter(entry => entry[0] === Diff.Diff.Operation.Insert).map(entry => entry[1]);
@@ -50,8 +53,9 @@ BindingsTestRunner.dumpWorkspace = function(previousSnapshot) {
 
   TestRunner.addResult(`Removed: ${removedLines.length} uiSourceCodes`);
 
-  for (const url of removedLines)
+  for (const url of removedLines) {
     TestRunner.addResult('[-] ' + url);
+  }
 
   TestRunner.addResult(`Workspace: ${urls.length} uiSourceCodes.`);
 
@@ -67,8 +71,9 @@ BindingsTestRunner.dumpWorkspace = function(previousSnapshot) {
 BindingsTestRunner.attachFrame = function(frameId, url, evalSourceURL) {
   let evalSource = `(${attachFrame.toString()})('${frameId}', '${url}')`;
 
-  if (evalSourceURL)
+  if (evalSourceURL) {
     evalSource += '//# sourceURL=' + evalSourceURL;
+  }
 
   return TestRunner.evaluateInPageAsync(evalSource);
 
@@ -84,8 +89,9 @@ BindingsTestRunner.attachFrame = function(frameId, url, evalSourceURL) {
 BindingsTestRunner.detachFrame = function(frameId, evalSourceURL) {
   let evalSource = `(${detachFrame.toString()})('${frameId}')`;
 
-  if (evalSourceURL)
+  if (evalSourceURL) {
     evalSource += '//# sourceURL=' + evalSourceURL;
+  }
 
   return TestRunner.evaluateInPageAnonymously(evalSource);
 
@@ -98,8 +104,9 @@ BindingsTestRunner.detachFrame = function(frameId, evalSourceURL) {
 BindingsTestRunner.navigateFrame = function(frameId, navigateURL, evalSourceURL) {
   let evalSource = `(${navigateFrame.toString()})('${frameId}', '${navigateURL}')`;
 
-  if (evalSourceURL)
+  if (evalSourceURL) {
     evalSource += '//# sourceURL=' + evalSourceURL;
+  }
 
   return TestRunner.evaluateInPageAsync(evalSource);
 
@@ -113,8 +120,9 @@ BindingsTestRunner.navigateFrame = function(frameId, navigateURL, evalSourceURL)
 BindingsTestRunner.attachShadowDOM = function(id, templateSelector, evalSourceURL) {
   let evalSource = `(${createShadowDOM.toString()})('${id}', '${templateSelector}')`;
 
-  if (evalSourceURL)
+  if (evalSourceURL) {
     evalSource += '//# sourceURL=' + evalSourceURL;
+  }
 
   return TestRunner.evaluateInPageAnonymously(evalSource);
 
@@ -134,8 +142,9 @@ BindingsTestRunner.attachShadowDOM = function(id, templateSelector, evalSourceUR
 BindingsTestRunner.detachShadowDOM = function(id, evalSourceURL) {
   let evalSource = `(${removeShadowDOM.toString()})('${id}')`;
 
-  if (evalSourceURL)
+  if (evalSourceURL) {
     evalSource += '//# sourceURL=' + evalSourceURL;
+  }
 
   return TestRunner.evaluateInPageAnonymously(evalSource);
 
@@ -153,8 +162,9 @@ BindingsTestRunner.waitForStyleSheetRemoved = function(urlSuffix) {
   function onStyleSheetRemoved(event) {
     const styleSheetHeader = event.data;
 
-    if (!styleSheetHeader.resourceURL().endsWith(urlSuffix))
+    if (!styleSheetHeader.resourceURL().endsWith(urlSuffix)) {
       return;
+    }
 
     TestRunner.cssModel.removeEventListener(SDK.CSSModel.Events.StyleSheetRemoved, onStyleSheetRemoved);
     fulfill();

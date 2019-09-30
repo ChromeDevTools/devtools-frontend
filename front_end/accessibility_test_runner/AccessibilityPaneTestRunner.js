@@ -44,8 +44,9 @@ AccessibilityTestRunner.dumpAccessibilityNode = function(accessibilityNode) {
 
   if (accessibilityNode.properties()) {
     for (const property of accessibilityNode.properties()) {
-      if ('value' in property)
+      if ('value' in property) {
         builder.push(property.name + '="' + property.value.value + '"');
+      }
     }
   }
 
@@ -66,8 +67,9 @@ AccessibilityTestRunner.findARIAAttributeTreeElement = function(attribute) {
   const childNodes = treeOutline._rootElement._children;
 
   for (const treeElement of childNodes) {
-    if (treeElement._attribute.name === attribute)
+    if (treeElement._attribute.name === attribute) {
       return treeElement;
+    }
   }
 
   return null;

@@ -21,8 +21,9 @@ export default class CharacterIdMap {
   toChar(object) {
     let character = this._elementToCharacter.get(object);
     if (!character) {
-      if (this._charCode >= 0xFFFF)
+      if (this._charCode >= 0xFFFF) {
         throw new Error('CharacterIdMap ran out of capacity!');
+      }
       character = String.fromCharCode(this._charCode++);
       this._elementToCharacter.set(object, character);
       this._characterToElement.set(character, object);
@@ -36,8 +37,9 @@ export default class CharacterIdMap {
    */
   fromChar(character) {
     const object = this._characterToElement.get(character);
-    if (object === undefined)
+    if (object === undefined) {
       return null;
+    }
     return object;
   }
 }

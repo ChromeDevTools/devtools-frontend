@@ -38,8 +38,9 @@ Network.EventSourceMessagesView = class extends UI.VBox {
   wasShown() {
     this._dataGrid.rootNode().removeChildren();
     const messages = this._request.eventSourceMessages();
-    for (let i = 0; i < messages.length; ++i)
+    for (let i = 0; i < messages.length; ++i) {
       this._dataGrid.insertChild(new Network.EventSourceMessageNode(messages[i]));
+    }
 
     this._request.addEventListener(SDK.NetworkRequest.Events.EventSourceMessageAdded, this._messageAdded, this);
   }
@@ -61,11 +62,13 @@ Network.EventSourceMessagesView = class extends UI.VBox {
 
   _sortItems() {
     const sortColumnId = this._dataGrid.sortColumnId();
-    if (!sortColumnId)
+    if (!sortColumnId) {
       return;
+    }
     const comparator = Network.EventSourceMessageNode.Comparators[sortColumnId];
-    if (!comparator)
+    if (!comparator) {
       return;
+    }
     this._dataGrid.sortNodes(comparator, !this._dataGrid.isSortOrderAscending());
   }
 };

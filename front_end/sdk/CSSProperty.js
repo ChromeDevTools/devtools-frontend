@@ -52,17 +52,20 @@ SDK.CSSProperty = class {
   }
 
   _ensureRanges() {
-    if (this._nameRange && this._valueRange)
+    if (this._nameRange && this._valueRange) {
       return;
+    }
     const range = this.range;
     const text = this.text ? new TextUtils.Text(this.text) : null;
-    if (!range || !text)
+    if (!range || !text) {
       return;
+    }
 
     const nameIndex = text.value().indexOf(this.name);
     const valueIndex = text.value().lastIndexOf(this.value);
-    if (nameIndex === -1 || valueIndex === -1 || nameIndex > valueIndex)
+    if (nameIndex === -1 || valueIndex === -1 || nameIndex > valueIndex) {
       return;
+    }
 
     const nameSourceRange = new TextUtils.SourceRange(nameIndex, this.name.length);
     const valueSourceRange = new TextUtils.SourceRange(valueIndex, this.value.length);
@@ -107,10 +110,12 @@ SDK.CSSProperty = class {
    * @param {!SDK.CSSModel.Edit} edit
    */
   rebase(edit) {
-    if (this.ownerStyle.styleSheetId !== edit.styleSheetId)
+    if (this.ownerStyle.styleSheetId !== edit.styleSheetId) {
       return;
-    if (this.range)
+    }
+    if (this.range) {
       this.range = this.range.rebaseAfterTextEdit(edit.oldRange, edit.newRange);
+    }
   }
 
   /**
@@ -121,11 +126,13 @@ SDK.CSSProperty = class {
   }
 
   get propertyText() {
-    if (this.text !== undefined)
+    if (this.text !== undefined) {
       return this.text;
+    }
 
-    if (this.name === '')
+    if (this.name === '') {
       return '';
+    }
     return this.name + ': ' + this.value + (this.important ? ' !important' : '') + ';';
   }
 
@@ -143,17 +150,21 @@ SDK.CSSProperty = class {
    * @return {!Promise.<boolean>}
    */
   async setText(propertyText, majorChange, overwrite) {
-    if (!this.ownerStyle)
+    if (!this.ownerStyle) {
       return Promise.reject(new Error('No ownerStyle for property'));
+    }
 
-    if (!this.ownerStyle.styleSheetId)
+    if (!this.ownerStyle.styleSheetId) {
       return Promise.reject(new Error('No owner style id'));
+    }
 
-    if (!this.range || !this.ownerStyle.range)
+    if (!this.range || !this.ownerStyle.range) {
       return Promise.reject(new Error('Style not editable'));
+    }
 
-    if (majorChange)
+    if (majorChange) {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.StyleRuleEdited);
+    }
 
     if (overwrite && propertyText === this.propertyText) {
       this.ownerStyle.cssModel().domModel().markUndoableState(!majorChange);
@@ -181,8 +192,9 @@ SDK.CSSProperty = class {
    */
   static _formatStyle(styleText, indentation, endIndentation, tokenizerFactory) {
     const doubleIndent = indentation.substring(endIndentation.length) + indentation;
-    if (indentation)
+    if (indentation) {
       indentation = '\n' + indentation;
+    }
     let result = '';
     let propertyName = '';
     let propertyText;
@@ -191,8 +203,9 @@ SDK.CSSProperty = class {
     const tokenize = tokenizerFactory.createTokenizer('text/css');
 
     tokenize('*{' + styleText + '}', processToken);
-    if (insideProperty)
+    if (insideProperty) {
       result += propertyText;
+    }
     result = result.substring(2, result.length - 1).trimRight();
     return result + (indentation ? '\n' + endIndentation : '');
 
@@ -215,11 +228,13 @@ SDK.CSSProperty = class {
           propertyText = token;
         } else if (token !== ';' || needsSemi) {
           result += token;
-          if (token.trim() && !(tokenType && tokenType.includes('css-comment')))
+          if (token.trim() && !(tokenType && tokenType.includes('css-comment'))) {
             needsSemi = token !== ';';
+          }
         }
-        if (token === '{' && !tokenType)
+        if (token === '{' && !tokenType) {
           needsSemi = false;
+        }
         return;
       }
 
@@ -228,16 +243,19 @@ SDK.CSSProperty = class {
         needsSemi = false;
         insideProperty = false;
         propertyName = '';
-        if (token === '}')
+        if (token === '}') {
           result += '}';
+        }
       } else {
         if (SDK.cssMetadata().isGridAreaDefiningProperty(propertyName)) {
           const rowResult = SDK.CSSMetadata.GridAreaRowRegex.exec(token);
-          if (rowResult && rowResult.index === 0 && !propertyText.trimRight().endsWith(']'))
+          if (rowResult && rowResult.index === 0 && !propertyText.trimRight().endsWith(']')) {
             propertyText = propertyText.trimRight() + '\n' + doubleIndent;
+          }
         }
-        if (!propertyName && token === ':')
+        if (!propertyName && token === ':') {
           propertyName = propertyText;
+        }
         propertyText += token;
       }
     }
@@ -248,8 +266,9 @@ SDK.CSSProperty = class {
      */
     function isDisabledProperty(text) {
       const colon = text.indexOf(':');
-      if (colon === -1)
+      if (colon === -1) {
         return false;
+      }
       const propertyName = text.substring(2, colon).trim();
       return SDK.cssMetadata().isCSSPropertyName(propertyName);
     }
@@ -261,8 +280,9 @@ SDK.CSSProperty = class {
    */
   _detectIndentation(text) {
     const lines = text.split('\n');
-    if (lines.length < 2)
+    if (lines.length < 2) {
       return '';
+    }
     return TextUtils.TextUtils.lineIndent(lines[1]);
   }
 
@@ -282,10 +302,12 @@ SDK.CSSProperty = class {
    * @return {!Promise.<boolean>}
    */
   setDisabled(disabled) {
-    if (!this.ownerStyle)
+    if (!this.ownerStyle) {
       return Promise.resolve(false);
-    if (disabled === this.disabled)
+    }
+    if (disabled === this.disabled) {
       return Promise.resolve(true);
+    }
     const propertyText = this.text.trim();
     const text = disabled ? '/* ' + propertyText + ' */' : this.text.substring(2, propertyText.length - 2).trim();
     return this.setText(text, true, true);

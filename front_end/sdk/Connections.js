@@ -40,16 +40,18 @@ SDK.MainConnection = class {
    * @param {string} message
    */
   sendRawMessage(message) {
-    if (this._onMessage)
+    if (this._onMessage) {
       InspectorFrontendHost.sendMessageToBackend(message);
+    }
   }
 
   /**
    * @param {!Common.Event} event
    */
   _dispatchMessage(event) {
-    if (this._onMessage)
+    if (this._onMessage) {
       this._onMessage.call(null, /** @type {string} */ (event.data));
+    }
   }
 
   /**
@@ -80,8 +82,9 @@ SDK.MainConnection = class {
     this._onDisconnect = null;
     this._onMessage = null;
 
-    if (onDisconnect)
+    if (onDisconnect) {
       onDisconnect.call(null, 'force disconnect');
+    }
     return Promise.resolve();
   }
 };
@@ -99,8 +102,9 @@ SDK.WebSocketConnection = class {
     this._socket.onerror = this._onError.bind(this);
     this._socket.onopen = this._onOpen.bind(this);
     this._socket.onmessage = messageEvent => {
-      if (this._onMessage)
+      if (this._onMessage) {
         this._onMessage.call(null, /** @type {string} */ (messageEvent.data));
+      }
     };
     this._socket.onclose = this._onClose.bind(this);
 
@@ -137,8 +141,9 @@ SDK.WebSocketConnection = class {
   _onOpen() {
     this._socket.onerror = console.error;
     this._connected = true;
-    for (const message of this._messages)
+    for (const message of this._messages) {
       this._socket.send(message);
+    }
     this._messages = [];
   }
 
@@ -166,10 +171,11 @@ SDK.WebSocketConnection = class {
    * @param {string} message
    */
   sendRawMessage(message) {
-    if (this._connected)
+    if (this._connected) {
       this._socket.send(message);
-    else
+    } else {
       this._messages.push(message);
+    }
   }
 
   /**
@@ -180,8 +186,9 @@ SDK.WebSocketConnection = class {
     let fulfill;
     const promise = new Promise(f => fulfill = f);
     this._close(() => {
-      if (this._onDisconnect)
+      if (this._onDisconnect) {
         this._onDisconnect.call(null, 'force disconnect');
+      }
       fulfill();
     });
     return promise;
@@ -231,8 +238,9 @@ SDK.StubConnection = class {
       code: Protocol.DevToolsStubErrorCode,
       data: messageObject
     };
-    if (this._onMessage)
+    if (this._onMessage) {
       this._onMessage.call(null, {id: messageObject.id, error: error});
+    }
   }
 
   /**
@@ -240,8 +248,9 @@ SDK.StubConnection = class {
    * @return {!Promise}
    */
   disconnect() {
-    if (this._onDisconnect)
+    if (this._onDisconnect) {
       this._onDisconnect.call(null, 'force disconnect');
+    }
     this._onDisconnect = null;
     this._onMessage = null;
     return Promise.resolve();
@@ -294,8 +303,9 @@ SDK.ParallelConnection = class {
    * @return {!Promise}
    */
   disconnect() {
-    if (this._onDisconnect)
+    if (this._onDisconnect) {
       this._onDisconnect.call(null, 'force disconnect');
+    }
     this._onDisconnect = null;
     this._onMessage = null;
     return Promise.resolve();

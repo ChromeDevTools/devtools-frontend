@@ -45,8 +45,9 @@ CPUProfilerTestRunner.showProfileWhenAdded = function(title) {
 };
 
 CPUProfilerTestRunner._profileHeaderAdded = function(profile) {
-  if (CPUProfilerTestRunner._showProfileWhenAdded === profile.title)
+  if (CPUProfilerTestRunner._showProfileWhenAdded === profile.title) {
     UI.panels.js_profiler.showProfile(profile);
+  }
 };
 
 CPUProfilerTestRunner.waitUntilProfileViewIsShown = function(title, callback) {
@@ -54,10 +55,11 @@ CPUProfilerTestRunner.waitUntilProfileViewIsShown = function(title, callback) {
   const profilesPanel = UI.panels.js_profiler;
 
   if (profilesPanel.visibleView && profilesPanel.visibleView.profile &&
-      profilesPanel.visibleView._profileHeader.title === title)
+      profilesPanel.visibleView._profileHeader.title === title) {
     callback(profilesPanel.visibleView);
-  else
+  } else {
     CPUProfilerTestRunner._waitUntilProfileViewIsShownCallback = {title: title, callback: callback};
+  }
 
 };
 

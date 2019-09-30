@@ -95,10 +95,11 @@ export default class ParsedURL {
   static platformPathToURL(fileSystemPath) {
     fileSystemPath = fileSystemPath.replace(/\\/g, '/');
     if (!fileSystemPath.startsWith('file://')) {
-      if (fileSystemPath.startsWith('/'))
+      if (fileSystemPath.startsWith('/')) {
         fileSystemPath = 'file://' + fileSystemPath;
-      else
+      } else {
         fileSystemPath = 'file:///' + fileSystemPath;
+      }
     }
     return fileSystemPath;
   }
@@ -110,8 +111,9 @@ export default class ParsedURL {
    */
   static urlToPlatformPath(fileURL, isWindows) {
     console.assert(fileURL.startsWith('file://'), 'This must be a file URL.');
-    if (isWindows)
+    if (isWindows) {
       return fileURL.substr('file:///'.length).replace(/\//g, '\\');
+    }
     return fileURL.substr('file://'.length);
   }
 
@@ -121,8 +123,9 @@ export default class ParsedURL {
    */
   static urlWithoutHash(url) {
     const hashIndex = url.indexOf('#');
-    if (hashIndex !== -1)
+    if (hashIndex !== -1) {
       return url.substr(0, hashIndex);
+    }
     return url;
   }
 
@@ -130,8 +133,9 @@ export default class ParsedURL {
    * @return {!RegExp}
    */
   static _urlRegex() {
-    if (Common.ParsedURL._urlRegexInstance)
+    if (Common.ParsedURL._urlRegexInstance) {
       return Common.ParsedURL._urlRegexInstance;
+    }
     // RegExp groups:
     // 1 - scheme, hostname, ?port
     // 2 - scheme (using the RFC3986 grammar)
@@ -180,17 +184,20 @@ export default class ParsedURL {
   static extractExtension(url) {
     url = Common.ParsedURL.urlWithoutHash(url);
     const indexOfQuestionMark = url.indexOf('?');
-    if (indexOfQuestionMark !== -1)
+    if (indexOfQuestionMark !== -1) {
       url = url.substr(0, indexOfQuestionMark);
+    }
     const lastIndexOfSlash = url.lastIndexOf('/');
-    if (lastIndexOfSlash !== -1)
+    if (lastIndexOfSlash !== -1) {
       url = url.substr(lastIndexOfSlash + 1);
+    }
     const lastIndexOfDot = url.lastIndexOf('.');
     if (lastIndexOfDot !== -1) {
       url = url.substr(lastIndexOfDot + 1);
       const lastIndexOfPercent = url.indexOf('%');
-      if (lastIndexOfPercent !== -1)
+      if (lastIndexOfPercent !== -1) {
         return url.substr(0, lastIndexOfPercent);
+      }
       return url;
     }
     return '';
@@ -216,20 +223,24 @@ export default class ParsedURL {
     // Return special URLs as-is.
     const trimmedHref = href.trim();
     if (trimmedHref.startsWith('data:') || trimmedHref.startsWith('blob:') || trimmedHref.startsWith('javascript:') ||
-        trimmedHref.startsWith('mailto:'))
+        trimmedHref.startsWith('mailto:')) {
       return href;
+    }
 
     // Return absolute URLs as-is.
     const parsedHref = trimmedHref.asParsedURL();
-    if (parsedHref && parsedHref.scheme)
+    if (parsedHref && parsedHref.scheme) {
       return trimmedHref;
+    }
 
     const parsedURL = baseURL.asParsedURL();
-    if (!parsedURL)
+    if (!parsedURL) {
       return null;
+    }
 
-    if (parsedURL.isDataURL())
+    if (parsedURL.isDataURL()) {
       return href;
+    }
 
     if (href.length > 1 && href.charAt(0) === '/' && href.charAt(1) === '/') {
       // href starts with "//" which is a full URL with the protocol dropped (use the baseURL protocol).
@@ -241,19 +252,23 @@ export default class ParsedURL {
     const queryText = parsedURL.queryParams ? '?' + parsedURL.queryParams : '';
 
     // Empty href resolves to a URL without fragment.
-    if (!href.length)
+    if (!href.length) {
       return securityOrigin + pathText + queryText;
+    }
 
-    if (href.charAt(0) === '#')
+    if (href.charAt(0) === '#') {
       return securityOrigin + pathText + queryText + href;
+    }
 
-    if (href.charAt(0) === '?')
+    if (href.charAt(0) === '?') {
       return securityOrigin + pathText + href;
+    }
 
     let hrefPath = href.match(/^[^#?]*/)[0];
     const hrefSuffix = href.substring(hrefPath.length);
-    if (hrefPath.charAt(0) !== '/')
+    if (hrefPath.charAt(0) !== '/') {
       hrefPath = parsedURL.folderPathComponents + '/' + hrefPath;
+    }
     return securityOrigin + Runtime.normalizePath(hrefPath) + hrefSuffix;
   }
 
@@ -303,21 +318,27 @@ export default class ParsedURL {
   }
 
   get displayName() {
-    if (this._displayName)
+    if (this._displayName) {
       return this._displayName;
+    }
 
-    if (this.isDataURL())
+    if (this.isDataURL()) {
       return this.dataURLDisplayName();
-    if (this.isBlobURL())
+    }
+    if (this.isBlobURL()) {
       return this.url;
-    if (this.isAboutBlank())
+    }
+    if (this.isAboutBlank()) {
       return this.url;
+    }
 
     this._displayName = this.lastPathComponent;
-    if (!this._displayName)
+    if (!this._displayName) {
       this._displayName = (this.host || '') + '/';
-    if (this._displayName === '/')
+    }
+    if (this._displayName === '/') {
       this._displayName = this.url;
+    }
     return this._displayName;
   }
 
@@ -325,10 +346,12 @@ export default class ParsedURL {
    * @return {string}
    */
   dataURLDisplayName() {
-    if (this._dataURLDisplayName)
+    if (this._dataURLDisplayName) {
       return this._dataURLDisplayName;
-    if (!this.isDataURL())
+    }
+    if (!this.isDataURL()) {
       return '';
+    }
     this._dataURLDisplayName = this.url.trimEndWithMaxLength(20);
     return this._dataURLDisplayName;
   }
@@ -365,8 +388,9 @@ export default class ParsedURL {
    * @return {string}
    */
   domain() {
-    if (this.isDataURL())
+    if (this.isDataURL()) {
       return 'data:';
+    }
     return this.host + (this.port ? ':' + this.port : '');
   }
 
@@ -374,8 +398,9 @@ export default class ParsedURL {
    * @return {string}
    */
   securityOrigin() {
-    if (this.isDataURL())
+    if (this.isDataURL()) {
       return 'data:';
+    }
     const scheme = this.isBlobURL() ? this._blobInnerScheme : this.scheme;
     return scheme + '://' + this.domain();
   }
@@ -384,8 +409,9 @@ export default class ParsedURL {
    * @return {string}
    */
   urlWithoutScheme() {
-    if (this.scheme && this.url.startsWith(this.scheme + '://'))
+    if (this.scheme && this.url.startsWith(this.scheme + '://')) {
       return this.url.substring(this.scheme.length + 3);
+    }
     return this.url;
   }
 }
@@ -395,8 +421,9 @@ export default class ParsedURL {
  */
 String.prototype.asParsedURL = function() {
   const parsedURL = new Common.ParsedURL(this.toString());
-  if (parsedURL.isValid)
+  if (parsedURL.isValid) {
     return parsedURL;
+  }
   return null;
 };
 

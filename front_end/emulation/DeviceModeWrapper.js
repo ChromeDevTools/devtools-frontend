@@ -34,15 +34,17 @@ Emulation.DeviceModeWrapper = class extends UI.VBox {
    * @return {boolean}
    */
   _captureScreenshot(fullSize, clip) {
-    if (!this._deviceModeView)
+    if (!this._deviceModeView) {
       this._deviceModeView = new Emulation.DeviceModeView();
+    }
     this._deviceModeView.setNonEmulatedAvailableSize(this._inspectedPagePlaceholder.element);
-    if (fullSize)
+    if (fullSize) {
       this._deviceModeView.captureFullSizeScreenshot();
-    else if (clip)
+    } else if (clip) {
       this._deviceModeView.captureAreaScreenshot(clip);
-    else
+    } else {
       this._deviceModeView.captureScreenshot();
+    }
     return true;
   }
 
@@ -61,19 +63,22 @@ Emulation.DeviceModeWrapper = class extends UI.VBox {
     this._toggleDeviceModeAction.setToggled(this._showDeviceModeSetting.get());
     if (!force) {
       const showing = this._deviceModeView && this._deviceModeView.isShowing();
-      if (this._showDeviceModeSetting.get() === showing)
+      if (this._showDeviceModeSetting.get() === showing) {
         return;
+      }
     }
 
     if (this._showDeviceModeSetting.get()) {
-      if (!this._deviceModeView)
+      if (!this._deviceModeView) {
         this._deviceModeView = new Emulation.DeviceModeView();
+      }
       this._deviceModeView.show(this.element);
       this._inspectedPagePlaceholder.clearMinimumSize();
       this._inspectedPagePlaceholder.show(this._deviceModeView.element);
     } else {
-      if (this._deviceModeView)
+      if (this._deviceModeView) {
         this._deviceModeView.detach();
+      }
       this._inspectedPagePlaceholder.restoreMinimumSize();
       this._inspectedPagePlaceholder.show(this.element);
     }
@@ -102,8 +107,9 @@ Emulation.DeviceModeWrapper.ActionDelegate = class {
 
         case 'emulation.capture-node-screenshot': {
           const node = UI.context.flavor(SDK.DOMNode);
-          if (!node)
+          if (!node) {
             return true;
+          }
           async function captureClip() {
             const object = await node.resolveToObject();
             const result = await object.callFunction(function() {

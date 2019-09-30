@@ -91,8 +91,9 @@ Resources.DOMStorageItemsView = class extends Resources.StorageItemsView {
   }
 
   _domStorageItemsCleared() {
-    if (!this.isShowing() || !this._dataGrid)
+    if (!this.isShowing() || !this._dataGrid) {
       return;
+    }
 
     this._dataGrid.rootNode().removeChildren();
     this._dataGrid.addCreationNode(false);
@@ -103,8 +104,9 @@ Resources.DOMStorageItemsView = class extends Resources.StorageItemsView {
    * @param {!Common.Event} event
    */
   _domStorageItemRemoved(event) {
-    if (!this.isShowing() || !this._dataGrid)
+    if (!this.isShowing() || !this._dataGrid) {
       return;
+    }
 
     const storageData = event.data;
     const rootNode = this._dataGrid.rootNode();
@@ -124,16 +126,18 @@ Resources.DOMStorageItemsView = class extends Resources.StorageItemsView {
    * @param {!Common.Event} event
    */
   _domStorageItemAdded(event) {
-    if (!this.isShowing() || !this._dataGrid)
+    if (!this.isShowing() || !this._dataGrid) {
       return;
+    }
 
     const storageData = event.data;
     const rootNode = this._dataGrid.rootNode();
     const children = rootNode.children;
 
     for (let i = 0; i < children.length; ++i) {
-      if (children[i].data.key === storageData.key)
+      if (children[i].data.key === storageData.key) {
         return;
+      }
     }
 
     const childNode = new DataGrid.DataGridNode({key: storageData.key, value: storageData.value}, false);
@@ -144,18 +148,21 @@ Resources.DOMStorageItemsView = class extends Resources.StorageItemsView {
    * @param {!Common.Event} event
    */
   _domStorageItemUpdated(event) {
-    if (!this.isShowing() || !this._dataGrid)
+    if (!this.isShowing() || !this._dataGrid) {
       return;
+    }
 
     const storageData = event.data;
     const childNode = this._dataGrid.rootNode().children.find(child => child.data.key === storageData.key);
-    if (!childNode || childNode.data.value === storageData.value)
+    if (!childNode || childNode.data.value === storageData.value) {
       return;
+    }
 
     childNode.data.value = storageData.value;
     childNode.refresh();
-    if (!childNode.selected)
+    if (!childNode.selected) {
       return;
+    }
     this._previewEntry(childNode);
     this.setCanDeleteSelected(true);
   }
@@ -167,8 +174,9 @@ Resources.DOMStorageItemsView = class extends Resources.StorageItemsView {
     const rootNode = this._dataGrid.rootNode();
     let selectedKey = null;
     for (const node of rootNode.children) {
-      if (!node.selected)
+      if (!node.selected) {
         continue;
+      }
       selectedKey = node.data.key;
       break;
     }
@@ -181,11 +189,13 @@ Resources.DOMStorageItemsView = class extends Resources.StorageItemsView {
       const node = new DataGrid.DataGridNode({key: key, value: value}, false);
       node.selectable = true;
       rootNode.appendChild(node);
-      if (!selectedNode || key === selectedKey)
+      if (!selectedNode || key === selectedKey) {
         selectedNode = node;
+      }
     }
-    if (selectedNode)
+    if (selectedNode) {
       selectedNode.selected = true;
+    }
     this._dataGrid.addCreationNode(false);
     this.setCanDeleteSelected(!!selectedNode);
   }
@@ -194,8 +204,9 @@ Resources.DOMStorageItemsView = class extends Resources.StorageItemsView {
    * @override
    */
   deleteSelectedItem() {
-    if (!this._dataGrid || !this._dataGrid.selectedNode)
+    if (!this._dataGrid || !this._dataGrid.selectedNode) {
       return;
+    }
 
     this._deleteCallback(this._dataGrid.selectedNode);
   }
@@ -219,8 +230,9 @@ Resources.DOMStorageItemsView = class extends Resources.StorageItemsView {
   _editingCallback(editingNode, columnIdentifier, oldText, newText) {
     const domStorage = this._domStorage;
     if (columnIdentifier === 'key') {
-      if (typeof oldText === 'string')
+      if (typeof oldText === 'string') {
         domStorage.removeItem(oldText);
+      }
       domStorage.setItem(newText, editingNode.data.value || '');
       this._removeDupes(editingNode);
     } else {
@@ -236,17 +248,20 @@ Resources.DOMStorageItemsView = class extends Resources.StorageItemsView {
     const children = rootNode.children;
     for (let i = children.length - 1; i >= 0; --i) {
       const childNode = children[i];
-      if ((childNode.data.key === masterNode.data.key) && (masterNode !== childNode))
+      if ((childNode.data.key === masterNode.data.key) && (masterNode !== childNode)) {
         rootNode.removeChild(childNode);
+      }
     }
   }
 
   _deleteCallback(node) {
-    if (!node || node.isCreationNode)
+    if (!node || node.isCreationNode) {
       return;
+    }
 
-    if (this._domStorage)
+    if (this._domStorage) {
       this._domStorage.removeItem(node.data.key);
+    }
   }
 
   /**
@@ -254,12 +269,15 @@ Resources.DOMStorageItemsView = class extends Resources.StorageItemsView {
    * @param {?string} value
    */
   _showPreview(preview, value) {
-    if (this._preview && this._previewValue === value)
+    if (this._preview && this._previewValue === value) {
       return;
-    if (this._preview)
+    }
+    if (this._preview) {
       this._preview.detach();
-    if (!preview)
+    }
+    if (!preview) {
       preview = new UI.EmptyWidget(Common.UIString('Select a value to preview'));
+    }
     this._previewValue = value;
     this._preview = preview;
     preview.show(this._previewPanel.contentElement);
@@ -280,8 +298,9 @@ Resources.DOMStorageItemsView = class extends Resources.StorageItemsView {
         Common.StaticContentProvider.fromString(url, Common.resourceTypes.XHR, /** @type {string} */ (value));
     const preview = await SourceFrame.PreviewFactory.createPreview(provider, 'text/plain');
     // Selection could've changed while the preview was loaded
-    if (!entry.selected)
+    if (!entry.selected) {
       return;
+    }
     this._showPreview(preview, value);
   }
 };

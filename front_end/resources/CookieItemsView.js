@@ -95,14 +95,17 @@ Resources.CookieItemsView = class extends Resources.StorageItemsView {
    * @param {?SDK.Cookie} value
    */
   _showPreview(preview, value) {
-    if (this._preview && this._previewValue === value)
+    if (this._preview && this._previewValue === value) {
       return;
+    }
 
-    if (this._preview)
+    if (this._preview) {
       this._preview.detach();
+    }
 
-    if (!preview)
+    if (!preview) {
       preview = new UI.EmptyWidget(ls`Select a cookie to preview it value`);
+    }
 
     this._previewValue = value;
     this._preview = preview;
@@ -145,10 +148,12 @@ Resources.CookieItemsView = class extends Resources.StorageItemsView {
    * @return {!Promise<boolean>}
    */
   _saveCookie(newCookie, oldCookie) {
-    if (!this._model)
+    if (!this._model) {
       return Promise.resolve(false);
-    if (oldCookie && (newCookie.name() !== oldCookie.name() || newCookie.url() !== oldCookie.url()))
+    }
+    if (oldCookie && (newCookie.name() !== oldCookie.name() || newCookie.url() !== oldCookie.url())) {
       this._model.deleteCookie(oldCookie);
+    }
     return this._model.saveCookie(newCookie);
   }
 
@@ -189,8 +194,9 @@ Resources.CookieItemsView = class extends Resources.StorageItemsView {
    */
   deleteSelectedItem() {
     const selectedCookie = this._cookiesTable.selectedCookie();
-    if (selectedCookie)
+    if (selectedCookie) {
       this._model.deleteCookie(selectedCookie, () => this.refreshItems());
+    }
   }
 
   /**

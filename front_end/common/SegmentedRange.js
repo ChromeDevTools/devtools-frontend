@@ -11,8 +11,9 @@ export class Segment {
    * @param {*} data
    */
   constructor(begin, end, data) {
-    if (begin > end)
+    if (begin > end) {
       console.assert(false, 'Invalid segment');
+    }
     this.begin = begin;
     this.end = end;
     this.data = data;
@@ -66,8 +67,9 @@ export default class SegmentedRange {
       }
     }
     // 3. Consume all segments that are entirely covered by the new one.
-    while (endIndex < this._segments.length && this._segments[endIndex].end <= newSegment.end)
+    while (endIndex < this._segments.length && this._segments[endIndex].end <= newSegment.end) {
       ++endIndex;
+    }
     // 4. Merge or adjust the succeeding segment if it overlaps.
     if (endIndex < this._segments.length) {
       merged = this._tryMerge(newSegment, this._segments[endIndex]);
@@ -102,8 +104,9 @@ export default class SegmentedRange {
    */
   _tryMerge(first, second) {
     const merged = this._mergeCallback && this._mergeCallback(first, second);
-    if (!merged)
+    if (!merged) {
       return null;
+    }
     merged.begin = first.begin;
     merged.end = Math.max(first.end, second.end);
     return merged;

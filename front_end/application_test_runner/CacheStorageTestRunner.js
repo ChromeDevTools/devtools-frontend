@@ -28,10 +28,11 @@ ApplicationTestRunner.dumpCacheTreeNoRefresh = async function(pathFilter) {
   }
   UI.panels.resources._sidebar.cacheStorageListTreeElement.expand();
 
-  if (!pathFilter)
+  if (!pathFilter) {
     TestRunner.addResult('Dumping CacheStorage tree:');
-  else
+  } else {
     TestRunner.addResult('Dumping CacheStorage tree with URL path filter string "' + pathFilter + '"');
+  }
 
   const cachesTreeElement = UI.panels.resources._sidebar.cacheStorageListTreeElement;
 
@@ -45,8 +46,9 @@ ApplicationTestRunner.dumpCacheTreeNoRefresh = async function(pathFilter) {
     TestRunner.addResult('    cache: ' + cacheTreeElement.title);
     let view = cacheTreeElement._view;
 
-    if (!view)
+    if (!view) {
       cacheTreeElement.onselect(false);
+    }
     view = cacheTreeElement._view;
     await view._updateData(true);
     if (cacheTreeElement._view._entriesForTest.length === 0) {
@@ -89,26 +91,30 @@ ApplicationTestRunner.dumpCachedEntryContentNoRefresh = async function(cacheName
 
   for (let i = 0; i < cachesTreeElement.childCount(); ++i) {
     const cacheTreeElement = cachesTreeElement.childAt(i);
-    if (cacheTreeElement.title.split(' ')[0] !== cacheName)
+    if (cacheTreeElement.title.split(' ')[0] !== cacheName) {
       continue;
+    }
 
     let view = cacheTreeElement._view;
-    if (!view)
+    if (!view) {
       cacheTreeElement.onselect(false);
+    }
     view = cacheTreeElement._view;
     await view._updateData(true);
 
     const promiseDumpContent = new Promise(resolve => {
       view._model.loadCacheData(view._cache, 0, 50, '', async function(entries, totalCount) {
         for (const entry of entries) {
-          if (entry.requestURL !== requestUrl)
+          if (entry.requestURL !== requestUrl) {
             continue;
+          }
 
           const request = view._createRequest(entry);
           if (request.requestHeaders().length) {
             TestRunner.addResult('    the original request has headers; query with headers? ' + withHeader);
-            if (!withHeader)
+            if (!withHeader) {
               request.setRequestHeaders([]);
+            }
           }
           const contentObject = await view._requestContent(request);
           const content = contentObject.content;
@@ -124,18 +130,20 @@ ApplicationTestRunner.dumpCachedEntryContentNoRefresh = async function(cacheName
 ApplicationTestRunner.deleteCacheFromInspector = async function(cacheName, optionalEntry) {
   UI.panels.resources._sidebar.cacheStorageListTreeElement.expand();
 
-  if (optionalEntry)
+  if (optionalEntry) {
     TestRunner.addResult('Deleting CacheStorage entry ' + optionalEntry + ' in cache ' + cacheName);
-  else
+  } else {
     TestRunner.addResult('Deleting CacheStorage cache ' + cacheName);
+  }
 
   const cachesTreeElement = UI.panels.resources._sidebar.cacheStorageListTreeElement;
   let promise = TestRunner.addSnifferPromise(SDK.ServiceWorkerCacheModel.prototype, '_updateCacheNames');
   UI.panels.resources._sidebar.cacheStorageListTreeElement._refreshCaches();
   await promise;
 
-  if (!cachesTreeElement.childCount())
+  if (!cachesTreeElement.childCount()) {
     throw 'Error: Could not find CacheStorage cache ' + cacheName;
+  }
 
 
   for (let i = 0; i < cachesTreeElement.childCount(); i++) {
@@ -143,8 +151,9 @@ ApplicationTestRunner.deleteCacheFromInspector = async function(cacheName, optio
     const title = cacheTreeElement.title;
     const elementCacheName = title.substring(0, title.lastIndexOf(' - '));
 
-    if (elementCacheName !== cacheName)
+    if (elementCacheName !== cacheName) {
       continue;
+    }
 
     if (!optionalEntry) {
       promise = TestRunner.addSnifferPromise(SDK.ServiceWorkerCacheModel.prototype, '_cacheRemoved');
@@ -156,17 +165,19 @@ ApplicationTestRunner.deleteCacheFromInspector = async function(cacheName, optio
     promise = TestRunner.addSnifferPromise(Resources.ServiceWorkerCacheView.prototype, '_updateDataCallback');
     let view = cacheTreeElement._view;
 
-    if (!view)
+    if (!view) {
       cacheTreeElement.onselect(false);
-    else
+    } else {
       view._updateData(true);
+    }
 
     view = cacheTreeElement._view;
     await promise;
     const entry = view._entriesForTest.find(entry => entry.requestURL === optionalEntry);
 
-    if (!entry)
+    if (!entry) {
       throw 'Error: Could not find cache entry to delete: ' + optionalEntry;
+    }
 
     await view._model.deleteCacheEntry(view._cache, entry.requestURL);
     return;

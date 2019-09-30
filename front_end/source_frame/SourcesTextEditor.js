@@ -16,8 +16,9 @@ SourceFrame.SourcesTextEditor = class extends TextEditor.CodeMirrorTextEditor {
       bracketMatchingSetting: Common.moduleSetting('textEditorBracketMatching'),
       padBottom: true
     };
-    if (codeMirrorOptions)
+    if (codeMirrorOptions) {
       Object.assign(defaultCodeMirrorOptions, codeMirrorOptions);
+    }
 
     super(defaultCodeMirrorOptions);
 
@@ -95,32 +96,39 @@ SourceFrame.SourcesTextEditor = class extends TextEditor.CodeMirrorTextEditor {
     const indents = {};
     for (let lineNumber = 0; lineNumber < lines.length; ++lineNumber) {
       const text = lines[lineNumber];
-      if (text.length === 0 || !TextUtils.TextUtils.isSpaceChar(text[0]))
+      if (text.length === 0 || !TextUtils.TextUtils.isSpaceChar(text[0])) {
         continue;
+      }
       if (tabRegex.test(text)) {
         ++tabLines;
         continue;
       }
       let i = 0;
-      while (i < text.length && TextUtils.TextUtils.isSpaceChar(text[i]))
+      while (i < text.length && TextUtils.TextUtils.isSpaceChar(text[i])) {
         ++i;
-      if (i % 2 !== 0)
+      }
+      if (i % 2 !== 0) {
         continue;
+      }
       indents[i] = 1 + (indents[i] || 0);
     }
     const linesCountPerIndentThreshold = 3 * lines.length / 100;
-    if (tabLines && tabLines > linesCountPerIndentThreshold)
+    if (tabLines && tabLines > linesCountPerIndentThreshold) {
       return '\t';
+    }
     let minimumIndent = Infinity;
     for (const i in indents) {
-      if (indents[i] < linesCountPerIndentThreshold)
+      if (indents[i] < linesCountPerIndentThreshold) {
         continue;
+      }
       const indent = parseInt(i, 10);
-      if (minimumIndent > indent)
+      if (minimumIndent > indent) {
         minimumIndent = indent;
+      }
     }
-    if (minimumIndent === Infinity)
+    if (minimumIndent === Infinity) {
       return Common.moduleSetting('textEditorIndent').get();
+    }
     return ' '.repeat(minimumIndent);
   }
 
@@ -151,16 +159,18 @@ SourceFrame.SourcesTextEditor = class extends TextEditor.CodeMirrorTextEditor {
     function innerHighlightRegex() {
       if (range) {
         this.scrollLineIntoView(range.startLine);
-        if (range.endColumn > TextEditor.CodeMirrorTextEditor.maxHighlightLength)
+        if (range.endColumn > TextEditor.CodeMirrorTextEditor.maxHighlightLength) {
           this.setSelection(range);
-        else
+        } else {
           this.setSelection(TextUtils.TextRange.createFromLocation(range.startLine, range.startColumn));
+        }
       }
       this._tokenHighlighter.highlightSearchResults(regex, range);
     }
 
-    if (!this._selectionBeforeSearch)
+    if (!this._selectionBeforeSearch) {
       this._selectionBeforeSearch = this.selection();
+    }
 
     this.codeMirror().operation(innerHighlightRegex.bind(this));
   }
@@ -199,13 +209,15 @@ SourceFrame.SourcesTextEditor = class extends TextEditor.CodeMirrorTextEditor {
    * @param {boolean} leftToNumbers
    */
   installGutter(type, leftToNumbers) {
-    if (this._gutters.indexOf(type) !== -1)
+    if (this._gutters.indexOf(type) !== -1) {
       return;
+    }
 
-    if (leftToNumbers)
+    if (leftToNumbers) {
       this._gutters.unshift(type);
-    else
+    } else {
       this._gutters.push(type);
+    }
 
     this.codeMirror().setOption('gutters', this._gutters.slice());
     this.refresh();
@@ -216,8 +228,9 @@ SourceFrame.SourcesTextEditor = class extends TextEditor.CodeMirrorTextEditor {
    */
   uninstallGutter(type) {
     const index = this._gutters.indexOf(type);
-    if (index === -1)
+    if (index === -1) {
       return;
+    }
     this.codeMirror().clearGutter(type);
     this._gutters.splice(index, 1);
     this.codeMirror().setOption('gutters', this._gutters.slice());
@@ -242,8 +255,9 @@ SourceFrame.SourcesTextEditor = class extends TextEditor.CodeMirrorTextEditor {
     this.clearPositionHighlight();
 
     this._executionLine = this.codeMirror().getLineHandle(lineNumber);
-    if (!this._executionLine)
+    if (!this._executionLine) {
       return;
+    }
 
     this.showExecutionLineBackground();
     this.codeMirror().addLineClass(this._executionLine, 'wrap', 'cm-execution-line-outline');
@@ -251,28 +265,32 @@ SourceFrame.SourcesTextEditor = class extends TextEditor.CodeMirrorTextEditor {
 
     if (token && !token.type && token.startColumn + 1 === token.endColumn) {
       const tokenContent = this.codeMirror().getLine(lineNumber)[token.startColumn];
-      if (tokenContent === '.' || tokenContent === '(')
+      if (tokenContent === '.' || tokenContent === '(') {
         token = this.tokenAtTextPosition(lineNumber, token.endColumn + 1);
+      }
     }
 
     let endColumn;
-    if (token && token.type)
+    if (token && token.type) {
       endColumn = token.endColumn;
-    else
+    } else {
       endColumn = this.codeMirror().getLine(lineNumber).length;
+    }
 
     this._executionLineTailMarker = this.codeMirror().markText(
         {line: lineNumber, ch: columnNumber}, {line: lineNumber, ch: endColumn}, {className: 'cm-execution-line-tail'});
   }
 
   showExecutionLineBackground() {
-    if (this._executionLine)
+    if (this._executionLine) {
       this.codeMirror().addLineClass(this._executionLine, 'wrap', 'cm-execution-line');
+    }
   }
 
   hideExecutionLineBackground() {
-    if (this._executionLine)
+    if (this._executionLine) {
       this.codeMirror().removeLineClass(this._executionLine, 'wrap', 'cm-execution-line');
+    }
   }
 
   clearExecutionLine() {
@@ -284,8 +302,9 @@ SourceFrame.SourcesTextEditor = class extends TextEditor.CodeMirrorTextEditor {
     }
     delete this._executionLine;
 
-    if (this._executionLineTailMarker)
+    if (this._executionLineTailMarker) {
       this._executionLineTailMarker.clear();
+    }
     delete this._executionLineTailMarker;
   }
 
@@ -295,12 +314,14 @@ SourceFrame.SourcesTextEditor = class extends TextEditor.CodeMirrorTextEditor {
    * @param {boolean} toggled
    */
   toggleLineClass(lineNumber, className, toggled) {
-    if (this.hasLineClass(lineNumber, className) === toggled)
+    if (this.hasLineClass(lineNumber, className) === toggled) {
       return;
+    }
 
     const lineHandle = this.codeMirror().getLineHandle(lineNumber);
-    if (!lineHandle)
+    if (!lineHandle) {
       return;
+    }
 
     if (toggled) {
       this.codeMirror().addLineClass(lineHandle, 'gutter', className);
@@ -360,8 +381,9 @@ SourceFrame.SourcesTextEditor = class extends TextEditor.CodeMirrorTextEditor {
    */
   editRange(range, text, origin) {
     const newRange = super.editRange(range, text, origin);
-    if (Common.moduleSetting('textEditorAutoDetectIndent').get())
+    if (Common.moduleSetting('textEditorAutoDetectIndent').get()) {
       this._onUpdateEditorIndentation();
+    }
 
     return newRange;
   }
@@ -377,8 +399,9 @@ SourceFrame.SourcesTextEditor = class extends TextEditor.CodeMirrorTextEditor {
   _setEditorIndentation(lines) {
     const extraKeys = {};
     let indent = Common.moduleSetting('textEditorIndent').get();
-    if (Common.moduleSetting('textEditorAutoDetectIndent').get())
+    if (Common.moduleSetting('textEditorAutoDetectIndent').get()) {
       indent = SourceFrame.SourcesTextEditor._guessIndentationLevel(lines);
+    }
 
     if (indent === TextUtils.TextUtils.Indent.TabCharacter) {
       this.codeMirror().setOption('indentWithTabs', true);
@@ -387,8 +410,9 @@ SourceFrame.SourcesTextEditor = class extends TextEditor.CodeMirrorTextEditor {
       this.codeMirror().setOption('indentWithTabs', false);
       this.codeMirror().setOption('indentUnit', indent.length);
       extraKeys.Tab = function(codeMirror) {
-        if (codeMirror.somethingSelected())
+        if (codeMirror.somethingSelected()) {
           return CodeMirror.Pass;
+        }
         const pos = codeMirror.getCursor('head');
         codeMirror.replaceRange(indent.substring(pos.ch % indent.length), codeMirror.getCursor());
       };
@@ -410,8 +434,9 @@ SourceFrame.SourcesTextEditor = class extends TextEditor.CodeMirrorTextEditor {
 
     for (let i = 0; i < this._autoAppendedSpaces.length; ++i) {
       const position = this._autoAppendedSpaces[i].resolve();
-      if (!position)
+      if (!position) {
         continue;
+      }
       const line = this.line(position.lineNumber);
       if (line.length === position.columnNumber && TextUtils.TextUtils.lineIndent(line).length === line.length) {
         this.codeMirror().replaceRange(
@@ -429,8 +454,9 @@ SourceFrame.SourcesTextEditor = class extends TextEditor.CodeMirrorTextEditor {
   }
 
   _cursorActivity() {
-    if (!this._isSearchActive())
+    if (!this._isSearchActive()) {
       this.codeMirror().operation(this._tokenHighlighter.highlightSelectedTokens.bind(this._tokenHighlighter));
+    }
 
     const start = this.codeMirror().getCursor('anchor');
     const end = this.codeMirror().getCursor('head');
@@ -443,8 +469,9 @@ SourceFrame.SourcesTextEditor = class extends TextEditor.CodeMirrorTextEditor {
    * @param {?TextUtils.TextRange} to
    */
   _reportJump(from, to) {
-    if (from && to && from.equal(to))
+    if (from && to && from.equal(to)) {
       return;
+    }
     this.dispatchEventToListeners(SourceFrame.SourcesTextEditor.Events.JumpHappened, {from: from, to: to});
   }
 
@@ -466,10 +493,12 @@ SourceFrame.SourcesTextEditor = class extends TextEditor.CodeMirrorTextEditor {
    * @param {{ranges: !Array.<{head: !CodeMirror.Pos, anchor: !CodeMirror.Pos}>}} selection
    */
   _fireBeforeSelectionChanged(codeMirror, selection) {
-    if (!this._isHandlingMouseDownEvent)
+    if (!this._isHandlingMouseDownEvent) {
       return;
-    if (!selection.ranges.length)
+    }
+    if (!selection.ranges.length) {
       return;
+    }
 
     const primarySelection = selection.ranges[0];
     this._reportJump(
@@ -527,10 +556,11 @@ SourceFrame.SourcesTextEditor = class extends TextEditor.CodeMirrorTextEditor {
     const whitespaceMode = Common.moduleSetting('showWhitespacesInEditor').get();
     this.element.classList.toggle('show-whitespaces', whitespaceMode === 'all');
 
-    if (whitespaceMode === 'all')
+    if (whitespaceMode === 'all') {
       return this._allWhitespaceOverlayMode(mimeType);
-    else if (whitespaceMode === 'trailing')
+    } else if (whitespaceMode === 'trailing') {
       return this._trailingWhitespaceOverlayMode(mimeType);
+    }
 
     return mimeType;
   }
@@ -544,8 +574,9 @@ SourceFrame.SourcesTextEditor = class extends TextEditor.CodeMirrorTextEditor {
         (CodeMirror.mimeModes[mimeType].name || CodeMirror.mimeModes[mimeType]) :
         CodeMirror.mimeModes['text/plain'];
     modeName += '+all-whitespaces';
-    if (CodeMirror.modes[modeName])
+    if (CodeMirror.modes[modeName]) {
       return modeName;
+    }
 
     function modeConstructor(config, parserConfig) {
       function nextToken(stream) {
@@ -558,8 +589,9 @@ SourceFrame.SourcesTextEditor = class extends TextEditor.CodeMirrorTextEditor {
           }
           return 'whitespace whitespace-' + spaces;
         }
-        while (!stream.eol() && stream.peek() !== ' ')
+        while (!stream.eol() && stream.peek() !== ' ') {
           stream.next();
+        }
         return null;
       }
       const whitespaceMode = {token: nextToken};
@@ -578,16 +610,18 @@ SourceFrame.SourcesTextEditor = class extends TextEditor.CodeMirrorTextEditor {
         (CodeMirror.mimeModes[mimeType].name || CodeMirror.mimeModes[mimeType]) :
         CodeMirror.mimeModes['text/plain'];
     modeName += '+trailing-whitespaces';
-    if (CodeMirror.modes[modeName])
+    if (CodeMirror.modes[modeName]) {
       return modeName;
+    }
 
     function modeConstructor(config, parserConfig) {
       function nextToken(stream) {
-        if (stream.match(/^\s+$/, true))
+        if (stream.match(/^\s+$/, true)) {
           return true ? 'trailing-whitespace' : null;
-        do
+        }
+        do {
           stream.next();
-        while (!stream.eol() && stream.peek() !== ' ');
+        } while (!stream.eol() && stream.peek() !== ' ');
         return null;
       }
       const whitespaceMode = {token: nextToken};
@@ -599,8 +633,9 @@ SourceFrame.SourcesTextEditor = class extends TextEditor.CodeMirrorTextEditor {
 
   _setupWhitespaceHighlight() {
     const doc = this.element.ownerDocument;
-    if (doc._codeMirrorWhitespaceStyleInjected || !Common.moduleSetting('showWhitespacesInEditor').get())
+    if (doc._codeMirrorWhitespaceStyleInjected || !Common.moduleSetting('showWhitespacesInEditor').get()) {
       return;
+    }
     doc._codeMirrorWhitespaceStyleInjected = true;
     const classBase = '.show-whitespaces .CodeMirror .cm-whitespace-';
     const spaceChar = '·';
@@ -689,8 +724,9 @@ CodeMirror.commands.smartNewlineAndIndent = function(codeMirror) {
  * @return {!Object|undefined}
  */
 CodeMirror.commands.sourcesDismiss = function(codemirror) {
-  if (codemirror.listSelections().length === 1 && codemirror._codeMirrorTextEditor._isSearchActive())
+  if (codemirror.listSelections().length === 1 && codemirror._codeMirrorTextEditor._isSearchActive()) {
     return CodeMirror.Pass;
+  }
   return CodeMirror.commands.dismiss(codemirror);
 };
 
@@ -711,16 +747,18 @@ SourceFrame.SourcesTextEditor._BlockIndentController = {
       const indent = TextUtils.TextUtils.lineIndent(line);
       let indentToInsert = '\n' + indent + codeMirror._codeMirrorTextEditor.indent();
       let isCollapsedBlock = false;
-      if (selection.head.ch === 0)
+      if (selection.head.ch === 0) {
         return CodeMirror.Pass;
+      }
       if (line.substr(selection.head.ch - 1, 2) === '{}') {
         indentToInsert += '\n' + indent;
         isCollapsedBlock = true;
       } else if (line.substr(selection.head.ch - 1, 1) !== '{') {
         return CodeMirror.Pass;
       }
-      if (i > 0 && allSelectionsAreCollapsedBlocks !== isCollapsedBlock)
+      if (i > 0 && allSelectionsAreCollapsedBlocks !== isCollapsedBlock) {
         return CodeMirror.Pass;
+      }
       replacements.push(indentToInsert);
       allSelectionsAreCollapsedBlocks = isCollapsedBlock;
     }
@@ -745,15 +783,17 @@ SourceFrame.SourcesTextEditor._BlockIndentController = {
    * @return {*}
    */
   '\'}\'': function(codeMirror) {
-    if (codeMirror.somethingSelected())
+    if (codeMirror.somethingSelected()) {
       return CodeMirror.Pass;
+    }
     let selections = codeMirror.listSelections();
     let replacements = [];
     for (let i = 0; i < selections.length; ++i) {
       const selection = selections[i];
       const line = codeMirror.getLine(selection.head.line);
-      if (line !== TextUtils.TextUtils.lineIndent(line))
+      if (line !== TextUtils.TextUtils.lineIndent(line)) {
         return CodeMirror.Pass;
+      }
       replacements.push('}');
     }
     codeMirror.replaceSelections(replacements);
@@ -763,8 +803,9 @@ SourceFrame.SourcesTextEditor._BlockIndentController = {
     for (let i = 0; i < selections.length; ++i) {
       const selection = selections[i];
       const matchingBracket = codeMirror.findMatchingBracket(selection.head);
-      if (!matchingBracket || !matchingBracket.match)
+      if (!matchingBracket || !matchingBracket.match) {
         return;
+      }
       updatedSelections.push({head: selection.head, anchor: new CodeMirror.Pos(selection.head.line, 0)});
       const line = codeMirror.getLine(matchingBracket.to.line);
       const indent = TextUtils.TextUtils.lineIndent(line);
@@ -801,17 +842,20 @@ SourceFrame.SourcesTextEditor.TokenHighlighter = class {
       this._searchResultMarker.clear();
       delete this._searchResultMarker;
     }
-    if (this._highlightDescriptor && this._highlightDescriptor.selectionStart)
+    if (this._highlightDescriptor && this._highlightDescriptor.selectionStart) {
       this._codeMirror.removeLineClass(this._highlightDescriptor.selectionStart.line, 'wrap', 'cm-line-with-selection');
+    }
     const selectionStart = this._highlightRange ?
         new CodeMirror.Pos(this._highlightRange.startLine, this._highlightRange.startColumn) :
         null;
-    if (selectionStart)
+    if (selectionStart) {
       this._codeMirror.addLineClass(selectionStart.line, 'wrap', 'cm-line-with-selection');
+    }
     if (oldRegex && this._highlightRegex.toString() === oldRegex.toString()) {
       // Do not re-add overlay mode if regex did not change for better performance.
-      if (this._highlightDescriptor)
+      if (this._highlightDescriptor) {
         this._highlightDescriptor.selectionStart = selectionStart;
+      }
     } else {
       this._removeHighlight();
       this._setHighlighter(this._searchHighlighter.bind(this, this._highlightRegex), selectionStart);
@@ -832,22 +876,27 @@ SourceFrame.SourcesTextEditor.TokenHighlighter = class {
   highlightSelectedTokens() {
     delete this._highlightRegex;
     delete this._highlightRange;
-    if (this._highlightDescriptor && this._highlightDescriptor.selectionStart)
+    if (this._highlightDescriptor && this._highlightDescriptor.selectionStart) {
       this._codeMirror.removeLineClass(this._highlightDescriptor.selectionStart.line, 'wrap', 'cm-line-with-selection');
+    }
     this._removeHighlight();
     const selectionStart = this._codeMirror.getCursor('start');
     const selectionEnd = this._codeMirror.getCursor('end');
-    if (selectionStart.line !== selectionEnd.line)
+    if (selectionStart.line !== selectionEnd.line) {
       return;
-    if (selectionStart.ch === selectionEnd.ch)
+    }
+    if (selectionStart.ch === selectionEnd.ch) {
       return;
+    }
     const selections = this._codeMirror.getSelections();
-    if (selections.length > 1)
+    if (selections.length > 1) {
       return;
+    }
     const selectedText = selections[0];
     if (this._isWord(selectedText, selectionStart.line, selectionStart.ch, selectionEnd.ch)) {
-      if (selectionStart)
+      if (selectionStart) {
         this._codeMirror.addLineClass(selectionStart.line, 'wrap', 'cm-line-with-selection');
+      }
       this._setHighlighter(this._tokenHighlighter.bind(this, selectedText, selectionStart), selectionStart);
     }
   }
@@ -877,12 +926,14 @@ SourceFrame.SourcesTextEditor.TokenHighlighter = class {
    * @param {!CodeMirror.StringStream} stream
    */
   _searchHighlighter(regex, stream) {
-    if (stream.column() === 0)
+    if (stream.column() === 0) {
       delete this._searchMatchLength;
+    }
     if (this._searchMatchLength) {
       if (this._searchMatchLength > 2) {
-        for (let i = 0; i < this._searchMatchLength - 2; ++i)
+        for (let i = 0; i < this._searchMatchLength - 2; ++i) {
           stream.next();
+        }
         this._searchMatchLength = 1;
         return 'search-highlight';
       } else {
@@ -895,8 +946,9 @@ SourceFrame.SourcesTextEditor.TokenHighlighter = class {
     if (match) {
       stream.next();
       const matchLength = match[0].length;
-      if (matchLength === 1)
+      if (matchLength === 1) {
         return 'search-highlight search-highlight-full';
+      }
       this._searchMatchLength = matchLength;
       return 'search-highlight search-highlight-start';
     }
@@ -911,12 +963,13 @@ SourceFrame.SourcesTextEditor.TokenHighlighter = class {
    */
   _tokenHighlighter(token, selectionStart, stream) {
     const tokenFirstChar = token.charAt(0);
-    if (stream.match(token) && (stream.eol() || !TextUtils.TextUtils.isWordChar(stream.peek())))
+    if (stream.match(token) && (stream.eol() || !TextUtils.TextUtils.isWordChar(stream.peek()))) {
       return stream.column() === selectionStart.ch ? 'token-highlight column-with-selection' : 'token-highlight';
+    }
     let eatenChar;
-    do
+    do {
       eatenChar = stream.next();
-    while (eatenChar && (TextUtils.TextUtils.isWordChar(eatenChar) || stream.peek() !== tokenFirstChar));
+    } while (eatenChar && (TextUtils.TextUtils.isWordChar(eatenChar) || stream.peek() !== tokenFirstChar));
   }
 
   /**

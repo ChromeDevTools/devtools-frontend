@@ -35,11 +35,13 @@ Sources.DebuggerPausedMessage = class {
   static async _createDOMBreakpointHitMessage(details) {
     const messageWrapper = createElement('span');
     const domDebuggerModel = details.debuggerModel.target().model(SDK.DOMDebuggerModel);
-    if (!details.auxData || !domDebuggerModel)
+    if (!details.auxData || !domDebuggerModel) {
       return messageWrapper;
+    }
     const data = domDebuggerModel.resolveDOMBreakpointData(/** @type {!Object} */ (details.auxData));
-    if (!data)
+    if (!data) {
       return messageWrapper;
+    }
 
     const mainElement = messageWrapper.createChild('div', 'status-main');
     mainElement.appendChild(UI.Icon.create('smallicon-info', 'status-icon'));
@@ -54,10 +56,11 @@ Sources.DebuggerPausedMessage = class {
       const targetNodeLink = await Common.Linkifier.linkify(data.targetNode);
       let messageElement;
       if (data.insertion) {
-        if (data.targetNode === data.node)
+        if (data.targetNode === data.node) {
           messageElement = UI.formatLocalized('Child %s added', [targetNodeLink]);
-        else
+        } else {
           messageElement = UI.formatLocalized('Descendant %s added', [targetNodeLink]);
+        }
       } else {
         messageElement = UI.formatLocalized('Descendant %s removed', [targetNodeLink]);
       }
@@ -76,8 +79,9 @@ Sources.DebuggerPausedMessage = class {
   async render(details, debuggerWorkspaceBinding, breakpointManager) {
     this._contentElement.removeChildren();
     this._contentElement.hidden = !details;
-    if (!details)
+    if (!details) {
       return;
+    }
 
     const status = this._contentElement.createChild('div', 'paused-status');
 
@@ -122,8 +126,9 @@ Sources.DebuggerPausedMessage = class {
     }
 
     status.classList.toggle('error-reason', errorLike);
-    if (messageWrapper)
+    if (messageWrapper) {
       status.appendChild(messageWrapper);
+    }
 
     /**
      * @param  {string} mainText

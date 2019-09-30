@@ -55,13 +55,15 @@ Resources.AppManifestView = class extends UI.VBox {
    * @param {!SDK.Target} target
    */
   targetAdded(target) {
-    if (this._target)
+    if (this._target) {
       return;
+    }
     this._target = target;
     this._resourceTreeModel = target.model(SDK.ResourceTreeModel);
     this._serviceWorkerManager = target.model(SDK.ServiceWorkerManager);
-    if (!this._resourceTreeModel || !this._serviceWorkerManager)
+    if (!this._resourceTreeModel || !this._serviceWorkerManager) {
       return;
+    }
 
     this._updateManifest(true);
 
@@ -78,10 +80,12 @@ Resources.AppManifestView = class extends UI.VBox {
    * @param {!SDK.Target} target
    */
   targetRemoved(target) {
-    if (this._target !== target)
+    if (this._target !== target) {
       return;
-    if (!this._resourceTreeModel || !this._serviceWorkerManager)
+    }
+    if (!this._resourceTreeModel || !this._serviceWorkerManager) {
       return;
+    }
     delete this._resourceTreeModel;
     delete this._serviceWorkerManager;
     Common.EventTarget.removeEventListeners(this._registeredListeners);
@@ -121,11 +125,13 @@ Resources.AppManifestView = class extends UI.VBox {
           UI.createIconLabel(error.message, error.critical ? 'smallicon-error' : 'smallicon-warning'));
     }
 
-    if (!data)
+    if (!data) {
       return;
+    }
 
-    if (data.charCodeAt(0) === 0xFEFF)
-      data = data.slice(1);  // Trim the BOM as per https://tools.ietf.org/html/rfc7159#section-8.1.
+    if (data.charCodeAt(0) === 0xFEFF) {
+      data = data.slice(1);
+    }  // Trim the BOM as per https://tools.ietf.org/html/rfc7159#section-8.1.
 
     const parsedManifest = JSON.parse(data);
     this._nameField.textContent = stringProperty('name');
@@ -161,14 +167,16 @@ Resources.AppManifestView = class extends UI.VBox {
       const title = (icon['sizes'] || '') + '\n' + (icon['type'] || '');
       const field = this._iconsSection.appendField(title);
       const image = await this._loadImage(Common.ParsedURL.completeURL(url, icon['src']));
-      if (image)
+      if (image) {
         field.appendChild(image);
+      }
     }
 
     this._installabilitySection.clearContent();
     this._installabilitySection.element.classList.toggle('hidden', !installabilityErrors.length);
-    for (const error of installabilityErrors)
+    for (const error of installabilityErrors) {
       this._installabilitySection.appendRow().appendChild(UI.createIconLabel(error, 'smallicon-warning'));
+    }
 
     /**
      * @param {string} name
@@ -176,8 +184,9 @@ Resources.AppManifestView = class extends UI.VBox {
      */
     function stringProperty(name) {
       const value = parsedManifest[name];
-      if (typeof value !== 'string')
+      if (typeof value !== 'string') {
         return '';
+      }
       return value;
     }
   }

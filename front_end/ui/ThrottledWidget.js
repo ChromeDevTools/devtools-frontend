@@ -25,8 +25,9 @@ UI.ThrottledWidget = class extends UI.VBox {
 
   update() {
     this._updateWhenVisible = !this.isShowing();
-    if (this._updateWhenVisible)
+    if (this._updateWhenVisible) {
       return;
+    }
     this._updateThrottler.schedule(innerUpdate.bind(this));
 
     /**
@@ -34,8 +35,9 @@ UI.ThrottledWidget = class extends UI.VBox {
      * @return {!Promise<?>}
      */
     function innerUpdate() {
-      if (this.isShowing())
+      if (this.isShowing()) {
         return this.doUpdate();
+      }
       this._updateWhenVisible = true;
       return Promise.resolve();
     }
@@ -46,7 +48,8 @@ UI.ThrottledWidget = class extends UI.VBox {
    */
   wasShown() {
     super.wasShown();
-    if (this._updateWhenVisible)
+    if (this._updateWhenVisible) {
       this.update();
+    }
   }
 };

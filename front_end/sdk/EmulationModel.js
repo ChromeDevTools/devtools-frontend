@@ -13,19 +13,22 @@ SDK.EmulationModel = class extends SDK.SDKModel {
     this._deviceOrientationAgent = target.deviceOrientationAgent();
     this._cssModel = target.model(SDK.CSSModel);
     this._overlayModel = target.model(SDK.OverlayModel);
-    if (this._overlayModel)
+    if (this._overlayModel) {
       this._overlayModel.addEventListener(SDK.OverlayModel.Events.InspectModeWillBeToggled, this._updateTouch, this);
+    }
 
     const disableJavascriptSetting = Common.settings.moduleSetting('javaScriptDisabled');
     disableJavascriptSetting.addChangeListener(
         () => this._emulationAgent.setScriptExecutionDisabled(disableJavascriptSetting.get()));
-    if (disableJavascriptSetting.get())
+    if (disableJavascriptSetting.get()) {
       this._emulationAgent.setScriptExecutionDisabled(true);
+    }
 
     const mediaSetting = Common.moduleSetting('emulatedCSSMedia');
     mediaSetting.addChangeListener(() => this._emulateCSSMedia(mediaSetting.get()));
-    if (mediaSetting.get())
+    if (mediaSetting.get()) {
       this._emulateCSSMedia(mediaSetting.get());
+    }
 
     this._touchEnabled = false;
     this._touchMobile = false;
@@ -52,10 +55,11 @@ SDK.EmulationModel = class extends SDK.SDKModel {
    * @return {!Promise}
    */
   emulateDevice(metrics) {
-    if (metrics)
+    if (metrics) {
       return this._emulationAgent.invoke_setDeviceMetricsOverride(metrics);
-    else
+    } else {
       return this._emulationAgent.clearDeviceMetricsOverride();
+    }
   }
 
   /**
@@ -99,8 +103,9 @@ SDK.EmulationModel = class extends SDK.SDKModel {
    */
   _emulateCSSMedia(media) {
     this._emulationAgent.setEmulatedMedia(media);
-    if (this._cssModel)
+    if (this._cssModel) {
       this._cssModel.mediaQueryResultChanged();
+    }
   }
 
   /**
@@ -133,17 +138,21 @@ SDK.EmulationModel = class extends SDK.SDKModel {
       enabled: this._touchEnabled,
       configuration: this._touchMobile ? 'mobile' : 'desktop',
     };
-    if (this._customTouchEnabled)
+    if (this._customTouchEnabled) {
       configuration = {enabled: true, configuration: 'mobile'};
+    }
 
-    if (this._overlayModel && this._overlayModel.inspectModeEnabled())
+    if (this._overlayModel && this._overlayModel.inspectModeEnabled()) {
       configuration = {enabled: false, configuration: 'mobile'};
+    }
 
-    if (!this._touchConfiguration.enabled && !configuration.enabled)
+    if (!this._touchConfiguration.enabled && !configuration.enabled) {
       return;
+    }
     if (this._touchConfiguration.enabled && configuration.enabled &&
-        this._touchConfiguration.configuration === configuration.configuration)
+        this._touchConfiguration.configuration === configuration.configuration) {
       return;
+    }
 
     this._touchConfiguration = configuration;
     this._emulationAgent.setTouchEmulationEnabled(configuration.enabled, 1);
@@ -189,14 +198,16 @@ SDK.EmulationModel.Geolocation = class {
    * @return {?SDK.EmulationModel.Geolocation}
    */
   static parseUserInput(latitudeString, longitudeString, errorStatus) {
-    if (!latitudeString && !longitudeString)
+    if (!latitudeString && !longitudeString) {
       return null;
+    }
 
     const {valid: isLatitudeValid} = SDK.EmulationModel.Geolocation.latitudeValidator(latitudeString);
     const {valid: isLongitudeValid} = SDK.EmulationModel.Geolocation.longitudeValidator(longitudeString);
 
-    if (!isLatitudeValid && !isLongitudeValid)
+    if (!isLatitudeValid && !isLongitudeValid) {
       return null;
+    }
 
     const latitude = isLatitudeValid ? parseFloat(latitudeString) : -1;
     const longitude = isLongitudeValid ? parseFloat(longitudeString) : -1;
@@ -260,15 +271,17 @@ SDK.EmulationModel.DeviceOrientation = class {
    * @return {?SDK.EmulationModel.DeviceOrientation}
    */
   static parseUserInput(alphaString, betaString, gammaString) {
-    if (!alphaString && !betaString && !gammaString)
+    if (!alphaString && !betaString && !gammaString) {
       return null;
+    }
 
     const {valid: isAlphaValid} = SDK.EmulationModel.DeviceOrientation.validator(alphaString);
     const {valid: isBetaValid} = SDK.EmulationModel.DeviceOrientation.validator(betaString);
     const {valid: isGammaValid} = SDK.EmulationModel.DeviceOrientation.validator(gammaString);
 
-    if (!isAlphaValid && !isBetaValid && !isGammaValid)
+    if (!isAlphaValid && !isBetaValid && !isGammaValid) {
       return null;
+    }
 
     const alpha = isAlphaValid ? parseFloat(alphaString) : -1;
     const beta = isBetaValid ? parseFloat(betaString) : -1;

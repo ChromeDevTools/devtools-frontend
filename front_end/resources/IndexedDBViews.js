@@ -58,8 +58,9 @@ Resources.IDBDatabaseView = class extends UI.VBox {
         UI.createTextButton(ls`Refresh database`, () => this._refreshDatabaseButtonClicked(), ls`Refresh database`);
     footer.appendChild(this._refreshButton);
 
-    if (database)
+    if (database) {
       this.update(database);
+    }
   }
 
   _refreshDatabase() {
@@ -89,8 +90,9 @@ Resources.IDBDatabaseView = class extends UI.VBox {
   async _deleteDatabase() {
     const ok = await UI.ConfirmDialog.show(
         Common.UIString('Please confirm delete of "%s" database.', this._database.databaseId.name), this.element);
-    if (ok)
+    if (ok) {
       this._model.deleteDatabase(this._database.databaseId);
+    }
   }
 };
 
@@ -173,15 +175,17 @@ Resources.IDBDataView = class extends UI.SimpleView {
   _keyColumnHeaderFragment(prefix, keyPath) {
     const keyColumnHeaderFragment = createDocumentFragment();
     keyColumnHeaderFragment.createTextChild(prefix);
-    if (keyPath === null)
+    if (keyPath === null) {
       return keyColumnHeaderFragment;
+    }
 
     keyColumnHeaderFragment.createTextChild(' (' + Common.UIString('Key path: '));
     if (Array.isArray(keyPath)) {
       keyColumnHeaderFragment.createTextChild('[');
       for (let i = 0; i < keyPath.length; ++i) {
-        if (i !== 0)
+        if (i !== 0) {
           keyColumnHeaderFragment.createTextChild(', ');
+        }
         keyColumnHeaderFragment.appendChild(this._keyPathStringFragment(keyPath[i]));
       }
       keyColumnHeaderFragment.createTextChild(']');
@@ -260,8 +264,9 @@ Resources.IDBDataView = class extends UI.SimpleView {
     this._objectStore = objectStore;
     this._index = index;
 
-    if (this._dataGrid)
+    if (this._dataGrid) {
       this._dataGrid.asWidget().detach();
+    }
     this._dataGrid = this._createDataGrid();
     this._dataGrid.asWidget().show(this.element);
 
@@ -294,8 +299,9 @@ Resources.IDBDataView = class extends UI.SimpleView {
     this._refreshButton.setEnabled(false);
     this._clearButton.setEnabled(!this._isIndex);
 
-    if (!force && this._lastKey === key && this._lastPageSize === pageSize && this._lastSkipCount === skipCount)
+    if (!force && this._lastKey === key && this._lastPageSize === pageSize && this._lastSkipCount === skipCount) {
       return;
+    }
 
     if (this._lastKey !== key || this._lastPageSize !== pageSize) {
       skipCount = 0;
@@ -324,12 +330,14 @@ Resources.IDBDataView = class extends UI.SimpleView {
 
         const node = new Resources.IDBDataGridNode(data);
         this._dataGrid.rootNode().appendChild(node);
-        if (data['number'] <= selected)
+        if (data['number'] <= selected) {
           selectedNode = node;
+        }
       }
 
-      if (selectedNode)
+      if (selectedNode) {
         selectedNode.select();
+      }
       this._pageBackButton.setEnabled(!!skipCount);
       this._pageForwardButton.setEnabled(hasMore);
       this._needsRefresh.setVisible(false);
@@ -353,11 +361,13 @@ Resources.IDBDataView = class extends UI.SimpleView {
    * @param {?Resources.IndexedDBModel.ObjectStoreMetadata} metadata
    */
   _updateSummaryBar(metadata) {
-    if (!this._summaryBarElement)
+    if (!this._summaryBarElement) {
       this._summaryBarElement = this.element.createChild('div', 'object-store-summary-bar');
+    }
     this._summaryBarElement.removeChildren();
-    if (!metadata)
+    if (!metadata) {
       return;
+    }
 
     const separator = '\u2002\u2758\u2002';
 
@@ -401,8 +411,9 @@ Resources.IDBDataView = class extends UI.SimpleView {
   async _deleteButtonClicked(node) {
     if (!node) {
       node = this._dataGrid.selectedNode;
-      if (!node)
+      if (!node) {
         return;
+      }
     }
     const key = /** @type {!SDK.RemoteObject} */ (this._isIndex ? node.data.primaryKey : node.data.key);
     const keyValue = /** @type {!Array<?>|!Date|number|string} */ (key.value);

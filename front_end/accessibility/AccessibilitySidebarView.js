@@ -50,20 +50,24 @@ Accessibility.AccessibilitySidebarView = class extends UI.ThrottledWidget {
    * @param {?Accessibility.AccessibilityNode} axNode
    */
   accessibilityNodeCallback(axNode) {
-    if (!axNode)
+    if (!axNode) {
       return;
+    }
 
     this._axNode = axNode;
 
-    if (axNode.isDOMNode())
+    if (axNode.isDOMNode()) {
       this._sidebarPaneStack.showView(this._ariaSubPane, this._axNodeSubPane);
-    else
+    } else {
       this._sidebarPaneStack.removeView(this._ariaSubPane);
+    }
 
-    if (this._axNodeSubPane)
+    if (this._axNodeSubPane) {
       this._axNodeSubPane.setAXNode(axNode);
-    if (this._breadcrumbsSubPane)
+    }
+    if (this._breadcrumbsSubPane) {
       this._breadcrumbsSubPane.setAXNode(axNode);
+    }
   }
 
   /**
@@ -76,8 +80,9 @@ Accessibility.AccessibilitySidebarView = class extends UI.ThrottledWidget {
     this._axNodeSubPane.setNode(node);
     this._ariaSubPane.setNode(node);
     this._breadcrumbsSubPane.setNode(node);
-    if (!node)
+    if (!node) {
       return Promise.resolve();
+    }
     const accessibilityModel = node.domModel().target().model(Accessibility.AccessibilityModel);
     accessibilityModel.clear();
     return accessibilityModel.requestPartialAXTree(node).then(() => {
@@ -129,11 +134,13 @@ Accessibility.AccessibilitySidebarView = class extends UI.ThrottledWidget {
    * @param {!Common.Event} event
    */
   _onAttrChange(event) {
-    if (!this.node())
+    if (!this.node()) {
       return;
+    }
     const node = event.data.node;
-    if (this.node() !== node)
+    if (this.node() !== node) {
       return;
+    }
     this.update();
   }
 
@@ -141,11 +148,13 @@ Accessibility.AccessibilitySidebarView = class extends UI.ThrottledWidget {
    * @param {!Common.Event} event
    */
   _onNodeChange(event) {
-    if (!this.node())
+    if (!this.node()) {
       return;
+    }
     const node = event.data;
-    if (this.node() !== node)
+    if (this.node() !== node) {
       return;
+    }
     this.update();
   }
 };

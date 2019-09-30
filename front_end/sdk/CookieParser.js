@@ -69,14 +69,16 @@ SDK.CookieParser = class {
    * @return {?Array<!SDK.Cookie>}
    */
   parseCookie(cookieHeader) {
-    if (!this._initialize(cookieHeader))
+    if (!this._initialize(cookieHeader)) {
       return null;
+    }
 
     for (let kv = this._extractKeyValue(); kv; kv = this._extractKeyValue()) {
-      if (kv.key.charAt(0) === '$' && this._lastCookie)
+      if (kv.key.charAt(0) === '$' && this._lastCookie) {
         this._lastCookie.addAttribute(kv.key.slice(1), kv.value);
-      else if (kv.key.toLowerCase() !== '$version' && typeof kv.value === 'string')
+      } else if (kv.key.toLowerCase() !== '$version' && typeof kv.value === 'string') {
         this._addCookie(kv, SDK.Cookie.Type.Request);
+      }
       this._advanceAndCheckCookieDelimiter();
     }
     this._flushCookie();
@@ -88,15 +90,18 @@ SDK.CookieParser = class {
    * @return {?Array<!SDK.Cookie>}
    */
   parseSetCookie(setCookieHeader) {
-    if (!this._initialize(setCookieHeader))
+    if (!this._initialize(setCookieHeader)) {
       return null;
+    }
     for (let kv = this._extractKeyValue(); kv; kv = this._extractKeyValue()) {
-      if (this._lastCookie)
+      if (this._lastCookie) {
         this._lastCookie.addAttribute(kv.key, kv.value);
-      else
+      } else {
         this._addCookie(kv, SDK.Cookie.Type.Response);
-      if (this._advanceAndCheckCookieDelimiter())
+      }
+      if (this._advanceAndCheckCookieDelimiter()) {
         this._flushCookie();
+      }
     }
     this._flushCookie();
     return this._cookies;
@@ -108,8 +113,9 @@ SDK.CookieParser = class {
    */
   _initialize(headerValue) {
     this._input = headerValue;
-    if (typeof headerValue !== 'string')
+    if (typeof headerValue !== 'string') {
       return false;
+    }
     this._cookies = [];
     this._lastCookie = null;
     this._lastCookieLine = '';
@@ -130,8 +136,9 @@ SDK.CookieParser = class {
    * @return {?SDK.CookieParser.KeyValue}
    */
   _extractKeyValue() {
-    if (!this._input || !this._input.length)
+    if (!this._input || !this._input.length) {
       return null;
+    }
     // Note: RFCs offer an option for quoted values that may contain commas and semicolons.
     // Many browsers/platforms do not support this, however (see http://webkit.org/b/16699
     // and http://crbug.com/12361). The logic below matches latest versions of IE, Firefox,
@@ -155,8 +162,9 @@ SDK.CookieParser = class {
    */
   _advanceAndCheckCookieDelimiter() {
     const match = /^\s*[\n;]\s*/.exec(this._input);
-    if (!match)
+    if (!match) {
       return false;
+    }
     this._lastCookieLine += match[0];
     this._input = this._input.slice(match[0].length);
     return match[0].match('\n') !== null;
@@ -167,8 +175,9 @@ SDK.CookieParser = class {
    * @param {!SDK.Cookie.Type} type
    */
   _addCookie(keyValue, type) {
-    if (this._lastCookie)
+    if (this._lastCookie) {
       this._lastCookie.setSize(keyValue.position - this._lastCookiePosition);
+    }
 
     // Mozilla bug 169091: Mozilla, IE and Chrome treat single token (w/o "=") as
     // specifying a value for a cookie with empty name.
@@ -224,14 +233,18 @@ SDK.Cookie = class {
     cookie.addAttribute('domain', protocolCookie['domain']);
     cookie.addAttribute('path', protocolCookie['path']);
     cookie.addAttribute('port', protocolCookie['port']);
-    if (protocolCookie['expires'])
+    if (protocolCookie['expires']) {
       cookie.addAttribute('expires', protocolCookie['expires'] * 1000);
-    if (protocolCookie['httpOnly'])
+    }
+    if (protocolCookie['httpOnly']) {
       cookie.addAttribute('httpOnly');
-    if (protocolCookie['secure'])
+    }
+    if (protocolCookie['secure']) {
       cookie.addAttribute('secure');
-    if (protocolCookie['sameSite'])
+    }
+    if (protocolCookie['sameSite']) {
       cookie.addAttribute('sameSite', protocolCookie['sameSite']);
+    }
     cookie.setSize(protocolCookie['size']);
     return cookie;
   }
@@ -354,8 +367,9 @@ SDK.Cookie = class {
       return new Date(targetDate.getTime() + 1000 * this.maxAge());
     }
 
-    if (this.expires())
+    if (this.expires()) {
       return new Date(this.expires());
+    }
 
     return null;
   }

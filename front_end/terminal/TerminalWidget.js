@@ -65,8 +65,9 @@ Terminal.TerminalWidget = class extends UI.VBox {
    * @override
    */
   onResize() {
-    if (this._term)
+    if (this._term) {
       this._term.fit();
+    }
   }
 
   _disposed() {
@@ -77,8 +78,9 @@ Terminal.TerminalWidget = class extends UI.VBox {
    * @override
    */
   ownerViewDisposed() {
-    if (this._backend)
+    if (this._backend) {
       this._backend.dispose();
+    }
   }
 
   _linkify() {
@@ -86,8 +88,9 @@ Terminal.TerminalWidget = class extends UI.VBox {
     this._mutationObserver.disconnect();
     this._linkifier.reset();
     const rows = this._term['rowContainer'].children;
-    for (let i = 0; i < rows.length; i++)
+    for (let i = 0; i < rows.length; i++) {
       this._linkifyTerminalLine(rows[i]);
+    }
     this._mutationObserver.observe(this.contentElement, this._config);
   }
 
@@ -101,8 +104,9 @@ Terminal.TerminalWidget = class extends UI.VBox {
 
     while (string) {
       const linkString = regex1.exec(string) || regex2.exec(string);
-      if (!linkString)
+      if (!linkString) {
         break;
+      }
 
       const text = linkString[0];
       const path = linkString[1];
@@ -124,8 +128,9 @@ Terminal.TerminalWidget = class extends UI.VBox {
       string = string.substring(linkIndex + text.length);
     }
 
-    if (string)
+    if (string) {
       container.appendChild(createTextNode(string));
+    }
     return container;
   }
 

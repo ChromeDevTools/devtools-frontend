@@ -63,8 +63,9 @@ Resources.IndexedDBModel = class extends SDK.SDKModel {
    * }|undefined)}
    */
   static keyFromIDBKey(idbKey) {
-    if (typeof(idbKey) === 'undefined' || idbKey === null)
+    if (typeof (idbKey) === 'undefined' || idbKey === null) {
       return undefined;
+    }
 
     let type;
     const key = {};
@@ -83,8 +84,9 @@ Resources.IndexedDBModel = class extends SDK.SDKModel {
           type = Resources.IndexedDBModel.KeyTypes.DateType;
         } else if (Array.isArray(idbKey)) {
           key.array = [];
-          for (let i = 0; i < idbKey.length; ++i)
+          for (let i = 0; i < idbKey.length; ++i) {
             key.array.push(Resources.IndexedDBModel.keyFromIDBKey(idbKey[i]));
+          }
           type = Resources.IndexedDBModel.KeyTypes.ArrayType;
         }
         break;
@@ -133,16 +135,19 @@ Resources.IndexedDBModel = class extends SDK.SDKModel {
    * @return {?string}
    */
   static keyPathStringFromIDBKeyPath(idbKeyPath) {
-    if (typeof idbKeyPath === 'string')
+    if (typeof idbKeyPath === 'string') {
       return '"' + idbKeyPath + '"';
-    if (idbKeyPath instanceof Array)
+    }
+    if (idbKeyPath instanceof Array) {
       return '["' + idbKeyPath.join('", "') + '"]';
+    }
     return null;
   }
 
   enable() {
-    if (this._enabled)
+    if (this._enabled) {
       return;
+    }
 
     this._indexedDBAgent.enable();
     this._securityOriginManager.addEventListener(
@@ -150,8 +155,9 @@ Resources.IndexedDBModel = class extends SDK.SDKModel {
     this._securityOriginManager.addEventListener(
         SDK.SecurityOriginManager.Events.SecurityOriginRemoved, this._securityOriginRemoved, this);
 
-    for (const securityOrigin of this._securityOriginManager.securityOrigins())
+    for (const securityOrigin of this._securityOriginManager.securityOrigins()) {
       this._addOrigin(securityOrigin);
+    }
 
     this._enabled = true;
   }
@@ -160,8 +166,9 @@ Resources.IndexedDBModel = class extends SDK.SDKModel {
    * @param {string} origin
    */
   clearForOrigin(origin) {
-    if (!this._enabled || !this._databaseNamesBySecurityOrigin[origin])
+    if (!this._enabled || !this._databaseNamesBySecurityOrigin[origin]) {
       return;
+    }
 
     this._removeOrigin(origin);
     this._addOrigin(origin);
@@ -171,15 +178,17 @@ Resources.IndexedDBModel = class extends SDK.SDKModel {
    * @param {!Resources.IndexedDBModel.DatabaseId} databaseId
    */
   async deleteDatabase(databaseId) {
-    if (!this._enabled)
+    if (!this._enabled) {
       return;
+    }
     await this._indexedDBAgent.deleteDatabase(databaseId.securityOrigin, databaseId.name);
     this._loadDatabaseNames(databaseId.securityOrigin);
   }
 
   async refreshDatabaseNames() {
-    for (const securityOrigin in this._databaseNamesBySecurityOrigin)
+    for (const securityOrigin in this._databaseNamesBySecurityOrigin) {
       await this._loadDatabaseNames(securityOrigin);
+    }
     this.dispatchEventToListeners(Resources.IndexedDBModel.Events.DatabaseNamesRefreshed);
   }
 
@@ -234,8 +243,9 @@ Resources.IndexedDBModel = class extends SDK.SDKModel {
     console.assert(!this._databaseNamesBySecurityOrigin[securityOrigin]);
     this._databaseNamesBySecurityOrigin[securityOrigin] = [];
     this._loadDatabaseNames(securityOrigin);
-    if (this._isValidSecurityOrigin(securityOrigin))
+    if (this._isValidSecurityOrigin(securityOrigin)) {
       this._storageAgent.trackIndexedDBForOrigin(securityOrigin);
+    }
   }
 
   /**
@@ -243,11 +253,13 @@ Resources.IndexedDBModel = class extends SDK.SDKModel {
    */
   _removeOrigin(securityOrigin) {
     console.assert(this._databaseNamesBySecurityOrigin[securityOrigin]);
-    for (let i = 0; i < this._databaseNamesBySecurityOrigin[securityOrigin].length; ++i)
+    for (let i = 0; i < this._databaseNamesBySecurityOrigin[securityOrigin].length; ++i) {
       this._databaseRemoved(securityOrigin, this._databaseNamesBySecurityOrigin[securityOrigin][i]);
+    }
     delete this._databaseNamesBySecurityOrigin[securityOrigin];
-    if (this._isValidSecurityOrigin(securityOrigin))
+    if (this._isValidSecurityOrigin(securityOrigin)) {
       this._storageAgent.untrackIndexedDBForOrigin(securityOrigin);
+    }
   }
 
   /**
@@ -270,12 +282,14 @@ Resources.IndexedDBModel = class extends SDK.SDKModel {
     this._databaseNamesBySecurityOrigin[securityOrigin] = databaseNames;
 
     for (const databaseName of oldDatabaseNames) {
-      if (!newDatabaseNames.has(databaseName))
+      if (!newDatabaseNames.has(databaseName)) {
         this._databaseRemoved(securityOrigin, databaseName);
+      }
     }
     for (const databaseName of newDatabaseNames) {
-      if (!oldDatabaseNames.has(databaseName))
+      if (!oldDatabaseNames.has(databaseName)) {
         this._databaseAdded(securityOrigin, databaseName);
+      }
     }
   }
 
@@ -286,8 +300,9 @@ Resources.IndexedDBModel = class extends SDK.SDKModel {
     const result = [];
     for (const securityOrigin in this._databaseNamesBySecurityOrigin) {
       const databaseNames = this._databaseNamesBySecurityOrigin[securityOrigin];
-      for (let i = 0; i < databaseNames.length; ++i)
+      for (let i = 0; i < databaseNames.length; ++i) {
         result.push(new Resources.IndexedDBModel.DatabaseId(securityOrigin, databaseNames[i]));
+      }
     }
     return result;
   }
@@ -317,10 +332,12 @@ Resources.IndexedDBModel = class extends SDK.SDKModel {
    */
   async _loadDatabaseNames(securityOrigin) {
     const databaseNames = await this._indexedDBAgent.requestDatabaseNames(securityOrigin);
-    if (!databaseNames)
+    if (!databaseNames) {
       return [];
-    if (!this._databaseNamesBySecurityOrigin[securityOrigin])
+    }
+    if (!this._databaseNamesBySecurityOrigin[securityOrigin]) {
       return [];
+    }
     this._updateOriginDatabaseNames(securityOrigin, databaseNames);
     return databaseNames;
   }
@@ -333,10 +350,12 @@ Resources.IndexedDBModel = class extends SDK.SDKModel {
     const databaseWithObjectStores =
         await this._indexedDBAgent.requestDatabase(databaseId.securityOrigin, databaseId.name);
 
-    if (!databaseWithObjectStores)
+    if (!databaseWithObjectStores) {
       return;
-    if (!this._databaseNamesBySecurityOrigin[databaseId.securityOrigin])
+    }
+    if (!this._databaseNamesBySecurityOrigin[databaseId.securityOrigin]) {
       return;
+    }
 
     const databaseModel = new Resources.IndexedDBModel.Database(databaseId, databaseWithObjectStores.version);
     this._databases.set(databaseId, databaseModel);
@@ -414,8 +433,9 @@ Resources.IndexedDBModel = class extends SDK.SDKModel {
     }
 
     const runtimeModel = this.target().model(SDK.RuntimeModel);
-    if (!runtimeModel || !this._databaseNamesBySecurityOrigin[databaseId.securityOrigin])
+    if (!runtimeModel || !this._databaseNamesBySecurityOrigin[databaseId.securityOrigin]) {
       return;
+    }
     const dataEntries = response.objectStoreDataEntries;
     const entries = [];
     for (const dataEntry of dataEntries) {
@@ -451,8 +471,9 @@ Resources.IndexedDBModel = class extends SDK.SDKModel {
    */
   async _refreshDatabaseList(securityOrigin) {
     const databaseNames = await this._loadDatabaseNames(securityOrigin);
-    for (const databaseName of databaseNames)
+    for (const databaseName of databaseNames) {
       this._loadDatabase(new Resources.IndexedDBModel.DatabaseId(securityOrigin, databaseName), false);
+    }
   }
 
   /**

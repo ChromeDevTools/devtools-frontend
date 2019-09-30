@@ -47,8 +47,9 @@ Security.SecurityPanel = class extends UI.PanelWithSidebar {
     const certificateButton = UI.createTextButton(text, async e => {
       e.consume();
       const names = await SDK.multitargetNetworkManager.getCertificate(origin);
-      if (names.length > 0)
+      if (names.length > 0) {
         InspectorFrontendHost.showCertificateViewer(names);
+      }
     }, 'origin-button');
     UI.ARIAUtils.markAsMenuButton(certificateButton);
     return certificateButton;
@@ -125,8 +126,9 @@ Security.SecurityPanel = class extends UI.PanelWithSidebar {
    */
   showOrigin(origin) {
     const originState = this._origins.get(origin);
-    if (!originState.originView)
+    if (!originState.originView) {
       originState.originView = new Security.SecurityOriginView(this, origin, originState);
+    }
 
     this._setVisibleView(originState.originView);
   }
@@ -136,8 +138,9 @@ Security.SecurityPanel = class extends UI.PanelWithSidebar {
    */
   wasShown() {
     super.wasShown();
-    if (!this._visibleView)
+    if (!this._visibleView) {
       this.selectAndSwitchToMainView();
+    }
   }
 
   /**
@@ -151,16 +154,19 @@ Security.SecurityPanel = class extends UI.PanelWithSidebar {
    * @param {!UI.VBox} view
    */
   _setVisibleView(view) {
-    if (this._visibleView === view)
+    if (this._visibleView === view) {
       return;
+    }
 
-    if (this._visibleView)
+    if (this._visibleView) {
       this._visibleView.detach();
+    }
 
     this._visibleView = view;
 
-    if (view)
+    if (view) {
       this.splitWidget().setMainWidget(view);
+    }
   }
 
   /**
@@ -168,8 +174,9 @@ Security.SecurityPanel = class extends UI.PanelWithSidebar {
    */
   _onResponseReceived(event) {
     const request = /** @type {!SDK.NetworkRequest} */ (event.data);
-    if (request.resourceType() === Common.resourceTypes.Document)
+    if (request.resourceType() === Common.resourceTypes.Document) {
       this._lastResponseReceivedForLoaderId.set(request.loaderId, request);
+    }
   }
 
   /**
@@ -186,8 +193,9 @@ Security.SecurityPanel = class extends UI.PanelWithSidebar {
     let securityState = /** @type {!Protocol.Security.SecurityState} */ (request.securityState());
 
     if (request.mixedContentType === Protocol.Security.MixedContentType.Blockable ||
-        request.mixedContentType === Protocol.Security.MixedContentType.OptionallyBlockable)
+        request.mixedContentType === Protocol.Security.MixedContentType.OptionallyBlockable) {
       securityState = Protocol.Security.SecurityState.Insecure;
+    }
 
     if (this._origins.has(origin)) {
       const originState = this._origins.get(origin);
@@ -195,11 +203,13 @@ Security.SecurityPanel = class extends UI.PanelWithSidebar {
       originState.securityState = this._securityStateMin(oldSecurityState, securityState);
       if (oldSecurityState !== originState.securityState) {
         const securityDetails = /** @type {?Protocol.Network.SecurityDetails} */ (request.securityDetails());
-        if (securityDetails)
+        if (securityDetails) {
           originState.securityDetails = securityDetails;
+        }
         this._sidebarTree.updateOrigin(origin, securityState);
-        if (originState.originView)
+        if (originState.originView) {
           originState.originView.setSecurityState(securityState);
+        }
       }
     } else {
       // This stores the first security details we see for an origin, but we should
@@ -209,8 +219,9 @@ Security.SecurityPanel = class extends UI.PanelWithSidebar {
       originState.securityState = securityState;
 
       const securityDetails = request.securityDetails();
-      if (securityDetails)
+      if (securityDetails) {
         originState.securityDetails = securityDetails;
+      }
 
       originState.loadedFromCache = request.cached();
 
@@ -235,22 +246,25 @@ Security.SecurityPanel = class extends UI.PanelWithSidebar {
    * @param {!SDK.NetworkRequest} request
    */
   _updateFilterRequestCounts(request) {
-    if (request.mixedContentType === Protocol.Security.MixedContentType.None)
+    if (request.mixedContentType === Protocol.Security.MixedContentType.None) {
       return;
+    }
 
     /** @type {!Network.NetworkLogView.MixedContentFilterValues} */
     let filterKey = Network.NetworkLogView.MixedContentFilterValues.All;
-    if (request.wasBlocked())
+    if (request.wasBlocked()) {
       filterKey = Network.NetworkLogView.MixedContentFilterValues.Blocked;
-    else if (request.mixedContentType === Protocol.Security.MixedContentType.Blockable)
+    } else if (request.mixedContentType === Protocol.Security.MixedContentType.Blockable) {
       filterKey = Network.NetworkLogView.MixedContentFilterValues.BlockOverridden;
-    else if (request.mixedContentType === Protocol.Security.MixedContentType.OptionallyBlockable)
+    } else if (request.mixedContentType === Protocol.Security.MixedContentType.OptionallyBlockable) {
       filterKey = Network.NetworkLogView.MixedContentFilterValues.Displayed;
+    }
 
-    if (!this._filterRequestCounts.has(filterKey))
+    if (!this._filterRequestCounts.has(filterKey)) {
       this._filterRequestCounts.set(filterKey, 1);
-    else
+    } else {
       this._filterRequestCounts.set(filterKey, this._filterRequestCounts.get(filterKey) + 1);
+    }
 
     this._mainView.refreshExplanations();
   }
@@ -277,8 +291,9 @@ Security.SecurityPanel = class extends UI.PanelWithSidebar {
    * @param {!Security.SecurityModel} securityModel
    */
   modelAdded(securityModel) {
-    if (this._securityModel)
+    if (this._securityModel) {
       return;
+    }
 
     this._securityModel = securityModel;
     const resourceTreeModel = securityModel.resourceTreeModel();
@@ -296,8 +311,9 @@ Security.SecurityPanel = class extends UI.PanelWithSidebar {
       networkManager.addEventListener(SDK.NetworkManager.Events.RequestFinished, this._onRequestFinished, this),
     ];
 
-    if (resourceTreeModel.isInterstitialShowing())
+    if (resourceTreeModel.isInterstitialShowing()) {
       this._onInterstitialShown();
+    }
   }
 
   /**
@@ -305,8 +321,9 @@ Security.SecurityPanel = class extends UI.PanelWithSidebar {
    * @param {!Security.SecurityModel} securityModel
    */
   modelRemoved(securityModel) {
-    if (this._securityModel !== securityModel)
+    if (this._securityModel !== securityModel) {
       return;
+    }
 
     delete this._securityModel;
     Common.EventTarget.removeEventListeners(this._eventListeners);
@@ -334,8 +351,9 @@ Security.SecurityPanel = class extends UI.PanelWithSidebar {
     const origin = Common.ParsedURL.extractOrigin(request ? request.url() : frame.url);
     this._sidebarTree.setMainOrigin(origin);
 
-    if (request)
+    if (request) {
       this._processRequest(request);
+    }
   }
 
   _onInterstitialShown() {
@@ -428,8 +446,9 @@ Security.SecurityPanelSidebarTree = class extends UI.TreeOutlineInShadow {
    * @param {boolean} hidden
    */
   toggleOriginsList(hidden) {
-    for (const element of this._originGroups.values())
+    for (const element of this._originGroups.values()) {
       element.hidden = hidden;
+    }
   }
 
   /**
@@ -464,10 +483,11 @@ Security.SecurityPanelSidebarTree = class extends UI.TreeOutlineInShadow {
     let newParent;
     if (origin === this._mainOrigin) {
       newParent = this._originGroups.get(Security.SecurityPanelSidebarTree.OriginGroup.MainOrigin);
-      if (securityState === Protocol.Security.SecurityState.Secure)
+      if (securityState === Protocol.Security.SecurityState.Secure) {
         newParent.title = ls`Main origin (secure)`;
-      else
+      } else {
         newParent.title = ls`Main origin (non-secure)`;
+      }
     } else {
       switch (securityState) {
         case Protocol.Security.SecurityState.Secure:
@@ -486,8 +506,9 @@ Security.SecurityPanelSidebarTree = class extends UI.TreeOutlineInShadow {
     if (oldParent !== newParent) {
       if (oldParent) {
         oldParent.removeChild(originElement);
-        if (oldParent.childCount() === 0)
+        if (oldParent.childCount() === 0) {
           oldParent.hidden = true;
+        }
       }
       newParent.appendChild(originElement);
       newParent.hidden = false;
@@ -552,8 +573,9 @@ Security.SecurityPanelSidebarTreeElement = class extends UI.TreeElement {
    * @param {!Protocol.Security.SecurityState} newSecurityState
    */
   setSecurityState(newSecurityState) {
-    if (this._securityState)
+    if (this._securityState) {
       this._iconElement.classList.remove(this._cssPrefix + '-' + this._securityState);
+    }
 
     this._securityState = newSecurityState;
     this._iconElement.classList.add(this._cssPrefix + '-' + newSecurityState);
@@ -652,8 +674,9 @@ Security.SecurityMainView = class extends UI.VBox {
 
     if (explanation.recommendations && explanation.recommendations.length) {
       const recommendationList = text.createChild('ul', 'security-explanation-recommendations');
-      for (const recommendation of explanation.recommendations)
+      for (const recommendation of explanation.recommendations) {
         recommendationList.createChild('li').textContent = recommendation;
+      }
     }
     return text;
   }
@@ -746,15 +769,17 @@ Security.SecurityMainView = class extends UI.VBox {
     const requestsAnchor = element.createChild('div', 'security-mixed-content devtools-link');
     UI.ARIAUtils.markAsLink(requestsAnchor);
     requestsAnchor.tabIndex = 0;
-    if (filterRequestCount === 1)
+    if (filterRequestCount === 1) {
       requestsAnchor.textContent = Common.UIString('View %d request in Network Panel', filterRequestCount);
-    else
+    } else {
       requestsAnchor.textContent = Common.UIString('View %d requests in Network Panel', filterRequestCount);
+    }
 
     requestsAnchor.addEventListener('click', this.showNetworkFilter.bind(this, filterKey));
     requestsAnchor.addEventListener('keydown', event => {
-      if (isEnterKey(event))
+      if (isEnterKey(event)) {
         this.showNetworkFilter(filterKey, event);
+      }
     });
   }
 
@@ -820,10 +845,12 @@ Security.SecurityOriginView = class extends UI.VBox {
       let table = new Security.SecurityDetailsTable();
       connectionSection.appendChild(table.element());
       table.addRow(Common.UIString('Protocol'), originState.securityDetails.protocol);
-      if (originState.securityDetails.keyExchange)
+      if (originState.securityDetails.keyExchange) {
         table.addRow(Common.UIString('Key exchange'), originState.securityDetails.keyExchange);
-      if (originState.securityDetails.keyExchangeGroup)
+      }
+      if (originState.securityDetails.keyExchangeGroup) {
         table.addRow(Common.UIString('Key exchange group'), originState.securityDetails.keyExchangeGroup);
+      }
       table.addRow(
           Common.UIString('Cipher'),
           originState.securityDetails.cipher +
@@ -863,8 +890,9 @@ Security.SecurityOriginView = class extends UI.VBox {
           Security.SecurityPanel.createCertificateViewerButtonForOrigin(
               Common.UIString('Open full certificate details'), origin));
 
-      if (!sctSection)
+      if (!sctSection) {
         return;
+      }
 
       // Show summary of SCT(s) of Certificate Transparency.
       const sctSummaryTable = new Security.SecurityDetailsTable();
@@ -897,10 +925,11 @@ Security.SecurityOriginView = class extends UI.VBox {
       if (sctListLength) {
         function toggleSctDetailsDisplay() {
           const isDetailsShown = !sctTableWrapper.classList.contains('hidden');
-          if (isDetailsShown)
+          if (isDetailsShown) {
             toggleSctsDetailsLink.textContent = ls`Show full details`;
-          else
+          } else {
             toggleSctsDetailsLink.textContent = ls`Hide full details`;
+          }
           sctSummaryTable.element().classList.toggle('hidden');
           sctTableWrapper.classList.toggle('hidden');
         }
@@ -970,8 +999,9 @@ Security.SecurityOriginView = class extends UI.VBox {
       for (let i = 0; i < sanList.length; i++) {
         const span = sanDiv.createChild('span', 'san-entry');
         span.textContent = sanList[i];
-        if (listIsTruncated && i >= truncatedNumToShow)
+        if (listIsTruncated && i >= truncatedNumToShow) {
           span.classList.add('truncated-entry');
+        }
       }
       if (listIsTruncated) {
         function toggleSANTruncation() {
@@ -1002,8 +1032,9 @@ Security.SecurityOriginView = class extends UI.VBox {
    */
   setSecurityState(newSecurityState) {
     for (const className of Array.prototype.slice.call(this._originLockIcon.classList)) {
-      if (className.startsWith('security-property-'))
+      if (className.startsWith('security-property-')) {
         this._originLockIcon.classList.remove(className);
+      }
     }
 
     this._originLockIcon.classList.add('security-property-' + newSecurityState);
@@ -1035,9 +1066,10 @@ Security.SecurityDetailsTable = class {
     row.createChild('div').textContent = key;
 
     const valueDiv = row.createChild('div');
-    if (typeof value === 'string')
+    if (typeof value === 'string') {
       valueDiv.textContent = value;
-    else
+    } else {
       valueDiv.appendChild(value);
+    }
   }
 };

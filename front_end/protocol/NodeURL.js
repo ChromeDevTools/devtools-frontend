@@ -14,14 +14,16 @@ Protocol.NodeURL = class {
      * @param {string} path
      */
     function process(object, path) {
-      if (object.url && Protocol.NodeURL._isPlatformPath(object.url, Host.isWin()))
+      if (object.url && Protocol.NodeURL._isPlatformPath(object.url, Host.isWin())) {
         object.url = Common.ParsedURL.platformPathToURL(object.url);
+      }
       for (const entry of Object.entries(object)) {
         const key = entry[0];
         const value = entry[1];
         const entryPath = path + '.' + key;
-        if (entryPath !== '.result.result.value' && value !== null && typeof value === 'object')
+        if (entryPath !== '.result.result.value' && value !== null && typeof value === 'object') {
           process(value, entryPath);
+        }
       }
     }
   }

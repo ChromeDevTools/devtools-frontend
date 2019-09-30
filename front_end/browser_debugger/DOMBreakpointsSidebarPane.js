@@ -51,8 +51,9 @@ BrowserDebugger.DOMBreakpointsSidebarPane = class extends UI.VBox {
 
     for (const domDebuggerModel of SDK.targetManager.models(SDK.DOMDebuggerModel)) {
       domDebuggerModel.retrieveDOMBreakpoints();
-      for (const breakpoint of domDebuggerModel.domBreakpoints())
+      for (const breakpoint of domDebuggerModel.domBreakpoints()) {
         this._addBreakpoint(breakpoint);
+      }
     }
 
     this._highlightedElement = null;
@@ -72,8 +73,9 @@ BrowserDebugger.DOMBreakpointsSidebarPane = class extends UI.VBox {
   _breakpointToggled(event) {
     const breakpoint = /** @type {!SDK.DOMDebuggerModel.DOMBreakpoint} */ (event.data);
     const item = this._items.get(breakpoint);
-    if (item)
+    if (item) {
       item.checkbox.checked = breakpoint.enabled;
+    }
   }
 
   /**
@@ -127,8 +129,9 @@ BrowserDebugger.DOMBreakpointsSidebarPane = class extends UI.VBox {
 
     let currentElement = this._listElement.firstChild;
     while (currentElement) {
-      if (currentElement._item && currentElement._item.breakpoint.type < breakpoint.type)
+      if (currentElement._item && currentElement._item.breakpoint.type < breakpoint.type) {
         break;
+      }
       currentElement = currentElement.nextSibling;
     }
     this._listElement.insertBefore(element, currentElement);
@@ -156,8 +159,9 @@ BrowserDebugger.DOMBreakpointsSidebarPane = class extends UI.VBox {
    */
   _checkboxClicked(breakpoint) {
     const item = this._items.get(breakpoint);
-    if (!item)
+    if (!item) {
       return;
+    }
     breakpoint.domDebuggerModel.toggleDOMBreakpoint(breakpoint, item.checkbox.checked);
   }
 
@@ -179,19 +183,23 @@ BrowserDebugger.DOMBreakpointsSidebarPane = class extends UI.VBox {
       return;
     }
     const domDebuggerModel = details.debuggerModel.target().model(SDK.DOMDebuggerModel);
-    if (!domDebuggerModel)
+    if (!domDebuggerModel) {
       return;
+    }
     const data = domDebuggerModel.resolveDOMBreakpointData(/** @type {!Object} */ (details.auxData));
-    if (!data)
+    if (!data) {
       return;
+    }
 
     let element = null;
     for (const item of this._items.values()) {
-      if (item.breakpoint.node === data.node && item.breakpoint.type === data.type)
+      if (item.breakpoint.node === data.node && item.breakpoint.type === data.type) {
         element = item.element;
+      }
     }
-    if (!element)
+    if (!element) {
       return;
+    }
     UI.viewManager.showView('sources.domBreakpoints');
     element.classList.add('breakpoint-hit');
     this._highlightedElement = element;
@@ -219,20 +227,23 @@ BrowserDebugger.DOMBreakpointsSidebarPane.ContextMenuProvider = class {
    */
   appendApplicableItems(event, contextMenu, object) {
     const node = /** @type {!SDK.DOMNode} */ (object);
-    if (node.pseudoType())
+    if (node.pseudoType()) {
       return;
+    }
     const domDebuggerModel = node.domModel().target().model(SDK.DOMDebuggerModel);
-    if (!domDebuggerModel)
+    if (!domDebuggerModel) {
       return;
+    }
 
     /**
      * @param {!SDK.DOMDebuggerModel.DOMBreakpoint.Type} type
      */
     function toggleBreakpoint(type) {
-      if (domDebuggerModel.hasDOMBreakpoint(node, type))
+      if (domDebuggerModel.hasDOMBreakpoint(node, type)) {
         domDebuggerModel.removeDOMBreakpoint(node, type);
-      else
+      } else {
         domDebuggerModel.setDOMBreakpoint(node, type);
+      }
     }
 
     const breakpointsMenu = contextMenu.debugSection().appendSubMenuItem(Common.UIString('Break on'));

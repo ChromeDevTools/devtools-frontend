@@ -67,8 +67,9 @@ Console.ConsolePrompt = class extends UI.Widget {
 
       this.setText(this._initialText);
       delete this._initialText;
-      if (this.hasFocus())
+      if (this.hasFocus()) {
         this.focus();
+      }
       this.element.removeAttribute('tabindex');
       this._editor.widget().element.tabIndex = -1;
 
@@ -82,8 +83,9 @@ Console.ConsolePrompt = class extends UI.Widget {
   _eagerSettingChanged() {
     const enabled = this._eagerEvalSetting.get();
     this._eagerPreviewElement.classList.toggle('hidden', !enabled);
-    if (enabled)
+    if (enabled) {
       this._requestPreview();
+    }
   }
 
   /**
@@ -113,8 +115,9 @@ Console.ConsolePrompt = class extends UI.Widget {
     const {preview, result} =
         await ObjectUI.JavaScriptREPL.evaluateAndBuildPreview(text, true /* throwOnSideEffect */, 500);
     this._innerPreviewElement.removeChildren();
-    if (preview.deepTextContent() !== this._editor.textWithCurrentSuggestion().trim())
+    if (preview.deepTextContent() !== this._editor.textWithCurrentSuggestion().trim()) {
       this._innerPreviewElement.appendChild(preview);
+    }
     if (result && result.object && result.object.subtype === 'node') {
       this._highlightingNode = true;
       SDK.OverlayModel.highlightObjectAsDOMNode(result.object);
@@ -122,8 +125,9 @@ Console.ConsolePrompt = class extends UI.Widget {
       this._highlightingNode = false;
       SDK.OverlayModel.hideDOMNodeHighlight();
     }
-    if (result)
+    if (result) {
       executionContext.runtimeModel.releaseEvaluationResult(result);
+    }
   }
 
   /**
@@ -144,8 +148,9 @@ Console.ConsolePrompt = class extends UI.Widget {
   }
 
   clearAutocomplete() {
-    if (this._editor)
+    if (this._editor) {
       this._editor.clearAutocomplete();
+    }
   }
 
   /**
@@ -156,18 +161,20 @@ Console.ConsolePrompt = class extends UI.Widget {
   }
 
   moveCaretToEndOfPrompt() {
-    if (this._editor)
+    if (this._editor) {
       this._editor.setSelection(TextUtils.TextRange.createFromLocation(Infinity, Infinity));
+    }
   }
 
   /**
    * @param {string} text
    */
   setText(text) {
-    if (this._editor)
+    if (this._editor) {
       this._editor.setText(text);
-    else
+    } else {
       this._initialText = text;
+    }
     this.dispatchEventToListeners(Console.ConsolePrompt.Events.TextChanged);
   }
 
@@ -199,16 +206,18 @@ Console.ConsolePrompt = class extends UI.Widget {
     switch (keyboardEvent.keyCode) {
       case UI.KeyboardShortcut.Keys.Up.code:
         const startY = this._editor.visualCoordinates(0, 0).y;
-        if (keyboardEvent.shiftKey || !selection.isEmpty() || cursorY !== startY)
+        if (keyboardEvent.shiftKey || !selection.isEmpty() || cursorY !== startY) {
           break;
+        }
         newText = this._history.previous(this.text());
         isPrevious = true;
         break;
       case UI.KeyboardShortcut.Keys.Down.code:
         const fullRange = this._editor.fullRange();
         const endY = this._editor.visualCoordinates(fullRange.endLine, fullRange.endColumn).y;
-        if (keyboardEvent.shiftKey || !selection.isEmpty() || cursorY !== endY)
+        if (keyboardEvent.shiftKey || !selection.isEmpty() || cursorY !== endY) {
           break;
+        }
         newText = this._history.next();
         break;
       case UI.KeyboardShortcut.Keys.P.code:  // Ctrl+P = Previous
@@ -220,35 +229,40 @@ Console.ConsolePrompt = class extends UI.Widget {
         break;
       case UI.KeyboardShortcut.Keys.N.code:  // Ctrl+N = Next
         if (Host.isMac() && keyboardEvent.ctrlKey && !keyboardEvent.metaKey && !keyboardEvent.altKey &&
-            !keyboardEvent.shiftKey)
+            !keyboardEvent.shiftKey) {
           newText = this._history.next();
+        }
         break;
       case UI.KeyboardShortcut.Keys.Enter.code:
         this._enterKeyPressed(keyboardEvent);
         break;
       case UI.KeyboardShortcut.Keys.Tab.code:
-        if (!this.text())
+        if (!this.text()) {
           keyboardEvent.consume();
+        }
         break;
     }
 
-    if (newText === undefined)
+    if (newText === undefined) {
       return;
+    }
     keyboardEvent.consume(true);
     this.setText(newText);
 
-    if (isPrevious)
+    if (isPrevious) {
       this._editor.setSelection(TextUtils.TextRange.createFromLocation(0, Infinity));
-    else
+    } else {
       this.moveCaretToEndOfPrompt();
+    }
   }
 
   /**
    * @return {!Promise<boolean>}
    */
   async _enterWillEvaluate() {
-    if (!this._isCaretAtEndOfPrompt())
+    if (!this._isCaretAtEndOfPrompt()) {
       return true;
+    }
     return await ObjectUI.JavaScriptAutocomplete.isExpressionComplete(this.text());
   }
 
@@ -263,8 +277,9 @@ Console.ConsolePrompt = class extends UI.Widget {
    * @param {!KeyboardEvent} event
    */
   async _enterKeyPressed(event) {
-    if (event.altKey || event.ctrlKey || event.shiftKey)
+    if (event.altKey || event.ctrlKey || event.shiftKey) {
       return;
+    }
 
     event.consume(true);
 
@@ -273,13 +288,15 @@ Console.ConsolePrompt = class extends UI.Widget {
     this.clearAutocomplete();
 
     const str = this.text();
-    if (!str.length)
+    if (!str.length) {
       return;
+    }
 
-    if (await this._enterWillEvaluate())
+    if (await this._enterWillEvaluate()) {
       await this._appendCommand(str, true);
-    else
+    } else {
       this._editor.newlineAndIndent();
+    }
     this._enterProcessedForTest();
   }
 
@@ -297,8 +314,9 @@ Console.ConsolePrompt = class extends UI.Widget {
       SDK.consoleModel.evaluateCommandInConsole(
           executionContext, message, wrappedResult.text, useCommandLineAPI,
           /* awaitPromise */ wrappedResult.preprocessed);
-      if (Console.ConsolePanel.instance().isShowing())
+      if (Console.ConsolePanel.instance().isShowing()) {
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.CommandEvaluatedInConsolePanel);
+      }
     }
   }
 
@@ -312,17 +330,20 @@ Console.ConsolePrompt = class extends UI.Widget {
    */
   _historyCompletions(prefix, force) {
     const text = this.text();
-    if (!this._addCompletionsFromHistory || !this._isCaretAtEndOfPrompt() || (!text && !force))
+    if (!this._addCompletionsFromHistory || !this._isCaretAtEndOfPrompt() || (!text && !force)) {
       return [];
+    }
     const result = [];
     const set = new Set();
     const data = this._history.historyData();
     for (let i = data.length - 1; i >= 0 && result.length < 50; --i) {
       const item = data[i];
-      if (!item.startsWith(text))
+      if (!item.startsWith(text)) {
         continue;
-      if (set.has(item))
+      }
+      if (set.has(item)) {
         continue;
+      }
       set.add(item);
       result.push(
           {text: item.substring(text.length - prefix.length), iconType: 'smallicon-text-prompt', isSecondary: true});
@@ -334,10 +355,11 @@ Console.ConsolePrompt = class extends UI.Widget {
    * @override
    */
   focus() {
-    if (this._editor)
+    if (this._editor) {
       this._editor.widget().focus();
-    else
+    } else {
       this.element.focus();
+    }
   }
 
   /**
@@ -400,8 +422,9 @@ Console.ConsoleHistoryManager = class {
     }
 
     this._historyOffset = 1;
-    if (text === this._currentHistoryItem())
+    if (text === this._currentHistoryItem()) {
       return;
+    }
     this._data.push(text);
   }
 
@@ -410,8 +433,9 @@ Console.ConsoleHistoryManager = class {
    * @param {string} currentText
    */
   _pushCurrentText(currentText) {
-    if (this._uncommittedIsTop)
-      this._data.pop();  // Throw away obsolete uncommitted text.
+    if (this._uncommittedIsTop) {
+      this._data.pop();
+    }  // Throw away obsolete uncommitted text.
     this._uncommittedIsTop = true;
     this._data.push(currentText);
   }
@@ -421,10 +445,12 @@ Console.ConsoleHistoryManager = class {
    * @return {string|undefined}
    */
   previous(currentText) {
-    if (this._historyOffset > this._data.length)
+    if (this._historyOffset > this._data.length) {
       return undefined;
-    if (this._historyOffset === 1)
+    }
+    if (this._historyOffset === 1) {
       this._pushCurrentText(currentText);
+    }
     ++this._historyOffset;
     return this._currentHistoryItem();
   }
@@ -433,8 +459,9 @@ Console.ConsoleHistoryManager = class {
    * @return {string|undefined}
    */
   next() {
-    if (this._historyOffset === 1)
+    if (this._historyOffset === 1) {
       return undefined;
+    }
     --this._historyOffset;
     return this._currentHistoryItem();
   }

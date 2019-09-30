@@ -11,8 +11,9 @@ Diff.Diff = {
   charDiff: function(text1, text2, cleanup) {
     const differ = new diff_match_patch();
     const diff = differ.diff_main(text1, text2);
-    if (cleanup)
+    if (cleanup) {
       differ.diff_cleanupSemantic(diff);
+    }
     return diff;
   },
 
@@ -31,8 +32,9 @@ Diff.Diff = {
     const lineDiff = [];
     for (let i = 0; i < diff.length; i++) {
       const lines = [];
-      for (let j = 0; j < diff[i][1].length; j++)
+      for (let j = 0; j < diff[i][1].length; j++) {
         lines.push(idMap.fromChar(diff[i][1][j]));
+      }
 
       lineDiff.push({0: diff[i][0], 1: lines});
     }

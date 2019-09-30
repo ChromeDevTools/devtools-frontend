@@ -26,8 +26,9 @@ WebAudio.GraphVisualizer.GraphManager = class extends Common.Object {
    * @param {!Protocol.WebAudio.GraphObjectId} contextId
    */
   destroyContext(contextId) {
-    if (!this._graphMapByContextId.has(contextId))
+    if (!this._graphMapByContextId.has(contextId)) {
       return;
+    }
 
     const graph = this._graphMapByContextId.get(contextId);
     graph.removeEventListener(WebAudio.GraphVisualizer.GraphView.Events.ShouldRedraw, this._notifyShouldRedraw, this);

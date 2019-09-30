@@ -120,8 +120,9 @@ Resources.DOMStorageModel = class extends SDK.SDKModel {
   }
 
   enable() {
-    if (this._enabled)
+    if (this._enabled) {
       return;
+    }
 
     this.target().registerDOMStorageDispatcher(new Resources.DOMStorageDispatcher(this));
     this._securityOriginManager.addEventListener(
@@ -129,8 +130,9 @@ Resources.DOMStorageModel = class extends SDK.SDKModel {
     this._securityOriginManager.addEventListener(
         SDK.SecurityOriginManager.Events.SecurityOriginRemoved, this._securityOriginRemoved, this);
 
-    for (const securityOrigin of this._securityOriginManager.securityOrigins())
+    for (const securityOrigin of this._securityOriginManager.securityOrigins()) {
       this._addOrigin(securityOrigin);
+    }
     this._agent.enable();
 
     this._enabled = true;
@@ -140,8 +142,9 @@ Resources.DOMStorageModel = class extends SDK.SDKModel {
    * @param {string} origin
    */
   clearForOrigin(origin) {
-    if (!this._enabled)
+    if (!this._enabled) {
       return;
+    }
     for (const isLocal of [true, false]) {
       const key = this._storageKey(origin, isLocal);
       const storage = this._storages[key];
@@ -164,8 +167,9 @@ Resources.DOMStorageModel = class extends SDK.SDKModel {
   _addOrigin(securityOrigin) {
     const parsed = new Common.ParsedURL(securityOrigin);
     // These are "opaque" origins which are not supposed to support DOM storage.
-    if (!parsed.isValid || parsed.scheme === 'data' || parsed.scheme === 'about' || parsed.scheme === 'javascript')
+    if (!parsed.isValid || parsed.scheme === 'data' || parsed.scheme === 'about' || parsed.scheme === 'javascript') {
       return;
+    }
 
     for (const isLocal of [true, false]) {
       const key = this._storageKey(securityOrigin, isLocal);
@@ -190,8 +194,9 @@ Resources.DOMStorageModel = class extends SDK.SDKModel {
     for (const isLocal of [true, false]) {
       const key = this._storageKey(securityOrigin, isLocal);
       const storage = this._storages[key];
-      if (!storage)
+      if (!storage) {
         continue;
+      }
       delete this._storages[key];
       this.dispatchEventToListeners(Resources.DOMStorageModel.Events.DOMStorageRemoved, storage);
     }
@@ -211,8 +216,9 @@ Resources.DOMStorageModel = class extends SDK.SDKModel {
    */
   _domStorageItemsCleared(storageId) {
     const domStorage = this.storageForId(storageId);
-    if (!domStorage)
+    if (!domStorage) {
       return;
+    }
 
     const eventData = {};
     domStorage.dispatchEventToListeners(Resources.DOMStorage.Events.DOMStorageItemsCleared, eventData);
@@ -224,8 +230,9 @@ Resources.DOMStorageModel = class extends SDK.SDKModel {
    */
   _domStorageItemRemoved(storageId, key) {
     const domStorage = this.storageForId(storageId);
-    if (!domStorage)
+    if (!domStorage) {
       return;
+    }
 
     const eventData = {key: key};
     domStorage.dispatchEventToListeners(Resources.DOMStorage.Events.DOMStorageItemRemoved, eventData);
@@ -238,8 +245,9 @@ Resources.DOMStorageModel = class extends SDK.SDKModel {
    */
   _domStorageItemAdded(storageId, key, value) {
     const domStorage = this.storageForId(storageId);
-    if (!domStorage)
+    if (!domStorage) {
       return;
+    }
 
     const eventData = {key: key, value: value};
     domStorage.dispatchEventToListeners(Resources.DOMStorage.Events.DOMStorageItemAdded, eventData);
@@ -253,8 +261,9 @@ Resources.DOMStorageModel = class extends SDK.SDKModel {
    */
   _domStorageItemUpdated(storageId, key, oldValue, value) {
     const domStorage = this.storageForId(storageId);
-    if (!domStorage)
+    if (!domStorage) {
       return;
+    }
 
     const eventData = {key: key, oldValue: oldValue, value: value};
     domStorage.dispatchEventToListeners(Resources.DOMStorage.Events.DOMStorageItemUpdated, eventData);
@@ -273,8 +282,9 @@ Resources.DOMStorageModel = class extends SDK.SDKModel {
    */
   storages() {
     const result = [];
-    for (const id in this._storages)
+    for (const id in this._storages) {
       result.push(this._storages[id]);
+    }
     return result;
   }
 };

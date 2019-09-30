@@ -40,8 +40,9 @@ FormatterWorker.ESTreeWalker = class {
       node = /** @type {!ESTree.Node} */ (result);
     }
 
-    if (!node)
+    if (!node) {
       return;
+    }
     node.parent = parent;
 
     if (this._beforeVisit.call(null, node) === FormatterWorker.ESTreeWalker.SkipSubtree) {
@@ -66,10 +67,11 @@ FormatterWorker.ESTreeWalker = class {
     } else {
       for (let i = 0; i < walkOrder.length; ++i) {
         const entity = node[walkOrder[i]];
-        if (Array.isArray(entity))
+        if (Array.isArray(entity)) {
           this._walkArray(entity, node);
-        else
+        } else {
           this._innerWalk(entity, node);
+        }
       }
     }
 
@@ -81,8 +83,9 @@ FormatterWorker.ESTreeWalker = class {
    * @param {?ESTree.Node} parentNode
    */
   _walkArray(nodeArray, parentNode) {
-    for (let i = 0; i < nodeArray.length; ++i)
+    for (let i = 0; i < nodeArray.length; ++i) {
       this._innerWalk(nodeArray[i], parentNode);
+    }
   }
 };
 

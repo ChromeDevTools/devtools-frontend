@@ -47,8 +47,9 @@ SDK.RuntimeModel = class extends SDK.SDKModel {
     /** @type {?boolean} */
     this._hasSideEffectSupport = null;
 
-    if (Common.moduleSetting('customFormatters').get())
+    if (Common.moduleSetting('customFormatters').get()) {
       this._agent.setCustomObjectFormatterEnabled(true);
+    }
 
     Common.moduleSetting('customFormatters').addChangeListener(this._customFormattersStateChanged.bind(this));
   }
@@ -104,8 +105,9 @@ SDK.RuntimeModel = class extends SDK.SDKModel {
    */
   defaultExecutionContext() {
     for (const context of this.executionContexts()) {
-      if (context.isDefault)
+      if (context.isDefault) {
         return context;
+      }
     }
     return null;
   }
@@ -134,8 +136,9 @@ SDK.RuntimeModel = class extends SDK.SDKModel {
    */
   _executionContextDestroyed(executionContextId) {
     const executionContext = this._executionContextById.get(executionContextId);
-    if (!executionContext)
+    if (!executionContext) {
       return;
+    }
     this.debuggerModel().executionContextDestroyed(executionContext);
     this._executionContextById.delete(executionContextId);
     this.dispatchEventToListeners(SDK.RuntimeModel.Events.ExecutionContextDestroyed, executionContext);
@@ -149,8 +152,9 @@ SDK.RuntimeModel = class extends SDK.SDKModel {
     this.debuggerModel().globalObjectCleared();
     const contexts = this.executionContexts();
     this._executionContextById.clear();
-    for (let i = 0; i < contexts.length; ++i)
+    for (let i = 0; i < contexts.length; ++i) {
       this.dispatchEventToListeners(SDK.RuntimeModel.Events.ExecutionContextDestroyed, contexts[i]);
+    }
   }
 
   /**
@@ -183,10 +187,12 @@ SDK.RuntimeModel = class extends SDK.SDKModel {
     const type = typeof value;
     let unserializableValue = undefined;
     const unserializableDescription = SDK.RemoteObject.unserializableDescription(value);
-    if (unserializableDescription !== null)
+    if (unserializableDescription !== null) {
       unserializableValue = /** @type {!Protocol.Runtime.UnserializableValue} */ (unserializableDescription);
-    if (typeof unserializableValue !== 'undefined')
+    }
+    if (typeof unserializableValue !== 'undefined') {
       value = undefined;
+    }
     return new SDK.RemoteObjectImpl(this, undefined, type, undefined, value, unserializableValue);
   }
 
@@ -214,8 +220,9 @@ SDK.RuntimeModel = class extends SDK.SDKModel {
    * @param {!SDK.RuntimeModel.EvaluationResult} result
    */
   releaseEvaluationResult(result) {
-    if (result.object)
+    if (result.object) {
       result.object.release();
+    }
     if (result.exceptionDetails && result.exceptionDetails.exception) {
       const exception = result.exceptionDetails.exception;
       const exceptionObject = this.createRemoteObject({type: exception.type, objectId: exception.objectId});
@@ -295,8 +302,9 @@ SDK.RuntimeModel = class extends SDK.SDKModel {
    * @return {!Promise<!SDK.RuntimeModel.QueryObjectResult>}
    */
   async queryObjects(prototype) {
-    if (!prototype.objectId)
+    if (!prototype.objectId) {
       return {error: 'Prototype should be an Object.'};
+    }
     const response = await this._agent.invoke_queryObjects(
         {prototypeObjectId: /** @type {string} */ (prototype.objectId), objectGroup: 'console'});
     const error = response[Protocol.Error];
@@ -354,8 +362,9 @@ SDK.RuntimeModel = class extends SDK.SDKModel {
      */
     function didGetDetails(response) {
       object.release();
-      if (!response || !response.location)
+      if (!response || !response.location) {
         return;
+      }
       Common.Revealer.reveal(response.location);
     }
     object.release();
@@ -378,10 +387,12 @@ SDK.RuntimeModel = class extends SDK.SDKModel {
      * @suppressReceiverCheck
      */
     function toStringForClipboard(subtype) {
-      if (subtype === 'node')
+      if (subtype === 'node') {
         return this.outerHTML;
-      if (subtype && typeof this === 'undefined')
+      }
+      if (subtype && typeof this === 'undefined') {
         return subtype + '';
+      }
       try {
         return JSON.stringify(this, null, '  ');
       } catch (e) {
@@ -411,8 +422,9 @@ SDK.RuntimeModel = class extends SDK.SDKModel {
     let text = exceptionDetails.text;
     if (exceptionDetails.exception && exceptionDetails.exception.description) {
       let description = exceptionDetails.exception.description;
-      if (description.indexOf('\n') !== -1)
+      if (description.indexOf('\n') !== -1) {
         description = description.substring(0, description.indexOf('\n'));
+      }
       text += ' ' + description;
     }
     return text;
@@ -468,10 +480,12 @@ SDK.RuntimeModel = class extends SDK.SDKModel {
    * @return {number}
    */
   executionContextForStackTrace(stackTrace) {
-    while (stackTrace && !stackTrace.callFrames.length)
+    while (stackTrace && !stackTrace.callFrames.length) {
       stackTrace = stackTrace.parent;
-    if (!stackTrace || !stackTrace.callFrames.length)
+    }
+    if (!stackTrace || !stackTrace.callFrames.length) {
       return 0;
+    }
     return this.executionContextIdForScriptId(stackTrace.callFrames[0].scriptId);
   }
 
@@ -487,8 +501,9 @@ SDK.RuntimeModel = class extends SDK.SDKModel {
    */
   async checkSideEffectSupport() {
     const testContext = this.executionContexts().peekLast();
-    if (!testContext)
+    if (!testContext) {
       return false;
+    }
     // Check for a positive throwOnSideEffect response without triggering side effects.
     const response = await this._agent.invoke_evaluate({
       expression: String.escapeInvalidUnicodeCharacters(SDK.RuntimeModel._sideEffectTestExpression),
@@ -699,14 +714,18 @@ SDK.ExecutionContext = class {
      * @return {number}
      */
     function targetWeight(target) {
-      if (!target.parentTarget())
+      if (!target.parentTarget()) {
         return 5;
-      if (target.type() === SDK.Target.Type.Frame)
+      }
+      if (target.type() === SDK.Target.Type.Frame) {
         return 4;
-      if (target.type() === SDK.Target.Type.ServiceWorker)
+      }
+      if (target.type() === SDK.Target.Type.ServiceWorker) {
         return 3;
-      if (target.type() === SDK.Target.Type.Worker)
+      }
+      if (target.type() === SDK.Target.Type.Worker) {
         return 2;
+      }
       return 1;
     }
 
@@ -735,24 +754,29 @@ SDK.ExecutionContext = class {
         break;
       }
     }
-    if (!targetA && targetB)
+    if (!targetA && targetB) {
       return -1;
+    }
 
-    if (!targetB && targetA)
+    if (!targetB && targetA) {
       return 1;
+    }
 
     if (targetA && targetB) {
       const weightDiff = targetWeight(targetA) - targetWeight(targetB);
-      if (weightDiff)
+      if (weightDiff) {
         return -weightDiff;
+      }
       return targetA.id().localeCompare(targetB.id());
     }
 
     // Main world context should always go first.
-    if (a.isDefault)
+    if (a.isDefault) {
       return -1;
-    if (b.isDefault)
+    }
+    if (b.isDefault) {
       return +1;
+    }
     return a.name.localeCompare(b.name);
   }
 
@@ -764,21 +788,25 @@ SDK.ExecutionContext = class {
    */
   evaluate(options, userGesture, awaitPromise) {
     // FIXME: It will be moved to separate ExecutionContext.
-    if (this.debuggerModel.selectedCallFrame())
+    if (this.debuggerModel.selectedCallFrame()) {
       return this.debuggerModel.evaluateOnSelectedCallFrame(options);
+    }
     // Assume backends either support both throwOnSideEffect and timeout options or neither.
     const needsTerminationOptions = !!options.throwOnSideEffect || options.timeout !== undefined;
-    if (!needsTerminationOptions || this.runtimeModel.hasSideEffectSupport())
+    if (!needsTerminationOptions || this.runtimeModel.hasSideEffectSupport()) {
       return this._evaluateGlobal(options, userGesture, awaitPromise);
+    }
 
     /** @type {!SDK.RuntimeModel.EvaluationResult} */
     const unsupportedError = {error: 'Side-effect checks not supported by backend.'};
-    if (this.runtimeModel.hasSideEffectSupport() === false)
+    if (this.runtimeModel.hasSideEffectSupport() === false) {
       return Promise.resolve(unsupportedError);
+    }
 
     return this.runtimeModel.checkSideEffectSupport().then(() => {
-      if (this.runtimeModel.hasSideEffectSupport())
+      if (this.runtimeModel.hasSideEffectSupport()) {
         return this._evaluateGlobal(options, userGesture, awaitPromise);
+      }
       return Promise.resolve(unsupportedError);
     });
   }

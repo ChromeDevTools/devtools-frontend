@@ -19,14 +19,16 @@ Accessibility.ARIAAttributesPane = class extends Accessibility.AccessibilitySubP
   setNode(node) {
     super.setNode(node);
     this._treeOutline.removeChildren();
-    if (!this.node())
+    if (!this.node()) {
       return;
+    }
     const target = this.node().domModel().target();
     const attributes = node.attributes();
     for (let i = 0; i < attributes.length; ++i) {
       const attribute = attributes[i];
-      if (Accessibility.ARIAAttributesPane._attributes.indexOf(attribute.name) < 0)
+      if (Accessibility.ARIAAttributesPane._attributes.indexOf(attribute.name) < 0) {
         continue;
+      }
       this._treeOutline.appendChild(new Accessibility.ARIAAttributesTreeElement(this, attribute, target));
     }
 
@@ -103,8 +105,9 @@ Accessibility.ARIAAttributesTreeElement = class extends UI.TreeElement {
    * @param {!Event} event
    */
   _mouseClick(event) {
-    if (event.target === this.listItemElement)
+    if (event.target === this.listItemElement) {
       return;
+    }
 
     event.consume(true);
 
@@ -114,8 +117,9 @@ Accessibility.ARIAAttributesTreeElement = class extends UI.TreeElement {
   _startEditing() {
     const valueElement = this._valueElement;
 
-    if (UI.isBeingEdited(valueElement))
+    if (UI.isBeingEdited(valueElement)) {
       return;
+    }
 
     const previousContent = valueElement.textContent;
 
@@ -140,8 +144,9 @@ Accessibility.ARIAAttributesTreeElement = class extends UI.TreeElement {
   }
 
   _removePrompt() {
-    if (!this._prompt)
+    if (!this._prompt) {
       return;
+    }
     this._prompt.detach();
     delete this._prompt;
   }
@@ -154,8 +159,9 @@ Accessibility.ARIAAttributesTreeElement = class extends UI.TreeElement {
     this._removePrompt();
 
     // Make the changes to the attribute
-    if (userInput !== previousContent)
+    if (userInput !== previousContent) {
       this._parentPane.node().setAttributeValue(this._attribute.name, userInput);
+    }
   }
 
   _editingCancelled() {
@@ -168,8 +174,9 @@ Accessibility.ARIAAttributesTreeElement = class extends UI.TreeElement {
    * @param {!Event} event
    */
   _editingValueKeyDown(previousContent, event) {
-    if (event.handled)
+    if (event.handled) {
       return;
+    }
 
     if (isEnterKey(event)) {
       this._editingCommitted(event.target.textContent, previousContent);
@@ -210,8 +217,9 @@ Accessibility.ARIAAttributesPane.ARIAAttributePrompt = class extends UI.TextProm
    */
   _buildPropertyCompletions(expression, prefix, force) {
     prefix = prefix.toLowerCase();
-    if (!prefix && !force && (this._isEditingName || expression))
+    if (!prefix && !force && (this._isEditingName || expression)) {
       return Promise.resolve([]);
+    }
     return Promise.resolve(this._ariaCompletions.filter(value => value.startsWith(prefix)).map(c => ({text: c})));
   }
 };

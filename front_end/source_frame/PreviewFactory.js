@@ -10,8 +10,9 @@ SourceFrame.PreviewFactory = class {
    */
   static async createPreview(provider, mimeType) {
     let resourceType = Common.ResourceType.fromMimeType(mimeType);
-    if (resourceType === Common.resourceTypes.Other)
+    if (resourceType === Common.resourceTypes.Other) {
       resourceType = provider.contentType();
+    }
 
     switch (resourceType) {
       case Common.resourceTypes.Image:
@@ -21,19 +22,23 @@ SourceFrame.PreviewFactory = class {
     }
 
     let content = await provider.requestContent();
-    if (!content)
+    if (!content) {
       return new UI.EmptyWidget(Common.UIString('Nothing to preview'));
+    }
 
-    if (await provider.contentEncoded())
+    if (await provider.contentEncoded()) {
       content = window.atob(content);
+    }
 
     const parsedXML = SourceFrame.XMLView.parseXML(content, mimeType);
-    if (parsedXML)
+    if (parsedXML) {
       return SourceFrame.XMLView.createSearchableView(parsedXML);
+    }
 
     const jsonView = await SourceFrame.JSONView.createView(content);
-    if (jsonView)
+    if (jsonView) {
       return jsonView;
+    }
 
     if (resourceType.isTextType()) {
       const highlighterType =

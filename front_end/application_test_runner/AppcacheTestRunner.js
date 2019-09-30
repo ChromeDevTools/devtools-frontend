@@ -74,13 +74,15 @@ ApplicationTestRunner.dumpApplicationCacheTree = function() {
 };
 
 ApplicationTestRunner.frameIdToString = function(frameId) {
-  if (!ApplicationTestRunner.framesByFrameId)
+  if (!ApplicationTestRunner.framesByFrameId) {
     ApplicationTestRunner.framesByFrameId = {};
+  }
 
   let frame = TestRunner.resourceTreeModel.frameForId(frameId);
 
-  if (!frame)
+  if (!frame) {
     frame = ApplicationTestRunner.framesByFrameId[frameId];
+  }
 
   ApplicationTestRunner.framesByFrameId[frameId] = frame;
   return frame.name;
@@ -102,8 +104,9 @@ ApplicationTestRunner.dumpApplicationCacheModel = function() {
   const model = UI.panels.resources._sidebar._applicationCacheModel;
   const frameIds = [];
 
-  for (const frameId in model._manifestURLsByFrame)
+  for (const frameId in model._manifestURLsByFrame) {
     frameIds.push(frameId);
+  }
 
   function compareFunc(a, b) {
     return ApplicationTestRunner.frameIdToString(a).localeCompare(ApplicationTestRunner.frameIdToString(b));
@@ -153,8 +156,9 @@ ApplicationTestRunner.startApplicationCacheStatusesRecording = function() {
     record.manifestURL = manifestURL;
     record.status = status;
 
-    if (!ApplicationTestRunner.applicationCacheStatusesRecords[frameId])
+    if (!ApplicationTestRunner.applicationCacheStatusesRecords[frameId]) {
       ApplicationTestRunner.applicationCacheStatusesRecords[frameId] = [];
+    }
 
     ApplicationTestRunner.applicationCacheStatusesRecords[frameId].push(record);
 
@@ -162,8 +166,9 @@ ApplicationTestRunner.startApplicationCacheStatusesRecording = function() {
         ApplicationTestRunner.awaitedFrameStatusEventsCount[frameId]) {
       ApplicationTestRunner.awaitedFrameStatusEventsCount[frameId].count--;
 
-      if (!ApplicationTestRunner.awaitedFrameStatusEventsCount[frameId].count)
+      if (!ApplicationTestRunner.awaitedFrameStatusEventsCount[frameId].count) {
         ApplicationTestRunner.awaitedFrameStatusEventsCount[frameId].callback();
+      }
     }
   }
 
@@ -179,8 +184,9 @@ ApplicationTestRunner.ensureFrameStatusEventsReceived = function(frameId, count,
     return;
   }
 
-  if (!ApplicationTestRunner.awaitedFrameStatusEventsCount)
+  if (!ApplicationTestRunner.awaitedFrameStatusEventsCount) {
     ApplicationTestRunner.awaitedFrameStatusEventsCount = {};
+  }
 
   ApplicationTestRunner.awaitedFrameStatusEventsCount[frameId] = {count: eventsLeft, callback: callback};
 };

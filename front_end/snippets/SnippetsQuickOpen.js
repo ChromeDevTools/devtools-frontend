@@ -14,8 +14,9 @@ Snippets.SnippetsQuickOpen = class extends QuickOpen.FilteredListWidget.Provider
    * @param {string} promptValue
    */
   selectItem(itemIndex, promptValue) {
-    if (itemIndex === null)
+    if (itemIndex === null) {
       return;
+    }
     Snippets.evaluateScriptSnippet(this._snippets[itemIndex]);
   }
 

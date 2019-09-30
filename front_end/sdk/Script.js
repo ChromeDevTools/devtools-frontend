@@ -76,15 +76,18 @@ SDK.Script = class {
     let sourceURLIndex = source.lastIndexOf('//# sourceURL=');
     if (sourceURLIndex === -1) {
       sourceURLIndex = source.lastIndexOf('//@ sourceURL=');
-      if (sourceURLIndex === -1)
+      if (sourceURLIndex === -1) {
         return source;
+      }
     }
     const sourceURLLineIndex = source.lastIndexOf('\n', sourceURLIndex);
-    if (sourceURLLineIndex === -1)
+    if (sourceURLLineIndex === -1) {
       return source;
+    }
     const sourceURLLine = source.substr(sourceURLLineIndex + 1).split('\n', 1)[0];
-    if (sourceURLLine.search(SDK.Script.sourceURLRegex) === -1)
+    if (sourceURLLine.search(SDK.Script.sourceURLRegex) === -1) {
       return source;
+    }
     return source.substr(0, sourceURLLineIndex) + source.substr(sourceURLLineIndex + sourceURLLine.length + 1);
   }
 
@@ -138,17 +141,21 @@ SDK.Script = class {
    * @return {!Promise<string>}
    */
   async requestContent() {
-    if (this._source)
+    if (this._source) {
       return this._source;
-    if (!this.scriptId)
+    }
+    if (!this.scriptId) {
       return '';
+    }
     const source = await this.debuggerModel.target().debuggerAgent().getScriptSource(this.scriptId);
-    if (source && this.hasSourceURL)
+    if (source && this.hasSourceURL) {
       this._source = SDK.Script._trimSourceURLComment(source);
-    else
+    } else {
       this._source = source || '';
-    if (this._originalSource === null)
+    }
+    if (this._originalSource === null) {
       this._originalSource = this._source;
+    }
     return this._source;
   }
 
@@ -172,8 +179,9 @@ SDK.Script = class {
    * @return {!Promise<!Array<!Common.ContentProvider.SearchMatch>>}
    */
   async searchInContent(query, caseSensitive, isRegex) {
-    if (!this.scriptId)
+    if (!this.scriptId) {
       return [];
+    }
 
     const matches =
         await this.debuggerModel.target().debuggerAgent().searchInContent(this.scriptId, query, caseSensitive, isRegex);
@@ -185,8 +193,9 @@ SDK.Script = class {
    * @return {string}
    */
   _appendSourceURLCommentIfNeeded(source) {
-    if (!this.hasSourceURL)
+    if (!this.hasSourceURL) {
       return source;
+    }
     return source + '\n //# sourceURL=' + this.sourceURL;
   }
 
@@ -212,8 +221,9 @@ SDK.Script = class {
     const response = await this.debuggerModel.target().debuggerAgent().invoke_setScriptSource(
         {scriptId: this.scriptId, scriptSource: newSource});
 
-    if (!response[Protocol.Error] && !response.exceptionDetails)
+    if (!response[Protocol.Error] && !response.exceptionDetails) {
       this._source = newSource;
+    }
 
     const needsStepIn = !!response.stackChanged;
     callback(

@@ -119,16 +119,19 @@ Network.NetworkItemView = class extends UI.TabbedPane {
    * @param {string=} tabId
    */
   _selectTab(tabId) {
-    if (!tabId)
+    if (!tabId) {
       tabId = this._resourceViewTabSetting.get();
+    }
 
-    if (!this.selectTab(tabId))
+    if (!this.selectTab(tabId)) {
       this.selectTab('headers');
+    }
   }
 
   _tabSelected(event) {
-    if (!event.data.isUserGesture)
+    if (!event.data.isUserGesture) {
       return;
+    }
     this._resourceViewTabSetting.set(event.data.tabId);
   }
 
@@ -145,8 +148,9 @@ Network.NetworkItemView = class extends UI.TabbedPane {
    */
   async revealResponseBody(line) {
     this._selectTab(Network.NetworkItemView.Tabs.Response);
-    if (this._responseView && typeof line === 'number')
+    if (this._responseView && typeof line === 'number') {
       await this._responseView.revealLine(/** @type {number} */ (line));
+    }
   }
 
   /**

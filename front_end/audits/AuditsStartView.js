@@ -23,8 +23,9 @@ Audits.StartView = class extends UI.Widget {
    */
   _populateRuntimeSettingAsRadio(settingName, label, parentElement) {
     const runtimeSetting = Audits.RuntimeSettings.find(item => item.setting.name === settingName);
-    if (!runtimeSetting || !runtimeSetting.options)
+    if (!runtimeSetting || !runtimeSetting.options) {
       throw new Error(`${settingName} is not a setting with options`);
+    }
 
     const control = new Audits.RadioSetting(runtimeSetting.options, runtimeSetting.setting, runtimeSetting.description);
     parentElement.appendChild(control.element);
@@ -37,8 +38,9 @@ Audits.StartView = class extends UI.Widget {
    */
   _populateRuntimeSettingAsCheckbox(settingName, parentElement) {
     const runtimeSetting = Audits.RuntimeSettings.find(item => item.setting.name === settingName);
-    if (!runtimeSetting || !runtimeSetting.title)
+    if (!runtimeSetting || !runtimeSetting.title) {
       throw new Error(`${settingName} is not a setting with a title`);
+    }
 
     runtimeSetting.setting.setTitle(runtimeSetting.title);
     const control = new UI.ToolbarSettingCheckbox(runtimeSetting.setting, runtimeSetting.description);
@@ -148,18 +150,21 @@ Audits.StartView = class extends UI.Widget {
    * @param {boolean} isEnabled
    */
   setStartButtonEnabled(isEnabled) {
-    if (this._helpText)
+    if (this._helpText) {
       this._helpText.classList.toggle('hidden', isEnabled);
+    }
 
-    if (this._startButton)
+    if (this._startButton) {
       this._startButton.disabled = !isEnabled;
+    }
   }
 
   /**
    * @param {?string} text
    */
   setUnauditableExplanation(text) {
-    if (this._helpText)
+    if (this._helpText) {
       this._helpText.textContent = text;
+    }
   }
 };

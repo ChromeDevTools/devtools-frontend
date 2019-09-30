@@ -191,10 +191,11 @@ export function markAsPoliteLiveRegion(element) {
  * @param {?string} placeholder
  */
 export function setPlaceholder(element, placeholder) {
-  if (placeholder)
+  if (placeholder) {
     element.setAttribute('aria-placeholder', placeholder);
-  else
+  } else {
     element.removeAttribute('aria-placeholder');
+  }
 }
 
 /**
@@ -215,8 +216,9 @@ export function markAsStatus(element) {
  * @param {!Element} element
  */
 export function ensureId(element) {
-  if (!element.id)
+  if (!element.id) {
     element.id = nextId('ariaElement');
+  }
 }
 
 /**
@@ -279,10 +281,11 @@ export function setSelected(element, value) {
  * @param {boolean} value
  */
 export function setInvalid(element, value) {
-  if (value)
+  if (value) {
     element.setAttribute('aria-invalid', value);
-  else
+  } else {
     element.removeAttribute('aria-invalid');
+  }
 }
 
 /**
@@ -345,8 +348,9 @@ export function setDescription(element, description) {
   // The rest of DevTools shouldn't have to worry about this,
   // so there is some unfortunate code below.
 
-  if (_descriptionMap.has(element))
+  if (_descriptionMap.has(element)) {
     _descriptionMap.get(element).remove();
+  }
   element.removeAttribute('data-aria-utils-animation-hack');
 
   if (!description) {
@@ -386,8 +390,9 @@ export function setDescription(element, description) {
   // Lets try the next best thing, and just put the description element
   // next to it in the DOM.
   const inserted = element.insertAdjacentElement('afterend', descriptionElement);
-  if (inserted)
+  if (inserted) {
     return;
+  }
 
   // Uh oh, the insertion didn't work! That means we aren't currently in the DOM.
   // How can we find out when the element enters the DOM?
@@ -395,8 +400,9 @@ export function setDescription(element, description) {
   element.setAttribute('data-aria-utils-animation-hack', 'sorry');
   element.addEventListener('animationend', () => {
     // Someone might have made a new description in the meantime.
-    if (_descriptionMap.get(element) !== descriptionElement)
+    if (_descriptionMap.get(element) !== descriptionElement) {
       return;
+    }
     element.removeAttribute('data-aria-utils-animation-hack');
 
     // Try it again. This time we are in the DOM, so it *should* work.

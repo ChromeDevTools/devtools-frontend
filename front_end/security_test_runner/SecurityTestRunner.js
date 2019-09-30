@@ -12,15 +12,17 @@ SecurityTestRunner.dumpSecurityPanelSidebarOrigins = function() {
     const originGroup = Security.SecurityPanelSidebarTree.OriginGroup[key];
     const element = Security.SecurityPanel._instance()._sidebarTree._originGroups.get(originGroup);
 
-    if (element.hidden)
+    if (element.hidden) {
       continue;
+    }
 
     TestRunner.addResult('Group: ' + element.title);
     const originTitles = element.childrenListElement.getElementsByTagName('span');
 
     for (const originTitle of originTitles) {
-      if (originTitle.className !== 'tree-element-title')
+      if (originTitle.className !== 'tree-element-title') {
         TestRunner.dumpDeepInnerHTML(originTitle);
+      }
     }
   }
 };

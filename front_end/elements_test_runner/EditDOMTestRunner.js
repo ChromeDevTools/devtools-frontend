@@ -57,8 +57,9 @@ ElementsTestRunner.editNodePart = function(node, className) {
   const treeElement = ElementsTestRunner.firstElementsTreeOutline().findTreeElement(node);
   let textElement = treeElement.listItemElement.getElementsByClassName(className)[0];
 
-  if (!textElement && treeElement.childrenListElement)
+  if (!textElement && treeElement.childrenListElement) {
     textElement = treeElement.childrenListElement.getElementsByClassName(className)[0];
+  }
 
   treeElement._startEditingTarget(textElement);
   return textElement;
@@ -69,8 +70,9 @@ ElementsTestRunner.editNodePartAndRun = function(node, className, newValue, step
   editorElement.textContent = newValue;
   editorElement.dispatchEvent(TestRunner.createKeyEvent('Enter'));
 
-  if (useSniffer)
+  if (useSniffer) {
     TestRunner.addSniffer(Elements.ElementsTreeOutline.prototype, '_updateModifiedNodes', step2);
-  else
+  } else {
     TestRunner.deprecatedRunAfterPendingDispatches(step2);
+  }
 };

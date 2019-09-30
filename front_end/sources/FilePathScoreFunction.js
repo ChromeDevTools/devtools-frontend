@@ -50,8 +50,9 @@ Sources.FilePathScoreFunction = class {
    * @return {number}
    */
   score(data, matchIndexes) {
-    if (!data || !this._query)
+    if (!data || !this._query) {
       return 0;
+    }
     const n = this._query.length;
     const m = data.length;
     if (!this._score || this._score.length < n * m) {
@@ -77,8 +78,9 @@ Sources.FilePathScoreFunction = class {
         }
       }
     }
-    if (matchIndexes)
+    if (matchIndexes) {
       this._restoreMatchIndexes(sequence, n, m, matchIndexes);
+    }
     const maxDataLength = 256;
     return score[n * m - 1] * maxDataLength + (maxDataLength - data.length);
   }
@@ -89,8 +91,9 @@ Sources.FilePathScoreFunction = class {
    * @return {boolean}
    */
   _testWordStart(data, j) {
-    if (j === 0)
+    if (j === 0) {
       return true;
+    }
 
     const prevChar = data.charAt(j - 1);
     return prevChar === '_' || prevChar === '-' || prevChar === '/' ||
@@ -133,19 +136,25 @@ Sources.FilePathScoreFunction = class {
     const isPathTokenStart = j === 0 || data[j - 1] === '/';
     const isCapsMatch = query[i] === data[j] && query[i] === this._queryUpperCase[i];
     let score = 10;
-    if (isPathTokenStart)
+    if (isPathTokenStart) {
       score += 4;
-    if (isWordStart)
+    }
+    if (isWordStart) {
       score += 2;
-    if (isCapsMatch)
+    }
+    if (isCapsMatch) {
       score += 6;
-    if (isFileName)
+    }
+    if (isFileName) {
       score += 4;
+    }
     // promote the case of making the whole match in the filename
-    if (j === this._fileNameIndex + 1 && i === 0)
+    if (j === this._fileNameIndex + 1 && i === 0) {
       score += 5;
-    if (isFileName && isWordStart)
+    }
+    if (isFileName && isWordStart) {
       score += 3;
+    }
     return score;
   }
 
@@ -161,10 +170,12 @@ Sources.FilePathScoreFunction = class {
     const isFileName = j > this._fileNameIndex;
     const isPathTokenStart = j === 0 || data[j - 1] === '/';
     let score = 10;
-    if (isFileName)
+    if (isFileName) {
       score += 4;
-    if (isPathTokenStart)
+    }
+    if (isPathTokenStart) {
       score += 5;
+    }
     score += sequenceLength * 4;
     return score;
   }
@@ -178,12 +189,14 @@ Sources.FilePathScoreFunction = class {
    * @return {number}
    */
   _match(query, data, i, j, consecutiveMatch) {
-    if (this._queryUpperCase[i] !== this._dataUpperCase[j])
+    if (this._queryUpperCase[i] !== this._dataUpperCase[j]) {
       return 0;
+    }
 
-    if (!consecutiveMatch)
+    if (!consecutiveMatch) {
       return this._singleCharScore(query, data, i, j);
-    else
+    } else {
       return this._sequenceCharScore(query, data, i, j - consecutiveMatch, consecutiveMatch);
+    }
   }
 };

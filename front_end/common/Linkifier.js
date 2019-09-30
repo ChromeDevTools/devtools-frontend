@@ -21,8 +21,9 @@ export default class Linkifier {
  * @return {!Promise<!Node>}
  */
 export function linkify(object, options) {
-  if (!object)
+  if (!object) {
     return Promise.reject(new Error('Can\'t linkify ' + object));
+  }
   return self.runtime.extension(Common.Linkifier, object)
       .instance()
       .then(linkifier => linkifier.linkify(object, options));

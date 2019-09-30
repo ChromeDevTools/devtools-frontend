@@ -41,8 +41,9 @@ export default class Trie {
    * @return {boolean}
    */
   remove(word) {
-    if (!this.has(word))
+    if (!this.has(word)) {
       return false;
+    }
     let node = this._root;
     --this._wordsInSubtree[this._root];
     for (let i = 0; i < word.length; ++i) {
@@ -66,8 +67,9 @@ export default class Trie {
     let node = this._root;
     for (let i = 0; i < word.length; ++i) {
       node = this._edges[node][word[i]];
-      if (!node)
+      if (!node) {
         return false;
+      }
     }
     return this._isWord[node];
   }
@@ -81,8 +83,9 @@ export default class Trie {
     let node = this._root;
     for (let i = 0; i < prefix.length; ++i) {
       node = this._edges[node][prefix[i]];
-      if (!node)
+      if (!node) {
         return [];
+      }
     }
     const results = [];
     this._dfs(node, prefix, results);
@@ -95,11 +98,13 @@ export default class Trie {
    * @param {!Array<string>} results
    */
   _dfs(node, prefix, results) {
-    if (this._isWord[node])
+    if (this._isWord[node]) {
       results.push(prefix);
+    }
     const edges = this._edges[node];
-    for (const edge in edges)
+    for (const edge in edges) {
       this._dfs(edges[edge], prefix + edge, results);
+    }
   }
 
   /**
@@ -112,10 +117,12 @@ export default class Trie {
     let wordIndex = 0;
     for (let i = 0; i < word.length; ++i) {
       node = this._edges[node][word[i]];
-      if (!node)
+      if (!node) {
         break;
-      if (!fullWordOnly || this._isWord[node])
+      }
+      if (!fullWordOnly || this._isWord[node]) {
         wordIndex = i + 1;
+      }
     }
     return word.substring(0, wordIndex);
   }

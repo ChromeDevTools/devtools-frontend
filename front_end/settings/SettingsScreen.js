@@ -69,8 +69,9 @@ Settings.SettingsScreen = class extends UI.VBox {
   static _showSettingsScreen(name) {
     const settingsScreen =
         /** @type {!Settings.SettingsScreen} */ (self.runtime.sharedInstance(Settings.SettingsScreen));
-    if (settingsScreen.isShowing())
+    if (settingsScreen.isShowing()) {
       return;
+    }
     const dialog = new UI.Dialog();
     dialog.addCloseButton();
     settingsScreen.show(dialog.contentElement);
@@ -99,8 +100,9 @@ Settings.SettingsScreen = class extends UI.VBox {
    */
   _keyDown(event) {
     const shiftKeyCode = 16;
-    if (event.keyCode === shiftKeyCode && ++this._developerModeCounter > 5)
+    if (event.keyCode === shiftKeyCode && ++this._developerModeCounter > 5) {
       this.contentElement.classList.add('settings-developer-mode');
+    }
   }
 };
 
@@ -116,8 +118,9 @@ Settings.SettingsTab = class extends UI.VBox {
   constructor(name, id) {
     super();
     this.element.classList.add('settings-tab-container');
-    if (id)
+    if (id) {
       this.element.id = id;
+    }
     const header = this.element.createChild('header');
     header.createChild('h1').createTextChild(name);
     this.containerElement = this.element.createChild('div', 'settings-container-wrapper')
@@ -153,8 +156,9 @@ Settings.GenericSettingsTab = class extends Settings.SettingsTab {
         ['', 'Appearance', 'Sources', 'Elements', 'Network', 'Performance', 'Console', 'Extensions'];
     /** @type {!Map<string, !Element>} */
     this._nameToSection = new Map();
-    for (const sectionName of explicitSectionOrder)
+    for (const sectionName of explicitSectionOrder) {
       this._sectionElement(sectionName);
+    }
     self.runtime.extensions('setting').forEach(this._addSetting.bind(this));
     self.runtime.extensions(UI.SettingUI).forEach(this._addSettingUI.bind(this));
 
@@ -173,10 +177,12 @@ Settings.GenericSettingsTab = class extends Settings.SettingsTab {
    */
   static isSettingVisible(extension) {
     const descriptor = extension.descriptor();
-    if (!('title' in descriptor))
+    if (!('title' in descriptor)) {
       return false;
-    if (!('category' in descriptor))
+    }
+    if (!('category' in descriptor)) {
       return false;
+    }
     return true;
   }
 
@@ -184,13 +190,15 @@ Settings.GenericSettingsTab = class extends Settings.SettingsTab {
    * @param {!Runtime.Extension} extension
    */
   _addSetting(extension) {
-    if (!Settings.GenericSettingsTab.isSettingVisible(extension))
+    if (!Settings.GenericSettingsTab.isSettingVisible(extension)) {
       return;
+    }
     const sectionElement = this._sectionElement(extension.descriptor()['category']);
     const setting = Common.moduleSetting(extension.descriptor()['settingName']);
     const settingControl = UI.SettingsUI.createControlForSetting(setting);
-    if (settingControl)
+    if (settingControl) {
       sectionElement.appendChild(settingControl);
+    }
   }
 
   /**
@@ -208,8 +216,9 @@ Settings.GenericSettingsTab = class extends Settings.SettingsTab {
     function appendCustomSetting(object) {
       const settingUI = /** @type {!UI.SettingUI} */ (object);
       const element = settingUI.settingElement();
-      if (element)
+      if (element) {
         this._sectionElement(sectionName).appendChild(element);
+      }
     }
   }
 
@@ -239,8 +248,9 @@ Settings.ExperimentsSettingsTab = class extends Settings.SettingsTab {
     if (experiments.length) {
       const experimentsSection = this._appendSection();
       experimentsSection.appendChild(this._createExperimentsWarningSubsection());
-      for (let i = 0; i < experiments.length; ++i)
+      for (let i = 0; i < experiments.length; ++i) {
         experimentsSection.appendChild(this._createExperimentCheckbox(experiments[i]));
+      }
     }
   }
 
@@ -325,8 +335,9 @@ Settings.SettingsScreen.Revealer = class {
      * @param {!Runtime.Extension} extension
      */
     function revealModuleSetting(extension) {
-      if (!Settings.GenericSettingsTab.isSettingVisible(extension))
+      if (!Settings.GenericSettingsTab.isSettingVisible(extension)) {
         return;
+      }
       if (extension.descriptor()['settingName'] === setting.name) {
         InspectorFrontendHost.bringToFront();
         Settings.SettingsScreen._showSettingsScreen();
@@ -351,8 +362,9 @@ Settings.SettingsScreen.Revealer = class {
      */
     function revealSettingsView(extension) {
       const location = extension.descriptor()['location'];
-      if (location !== 'settings-view')
+      if (location !== 'settings-view') {
         return;
+      }
       const settings = extension.descriptor()['settings'];
       if (settings && settings.indexOf(setting.name) !== -1) {
         InspectorFrontendHost.bringToFront();

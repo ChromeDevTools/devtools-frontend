@@ -40,8 +40,9 @@ UI.ResizerWidget = class extends Common.Object {
    * @param {!Element} element
    */
   addElement(element) {
-    if (this._elements.indexOf(element) !== -1)
+    if (this._elements.indexOf(element) !== -1) {
       return;
+    }
 
     this._elements.push(element);
     element.addEventListener('mousedown', this._installDragOnMouseDownBound, false);
@@ -52,8 +53,9 @@ UI.ResizerWidget = class extends Common.Object {
    * @param {!Element} element
    */
   removeElement(element) {
-    if (this._elements.indexOf(element) === -1)
+    if (this._elements.indexOf(element) === -1) {
       return;
+    }
 
     this._elements.remove(element);
     element.removeEventListener('mousedown', this._installDragOnMouseDownBound, false);
@@ -68,10 +70,11 @@ UI.ResizerWidget = class extends Common.Object {
    * @param {!Element} element
    */
   _updateElementCursor(element) {
-    if (this._isEnabled)
+    if (this._isEnabled) {
       element.style.setProperty('cursor', this.cursor());
-    else
+    } else {
       element.style.removeProperty('cursor');
+    }
   }
 
   /**
@@ -94,8 +97,9 @@ UI.ResizerWidget = class extends Common.Object {
    */
   _installDragOnMouseDown(event) {
     // Only handle drags of the nodes specified.
-    if (this._elements.indexOf(event.target) === -1)
+    if (this._elements.indexOf(event.target) === -1) {
       return false;
+    }
     UI.elementDragStart(
         /** @type {!Element} */ (event.target), this._dragStart.bind(this), this._drag.bind(this),
         this._dragEnd.bind(this), this.cursor(), event);
@@ -106,8 +110,9 @@ UI.ResizerWidget = class extends Common.Object {
    * @return {boolean}
    */
   _dragStart(event) {
-    if (!this._isEnabled)
+    if (!this._isEnabled) {
       return false;
+    }
     this._startX = event.pageX;
     this._startY = event.pageY;
     this.sendDragStart(this._startX, this._startY);

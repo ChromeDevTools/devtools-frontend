@@ -34,15 +34,19 @@ Services.ServiceManager = class {
     const isUnderTest = Host.isUnderTest();
 
     const queryParams = [];
-    if (remoteBase)
+    if (remoteBase) {
       queryParams.push('remoteBase=' + remoteBase);
-    if (debugFrontend)
+    }
+    if (debugFrontend) {
       queryParams.push('debugFrontend=' + debugFrontend);
-    if (isUnderTest)
+    }
+    if (isUnderTest) {
       queryParams.push('isUnderTest=true');
+    }
 
-    if (queryParams.length)
+    if (queryParams.length) {
       url += `?${queryParams.join('&')}`;
+    }
 
     const worker = new Worker(url);
     const connection = new Services.ServiceManager.Connection(new Services.ServiceManager.WorkerServicePort(worker));
@@ -104,8 +108,9 @@ Services.ServiceManager.Connection = class {
     const id = this._lastId++;
     const message = JSON.stringify({id: id, method: method, params: params || {}});
     return this._port.send(message).then(success => {
-      if (!success)
+      if (!success) {
         return Promise.resolve(null);
+      }
       return new Promise(fulfill => this._callbacks.set(id, fulfill));
     });
   }
@@ -122,8 +127,9 @@ Services.ServiceManager.Connection = class {
       return;
     }
     if (object.id) {
-      if (object.error)
+      if (object.error) {
         console.error('Service error: ' + object.error);
+      }
       this._callbacks.get(object.id)(object.error ? null : object.result);
       this._callbacks.delete(object.id);
       return;
@@ -141,11 +147,13 @@ Services.ServiceManager.Connection = class {
   }
 
   _connectionClosed() {
-    for (const callback of this._callbacks.values())
+    for (const callback of this._callbacks.values()) {
       callback(null);
+    }
     this._callbacks.clear();
-    for (const service of this._services.values())
+    for (const service of this._services.values()) {
       service._dispatchNotification('disposed');
+    }
     this._services.clear();
   }
 };
@@ -236,8 +244,9 @@ Services.ServiceManager.RemoteServicePort = class {
    * @return {!Promise<boolean>}
    */
   _open() {
-    if (!this._connectionPromise)
+    if (!this._connectionPromise) {
       this._connectionPromise = new Promise(promiseBody.bind(this));
+    }
     return this._connectionPromise;
 
     /**
@@ -275,8 +284,9 @@ Services.ServiceManager.RemoteServicePort = class {
        * @this {Services.ServiceManager.RemoteServicePort}
        */
       function onClose() {
-        if (!this._socket)
+        if (!this._socket) {
           fulfill(false);
+        }
         this._socketClosed(!!this._socket);
       }
     }
@@ -317,8 +327,9 @@ Services.ServiceManager.RemoteServicePort = class {
   _socketClosed(notifyClient) {
     this._socket = null;
     delete this._connectionPromise;
-    if (notifyClient)
+    if (notifyClient) {
       this._closeHandler();
+    }
   }
 };
 
@@ -384,8 +395,9 @@ Services.ServiceManager.WorkerServicePort = class {
    */
   close() {
     return this._workerPromise.then(() => {
-      if (this._worker)
+      if (this._worker) {
         this._worker.terminate();
+      }
       return false;
     });
   }

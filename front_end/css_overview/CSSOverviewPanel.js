@@ -88,8 +88,9 @@ CssOverview.CSSOverviewPanel = class extends UI.Panel {
 
     // 1. Get the global style stats.
     const globalStyleStats = await this._model.getGlobalStylesheetStats();
-    if (globalStyleStats)
+    if (globalStyleStats) {
       this._globalStyleStats = globalStyleStats;
+    }
 
     // 2. Get the total element count.
     this._elementCount = document.length;
@@ -108,16 +109,18 @@ CssOverview.CSSOverviewPanel = class extends UI.Panel {
       // 3a. Capture any colors from the computed styles.
       if (computedStyles) {
         const backgroundColor = this._getStyleValue(computedStyles, 'background-color');
-        if (backgroundColor)
+        if (backgroundColor) {
           this._backgroundColors.add(backgroundColor);
+        }
 
         if (node.nodeType === Node.TEXT_NODE) {
           const textColor = this._getStyleValue(computedStyles, 'color');
           this._textColors.add(textColor);
 
           const fontSize = this._getStyleValue(computedStyles, 'font-size');
-          if (!this._fontSizes.has(fontSize))
+          if (!this._fontSizes.has(fontSize)) {
             this._fontSizes.set(fontSize, 0);
+          }
 
           this._fontSizes.set(fontSize, this._fontSizes.get(fontSize) + 1);
         }
@@ -126,11 +129,13 @@ CssOverview.CSSOverviewPanel = class extends UI.Panel {
       // 3b. Tally the selector stats.
       if (styleStats) {
         for (const section of Object.keys(this._elementStyleStats)) {
-          if (!styleStats[section])
+          if (!styleStats[section]) {
             continue;
+          }
 
-          for (const value of styleStats[section])
+          for (const value of styleStats[section]) {
             this._elementStyleStats[section].add(value);
+          }
         }
       }
 
@@ -143,8 +148,9 @@ CssOverview.CSSOverviewPanel = class extends UI.Panel {
 
   _getStyleValue(styles, name) {
     const item = styles.filter(style => style.name === name);
-    if (!item.length)
+    if (!item.length) {
       return;
+    }
 
     return item[0].value;
   }

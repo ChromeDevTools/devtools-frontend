@@ -53,21 +53,24 @@ ElementsTestRunner.findNode = async function(matchFunction, callback) {
   let pendingRequests = 0;
   async function processChildren(node) {
     try {
-      if (result)
+      if (result) {
         return;
+      }
 
-      if (node._childDocumentPromiseForTesting)
+      if (node._childDocumentPromiseForTesting) {
         await node._childDocumentPromiseForTesting;
+      }
 
       const pseudoElementsMap = node.pseudoElements();
       const pseudoElements = pseudoElementsMap ? pseudoElementsMap.valuesArray() : [];
       const children = (node.children() || []).concat(node.shadowRoots()).concat(pseudoElements);
-      if (node.templateContent())
+      if (node.templateContent()) {
         children.push(node.templateContent());
-      else if (node.contentDocument())
+      } else if (node.contentDocument()) {
         children.push(node.contentDocument());
-      else if (node.importedDocument())
+      } else if (node.importedDocument()) {
         children.push(node.importedDocument());
+      }
 
       for (let i = 0; i < children.length; ++i) {
         const childNode = children[i];
@@ -83,8 +86,9 @@ ElementsTestRunner.findNode = async function(matchFunction, callback) {
       pendingRequests--;
     }
 
-    if (!result && !pendingRequests)
+    if (!result && !pendingRequests) {
       callback(null);
+    }
   }
 
   const doc = TestRunner.domModel.existingDocument() || await TestRunner.domModel.requestDocument();
@@ -111,8 +115,9 @@ ElementsTestRunner.expandAndDumpEventListeners = function(eventListenersView, ca
     for (let i = 0; i < listenerTypes.length; ++i) {
       listenerTypes[i].expand();
       const listenerItems = listenerTypes[i].children();
-      for (let j = 0; j < listenerItems.length; ++j)
+      for (let j = 0; j < listenerItems.length; ++j) {
         listenerItems[j].expand();
+      }
     }
     TestRunner.deprecatedRunAfterPendingDispatches(objectsExpanded);
   }
@@ -120,8 +125,9 @@ ElementsTestRunner.expandAndDumpEventListeners = function(eventListenersView, ca
   function objectsExpanded() {
     const listenerTypes = eventListenersView._treeOutline.rootElement().children();
     for (let i = 0; i < listenerTypes.length; ++i) {
-      if (!listenerTypes[i].children().length)
+      if (!listenerTypes[i].children().length) {
         continue;
+      }
       const eventType = listenerTypes[i]._title;
       TestRunner.addResult('');
       TestRunner.addResult('======== ' + eventType + ' ========');
@@ -158,31 +164,35 @@ ElementsTestRunner.dumpComputedStyle = function(doNotAutoExpand, printInnerText)
   for (const treeElement of children) {
     const property = treeElement[Elements.ComputedStyleWidget._propertySymbol];
 
-    if (property.name === 'width' || property.name === 'height')
+    if (property.name === 'width' || property.name === 'height') {
       continue;
+    }
 
     let dumpText = '';
     dumpText += text(treeElement.title.querySelector('.property-name'));
     dumpText += text(treeElement.title.querySelector('.property-value'));
     TestRunner.addResult(dumpText);
 
-    if (doNotAutoExpand && !treeElement.expanded)
+    if (doNotAutoExpand && !treeElement.expanded) {
       continue;
+    }
 
     for (const trace of treeElement.children()) {
       const title = trace.title;
       let dumpText = '';
 
-      if (trace.title.classList.contains('property-trace-inactive'))
+      if (trace.title.classList.contains('property-trace-inactive')) {
         dumpText += 'OVERLOADED ';
+      }
 
       dumpText += text(title.querySelector('.property-trace-value'));
       dumpText += ' - ';
       dumpText += text(title.querySelector('.property-trace-selector'));
       const link = title.querySelector('.trace-link');
 
-      if (link)
+      if (link) {
         dumpText += ' ' + extractLinkText(link);
+      }
 
       TestRunner.addResult('    ' + dumpText);
     }
@@ -201,8 +211,9 @@ ElementsTestRunner.findComputedPropertyWithName = function(name) {
   for (const treeElement of children) {
     const property = treeElement[Elements.ComputedStyleWidget._propertySymbol];
 
-    if (property.name === name)
+    if (property.name === name) {
       return treeElement;
+    }
   }
 
   return null;
@@ -362,8 +373,9 @@ ElementsTestRunner.dumpRenderedMatchedStyles = function() {
 
   for (const block of sectionBlocks) {
     for (const section of block.sections) {
-      if (section.element.classList.contains('hidden'))
+      if (section.element.classList.contains('hidden')) {
         continue;
+      }
 
       dumpRenderedSection(section);
     }
@@ -373,8 +385,9 @@ ElementsTestRunner.dumpRenderedMatchedStyles = function() {
     TestRunner.addResult(section._selectorElement.textContent + ' {');
     const rootElement = section.propertiesTreeOutline.rootElement();
 
-    for (let i = 0; i < rootElement.childCount(); ++i)
+    for (let i = 0; i < rootElement.childCount(); ++i) {
       dumpRenderedProperty(rootElement.childAt(i));
+    }
 
     TestRunner.addResult('}');
   }
@@ -384,20 +397,23 @@ ElementsTestRunner.dumpRenderedMatchedStyles = function() {
     text += property.nameElement.textContent;
     text += ':';
 
-    if (property.isExpandable())
+    if (property.isExpandable()) {
       text += (property.expanded ? 'v' : '>');
-    else
+    } else {
       text += ' ';
+    }
 
     text += property.valueElement.textContent;
 
-    if (property.listItemElement.classList.contains('filter-match'))
+    if (property.listItemElement.classList.contains('filter-match')) {
       text = 'F' + text.substring(1);
+    }
 
     TestRunner.addResult(text);
 
-    if (!property.expanded)
+    if (!property.expanded) {
       return;
+    }
 
     const indent = new Array(8).join(' ');
 
@@ -406,8 +422,9 @@ ElementsTestRunner.dumpRenderedMatchedStyles = function() {
       let text = indent;
       text += String.sprintf('%s: %s', childProperty.nameElement.textContent, childProperty.valueElement.textContent);
 
-      if (childProperty.listItemElement.classList.contains('filter-match'))
+      if (childProperty.listItemElement.classList.contains('filter-match')) {
         text = 'F' + text.substring(1);
+      }
 
       TestRunner.addResult(text);
     }
@@ -418,19 +435,22 @@ ElementsTestRunner.dumpSelectedElementStyles = function(
     excludeComputed, excludeMatched, omitLonghands, includeSelectorGroupMarks, printInnerText) {
   const sectionBlocks = UI.panels.elements._stylesWidget._sectionBlocks;
 
-  if (!excludeComputed)
+  if (!excludeComputed) {
     ElementsTestRunner.dumpComputedStyle(false /* doNotAutoExpand */, printInnerText);
+  }
 
   for (const block of sectionBlocks) {
     for (const section of block.sections) {
-      if (section.style().parentRule && excludeMatched)
+      if (section.style().parentRule && excludeMatched) {
         continue;
+      }
 
       if (section.element.previousSibling && section.element.previousSibling.className === 'sidebar-separator') {
         let nodeDescription = '';
 
-        if (section.element.previousSibling.firstElementChild)
+        if (section.element.previousSibling.firstElementChild) {
           nodeDescription = text(section.element.previousSibling.firstElementChild.shadowRoot.lastChild);
+        }
 
         TestRunner.addResult('======== ' + text(section.element.previousSibling) + nodeDescription + ' ========');
       }
@@ -445,8 +465,9 @@ ElementsTestRunner.dumpSelectedElementStyles = function(
 };
 
 function printStyleSection(section, omitLonghands, includeSelectorGroupMarks, printInnerText) {
-  if (!section)
+  if (!section) {
     return;
+  }
 
   TestRunner.addResult(
       '[expanded] ' + ((section.propertiesTreeOutline.element.classList.contains('no-affect') ? '[no-affect] ' : '')));
@@ -470,8 +491,9 @@ function printStyleSection(section, omitLonghands, includeSelectorGroupMarks, pr
 
   TestRunner.addResult(selectorText);
   ElementsTestRunner.dumpStyleTreeOutline(section.propertiesTreeOutline, (omitLonghands ? 1 : 2), printInnerText);
-  if (!section._showAllButton.classList.contains('hidden'))
+  if (!section._showAllButton.classList.contains('hidden')) {
     TestRunner.addResult(text(section._showAllButton));
+  }
   TestRunner.addResult('');
 
   function text(node) {
@@ -482,8 +504,9 @@ function printStyleSection(section, omitLonghands, includeSelectorGroupMarks, pr
 function extractLinkText(element) {
   const anchor = element.querySelector('.devtools-link');
 
-  if (!anchor)
+  if (!anchor) {
     return element.textContent;
+  }
 
   const anchorText = anchor.textContent;
   const info = Components.Linkifier._linkInfo(anchor);
@@ -499,10 +522,11 @@ function buildMarkedSelectors(element) {
   let result = '';
 
   for (let node = element.firstChild; node; node = node.nextSibling) {
-    if (node.nodeType === Node.ELEMENT_NODE && node.classList.contains('selector-matches'))
+    if (node.nodeType === Node.ELEMENT_NODE && node.classList.contains('selector-matches')) {
       result += '[$' + node.textContent + '$]';
-    else
+    } else {
       result += node.textContent;
+    }
   }
 
   return result;
@@ -559,10 +583,11 @@ ElementsTestRunner.removeFirstEventListener = function() {
 
 ElementsTestRunner.dumpObjectPropertySectionDeep = function(section) {
   function domNodeToString(node) {
-    if (node)
+    if (node) {
       return '\'' + node.textContent + '\'';
-    else
+    } else {
       return 'null';
+    }
   }
 
   function dumpTreeElementRecursively(treeElement, prefix) {
@@ -573,14 +598,16 @@ ElementsTestRunner.dumpObjectPropertySectionDeep = function(section) {
       TestRunner.addResult(prefix + treeElement.title);
     }
 
-    for (let i = 0; i < treeElement.childCount(); i++)
+    for (let i = 0; i < treeElement.childCount(); i++) {
       dumpTreeElementRecursively(treeElement.childAt(i), prefix + '    ');
+    }
   }
 
   const childNodes = section.propertiesTreeOutline.rootElement().children();
 
-  for (let i = 0; i < childNodes.length; i++)
+  for (let i = 0; i < childNodes.length; i++) {
     dumpTreeElementRecursively(childNodes[i], '');
+  }
 
 };
 
@@ -595,8 +622,9 @@ ElementsTestRunner.getMatchedStylePropertyTreeItem = function(propertyName) {
     for (const section of block.sections) {
       const treeItem = ElementsTestRunner.getFirstPropertyTreeItemForSection(section, propertyName);
 
-      if (treeItem)
+      if (treeItem) {
         return treeItem;
+      }
     }
   }
 
@@ -609,8 +637,9 @@ ElementsTestRunner.getFirstPropertyTreeItemForSection = function(section, proper
   for (let i = 0; i < outline.childCount(); ++i) {
     const treeItem = outline.childAt(i);
 
-    if (treeItem.name === propertyName)
+    if (treeItem.name === propertyName) {
       return treeItem;
+    }
   }
 
   return null;
@@ -619,28 +648,33 @@ ElementsTestRunner.getFirstPropertyTreeItemForSection = function(section, proper
 ElementsTestRunner.dumpStyleTreeOutline = function(treeItem, depth, printInnerText) {
   const children = treeItem.rootElement().children();
 
-  for (let i = 0; i < children.length; ++i)
+  for (let i = 0; i < children.length; ++i) {
     ElementsTestRunner.dumpStyleTreeItem(children[i], '', depth || 2, printInnerText);
+  }
 };
 
 ElementsTestRunner.dumpStyleTreeItem = function(treeItem, prefix, depth, printInnerText) {
   const textContent = printInnerText ? treeItem.listItemElement.innerText :
                                        TestRunner.textContentWithoutStyles(treeItem.listItemElement);
-  if (textContent.indexOf(' width:') !== -1 || textContent.indexOf(' height:') !== -1)
+  if (textContent.indexOf(' width:') !== -1 || textContent.indexOf(' height:') !== -1) {
     return;
+  }
 
-  if (treeItem.listItemElement.classList.contains('inherited'))
+  if (treeItem.listItemElement.classList.contains('inherited')) {
     return;
+  }
 
   let typePrefix = '';
 
   if (treeItem.listItemElement.classList.contains('overloaded') ||
       treeItem.listItemElement.classList.contains('inactive') ||
-      treeItem.listItemElement.classList.contains('not-parsed-ok'))
+      treeItem.listItemElement.classList.contains('not-parsed-ok')) {
     typePrefix += '/-- overloaded --/ ';
+  }
 
-  if (treeItem.listItemElement.classList.contains('disabled'))
+  if (treeItem.listItemElement.classList.contains('disabled')) {
     typePrefix += '/-- disabled --/ ';
+  }
 
   TestRunner.addResult(prefix + typePrefix + textContent);
 
@@ -648,8 +682,9 @@ ElementsTestRunner.dumpStyleTreeItem = function(treeItem, prefix, depth, printIn
     treeItem.expand();
     const children = treeItem.children();
 
-    for (let i = 0; children && i < children.length; ++i)
+    for (let i = 0; children && i < children.length; ++i) {
       ElementsTestRunner.dumpStyleTreeItem(children[i], prefix + '    ', depth);
+    }
   }
 };
 
@@ -661,18 +696,21 @@ ElementsTestRunner.dumpElementsTree = function(rootNode, depth, resultsArray) {
   function dumpMap(name, map) {
     const result = [];
 
-    for (const id of map.keys())
+    for (const id of map.keys()) {
       result.push(id + '=' + map.get(id));
+    }
 
-    if (!result.length)
+    if (!result.length) {
       return '';
+    }
 
     return name + ':[' + result.join(',') + ']';
   }
 
   function markersDataDump(treeItem) {
-    if (treeItem._elementCloseTag)
+    if (treeItem._elementCloseTag) {
       return '';
+    }
 
     let markers = '';
     const node = treeItem._node;
@@ -682,14 +720,16 @@ ElementsTestRunner.dumpElementsTree = function(rootNode, depth, resultsArray) {
       const dump = (node._subtreeMarkerCount ? 'subtreeMarkerCount:' + node._subtreeMarkerCount : '');
 
       if (dump) {
-        if (markers)
+        if (markers) {
           markers += ', ';
+        }
 
         markers += dump;
       }
 
-      if (markers)
+      if (markers) {
         markers = ' [' + markers + ']';
+      }
     }
 
     return markers;
@@ -700,10 +740,11 @@ ElementsTestRunner.dumpElementsTree = function(rootNode, depth, resultsArray) {
       let expander;
 
       if (treeItem.isExpandable()) {
-        if (treeItem.expanded)
+        if (treeItem.expanded) {
           expander = '- ';
-        else
+        } else {
           expander = '+ ';
+        }
       } else {
         expander = '  ';
       }
@@ -722,23 +763,26 @@ ElementsTestRunner.dumpElementsTree = function(rootNode, depth, resultsArray) {
         }
       }
 
-      if (resultsArray)
+      if (resultsArray) {
         resultsArray.push(value);
-      else
+      } else {
         TestRunner.addResult(value);
+      }
     }
 
-    if (!treeItem.expanded)
+    if (!treeItem.expanded) {
       return;
+    }
 
     const children = treeItem.children();
     const newPrefix = (treeItem.root ? '' : prefix + '    ');
 
     for (let i = 0; depth && children && i < children.length; ++i) {
-      if (!children[i]._elementCloseTag)
+      if (!children[i]._elementCloseTag) {
         print(children[i], newPrefix, depth - 1);
-      else
+      } else {
         print(children[i], prefix, depth);
+      }
     }
   }
 
@@ -755,11 +799,13 @@ ElementsTestRunner.dumpDOMUpdateHighlights = function(rootNode, callback, depth)
     const treeOutline = ElementsTestRunner.firstElementsTreeOutline();
     print((rootNode ? treeOutline.findTreeElement(rootNode) : treeOutline.rootElement()), '', depth || 10000);
 
-    if (!hasHighlights)
+    if (!hasHighlights) {
       TestRunner.addResult('<No highlights>');
+    }
 
-    if (callback)
+    if (callback) {
       callback();
+    }
   }
 
   function print(treeItem, prefix, depth) {
@@ -786,15 +832,17 @@ ElementsTestRunner.dumpDOMUpdateHighlights = function(rootNode, callback, depth)
       }
     }
 
-    if (!treeItem.expanded)
+    if (!treeItem.expanded) {
       return;
+    }
 
     const children = treeItem.children();
     const newPrefix = (treeItem.root ? '' : prefix + '    ');
 
     for (let i = 0; depth && children && i < children.length; ++i) {
-      if (!children[i]._elementCloseTag)
+      if (!children[i]._elementCloseTag) {
         print(children[i], newPrefix, depth - 1);
+      }
     }
   }
 };
@@ -841,39 +889,46 @@ ElementsTestRunner.expandAndDump = function() {
 };
 
 ElementsTestRunner.dumpDOMAgentTree = function(node) {
-  if (!TestRunner.domModel._document)
+  if (!TestRunner.domModel._document) {
     return;
+  }
 
   function dump(node, prefix) {
     TestRunner.addResult(prefix + node.nodeName());
     prefix = prefix + '    ';
 
-    if (node.templateContent())
+    if (node.templateContent()) {
       dump(node.templateContent(), prefix);
+    }
 
-    if (node.contentDocument())
+    if (node.contentDocument()) {
       dump(node.contentDocument(), prefix);
+    }
 
-    if (node.importedDocument())
+    if (node.importedDocument()) {
       dump(node.importedDocument(), prefix);
+    }
 
     const shadowRoots = node.shadowRoots();
 
-    for (let i = 0; i < shadowRoots.length; ++i)
+    for (let i = 0; i < shadowRoots.length; ++i) {
       dump(shadowRoots[i], prefix);
+    }
 
     const children = node.children();
 
-    for (let i = 0; children && i < children.length; ++i)
+    for (let i = 0; children && i < children.length; ++i) {
       dump(children[i], prefix);
+    }
   }
 
   dump(node, '');
 };
 
 ElementsTestRunner.rangeText = function(range) {
-  if (!range)
+  if (!range) {
     return '[undefined-undefined]';
+  }
 
   return '[' + range.startLine + ':' + range.startColumn + '-' + range.endLine + ':' + range.endColumn + ']';
 };
@@ -941,31 +996,36 @@ ElementsTestRunner.generateUndoTest = function(testBody) {
 const indent = '    ';
 
 ElementsTestRunner.dumpRulesArray = function(rules, currentIndent) {
-  if (!rules)
+  if (!rules) {
     return;
+  }
 
   currentIndent = currentIndent || '';
 
-  for (let i = 0; i < rules.length; ++i)
+  for (let i = 0; i < rules.length; ++i) {
     ElementsTestRunner.dumpRule(rules[i], currentIndent);
+  }
 };
 
 ElementsTestRunner.dumpRuleMatchesArray = function(matches, currentIndent) {
-  if (!matches)
+  if (!matches) {
     return;
+  }
 
   currentIndent = currentIndent || '';
 
-  for (let i = 0; i < matches.length; ++i)
+  for (let i = 0; i < matches.length; ++i) {
     ElementsTestRunner.dumpRule(matches[i].rule, currentIndent);
+  }
 };
 
 ElementsTestRunner.dumpRule = function(rule, currentIndent) {
   function selectorRange() {
     const selectors = rule.selectorList.selectors;
 
-    if (!selectors || !selectors[0].range)
+    if (!selectors || !selectors[0].range) {
       return '';
+    }
 
     const ranges = [];
 
@@ -1071,8 +1131,9 @@ ElementsTestRunner.dumpCSSStyleDeclaration = function(style, currentIndent) {
 };
 
 ElementsTestRunner.dumpBreadcrumb = function(message) {
-  if (message)
+  if (message) {
     TestRunner.addResult(message + ':');
+  }
 
   const result = [];
   const crumbs = UI.panels.elements._breadcrumbs.crumbsElement;
@@ -1090,8 +1151,9 @@ ElementsTestRunner.matchingSelectors = function(matchedStyles, rule) {
   const selectors = [];
   const matchingSelectors = matchedStyles.matchingSelectors(rule);
 
-  for (let i = 0; i < matchingSelectors.length; ++i)
+  for (let i = 0; i < matchingSelectors.length; ++i) {
     selectors.push(rule.selectors[matchingSelectors[i]].text);
+  }
 
   return '[' + selectors.join(', ') + ']';
 };
@@ -1113,8 +1175,9 @@ ElementsTestRunner.addNewRule = function(selector, callback) {
 function onBlankSection(selector, callback) {
   const section = ElementsTestRunner.firstMatchedStyleSection();
 
-  if (typeof selector === 'string')
+  if (typeof selector === 'string') {
     section._selectorElement.textContent = selector;
+  }
 
   section._selectorElement.dispatchEvent(TestRunner.createKeyEvent('Enter'));
   ElementsTestRunner.waitForSelectorCommitted(callback.bind(null, section));
@@ -1139,8 +1202,9 @@ ElementsTestRunner.dumpInspectorDistanceJSON = function(idValue, callback) {
     if (!info) {
       TestRunner.addResult(`${idValue}: No distance info`);
     } else {
-      if (info['style'])
+      if (info['style']) {
         info['style'] = '<style data>';
+      }
       TestRunner.addResult(idValue + JSON.stringify(info, null, 2));
     }
     callback();
@@ -1154,8 +1218,9 @@ ElementsTestRunner.dumpInspectorHighlightStyleJSON = async function(idValue) {
   if (!info) {
     TestRunner.addResult(`${idValue}: No style info`);
   } else {
-    if (info['font-family'])
+    if (info['font-family']) {
       info['font-family'] = '<font-family value>';
+    }
     TestRunner.addResult(idValue + JSON.stringify(info, null, 2));
   }
 };

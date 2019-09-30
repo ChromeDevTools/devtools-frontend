@@ -153,12 +153,14 @@ Snippets.SnippetFileSystem = class extends Persistence.PlatformFileSystem {
  * @param {!Workspace.UISourceCode} uiSourceCode
  */
 Snippets.evaluateScriptSnippet = async function(uiSourceCode) {
-  if (!uiSourceCode.url().startsWith('snippet://'))
+  if (!uiSourceCode.url().startsWith('snippet://')) {
     return;
+  }
 
   const executionContext = UI.context.flavor(SDK.ExecutionContext);
-  if (!executionContext)
+  if (!executionContext) {
     return;
+  }
 
   const runtimeModel = executionContext.runtimeModel;
 
@@ -186,8 +188,9 @@ Snippets.evaluateScriptSnippet = async function(uiSourceCode) {
         runtimeModel, result.exceptionDetails, /* messageType */ undefined, /* timestamp */ undefined, url));
     return;
   }
-  if (!result.object)
+  if (!result.object) {
     return;
+  }
 
   const scripts = executionContext.debuggerModel.scriptsForSourceURL(url);
   const scriptId = scripts[scripts.length - 1].scriptId;

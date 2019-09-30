@@ -25,8 +25,9 @@ PerfUI.LineLevelProfile.Performance = class {
       for (let i = 0; i < nodes.length; ++i) {
         const node = nodes[i];
         nodesToGo.push(node);
-        if (!node.url || !node.positionTicks)
+        if (!node.url || !node.positionTicks) {
           continue;
+        }
         for (let j = 0; j < node.positionTicks.length; ++j) {
           const lineInfo = node.positionTicks[j];
           const line = lineInfo.line;
@@ -49,12 +50,14 @@ PerfUI.LineLevelProfile.Performance = class {
     const target = profile.target();
     for (let i = 1; i < profile.samples.length; ++i) {
       const line = profile.lines[i];
-      if (!line)
+      if (!line) {
         continue;
+      }
       const node = profile.nodeByIndex(i);
       const scriptIdOrUrl = node.scriptId || node.url;
-      if (!scriptIdOrUrl)
+      if (!scriptIdOrUrl) {
         continue;
+      }
       const time = profile.timestamps[i] - profile.timestamps[i - 1];
       this._helper.addLineData(target, scriptIdOrUrl, line, time);
     }
@@ -85,11 +88,13 @@ PerfUI.LineLevelProfile.Memory = class {
      */
     function processNode(node) {
       node.children.forEach(processNode);
-      if (!node.selfSize)
+      if (!node.selfSize) {
         return;
+      }
       const script = Number(node.callFrame.scriptId) || node.callFrame.url;
-      if (!script)
+      if (!script) {
         return;
+      }
       const line = node.callFrame.lineNumber + 1;
       helper.addLineData(target, script, line, node.selfSize);
     }
@@ -135,8 +140,9 @@ PerfUI.LineLevelProfile._Helper = class {
   }
 
   scheduleUpdate() {
-    if (this._updateTimer)
+    if (this._updateTimer) {
       return;
+    }
     this._updateTimer = setTimeout(() => {
       this._updateTimer = null;
       this._doUpdate();
@@ -158,8 +164,9 @@ PerfUI.LineLevelProfile._Helper = class {
         const uiSourceCode = !debuggerModel && typeof scriptIdOrUrl === 'string' ?
             Workspace.workspace.uiSourceCodeForURL(scriptIdOrUrl) :
             null;
-        if (!debuggerModel && !uiSourceCode)
+        if (!debuggerModel && !uiSourceCode) {
           continue;
+        }
         for (const lineToData of lineToDataMap) {
           const line = /** @type {number} */ (lineToData[0]) - 1;
           const data = /** @type {number} */ (lineToData[1]);
@@ -170,8 +177,9 @@ PerfUI.LineLevelProfile._Helper = class {
           const rawLocation = typeof scriptIdOrUrl === 'string' ?
               debuggerModel.createRawLocationByURL(scriptIdOrUrl, line, 0) :
               debuggerModel.createRawLocationByScriptId(String(scriptIdOrUrl), line, 0);
-          if (rawLocation)
+          if (rawLocation) {
             new PerfUI.LineLevelProfile.Presentation(rawLocation, this._type, data, this._locationPool);
+          }
         }
       }
     }
@@ -196,11 +204,13 @@ PerfUI.LineLevelProfile.Presentation = class {
    * @param {!Bindings.LiveLocation} liveLocation
    */
   updateLocation(liveLocation) {
-    if (this._uiLocation)
+    if (this._uiLocation) {
       this._uiLocation.uiSourceCode.removeDecorationsForType(this._type);
+    }
     this._uiLocation = liveLocation.uiLocation();
-    if (this._uiLocation)
+    if (this._uiLocation) {
       this._uiLocation.uiSourceCode.addLineDecoration(this._uiLocation.lineNumber, this._type, this._time);
+    }
   }
 };
 
@@ -218,8 +228,9 @@ PerfUI.LineLevelProfile.LineDecorator = class {
     const gutterType = `CodeMirror-gutter-${type}`;
     const decorations = uiSourceCode.decorationsForType(type);
     textEditor.uninstallGutter(gutterType);
-    if (!decorations || !decorations.size)
+    if (!decorations || !decorations.size) {
       return;
+    }
     textEditor.installGutter(gutterType, false);
     for (const decoration of decorations) {
       const value = /** @type {number} */ (decoration.data());

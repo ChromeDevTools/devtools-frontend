@@ -90,8 +90,9 @@ SDK.SourceMapEntry = class {
    * @return {number}
    */
   static compare(entry1, entry2) {
-    if (entry1.lineNumber !== entry2.lineNumber)
+    if (entry1.lineNumber !== entry2.lineNumber) {
       return entry1.lineNumber - entry2.lineNumber;
+    }
     return entry1.columnNumber - entry2.columnNumber;
   }
 };
@@ -170,8 +171,9 @@ SDK.TextSourceMap = class {
     if (!SDK.TextSourceMap._base64Map) {
       const base64Digits = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
       SDK.TextSourceMap._base64Map = {};
-      for (let i = 0; i < base64Digits.length; ++i)
+      for (let i = 0; i < base64Digits.length; ++i) {
         SDK.TextSourceMap._base64Map[base64Digits.charAt(i)] = i;
+      }
     }
 
     this._json = payload;
@@ -185,8 +187,9 @@ SDK.TextSourceMap = class {
     this._sourceInfos = new Map();
     if (this._json.sections) {
       const sectionWithURL = !!this._json.sections.find(section => !!section.url);
-      if (sectionWithURL)
+      if (sectionWithURL) {
         Common.console.warn(`SourceMap "${sourceMappingURL}" contains unsupported "URL" field in one of its sections.`);
+      }
     }
     this._eachSection(this._parseSources.bind(this));
   }
@@ -214,8 +217,9 @@ SDK.TextSourceMap = class {
         return;
       }
 
-      if (content.slice(0, 3) === ')]}')
+      if (content.slice(0, 3) === ')]}') {
         content = content.substring(content.indexOf('\n'));
+      }
       try {
         const payload = /** @type {!SDK.SourceMapV3} */ (JSON.parse(content));
         callback(new SDK.TextSourceMap(compiledURL, sourceMapURL, payload));
@@ -259,8 +263,9 @@ SDK.TextSourceMap = class {
    */
   sourceContentProvider(sourceURL, contentType) {
     const info = this._sourceInfos.get(sourceURL);
-    if (info.content)
+    if (info.content) {
       return Common.StaticContentProvider.fromString(sourceURL, contentType, info.content);
+    }
     return new SDK.CompilerSourceMappingContentProvider(sourceURL, contentType);
   }
 
@@ -270,8 +275,9 @@ SDK.TextSourceMap = class {
    * @return {?string}
    */
   embeddedContentByURL(sourceURL) {
-    if (!this._sourceInfos.has(sourceURL))
+    if (!this._sourceInfos.has(sourceURL)) {
       return null;
+    }
     return this._sourceInfos.get(sourceURL).content;
   }
 
@@ -298,11 +304,13 @@ SDK.TextSourceMap = class {
     const mappings = this._reversedMappings(sourceURL);
     const first = mappings.lowerBound(lineNumber, lineComparator);
     const last = mappings.upperBound(lineNumber, lineComparator);
-    if (first >= mappings.length || mappings[first].sourceLineNumber !== lineNumber)
+    if (first >= mappings.length || mappings[first].sourceLineNumber !== lineNumber) {
       return null;
+    }
     const columnMappings = mappings.slice(first, last);
-    if (!columnMappings.length)
+    if (!columnMappings.length) {
       return null;
+    }
     const index =
         columnMappings.lowerBound(columnNumber, (columnNumber, mapping) => columnNumber - mapping.sourceColumnNumber);
     return index >= columnMappings.length ? columnMappings[columnMappings.length - 1] : columnMappings[index];
@@ -329,8 +337,9 @@ SDK.TextSourceMap = class {
         undefined, (unused, entry) => lineNumber - entry.sourceLineNumber || columnNumber - entry.sourceColumnNumber);
     let startIndex = endIndex;
     while (startIndex > 0 && mappings[startIndex - 1].sourceLineNumber === mappings[endIndex - 1].sourceLineNumber &&
-           mappings[startIndex - 1].sourceColumnNumber === mappings[endIndex - 1].sourceColumnNumber)
+           mappings[startIndex - 1].sourceColumnNumber === mappings[endIndex - 1].sourceColumnNumber) {
       --startIndex;
+    }
 
     return mappings.slice(startIndex, endIndex);
   }
@@ -352,12 +361,14 @@ SDK.TextSourceMap = class {
    * @return {!Array.<!SDK.SourceMapEntry>}
    */
   _reversedMappings(sourceURL) {
-    if (!this._sourceInfos.has(sourceURL))
+    if (!this._sourceInfos.has(sourceURL)) {
       return [];
+    }
     const mappings = this.mappings();
     const info = this._sourceInfos.get(sourceURL);
-    if (info.reverseMappings === null)
+    if (info.reverseMappings === null) {
       info.reverseMappings = mappings.filter(mapping => mapping.sourceURL === sourceURL).sort(sourceMappingComparator);
+    }
 
     return info.reverseMappings;
 
@@ -367,13 +378,16 @@ SDK.TextSourceMap = class {
      * @return {number}
      */
     function sourceMappingComparator(a, b) {
-      if (a.sourceLineNumber !== b.sourceLineNumber)
+      if (a.sourceLineNumber !== b.sourceLineNumber) {
         return a.sourceLineNumber - b.sourceLineNumber;
-      if (a.sourceColumnNumber !== b.sourceColumnNumber)
+      }
+      if (a.sourceColumnNumber !== b.sourceColumnNumber) {
         return a.sourceColumnNumber - b.sourceColumnNumber;
+      }
 
-      if (a.lineNumber !== b.lineNumber)
+      if (a.lineNumber !== b.lineNumber) {
         return a.lineNumber - b.lineNumber;
+      }
 
       return a.columnNumber - b.columnNumber;
     }
@@ -387,8 +401,9 @@ SDK.TextSourceMap = class {
       callback(this._json, 0, 0);
       return;
     }
-    for (const section of this._json.sections)
+    for (const section of this._json.sections) {
       callback(section.map, section.offset.line, section.offset.column);
+    }
   }
 
   /**
@@ -397,14 +412,16 @@ SDK.TextSourceMap = class {
   _parseSources(sourceMap) {
     const sourcesList = [];
     let sourceRoot = sourceMap.sourceRoot || '';
-    if (sourceRoot && !sourceRoot.endsWith('/'))
+    if (sourceRoot && !sourceRoot.endsWith('/')) {
       sourceRoot += '/';
+    }
     for (let i = 0; i < sourceMap.sources.length; ++i) {
       const href = sourceRoot + sourceMap.sources[i];
       let url = Common.ParsedURL.completeURL(this._baseURL, href) || href;
       const source = sourceMap.sourcesContent && sourceMap.sourcesContent[i];
-      if (url === this._compiledURL && source)
+      if (url === this._compiledURL && source) {
         url += Common.UIString('? [sm]');
+      }
       this._sourceInfos.set(url, new SDK.TextSourceMap.SourceInfo(source, null));
       sourcesList.push(url);
     }
@@ -435,8 +452,9 @@ SDK.TextSourceMap = class {
           columnNumber = 0;
           stringCharIterator.next();
         }
-        if (!stringCharIterator.hasNext())
+        if (!stringCharIterator.hasNext()) {
           break;
+        }
       }
 
       columnNumber += this._decodeVLQ(stringCharIterator);
@@ -509,8 +527,9 @@ SDK.TextSourceMap = class {
      * @return {number}
      */
     function comparator(position, mapping) {
-      if (position.lineNumber !== mapping.sourceLineNumber)
+      if (position.lineNumber !== mapping.sourceLineNumber) {
         return position.lineNumber - mapping.sourceLineNumber;
+      }
 
       return position.columnNumber - mapping.sourceColumnNumber;
     }

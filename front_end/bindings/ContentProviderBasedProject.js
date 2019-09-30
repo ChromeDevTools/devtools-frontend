@@ -252,8 +252,9 @@ Bindings.ContentProviderBasedProject = class extends Workspace.ProjectStore {
           break;
         }
       }
-      if (allMatchesFound)
+      if (allMatchesFound) {
         result.push(path);
+      }
       progress.worked(1);
     }
   }

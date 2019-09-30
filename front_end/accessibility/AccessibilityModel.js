@@ -24,8 +24,9 @@ Accessibility.AccessibilityNode = class {
       this._deferredDOMNode = null;
     }
     this._ignored = payload.ignored;
-    if (this._ignored && 'ignoredReasons' in payload)
+    if (this._ignored && 'ignoredReasons' in payload) {
       this._ignoredReasons = payload.ignoredReasons;
+    }
 
     this._role = payload.role || null;
     this._name = payload.name || null;
@@ -70,14 +71,16 @@ Accessibility.AccessibilityNode = class {
   coreProperties() {
     const properties = [];
 
-    if (this._name)
+    if (this._name) {
       properties.push(/** @type {!Protocol.Accessibility.AXProperty} */ ({name: 'name', value: this._name}));
+    }
     if (this._description) {
       properties.push(
           /** @type {!Protocol.Accessibility.AXProperty} */ ({name: 'description', value: this._description}));
     }
-    if (this._value)
+    if (this._value) {
       properties.push(/** @type {!Protocol.Accessibility.AXProperty} */ ({name: 'value', value: this._value}));
+    }
 
     return properties;
   }
@@ -146,8 +149,9 @@ Accessibility.AccessibilityNode = class {
   }
 
   highlightDOMNode() {
-    if (!this.deferredDOMNode())
+    if (!this.deferredDOMNode()) {
       return;
+    }
 
     // Highlight node in page.
     this.deferredDOMNode().highlight();
@@ -158,13 +162,15 @@ Accessibility.AccessibilityNode = class {
    */
   children() {
     const children = [];
-    if (!this._childIds)
+    if (!this._childIds) {
       return children;
+    }
 
     for (const childId of this._childIds) {
       const child = this._accessibilityModel.axNodeForId(childId);
-      if (child)
+      if (child) {
         children.push(child);
+      }
     }
 
     return children;
@@ -174,8 +180,9 @@ Accessibility.AccessibilityNode = class {
    * @return {number}
    */
   numChildren() {
-    if (!this._childIds)
+    if (!this._childIds) {
       return 0;
+    }
     return this._childIds.length;
   }
 
@@ -183,8 +190,9 @@ Accessibility.AccessibilityNode = class {
    * @return {boolean}
    */
   hasOnlyUnloadedChildren() {
-    if (!this._childIds || !this._childIds.length)
+    if (!this._childIds || !this._childIds.length) {
       return false;
+    }
 
     return !this._childIds.some(id => this._accessibilityModel.axNodeForId(id) !== undefined);
   }
@@ -197,18 +205,22 @@ Accessibility.AccessibilityNode = class {
    */
   printSelfAndChildren(inspectedNode, leadingSpace) {
     let string = leadingSpace || '';
-    if (this._role)
+    if (this._role) {
       string += this._role.value;
-    else
+    } else {
       string += '<no role>';
+    }
     string += (this._name ? ' ' + this._name.value : '');
     string += ' ' + this._id;
-    if (this._domNode)
+    if (this._domNode) {
       string += ' (' + this._domNode.nodeName() + ')';
-    if (this === inspectedNode)
+    }
+    if (this === inspectedNode) {
       string += ' *';
-    for (const child of this.children())
+    }
+    for (const child of this.children()) {
       string += '\n' + child.printSelfAndChildren(inspectedNode, (leadingSpace || '') + '  ');
+    }
     return string;
   }
 };
@@ -239,15 +251,18 @@ Accessibility.AccessibilityModel = class extends SDK.SDKModel {
    */
   async requestPartialAXTree(node) {
     const payloads = await this._agent.getPartialAXTree(node.id, undefined, undefined, true);
-    if (!payloads)
+    if (!payloads) {
       return;
+    }
 
-    for (const payload of payloads)
+    for (const payload of payloads) {
       new Accessibility.AccessibilityNode(this, payload);
+    }
 
     for (const axNode of this._axIdToAXNode.values()) {
-      for (const axChild of axNode.children())
+      for (const axChild of axNode.children()) {
         axChild._setParentNode(axNode);
+      }
     }
   }
 
@@ -272,8 +287,9 @@ Accessibility.AccessibilityModel = class extends SDK.SDKModel {
    * @return {?Accessibility.AccessibilityNode}
    */
   axNodeForDOMNode(domNode) {
-    if (!domNode)
+    if (!domNode) {
       return null;
+    }
     return this._backendDOMNodeIdToAXNode.get(domNode.backendNodeId());
   }
 
@@ -291,8 +307,9 @@ Accessibility.AccessibilityModel = class extends SDK.SDKModel {
    */
   logTree(inspectedNode) {
     let rootNode = inspectedNode;
-    while (rootNode.parentNode())
+    while (rootNode.parentNode()) {
       rootNode = rootNode.parentNode();
+    }
     console.log(rootNode.printSelfAndChildren(inspectedNode));  // eslint-disable-line no-console
   }
 };

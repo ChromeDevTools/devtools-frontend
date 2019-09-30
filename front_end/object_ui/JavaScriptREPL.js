@@ -9,8 +9,9 @@ ObjectUI.JavaScriptREPL = class {
    */
   static wrapObjectLiteral(code) {
     // Only parenthesize what appears to be an object literal.
-    if (!(/^\s*\{/.test(code) && /\}\s*$/.test(code)))
+    if (!(/^\s*\{/.test(code) && /\}\s*$/.test(code))) {
       return code;
+    }
 
     const parse = (async () => 0).constructor;
     try {
@@ -53,8 +54,9 @@ ObjectUI.JavaScriptREPL = class {
   static async evaluateAndBuildPreview(text, throwOnSideEffect, timeout, allowErrors, objectGroup) {
     const executionContext = UI.context.flavor(SDK.ExecutionContext);
     const isTextLong = text.length > ObjectUI.JavaScriptREPL._MaxLengthForEvaluation;
-    if (!text || !executionContext || (throwOnSideEffect && isTextLong))
+    if (!text || !executionContext || (throwOnSideEffect && isTextLong)) {
       return {preview: createDocumentFragment(), result: null};
+    }
 
     const wrappedResult = await ObjectUI.JavaScriptREPL.preprocessExpression(text);
     const options = {
@@ -79,13 +81,15 @@ ObjectUI.JavaScriptREPL = class {
    */
   static _buildEvaluationPreview(result, allowErrors) {
     const fragment = createDocumentFragment();
-    if (result.error)
+    if (result.error) {
       return fragment;
+    }
 
     if (result.exceptionDetails && result.exceptionDetails.exception && result.exceptionDetails.exception.description) {
       const exception = result.exceptionDetails.exception.description;
-      if (exception.startsWith('TypeError: ') || allowErrors)
+      if (exception.startsWith('TypeError: ') || allowErrors) {
         fragment.createChild('span').textContent = result.exceptionDetails.text + ' ' + exception;
+      }
       return fragment;
     }
 

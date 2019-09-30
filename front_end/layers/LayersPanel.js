@@ -79,16 +79,18 @@ Layers.LayersPanel = class extends UI.PanelWithSidebar {
    */
   wasShown() {
     super.wasShown();
-    if (this._model)
+    if (this._model) {
       this._model.enable();
+    }
   }
 
   /**
    * @override
    */
   willHide() {
-    if (this._model)
+    if (this._model) {
       this._model.disable();
+    }
     super.willHide();
   }
 
@@ -97,15 +99,18 @@ Layers.LayersPanel = class extends UI.PanelWithSidebar {
    * @param {!SDK.Target} target
    */
   targetAdded(target) {
-    if (this._model)
+    if (this._model) {
       return;
+    }
     this._model = target.model(Layers.LayerTreeModel);
-    if (!this._model)
+    if (!this._model) {
       return;
+    }
     this._model.addEventListener(Layers.LayerTreeModel.Events.LayerTreeChanged, this._onLayerTreeUpdated, this);
     this._model.addEventListener(Layers.LayerTreeModel.Events.LayerPainted, this._onLayerPainted, this);
-    if (this.isShowing())
+    if (this.isShowing()) {
       this._model.enable();
+    }
   }
 
   /**
@@ -113,8 +118,9 @@ Layers.LayersPanel = class extends UI.PanelWithSidebar {
    * @param {!SDK.Target} target
    */
   targetRemoved(target) {
-    if (!this._model || this._model.target() !== target)
+    if (!this._model || this._model.target() !== target) {
       return;
+    }
     this._model.removeEventListener(Layers.LayerTreeModel.Events.LayerTreeChanged, this._onLayerTreeUpdated, this);
     this._model.removeEventListener(Layers.LayerTreeModel.Events.LayerPainted, this._onLayerPainted, this);
     this._model.disable();
@@ -129,8 +135,9 @@ Layers.LayersPanel = class extends UI.PanelWithSidebar {
    * @return {!Promise<*>}
    */
   _update() {
-    if (this._model)
+    if (this._model) {
       this._layerViewHost.setLayerTree(this._model.layerTree());
+    }
     return Promise.resolve();
   }
 
@@ -138,11 +145,13 @@ Layers.LayersPanel = class extends UI.PanelWithSidebar {
    * @param {!Common.Event} event
    */
   _onLayerPainted(event) {
-    if (!this._model)
+    if (!this._model) {
       return;
+    }
     const layer = /** @type {!SDK.Layer} */ (event.data);
-    if (this._layerViewHost.selection() && this._layerViewHost.selection().layer() === layer)
+    if (this._layerViewHost.selection() && this._layerViewHost.selection().layer() === layer) {
       this._layerDetailsView.update();
+    }
     this._layers3DView.updateLayerSnapshot(layer);
   }
 
@@ -152,8 +161,9 @@ Layers.LayersPanel = class extends UI.PanelWithSidebar {
   _onPaintProfileRequested(event) {
     const selection = /** @type {!LayerViewer.LayerView.Selection} */ (event.data);
     this._layers3DView.snapshotForSelection(selection).then(snapshotWithRect => {
-      if (!snapshotWithRect)
+      if (!snapshotWithRect) {
         return;
+      }
       this._layerBeingProfiled = selection.layer();
       if (!this._tabbedPane.hasTab(Layers.LayersPanel.DetailsViewTabs.Profiler)) {
         this._tabbedPane.appendTab(
@@ -169,8 +179,9 @@ Layers.LayersPanel = class extends UI.PanelWithSidebar {
    * @param {!Common.Event} event
    */
   _onTabClosed(event) {
-    if (event.data.tabId !== Layers.LayersPanel.DetailsViewTabs.Profiler || !this._layerBeingProfiled)
+    if (event.data.tabId !== Layers.LayersPanel.DetailsViewTabs.Profiler || !this._layerBeingProfiled) {
       return;
+    }
     this._paintProfilerView.reset();
     this._layers3DView.showImageForLayer(this._layerBeingProfiled, undefined);
     this._layerBeingProfiled = null;

@@ -73,34 +73,39 @@ Elements.PropertiesWidget = class extends UI.ThrottledWidget {
 
     this._lastRequestedNode = this._node;
     const object = await this._node.resolveToObject(Elements.PropertiesWidget._objectGroupName);
-    if (!object)
+    if (!object) {
       return;
+    }
 
     const result = await object.callFunction(protoList);
     object.release();
 
-    if (!result.object || result.wasThrown)
+    if (!result.object || result.wasThrown) {
       return;
+    }
 
     const propertiesResult = await result.object.getOwnProperties(false /* generatePreview */);
     result.object.release();
 
-    if (!propertiesResult || !propertiesResult.properties)
+    if (!propertiesResult || !propertiesResult.properties) {
       return;
+    }
 
     const properties = propertiesResult.properties;
     const expanded = [];
     const sections = this.sections || [];
-    for (let i = 0; i < sections.length; ++i)
+    for (let i = 0; i < sections.length; ++i) {
       expanded.push(sections[i].expanded);
+    }
 
     this.contentElement.removeChildren();
     this.sections = [];
 
     // Get array of property user-friendly names.
     for (let i = 0; i < properties.length; ++i) {
-      if (!parseInt(properties[i].name, 10))
+      if (!parseInt(properties[i].name, 10)) {
         continue;
+      }
       const property = properties[i].value;
       let title = property.description;
       title = title.replace(/Prototype$/, '');
@@ -108,8 +113,9 @@ Elements.PropertiesWidget = class extends UI.ThrottledWidget {
       section.element.classList.add('properties-widget-section');
       this.sections.push(section);
       this.contentElement.appendChild(section.element);
-      if (expanded[this.sections.length - 1])
+      if (expanded[this.sections.length - 1]) {
         section.expand();
+      }
       section.addEventListener(UI.TreeOutline.Events.ElementExpanded, this._propertyExpanded, this);
     }
 
@@ -134,20 +140,23 @@ Elements.PropertiesWidget = class extends UI.ThrottledWidget {
    */
   _propertyExpanded(event) {
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.DOMPropertiesExpanded);
-    for (const section of this.sections)
+    for (const section of this.sections) {
       section.removeEventListener(UI.TreeOutline.Events.ElementExpanded, this._propertyExpanded, this);
+    }
   }
 
   /**
    * @param {!Common.Event} event
    */
   _onNodeChange(event) {
-    if (!this._node)
+    if (!this._node) {
       return;
+    }
     const data = event.data;
     const node = /** @type {!SDK.DOMNode} */ (data instanceof SDK.DOMNode ? data : data.node);
-    if (this._node !== node)
+    if (this._node !== node) {
       return;
+    }
     this.update();
   }
 };

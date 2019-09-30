@@ -60,8 +60,9 @@ Profiler.BottomUpProfileDataGridNode = class extends Profiler.ProfileDataGridNod
 
         child.self += focusNode.self;
 
-        if (!totalAccountedFor)
+        if (!totalAccountedFor) {
           child.total += focusNode.total;
+        }
       } else {
         // If not, add it as a true ancestor.
         // In heavy mode, we take our visual identity from ancestor node...
@@ -111,21 +112,24 @@ Profiler.BottomUpProfileDataGridNode = class extends Profiler.ProfileDataGridNod
    * @param {string} aCallUID
    */
   _exclude(aCallUID) {
-    if (this._remainingNodeInfos)
+    if (this._remainingNodeInfos) {
       this.populate();
+    }
 
     this.save();
 
     const children = this.children;
     let index = this.children.length;
 
-    while (index--)
+    while (index--) {
       children[index]._exclude(aCallUID);
+    }
 
     const child = this.childrenByCallUID.get(aCallUID);
 
-    if (child)
+    if (child) {
       this.merge(child, true);
+    }
   }
 
   /**
@@ -134,8 +138,9 @@ Profiler.BottomUpProfileDataGridNode = class extends Profiler.ProfileDataGridNod
   restore() {
     super.restore();
 
-    if (!this.children.length)
+    if (!this.children.length) {
       this.setHasChildren(this._willHaveChildren(this.profileNode));
+    }
   }
 
   /**
@@ -193,8 +198,9 @@ Profiler.BottomUpProfileDataGridTree = class extends Profiler.ProfileDataGridTre
       for (let index = 0; index < count; ++index) {
         const profileNode = profileNodes[index];
 
-        if (!profileNode.UID)
+        if (!profileNode.UID) {
           profileNode.UID = ++profileNodeUIDs;
+        }
 
         if (profileNode.parent) {
           // The total time of this ancestor is accounted for if we're in any form of recursive cycle.
@@ -241,8 +247,9 @@ Profiler.BottomUpProfileDataGridTree = class extends Profiler.ProfileDataGridTre
    * @param {!Profiler.ProfileDataGridNode} profileDataGridNode
    */
   focus(profileDataGridNode) {
-    if (!profileDataGridNode)
+    if (!profileDataGridNode) {
       return;
+    }
 
     this.save();
 
@@ -255,8 +262,9 @@ Profiler.BottomUpProfileDataGridTree = class extends Profiler.ProfileDataGridTre
       focusNode = currentNode;
       currentNode = currentNode.parent;
 
-      if (currentNode instanceof Profiler.ProfileDataGridNode)
+      if (currentNode instanceof Profiler.ProfileDataGridNode) {
         currentNode._keepOnlyChild(focusNode);
+      }
     }
 
     this.children = [focusNode];
@@ -267,8 +275,9 @@ Profiler.BottomUpProfileDataGridTree = class extends Profiler.ProfileDataGridTre
    * @param {!Profiler.ProfileDataGridNode} profileDataGridNode
    */
   exclude(profileDataGridNode) {
-    if (!profileDataGridNode)
+    if (!profileDataGridNode) {
       return;
+    }
 
     this.save();
 
@@ -277,17 +286,20 @@ Profiler.BottomUpProfileDataGridTree = class extends Profiler.ProfileDataGridTre
 
     // If we have a top level node that is excluded, get rid of it completely (not keeping children),
     // since bottom up data relies entirely on the root node.
-    if (excludedTopLevelChild)
+    if (excludedTopLevelChild) {
       this.children.remove(excludedTopLevelChild);
+    }
 
     const children = this.children;
     const count = children.length;
 
-    for (let index = 0; index < count; ++index)
+    for (let index = 0; index < count; ++index) {
       children[index]._exclude(excludedCallUID);
+    }
 
-    if (this.lastComparator)
+    if (this.lastComparator) {
       this.sort(this.lastComparator, true);
+    }
   }
 
   /**

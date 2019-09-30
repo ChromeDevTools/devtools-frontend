@@ -130,8 +130,9 @@ UI.GlassPane = class {
    * @param {!Document} document
    */
   show(document) {
-    if (this.isShowing())
+    if (this.isShowing()) {
       return;
+    }
     // Deliberately starts with 3000 to hide other z-indexed elements below.
     this.element.style.zIndex = 3000 + 1000 * UI.GlassPane._panes.size;
     document.body.addEventListener('mousedown', this._onMouseDownBound, true);
@@ -141,8 +142,9 @@ UI.GlassPane = class {
   }
 
   hide() {
-    if (!this.isShowing())
+    if (!this.isShowing()) {
       return;
+    }
     UI.GlassPane._panes.delete(this);
     this.element.ownerDocument.body.removeEventListener('mousedown', this._onMouseDownBound, true);
     this._widget.detach();
@@ -152,17 +154,20 @@ UI.GlassPane = class {
    * @param {!Event} event
    */
   _onMouseDown(event) {
-    if (!this._onClickOutsideCallback)
+    if (!this._onClickOutsideCallback) {
       return;
+    }
     const node = event.deepElementFromPoint();
-    if (!node || this.contentElement.isSelfOrAncestor(node))
+    if (!node || this.contentElement.isSelfOrAncestor(node)) {
       return;
+    }
     this._onClickOutsideCallback.call(null, event);
   }
 
   _positionContent() {
-    if (!this.isShowing())
+    if (!this.isShowing()) {
       return;
+    }
 
     const showArrow = this._marginBehavior === UI.GlassPane.MarginBehavior.Arrow;
     const gutterSize = showArrow ? 8 : (this._marginBehavior === UI.GlassPane.MarginBehavior.NoMargin ? 0 : 3);
@@ -207,10 +212,12 @@ UI.GlassPane = class {
       if (behavior === UI.GlassPane.AnchorBehavior.PreferTop || behavior === UI.GlassPane.AnchorBehavior.PreferBottom) {
         const top = anchorBox.y - 2 * gutterSize;
         const bottom = containerHeight - anchorBox.y - anchorBox.height - 2 * gutterSize;
-        if (behavior === UI.GlassPane.AnchorBehavior.PreferTop && top < height && bottom > top)
+        if (behavior === UI.GlassPane.AnchorBehavior.PreferTop && top < height && bottom > top) {
           behavior = UI.GlassPane.AnchorBehavior.PreferBottom;
-        if (behavior === UI.GlassPane.AnchorBehavior.PreferBottom && bottom < height && top > bottom)
+        }
+        if (behavior === UI.GlassPane.AnchorBehavior.PreferBottom && bottom < height && top > bottom) {
           behavior = UI.GlassPane.AnchorBehavior.PreferTop;
+        }
 
         let arrowY;
         let enoughHeight = true;
@@ -246,10 +253,11 @@ UI.GlassPane = class {
         }
 
         positionX = Math.max(gutterSize, Math.min(anchorBox.x, containerWidth - width - gutterSize));
-        if (!enoughHeight)
+        if (!enoughHeight) {
           positionX = Math.min(positionX + arrowSize, containerWidth - width - gutterSize);
-        else if (showArrow && positionX - arrowSize >= gutterSize)
+        } else if (showArrow && positionX - arrowSize >= gutterSize) {
           positionX -= arrowSize;
+        }
         width = Math.min(width, containerWidth - positionX - gutterSize);
         if (2 * arrowSize >= width) {
           this._arrowElement.classList.add('arrow-none');
@@ -261,10 +269,12 @@ UI.GlassPane = class {
       } else {
         const left = anchorBox.x - 2 * gutterSize;
         const right = containerWidth - anchorBox.x - anchorBox.width - 2 * gutterSize;
-        if (behavior === UI.GlassPane.AnchorBehavior.PreferLeft && left < width && right > left)
+        if (behavior === UI.GlassPane.AnchorBehavior.PreferLeft && left < width && right > left) {
           behavior = UI.GlassPane.AnchorBehavior.PreferRight;
-        if (behavior === UI.GlassPane.AnchorBehavior.PreferRight && right < width && left > right)
+        }
+        if (behavior === UI.GlassPane.AnchorBehavior.PreferRight && right < width && left > right) {
           behavior = UI.GlassPane.AnchorBehavior.PreferLeft;
+        }
 
         let arrowX;
         let enoughWidth = true;
@@ -300,10 +310,11 @@ UI.GlassPane = class {
         }
 
         positionY = Math.max(gutterSize, Math.min(anchorBox.y, containerHeight - height - gutterSize));
-        if (!enoughWidth)
+        if (!enoughWidth) {
           positionY = Math.min(positionY + arrowSize, containerHeight - height - gutterSize);
-        else if (showArrow && positionY - arrowSize >= gutterSize)
+        } else if (showArrow && positionY - arrowSize >= gutterSize) {
           positionY -= arrowSize;
+        }
         height = Math.min(height, containerHeight - positionY - gutterSize);
         if (2 * arrowSize >= height) {
           this._arrowElement.classList.add('arrow-none');
@@ -322,10 +333,11 @@ UI.GlassPane = class {
     }
 
     this.contentElement.style.width = width + 'px';
-    if (this._sizeBehavior === UI.GlassPane.SizeBehavior.SetExactWidthMaxHeight)
+    if (this._sizeBehavior === UI.GlassPane.SizeBehavior.SetExactWidthMaxHeight) {
       this.contentElement.style.maxHeight = height + 'px';
-    else
+    } else {
       this.contentElement.style.height = height + 'px';
+    }
 
     this.contentElement.positionAt(positionX, positionY, container);
     this._widget.doResize();
@@ -360,8 +372,9 @@ UI.GlassPane = class {
    */
   static containerMoved(element) {
     for (const pane of UI.GlassPane._panes) {
-      if (pane.isShowing() && pane.element.ownerDocument === element.ownerDocument)
+      if (pane.isShowing() && pane.element.ownerDocument === element.ownerDocument) {
         pane._positionContent();
+      }
     }
   }
 };

@@ -95,14 +95,16 @@ SourceFrame.ImageView = class extends UI.SimpleView {
 
   async _updateContentIfNeeded() {
     const content = await this._contentProvider.requestContent();
-    if (this._cachedContent === content)
+    if (this._cachedContent === content) {
       return;
+    }
 
     const contentEncoded = await this._contentProvider.contentEncoded();
     this._cachedContent = content;
     let imageSrc = Common.ContentProvider.contentAsDataURL(content, this._mimeType, contentEncoded);
-    if (content === null)
+    if (content === null) {
       imageSrc = this._url;
+    }
     const loadPromise = new Promise(x => this._imagePreviewElement.onload = x);
     this._imagePreviewElement.src = imageSrc;
     const size = content && !contentEncoded ? content.length : base64ToSize(content);
@@ -114,8 +116,9 @@ SourceFrame.ImageView = class extends UI.SimpleView {
 
   _contextMenu(event) {
     const contextMenu = new UI.ContextMenu(event);
-    if (!this._parsedURL.isDataURL())
+    if (!this._parsedURL.isDataURL()) {
       contextMenu.clipboardSection().appendItem(Common.UIString('Copy image URL'), this._copyImageURL.bind(this));
+    }
     if (this._imagePreviewElement.src) {
       contextMenu.clipboardSection().appendItem(
           Common.UIString('Copy image as data URI'), this._copyImageAsDataURL.bind(this));
@@ -150,8 +153,9 @@ SourceFrame.ImageView = class extends UI.SimpleView {
    */
   async _handleDrop(dataTransfer) {
     const items = dataTransfer.items;
-    if (!items.length || items[0].kind !== 'file')
+    if (!items.length || items[0].kind !== 'file') {
       return;
+    }
 
     const entry = items[0].webkitGetAsEntry();
     const encoded = !entry.name.endsWith('.svg');
@@ -165,14 +169,16 @@ SourceFrame.ImageView = class extends UI.SimpleView {
           result = null;
           console.error('Can\'t read file: ' + e);
         }
-        if (typeof result !== 'string')
+        if (typeof result !== 'string') {
           return;
+        }
         this._uiSourceCode.setContent(encoded ? btoa(result) : result, encoded);
       };
-      if (encoded)
+      if (encoded) {
         reader.readAsBinaryString(file);
-      else
+      } else {
         reader.readAsText(file);
+      }
     });
   }
 };

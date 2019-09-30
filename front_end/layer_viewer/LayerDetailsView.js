@@ -57,8 +57,9 @@ LayerViewer.LayerDetailsView = class extends UI.Widget {
    */
   selectObject(selection) {
     this._selection = selection;
-    if (this.isShowing())
+    if (this.isShowing()) {
       this.update();
+    }
   }
 
   /**
@@ -81,14 +82,16 @@ LayerViewer.LayerDetailsView = class extends UI.Widget {
    * @param {!Event} event
    */
   _onScrollRectClicked(index, event) {
-    if (event.which !== 1)
+    if (event.which !== 1) {
       return;
+    }
     this._layerViewHost.selectObject(new LayerViewer.LayerView.ScrollRectSelection(this._selection.layer(), index));
   }
 
   _onPaintProfilerButtonClicked() {
-    if (this._selection.type() === LayerViewer.LayerView.Selection.Type.Snapshot || this._selection.layer())
+    if (this._selection.type() === LayerViewer.LayerView.Selection.Type.Snapshot || this._selection.layer()) {
       this.dispatchEventToListeners(LayerViewer.LayerDetailsView.Events.PaintProfilerRequested, this._selection);
+    }
   }
 
   /**
@@ -96,11 +99,13 @@ LayerViewer.LayerDetailsView = class extends UI.Widget {
    * @param {number} index
    */
   _createScrollRectElement(scrollRect, index) {
-    if (index)
+    if (index) {
       this._scrollRectsCell.createTextChild(', ');
+    }
     const element = this._scrollRectsCell.createChild('span', 'scroll-rect');
-    if (this._selection.scrollRectIndex === index)
+    if (this._selection.scrollRectIndex === index) {
       element.classList.add('active');
+    }
     element.textContent = Common.UIString(
         '%s %d × %d (at %d, %d)', LayerViewer.LayerDetailsView._slowScrollRectNames.get(scrollRect.type),
         scrollRect.rect.x, scrollRect.rect.y, scrollRect.rect.width, scrollRect.rect.height);
@@ -113,8 +118,9 @@ LayerViewer.LayerDetailsView = class extends UI.Widget {
    * @return {string}
    */
   _formatStickyAncestorLayer(title, layer) {
-    if (!layer)
+    if (!layer) {
       return '';
+    }
 
     const node = layer.nodeForSelfOrAncestor();
     const name = node ? node.simpleSelector() : Common.UIString('<unnamed>');
@@ -126,8 +132,9 @@ LayerViewer.LayerDetailsView = class extends UI.Widget {
    * @param {?SDK.Layer} layer
    */
   _createStickyAncestorChild(title, layer) {
-    if (!layer)
+    if (!layer) {
       return;
+    }
 
     this._stickyPositionConstraintCell.createTextChild(', ');
     const child = this._stickyPositionConstraintCell.createChild('span');
@@ -139,8 +146,9 @@ LayerViewer.LayerDetailsView = class extends UI.Widget {
    */
   _populateStickyPositionConstraintCell(constraint) {
     this._stickyPositionConstraintCell.removeChildren();
-    if (!constraint)
+    if (!constraint) {
       return;
+    }
 
     const stickyBoxRect = constraint.stickyBoxRect();
     const stickyBoxRectElement = this._stickyPositionConstraintCell.createChild('span');
@@ -224,8 +232,9 @@ LayerViewer.LayerDetailsView = class extends UI.Widget {
     for (let i = 0; i < compositingReasons.length; ++i) {
       let text = LayerViewer.LayerDetailsView.CompositingReasonDetail[compositingReasons[i]] || compositingReasons[i];
       // If the text is more than one word but does not terminate with period, add the period.
-      if (/\s.*[^.]$/.test(text))
+      if (/\s.*[^.]$/.test(text)) {
         text += '.';
+      }
       list.createChild('li').textContent = text;
     }
   }

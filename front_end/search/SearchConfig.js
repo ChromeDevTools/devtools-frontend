@@ -83,8 +83,9 @@ Search.SearchConfig = class {
 
     for (let i = 0; i < queryParts.length; ++i) {
       const queryPart = queryParts[i];
-      if (!queryPart)
+      if (!queryPart) {
         continue;
+      }
       const fileQuery = this._parseFileQuery(queryPart);
       if (fileQuery) {
         this._fileQueries.push(fileQuery);
@@ -99,8 +100,9 @@ Search.SearchConfig = class {
         continue;
       }
       if (queryPart.startsWith('"')) {
-        if (!queryPart.endsWith('"'))
+        if (!queryPart.endsWith('"')) {
           continue;
+        }
         this._queries.push(this._parseQuotedQuery(queryPart));
         continue;
       }
@@ -114,11 +116,13 @@ Search.SearchConfig = class {
    * @return {boolean}
    */
   filePathMatchesFileQuery(filePath) {
-    if (!this._fileRegexQueries)
+    if (!this._fileRegexQueries) {
       return true;
+    }
     for (let i = 0; i < this._fileRegexQueries.length; ++i) {
-      if (!!filePath.match(this._fileRegexQueries[i].regex) === this._fileRegexQueries[i].isNegative)
+      if (!!filePath.match(this._fileRegexQueries[i].regex) === this._fileRegexQueries[i].isNegative) {
         return false;
+      }
     }
     return true;
   }
@@ -145,8 +149,9 @@ Search.SearchConfig = class {
    */
   _parseFileQuery(query) {
     const match = query.match(Search.SearchConfig.FilePatternRegex);
-    if (!match)
+    if (!match) {
       return null;
+    }
     const isNegative = !!match[1];
     query = match[3];
     let result = '';
@@ -157,11 +162,13 @@ Search.SearchConfig = class {
       } else if (char === '\\') {
         ++i;
         const nextChar = query[i];
-        if (nextChar === ' ')
+        if (nextChar === ' ') {
           result += ' ';
+        }
       } else {
-        if (String.regexSpecialCharacters().indexOf(query.charAt(i)) !== -1)
+        if (String.regexSpecialCharacters().indexOf(query.charAt(i)) !== -1) {
           result += '\\';
+        }
         result += query.charAt(i);
       }
     }

@@ -40,8 +40,9 @@ Emulation.GeolocationsSettingsTab = class extends UI.VBox {
     this._list.clear();
 
     const conditions = this._customSetting.get();
-    for (let i = 0; i < conditions.length; ++i)
+    for (let i = 0; i < conditions.length; ++i) {
       this._list.appendItem(conditions[i], true);
+    }
 
     this._list.appendSeparator();
   }
@@ -96,8 +97,9 @@ Emulation.GeolocationsSettingsTab = class extends UI.VBox {
     geolocation.long = long ? parseFloat(long) : 0;
 
     const list = this._customSetting.get();
-    if (isNew)
+    if (isNew) {
       list.push(geolocation);
+    }
     this._customSetting.set(list);
   }
 
@@ -119,8 +121,9 @@ Emulation.GeolocationsSettingsTab = class extends UI.VBox {
    * @return {!UI.ListWidget.Editor}
    */
   _createEditor() {
-    if (this._editor)
+    if (this._editor) {
       return this._editor;
+    }
 
     const editor = new UI.ListWidget.Editor();
     this._editor = editor;
@@ -159,13 +162,15 @@ Emulation.GeolocationsSettingsTab = class extends UI.VBox {
       const value = input.value.trim();
 
       let errorMessage;
-      if (!value.length)
+      if (!value.length) {
         errorMessage = ls`Location name cannot be empty`;
-      else if (value.length > maxLength)
+      } else if (value.length > maxLength) {
         errorMessage = ls`Location name must be less than ${maxLength} characters`;
+      }
 
-      if (errorMessage)
+      if (errorMessage) {
         return {valid: false, errorMessage};
+      }
       return {valid: true};
     }
 
@@ -180,19 +185,22 @@ Emulation.GeolocationsSettingsTab = class extends UI.VBox {
       const maxLat = 90;
       const value = input.value.trim();
 
-      if (!value)
+      if (!value) {
         return {valid: true};
+      }
 
       let errorMessage;
-      if (!/^-?[\d]+(\.\d+)?|\.\d+$/.test(value))
+      if (!/^-?[\d]+(\.\d+)?|\.\d+$/.test(value)) {
         errorMessage = ls`Latitude must be a number`;
-      else if (parseFloat(value) < minLat)
+      } else if (parseFloat(value) < minLat) {
         errorMessage = ls`Latitude must be greater than or equal to ${minLat}`;
-      else if (parseFloat(value) > maxLat)
+      } else if (parseFloat(value) > maxLat) {
         errorMessage = ls`Latitude must be less than or equal to ${maxLat}`;
+      }
 
-      if (errorMessage)
+      if (errorMessage) {
         return {valid: false, errorMessage};
+      }
       return {valid: true};
     }
 
@@ -207,19 +215,22 @@ Emulation.GeolocationsSettingsTab = class extends UI.VBox {
       const maxLong = 180;
       const value = input.value.trim();
 
-      if (!value)
+      if (!value) {
         return {valid: true};
+      }
 
       let errorMessage;
-      if (!/^-?[\d]+(\.\d+)?|\.\d+$/.test(value))
+      if (!/^-?[\d]+(\.\d+)?|\.\d+$/.test(value)) {
         errorMessage = ls`Longitude must be a number`;
-      else if (parseFloat(value) < minLong)
+      } else if (parseFloat(value) < minLong) {
         errorMessage = ls`Longitude must be greater than or equal to ${minLong}`;
-      else if (parseFloat(value) > maxLong)
+      } else if (parseFloat(value) > maxLong) {
         errorMessage = ls`Longitude must be less than or equal to ${maxLong}`;
+      }
 
-      if (errorMessage)
+      if (errorMessage) {
         return {valid: false, errorMessage};
+      }
       return {valid: true};
     }
   }

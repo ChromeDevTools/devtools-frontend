@@ -124,10 +124,11 @@ ColorPicker.ContrastDetails = class extends Common.Object {
     const labelAA = this._contrastPassFailAA.createChild('span', 'contrast-link-label');
     labelAA.textContent = Common.UIString('AA');
     this._contrastPassFailAA.createChild('span').textContent = Common.UIString(': %s', aa.toFixed(1));
-    if (this._passesAA)
+    if (this._passesAA) {
       this._contrastPassFailAA.appendChild(UI.Icon.create('smallicon-checkmark-square'));
-    else
+    } else {
       this._contrastPassFailAA.appendChild(UI.Icon.create('smallicon-no'));
+    }
 
     const aaa = this._contrastInfo.contrastRatioThreshold('aaa');
     const passesAAA = this._contrastInfo.contrastRatio() >= aaa;
@@ -135,10 +136,11 @@ ColorPicker.ContrastDetails = class extends Common.Object {
     const labelAAA = this._contrastPassFailAAA.createChild('span', 'contrast-link-label');
     labelAAA.textContent = Common.UIString('AAA');
     this._contrastPassFailAAA.createChild('span').textContent = Common.UIString(': %s', aaa.toFixed(1));
-    if (passesAAA)
+    if (passesAAA) {
       this._contrastPassFailAAA.appendChild(UI.Icon.create('smallicon-checkmark-square'));
-    else
+    } else {
       this._contrastPassFailAAA.appendChild(UI.Icon.create('smallicon-no'));
+    }
 
     [labelAA, labelAAA].forEach(e => e.addEventListener('click', event => ColorPicker.ContrastDetails._showHelp()));
 
@@ -199,8 +201,9 @@ ColorPicker.ContrastDetails = class extends Common.Object {
       this._toggleMainColorPicker(false);
       this._expandButton.setGlyph('smallicon-expand-less');
       this._expandButton.setTitle(Common.UIString('Show less'));
-      if (this._contrastUnknown)
+      if (this._contrastUnknown) {
         this._toggleBackgroundColorPicker(true);
+      }
     } else {
       this._toggleBackgroundColorPicker(false);
       this._expandButton.setGlyph('smallicon-expand-more');
@@ -242,12 +245,14 @@ ColorPicker.ContrastDetails = class extends Common.Object {
    * @param {boolean=} shouldTriggerEvent
    */
   _toggleBackgroundColorPicker(enabled, shouldTriggerEvent = true) {
-    if (enabled === undefined)
+    if (enabled === undefined) {
       enabled = !this._bgColorPickerButton.toggled();
+    }
     this._bgColorPickerButton.setToggled(enabled);
 
-    if (shouldTriggerEvent)
+    if (shouldTriggerEvent) {
       this.dispatchEventToListeners(ColorPicker.ContrastDetails.Events.BackgroundColorPickerWillBeToggled, enabled);
+    }
 
     InspectorFrontendHost.setEyeDropperActive(enabled);
     if (enabled) {

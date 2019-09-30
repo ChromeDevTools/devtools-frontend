@@ -42,8 +42,9 @@ Host.InspectorFrontendHostStub = class {
     function stopEventPropagation(event) {
       // Let browser handle Ctrl+/Ctrl- shortcuts in hosted mode.
       const zoomModifier = Host.isMac() ? event.metaKey : event.ctrlKey;
-      if (zoomModifier && (event.keyCode === 187 || event.keyCode === 189))
+      if (zoomModifier && (event.keyCode === 187 || event.keyCode === 189)) {
         event.stopPropagation();
+      }
     }
     document.addEventListener('keydown', stopEventPropagation, true);
     /**
@@ -63,11 +64,13 @@ Host.InspectorFrontendHostStub = class {
    */
   platform() {
     let match = navigator.userAgent.match(/Windows NT/);
-    if (match)
+    if (match) {
       return 'windows';
+    }
     match = navigator.userAgent.match(/Mac OS X/);
-    if (match)
+    if (match) {
       return 'mac';
+    }
     return 'linux';
   }
 
@@ -137,8 +140,9 @@ Host.InspectorFrontendHostStub = class {
    * @suppressGlobalPropertiesCheck
    */
   copyText(text) {
-    if (text === undefined || text === null)
+    if (text === undefined || text === null) {
       return;
+    }
     if (navigator.clipboard) {
       navigator.clipboard.writeText(text);
     } else if (document.queryCommandSupported('copy')) {
@@ -297,8 +301,9 @@ Host.InspectorFrontendHostStub = class {
    */
   getPreferences(callback) {
     const prefs = {};
-    for (const name in window.localStorage)
+    for (const name in window.localStorage) {
       prefs[name] = window.localStorage[name];
+    }
     callback(prefs);
   }
 
@@ -504,8 +509,9 @@ Host.InspectorFrontendAPIImpl = class {
         !!Runtime.queryParam('debugFrontend') || (window['InspectorTest'] && window['InspectorTest']['debugTest']);
 
     const descriptors = Host.InspectorFrontendAPIImpl.EventDescriptors;
-    for (let i = 0; i < descriptors.length; ++i)
+    for (let i = 0; i < descriptors.length; ++i) {
       this[descriptors[i][1]] = this._dispatch.bind(this, descriptors[i][0], descriptors[i][2], descriptors[i][3]);
+    }
   }
 
   /**
@@ -516,10 +522,11 @@ Host.InspectorFrontendAPIImpl = class {
   _dispatch(name, signature, runOnceLoaded) {
     const params = Array.prototype.slice.call(arguments, 3);
 
-    if (this._debugFrontend)
+    if (this._debugFrontend) {
       setImmediate(innerDispatch);
-    else
+    } else {
       innerDispatch();
+    }
 
     function innerDispatch() {
       // Single argument methods get dispatched with the param.
@@ -532,8 +539,9 @@ Host.InspectorFrontendAPIImpl = class {
         return;
       }
       const data = {};
-      for (let i = 0; i < signature.length; ++i)
+      for (let i = 0; i < signature.length; ++i) {
         data[signature[i]] = params[i];
+      }
       try {
         InspectorFrontendHost.events.dispatchEventToListeners(name, data);
       } catch (e) {
@@ -606,8 +614,9 @@ let InspectorFrontendHost = window.InspectorFrontendHost;
       proto = Host.InspectorFrontendHostStub.prototype;
       for (const name of Object.getOwnPropertyNames(proto)) {
         const stub = proto[name];
-        if (typeof stub !== 'function' || InspectorFrontendHost[name])
+        if (typeof stub !== 'function' || InspectorFrontendHost[name]) {
           continue;
+        }
 
         console.error(
             'Incompatible embedder: method InspectorFrontendHost.' + name + ' is missing. Using stub instead.');
@@ -631,10 +640,12 @@ let InspectorFrontendHost = window.InspectorFrontendHost;
  */
 Host.isUnderTest = function(prefs) {
   // Integration tests rely on test queryParam.
-  if (Runtime.queryParam('test'))
+  if (Runtime.queryParam('test')) {
     return true;
+  }
   // Browser tests rely on prefs.
-  if (prefs)
+  if (prefs) {
     return prefs['isUnderTest'] === 'true';
+  }
   return Common.settings && Common.settings.createSetting('isUnderTest', false).get();
 };

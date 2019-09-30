@@ -32,8 +32,9 @@ Animation.AnimationGroupPreviewUI = class {
     let duration = 0;
     for (const anim of this._model.animations()) {
       const animDuration = anim.source().delay() + anim.source().duration();
-      if (animDuration > duration)
+      if (animDuration > duration) {
         duration = animDuration;
+      }
     }
     return duration;
   }

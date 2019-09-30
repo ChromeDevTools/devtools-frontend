@@ -35,8 +35,9 @@ Sources.ScriptOriginPlugin = class extends Sources.UISourceCodeFrame.Plugin {
 
     // Handle anonymous scripts with an originStackTrace.
     const script = Sources.ScriptOriginPlugin._script(this._uiSourceCode);
-    if (!script || !script.originStackTrace)
+    if (!script || !script.originStackTrace) {
       return [];
+    }
     const link = Sources.ScriptOriginPlugin._linkifier.linkifyStackTraceTopFrame(
         script.debuggerModel.target(), script.originStackTrace);
     return [new UI.ToolbarItem(link)];
@@ -50,8 +51,9 @@ Sources.ScriptOriginPlugin = class extends Sources.UISourceCodeFrame.Plugin {
     const locations = Bindings.debuggerWorkspaceBinding.uiLocationToRawLocations(uiSourceCode, 0, 0);
     for (const location of locations) {
       const script = location.script();
-      if (script.originStackTrace)
+      if (script.originStackTrace) {
         return script;
+      }
     }
     return null;
   }

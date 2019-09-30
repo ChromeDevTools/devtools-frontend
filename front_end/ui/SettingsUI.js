@@ -38,15 +38,17 @@ UI.SettingsUI = {};
  */
 UI.SettingsUI.createSettingCheckbox = function(name, setting, omitParagraphElement, tooltip) {
   const label = UI.CheckboxLabel.create(name);
-  if (tooltip)
+  if (tooltip) {
     label.title = tooltip;
+  }
 
   const input = label.checkboxElement;
   input.name = name;
   UI.SettingsUI.bindCheckbox(input, setting);
 
-  if (omitParagraphElement)
+  if (omitParagraphElement) {
     return label;
+  }
 
   const p = createElement('p');
   p.appendChild(label);
@@ -86,8 +88,9 @@ UI.SettingsUI.createSettingSelect = function(name, options, setting, subtitle) {
   function settingChanged() {
     const newValue = setting.get();
     for (let i = 0; i < options.length; i++) {
-      if (options[i].value === newValue)
+      if (options[i].value === newValue) {
         select.selectedIndex = i;
+      }
     }
   }
 
@@ -103,15 +106,17 @@ UI.SettingsUI.createSettingSelect = function(name, options, setting, subtitle) {
  */
 UI.SettingsUI.bindCheckbox = function(input, setting) {
   function settingChanged() {
-    if (input.checked !== setting.get())
+    if (input.checked !== setting.get()) {
       input.checked = setting.get();
+    }
   }
   setting.addChangeListener(settingChanged);
   settingChanged();
 
   function inputChanged() {
-    if (setting.get() !== input.checked)
+    if (setting.get() !== input.checked) {
       setting.set(input.checked);
+    }
   }
   input.addEventListener('change', inputChanged, false);
 };
@@ -137,16 +142,18 @@ UI.SettingsUI.createCustomSetting = function(name, element) {
  * @return {?Element}
  */
 UI.SettingsUI.createControlForSetting = function(setting, subtitle) {
-  if (!setting.extension())
+  if (!setting.extension()) {
     return null;
+  }
   const descriptor = setting.extension().descriptor();
   const uiTitle = Common.UIString(setting.title() || '');
   switch (descriptor['settingType']) {
     case 'boolean':
       return UI.SettingsUI.createSettingCheckbox(uiTitle, setting);
     case 'enum':
-      if (Array.isArray(descriptor['options']))
+      if (Array.isArray(descriptor['options'])) {
         return UI.SettingsUI.createSettingSelect(uiTitle, descriptor['options'], setting, subtitle);
+      }
       console.error('Enum setting defined without options');
       return null;
     default:

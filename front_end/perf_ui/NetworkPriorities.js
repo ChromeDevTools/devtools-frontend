@@ -27,8 +27,9 @@ PerfUI.uiLabelToNetworkPriority = function(priorityLabel) {
  * @return {!Map<!Protocol.Network.ResourcePriority, string>}
  */
 PerfUI._priorityUILabelMap = function() {
-  if (PerfUI._priorityUILabelMapInstance)
+  if (PerfUI._priorityUILabelMapInstance) {
     return PerfUI._priorityUILabelMapInstance;
+  }
 
   /** @type {!Map<!Protocol.Network.ResourcePriority, string>} */
   const map = new Map();

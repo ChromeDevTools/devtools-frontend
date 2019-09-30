@@ -108,14 +108,16 @@ UI.Toolbar = class {
 
       const topNotBottom = hostButtonPosition.y + buttonHeight * buttons.length < document.documentElement.offsetHeight;
 
-      if (topNotBottom)
+      if (topNotBottom) {
         buttons = buttons.reverse();
+      }
 
       optionsBar.element.style.height = (buttonHeight * buttons.length) + 'px';
-      if (topNotBottom)
+      if (topNotBottom) {
         optionsBar.element.style.top = (hostButtonPosition.y - 5) + 'px';
-      else
+      } else {
         optionsBar.element.style.top = (hostButtonPosition.y - (buttonHeight * (buttons.length - 1)) - 6) + 'px';
+      }
       optionsBar.element.style.left = (hostButtonPosition.x - 5) + 'px';
 
       for (let i = 0; i < buttons.length; ++i) {
@@ -127,22 +129,25 @@ UI.Toolbar = class {
       buttons[hostButtonIndex].element.classList.add('emulate-active');
 
       function mouseOver(e) {
-        if (e.which !== 1)
+        if (e.which !== 1) {
           return;
+        }
         const buttonElement = e.target.enclosingNodeOrSelfWithClass('toolbar-item');
         buttonElement.classList.add('emulate-active');
       }
 
       function mouseOut(e) {
-        if (e.which !== 1)
+        if (e.which !== 1) {
           return;
+        }
         const buttonElement = e.target.enclosingNodeOrSelfWithClass('toolbar-item');
         buttonElement.classList.remove('emulate-active');
       }
 
       function mouseUp(e) {
-        if (e.which !== 1)
+        if (e.which !== 1) {
           return;
+        }
         optionsGlassPane.hide();
         document.documentElement.removeEventListener('mouseup', mouseUp, false);
 
@@ -165,8 +170,9 @@ UI.Toolbar = class {
   static createActionButton(action, showLabel) {
     const button = action.toggleable() ? makeToggle() : makeButton();
 
-    if (showLabel)
+    if (showLabel) {
       button.setText(action.title());
+    }
     button.addEventListener(UI.ToolbarButton.Events.Click, action.execute, action);
     action.addEventListener(UI.Action.Events.Enabled, enabledChanged);
     button.setEnabled(action.enabled());
@@ -178,8 +184,9 @@ UI.Toolbar = class {
 
     function makeButton() {
       const button = new UI.ToolbarButton(action.title(), action.icon());
-      if (action.title())
+      if (action.title()) {
         UI.Tooltip.install(button.element, action.title(), action.id());
+      }
       return button;
     }
 
@@ -195,8 +202,9 @@ UI.Toolbar = class {
 
       function toggled() {
         toggleButton.setToggled(action.toggled());
-        if (action.title())
+        if (action.title()) {
           UI.Tooltip.install(toggleButton.element, action.title(), action.id());
+        }
       }
     }
 
@@ -230,8 +238,9 @@ UI.Toolbar = class {
    */
   makeWrappable(growVertically) {
     this._contentElement.classList.add('wrappable');
-    if (growVertically)
+    if (growVertically) {
       this._contentElement.classList.add('toolbar-grow-vertical');
+    }
   }
 
   makeVertical() {
@@ -262,8 +271,9 @@ UI.Toolbar = class {
    */
   setEnabled(enabled) {
     this._enabled = enabled;
-    for (const item of this._items)
+    for (const item of this._items) {
       item._applyEnabledState(this._enabled && item._enabled);
+    }
   }
 
   /**
@@ -272,8 +282,9 @@ UI.Toolbar = class {
   appendToolbarItem(item) {
     this._items.push(item);
     item._toolbar = this;
-    if (!this._enabled)
+    if (!this._enabled) {
       item._applyEnabledState(false);
+    }
     this._contentElement.insertBefore(item.element, this._insertionPoint);
     this._hideSeparatorDupes();
   }
@@ -294,8 +305,9 @@ UI.Toolbar = class {
   }
 
   removeToolbarItems() {
-    for (const item of this._items)
+    for (const item of this._items) {
       delete item._toolbar;
+    }
     this._items = [];
     this._contentElement.removeChildren();
     this._insertionPoint = this._contentElement.createChild('slot');
@@ -321,8 +333,9 @@ UI.Toolbar = class {
   }
 
   _hideSeparatorDupes() {
-    if (!this._items.length)
+    if (!this._items.length) {
       return;
+    }
     // Don't hide first and last separators if they were added explicitly.
     let previousIsSeparator = false;
     let lastSeparator;
@@ -340,8 +353,9 @@ UI.Toolbar = class {
         nonSeparatorVisible = true;
       }
     }
-    if (lastSeparator && lastSeparator !== this._items.peekLast())
+    if (lastSeparator && lastSeparator !== this._items.peekLast()) {
       lastSeparator.setVisible(false);
+    }
 
     this.element.classList.toggle('hidden', !!lastSeparator && lastSeparator.visible() && !nonSeparatorVisible);
   }
@@ -355,10 +369,12 @@ UI.Toolbar = class {
     const filtered = extensions.filter(e => e.descriptor()['location'] === location);
     const items = await Promise.all(filtered.map(extension => {
       const descriptor = extension.descriptor();
-      if (descriptor['separator'])
+      if (descriptor['separator']) {
         return new UI.ToolbarSeparator();
-      if (descriptor['actionId'])
+      }
+      if (descriptor['actionId']) {
         return UI.Toolbar.createActionButtonForId(descriptor['actionId'], descriptor['showLabel']);
+      }
       return extension.instance().then(p => p.item());
     }));
     items.filter(item => item).forEach(item => this.appendToolbarItem(item));
@@ -384,8 +400,9 @@ UI.ToolbarItem = class extends Common.Object {
    * @param {string} title
    */
   setTitle(title) {
-    if (this._title === title)
+    if (this._title === title) {
       return;
+    }
     this._title = title;
     UI.ARIAUtils.setAccessibleName(this.element, title);
     UI.Tooltip.install(this.element, title);
@@ -395,8 +412,9 @@ UI.ToolbarItem = class extends Common.Object {
    * @param {boolean} value
    */
   setEnabled(value) {
-    if (this._enabled === value)
+    if (this._enabled === value) {
       return;
+    }
     this._enabled = value;
     this._applyEnabledState(this._enabled && (!this._toolbar || this._toolbar._enabled));
   }
@@ -419,12 +437,14 @@ UI.ToolbarItem = class extends Common.Object {
    * @param {boolean} x
    */
   setVisible(x) {
-    if (this._visible === x)
+    if (this._visible === x) {
       return;
+    }
     this.element.classList.toggle('hidden', !x);
     this._visible = x;
-    if (this._toolbar && !(this instanceof UI.ToolbarSeparator))
+    if (this._toolbar && !(this instanceof UI.ToolbarSeparator)) {
       this._toolbar._hideSeparatorDupes();
+    }
   }
 
   setRightAligned(alignRight) {
@@ -479,8 +499,9 @@ UI.ToolbarButton = class extends UI.ToolbarItem {
     this._textElement = this.element.createChild('div', 'toolbar-text hidden');
 
     this.setTitle(title);
-    if (glyph)
+    if (glyph) {
       this.setGlyph(glyph);
+    }
     this.setText(text || '');
     this._title = '';
   }
@@ -489,8 +510,9 @@ UI.ToolbarButton = class extends UI.ToolbarItem {
    * @param {string} text
    */
   setText(text) {
-    if (this._text === text)
+    if (this._text === text) {
       return;
+    }
     this._textElement.textContent = text;
     this._textElement.classList.toggle('hidden', !text);
     this._text = text;
@@ -500,8 +522,9 @@ UI.ToolbarButton = class extends UI.ToolbarItem {
    * @param {string} glyph
    */
   setGlyph(glyph) {
-    if (this._glyph === glyph)
+    if (this._glyph === glyph) {
       return;
+    }
     this._glyphElement.setIconType(glyph);
     this._glyphElement.classList.toggle('hidden', !glyph);
     this.element.classList.toggle('toolbar-has-glyph', !!glyph);
@@ -526,16 +549,18 @@ UI.ToolbarButton = class extends UI.ToolbarItem {
     this.element.classList.add('toolbar-has-dropdown');
     const dropdownArrowIcon = UI.Icon.create('smallicon-triangle-down', 'toolbar-dropdown-arrow');
     this.element.appendChild(dropdownArrowIcon);
-    if (width)
+    if (width) {
       this.element.style.width = width + 'px';
+    }
   }
 
   /**
    * @param {!Event} event
    */
   _clicked(event) {
-    if (!this._enabled)
+    if (!this._enabled) {
       return;
+    }
     this.dispatchEventToListeners(UI.ToolbarButton.Events.Click, event);
     event.consume();
   }
@@ -544,8 +569,9 @@ UI.ToolbarButton = class extends UI.ToolbarItem {
    * @param {!Event} event
    */
   _mouseDown(event) {
-    if (!this._enabled)
+    if (!this._enabled) {
       return;
+    }
     this.dispatchEventToListeners(UI.ToolbarButton.Events.MouseDown, event);
   }
 };
@@ -576,15 +602,18 @@ UI.ToolbarInput = class extends UI.ToolbarItem {
     this._proxyElement.classList.add('toolbar-prompt-proxy');
     this._proxyElement.addEventListener('keydown', event => this._onKeydownCallback(event));
     this._prompt.initialize(completions || (() => Promise.resolve([])), ' ');
-    if (tooltip)
+    if (tooltip) {
       this._prompt.setTitle(tooltip);
+    }
     this._prompt.setPlaceholder(placeholder, accessiblePlaceholder);
     this._prompt.addEventListener(UI.TextPrompt.Events.TextChanged, this._onChangeCallback.bind(this));
 
-    if (growFactor)
+    if (growFactor) {
       this.element.style.flexGrow = growFactor;
-    if (shrinkFactor)
+    }
+    if (shrinkFactor) {
       this.element.style.flexShrink = shrinkFactor;
+    }
 
     const clearButton = this.element.createChild('div', 'toolbar-input-clear-button');
     clearButton.appendChild(UI.Icon.create('mediumicon-gray-cross-hover', 'search-cancel-button'));
@@ -610,8 +639,9 @@ UI.ToolbarInput = class extends UI.ToolbarItem {
    */
   setValue(value, notify) {
     this._prompt.setText(value);
-    if (notify)
+    if (notify) {
       this._onChangeCallback();
+    }
     this._updateEmptyStyles();
   }
 
@@ -626,8 +656,9 @@ UI.ToolbarInput = class extends UI.ToolbarItem {
    * @param {!Event} event
    */
   _onKeydownCallback(event) {
-    if (!isEscKey(event) || !this._prompt.text())
+    if (!isEscKey(event) || !this._prompt.text()) {
       return;
+    }
     this.setValue('', true);
     event.consume(true);
   }
@@ -675,14 +706,16 @@ UI.ToolbarToggle = class extends UI.ToolbarButton {
    * @param {boolean} toggled
    */
   setToggled(toggled) {
-    if (this._toggled === toggled)
+    if (this._toggled === toggled) {
       return;
+    }
     this._toggled = toggled;
     this.element.classList.toggle('toolbar-state-on', toggled);
     this.element.classList.toggle('toolbar-state-off', !toggled);
     UI.ARIAUtils.setPressed(this.element, toggled);
-    if (this._toggledGlyph && this._untoggledGlyph)
+    if (this._toggledGlyph && this._untoggledGlyph) {
       this.setGlyph(toggled ? this._toggledGlyph : this._untoggledGlyph);
+    }
   }
 
   /**
@@ -725,8 +758,9 @@ UI.ToolbarMenuButton = class extends UI.ToolbarButton {
       return;
     }
 
-    if (!this._triggerTimeout)
+    if (!this._triggerTimeout) {
       this._triggerTimeout = setTimeout(this._trigger.bind(this, event), 200);
+    }
   }
 
   /**
@@ -737,8 +771,9 @@ UI.ToolbarMenuButton = class extends UI.ToolbarButton {
 
     // Throttling avoids entering a bad state on Macs when rapidly triggering context menus just
     // after the window gains focus. See crbug.com/655556
-    if (this._lastTriggerTime && Date.now() - this._lastTriggerTime < 300)
+    if (this._lastTriggerTime && Date.now() - this._lastTriggerTime < 300) {
       return;
+    }
     const contextMenu = new UI.ContextMenu(
         event, this._useSoftMenu, this.element.totalOffsetLeft(),
         this.element.totalOffsetTop() + this.element.offsetHeight);
@@ -752,8 +787,9 @@ UI.ToolbarMenuButton = class extends UI.ToolbarButton {
    * @param {!Event} event
    */
   _clicked(event) {
-    if (this._triggerTimeout)
+    if (this._triggerTimeout) {
       clearTimeout(this._triggerTimeout);
+    }
     this._trigger(event);
   }
 };
@@ -842,12 +878,14 @@ UI.ToolbarComboBox = class extends UI.ToolbarItem {
     this._selectElement = this.element.createChild('select', 'toolbar-item');
     const dropdownArrowIcon = UI.Icon.create('smallicon-triangle-down', 'toolbar-dropdown-arrow');
     this.element.appendChild(dropdownArrowIcon);
-    if (changeHandler)
+    if (changeHandler) {
       this._selectElement.addEventListener('change', changeHandler, false);
+    }
     UI.ARIAUtils.setAccessibleName(this._selectElement, title);
     super.setTitle(title);
-    if (className)
+    if (className) {
       this._selectElement.classList.add(className);
+    }
   }
 
   /**
@@ -886,8 +924,9 @@ UI.ToolbarComboBox = class extends UI.ToolbarItem {
   createOption(label, value) {
     const option = this._selectElement.createChild('option');
     option.text = label;
-    if (typeof value !== 'undefined')
+    if (typeof value !== 'undefined') {
       option.value = value;
+    }
     return option;
   }
 
@@ -915,8 +954,9 @@ UI.ToolbarComboBox = class extends UI.ToolbarItem {
    * @return {?Element}
    */
   selectedOption() {
-    if (this._selectElement.selectedIndex >= 0)
+    if (this._selectElement.selectedIndex >= 0) {
       return this._selectElement[this._selectElement.selectedIndex];
+    }
     return null;
   }
 
@@ -984,8 +1024,9 @@ UI.ToolbarSettingComboBox = class extends UI.ToolbarComboBox {
       const dataOption = options[i];
       const option = this.createOption(dataOption.label, dataOption.value);
       this._selectElement.appendChild(option);
-      if (this._setting.get() === dataOption.value)
+      if (this._setting.get() === dataOption.value) {
         this.setSelectedIndex(i);
+      }
     }
   }
 
@@ -997,8 +1038,9 @@ UI.ToolbarSettingComboBox = class extends UI.ToolbarComboBox {
   }
 
   _settingChanged() {
-    if (this._muteSettingListener)
+    if (this._muteSettingListener) {
       return;
+    }
 
     const value = this._setting.get();
     for (let i = 0; i < this._options.length; ++i) {
@@ -1033,10 +1075,12 @@ UI.ToolbarCheckbox = class extends UI.ToolbarItem {
     super(UI.CheckboxLabel.create(text));
     this.element.classList.add('checkbox');
     this.inputElement = this.element.checkboxElement;
-    if (tooltip)
+    if (tooltip) {
       this.element.title = tooltip;
-    if (listener)
+    }
+    if (listener) {
       this.inputElement.addEventListener('click', listener, false);
+    }
   }
 
   /**

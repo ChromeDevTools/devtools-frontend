@@ -79,8 +79,9 @@ Sources.ScopeChainSidebarPane = class extends UI.VBox {
         case Protocol.Debugger.ScopeType.Local:
           foundLocalScope = true;
           emptyPlaceholder = Common.UIString('No variables');
-          if (thisObject)
+          if (thisObject) {
             extraProperties.push(new SDK.RemoteObjectProperty('this', thisObject));
+          }
           if (i === 0) {
             const exception = details.exception();
             if (exception) {
@@ -98,17 +99,19 @@ Sources.ScopeChainSidebarPane = class extends UI.VBox {
           break;
         case Protocol.Debugger.ScopeType.Closure:
           const scopeName = scope.name();
-          if (scopeName)
+          if (scopeName) {
             title = Common.UIString('Closure (%s)', UI.beautifyFunctionName(scopeName));
-          else
+          } else {
             title = Common.UIString('Closure');
+          }
           emptyPlaceholder = Common.UIString('No variables');
           break;
       }
 
       let subtitle = scope.description();
-      if (!title || title === subtitle)
+      if (!title || title === subtitle) {
         subtitle = undefined;
+      }
 
       const titleElement = createElementWithClass('div', 'scope-chain-sidebar-pane-section-header');
       titleElement.createChild('div', 'scope-chain-sidebar-pane-section-subtitle').textContent = subtitle;
@@ -119,10 +122,11 @@ Sources.ScopeChainSidebarPane = class extends UI.VBox {
           true, extraProperties);
       this._expandController.watchSection(title + (subtitle ? ':' + subtitle : ''), section);
 
-      if (scope.type() === Protocol.Debugger.ScopeType.Global)
+      if (scope.type() === Protocol.Debugger.ScopeType.Global) {
         section.objectTreeElement().collapse();
-      else if (!foundLocalScope || scope.type() === Protocol.Debugger.ScopeType.Local)
+      } else if (!foundLocalScope || scope.type() === Protocol.Debugger.ScopeType.Local) {
         section.objectTreeElement().expand();
+      }
 
       section.element.classList.add('scope-chain-sidebar-pane-section');
       this.contentElement.appendChild(section.element);

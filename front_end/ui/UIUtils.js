@@ -49,24 +49,28 @@ UI.installDragHandle = function(
     const dragHandler = new UI.DragHandler();
     const dragStart = dragHandler.elementDragStart.bind(
         dragHandler, element, elementDragStart, elementDrag, elementDragEnd, cursor, event);
-    if (startDelay)
+    if (startDelay) {
       startTimer = setTimeout(dragStart, startDelay);
-    else
+    } else {
       dragStart();
+    }
   }
 
   function onMouseUp() {
-    if (startTimer)
+    if (startTimer) {
       clearTimeout(startTimer);
+    }
     startTimer = null;
   }
 
   let startTimer;
   element.addEventListener('mousedown', onMouseDown, false);
-  if (startDelay)
+  if (startDelay) {
     element.addEventListener('mouseup', onMouseUp, false);
-  if (hoverCursor !== null)
+  }
+  if (hoverCursor !== null) {
     element.style.cursor = hoverCursor || cursor || '';
+  }
 };
 
 /**
@@ -102,11 +106,13 @@ UI.DragHandler = class {
   }
 
   _disposeGlassPane() {
-    if (!this._glassPaneInUse)
+    if (!this._glassPaneInUse) {
       return;
+    }
     this._glassPaneInUse = false;
-    if (--UI.DragHandler._glassPaneUsageCount)
+    if (--UI.DragHandler._glassPaneUsageCount) {
       return;
+    }
     UI.DragHandler._glassPane.hide();
     delete UI.DragHandler._glassPane;
     delete UI.DragHandler._documentForMouseOut;
@@ -122,14 +128,17 @@ UI.DragHandler = class {
    */
   elementDragStart(targetElement, elementDragStart, elementDrag, elementDragEnd, cursor, event) {
     // Only drag upon left button. Right will likely cause a context menu. So will ctrl-click on mac.
-    if (event.button || (Host.isMac() && event.ctrlKey))
+    if (event.button || (Host.isMac() && event.ctrlKey)) {
       return;
+    }
 
-    if (this._elementDraggingEventListener)
+    if (this._elementDraggingEventListener) {
       return;
+    }
 
-    if (elementDragStart && !elementDragStart(/** @type {!MouseEvent} */ (event)))
+    if (elementDragStart && !elementDragStart(/** @type {!MouseEvent} */ (event))) {
       return;
+    }
 
     const targetDocument = event.target.ownerDocument;
     this._elementDraggingEventListener = elementDrag;
@@ -147,8 +156,9 @@ UI.DragHandler = class {
     targetDocument.addEventListener('mousemove', this._elementDragMove, true);
     targetDocument.addEventListener('mouseup', this._elementDragEnd, true);
     targetDocument.addEventListener('mouseout', this._mouseOutWhileDragging, true);
-    if (targetDocument !== this._dragEventsTargetDocumentTop)
+    if (targetDocument !== this._dragEventsTargetDocumentTop) {
       this._dragEventsTargetDocumentTop.addEventListener('mouseup', this._elementDragEnd, true);
+    }
 
     if (typeof cursor === 'string') {
       this._restoreCursorAfterDrag = restoreCursor.bind(this, targetElement.style.cursor);
@@ -173,18 +183,21 @@ UI.DragHandler = class {
   }
 
   _unregisterMouseOutWhileDragging() {
-    if (!UI.DragHandler._documentForMouseOut)
+    if (!UI.DragHandler._documentForMouseOut) {
       return;
+    }
     UI.DragHandler._documentForMouseOut.removeEventListener('mouseout', this._mouseOutWhileDragging, true);
   }
 
   _unregisterDragEvents() {
-    if (!this._dragEventsTargetDocument)
+    if (!this._dragEventsTargetDocument) {
       return;
+    }
     this._dragEventsTargetDocument.removeEventListener('mousemove', this._elementDragMove, true);
     this._dragEventsTargetDocument.removeEventListener('mouseup', this._elementDragEnd, true);
-    if (this._dragEventsTargetDocument !== this._dragEventsTargetDocumentTop)
+    if (this._dragEventsTargetDocument !== this._dragEventsTargetDocumentTop) {
       this._dragEventsTargetDocumentTop.removeEventListener('mouseup', this._elementDragEnd, true);
+    }
     delete this._dragEventsTargetDocument;
     delete this._dragEventsTargetDocumentTop;
   }
@@ -197,8 +210,9 @@ UI.DragHandler = class {
       this._elementDragEnd(event);
       return;
     }
-    if (this._elementDraggingEventListener(/** @type {!MouseEvent} */ (event)))
+    if (this._elementDraggingEventListener(/** @type {!MouseEvent} */ (event))) {
       this._cancelDragEvents(event);
+    }
   }
 
   /**
@@ -208,8 +222,9 @@ UI.DragHandler = class {
     this._unregisterDragEvents();
     this._unregisterMouseOutWhileDragging();
 
-    if (this._restoreCursorAfterDrag)
+    if (this._restoreCursorAfterDrag) {
       this._restoreCursorAfterDrag();
+    }
 
     this._disposeGlassPane();
 
@@ -224,8 +239,9 @@ UI.DragHandler = class {
     const elementDragEnd = this._elementEndDraggingEventListener;
     this._cancelDragEvents(/** @type {!MouseEvent} */ (event));
     event.preventDefault();
-    if (elementDragEnd)
+    if (elementDragEnd) {
       elementDragEnd(/** @type {!MouseEvent} */ (event));
+    }
   }
 };
 
@@ -236,18 +252,22 @@ UI.DragHandler._glassPaneUsageCount = 0;
  * @return {boolean}
  */
 UI.isBeingEdited = function(node) {
-  if (!node || node.nodeType !== Node.ELEMENT_NODE)
+  if (!node || node.nodeType !== Node.ELEMENT_NODE) {
     return false;
+  }
   let element = /** {!Element} */ (node);
-  if (element.classList.contains('text-prompt') || element.nodeName === 'INPUT' || element.nodeName === 'TEXTAREA')
+  if (element.classList.contains('text-prompt') || element.nodeName === 'INPUT' || element.nodeName === 'TEXTAREA') {
     return true;
+  }
 
-  if (!UI.__editingCount)
+  if (!UI.__editingCount) {
     return false;
+  }
 
   while (element) {
-    if (element.__editing)
+    if (element.__editing) {
       return true;
+    }
     element = element.parentElementOrShadowHost();
   }
   return false;
@@ -258,12 +278,14 @@ UI.isBeingEdited = function(node) {
  * @suppressGlobalPropertiesCheck
  */
 UI.isEditing = function() {
-  if (UI.__editingCount)
+  if (UI.__editingCount) {
     return true;
+  }
 
   const focused = document.deepActiveElement();
-  if (!focused)
+  if (!focused) {
     return false;
+  }
   return focused.classList.contains('text-prompt') || focused.nodeName === 'INPUT' || focused.nodeName === 'TEXTAREA';
 };
 
@@ -274,14 +296,16 @@ UI.isEditing = function() {
  */
 UI.markBeingEdited = function(element, value) {
   if (value) {
-    if (element.__editing)
+    if (element.__editing) {
       return false;
+    }
     element.classList.add('being-edited');
     element.__editing = true;
     UI.__editingCount = (UI.__editingCount || 0) + 1;
   } else {
-    if (!element.__editing)
+    if (!element.__editing) {
       return false;
+    }
     element.classList.remove('being-edited');
     delete element.__editing;
     --UI.__editingCount;
@@ -302,15 +326,17 @@ UI._valueModificationDirection = function(event) {
   let direction = null;
   if (event.type === 'mousewheel') {
     // When shift is pressed while spinning mousewheel, delta comes as wheelDeltaX.
-    if (event.wheelDeltaY > 0 || event.wheelDeltaX > 0)
+    if (event.wheelDeltaY > 0 || event.wheelDeltaX > 0) {
       direction = 'Up';
-    else if (event.wheelDeltaY < 0 || event.wheelDeltaX < 0)
+    } else if (event.wheelDeltaY < 0 || event.wheelDeltaX < 0) {
       direction = 'Down';
+    }
   } else {
-    if (event.key === 'ArrowUp' || event.key === 'PageUp')
+    if (event.key === 'ArrowUp' || event.key === 'PageUp') {
       direction = 'Up';
-    else if (event.key === 'ArrowDown' || event.key === 'PageDown')
+    } else if (event.key === 'ArrowDown' || event.key === 'PageDown') {
       direction = 'Down';
+    }
   }
   return direction;
 };
@@ -322,20 +348,23 @@ UI._valueModificationDirection = function(event) {
  */
 UI._modifiedHexValue = function(hexString, event) {
   const direction = UI._valueModificationDirection(event);
-  if (!direction)
+  if (!direction) {
     return null;
+  }
 
   const mouseEvent = /** @type {!MouseEvent} */ (event);
   const number = parseInt(hexString, 16);
-  if (isNaN(number) || !isFinite(number))
+  if (isNaN(number) || !isFinite(number)) {
     return null;
+  }
 
   const hexStrLen = hexString.length;
   const channelLen = hexStrLen / 3;
 
   // Colors are either rgb or rrggbb.
-  if (channelLen !== 1 && channelLen !== 2)
+  if (channelLen !== 1 && channelLen !== 2) {
     return null;
+  }
 
   // Precision modifier keys work with both mousewheel and up/down keys.
   // When ctrl is pressed, increase R by 1.
@@ -344,16 +373,21 @@ UI._modifiedHexValue = function(hexString, event) {
   // If no shortcut keys are pressed then increase hex value by 1.
   // Keys can be pressed together to increase RGB channels. e.g trying different shades.
   let delta = 0;
-  if (UI.KeyboardShortcut.eventHasCtrlOrMeta(mouseEvent))
+  if (UI.KeyboardShortcut.eventHasCtrlOrMeta(mouseEvent)) {
     delta += Math.pow(16, channelLen * 2);
-  if (mouseEvent.shiftKey)
+  }
+  if (mouseEvent.shiftKey) {
     delta += Math.pow(16, channelLen);
-  if (mouseEvent.altKey)
+  }
+  if (mouseEvent.altKey) {
     delta += 1;
-  if (delta === 0)
+  }
+  if (delta === 0) {
     delta = 1;
-  if (direction === 'Down')
+  }
+  if (direction === 'Down') {
     delta *= -1;
+  }
 
   // Increase hex value by 1 and clamp from 0 ... maxValue.
   const maxValue = Math.pow(16, hexStrLen) - 1;
@@ -361,8 +395,9 @@ UI._modifiedHexValue = function(hexString, event) {
 
   // Ensure the result length is the same as the original hex value.
   let resultString = result.toString(16).toUpperCase();
-  for (let i = 0, lengthDelta = hexStrLen - resultString.length; i < lengthDelta; ++i)
+  for (let i = 0, lengthDelta = hexStrLen - resultString.length; i < lengthDelta; ++i) {
     resultString = '0' + resultString;
+  }
   return resultString;
 };
 
@@ -374,8 +409,9 @@ UI._modifiedHexValue = function(hexString, event) {
  */
 UI._modifiedFloatNumber = function(number, event, modifierMultiplier) {
   const direction = UI._valueModificationDirection(event);
-  if (!direction)
+  if (!direction) {
     return null;
+  }
 
   const mouseEvent = /** @type {!MouseEvent} */ (event);
 
@@ -385,23 +421,27 @@ UI._modifiedFloatNumber = function(number, event, modifierMultiplier) {
   // When alt is pressed, increase by 0.1.
   // Otherwise increase by 1.
   let delta = 1;
-  if (UI.KeyboardShortcut.eventHasCtrlOrMeta(mouseEvent))
+  if (UI.KeyboardShortcut.eventHasCtrlOrMeta(mouseEvent)) {
     delta = 100;
-  else if (mouseEvent.shiftKey)
+  } else if (mouseEvent.shiftKey) {
     delta = 10;
-  else if (mouseEvent.altKey)
+  } else if (mouseEvent.altKey) {
     delta = 0.1;
+  }
 
-  if (direction === 'Down')
+  if (direction === 'Down') {
     delta *= -1;
-  if (modifierMultiplier)
+  }
+  if (modifierMultiplier) {
     delta *= modifierMultiplier;
+  }
 
   // Make the new number and constrain it to a precision of 6, this matches numbers the engine returns.
   // Use the Number constructor to forget the fixed precision, so 1.100000 will print as 1.1.
   const result = Number((number + delta).toFixed(6));
-  if (!String(result).match(UI._numberRegex))
+  if (!String(result).match(UI._numberRegex)) {
     return null;
+  }
   return result;
 };
 
@@ -421,8 +461,9 @@ UI.createReplacementString = function(wordString, event, customNumberHandler) {
     prefix = matches[1];
     suffix = matches[3];
     number = UI._modifiedHexValue(matches[2], event);
-    if (number !== null)
+    if (number !== null) {
       replacementString = prefix + number + suffix;
+    }
   } else {
     matches = /(.*?)(-?(?:\d+(?:\.\d+)?|\.\d+))(.*)/.exec(wordString);
     if (matches && matches.length) {
@@ -458,24 +499,28 @@ UI.handleElementValueModifications = function(event, element, finishHandler, sug
   const arrowKeyOrMouseWheelEvent =
       (event.key === 'ArrowUp' || event.key === 'ArrowDown' || event.type === 'mousewheel');
   const pageKeyPressed = (event.key === 'PageUp' || event.key === 'PageDown');
-  if (!arrowKeyOrMouseWheelEvent && !pageKeyPressed)
+  if (!arrowKeyOrMouseWheelEvent && !pageKeyPressed) {
     return false;
+  }
 
   const selection = element.getComponentSelection();
-  if (!selection.rangeCount)
+  if (!selection.rangeCount) {
     return false;
+  }
 
   const selectionRange = selection.getRangeAt(0);
-  if (!selectionRange.commonAncestorContainer.isSelfOrDescendant(element))
+  if (!selectionRange.commonAncestorContainer.isSelfOrDescendant(element)) {
     return false;
+  }
 
   const originalValue = element.textContent;
   const wordRange =
       selectionRange.startContainer.rangeOfWord(selectionRange.startOffset, UI.StyleValueDelimiters, element);
   const wordString = wordRange.toString();
 
-  if (suggestionHandler && suggestionHandler(wordString))
+  if (suggestionHandler && suggestionHandler(wordString)) {
     return false;
+  }
 
   const replacementString = UI.createReplacementString(wordString, event, customNumberHandler);
 
@@ -495,8 +540,9 @@ UI.handleElementValueModifications = function(event, element, finishHandler, sug
     event.handled = true;
     event.preventDefault();
 
-    if (finishHandler)
+    if (finishHandler) {
       finishHandler(originalValue, replacementString);
+    }
 
     return true;
   }
@@ -541,30 +587,38 @@ UI._daysFormat = new Common.UIStringFormat('%.1f\xa0days');
  * @return {string}
  */
 Number.millisToString = function(ms, higherResolution) {
-  if (!isFinite(ms))
+  if (!isFinite(ms)) {
     return '-';
+  }
 
-  if (ms === 0)
+  if (ms === 0) {
     return '0';
+  }
 
-  if (higherResolution && ms < 0.1)
+  if (higherResolution && ms < 0.1) {
     return UI._microsFormat.format(ms * 1000);
-  if (higherResolution && ms < 1000)
+  }
+  if (higherResolution && ms < 1000) {
     return UI._subMillisFormat.format(ms);
-  if (ms < 1000)
+  }
+  if (ms < 1000) {
     return UI._millisFormat.format(ms);
+  }
 
   const seconds = ms / 1000;
-  if (seconds < 60)
+  if (seconds < 60) {
     return UI._secondsFormat.format(seconds);
+  }
 
   const minutes = seconds / 60;
-  if (minutes < 60)
+  if (minutes < 60) {
     return UI._minutesFormat.format(minutes);
+  }
 
   const hours = minutes / 60;
-  if (hours < 24)
+  if (hours < 24) {
     return UI._hoursFormat.format(hours);
+  }
 
   const days = hours / 24;
   return UI._daysFormat.format(days);
@@ -576,8 +630,9 @@ Number.millisToString = function(ms, higherResolution) {
  * @return {string}
  */
 Number.secondsToString = function(seconds, higherResolution) {
-  if (!isFinite(seconds))
+  if (!isFinite(seconds)) {
     return '-';
+  }
   return Number.millisToString(seconds * 1000, higherResolution);
 };
 
@@ -586,20 +641,24 @@ Number.secondsToString = function(seconds, higherResolution) {
  * @return {string}
  */
 Number.bytesToString = function(bytes) {
-  if (bytes < 1024)
+  if (bytes < 1024) {
     return Common.UIString('%.0f\xa0B', bytes);
+  }
 
   const kilobytes = bytes / 1024;
-  if (kilobytes < 100)
+  if (kilobytes < 100) {
     return Common.UIString('%.1f\xa0KB', kilobytes);
-  if (kilobytes < 1024)
+  }
+  if (kilobytes < 1024) {
     return Common.UIString('%.0f\xa0KB', kilobytes);
+  }
 
   const megabytes = kilobytes / 1024;
-  if (megabytes < 100)
+  if (megabytes < 100) {
     return Common.UIString('%.1f\xa0MB', megabytes);
-  else
+  } else {
     return Common.UIString('%.0f\xa0MB', megabytes);
+  }
 };
 
 /**
@@ -609,8 +668,9 @@ Number.bytesToString = function(bytes) {
 Number.withThousandsSeparator = function(num) {
   let str = num + '';
   const re = /(\d+)(\d{3})/;
-  while (str.match(re))
-    str = str.replace(re, '$1\xa0$2');  // \xa0 is a non-breaking space
+  while (str.match(re)) {
+    str = str.replace(re, '$1\xa0$2');
+  }  // \xa0 is a non-breaking space
   return str;
 };
 
@@ -661,10 +721,11 @@ UI.anotherProfilerActiveLabel = function() {
  */
 UI.asyncStackTraceLabel = function(description) {
   if (description) {
-    if (description === 'Promise.resolve')
+    if (description === 'Promise.resolve') {
       return ls`Promise resolved (async)`;
-    else if (description === 'Promise.reject')
+    } else if (description === 'Promise.reject') {
       return ls`Promise rejected (async)`;
+    }
     return ls`${description} (async)`;
   }
   return Common.UIString('Async Call');
@@ -678,8 +739,9 @@ UI.installComponentRootStyles = function(element) {
   element.classList.add('platform-' + Host.platform());
 
   // Detect overlay scrollbar enable by checking for nonzero scrollbar width.
-  if (!Host.isMac() && UI.measuredScrollbarWidth(element.ownerDocument) === 0)
+  if (!Host.isMac() && UI.measuredScrollbarWidth(element.ownerDocument) === 0) {
     element.classList.add('overlay-scrollbar-enabled');
+  }
 };
 
 /**
@@ -687,10 +749,12 @@ UI.installComponentRootStyles = function(element) {
  * @return {number}
  */
 UI.measuredScrollbarWidth = function(document) {
-  if (typeof UI._measuredScrollbarWidth === 'number')
+  if (typeof UI._measuredScrollbarWidth === 'number') {
     return UI._measuredScrollbarWidth;
-  if (!document)
+  }
+  if (!document) {
     return 16;
+  }
   const scrollDiv = document.createElement('div');
   scrollDiv.setAttribute('style', 'width: 100px; height: 100px; overflow: scroll;');
   document.body.appendChild(scrollDiv);
@@ -708,8 +772,9 @@ UI.measuredScrollbarWidth = function(document) {
 UI.createShadowRootWithCoreStyles = function(element, cssFile, delegatesFocus) {
   const shadowRoot = element.attachShadow({mode: 'open', delegatesFocus});
   UI._injectCoreStyles(shadowRoot);
-  if (cssFile)
+  if (cssFile) {
     UI.appendStyle(shadowRoot, cssFile);
+  }
   shadowRoot.addEventListener('focus', UI._focusChanged.bind(UI), true);
   return shadowRoot;
 };
@@ -729,13 +794,15 @@ UI._injectCoreStyles = function(root) {
  * @param {!Event} event
  */
 UI._windowFocused = function(document, event) {
-  if (event.target.document.nodeType === Node.DOCUMENT_NODE)
+  if (event.target.document.nodeType === Node.DOCUMENT_NODE) {
     document.body.classList.remove('inactive');
+  }
   UI._keyboardFocus = true;
   const listener = () => {
     const activeElement = document.deepActiveElement();
-    if (activeElement)
+    if (activeElement) {
       activeElement.removeAttribute('data-keyboard-focus');
+    }
     UI._keyboardFocus = false;
   };
   document.defaultView.requestAnimationFrame(() => {
@@ -743,7 +810,6 @@ UI._windowFocused = function(document, event) {
     document.removeEventListener('mousedown', listener, true);
   });
   document.addEventListener('mousedown', listener, true);
-
 };
 
 /**
@@ -751,8 +817,9 @@ UI._windowFocused = function(document, event) {
  * @param {!Event} event
  */
 UI._windowBlurred = function(document, event) {
-  if (event.target.document.nodeType === Node.DOCUMENT_NODE)
+  if (event.target.document.nodeType === Node.DOCUMENT_NODE) {
     document.body.classList.add('inactive');
+  }
 };
 
 /**
@@ -763,8 +830,9 @@ UI._focusChanged = function(event) {
   const element = document ? document.deepActiveElement() : null;
   UI.Widget.focusWidgetForNode(element);
   UI.XWidget.focusWidgetForNode(element);
-  if (!UI._keyboardFocus)
+  if (!UI._keyboardFocus) {
     return;
+  }
   element.setAttribute('data-keyboard-focus', 'true');
   element.addEventListener('blur', () => element.removeAttribute('data-keyboard-focus'), {once: true, capture: true});
 };
@@ -783,10 +851,12 @@ UI.ElementFocusRestorer = class {
   }
 
   restore() {
-    if (!this._element)
+    if (!this._element) {
       return;
-    if (this._element.hasFocus() && this._previous)
+    }
+    if (this._element.hasFocus() && this._previous) {
       this._previous.focus();
+    }
     this._previous = null;
     this._element = null;
   }
@@ -824,8 +894,9 @@ UI.runCSSAnimationOnce = function(element, className) {
     element.removeEventListener('webkitAnimationEnd', animationEndCallback, false);
   }
 
-  if (element.classList.contains(className))
+  if (element.classList.contains(className)) {
     element.classList.remove(className);
+  }
 
   element.addEventListener('webkitAnimationEnd', animationEndCallback, false);
   element.classList.add(className);
@@ -849,8 +920,9 @@ UI.highlightRangesWithStyleClass = function(element, resultRanges, styleClass, c
                        .join('');
   const ownerDocument = element.ownerDocument;
 
-  if (textNodes.length === 0)
+  if (textNodes.length === 0) {
     return highlightNodes;
+  }
 
   const nodeRanges = [];
   let rangeEndOffset = 0;
@@ -868,13 +940,16 @@ UI.highlightRangesWithStyleClass = function(element, resultRanges, styleClass, c
     const endOffset = startOffset + resultRanges[i].length;
 
     while (startIndex < textNodes.length &&
-           nodeRanges[startIndex].offset + nodeRanges[startIndex].length <= startOffset)
+           nodeRanges[startIndex].offset + nodeRanges[startIndex].length <= startOffset) {
       startIndex++;
+    }
     let endIndex = startIndex;
-    while (endIndex < textNodes.length && nodeRanges[endIndex].offset + nodeRanges[endIndex].length < endOffset)
+    while (endIndex < textNodes.length && nodeRanges[endIndex].offset + nodeRanges[endIndex].length < endOffset) {
       endIndex++;
-    if (endIndex === textNodes.length)
+    }
+    if (endIndex === textNodes.length) {
       break;
+    }
 
     const highlightNode = ownerDocument.createElement('span');
     highlightNode.className = styleClass;
@@ -963,10 +1038,11 @@ UI.measurePreferredSize = function(element, containerElement) {
   const result = element.getBoundingClientRect();
 
   element.positionAt(undefined, undefined);
-  if (oldParent)
+  if (oldParent) {
     oldParent.insertBefore(element, oldNextSibling);
-  else
+  } else {
     element.remove();
+  }
   return new UI.Size(result.width, result.height);
 };
 
@@ -989,8 +1065,9 @@ UI.InvokeOnceHandlers = class {
   add(object, method) {
     if (!this._handlers) {
       this._handlers = new Map();
-      if (this._autoInvoke)
+      if (this._autoInvoke) {
         this.scheduleInvoke();
+      }
     }
     let methods = this._handlers.get(object);
     if (!methods) {
@@ -1004,8 +1081,9 @@ UI.InvokeOnceHandlers = class {
    * @suppressGlobalPropertiesCheck
    */
   scheduleInvoke() {
-    if (this._handlers)
+    if (this._handlers) {
       requestAnimationFrame(this._invoke.bind(this));
+    }
   }
 
   _invoke() {
@@ -1015,8 +1093,9 @@ UI.InvokeOnceHandlers = class {
     for (let i = 0; i < keys.length; ++i) {
       const object = keys[i];
       const methods = handlers.get(object).valuesArray();
-      for (let j = 0; j < methods.length; ++j)
+      for (let j = 0; j < methods.length; ++j) {
         methods[j].call(object);
+      }
     }
   }
 };
@@ -1025,13 +1104,15 @@ UI._coalescingLevel = 0;
 UI._postUpdateHandlers = null;
 
 UI.startBatchUpdate = function() {
-  if (!UI._coalescingLevel++)
+  if (!UI._coalescingLevel++) {
     UI._postUpdateHandlers = new UI.InvokeOnceHandlers(false);
+  }
 };
 
 UI.endBatchUpdate = function() {
-  if (--UI._coalescingLevel)
+  if (--UI._coalescingLevel) {
     return;
+  }
   UI._postUpdateHandlers.scheduleInvoke();
   UI._postUpdateHandlers = null;
 };
@@ -1041,8 +1122,9 @@ UI.endBatchUpdate = function() {
  * @param {function()} method
  */
 UI.invokeOnceAfterBatchUpdate = function(object, method) {
-  if (!UI._postUpdateHandlers)
+  if (!UI._postUpdateHandlers) {
     UI._postUpdateHandlers = new UI.InvokeOnceHandlers(true);
+  }
   UI._postUpdateHandlers.add(object, method);
 };
 
@@ -1061,10 +1143,11 @@ UI.animateFunction = function(window, func, params, duration, animationComplete)
   function animationStep(timestamp) {
     const progress = Number.constrain((timestamp - start) / duration, 0, 1);
     func(...params.map(p => p.from + (p.to - p.from) * progress));
-    if (progress < 1)
+    if (progress < 1) {
       raf = window.requestAnimationFrame(animationStep);
-    else if (animationComplete)
+    } else if (animationComplete) {
       animationComplete();
+    }
   }
 
   return () => window.cancelAnimationFrame(raf);
@@ -1093,8 +1176,9 @@ UI.LongClickController = class extends Common.Object {
   }
 
   _enable() {
-    if (this._longClickData)
+    if (this._longClickData) {
       return;
+    }
     const boundMouseDown = mouseDown.bind(this);
     const boundMouseUp = mouseUp.bind(this);
     const boundReset = this.reset.bind(this);
@@ -1111,8 +1195,9 @@ UI.LongClickController = class extends Common.Object {
      * @this {UI.LongClickController}
      */
     function mouseDown(e) {
-      if (e.which !== 1)
+      if (e.which !== 1) {
         return;
+      }
       const callback = this._callback;
       this._longClickInterval = setTimeout(callback.bind(null, e), 200);
     }
@@ -1122,15 +1207,17 @@ UI.LongClickController = class extends Common.Object {
      * @this {UI.LongClickController}
      */
     function mouseUp(e) {
-      if (e.which !== 1)
+      if (e.which !== 1) {
         return;
+      }
       this.reset();
     }
   }
 
   dispose() {
-    if (!this._longClickData)
+    if (!this._longClickData) {
       return;
+    }
     this._element.removeEventListener('mousedown', this._longClickData.mouseDown, false);
     this._element.removeEventListener('mouseout', this._longClickData.reset, false);
     this._element.removeEventListener('mouseup', this._longClickData.mouseUp, false);
@@ -1153,8 +1240,9 @@ UI.initializeUIUtils = function(document, themeSetting) {
     document.defaultView.requestAnimationFrame(() => void(UI._keyboardFocus = false));
   }, true);
 
-  if (!UI.themeSupport)
+  if (!UI.themeSupport) {
     UI.themeSupport = new UI.ThemeSupport(themeSetting);
+  }
   UI.themeSupport.applyTheme(document);
 
   const body = /** @type {!Element} */ (document.body);
@@ -1199,10 +1287,12 @@ UI.createTextButton = function(text, clickHandler, className, primary) {
   const element = createElementWithClass('button', className || '');
   element.textContent = text;
   element.classList.add('text-button');
-  if (primary)
+  if (primary) {
     element.classList.add('primary-button');
-  if (clickHandler)
+  }
+  if (clickHandler) {
     element.addEventListener('click', clickHandler, false);
+  }
   element.type = 'button';
   return element;
 };
@@ -1216,8 +1306,9 @@ UI.createInput = function(className, type) {
   const element = createElementWithClass('input', className || '');
   element.spellcheck = false;
   element.classList.add('harmony-input');
-  if (type)
+  if (type) {
     element.type = type;
+  }
   return element;
 };
 
@@ -1230,8 +1321,9 @@ UI.createInput = function(className, type) {
 UI.createLabel = function(title, className, associatedControl) {
   const element = createElementWithClass('label', className || '');
   element.textContent = title;
-  if (associatedControl)
+  if (associatedControl) {
     UI.ARIAUtils.bindLabelToControl(element, associatedControl);
+  }
 
   return element;
 };
@@ -1284,8 +1376,9 @@ UI.createSlider = function(min, max, tabIndex) {
  */
 UI.appendStyle = function(node, cssFile) {
   const content = Runtime.cachedResources[cssFile] || '';
-  if (!content)
+  if (!content) {
     console.error(cssFile + ' not preloaded. Check module.json');
+  }
   let styleElement = createElement('style');
   styleElement.textContent = content;
   node.appendChild(styleElement);
@@ -1325,14 +1418,16 @@ UI.CheckboxLabel = class extends HTMLSpanElement {
    * @return {!UI.CheckboxLabel}
    */
   static create(title, checked, subtitle) {
-    if (!UI.CheckboxLabel._constructor)
+    if (!UI.CheckboxLabel._constructor) {
       UI.CheckboxLabel._constructor = UI.registerCustomElement('span', 'dt-checkbox', UI.CheckboxLabel);
+    }
     const element = /** @type {!UI.CheckboxLabel} */ (UI.CheckboxLabel._constructor());
     element.checkboxElement.checked = !!checked;
     if (title !== undefined) {
       element.textElement.textContent = title;
-      if (subtitle !== undefined)
+      if (subtitle !== undefined) {
         element.textElement.createChild('div', 'dt-checkbox-subtitle').textContent = subtitle;
+      }
     }
     return element;
   }
@@ -1391,8 +1486,9 @@ UI.registerCustomElement('span', 'dt-radio', class extends HTMLSpanElement {
    * @this {Element}
    */
 function radioClickHandler(event) {
-  if (this.radioElement.checked || this.radioElement.disabled)
+  if (this.radioElement.checked || this.radioElement.disabled) {
     return;
+  }
   this.radioElement.checked = true;
   this.radioElement.dispatchEvent(new Event('change'));
 }
@@ -1519,8 +1615,9 @@ UI.bindInput = function(input, apply, validate, numeric, modifierMultiplier) {
   function onChange() {
     const {valid} = validate(input.value);
     input.classList.toggle('error-input', !valid);
-    if (valid)
+    if (valid) {
       apply(input.value);
+    }
   }
 
   /**
@@ -1529,20 +1626,23 @@ UI.bindInput = function(input, apply, validate, numeric, modifierMultiplier) {
   function onKeyDown(event) {
     if (isEnterKey(event)) {
       const {valid} = validate(input.value);
-      if (valid)
+      if (valid) {
         apply(input.value);
+      }
       event.preventDefault();
       return;
     }
 
-    if (!numeric)
+    if (!numeric) {
       return;
+    }
 
     const value = UI._modifiedFloatNumber(parseFloat(input.value), event, modifierMultiplier);
     const stringValue = value ? String(value) : '';
     const {valid} = validate(stringValue);
-    if (!valid || !value)
+    if (!valid || !value) {
       return;
+    }
 
     input.value = stringValue;
     apply(input.value);
@@ -1553,8 +1653,9 @@ UI.bindInput = function(input, apply, validate, numeric, modifierMultiplier) {
    * @param {string} value
    */
   function setValue(value) {
-    if (value === input.value)
+    if (value === input.value) {
       return;
+    }
     const {valid} = validate(value);
     input.classList.toggle('error-input', !valid);
     input.value = value;
@@ -1572,13 +1673,16 @@ UI.bindInput = function(input, apply, validate, numeric, modifierMultiplier) {
  */
 UI.trimText = function(context, text, maxWidth, trimFunction) {
   const maxLength = 200;
-  if (maxWidth <= 10)
+  if (maxWidth <= 10) {
     return '';
-  if (text.length > maxLength)
+  }
+  if (text.length > maxLength) {
     text = trimFunction(text, maxLength);
+  }
   const textWidth = UI.measureTextWidth(context, text);
-  if (textWidth <= maxWidth)
+  if (textWidth <= maxWidth) {
     return text;
+  }
 
   let l = 0;
   let r = text.length;
@@ -1626,8 +1730,9 @@ UI.trimTextEnd = function(context, text, maxWidth) {
  */
 UI.measureTextWidth = function(context, text) {
   const maxCacheableLength = 200;
-  if (text.length > maxCacheableLength)
+  if (text.length > maxCacheableLength) {
     return context.measureText(text).width;
+  }
 
   let widthCache = UI.measureTextWidth._textWidthCache;
   if (!widthCache) {
@@ -1689,8 +1794,9 @@ UI.ThemeSupport = class {
   injectHighlightStyleSheets(element) {
     this._injectingStyleSheet = true;
     UI.appendStyle(element, 'ui/inspectorSyntaxHighlight.css');
-    if (this._themeName === 'dark')
+    if (this._themeName === 'dark') {
       UI.appendStyle(element, 'ui/inspectorSyntaxHighlightDark.css');
+    }
     this._injectingStyleSheet = false;
   }
 
@@ -1716,16 +1822,19 @@ UI.ThemeSupport = class {
    * @param {!Document} document
    */
   applyTheme(document) {
-    if (!this.hasTheme())
+    if (!this.hasTheme()) {
       return;
+    }
 
-    if (this._themeName === 'dark')
+    if (this._themeName === 'dark') {
       document.documentElement.classList.add('-theme-with-dark-background');
+    }
 
     const styleSheets = document.styleSheets;
     const result = [];
-    for (let i = 0; i < styleSheets.length; ++i)
+    for (let i = 0; i < styleSheets.length; ++i) {
       result.push(this._patchForTheme(styleSheets[i].href, styleSheets[i]));
+    }
     result.push('/*# sourceURL=inspector.css.theme */');
 
     const styleElement = createElement('style');
@@ -1740,8 +1849,9 @@ UI.ThemeSupport = class {
    * @suppressGlobalPropertiesCheck
    */
   themeStyleSheet(id, text) {
-    if (!this.hasTheme() || this._injectingStyleSheet)
+    if (!this.hasTheme() || this._injectingStyleSheet) {
       return '';
+    }
 
     let patch = this._cachedThemePatches.get(id);
     if (!patch) {
@@ -1761,8 +1871,9 @@ UI.ThemeSupport = class {
    */
   _patchForTheme(id, styleSheet) {
     const cached = this._cachedThemePatches.get(id);
-    if (cached)
+    if (cached) {
       return cached;
+    }
 
     try {
       const rules = styleSheet.cssRules;
@@ -1775,10 +1886,12 @@ UI.ThemeSupport = class {
         const output = [];
         const style = rules[j].style;
         const selectorText = rules[j].selectorText;
-        for (let i = 0; style && i < style.length; ++i)
+        for (let i = 0; style && i < style.length; ++i) {
           this._patchProperty(selectorText, style, style[i], output);
-        if (output.length)
+        }
+        if (output.length) {
           result.push(rules[j].selectorText + '{' + output.join('') + '}');
+        }
       }
 
       const fullText = result.join('\n');
@@ -1801,31 +1914,39 @@ UI.ThemeSupport = class {
    * - One can create specializations for dark themes via body.-theme-with-dark-background selector in host context.
    */
   _patchProperty(selectorText, style, name, output) {
-    if (!this._themableProperties.has(name))
+    if (!this._themableProperties.has(name)) {
       return;
+    }
 
     const value = style.getPropertyValue(name);
-    if (!value || value === 'none' || value === 'inherit' || value === 'initial' || value === 'transparent')
+    if (!value || value === 'none' || value === 'inherit' || value === 'initial' || value === 'transparent') {
       return;
-    if (name === 'background-image' && value.indexOf('gradient') === -1)
+    }
+    if (name === 'background-image' && value.indexOf('gradient') === -1) {
       return;
+    }
 
-    if (selectorText.indexOf('-theme-') !== -1)
+    if (selectorText.indexOf('-theme-') !== -1) {
       return;
+    }
 
     let colorUsage = UI.ThemeSupport.ColorUsage.Unknown;
-    if (name.indexOf('background') === 0 || name.indexOf('border') === 0)
+    if (name.indexOf('background') === 0 || name.indexOf('border') === 0) {
       colorUsage |= UI.ThemeSupport.ColorUsage.Background;
-    if (name.indexOf('background') === -1)
+    }
+    if (name.indexOf('background') === -1) {
       colorUsage |= UI.ThemeSupport.ColorUsage.Foreground;
+    }
 
     output.push(name);
     output.push(':');
     const items = value.replace(Common.Color.Regex, '\0$1\0').split('\0');
-    for (let i = 0; i < items.length; ++i)
+    for (let i = 0; i < items.length; ++i) {
       output.push(this.patchColorText(items[i], /** @type {!UI.ThemeSupport.ColorUsage} */ (colorUsage)));
-    if (style.getPropertyPriority(name))
+    }
+    if (style.getPropertyPriority(name)) {
       output.push(' !important');
+    }
     output.push(';');
   }
 
@@ -1836,12 +1957,14 @@ UI.ThemeSupport = class {
    */
   patchColorText(text, colorUsage) {
     const color = Common.Color.parse(text);
-    if (!color)
+    if (!color) {
       return text;
+    }
     const outColor = this.patchColor(color, colorUsage);
     let outText = outColor.asString(null);
-    if (!outText)
+    if (!outText) {
       outText = outColor.asString(outColor.hasAlpha() ? Common.Color.Format.RGBA : Common.Color.Format.RGB);
+    }
     return outText || text;
   }
 
@@ -1873,10 +1996,11 @@ UI.ThemeSupport = class {
         const minCap = colorUsage & UI.ThemeSupport.ColorUsage.Background ? 0.14 : 0;
         const maxCap = colorUsage & UI.ThemeSupport.ColorUsage.Foreground ? 0.9 : 1;
         lit = 1 - lit;
-        if (lit < minCap * 2)
+        if (lit < minCap * 2) {
           lit = minCap + lit / 2;
-        else if (lit > 2 * maxCap - 1)
+        } else if (lit > 2 * maxCap - 1) {
           lit = maxCap - 1 / 2 + lit / 2;
+        }
 
         break;
     }
@@ -2027,8 +2151,9 @@ UI.createInlineButton = function(toolbarButton) {
  */
 UI.createExpandableText = function(text, maxLength) {
   const clickHandler = () => {
-    if (expandElement.parentElement)
+    if (expandElement.parentElement) {
       expandElement.parentElement.insertBefore(createTextNode(text.slice(maxLength)), expandElement);
+    }
     expandElement.remove();
   };
   const fragment = createDocumentFragment();
@@ -2040,8 +2165,9 @@ UI.createExpandableText = function(text, maxLength) {
     expandElement.classList.add('expandable-inline-button');
     expandElement.addEventListener('click', clickHandler);
     expandElement.addEventListener('keydown', event => {
-      if (event.key === 'Enter' || event.key === ' ')
+      if (event.key === 'Enter' || event.key === ' ') {
         clickHandler();
+      }
     });
     UI.ARIAUtils.markAsButton(expandElement);
 
@@ -2056,8 +2182,9 @@ UI.createExpandableText = function(text, maxLength) {
     InspectorFrontendHost.copyText(text);
   });
   copyButton.addEventListener('keydown', event => {
-    if (event.key === 'Enter' || event.key === ' ')
+    if (event.key === 'Enter' || event.key === ' ') {
       InspectorFrontendHost.copyText(text);
+    }
   });
   UI.ARIAUtils.markAsButton(copyButton);
   return fragment;
@@ -2083,8 +2210,9 @@ UI.Renderer.prototype = {
  * @return {!Promise<?{node: !Node, tree: ?UI.TreeOutline}>}
  */
 UI.Renderer.render = async function(object, options) {
-  if (!object)
+  if (!object) {
     throw new Error('Can\'t render ' + object);
+  }
   const renderer = await self.runtime.extension(UI.Renderer, object).instance();
   return renderer ? renderer.render(object, options || {}) : null;
 };

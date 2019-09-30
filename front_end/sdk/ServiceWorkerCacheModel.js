@@ -30,16 +30,18 @@ SDK.ServiceWorkerCacheModel = class extends SDK.SDKModel {
   }
 
   enable() {
-    if (this._enabled)
+    if (this._enabled) {
       return;
+    }
 
     this._securityOriginManager.addEventListener(
         SDK.SecurityOriginManager.Events.SecurityOriginAdded, this._securityOriginAdded, this);
     this._securityOriginManager.addEventListener(
         SDK.SecurityOriginManager.Events.SecurityOriginRemoved, this._securityOriginRemoved, this);
 
-    for (const securityOrigin of this._securityOriginManager.securityOrigins())
+    for (const securityOrigin of this._securityOriginManager.securityOrigins()) {
       this._addOrigin(securityOrigin);
+    }
     this._enabled = true;
   }
 
@@ -52,12 +54,14 @@ SDK.ServiceWorkerCacheModel = class extends SDK.SDKModel {
   }
 
   refreshCacheNames() {
-    for (const cache of this._caches.values())
+    for (const cache of this._caches.values()) {
       this._cacheRemoved(cache);
+    }
     this._caches.clear();
     const securityOrigins = this._securityOriginManager.securityOrigins();
-    for (const securityOrigin of securityOrigins)
+    for (const securityOrigin of securityOrigins) {
       this._loadCacheNames(securityOrigin);
+    }
   }
 
   /**
@@ -80,8 +84,9 @@ SDK.ServiceWorkerCacheModel = class extends SDK.SDKModel {
    */
   async deleteCacheEntry(cache, request) {
     const response = await this._cacheAgent.invoke_deleteEntry({cacheId: cache.cacheId, request});
-    if (!response[Protocol.Error])
+    if (!response[Protocol.Error]) {
       return;
+    }
     Common.console.error(Common.UIString(
         'ServiceWorkerCacheAgent error deleting cache entry %s in cache: %s', cache.toString(),
         response[Protocol.Error]));
@@ -103,8 +108,9 @@ SDK.ServiceWorkerCacheModel = class extends SDK.SDKModel {
    */
   caches() {
     const caches = new Array();
-    for (const cache of this._caches.values())
+    for (const cache of this._caches.values()) {
       caches.push(cache);
+    }
     return caches;
   }
 
@@ -112,8 +118,9 @@ SDK.ServiceWorkerCacheModel = class extends SDK.SDKModel {
    * @override
    */
   dispose() {
-    for (const cache of this._caches.values())
+    for (const cache of this._caches.values()) {
       this._cacheRemoved(cache);
+    }
     this._caches.clear();
     if (this._enabled) {
       this._securityOriginManager.removeEventListener(
@@ -125,8 +132,9 @@ SDK.ServiceWorkerCacheModel = class extends SDK.SDKModel {
 
   _addOrigin(securityOrigin) {
     this._loadCacheNames(securityOrigin);
-    if (this._isValidSecurityOrigin(securityOrigin))
+    if (this._isValidSecurityOrigin(securityOrigin)) {
       this._storageAgent.trackCacheStorageForOrigin(securityOrigin);
+    }
   }
 
   /**
@@ -140,8 +148,9 @@ SDK.ServiceWorkerCacheModel = class extends SDK.SDKModel {
         this._cacheRemoved(cache);
       }
     }
-    if (this._isValidSecurityOrigin(securityOrigin))
+    if (this._isValidSecurityOrigin(securityOrigin)) {
       this._storageAgent.untrackCacheStorageForOrigin(securityOrigin);
+    }
   }
 
   /**
@@ -158,8 +167,9 @@ SDK.ServiceWorkerCacheModel = class extends SDK.SDKModel {
    */
   async _loadCacheNames(securityOrigin) {
     const caches = await this._cacheAgent.requestCacheNames(securityOrigin);
-    if (!caches)
+    if (!caches) {
       return;
+    }
     this._updateCacheNames(securityOrigin, caches);
   }
 
@@ -190,8 +200,9 @@ SDK.ServiceWorkerCacheModel = class extends SDK.SDKModel {
       const cache =
           new SDK.ServiceWorkerCacheModel.Cache(this, cacheJson.securityOrigin, cacheJson.cacheName, cacheJson.cacheId);
       updatingCachesIds.add(cache.cacheId);
-      if (this._caches.has(cache.cacheId))
+      if (this._caches.has(cache.cacheId)) {
         continue;
+      }
       newCaches.set(cache.cacheId, cache);
       this._caches.set(cache.cacheId, cache);
     }

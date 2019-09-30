@@ -13,8 +13,9 @@ ProductRegistry.BadgePool = class {
     if (!forceShow) {
       this._setting = Common.settings.moduleSetting('product_registry.badges-visible');
       this._setting.addChangeListener(this._settingUpdated.bind(this));
-      if (this._setting.get())
+      if (this._setting.get()) {
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.ShowedThirdPartyBadges);
+      }
     }
   }
 
@@ -74,8 +75,9 @@ ProductRegistry.BadgePool = class {
     const entry = registry.entryForUrl(parsedUrl);
     if (!entry) {
       frame.findCreationCallFrame(callFrame => {
-        if (!callFrame.url)
+        if (!callFrame.url) {
           return false;
+        }
         parsedUrl = new Common.ParsedURL(callFrame.url);
         return !!registry.entryForUrl(parsedUrl);
       });
@@ -95,15 +97,17 @@ ProductRegistry.BadgePool = class {
     const parsedUrl = await this._badgeElements.get(badgeElement)();
     const registry = await ProductRegistry.instance();
     const entryName = parsedUrl && registry.nameForUrl(parsedUrl);
-    if (!entryName)
+    if (!entryName) {
       return;
+    }
 
     const tokens = entryName.replace(/[a-z]*/g, '').split(' ');
     let label;
-    if (tokens.length > 1)
+    if (tokens.length > 1) {
       label = tokens[0][0] + tokens[1][0];
-    else
+    } else {
       label = entryName;
+    }
 
     const iconElement = badgeElement.createChild('span', 'product-registry-badge monospace');
     iconElement.setAttribute('data-initial', label.substring(0, 2).toUpperCase());
@@ -115,8 +119,9 @@ ProductRegistry.BadgePool = class {
   }
 
   _settingUpdated() {
-    for (const badgeElement of this._badgeElements.keys())
+    for (const badgeElement of this._badgeElements.keys()) {
       this._renderBadge(badgeElement);
+    }
   }
 
   /**
@@ -139,8 +144,9 @@ ProductRegistry.BadgePool = class {
    * @param {!Element} badgeElement
    */
   async _showPopup(badgeElement) {
-    if (!this._badgeElements.has(badgeElement))
+    if (!this._badgeElements.has(badgeElement)) {
       return;
+    }
 
     const registry = await ProductRegistry.instance();
     const parsedUrl = await this._badgeElements.get(badgeElement)();

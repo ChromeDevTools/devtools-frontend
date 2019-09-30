@@ -22,11 +22,13 @@ Network.NetworkFrameGrouper = class {
    */
   groupNodeForRequest(request) {
     const frame = SDK.ResourceTreeModel.frameForRequest(request);
-    if (!frame || frame.isTopFrame())
+    if (!frame || frame.isTopFrame()) {
       return null;
+    }
     let groupNode = this._activeGroups.get(frame);
-    if (groupNode)
+    if (groupNode) {
       return groupNode;
+    }
     groupNode = new Network.FrameGroupNode(this._parentView, frame);
     this._activeGroups.set(frame, groupNode);
     return groupNode;

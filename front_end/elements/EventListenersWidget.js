@@ -64,8 +64,9 @@ Elements.EventListenersWidget = class extends UI.ThrottledWidget {
      */
     function addDispatchFilterOption(name, value) {
       const option = dispatchFilter.createOption(name, value);
-      if (value === this._dispatchFilterBySetting.get())
+      if (value === this._dispatchFilterBySetting.get()) {
         dispatchFilter.select(option);
+      }
     }
     addDispatchFilterOption.call(this, Common.UIString('All'), Elements.EventListenersWidget.DispatchFilterBy.All);
     addDispatchFilterOption.call(
@@ -150,8 +151,9 @@ Elements.EventListenersWidget = class extends UI.ThrottledWidget {
     if (node.frameId()) {
       for (let i = 0; i < executionContexts.length; ++i) {
         const executionContext = executionContexts[i];
-        if (executionContext.frameId === node.frameId() && executionContext.isDefault)
+        if (executionContext.frameId === node.frameId() && executionContext.isDefault) {
           context = executionContext;
+        }
       }
     } else {
       context = executionContexts[0];

@@ -31,8 +31,9 @@
 /* eslint-disable indent */
 
 function defineCommonExtensionSymbols(apiPrivate) {
-  if (!apiPrivate.panels)
+  if (!apiPrivate.panels) {
     apiPrivate.panels = {};
+  }
   apiPrivate.panels.SearchAction = {
     CancelSearch: 'cancelSearch',
     PerformSearch: 'performSearch',
@@ -98,8 +99,9 @@ function injectedExtensionAPI(extensionInfo, inspectedTabId, themeName, keysToFo
   const keysToForwardSet = new Set(keysToForward);
   const chrome = window.chrome || {};
   const devtools_descriptor = Object.getOwnPropertyDescriptor(chrome, 'devtools');
-  if (devtools_descriptor)
+  if (devtools_descriptor) {
     return;
+  }
 
   const apiPrivate = {};
 
@@ -126,10 +128,12 @@ function injectedExtensionAPI(extensionInfo, inspectedTabId, themeName, keysToFo
 
   EventSinkImpl.prototype = {
     addListener: function(callback) {
-      if (typeof callback !== 'function')
+      if (typeof callback !== 'function') {
         throw 'addListener: callback is not a function';
-      if (this._listeners.length === 0)
+      }
+      if (this._listeners.length === 0) {
         extensionServer.sendRequest({command: commands.Subscribe, type: this._type});
+      }
       this._listeners.push(callback);
       extensionServer.registerHandler('notify-' + this._type, this._dispatch.bind(this));
     },
@@ -143,8 +147,9 @@ function injectedExtensionAPI(extensionInfo, inspectedTabId, themeName, keysToFo
           break;
         }
       }
-      if (this._listeners.length === 0)
+      if (this._listeners.length === 0) {
         extensionServer.sendRequest({command: commands.Unsubscribe, type: this._type});
+      }
     },
 
     /**
@@ -152,15 +157,17 @@ function injectedExtensionAPI(extensionInfo, inspectedTabId, themeName, keysToFo
      */
     _fire: function(vararg) {
       const listeners = this._listeners.slice();
-      for (let i = 0; i < listeners.length; ++i)
+      for (let i = 0; i < listeners.length; ++i) {
         listeners[i].apply(null, arguments);
+      }
     },
 
     _dispatch: function(request) {
-      if (this._customDispatch)
+      if (this._customDispatch) {
         this._customDispatch.call(this, request);
-      else
+      } else {
         this._fire.apply(this, request.arguments);
+      }
     }
   };
 
@@ -239,8 +246,9 @@ function injectedExtensionAPI(extensionInfo, inspectedTabId, themeName, keysToFo
     function panelGetter(name) {
       return panels[name];
     }
-    for (const panel in panels)
+    for (const panel in panels) {
       Object.defineProperty(this, panel, {get: panelGetter.bind(null, panel), enumerable: true});
+    }
     this.applyStyleSheet = function(styleSheet) {
       extensionServer.sendRequest({command: commands.ApplyStyleSheet, styleSheet: styleSheet});
     };
@@ -266,14 +274,16 @@ function injectedExtensionAPI(extensionInfo, inspectedTabId, themeName, keysToFo
         }
       }
 
-      if (!callback)
+      if (!callback) {
         extensionServer.unregisterHandler(events.OpenResource);
-      else
+      } else {
         extensionServer.registerHandler(events.OpenResource, callbackWrapper);
+      }
 
       // Only send command if we either removed an existing handler or added handler and had none before.
-      if (hadHandler === !callback)
+      if (hadHandler === !callback) {
         extensionServer.sendRequest({command: commands.SetOpenResourceHandler, 'handlerPresent': !!callback});
+      }
     },
 
     openResource: function(url, lineNumber, callback) {
@@ -296,10 +306,11 @@ function injectedExtensionAPI(extensionInfo, inspectedTabId, themeName, keysToFo
      */
     function dispatchShowEvent(message) {
       const frameIndex = message.arguments[0];
-      if (typeof frameIndex === 'number')
+      if (typeof frameIndex === 'number') {
         this._fire(window.parent.frames[frameIndex]);
-      else
+      } else {
         this._fire();
+      }
     }
 
     if (id) {
@@ -410,8 +421,9 @@ function injectedExtensionAPI(extensionInfo, inspectedTabId, themeName, keysToFo
     },
 
     show: function() {
-      if (!userAction)
+      if (!userAction) {
         return;
+      }
 
       const request = {command: commands.ShowPanel, id: this._id};
       extensionServer.sendRequest(request);
@@ -441,8 +453,9 @@ function injectedExtensionAPI(extensionInfo, inspectedTabId, themeName, keysToFo
         rootTitle: rootTitle,
         evaluateOnPage: true,
       };
-      if (typeof evaluateOptions === 'object')
+      if (typeof evaluateOptions === 'object') {
         request.evaluateOptions = evaluateOptions;
+      }
       extensionServer.sendRequest(request, extractCallbackArgument(arguments));
     },
 
@@ -573,14 +586,16 @@ function injectedExtensionAPI(extensionInfo, inspectedTabId, themeName, keysToFo
     eval: function(expression, evaluateOptions) {
       const callback = extractCallbackArgument(arguments);
       function callbackWrapper(result) {
-        if (result.isError || result.isException)
+        if (result.isError || result.isException) {
           callback(undefined, result);
-        else
+        } else {
           callback(result.value);
+        }
       }
       const request = {command: commands.EvaluateOnInspectedPage, expression: expression};
-      if (typeof evaluateOptions === 'object')
+      if (typeof evaluateOptions === 'object') {
         request.evaluateOptions = evaluateOptions;
+      }
       extensionServer.sendRequest(request, callback && callbackWrapper);
       return null;
     },
@@ -636,18 +651,23 @@ function injectedExtensionAPI(extensionInfo, inspectedTabId, themeName, keysToFo
 
   function forwardKeyboardEvent(event) {
     let modifiers = 0;
-    if (event.shiftKey)
+    if (event.shiftKey) {
       modifiers |= 1;
-    if (event.ctrlKey)
+    }
+    if (event.ctrlKey) {
       modifiers |= 2;
-    if (event.altKey)
+    }
+    if (event.altKey) {
       modifiers |= 4;
-    if (event.metaKey)
+    }
+    if (event.metaKey) {
       modifiers |= 8;
+    }
     const num = (event.keyCode & 255) | (modifiers << 8);
     // We only care about global hotkeys, not about random text
-    if (!keysToForwardSet.has(num))
+    if (!keysToForwardSet.has(num)) {
       return;
+    }
     event.preventDefault();
     const requestPayload = {
       eventType: event.type,
@@ -662,8 +682,9 @@ function injectedExtensionAPI(extensionInfo, inspectedTabId, themeName, keysToFo
       keyCode: event.keyCode
     };
     keyboardEventRequestQueue.push(requestPayload);
-    if (!forwardTimer)
+    if (!forwardTimer) {
       forwardTimer = setTimeout(forwardEventQueue, 0);
+    }
   }
 
   function forwardEventQueue() {
@@ -700,8 +721,9 @@ function injectedExtensionAPI(extensionInfo, inspectedTabId, themeName, keysToFo
      * @param {function()=} callback
      */
     sendRequest: function(message, callback) {
-      if (typeof callback === 'function')
+      if (typeof callback === 'function') {
         message.requestId = this._registerCallback(callback);
+      }
       this._port.postMessage(message);
     },
 
@@ -744,27 +766,32 @@ function injectedExtensionAPI(extensionInfo, inspectedTabId, themeName, keysToFo
     _onMessage: function(event) {
       const request = event.data;
       const handler = this._handlers[request.command];
-      if (handler)
+      if (handler) {
         handler.call(this, request);
+      }
     }
   };
 
   function populateInterfaceClass(interfaze, implementation) {
     for (const member in implementation) {
-      if (member.charAt(0) === '_')
+      if (member.charAt(0) === '_') {
         continue;
+      }
       let descriptor = null;
       // Traverse prototype chain until we find the owner.
-      for (let owner = implementation; owner && !descriptor; owner = owner.__proto__)
+      for (let owner = implementation; owner && !descriptor; owner = owner.__proto__) {
         descriptor = Object.getOwnPropertyDescriptor(owner, member);
-      if (!descriptor)
+      }
+      if (!descriptor) {
         continue;
-      if (typeof descriptor.value === 'function')
+      }
+      if (typeof descriptor.value === 'function') {
         interfaze[member] = descriptor.value.bind(implementation);
-      else if (typeof descriptor.get === 'function')
+      } else if (typeof descriptor.get === 'function') {
         interfaze.__defineGetter__(member, descriptor.get.bind(implementation));
-      else
+      } else {
         Object.defineProperty(interfaze, member, descriptor);
+      }
     }
   }
 
@@ -789,14 +816,16 @@ function injectedExtensionAPI(extensionInfo, inspectedTabId, themeName, keysToFo
     const properties = Object.getOwnPropertyNames(coreAPI);
     for (let i = 0; i < properties.length; ++i) {
       const descriptor = Object.getOwnPropertyDescriptor(coreAPI, properties[i]);
-      if (descriptor)
+      if (descriptor) {
         Object.defineProperty(chrome.experimental.devtools, properties[i], descriptor);
+      }
     }
     chrome.experimental.devtools.inspectedWindow = chrome.devtools.inspectedWindow;
   }
 
-  if (extensionInfo.exposeWebInspectorNamespace)
+  if (extensionInfo.exposeWebInspectorNamespace) {
     window.webInspector = coreAPI;
+  }
   testHook(extensionServer, coreAPI);
 }
 
@@ -810,8 +839,9 @@ function injectedExtensionAPI(extensionInfo, inspectedTabId, themeName, keysToFo
  */
 self.buildExtensionAPIInjectedScript = function(extensionInfo, inspectedTabId, themeName, keysToForward, testHook) {
   const argumentsJSON = [extensionInfo, inspectedTabId || null, themeName, keysToForward].map(_ => JSON.stringify(_)).join(',');
-  if (!testHook)
+  if (!testHook) {
     testHook = () => {};
+  }
   return '(function(injectedScriptId){ ' + defineCommonExtensionSymbols.toString() + ';' +
       '(' + injectedExtensionAPI.toString() + ')(' + argumentsJSON + ',' + testHook + ', injectedScriptId);' +
       '})';

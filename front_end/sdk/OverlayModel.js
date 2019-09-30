@@ -54,13 +54,15 @@ SDK.OverlayModel = class extends SDK.SDKModel {
    */
   static highlightObjectAsDOMNode(object) {
     const domModel = object.runtimeModel().target().model(SDK.DOMModel);
-    if (domModel)
+    if (domModel) {
       domModel.overlayModel().highlightInOverlay({object});
+    }
   }
 
   static hideDOMNodeHighlight() {
-    for (const overlayModel of SDK.targetManager.models(SDK.OverlayModel))
+    for (const overlayModel of SDK.targetManager.models(SDK.OverlayModel)) {
       overlayModel._delayedHideHighlight(0);
+    }
   }
 
   static async muteHighlight() {
@@ -92,22 +94,30 @@ SDK.OverlayModel = class extends SDK.SDKModel {
           () => this._overlayAgent.setShowHitTestBorders(this._showHitTestBordersSetting.get()))
     ];
 
-    if (this._showPaintRectsSetting.get())
+    if (this._showPaintRectsSetting.get()) {
       this._overlayAgent.setShowPaintRects(true);
-    if (this._showLayoutShiftRegionsSetting.get())
+    }
+    if (this._showLayoutShiftRegionsSetting.get()) {
       this._overlayAgent.setShowLayoutShiftRegions(true);
-    if (this._showAdHighlightsSetting.get())
+    }
+    if (this._showAdHighlightsSetting.get()) {
       this._overlayAgent.setShowAdHighlights(true);
-    if (this._showDebugBordersSetting.get())
+    }
+    if (this._showDebugBordersSetting.get()) {
       this._overlayAgent.setShowDebugBorders(true);
-    if (this._showFPSCounterSetting.get())
+    }
+    if (this._showFPSCounterSetting.get()) {
       this._overlayAgent.setShowFPSCounter(true);
-    if (this._showScrollBottleneckRectsSetting.get())
+    }
+    if (this._showScrollBottleneckRectsSetting.get()) {
       this._overlayAgent.setShowScrollBottleneckRects(true);
-    if (this._showHitTestBordersSetting.get())
+    }
+    if (this._showHitTestBordersSetting.get()) {
       this._overlayAgent.setShowHitTestBorders(true);
-    if (this._debuggerModel.isPaused())
+    }
+    if (this._debuggerModel.isPaused()) {
       this._updatePausedInDebuggerMessage();
+    }
     return this._overlayAgent.setShowViewportSizeOnResize(this._showViewportSizeOnResize);
   }
 
@@ -134,8 +144,9 @@ SDK.OverlayModel = class extends SDK.SDKModel {
    */
   setShowViewportSizeOnResize(show) {
     this._showViewportSizeOnResize = show;
-    if (this.target().suspended())
+    if (this.target().suspended()) {
       return;
+    }
     this._overlayAgent.setShowViewportSizeOnResize(show);
   }
 
@@ -143,8 +154,9 @@ SDK.OverlayModel = class extends SDK.SDKModel {
    * @return {!Promise}
    */
   _updatePausedInDebuggerMessage() {
-    if (this.target().suspended())
+    if (this.target().suspended()) {
       return Promise.resolve();
+    }
     const message = this._debuggerModel.isPaused() && !Common.moduleSetting('disablePausedStateOverlay').get() ?
         Common.UIString('Paused in debugger') :
         undefined;
@@ -188,8 +200,9 @@ SDK.OverlayModel = class extends SDK.SDKModel {
       this._hideHighlightTimeout = null;
     }
     const highlightConfig = this._buildHighlightConfig(mode);
-    if (typeof showInfo !== 'undefined')
+    if (typeof showInfo !== 'undefined') {
       highlightConfig.showInfo = showInfo;
+    }
     this._highlighter.highlightInOverlay(data, highlightConfig);
   }
 
@@ -205,8 +218,9 @@ SDK.OverlayModel = class extends SDK.SDKModel {
    * @param {number} delay
    */
   _delayedHideHighlight(delay) {
-    if (this._hideHighlightTimeout === null)
+    if (this._hideHighlightTimeout === null) {
       this._hideHighlightTimeout = setTimeout(() => this.highlightInOverlay({}), delay);
+    }
   }
 
   /**
@@ -229,17 +243,21 @@ SDK.OverlayModel = class extends SDK.SDKModel {
     const showRulers = Common.moduleSetting('showMetricsRulers').get();
     const highlightConfig =
         {showInfo: mode === 'all', showRulers: showRulers, showStyles, showExtensionLines: showRulers};
-    if (mode === 'all' || mode === 'content')
+    if (mode === 'all' || mode === 'content') {
       highlightConfig.contentColor = Common.Color.PageHighlight.Content.toProtocolRGBA();
+    }
 
-    if (mode === 'all' || mode === 'padding')
+    if (mode === 'all' || mode === 'padding') {
       highlightConfig.paddingColor = Common.Color.PageHighlight.Padding.toProtocolRGBA();
+    }
 
-    if (mode === 'all' || mode === 'border')
+    if (mode === 'all' || mode === 'border') {
       highlightConfig.borderColor = Common.Color.PageHighlight.Border.toProtocolRGBA();
+    }
 
-    if (mode === 'all' || mode === 'margin')
+    if (mode === 'all' || mode === 'margin') {
       highlightConfig.marginColor = Common.Color.PageHighlight.Margin.toProtocolRGBA();
+    }
 
     if (mode === 'all') {
       highlightConfig.eventTargetColor = Common.Color.PageHighlight.EventTarget.toProtocolRGBA();
@@ -247,8 +265,9 @@ SDK.OverlayModel = class extends SDK.SDKModel {
       highlightConfig.shapeMarginColor = Common.Color.PageHighlight.ShapeMargin.toProtocolRGBA();
     }
 
-    if (mode === 'all')
+    if (mode === 'all') {
       highlightConfig.cssGridColor = Common.Color.PageHighlight.CssGrid.toProtocolRGBA();
+    }
 
     return highlightConfig;
   }
@@ -259,8 +278,9 @@ SDK.OverlayModel = class extends SDK.SDKModel {
    */
   nodeHighlightRequested(nodeId) {
     const node = this._domModel.nodeForId(nodeId);
-    if (node)
+    if (node) {
       this.dispatchEventToListeners(SDK.OverlayModel.Events.HighlightNodeRequested, node);
+    }
   }
 
   /**
@@ -278,8 +298,9 @@ SDK.OverlayModel = class extends SDK.SDKModel {
     const deferredNode = new SDK.DeferredDOMNode(this.target(), backendNodeId);
     if (SDK.OverlayModel._inspectNodeHandler) {
       deferredNode.resolvePromise().then(node => {
-        if (node)
+        if (node) {
           SDK.OverlayModel._inspectNodeHandler(node);
+        }
       });
     } else {
       Common.Revealer.reveal(deferredNode);
@@ -366,10 +387,11 @@ SDK.OverlayModel.DefaultHighlighter = class {
     const nodeId = node ? node.id : undefined;
     const backendNodeId = deferredNode ? deferredNode.backendNodeId() : undefined;
     const objectId = object ? object.objectId : undefined;
-    if (nodeId || backendNodeId || objectId)
+    if (nodeId || backendNodeId || objectId) {
       this._model._overlayAgent.highlightNode(config, nodeId, backendNodeId, objectId, selectorList);
-    else
+    } else {
       this._model._overlayAgent.hideHighlight();
+    }
   }
 
   /**

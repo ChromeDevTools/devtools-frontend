@@ -46,8 +46,9 @@ Elements.MetricsSidebarPane = class extends Elements.ElementsSidebarPane {
   doUpdate() {
     // "style" attribute might have changed. Update metrics unless they are being edited
     // (if a CSS property is added, a StyleSheetChanged event is dispatched).
-    if (this._isEditingMetrics)
+    if (this._isEditingMetrics) {
       return Promise.resolve();
+    }
 
     // FIXME: avoid updates of a collapsed pane.
     const node = this.node();
@@ -62,8 +63,9 @@ Elements.MetricsSidebarPane = class extends Elements.ElementsSidebarPane {
      * @this {Elements.MetricsSidebarPane}
      */
     function callback(style) {
-      if (!style || this.node() !== node)
+      if (!style || this.node() !== node) {
         return;
+      }
       this._updateMetrics(style);
     }
     /**
@@ -71,8 +73,9 @@ Elements.MetricsSidebarPane = class extends Elements.ElementsSidebarPane {
      * @this {Elements.MetricsSidebarPane}
      */
     function inlineStyleCallback(inlineStyleResult) {
-      if (inlineStyleResult && this.node() === node)
+      if (inlineStyleResult && this.node() === node) {
         this._inlineStyle = inlineStyleResult.inlineStyle;
+      }
     }
 
     const promises = [
@@ -119,8 +122,9 @@ Elements.MetricsSidebarPane = class extends Elements.ElementsSidebarPane {
   _highlightDOMNode(showHighlight, mode, event) {
     event.consume();
     if (showHighlight && this.node()) {
-      if (this._highlightMode === mode)
+      if (this._highlightMode === mode) {
         return;
+      }
       this._highlightMode = mode;
       this.node().highlight(mode);
     } else {
@@ -130,10 +134,11 @@ Elements.MetricsSidebarPane = class extends Elements.ElementsSidebarPane {
 
     for (let i = 0; this._boxElements && i < this._boxElements.length; ++i) {
       const element = this._boxElements[i];
-      if (!this.node() || mode === 'all' || element._name === mode)
+      if (!this.node() || mode === 'all' || element._name === mode) {
         element.style.backgroundColor = element._backgroundColor;
-      else
+      } else {
         element.style.backgroundColor = '';
+      }
     }
   }
 
@@ -156,10 +161,11 @@ Elements.MetricsSidebarPane = class extends Elements.ElementsSidebarPane {
     function createBoxPartElement(style, name, side, suffix) {
       const propertyName = (name !== 'position' ? name + '-' : '') + side + suffix;
       let value = style.get(propertyName);
-      if (value === '' || (name !== 'position' && value === '0px'))
+      if (value === '' || (name !== 'position' && value === '0px')) {
         value = '\u2012';
-      else if (name === 'position' && value === 'auto')
+      } else if (name === 'position' && value === 'auto') {
         value = '\u2012';
+      }
       value = value.replace(/px$/, '');
       value = Number.toFixedIfFloating(value);
 
@@ -240,12 +246,15 @@ Elements.MetricsSidebarPane = class extends Elements.ElementsSidebarPane {
     for (let i = 0; i < boxes.length; ++i) {
       const name = boxes[i];
 
-      if (name === 'margin' && noMarginDisplayType[style.get('display')])
+      if (name === 'margin' && noMarginDisplayType[style.get('display')]) {
         continue;
-      if (name === 'padding' && noPaddingDisplayType[style.get('display')])
+      }
+      if (name === 'padding' && noPaddingDisplayType[style.get('display')]) {
         continue;
-      if (name === 'position' && noPositionType[style.get('position')])
+      }
+      if (name === 'position' && noPositionType[style.get('position')]) {
         continue;
+      }
 
       const boxElement = createElement('div');
       boxElement.className = name;
@@ -282,8 +291,9 @@ Elements.MetricsSidebarPane = class extends Elements.ElementsSidebarPane {
         boxElement.appendChild(createElement('br'));
         boxElement.appendChild(createBoxPartElement.call(this, style, name, 'left', suffix));
 
-        if (previousBox)
+        if (previousBox) {
           boxElement.appendChild(previousBox);
+        }
 
         boxElement.appendChild(createBoxPartElement.call(this, style, name, 'right', suffix));
         boxElement.appendChild(createElement('br'));
@@ -309,8 +319,9 @@ Elements.MetricsSidebarPane = class extends Elements.ElementsSidebarPane {
    * @param {!Map.<string, string>} computedStyle
    */
   startEditing(targetElement, box, styleProperty, computedStyle) {
-    if (UI.isBeingEdited(targetElement))
+    if (UI.isBeingEdited(targetElement)) {
       return;
+    }
 
     const context = {box: box, styleProperty: styleProperty, computedStyle: computedStyle};
     const boundKeyDown = this._handleKeyDown.bind(this, context, styleProperty);
@@ -345,8 +356,9 @@ Elements.MetricsSidebarPane = class extends Elements.ElementsSidebarPane {
      * @return {string}
      */
     function customNumberHandler(prefix, number, suffix) {
-      if (styleProperty !== 'margin' && number < 0)
+      if (styleProperty !== 'margin' && number < 0) {
         number = 0;
+      }
       return prefix + number + suffix;
     }
 
@@ -365,8 +377,9 @@ Elements.MetricsSidebarPane = class extends Elements.ElementsSidebarPane {
       if (!this.originalPropertyData) {
         // An added property, remove the last property in the style.
         const pastLastSourcePropertyIndex = this._inlineStyle.pastLastSourcePropertyIndex();
-        if (pastLastSourcePropertyIndex)
+        if (pastLastSourcePropertyIndex) {
           this._inlineStyle.allProperties()[pastLastSourcePropertyIndex - 1].setText('', false);
+        }
       } else {
         this._inlineStyle.allProperties()[this.originalPropertyData.index].setText(
             this.originalPropertyData.propertyText, false);
@@ -382,18 +395,21 @@ Elements.MetricsSidebarPane = class extends Elements.ElementsSidebarPane {
       return this.editingCancelled(element, context);  // nothing changed, so cancel
     }
 
-    if (commitEditor && userInput === previousContent)
-      return this.editingCancelled(element, context);  // nothing changed, so cancel
+    if (commitEditor && userInput === previousContent) {
+      return this.editingCancelled(element, context);
+    }  // nothing changed, so cancel
 
-    if (context.box !== 'position' && (!userInput || userInput === '\u2012'))
+    if (context.box !== 'position' && (!userInput || userInput === '\u2012')) {
       userInput = '0px';
-    else if (context.box === 'position' && (!userInput || userInput === '\u2012'))
+    } else if (context.box === 'position' && (!userInput || userInput === '\u2012')) {
       userInput = 'auto';
+    }
 
     userInput = userInput.toLowerCase();
     // Append a "px" unit if the user input was just a number.
-    if (/^\d+$/.test(userInput))
+    if (/^\d+$/.test(userInput)) {
       userInput += 'px';
+    }
 
     const styleProperty = context.styleProperty;
     const computedStyle = context.computedStyle;
@@ -408,12 +424,14 @@ Elements.MetricsSidebarPane = class extends Elements.ElementsSidebarPane {
       const borderBox = this._getBox(computedStyle, 'border');
       const paddingBox = this._getBox(computedStyle, 'padding');
       let userValuePx = Number(userInput.replace(/px$/, ''));
-      if (isNaN(userValuePx))
+      if (isNaN(userValuePx)) {
         return;
-      if (styleProperty === 'width')
+      }
+      if (styleProperty === 'width') {
         userValuePx += borderBox.left + borderBox.right + paddingBox.left + paddingBox.right;
-      else
+      } else {
         userValuePx += borderBox.top + borderBox.bottom + paddingBox.top + paddingBox.bottom;
+      }
 
       userInput = userValuePx + 'px';
     }
@@ -423,8 +441,9 @@ Elements.MetricsSidebarPane = class extends Elements.ElementsSidebarPane {
     const allProperties = this._inlineStyle.allProperties();
     for (let i = 0; i < allProperties.length; ++i) {
       const property = allProperties[i];
-      if (property.name !== context.styleProperty || !property.activeInStyle())
+      if (property.name !== context.styleProperty || !property.activeInStyle()) {
         continue;
+      }
 
       this.previousPropertyDataCandidate = property;
       property.setValue(userInput, commitEditor, true, callback.bind(this));
@@ -438,16 +457,20 @@ Elements.MetricsSidebarPane = class extends Elements.ElementsSidebarPane {
      * @this {Elements.MetricsSidebarPane}
      */
     function callback(success) {
-      if (!success)
+      if (!success) {
         return;
-      if (!('originalPropertyData' in this))
+      }
+      if (!('originalPropertyData' in this)) {
         this.originalPropertyData = this.previousPropertyDataCandidate;
+      }
 
-      if (typeof this._highlightMode !== 'undefined')
+      if (typeof this._highlightMode !== 'undefined') {
         this.node().highlight(this._highlightMode);
+      }
 
-      if (commitEditor)
+      if (commitEditor) {
         this.update();
+      }
     }
   }
 

@@ -64,8 +64,9 @@ export default class WorkerWrapper {
    */
   postMessage(message) {
     this._workerPromise.then(worker => {
-      if (!this._disposed)
+      if (!this._disposed) {
         worker.postMessage(message);
+      }
     });
   }
 

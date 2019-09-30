@@ -50,8 +50,9 @@ FormatterWorker.RelaxedJSONParser.parse = function(content) {
 
   walker.walk(root);
 
-  if (hasExpression)
+  if (hasExpression) {
     return null;
+  }
   return rootTip.length ? rootTip[0] : null;
 
   /**
@@ -71,10 +72,11 @@ FormatterWorker.RelaxedJSONParser.parse = function(content) {
    */
   function applyValue(value) {
     stackData.tip[stackData.key] = value;
-    if (stackData.parentIsArray)
+    if (stackData.parentIsArray) {
       stackData.key++;
-    else
+    } else {
       stackData.state = null;
+    }
   }
 
   /**
@@ -130,8 +132,9 @@ FormatterWorker.RelaxedJSONParser.parse = function(content) {
       case 'ExpressionStatement':
         break;
       default:
-        if (stackData.state === States.ExpectValue)
+        if (stackData.state === States.ExpectValue) {
           applyValue(extractValue(node));
+        }
         return FormatterWorker.ESTreeWalker.SkipSubtree;
     }
   }
@@ -140,8 +143,9 @@ FormatterWorker.RelaxedJSONParser.parse = function(content) {
    * @param {!ESTree.Node} node
    */
   function afterVisit(node) {
-    if (node.type === 'ObjectExpression' || node.type === 'ArrayExpression')
+    if (node.type === 'ObjectExpression' || node.type === 'ArrayExpression') {
       popStack();
+    }
   }
 
   /**
@@ -153,8 +157,9 @@ FormatterWorker.RelaxedJSONParser.parse = function(content) {
     const originalNode = node;
     let value;
     if (node.type === 'UnaryExpression' && (node.operator === '-' || node.operator === '+')) {
-      if (node.operator === '-')
+      if (node.operator === '-') {
         isNegative = true;
+      }
       node = /** @type {!ESTree.Node} */ (node.argument);
     }
 

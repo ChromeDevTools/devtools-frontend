@@ -22,12 +22,14 @@ Sources.OpenFileQuickOpen = class extends Sources.FilteredUISourceCodeListProvid
   uiSourceCodeSelected(uiSourceCode, lineNumber, columnNumber) {
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.SelectFileFromFilePicker);
 
-    if (!uiSourceCode)
+    if (!uiSourceCode) {
       return;
-    if (typeof lineNumber === 'number')
+    }
+    if (typeof lineNumber === 'number') {
       Common.Revealer.reveal(uiSourceCode.uiLocation(lineNumber, columnNumber));
-    else
+    } else {
       Common.Revealer.reveal(uiSourceCode);
+    }
   }
 
   /**

@@ -99,8 +99,9 @@ UI.FilterBar = class extends UI.HBox {
   }
 
   _updateFilterBar() {
-    if (!this.parentWidget() || this._showingWidget)
+    if (!this.parentWidget() || this._showingWidget) {
       return;
+    }
     if (this.visible()) {
       this._showingWidget = true;
       this.showWidget();
@@ -125,8 +126,9 @@ UI.FilterBar = class extends UI.HBox {
 
   _updateFilterButton() {
     let isActive = false;
-    for (const filter of this._filters)
+    for (const filter of this._filters) {
       isActive = isActive || filter.isActive();
+    }
     this._filterButton.setDefaultWithRedColor(isActive);
     this._filterButton.setToggleWithRedColor(isActive);
   }
@@ -199,8 +201,9 @@ UI.TextFilterUI = class extends Common.Object {
    * @return {!Promise<!UI.SuggestBox.Suggestions>}
    */
   _completions(expression, prefix, force) {
-    if (this._suggestionProvider)
+    if (this._suggestionProvider) {
       return this._suggestionProvider(expression, prefix, force);
+    }
     return Promise.resolve([]);
   }
   /**
@@ -276,8 +279,9 @@ UI.NamedBitSetFilterUI = class extends Common.Object {
     this._typeFilterElements[0].tabIndex = 0;
     this._filtersElement.createChild('div', 'filter-bitset-filter-divider');
 
-    for (let i = 0; i < items.length; ++i)
+    for (let i = 0; i < items.length; ++i) {
       this._addBit(items[i].name, items[i].label, items[i].title);
+    }
 
     if (setting) {
       this._setting = setting;
@@ -320,8 +324,9 @@ UI.NamedBitSetFilterUI = class extends Common.Object {
     const allowedTypes = this._setting.get();
     this._allowedTypes = {};
     for (const element of this._typeFilterElements) {
-      if (allowedTypes[element.typeName])
+      if (allowedTypes[element.typeName]) {
         this._allowedTypes[element.typeName] = true;
+      }
     }
     this._update();
   }
@@ -351,8 +356,9 @@ UI.NamedBitSetFilterUI = class extends Common.Object {
     typeFilterElement.typeName = name;
     typeFilterElement.createTextChild(label);
     UI.ARIAUtils.markAsOption(typeFilterElement);
-    if (title)
+    if (title) {
       typeFilterElement.title = title;
+    }
     typeFilterElement.addEventListener('click', this._onTypeFilterClicked.bind(this), false);
     typeFilterElement.addEventListener('keydown', this._onTypeFilterKeydown.bind(this), false);
     this._typeFilterElements.push(typeFilterElement);
@@ -363,10 +369,11 @@ UI.NamedBitSetFilterUI = class extends Common.Object {
    */
   _onTypeFilterClicked(e) {
     let toggle;
-    if (Host.isMac())
+    if (Host.isMac()) {
       toggle = e.metaKey && !e.ctrlKey && !e.altKey && !e.shiftKey;
-    else
+    } else {
       toggle = e.ctrlKey && !e.metaKey && !e.altKey && !e.shiftKey;
+    }
     this._toggleTypeFilter(e.target.typeName, toggle);
   }
 
@@ -375,15 +382,18 @@ UI.NamedBitSetFilterUI = class extends Common.Object {
    */
   _onTypeFilterKeydown(event) {
     const element = /** @type {?Element} */ (event.target);
-    if (!element)
+    if (!element) {
       return;
+    }
 
     if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') {
-      if (this._keyFocusNextBit(element, true /* selectPrevious */))
+      if (this._keyFocusNextBit(element, true /* selectPrevious */)) {
         event.consume(true);
+      }
     } else if (event.key === 'ArrowRight' || event.key === 'ArrowDown') {
-      if (this._keyFocusNextBit(element, false /* selectPrevious */))
+      if (this._keyFocusNextBit(element, false /* selectPrevious */)) {
         event.consume(true);
+      }
     } else if (isEnterOrSpaceKey(event)) {
       this._onTypeFilterClicked(event);
     }
@@ -396,11 +406,13 @@ UI.NamedBitSetFilterUI = class extends Common.Object {
    */
   _keyFocusNextBit(target, selectPrevious) {
     const index = this._typeFilterElements.indexOf(target);
-    if (index === -1)
+    if (index === -1) {
       return false;
+    }
     const nextIndex = selectPrevious ? index - 1 : index + 1;
-    if (nextIndex < 0 || nextIndex >= this._typeFilterElements.length)
+    if (nextIndex < 0 || nextIndex >= this._typeFilterElements.length) {
       return false;
+    }
 
     const nextElement = this._typeFilterElements[nextIndex];
     nextElement.tabIndex = 0;
@@ -414,17 +426,19 @@ UI.NamedBitSetFilterUI = class extends Common.Object {
    * @param {boolean} allowMultiSelect
    */
   _toggleTypeFilter(typeName, allowMultiSelect) {
-    if (allowMultiSelect && typeName !== UI.NamedBitSetFilterUI.ALL_TYPES)
+    if (allowMultiSelect && typeName !== UI.NamedBitSetFilterUI.ALL_TYPES) {
       this._allowedTypes[UI.NamedBitSetFilterUI.ALL_TYPES] = false;
-    else
+    } else {
       this._allowedTypes = {};
+    }
 
     this._allowedTypes[typeName] = !this._allowedTypes[typeName];
 
-    if (this._setting)
+    if (this._setting) {
       this._setting.set(this._allowedTypes);
-    else
+    } else {
       this._update();
+    }
   }
 };
 
@@ -451,10 +465,11 @@ UI.CheckboxFilterUI = class extends Common.Object {
     this._label = UI.CheckboxLabel.create(title);
     this._filterElement.appendChild(this._label);
     this._checkboxElement = this._label.checkboxElement;
-    if (setting)
+    if (setting) {
       UI.SettingsUI.bindCheckbox(this._checkboxElement, setting);
-    else
+    } else {
       this._checkboxElement.checked = true;
+    }
     this._checkboxElement.addEventListener('change', this._fireUpdated.bind(this), false);
   }
 

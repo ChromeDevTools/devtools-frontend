@@ -58,8 +58,9 @@ UI.Geometry.Vector = class {
 
   normalize() {
     const length = this.length();
-    if (length <= UI.Geometry._Eps)
+    if (length <= UI.Geometry._Eps) {
       return;
+    }
 
     this.x /= length;
     this.y /= length;
@@ -93,8 +94,9 @@ UI.Geometry.Point = class {
    * @return {!UI.Geometry.Point}
    */
   projectOn(line) {
-    if (line.x === 0 && line.y === 0)
+    if (line.x === 0 && line.y === 0) {
       return new UI.Geometry.Point(0, 0);
+    }
     return line.scale((this.x * line.x + this.y * line.y) / (Math.pow(line.x, 2) + Math.pow(line.y, 2)));
   }
 
@@ -134,8 +136,9 @@ UI.Geometry.CubicBezier = class {
   static parse(text) {
     const keywordValues = UI.Geometry.CubicBezier.KeywordValues;
     const value = text.toLowerCase().replace(/\s+/g, '');
-    if (Object.keys(keywordValues).indexOf(value) !== -1)
+    if (Object.keys(keywordValues).indexOf(value) !== -1) {
       return UI.Geometry.CubicBezier.parse(keywordValues[value]);
+    }
     const bezierRegex = /^cubic-bezier\(([^,]+),([^,]+),([^,]+),([^,]+)\)$/;
     const match = value.match(bezierRegex);
     if (match) {
@@ -172,8 +175,9 @@ UI.Geometry.CubicBezier = class {
     const raw = 'cubic-bezier(' + this.controlPoints.join(', ') + ')';
     const keywordValues = UI.Geometry.CubicBezier.KeywordValues;
     for (const keyword in keywordValues) {
-      if (raw === keywordValues[keyword])
+      if (raw === keywordValues[keyword]) {
         return keyword;
+      }
     }
     return raw;
   }
@@ -288,11 +292,13 @@ UI.Geometry.multiplyVectorByMatrixAndNormalize = function(v, m) {
 UI.Geometry.calculateAngle = function(u, v) {
   const uLength = u.length();
   const vLength = v.length();
-  if (uLength <= UI.Geometry._Eps || vLength <= UI.Geometry._Eps)
+  if (uLength <= UI.Geometry._Eps || vLength <= UI.Geometry._Eps) {
     return 0;
+  }
   const cos = UI.Geometry.scalarProduct(u, v) / uLength / vLength;
-  if (Math.abs(cos) > 1)
+  if (Math.abs(cos) > 1) {
     return 0;
+  }
   return UI.Geometry.radiansToDegrees(Math.acos(cos));
 };
 
@@ -319,10 +325,12 @@ UI.Geometry.radiansToDegrees = function(rad) {
  * @return {!{minX: number, maxX: number, minY: number, maxY: number}}
  */
 UI.Geometry.boundsForTransformedPoints = function(matrix, points, aggregateBounds) {
-  if (!aggregateBounds)
+  if (!aggregateBounds) {
     aggregateBounds = {minX: Infinity, maxX: -Infinity, minY: Infinity, maxY: -Infinity};
-  if (points.length % 3)
+  }
+  if (points.length % 3) {
     console.assert('Invalid size of points array');
+  }
   for (let p = 0; p < points.length; p += 3) {
     let vector = new UI.Geometry.Vector(points[p], points[p + 1], points[p + 2]);
     vector = UI.Geometry.multiplyVectorByMatrixAndNormalize(vector, matrix);
@@ -352,8 +360,9 @@ UI.Size = class {
    * @return {!UI.Size}
    */
   clipTo(size) {
-    if (!size)
+    if (!size) {
       return this;
+    }
     return new UI.Size(Math.min(this.width, size.width), Math.min(this.height, size.height));
   }
 
@@ -510,8 +519,9 @@ UI.Constraints = class {
      */
     this.preferred = preferred || this.minimum;
 
-    if (this.minimum.width > this.preferred.width || this.minimum.height > this.preferred.height)
+    if (this.minimum.width > this.preferred.width || this.minimum.height > this.preferred.height) {
       throw new Error('Minimum size is greater than preferred.');
+    }
   }
 };
 
@@ -528,8 +538,9 @@ UI.Constraints.prototype.isEqual = function(constraints) {
  * @return {!UI.Constraints}
  */
 UI.Constraints.prototype.widthToMax = function(value) {
-  if (typeof value === 'number')
+  if (typeof value === 'number') {
     return new UI.Constraints(this.minimum.widthToMax(value), this.preferred.widthToMax(value));
+  }
   return new UI.Constraints(this.minimum.widthToMax(value.minimum), this.preferred.widthToMax(value.preferred));
 };
 
@@ -538,8 +549,9 @@ UI.Constraints.prototype.widthToMax = function(value) {
  * @return {!UI.Constraints}
  */
 UI.Constraints.prototype.addWidth = function(value) {
-  if (typeof value === 'number')
+  if (typeof value === 'number') {
     return new UI.Constraints(this.minimum.addWidth(value), this.preferred.addWidth(value));
+  }
   return new UI.Constraints(this.minimum.addWidth(value.minimum), this.preferred.addWidth(value.preferred));
 };
 
@@ -548,8 +560,9 @@ UI.Constraints.prototype.addWidth = function(value) {
  * @return {!UI.Constraints}
  */
 UI.Constraints.prototype.heightToMax = function(value) {
-  if (typeof value === 'number')
+  if (typeof value === 'number') {
     return new UI.Constraints(this.minimum.heightToMax(value), this.preferred.heightToMax(value));
+  }
   return new UI.Constraints(this.minimum.heightToMax(value.minimum), this.preferred.heightToMax(value.preferred));
 };
 
@@ -558,7 +571,8 @@ UI.Constraints.prototype.heightToMax = function(value) {
  * @return {!UI.Constraints}
  */
 UI.Constraints.prototype.addHeight = function(value) {
-  if (typeof value === 'number')
+  if (typeof value === 'number') {
     return new UI.Constraints(this.minimum.addHeight(value), this.preferred.addHeight(value));
+  }
   return new UI.Constraints(this.minimum.addHeight(value.minimum), this.preferred.addHeight(value.preferred));
 };

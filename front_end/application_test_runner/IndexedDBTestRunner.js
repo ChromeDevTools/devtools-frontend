@@ -51,8 +51,9 @@ ApplicationTestRunner.dumpObjectStores = function() {
     TestRunner.addResult('    Object store: ' + objectStoreTreeElement.title);
     const entries = objectStoreTreeElement._view._entries;
     TestRunner.addResult('            Number of entries: ' + entries.length);
-    for (let j = 0; j < entries.length; ++j)
+    for (let j = 0; j < entries.length; ++j) {
       TestRunner.addResult('            Key = ' + entries[j].key._value + ', value = ' + entries[j].value);
+    }
 
     for (let k = 0; k < objectStoreTreeElement.childCount(); ++k) {
       const indexTreeElement = objectStoreTreeElement.childAt(k);
@@ -60,8 +61,9 @@ ApplicationTestRunner.dumpObjectStores = function() {
       indexTreeElement.onselect(false);
       const entries = indexTreeElement._view._entries;
       TestRunner.addResult('                Number of entries: ' + entries.length);
-      for (let j = 0; j < entries.length; ++j)
+      for (let j = 0; j < entries.length; ++j) {
         TestRunner.addResult('                Key = ' + entries[j].primaryKey._value + ', value = ' + entries[j].value);
+      }
     }
   }
 };
@@ -76,8 +78,9 @@ ApplicationTestRunner.evaluateWithCallback = function(frameId, methodName, param
   callbacks[callbackId] = callback;
   let parametersString = 'dispatchCallback.bind(this, "' + callbackIdPrefix + callbackId + '")';
 
-  for (let i = 0; i < parameters.length; ++i)
+  for (let i = 0; i < parameters.length; ++i) {
     parametersString += ', ' + JSON.stringify(parameters[i]);
+  }
 
   const requestString = methodName + '(' + parametersString + ')';
   TestRunner.evaluateInPageAnonymously(requestString);

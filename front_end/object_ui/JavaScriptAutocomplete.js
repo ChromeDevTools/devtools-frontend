@@ -38,11 +38,13 @@ ObjectUI.JavaScriptAutocomplete = class {
    */
   async argumentsHint(fullText) {
     const functionCall = await Formatter.formatterWorkerPool().findLastFunctionCall(fullText);
-    if (!functionCall)
+    if (!functionCall) {
       return null;
+    }
     const executionContext = UI.context.flavor(SDK.ExecutionContext);
-    if (!executionContext)
+    if (!executionContext) {
       return null;
+    }
     const result = await executionContext.evaluate(
         {
           expression: functionCall.baseExpression,
@@ -76,8 +78,9 @@ ObjectUI.JavaScriptAutocomplete = class {
       return (result && !result.exceptionDetails && result.object) ? result.object : null;
     }, functionCall.functionName);
     executionContext.runtimeModel.releaseObjectGroup('argumentsHint');
-    if (!args.length || (args.length === 1 && !args[0].length))
+    if (!args.length || (args.length === 1 && !args[0].length)) {
       return null;
+    }
     return {args, argumentIndex: functionCall.argumentIndex};
   }
 
@@ -89,8 +92,9 @@ ObjectUI.JavaScriptAutocomplete = class {
    */
   async _argumentsForFunction(functionObject, receiverObjGetter, parsedFunctionName) {
     const description = functionObject.description;
-    if (!description.endsWith('{ [native code] }'))
+    if (!description.endsWith('{ [native code] }')) {
       return [await Formatter.formatterWorkerPool().argumentsList(description)];
+    }
 
     // Check if this is a bound function.
     if (description === 'function () { [native code] }') {
@@ -106,10 +110,11 @@ ObjectUI.JavaScriptAutocomplete = class {
         const clippedArgs = [];
         for (const signature of originalSignatures) {
           const restIndex = signature.slice(0, boundArgsLength).findIndex(arg => arg.startsWith('...'));
-          if (restIndex !== -1)
+          if (restIndex !== -1) {
             clippedArgs.push(signature.slice(restIndex));
-          else
+          } else {
             clippedArgs.push(signature.slice(boundArgsLength));
+          }
         }
         return clippedArgs;
       }
@@ -117,22 +122,26 @@ ObjectUI.JavaScriptAutocomplete = class {
     const javaScriptMetadata = await self.runtime.extension(Common.JavaScriptMetadata).instance();
 
     const name = /^function ([^(]*)\(/.exec(description)[1] || parsedFunctionName;
-    if (!name)
+    if (!name) {
       return [];
+    }
     const uniqueSignatures = javaScriptMetadata.signaturesForNativeFunction(name);
-    if (uniqueSignatures)
+    if (uniqueSignatures) {
       return uniqueSignatures;
+    }
     const receiverObj = await receiverObjGetter();
     const className = receiverObj.className;
-    if (javaScriptMetadata.signaturesForInstanceMethod(name, className))
+    if (javaScriptMetadata.signaturesForInstanceMethod(name, className)) {
       return javaScriptMetadata.signaturesForInstanceMethod(name, className);
+    }
 
     // Check for static methods on a constructor.
     if (receiverObj.type === 'function' && receiverObj.description.endsWith('{ [native code] }')) {
       const receiverName = /^function ([^(]*)\(/.exec(receiverObj.description)[1];
       const staticSignatures = javaScriptMetadata.signaturesForStaticMethod(name, receiverName);
-      if (staticSignatures)
+      if (staticSignatures) {
         return staticSignatures;
+      }
     }
 
 
@@ -153,16 +162,18 @@ ObjectUI.JavaScriptAutocomplete = class {
       protoNames = await receiverObj.callFunctionJSON(function() {
         const result = [];
         for (let object = this; object; object = Object.getPrototypeOf(object)) {
-          if (typeof object === 'object' && object.constructor && object.constructor.name)
+          if (typeof object === 'object' && object.constructor && object.constructor.name) {
             result[result.length] = object.constructor.name;
+          }
         }
         return result;
       }, []);
     }
     for (const proto of protoNames) {
       const instanceSignatures = javaScriptMetadata.signaturesForInstanceMethod(name, proto);
-      if (instanceSignatures)
+      if (instanceSignatures) {
         return instanceSignatures;
+      }
     }
     return [];
   }
@@ -175,12 +186,14 @@ ObjectUI.JavaScriptAutocomplete = class {
   async _mapCompletions(text, query) {
     const mapMatch = text.match(/\.\s*(get|set|delete)\s*\(\s*$/);
     const executionContext = UI.context.flavor(SDK.ExecutionContext);
-    if (!executionContext || !mapMatch)
+    if (!executionContext || !mapMatch) {
       return [];
+    }
 
     const expression = await Formatter.formatterWorkerPool().findLastExpression(text.substring(0, mapMatch.index));
-    if (!expression)
+    if (!expression) {
       return [];
+    }
 
     const result = await executionContext.evaluate(
         {
@@ -194,13 +207,15 @@ ObjectUI.JavaScriptAutocomplete = class {
           timeout: expression.possibleSideEffects ? 500 : undefined
         },
         /* userGesture */ false, /* awaitPromise */ false);
-    if (result.error || !!result.exceptionDetails || result.object.subtype !== 'map')
+    if (result.error || !!result.exceptionDetails || result.object.subtype !== 'map') {
       return [];
+    }
     const properties = await result.object.getOwnProperties(false);
     const internalProperties = properties.internalProperties || [];
     const entriesProperty = internalProperties.find(property => property.name === '[[Entries]]');
-    if (!entriesProperty)
+    if (!entriesProperty) {
       return [];
+    }
     const keysObj = await entriesProperty.value.callFunctionJSON(getEntries);
     executionContext.runtimeModel.releaseObjectGroup('mapCompletion');
     return gotKeys(Object.keys(keysObj));
@@ -213,8 +228,9 @@ ObjectUI.JavaScriptAutocomplete = class {
     function getEntries() {
       const result = {__proto__: null};
       for (let i = 0; i < this.length; i++) {
-        if (typeof this[i].key === 'string')
+        if (typeof this[i].key === 'string') {
           result[this[i].key] = true;
+        }
       }
       return result;
     }
@@ -229,37 +245,43 @@ ObjectUI.JavaScriptAutocomplete = class {
       const caseSensitiveAnywhere = [];
       const caseInsensitiveAnywhere = [];
       let quoteChar = '"';
-      if (query.startsWith('\''))
+      if (query.startsWith('\'')) {
         quoteChar = '\'';
+      }
       let endChar = ')';
-      if (mapMatch[0].indexOf('set') !== -1)
+      if (mapMatch[0].indexOf('set') !== -1) {
         endChar = ', ';
+      }
 
       const sorter = rawKeys.length < 1000 ? String.naturalOrderComparator : undefined;
       const keys = rawKeys.sort(sorter).map(key => quoteChar + key + quoteChar);
 
       for (const key of keys) {
-        if (key.length < query.length)
+        if (key.length < query.length) {
           continue;
-        if (query.length && key.toLowerCase().indexOf(query.toLowerCase()) === -1)
+        }
+        if (query.length && key.toLowerCase().indexOf(query.toLowerCase()) === -1) {
           continue;
+        }
         // Substitute actual newlines with newline characters. @see crbug.com/498421
         const title = key.split('\n').join('\\n');
         const text = title + endChar;
 
-        if (key.startsWith(query))
+        if (key.startsWith(query)) {
           caseSensitivePrefix.push({text: text, title: title, priority: 4});
-        else if (key.toLowerCase().startsWith(query.toLowerCase()))
+        } else if (key.toLowerCase().startsWith(query.toLowerCase())) {
           caseInsensitivePrefix.push({text: text, title: title, priority: 3});
-        else if (key.indexOf(query) !== -1)
+        } else if (key.indexOf(query) !== -1) {
           caseSensitiveAnywhere.push({text: text, title: title, priority: 2});
-        else
+        } else {
           caseInsensitiveAnywhere.push({text: text, title: title, priority: 1});
+        }
       }
       const suggestions =
           caseSensitivePrefix.concat(caseInsensitivePrefix, caseSensitiveAnywhere, caseInsensitiveAnywhere);
-      if (suggestions.length)
+      if (suggestions.length) {
         suggestions[0].subtitle = Common.UIString('Keys');
+      }
       return suggestions;
     }
   }
@@ -272,14 +294,17 @@ ObjectUI.JavaScriptAutocomplete = class {
    */
   async _completionsForExpression(fullText, query, force) {
     const executionContext = UI.context.flavor(SDK.ExecutionContext);
-    if (!executionContext)
+    if (!executionContext) {
       return [];
+    }
     let expression;
-    if (fullText.endsWith('.') || fullText.endsWith('['))
+    if (fullText.endsWith('.') || fullText.endsWith('[')) {
       expression = await Formatter.formatterWorkerPool().findLastExpression(fullText.substring(0, fullText.length - 1));
+    }
     if (!expression) {
-      if (fullText.endsWith('.'))
+      if (fullText.endsWith('.')) {
         return [];
+      }
       expression = {baseExpression: '', possibleSideEffects: false};
     }
     const needsNoSideEffects = expression.possibleSideEffects;
@@ -290,12 +315,14 @@ ObjectUI.JavaScriptAutocomplete = class {
     const bracketNotation = !!expressionString && fullText.endsWith('[');
 
     // User is entering float value, do not suggest anything.
-    if ((expressionString && !isNaN(expressionString)) || (!expressionString && query && !isNaN(query)))
+    if ((expressionString && !isNaN(expressionString)) || (!expressionString && query && !isNaN(query))) {
       return [];
+    }
 
 
-    if (!query && !expressionString && !force)
+    if (!query && !expressionString && !force) {
       return [];
+    }
     const selectedFrame = executionContext.debuggerModel.selectedCallFrame();
     let completionGroups;
     const TEN_SECONDS = 10000;
@@ -332,8 +359,9 @@ ObjectUI.JavaScriptAutocomplete = class {
      * @return {!Promise<!Array<!ObjectUI.JavaScriptAutocomplete.CompletionGroup>>}
      */
     async function completionsOnGlobal(result) {
-      if (result.error || !!result.exceptionDetails || !result.object)
+      if (result.error || !!result.exceptionDetails || !result.object) {
         return [];
+      }
 
       let object = result.object;
       while (object && object.type === 'object' && object.subtype === 'proxy') {
@@ -342,8 +370,9 @@ ObjectUI.JavaScriptAutocomplete = class {
         const target = internalProperties.find(property => property.name === '[[Target]]');
         object = target ? target.value : null;
       }
-      if (!object)
+      if (!object) {
         return [];
+      }
       let completions = [];
       if (object.type === 'object' || object.type === 'function') {
         completions =
@@ -362,23 +391,26 @@ ObjectUI.JavaScriptAutocomplete = class {
             },
             /* userGesture */ false,
             /* awaitPromise */ false);
-        if (evaluateResult.object && !evaluateResult.exceptionDetails)
+        if (evaluateResult.object && !evaluateResult.exceptionDetails) {
           completions = /** @type {!Iterable} */ (evaluateResult.object.value) || [];
+        }
       }
       executionContext.runtimeModel.releaseObjectGroup('completion');
 
       if (!expressionString) {
         const globalNames = await executionContext.globalLexicalScopeNames();
         // Merge lexical scope names with first completion group on global object: let a and let b should be in the same group.
-        if (completions.length)
+        if (completions.length) {
           completions[0].items = completions[0].items.concat(globalNames);
-        else
+        } else {
           completions.push({items: globalNames.sort(), title: Common.UIString('Lexical scope variables')});
+        }
       }
 
       for (const group of completions) {
-        for (let i = 0; i < group.items.length; i++)
+        for (let i = 0; i < group.items.length; i++) {
           group.items[i] = group.items[i].replace(/\n/g, '\\n');
+        }
 
         group.items.sort(group.items.length < 1000 ? this._itemComparator : undefined);
       }
@@ -393,29 +425,33 @@ ObjectUI.JavaScriptAutocomplete = class {
        */
       function getCompletions(type) {
         let object;
-        if (type === 'string')
+        if (type === 'string') {
           object = new String('');
-        else if (type === 'number')
+        } else if (type === 'number') {
           object = new Number(0);
+        }
         // Object-wrapped BigInts cannot be constructed via `new BigInt`.
-        else if (type === 'bigint')
+        else if (type === 'bigint') {
           object = Object(BigInt(0));
-        else if (type === 'boolean')
+        } else if (type === 'boolean') {
           object = new Boolean(false);
-        else
+        } else {
           object = this;
+        }
 
         const result = [];
         try {
           for (let o = object; o; o = Object.getPrototypeOf(o)) {
-            if ((type === 'array' || type === 'typedarray') && o === object && o.length > 9999)
+            if ((type === 'array' || type === 'typedarray') && o === object && o.length > 9999) {
               continue;
+            }
 
             const group = {items: [], __proto__: null};
             try {
               if (typeof o === 'object' && Object.prototype.hasOwnProperty.call(o, 'constructor') && o.constructor &&
-                  o.constructor.name)
+                  o.constructor.name) {
                 group.title = o.constructor.name;
+              }
             } catch (ee) {
               // we could break upon cross origin check.
             }
@@ -424,8 +460,9 @@ ObjectUI.JavaScriptAutocomplete = class {
             const isArray = Array.isArray(o);
             for (let i = 0; i < names.length && group.items.length < 10000; ++i) {
               // Skip array elements indexes.
-              if (isArray && /^[0-9]/.test(names[i]))
+              if (isArray && /^[0-9]/.test(names[i])) {
                 continue;
+              }
               group.items[group.items.length] = names[i];
             }
           }
@@ -450,8 +487,9 @@ ObjectUI.JavaScriptAutocomplete = class {
       }
       const fullScopes = await Promise.all(groupPromises);
       executionContext.runtimeModel.releaseObjectGroup('completion');
-      for (const scope of fullScopes)
+      for (const scope of fullScopes) {
         result.push({title: scope.name, items: scope.properties.map(property => property.name).sort()});
+      }
       return result;
     }
   }
@@ -465,8 +503,9 @@ ObjectUI.JavaScriptAutocomplete = class {
    * @return {!UI.SuggestBox.Suggestions}
    */
   _receivedPropertyNames(propertyGroups, dotNotation, bracketNotation, expressionString, query) {
-    if (!propertyGroups)
+    if (!propertyGroups) {
       return [];
+    }
     const includeCommandLineAPI = (!dotNotation && !bracketNotation);
     if (includeCommandLineAPI) {
       const commandLineAPI = [
@@ -542,32 +581,38 @@ ObjectUI.JavaScriptAutocomplete = class {
       for (let i = 0; i < group.items.length; i++) {
         let property = group.items[i];
         // Assume that all non-ASCII characters are letters and thus can be used as part of identifier.
-        if (!bracketNotation && !regex.test(property))
+        if (!bracketNotation && !regex.test(property)) {
           continue;
+        }
 
         if (bracketNotation) {
-          if (!/^[0-9]+$/.test(property))
+          if (!/^[0-9]+$/.test(property)) {
             property = quoteUsed + property.escapeCharacters(quoteUsed + '\\') + quoteUsed;
+          }
           property += ']';
         }
-        if (allProperties.has(property))
+        if (allProperties.has(property)) {
           continue;
+        }
 
-        if (property.length < query.length)
+        if (property.length < query.length) {
           continue;
+        }
         const lowerCaseProperty = property.toLowerCase();
-        if (query.length && lowerCaseProperty.indexOf(lowerCaseQuery) === -1)
+        if (query.length && lowerCaseProperty.indexOf(lowerCaseQuery) === -1) {
           continue;
+        }
 
         allProperties.add(property);
-        if (property.startsWith(query))
+        if (property.startsWith(query)) {
           caseSensitivePrefix.push({text: property, priority: property === query ? 5 : 4});
-        else if (lowerCaseProperty.startsWith(lowerCaseQuery))
+        } else if (lowerCaseProperty.startsWith(lowerCaseQuery)) {
           caseInsensitivePrefix.push({text: property, priority: 3});
-        else if (property.indexOf(query) !== -1)
+        } else if (property.indexOf(query) !== -1) {
           caseSensitiveAnywhere.push({text: property, priority: 2});
-        else
+        } else {
           caseInsensitiveAnywhere.push({text: property, priority: 1});
+        }
       }
       const structuredGroup =
           caseSensitivePrefix.concat(caseInsensitivePrefix, caseSensitiveAnywhere, caseInsensitiveAnywhere);
@@ -577,8 +622,9 @@ ObjectUI.JavaScriptAutocomplete = class {
       }
       result = result.concat(structuredGroup);
       result.forEach(item => {
-        if (item.text.endsWith(']'))
+        if (item.text.endsWith(']')) {
           item.title = item.text.substring(0, item.text.length - 1);
+        }
       });
     }
     return result;
@@ -592,10 +638,12 @@ ObjectUI.JavaScriptAutocomplete = class {
   _itemComparator(a, b) {
     const aStartsWithUnderscore = a.startsWith('_');
     const bStartsWithUnderscore = b.startsWith('_');
-    if (aStartsWithUnderscore && !bStartsWithUnderscore)
+    if (aStartsWithUnderscore && !bStartsWithUnderscore) {
       return 1;
-    if (bStartsWithUnderscore && !aStartsWithUnderscore)
+    }
+    if (bStartsWithUnderscore && !aStartsWithUnderscore) {
       return -1;
+    }
     return String.naturalOrderComparator(a, b);
   }
 
@@ -605,12 +653,14 @@ ObjectUI.JavaScriptAutocomplete = class {
    */
   static async isExpressionComplete(expression) {
     const currentExecutionContext = UI.context.flavor(SDK.ExecutionContext);
-    if (!currentExecutionContext)
+    if (!currentExecutionContext) {
       return true;
+    }
     const result =
         await currentExecutionContext.runtimeModel.compileScript(expression, '', false, currentExecutionContext.id);
-    if (!result.exceptionDetails)
+    if (!result.exceptionDetails) {
       return true;
+    }
     const description = result.exceptionDetails.exception.description;
     return !description.startsWith('SyntaxError: Unexpected end of input') &&
         !description.startsWith('SyntaxError: Unterminated template literal');
@@ -650,14 +700,16 @@ ObjectUI.JavaScriptAutocompleteConfig = class {
    */
   _substituteRange(lineNumber, columnNumber) {
     const token = this._editor.tokenAtTextPosition(lineNumber, columnNumber);
-    if (token && token.type === 'js-string')
+    if (token && token.type === 'js-string') {
       return new TextUtils.TextRange(lineNumber, token.startColumn, lineNumber, columnNumber);
+    }
 
     const lineText = this._editor.line(lineNumber);
     let index;
     for (index = columnNumber - 1; index >= 0; index--) {
-      if (' =:[({;,!+-*/&|^<>.\t\r\n'.indexOf(lineText.charAt(index)) !== -1)
+      if (' =:[({;,!+-*/&|^<>.\t\r\n'.indexOf(lineText.charAt(index)) !== -1) {
         break;
+      }
     }
     return new TextUtils.TextRange(lineNumber, index + 1, lineNumber, columnNumber);
   }
@@ -675,19 +727,23 @@ ObjectUI.JavaScriptAutocompleteConfig = class {
     if (token) {
       const excludedTokens = new Set(['js-comment', 'js-string-2', 'js-def']);
       const trimmedBefore = before.trim();
-      if (!trimmedBefore.endsWith('[') && !trimmedBefore.match(/\.\s*(get|set|delete)\s*\(\s*$/))
+      if (!trimmedBefore.endsWith('[') && !trimmedBefore.match(/\.\s*(get|set|delete)\s*\(\s*$/)) {
         excludedTokens.add('js-string');
-      if (!trimmedBefore.endsWith('.'))
+      }
+      if (!trimmedBefore.endsWith('.')) {
         excludedTokens.add('js-property');
-      if (excludedTokens.has(token.type))
+      }
+      if (excludedTokens.has(token.type)) {
         return [];
+      }
     }
     const queryAndAfter = this._editor.line(queryRange.startLine).substring(queryRange.startColumn);
 
     const words = await ObjectUI.javaScriptAutocomplete.completionsForTextInCurrentContext(before, query, force);
     if (!force && queryAndAfter && queryAndAfter !== query &&
-        words.some(word => queryAndAfter.startsWith(word.text) && query.length !== word.text.length))
+        words.some(word => queryAndAfter.startsWith(word.text) && query.length !== word.text.length)) {
       return [];
+    }
     return words;
   }
 
@@ -699,19 +755,22 @@ ObjectUI.JavaScriptAutocompleteConfig = class {
   async _tooltipCallback(lineNumber, columnNumber) {
     const before = this._editor.text(new TextUtils.TextRange(0, 0, lineNumber, columnNumber));
     const result = await ObjectUI.javaScriptAutocomplete.argumentsHint(before);
-    if (!result)
+    if (!result) {
       return null;
+    }
     const argumentIndex = result.argumentIndex;
     const tooltip = createElement('div');
     for (const args of result.args) {
       const argumentsElement = createElement('span');
       for (let i = 0; i < args.length; i++) {
-        if (i === argumentIndex || (i < argumentIndex && args[i].startsWith('...')))
+        if (i === argumentIndex || (i < argumentIndex && args[i].startsWith('...'))) {
           argumentsElement.appendChild(UI.html`<b>${args[i]}</b>`);
-        else
+        } else {
           argumentsElement.createTextChild(args[i]);
-        if (i < args.length - 1)
+        }
+        if (i < args.length - 1) {
           argumentsElement.createTextChild(', ');
+        }
       }
       tooltip.appendChild(UI.html`<div class='source-code'>\u0192(${argumentsElement})</div>`);
     }

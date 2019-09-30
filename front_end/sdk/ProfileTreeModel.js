@@ -91,16 +91,18 @@ SDK.ProfileTreeModel = class {
     while (nodesToTraverse.length) {
       const parent = nodesToTraverse.pop();
       const depth = parent.depth + 1;
-      if (depth > this.maxDepth)
+      if (depth > this.maxDepth) {
         this.maxDepth = depth;
+      }
       const children = parent.children;
       const length = children.length;
       for (let i = 0; i < length; ++i) {
         const child = children[i];
         child.depth = depth;
         child.parent = parent;
-        if (child.children.length)
+        if (child.children.length) {
           nodesToTraverse.push(child);
+        }
       }
     }
   }

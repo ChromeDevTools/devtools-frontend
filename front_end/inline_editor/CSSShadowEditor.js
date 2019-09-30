@@ -155,8 +155,9 @@ InlineEditor.CSSShadowEditor = class extends UI.VBox {
    */
   _onButtonClick(event) {
     const insetClicked = (event.currentTarget === this._insetButton);
-    if (insetClicked && this._model.inset() || !insetClicked && !this._model.inset())
+    if (insetClicked && this._model.inset() || !insetClicked && !this._model.inset()) {
       return;
+    }
     this._model.setInset(insetClicked);
     this._updateButtons();
     this.dispatchEventToListeners(InlineEditor.CSSShadowEditor.Events.ShadowChanged, this._model);
@@ -167,13 +168,16 @@ InlineEditor.CSSShadowEditor = class extends UI.VBox {
    */
   _handleValueModification(event) {
     const modifiedValue = UI.createReplacementString(event.currentTarget.value, event, customNumberHandler);
-    if (!modifiedValue)
+    if (!modifiedValue) {
       return;
+    }
     const length = InlineEditor.CSSLength.parse(modifiedValue);
-    if (!length)
+    if (!length) {
       return;
-    if (event.currentTarget === this._blurInput && length.amount < 0)
+    }
+    if (event.currentTarget === this._blurInput && length.amount < 0) {
       length.amount = 0;
+    }
     event.currentTarget.value = length.asCSSText();
     event.currentTarget.selectionStart = 0;
     event.currentTarget.selectionEnd = event.currentTarget.value.length;
@@ -187,8 +191,9 @@ InlineEditor.CSSShadowEditor = class extends UI.VBox {
      * @return {string}
      */
     function customNumberHandler(prefix, number, suffix) {
-      if (!suffix.length)
+      if (!suffix.length) {
         suffix = InlineEditor.CSSShadowEditor.defaultUnit;
+      }
       return prefix + number + suffix;
     }
   }
@@ -200,8 +205,9 @@ InlineEditor.CSSShadowEditor = class extends UI.VBox {
     this._changedElement = event.currentTarget;
     this._changedElement.classList.remove('invalid');
     const length = InlineEditor.CSSLength.parse(event.currentTarget.value);
-    if (!length || event.currentTarget === this._blurInput && length.amount < 0)
+    if (!length || event.currentTarget === this._blurInput && length.amount < 0) {
       return;
+    }
     if (event.currentTarget === this._xInput) {
       this._model.setOffsetX(length);
       this._updateCanvas(false);
@@ -219,12 +225,14 @@ InlineEditor.CSSShadowEditor = class extends UI.VBox {
   }
 
   _onTextBlur() {
-    if (!this._changedElement)
+    if (!this._changedElement) {
       return;
+    }
     let length = !this._changedElement.value.trim() ? InlineEditor.CSSLength.zero() :
                                                       InlineEditor.CSSLength.parse(this._changedElement.value);
-    if (!length)
+    if (!length) {
       length = InlineEditor.CSSLength.parse(this._changedElement.value + InlineEditor.CSSShadowEditor.defaultUnit);
+    }
     if (!length) {
       this._changedElement.classList.add('invalid');
       this._changedElement = null;
@@ -239,8 +247,9 @@ InlineEditor.CSSShadowEditor = class extends UI.VBox {
       this._yInput.value = length.asCSSText();
       this._updateCanvas(false);
     } else if (this._changedElement === this._blurInput) {
-      if (length.amount < 0)
+      if (length.amount < 0) {
         length = InlineEditor.CSSLength.zero();
+      }
       this._model.setBlurRadius(length);
       this._blurInput.value = length.asCSSText();
       this._blurSlider.value = length.amount;
@@ -283,8 +292,9 @@ InlineEditor.CSSShadowEditor = class extends UI.VBox {
         this._xySlider.totalOffsetTop() + this._halfCanvasSize);
     const clickedPoint = new UI.Geometry.Point(event.x - this._canvasOrigin.x, event.y - this._canvasOrigin.y);
     const thumbPoint = this._sliderThumbPosition();
-    if (clickedPoint.distanceTo(thumbPoint) >= InlineEditor.CSSShadowEditor.sliderThumbRadius)
+    if (clickedPoint.distanceTo(thumbPoint) >= InlineEditor.CSSShadowEditor.sliderThumbRadius) {
       this._dragMove(event);
+    }
     return true;
   }
 
@@ -293,8 +303,9 @@ InlineEditor.CSSShadowEditor = class extends UI.VBox {
    */
   _dragMove(event) {
     let point = new UI.Geometry.Point(event.x - this._canvasOrigin.x, event.y - this._canvasOrigin.y);
-    if (event.shiftKey)
+    if (event.shiftKey) {
       point = this._snapToClosestDirection(point);
+    }
     const constrainedPoint = this._constrainPoint(point, this._innerCanvasSize);
     const newX = Math.round((constrainedPoint.x / this._innerCanvasSize) * InlineEditor.CSSShadowEditor.maxRange);
     const newY = Math.round((constrainedPoint.y / this._innerCanvasSize) * InlineEditor.CSSShadowEditor.maxRange);
@@ -332,25 +343,28 @@ InlineEditor.CSSShadowEditor = class extends UI.VBox {
   _onCanvasArrowKey(event) {
     let shiftX = 0;
     let shiftY = 0;
-    if (event.key === 'ArrowRight')
+    if (event.key === 'ArrowRight') {
       shiftX = 1;
-    else if (event.key === 'ArrowLeft')
+    } else if (event.key === 'ArrowLeft') {
       shiftX = -1;
-    else if (event.key === 'ArrowUp')
+    } else if (event.key === 'ArrowUp') {
       shiftY = -1;
-    else if (event.key === 'ArrowDown')
+    } else if (event.key === 'ArrowDown') {
       shiftY = 1;
+    }
 
-    if (!shiftX && !shiftY)
+    if (!shiftX && !shiftY) {
       return;
+    }
     event.consume(true);
 
     if (shiftX) {
       const offsetX = this._model.offsetX();
       const newAmount = Number.constrain(
           offsetX.amount + shiftX, -InlineEditor.CSSShadowEditor.maxRange, InlineEditor.CSSShadowEditor.maxRange);
-      if (newAmount === offsetX.amount)
+      if (newAmount === offsetX.amount) {
         return;
+      }
       this._model.setOffsetX(
           new InlineEditor.CSSLength(newAmount, offsetX.unit || InlineEditor.CSSShadowEditor.defaultUnit));
       this._xInput.value = this._model.offsetX().asCSSText();
@@ -360,8 +374,9 @@ InlineEditor.CSSShadowEditor = class extends UI.VBox {
       const offsetY = this._model.offsetY();
       const newAmount = Number.constrain(
           offsetY.amount + shiftY, -InlineEditor.CSSShadowEditor.maxRange, InlineEditor.CSSShadowEditor.maxRange);
-      if (newAmount === offsetY.amount)
+      if (newAmount === offsetY.amount) {
         return;
+      }
       this._model.setOffsetY(
           new InlineEditor.CSSLength(newAmount, offsetY.unit || InlineEditor.CSSShadowEditor.defaultUnit));
       this._yInput.value = this._model.offsetY().asCSSText();
@@ -377,8 +392,9 @@ InlineEditor.CSSShadowEditor = class extends UI.VBox {
    * @return {!UI.Geometry.Point}
    */
   _constrainPoint(point, max) {
-    if (Math.abs(point.x) <= max && Math.abs(point.y) <= max)
+    if (Math.abs(point.x) <= max && Math.abs(point.y) <= max) {
       return new UI.Geometry.Point(point.x, point.y);
+    }
     return point.scale(max / Math.max(Math.abs(point.x), Math.abs(point.y)));
   }
 

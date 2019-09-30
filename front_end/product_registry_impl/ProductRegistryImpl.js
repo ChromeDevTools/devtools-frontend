@@ -16,8 +16,9 @@ ProductRegistryImpl.Registry = class {
    */
   nameForUrl(parsedUrl) {
     const entry = this.entryForUrl(parsedUrl);
-    if (entry)
+    if (entry) {
       return entry.name;
+    }
     return null;
   }
 
@@ -27,8 +28,9 @@ ProductRegistryImpl.Registry = class {
    * @return {?ProductRegistry.Registry.ProductEntry}
    */
   entryForUrl(parsedUrl) {
-    if (parsedUrl.isDataURL() || !parsedUrl.isValid)
+    if (parsedUrl.isDataURL() || !parsedUrl.isValid) {
       return null;
+    }
     // TODO(allada) This should be expanded to allow paths as as well as domain to find a product.
     const productsByDomainHash = ProductRegistryImpl._productsByDomainHash;
     // Remove leading www. if it is the only subdomain.
@@ -43,21 +45,25 @@ ProductRegistryImpl.Registry = class {
       const prefixes = productsByDomainHash.get(ProductRegistryImpl._hashForDomain(subDomain));
       previousIndex = index;
       index = nextIndex;
-      if (!prefixes)
+      if (!prefixes) {
         continue;
+      }
       // Exact match domains are always highest priority.
-      if ('' in prefixes && domain === subDomain)
+      if ('' in prefixes && domain === subDomain) {
         return prefixes[''];
+      }
       if (previousSubdomain) {
         for (const prefix in prefixes) {
           const domainPrefix = previousSubdomain.substr(0, prefix.length);
-          if (domainPrefix === prefix && prefix !== '')
+          if (domainPrefix === prefix && prefix !== '') {
             return prefixes[prefix];
+          }
         }
       }
       // Process wildcard subdomain if no better match found.
-      if (prefixes && '*' in prefixes)
+      if (prefixes && '*' in prefixes) {
         return prefixes['*'];
+      }
     }
     return null;
   }
@@ -69,8 +75,9 @@ ProductRegistryImpl.Registry = class {
    */
   typeForUrl(parsedUrl) {
     const entry = this.entryForUrl(parsedUrl);
-    if (entry)
+    if (entry) {
       return entry.type;
+    }
     return null;
   }
 };

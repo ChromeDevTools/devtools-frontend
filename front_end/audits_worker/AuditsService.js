@@ -111,10 +111,12 @@ var AuditsService = class {  // eslint-disable-line
    * @param {function(string|undefined)} cb
    */
   on(eventName, cb) {
-    if (eventName === 'message')
+    if (eventName === 'message') {
       this._onMessage = cb;
-    if (eventName === 'close')
+    }
+    if (eventName === 'close') {
       this._onClose = cb;
+    }
   }
 
   _disableLoggingForTest() {

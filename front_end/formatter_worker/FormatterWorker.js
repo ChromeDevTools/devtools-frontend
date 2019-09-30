@@ -46,8 +46,9 @@ FormatterWorker.createTokenizer = function(mimeType) {
     while (!stream.eol()) {
       const style = mode.token(stream, state);
       const value = stream.current();
-      if (callback(value, style, stream.start, stream.start + value.length) === FormatterWorker.AbortTokenization)
+      if (callback(value, style, stream.start, stream.start + value.length) === FormatterWorker.AbortTokenization) {
         return;
+      }
       stream.start = stream.pos;
     }
   }
@@ -59,8 +60,9 @@ FormatterWorker.AbortTokenization = {};
 self.onmessage = function(event) {
   const method = /** @type {string} */ (event.data.method);
   const params = /** @type !{indentString: string, content: string, mimeType: string} */ (event.data.params);
-  if (!method)
+  if (!method) {
     return;
+  }
 
   switch (method) {
     case 'format':
@@ -116,8 +118,9 @@ FormatterWorker.evaluatableJavaScriptSubstring = function(content) {
   let result = '';
   try {
     let token = tokenizer.getToken();
-    while (token.type !== acorn.tokTypes.eof && FormatterWorker.AcornTokenizer.punctuator(token))
+    while (token.type !== acorn.tokTypes.eof && FormatterWorker.AcornTokenizer.punctuator(token)) {
       token = tokenizer.getToken();
+    }
 
     const startIndex = token.start;
     let endIndex = token.end;
@@ -126,14 +129,16 @@ FormatterWorker.evaluatableJavaScriptSubstring = function(content) {
       const isIdentifier = FormatterWorker.AcornTokenizer.identifier(token);
       const isThis = FormatterWorker.AcornTokenizer.keyword(token, 'this');
       const isString = token.type === acorn.tokTypes.string;
-      if (!isThis && !isIdentifier && !isString)
+      if (!isThis && !isIdentifier && !isString) {
         break;
+      }
 
       endIndex = token.end;
       token = tokenizer.getToken();
       while (FormatterWorker.AcornTokenizer.punctuator(token, '.[]')) {
-        if (FormatterWorker.AcornTokenizer.punctuator(token, '['))
+        if (FormatterWorker.AcornTokenizer.punctuator(token, '[')) {
           openBracketsCounter++;
+        }
 
         if (FormatterWorker.AcornTokenizer.punctuator(token, ']')) {
           endIndex = openBracketsCounter > 0 ? token.end : endIndex;
@@ -169,8 +174,9 @@ FormatterWorker.preprocessTopLevelAwaitExpressions = function(content) {
   let containsReturn = false;
   class Visitor {
     ClassDeclaration(node) {
-      if (node.parent === body)
+      if (node.parent === body) {
         changes.push({text: node.id.name + '=', start: node.start, end: node.start});
+      }
     }
     FunctionDeclaration(node) {
       changes.push({text: node.id.name + '=', start: node.start, end: node.start});
@@ -189,17 +195,20 @@ FormatterWorker.preprocessTopLevelAwaitExpressions = function(content) {
       containsAwait = true;
     }
     ForOfStatement(node) {
-      if (node.await)
+      if (node.await) {
         containsAwait = true;
+      }
     }
     ReturnStatement(node) {
       containsReturn = true;
     }
     VariableDeclaration(node) {
-      if (node.kind !== 'var' && node.parent !== body)
+      if (node.kind !== 'var' && node.parent !== body) {
         return;
-      if (node.parent.type === 'ForOfStatement' && node.parent.left === node)
+      }
+      if (node.parent.type === 'ForOfStatement' && node.parent.left === node) {
         return;
+      }
       const onlyOneDeclaration = node.declarations.length === 1;
       changes.push(
           {text: onlyOneDeclaration ? 'void' : 'void (', start: node.start, end: node.start + node.kind.length});
@@ -225,8 +234,9 @@ FormatterWorker.preprocessTopLevelAwaitExpressions = function(content) {
    * @this {Object}
    */
   function visit(node) {
-    if (node.type in this)
+    if (node.type in this) {
       return this[node.type](node);
+    }
   }
   // Top-level return is not allowed.
   if (!containsAwait || containsReturn) {
@@ -236,10 +246,11 @@ FormatterWorker.preprocessTopLevelAwaitExpressions = function(content) {
   const last = body.body[body.body.length - 1];
   if (last.type === 'ExpressionStatement') {
     changes.push({text: 'return (', start: last.start, end: last.start});
-    if (wrapped[last.end - 1] !== ';')
+    if (wrapped[last.end - 1] !== ';') {
       changes.push({text: ')', start: last.end, end: last.end});
-    else
+    } else {
       changes.push({text: ')', start: last.end - 1, end: last.end - 1});
+    }
   }
   while (changes.length) {
     const change = changes.pop();
@@ -276,17 +287,20 @@ FormatterWorker.javaScriptIdentifiers = function(content) {
    */
   function beforeVisit(node) {
     if (isFunction(node)) {
-      if (node.id)
+      if (node.id) {
         identifiers.push(node.id);
+      }
       return FormatterWorker.ESTreeWalker.SkipSubtree;
     }
 
-    if (node.type !== 'Identifier')
+    if (node.type !== 'Identifier') {
       return;
+    }
 
     if (node.parent && node.parent.type === 'MemberExpression' && node.parent.property === node &&
-        !node.parent.computed)
+        !node.parent.computed) {
       return;
+    }
     identifiers.push(node);
   }
 
@@ -296,8 +310,9 @@ FormatterWorker.javaScriptIdentifiers = function(content) {
   }
 
   const functionNode = root.body[0];
-  for (const param of functionNode.params)
+  for (const param of functionNode.params) {
     walker.walk(param);
+  }
   walker.walk(functionNode.body);
   const reduced = identifiers.map(id => ({name: id.name, offset: id.start}));
   postMessage(reduced);
@@ -351,8 +366,9 @@ FormatterWorker.format = function(mimeType, text, indentString) {
  * @return {?{baseExpression: string, possibleSideEffects:boolean, receiver: string, argumentIndex: number, functionName: string}}
  */
 FormatterWorker.findLastFunctionCall = function(content) {
-  if (content.length > 10000)
+  if (content.length > 10000) {
     return null;
+  }
   try {
     const tokenizer = acorn.tokenizer(content, {ecmaVersion: FormatterWorker.ACORN_ECMA_VERSION});
     while (tokenizer.getToken().type !== acorn.tokTypes.eof) {
@@ -363,17 +379,19 @@ FormatterWorker.findLastFunctionCall = function(content) {
 
   const suffix = '000)';
   const base = FormatterWorker._lastCompleteExpression(content, suffix, new Set(['CallExpression', 'NewExpression']));
-  if (!base)
+  if (!base) {
     return null;
+  }
   const callee = base.baseNode['callee'];
 
   let functionName = '';
   const functionProperty = callee.type === 'Identifier' ? callee : callee.property;
   if (functionProperty) {
-    if (functionProperty.type === 'Identifier')
+    if (functionProperty.type === 'Identifier') {
       functionName = functionProperty.name;
-    else if (functionProperty.type === 'Literal')
+    } else if (functionProperty.type === 'Literal') {
       functionName = functionProperty.value;
+    }
   }
 
   const argumentIndex = base.baseNode['arguments'].length - 1;
@@ -394,8 +412,9 @@ FormatterWorker.findLastFunctionCall = function(content) {
  * @return {!Array<string>}
  */
 FormatterWorker.argumentsList = function(content) {
-  if (content.length > 10000)
+  if (content.length > 10000) {
     return [];
+  }
   let parsed = null;
   try {
     // Try to parse as a function, anonymous function, or arrow function.
@@ -409,21 +428,25 @@ FormatterWorker.argumentsList = function(content) {
     } catch (e) {
     }
   }
-  if (!parsed || !parsed.body || !parsed.body[0] || !parsed.body[0].expression)
+  if (!parsed || !parsed.body || !parsed.body[0] || !parsed.body[0].expression) {
     return [];
+  }
   const expression = parsed.body[0].expression;
   let params = null;
   switch (expression.type) {
     case 'ClassExpression':
-      if (!expression.body.body)
+      if (!expression.body.body) {
         break;
+      }
       const constructor = expression.body.body.find(method => method.kind === 'constructor');
-      if (constructor)
+      if (constructor) {
         params = constructor.value.params;
+      }
       break;
     case 'ObjectExpression':
-      if (!expression.properties[0] || !expression.properties[0].value)
+      if (!expression.properties[0] || !expression.properties[0].value) {
         break;
+      }
       params = expression.properties[0].value.params;
       break;
     case 'FunctionExpression':
@@ -431,8 +454,9 @@ FormatterWorker.argumentsList = function(content) {
       params = expression.params;
       break;
   }
-  if (!params)
+  if (!params) {
     return [];
+  }
   return params.map(paramName);
 
   function paramName(param) {
@@ -457,8 +481,9 @@ FormatterWorker.argumentsList = function(content) {
  * @return {?{baseExpression: string, possibleSideEffects:boolean}}
  */
 FormatterWorker.findLastExpression = function(content) {
-  if (content.length > 10000)
+  if (content.length > 10000) {
     return null;
+  }
   try {
     const tokenizer = acorn.tokenizer(content, {ecmaVersion: FormatterWorker.ACORN_ECMA_VERSION});
     while (tokenizer.getToken().type !== acorn.tokTypes.eof) {
@@ -472,12 +497,14 @@ FormatterWorker.findLastExpression = function(content) {
     acorn.parse(content + suffix, {ecmaVersion: FormatterWorker.ACORN_ECMA_VERSION});
   } catch (parseError) {
     // If this is an invalid location for a '.', don't attempt to give autocomplete
-    if (parseError.message.startsWith('Unexpected token') && parseError.pos === content.length)
+    if (parseError.message.startsWith('Unexpected token') && parseError.pos === content.length) {
       return null;
+    }
   }
   const base = FormatterWorker._lastCompleteExpression(content, suffix, new Set(['MemberExpression', 'Identifier']));
-  if (!base)
+  if (!base) {
     return null;
+  }
   const {baseExpression, baseNode} = base;
   const possibleSideEffects = FormatterWorker._nodeHasPossibleSideEffects(baseNode);
   return {baseExpression, possibleSideEffects};
@@ -502,21 +529,26 @@ FormatterWorker._lastCompleteExpression = function(content, suffix, types) {
     } catch (e) {
     }
   }
-  if (!ast)
+  if (!ast) {
     return null;
+  }
   let baseNode = null;
   const walker = new FormatterWorker.ESTreeWalker(node => {
-    if (baseNode || node.end < ast.end)
+    if (baseNode || node.end < ast.end) {
       return FormatterWorker.ESTreeWalker.SkipSubtree;
-    if (types.has(node.type))
+    }
+    if (types.has(node.type)) {
       baseNode = node;
+    }
   });
   walker.walk(ast);
-  if (!baseNode)
+  if (!baseNode) {
     return null;
+  }
   let baseExpression = parsedContent.substring(baseNode.start, parsedContent.length - suffix.length);
-  if (baseExpression.startsWith('{'))
+  if (baseExpression.startsWith('{')) {
     baseExpression = `(${baseExpression})`;
+  }
   return {baseNode, baseExpression};
 };
 
@@ -531,10 +563,12 @@ FormatterWorker._nodeHasPossibleSideEffects = function(baseNode) {
   ]);
   let possibleSideEffects = false;
   const sideEffectwalker = new FormatterWorker.ESTreeWalker(node => {
-    if (!possibleSideEffects && !sideEffectFreeTypes.has(node.type))
+    if (!possibleSideEffects && !sideEffectFreeTypes.has(node.type)) {
       possibleSideEffects = true;
-    if (possibleSideEffects)
+    }
+    if (possibleSideEffects) {
       return FormatterWorker.ESTreeWalker.SkipSubtree;
+    }
   });
   sideEffectwalker.walk(/** @type {!ESTree.Node} */ (baseNode));
   return possibleSideEffects;
@@ -572,6 +606,7 @@ FormatterWorker.FormatterWorkerContentParser.parse = function(content, mimeType)
 };
 
 (function disableLoggingForTest() {
-  if (Runtime.queryParam('test'))
+  if (Runtime.queryParam('test')) {
     console.error = () => undefined;
+  }
 })();

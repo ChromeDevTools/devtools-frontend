@@ -40,8 +40,9 @@ Audits.AuditsPanel = class extends UI.Panel {
    */
   _refreshStartAuditUI(evt) {
     // PageAuditabilityChanged fires multiple times during an audit, which we want to ignore.
-    if (this._isLHAttached)
+    if (this._isLHAttached) {
       return;
+    }
 
     this._unauditableExplanation = evt.data.helpText;
     this._startView.setUnauditableExplanation(evt.data.helpText);
@@ -94,8 +95,9 @@ Audits.AuditsPanel = class extends UI.Panel {
     this._startView.show(this.contentElement);
     this._startView.setUnauditableExplanation(this._unauditableExplanation);
     this._startView.setStartButtonEnabled(!this._unauditableExplanation);
-    if (!this._unauditableExplanation)
+    if (!this._unauditableExplanation) {
       this._startView.focusStartButton();
+    }
 
     this._newButton.setEnabled(false);
     this._refreshToolbarUI();
@@ -147,8 +149,9 @@ Audits.AuditsPanel = class extends UI.Panel {
 
     const templatesHTML = Runtime.cachedResources['audits/lighthouse/templates.html'];
     const templatesDOM = new DOMParser().parseFromString(templatesHTML, 'text/html');
-    if (!templatesDOM)
+    if (!templatesDOM) {
       return;
+    }
 
     renderer.setTemplateContext(templatesDOM);
     const el = renderer.renderReport(lighthouseResult, reportContainer);
@@ -181,8 +184,9 @@ Audits.AuditsPanel = class extends UI.Panel {
    * @param {!ReportRenderer.RunnerResultArtifacts=} artifacts
    */
   _buildReportUI(lighthouseResult, artifacts) {
-    if (lighthouseResult === null)
+    if (lighthouseResult === null) {
       return;
+    }
 
     const optionElement = new Audits.ReportSelector.Item(
         lighthouseResult, () => this._renderReport(lighthouseResult, artifacts), this._renderStartView.bind(this));
@@ -196,13 +200,15 @@ Audits.AuditsPanel = class extends UI.Panel {
    */
   _handleDrop(dataTransfer) {
     const items = dataTransfer.items;
-    if (!items.length)
+    if (!items.length) {
       return;
+    }
     const item = items[0];
     if (item.kind === 'file') {
       const entry = items[0].webkitGetAsEntry();
-      if (!entry.isFile)
+      if (!entry.isFile) {
         return;
+      }
       entry.file(file => {
         const reader = new FileReader();
         reader.onload = () => this._loadedFromFile(/** @type {string} */ (reader.result));
@@ -216,8 +222,9 @@ Audits.AuditsPanel = class extends UI.Panel {
    */
   _loadedFromFile(report) {
     const data = JSON.parse(report);
-    if (!data['lighthouseVersion'])
+    if (!data['lighthouseVersion']) {
       return;
+    }
     this._buildReportUI(/** @type {!ReportRenderer.ReportJSON} */ (data));
   }
 
@@ -241,8 +248,9 @@ Audits.AuditsPanel = class extends UI.Panel {
         throw error;
       }
 
-      if (!lighthouseResponse)
+      if (!lighthouseResponse) {
         throw new Error('Auditing failed to produce a result');
+      }
 
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.AuditsFinished);
 
@@ -250,8 +258,9 @@ Audits.AuditsPanel = class extends UI.Panel {
       this._buildReportUI(lighthouseResponse.lhr, lighthouseResponse.artifacts);
     } catch (err) {
       await this._resetEmulationAndProtocolConnection();
-      if (err instanceof Error)
+      if (err instanceof Error) {
         this._statusView.renderBugReport(err);
+      }
     }
   }
 
@@ -290,8 +299,9 @@ Audits.AuditsPanel = class extends UI.Panel {
       emulationModel.deviceOutlineSetting().set(true);
 
       for (const device of Emulation.EmulatedDevicesList.instance().standard()) {
-        if (device.title === 'Nexus 5X')
+        if (device.title === 'Nexus 5X') {
           emulationModel.emulate(Emulation.DeviceModeModel.Type.Device, device, device.modes[0], 1);
+        }
       }
     }
 
@@ -300,8 +310,9 @@ Audits.AuditsPanel = class extends UI.Panel {
   }
 
   async _resetEmulationAndProtocolConnection() {
-    if (!this._isLHAttached)
+    if (!this._isLHAttached) {
       return;
+    }
 
     this._isLHAttached = false;
     await this._protocolService.detach();

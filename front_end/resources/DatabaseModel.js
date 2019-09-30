@@ -106,12 +106,13 @@ Resources.Database = class {
       return;
     }
     let message;
-    if (sqlError.message)
+    if (sqlError.message) {
       message = sqlError.message;
-    else if (sqlError.code === 2)
+    } else if (sqlError.code === 2) {
       message = Common.UIString('Database no longer has expected version.');
-    else
+    } else {
       message = Common.UIString('An unexpected error %s occurred.', sqlError.code);
+    }
     onError(message);
   }
 };
@@ -132,15 +133,17 @@ Resources.DatabaseModel = class extends SDK.SDKModel {
   }
 
   enable() {
-    if (this._enabled)
+    if (this._enabled) {
       return;
+    }
     this._agent.enable();
     this._enabled = true;
   }
 
   disable() {
-    if (!this._enabled)
+    if (!this._enabled) {
       return;
+    }
     this._enabled = false;
     this._databases = [];
     this._agent.disable();
@@ -152,8 +155,9 @@ Resources.DatabaseModel = class extends SDK.SDKModel {
    */
   databases() {
     const result = [];
-    for (const database of this._databases)
+    for (const database of this._databases) {
       result.push(database);
+    }
     return result;
   }
 

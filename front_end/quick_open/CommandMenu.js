@@ -80,24 +80,28 @@ QuickOpen.CommandMenu = class {
     self.runtime.extensions(UI.ViewLocationResolver).forEach(extension => {
       const category = extension.descriptor()['category'];
       const name = extension.descriptor()['name'];
-      if (category && name)
+      if (category && name) {
         locations.set(name, category);
+      }
     });
     const viewExtensions = self.runtime.extensions('view');
     for (const extension of viewExtensions) {
       const category = locations.get(extension.descriptor()['location']);
-      if (category)
+      if (category) {
         this._commands.push(QuickOpen.CommandMenu.createRevealViewCommand(extension, ls(category)));
+      }
     }
 
     // Populate whitelisted settings.
     const settingExtensions = self.runtime.extensions('setting');
     for (const extension of settingExtensions) {
       const options = extension.descriptor()['options'];
-      if (!options || !extension.descriptor()['category'])
+      if (!options || !extension.descriptor()['category']) {
         continue;
-      for (const pair of options)
+      }
+      for (const pair of options) {
         this._commands.push(QuickOpen.CommandMenu.createSettingCommand(extension, ls(pair['title']), pair['value']));
+      }
     }
   }
 
@@ -124,13 +128,15 @@ QuickOpen.CommandMenuProvider = class extends QuickOpen.FilteredListWidget.Provi
     // Populate whitelisted actions.
     const actions = UI.actionRegistry.availableActions();
     for (const action of actions) {
-      if (action.category())
+      if (action.category()) {
         this._commands.push(QuickOpen.CommandMenu.createActionCommand(action));
+      }
     }
 
     for (const command of allCommands) {
-      if (command.available())
+      if (command.available()) {
         this._commands.push(command);
+      }
     }
 
     this._commands = this._commands.sort(commandComparator);
@@ -182,15 +188,17 @@ QuickOpen.CommandMenuProvider = class extends QuickOpen.FilteredListWidget.Provi
     let score = 0;
     // Score longer sequences higher.
     for (let i = 0; i < opcodes.length; ++i) {
-      if (opcodes[i][0] === Diff.Diff.Operation.Equal)
+      if (opcodes[i][0] === Diff.Diff.Operation.Equal) {
         score += opcodes[i][1].length * opcodes[i][1].length;
+      }
     }
 
     // Score panel/drawer reveals above regular actions.
-    if (command.category().startsWith('Panel'))
+    if (command.category().startsWith('Panel')) {
       score += 2;
-    else if (command.category().startsWith('Drawer'))
+    } else if (command.category().startsWith('Drawer')) {
       score += 1;
+    }
 
     return score;
   }
@@ -220,8 +228,9 @@ QuickOpen.CommandMenuProvider = class extends QuickOpen.FilteredListWidget.Provi
    * @param {string} promptValue
    */
   selectItem(itemIndex, promptValue) {
-    if (itemIndex === null)
+    if (itemIndex === null) {
       return;
+    }
     this._commands[itemIndex].execute();
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.SelectCommandFromCommandMenu);
   }

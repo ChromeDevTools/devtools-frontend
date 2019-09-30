@@ -33,8 +33,9 @@ Timeline.TimelineHistoryManager = class {
     this._buildPreview(performanceModel);
     this._button.setText(this._title(performanceModel));
     this._updateState();
-    if (this._recordings.length <= Timeline.TimelineHistoryManager._maxRecordings)
+    if (this._recordings.length <= Timeline.TimelineHistoryManager._maxRecordings) {
       return;
+    }
     const lruModel = this._recordings.reduce((a, b) => lastUsedTime(a) < lastUsedTime(b) ? a : b);
     this._recordings.splice(this._recordings.indexOf(lruModel), 1);
     lruModel.dispose();
@@ -73,13 +74,15 @@ Timeline.TimelineHistoryManager = class {
    * @return {!Promise<?Timeline.PerformanceModel>}
    */
   async showHistoryDropDown() {
-    if (this._recordings.length < 2 || !this._enabled)
+    if (this._recordings.length < 2 || !this._enabled) {
       return null;
+    }
 
     const model = await Timeline.TimelineHistoryManager.DropDown.show(
         this._recordings, /** @type {!Timeline.PerformanceModel} */ (this._lastActiveModel), this._button.element);
-    if (!model)
+    if (!model) {
       return null;
+    }
     const index = this._recordings.indexOf(model);
     if (index < 0) {
       console.assert(false, `selected recording not found`);
@@ -98,11 +101,13 @@ Timeline.TimelineHistoryManager = class {
    * @return {?Timeline.PerformanceModel}
    */
   navigate(direction) {
-    if (!this._enabled || !this._lastActiveModel)
+    if (!this._enabled || !this._lastActiveModel) {
       return null;
+    }
     const index = this._recordings.indexOf(this._lastActiveModel);
-    if (index < 0)
+    if (index < 0) {
       return null;
+    }
     const newIndex = Number.constrain(index + direction, 0, this._recordings.length - 1);
     const model = this._recordings[newIndex];
     this._setCurrentModel(model);
@@ -140,11 +145,13 @@ Timeline.TimelineHistoryManager = class {
    */
   static _coarseAge(time) {
     const seconds = Math.round((Date.now() - time) / 1000);
-    if (seconds < 50)
+    if (seconds < 50) {
       return Common.UIString('moments');
+    }
     const minutes = Math.round(seconds / 60);
-    if (minutes < 50)
+    if (minutes < 50) {
       return Common.UIString('%s m', minutes);
+    }
     const hours = Math.round(minutes / 60);
     return Common.UIString('%s h', hours);
   }
@@ -207,8 +214,9 @@ Timeline.TimelineHistoryManager = class {
     container.style.height = this._totalHeight + 'px';
     const filmStripModel = performanceModel.filmStripModel();
     const lastFrame = filmStripModel.frames().peekLast();
-    if (!lastFrame)
+    if (!lastFrame) {
       return container;
+    }
     lastFrame.imageDataPromise()
         .then(data => UI.loadImageFromData(data))
         .then(image => image && container.appendChild(image));
@@ -297,15 +305,17 @@ Timeline.TimelineHistoryManager.DropDown = class {
    * @return {!Promise<?Timeline.PerformanceModel>}
    */
   static show(models, currentModel, anchor) {
-    if (Timeline.TimelineHistoryManager.DropDown._instance)
+    if (Timeline.TimelineHistoryManager.DropDown._instance) {
       return Promise.resolve(/** @type {?Timeline.PerformanceModel} */ (null));
+    }
     const instance = new Timeline.TimelineHistoryManager.DropDown(models);
     return instance._show(anchor, currentModel);
   }
 
   static cancelIfShowing() {
-    if (!Timeline.TimelineHistoryManager.DropDown._instance)
+    if (!Timeline.TimelineHistoryManager.DropDown._instance) {
       return;
+    }
     Timeline.TimelineHistoryManager.DropDown._instance._close(null);
   }
 
@@ -330,8 +340,9 @@ Timeline.TimelineHistoryManager.DropDown = class {
   _onMouseMove(event) {
     const node = event.target.enclosingNodeOrSelfWithClass('preview-item');
     const listItem = node && this._listControl.itemForNode(node);
-    if (!listItem)
+    if (!listItem) {
       return;
+    }
     this._listControl.selectItem(listItem);
   }
 
@@ -339,8 +350,9 @@ Timeline.TimelineHistoryManager.DropDown = class {
    * @param {!Event} event
    */
   _onClick(event) {
-    if (!event.target.enclosingNodeOrSelfWithClass('preview-item'))
+    if (!event.target.enclosingNodeOrSelfWithClass('preview-item')) {
       return;
+    }
     this._close(this._listControl.selectedItem());
   }
 
@@ -408,10 +420,12 @@ Timeline.TimelineHistoryManager.DropDown = class {
    * @param {?Element} toElement
    */
   selectedItemChanged(from, to, fromElement, toElement) {
-    if (fromElement)
+    if (fromElement) {
       fromElement.classList.remove('selected');
-    if (toElement)
+    }
+    if (toElement) {
       toElement.classList.add('selected');
+    }
   }
 };
 

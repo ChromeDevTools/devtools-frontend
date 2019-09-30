@@ -31,11 +31,13 @@ UI.SegmentedButton = class extends UI.HBox {
    * @param {string} value
    */
   select(value) {
-    if (this._selected === value)
+    if (this._selected === value) {
       return;
+    }
     this._selected = value;
-    for (const key of this._buttons.keys())
+    for (const key of this._buttons.keys()) {
       this._buttons.get(key).classList.toggle('segmented-button-segment-selected', key === this._selected);
+    }
   }
 
   /**

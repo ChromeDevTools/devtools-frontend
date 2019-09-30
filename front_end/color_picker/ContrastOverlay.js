@@ -31,8 +31,9 @@ ColorPicker.ContrastOverlay = class {
   }
 
   _update() {
-    if (!this._visible || this._contrastInfo.isNull() || !this._contrastInfo.contrastRatio())
+    if (!this._visible || this._contrastInfo.isNull() || !this._contrastInfo.contrastRatio()) {
       return;
+    }
 
     this._contrastRatioLinesThrottler.schedule(this._drawContrastRatioLinesBound);
   }
@@ -59,10 +60,11 @@ ColorPicker.ContrastOverlay = class {
   async _drawContrastRatioLines() {
     for (const level in this._contrastRatioLines) {
       const path = this._contrastRatioLineBuilder.drawContrastRatioLine(this._width, this._height, level);
-      if (path)
+      if (path) {
         this._contrastRatioLines[level].setAttribute('d', path);
-      else
+      } else {
         this._contrastRatioLines[level].removeAttribute('d');
+      }
     }
   }
 };
@@ -84,8 +86,9 @@ ColorPicker.ContrastRatioLineBuilder = class {
    */
   drawContrastRatioLine(width, height, level) {
     const requiredContrast = this._contrastInfo.contrastRatioThreshold(level);
-    if (!width || !height || !requiredContrast)
+    if (!width || !height || !requiredContrast) {
       return null;
+    }
 
     const dS = 0.02;
     const epsilon = 0.0002;
@@ -96,8 +99,9 @@ ColorPicker.ContrastRatioLineBuilder = class {
 
     const color = this._contrastInfo.color();
     const bgColor = this._contrastInfo.bgColor();
-    if (!color || !bgColor)
+    if (!color || !bgColor) {
       return null;
+    }
 
     const fgRGBA = color.rgba();
     const fgHSVA = color.hsva();
@@ -142,8 +146,9 @@ ColorPicker.ContrastRatioLineBuilder = class {
       let previousSign = Math.sign(dLuminance);
 
       for (let guard = 100; guard; guard--) {
-        if (Math.abs(dLuminance) < epsilon)
+        if (Math.abs(dLuminance) < epsilon) {
           return x;
+        }
 
         const sign = Math.sign(dLuminance);
         if (sign !== previousSign) {
@@ -180,8 +185,9 @@ ColorPicker.ContrastRatioLineBuilder = class {
       candidateHSVA[V] = lastV + currentSlope * dS;
 
       const v = approach(V);
-      if (v === null)
+      if (v === null) {
         break;
+      }
 
       // Approximate the current gradient of the curve.
       currentSlope = s === 0 ? 0 : (v - lastV) / dS;
@@ -198,11 +204,13 @@ ColorPicker.ContrastRatioLineBuilder = class {
       s -= dS;
       candidateHSVA[V] = 1;
       s = approach(S);
-      if (s !== null)
+      if (s !== null) {
         pathBuilder = pathBuilder.concat(['L', (s * width).toFixed(2), '-0.1']);
+      }
     }
-    if (pathBuilder.length === 0)
+    if (pathBuilder.length === 0) {
       return null;
+    }
     return pathBuilder.join(' ');
   }
 };

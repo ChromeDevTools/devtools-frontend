@@ -17,8 +17,9 @@ TextUtils.Text = class {
    * @return {!Array<number>}
    */
   lineEndings() {
-    if (!this._lineEndings)
+    if (!this._lineEndings) {
       this._lineEndings = this._value.computeLineEndings();
+    }
     return this._lineEndings;
   }
 
@@ -64,8 +65,9 @@ TextUtils.Text = class {
     const lineStart = lineNumber > 0 ? lineEndings[lineNumber - 1] + 1 : 0;
     const lineEnd = lineEndings[lineNumber];
     let lineContent = this._value.substring(lineStart, lineEnd);
-    if (lineContent.length > 0 && lineContent.charAt(lineContent.length - 1) === '\r')
+    if (lineContent.length > 0 && lineContent.charAt(lineContent.length - 1) === '\r') {
       lineContent = lineContent.substring(0, lineContent.length - 1);
+    }
     return lineContent;
   }
 
@@ -140,8 +142,9 @@ TextUtils.TextCursor = class {
    */
   advance(offset) {
     this._offset = offset;
-    while (this._lineNumber < this._lineEndings.length && this._lineEndings[this._lineNumber] < this._offset)
+    while (this._lineNumber < this._lineEndings.length && this._lineEndings[this._lineNumber] < this._offset) {
       ++this._lineNumber;
+    }
     this._columnNumber = this._lineNumber ? this._offset - this._lineEndings[this._lineNumber - 1] - 1 : this._offset;
   }
 

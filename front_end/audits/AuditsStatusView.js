@@ -96,8 +96,9 @@ Audits.StatusView = class {
   }
 
   hide() {
-    if (this._dialog.isShowing())
+    if (this._dialog.isShowing()) {
       this._dialog.hide();
+    }
   }
 
   /**
@@ -111,8 +112,9 @@ Audits.StatusView = class {
    * @param {?string} message
    */
   updateStatus(message) {
-    if (!message || !this._statusText)
+    if (!message || !this._statusText) {
       return;
+    }
 
     if (message.startsWith('Cancel')) {
       this._commitTextChange(Common.UIString('Cancelling\u2026'));
@@ -142,8 +144,9 @@ Audits.StatusView = class {
    * @return {string}
    */
   _getMessageForPhase(phase) {
-    if (phase.message)
+    if (phase.message) {
       return phase.message;
+    }
 
     const deviceType = Audits.RuntimeSettings.find(item => item.setting.name === 'audits.device_type').setting.get();
     const throttling = Audits.RuntimeSettings.find(item => item.setting.name === 'audits.throttling').setting.get();
@@ -163,15 +166,17 @@ Audits.StatusView = class {
   }
 
   _resetProgressBarClasses() {
-    if (!this._progressBar)
+    if (!this._progressBar) {
       return;
+    }
 
     this._progressBar.className = 'audits-progress-bar';
   }
 
   _scheduleFastFactCheck() {
-    if (!this._currentPhase || this._scheduledFastFactTimeout)
+    if (!this._currentPhase || this._scheduledFastFactTimeout) {
       return;
+    }
 
     this._scheduledFastFactTimeout = setTimeout(() => {
       this._updateFastFactIfNecessary();
@@ -183,10 +188,12 @@ Audits.StatusView = class {
 
   _updateFastFactIfNecessary() {
     const now = performance.now();
-    if (now - this._textChangedAt < Audits.StatusView.fastFactRotationInterval)
+    if (now - this._textChangedAt < Audits.StatusView.fastFactRotationInterval) {
       return;
-    if (!this._fastFactsQueued.length)
+    }
+    if (!this._fastFactsQueued.length) {
       return;
+    }
 
     const fastFactIndex = Math.floor(Math.random() * this._fastFactsQueued.length);
     this._scheduleTextChange(ls`\ud83d\udca1 ${this._fastFactsQueued[fastFactIndex]}`);
@@ -197,8 +204,9 @@ Audits.StatusView = class {
    * @param {string} text
    */
   _commitTextChange(text) {
-    if (!this._statusText)
+    if (!this._statusText) {
       return;
+    }
     this._textChangedAt = performance.now();
     this._statusText.textContent = text;
   }
@@ -207,8 +215,9 @@ Audits.StatusView = class {
    * @param {string} text
    */
   _scheduleTextChange(text) {
-    if (this._scheduledTextChangeTimeout)
+    if (this._scheduledTextChangeTimeout) {
       clearTimeout(this._scheduledTextChangeTimeout);
+    }
 
     const msSinceLastChange = performance.now() - this._textChangedAt;
     const msToTextChange = Audits.StatusView.minimumTextVisibilityDuration - msSinceLastChange;

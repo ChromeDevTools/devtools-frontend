@@ -21,8 +21,9 @@ Console.ConsoleFilter = class {
    */
   static allLevelsFilterValue() {
     const result = {};
-    for (const name of Object.values(SDK.ConsoleMessage.MessageLevel))
+    for (const name of Object.values(SDK.ConsoleMessage.MessageLevel)) {
       result[name] = true;
+    }
     return result;
   }
 
@@ -62,39 +63,47 @@ Console.ConsoleFilter = class {
     const message = viewMessage.consoleMessage();
     if (this.executionContext &&
         (this.executionContext.runtimeModel !== message.runtimeModel() ||
-         this.executionContext.id !== message.executionContextId))
+         this.executionContext.id !== message.executionContextId)) {
       return false;
+    }
 
     if (message.type === SDK.ConsoleMessage.MessageType.Command ||
-        message.type === SDK.ConsoleMessage.MessageType.Result || message.isGroupMessage())
+        message.type === SDK.ConsoleMessage.MessageType.Result || message.isGroupMessage()) {
       return true;
+    }
 
-    if (message.level && !this.levelsMask[/** @type {string} */ (message.level)])
+    if (message.level && !this.levelsMask[/** @type {string} */ (message.level)]) {
       return false;
+    }
 
     for (const filter of this.parsedFilters) {
       if (!filter.key) {
-        if (filter.regex && viewMessage.matchesFilterRegex(filter.regex) === filter.negative)
+        if (filter.regex && viewMessage.matchesFilterRegex(filter.regex) === filter.negative) {
           return false;
-        if (filter.text && viewMessage.matchesFilterText(filter.text) === filter.negative)
+        }
+        if (filter.text && viewMessage.matchesFilterText(filter.text) === filter.negative) {
           return false;
+        }
       } else {
         switch (filter.key) {
           case Console.ConsoleFilter.FilterType.Context:
-            if (!passesFilter(filter, message.context, false /* exactMatch */))
+            if (!passesFilter(filter, message.context, false /* exactMatch */)) {
               return false;
+            }
             break;
           case Console.ConsoleFilter.FilterType.Source:
             const sourceNameForMessage = message.source ?
                 SDK.ConsoleMessage.MessageSourceDisplayName.get(
                     /** @type {!SDK.ConsoleMessage.MessageSource} */ (message.source)) :
                 message.source;
-            if (!passesFilter(filter, sourceNameForMessage, true /* exactMatch */))
+            if (!passesFilter(filter, sourceNameForMessage, true /* exactMatch */)) {
               return false;
+            }
             break;
           case Console.ConsoleFilter.FilterType.Url:
-            if (!passesFilter(filter, message.url, false /* exactMatch */))
+            if (!passesFilter(filter, message.url, false /* exactMatch */)) {
               return false;
+            }
             break;
         }
       }
@@ -108,16 +117,20 @@ Console.ConsoleFilter = class {
      * @return {boolean}
      */
     function passesFilter(filter, value, exactMatch) {
-      if (!filter.text)
+      if (!filter.text) {
         return !!value === filter.negative;
-      if (!value)
+      }
+      if (!value) {
         return !filter.text === !filter.negative;
+      }
       const filterText = /** @type {string} */ (filter.text).toLowerCase();
       const lowerCaseValue = value.toLowerCase();
-      if (exactMatch && (lowerCaseValue === filterText) === filter.negative)
+      if (exactMatch && (lowerCaseValue === filterText) === filter.negative) {
         return false;
-      if (!exactMatch && lowerCaseValue.includes(filterText) === filter.negative)
+      }
+      if (!exactMatch && lowerCaseValue.includes(filterText) === filter.negative) {
         return false;
+      }
       return true;
     }
   }

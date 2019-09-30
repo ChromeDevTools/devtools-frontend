@@ -28,8 +28,9 @@ ElementsTestRunner.setUpTestSuite = function(next) {
     for (const key in SDK.DOMModel.Events) {
       const eventName = SDK.DOMModel.Events[key];
 
-      if (eventName === SDK.DOMModel.Events.MarkersChanged || eventName === SDK.DOMModel.Events.DOMMutated)
+      if (eventName === SDK.DOMModel.Events.MarkersChanged || eventName === SDK.DOMModel.Events.DOMMutated) {
         continue;
+      }
 
       TestRunner.domModel.addEventListener(
           eventName, ElementsTestRunner.recordEvent.bind(ElementsTestRunner, eventName));
@@ -40,15 +41,17 @@ ElementsTestRunner.setUpTestSuite = function(next) {
 };
 
 ElementsTestRunner.recordEvent = function(eventName, event) {
-  if (!event.data)
+  if (!event.data) {
     return;
+  }
 
   const node = event.data.node || event.data;
   const parent = event.data.parent;
 
   for (let currentNode = parent || node; currentNode; currentNode = currentNode.parentNode) {
-    if (currentNode.getAttribute('id') === 'output')
+    if (currentNode.getAttribute('id') === 'output') {
       return;
+    }
   }
 
   ElementsTestRunner.events.push('Event ' + eventName.toString() + ': ' + node.nodeName());
@@ -94,8 +97,9 @@ ElementsTestRunner._dumpOuterHTML = async function(last, next) {
   TestRunner.addResult('Wrapper identity: ' + result.value);
   ElementsTestRunner.events.sort();
 
-  for (let i = 0; i < ElementsTestRunner.events.length; ++i)
+  for (let i = 0; i < ElementsTestRunner.events.length; ++i) {
     TestRunner.addResult(ElementsTestRunner.events[i]);
+  }
 
   ElementsTestRunner.events = [];
   const text = await TestRunner.DOMAgent.getOuterHTML(ElementsTestRunner.containerId);
@@ -103,8 +107,9 @@ ElementsTestRunner._dumpOuterHTML = async function(last, next) {
   TestRunner.addResult(text);
   TestRunner.addResult('==========>8==========');
 
-  if (last)
+  if (last) {
     TestRunner.addResult('\n\n\n');
+  }
 
   next();
 };

@@ -54,8 +54,9 @@ Sources.SearchSourcesView.ActionDelegate = class {
   _showSearch() {
     const selection = UI.inspectorView.element.window().getSelection();
     let queryCandidate = '';
-    if (selection.rangeCount)
+    if (selection.rangeCount) {
       queryCandidate = selection.toString().replace(/\r?\n.*/, '');
+    }
 
     return Sources.SearchSourcesView.openSearch(queryCandidate);
   }

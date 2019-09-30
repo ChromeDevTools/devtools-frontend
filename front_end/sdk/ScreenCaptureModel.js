@@ -58,8 +58,9 @@ SDK.ScreenCaptureModel = class extends SDK.SDKModel {
    */
   async fetchLayoutMetrics() {
     const response = await this._agent.invoke_getLayoutMetrics({});
-    if (response[Protocol.Error])
+    if (response[Protocol.Error]) {
       return null;
+    }
     return {
       viewportX: response.visualViewport.pageX,
       viewportY: response.visualViewport.pageY,
@@ -77,8 +78,9 @@ SDK.ScreenCaptureModel = class extends SDK.SDKModel {
    */
   screencastFrame(data, metadata, sessionId) {
     this._agent.screencastFrameAck(sessionId);
-    if (this._onScreencastFrame)
+    if (this._onScreencastFrame) {
       this._onScreencastFrame.call(null, data, metadata);
+    }
   }
 
   /**
@@ -86,8 +88,9 @@ SDK.ScreenCaptureModel = class extends SDK.SDKModel {
    * @param {boolean} visible
    */
   screencastVisibilityChanged(visible) {
-    if (this._onScreencastVisibilityChanged)
+    if (this._onScreencastVisibilityChanged) {
       this._onScreencastVisibilityChanged.call(null, visible);
+    }
   }
 
   /**

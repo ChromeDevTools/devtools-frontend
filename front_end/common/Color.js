@@ -41,8 +41,9 @@ export default class Color {
     this._originalText = originalText || null;
     this._originalTextIsValid = !!this._originalText;
     this._format = format;
-    if (typeof this._rgba[3] === 'undefined')
+    if (typeof this._rgba[3] === 'undefined') {
       this._rgba[3] = 1;
+    }
 
     for (let i = 0; i < 4; ++i) {
       if (this._rgba[i] < 0) {
@@ -85,8 +86,9 @@ export default class Color {
         const g = parseInt(hex.substring(2, 4), 16);
         const b = parseInt(hex.substring(4, 6), 16);
         let a = 1;
-        if (hex.length === 8)
+        if (hex.length === 8) {
           a = parseInt(hex.substring(6, 8), 16) / 255;
+        }
         return new Color([r / 255, g / 255, b / 255, a], format, text);
       }
 
@@ -115,8 +117,9 @@ export default class Color {
         values = components.split(/\s+/);
         if (values[3] === '/') {
           values.splice(3, 1);
-          if (values.length !== 4)
+          if (values.length !== 4) {
             return null;
+          }
         } else if ((values.length > 2 && values[2].indexOf('/') !== -1) || (values.length > 3 && values[3].indexOf('/') !== -1)) {
           const alpha = values.slice(2, 4).join('');
           values = values.slice(0, 2).concat(alpha.split(/\//)).concat(values.slice(4));
@@ -124,8 +127,9 @@ export default class Color {
           return null;
         }
       }
-      if (values.length !== 3 && values.length !== 4 || values.indexOf('') > -1)
+      if (values.length !== 3 && values.length !== 4 || values.indexOf('') > -1) {
         return null;
+      }
       const hasAlpha = (values[3] !== undefined);
 
       if (match[1]) {  // rgb/rgba
@@ -133,8 +137,9 @@ export default class Color {
           Color._parseRgbNumeric(values[0]), Color._parseRgbNumeric(values[1]), Color._parseRgbNumeric(values[2]),
           hasAlpha ? Color._parseAlphaNumeric(values[3]) : 1
         ];
-        if (rgba.indexOf(null) > -1)
+        if (rgba.indexOf(null) > -1) {
           return null;
+        }
         return new Color(rgba, hasAlpha ? Format.RGBA : Format.RGB, text);
       }
 
@@ -143,8 +148,9 @@ export default class Color {
           Color._parseHueNumeric(values[0]), Color._parseSatLightNumeric(values[1]),
           Color._parseSatLightNumeric(values[2]), hasAlpha ? Color._parseAlphaNumeric(values[3]) : 1
         ];
-        if (hsla.indexOf(null) > -1)
+        if (hsla.indexOf(null) > -1) {
           return null;
+        }
         const rgba = [];
         Color.hsl2rgb(hsla, rgba);
         return new Color(rgba, hasAlpha ? Format.HSLA : Format.HSL, text);
@@ -177,13 +183,15 @@ export default class Color {
    * return {number}
    */
   static _parsePercentOrNumber(value) {
-    if (isNaN(value.replace('%', '')))
+    if (isNaN(value.replace('%', ''))) {
       return null;
+    }
     const parsed = parseFloat(value);
 
     if (value.indexOf('%') !== -1) {
-      if (value.indexOf('%') !== value.length - 1)
+      if (value.indexOf('%') !== value.length - 1) {
         return null;
+      }
       return parsed / 100;
     }
     return parsed;
@@ -195,11 +203,13 @@ export default class Color {
    */
   static _parseRgbNumeric(value) {
     const parsed = Color._parsePercentOrNumber(value);
-    if (parsed === null)
+    if (parsed === null) {
       return null;
+    }
 
-    if (value.indexOf('%') !== -1)
+    if (value.indexOf('%') !== -1) {
       return parsed;
+    }
     return parsed / 255;
   }
 
@@ -209,16 +219,18 @@ export default class Color {
    */
   static _parseHueNumeric(value) {
     const angle = value.replace(/(deg|g?rad|turn)$/, '');
-    if (isNaN(angle) || value.match(/\s+(deg|g?rad|turn)/))
+    if (isNaN(angle) || value.match(/\s+(deg|g?rad|turn)/)) {
       return null;
+    }
     const number = parseFloat(angle);
 
-    if (value.indexOf('turn') !== -1)
+    if (value.indexOf('turn') !== -1) {
       return number % 1;
-    else if (value.indexOf('grad') !== -1)
+    } else if (value.indexOf('grad') !== -1) {
       return (number / 400) % 1;
-    else if (value.indexOf('rad') !== -1)
+    } else if (value.indexOf('rad') !== -1) {
       return (number / (2 * Math.PI)) % 1;
+    }
     return (number / 360) % 1;
   }
 
@@ -227,8 +239,9 @@ export default class Color {
    * return {number}
    */
   static _parseSatLightNumeric(value) {
-    if (value.indexOf('%') !== value.length - 1 || isNaN(value.replace('%', '')))
+    if (value.indexOf('%') !== value.length - 1 || isNaN(value.replace('%', ''))) {
       return null;
+    }
     const parsed = parseFloat(value);
     return Math.min(1, parsed / 100);
   }
@@ -251,10 +264,11 @@ export default class Color {
     const v = hsva[2];
 
     const t = (2 - s) * v;
-    if (v === 0 || s === 0)
+    if (v === 0 || s === 0) {
       s = 0;
-    else
+    } else {
       s *= v / (t < 1 ? t : 2 - t);
+    }
 
     out_hsla[0] = h;
     out_hsla[1] = s;
@@ -272,29 +286,33 @@ export default class Color {
     const l = hsl[2];
 
     function hue2rgb(p, q, h) {
-      if (h < 0)
+      if (h < 0) {
         h += 1;
-      else if (h > 1)
+      } else if (h > 1) {
         h -= 1;
+      }
 
-      if ((h * 6) < 1)
+      if ((h * 6) < 1) {
         return p + (q - p) * h * 6;
-      else if ((h * 2) < 1)
+      } else if ((h * 2) < 1) {
         return q;
-      else if ((h * 3) < 2)
+      } else if ((h * 3) < 2) {
         return p + (q - p) * ((2 / 3) - h) * 6;
-      else
+      } else {
         return p;
+      }
     }
 
-    if (s < 0)
+    if (s < 0) {
       s = 0;
+    }
 
     let q;
-    if (l <= 0.5)
+    if (l <= 0.5) {
       q = l * (1 + s);
-    else
+    } else {
       q = l + s - (l * s);
+    }
 
     const p = 2 * l - q;
 
@@ -316,8 +334,9 @@ export default class Color {
     Color._hsva2hsla(hsva, Color.hsva2rgba._tmpHSLA);
     Color.hsl2rgb(Color.hsva2rgba._tmpHSLA, out_rgba);
 
-    for (let i = 0; i < Color.hsva2rgba._tmpHSLA.length; i++)
+    for (let i = 0; i < Color.hsva2rgba._tmpHSLA.length; i++) {
       Color.hsva2rgba._tmpHSLA[i] = 0;
+    }
   }
 
   /**
@@ -368,8 +387,9 @@ export default class Color {
     const bgLuminance = Color.luminance(bgRGBA);
     const contrastRatio = (Math.max(fgLuminance, bgLuminance) + 0.05) / (Math.min(fgLuminance, bgLuminance) + 0.05);
 
-    for (let i = 0; i < Color.calculateContrastRatio._blendedFg.length; i++)
+    for (let i = 0; i < Color.calculateContrastRatio._blendedFg.length; i++) {
       Color.calculateContrastRatio._blendedFg[i] = 0;
+    }
 
     return contrastRatio;
   }
@@ -387,10 +407,11 @@ export default class Color {
    */
   static desiredLuminance(luminance, contrast, lighter) {
     function computeLuminance() {
-      if (lighter)
+      if (lighter) {
         return (luminance + 0.05) * contrast - 0.05;
-      else
+      } else {
         return (luminance + 0.05) / contrast - 0.05;
+      }
     }
     let desiredLuminance = computeLuminance();
     if (desiredLuminance < 0 || desiredLuminance > 1) {
@@ -408,16 +429,17 @@ export default class Color {
     const cf = Format;
     let format;
     const formatSetting = Common.moduleSetting('colorFormat').get();
-    if (formatSetting === cf.Original)
+    if (formatSetting === cf.Original) {
       format = cf.Original;
-    else if (formatSetting === cf.RGB)
+    } else if (formatSetting === cf.RGB) {
       format = (color.hasAlpha() ? cf.RGBA : cf.RGB);
-    else if (formatSetting === cf.HSL)
+    } else if (formatSetting === cf.HSL) {
       format = (color.hasAlpha() ? cf.HSLA : cf.HSL);
-    else if (formatSetting === cf.HEX)
+    } else if (formatSetting === cf.HEX) {
       format = color.detectHEXFormat();
-    else
+    } else {
       format = cf.RGBA;
+    }
 
     return format;
   }
@@ -433,8 +455,9 @@ export default class Color {
    * @return {!Array.<number>} HSLA with components within [0..1]
    */
   hsla() {
-    if (this._hsla)
+    if (this._hsla) {
       return this._hsla;
+    }
     const r = this._rgba[0];
     const g = this._rgba[1];
     const b = this._rgba[2];
@@ -444,26 +467,28 @@ export default class Color {
     const add = max + min;
 
     let h;
-    if (min === max)
+    if (min === max) {
       h = 0;
-    else if (r === max)
+    } else if (r === max) {
       h = ((1 / 6 * (g - b) / diff) + 1) % 1;
-    else if (g === max)
+    } else if (g === max) {
       h = (1 / 6 * (b - r) / diff) + 1 / 3;
-    else
+    } else {
       h = (1 / 6 * (r - g) / diff) + 2 / 3;
+    }
 
     const l = 0.5 * add;
 
     let s;
-    if (l === 0)
+    if (l === 0) {
       s = 0;
-    else if (l === 1)
+    } else if (l === 1) {
       s = 0;
-    else if (l <= 0.5)
+    } else if (l <= 0.5) {
       s = diff / add;
-    else
+    } else {
       s = diff / (2 - add);
+    }
 
     this._hsla = [h, s, l, this._rgba[3]];
     return this._hsla;
@@ -512,8 +537,9 @@ export default class Color {
 
     const hasAlpha = this.hasAlpha();
     const cf = Format;
-    if (canBeShort)
+    if (canBeShort) {
       return hasAlpha ? cf.ShortHEXA : cf.ShortHEX;
+    }
     return hasAlpha ? cf.HEXA : cf.HEX;
   }
 
@@ -521,11 +547,13 @@ export default class Color {
    * @return {?string}
    */
   asString(format) {
-    if (format === this._format && this._originalTextIsValid)
+    if (format === this._format && this._originalTextIsValid) {
       return this._originalText;
+    }
 
-    if (!format)
+    if (!format) {
       format = this._format;
+    }
 
     /**
      * @param {number} value
@@ -556,8 +584,9 @@ export default class Color {
       case Format.Original:
         return this._originalText;
       case Format.RGB:
-        if (this.hasAlpha())
+        if (this.hasAlpha()) {
           return null;
+        }
         return String.sprintf(
             'rgb(%d, %d, %d)', toRgbValue(this._rgba[0]), toRgbValue(this._rgba[1]), toRgbValue(this._rgba[2]));
       case Format.RGBA:
@@ -565,8 +594,9 @@ export default class Color {
             'rgba(%d, %d, %d, %f)', toRgbValue(this._rgba[0]), toRgbValue(this._rgba[1]), toRgbValue(this._rgba[2]),
             this._rgba[3]);
       case Format.HSL:
-        if (this.hasAlpha())
+        if (this.hasAlpha()) {
           return null;
+        }
         const hsl = this.hsla();
         return String.sprintf(
             'hsl(%d, %d%, %d%)', Math.round(hsl[0] * 360), Math.round(hsl[1] * 100), Math.round(hsl[2] * 100));
@@ -582,25 +612,29 @@ export default class Color {
                 toHexValue(this._rgba[3]))
             .toLowerCase();
       case Format.HEX:
-        if (this.hasAlpha())
+        if (this.hasAlpha()) {
           return null;
+        }
         return String
             .sprintf('#%s%s%s', toHexValue(this._rgba[0]), toHexValue(this._rgba[1]), toHexValue(this._rgba[2]))
             .toLowerCase();
       case Format.ShortHEXA:
         const hexFormat = this.detectHEXFormat();
-        if (hexFormat !== Format.ShortHEXA && hexFormat !== Format.ShortHEX)
+        if (hexFormat !== Format.ShortHEXA && hexFormat !== Format.ShortHEX) {
           return null;
+        }
         return String
             .sprintf(
                 '#%s%s%s%s', toShortHexValue(this._rgba[0]), toShortHexValue(this._rgba[1]),
                 toShortHexValue(this._rgba[2]), toShortHexValue(this._rgba[3]))
             .toLowerCase();
       case Format.ShortHEX:
-        if (this.hasAlpha())
+        if (this.hasAlpha()) {
           return null;
-        if (this.detectHEXFormat() !== Format.ShortHEX)
+        }
+        if (this.detectHEXFormat() !== Format.ShortHEX) {
           return null;
+        }
         return String
             .sprintf(
                 '#%s%s%s', toShortHexValue(this._rgba[0]), toShortHexValue(this._rgba[1]),
@@ -625,8 +659,9 @@ export default class Color {
    */
   canonicalRGBA() {
     const rgba = new Array(4);
-    for (let i = 0; i < 3; ++i)
+    for (let i = 0; i < 3; ++i) {
       rgba[i] = Math.round(this._rgba[i] * 255);
+    }
     rgba[3] = this._rgba[3];
     return rgba;
   }
@@ -639,8 +674,9 @@ export default class Color {
       Color._rgbaToNickname = {};
       for (const nickname in Nicknames) {
         let rgba = Nicknames[nickname];
-        if (rgba.length !== 4)
+        if (rgba.length !== 4) {
           rgba = rgba.concat(1);
+        }
         Color._rgbaToNickname[rgba] = nickname;
       }
     }
@@ -654,8 +690,9 @@ export default class Color {
   toProtocolRGBA() {
     const rgba = this.canonicalRGBA();
     const result = {r: rgba[0], g: rgba[1], b: rgba[2]};
-    if (rgba[3] !== 1)
+    if (rgba[3] !== 1) {
       result.a = rgba[3];
+    }
     return result;
   }
 
@@ -935,8 +972,9 @@ export class Generator {
    * @return {number}
    */
   _indexToValueInSpace(index, space) {
-    if (typeof space === 'number')
+    if (typeof space === 'number') {
       return space;
+    }
     const count = space.count || space.max - space.min;
     index %= count;
     return space.min + Math.floor(index / (count - 1) * (space.max - space.min));

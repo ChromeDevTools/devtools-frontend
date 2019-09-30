@@ -46,8 +46,9 @@ Profiler.HeapSnapshotSortableDataGrid = class extends DataGrid.DataGrid {
     ];
     for (const info of tooltips) {
       const headerCell = this.headerTableHeader(info[0]);
-      if (headerCell)
+      if (headerCell) {
         headerCell.setAttribute('title', info[1]);
+      }
     }
 
     /**
@@ -102,8 +103,9 @@ Profiler.HeapSnapshotSortableDataGrid = class extends DataGrid.DataGrid {
 
   _disposeAllNodes() {
     const children = this.topLevelNodes();
-    for (let i = 0, l = children.length; i < l; ++i)
+    for (let i = 0, l = children.length; i < l; ++i) {
       children[i].dispose();
+    }
   }
 
   /**
@@ -114,8 +116,9 @@ Profiler.HeapSnapshotSortableDataGrid = class extends DataGrid.DataGrid {
       this._nameFilter.addEventListener(UI.ToolbarInput.Event.TextChanged, this._onNameFilterChanged, this);
       this.updateVisibleNodes(true);
     }
-    if (this._populatedAndSorted)
+    if (this._populatedAndSorted) {
       this.dispatchEventToListeners(Profiler.HeapSnapshotSortableDataGrid.Events.ContentShown, this);
+    }
   }
 
   _sortingComplete() {
@@ -128,8 +131,9 @@ Profiler.HeapSnapshotSortableDataGrid = class extends DataGrid.DataGrid {
    * @override
    */
   willHide() {
-    if (this._nameFilter)
+    if (this._nameFilter) {
       this._nameFilter.removeEventListener(UI.ToolbarInput.Event.TextChanged, this._onNameFilterChanged, this);
+    }
     this._clearCurrentHighlight();
   }
 
@@ -174,8 +178,9 @@ Profiler.HeapSnapshotSortableDataGrid = class extends DataGrid.DataGrid {
   }
 
   _clearCurrentHighlight() {
-    if (!this._highlightedNode)
+    if (!this._highlightedNode) {
       return;
+    }
     this._highlightedNode.element().classList.remove('highlighted-row');
     this._highlightedNode = null;
   }
@@ -191,8 +196,9 @@ Profiler.HeapSnapshotSortableDataGrid = class extends DataGrid.DataGrid {
   sortingChanged() {
     const sortAscending = this.isSortOrderAscending();
     const sortColumnId = this.sortColumnId();
-    if (this._lastSortColumnId === sortColumnId && this._lastSortAscending === sortAscending)
+    if (this._lastSortColumnId === sortColumnId && this._lastSortAscending === sortAscending) {
       return;
+    }
     this._lastSortColumnId = sortColumnId;
     this._lastSortAscending = sortAscending;
     const sortFields = this._sortFields(sortColumnId, sortAscending);
@@ -201,15 +207,18 @@ Profiler.HeapSnapshotSortableDataGrid = class extends DataGrid.DataGrid {
       let field1 = nodeA[sortFields[0]];
       let field2 = nodeB[sortFields[0]];
       let result = field1 < field2 ? -1 : (field1 > field2 ? 1 : 0);
-      if (!sortFields[1])
+      if (!sortFields[1]) {
         result = -result;
-      if (result !== 0)
+      }
+      if (result !== 0) {
         return result;
+      }
       field1 = nodeA[sortFields[2]];
       field2 = nodeB[sortFields[2]];
       result = field1 < field2 ? -1 : (field1 > field2 ? 1 : 0);
-      if (!sortFields[3])
+      if (!sortFields[3]) {
         result = -result;
+      }
       return result;
     }
     this._performSorting(SortByTwoFields);
@@ -223,8 +232,9 @@ Profiler.HeapSnapshotSortableDataGrid = class extends DataGrid.DataGrid {
     for (let i = 0, l = children.length; i < l; ++i) {
       const child = children[i];
       this.appendChildAfterSorting(child);
-      if (child.expanded)
+      if (child.expanded) {
         child.sort();
+      }
     }
     this.recursiveSortingLeave();
   }
@@ -240,10 +250,12 @@ Profiler.HeapSnapshotSortableDataGrid = class extends DataGrid.DataGrid {
   }
 
   recursiveSortingLeave() {
-    if (!this._recursiveSortingDepth)
+    if (!this._recursiveSortingDepth) {
       return;
-    if (--this._recursiveSortingDepth)
+    }
+    if (--this._recursiveSortingDepth) {
       return;
+    }
     this.updateVisibleNodes(true);
     this.dispatchEventToListeners(Profiler.HeapSnapshotSortableDataGrid.Events.SortingComplete);
   }
@@ -338,8 +350,9 @@ Profiler.HeapSnapshotViewportDataGrid = class extends Profiler.HeapSnapshotSorta
     scrollBottom = Math.max(0, scrollBottom - guardZoneHeight);
     let viewPortHeight = scrollHeight - scrollTop - scrollBottom;
     // Do nothing if populated nodes still fit the viewport.
-    if (!force && scrollTop >= this._topPaddingHeight && scrollBottom >= this._bottomPaddingHeight)
+    if (!force && scrollTop >= this._topPaddingHeight && scrollBottom >= this._bottomPaddingHeight) {
       return;
+    }
     const hysteresisHeight = 500;
     scrollTop -= hysteresisHeight;
     viewPortHeight += 2 * hysteresisHeight;
@@ -355,10 +368,11 @@ Profiler.HeapSnapshotViewportDataGrid = class extends Profiler.HeapSnapshotSorta
 
     if (selectedNode) {
       // Keep selection even if the node is not in the current viewport.
-      if (selectedNode.parent)
+      if (selectedNode.parent) {
         selectedNode.select(true);
-      else
+      } else {
         this.selectedNode = selectedNode;
+      }
     }
   }
 
@@ -369,8 +383,9 @@ Profiler.HeapSnapshotViewportDataGrid = class extends Profiler.HeapSnapshotSorta
    * @return {number}
    */
   _addVisibleNodes(parentNode, topBound, bottomBound) {
-    if (!parentNode.expanded)
+    if (!parentNode.expanded) {
       return 0;
+    }
 
     const children = this.allChildren(parentNode);
     let topPadding = 0;
@@ -380,11 +395,13 @@ Profiler.HeapSnapshotViewportDataGrid = class extends Profiler.HeapSnapshotSorta
     let i = 0;
     for (; i < children.length; ++i) {
       const child = children[i];
-      if (nameFilterValue && child.filteredOut && child.filteredOut(nameFilterValue))
+      if (nameFilterValue && child.filteredOut && child.filteredOut(nameFilterValue)) {
         continue;
+      }
       const newTop = topPadding + this._nodeHeight(child);
-      if (newTop > topBound)
+      if (newTop > topBound) {
         break;
+      }
       topPadding = newTop;
     }
 
@@ -392,8 +409,9 @@ Profiler.HeapSnapshotViewportDataGrid = class extends Profiler.HeapSnapshotSorta
     let position = topPadding;
     for (; i < children.length && position < bottomBound; ++i) {
       const child = children[i];
-      if (nameFilterValue && child.filteredOut && child.filteredOut(nameFilterValue))
+      if (nameFilterValue && child.filteredOut && child.filteredOut(nameFilterValue)) {
         continue;
+      }
       const hasChildren = child.hasChildren();
       child.removeChildren();
       child.setHasChildren(hasChildren);
@@ -406,8 +424,9 @@ Profiler.HeapSnapshotViewportDataGrid = class extends Profiler.HeapSnapshotSorta
     let bottomPadding = 0;
     for (; i < children.length; ++i) {
       const child = children[i];
-      if (nameFilterValue && child.filteredOut && child.filteredOut(nameFilterValue))
+      if (nameFilterValue && child.filteredOut && child.filteredOut(nameFilterValue)) {
         continue;
+      }
       bottomPadding += this._nodeHeight(child);
     }
 
@@ -422,11 +441,13 @@ Profiler.HeapSnapshotViewportDataGrid = class extends Profiler.HeapSnapshotSorta
    */
   _nodeHeight(node) {
     let result = node.nodeSelfHeight();
-    if (!node.expanded)
+    if (!node.expanded) {
       return result;
+    }
     const children = this.allChildren(node);
-    for (let i = 0; i < children.length; i++)
+    for (let i = 0; i < children.length; i++) {
       result += this._nodeHeight(children[i]);
+    }
     return result;
   }
 
@@ -439,8 +460,9 @@ Profiler.HeapSnapshotViewportDataGrid = class extends Profiler.HeapSnapshotSorta
     const node = /** @type {!Profiler.HeapSnapshotGridNode} */ (pathToReveal.peekLast());
     const scrollTop = this.scrollContainer.scrollTop;
     const scrollBottom = scrollTop + this.scrollContainer.offsetHeight;
-    if (height >= scrollTop && height < scrollBottom)
+    if (height >= scrollTop && height < scrollBottom) {
       return Promise.resolve(node);
+    }
 
     const scrollGap = 40;
     this.scrollContainer.scrollTop = Math.max(0, height - scrollGap);
@@ -449,8 +471,9 @@ Profiler.HeapSnapshotViewportDataGrid = class extends Profiler.HeapSnapshotSorta
       this._scrollToResolveCallback = resolve.bind(null, node);
       // Still resolve the promise if it does not scroll for some reason.
       this.scrollContainer.window().requestAnimationFrame(() => {
-        if (!this._scrollToResolveCallback)
+        if (!this._scrollToResolveCallback) {
           return;
+        }
         this._scrollToResolveCallback();
         this._scrollToResolveCallback = null;
       });
@@ -605,8 +628,9 @@ Profiler.HeapSnapshotContainmentDataGrid = class extends Profiler.HeapSnapshotSo
    */
   sortingChanged() {
     const rootNode = this.rootNode();
-    if (rootNode.hasChildren())
+    if (rootNode.hasChildren()) {
       rootNode.sort();
+    }
   }
 };
 
@@ -722,12 +746,14 @@ Profiler.HeapSnapshotConstructorsDataGrid = class extends Profiler.HeapSnapshotV
     }
 
     const className = await this.snapshot.nodeClassName(parseInt(id, 10));
-    if (!className)
+    if (!className) {
       return null;
+    }
 
     const parent = this.topLevelNodes().find(classNode => classNode._name === className);
-    if (!parent)
+    if (!parent) {
       return null;
+    }
 
     const nodes = await parent.populateNodeBySnapshotObjectId(parseInt(id, 10));
     return nodes.length ? this.revealTreeNode(nodes) : null;
@@ -744,8 +770,9 @@ Profiler.HeapSnapshotConstructorsDataGrid = class extends Profiler.HeapSnapshotV
    */
   setDataSource(snapshot) {
     this.snapshot = snapshot;
-    if (this._profileIndex === -1)
+    if (this._profileIndex === -1) {
       this._populateChildren();
+    }
 
     if (this._objectIdToSelect) {
       this.revealObjectByHeapSnapshotId(this._objectIdToSelect);
@@ -804,8 +831,9 @@ Profiler.HeapSnapshotConstructorsDataGrid = class extends Profiler.HeapSnapshotV
       this._nextRequestedFilter = this._filterInProgress.equals(nodeFilter) ? null : nodeFilter;
       return;
     }
-    if (this._lastFilter && this._lastFilter.equals(nodeFilter))
+    if (this._lastFilter && this._lastFilter.equals(nodeFilter)) {
       return;
+    }
     this._filterInProgress = nodeFilter;
 
     const aggregates = await this.snapshot.aggregatesWithFilter(nodeFilter);
@@ -956,8 +984,9 @@ Profiler.AllocationDataGrid = class extends Profiler.HeapSnapshotViewportDataGri
     this.removeTopLevelNodes();
     const root = this.rootNode();
     const tops = this._topNodes;
-    for (const top of tops)
+    for (const top of tops) {
       this.appendNode(root, new Profiler.AllocationGridNode(this, top));
+    }
     this.updateVisibleNodes(true);
   }
 
@@ -982,10 +1011,12 @@ Profiler.AllocationDataGrid = class extends Profiler.HeapSnapshotViewportDataGri
      * @return {number}
      */
     function compare(a, b) {
-      if (a[fieldName] > b[fieldName])
+      if (a[fieldName] > b[fieldName]) {
         return compareResult;
-      if (a[fieldName] < b[fieldName])
+      }
+      if (a[fieldName] < b[fieldName]) {
         return -compareResult;
+      }
       return 0;
     }
     return compare;

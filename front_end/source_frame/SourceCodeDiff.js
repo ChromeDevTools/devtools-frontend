@@ -19,20 +19,23 @@ SourceFrame.SourceCodeDiff = class {
    * @param {?string} newContent
    */
   highlightModifiedLines(oldContent, newContent) {
-    if (typeof oldContent !== 'string' || typeof newContent !== 'string')
+    if (typeof oldContent !== 'string' || typeof newContent !== 'string') {
       return;
+    }
 
     const diff =
         SourceFrame.SourceCodeDiff.computeDiff(Diff.Diff.lineDiff(oldContent.split('\n'), newContent.split('\n')));
     const changedLines = [];
     for (let i = 0; i < diff.length; ++i) {
       const diffEntry = diff[i];
-      if (diffEntry.type === SourceFrame.SourceCodeDiff.EditType.Delete)
+      if (diffEntry.type === SourceFrame.SourceCodeDiff.EditType.Delete) {
         continue;
+      }
       for (let lineNumber = diffEntry.from; lineNumber < diffEntry.to; ++lineNumber) {
         const position = this._textEditor.textEditorPositionHandle(lineNumber, 0);
-        if (position)
+        if (position) {
           changedLines.push(position);
+        }
       }
     }
     this._updateHighlightedLines(changedLines);
@@ -44,8 +47,9 @@ SourceFrame.SourceCodeDiff = class {
    * @param {!Array<!TextEditor.TextEditorPositionHandle>} newLines
    */
   _updateHighlightedLines(newLines) {
-    if (this._animationTimeout)
+    if (this._animationTimeout) {
       clearTimeout(this._animationTimeout);
+    }
     this._animationTimeout = null;
     this._textEditor.operation(operation.bind(this));
 
@@ -65,8 +69,9 @@ SourceFrame.SourceCodeDiff = class {
     function toggleLines(value) {
       for (let i = 0; i < this._animatedLines.length; ++i) {
         const location = this._animatedLines[i].resolve();
-        if (location)
+        if (location) {
           this._textEditor.toggleLineClass(location.lineNumber, 'highlight-line-modification', value);
+        }
       }
     }
   }
@@ -85,8 +90,9 @@ SourceFrame.SourceCodeDiff = class {
     for (let i = 0; i < diff.length; ++i) {
       const token = diff[i];
       if (token[0] === Diff.Diff.Operation.Equal) {
-        if (isInsideBlock)
+        if (isInsideBlock) {
           flush();
+        }
         currentLineNumber += token[1].length;
         continue;
       }
@@ -103,8 +109,9 @@ SourceFrame.SourceCodeDiff = class {
         hasAdded = true;
       }
     }
-    if (isInsideBlock)
+    if (isInsideBlock) {
       flush();
+    }
     if (result.length > 1 && result[0].from === 0 && result[1].from === 0) {
       const merged = {type: SourceFrame.SourceCodeDiff.EditType.Modify, from: 0, to: result[1].to};
       result.splice(0, 2, merged);

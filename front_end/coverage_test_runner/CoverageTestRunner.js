@@ -82,8 +82,9 @@ CoverageTestRunner.findCoverageNodeForURL = function(url) {
   const rootNode = coverageListView._dataGrid.rootNode();
 
   for (const child of rootNode.children) {
-    if (child._coverageInfo.url().endsWith(url))
+    if (child._coverageInfo.url().endsWith(url)) {
       return child;
+    }
   }
 
   return null;
@@ -98,8 +99,9 @@ CoverageTestRunner.dumpDecorationsInSourceFrame = function(sourceFrame) {
     let markerType = ' ';
     const lineInfo = codeMirror.lineInfo(line);
 
-    if (!lineInfo)
+    if (!lineInfo) {
       continue;
+    }
 
     const gutterElement = lineInfo.gutterMarkers && lineInfo.gutterMarkers['CodeMirror-gutter-coverage'];
 
@@ -121,8 +123,9 @@ CoverageTestRunner.dumpCoverageListView = function() {
     const data = child._coverageInfo;
     const url = TestRunner.formatters.formatAsURL(data.url());
 
-    if (url.startsWith('test://'))
+    if (url.startsWith('test://')) {
       continue;
+    }
 
     const type = Coverage.CoverageListView._typeToString(data.type());
     TestRunner.addResult(`${url} ${type} used: ${data.usedSize()} unused: ${data.unusedSize()} total: ${data.size()}`);

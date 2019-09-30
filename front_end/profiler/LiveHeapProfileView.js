@@ -68,8 +68,9 @@ Profiler.LiveHeapProfileView = class extends UI.VBox {
     dataGrid.addEventListener(DataGrid.DataGrid.Events.SortingChanged, this._sortingChanged, this);
     for (const info of columns) {
       const headerCell = dataGrid.headerTableHeader(info.id);
-      if (headerCell)
+      if (headerCell) {
         headerCell.setAttribute('title', info.tooltip);
+      }
     }
     return dataGrid;
   }
@@ -103,8 +104,9 @@ Profiler.LiveHeapProfileView = class extends UI.VBox {
       const isolates = Array.from(SDK.isolateManager.isolates());
       const profiles = await Promise.all(
           isolates.map(isolate => isolate.heapProfilerModel() && isolate.heapProfilerModel().getSamplingProfile()));
-      if (this._currentPollId !== pollId)
+      if (this._currentPollId !== pollId) {
         return;
+      }
       this._update(isolates, profiles);
       await new Promise(r => setTimeout(r, 3000));
     } while (this._currentPollId === pollId);
@@ -118,8 +120,9 @@ Profiler.LiveHeapProfileView = class extends UI.VBox {
     /** @type {!Map<string, !{size: number, isolates: !Set<!SDK.IsolateManager.Isolate>}>} */
     const dataByUrl = new Map();
     profiles.forEach((profile, index) => {
-      if (profile)
+      if (profile) {
         processNodeTree(isolates[index], '', profile.head);
+      }
     });
 
     const rootNode = this._dataGrid.rootNode();
@@ -144,8 +147,9 @@ Profiler.LiveHeapProfileView = class extends UI.VBox {
     }
 
     for (const node of rootNode.children.slice()) {
-      if (!exisitingNodes.has(node))
+      if (!exisitingNodes.has(node)) {
         node.remove();
+      }
       this._gridNodeByUrl.delete(node);
     }
 
@@ -159,8 +163,9 @@ Profiler.LiveHeapProfileView = class extends UI.VBox {
     function processNodeTree(isolate, parentUrl, node) {
       const url = node.callFrame.url || parentUrl || systemNodeName(node) || anonymousScriptName(node);
       node.children.forEach(processNodeTree.bind(null, isolate, url));
-      if (!node.selfSize)
+      if (!node.selfSize) {
         return;
+      }
       let data = dataByUrl.get(url);
       if (!data) {
         data = {size: 0, isolates: new Set()};
@@ -192,25 +197,29 @@ Profiler.LiveHeapProfileView = class extends UI.VBox {
    * @param {!Event} event
    */
   _onKeyDown(event) {
-    if (!isEnterKey(event))
+    if (!isEnterKey(event)) {
       return;
+    }
     event.consume(true);
     this._revealSourceForSelectedNode();
   }
 
   _revealSourceForSelectedNode() {
     const node = this._dataGrid.selectedNode;
-    if (!node || !node._url)
+    if (!node || !node._url) {
       return;
+    }
     const sourceCode = Workspace.workspace.uiSourceCodeForURL(node._url);
-    if (sourceCode)
+    if (sourceCode) {
       Common.Revealer.reveal(sourceCode);
+    }
   }
 
   _sortingChanged() {
     const columnId = this._dataGrid.sortColumnId();
-    if (!columnId)
+    if (!columnId) {
       return;
+    }
     const sortByUrl = (a, b) => b._url.localeCompare(a._url);
     const sortBySize = (a, b) => b._size - a._size;
     const sortFunction = columnId === 'url' ? sortByUrl : sortBySize;
@@ -219,10 +228,11 @@ Profiler.LiveHeapProfileView = class extends UI.VBox {
 
   _toggleRecording() {
     const enable = !this._setting.get();
-    if (enable)
+    if (enable) {
       this._startRecording(false);
-    else
+    } else {
       this._stopRecording();
+    }
   }
 
   /**
@@ -230,14 +240,17 @@ Profiler.LiveHeapProfileView = class extends UI.VBox {
    */
   _startRecording(reload) {
     this._setting.set(true);
-    if (!reload)
+    if (!reload) {
       return;
+    }
     const mainTarget = SDK.targetManager.mainTarget();
-    if (!mainTarget)
+    if (!mainTarget) {
       return;
+    }
     const resourceTreeModel = /** @type {?SDK.ResourceTreeModel} */ (mainTarget.model(SDK.ResourceTreeModel));
-    if (resourceTreeModel)
+    if (resourceTreeModel) {
       resourceTreeModel.reloadPage();
+    }
   }
 
   async _stopRecording() {
@@ -263,8 +276,9 @@ Profiler.LiveHeapProfileView.GridNode = class extends DataGrid.SortableDataGridN
    * @param {number} isolateCount
    */
   updateNode(size, isolateCount) {
-    if (this._size === size && this._isolateCount === isolateCount)
+    if (this._size === size && this._isolateCount === isolateCount) {
       return;
+    }
     this._size = size;
     this._isolateCount = isolateCount;
     this.refresh();

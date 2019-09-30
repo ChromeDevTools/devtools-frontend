@@ -6,8 +6,9 @@
  * @param {!Array<!Common.EventTarget.EventDescriptor>} eventList
  */
 export function removeEventListeners(eventList) {
-  for (const eventInfo of eventList)
+  for (const eventInfo of eventList) {
     eventInfo.eventTarget.removeEventListener(eventInfo.eventType, eventInfo.listener, eventInfo.thisObject);
+  }
   // Do not hold references on unused event descriptors.
   eventList.splice(0);
 }

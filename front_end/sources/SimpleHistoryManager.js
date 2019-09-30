@@ -74,15 +74,17 @@ Sources.SimpleHistoryManager = class {
    * @param {function(!Sources.HistoryEntry):boolean} filterOutCallback
    */
   filterOut(filterOutCallback) {
-    if (this.readOnly())
+    if (this.readOnly()) {
       return;
+    }
     const filteredEntries = [];
     let removedBeforeActiveEntry = 0;
     for (let i = 0; i < this._entries.length; ++i) {
-      if (!filterOutCallback(this._entries[i]))
+      if (!filterOutCallback(this._entries[i])) {
         filteredEntries.push(this._entries[i]);
-      else if (i <= this._activeEntryIndex)
+      } else if (i <= this._activeEntryIndex) {
         ++removedBeforeActiveEntry;
+      }
     }
     this._entries = filteredEntries;
     this._activeEntryIndex = Math.max(0, this._activeEntryIndex - removedBeforeActiveEntry);
@@ -106,13 +108,16 @@ Sources.SimpleHistoryManager = class {
    * @param {!Sources.HistoryEntry} entry
    */
   push(entry) {
-    if (this.readOnly())
+    if (this.readOnly()) {
       return;
-    if (!this.empty())
+    }
+    if (!this.empty()) {
       this._entries.splice(this._activeEntryIndex + 1);
+    }
     this._entries.push(entry);
-    if (this._entries.length > this._historyDepth)
+    if (this._entries.length > this._historyDepth) {
       this._entries.shift();
+    }
     this._activeEntryIndex = this._entries.length - 1;
   }
 
@@ -120,14 +125,17 @@ Sources.SimpleHistoryManager = class {
    * @return {boolean}
    */
   rollback() {
-    if (this.empty())
+    if (this.empty()) {
       return false;
+    }
 
     let revealIndex = this._activeEntryIndex - 1;
-    while (revealIndex >= 0 && !this._entries[revealIndex].valid())
+    while (revealIndex >= 0 && !this._entries[revealIndex].valid()) {
       --revealIndex;
-    if (revealIndex < 0)
+    }
+    if (revealIndex < 0) {
       return false;
+    }
 
     this.readOnlyLock();
     this._entries[revealIndex].reveal();
@@ -143,10 +151,12 @@ Sources.SimpleHistoryManager = class {
   rollover() {
     let revealIndex = this._activeEntryIndex + 1;
 
-    while (revealIndex < this._entries.length && !this._entries[revealIndex].valid())
+    while (revealIndex < this._entries.length && !this._entries[revealIndex].valid()) {
       ++revealIndex;
-    if (revealIndex >= this._entries.length)
+    }
+    if (revealIndex >= this._entries.length) {
       return false;
+    }
 
     this.readOnlyLock();
     this._entries[revealIndex].reveal();

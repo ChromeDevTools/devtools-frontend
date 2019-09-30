@@ -22,14 +22,17 @@ Formatter.FormatterWorkerPool = class {
   }
 
   _processNextTask() {
-    if (!this._taskQueue.length)
+    if (!this._taskQueue.length) {
       return;
+    }
 
     let freeWorker = this._workerTasks.keysArray().find(worker => !this._workerTasks.get(worker));
-    if (!freeWorker && this._workerTasks.size < Formatter.FormatterWorkerPool.MaxWorkers)
+    if (!freeWorker && this._workerTasks.size < Formatter.FormatterWorkerPool.MaxWorkers) {
       freeWorker = this._createWorker();
-    if (!freeWorker)
+    }
+    if (!freeWorker) {
       return;
+    }
 
     const task = this._taskQueue.shift();
     this._workerTasks.set(freeWorker, task);
@@ -381,7 +384,8 @@ Formatter.FormatterWorkerPool.SCSSRule = class {
  * @return {!Formatter.FormatterWorkerPool}
  */
 Formatter.formatterWorkerPool = function() {
-  if (!Formatter._formatterWorkerPool)
+  if (!Formatter._formatterWorkerPool) {
     Formatter._formatterWorkerPool = new Formatter.FormatterWorkerPool();
+  }
   return Formatter._formatterWorkerPool;
 };

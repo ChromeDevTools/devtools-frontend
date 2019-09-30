@@ -63,8 +63,9 @@ Workspace.FileManager = class extends Common.Object {
     const url = /** @type {string} */ (event.data.url);
     const callback = this._saveCallbacks.get(url);
     this._saveCallbacks.delete(url);
-    if (callback)
+    if (callback) {
       callback({fileSystemPath: /** @type {string} */ (event.data.fileSystemPath)});
+    }
   }
 
   /**
@@ -74,8 +75,9 @@ Workspace.FileManager = class extends Common.Object {
     const url = /** @type {string} */ (event.data);
     const callback = this._saveCallbacks.get(url);
     this._saveCallbacks.delete(url);
-    if (callback)
+    if (callback) {
       callback(null);
+    }
   }
 
   /**

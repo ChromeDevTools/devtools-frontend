@@ -47,10 +47,12 @@ Elements.InspectElementModeController = class {
     this._showDetailedInspectTooltipSetting.addChangeListener(this._showDetailedInspectTooltipChanged.bind(this));
 
     document.addEventListener('keydown', event => {
-      if (event.keyCode !== UI.KeyboardShortcut.Keys.Esc.code)
+      if (event.keyCode !== UI.KeyboardShortcut.Keys.Esc.code) {
         return;
-      if (!this._isInInspectElementMode())
+      }
+      if (!this._isInInspectElementMode()) {
         return;
+      }
       this._setMode(Protocol.Overlay.InspectMode.None);
       event.consume(true);
     }, true);
@@ -63,8 +65,9 @@ Elements.InspectElementModeController = class {
   modelAdded(overlayModel) {
     // When DevTools are opening in the inspect element mode, the first target comes in
     // much later than the InspectorFrontendAPI.enterInspectElementMode event.
-    if (this._mode === Protocol.Overlay.InspectMode.None)
+    if (this._mode === Protocol.Overlay.InspectMode.None) {
       return;
+    }
     overlayModel.setInspectMode(this._mode, this._showDetailedInspectTooltipSetting.get());
   }
 
@@ -101,17 +104,20 @@ Elements.InspectElementModeController = class {
    * @param {!Protocol.Overlay.InspectMode} mode
    */
   _setMode(mode) {
-    if (SDK.targetManager.allTargetsSuspended())
+    if (SDK.targetManager.allTargetsSuspended()) {
       return;
+    }
     this._mode = mode;
-    for (const overlayModel of SDK.targetManager.models(SDK.OverlayModel))
+    for (const overlayModel of SDK.targetManager.models(SDK.OverlayModel)) {
       overlayModel.setInspectMode(mode, this._showDetailedInspectTooltipSetting.get());
+    }
     this._toggleSearchAction.setToggled(this._isInInspectElementMode());
   }
 
   _suspendStateChanged() {
-    if (!SDK.targetManager.allTargetsSuspended())
+    if (!SDK.targetManager.allTargetsSuspended()) {
       return;
+    }
 
     this._mode = Protocol.Overlay.InspectMode.None;
     this._toggleSearchAction.setToggled(false);
@@ -141,12 +147,14 @@ Elements.InspectElementModeController.ToggleSearchActionDelegate = class {
    * @return {boolean}
    */
   handleAction(context, actionId) {
-    if (!Elements.inspectElementModeController)
+    if (!Elements.inspectElementModeController) {
       return false;
-    if (actionId === 'elements.toggle-element-search')
+    }
+    if (actionId === 'elements.toggle-element-search') {
       Elements.inspectElementModeController._toggleInspectMode();
-    else if (actionId === 'elements.capture-area-screenshot')
+    } else if (actionId === 'elements.capture-area-screenshot') {
       Elements.inspectElementModeController._captureScreenshotMode();
+    }
     return true;
   }
 };

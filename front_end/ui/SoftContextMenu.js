@@ -45,8 +45,9 @@ UI.SoftContextMenu = class {
    * @param {!AnchorBox} anchorBox
    */
   show(document, anchorBox) {
-    if (!this._items.length)
+    if (!this._items.length) {
       return;
+    }
 
     this._document = document;
 
@@ -67,8 +68,9 @@ UI.SoftContextMenu = class {
     this._contextMenuElement.addEventListener('mouseup', e => e.consume(), false);
     this._contextMenuElement.addEventListener('keydown', this._menuKeyDown.bind(this), false);
 
-    for (let i = 0; i < this._items.length; ++i)
+    for (let i = 0; i < this._items.length; ++i) {
       this._contextMenuElement.appendChild(this._createMenuItem(this._items[i]));
+    }
 
     this._glassPane.show(document);
     this._focusRestorer = new UI.ElementFocusRestorer(this._contextMenuElement);
@@ -78,8 +80,9 @@ UI.SoftContextMenu = class {
         // If a user clicks on any submenu, prevent the menu system from closing.
         let subMenu = this._subMenu;
         while (subMenu) {
-          if (subMenu._contextMenuElement === event.path[0])
+          if (subMenu._contextMenuElement === event.path[0]) {
             return;
+          }
           subMenu = subMenu._subMenu;
         }
 
@@ -92,10 +95,12 @@ UI.SoftContextMenu = class {
   }
 
   discard() {
-    if (this._subMenu)
+    if (this._subMenu) {
       this._subMenu.discard();
-    if (this._focusRestorer)
+    }
+    if (this._focusRestorer) {
       this._focusRestorer.restore();
+    }
     if (this._glassPane) {
       this._glassPane.hide();
       delete this._glassPane;
@@ -105,24 +110,28 @@ UI.SoftContextMenu = class {
         delete this._hideOnUserGesture;
       }
     }
-    if (this._parentMenu)
+    if (this._parentMenu) {
       delete this._parentMenu._subMenu;
+    }
   }
 
   _createMenuItem(item) {
-    if (item.type === 'separator')
+    if (item.type === 'separator') {
       return this._createSeparator();
+    }
 
-    if (item.type === 'subMenu')
+    if (item.type === 'subMenu') {
       return this._createSubMenu(item);
+    }
 
     const menuItemElement = createElementWithClass('div', 'soft-context-menu-item');
     menuItemElement.tabIndex = -1;
     UI.ARIAUtils.markAsMenuItem(menuItemElement);
     const checkMarkElement = UI.Icon.create('smallicon-checkmark', 'checkmark');
     menuItemElement.appendChild(checkMarkElement);
-    if (!item.checked)
+    if (!item.checked) {
       checkMarkElement.style.opacity = '0';
+    }
 
     if (item.element) {
       const wrapper = menuItemElement.createChild('div', 'soft-context-menu-custom-item');
@@ -131,8 +140,9 @@ UI.SoftContextMenu = class {
       return menuItemElement;
     }
 
-    if (!item.enabled)
+    if (!item.enabled) {
       menuItemElement.classList.add('soft-context-menu-disabled');
+    }
     menuItemElement.createTextChild(item.label);
     menuItemElement.createChild('span', 'soft-context-menu-shortcut').textContent = item.shortcut;
 
@@ -149,10 +159,11 @@ UI.SoftContextMenu = class {
 
     if (item.type === 'checkbox') {
       const checkedState = item.checked ? ls`checked` : ls`unchecked`;
-      if (item.shortcut)
+      if (item.shortcut) {
         accessibleName = ls`${item.label}, ${item.shortcut}, ${checkedState}`;
-      else
+      } else {
         accessibleName = ls`${item.label}, ${checkedState}`;
+      }
     } else if (item.shortcut) {
       accessibleName = ls`${item.label}, ${item.shortcut}`;
     }
@@ -215,8 +226,9 @@ UI.SoftContextMenu = class {
    */
   _root() {
     let root = this;
-    while (root._parentMenu)
+    while (root._parentMenu) {
       root = root._parentMenu;
+    }
     return root;
   }
 
@@ -240,8 +252,9 @@ UI.SoftContextMenu = class {
       clearTimeout(menuItemElement._subMenuTimer);
       delete menuItemElement._subMenuTimer;
     }
-    if (this._subMenu)
+    if (this._subMenu) {
       return;
+    }
 
     this._subMenu = new UI.SoftContextMenu(menuItemElement._subItems, this._itemSelectedCallback, this);
     const anchorBox = menuItemElement.boxInWindow();
@@ -264,8 +277,9 @@ UI.SoftContextMenu = class {
     }
 
     const relatedTarget = event.relatedTarget;
-    if (relatedTarget === this._contextMenuElement)
+    if (relatedTarget === this._contextMenuElement) {
       this._highlightMenuItem(null, true);
+    }
   }
 
   /**
@@ -273,11 +287,13 @@ UI.SoftContextMenu = class {
    * @param {boolean} scheduleSubMenu
    */
   _highlightMenuItem(menuItemElement, scheduleSubMenu) {
-    if (this._highlightedMenuItemElement === menuItemElement)
+    if (this._highlightedMenuItemElement === menuItemElement) {
       return;
+    }
 
-    if (this._subMenu)
+    if (this._subMenu) {
       this._subMenu.discard();
+    }
     if (this._highlightedMenuItemElement) {
       this._highlightedMenuItemElement.classList.remove('force-white-icons');
       this._highlightedMenuItemElement.classList.remove('soft-context-menu-item-mouse-over');
@@ -288,13 +304,15 @@ UI.SoftContextMenu = class {
     }
     this._highlightedMenuItemElement = menuItemElement;
     if (this._highlightedMenuItemElement) {
-      if (UI.themeSupport.hasTheme() || Host.isMac())
+      if (UI.themeSupport.hasTheme() || Host.isMac()) {
         this._highlightedMenuItemElement.classList.add('force-white-icons');
+      }
       this._highlightedMenuItemElement.classList.add('soft-context-menu-item-mouse-over');
-      if (this._highlightedMenuItemElement._customElement)
+      if (this._highlightedMenuItemElement._customElement) {
         this._highlightedMenuItemElement._customElement.focus();
-      else
+      } else {
         this._highlightedMenuItemElement.focus();
+      }
       if (scheduleSubMenu && this._highlightedMenuItemElement._subItems &&
           !this._highlightedMenuItemElement._subMenuTimer) {
         this._highlightedMenuItemElement._subMenuTimer =
@@ -307,20 +325,24 @@ UI.SoftContextMenu = class {
     let menuItemElement = this._highlightedMenuItemElement ? this._highlightedMenuItemElement.previousSibling :
                                                              this._contextMenuElement.lastChild;
     while (menuItemElement &&
-           (menuItemElement._isSeparator || menuItemElement.classList.contains('soft-context-menu-disabled')))
+           (menuItemElement._isSeparator || menuItemElement.classList.contains('soft-context-menu-disabled'))) {
       menuItemElement = menuItemElement.previousSibling;
-    if (menuItemElement)
+    }
+    if (menuItemElement) {
       this._highlightMenuItem(menuItemElement, false);
+    }
   }
 
   _highlightNext() {
     let menuItemElement = this._highlightedMenuItemElement ? this._highlightedMenuItemElement.nextSibling :
                                                              this._contextMenuElement.firstChild;
     while (menuItemElement &&
-           (menuItemElement._isSeparator || menuItemElement.classList.contains('soft-context-menu-disabled')))
+           (menuItemElement._isSeparator || menuItemElement.classList.contains('soft-context-menu-disabled'))) {
       menuItemElement = menuItemElement.nextSibling;
-    if (menuItemElement)
+    }
+    if (menuItemElement) {
       this._highlightMenuItem(menuItemElement, false);
+    }
   }
 
   _menuKeyDown(event) {
@@ -338,8 +360,9 @@ UI.SoftContextMenu = class {
         }
         break;
       case 'ArrowRight':
-        if (!this._highlightedMenuItemElement)
+        if (!this._highlightedMenuItemElement) {
           break;
+        }
         if (this._highlightedMenuItemElement._subItems) {
           this._showSubMenu(this._highlightedMenuItemElement);
           this._subMenu._highlightNext();
@@ -349,15 +372,18 @@ UI.SoftContextMenu = class {
         this.discard();
         break;
       case 'Enter':
-        if (!isEnterKey(event))
+        if (!isEnterKey(event)) {
           return;
+        }
       // Fall through
       case ' ':  // Space
-        if (!this._highlightedMenuItemElement || this._highlightedMenuItemElement._customElement)
+        if (!this._highlightedMenuItemElement || this._highlightedMenuItemElement._customElement) {
           return;
+        }
         this._triggerAction(this._highlightedMenuItemElement, event);
-        if (this._highlightedMenuItemElement._subItems)
+        if (this._highlightedMenuItemElement._subItems) {
           this._subMenu._highlightNext();
+        }
         break;
     }
     event.consume(true);

@@ -57,8 +57,9 @@ Network.BlockedURLsPane = class extends UI.VBox {
   }
 
   static reset() {
-    if (Network.BlockedURLsPane._instance)
+    if (Network.BlockedURLsPane._instance) {
       Network.BlockedURLsPane._instance.reset();
+    }
   }
 
   _addButtonClicked() {
@@ -133,10 +134,11 @@ Network.BlockedURLsPane = class extends UI.VBox {
   commitEdit(item, editor, isNew) {
     const url = editor.control('url').value;
     const patterns = this._manager.blockedPatterns();
-    if (isNew)
+    if (isNew) {
       patterns.push({enabled: true, url: url});
-    else
+    } else {
       patterns.splice(patterns.indexOf(item), 1, {enabled: true, url: url});
+    }
 
     this._manager.setBlockedPatterns(patterns);
   }
@@ -145,8 +147,9 @@ Network.BlockedURLsPane = class extends UI.VBox {
    * @return {!UI.ListWidget.Editor<!SDK.NetworkManager.BlockedPattern>}
    */
   _createEditor() {
-    if (this._editor)
+    if (this._editor) {
       return this._editor;
+    }
 
     const editor = new UI.ListWidget.Editor();
     const content = editor.contentElement();
@@ -175,8 +178,9 @@ Network.BlockedURLsPane = class extends UI.VBox {
     this._list.element.classList.toggle('blocking-disabled', !enabled && !!this._manager.blockedPatterns().length);
     this._enabledCheckbox.setChecked(enabled);
     this._list.clear();
-    for (const pattern of this._manager.blockedPatterns())
+    for (const pattern of this._manager.blockedPatterns()) {
       this._list.appendItem(pattern, true);
+    }
     return Promise.resolve();
   }
 
@@ -185,13 +189,15 @@ Network.BlockedURLsPane = class extends UI.VBox {
    * @return {number}
    */
   _blockedRequestsCount(url) {
-    if (!url)
+    if (!url) {
       return 0;
+    }
 
     let result = 0;
     for (const blockedUrl of this._blockedCountForUrl.keys()) {
-      if (this._matches(url, blockedUrl))
+      if (this._matches(url, blockedUrl)) {
         result += this._blockedCountForUrl.get(blockedUrl);
+      }
     }
     return result;
   }
@@ -206,11 +212,13 @@ Network.BlockedURLsPane = class extends UI.VBox {
     const parts = pattern.split('*');
     for (let index = 0; index < parts.length; index++) {
       const part = parts[index];
-      if (!part.length)
+      if (!part.length) {
         continue;
+      }
       pos = url.indexOf(part, pos);
-      if (pos === -1)
+      if (pos === -1) {
         return false;
+      }
       pos += part.length;
     }
     return true;

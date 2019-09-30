@@ -27,8 +27,9 @@ Audits.RadioSetting = class {
       `;
 
       this.element.appendChild(fragment.element());
-      if (option.title)
+      if (option.title) {
         UI.Tooltip.install(fragment.$('label'), option.title);
+      }
       const radioElement = fragment.$('input');
       radioElement.addEventListener('change', this._valueChanged.bind(this));
       this._radioElements.push(radioElement);
@@ -57,8 +58,9 @@ Audits.RadioSetting = class {
    * @param {!Event} event
    */
   _valueChanged(event) {
-    if (this._ignoreChangeEvents)
+    if (this._ignoreChangeEvents) {
       return;
+    }
 
     const selectedRadio = this._radioElements.find(radio => radio.checked);
     this._setting.set(selectedRadio.value);

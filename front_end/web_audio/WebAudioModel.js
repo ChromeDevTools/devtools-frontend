@@ -47,14 +47,16 @@ WebAudio.WebAudioModel = class extends SDK.SDKModel {
    * @return {!Promise}
    */
   resumeModel() {
-    if (!this._enabled)
+    if (!this._enabled) {
       return Promise.resolve();
+    }
     return this._agent.enable();
   }
 
   ensureEnabled() {
-    if (this._enabled)
+    if (this._enabled) {
       return;
+    }
     this._agent.enable();
     this._enabled = true;
   }

@@ -48,8 +48,9 @@ Security.SecurityModel = class extends SDK.SDKModel {
         // and so that failed/cancelled requests appear at the bottom of the origins list.
         Protocol.Security.SecurityState.Unknown
       ];
-      for (let i = 0; i < ordering.length; i++)
+      for (let i = 0; i < ordering.length; i++) {
         securityStateMap.set(ordering[i], i + 1);
+      }
       Security.SecurityModel._symbolicToNumericSecurityState = securityStateMap;
     }
     const aScore = securityStateMap.get(a) || 0;

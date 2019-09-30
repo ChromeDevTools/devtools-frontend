@@ -46,15 +46,17 @@ Animation.AnimationScreenshotPopover = class extends UI.VBox {
       return;
     }
     this._showFrame = !this._showFrame;
-    if (!this._showFrame)
+    if (!this._showFrame) {
       return;
+    }
 
     const numFrames = this._frames.length;
     this._frames[this._currentFrame % numFrames].style.display = 'none';
     this._currentFrame++;
     this._frames[(this._currentFrame) % numFrames].style.display = 'block';
-    if (this._currentFrame % numFrames === numFrames - 1)
+    if (this._currentFrame % numFrames === numFrames - 1) {
       this._endDelay = 50;
+    }
     this._progressBar.style.width = (this._currentFrame % numFrames + 1) / numFrames * 100 + '%';
   }
 };

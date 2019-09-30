@@ -33,8 +33,9 @@ ConsoleTestRunner.dumpConsoleMessagesIntoArray = function(printOriginatingComman
   const originalViewportStyle = consoleView._viewport.element.style;
   const originalSize = {width: originalViewportStyle.width, height: originalViewportStyle.height};
   ConsoleTestRunner.disableConsoleViewport();
-  if (consoleView._needsFullUpdate)
+  if (consoleView._needsFullUpdate) {
     consoleView._updateMessageList();
+  }
   const viewMessages = consoleView._visibleViewMessages;
   for (let i = 0; i < viewMessages.length; ++i) {
     const uiMessage = viewMessages[i];
@@ -49,8 +50,9 @@ ConsoleTestRunner.dumpConsoleMessagesIntoArray = function(printOriginatingComman
           let depth = 0;
           let depthTest = node;
           while (depthTest !== element) {
-            if (depthTest.nodeType === Node.ELEMENT_NODE && depthTest.className)
+            if (depthTest.nodeType === Node.ELEMENT_NODE && depthTest.className) {
               depth++;
+            }
             depthTest = depthTest.parentNodeOrShadowHost();
           }
           classNames.push(
@@ -63,16 +65,18 @@ ConsoleTestRunner.dumpConsoleMessagesIntoArray = function(printOriginatingComman
     }
 
     if (ConsoleTestRunner.dumpConsoleTableMessage(uiMessage, false, result)) {
-      if (dumpClassNames)
+      if (dumpClassNames) {
         result.push(classNames.join('\n'));
+      }
     } else {
       let messageText = formatter(element, message);
       messageText = messageText.replace(/VM\d+/g, 'VM');
       result.push(messageText + (dumpClassNames ? ' ' + classNames.join('\n') : ''));
     }
 
-    if (printOriginatingCommand && uiMessage.consoleMessage().originatingMessage())
+    if (printOriginatingCommand && uiMessage.consoleMessage().originatingMessage()) {
       result.push('Originating from: ' + uiMessage.consoleMessage().originatingMessage().messageText);
+    }
   }
   consoleView._viewport.element.style.width = originalSize.width;
   consoleView._viewport.element.style.height = originalSize.height;
@@ -106,16 +110,19 @@ ConsoleTestRunner.prepareConsoleMessageText = function(messageElement) {
  * @return {boolean}
  */
 ConsoleTestRunner.dumpConsoleTableMessage = function(viewMessage, forceInvalidate, results) {
-  if (forceInvalidate)
+  if (forceInvalidate) {
     Console.ConsoleView.instance()._viewport.invalidate();
+  }
   const table = viewMessage.element();
   const headers = table.querySelectorAll('th > div:first-child');
-  if (!headers.length)
+  if (!headers.length) {
     return false;
+  }
 
   let headerLine = '';
-  for (let i = 0; i < headers.length; i++)
+  for (let i = 0; i < headers.length; i++) {
     headerLine += headers[i].textContent + ' | ';
+  }
 
   addResult('HEADER ' + headerLine);
 
@@ -125,21 +132,24 @@ ConsoleTestRunner.dumpConsoleTableMessage = function(viewMessage, forceInvalidat
     const row = rows[i];
     let rowLine = '';
     const items = row.querySelectorAll('td > span');
-    for (let j = 0; j < items.length; j++)
+    for (let j = 0; j < items.length; j++) {
       rowLine += items[j].textContent + ' | ';
+    }
 
-    if (rowLine.trim())
+    if (rowLine.trim()) {
       addResult('ROW ' + rowLine);
+    }
   }
 
   /**
    * @param {string} x
    */
   function addResult(x) {
-    if (results)
+    if (results) {
       results.push(x);
-    else
+    } else {
       TestRunner.addResult(x);
+    }
   }
 
   return true;
@@ -177,8 +187,9 @@ ConsoleTestRunner.selectMainExecutionContext = function() {
  * @param {boolean=} dontForceMainContext
  */
 ConsoleTestRunner.evaluateInConsole = function(code, callback, dontForceMainContext) {
-  if (!dontForceMainContext)
+  if (!dontForceMainContext) {
     ConsoleTestRunner.selectMainExecutionContext();
+  }
   callback = TestRunner.safeWrap(callback);
 
   const consoleView = Console.ConsoleView.instance();
@@ -291,8 +302,9 @@ ConsoleTestRunner.dumpConsoleMessagesWithStyles = function() {
     const messageText = ConsoleTestRunner.prepareConsoleMessageText(element);
     TestRunner.addResult(messageText);
     const spans = element.querySelectorAll('.console-message-text *');
-    for (let j = 0; j < spans.length; ++j)
+    for (let j = 0; j < spans.length; ++j) {
       TestRunner.addResult('Styled text #' + j + ': ' + (spans[j].style.cssText || 'NO STYLES DEFINED'));
+    }
   }
 };
 
@@ -308,8 +320,9 @@ ConsoleTestRunner.dumpConsoleMessagesWithClasses = function(sortMessages) {
     const messageText = ConsoleTestRunner.prepareConsoleMessageText(element);
     result.push(messageText + ' ' + element.getAttribute('class') + ' > ' + contentElement.getAttribute('class'));
   }
-  if (sortMessages)
+  if (sortMessages) {
     result.sort();
+  }
   TestRunner.addResults(result);
 };
 
@@ -323,10 +336,12 @@ ConsoleTestRunner.dumpConsoleClassesBrief = function() {
 
 ConsoleTestRunner.dumpConsoleCounters = async function() {
   const counter = ConsoleCounters.WarningErrorCounter._instanceForTest;
-  if (counter._updatingForTest)
+  if (counter._updatingForTest) {
     await TestRunner.addSnifferPromise(counter, '_updatedForTest');
-  for (let index = 0; index < counter._titles.length; ++index)
+  }
+  for (let index = 0; index < counter._titles.length; ++index) {
     TestRunner.addResult(counter._titles[index]);
+  }
   ConsoleTestRunner.dumpConsoleClassesBrief();
 };
 
@@ -340,8 +355,9 @@ ConsoleTestRunner.expandConsoleMessages = function(callback, deepFilter, section
   const messageViews = Console.ConsoleView.instance()._visibleViewMessages;
 
   // Initiate round-trips to fetch necessary data for further rendering.
-  for (let i = 0; i < messageViews.length; ++i)
+  for (let i = 0; i < messageViews.length; ++i) {
     messageViews[i].element();
+  }
 
   TestRunner.deprecatedRunAfterPendingDispatches(expandTreeElements);
 
@@ -349,24 +365,30 @@ ConsoleTestRunner.expandConsoleMessages = function(callback, deepFilter, section
     for (let i = 0; i < messageViews.length; ++i) {
       const element = messageViews[i].element();
       for (let node = element; node; node = node.traverseNextNode(element)) {
-        if (node.treeElementForTest)
+        if (node.treeElementForTest) {
           node.treeElementForTest.expand();
-        if (node._expandStackTraceForTest)
+        }
+        if (node._expandStackTraceForTest) {
           node._expandStackTraceForTest();
-        if (!node._section)
+        }
+        if (!node._section) {
           continue;
-        if (sectionFilter && !sectionFilter(node._section))
+        }
+        if (sectionFilter && !sectionFilter(node._section)) {
           continue;
+        }
         node._section.expand();
 
-        if (!deepFilter)
+        if (!deepFilter) {
           continue;
+        }
         const treeElements = node._section.rootElement().children();
         for (let j = 0; j < treeElements.length; ++j) {
           for (let treeElement = treeElements[j]; treeElement;
                treeElement = treeElement.traverseNextTreeElement(true, null, true)) {
-            if (deepFilter(treeElement))
+            if (deepFilter(treeElement)) {
               treeElement.expand();
+            }
           }
         }
       }
@@ -406,8 +428,9 @@ ConsoleTestRunner.expandGettersInConsoleMessages = function(callback) {
   function propertyExpandableUpdated() {
     --propertiesCount;
     if (propertiesCount === 0) {
-      for (let i = 0; i < properties.length; ++i)
+      for (let i = 0; i < properties.length; ++i) {
         properties[i].click();
+      }
       TestRunner.deprecatedRunAfterPendingDispatches(callback);
     } else {
       TestRunner.addSniffer(
@@ -422,8 +445,9 @@ ConsoleTestRunner.expandGettersInConsoleMessages = function(callback) {
 ConsoleTestRunner.expandConsoleMessagesErrorParameters = function(callback) {
   const messageViews = Console.ConsoleView.instance()._visibleViewMessages;
   // Initiate round-trips to fetch necessary data for further rendering.
-  for (let i = 0; i < messageViews.length; ++i)
+  for (let i = 0; i < messageViews.length; ++i) {
     messageViews[i].element();
+  }
   TestRunner.deprecatedRunAfterPendingDispatches(callback);
 };
 
@@ -432,8 +456,9 @@ ConsoleTestRunner.expandConsoleMessagesErrorParameters = function(callback) {
  */
 ConsoleTestRunner.waitForRemoteObjectsConsoleMessages = function(callback) {
   const messages = Console.ConsoleView.instance()._visibleViewMessages;
-  for (let i = 0; i < messages.length; ++i)
+  for (let i = 0; i < messages.length; ++i) {
     messages[i].toMessageElement();
+  }
   TestRunner.deprecatedRunAfterPendingDispatches(callback);
 };
 
@@ -451,10 +476,11 @@ ConsoleTestRunner.waitUntilConsoleEditorLoaded = function() {
   let fulfill;
   const promise = new Promise(x => (fulfill = x));
   const prompt = Console.ConsoleView.instance()._prompt;
-  if (prompt._editor)
+  if (prompt._editor) {
     fulfill(prompt._editor);
-  else
+  } else {
     TestRunner.addSniffer(Console.ConsolePrompt.prototype, '_editorSetForTest', _ => fulfill(prompt._editor));
+  }
   return promise;
 };
 
@@ -478,10 +504,11 @@ ConsoleTestRunner.waitUntilMessageReceivedPromise = function() {
  */
 ConsoleTestRunner.waitUntilNthMessageReceived = function(count, callback) {
   function override() {
-    if (--count === 0)
+    if (--count === 0) {
       TestRunner.safeWrap(callback)();
-    else
+    } else {
       TestRunner.addSniffer(SDK.consoleModel, 'addMessage', override, false);
+    }
   }
   TestRunner.addSniffer(SDK.consoleModel, 'addMessage', override, false);
 };
@@ -563,8 +590,9 @@ ConsoleTestRunner.selectConsoleMessages = function(fromMessage, fromTextOffset, 
     let charCount = 0;
     while ((node = node.traverseNextTextNode(container))) {
       const length = node.textContent.length;
-      if (charCount + length >= offset)
+      if (charCount + length >= offset) {
         return {container: node, offset: offset - charCount};
+      }
 
       charCount += length;
     }
@@ -626,8 +654,9 @@ ConsoleTestRunner.visibleIndices = function() {
   for (let i = 0; i < consoleView._visibleViewMessages.length; i++) {
     // Created message elements may have a bounding rect, but not be connected to DOM.
     const item = consoleView._visibleViewMessages[i];
-    if (!item._element || !item._element.isConnected)
+    if (!item._element || !item._element.isConnected) {
       continue;
+    }
     const itemRect = item._element.getBoundingClientRect();
     const isVisible = (itemRect.bottom > viewportRect.top + 1) && (itemRect.top <= viewportRect.bottom - 1);
     if (isVisible) {

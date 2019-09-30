@@ -16,8 +16,9 @@ UI.HistoryInput = class extends HTMLInputElement {
    * @return {!UI.HistoryInput}
    */
   static create() {
-    if (!UI.HistoryInput._constructor)
+    if (!UI.HistoryInput._constructor) {
       UI.HistoryInput._constructor = UI.registerCustomElement('input', 'history-input', UI.HistoryInput);
+    }
 
     return /** @type {!UI.HistoryInput} */ (UI.HistoryInput._constructor());
   }
@@ -26,8 +27,9 @@ UI.HistoryInput = class extends HTMLInputElement {
    * @param {!Event} event
    */
   _onInput(event) {
-    if (this._history.length === this._historyPosition + 1)
+    if (this._history.length === this._historyPosition + 1) {
       this._history[this._history.length - 1] = this.value;
+    }
   }
 
   /**
@@ -50,8 +52,9 @@ UI.HistoryInput = class extends HTMLInputElement {
   }
 
   _saveToHistory() {
-    if (this._history.length > 1 && this._history[this._history.length - 2] === this.value)
+    if (this._history.length > 1 && this._history[this._history.length - 2] === this.value) {
       return;
+    }
     this._history[this._history.length - 1] = this.value;
     this._historyPosition = this._history.length - 1;
     this._history.push('');

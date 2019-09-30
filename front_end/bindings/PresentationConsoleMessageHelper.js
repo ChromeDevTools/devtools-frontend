@@ -64,15 +64,17 @@ Bindings.PresentationConsoleMessageManager = class {
    */
   _consoleMessageAdded(message) {
     if (!message.isErrorOrWarning() || !message.runtimeModel() ||
-        message.source === SDK.ConsoleMessage.MessageSource.Violation)
+        message.source === SDK.ConsoleMessage.MessageSource.Violation) {
       return;
+    }
     const debuggerModel = message.runtimeModel().debuggerModel();
     debuggerModel[Bindings.PresentationConsoleMessageManager._symbol]._consoleMessageAdded(message);
   }
 
   _consoleCleared() {
-    for (const debuggerModel of SDK.targetManager.models(SDK.DebuggerModel))
+    for (const debuggerModel of SDK.targetManager.models(SDK.DebuggerModel)) {
       debuggerModel[Bindings.PresentationConsoleMessageManager._symbol]._consoleCleared();
+    }
   }
 };
 
@@ -104,10 +106,11 @@ Bindings.PresentationConsoleMessageHelper = class {
    */
   _consoleMessageAdded(message) {
     const rawLocation = this._rawLocation(message);
-    if (rawLocation)
+    if (rawLocation) {
       this._addConsoleMessageToScript(message, rawLocation);
-    else
+    } else {
       this._addPendingConsoleMessage(message);
+    }
   }
 
   /**
@@ -115,15 +118,17 @@ Bindings.PresentationConsoleMessageHelper = class {
    * @return {?SDK.DebuggerModel.Location}
    */
   _rawLocation(message) {
-    if (message.scriptId)
+    if (message.scriptId) {
       return this._debuggerModel.createRawLocationByScriptId(message.scriptId, message.line, message.column);
+    }
     const callFrame = message.stackTrace && message.stackTrace.callFrames ? message.stackTrace.callFrames[0] : null;
     if (callFrame) {
       return this._debuggerModel.createRawLocationByScriptId(
           callFrame.scriptId, callFrame.lineNumber, callFrame.columnNumber);
     }
-    if (message.url)
+    if (message.url) {
       return this._debuggerModel.createRawLocationByURL(message.url, message.line, message.column);
+    }
     return null;
   }
 
@@ -140,10 +145,12 @@ Bindings.PresentationConsoleMessageHelper = class {
    * @param {!SDK.ConsoleMessage} message
    */
   _addPendingConsoleMessage(message) {
-    if (!message.url)
+    if (!message.url) {
       return;
-    if (!this._pendingConsoleMessages[message.url])
+    }
+    if (!this._pendingConsoleMessages[message.url]) {
       this._pendingConsoleMessages[message.url] = [];
+    }
     this._pendingConsoleMessages[message.url].push(message);
   }
 
@@ -154,25 +161,29 @@ Bindings.PresentationConsoleMessageHelper = class {
     const script = /** @type {!SDK.Script} */ (event.data);
 
     const messages = this._pendingConsoleMessages[script.sourceURL];
-    if (!messages)
+    if (!messages) {
       return;
+    }
 
     const pendingMessages = [];
     for (let i = 0; i < messages.length; i++) {
       const message = messages[i];
       const rawLocation = this._rawLocation(message);
-      if (!rawLocation)
+      if (!rawLocation) {
         continue;
-      if (script.scriptId === rawLocation.scriptId)
+      }
+      if (script.scriptId === rawLocation.scriptId) {
         this._addConsoleMessageToScript(message, rawLocation);
-      else
+      } else {
         pendingMessages.push(message);
+      }
     }
 
-    if (pendingMessages.length)
+    if (pendingMessages.length) {
       this._pendingConsoleMessages[script.sourceURL] = pendingMessages;
-    else
+    } else {
       delete this._pendingConsoleMessages[script.sourceURL];
+    }
   }
 
   _consoleCleared() {
@@ -181,8 +192,9 @@ Bindings.PresentationConsoleMessageHelper = class {
   }
 
   _debuggerReset() {
-    for (const message of this._presentationConsoleMessages)
+    for (const message of this._presentationConsoleMessages) {
       message.dispose();
+    }
     this._presentationConsoleMessages = [];
     this._locationPool.disposeAll();
   }
@@ -209,17 +221,20 @@ Bindings.PresentationConsoleMessage = class {
    * @param {!Bindings.LiveLocation} liveLocation
    */
   _updateLocation(liveLocation) {
-    if (this._uiMessage)
+    if (this._uiMessage) {
       this._uiMessage.remove();
+    }
     const uiLocation = liveLocation.uiLocation();
-    if (!uiLocation)
+    if (!uiLocation) {
       return;
+    }
     this._uiMessage =
         uiLocation.uiSourceCode.addLineMessage(this._level, this._text, uiLocation.lineNumber, uiLocation.columnNumber);
   }
 
   dispose() {
-    if (this._uiMessage)
+    if (this._uiMessage) {
       this._uiMessage.remove();
+    }
   }
 };

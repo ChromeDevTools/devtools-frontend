@@ -63,10 +63,11 @@ UI.Fragment = class {
       html += strings[i];
       const close = strings[i].lastIndexOf('>');
       const open = strings[i].indexOf('<', close + 1);
-      if (close !== -1 && open === -1)
+      if (close !== -1 && open === -1) {
         insideText = true;
-      else if (open !== -1)
+      } else if (open !== -1) {
         insideText = false;
+      }
       html += insideText ? UI.Fragment._textMarker : UI.Fragment._attributeMarker(i);
     }
     html += strings[strings.length - 1];
@@ -93,8 +94,9 @@ UI.Fragment = class {
           const name = node.attributes[i].name;
 
           if (!UI.Fragment._attributeMarkerRegex.test(name) &&
-              !UI.Fragment._attributeMarkerRegex.test(node.attributes[i].value))
+              !UI.Fragment._attributeMarkerRegex.test(node.attributes[i].value)) {
             continue;
+          }
 
           attributesToRemove.push(name);
           nodesToMark.push(node);
@@ -105,16 +107,18 @@ UI.Fragment = class {
           valueIndex += bind.attr.values.length - 1;
           binds.push(bind);
         }
-        for (let i = 0; i < attributesToRemove.length; i++)
+        for (let i = 0; i < attributesToRemove.length; i++) {
           node.removeAttribute(attributesToRemove[i]);
+        }
       }
 
       if (node.nodeType === Node.TEXT_NODE && node.data.indexOf(UI.Fragment._textMarker) !== -1) {
         const texts = node.data.split(UI.Fragment._textMarkerRegex);
         node.data = texts[texts.length - 1];
         for (let i = 0; i < texts.length - 1; i++) {
-          if (texts[i])
+          if (texts[i]) {
             node.parentNode.insertBefore(createTextNode(texts[i]), node);
+          }
           const nodeToReplace = createElement('span');
           nodesToMark.push(nodeToReplace);
           binds.push({replaceNodeIndex: valueIndex++});
@@ -124,15 +128,18 @@ UI.Fragment = class {
 
       if (node.nodeType === Node.TEXT_NODE &&
           (!node.previousSibling || node.previousSibling.nodeType === Node.ELEMENT_NODE) &&
-          (!node.nextSibling || node.nextSibling.nodeType === Node.ELEMENT_NODE) && /^\s*$/.test(node.data))
+          (!node.nextSibling || node.nextSibling.nodeType === Node.ELEMENT_NODE) && /^\s*$/.test(node.data)) {
         emptyTextNodes.push(node);
+      }
     }
 
-    for (let i = 0; i < nodesToMark.length; i++)
+    for (let i = 0; i < nodesToMark.length; i++) {
       nodesToMark[i].classList.add(UI.Fragment._class(i));
+    }
 
-    for (const emptyTextNode of emptyTextNodes)
+    for (const emptyTextNode of emptyTextNodes) {
       emptyTextNode.remove();
+    }
     return {template: template, binds: binds};
   }
 
@@ -194,14 +201,17 @@ UI.Fragment = class {
    * @return {!Node}
    */
   static _nodeForValue(value) {
-    if (value instanceof Node)
+    if (value instanceof Node) {
       return value;
-    if (value instanceof UI.Fragment)
+    }
+    if (value instanceof UI.Fragment) {
       return value._element;
+    }
     if (Array.isArray(value)) {
       const node = createDocumentFragment();
-      for (const v of value)
+      for (const v of value) {
         node.appendChild(this._nodeForValue(v));
+      }
       return node;
     }
     return createTextNode('' + value);

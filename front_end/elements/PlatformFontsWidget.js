@@ -57,8 +57,9 @@ Elements.PlatformFontsWidget = class extends UI.ThrottledWidget {
   doUpdate() {
     const cssModel = this._sharedModel.cssModel();
     const node = this._sharedModel.node();
-    if (!node || !cssModel)
+    if (!node || !cssModel) {
       return Promise.resolve();
+    }
 
     return cssModel.platformFontsPromise(node.id).then(this._refreshUI.bind(this, node));
   }
@@ -68,15 +69,17 @@ Elements.PlatformFontsWidget = class extends UI.ThrottledWidget {
    * @param {?Array.<!Protocol.CSS.PlatformFontUsage>} platformFonts
    */
   _refreshUI(node, platformFonts) {
-    if (this._sharedModel.node() !== node)
+    if (this._sharedModel.node() !== node) {
       return;
+    }
 
     this._fontStatsSection.removeChildren();
 
     const isEmptySection = !platformFonts || !platformFonts.length;
     this._sectionTitle.classList.toggle('hidden', isEmptySection);
-    if (isEmptySection)
+    if (isEmptySection) {
       return;
+    }
 
     platformFonts.sort(function(a, b) {
       return b.glyphCount - a.glyphCount;

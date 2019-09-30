@@ -88,8 +88,9 @@ Profiler.ProfilesPanel = class extends UI.PanelWithSidebar {
     this._profileToView = [];
     this._typeIdToSidebarSection = {};
     const types = this._profileTypes;
-    for (let i = 0; i < types.length; i++)
+    for (let i = 0; i < types.length; i++) {
       this._registerProfileType(types[i]);
+    }
     this._launcherView.restoreSelectedProfileType();
     this.profilesItemTreeElement.select();
     this._showLauncherView();
@@ -107,12 +108,14 @@ Profiler.ProfilesPanel = class extends UI.PanelWithSidebar {
    */
   _onKeyDown(event) {
     let handled = false;
-    if (event.key === 'ArrowDown' && !event.altKey)
+    if (event.key === 'ArrowDown' && !event.altKey) {
       handled = this._sidebarTree.selectNext();
-    else if (event.key === 'ArrowUp' && !event.altKey)
+    } else if (event.key === 'ArrowUp' && !event.altKey) {
       handled = this._sidebarTree.selectPrevious();
-    if (handled)
+    }
+    if (handled) {
       event.consume(true);
+    }
   }
 
   /**
@@ -124,8 +127,9 @@ Profiler.ProfilesPanel = class extends UI.PanelWithSidebar {
   }
 
   _createFileSelectorElement() {
-    if (this._fileSelectorElement)
+    if (this._fileSelectorElement) {
       this.element.removeChild(this._fileSelectorElement);
+    }
     this._fileSelectorElement = UI.createFileSelectorElement(this._loadFromFile.bind(this));
     Profiler.ProfilesPanel._fileSelectorElement = this._fileSelectorElement;
     this.element.appendChild(this._fileSelectorElement);
@@ -160,23 +164,26 @@ Profiler.ProfilesPanel = class extends UI.PanelWithSidebar {
     }
 
     const error = await profileType.loadFromFile(file);
-    if (error)
+    if (error) {
       UI.MessageDialog.show(Common.UIString('Profile loading failed: %s.', error.message));
+    }
   }
 
   /**
    * @return {boolean}
    */
   toggleRecord() {
-    if (!this._toggleRecordAction.enabled())
+    if (!this._toggleRecordAction.enabled()) {
       return true;
+    }
     const type = this._selectedProfileType;
     const isProfiling = type.buttonClicked();
     this._updateToggleRecordAction(isProfiling);
     if (isProfiling) {
       this._launcherView.profileStarted();
-      if (type.hasTemporaryView())
+      if (type.hasTemporaryView()) {
         this.showProfile(type.profileBeingRecorded());
+      }
     } else {
       this._launcherView.profileFinished();
     }
@@ -195,12 +202,14 @@ Profiler.ProfilesPanel = class extends UI.PanelWithSidebar {
     const enable = toggled || (!SDK.targetManager.allTargetsSuspended() && hasSelectedTarget);
     this._toggleRecordAction.setEnabled(enable);
     this._toggleRecordAction.setToggled(toggled);
-    if (enable)
+    if (enable) {
       this._toggleRecordButton.setTitle(this._selectedProfileType ? this._selectedProfileType.buttonTooltip : '');
-    else
+    } else {
       this._toggleRecordButton.setTitle(UI.anotherProfilerActiveLabel());
-    if (this._selectedProfileType)
+    }
+    if (this._selectedProfileType) {
       this._launcherView.updateProfileType(this._selectedProfileType, enable);
+    }
   }
 
   _profileBeingRecordedRemoved() {
@@ -289,8 +298,9 @@ Profiler.ProfilesPanel = class extends UI.PanelWithSidebar {
     profileType.addEventListener(Profiler.ProfileType.Events.ProfileComplete, profileComplete, this);
 
     const profiles = profileType.getProfiles();
-    for (let i = 0; i < profiles.length; i++)
+    for (let i = 0; i < profiles.length; i++) {
       this._addProfileHeader(profiles[i]);
+    }
   }
 
   /**
@@ -316,20 +326,23 @@ Profiler.ProfilesPanel = class extends UI.PanelWithSidebar {
     const profileType = profile.profileType();
     const typeId = profileType.id;
     this._typeIdToSidebarSection[typeId].addProfileHeader(profile);
-    if (!this.visibleView || this.visibleView === this._launcherView)
+    if (!this.visibleView || this.visibleView === this._launcherView) {
       this.showProfile(profile);
+    }
   }
 
   /**
    * @param {!Profiler.ProfileHeader} profile
    */
   _removeProfileHeader(profile) {
-    if (profile.profileType().profileBeingRecorded() === profile)
+    if (profile.profileType().profileBeingRecorded() === profile) {
       this._profileBeingRecordedRemoved();
+    }
 
     const i = this._indexOfViewForProfile(profile);
-    if (i !== -1)
+    if (i !== -1) {
       this._profileToView.splice(i, 1);
+    }
 
     const typeId = profile.profileType().id;
     const sectionIsEmpty = this._typeIdToSidebarSection[typeId].removeProfileHeader(profile);
@@ -349,12 +362,14 @@ Profiler.ProfilesPanel = class extends UI.PanelWithSidebar {
    */
   showProfile(profile) {
     if (!profile ||
-        (profile.profileType().profileBeingRecorded() === profile) && !profile.profileType().hasTemporaryView())
+        (profile.profileType().profileBeingRecorded() === profile) && !profile.profileType().hasTemporaryView()) {
       return null;
+    }
 
     const view = this.viewForProfile(profile);
-    if (view === this.visibleView)
+    if (view === this.visibleView) {
       return view;
+    }
 
     this.closeVisibleView();
 
@@ -370,8 +385,9 @@ Profiler.ProfilesPanel = class extends UI.PanelWithSidebar {
     this._profileViewToolbar.removeToolbarItems();
 
     const toolbarItems = view.syncToolbarItems();
-    for (let i = 0; i < toolbarItems.length; ++i)
+    for (let i = 0; i < toolbarItems.length; ++i) {
       this._profileViewToolbar.appendToolbarItem(toolbarItems[i]);
+    }
 
     return view;
   }
@@ -399,8 +415,9 @@ Profiler.ProfilesPanel = class extends UI.PanelWithSidebar {
    */
   viewForProfile(profile) {
     const index = this._indexOfViewForProfile(profile);
-    if (index !== -1)
+    if (index !== -1) {
       return this._profileToView[index].view;
+    }
     const view = profile.createView(this);
     view.element.classList.add('profile-view');
     this._profileToView.push({profile: profile, view: view});
@@ -416,8 +433,9 @@ Profiler.ProfilesPanel = class extends UI.PanelWithSidebar {
   }
 
   closeVisibleView() {
-    if (this.visibleView)
+    if (this.visibleView) {
       this.visibleView.detach();
+    }
     delete this.visibleView;
   }
 
@@ -484,8 +502,9 @@ Profiler.ProfileTypeSidebarSection = class extends UI.TreeElement {
         const selected = firstProfileTreeElement.selected;
         this.removeChild(firstProfileTreeElement);
         group.sidebarTreeElement.appendChild(firstProfileTreeElement);
-        if (selected)
+        if (selected) {
           firstProfileTreeElement.revealAndSelect();
+        }
 
         firstProfileTreeElement.setSmall(true);
         firstProfileTreeElement.setMainTitle(Common.UIString('Run %d', 1));
@@ -509,8 +528,9 @@ Profiler.ProfileTypeSidebarSection = class extends UI.TreeElement {
    */
   removeProfileHeader(profile) {
     const index = this._sidebarElementIndex(profile);
-    if (index === -1)
+    if (index === -1) {
       return false;
+    }
     const profileTreeElement = this._profileTreeElements[index];
     this._profileTreeElements.splice(index, 1);
 
@@ -529,14 +549,16 @@ Profiler.ProfileTypeSidebarSection = class extends UI.TreeElement {
         groupElements[0].setMainTitle(profile.title);
         this.removeChild(group.sidebarTreeElement);
       }
-      if (groupElements.length !== 0)
+      if (groupElements.length !== 0) {
         sidebarParent = group.sidebarTreeElement;
+      }
     }
     sidebarParent.removeChild(profileTreeElement);
     profileTreeElement.dispose();
 
-    if (this.childCount())
+    if (this.childCount()) {
       return false;
+    }
     this.hidden = true;
     return true;
   }
@@ -557,8 +579,9 @@ Profiler.ProfileTypeSidebarSection = class extends UI.TreeElement {
   _sidebarElementIndex(profile) {
     const elements = this._profileTreeElements;
     for (let i = 0; i < elements.length; i++) {
-      if (elements[i].profile === profile)
+      if (elements[i].profile === profile) {
         return i;
+      }
     }
     return -1;
   }
@@ -606,10 +629,11 @@ Profiler.ProfileSidebarTreeElement = class extends UI.TreeElement {
     this._dataDisplayDelegate = dataDisplayDelegate;
     this.profile = profile;
     profile.addEventListener(Profiler.ProfileHeader.Events.UpdateStatus, this._updateStatus, this);
-    if (profile.canSaveToFile())
+    if (profile.canSaveToFile()) {
       this._createSaveLink();
-    else
+    } else {
       profile.addEventListener(Profiler.ProfileHeader.Events.ProfileReceived, this._onProfileReceived, this);
+    }
   }
 
   _createSaveLink() {
@@ -631,8 +655,9 @@ Profiler.ProfileSidebarTreeElement = class extends UI.TreeElement {
       this._subtitleElement.textContent = statusUpdate.subtitle || '';
       this._titlesElement.classList.toggle('no-subtitle', !statusUpdate.subtitle);
     }
-    if (typeof statusUpdate.wait === 'boolean' && this.listItemElement)
+    if (typeof statusUpdate.wait === 'boolean' && this.listItemElement) {
       this.listItemElement.classList.toggle('wait', statusUpdate.wait);
+    }
   }
 
   /**
@@ -641,8 +666,9 @@ Profiler.ProfileSidebarTreeElement = class extends UI.TreeElement {
    * @return {boolean}
    */
   ondblclick(event) {
-    if (!this._editing)
+    if (!this._editing) {
       this._startEditing(/** @type {!Element} */ (event.target));
+    }
     return false;
   }
 
@@ -651,8 +677,9 @@ Profiler.ProfileSidebarTreeElement = class extends UI.TreeElement {
    */
   _startEditing(eventTarget) {
     const container = eventTarget.enclosingNodeOrSelfWithClass('title');
-    if (!container)
+    if (!container) {
       return;
+    }
     const config = new UI.InplaceEditor.Config(this._editingCommitted.bind(this), this._editingCancelled.bind(this));
     this._editing = UI.InplaceEditor.startEditing(container, config);
   }
@@ -697,10 +724,12 @@ Profiler.ProfileSidebarTreeElement = class extends UI.TreeElement {
    * @override
    */
   onattach() {
-    if (this._className)
+    if (this._className) {
       this.listItemElement.classList.add(this._className);
-    if (this._small)
+    }
+    if (this._small) {
       this.listItemElement.classList.add('small');
+    }
     this.listItemElement.appendChildren(this._iconElement, this._titlesElement);
     this.listItemElement.addEventListener('contextmenu', this._handleContextMenuEvent.bind(this), true);
   }
@@ -715,8 +744,9 @@ Profiler.ProfileSidebarTreeElement = class extends UI.TreeElement {
     contextMenu.headerSection().appendItem(
         Common.UIString('Load\u2026'),
         Profiler.ProfilesPanel._fileSelectorElement.click.bind(Profiler.ProfilesPanel._fileSelectorElement));
-    if (profile.canSaveToFile())
+    if (profile.canSaveToFile()) {
       contextMenu.saveSection().appendItem(Common.UIString('Save\u2026'), profile.saveToFile.bind(profile));
+    }
     contextMenu.footerSection().appendItem(Common.UIString('Delete'), this.ondelete.bind(this));
     contextMenu.show();
   }
@@ -730,8 +760,9 @@ Profiler.ProfileSidebarTreeElement = class extends UI.TreeElement {
    */
   setSmall(small) {
     this._small = small;
-    if (this.listItemElement)
+    if (this.listItemElement) {
       this.listItemElement.classList.toggle('small', this._small);
+    }
   }
 
   /**
@@ -765,8 +796,9 @@ Profiler.ProfileGroupSidebarTreeElement = class extends UI.TreeElement {
    */
   onselect() {
     const hasChildren = this.childCount() > 0;
-    if (hasChildren)
+    if (hasChildren) {
       this._dataDisplayDelegate.showProfile(this.lastChild().profile);
+    }
     return hasChildren;
   }
 

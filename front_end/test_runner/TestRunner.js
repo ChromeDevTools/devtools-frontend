@@ -39,17 +39,19 @@ TestRunner._executeTestScript = function() {
           TestRunner.completeTest = () => console.log('Test completed');
 
           // Auto-start unit tests
-          if (!self.testRunner)
+          if (!self.testRunner) {
             eval(`(function test(){${testScript}})()\n//# sourceURL=${testScriptURL}`);
-          else
+          } else {
             self.eval(`function test(){${testScript}}\n//# sourceURL=${testScriptURL}`);
+          }
           return;
         }
 
         // Convert the test script into an expression (if needed)
         testScript = testScript.trimRight();
-        if (testScript.endsWith(';'))
+        if (testScript.endsWith(';')) {
           testScript = testScript.slice(0, testScript.length - 1);
+        }
 
         (async function() {
           try {
@@ -107,10 +109,12 @@ TestRunner.addResult = function(text) {
  * @param {!Array<string>} textArray
  */
 TestRunner.addResults = function(textArray) {
-  if (!textArray)
+  if (!textArray) {
     return;
-  for (let i = 0, size = textArray.length; i < size; ++i)
+  }
+  for (let i = 0, size = textArray.length; i < size; ++i) {
     TestRunner.addResult(textArray[i]);
+  }
 };
 
 /**
@@ -127,8 +131,9 @@ TestRunner.runTests = function(tests) {
     }
     TestRunner.addResult('\ntest: ' + test.name);
     let testPromise = test();
-    if (!(testPromise instanceof Promise))
+    if (!(testPromise instanceof Promise)) {
       testPromise = Promise.resolve();
+    }
     testPromise.then(nextTest);
   }
 };
@@ -143,16 +148,18 @@ TestRunner.addSniffer = function(receiver, methodName, override, opt_sticky) {
   override = TestRunner.safeWrap(override);
 
   const original = receiver[methodName];
-  if (typeof original !== 'function')
+  if (typeof original !== 'function') {
     throw new Error('Cannot find method to override: ' + methodName);
+  }
 
   receiver[methodName] = function(var_args) {
     let result;
     try {
       result = original.apply(this, arguments);
     } finally {
-      if (!opt_sticky)
+      if (!opt_sticky) {
         receiver[methodName] = original;
+      }
     }
     // In case of exception the override won't be called.
     try {
@@ -208,8 +215,9 @@ TestRunner._resolveOnFinishInits;
 TestRunner.loadModule = async function(module) {
   const promise = new Promise(resolve => TestRunner._resolveOnFinishInits = resolve);
   await self.runtime.loadModulePromise(module);
-  if (!TestRunner._pendingInits)
+  if (!TestRunner._pendingInits) {
     return;
+  }
   return promise;
 };
 
@@ -253,17 +261,19 @@ TestRunner.safeWrap = function(func, onexception) {
    * @this {*}
    */
   function result() {
-    if (!func)
+    if (!func) {
       return;
+    }
     const wrapThis = this;
     try {
       return func.apply(wrapThis, arguments);
     } catch (e) {
       TestRunner.addResult('Exception while running: ' + func + '\n' + (e.stack || e));
-      if (onexception)
+      if (onexception) {
         TestRunner.safeWrap(onexception)();
-      else
+      } else {
         TestRunner.completeTest();
+      }
     }
   }
   return result;
@@ -281,8 +291,9 @@ TestRunner.safeAsyncWrap = function(func) {
    * @this {*}
    */
   async function result() {
-    if (!func)
+    if (!func) {
       return;
+    }
     const wrapThis = this;
     try {
       return await func.apply(wrapThis, arguments);
@@ -303,8 +314,9 @@ TestRunner.textContentWithLineBreaks = function(node) {
     let result = 0;
     while (currentNode && currentNode !== node) {
       if (currentNode.nodeName === 'OL' &&
-          !(currentNode.classList && currentNode.classList.contains('object-properties-section')))
+          !(currentNode.classList && currentNode.classList.contains('object-properties-section'))) {
         ++result;
+      }
       currentNode = currentNode.parentNode;
     }
     return Array(result * 4 + 1).join(' ');
@@ -318,10 +330,11 @@ TestRunner.textContentWithLineBreaks = function(node) {
     if (currentNode.nodeType === Node.TEXT_NODE) {
       buffer += currentNode.nodeValue;
     } else if (currentNode.nodeName === 'LI' || currentNode.nodeName === 'TR') {
-      if (!ignoreFirst)
+      if (!ignoreFirst) {
         buffer += '\n' + padding(currentNode);
-      else
+      } else {
         ignoreFirst = false;
+      }
     } else if (currentNode.nodeName === 'STYLE') {
       currentNode = currentNode.traverseNextNode(node);
       continue;
@@ -341,10 +354,11 @@ TestRunner.textContentWithoutStyles = function(node) {
   let currentNode = node;
   while (currentNode.traverseNextNode(node)) {
     currentNode = currentNode.traverseNextNode(node);
-    if (currentNode.nodeType === Node.TEXT_NODE)
+    if (currentNode.nodeType === Node.TEXT_NODE) {
       buffer += currentNode.nodeValue;
-    else if (currentNode.nodeName === 'STYLE')
+    } else if (currentNode.nodeName === 'STYLE') {
       currentNode = currentNode.traverseNextNode(node);
+    }
   }
   return buffer;
 };
@@ -423,8 +437,9 @@ TestRunner._evaluateInPage = async function(code) {
   const sourceURL = `test://evaluations/${TestRunner._evaluateInPageCounter++}/` + fileName;
   const lineOffset = parseInt(source[1], 10);
   code = '\n'.repeat(lineOffset - 1) + code;
-  if (code.indexOf('sourceURL=') === -1)
+  if (code.indexOf('sourceURL=') === -1) {
     code += `//# sourceURL=${sourceURL}`;
+  }
   const response = await TestRunner.RuntimeAgent.invoke_evaluate({expression: code, objectGroup: 'console'});
   const error = response[Protocol.Error];
   if (error) {
@@ -445,8 +460,9 @@ TestRunner._evaluateInPage = async function(code) {
 TestRunner.evaluateInPageAnonymously = async function(code, userGesture) {
   const response =
       await TestRunner.RuntimeAgent.invoke_evaluate({expression: code, objectGroup: 'console', userGesture});
-  if (!response[Protocol.Error])
+  if (!response[Protocol.Error]) {
     return response.result.value;
+  }
   TestRunner.addResult(
       'Error: ' +
       (response.exceptionDetails && response.exceptionDetails.text || 'exception from evaluateInPageAnonymously.'));
@@ -470,8 +486,9 @@ TestRunner.evaluateInPageAsync = async function(code) {
       {expression: code, objectGroup: 'console', includeCommandLineAPI: false, awaitPromise: true});
 
   const error = response[Protocol.Error];
-  if (!error && !response.exceptionDetails)
+  if (!error && !response.exceptionDetails) {
     return response.result.value;
+  }
   TestRunner.addResult(
       'Error: ' +
       (error || response.exceptionDetails && response.exceptionDetails.text || 'exception while evaluation in page.'));
@@ -523,8 +540,9 @@ TestRunner.evaluateFunctionInOverlay = function(func, callback) {
  * @param {string} failureText
  */
 TestRunner.check = function(passCondition, failureText) {
-  if (!passCondition)
+  if (!passCondition) {
     TestRunner.addResult('FAIL: ' + failureText);
+  }
 };
 
 /**
@@ -546,10 +564,11 @@ TestRunner.loadHTML = function(html) {
     // <!DOCTYPE...> tag needs to be first
     const doctypeRegex = /(<!DOCTYPE.*?>)/i;
     const baseTag = `<base href="${TestRunner.url()}">`;
-    if (html.match(doctypeRegex))
+    if (html.match(doctypeRegex)) {
       html = html.replace(doctypeRegex, '$1' + baseTag);
-    else
+    } else {
       html = baseTag + html;
+    }
   }
   html = html.replace(/'/g, '\\\'').replace(/\n/g, '\\n');
   return TestRunner.evaluateInPageAnonymously(`document.write(\`${html}\`);document.close();`);
@@ -656,8 +675,9 @@ TestRunner.deprecatedInitAsync = async function(code) {
   TestRunner._pendingInits++;
   await TestRunner.RuntimeAgent.invoke_evaluate({expression: code, objectGroup: 'console'});
   TestRunner._pendingInits--;
-  if (!TestRunner._pendingInits)
+  if (!TestRunner._pendingInits) {
     TestRunner._resolveOnFinishInits();
+  }
 };
 
 /**
@@ -697,8 +717,9 @@ TestRunner.formatters.formatAsTypeName = function(value) {
  * @return {string}
  */
 TestRunner.formatters.formatAsTypeNameOrNull = function(value) {
-  if (value === null)
+  if (value === null) {
     return 'null';
+  }
   return TestRunner.formatters.formatAsTypeName(value);
 };
 
@@ -707,8 +728,9 @@ TestRunner.formatters.formatAsTypeNameOrNull = function(value) {
  * @return {string|!Date}
  */
 TestRunner.formatters.formatAsRecentTime = function(value) {
-  if (typeof value !== 'object' || !(value instanceof Date))
+  if (typeof value !== 'object' || !(value instanceof Date)) {
     return TestRunner.formatters.formatAsTypeName(value);
+  }
   const delta = Date.now() - value;
   return 0 <= delta && delta < 30 * 60 * 1000 ? '<plausible>' : value;
 };
@@ -718,11 +740,13 @@ TestRunner.formatters.formatAsRecentTime = function(value) {
  * @return {string}
  */
 TestRunner.formatters.formatAsURL = function(value) {
-  if (!value)
+  if (!value) {
     return value;
+  }
   const lastIndex = value.lastIndexOf('devtools/');
-  if (lastIndex < 0)
+  if (lastIndex < 0) {
     return value;
+  }
   return '.../' + value.substr(lastIndex);
 };
 
@@ -731,8 +755,9 @@ TestRunner.formatters.formatAsURL = function(value) {
  * @return {string}
  */
 TestRunner.formatters.formatAsDescription = function(value) {
-  if (!value)
+  if (!value) {
     return value;
+  }
   return '"' + value.replace(/^function [gs]et /, 'function ') + '"';
 };
 
@@ -755,8 +780,9 @@ TestRunner.addObject = function(object, customFormatters, prefix, firstLinePrefi
   propertyNames.sort();
   for (let i = 0; i < propertyNames.length; ++i) {
     const prop = propertyNames[i];
-    if (!object.hasOwnProperty(prop))
+    if (!object.hasOwnProperty(prop)) {
       continue;
+    }
     const prefixWithName = '    ' + prefix + prop + ' : ';
     const propValue = object[prop];
     if (customFormatters && customFormatters[prop]) {
@@ -782,8 +808,9 @@ TestRunner.addArray = function(array, customFormatters, prefix, firstLinePrefix)
   prefix = prefix || '';
   firstLinePrefix = firstLinePrefix || prefix;
   TestRunner.addResult(firstLinePrefix + '[');
-  for (let i = 0; i < array.length; ++i)
+  for (let i = 0; i < array.length; ++i) {
     TestRunner.dump(array[i], customFormatters, prefix + '    ');
+  }
   TestRunner.addResult(prefix + ']');
 };
 
@@ -798,21 +825,25 @@ TestRunner.dumpDeepInnerHTML = function(node) {
   function innerHTML(prefix, node) {
     const openTag = [];
     if (node.nodeType === Node.TEXT_NODE) {
-      if (!node.parentElement || node.parentElement.nodeName !== 'STYLE')
+      if (!node.parentElement || node.parentElement.nodeName !== 'STYLE') {
         TestRunner.addResult(node.nodeValue);
+      }
       return;
     }
     openTag.push('<' + node.nodeName);
     const attrs = node.attributes;
-    for (let i = 0; attrs && i < attrs.length; ++i)
+    for (let i = 0; attrs && i < attrs.length; ++i) {
       openTag.push(attrs[i].name + '=' + attrs[i].value);
+    }
 
     openTag.push('>');
     TestRunner.addResult(prefix + openTag.join(' '));
-    for (let child = node.firstChild; child; child = child.nextSibling)
+    for (let child = node.firstChild; child; child = child.nextSibling) {
       innerHTML(prefix + '    ', child);
-    if (node.shadowRoot)
+    }
+    if (node.shadowRoot) {
       innerHTML(prefix + '    ', node.shadowRoot);
+    }
     TestRunner.addResult(prefix + '</' + node.nodeName + '>');
   }
   innerHTML('', node);
@@ -823,16 +854,20 @@ TestRunner.dumpDeepInnerHTML = function(node) {
  * @return {string}
  */
 TestRunner.deepTextContent = function(node) {
-  if (!node)
+  if (!node) {
     return '';
-  if (node.nodeType === Node.TEXT_NODE && node.nodeValue)
+  }
+  if (node.nodeType === Node.TEXT_NODE && node.nodeValue) {
     return !node.parentElement || node.parentElement.nodeName !== 'STYLE' ? node.nodeValue : '';
+  }
   let res = '';
   const children = node.childNodes;
-  for (let i = 0; i < children.length; ++i)
+  for (let i = 0; i < children.length; ++i) {
     res += TestRunner.deepTextContent(children[i]);
-  if (node.shadowRoot)
+  }
+  if (node.shadowRoot) {
     res += TestRunner.deepTextContent(node.shadowRoot);
+  }
   return res;
 };
 
@@ -848,16 +883,17 @@ TestRunner.dump = function(value, customFormatters, prefix, prefixWithName) {
     TestRunner.addResult(prefixWithName + 'was skipped due to prefix length limit');
     return;
   }
-  if (value === null)
+  if (value === null) {
     TestRunner.addResult(prefixWithName + 'null');
-  else if (value && value.constructor && value.constructor.name === 'Array')
+  } else if (value && value.constructor && value.constructor.name === 'Array') {
     TestRunner.addArray(/** @type {!Array} */ (value), customFormatters, prefix, prefixWithName);
-  else if (typeof value === 'object')
+  } else if (typeof value === 'object') {
     TestRunner.addObject(/** @type {!Object} */ (value), customFormatters, prefix, prefixWithName);
-  else if (typeof value === 'string')
+  } else if (typeof value === 'string') {
     TestRunner.addResult(prefixWithName + '"' + value + '"');
-  else
+  } else {
     TestRunner.addResult(prefixWithName + value);
+  }
 };
 
 /**
@@ -892,8 +928,9 @@ TestRunner.waitForEvent = function(eventName, obj, condition) {
      * @param {!Common.Event} event
      */
     function onEventFired(event) {
-      if (!condition(event.data))
+      if (!condition(event.data)) {
         return;
+      }
       obj.removeEventListener(eventName, onEventFired);
       resolve(event.data);
     }
@@ -907,8 +944,9 @@ TestRunner.waitForEvent = function(eventName, obj, condition) {
 TestRunner.waitForTarget = function(filter) {
   filter = filter || (target => true);
   for (const target of SDK.targetManager.targets()) {
-    if (filter(target))
+    if (filter(target)) {
       return Promise.resolve(target);
+    }
   }
   return new Promise(fulfill => {
     const observer = /** @type {!SDK.TargetManager.Observer} */ ({
@@ -948,8 +986,9 @@ TestRunner.waitForTargetRemoved = function(targetToRemove) {
  * @return {!Promise}
  */
 TestRunner.waitForExecutionContext = function(runtimeModel) {
-  if (runtimeModel.executionContexts().length)
+  if (runtimeModel.executionContexts().length) {
     return Promise.resolve(runtimeModel.executionContexts()[0]);
+  }
   return runtimeModel.once(SDK.RuntimeModel.Events.ExecutionContextCreated);
 };
 
@@ -959,8 +998,9 @@ TestRunner.waitForExecutionContext = function(runtimeModel) {
  */
 TestRunner.waitForExecutionContextDestroyed = function(context) {
   const runtimeModel = context.runtimeModel;
-  if (runtimeModel.executionContexts().indexOf(context) === -1)
+  if (runtimeModel.executionContexts().indexOf(context) === -1) {
     return Promise.resolve();
+  }
   return TestRunner.waitForEvent(
       SDK.RuntimeModel.Events.ExecutionContextDestroyed, runtimeModel,
       destroyedContext => destroyedContext === context);
@@ -972,8 +1012,9 @@ TestRunner.waitForExecutionContextDestroyed = function(context) {
  * @param {string=} message
  */
 TestRunner.assertGreaterOrEqual = function(a, b, message) {
-  if (a < b)
+  if (a < b) {
     TestRunner.addResult('FAILED: ' + (message ? message + ': ' : '') + a + ' < ' + b);
+  }
 };
 
 /**
@@ -1073,8 +1114,9 @@ TestRunner.waitForPageLoad = function(callback) {
 TestRunner.runWhenPageLoads = function(callback) {
   const oldCallback = TestRunner._pageLoadedCallback;
   function chainedCallback() {
-    if (oldCallback)
+    if (oldCallback) {
       oldCallback();
+    }
     callback();
   }
   TestRunner._pageLoadedCallback = TestRunner.safeWrap(chainedCallback);
@@ -1122,14 +1164,16 @@ TestRunner.runAsyncTestSuite = async function(testSuite) {
  * @param {string} message
  */
 TestRunner.assertEquals = function(expected, found, message) {
-  if (expected === found)
+  if (expected === found) {
     return;
+  }
 
   let error;
-  if (message)
+  if (message) {
     error = 'Failure (' + message + '):';
-  else
+  } else {
     error = 'Failure:';
+  }
   throw new Error(error + ' expected <' + expected + '> found <' + found + '>');
 };
 
@@ -1152,8 +1196,9 @@ TestRunner.override = function(receiver, methodName, override, opt_sticky) {
   override = TestRunner.safeWrap(override);
 
   const original = receiver[methodName];
-  if (typeof original !== 'function')
+  if (typeof original !== 'function') {
     throw new Error('Cannot find method to override: ' + methodName);
+  }
 
   receiver[methodName] = function(var_args) {
     try {
@@ -1161,8 +1206,9 @@ TestRunner.override = function(receiver, methodName, override, opt_sticky) {
     } catch (e) {
       throw new Error('Exception in overriden method \'' + methodName + '\': ' + e);
     } finally {
-      if (!opt_sticky)
+      if (!opt_sticky) {
         receiver[methodName] = original;
+      }
     }
   };
 
@@ -1271,8 +1317,9 @@ TestRunner.dumpLoadedModules = function(relativeTo) {
   TestRunner.addResult('Loaded modules:');
   const loadedModules = TestRunner.loadedModules().sort(moduleSorter);
   for (const module of loadedModules) {
-    if (previous.has(module))
+    if (previous.has(module)) {
       continue;
+    }
     TestRunner.addResult('    ' + module._descriptor.name);
   }
   return loadedModules;
@@ -1289,18 +1336,22 @@ TestRunner.waitForUISourceCode = function(urlSuffix, projectType) {
    * @return {boolean}
    */
   function matches(uiSourceCode) {
-    if (projectType && uiSourceCode.project().type() !== projectType)
+    if (projectType && uiSourceCode.project().type() !== projectType) {
       return false;
-    if (!projectType && uiSourceCode.project().type() === Workspace.projectTypes.Service)
+    }
+    if (!projectType && uiSourceCode.project().type() === Workspace.projectTypes.Service) {
       return false;
-    if (urlSuffix && !uiSourceCode.url().endsWith(urlSuffix))
+    }
+    if (urlSuffix && !uiSourceCode.url().endsWith(urlSuffix)) {
       return false;
+    }
     return true;
   }
 
   for (const uiSourceCode of Workspace.workspace.uiSourceCodes()) {
-    if (urlSuffix && matches(uiSourceCode))
+    if (urlSuffix && matches(uiSourceCode)) {
       return Promise.resolve(uiSourceCode);
+    }
   }
 
   return TestRunner.waitForEvent(Workspace.Workspace.Events.UISourceCodeAdded, Workspace.workspace, matches);
@@ -1341,10 +1392,11 @@ TestRunner.dumpSyntaxHighlight = function(str, mimeType) {
     const node_parts = [];
 
     for (let i = 0; i < node.childNodes.length; i++) {
-      if (node.childNodes[i].getAttribute)
+      if (node.childNodes[i].getAttribute) {
         node_parts.push(node.childNodes[i].getAttribute('class'));
-      else
+      } else {
         node_parts.push('*');
+      }
     }
 
     TestRunner.addResult(str + ': ' + node_parts.join(', '));
@@ -1364,8 +1416,9 @@ TestRunner._consoleOutputHook = function(messageType) {
  * messages printed at the top of the test expectation file (default behavior).
  */
 TestRunner._printDevToolsConsole = function() {
-  if (TestRunner._isDebugTest())
+  if (TestRunner._isDebugTest()) {
     return;
+  }
   console.log = TestRunner._consoleOutputHook.bind(TestRunner, 'log');
   console.error = TestRunner._consoleOutputHook.bind(TestRunner, 'error');
   console.info = TestRunner._consoleOutputHook.bind(TestRunner, 'info');
@@ -1391,12 +1444,14 @@ TestRunner._TestObserver = class {
    * @override
    */
   targetAdded(target) {
-    if (TestRunner._startedTest)
+    if (TestRunner._startedTest) {
       return;
+    }
     TestRunner._startedTest = true;
     TestRunner._setupTestHelpers(target);
-    if (TestRunner._isStartupTest())
+    if (TestRunner._isStartupTest()) {
       return;
+    }
     TestRunner
         .loadHTML(`
       <head>
@@ -1445,8 +1500,9 @@ TestRunner._isStartupTest = function() {
   self['onerror'] = completeTestOnError;
   TestRunner._printDevToolsConsole();
   SDK.targetManager.observeTargets(new TestRunner._TestObserver());
-  if (!TestRunner._isStartupTest())
+  if (!TestRunner._isStartupTest()) {
     return;
+  }
   /**
    * Startup test initialization:
    * 1. Wait for DevTools app UI to load

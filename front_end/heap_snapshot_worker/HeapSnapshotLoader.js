@@ -55,8 +55,9 @@ HeapSnapshotWorker.HeapSnapshotLoader = class {
 
   close() {
     this._done = true;
-    if (this._dataCallback)
+    if (this._dataCallback) {
       this._dataCallback('');
+    }
   }
 
   /**
@@ -94,8 +95,9 @@ HeapSnapshotWorker.HeapSnapshotLoader = class {
       const startIndex = index;
       while (index < length) {
         const code = this._json.charCodeAt(index);
-        if (char0 > code || code > char9)
+        if (char0 > code || code > char9) {
           break;
+        }
         nextNumber *= 10;
         nextNumber += (code - char0);
         ++index;
@@ -111,8 +113,9 @@ HeapSnapshotWorker.HeapSnapshotLoader = class {
   _parseStringsArray() {
     this._progress.updateStatus(ls`Parsing strings\u2026`);
     const closingBracketIndex = this._json.lastIndexOf(']');
-    if (closingBracketIndex === -1)
+    if (closingBracketIndex === -1) {
       throw new Error('Incomplete JSON');
+    }
     this._json = this._json.slice(0, closingBracketIndex + 1);
     this._snapshot.strings = JSON.parse(this._json);
   }
@@ -122,8 +125,9 @@ HeapSnapshotWorker.HeapSnapshotLoader = class {
    */
   write(chunk) {
     this._buffer += chunk;
-    if (!this._dataCallback)
+    if (!this._dataCallback) {
       return;
+    }
     this._dataCallback(this._buffer);
     this._dataCallback = null;
     this._buffer = '';
@@ -144,8 +148,9 @@ HeapSnapshotWorker.HeapSnapshotLoader = class {
   async _findToken(token, startIndex) {
     while (true) {
       const pos = this._json.indexOf(token, startIndex || 0);
-      if (pos !== -1)
+      if (pos !== -1) {
         return pos;
+      }
       startIndex = this._json.length - token.length + 1;
       this._json += await this._fetchChunk();
     }
@@ -175,8 +180,9 @@ HeapSnapshotWorker.HeapSnapshotLoader = class {
   async _parseInput() {
     const snapshotToken = '"snapshot"';
     const snapshotTokenIndex = await this._findToken(snapshotToken);
-    if (snapshotTokenIndex === -1)
+    if (snapshotTokenIndex === -1) {
       throw new Error('Snapshot token not found');
+    }
 
     this._progress.updateStatus(ls`Loading snapshot info\u2026`);
     const json = this._json.slice(snapshotTokenIndex + snapshotToken.length + 1);
@@ -186,8 +192,9 @@ HeapSnapshotWorker.HeapSnapshotLoader = class {
       this._snapshot.snapshot = /** @type {!HeapSnapshotWorker.HeapSnapshotHeader} */ (JSON.parse(metaJSON));
     });
     this._jsonTokenizer.write(json);
-    while (this._jsonTokenizer)
+    while (this._jsonTokenizer) {
       this._jsonTokenizer.write(await this._fetchChunk());
+    }
 
     this._snapshot.nodes = await this._parseArray(
         '"nodes"', ls`Loading nodes\u2026 %d%%`,
@@ -211,20 +218,23 @@ HeapSnapshotWorker.HeapSnapshotLoader = class {
       this._json = this._json.slice(closeBracketIndex + 1);
     }
 
-    if (this._snapshot.snapshot.meta.sample_fields)
+    if (this._snapshot.snapshot.meta.sample_fields) {
       this._snapshot.samples = await this._parseArray('"samples"', ls`Loading samples\u2026`);
+    }
 
-    if (this._snapshot.snapshot.meta['location_fields'])
+    if (this._snapshot.snapshot.meta['location_fields']) {
       this._snapshot.locations = await this._parseArray('"locations"', ls`Loading locations\u2026`);
-    else
+    } else {
       this._snapshot.locations = [];
+    }
 
     this._progress.updateStatus(ls`Loading strings\u2026`);
     const stringsTokenIndex = await this._findToken('"strings"');
     const bracketIndex = await this._findToken('[', stringsTokenIndex);
     this._json = this._json.slice(bracketIndex);
-    while (!this._done)
+    while (!this._done) {
       this._json += await this._fetchChunk();
+    }
     this._parseStringsArray();
   }
 };

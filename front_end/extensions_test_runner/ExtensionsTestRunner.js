@@ -36,8 +36,9 @@ function onEvaluate(message, port) {
 }
 
 ExtensionsTestRunner.showPanel = function(panelId) {
-  if (panelId === 'extension')
+  if (panelId === 'extension') {
     panelId = UI.inspectorView._tabbedPane._tabs[UI.inspectorView._tabbedPane._tabs.length - 1].id;
+  }
   return UI.inspectorView.showPanel(panelId);
 };
 
@@ -48,8 +49,9 @@ ExtensionsTestRunner.evaluateInExtension = function(code) {
 ExtensionsTestRunner.runExtensionTests = async function(tests) {
   const result = await TestRunner.RuntimeAgent.evaluate('location.href', 'console', false);
 
-  if (!result)
+  if (!result) {
     return;
+  }
 
   ExtensionsTestRunner._pendingTests = (ExtensionsTestRunner._codeToEvaluateBeforeTests || '') + tests.join('\n');
   const pageURL = result.value;

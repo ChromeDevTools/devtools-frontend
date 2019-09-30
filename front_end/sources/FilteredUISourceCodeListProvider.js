@@ -33,8 +33,9 @@ Sources.FilteredUISourceCodeListProvider = class extends QuickOpen.FilteredListW
     this._uiSourceCodes = [];
     const projects = Workspace.workspace.projects().filter(this.filterProject.bind(this));
     for (let i = 0; i < projects.length; ++i) {
-      if (skipProject && projects[i] === skipProject)
+      if (skipProject && projects[i] === skipProject) {
         continue;
+      }
       const uiSourceCodes = projects[i].uiSourceCodes().filter(this._filterUISourceCode.bind(this));
       this._uiSourceCodes = this._uiSourceCodes.concat(uiSourceCodes);
     }
@@ -101,8 +102,9 @@ Sources.FilteredUISourceCodeListProvider = class extends QuickOpen.FilteredListW
   itemScoreAt(itemIndex, query) {
     const uiSourceCode = this._uiSourceCodes[itemIndex];
     const score = this._defaultScores ? (this._defaultScores.get(uiSourceCode) || 0) : 0;
-    if (!query || query.length < 2)
+    if (!query || query.length < 2) {
       return score;
+    }
 
     if (this._query !== query) {
       this._query = query;
@@ -111,8 +113,9 @@ Sources.FilteredUISourceCodeListProvider = class extends QuickOpen.FilteredListW
 
     let multiplier = 10;
     if (uiSourceCode.project().type() === Workspace.projectTypes.FileSystem &&
-        !Persistence.persistence.binding(uiSourceCode))
+        !Persistence.persistence.binding(uiSourceCode)) {
       multiplier = 5;
+    }
 
     const fullDisplayName = uiSourceCode.fullDisplayName();
     return score + multiplier * this._scorer.score(fullDisplayName, null);
@@ -139,12 +142,14 @@ Sources.FilteredUISourceCodeListProvider = class extends QuickOpen.FilteredListW
     this._renderSubtitleElement(subtitleElement, fullDisplayName);
     subtitleElement.title = fullDisplayName;
     const ranges = [];
-    for (let i = 0; i < indexes.length; ++i)
+    for (let i = 0; i < indexes.length; ++i) {
       ranges.push({offset: indexes[i], length: 1});
+    }
 
     if (indexes[0] > fileNameIndex) {
-      for (let i = 0; i < ranges.length; ++i)
+      for (let i = 0; i < ranges.length; ++i) {
         ranges[i].offset -= fileNameIndex + 1;
+      }
       UI.highlightRangesWithStyleClass(titleElement, ranges, 'highlight');
     } else {
       UI.highlightRangesWithStyleClass(subtitleElement, ranges, 'highlight');
@@ -158,8 +163,9 @@ Sources.FilteredUISourceCodeListProvider = class extends QuickOpen.FilteredListW
   _renderSubtitleElement(element, text) {
     element.removeChildren();
     let splitPosition = text.lastIndexOf('/');
-    if (text.length > 55)
+    if (text.length > 55) {
       splitPosition = text.length - 55;
+    }
     const first = element.createChild('div', 'first-part');
     first.textContent = text.substring(0, splitPosition);
     const second = element.createChild('div', 'second-part');
@@ -174,15 +180,18 @@ Sources.FilteredUISourceCodeListProvider = class extends QuickOpen.FilteredListW
    */
   selectItem(itemIndex, promptValue) {
     const parsedExpression = promptValue.trim().match(/^([^:]*)(:\d+)?(:\d+)?$/);
-    if (!parsedExpression)
+    if (!parsedExpression) {
       return;
+    }
 
     let lineNumber;
     let columnNumber;
-    if (parsedExpression[2])
+    if (parsedExpression[2]) {
       lineNumber = parseInt(parsedExpression[2].substr(1), 10) - 1;
-    if (parsedExpression[3])
+    }
+    if (parsedExpression[3]) {
       columnNumber = parseInt(parsedExpression[3].substr(1), 10) - 1;
+    }
     const uiSourceCode = itemIndex !== null ? this._uiSourceCodes[itemIndex] : null;
     this.uiSourceCodeSelected(uiSourceCode, lineNumber, columnNumber);
   }
@@ -194,8 +203,9 @@ Sources.FilteredUISourceCodeListProvider = class extends QuickOpen.FilteredListW
    */
   rewriteQuery(query) {
     query = query ? query.trim() : '';
-    if (!query || query === ':')
+    if (!query || query === ':') {
       return '';
+    }
     const lineNumberMatch = query.match(/^([^:]+)((?::[^:]*){0,2})$/);
     this._queryLineNumberAndColumnNumber = lineNumberMatch ? lineNumberMatch[2] : '';
     return lineNumberMatch ? lineNumberMatch[1] : query;
@@ -206,8 +216,9 @@ Sources.FilteredUISourceCodeListProvider = class extends QuickOpen.FilteredListW
    */
   _uiSourceCodeAdded(event) {
     const uiSourceCode = /** @type {!Workspace.UISourceCode} */ (event.data);
-    if (!this._filterUISourceCode(uiSourceCode) || !this.filterProject(uiSourceCode.project()))
+    if (!this._filterUISourceCode(uiSourceCode) || !this.filterProject(uiSourceCode.project())) {
       return;
+    }
     this._uiSourceCodes.push(uiSourceCode);
     this.refresh();
   }

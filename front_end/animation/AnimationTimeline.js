@@ -41,16 +41,18 @@ Animation.AnimationTimeline = class extends UI.VBox {
    * @override
    */
   wasShown() {
-    for (const animationModel of SDK.targetManager.models(Animation.AnimationModel))
+    for (const animationModel of SDK.targetManager.models(Animation.AnimationModel)) {
       this._addEventListeners(animationModel);
+    }
   }
 
   /**
    * @override
    */
   willHide() {
-    for (const animationModel of SDK.targetManager.models(Animation.AnimationModel))
+    for (const animationModel of SDK.targetManager.models(Animation.AnimationModel)) {
       this._removeEventListeners(animationModel);
+    }
     this._popoverHelper.hidePopover();
   }
 
@@ -59,8 +61,9 @@ Animation.AnimationTimeline = class extends UI.VBox {
    * @param {!Animation.AnimationModel} animationModel
    */
   modelAdded(animationModel) {
-    if (this.isShowing())
+    if (this.isShowing()) {
       this._addEventListeners(animationModel);
+    }
   }
 
   /**
@@ -91,8 +94,9 @@ Animation.AnimationTimeline = class extends UI.VBox {
   }
 
   _nodeChanged() {
-    for (const nodeUI of this._nodesMap.values())
+    for (const nodeUI of this._nodesMap.values()) {
       nodeUI._nodeChanged();
+    }
   }
 
   /**
@@ -166,28 +170,32 @@ Animation.AnimationTimeline = class extends UI.VBox {
    */
   _getPopoverRequest(event) {
     const element = event.target;
-    if (!element.isDescendant(this._previewContainer))
+    if (!element.isDescendant(this._previewContainer)) {
       return null;
+    }
 
     return {
       box: event.target.boxInWindow(),
       show: popover => {
         let animGroup;
         for (const group of this._previewMap.keysArray()) {
-          if (this._previewMap.get(group).element === element.parentElement)
+          if (this._previewMap.get(group).element === element.parentElement) {
             animGroup = group;
+          }
         }
         console.assert(animGroup);
         const screenshots = animGroup.screenshots();
-        if (!screenshots.length)
+        if (!screenshots.length) {
           return Promise.resolve(false);
+        }
 
         let fulfill;
         const promise = new Promise(x => fulfill = x);
-        if (!screenshots[0].complete)
+        if (!screenshots[0].complete) {
           screenshots[0].onload = onFirstScreenshotLoaded.bind(null, screenshots);
-        else
+        } else {
           onFirstScreenshotLoaded(screenshots);
+        }
         return promise;
 
         /**
@@ -213,11 +221,13 @@ Animation.AnimationTimeline = class extends UI.VBox {
    */
   _setPlaybackRate(playbackRate) {
     this._playbackRate = playbackRate;
-    for (const animationModel of SDK.targetManager.models(Animation.AnimationModel))
+    for (const animationModel of SDK.targetManager.models(Animation.AnimationModel)) {
       animationModel.setPlaybackRate(this._allPaused ? 0 : this._playbackRate);
+    }
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.AnimationsPlaybackRateChanged);
-    if (this._scrubberPlayer)
+    if (this._scrubberPlayer) {
       this._scrubberPlayer.playbackRate = this._effectivePlaybackRate();
+    }
 
     this._updatePlaybackControls();
   }
@@ -230,12 +240,13 @@ Animation.AnimationTimeline = class extends UI.VBox {
   }
 
   _controlButtonToggle() {
-    if (this._controlState === Animation.AnimationTimeline._ControlState.Play)
+    if (this._controlState === Animation.AnimationTimeline._ControlState.Play) {
       this._togglePause(false);
-    else if (this._controlState === Animation.AnimationTimeline._ControlState.Replay)
+    } else if (this._controlState === Animation.AnimationTimeline._ControlState.Replay) {
       this._replay();
-    else
+    } else {
       this._togglePause(true);
+    }
   }
 
   _updateControlButton() {
@@ -270,15 +281,17 @@ Animation.AnimationTimeline = class extends UI.VBox {
    */
   _togglePause(pause) {
     this._selectedGroup.togglePause(pause);
-    if (this._scrubberPlayer)
+    if (this._scrubberPlayer) {
       this._scrubberPlayer.playbackRate = this._effectivePlaybackRate();
+    }
     this._previewMap.get(this._selectedGroup).element.classList.toggle('paused', pause);
     this._updateControlButton();
   }
 
   _replay() {
-    if (!this._selectedGroup)
+    if (!this._selectedGroup) {
       return;
+    }
     this._selectedGroup.seekTo(0);
     this._animateTime(0);
     this._updateControlButton();
@@ -307,8 +320,9 @@ Animation.AnimationTimeline = class extends UI.VBox {
     this._duration = this._defaultDuration;
     this._timelineScrubber.classList.add('hidden');
     delete this._selectedGroup;
-    if (this._scrubberPlayer)
+    if (this._scrubberPlayer) {
       this._scrubberPlayer.cancel();
+    }
     delete this._scrubberPlayer;
     this._currentTime.textContent = '';
     this._updateControlButton();
@@ -316,13 +330,15 @@ Animation.AnimationTimeline = class extends UI.VBox {
 
   _reset() {
     this._clearTimeline();
-    if (this._allPaused)
+    if (this._allPaused) {
       this._togglePauseAll();
-    else
+    } else {
       this._setPlaybackRate(this._playbackRate);
+    }
 
-    for (const group of this._groupBuffer)
+    for (const group of this._groupBuffer) {
       group.release();
+    }
     this._groupBuffer = [];
     this._previewMap.clear();
     this._previewContainer.removeChildren();
@@ -350,10 +366,11 @@ Animation.AnimationTimeline = class extends UI.VBox {
     }
 
     if (this._previewMap.get(group)) {
-      if (this._selectedGroup === group)
+      if (this._selectedGroup === group) {
         this._syncScrubber();
-      else
+      } else {
         this._previewMap.get(group).replay();
+      }
       return;
     }
     this._groupBuffer.sort(startTimeComparator);
@@ -417,8 +434,9 @@ Animation.AnimationTimeline = class extends UI.VBox {
     this._selectedGroup = group;
     this._previewMap.forEach(applySelectionClass, this);
     this.setDuration(Math.max(500, group.finiteDuration() + 100));
-    for (const anim of group.animations())
+    for (const anim of group.animations()) {
       this._addAnimation(anim);
+    }
     this.scheduleRedraw();
     this._timelineScrubber.classList.remove('hidden');
     this._togglePause(false);
@@ -436,8 +454,9 @@ Animation.AnimationTimeline = class extends UI.VBox {
     function nodeResolved(node) {
       nodeUI.nodeResolved(node);
       uiAnimation.setNode(node);
-      if (node)
+      if (node) {
         node[this._symbol] = nodeUI;
+      }
     }
 
     let nodeUI = this._nodesMap.get(animation.source().backendNodeId());
@@ -458,8 +477,9 @@ Animation.AnimationTimeline = class extends UI.VBox {
    */
   _nodeRemoved(event) {
     const node = event.data.node;
-    if (node[this._symbol])
+    if (node[this._symbol]) {
       node[this._symbol].nodeRemoved();
+    }
   }
 
   _renderGrid() {
@@ -490,10 +510,12 @@ Animation.AnimationTimeline = class extends UI.VBox {
 
   scheduleRedraw() {
     this._renderQueue = [];
-    for (const ui of this._uiAnimations)
+    for (const ui of this._uiAnimations) {
       this._renderQueue.push(ui);
-    if (this._redrawing)
+    }
+    if (this._redrawing) {
       return;
+    }
     this._redrawing = true;
     this._renderGrid();
     this._animationsContainer.window().requestAnimationFrame(this._render.bind(this));
@@ -503,12 +525,14 @@ Animation.AnimationTimeline = class extends UI.VBox {
    * @param {number=} timestamp
    */
   _render(timestamp) {
-    while (this._renderQueue.length && (!timestamp || window.performance.now() - timestamp < 50))
+    while (this._renderQueue.length && (!timestamp || window.performance.now() - timestamp < 50)) {
       this._renderQueue.shift().redraw();
-    if (this._renderQueue.length)
+    }
+    if (this._renderQueue.length) {
       this._animationsContainer.window().requestAnimationFrame(this._render.bind(this));
-    else
+    } else {
       delete this._redrawing;
+    }
   }
 
   /**
@@ -518,8 +542,9 @@ Animation.AnimationTimeline = class extends UI.VBox {
     this._cachedTimelineWidth = Math.max(0, this._animationsContainer.offsetWidth - this._timelineControlsWidth) || 0;
     this._cachedTimelineHeight = this._animationsContainer.offsetHeight;
     this.scheduleRedraw();
-    if (this._scrubberPlayer)
+    if (this._scrubberPlayer) {
       this._syncScrubber();
+    }
     delete this._gridOffsetLeft;
   }
 
@@ -548,8 +573,9 @@ Animation.AnimationTimeline = class extends UI.VBox {
   }
 
   _syncScrubber() {
-    if (!this._selectedGroup)
+    if (!this._selectedGroup) {
       return;
+    }
     this._selectedGroup.currentTimePromise()
         .then(this._animateTime.bind(this))
         .then(this._updateControlButton.bind(this));
@@ -559,8 +585,9 @@ Animation.AnimationTimeline = class extends UI.VBox {
    * @param {number} currentTime
    */
   _animateTime(currentTime) {
-    if (this._scrubberPlayer)
+    if (this._scrubberPlayer) {
       this._scrubberPlayer.cancel();
+    }
 
     this._scrubberPlayer = this._timelineScrubber.animate(
         [{transform: 'translateX(0px)'}, {transform: 'translateX(' + this.width() + 'px)'}],
@@ -582,13 +609,15 @@ Animation.AnimationTimeline = class extends UI.VBox {
    * @param {number} timestamp
    */
   _updateScrubber(timestamp) {
-    if (!this._scrubberPlayer)
+    if (!this._scrubberPlayer) {
       return;
+    }
     this._currentTime.textContent = Number.millisToString(this._scrubberPlayer.currentTime);
-    if (this._scrubberPlayer.playState === 'pending' || this._scrubberPlayer.playState === 'running')
+    if (this._scrubberPlayer.playState === 'pending' || this._scrubberPlayer.playState === 'running') {
       this.element.window().requestAnimationFrame(this._updateScrubber.bind(this));
-    else if (this._scrubberPlayer.playState === 'finished')
+    } else if (this._scrubberPlayer.playState === 'finished') {
       this._currentTime.textContent = '';
+    }
   }
 
   /**
@@ -596,12 +625,14 @@ Animation.AnimationTimeline = class extends UI.VBox {
    * @return {boolean}
    */
   _repositionScrubber(event) {
-    if (!this._selectedGroup)
+    if (!this._selectedGroup) {
       return false;
+    }
 
     // Seek to current mouse position.
-    if (!this._gridOffsetLeft)
+    if (!this._gridOffsetLeft) {
       this._gridOffsetLeft = this._grid.totalOffsetLeft() + 10;
+    }
     const seekTime = Math.max(0, event.x - this._gridOffsetLeft) / this.pixelMsRatio();
     this._selectedGroup.seekTo(seekTime);
     this._togglePause(true);
@@ -618,8 +649,9 @@ Animation.AnimationTimeline = class extends UI.VBox {
    * @return {boolean}
    */
   _scrubberDragStart(event) {
-    if (!this._scrubberPlayer || !this._selectedGroup)
+    if (!this._scrubberPlayer || !this._selectedGroup) {
       return false;
+    }
 
     this._originalScrubberTime = this._scrubberPlayer.currentTime;
     this._timelineScrubber.classList.remove('animation-timeline-end');
@@ -686,8 +718,9 @@ Animation.AnimationTimeline.NodeUI = class {
     this._node = node;
     this._nodeChanged();
     Common.Linkifier.linkify(node).then(link => this._description.appendChild(link));
-    if (!node.ownerDocument)
+    if (!node.ownerDocument) {
       this.nodeRemoved();
+    }
   }
 
   /**
@@ -727,11 +760,13 @@ Animation.AnimationTimeline.StepTimingFunction = class {
    */
   static parse(text) {
     let match = text.match(/^steps\((\d+), (start|middle)\)$/);
-    if (match)
+    if (match) {
       return new Animation.AnimationTimeline.StepTimingFunction(parseInt(match[1], 10), match[2]);
+    }
     match = text.match(/^steps\((\d+)\)$/);
-    if (match)
+    if (match) {
       return new Animation.AnimationTimeline.StepTimingFunction(parseInt(match[1], 10), 'end');
+    }
     return null;
   }
 };

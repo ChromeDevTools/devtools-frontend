@@ -20,14 +20,16 @@ InspectorMain.InspectorMain = class extends Common.Object {
       // Only resume target during the first connection,
       // subsequent connections are due to connection hand-over,
       // there is no need to pause in debugger.
-      if (!firstCall)
+      if (!firstCall) {
         return;
+      }
       firstCall = false;
 
       if (waitForDebuggerInPage) {
         const debuggerModel = target.model(SDK.DebuggerModel);
-        if (!debuggerModel.isReadyToPause())
+        if (!debuggerModel.isReadyToPause()) {
           await debuggerModel.once(SDK.DebuggerModel.Events.DebuggerIsReadyToPause);
+        }
         debuggerModel.pause();
       }
 
@@ -110,8 +112,9 @@ InspectorMain.NodeIndicator = class {
   _update(targetInfos) {
     const hasNode = !!targetInfos.find(target => target.type === 'node' && !target.attached);
     this._element.classList.toggle('inactive', !hasNode);
-    if (hasNode)
+    if (hasNode) {
       this._button.setVisible(true);
+    }
   }
 
   /**
@@ -166,8 +169,9 @@ InspectorMain.BackendSettingsSync = class {
    * @param {!SDK.Target} target
    */
   _updateTarget(target) {
-    if (target.type() !== SDK.Target.Type.Frame || target.parentTarget())
+    if (target.type() !== SDK.Target.Type.Frame || target.parentTarget()) {
       return;
+    }
     target.pageAgent().setAdBlockingEnabled(this._adBlockEnabledSetting.get());
     target.emulationAgent().setFocusEmulationEnabled(this._emulatePageFocusSetting.get());
   }
@@ -177,8 +181,9 @@ InspectorMain.BackendSettingsSync = class {
   }
 
   _update() {
-    for (const target of SDK.targetManager.targets())
+    for (const target of SDK.targetManager.targets()) {
       this._updateTarget(target);
+    }
   }
 
   /**

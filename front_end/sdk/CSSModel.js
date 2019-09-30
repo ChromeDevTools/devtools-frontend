@@ -48,8 +48,9 @@ SDK.CSSModel = class extends SDK.SDKModel {
           SDK.ResourceTreeModel.Events.MainFrameNavigated, this._resetStyleSheets, this);
     }
     target.registerCSSDispatcher(new SDK.CSSDispatcher(this));
-    if (!target.suspended())
+    if (!target.suspended()) {
       this._enable();
+    }
     /** @type {!Map.<string, !SDK.CSSStyleSheetHeader>} */
     this._styleSheetIdToHeader = new Map();
     /** @type {!Map.<string, !Object.<!Protocol.Page.FrameId, !Array.<!Protocol.CSS.StyleSheetId>>>} */
@@ -74,8 +75,9 @@ SDK.CSSModel = class extends SDK.SDKModel {
     const headers = [];
     for (const headerId of this.styleSheetIdsForURL(sourceURL)) {
       const header = this.styleSheetHeaderForId(headerId);
-      if (header)
+      if (header) {
         headers.push(header);
+      }
     }
     return headers;
   }
@@ -91,14 +93,16 @@ SDK.CSSModel = class extends SDK.SDKModel {
     headers.sort(stylesheetComparator);
     const compareToArgLocation = (_, header) => lineNumber - header.startLine || columnNumber - header.startColumn;
     const endIndex = headers.upperBound(undefined, compareToArgLocation);
-    if (!endIndex)
+    if (!endIndex) {
       return [];
+    }
     const locations = [];
     const last = headers[endIndex - 1];
     for (let index = endIndex - 1;
          index >= 0 && headers[index].startLine === last.startLine && headers[index].startColumn === last.startColumn;
-         --index)
+         --index) {
       locations.push(new SDK.CSSLocation(headers[index], lineNumber, columnNumber));
+    }
 
 
     return locations;
@@ -127,16 +131,19 @@ SDK.CSSModel = class extends SDK.SDKModel {
     let sourceURLIndex = text.lastIndexOf('/*# sourceURL=');
     if (sourceURLIndex === -1) {
       sourceURLIndex = text.lastIndexOf('/*@ sourceURL=');
-      if (sourceURLIndex === -1)
+      if (sourceURLIndex === -1) {
         return text;
+      }
     }
     const sourceURLLineIndex = text.lastIndexOf('\n', sourceURLIndex);
-    if (sourceURLLineIndex === -1)
+    if (sourceURLLineIndex === -1) {
       return text;
+    }
     const sourceURLLine = text.substr(sourceURLLineIndex + 1).split('\n', 1)[0];
     const sourceURLRegex = /[\040\t]*\/\*[#@] sourceURL=[\040\t]*([^\s]*)[\040\t]*\*\/[\040\t]*$/;
-    if (sourceURLLine.search(sourceURLRegex) === -1)
+    if (sourceURLLine.search(sourceURLRegex) === -1) {
       return text;
+    }
     return text.substr(0, sourceURLLineIndex) + text.substr(sourceURLLineIndex + sourceURLLine.length + 1);
   }
 
@@ -160,8 +167,9 @@ SDK.CSSModel = class extends SDK.SDKModel {
 
       const stylePayloads =
           await this._agent.setStyleTexts([{styleSheetId: styleSheetId, range: range.serializeToObject(), text: text}]);
-      if (!stylePayloads || stylePayloads.length !== 1)
+      if (!stylePayloads || stylePayloads.length !== 1) {
         return false;
+      }
 
       this._domModel.markUndoableState(!majorChange);
       const edit = new SDK.CSSModel.Edit(styleSheetId, range, text, stylePayloads[0]);
@@ -185,8 +193,9 @@ SDK.CSSModel = class extends SDK.SDKModel {
       await this._ensureOriginalStyleSheetText(styleSheetId);
       const selectorPayload = await this._agent.setRuleSelector(styleSheetId, range, text);
 
-      if (!selectorPayload)
+      if (!selectorPayload) {
         return false;
+      }
       this._domModel.markUndoableState();
       const edit = new SDK.CSSModel.Edit(styleSheetId, range, text, selectorPayload);
       this._fireStyleSheetChanged(styleSheetId, edit);
@@ -209,8 +218,9 @@ SDK.CSSModel = class extends SDK.SDKModel {
       await this._ensureOriginalStyleSheetText(styleSheetId);
       const payload = await this._agent.setKeyframeKey(styleSheetId, range, text);
 
-      if (!payload)
+      if (!payload) {
         return false;
+      }
       this._domModel.markUndoableState();
       const edit = new SDK.CSSModel.Edit(styleSheetId, range, text, payload);
       this._fireStyleSheetChanged(styleSheetId, edit);
@@ -261,8 +271,9 @@ SDK.CSSModel = class extends SDK.SDKModel {
   async _enable() {
     await this._agent.enable();
     this._isEnabled = true;
-    if (this._isRuleUsageTrackingEnabled)
+    if (this._isRuleUsageTrackingEnabled) {
       await this.startCoverage();
+    }
     this.dispatchEventToListeners(SDK.CSSModel.Events.ModelWasEnabled);
   }
 
@@ -273,12 +284,14 @@ SDK.CSSModel = class extends SDK.SDKModel {
   async matchedStylesPromise(nodeId) {
     const response = await this._agent.invoke_getMatchedStylesForNode({nodeId});
 
-    if (response[Protocol.Error])
+    if (response[Protocol.Error]) {
       return null;
+    }
 
     const node = this._domModel.nodeForId(nodeId);
-    if (!node)
+    if (!node) {
       return null;
+    }
 
     return new SDK.CSSMatchedStyles(
         this, /** @type {!SDK.DOMNode} */ (node), response.inlineStyle || null, response.attributesStyle || null,
@@ -308,8 +321,9 @@ SDK.CSSModel = class extends SDK.SDKModel {
    */
   async backgroundColorsPromise(nodeId) {
     const response = this._agent.invoke_getBackgroundColors({nodeId});
-    if (response[Protocol.Error])
+    if (response[Protocol.Error]) {
       return null;
+    }
 
     return response;
   }
@@ -333,10 +347,11 @@ SDK.CSSModel = class extends SDK.SDKModel {
      * @return {number}
      */
     function styleSheetComparator(a, b) {
-      if (a.sourceURL < b.sourceURL)
+      if (a.sourceURL < b.sourceURL) {
         return -1;
-      else if (a.sourceURL > b.sourceURL)
+      } else if (a.sourceURL > b.sourceURL) {
         return 1;
+      }
       return a.startLine - b.startLine || a.startColumn - b.startColumn;
     }
     values.sort(styleSheetComparator);
@@ -351,8 +366,9 @@ SDK.CSSModel = class extends SDK.SDKModel {
   async inlineStylesPromise(nodeId) {
     const response = await this._agent.invoke_getInlineStylesForNode({nodeId});
 
-    if (response[Protocol.Error] || !response.inlineStyle)
+    if (response[Protocol.Error] || !response.inlineStyle) {
       return null;
+    }
     const inlineStyle =
         new SDK.CSSStyleDeclaration(this, null, response.inlineStyle, SDK.CSSStyleDeclaration.Type.Inline);
     const attributesStyle = response.attributesStyle ?
@@ -370,18 +386,21 @@ SDK.CSSModel = class extends SDK.SDKModel {
   forcePseudoState(node, pseudoClass, enable) {
     const pseudoClasses = node.marker(SDK.CSSModel.PseudoStateMarker) || [];
     if (enable) {
-      if (pseudoClasses.indexOf(pseudoClass) >= 0)
+      if (pseudoClasses.indexOf(pseudoClass) >= 0) {
         return false;
+      }
       pseudoClasses.push(pseudoClass);
       node.setMarker(SDK.CSSModel.PseudoStateMarker, pseudoClasses);
     } else {
-      if (pseudoClasses.indexOf(pseudoClass) < 0)
+      if (pseudoClasses.indexOf(pseudoClass) < 0) {
         return false;
+      }
       pseudoClasses.remove(pseudoClass);
-      if (pseudoClasses.length)
+      if (pseudoClasses.length) {
         node.setMarker(SDK.CSSModel.PseudoStateMarker, pseudoClasses);
-      else
+      } else {
         node.setMarker(SDK.CSSModel.PseudoStateMarker, null);
+      }
     }
 
     this._agent.forcePseudoState(node.id, pseudoClasses);
@@ -411,8 +430,9 @@ SDK.CSSModel = class extends SDK.SDKModel {
       await this._ensureOriginalStyleSheetText(styleSheetId);
       const mediaPayload = await this._agent.setMediaText(styleSheetId, range, newMediaText);
 
-      if (!mediaPayload)
+      if (!mediaPayload) {
         return false;
+      }
       this._domModel.markUndoableState();
       const edit = new SDK.CSSModel.Edit(styleSheetId, range, newMediaText, mediaPayload);
       this._fireStyleSheetChanged(styleSheetId, edit);
@@ -433,8 +453,9 @@ SDK.CSSModel = class extends SDK.SDKModel {
       await this._ensureOriginalStyleSheetText(styleSheetId);
       const rulePayload = await this._agent.addRule(styleSheetId, ruleText, ruleLocation);
 
-      if (!rulePayload)
+      if (!rulePayload) {
         return null;
+      }
       this._domModel.markUndoableState();
       const edit = new SDK.CSSModel.Edit(styleSheetId, ruleLocation, ruleText, rulePayload);
       this._fireStyleSheetChanged(styleSheetId, edit);
@@ -452,8 +473,9 @@ SDK.CSSModel = class extends SDK.SDKModel {
     const frameId = node.frameId() || (this._resourceTreeModel ? this._resourceTreeModel.mainFrame.id : '');
     const headers = this._styleSheetIdToHeader.valuesArray();
     const styleSheetHeader = headers.find(header => header.frameId === frameId && header.isViaInspector());
-    if (styleSheetHeader)
+    if (styleSheetHeader) {
       return styleSheetHeader;
+    }
 
     try {
       const styleSheetId = await this._agent.createStyleSheet(frameId);
@@ -500,8 +522,9 @@ SDK.CSSModel = class extends SDK.SDKModel {
    */
   _ensureOriginalStyleSheetText(styleSheetId) {
     const header = this.styleSheetHeaderForId(styleSheetId);
-    if (!header)
+    if (!header) {
       return Promise.resolve(/** @type {?string} */ (null));
+    }
     let promise = this._originalStyleSheetText.get(header);
     if (!promise) {
       promise = this.getStyleSheetText(header.id);
@@ -533,8 +556,9 @@ SDK.CSSModel = class extends SDK.SDKModel {
     const styleSheetHeader = new SDK.CSSStyleSheetHeader(this, header);
     this._styleSheetIdToHeader.set(header.styleSheetId, styleSheetHeader);
     const url = styleSheetHeader.resourceURL();
-    if (!this._styleSheetIdsForURL.get(url))
+    if (!this._styleSheetIdsForURL.get(url)) {
       this._styleSheetIdsForURL.set(url, {});
+    }
     const frameIdToStyleSheetIds = this._styleSheetIdsForURL.get(url);
     let styleSheetIds = frameIdToStyleSheetIds[styleSheetHeader.frameId];
     if (!styleSheetIds) {
@@ -552,8 +576,9 @@ SDK.CSSModel = class extends SDK.SDKModel {
   _styleSheetRemoved(id) {
     const header = this._styleSheetIdToHeader.get(id);
     console.assert(header);
-    if (!header)
+    if (!header) {
       return;
+    }
     this._styleSheetIdToHeader.remove(id);
     const url = header.resourceURL();
     const frameIdToStyleSheetIds =
@@ -563,8 +588,9 @@ SDK.CSSModel = class extends SDK.SDKModel {
     frameIdToStyleSheetIds[header.frameId].remove(id);
     if (!frameIdToStyleSheetIds[header.frameId].length) {
       delete frameIdToStyleSheetIds[header.frameId];
-      if (!Object.keys(frameIdToStyleSheetIds).length)
+      if (!Object.keys(frameIdToStyleSheetIds).length) {
         this._styleSheetIdsForURL.remove(url);
+      }
     }
     this._originalStyleSheetText.remove(header);
     this._sourceMapManager.detachSourceMap(header);
@@ -577,12 +603,14 @@ SDK.CSSModel = class extends SDK.SDKModel {
    */
   styleSheetIdsForURL(url) {
     const frameIdToStyleSheetIds = this._styleSheetIdsForURL.get(url);
-    if (!frameIdToStyleSheetIds)
+    if (!frameIdToStyleSheetIds) {
       return [];
+    }
 
     let result = [];
-    for (const frameId in frameIdToStyleSheetIds)
+    for (const frameId in frameIdToStyleSheetIds) {
       result = result.concat(frameIdToStyleSheetIds[frameId]);
+    }
     return result;
   }
 
@@ -596,8 +624,9 @@ SDK.CSSModel = class extends SDK.SDKModel {
     const header = /** @type {!SDK.CSSStyleSheetHeader} */ (this._styleSheetIdToHeader.get(styleSheetId));
     console.assert(header);
     newText = SDK.CSSModel.trimSourceURL(newText);
-    if (header.hasSourceURL)
+    if (header.hasSourceURL) {
       newText += '\n/*# sourceURL=' + header.sourceURL + ' */';
+    }
 
     await this._ensureOriginalStyleSheetText(styleSheetId);
     const response = await this._agent.invoke_setStyleSheetText({styleSheetId: header.id, text: newText});
@@ -606,8 +635,9 @@ SDK.CSSModel = class extends SDK.SDKModel {
     this._sourceMapManager.detachSourceMap(header);
     header.setSourceMapURL(sourceMapURL);
     this._sourceMapManager.attachSourceMap(header, header.sourceURL, header.sourceMapURL);
-    if (sourceMapURL === null)
+    if (sourceMapURL === null) {
       return 'Error in CSS.setStyleSheetText';
+    }
     this._domModel.markUndoableState(!majorChange);
     this._fireStyleSheetChanged(styleSheetId);
     return null;
@@ -667,11 +697,13 @@ SDK.CSSModel = class extends SDK.SDKModel {
    * @return {!Promise.<?SDK.CSSMatchedStyles>}
    */
   cachedMatchedCascadeForNode(node) {
-    if (this._cachedMatchedCascadeNode !== node)
+    if (this._cachedMatchedCascadeNode !== node) {
       this.discardCachedMatchedCascade();
+    }
     this._cachedMatchedCascadeNode = node;
-    if (!this._cachedMatchedCascadePromise)
+    if (!this._cachedMatchedCascadePromise) {
       this._cachedMatchedCascadePromise = this.matchedStylesPromise(node.id);
+    }
     return this._cachedMatchedCascadePromise;
   }
 
@@ -831,8 +863,9 @@ SDK.CSSModel.ComputedStyleLoader = class {
    */
   computedStylePromise(nodeId) {
     let promise = this._nodeIdToPromise.get(nodeId);
-    if (promise)
+    if (promise) {
       return promise;
+    }
     promise = this._cssModel._agent.getComputedStyleForNode(nodeId).then(parsePayload.bind(this));
     this._nodeIdToPromise.set(nodeId, promise);
     return promise;
@@ -844,11 +877,13 @@ SDK.CSSModel.ComputedStyleLoader = class {
      */
     function parsePayload(computedPayload) {
       this._nodeIdToPromise.delete(nodeId);
-      if (!computedPayload || !computedPayload.length)
+      if (!computedPayload || !computedPayload.length) {
         return null;
+      }
       const result = new Map();
-      for (const property of computedPayload)
+      for (const property of computedPayload) {
         result.set(property.name, property.value);
+      }
       return result;
     }
   }

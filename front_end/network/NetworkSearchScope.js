@@ -36,8 +36,9 @@ Network.NetworkSearchScope = class {
       return;
     }
     for (const result of results.sort((r1, r2) => r1.label().localeCompare(r2.label()))) {
-      if (result.matchesCount() > 0)
+      if (result.matchesCount() > 0) {
         searchResultCallback(result);
+      }
     }
     progress.done();
     searchFinishedCallback(true);
@@ -55,21 +56,26 @@ Network.NetworkSearchScope = class {
       bodyMatches =
           await request.searchInContent(searchConfig.query(), !searchConfig.ignoreCase(), searchConfig.isRegex());
     }
-    if (progress.isCanceled())
+    if (progress.isCanceled()) {
       return null;
+    }
     const locations = [];
-    if (stringMatchesQuery(request.url()))
+    if (stringMatchesQuery(request.url())) {
       locations.push(Network.UIRequestLocation.urlMatch(request));
+    }
     for (const header of request.requestHeaders()) {
-      if (headerMatchesQuery(header))
+      if (headerMatchesQuery(header)) {
         locations.push(Network.UIRequestLocation.requestHeaderMatch(request, header));
+      }
     }
     for (const header of request.responseHeaders) {
-      if (headerMatchesQuery(header))
+      if (headerMatchesQuery(header)) {
         locations.push(Network.UIRequestLocation.responseHeaderMatch(request, header));
+      }
     }
-    for (const match of bodyMatches)
+    for (const match of bodyMatches) {
       locations.push(Network.UIRequestLocation.bodyMatch(request, match));
+    }
     progress.worked();
     return new Network.NetworkSearchResult(request, locations);
 
@@ -91,8 +97,9 @@ Network.NetworkSearchScope = class {
       let pos = 0;
       for (const regExp of regExps) {
         const match = string.substr(pos).match(regExp);
-        if (!match)
+        if (!match) {
           return false;
+        }
         pos += match.index + match[0].length;
       }
       return true;
@@ -189,8 +196,9 @@ Network.NetworkSearchResult = class {
    */
   description() {
     const parsedUrl = this._request.parsedURL;
-    if (!parsedUrl)
+    if (!parsedUrl) {
       return this._request.url();
+    }
     return parsedUrl.urlWithoutScheme();
   }
 
@@ -201,11 +209,13 @@ Network.NetworkSearchResult = class {
    */
   matchLineContent(index) {
     const location = this._locations[index];
-    if (location.isUrlMatch)
+    if (location.isUrlMatch) {
       return this._request.url();
+    }
     const header = location.requestHeader || location.responseHeader;
-    if (header)
+    if (header) {
       return header.value;
+    }
     return location.searchMatch.lineContent;
   }
 
@@ -225,11 +235,13 @@ Network.NetworkSearchResult = class {
    */
   matchLabel(index) {
     const location = this._locations[index];
-    if (location.isUrlMatch)
+    if (location.isUrlMatch) {
       return Common.UIString('URL');
+    }
     const header = location.requestHeader || location.responseHeader;
-    if (header)
+    if (header) {
       return `${header.name}:`;
+    }
     return location.searchMatch.lineNumber + 1;
   }
 };

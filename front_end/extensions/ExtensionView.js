@@ -63,23 +63,26 @@ Extensions.ExtensionView = class extends UI.Widget {
    * @override
    */
   wasShown() {
-    if (typeof this._frameIndex === 'number')
+    if (typeof this._frameIndex === 'number') {
       this._server.notifyViewShown(this._id, this._frameIndex);
+    }
   }
 
   /**
    * @override
    */
   willHide() {
-    if (typeof this._frameIndex === 'number')
+    if (typeof this._frameIndex === 'number') {
       this._server.notifyViewHidden(this._id);
+    }
   }
 
   _onLoad() {
     const frames = window.frames;
     this._frameIndex = Array.prototype.indexOf.call(frames, this._iframe.contentWindow);
-    if (this.isShowing())
+    if (this.isShowing()) {
       this._server.notifyViewShown(this._id, this._frameIndex);
+    }
   }
 };
 

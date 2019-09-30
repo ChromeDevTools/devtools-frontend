@@ -60,8 +60,9 @@ Profiler.ProfileHeader = class extends Common.Object {
   }
 
   removeTempFile() {
-    if (this._tempFile)
+    if (this._tempFile) {
       this._tempFile.remove();
+    }
   }
 
   dispose() {

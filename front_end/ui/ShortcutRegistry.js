@@ -42,8 +42,9 @@ UI.ShortcutRegistry = class {
     for (const key of this._defaultKeyToActions.keysArray()) {
       const actions = this._defaultKeyToActions.get(key).valuesArray();
       const applicableActions = this._actionRegistry.applicableActions(actions, new UI.Context());
-      if (applicableActions.length)
+      if (applicableActions.length) {
         keys.push(Number(key));
+      }
     }
     return keys;
   }
@@ -64,8 +65,9 @@ UI.ShortcutRegistry = class {
     const result = [];
     for (let i = 0; i < actionIds.length; ++i) {
       const descriptors = this.shortcutDescriptorsForAction(actionIds[i]);
-      for (let j = 0; j < descriptors.length; ++j)
+      for (let j = 0; j < descriptors.length; ++j) {
         result.push(descriptors[j].key);
+      }
     }
     return result;
   }
@@ -76,8 +78,9 @@ UI.ShortcutRegistry = class {
    */
   shortcutTitleForAction(actionId) {
     const descriptors = this.shortcutDescriptorsForAction(actionId);
-    if (descriptors.length)
+    if (descriptors.length) {
       return descriptors[0].name;
+    }
   }
 
   /**
@@ -107,8 +110,9 @@ UI.ShortcutRegistry = class {
   addShortcutListener(element, actionId, listener, capture) {
     console.assert(this._defaultActionToShortcut.has(actionId), 'Unknown action ' + actionId);
     element.addEventListener('keydown', event => {
-      if (!this.eventMatchesAction(/** @type {!KeyboardEvent} */ (event), actionId) || !listener.call(null))
+      if (!this.eventMatchesAction(/** @type {!KeyboardEvent} */ (event), actionId) || !listener.call(null)) {
         return;
+      }
       event.consume(true);
     }, capture);
   }
@@ -121,45 +125,57 @@ UI.ShortcutRegistry = class {
   async handleKey(key, domKey, event) {
     const keyModifiers = key >> 8;
     const actions = this._applicableActions(key);
-    if (!actions.length || isPossiblyInputKey())
+    if (!actions.length || isPossiblyInputKey()) {
       return;
-    if (event)
+    }
+    if (event) {
       event.consume(true);
-    if (UI.Dialog.hasInstance())
+    }
+    if (UI.Dialog.hasInstance()) {
       return;
+    }
     for (const action of actions) {
-      if (await action.execute())
+      if (await action.execute()) {
         return;
+      }
     }
 
     /**
      * @return {boolean}
      */
     function isPossiblyInputKey() {
-      if (!event || !UI.isEditing() || /^F\d+|Control|Shift|Alt|Meta|Escape|Win|U\+001B$/.test(domKey))
+      if (!event || !UI.isEditing() || /^F\d+|Control|Shift|Alt|Meta|Escape|Win|U\+001B$/.test(domKey)) {
         return false;
+      }
 
-      if (!keyModifiers)
+      if (!keyModifiers) {
         return true;
+      }
 
       const modifiers = UI.KeyboardShortcut.Modifiers;
       // Undo/Redo will also cause input, so textual undo should take precedence over DevTools undo when editing.
       if (Host.isMac()) {
-        if (UI.KeyboardShortcut.makeKey('z', modifiers.Meta) === key)
+        if (UI.KeyboardShortcut.makeKey('z', modifiers.Meta) === key) {
           return true;
-        if (UI.KeyboardShortcut.makeKey('z', modifiers.Meta | modifiers.Shift) === key)
+        }
+        if (UI.KeyboardShortcut.makeKey('z', modifiers.Meta | modifiers.Shift) === key) {
           return true;
+        }
       } else {
-        if (UI.KeyboardShortcut.makeKey('z', modifiers.Ctrl) === key)
+        if (UI.KeyboardShortcut.makeKey('z', modifiers.Ctrl) === key) {
           return true;
-        if (UI.KeyboardShortcut.makeKey('y', modifiers.Ctrl) === key)
+        }
+        if (UI.KeyboardShortcut.makeKey('y', modifiers.Ctrl) === key) {
           return true;
-        if (!Host.isWin() && UI.KeyboardShortcut.makeKey('z', modifiers.Ctrl | modifiers.Shift) === key)
+        }
+        if (!Host.isWin() && UI.KeyboardShortcut.makeKey('z', modifiers.Ctrl | modifiers.Shift) === key) {
           return true;
+        }
       }
 
-      if ((keyModifiers & (modifiers.Ctrl | modifiers.Alt)) === (modifiers.Ctrl | modifiers.Alt))
+      if ((keyModifiers & (modifiers.Ctrl | modifiers.Alt)) === (modifiers.Ctrl | modifiers.Alt)) {
         return Host.isWin();
+      }
 
       return !hasModifier(modifiers.Ctrl) && !hasModifier(modifiers.Alt) && !hasModifier(modifiers.Meta);
     }
@@ -179,8 +195,9 @@ UI.ShortcutRegistry = class {
    */
   registerShortcut(actionId, shortcut) {
     const descriptor = UI.KeyboardShortcut.makeDescriptorFromBindingShortcut(shortcut);
-    if (!descriptor)
+    if (!descriptor) {
       return;
+    }
     this._defaultActionToShortcut.set(actionId, descriptor);
     this._defaultKeyToActions.set(String(descriptor.key), actionId);
   }
@@ -200,8 +217,9 @@ UI.ShortcutRegistry = class {
       const descriptor = extension.descriptor();
       const bindings = descriptor['bindings'];
       for (let i = 0; bindings && i < bindings.length; ++i) {
-        if (!platformMatches(bindings[i].platform))
+        if (!platformMatches(bindings[i].platform)) {
           continue;
+        }
         const shortcuts = bindings[i]['shortcut'].split(/\s+/);
         shortcuts.forEach(this.registerShortcut.bind(this, descriptor['actionId']));
       }
@@ -212,13 +230,15 @@ UI.ShortcutRegistry = class {
      * @return {boolean}
      */
     function platformMatches(platformsString) {
-      if (!platformsString)
+      if (!platformsString) {
         return true;
+      }
       const platforms = platformsString.split(',');
       let isMatch = false;
       const currentPlatform = Host.platform();
-      for (let i = 0; !isMatch && i < platforms.length; ++i)
+      for (let i = 0; !isMatch && i < platforms.length; ++i) {
         isMatch = platforms[i] === currentPlatform;
+      }
       return isMatch;
     }
   }

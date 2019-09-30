@@ -84,8 +84,9 @@ export class CompositeProgress {
   }
 
   _childDone() {
-    if (++this._childrenDone !== this._children.length)
+    if (++this._childrenDone !== this._children.length) {
       return;
+    }
     this._parent.done();
   }
 
@@ -105,8 +106,9 @@ export class CompositeProgress {
 
     for (let i = 0; i < this._children.length; ++i) {
       const child = this._children[i];
-      if (child._totalWork)
+      if (child._totalWork) {
         done += child._weight * child._worked / child._totalWork;
+      }
       totalWeights += child._weight;
     }
     this._parent.setWorked(done / totalWeights);
@@ -168,8 +170,9 @@ export class SubProgress {
    */
   setWorked(worked, title) {
     this._worked = worked;
-    if (typeof title !== 'undefined')
+    if (typeof title !== 'undefined') {
       this.setTitle(title);
+    }
     this._composite._update();
   }
 
@@ -209,18 +212,21 @@ export class ProgressProxy {
    * @param {string} title
    */
   setTitle(title) {
-    if (this._delegate)
+    if (this._delegate) {
       this._delegate.setTitle(title);
+    }
   }
 
   /**
    * @override
    */
   done() {
-    if (this._delegate)
+    if (this._delegate) {
       this._delegate.done();
-    if (this._doneCallback)
+    }
+    if (this._doneCallback) {
       this._doneCallback();
+    }
   }
 
   /**
@@ -228,8 +234,9 @@ export class ProgressProxy {
    * @param {number} totalWork
    */
   setTotalWork(totalWork) {
-    if (this._delegate)
+    if (this._delegate) {
       this._delegate.setTotalWork(totalWork);
+    }
   }
 
   /**
@@ -238,8 +245,9 @@ export class ProgressProxy {
    * @param {string=} title
    */
   setWorked(worked, title) {
-    if (this._delegate)
+    if (this._delegate) {
       this._delegate.setWorked(worked, title);
+    }
   }
 
   /**
@@ -247,8 +255,9 @@ export class ProgressProxy {
    * @param {number=} worked
    */
   worked(worked) {
-    if (this._delegate)
+    if (this._delegate) {
       this._delegate.worked(worked);
+    }
   }
 }
 

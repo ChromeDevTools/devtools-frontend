@@ -45,8 +45,9 @@ FormatterWorker.FormattedContentBuilder = class {
    */
   addToken(token, offset) {
     const last = this._formattedContent.peekLast();
-    if (this._enforceSpaceBetweenWords && last && /\w/.test(last[last.length - 1]) && /\w/.test(token))
+    if (this._enforceSpaceBetweenWords && last && /\w/.test(last[last.length - 1]) && /\w/.test(token)) {
       this.addSoftSpace();
+    }
 
     this._appendFormatting();
 
@@ -56,8 +57,9 @@ FormatterWorker.FormattedContentBuilder = class {
   }
 
   addSoftSpace() {
-    if (!this._hardSpaces)
+    if (!this._hardSpaces) {
       this._softSpace = true;
+    }
   }
 
   addHardSpace() {
@@ -70,12 +72,14 @@ FormatterWorker.FormattedContentBuilder = class {
    */
   addNewLine(noSquash) {
     // Avoid leading newlines.
-    if (!this._formattedContentLength)
+    if (!this._formattedContentLength) {
       return;
-    if (noSquash)
+    }
+    if (noSquash) {
       ++this._newLines;
-    else
+    } else {
       this._newLines = this._newLines || 1;
+    }
   }
 
   increaseNestingLevel() {
@@ -83,21 +87,24 @@ FormatterWorker.FormattedContentBuilder = class {
   }
 
   decreaseNestingLevel() {
-    if (this._nestingLevel > 0)
+    if (this._nestingLevel > 0) {
       this._nestingLevel -= 1;
+    }
   }
 
   _appendFormatting() {
     if (this._newLines) {
-      for (let i = 0; i < this._newLines; ++i)
+      for (let i = 0; i < this._newLines; ++i) {
         this._addText('\n');
+      }
       this._addText(this._indent());
     } else if (this._softSpace) {
       this._addText(' ');
     }
     if (this._hardSpaces) {
-      for (let i = 0; i < this._hardSpaces; ++i)
+      for (let i = 0; i < this._hardSpaces; ++i) {
         this._addText(' ');
+      }
     }
     this._newLines = 0;
     this._softSpace = false;
@@ -123,16 +130,19 @@ FormatterWorker.FormattedContentBuilder = class {
    */
   _indent() {
     const cachedValue = this._cachedIndents.get(this._nestingLevel);
-    if (cachedValue)
+    if (cachedValue) {
       return cachedValue;
+    }
 
     let fullIndent = '';
-    for (let i = 0; i < this._nestingLevel; ++i)
+    for (let i = 0; i < this._nestingLevel; ++i) {
       fullIndent += this._indentString;
+    }
 
     // Cache a maximum of 20 nesting level indents.
-    if (this._nestingLevel <= 20)
+    if (this._nestingLevel <= 20) {
       this._cachedIndents.set(this._nestingLevel, fullIndent);
+    }
     return fullIndent;
   }
 
@@ -148,8 +158,9 @@ FormatterWorker.FormattedContentBuilder = class {
    * @param {number} originalPosition
    */
   _addMappingIfNeeded(originalPosition) {
-    if (originalPosition - this._lastOriginalPosition === this._formattedContentLength - this._lastFormattedPosition)
+    if (originalPosition - this._lastOriginalPosition === this._formattedContentLength - this._lastFormattedPosition) {
       return;
+    }
     this._mapping.original.push(originalPosition);
     this._lastOriginalPosition = originalPosition;
     this._mapping.formatted.push(this._formattedContentLength);

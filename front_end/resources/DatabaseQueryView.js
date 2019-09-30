@@ -51,8 +51,9 @@ Resources.DatabaseQueryView = class extends UI.VBox {
   }
 
   _messagesClicked() {
-    if (!this._prompt.isCaretInsidePrompt() && !this.element.hasSelection())
+    if (!this._prompt.isCaretInsidePrompt() && !this.element.hasSelection()) {
       this._prompt.moveCaretToEndOfPrompt();
+    }
   }
 
   /**
@@ -62,8 +63,9 @@ Resources.DatabaseQueryView = class extends UI.VBox {
    * @return {!Promise<!UI.SuggestBox.Suggestions>}
    */
   async completions(expression, prefix, force) {
-    if (!prefix)
+    if (!prefix) {
       return [];
+    }
 
     prefix = prefix.toLowerCase();
     const tableNames = await this.database.tableNames();
@@ -74,8 +76,9 @@ Resources.DatabaseQueryView = class extends UI.VBox {
   }
 
   _selectStart(event) {
-    if (this._selectionTimeout)
+    if (this._selectionTimeout) {
       clearTimeout(this._selectionTimeout);
+    }
 
     this._prompt.clearAutocomplete();
 
@@ -84,8 +87,9 @@ Resources.DatabaseQueryView = class extends UI.VBox {
      */
     function moveBackIfOutside() {
       delete this._selectionTimeout;
-      if (!this._prompt.isCaretInsidePrompt() && !this.element.hasSelection())
+      if (!this._prompt.isCaretInsidePrompt() && !this.element.hasSelection()) {
         this._prompt.moveCaretToEndOfPrompt();
+      }
       this._prompt.autoCompleteSoon();
     }
 
@@ -105,8 +109,9 @@ Resources.DatabaseQueryView = class extends UI.VBox {
     const query = this._prompt.textWithCurrentSuggestion();
     this._prompt.clearAutocomplete();
 
-    if (!query.length)
+    if (!query.length) {
       return;
+    }
 
     this._prompt.setEnabled(false);
     try {
@@ -136,8 +141,9 @@ Resources.DatabaseQueryView = class extends UI.VBox {
     }
     this._appendViewQueryResult(trimmedQuery, view);
 
-    if (trimmedQuery.match(/^create /i) || trimmedQuery.match(/^drop table /i))
+    if (trimmedQuery.match(/^create /i) || trimmedQuery.match(/^drop table /i)) {
       this.dispatchEventToListeners(Resources.DatabaseQueryView.Events.SchemaUpdated, this.database);
+    }
   }
 
   /**
@@ -146,10 +152,11 @@ Resources.DatabaseQueryView = class extends UI.VBox {
    */
   _appendViewQueryResult(query, view) {
     const resultElement = this._appendQueryResult(query);
-    if (view)
+    if (view) {
       view.show(resultElement);
-    else
+    } else {
       resultElement.remove();
+    }
     this._promptElement.scrollIntoView(false);
   }
 

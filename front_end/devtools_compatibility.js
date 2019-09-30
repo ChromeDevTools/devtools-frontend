@@ -39,8 +39,9 @@
     embedderMessageAck(id, arg) {
       const callback = this._callbacks[id];
       delete this._callbacks[id];
-      if (callback)
+      if (callback) {
         callback(arg);
+      }
     }
 
     /**
@@ -50,11 +51,13 @@
      */
     sendMessageToEmbedder(method, args, callback) {
       const callId = ++this._lastCallId;
-      if (callback)
+      if (callback) {
         this._callbacks[callId] = callback;
+      }
       const message = {'id': callId, 'method': method};
-      if (args.length)
+      if (args.length) {
         message.params = args;
+      }
       DevToolsHost.sendMessageToEmbedder(JSON.stringify(message));
     }
 
@@ -80,10 +83,11 @@
         // The addExtensions command is sent as the onload event happens for
         // DevTools front-end. We should buffer this command until the frontend
         // is ready for it.
-        if (this._addExtensionCallback)
+        if (this._addExtensionCallback) {
           extensions.forEach(this._addExtensionCallback);
-        else
+        } else {
           this._pendingExtensionDescriptors.pushAll(extensions);
+        }
       }
     }
 
@@ -287,10 +291,11 @@
      */
     setInspectedTabId(tabId) {
       // Support for legacy front-ends (<M41).
-      if (window['WebInspector'] && window['WebInspector']['setInspectedTabId'])
+      if (window['WebInspector'] && window['WebInspector']['setInspectedTabId']) {
         window['WebInspector']['setInspectedTabId'](tabId);
-      else
+      } else {
         this._dispatchOnInspectorFrontendAPI('setInspectedTabId', [tabId]);
+      }
     }
 
     /**
@@ -387,8 +392,9 @@
       // Support for legacy (<57) frontends.
       if (window.Runtime && window.Runtime.queryParam) {
         const panelToOpen = window.Runtime.queryParam('panel');
-        if (panelToOpen)
+        if (panelToOpen) {
           window.DevToolsAPI.showPanel(panelToOpen);
+        }
       }
     }
 
@@ -558,8 +564,9 @@
      */
     recordEnumeratedHistogram(actionName, actionCode, bucketSize) {
       // Support for M49 frontend.
-      if (actionName === 'DevTools.DrawerShown')
+      if (actionName === 'DevTools.DrawerShown') {
         return;
+      }
       DevToolsAPI.sendMessageToEmbedder('recordEnumeratedHistogram', [actionName, actionCode, bucketSize], null);
     }
 
@@ -1074,16 +1081,18 @@
     function objectObserve(object, observer) {
       if (window['WebInspector']) {
         const settingPrototype = /** @type {!Object} */ (window['WebInspector']['Setting']['prototype']);
-        if (typeof settingPrototype['remove'] === 'function')
+        if (typeof settingPrototype['remove'] === 'function') {
           settingPrototype['remove'] = settingRemove;
+        }
       }
       /** @type {!Set<string>} */
       const changedProperties = new Set();
       let scheduled = false;
 
       function scheduleObserver() {
-        if (scheduled)
+        if (scheduled) {
           return;
+        }
         scheduled = true;
         setImmediate(callObserver);
       }
@@ -1129,8 +1138,9 @@
         });
       }
 
-      for (let i = 0; i < properties.length; ++i)
+      for (let i = 0; i < properties.length; ++i) {
         defineProperty(properties[i]);
+      }
     }
 
     window.Object.observe = objectObserve;
@@ -1202,20 +1212,23 @@
    */
   function keyCodeToKeyIdentifier(keyCode) {
     let result = staticKeyIdentifiers.get(keyCode);
-    if (result !== undefined)
+    if (result !== undefined) {
       return result;
+    }
     result = 'U+';
     const hexString = keyCode.toString(16).toUpperCase();
-    for (let i = hexString.length; i < 4; ++i)
+    for (let i = hexString.length; i < 4; ++i) {
       result += '0';
+    }
     result += hexString;
     return result;
   }
 
   function installBackwardsCompatibility() {
     const majorVersion = getRemoteMajorVersion();
-    if (!majorVersion)
+    if (!majorVersion) {
       return;
+    }
 
     /** @type {!Array<string>} */
     const styleRules = [];
@@ -1236,15 +1249,17 @@
 
       const origAdd = DOMTokenList.prototype.add;
       DOMTokenList.prototype.add = function(...tokens) {
-        if (tokens[0].startsWith('insertion-point') || tokens[0].startsWith('tabbed-pane-header'))
+        if (tokens[0].startsWith('insertion-point') || tokens[0].startsWith('tabbed-pane-header')) {
           this._myElement.slot = '.' + tokens[0];
+        }
         return origAdd.apply(this, tokens);
       };
 
       const origCreateElement = Document.prototype.createElement;
       Document.prototype.createElement = function(tagName, ...rest) {
-        if (tagName === 'content')
+        if (tagName === 'content') {
           tagName = 'slot';
+        }
         const element = origCreateElement.call(this, tagName, ...rest);
         element.classList._myElement = element;
         return element;
@@ -1261,8 +1276,9 @@
 
         const origCreateElementWithClass = Document.prototype.createElementWithClass;
         Document.prototype.createElementWithClass = function(tagName, className, ...rest) {
-          if (tagName !== 'button' || (className !== 'soft-dropdown' && className !== 'dropdown-button'))
+          if (tagName !== 'button' || (className !== 'soft-dropdown' && className !== 'dropdown-button')) {
             return origCreateElementWithClass.call(this, tagName, className, ...rest);
+          }
           const element = origCreateElementWithClass.call(this, 'div', className, ...rest);
           element.tabIndex = 0;
           element.role = 'button';
@@ -1273,10 +1289,11 @@
       // Document.prototype.createElementWithClass is a DevTools method, so we
       // need to wait for DOMContentLoaded in order to override it.
       if (window.document.head &&
-          (window.document.readyState === 'complete' || window.document.readyState === 'interactive'))
+          (window.document.readyState === 'complete' || window.document.readyState === 'interactive')) {
         overrideCreateElementWithClass();
-      else
+      } else {
         window.addEventListener('DOMContentLoaded', overrideCreateElementWithClass);
+      }
     }
 
     // Custom Elements V0 polyfill
@@ -1289,13 +1306,15 @@
           const element = document.createElement(localName || typeExtension);
           const skip = new Set(['constructor', '__proto__']);
           for (const key of Object.keys(Object.getOwnPropertyDescriptors(prototype.__proto__ || {}))) {
-            if (skip.has(key))
+            if (skip.has(key)) {
               continue;
+            }
             element[key] = prototype[key];
           }
           element.setAttribute('is', typeExtension);
-          if (element['createdCallback'])
+          if (element['createdCallback']) {
             element['createdCallback']();
+          }
           return element;
         };
         fakeRegistry.set(typeExtension, callback);
@@ -1305,8 +1324,9 @@
       const origCreateElement = Document.prototype.createElement;
       Document.prototype.createElement = function(tagName, fakeCustomElementType) {
         const fakeConstructor = fakeRegistry.get(fakeCustomElementType);
-        if (fakeConstructor)
+        if (fakeConstructor) {
           return fakeConstructor();
+        }
         return origCreateElement.call(this, tagName, fakeCustomElementType);
       };
 
@@ -1316,8 +1336,9 @@
       //   classList.toggle('a');
       const originalDOMTokenListToggle = DOMTokenList.prototype.toggle;
       DOMTokenList.prototype.toggle = function(token, force) {
-        if (arguments.length === 1)
+        if (arguments.length === 1) {
           force = !this.contains(token);
+        }
         return originalDOMTokenListToggle.call(this, token, !!force);
       };
     }
@@ -1335,8 +1356,9 @@
          */
         ShadowRoot.prototype.elementFromPoint = function(x, y) {
           const originalResult = ShadowRoot.prototype.__originalShadowRootElementFromPoint.apply(this, arguments);
-          if (this.host && originalResult === this.host)
+          if (this.host && originalResult === this.host) {
             return null;
+          }
           return originalResult;
         };
       }
@@ -1354,8 +1376,9 @@
       });
     }
 
-    if (majorVersion <= 50)
+    if (majorVersion <= 50) {
       installObjectObserve();
+    }
 
     if (majorVersion <= 45) {
       /**
@@ -1389,8 +1412,9 @@
       window.CSSPrimitiveValue = CSSPrimitiveValue;
     }
 
-    if (majorVersion <= 45)
+    if (majorVersion <= 45) {
       styleRules.push('* { min-width: 0; min-height: 0; }');
+    }
 
     if (majorVersion <= 51) {
       // Support for quirky border-image behavior (<M51), see:
@@ -1404,8 +1428,9 @@
           '.coverage-toolbar-container, .animation-timeline-toolbar-container, .computed-properties { flex-basis: auto; }');
     }
 
-    if (majorVersion <= 50)
+    if (majorVersion <= 50) {
       Event.prototype.deepPath = undefined;
+    }
 
     if (majorVersion <= 54) {
       window.FileError = /** @type {!function (new: FileError) : ?} */ ({
@@ -1425,8 +1450,9 @@
   function getRemoteMajorVersion() {
     try {
       const remoteVersion = new URLSearchParams(window.location.search).get('remoteVersion');
-      if (!remoteVersion)
+      if (!remoteVersion) {
         return null;
+      }
       const majorVersion = parseInt(remoteVersion.split('.')[0], 10);
       return majorVersion;
     } catch (e) {
@@ -1438,8 +1464,9 @@
    * @param {!Array<string>} styleRules
    */
   function installExtraStyleRules(styleRules) {
-    if (!styleRules.length)
+    if (!styleRules.length) {
       return;
+    }
     const styleText = styleRules.join('\n');
     document.head.appendChild(createStyleElement(styleText));
 

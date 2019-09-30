@@ -76,8 +76,9 @@ Resources.ServiceWorkerCacheView = class extends UI.SimpleView {
   }
 
   _resetDataGrid() {
-    if (this._dataGrid)
+    if (this._dataGrid) {
       this._dataGrid.asWidget().detach();
+    }
     this._dataGrid = this._createDataGrid();
     const dataGridWidget = this._dataGrid.asWidget();
     this._splitWidget.setSidebarWidget(dataGridWidget);
@@ -106,12 +107,15 @@ Resources.ServiceWorkerCacheView = class extends UI.SimpleView {
    * @param {?UI.Widget} preview
    */
   _showPreview(preview) {
-    if (preview && this._preview === preview)
+    if (preview && this._preview === preview) {
       return;
-    if (this._preview)
+    }
+    if (this._preview) {
       this._preview.detach();
-    if (!preview)
+    }
+    if (!preview) {
       preview = new UI.EmptyWidget(Common.UIString('Select a cache entry above to preview'));
+    }
     this._preview = preview;
     this._preview.show(this._previewPanel.element);
   }
@@ -152,22 +156,24 @@ Resources.ServiceWorkerCacheView = class extends UI.SimpleView {
   }
 
   _sortingChanged() {
-    if (!this._dataGrid)
+    if (!this._dataGrid) {
       return;
+    }
 
     const accending = this._dataGrid.isSortOrderAscending();
     const columnId = this._dataGrid.sortColumnId();
     let comparator;
-    if (columnId === 'name')
+    if (columnId === 'name') {
       comparator = (a, b) => a._name.localeCompare(b._name);
-    else if (columnId === 'contentType')
+    } else if (columnId === 'contentType') {
       comparator = (a, b) => a.data.mimeType.localeCompare(b.data.mimeType);
-    else if (columnId === 'contentLength')
+    } else if (columnId === 'contentLength') {
       comparator = (a, b) => a.data.resourceSize - b.data.resourceSize;
-    else if (columnId === 'responseTime')
+    } else if (columnId === 'responseTime') {
       comparator = (a, b) => a.data.endTime - b.data.endTime;
-    else if (columnId === 'responseType')
+    } else if (columnId === 'responseType') {
       comparator = (a, b) => a._responseType.localeCompare(b._responseType);
+    }
 
     const children = this._dataGrid.rootNode().children.slice();
     this._dataGrid.rootNode().removeChildren();
@@ -200,8 +206,9 @@ Resources.ServiceWorkerCacheView = class extends UI.SimpleView {
   async _deleteButtonClicked(node) {
     if (!node) {
       node = this._dataGrid && this._dataGrid.selectedNode;
-      if (!node)
+      if (!node) {
         return;
+      }
     }
     await this._model.deleteCacheEntry(this._cache, /** @type {string} */ (node.data.url()));
     node.remove();
@@ -217,15 +224,17 @@ Resources.ServiceWorkerCacheView = class extends UI.SimpleView {
   }
 
   _updateSummaryBar() {
-    if (!this._summaryBarElement)
+    if (!this._summaryBarElement) {
       this._summaryBarElement = this.element.createChild('div', 'cache-storage-summary-bar');
+    }
     this._summaryBarElement.removeChildren();
 
     const span = this._summaryBarElement.createChild('span');
-    if (this._entryPathFilter)
+    if (this._entryPathFilter) {
       span.textContent = ls`Matching entries: ${this._returnCount}`;
-    else
+    } else {
       span.textContent = ls`Total entries: ${this._returnCount}`;
+    }
   }
 
   /**
@@ -245,8 +254,9 @@ Resources.ServiceWorkerCacheView = class extends UI.SimpleView {
     /** @type {!Map<string, !DataGrid.DataGridNode>} */
     const oldEntries = new Map();
     const rootNode = this._dataGrid.rootNode();
-    for (const node of rootNode.children)
+    for (const node of rootNode.children) {
       oldEntries.set(node.data.url, node);
+    }
     rootNode.removeChildren();
     let selectedNode = null;
     for (let i = 0; i < entries.length; ++i) {
@@ -260,15 +270,17 @@ Resources.ServiceWorkerCacheView = class extends UI.SimpleView {
         node.data.number = i + this._skipCount;
       }
       rootNode.appendChild(node);
-      if (entry.requestURL === selected)
+      if (entry.requestURL === selected) {
         selectedNode = node;
+      }
     }
     this._pageBackButton.setEnabled(!!skipCount);
     this._pageForwardButton.setEnabled(hasMore);
-    if (!selectedNode)
+    if (!selectedNode) {
       this._showPreview(null);
-    else
+    } else {
       selectedNode.revealAndSelect();
+    }
     this._updatedForTest();
   }
 
@@ -279,8 +291,9 @@ Resources.ServiceWorkerCacheView = class extends UI.SimpleView {
     const pageSize = this._pageSize;
     let skipCount = this._skipCount;
 
-    if (!force && this._lastPageSize === pageSize && this._lastSkipCount === skipCount)
+    if (!force && this._lastPageSize === pageSize && this._lastSkipCount === skipCount) {
       return;
+    }
     this._refreshButton.setEnabled(false);
     if (this._lastPageSize !== pageSize) {
       skipCount = 0;
@@ -309,8 +322,9 @@ Resources.ServiceWorkerCacheView = class extends UI.SimpleView {
    */
   _cacheContentUpdated(event) {
     const nameAndOrigin = event.data;
-    if (this._cache.securityOrigin !== nameAndOrigin.origin || this._cache.cacheName !== nameAndOrigin.cacheName)
+    if (this._cache.securityOrigin !== nameAndOrigin.origin || this._cache.cacheName !== nameAndOrigin.cacheName) {
       return;
+    }
     this._refreshThrottler.schedule(() => Promise.resolve(this._updateData(true)), true);
   }
 
@@ -325,8 +339,9 @@ Resources.ServiceWorkerCacheView = class extends UI.SimpleView {
     }
 
     // It is possible that table selection changes before the preview opens.
-    if (request === this._dataGrid.selectedNode.data)
+    if (request === this._dataGrid.selectedNode.data) {
       this._showPreview(preview);
+    }
   }
 
   /**
@@ -352,8 +367,9 @@ Resources.ServiceWorkerCacheView = class extends UI.SimpleView {
     request.resourceSize = (header && header.value) | 0;
 
     let resourceType = Common.ResourceType.fromMimeType(contentType);
-    if (!resourceType)
+    if (!resourceType) {
       resourceType = Common.ResourceType.fromURL(entry.requestURL) || Common.resourceTypes.Other;
+    }
     request.setResourceType(resourceType);
     request.setContentDataProvider(this._requestContent.bind(this, request));
     return request;
@@ -367,8 +383,9 @@ Resources.ServiceWorkerCacheView = class extends UI.SimpleView {
     const isText = request.resourceType().isTextType();
     const contentData = {error: null, content: null, encoded: !isText};
     const response = await this._cache.requestCachedResponse(request.url(), request.requestHeaders());
-    if (response)
+    if (response) {
       contentData.content = isText ? window.atob(response.body) : response.body;
+    }
     return contentData;
   }
 
@@ -390,10 +407,11 @@ Resources.ServiceWorkerCacheView.DataGridNode = class extends DataGrid.DataGridN
     super(request);
     this._number = number;
     const parsed = new Common.ParsedURL(request.url());
-    if (parsed.isValid)
+    if (parsed.isValid) {
       this._name = request.url().trimURL(parsed.domain());
-    else
+    } else {
       this._name = request.url();
+    }
     this._request = request;
     this._responseType = responseType;
   }
@@ -411,12 +429,13 @@ Resources.ServiceWorkerCacheView.DataGridNode = class extends DataGrid.DataGridN
     } else if (columnId === 'name') {
       value = this._name;
     } else if (columnId === 'responseType') {
-      if (this._responseType === 'opaqueResponse')
+      if (this._responseType === 'opaqueResponse') {
         value = 'opaque';
-      else if (this._responseType === 'opaqueRedirect')
+      } else if (this._responseType === 'opaqueRedirect') {
         value = 'opaqueredirect';
-      else
+      } else {
         value = this._responseType;
+      }
     } else if (columnId === 'contentType') {
       value = this._request.mimeType;
     } else if (columnId === 'contentLength') {
@@ -458,15 +477,18 @@ Resources.ServiceWorkerCacheView.RequestView = class extends UI.VBox {
    * @param {string=} tabId
    */
   _selectTab(tabId) {
-    if (!tabId)
+    if (!tabId) {
       tabId = this._resourceViewTabSetting.get();
-    if (!this._tabbedPane.selectTab(tabId))
+    }
+    if (!this._tabbedPane.selectTab(tabId)) {
       this._tabbedPane.selectTab('headers');
+    }
   }
 
   _tabSelected(event) {
-    if (!event.data.isUserGesture)
+    if (!event.data.isUserGesture) {
       return;
+    }
     this._resourceViewTabSetting.set(event.data.tabId);
   }
 };

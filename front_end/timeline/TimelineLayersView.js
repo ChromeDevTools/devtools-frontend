@@ -46,10 +46,11 @@ Timeline.TimelineLayersView = class extends UI.SplitWidget {
    */
   showLayerTree(frameLayerTree) {
     this._frameLayerTree = frameLayerTree;
-    if (this.isShowing())
+    if (this.isShowing()) {
       this._update();
-    else
+    } else {
       this._updateWhenVisible = true;
+    }
   }
 
   /**
@@ -68,8 +69,9 @@ Timeline.TimelineLayersView = class extends UI.SplitWidget {
   _onPaintProfilerRequested(event) {
     const selection = /** @type {!LayerViewer.LayerView.Selection} */ (event.data);
     this._layers3DView.snapshotForSelection(selection).then(snapshotWithRect => {
-      if (snapshotWithRect)
+      if (snapshotWithRect) {
         this._showPaintProfilerCallback(snapshotWithRect.snapshot);
+      }
     });
   }
 

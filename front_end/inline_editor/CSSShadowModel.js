@@ -65,13 +65,15 @@ InlineEditor.CSSShadowModel = class {
         const result = results[j];
         if (result.regexIndex === -1) {
           // Don't allow anything other than inset, color, length values, and whitespace.
-          if (/\S/.test(result.value))
+          if (/\S/.test(result.value)) {
             return [];
+          }
           // All parts must be separated by whitespace.
           nextPartAllowed = true;
         } else {
-          if (!nextPartAllowed)
+          if (!nextPartAllowed) {
             return [];
+          }
           nextPartAllowed = false;
 
           if (result.regexIndex === 0) {
@@ -79,14 +81,16 @@ InlineEditor.CSSShadowModel = class {
             shadow._format.push(InlineEditor.CSSShadowModel._Part.Inset);
           } else if (result.regexIndex === 1) {
             const color = Common.Color.parse(result.value);
-            if (!color)
+            if (!color) {
               return [];
+            }
             shadow._color = color;
             shadow._format.push(InlineEditor.CSSShadowModel._Part.Color);
           } else if (result.regexIndex === 2) {
             const length = InlineEditor.CSSLength.parse(result.value);
-            if (!length)
+            if (!length) {
               return [];
+            }
             const previousPart = shadow._format.length > 0 ? shadow._format[shadow._format.length - 1] : '';
             if (previousPart === InlineEditor.CSSShadowModel._Part.OffsetX) {
               shadow._offsetY = length;
@@ -109,8 +113,9 @@ InlineEditor.CSSShadowModel = class {
           invalidCount(shadow, InlineEditor.CSSShadowModel._Part.Color, 0, 1) ||
           invalidCount(shadow, InlineEditor.CSSShadowModel._Part.BlurRadius, 0, 1) ||
           invalidCount(shadow, InlineEditor.CSSShadowModel._Part.Inset, 0, isBoxShadow ? 1 : 0) ||
-          invalidCount(shadow, InlineEditor.CSSShadowModel._Part.SpreadRadius, 0, isBoxShadow ? 1 : 0))
+          invalidCount(shadow, InlineEditor.CSSShadowModel._Part.SpreadRadius, 0, isBoxShadow ? 1 : 0)) {
         return [];
+      }
       shadows.push(shadow);
     }
     return shadows;
@@ -125,8 +130,9 @@ InlineEditor.CSSShadowModel = class {
     function invalidCount(shadow, part, min, max) {
       let count = 0;
       for (let i = 0; i < shadow._format.length; i++) {
-        if (shadow._format[i] === part)
+        if (shadow._format[i] === part) {
           count++;
+        }
       }
       return count < min || count > max;
     }
@@ -137,8 +143,9 @@ InlineEditor.CSSShadowModel = class {
    */
   setInset(inset) {
     this._inset = inset;
-    if (this._format.indexOf(InlineEditor.CSSShadowModel._Part.Inset) === -1)
+    if (this._format.indexOf(InlineEditor.CSSShadowModel._Part.Inset) === -1) {
       this._format.unshift(InlineEditor.CSSShadowModel._Part.Inset);
+    }
   }
 
   /**
@@ -183,8 +190,9 @@ InlineEditor.CSSShadowModel = class {
    */
   setColor(color) {
     this._color = color;
-    if (this._format.indexOf(InlineEditor.CSSShadowModel._Part.Color) === -1)
+    if (this._format.indexOf(InlineEditor.CSSShadowModel._Part.Color) === -1) {
       this._format.push(InlineEditor.CSSShadowModel._Part.Color);
+    }
   }
 
   /**
@@ -243,18 +251,19 @@ InlineEditor.CSSShadowModel = class {
     const parts = [];
     for (let i = 0; i < this._format.length; i++) {
       const part = this._format[i];
-      if (part === InlineEditor.CSSShadowModel._Part.Inset && this._inset)
+      if (part === InlineEditor.CSSShadowModel._Part.Inset && this._inset) {
         parts.push('inset');
-      else if (part === InlineEditor.CSSShadowModel._Part.OffsetX)
+      } else if (part === InlineEditor.CSSShadowModel._Part.OffsetX) {
         parts.push(this._offsetX.asCSSText());
-      else if (part === InlineEditor.CSSShadowModel._Part.OffsetY)
+      } else if (part === InlineEditor.CSSShadowModel._Part.OffsetY) {
         parts.push(this._offsetY.asCSSText());
-      else if (part === InlineEditor.CSSShadowModel._Part.BlurRadius)
+      } else if (part === InlineEditor.CSSShadowModel._Part.BlurRadius) {
         parts.push(this._blurRadius.asCSSText());
-      else if (part === InlineEditor.CSSShadowModel._Part.SpreadRadius)
+      } else if (part === InlineEditor.CSSShadowModel._Part.SpreadRadius) {
         parts.push(this._spreadRadius.asCSSText());
-      else if (part === InlineEditor.CSSShadowModel._Part.Color)
+      } else if (part === InlineEditor.CSSShadowModel._Part.Color) {
         parts.push(this._color.asString(this._color.format()));
+      }
     }
     return parts.join(' ');
   }
@@ -293,10 +302,12 @@ InlineEditor.CSSLength = class {
   static parse(text) {
     const lengthRegex = new RegExp('^(?:' + InlineEditor.CSSLength.Regex.source + ')$', 'i');
     const match = text.match(lengthRegex);
-    if (!match)
+    if (!match) {
       return null;
-    if (match.length > 2 && match[2])
+    }
+    if (match.length > 2 && match[2]) {
       return new InlineEditor.CSSLength(parseFloat(match[1]), match[2]);
+    }
     return InlineEditor.CSSLength.zero();
   }
 

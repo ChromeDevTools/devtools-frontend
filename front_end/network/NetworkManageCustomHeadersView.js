@@ -93,15 +93,18 @@ Network.NetworkManageCustomHeadersView = class extends UI.VBox {
   commitEdit(item, editor, isNew) {
     const headerId = editor.control('header').value.trim();
     let success;
-    if (isNew)
+    if (isNew) {
       success = this._addHeaderColumnCallback(headerId);
-    else
+    } else {
       success = this._changeHeaderColumnCallback(item.header, headerId);
+    }
 
-    if (success && !isNew)
+    if (success && !isNew) {
       this._columnConfigs.delete(item.header.toLowerCase());
-    if (success)
+    }
+    if (success) {
       this._columnConfigs.set(headerId.toLowerCase(), {title: headerId, editable: true});
+    }
 
     this._headersUpdated();
   }
@@ -121,8 +124,9 @@ Network.NetworkManageCustomHeadersView = class extends UI.VBox {
    * @return {!UI.ListWidget.Editor}
    */
   _createEditor() {
-    if (this._editor)
+    if (this._editor) {
       return this._editor;
+    }
 
     const editor = new UI.ListWidget.Editor();
     this._editor = editor;
@@ -147,8 +151,9 @@ Network.NetworkManageCustomHeadersView = class extends UI.VBox {
     function validateHeader(item, index, input) {
       let valid = true;
       const headerId = editor.control('header').value.trim().toLowerCase();
-      if (this._columnConfigs.has(headerId) && item.header !== headerId)
+      if (this._columnConfigs.has(headerId) && item.header !== headerId) {
         valid = false;
+      }
       return {valid};
     }
   }

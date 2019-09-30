@@ -43,10 +43,12 @@ FormatterWorker.javaScriptOutline = function(content) {
         (node.type === 'MethodDefinition' || node.type === 'Property') && isNameNode(node.key) &&
         isFunctionNode(node.value)) {
       const namePrefix = [];
-      if (node.kind === 'get' || node.kind === 'set')
+      if (node.kind === 'get' || node.kind === 'set') {
         namePrefix.push(node.kind);
-      if (node.static)
+      }
+      if (node.static) {
         namePrefix.push('static');
+      }
       reportFunction(node.key, node.value, namePrefix.join(' '));
     }
   }
@@ -71,12 +73,15 @@ FormatterWorker.javaScriptOutline = function(content) {
    */
   function reportFunction(nameNode, functionNode, namePrefix) {
     let name = stringifyNameNode(nameNode);
-    if (functionNode.generator)
+    if (functionNode.generator) {
       name = '*' + name;
-    if (namePrefix)
+    }
+    if (namePrefix) {
       name = namePrefix + ' ' + name;
-    if (functionNode.async)
+    }
+    if (functionNode.async) {
       name = 'async ' + name;
+    }
 
     textCursor.advance(nameNode.start);
     addOutlineItem({
@@ -92,10 +97,12 @@ FormatterWorker.javaScriptOutline = function(content) {
    * @return {boolean}
    */
   function isNameNode(node) {
-    if (!node)
+    if (!node) {
       return false;
-    if (node.type === 'MemberExpression')
+    }
+    if (node.type === 'MemberExpression') {
       return !node.computed && node.property.type === 'Identifier';
+    }
     return node.type === 'Identifier';
   }
 
@@ -104,8 +111,9 @@ FormatterWorker.javaScriptOutline = function(content) {
    * @return {boolean}
    */
   function isFunctionNode(node) {
-    if (!node)
+    if (!node) {
       return false;
+    }
     return node.type === 'FunctionExpression' || node.type === 'ArrowFunctionExpression';
   }
 
@@ -122,8 +130,9 @@ FormatterWorker.javaScriptOutline = function(content) {
    * @return {string}
    */
   function stringifyNameNode(node) {
-    if (node.type === 'MemberExpression')
+    if (node.type === 'MemberExpression') {
       node = /** @type {!ESTree.Node} */ (node.property);
+    }
     console.assert(node.type === 'Identifier', 'Cannot extract identifier from unknown type: ' + node.type);
     return /** @type {string} */ (node.name);
   }
@@ -135,12 +144,13 @@ FormatterWorker.javaScriptOutline = function(content) {
   function stringifyArguments(params) {
     const result = [];
     for (const param of params) {
-      if (param.type === 'Identifier')
+      if (param.type === 'Identifier') {
         result.push(param.name);
-      else if (param.type === 'RestElement' && param.argument.type === 'Identifier')
+      } else if (param.type === 'RestElement' && param.argument.type === 'Identifier') {
         result.push('...' + param.argument.name);
-      else
+      } else {
         console.error('Error: unexpected function parameter type: ' + param.type);
+      }
     }
     return '(' + result.join(', ') + ')';
   }
@@ -150,8 +160,9 @@ FormatterWorker.javaScriptOutline = function(content) {
    */
   function addOutlineItem(item) {
     outlineChunk.push(item);
-    if (textCursor.offset() - lastReportedOffset < chunkSize)
+    if (textCursor.offset() - lastReportedOffset < chunkSize) {
       return;
+    }
     postMessage({chunk: outlineChunk, isLastChunk: false});
     outlineChunk = [];
     lastReportedOffset = textCursor.offset();

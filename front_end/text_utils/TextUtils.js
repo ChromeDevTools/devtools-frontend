@@ -59,8 +59,9 @@ TextUtils.TextUtils = {
    */
   isWord: function(word) {
     for (let i = 0; i < word.length; ++i) {
-      if (!TextUtils.TextUtils.isWordChar(word.charAt(i)))
+      if (!TextUtils.TextUtils.isWordChar(word.charAt(i))) {
         return false;
+      }
     }
     return true;
   },
@@ -98,15 +99,17 @@ TextUtils.TextUtils = {
     let startWord = -1;
     for (let i = 0; i < text.length; ++i) {
       if (!isWordChar(text.charAt(i))) {
-        if (startWord !== -1)
+        if (startWord !== -1) {
           wordCallback(text.substring(startWord, i));
+        }
         startWord = -1;
       } else if (startWord === -1) {
         startWord = i;
       }
     }
-    if (startWord !== -1)
+    if (startWord !== -1) {
       wordCallback(text.substring(startWord));
+    }
   },
 
   /**
@@ -115,8 +118,9 @@ TextUtils.TextUtils = {
    */
   lineIndent: function(line) {
     let indentation = 0;
-    while (indentation < line.length && TextUtils.TextUtils.isSpaceChar(line.charAt(indentation)))
+    while (indentation < line.length && TextUtils.TextUtils.isSpaceChar(line.charAt(indentation))) {
       ++indentation;
+    }
     return line.substr(0, indentation);
   },
 
@@ -146,10 +150,11 @@ TextUtils.TextUtils = {
     const globalRegexes = [];
     for (let i = 0; i < regexes.length; i++) {
       const regex = regexes[i];
-      if (!regex.global)
+      if (!regex.global) {
         globalRegexes.push(new RegExp(regex.source, regex.flags ? regex.flags + 'g' : 'g'));
-      else
+      } else {
         globalRegexes.push(regex);
+      }
     }
     doSplit(text, 0, 0);
     return matches;
@@ -171,8 +176,9 @@ TextUtils.TextUtils = {
       regex.lastIndex = 0;
       while ((result = regex.exec(text)) !== null) {
         const stringBeforeMatch = text.substring(currentIndex, result.index);
-        if (stringBeforeMatch)
+        if (stringBeforeMatch) {
           doSplit(stringBeforeMatch, regexIndex + 1, startIndex + currentIndex);
+        }
         const match = result[0];
         matches.push({
           value: match,
@@ -183,8 +189,9 @@ TextUtils.TextUtils = {
         currentIndex = result.index + match.length;
       }
       const stringAfterMatches = text.substring(currentIndex);
-      if (stringAfterMatches)
+      if (stringAfterMatches) {
         doSplit(stringAfterMatches, regexIndex + 1, startIndex + currentIndex);
+      }
     }
   }
 };
@@ -217,14 +224,16 @@ TextUtils.FilterParser = class {
     const filters = [];
     for (let i = 0; i < splitResult.length; i++) {
       const regexIndex = splitResult[i].regexIndex;
-      if (regexIndex === -1)
+      if (regexIndex === -1) {
         continue;
+      }
       const result = splitResult[i].captureGroups;
       if (regexIndex === 0) {
-        if (this._keys.indexOf(/** @type {string} */ (result[1])) !== -1)
+        if (this._keys.indexOf(/** @type {string} */ (result[1])) !== -1) {
           filters.push({key: result[1], text: result[2], negative: !!result[0]});
-        else
+        } else {
           filters.push({text: result[1] + ':' + result[2], negative: !!result[0]});
+        }
       } else if (regexIndex === 1) {
         try {
           filters.push({regex: new RegExp(result[1], 'i'), negative: !!result[0]});
@@ -287,8 +296,9 @@ TextUtils.TextUtils.BalancedJSONTokenizer = class {
       const character = buffer[index];
       if (character === '"') {
         this._closingDoubleQuoteRegex.lastIndex = index;
-        if (!this._closingDoubleQuoteRegex.test(buffer))
+        if (!this._closingDoubleQuoteRegex.test(buffer)) {
           break;
+        }
         index = this._closingDoubleQuoteRegex.lastIndex - 1;
       } else if (character === '{') {
         ++this._balance;
@@ -300,8 +310,9 @@ TextUtils.TextUtils.BalancedJSONTokenizer = class {
         }
         if (!this._balance) {
           this._lastBalancedIndex = index + 1;
-          if (!this._findMultiple)
+          if (!this._findMultiple) {
             break;
+          }
         }
       } else if (character === ']' && !this._balance) {
         this._reportBalanced();
@@ -314,8 +325,9 @@ TextUtils.TextUtils.BalancedJSONTokenizer = class {
   }
 
   _reportBalanced() {
-    if (!this._lastBalancedIndex)
+    if (!this._lastBalancedIndex) {
       return;
+    }
     this._callback(this._buffer.slice(0, this._lastBalancedIndex));
     this._buffer = this._buffer.slice(this._lastBalancedIndex);
     this._index -= this._lastBalancedIndex;
@@ -353,10 +365,12 @@ TextUtils.isMinified = function(text) {
   let lastPosition = 0;
   do {
     let eolIndex = text.indexOf('\n', lastPosition);
-    if (eolIndex < 0)
+    if (eolIndex < 0) {
       eolIndex = text.length;
-    if (eolIndex - lastPosition > kMaxNonMinifiedLength && text.substr(lastPosition, 3) !== '//#')
+    }
+    if (eolIndex - lastPosition > kMaxNonMinifiedLength && text.substr(lastPosition, 3) !== '//#') {
       return true;
+    }
     lastPosition = eolIndex + 1;
   } while (--linesToCheck >= 0 && lastPosition < text.length);
 
@@ -365,10 +379,12 @@ TextUtils.isMinified = function(text) {
   lastPosition = text.length;
   do {
     let eolIndex = text.lastIndexOf('\n', lastPosition);
-    if (eolIndex < 0)
+    if (eolIndex < 0) {
       eolIndex = 0;
-    if (lastPosition - eolIndex > kMaxNonMinifiedLength && text.substr(lastPosition, 3) !== '//#')
+    }
+    if (lastPosition - eolIndex > kMaxNonMinifiedLength && text.substr(lastPosition, 3) !== '//#') {
       return true;
+    }
     lastPosition = eolIndex - 1;
   } while (--linesToCheck >= 0 && lastPosition > 0);
   return false;

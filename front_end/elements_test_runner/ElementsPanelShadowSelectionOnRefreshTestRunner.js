@@ -28,8 +28,9 @@ ElementsTestRunner.selectReloadAndDump = function(next, node) {
   }
 
   function maybeDumpSelectedNode() {
-    if (!reloaded || !selected)
+    if (!reloaded || !selected) {
       return;
+    }
 
     const selectedElement = ElementsTestRunner.firstElementsTreeOutline().selectedTreeElement;
     const nodeName = (selectedElement ? selectedElement.node().nodeNameInCorrectCase() : 'null');

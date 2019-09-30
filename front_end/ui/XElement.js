@@ -27,12 +27,13 @@ UI.XElement = class extends HTMLElement {
    */
   attributeChangedCallback(attr, oldValue, newValue) {
     if (attr === 'flex') {
-      if (newValue === null)
+      if (newValue === null) {
         this.style.removeProperty('flex');
-      else if (newValue === 'initial' || newValue === 'auto' || newValue === 'none' || newValue.indexOf(' ') !== -1)
+      } else if (newValue === 'initial' || newValue === 'auto' || newValue === 'none' || newValue.indexOf(' ') !== -1) {
         this.style.setProperty('flex', newValue);
-      else
+      } else {
         this.style.setProperty('flex', '0 0 ' + newValue);
+      }
       return;
     }
     if (newValue === null) {
@@ -41,8 +42,9 @@ UI.XElement = class extends HTMLElement {
           attr.startsWith('background-') || attr.startsWith('overflow-')) {
         const shorthand = attr.substring(0, attr.indexOf('-'));
         const shorthandValue = this.getAttribute(shorthand);
-        if (shorthandValue !== null)
+        if (shorthandValue !== null) {
           this.style.setProperty(shorthand, shorthandValue);
+        }
       }
     } else {
       this.style.setProperty(attr, newValue);
@@ -79,10 +81,11 @@ UI._XBox = class extends UI.XElement {
    */
   attributeChangedCallback(attr, oldValue, newValue) {
     if (attr === 'x-start' || attr === 'x-center' || attr === 'x-stretch' || attr === 'x-baseline') {
-      if (newValue === null)
+      if (newValue === null) {
         this.style.removeProperty('align-items');
-      else
+      } else {
         this.style.setProperty('align-items', attr === 'x-start' ? 'flex-start' : attr.substr(2));
+      }
       return;
     }
     super.attributeChangedCallback(attr, oldValue, newValue);

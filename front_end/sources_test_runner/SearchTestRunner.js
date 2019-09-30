@@ -55,8 +55,9 @@ SourcesTestRunner.runSearchAndDumpResults = function(scope, searchConfig, callba
       const uiSourceCode = searchResult._uiSourceCode;
       const searchMatches = searchResult._searchMatches;
 
-      if (!searchMatches.length)
+      if (!searchMatches.length) {
         continue;
+      }
 
       TestRunner.addResult(
           'Search result #' + (i + 1) + ': uiSourceCode.url = ' + uiSourceCode.url().replace(/VM\d+/, 'VMXX'));
@@ -76,14 +77,17 @@ SourcesTestRunner.runSearchAndDumpResults = function(scope, searchConfig, callba
 SourcesTestRunner.replaceAndDumpChange = function(sourceFrame, searchConfig, replacement, replaceAll) {
   const modifiers = [];
 
-  if (searchConfig.isRegex)
+  if (searchConfig.isRegex) {
     modifiers.push('regex');
+  }
 
-  if (searchConfig.caseSensitive)
+  if (searchConfig.caseSensitive) {
     modifiers.push('caseSensitive');
+  }
 
-  if (replaceAll)
+  if (replaceAll) {
     modifiers.push('replaceAll');
+  }
 
   const modifiersString = (modifiers.length ? ' (' + modifiers.join(', ') + ')' : '');
   TestRunner.addResult(
@@ -91,8 +95,9 @@ SourcesTestRunner.replaceAndDumpChange = function(sourceFrame, searchConfig, rep
   editor = sourceFrame._textEditor;
   const oldLines = [];
 
-  for (let i = 0; i < editor.linesCount; ++i)
+  for (let i = 0; i < editor.linesCount; ++i) {
     oldLines.push(editor.line(i));
+  }
 
   const searchableView = UI.panels.sources.sourcesView().searchableView();
   searchableView.showSearchField();
@@ -104,33 +109,38 @@ SourcesTestRunner.replaceAndDumpChange = function(sourceFrame, searchConfig, rep
   searchableView._replaceInputElement.value = replacement;
   searchableView._performSearch(true, true);
 
-  if (replaceAll)
+  if (replaceAll) {
     searchableView._replaceAll();
-  else
+  } else {
     searchableView._replace();
+  }
 
   const newLines = [];
 
-  for (let i = 0; i < editor.linesCount; ++i)
+  for (let i = 0; i < editor.linesCount; ++i) {
     newLines.push(editor.line(i));
+  }
 
   for (let i = 0; i < newLines.length; ++i) {
-    if (oldLines[i] === newLines[i])
+    if (oldLines[i] === newLines[i]) {
       continue;
+    }
 
     const oldLine = oldLines[i];
     const newLine = newLines[i];
     let prefixLength = 0;
 
-    for (let j = 0; j < oldLine.length && j < newLine.length && newLine[j] === oldLine[j]; ++j)
+    for (let j = 0; j < oldLine.length && j < newLine.length && newLine[j] === oldLine[j]; ++j) {
       ++prefixLength;
+    }
 
     let postfixLength = 0;
 
     for (let j = 0; j < oldLine.length && j < newLine.length &&
          newLine[newLine.length - j - 1] === oldLine[oldLine.length - j - 1];
-         ++j)
+         ++j) {
       ++postfixLength;
+    }
 
     const prefix = oldLine.substring(0, prefixLength);
     const removed = oldLine.substring(prefixLength, oldLine.length - postfixLength);

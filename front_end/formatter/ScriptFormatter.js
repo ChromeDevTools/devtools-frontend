@@ -39,10 +39,11 @@ Formatter.Formatter = function() {};
  * @param {function(string, !Formatter.FormatterSourceMapping)} callback
  */
 Formatter.Formatter.format = function(contentType, mimeType, content, callback) {
-  if (contentType.isDocumentOrScriptOrStyleSheet())
+  if (contentType.isDocumentOrScriptOrStyleSheet()) {
     new Formatter.ScriptFormatter(mimeType, content, callback);
-  else
+  } else {
     new Formatter.ScriptIdentityFormatter(mimeType, content, callback);
+  }
 };
 
 /**
@@ -64,10 +65,11 @@ Formatter.Formatter.locationToPosition = function(lineEndings, lineNumber, colum
 Formatter.Formatter.positionToLocation = function(lineEndings, position) {
   const lineNumber = lineEndings.upperBound(position - 1);
   let columnNumber;
-  if (!lineNumber)
+  if (!lineNumber) {
     columnNumber = position;
-  else
+  } else {
     columnNumber = position - lineEndings[lineNumber - 1] - 1;
+  }
   return [lineNumber, columnNumber];
 };
 
@@ -221,8 +223,9 @@ Formatter.FormatterSourceMappingImpl = class {
   _convertPosition(positions1, positions2, position) {
     const index = positions1.upperBound(position) - 1;
     let convertedPosition = positions2[index] + position - positions1[index];
-    if (index < positions2.length - 1 && convertedPosition > positions2[index + 1])
+    if (index < positions2.length - 1 && convertedPosition > positions2[index + 1]) {
       convertedPosition = positions2[index + 1];
+    }
     return convertedPosition;
   }
 };

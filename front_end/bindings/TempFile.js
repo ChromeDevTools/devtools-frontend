@@ -38,8 +38,9 @@ Bindings.TempFile = class {
    * @param {!Array<string|!Blob>} pieces
    */
   write(pieces) {
-    if (this._lastBlob)
+    if (this._lastBlob) {
       pieces.unshift(this._lastBlob);
+    }
     this._lastBlob = new Blob(pieces, {type: 'text/plain'});
   }
 
@@ -126,8 +127,9 @@ Bindings.TempFileBackingStorage = class {
     this._strings.push(string);
     this._stringsLength += string.length;
     const flushStringLength = 10 * 1024 * 1024;
-    if (this._stringsLength > flushStringLength)
+    if (this._stringsLength > flushStringLength) {
       this._flush();
+    }
   }
 
   /**
@@ -144,10 +146,12 @@ Bindings.TempFileBackingStorage = class {
   }
 
   _flush() {
-    if (!this._strings.length)
+    if (!this._strings.length) {
       return;
-    if (!this._file)
+    }
+    if (!this._file) {
       this._file = new Bindings.TempFile();
+    }
     this._stringsLength = 0;
     this._file.write(this._strings.splice(0));
   }
@@ -163,8 +167,9 @@ Bindings.TempFileBackingStorage = class {
    * @override
    */
   reset() {
-    if (this._file)
+    if (this._file) {
       this._file.remove();
+    }
     this._file = null;
     /** @type {!Array<string>} */
     this._strings = [];

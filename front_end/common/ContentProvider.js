@@ -93,8 +93,9 @@ export const performSearchInContent = function(content, query, caseSensitive, is
   for (let i = 0; i < text.lineCount(); ++i) {
     const lineContent = text.lineAt(i);
     regex.lastIndex = 0;
-    if (regex.exec(lineContent))
+    if (regex.exec(lineContent)) {
       result.push(new Common.ContentProvider.SearchMatch(i, lineContent));
+    }
   }
   return result;
 };
@@ -108,8 +109,9 @@ export const performSearchInContent = function(content, query, caseSensitive, is
  */
 export const contentAsDataURL = function(content, mimeType, contentEncoded, charset) {
   const maxDataUrlSize = 1024 * 1024;
-  if (content === null || content.length > maxDataUrlSize)
+  if (content === null || content.length > maxDataUrlSize) {
     return null;
+  }
 
   return 'data:' + mimeType + (charset ? ';charset=' + charset : '') + (contentEncoded ? ';base64' : '') + ',' +
       content;

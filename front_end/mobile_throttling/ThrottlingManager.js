@@ -66,18 +66,20 @@ MobileThrottling.ThrottlingManager = class extends Common.Object {
     }
 
     function optionSelected() {
-      if (selectElement.selectedIndex === selectElement.options.length - 1)
+      if (selectElement.selectedIndex === selectElement.options.length - 1) {
         selector.revealAndUpdate();
-      else
+      } else {
         selector.optionSelected(options[selectElement.selectedIndex]);
+      }
     }
 
     /**
      * @param {number} index
      */
     function select(index) {
-      if (selectElement.selectedIndex !== index)
+      if (selectElement.selectedIndex !== index) {
         selectElement.selectedIndex = index;
+      }
     }
   }
 
@@ -95,10 +97,11 @@ MobileThrottling.ThrottlingManager = class extends Common.Object {
      * @this {!MobileThrottling.ThrottlingManager}
      */
     function forceOffline() {
-      if (checkbox.checked())
+      if (checkbox.checked()) {
         SDK.multitargetNetworkManager.setNetworkConditions(SDK.NetworkManager.OfflineConditions);
-      else
+      } else {
         SDK.multitargetNetworkManager.setNetworkConditions(this._lastNetworkThrottlingConditions);
+      }
     }
 
     function networkConditionsChanged() {
@@ -131,11 +134,13 @@ MobileThrottling.ThrottlingManager = class extends Common.Object {
     function appendItems(contextMenu) {
       for (let index = 0; index < options.length; ++index) {
         const conditions = options[index];
-        if (!conditions)
+        if (!conditions) {
           continue;
+        }
         if (conditions.title === MobileThrottling.CustomConditions.title &&
-            conditions.description === MobileThrottling.CustomConditions.description)
+            conditions.description === MobileThrottling.CustomConditions.description) {
           continue;
+        }
         contextMenu.defaultSection().appendCheckboxItem(
             Common.UIString(conditions.title),
             selector.optionSelected.bind(selector, /** @type {!MobileThrottling.Conditions} */ (conditions)),
@@ -150,8 +155,9 @@ MobileThrottling.ThrottlingManager = class extends Common.Object {
     function populate(groups) {
       options = [];
       for (const group of groups) {
-        for (const conditions of group.items)
+        for (const conditions of group.items) {
           options.push(conditions);
+        }
         options.push(null);
       }
       return options;
@@ -179,8 +185,9 @@ MobileThrottling.ThrottlingManager = class extends Common.Object {
    */
   setCPUThrottlingRate(rate) {
     this._cpuThrottlingRate = rate;
-    for (const emulationModel of SDK.targetManager.models(SDK.EmulationModel))
+    for (const emulationModel of SDK.targetManager.models(SDK.EmulationModel)) {
       emulationModel.setCPUThrottlingRate(this._cpuThrottlingRate);
+    }
     let icon = null;
     if (this._cpuThrottlingRate !== MobileThrottling.CPUThrottlingRates.NoThrottling) {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.CpuThrottlingEnabled);
@@ -188,8 +195,9 @@ MobileThrottling.ThrottlingManager = class extends Common.Object {
       icon.title = Common.UIString('CPU throttling is enabled');
     }
     const index = this._cpuThrottlingRates.indexOf(this._cpuThrottlingRate);
-    for (const control of this._cpuThrottlingControls)
+    for (const control of this._cpuThrottlingControls) {
       control.setSelectedIndex(index);
+    }
     UI.inspectorView.setPanelIcon('timeline', icon);
     this.dispatchEventToListeners(MobileThrottling.ThrottlingManager.Events.RateChanged, this._cpuThrottlingRate);
   }
@@ -199,8 +207,9 @@ MobileThrottling.ThrottlingManager = class extends Common.Object {
    * @param {!SDK.EmulationModel} emulationModel
    */
   modelAdded(emulationModel) {
-    if (this._cpuThrottlingRate !== MobileThrottling.CPUThrottlingRates.NoThrottling)
+    if (this._cpuThrottlingRate !== MobileThrottling.CPUThrottlingRates.NoThrottling) {
       emulationModel.setCPUThrottlingRate(this._cpuThrottlingRate);
+    }
   }
 
   /**
@@ -224,8 +233,9 @@ MobileThrottling.ThrottlingManager = class extends Common.Object {
       const title = rate === 1 ? Common.UIString('No throttling') : Common.UIString('%d\xD7 slowdown', rate);
       const option = control.createOption(title);
       control.addOption(option);
-      if (currentRate === rate)
+      if (currentRate === rate) {
         control.setSelectedIndex(i);
+      }
     }
     return control;
   }

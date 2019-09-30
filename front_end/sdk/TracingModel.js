@@ -80,8 +80,9 @@ SDK.TracingModel = class {
    */
   static _extractId(payload) {
     const scope = payload.scope || '';
-    if (typeof payload.id2 === 'undefined')
+    if (typeof payload.id2 === 'undefined') {
       return scope && payload.id ? `${scope}@${payload.id}` : payload.id;
+    }
     const id2 = payload.id2;
     if (typeof id2 === 'object' && ('global' in id2) !== ('local' in id2)) {
       return typeof id2['global'] !== 'undefined' ? `:${scope}:${id2['global']}` :
@@ -102,24 +103,29 @@ SDK.TracingModel = class {
   static browserMainThread(tracingModel) {
     const processes = tracingModel.sortedProcesses();
     // Avoid warning for an empty model.
-    if (!processes.length)
+    if (!processes.length) {
       return null;
+    }
     const browserMainThreadName = 'CrBrowserMain';
     const browserProcesses = [];
     const browserMainThreads = [];
     for (const process of processes) {
-      if (process.name().toLowerCase().endsWith('browser'))
+      if (process.name().toLowerCase().endsWith('browser')) {
         browserProcesses.push(process);
+      }
       browserMainThreads.push(...process.sortedThreads().filter(t => t.name() === browserMainThreadName));
     }
-    if (browserMainThreads.length === 1)
+    if (browserMainThreads.length === 1) {
       return browserMainThreads[0];
-    if (browserProcesses.length === 1)
+    }
+    if (browserProcesses.length === 1) {
       return browserProcesses[0].threadByName(browserMainThreadName);
+    }
     const tracingStartedInBrowser =
         tracingModel.devToolsMetadataEvents().filter(e => e.name === 'TracingStartedInBrowser');
-    if (tracingStartedInBrowser.length === 1)
+    if (tracingStartedInBrowser.length === 1) {
       return tracingStartedInBrowser[0].thread;
+    }
     Common.console.error('Failed to find browser main thread in trace, some timeline features may be unavailable');
     return null;
   }
@@ -135,8 +141,9 @@ SDK.TracingModel = class {
    * @param {!Array.<!SDK.TracingManager.EventPayload>} events
    */
   addEvents(events) {
-    for (let i = 0; i < events.length; ++i)
+    for (let i = 0; i < events.length; ++i) {
       this._addEvent(events[i]);
+    }
   }
 
   tracingComplete() {
@@ -145,14 +152,16 @@ SDK.TracingModel = class {
     this._backingStorage.finishWriting();
     this._firstWritePending = false;
     for (const process of this._processById.values()) {
-      for (const thread of process._threads.values())
+      for (const thread of process._threads.values()) {
         thread.tracingComplete();
+      }
     }
   }
 
   dispose() {
-    if (!this._firstWritePending)
+    if (!this._firstWritePending) {
       this._backingStorage.reset();
+    }
   }
 
   /**
@@ -165,13 +174,15 @@ SDK.TracingModel = class {
       for (const thread of process._threads.values()) {
         for (const event of thread.events()) {
           event.startTime += offset;
-          if (typeof event.endTime === 'number')
+          if (typeof event.endTime === 'number') {
             event.endTime += offset;
+          }
         }
         for (const event of thread.asyncEvents()) {
           event.startTime += offset;
-          if (typeof event.endTime === 'number')
+          if (typeof event.endTime === 'number') {
             event.endTime += offset;
+          }
         }
       }
     }
@@ -195,22 +206,25 @@ SDK.TracingModel = class {
     const isAccessible = payload.ph === phase.SnapshotObject;
     let backingStorage = null;
     const keepStringsLessThan = 10000;
-    if (isAccessible && stringPayload.length > keepStringsLessThan)
+    if (isAccessible && stringPayload.length > keepStringsLessThan) {
       backingStorage = this._backingStorage.appendAccessibleString(stringPayload);
-    else
+    } else {
       this._backingStorage.appendString(stringPayload);
+    }
 
     const timestamp = payload.ts / 1000;
     // We do allow records for unrelated threads to arrive out-of-order,
     // so there's a chance we're getting records from the past.
     if (timestamp && (!this._minimumRecordTime || timestamp < this._minimumRecordTime) &&
-        (payload.ph === phase.Begin || payload.ph === phase.Complete || payload.ph === phase.Instant))
+        (payload.ph === phase.Begin || payload.ph === phase.Complete || payload.ph === phase.Instant)) {
       this._minimumRecordTime = timestamp;
+    }
     const endTimeStamp = (payload.ts + (payload.dur || 0)) / 1000;
     this._maximumRecordTime = Math.max(this._maximumRecordTime, endTimeStamp);
     const event = process._addEvent(payload);
-    if (!event)
+    if (!event) {
       return;
+    }
     if (payload.ph === phase.Sample) {
       this._addSampleEvent(event);
       return;
@@ -218,14 +232,17 @@ SDK.TracingModel = class {
     // Build async event when we've got events from all threads & processes, so we can sort them and process in the
     // chronological order. However, also add individual async events to the thread flow (above), so we can easily
     // display them on the same chart as other events, should we choose so.
-    if (SDK.TracingModel.isAsyncPhase(payload.ph))
+    if (SDK.TracingModel.isAsyncPhase(payload.ph)) {
       this._asyncEvents.push(event);
+    }
     event._setBackingStorage(backingStorage);
-    if (event.hasCategory(SDK.TracingModel.DevToolsMetadataEventCategory))
+    if (event.hasCategory(SDK.TracingModel.DevToolsMetadataEventCategory)) {
       this._devToolsMetadataEvents.push(event);
+    }
 
-    if (payload.ph !== phase.Metadata)
+    if (payload.ph !== phase.Metadata) {
       return;
+    }
 
     switch (payload.name) {
       case SDK.TracingModel.MetadataEvent.ProcessSortIndex:
@@ -251,10 +268,11 @@ SDK.TracingModel = class {
   _addSampleEvent(event) {
     const id = `${event.thread.process().id()}:${event.id}`;
     const group = this._profileGroups.get(id);
-    if (group)
+    if (group) {
       group._addChild(event);
-    else
+    } else {
       this._profileGroups.set(id, new SDK.TracingModel.ProfileEventsGroup(event));
+    }
   }
 
   /**
@@ -316,10 +334,11 @@ SDK.TracingModel = class {
     this._asyncEvents.sort(SDK.TracingModel.Event.compareStartTime);
     for (let i = 0; i < this._asyncEvents.length; ++i) {
       const event = this._asyncEvents[i];
-      if (SDK.TracingModel.isNestableAsyncPhase(event.phase))
+      if (SDK.TracingModel.isNestableAsyncPhase(event.phase)) {
         this._addNestableAsyncEvent(event);
-      else
+      } else {
         this._addAsyncEvent(event);
+      }
     }
     this._asyncEvents = [];
     this._closeOpenAsyncEvents();
@@ -335,8 +354,9 @@ SDK.TracingModel = class {
     this._openAsyncEvents.clear();
 
     for (const eventStack of this._openNestableAsyncEvents.values()) {
-      while (eventStack.length)
+      while (eventStack.length) {
         eventStack.pop().setEndTime(this._maximumRecordTime);
+      }
     }
     this._openNestableAsyncEvents.clear();
   }
@@ -361,13 +381,15 @@ SDK.TracingModel = class {
         break;
 
       case phase.NestableAsyncInstant:
-        if (openEventsStack && openEventsStack.length)
+        if (openEventsStack && openEventsStack.length) {
           openEventsStack.peekLast()._addStep(event);
+        }
         break;
 
       case phase.NestableAsyncEnd:
-        if (!openEventsStack || !openEventsStack.length)
+        if (!openEventsStack || !openEventsStack.length) {
           break;
+        }
         const top = openEventsStack.pop();
         if (top.name !== event.name) {
           console.error(
@@ -542,15 +564,19 @@ SDK.TracingModel.Event = class {
   static fromPayload(payload, thread) {
     const event = new SDK.TracingModel.Event(
         payload.cat, payload.name, /** @type {!SDK.TracingModel.Phase} */ (payload.ph), payload.ts / 1000, thread);
-    if (payload.args)
+    if (payload.args) {
       event.addArgs(payload.args);
-    if (typeof payload.dur === 'number')
+    }
+    if (typeof payload.dur === 'number') {
       event.setEndTime((payload.ts + payload.dur) / 1000);
+    }
     const id = SDK.TracingModel._extractId(payload);
-    if (typeof id !== 'undefined')
+    if (typeof id !== 'undefined') {
       event.id = id;
-    if (payload.bind_id)
+    }
+    if (payload.bind_id) {
       event.bind_id = payload.bind_id;
+    }
 
     return event;
   }
@@ -602,8 +628,9 @@ SDK.TracingModel.Event = class {
   addArgs(args) {
     // Shallow copy args to avoid modifying original payload which may be saved to file.
     for (const name in args) {
-      if (name in this.args)
+      if (name in this.args) {
         console.error('Same argument name (' + name + ') is used for begin and end phases of ' + this.name);
+      }
       this.args[name] = args[name];
     }
   }
@@ -612,10 +639,11 @@ SDK.TracingModel.Event = class {
    * @param {!SDK.TracingModel.Event} endEvent
    */
   _complete(endEvent) {
-    if (endEvent.args)
+    if (endEvent.args) {
       this.addArgs(endEvent.args);
-    else
+    } else {
       console.error('Missing mandatory event argument \'args\' at ' + endEvent.startTime);
+    }
     this.setEndTime(endEvent.startTime);
   }
 
@@ -653,14 +681,16 @@ SDK.TracingModel.ObjectSnapshot = class extends SDK.TracingModel.Event {
   static fromPayload(payload, thread) {
     const snapshot = new SDK.TracingModel.ObjectSnapshot(payload.cat, payload.name, payload.ts / 1000, thread);
     const id = SDK.TracingModel._extractId(payload);
-    if (typeof id !== 'undefined')
+    if (typeof id !== 'undefined') {
       snapshot.id = id;
+    }
     if (!payload.args || !payload.args['snapshot']) {
       console.error('Missing mandatory \'snapshot\' argument at ' + payload.ts / 1000);
       return snapshot;
     }
-    if (payload.args)
+    if (payload.args) {
       snapshot.addArgs(payload.args);
+    }
     return snapshot;
   }
 
@@ -696,8 +726,9 @@ SDK.TracingModel.ObjectSnapshot = class extends SDK.TracingModel.Event {
    * @return {!Promise<?>}
    */
   objectPromise() {
-    if (!this._objectPromise)
+    if (!this._objectPromise) {
       this._objectPromise = new Promise(this.requestObject.bind(this));
+    }
     return this._objectPromise;
   }
 
@@ -706,8 +737,9 @@ SDK.TracingModel.ObjectSnapshot = class extends SDK.TracingModel.Event {
    * @param {?function():!Promise.<?>} backingStorage
    */
   _setBackingStorage(backingStorage) {
-    if (!backingStorage)
+    if (!backingStorage) {
       return;
+    }
     this._backingStorage = backingStorage;
     this.args = {};
   }
@@ -898,8 +930,9 @@ SDK.TracingModel.Thread = class extends SDK.TracingModel.NamedObject {
         case phases.End:
           this._events[i] = null;  // Mark for removal.
           // Quietly ignore unbalanced close events, they're legit (we could have missed start one).
-          if (!stack.length)
+          if (!stack.length) {
             continue;
+          }
           const top = stack.pop();
           if (top.name !== e.name || top.categoriesString !== e.categoriesString) {
             console.error(
@@ -914,8 +947,9 @@ SDK.TracingModel.Thread = class extends SDK.TracingModel.NamedObject {
           break;
       }
     }
-    while (stack.length)
+    while (stack.length) {
       stack.pop().setEndTime(this._model.maximumRecordTime());
+    }
     this._events.remove(null, false);
   }
 
@@ -929,8 +963,9 @@ SDK.TracingModel.Thread = class extends SDK.TracingModel.NamedObject {
         SDK.TracingModel.Event.fromPayload(payload, this);
     if (SDK.TracingModel.isTopLevelEvent(event)) {
       // Discard nested "top-level" events.
-      if (this._lastTopLevelEvent && this._lastTopLevelEvent.endTime > event.startTime)
+      if (this._lastTopLevelEvent && this._lastTopLevelEvent.endTime > event.startTime) {
         return null;
+      }
       this._lastTopLevelEvent = event;
     }
     this._events.push(event);

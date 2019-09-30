@@ -164,20 +164,23 @@ Network.NetworkTimeCalculator = class extends Common.Object {
     let start;
     let middle;
     let end;
-    if (request.startTime !== -1)
+    if (request.startTime !== -1) {
       start = ((request.startTime - this.minimumBoundary()) / this.boundarySpan()) * 100;
-    else
+    } else {
       start = 0;
+    }
 
-    if (request.responseReceivedTime !== -1)
+    if (request.responseReceivedTime !== -1) {
       middle = ((request.responseReceivedTime - this.minimumBoundary()) / this.boundarySpan()) * 100;
-    else
+    } else {
       middle = (this.startAtZero ? start : 100);
+    }
 
-    if (request.endTime !== -1)
+    if (request.endTime !== -1) {
       end = ((request.endTime - this.minimumBoundary()) / this.boundarySpan()) * 100;
-    else
+    } else {
       end = (this.startAtZero ? middle : 100);
+    }
 
     if (this.startAtZero) {
       end -= start;
@@ -196,8 +199,9 @@ Network.NetworkTimeCalculator = class extends Common.Object {
     // This function computes a percentage in terms of the total loading time
     // of a specific event. If startAtZero is set, then this is useless, and we
     // want to return 0.
-    if (eventTime !== -1 && !this.startAtZero)
+    if (eventTime !== -1 && !this.startAtZero) {
       return ((eventTime - this.minimumBoundary()) / this.boundarySpan()) * 100;
+    }
 
     return 0;
   }
@@ -227,8 +231,9 @@ Network.NetworkTimeCalculator = class extends Common.Object {
    * @param {number} eventTime
    */
   updateBoundariesForEventTime(eventTime) {
-    if (eventTime === -1 || this.startAtZero)
+    if (eventTime === -1 || this.startAtZero) {
       return;
+    }
 
     if (this._maximumBoundary === undefined || eventTime > this._maximumBoundary) {
       this._maximumBoundary = eventTime;
@@ -242,14 +247,16 @@ Network.NetworkTimeCalculator = class extends Common.Object {
    */
   computeBarGraphLabels(request) {
     let rightLabel = '';
-    if (request.responseReceivedTime !== -1 && request.endTime !== -1)
+    if (request.responseReceivedTime !== -1 && request.endTime !== -1) {
       rightLabel = Number.secondsToString(request.endTime - request.responseReceivedTime);
+    }
 
     const hasLatency = request.latency > 0;
     const leftLabel = hasLatency ? Number.secondsToString(request.latency) : rightLabel;
 
-    if (request.timing)
+    if (request.timing) {
       return {left: leftLabel, right: rightLabel};
+    }
 
     let tooltip;
     if (hasLatency && rightLabel) {
@@ -261,10 +268,11 @@ Network.NetworkTimeCalculator = class extends Common.Object {
       tooltip = Network.NetworkTimeCalculator._downloadFormat.format(rightLabel);
     }
 
-    if (request.fetchedViaServiceWorker)
+    if (request.fetchedViaServiceWorker) {
       tooltip = Network.NetworkTimeCalculator._fromServiceWorkerFormat.format(tooltip);
-    else if (request.cached())
+    } else if (request.cached()) {
       tooltip = Network.NetworkTimeCalculator._fromCacheFormat.format(tooltip);
+    }
     return {left: leftLabel, right: rightLabel, tooltip: tooltip};
   }
 
@@ -275,12 +283,15 @@ Network.NetworkTimeCalculator = class extends Common.Object {
     const lowerBound = this._lowerBound(request);
     const upperBound = this._upperBound(request);
     let changed = false;
-    if (lowerBound !== -1 || this.startAtZero)
+    if (lowerBound !== -1 || this.startAtZero) {
       changed = this._extendBoundariesToIncludeTimestamp(this.startAtZero ? 0 : lowerBound);
-    if (upperBound !== -1)
+    }
+    if (upperBound !== -1) {
       changed = this._extendBoundariesToIncludeTimestamp(upperBound) || changed;
-    if (changed)
+    }
+    if (changed) {
       this._boundaryChanged();
+    }
   }
 
   /**

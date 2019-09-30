@@ -29,11 +29,13 @@ BindingsTestRunner.waitForBinding = function(fileName) {
   for (const uiSourceCode of uiSourceCodes) {
     const binding = Persistence.persistence.binding(uiSourceCode);
 
-    if (!binding)
+    if (!binding) {
       continue;
+    }
 
-    if (uiSourceCode.name() === fileName)
+    if (uiSourceCode.name() === fileName) {
       return Promise.resolve(binding);
+    }
   }
 
   return TestRunner.waitForEvent(
@@ -75,8 +77,9 @@ class TestMapping {
 
   _findBinding(urlSuffix) {
     for (const binding of this._bindings) {
-      if (binding.network.url().endsWith(urlSuffix))
+      if (binding.network.url().endsWith(urlSuffix)) {
         return binding;
+      }
     }
 
     return null;
@@ -96,8 +99,9 @@ class TestMapping {
   }
 
   dispose() {
-    for (const binding of this._bindings)
+    for (const binding of this._bindings) {
       this._persistence.removeBindingForTest(binding);
+    }
 
     this._bindings.clear();
   }

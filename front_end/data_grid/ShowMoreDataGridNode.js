@@ -105,8 +105,9 @@ DataGrid.ShowMoreDataGridNode = class extends DataGrid.DataGridNode {
     const cell = this.createTD(columnIdentifier);
     if (!this._hasCells) {
       this._hasCells = true;
-      if (this.depth)
+      if (this.depth) {
         cell.style.setProperty('padding-left', (this.depth * this.dataGrid.indentWidth) + 'px');
+      }
       cell.appendChild(this.showNext);
       cell.appendChild(this.showAll);
       cell.appendChild(this.showLast);

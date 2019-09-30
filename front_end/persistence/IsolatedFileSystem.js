@@ -68,8 +68,9 @@ Persistence.IsolatedFileSystem = class extends Persistence.PlatformFileSystem {
    */
   static create(manager, path, embedderPath, type, name, rootURL) {
     const domFileSystem = InspectorFrontendHost.isolatedFileSystem(name, rootURL);
-    if (!domFileSystem)
+    if (!domFileSystem) {
       return Promise.resolve(/** @type {?Persistence.IsolatedFileSystem} */ (null));
+    }
 
     const fileSystem = new Persistence.IsolatedFileSystem(manager, path, embedderPath, domFileSystem, type);
     return fileSystem._initializeFilePaths()
@@ -168,8 +169,9 @@ Persistence.IsolatedFileSystem = class extends Persistence.PlatformFileSystem {
       for (let i = 0; i < entries.length; ++i) {
         const entry = entries[i];
         if (!entry.isDirectory) {
-          if (this.isFileExcluded(entry.fullPath))
+          if (this.isFileExcluded(entry.fullPath)) {
             continue;
+          }
           this._initialFilePaths.add(entry.fullPath.substr(1));
         } else {
           if (entry.fullPath.endsWith('/.git')) {
@@ -186,8 +188,9 @@ Persistence.IsolatedFileSystem = class extends Persistence.PlatformFileSystem {
           this._requestEntries(entry.fullPath, boundInnerCallback);
         }
       }
-      if ((--pendingRequests === 0))
+      if ((--pendingRequests === 0)) {
         fulfill();
+      }
     }
   }
 
@@ -199,15 +202,17 @@ Persistence.IsolatedFileSystem = class extends Persistence.PlatformFileSystem {
     // Fast-path. If parent directory already exists we return it immidiatly.
     let dirEntry = await new Promise(
         resolve => this._domFileSystem.root.getDirectory(folderPath, undefined, resolve, () => resolve(null)));
-    if (dirEntry)
+    if (dirEntry) {
       return dirEntry;
+    }
     const paths = folderPath.split('/');
     let activePath = '';
     for (const path of paths) {
       activePath = activePath + '/' + path;
       dirEntry = await this._innerCreateFolderIfNeeded(activePath);
-      if (!dirEntry)
+      if (!dirEntry) {
         return null;
+      }
     }
     return dirEntry;
   }
@@ -234,11 +239,13 @@ Persistence.IsolatedFileSystem = class extends Persistence.PlatformFileSystem {
    */
   async createFile(path, name) {
     const dirEntry = await this._createFoldersIfNotExist(path);
-    if (!dirEntry)
+    if (!dirEntry) {
       return null;
+    }
     const fileEntry = await this._serializedFileOperation(path, createFileCandidate.bind(this, name || 'NewFile'));
-    if (!fileEntry)
+    if (!fileEntry) {
       return null;
+    }
     return fileEntry.fullPath.substr(1);
 
     /**
@@ -345,10 +352,11 @@ Persistence.IsolatedFileSystem = class extends Persistence.PlatformFileSystem {
       const extension = Common.ParsedURL.extractExtension(path);
       const encoded = Persistence.IsolatedFileSystem.BinaryExtensions.has(extension);
       const readPromise = new Promise(x => reader.onloadend = x);
-      if (encoded)
+      if (encoded) {
         reader.readAsBinaryString(blob);
-      else
+      } else {
         reader.readAsText(blob);
+      }
       await readPromise;
       if (reader.error) {
         console.error('Can\'t read file: ' + path + ': ' + reader.error);
@@ -405,10 +413,11 @@ Persistence.IsolatedFileSystem = class extends Persistence.PlatformFileSystem {
       fileWriter.onerror = errorHandler.bind(this);
       fileWriter.onwriteend = fileWritten;
       let blob;
-      if (isBase64)
-        blob = await(await fetch(`data:application/octet-stream;base64,${content}`)).blob();
-      else
+      if (isBase64) {
+        blob = await (await fetch(`data:application/octet-stream;base64,${content}`)).blob();
+      } else {
         blob = new Blob([content], {type: 'text/plain'});
+      }
       fileWriter.write(blob);
 
       function fileWritten() {
@@ -595,8 +604,9 @@ Persistence.IsolatedFileSystem = class extends Persistence.PlatformFileSystem {
    * @return {boolean}
    */
   isFileExcluded(folderPath) {
-    if (this._excludedFolders.has(folderPath))
+    if (this._excludedFolders.has(folderPath)) {
       return true;
+    }
     const regex = this._manager.workspaceFolderExcludePatternSetting().asRegExp();
     return !!(regex && regex.test(folderPath));
   }
@@ -665,14 +675,18 @@ Persistence.IsolatedFileSystem = class extends Persistence.PlatformFileSystem {
    */
   contentType(path) {
     const extension = Common.ParsedURL.extractExtension(path);
-    if (Persistence.IsolatedFileSystem._styleSheetExtensions.has(extension))
+    if (Persistence.IsolatedFileSystem._styleSheetExtensions.has(extension)) {
       return Common.resourceTypes.Stylesheet;
-    if (Persistence.IsolatedFileSystem._documentExtensions.has(extension))
+    }
+    if (Persistence.IsolatedFileSystem._documentExtensions.has(extension)) {
       return Common.resourceTypes.Document;
-    if (Persistence.IsolatedFileSystem.ImageExtensions.has(extension))
+    }
+    if (Persistence.IsolatedFileSystem.ImageExtensions.has(extension)) {
       return Common.resourceTypes.Image;
-    if (Persistence.IsolatedFileSystem._scriptExtensions.has(extension))
+    }
+    if (Persistence.IsolatedFileSystem._scriptExtensions.has(extension)) {
       return Common.resourceTypes.Script;
+    }
     return Persistence.IsolatedFileSystem.BinaryExtensions.has(extension) ? Common.resourceTypes.Other :
                                                                             Common.resourceTypes.Document;
   }

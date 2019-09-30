@@ -40,13 +40,15 @@ FormatterWorker.HTMLFormatter = class {
    * @param {!FormatterWorker.HTMLModel.Element} element
    */
   _walk(element) {
-    if (element.parent)
+    if (element.parent) {
       this._formatTokensTill(element.parent, element.openTag.startOffset);
+    }
     this._beforeOpenTag(element);
     this._formatTokensTill(element, element.openTag.endOffset);
     this._afterOpenTag(element);
-    for (let i = 0; i < element.children.length; ++i)
+    for (let i = 0; i < element.children.length; ++i) {
       this._walk(element.children[i]);
+    }
 
     this._formatTokensTill(element, element.closeTag.startOffset);
     this._beforeCloseTag(element);
@@ -58,8 +60,9 @@ FormatterWorker.HTMLFormatter = class {
    * @param {!FormatterWorker.HTMLModel.Element} element
    */
   _beforeOpenTag(element) {
-    if (!element.children.length || element === this._model.document())
+    if (!element.children.length || element === this._model.document()) {
       return;
+    }
     this._builder.addNewLine();
   }
 
@@ -67,8 +70,9 @@ FormatterWorker.HTMLFormatter = class {
    * @param {!FormatterWorker.HTMLModel.Element} element
    */
   _afterOpenTag(element) {
-    if (!element.children.length || element === this._model.document())
+    if (!element.children.length || element === this._model.document()) {
       return;
+    }
     this._builder.increaseNestingLevel();
     this._builder.addNewLine();
   }
@@ -77,8 +81,9 @@ FormatterWorker.HTMLFormatter = class {
    * @param {!FormatterWorker.HTMLModel.Element} element
    */
   _beforeCloseTag(element) {
-    if (!element.children.length || element === this._model.document())
+    if (!element.children.length || element === this._model.document()) {
       return;
+    }
     this._builder.decreaseNestingLevel();
     this._builder.addNewLine();
   }
@@ -95,8 +100,9 @@ FormatterWorker.HTMLFormatter = class {
    * @param {!FormatterWorker.HTMLModel.Token} token
    */
   _formatToken(element, token) {
-    if (token.value.isWhitespace())
+    if (token.value.isWhitespace()) {
       return;
+    }
     if (token.type.has('comment') || token.type.has('meta')) {
       this._builder.addNewLine();
       this._builder.addToken(token.value.trim(), token.startOffset);
@@ -126,8 +132,9 @@ FormatterWorker.HTMLFormatter = class {
       return;
     }
 
-    if (!isBodyToken && token.type.has('attribute'))
+    if (!isBodyToken && token.type.has('attribute')) {
       this._builder.addSoftSpace();
+    }
 
     this._builder.addToken(token.value, token.startOffset);
   }
@@ -137,14 +144,17 @@ FormatterWorker.HTMLFormatter = class {
    * @return {boolean}
    */
   _scriptTagIsJavaScript(element) {
-    if (!element.openTag.attributes.has('type'))
+    if (!element.openTag.attributes.has('type')) {
       return true;
+    }
     let type = element.openTag.attributes.get('type').toLowerCase();
-    if (!type)
+    if (!type) {
       return true;
+    }
     const isWrappedInQuotes = /^(["\'])(.*)\1$/.exec(type.trim());
-    if (isWrappedInQuotes)
+    if (isWrappedInQuotes) {
       type = isWrappedInQuotes[2];
+    }
     return FormatterWorker.HTMLFormatter.SupportedJavaScriptMimeTypes.has(type.trim());
   }
 };
@@ -187,12 +197,14 @@ FormatterWorker.HTMLModel = class {
 
     while (true) {
       tokenizer(text.substring(lastOffset), processToken.bind(this, lastOffset));
-      if (lastOffset >= text.length)
+      if (lastOffset >= text.length) {
         break;
+      }
       const element = this._stack.peekLast();
       lastOffset = lowerCaseText.indexOf('</' + element.name, lastOffset);
-      if (lastOffset === -1)
+      if (lastOffset === -1) {
         lastOffset = text.length;
+      }
       const tokenStart = element.openTag.endOffset;
       const tokenEnd = lastOffset;
       const tokenValue = text.substring(tokenStart, tokenEnd);
@@ -226,8 +238,9 @@ FormatterWorker.HTMLModel = class {
 
       const element = this._stack.peekLast();
       if (element && (element.name === 'script' || element.name === 'style') &&
-          element.openTag.endOffset === lastOffset)
+          element.openTag.endOffset === lastOffset) {
         return FormatterWorker.AbortTokenization;
+      }
     }
   }
 
@@ -306,20 +319,23 @@ FormatterWorker.HTMLModel = class {
   _onTagComplete(tag) {
     if (tag.isOpenTag) {
       const topElement = this._stack.peekLast();
-      if (topElement !== this._document && topElement.openTag.selfClosingTag)
+      if (topElement !== this._document && topElement.openTag.selfClosingTag) {
         this._popElement(autocloseTag(topElement, topElement.openTag.endOffset));
-      else if (
+      } else if (
           (topElement.name in FormatterWorker.HTMLModel.AutoClosingTags) &&
-          FormatterWorker.HTMLModel.AutoClosingTags[topElement.name].has(tag.name))
+          FormatterWorker.HTMLModel.AutoClosingTags[topElement.name].has(tag.name)) {
         this._popElement(autocloseTag(topElement, tag.startOffset));
+      }
       this._pushElement(tag);
       return;
     }
 
-    while (this._stack.length > 1 && this._stack.peekLast().name !== tag.name)
+    while (this._stack.length > 1 && this._stack.peekLast().name !== tag.name) {
       this._popElement(autocloseTag(this._stack.peekLast(), tag.startOffset));
-    if (this._stack.length === 1)
+    }
+    if (this._stack.length === 1) {
       return;
+    }
     this._popElement(tag);
 
     /**

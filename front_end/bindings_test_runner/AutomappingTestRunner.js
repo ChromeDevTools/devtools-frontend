@@ -24,20 +24,23 @@ BindingsTestRunner.overrideNetworkModificationTime = function(urlToTime) {
         TestRunner.override(Bindings.ContentProviderBasedProject.prototype, 'requestMetadata', overrideTime, true);
   }
 
-  for (const url in urlToTime)
+  for (const url in urlToTime) {
     timeOverrides.set(url, urlToTime[url]);
+  }
 
   function overrideTime(uiSourceCode) {
-    if (!timeOverrides.has(uiSourceCode.url()))
+    if (!timeOverrides.has(uiSourceCode.url())) {
       return originalRequestMetadata.call(this, uiSourceCode);
+    }
 
     const override = timeOverrides.get(uiSourceCode.url());
     return originalRequestMetadata.call(this, uiSourceCode).then(onOriginalMetadata.bind(null, override));
   }
 
   function onOriginalMetadata(timeOverride, metadata) {
-    if (!timeOverride && !metadata)
+    if (!timeOverride && !metadata) {
       return null;
+    }
 
     return new Workspace.UISourceCodeMetadata(timeOverride, (metadata ? metadata.contentSize : null));
   }
@@ -48,8 +51,9 @@ BindingsTestRunner.AutomappingTest = function(workspace) {
   this._networkProject = new Bindings.ContentProviderBasedProject(
       this._workspace, 'AUTOMAPPING', Workspace.projectTypes.Network, 'simple website');
 
-  if (workspace !== Workspace.workspace)
+  if (workspace !== Workspace.workspace) {
     new Persistence.FileSystemWorkspaceBinding(Persistence.isolatedFileSystemManager, this._workspace);
+  }
 
   this._failedBindingsCount = 0;
   this._automapping =
@@ -60,8 +64,9 @@ BindingsTestRunner.AutomappingTest = function(workspace) {
 
 BindingsTestRunner.AutomappingTest.prototype = {
   removeResources: function(urls) {
-    for (const url of urls)
+    for (const url of urls) {
       this._networkProject.removeFile(url);
+    }
   },
 
   addNetworkResources: function(assets) {
@@ -105,8 +110,9 @@ BindingsTestRunner.AutomappingTest.prototype = {
   },
 
   _checkStabilized: function() {
-    if (!this._stabilizedCallback || this._automapping._sweepThrottler._process)
+    if (!this._stabilizedCallback || this._automapping._sweepThrottler._process) {
       return;
+    }
 
     const networkUISourceCodes = this._workspace.uiSourceCodesForProjectType(Workspace.projectTypes.Network);
     const stabilized = this._failedBindingsCount + this._automapping._statuses.size === networkUISourceCodes.length;

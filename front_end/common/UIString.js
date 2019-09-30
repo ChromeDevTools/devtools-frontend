@@ -54,8 +54,9 @@ export function serializeUIString(string, values = []) {
  * @return {*}
  */
 export function deserializeUIString(serializedMessage) {
-  if (!serializedMessage)
+  if (!serializedMessage) {
     return {};
+  }
 
   return JSON.parse(serializedMessage);
 }
@@ -110,8 +111,9 @@ export class UIStringFormat {
  * @return {string}
  */
 self.ls = function(strings, vararg) {
-  if (typeof strings === 'string')
+  if (typeof strings === 'string') {
     return strings;
+  }
   let substitutionString = Common._substitutionStrings.get(strings);
   if (!substitutionString) {
     substitutionString = strings.join('%s');

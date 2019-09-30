@@ -57,8 +57,9 @@ PerformanceTestRunner.InvalidationFormatters = {
 };
 
 TestRunner.formatters.formatAsInvalidationCause = function(cause) {
-  if (!cause)
+  if (!cause) {
     return '<undefined>';
+  }
 
   let stackTrace;
 
@@ -85,8 +86,9 @@ PerformanceTestRunner.invokeWithTracing = function(functionName, callback, addit
   let categories = '-*,disabled-by-default-devtools.timeline*,devtools.timeline,blink.user_timing,' +
       SDK.TracingModel.LegacyTopLevelEventCategory;
 
-  if (additionalCategories)
+  if (additionalCategories) {
     categories += ',' + additionalCategories;
+  }
 
   const timelinePanel = UI.panels.timeline;
   const timelineController = PerformanceTestRunner.createTimelineController();
@@ -174,15 +176,17 @@ PerformanceTestRunner.performActionsAndPrint = async function(actions, typeName,
 
 PerformanceTestRunner.printTimelineRecords = function(name) {
   for (const event of PerformanceTestRunner.timelineModel().inspectedTargetEvents()) {
-    if (event.name === name)
+    if (event.name === name) {
       PerformanceTestRunner.printTraceEventProperties(event);
+    }
   }
 };
 
 PerformanceTestRunner.printTimelineRecordsWithDetails = function(name) {
   for (const event of PerformanceTestRunner.timelineModel().inspectedTargetEvents()) {
-    if (name === event.name)
+    if (name === event.name) {
       PerformanceTestRunner.printTraceEventPropertiesWithDetails(event);
+    }
   }
 };
 
@@ -199,19 +203,22 @@ PerformanceTestRunner.walkTimelineEventTree = function(callback) {
 PerformanceTestRunner.walkTimelineEventTreeUnderNode = function(callback, root, level) {
   const event = root.event;
 
-  if (event)
+  if (event) {
     callback(event, level, root);
+  }
 
-  for (const child of root.children().values())
+  for (const child of root.children().values()) {
     PerformanceTestRunner.walkTimelineEventTreeUnderNode(callback, child, (level || 0) + 1);
+  }
 };
 
 PerformanceTestRunner.printTimestampRecords = function(typeName) {
   const dividers = PerformanceTestRunner.timelineModel().timeMarkerEvents();
 
   for (const event of dividers) {
-    if (event.name === typeName)
+    if (event.name === typeName) {
       PerformanceTestRunner.printTraceEventProperties(event);
+    }
   }
 };
 
@@ -219,13 +226,15 @@ PerformanceTestRunner.forAllEvents = function(events, callback) {
   const eventStack = [];
 
   for (const event of events) {
-    while (eventStack.length && eventStack.peekLast().endTime <= event.startTime)
+    while (eventStack.length && eventStack.peekLast().endTime <= event.startTime) {
       eventStack.pop();
+    }
 
     callback(event, eventStack);
 
-    if (event.endTime)
+    if (event.endTime) {
       eventStack.push(event);
+    }
   }
 };
 
@@ -244,8 +253,9 @@ PerformanceTestRunner.printTraceEventProperties = function(traceEvent) {
   };
 
   for (const field in object) {
-    if (object[field] === null || object[field] === undefined)
+    if (object[field] === null || object[field] === undefined) {
       delete object[field];
+    }
   }
 
   TestRunner.addObject(object, PerformanceTestRunner.timelinePropertyFormatters);
@@ -257,15 +267,17 @@ PerformanceTestRunner.printTraceEventPropertiesWithDetails = function(event) {
       event, SDK.targetManager.mainTarget(), new Components.Linkifier());
   TestRunner.addResult(`Text details for ${event.name}: ${details}`);
 
-  if (TimelineModel.TimelineData.forEvent(event).warning)
+  if (TimelineModel.TimelineData.forEvent(event).warning) {
     TestRunner.addResult(`${event.name} has a warning`);
+  }
 };
 
 PerformanceTestRunner.mainTrack = function() {
   let mainTrack;
   for (const track of PerformanceTestRunner.timelineModel().tracks()) {
-    if (track.type === TimelineModel.TimelineModel.TrackType.MainThread && track.forMainFrame)
+    if (track.type === TimelineModel.TimelineModel.TrackType.MainThread && track.forMainFrame) {
       mainTrack = track;
+    }
   }
   return mainTrack;
 };
@@ -282,8 +294,9 @@ PerformanceTestRunner.findChildEvent = function(events, parentIndex, name) {
   const endTime = events[parentIndex].endTime;
 
   for (let i = parentIndex + 1; i < events.length && (!events[i].endTime || events[i].endTime <= endTime); ++i) {
-    if (events[i].name === name)
+    if (events[i].name === name) {
       return events[i];
+    }
   }
 
   return null;
@@ -299,15 +312,17 @@ PerformanceTestRunner.dumpFrame = function(frame) {
     const result = {};
 
     for (const key in object) {
-      if (fieldsToDump.indexOf(key) < 0)
+      if (fieldsToDump.indexOf(key) < 0) {
         continue;
+      }
 
       let value = object[key];
 
-      if (typeof value === 'number')
+      if (typeof value === 'number') {
         value = Number(value.toFixed(7));
-      else if (typeof value === 'object' && value)
+      } else if (typeof value === 'object' && value) {
         value = formatFields(value);
+      }
 
       result[key] = value;
     }
@@ -332,14 +347,16 @@ PerformanceTestRunner.dumpFlameChartProvider = function(provider, includeGroups)
   const stackDepth = provider.maxStackDepth();
   const entriesByLevel = new Multimap();
 
-  for (let i = 0; i < timelineData.entryLevels.length; ++i)
+  for (let i = 0; i < timelineData.entryLevels.length; ++i) {
     entriesByLevel.set(timelineData.entryLevels[i], i);
+  }
 
   for (let groupIndex = 0; groupIndex < timelineData.groups.length; ++groupIndex) {
     const group = timelineData.groups[groupIndex];
 
-    if (includeGroupsSet && !includeGroupsSet.has(group.name))
+    if (includeGroupsSet && !includeGroupsSet.has(group.name)) {
       continue;
+    }
 
     const maxLevel =
         (groupIndex + 1 < timelineData.groups.length ? timelineData.groups[groupIndex + 1].startLevel : stackDepth);

@@ -13,24 +13,27 @@ Components.ImagePreview = class {
   static build(target, originalImageURL, showDimensions, options = {}) {
     const {precomputedFeatures, imageAltText} = options;
     const resourceTreeModel = target.model(SDK.ResourceTreeModel);
-    if (!resourceTreeModel)
+    if (!resourceTreeModel) {
       return Promise.resolve(/** @type {?Element} */ (null));
+    }
     let resource = resourceTreeModel.resourceForURL(originalImageURL);
     let imageURL = originalImageURL;
     if (!isImageResource(resource) && precomputedFeatures && precomputedFeatures.currentSrc) {
       imageURL = precomputedFeatures.currentSrc;
       resource = resourceTreeModel.resourceForURL(imageURL);
     }
-    if (!isImageResource(resource))
+    if (!isImageResource(resource)) {
       return Promise.resolve(/** @type {?Element} */ (null));
+    }
 
     let fulfill;
     const promise = new Promise(x => fulfill = x);
     const imageElement = createElement('img');
     imageElement.addEventListener('load', buildContent, false);
     imageElement.addEventListener('error', () => fulfill(null), false);
-    if (imageAltText)
+    if (imageAltText) {
       imageElement.alt = imageAltText;
+    }
     resource.populateImageSource(imageElement);
     return promise;
 
@@ -61,8 +64,9 @@ Components.ImagePreview = class {
       }
 
       container.createChild('tr').createChild('td', 'image-container').appendChild(imageElement);
-      if (description)
+      if (description) {
         container.createChild('tr').createChild('td').createChild('span', 'description').textContent = description;
+      }
       if (imageURL !== originalImageURL) {
         container.createChild('tr').createChild('td').createChild('span', 'description').textContent =
             String.sprintf('currentSrc: %s', imageURL.trimMiddle(100));
@@ -76,13 +80,15 @@ Components.ImagePreview = class {
    * @return {!Promise<!Object|undefined>}
    */
   static async loadDimensionsForNode(node) {
-    if (!node.nodeName() || node.nodeName().toLowerCase() !== 'img')
+    if (!node.nodeName() || node.nodeName().toLowerCase() !== 'img') {
       return;
+    }
 
     const object = await node.resolveToObject('');
 
-    if (!object)
+    if (!object) {
       return;
+    }
 
     const featuresObject = object.callFunctionJSON(features, undefined);
     object.release();

@@ -65,8 +65,9 @@ InspectorMain.RenderingOptionsView = class extends UI.VBox {
         const mediaSetting = Common.moduleSetting('emulatedCSSMedia');
         const selectSubtitle = ls`Forces media type for testing print and screen styles`;
         const mediaSelect = UI.SettingsUI.createControlForSetting(mediaSetting, selectSubtitle);
-        if (mediaSelect)
+        if (mediaSelect) {
           this.contentElement.appendChild(mediaSelect);
+        }
   }
 
   /**

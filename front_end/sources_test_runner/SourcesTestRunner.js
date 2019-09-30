@@ -24,21 +24,24 @@ SourcesTestRunner.dumpNavigatorView = function(navigatorView, dumpIcons) {
       let icons = treeElement._leadingIconsElement.querySelectorAll('[is=ui-icon]');
       icons = Array.prototype.slice.call(icons);
       const iconTypes = icons.map(icon => icon._iconType);
-      if (iconTypes.length)
+      if (iconTypes.length) {
         titleText = titleText + '[' + iconTypes.join(', ') + '] ';
+      }
     }
     titleText += treeElement.title;
     if (treeElement._nodeType === Sources.NavigatorView.Types.FileSystem ||
         treeElement._nodeType === Sources.NavigatorView.Types.FileSystemFolder) {
       const hasMappedFiles = treeElement.listItemElement.classList.contains('has-mapped-files');
-      if (!hasMappedFiles)
+      if (!hasMappedFiles) {
         titleText += ' [dimmed]';
+      }
     }
     TestRunner.addResult(prefix + titleText);
     treeElement.expand();
     const children = treeElement.children();
-    for (let i = 0; i < children.length; ++i)
+    for (let i = 0; i < children.length; ++i) {
       dumpNavigatorTreeElement(prefix + '  ', children[i]);
+    }
   }
 
   /**
@@ -46,8 +49,9 @@ SourcesTestRunner.dumpNavigatorView = function(navigatorView, dumpIcons) {
    */
   function dumpNavigatorTreeOutline(treeOutline) {
     const children = treeOutline.rootElement().children();
-    for (let i = 0; i < children.length; ++i)
+    for (let i = 0; i < children.length; ++i) {
       dumpNavigatorTreeElement('', children[i]);
+    }
   }
 };
 
@@ -82,8 +86,9 @@ SourcesTestRunner.dumpNavigatorViewInMode = function(view, mode) {
  */
 SourcesTestRunner.addScriptUISourceCode = function(url, content, isContentScript, worldId) {
   content += '\n//# sourceURL=' + url;
-  if (isContentScript)
+  if (isContentScript) {
     content = `testRunner.evaluateScriptInIsolatedWorld(${worldId}, \`${content}\`)`;
+  }
   TestRunner.evaluateInPageAnonymously(content);
   return TestRunner.waitForUISourceCode(url);
 };
@@ -97,10 +102,11 @@ function testSourceMapping(text1, text2, mapping, testToken) {
       Formatter.Formatter.locationToPosition(text2.computeLineEndings(), formattedLocation[0], formattedLocation[1]);
   const expectedFormattedPosition = text2.indexOf(testToken);
 
-  if (expectedFormattedPosition === formattedPosition)
+  if (expectedFormattedPosition === formattedPosition) {
     TestRunner.addResult(String.sprintf('Correct mapping for <%s>', testToken));
-  else
+  } else {
     TestRunner.addResult(String.sprintf('ERROR: Wrong mapping for <%s>', testToken));
+  }
 }
 
 SourcesTestRunner.testPrettyPrint = function(mimeType, text, mappingQueries, next) {
@@ -111,8 +117,9 @@ SourcesTestRunner.testPrettyPrint = function(mimeType, text, mappingQueries, nex
     TestRunner.addResult(formattedSource);
     TestRunner.addResult('------ >8 ======');
 
-    while (mappingQueries && mappingQueries.length)
+    while (mappingQueries && mappingQueries.length) {
       testSourceMapping(text, formattedSource, mapping, mappingQueries.shift());
+    }
 
     next();
   }
@@ -128,15 +135,17 @@ SourcesTestRunner.testJavascriptOutline = function(text) {
   function onChunk(isLastChunk, outlineItems) {
     items.pushAll(outlineItems);
 
-    if (!isLastChunk)
+    if (!isLastChunk) {
       return;
+    }
 
     TestRunner.addResult('Text:');
     TestRunner.addResult(text.split('\n').map(line => '    ' + line).join('\n'));
     TestRunner.addResult('Outline:');
 
-    for (const item of items)
+    for (const item of items) {
       TestRunner.addResult('    ' + item.name + (item.arguments || '') + ':' + item.line + ':' + item.column);
+    }
 
     fulfill();
   }

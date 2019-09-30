@@ -89,13 +89,16 @@ Timeline.PerformanceModel = class extends Common.Object {
     let inputEvents = null;
     let animationEvents = null;
     for (const track of this._timelineModel.tracks()) {
-      if (track.type === TimelineModel.TimelineModel.TrackType.Input)
+      if (track.type === TimelineModel.TimelineModel.TrackType.Input) {
         inputEvents = track.asyncEvents;
-      if (track.type === TimelineModel.TimelineModel.TrackType.Animation)
+      }
+      if (track.type === TimelineModel.TimelineModel.TrackType.Animation) {
         animationEvents = track.asyncEvents;
+      }
     }
-    if (inputEvents || animationEvents)
+    if (inputEvents || animationEvents) {
       this._irModel.populate(inputEvents || [], animationEvents || []);
+    }
 
     const mainTracks = this._timelineModel.tracks().filter(
         track => track.type === TimelineModel.TimelineModel.TrackType.MainThread && track.forMainFrame &&
@@ -120,8 +123,9 @@ Timeline.PerformanceModel = class extends Common.Object {
    */
   addExtensionEvents(title, model, timeOffset) {
     this._extensionTracingModels.push({model: model, title: title, timeOffset: timeOffset});
-    if (!this._tracingModel)
+    if (!this._tracingModel) {
       return;
+    }
     model.adjustTime(this._tracingModel.minimumRecordTime() + (timeOffset / 1000) - this._recordStartTime);
     this.dispatchEventToListeners(Timeline.PerformanceModel.Events.ExtensionDataAdded);
   }
@@ -130,8 +134,9 @@ Timeline.PerformanceModel = class extends Common.Object {
    * @return {!SDK.TracingModel}
    */
   tracingModel() {
-    if (!this._tracingModel)
+    if (!this._tracingModel) {
       throw 'call setTracingModel before accessing PerformanceModel';
+    }
     return this._tracingModel;
   }
 
@@ -146,10 +151,12 @@ Timeline.PerformanceModel = class extends Common.Object {
    * @return {!SDK.FilmStripModel} filmStripModel
    */
   filmStripModel() {
-    if (this._filmStripModel)
+    if (this._filmStripModel) {
       return this._filmStripModel;
-    if (!this._tracingModel)
+    }
+    if (!this._tracingModel) {
       throw 'call setTracingModel before accessing PerformanceModel';
+    }
     this._filmStripModel = new SDK.FilmStripModel(this._tracingModel);
     return this._filmStripModel;
   }
@@ -183,10 +190,12 @@ Timeline.PerformanceModel = class extends Common.Object {
   }
 
   dispose() {
-    if (this._tracingModel)
+    if (this._tracingModel) {
       this._tracingModel.dispose();
-    for (const extensionEntry of this._extensionTracingModels)
+    }
+    for (const extensionEntry of this._extensionTracingModels) {
       extensionEntry.model.dispose();
+    }
   }
 
   /**
@@ -230,8 +239,9 @@ Timeline.PerformanceModel = class extends Common.Object {
     let tasks = [];
     for (const track of timelineModel.tracks()) {
       // Deliberately pick up last main frame's track.
-      if (track.type === TimelineModel.TimelineModel.TrackType.MainThread && track.forMainFrame)
+      if (track.type === TimelineModel.TimelineModel.TrackType.MainThread && track.forMainFrame) {
         tasks = track.tasks;
+      }
     }
     if (!tasks.length) {
       this.setWindow({left: timelineModel.minimumRecordTime(), right: timelineModel.maximumRecordTime()});

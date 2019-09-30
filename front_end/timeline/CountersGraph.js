@@ -91,11 +91,13 @@ Timeline.CountersGraph = class extends UI.VBox {
    */
   setModel(model, track) {
     if (this._model !== model) {
-      if (this._model)
+      if (this._model) {
         this._model.removeEventListener(Timeline.PerformanceModel.Events.WindowChanged, this._onWindowChanged, this);
+      }
       this._model = model;
-      if (this._model)
+      if (this._model) {
         this._model.addEventListener(Timeline.PerformanceModel.Events.WindowChanged, this._onWindowChanged, this);
+      }
     }
     this._calculator.setZeroTime(model ? model.timelineModel().minimumRecordTime() : 0);
     for (let i = 0; i < this._counters.length; ++i) {
@@ -104,26 +106,31 @@ Timeline.CountersGraph = class extends UI.VBox {
     }
     this.scheduleRefresh();
     this._track = track;
-    if (!track)
+    if (!track) {
       return;
+    }
     const events = track.syncEvents();
     for (let i = 0; i < events.length; ++i) {
       const event = events[i];
-      if (event.name !== TimelineModel.TimelineModel.RecordType.UpdateCounters)
+      if (event.name !== TimelineModel.TimelineModel.RecordType.UpdateCounters) {
         continue;
+      }
 
       const counters = event.args.data;
-      if (!counters)
+      if (!counters) {
         return;
+      }
       for (const name in counters) {
         const counter = this._countersByName[name];
-        if (counter)
+        if (counter) {
           counter.appendSample(event.startTime, counters[name]);
+        }
       }
 
       const gpuMemoryLimitCounterName = 'gpuMemoryLimitKB';
-      if (gpuMemoryLimitCounterName in counters)
+      if (gpuMemoryLimitCounterName in counters) {
         this._gpuMemoryCounter.setLimit(counters[gpuMemoryLimitCounterName]);
+      }
     }
   }
 
@@ -181,8 +188,9 @@ Timeline.CountersGraph = class extends UI.VBox {
       counter._calculateVisibleIndexes(this._calculator);
       counter._calculateXValues(this._canvas.width);
     }
-    for (const counterUI of this._counterUI)
+    for (const counterUI of this._counterUI) {
       counterUI._drawGraph(this._canvas);
+    }
   }
 
   /**
@@ -193,8 +201,9 @@ Timeline.CountersGraph = class extends UI.VBox {
     let minDistance = Infinity;
     let bestTime;
     for (const counterUI of this._counterUI) {
-      if (!counterUI.counter.times.length)
+      if (!counterUI.counter.times.length) {
         continue;
+      }
       const index = counterUI._recordIndexAt(x);
       const distance = Math.abs(x * window.devicePixelRatio - counterUI.counter.x[index]);
       if (distance < minDistance) {
@@ -217,8 +226,9 @@ Timeline.CountersGraph = class extends UI.VBox {
   }
 
   _clearCurrentValueAndMarker() {
-    for (let i = 0; i < this._counterUI.length; i++)
+    for (let i = 0; i < this._counterUI.length; i++) {
       this._counterUI[i]._clearCurrentValueAndMarker();
+    }
   }
 
   /**
@@ -231,10 +241,12 @@ Timeline.CountersGraph = class extends UI.VBox {
   }
 
   _refreshCurrentValues() {
-    if (this._markerXPosition === undefined)
+    if (this._markerXPosition === undefined) {
       return;
-    for (let i = 0; i < this._counterUI.length; ++i)
+    }
+    for (let i = 0; i < this._counterUI.length; ++i) {
       this._counterUI[i].updateCurrentValue(this._markerXPosition);
+    }
   }
 
   refresh() {
@@ -263,8 +275,9 @@ Timeline.CountersGraph.Counter = class {
    * @param {number} value
    */
   appendSample(time, value) {
-    if (this.values.length && this.values.peekLast() === value)
+    if (this.values.length && this.values.peekLast() === value) {
       return;
+    }
     this.times.push(time);
     this.values.push(value);
   }
@@ -289,16 +302,19 @@ Timeline.CountersGraph.Counter = class {
     let minValue;
     for (let i = this._minimumIndex; i <= this._maximumIndex; i++) {
       const value = this.values[i];
-      if (minValue === undefined || value < minValue)
+      if (minValue === undefined || value < minValue) {
         minValue = value;
-      if (maxValue === undefined || value > maxValue)
+      }
+      if (maxValue === undefined || value > maxValue) {
         maxValue = value;
+      }
     }
     minValue = minValue || 0;
     maxValue = maxValue || 1;
     if (this._limitValue) {
-      if (maxValue > this._limitValue * 0.5)
+      if (maxValue > this._limitValue * 0.5) {
         maxValue = Math.max(maxValue, this._limitValue);
+      }
       minValue = Math.min(minValue, this._limitValue);
     }
     return {min: minValue, max: maxValue};
@@ -326,14 +342,16 @@ Timeline.CountersGraph.Counter = class {
    * @param {number} width
    */
   _calculateXValues(width) {
-    if (!this.values.length)
+    if (!this.values.length) {
       return;
+    }
 
     const xFactor = width / (this._maxTime - this._minTime);
 
     this.x = new Array(this.values.length);
-    for (let i = this._minimumIndex + 1; i <= this._maximumIndex; i++)
+    for (let i = this._minimumIndex + 1; i <= this._maximumIndex; i++) {
       this.x[i] = xFactor * (this.times[i] - this._minTime);
+    }
   }
 };
 
@@ -416,8 +434,9 @@ Timeline.CountersGraph.CounterUI = class {
    * @param {number} x
    */
   updateCurrentValue(x) {
-    if (!this.visible() || !this.counter.values.length || !this.counter.x)
+    if (!this.visible() || !this.counter.values.length || !this.counter.x) {
       return;
+    }
     const index = this._recordIndexAt(x);
     const value = Number.withThousandsSeparator(this.counter.values[index]);
     this._value.textContent = Common.UIString(this._currentValueLabel, value);
@@ -447,16 +466,18 @@ Timeline.CountersGraph.CounterUI = class {
     const counter = this.counter;
     const values = counter.values;
 
-    if (!values.length)
+    if (!values.length) {
       return;
+    }
 
     const bounds = counter._calculateBounds();
     const minValue = bounds.min;
     const maxValue = bounds.max;
     this.setRange(minValue, maxValue);
 
-    if (!this.visible())
+    if (!this.visible()) {
       return;
+    }
 
     const yValues = this.graphYValues;
     const maxYRange = maxValue - minValue;
@@ -464,8 +485,9 @@ Timeline.CountersGraph.CounterUI = class {
 
     ctx.save();
     ctx.lineWidth = window.devicePixelRatio;
-    if (ctx.lineWidth % 2)
+    if (ctx.lineWidth % 2) {
       ctx.translate(0.5, 0.5);
+    }
     ctx.beginPath();
     let value = values[counter._minimumIndex];
     let currentY = Math.round(originY + height - (value - minValue) * yFactor);
@@ -475,8 +497,9 @@ Timeline.CountersGraph.CounterUI = class {
       const x = Math.round(counter.x[i]);
       ctx.lineTo(x, currentY);
       const currentValue = values[i];
-      if (typeof currentValue !== 'undefined')
+      if (typeof currentValue !== 'undefined') {
         value = currentValue;
+      }
       currentY = Math.round(originY + height - (value - minValue) * yFactor);
       ctx.lineTo(x, currentY);
       yValues[i] = currentY;

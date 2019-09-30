@@ -22,8 +22,9 @@ SourcesTestRunner.dumpSuggestions = function(textEditor, lines) {
     }
   }
 
-  if (lineNumber === -1)
+  if (lineNumber === -1) {
     throw new Error('Test case is invalid: cursor position is not marked with \'|\' symbol.');
+  }
 
   textEditor.setText(lines.join('\n').replace('|', ''));
   textEditor.setSelection(TextUtils.TextRange.createFromLocation(lineNumber, columnNumber));

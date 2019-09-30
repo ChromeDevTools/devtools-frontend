@@ -55,8 +55,9 @@ Settings.FrameworkBlackboxSettingsTab = class extends UI.VBox {
   _settingUpdated() {
     this._list.clear();
     const patterns = this._setting.getAsArray();
-    for (let i = 0; i < patterns.length; ++i)
+    for (let i = 0; i < patterns.length; ++i) {
       this._list.appendItem(patterns[i], true);
+    }
   }
 
   _addButtonClicked() {
@@ -77,8 +78,9 @@ Settings.FrameworkBlackboxSettingsTab = class extends UI.VBox {
     element.createChild('div', 'blackbox-separator');
     element.createChild('div', 'blackbox-behavior').textContent =
         item.disabled ? this._disabledLabel : this._blackboxLabel;
-    if (item.disabled)
+    if (item.disabled) {
       element.classList.add('blackbox-disabled');
+    }
     return element;
   }
 
@@ -104,8 +106,9 @@ Settings.FrameworkBlackboxSettingsTab = class extends UI.VBox {
     item.disabled = editor.control('behavior').value === this._disabledLabel;
 
     const list = this._setting.getAsArray();
-    if (isNew)
+    if (isNew) {
       list.push(item);
+    }
     this._setting.setAsArray(list);
   }
 
@@ -125,8 +128,9 @@ Settings.FrameworkBlackboxSettingsTab = class extends UI.VBox {
    * @return {!UI.ListWidget.Editor}
    */
   _createEditor() {
-    if (this._editor)
+    if (this._editor) {
       return this._editor;
+    }
 
     const editor = new UI.ListWidget.Editor();
     this._editor = editor;
@@ -159,12 +163,14 @@ Settings.FrameworkBlackboxSettingsTab = class extends UI.VBox {
       const pattern = input.value.trim();
       const patterns = this._setting.getAsArray();
 
-      if (!pattern.length)
+      if (!pattern.length) {
         return {valid: false, errorMessage: ls`Pattern cannot be empty`};
+      }
 
       for (let i = 0; i < patterns.length; ++i) {
-        if (i !== index && patterns[i].pattern === pattern)
+        if (i !== index && patterns[i].pattern === pattern) {
           return {valid: false, errorMessage: ls`Pattern already exists`};
+        }
       }
 
       let regex;
@@ -172,10 +178,11 @@ Settings.FrameworkBlackboxSettingsTab = class extends UI.VBox {
         regex = new RegExp(pattern);
       } catch (e) {
       }
-      if (!regex)
+      if (!regex) {
         return {valid: false, errorMessage: ls`Pattern must be a valid regular expression`};
-      else
+      } else {
         return {valid: true};
+      }
     }
 
     /**

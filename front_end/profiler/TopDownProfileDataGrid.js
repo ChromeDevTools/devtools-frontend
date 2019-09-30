@@ -59,21 +59,24 @@ Profiler.TopDownProfileDataGridNode = class extends Profiler.ProfileDataGridNode
    * @param {string} aCallUID
    */
   static _excludeRecursively(container, aCallUID) {
-    if (container._remainingChildren)
+    if (container._remainingChildren) {
       container.populate();
+    }
 
     container.save();
 
     const children = container.children;
     let index = container.children.length;
 
-    while (index--)
+    while (index--) {
       Profiler.TopDownProfileDataGridNode._excludeRecursively(children[index], aCallUID);
+    }
 
     const child = container.childrenByCallUID.get(aCallUID);
 
-    if (child)
+    if (child) {
       Profiler.ProfileDataGridNode.merge(container, child, true);
+    }
   }
 
   /**
@@ -105,8 +108,9 @@ Profiler.TopDownProfileDataGridTree = class extends Profiler.ProfileDataGridTree
    * @param {!Profiler.ProfileDataGridNode} profileDataGridNode
    */
   focus(profileDataGridNode) {
-    if (!profileDataGridNode)
+    if (!profileDataGridNode) {
       return;
+    }
 
     this.save();
     profileDataGridNode.savePosition();
@@ -119,23 +123,26 @@ Profiler.TopDownProfileDataGridTree = class extends Profiler.ProfileDataGridTree
    * @param {!Profiler.ProfileDataGridNode} profileDataGridNode
    */
   exclude(profileDataGridNode) {
-    if (!profileDataGridNode)
+    if (!profileDataGridNode) {
       return;
+    }
 
     this.save();
 
     Profiler.TopDownProfileDataGridNode._excludeRecursively(this, profileDataGridNode.callUID);
 
-    if (this.lastComparator)
+    if (this.lastComparator) {
       this.sort(this.lastComparator, true);
+    }
   }
 
   /**
    * @override
    */
   restore() {
-    if (!this._savedChildren)
+    if (!this._savedChildren) {
       return;
+    }
 
     this.children[0].restorePosition();
 

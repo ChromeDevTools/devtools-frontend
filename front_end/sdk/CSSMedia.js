@@ -11,8 +11,9 @@ SDK.CSSMediaQuery = class {
   constructor(payload) {
     this._active = payload.active;
     this._expressions = [];
-    for (let j = 0; j < payload.expressions.length; ++j)
+    for (let j = 0; j < payload.expressions.length; ++j) {
       this._expressions.push(SDK.CSSMediaQueryExpression.parsePayload(payload.expressions[j]));
+    }
   }
 
   /**
@@ -128,8 +129,9 @@ SDK.CSSMedia = class {
    */
   static parseMediaArrayPayload(cssModel, payload) {
     const result = [];
-    for (let i = 0; i < payload.length; ++i)
+    for (let i = 0; i < payload.length; ++i) {
       result.push(SDK.CSSMedia.parsePayload(cssModel, payload[i]));
+    }
     return result;
   }
 
@@ -145,8 +147,9 @@ SDK.CSSMedia = class {
     this.mediaList = null;
     if (payload.mediaList) {
       this.mediaList = [];
-      for (let i = 0; i < payload.mediaList.length; ++i)
+      for (let i = 0; i < payload.mediaList.length; ++i) {
         this.mediaList.push(SDK.CSSMediaQuery.parsePayload(payload.mediaList[i]));
+      }
     }
   }
 
@@ -154,12 +157,14 @@ SDK.CSSMedia = class {
    * @param {!SDK.CSSModel.Edit} edit
    */
   rebase(edit) {
-    if (this.styleSheetId !== edit.styleSheetId || !this.range)
+    if (this.styleSheetId !== edit.styleSheetId || !this.range) {
       return;
-    if (edit.oldRange.equal(this.range))
+    }
+    if (edit.oldRange.equal(this.range)) {
       this._reinitialize(/** @type {!Protocol.CSS.CSSMedia} */ (edit.payload));
-    else
+    } else {
       this.range = this.range.rebaseAfterTextEdit(edit.oldRange, edit.newRange);
+    }
   }
 
   /**
@@ -167,8 +172,9 @@ SDK.CSSMedia = class {
    * @return {boolean}
    */
   equal(other) {
-    if (!this.styleSheetId || !this.range || !other.range)
+    if (!this.styleSheetId || !this.range || !other.range) {
       return false;
+    }
     return this.styleSheetId === other.styleSheetId && this.range.equal(other.range);
   }
 
@@ -176,11 +182,13 @@ SDK.CSSMedia = class {
    * @return {boolean}
    */
   active() {
-    if (!this.mediaList)
+    if (!this.mediaList) {
       return true;
+    }
     for (let i = 0; i < this.mediaList.length; ++i) {
-      if (this.mediaList[i].active())
+      if (this.mediaList[i].active()) {
         return true;
+      }
     }
     return false;
   }
@@ -189,11 +197,13 @@ SDK.CSSMedia = class {
    * @return {number|undefined}
    */
   lineNumberInSource() {
-    if (!this.range)
+    if (!this.range) {
       return undefined;
+    }
     const header = this.header();
-    if (!header)
+    if (!header) {
       return undefined;
+    }
     return header.lineNumberInSource(this.range.startLine);
   }
 
@@ -201,11 +211,13 @@ SDK.CSSMedia = class {
    * @return {number|undefined}
    */
   columnNumberInSource() {
-    if (!this.range)
+    if (!this.range) {
       return undefined;
+    }
     const header = this.header();
-    if (!header)
+    if (!header) {
       return undefined;
+    }
     return header.columnNumberInSource(this.range.startLine, this.range.startColumn);
   }
 
@@ -221,8 +233,9 @@ SDK.CSSMedia = class {
    */
   rawLocation() {
     const header = this.header();
-    if (!header || this.lineNumberInSource() === undefined)
+    if (!header || this.lineNumberInSource() === undefined) {
       return null;
+    }
     const lineNumber = Number(this.lineNumberInSource());
     return new SDK.CSSLocation(header, lineNumber, this.columnNumberInSource());
   }

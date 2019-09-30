@@ -68,14 +68,17 @@ ProtocolMonitor.ProtocolMonitor = class extends UI.VBox {
       const filters = this._filterParser.parse(query);
       this._filter = node => {
         for (const {key, text, negative} of filters) {
-          if (!text)
+          if (!text) {
             continue;
+          }
           const data = key ? node.data[key] : node.data;
-          if (!data)
+          if (!data) {
             continue;
+          }
           const found = JSON.stringify(data).toLowerCase().indexOf(text.toLowerCase()) !== -1;
-          if (found === negative)
+          if (found === negative) {
             return false;
+          }
         }
         return true;
       };
@@ -87,8 +90,9 @@ ProtocolMonitor.ProtocolMonitor = class extends UI.VBox {
   _filterNodes() {
     for (const node of this._nodes) {
       if (this._filter(node)) {
-        if (!node.parent)
+        if (!node.parent) {
           this._dataGrid.insertChild(node);
+        }
       } else {
         node.remove();
       }
@@ -133,15 +137,17 @@ ProtocolMonitor.ProtocolMonitor = class extends UI.VBox {
 
   _updateColumnVisibility() {
     const visibleColumns = /** @type {!Object.<string, boolean>} */ ({});
-    for (const columnConfig of this._columns)
+    for (const columnConfig of this._columns) {
       visibleColumns[columnConfig.id] = columnConfig.visible;
+    }
     this._dataGrid.setColumnsVisiblity(visibleColumns);
   }
 
   _sortDataGrid() {
     const sortColumnId = this._dataGrid.sortColumnId();
-    if (!sortColumnId)
+    if (!sortColumnId) {
       return;
+    }
 
     let columnIsNumeric = true;
     switch (sortColumnId) {
@@ -161,8 +167,9 @@ ProtocolMonitor.ProtocolMonitor = class extends UI.VBox {
    * @override
    */
   wasShown() {
-    if (this._started)
+    if (this._started) {
       return;
+    }
     this._started = true;
     this._startTime = Date.now();
     this._setRecording(true);
@@ -186,8 +193,9 @@ ProtocolMonitor.ProtocolMonitor = class extends UI.VBox {
    * @return {string}
    */
   _targetToString(target) {
-    if (!target)
+    if (!target) {
       return '';
+    }
     return target.decorateLabel(`${target.name()} ${target === SDK.targetManager.mainTarget() ? '' : target.id()}`);
   }
 
@@ -198,13 +206,15 @@ ProtocolMonitor.ProtocolMonitor = class extends UI.VBox {
   _messageRecieved(message, target) {
     if ('id' in message) {
       const node = this._nodeForId[message.id];
-      if (!node)
+      if (!node) {
         return;
+      }
       node.data.response = message.result || message.error;
       node.hasError = !!message.error;
       node.refresh();
-      if (this._dataGrid.selectedNode === node)
+      if (this._dataGrid.selectedNode === node) {
         this._infoWidget.render(node.data);
+      }
       return;
     }
 
@@ -218,8 +228,9 @@ ProtocolMonitor.ProtocolMonitor = class extends UI.VBox {
       target: this._targetToString(sdkTarget)
     });
     this._nodes.push(node);
-    if (this._filter(node))
+    if (this._filter(node)) {
       this._dataGrid.insertChild(node);
+    }
   }
 
   /**
@@ -239,8 +250,9 @@ ProtocolMonitor.ProtocolMonitor = class extends UI.VBox {
     });
     this._nodeForId[message.id] = node;
     this._nodes.push(node);
-    if (this._filter(node))
+    if (this._filter(node)) {
       this._dataGrid.insertChild(node);
+    }
   }
 };
 
@@ -316,8 +328,9 @@ ProtocolMonitor.ProtocolMonitor.InfoWidget = class extends UI.VBox {
       this._tabbedPane.changeTabView('response', new UI.EmptyWidget(ls`No message selected`));
       return;
     }
-    if (!requestEnabled)
+    if (!requestEnabled) {
       this._tabbedPane.selectTab('response');
+    }
 
     this._tabbedPane.changeTabView('request', SourceFrame.JSONView.createViewSync(data.request));
     this._tabbedPane.changeTabView('response', SourceFrame.JSONView.createViewSync(data.response));

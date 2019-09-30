@@ -43,8 +43,9 @@ Elements.ElementsSidebarPane = class extends UI.VBox {
 
   update() {
     this._updateWhenVisible = !this.isShowing();
-    if (this._updateWhenVisible)
+    if (this._updateWhenVisible) {
       return;
+    }
     this._updateThrottler.schedule(innerUpdate.bind(this));
 
     /**
@@ -61,8 +62,9 @@ Elements.ElementsSidebarPane = class extends UI.VBox {
    */
   wasShown() {
     super.wasShown();
-    if (this._updateWhenVisible)
+    if (this._updateWhenVisible) {
       this.update();
+    }
   }
 
   /**

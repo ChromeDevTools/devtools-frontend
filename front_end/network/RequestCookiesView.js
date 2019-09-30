@@ -100,8 +100,9 @@ Network.RequestCookiesView = class extends UI.Widget {
       if (this._detailedRequestCookies) {
         requestCookies = requestCookies.map(cookie => {
           for (const detailedCookie of (this._detailedRequestCookies || [])) {
-            if (detailedCookie.name() === cookie.name() && detailedCookie.value() === cookie.value())
+            if (detailedCookie.name() === cookie.name() && detailedCookie.value() === cookie.value()) {
               return detailedCookie;
+            }
           }
           return cookie;
         });
@@ -180,8 +181,9 @@ Network.RequestCookiesView = class extends UI.Widget {
   }
 
   _refreshRequestCookiesView() {
-    if (!this.isShowing())
+    if (!this.isShowing()) {
       return;
+    }
 
     const {requestCookies, requestCookieToBlockedReasons} = this._getRequestCookies();
     const {responseCookies, responseCookieToBlockedReasons, malformedResponseCookies} = this._getResponseCookies();
@@ -263,8 +265,9 @@ Network.RequestCookiesView = class extends UI.Widget {
   }
 
   _cookiesUpdated() {
-    if (!this.isShowing())
+    if (!this.isShowing()) {
       return;
+    }
 
     if (this._gotCookies()) {
       this._refreshRequestCookiesView();

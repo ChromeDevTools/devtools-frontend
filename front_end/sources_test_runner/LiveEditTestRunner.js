@@ -14,8 +14,9 @@ SourcesTestRunner.replaceInSource = function(sourceFrame, string, replacement) {
     const line = sourceFrame._textEditor.line(i);
     const column = line.indexOf(string);
 
-    if (column === -1)
+    if (column === -1) {
       continue;
+    }
 
     const range = new TextUtils.TextRange(i, column, i, column + string.length);
     sourceFrame._textEditor.editRange(range, replacement);

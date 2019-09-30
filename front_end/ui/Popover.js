@@ -95,8 +95,9 @@ UI.PopoverHelper = class {
       this.hidePopover();
       return;
     }
-    if (this._eventInScheduledContent(event))
+    if (this._eventInScheduledContent(event)) {
       return;
+    }
 
     this._startHidePopoverTimer(0);
     this._stopShowPopoverTimer();
@@ -108,13 +109,15 @@ UI.PopoverHelper = class {
    */
   _mouseMove(event) {
     // Pretend that nothing has happened.
-    if (this._eventInScheduledContent(event))
+    if (this._eventInScheduledContent(event)) {
       return;
+    }
 
     this._startHidePopoverTimer(this._hideTimeout);
     this._stopShowPopoverTimer();
-    if (event.which && this._disableOnClick)
+    if (event.which && this._disableOnClick) {
       return;
+    }
     this._startShowPopoverTimer(
         /** @type {!MouseEvent} */ (event), this.isPopoverVisible() ? this._showTimeout * 0.6 : this._showTimeout);
   }
@@ -131,20 +134,24 @@ UI.PopoverHelper = class {
    * @param {!Event} event
    */
   _popoverMouseOut(popover, event) {
-    if (!popover.isShowing())
+    if (!popover.isShowing()) {
       return;
-    if (event.relatedTarget && !event.relatedTarget.isSelfOrDescendant(popover.contentElement))
+    }
+    if (event.relatedTarget && !event.relatedTarget.isSelfOrDescendant(popover.contentElement)) {
       this._startHidePopoverTimer(this._hideTimeout);
+    }
   }
 
   /**
    * @param {!Event} event
    */
   _mouseOut(event) {
-    if (!this.isPopoverVisible())
+    if (!this.isPopoverVisible()) {
       return;
-    if (!this._eventInScheduledContent(event))
+    }
+    if (!this._eventInScheduledContent(event)) {
       this._startHidePopoverTimer(this._hideTimeout);
+    }
   }
 
   /**
@@ -152,8 +159,9 @@ UI.PopoverHelper = class {
    */
   _startHidePopoverTimer(timeout) {
     // User has |timeout| ms to reach the popup.
-    if (!this._hidePopoverCallback || this._hidePopoverTimer)
+    if (!this._hidePopoverCallback || this._hidePopoverTimer) {
       return;
+    }
 
     this._hidePopoverTimer = setTimeout(() => {
       this._hidePopover();
@@ -167,8 +175,9 @@ UI.PopoverHelper = class {
    */
   _startShowPopoverTimer(event, timeout) {
     this._scheduledRequest = this._getRequest.call(null, event);
-    if (!this._scheduledRequest)
+    if (!this._scheduledRequest) {
       return;
+    }
 
     this._showPopoverTimer = setTimeout(() => {
       this._showPopoverTimer = null;
@@ -179,8 +188,9 @@ UI.PopoverHelper = class {
   }
 
   _stopShowPopoverTimer() {
-    if (!this._showPopoverTimer)
+    if (!this._showPopoverTimer) {
       return;
+    }
     clearTimeout(this._showPopoverTimer);
     this._showPopoverTimer = null;
   }
@@ -198,8 +208,9 @@ UI.PopoverHelper = class {
   }
 
   _hidePopover() {
-    if (!this._hidePopoverCallback)
+    if (!this._hidePopoverCallback) {
       return;
+    }
     this._hidePopoverCallback.call(null);
     this._hidePopoverCallback = null;
   }
@@ -214,12 +225,14 @@ UI.PopoverHelper = class {
     popover.setMarginBehavior(UI.GlassPane.MarginBehavior.Arrow);
     const request = this._scheduledRequest;
     request.show.call(null, popover).then(success => {
-      if (!success)
+      if (!success) {
         return;
+      }
 
       if (this._scheduledRequest !== request) {
-        if (request.hide)
+        if (request.hide) {
           request.hide.call(null);
+        }
         return;
       }
 
@@ -237,8 +250,9 @@ UI.PopoverHelper = class {
       popover.show(document);
 
       this._hidePopoverCallback = () => {
-        if (request.hide)
+        if (request.hide) {
           request.hide.call(null);
+        }
         popover.hide();
         delete UI.PopoverHelper._popoverHelper;
       };
@@ -246,8 +260,9 @@ UI.PopoverHelper = class {
   }
 
   _stopHidePopoverTimer() {
-    if (!this._hidePopoverTimer)
+    if (!this._hidePopoverTimer) {
       return;
+    }
     clearTimeout(this._hidePopoverTimer);
     this._hidePopoverTimer = null;
 

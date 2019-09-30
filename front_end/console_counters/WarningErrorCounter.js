@@ -24,14 +24,16 @@ ConsoleCounters.WarningErrorCounter = class {
     });
     const violationShadowRoot =
         UI.createShadowRootWithCoreStyles(this._violationCounter, 'console_counters/errorWarningCounter.css');
-    if (Runtime.experiments.isEnabled('spotlight'))
+    if (Runtime.experiments.isEnabled('spotlight')) {
       countersWrapper.appendChild(this._violationCounter);
+    }
 
 
     this._errors = this._createItem(shadowRoot, 'smallicon-error');
     this._warnings = this._createItem(shadowRoot, 'smallicon-warning');
-    if (Runtime.experiments.isEnabled('spotlight'))
+    if (Runtime.experiments.isEnabled('spotlight')) {
       this._violations = this._createItem(violationShadowRoot, 'smallicon-info');
+    }
     this._titles = [];
     this._errorCount = -1;
     this._warningCount = -1;
@@ -85,8 +87,9 @@ ConsoleCounters.WarningErrorCounter = class {
     const errors = SDK.consoleModel.errors();
     const warnings = SDK.consoleModel.warnings();
     const violations = SDK.consoleModel.violations();
-    if (errors === this._errorCount && warnings === this._warningCount && violations === this._violationCount)
+    if (errors === this._errorCount && warnings === this._warningCount && violations === this._violationCount) {
       return Promise.resolve();
+    }
     this._errorCount = errors;
     this._warningCount = warnings;
     this._violationCount = violations;
@@ -97,29 +100,34 @@ ConsoleCounters.WarningErrorCounter = class {
     this._toolbarItem.setVisible(!!(errors || warnings || violations));
 
     let errorCountTitle = '';
-    if (errors === 1)
+    if (errors === 1) {
       errorCountTitle = ls`${errors} error`;
-    else
+    } else {
       errorCountTitle = ls`${errors} errors`;
+    }
     this._updateItem(this._errors, errors, false);
-    if (errors)
+    if (errors) {
       this._titles.push(errorCountTitle);
+    }
 
     let warningCountTitle = '';
-    if (warnings === 1)
+    if (warnings === 1) {
       warningCountTitle = ls`${warnings} warning`;
-    else
+    } else {
       warningCountTitle = ls`${warnings} warnings`;
+    }
     this._updateItem(this._warnings, warnings, !errors);
-    if (warnings)
+    if (warnings) {
       this._titles.push(warningCountTitle);
+    }
 
     if (Runtime.experiments.isEnabled('spotlight')) {
       let violationCountTitle = '';
-      if (violations === 1)
+      if (violations === 1) {
         violationCountTitle = ls`${violations} violation`;
-      else
+      } else {
         violationCountTitle = ls`${violations} violations`;
+      }
       this._updateItem(this._violations, violations, true);
       this._violationCounter.title = violationCountTitle;
     }

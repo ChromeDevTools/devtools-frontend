@@ -44,22 +44,25 @@ SDK.ServiceWorkerManager = class extends SDK.SDKModel {
     this._registrations = new Map();
     this.enable();
     this._forceUpdateSetting = Common.settings.createSetting('serviceWorkerUpdateOnReload', false);
-    if (this._forceUpdateSetting.get())
+    if (this._forceUpdateSetting.get()) {
       this._forceUpdateSettingChanged();
+    }
     this._forceUpdateSetting.addChangeListener(this._forceUpdateSettingChanged, this);
     new SDK.ServiceWorkerContextNamer(target, this);
   }
 
   enable() {
-    if (this._enabled)
+    if (this._enabled) {
       return;
+    }
     this._enabled = true;
     this._agent.enable();
   }
 
   disable() {
-    if (!this._enabled)
+    if (!this._enabled) {
       return;
+    }
     this._enabled = false;
     this._registrations.clear();
     this._agent.disable();
@@ -78,8 +81,9 @@ SDK.ServiceWorkerManager = class extends SDK.SDKModel {
    */
   hasRegistrationForURLs(urls) {
     for (const registration of this._registrations.values()) {
-      if (urls.filter(url => url && url.startsWith(registration.scopeURL)).length === urls.length)
+      if (urls.filter(url => url && url.startsWith(registration.scopeURL)).length === urls.length) {
         return true;
+      }
     }
     return false;
   }
@@ -91,8 +95,9 @@ SDK.ServiceWorkerManager = class extends SDK.SDKModel {
   findVersion(versionId) {
     for (const registration of this.registrations().values()) {
       const version = registration.versions.get(versionId);
-      if (version)
+      if (version) {
         return version;
+      }
     }
     return null;
   }
@@ -102,16 +107,18 @@ SDK.ServiceWorkerManager = class extends SDK.SDKModel {
    */
   deleteRegistration(registrationId) {
     const registration = this._registrations.get(registrationId);
-    if (!registration)
+    if (!registration) {
       return;
+    }
     if (registration._isRedundant()) {
       this._registrations.delete(registrationId);
       this.dispatchEventToListeners(SDK.ServiceWorkerManager.Events.RegistrationDeleted, registration);
       return;
     }
     registration._deleting = true;
-    for (const version of registration.versions.values())
+    for (const version of registration.versions.values()) {
       this.stopWorker(version.id);
+    }
     this._unregister(registration.scopeURL);
   }
 
@@ -120,8 +127,9 @@ SDK.ServiceWorkerManager = class extends SDK.SDKModel {
    */
   updateRegistration(registrationId) {
     const registration = this._registrations.get(registrationId);
-    if (!registration)
+    if (!registration) {
       return;
+    }
     this._agent.updateRegistration(registration.scopeURL);
   }
 
@@ -131,8 +139,9 @@ SDK.ServiceWorkerManager = class extends SDK.SDKModel {
    */
   deliverPushMessage(registrationId, data) {
     const registration = this._registrations.get(registrationId);
-    if (!registration)
+    if (!registration) {
       return;
+    }
     const origin = Common.ParsedURL.extractOrigin(registration.scopeURL);
     this._agent.deliverPushMessage(origin, registrationId, data);
   }
@@ -144,8 +153,9 @@ SDK.ServiceWorkerManager = class extends SDK.SDKModel {
    */
   dispatchSyncEvent(registrationId, tag, lastChance) {
     const registration = this._registrations.get(registrationId);
-    if (!registration)
+    if (!registration) {
       return;
+    }
     const origin = Common.ParsedURL.extractOrigin(registration.scopeURL);
     this._agent.dispatchSyncEvent(origin, registrationId, tag, lastChance);
   }
@@ -156,8 +166,9 @@ SDK.ServiceWorkerManager = class extends SDK.SDKModel {
    */
   dispatchPeriodicSyncEvent(registrationId, tag) {
     const registration = this._registrations.get(registrationId);
-    if (!registration)
+    if (!registration) {
       return;
+    }
     const origin = Common.ParsedURL.extractOrigin(registration.scopeURL);
     this._agent.dispatchPeriodicSyncEvent(origin, registrationId, tag);
   }
@@ -228,8 +239,9 @@ SDK.ServiceWorkerManager = class extends SDK.SDKModel {
     const registrations = new Set();
     for (const payload of versions) {
       const registration = this._registrations.get(payload.registrationId);
-      if (!registration)
+      if (!registration) {
         continue;
+      }
       registration._updateVersion(payload);
       registrations.add(registration);
     }
@@ -248,8 +260,9 @@ SDK.ServiceWorkerManager = class extends SDK.SDKModel {
    */
   _workerErrorReported(payload) {
     const registration = this._registrations.get(payload.registrationId);
-    if (!registration)
+    if (!registration) {
       return;
+    }
     registration.errors.push(payload);
     this.dispatchEventToListeners(
         SDK.ServiceWorkerManager.Events.RegistrationErrorAdded, {registration: registration, error: payload});
@@ -339,8 +352,9 @@ SDK.ServiceWorkerVersion = class {
     this.scriptLastModified = payload.scriptLastModified;
     this.scriptResponseTime = payload.scriptResponseTime;
     this.controlledClients = [];
-    for (let i = 0; i < payload.controlledClients.length; ++i)
+    for (let i = 0; i < payload.controlledClients.length; ++i) {
       this.controlledClients.push(payload.controlledClients[i]);
+    }
     this.targetId = payload.targetId || null;
   }
 
@@ -433,12 +447,13 @@ SDK.ServiceWorkerVersion = class {
    * @return {string}
    */
   mode() {
-    if (this.isNew() || this.isInstalling())
+    if (this.isNew() || this.isInstalling()) {
       return SDK.ServiceWorkerVersion.Modes.Installing;
-    else if (this.isInstalled())
+    } else if (this.isInstalled()) {
       return SDK.ServiceWorkerVersion.Modes.Waiting;
-    else if (this.isActivating() || this.isActivated())
+    } else if (this.isActivating() || this.isActivated()) {
       return SDK.ServiceWorkerVersion.Modes.Active;
+    }
     return SDK.ServiceWorkerVersion.Modes.Redundant;
   }
 };
@@ -505,8 +520,9 @@ SDK.ServiceWorkerRegistration = class {
   versionsByMode() {
     /** @type {!Map<string, !SDK.ServiceWorkerVersion>} */
     const result = new Map();
-    for (const version of this.versions.values())
+    for (const version of this.versions.values()) {
       result.set(version.mode(), version);
+    }
     return result;
   }
 
@@ -531,8 +547,9 @@ SDK.ServiceWorkerRegistration = class {
    */
   _isRedundant() {
     for (const version of this.versions.values()) {
-      if (!version.isStoppedAndRedundant())
+      if (!version.isStoppedAndRedundant()) {
         return false;
+      }
     }
     return true;
   }
@@ -588,8 +605,9 @@ SDK.ServiceWorkerContextNamer = class {
     for (const registration of registrations) {
       const versions = registration.versions.valuesArray();
       for (const version of versions) {
-        if (version.targetId)
+        if (version.targetId) {
           this._versionByTargetId.set(version.targetId, version);
+        }
       }
     }
     this._updateAllContextLabels();
@@ -601,8 +619,9 @@ SDK.ServiceWorkerContextNamer = class {
   _executionContextCreated(event) {
     const executionContext = /** @type {!SDK.ExecutionContext} */ (event.data);
     const serviceWorkerTargetId = this._serviceWorkerTargetId(executionContext.target());
-    if (!serviceWorkerTargetId)
+    if (!serviceWorkerTargetId) {
       return;
+    }
     this._updateContextLabel(executionContext, this._versionByTargetId.get(serviceWorkerTargetId) || null);
   }
 
@@ -611,21 +630,24 @@ SDK.ServiceWorkerContextNamer = class {
    * @return {?string}
    */
   _serviceWorkerTargetId(target) {
-    if (target.parentTarget() !== this._target || target.type() !== SDK.Target.Type.ServiceWorker)
+    if (target.parentTarget() !== this._target || target.type() !== SDK.Target.Type.ServiceWorker) {
       return null;
+    }
     return target.id();
   }
 
   _updateAllContextLabels() {
     for (const target of SDK.targetManager.targets()) {
       const serviceWorkerTargetId = this._serviceWorkerTargetId(target);
-      if (!serviceWorkerTargetId)
+      if (!serviceWorkerTargetId) {
         continue;
+      }
       const version = this._versionByTargetId.get(serviceWorkerTargetId) || null;
       const runtimeModel = target.model(SDK.RuntimeModel);
       const executionContexts = runtimeModel ? runtimeModel.executionContexts() : [];
-      for (const context of executionContexts)
+      for (const context of executionContexts) {
         this._updateContextLabel(context, version);
+      }
     }
   }
 

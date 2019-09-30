@@ -51,20 +51,24 @@ Bindings.ResourceMapping = class {
    */
   cssLocationToUILocation(cssLocation) {
     const header = cssLocation.header();
-    if (!header)
+    if (!header) {
       return null;
+    }
     const info = this._infoForTarget(cssLocation.cssModel().target());
-    if (!info)
+    if (!info) {
       return null;
+    }
     const uiSourceCode = info._project.uiSourceCodeForURL(cssLocation.url);
-    if (!uiSourceCode)
+    if (!uiSourceCode) {
       return null;
+    }
     const offset = header[Bindings.ResourceMapping._offsetSymbol] ||
         TextUtils.TextRange.createFromLocation(header.startLine, header.startColumn);
     const lineNumber = cssLocation.lineNumber + offset.startLine - header.startLine;
     let columnNumber = cssLocation.columnNumber;
-    if (cssLocation.lineNumber === header.startLine)
+    if (cssLocation.lineNumber === header.startLine) {
       columnNumber += offset.startColumn - header.startColumn;
+    }
     return uiSourceCode.uiLocation(lineNumber, columnNumber);
   }
 
@@ -74,20 +78,24 @@ Bindings.ResourceMapping = class {
    */
   jsLocationToUILocation(jsLocation) {
     const script = jsLocation.script();
-    if (!script)
+    if (!script) {
       return null;
+    }
     const info = this._infoForTarget(jsLocation.debuggerModel.target());
-    if (!info)
+    if (!info) {
       return null;
+    }
     const uiSourceCode = info._project.uiSourceCodeForURL(script.sourceURL);
-    if (!uiSourceCode)
+    if (!uiSourceCode) {
       return null;
+    }
     const offset = script[Bindings.ResourceMapping._offsetSymbol] ||
         TextUtils.TextRange.createFromLocation(script.lineOffset, script.columnOffset);
     const lineNumber = jsLocation.lineNumber + offset.startLine - script.lineOffset;
     let columnNumber = jsLocation.columnNumber;
-    if (jsLocation.lineNumber === script.lineOffset)
+    if (jsLocation.lineNumber === script.lineOffset) {
       columnNumber += offset.startColumn - script.columnOffset;
+    }
     return uiSourceCode.uiLocation(lineNumber, columnNumber);
   }
 
@@ -98,17 +106,21 @@ Bindings.ResourceMapping = class {
    * @return {!Array<!SDK.DebuggerModel.Location>}
    */
   uiLocationToJSLocations(uiSourceCode, lineNumber, columnNumber) {
-    if (!uiSourceCode[Bindings.ResourceMapping._symbol])
+    if (!uiSourceCode[Bindings.ResourceMapping._symbol]) {
       return [];
+    }
     const target = Bindings.NetworkProject.targetForUISourceCode(uiSourceCode);
-    if (!target)
+    if (!target) {
       return [];
+    }
     const debuggerModel = target.model(SDK.DebuggerModel);
-    if (!debuggerModel)
+    if (!debuggerModel) {
       return [];
+    }
     const location = debuggerModel.createRawLocationByURL(uiSourceCode.url(), lineNumber, columnNumber);
-    if (location && location.script().containsLocation(lineNumber, columnNumber))
+    if (location && location.script().containsLocation(lineNumber, columnNumber)) {
       return [location];
+    }
     return [];
   }
 
@@ -117,14 +129,17 @@ Bindings.ResourceMapping = class {
    * @return {!Array<!SDK.CSSLocation>}
    */
   uiLocationToCSSLocations(uiLocation) {
-    if (!uiLocation.uiSourceCode[Bindings.ResourceMapping._symbol])
+    if (!uiLocation.uiSourceCode[Bindings.ResourceMapping._symbol]) {
       return [];
+    }
     const target = Bindings.NetworkProject.targetForUISourceCode(uiLocation.uiSourceCode);
-    if (!target)
+    if (!target) {
       return [];
+    }
     const cssModel = target.model(SDK.CSSModel);
-    if (!cssModel)
+    if (!cssModel) {
       return [];
+    }
     return cssModel.createRawLocationsByURL(
         uiLocation.uiSourceCode.url(), uiLocation.lineNumber, uiLocation.columnNumber);
   }
@@ -135,8 +150,9 @@ Bindings.ResourceMapping = class {
   _resetForTest(target) {
     const resourceTreeModel = target.model(SDK.ResourceTreeModel);
     const info = resourceTreeModel ? this._modelToInfo.get(resourceTreeModel) : null;
-    if (info)
+    if (info) {
       info._resetForTest();
+    }
   }
 };
 
@@ -169,11 +185,13 @@ Bindings.ResourceMapping.ModelInfo = class {
    */
   _styleSheetChanged(event) {
     const header = this._cssModel.styleSheetHeaderForId(event.data.styleSheetId);
-    if (!header || !header.isInline)
+    if (!header || !header.isInline) {
       return;
+    }
     const binding = this._bindings.get(header.resourceURL());
-    if (!binding)
+    if (!binding) {
       return;
+    }
     binding._styleSheetChanged(header, event.data.edit);
   }
 
@@ -184,17 +202,21 @@ Bindings.ResourceMapping.ModelInfo = class {
     const resourceType = resource.resourceType();
     // Only load selected resource types from resources.
     if (resourceType !== Common.resourceTypes.Image && resourceType !== Common.resourceTypes.Font &&
-        resourceType !== Common.resourceTypes.Document && resourceType !== Common.resourceTypes.Manifest)
+        resourceType !== Common.resourceTypes.Document && resourceType !== Common.resourceTypes.Manifest) {
       return false;
+    }
 
     // Ignore non-images and non-fonts.
-    if (resourceType === Common.resourceTypes.Image && resource.mimeType && !resource.mimeType.startsWith('image'))
+    if (resourceType === Common.resourceTypes.Image && resource.mimeType && !resource.mimeType.startsWith('image')) {
       return false;
-    if (resourceType === Common.resourceTypes.Font && resource.mimeType && !resource.mimeType.includes('font'))
+    }
+    if (resourceType === Common.resourceTypes.Font && resource.mimeType && !resource.mimeType.includes('font')) {
       return false;
+    }
     if ((resourceType === Common.resourceTypes.Image || resourceType === Common.resourceTypes.Font) &&
-        resource.contentURL().startsWith('data:'))
+        resource.contentURL().startsWith('data:')) {
       return false;
+    }
     return true;
   }
 
@@ -203,8 +225,9 @@ Bindings.ResourceMapping.ModelInfo = class {
    */
   _resourceAdded(event) {
     const resource = /** @type {!SDK.Resource} */ (event.data);
-    if (!this._acceptsResource(resource))
+    if (!this._acceptsResource(resource)) {
       return;
+    }
 
     let binding = this._bindings.get(resource.url);
     if (!binding) {
@@ -220,8 +243,9 @@ Bindings.ResourceMapping.ModelInfo = class {
    */
   _removeFrameResources(frame) {
     for (const resource of frame.resources()) {
-      if (!this._acceptsResource(resource))
+      if (!this._acceptsResource(resource)) {
         continue;
+      }
       const binding = this._bindings.get(resource.url);
       if (binding._resources.size === 1) {
         binding.dispose();
@@ -249,15 +273,17 @@ Bindings.ResourceMapping.ModelInfo = class {
   }
 
   _resetForTest() {
-    for (const binding of this._bindings.valuesArray())
+    for (const binding of this._bindings.valuesArray()) {
       binding.dispose();
+    }
     this._bindings.clear();
   }
 
   dispose() {
     Common.EventTarget.removeEventListeners(this._eventListeners);
-    for (const binding of this._bindings.valuesArray())
+    for (const binding of this._bindings.valuesArray()) {
       binding.dispose();
+    }
     this._bindings.clear();
     this._project.removeProject();
   }
@@ -293,8 +319,9 @@ Bindings.ResourceMapping.Binding = class {
     if (cssModel) {
       for (const headerId of cssModel.styleSheetIdsForURL(this._uiSourceCode.url())) {
         const header = cssModel.styleSheetHeaderForId(headerId);
-        if (header)
+        if (header) {
           stylesheets.push(header);
+        }
       }
     }
     return stylesheets;
@@ -306,8 +333,9 @@ Bindings.ResourceMapping.Binding = class {
   _inlineScripts() {
     const target = Bindings.NetworkProject.targetForUISourceCode(this._uiSourceCode);
     const debuggerModel = target.model(SDK.DebuggerModel);
-    if (!debuggerModel)
+    if (!debuggerModel) {
       return [];
+    }
     return debuggerModel.scriptsForSourceURL(this._uiSourceCode.url());
   }
 
@@ -317,12 +345,14 @@ Bindings.ResourceMapping.Binding = class {
    */
   async _styleSheetChanged(stylesheet, edit) {
     this._edits.push({stylesheet, edit});
-    if (this._edits.length > 1)
-      return;  // There is already a _styleSheetChanged loop running
+    if (this._edits.length > 1) {
+      return;
+    }  // There is already a _styleSheetChanged loop running
 
     const content = await this._uiSourceCode.requestContent();
-    if (content !== null)
+    if (content !== null) {
       this._innerStyleSheetChanged(content);
+    }
     this._edits = [];
   }
 
@@ -345,16 +375,18 @@ Bindings.ResourceMapping.Binding = class {
       for (const script of scripts) {
         const scriptOffset = script[Bindings.ResourceMapping._offsetSymbol] ||
             TextUtils.TextRange.createFromLocation(script.lineOffset, script.columnOffset);
-        if (!scriptOffset.follows(oldRange))
+        if (!scriptOffset.follows(oldRange)) {
           continue;
+        }
         script[Bindings.ResourceMapping._offsetSymbol] = scriptOffset.rebaseAfterTextEdit(oldRange, newRange);
         Bindings.debuggerWorkspaceBinding.updateLocations(script);
       }
       for (const style of styles) {
         const styleOffset = style[Bindings.ResourceMapping._offsetSymbol] ||
             TextUtils.TextRange.createFromLocation(style.startLine, style.startColumn);
-        if (!styleOffset.follows(oldRange))
+        if (!styleOffset.follows(oldRange)) {
           continue;
+        }
         style[Bindings.ResourceMapping._offsetSymbol] = styleOffset.rebaseAfterTextEdit(oldRange, newRange);
         Bindings.cssWorkspaceBinding.updateLocations(style);
       }

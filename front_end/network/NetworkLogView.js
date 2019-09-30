@@ -194,8 +194,9 @@ Network.NetworkLogView = class extends UI.VBox {
    * @return {boolean}
    */
   static _requestPathFilter(regex, request) {
-    if (!regex)
+    if (!regex) {
       return false;
+    }
 
     return regex.test(request.path() + '/' + request.name());
   }
@@ -313,14 +314,15 @@ Network.NetworkLogView = class extends UI.VBox {
    * @return {boolean}
    */
   static _requestMixedContentFilter(value, request) {
-    if (value === Network.NetworkLogView.MixedContentFilterValues.Displayed)
+    if (value === Network.NetworkLogView.MixedContentFilterValues.Displayed) {
       return request.mixedContentType === Protocol.Security.MixedContentType.OptionallyBlockable;
-    else if (value === Network.NetworkLogView.MixedContentFilterValues.Blocked)
+    } else if (value === Network.NetworkLogView.MixedContentFilterValues.Blocked) {
       return request.mixedContentType === Protocol.Security.MixedContentType.Blockable && request.wasBlocked();
-    else if (value === Network.NetworkLogView.MixedContentFilterValues.BlockOverridden)
+    } else if (value === Network.NetworkLogView.MixedContentFilterValues.BlockOverridden) {
       return request.mixedContentType === Protocol.Security.MixedContentType.Blockable && !request.wasBlocked();
-    else if (value === Network.NetworkLogView.MixedContentFilterValues.All)
+    } else if (value === Network.NetworkLogView.MixedContentFilterValues.All) {
       return request.mixedContentType !== Protocol.Security.MixedContentType.None;
+    }
 
     return false;
   }
@@ -342,8 +344,9 @@ Network.NetworkLogView = class extends UI.VBox {
   static _requestSetCookieDomainFilter(value, request) {
     const cookies = request.responseCookies;
     for (let i = 0, l = cookies ? cookies.length : 0; i < l; ++i) {
-      if (cookies[i].domain() === value)
+      if (cookies[i].domain() === value) {
         return true;
+      }
     }
     return false;
   }
@@ -356,8 +359,9 @@ Network.NetworkLogView = class extends UI.VBox {
   static _requestSetCookieNameFilter(value, request) {
     const cookies = request.responseCookies;
     for (let i = 0, l = cookies ? cookies.length : 0; i < l; ++i) {
-      if (cookies[i].name() === value)
+      if (cookies[i].name() === value) {
         return true;
+      }
     }
     return false;
   }
@@ -370,8 +374,9 @@ Network.NetworkLogView = class extends UI.VBox {
   static _requestSetCookieValueFilter(value, request) {
     const cookies = request.responseCookies;
     for (let i = 0, l = cookies ? cookies.length : 0; i < l; ++i) {
-      if (cookies[i].value() === value)
+      if (cookies[i].value() === value) {
         return true;
+      }
     }
     return false;
   }
@@ -409,10 +414,12 @@ Network.NetworkLogView = class extends UI.VBox {
    * @return {boolean}
    */
   static _requestTimeFilter(windowStart, windowEnd, request) {
-    if (request.issueTime() > windowEnd)
+    if (request.issueTime() > windowEnd) {
       return false;
-    if (request.endTime !== -1 && request.endTime < windowStart)
+    }
+    if (request.endTime !== -1 && request.endTime < windowStart) {
       return false;
+    }
     return true;
   }
 
@@ -436,10 +443,11 @@ Network.NetworkLogView = class extends UI.VBox {
   static async _copyResponse(request) {
     const contentData = await request.contentData();
     let content = contentData.content || '';
-    if (!request.contentType().isTextType())
+    if (!request.contentType().isTextType()) {
       content = Common.ContentProvider.contentAsDataURL(content, request.mimeType, contentData.encoded);
-    else if (contentData.encoded)
+    } else if (contentData.encoded) {
       content = window.atob(content);
+    }
     InspectorFrontendHost.copyText(content);
   }
 
@@ -448,11 +456,13 @@ Network.NetworkLogView = class extends UI.VBox {
    */
   _handleDrop(dataTransfer) {
     const items = dataTransfer.items;
-    if (!items.length)
+    if (!items.length) {
       return;
+    }
     const entry = items[0].webkitGetAsEntry();
-    if (entry.isDirectory)
+    if (entry.isDirectory) {
       return;
+    }
 
     entry.file(this.onLoadFromFile.bind(this));
   }
@@ -490,8 +500,9 @@ Network.NetworkLogView = class extends UI.VBox {
    * @param {?string} groupKey
    */
   _setGrouping(groupKey) {
-    if (this._activeGroupLookup)
+    if (this._activeGroupLookup) {
       this._activeGroupLookup.reset();
+    }
     const groupLookup = groupKey ? this._groupLookups.get(groupKey) || null : null;
     this._activeGroupLookup = groupLookup;
     this._invalidateAllItems();
@@ -533,8 +544,9 @@ Network.NetworkLogView = class extends UI.VBox {
    */
   modelAdded(networkManager) {
     // TODO(allada) Remove dependency on networkManager and instead use NetworkLog and PageLoad for needed data.
-    if (networkManager.target().parentTarget())
+    if (networkManager.target().parentTarget()) {
       return;
+    }
     const resourceTreeModel = networkManager.target().model(SDK.ResourceTreeModel);
     if (resourceTreeModel) {
       resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.Load, this._loadEventFired, this);
@@ -574,8 +586,9 @@ Network.NetworkLogView = class extends UI.VBox {
   }
 
   clearSelection() {
-    if (this._dataGrid.selectedNode)
+    if (this._dataGrid.selectedNode) {
       this._dataGrid.selectedNode.deselect();
+    }
   }
 
   _resetSuggestionBuilder() {
@@ -639,8 +652,9 @@ Network.NetworkLogView = class extends UI.VBox {
   }
 
   _hideRecordingHint() {
-    if (this._recordingHint)
+    if (this._recordingHint) {
       this._recordingHint.remove();
+    }
     this._recordingHint = null;
   }
 
@@ -650,7 +664,9 @@ Network.NetworkLogView = class extends UI.VBox {
    */
   elementsToRestoreScrollPositionsFor() {
     if (!this._dataGrid)  // Not initialized yet.
+    {
       return [];
+    }
     return [this._dataGrid.scrollContainer];
   }
 
@@ -661,8 +677,9 @@ Network.NetworkLogView = class extends UI.VBox {
   _setupDataGrid() {
     this._dataGrid.setRowContextMenuCallback((contextMenu, node) => {
       const request = node.request();
-      if (request)
+      if (request) {
         this.handleContextMenuForRequest(contextMenu, request);
+      }
     });
     this._dataGrid.setStickToBottom(true);
     this._dataGrid.setName('networkLog');
@@ -695,19 +712,22 @@ Network.NetworkLogView = class extends UI.VBox {
    * @param {boolean=} highlightInitiatorChain
    */
   _setHoveredNode(node, highlightInitiatorChain) {
-    if (this._hoveredNode)
+    if (this._hoveredNode) {
       this._hoveredNode.setHovered(false, false);
+    }
     this._hoveredNode = node;
-    if (this._hoveredNode)
+    if (this._hoveredNode) {
       this._hoveredNode.setHovered(true, !!highlightInitiatorChain);
+    }
   }
 
   /**
    * @param {!Event} event
    */
   _dataGridMouseDown(event) {
-    if (!this._dataGrid.selectedNode && event.button)
+    if (!this._dataGrid.selectedNode && event.button) {
       event.consume();
+    }
   }
 
   _updateSummaryBar() {
@@ -724,8 +744,9 @@ Network.NetworkLogView = class extends UI.VBox {
     let nodeCount = 0;
     for (const request of SDK.networkLog.requests()) {
       const node = request[Network.NetworkLogView._networkNodeSymbol];
-      if (!node)
+      if (!node) {
         continue;
+      }
       nodeCount++;
       const requestTransferSize = request.transferSize;
       transferSize += requestTransferSize;
@@ -740,10 +761,12 @@ Network.NetworkLogView = class extends UI.VBox {
       // TODO(allada) inspectedURL should be stored in PageLoad used instead of target so HAR requests can have an
       // inspected url.
       if (networkManager && request.url() === networkManager.target().inspectedURL() &&
-          request.resourceType() === Common.resourceTypes.Document && !networkManager.target().parentTarget())
+          request.resourceType() === Common.resourceTypes.Document && !networkManager.target().parentTarget()) {
         baseTime = request.startTime;
-      if (request.endTime > maxTime)
+      }
+      if (request.endTime > maxTime) {
         maxTime = request.endTime;
+      }
     }
 
     if (!nodeCount) {
@@ -800,13 +823,15 @@ Network.NetworkLogView = class extends UI.VBox {
   }
 
   scheduleRefresh() {
-    if (this._needsRefresh)
+    if (this._needsRefresh) {
       return;
+    }
 
     this._needsRefresh = true;
 
-    if (this.isShowing() && !this._refreshRequestId)
+    if (this.isShowing() && !this._refreshRequestId) {
       this._refreshRequestId = this.element.window().requestAnimationFrame(this._refresh.bind(this));
+    }
   }
 
   /**
@@ -828,8 +853,9 @@ Network.NetworkLogView = class extends UI.VBox {
   }
 
   _refreshIfNeeded() {
-    if (this._needsRefresh)
+    if (this._needsRefresh) {
       this._refresh();
+    }
   }
 
   /**
@@ -837,10 +863,11 @@ Network.NetworkLogView = class extends UI.VBox {
    */
   _invalidateAllItems(deferUpdate) {
     this._staleRequests = new Set(SDK.networkLog.requests());
-    if (deferUpdate)
+    if (deferUpdate) {
       this.scheduleRefresh();
-    else
+    } else {
       this._refresh();
+    }
   }
 
   /**
@@ -861,8 +888,9 @@ Network.NetworkLogView = class extends UI.VBox {
    * @param {!Network.NetworkTimeCalculator} x
    */
   setCalculator(x) {
-    if (!x || this._calculator === x)
+    if (!x || this._calculator === x) {
       return;
+    }
 
     if (this._calculator !== x) {
       this._calculator = x;
@@ -870,10 +898,11 @@ Network.NetworkLogView = class extends UI.VBox {
     }
     this._calculator.reset();
 
-    if (this._calculator.startAtZero)
+    if (this._calculator.startAtZero) {
       this._columns.hideEventDividers();
-    else
+    } else {
       this._columns.showEventDividers();
+    }
 
     this._invalidateAllItems();
   }
@@ -882,8 +911,9 @@ Network.NetworkLogView = class extends UI.VBox {
    * @param {!Common.Event} event
    */
   _loadEventFired(event) {
-    if (!this._recording)
+    if (!this._recording) {
       return;
+    }
 
     const time = /** @type {number} */ (event.data.loadTime);
     if (time) {
@@ -896,8 +926,9 @@ Network.NetworkLogView = class extends UI.VBox {
    * @param {!Common.Event} event
    */
   _domContentLoadedEventFired(event) {
-    if (!this._recording)
+    if (!this._recording) {
       return;
+    }
     const data = /** @type {number} */ (event.data);
     if (data) {
       this._mainRequestDOMContentLoadedTime = data;
@@ -967,24 +998,28 @@ Network.NetworkLogView = class extends UI.VBox {
       const request = this._staleRequests.firstValue();
       this._staleRequests.delete(request);
       let node = request[Network.NetworkLogView._networkNodeSymbol];
-      if (!node)
+      if (!node) {
         node = this._createNodeForRequest(request);
+      }
       staleNodes.add(node);
     }
 
     for (const node of staleNodes) {
       const isFilteredOut = !this._applyFilter(node);
-      if (isFilteredOut && node === this._hoveredNode)
+      if (isFilteredOut && node === this._hoveredNode) {
         this._setHoveredNode(null);
+      }
 
-      if (!isFilteredOut)
+      if (!isFilteredOut) {
         nodesToRefresh.push(node);
+      }
       const request = node.request();
       this._timeCalculator.updateBoundaries(request);
       this._durationCalculator.updateBoundaries(request);
       const newParent = this._parentNodeForInsert(node);
-      if (node[Network.NetworkLogView._isFilteredOutSymbol] === isFilteredOut && node.parent === newParent)
+      if (node[Network.NetworkLogView._isFilteredOutSymbol] === isFilteredOut && node.parent === newParent) {
         continue;
+      }
       node[Network.NetworkLogView._isFilteredOutSymbol] = isFilteredOut;
       const removeFromParent = node.parent && (isFilteredOut || node.parent !== newParent);
       if (removeFromParent) {
@@ -997,8 +1032,9 @@ Network.NetworkLogView = class extends UI.VBox {
         }
       }
 
-      if (!newParent || isFilteredOut)
+      if (!newParent || isFilteredOut) {
         continue;
+      }
 
       if (!newParent.dataGrid && !nodesToInsert.has(newParent)) {
         nodesToInsert.set(newParent, this._dataGrid.rootNode());
@@ -1007,16 +1043,19 @@ Network.NetworkLogView = class extends UI.VBox {
       nodesToInsert.set(node, newParent);
     }
 
-    for (const node of nodesToInsert.keys())
+    for (const node of nodesToInsert.keys()) {
       nodesToInsert.get(node).appendChild(node);
+    }
 
-    for (const node of nodesToRefresh)
+    for (const node of nodesToRefresh) {
       node.refresh();
+    }
 
     this._updateSummaryBar();
 
-    if (nodesToInsert.size)
+    if (nodesToInsert.size) {
       this._columns.sortByCurrentColumn();
+    }
 
     this._dataGrid.updateInstantly();
     this._didRefreshForTest();
@@ -1030,12 +1069,14 @@ Network.NetworkLogView = class extends UI.VBox {
    * @return {?Network.NetworkNode}
    */
   _parentNodeForInsert(node) {
-    if (!this._activeGroupLookup)
+    if (!this._activeGroupLookup) {
       return this._dataGrid.rootNode();
+    }
 
     const groupNode = this._activeGroupLookup.groupNodeForRequest(node.request());
-    if (!groupNode)
+    if (!groupNode) {
       return this._dataGrid.rootNode();
+    }
     return groupNode;
   }
 
@@ -1052,8 +1093,9 @@ Network.NetworkLogView = class extends UI.VBox {
     this.linkifier.reset();
     this.badgePool.reset();
 
-    if (this._activeGroupLookup)
+    if (this._activeGroupLookup) {
       this._activeGroupLookup.reset();
+    }
     this._staleRequests.clear();
     this._resetSuggestionBuilder();
 
@@ -1083,8 +1125,9 @@ Network.NetworkLogView = class extends UI.VBox {
     request[Network.NetworkLogView._networkNodeSymbol] = node;
     node[Network.NetworkLogView._isFilteredOutSymbol] = true;
 
-    for (let redirect = request.redirectSource(); redirect; redirect = redirect.redirectSource())
+    for (let redirect = request.redirectSource(); redirect; redirect = redirect.redirectSource()) {
       this._refreshRequest(redirect);
+    }
     return node;
   }
 
@@ -1131,8 +1174,9 @@ Network.NetworkLogView = class extends UI.VBox {
     }
 
     const responseHeaders = request.responseHeaders;
-    for (let i = 0, l = responseHeaders.length; i < l; ++i)
+    for (let i = 0, l = responseHeaders.length; i < l; ++i) {
       this._suggestionBuilder.addItem(Network.NetworkLogView.FilterType.HasResponseHeader, responseHeaders[i].name);
+    }
     const cookies = request.responseCookies;
     for (let i = 0, l = cookies ? cookies.length : 0; i < l; ++i) {
       const cookie = cookies[i];
@@ -1332,8 +1376,9 @@ Network.NetworkLogView = class extends UI.VBox {
     const filename = parsedURL ? parsedURL.host : 'network-log';
     const stream = new Bindings.FileOutputStream();
 
-    if (!await stream.open(filename + '.har'))
+    if (!await stream.open(filename + '.har')) {
       return;
+    }
 
     const progressIndicator = new UI.ProgressIndicator();
     this._progressBarContainer.appendChild(progressIndicator.element);
@@ -1343,19 +1388,22 @@ Network.NetworkLogView = class extends UI.VBox {
   }
 
   _clearBrowserCache() {
-    if (confirm(Common.UIString('Are you sure you want to clear browser cache?')))
+    if (confirm(Common.UIString('Are you sure you want to clear browser cache?'))) {
       SDK.multitargetNetworkManager.clearBrowserCache();
+    }
   }
 
   _clearBrowserCookies() {
-    if (confirm(Common.UIString('Are you sure you want to clear browser cookies?')))
+    if (confirm(Common.UIString('Are you sure you want to clear browser cookies?'))) {
       SDK.multitargetNetworkManager.clearBrowserCookies();
+    }
   }
 
   _removeAllHighlights() {
     this.removeAllNodeHighlights();
-    for (let i = 0; i < this._highlightedSubstringChanges.length; ++i)
+    for (let i = 0; i < this._highlightedSubstringChanges.length; ++i) {
       UI.revertDomChanges(this._highlightedSubstringChanges[i]);
+    }
     this._highlightedSubstringChanges = [];
   }
 
@@ -1365,18 +1413,23 @@ Network.NetworkLogView = class extends UI.VBox {
    */
   _applyFilter(node) {
     const request = node.request();
-    if (this._timeFilter && !this._timeFilter(request))
+    if (this._timeFilter && !this._timeFilter(request)) {
       return false;
+    }
     const categoryName = request.resourceType().category().title;
-    if (!this._resourceCategoryFilterUI.accept(categoryName))
+    if (!this._resourceCategoryFilterUI.accept(categoryName)) {
       return false;
-    if (this._dataURLFilterUI.checked() && (request.parsedURL.isDataURL() || request.parsedURL.isBlobURL()))
+    }
+    if (this._dataURLFilterUI.checked() && (request.parsedURL.isDataURL() || request.parsedURL.isBlobURL())) {
       return false;
-    if (request.statusText === 'Service Worker Fallback Required')
+    }
+    if (request.statusText === 'Service Worker Fallback Required') {
       return false;
+    }
     for (let i = 0; i < this._filters.length; ++i) {
-      if (!this._filters[i](request))
+      if (!this._filters[i](request)) {
         return false;
+      }
     }
     return true;
   }
@@ -1418,14 +1471,18 @@ Network.NetworkLogView = class extends UI.VBox {
         return Network.NetworkLogView._requestResponseHeaderFilter.bind(null, value);
 
       case Network.NetworkLogView.FilterType.Is:
-        if (value.toLowerCase() === Network.NetworkLogView.IsFilterType.Running)
+        if (value.toLowerCase() === Network.NetworkLogView.IsFilterType.Running) {
           return Network.NetworkLogView._runningRequestFilter;
-        if (value.toLowerCase() === Network.NetworkLogView.IsFilterType.FromCache)
+        }
+        if (value.toLowerCase() === Network.NetworkLogView.IsFilterType.FromCache) {
           return Network.NetworkLogView._fromCacheRequestFilter;
-        if (value.toLowerCase() === Network.NetworkLogView.IsFilterType.ServiceWorkerIntercepted)
+        }
+        if (value.toLowerCase() === Network.NetworkLogView.IsFilterType.ServiceWorkerIntercepted) {
           return Network.NetworkLogView._interceptedByServiceWorkerFilter;
-        if (value.toLowerCase() === Network.NetworkLogView.IsFilterType.ServiceWorkerInitiated)
+        }
+        if (value.toLowerCase() === Network.NetworkLogView.IsFilterType.ServiceWorkerInitiated) {
           return Network.NetworkLogView._initiatedByServiceWorkerFilter;
+        }
         break;
 
       case Network.NetworkLogView.FilterType.LargerThan:
@@ -1476,8 +1533,9 @@ Network.NetworkLogView = class extends UI.VBox {
       value = value.substring(0, value.length - 1);
     }
     const quantity = Number(value);
-    if (isNaN(quantity))
+    if (isNaN(quantity)) {
       return null;
+    }
     return Network.NetworkLogView._requestSizeLargerThanFilter.bind(null, quantity * multiplier);
   }
 
@@ -1493,8 +1551,9 @@ Network.NetworkLogView = class extends UI.VBox {
   _reveal(request) {
     this.removeAllNodeHighlights();
     const node = request[Network.NetworkLogView._networkNodeSymbol];
-    if (!node || !node.dataGrid)
+    if (!node || !node.dataGrid) {
       return null;
+    }
     node.reveal();
     return node;
   }
@@ -1504,8 +1563,9 @@ Network.NetworkLogView = class extends UI.VBox {
    */
   revealAndHighlightRequest(request) {
     const node = this._reveal(request);
-    if (node)
+    if (node) {
       this._highlightNode(node);
+    }
   }
 
   /**
@@ -1514,8 +1574,9 @@ Network.NetworkLogView = class extends UI.VBox {
   selectRequest(request) {
     this.setTextFilterValue('');
     const node = this._reveal(request);
-    if (node)
+    if (node) {
       node.select();
+    }
   }
 
   removeAllNodeHighlights() {
@@ -1587,15 +1648,17 @@ Network.NetworkLogView = class extends UI.VBox {
     const headerData = requestHeaders.reduce((result, header) => {
       const name = header.name;
 
-      if (!ignoredHeaders[name.toLowerCase()] && !name.includes(':'))
+      if (!ignoredHeaders[name.toLowerCase()] && !name.includes(':')) {
         result.append(name, header.value);
+      }
 
       return result;
     }, new Headers());
 
     const headers = {};
-    for (const headerArray of headerData)
+    for (const headerArray of headerData) {
       headers[headerArray[0]] = headerArray[1];
+    }
 
     const credentials =
         request.requestCookies || requestHeaders.some(({name}) => credentialHeaders[name.toLowerCase()]) ? 'include' :
@@ -1695,8 +1758,9 @@ Network.NetworkLogView = class extends UI.VBox {
         let hexString = code.toString(16);
         // Zero pad to four digits to comply with ANSI-C Quoting:
         // http://www.gnu.org/software/bash/manual/html_node/ANSI_002dC-Quoting.html
-        while (hexString.length < 4)
+        while (hexString.length < 4) {
           hexString = '0' + hexString;
+        }
 
         return '\\u' + hexString;
       }
@@ -1747,16 +1811,18 @@ Network.NetworkLogView = class extends UI.VBox {
     for (let i = 0; i < requestHeaders.length; i++) {
       const header = requestHeaders[i];
       const name = header.name.replace(/^:/, '');  // Translate SPDY v3 headers to HTTP headers.
-      if (name.toLowerCase() in ignoredHeaders)
+      if (name.toLowerCase() in ignoredHeaders) {
         continue;
+      }
       command.push('-H');
       command.push(escapeString(name + ': ' + header.value));
     }
     command = command.concat(data);
     command.push('--compressed');
 
-    if (request.securityState() === Protocol.Security.SecurityState.Insecure)
+    if (request.securityState() === Protocol.Security.SecurityState.Insecure) {
       command.push('--insecure');
+    }
     return command.join(' ');
   }
 
@@ -1768,10 +1834,11 @@ Network.NetworkLogView = class extends UI.VBox {
   async _generateAllCurlCommand(requests, platform) {
     const nonBlobRequests = this._filterOutBlobRequests(requests);
     const commands = await Promise.all(nonBlobRequests.map(request => this._generateCurlCommand(request, platform)));
-    if (platform === 'win')
+    if (platform === 'win') {
       return commands.join(' &\r\n');
-    else
+    } else {
       return commands.join(' ;\n');
+    }
   }
 
   /**
@@ -1804,8 +1871,9 @@ Network.NetworkLogView = class extends UI.VBox {
     const headerNameValuePairs = [];
     for (const header of requestHeaders) {
       const name = header.name.replace(/^:/, '');  // Translate h2 headers to HTTP headers.
-      if (ignoredHeaders.has(name.toLowerCase()))
+      if (ignoredHeaders.has(name.toLowerCase())) {
         continue;
+      }
       headerNameValuePairs.push(escapeString(name) + '=' + escapeString(header.value));
     }
     if (headerNameValuePairs.length) {
@@ -1823,10 +1891,11 @@ Network.NetworkLogView = class extends UI.VBox {
     if (formData) {
       command.push('-Body');
       const body = escapeString(formData);
-      if (/[^\x20-\x7E]/.test(formData))
+      if (/[^\x20-\x7E]/.test(formData)) {
         command.push('([System.Text.Encoding]::UTF8.GetBytes(' + body + '))');
-      else
+      } else {
         command.push(body);
+      }
     }
 
     return command.join(' ');
@@ -1846,8 +1915,9 @@ Network.NetworkLogView = class extends UI.VBox {
    * @return {string}
    */
   static getDCLEventColor() {
-    if (UI.themeSupport.themeName() === 'dark')
+    if (UI.themeSupport.themeName() === 'dark') {
       return '#03A9F4';
+    }
     return '#0867CB';
   }
 

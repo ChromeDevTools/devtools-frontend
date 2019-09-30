@@ -41,14 +41,17 @@ export default class ObjectWrapper {
    * @return {!Common.EventTarget.EventDescriptor}
    */
   addEventListener(eventType, listener, thisObject) {
-    if (!listener)
+    if (!listener) {
       console.assert(false);
+    }
 
-    if (!this._listeners)
+    if (!this._listeners) {
       this._listeners = new Map();
+    }
 
-    if (!this._listeners.has(eventType))
+    if (!this._listeners.has(eventType)) {
       this._listeners.set(eventType, []);
+    }
     this._listeners.get(eventType).push({thisObject: thisObject, listener: listener});
     return {eventTarget: this, eventType: eventType, thisObject: thisObject, listener: listener};
   }
@@ -76,8 +79,9 @@ export default class ObjectWrapper {
   removeEventListener(eventType, listener, thisObject) {
     console.assert(listener);
 
-    if (!this._listeners || !this._listeners.has(eventType))
+    if (!this._listeners || !this._listeners.has(eventType)) {
       return;
+    }
     const listeners = this._listeners.get(eventType);
     for (let i = 0; i < listeners.length; ++i) {
       if (listeners[i].listener === listener && listeners[i].thisObject === thisObject) {
@@ -86,8 +90,9 @@ export default class ObjectWrapper {
       }
     }
 
-    if (!listeners.length)
+    if (!listeners.length) {
       this._listeners.delete(eventType);
+    }
   }
 
   /**
@@ -105,14 +110,16 @@ export default class ObjectWrapper {
    * @param {*=} eventData
    */
   dispatchEventToListeners(eventType, eventData) {
-    if (!this._listeners || !this._listeners.has(eventType))
+    if (!this._listeners || !this._listeners.has(eventType)) {
       return;
+    }
 
     const event = /** @type {!Common.Event} */ ({data: eventData});
     const listeners = this._listeners.get(eventType).slice(0);
     for (let i = 0; i < listeners.length; ++i) {
-      if (!listeners[i].disposed)
+      if (!listeners[i].disposed) {
         listeners[i].listener.call(listeners[i].thisObject, event);
+      }
     }
   }
 }

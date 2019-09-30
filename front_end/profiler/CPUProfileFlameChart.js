@@ -269,14 +269,16 @@ Profiler.CPUProfileFlameChart = class extends UI.VBox {
     this._searchResults = [];
     const entriesCount = this._dataProvider._entryNodes.length;
     for (let index = 0; index < entriesCount; ++index) {
-      if (this._dataProvider.entryTitle(index).match(matcher))
+      if (this._dataProvider.entryTitle(index).match(matcher)) {
         this._searchResults.push(index);
+      }
     }
 
     if (this._searchResults.length) {
       this._searchResultIndex = this._searchResults.indexOf(selectedEntryIndex);
-      if (this._searchResultIndex === -1)
+      if (this._searchResultIndex === -1) {
         this._searchResultIndex = jumpBackwards ? this._searchResults.length - 1 : 0;
+      }
       this._mainPane.setSelectedEntry(this._searchResults[this._searchResultIndex]);
     } else {
       this.searchCanceled();
@@ -484,16 +486,18 @@ Profiler.CPUProfileFlameChart.OverviewPane = class extends UI.VBox {
   }
 
   _scheduleUpdate() {
-    if (this._updateTimerId)
+    if (this._updateTimerId) {
       return;
+    }
     this._updateTimerId = this.element.window().requestAnimationFrame(this.update.bind(this));
   }
 
   update() {
     this._updateTimerId = 0;
     const timelineData = this._timelineData();
-    if (!timelineData)
+    if (!timelineData) {
       return;
+    }
     this._resetCanvas(
         this._overviewContainer.clientWidth, this._overviewContainer.clientHeight - PerfUI.FlameChart.HeaderHeight);
     this._overviewCalculator._updateBoundaries(this);
@@ -548,8 +552,9 @@ Profiler.CPUProfileFlameChart.OverviewPane = class extends UI.VBox {
       const start = Math.floor((entryStartTimes[entryIndex] - minimumBoundary) * scaleFactor);
       const finish =
           Math.floor((entryStartTimes[entryIndex] - minimumBoundary + entryTotalTimes[entryIndex]) * scaleFactor);
-      for (let x = start; x <= finish; ++x)
+      for (let x = start; x <= finish; ++x) {
         drawData[x] = Math.max(drawData[x], entryLevels[entryIndex] + 1);
+      }
     }
     return drawData;
   }

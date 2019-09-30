@@ -37,8 +37,9 @@ Timeline.TimelineUIUtils = class {
    * @return {!Object.<string, !Timeline.TimelineRecordStyle>}
    */
   static _initEventStyles() {
-    if (Timeline.TimelineUIUtils._eventStylesMap)
+    if (Timeline.TimelineUIUtils._eventStylesMap) {
       return Timeline.TimelineUIUtils._eventStylesMap;
+    }
 
     const type = TimelineModel.TimelineModel.RecordType;
     const categories = Timeline.TimelineUIUtils.categories();
@@ -198,8 +199,9 @@ Timeline.TimelineUIUtils = class {
    * @return {string}
    */
   static frameDisplayName(frame) {
-    if (!TimelineModel.TimelineJSProfileProcessor.isNativeRuntimeFrame(frame))
+    if (!TimelineModel.TimelineJSProfileProcessor.isNativeRuntimeFrame(frame)) {
       return UI.beautifyFunctionName(frame.functionName);
+    }
     const nativeGroup = TimelineModel.TimelineJSProfileProcessor.nativeGroup(frame.functionName);
     const groups = TimelineModel.TimelineJSProfileProcessor.NativeGroups;
     switch (nativeGroup) {
@@ -220,8 +222,9 @@ Timeline.TimelineUIUtils = class {
     const title = Timeline.TimelineUIUtils.eventStyle(traceEvent).title;
     const tokens = [title];
     const url = TimelineModel.TimelineData.forEvent(traceEvent).url;
-    if (url)
+    if (url) {
       tokens.push(url);
+    }
     appendObjectProperties(traceEvent.args, 2);
     return regExp.test(tokens.join('|'));
 
@@ -230,17 +233,19 @@ Timeline.TimelineUIUtils = class {
      * @param {number} depth
      */
     function appendObjectProperties(object, depth) {
-      if (!depth)
+      if (!depth) {
         return;
+      }
       for (const key in object) {
         const value = object[key];
         const type = typeof value;
-        if (type === 'string')
+        if (type === 'string') {
           tokens.push(value);
-        else if (type === 'number')
+        } else if (type === 'number') {
           tokens.push(String(value));
-        else if (type === 'object')
+        } else if (type === 'object') {
           appendObjectProperties(value, depth - 1);
+        }
       }
     }
   }
@@ -252,8 +257,9 @@ Timeline.TimelineUIUtils = class {
   static eventURL(event) {
     const data = event.args['data'] || event.args['beginData'];
     const url = data && data.url;
-    if (url)
+    if (url) {
       return url;
+    }
     const stackTrace = data && data['stackTrace'];
     const frame =
         stackTrace && stackTrace.length && stackTrace[0] || TimelineModel.TimelineData.forEvent(event).topFrame();
@@ -267,8 +273,9 @@ Timeline.TimelineUIUtils = class {
   static eventStyle(event) {
     const eventStyles = Timeline.TimelineUIUtils._initEventStyles();
     if (event.hasCategory(TimelineModel.TimelineModel.Category.Console) ||
-        event.hasCategory(TimelineModel.TimelineModel.Category.UserTiming))
+        event.hasCategory(TimelineModel.TimelineModel.Category.UserTiming)) {
       return {title: event.name, category: Timeline.TimelineUIUtils.categories()['scripting']};
+    }
 
     if (event.hasCategory(TimelineModel.TimelineModel.Category.LatencyInfo)) {
       /** @const */
@@ -293,8 +300,9 @@ Timeline.TimelineUIUtils = class {
   static eventColor(event) {
     if (event.name === TimelineModel.TimelineModel.RecordType.JSFrame) {
       const frame = event.args['data'];
-      if (Timeline.TimelineUIUtils.isUserFrame(frame))
+      if (Timeline.TimelineUIUtils.isUserFrame(frame)) {
         return Timeline.TimelineUIUtils.colorForId(frame.url);
+      }
     }
     return Timeline.TimelineUIUtils.eventStyle(event).category.color;
   }
@@ -309,21 +317,25 @@ Timeline.TimelineUIUtils = class {
   static eventColorByProduct(productRegistry, model, urlToColorCache, event) {
     const url = Timeline.TimelineUIUtils.eventURL(event) || '';
     let color = urlToColorCache.get(url);
-    if (color)
+    if (color) {
       return color;
+    }
     const defaultColor = '#f2ecdc';
     const parsedURL = url.asParsedURL();
-    if (!parsedURL)
+    if (!parsedURL) {
       return defaultColor;
+    }
     let name = productRegistry && productRegistry.nameForUrl(parsedURL);
     if (!name) {
       name = parsedURL.host;
       const rootFrames = model.rootFrames();
-      if (rootFrames.some(pageFrame => new Common.ParsedURL(pageFrame.url).host === name))
+      if (rootFrames.some(pageFrame => new Common.ParsedURL(pageFrame.url).host === name)) {
         color = defaultColor;
+      }
     }
-    if (!color)
+    if (!color) {
       color = name ? ProductRegistry.BadgePool.colorForEntryName(name) : defaultColor;
+    }
     urlToColorCache.set(url, color);
     return color;
   }
@@ -335,17 +347,22 @@ Timeline.TimelineUIUtils = class {
   static eventTitle(event) {
     const recordType = TimelineModel.TimelineModel.RecordType;
     const eventData = event.args['data'];
-    if (event.name === recordType.JSFrame)
+    if (event.name === recordType.JSFrame) {
       return Timeline.TimelineUIUtils.frameDisplayName(eventData);
+    }
     const title = Timeline.TimelineUIUtils.eventStyle(event).title;
-    if (event.hasCategory(TimelineModel.TimelineModel.Category.Console))
+    if (event.hasCategory(TimelineModel.TimelineModel.Category.Console)) {
       return title;
-    if (event.name === recordType.TimeStamp)
+    }
+    if (event.name === recordType.TimeStamp) {
       return ls`${title}: ${eventData['message']}`;
-    if (event.name === recordType.Animation && eventData && eventData['name'])
+    }
+    if (event.name === recordType.Animation && eventData && eventData['name']) {
       return ls`${title}: ${eventData['name']}`;
-    if (event.name === recordType.EventDispatch && eventData && eventData['type'])
+    }
+    if (event.name === recordType.EventDispatch && eventData && eventData['type']) {
       return ls`${title}: ${eventData['type']}`;
+    }
     return title;
   }
 
@@ -476,18 +493,20 @@ Timeline.TimelineUIUtils = class {
       case recordType.Paint: {
         const width = Timeline.TimelineUIUtils.quadWidth(eventData.clip);
         const height = Timeline.TimelineUIUtils.quadHeight(eventData.clip);
-        if (width && height)
+        if (width && height) {
           detailsText = Common.UIString('%d\xa0\u00d7\xa0%d', width, height);
+        }
         break;
       }
       case recordType.ParseHTML: {
         const startLine = event.args['beginData']['startLine'];
         const endLine = event.args['endData'] && event.args['endData']['endLine'];
         const url = Bindings.displayNameForURL(event.args['beginData']['url']);
-        if (endLine >= 0)
+        if (endLine >= 0) {
           detailsText = Common.UIString('%s [%s\u2026%s]', url, startLine + 1, endLine + 1);
-        else
+        } else {
           detailsText = Common.UIString('%s [%s\u2026]', url, startLine + 1);
+        }
         break;
       }
       case recordType.CompileModule:
@@ -496,15 +515,17 @@ Timeline.TimelineUIUtils = class {
       case recordType.CompileScript:
       case recordType.EvaluateScript: {
         const url = eventData && eventData['url'];
-        if (url)
+        if (url) {
           detailsText = Bindings.displayNameForURL(url) + ':' + (eventData['lineNumber'] + 1);
+        }
         break;
       }
       case recordType.WasmCompiledModule:
       case recordType.WasmModuleCacheHit: {
         const url = event.args['url'];
-        if (url)
+        if (url) {
           detailsText = Bindings.displayNameForURL(url);
+        }
         break;
       }
 
@@ -512,8 +533,9 @@ Timeline.TimelineUIUtils = class {
       case recordType.XHRReadyStateChange:
       case recordType.XHRLoad: {
         const url = eventData['url'];
-        if (url)
+        if (url) {
           detailsText = Bindings.displayNameForURL(url);
+        }
         break;
       }
       case recordType.TimeStamp:
@@ -534,8 +556,9 @@ Timeline.TimelineUIUtils = class {
       case recordType.ResizeImage:
       case recordType.DecodeLazyPixelRef: {
         const url = TimelineModel.TimelineData.forEvent(event).url;
-        if (url)
+        if (url) {
           detailsText = Bindings.displayNameForURL(url);
+        }
         break;
       }
 
@@ -552,10 +575,11 @@ Timeline.TimelineUIUtils = class {
         break;
 
       default:
-        if (event.hasCategory(TimelineModel.TimelineModel.Category.Console))
+        if (event.hasCategory(TimelineModel.TimelineModel.Category.Console)) {
           detailsText = null;
-        else
+        } else {
           detailsText = linkifyTopCallFrameAsText();
+        }
         break;
     }
 
@@ -569,11 +593,13 @@ Timeline.TimelineUIUtils = class {
      */
     function linkifyLocationAsText(scriptId, lineNumber, columnNumber) {
       const debuggerModel = target ? target.model(SDK.DebuggerModel) : null;
-      if (!target || target.isDisposed() || !scriptId || !debuggerModel)
+      if (!target || target.isDisposed() || !scriptId || !debuggerModel) {
         return null;
+      }
       const rawLocation = debuggerModel.createRawLocationByScriptId(scriptId, lineNumber, columnNumber);
-      if (!rawLocation)
+      if (!rawLocation) {
         return null;
+      }
       const uiLocation = Bindings.debuggerWorkspaceBinding.rawLocationToUILocation(rawLocation);
       return uiLocation ? uiLocation.linkText() : null;
     }
@@ -583,13 +609,15 @@ Timeline.TimelineUIUtils = class {
      */
     function linkifyTopCallFrameAsText() {
       const frame = TimelineModel.TimelineData.forEvent(event).topFrame();
-      if (!frame)
+      if (!frame) {
         return null;
+      }
       let text = linkifyLocationAsText(frame.scriptId, frame.lineNumber, frame.columnNumber);
       if (!text) {
         text = frame.url;
-        if (typeof frame.lineNumber === 'number')
+        if (typeof frame.lineNumber === 'number') {
           text += ':' + (frame.lineNumber + 1);
+        }
       }
       return text;
     }
@@ -638,8 +666,9 @@ Timeline.TimelineUIUtils = class {
       case recordType.ResourceReceiveResponse:
       case recordType.ResourceFinish: {
         const url = TimelineModel.TimelineData.forEvent(event).url;
-        if (url)
+        if (url) {
           details = Components.Linkifier.linkifyURL(url);
+        }
         break;
       }
       case recordType.FunctionCall:
@@ -659,26 +688,30 @@ Timeline.TimelineUIUtils = class {
       case recordType.CompileScript:
       case recordType.EvaluateScript: {
         const url = eventData['url'];
-        if (url)
+        if (url) {
           details = linkifyLocation('', url, eventData['lineNumber'], 0);
+        }
         break;
       }
       case recordType.ParseScriptOnBackground: {
         const url = eventData['url'];
-        if (url)
+        if (url) {
           details = linkifyLocation('', url, 0, 0);
+        }
         break;
       }
       default:
-        if (event.hasCategory(TimelineModel.TimelineModel.Category.Console))
+        if (event.hasCategory(TimelineModel.TimelineModel.Category.Console)) {
           detailsText = null;
-        else
+        } else {
           details = linkifyTopCallFrame();
+        }
         break;
     }
 
-    if (!details && detailsText)
+    if (!details && detailsText) {
       details = createTextNode(detailsText);
+    }
     return details;
 
     /**
@@ -760,15 +793,18 @@ Timeline.TimelineUIUtils = class {
       /** @type {!Set<number>} */
       const nodeIdsToResolve = new Set();
       const timelineData = TimelineModel.TimelineData.forEvent(event);
-      if (timelineData.backendNodeId)
+      if (timelineData.backendNodeId) {
         nodeIdsToResolve.add(timelineData.backendNodeId);
+      }
       const invalidationTrackingEvents = TimelineModel.InvalidationTracker.invalidationEventsFor(event);
-      if (invalidationTrackingEvents)
+      if (invalidationTrackingEvents) {
         Timeline.TimelineUIUtils._collectInvalidationNodeIds(nodeIdsToResolve, invalidationTrackingEvents);
+      }
       if (nodeIdsToResolve.size) {
         const domModel = target.model(SDK.DOMModel);
-        if (domModel)
+        if (domModel) {
           relatedNodesMap = await domModel.pushNodesByBackendIdsToFrontend(nodeIdsToResolve);
+        }
       }
     }
 
@@ -786,10 +822,12 @@ Timeline.TimelineUIUtils = class {
     const initiator = timelineData.initiator();
     let url = null;
 
-    if (timelineData.warning)
+    if (timelineData.warning) {
       contentHelper.appendWarningRow(event);
-    if (event.name === recordTypes.JSFrame && eventData['deoptReason'])
+    }
+    if (event.name === recordTypes.JSFrame && eventData['deoptReason']) {
       contentHelper.appendWarningRow(event, TimelineModel.TimelineModel.WarningType.V8Deopt);
+    }
 
     if (detailed && !Number.isNaN(event.duration + 0)) {
       contentHelper.appendTextRow(ls`Total Time`, Number.millisToString(event.duration, true));
@@ -818,8 +856,9 @@ Timeline.TimelineUIUtils = class {
       case recordTypes.FunctionCall:
         const detailsNode =
             Timeline.TimelineUIUtils.buildDetailsNodeForTraceEvent(event, model.targetByEvent(event), linkifier);
-        if (detailsNode)
+        if (detailsNode) {
           contentHelper.appendElementRow(ls`Function`, detailsNode);
+        }
         break;
       case recordTypes.TimerFire:
       case recordTypes.TimerInstall:
@@ -839,34 +878,42 @@ Timeline.TimelineUIUtils = class {
       case recordTypes.ResourceReceivedData:
       case recordTypes.ResourceFinish:
         url = timelineData.url;
-        if (url)
+        if (url) {
           contentHelper.appendElementRow(ls`Resource`, Components.Linkifier.linkifyURL(url));
-        if (eventData['requestMethod'])
+        }
+        if (eventData['requestMethod']) {
           contentHelper.appendTextRow(ls`Request Method`, eventData['requestMethod']);
-        if (typeof eventData['statusCode'] === 'number')
+        }
+        if (typeof eventData['statusCode'] === 'number') {
           contentHelper.appendTextRow(ls`Status Code`, eventData['statusCode']);
-        if (eventData['mimeType'])
+        }
+        if (eventData['mimeType']) {
           contentHelper.appendTextRow(ls`MIME Type`, eventData['mimeType']);
+        }
         if ('priority' in eventData) {
           const priority = PerfUI.uiLabelForNetworkPriority(eventData['priority']);
           contentHelper.appendTextRow(ls`Priority`, priority);
         }
-        if (eventData['encodedDataLength'])
+        if (eventData['encodedDataLength']) {
           contentHelper.appendTextRow(ls`Encoded Data`, ls`${eventData['encodedDataLength']} Bytes`);
-        if (eventData['decodedBodyLength'])
+        }
+        if (eventData['decodedBodyLength']) {
           contentHelper.appendTextRow(ls`Decoded Body`, ls`${eventData['decodedBodyLength']} Bytes`);
+        }
         break;
       case recordTypes.CompileModule:
         contentHelper.appendLocationRow(ls`Module`, event.args['fileName'], 0);
         break;
       case recordTypes.CompileScript:
         url = eventData && eventData['url'];
-        if (url)
+        if (url) {
           contentHelper.appendLocationRow(ls`Script`, url, eventData['lineNumber'], eventData['columnNumber']);
+        }
         contentHelper.appendTextRow(ls`Streamed`, eventData['streamed']);
         const producedCacheSize = eventData && eventData['producedCacheSize'];
-        if (producedCacheSize)
+        if (producedCacheSize) {
           contentHelper.appendTextRow(ls`Produced Cache Size`, producedCacheSize);
+        }
         const cacheConsumeOptions = eventData && eventData['cacheConsumeOptions'];
         if (cacheConsumeOptions) {
           contentHelper.appendTextRow(ls`Cache Consume Options`, cacheConsumeOptions);
@@ -876,8 +923,9 @@ Timeline.TimelineUIUtils = class {
         break;
       case recordTypes.EvaluateScript:
         url = eventData && eventData['url'];
-        if (url)
+        if (url) {
           contentHelper.appendLocationRow(ls`Script`, url, eventData['lineNumber'], eventData['columnNumber']);
+        }
         break;
       case recordTypes.WasmStreamFromResponseCallback:
       case recordTypes.WasmCompiledModule:
@@ -886,14 +934,17 @@ Timeline.TimelineUIUtils = class {
       case recordTypes.WasmModuleCacheInvalid:
         if (eventData) {
           url = event.args['url'];
-          if (url)
+          if (url) {
             contentHelper.appendTextRow(ls`Url`, url);
+          }
           const producedCachedSize = event.args['producedCachedSize'];
-          if (producedCachedSize)
+          if (producedCachedSize) {
             contentHelper.appendTextRow(ls`Produced Cache Size`, producedCachedSize);
+          }
           const consumedCachedSize = event.args['consumedCachedSize'];
-          if (consumedCachedSize)
+          if (consumedCachedSize) {
             contentHelper.appendTextRow(ls`Consumed Cache Size`, consumedCachedSize);
+          }
         }
         break;
       case recordTypes.Paint:
@@ -916,13 +967,15 @@ Timeline.TimelineUIUtils = class {
       case recordTypes.DrawLazyPixelRef:
         relatedNodeLabel = ls`Owner Element`;
         url = timelineData.url;
-        if (url)
+        if (url) {
           contentHelper.appendElementRow(ls`Image URL`, Components.Linkifier.linkifyURL(url));
+        }
         break;
       case recordTypes.ParseAuthorStyleSheet:
         url = eventData['styleSheetUrl'];
-        if (url)
+        if (url) {
           contentHelper.appendElementRow(ls`Stylesheet URL`, Components.Linkifier.linkifyURL(url));
+        }
         break;
       case recordTypes.UpdateLayoutTree:  // We don't want to see default details.
       case recordTypes.RecalculateStyles:
@@ -942,27 +995,32 @@ Timeline.TimelineUIUtils = class {
       case recordTypes.WebSocketReceiveHandshakeResponse:
       case recordTypes.WebSocketDestroy:
         const initiatorData = initiator ? initiator.args['data'] : eventData;
-        if (typeof initiatorData['webSocketURL'] !== 'undefined')
+        if (typeof initiatorData['webSocketURL'] !== 'undefined') {
           contentHelper.appendTextRow(ls`URL`, initiatorData['webSocketURL']);
-        if (typeof initiatorData['webSocketProtocol'] !== 'undefined')
+        }
+        if (typeof initiatorData['webSocketProtocol'] !== 'undefined') {
           contentHelper.appendTextRow(ls`WebSocket Protocol`, initiatorData['webSocketProtocol']);
-        if (typeof eventData['message'] !== 'undefined')
+        }
+        if (typeof eventData['message'] !== 'undefined') {
           contentHelper.appendTextRow(ls`Message`, eventData['message']);
+        }
         break;
       case recordTypes.EmbedderCallback:
         contentHelper.appendTextRow(ls`Callback Function`, eventData['callbackName']);
         break;
       case recordTypes.Animation:
-        if (event.phase === SDK.TracingModel.Phase.NestableAsyncInstant)
+        if (event.phase === SDK.TracingModel.Phase.NestableAsyncInstant) {
           contentHelper.appendTextRow(ls`State`, eventData['state']);
+        }
         break;
       case recordTypes.ParseHTML: {
         const beginData = event.args['beginData'];
         const startLine = beginData['startLine'] - 1;
         const endLine = event.args['endData'] ? event.args['endData']['endLine'] - 1 : undefined;
         url = beginData['url'];
-        if (url)
+        if (url) {
           contentHelper.appendLocationRange(ls`Range`, url, startLine, endLine);
+        }
         break;
       }
 
@@ -997,8 +1055,9 @@ Timeline.TimelineUIUtils = class {
       default: {
         const detailsNode =
             Timeline.TimelineUIUtils.buildDetailsNodeForTraceEvent(event, model.targetByEvent(event), linkifier);
-        if (detailsNode)
+        if (detailsNode) {
           contentHelper.appendElementRow(ls`Details`, detailsNode);
+        }
         break;
       }
     }
@@ -1023,8 +1082,9 @@ Timeline.TimelineUIUtils = class {
     }
 
     if (initiator || timelineData.stackTraceForSelfOrInitiator() ||
-        TimelineModel.InvalidationTracker.invalidationEventsFor(event))
+        TimelineModel.InvalidationTracker.invalidationEventsFor(event)) {
       Timeline.TimelineUIUtils._generateCauses(event, model.targetByEvent(event), relatedNodesMap, contentHelper);
+    }
 
     const stats = {};
     const showPieChart = detailed && Timeline.TimelineUIUtils._aggregatedStatsForTraceEvent(stats, model, event);
@@ -1045,8 +1105,9 @@ Timeline.TimelineUIUtils = class {
    */
   static _maybeAppendProductToDetails(contentHelper, badgePool, url) {
     const parsedURL = url ? url.asParsedURL() : null;
-    if (parsedURL)
+    if (parsedURL) {
       contentHelper.appendElementRow('', badgePool.badgeForURL(parsedURL));
+    }
   }
 
   /**
@@ -1056,8 +1117,9 @@ Timeline.TimelineUIUtils = class {
    * @return {!Object<string, number>}
    */
   static statsForTimeRange(events, startTime, endTime) {
-    if (!events.length)
+    if (!events.length) {
       return {'idle': endTime - startTime};
+    }
 
     buildRangeStatsCacheIfNeeded(events);
     const aggregatedStats = subtractStats(aggregatedStatsAtTime(endTime), aggregatedStatsAtTime(startTime));
@@ -1099,8 +1161,9 @@ Timeline.TimelineUIUtils = class {
       */
     function subtractStats(a, b) {
       const result = Object.assign({}, a);
-      for (const key in b)
+      for (const key in b) {
         result[key] -= b[key];
+      }
       return result;
     }
 
@@ -1108,8 +1171,9 @@ Timeline.TimelineUIUtils = class {
      * @param {!Array<!SDK.TracingModel.Event>} events
      */
     function buildRangeStatsCacheIfNeeded(events) {
-      if (events[Timeline.TimelineUIUtils._categoryBreakdownCacheSymbol])
+      if (events[Timeline.TimelineUIUtils._categoryBreakdownCacheSymbol]) {
         return;
+      }
 
       // aggeregatedStats is a map by categories. For each category there's an array
       // containing sorted time points which records accumulated value of the category.
@@ -1137,8 +1201,9 @@ Timeline.TimelineUIUtils = class {
           statsArrays = {time: [], value: []};
           aggregatedStats[category] = statsArrays;
         }
-        if (statsArrays.time.length && statsArrays.time.peekLast() === time)
+        if (statsArrays.time.length && statsArrays.time.peekLast() === time) {
           return;
+        }
         const lastValue = statsArrays.value.length ? statsArrays.value.peekLast() : 0;
         statsArrays.value.push(lastValue + time - lastTime);
         statsArrays.time.push(time);
@@ -1150,11 +1215,13 @@ Timeline.TimelineUIUtils = class {
        * @param {number} time
        */
       function categoryChange(from, to, time) {
-        if (from)
+        if (from) {
           updateCategory(from, time);
+        }
         lastTime = time;
-        if (to)
+        if (to) {
           updateCategory(to, time);
+        }
       }
 
       /**
@@ -1163,8 +1230,9 @@ Timeline.TimelineUIUtils = class {
       function onStartEvent(e) {
         const category = Timeline.TimelineUIUtils.eventStyle(e).category.name;
         const parentCategory = categoryStack.length ? categoryStack.peekLast() : null;
-        if (category !== parentCategory)
+        if (category !== parentCategory) {
           categoryChange(parentCategory, category, e.startTime);
+        }
         categoryStack.push(category);
       }
 
@@ -1174,8 +1242,9 @@ Timeline.TimelineUIUtils = class {
       function onEndEvent(e) {
         const category = categoryStack.pop();
         const parentCategory = categoryStack.length ? categoryStack.peekLast() : null;
-        if (category !== parentCategory)
+        if (category !== parentCategory) {
           categoryChange(category, parentCategory, e.endTime);
+        }
       }
 
       const obj = /** @type {!Object} */ (events);
@@ -1197,8 +1266,9 @@ Timeline.TimelineUIUtils = class {
     const color = Timeline.TimelineUIUtils.networkCategoryColor(category);
     contentHelper.addSection(ls`Network request`, color);
 
-    if (request.url)
+    if (request.url) {
       contentHelper.appendElementRow(ls`URL`, Components.Linkifier.linkifyURL(request.url));
+    }
     Timeline.TimelineUIUtils._maybeAppendProductToDetails(contentHelper, badgePool, request.url);
 
     // The time from queueing the request until resource processing is finished.
@@ -1219,44 +1289,52 @@ Timeline.TimelineUIUtils = class {
       contentHelper.appendTextRow(ls`Duration`, textRow);
     }
 
-    if (request.requestMethod)
+    if (request.requestMethod) {
       contentHelper.appendTextRow(ls`Request Method`, request.requestMethod);
+    }
     if (typeof request.priority === 'string') {
       const priority =
           PerfUI.uiLabelForNetworkPriority(/** @type {!Protocol.Network.ResourcePriority} */ (request.priority));
       contentHelper.appendTextRow(ls`Priority`, priority);
     }
-    if (request.mimeType)
+    if (request.mimeType) {
       contentHelper.appendTextRow(ls`Mime Type`, request.mimeType);
+    }
     let lengthText = '';
-    if (request.memoryCached())
+    if (request.memoryCached()) {
       lengthText += ls` (from memory cache)`;
-    else if (request.cached())
+    } else if (request.cached()) {
       lengthText += ls` (from cache)`;
-    else if (request.timing && request.timing.pushStart)
+    } else if (request.timing && request.timing.pushStart) {
       lengthText += ls` (from push)`;
-    if (request.fromServiceWorker)
+    }
+    if (request.fromServiceWorker) {
       lengthText += ls` (from service worker)`;
-    if (request.encodedDataLength || !lengthText)
+    }
+    if (request.encodedDataLength || !lengthText) {
       lengthText = `${Number.bytesToString(request.encodedDataLength)}${lengthText}`;
+    }
     contentHelper.appendTextRow(ls`Encoded Data`, lengthText);
-    if (request.decodedBodyLength)
+    if (request.decodedBodyLength) {
       contentHelper.appendTextRow(ls`Decoded Body`, Number.bytesToString(request.decodedBodyLength));
+    }
     const title = ls`Initiator`;
     const sendRequest = request.children[0];
     const topFrame = TimelineModel.TimelineData.forEvent(sendRequest).topFrame();
     if (topFrame) {
       const link = linkifier.maybeLinkifyConsoleCallFrame(target, topFrame);
-      if (link)
+      if (link) {
         contentHelper.appendElementRow(title, link);
+      }
     } else {
       const initiator = TimelineModel.TimelineData.forEvent(sendRequest).initiator();
       if (initiator) {
         const initiatorURL = TimelineModel.TimelineData.forEvent(initiator).url;
         if (initiatorURL) {
           const link = linkifier.maybeLinkifyScriptLocation(target, null, initiatorURL, 0);
-          if (link)
+          if (link) {
             contentHelper.appendElementRow(title, link);
+          }
         }
       }
     }
@@ -1265,8 +1343,9 @@ Timeline.TimelineUIUtils = class {
       request.previewElement = await Components.ImagePreview.build(
           target, request.url, false, {imageAltText: Components.ImagePreview.defaultAltTextForImageURL(request.url)});
     }
-    if (request.previewElement)
+    if (request.previewElement) {
       contentHelper.appendElementRow(ls`Preview`, request.previewElement);
+    }
     return contentHelper.fragment;
   }
 
@@ -1355,10 +1434,11 @@ Timeline.TimelineUIUtils = class {
     const invalidationTrackingEvents = TimelineModel.InvalidationTracker.invalidationEventsFor(event);
     const invalidations = {};
     invalidationTrackingEvents.forEach(function(invalidation) {
-      if (!invalidations[invalidation.type])
+      if (!invalidations[invalidation.type]) {
         invalidations[invalidation.type] = [invalidation];
-      else
+      } else {
         invalidations[invalidation.type].push(invalidation);
+      }
     });
 
     Object.keys(invalidations).forEach(function(type) {
@@ -1410,8 +1490,9 @@ Timeline.TimelineUIUtils = class {
       for (let index = 0; index < invalidations.length; index++) {
         const invalidation = invalidations[index];
         let causeKey = '';
-        if (invalidation.cause.reason)
+        if (invalidation.cause.reason) {
           causeKey += invalidation.cause.reason + '.';
+        }
         if (invalidation.cause.stackTrace) {
           invalidation.cause.stackTrace.forEach(function(stackFrame) {
             causeKey += stackFrame['functionName'] + '.';
@@ -1422,10 +1503,11 @@ Timeline.TimelineUIUtils = class {
           });
         }
 
-        if (causeToInvalidationMap.has(causeKey))
+        if (causeToInvalidationMap.has(causeKey)) {
           causeToInvalidationMap.get(causeKey).push(invalidation);
-        else
+        } else {
           causeToInvalidationMap.set(causeKey, [invalidation]);
+        }
       }
       return causeToInvalidationMap.valuesArray();
     }
@@ -1457,21 +1539,26 @@ Timeline.TimelineUIUtils = class {
     }
     const index = events.binaryIndexOf(event.startTime, eventComparator);
     // Not a main thread event?
-    if (index < 0)
+    if (index < 0) {
       return false;
+    }
     let hasChildren = false;
     const endTime = event.endTime;
     if (endTime) {
       for (let i = index; i < events.length; i++) {
         const nextEvent = events[i];
-        if (nextEvent.startTime >= endTime)
+        if (nextEvent.startTime >= endTime) {
           break;
-        if (!nextEvent.selfTime)
+        }
+        if (!nextEvent.selfTime) {
           continue;
-        if (nextEvent.thread !== event.thread)
+        }
+        if (nextEvent.thread !== event.thread) {
           continue;
-        if (i > index)
+        }
+        if (i > index) {
           hasChildren = true;
+        }
         const categoryName = Timeline.TimelineUIUtils.eventStyle(nextEvent).category.name;
         total[categoryName] = (total[categoryName] || 0) + nextEvent.selfTime;
       }
@@ -1479,8 +1566,9 @@ Timeline.TimelineUIUtils = class {
     if (SDK.TracingModel.isAsyncPhase(event.phase)) {
       if (event.endTime) {
         let aggregatedTotal = 0;
-        for (const categoryName in total)
+        for (const categoryName in total) {
           aggregatedTotal += total[categoryName];
+        }
         total['idle'] = Math.max(0, event.endTime - event.startTime - aggregatedTotal);
       }
       return false;
@@ -1495,13 +1583,15 @@ Timeline.TimelineUIUtils = class {
    */
   static async buildPicturePreviewContent(event, target) {
     const snapshotWithRect = await new TimelineModel.LayerPaintEvent(event, target).snapshotPromise();
-    if (!snapshotWithRect)
+    if (!snapshotWithRect) {
       return null;
+    }
     const imageURLPromise = snapshotWithRect.snapshot.replay();
     snapshotWithRect.snapshot.release();
     const imageURL = await imageURLPromise;
-    if (!imageURL)
+    if (!imageURL) {
       return null;
+    }
     const container = createElement('div');
     UI.appendStyle(container, 'components/imagePreview.css');
     container.classList.add('image-preview-container', 'vbox', 'link');
@@ -1526,8 +1616,9 @@ Timeline.TimelineUIUtils = class {
     const startTime = Number.millisToString(event.startTime - zeroTime);
     eventDivider.title = Common.UIString('%s at %s', Timeline.TimelineUIUtils.eventTitle(event), startTime);
     const style = Timeline.TimelineUIUtils.markerStyleForEvent(event);
-    if (style.tall)
+    if (style.tall) {
       eventDivider.style.backgroundColor = style.color;
+    }
     return eventDivider;
   }
 
@@ -1538,8 +1629,9 @@ Timeline.TimelineUIUtils = class {
     const eventStyles = Timeline.TimelineUIUtils._initEventStyles();
     const result = [];
     for (const name in eventStyles) {
-      if (!eventStyles[name].hidden)
+      if (!eventStyles[name].hidden) {
         result.push(name);
+      }
     }
     return result;
   }
@@ -1555,8 +1647,9 @@ Timeline.TimelineUIUtils = class {
    * @return {!Object.<string, !Timeline.TimelineCategory>}
    */
   static categories() {
-    if (Timeline.TimelineUIUtils._categories)
+    if (Timeline.TimelineUIUtils._categories) {
       return Timeline.TimelineUIUtils._categories;
+    }
     Timeline.TimelineUIUtils._categories = {
       loading: new Timeline.TimelineCategory('loading', ls`Loading`, true, 'hsl(214, 67%, 74%)', 'hsl(214, 67%, 66%)'),
       scripting:
@@ -1581,8 +1674,9 @@ Timeline.TimelineUIUtils = class {
    */
   static generatePieChart(aggregatedStats, selfCategory, selfTime) {
     let total = 0;
-    for (const categoryName in aggregatedStats)
+    for (const categoryName in aggregatedStats) {
       total += aggregatedStats[categoryName];
+    }
 
     const element = createElementWithClass('div', 'timeline-details-view-pie-chart-wrapper hbox');
     const pieChart = new PerfUI.PieChart({
@@ -1603,8 +1697,9 @@ Timeline.TimelineUIUtils = class {
      * @param {string} color
      */
     function appendLegendRow(name, title, value, color) {
-      if (!value)
+      if (!value) {
         return;
+      }
       pieChart.addSlice(value, color, title);
     }
 
@@ -1626,8 +1721,9 @@ Timeline.TimelineUIUtils = class {
     // Add other categories.
     for (const categoryName in Timeline.TimelineUIUtils.categories()) {
       const category = Timeline.TimelineUIUtils.categories()[categoryName];
-      if (category === selfCategory)
+      if (category === selfCategory) {
         continue;
+      }
       appendLegendRow(category.name, category.title, aggregatedStats[category.name], category.childColor);
     }
     return element;
@@ -1656,8 +1752,9 @@ Timeline.TimelineUIUtils = class {
       filmStripPreview.addEventListener('click', frameClicked.bind(null, filmStripFrame), false);
     }
 
-    if (frame.layerTree)
+    if (frame.layerTree) {
       contentHelper.appendElementRow(ls`Layer tree`, Components.Linkifier.linkifyRevealable(frame.layerTree, ls`Show`));
+    }
 
     /**
      * @param {!SDK.FilmStripModel.Frame} filmStripFrame
@@ -1677,8 +1774,9 @@ Timeline.TimelineUIUtils = class {
     const durationText = Common.UIString(
         '%s (at %s)', Number.millisToString(frame.endTime - frame.startTime, true),
         Number.millisToString(frame.startTimeOffset, true));
-    if (!frame.hasWarnings())
+    if (!frame.hasWarnings()) {
       return UI.formatLocalized('%s', [durationText]);
+    }
 
     const link = UI.XLink.create('https://developers.google.com/web/fundamentals/performance/rendering/', ls`jank`);
     return UI.formatLocalized('%s. Long frame times are an indication of %s', [durationText, link]);
@@ -1722,8 +1820,9 @@ Timeline.TimelineUIUtils = class {
    * @return {!Array.<!Timeline.TimelineUIUtils.EventDispatchTypeDescriptor>}
    */
   static eventDispatchDesciptors() {
-    if (Timeline.TimelineUIUtils._eventDispatchDesciptors)
+    if (Timeline.TimelineUIUtils._eventDispatchDesciptors) {
       return Timeline.TimelineUIUtils._eventDispatchDesciptors;
+    }
     const lightOrange = 'hsl(40,100%,80%)';
     const orange = 'hsl(40,100%,50%)';
     const green = 'hsl(90,100%,40%)';
@@ -1867,8 +1966,9 @@ Timeline.TimelineUIUtils = class {
   static eventWarning(event, warningType) {
     const timelineData = TimelineModel.TimelineData.forEvent(event);
     const warning = warningType || timelineData.warning;
-    if (!warning)
+    if (!warning) {
       return null;
+    }
     const warnings = TimelineModel.TimelineModel.WarningType;
     const span = createElement('span');
     const eventData = event.args['data'];
@@ -1914,8 +2014,9 @@ Timeline.TimelineUIUtils = class {
    */
   static displayNameForFrame(frame, trimAt) {
     const url = frame.url;
-    if (!trimAt)
+    if (!trimAt) {
       trimAt = 30;
+    }
     return url.startsWith('about:') ? `"${frame.name.trimMiddle(trimAt)}"` : frame.url.trimEnd(trimAt);
   }
 };
@@ -1985,8 +2086,9 @@ Timeline.TimelineUIUtils.InvalidationsGroupElement = class extends UI.TreeElemen
     const topFrame = first.cause.stackTrace && first.cause.stackTrace[0];
 
     const truncatedNodesElement = this._getTruncatedNodesElement(this._invalidations);
-    if (truncatedNodesElement === null)
+    if (truncatedNodesElement === null) {
       return UI.formatLocalized(reason, []);
+    }
 
     const title = UI.formatLocalized('%s for %s', [reason, truncatedNodesElement]);
 
@@ -2027,8 +2129,9 @@ Timeline.TimelineUIUtils.InvalidationsGroupElement = class extends UI.TreeElemen
       const invalidation = this._invalidations[i];
       const invalidationNode = this._createInvalidationNode(invalidation, true);
       if (invalidationNode) {
-        if (!firstNode)
+        if (!firstNode) {
           nodeList.createTextChild(ls`, `);
+        }
         firstNode = false;
 
         nodeList.appendChild(invalidationNode);
@@ -2214,8 +2317,9 @@ Timeline.TimelinePopupContentHelper = class {
     text.createTextChild(String(content));
     const cell = createElement('td');
     cell.className = 'timeline-details';
-    if (styleName)
+    if (styleName) {
       cell.className += ' ' + styleName;
+    }
     cell.textContent = content;
     return cell;
   }
@@ -2241,10 +2345,11 @@ Timeline.TimelinePopupContentHelper = class {
     row.appendChild(titleCell);
     const cell = createElement('td');
     cell.className = 'details';
-    if (content instanceof Node)
+    if (content instanceof Node) {
       cell.appendChild(content);
-    else
+    } else {
       cell.createTextChild(content || '');
+    }
     row.appendChild(cell);
     this._contentTable.appendChild(row);
   }
@@ -2283,8 +2388,9 @@ Timeline.TimelineDetailsContentHelper = class {
 
     if (title) {
       const titleElement = this.element.createChild('div', 'timeline-details-chip-title');
-      if (swatchColor)
+      if (swatchColor) {
         titleElement.createChild('div').style.backgroundColor = swatchColor;
+      }
       titleElement.createTextChild(title);
     }
 
@@ -2317,17 +2423,20 @@ Timeline.TimelineDetailsContentHelper = class {
    */
   appendElementRow(title, content, isWarning, isStacked) {
     const rowElement = this._tableElement.createChild('div', 'timeline-details-view-row');
-    if (isWarning)
+    if (isWarning) {
       rowElement.classList.add('timeline-details-warning');
-    if (isStacked)
+    }
+    if (isStacked) {
       rowElement.classList.add('timeline-details-stack-values');
+    }
     const titleElement = rowElement.createChild('div', 'timeline-details-view-row-title');
     titleElement.textContent = title;
     const valueElement = rowElement.createChild('div', 'timeline-details-view-row-value');
-    if (content instanceof Node)
+    if (content instanceof Node) {
       valueElement.appendChild(content);
-    else
+    } else {
       valueElement.createTextChild(content || '');
+    }
   }
 
   /**
@@ -2337,11 +2446,13 @@ Timeline.TimelineDetailsContentHelper = class {
    * @param {number=} startColumn
    */
   appendLocationRow(title, url, startLine, startColumn) {
-    if (!this._linkifier || !this._target)
+    if (!this._linkifier || !this._target) {
       return;
+    }
     const link = this._linkifier.maybeLinkifyScriptLocation(this._target, null, url, startLine, startColumn);
-    if (!link)
+    if (!link) {
       return;
+    }
     this.appendElementRow(title, link);
   }
 
@@ -2352,12 +2463,14 @@ Timeline.TimelineDetailsContentHelper = class {
    * @param {number=} endLine
    */
   appendLocationRange(title, url, startLine, endLine) {
-    if (!this._linkifier || !this._target)
+    if (!this._linkifier || !this._target) {
       return;
+    }
     const locationContent = createElement('span');
     const link = this._linkifier.maybeLinkifyScriptLocation(this._target, null, url, startLine);
-    if (!link)
+    if (!link) {
       return;
+    }
     locationContent.appendChild(link);
     locationContent.createTextChild(String.sprintf(' [%s\u2026%s]', startLine + 1, endLine + 1 || ''));
     this.appendElementRow(title, locationContent);
@@ -2368,8 +2481,9 @@ Timeline.TimelineDetailsContentHelper = class {
    * @param {!Protocol.Runtime.StackTrace} stackTrace
    */
   appendStackTrace(title, stackTrace) {
-    if (!this._linkifier || !this._target)
+    if (!this._linkifier || !this._target) {
       return;
+    }
 
     const rowElement = this._tableElement.createChild('div', 'timeline-details-view-row');
     rowElement.createChild('div', 'timeline-details-view-row-title').textContent = title;
@@ -2381,8 +2495,9 @@ Timeline.TimelineDetailsContentHelper = class {
    * @param {!Protocol.Runtime.StackTrace} stackTrace
    */
   createChildStackTraceElement(parentElement, stackTrace) {
-    if (!this._linkifier || !this._target)
+    if (!this._linkifier || !this._target) {
       return;
+    }
     parentElement.classList.add('timeline-details-stack-values');
     const stackTraceElement =
         parentElement.createChild('div', 'timeline-details-view-row-value timeline-details-view-row-stack-trace');
@@ -2397,8 +2512,9 @@ Timeline.TimelineDetailsContentHelper = class {
    */
   appendWarningRow(event, warningType) {
     const warning = Timeline.TimelineUIUtils.eventWarning(event, warningType);
-    if (warning)
+    if (warning) {
       this.appendElementRow(ls`Warning`, warning, true);
+    }
   }
 };
 

@@ -13,8 +13,9 @@ QuickOpen.HelpQuickOpen = class extends QuickOpen.FilteredListWidget.Provider {
    * @param {!Runtime.Extension} extension
    */
   _addProvider(extension) {
-    if (extension.title())
+    if (extension.title()) {
       this._providers.push({prefix: extension.descriptor()['prefix'], title: extension.title()});
+    }
   }
 
   /**
@@ -64,8 +65,9 @@ QuickOpen.HelpQuickOpen = class extends QuickOpen.FilteredListWidget.Provider {
    * @param {string} promptValue
    */
   selectItem(itemIndex, promptValue) {
-    if (itemIndex !== null)
+    if (itemIndex !== null) {
       QuickOpen.QuickOpen.show(this._providers[itemIndex].prefix);
+    }
   }
 
   /**

@@ -54,10 +54,12 @@ Sources.EditingLocationHistoryManager = class {
    * @param {!Common.Event} event
    */
   _onJumpHappened(event) {
-    if (event.data.from)
+    if (event.data.from) {
       this._updateActiveState(event.data.from);
-    if (event.data.to)
+    }
+    if (event.data.to) {
       this._pushActiveState(event.data.to);
+    }
   }
 
   rollback() {
@@ -70,15 +72,17 @@ Sources.EditingLocationHistoryManager = class {
 
   updateCurrentState() {
     const sourceFrame = this._currentSourceFrameCallback();
-    if (!sourceFrame)
+    if (!sourceFrame) {
       return;
+    }
     this._updateActiveState(sourceFrame.textEditor.selection());
   }
 
   pushNewState() {
     const sourceFrame = this._currentSourceFrameCallback();
-    if (!sourceFrame)
+    if (!sourceFrame) {
       return;
+    }
     this._pushActiveState(sourceFrame.textEditor.selection());
   }
 
@@ -87,11 +91,13 @@ Sources.EditingLocationHistoryManager = class {
    */
   _updateActiveState(selection) {
     const active = this._historyManager.active();
-    if (!active)
+    if (!active) {
       return;
+    }
     const sourceFrame = this._currentSourceFrameCallback();
-    if (!sourceFrame)
+    if (!sourceFrame) {
       return;
+    }
     const entry = new Sources.EditingLocationHistoryEntry(this._sourcesView, this, sourceFrame, selection);
     active.merge(entry);
   }
@@ -101,8 +107,9 @@ Sources.EditingLocationHistoryManager = class {
    */
   _pushActiveState(selection) {
     const sourceFrame = this._currentSourceFrameCallback();
-    if (!sourceFrame)
+    if (!sourceFrame) {
       return;
+    }
     const entry = new Sources.EditingLocationHistoryEntry(this._sourcesView, this, sourceFrame, selection);
     this._historyManager.push(entry);
   }
@@ -147,8 +154,9 @@ Sources.EditingLocationHistoryEntry = class {
    * @param {!Sources.HistoryEntry} entry
    */
   merge(entry) {
-    if (this._projectId !== entry._projectId || this._url !== entry._url)
+    if (this._projectId !== entry._projectId || this._url !== entry._url) {
       return;
+    }
     this._positionHandle = entry._positionHandle;
   }
 
@@ -176,8 +184,9 @@ Sources.EditingLocationHistoryEntry = class {
   reveal() {
     const position = this._positionHandle.resolve();
     const uiSourceCode = Workspace.workspace.uiSourceCode(this._projectId, this._url);
-    if (!position || !uiSourceCode)
+    if (!position || !uiSourceCode) {
       return;
+    }
 
     this._editingLocationManager.updateCurrentState();
     this._sourcesView.showSourceLocation(uiSourceCode, position.lineNumber, position.columnNumber);

@@ -59,8 +59,9 @@ Profiler.IsolateSelector = class extends UI.VBox {
     const index = item.model().target() === SDK.targetManager.mainTarget() ? 0 : this._items.length;
     this._items.insert(index, item);
     this._itemByIsolate.set(isolate, item);
-    if (this._items.length === 1)
+    if (this._items.length === 1) {
       this._list.selectItem(item);
+    }
     this._update();
   }
 
@@ -91,12 +92,14 @@ Profiler.IsolateSelector = class extends UI.VBox {
   _targetChanged(event) {
     const target = /** @type {!SDK.Target} */ (event.data);
     const model = target.model(SDK.RuntimeModel);
-    if (!model)
+    if (!model) {
       return;
+    }
     const isolate = SDK.isolateManager.isolateByModel(model);
     const item = isolate && this._itemByIsolate.get(isolate);
-    if (item)
+    if (item) {
       item.updateTitle();
+    }
   }
 
   /**
@@ -105,8 +108,9 @@ Profiler.IsolateSelector = class extends UI.VBox {
   _heapStatsChanged(event) {
     const isolate = /** @type {!SDK.IsolateManager.Isolate} */ (event.data);
     const listItem = this._itemByIsolate.get(isolate);
-    if (listItem)
+    if (listItem) {
       listItem.updateStats();
+    }
     this._updateTotal();
   }
 
@@ -128,8 +132,9 @@ Profiler.IsolateSelector = class extends UI.VBox {
   static _formatTrendElement(trendValueMs, element) {
     const changeRateBytesPerSecond = trendValueMs * 1e3;
     const changeRateThresholdBytesPerSecond = 1024;
-    if (Math.abs(changeRateBytesPerSecond) < changeRateThresholdBytesPerSecond)
+    if (Math.abs(changeRateBytesPerSecond) < changeRateThresholdBytesPerSecond) {
       return;
+    }
     const changeRateText = Number.bytesToString(Math.abs(changeRateBytesPerSecond));
     const changeText = changeRateBytesPerSecond > 0 ? ls`\u2B06${changeRateText}/s` : ls`\u2B07${changeRateText}/s`;
     element.classList.toggle('increasing', changeRateBytesPerSecond > 0);
@@ -177,10 +182,12 @@ Profiler.IsolateSelector = class extends UI.VBox {
    * @param {?Element} toElement
    */
   selectedItemChanged(from, to, fromElement, toElement) {
-    if (fromElement)
+    if (fromElement) {
       fromElement.classList.remove('selected');
-    if (toElement)
+    }
+    if (toElement) {
       toElement.classList.add('selected');
+    }
     const model = to && to.model();
     UI.context.setFlavor(SDK.HeapProfilerModel, model && model.heapProfilerModel());
     UI.context.setFlavor(SDK.CPUProfilerModel, model && model.target().model(SDK.CPUProfilerModel));

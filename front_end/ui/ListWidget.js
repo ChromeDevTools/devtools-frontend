@@ -52,8 +52,9 @@ UI.ListWidget = class extends UI.VBox {
    * @param {boolean} editable
    */
   appendItem(item, editable) {
-    if (this._lastSeparator && this._items.length)
+    if (this._lastSeparator && this._items.length) {
       this._list.appendChild(createElementWithClass('div', 'list-separator'));
+    }
     this._lastSeparator = false;
 
     this._items.push(item);
@@ -77,8 +78,9 @@ UI.ListWidget = class extends UI.VBox {
    * @param {number} index
    */
   removeItem(index) {
-    if (this._editItem === this._items[index])
+    if (this._editItem === this._items[index]) {
       this._stopEditing();
+    }
 
     const element = this._elements[index];
 
@@ -88,10 +90,12 @@ UI.ListWidget = class extends UI.VBox {
     const next = element.nextElementSibling;
     const nextIsSeparator = next && next.classList.contains('list-separator');
 
-    if (previousIsSeparator && (nextIsSeparator || !next))
+    if (previousIsSeparator && (nextIsSeparator || !next)) {
       previous.remove();
-    if (nextIsSeparator && !previous)
+    }
+    if (nextIsSeparator && !previous) {
       next.remove();
+    }
     element.remove();
 
     this._elements.splice(index, 1);
@@ -167,13 +171,15 @@ UI.ListWidget = class extends UI.VBox {
   }
 
   _updatePlaceholder() {
-    if (!this._emptyPlaceholder)
+    if (!this._emptyPlaceholder) {
       return;
+    }
 
-    if (!this._elements.length && !this._editor)
+    if (!this._elements.length && !this._editor) {
       this._list.appendChild(this._emptyPlaceholder);
-    else
+    } else {
       this._emptyPlaceholder.remove();
+    }
   }
 
   /**
@@ -182,8 +188,9 @@ UI.ListWidget = class extends UI.VBox {
    * @param {?Element} insertionPoint
    */
   _startEditing(item, element, insertionPoint) {
-    if (element && this._editElement === element)
+    if (element && this._editElement === element) {
       return;
+    }
 
     this._stopEditing();
     this._focusRestorer = new UI.ElementFocusRestorer(this.element);
@@ -191,8 +198,9 @@ UI.ListWidget = class extends UI.VBox {
     this._list.classList.add('list-editing');
     this._editItem = item;
     this._editElement = element;
-    if (element)
+    if (element) {
       element.classList.add('hidden');
+    }
 
     const index = element ? this._elements.indexOf(element) : -1;
     this._editor = this._delegate.beginEdit(item);
@@ -213,12 +221,15 @@ UI.ListWidget = class extends UI.VBox {
 
   _stopEditing() {
     this._list.classList.remove('list-editing');
-    if (this._focusRestorer)
+    if (this._focusRestorer) {
       this._focusRestorer.restore();
-    if (this._editElement)
+    }
+    if (this._editElement) {
       this._editElement.classList.remove('hidden');
-    if (this._editor && this._editor.element.parentElement)
+    }
+    if (this._editor && this._editor.element.parentElement) {
       this._editor.element.remove();
+    }
 
     this._editor = null;
     this._editItem = null;
@@ -383,13 +394,15 @@ UI.ListWidget.Editor = class {
       const {valid, errorMessage} = this._validators[index].call(null, this._item, this._index, input);
 
       input.classList.toggle('error-input', !valid && !forceValid);
-      if (valid || forceValid)
+      if (valid || forceValid) {
         UI.ARIAUtils.setInvalid(input, false);
-      else
+      } else {
         UI.ARIAUtils.setInvalid(input, true);
+      }
 
-      if (!forceValid && errorMessage && !this._errorMessageContainer.textContent)
+      if (!forceValid && errorMessage && !this._errorMessageContainer.textContent) {
         this._errorMessageContainer.textContent = errorMessage;
+      }
 
       allValid &= valid;
     }
@@ -411,14 +424,16 @@ UI.ListWidget.Editor = class {
 
     this._commitButton.textContent = commitButtonTitle;
     this.element.scrollIntoViewIfNeeded(false);
-    if (this._controls.length)
+    if (this._controls.length) {
       this._controls[0].focus();
+    }
     this._validateControls(true);
   }
 
   _commitClicked() {
-    if (this._commitButton.disabled)
+    if (this._commitButton.disabled) {
       return;
+    }
 
     const commit = this._commit;
     this._commit = null;

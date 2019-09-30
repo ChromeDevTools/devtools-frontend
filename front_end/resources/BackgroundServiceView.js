@@ -127,8 +127,9 @@ Resources.BackgroundServiceView = class extends UI.VBox {
   _refreshView() {
     this._clearView();
     const events = this._model.getEvents(this._serviceName).filter(event => this._acceptEvent(event));
-    for (const event of events)
+    for (const event of events) {
       this._addEvent(event);
+    }
   }
 
   /**
@@ -161,11 +162,13 @@ Resources.BackgroundServiceView = class extends UI.VBox {
    */
   _onRecordingStateChanged(event) {
     const state = /** @type {!Resources.BackgroundServiceModel.RecordingState} */ (event.data);
-    if (state.serviceName !== this._serviceName)
+    if (state.serviceName !== this._serviceName) {
       return;
+    }
 
-    if (state.isRecording === this._recordButton.toggled())
+    if (state.isRecording === this._recordButton.toggled()) {
       return;
+    }
 
     this._recordButton.setToggled(state.isRecording);
     this._showPreview(this._selectedEventNode);
@@ -176,15 +179,17 @@ Resources.BackgroundServiceView = class extends UI.VBox {
    */
   _onEventReceived(event) {
     const serviceEvent = /** @type {!Protocol.BackgroundService.BackgroundServiceEvent} */ (event.data);
-    if (!this._acceptEvent(serviceEvent))
+    if (!this._acceptEvent(serviceEvent)) {
       return;
+    }
     this._addEvent(serviceEvent);
   }
 
   _onOriginChanged() {
     // No need to refresh the view if we are already showing all events.
-    if (this._originCheckbox.checked())
+    if (this._originCheckbox.checked()) {
       return;
+    }
     this._refreshView();
   }
 
@@ -234,8 +239,9 @@ Resources.BackgroundServiceView = class extends UI.VBox {
 
     // Try to get the scope of the Service Worker registration to be more user-friendly.
     const registration = this._serviceWorkerManager.registrations().get(serviceEvent.serviceWorkerRegistrationId);
-    if (registration)
+    if (registration) {
       swScope = registration.scopeURL.substr(registration.securityOrigin.length);
+    }
 
     return {
       id: this._dataGrid.rootNode().children.length + 1,
@@ -253,11 +259,13 @@ Resources.BackgroundServiceView = class extends UI.VBox {
    * @return {boolean}
    */
   _acceptEvent(event) {
-    if (event.service !== this._serviceName)
+    if (event.service !== this._serviceName) {
       return false;
+    }
 
-    if (this._originCheckbox.checked())
+    if (this._originCheckbox.checked()) {
       return true;
+    }
 
     // Trim the trailing '/'.
     const origin = event.origin.substr(0, event.origin.length - 1);
@@ -296,13 +304,15 @@ Resources.BackgroundServiceView = class extends UI.VBox {
    * @param {?Resources.BackgroundServiceView.EventDataNode} dataNode
    */
   _showPreview(dataNode) {
-    if (this._selectedEventNode && this._selectedEventNode === dataNode)
+    if (this._selectedEventNode && this._selectedEventNode === dataNode) {
       return;
+    }
 
     this._selectedEventNode = dataNode;
 
-    if (this._preview)
+    if (this._preview) {
       this._preview.detach();
+    }
 
     if (this._selectedEventNode) {
       this._preview = this._selectedEventNode.createPreview();
@@ -349,8 +359,9 @@ Resources.BackgroundServiceView = class extends UI.VBox {
     const stream = new Bindings.FileOutputStream();
 
     const accepted = await stream.open(fileName);
-    if (!accepted)
+    if (!accepted) {
       return;
+    }
 
     const events = this._model.getEvents(this._serviceName).filter(event => this._acceptEvent(event));
     await stream.write(JSON.stringify(events, undefined, 2));

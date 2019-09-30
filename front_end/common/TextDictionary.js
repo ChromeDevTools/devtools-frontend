@@ -53,8 +53,9 @@ export default class TextDictionary {
    */
   removeWord(word) {
     let count = this._words.get(word) || 0;
-    if (!count)
+    if (!count) {
       return;
+    }
     if (count === 1) {
       this._words.delete(word);
       this._index.remove(word);

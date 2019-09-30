@@ -107,8 +107,9 @@ Persistence.Persistence = class extends Common.Object {
    * @param {!Persistence.PersistenceBinding} binding
    */
   _innerRemoveBinding(binding) {
-    if (binding.network[Persistence.Persistence._binding] !== binding)
+    if (binding.network[Persistence.Persistence._binding] !== binding) {
       return;
+    }
     console.assert(
         binding.network[Persistence.Persistence._binding] === binding.fileSystem[Persistence.Persistence._binding],
         'ERROR: inconsistent binding for networkURL ' + binding.network.url());
@@ -163,8 +164,9 @@ Persistence.Persistence = class extends Common.Object {
    */
   _syncWorkingCopy(uiSourceCode) {
     const binding = uiSourceCode[Persistence.Persistence._binding];
-    if (!binding || binding[Persistence.Persistence._muteWorkingCopy])
+    if (!binding || binding[Persistence.Persistence._muteWorkingCopy]) {
       return;
+    }
     const other = binding.network === uiSourceCode ? binding.fileSystem : binding.network;
     if (!uiSourceCode.isDirty()) {
       binding[Persistence.Persistence._muteWorkingCopy] = true;
@@ -214,8 +216,9 @@ Persistence.Persistence = class extends Common.Object {
    */
   syncContent(uiSourceCode, newContent, encoded) {
     const binding = uiSourceCode[Persistence.Persistence._binding];
-    if (!binding || binding[Persistence.Persistence._muteCommit])
+    if (!binding || binding[Persistence.Persistence._muteCommit]) {
       return;
+    }
     const other = binding.network === uiSourceCode ? binding.fileSystem : binding.network;
     const target = Bindings.NetworkProject.targetForUISourceCode(binding.network);
     if (target.type() === SDK.Target.Type.Node) {
@@ -252,14 +255,17 @@ Persistence.Persistence = class extends Common.Object {
         newContent = newContent.substring(
             Persistence.Persistence._NodePrefix.length, newContent.length - Persistence.Persistence._NodeSuffix.length);
       }
-      if (currentContent.startsWith(Persistence.Persistence._NodeShebang))
+      if (currentContent.startsWith(Persistence.Persistence._NodeShebang)) {
         newContent = Persistence.Persistence._NodeShebang + newContent;
+      }
     } else {
-      if (newContent.startsWith(Persistence.Persistence._NodeShebang))
+      if (newContent.startsWith(Persistence.Persistence._NodeShebang)) {
         newContent = newContent.substring(Persistence.Persistence._NodeShebang.length);
+      }
       if (currentContent.startsWith(Persistence.Persistence._NodePrefix) &&
-          currentContent.endsWith(Persistence.Persistence._NodeSuffix))
+          currentContent.endsWith(Persistence.Persistence._NodeSuffix)) {
         newContent = Persistence.Persistence._NodePrefix + newContent + Persistence.Persistence._NodeSuffix;
+      }
     }
     return newContent;
   }
@@ -286,12 +292,15 @@ Persistence.Persistence = class extends Common.Object {
    * @return {boolean}
    */
   hasUnsavedCommittedChanges(uiSourceCode) {
-    if (this._workspace.hasResourceContentTrackingExtensions())
+    if (this._workspace.hasResourceContentTrackingExtensions()) {
       return false;
-    if (uiSourceCode.project().canSetFileContent())
+    }
+    if (uiSourceCode.project().canSetFileContent()) {
       return false;
-    if (uiSourceCode[Persistence.Persistence._binding])
+    }
+    if (uiSourceCode[Persistence.Persistence._binding]) {
       return false;
+    }
     return !!uiSourceCode.hasCommits();
   }
 
@@ -323,11 +332,13 @@ Persistence.Persistence = class extends Common.Object {
    * @param {!Workspace.UISourceCode} uiSourceCode
    */
   _notifyBindingEvent(uiSourceCode) {
-    if (!this._subscribedBindingEventListeners.has(uiSourceCode))
+    if (!this._subscribedBindingEventListeners.has(uiSourceCode)) {
       return;
+    }
     const listeners = Array.from(this._subscribedBindingEventListeners.get(uiSourceCode));
-    for (const listener of listeners)
+    for (const listener of listeners) {
       listener.call(null);
+    }
   }
 
   /**
@@ -368,10 +379,11 @@ Persistence.Persistence = class extends Common.Object {
     for (const token of filePath.split('/')) {
       relative += token + '/';
       const count = this._filePathPrefixesToBindingCount.get(relative);
-      if (count === 1)
+      if (count === 1) {
         this._filePathPrefixesToBindingCount.delete(relative);
-      else
+      } else {
         this._filePathPrefixesToBindingCount.set(relative, count - 1);
+      }
     }
   }
 
@@ -380,8 +392,9 @@ Persistence.Persistence = class extends Common.Object {
    * @return {boolean}
    */
   filePathHasBindings(filePath) {
-    if (!filePath.endsWith('/'))
+    if (!filePath.endsWith('/')) {
       filePath += '/';
+    }
     return this._filePathPrefixesToBindingCount.has(filePath);
   }
 };

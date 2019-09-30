@@ -64,8 +64,9 @@ Host.UserMetrics = class {
    * @suppressGlobalPropertiesCheck
    */
   panelLoaded(panelName, histogramName) {
-    if (this._firedLaunchHistogram || panelName !== this._launchPanelName)
+    if (this._firedLaunchHistogram || panelName !== this._launchPanelName) {
       return;
+    }
 
     this._firedLaunchHistogram = true;
     // Use rAF and setTimeout to ensure the marker is fired after layout and rendering.
@@ -76,8 +77,9 @@ Host.UserMetrics = class {
         performance.mark(histogramName);
         // If the user has switched panel before we finished loading, ignore the histogram,
         // since the launch timings will have been affected and are no longer valid.
-        if (this._panelChangedSinceLaunch)
+        if (this._panelChangedSinceLaunch) {
           return;
+        }
         // This fires the event for the appropriate launch histogram.
         // The duration is measured as the time elapsed since the time origin of the document.
         InspectorFrontendHost.recordPerformanceHistogram(histogramName, performance.now());

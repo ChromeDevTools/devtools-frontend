@@ -39,8 +39,9 @@ Network.HARWriter = class {
     const compositeProgress = new Common.CompositeProgress(progress);
 
     const content = await Network.HARWriter._harStringForRequests(requests, compositeProgress);
-    if (progress.isCanceled())
+    if (progress.isCanceled()) {
       return Promise.resolve();
+    }
     return Network.HARWriter._writeToStream(stream, compositeProgress, content);
   }
 
@@ -64,8 +65,9 @@ Network.HARWriter = class {
     await Promise.all(promises);
     progress.done();
 
-    if (progress.isCanceled())
+    if (progress.isCanceled()) {
       return '';
+    }
     return JSON.stringify({log: harLog}, null, Network.HARWriter._jsonIndent);
 
     function isValidCharacter(code_point) {
@@ -77,8 +79,9 @@ Network.HARWriter = class {
 
     function needsEncoding(content) {
       for (let i = 0; i < content.length; i++) {
-        if (!isValidCharacter(content.charCodeAt(i)))
+        if (!isValidCharacter(content.charCodeAt(i))) {
           return true;
+        }
       }
       return false;
     }
@@ -98,8 +101,9 @@ Network.HARWriter = class {
         }
         entry.response.content.text = content;
       }
-      if (encoded)
+      if (encoded) {
         entry.response.content.encoding = 'base64';
+      }
     }
   }
 

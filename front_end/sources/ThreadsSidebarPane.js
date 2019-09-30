@@ -53,8 +53,9 @@ Sources.ThreadsSidebarPane = class extends UI.VBox {
      */
     function targetNameChanged(event) {
       const target = /** @type {!SDK.Target} */ (event.data);
-      if (target === debuggerModel.target())
+      if (target === debuggerModel.target()) {
         updateTitle();
+      }
     }
 
     debuggerModel.addEventListener(SDK.DebuggerModel.Events.DebuggerPaused, updatePausedState);
@@ -94,12 +95,15 @@ Sources.ThreadsSidebarPane = class extends UI.VBox {
    * @param {?Element} toElement
    */
   selectedItemChanged(from, to, fromElement, toElement) {
-    if (fromElement)
+    if (fromElement) {
       fromElement.classList.remove('selected');
-    if (toElement)
+    }
+    if (toElement) {
       toElement.classList.add('selected');
-    if (to)
+    }
+    if (to) {
       UI.context.setFlavor(SDK.Target, to.target());
+    }
   }
 
   /**
@@ -109,8 +113,9 @@ Sources.ThreadsSidebarPane = class extends UI.VBox {
   modelAdded(debuggerModel) {
     this._items.insert(this._items.length, debuggerModel);
     const currentTarget = UI.context.flavor(SDK.Target);
-    if (currentTarget === debuggerModel.target())
+    if (currentTarget === debuggerModel.target()) {
       this._list.selectItem(debuggerModel);
+    }
   }
 
   /**
@@ -127,7 +132,8 @@ Sources.ThreadsSidebarPane = class extends UI.VBox {
   _targetFlavorChanged(event) {
     const target = /** @type {!SDK.Target} */ (event.data);
     const debuggerModel = target.model(SDK.DebuggerModel);
-    if (debuggerModel)
+    if (debuggerModel) {
       this._list.selectItem(debuggerModel);
+    }
   }
 };

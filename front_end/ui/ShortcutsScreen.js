@@ -234,8 +234,9 @@ UI.ShortcutsScreen = class {
    */
   section(name) {
     let section = this._sections[name];
-    if (!section)
+    if (!section) {
       this._sections[name] = section = new UI.ShortcutsSection(name);
+    }
     return section;
   }
 
@@ -244,8 +245,9 @@ UI.ShortcutsScreen = class {
    */
   createShortcutsTabView() {
     const orderedSections = [];
-    for (const section in this._sections)
+    for (const section in this._sections) {
       orderedSections.push(this._sections[section]);
+    }
     function compareSections(a, b) {
       return a.order - b.order;
     }
@@ -258,8 +260,9 @@ UI.ShortcutsScreen = class {
     const scrollPane = widget.element.createChild('div', 'settings-container-wrapper');
     const container = scrollPane.createChild('div');
     container.className = 'settings-content settings-container';
-    for (let i = 0; i < orderedSections.length; ++i)
+    for (let i = 0; i < orderedSections.length; ++i) {
       orderedSections[i].renderSection(container);
+    }
 
     const note = scrollPane.createChild('p', 'settings-footnote');
     note.appendChild(UI.createDocumentationLink(
@@ -380,8 +383,9 @@ UI.ShortcutsSection = class {
   _joinNodes(nodes, delimiter) {
     const result = createDocumentFragment();
     for (let i = 0; i < nodes.length; ++i) {
-      if (i > 0)
+      if (i > 0) {
         result.appendChild(delimiter.cloneNode(true));
+      }
       result.appendChild(nodes[i]);
     }
     return result;

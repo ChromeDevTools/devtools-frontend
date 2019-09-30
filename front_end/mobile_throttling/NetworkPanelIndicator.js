@@ -5,8 +5,9 @@
 MobileThrottling.NetworkPanelIndicator = class {
   constructor() {
     // TODO: we should not access network from other modules.
-    if (!UI.inspectorView.hasPanel('network'))
+    if (!UI.inspectorView.hasPanel('network')) {
       return;
+    }
     const manager = SDK.multitargetNetworkManager;
     manager.addEventListener(SDK.MultitargetNetworkManager.Events.ConditionsChanged, updateVisibility);
     manager.addEventListener(SDK.MultitargetNetworkManager.Events.BlockedPatternsChanged, updateVisibility);

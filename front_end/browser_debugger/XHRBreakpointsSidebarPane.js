@@ -92,8 +92,9 @@ BrowserDebugger.XHRBreakpointsSidebarPane = class extends UI.VBox {
 
     let currentElement = /** @type {?Element} */ (this._listElement.firstChild);
     while (currentElement) {
-      if (currentElement._url && currentElement._url < element._url)
+      if (currentElement._url && currentElement._url < element._url) {
         break;
+      }
       currentElement = /** @type {?Element} */ (currentElement.nextSibling);
     }
     this._addListElement(element, currentElement);
@@ -105,8 +106,9 @@ BrowserDebugger.XHRBreakpointsSidebarPane = class extends UI.VBox {
    */
   _removeBreakpoint(url) {
     const element = this._breakpointElements.get(url);
-    if (!element)
+    if (!element) {
       return;
+    }
 
     this._removeListElement(element);
     this._breakpointElements.delete(url);
@@ -214,8 +216,9 @@ BrowserDebugger.XHRBreakpointsSidebarPane = class extends UI.VBox {
     }
     const url = details.auxData['breakpointURL'];
     const element = this._breakpointElements.get(url);
-    if (!element)
+    if (!element) {
       return;
+    }
     UI.viewManager.showView('sources.xhrBreakpoints');
     element.classList.add('breakpoint-hit');
     this._highlightedElement = element;
@@ -223,7 +226,8 @@ BrowserDebugger.XHRBreakpointsSidebarPane = class extends UI.VBox {
 
   _restoreBreakpoints() {
     const breakpoints = SDK.domDebuggerManager.xhrBreakpoints();
-    for (const url of breakpoints.keys())
+    for (const url of breakpoints.keys()) {
       this._setBreakpoint(url, breakpoints.get(url));
+    }
   }
 };

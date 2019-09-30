@@ -144,12 +144,15 @@ Extensions.ExtensionButton = class {
    * @param {boolean=} disabled
    */
   update(iconURL, tooltip, disabled) {
-    if (typeof iconURL === 'string')
+    if (typeof iconURL === 'string') {
       this._toolbarButton.setBackgroundImage(iconURL);
-    if (typeof tooltip === 'string')
+    }
+    if (typeof tooltip === 'string') {
       this._toolbarButton.setTitle(tooltip);
-    if (typeof disabled === 'boolean')
+    }
+    if (typeof disabled === 'boolean') {
       this._toolbarButton.setEnabled(!disabled);
+    }
   }
 
   /**
@@ -223,14 +226,16 @@ Extensions.ExtensionSidebarPane = class extends UI.SimpleView {
       this._objectPropertiesView.detach();
       delete this._objectPropertiesView;
     }
-    if (this._extensionView)
+    if (this._extensionView) {
       this._extensionView.detach(true);
+    }
 
     this._extensionView = new Extensions.ExtensionView(this._server, this._id, url, 'extension fill');
     this._extensionView.show(this.element);
 
-    if (!this.element.style.height)
+    if (!this.element.style.height) {
       this.setHeight('150px');
+    }
   }
 
   /**
@@ -248,15 +253,17 @@ Extensions.ExtensionSidebarPane = class extends UI.SimpleView {
    * @param {boolean=} wasThrown
    */
   _onEvaluate(title, callback, error, result, wasThrown) {
-    if (error || !result)
+    if (error || !result) {
       callback(error.toString());
-    else
+    } else {
       this._setObject(result, title, callback);
+    }
   }
 
   _createObjectPropertiesView() {
-    if (this._objectPropertiesView)
+    if (this._objectPropertiesView) {
       return;
+    }
     if (this._extensionView) {
       this._extensionView.detach(true);
       delete this._extensionView;
@@ -282,8 +289,9 @@ Extensions.ExtensionSidebarPane = class extends UI.SimpleView {
         callback();
         return;
       }
-      if (result.tree && result.tree.firstChild())
+      if (result.tree && result.tree.firstChild()) {
         result.tree.firstChild().expand();
+      }
       this._objectPropertiesView.element.appendChild(result.node);
       callback();
     });

@@ -40,8 +40,9 @@ Elements.ComputedStyleModel = class extends Common.Object {
    * @param {?SDK.CSSModel} cssModel
    */
   _updateModel(cssModel) {
-    if (this._cssModel === cssModel)
+    if (this._cssModel === cssModel) {
       return;
+    }
     Common.EventTarget.removeEventListeners(this._eventListeners);
     this._cssModel = cssModel;
     const domModel = cssModel ? cssModel.domModel() : null;
@@ -75,8 +76,10 @@ Elements.ComputedStyleModel = class extends Common.Object {
   _onDOMModelChanged(event) {
     // Any attribute removal or modification can affect the styles of "related" nodes.
     const node = /** @type {!SDK.DOMNode} */ (event.data);
-    if (!this._node || this._node !== node && node.parentNode !== this._node.parentNode && !node.isAncestor(this._node))
+    if (!this._node ||
+        this._node !== node && node.parentNode !== this._node.parentNode && !node.isAncestor(this._node)) {
       return;
+    }
     this._onComputedStyleChanged(null);
   }
 
@@ -92,8 +95,9 @@ Elements.ComputedStyleModel = class extends Common.Object {
       delete this._frameResizedTimer;
     }
 
-    if (this._frameResizedTimer)
+    if (this._frameResizedTimer) {
       clearTimeout(this._frameResizedTimer);
+    }
 
     this._frameResizedTimer = setTimeout(refreshContents.bind(this), 100);
   }
@@ -111,8 +115,9 @@ Elements.ComputedStyleModel = class extends Common.Object {
   fetchComputedStyle() {
     const elementNode = this._elementNode();
     const cssModel = this.cssModel();
-    if (!elementNode || !cssModel)
+    if (!elementNode || !cssModel) {
       return Promise.resolve(/** @type {?Elements.ComputedStyleModel.ComputedStyle} */ (null));
+    }
 
     if (!this._computedStylePromise) {
       this._computedStylePromise =

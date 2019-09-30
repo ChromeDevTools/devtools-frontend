@@ -8,8 +8,9 @@
  */
 
 LayersTestRunner.layerTreeModel = function() {
-  if (!LayersTestRunner._layerTreeModel)
+  if (!LayersTestRunner._layerTreeModel) {
     LayersTestRunner._layerTreeModel = TestRunner.mainTarget.model(Layers.LayerTreeModel);
+  }
 
   return LayersTestRunner._layerTreeModel;
 };
@@ -20,18 +21,21 @@ LayersTestRunner.labelForLayer = function(layer) {
   const height = layer.height();
   const width = layer.width();
 
-  if (height <= 200 && width <= 200)
+  if (height <= 200 && width <= 200) {
     label += ' ' + height + 'x' + width;
+  }
 
-  if (typeof layer.__extraData !== 'undefined')
+  if (typeof layer.__extraData !== 'undefined') {
     label += ' (' + layer.__extraData + ')';
+  }
 
   return label;
 };
 
 LayersTestRunner.dumpLayerTree = function(prefix, root) {
-  if (!prefix)
+  if (!prefix) {
     prefix = '';
+  }
 
   if (!root) {
     root = LayersTestRunner.layerTreeModel().layerTree().contentRoot();
@@ -48,17 +52,21 @@ LayersTestRunner.dumpLayerTree = function(prefix, root) {
 };
 
 LayersTestRunner.dumpLayers3DView = function(prefix, root) {
-  if (!prefix)
+  if (!prefix) {
     prefix = '';
+  }
 
-  if (!root)
+  if (!root) {
     root = UI.panels.layers._layers3DView._rotatingContainerElement;
+  }
 
-  if (root.__layer)
+  if (root.__layer) {
     TestRunner.addResult(prefix + LayersTestRunner.labelForLayer(root.__layer));
+  }
 
-  for (let element = root.firstElementChild; element; element = element.nextSibling)
+  for (let element = root.firstElementChild; element; element = element.nextSibling) {
     LayersTestRunner.dumpLayers3DView(prefix + '    ', element);
+  }
 };
 
 LayersTestRunner.evaluateAndWaitForTreeChange = async function(expression) {
@@ -72,11 +80,13 @@ LayersTestRunner.findLayerByNodeIdAttribute = function(nodeIdAttribute) {
   function testLayer(layer) {
     const node = layer.node();
 
-    if (!node)
+    if (!node) {
       return false;
+    }
 
-    if (!node || node.getAttribute('id') !== nodeIdAttribute)
+    if (!node || node.getAttribute('id') !== nodeIdAttribute) {
       return false;
+    }
 
     result = layer;
     return true;
@@ -84,8 +94,9 @@ LayersTestRunner.findLayerByNodeIdAttribute = function(nodeIdAttribute) {
 
   LayersTestRunner.layerTreeModel().layerTree().forEachLayer(testLayer);
 
-  if (!result)
+  if (!result) {
     TestRunner.addResult('ERROR: No layer for ' + nodeIdAttribute);
+  }
 
   return result;
 };
@@ -134,10 +145,12 @@ LayersTestRunner.dispatchMouseEventToLayerTree = function(eventType, button, lay
 
 LayersTestRunner.dumpSelectedStyles = function(message, element) {
   const classes = [];
-  if (element.classList.contains('selected'))
+  if (element.classList.contains('selected')) {
     classes.push('selected');
-  if (element.classList.contains('hovered'))
+  }
+  if (element.classList.contains('hovered')) {
     classes.push('hovered');
+  }
 
   TestRunner.addResult(message + ': ' + classes.join(', '));
 };

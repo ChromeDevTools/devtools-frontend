@@ -40,8 +40,9 @@ UI.KeyboardShortcut = class {
    * @return {number}
    */
   static makeKey(keyCode, modifiers) {
-    if (typeof keyCode === 'string')
+    if (typeof keyCode === 'string') {
       keyCode = keyCode.charCodeAt(0) - (/^[a-z]/.test(keyCode) ? 32 : 0);
+    }
     modifiers = modifiers || UI.KeyboardShortcut.Modifiers.None;
     return UI.KeyboardShortcut._makeKeyFromCodeAndModifiers(keyCode, modifiers);
   }
@@ -52,14 +53,18 @@ UI.KeyboardShortcut = class {
    */
   static makeKeyFromEvent(keyboardEvent) {
     let modifiers = UI.KeyboardShortcut.Modifiers.None;
-    if (keyboardEvent.shiftKey)
+    if (keyboardEvent.shiftKey) {
       modifiers |= UI.KeyboardShortcut.Modifiers.Shift;
-    if (keyboardEvent.ctrlKey)
+    }
+    if (keyboardEvent.ctrlKey) {
       modifiers |= UI.KeyboardShortcut.Modifiers.Ctrl;
-    if (keyboardEvent.altKey)
+    }
+    if (keyboardEvent.altKey) {
       modifiers |= UI.KeyboardShortcut.Modifiers.Alt;
-    if (keyboardEvent.metaKey)
+    }
+    if (keyboardEvent.metaKey) {
       modifiers |= UI.KeyboardShortcut.Modifiers.Meta;
+    }
 
     // Use either a real or a synthetic keyCode (for events originating from extensions).
     const keyCode = keyboardEvent.keyCode || keyboardEvent['__keyCode'];
@@ -122,12 +127,14 @@ UI.KeyboardShortcut = class {
       break;
     }
     console.assert(keyString, 'Modifiers-only shortcuts are not allowed (encountered <' + shortcut + '>)');
-    if (!keyString)
+    if (!keyString) {
       return null;
+    }
 
     const key = UI.KeyboardShortcut.Keys[keyString] || UI.KeyboardShortcut.KeyBindings[keyString];
-    if (key && key.shiftKey)
+    if (key && key.shiftKey) {
       modifiers |= UI.KeyboardShortcut.Modifiers.Shift;
+    }
     return UI.KeyboardShortcut.makeDescriptor(key ? key : keyString, modifiers);
   }
 
@@ -145,10 +152,12 @@ UI.KeyboardShortcut = class {
    * @return {string}
    */
   static _keyName(key) {
-    if (typeof key === 'string')
+    if (typeof key === 'string') {
       return key.toUpperCase();
-    if (typeof key.name === 'string')
+    }
+    if (typeof key.name === 'string') {
       return key.name;
+    }
     return key.name[Host.platform()] || key.name.other || '';
   }
 

@@ -8,8 +8,9 @@
  */
 
 NetworkTestRunner.waitForRequestResponse = function(request) {
-  if (request.responseReceivedTime !== -1)
+  if (request.responseReceivedTime !== -1) {
     return Promise.resolve(request);
+  }
 
   return TestRunner.waitForEvent(
       SDK.NetworkManager.Events.RequestUpdated, TestRunner.networkManager,
@@ -20,8 +21,9 @@ NetworkTestRunner.waitForNetworkLogViewNodeForRequest = function(request) {
   const networkLogView = UI.panels.network._networkLogView;
   const node = networkLogView.nodeForRequest(request);
 
-  if (node)
+  if (node) {
     return Promise.resolve(node);
+  }
 
   console.assert(networkLogView._staleRequests.has(request));
 
@@ -34,8 +36,9 @@ NetworkTestRunner.waitForNetworkLogViewNodeForRequest = function(request) {
 
 NetworkTestRunner.waitForWebsocketFrameReceived = function(wsRequest, message) {
   for (const frame of wsRequest.frames()) {
-    if (checkFrame(frame))
+    if (checkFrame(frame)) {
       return Promise.resolve(frame);
+    }
   }
 
   return TestRunner.waitForEvent(SDK.NetworkRequest.Events.WebsocketFrameAdded, wsRequest, checkFrame);
@@ -66,8 +69,9 @@ NetworkTestRunner.dumpNetworkRequests = function() {
 
   TestRunner.addResult('resources count = ' + requests.length);
 
-  for (i = 0; i < requests.length; i++)
+  for (i = 0; i < requests.length; i++) {
     TestRunner.addResult(requests[i].url());
+  }
 };
 
 NetworkTestRunner.dumpNetworkRequestsWithSignedExchangeInfo = function() {
@@ -81,8 +85,9 @@ NetworkTestRunner.dumpNetworkRequestsWithSignedExchangeInfo = function() {
       if (request.signedExchangeInfo().header) {
         const header = request.signedExchangeInfo().header;
         TestRunner.addResult(`    Request URL: ${header.requestUrl}`);
-        for (const signature of header.signatures)
+        for (const signature of header.signatures) {
           TestRunner.addResult(`    Certificate URL: ${signature.certUrl}`);
+        }
       }
       if (request.signedExchangeInfo().securityDetails) {
         const securityDetails = request.signedExchangeInfo().securityDetails;
@@ -90,8 +95,9 @@ NetworkTestRunner.dumpNetworkRequestsWithSignedExchangeInfo = function() {
         TestRunner.addResult(`    Certificate Issuer: ${securityDetails.issuer}`);
       }
       if (request.signedExchangeInfo().errors) {
-        for (const errorMessage of request.signedExchangeInfo().errors)
+        for (const errorMessage of request.signedExchangeInfo().errors) {
           TestRunner.addResult(`    Error: ${JSON.stringify(errorMessage)}`);
+        }
       }
     }
   }
@@ -138,8 +144,9 @@ NetworkTestRunner.makeXHRImpl = function(method, url, async, args, callback) {
 
   function innerCallback(msg) {
     if (msg.messageText.indexOf('XHR loaded') !== -1) {
-      if (callback)
+      if (callback) {
         callback();
+      }
     } else {
       ConsoleTestRunner.addConsoleSniffer(innerCallback);
     }

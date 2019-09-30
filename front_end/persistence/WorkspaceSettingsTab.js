@@ -40,8 +40,9 @@ Persistence.WorkspaceSettingsTab = class extends UI.VBox {
     this._mappingViewByPath = new Map();
 
     const fileSystems = Persistence.isolatedFileSystemManager.fileSystems();
-    for (let i = 0; i < fileSystems.length; ++i)
+    for (let i = 0; i < fileSystems.length; ++i) {
       this._addItem(fileSystems[i]);
+    }
   }
 
   /**
@@ -82,12 +83,14 @@ Persistence.WorkspaceSettingsTab = class extends UI.VBox {
    */
   _addItem(fileSystem) {
     // Support managing only instances of IsolatedFileSystem.
-    if (!(fileSystem instanceof Persistence.IsolatedFileSystem))
+    if (!(fileSystem instanceof Persistence.IsolatedFileSystem)) {
       return;
+    }
     const networkPersistenceProject = Persistence.networkPersistenceManager.project();
     if (networkPersistenceProject &&
-        Persistence.isolatedFileSystemManager.fileSystem(networkPersistenceProject.fileSystemPath()) === fileSystem)
+        Persistence.isolatedFileSystemManager.fileSystem(networkPersistenceProject.fileSystemPath()) === fileSystem) {
       return;
+    }
     const element = this._renderFileSystem(fileSystem);
     this._elementByPath.set(fileSystem.path(), element);
 

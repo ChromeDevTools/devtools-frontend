@@ -67,8 +67,9 @@ Profiler.HeapSnapshotWorkerProxy = class extends Common.Object {
 
   dispose() {
     this._worker.terminate();
-    if (this._interval)
+    if (this._interval) {
       clearInterval(this._interval);
+    }
   }
 
   disposeObject(objectId) {
@@ -133,8 +134,9 @@ Profiler.HeapSnapshotWorkerProxy = class extends Common.Object {
   callMethod(callback, objectId, methodName) {
     const callId = this._nextCallId++;
     const methodArguments = Array.prototype.slice.call(arguments, 3);
-    if (callback)
+    if (callback) {
       this._callbacks.set(callId, callback);
+    }
     this._postMessage({
       callId: callId,
       disposition: 'method',
@@ -145,21 +147,24 @@ Profiler.HeapSnapshotWorkerProxy = class extends Common.Object {
   }
 
   startCheckingForLongRunningCalls() {
-    if (this._interval)
+    if (this._interval) {
       return;
+    }
     this._checkLongRunningCalls();
     this._interval = setInterval(this._checkLongRunningCalls.bind(this), 300);
   }
 
   _checkLongRunningCalls() {
     for (const callId of this._previousCallbacks) {
-      if (!this._callbacks.has(callId))
+      if (!this._callbacks.has(callId)) {
         this._previousCallbacks.delete(callId);
+      }
     }
     const hasLongRunningCalls = !!this._previousCallbacks.size;
     this.dispatchEventToListeners(Profiler.HeapSnapshotWorkerProxy.Events.Wait, hasLongRunningCalls);
-    for (const callId of this._callbacks.keysArray())
+    for (const callId of this._callbacks.keysArray()) {
       this._previousCallbacks.add(callId);
+    }
   }
 
   /**
@@ -168,8 +173,9 @@ Profiler.HeapSnapshotWorkerProxy = class extends Common.Object {
   _messageReceived(event) {
     const data = event.data;
     if (data.eventName) {
-      if (this._eventHandler)
+      if (this._eventHandler) {
         this._eventHandler(data.eventName, data.data);
+      }
       return;
     }
     if (data.error) {
@@ -181,8 +187,9 @@ Profiler.HeapSnapshotWorkerProxy = class extends Common.Object {
       this._callbacks.delete(data.callId);
       return;
     }
-    if (!this._callbacks.has(data.callId))
+    if (!this._callbacks.has(data.callId)) {
       return;
+    }
     const callback = this._callbacks.get(data.callId);
     this._callbacks.delete(data.callId);
     callback(data.result);

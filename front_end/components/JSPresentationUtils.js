@@ -64,8 +64,9 @@ Components.JSPresentationUtils.buildStackTracePreviewContents = function(
       if (link) {
         link.addEventListener('contextmenu', populateContextMenu.bind(null, link));
         const uiLocation = Components.Linkifier.uiLocation(link);
-        if (uiLocation && Bindings.blackboxManager.isBlackboxedUISourceCode(uiLocation.uiSourceCode))
+        if (uiLocation && Bindings.blackboxManager.isBlackboxedUISourceCode(uiLocation.uiSourceCode)) {
           shouldHide = true;
+        }
         row.createChild('td').textContent = ' @ ';
         row.createChild('td').appendChild(link);
         links.push(link);
@@ -101,8 +102,9 @@ Components.JSPresentationUtils.buildStackTracePreviewContents = function(
     contextMenu.show();
   }
 
-  if (!stackTrace)
+  if (!stackTrace) {
     return {element, links};
+  }
 
   appendStackTrace(stackTrace);
 
@@ -118,8 +120,9 @@ Components.JSPresentationUtils.buildStackTracePreviewContents = function(
         UI.asyncStackTraceLabel(asyncStackTrace.description);
     row.createChild('td');
     row.createChild('td');
-    if (appendStackTrace(asyncStackTrace))
+    if (appendStackTrace(asyncStackTrace)) {
       row.classList.add('blackboxed');
+    }
     asyncStackTrace = asyncStackTrace.parent;
   }
 
@@ -129,14 +132,16 @@ Components.JSPresentationUtils.buildStackTracePreviewContents = function(
     const cell = row.createChild('td');
     cell.colSpan = 4;
     const showAllLink = cell.createChild('span', 'link');
-    if (totalHiddenCallFramesCount === 1)
+    if (totalHiddenCallFramesCount === 1) {
       showAllLink.textContent = ls`Show 1 more frame`;
-    else
+    } else {
       showAllLink.textContent = ls`Show ${totalHiddenCallFramesCount} more frames`;
+    }
     showAllLink.addEventListener('click', () => {
       contentElement.classList.add('show-blackboxed');
-      if (contentUpdated)
+      if (contentUpdated) {
         contentUpdated();
+      }
     }, false);
   }
 

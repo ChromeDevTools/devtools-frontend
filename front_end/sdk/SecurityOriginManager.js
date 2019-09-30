@@ -30,13 +30,15 @@ SDK.SecurityOriginManager = class extends SDK.SDKModel {
     this._securityOrigins = securityOrigins;
 
     for (const origin of oldOrigins) {
-      if (!this._securityOrigins.has(origin))
+      if (!this._securityOrigins.has(origin)) {
         this.dispatchEventToListeners(SDK.SecurityOriginManager.Events.SecurityOriginRemoved, origin);
+      }
     }
 
     for (const origin of this._securityOrigins) {
-      if (!oldOrigins.has(origin))
+      if (!oldOrigins.has(origin)) {
         this.dispatchEventToListeners(SDK.SecurityOriginManager.Events.SecurityOriginAdded, origin);
+      }
     }
   }
 

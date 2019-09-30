@@ -93,8 +93,9 @@ InlineEditor.BezierUI = class {
    * @param {!Element} svg
    */
   drawCurve(bezier, svg) {
-    if (!bezier)
+    if (!bezier) {
       return;
+    }
     const width = this.curveWidth();
     const height = this.curveHeight();
     svg.setAttribute('width', this.width);
@@ -102,8 +103,9 @@ InlineEditor.BezierUI = class {
     svg.removeChildren();
     const group = svg.createSVGChild('g');
 
-    if (this.linearLine)
+    if (this.linearLine) {
       this._drawLine(group, 'linear-line', 0, height, width, 0);
+    }
 
     const curve = group.createSVGChild('path', 'bezier-path');
     const curvePoints = [

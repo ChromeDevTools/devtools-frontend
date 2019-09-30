@@ -52,14 +52,17 @@ Sources.NetworkNavigatorView = class extends Sources.NavigatorView {
    */
   _inspectedURLChanged(event) {
     const mainTarget = SDK.targetManager.mainTarget();
-    if (event.data !== mainTarget)
+    if (event.data !== mainTarget) {
       return;
+    }
     const inspectedURL = mainTarget && mainTarget.inspectedURL();
-    if (!inspectedURL)
+    if (!inspectedURL) {
       return;
+    }
     for (const uiSourceCode of this.workspace().uiSourceCodes()) {
-      if (this.acceptProject(uiSourceCode.project()) && uiSourceCode.url() === inspectedURL)
+      if (this.acceptProject(uiSourceCode.project()) && uiSourceCode.url() === inspectedURL) {
         this.revealUISourceCode(uiSourceCode, true);
+      }
     }
   }
 
@@ -70,10 +73,12 @@ Sources.NetworkNavigatorView = class extends Sources.NavigatorView {
   uiSourceCodeAdded(uiSourceCode) {
     const mainTarget = SDK.targetManager.mainTarget();
     const inspectedURL = mainTarget && mainTarget.inspectedURL();
-    if (!inspectedURL)
+    if (!inspectedURL) {
       return;
-    if (uiSourceCode.url() === inspectedURL)
+    }
+    if (uiSourceCode.url() === inspectedURL) {
       this.revealUISourceCode(uiSourceCode, true);
+    }
   }
 };
 
@@ -92,8 +97,9 @@ Sources.FilesNavigatorView = class extends Sources.NavigatorView {
 
     const toolbar = new UI.Toolbar('navigator-toolbar');
     toolbar.appendItemsAtLocation('files-navigator-toolbar').then(() => {
-      if (!toolbar.empty())
+      if (!toolbar.empty()) {
         this.contentElement.insertBefore(toolbar.element, this.contentElement.firstChild);
+      }
     });
   }
 
@@ -146,16 +152,18 @@ Sources.OverridesNavigatorView = class extends Sources.NavigatorView {
   _onProjectAddOrRemoved(event) {
     const project = /** @type {!Workspace.Project} */ (event.data);
     if (project && project.type() === Workspace.projectTypes.FileSystem &&
-        Persistence.FileSystemWorkspaceBinding.fileSystemType(project) !== 'overrides')
+        Persistence.FileSystemWorkspaceBinding.fileSystemType(project) !== 'overrides') {
       return;
+    }
     this._updateUI();
   }
 
   _updateProjectAndUI() {
     this.reset();
     const project = Persistence.networkPersistenceManager.project();
-    if (project)
+    if (project) {
       this.tryAddProject(project);
+    }
     this._updateUI();
   }
 
@@ -183,8 +191,9 @@ Sources.OverridesNavigatorView = class extends Sources.NavigatorView {
 
   async _setupNewWorkspace() {
     const fileSystem = await Persistence.isolatedFileSystemManager.addFileSystem('overrides');
-    if (!fileSystem)
+    if (!fileSystem) {
       return;
+    }
     Common.settings.moduleSetting('persistenceNetworkOverridesEnabled').set(true);
   }
 

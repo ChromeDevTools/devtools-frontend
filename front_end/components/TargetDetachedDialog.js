@@ -11,8 +11,9 @@ Components.TargetDetachedDialog = class extends SDK.SDKModel {
    */
   constructor(target) {
     super(target);
-    if (target.parentTarget())
+    if (target.parentTarget()) {
       return;
+    }
     target.registerInspectorDispatcher(this);
     target.inspectorAgent().enable();
     this._hideCrashedDialog = null;

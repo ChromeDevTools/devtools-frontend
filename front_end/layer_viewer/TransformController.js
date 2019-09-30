@@ -16,8 +16,9 @@ LayerViewer.TransformController = class extends Common.Object {
     super();
     this._shortcuts = {};
     this.element = element;
-    if (this.element.tabIndex < 0)
+    if (this.element.tabIndex < 0) {
       this.element.tabIndex = 0;
+    }
     this._registerShortcuts();
     UI.installDragHandle(
         element, this._onDragStart.bind(this), this._onDrag.bind(this), this._onDragEnd.bind(this), 'move', null);
@@ -67,18 +68,21 @@ LayerViewer.TransformController = class extends Common.Object {
 
     const shortcutKey = UI.KeyboardShortcut.makeKeyFromEventIgnoringModifiers(event);
     const handler = this._shortcuts[shortcutKey];
-    if (handler && handler(event))
+    if (handler && handler(event)) {
       event.consume();
+    }
   }
 
   _onKeyUp(event) {
-    if (event.keyCode === UI.KeyboardShortcut.Keys.Shift.code)
+    if (event.keyCode === UI.KeyboardShortcut.Keys.Shift.code) {
       this._toggleMode();
+    }
   }
 
   _addShortcuts(keys, handler) {
-    for (let i = 0; i < keys.length; ++i)
+    for (let i = 0; i < keys.length; ++i) {
       this._shortcuts[keys[i].key] = handler;
+    }
   }
 
   _registerShortcuts() {
@@ -121,16 +125,18 @@ LayerViewer.TransformController = class extends Common.Object {
    * @param {!LayerViewer.TransformController.Modes} mode
    */
   _setMode(mode) {
-    if (this._mode === mode)
+    if (this._mode === mode) {
       return;
+    }
     this._mode = mode;
     this._updateModeButtons();
     this.element.focus();
   }
 
   _updateModeButtons() {
-    for (const mode in this._modeButtons)
+    for (const mode in this._modeButtons) {
       this._modeButtons[mode].setToggled(mode === this._mode);
+    }
   }
 
   /**
@@ -139,8 +145,9 @@ LayerViewer.TransformController = class extends Common.Object {
   resetAndNotify(event) {
     this._reset();
     this._postChangeEvent();
-    if (event)
+    if (event) {
       event.preventDefault();
+    }
     this.element.focus();
   }
 

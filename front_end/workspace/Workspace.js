@@ -285,8 +285,9 @@ Workspace.ProjectStore = class {
    */
   addUISourceCode(uiSourceCode) {
     const url = uiSourceCode.url();
-    if (this.uiSourceCodeForURL(url))
+    if (this.uiSourceCodeForURL(url)) {
       return false;
+    }
     this._uiSourceCodesMap.set(url, {uiSourceCode: uiSourceCode, index: this._uiSourceCodesList.length});
     this._uiSourceCodesList.push(uiSourceCode);
     this._workspace.dispatchEventToListeners(Workspace.Workspace.Events.UISourceCodeAdded, uiSourceCode);
@@ -298,8 +299,9 @@ Workspace.ProjectStore = class {
    */
   removeUISourceCode(url) {
     const uiSourceCode = this.uiSourceCodeForURL(url);
-    if (!uiSourceCode)
+    if (!uiSourceCode) {
       return;
+    }
 
     const entry = this._uiSourceCodesMap.get(url);
     const movedUISourceCode = this._uiSourceCodesList[this._uiSourceCodesList.length - 1];
@@ -375,8 +377,9 @@ Workspace.Workspace = class extends Common.Object {
   uiSourceCodeForURL(url) {
     for (const project of this._projects.values()) {
       const uiSourceCode = project.uiSourceCodeForURL(url);
-      if (uiSourceCode)
+      if (uiSourceCode) {
         return uiSourceCode;
+      }
     }
     return null;
   }
@@ -388,8 +391,9 @@ Workspace.Workspace = class extends Common.Object {
   uiSourceCodesForProjectType(type) {
     let result = [];
     for (const project of this._projects.values()) {
-      if (project.type() === type)
+      if (project.type() === type) {
         result = result.concat(project.uiSourceCodes());
+      }
     }
     return result;
   }
@@ -442,8 +446,9 @@ Workspace.Workspace = class extends Common.Object {
    */
   uiSourceCodes() {
     let result = [];
-    for (const project of this._projects.values())
+    for (const project of this._projects.values()) {
       result = result.concat(project.uiSourceCodes());
+    }
     return result;
   }
 

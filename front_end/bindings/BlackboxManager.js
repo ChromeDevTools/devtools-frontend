@@ -63,8 +63,9 @@ Bindings.BlackboxManager = class {
   }
 
   _clearCacheIfNeeded() {
-    if (this._isBlackboxedURLCache.size > 1024)
+    if (this._isBlackboxedURLCache.size > 1024) {
       this._isBlackboxedURLCache.clear();
+    }
   }
 
   /**
@@ -75,8 +76,9 @@ Bindings.BlackboxManager = class {
     const regexPatterns = Common.moduleSetting('skipStackFramesPattern').getAsArray();
     const patterns = /** @type {!Array<string>} */ ([]);
     for (const item of regexPatterns) {
-      if (!item.disabled && item.pattern)
+      if (!item.disabled && item.pattern) {
         patterns.push(item.pattern);
+      }
     }
     return debuggerModel.setBlackboxPatterns(patterns);
   }
@@ -88,8 +90,9 @@ Bindings.BlackboxManager = class {
   isBlackboxedUISourceCode(uiSourceCode) {
     const projectType = uiSourceCode.project().type();
     const isContentScript = projectType === Workspace.projectTypes.ContentScripts;
-    if (isContentScript && Common.moduleSetting('skipContentScripts').get())
+    if (isContentScript && Common.moduleSetting('skipContentScripts').get()) {
       return true;
+    }
     const url = this._uiSourceCodeURL(uiSourceCode);
     return url ? this.isBlackboxedURL(url) : false;
   }
@@ -100,10 +103,12 @@ Bindings.BlackboxManager = class {
    * @return {boolean}
    */
   isBlackboxedURL(url, isContentScript) {
-    if (this._isBlackboxedURLCache.has(url))
+    if (this._isBlackboxedURLCache.has(url)) {
       return !!this._isBlackboxedURLCache.get(url);
-    if (isContentScript && Common.moduleSetting('skipContentScripts').get())
+    }
+    if (isContentScript && Common.moduleSetting('skipContentScripts').get()) {
       return true;
+    }
     const regex = Common.moduleSetting('skipStackFramesPattern').asRegExp();
     const isBlackboxed = (regex && regex.test(url)) || false;
     this._isBlackboxedURLCache.set(url, isBlackboxed);
@@ -134,11 +139,13 @@ Bindings.BlackboxManager = class {
    */
   async _updateScriptRanges(script, sourceMap) {
     let hasBlackboxedMappings = false;
-    if (!Bindings.blackboxManager.isBlackboxedURL(script.sourceURL, script.isContentScript()))
+    if (!Bindings.blackboxManager.isBlackboxedURL(script.sourceURL, script.isContentScript())) {
       hasBlackboxedMappings = sourceMap ? sourceMap.sourceURLs().some(url => this.isBlackboxedURL(url)) : false;
+    }
     if (!hasBlackboxedMappings) {
-      if (script[Bindings.BlackboxManager._blackboxedRanges] && await script.setBlackboxedRanges([]))
+      if (script[Bindings.BlackboxManager._blackboxedRanges] && await script.setBlackboxedRanges([])) {
         delete script[Bindings.BlackboxManager._blackboxedRanges];
+      }
       this._debuggerWorkspaceBinding.updateLocations(script);
       return;
     }
@@ -158,8 +165,9 @@ Bindings.BlackboxManager = class {
     }
 
     const oldRanges = script[Bindings.BlackboxManager._blackboxedRanges] || [];
-    if (!isEqual(oldRanges, newRanges) && await script.setBlackboxedRanges(newRanges))
+    if (!isEqual(oldRanges, newRanges) && await script.setBlackboxedRanges(newRanges)) {
       script[Bindings.BlackboxManager._blackboxedRanges] = newRanges;
+    }
     this._debuggerWorkspaceBinding.updateLocations(script);
 
     /**
@@ -168,11 +176,13 @@ Bindings.BlackboxManager = class {
      * @return {boolean}
      */
     function isEqual(rangesA, rangesB) {
-      if (rangesA.length !== rangesB.length)
+      if (rangesA.length !== rangesB.length) {
         return false;
+      }
       for (let i = 0; i < rangesA.length; ++i) {
-        if (rangesA[i].lineNumber !== rangesB[i].lineNumber || rangesA[i].columnNumber !== rangesB[i].columnNumber)
+        if (rangesA[i].lineNumber !== rangesB[i].lineNumber || rangesA[i].columnNumber !== rangesB[i].columnNumber) {
           return false;
+        }
       }
       return true;
     }
@@ -200,8 +210,9 @@ Bindings.BlackboxManager = class {
    */
   blackboxUISourceCode(uiSourceCode) {
     const url = this._uiSourceCodeURL(uiSourceCode);
-    if (url)
+    if (url) {
       this._blackboxURL(url);
+    }
   }
 
   /**
@@ -209,8 +220,9 @@ Bindings.BlackboxManager = class {
    */
   unblackboxUISourceCode(uiSourceCode) {
     const url = this._uiSourceCodeURL(uiSourceCode);
-    if (url)
+    if (url) {
       this._unblackboxURL(url);
+    }
   }
 
   blackboxContentScripts() {
@@ -227,8 +239,9 @@ Bindings.BlackboxManager = class {
   _blackboxURL(url) {
     const regexPatterns = Common.moduleSetting('skipStackFramesPattern').getAsArray();
     const regexValue = this._urlToRegExpString(url);
-    if (!regexValue)
+    if (!regexValue) {
       return;
+    }
     let found = false;
     for (let i = 0; i < regexPatterns.length; ++i) {
       const item = regexPatterns[i];
@@ -238,8 +251,9 @@ Bindings.BlackboxManager = class {
         break;
       }
     }
-    if (!found)
+    if (!found) {
       regexPatterns.push({pattern: regexValue});
+    }
     Common.moduleSetting('skipStackFramesPattern').setAsArray(regexPatterns);
   }
 
@@ -249,19 +263,22 @@ Bindings.BlackboxManager = class {
   _unblackboxURL(url) {
     let regexPatterns = Common.moduleSetting('skipStackFramesPattern').getAsArray();
     const regexValue = Bindings.blackboxManager._urlToRegExpString(url);
-    if (!regexValue)
+    if (!regexValue) {
       return;
+    }
     regexPatterns = regexPatterns.filter(function(item) {
       return item.pattern !== regexValue;
     });
     for (let i = 0; i < regexPatterns.length; ++i) {
       const item = regexPatterns[i];
-      if (item.disabled)
+      if (item.disabled) {
         continue;
+      }
       try {
         const regex = new RegExp(item.pattern);
-        if (regex.test(url))
+        if (regex.test(url)) {
           item.disabled = true;
+        }
       } catch (e) {
       }
     }
@@ -276,13 +293,15 @@ Bindings.BlackboxManager = class {
     for (const debuggerModel of SDK.targetManager.models(SDK.DebuggerModel)) {
       promises.push(this._setBlackboxPatterns(debuggerModel));
       const sourceMapManager = debuggerModel.sourceMapManager();
-      for (const script of debuggerModel.scripts())
+      for (const script of debuggerModel.scripts()) {
         promises.push(this._updateScriptRanges(script, sourceMapManager.sourceMapForClient(script)));
+      }
     }
     await Promise.all(promises);
     const listeners = Array.from(this._listeners);
-    for (const listener of listeners)
+    for (const listener of listeners) {
       listener();
+    }
     this._patternChangeFinishedForTests();
   }
 
@@ -296,25 +315,31 @@ Bindings.BlackboxManager = class {
    */
   _urlToRegExpString(url) {
     const parsedURL = new Common.ParsedURL(url);
-    if (parsedURL.isAboutBlank() || parsedURL.isDataURL())
+    if (parsedURL.isAboutBlank() || parsedURL.isDataURL()) {
       return '';
-    if (!parsedURL.isValid)
+    }
+    if (!parsedURL.isValid) {
       return '^' + url.escapeForRegExp() + '$';
+    }
     let name = parsedURL.lastPathComponent;
-    if (name)
+    if (name) {
       name = '/' + name;
-    else if (parsedURL.folderPathComponents)
+    } else if (parsedURL.folderPathComponents) {
       name = parsedURL.folderPathComponents + '/';
-    if (!name)
+    }
+    if (!name) {
       name = parsedURL.host;
-    if (!name)
+    }
+    if (!name) {
       return '';
+    }
     const scheme = parsedURL.scheme;
     let prefix = '';
     if (scheme && scheme !== 'http' && scheme !== 'https') {
       prefix = '^' + scheme + '://';
-      if (scheme === 'chrome-extension')
+      if (scheme === 'chrome-extension') {
         prefix += parsedURL.host + '\\b';
+      }
       prefix += '.*';
     }
     return prefix + name.escapeForRegExp() + (url.endsWith(name) ? '$' : '\\b');

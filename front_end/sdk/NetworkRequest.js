@@ -131,10 +131,12 @@ SDK.NetworkRequest = class extends Common.Object {
   indentityCompare(other) {
     const thisId = this.requestId();
     const thatId = other.requestId();
-    if (thisId > thatId)
+    if (thisId > thatId) {
       return 1;
-    if (thisId < thatId)
+    }
+    if (thisId < thatId) {
       return -1;
+    }
     return 0;
   }
 
@@ -170,8 +172,9 @@ SDK.NetworkRequest = class extends Common.Object {
    * @param {string} x
    */
   setUrl(x) {
-    if (this._url === x)
+    if (this._url === x) {
       return;
+    }
 
     this._url = x;
     this._parsedURL = new Common.ParsedURL(x);
@@ -327,8 +330,9 @@ SDK.NetworkRequest = class extends Common.Object {
     } else {
       // Prefer endTime since it might be from the network stack.
       this._endTime = x;
-      if (this._responseReceivedTime > x)
+      if (this._responseReceivedTime > x) {
         this._responseReceivedTime = x;
+      }
     }
     this.dispatchEventToListeners(SDK.NetworkRequest.Events.TimingChanged, this);
   }
@@ -337,8 +341,9 @@ SDK.NetworkRequest = class extends Common.Object {
    * @return {number}
    */
   get duration() {
-    if (this._endTime === -1 || this._startTime === -1)
+    if (this._endTime === -1 || this._startTime === -1) {
       return -1;
+    }
     return this._endTime - this._startTime;
   }
 
@@ -346,8 +351,9 @@ SDK.NetworkRequest = class extends Common.Object {
    * @return {number}
    */
   get latency() {
-    if (this._responseReceivedTime === -1 || this._startTime === -1)
+    if (this._responseReceivedTime === -1 || this._startTime === -1) {
       return -1;
+    }
     return this._responseReceivedTime - this._startTime;
   }
 
@@ -397,13 +403,15 @@ SDK.NetworkRequest = class extends Common.Object {
    * @param {boolean} x
    */
   set finished(x) {
-    if (this._finished === x)
+    if (this._finished === x) {
       return;
+    }
 
     this._finished = x;
 
-    if (x)
+    if (x) {
       this.dispatchEventToListeners(SDK.NetworkRequest.Events.FinishedLoading, this);
+    }
   }
 
   /**
@@ -511,8 +519,9 @@ SDK.NetworkRequest = class extends Common.Object {
    */
   initiatedByServiceWorker() {
     const networkManager = SDK.NetworkManager.forRequest(this);
-    if (!networkManager)
+    if (!networkManager) {
       return false;
+    }
     return networkManager.target().type() === SDK.Target.Type.ServiceWorker;
   }
 
@@ -527,16 +536,19 @@ SDK.NetworkRequest = class extends Common.Object {
    * @param {!Protocol.Network.ResourceTiming|undefined} timingInfo
    */
   set timing(timingInfo) {
-    if (!timingInfo || this._fromMemoryCache)
+    if (!timingInfo || this._fromMemoryCache) {
       return;
+    }
     // Take startTime and responseReceivedTime from timing data for better accuracy.
     // Timing's requestTime is a baseline in seconds, rest of the numbers there are ticks in millis.
     this._startTime = timingInfo.requestTime;
     const headersReceivedTime = timingInfo.requestTime + timingInfo.receiveHeadersEnd / 1000.0;
-    if ((this._responseReceivedTime || -1) < 0 || this._responseReceivedTime > headersReceivedTime)
+    if ((this._responseReceivedTime || -1) < 0 || this._responseReceivedTime > headersReceivedTime) {
       this._responseReceivedTime = headersReceivedTime;
-    if (this._startTime > this._responseReceivedTime)
+    }
+    if (this._startTime > this._responseReceivedTime) {
       this._responseReceivedTime = this._startTime;
+    }
 
     this._timing = timingInfo;
     this.dispatchEventToListeners(SDK.NetworkRequest.Events.TimingChanged, this);
@@ -567,8 +579,9 @@ SDK.NetworkRequest = class extends Common.Object {
    * @return {string}
    */
   name() {
-    if (this._name)
+    if (this._name) {
       return this._name;
+    }
     this._parseNameAndPathFromURL();
     return this._name;
   }
@@ -577,8 +590,9 @@ SDK.NetworkRequest = class extends Common.Object {
    * @return {string}
    */
   path() {
-    if (this._path)
+    if (this._path) {
       return this._path;
+    }
     this._parseNameAndPathFromURL();
     return this._path;
   }
@@ -620,8 +634,9 @@ SDK.NetworkRequest = class extends Common.Object {
   get folder() {
     let path = this._parsedURL.path;
     const indexOfQuery = path.indexOf('?');
-    if (indexOfQuery !== -1)
+    if (indexOfQuery !== -1) {
       path = path.substring(0, indexOfQuery);
+    }
     const lastSlashIndex = path.lastIndexOf('/');
     return lastSlashIndex !== -1 ? path.substring(0, lastSlashIndex) : '';
   }
@@ -720,8 +735,9 @@ SDK.NetworkRequest = class extends Common.Object {
    * @return {string|undefined}
    */
   requestHeaderValue(headerName) {
-    if (this._requestHeaderValues[headerName])
+    if (this._requestHeaderValues[headerName]) {
       return this._requestHeaderValues[headerName];
+    }
     this._requestHeaderValues[headerName] = this._computeHeaderValue(this.requestHeaders(), headerName);
     return this._requestHeaderValues[headerName];
   }
@@ -730,8 +746,9 @@ SDK.NetworkRequest = class extends Common.Object {
    * @return {?Array.<!SDK.Cookie>}
    */
   get requestCookies() {
-    if (!this._requestCookies)
+    if (!this._requestCookies) {
       this._requestCookies = SDK.CookieParser.parseCookie(this.requestHeaderValue('Cookie'));
+    }
     return this._requestCookies;
   }
 
@@ -739,8 +756,9 @@ SDK.NetworkRequest = class extends Common.Object {
    * @return {!Promise<?string>}
    */
   requestFormData() {
-    if (!this._requestFormDataPromise)
+    if (!this._requestFormDataPromise) {
       this._requestFormDataPromise = SDK.NetworkManager.requestPostData(this);
+    }
     return this._requestFormDataPromise;
   }
 
@@ -758,8 +776,9 @@ SDK.NetworkRequest = class extends Common.Object {
    */
   _filteredProtocolName() {
     const protocol = this.protocol.toLowerCase();
-    if (protocol === 'h2')
+    if (protocol === 'h2') {
       return 'http/2.0';
+    }
     return protocol.replace(/^http\/2(\.0)?\+/, 'http/2.0+');
   }
 
@@ -770,8 +789,9 @@ SDK.NetworkRequest = class extends Common.Object {
     const headersText = this.requestHeadersText();
     if (!headersText) {
       const version = this.requestHeaderValue('version') || this.requestHeaderValue(':version');
-      if (version)
+      if (version) {
         return version;
+      }
       return this._filteredProtocolName();
     }
     const firstLine = headersText.split(/\r\n/)[0];
@@ -819,8 +839,9 @@ SDK.NetworkRequest = class extends Common.Object {
    * @return {!Array.<!SDK.NetworkRequest.NameValue>}
    */
   get sortedResponseHeaders() {
-    if (this._sortedResponseHeaders !== undefined)
+    if (this._sortedResponseHeaders !== undefined) {
       return this._sortedResponseHeaders;
+    }
 
     this._sortedResponseHeaders = this.responseHeaders.slice();
     this._sortedResponseHeaders.sort(function(a, b) {
@@ -834,8 +855,9 @@ SDK.NetworkRequest = class extends Common.Object {
    * @return {string|undefined}
    */
   responseHeaderValue(headerName) {
-    if (headerName in this._responseHeaderValues)
+    if (headerName in this._responseHeaderValues) {
       return this._responseHeaderValues[headerName];
+    }
     this._responseHeaderValues[headerName] = this._computeHeaderValue(this.responseHeaders, headerName);
     return this._responseHeaderValues[headerName];
   }
@@ -844,8 +866,9 @@ SDK.NetworkRequest = class extends Common.Object {
    * @return {!Array.<!SDK.Cookie>}
    */
   get responseCookies() {
-    if (!this._responseCookies)
+    if (!this._responseCookies) {
       this._responseCookies = SDK.CookieParser.parseSetCookie(this.responseHeaderValue('Set-Cookie'));
+    }
     return this._responseCookies;
   }
 
@@ -860,8 +883,9 @@ SDK.NetworkRequest = class extends Common.Object {
    * @return {?Array.<!SDK.ServerTiming>}
    */
   get serverTimings() {
-    if (typeof this._serverTimings === 'undefined')
+    if (typeof this._serverTimings === 'undefined') {
       this._serverTimings = SDK.ServerTiming.parseHeaders(this.responseHeaders);
+    }
     return this._serverTimings;
   }
 
@@ -869,8 +893,9 @@ SDK.NetworkRequest = class extends Common.Object {
    * @return {?string}
    */
   queryString() {
-    if (this._queryString !== undefined)
+    if (this._queryString !== undefined) {
       return this._queryString;
+    }
 
     let queryString = null;
     const url = this.url();
@@ -878,8 +903,9 @@ SDK.NetworkRequest = class extends Common.Object {
     if (questionMarkPosition !== -1) {
       queryString = url.substring(questionMarkPosition + 1);
       const hashSignPosition = queryString.indexOf('#');
-      if (hashSignPosition !== -1)
+      if (hashSignPosition !== -1) {
         queryString = queryString.substring(0, hashSignPosition);
+      }
     }
     this._queryString = queryString;
     return this._queryString;
@@ -889,11 +915,13 @@ SDK.NetworkRequest = class extends Common.Object {
    * @return {?Array.<!SDK.NetworkRequest.NameValue>}
    */
   get queryParameters() {
-    if (this._parsedQueryParameters)
+    if (this._parsedQueryParameters) {
       return this._parsedQueryParameters;
+    }
     const queryString = this.queryString();
-    if (!queryString)
+    if (!queryString) {
       return null;
+    }
     this._parsedQueryParameters = this._parseParameters(queryString);
     return this._parsedQueryParameters;
   }
@@ -904,14 +932,16 @@ SDK.NetworkRequest = class extends Common.Object {
   async _parseFormParameters() {
     const requestContentType = this.requestContentType();
 
-    if (!requestContentType)
+    if (!requestContentType) {
       return null;
+    }
 
     // Handling application/x-www-form-urlencoded request bodies.
     if (requestContentType.match(/^application\/x-www-form-urlencoded\s*(;.*)?$/i)) {
       const formData = await this.requestFormData();
-      if (!formData)
+      if (!formData) {
         return null;
+      }
 
       return this._parseParameters(formData);
     }
@@ -919,16 +949,19 @@ SDK.NetworkRequest = class extends Common.Object {
     // Handling multipart/form-data request bodies.
     const multipartDetails = requestContentType.match(/^multipart\/form-data\s*;\s*boundary\s*=\s*(\S+)\s*$/);
 
-    if (!multipartDetails)
+    if (!multipartDetails) {
       return null;
+    }
 
     const boundary = multipartDetails[1];
-    if (!boundary)
+    if (!boundary) {
       return null;
+    }
 
     const formData = await this.requestFormData();
-    if (!formData)
+    if (!formData) {
       return null;
+    }
 
     return this._parseMultipartFormDataParameters(formData, boundary);
   }
@@ -937,8 +970,9 @@ SDK.NetworkRequest = class extends Common.Object {
    * @return {!Promise<?Array<!SDK.NetworkRequest.NameValue>>}
    */
   formParameters() {
-    if (!this._formParametersPromise)
+    if (!this._formParametersPromise) {
       this._formParametersPromise = this._parseFormParameters();
+    }
     return this._formParametersPromise;
   }
 
@@ -949,8 +983,9 @@ SDK.NetworkRequest = class extends Common.Object {
     const headersText = this._responseHeadersText;
     if (!headersText) {
       const version = this.responseHeaderValue('version') || this.responseHeaderValue(':version');
-      if (version)
+      if (version) {
         return version;
+      }
       return this._filteredProtocolName();
     }
     const firstLine = headersText.split(/\r\n/)[0];
@@ -965,10 +1000,11 @@ SDK.NetworkRequest = class extends Common.Object {
   _parseParameters(queryString) {
     function parseNameValue(pair) {
       const position = pair.indexOf('=');
-      if (position === -1)
+      if (position === -1) {
         return {name: pair, value: ''};
-      else
+      } else {
         return {name: pair.substring(0, position), value: pair.substring(position + 1)};
+      }
     }
     return queryString.split('&').map(parseNameValue);
   }
@@ -1015,8 +1051,9 @@ SDK.NetworkRequest = class extends Common.Object {
     function parseMultipartField(result, field) {
       const [match, name, filename, contentType, value] = field.match(keyValuePattern) || [];
 
-      if (!match)
+      if (!match) {
         return result;
+      }
 
       const processedValue = (filename || contentType) ? ls`(binary)` : value;
       result.push({name, value: processedValue});
@@ -1035,14 +1072,17 @@ SDK.NetworkRequest = class extends Common.Object {
 
     const values = [];
     for (let i = 0; i < headers.length; ++i) {
-      if (headers[i].name.toLowerCase() === headerName)
+      if (headers[i].name.toLowerCase() === headerName) {
         values.push(headers[i].value);
+      }
     }
-    if (!values.length)
+    if (!values.length) {
       return undefined;
+    }
     // Set-Cookie values should be separated by '\n', not comma, otherwise cookies could not be parsed.
-    if (headerName === 'set-cookie')
+    if (headerName === 'set-cookie') {
       return values.join('\n');
+    }
     return values.join(', ');
   }
 
@@ -1050,12 +1090,14 @@ SDK.NetworkRequest = class extends Common.Object {
    * @return {!Promise<!SDK.NetworkRequest.ContentData>}
    */
   contentData() {
-    if (this._contentData)
+    if (this._contentData) {
       return this._contentData;
-    if (this._contentDataProvider)
+    }
+    if (this._contentDataProvider) {
       this._contentData = this._contentDataProvider();
-    else
+    } else {
       this._contentData = SDK.NetworkManager.requestContentData(this);
+    }
     return this._contentData;
   }
 
@@ -1107,15 +1149,18 @@ SDK.NetworkRequest = class extends Common.Object {
    * @return {!Promise<!Array<!Common.ContentProvider.SearchMatch>>}
    */
   async searchInContent(query, caseSensitive, isRegex) {
-    if (!this._contentDataProvider)
+    if (!this._contentDataProvider) {
       return SDK.NetworkManager.searchInRequest(this, query, caseSensitive, isRegex);
+    }
 
     const contentData = await this.contentData();
     let content = contentData.content;
-    if (!content)
+    if (!content) {
       return [];
-    if (contentData.encoded)
+    }
+    if (contentData.encoded) {
       content = window.atob(content);
+    }
     return Common.ContentProvider.performSearchInContent(content, query, caseSensitive, isRegex);
   }
 
@@ -1190,11 +1235,13 @@ SDK.NetworkRequest = class extends Common.Object {
     let imageSrc = Common.ContentProvider.contentAsDataURL(content, this._mimeType, encoded);
     if (imageSrc === null && !this._failed) {
       const cacheControl = this.responseHeaderValue('cache-control') || '';
-      if (!cacheControl.includes('no-cache'))
+      if (!cacheControl.includes('no-cache')) {
         imageSrc = this._url;
+      }
     }
-    if (imageSrc !== null)
+    if (imageSrc !== null) {
       image.src = imageSrc;
+    }
   }
 
   /**
@@ -1288,15 +1335,17 @@ SDK.NetworkRequest = class extends Common.Object {
    */
   charset() {
     const contentTypeHeader = this.responseHeaderValue('content-type');
-    if (!contentTypeHeader)
+    if (!contentTypeHeader) {
       return null;
+    }
 
     const responseCharsets = contentTypeHeader.replace(/ /g, '')
                                  .split(';')
                                  .filter(parameter => parameter.toLowerCase().startsWith('charset='))
                                  .map(parameter => parameter.slice('charset='.length));
-    if (responseCharsets.length)
+    if (responseCharsets.length) {
       return responseCharsets[0];
+    }
 
     return null;
   }
@@ -1339,12 +1388,14 @@ SDK.NetworkRequest = class extends Common.Object {
         // Generate request headers text from raw headers in extra request info because
         // Network.requestWillBeSentExtraInfo doesn't include headers text.
         let requestHeadersText = `${this.requestMethod} ${this.parsedURL.path}`;
-        if (this.parsedURL.queryParams)
+        if (this.parsedURL.queryParams) {
           requestHeadersText += `?${this.parsedURL.queryParams}`;
+        }
         requestHeadersText += ` HTTP/1.1\r\n`;
 
-        for (const {name, value} of this.requestHeaders())
+        for (const {name, value} of this.requestHeaders()) {
           requestHeadersText += `${name}: ${value}\r\n`;
+        }
         this.setRequestHeadersText(requestHeadersText);
       }
     }

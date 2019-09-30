@@ -120,8 +120,9 @@ Bindings.SASSSourceMapping = class {
       const sassText = /** @type {string} */ (newSources.get(sourceURL));
       uiSourceCode.setWorkingCopy(sassText);
     }
-    for (const header of headers)
+    for (const header of headers) {
       Bindings.cssWorkspaceBinding.updateLocations(header);
+    }
   }
 
   /**
@@ -131,17 +132,21 @@ Bindings.SASSSourceMapping = class {
    */
   rawLocationToUILocation(rawLocation) {
     const header = rawLocation.header();
-    if (!header)
+    if (!header) {
       return null;
+    }
     const sourceMap = this._sourceMapManager.sourceMapForClient(header);
-    if (!sourceMap)
+    if (!sourceMap) {
       return null;
+    }
     const entry = sourceMap.findEntry(rawLocation.lineNumber, rawLocation.columnNumber);
-    if (!entry || !entry.sourceURL)
+    if (!entry || !entry.sourceURL) {
       return null;
+    }
     const uiSourceCode = this._project.uiSourceCodeForURL(entry.sourceURL);
-    if (!uiSourceCode)
+    if (!uiSourceCode) {
       return null;
+    }
     return uiSourceCode.uiLocation(entry.sourceLineNumber || 0, entry.sourceColumnNumber);
   }
 
@@ -152,13 +157,15 @@ Bindings.SASSSourceMapping = class {
    */
   uiLocationToRawLocations(uiLocation) {
     const sourceMap = uiLocation.uiSourceCode[Bindings.SASSSourceMapping._sourceMapSymbol];
-    if (!sourceMap)
+    if (!sourceMap) {
       return [];
+    }
     const entries =
         sourceMap.findReverseEntries(uiLocation.uiSourceCode.url(), uiLocation.lineNumber, uiLocation.columnNumber);
     const locations = [];
-    for (const header of this._sourceMapManager.clientsForSourceMap(sourceMap))
+    for (const header of this._sourceMapManager.clientsForSourceMap(sourceMap)) {
       locations.pushAll(entries.map(entry => new SDK.CSSLocation(header, entry.lineNumber, entry.columnNumber)));
+    }
     return locations;
   }
 

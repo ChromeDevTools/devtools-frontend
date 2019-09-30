@@ -66,8 +66,9 @@ Protocol.InspectorBackend = class {
    */
   _addAgentGetterMethodToProtocolTargetPrototype(domain) {
     let upperCaseLength = 0;
-    while (upperCaseLength < domain.length && domain[upperCaseLength].toLowerCase() !== domain[upperCaseLength])
+    while (upperCaseLength < domain.length && domain[upperCaseLength].toLowerCase() !== domain[upperCaseLength]) {
       ++upperCaseLength;
+    }
 
     const methodName = domain.substr(0, upperCaseLength).toLowerCase() + domain.slice(upperCaseLength) + 'Agent';
 
@@ -108,8 +109,9 @@ Protocol.InspectorBackend = class {
    * @return {!Protocol.InspectorBackend._DispatcherPrototype}
    */
   _dispatcherPrototype(domain) {
-    if (!this._dispatcherPrototypes.has(domain))
+    if (!this._dispatcherPrototypes.has(domain)) {
       this._dispatcherPrototypes.set(domain, new Protocol.InspectorBackend._DispatcherPrototype());
+    }
     return this._dispatcherPrototypes.get(domain);
   }
 
@@ -132,8 +134,9 @@ Protocol.InspectorBackend = class {
   registerEnum(type, values) {
     const domainAndName = type.split('.');
     const domain = domainAndName[0];
-    if (!Protocol[domain])
+    if (!Protocol[domain]) {
       Protocol[domain] = {};
+    }
 
     Protocol[domain][domainAndName[1]] = values;
     this._initialized = true;
@@ -169,10 +172,11 @@ Protocol.InspectorBackend = class {
         clientCallback(defaultValue);
         return;
       }
-      if (constructor)
+      if (constructor) {
         clientCallback(new constructor(value));
-      else
+      } else {
         clientCallback(value);
+      }
     }
     return callbackWrapper;
   }
@@ -293,8 +297,9 @@ Protocol.SessionRouter = class {
 
     this._connection.setOnDisconnect(reason => {
       const session = this._sessions.get('');
-      if (session)
+      if (session) {
         session.target.dispose(reason);
+      }
     });
   }
 
@@ -312,8 +317,9 @@ Protocol.SessionRouter = class {
    */
   unregisterSession(sessionId) {
     const session = this._sessions.get(sessionId);
-    for (const callback of session.callbacks.values())
+    for (const callback of session.callbacks.values()) {
       Protocol.SessionRouter.dispatchConnectionError(callback);
+    }
     this._sessions.delete(sessionId);
   }
 
@@ -323,8 +329,9 @@ Protocol.SessionRouter = class {
    */
   _getTargetBySessionId(sessionId) {
     const session = this._sessions.get(sessionId ? sessionId : '');
-    if (!session)
+    if (!session) {
       return null;
+    }
     return session.target;
   }
 
@@ -354,13 +361,16 @@ Protocol.SessionRouter = class {
     const messageId = this._nextMessageId();
     messageObject.id = messageId;
     messageObject.method = method;
-    if (params)
+    if (params) {
       messageObject.params = params;
-    if (sessionId)
+    }
+    if (sessionId) {
       messageObject.sessionId = sessionId;
+    }
 
-    if (Protocol.test.dumpProtocol)
+    if (Protocol.test.dumpProtocol) {
       Protocol.test.dumpProtocol('frontend: ' + JSON.stringify(messageObject));
+    }
 
     if (Protocol.test.onMessageSent) {
       const paramsObject = JSON.parse(JSON.stringify(params || {}));
@@ -388,8 +398,9 @@ Protocol.SessionRouter = class {
    * @param {!Object|string} message
    */
   _onMessage(message) {
-    if (Protocol.test.dumpProtocol)
+    if (Protocol.test.dumpProtocol) {
       Protocol.test.dumpProtocol('backend: ' + ((typeof message === 'string') ? message : JSON.stringify(message)));
+    }
 
     if (Protocol.test.onMessageReceived) {
       const messageObjectCopy = JSON.parse((typeof message === 'string') ? message : JSON.stringify(message));
@@ -406,8 +417,9 @@ Protocol.SessionRouter = class {
       return;
     }
 
-    if (session.target._needsNodeJSPatching)
+    if (session.target._needsNodeJSPatching) {
       Protocol.NodeURL.patch(messageObject);
+    }
 
     if (session.proxyConnection) {
       if (session.proxyConnection._onMessage) {
@@ -430,8 +442,9 @@ Protocol.SessionRouter = class {
       callback(messageObject.error, messageObject.result);
       --this._pendingResponsesCount;
 
-      if (this._pendingScripts.length && !this._pendingResponsesCount)
+      if (this._pendingScripts.length && !this._pendingResponsesCount) {
         this._deprecatedRunAfterPendingDispatches();
+      }
     } else {
       if (!('method' in messageObject)) {
         Protocol.InspectorBackend.reportProtocolError('Protocol Error: the message without method', messageObject);
@@ -454,15 +467,17 @@ Protocol.SessionRouter = class {
    * @param {function()=} script
    */
   _deprecatedRunAfterPendingDispatches(script) {
-    if (script)
+    if (script) {
       this._pendingScripts.push(script);
+    }
 
     // Execute all promises.
     setTimeout(() => {
-      if (!this._pendingResponsesCount)
+      if (!this._pendingResponsesCount) {
         this._executeAfterPendingDispatches();
-      else
+      } else {
         this._deprecatedRunAfterPendingDispatches();
+      }
     }, 0);
   }
 
@@ -470,8 +485,9 @@ Protocol.SessionRouter = class {
     if (!this._pendingResponsesCount) {
       const scripts = this._pendingScripts;
       this._pendingScripts = [];
-      for (let id = 0; id < scripts.length; ++id)
+      for (let id = 0; id < scripts.length; ++id) {
         scripts[id]();
+      }
     }
   }
 
@@ -502,14 +518,16 @@ Protocol.TargetBase = class {
     this._needsNodeJSPatching = needsNodeJSPatching;
     this._sessionId = sessionId;
 
-    if ((!parentTarget && connection) || (!parentTarget && sessionId) || (connection && sessionId))
+    if ((!parentTarget && connection) || (!parentTarget && sessionId) || (connection && sessionId)) {
       throw new Error('Either connection or sessionId (but not both) must be supplied for a child target');
-    if (sessionId)
+    }
+    if (sessionId) {
       this._router = parentTarget._router;
-    else if (connection)
+    } else if (connection) {
       this._router = new Protocol.SessionRouter(connection);
-    else
+    } else {
       this._router = new Protocol.SessionRouter(Protocol.Connection._factory());
+    }
 
     this._router.registerSession(this, this._sessionId);
 
@@ -532,8 +550,9 @@ Protocol.TargetBase = class {
    * @param {!Object} dispatcher
    */
   registerDispatcher(domain, dispatcher) {
-    if (!this._dispatchers[domain])
+    if (!this._dispatchers[domain]) {
       return;
+    }
     this._dispatchers[domain].addDomainDispatcher(dispatcher);
   }
 
@@ -611,8 +630,9 @@ Protocol.InspectorBackend._AgentPrototype = class {
     this['invoke_' + methodName] = invoke;
 
     this._replyArgs[domainAndMethod] = replyArgs;
-    if (hasErrorData)
+    if (hasErrorData) {
       this._hasErrorData[domainAndMethod] = true;
+    }
   }
 
   /**
@@ -639,8 +659,9 @@ Protocol.InspectorBackend._AgentPrototype = class {
       }
 
       const value = args.shift();
-      if (optionalFlag && typeof value === 'undefined')
+      if (optionalFlag && typeof value === 'undefined') {
         continue;
+      }
 
       if (typeof value !== typeName) {
         errorCallback(
@@ -677,14 +698,16 @@ Protocol.InspectorBackend._AgentPrototype = class {
       errorMessage = message;
     }
     const params = this._prepareParameters(method, signature, args, onError);
-    if (errorMessage)
+    if (errorMessage) {
       return Promise.resolve(null);
+    }
 
     return new Promise(resolve => {
       const callback = (error, result) => {
         if (error && !Protocol.test.suppressRequestErrors && error.code !== Protocol.DevToolsStubErrorCode &&
-            error.code !== Protocol._GenericError && error.code !== Protocol._ConnectionClosedErrorCode)
+            error.code !== Protocol._GenericError && error.code !== Protocol._ConnectionClosedErrorCode) {
           console.error('Request ' + method + ' failed. ' + JSON.stringify(error));
+        }
 
 
         if (error) {
@@ -695,10 +718,11 @@ Protocol.InspectorBackend._AgentPrototype = class {
         resolve(result && args.length ? result[args[0]] : undefined);
       };
 
-      if (!this._target._router)
+      if (!this._target._router) {
         Protocol.SessionRouter.dispatchConnectionError(callback);
-      else
+      } else {
         this._target._router.sendMessage(this._target._sessionId, this._domain, method, params, callback);
+      }
     });
   }
 
@@ -711,21 +735,25 @@ Protocol.InspectorBackend._AgentPrototype = class {
     return new Promise(fulfill => {
       const callback = (error, result) => {
         if (error && !Protocol.test.suppressRequestErrors && error.code !== Protocol.DevToolsStubErrorCode &&
-            error.code !== Protocol._GenericError && error.code !== Protocol._ConnectionClosedErrorCode)
+            error.code !== Protocol._GenericError && error.code !== Protocol._ConnectionClosedErrorCode) {
           console.error('Request ' + method + ' failed. ' + JSON.stringify(error));
+        }
 
 
-        if (!result)
+        if (!result) {
           result = {};
-        if (error)
+        }
+        if (error) {
           result[Protocol.Error] = error.message;
+        }
         fulfill(result);
       };
 
-      if (!this._target._router)
+      if (!this._target._router) {
         Protocol.SessionRouter.dispatchConnectionError(callback);
-      else
+      } else {
         this._target._router.sendMessage(this._target._sessionId, this._domain, method, request, callback);
+      }
     });
   }
 };
@@ -758,8 +786,9 @@ Protocol.InspectorBackend._DispatcherPrototype = class {
    * @param {!Object} messageObject
    */
   dispatch(functionName, messageObject) {
-    if (!this._dispatchers.length)
+    if (!this._dispatchers.length) {
       return;
+    }
 
     if (!this._eventArgs[messageObject.method]) {
       Protocol.InspectorBackend.reportProtocolError(
@@ -770,14 +799,16 @@ Protocol.InspectorBackend._DispatcherPrototype = class {
     const params = [];
     if (messageObject.params) {
       const paramNames = this._eventArgs[messageObject.method];
-      for (let i = 0; i < paramNames.length; ++i)
+      for (let i = 0; i < paramNames.length; ++i) {
         params.push(messageObject.params[paramNames[i]]);
+      }
     }
 
     for (let index = 0; index < this._dispatchers.length; ++index) {
       const dispatcher = this._dispatchers[index];
-      if (functionName in dispatcher)
+      if (functionName in dispatcher) {
         dispatcher[functionName].apply(dispatcher, params);
+      }
     }
   }
 };

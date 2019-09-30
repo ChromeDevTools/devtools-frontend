@@ -63,13 +63,16 @@ Screencast.InputModel = class extends SDK.SDKModel {
       'mousemove': 'mouseMoved',
       'mousewheel': 'mouseWheel'
     };
-    if (!(event.type in types) || !(event.which in buttons))
+    if (!(event.type in types) || !(event.which in buttons)) {
       return;
-    if (event.type !== 'mousewheel' && buttons[event.which] === 'none')
+    }
+    if (event.type !== 'mousewheel' && buttons[event.which] === 'none') {
       return;
+    }
 
-    if (event.type === 'mousedown' || this._activeTouchOffsetTop === null)
+    if (event.type === 'mousedown' || this._activeTouchOffsetTop === null) {
       this._activeTouchOffsetTop = offsetTop;
+    }
 
     const x = Math.round(event.offsetX / zoom);
     let y = Math.round(event.offsetY / zoom);
@@ -88,8 +91,9 @@ Screencast.InputModel = class extends SDK.SDKModel {
     } else {
       this._activeTouchParams = params;
     }
-    if (event.type === 'mouseup')
+    if (event.type === 'mouseup') {
       this._activeTouchOffsetTop = null;
+    }
     this._inputAgent.invoke_emulateTouchFromMouseEvent(params);
   }
 

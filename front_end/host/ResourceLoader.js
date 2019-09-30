@@ -66,8 +66,9 @@ Host.ResourceLoader.loadAsStream = function(url, headers, stream, callback) {
 
   const rawHeaders = [];
   if (headers) {
-    for (const key in headers)
+    for (const key in headers) {
       rawHeaders.push(key + ': ' + headers[key]);
+    }
   }
   InspectorFrontendHost.loadNetworkResource(url, rawHeaders.join('\r\n'), streamId, finishedCallback);
 
@@ -75,8 +76,9 @@ Host.ResourceLoader.loadAsStream = function(url, headers, stream, callback) {
    * @param {!InspectorFrontendHostAPI.LoadNetworkResourceResult} response
    */
   function finishedCallback(response) {
-    if (callback)
+    if (callback) {
       callback(response.statusCode, response.headers || {});
+    }
     Host.ResourceLoader._discardOutputStream(streamId);
   }
 

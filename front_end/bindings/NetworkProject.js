@@ -55,8 +55,9 @@ Bindings.NetworkProject = class {
    */
   static setInitialFrameAttribution(uiSourceCode, frameId) {
     const frame = Bindings.NetworkProject._resolveFrame(uiSourceCode, frameId);
-    if (!frame)
+    if (!frame) {
       return;
+    }
     /** @type {!Map<string, !{frame: !SDK.ResourceTreeFrame, count: number}>} */
     const attribution = new Map();
     attribution.set(frameId, {frame: frame, count: 1});
@@ -69,8 +70,9 @@ Bindings.NetworkProject = class {
    */
   static cloneInitialFrameAttribution(fromUISourceCode, toUISourceCode) {
     const fromAttribution = fromUISourceCode[Bindings.NetworkProject._frameAttributionSymbol];
-    if (!fromAttribution)
+    if (!fromAttribution) {
       return;
+    }
     /** @type {!Map<string, !{frame: !SDK.ResourceTreeFrame, count: number}>} */
     const toAttribution = new Map();
     toUISourceCode[Bindings.NetworkProject._frameAttributionSymbol] = toAttribution;
@@ -86,14 +88,16 @@ Bindings.NetworkProject = class {
    */
   static addFrameAttribution(uiSourceCode, frameId) {
     const frame = Bindings.NetworkProject._resolveFrame(uiSourceCode, frameId);
-    if (!frame)
+    if (!frame) {
       return;
+    }
     const frameAttribution = uiSourceCode[Bindings.NetworkProject._frameAttributionSymbol];
     const attributionInfo = frameAttribution.get(frameId) || {frame: frame, count: 0};
     attributionInfo.count += 1;
     frameAttribution.set(frameId, attributionInfo);
-    if (attributionInfo.count !== 1)
+    if (attributionInfo.count !== 1) {
       return;
+    }
 
     const data = {uiSourceCode: uiSourceCode, frame: frame};
     Bindings.networkProjectManager.dispatchEventToListeners(
@@ -106,13 +110,15 @@ Bindings.NetworkProject = class {
    */
   static removeFrameAttribution(uiSourceCode, frameId) {
     const frameAttribution = uiSourceCode[Bindings.NetworkProject._frameAttributionSymbol];
-    if (!frameAttribution)
+    if (!frameAttribution) {
       return;
+    }
     const attributionInfo = frameAttribution.get(frameId);
     console.assert(attributionInfo, 'Failed to remove frame attribution for url: ' + uiSourceCode.url());
     attributionInfo.count -= 1;
-    if (attributionInfo.count > 0)
+    if (attributionInfo.count > 0) {
       return;
+    }
     frameAttribution.delete(frameId);
     const data = {uiSourceCode: uiSourceCode, frame: attributionInfo.frame};
     Bindings.networkProjectManager.dispatchEventToListeners(
@@ -143,8 +149,9 @@ Bindings.NetworkProject = class {
     const target = Bindings.NetworkProject.targetForUISourceCode(uiSourceCode);
     const resourceTreeModel = target && target.model(SDK.ResourceTreeModel);
     const attribution = uiSourceCode[Bindings.NetworkProject._frameAttributionSymbol];
-    if (!resourceTreeModel || !attribution)
+    if (!resourceTreeModel || !attribution) {
       return [];
+    }
     const frames = Array.from(attribution.keys()).map(frameId => resourceTreeModel.frameForId(frameId));
     return frames.filter(frame => !!frame);
   }

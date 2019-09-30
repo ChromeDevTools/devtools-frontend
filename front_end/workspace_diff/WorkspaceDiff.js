@@ -71,8 +71,9 @@ WorkspaceDiff.WorkspaceDiff = class extends Common.Object {
    * @return {!WorkspaceDiff.WorkspaceDiff.UISourceCodeDiff}
    */
   _uiSourceCodeDiff(uiSourceCode) {
-    if (!this._uiSourceCodeDiffs.has(uiSourceCode))
+    if (!this._uiSourceCodeDiffs.has(uiSourceCode)) {
       this._uiSourceCodeDiffs.set(uiSourceCode, new WorkspaceDiff.WorkspaceDiff.UISourceCodeDiff(uiSourceCode));
+    }
     return this._uiSourceCodeDiffs.get(uiSourceCode);
   }
 
@@ -105,8 +106,9 @@ WorkspaceDiff.WorkspaceDiff = class extends Common.Object {
    */
   _projectRemoved(event) {
     const project = /** @type {!Workspace.Project} */ (event.data);
-    for (const uiSourceCode of project.uiSourceCodes())
+    for (const uiSourceCode of project.uiSourceCodes()) {
       this._removeUISourceCode(uiSourceCode);
+    }
   }
 
   /**
@@ -115,8 +117,9 @@ WorkspaceDiff.WorkspaceDiff = class extends Common.Object {
   _removeUISourceCode(uiSourceCode) {
     this._loadingUISourceCodes.delete(uiSourceCode);
     const uiSourceCodeDiff = this._uiSourceCodeDiffs.get(uiSourceCode);
-    if (uiSourceCodeDiff)
+    if (uiSourceCodeDiff) {
       uiSourceCodeDiff._dispose = true;
+    }
     this._markAsUnmodified(uiSourceCode);
   }
 
@@ -125,8 +128,9 @@ WorkspaceDiff.WorkspaceDiff = class extends Common.Object {
    */
   _markAsUnmodified(uiSourceCode) {
     this._uiSourceCodeProcessedForTest();
-    if (this._modifiedUISourceCodes.delete(uiSourceCode))
+    if (this._modifiedUISourceCodes.delete(uiSourceCode)) {
       this.dispatchEventToListeners(WorkspaceDiff.Events.ModifiedStatusChanged, {uiSourceCode, isModified: false});
+    }
   }
 
   /**
@@ -134,8 +138,9 @@ WorkspaceDiff.WorkspaceDiff = class extends Common.Object {
    */
   _markAsModified(uiSourceCode) {
     this._uiSourceCodeProcessedForTest();
-    if (this._modifiedUISourceCodes.has(uiSourceCode))
+    if (this._modifiedUISourceCodes.has(uiSourceCode)) {
       return;
+    }
     this._modifiedUISourceCodes.add(uiSourceCode);
     this.dispatchEventToListeners(WorkspaceDiff.Events.ModifiedStatusChanged, {uiSourceCode, isModified: true});
   }
@@ -166,14 +171,16 @@ WorkspaceDiff.WorkspaceDiff = class extends Common.Object {
         Promise.all([this.requestOriginalContentForUISourceCode(uiSourceCode), uiSourceCode.requestContent()]);
     this._loadingUISourceCodes.set(uiSourceCode, contentsPromise);
     const contents = await contentsPromise;
-    if (this._loadingUISourceCodes.get(uiSourceCode) !== contentsPromise)
+    if (this._loadingUISourceCodes.get(uiSourceCode) !== contentsPromise) {
       return;
+    }
     this._loadingUISourceCodes.delete(uiSourceCode);
 
-    if (contents[0] !== null && contents[1] !== null && contents[0] !== contents[1])
+    if (contents[0] !== null && contents[1] !== null && contents[0] !== contents[1]) {
       this._markAsModified(uiSourceCode);
-    else
+    } else {
       this._markAsUnmodified(uiSourceCode);
+    }
   }
 
   /**
@@ -193,8 +200,9 @@ WorkspaceDiff.WorkspaceDiff = class extends Common.Object {
      * @param {?string} content
      */
     function callback(content) {
-      if (typeof content !== 'string')
+      if (typeof content !== 'string') {
         return;
+      }
 
       uiSourceCode.addRevision(content);
     }
@@ -233,8 +241,9 @@ WorkspaceDiff.WorkspaceDiff.UISourceCodeDiff = class extends Common.Object {
      * @this {WorkspaceDiff.WorkspaceDiff.UISourceCodeDiff}
      */
     function emitDiffChanged() {
-      if (this._dispose)
+      if (this._dispose) {
         return;
+      }
       this.dispatchEventToListeners(WorkspaceDiff.Events.DiffChanged);
       this._pendingChanges = null;
     }
@@ -244,8 +253,9 @@ WorkspaceDiff.WorkspaceDiff.UISourceCodeDiff = class extends Common.Object {
    * @return {!Promise<?Diff.Diff.DiffArray>}
    */
   requestDiff() {
-    if (!this._requestDiffPromise)
+    if (!this._requestDiffPromise) {
       this._requestDiffPromise = this._innerRequestDiff();
+    }
     return this._requestDiffPromise;
   }
 
@@ -255,8 +265,9 @@ WorkspaceDiff.WorkspaceDiff.UISourceCodeDiff = class extends Common.Object {
   _originalContent() {
     const originalNetworkContent =
         Persistence.networkPersistenceManager.originalContentForUISourceCode(this._uiSourceCode);
-    if (originalNetworkContent)
+    if (originalNetworkContent) {
       return originalNetworkContent;
+    }
 
     let callback;
     const promise = new Promise(fulfill => callback = fulfill);
@@ -268,28 +279,35 @@ WorkspaceDiff.WorkspaceDiff.UISourceCodeDiff = class extends Common.Object {
    * @return {!Promise<?Diff.Diff.DiffArray>}
    */
   async _innerRequestDiff() {
-    if (this._dispose)
+    if (this._dispose) {
       return null;
+    }
 
     const baseline = await this._originalContent();
-    if (baseline.length > 1024 * 1024)
+    if (baseline.length > 1024 * 1024) {
       return null;
+    }
     // ------------ ASYNC ------------
-    if (this._dispose)
+    if (this._dispose) {
       return null;
+    }
 
     let current = this._uiSourceCode.workingCopy();
-    if (!current && !this._uiSourceCode.contentLoaded())
+    if (!current && !this._uiSourceCode.contentLoaded()) {
       current = await this._uiSourceCode.requestContent();
-    if (current.length > 1024 * 1024)
+    }
+    if (current.length > 1024 * 1024) {
       return null;
+    }
     // ------------ ASYNC ------------
 
-    if (this._dispose)
+    if (this._dispose) {
       return null;
+    }
 
-    if (current === null || baseline === null)
+    if (current === null || baseline === null) {
       return null;
+    }
     return Diff.Diff.lineDiff(baseline.split(/\r\n|\n|\r/), current.split(/\r\n|\n|\r/));
   }
 };
@@ -306,8 +324,9 @@ WorkspaceDiff.Events = {
  * @return {!WorkspaceDiff.WorkspaceDiff}
  */
 WorkspaceDiff.workspaceDiff = function() {
-  if (!WorkspaceDiff.WorkspaceDiff._instance)
+  if (!WorkspaceDiff.WorkspaceDiff._instance) {
     WorkspaceDiff.WorkspaceDiff._instance = new WorkspaceDiff.WorkspaceDiff(Workspace.workspace);
+  }
   return WorkspaceDiff.WorkspaceDiff._instance;
 };
 

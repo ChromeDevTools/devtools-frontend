@@ -53,16 +53,18 @@ WebAudio.WebAudioView = class extends UI.ThrottledWidget {
    */
   wasShown() {
     super.wasShown();
-    for (const model of SDK.targetManager.models(WebAudio.WebAudioModel))
+    for (const model of SDK.targetManager.models(WebAudio.WebAudioModel)) {
       this._addEventListeners(model);
+    }
   }
 
   /**
    * @override
    */
   willHide() {
-    for (const model of SDK.targetManager.models(WebAudio.WebAudioModel))
+    for (const model of SDK.targetManager.models(WebAudio.WebAudioModel)) {
       this._removeEventListeners(model);
+    }
   }
 
   /**
@@ -70,8 +72,9 @@ WebAudio.WebAudioView = class extends UI.ThrottledWidget {
    * @param {!WebAudio.WebAudioModel} webAudioModel
    */
   modelAdded(webAudioModel) {
-    if (this.isShowing())
+    if (this.isShowing()) {
       this._addEventListeners(webAudioModel);
+    }
   }
 
   /**
@@ -167,15 +170,17 @@ WebAudio.WebAudioView = class extends UI.ThrottledWidget {
    */
   _contextChanged(event) {
     const context = /** @type {!Protocol.WebAudio.BaseAudioContext} */ (event.data);
-    if (!this._graphManager.hasContext(context.contextId))
+    if (!this._graphManager.hasContext(context.contextId)) {
       return;
+    }
 
     this._contextSelector.contextChanged(event);
   }
 
   _reset() {
-    if (this._landingPage.isShowing())
+    if (this._landingPage.isShowing()) {
       this._landingPage.detach();
+    }
     this._contextSelector.reset();
     this._detailViewContainer.removeChildren();
     this._landingPage.show(this._detailViewContainer);
@@ -192,8 +197,9 @@ WebAudio.WebAudioView = class extends UI.ThrottledWidget {
   _audioListenerCreated(event) {
     const listener = /** @type {!Protocol.WebAudio.AudioListener} */ (event.data);
     const graph = this._graphManager.getGraph(listener.contextId);
-    if (!graph)
+    if (!graph) {
       return;
+    }
     graph.addNode({
       nodeId: listener.listenerId,
       nodeType: 'Listener',
@@ -208,8 +214,9 @@ WebAudio.WebAudioView = class extends UI.ThrottledWidget {
   _audioListenerWillBeDestroyed(event) {
     const {contextId, listenerId} = event.data;
     const graph = this._graphManager.getGraph(contextId);
-    if (!graph)
+    if (!graph) {
       return;
+    }
     graph.removeNode(listenerId);
   }
 
@@ -219,8 +226,9 @@ WebAudio.WebAudioView = class extends UI.ThrottledWidget {
   _audioNodeCreated(event) {
     const node = /** @type {!Protocol.WebAudio.AudioNode} */ (event.data);
     const graph = this._graphManager.getGraph(node.contextId);
-    if (!graph)
+    if (!graph) {
       return;
+    }
     graph.addNode({
       nodeId: node.nodeId,
       nodeType: node.nodeType,
@@ -235,8 +243,9 @@ WebAudio.WebAudioView = class extends UI.ThrottledWidget {
   _audioNodeWillBeDestroyed(event) {
     const {contextId, nodeId} = event.data;
     const graph = this._graphManager.getGraph(contextId);
-    if (!graph)
+    if (!graph) {
       return;
+    }
     graph.removeNode(nodeId);
   }
 
@@ -246,8 +255,9 @@ WebAudio.WebAudioView = class extends UI.ThrottledWidget {
   _audioParamCreated(event) {
     const param = /** @type {!Protocol.WebAudio.AudioParam} */ (event.data);
     const graph = this._graphManager.getGraph(param.contextId);
-    if (!graph)
+    if (!graph) {
       return;
+    }
     graph.addParam({
       paramId: param.paramId,
       paramType: param.paramType,
@@ -261,8 +271,9 @@ WebAudio.WebAudioView = class extends UI.ThrottledWidget {
   _audioParamWillBeDestroyed(event) {
     const {contextId, paramId} = event.data;
     const graph = this._graphManager.getGraph(contextId);
-    if (!graph)
+    if (!graph) {
       return;
+    }
     graph.removeParam(paramId);
   }
 
@@ -272,8 +283,9 @@ WebAudio.WebAudioView = class extends UI.ThrottledWidget {
   _nodesConnected(event) {
     const {contextId, sourceId, destinationId, sourceOutputIndex, destinationInputIndex} = event.data;
     const graph = this._graphManager.getGraph(contextId);
-    if (!graph)
+    if (!graph) {
       return;
+    }
     graph.addNodeToNodeConnection({
       sourceId,
       destinationId,
@@ -288,8 +300,9 @@ WebAudio.WebAudioView = class extends UI.ThrottledWidget {
   _nodesDisconnected(event) {
     const {contextId, sourceId, destinationId, sourceOutputIndex, destinationInputIndex} = event.data;
     const graph = this._graphManager.getGraph(contextId);
-    if (!graph)
+    if (!graph) {
       return;
+    }
     graph.removeNodeToNodeConnection({
       sourceId,
       destinationId,
@@ -304,13 +317,15 @@ WebAudio.WebAudioView = class extends UI.ThrottledWidget {
   _nodeParamConnected(event) {
     const {contextId, sourceId, destinationId, sourceOutputIndex} = event.data;
     const graph = this._graphManager.getGraph(contextId);
-    if (!graph)
+    if (!graph) {
       return;
+    }
     // Since the destinationId is AudioParamId, we need to find the nodeId as the
     // real destinationId.
     const nodeId = graph.getNodeIdByParamId(destinationId);
-    if (!nodeId)
+    if (!nodeId) {
       return;
+    }
     graph.addNodeToParamConnection({
       sourceId,
       destinationId: nodeId,
@@ -325,13 +340,15 @@ WebAudio.WebAudioView = class extends UI.ThrottledWidget {
   _nodeParamDisconnected(event) {
     const {contextId, sourceId, destinationId, sourceOutputIndex} = event.data;
     const graph = this._graphManager.getGraph(contextId);
-    if (!graph)
+    if (!graph) {
       return;
+    }
     // Since the destinationId is AudioParamId, we need to find the nodeId as the
     // real destinationId.
     const nodeId = graph.getNodeIdByParamId(destinationId);
-    if (!nodeId)
+    if (!nodeId) {
       return;
+    }
     graph.removeNodeToParamConnection({
       sourceId,
       destinationId: nodeId,
@@ -344,8 +361,9 @@ WebAudio.WebAudioView = class extends UI.ThrottledWidget {
    * @param {!Protocol.WebAudio.BaseAudioContext} context
    */
   _updateDetailView(context) {
-    if (this._landingPage.isShowing())
+    if (this._landingPage.isShowing()) {
       this._landingPage.detach();
+    }
     const detailBuilder = new WebAudio.ContextDetailBuilder(context);
     this._detailViewContainer.removeChildren();
     this._detailViewContainer.appendChild(detailBuilder.getFragment());
@@ -376,11 +394,13 @@ WebAudio.WebAudioView = class extends UI.ThrottledWidget {
     for (const model of SDK.targetManager.models(WebAudio.WebAudioModel)) {
       // Display summary only for real-time context.
       if (context.contextType === 'realtime') {
-        if (!this._graphManager.hasContext(context.contextId))
+        if (!this._graphManager.hasContext(context.contextId)) {
           continue;
+        }
         const realtimeData = await model.requestRealtimeData(context.contextId);
-        if (realtimeData)
+        if (realtimeData) {
           this._updateSummaryBar(context.contextId, realtimeData);
+        }
       } else {
         this._clearSummaryBar();
       }

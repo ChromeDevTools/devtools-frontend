@@ -45,8 +45,9 @@ UI.ContextMenuItem = class {
     this._disabled = disabled;
     this._checked = checked;
     this._contextMenu = contextMenu;
-    if (type === 'item' || type === 'checkbox')
+    if (type === 'item' || type === 'checkbox') {
       this._id = contextMenu ? contextMenu._nextId() : 0;
+    }
   }
 
   /**
@@ -84,10 +85,12 @@ UI.ContextMenuItem = class {
     switch (this._type) {
       case 'item':
         const result = {type: 'item', id: this._id, label: this._label, enabled: !this._disabled};
-        if (this._customElement)
+        if (this._customElement) {
           result.element = this._customElement;
-        if (this._shortcut)
+        }
+        if (this._shortcut) {
           result.shortcut = this._shortcut;
+        }
         return result;
       case 'separator':
         return {type: 'separator'};
@@ -150,16 +153,19 @@ UI.ContextMenuSection = class {
   appendAction(actionId, label, optional) {
     const action = UI.actionRegistry.action(actionId);
     if (!action) {
-      if (!optional)
+      if (!optional) {
         console.error(`Action ${actionId} was not defined`);
+      }
       return;
     }
-    if (!label)
+    if (!label) {
       label = action.title();
+    }
     const result = this.appendItem(label, action.execute.bind(action));
     const shortcut = UI.shortcutRegistry.shortcutTitleForAction(actionId);
-    if (shortcut)
+    if (shortcut) {
       result.setShortcut(shortcut);
+    }
   }
 
   /**
@@ -308,10 +314,12 @@ UI.ContextSubMenu = class extends UI.ContextMenuItem {
 
     const nonEmptySections = this._sectionList.filter(section => !!section._items.length);
     for (const section of nonEmptySections) {
-      for (const item of section._items)
+      for (const item of section._items) {
         result.subItems.push(item._buildDescriptor());
-      if (section !== nonEmptySections.peekLast())
+      }
+      if (section !== nonEmptySections.peekLast()) {
         result.subItems.push({type: 'separator'});
+      }
     }
     return result;
   }
@@ -322,12 +330,14 @@ UI.ContextSubMenu = class extends UI.ContextMenuItem {
   appendItemsAtLocation(location) {
     for (const extension of self.runtime.extensions('context-menu-item')) {
       const itemLocation = extension.descriptor()['location'] || '';
-      if (!itemLocation.startsWith(location + '/'))
+      if (!itemLocation.startsWith(location + '/')) {
         continue;
+      }
 
       const section = itemLocation.substr(location.length + 1);
-      if (!section || section.includes('/'))
+      if (!section || section.includes('/')) {
         continue;
+      }
 
       this.section(section).appendAction(extension.descriptor()['actionId']);
     }
@@ -363,8 +373,9 @@ UI.ContextMenu = class extends UI.ContextSubMenu {
     this._id = 0;
 
     const target = event.deepElementFromPoint();
-    if (target)
+    if (target) {
       this.appendApplicableItems(/** @type {!Object} */ (target));
+    }
   }
 
   static initialize() {
@@ -408,8 +419,9 @@ UI.ContextMenu = class extends UI.ContextSubMenu {
      * @this {UI.ContextMenu}
      */
     function populate(appendCallResults) {
-      if (UI.ContextMenu._pendingMenu !== this)
+      if (UI.ContextMenu._pendingMenu !== this) {
         return;
+      }
       delete UI.ContextMenu._pendingMenu;
 
       for (let i = 0; i < appendCallResults.length; ++i) {
@@ -430,8 +442,9 @@ UI.ContextMenu = class extends UI.ContextSubMenu {
   }
 
   discard() {
-    if (this._softMenu)
+    if (this._softMenu) {
       this._softMenu.discard();
+    }
   }
 
   _innerShow() {
@@ -463,8 +476,9 @@ UI.ContextMenu = class extends UI.ContextSubMenu {
    * @param {function(?)} handler
    */
   _setHandler(id, handler) {
-    if (handler)
+    if (handler) {
       this._handlers[id] = handler;
+    }
   }
 
   /**
@@ -485,8 +499,9 @@ UI.ContextMenu = class extends UI.ContextSubMenu {
    * @param {string} id
    */
   _itemSelected(id) {
-    if (this._handlers[id])
+    if (this._handlers[id]) {
       this._handlers[id].call(this);
+    }
     this._menuCleared();
   }
 

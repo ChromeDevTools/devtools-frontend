@@ -98,21 +98,25 @@ Network.BinaryResourceView = class extends UI.VBox {
    * @override
    */
   wasShown() {
-    if (!this._empty)
+    if (!this._empty) {
       this._updateView();
+    }
   }
 
   _updateView() {
     const newViewObject = this._getCurrentViewObject();
-    if (!newViewObject)
+    if (!newViewObject) {
       return;
+    }
 
     const newView = newViewObject.getView();
-    if (newView === this._lastView)
+    if (newView === this._lastView) {
       return;
+    }
 
-    if (this._lastView)
+    if (this._lastView) {
       this._lastView.detach();
+    }
     this._lastView = newView;
 
     newView.show(this.element, this._toolbar.element);
@@ -121,8 +125,9 @@ Network.BinaryResourceView = class extends UI.VBox {
 
   _binaryViewTypeChanged() {
     const newViewType = this._binaryViewTypeCombobox.selectedOption().value;
-    if (this._binaryViewTypeSetting.get() === newViewType)
+    if (this._binaryViewTypeSetting.get() === newViewType) {
       return;
+    }
     this._binaryViewTypeSetting.set(newViewType);
     this._updateView();
   }
@@ -132,8 +137,9 @@ Network.BinaryResourceView = class extends UI.VBox {
    * @param {string} submenuItemText
    */
   addCopyToContextMenu(contextMenu, submenuItemText) {
-    if (this._empty)
+    if (this._empty) {
       return;
+    }
     const copyMenu = contextMenu.clipboardSection().appendSubMenuItem(submenuItemText);
     const footerSection = copyMenu.footerSection();
 
@@ -169,8 +175,9 @@ Network.BinaryResourceView.BinaryViewObject = class {
    * @return {!UI.Widget}
    */
   getView() {
-    if (!this._view)
+    if (!this._view) {
       this._view = this._createViewFn();
+    }
     return this._view;
   }
 };

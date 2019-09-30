@@ -34,8 +34,9 @@ Search.SearchResultsPane = class extends UI.VBox {
     const treeElement = new Search.SearchResultsPane.SearchResultsTreeElement(this._searchConfig, searchResult);
     this._treeOutline.appendChild(treeElement);
     // Expand until at least a certain number of matches is expanded.
-    if (this._matchesExpandedCount < Search.SearchResultsPane._matchesExpandedByDefault)
+    if (this._matchesExpandedCount < Search.SearchResultsPane._matchesExpandedByDefault) {
       treeElement.expand();
+    }
     this._matchesExpandedCount += searchResult.matchesCount();
   }
 };
@@ -62,8 +63,9 @@ Search.SearchResultsPane.SearchResultsTreeElement = class extends UI.TreeElement
    * @override
    */
   onexpand() {
-    if (this._initialized)
+    if (this._initialized) {
       return;
+    }
 
     this._updateMatchesUI();
     this._initialized = true;
@@ -102,8 +104,9 @@ Search.SearchResultsPane.SearchResultsTreeElement = class extends UI.TreeElement
     matchesCountSpan.textContent = `${this._searchResult.matchesCount()}`;
 
     this.listItemElement.appendChild(matchesCountSpan);
-    if (this.expanded)
+    if (this.expanded) {
       this._updateMatchesUI();
+    }
 
     /**
      * @param {string} text
@@ -127,14 +130,16 @@ Search.SearchResultsPane.SearchResultsTreeElement = class extends UI.TreeElement
 
     const queries = this._searchConfig.queries();
     const regexes = [];
-    for (let i = 0; i < queries.length; ++i)
+    for (let i = 0; i < queries.length; ++i) {
       regexes.push(createSearchRegex(queries[i], !this._searchConfig.ignoreCase(), this._searchConfig.isRegex()));
+    }
 
     for (let i = fromIndex; i < toIndex; ++i) {
       const lineContent = searchResult.matchLineContent(i).trim();
       let matchRanges = [];
-      for (let j = 0; j < regexes.length; ++j)
+      for (let j = 0; j < regexes.length; ++j) {
         matchRanges = matchRanges.concat(this._regexMatchRanges(lineContent, regexes[j]));
+      }
 
       const anchor = Components.Linkifier.linkifyRevealable(searchResult.matchRevealable(i), '');
       anchor.classList.add('search-match-link');
@@ -175,8 +180,9 @@ Search.SearchResultsPane.SearchResultsTreeElement = class extends UI.TreeElement
    */
   _createContentSpan(lineContent, matchRanges) {
     let trimBy = 0;
-    if (matchRanges.length > 0 && matchRanges[0].offset > 20)
+    if (matchRanges.length > 0 && matchRanges[0].offset > 20) {
       trimBy = 15;
+    }
     lineContent = lineContent.substring(trimBy, 1000 + trimBy);
     if (trimBy) {
       matchRanges = matchRanges.map(range => new TextUtils.SourceRange(range.offset - trimBy + 1, range.length));
@@ -198,8 +204,9 @@ Search.SearchResultsPane.SearchResultsTreeElement = class extends UI.TreeElement
     regex.lastIndex = 0;
     let match;
     const matchRanges = [];
-    while ((regex.lastIndex < lineContent.length) && (match = regex.exec(lineContent)))
+    while ((regex.lastIndex < lineContent.length) && (match = regex.exec(lineContent))) {
       matchRanges.push(new TextUtils.SourceRange(match.index, match[0].length));
+    }
 
     return matchRanges;
   }

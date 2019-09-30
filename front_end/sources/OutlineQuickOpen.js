@@ -63,8 +63,9 @@ Sources.OutlineQuickOpen = class extends QuickOpen.FilteredListWidget.Provider {
   itemScoreAt(itemIndex, query) {
     const item = this._items[itemIndex];
     const methodName = query.split('(')[0];
-    if (methodName.toLowerCase() === item.title.toLowerCase())
+    if (methodName.toLowerCase() === item.title.toLowerCase()) {
       return 1 / (1 + item.line);
+    }
     return -item.line - 1;
   }
 
@@ -88,14 +89,17 @@ Sources.OutlineQuickOpen = class extends QuickOpen.FilteredListWidget.Provider {
    * @param {string} promptValue
    */
   selectItem(itemIndex, promptValue) {
-    if (itemIndex === null)
+    if (itemIndex === null) {
       return;
+    }
     const uiSourceCode = this._currentUISourceCode();
-    if (!uiSourceCode)
+    if (!uiSourceCode) {
       return;
+    }
     const lineNumber = this._items[itemIndex].line;
-    if (!isNaN(lineNumber) && lineNumber >= 0)
+    if (!isNaN(lineNumber) && lineNumber >= 0) {
       Common.Revealer.reveal(uiSourceCode.uiLocation(lineNumber, this._items[itemIndex].column));
+    }
   }
 
 
@@ -104,8 +108,9 @@ Sources.OutlineQuickOpen = class extends QuickOpen.FilteredListWidget.Provider {
    */
   _currentUISourceCode() {
     const sourcesView = UI.context.flavor(Sources.SourcesView);
-    if (!sourcesView)
+    if (!sourcesView) {
       return null;
+    }
     return sourcesView.currentUISourceCode();
   }
 
@@ -114,10 +119,12 @@ Sources.OutlineQuickOpen = class extends QuickOpen.FilteredListWidget.Provider {
    * @return {string}
    */
   notFoundText() {
-    if (!this._currentUISourceCode())
+    if (!this._currentUISourceCode()) {
       return Common.UIString('No file selected.');
-    if (!this._active)
+    }
+    if (!this._active) {
       return Common.UIString('Open a JavaScript or CSS file to see symbols');
+    }
     return Common.UIString('No results found');
   }
 };

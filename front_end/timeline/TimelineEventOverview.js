@@ -42,8 +42,9 @@ Timeline.TimelineEventOverview = class extends PerfUI.TimelineOverviewBase {
     this.element.classList.add('overview-strip');
     /** @type {?Timeline.PerformanceModel} */
     this._model = null;
-    if (title)
+    if (title) {
       this.element.createChild('div', 'timeline-overview-strip-title').textContent = title;
+    }
   }
 
   /**
@@ -82,16 +83,18 @@ Timeline.TimelineEventOverviewInput = class extends Timeline.TimelineEventOvervi
    */
   update() {
     super.update();
-    if (!this._model)
+    if (!this._model) {
       return;
+    }
     const height = this.height();
     const descriptors = Timeline.TimelineUIUtils.eventDispatchDesciptors();
     /** @type {!Map.<string,!Timeline.TimelineUIUtils.EventDispatchTypeDescriptor>} */
     const descriptorsByType = new Map();
     let maxPriority = -1;
     for (const descriptor of descriptors) {
-      for (const type of descriptor.eventTypes)
+      for (const type of descriptor.eventTypes) {
         descriptorsByType.set(type, descriptor);
+      }
       maxPriority = Math.max(maxPriority, descriptor.priority);
     }
 
@@ -105,11 +108,13 @@ Timeline.TimelineEventOverviewInput = class extends Timeline.TimelineEventOvervi
       for (const track of this._model.timelineModel().tracks()) {
         for (let i = 0; i < track.events.length; ++i) {
           const event = track.events[i];
-          if (event.name !== TimelineModel.TimelineModel.RecordType.EventDispatch)
+          if (event.name !== TimelineModel.TimelineModel.RecordType.EventDispatch) {
             continue;
+          }
           const descriptor = descriptorsByType.get(event.args['data']['type']);
-          if (!descriptor || descriptor.priority !== priority)
+          if (!descriptor || descriptor.priority !== priority) {
             continue;
+          }
           const start = Number.constrain(Math.floor((event.startTime - timeOffset) * scale), 0, canvasWidth);
           const end = Number.constrain(Math.ceil((event.endTime - timeOffset) * scale), 0, canvasWidth);
           const width = Math.max(end - start, minWidth);
@@ -133,8 +138,9 @@ Timeline.TimelineEventOverviewNetwork = class extends Timeline.TimelineEventOver
    */
   update() {
     super.update();
-    if (!this._model)
+    if (!this._model) {
       return;
+    }
     const timelineModel = this._model.timelineModel();
     const bandHeight = this.height() / 2;
     const timeOffset = timelineModel.minimumRecordTime();
@@ -185,8 +191,9 @@ Timeline.TimelineEventOverviewCPUActivity = class extends Timeline.TimelineEvent
    */
   update() {
     super.update();
-    if (!this._model)
+    if (!this._model) {
       return;
+    }
     const timelineModel = this._model.timelineModel();
     const /** @const */ quantSizePx = 4 * window.devicePixelRatio;
     const width = this.width();
@@ -201,15 +208,17 @@ Timeline.TimelineEventOverviewCPUActivity = class extends Timeline.TimelineEvent
     const otherIndex = categoryOrder.indexOf('other');
     const idleIndex = 0;
     console.assert(idleIndex === categoryOrder.indexOf('idle'));
-    for (let i = idleIndex + 1; i < categoryOrder.length; ++i)
+    for (let i = idleIndex + 1; i < categoryOrder.length; ++i) {
       categories[categoryOrder[i]]._overviewIndex = i;
+    }
 
     const backgroundContext = this._backgroundCanvas.getContext('2d');
     for (const track of timelineModel.tracks()) {
-      if (track.type === TimelineModel.TimelineModel.TrackType.MainThread && track.forMainFrame)
+      if (track.type === TimelineModel.TimelineModel.TrackType.MainThread && track.forMainFrame) {
         drawThreadEvents(this.context(), track.events);
-      else
+      } else {
         drawThreadEvents(backgroundContext, track.events);
+      }
     }
     applyPattern(backgroundContext);
 
@@ -299,8 +308,9 @@ Timeline.TimelineEventOverviewResponsiveness = class extends Timeline.TimelineEv
    */
   update() {
     super.update();
-    if (!this._model)
+    if (!this._model) {
       return;
+    }
     const height = this.height();
 
     const timeOffset = this._model.timelineModel().minimumRecordTime();
@@ -313,16 +323,18 @@ Timeline.TimelineEventOverviewResponsiveness = class extends Timeline.TimelineEv
     const markersPath = new Path2D();
     for (let i = 0; i < frames.length; ++i) {
       const frame = frames[i];
-      if (!frame.hasWarnings())
+      if (!frame.hasWarnings()) {
         continue;
+      }
       paintWarningDecoration(frame.startTime, frame.duration);
     }
 
     for (const track of this._model.timelineModel().tracks()) {
       const events = track.events;
       for (let i = 0; i < events.length; ++i) {
-        if (!TimelineModel.TimelineData.forEvent(events[i]).warning)
+        if (!TimelineModel.TimelineData.forEvent(events[i]).warning) {
           continue;
+        }
         paintWarningDecoration(events[i].startTime, events[i].duration);
       }
     }
@@ -362,16 +374,19 @@ Timeline.TimelineFilmStripOverview = class extends Timeline.TimelineEventOvervie
   update() {
     super.update();
     const frames = this._model ? this._model.filmStripModel().frames() : [];
-    if (!frames.length)
+    if (!frames.length) {
       return;
+    }
 
     const drawGeneration = Symbol('drawGeneration');
     this._drawGeneration = drawGeneration;
     this._imageByFrame(frames[0]).then(image => {
-      if (this._drawGeneration !== drawGeneration)
+      if (this._drawGeneration !== drawGeneration) {
         return;
-      if (!image || !image.naturalWidth || !image.naturalHeight)
+      }
+      if (!image || !image.naturalWidth || !image.naturalHeight) {
         return;
+      }
       const imageHeight = this.height() - 2 * Timeline.TimelineFilmStripOverview.Padding;
       const imageWidth = Math.ceil(imageHeight * image.naturalWidth / image.naturalHeight);
       const popoverScale = Math.min(200 / image.naturalWidth, 1);
@@ -398,11 +413,13 @@ Timeline.TimelineFilmStripOverview = class extends Timeline.TimelineEventOvervie
    * @param {number} imageHeight
    */
   _drawFrames(imageWidth, imageHeight) {
-    if (!imageWidth || !this._model)
+    if (!imageWidth || !this._model) {
       return;
+    }
     const filmStripModel = this._model.filmStripModel();
-    if (!filmStripModel.frames().length)
+    if (!filmStripModel.frames().length) {
       return;
+    }
     const padding = Timeline.TimelineFilmStripOverview.Padding;
     const width = this.width();
     const zeroTime = filmStripModel.zeroTime();
@@ -415,8 +432,9 @@ Timeline.TimelineFilmStripOverview = class extends Timeline.TimelineEventOvervie
     for (let x = padding; x < width; x += imageWidth + 2 * padding) {
       const time = zeroTime + (x + imageWidth / 2) * scale;
       const frame = filmStripModel.frameByTimestamp(time);
-      if (!frame)
+      if (!frame) {
         continue;
+      }
       context.rect(x - 0.5, 0.5, imageWidth + 1, imageHeight + 1);
       this._imageByFrame(frame).then(drawFrameImage.bind(this, x));
     }
@@ -430,8 +448,9 @@ Timeline.TimelineFilmStripOverview = class extends Timeline.TimelineEventOvervie
      */
     function drawFrameImage(x, image) {
       // Ignore draws deferred from a previous update call.
-      if (this._drawGeneration !== drawGeneration || !image)
+      if (this._drawGeneration !== drawGeneration || !image) {
         return;
+      }
       context.drawImage(image, x, 1, imageWidth, imageHeight);
     }
   }
@@ -442,13 +461,15 @@ Timeline.TimelineFilmStripOverview = class extends Timeline.TimelineEventOvervie
    * @return {!Promise<?Element>}
    */
   overviewInfoPromise(x) {
-    if (!this._model || !this._model.filmStripModel().frames().length)
+    if (!this._model || !this._model.filmStripModel().frames().length) {
       return Promise.resolve(/** @type {?Element} */ (null));
+    }
 
     const time = this.calculator().positionToTime(x);
     const frame = this._model.filmStripModel().frameByTimestamp(time);
-    if (frame === this._lastFrame)
+    if (frame === this._lastFrame) {
       return Promise.resolve(this._lastElement);
+    }
     const imagePromise = frame ? this._imageByFrame(frame) : Promise.resolve(this._emptyImage);
     return imagePromise.then(createFrameElement.bind(this));
 
@@ -459,8 +480,9 @@ Timeline.TimelineFilmStripOverview = class extends Timeline.TimelineEventOvervie
      */
     function createFrameElement(image) {
       const element = createElementWithClass('div', 'frame');
-      if (image)
+      if (image) {
         element.createChild('div', 'thumbnail').appendChild(image);
+      }
       this._lastFrame = frame;
       this._lastElement = element;
       return element;
@@ -494,11 +516,13 @@ Timeline.TimelineEventOverviewFrames = class extends Timeline.TimelineEventOverv
    */
   update() {
     super.update();
-    if (!this._model)
+    if (!this._model) {
       return;
+    }
     const frames = this._model.frames();
-    if (!frames.length)
+    if (!frames.length) {
       return;
+    }
     const height = this.height();
     const /** @const */ padding = 1 * window.devicePixelRatio;
     const /** @const */ baseFrameDurationMs = 1e3 / 60;
@@ -581,21 +605,24 @@ Timeline.TimelineEventOverviewMemory = class extends Timeline.TimelineEventOverv
     function isUpdateCountersEvent(event) {
       return event.name === TimelineModel.TimelineModel.RecordType.UpdateCounters;
     }
-    for (let i = 0; i < trackEvents.length; i++)
+    for (let i = 0; i < trackEvents.length; i++) {
       trackEvents[i] = trackEvents[i].filter(isUpdateCountersEvent);
+    }
 
     /**
      * @param {!SDK.TracingModel.Event} event
      */
     function calculateMinMaxSizes(event) {
       const counters = event.args.data;
-      if (!counters || !counters.jsHeapSizeUsed)
+      if (!counters || !counters.jsHeapSizeUsed) {
         return;
+      }
       maxUsedHeapSize = Math.max(maxUsedHeapSize, counters.jsHeapSizeUsed);
       minUsedHeapSize = Math.min(minUsedHeapSize, counters.jsHeapSizeUsed);
     }
-    for (let i = 0; i < trackEvents.length; i++)
+    for (let i = 0; i < trackEvents.length; i++) {
       trackEvents[i].forEach(calculateMinMaxSizes);
+    }
     minUsedHeapSize = Math.min(minUsedHeapSize, maxUsedHeapSize);
 
     const lineWidth = 1;
@@ -611,15 +638,17 @@ Timeline.TimelineEventOverviewMemory = class extends Timeline.TimelineEventOverv
      */
     function buildHistogram(event) {
       const counters = event.args.data;
-      if (!counters || !counters.jsHeapSizeUsed)
+      if (!counters || !counters.jsHeapSizeUsed) {
         return;
+      }
       const x = Math.round((event.startTime - minTime) * xFactor);
       const y = Math.round((counters.jsHeapSizeUsed - minUsedHeapSize) * yFactor);
       // TODO(alph): use sum instead of max.
       histogram[x] = Math.max(histogram[x] || 0, y);
     }
-    for (let i = 0; i < trackEvents.length; i++)
+    for (let i = 0; i < trackEvents.length; i++) {
       trackEvents[i].forEach(buildHistogram);
+    }
 
     const ctx = this.context();
     const heightBeyondView = height + lowerOffset + lineWidth;
@@ -631,16 +660,18 @@ Timeline.TimelineEventOverviewMemory = class extends Timeline.TimelineEventOverv
     let isFirstPoint = true;
     let lastX = 0;
     for (let x = 0; x < histogram.length; x++) {
-      if (typeof histogram[x] === 'undefined')
+      if (typeof histogram[x] === 'undefined') {
         continue;
+      }
       if (isFirstPoint) {
         isFirstPoint = false;
         y = histogram[x];
         ctx.lineTo(-lineWidth, height - y);
       }
       const nextY = histogram[x];
-      if (Math.abs(nextY - y) > 2 && Math.abs(x - lastX) > 1)
+      if (Math.abs(nextY - y) > 2 && Math.abs(x - lastX) > 1) {
         ctx.lineTo(x, height - y);
+      }
       y = nextY;
       ctx.lineTo(x, height - y);
       lastX = x;
@@ -724,8 +755,9 @@ Timeline.TimelineEventOverviewCoverage = class extends Timeline.TimelineEventOve
    */
   setModel(model) {
     super.setModel(model);
-    if (this._model)
+    if (this._model) {
       this._coverageModel = model.mainTarget().model(Coverage.CoverageModel);
+    }
   }
 
   /**
@@ -735,8 +767,9 @@ Timeline.TimelineEventOverviewCoverage = class extends Timeline.TimelineEventOve
     super.update();
     const ratio = window.devicePixelRatio;
 
-    if (!this._coverageModel)
+    if (!this._coverageModel) {
       return;
+    }
 
     let total = 0;
     let total_used = 0;
@@ -750,15 +783,17 @@ Timeline.TimelineEventOverviewCoverage = class extends Timeline.TimelineEventOve
         for (const [stamp, used] of info.usedByTimestamp()) {
           total_used += used;
 
-          if (!totalByTimestamp.has(stamp))
+          if (!totalByTimestamp.has(stamp)) {
             totalByTimestamp.set(stamp, new Set());
+          }
 
           totalByTimestamp.get(stamp).add(info);
 
-          if (!usedByTimestamp.has(stamp))
+          if (!usedByTimestamp.has(stamp)) {
             usedByTimestamp.set(stamp, used);
-          else
+          } else {
             usedByTimestamp.set(stamp, usedByTimestamp.get(stamp) + used);
+          }
         }
       }
     }
@@ -772,8 +807,9 @@ Timeline.TimelineEventOverviewCoverage = class extends Timeline.TimelineEventOve
     const sortedByTimestamp = Array.from(totalByTimestamp.entries()).sort((a, b) => a[0] - b[0]);
     for (const [stamp, infos] of sortedByTimestamp) {
       for (const info of infos.values()) {
-        if (seen.has(info))
+        if (seen.has(info)) {
           continue;
+        }
 
         seen.add(info);
         sumTotal += info.size();
@@ -805,8 +841,9 @@ Timeline.TimelineEventOverviewCoverage = class extends Timeline.TimelineEventOve
     ctx.lineTo(-lineWidth, height - yOffset);
 
     for (const [stamp, coverage] of coverageByTimestamp) {
-      if (stamp > maxTime)
+      if (stamp > maxTime) {
         break;
+      }
       const x = (stamp - minTime) * xFactor;
       yOffset = coverage * yFactor;
       ctx.lineTo(x, height - yOffset);
@@ -822,8 +859,9 @@ Timeline.TimelineEventOverviewCoverage = class extends Timeline.TimelineEventOve
     ctx.stroke();
 
     for (const [stamp, coverage] of coverageByTimestamp) {
-      if (stamp > maxTime)
+      if (stamp > maxTime) {
         break;
+      }
       ctx.beginPath();
       const x = (stamp - minTime) * xFactor;
       const y = height - coverage * yFactor;

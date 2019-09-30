@@ -19,8 +19,9 @@ Sources.InplaceFormatterEditorAction = class {
    */
   _editorClosed(event) {
     const wasSelected = /** @type {boolean} */ (event.data.wasSelected);
-    if (wasSelected)
+    if (wasSelected) {
       this._updateButton(null);
+    }
   }
 
   /**
@@ -36,8 +37,9 @@ Sources.InplaceFormatterEditorAction = class {
    * @return {!UI.ToolbarButton}
    */
   button(sourcesView) {
-    if (this._button)
+    if (this._button) {
       return this._button;
+    }
 
     this._sourcesView = sourcesView;
     this._sourcesView.addEventListener(Sources.SourcesView.Events.EditorSelected, this._editorSelected.bind(this));
@@ -55,12 +57,15 @@ Sources.InplaceFormatterEditorAction = class {
    * @return {boolean}
    */
   _isFormattable(uiSourceCode) {
-    if (!uiSourceCode)
+    if (!uiSourceCode) {
       return false;
-    if (uiSourceCode.project().canSetFileContent())
+    }
+    if (uiSourceCode.project().canSetFileContent()) {
       return true;
-    if (Persistence.persistence.binding(uiSourceCode))
+    }
+    if (Persistence.persistence.binding(uiSourceCode)) {
       return true;
+    }
     return uiSourceCode.contentType().isStyleSheet();
   }
 
@@ -69,13 +74,15 @@ Sources.InplaceFormatterEditorAction = class {
    */
   _formatSourceInPlace(event) {
     const uiSourceCode = this._sourcesView.currentUISourceCode();
-    if (!this._isFormattable(uiSourceCode))
+    if (!this._isFormattable(uiSourceCode)) {
       return;
+    }
 
-    if (uiSourceCode.isDirty())
+    if (uiSourceCode.isDirty()) {
       contentLoaded.call(this, uiSourceCode.workingCopy());
-    else
+    } else {
       uiSourceCode.requestContent().then(contentLoaded.bind(this));
+    }
 
     /**
      * @this {Sources.InplaceFormatterEditorAction}
@@ -92,8 +99,9 @@ Sources.InplaceFormatterEditorAction = class {
      * @param {!Formatter.FormatterSourceMapping} formatterMapping
      */
     function innerCallback(formattedContent, formatterMapping) {
-      if (uiSourceCode.workingCopy() === formattedContent)
+      if (uiSourceCode.workingCopy() === formattedContent) {
         return;
+      }
       const sourceFrame = this._sourcesView.viewForFile(uiSourceCode);
       let start = [0, 0];
       if (sourceFrame) {

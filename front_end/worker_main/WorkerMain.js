@@ -19,12 +19,15 @@ WorkerMain.WorkerMain = class extends Common.Object {
 
 SDK.ChildTargetManager.install(async ({target, waitingForDebugger}) => {
   // Only pause the new worker if debugging SW - we are going through the pause on start checkbox.
-  if (target.parentTarget() || target.type() !== SDK.Target.Type.ServiceWorker || !waitingForDebugger)
+  if (target.parentTarget() || target.type() !== SDK.Target.Type.ServiceWorker || !waitingForDebugger) {
     return;
+  }
   const debuggerModel = target.model(SDK.DebuggerModel);
-  if (!debuggerModel)
+  if (!debuggerModel) {
     return;
-  if (!debuggerModel.isReadyToPause())
+  }
+  if (!debuggerModel.isReadyToPause()) {
     await debuggerModel.once(SDK.DebuggerModel.Events.DebuggerIsReadyToPause);
+  }
   debuggerModel.pause();
 });

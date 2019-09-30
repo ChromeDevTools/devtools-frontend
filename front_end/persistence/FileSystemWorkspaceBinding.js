@@ -129,8 +129,9 @@ Persistence.FileSystemWorkspaceBinding = class {
    * @param {!Array<!Persistence.IsolatedFileSystem>} fileSystems
    */
   _onFileSystemsLoaded(fileSystems) {
-    for (const fileSystem of fileSystems)
+    for (const fileSystem of fileSystems) {
       this._addFileSystem(fileSystem);
+    }
   }
 
   /**
@@ -166,22 +167,25 @@ Persistence.FileSystemWorkspaceBinding = class {
     const paths = /** @type {!Persistence.IsolatedFileSystemManager.FilesChangedData} */ (event.data);
     for (const fileSystemPath of paths.changed.keysArray()) {
       const fileSystem = this._boundFileSystems.get(fileSystemPath);
-      if (!fileSystem)
+      if (!fileSystem) {
         continue;
+      }
       paths.changed.get(fileSystemPath).forEach(path => fileSystem._fileChanged(path));
     }
 
     for (const fileSystemPath of paths.added.keysArray()) {
       const fileSystem = this._boundFileSystems.get(fileSystemPath);
-      if (!fileSystem)
+      if (!fileSystem) {
         continue;
+      }
       paths.added.get(fileSystemPath).forEach(path => fileSystem._fileChanged(path));
     }
 
     for (const fileSystemPath of paths.removed.keysArray()) {
       const fileSystem = this._boundFileSystems.get(fileSystemPath);
-      if (!fileSystem)
+      if (!fileSystem) {
         continue;
+      }
       paths.removed.get(fileSystemPath).forEach(path => fileSystem.removeUISourceCode(path));
     }
   }
@@ -270,8 +274,9 @@ Persistence.FileSystemWorkspaceBinding.FileSystem = class extends Workspace.Proj
    * @return {!Promise<?Workspace.UISourceCodeMetadata>}
    */
   requestMetadata(uiSourceCode) {
-    if (uiSourceCode[Persistence.FileSystemWorkspaceBinding._metadata])
+    if (uiSourceCode[Persistence.FileSystemWorkspaceBinding._metadata]) {
       return uiSourceCode[Persistence.FileSystemWorkspaceBinding._metadata];
+    }
     const relativePath = this._filePathForUISourceCode(uiSourceCode);
     const promise = this._fileSystem.getMetadata(relativePath).then(onMetadata);
     uiSourceCode[Persistence.FileSystemWorkspaceBinding._metadata] = promise;
@@ -282,8 +287,9 @@ Persistence.FileSystemWorkspaceBinding.FileSystem = class extends Workspace.Proj
      * @return {?Workspace.UISourceCodeMetadata}
      */
     function onMetadata(metadata) {
-      if (!metadata)
+      if (!metadata) {
         return null;
+      }
       return new Workspace.UISourceCodeMetadata(metadata.modificationTime, metadata.size);
     }
   }
@@ -414,8 +420,9 @@ Persistence.FileSystemWorkspaceBinding.FileSystem = class extends Workspace.Proj
   async findFilesMatchingSearchRequest(searchConfig, filesMathingFileQuery, progress) {
     let result = filesMathingFileQuery;
     const queriesToRun = searchConfig.queries().slice();
-    if (!queriesToRun.length)
+    if (!queriesToRun.length) {
       queriesToRun.push('');
+    }
     progress.setTotalWork(queriesToRun.length);
 
     for (const query of queriesToRun) {
@@ -447,10 +454,12 @@ Persistence.FileSystemWorkspaceBinding.FileSystem = class extends Workspace.Proj
      */
     function reportFileChunk(from) {
       const to = Math.min(from + chunkSize, filePaths.length);
-      for (let i = from; i < to; ++i)
+      for (let i = from; i < to; ++i) {
         this._addFile(filePaths[i]);
-      if (to < filePaths.length)
+      }
+      if (to < filePaths.length) {
         setTimeout(reportFileChunk.bind(this, to), 100);
+      }
     }
   }
 
@@ -460,17 +469,20 @@ Persistence.FileSystemWorkspaceBinding.FileSystem = class extends Workspace.Proj
    */
   excludeFolder(url) {
     let relativeFolder = url.substring(this._fileSystemBaseURL.length);
-    if (!relativeFolder.startsWith('/'))
+    if (!relativeFolder.startsWith('/')) {
       relativeFolder = '/' + relativeFolder;
-    if (!relativeFolder.endsWith('/'))
+    }
+    if (!relativeFolder.endsWith('/')) {
       relativeFolder += '/';
+    }
     this._fileSystem.addExcludedFolder(relativeFolder);
 
     const uiSourceCodes = this.uiSourceCodes().slice();
     for (let i = 0; i < uiSourceCodes.length; ++i) {
       const uiSourceCode = uiSourceCodes[i];
-      if (uiSourceCode.url().startsWith(url))
+      if (uiSourceCode.url().startsWith(url)) {
         this.removeUISourceCode(uiSourceCode.url());
+      }
     }
   }
 
@@ -503,8 +515,9 @@ Persistence.FileSystemWorkspaceBinding.FileSystem = class extends Workspace.Proj
     const guardFileName = this._fileSystemPath + path + (!path.endsWith('/') ? '/' : '') + name;
     this._creatingFilesGuard.add(guardFileName);
     const filePath = await this._fileSystem.createFile(path, name);
-    if (!filePath)
+    if (!filePath) {
       return null;
+    }
     const uiSourceCode = this._addFile(filePath);
     uiSourceCode.setContent(content, !!isBase64);
     this._creatingFilesGuard.delete(guardFileName);
@@ -518,8 +531,9 @@ Persistence.FileSystemWorkspaceBinding.FileSystem = class extends Workspace.Proj
   deleteFile(uiSourceCode) {
     const relativePath = this._filePathForUISourceCode(uiSourceCode);
     this._fileSystem.deleteFile(relativePath).then(success => {
-      if (success)
+      if (success) {
         this.removeUISourceCode(uiSourceCode.url());
+      }
     });
   }
 
@@ -546,8 +560,9 @@ Persistence.FileSystemWorkspaceBinding.FileSystem = class extends Workspace.Proj
    */
   _fileChanged(path) {
     // Ignore files that are being created but do not have content yet.
-    if (this._creatingFilesGuard.has(path))
+    if (this._creatingFilesGuard.has(path)) {
       return;
+    }
     const uiSourceCode = this.uiSourceCodeForURL(path);
     if (!uiSourceCode) {
       const contentType = this._fileSystem.contentType(path);

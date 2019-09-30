@@ -85,8 +85,9 @@ SDK.PaintProfilerSnapshot = class {
 
   release() {
     console.assert(this._refCount > 0, 'release is already called on the object');
-    if (!--this._refCount)
+    if (!--this._refCount) {
       this._paintProfilerModel._layerTreeAgent.releaseSnapshot(this._id);
+    }
   }
 
   addReference() {

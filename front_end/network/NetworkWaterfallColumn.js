@@ -119,8 +119,9 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
 
     for (const resourceType of Object.values(Common.resourceTypes)) {
       let color = baseResourceTypeColors.get(resourceType.name());
-      if (!color)
+      if (!color) {
         color = baseResourceTypeColors.get('other');
+      }
       const borderColor = toBorderColor(color);
 
       waitingStyleMap.set(resourceType, {fillStyle: toWaitingColor(color), lineWidth: 1, borderColor: borderColor});
@@ -185,11 +186,13 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
    * @return {?UI.PopoverRequest}
    */
   _getPopoverRequest(event) {
-    if (!this._hoveredNode)
+    if (!this._hoveredNode) {
       return null;
+    }
     const request = this._hoveredNode.request();
-    if (!request)
+    if (!request) {
       return null;
+    }
     const useTimingBars = !Common.moduleSetting('networkColorCodeResourceTypes').get() && !this._calculator.startAtZero;
     let range;
     let start;
@@ -211,15 +214,17 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
       end = end - halfWidth + 25;
     }
 
-    if (event.clientX < this._canvasPosition.left + start || event.clientX > this._canvasPosition.left + end)
+    if (event.clientX < this._canvasPosition.left + start || event.clientX > this._canvasPosition.left + end) {
       return null;
+    }
 
     const rowIndex = this._nodes.findIndex(node => node.hovered());
     const barHeight = this._getBarHeight(range.name);
     const y = this._headerHeight + (this._rowHeight * rowIndex - this._scrollTop) + ((this._rowHeight - barHeight) / 2);
 
-    if (event.clientY < this._canvasPosition.top + y || event.clientY > this._canvasPosition.top + y + barHeight)
+    if (event.clientY < this._canvasPosition.top + y || event.clientY > this._canvasPosition.top + y + barHeight) {
       return null;
+    }
 
     const anchorBox = this.element.boxInWindow();
     anchorBox.x += start;
@@ -243,11 +248,13 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
    * @param {boolean} highlightInitiatorChain
    */
   _setHoveredNode(node, highlightInitiatorChain) {
-    if (this._hoveredNode)
+    if (this._hoveredNode) {
       this._hoveredNode.setHovered(false, false);
+    }
     this._hoveredNode = node;
-    if (this._hoveredNode)
+    if (this._hoveredNode) {
       this._hoveredNode.setHovered(true, highlightInitiatorChain);
+    }
   }
 
   /**
@@ -290,14 +297,16 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
    * @return {?Network.NetworkNode}
    */
   getNodeFromPoint(x, y) {
-    if (y <= this._headerHeight)
+    if (y <= this._headerHeight) {
       return null;
+    }
     return this._nodes[Math.floor((this._scrollTop + y - this._headerHeight) / this._rowHeight)];
   }
 
   scheduleDraw() {
-    if (this._updateRequestID)
+    if (this._updateRequestID) {
       return;
+    }
     this._updateRequestID = this.element.window().requestAnimationFrame(() => this.update());
   }
 
@@ -315,8 +324,9 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
       this._nodes = nodes;
       this._calculateCanvasSize();
     }
-    if (eventDividers !== undefined)
+    if (eventDividers !== undefined) {
       this._eventDividers = eventDividers;
+    }
     if (this._updateRequestID) {
       this.element.window().cancelAnimationFrame(this._updateRequestID);
       delete this._updateRequestID;
@@ -385,22 +395,25 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
       const node = nodes[i];
       this._decorateRow(context, node, rowOffset - this._scrollTop);
       let drawNodes = [];
-      if (node.hasChildren() && !node.expanded)
+      if (node.hasChildren() && !node.expanded) {
         drawNodes = /** @type {!Array<!Network.NetworkNode>} */ (node.flatChildren());
+      }
       drawNodes.push(node);
       for (const drawNode of drawNodes) {
-        if (useTimingBars)
+        if (useTimingBars) {
           this._buildTimingBarLayers(drawNode, rowOffset - this._scrollTop);
-        else
+        } else {
           this._buildSimplifiedBarLayers(context, drawNode, rowOffset - this._scrollTop);
+        }
       }
     }
     this._drawLayers(context);
 
     context.save();
     context.fillStyle = UI.themeSupport.patchColorText('#888', UI.ThemeSupport.ColorUsage.Foreground);
-    for (const textData of this._textLayers)
+    for (const textData of this._textLayers) {
       context.fillText(textData.text, textData.x, textData.y);
+    }
     context.restore();
 
     this._drawEventDividers(context);
@@ -500,8 +513,9 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
    */
   _buildSimplifiedBarLayers(context, node, y) {
     const request = node.request();
-    if (!request)
+    if (!request) {
       return;
+    }
     const borderWidth = 1;
     const borderOffset = borderWidth % 2 === 0 ? 0 : 0.5;
 
@@ -579,13 +593,15 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
    */
   _buildTimingBarLayers(node, y) {
     const request = node.request();
-    if (!request)
+    if (!request) {
       return;
+    }
     const ranges = Network.RequestTimingView.calculateRequestTimeRanges(request, 0);
     for (const range of ranges) {
       if (range.name === Network.RequestTimeRangeNames.Total || range.name === Network.RequestTimeRangeNames.Sending ||
-          range.end - range.start === 0)
+          range.end - range.start === 0) {
         continue;
+      }
 
       const style = this._styleForTimeRangeName.get(range.name);
       const path = this._pathForStyle.get(style);

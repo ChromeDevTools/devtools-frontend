@@ -29,10 +29,12 @@ Help._innerShowReleaseNoteIfNeeded = function(lastSeenVersion, latestVersion, sh
     Help._releaseNoteVersionSetting.set(latestVersion);
     return;
   }
-  if (!showReleaseNote)
+  if (!showReleaseNote) {
     return;
-  if (lastSeenVersion >= latestVersion)
+  }
+  if (lastSeenVersion >= latestVersion) {
     return;
+  }
   Help._releaseNoteVersionSetting.set(latestVersion);
   UI.viewManager.showView(Help.releaseNoteViewId, true);
 };
@@ -60,8 +62,9 @@ Help.HelpLateInitialization = class {
    * @override
    */
   async run() {
-    if (!Host.isUnderTest())
+    if (!Host.isUnderTest()) {
       Help._showReleaseNoteIfNeeded();
+    }
   }
 };
 

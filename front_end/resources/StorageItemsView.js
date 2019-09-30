@@ -26,9 +26,9 @@ Resources.StorageItemsView = class extends UI.VBox {
 
     const toolbarItems =
         [this._refreshButton, this._filterItem, toolbarSeparator, this._deleteAllButton, this._deleteSelectedButton];
-    for (const item of toolbarItems)
+    for (const item of toolbarItems) {
       this._mainToolbar.appendToolbarItem(item);
-
+    }
   }
 
   /**
@@ -59,8 +59,9 @@ Resources.StorageItemsView = class extends UI.VBox {
    * @protected
    */
   filter(items, keyFunction) {
-    if (!this._filterRegex)
+    if (!this._filterRegex) {
       return items;
+    }
     return items.filter(item => this._filterRegex.test(keyFunction(item)));
   }
 

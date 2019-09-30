@@ -70,14 +70,18 @@ Sources.CSSPlugin = class extends Sources.UISourceCodeFrame.Plugin {
 
   _registerShortcuts() {
     const shortcutKeys = UI.ShortcutsScreen.SourcesPanelShortcuts;
-    for (const descriptor of shortcutKeys.IncreaseCSSUnitByOne)
+    for (const descriptor of shortcutKeys.IncreaseCSSUnitByOne) {
       this._shortcuts[descriptor.key] = this._handleUnitModification.bind(this, 1);
-    for (const descriptor of shortcutKeys.DecreaseCSSUnitByOne)
+    }
+    for (const descriptor of shortcutKeys.DecreaseCSSUnitByOne) {
       this._shortcuts[descriptor.key] = this._handleUnitModification.bind(this, -1);
-    for (const descriptor of shortcutKeys.IncreaseCSSUnitByTen)
+    }
+    for (const descriptor of shortcutKeys.IncreaseCSSUnitByTen) {
       this._shortcuts[descriptor.key] = this._handleUnitModification.bind(this, 10);
-    for (const descriptor of shortcutKeys.DecreaseCSSUnitByTen)
+    }
+    for (const descriptor of shortcutKeys.DecreaseCSSUnitByTen) {
       this._shortcuts[descriptor.key] = this._handleUnitModification.bind(this, -10);
+    }
   }
 
   /**
@@ -86,13 +90,15 @@ Sources.CSSPlugin = class extends Sources.UISourceCodeFrame.Plugin {
   _handleKeyDown(event) {
     const shortcutKey = UI.KeyboardShortcut.makeKeyFromEvent(/** @type {!KeyboardEvent} */ (event));
     const handler = this._shortcuts[shortcutKey];
-    if (handler && handler())
+    if (handler && handler()) {
       event.consume(true);
+    }
   }
 
   _textEditorScrolled() {
-    if (this._swatchPopoverHelper.isShowing())
+    if (this._swatchPopoverHelper.isShowing()) {
       this._swatchPopoverHelper.hide(true);
+    }
   }
 
   /**
@@ -102,8 +108,9 @@ Sources.CSSPlugin = class extends Sources.UISourceCodeFrame.Plugin {
    */
   _modifyUnit(unit, change) {
     const unitValue = parseInt(unit, 10);
-    if (isNaN(unitValue))
+    if (isNaN(unitValue)) {
       return null;
+    }
     const tail = unit.substring((unitValue).toString().length);
     return String.sprintf('%d%s', unitValue + change, tail);
   }
@@ -116,20 +123,24 @@ Sources.CSSPlugin = class extends Sources.UISourceCodeFrame.Plugin {
     const selection = this._textEditor.selection().normalize();
     let token = this._textEditor.tokenAtTextPosition(selection.startLine, selection.startColumn);
     if (!token) {
-      if (selection.startColumn > 0)
+      if (selection.startColumn > 0) {
         token = this._textEditor.tokenAtTextPosition(selection.startLine, selection.startColumn - 1);
-      if (!token)
+      }
+      if (!token) {
         return false;
+      }
     }
-    if (token.type !== 'css-number')
+    if (token.type !== 'css-number') {
       return false;
+    }
 
     const cssUnitRange =
         new TextUtils.TextRange(selection.startLine, token.startColumn, selection.startLine, token.endColumn);
     const cssUnitText = this._textEditor.text(cssUnitRange);
     const newUnitText = this._modifyUnit(cssUnitText, change);
-    if (!newUnitText)
+    if (!newUnitText) {
       return false;
+    }
     this._textEditor.editRange(cssUnitRange, newUnitText);
     selection.startColumn = token.startColumn;
     selection.endColumn = selection.startColumn + newUnitText.length;
@@ -156,17 +167,20 @@ Sources.CSSPlugin = class extends Sources.UISourceCodeFrame.Plugin {
       const results = TextUtils.TextUtils.splitStringByRegexes(line, regexes);
       for (let i = 0; i < results.length; i++) {
         const result = results[i];
-        if (result.regexIndex === -1 || !handlers.has(regexes[result.regexIndex]))
+        if (result.regexIndex === -1 || !handlers.has(regexes[result.regexIndex])) {
           continue;
+        }
         const delimiters = /[\s:;,(){}]/;
         const positionBefore = result.position - 1;
         const positionAfter = result.position + result.value.length;
         if (positionBefore >= 0 && !delimiters.test(line.charAt(positionBefore)) ||
-            positionAfter < line.length && !delimiters.test(line.charAt(positionAfter)))
+            positionAfter < line.length && !delimiters.test(line.charAt(positionAfter))) {
           continue;
+        }
         const swatch = handlers.get(regexes[result.regexIndex])(result.value);
-        if (!swatch)
+        if (!swatch) {
           continue;
+        }
         swatches.push(swatch);
         swatchPositions.push(TextUtils.TextRange.createFromLocation(lineNumber, result.position));
       }
@@ -196,8 +210,9 @@ Sources.CSSPlugin = class extends Sources.UISourceCodeFrame.Plugin {
    */
   _createColorSwatch(text) {
     const color = Common.Color.parse(text);
-    if (!color)
+    if (!color) {
       return null;
+    }
     const swatch = InlineEditor.ColorSwatch.create();
     swatch.setColor(color);
     swatch.iconElement().title = Common.UIString('Open color picker.');
@@ -211,8 +226,9 @@ Sources.CSSPlugin = class extends Sources.UISourceCodeFrame.Plugin {
    * @return {?InlineEditor.BezierSwatch}
    */
   _createBezierSwatch(text) {
-    if (!UI.Geometry.CubicBezier.parse(text))
+    if (!UI.Geometry.CubicBezier.parse(text)) {
       return null;
+    }
     const swatch = InlineEditor.BezierSwatch.create();
     swatch.setBezierText(text);
     swatch.iconElement().title = Common.UIString('Open cubic bezier editor.');
@@ -235,10 +251,11 @@ Sources.CSSPlugin = class extends Sources.UISourceCodeFrame.Plugin {
     this._editedSwatchTextRange.endColumn += swatch.textContent.length;
     this._currentSwatch = swatch;
 
-    if (swatch instanceof InlineEditor.ColorSwatch)
+    if (swatch instanceof InlineEditor.ColorSwatch) {
       this._showSpectrum(swatch);
-    else if (swatch instanceof InlineEditor.BezierSwatch)
+    } else if (swatch instanceof InlineEditor.BezierSwatch) {
       this._showBezierEditor(swatch);
+    }
   }
 
   /**
@@ -267,8 +284,9 @@ Sources.CSSPlugin = class extends Sources.UISourceCodeFrame.Plugin {
   _spectrumChanged(event) {
     const colorString = /** @type {string} */ (event.data);
     const color = Common.Color.parse(colorString);
-    if (!color)
+    if (!color) {
       return;
+    }
     this._currentSwatch.setColor(color);
     this._changeSwatchText(colorString);
   }
@@ -314,16 +332,18 @@ Sources.CSSPlugin = class extends Sources.UISourceCodeFrame.Plugin {
    */
   _swatchPopoverHidden(commitEdit) {
     this._muteSwatchProcessing = false;
-    if (!commitEdit && this._hadSwatchChange)
+    if (!commitEdit && this._hadSwatchChange) {
       this._textEditor.undo();
+    }
   }
 
   /**
    * @param {!Common.Event} event
    */
   _onTextChanged(event) {
-    if (!this._muteSwatchProcessing)
+    if (!this._muteSwatchProcessing) {
       this._updateSwatches(event.data.newRange.startLine, event.data.newRange.endLine);
+    }
   }
 
   /**
@@ -341,12 +361,14 @@ Sources.CSSPlugin = class extends Sources.UISourceCodeFrame.Plugin {
    */
   _cssSuggestions(prefixRange, substituteRange) {
     const prefix = this._textEditor.text(prefixRange);
-    if (prefix.startsWith('$'))
+    if (prefix.startsWith('$')) {
       return null;
+    }
 
     const propertyToken = this._backtrackPropertyToken(prefixRange.startLine, prefixRange.startColumn - 1);
-    if (!propertyToken)
+    if (!propertyToken) {
       return null;
+    }
 
     const line = this._textEditor.line(prefixRange.startLine);
     const tokenContent = line.substring(propertyToken.startColumn, propertyToken.endColumn);
@@ -367,18 +389,22 @@ Sources.CSSPlugin = class extends Sources.UISourceCodeFrame.Plugin {
 
     for (let i = 0; i < backtrackDepth && tokenPosition >= 0; ++i) {
       const token = this._textEditor.tokenAtTextPosition(lineNumber, tokenPosition);
-      if (!token)
+      if (!token) {
         return null;
-      if (token.type === 'css-property')
+      }
+      if (token.type === 'css-property') {
         return seenColon ? token : null;
-      if (token.type && !(token.type.indexOf('whitespace') !== -1 || token.type.startsWith('css-comment')))
+      }
+      if (token.type && !(token.type.indexOf('whitespace') !== -1 || token.type.startsWith('css-comment'))) {
         return null;
+      }
 
       if (!token.type && line.substring(token.startColumn, token.endColumn) === ':') {
-        if (!seenColon)
+        if (!seenColon) {
           seenColon = true;
-        else
+        } else {
           return null;
+        }
       }
       tokenPosition = token.startColumn - 1;
     }
@@ -389,8 +415,9 @@ Sources.CSSPlugin = class extends Sources.UISourceCodeFrame.Plugin {
    * @override
    */
   dispose() {
-    if (this._swatchPopoverHelper.isShowing())
+    if (this._swatchPopoverHelper.isShowing()) {
       this._swatchPopoverHelper.hide(true);
+    }
     this._textEditor.removeEventListener(
         SourceFrame.SourcesTextEditor.Events.ScrollChanged, this._textEditorScrolled, this);
     this._textEditor.removeEventListener(UI.TextEditor.Events.TextChanged, this._onTextChanged, this);

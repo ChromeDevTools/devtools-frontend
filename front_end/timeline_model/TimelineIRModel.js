@@ -23,11 +23,13 @@ TimelineModel.TimelineIRModel = class {
    */
   populate(inputLatencies, animations) {
     this.reset();
-    if (!inputLatencies)
+    if (!inputLatencies) {
       return;
+    }
     this._processInputLatencies(inputLatencies);
-    if (animations)
+    if (animations) {
       this._processAnimations(animations);
+    }
     const range = new Common.SegmentedRange();
     range.appendRange(this._drags);  // Drags take lower precedence than animation, as we can't detect them reliably.
     range.appendRange(this._cssAnimations);
@@ -54,8 +56,9 @@ TimelineModel.TimelineIRModel = class {
 
     for (let i = 0; i < events.length; ++i) {
       const event = events[i];
-      if (i > 0 && events[i].startTime < events[i - 1].startTime)
+      if (i > 0 && events[i].startTime < events[i - 1].startTime) {
         console.assert(false, 'Unordered input events');
+      }
       const type = this._inputEventType(event.name);
       switch (type) {
         case eventTypes.ScrollBegin:
@@ -64,10 +67,11 @@ TimelineModel.TimelineIRModel = class {
           break;
 
         case eventTypes.ScrollEnd:
-          if (scrollStart)
+          if (scrollStart) {
             this._scrolls.append(this._segmentForEventRange(scrollStart, event, phases.Scroll));
-          else
+          } else {
             this._scrolls.append(this._segmentForEvent(event, phases.Scroll));
+          }
           scrollStart = null;
           break;
 
@@ -87,8 +91,9 @@ TimelineModel.TimelineIRModel = class {
 
         case eventTypes.FlingCancel:
           // FIXME: also process renderer fling events.
-          if (!flingStart)
+          if (!flingStart) {
             break;
+          }
           this._scrolls.append(this._segmentForEventRange(flingStart, event, phases.Fling));
           flingStart = null;
           break;
@@ -160,10 +165,11 @@ TimelineModel.TimelineIRModel = class {
 
         case eventTypes.MouseWheel:
           // Do not consider first MouseWheel as trace viewer's implementation does -- in case of MouseWheel it's not really special.
-          if (mouseWheel && canMerge(thresholdsMs.mouse, mouseWheel, event))
+          if (mouseWheel && canMerge(thresholdsMs.mouse, mouseWheel, event)) {
             this._scrolls.append(this._segmentForEventRange(mouseWheel, event, phases.Scroll));
-          else
+          } else {
             this._scrolls.append(this._segmentForEvent(event, phases.Scroll));
+          }
           mouseWheel = event;
           break;
       }
@@ -184,8 +190,9 @@ TimelineModel.TimelineIRModel = class {
    * @param {!Array<!SDK.TracingModel.AsyncEvent>} events
    */
   _processAnimations(events) {
-    for (let i = 0; i < events.length; ++i)
+    for (let i = 0; i < events.length; ++i) {
       this._cssAnimations.append(this._segmentForEvent(events[i], TimelineModel.TimelineIRModel.Phases.Animation));
+    }
   }
 
   /**
@@ -251,8 +258,9 @@ TimelineModel.TimelineIRModel = class {
   _inputEventType(eventName) {
     const prefix = 'InputLatency::';
     if (!eventName.startsWith(prefix)) {
-      if (eventName === TimelineModel.TimelineIRModel.InputEvents.ImplSideFling)
+      if (eventName === TimelineModel.TimelineIRModel.InputEvents.ImplSideFling) {
         return /** @type {!TimelineModel.TimelineIRModel.InputEvents} */ (eventName);
+      }
       console.error('Unrecognized input latency event: ' + eventName);
       return null;
     }

@@ -100,8 +100,9 @@ ServiceDispatcher = class {
   }
 
   _connectionClosed() {
-    for (const object of this._objects.values())
+    for (const object of this._objects.values()) {
       object.dispose();
+    }
     this._objects.clear();
   }
 

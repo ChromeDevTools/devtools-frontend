@@ -99,8 +99,9 @@ FormatterWorker._innerParseCSS = function(text, chunkCallback) {
         } else if (tokenType.has('comment')) {
           // The |processToken| is called per-line, so no token spans more than one line.
           // Support only a one-line comments.
-          if (tokenValue.substring(0, 2) !== '/*' || tokenValue.substring(tokenValue.length - 2) !== '*/')
+          if (tokenValue.substring(0, 2) !== '/*' || tokenValue.substring(tokenValue.length - 2) !== '*/') {
             break;
+          }
           const uncommentedText = tokenValue.substring(2, tokenValue.length - 2);
           const fakeRule = 'a{\n' + uncommentedText + '}';
           disabledRules = [];

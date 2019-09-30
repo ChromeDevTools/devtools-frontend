@@ -25,8 +25,9 @@ Accessibility.AXNodeSubPane = class extends Accessibility.AccessibilitySubPane {
    * @override
    */
   setAXNode(axNode) {
-    if (this._axNode === axNode)
+    if (this._axNode === axNode) {
       return;
+    }
     this._axNode = axNode;
 
     const treeOutline = this._treeOutline;
@@ -60,10 +61,12 @@ Accessibility.AXNodeSubPane = class extends Accessibility.AccessibilitySubPane {
             property, /** @type {!Accessibility.AccessibilityNode} */ (axNode)));
       }
       const ignoredReasonsArray = /** @type {!Array<!Protocol.Accessibility.AXProperty>} */ (axNode.ignoredReasons());
-      for (const reason of ignoredReasonsArray)
+      for (const reason of ignoredReasonsArray) {
         addIgnoredReason(reason);
-      if (!ignoredReasons.firstChild())
+      }
+      if (!ignoredReasons.firstChild()) {
         ignoredReasons.element.classList.add('hidden');
+      }
       return;
     }
     this.element.classList.remove('ax-ignored-node-pane');
@@ -82,13 +85,15 @@ Accessibility.AXNodeSubPane = class extends Accessibility.AccessibilitySubPane {
           property, /** @type {!Accessibility.AccessibilityNode} */ (axNode)));
     }
 
-    for (const property of axNode.coreProperties())
+    for (const property of axNode.coreProperties()) {
       addProperty(property);
+    }
 
     const roleProperty = /** @type {!Protocol.Accessibility.AXProperty} */ ({name: 'role', value: axNode.role()});
     addProperty(roleProperty);
-    for (const property of /** @type {!Array.<!Protocol.Accessibility.AXProperty>} */ (axNode.properties()))
+    for (const property of /** @type {!Array.<!Protocol.Accessibility.AXProperty>} */ (axNode.properties())) {
       addProperty(property);
+    }
   }
 
   /**
@@ -122,10 +127,11 @@ Accessibility.AXNodePropertyTreeElement = class extends UI.TreeElement {
   static createSimpleValueElement(type, value) {
     let valueElement;
     const AXValueType = Protocol.Accessibility.AXValueType;
-    if (!type || type === AXValueType.ValueUndefined || type === AXValueType.ComputedString)
+    if (!type || type === AXValueType.ValueUndefined || type === AXValueType.ComputedString) {
       valueElement = createElement('span');
-    else
+    } else {
       valueElement = createElementWithClass('span', 'monospace');
+    }
     let valueText;
     const isStringProperty = type && Accessibility.AXNodePropertyTreeElement.StringProperties.has(type);
     if (isStringProperty) {
@@ -136,8 +142,9 @@ Accessibility.AXNodePropertyTreeElement = class extends UI.TreeElement {
       valueText = String(value);
     }
 
-    if (type && type in Accessibility.AXNodePropertyTreeElement.TypeStyles)
+    if (type && type in Accessibility.AXNodePropertyTreeElement.TypeStyles) {
       valueElement.classList.add(Accessibility.AXNodePropertyTreeElement.TypeStyles[type]);
+    }
 
     valueElement.setTextContentTruncatedIfNeeded(valueText || '');
 
@@ -228,10 +235,11 @@ Accessibility.AXNodePropertyTreeElement = class extends UI.TreeElement {
     }
 
     value.relatedNodes.forEach(this.appendRelatedNode, this);
-    if (value.relatedNodes.length <= 3)
+    if (value.relatedNodes.length <= 3) {
       this.expand();
-    else
+    } else {
       this.collapse();
+    }
   }
 };
 
@@ -339,20 +347,22 @@ Accessibility.AXValueSourceTreeElement = class extends Accessibility.AXNodePrope
     if (idrefs.length === 1) {
       const idref = idrefs[0];
       const matchingNode = relatedNodes.find(node => node.idref === idref);
-      if (matchingNode)
+      if (matchingNode) {
         this.appendRelatedNodeWithIdref(matchingNode, 0, idref);
-      else
+      } else {
         this.listItemElement.appendChild(new Accessibility.AXRelatedNodeElement({idref: idref}).render());
+      }
 
     } else {
       // TODO(aboxhall): exclamation mark if not idreflist type
       for (let i = 0; i < idrefs.length; ++i) {
         const idref = idrefs[i];
         const matchingNode = relatedNodes.find(node => node.idref === idref);
-        if (matchingNode)
+        if (matchingNode) {
           this.appendRelatedNodeWithIdref(matchingNode, i, idref);
-        else
+        } else {
           this.appendChild(new Accessibility.AXRelatedNodeSourceTreeElement({idref: idref}));
+        }
       }
     }
   }
@@ -366,16 +376,18 @@ Accessibility.AXValueSourceTreeElement = class extends Accessibility.AXNodePrope
     const numNodes = relatedNodes.length;
 
     if (value.type === Protocol.Accessibility.AXValueType.IdrefList ||
-        value.type === Protocol.Accessibility.AXValueType.Idref)
+        value.type === Protocol.Accessibility.AXValueType.Idref) {
       this.appendIDRefValueElement(value);
-    else
+    } else {
       super.appendRelatedNodeListValueElement(value);
+    }
 
 
-    if (numNodes <= 3)
+    if (numNodes <= 3) {
       this.expand();
-    else
+    } else {
       this.collapse();
+    }
   }
 
   /**
@@ -436,8 +448,9 @@ Accessibility.AXValueSourceTreeElement = class extends Accessibility.AXNodePrope
     } else if (this._source.nativeSourceValue) {
       this.appendValueElement(this._source.nativeSourceValue);
       this.listItemElement.createTextChild('\xA0');
-      if (this._source.value)
+      if (this._source.value) {
         this.appendValueElement(this._source.value);
+      }
     } else if (this._source.value) {
       this.appendValueElement(this._source.value);
     } else {
@@ -447,8 +460,9 @@ Accessibility.AXValueSourceTreeElement = class extends Accessibility.AXNodePrope
       this.listItemElement.classList.add('ax-value-source-unused');
     }
 
-    if (this._source.value && this._source.superseded)
+    if (this._source.value && this._source.superseded) {
       this.listItemElement.classList.add('ax-value-source-superseded');
+    }
   }
 };
 
@@ -473,8 +487,9 @@ Accessibility.AXRelatedNodeSourceTreeElement = class extends UI.TreeElement {
    */
   onattach() {
     this.listItemElement.appendChild(this._axRelatedNodeElement.render());
-    if (!this._value)
+    if (!this._value) {
       return;
+    }
 
     if (this._value.text) {
       this.listItemElement.appendChild(Accessibility.AXNodePropertyTreeElement.createSimpleValueElement(
@@ -605,8 +620,9 @@ Accessibility.AXNodeIgnoredReasonTreeElement = class extends Accessibility.AXNod
         reasonElement = UI.formatLocalized('Element not interesting for accessibility.', []);
         break;
     }
-    if (reasonElement)
+    if (reasonElement) {
       reasonElement.classList.add('ax-reason');
+    }
     return reasonElement;
   }
 
@@ -621,7 +637,8 @@ Accessibility.AXNodeIgnoredReasonTreeElement = class extends Accessibility.AXNod
     this.listItemElement.appendChild(this._reasonElement);
 
     const value = this._property.value;
-    if (value.type === Protocol.Accessibility.AXValueType.Idref)
+    if (value.type === Protocol.Accessibility.AXValueType.Idref) {
       this.appendRelatedNodeListValueElement(value);
+    }
   }
 };

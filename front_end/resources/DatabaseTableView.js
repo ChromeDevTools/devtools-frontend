@@ -88,8 +88,9 @@ Resources.DatabaseTableView = class extends UI.SimpleView {
     this._dataGrid.autoSizeColumns(5);
 
     this._columnsMap = new Map();
-    for (let i = 1; i < columnNames.length; ++i)
+    for (let i = 1; i < columnNames.length; ++i) {
       this._columnsMap.set(columnNames[i], String(i));
+    }
     this._lastVisibleColumns = '';
     const visibleColumnsText = this._visibleColumnsSetting.get()[this.tableName] || '';
     this._visibleColumnsInput.setValue(visibleColumnsText);
@@ -97,8 +98,9 @@ Resources.DatabaseTableView = class extends UI.SimpleView {
   }
 
   _onVisibleColumnsChanged() {
-    if (!this._dataGrid)
+    if (!this._dataGrid) {
       return;
+    }
     const text = this._visibleColumnsInput.value();
     const parts = text.split(/[\s,]+/);
     const matches = new Set();
@@ -113,11 +115,13 @@ Resources.DatabaseTableView = class extends UI.SimpleView {
     }
     const newVisibleColumns = matches.valuesArray().sort().join(', ');
     if (newVisibleColumns.length === 0) {
-      for (const v of this._columnsMap.values())
+      for (const v of this._columnsMap.values()) {
         columnsVisibility[v] = true;
+      }
     }
-    if (newVisibleColumns === this._lastVisibleColumns)
+    if (newVisibleColumns === this._lastVisibleColumns) {
       return;
+    }
     const visibleColumnsRegistry = this._visibleColumnsSetting.get();
     visibleColumnsRegistry[this.tableName] = text;
     this._visibleColumnsSetting.set(visibleColumnsRegistry);

@@ -116,10 +116,12 @@ Emulation.DeviceModeView = class extends UI.VBox {
     const resizer = new UI.ResizerWidget();
     resizer.addElement(element);
     let cursor = widthFactor ? 'ew-resize' : 'ns-resize';
-    if (widthFactor * heightFactor > 0)
+    if (widthFactor * heightFactor > 0) {
       cursor = 'nwse-resize';
-    if (widthFactor * heightFactor < 0)
+    }
+    if (widthFactor * heightFactor < 0) {
       cursor = 'nesw-resize';
+    }
     resizer.setCursor(cursor);
     resizer.addEventListener(UI.ResizerWidget.Events.ResizeStart, this._onResizeStart, this);
     resizer.addEventListener(
@@ -143,8 +145,9 @@ Emulation.DeviceModeView = class extends UI.VBox {
    * @param {!Common.Event} event
    */
   _onResizeUpdate(widthFactor, heightFactor, event) {
-    if (event.data.shiftKey !== !!this._slowPositionStart)
+    if (event.data.shiftKey !== !!this._slowPositionStart) {
       this._slowPositionStart = event.data.shiftKey ? {x: event.data.currentX, y: event.data.currentY} : null;
+    }
 
     let cssOffsetX = event.data.currentX - event.data.startX;
     let cssOffsetY = event.data.currentY - event.data.startY;
@@ -159,16 +162,19 @@ Emulation.DeviceModeView = class extends UI.VBox {
       const dipOffsetX = cssOffsetX * UI.zoomManager.zoomFactor();
       let newWidth = this._resizeStart.width + dipOffsetX * widthFactor;
       newWidth = Math.round(newWidth / this._model.scale());
-      if (newWidth >= Emulation.DeviceModeModel.MinDeviceSize && newWidth <= Emulation.DeviceModeModel.MaxDeviceSize)
+      if (newWidth >= Emulation.DeviceModeModel.MinDeviceSize && newWidth <= Emulation.DeviceModeModel.MaxDeviceSize) {
         this._model.setWidth(newWidth);
+      }
     }
 
     if (heightFactor) {
       const dipOffsetY = cssOffsetY * UI.zoomManager.zoomFactor();
       let newHeight = this._resizeStart.height + dipOffsetY * heightFactor;
       newHeight = Math.round(newHeight / this._model.scale());
-      if (newHeight >= Emulation.DeviceModeModel.MinDeviceSize && newHeight <= Emulation.DeviceModeModel.MaxDeviceSize)
+      if (newHeight >= Emulation.DeviceModeModel.MinDeviceSize &&
+          newHeight <= Emulation.DeviceModeModel.MaxDeviceSize) {
         this._model.setHeight(newHeight);
+      }
     }
   }
 
@@ -192,8 +198,9 @@ Emulation.DeviceModeView = class extends UI.VBox {
       element.style.height = rect.height + 'px';
     }
 
-    if (!this.isShowing())
+    if (!this.isShowing()) {
       return;
+    }
 
     const zoomFactor = UI.zoomManager.zoomFactor();
     let callDoResize = false;
@@ -237,10 +244,11 @@ Emulation.DeviceModeView = class extends UI.VBox {
     const mediaInspectorVisible =
         this._showMediaInspectorSetting.get() && this._model.type() !== Emulation.DeviceModeModel.Type.None;
     if (mediaInspectorVisible !== this._cachedMediaInspectorVisible) {
-      if (mediaInspectorVisible)
+      if (mediaInspectorVisible) {
         this._mediaInspector.show(this._mediaInspectorContainer);
-      else
+      } else {
         this._mediaInspector.detach();
+      }
       contentAreaResized = true;
       callDoResize = true;
       this._cachedMediaInspectorVisible = mediaInspectorVisible;
@@ -263,8 +271,9 @@ Emulation.DeviceModeView = class extends UI.VBox {
     if (this._model.scale() !== this._cachedScale) {
       updateRulers = true;
       callDoResize = true;
-      for (const block of this._presetBlocks)
+      for (const block of this._presetBlocks) {
         block.style.width = block.__width * this._model.scale() + 'px';
+      }
       this._cachedScale = this._model.scale();
     }
 
@@ -272,8 +281,9 @@ Emulation.DeviceModeView = class extends UI.VBox {
     this._loadImage(this._screenImage, this._model.screenImage());
     this._loadImage(this._outlineImage, this._model.outlineImage());
     this._mediaInspector.setAxisTransform(this._model.scale());
-    if (callDoResize)
+    if (callDoResize) {
       this.doResize();
+    }
     if (updateRulers) {
       this._topRuler.render(this._model.scale());
       this._leftRuler.render(this._model.scale());
@@ -284,8 +294,9 @@ Emulation.DeviceModeView = class extends UI.VBox {
           this._cachedCssScreenRect ? this._cachedCssScreenRect.left : 0,
           this._cachedCssScreenRect ? this._cachedCssScreenRect.top : 0);
     }
-    if (contentAreaResized)
+    if (contentAreaResized) {
       this._contentAreaResized();
+    }
   }
 
   /**
@@ -293,11 +304,13 @@ Emulation.DeviceModeView = class extends UI.VBox {
    * @param {string} srcset
    */
   _loadImage(element, srcset) {
-    if (element.getAttribute('srcset') === srcset)
+    if (element.getAttribute('srcset') === srcset) {
       return;
+    }
     element.setAttribute('srcset', srcset);
-    if (!srcset)
+    if (!srcset) {
       element.classList.toggle('hidden', true);
+    }
   }
 
   /**
@@ -312,8 +325,9 @@ Emulation.DeviceModeView = class extends UI.VBox {
    * @param {!Element} element
    */
   setNonEmulatedAvailableSize(element) {
-    if (this._model.type() !== Emulation.DeviceModeModel.Type.None)
+    if (this._model.type() !== Emulation.DeviceModeModel.Type.None) {
       return;
+    }
     const zoomFactor = UI.zoomManager.zoomFactor();
     const rect = element.getBoundingClientRect();
     const availableSize = new UI.Size(Math.max(rect.width * zoomFactor, 1), Math.max(rect.height * zoomFactor, 1));
@@ -353,8 +367,9 @@ Emulation.DeviceModeView = class extends UI.VBox {
    * @override
    */
   onResize() {
-    if (this.isShowing())
+    if (this.isShowing()) {
       this._contentAreaResized();
+    }
   }
 
   /**
@@ -377,8 +392,9 @@ Emulation.DeviceModeView = class extends UI.VBox {
    */
   async captureScreenshot() {
     const screenshot = await this._model.captureScreenshot(false);
-    if (screenshot === null)
+    if (screenshot === null) {
       return;
+    }
 
     const pageImage = new Image();
     pageImage.src = 'data:image/png;base64,' + screenshot;
@@ -396,10 +412,12 @@ Emulation.DeviceModeView = class extends UI.VBox {
       const ctx = canvas.getContext('2d');
       ctx.imageSmoothingEnabled = false;
 
-      if (this._model.outlineImage())
+      if (this._model.outlineImage()) {
         await this._paintImage(ctx, this._model.outlineImage(), outlineRect.relativeTo(outlineRect));
-      if (this._model.screenImage())
+      }
+      if (this._model.screenImage()) {
         await this._paintImage(ctx, this._model.screenImage(), screenRect.relativeTo(outlineRect));
+      }
       ctx.drawImage(pageImage, Math.floor(contentLeft), Math.floor(contentTop));
       this._saveScreenshot(canvas);
     };
@@ -410,8 +428,9 @@ Emulation.DeviceModeView = class extends UI.VBox {
    */
   async captureFullSizeScreenshot() {
     const screenshot = await this._model.captureScreenshot(true);
-    if (screenshot === null)
+    if (screenshot === null) {
       return;
+    }
     return this._saveScreenshotBase64(screenshot);
   }
 
@@ -421,8 +440,9 @@ Emulation.DeviceModeView = class extends UI.VBox {
    */
   async captureAreaScreenshot(clip) {
     const screenshot = await this._model.captureScreenshot(false, clip);
-    if (screenshot === null)
+    if (screenshot === null) {
       return;
+    }
     return this._saveScreenshotBase64(screenshot);
   }
 
@@ -468,8 +488,9 @@ Emulation.DeviceModeView = class extends UI.VBox {
   _saveScreenshot(canvas) {
     const url = this._model.inspectedURL();
     let fileName = url ? url.trimURL().removeURLFragment() : '';
-    if (this._model.type() === Emulation.DeviceModeModel.Type.Device)
+    if (this._model.type() === Emulation.DeviceModeModel.Type.Device) {
       fileName += Common.UIString('(%s)', this._model.device().title);
+    }
     const link = createElement('a');
     link.download = fileName + '.png';
     canvas.toBlob(blob => {
@@ -531,41 +552,50 @@ Emulation.DeviceModeView.Ruler = class extends UI.VBox {
     const dipSize = size * zoomFactor / this._scale;
     const count = Math.ceil(dipSize / 5);
     let step = 1;
-    if (this._scale < 0.8)
+    if (this._scale < 0.8) {
       step = 2;
-    if (this._scale < 0.6)
+    }
+    if (this._scale < 0.6) {
       step = 4;
-    if (this._scale < 0.4)
+    }
+    if (this._scale < 0.4) {
       step = 8;
-    if (this._scale < 0.2)
+    }
+    if (this._scale < 0.2) {
       step = 16;
-    if (this._scale < 0.1)
+    }
+    if (this._scale < 0.1) {
       step = 32;
+    }
 
     for (let i = count; i < this._count; i++) {
-      if (!(i % step))
+      if (!(i % step)) {
         this._contentElement.lastChild.remove();
+      }
     }
 
     for (let i = this._count; i < count; i++) {
-      if (i % step)
+      if (i % step) {
         continue;
+      }
       const marker = this._contentElement.createChild('div', 'device-mode-ruler-marker');
       if (i) {
-        if (this._horizontal)
+        if (this._horizontal) {
           marker.style.left = (5 * i) * this._scale / zoomFactor + 'px';
-        else
+        } else {
           marker.style.top = (5 * i) * this._scale / zoomFactor + 'px';
+        }
         if (!(i % 20)) {
           const text = marker.createChild('div', 'device-mode-ruler-text');
           text.textContent = i * 5;
           text.addEventListener('click', this._onMarkerClick.bind(this, i * 5), false);
         }
       }
-      if (!(i % 10))
+      if (!(i % 10)) {
         marker.classList.add('device-mode-ruler-marker-large');
-      else if (!(i % 5))
+      } else if (!(i % 5)) {
         marker.classList.add('device-mode-ruler-marker-medium');
+      }
     }
 
     this._count = count;

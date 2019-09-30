@@ -71,10 +71,11 @@ Profiler.ProfileLauncherView = class extends UI.VBox {
   }
 
   _updateControls() {
-    if (this._isEnabled && this._recordButtonEnabled)
+    if (this._isEnabled && this._recordButtonEnabled) {
       this._controlButton.removeAttribute('disabled');
-    else
+    } else {
       this._controlButton.setAttribute('disabled', '');
+    }
     this._controlButton.title = this._recordButtonEnabled ? '' : UI.anotherProfilerActiveLabel();
     if (this._isInstantProfile) {
       this._controlButton.classList.remove('running');
@@ -89,8 +90,9 @@ Profiler.ProfileLauncherView = class extends UI.VBox {
       this._controlButton.classList.add('primary-button');
       this._controlButton.textContent = Common.UIString('Start');
     }
-    for (const item of this._typeIdToOptionElement.values())
+    for (const item of this._typeIdToOptionElement.values()) {
       item.disabled = !!this._isProfiling;
+    }
   }
 
   profileStarted() {

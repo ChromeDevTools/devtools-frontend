@@ -27,20 +27,24 @@ SDK.FilmStripModel = class {
     /** @type {!Array<!SDK.FilmStripModel.Frame>} */
     this._frames = [];
     const browserMain = SDK.TracingModel.browserMainThread(tracingModel);
-    if (!browserMain)
+    if (!browserMain) {
       return;
+    }
 
     const events = browserMain.events();
     for (let i = 0; i < events.length; ++i) {
       const event = events[i];
-      if (event.startTime < this._zeroTime)
+      if (event.startTime < this._zeroTime) {
         continue;
-      if (!event.hasCategory(SDK.FilmStripModel._category))
+      }
+      if (!event.hasCategory(SDK.FilmStripModel._category)) {
         continue;
+      }
       if (event.name === SDK.FilmStripModel.TraceEvents.CaptureFrame) {
         const data = event.args['data'];
-        if (data)
+        if (data) {
           this._frames.push(SDK.FilmStripModel.Frame._fromEvent(this, event, this._frames.length));
+        }
       } else if (event.name === SDK.FilmStripModel.TraceEvents.Screenshot) {
         this._frames.push(SDK.FilmStripModel.Frame._fromSnapshot(
             this, /** @type {!SDK.TracingModel.ObjectSnapshot} */ (event), this._frames.length));
@@ -140,8 +144,9 @@ SDK.FilmStripModel.Frame = class {
    * @return {!Promise<?string>}
    */
   imageDataPromise() {
-    if (this._imageData || !this._snapshot)
+    if (this._imageData || !this._snapshot) {
       return Promise.resolve(this._imageData);
+    }
 
     return /** @type {!Promise<?string>} */ (this._snapshot.objectPromise());
   }

@@ -137,12 +137,14 @@ Network.RequestHeadersView = class extends UI.VBox {
       }
     }
     const div = createElementWithClass('div', className);
-    if (value === '')
+    if (value === '') {
       div.classList.add('empty-value');
-    if (errorDecoding)
+    }
+    if (errorDecoding) {
       div.createChild('span', 'header-decode-error').textContent = Common.UIString('(unable to decode value)');
-    else
+    } else {
       div.textContent = value;
+    }
     return div;
   }
 
@@ -165,8 +167,9 @@ Network.RequestHeadersView = class extends UI.VBox {
     this._requestPayloadCategory.hidden = true;
 
     const formData = await this._request.requestFormData();
-    if (!formData)
+    if (!formData) {
       return;
+    }
 
     const formParameters = await this._request.formParameters();
     if (formParameters) {
@@ -199,8 +202,9 @@ Network.RequestHeadersView = class extends UI.VBox {
     sourceTreeElement.selectable = false;
     treeElement.removeChildren();
     treeElement.appendChild(sourceTreeElement);
-    if (!trim)
+    if (!trim) {
       return;
+    }
 
     const showMoreButton = createElementWithClass('button', 'request-headers-show-more-button');
     showMoreButton.textContent = Common.UIString('Show more');
@@ -337,10 +341,11 @@ Network.RequestHeadersView = class extends UI.VBox {
     });
     const headersText = this._request.requestHeadersText();
 
-    if (this._showRequestHeadersText && headersText)
+    if (this._showRequestHeadersText && headersText) {
       this._refreshHeadersText(Common.UIString('Request Headers'), headers.length, headersText, treeElement);
-    else
+    } else {
       this._refreshHeaders(Common.UIString('Request Headers'), headers, treeElement, headersText === undefined);
+    }
 
     if (headersText) {
       const toggleButton = this._createHeadersToggleButton(this._showRequestHeadersText);
@@ -386,12 +391,13 @@ Network.RequestHeadersView = class extends UI.VBox {
       const statusCodeImage = statusCodeFragment.createChild('span', 'resource-status-image', 'dt-icon-label');
       statusCodeImage.title = this._request.statusCode + ' ' + this._request.statusText;
 
-      if (this._request.statusCode < 300 || this._request.statusCode === 304)
+      if (this._request.statusCode < 300 || this._request.statusCode === 304) {
         statusCodeImage.type = 'smallicon-green-ball';
-      else if (this._request.statusCode < 400)
+      } else if (this._request.statusCode < 400) {
         statusCodeImage.type = 'smallicon-orange-ball';
-      else
+      } else {
         statusCodeImage.type = 'smallicon-red-ball';
+      }
 
       requestMethodElement.title = this._formatHeader(ls`Request Method`, this._request.requestMethod);
 
@@ -479,8 +485,9 @@ Network.RequestHeadersView = class extends UI.VBox {
 
           let titleText = '';
           for (const blockedReason of matchingBlockedReasons) {
-            if (titleText)
+            if (titleText) {
               titleText += '\n';
+            }
             titleText += SDK.NetworkRequest.setCookieBlockedReasonToUiString(blockedReason);
           }
           icon.title = titleText;
@@ -506,16 +513,18 @@ Network.RequestHeadersView = class extends UI.VBox {
     const remoteAddress = this._request.remoteAddress();
     const treeElement = this._remoteAddressItem;
     treeElement.hidden = !remoteAddress;
-    if (remoteAddress)
+    if (remoteAddress) {
       treeElement.title = this._formatHeader(Common.UIString('Remote Address'), remoteAddress);
+    }
   }
 
   _refreshReferrerPolicy() {
     const referrerPolicy = this._request.referrerPolicy();
     const treeElement = this._referrerPolicyItem;
     treeElement.hidden = !referrerPolicy;
-    if (referrerPolicy)
+    if (referrerPolicy) {
       treeElement.title = this._formatHeader(Common.UIString('Referrer Policy'), referrerPolicy);
+    }
   }
 
   /**
@@ -556,8 +565,9 @@ Network.RequestHeadersView = class extends UI.VBox {
   }
 
   _clearHighlight() {
-    if (this._highlightedElement)
+    if (this._highlightedElement) {
       this._highlightedElement.listItemElement.classList.remove('header-highlight');
+    }
     this._highlightedElement = null;
   }
 
@@ -569,8 +579,9 @@ Network.RequestHeadersView = class extends UI.VBox {
   _revealAndHighlight(category, name) {
     this._clearHighlight();
     for (const element of category.children()) {
-      if (element[Network.RequestHeadersView._headerNameSymbol] !== name)
+      if (element[Network.RequestHeadersView._headerNameSymbol] !== name) {
         continue;
+      }
       this._highlightedElement = element;
       element.reveal();
       element.listItemElement.classList.add('header-highlight');

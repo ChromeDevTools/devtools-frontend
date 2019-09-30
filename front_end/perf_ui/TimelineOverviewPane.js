@@ -65,8 +65,9 @@ PerfUI.TimelineOverviewPane = class extends UI.VBox {
    * @param {!Event} event
    */
   _onMouseMove(event) {
-    if (!this._cursorEnabled)
+    if (!this._cursorEnabled) {
       return;
+    }
     this._cursorPosition = event.offsetX + event.target.offsetLeft;
     this._cursorElement.style.left = this._cursorPosition + 'px';
     this._cursorElement.style.visibility = 'visible';
@@ -110,8 +111,9 @@ PerfUI.TimelineOverviewPane = class extends UI.VBox {
    */
   onResize() {
     const width = this.element.offsetWidth;
-    if (width === this._lastWidth)
+    if (width === this._lastWidth) {
       return;
+    }
     this._lastWidth = width;
     this.scheduleUpdate();
   }
@@ -120,8 +122,9 @@ PerfUI.TimelineOverviewPane = class extends UI.VBox {
    * @param {!Array.<!PerfUI.TimelineOverview>} overviewControls
    */
   setOverviewControls(overviewControls) {
-    for (let i = 0; i < this._overviewControls.length; ++i)
+    for (let i = 0; i < this._overviewControls.length; ++i) {
       this._overviewControls[i].dispose();
+    }
 
     for (let i = 0; i < overviewControls.length; ++i) {
       overviewControls[i].setCalculator(this._overviewCalculator);
@@ -154,11 +157,13 @@ PerfUI.TimelineOverviewPane = class extends UI.VBox {
   }
 
   _update() {
-    if (!this.isShowing())
+    if (!this.isShowing()) {
       return;
+    }
     this._overviewCalculator.setDisplayWidth(this._overviewGrid.clientWidth());
-    for (let i = 0; i < this._overviewControls.length; ++i)
+    for (let i = 0; i < this._overviewControls.length; ++i) {
       this._overviewControls[i].update();
+    }
     this._overviewGrid.updateDividers(this._overviewCalculator);
     this._updateMarkers();
     this._updateWindow();
@@ -177,8 +182,9 @@ PerfUI.TimelineOverviewPane = class extends UI.VBox {
       const marker = this._markers.get(time);
       const position = Math.round(this._overviewCalculator.computePosition(time));
       // Limit the number of markers to one per pixel.
-      if (filteredMarkers.has(position))
+      if (filteredMarkers.has(position)) {
         continue;
+      }
       filteredMarkers.set(position, marker);
       marker.style.left = position + 'px';
     }
@@ -195,8 +201,9 @@ PerfUI.TimelineOverviewPane = class extends UI.VBox {
     this._cursorEnabled = false;
     this._hideCursor();
     this._markers = new Map();
-    for (const control of this._overviewControls)
+    for (const control of this._overviewControls) {
       control.reset();
+    }
     this._overviewInfo.hide();
     this.scheduleUpdate();
   }
@@ -213,11 +220,13 @@ PerfUI.TimelineOverviewPane = class extends UI.VBox {
    * @param {!Common.Event} event
    */
   _onWindowChanged(event) {
-    if (this._muteOnWindowChanged)
+    if (this._muteOnWindowChanged) {
       return;
+    }
     // Always use first control as a time converter.
-    if (!this._overviewControls.length)
+    if (!this._overviewControls.length) {
       return;
+    }
 
     const absoluteMin = this._overviewCalculator.minimumBoundary();
     const timeSpan = this._overviewCalculator.maximumBoundary() - absoluteMin;
@@ -235,8 +244,9 @@ PerfUI.TimelineOverviewPane = class extends UI.VBox {
    * @param {number} endTime
    */
   setWindowTimes(startTime, endTime) {
-    if (startTime === this._windowStartTime && endTime === this._windowEndTime)
+    if (startTime === this._windowStartTime && endTime === this._windowEndTime) {
       return;
+    }
     this._windowStartTime = startTime;
     this._windowEndTime = endTime;
     this._updateWindow();
@@ -245,8 +255,9 @@ PerfUI.TimelineOverviewPane = class extends UI.VBox {
   }
 
   _updateWindow() {
-    if (!this._overviewControls.length)
+    if (!this._overviewControls.length) {
       return;
+    }
     const absoluteMin = this._overviewCalculator.minimumBoundary();
     const timeSpan = this._overviewCalculator.maximumBoundary() - absoluteMin;
     const haveRecords = absoluteMin > 0;
@@ -466,8 +477,9 @@ PerfUI.TimelineOverviewBase = class extends UI.VBox {
   }
 
   resetCanvas() {
-    if (this.element.clientWidth)
+    if (this.element.clientWidth) {
       this.setCanvasSize(this.element.clientWidth, this.element.clientHeight);
+    }
   }
 
   /**
@@ -502,13 +514,15 @@ PerfUI.TimelineOverviewPane.OverviewInfo = class {
   async setContent(contentPromise) {
     this._visible = true;
     const content = await contentPromise;
-    if (!this._visible)
+    if (!this._visible) {
       return;
+    }
     this._element.removeChildren();
     this._element.appendChild(content);
     this._glassPane.setContentAnchorBox(this._anchorElement.boxInWindow());
-    if (!this._glassPane.isShowing())
+    if (!this._glassPane.isShowing()) {
       this._glassPane.show(/** @type {!Document} */ (this._anchorElement.ownerDocument));
+    }
   }
 
   hide() {

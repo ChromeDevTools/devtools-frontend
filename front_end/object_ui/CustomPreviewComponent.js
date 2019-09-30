@@ -50,8 +50,9 @@ ObjectUI.CustomPreviewSection = class {
    * @return {!Node}
    */
   _renderJSONMLTag(jsonML) {
-    if (!Array.isArray(jsonML))
+    if (!Array.isArray(jsonML)) {
       return createTextNode(jsonML + '');
+    }
 
     const array = /** @type {!Array.<*>} */ (jsonML);
     return array[0] === 'object' ? this._layoutObjectTag(array) : this._renderElement(array);
@@ -73,8 +74,9 @@ ObjectUI.CustomPreviewSection = class {
       const attributes = object.shift();
       for (const key in attributes) {
         const value = attributes[key];
-        if ((key !== 'style') || (typeof value !== 'string'))
+        if ((key !== 'style') || (typeof value !== 'string')) {
           continue;
+        }
 
         element.setAttribute(key, value);
       }
@@ -93,8 +95,9 @@ ObjectUI.CustomPreviewSection = class {
     const attributes = objectTag.shift();
     const remoteObject = this._object.runtimeModel().createRemoteObject(
         /** @type {!Protocol.Runtime.RemoteObject} */ (attributes));
-    if (remoteObject.customPreview())
+    if (remoteObject.customPreview()) {
       return (new ObjectUI.CustomPreviewSection(remoteObject)).element();
+    }
 
     const sectionElement = ObjectUI.ObjectPropertiesSection.defaultObjectPresentation(remoteObject);
     sectionElement.classList.toggle('custom-expandable-section-standard-section', remoteObject.hasChildren);
@@ -106,8 +109,9 @@ ObjectUI.CustomPreviewSection = class {
    * @param {!Array.<*>} jsonMLTags
    */
   _appendJsonMLTags(parentElement, jsonMLTags) {
-    for (let i = 0; i < jsonMLTags.length; ++i)
+    for (let i = 0; i < jsonMLTags.length; ++i) {
       parentElement.appendChild(this._renderJSONMLTag(jsonMLTags[i]));
+    }
   }
 
   /**
@@ -115,20 +119,22 @@ ObjectUI.CustomPreviewSection = class {
    */
   _onClick(event) {
     event.consume(true);
-    if (this._cachedContent)
+    if (this._cachedContent) {
       this._toggleExpand();
-    else
+    } else {
       this._loadBody();
+    }
   }
 
   _toggleExpand() {
     this._expanded = !this._expanded;
     this._header.classList.toggle('expanded', this._expanded);
     this._cachedContent.classList.toggle('hidden', !this._expanded);
-    if (this._expanded)
+    if (this._expanded) {
       this._expandIcon.setIconType('smallicon-triangle-down');
-    else
+    } else {
       this._expandIcon.setIconType('smallicon-triangle-right');
+    }
   }
 
   _loadBody() {
@@ -147,26 +153,30 @@ ObjectUI.CustomPreviewSection = class {
        * @throws {string} error message
        */
       function substituteObjectTagsInCustomPreview(jsonMLObject) {
-        if (!jsonMLObject || (typeof jsonMLObject !== 'object') || (typeof jsonMLObject.splice !== 'function'))
+        if (!jsonMLObject || (typeof jsonMLObject !== 'object') || (typeof jsonMLObject.splice !== 'function')) {
           return;
+        }
 
         const obj = jsonMLObject.length;
-        if (!(typeof obj === 'number' && obj >>> 0 === obj && (obj > 0 || 1 / obj > 0)))
+        if (!(typeof obj === 'number' && obj >>> 0 === obj && (obj > 0 || 1 / obj > 0))) {
           return;
+        }
 
         let startIndex = 1;
         if (jsonMLObject[0] === 'object') {
           const attributes = jsonMLObject[1];
           const originObject = attributes['object'];
           const config = attributes['config'];
-          if (typeof originObject === 'undefined')
+          if (typeof originObject === 'undefined') {
             throw 'Illegal format: obligatory attribute "object" isn\'t specified';
+          }
 
           jsonMLObject[1] = bindRemoteObject(originObject, config);
           startIndex = 2;
         }
-        for (let i = startIndex; i < jsonMLObject.length; ++i)
+        for (let i = startIndex; i < jsonMLObject.length; ++i) {
           substituteObjectTagsInCustomPreview(jsonMLObject[i]);
+        }
       }
 
       try {
@@ -183,8 +193,9 @@ ObjectUI.CustomPreviewSection = class {
     if (customPreview.bindRemoteObjectFunctionId && customPreview.formatterObjectId) {
       // Support for V8 version < 7.3.
       const args = [{objectId: customPreview.bindRemoteObjectFunctionId}, {objectId: customPreview.formatterObjectId}];
-      if (customPreview.configObjectId)
+      if (customPreview.configObjectId) {
         args.push({objectId: customPreview.configObjectId});
+      }
       this._object.callFunctionJSON(load, args).then(onBodyLoaded.bind(this));
     } else if (customPreview.bodyGetterId) {
       this._object.callFunctionJSON(bodyGetter => bodyGetter(), [{objectId: customPreview.bodyGetterId}])
@@ -196,8 +207,9 @@ ObjectUI.CustomPreviewSection = class {
      * @this {ObjectUI.CustomPreviewSection}
      */
     function onBodyLoaded(bodyJsonML) {
-      if (!bodyJsonML)
+      if (!bodyJsonML) {
         return;
+      }
 
       this._cachedContent = this._renderJSONMLTag(bodyJsonML);
       this._sectionElement.appendChild(this._cachedContent);
@@ -224,8 +236,9 @@ ObjectUI.CustomPreviewComponent = class {
 
   expandIfPossible() {
     if ((this._object.customPreview().hasBody || this._object.customPreview().bodyGetterId) &&
-        this._customPreviewSection)
+        this._customPreviewSection) {
       this._customPreviewSection._loadBody();
+    }
   }
 
   /**

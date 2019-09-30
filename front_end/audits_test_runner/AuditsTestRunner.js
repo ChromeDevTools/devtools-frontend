@@ -81,8 +81,9 @@ AuditsTestRunner.forcePageAuditabilityCheck = function() {
  * @return {string}
  */
 AuditsTestRunner._checkboxStateLabel = function(checkboxContainer) {
-  if (!checkboxContainer)
+  if (!checkboxContainer) {
     return 'missing';
+  }
 
   const label = checkboxContainer.textElement.textContent;
   const checkedLabel = checkboxContainer.checkboxElement.checked ? 'x' : ' ';
@@ -94,8 +95,9 @@ AuditsTestRunner._checkboxStateLabel = function(checkboxContainer) {
  * @return {string}
  */
 AuditsTestRunner._buttonStateLabel = function(button) {
-  if (!button)
+  if (!button) {
     return 'missing';
+  }
 
   const enabledLabel = button.disabled ? 'disabled' : 'enabled';
   const hiddenLabel = window.getComputedStyle(button).getPropertyValue('visibility');
@@ -112,8 +114,9 @@ AuditsTestRunner.dumpStartAuditState = function() {
   });
 
   const helpText = containerElement.querySelector('.audits-help-text');
-  if (!helpText.classList.contains('hidden'))
+  if (!helpText.classList.contains('hidden')) {
     TestRunner.addResult(`Help text: ${helpText.textContent}`);
+  }
 
   TestRunner.addResult(AuditsTestRunner._buttonStateLabel(AuditsTestRunner.getRunButton()));
 };

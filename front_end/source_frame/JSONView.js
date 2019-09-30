@@ -60,8 +60,9 @@ SourceFrame.JSONView = class extends UI.VBox {
   static async createView(content) {
     // We support non-strict JSON parsing by parsing an AST tree which is why we offload it to a worker.
     const parsedJSON = await SourceFrame.JSONView._parseJSON(content);
-    if (!parsedJSON || typeof parsedJSON.data !== 'object')
+    if (!parsedJSON || typeof parsedJSON.data !== 'object') {
       return null;
+    }
 
     const jsonView = new SourceFrame.JSONView(parsedJSON);
     const searchableView = new UI.SearchableView(jsonView);
@@ -91,10 +92,12 @@ SourceFrame.JSONView = class extends UI.VBox {
    */
   static _parseJSON(text) {
     let returnObj = null;
-    if (text)
+    if (text) {
       returnObj = SourceFrame.JSONView._extractJSON(/** @type {string} */ (text));
-    if (!returnObj)
+    }
+    if (!returnObj) {
       return Promise.resolve(/** @type {?SourceFrame.ParsedJSON} */ (null));
+    }
     return Formatter.formatterWorkerPool().parseJSONRelaxed(returnObj.data).then(handleReturnedJSON);
 
     /**
@@ -102,8 +105,9 @@ SourceFrame.JSONView = class extends UI.VBox {
      * @return {?SourceFrame.ParsedJSON}
      */
     function handleReturnedJSON(data) {
-      if (!data)
+      if (!data) {
         return null;
+      }
       returnObj.data = data;
       return returnObj;
     }
@@ -115,23 +119,26 @@ SourceFrame.JSONView = class extends UI.VBox {
    */
   static _extractJSON(text) {
     // Do not treat HTML as JSON.
-    if (text.startsWith('<'))
+    if (text.startsWith('<')) {
       return null;
+    }
     let inner = SourceFrame.JSONView._findBrackets(text, '{', '}');
     const inner2 = SourceFrame.JSONView._findBrackets(text, '[', ']');
     inner = inner2.length > inner.length ? inner2 : inner;
 
     // Return on blank payloads or on payloads significantly smaller than original text.
-    if (inner.length === -1 || text.length - inner.length > 80)
+    if (inner.length === -1 || text.length - inner.length > 80) {
       return null;
+    }
 
     const prefix = text.substring(0, inner.start);
     const suffix = text.substring(inner.end + 1);
     text = text.substring(inner.start, inner.end + 1);
 
     // Only process valid JSONP.
-    if (suffix.trim().length && !(suffix.trim().startsWith(')') && prefix.trim().endsWith('(')))
+    if (suffix.trim().length && !(suffix.trim().startsWith(')') && prefix.trim().endsWith('('))) {
       return null;
+    }
 
     return new SourceFrame.ParsedJSON(text, prefix, suffix);
   }
@@ -146,8 +153,9 @@ SourceFrame.JSONView = class extends UI.VBox {
     const start = text.indexOf(open);
     const end = text.lastIndexOf(close);
     let length = end - start - 1;
-    if (start === -1 || end === -1 || end < start)
+    if (start === -1 || end === -1 || end < start) {
       length = -1;
+    }
     return {start: start, end: end, length: length};
   }
 
@@ -159,8 +167,9 @@ SourceFrame.JSONView = class extends UI.VBox {
   }
 
   _initialize() {
-    if (this._initialized)
+    if (this._initialized) {
       return;
+    }
     this._initialized = true;
 
     const obj = SDK.RemoteObject.fromLocalObject(this._parsedJSON.data);
@@ -178,11 +187,13 @@ SourceFrame.JSONView = class extends UI.VBox {
    * @param {number} index
    */
   _jumpToMatch(index) {
-    if (!this._searchRegex)
+    if (!this._searchRegex) {
       return;
+    }
     const previousFocusElement = this._currentSearchTreeElements[this._currentSearchFocusIndex];
-    if (previousFocusElement)
+    if (previousFocusElement) {
       previousFocusElement.setSearchRegex(this._searchRegex);
+    }
 
     const newFocusElement = this._currentSearchTreeElements[index];
     if (newFocusElement) {
@@ -198,8 +209,9 @@ SourceFrame.JSONView = class extends UI.VBox {
    * @param {number} count
    */
   _updateSearchCount(count) {
-    if (!this._searchableView)
+    if (!this._searchableView) {
       return;
+    }
     this._searchableView.updateSearchMatchesCount(count);
   }
 
@@ -208,8 +220,9 @@ SourceFrame.JSONView = class extends UI.VBox {
    */
   _updateSearchIndex(index) {
     this._currentSearchFocusIndex = index;
-    if (!this._searchableView)
+    if (!this._searchableView) {
       return;
+    }
     this._searchableView.updateCurrentMatchIndex(index);
   }
 
@@ -221,8 +234,9 @@ SourceFrame.JSONView = class extends UI.VBox {
     this._currentSearchTreeElements = [];
 
     for (let element = this._treeOutline.rootElement(); element; element = element.traverseNextTreeElement(false)) {
-      if (!(element instanceof ObjectUI.ObjectPropertyTreeElement))
+      if (!(element instanceof ObjectUI.ObjectPropertyTreeElement)) {
         continue;
+      }
       element.revertHighlightChanges();
     }
     this._updateSearchCount(0);
@@ -242,17 +256,20 @@ SourceFrame.JSONView = class extends UI.VBox {
     this._searchRegex = searchConfig.toSearchRegex(true);
 
     for (let element = this._treeOutline.rootElement(); element; element = element.traverseNextTreeElement(false)) {
-      if (!(element instanceof ObjectUI.ObjectPropertyTreeElement))
+      if (!(element instanceof ObjectUI.ObjectPropertyTreeElement)) {
         continue;
+      }
       const hasMatch = element.setSearchRegex(this._searchRegex);
-      if (hasMatch)
+      if (hasMatch) {
         this._currentSearchTreeElements.push(element);
+      }
       if (previousSearchFocusElement === element) {
         const currentIndex = this._currentSearchTreeElements.length - 1;
-        if (hasMatch || jumpBackwards)
+        if (hasMatch || jumpBackwards) {
           newIndex = currentIndex;
-        else
+        } else {
           newIndex = currentIndex + 1;
+        }
       }
     }
     this._updateSearchCount(this._currentSearchTreeElements.length);
@@ -270,8 +287,9 @@ SourceFrame.JSONView = class extends UI.VBox {
    * @override
    */
   jumpToNextSearchResult() {
-    if (!this._currentSearchTreeElements.length)
+    if (!this._currentSearchTreeElements.length) {
       return;
+    }
     const newIndex = mod(this._currentSearchFocusIndex + 1, this._currentSearchTreeElements.length);
     this._jumpToMatch(newIndex);
   }
@@ -280,8 +298,9 @@ SourceFrame.JSONView = class extends UI.VBox {
    * @override
    */
   jumpToPreviousSearchResult() {
-    if (!this._currentSearchTreeElements.length)
+    if (!this._currentSearchTreeElements.length) {
       return;
+    }
     const newIndex = mod(this._currentSearchFocusIndex - 1, this._currentSearchTreeElements.length);
     this._jumpToMatch(newIndex);
   }

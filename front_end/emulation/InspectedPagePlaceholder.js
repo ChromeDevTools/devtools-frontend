@@ -17,8 +17,9 @@ Emulation.InspectedPagePlaceholder = class extends UI.Widget {
    * @override
    */
   onResize() {
-    if (this._updateId)
+    if (this._updateId) {
       this.element.window().cancelAnimationFrame(this._updateId);
+    }
     this._updateId = this.element.window().requestAnimationFrame(this.update.bind(this, false));
   }
 

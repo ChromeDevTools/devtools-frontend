@@ -50,14 +50,17 @@ SDK.CSSMetadata = class {
     for (let i = 0; i < properties.length; ++i) {
       const property = properties[i];
       const propertyName = property.name;
-      if (!CSS.supports(propertyName, 'initial'))
+      if (!CSS.supports(propertyName, 'initial')) {
         continue;
+      }
       this._values.push(propertyName);
 
-      if (property.inherited)
+      if (property.inherited) {
         this._inherited.add(propertyName);
-      if (property.svg)
+      }
+      if (property.svg) {
         this._svgProperties.add(propertyName);
+      }
 
       const longhands = properties[i].longhands;
       if (longhands) {
@@ -85,8 +88,9 @@ SDK.CSSMetadata = class {
                          .filter(value => CSS.supports(name, value))
                          .sort(SDK.CSSMetadata._sortPrefixesToEnd);
       const presets = values.map(value => `${name}: ${value}`);
-      if (!this.isSVGProperty(name))
+      if (!this.isSVGProperty(name)) {
         this._nameValuePresets.pushAll(presets);
+      }
       this._nameValuePresetsIncludingSVG.pushAll(presets);
     }
   }
@@ -98,10 +102,12 @@ SDK.CSSMetadata = class {
   static _sortPrefixesToEnd(a, b) {
     const aIsPrefixed = a.startsWith('-webkit-');
     const bIsPrefixed = b.startsWith('-webkit-');
-    if (aIsPrefixed && !bIsPrefixed)
+    if (aIsPrefixed && !bIsPrefixed) {
       return 1;
-    if (!aIsPrefixed && bIsPrefixed)
+    }
+    if (!aIsPrefixed && bIsPrefixed) {
       return -1;
+    }
     return a < b ? -1 : (a > b ? 1 : 0);
   }
 
@@ -169,8 +175,9 @@ SDK.CSSMetadata = class {
    */
   isLengthProperty(propertyName) {
     propertyName = propertyName.toLowerCase();
-    if (propertyName === 'line-height')
+    if (propertyName === 'line-height') {
       return false;
+    }
     return SDK.CSSMetadata._distanceProperties.has(propertyName) || propertyName.startsWith('margin') ||
         propertyName.startsWith('padding') || propertyName.indexOf('width') !== -1 ||
         propertyName.indexOf('height') !== -1;
@@ -198,14 +205,17 @@ SDK.CSSMetadata = class {
    * @return {string}
    */
   canonicalPropertyName(name) {
-    if (this.isCustomProperty(name))
+    if (this.isCustomProperty(name)) {
       return name;
+    }
     name = name.toLowerCase();
-    if (!name || name.length < 9 || name.charAt(0) !== '-')
+    if (!name || name.length < 9 || name.charAt(0) !== '-') {
       return name;
+    }
     const match = name.match(/(?:-webkit-)(.+)/);
-    if (!match || !this._valuesSet.has(match[1]))
+    if (!match || !this._valuesSet.has(match[1])) {
       return name;
+    }
     return match[1];
   }
 
@@ -216,8 +226,9 @@ SDK.CSSMetadata = class {
   isCSSPropertyName(propertyName) {
     propertyName = propertyName.toLowerCase();
     if (propertyName.startsWith('-moz-') || propertyName.startsWith('-o-') || propertyName.startsWith('-webkit-') ||
-        propertyName.startsWith('-ms-'))
+        propertyName.startsWith('-ms-')) {
       return true;
+    }
     return this._valuesSet.has(propertyName);
   }
 
@@ -240,8 +251,9 @@ SDK.CSSMetadata = class {
     const entry = SDK.CSSMetadata._propertyDataMap[propertyName] || SDK.CSSMetadata._propertyDataMap[unprefixedName];
     const keywords = entry && entry.values ? entry.values.slice() : [];
     for (const commonKeyword of ['auto', 'none']) {
-      if (CSS.supports(propertyName, commonKeyword))
+      if (CSS.supports(propertyName, commonKeyword)) {
         keywords.push(commonKeyword);
+      }
     }
     return keywords;
   }
@@ -256,8 +268,9 @@ SDK.CSSMetadata = class {
     acceptedKeywords.pushAll(this._specificPropertyValues(propertyName));
     if (this.isColorAwareProperty(propertyName)) {
       acceptedKeywords.push('currentColor');
-      for (const color in Common.Color.Nicknames)
+      for (const color in Common.Color.Nicknames) {
         acceptedKeywords.push(color);
+      }
     }
     return acceptedKeywords.sort(SDK.CSSMetadata._sortPrefixesToEnd);
   }
@@ -278,8 +291,9 @@ SDK.CSSMetadata = class {
   getValuePreset(key, value) {
     const values = SDK.CSSMetadata._valuePresets.get(key);
     let text = values ? values.get(value) : null;
-    if (!text)
+    if (!text) {
       return null;
+    }
     let startColumn = text.length;
     let endColumn = text.length;
     if (text) {
@@ -309,8 +323,9 @@ SDK.CSSMetadata.GridAreaRowRegex = /((?:\[[\w\- ]+\]\s*)*(?:"[^"]+"|'[^']+'))[^'
  * @return {!SDK.CSSMetadata}
  */
 SDK.cssMetadata = function() {
-  if (!SDK.CSSMetadata._instance)
+  if (!SDK.CSSMetadata._instance) {
     SDK.CSSMetadata._instance = new SDK.CSSMetadata(SDK.CSSMetadata._generatedProperties || []);
+  }
   return SDK.CSSMetadata._instance;
 };
 

@@ -21,8 +21,9 @@ WebAudio.ContextDetailBuilder = class {
     this._addTitle(title, context.contextId);
     this._addEntry(ls`State`, context.contextState);
     this._addEntry(ls`Sample Rate`, context.sampleRate, 'Hz');
-    if (context.contextType === 'realtime')
+    if (context.contextType === 'realtime') {
       this._addEntry(ls`Callback Buffer Size`, context.callbackBufferSize, 'frames');
+    }
     this._addEntry(ls`Max Output Channels`, context.maxOutputChannelCount, 'ch');
   }
 

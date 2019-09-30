@@ -182,37 +182,44 @@ LayerViewer.LayerViewHost = class {
   setLayerTree(layerTree) {
     this._target = layerTree.target();
     const selectedLayer = this._selectedObject && this._selectedObject.layer();
-    if (selectedLayer && (!layerTree || !layerTree.layerById(selectedLayer.id())))
+    if (selectedLayer && (!layerTree || !layerTree.layerById(selectedLayer.id()))) {
       this.selectObject(null);
+    }
     const hoveredLayer = this._hoveredObject && this._hoveredObject.layer();
-    if (hoveredLayer && (!layerTree || !layerTree.layerById(hoveredLayer.id())))
+    if (hoveredLayer && (!layerTree || !layerTree.layerById(hoveredLayer.id()))) {
       this.hoverObject(null);
-    for (const view of this._views)
+    }
+    for (const view of this._views) {
       view.setLayerTree(layerTree);
+    }
   }
 
   /**
    * @param {?LayerViewer.LayerView.Selection} selection
    */
   hoverObject(selection) {
-    if (LayerViewer.LayerView.Selection.isEqual(this._hoveredObject, selection))
+    if (LayerViewer.LayerView.Selection.isEqual(this._hoveredObject, selection)) {
       return;
+    }
     this._hoveredObject = selection;
     const layer = selection && selection.layer();
     this._toggleNodeHighlight(layer ? layer.nodeForSelfOrAncestor() : null);
-    for (const view of this._views)
+    for (const view of this._views) {
       view.hoverObject(selection);
+    }
   }
 
   /**
    * @param {?LayerViewer.LayerView.Selection} selection
    */
   selectObject(selection) {
-    if (LayerViewer.LayerView.Selection.isEqual(this._selectedObject, selection))
+    if (LayerViewer.LayerView.Selection.isEqual(this._selectedObject, selection)) {
       return;
+    }
     this._selectedObject = selection;
-    for (const view of this._views)
+    for (const view of this._views) {
       view.selectObject(selection);
+    }
   }
 
   /**
@@ -231,8 +238,9 @@ LayerViewer.LayerViewHost = class {
         Common.UIString('Show internal layers'), this._toggleShowInternalLayers.bind(this),
         this._showInternalLayersSetting.get());
     const node = selection && selection.layer() && selection.layer().nodeForSelfOrAncestor();
-    if (node)
+    if (node) {
       contextMenu.appendApplicableItems(node);
+    }
     contextMenu.show();
   }
 

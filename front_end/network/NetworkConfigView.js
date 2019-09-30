@@ -73,8 +73,9 @@ Network.NetworkConfigView = class extends UI.VBox {
         }
       }
 
-      if (!selectionRestored)
+      if (!selectionRestored) {
         userAgentSelectElement.selectedIndex = 0;
+      }
     }
 
     function applyOtherUserAgent() {
@@ -95,8 +96,9 @@ Network.NetworkConfigView = class extends UI.VBox {
    */
   _createSection(title, className) {
     const section = this.contentElement.createChild('section', 'network-config-group');
-    if (className)
+    if (className) {
       section.classList.add(className);
+    }
     section.createChild('div', 'network-config-title').textContent = title;
     return section.createChild('div', 'network-config-fields');
   }
@@ -125,8 +127,9 @@ Network.NetworkConfigView = class extends UI.VBox {
 
     const customUserAgentSetting = Common.settings.createSetting('customUserAgent', '');
     customUserAgentSetting.addChangeListener(() => {
-      if (autoCheckbox.checked)
+      if (autoCheckbox.checked) {
         return;
+      }
       SDK.multitargetNetworkManager.setCustomUserAgentOverride(customUserAgentSetting.get());
     });
     const customUserAgentSelectBox = section.createChild('div', 'network-config-ua-custom');

@@ -110,8 +110,9 @@ SDK.ConsoleModel = class extends Common.Object {
    */
   targetRemoved(target) {
     const runtimeModel = target.model(SDK.RuntimeModel);
-    if (runtimeModel)
+    if (runtimeModel) {
       this._messageByExceptionId.delete(runtimeModel);
+    }
     Common.EventTarget.removeEventListeners(target[SDK.ConsoleModel._events] || []);
   }
 
@@ -134,8 +135,9 @@ SDK.ConsoleModel = class extends Common.Object {
         },
         Common.settings.moduleSetting('consoleUserActivationEval').get(), awaitPromise);
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.ConsoleEvaluated);
-    if (result.error)
+    if (result.error) {
       return;
+    }
     await Common.console.showPromise();
     this.dispatchEventToListeners(
         SDK.ConsoleModel.Events.CommandEvaluated,
@@ -161,8 +163,10 @@ SDK.ConsoleModel = class extends Common.Object {
    */
   addMessage(msg) {
     msg._pageLoadSequenceNumber = this._pageLoadSequenceNumber;
-    if (msg.source === SDK.ConsoleMessage.MessageSource.ConsoleAPI && msg.type === SDK.ConsoleMessage.MessageType.Clear)
+    if (msg.source === SDK.ConsoleMessage.MessageSource.ConsoleAPI &&
+        msg.type === SDK.ConsoleMessage.MessageType.Clear) {
       this._clearIfNecessary();
+    }
 
     this._messages.push(msg);
     const runtimeModel = msg.runtimeModel();
@@ -198,8 +202,9 @@ SDK.ConsoleModel = class extends Common.Object {
     const exceptionId = /** @type {number} */ (event.data);
     const modelMap = this._messageByExceptionId.get(runtimeModel);
     const exceptionMessage = modelMap ? modelMap.get(exceptionId) : null;
-    if (!exceptionMessage)
+    if (!exceptionMessage) {
       return;
+    }
     this._errors--;
     exceptionMessage.level = SDK.ConsoleMessage.MessageLevel.Verbose;
     this.dispatchEventToListeners(SDK.ConsoleModel.Events.MessageUpdated, exceptionMessage);
@@ -212,21 +217,24 @@ SDK.ConsoleModel = class extends Common.Object {
   _consoleAPICalled(runtimeModel, event) {
     const call = /** @type {!SDK.RuntimeModel.ConsoleAPICall} */ (event.data);
     let level = SDK.ConsoleMessage.MessageLevel.Info;
-    if (call.type === SDK.ConsoleMessage.MessageType.Debug)
+    if (call.type === SDK.ConsoleMessage.MessageType.Debug) {
       level = SDK.ConsoleMessage.MessageLevel.Verbose;
-    else if (call.type === SDK.ConsoleMessage.MessageType.Error || call.type === SDK.ConsoleMessage.MessageType.Assert)
+    } else if (
+        call.type === SDK.ConsoleMessage.MessageType.Error || call.type === SDK.ConsoleMessage.MessageType.Assert) {
       level = SDK.ConsoleMessage.MessageLevel.Error;
-    else if (call.type === SDK.ConsoleMessage.MessageType.Warning)
+    } else if (call.type === SDK.ConsoleMessage.MessageType.Warning) {
       level = SDK.ConsoleMessage.MessageLevel.Warning;
-    else if (call.type === SDK.ConsoleMessage.MessageType.Info || call.type === SDK.ConsoleMessage.MessageType.Log)
+    } else if (call.type === SDK.ConsoleMessage.MessageType.Info || call.type === SDK.ConsoleMessage.MessageType.Log) {
       level = SDK.ConsoleMessage.MessageLevel.Info;
+    }
     let message = '';
-    if (call.args.length && call.args[0].unserializableValue)
+    if (call.args.length && call.args[0].unserializableValue) {
       message = call.args[0].unserializableValue;
-    else if (call.args.length && (typeof call.args[0].value !== 'object' || call.args[0].value === null))
+    } else if (call.args.length && (typeof call.args[0].value !== 'object' || call.args[0].value === null)) {
       message = call.args[0].value + '';
-    else if (call.args.length && call.args[0].description)
+    } else if (call.args.length && call.args[0].description) {
       message = call.args[0].description;
+    }
     const callFrame = call.stackTrace && call.stackTrace.callFrames.length ? call.stackTrace.callFrames[0] : null;
     const consoleMessage = new SDK.ConsoleMessage(
         runtimeModel, SDK.ConsoleMessage.MessageSource.ConsoleAPI, level,
@@ -248,8 +256,9 @@ SDK.ConsoleModel = class extends Common.Object {
   }
 
   _clearIfNecessary() {
-    if (!Common.moduleSetting('preserveConsoleLog').get())
+    if (!Common.moduleSetting('preserveConsoleLog').get()) {
       this._clear();
+    }
     ++this._pageLoadSequenceNumber;
   }
 
@@ -257,8 +266,9 @@ SDK.ConsoleModel = class extends Common.Object {
    * @param {!Common.Event} event
    */
   _mainFrameNavigated(event) {
-    if (Common.moduleSetting('preserveConsoleLog').get())
+    if (Common.moduleSetting('preserveConsoleLog').get()) {
       Common.console.log(Common.UIString('Navigated to %s', event.data.url));
+    }
   }
 
   /**
@@ -328,10 +338,12 @@ SDK.ConsoleModel = class extends Common.Object {
   }
 
   requestClearMessages() {
-    for (const logModel of SDK.targetManager.models(SDK.LogModel))
+    for (const logModel of SDK.targetManager.models(SDK.LogModel)) {
       logModel.requestClear();
-    for (const runtimeModel of SDK.targetManager.models(SDK.RuntimeModel))
+    }
+    for (const runtimeModel of SDK.targetManager.models(SDK.RuntimeModel)) {
       runtimeModel.discardConsoleEntries();
+    }
     this._clear();
   }
 
@@ -394,8 +406,9 @@ SDK.ConsoleModel = class extends Common.Object {
       this.evaluateCommandInConsole(
           executionContext, message, text, /* useCommandLineAPI */ false, /* awaitPromise */ false);
     }
-    if (callFunctionResult.object)
+    if (callFunctionResult.object) {
       callFunctionResult.object.release();
+    }
 
     /**
      * @suppressReceiverCheck
@@ -404,8 +417,9 @@ SDK.ConsoleModel = class extends Common.Object {
     function saveVariable(value) {
       const prefix = 'temp';
       let index = 1;
-      while ((prefix + index) in this)
+      while ((prefix + index) in this) {
         ++index;
+      }
       const name = prefix + index;
       this[name] = value;
       return name;
@@ -416,8 +430,9 @@ SDK.ConsoleModel = class extends Common.Object {
      */
     function failedToSave(result) {
       let message = Common.UIString('Failed to save to temp variable.');
-      if (result)
+      if (result) {
         message += ' ' + result.description;
+      }
       Common.console.error(message);
     }
   }
@@ -476,14 +491,16 @@ SDK.ConsoleMessage = class {
     this.workerId = workerId || null;
 
     if (!this.executionContextId && this._runtimeModel) {
-      if (this.scriptId)
+      if (this.scriptId) {
         this.executionContextId = this._runtimeModel.executionContextIdForScriptId(this.scriptId);
-      else if (this.stackTrace)
+      } else if (this.stackTrace) {
         this.executionContextId = this._runtimeModel.executionContextForStackTrace(this.stackTrace);
+      }
     }
 
-    if (context)
+    if (context) {
       this.context = context.match(/[^#]*/)[0];
+    }
   }
 
   /**
@@ -598,25 +615,30 @@ SDK.ConsoleMessage = class {
    * @return {boolean}
    */
   isEqual(msg) {
-    if (!msg)
+    if (!msg) {
       return false;
+    }
 
-    if (!this._isEqualStackTraces(this.stackTrace, msg.stackTrace))
+    if (!this._isEqualStackTraces(this.stackTrace, msg.stackTrace)) {
       return false;
+    }
 
     if (this.parameters) {
-      if (!msg.parameters || this.parameters.length !== msg.parameters.length)
+      if (!msg.parameters || this.parameters.length !== msg.parameters.length) {
         return false;
+      }
 
       for (let i = 0; i < msg.parameters.length; ++i) {
         // Never treat objects as equal - their properties might change over time. Errors can be treated as equal
         // since they are always formatted as strings.
-        if (msg.parameters[i].type === 'object' && msg.parameters[i].subtype !== 'error')
+        if (msg.parameters[i].type === 'object' && msg.parameters[i].subtype !== 'error') {
           return false;
+        }
         if (this.parameters[i].type !== msg.parameters[i].type ||
             this.parameters[i].value !== msg.parameters[i].value ||
-            this.parameters[i].description !== msg.parameters[i].description)
+            this.parameters[i].description !== msg.parameters[i].description) {
           return false;
+        }
       }
     }
 
@@ -632,19 +654,23 @@ SDK.ConsoleMessage = class {
    * @return {boolean}
    */
   _isEqualStackTraces(stackTrace1, stackTrace2) {
-    if (!stackTrace1 !== !stackTrace2)
+    if (!stackTrace1 !== !stackTrace2) {
       return false;
-    if (!stackTrace1)
+    }
+    if (!stackTrace1) {
       return true;
+    }
     const callFrames1 = stackTrace1.callFrames;
     const callFrames2 = stackTrace2.callFrames;
-    if (callFrames1.length !== callFrames2.length)
+    if (callFrames1.length !== callFrames2.length) {
       return false;
+    }
     for (let i = 0, n = callFrames1.length; i < n; ++i) {
       if (callFrames1[i].url !== callFrames2[i].url || callFrames1[i].functionName !== callFrames2[i].functionName ||
           callFrames1[i].lineNumber !== callFrames2[i].lineNumber ||
-          callFrames1[i].columnNumber !== callFrames2[i].columnNumber)
+          callFrames1[i].columnNumber !== callFrames2[i].columnNumber) {
         return false;
+      }
     }
     return this._isEqualStackTraces(stackTrace1.parent, stackTrace2.parent);
   }

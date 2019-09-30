@@ -49,8 +49,9 @@ Network.NetworkOverview = class extends PerfUI.TimelineOverviewBase {
    */
   _loadEventFired(event) {
     const time = /** @type {number} */ (event.data.loadTime);
-    if (time)
+    if (time) {
       this._loadEvents.push(time * 1000);
+    }
     this.scheduleUpdate();
   }
 
@@ -59,8 +60,9 @@ Network.NetworkOverview = class extends PerfUI.TimelineOverviewBase {
    */
   _domContentLoadedEventFired(event) {
     const data = /** @type {number} */ (event.data);
-    if (data)
+    if (data) {
       this._domContentLoadedEvents.push(data * 1000);
+    }
     this.scheduleUpdate();
   }
 
@@ -69,10 +71,12 @@ Network.NetworkOverview = class extends PerfUI.TimelineOverviewBase {
    * @return {number}
    */
   _bandId(connectionId) {
-    if (!connectionId || connectionId === '0')
+    if (!connectionId || connectionId === '0') {
       return -1;
-    if (this._bandMap.has(connectionId))
+    }
+    if (this._bandMap.has(connectionId)) {
       return /** @type {number} */ (this._bandMap.get(connectionId));
+    }
     const result = this._nextBand++;
     this._bandMap.set(connectionId, result);
     return result;
@@ -141,8 +145,9 @@ Network.NetworkOverview = class extends PerfUI.TimelineOverviewBase {
    * @protected
    */
   scheduleUpdate() {
-    if (this._updateScheduled || !this.isShowing())
+    if (this._updateScheduled || !this.isShowing()) {
       return;
+    }
     this._updateScheduled = true;
     this.element.window().requestAnimationFrame(this.update.bind(this));
   }
@@ -158,8 +163,9 @@ Network.NetworkOverview = class extends PerfUI.TimelineOverviewBase {
     const newBoundary = new Network.NetworkTimeBoundary(calculator.minimumBoundary(), calculator.maximumBoundary());
     if (!this._lastBoundary || !newBoundary.equals(this._lastBoundary)) {
       const span = calculator.boundarySpan();
-      while (this._span < span)
+      while (this._span < span) {
         this._span *= 1.25;
+      }
 
       calculator.setBounds(calculator.minimumBoundary(), calculator.minimumBoundary() + this._span);
       this._lastBoundary = new Network.NetworkTimeBoundary(calculator.minimumBoundary(), calculator.maximumBoundary());
@@ -175,8 +181,9 @@ Network.NetworkOverview = class extends PerfUI.TimelineOverviewBase {
      */
     function drawLines(type, strokeStyle) {
       const lines = linesByType[type];
-      if (!lines)
+      if (!lines) {
         return;
+      }
       const n = lines.length;
       context.beginPath();
       context.strokeStyle = strokeStyle;
@@ -184,8 +191,9 @@ Network.NetworkOverview = class extends PerfUI.TimelineOverviewBase {
         const y = lines[i++] * Network.NetworkOverview._bandHeight + paddingTop;
         const startTime = lines[i++];
         let endTime = lines[i++];
-        if (endTime === Number.MAX_VALUE)
+        if (endTime === Number.MAX_VALUE) {
           endTime = calculator.maximumBoundary();
+        }
         context.moveTo(calculator.computePosition(startTime), y);
         context.lineTo(calculator.computePosition(endTime) + 1, y);
       }
@@ -217,8 +225,9 @@ Network.NetworkOverview = class extends PerfUI.TimelineOverviewBase {
           Network.RequestTimingView.calculateRequestTimeRanges(request, this.calculator().minimumBoundary());
       for (let j = 0; j < timeRanges.length; ++j) {
         const type = timeRanges[j].name;
-        if (band !== -1 || type === Network.RequestTimeRangeNames.Total)
+        if (band !== -1 || type === Network.RequestTimeRangeNames.Total) {
           addLine(type, y, timeRanges[j].start * 1000, timeRanges[j].end * 1000);
+        }
       }
     }
 

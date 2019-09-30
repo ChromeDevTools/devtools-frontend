@@ -49,23 +49,31 @@ export default class ResourceType {
    * @return {!ResourceType}
    */
   static fromMimeType(mimeType) {
-    if (mimeType.startsWith('text/html'))
+    if (mimeType.startsWith('text/html')) {
       return resourceTypes.Document;
-    if (mimeType.startsWith('text/css'))
+    }
+    if (mimeType.startsWith('text/css')) {
       return resourceTypes.Stylesheet;
-    if (mimeType.startsWith('image/'))
+    }
+    if (mimeType.startsWith('image/')) {
       return resourceTypes.Image;
-    if (mimeType.startsWith('text/'))
+    }
+    if (mimeType.startsWith('text/')) {
       return resourceTypes.Script;
+    }
 
-    if (mimeType.includes('font'))
+    if (mimeType.includes('font')) {
       return resourceTypes.Font;
-    if (mimeType.includes('script'))
+    }
+    if (mimeType.includes('script')) {
       return resourceTypes.Script;
-    if (mimeType.includes('octet'))
+    }
+    if (mimeType.includes('octet')) {
       return resourceTypes.Other;
-    if (mimeType.includes('application'))
+    }
+    if (mimeType.includes('application')) {
       return resourceTypes.Script;
+    }
 
     return resourceTypes.Other;
   }
@@ -85,8 +93,9 @@ export default class ResourceType {
   static fromName(name) {
     for (const resourceTypeId in resourceTypes) {
       const resourceType = resourceTypes[resourceTypeId];
-      if (resourceType.name() === name)
+      if (resourceType.name() === name) {
         return resourceType;
+      }
     }
     return null;
   }
@@ -97,8 +106,9 @@ export default class ResourceType {
    */
   static mimeFromURL(url) {
     const name = Common.ParsedURL.extractName(url);
-    if (ResourceType._mimeTypeByName.has(name))
+    if (ResourceType._mimeTypeByName.has(name)) {
       return ResourceType._mimeTypeByName.get(name);
+    }
 
     const ext = Common.ParsedURL.extractExtension(url).toLowerCase();
     return ResourceType._mimeTypeByExtension.get(ext);
@@ -194,12 +204,15 @@ export default class ResourceType {
    * @return {string}
    */
   canonicalMimeType() {
-    if (this.isDocument())
+    if (this.isDocument()) {
       return 'text/html';
-    if (this.isScript())
+    }
+    if (this.isScript()) {
       return 'text/javascript';
-    if (this.isStyleSheet())
+    }
+    if (this.isStyleSheet()) {
       return 'text/css';
+    }
     return '';
   }
 }

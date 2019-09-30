@@ -40,21 +40,24 @@ UI.SoftDropDown = class {
 
     this._listWasShowing200msAgo = false;
     this.element.addEventListener('mousedown', event => {
-      if (this._listWasShowing200msAgo)
+      if (this._listWasShowing200msAgo) {
         this._hide(event);
-      else if (!this.element.disabled)
+      } else if (!this.element.disabled) {
         this._show(event);
+      }
     }, false);
     this.element.addEventListener('keydown', this._onKeyDownButton.bind(this), false);
     this._list.element.addEventListener('keydown', this._onKeyDownList.bind(this), false);
     this._list.element.addEventListener('focusout', this._hide.bind(this), false);
     this._list.element.addEventListener('mousedown', event => event.consume(true), false);
     this._list.element.addEventListener('mouseup', event => {
-      if (event.target === this._list.element)
+      if (event.target === this._list.element) {
         return;
+      }
 
-      if (!this._listWasShowing200msAgo)
+      if (!this._listWasShowing200msAgo) {
         return;
+      }
       this._selectHighlightedItem();
       this._hide(event);
     }, false);
@@ -65,15 +68,17 @@ UI.SoftDropDown = class {
    * @param {!Event} event
    */
   _show(event) {
-    if (this._glassPane.isShowing())
+    if (this._glassPane.isShowing()) {
       return;
+    }
     this._glassPane.setContentAnchorBox(this.element.boxInWindow());
     this._glassPane.show(/** @type {!Document} **/ (this.element.ownerDocument));
     this._list.element.focus();
     UI.ARIAUtils.setExpanded(this.element, true);
     this._updateGlasspaneSize();
-    if (this._selectedItem)
+    if (this._selectedItem) {
       this._list.selectItem(this._selectedItem);
+    }
     event.consume(true);
     setTimeout(() => this._listWasShowing200msAgo = true, 200);
   }
@@ -121,8 +126,9 @@ UI.SoftDropDown = class {
         break;
     }
 
-    if (handled)
+    if (handled) {
       event.consume(true);
+    }
   }
 
   /**
@@ -182,8 +188,9 @@ UI.SoftDropDown = class {
         break;
     }
 
-    if (handled)
+    if (handled) {
       event.consume(true);
+    }
   }
 
   /**
@@ -206,8 +213,9 @@ UI.SoftDropDown = class {
    */
   setPlaceholderText(text) {
     this._placeholderText = text;
-    if (!this._selectedItem)
+    if (!this._selectedItem) {
       this._titleElement.textContent = this._placeholderText;
+    }
   }
 
   /**
@@ -227,10 +235,11 @@ UI.SoftDropDown = class {
    */
   selectItem(item) {
     this._selectedItem = item;
-    if (this._selectedItem)
+    if (this._selectedItem) {
       this._titleElement.textContent = this._delegate.titleFor(this._selectedItem);
-    else
+    } else {
       this._titleElement.textContent = this._placeholderText;
+    }
     this._delegate.itemSelected(this._selectedItem);
   }
 
@@ -242,8 +251,9 @@ UI.SoftDropDown = class {
   createElementForItem(item) {
     const element = createElementWithClass('div', 'item');
     element.addEventListener('mousemove', e => {
-      if ((e.movementX || e.movementY) && this._delegate.isItemSelectable(item))
+      if ((e.movementX || e.movementY) && this._delegate.isItemSelectable(item)) {
         this._list.selectItem(item, false, /* Don't scroll */ true);
+      }
     });
     element.classList.toggle('disabled', !this._delegate.isItemSelectable(item));
     element.classList.toggle('highlighted', this._list.selectedItem() === item);
@@ -280,10 +290,12 @@ UI.SoftDropDown = class {
    * @param {?Element} toElement
    */
   selectedItemChanged(from, to, fromElement, toElement) {
-    if (fromElement)
+    if (fromElement) {
       fromElement.classList.remove('highlighted');
-    if (toElement)
+    }
+    if (toElement) {
       toElement.classList.add('highlighted');
+    }
 
     UI.ARIAUtils.setActiveDescendant(this._list.element, toElement);
     this._delegate.highlightedItemChanged(

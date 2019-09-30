@@ -95,13 +95,15 @@ String.prototype.escapeCharacters = function(chars) {
     }
   }
 
-  if (!foundChar)
+  if (!foundChar) {
     return String(this);
+  }
 
   let result = '';
   for (let i = 0; i < this.length; ++i) {
-    if (chars.indexOf(this.charAt(i)) !== -1)
+    if (chars.indexOf(this.charAt(i)) !== -1) {
       result += '\\';
+    }
     result += this.charAt(i);
   }
 
@@ -131,10 +133,12 @@ String.filterRegex = function(query) {
   let regexString = '';
   for (let i = 0; i < query.length; ++i) {
     let c = query.charAt(i);
-    if (toEscape.indexOf(c) !== -1)
+    if (toEscape.indexOf(c) !== -1) {
       c = '\\' + c;
-    if (i)
+    }
+    if (i) {
       regexString += '[^\\0' + c + ']*';
+    }
     regexString += c;
   }
   return new RegExp(regexString, 'i');
@@ -148,19 +152,22 @@ String.escapeInvalidUnicodeCharacters = function(text) {
   if (!String._invalidCharactersRegExp) {
     // Escape orphan surrogates and invalid characters.
     let invalidCharacters = '';
-    for (let i = 0xfffe; i <= 0x10ffff; i += 0x10000)
+    for (let i = 0xfffe; i <= 0x10ffff; i += 0x10000) {
       invalidCharacters += String.fromCodePoint(i, i + 1);
+    }
     String._invalidCharactersRegExp = new RegExp(`[${invalidCharacters}\uD800-\uDFFF\uFDD0-\uFDEF]`, 'gu');
   }
   let result = '';
   let lastPos = 0;
   while (true) {
     const match = String._invalidCharactersRegExp.exec(text);
-    if (!match)
+    if (!match) {
       break;
+    }
     result += text.substring(lastPos, match.index) + '\\u' + text.charCodeAt(match.index).toString(16);
-    if (match.index + 1 < String._invalidCharactersRegExp.lastIndex)
+    if (match.index + 1 < String._invalidCharactersRegExp.lastIndex) {
       result += '\\u' + text.charCodeAt(match.index + 1).toString(16);
+    }
     lastPos = String._invalidCharactersRegExp.lastIndex;
   }
   return result + text.substring(lastPos);
@@ -201,16 +208,18 @@ String.prototype.collapseWhitespace = function() {
  * @return {string}
  */
 String.prototype.trimMiddle = function(maxLength) {
-  if (this.length <= maxLength)
+  if (this.length <= maxLength) {
     return String(this);
+  }
   let leftHalf = maxLength >> 1;
   let rightHalf = maxLength - leftHalf - 1;
   if (this.codePointAt(this.length - rightHalf - 1) >= 0x10000) {
     --rightHalf;
     ++leftHalf;
   }
-  if (leftHalf > 0 && this.codePointAt(leftHalf - 1) >= 0x10000)
+  if (leftHalf > 0 && this.codePointAt(leftHalf - 1) >= 0x10000) {
     --leftHalf;
+  }
   return this.substr(0, leftHalf) + '\u2026' + this.substr(this.length - rightHalf, rightHalf);
 };
 
@@ -219,8 +228,9 @@ String.prototype.trimMiddle = function(maxLength) {
  * @return {string}
  */
 String.prototype.trimEndWithMaxLength = function(maxLength) {
-  if (this.length <= maxLength)
+  if (this.length <= maxLength) {
     return String(this);
+  }
   return this.substr(0, maxLength - 1) + '\u2026';
 };
 
@@ -231,8 +241,9 @@ String.prototype.trimEndWithMaxLength = function(maxLength) {
 String.prototype.trimURL = function(baseURLDomain) {
   let result = this.replace(/^(https|http|file):\/\//i, '');
   if (baseURLDomain) {
-    if (result.toLowerCase().startsWith(baseURLDomain.toLowerCase()))
+    if (result.toLowerCase().startsWith(baseURLDomain.toLowerCase())) {
       result = result.substr(baseURLDomain.length);
+    }
   }
   return result;
 };
@@ -249,10 +260,12 @@ String.prototype.toTitleCase = function() {
  * @return {number}
  */
 String.prototype.compareTo = function(other) {
-  if (this > other)
+  if (this > other) {
     return 1;
-  if (this < other)
+  }
+  if (this < other) {
     return -1;
+  }
   return 0;
 };
 
@@ -261,8 +274,9 @@ String.prototype.compareTo = function(other) {
  */
 String.prototype.removeURLFragment = function() {
   let fragmentIndex = this.indexOf('#');
-  if (fragmentIndex === -1)
+  if (fragmentIndex === -1) {
     fragmentIndex = this.length;
+  }
   return this.substring(0, fragmentIndex);
 };
 
@@ -271,8 +285,9 @@ String.prototype.removeURLFragment = function() {
  * @return {number}
  */
 String.hashCode = function(string) {
-  if (!string)
+  if (!string) {
     return 0;
+  }
   // Hash algorithm for substrings is described in "Über die Komplexität der Multiplikation in
   // eingeschränkten Branchingprogrammmodellen" by Woelfe.
   // http://opendatastructures.org/versions/edition-0.1d/ods-java/node33.html#SECTION00832000000000000000
@@ -315,8 +330,9 @@ String.prototype.toBase64 = function() {
   const data = encoder.encode(this.toString());
   const n = data.length;
   let encoded = '';
-  if (n === 0)
+  if (n === 0) {
     return encoded;
+  }
   let shift;
   let v = 0;
   for (let i = 0; i < n; i++) {
@@ -328,10 +344,11 @@ String.prototype.toBase64 = function() {
       v = 0;
     }
   }
-  if (shift === 0)
+  if (shift === 0) {
     encoded += String.fromCharCode(encodeBits(v >>> 18 & 63), encodeBits(v >>> 12 & 63), 61, 61);
-  else if (shift === 1)
+  } else if (shift === 1) {
     encoded += String.fromCharCode(encodeBits(v >>> 18 & 63), encodeBits(v >>> 12 & 63), encodeBits(v >>> 6 & 63), 61);
+  }
   return encoded;
 };
 
@@ -345,31 +362,38 @@ String.naturalOrderComparator = function(a, b) {
   let chunka, chunkb, anum, bnum;
   while (1) {
     if (a) {
-      if (!b)
+      if (!b) {
         return 1;
+      }
     } else {
-      if (b)
+      if (b) {
         return -1;
-      else
+      } else {
         return 0;
+      }
     }
     chunka = a.match(chunk)[0];
     chunkb = b.match(chunk)[0];
     anum = !isNaN(chunka);
     bnum = !isNaN(chunkb);
-    if (anum && !bnum)
+    if (anum && !bnum) {
       return -1;
-    if (bnum && !anum)
+    }
+    if (bnum && !anum) {
       return 1;
+    }
     if (anum && bnum) {
       const diff = chunka - chunkb;
-      if (diff)
+      if (diff) {
         return diff;
+      }
       if (chunka.length !== chunkb.length) {
-        if (! + chunka && ! + chunkb)  // chunks are strings of all 0s (special case)
+        if (!+chunka && !+chunkb)  // chunks are strings of all 0s (special case)
+        {
           return chunka.length - chunkb.length;
-        else
+        } else {
           return chunkb.length - chunka.length;
+        }
       }
     } else if (chunka !== chunkb) {
       return (chunka < chunkb) ? -1 : 1;
@@ -387,8 +411,9 @@ String.naturalOrderComparator = function(a, b) {
 String.caseInsensetiveComparator = function(a, b) {
   a = a.toUpperCase();
   b = b.toUpperCase();
-  if (a === b)
+  if (a === b) {
     return 0;
+  }
   return a > b ? 1 : -1;
 };
 
@@ -399,10 +424,11 @@ String.caseInsensetiveComparator = function(a, b) {
  * @return {number}
  */
 Number.constrain = function(num, min, max) {
-  if (num < min)
+  if (num < min) {
     num = min;
-  else if (num > max)
+  } else if (num > max) {
     num = max;
+  }
   return num;
 };
 
@@ -412,10 +438,11 @@ Number.constrain = function(num, min, max) {
  * @return {number}
  */
 Number.gcd = function(a, b) {
-  if (b === 0)
+  if (b === 0) {
     return a;
-  else
+  } else {
     return Number.gcd(b, a % b);
+  }
 };
 
 /**
@@ -423,8 +450,9 @@ Number.gcd = function(a, b) {
  * @return {string}
  */
 Number.toFixedIfFloating = function(value) {
-  if (!value || isNaN(value))
+  if (!value || isNaN(value)) {
     return value;
+  }
   const number = Number(value);
   return number % 1 ? number.toFixed(3) : String(number);
 };
@@ -461,15 +489,17 @@ Object.defineProperty(Array.prototype, 'remove', {
    */
   value: function(value, firstOnly) {
     let index = this.indexOf(value);
-    if (index === -1)
+    if (index === -1) {
       return false;
+    }
     if (firstOnly) {
       this.splice(index, 1);
       return true;
     }
     for (let i = index + 1, n = this.length; i < n; ++i) {
-      if (this[i] !== value)
+      if (this[i] !== value) {
         this[index++] = this[i];
+      }
     }
     this.length = index;
     return true;
@@ -483,8 +513,9 @@ Object.defineProperty(Array.prototype, 'pushAll', {
    * @template T
    */
   value: function(array) {
-    for (let i = 0; i < array.length; ++i)
+    for (let i = 0; i < array.length; ++i) {
       this.push(array[i]);
+    }
   }
 });
 
@@ -497,8 +528,9 @@ Object.defineProperty(Array.prototype, 'rotate', {
    */
   value: function(index) {
     const result = [];
-    for (let i = index; i < index + this.length; ++i)
+    for (let i = index; i < index + this.length; ++i) {
       result.push(this[i % this.length]);
+    }
     return result;
   }
 });
@@ -565,19 +597,23 @@ const sortRange = {
      */
   value: function(comparator, leftBound, rightBound, sortWindowLeft, sortWindowRight) {
     function quickSortRange(array, comparator, left, right, sortWindowLeft, sortWindowRight) {
-      if (right <= left)
+      if (right <= left) {
         return;
+      }
       const pivotIndex = Math.floor(Math.random() * (right - left)) + left;
       const pivotNewIndex = array.partition(comparator, left, right, pivotIndex);
-      if (sortWindowLeft < pivotNewIndex)
+      if (sortWindowLeft < pivotNewIndex) {
         quickSortRange(array, comparator, left, pivotNewIndex - 1, sortWindowLeft, sortWindowRight);
-      if (pivotNewIndex < sortWindowRight)
+      }
+      if (pivotNewIndex < sortWindowRight) {
         quickSortRange(array, comparator, pivotNewIndex + 1, right, sortWindowLeft, sortWindowRight);
+      }
     }
-    if (leftBound === 0 && rightBound === (this.length - 1) && sortWindowLeft === 0 && sortWindowRight >= rightBound)
+    if (leftBound === 0 && rightBound === (this.length - 1) && sortWindowLeft === 0 && sortWindowRight >= rightBound) {
       this.sort(comparator);
-    else
+    } else {
       quickSortRange(this, comparator, leftBound, rightBound, sortWindowLeft, sortWindowRight);
+    }
     return this;
   }
 };
@@ -611,10 +647,11 @@ Object.defineProperty(Array.prototype, 'lowerBound', {
     let r = right !== undefined ? right : this.length;
     while (l < r) {
       const m = (l + r) >> 1;
-      if (comparator(object, this[m]) > 0)
+      if (comparator(object, this[m]) > 0) {
         l = m + 1;
-      else
+      } else {
         r = m;
+      }
     }
     return r;
   }
@@ -646,10 +683,11 @@ Object.defineProperty(Array.prototype, 'upperBound', {
     let r = right !== undefined ? right : this.length;
     while (l < r) {
       const m = (l + r) >> 1;
-      if (comparator(object, this[m]) >= 0)
+      if (comparator(object, this[m]) >= 0) {
         l = m + 1;
-      else
+      } else {
         r = m;
+      }
     }
     return r;
   }
@@ -688,8 +726,9 @@ Object.defineProperty(Array.prototype, 'select', {
    */
   value: function(field) {
     const result = new Array(this.length);
-    for (let i = 0; i < this.length; ++i)
+    for (let i = 0; i < this.length; ++i) {
       result[i] = this[i][field];
+    }
     return result;
   }
 });
@@ -720,18 +759,23 @@ Object.defineProperty(Array.prototype, 'peekLast', {
     let j = 0;
     while (i < array1.length && j < array2.length) {
       const compareValue = comparator(array1[i], array2[j]);
-      if (mergeNotIntersect || !compareValue)
+      if (mergeNotIntersect || !compareValue) {
         result.push(compareValue <= 0 ? array1[i] : array2[j]);
-      if (compareValue <= 0)
+      }
+      if (compareValue <= 0) {
         i++;
-      if (compareValue >= 0)
+      }
+      if (compareValue >= 0) {
         j++;
+      }
     }
     if (mergeNotIntersect) {
-      while (i < array1.length)
+      while (i < array1.length) {
         result.push(array1[i++]);
-      while (j < array2.length)
+      }
+      while (j < array2.length) {
         result.push(array2[j++]);
+      }
     }
     return result;
   }
@@ -781,12 +825,14 @@ String.tokenizeFormatString = function(format, formatters) {
   const tokens = [];
 
   function addStringToken(str) {
-    if (!str)
+    if (!str) {
       return;
-    if (tokens.length && tokens[tokens.length - 1].type === 'string')
+    }
+    if (tokens.length && tokens[tokens.length - 1].type === 'string') {
       tokens[tokens.length - 1].value += str;
-    else
+    } else {
       tokens.push({type: 'string', value: str});
+    }
   }
 
   function addSpecifierToken(specifier, precision, substitutionIndex) {
@@ -800,11 +846,13 @@ String.tokenizeFormatString = function(format, formatters) {
         ['darkGray', 'lightRed', 'lightGreen', 'lightYellow', 'lightBlue', 'lightMagenta', 'lightCyan', 'white', ''];
     const colors = {color: colorCodes, colorLight: colorCodesLight, bgColor: colorCodes, bgColorLight: colorCodesLight};
     const type = types[Math.floor(code / 10)];
-    if (!type)
+    if (!type) {
       return;
+    }
     const color = colors[type][code % 10];
-    if (!color)
+    if (!color) {
       return;
+    }
     tokens.push({
       type: 'specifier',
       specifier: 'c',
@@ -818,16 +866,18 @@ String.tokenizeFormatString = function(format, formatters) {
       new RegExp(`%%|%(?:(\\d+)\\$)?(?:\\.(\\d*))?([${Object.keys(formatters).join('')}])|\\u001b\\[(\\d+)m`, 'g');
   for (let match = re.exec(format); !!match; match = re.exec(format)) {
     const matchStart = match.index;
-    if (matchStart > textStart)
+    if (matchStart > textStart) {
       addStringToken(format.substring(textStart, matchStart));
+    }
 
     if (match[0] === '%%') {
       addStringToken('%');
     } else if (match[0].startsWith('%')) {
       // eslint-disable-next-line no-unused-vars
       const [_, substitionString, precisionString, specifierString] = match;
-      if (substitionString && Number(substitionString) > 0)
+      if (substitionString && Number(substitionString) > 0) {
         substitutionIndex = Number(substitionString) - 1;
+      }
       const precision = precisionString ? Number(precisionString) : -1;
       addSpecifierToken(specifierString, precision, substitutionIndex);
       ++substitutionIndex;
@@ -853,8 +903,9 @@ String.standardFormatters = {
    * @return {number}
    */
   f: function(substitution, token) {
-    if (substitution && token.precision > -1)
+    if (substitution && token.precision > -1) {
       substitution = substitution.toFixed(token.precision);
+    }
     return !isNaN(substitution) ? substitution : (token.precision > -1 ? Number(0).toFixed(token.precision) : 0);
   },
 
@@ -892,8 +943,9 @@ String.vsprintf = function(format, substitutions) {
  * @template T, Q
  */
 String.format = function(format, substitutions, formatters, initialValue, append, tokenizedFormat) {
-  if (!format || ((!substitutions || !substitutions.length) && format.search(/\u001b\[(\d+)m/) === -1))
+  if (!format || ((!substitutions || !substitutions.length) && format.search(/\u001b\[(\d+)m/) === -1)) {
     return {formattedResult: append(initialValue, format), unusedSubstitutions: substitutions};
+  }
 
   function prettyFunctionName() {
     return 'String.format("' + format + '", "' + Array.prototype.join.call(substitutions, '", "') + '")';
@@ -934,8 +986,9 @@ String.format = function(format, substitutions, formatters, initialValue, append
       continue;
     }
 
-    if (!token.value)
+    if (!token.value) {
       usedSubstitutionIndexes[token.substitutionIndex] = true;
+    }
 
     if (!(token.specifier in formatters)) {
       // Encountered an unsupported format character, treat as a string.
@@ -949,8 +1002,9 @@ String.format = function(format, substitutions, formatters, initialValue, append
 
   const unusedSubstitutions = [];
   for (let i = 0; i < substitutions.length; ++i) {
-    if (i in usedSubstitutionIndexes)
+    if (i in usedSubstitutionIndexes) {
       continue;
+    }
     unusedSubstitutions.push(substitutions[i]);
   }
 
@@ -975,8 +1029,9 @@ self.createSearchRegex = function(query, caseSensitive, isRegex) {
     }
   }
 
-  if (!regexObject)
+  if (!regexObject) {
     regexObject = self.createPlainTextSearchRegex(query, regexFlags);
+  }
 
   return regexObject;
 };
@@ -992,8 +1047,9 @@ self.createPlainTextSearchRegex = function(query, flags) {
   let regex = '';
   for (let i = 0; i < query.length; ++i) {
     const c = query.charAt(i);
-    if (regexSpecialCharacters.indexOf(c) !== -1)
+    if (regexSpecialCharacters.indexOf(c) !== -1) {
       regex += '\\';
+    }
     regex += c;
   }
   return new RegExp(regex, flags || '');
@@ -1009,8 +1065,9 @@ self.countRegexMatches = function(regex, content) {
   let result = 0;
   let match;
   while (text && (match = regex.exec(text))) {
-    if (match[0].length > 0)
+    if (match[0].length > 0) {
       ++result;
+    }
     text = text.substring(match.index + 1);
   }
   return result;
@@ -1048,8 +1105,9 @@ Set.prototype.valuesArray = function() {
  * @template T
  */
 Set.prototype.firstValue = function() {
-  if (!this.size)
+  if (!this.size) {
     return null;
+  }
   return this.values().next().value;
 };
 
@@ -1058,8 +1116,9 @@ Set.prototype.firstValue = function() {
  * @template T
  */
 Set.prototype.addAll = function(iterable) {
-  for (const e of iterable)
+  for (const e of iterable) {
     this.add(e);
+  }
 };
 
 /**
@@ -1069,8 +1128,9 @@ Set.prototype.addAll = function(iterable) {
  */
 Set.prototype.containsAll = function(iterable) {
   for (const e of iterable) {
-    if (!this.has(e))
+    if (!this.has(e)) {
       return false;
+    }
   }
   return true;
 };
@@ -1157,8 +1217,9 @@ Multimap.prototype = {
    */
   hasValue: function(key, value) {
     const set = this._map.get(key);
-    if (!set)
+    if (!set) {
       return false;
+    }
     return set.has(value);
   },
 
@@ -1176,11 +1237,13 @@ Multimap.prototype = {
    */
   delete: function(key, value) {
     const values = this.get(key);
-    if (!values)
+    if (!values) {
       return false;
+    }
     const result = values.delete(value);
-    if (!values.size)
+    if (!values.size) {
       this._map.delete(key);
+    }
     return result;
   },
 
@@ -1204,8 +1267,9 @@ Multimap.prototype = {
   valuesArray: function() {
     const result = [];
     const keys = this.keysArray();
-    for (let i = 0; i < keys.length; ++i)
+    for (let i = 0; i < keys.length; ++i) {
       result.pushAll(this.get(keys[i]).valuesArray());
+    }
     return result;
   },
 
@@ -1223,8 +1287,9 @@ self.loadXHR = function(url) {
 
   function load(successCallback, failureCallback) {
     function onReadyStateChanged() {
-      if (xhr.readyState !== XMLHttpRequest.DONE)
+      if (xhr.readyState !== XMLHttpRequest.DONE) {
         return;
+      }
       if (xhr.status !== 200) {
         xhr.onreadystatechange = null;
         failureCallback(new Error(xhr.status));
@@ -1340,10 +1405,11 @@ self.runOnWindowLoad = function(callback) {
     callback();
   }
 
-  if (document.readyState === 'complete' || document.readyState === 'interactive')
+  if (document.readyState === 'complete' || document.readyState === 'interactive') {
     callback();
-  else
+  } else {
     self.addEventListener('DOMContentLoaded', windowLoaded, false);
+  }
 };
 
 const _singletonSymbol = Symbol('singleton');
@@ -1354,8 +1420,9 @@ const _singletonSymbol = Symbol('singleton');
  * @return {!T}
  */
 self.singleton = function(constructorFunction) {
-  if (_singletonSymbol in constructorFunction)
+  if (_singletonSymbol in constructorFunction) {
     return constructorFunction[_singletonSymbol];
+  }
   const instance = new constructorFunction();
   constructorFunction[_singletonSymbol] = instance;
   return instance;
@@ -1366,12 +1433,15 @@ self.singleton = function(constructorFunction) {
  * @return {number}
  */
 self.base64ToSize = function(content) {
-  if (!content)
+  if (!content) {
     return 0;
+  }
   let size = content.length * 3 / 4;
-  if (content[content.length - 1] === '=')
+  if (content[content.length - 1] === '=') {
     size--;
-  if (content.length > 1 && content[content.length - 2] === '=')
+  }
+  if (content.length > 1 && content[content.length - 2] === '=') {
     size--;
+  }
   return size;
 };

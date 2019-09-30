@@ -30,8 +30,9 @@ SDK.HeapProfilerModel = class extends SDK.SDKModel {
   }
 
   enable() {
-    if (this._enabled)
+    if (this._enabled) {
       return;
+    }
 
     this._enabled = true;
     this._heapProfilerAgent.enable();
@@ -41,8 +42,9 @@ SDK.HeapProfilerModel = class extends SDK.SDKModel {
    * @param {number=} samplingRateInBytes
    */
   startSampling(samplingRateInBytes) {
-    if (this._samplingProfilerDepth++)
+    if (this._samplingProfilerDepth++) {
       return;
+    }
     const defaultSamplingIntervalInBytes = 16384;
     this._heapProfilerAgent.startSampling(samplingRateInBytes || defaultSamplingIntervalInBytes);
   }
@@ -51,10 +53,12 @@ SDK.HeapProfilerModel = class extends SDK.SDKModel {
    * @return {!Promise<?Protocol.HeapProfiler.SamplingHeapProfile>}
    */
   stopSampling() {
-    if (!this._samplingProfilerDepth)
+    if (!this._samplingProfilerDepth) {
       throw new Error('Sampling profiler is not running.');
-    if (--this._samplingProfilerDepth)
+    }
+    if (--this._samplingProfilerDepth) {
       return this.getSamplingProfile();
+    }
     return this._heapProfilerAgent.stopSampling();
   }
 
@@ -107,8 +111,9 @@ SDK.HeapProfilerModel = class extends SDK.SDKModel {
     for (const sample of rawProfile.samples) {
       const node = sample.stack.reverse().reduce((node, name) => {
         let child = node.children.get(name);
-        if (child)
+        if (child) {
           return child;
+        }
         const namespace = /^([^:]*)::/.exec(name);
         child = {
           children: new Map(),

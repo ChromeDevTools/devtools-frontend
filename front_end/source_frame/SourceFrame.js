@@ -75,8 +75,9 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
     this._textEditor.addEventListener(
         SourceFrame.SourcesTextEditor.Events.SelectionChanged, this._updateSourcePosition, this);
     this._textEditor.addEventListener(UI.TextEditor.Events.TextChanged, event => {
-      if (!this._muteChangeEventsForSetContent)
+      if (!this._muteChangeEventsForSetContent) {
         this.onTextChanged(event.data.oldRange, event.data.newRange);
+      }
     });
     /** @type {boolean} */
     this._muteChangeEventsForSetContent = false;
@@ -105,8 +106,9 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
        * @return {!Array<number>}
        */
       editorToRawLocation: (editorLineNumber, editorColumnNumber = 0) => {
-        if (!this._pretty)
+        if (!this._pretty) {
           return [editorLineNumber, editorColumnNumber];
+        }
         return this._prettyToRawLocation(editorLineNumber, editorColumnNumber);
       },
 
@@ -116,8 +118,9 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
        * @return {!Array<number>}
        */
       rawToEditorLocation: (lineNumber, columnNumber = 0) => {
-        if (!this._pretty)
+        if (!this._pretty) {
           return [lineNumber, columnNumber];
+        }
         return this._rawToPrettyLocation(lineNumber, columnNumber);
       }
     };
@@ -172,10 +175,12 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
     if (this._pretty) {
       this._textEditor.setLineNumberFormatter(lineNumber => {
         const line = this._prettyToRawLocation(lineNumber - 1, 0)[0] + 1;
-        if (lineNumber === 1)
+        if (lineNumber === 1) {
           return String(line);
-        if (line !== this._prettyToRawLocation(lineNumber - 2, 0)[0] + 1)
+        }
+        if (line !== this._prettyToRawLocation(lineNumber - 2, 0)[0] + 1) {
           return String(line);
+        }
         return '-';
       });
     } else {
@@ -199,8 +204,9 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
    * @return {!Array<number>}
    */
   _prettyToRawLocation(line, column) {
-    if (!this._formattedMap)
+    if (!this._formattedMap) {
       return [line, column];
+    }
     return this._formattedMap.formattedToOriginal(line, column);
   }
 
@@ -210,8 +216,9 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
    * @return {!Array<number>}
    */
   _rawToPrettyLocation(line, column) {
-    if (!this._formattedMap)
+    if (!this._formattedMap) {
       return [line, column];
+    }
     return this._formattedMap.originalToFormatted(line, column);
   }
 
@@ -221,8 +228,9 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
    */
   setEditable(editable) {
     this._editable = editable;
-    if (this._loaded)
+    if (this._loaded) {
       this._textEditor.setReadOnly(!editable);
+    }
   }
 
   /**
@@ -273,10 +281,11 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
       this._formattedContentPromise = null;
       this._formattedMap = null;
       this._prettyToggle.setEnabled(true);
-      if (this._shouldAutoPrettyPrint && TextUtils.isMinified(content))
+      if (this._shouldAutoPrettyPrint && TextUtils.isMinified(content)) {
         await this._setPretty(true);
-      else
+      } else {
         this.setContent(this._rawContent);
+      }
     }
   }
 
@@ -284,8 +293,9 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
    * @return {!Promise<{content: string, map: !Formatter.FormatterSourceMapping}>}
    */
   _requestFormattedContent() {
-    if (this._formattedContentPromise)
+    if (this._formattedContentPromise) {
       return this._formattedContentPromise;
+    }
     let fulfill;
     this._formattedContentPromise = new Promise(x => fulfill = x);
     new Formatter.ScriptFormatter(this._highlighterType, this._rawContent || '', (content, map) => {
@@ -307,11 +317,13 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
   }
 
   _innerRevealPositionIfNeeded() {
-    if (!this._positionToReveal)
+    if (!this._positionToReveal) {
       return;
+    }
 
-    if (!this.loaded || !this.isShowing())
+    if (!this.loaded || !this.isShowing()) {
       return;
+    }
 
     const [line, column] =
         this._transformer.rawToEditorLocation(this._positionToReveal.line, this._positionToReveal.column);
@@ -378,12 +390,14 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
   onTextChanged(oldRange, newRange) {
     const wasPretty = this.pretty;
     this._pretty = this._prettyCleanGeneration !== null && this.textEditor.isClean(this._prettyCleanGeneration);
-    if (this._pretty !== wasPretty)
+    if (this._pretty !== wasPretty) {
       this._updatePrettyPrintState();
+    }
     this._prettyToggle.setEnabled(this.isClean());
 
-    if (this._searchConfig && this._searchableView)
+    if (this._searchConfig && this._searchableView) {
       this.performSearch(this._searchConfig, false, false);
+    }
   }
 
   /**
@@ -413,18 +427,23 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
    * @return {string}
    */
   _simplifyMimeType(content, mimeType) {
-    if (!mimeType)
+    if (!mimeType) {
       return '';
+    }
     // There are plenty of instances where TSX/JSX files are served with out the trailing x, i.e. JSX with a 'js' suffix
     // which breaks the formatting. Therefore, if the mime type is TypeScript or JavaScript, we switch to the TSX/JSX
     // superset so that we don't break formatting.
-    if (mimeType.indexOf('typescript') >= 0)
+    if (mimeType.indexOf('typescript') >= 0) {
       return 'text/typescript-jsx';
-    if (mimeType.indexOf('javascript') >= 0 || mimeType.indexOf('jscript') >= 0 || mimeType.indexOf('ecmascript') >= 0)
+    }
+    if (mimeType.indexOf('javascript') >= 0 || mimeType.indexOf('jscript') >= 0 ||
+        mimeType.indexOf('ecmascript') >= 0) {
       return 'text/jsx';
+    }
     // A hack around the fact that files with "php" extension might be either standalone or html embedded php scripts.
-    if (mimeType === 'text/x-php' && content.match(/\<\?.*\?\>/g))
+    if (mimeType === 'text/x-php' && content.match(/\<\?.*\?\>/g)) {
       return 'application/x-httpd-php';
+    }
     return mimeType;
   }
 
@@ -499,17 +518,19 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
     this._searchRegex = regex;
     this._searchResults = this._collectRegexMatches(regex);
 
-    if (this._searchableView)
+    if (this._searchableView) {
       this._searchableView.updateSearchMatchesCount(this._searchResults.length);
+    }
 
-    if (!this._searchResults.length)
+    if (!this._searchResults.length) {
       this._textEditor.cancelSearchResultsHighlight();
-    else if (shouldJump && jumpBackwards)
+    } else if (shouldJump && jumpBackwards) {
       this.jumpToPreviousSearchResult();
-    else if (shouldJump)
+    } else if (shouldJump) {
       this.jumpToNextSearchResult();
-    else
+    } else {
       this._textEditor.highlightSearchResults(regex, null);
+    }
   }
 
   /**
@@ -519,25 +540,29 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
    * @param {boolean=} jumpBackwards
    */
   performSearch(searchConfig, shouldJump, jumpBackwards) {
-    if (this._searchableView)
+    if (this._searchableView) {
       this._searchableView.updateSearchMatchesCount(0);
+    }
 
     this._resetSearch();
     this._searchConfig = searchConfig;
-    if (this.loaded)
+    if (this.loaded) {
       this._doFindSearchMatches(searchConfig, shouldJump, !!jumpBackwards);
-    else
+    } else {
       this._delayedFindSearchMatches = this._doFindSearchMatches.bind(this, searchConfig, shouldJump, !!jumpBackwards);
+    }
 
     this._ensureContentLoaded();
   }
 
   _resetCurrentSearchResultIndex() {
-    if (!this._searchResults.length)
+    if (!this._searchResults.length) {
       return;
+    }
     this._currentSearchResultIndex = -1;
-    if (this._searchableView)
+    if (this._searchableView) {
       this._searchableView.updateCurrentMatchIndex(this._currentSearchResultIndex);
+    }
     this._textEditor.highlightSearchResults(/** @type {!RegExp} */ (this._searchRegex), null);
   }
 
@@ -555,11 +580,13 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
   searchCanceled() {
     const range = this._currentSearchResultIndex !== -1 ? this._searchResults[this._currentSearchResultIndex] : null;
     this._resetSearch();
-    if (!this.loaded)
+    if (!this.loaded) {
       return;
+    }
     this._textEditor.cancelSearchResultsHighlight();
-    if (range)
+    if (range) {
       this.setSelection(range);
+    }
   }
 
   jumpToLastSearchResult() {
@@ -607,11 +634,13 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
   }
 
   jumpToSearchResult(index) {
-    if (!this.loaded || !this._searchResults.length)
+    if (!this.loaded || !this._searchResults.length) {
       return;
+    }
     this._currentSearchResultIndex = (index + this._searchResults.length) % this._searchResults.length;
-    if (this._searchableView)
+    if (this._searchableView) {
       this._searchableView.updateCurrentMatchIndex(this._currentSearchResultIndex);
+    }
     this._textEditor.highlightSearchResults(
         /** @type {!RegExp} */ (this._searchRegex), this._searchResults[this._currentSearchResultIndex]);
   }
@@ -623,8 +652,9 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
    */
   replaceSelectionWith(searchConfig, replacement) {
     const range = this._searchResults[this._currentSearchResultIndex];
-    if (!range)
+    if (!range) {
       return;
+    }
     this._textEditor.highlightSearchResults(/** @type {!RegExp} */ (this._searchRegex), null);
 
     const oldText = this._textEditor.text(range);
@@ -663,8 +693,9 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
     }
 
     const ranges = this._collectRegexMatches(regex);
-    if (!ranges.length)
+    if (!ranges.length) {
       return;
+    }
 
     // Calculate the position of the end of the last range to be edited.
     const currentRangeIndex = ranges.lowerBound(this._textEditor.selection(), TextUtils.TextRange.comparator);
@@ -694,8 +725,9 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
         match = regexObject.exec(line);
         if (match) {
           const matchEndIndex = match.index + Math.max(match[0].length, 1);
-          if (match[0].length)
+          if (match[0].length) {
             ranges.push(new TextUtils.TextRange(i, offset + match.index, i, offset + matchEndIndex));
+          }
           offset += matchEndIndex;
           line = line.substring(matchEndIndex);
         }
@@ -729,8 +761,9 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
 
   _updateSourcePosition() {
     const selections = this._textEditor.selections();
-    if (!selections.length)
+    if (!selections.length) {
       return;
+    }
     if (selections.length > 1) {
       this._sourcePosition.setText(Common.UIString('%d selection regions', selections.length));
       return;

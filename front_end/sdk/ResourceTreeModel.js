@@ -66,8 +66,9 @@ SDK.ResourceTreeModel = class extends SDK.SDKModel {
   static frameForRequest(request) {
     const networkManager = SDK.NetworkManager.forRequest(request);
     const resourceTreeModel = networkManager ? networkManager.target().model(SDK.ResourceTreeModel) : null;
-    if (!resourceTreeModel)
+    if (!resourceTreeModel) {
       return null;
+    }
     return resourceTreeModel.frameForId(request.frameId);
   }
 
@@ -76,8 +77,9 @@ SDK.ResourceTreeModel = class extends SDK.SDKModel {
    */
   static frames() {
     let result = [];
-    for (const resourceTreeModel of SDK.targetManager.models(SDK.ResourceTreeModel))
+    for (const resourceTreeModel of SDK.targetManager.models(SDK.ResourceTreeModel)) {
       result = result.concat(resourceTreeModel._frames.valuesArray());
+    }
     return result;
   }
 
@@ -89,8 +91,9 @@ SDK.ResourceTreeModel = class extends SDK.SDKModel {
     for (const resourceTreeModel of SDK.targetManager.models(SDK.ResourceTreeModel)) {
       const mainFrame = resourceTreeModel.mainFrame;
       const result = mainFrame ? mainFrame.resourceForURL(url) : null;
-      if (result)
+      if (result) {
         return result;
+      }
     }
     return null;
   }
@@ -101,8 +104,9 @@ SDK.ResourceTreeModel = class extends SDK.SDKModel {
    */
   static reloadAllPages(bypassCache, scriptToEvaluateOnLoad) {
     for (const resourceTreeModel of SDK.targetManager.models(SDK.ResourceTreeModel)) {
-      if (!resourceTreeModel.target().parentTarget())
+      if (!resourceTreeModel.target().parentTarget()) {
         resourceTreeModel.reloadPage(bypassCache, scriptToEvaluateOnLoad);
+      }
     }
   }
 
@@ -151,8 +155,9 @@ SDK.ResourceTreeModel = class extends SDK.SDKModel {
    */
   _addFrame(frame, aboutToNavigate) {
     this._frames.set(frame.id, frame);
-    if (frame.isMainFrame())
+    if (frame.isMainFrame()) {
       this.mainFrame = frame;
+    }
     this.dispatchEventToListeners(SDK.ResourceTreeModel.Events.FrameAdded, frame);
     this._updateSecurityOrigins();
   }
@@ -166,14 +171,17 @@ SDK.ResourceTreeModel = class extends SDK.SDKModel {
   _frameAttached(frameId, parentFrameId, stackTrace) {
     const parentFrame = parentFrameId ? (this._frames.get(parentFrameId) || null) : null;
     // Do nothing unless cached resource tree is processed - it will overwrite everything.
-    if (!this._cachedResourcesProcessed && parentFrame)
+    if (!this._cachedResourcesProcessed && parentFrame) {
       return null;
-    if (this._frames.has(frameId))
+    }
+    if (this._frames.has(frameId)) {
       return null;
+    }
 
     const frame = new SDK.ResourceTreeFrame(this, parentFrame, frameId, null, stackTrace || null);
-    if (parentFrameId && !parentFrame)
+    if (parentFrameId && !parentFrame) {
       frame._crossTargetParentFrameId = parentFrameId;
+    }
     if (frame.isMainFrame() && this.mainFrame) {
       // Navigation to the new backend process.
       this._frameDetached(this.mainFrame.id);
@@ -188,8 +196,9 @@ SDK.ResourceTreeModel = class extends SDK.SDKModel {
   _frameNavigated(framePayload) {
     const parentFrame = framePayload.parentId ? (this._frames.get(framePayload.parentId) || null) : null;
     // Do nothing unless cached resource tree is processed - it will overwrite everything.
-    if (!this._cachedResourcesProcessed && parentFrame)
+    if (!this._cachedResourcesProcessed && parentFrame) {
       return;
+    }
     let frame = this._frames.get(framePayload.id);
     if (!frame) {
       // Simulate missed "frameAttached" for a main frame navigation to the new backend process.
@@ -201,16 +210,19 @@ SDK.ResourceTreeModel = class extends SDK.SDKModel {
     frame._navigate(framePayload);
     this.dispatchEventToListeners(SDK.ResourceTreeModel.Events.FrameNavigated, frame);
 
-    if (frame.isMainFrame())
+    if (frame.isMainFrame()) {
       this.dispatchEventToListeners(SDK.ResourceTreeModel.Events.MainFrameNavigated, frame);
+    }
 
     // Fill frame with retained resources (the ones loaded using new loader).
     const resources = frame.resources();
-    for (let i = 0; i < resources.length; ++i)
+    for (let i = 0; i < resources.length; ++i) {
       this.dispatchEventToListeners(SDK.ResourceTreeModel.Events.ResourceAdded, resources[i]);
+    }
 
-    if (frame.isMainFrame())
+    if (frame.isMainFrame()) {
       this.target().setInspectedURL(frame.url);
+    }
     this._updateSecurityOrigins();
   }
 
@@ -219,17 +231,20 @@ SDK.ResourceTreeModel = class extends SDK.SDKModel {
    */
   _frameDetached(frameId) {
     // Do nothing unless cached resource tree is processed - it will overwrite everything.
-    if (!this._cachedResourcesProcessed)
+    if (!this._cachedResourcesProcessed) {
       return;
+    }
 
     const frame = this._frames.get(frameId);
-    if (!frame)
+    if (!frame) {
       return;
+    }
 
-    if (frame.parentFrame)
+    if (frame.parentFrame) {
       frame.parentFrame._removeChildFrame(frame);
-    else
+    } else {
       frame._remove();
+    }
     this._updateSecurityOrigins();
   }
 
@@ -237,33 +252,39 @@ SDK.ResourceTreeModel = class extends SDK.SDKModel {
    * @param {!Common.Event} event
    */
   _onRequestFinished(event) {
-    if (!this._cachedResourcesProcessed)
+    if (!this._cachedResourcesProcessed) {
       return;
+    }
 
     const request = /** @type {!SDK.NetworkRequest} */ (event.data);
-    if (request.failed || request.resourceType() === Common.resourceTypes.XHR)
+    if (request.failed || request.resourceType() === Common.resourceTypes.XHR) {
       return;
+    }
 
     const frame = this._frames.get(request.frameId);
-    if (frame)
+    if (frame) {
       frame._addRequest(request);
+    }
   }
 
   /**
    * @param {!Common.Event} event
    */
   _onRequestUpdateDropped(event) {
-    if (!this._cachedResourcesProcessed)
+    if (!this._cachedResourcesProcessed) {
       return;
+    }
 
     const frameId = event.data.frameId;
     const frame = this._frames.get(frameId);
-    if (!frame)
+    if (!frame) {
       return;
+    }
 
     const url = event.data.url;
-    if (frame._resourcesMap[url])
+    if (frame._resourcesMap[url]) {
       return;
+    }
 
     const resource = new SDK.Resource(
         this, null, url, frame.url, frameId, event.data.loaderId, Common.resourceTypes[event.data.resourceType],
@@ -284,8 +305,9 @@ SDK.ResourceTreeModel = class extends SDK.SDKModel {
    * @return {boolean}
    */
   forAllResources(callback) {
-    if (this.mainFrame)
+    if (this.mainFrame) {
       return this.mainFrame._callForFrameResources(callback);
+    }
     return false;
   }
 
@@ -312,12 +334,14 @@ SDK.ResourceTreeModel = class extends SDK.SDKModel {
   _addFramesRecursively(parentFrame, frameTreePayload) {
     const framePayload = frameTreePayload.frame;
     const frame = new SDK.ResourceTreeFrame(this, parentFrame, framePayload.id, framePayload, null);
-    if (!parentFrame && framePayload.parentId)
+    if (!parentFrame && framePayload.parentId) {
       frame._crossTargetParentFrameId = framePayload.parentId;
+    }
     this._addFrame(frame);
 
-    for (let i = 0; frameTreePayload.childFrames && i < frameTreePayload.childFrames.length; ++i)
+    for (let i = 0; frameTreePayload.childFrames && i < frameTreePayload.childFrames.length; ++i) {
       this._addFramesRecursively(frame, frameTreePayload.childFrames[i]);
+    }
 
     for (let i = 0; i < frameTreePayload.resources.length; ++i) {
       const subresource = frameTreePayload.resources[i];
@@ -356,8 +380,9 @@ SDK.ResourceTreeModel = class extends SDK.SDKModel {
   resumeReload() {
     this._reloadSuspensionCount--;
     console.assert(this._reloadSuspensionCount >= 0, 'Unbalanced call to ResourceTreeModel.resumeReload()');
-    if (!this._reloadSuspensionCount && this._pendingReloadOptions)
+    if (!this._reloadSuspensionCount && this._pendingReloadOptions) {
       this.reloadPage.apply(this, this._pendingReloadOptions);
+    }
   }
 
   /**
@@ -366,8 +391,9 @@ SDK.ResourceTreeModel = class extends SDK.SDKModel {
    */
   reloadPage(bypassCache, scriptToEvaluateOnLoad) {
     // Only dispatch PageReloadRequested upon first reload request to simplify client logic.
-    if (!this._pendingReloadOptions)
+    if (!this._pendingReloadOptions) {
       this.dispatchEventToListeners(SDK.ResourceTreeModel.Events.PageReloadRequested, this);
+    }
     if (this._reloadSuspensionCount) {
       this._pendingReloadOptions = [bypassCache, scriptToEvaluateOnLoad];
       return;
@@ -390,8 +416,9 @@ SDK.ResourceTreeModel = class extends SDK.SDKModel {
    */
   async navigationHistory() {
     const response = await this._agent.invoke_getNavigationHistory({});
-    if (response[Protocol.Error])
+    if (response[Protocol.Error]) {
       return null;
+    }
     return {currentIndex: response.currentIndex, entries: response.entries};
   }
 
@@ -407,8 +434,9 @@ SDK.ResourceTreeModel = class extends SDK.SDKModel {
    */
   async fetchAppManifest() {
     const response = await this._agent.invoke_getAppManifest({});
-    if (response[Protocol.Error])
+    if (response[Protocol.Error]) {
       return {url: response.url, data: null, errors: []};
+    }
     return {url: response.url, data: response.data || null, errors: response.errors};
   }
 
@@ -440,8 +468,9 @@ SDK.ResourceTreeModel = class extends SDK.SDKModel {
       return parents.reverse();
     }
 
-    if (a.target() !== b.target())
+    if (a.target() !== b.target()) {
       return SDK.ExecutionContext.comparator(a, b);
+    }
 
     const framesA = a.frameId ? framePath(this.frameForId(a.frameId)) : [];
     const framesB = b.frameId ? framePath(this.frameForId(b.frameId)) : [];
@@ -454,14 +483,17 @@ SDK.ResourceTreeModel = class extends SDK.SDKModel {
         break;
       }
     }
-    if (!frameA && frameB)
+    if (!frameA && frameB) {
       return -1;
+    }
 
-    if (!frameB && frameA)
+    if (!frameB && frameA) {
       return 1;
+    }
 
-    if (frameA && frameB)
+    if (frameA && frameB) {
       return frameA.id.localeCompare(frameB.id);
+    }
 
     return SDK.ExecutionContext.comparator(a, b);
   }
@@ -477,8 +509,9 @@ SDK.ResourceTreeModel = class extends SDK.SDKModel {
     let unreachableMainSecurityOrigin = null;
     for (const frame of this._frames.values()) {
       const origin = frame.securityOrigin;
-      if (!origin)
+      if (!origin) {
         continue;
+      }
 
       securityOrigins.add(origin);
       if (frame.isMainFrame()) {
@@ -584,8 +617,9 @@ SDK.ResourceTreeFrame = class {
      */
     this._resourcesMap = {};
 
-    if (this._parentFrame)
+    if (this._parentFrame) {
       this._parentFrame._childFrames.push(this);
+    }
   }
 
 
@@ -602,8 +636,9 @@ SDK.ResourceTreeFrame = class {
     const mainResource = this._resourcesMap[this._url];
     this._resourcesMap = {};
     this._removeChildFrames();
-    if (mainResource && mainResource.loaderId === this._loaderId)
+    if (mainResource && mainResource.loaderId === this._loaderId) {
       this.addResource(mainResource);
+    }
   }
 
   /**
@@ -673,13 +708,16 @@ SDK.ResourceTreeFrame = class {
    * @return {?SDK.ResourceTreeFrame}
    */
   crossTargetParentFrame() {
-    if (!this._crossTargetParentFrameId)
+    if (!this._crossTargetParentFrameId) {
       return null;
-    if (!this._model.target().parentTarget())
+    }
+    if (!this._model.target().parentTarget()) {
       return null;
+    }
     const parentModel = this._model.target().parentTarget().model(SDK.ResourceTreeModel);
-    if (!parentModel)
+    if (!parentModel) {
       return null;
+    }
     // Note that parent model has already processed cached resources:
     // - when parent target was created, we issued getResourceTree call;
     // - strictly after we issued setAutoAttach call;
@@ -697,8 +735,9 @@ SDK.ResourceTreeFrame = class {
     let stackTrace = this._creationStackTrace;
     while (stackTrace) {
       const foundEntry = stackTrace.callFrames.find(searchFn);
-      if (foundEntry)
+      if (foundEntry) {
         return foundEntry;
+      }
       stackTrace = this.parent;
     }
     return null;
@@ -733,8 +772,9 @@ SDK.ResourceTreeFrame = class {
   _removeChildFrames() {
     const frames = this._childFrames;
     this._childFrames = [];
-    for (let i = 0; i < frames.length; ++i)
+    for (let i = 0; i < frames.length; ++i) {
       frames[i]._remove();
+    }
   }
 
   _remove() {
@@ -776,8 +816,9 @@ SDK.ResourceTreeFrame = class {
    */
   resources() {
     const result = [];
-    for (const url in this._resourcesMap)
+    for (const url in this._resourcesMap) {
       result.push(this._resourcesMap[url]);
+    }
     return result;
   }
 
@@ -787,10 +828,12 @@ SDK.ResourceTreeFrame = class {
    */
   resourceForURL(url) {
     let resource = this._resourcesMap[url] || null;
-    if (resource)
+    if (resource) {
       return resource;
-    for (let i = 0; !resource && i < this._childFrames.length; ++i)
+    }
+    for (let i = 0; !resource && i < this._childFrames.length; ++i) {
       resource = this._childFrames[i].resourceForURL(url);
+    }
     return resource;
   }
 
@@ -800,13 +843,15 @@ SDK.ResourceTreeFrame = class {
    */
   _callForFrameResources(callback) {
     for (const url in this._resourcesMap) {
-      if (callback(this._resourcesMap[url]))
+      if (callback(this._resourcesMap[url])) {
         return true;
+      }
     }
 
     for (let i = 0; i < this._childFrames.length; ++i) {
-      if (this._childFrames[i]._callForFrameResources(callback))
+      if (this._childFrames[i]._callForFrameResources(callback)) {
         return true;
+      }
     }
     return false;
   }
@@ -815,12 +860,14 @@ SDK.ResourceTreeFrame = class {
    * @return {string}
    */
   displayName() {
-    if (this.isTopFrame())
+    if (this.isTopFrame()) {
       return Common.UIString('top');
+    }
     const subtitle = new Common.ParsedURL(this._url).displayName;
     if (subtitle) {
-      if (!this._name)
+      if (!this._name) {
         return subtitle;
+      }
       return this._name + ' (' + subtitle + ')';
     }
     return Common.UIString('<iframe>');
@@ -954,8 +1001,9 @@ SDK.PageDispatcher = class {
    * @param {string=} prompt
    */
   javascriptDialogOpening(url, message, dialogType, hasBrowserHandler, prompt) {
-    if (!hasBrowserHandler)
+    if (!hasBrowserHandler) {
       this._resourceTreeModel._agent.handleJavaScriptDialog(false);
+    }
   }
 
   /**

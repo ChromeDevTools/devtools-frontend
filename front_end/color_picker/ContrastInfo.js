@@ -18,12 +18,14 @@ ColorPicker.ContrastInfo = class extends Common.Object {
     /** @type {?Common.Color} */
     this._bgColor = null;
 
-    if (!contrastInfo)
+    if (!contrastInfo) {
       return;
+    }
 
     if (!contrastInfo.computedFontSize || !contrastInfo.computedFontWeight || !contrastInfo.backgroundColors ||
-        contrastInfo.backgroundColors.length !== 1)
+        contrastInfo.backgroundColors.length !== 1) {
       return;
+    }
 
     this._isNull = false;
     const isLargeFont =
@@ -33,8 +35,9 @@ ColorPicker.ContrastInfo = class extends Common.Object {
         ColorPicker.ContrastInfo._ContrastThresholds[(isLargeFont ? 'largeFont' : 'normalFont')];
     const bgColorText = contrastInfo.backgroundColors[0];
     const bgColor = Common.Color.parse(bgColorText);
-    if (bgColor)
+    if (bgColor) {
       this._setBgColorInternal(bgColor);
+    }
   }
 
   /**
@@ -81,8 +84,9 @@ ColorPicker.ContrastInfo = class extends Common.Object {
   _setBgColorInternal(bgColor) {
     this._bgColor = bgColor;
 
-    if (!this._fgColor)
+    if (!this._fgColor) {
       return;
+    }
 
     const fgRGBA = this._fgColor.rgba();
 
@@ -106,8 +110,9 @@ ColorPicker.ContrastInfo = class extends Common.Object {
   }
 
   _updateContrastRatio() {
-    if (!this._bgColor || !this._fgColor)
+    if (!this._bgColor || !this._fgColor) {
       return;
+    }
     this._contrastRatio = Common.Color.calculateContrastRatio(this._fgColor.rgba(), this._bgColor.rgba());
   }
 
@@ -116,8 +121,9 @@ ColorPicker.ContrastInfo = class extends Common.Object {
    * @return {?number}
    */
   contrastRatioThreshold(level) {
-    if (!this._contrastRatioThresholds)
+    if (!this._contrastRatioThresholds) {
       return null;
+    }
     return this._contrastRatioThresholds[level];
   }
 
@@ -133,10 +139,11 @@ ColorPicker.ContrastInfo = class extends Common.Object {
     const isBold = (boldWeights.indexOf(fontWeight) !== -1);
 
     const fontSizePt = fontSizePx * 72 / 96;
-    if (isBold)
+    if (isBold) {
       return fontSizePt >= 14;
-    else
+    } else {
       return fontSizePt >= 18;
+    }
   }
 };
 

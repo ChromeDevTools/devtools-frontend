@@ -70,18 +70,21 @@ Timeline.TimelinePaintProfilerView = class extends UI.SplitWidget {
     this._event = event;
 
     this._updateWhenVisible();
-    if (this._event.name === TimelineModel.TimelineModel.RecordType.Paint)
+    if (this._event.name === TimelineModel.TimelineModel.RecordType.Paint) {
       return !!TimelineModel.TimelineData.forEvent(event).picture;
-    if (this._event.name === TimelineModel.TimelineModel.RecordType.RasterTask)
+    }
+    if (this._event.name === TimelineModel.TimelineModel.RecordType.RasterTask) {
       return this._frameModel.hasRasterTile(this._event);
+    }
     return false;
   }
 
   _updateWhenVisible() {
-    if (this.isShowing())
+    if (this.isShowing()) {
       this._update();
-    else
+    } else {
       this._needsUpdateWhenVisible = true;
+    }
   }
 
   _update() {
@@ -127,8 +130,9 @@ Timeline.TimelinePaintProfilerView = class extends UI.SplitWidget {
   }
 
   _releaseSnapshot() {
-    if (!this._lastLoadedSnapshot)
+    if (!this._lastLoadedSnapshot) {
       return;
+    }
     this._lastLoadedSnapshot.release();
     this._lastLoadedSnapshot = null;
   }
@@ -160,8 +164,9 @@ Timeline.TimelinePaintImageView = class extends UI.Widget {
    * @override
    */
   onResize() {
-    if (this._imageElement.src)
+    if (this._imageElement.src) {
       this._updateImagePosition();
+    }
   }
 
   _updateImagePosition() {
@@ -207,8 +212,9 @@ Timeline.TimelinePaintImageView = class extends UI.Widget {
    */
   showImage(imageURL) {
     this._imageContainer.classList.toggle('hidden', !imageURL);
-    if (imageURL)
+    if (imageURL) {
       this._imageElement.src = imageURL;
+    }
   }
 
   /**

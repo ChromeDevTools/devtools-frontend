@@ -33,8 +33,9 @@ Profiler.HeapTimelineOverview = class extends UI.VBox {
     this._running = true;
     const drawFrame = () => {
       this.update();
-      if (this._running)
+      if (this._running) {
         this.element.window().requestAnimationFrame(drawFrame);
+      }
     };
     drawFrame();
   }
@@ -48,8 +49,9 @@ Profiler.HeapTimelineOverview = class extends UI.VBox {
    */
   setSamples(samples) {
     this._profileSamples = samples;
-    if (!this._running)
+    if (!this._running) {
       this.update();
+    }
   }
 
   /**
@@ -57,8 +59,9 @@ Profiler.HeapTimelineOverview = class extends UI.VBox {
    * @param {number} height
    */
   _drawOverviewCanvas(width, height) {
-    if (!this._profileSamples)
+    if (!this._profileSamples) {
       return;
+    }
     const profileSamples = this._profileSamples;
     const sizes = profileSamples.sizes;
     const topSizes = profileSamples.max;
@@ -77,8 +80,9 @@ Profiler.HeapTimelineOverview = class extends UI.VBox {
       for (let i = 1; i < timestamps.length; ++i) {
         const x = Math.floor((timestamps[i] - startTime) * scaleFactor);
         if (x !== currentX) {
-          if (size)
+          if (size) {
             callback(currentX, size);
+          }
           size = 0;
           currentX = x;
         }
@@ -128,8 +132,9 @@ Profiler.HeapTimelineOverview = class extends UI.VBox {
       // e.g. a round value 10KB is 10240 bytes.
       gridValue = Math.pow(1024, Math.floor(Math.log(maxGridValue) / Math.log(1024)));
       gridValue *= Math.pow(10, Math.floor(Math.log(maxGridValue / gridValue) / Math.LN10));
-      if (gridValue * 5 <= maxGridValue)
+      if (gridValue * 5 <= maxGridValue) {
         gridValue *= 5;
+      }
       gridY = Math.round(height - gridValue * yScaleFactor - 0.5) + 0.5;
       context.beginPath();
       context.lineWidth = 1;
@@ -190,13 +195,15 @@ Profiler.HeapTimelineOverview = class extends UI.VBox {
   }
 
   _onWindowChanged() {
-    if (!this._updateGridTimerId)
+    if (!this._updateGridTimerId) {
       this._updateGridTimerId = setTimeout(this.updateGrid.bind(this), 10);
+    }
   }
 
   _scheduleUpdate() {
-    if (this._updateTimerId)
+    if (this._updateTimerId) {
       return;
+    }
     this._updateTimerId = setTimeout(this.update.bind(this), 10);
   }
 
@@ -208,8 +215,9 @@ Profiler.HeapTimelineOverview = class extends UI.VBox {
 
   update() {
     this._updateTimerId = null;
-    if (!this.isShowing())
+    if (!this.isShowing()) {
       return;
+    }
     this._updateBoundaries();
     this._overviewCalculator._updateBoundaries(this);
     this._overviewGrid.updateDividers(this._overviewCalculator);
@@ -220,8 +228,9 @@ Profiler.HeapTimelineOverview = class extends UI.VBox {
     this._updateGridTimerId = 0;
     this._updateBoundaries();
     const ids = this._profileSamples.ids;
-    if (!ids.length)
+    if (!ids.length) {
       return;
+    }
     const timestamps = this._profileSamples.timestamps;
     const sizes = this._profileSamples.sizes;
     const startTime = timestamps[0];
@@ -231,8 +240,9 @@ Profiler.HeapTimelineOverview = class extends UI.VBox {
     const minIndex = timestamps.lowerBound(timeLeft);
     const maxIndex = timestamps.upperBound(timeRight);
     let size = 0;
-    for (let i = minIndex; i <= maxIndex; ++i)
+    for (let i = minIndex; i <= maxIndex; ++i) {
       size += sizes[i];
+    }
     const minId = minIndex > 0 ? ids[minIndex - 1] : 0;
     const maxId = maxIndex < ids.length ? ids[maxIndex] : Infinity;
 

@@ -100,8 +100,9 @@ PerfUI.ChartViewport = class extends UI.VBox {
 
   _updateScrollBar() {
     const showScroll = this._alwaysShowVerticalScroll || this._totalHeight > this._offsetHeight;
-    if (this._vScrollElement.classList.contains('hidden') !== showScroll)
+    if (this._vScrollElement.classList.contains('hidden') !== showScroll) {
       return;
+    }
     this._vScrollElement.classList.toggle('hidden', !showScroll);
     this._updateContentElementSize();
   }
@@ -136,8 +137,9 @@ PerfUI.ChartViewport = class extends UI.VBox {
 
   _updateContentElementSize() {
     let offsetWidth = this._vScrollElement.offsetLeft;
-    if (!offsetWidth)
+    if (!offsetWidth) {
       offsetWidth = this.contentElement.offsetWidth;
+    }
     this._offsetWidth = offsetWidth;
     this._offsetHeight = this.contentElement.offsetHeight;
     this._delegate.setSize(this._offsetWidth, this._offsetHeight);
@@ -150,8 +152,9 @@ PerfUI.ChartViewport = class extends UI.VBox {
     this._totalHeight = totalHeight;
     this._vScrollContent.style.height = totalHeight + 'px';
     this._updateScrollBar();
-    if (this._scrollTop + this._offsetHeight <= totalHeight)
+    if (this._scrollTop + this._offsetHeight <= totalHeight) {
       return;
+    }
     this._scrollTop = Math.max(0, totalHeight - this._offsetHeight);
     this._vScrollElement.scrollTop = this._scrollTop;
   }
@@ -162,10 +165,11 @@ PerfUI.ChartViewport = class extends UI.VBox {
    */
   setScrollOffset(offset, height) {
     height = height || 0;
-    if (this._vScrollElement.scrollTop > offset)
+    if (this._vScrollElement.scrollTop > offset) {
       this._vScrollElement.scrollTop = offset;
-    else if (this._vScrollElement.scrollTop < offset - this._offsetHeight + height)
+    } else if (this._vScrollElement.scrollTop < offset - this._offsetHeight + height) {
       this._vScrollElement.scrollTop = offset - this._offsetHeight + height;
+    }
   }
 
   /**
@@ -209,8 +213,9 @@ PerfUI.ChartViewport = class extends UI.VBox {
    * @return {boolean}
    */
   _startDragging(event) {
-    if (event.shiftKey)
+    if (event.shiftKey) {
       return false;
+    }
     this._isDragging = true;
     this._dragStartPointX = event.pageX;
     this._dragStartPointY = event.pageY;
@@ -239,8 +244,9 @@ PerfUI.ChartViewport = class extends UI.VBox {
    * @return {boolean}
    */
   _startRangeSelection(event) {
-    if (!event.shiftKey || !this._rangeSelectionEnabled)
+    if (!event.shiftKey || !this._rangeSelectionEnabled) {
       return false;
+    }
     this._isDragging = true;
     this._selectionOffsetShiftX = event.offsetX - event.pageX;
     this._selectionOffsetShiftY = event.offsetY - event.pageY;
@@ -269,8 +275,9 @@ PerfUI.ChartViewport = class extends UI.VBox {
    * @param {number} endTime
    */
   setRangeSelection(startTime, endTime) {
-    if (!this._rangeSelectionEnabled)
+    if (!this._rangeSelectionEnabled) {
       return;
+    }
     this._rangeSelectionStart = Math.min(startTime, endTime);
     this._rangeSelectionEnd = Math.max(startTime, endTime);
     this._updateRangeSelectionOverlay();
@@ -282,8 +289,9 @@ PerfUI.ChartViewport = class extends UI.VBox {
    */
   onClick(event) {
     const time = this.pixelToTime(event.offsetX);
-    if (this._rangeSelectionStart !== null && time >= this._rangeSelectionStart && time <= this._rangeSelectionEnd)
+    if (this._rangeSelectionStart !== null && time >= this._rangeSelectionStart && time <= this._rangeSelectionEnd) {
       return;
+    }
     this.hideRangeSelection();
   }
 
@@ -385,8 +393,9 @@ PerfUI.ChartViewport = class extends UI.VBox {
    * @param {!Event} e
    */
   _handleZoomPanKeys(e) {
-    if (!UI.KeyboardShortcut.hasNoModifiers(e))
+    if (!UI.KeyboardShortcut.hasNoModifiers(e)) {
       return;
+    }
     const zoomFactor = e.shiftKey ? 0.8 : 0.3;
     const panOffset = e.shiftKey ? 320 : 160;
     switch (e.code) {
@@ -446,14 +455,16 @@ PerfUI.ChartViewport = class extends UI.VBox {
       bounds.left = Math.max(bounds.left - bounds.right + maxBound, this._minimumBoundary);
       bounds.right = maxBound;
     }
-    if (bounds.right - bounds.left < PerfUI.FlameChart.MinimalTimeWindowMs)
+    if (bounds.right - bounds.left < PerfUI.FlameChart.MinimalTimeWindowMs) {
       return;
+    }
     this._delegate.windowChanged(bounds.left, bounds.right, animate);
   }
 
   scheduleUpdate() {
-    if (this._updateTimerId || this._cancelWindowTimesAnimation)
+    if (this._updateTimerId || this._cancelWindowTimesAnimation) {
       return;
+    }
     this._updateTimerId = this.element.window().requestAnimationFrame(() => {
       this._updateTimerId = 0;
       this._update();
@@ -471,8 +482,9 @@ PerfUI.ChartViewport = class extends UI.VBox {
    * @param {boolean=} animate
    */
   setWindowTimes(startTime, endTime, animate) {
-    if (startTime === this._targetLeftTime && endTime === this._targetRightTime)
+    if (startTime === this._targetLeftTime && endTime === this._targetRightTime) {
       return;
+    }
     if (!animate || this._visibleLeftTime === 0 || this._visibleRightTime === Infinity ||
         (startTime === 0 && endTime === Infinity) || (startTime === Infinity && endTime === Infinity)) {
       // Skip animation, move instantly.

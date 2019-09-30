@@ -76,8 +76,9 @@ Sources.WatchExpressionsSidebarPane = class extends UI.ThrottledWidget {
   _saveExpressions() {
     const toSave = [];
     for (let i = 0; i < this._watchExpressions.length; i++) {
-      if (this._watchExpressions[i].expression())
+      if (this._watchExpressions[i].expression()) {
         toSave.push(this._watchExpressions[i].expression());
+      }
     }
 
     this._watchExpressionsSetting.set(toSave);
@@ -101,8 +102,9 @@ Sources.WatchExpressionsSidebarPane = class extends UI.ThrottledWidget {
     const watchExpressionStrings = this._watchExpressionsSetting.get();
     for (let i = 0; i < watchExpressionStrings.length; ++i) {
       const expression = watchExpressionStrings[i];
-      if (!expression)
+      if (!expression) {
         continue;
+      }
 
       this._createWatchExpression(expression);
     }
@@ -152,11 +154,13 @@ Sources.WatchExpressionsSidebarPane = class extends UI.ThrottledWidget {
    */
   _populateContextMenu(contextMenu, event) {
     let isEditing = false;
-    for (const watchExpression of this._watchExpressions)
+    for (const watchExpression of this._watchExpressions) {
       isEditing |= watchExpression.isEditing();
+    }
 
-    if (!isEditing)
+    if (!isEditing) {
       contextMenu.debugSection().appendItem(Common.UIString('Add watch expression'), this._addButtonClicked.bind(this));
+    }
 
     if (this._watchExpressions.length > 1) {
       contextMenu.debugSection().appendItem(
@@ -165,11 +169,13 @@ Sources.WatchExpressionsSidebarPane = class extends UI.ThrottledWidget {
 
 
     const target = event.deepElementFromPoint();
-    if (!target)
+    if (!target) {
       return;
+    }
     for (const watchExpression of this._watchExpressions) {
-      if (watchExpression.element().isSelfOrAncestor(target))
+      if (watchExpression.element().isSelfOrAncestor(target)) {
         watchExpression._populateContextMenu(contextMenu, event);
+      }
     }
   }
 
@@ -204,8 +210,9 @@ Sources.WatchExpressionsSidebarPane = class extends UI.ThrottledWidget {
    */
   handleAction(context, actionId) {
     const frame = UI.context.flavor(Sources.UISourceCodeFrame);
-    if (!frame)
+    if (!frame) {
       return false;
+    }
     const text = frame.textEditor.text(frame.textEditor.selection());
     this._focusAndAddExpressionToWatch(text);
     return true;
@@ -231,8 +238,9 @@ Sources.WatchExpressionsSidebarPane = class extends UI.ThrottledWidget {
     }
 
     const frame = UI.context.flavor(Sources.UISourceCodeFrame);
-    if (!frame || frame.textEditor.selection().isEmpty())
+    if (!frame || frame.textEditor.selection().isEmpty()) {
       return;
+    }
 
     contextMenu.debugSection().appendAction('sources.add-to-watch');
   }
@@ -317,8 +325,9 @@ Sources.WatchExpression = class extends Common.Object {
    * @param {boolean=} canceled
    */
   _finishEditing(event, canceled) {
-    if (event)
+    if (event) {
       event.consume(canceled);
+    }
 
     this._editing = false;
     this._textPrompt.detach();
@@ -334,16 +343,18 @@ Sources.WatchExpression = class extends Common.Object {
    */
   _dblClickOnWatchExpression(event) {
     event.consume();
-    if (!this.isEditing())
+    if (!this.isEditing()) {
       this.startEditing();
+    }
   }
 
   /**
    * @param {?string} newExpression
    */
   _updateExpression(newExpression) {
-    if (this._expression)
+    if (this._expression) {
       this._expandController.stopWatchSectionsWithId(this._expression);
+    }
     this._expression = newExpression;
     this.update();
     this.dispatchEventToListeners(Sources.WatchExpression.Events.ExpressionUpdated, this);
@@ -420,14 +431,16 @@ Sources.WatchExpression = class extends Common.Object {
      * @this {Sources.WatchExpression}
      */
     function handleClick() {
-      if (!this._objectPropertiesSection)
+      if (!this._objectPropertiesSection) {
         return;
+      }
 
       const objectTreeElement = this._objectPropertiesSection.objectTreeElement();
-      if (objectTreeElement.expanded)
+      if (objectTreeElement.expanded) {
         objectTreeElement.collapse();
-      else
+      } else {
         objectTreeElement.expand();
+      }
     }
   }
 
@@ -435,8 +448,9 @@ Sources.WatchExpression = class extends Common.Object {
    * @param {!Event} event
    */
   _promptKeyDown(event) {
-    if (isEnterKey(event) || isEscKey(event))
+    if (isEnterKey(event) || isEscKey(event)) {
       this._finishEditing(event, isEscKey(event));
+    }
   }
 
   /**
@@ -450,12 +464,14 @@ Sources.WatchExpression = class extends Common.Object {
     }
 
 
-    if (!this.isEditing() && this._result && (this._result.type === 'number' || this._result.type === 'string'))
+    if (!this.isEditing() && this._result && (this._result.type === 'number' || this._result.type === 'string')) {
       contextMenu.clipboardSection().appendItem(Common.UIString('Copy value'), this._copyValueButtonClicked.bind(this));
+    }
 
     const target = event.deepElementFromPoint();
-    if (target && this._valueElement.isSelfOrAncestor(target))
+    if (target && this._valueElement.isSelfOrAncestor(target)) {
       contextMenu.appendApplicableItems(this._result);
+    }
   }
 
   _copyValueButtonClicked() {

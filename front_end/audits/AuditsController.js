@@ -13,8 +13,9 @@ Audits.AuditController = class extends Common.Object {
     protocolService.registerStatusCallback(
         message => this.dispatchEventToListeners(Audits.Events.AuditProgressChanged, {message}));
 
-    for (const preset of Audits.Presets)
+    for (const preset of Audits.Presets) {
       preset.setting.addChangeListener(this.recomputePageAuditability.bind(this));
+    }
 
     SDK.targetManager.observeModels(SDK.ServiceWorkerManager, this);
     SDK.targetManager.addEventListener(
@@ -26,8 +27,9 @@ Audits.AuditController = class extends Common.Object {
    * @param {!SDK.ServiceWorkerManager} serviceWorkerManager
    */
   modelAdded(serviceWorkerManager) {
-    if (this._manager)
+    if (this._manager) {
       return;
+    }
 
     this._manager = serviceWorkerManager;
     this._serviceWorkerListeners = [
@@ -45,8 +47,9 @@ Audits.AuditController = class extends Common.Object {
    * @param {!SDK.ServiceWorkerManager} serviceWorkerManager
    */
   modelRemoved(serviceWorkerManager) {
-    if (this._manager !== serviceWorkerManager)
+    if (this._manager !== serviceWorkerManager) {
       return;
+    }
 
     Common.EventTarget.removeEventListeners(this._serviceWorkerListeners);
     this._manager = null;
@@ -57,22 +60,26 @@ Audits.AuditController = class extends Common.Object {
    * @return {boolean}
    */
   _hasActiveServiceWorker() {
-    if (!this._manager)
+    if (!this._manager) {
       return false;
+    }
 
     const mainTarget = this._manager.target();
-    if (!mainTarget)
+    if (!mainTarget) {
       return false;
+    }
 
     const inspectedURL = mainTarget.inspectedURL().asParsedURL();
     const inspectedOrigin = inspectedURL && inspectedURL.securityOrigin();
     for (const registration of this._manager.registrations().values()) {
-      if (registration.securityOrigin !== inspectedOrigin)
+      if (registration.securityOrigin !== inspectedOrigin) {
         continue;
+      }
 
       for (const version of registration.versions.values()) {
-        if (version.controlledClients.length > 1)
+        if (version.controlledClients.length > 1) {
           return true;
+        }
       }
     }
 
@@ -90,8 +97,9 @@ Audits.AuditController = class extends Common.Object {
    * @return {?string}
    */
   _unauditablePageMessage() {
-    if (!this._manager)
+    if (!this._manager) {
       return null;
+    }
 
     const mainTarget = this._manager.target();
     const inspectedURL = mainTarget && mainTarget.inspectedURL();
@@ -111,8 +119,9 @@ Audits.AuditController = class extends Common.Object {
     const runtimeModel = mainTarget.model(SDK.RuntimeModel);
     const executionContext = runtimeModel && runtimeModel.defaultExecutionContext();
     let inspectedURL = mainTarget.inspectedURL();
-    if (!executionContext)
+    if (!executionContext) {
       return inspectedURL;
+    }
 
     // Evaluate location.href for a more specific URL than inspectedURL provides so that SPA hash navigation routes
     // will be respected and audited.
@@ -146,8 +155,9 @@ Audits.AuditController = class extends Common.Object {
       // DevTools handles all the emulation. This tells Lighthouse to not bother with emulation.
       deviceScreenEmulationMethod: 'provided'
     };
-    for (const runtimeSetting of Audits.RuntimeSettings)
+    for (const runtimeSetting of Audits.RuntimeSettings) {
       runtimeSetting.setFlags(flags, runtimeSetting.setting.get());
+    }
     return flags;
   }
 
@@ -157,8 +167,9 @@ Audits.AuditController = class extends Common.Object {
   getCategoryIDs() {
     const categoryIDs = [];
     for (const preset of Audits.Presets) {
-      if (preset.setting.get())
+      if (preset.setting.get()) {
         categoryIDs.push(preset.configID);
+      }
     }
     return categoryIDs;
   }
@@ -168,8 +179,9 @@ Audits.AuditController = class extends Common.Object {
    * @return {!Promise<string>}
    */
   async getInspectedURL(options) {
-    if (options && options.force || !this._inspectedURL)
+    if (options && options.force || !this._inspectedURL) {
       this._inspectedURL = await this._evaluateInspectedURL();
+    }
     return this._inspectedURL;
   }
 

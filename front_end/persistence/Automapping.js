@@ -46,10 +46,12 @@ Persistence.Automapping = class {
         Workspace.Workspace.Events.ProjectRemoved,
         event => this._onProjectRemoved(/** @type {!Workspace.Project} */ (event.data)), this);
 
-    for (const fileSystem of workspace.projects())
+    for (const fileSystem of workspace.projects()) {
       this._onProjectAdded(fileSystem);
-    for (const uiSourceCode of workspace.uiSourceCodes())
+    }
+    for (const uiSourceCode of workspace.uiSourceCodes()) {
       this._onUISourceCodeAdded(uiSourceCode);
+    }
   }
 
   /**
@@ -61,8 +63,9 @@ Persistence.Automapping = class {
   }
 
   scheduleRemap() {
-    for (const status of this._statuses.valuesArray())
+    for (const status of this._statuses.valuesArray()) {
       this._clearNetworkStatus(status.network);
+    }
     this._scheduleSweep();
   }
 
@@ -76,8 +79,9 @@ Persistence.Automapping = class {
     function sweepUnmapped() {
       const networkProjects = this._workspace.projectsForType(Workspace.projectTypes.Network);
       for (const networkProject of networkProjects) {
-        for (const uiSourceCode of networkProject.uiSourceCodes())
+        for (const uiSourceCode of networkProject.uiSourceCodes()) {
           this._computeNetworkStatus(uiSourceCode);
+        }
       }
       this._onSweepHappenedForTest();
       return Promise.resolve();
@@ -91,13 +95,16 @@ Persistence.Automapping = class {
    * @param {!Workspace.Project} project
    */
   _onProjectRemoved(project) {
-    for (const uiSourceCode of project.uiSourceCodes())
+    for (const uiSourceCode of project.uiSourceCodes()) {
       this._onUISourceCodeRemoved(uiSourceCode);
-    if (project.type() !== Workspace.projectTypes.FileSystem)
+    }
+    if (project.type() !== Workspace.projectTypes.FileSystem) {
       return;
+    }
     const fileSystem = /** @type {!Persistence.FileSystemWorkspaceBinding.FileSystem} */ (project);
-    for (const gitFolder of fileSystem.initialGitFolders())
+    for (const gitFolder of fileSystem.initialGitFolders()) {
       this._projectFoldersIndex.removeFolder(gitFolder);
+    }
     this._projectFoldersIndex.removeFolder(fileSystem.fileSystemPath());
     this.scheduleRemap();
   }
@@ -106,11 +113,13 @@ Persistence.Automapping = class {
    * @param {!Workspace.Project} project
    */
   _onProjectAdded(project) {
-    if (project.type() !== Workspace.projectTypes.FileSystem)
+    if (project.type() !== Workspace.projectTypes.FileSystem) {
       return;
+    }
     const fileSystem = /** @type {!Persistence.FileSystemWorkspaceBinding.FileSystem} */ (project);
-    for (const gitFolder of fileSystem.initialGitFolders())
+    for (const gitFolder of fileSystem.initialGitFolders()) {
       this._projectFoldersIndex.addFolder(gitFolder);
+    }
     this._projectFoldersIndex.addFolder(fileSystem.fileSystemPath());
     project.uiSourceCodes().forEach(this._onUISourceCodeAdded.bind(this));
     this.scheduleRemap();
@@ -122,8 +131,9 @@ Persistence.Automapping = class {
   _onUISourceCodeAdded(uiSourceCode) {
     const project = uiSourceCode.project();
     if (project.type() === Workspace.projectTypes.FileSystem) {
-      if (!Persistence.FileSystemWorkspaceBinding.fileSystemSupportsAutomapping(project))
+      if (!Persistence.FileSystemWorkspaceBinding.fileSystemSupportsAutomapping(project)) {
         return;
+      }
       this._filesIndex.addPath(uiSourceCode.url());
       this._fileSystemUISourceCodes.set(uiSourceCode.url(), uiSourceCode);
       this._scheduleSweep();
@@ -140,8 +150,9 @@ Persistence.Automapping = class {
       this._filesIndex.removePath(uiSourceCode.url());
       this._fileSystemUISourceCodes.delete(uiSourceCode.url());
       const status = uiSourceCode[this._statusSymbol];
-      if (status)
+      if (status) {
         this._clearNetworkStatus(status.network);
+      }
     } else if (uiSourceCode.project().type() === Workspace.projectTypes.Network) {
       this._clearNetworkStatus(uiSourceCode);
     }
@@ -153,14 +164,16 @@ Persistence.Automapping = class {
   _onUISourceCodeRenamed(event) {
     const uiSourceCode = /** @type {!Workspace.UISourceCode} */ (event.data.uiSourceCode);
     const oldURL = /** @type {string} */ (event.data.oldURL);
-    if (uiSourceCode.project().type() !== Workspace.projectTypes.FileSystem)
+    if (uiSourceCode.project().type() !== Workspace.projectTypes.FileSystem) {
       return;
+    }
 
     this._filesIndex.removePath(oldURL);
     this._fileSystemUISourceCodes.delete(oldURL);
     const status = uiSourceCode[this._statusSymbol];
-    if (status)
+    if (status) {
       this._clearNetworkStatus(status.network);
+    }
 
     this._filesIndex.addPath(uiSourceCode.url());
     this._fileSystemUISourceCodes.set(uiSourceCode.url(), uiSourceCode);
@@ -171,12 +184,15 @@ Persistence.Automapping = class {
    * @param {!Workspace.UISourceCode} networkSourceCode
    */
   _computeNetworkStatus(networkSourceCode) {
-    if (networkSourceCode[this._processingPromiseSymbol] || networkSourceCode[this._statusSymbol])
+    if (networkSourceCode[this._processingPromiseSymbol] || networkSourceCode[this._statusSymbol]) {
       return;
-    if (this._interceptors.some(interceptor => interceptor(networkSourceCode)))
+    }
+    if (this._interceptors.some(interceptor => interceptor(networkSourceCode))) {
       return;
-    if (networkSourceCode.url().startsWith('wasm://'))
+    }
+    if (networkSourceCode.url().startsWith('wasm://')) {
       return;
+    }
     const createBindingPromise =
         this._createBinding(networkSourceCode).then(validateStatus.bind(this)).then(onStatus.bind(this));
     networkSourceCode[this._processingPromiseSymbol] = createBindingPromise;
@@ -187,12 +203,15 @@ Persistence.Automapping = class {
      * @this {Persistence.Automapping}
      */
     async function validateStatus(status) {
-      if (!status)
+      if (!status) {
         return null;
-      if (networkSourceCode[this._processingPromiseSymbol] !== createBindingPromise)
+      }
+      if (networkSourceCode[this._processingPromiseSymbol] !== createBindingPromise) {
         return null;
-      if (status.network.contentType().isFromSourceMap() || !status.fileSystem.contentType().isTextType())
+      }
+      if (status.network.contentType().isFromSourceMap() || !status.fileSystem.contentType().isTextType()) {
         return status;
+      }
 
       // At the time binding comes, there are multiple user scenarios:
       // 1. Both network and fileSystem files are **not** dirty.
@@ -211,8 +230,9 @@ Persistence.Automapping = class {
       //    We consider this to be un-realistic scenario and in this case just fail gracefully.
       //
       // To support usecase (3), we need to validate against original network content.
-      if (status.fileSystem.isDirty() && (status.network.isDirty() || status.network.hasCommits()))
+      if (status.fileSystem.isDirty() && (status.network.isDirty() || status.network.hasCommits())) {
         return null;
+      }
 
       const contents = await Promise.all([
         status.fileSystem.requestContent(),
@@ -220,11 +240,13 @@ Persistence.Automapping = class {
       ]);
       const fileSystemContent = contents[0];
       const networkContent = contents[1];
-      if (fileSystemContent === null || networkContent === null)
+      if (fileSystemContent === null || networkContent === null) {
         return null;
+      }
 
-      if (networkSourceCode[this._processingPromiseSymbol] !== createBindingPromise)
+      if (networkSourceCode[this._processingPromiseSymbol] !== createBindingPromise) {
         return null;
+      }
 
       const target = Bindings.NetworkProject.targetForUISourceCode(status.network);
       let isValid = false;
@@ -248,16 +270,18 @@ Persistence.Automapping = class {
      * @this {Persistence.Automapping}
      */
     function onStatus(status) {
-      if (networkSourceCode[this._processingPromiseSymbol] !== createBindingPromise)
+      if (networkSourceCode[this._processingPromiseSymbol] !== createBindingPromise) {
         return;
+      }
       networkSourceCode[this._processingPromiseSymbol] = null;
       if (!status) {
         this._onBindingFailedForTest();
         return;
       }
       // TODO(lushnikov): remove this check once there's a single uiSourceCode per url. @see crbug.com/670180
-      if (status.network[this._statusSymbol] || status.fileSystem[this._statusSymbol])
+      if (status.network[this._statusSymbol] || status.fileSystem[this._statusSymbol]) {
         return;
+      }
 
       this._statuses.add(status);
       status.network[this._statusSymbol] = status;
@@ -265,8 +289,9 @@ Persistence.Automapping = class {
       if (status.exactMatch) {
         const projectFolder = this._projectFoldersIndex.closestParentFolder(status.fileSystem.url());
         const newFolderAdded = projectFolder ? this._activeFoldersIndex.addFolder(projectFolder) : false;
-        if (newFolderAdded)
+        if (newFolderAdded) {
           this._scheduleSweep();
+        }
       }
       this._onStatusAdded.call(null, status);
     }
@@ -290,16 +315,18 @@ Persistence.Automapping = class {
       return;
     }
     const status = networkSourceCode[this._statusSymbol];
-    if (!status)
+    if (!status) {
       return;
+    }
 
     this._statuses.delete(status);
     status.network[this._statusSymbol] = null;
     status.fileSystem[this._statusSymbol] = null;
     if (status.exactMatch) {
       const projectFolder = this._projectFoldersIndex.closestParentFolder(status.fileSystem.url());
-      if (projectFolder)
+      if (projectFolder) {
         this._activeFoldersIndex.removeFolder(projectFolder);
+      }
     }
     this._onStatusRemoved.call(null, status);
   }
@@ -318,16 +345,19 @@ Persistence.Automapping = class {
     }
 
     let networkPath = Common.ParsedURL.extractPath(networkSourceCode.url());
-    if (networkPath === null)
+    if (networkPath === null) {
       return Promise.resolve(/** @type {?Persistence.AutomappingStatus} */ (null));
+    }
 
-    if (networkPath.endsWith('/'))
+    if (networkPath.endsWith('/')) {
       networkPath += 'index.html';
+    }
     const urlDecodedNetworkPath = decodeURI(networkPath);
     const similarFiles =
         this._filesIndex.similarFiles(urlDecodedNetworkPath).map(path => this._fileSystemUISourceCodes.get(path));
-    if (!similarFiles.length)
+    if (!similarFiles.length) {
       return Promise.resolve(/** @type {?Persistence.AutomappingStatus} */ (null));
+    }
 
     return this._pullMetadatas(similarFiles.concat(networkSourceCode)).then(onMetadatas.bind(this));
 
@@ -339,17 +369,20 @@ Persistence.Automapping = class {
       const networkMetadata = networkSourceCode[this._metadataSymbol];
       if (!networkMetadata || (!networkMetadata.modificationTime && typeof networkMetadata.contentSize !== 'number')) {
         // If networkSourceCode does not have metadata, try to match against active folders.
-        if (activeFiles.length !== 1)
+        if (activeFiles.length !== 1) {
           return null;
+        }
         return new Persistence.AutomappingStatus(networkSourceCode, activeFiles[0], false);
       }
 
       // Try to find exact matches, prioritizing active folders.
       let exactMatches = this._filterWithMetadata(activeFiles, networkMetadata);
-      if (!exactMatches.length)
+      if (!exactMatches.length) {
         exactMatches = this._filterWithMetadata(similarFiles, networkMetadata);
-      if (exactMatches.length !== 1)
+      }
+      if (exactMatches.length !== 1) {
         return null;
+      }
       return new Persistence.AutomappingStatus(networkSourceCode, exactMatches[0], true);
     }
   }
@@ -372,8 +405,9 @@ Persistence.Automapping = class {
   _filterWithMetadata(files, networkMetadata) {
     return files.filter(file => {
       const fileMetadata = file[this._metadataSymbol];
-      if (!fileMetadata)
+      if (!fileMetadata) {
         return false;
+      }
       // Allow a second of difference due to network timestamps lack of precision.
       const timeMatches = !networkMetadata.modificationTime ||
           Math.abs(networkMetadata.modificationTime - fileMetadata.modificationTime) < 1000;
@@ -418,8 +452,9 @@ Persistence.Automapping.FilePathIndex = class {
   similarFiles(networkPath) {
     const encodedPath = this._encoder.encode(networkPath);
     const longestCommonPrefix = this._reversedIndex.longestPrefix(encodedPath.reverse(), false);
-    if (!longestCommonPrefix)
+    if (!longestCommonPrefix) {
       return [];
+    }
     return this._reversedIndex.words(longestCommonPrefix)
         .map(encodedPath => this._encoder.decode(encodedPath.reverse()));
   }
@@ -444,8 +479,9 @@ Persistence.Automapping.FolderIndex = class {
    * @return {boolean}
    */
   addFolder(path) {
-    if (path.endsWith('/'))
+    if (path.endsWith('/')) {
       path = path.substring(0, path.length - 1);
+    }
     const encodedPath = this._encoder.encode(path);
     this._index.add(encodedPath);
     const count = this._folderCount.get(encodedPath) || 0;
@@ -458,12 +494,14 @@ Persistence.Automapping.FolderIndex = class {
    * @return {boolean}
    */
   removeFolder(path) {
-    if (path.endsWith('/'))
+    if (path.endsWith('/')) {
       path = path.substring(0, path.length - 1);
+    }
     const encodedPath = this._encoder.encode(path);
     const count = this._folderCount.get(encodedPath) || 0;
-    if (!count)
+    if (!count) {
       return false;
+    }
     if (count > 1) {
       this._folderCount.set(encodedPath, count - 1);
       return false;

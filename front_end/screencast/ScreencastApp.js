@@ -20,8 +20,9 @@ Screencast.ScreencastApp = class {
    * @return {!Screencast.ScreencastApp}
    */
   static _instance() {
-    if (!Screencast.ScreencastApp._appInstance)
+    if (!Screencast.ScreencastApp._appInstance) {
       Screencast.ScreencastApp._appInstance = new Screencast.ScreencastApp();
+    }
     return Screencast.ScreencastApp._appInstance;
   }
 
@@ -48,8 +49,9 @@ Screencast.ScreencastApp = class {
    * @param {!SDK.ScreenCaptureModel} screenCaptureModel
    */
   modelAdded(screenCaptureModel) {
-    if (this._screenCaptureModel)
+    if (this._screenCaptureModel) {
       return;
+    }
     this._screenCaptureModel = screenCaptureModel;
     this._toggleButton.setEnabled(true);
     this._screencastView = new Screencast.ScreencastView(screenCaptureModel);
@@ -63,8 +65,9 @@ Screencast.ScreencastApp = class {
    * @param {!SDK.ScreenCaptureModel} screenCaptureModel
    */
   modelRemoved(screenCaptureModel) {
-    if (this._screenCaptureModel !== screenCaptureModel)
+    if (this._screenCaptureModel !== screenCaptureModel) {
       return;
+    }
     delete this._screenCaptureModel;
     this._toggleButton.setEnabled(false);
     this._screencastView.detach();
@@ -79,14 +82,16 @@ Screencast.ScreencastApp = class {
   }
 
   _onScreencastEnabledChanged() {
-    if (!this._rootSplitWidget)
+    if (!this._rootSplitWidget) {
       return;
+    }
     const enabled = this._enabledSetting.get() && this._screencastView;
     this._toggleButton.setToggled(enabled);
-    if (enabled)
+    if (enabled) {
       this._rootSplitWidget.showBoth();
-    else
+    } else {
       this._rootSplitWidget.hideMain();
+    }
   }
 };
 

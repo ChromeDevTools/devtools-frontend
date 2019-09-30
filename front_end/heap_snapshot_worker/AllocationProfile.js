@@ -96,8 +96,9 @@ HeapSnapshotWorker.AllocationProfile = class {
       functionInfo.addTraceTopNode(result);
 
       const rawChildren = rawNodeArray[nodeOffset + childrenOffset];
-      for (let i = 0; i < rawChildren.length; i += nodeFieldCount)
+      for (let i = 0; i < rawChildren.length; i += nodeFieldCount) {
         result.children.push(traverseNode(rawChildren, i, result));
+      }
 
       return result;
     }
@@ -109,14 +110,16 @@ HeapSnapshotWorker.AllocationProfile = class {
    * @return {!Array.<!HeapSnapshotModel.SerializedAllocationNode>}
    */
   serializeTraceTops() {
-    if (this._traceTops)
+    if (this._traceTops) {
       return this._traceTops;
+    }
     const result = this._traceTops = [];
     const functionInfos = this._functionInfos;
     for (let i = 0; i < functionInfos.length; i++) {
       const info = functionInfos[i];
-      if (info.totalCount === 0)
+      if (info.totalCount === 0) {
         continue;
+      }
       const nodeId = this._nextNodeId++;
       const isRoot = i === 0;
       result.push(this._serializeNode(
@@ -143,8 +146,9 @@ HeapSnapshotWorker.AllocationProfile = class {
 
     const branchingCallers = [];
     const callers = node.callers();
-    for (let i = 0; i < callers.length; i++)
+    for (let i = 0; i < callers.length; i++) {
       branchingCallers.push(this._serializeCaller(callers[i]));
+    }
 
     return new HeapSnapshotModel.AllocationNodeCallers(nodesWithSingleCaller, branchingCallers);
   }
@@ -324,8 +328,9 @@ HeapSnapshotWorker.FunctionAllocationInfo = class {
    * @param {!HeapSnapshotWorker.TopDownAllocationNode} node
    */
   addTraceTopNode(node) {
-    if (node.allocationCount === 0)
+    if (node.allocationCount === 0) {
       return;
+    }
     this._traceTops.push(node);
     this.totalCount += node.allocationCount;
     this.totalSize += node.allocationSize;
@@ -337,10 +342,12 @@ HeapSnapshotWorker.FunctionAllocationInfo = class {
    * @return {?HeapSnapshotWorker.BottomUpAllocationNode}
    */
   bottomUpRoot() {
-    if (!this._traceTops.length)
+    if (!this._traceTops.length) {
       return null;
-    if (!this._bottomUpTree)
+    }
+    if (!this._bottomUpTree) {
       this._buildAllocationTraceTree();
+    }
     return this._bottomUpTree;
   }
 
@@ -362,8 +369,9 @@ HeapSnapshotWorker.FunctionAllocationInfo = class {
         bottomUpNode.liveSize += liveSize;
         bottomUpNode.traceTopIds.push(traceId);
         node = node.parent;
-        if (node === null)
+        if (node === null) {
           break;
+        }
 
         bottomUpNode = bottomUpNode.addCaller(node);
       }

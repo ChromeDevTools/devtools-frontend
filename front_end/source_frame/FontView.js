@@ -64,8 +64,9 @@ SourceFrame.FontView = class extends UI.SimpleView {
   }
 
   _createContentIfNeeded() {
-    if (this.fontPreviewElement)
+    if (this.fontPreviewElement) {
       return;
+    }
 
     const uniqueFontName = 'WebInspectorFontPreview' + (++SourceFrame.FontView._fontId);
 
@@ -75,8 +76,9 @@ SourceFrame.FontView = class extends UI.SimpleView {
 
     const fontPreview = createElement('div');
     for (let i = 0; i < SourceFrame.FontView._fontPreviewLines.length; ++i) {
-      if (i > 0)
+      if (i > 0) {
         fontPreview.createChild('br');
+      }
       fontPreview.createTextChild(SourceFrame.FontView._fontPreviewLines[i]);
     }
     this.fontPreviewElement = fontPreview.cloneNode(true);
@@ -109,8 +111,9 @@ SourceFrame.FontView = class extends UI.SimpleView {
    * @override
    */
   onResize() {
-    if (this._inResize)
+    if (this._inResize) {
       return;
+    }
 
     this._inResize = true;
     try {
@@ -129,8 +132,9 @@ SourceFrame.FontView = class extends UI.SimpleView {
   }
 
   updateFontPreviewSize() {
-    if (!this.fontPreviewElement || !this.isShowing())
+    if (!this.fontPreviewElement || !this.isShowing()) {
       return;
+    }
 
     this.fontPreviewElement.style.removeProperty('visibility');
     const dimension = this._measureElement();

@@ -24,13 +24,16 @@ SDK.IsolateManager = class extends Common.Object {
    * @param {!SDK.IsolateManager.Observer} observer
    */
   observeIsolates(observer) {
-    if (this._observers.has(observer))
+    if (this._observers.has(observer)) {
       throw new Error('Observer can only be registered once');
-    if (!this._observers.size)
+    }
+    if (!this._observers.size) {
       this._poll();
+    }
     this._observers.add(observer);
-    for (const isolate of this._isolates.values())
+    for (const isolate of this._isolates.values()) {
       observer.isolateAdded(isolate);
+    }
   }
 
   /**
@@ -38,8 +41,9 @@ SDK.IsolateManager = class extends Common.Object {
    */
   unobserveIsolates(observer) {
     this._observers.delete(observer);
-    if (!this._observers.size)
-      ++this._pollId;  // Stops the current polling loop.
+    if (!this._observers.size) {
+      ++this._pollId;
+    }  // Stops the current polling loop.
   }
 
   /**
@@ -72,11 +76,13 @@ SDK.IsolateManager = class extends Common.Object {
     }
     isolate._models.add(model);
     if (isolate._models.size === 1) {
-      for (const observer of this._observers)
+      for (const observer of this._observers) {
         observer.isolateAdded(isolate);
+      }
     } else {
-      for (const observer of this._observers)
+      for (const observer of this._observers) {
         observer.isolateChanged(isolate);
+      }
     }
   }
 
@@ -87,17 +93,20 @@ SDK.IsolateManager = class extends Common.Object {
   modelRemoved(model) {
     const isolateId = this._isolateIdByModel.get(model);
     this._isolateIdByModel.delete(model);
-    if (!isolateId)
+    if (!isolateId) {
       return;
+    }
     const isolate = this._isolates.get(isolateId);
     isolate._models.delete(model);
     if (isolate._models.size) {
-      for (const observer of this._observers)
+      for (const observer of this._observers) {
         observer.isolateChanged(isolate);
+      }
       return;
     }
-    for (const observer of this._observers)
+    for (const observer of this._observers) {
       observer.isolateRemoved(isolate);
+    }
     this._isolates.delete(isolateId);
   }
 
@@ -199,8 +208,9 @@ SDK.IsolateManager.Isolate = class {
   async _update() {
     const model = this.runtimeModel();
     const usage = model && await model.heapUsage();
-    if (!usage)
+    if (!usage) {
       return;
+    }
     this._usedHeapSize = usage.usedSize;
     this._memoryTrend.add(this._usedHeapSize);
     SDK.isolateManager.dispatchEventToListeners(SDK.IsolateManager.Events.MemoryChanged, this);

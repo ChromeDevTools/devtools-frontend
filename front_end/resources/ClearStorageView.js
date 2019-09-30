@@ -29,8 +29,9 @@ Resources.ClearStorageView = class extends UI.ThrottledWidget {
     this._securityOrigin = null;
 
     this._settings = new Map();
-    for (const type of Resources.ClearStorageView.AllStorageTypes)
+    for (const type of Resources.ClearStorageView.AllStorageTypes) {
       this._settings.set(type, Common.settings.createSetting('clear-storage-' + type, true));
+    }
 
     const quota = this._reportView.appendSection(Common.UIString('Usage'));
     this._quotaRow = quota.appendSelectableRow();
@@ -84,8 +85,9 @@ Resources.ClearStorageView = class extends UI.ThrottledWidget {
    * @param {!SDK.Target} target
    */
   targetAdded(target) {
-    if (this._target)
+    if (this._target) {
       return;
+    }
     this._target = target;
     const securityOriginManager = target.model(SDK.SecurityOriginManager);
     this._updateOrigin(
@@ -99,8 +101,9 @@ Resources.ClearStorageView = class extends UI.ThrottledWidget {
    * @param {!SDK.Target} target
    */
   targetRemoved(target) {
-    if (this._target !== target)
+    if (this._target !== target) {
       return;
+    }
     const securityOriginManager = target.model(SDK.SecurityOriginManager);
     securityOriginManager.removeEventListener(
         SDK.SecurityOriginManager.Events.MainSecurityOriginChanged, this._originChanged, this);
@@ -132,16 +135,19 @@ Resources.ClearStorageView = class extends UI.ThrottledWidget {
   }
 
   _clear() {
-    if (!this._securityOrigin)
+    if (!this._securityOrigin) {
       return;
+    }
     const selectedStorageTypes = [];
     for (const type of this._settings.keys()) {
-      if (this._settings.get(type).get())
+      if (this._settings.get(type).get()) {
         selectedStorageTypes.push(type);
+      }
     }
 
-    if (this._target)
+    if (this._target) {
       Resources.ClearStorageView.clear(this._target, this._securityOrigin, selectedStorageTypes);
+    }
 
     this._clearButton.disabled = true;
     const label = this._clearButton.textContent;
@@ -164,22 +170,25 @@ Resources.ClearStorageView = class extends UI.ThrottledWidget {
     const hasAll = set.has(Protocol.Storage.StorageType.All);
     if (set.has(Protocol.Storage.StorageType.Cookies) || hasAll) {
       const cookieModel = target.model(SDK.CookieModel);
-      if (cookieModel)
+      if (cookieModel) {
         cookieModel.clear();
+      }
     }
 
     if (set.has(Protocol.Storage.StorageType.Indexeddb) || hasAll) {
       for (const target of SDK.targetManager.targets()) {
         const indexedDBModel = target.model(Resources.IndexedDBModel);
-        if (indexedDBModel)
+        if (indexedDBModel) {
           indexedDBModel.clearForOrigin(securityOrigin);
+        }
       }
     }
 
     if (set.has(Protocol.Storage.StorageType.Local_storage) || hasAll) {
       const storageModel = target.model(Resources.DOMStorageModel);
-      if (storageModel)
+      if (storageModel) {
         storageModel.clearForOrigin(securityOrigin);
+      }
     }
 
     if (set.has(Protocol.Storage.StorageType.Websql) || hasAll) {
@@ -193,14 +202,16 @@ Resources.ClearStorageView = class extends UI.ThrottledWidget {
     if (set.has(Protocol.Storage.StorageType.Cache_storage) || hasAll) {
       const target = SDK.targetManager.mainTarget();
       const model = target && target.model(SDK.ServiceWorkerCacheModel);
-      if (model)
+      if (model) {
         model.clearForOrigin(securityOrigin);
+      }
     }
 
     if (set.has(Protocol.Storage.StorageType.Appcache) || hasAll) {
       const appcacheModel = target.model(Resources.ApplicationCacheModel);
-      if (appcacheModel)
+      if (appcacheModel) {
         appcacheModel.reset();
+      }
     }
   }
 
@@ -209,8 +220,9 @@ Resources.ClearStorageView = class extends UI.ThrottledWidget {
    * @return {!Promise<?>}
    */
   async doUpdate() {
-    if (!this._securityOrigin)
+    if (!this._securityOrigin) {
       return;
+    }
 
     const securityOrigin = /** @type {string} */ (this._securityOrigin);
     const response = await this._target.storageAgent().invoke_getUsageAndQuota({origin: securityOrigin});
@@ -232,8 +244,9 @@ Resources.ClearStorageView = class extends UI.ThrottledWidget {
       this._resetPieChart(response.usage);
       for (const usageForType of response.usageBreakdown.sort((a, b) => b.usage - a.usage)) {
         const value = usageForType.usage;
-        if (!value)
+        if (!value) {
           continue;
+        }
         const title = this._getStorageTypeName(usageForType.storageType);
         const color = this._pieColors.get(usageForType.storageType) || '#ccc';
         this._pieChart.addSlice(value, color, title);
@@ -313,14 +326,17 @@ Resources.ClearStorageView.ActionDelegate = class {
    */
   _handleClear() {
     const target = SDK.targetManager.mainTarget();
-    if (!target)
+    if (!target) {
       return false;
+    }
     const resourceTreeModel = target.model(SDK.ResourceTreeModel);
-    if (!resourceTreeModel)
+    if (!resourceTreeModel) {
       return false;
+    }
     const securityOrigin = resourceTreeModel.getMainSecurityOrigin();
-    if (!securityOrigin)
+    if (!securityOrigin) {
       return false;
+    }
 
     Resources.ClearStorageView.clear(target, securityOrigin, Resources.ClearStorageView.AllStorageTypes);
     return true;

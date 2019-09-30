@@ -203,11 +203,13 @@ Timeline.TimelineTreeView = class extends UI.VBox {
    */
   _linkifyLocation(event) {
     const target = this._model.timelineModel().targetByEvent(event);
-    if (!target)
+    if (!target) {
       return null;
+    }
     const frame = TimelineModel.TimelineProfileTree.eventStackFrame(event);
-    if (!frame)
+    if (!frame) {
       return null;
+    }
     return this._linkifier.maybeLinkifyConsoleCallFrame(target, frame);
   }
 
@@ -217,12 +219,14 @@ Timeline.TimelineTreeView = class extends UI.VBox {
    */
   selectProfileNode(treeNode, suppressSelectedEvent) {
     const pathToRoot = [];
-    for (let node = treeNode; node; node = node.parent)
+    for (let node = treeNode; node; node = node.parent) {
       pathToRoot.push(node);
+    }
     for (let i = pathToRoot.length - 1; i > 0; --i) {
       const gridNode = this.dataGridNodeForTreeNode(pathToRoot[i]);
-      if (gridNode && gridNode.dataGrid)
+      if (gridNode && gridNode.dataGrid) {
         gridNode.expand();
+      }
     }
     const gridNode = this.dataGridNodeForTreeNode(treeNode);
     if (gridNode.dataGrid) {
@@ -258,11 +262,13 @@ Timeline.TimelineTreeView = class extends UI.VBox {
     }
     this._sortingChanged();
     this._updateDetailsForSelection();
-    if (this._searchableView)
+    if (this._searchableView) {
       this._searchableView.refreshSearch();
+    }
     const rootNode = this._dataGrid.rootNode();
-    if (rootNode.children.length > 0)
+    if (rootNode.children.length > 0) {
       rootNode.children[0].select();
+    }
   }
 
   /**
@@ -295,8 +301,9 @@ Timeline.TimelineTreeView = class extends UI.VBox {
 
   _sortingChanged() {
     const columnId = this._dataGrid.sortColumnId();
-    if (!columnId)
+    if (!columnId) {
       return;
+    }
     let sortFunction;
     switch (columnId) {
       case 'startTime':
@@ -355,8 +362,9 @@ Timeline.TimelineTreeView = class extends UI.VBox {
   }
 
   _onShowModeChanged() {
-    if (this._splitWidget.showMode() === UI.SplitWidget.ShowMode.OnlyMain)
+    if (this._splitWidget.showMode() === UI.SplitWidget.ShowMode.OnlyMain) {
       return;
+    }
     this._lastSelectedNode = undefined;
     this._updateDetailsForSelection();
   }
@@ -365,15 +373,18 @@ Timeline.TimelineTreeView = class extends UI.VBox {
     const selectedNode = this._dataGrid.selectedNode ?
         /** @type {!Timeline.TimelineTreeView.TreeGridNode} */ (this._dataGrid.selectedNode)._profileNode :
         null;
-    if (selectedNode === this._lastSelectedNode)
+    if (selectedNode === this._lastSelectedNode) {
       return;
+    }
     this._lastSelectedNode = selectedNode;
-    if (this._splitWidget.showMode() === UI.SplitWidget.ShowMode.OnlyMain)
+    if (this._splitWidget.showMode() === UI.SplitWidget.ShowMode.OnlyMain) {
       return;
+    }
     this._detailsView.detachChildWidgets();
     this._detailsView.element.removeChildren();
-    if (selectedNode && this._showDetailsForNode(selectedNode))
+    if (selectedNode && this._showDetailsForNode(selectedNode)) {
       return;
+    }
     const banner = this._detailsView.element.createChild('div', 'full-widget-dimmed-banner');
     banner.createTextChild(Common.UIString('Select item for details.'));
   }
@@ -395,8 +406,9 @@ Timeline.TimelineTreeView = class extends UI.VBox {
             this._dataGrid.dataGridNodeFromNode(/** @type {!Node} */ (event.target))) :
         null;
     const profileNode = gridNode && gridNode._profileNode;
-    if (profileNode === this._lastHoveredProfileNode)
+    if (profileNode === this._lastHoveredProfileNode) {
       return;
+    }
     this._lastHoveredProfileNode = profileNode;
     this._onHover(profileNode);
   }
@@ -406,11 +418,13 @@ Timeline.TimelineTreeView = class extends UI.VBox {
    * @param {!DataGrid.DataGridNode} gridNode
    */
   _onContextMenu(contextMenu, gridNode) {
-    if (gridNode._linkElement && !contextMenu.containsTarget(gridNode._linkElement))
+    if (gridNode._linkElement && !contextMenu.containsTarget(gridNode._linkElement)) {
       contextMenu.appendApplicableItems(gridNode._linkElement);
+    }
     const profileNode = gridNode._profileNode;
-    if (profileNode)
+    if (profileNode) {
       this._appendContextMenuItems(contextMenu, profileNode);
+    }
   }
 
   /**
@@ -441,8 +455,9 @@ Timeline.TimelineTreeView = class extends UI.VBox {
   performSearch(searchConfig, shouldJump, jumpBackwards) {
     this._searchResults = [];
     this._currentResult = 0;
-    if (!this._root)
+    if (!this._root) {
       return;
+    }
     const searchRegex = searchConfig.toSearchRegex();
     this._searchResults =
         this._root.searchTree(event => Timeline.TimelineUIUtils.testContentMatching(event, searchRegex));
@@ -453,8 +468,9 @@ Timeline.TimelineTreeView = class extends UI.VBox {
    * @override
    */
   jumpToNextSearchResult() {
-    if (!this._searchResults.length)
+    if (!this._searchResults.length) {
       return;
+    }
     this.selectProfileNode(this._searchResults[this._currentResult], false);
     this._currentResult = mod(this._currentResult + 1, this._searchResults.length);
   }
@@ -463,8 +479,9 @@ Timeline.TimelineTreeView = class extends UI.VBox {
    * @override
    */
   jumpToPreviousSearchResult() {
-    if (!this._searchResults.length)
+    if (!this._searchResults.length) {
       return;
+    }
     this.selectProfileNode(this._searchResults[this._currentResult], false);
     this._currentResult = mod(this._currentResult - 1, this._searchResults.length);
   }
@@ -514,8 +531,9 @@ Timeline.TimelineTreeView.GridNode = class extends DataGrid.SortableDataGridNode
    * @return {!Element}
    */
   createCell(columnId) {
-    if (columnId === 'activity')
+    if (columnId === 'activity') {
       return this._createNameCell(columnId);
+    }
     return this._createValueCell(columnId) || super.createCell(columnId);
   }
 
@@ -535,18 +553,21 @@ Timeline.TimelineTreeView.GridNode = class extends DataGrid.SortableDataGridNode
       const info = treeView._displayInfoForGroupNode(this._profileNode);
       name.textContent = info.name;
       icon.style.backgroundColor = info.color;
-      if (info.icon)
+      if (info.icon) {
         iconContainer.insertBefore(info.icon, icon);
+      }
     } else if (event) {
       const data = event.args['data'];
       const deoptReason = data && data['deoptReason'];
-      if (deoptReason)
+      if (deoptReason) {
         container.createChild('div', 'activity-warning').title = Common.UIString('Not optimized: %s', deoptReason);
+      }
 
       name.textContent = Timeline.TimelineUIUtils.eventTitle(event);
       this._linkElement = this._treeView._linkifyLocation(event);
-      if (this._linkElement)
+      if (this._linkElement) {
         container.createChild('div', 'activity-link').appendChild(this._linkElement);
+      }
       const eventStyle = Timeline.TimelineUIUtils.eventStyle(event);
       const eventCategory = eventStyle.category;
       UI.ARIAUtils.setAccessibleName(icon, eventCategory.title);
@@ -560,8 +581,9 @@ Timeline.TimelineTreeView.GridNode = class extends DataGrid.SortableDataGridNode
    * @return {?Element}
    */
   _createValueCell(columnId) {
-    if (columnId !== 'self' && columnId !== 'total' && columnId !== 'startTime')
+    if (columnId !== 'self' && columnId !== 'total' && columnId !== 'startTime') {
       return null;
+    }
 
     let showPercents = false;
     let value;
@@ -622,11 +644,13 @@ Timeline.TimelineTreeView.TreeGridNode = class extends Timeline.TimelineTreeView
    * @override
    */
   populate() {
-    if (this._populated)
+    if (this._populated) {
       return;
+    }
     this._populated = true;
-    if (!this._profileNode.children)
+    if (!this._profileNode.children) {
       return;
+    }
     for (const node of this._profileNode.children().values()) {
       const gridNode = new Timeline.TimelineTreeView.TreeGridNode(
           node, this._grandTotalTime, this._maxSelfTime, this._maxTotalTime, this._treeView);
@@ -679,15 +703,17 @@ Timeline.AggregatedTimelineTreeView = class extends Timeline.TimelineTreeView {
     this._updateExtensionResolver();
     super.updateContents(selection);
     const rootNode = this._dataGrid.rootNode();
-    if (rootNode.children.length)
+    if (rootNode.children.length) {
       rootNode.children[0].select();
+    }
   }
 
   _updateExtensionResolver() {
     this._executionContextNamesByOrigin = new Map();
     for (const runtimeModel of SDK.targetManager.models(SDK.RuntimeModel)) {
-      for (const context of runtimeModel.executionContexts())
+      for (const context of runtimeModel.executionContexts()) {
         this._executionContextNamesByOrigin.set(context.origin, context.name);
+      }
     }
   }
 
@@ -697,12 +723,13 @@ Timeline.AggregatedTimelineTreeView = class extends Timeline.TimelineTreeView {
    * @this {Timeline.AggregatedTimelineTreeView}
    */
   _beautifyDomainName(name) {
-    if (Timeline.AggregatedTimelineTreeView._isExtensionInternalURL(name))
+    if (Timeline.AggregatedTimelineTreeView._isExtensionInternalURL(name)) {
       name = Common.UIString('[Chrome extensions overhead]');
-    else if (Timeline.AggregatedTimelineTreeView._isV8NativeURL(name))
+    } else if (Timeline.AggregatedTimelineTreeView._isV8NativeURL(name)) {
       name = Common.UIString('[V8 Runtime]');
-    else if (name.startsWith('chrome-extension'))
+    } else if (name.startsWith('chrome-extension')) {
       name = this._executionContextNamesByOrigin.get(name) || name;
+    }
     return name;
   }
 
@@ -729,8 +756,9 @@ Timeline.AggregatedTimelineTreeView = class extends Timeline.TimelineTreeView {
         let domainName = id ? this._beautifyDomainName(id) : undefined;
         if (domainName) {
           const productName = this._productByEvent(/** @type {!SDK.TracingModel.Event} */ (node.event));
-          if (productName)
+          if (productName) {
             domainName += ' \u2014 ' + productName;
+          }
         }
         return {name: domainName || unattributed, color: color};
       }
@@ -800,8 +828,9 @@ Timeline.AggregatedTimelineTreeView = class extends Timeline.TimelineTreeView {
     console.assert(!!treeNode.parent, 'Attempt to build stack for tree root');
     let result = [];
     // Do not add root to the stack, as it's the tree itself.
-    for (let node = treeNode; node && node.parent; node = node.parent)
+    for (let node = treeNode; node && node.parent; node = node.parent) {
       result.push(node);
+    }
     result = result.reverse();
     for (let node = treeNode; node && node.children() && node.children().size;) {
       const children = Array.from(node.children().values());
@@ -821,8 +850,9 @@ Timeline.AggregatedTimelineTreeView = class extends Timeline.TimelineTreeView {
 
   _onStackViewSelectionChanged() {
     const treeNode = this._stackView.selectedTreeNode();
-    if (treeNode)
+    if (treeNode) {
       this.selectProfileNode(treeNode, true);
+    }
   }
 
   /**
@@ -873,21 +903,28 @@ Timeline.AggregatedTimelineTreeView = class extends Timeline.TimelineTreeView {
    */
   _domainByEvent(groupSubdomains, event) {
     const url = TimelineModel.TimelineProfileTree.eventURL(event);
-    if (!url)
+    if (!url) {
       return '';
-    if (Timeline.AggregatedTimelineTreeView._isExtensionInternalURL(url))
+    }
+    if (Timeline.AggregatedTimelineTreeView._isExtensionInternalURL(url)) {
       return Timeline.AggregatedTimelineTreeView._extensionInternalPrefix;
-    if (Timeline.AggregatedTimelineTreeView._isV8NativeURL(url))
+    }
+    if (Timeline.AggregatedTimelineTreeView._isV8NativeURL(url)) {
       return Timeline.AggregatedTimelineTreeView._v8NativePrefix;
+    }
     const parsedURL = url.asParsedURL();
-    if (!parsedURL)
+    if (!parsedURL) {
       return '';
-    if (parsedURL.scheme === 'chrome-extension')
+    }
+    if (parsedURL.scheme === 'chrome-extension') {
       return parsedURL.scheme + '://' + parsedURL.host;
-    if (!groupSubdomains)
+    }
+    if (!groupSubdomains) {
       return parsedURL.host;
-    if (/^[.0-9]+$/.test(parsedURL.host))
+    }
+    if (/^[.0-9]+$/.test(parsedURL.host)) {
       return parsedURL.host;
+    }
     const domainMatch = /([^.]*\.)?[^.]*$/.exec(parsedURL.host);
     return domainMatch && domainMatch[0] || '';
   }
@@ -898,12 +935,15 @@ Timeline.AggregatedTimelineTreeView = class extends Timeline.TimelineTreeView {
    */
   _productByEvent(event) {
     const url = TimelineModel.TimelineProfileTree.eventURL(event);
-    if (!url)
+    if (!url) {
       return '';
-    if (this._productByURLCache.has(url))
+    }
+    if (this._productByURLCache.has(url)) {
       return this._productByURLCache.get(url);
-    if (!this._productRegistry)
+    }
+    if (!this._productRegistry) {
       return '';
+    }
     const parsedURL = url.asParsedURL();
     const name = parsedURL && this._productRegistry.nameForUrl(parsedURL) || '';
     this._productByURLCache.set(url, name);
@@ -916,12 +956,14 @@ Timeline.AggregatedTimelineTreeView = class extends Timeline.TimelineTreeView {
    */
   _productAndBadgeByEvent(event) {
     const url = TimelineModel.TimelineProfileTree.eventURL(event);
-    if (!url || !this._productRegistry)
+    if (!url || !this._productRegistry) {
       return null;
+    }
     const parsedURL = url.asParsedURL();
     const name = parsedURL && this._productRegistry.nameForUrl(parsedURL) || this._domainByEvent(true, event);
-    if (!name)
+    if (!name) {
       return null;
+    }
     const icon = parsedURL && this._badgePool.badgeForURL(parsedURL);
     return {name: this._beautifyDomainName(name), badge: icon};
   }
@@ -932,13 +974,16 @@ Timeline.AggregatedTimelineTreeView = class extends Timeline.TimelineTreeView {
    * @param {!TimelineModel.TimelineProfileTree.Node} node
    */
   _appendContextMenuItems(contextMenu, node) {
-    if (this._groupBySetting.get() !== Timeline.AggregatedTimelineTreeView.GroupBy.Frame)
+    if (this._groupBySetting.get() !== Timeline.AggregatedTimelineTreeView.GroupBy.Frame) {
       return;
-    if (!node.isGroupNode())
+    }
+    if (!node.isGroupNode()) {
       return;
+    }
     const frame = this._model.timelineModel().pageFrameById(/** @type {string} */ (node.id));
-    if (!frame || !frame.ownerNode)
+    if (!frame || !frame.ownerNode) {
       return;
+    }
     contextMenu.appendApplicableItems(frame.ownerNode);
   }
 
@@ -1062,8 +1107,9 @@ Timeline.TimelineStackView = class extends UI.VBox {
     for (const node of stack) {
       const gridNode = new Timeline.TimelineTreeView.GridNode(node, totalTime, totalTime, totalTime, this._treeView);
       rootNode.appendChild(gridNode);
-      if (node === selectedNode)
+      if (node === selectedNode) {
         nodeToReveal = gridNode;
+      }
     }
     nodeToReveal.revealAndSelect();
   }

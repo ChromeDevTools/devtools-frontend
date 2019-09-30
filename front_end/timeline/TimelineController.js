@@ -59,34 +59,40 @@ Timeline.TimelineController = class {
     ];
     categoriesArray.push(TimelineModel.TimelineModel.Category.LatencyInfo);
 
-    if (Runtime.experiments.isEnabled('timelineFlowEvents'))
+    if (Runtime.experiments.isEnabled('timelineFlowEvents')) {
       categoriesArray.push('devtools.timeline.async');
+    }
 
-    if (Runtime.experiments.isEnabled('timelineV8RuntimeCallStats') && options.enableJSSampling)
+    if (Runtime.experiments.isEnabled('timelineV8RuntimeCallStats') && options.enableJSSampling) {
       categoriesArray.push(disabledByDefault('v8.runtime_stats_sampling'));
+    }
     if (!Runtime.queryParam('timelineTracingJSProfileDisabled') && options.enableJSSampling) {
       categoriesArray.push(disabledByDefault('v8.cpu_profiler'));
-      if (Common.moduleSetting('highResolutionCpuProfiling').get())
+      if (Common.moduleSetting('highResolutionCpuProfiling').get()) {
         categoriesArray.push(disabledByDefault('v8.cpu_profiler.hires'));
+      }
     }
     categoriesArray.push(disabledByDefault('devtools.timeline.stack'));
-    if (Runtime.experiments.isEnabled('timelineInvalidationTracking'))
+    if (Runtime.experiments.isEnabled('timelineInvalidationTracking')) {
       categoriesArray.push(disabledByDefault('devtools.timeline.invalidationTracking'));
+    }
     if (options.capturePictures) {
       categoriesArray.push(
           disabledByDefault('devtools.timeline.layers'), disabledByDefault('devtools.timeline.picture'),
           disabledByDefault('blink.graphics_context_annotations'));
     }
-    if (options.captureFilmStrip)
+    if (options.captureFilmStrip) {
       categoriesArray.push(disabledByDefault('devtools.screenshot'));
+    }
 
     this._extensionSessions =
         providers.map(provider => new Timeline.ExtensionTracingSession(provider, this._performanceModel));
     this._extensionSessions.forEach(session => session.start());
     this._performanceModel.setRecordStartTime(Date.now());
     const response = await this._startRecordingWithCategories(categoriesArray.join(','), options.enableJSSampling);
-    if (response[Protocol.Error])
+    if (response[Protocol.Error]) {
       await this._waitForTracingToStop(false);
+    }
     return response;
   }
 
@@ -94,8 +100,9 @@ Timeline.TimelineController = class {
    * @return {!Promise<!Timeline.PerformanceModel>}
    */
   async stopRecording() {
-    if (this._tracingManager)
+    if (this._tracingManager) {
       this._tracingManager.stop();
+    }
 
     this._client.loadingStarted();
     await this._waitForTracingToStop(true);
@@ -110,8 +117,9 @@ Timeline.TimelineController = class {
    */
   _waitForTracingToStop(awaitTracingCompleteCallback) {
     const tracingStoppedPromises = [];
-    if (this._tracingManager && awaitTracingCompleteCallback)
+    if (this._tracingManager && awaitTracingCompleteCallback) {
       tracingStoppedPromises.push(new Promise(resolve => this._tracingCompleteCallback = resolve));
+    }
     tracingStoppedPromises.push(this._stopProfilingOnAllModels());
 
     const extensionCompletionPromises = this._extensionSessions.map(session => session.stop());
@@ -127,8 +135,9 @@ Timeline.TimelineController = class {
    * @param {!SDK.CPUProfilerModel} cpuProfilerModel
    */
   modelAdded(cpuProfilerModel) {
-    if (this._profiling)
+    if (this._profiling) {
       cpuProfilerModel.startRecording();
+    }
   }
 
   /**
@@ -158,8 +167,9 @@ Timeline.TimelineController = class {
       Common.console.warn(Common.UIString('CPU profile for a target is not available.'));
       return;
     }
-    if (!this._cpuProfiles)
+    if (!this._cpuProfiles) {
       this._cpuProfiles = new Map();
+    }
     this._cpuProfiles.set(targetId, cpuProfile);
   }
 
@@ -188,10 +198,12 @@ Timeline.TimelineController = class {
     // caused by starting CPU profiler, that needs to traverse JS heap to collect
     // all the functions data.
     await SDK.targetManager.suspendAllTargets('performance-timeline');
-    if (enableJSSampling && Runtime.queryParam('timelineTracingJSProfileDisabled'))
+    if (enableJSSampling && Runtime.queryParam('timelineTracingJSProfileDisabled')) {
       await this._startProfilingOnAllModels();
-    if (!this._tracingManager)
+    }
+    if (!this._tracingManager) {
       return;
+    }
 
     const samplingFrequencyHz = Common.moduleSetting('highResolutionCpuProfiling').get() ? 10000 : 1000;
     const options = 'sampling-frequency=' + samplingFrequencyHz;
@@ -235,8 +247,9 @@ Timeline.TimelineController = class {
    * @param {?Protocol.Profiler.Profile} cpuProfile
    */
   _injectCpuProfileEvent(pid, tid, cpuProfile) {
-    if (!cpuProfile)
+    if (!cpuProfile) {
       return;
+    }
     const cpuProfileEvent = /** @type {!SDK.TracingManager.EventPayload} */ ({
       cat: SDK.TracingModel.DevToolsMetadataEventCategory,
       ph: SDK.TracingModel.Phase.Instant,
@@ -256,42 +269,48 @@ Timeline.TimelineController = class {
     const metadataEventTypes = TimelineModel.TimelineModel.DevToolsMetadataEvent;
     const metadataEvents = this._tracingModel.devToolsMetadataEvents();
     const browserMetaEvent = metadataEvents.find(e => e.name === metadataEventTypes.TracingStartedInBrowser);
-    if (!browserMetaEvent)
+    if (!browserMetaEvent) {
       return null;
+    }
 
     /** @type {!Multimap<string, string>} */
     const pseudoPidToFrames = new Multimap();
     /** @type {!Map<string, number>} */
     const targetIdToPid = new Map();
     const frames = browserMetaEvent.args.data['frames'];
-    for (const frameInfo of frames)
+    for (const frameInfo of frames) {
       targetIdToPid.set(frameInfo.frame, frameInfo.processId);
+    }
     for (const event of metadataEvents) {
       const data = event.args.data;
       switch (event.name) {
         case metadataEventTypes.FrameCommittedInBrowser:
-          if (data.processId)
+          if (data.processId) {
             targetIdToPid.set(data.frame, data.processId);
-          else
+          } else {
             pseudoPidToFrames.set(data.processPseudoId, data.frame);
+          }
           break;
         case metadataEventTypes.ProcessReadyInBrowser:
-          for (const frame of pseudoPidToFrames.get(data.processPseudoId) || [])
+          for (const frame of pseudoPidToFrames.get(data.processPseudoId) || []) {
             targetIdToPid.set(frame, data.processId);
+          }
           break;
       }
     }
     const mainFrame = frames.find(frame => !frame.parent);
     const mainRendererProcessId = mainFrame.processId;
     const mainProcess = this._tracingModel.processById(mainRendererProcessId);
-    if (mainProcess)
+    if (mainProcess) {
       targetIdToPid.set(SDK.targetManager.mainTarget().id(), mainProcess.id());
+    }
     return targetIdToPid;
   }
 
   _injectCpuProfileEvents() {
-    if (!this._cpuProfiles)
+    if (!this._cpuProfiles) {
       return;
+    }
 
     const metadataEventTypes = TimelineModel.TimelineModel.DevToolsMetadataEvent;
     const metadataEvents = this._tracingModel.devToolsMetadataEvents();
@@ -300,12 +319,14 @@ Timeline.TimelineController = class {
     if (targetIdToPid) {
       for (const [id, profile] of this._cpuProfiles) {
         const pid = targetIdToPid.get(id);
-        if (!pid)
+        if (!pid) {
           continue;
+        }
         const process = this._tracingModel.processById(pid);
         const thread = process && process.threadByName(TimelineModel.TimelineModel.RendererMainThreadName);
-        if (thread)
+        if (thread) {
           this._injectCpuProfileEvent(pid, thread.id(), profile);
+        }
       }
     } else {
       // Legacy backends support.

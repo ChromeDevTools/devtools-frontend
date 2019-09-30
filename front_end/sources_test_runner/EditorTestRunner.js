@@ -18,8 +18,9 @@ SourcesTestRunner.createTestEditor = function(clientHeight, textEditorDelegate) 
 };
 
 function textWithSelection(text, selections) {
-  if (!selections.length)
+  if (!selections.length) {
     return text;
+  }
 
   function lineWithCursor(line, column, cursorChar) {
     return line.substring(0, column) + cursorChar + line.substring(column);
@@ -34,8 +35,9 @@ function textWithSelection(text, selections) {
     const endCursorChar = (selection.isEmpty() ? '|' : '<');
     lines[selection.endLine] = lineWithCursor(lines[selection.endLine], selection.endColumn, endCursorChar);
 
-    if (!selection.isEmpty())
+    if (!selection.isEmpty()) {
       lines[selection.startLine] = lineWithCursor(lines[selection.startLine], selection.startColumn, '>');
+    }
   }
 
   return lines.join('\n');
@@ -44,8 +46,9 @@ function textWithSelection(text, selections) {
 SourcesTestRunner.dumpTextWithSelection = function(textEditor, dumpWhiteSpaces) {
   let text = textWithSelection(textEditor.text(), textEditor.selections());
 
-  if (dumpWhiteSpaces)
+  if (dumpWhiteSpaces) {
     text = text.replace(/ /g, '.');
+  }
 
   TestRunner.addResult(text);
 };
@@ -121,8 +124,9 @@ function createCodeMirrorFakeEvent(editor, eventType, code, charCode, modifiers)
   };
 
   if (modifiers) {
-    for (let i = 0; i < modifiers.length; ++i)
+    for (let i = 0; i < modifiers.length; ++i) {
       event[modifiers[i]] = true;
+    }
   }
 
   return event;
@@ -149,8 +153,9 @@ function fakeCodeMirrorKeyEvent(editor, eventType, code, charCode, modifiers) {
 }
 
 function fakeCodeMirrorInputEvent(editor, character) {
-  if (typeof character !== 'string')
+  if (typeof character !== 'string') {
     return;
+  }
   const input = editor._codeMirror.display.input;
   const value = input.textarea.value;
   const newValue =
@@ -181,8 +186,9 @@ SourcesTestRunner.fakeKeyEvent = function(editor, originalCode, modifiers, callb
 
   code = code || eventCodes[originalCode] || originalCode;
 
-  if (typeof code === 'string')
+  if (typeof code === 'string') {
     code = code.charCodeAt(0);
+  }
 
   if (fakeCodeMirrorKeyEvent(editor, 'keydown', code, charCode, modifiers)) {
     callback();
@@ -220,10 +226,11 @@ SourcesTestRunner.dumpSelectionStats = function(textEditor) {
   for (let i = 0; i < sortedKeys.length; ++i) {
     let keyName = sortedKeys[i];
 
-    if (!keyName.length)
+    if (!keyName.length) {
       keyName = '<Empty string>';
-    else
+    } else {
       keyName = '\'' + keyName + '\'';
+    }
 
     TestRunner.addResult(keyName + ': ' + listHashMap[sortedKeys[i]]);
   }

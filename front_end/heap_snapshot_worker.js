@@ -3,8 +3,9 @@
 // found in the LICENSE file.
 // Release build has Runtime.js bundled.
 
-if (!self.Runtime)
+if (!self.Runtime) {
   self.importScripts('Runtime.js');
+}
 
 // Due to a lack of ESM within workers the functionality required by the
 // worker is duplicated here from Common. When ESM lands in Workers, this code
@@ -29,8 +30,9 @@ function serializeUIString(string, values = []) {
  * @return {*}
  */
 function deserializeUIString(serializedMessage) {
-  if (!serializedMessage)
+  if (!serializedMessage) {
     return {};
+  }
 
   return JSON.parse(serializedMessage);
 }
@@ -49,8 +51,9 @@ function UIString(string, vararg) {
  * @return {string}
  */
 self.ls = function(strings, vararg) {
-  if (typeof strings === 'string')
+  if (typeof strings === 'string') {
     return strings;
+  }
   let substitutionString = _substitutionStrings.get(strings);
   if (!substitutionString) {
     substitutionString = strings.join('%s');

@@ -12,8 +12,9 @@ Elements.DOMLinkifier = {};
 Elements.DOMLinkifier.decorateNodeLabel = function(node, parentElement, tooltipContent) {
   const originalNode = node;
   const isPseudo = node.nodeType() === Node.ELEMENT_NODE && node.pseudoType();
-  if (isPseudo && node.parentNode)
+  if (isPseudo && node.parentNode) {
     node = node.parentNode;
+  }
 
   let title = node.nodeNameInCorrectCase();
 
@@ -65,8 +66,9 @@ Elements.DOMLinkifier.decorateNodeLabel = function(node, parentElement, tooltipC
  * @return {!Node}
  */
 Elements.DOMLinkifier.linkifyNodeReference = function(node, options = {}) {
-  if (!node)
+  if (!node) {
     return createTextNode(Common.UIString('<node>'));
+  }
 
   const root = createElementWithClass('span', 'monospace');
   const shadowRoot = UI.createShadowRootWithCoreStyles(root, 'elements/domLinkifier.css');
@@ -127,10 +129,12 @@ Elements.DOMLinkifier.Linkifier = class {
    * @return {!Node}
    */
   linkify(object, options) {
-    if (object instanceof SDK.DOMNode)
+    if (object instanceof SDK.DOMNode) {
       return Elements.DOMLinkifier.linkifyNodeReference(object, options);
-    if (object instanceof SDK.DeferredDOMNode)
+    }
+    if (object instanceof SDK.DeferredDOMNode) {
       return Elements.DOMLinkifier.linkifyDeferredNodeReference(object, options);
+    }
     throw new Error('Can\'t linkify non-node');
   }
 };

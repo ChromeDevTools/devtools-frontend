@@ -46,21 +46,24 @@ Emulation.DevicesSettingsTab = class extends UI.VBox {
   }
 
   _devicesUpdated() {
-    if (this._muteUpdate)
+    if (this._muteUpdate) {
       return;
+    }
 
     this._list.clear();
 
     let devices = this._emulatedDevicesList.custom().slice();
-    for (let i = 0; i < devices.length; ++i)
+    for (let i = 0; i < devices.length; ++i) {
       this._list.appendItem(devices[i], true);
+    }
 
     this._list.appendSeparator();
 
     devices = this._emulatedDevicesList.standard().slice();
     devices.sort(Emulation.EmulatedDevice.deviceComparator);
-    for (let i = 0; i < devices.length; ++i)
+    for (let i = 0; i < devices.length; ++i) {
       this._list.appendItem(devices[i], false);
+    }
   }
 
   /**
@@ -68,10 +71,11 @@ Emulation.DevicesSettingsTab = class extends UI.VBox {
    */
   _muteAndSaveDeviceList(custom) {
     this._muteUpdate = true;
-    if (custom)
+    if (custom) {
       this._emulatedDevicesList.saveCustomDevices();
-    else
+    } else {
       this._emulatedDevicesList.saveStandardDevices();
+    }
     this._muteUpdate = false;
   }
 
@@ -154,14 +158,17 @@ Emulation.DevicesSettingsTab = class extends UI.VBox {
         {title: '', orientation: Emulation.EmulatedDevice.Horizontal, insets: new UI.Insets(0, 0, 0, 0), image: null});
     device.capabilities = [];
     const uaType = editor.control('ua-type').value;
-    if (uaType === Emulation.DeviceModeModel.UA.Mobile || uaType === Emulation.DeviceModeModel.UA.MobileNoTouch)
+    if (uaType === Emulation.DeviceModeModel.UA.Mobile || uaType === Emulation.DeviceModeModel.UA.MobileNoTouch) {
       device.capabilities.push(Emulation.EmulatedDevice.Capability.Mobile);
-    if (uaType === Emulation.DeviceModeModel.UA.Mobile || uaType === Emulation.DeviceModeModel.UA.DesktopTouch)
+    }
+    if (uaType === Emulation.DeviceModeModel.UA.Mobile || uaType === Emulation.DeviceModeModel.UA.DesktopTouch) {
       device.capabilities.push(Emulation.EmulatedDevice.Capability.Touch);
-    if (isNew)
+    }
+    if (isNew) {
       this._emulatedDevicesList.addCustomDevice(device);
-    else
+    } else {
       this._emulatedDevicesList.saveCustomDevices();
+    }
     this._addCustomButton.scrollIntoViewIfNeeded();
     this._addCustomButton.focus();
   }
@@ -180,10 +187,11 @@ Emulation.DevicesSettingsTab = class extends UI.VBox {
     editor.control('scale').value = this._toNumericInputValue(device.deviceScaleFactor);
     editor.control('user-agent').value = device.userAgent;
     let uaType;
-    if (device.mobile())
+    if (device.mobile()) {
       uaType = device.touch() ? Emulation.DeviceModeModel.UA.Mobile : Emulation.DeviceModeModel.UA.MobileNoTouch;
-    else
+    } else {
       uaType = device.touch() ? Emulation.DeviceModeModel.UA.DesktopTouch : Emulation.DeviceModeModel.UA.Desktop;
+    }
     editor.control('ua-type').value = uaType;
     return editor;
   }
@@ -192,8 +200,9 @@ Emulation.DevicesSettingsTab = class extends UI.VBox {
    * @return {!UI.ListWidget.Editor}
    */
   _createEditor() {
-    if (this._editor)
+    if (this._editor) {
       return this._editor;
+    }
 
     const editor = new UI.ListWidget.Editor();
     this._editor = editor;
@@ -234,12 +243,13 @@ Emulation.DevicesSettingsTab = class extends UI.VBox {
       let errorMessage;
 
       const value = input.value.trim();
-      if (value.length >= Emulation.DeviceModeModel.MaxDeviceNameLength)
+      if (value.length >= Emulation.DeviceModeModel.MaxDeviceNameLength) {
         errorMessage = ls`Device name must be less than ${Emulation.DeviceModeModel.MaxDeviceNameLength} characters.`;
-      else if (value.length === 0)
+      } else if (value.length === 0) {
         errorMessage = ls`Device name cannot be empty.`;
-      else
+      } else {
         valid = true;
+      }
 
       return {valid, errorMessage};
     }

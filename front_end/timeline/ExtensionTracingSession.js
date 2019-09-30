@@ -42,8 +42,9 @@ Timeline.ExtensionTracingSession = class {
    * @param {?SDK.TracingModel} tracingModel
    */
   loadingComplete(tracingModel) {
-    if (!tracingModel)
+    if (!tracingModel) {
       return;
+    }
     this._performanceModel.addExtensionEvents(this._provider.longDisplayName(), tracingModel, this._timeOffset);
     this._completionCallback();
   }

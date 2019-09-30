@@ -56,8 +56,9 @@ Bindings.DebuggerWorkspaceBinding = class {
    */
   updateLocations(script) {
     const modelData = this._debuggerModelToData.get(script.debuggerModel);
-    if (modelData)
+    if (modelData) {
       modelData._updateLocations(script);
+    }
   }
 
   /**
@@ -93,8 +94,9 @@ Bindings.DebuggerWorkspaceBinding = class {
    */
   createCallFrameLiveLocation(location, updateDelegate, locationPool) {
     const script = location.script();
-    if (!script)
+    if (!script) {
       return null;
+    }
     const debuggerModel = location.debuggerModel;
     const liveLocation = this.createLiveLocation(location, updateDelegate, locationPool);
     this._registerCallFrameLiveLocation(debuggerModel, liveLocation);
@@ -108,8 +110,9 @@ Bindings.DebuggerWorkspaceBinding = class {
   rawLocationToUILocation(rawLocation) {
     for (let i = 0; i < this._sourceMappings.length; ++i) {
       const uiLocation = this._sourceMappings[i].rawLocationToUILocation(rawLocation);
-      if (uiLocation)
+      if (uiLocation) {
         return uiLocation;
+      }
     }
     const modelData = this._debuggerModelToData.get(rawLocation.debuggerModel);
     return modelData._rawLocationToUILocation(rawLocation);
@@ -122,8 +125,9 @@ Bindings.DebuggerWorkspaceBinding = class {
    */
   uiSourceCodeForSourceMapSourceURL(debuggerModel, url, isContentScript) {
     const modelData = this._debuggerModelToData.get(debuggerModel);
-    if (!modelData)
+    if (!modelData) {
       return null;
+    }
     return modelData._compilerMapping.uiSourceCodeForURL(url, isContentScript);
   }
 
@@ -135,12 +139,15 @@ Bindings.DebuggerWorkspaceBinding = class {
    */
   uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber) {
     let locations = [];
-    for (let i = 0; i < this._sourceMappings.length && !locations.length; ++i)
+    for (let i = 0; i < this._sourceMappings.length && !locations.length; ++i) {
       locations = this._sourceMappings[i].uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber);
-    if (locations.length)
+    }
+    if (locations.length) {
       return locations;
-    for (const modelData of this._debuggerModelToData.values())
+    }
+    for (const modelData of this._debuggerModelToData.values()) {
       locations.push(...modelData._uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber));
+    }
     return locations;
   }
 
@@ -153,8 +160,9 @@ Bindings.DebuggerWorkspaceBinding = class {
         this.uiLocationToRawLocations(uiLocation.uiSourceCode, uiLocation.lineNumber, uiLocation.columnNumber);
     for (const location of rawLocations) {
       const uiLocationCandidate = this.rawLocationToUILocation(location);
-      if (uiLocationCandidate)
+      if (uiLocationCandidate) {
         return uiLocationCandidate;
+      }
     }
     return uiLocation;
   }
@@ -175,8 +183,9 @@ Bindings.DebuggerWorkspaceBinding = class {
    */
   sourceMapForScript(script) {
     const modelData = this._debuggerModelToData.get(script.debuggerModel);
-    if (!modelData)
+    if (!modelData) {
       return null;
+    }
     return modelData._compilerMapping.sourceMapForScript(script);
   }
 
@@ -220,8 +229,9 @@ Bindings.DebuggerWorkspaceBinding = class {
    */
   _removeLiveLocation(location) {
     const modelData = this._debuggerModelToData.get(location._script.debuggerModel);
-    if (modelData)
+    if (modelData) {
       modelData._disposeLocation(location);
+    }
   }
 
   /**
@@ -287,8 +297,9 @@ Bindings.DebuggerWorkspaceBinding.ModelData = class {
    * @param {!SDK.Script} script
    */
   _updateLocations(script) {
-    for (const location of this._locations.get(script))
+    for (const location of this._locations.get(script)) {
       location.update();
+    }
   }
 
   /**
@@ -422,23 +433,26 @@ Bindings.DebuggerWorkspaceBinding.StackTraceTopFrameLocation = class extends Bin
    */
   dispose() {
     super.dispose();
-    for (const location of this._locations)
+    for (const location of this._locations) {
       location.dispose();
+    }
     this._locations = null;
     this._current = null;
   }
 
   _scheduleUpdate() {
-    if (this._updateScheduled)
+    if (this._updateScheduled) {
       return;
+    }
     this._updateScheduled = true;
     setImmediate(this._updateLocation.bind(this));
   }
 
   _updateLocation() {
     this._updateScheduled = false;
-    if (!this._locations)
+    if (!this._locations) {
       return;
+    }
     this._current = this._locations.find(location => !location.isBlackboxed()) || this._locations[0];
     this.update();
   }

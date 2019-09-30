@@ -6,8 +6,9 @@
  */
 ProductRegistry.instance = function() {
   const extension = self.runtime.extension(ProductRegistry.Registry);
-  if (extension)
+  if (extension) {
     return extension.instance();
+  }
   // TODO(tvanderlippe): Remove type-cast once Closure compiler is updated to latest version.
   return Promise.resolve(/** @type {!ProductRegistry.Registry} */ (self.singleton(ProductRegistry.RegistryStub)));
 };

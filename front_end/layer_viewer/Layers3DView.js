@@ -80,8 +80,9 @@ LayerViewer.Layers3DView = class extends UI.VBox {
     this._layerTree = layerTree;
     this._layerTexture = null;
     delete this._oldTextureScale;
-    if (this._showPaints())
+    if (this._showPaints()) {
       this._textureManager.setLayerTree(layerTree);
+    }
     this._update();
   }
 
@@ -122,8 +123,9 @@ LayerViewer.Layers3DView = class extends UI.VBox {
    */
   wasShown() {
     this._textureManager.resume();
-    if (!this._needsUpdate)
+    if (!this._needsUpdate) {
       return;
+    }
     this._resizeCanvas();
     this._update();
   }
@@ -173,8 +175,9 @@ LayerViewer.Layers3DView = class extends UI.VBox {
     }
     if (selection.layer()) {
       const promise = selection.layer().snapshots()[0];
-      if (promise)
+      if (promise) {
         return promise;
+      }
     }
     return /** @type {!Promise<?SDK.SnapshotWithRect>} */ (Promise.resolve(null));
   }
@@ -185,8 +188,9 @@ LayerViewer.Layers3DView = class extends UI.VBox {
    */
   _initGL(canvas) {
     const gl = canvas.getContext('webgl');
-    if (!gl)
+    if (!gl) {
       return null;
+    }
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
     gl.enable(gl.BLEND);
     gl.clearColor(0.0, 0.0, 0.0, 0.0);
@@ -264,8 +268,9 @@ LayerViewer.Layers3DView = class extends UI.VBox {
                                        .translate(-baseWidth / 2, -baseHeight / 2, 0);
 
     let bounds;
-    for (let i = 0; i < this._rects.length; ++i)
+    for (let i = 0; i < this._rects.length; ++i) {
       bounds = UI.Geometry.boundsForTransformedPoints(scaleAndRotationMatrix, this._rects[i].vertices, bounds);
+    }
 
     this._transformController.clampOffsets(
         (paddingX - bounds.maxX) / window.devicePixelRatio,
@@ -324,11 +329,13 @@ LayerViewer.Layers3DView = class extends UI.VBox {
    * @return {?WebGLRenderingContext}
    */
   _initGLIfNecessary() {
-    if (this._gl)
+    if (this._gl) {
       return this._gl;
+    }
     this._gl = this._initGL(this._canvasElement);
-    if (!this._gl)
+    if (!this._gl) {
       return null;
+    }
     this._initShaders();
     this._initWhiteTexture();
     this._initChromeTextures();
@@ -348,8 +355,9 @@ LayerViewer.Layers3DView = class extends UI.VBox {
     this._visibleLayers = new Set();
     while (queue.length > 0) {
       const layer = queue.shift();
-      if (showInternalLayers || layer.drawsContent())
+      if (showInternalLayers || layer.drawsContent()) {
         this._visibleLayers.add(layer);
+      }
       const children = layer.children();
       for (let i = 0; i < children.length; ++i) {
         this._depthByLayerId[children[i].id()] = ++depth;
@@ -392,8 +400,9 @@ LayerViewer.Layers3DView = class extends UI.VBox {
    * @param {!SDK.Layer} layer
    */
   _calculateLayerRect(layer) {
-    if (!this._visibleLayers.has(layer))
+    if (!this._visibleLayers.has(layer)) {
       return;
+    }
     const selection = new LayerViewer.LayerView.LayerSelection(layer);
     const rect = new LayerViewer.Layers3DView.Rectangle(selection);
     rect.setVertices(layer.quad(), this._depthForLayer(layer));
@@ -448,8 +457,9 @@ LayerViewer.Layers3DView = class extends UI.VBox {
     const tiles = this._textureManager.tilesForLayer(layer);
     for (let i = 0; i < tiles.length; ++i) {
       const tile = tiles[i];
-      if (!tile.texture)
+      if (!tile.texture) {
         continue;
+      }
       const selection = new LayerViewer.LayerView.SnapshotSelection(layer, {rect: tile.rect, snapshot: tile.snapshot});
       const rect = new LayerViewer.Layers3DView.Rectangle(selection);
       rect.calculateVerticesFromRect(layer, tile.rect, this._depthForLayer(layer) + 1);
@@ -463,8 +473,9 @@ LayerViewer.Layers3DView = class extends UI.VBox {
     this._dimensionsForAutoscale = {width: 0, height: 0};
     this._layerTree.forEachLayer(this._calculateLayerRect.bind(this));
 
-    if (this._showSlowScrollRectsSetting.get())
+    if (this._showSlowScrollRectsSetting.get()) {
       this._layerTree.forEachLayer(this._calculateLayerScrollRects.bind(this));
+    }
 
     if (this._layerTexture && this._visibleLayers.has(this._layerTexture.layer)) {
       const layer = this._layerTexture.layer;
@@ -485,8 +496,9 @@ LayerViewer.Layers3DView = class extends UI.VBox {
   _makeColorsArray(color) {
     let colors = [];
     const normalizedColor = [color[0] / 255, color[1] / 255, color[2] / 255, color[3]];
-    for (let i = 0; i < 4; i++)
+    for (let i = 0; i < 4; i++) {
       colors = colors.concat(normalizedColor);
+    }
     return colors;
   }
 
@@ -540,8 +552,9 @@ LayerViewer.Layers3DView = class extends UI.VBox {
 
   _drawViewportAndChrome() {
     const viewport = this._layerTree.viewportSize();
-    if (!viewport)
+    if (!viewport) {
       return;
+    }
 
     const drawChrome = !Common.moduleSetting('frameViewerHideChromeWindow').get() && this._chromeTextures.length >= 3 &&
         this._chromeTextures.indexOf(undefined) < 0;
@@ -552,8 +565,9 @@ LayerViewer.Layers3DView = class extends UI.VBox {
     this._drawRectangle(
         vertices, drawChrome ? this._gl.LINE_STRIP : this._gl.LINE_LOOP, LayerViewer.Layers3DView.ViewportBorderColor);
 
-    if (!drawChrome)
+    if (!drawChrome) {
       return;
+    }
 
     const borderAdjustment = LayerViewer.Layers3DView.ViewportBorderWidth / 2;
     const viewportWidth = this._layerTree.viewportSize().width + 2 * borderAdjustment;
@@ -565,8 +579,9 @@ LayerViewer.Layers3DView = class extends UI.VBox {
     for (let i = 0; i < this._chromeTextures.length; ++i) {
       const width = i === LayerViewer.Layers3DView.ChromeTexture.Middle ? middleFragmentWidth :
                                                                           this._chromeTextures[i].image.naturalWidth;
-      if (width < 0 || x + width > viewportWidth)
+      if (width < 0 || x + width > viewportWidth) {
         break;
+      }
       vertices = [x, y, z, x + width, y, z, x + width, y + chromeHeight, z, x, y + chromeHeight, z];
       this._drawTexture(vertices, /** @type {!WebGLTexture} */ (this._chromeTextures[i]));
       x += width;
@@ -578,13 +593,15 @@ LayerViewer.Layers3DView = class extends UI.VBox {
    */
   _drawViewRect(rect) {
     const vertices = rect.vertices;
-    if (rect.texture)
+    if (rect.texture) {
       this._drawTexture(vertices, rect.texture, rect.fillColor || undefined);
-    else if (rect.fillColor)
+    } else if (rect.fillColor) {
       this._drawRectangle(vertices, this._gl.TRIANGLE_FAN, rect.fillColor);
+    }
     this._gl.lineWidth(rect.lineWidth);
-    if (rect.borderColor)
+    if (rect.borderColor) {
       this._drawRectangle(vertices, this._gl.LINE_LOOP, rect.borderColor);
+    }
   }
 
   _update() {
@@ -634,8 +651,9 @@ LayerViewer.Layers3DView = class extends UI.VBox {
    * @return {?LayerViewer.LayerView.Selection}
    */
   _selectionFromEventPoint(event) {
-    if (!this._layerTree)
+    if (!this._layerTree) {
       return null;
+    }
     let closestIntersectionPoint = Infinity;
     let closestObject = null;
     const projectionMatrix =
@@ -647,8 +665,9 @@ LayerViewer.Layers3DView = class extends UI.VBox {
      * @param {!LayerViewer.Layers3DView.Rectangle} rect
      */
     function checkIntersection(rect) {
-      if (!rect.relatedObject)
+      if (!rect.relatedObject) {
         return;
+      }
       const t = rect.intersectWithLine(projectionMatrix, x0, y0);
       if (t < closestIntersectionPoint) {
         closestIntersectionPoint = t;
@@ -707,8 +726,9 @@ LayerViewer.Layers3DView = class extends UI.VBox {
    * @param {!Event} event
    */
   _onMouseMove(event) {
-    if (event.which)
+    if (event.which) {
       return;
+    }
     this._layerViewHost.hoverObject(this._selectionFromEventPoint(event));
   }
 
@@ -726,8 +746,9 @@ LayerViewer.Layers3DView = class extends UI.VBox {
   _onMouseUp(event) {
     const maxDistanceInPixels = 6;
     if (this._mouseDownX && Math.abs(event.clientX - this._mouseDownX) < maxDistanceInPixels &&
-        Math.abs(event.clientY - this._mouseDownY) < maxDistanceInPixels)
+        Math.abs(event.clientY - this._mouseDownY) < maxDistanceInPixels) {
       this._layerViewHost.selectObject(this._selectionFromEventPoint(event));
+    }
     delete this._mouseDownX;
     delete this._mouseDownY;
   }
@@ -737,8 +758,9 @@ LayerViewer.Layers3DView = class extends UI.VBox {
    */
   _onDoubleClick(event) {
     const selection = this._selectionFromEventPoint(event);
-    if (selection && (selection.type() === LayerViewer.LayerView.Selection.Type.Snapshot || selection.layer()))
+    if (selection && (selection.type() === LayerViewer.LayerView.Selection.Type.Snapshot || selection.layer())) {
       this.dispatchEventToListeners(LayerViewer.Layers3DView.Events.PaintProfilerRequested, selection);
+    }
     event.stopPropagation();
   }
 
@@ -870,8 +892,9 @@ LayerViewer.LayerTextureManager = class {
   }
 
   reset() {
-    if (this._tilesByLayer)
+    if (this._tilesByLayer) {
       this.setLayerTree(null);
+    }
 
     /** @type {!Map<!SDK.Layer, !Array<!LayerViewer.LayerTextureManager.Tile>>} */
     this._tilesByLayer = new Map();
@@ -884,8 +907,9 @@ LayerViewer.LayerTextureManager = class {
    */
   setContext(glContext) {
     this._gl = glContext;
-    if (this._scale)
+    if (this._scale) {
       this._updateTextures();
+    }
   }
 
   suspend() {
@@ -894,8 +918,9 @@ LayerViewer.LayerTextureManager = class {
 
   resume() {
     this._active = true;
-    if (this._queue.length)
+    if (this._queue.length) {
       this._update();
+    }
   }
 
   /**
@@ -906,8 +931,9 @@ LayerViewer.LayerTextureManager = class {
     const oldLayers = Array.from(this._tilesByLayer.keys());
     if (layerTree) {
       layerTree.forEachLayer(layer => {
-        if (!layer.drawsContent())
+        if (!layer.drawsContent()) {
           return;
+        }
         newLayers.add(layer);
         if (!this._tilesByLayer.has(layer)) {
           this._tilesByLayer.set(layer, []);
@@ -915,11 +941,13 @@ LayerViewer.LayerTextureManager = class {
         }
       });
     }
-    if (!oldLayers.length)
+    if (!oldLayers.length) {
       this.forceUpdate();
+    }
     for (const layer of oldLayers) {
-      if (newLayers.has(layer))
+      if (newLayers.has(layer)) {
         continue;
+      }
       this._tilesByLayer.get(layer).forEach(tile => tile.dispose());
       this._tilesByLayer.delete(layer);
     }
@@ -944,10 +972,12 @@ LayerViewer.LayerTextureManager = class {
       }
     }
     this._tilesByLayer.set(layer, reusedTiles.concat(newTiles));
-    for (const tile of oldSnapshotsToTiles.values())
+    for (const tile of oldSnapshotsToTiles.values()) {
       tile.dispose();
-    if (!this._gl || !this._scale)
+    }
+    if (!this._gl || !this._scale) {
       return Promise.resolve();
+    }
     return Promise.all(newTiles.map(tile => tile.update(this._gl, this._scale))).then(this._textureUpdatedCallback);
   }
 
@@ -955,8 +985,9 @@ LayerViewer.LayerTextureManager = class {
    * @param {number} scale
    */
   setScale(scale) {
-    if (this._scale && this._scale >= scale)
+    if (this._scale && this._scale >= scale) {
       return;
+    }
     this._scale = scale;
     this._updateTextures();
   }
@@ -973,10 +1004,12 @@ LayerViewer.LayerTextureManager = class {
    * @param {!SDK.Layer} layer
    */
   layerNeedsUpdate(layer) {
-    if (this._queue.indexOf(layer) < 0)
+    if (this._queue.indexOf(layer) < 0) {
       this._queue.push(layer);
-    if (this._active)
+    }
+    if (this._active) {
       this._throttler.schedule(this._update.bind(this));
+    }
   }
 
   forceUpdate() {
@@ -990,10 +1023,12 @@ LayerViewer.LayerTextureManager = class {
    */
   _update() {
     const layer = this._queue.shift();
-    if (!layer)
+    if (!layer) {
       return Promise.resolve();
-    if (this._queue.length)
+    }
+    if (this._queue.length) {
       this._throttler.schedule(this._update.bind(this));
+    }
     return this._updateLayer(layer);
   }
 
@@ -1007,16 +1042,19 @@ LayerViewer.LayerTextureManager = class {
   }
 
   _updateTextures() {
-    if (!this._gl)
+    if (!this._gl) {
       return;
-    if (!this._scale)
+    }
+    if (!this._scale) {
       return;
+    }
 
     for (const tiles of this._tilesByLayer.values()) {
       for (const tile of tiles) {
         const promise = tile.updateScale(this._gl, this._scale);
-        if (promise)
+        if (promise) {
           promise.then(this._textureUpdatedCallback);
+        }
       }
     }
   }
@@ -1129,8 +1167,9 @@ LayerViewer.Layers3DView.Rectangle = class {
     for (i = 0; i < tVects.length; ++i) {
       const product =
           UI.Geometry.scalarProduct(normal, UI.Geometry.crossProduct(tVects[i], tVects[(i + 1) % tVects.length]));
-      if (product < 0)
+      if (product < 0) {
         return undefined;
+      }
     }
     return t;
   }
@@ -1166,8 +1205,9 @@ LayerViewer.LayerTextureManager.Tile = class {
    * @return {?Promise}
    */
   updateScale(glContext, scale) {
-    if (this.texture && this.scale >= scale)
+    if (this.texture && this.scale >= scale) {
       return null;
+    }
     return this.update(glContext, scale);
   }
 

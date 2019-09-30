@@ -18,18 +18,21 @@ Persistence.PersistenceActions.ContextMenuProvider = class {
   appendApplicableItems(event, contextMenu, target) {
     const contentProvider = /** @type {!Common.ContentProvider} */ (target);
     async function saveAs() {
-      if (contentProvider instanceof Workspace.UISourceCode)
+      if (contentProvider instanceof Workspace.UISourceCode) {
         /** @type {!Workspace.UISourceCode} */ (contentProvider).commitWorkingCopy();
+      }
       let content = await contentProvider.requestContent();
-      if (await contentProvider.contentEncoded())
+      if (await contentProvider.contentEncoded()) {
         content = window.atob(content);
+      }
       const url = contentProvider.contentURL();
       Workspace.fileManager.save(url, /** @type {string} */ (content), true);
       Workspace.fileManager.close(url);
     }
 
-    if (contentProvider.contentType().isDocumentOrScriptOrStyleSheet())
+    if (contentProvider.contentType().isDocumentOrScriptOrStyleSheet()) {
       contextMenu.saveSection().appendItem(Common.UIString('Save as...'), saveAs);
+    }
 
     // Retrieve uiSourceCode by URL to pick network resources everywhere.
     const uiSourceCode = Workspace.workspace.uiSourceCodeForURL(contentProvider.contentURL());

@@ -60,11 +60,13 @@ Bindings.StylesSourceMapping = class {
    */
   rawLocationToUILocation(rawLocation) {
     const header = rawLocation.header();
-    if (!header || !this._acceptsHeader(header))
+    if (!header || !this._acceptsHeader(header)) {
       return null;
+    }
     const styleFile = this._styleFiles.get(header.resourceURL());
-    if (!styleFile)
+    if (!styleFile) {
       return null;
+    }
     let lineNumber = rawLocation.lineNumber;
     let columnNumber = rawLocation.columnNumber;
     if (header.isInline && header.hasSourceURL) {
@@ -81,8 +83,9 @@ Bindings.StylesSourceMapping = class {
    */
   uiLocationToRawLocations(uiLocation) {
     const styleFile = uiLocation.uiSourceCode[Bindings.StyleFile._symbol];
-    if (!styleFile)
+    if (!styleFile) {
       return [];
+    }
     const rawLocations = [];
     for (const header of styleFile._headers) {
       let lineNumber = uiLocation.lineNumber;
@@ -100,10 +103,12 @@ Bindings.StylesSourceMapping = class {
    * @param {!SDK.CSSStyleSheetHeader} header
    */
   _acceptsHeader(header) {
-    if (header.isInline && !header.hasSourceURL && header.origin !== 'inspector')
+    if (header.isInline && !header.hasSourceURL && header.origin !== 'inspector') {
       return false;
-    if (!header.resourceURL())
+    }
+    if (!header.resourceURL()) {
       return false;
+    }
     return true;
   }
 
@@ -112,8 +117,9 @@ Bindings.StylesSourceMapping = class {
    */
   _styleSheetAdded(event) {
     const header = /** @type {!SDK.CSSStyleSheetHeader} */ (event.data);
-    if (!this._acceptsHeader(header))
+    if (!this._acceptsHeader(header)) {
       return;
+    }
 
     const url = header.resourceURL();
     let styleFile = this._styleFiles.get(url);
@@ -130,8 +136,9 @@ Bindings.StylesSourceMapping = class {
    */
   _styleSheetRemoved(event) {
     const header = /** @type {!SDK.CSSStyleSheetHeader} */ (event.data);
-    if (!this._acceptsHeader(header))
+    if (!this._acceptsHeader(header)) {
       return;
+    }
     const url = header.resourceURL();
     const styleFile = this._styleFiles.get(url);
     if (styleFile._headers.size === 1) {
@@ -147,15 +154,17 @@ Bindings.StylesSourceMapping = class {
    */
   _styleSheetChanged(event) {
     const header = this._cssModel.styleSheetHeaderForId(event.data.styleSheetId);
-    if (!header || !this._acceptsHeader(header))
+    if (!header || !this._acceptsHeader(header)) {
       return;
+    }
     const styleFile = this._styleFiles.get(header.resourceURL());
     styleFile._styleSheetChanged(header);
   }
 
   dispose() {
-    for (const styleFile of this._styleFiles.values())
+    for (const styleFile of this._styleFiles.values()) {
       styleFile.dispose();
+    }
     this._styleFiles.clear();
     Common.EventTarget.removeEventListeners(this._eventListeners);
     this._project.removeProject();
@@ -219,8 +228,9 @@ Bindings.StyleFile = class {
    */
   _styleSheetChanged(header) {
     console.assert(this._headers.has(header));
-    if (this._isUpdatingHeaders || !this._headers.has(header))
+    if (this._isUpdatingHeaders || !this._headers.has(header)) {
       return;
+    }
     const mirrorContentBound = this._mirrorContent.bind(this, header, true /* majorChange */);
     this._throttler.schedule(mirrorContentBound, false /* asSoonAsPossible */);
   }
@@ -229,8 +239,9 @@ Bindings.StyleFile = class {
    * @param {!Common.Event} event
    */
   _workingCopyCommitted(event) {
-    if (this._isAddingRevision)
+    if (this._isAddingRevision) {
       return;
+    }
     const mirrorContentBound = this._mirrorContent.bind(this, this._uiSourceCode, true /* majorChange */);
     this._throttler.schedule(mirrorContentBound, true /* asSoonAsPossible */);
   }
@@ -239,8 +250,9 @@ Bindings.StyleFile = class {
    * @param {!Common.Event} event
    */
   _workingCopyChanged(event) {
-    if (this._isAddingRevision)
+    if (this._isAddingRevision) {
       return;
+    }
     const mirrorContentBound = this._mirrorContent.bind(this, this._uiSourceCode, false /* majorChange */);
     this._throttler.schedule(mirrorContentBound, false /* asSoonAsPossible */);
   }
@@ -278,8 +290,9 @@ Bindings.StyleFile = class {
     this._isUpdatingHeaders = true;
     const promises = [];
     for (const header of this._headers) {
-      if (header === fromProvider)
+      if (header === fromProvider) {
         continue;
+      }
       promises.push(this._cssModel.setStyleSheetText(header.id, newContent, majorChange));
     }
     // ------ ASYNC ------
@@ -292,8 +305,9 @@ Bindings.StyleFile = class {
   }
 
   dispose() {
-    if (this._terminated)
+    if (this._terminated) {
       return;
+    }
     this._terminated = true;
     this._project.removeFile(this._uiSourceCode.url());
     Common.EventTarget.removeEventListeners(this._eventListeners);

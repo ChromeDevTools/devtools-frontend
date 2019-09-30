@@ -56,15 +56,18 @@ Components.DockController = class extends Common.Object {
     this._currentDockStateSetting = Common.settings.moduleSetting('currentDockState');
     this._currentDockStateSetting.addChangeListener(this._dockSideChanged, this);
     this._lastDockStateSetting = Common.settings.createSetting('lastDockState', 'bottom');
-    if (this._states.indexOf(this._currentDockStateSetting.get()) === -1)
+    if (this._states.indexOf(this._currentDockStateSetting.get()) === -1) {
       this._currentDockStateSetting.set('right');
-    if (this._states.indexOf(this._lastDockStateSetting.get()) === -1)
+    }
+    if (this._states.indexOf(this._lastDockStateSetting.get()) === -1) {
       this._currentDockStateSetting.set('bottom');
+    }
   }
 
   initialize() {
-    if (!this._canDock)
+    if (!this._canDock) {
       return;
+    }
 
     this._titles = [
       Common.UIString('Dock to right'), Common.UIString('Dock to bottom'), Common.UIString('Dock to left'),
@@ -104,14 +107,17 @@ Components.DockController = class extends Common.Object {
    * @suppressGlobalPropertiesCheck
    */
   setDockSide(dockSide) {
-    if (this._states.indexOf(dockSide) === -1)
+    if (this._states.indexOf(dockSide) === -1) {
       dockSide = this._states[0];
+    }
 
-    if (this._dockSide === dockSide)
+    if (this._dockSide === dockSide) {
       return;
+    }
 
-    if (this._dockSide)
+    if (this._dockSide) {
       this._lastDockStateSetting.set(this._dockSide);
+    }
 
     this._savedFocus = document.deepActiveElement();
     const eventData = {from: this._dockSide, to: dockSide};

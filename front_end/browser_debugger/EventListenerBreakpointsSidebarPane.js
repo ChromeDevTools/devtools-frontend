@@ -17,14 +17,16 @@ BrowserDebugger.EventListenerBreakpointsSidebarPane = class extends UI.VBox {
     const categories = SDK.domDebuggerManager.eventListenerBreakpoints().map(breakpoint => breakpoint.category());
     categories.sort();
     for (const category of categories) {
-      if (!this._categories.has(category))
+      if (!this._categories.has(category)) {
         this._createCategory(category);
+      }
     }
 
     /** @type {!Map<!SDK.DOMDebuggerModel.EventListenerBreakpoint, !BrowserDebugger.EventListenerBreakpointsSidebarPane.Item>} */
     this._breakpoints = new Map();
-    for (const breakpoint of SDK.domDebuggerManager.eventListenerBreakpoints())
+    for (const breakpoint of SDK.domDebuggerManager.eventListenerBreakpoints()) {
       this._createBreakpoint(breakpoint);
+    }
 
     SDK.targetManager.addModelListener(SDK.DebuggerModel, SDK.DebuggerModel.Events.DebuggerPaused, this._update, this);
     SDK.targetManager.addModelListener(SDK.DebuggerModel, SDK.DebuggerModel.Events.DebuggerResumed, this._update, this);
@@ -75,8 +77,9 @@ BrowserDebugger.EventListenerBreakpointsSidebarPane = class extends UI.VBox {
     }
 
     const breakpoint = SDK.domDebuggerManager.resolveEventListenerBreakpoint(/** @type {!Object} */ (details.auxData));
-    if (!breakpoint)
+    if (!breakpoint) {
       return;
+    }
 
     UI.viewManager.showView('sources.eventListenerBreakpoints');
     this._categories.get(breakpoint.category()).element.expand();
@@ -109,10 +112,11 @@ BrowserDebugger.EventListenerBreakpointsSidebarPane = class extends UI.VBox {
     let hasDisabled = false;
     for (const other of this._breakpoints.keys()) {
       if (other.category() === breakpoint.category()) {
-        if (other.enabled())
+        if (other.enabled()) {
           hasEnabled = true;
-        else
+        } else {
           hasDisabled = true;
+        }
       }
     }
 

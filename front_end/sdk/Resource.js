@@ -59,16 +59,18 @@ SDK.Resource = class {
     /** @type {?string} */ this._content;
     /** @type {boolean} */ this._contentEncoded;
     this._pendingContentCallbacks = [];
-    if (this._request && !this._request.finished)
+    if (this._request && !this._request.finished) {
       this._request.addEventListener(SDK.NetworkRequest.Events.FinishedLoading, this._requestFinished, this);
+    }
   }
 
   /**
    * @return {?Date}
    */
   lastModified() {
-    if (this._lastModified || !this._request)
+    if (this._lastModified || !this._request) {
       return this._lastModified;
+    }
     const lastModifiedHeader = this._request.responseLastModified();
     const date = lastModifiedHeader ? new Date(lastModifiedHeader) : null;
     this._lastModified = date && date.isValid() ? date : null;
@@ -79,8 +81,9 @@ SDK.Resource = class {
    * @return {?number}
    */
   contentSize() {
-    if (typeof this._contentSize === 'number' || !this._request)
+    if (typeof this._contentSize === 'number' || !this._request) {
       return this._contentSize;
+    }
     return this._request.resourceSize;
   }
 
@@ -172,8 +175,9 @@ SDK.Resource = class {
    * @return {!Common.ResourceType}
    */
   contentType() {
-    if (this.resourceType() === Common.resourceTypes.Document && this.mimeType.indexOf('javascript') !== -1)
+    if (this.resourceType() === Common.resourceTypes.Document && this.mimeType.indexOf('javascript') !== -1) {
       return Common.resourceTypes.Script;
+    }
     return this.resourceType();
   }
 
@@ -191,14 +195,16 @@ SDK.Resource = class {
    * @return {!Promise<string>}
    */
   requestContent() {
-    if (typeof this._content !== 'undefined')
+    if (typeof this._content !== 'undefined') {
       return Promise.resolve(/** @type {string} */ (this._content));
+    }
 
     let callback;
     const promise = new Promise(fulfill => callback = fulfill);
     this._pendingContentCallbacks.push(callback);
-    if (!this._request || this._request.finished)
+    if (!this._request || this._request.finished) {
       this._innerRequestContent();
+    }
     return promise;
   }
 
@@ -217,10 +223,12 @@ SDK.Resource = class {
    * @return {!Promise<!Array<!Common.ContentProvider.SearchMatch>>}
    */
   async searchInContent(query, caseSensitive, isRegex) {
-    if (!this.frameId)
+    if (!this.frameId) {
       return [];
-    if (this.request)
+    }
+    if (this.request) {
       return this.request.searchInContent(query, caseSensitive, isRegex);
+    }
     const result = await this._resourceTreeModel.target().pageAgent().searchInResource(
         this.frameId, this.url, query, caseSensitive, isRegex);
     return result || [];
@@ -237,13 +245,15 @@ SDK.Resource = class {
 
   _requestFinished() {
     this._request.removeEventListener(SDK.NetworkRequest.Events.FinishedLoading, this._requestFinished, this);
-    if (this._pendingContentCallbacks.length)
+    if (this._pendingContentCallbacks.length) {
       this._innerRequestContent();
+    }
   }
 
   async _innerRequestContent() {
-    if (this._contentRequested)
+    if (this._contentRequested) {
       return;
+    }
     this._contentRequested = true;
 
     if (this.request) {
@@ -257,11 +267,13 @@ SDK.Resource = class {
       this._contentEncoded = response.base64Encoded;
     }
 
-    if (this._content === null)
+    if (this._content === null) {
       this._contentEncoded = false;
+    }
 
-    for (const callback of this._pendingContentCallbacks.splice(0))
+    for (const callback of this._pendingContentCallbacks.splice(0)) {
       callback(this._content);
+    }
     delete this._contentRequested;
   }
 
@@ -269,10 +281,12 @@ SDK.Resource = class {
    * @return {boolean}
    */
   hasTextContent() {
-    if (this._type.isTextType())
+    if (this._type.isTextType()) {
       return true;
-    if (this._type === Common.resourceTypes.Other)
+    }
+    if (this._type === Common.resourceTypes.Other) {
       return !!this._content && !this._contentEncoded;
+    }
     return false;
   }
 

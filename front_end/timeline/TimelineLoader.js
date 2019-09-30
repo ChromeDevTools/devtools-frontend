@@ -39,8 +39,9 @@ Timeline.TimelineLoader = class {
     loader._canceledCallback = fileReader.cancel.bind(fileReader);
     loader._totalSize = file.size;
     fileReader.read(loader).then(success => {
-      if (!success)
+      if (!success) {
         loader._reportErrorAndCancelLoading(fileReader.error().message);
+      }
     });
     return loader;
   }
@@ -84,8 +85,9 @@ Timeline.TimelineLoader = class {
     this._backingStorage.reset();
     this._client.loadingComplete(null);
     this._client = null;
-    if (this._canceledCallback)
+    if (this._canceledCallback) {
       this._canceledCallback();
+    }
   }
 
   /**
@@ -94,13 +96,15 @@ Timeline.TimelineLoader = class {
    * @return {!Promise}
    */
   write(chunk) {
-    if (!this._client)
+    if (!this._client) {
       return Promise.resolve();
+    }
     this._loadedBytes += chunk.length;
-    if (this._firstRawChunk)
+    if (this._firstRawChunk) {
       this._client.loadingStarted();
-    else
+    } else {
       this._client.loadingProgress(this._totalSize ? this._loadedBytes / this._totalSize : undefined);
+    }
     this._firstRawChunk = false;
 
     if (this._state === Timeline.TimelineLoader.State.Initial) {
@@ -126,19 +130,23 @@ Timeline.TimelineLoader = class {
       const startPos = this._buffer.length - objectName.length;
       this._buffer += chunk;
       const pos = this._buffer.indexOf(objectName, startPos);
-      if (pos === -1)
+      if (pos === -1) {
         return Promise.resolve();
+      }
       chunk = this._buffer.slice(pos + objectName.length);
       this._state = Timeline.TimelineLoader.State.ReadingEvents;
     }
 
-    if (this._state !== Timeline.TimelineLoader.State.ReadingEvents)
+    if (this._state !== Timeline.TimelineLoader.State.ReadingEvents) {
       return Promise.resolve();
-    if (this._jsonTokenizer.write(chunk))
+    }
+    if (this._jsonTokenizer.write(chunk)) {
       return Promise.resolve();
+    }
     this._state = Timeline.TimelineLoader.State.SkippingTail;
-    if (this._firstChunk)
+    if (this._firstChunk) {
       this._reportErrorAndCancelLoading(Common.UIString('Malformed timeline input, wrong JSON brackets balance'));
+    }
     return Promise.resolve();
   }
 
@@ -150,8 +158,9 @@ Timeline.TimelineLoader = class {
 
     if (!this._firstChunk) {
       const commaIndex = json.indexOf(',');
-      if (commaIndex !== -1)
+      if (commaIndex !== -1) {
         json = json.slice(commaIndex + 1);
+      }
       json = '[' + json;
     }
 
@@ -182,8 +191,9 @@ Timeline.TimelineLoader = class {
    * @param {string=} message
    */
   _reportErrorAndCancelLoading(message) {
-    if (message)
+    if (message) {
       Common.console.error(message);
+    }
     this.cancel();
   }
 
@@ -199,8 +209,9 @@ Timeline.TimelineLoader = class {
    * @override
    */
   async close() {
-    if (!this._client)
+    if (!this._client) {
       return;
+    }
     this._client.processingStarted();
     setTimeout(() => this._finalizeTrace(), 0);
   }

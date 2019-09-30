@@ -43,11 +43,13 @@ Network.RequestPreviewView = class extends Network.RequestResponseView {
    */
   async showPreview() {
     const view = await super.showPreview();
-    if (!(view instanceof UI.SimpleView))
+    if (!(view instanceof UI.SimpleView)) {
       return view;
+    }
     const toolbar = new UI.Toolbar('network-item-preview-toolbar', this.element);
-    for (const item of view.syncToolbarItems())
+    for (const item of view.syncToolbarItems()) {
       toolbar.appendToolbarItem(item);
+    }
     return view;
   }
 
@@ -56,20 +58,23 @@ Network.RequestPreviewView = class extends Network.RequestResponseView {
    */
   async _htmlPreview() {
     const contentData = await this.request.contentData();
-    if (contentData.error)
+    if (contentData.error) {
       return new UI.EmptyWidget(Common.UIString('Failed to load response data'));
+    }
 
     const whitelist = new Set(['text/html', 'text/plain', 'application/xhtml+xml']);
-    if (!whitelist.has(this.request.mimeType))
+    if (!whitelist.has(this.request.mimeType)) {
       return null;
+    }
 
     const content = contentData.encoded ? window.atob(/** @type {string} */ (contentData.content)) :
                                           /** @type {string} */ (contentData.content);
 
     // http://crbug.com/767393 - DevTools should recognize JSON regardless of the content type
     const jsonView = await SourceFrame.JSONView.createView(content);
-    if (jsonView)
+    if (jsonView) {
       return jsonView;
+    }
 
     const dataURL = Common.ContentProvider.contentAsDataURL(
         contentData.content, this.request.mimeType, contentData.encoded, this.request.charset());
@@ -82,16 +87,19 @@ Network.RequestPreviewView = class extends Network.RequestResponseView {
    * @return {!Promise<!UI.Widget>}
    */
   async createPreview() {
-    if (this.request.signedExchangeInfo())
+    if (this.request.signedExchangeInfo()) {
       return new Network.SignedExchangeInfoView(this.request);
+    }
 
     const htmlErrorPreview = await this._htmlPreview();
-    if (htmlErrorPreview)
+    if (htmlErrorPreview) {
       return htmlErrorPreview;
+    }
 
     const provided = await SourceFrame.PreviewFactory.createPreview(this.request, this.request.mimeType);
-    if (provided)
+    if (provided) {
       return provided;
+    }
 
     return new UI.EmptyWidget(Common.UIString('Preview not available'));
   }

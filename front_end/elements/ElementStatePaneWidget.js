@@ -20,8 +20,9 @@ Elements.ElementStatePaneWidget = class extends UI.Widget {
      */
     function clickListener(event) {
       const node = UI.context.flavor(SDK.DOMNode);
-      if (!node)
+      if (!node) {
         return;
+      }
       node.domModel().cssModel().forcePseudoState(node, event.target.state, event.target.checked);
     }
 
@@ -64,13 +65,16 @@ Elements.ElementStatePaneWidget = class extends UI.Widget {
    * @param {?SDK.CSSModel} cssModel
    */
   _updateModel(cssModel) {
-    if (this._cssModel === cssModel)
+    if (this._cssModel === cssModel) {
       return;
-    if (this._cssModel)
+    }
+    if (this._cssModel) {
       this._cssModel.removeEventListener(SDK.CSSModel.Events.PseudoStateForced, this._update, this);
+    }
     this._cssModel = cssModel;
-    if (this._cssModel)
+    if (this._cssModel) {
       this._cssModel.addEventListener(SDK.CSSModel.Events.PseudoStateForced, this._update, this);
+    }
   }
 
   /**
@@ -81,12 +85,14 @@ Elements.ElementStatePaneWidget = class extends UI.Widget {
   }
 
   _update() {
-    if (!this.isShowing())
+    if (!this.isShowing()) {
       return;
+    }
 
     let node = UI.context.flavor(SDK.DOMNode);
-    if (node)
+    if (node) {
       node = node.enclosingElementOrSelf();
+    }
 
     this._updateModel(node ? node.domModel().cssModel() : null);
     if (node) {

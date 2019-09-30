@@ -20,22 +20,27 @@ Emulation.DeviceModeModel = class extends Common.Object {
 
     this._scaleSetting = Common.settings.createSetting('emulation.deviceScale', 1);
     // We've used to allow zero before.
-    if (!this._scaleSetting.get())
+    if (!this._scaleSetting.get()) {
       this._scaleSetting.set(1);
+    }
     this._scaleSetting.addChangeListener(this._scaleSettingChanged, this);
 
     this._widthSetting = Common.settings.createSetting('emulation.deviceWidth', 400);
-    if (this._widthSetting.get() < Emulation.DeviceModeModel.MinDeviceSize)
+    if (this._widthSetting.get() < Emulation.DeviceModeModel.MinDeviceSize) {
       this._widthSetting.set(Emulation.DeviceModeModel.MinDeviceSize);
-    if (this._widthSetting.get() > Emulation.DeviceModeModel.MaxDeviceSize)
+    }
+    if (this._widthSetting.get() > Emulation.DeviceModeModel.MaxDeviceSize) {
       this._widthSetting.set(Emulation.DeviceModeModel.MaxDeviceSize);
+    }
     this._widthSetting.addChangeListener(this._widthSettingChanged, this);
 
     this._heightSetting = Common.settings.createSetting('emulation.deviceHeight', 0);
-    if (this._heightSetting.get() && this._heightSetting.get() < Emulation.DeviceModeModel.MinDeviceSize)
+    if (this._heightSetting.get() && this._heightSetting.get() < Emulation.DeviceModeModel.MinDeviceSize) {
       this._heightSetting.set(Emulation.DeviceModeModel.MinDeviceSize);
-    if (this._heightSetting.get() > Emulation.DeviceModeModel.MaxDeviceSize)
+    }
+    if (this._heightSetting.get() > Emulation.DeviceModeModel.MaxDeviceSize) {
       this._heightSetting.set(Emulation.DeviceModeModel.MaxDeviceSize);
+    }
     this._heightSetting.addChangeListener(this._heightSettingChanged, this);
 
     this._uaSetting = Common.settings.createSetting('emulation.deviceUA', Emulation.DeviceModeModel.UA.Mobile);
@@ -75,14 +80,15 @@ Emulation.DeviceModeModel = class extends Common.Object {
     let valid = false;
     let errorMessage;
 
-    if (!/^[\d]+$/.test(value))
+    if (!/^[\d]+$/.test(value)) {
       errorMessage = ls`Width must be a number.`;
-    else if (value > Emulation.DeviceModeModel.MaxDeviceSize)
+    } else if (value > Emulation.DeviceModeModel.MaxDeviceSize) {
       errorMessage = ls`Width must be less than or equal to ${Emulation.DeviceModeModel.MaxDeviceSize}.`;
-    else if (value < Emulation.DeviceModeModel.MinDeviceSize)
+    } else if (value < Emulation.DeviceModeModel.MinDeviceSize) {
       errorMessage = ls`Width must be greater than or equal to ${Emulation.DeviceModeModel.MinDeviceSize}.`;
-    else
+    } else {
       valid = true;
+    }
 
     return {valid, errorMessage};
   }
@@ -95,14 +101,15 @@ Emulation.DeviceModeModel = class extends Common.Object {
     let valid = false;
     let errorMessage;
 
-    if (!/^[\d]+$/.test(value))
+    if (!/^[\d]+$/.test(value)) {
       errorMessage = ls`Height must be a number.`;
-    else if (value > Emulation.DeviceModeModel.MaxDeviceSize)
+    } else if (value > Emulation.DeviceModeModel.MaxDeviceSize) {
       errorMessage = ls`Height must be less than or equal to ${Emulation.DeviceModeModel.MaxDeviceSize}.`;
-    else if (value < Emulation.DeviceModeModel.MinDeviceSize)
+    } else if (value < Emulation.DeviceModeModel.MinDeviceSize) {
       errorMessage = ls`Height must be greater than or equal to ${Emulation.DeviceModeModel.MinDeviceSize}.`;
-    else
+    } else {
       valid = true;
+    }
 
     return {valid, errorMessage};
   }
@@ -169,8 +176,9 @@ Emulation.DeviceModeModel = class extends Common.Object {
       this._mode = null;
     }
 
-    if (type !== Emulation.DeviceModeModel.Type.None)
+    if (type !== Emulation.DeviceModeModel.Type.None) {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.DeviceModeEnabled);
+    }
     this._calculateAndEmulate(resetPageScaleFactor);
   }
 
@@ -198,8 +206,9 @@ Emulation.DeviceModeModel = class extends Common.Object {
   setHeight(height) {
     const max = Math.min(Emulation.DeviceModeModel.MaxDeviceSize, this._preferredScaledHeight());
     height = Math.max(Math.min(height, max), 0);
-    if (height === this._preferredScaledHeight())
+    if (height === this._preferredScaledHeight()) {
       height = 0;
+    }
     this._heightSetting.set(height);
   }
 
@@ -406,8 +415,9 @@ Emulation.DeviceModeModel = class extends Common.Object {
    * @param {!SDK.EmulationModel} emulationModel
    */
   modelRemoved(emulationModel) {
-    if (this._emulationModel === emulationModel)
+    if (this._emulationModel === emulationModel) {
       this._emulationModel = null;
+    }
   }
 
   /**
@@ -460,11 +470,13 @@ Emulation.DeviceModeModel = class extends Common.Object {
    */
   _currentOutline() {
     let outline = new UI.Insets(0, 0, 0, 0);
-    if (this._type !== Emulation.DeviceModeModel.Type.Device)
+    if (this._type !== Emulation.DeviceModeModel.Type.Device) {
       return outline;
+    }
     const orientation = this._device.orientationByName(this._mode.orientation);
-    if (this._deviceOutlineSetting.get())
+    if (this._deviceOutlineSetting.get()) {
       outline = orientation.outlineInsets || outline;
+    }
     return outline;
   }
 
@@ -472,8 +484,9 @@ Emulation.DeviceModeModel = class extends Common.Object {
    * @return {!UI.Insets}
    */
   _currentInsets() {
-    if (this._type !== Emulation.DeviceModeModel.Type.Device)
+    if (this._type !== Emulation.DeviceModeModel.Type.Device) {
       return new UI.Insets(0, 0, 0, 0);
+    }
     return this._mode.insets;
   }
 
@@ -481,8 +494,9 @@ Emulation.DeviceModeModel = class extends Common.Object {
    * @param {boolean} resetPageScaleFactor
    */
   _calculateAndEmulate(resetPageScaleFactor) {
-    if (!this._emulationModel)
+    if (!this._emulationModel) {
       this._onModelAvailable = this._calculateAndEmulate.bind(this, resetPageScaleFactor);
+    }
     const mobile = this._isMobile();
     if (this._type === Emulation.DeviceModeModel.Type.Device) {
       const orientation = this._device.orientationByName(this._mode.orientation);
@@ -514,11 +528,13 @@ Emulation.DeviceModeModel = class extends Common.Object {
       this._applyTouch(false, false);
     } else if (this._type === Emulation.DeviceModeModel.Type.Responsive) {
       let screenWidth = this._widthSetting.get();
-      if (!screenWidth || screenWidth > this._preferredScaledWidth())
+      if (!screenWidth || screenWidth > this._preferredScaledWidth()) {
         screenWidth = this._preferredScaledWidth();
+      }
       let screenHeight = this._heightSetting.get();
-      if (!screenHeight || screenHeight > this._preferredScaledHeight())
+      if (!screenHeight || screenHeight > this._preferredScaledHeight()) {
         screenHeight = this._preferredScaledHeight();
+      }
       const defaultDeviceScaleFactor = mobile ? Emulation.DeviceModeModel.defaultMobileScaleFactor : 0;
       this._fitScale = this._calculateFitScale(this._widthSetting.get(), this._heightSetting.get());
       this._appliedUserAgentType = this._uaSetting.get();
@@ -535,8 +551,9 @@ Emulation.DeviceModeModel = class extends Common.Object {
           this._uaSetting.get() === Emulation.DeviceModeModel.UA.Mobile);
     }
     const overlayModel = this._emulationModel ? this._emulationModel.overlayModel() : null;
-    if (overlayModel)
+    if (overlayModel) {
       overlayModel.setShowViewportSizeOnResize(this._type === Emulation.DeviceModeModel.Type.None);
+    }
     this.dispatchEventToListeners(Emulation.DeviceModeModel.Events.Updated);
   }
 
@@ -560,12 +577,15 @@ Emulation.DeviceModeModel = class extends Common.Object {
     let sharpScale = scale;
     while (sharpScale > scale * 0.7) {
       let sharp = true;
-      if (screenWidth)
+      if (screenWidth) {
         sharp = sharp && Number.isInteger((screenWidth - insetsWidth) * sharpScale / 100);
-      if (screenHeight)
+      }
+      if (screenHeight) {
         sharp = sharp && Number.isInteger((screenHeight - insetsHeight) * sharpScale / 100);
-      if (sharp)
+      }
+      if (sharp) {
         return sharpScale / 100;
+      }
       sharpScale -= 1;
     }
     return scale / 100;
@@ -646,11 +666,13 @@ Emulation.DeviceModeModel = class extends Common.Object {
       pageHeight = 0;
     }
 
-    if (!this._emulationModel)
+    if (!this._emulationModel) {
       return;
+    }
 
-    if (resetPageScaleFactor)
+    if (resetPageScaleFactor) {
       this._emulationModel.resetPageScaleFactor();
+    }
     if (pageWidth || pageHeight || mobile || deviceScaleFactor || scale !== 1 || screenOrientation) {
       const metrics = {
         width: pageWidth,
@@ -664,8 +686,9 @@ Emulation.DeviceModeModel = class extends Common.Object {
         positionY: positionY,
         dontSetVisibleSize: true
       };
-      if (screenOrientation)
+      if (screenOrientation) {
         metrics.screenOrientation = {type: screenOrientation, angle: screenOrientationAngle};
+      }
       this._emulationModel.emulateDevice(metrics);
     } else {
       this._emulationModel.emulateDevice(null);
@@ -680,19 +703,22 @@ Emulation.DeviceModeModel = class extends Common.Object {
   async captureScreenshot(fullSize, clip) {
     const screenCaptureModel =
         this._emulationModel ? this._emulationModel.target().model(SDK.ScreenCaptureModel) : null;
-    if (!screenCaptureModel)
+    if (!screenCaptureModel) {
       return null;
+    }
 
     const overlayModel = this._emulationModel ? this._emulationModel.overlayModel() : null;
-    if (overlayModel)
+    if (overlayModel) {
       overlayModel.setShowViewportSizeOnResize(false);
+    }
 
     // Emulate full size device if necessary.
     let deviceMetrics;
     if (fullSize) {
       const metrics = await screenCaptureModel.fetchLayoutMetrics();
-      if (!metrics)
+      if (!metrics) {
         return null;
+      }
 
       // Cap the height to not hit the GPU limit.
       const contentHeight = Math.min((1 << 14) / this._appliedDeviceScaleFactor, metrics.contentHeight);
@@ -739,8 +765,9 @@ Emulation.DeviceModeModel = class extends Common.Object {
   _applyTouch(touchEnabled, mobile) {
     this._touchEnabled = touchEnabled;
     this._touchMobile = mobile;
-    for (const emulationModel of SDK.targetManager.models(SDK.EmulationModel))
+    for (const emulationModel of SDK.targetManager.models(SDK.EmulationModel)) {
       emulationModel.emulateTouch(touchEnabled, mobile);
+    }
   }
 };
 

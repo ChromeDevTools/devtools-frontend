@@ -73,8 +73,9 @@ DataGrid.ViewportDataGrid = class extends DataGrid.DataGrid {
    * @override
    */
   onResize() {
-    if (this._stickToBottom)
+    if (this._stickToBottom) {
       this.scrollContainer.scrollTop = this.scrollContainer.scrollHeight - this.scrollContainer.clientHeight;
+    }
     this.scheduleUpdate();
     super.onResize();
   }
@@ -91,8 +92,9 @@ DataGrid.ViewportDataGrid = class extends DataGrid.DataGrid {
    */
   _onScroll(event) {
     this._stickToBottom = this.scrollContainer.isScrolledToBottom();
-    if (this._lastScrollTop !== this.scrollContainer.scrollTop)
+    if (this._lastScrollTop !== this.scrollContainer.scrollTop) {
       this.scheduleUpdate(true);
+    }
   }
 
   /**
@@ -106,11 +108,13 @@ DataGrid.ViewportDataGrid = class extends DataGrid.DataGrid {
    * @param {boolean=} isFromUser
    */
   scheduleUpdate(isFromUser) {
-    if (this._stickToBottom && isFromUser)
+    if (this._stickToBottom && isFromUser) {
       this._stickToBottom = this.scrollContainer.isScrolledToBottom();
+    }
     this._updateIsFromUser = this._updateIsFromUser || isFromUser;
-    if (this._updateAnimationFrameId)
+    if (this._updateAnimationFrameId) {
       return;
+    }
     this._updateAnimationFrameId = this.element.window().requestAnimationFrame(this._update.bind(this));
   }
 
@@ -137,25 +141,29 @@ DataGrid.ViewportDataGrid = class extends DataGrid.DataGrid {
    */
   _calculateVisibleNodes(clientHeight, scrollTop) {
     const nodes = this.rootNode().flatChildren();
-    if (this._inline)
+    if (this._inline) {
       return {topPadding: 0, bottomPadding: 0, contentHeight: 0, visibleNodes: nodes, offset: 0};
+    }
 
     const size = nodes.length;
     let i = 0;
     let y = 0;
 
-    for (; i < size && y + nodes[i].nodeSelfHeight() < scrollTop; ++i)
+    for (; i < size && y + nodes[i].nodeSelfHeight() < scrollTop; ++i) {
       y += nodes[i].nodeSelfHeight();
+    }
     const start = i;
     const topPadding = y;
 
-    for (; i < size && y < scrollTop + clientHeight; ++i)
+    for (; i < size && y < scrollTop + clientHeight; ++i) {
       y += nodes[i].nodeSelfHeight();
+    }
     const end = i;
 
     let bottomPadding = 0;
-    for (; i < size; ++i)
+    for (; i < size; ++i) {
       bottomPadding += nodes[i].nodeSelfHeight();
+    }
 
     return {
       topPadding: topPadding,
@@ -172,8 +180,9 @@ DataGrid.ViewportDataGrid = class extends DataGrid.DataGrid {
   _contentHeight() {
     const nodes = this.rootNode().flatChildren();
     let result = 0;
-    for (let i = 0, size = nodes.length; i < size; ++i)
+    for (let i = 0, size = nodes.length; i < size; ++i) {
       result += nodes[i].nodeSelfHeight();
+    }
     return result;
   }
 
@@ -187,8 +196,9 @@ DataGrid.ViewportDataGrid = class extends DataGrid.DataGrid {
     let scrollTop = this.scrollContainer.scrollTop;
     const currentScrollTop = scrollTop;
     const maxScrollTop = Math.max(0, this._contentHeight() - clientHeight);
-    if (!this._updateIsFromUser && this._stickToBottom)
+    if (!this._updateIsFromUser && this._stickToBottom) {
       scrollTop = maxScrollTop;
+    }
     this._updateIsFromUser = false;
     scrollTop = Math.min(maxScrollTop, scrollTop);
 
@@ -212,8 +222,9 @@ DataGrid.ViewportDataGrid = class extends DataGrid.DataGrid {
       const nodes = this.rootNode().flatChildren();
       const index = nodes.indexOf(visibleNodes[0]);
       this._updateStripesClass(!!(index % 2));
-      if (this._stickToBottom && index !== -1 && !!(index % 2) !== this._firstVisibleIsStriped)
+      if (this._stickToBottom && index !== -1 && !!(index % 2) !== this._firstVisibleIsStriped) {
         offset += 1;
+      }
     }
 
     this._firstVisibleIsStriped = !!(offset % 2);
@@ -222,16 +233,18 @@ DataGrid.ViewportDataGrid = class extends DataGrid.DataGrid {
       const node = visibleNodes[i];
       const element = node.element();
       node.setStriped((offset + i) % 2 === 0);
-      if (element !== previousElement.nextSibling)
+      if (element !== previousElement.nextSibling) {
         tBody.insertBefore(element, previousElement.nextSibling);
+      }
       node.revealed = true;
       previousElement = element;
     }
 
     this.setVerticalPadding(viewportState.topPadding, viewportState.bottomPadding);
     this._lastScrollTop = scrollTop;
-    if (scrollTop !== currentScrollTop)
+    if (scrollTop !== currentScrollTop) {
       this.scrollContainer.scrollTop = scrollTop;
+    }
     const contentFits =
         viewportState.contentHeight <= clientHeight && viewportState.topPadding + viewportState.bottomPadding === 0;
     if (contentFits !== this.element.classList.contains('data-grid-fits-viewport')) {
@@ -248,11 +261,13 @@ DataGrid.ViewportDataGrid = class extends DataGrid.DataGrid {
   _revealViewportNode(node) {
     const nodes = this.rootNode().flatChildren();
     const index = nodes.indexOf(node);
-    if (index === -1)
+    if (index === -1) {
       return;
+    }
     let fromY = 0;
-    for (let i = 0; i < index; ++i)
+    for (let i = 0; i < index; ++i) {
       fromY += nodes[i].nodeSelfHeight();
+    }
     const toY = fromY + node.nodeSelfHeight();
 
     let scrollTop = this.scrollContainer.scrollTop;
@@ -327,16 +342,18 @@ DataGrid.ViewportDataGridNode = class extends DataGrid.DataGridNode {
   clearFlatNodes() {
     this._flatNodes = null;
     const parent = /** @type {!DataGrid.ViewportDataGridNode} */ (this.parent);
-    if (parent)
+    if (parent) {
       parent.clearFlatNodes();
+    }
   }
 
   /**
    * @return {!Array<!DataGrid.ViewportDataGridNode>}
    */
   flatChildren() {
-    if (this._flatNodes)
+    if (this._flatNodes) {
       return this._flatNodes;
+    }
     /** @type {!Array<!DataGrid.ViewportDataGridNode>} */
     const flatNodes = [];
     /** @type {!Array<!Array<!DataGrid.ViewportDataGridNode>>} */
@@ -371,22 +388,27 @@ DataGrid.ViewportDataGridNode = class extends DataGrid.DataGridNode {
     this.clearFlatNodes();
     if (child.parent === this) {
       const currentIndex = this.children.indexOf(child);
-      if (currentIndex < 0)
+      if (currentIndex < 0) {
         console.assert(false, 'Inconsistent DataGrid state');
-      if (currentIndex === index)
+      }
+      if (currentIndex === index) {
         return;
-      if (currentIndex < index)
+      }
+      if (currentIndex < index) {
         --index;
+      }
     }
     child.remove();
     child.parent = this;
     child.dataGrid = this.dataGrid;
-    if (!this.children.length)
+    if (!this.children.length) {
       this.setHasChildren(true);
+    }
     this.children.splice(index, 0, child);
     child.recalculateSiblings(index);
-    if (this.expanded)
+    if (this.expanded) {
       this.dataGrid.scheduleUpdateStructure();
+    }
   }
 
   /**
@@ -395,22 +417,28 @@ DataGrid.ViewportDataGridNode = class extends DataGrid.DataGridNode {
    */
   removeChild(child) {
     this.clearFlatNodes();
-    if (this.dataGrid)
+    if (this.dataGrid) {
       this.dataGrid.updateSelectionBeforeRemoval(child, false);
-    if (child.previousSibling)
+    }
+    if (child.previousSibling) {
       child.previousSibling.nextSibling = child.nextSibling;
-    if (child.nextSibling)
+    }
+    if (child.nextSibling) {
       child.nextSibling.previousSibling = child.previousSibling;
-    if (child.parent !== this)
+    }
+    if (child.parent !== this) {
       throw 'removeChild: Node is not a child of this node.';
+    }
 
     this.children.remove(child, true);
     child._unlink();
 
-    if (!this.children.length)
+    if (!this.children.length) {
       this.setHasChildren(false);
-    if (this.expanded)
+    }
+    if (this.expanded) {
       this.dataGrid.scheduleUpdateStructure();
+    }
   }
 
   /**
@@ -418,19 +446,23 @@ DataGrid.ViewportDataGridNode = class extends DataGrid.DataGridNode {
    */
   removeChildren() {
     this.clearFlatNodes();
-    if (this.dataGrid)
+    if (this.dataGrid) {
       this.dataGrid.updateSelectionBeforeRemoval(this, true);
-    for (let i = 0; i < this.children.length; ++i)
+    }
+    for (let i = 0; i < this.children.length; ++i) {
       this.children[i]._unlink();
+    }
     this.children = [];
 
-    if (this.expanded)
+    if (this.expanded) {
       this.dataGrid.scheduleUpdateStructure();
+    }
   }
 
   _unlink() {
-    if (this.attached())
+    if (this.attached()) {
       this.existingElement().remove();
+    }
     this.resetNode();
   }
 
@@ -438,15 +470,17 @@ DataGrid.ViewportDataGridNode = class extends DataGrid.DataGridNode {
    * @override
    */
   collapse() {
-    if (!this.expanded)
+    if (!this.expanded) {
       return;
+    }
     this.clearFlatNodes();
     /**
      * @suppress {accessControls}
      */
     this._expanded = false;
-    if (this.existingElement())
+    if (this.existingElement()) {
       this.existingElement().classList.remove('expanded');
+    }
     this.dataGrid.scheduleUpdateStructure();
   }
 
@@ -454,8 +488,9 @@ DataGrid.ViewportDataGridNode = class extends DataGrid.DataGridNode {
    * @override
    */
   expand() {
-    if (this.expanded)
+    if (this.expanded) {
       return;
+    }
     this.dataGrid._stickToBottom = false;
     this.clearFlatNodes();
     super.expand();

@@ -155,13 +155,15 @@ SDK.Layer.StickyPositionConstraint = class {
     this._containingBlockRect = constraint.containingBlockRect;
     /** @type {?SDK.Layer} */
     this._nearestLayerShiftingStickyBox = null;
-    if (layerTree && constraint.nearestLayerShiftingStickyBox)
+    if (layerTree && constraint.nearestLayerShiftingStickyBox) {
       this._nearestLayerShiftingStickyBox = layerTree.layerById(constraint.nearestLayerShiftingStickyBox);
+    }
 
     /** @type {?SDK.Layer} */
     this._nearestLayerShiftingContainingBlock = null;
-    if (layerTree && constraint.nearestLayerShiftingContainingBlock)
+    if (layerTree && constraint.nearestLayerShiftingContainingBlock) {
       this._nearestLayerShiftingContainingBlock = layerTree.layerById(constraint.nearestLayerShiftingContainingBlock);
+    }
   }
 
   /**
@@ -255,8 +257,9 @@ SDK.LayerTreeBase = class {
   forEachLayer(callback, root) {
     if (!root) {
       root = this.root();
-      if (!root)
+      if (!root) {
         return false;
+      }
     }
     return callback(root) || root.children().some(this.forEachLayer.bind(this, callback));
   }
@@ -274,15 +277,18 @@ SDK.LayerTreeBase = class {
    * @return {!Promise}
    */
   async resolveBackendNodeIds(requestedNodeIds) {
-    if (!requestedNodeIds.size || !this._domModel)
+    if (!requestedNodeIds.size || !this._domModel) {
       return;
+    }
 
     const nodesMap = await this._domModel.pushNodesByBackendIdsToFrontend(requestedNodeIds);
 
-    if (!nodesMap)
+    if (!nodesMap) {
       return;
-    for (const nodeId of nodesMap.keysArray())
+    }
+    for (const nodeId of nodesMap.keysArray()) {
       this._backendNodeIdToNode.set(nodeId, nodesMap.get(nodeId) || null);
+    }
   }
 
   /**

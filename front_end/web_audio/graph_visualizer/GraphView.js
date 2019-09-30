@@ -166,8 +166,9 @@ WebAudio.GraphVisualizer.GraphView = class extends Common.Object {
   _addEdge(edge) {
     const sourceId = edge.sourceId;
     // Do nothing if the edge already exists.
-    if (this._outboundEdgeMap.hasValue(sourceId, edge.id))
+    if (this._outboundEdgeMap.hasValue(sourceId, edge.id)) {
       return;
+    }
 
     this._edges.set(edge.id, edge);
     this._outboundEdgeMap.set(sourceId, edge.id);
@@ -183,8 +184,9 @@ WebAudio.GraphVisualizer.GraphView = class extends Common.Object {
    */
   _removeEdge(edgeId) {
     const edge = this._edges.get(edgeId);
-    if (!edge)
+    if (!edge) {
       return;
+    }
 
     this._outboundEdgeMap.delete(edge.sourceId, edgeId);
     this._inboundEdgeMap.delete(edge.destinationId, edgeId);

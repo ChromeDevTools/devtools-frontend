@@ -98,8 +98,9 @@ Network.NetworkPanel = class extends UI.Panel {
     tabbedPane.setMinimumSize(100, 25);
     tabbedPane.element.classList.add('network-tabbed-pane');
     tabbedPane.element.addEventListener('keydown', event => {
-      if (event.key !== 'Escape')
+      if (event.key !== 'Escape') {
         return;
+      }
       splitWidget.hideSidebar();
       event.consume();
     });
@@ -160,8 +161,9 @@ Network.NetworkPanel = class extends UI.Panel {
   static revealAndFilter(filters) {
     const panel = Network.NetworkPanel._instance();
     let filterString = '';
-    for (const filter of filters)
+    for (const filter of filters) {
       filterString += `${filter.filterType}:${filter.filterValue} `;
+    }
     panel._networkLogView.setTextFilterValue(filterString);
     UI.viewManager.showView('network');
   }
@@ -204,10 +206,11 @@ Network.NetworkPanel = class extends UI.Panel {
     updateSidebarToggle();
     splitWidget.addEventListener(UI.SplitWidget.Events.ShowModeChanged, updateSidebarToggle);
     searchToggle.addEventListener(UI.ToolbarButton.Events.Click, () => {
-      if (splitWidget.showMode() === UI.SplitWidget.ShowMode.OnlyMain)
+      if (splitWidget.showMode() === UI.SplitWidget.ShowMode.OnlyMain) {
         splitWidget.showBoth();
-      else
+      } else {
         splitWidget.hideSidebar();
+      }
     });
     this._panelToolbar.appendToolbarItem(searchToggle);
     this._panelToolbar.appendSeparator();
@@ -267,8 +270,9 @@ Network.NetworkPanel = class extends UI.Panel {
   }
 
   _toggleRecording() {
-    if (!this._preserveLogSetting.get() && !this._toggleRecordAction.toggled())
+    if (!this._preserveLogSetting.get() && !this._toggleRecordAction.toggled()) {
       SDK.networkLog.reset();
+    }
     this._toggleRecord(!this._toggleRecordAction.toggled());
   }
 
@@ -278,8 +282,9 @@ Network.NetworkPanel = class extends UI.Panel {
   _toggleRecord(toggled) {
     this._toggleRecordAction.setToggled(toggled);
     this._networkLogView.setRecording(toggled);
-    if (!toggled && this._filmStripRecorder)
+    if (!toggled && this._filmStripRecorder) {
       this._filmStripRecorder.stopRecording(this._filmStripAvailable.bind(this));
+    }
     // TODO(einbinder) This should be moved to a setting/action that NetworkLog owns but NetworkPanel controls, but
     // always be present in the command menu.
     SDK.networkLog.setIsRecording(toggled);
@@ -289,8 +294,9 @@ Network.NetworkPanel = class extends UI.Panel {
    * @param {?SDK.FilmStripModel} filmStripModel
    */
   _filmStripAvailable(filmStripModel) {
-    if (!filmStripModel)
+    if (!filmStripModel) {
       return;
+    }
     const calculator = this._networkLogView.timeCalculator();
     this._filmStripView.setModel(filmStripModel, calculator.minimumBoundary() * 1000, calculator.boundarySpan() * 1000);
     this._networkOverview.setFilmStripModel(filmStripModel);
@@ -313,8 +319,9 @@ Network.NetworkPanel = class extends UI.Panel {
       this._calculator.reset();
       this._overviewPane.reset();
     }
-    if (this._filmStripView)
+    if (this._filmStripView) {
       this._resetFilmStripView();
+    }
   }
 
   /**
@@ -326,8 +333,9 @@ Network.NetworkPanel = class extends UI.Panel {
       clearTimeout(this._pendingStopTimer);
       delete this._pendingStopTimer;
     }
-    if (this.isShowing() && this._filmStripRecorder)
+    if (this.isShowing() && this._filmStripRecorder) {
       this._filmStripRecorder.startRecording();
+    }
   }
 
   /**
@@ -351,10 +359,11 @@ Network.NetworkPanel = class extends UI.Panel {
 
   _toggleShowOverview() {
     const toggled = this._networkLogShowOverviewSetting.get();
-    if (toggled)
+    if (toggled) {
       this._overviewPane.show(this._overviewPlaceholderElement);
-    else
+    } else {
       this._overviewPane.detach();
+    }
     this.doResize();
   }
 
@@ -420,8 +429,9 @@ Network.NetworkPanel = class extends UI.Panel {
    */
   revealAndHighlightRequest(request) {
     this._showRequest(null);
-    if (request)
+    if (request) {
       this._networkLogView.revealAndHighlightRequest(request);
+    }
   }
 
   /**
@@ -498,28 +508,33 @@ Network.NetworkPanel = class extends UI.Panel {
       contextMenu.revealSection().appendItem(Common.UIString('Reveal in Network panel'), reveal.bind(this, request));
     }
 
-    if (event.target.isSelfOrDescendant(this.element))
+    if (event.target.isSelfOrDescendant(this.element)) {
       return;
+    }
 
     if (target instanceof SDK.Resource) {
       const resource = /** @type {!SDK.Resource} */ (target);
-      if (resource.request)
+      if (resource.request) {
         appendRevealItem.call(this, resource.request);
+      }
       return;
     }
     if (target instanceof Workspace.UISourceCode) {
       const uiSourceCode = /** @type {!Workspace.UISourceCode} */ (target);
       const resource = Bindings.resourceForURL(uiSourceCode.url());
-      if (resource && resource.request)
+      if (resource && resource.request) {
         appendRevealItem.call(this, resource.request);
+      }
       return;
     }
 
-    if (!(target instanceof SDK.NetworkRequest))
+    if (!(target instanceof SDK.NetworkRequest)) {
       return;
+    }
     const request = /** @type {!SDK.NetworkRequest} */ (target);
-    if (this._networkItemView && this._networkItemView.isShowing() && this._networkItemView.request() === request)
+    if (this._networkItemView && this._networkItemView.isShowing() && this._networkItemView.request() === request) {
       return;
+    }
 
     appendRevealItem.call(this, request);
   }
@@ -567,8 +582,9 @@ Network.NetworkPanel = class extends UI.Panel {
    * @return {?UI.ViewLocation}
    */
   resolveLocation(locationName) {
-    if (locationName === 'network-sidebar')
+    if (locationName === 'network-sidebar') {
       return this._sidebarLocation;
+    }
     return null;
   }
 };
@@ -602,8 +618,9 @@ Network.NetworkPanel.RequestRevealer = class {
    * @return {!Promise}
    */
   reveal(request) {
-    if (!(request instanceof SDK.NetworkRequest))
+    if (!(request instanceof SDK.NetworkRequest)) {
       return Promise.reject(new Error('Internal error: not a network request'));
+    }
     const panel = Network.NetworkPanel._instance();
     return UI.viewManager.showView('network').then(panel.revealAndHighlightRequest.bind(panel, request));
   }
@@ -636,22 +653,25 @@ Network.NetworkPanel.FilmStripRecorder = class {
    * @param {!Array.<!SDK.TracingManager.EventPayload>} events
    */
   traceEventsCollected(events) {
-    if (this._tracingModel)
+    if (this._tracingModel) {
       this._tracingModel.addEvents(events);
+    }
   }
 
   /**
    * @override
    */
   tracingComplete() {
-    if (!this._tracingModel || !this._tracingManager)
+    if (!this._tracingModel || !this._tracingManager) {
       return;
+    }
     this._tracingModel.tracingComplete();
     this._tracingManager = null;
     this._callback(new SDK.FilmStripModel(this._tracingModel, this._timeCalculator.minimumBoundary() * 1000));
     this._callback = null;
-    if (this._resourceTreeModel)
+    if (this._resourceTreeModel) {
       this._resourceTreeModel.resumeReload();
+    }
     this._resourceTreeModel = null;
   }
 
@@ -672,13 +692,15 @@ Network.NetworkPanel.FilmStripRecorder = class {
     this._filmStripView.reset();
     this._filmStripView.setStatusText(Common.UIString('Recording frames...'));
     const tracingManagers = SDK.targetManager.models(SDK.TracingManager);
-    if (this._tracingManager || !tracingManagers.length)
+    if (this._tracingManager || !tracingManagers.length) {
       return;
+    }
 
     this._tracingManager = tracingManagers[0];
     this._resourceTreeModel = this._tracingManager.target().model(SDK.ResourceTreeModel);
-    if (this._tracingModel)
+    if (this._tracingModel) {
       this._tracingModel.dispose();
+    }
     this._tracingModel = new SDK.TracingModel(new Bindings.TempFileBackingStorage());
     this._tracingManager.start(this, '-*,disabled-by-default-devtools.screenshot', '');
 
@@ -696,12 +718,14 @@ Network.NetworkPanel.FilmStripRecorder = class {
    * @param {function(?SDK.FilmStripModel)} callback
    */
   stopRecording(callback) {
-    if (!this._tracingManager)
+    if (!this._tracingManager) {
       return;
+    }
 
     this._tracingManager.stop();
-    if (this._resourceTreeModel)
+    if (this._resourceTreeModel) {
       this._resourceTreeModel.suspendReload();
+    }
     this._callback = callback;
     this._filmStripView.setStatusText(Common.UIString('Fetching frames...'));
   }
@@ -725,15 +749,17 @@ Network.NetworkPanel.ActionDelegate = class {
         panel._toggleRecording();
         return true;
       case 'network.hide-request-details':
-        if (!panel._networkItemView)
+        if (!panel._networkItemView) {
           return false;
+        }
         panel._showRequest(null);
         return true;
       case 'network.search':
         const selection = UI.inspectorView.element.window().getSelection();
         let queryCandidate = '';
-        if (selection.rangeCount)
+        if (selection.rangeCount) {
           queryCandidate = selection.toString().replace(/\r?\n.*/, '');
+        }
         Network.SearchNetworkView.openSearch(queryCandidate);
         return true;
     }
@@ -753,14 +779,18 @@ Network.NetworkPanel.RequestLocationRevealer = class {
   async reveal(match) {
     const location = /** @type {!Network.UIRequestLocation} */ (match);
     const view = await Network.NetworkPanel._instance().selectRequest(location.request);
-    if (!view)
+    if (!view) {
       return;
-    if (location.searchMatch)
+    }
+    if (location.searchMatch) {
       await view.revealResponseBody(location.searchMatch.lineNumber);
-    if (location.requestHeader)
+    }
+    if (location.requestHeader) {
       view.revealRequestHeader(location.requestHeader.name);
-    if (location.responseHeader)
+    }
+    if (location.responseHeader) {
       view.revealResponseHeader(location.responseHeader.name);
+    }
   }
 };
 

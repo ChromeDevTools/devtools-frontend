@@ -21,12 +21,14 @@ UI.FilterSuggestionBuilder = class {
    * @return {!Promise<!UI.SuggestBox.Suggestions>}
    */
   completions(expression, prefix, force) {
-    if (!prefix && !force)
+    if (!prefix && !force) {
       return Promise.resolve([]);
+    }
 
     const negative = prefix.startsWith('-');
-    if (negative)
+    if (negative) {
       prefix = prefix.substring(1);
+    }
     const modifier = negative ? '-' : '';
     const valueDelimiterIndex = prefix.indexOf(':');
 
@@ -34,8 +36,9 @@ UI.FilterSuggestionBuilder = class {
     if (valueDelimiterIndex === -1) {
       const matcher = new RegExp('^' + prefix.escapeForRegExp(), 'i');
       for (const key of this._keys) {
-        if (matcher.test(key))
+        if (matcher.test(key)) {
           suggestions.push({text: modifier + key + ':'});
+        }
       }
     } else {
       const key = prefix.substring(0, valueDelimiterIndex).toLowerCase();
@@ -44,8 +47,9 @@ UI.FilterSuggestionBuilder = class {
       const values = Array.from(this._valuesMap.get(key) || new Set());
       this._valueSorter(key, values);
       for (const item of values) {
-        if (matcher.test(item) && (item !== value))
+        if (matcher.test(item) && (item !== value)) {
           suggestions.push({text: modifier + key + ':' + item});
+        }
       }
     }
     return Promise.resolve(suggestions);
@@ -56,11 +60,13 @@ UI.FilterSuggestionBuilder = class {
    * @param {?string=} value
    */
   addItem(key, value) {
-    if (!value)
+    if (!value) {
       return;
+    }
 
-    if (!this._valuesMap.get(key))
+    if (!this._valuesMap.get(key)) {
       this._valuesMap.set(key, /** @type {!Set<string>} */ (new Set()));
+    }
     this._valuesMap.get(key).add(value);
   }
 

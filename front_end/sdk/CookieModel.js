@@ -17,8 +17,9 @@ SDK.CookieModel = class extends SDK.SDKModel {
    */
   static cookieMatchesResourceURL(cookie, resourceURL) {
     const url = resourceURL.asParsedURL();
-    if (!url || !SDK.CookieModel.cookieDomainMatchesResourceDomain(cookie.domain(), url.host))
+    if (!url || !SDK.CookieModel.cookieDomainMatchesResourceDomain(cookie.domain(), url.host)) {
       return false;
+    }
     return (
         url.path.startsWith(cookie.path()) && (!cookie.port() || url.port === cookie.port()) &&
         (!cookie.secure() || url.scheme === 'https'));
@@ -30,8 +31,9 @@ SDK.CookieModel = class extends SDK.SDKModel {
    * @return {boolean}
    */
   static cookieDomainMatchesResourceDomain(cookieDomain, resourceDomain) {
-    if (cookieDomain.charAt(0) !== '.')
+    if (cookieDomain.charAt(0) !== '.') {
       return resourceDomain === cookieDomain;
+    }
     return !!resourceDomain.match(
         new RegExp('^([^\\.]+\\.)*' + cookieDomain.substring(1).escapeForRegExp() + '$', 'i'));
   }
@@ -67,11 +69,13 @@ SDK.CookieModel = class extends SDK.SDKModel {
    */
   saveCookie(cookie) {
     let domain = cookie.domain();
-    if (!domain.startsWith('.'))
+    if (!domain.startsWith('.')) {
       domain = '';
+    }
     let expires = undefined;
-    if (cookie.expires())
+    if (cookie.expires()) {
       expires = Math.floor(Date.parse(cookie.expires()) / 1000);
+    }
     return this.target()
         .networkAgent()
         .setCookie(
@@ -92,12 +96,14 @@ SDK.CookieModel = class extends SDK.SDKModel {
      */
     function populateResourceURLs(resource) {
       const documentURL = resource.documentURL.asParsedURL();
-      if (documentURL && (!domain || documentURL.securityOrigin() === domain))
+      if (documentURL && (!domain || documentURL.securityOrigin() === domain)) {
         resourceURLs.push(resource.url);
+      }
     }
     const resourceTreeModel = this.target().model(SDK.ResourceTreeModel);
-    if (resourceTreeModel)
+    if (resourceTreeModel) {
       resourceTreeModel.forAllResources(populateResourceURLs);
+    }
     return this.getCookies(resourceURLs);
   }
 

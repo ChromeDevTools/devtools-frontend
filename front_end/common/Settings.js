@@ -73,10 +73,12 @@ export default class Settings {
     }
     const setting = isRegex ? this.createRegExpSetting(settingName, defaultValue, undefined, storageType) :
                               this.createSetting(settingName, defaultValue, storageType);
-    if (extension.title())
+    if (extension.title()) {
       setting.setTitle(extension.title());
-    if (descriptor['userActionCondition'])
+    }
+    if (descriptor['userActionCondition']) {
       setting.setRequiresUserAction(!!Runtime.queryParam(descriptor['userActionCondition']));
+    }
     setting._extension = extension;
     this._moduleSettings.set(settingName, setting);
   }
@@ -87,8 +89,9 @@ export default class Settings {
    */
   moduleSetting(settingName) {
     const setting = this._moduleSettings.get(settingName);
-    if (!setting)
+    if (!setting) {
       throw new Error('No setting registered: ' + settingName);
+    }
     return setting;
   }
 
@@ -98,8 +101,9 @@ export default class Settings {
    */
   settingForTest(settingName) {
     const setting = this._registry.get(settingName);
-    if (!setting)
+    if (!setting) {
       throw new Error('No setting registered: ' + settingName);
+    }
     return setting;
   }
 
@@ -111,8 +115,9 @@ export default class Settings {
    */
   createSetting(key, defaultValue, storageType) {
     const storage = this._storageFromType(storageType);
-    if (!this._registry.get(key))
+    if (!this._registry.get(key)) {
       this._registry.set(key, new Common.Setting(this, key, defaultValue, this._eventSupport, storage));
+    }
     return /** @type {!Common.Setting} */ (this._registry.get(key));
   }
 
@@ -231,8 +236,9 @@ export class SettingsStorage {
     Common.console.log('Ten largest settings: ');
 
     const sizes = {__proto__: null};
-    for (const key in this._object)
+    for (const key in this._object) {
       sizes[key] = this._object[key].length;
+    }
     const keys = Object.keys(sizes);
 
     function comparator(key1, key2) {
@@ -241,8 +247,9 @@ export class SettingsStorage {
 
     keys.sort(comparator);
 
-    for (let i = 0; i < 10 && i < keys.length; ++i)
+    for (let i = 0; i < 10 && i < keys.length; ++i) {
       Common.console.log('Setting: \'' + keys[i] + '\', size: ' + sizes[keys[i]]);
+    }
   }
 }
 
@@ -315,11 +322,13 @@ export class Setting {
    * @return {V}
    */
   get() {
-    if (this._requiresUserAction && !this._hadUserAction)
+    if (this._requiresUserAction && !this._hadUserAction) {
       return this._defaultValue;
+    }
 
-    if (typeof this._value !== 'undefined')
+    if (typeof this._value !== 'undefined') {
       return this._value;
+    }
 
     this._value = this._defaultValue;
     if (this._storage.has(this._name)) {
@@ -404,8 +413,9 @@ export class RegExpSetting extends Setting {
     const items = this.getAsArray();
     for (let i = 0; i < items.length; ++i) {
       const item = items[i];
-      if (item.pattern && !item.disabled)
+      if (item.pattern && !item.disabled) {
         result.push(item.pattern);
+      }
     }
     return result.join('|');
   }
@@ -437,13 +447,15 @@ export class RegExpSetting extends Setting {
    * @return {?RegExp}
    */
   asRegExp() {
-    if (typeof this._regex !== 'undefined')
+    if (typeof this._regex !== 'undefined') {
       return this._regex;
+    }
     this._regex = null;
     try {
       const pattern = this.get();
-      if (pattern)
+      if (pattern) {
         this._regex = new RegExp(pattern, this._regexFlags || '');
+      }
     } catch (e) {
     }
     return this._regex;
@@ -466,8 +478,9 @@ export class VersionController {
       return;
     }
     const methodsToRun = this._methodsToRunToUpdateVersion(oldVersion, currentVersion);
-    for (let i = 0; i < methodsToRun.length; ++i)
+    for (let i = 0; i < methodsToRun.length; ++i) {
       this[methodsToRun[i]].call(this);
+    }
     versionSetting.set(currentVersion);
   }
 
@@ -477,8 +490,9 @@ export class VersionController {
    */
   _methodsToRunToUpdateVersion(oldVersion, currentVersion) {
     const result = [];
-    for (let i = oldVersion; i < currentVersion; ++i)
+    for (let i = oldVersion; i < currentVersion; ++i) {
       result.push('_updateVersionFrom' + i + 'To' + (i + 1));
+    }
     return result;
   }
 
@@ -543,8 +557,9 @@ export class VersionController {
         newValue.horizontal.size = oldSettingH.get();
         oldSettingH.remove();
       }
-      if (newValue)
+      if (newValue) {
         Common.settings.createSetting(newName, {}).set(newValue);
+      }
     }
   }
 
@@ -590,13 +605,16 @@ export class VersionController {
     for (const name in settingNames) {
       const setting = Common.settings.createSetting(name, empty);
       const value = setting.get();
-      if (value === empty)
+      if (value === empty) {
         continue;
+      }
       // Zero out saved percentage sizes, and they will be restored to defaults.
-      if (value.vertical && value.vertical.size && value.vertical.size < 1)
+      if (value.vertical && value.vertical.size && value.vertical.size < 1) {
         value.vertical.size = 0;
-      if (value.horizontal && value.horizontal.size && value.horizontal.size < 1)
+      }
+      if (value.horizontal && value.horizontal.size && value.horizontal.size < 1) {
         value.horizontal.size = 0;
+      }
       setting.set(value);
     }
   }
@@ -610,13 +628,16 @@ export class VersionController {
     for (let i = 0; i < settingNames.length; ++i) {
       const setting = Common.settings.createSetting(settingNames[i], '');
       let value = setting.get();
-      if (!value)
+      if (!value) {
         return;
-      if (typeof value === 'string')
+      }
+      if (typeof value === 'string') {
         value = [value];
+      }
       for (let j = 0; j < value.length; ++j) {
-        if (typeof value[j] === 'string')
+        if (typeof value[j] === 'string') {
           value[j] = {pattern: value[j]};
+        }
       }
       setting.set(value);
     }
@@ -624,11 +645,13 @@ export class VersionController {
 
   _updateVersionFrom9To10() {
     // This one is localStorage specific, which is fine.
-    if (!window.localStorage)
+    if (!window.localStorage) {
       return;
+    }
     for (const key in window.localStorage) {
-      if (key.startsWith('revision-history'))
+      if (key.startsWith('revision-history')) {
         window.localStorage.removeItem(key);
+      }
     }
   }
 
@@ -637,8 +660,9 @@ export class VersionController {
     const newSettingName = 'customEmulatedDeviceList';
     const oldSetting = Common.settings.createSetting(oldSettingName, undefined);
     const list = oldSetting.get();
-    if (!Array.isArray(list))
+    if (!Array.isArray(list)) {
       return;
+    }
     const newList = [];
     for (let i = 0; i < list.length; ++i) {
       const value = list[i];
@@ -647,10 +671,12 @@ export class VersionController {
       device['type'] = 'unknown';
       device['user-agent'] = value['userAgent'];
       device['capabilities'] = [];
-      if (value['touch'])
+      if (value['touch']) {
         device['capabilities'].push('touch');
-      if (value['mobile'])
+      }
+      if (value['mobile']) {
         device['capabilities'].push('mobile');
+      }
       device['screen'] = {};
       device['screen']['vertical'] = {width: value['width'], height: value['height']};
       device['screen']['horizontal'] = {width: value['height'], height: value['width']};
@@ -660,8 +686,9 @@ export class VersionController {
       device['show'] = 'Default';
       newList.push(device);
     }
-    if (newList.length)
+    if (newList.length) {
       Common.settings.createSetting(newSettingName, []).set(newList);
+    }
     oldSetting.remove();
   }
 
@@ -685,8 +712,9 @@ export class VersionController {
     const newValue = {};
     for (const fileSystemPath in oldValue) {
       newValue[fileSystemPath] = [];
-      for (const entry of oldValue[fileSystemPath])
+      for (const entry of oldValue[fileSystemPath]) {
         newValue[fileSystemPath].push(entry.path);
+      }
     }
     setting.set(newValue);
   }
@@ -694,8 +722,9 @@ export class VersionController {
   _updateVersionFrom15To16() {
     const setting = Common.settings.createSetting('InspectorView.panelOrder', {});
     const tabOrders = setting.get();
-    for (const key of Object.keys(tabOrders))
+    for (const key of Object.keys(tabOrders)) {
       tabOrders[key] = (tabOrders[key] + 1) * 10;
+    }
     setting.set(tabOrders);
   }
 
@@ -725,10 +754,11 @@ export class VersionController {
     for (const oldKey in oldValue) {
       let newKey = oldKey.replace(/\\/g, '/');
       if (!newKey.startsWith('file://')) {
-        if (newKey.startsWith('/'))
+        if (newKey.startsWith('/')) {
           newKey = 'file://' + newKey;
-        else
+        } else {
           newKey = 'file:///' + newKey;
+        }
       }
       newValue[newKey] = oldValue[oldKey];
     }
@@ -744,8 +774,9 @@ export class VersionController {
 
     const configs = {};
     for (const columnId in visibleColumns) {
-      if (!visibleColumns.hasOwnProperty(columnId))
+      if (!visibleColumns.hasOwnProperty(columnId)) {
         continue;
+      }
       configs[columnId.toLowerCase()] = {visible: visibleColumns[columnId]};
     }
     const newSetting = Common.settings.createSetting('networkLogColumns', {});
@@ -833,8 +864,9 @@ export class VersionController {
     function renameInStringSetting(settingName, from, to) {
       const setting = Common.settings.createSetting(settingName, '');
       const value = setting.get();
-      if (value === from)
+      if (value === from) {
         setting.set(to);
+      }
     }
 
     renameKeyInObjectSetting('panel-tabOrder', 'audits2', 'audits');
@@ -844,8 +876,9 @@ export class VersionController {
 
   _updateVersionFrom27To28() {
     const setting = Common.settings.createSetting('uiTheme', 'systemPreferred');
-    if (setting.get() === 'default')
+    if (setting.get() === 'default') {
       setting.set('systemPreferred');
+    }
   }
 
   _migrateSettingsFromLocalStorage() {
@@ -855,12 +888,14 @@ export class VersionController {
       'fileSystemMapping', 'lastSelectedSourcesSidebarPaneTab', 'previouslyViewedFiles', 'savedURLs',
       'watchExpressions', 'workspaceExcludedFolders', 'xhrBreakpoints'
     ]);
-    if (!window.localStorage)
+    if (!window.localStorage) {
       return;
+    }
 
     for (const key in window.localStorage) {
-      if (localSettings.has(key))
+      if (localSettings.has(key)) {
         continue;
+      }
       const value = window.localStorage[key];
       window.localStorage.removeItem(key);
       Common.settings._globalStorage[key] = value;
@@ -874,8 +909,9 @@ export class VersionController {
   _clearBreakpointsWhenTooMany(breakpointsSetting, maxBreakpointsCount) {
     // If there are too many breakpoints in a storage, it is likely due to a recent bug that caused
     // periodical breakpoints duplication leading to inspector slowness.
-    if (breakpointsSetting.get().length > maxBreakpointsCount)
+    if (breakpointsSetting.get().length > maxBreakpointsCount) {
       breakpointsSetting.set([]);
+    }
   }
 }
 

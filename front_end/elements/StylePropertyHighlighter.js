@@ -19,8 +19,9 @@ Elements.StylePropertyHighlighter = class {
     // Expand all shorthands.
     for (const section of this._styleSidebarPane.allSections()) {
       for (let treeElement = section.propertiesTreeOutline.firstChild(); treeElement;
-           treeElement = treeElement.nextSibling)
+           treeElement = treeElement.nextSibling) {
         treeElement.onpopulate();
+      }
     }
     let highlightTreeElement = null;
     for (const section of this._styleSidebarPane.allSections()) {
@@ -32,12 +33,14 @@ Elements.StylePropertyHighlighter = class {
         }
         treeElement = treeElement.traverseNextTreeElement(false, null, true);
       }
-      if (highlightTreeElement)
+      if (highlightTreeElement) {
         break;
+      }
     }
 
-    if (!highlightTreeElement)
+    if (!highlightTreeElement) {
       return;
+    }
 
     highlightTreeElement.parent.expand();
     highlightTreeElement.listItemElement.scrollIntoViewIfNeeded();

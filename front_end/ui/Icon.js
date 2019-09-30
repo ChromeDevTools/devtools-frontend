@@ -19,14 +19,17 @@ UI.Icon = class extends HTMLSpanElement {
    * @return {!UI.Icon}
    */
   static create(iconType, className) {
-    if (!UI.Icon._constructor)
+    if (!UI.Icon._constructor) {
       UI.Icon._constructor = UI.registerCustomElement('span', 'ui-icon', UI.Icon);
+    }
 
     const icon = /** @type {!UI.Icon} */ (UI.Icon._constructor());
-    if (className)
+    if (className) {
       icon.className = className;
-    if (iconType)
+    }
+    if (iconType) {
       icon.setIconType(iconType);
+    }
     return icon;
   }
 
@@ -75,8 +78,9 @@ UI.Icon = class extends HTMLSpanElement {
    */
   _propertyValue() {
     if (!this._descriptor.coordinates) {
-      if (!this._descriptor.position || !UI.Icon._positionRegex.test(this._descriptor.position))
+      if (!this._descriptor.position || !UI.Icon._positionRegex.test(this._descriptor.position)) {
         throw new Error(`ERROR: icon '${this._iconType}' has malformed position: '${this._descriptor.position}'`);
+      }
       const column = this._descriptor.position[0].toLowerCase().charCodeAt(0) - 97;
       const row = parseInt(this._descriptor.position.substring(1), 10) - 1;
       this._descriptor.coordinates = {

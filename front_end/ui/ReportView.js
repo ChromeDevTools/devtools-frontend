@@ -25,8 +25,9 @@ UI.ReportView = class extends UI.VBox {
    * @param {string} title
    */
   setTitle(title) {
-    if (this._titleElement.textContent === title)
+    if (this._titleElement.textContent === title) {
       return;
+    }
     this._titleElement.textContent = title;
   }
 
@@ -34,10 +35,12 @@ UI.ReportView = class extends UI.VBox {
    * @param {string} subtitle
    */
   setSubtitle(subtitle) {
-    if (this._subtitleElement && this._subtitleElement.textContent === subtitle)
+    if (this._subtitleElement && this._subtitleElement.textContent === subtitle) {
       return;
-    if (!this._subtitleElement)
+    }
+    if (!this._subtitleElement) {
       this._subtitleElement = this._headerElement.createChild('div', 'report-subtitle');
+    }
     this._subtitleElement.textContent = subtitle;
   }
 
@@ -45,11 +48,13 @@ UI.ReportView = class extends UI.VBox {
    * @param {?Element} link
    */
   setURL(link) {
-    if (!this._urlElement)
+    if (!this._urlElement) {
       this._urlElement = this._headerElement.createChild('div', 'report-url link');
+    }
     this._urlElement.removeChildren();
-    if (link)
+    if (link) {
       this._urlElement.appendChild(link);
+    }
   }
 
   /**
@@ -78,13 +83,15 @@ UI.ReportView = class extends UI.VBox {
   sortSections(comparator) {
     const sections = /** @type {!Array<!UI.ReportView.Section>} */ (this.children().slice());
     const sorted = sections.every((e, i, a) => !i || comparator(a[i - 1], a[i]) <= 0);
-    if (sorted)
+    if (sorted) {
       return;
+    }
 
     this.detachChildWidgets();
     sections.sort(comparator);
-    for (const section of sections)
+    for (const section of sections) {
       section.show(this._sectionList);
+    }
   }
 
   /**
@@ -114,8 +121,9 @@ UI.ReportView.Section = class extends UI.VBox {
   constructor(title, className) {
     super();
     this.element.classList.add('report-section');
-    if (className)
+    if (className) {
       this.element.classList.add(className);
+    }
     this._headerElement = this.element.createChild('div', 'report-section-header');
     this._titleElement = this._headerElement.createChild('div', 'report-section-title');
     this.setTitle(title);
@@ -136,8 +144,9 @@ UI.ReportView.Section = class extends UI.VBox {
    * @param {string} title
    */
   setTitle(title) {
-    if (this._titleElement.textContent !== title)
+    if (this._titleElement.textContent !== title) {
       this._titleElement.textContent = title;
+    }
     this._titleElement.classList.toggle('hidden', !this._titleElement.textContent);
   }
 
@@ -163,8 +172,9 @@ UI.ReportView.Section = class extends UI.VBox {
       this._fieldMap.set(title, row);
       row.createChild('div', 'report-field-value');
     }
-    if (textValue)
+    if (textValue) {
       row.lastElementChild.textContent = textValue;
+    }
     return /** @type {!Element} */ (row.lastElementChild);
   }
 
@@ -173,8 +183,9 @@ UI.ReportView.Section = class extends UI.VBox {
    */
   removeField(title) {
     const row = this._fieldMap.get(title);
-    if (row)
+    if (row) {
       row.remove();
+    }
     this._fieldMap.delete(title);
   }
 
@@ -184,8 +195,9 @@ UI.ReportView.Section = class extends UI.VBox {
    */
   setFieldVisible(title, visible) {
     const row = this._fieldMap.get(title);
-    if (row)
+    if (row) {
       row.classList.toggle('hidden', !visible);
+    }
   }
 
   /**

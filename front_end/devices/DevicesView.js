@@ -56,8 +56,9 @@ Devices.DevicesView = class extends UI.VBox {
    * @return {!Devices.DevicesView}
    */
   static _instance() {
-    if (!Devices.DevicesView._instanceObject)
+    if (!Devices.DevicesView._instanceObject) {
       Devices.DevicesView._instanceObject = new Devices.DevicesView();
+    }
     return Devices.DevicesView._instanceObject;
   }
 
@@ -66,8 +67,9 @@ Devices.DevicesView = class extends UI.VBox {
    * @param {!UI.Widget} view
    */
   _selectSidebarListItem(listItem, view) {
-    if (this._selectedListItem === listItem)
+    if (this._selectedListItem === listItem) {
       return;
+    }
 
     if (this._selectedListItem) {
       this._selectedListItem.classList.remove('selected');
@@ -89,13 +91,15 @@ Devices.DevicesView = class extends UI.VBox {
             .slice()
             .filter(d => d.adbSerial.toUpperCase() !== 'WEBRTC' && d.adbSerial.toUpperCase() !== 'LOCALHOST');
     for (const device of this._devices) {
-      if (!device.adbConnected)
+      if (!device.adbConnected) {
         device.adbModel = Common.UIString('Unknown');
+      }
     }
 
     const ids = new Set();
-    for (const device of this._devices)
+    for (const device of this._devices) {
       ids.add(device.id);
+    }
 
     let selectedRemoved = false;
     for (const deviceId of this._viewById.keys()) {
@@ -104,8 +108,9 @@ Devices.DevicesView = class extends UI.VBox {
         this._listItemById.remove(deviceId);
         this._viewById.remove(deviceId);
         listItem.remove();
-        if (listItem === this._selectedListItem)
+        if (listItem === this._selectedListItem) {
           selectedRemoved = true;
+        }
       }
     }
 
@@ -128,8 +133,9 @@ Devices.DevicesView = class extends UI.VBox {
       view.update(device);
     }
 
-    if (selectedRemoved)
+    if (selectedRemoved) {
       this._selectSidebarListItem(this._discoveryListItem, this._discoveryView);
+    }
 
     this._updateFooter();
   }
@@ -161,13 +167,15 @@ Devices.DevicesView = class extends UI.VBox {
     const status = /** @type {!Adb.PortForwardingStatus} */ (event.data);
     for (const deviceId in status) {
       const view = this._viewById.get(deviceId);
-      if (view)
+      if (view) {
         view.portForwardingStatusChanged(status[deviceId]);
+      }
     }
     for (const deviceId of this._viewById.keys()) {
       const view = this._viewById.get(deviceId);
-      if (view && !(deviceId in status))
+      if (view && !(deviceId in status)) {
         view.portForwardingStatusChanged({ports: {}, browserId: ''});
+      }
     }
   }
 
@@ -225,8 +233,9 @@ Devices.DevicesView.DiscoveryView = class extends UI.VBox {
     this._portForwardingView = new Devices.DevicesView.PortForwardingView((enabled, config) => {
       this._config.portForwardingEnabled = enabled;
       this._config.portForwardingConfig = {};
-      for (const rule of config)
+      for (const rule of config) {
         this._config.portForwardingConfig[rule.port] = rule.address;
+      }
       InspectorFrontendHost.setDevicesDiscoveryConfig(this._config);
     });
     this._portForwardingView.show(this.element);
@@ -348,8 +357,9 @@ Devices.DevicesView.PortForwardingView = class extends UI.VBox {
   commitEdit(rule, editor, isNew) {
     rule.port = editor.control('port').value.trim();
     rule.address = editor.control('address').value.trim();
-    if (isNew)
+    if (isNew) {
       this._portForwardingConfig.push(rule);
+    }
     this._update();
   }
 
@@ -369,8 +379,9 @@ Devices.DevicesView.PortForwardingView = class extends UI.VBox {
    * @return {!UI.ListWidget.Editor<!Adb.PortForwardingRule>}
    */
   _createEditor() {
-    if (this._editor)
+    if (this._editor) {
       return this._editor;
+    }
 
     const editor = new UI.ListWidget.Editor();
     this._editor = editor;
@@ -403,8 +414,9 @@ Devices.DevicesView.PortForwardingView = class extends UI.VBox {
         errorMessage = ls`Device port must be a number`;
       } else {
         const port = parseInt(match[1], 10);
-        if (port < 1024 || port > 65535)
+        if (port < 1024 || port > 65535) {
           errorMessage = ls`Device port number must be between 1024 and 65535`;
+        }
         for (let i = 0; i < this._portForwardingConfig.length; ++i) {
           if (i !== index && this._portForwardingConfig[i].port === value) {
             errorMessage = ls`Device port numbers can only be used once`;
@@ -413,8 +425,9 @@ Devices.DevicesView.PortForwardingView = class extends UI.VBox {
         }
       }
 
-      if (errorMessage)
+      if (errorMessage) {
         return {valid: false, errorMessage};
+      }
       return {valid: true};
     }
 
@@ -436,12 +449,14 @@ Devices.DevicesView.PortForwardingView = class extends UI.VBox {
         errorMessage = ls`Local address must match this pattern: dev.example.corp:3333`;
       } else {
         const port = parseInt(match[2], 10);
-        if (port > 65535)
+        if (port > 65535) {
           errorMessage = ls`Port number must be not greater than 65535`;
+        }
       }
 
-      if (errorMessage)
+      if (errorMessage) {
         return {valid: false, errorMessage};
+      }
       return {valid: true};
     }
   }
@@ -480,19 +495,22 @@ Devices.DevicesView.DeviceView = class extends UI.VBox {
    * @param {!Adb.Device} device
    */
   update(device) {
-    if (!this._device || this._device.adbModel !== device.adbModel)
+    if (!this._device || this._device.adbModel !== device.adbModel) {
       this._deviceTitle.textContent = device.adbModel;
+    }
 
-    if (!this._device || this._device.adbSerial !== device.adbSerial)
+    if (!this._device || this._device.adbSerial !== device.adbSerial) {
       this._deviceSerial.textContent = '#' + device.adbSerial;
+    }
 
     this._deviceOffline.classList.toggle('hidden', device.adbConnected);
     this._noBrowsers.classList.toggle('hidden', !device.adbConnected || !!device.browsers.length);
     this._browsers.classList.toggle('hidden', !device.adbConnected || !device.browsers.length);
 
     const browserIds = new Set();
-    for (const browser of device.browsers)
+    for (const browser of device.browsers) {
       browserIds.add(browser.id);
+    }
 
     for (const browserId of this._browserById.keys()) {
       if (!browserIds.has(browserId)) {
@@ -584,15 +602,17 @@ Devices.DevicesView.DeviceView = class extends UI.VBox {
   _updateBrowserSection(section, browser) {
     if (!section.browser || section.browser.adbBrowserName !== browser.adbBrowserName ||
         section.browser.adbBrowserVersion !== browser.adbBrowserVersion) {
-      if (browser.adbBrowserVersion)
+      if (browser.adbBrowserVersion) {
         section.title.textContent = String.sprintf('%s (%s)', browser.adbBrowserName, browser.adbBrowserVersion);
-      else
+      } else {
         section.title.textContent = browser.adbBrowserName;
+      }
     }
 
     const pageIds = new Set();
-    for (const page of browser.pages)
+    for (const page of browser.pages) {
       pageIds.add(page.id);
+    }
 
     for (const pageId of section.pageSections.keys()) {
       if (!pageIds.has(pageId)) {
@@ -610,13 +630,15 @@ Devices.DevicesView.DeviceView = class extends UI.VBox {
         section.pages.appendChild(pageSection.element);
       }
       this._updatePageSection(pageSection, page);
-      if (!index && section.pages.firstChild !== pageSection.element)
+      if (!index && section.pages.firstChild !== pageSection.element) {
         section.pages.insertBefore(pageSection.element, section.pages.firstChild);
+      }
     }
 
     const kViewMoreCount = 3;
-    for (let index = 0, element = section.pages.firstChild; element; element = element.nextSibling, ++index)
+    for (let index = 0, element = section.pages.firstChild; element; element = element.nextSibling, ++index) {
       element.classList.toggle('device-view-more-page', index >= kViewMoreCount);
+    }
     section.viewMore.classList.toggle('device-needs-view-more', browser.pages.length > kViewMoreCount);
     section.newTab.classList.toggle('hidden', !browser.adbBrowserChromeVersion);
     section.browser = browser;
@@ -654,8 +676,9 @@ Devices.DevicesView.DeviceView = class extends UI.VBox {
      * @param {string} action
      */
     function doAction(action) {
-      if (section.page)
+      if (section.page) {
         InspectorFrontendHost.performActionOnRemotePage(section.page.id, action);
+      }
     }
   }
 
@@ -682,8 +705,9 @@ Devices.DevicesView.DeviceView = class extends UI.VBox {
    */
   portForwardingStatusChanged(status) {
     const json = JSON.stringify(status);
-    if (json === this._cachedPortStatus)
+    if (json === this._cachedPortStatus) {
       return;
+    }
     this._cachedPortStatus = json;
 
     this._portStatus.removeChildren();
@@ -693,17 +717,19 @@ Devices.DevicesView.DeviceView = class extends UI.VBox {
     const error = [];
     let empty = true;
     for (const port in status.ports) {
-      if (!status.ports.hasOwnProperty(port))
+      if (!status.ports.hasOwnProperty(port)) {
         continue;
+      }
 
       empty = false;
       const portStatus = status.ports[port];
       const portNumber = createElementWithClass('div', 'device-view-port-number monospace');
       portNumber.textContent = ':' + port;
-      if (portStatus >= 0)
+      if (portStatus >= 0) {
         this._portStatus.appendChild(portNumber);
-      else
+      } else {
         this._portStatus.insertBefore(portNumber, this._portStatus.firstChild);
+      }
 
       const portIcon = createElementWithClass('div', 'device-view-port-icon');
       if (portStatus >= 0) {
@@ -719,12 +745,15 @@ Devices.DevicesView.DeviceView = class extends UI.VBox {
     }
 
     const title = [];
-    if (connected.length)
+    if (connected.length) {
       title.push(Common.UIString('Connected: %s', connected.join(', ')));
-    if (transient.length)
+    }
+    if (transient.length) {
       title.push(Common.UIString('Transient: %s', transient.join(', ')));
-    if (error.length)
+    }
+    if (error.length) {
       title.push(Common.UIString('Error: %s', error.join(', ')));
+    }
     this._portStatus.title = title.join('; ');
     this._portStatus.classList.toggle('hidden', empty);
   }

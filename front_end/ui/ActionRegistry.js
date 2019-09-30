@@ -19,17 +19,19 @@ UI.ActionRegistry = class {
      * @this {UI.ActionRegistry}
      */
     function registerExtension(extension) {
-      if (!extension.canInstantiate())
+      if (!extension.canInstantiate()) {
         return;
+      }
       const actionId = extension.descriptor()['actionId'];
       console.assert(actionId);
       console.assert(!this._actionsById.get(actionId));
 
       const action = new UI.Action(extension);
-      if (!action.category() || action.title())
+      if (!action.category() || action.title()) {
         this._actionsById.set(actionId, action);
-      else
+      } else {
         console.error(`Category actions require a title for command menu: ${actionId}`);
+      }
     }
   }
 
@@ -49,8 +51,9 @@ UI.ActionRegistry = class {
     const extensions = [];
     actionIds.forEach(function(actionId) {
       const action = this._actionsById.get(actionId);
-      if (action)
+      if (action) {
         extensions.push(action._extension);
+      }
     }, this);
     return context.applicableExtensions(extensions).valuesArray().map(extensionToAction.bind(this));
 
@@ -137,8 +140,9 @@ UI.Action = class extends Common.Object {
    * @param {boolean} enabled
    */
   setEnabled(enabled) {
-    if (this._enabled === enabled)
+    if (this._enabled === enabled) {
       return;
+    }
 
     this._enabled = enabled;
     this.dispatchEventToListeners(UI.Action.Events.Enabled, enabled);
@@ -180,8 +184,9 @@ UI.Action = class extends Common.Object {
     const options = this._extension.descriptor()['options'];
     if (options) {
       for (const pair of options) {
-        if (pair['value'] !== this._toggled)
+        if (pair['value'] !== this._toggled) {
           title = pair['title'];
+        }
       }
     }
     return ls(title);
@@ -199,8 +204,9 @@ UI.Action = class extends Common.Object {
    */
   setToggled(toggled) {
     console.assert(this.toggleable(), 'Shouldn\'t be toggling an untoggleable action', this.id());
-    if (this._toggled === toggled)
+    if (this._toggled === toggled) {
       return;
+    }
 
     this._toggled = toggled;
     this.dispatchEventToListeners(UI.Action.Events.Toggled, toggled);

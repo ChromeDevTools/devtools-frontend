@@ -47,8 +47,9 @@ InlineEditor.BezierEditor = class extends UI.VBox {
    * @param {?UI.Geometry.CubicBezier} bezier
    */
   setBezier(bezier) {
-    if (!bezier)
+    if (!bezier) {
       return;
+    }
     this._bezier = bezier;
     this._updateUI();
   }
@@ -173,8 +174,9 @@ InlineEditor.BezierEditor = class extends UI.VBox {
   }
 
   _unselectPresets() {
-    for (const category of this._presetCategories)
+    for (const category of this._presetCategories) {
       category.icon.classList.remove('bezier-preset-selected');
+    }
     delete this._selectedCategory;
     this._header.classList.remove('bezier-header-active');
   }
@@ -184,8 +186,9 @@ InlineEditor.BezierEditor = class extends UI.VBox {
    * @param {!Event=} event
    */
   _presetCategorySelected(category, event) {
-    if (this._selectedCategory === category)
+    if (this._selectedCategory === category) {
       return;
+    }
     this._unselectPresets();
     this._header.classList.add('bezier-header-active');
     this._selectedCategory = category;
@@ -193,8 +196,9 @@ InlineEditor.BezierEditor = class extends UI.VBox {
     this.setBezier(UI.Geometry.CubicBezier.parse(category.presets[category.presetIndex].value));
     this._onchange();
     this._startPreviewAnimation();
-    if (event)
+    if (event) {
       event.consume(true);
+    }
   }
 
   /**
@@ -202,8 +206,9 @@ InlineEditor.BezierEditor = class extends UI.VBox {
    * @param {!Event} event
    */
   _presetModifyClicked(intensify, event) {
-    if (!this._selectedCategory)
+    if (!this._selectedCategory) {
       return;
+    }
 
     const length = this._selectedCategory.presets.length;
     this._selectedCategory.presetIndex = (this._selectedCategory.presetIndex + (intensify ? 1 : -1) + length) % length;
@@ -214,8 +219,9 @@ InlineEditor.BezierEditor = class extends UI.VBox {
   }
 
   _startPreviewAnimation() {
-    if (this._previewAnimation)
+    if (this._previewAnimation) {
       this._previewAnimation.cancel();
+    }
 
     const animationDuration = 1600;
     const numberOnionSlices = 20;

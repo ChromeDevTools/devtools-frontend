@@ -40,14 +40,16 @@ CssOverview.CSSOverviewSidebarPanel = class extends UI.VBox {
 
   _deselectAllItems() {
     const items = this.contentElement.querySelectorAll(`.${CssOverview.CSSOverviewSidebarPanel.ITEM_CLASS_NAME}`);
-    for (const item of items)
+    for (const item of items) {
       item.classList.remove(CssOverview.CSSOverviewSidebarPanel.SELECTED);
+    }
   }
 
   _onItemClick(event) {
     const target = event.path[0];
-    if (!target.classList.contains(CssOverview.CSSOverviewSidebarPanel.ITEM_CLASS_NAME))
+    if (!target.classList.contains(CssOverview.CSSOverviewSidebarPanel.ITEM_CLASS_NAME)) {
       return;
+    }
 
     const {id} = target.dataset;
     this.select(id);
@@ -56,11 +58,13 @@ CssOverview.CSSOverviewSidebarPanel = class extends UI.VBox {
 
   select(id) {
     const target = this.contentElement.querySelector(`[data-id=${CSS.escape(id)}]`);
-    if (!target)
+    if (!target) {
       return;
+    }
 
-    if (target.classList.contains(CssOverview.CSSOverviewSidebarPanel.SELECTED))
+    if (target.classList.contains(CssOverview.CSSOverviewSidebarPanel.SELECTED)) {
       return;
+    }
 
     this._deselectAllItems();
     target.classList.add(CssOverview.CSSOverviewSidebarPanel.SELECTED);

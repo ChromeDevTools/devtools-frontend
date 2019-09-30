@@ -28,10 +28,11 @@ Audits.ReportSelector = class {
    */
   _handleChange(event) {
     const item = this._selectedItem();
-    if (item)
+    if (item) {
       item.select();
-    else
+    } else {
       this._renderNewAuditView();
+    }
   }
 
   /**
@@ -79,8 +80,9 @@ Audits.ReportSelector = class {
 
   clearAll() {
     for (const elem of this._comboBox.options()) {
-      if (elem === this._newAuditItem)
+      if (elem === this._newAuditItem) {
         continue;
+      }
 
       this._itemByOptionElement.get(elem).delete();
       this._itemByOptionElement.delete(elem);
@@ -123,8 +125,9 @@ Audits.ReportSelector.Item = class {
   }
 
   delete() {
-    if (this._element)
+    if (this._element) {
       this._element.remove();
+    }
     this._showLandingCallback();
   }
 };

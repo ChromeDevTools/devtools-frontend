@@ -65,29 +65,35 @@ FormatterWorker.CSSFormatter = class {
   _tokenCallback(token, type, startPosition) {
     startPosition += this._fromOffset;
     const startLine = this._lineEndings.lowerBound(startPosition);
-    if (startLine !== this._lastLine)
+    if (startLine !== this._lastLine) {
       this._state.eatWhitespace = true;
-    if (/^property/.test(type) && !this._state.inPropertyValue)
+    }
+    if (/^property/.test(type) && !this._state.inPropertyValue) {
       this._state.seenProperty = true;
+    }
     this._lastLine = startLine;
     const isWhitespace = /^\s+$/.test(token);
     if (isWhitespace) {
-      if (!this._state.eatWhitespace)
+      if (!this._state.eatWhitespace) {
         this._builder.addSoftSpace();
+      }
       return;
     }
     this._state.eatWhitespace = false;
-    if (token === '\n')
+    if (token === '\n') {
       return;
+    }
 
     if (token !== '}') {
-      if (this._state.afterClosingBrace)
+      if (this._state.afterClosingBrace) {
         this._builder.addNewLine(true);
+      }
       this._state.afterClosingBrace = false;
     }
     if (token === '}') {
-      if (this._state.inPropertyValue)
+      if (this._state.inPropertyValue) {
         this._builder.addNewLine();
+      }
       this._builder.decreaseNestingLevel();
       this._state.afterClosingBrace = true;
       this._state.inPropertyValue = false;
@@ -108,8 +114,9 @@ FormatterWorker.CSSFormatter = class {
 
     this._builder.addToken(token, startPosition);
 
-    if (type === 'comment' && !this._state.inPropertyValue && !this._state.seenProperty)
+    if (type === 'comment' && !this._state.inPropertyValue && !this._state.seenProperty) {
       this._builder.addNewLine();
+    }
     if (token === ';' && this._state.inPropertyValue) {
       this._state.inPropertyValue = false;
       this._builder.addNewLine();

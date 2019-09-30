@@ -55,18 +55,22 @@ UI.Tooltip = class {
   _mouseMove(event) {
     const mouseEvent = /** @type {!MouseEvent} */ (event);
     const path = mouseEvent.composedPath();
-    if (!path || mouseEvent.buttons !== 0 || (mouseEvent.movementX === 0 && mouseEvent.movementY === 0))
+    if (!path || mouseEvent.buttons !== 0 || (mouseEvent.movementX === 0 && mouseEvent.movementY === 0)) {
       return;
+    }
 
-    if (this._anchorElement && path.indexOf(this._anchorElement) === -1)
+    if (this._anchorElement && path.indexOf(this._anchorElement) === -1) {
       this._hide(false);
+    }
 
     for (const element of path) {
-      if (element === this._anchorElement)
+      if (element === this._anchorElement) {
         return;
+      }
       // The offsetParent is null when the element or an ancestor has 'display: none'.
-      if (!(element instanceof Element) || element.offsetParent === null)
+      if (!(element instanceof Element) || element.offsetParent === null) {
         continue;
+      }
       if (element[UI.Tooltip._symbol]) {
         this._show(element, mouseEvent);
         return;
@@ -92,10 +96,11 @@ UI.Tooltip = class {
       }
     }
 
-    if (typeof tooltip.content === 'string')
+    if (typeof tooltip.content === 'string') {
       this._tooltipElement.setTextContentTruncatedIfNeeded(tooltip.content);
-    else
+    } else {
       this._tooltipElement.appendChild(tooltip.content);
+    }
 
     if (tooltip.actionId) {
       const shortcuts = UI.shortcutRegistry.shortcutDescriptorsForAction(tooltip.actionId);
@@ -152,10 +157,12 @@ UI.Tooltip = class {
   _hide(removeInstant) {
     delete this._anchorElement;
     this._tooltipElement.classList.remove('shown');
-    if (Date.now() > this._tooltipLastOpened)
+    if (Date.now() > this._tooltipLastOpened) {
       this._tooltipLastClosed = Date.now();
-    if (removeInstant)
+    }
+    if (removeInstant) {
       delete this._tooltipLastClosed;
+    }
   }
 
   _reset() {

@@ -23,8 +23,9 @@ SDK.CSSStyleSheetHeader = class {
     this.startLine = payload.startLine;
     this.startColumn = payload.startColumn;
     this.contentLength = payload.length;
-    if (payload.ownerNode)
+    if (payload.ownerNode) {
       this.ownerNode = new SDK.DeferredDOMNode(cssModel.target(), payload.ownerNode);
+    }
     this.setSourceMapURL(payload.sourceMapURL);
   }
 
@@ -76,8 +77,9 @@ SDK.CSSStyleSheetHeader = class {
     console.assert(frame);
     const parsedURL = new Common.ParsedURL(frame.url);
     let fakeURL = 'inspector://' + parsedURL.host + parsedURL.folderPathComponents;
-    if (!fakeURL.endsWith('/'))
+    if (!fakeURL.endsWith('/')) {
       fakeURL += '/';
+    }
     fakeURL += 'inspector-stylesheet';
     return fakeURL;
   }

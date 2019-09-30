@@ -63,8 +63,9 @@ SDK.TracingManager = class extends SDK.SDKModel {
       return;
     }
 
-    if (this._eventsRetrieved > this._eventBufferSize)
+    if (this._eventsRetrieved > this._eventBufferSize) {
       this._eventsRetrieved = this._eventBufferSize;
+    }
     this._activeClient.eventsRetrievalProgress(this._eventsRetrieved / this._eventBufferSize);
   }
 
@@ -83,8 +84,9 @@ SDK.TracingManager = class extends SDK.SDKModel {
    * @return {!Promise<!Object>}
    */
   async start(client, categoryFilter, options) {
-    if (this._activeClient)
+    if (this._activeClient) {
       throw new Error('Tracing is already started');
+    }
     const bufferUsageReportingIntervalMs = 500;
     this._activeClient = client;
     const args = {
@@ -94,16 +96,19 @@ SDK.TracingManager = class extends SDK.SDKModel {
       transferMode: SDK.TracingManager.TransferMode.ReportEvents
     };
     const response = await this._tracingAgent.invoke_start(args);
-    if (response[Protocol.Error])
+    if (response[Protocol.Error]) {
       this._activeClient = null;
+    }
     return response;
   }
 
   stop() {
-    if (!this._activeClient)
+    if (!this._activeClient) {
       throw new Error('Tracing is not started');
-    if (this._finishing)
+    }
+    if (this._finishing) {
       throw new Error('Tracing is already being stopped');
+    }
     this._finishing = true;
     this._tracingAgent.end();
   }

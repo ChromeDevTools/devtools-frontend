@@ -30,8 +30,9 @@ CssOverview.CSSOverviewCompletedView = class extends UI.PanelWithSidebar {
 
   _sideBarItemSelected(event) {
     const section = this._fragment.$(event.data);
-    if (!section)
+    if (!section) {
       return;
+    }
 
     section.scrollIntoView();
   }
@@ -45,8 +46,9 @@ CssOverview.CSSOverviewCompletedView = class extends UI.PanelWithSidebar {
   }
 
   _render(data) {
-    if (!(data && ('textColors' in data) && ('backgroundColors' in data)))
+    if (!(data && ('textColors' in data) && ('backgroundColors' in data))) {
       return;
+    }
 
     const {elementStyleStats, elementCount, backgroundColors, textColors, globalStyleStats} = data;
 
@@ -153,8 +155,9 @@ CssOverview.CSSOverviewCompletedView = class extends UI.PanelWithSidebar {
     return Array.from(colors)
         .map(colorText => {
           const color = Common.Color.parse(colorText);
-          if (color.rgba()[3] === 0)
+          if (color.rgba()[3] === 0) {
             return;
+          }
 
           return color;
         })

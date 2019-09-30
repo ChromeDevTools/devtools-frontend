@@ -85,8 +85,9 @@ Resources.ApplicationCacheItemsView = class extends UI.SimpleView {
   }
 
   _maybeUpdate() {
-    if (!this.isShowing() || !this._viewDirty)
+    if (!this.isShowing() || !this._viewDirty) {
       return;
+    }
 
     this._update();
     this._viewDirty = false;
@@ -124,8 +125,9 @@ Resources.ApplicationCacheItemsView = class extends UI.SimpleView {
     this._statusIcon.textContent = info.text;
 
     if (this.isShowing() && this._status === Resources.ApplicationCacheModel.IDLE &&
-        (oldStatus === Resources.ApplicationCacheModel.UPDATEREADY || !this._resources))
+        (oldStatus === Resources.ApplicationCacheModel.UPDATEREADY || !this._resources)) {
       this._markDirty();
+    }
     this._maybeUpdate();
   }
 
@@ -154,8 +156,9 @@ Resources.ApplicationCacheItemsView = class extends UI.SimpleView {
 
       this._emptyWidget.show(this.element);
       this._deleteButton.setVisible(false);
-      if (this._dataGrid)
+      if (this._dataGrid) {
         this._dataGrid.element.classList.add('hidden');
+      }
       return;
     }
     // FIXME: are these variables needed anywhere else?
@@ -165,8 +168,9 @@ Resources.ApplicationCacheItemsView = class extends UI.SimpleView {
     this._size = applicationCache.size;
     this._resources = applicationCache.resources;
 
-    if (!this._dataGrid)
+    if (!this._dataGrid) {
       this._createDataGrid();
+    }
 
     this._populateDataGrid();
     this._dataGrid.autoSizeColumns(20, 80);
@@ -237,16 +241,18 @@ Resources.ApplicationCacheItemsView = class extends UI.SimpleView {
       }
     }
 
-    if (!nodeToSelect && this._dataGrid.rootNode().children.length)
+    if (!nodeToSelect && this._dataGrid.rootNode().children.length) {
       this._dataGrid.rootNode().children[0].selected = true;
+    }
   }
 
   /**
    * @param {!Common.Event} event
    */
   _deleteButtonClicked(event) {
-    if (!this._dataGrid || !this._dataGrid.selectedNode)
+    if (!this._dataGrid || !this._dataGrid.selectedNode) {
       return;
+    }
 
     // FIXME: Delete Button semantics are not yet defined. (Delete a single, or all?)
     this._deleteCallback(this._dataGrid.selectedNode);

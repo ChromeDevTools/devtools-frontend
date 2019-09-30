@@ -60,13 +60,15 @@ Timeline.TimelineFlameChartNetworkDataProvider = class {
    * @return {!PerfUI.FlameChart.TimelineData}
    */
   timelineData() {
-    if (this._timelineData)
+    if (this._timelineData) {
       return this._timelineData;
+    }
     /** @type {!Array<!TimelineModel.TimelineModel.NetworkRequest>} */
     this._requests = [];
     this._timelineData = new PerfUI.FlameChart.TimelineData([], [], [], []);
-    if (this._model)
+    if (this._model) {
       this._appendTimelineData();
+    }
     return this._timelineData;
   }
 
@@ -101,8 +103,9 @@ Timeline.TimelineFlameChartNetworkDataProvider = class {
    * @return {?Timeline.TimelineSelection}
    */
   createSelection(index) {
-    if (index === -1)
+    if (index === -1) {
       return null;
+    }
     const request = this._requests[index];
     this._lastSelection =
         new Timeline.TimelineFlameChartView.Selection(Timeline.TimelineSelection.fromNetworkRequest(request), index);
@@ -114,14 +117,17 @@ Timeline.TimelineFlameChartNetworkDataProvider = class {
    * @return {number}
    */
   entryIndexForSelection(selection) {
-    if (!selection)
+    if (!selection) {
       return -1;
+    }
 
-    if (this._lastSelection && this._lastSelection.timelineSelection.object() === selection.object())
+    if (this._lastSelection && this._lastSelection.timelineSelection.object() === selection.object()) {
       return this._lastSelection.entryIndex;
+    }
 
-    if (selection.type() !== Timeline.TimelineSelection.Type.NetworkRequest)
+    if (selection.type() !== Timeline.TimelineSelection.Type.NetworkRequest) {
       return -1;
+    }
     const request = /** @type{!TimelineModel.TimelineModel.NetworkRequest} */ (selection.object());
     const index = this._requests.indexOf(request);
     if (index !== -1) {
@@ -186,8 +192,9 @@ Timeline.TimelineFlameChartNetworkDataProvider = class {
    */
   decorateEntry(index, context, text, barX, barY, barWidth, barHeight, unclippedBarX, timeToPixelRatio) {
     const request = /** @type {!TimelineModel.TimelineModel.NetworkRequest} */ (this._requests[index]);
-    if (!request.timing)
+    if (!request.timing) {
       return false;
+    }
 
     const beginTime = request.beginTime();
     /**
@@ -279,8 +286,9 @@ Timeline.TimelineFlameChartNetworkDataProvider = class {
     const /** @const */ minTextWidthPx = 20;
     if (textWidth >= minTextWidthPx) {
       text = this.entryTitle(index) || '';
-      if (request.fromServiceWorker)
+      if (request.fromServiceWorker) {
         text = '⚙ ' + text;
+      }
       if (text) {
         const /** @const */ textPadding = 4;
         const /** @const */ textBaseline = 5;
@@ -311,15 +319,17 @@ Timeline.TimelineFlameChartNetworkDataProvider = class {
   prepareHighlightedEntryInfo(index) {
     const /** @const */ maxURLChars = 80;
     const request = /** @type {!TimelineModel.TimelineModel.NetworkRequest} */ (this._requests[index]);
-    if (!request.url)
+    if (!request.url) {
       return null;
+    }
     const element = createElement('div');
     const root = UI.createShadowRootWithCoreStyles(element, 'timeline/timelineFlamechartPopover.css');
     const contents = root.createChild('div', 'timeline-flamechart-popover');
     const startTime = request.getStartTime();
     const duration = request.endTime - startTime;
-    if (startTime && isFinite(duration))
+    if (startTime && isFinite(duration)) {
       contents.createChild('span', 'timeline-info-network-time').textContent = Number.millisToString(duration, true);
+    }
     if (typeof request.priority === 'string') {
       const div = contents.createChild('span');
       div.textContent =
@@ -355,8 +365,9 @@ Timeline.TimelineFlameChartNetworkDataProvider = class {
   }
 
   _updateTimelineData() {
-    if (!this._timelineData)
+    if (!this._timelineData) {
       return;
+    }
     const lastTimeByLevel = [];
     let maxLevel = 0;
     for (let i = 0; i < this._requests.length; ++i) {
@@ -367,15 +378,17 @@ Timeline.TimelineFlameChartNetworkDataProvider = class {
         this._timelineData.entryLevels[i] = -1;
         continue;
       }
-      while (lastTimeByLevel.length && lastTimeByLevel.peekLast() <= beginTime)
+      while (lastTimeByLevel.length && lastTimeByLevel.peekLast() <= beginTime) {
         lastTimeByLevel.pop();
+      }
       this._timelineData.entryLevels[i] = lastTimeByLevel.length;
       lastTimeByLevel.push(r.endTime);
       maxLevel = Math.max(maxLevel, lastTimeByLevel.length);
     }
     for (let i = 0; i < this._requests.length; ++i) {
-      if (this._timelineData.entryLevels[i] === -1)
+      if (this._timelineData.entryLevels[i] === -1) {
         this._timelineData.entryLevels[i] = maxLevel;
+      }
     }
     this._timelineData = new PerfUI.FlameChart.TimelineData(
         this._timelineData.entryLevels, this._timelineData.entryTotalTimes, this._timelineData.entryStartTimes,

@@ -58,8 +58,9 @@ DataGrid.DataGrid = class extends Common.Object {
 
     // FIXME: Add a createCallback which is different from editCallback and has different
     // behavior when creating a new node.
-    if (editCallback)
+    if (editCallback) {
       this._dataTable.addEventListener('dblclick', this._ondblclick.bind(this), false);
+    }
     this._dataTable.addEventListener('mousedown', this._mouseDownInDataTable.bind(this));
     this._dataTable.addEventListener('click', this._clickInDataTable.bind(this), true);
 
@@ -161,16 +162,19 @@ DataGrid.DataGrid = class extends Common.Object {
    */
   _innerAddColumn(column, position) {
     const columnId = column.id;
-    if (columnId in this._columns)
+    if (columnId in this._columns) {
       this._innerRemoveColumn(columnId);
+    }
 
-    if (position === undefined)
+    if (position === undefined) {
       position = this._columnsArray.length;
+    }
 
     this._columnsArray.splice(position, 0, column);
     this._columns[columnId] = column;
-    if (column.disclosure)
+    if (column.disclosure) {
       this.disclosureColumnId = columnId;
+    }
 
     const cell = createElement('th');
     cell.className = columnId + '-column';
@@ -178,10 +182,11 @@ DataGrid.DataGrid = class extends Common.Object {
     this._headerTableHeaders[columnId] = cell;
 
     const div = createElement('div');
-    if (column.titleDOMFragment)
+    if (column.titleDOMFragment) {
       div.appendChild(column.titleDOMFragment);
-    else
+    } else {
       div.textContent = column.title;
+    }
     cell.appendChild(div);
 
     if (column.sort) {
@@ -211,14 +216,16 @@ DataGrid.DataGrid = class extends Common.Object {
    */
   _innerRemoveColumn(columnId) {
     const column = this._columns[columnId];
-    if (!column)
+    if (!column) {
       return;
+    }
     delete this._columns[columnId];
     const index = this._columnsArray.findIndex(columnConfig => columnConfig.id === columnId);
     this._columnsArray.splice(index, 1);
     const cell = this._headerTableHeaders[columnId];
-    if (cell.parentElement)
+    if (cell.parentElement) {
       cell.parentElement.removeChild(cell);
+    }
     delete this._headerTableHeaders[columnId];
   }
 
@@ -276,8 +283,9 @@ DataGrid.DataGrid = class extends Common.Object {
   setVerticalPadding(top, bottom) {
     const topPx = top + 'px';
     const bottomPx = (top || bottom) ? bottom + 'px' : 'auto';
-    if (this._topFillerRow.style.height === topPx && this._bottomFillerRow.style.height === bottomPx)
+    if (this._topFillerRow.style.height === topPx && this._bottomFillerRow.style.height === bottomPx) {
       return;
+    }
     this._topFillerRow.style.height = topPx;
     this._bottomFillerRow.style.height = bottomPx;
     this.dispatchEventToListeners(DataGrid.DataGrid.Events.PaddingChanged);
@@ -314,12 +322,14 @@ DataGrid.DataGrid = class extends Common.Object {
    * @param {!Event} event
    */
   _ondblclick(event) {
-    if (this._editing || this._editingNode)
+    if (this._editing || this._editingNode) {
       return;
+    }
 
     const columnId = this.columnIdFromNode(/** @type {!Node} */ (event.target));
-    if (!columnId || !this._columns[columnId].editable)
+    if (!columnId || !this._columns[columnId].editable) {
       return;
+    }
     this._startEditing(/** @type {!Node} */ (event.target));
   }
 
@@ -346,8 +356,9 @@ DataGrid.DataGrid = class extends Common.Object {
     const column = this._columns[columnIdentifier];
     const cellIndex = this._visibleColumnsArray.indexOf(column);
     const nextEditableColumn = this._nextEditableColumn(cellIndex);
-    if (nextEditableColumn !== -1)
+    if (nextEditableColumn !== -1) {
       this._startEditingColumnOfDataGridNode(node, nextEditableColumn);
+    }
   }
 
   /**
@@ -355,13 +366,15 @@ DataGrid.DataGrid = class extends Common.Object {
    */
   _startEditing(target) {
     const element = /** @type {?Element} */ (target.enclosingNodeOrSelfWithNodeName('td'));
-    if (!element)
+    if (!element) {
       return;
+    }
 
     this._editingNode = this.dataGridNodeFromNode(target);
     if (!this._editingNode) {
-      if (!this.creationNode)
+      if (!this.creationNode) {
         return;
+      }
       this._editingNode = this.creationNode;
     }
 
@@ -372,8 +385,9 @@ DataGrid.DataGrid = class extends Common.Object {
     }
 
     this._editing = true;
-    if (element[DataGrid.DataGrid._longTextSymbol])
+    if (element[DataGrid.DataGrid._longTextSymbol]) {
       element.textContent = element[DataGrid.DataGrid._longTextSymbol];
+    }
     UI.InplaceEditor.startEditing(element, this._startEditingConfig(element));
 
     element.getComponentSelection().selectAllChildren(element);
@@ -417,13 +431,15 @@ DataGrid.DataGrid = class extends Common.Object {
      * @this {DataGrid.DataGrid}
      */
     function moveToNextIfNeeded(wasChange) {
-      if (!moveDirection)
+      if (!moveDirection) {
         return;
+      }
 
       if (moveDirection === 'forward') {
         const firstEditableColumn = this._nextEditableColumn(-1);
-        if (currentEditingNode.isCreationNode && cellIndex === firstEditableColumn && !wasChange)
+        if (currentEditingNode.isCreationNode && cellIndex === firstEditableColumn && !wasChange) {
           return;
+        }
 
         const nextEditableColumn = this._nextEditableColumn(cellIndex);
         if (nextEditableColumn !== -1) {
@@ -453,8 +469,9 @@ DataGrid.DataGrid = class extends Common.Object {
 
         const lastEditableColumn = this._nextEditableColumn(this._visibleColumnsArray.length, true);
         const nextDataGridNode = currentEditingNode.traversePreviousNode(true, true);
-        if (nextDataGridNode)
+        if (nextDataGridNode) {
           this._startEditingColumnOfDataGridNode(nextDataGridNode, lastEditableColumn);
+        }
         return;
       }
     }
@@ -475,8 +492,9 @@ DataGrid.DataGrid = class extends Common.Object {
     // the text that used to be there, and the new text.
     this._editCallback(this._editingNode, columnId, textBeforeEditing, newText);
 
-    if (this._editingNode.isCreationNode)
+    if (this._editingNode.isCreationNode) {
       this.addCreationNode(false);
+    }
 
     this._editingCancelled(element);
     moveToNextIfNeeded.call(this, true);
@@ -499,8 +517,9 @@ DataGrid.DataGrid = class extends Common.Object {
     const increment = moveBackward ? -1 : 1;
     const columns = this._visibleColumnsArray;
     for (let i = cellIndex + increment; (i >= 0) && (i < columns.length); i += increment) {
-      if (columns[i].editable)
+      if (columns[i].editable) {
         return i;
+      }
     }
     return -1;
   }
@@ -509,8 +528,9 @@ DataGrid.DataGrid = class extends Common.Object {
    * @return {?string}
    */
   sortColumnId() {
-    if (!this._sortColumnCell)
+    if (!this._sortColumnCell) {
       return null;
+    }
     return this._sortColumnCell[DataGrid.DataGrid._columnIdSymbol];
   }
 
@@ -518,10 +538,12 @@ DataGrid.DataGrid = class extends Common.Object {
    * @return {?string}
    */
   sortOrder() {
-    if (!this._sortColumnCell || this._sortColumnCell.classList.contains(DataGrid.DataGrid.Order.Ascending))
+    if (!this._sortColumnCell || this._sortColumnCell.classList.contains(DataGrid.DataGrid.Order.Ascending)) {
       return DataGrid.DataGrid.Order.Ascending;
-    if (this._sortColumnCell.classList.contains(DataGrid.DataGrid.Order.Descending))
+    }
+    if (this._sortColumnCell.classList.contains(DataGrid.DataGrid.Order.Descending)) {
       return DataGrid.DataGrid.Order.Descending;
+    }
     return null;
   }
 
@@ -539,18 +561,21 @@ DataGrid.DataGrid = class extends Common.Object {
    * @return {!Array.<number>}
    */
   _autoSizeWidths(widths, minPercent, maxPercent) {
-    if (minPercent)
+    if (minPercent) {
       minPercent = Math.min(minPercent, Math.floor(100 / widths.length));
+    }
     let totalWidth = 0;
-    for (let i = 0; i < widths.length; ++i)
+    for (let i = 0; i < widths.length; ++i) {
       totalWidth += widths[i];
+    }
     let totalPercentWidth = 0;
     for (let i = 0; i < widths.length; ++i) {
       let width = Math.round(100 * widths[i] / totalWidth);
-      if (minPercent && width < minPercent)
+      if (minPercent && width < minPercent) {
         width = minPercent;
-      else if (maxPercent && width > maxPercent)
+      } else if (maxPercent && width > maxPercent) {
         width = maxPercent;
+      }
       totalPercentWidth += width;
       widths[i] = width;
     }
@@ -561,8 +586,9 @@ DataGrid.DataGrid = class extends Common.Object {
         if (widths[i] > minPercent) {
           --widths[i];
           --recoupPercent;
-          if (!recoupPercent)
+          if (!recoupPercent) {
             break;
+          }
         }
       }
     }
@@ -572,8 +598,9 @@ DataGrid.DataGrid = class extends Common.Object {
         if (widths[i] < maxPercent) {
           ++widths[i];
           ++recoupPercent;
-          if (!recoupPercent)
+          if (!recoupPercent) {
             break;
+          }
         }
       }
     }
@@ -589,8 +616,9 @@ DataGrid.DataGrid = class extends Common.Object {
    */
   autoSizeColumns(minPercent, maxPercent, maxDescentLevel) {
     let widths = [];
-    for (let i = 0; i < this._columnsArray.length; ++i)
+    for (let i = 0; i < this._columnsArray.length; ++i) {
       widths.push((this._columnsArray[i].title || '').length);
+    }
 
     maxDescentLevel = maxDescentLevel || 0;
     const children = this._enumerateChildren(this._rootNode, [], maxDescentLevel + 1);
@@ -598,15 +626,17 @@ DataGrid.DataGrid = class extends Common.Object {
       const node = children[i];
       for (let j = 0; j < this._columnsArray.length; ++j) {
         const text = String(node.data[this._columnsArray[j].id]);
-        if (text.length > widths[j])
+        if (text.length > widths[j]) {
           widths[j] = text.length;
+        }
       }
     }
 
     widths = this._autoSizeWidths(widths, minPercent, maxPercent);
 
-    for (let i = 0; i < this._columnsArray.length; ++i)
+    for (let i = 0; i < this._columnsArray.length; ++i) {
       this._columnsArray[i].weight = widths[i];
+    }
     this._columnWidthsInitialized = false;
     this.updateWidths();
   }
@@ -618,12 +648,15 @@ DataGrid.DataGrid = class extends Common.Object {
    * @return {!Array<!NODE_TYPE>}
    */
   _enumerateChildren(rootNode, result, maxLevel) {
-    if (!rootNode._isRoot)
+    if (!rootNode._isRoot) {
       result.push(rootNode);
-    if (!maxLevel)
+    }
+    if (!maxLevel) {
       return [];
-    for (let i = 0; i < rootNode.children.length; ++i)
+    }
+    for (let i = 0; i < rootNode.children.length; ++i) {
       this._enumerateChildren(rootNode.children[i], result, maxLevel - 1);
+    }
     return result;
   }
 
@@ -655,8 +688,9 @@ DataGrid.DataGrid = class extends Common.Object {
       const numColumns = cells.length - 1;  // Do not process corner column.
       for (let i = 0; i < numColumns; i++) {
         const column = this._visibleColumnsArray[i];
-        if (!column.weight)
+        if (!column.weight) {
           column.weight = 100 * cells[i].offsetWidth / tableWidth || 10;
+        }
       }
       this._columnWidthsInitialized = true;
     }
@@ -672,21 +706,24 @@ DataGrid.DataGrid = class extends Common.Object {
   }
 
   _loadColumnWeights() {
-    if (!this._columnWeightsSetting)
+    if (!this._columnWeightsSetting) {
       return;
+    }
     const weights = this._columnWeightsSetting.get();
     for (let i = 0; i < this._columnsArray.length; ++i) {
       const column = this._columnsArray[i];
       const weight = weights[column.id];
-      if (weight)
+      if (weight) {
         column.weight = weight;
+      }
     }
     this._applyColumnWeights();
   }
 
   _saveColumnWeights() {
-    if (!this._columnWeightsSetting)
+    if (!this._columnWeightsSetting) {
       return;
+    }
     const weights = {};
     for (let i = 0; i < this._columnsArray.length; ++i) {
       const column = this._columnsArray[i];
@@ -704,8 +741,9 @@ DataGrid.DataGrid = class extends Common.Object {
 
   _applyColumnWeights() {
     let tableWidth = this.element.offsetWidth - this._cornerWidth;
-    if (tableWidth <= 0)
+    if (tableWidth <= 0) {
       return;
+    }
 
     let sumOfWeights = 0.0;
     const fixedColumnWidths = [];
@@ -747,14 +785,16 @@ DataGrid.DataGrid = class extends Common.Object {
     this._visibleColumnsArray = [];
     for (let i = 0; i < this._columnsArray.length; ++i) {
       const column = this._columnsArray[i];
-      if (columnsVisibility[column.id])
+      if (columnsVisibility[column.id]) {
         this._visibleColumnsArray.push(column);
+      }
     }
     this._refreshHeader();
     this._applyColumnWeights();
     const nodes = this._enumerateChildren(this.rootNode(), [], -1);
-    for (let i = 0; i < nodes.length; ++i)
+    for (let i = 0; i < nodes.length; ++i) {
       nodes[i].refresh();
+    }
   }
 
   get scrollContainer() {
@@ -767,8 +807,9 @@ DataGrid.DataGrid = class extends Common.Object {
     const left = [];
     const resizers = this._resizers;
 
-    while (resizers.length > numColumns - 1)
+    while (resizers.length > numColumns - 1) {
       resizers.pop().remove();
+    }
 
     for (let i = 0; i < numColumns - 1; i++) {
       // Get the width of the cell in the first (and only) row of the
@@ -801,12 +842,14 @@ DataGrid.DataGrid = class extends Common.Object {
   }
 
   addCreationNode(hasChildren) {
-    if (this.creationNode)
+    if (this.creationNode) {
       this.creationNode.makeNormal();
+    }
 
     const emptyData = {};
-    for (const column in this._columns)
+    for (const column in this._columns) {
       emptyData[column] = null;
+    }
     this.creationNode = new DataGrid.CreationDataGridNode(emptyData, hasChildren);
     this.rootNode().appendChild(this.creationNode);
   }
@@ -815,27 +858,31 @@ DataGrid.DataGrid = class extends Common.Object {
    * @param {!Event} event
    */
   _keyDown(event) {
-    if (!this.selectedNode || event.shiftKey || event.metaKey || event.ctrlKey || this._editing || UI.isEditing())
+    if (!this.selectedNode || event.shiftKey || event.metaKey || event.ctrlKey || this._editing || UI.isEditing()) {
       return;
+    }
 
     let handled = false;
     let nextSelectedNode;
     if (event.key === 'ArrowUp' && !event.altKey) {
       nextSelectedNode = this.selectedNode.traversePreviousNode(true);
-      while (nextSelectedNode && !nextSelectedNode.selectable)
+      while (nextSelectedNode && !nextSelectedNode.selectable) {
         nextSelectedNode = nextSelectedNode.traversePreviousNode(true);
+      }
       handled = nextSelectedNode ? true : false;
     } else if (event.key === 'ArrowDown' && !event.altKey) {
       nextSelectedNode = this.selectedNode.traverseNextNode(true);
-      while (nextSelectedNode && !nextSelectedNode.selectable)
+      while (nextSelectedNode && !nextSelectedNode.selectable) {
         nextSelectedNode = nextSelectedNode.traverseNextNode(true);
+      }
       handled = nextSelectedNode ? true : false;
     } else if (event.key === 'ArrowLeft') {
       if (this.selectedNode.expanded) {
-        if (event.altKey)
+        if (event.altKey) {
           this.selectedNode.collapseRecursively();
-        else
+        } else {
           this.selectedNode.collapse();
+        }
         handled = true;
       } else if (this.selectedNode.parent && !this.selectedNode.parent._isRoot) {
         handled = true;
@@ -856,10 +903,11 @@ DataGrid.DataGrid = class extends Common.Object {
           nextSelectedNode = this.selectedNode.children[0];
           handled = nextSelectedNode ? true : false;
         } else {
-          if (event.altKey)
+          if (event.altKey) {
             this.selectedNode.expandRecursively();
-          else
+          } else {
             this.selectedNode.expand();
+          }
         }
       }
     } else if (event.keyCode === 8 || event.keyCode === 46) {
@@ -880,8 +928,9 @@ DataGrid.DataGrid = class extends Common.Object {
       nextSelectedNode.reveal();
       nextSelectedNode.select();
     }
-    if (handled)
+    if (handled) {
       event.consume(true);
+    }
   }
 
   /**
@@ -890,25 +939,30 @@ DataGrid.DataGrid = class extends Common.Object {
    */
   updateSelectionBeforeRemoval(root, onlyAffectsSubtree) {
     let ancestor = this.selectedNode;
-    while (ancestor && ancestor !== root)
+    while (ancestor && ancestor !== root) {
       ancestor = ancestor.parent;
+    }
     // Selection is not in the subtree being deleted.
-    if (!ancestor)
+    if (!ancestor) {
       return;
+    }
 
     let nextSelectedNode;
     // Skip subtree being deleted when looking for the next selectable node.
     for (ancestor = root; ancestor && !ancestor.nextSibling; ancestor = ancestor.parent) {
     }
-    if (ancestor)
+    if (ancestor) {
       nextSelectedNode = ancestor.nextSibling;
-    while (nextSelectedNode && !nextSelectedNode.selectable)
+    }
+    while (nextSelectedNode && !nextSelectedNode.selectable) {
       nextSelectedNode = nextSelectedNode.traverseNextNode(true);
+    }
 
     if (!nextSelectedNode || nextSelectedNode.isCreationNode) {
       nextSelectedNode = root.traversePreviousNode(true);
-      while (nextSelectedNode && !nextSelectedNode.selectable)
+      while (nextSelectedNode && !nextSelectedNode.selectable) {
         nextSelectedNode = nextSelectedNode.traversePreviousNode(true);
+      }
     }
     if (nextSelectedNode) {
       nextSelectedNode.reveal();
@@ -941,8 +995,9 @@ DataGrid.DataGrid = class extends Common.Object {
    */
   _clickInHeaderCell(event) {
     const cell = event.target.enclosingNodeOrSelfWithNodeName('th');
-    if (!cell)
+    if (!cell) {
       return;
+    }
     this._sortByColumnHeaderCell(cell);
   }
 
@@ -950,15 +1005,18 @@ DataGrid.DataGrid = class extends Common.Object {
    * @param {!Node} cell
    */
   _sortByColumnHeaderCell(cell) {
-    if ((cell[DataGrid.DataGrid._columnIdSymbol] === undefined) || !cell.classList.contains('sortable'))
+    if ((cell[DataGrid.DataGrid._columnIdSymbol] === undefined) || !cell.classList.contains('sortable')) {
       return;
+    }
 
     let sortOrder = DataGrid.DataGrid.Order.Ascending;
-    if ((cell === this._sortColumnCell) && this.isSortOrderAscending())
+    if ((cell === this._sortColumnCell) && this.isSortOrderAscending()) {
       sortOrder = DataGrid.DataGrid.Order.Descending;
+    }
 
-    if (this._sortColumnCell)
+    if (this._sortColumnCell) {
       this._sortColumnCell.classList.remove(DataGrid.DataGrid.Order.Ascending, DataGrid.DataGrid.Order.Descending);
+    }
     this._sortColumnCell = cell;
 
     cell.classList.add(sortOrder);
@@ -974,8 +1032,9 @@ DataGrid.DataGrid = class extends Common.Object {
    * @param {!DataGrid.DataGrid.Order} sortOrder
    */
   markColumnAsSortedBy(columnId, sortOrder) {
-    if (this._sortColumnCell)
+    if (this._sortColumnCell) {
       this._sortColumnCell.classList.remove(DataGrid.DataGrid.Order.Ascending, DataGrid.DataGrid.Order.Descending);
+    }
     this._sortColumnCell = this._headerTableHeaders[columnId];
     this._sortColumnCell.classList.add(sortOrder);
   }
@@ -994,18 +1053,21 @@ DataGrid.DataGrid = class extends Common.Object {
   _mouseDownInDataTable(event) {
     const target = /** @type {!Node} */ (event.target);
     const gridNode = this.dataGridNodeFromNode(target);
-    if (!gridNode || !gridNode.selectable || gridNode.isEventWithinDisclosureTriangle(event))
+    if (!gridNode || !gridNode.selectable || gridNode.isEventWithinDisclosureTriangle(event)) {
       return;
+    }
 
     const columnId = this.columnIdFromNode(target);
-    if (columnId && this._columns[columnId].nonSelectable)
+    if (columnId && this._columns[columnId].nonSelectable) {
       return;
+    }
 
     if (event.metaKey) {
-      if (gridNode.selected)
+      if (gridNode.selected) {
         gridNode.deselect();
-      else
+      } else {
         gridNode.select();
+      }
     } else {
       gridNode.select();
       this.dispatchEventToListeners(DataGrid.DataGrid.Events.OpenedNode, gridNode);
@@ -1046,16 +1108,18 @@ DataGrid.DataGrid = class extends Common.Object {
     }
 
     if (target.isSelfOrDescendant(this._headerTableBody)) {
-      if (this._headerContextMenuCallback)
+      if (this._headerContextMenuCallback) {
         this._headerContextMenuCallback(contextMenu);
-      else
+      } else {
         contextMenu.show();
+      }
       return;
     }
 
     const gridNode = this.dataGridNodeFromNode(target);
-    if (this._refreshCallback && (!gridNode || gridNode !== this.creationNode))
+    if (this._refreshCallback && (!gridNode || gridNode !== this.creationNode)) {
       contextMenu.defaultSection().appendItem(Common.UIString('Refresh'), this._refreshCallback.bind(this));
+    }
 
     if (gridNode && gridNode.selectable && !gridNode.isEventWithinDisclosureTriangle(event)) {
       if (this._editCallback) {
@@ -1069,10 +1133,12 @@ DataGrid.DataGrid = class extends Common.Object {
           }
         }
       }
-      if (this._deleteCallback && gridNode !== this.creationNode)
+      if (this._deleteCallback && gridNode !== this.creationNode) {
         contextMenu.defaultSection().appendItem(Common.UIString('Delete'), this._deleteCallback.bind(this, gridNode));
-      if (this._rowContextMenuCallback)
+      }
+      if (this._rowContextMenuCallback) {
         this._rowContextMenuCallback(contextMenu, gridNode);
+      }
     }
 
     contextMenu.show();
@@ -1083,19 +1149,22 @@ DataGrid.DataGrid = class extends Common.Object {
    */
   _clickInDataTable(event) {
     const gridNode = this.dataGridNodeFromNode(/** @type {!Node} */ (event.target));
-    if (!gridNode || !gridNode.hasChildren() || !gridNode.isEventWithinDisclosureTriangle(event))
+    if (!gridNode || !gridNode.hasChildren() || !gridNode.isEventWithinDisclosureTriangle(event)) {
       return;
+    }
 
     if (gridNode.expanded) {
-      if (event.altKey)
+      if (event.altKey) {
         gridNode.collapseRecursively();
-      else
+      } else {
         gridNode.collapse();
+      }
     } else {
-      if (event.altKey)
+      if (event.altKey) {
         gridNode.expandRecursively();
-      else
+      } else {
         gridNode.expand();
+      }
     }
   }
 
@@ -1125,8 +1194,9 @@ DataGrid.DataGrid = class extends Common.Object {
    */
   _resizerDragging(event) {
     const resizer = this._currentResizer;
-    if (!resizer)
+    if (!resizer) {
       return;
+    }
 
     // Constrain the dragpoint to be within the containing div of the
     // datagrid.
@@ -1137,8 +1207,9 @@ DataGrid.DataGrid = class extends Common.Object {
     // column directly to the left and the column directly to the right.
     let leftCellIndex = resizer.__index;
     let rightCellIndex = leftCellIndex + 1;
-    for (let i = 0; i < leftCellIndex; i++)
+    for (let i = 0; i < leftCellIndex; i++) {
       leftEdgeOfPreviousColumn += firstRowCells[i].offsetWidth;
+    }
 
     // Differences for other resize methods
     if (this._resizeMethod === DataGrid.DataGrid.ResizeMethod.Last) {
@@ -1154,8 +1225,9 @@ DataGrid.DataGrid = class extends Common.Object {
     // Give each column some padding so that they don't disappear.
     const leftMinimum = leftEdgeOfPreviousColumn + DataGrid.DataGrid.ColumnResizePadding;
     const rightMaximum = rightEdgeOfNextColumn - DataGrid.DataGrid.ColumnResizePadding;
-    if (leftMinimum > rightMaximum)
+    if (leftMinimum > rightMaximum) {
       return;
+    }
 
     dragPoint = Number.constrain(dragPoint, leftMinimum, rightMaximum);
 
@@ -1195,12 +1267,14 @@ DataGrid.DataGrid = class extends Common.Object {
    * @return {number}
    */
   columnOffset(columnId) {
-    if (!this.element.offsetWidth)
+    if (!this.element.offsetWidth) {
       return 0;
+    }
     for (let i = 1; i < this._visibleColumnsArray.length; ++i) {
       if (columnId === this._visibleColumnsArray[i].id) {
-        if (this._resizers[i - 1])
+        if (this._resizers[i - 1]) {
           return this._resizers[i - 1].__position;
+        }
       }
     }
     return 0;
@@ -1210,8 +1284,9 @@ DataGrid.DataGrid = class extends Common.Object {
    * @return {!DataGrid.DataGridWidget}
    */
   asWidget() {
-    if (!this._dataGridWidget)
+    if (!this._dataGridWidget) {
       this._dataGridWidget = new DataGrid.DataGridWidget(this);
+    }
     return this._dataGridWidget;
   }
 
@@ -1351,18 +1426,24 @@ DataGrid.DataGridNode = class extends Common.Object {
     this._element = createElementWithClass('tr', 'data-grid-data-grid-node');
     this._element._dataGridNode = this;
 
-    if (this._hasChildren)
+    if (this._hasChildren) {
       this._element.classList.add('parent');
-    if (this.expanded)
+    }
+    if (this.expanded) {
       this._element.classList.add('expanded');
-    if (this.selected)
+    }
+    if (this.selected) {
       this._element.classList.add('selected');
-    if (this.revealed)
+    }
+    if (this.revealed) {
       this._element.classList.add('revealed');
-    if (this.dirty)
+    }
+    if (this.dirty) {
       this._element.classList.add('dirty');
-    if (this.inactive)
+    }
+    if (this.inactive) {
       this._element.classList.add('inactive');
+    }
     return this._element;
   }
 
@@ -1387,8 +1468,9 @@ DataGrid.DataGridNode = class extends Common.Object {
   createCells(element) {
     element.removeChildren();
     const columnsArray = this.dataGrid._visibleColumnsArray;
-    for (let i = 0; i < columnsArray.length; ++i)
+    for (let i = 0; i < columnsArray.length; ++i) {
       element.appendChild(this.createCell(columnsArray[i].id));
+    }
     element.appendChild(this._createTDWithClass('corner'));
   }
 
@@ -1411,8 +1493,9 @@ DataGrid.DataGridNode = class extends Common.Object {
    * @return {boolean}
    */
   get revealed() {
-    if (this._revealed !== undefined)
+    if (this._revealed !== undefined) {
       return this._revealed;
+    }
 
     let currentAncestor = this.parent;
     while (currentAncestor && !currentAncestor._isRoot) {
@@ -1432,16 +1515,19 @@ DataGrid.DataGridNode = class extends Common.Object {
    * @param {boolean} x
    */
   set revealed(x) {
-    if (this._revealed === x)
+    if (this._revealed === x) {
       return;
+    }
 
     this._revealed = x;
 
-    if (this._element)
+    if (this._element) {
       this._element.classList.toggle('revealed', this._revealed);
+    }
 
-    for (let i = 0; i < this.children.length; ++i)
+    for (let i = 0; i < this.children.length; ++i) {
       this.children[i].revealed = x && this.expanded;
+    }
   }
 
   /**
@@ -1455,15 +1541,18 @@ DataGrid.DataGridNode = class extends Common.Object {
    * @param {boolean} dirty
    */
   setDirty(dirty) {
-    if (this._dirty === dirty)
+    if (this._dirty === dirty) {
       return;
+    }
     this._dirty = dirty;
-    if (!this._element)
+    if (!this._element) {
       return;
-    if (dirty)
+    }
+    if (dirty) {
       this._element.classList.add('dirty');
-    else
+    } else {
       this._element.classList.remove('dirty');
+    }
   }
 
 
@@ -1478,15 +1567,18 @@ DataGrid.DataGridNode = class extends Common.Object {
    * @param {boolean} inactive
    */
   setInactive(inactive) {
-    if (this._inactive === inactive)
+    if (this._inactive === inactive) {
       return;
+    }
     this._inactive = inactive;
-    if (!this._element)
+    if (!this._element) {
       return;
-    if (inactive)
+    }
+    if (inactive) {
       this._element.classList.add('inactive');
-    else
+    } else {
       this._element.classList.remove('inactive');
+    }
   }
 
   /**
@@ -1500,13 +1592,15 @@ DataGrid.DataGridNode = class extends Common.Object {
    * @param {boolean} x
    */
   setHasChildren(x) {
-    if (this._hasChildren === x)
+    if (this._hasChildren === x) {
       return;
+    }
 
     this._hasChildren = x;
 
-    if (!this._element)
+    if (!this._element) {
       return;
+    }
 
     this._element.classList.toggle('parent', this._hasChildren);
     this._element.classList.toggle('expanded', this._hasChildren && this.expanded);
@@ -1516,12 +1610,14 @@ DataGrid.DataGridNode = class extends Common.Object {
    * @return {number}
    */
   get depth() {
-    if (this._depth !== undefined)
+    if (this._depth !== undefined) {
       return this._depth;
-    if (this.parent && !this.parent._isRoot)
+    }
+    if (this.parent && !this.parent._isRoot) {
       this._depth = this.parent.depth + 1;
-    else
+    } else {
       this._depth = 0;
+    }
     return this._depth;
   }
 
@@ -1544,8 +1640,9 @@ DataGrid.DataGridNode = class extends Common.Object {
    */
   set shouldRefreshChildren(x) {
     this._shouldRefreshChildren = x;
-    if (x && this.expanded)
+    if (x && this.expanded) {
       this.expand();
+    }
   }
 
   /**
@@ -1559,10 +1656,11 @@ DataGrid.DataGridNode = class extends Common.Object {
    * @param {boolean} x
    */
   set selected(x) {
-    if (x)
+    if (x) {
       this.select();
-    else
+    } else {
       this.deselect();
+    }
   }
 
   /**
@@ -1576,17 +1674,20 @@ DataGrid.DataGridNode = class extends Common.Object {
    * @param {boolean} x
    */
   set expanded(x) {
-    if (x)
+    if (x) {
       this.expand();
-    else
+    } else {
       this.collapse();
+    }
   }
 
   refresh() {
-    if (!this.dataGrid)
+    if (!this.dataGrid) {
       this._element = null;
-    if (!this._element)
+    }
+    if (!this._element) {
       return;
+    }
     this.createCells(this._element);
   }
 
@@ -1597,8 +1698,9 @@ DataGrid.DataGridNode = class extends Common.Object {
   _createTDWithClass(className) {
     const cell = createElementWithClass('td', className);
     const cellClass = this.dataGrid._cellClass;
-    if (cellClass)
+    if (cellClass) {
       cell.classList.add(cellClass);
+    }
     return cell;
   }
 
@@ -1611,13 +1713,15 @@ DataGrid.DataGridNode = class extends Common.Object {
     cell[DataGrid.DataGrid._columnIdSymbol] = columnId;
 
     const alignment = this.dataGrid._columns[columnId].align;
-    if (alignment)
+    if (alignment) {
       cell.classList.add(alignment);
+    }
 
     if (columnId === this.dataGrid.disclosureColumnId) {
       cell.classList.add('disclosure');
-      if (this.leftPadding)
+      if (this.leftPadding) {
         cell.style.setProperty('padding-left', this.leftPadding + 'px');
+      }
     }
 
     return cell;
@@ -1630,10 +1734,11 @@ DataGrid.DataGridNode = class extends Common.Object {
   createCell(columnId) {
     const cell = this.createTD(columnId);
     const data = this.data[columnId];
-    if (data instanceof Node)
+    if (data instanceof Node) {
       cell.appendChild(data);
-    else if (data !== null)
+    } else if (data !== null) {
       DataGrid.DataGrid.setElementText(cell, /** @type {string} */ (data), !!this.dataGrid._columns[columnId].longText);
+    }
 
     return cell;
   }
@@ -1659,12 +1764,15 @@ DataGrid.DataGridNode = class extends Common.Object {
     // @TODO(allada) This is a hack to make sure ViewportDataGrid can clean up these caches. Try Not To Use.
     delete this._depth;
     delete this._revealed;
-    if (onlyCaches)
+    if (onlyCaches) {
       return;
-    if (this.previousSibling)
+    }
+    if (this.previousSibling) {
       this.previousSibling.nextSibling = this.nextSibling;
-    if (this.nextSibling)
+    }
+    if (this.nextSibling) {
       this.nextSibling.previousSibling = this.previousSibling;
+    }
     this.dataGrid = null;
     this.parent = null;
     this.nextSibling = null;
@@ -1677,16 +1785,20 @@ DataGrid.DataGridNode = class extends Common.Object {
    * @param {number} index
    */
   insertChild(child, index) {
-    if (!child)
+    if (!child) {
       throw 'insertChild: Node can\'t be undefined or null.';
+    }
     if (child.parent === this) {
       const currentIndex = this.children.indexOf(child);
-      if (currentIndex < 0)
+      if (currentIndex < 0) {
         console.assert(false, 'Inconsistent DataGrid state');
-      if (currentIndex === index)
+      }
+      if (currentIndex === index) {
         return;
-      if (currentIndex < index)
+      }
+      if (currentIndex < index) {
         --index;
+      }
     }
 
     child.remove();
@@ -1709,40 +1821,48 @@ DataGrid.DataGridNode = class extends Common.Object {
       current = current.traverseNextNode(false, child, true);
     }
 
-    if (this.expanded)
+    if (this.expanded) {
       child._attach();
-    if (!this.revealed)
+    }
+    if (!this.revealed) {
       child.revealed = false;
+    }
   }
 
   remove() {
-    if (this.parent)
+    if (this.parent) {
       this.parent.removeChild(this);
+    }
   }
 
   /**
    * @param {!NODE_TYPE} child
    */
   removeChild(child) {
-    if (!child)
+    if (!child) {
       throw 'removeChild: Node can\'t be undefined or null.';
-    if (child.parent !== this)
+    }
+    if (child.parent !== this) {
       throw 'removeChild: Node is not a child of this node.';
+    }
 
-    if (this.dataGrid)
+    if (this.dataGrid) {
       this.dataGrid.updateSelectionBeforeRemoval(child, false);
+    }
 
     child._detach();
     child.resetNode();
     this.children.remove(child, true);
 
-    if (this.children.length <= 0)
+    if (this.children.length <= 0) {
       this.setHasChildren(false);
+    }
   }
 
   removeChildren() {
-    if (this.dataGrid)
+    if (this.dataGrid) {
       this.dataGrid.updateSelectionBeforeRemoval(this, true);
+    }
     for (let i = 0; i < this.children.length; ++i) {
       const child = this.children[i];
       child._detach();
@@ -1757,37 +1877,44 @@ DataGrid.DataGridNode = class extends Common.Object {
    * @param {number} myIndex
    */
   recalculateSiblings(myIndex) {
-    if (!this.parent)
+    if (!this.parent) {
       return;
+    }
 
     const previousChild = this.parent.children[myIndex - 1] || null;
-    if (previousChild)
+    if (previousChild) {
       previousChild.nextSibling = this;
+    }
     this.previousSibling = previousChild;
 
     const nextChild = this.parent.children[myIndex + 1] || null;
-    if (nextChild)
+    if (nextChild) {
       nextChild.previousSibling = this;
+    }
     this.nextSibling = nextChild;
   }
 
   collapse() {
-    if (this._isRoot)
+    if (this._isRoot) {
       return;
-    if (this._element)
+    }
+    if (this._element) {
       this._element.classList.remove('expanded');
+    }
 
     this._expanded = false;
 
-    for (let i = 0; i < this.children.length; ++i)
+    for (let i = 0; i < this.children.length; ++i) {
       this.children[i].revealed = false;
+    }
   }
 
   collapseRecursively() {
     let item = this;
     while (item) {
-      if (item.expanded)
+      if (item.expanded) {
         item.collapse();
+      }
       item = item.traverseNextNode(false, this, true);
     }
   }
@@ -1796,27 +1923,32 @@ DataGrid.DataGridNode = class extends Common.Object {
   }
 
   expand() {
-    if (!this._hasChildren || this.expanded)
+    if (!this._hasChildren || this.expanded) {
       return;
-    if (this._isRoot)
+    }
+    if (this._isRoot) {
       return;
+    }
 
     if (this.revealed && !this._shouldRefreshChildren) {
-      for (let i = 0; i < this.children.length; ++i)
+      for (let i = 0; i < this.children.length; ++i) {
         this.children[i].revealed = true;
+      }
     }
 
     if (this._shouldRefreshChildren) {
-      for (let i = 0; i < this.children.length; ++i)
+      for (let i = 0; i < this.children.length; ++i) {
         this.children[i]._detach();
+      }
 
       this.populate();
 
       if (this._attached) {
         for (let i = 0; i < this.children.length; ++i) {
           const child = this.children[i];
-          if (this.revealed)
+          if (this.revealed) {
             child.revealed = true;
+          }
           child._attach();
         }
       }
@@ -1824,8 +1956,9 @@ DataGrid.DataGridNode = class extends Common.Object {
       this._shouldRefreshChildren = false;
     }
 
-    if (this._element)
+    if (this._element) {
       this._element.classList.add('expanded');
+    }
 
     this._expanded = true;
   }
@@ -1839,12 +1972,14 @@ DataGrid.DataGridNode = class extends Common.Object {
   }
 
   reveal() {
-    if (this._isRoot)
+    if (this._isRoot) {
       return;
+    }
     let currentAncestor = this.parent;
     while (currentAncestor && !currentAncestor._isRoot) {
-      if (!currentAncestor.expanded)
+      if (!currentAncestor.expanded) {
         currentAncestor.expand();
+      }
       currentAncestor = currentAncestor.parent;
     }
 
@@ -1855,25 +1990,30 @@ DataGrid.DataGridNode = class extends Common.Object {
    * @param {boolean=} supressSelectedEvent
    */
   select(supressSelectedEvent) {
-    if (!this.dataGrid || !this.selectable || this.selected)
+    if (!this.dataGrid || !this.selectable || this.selected) {
       return;
+    }
 
-    if (this.dataGrid.selectedNode)
+    if (this.dataGrid.selectedNode) {
       this.dataGrid.selectedNode.deselect();
+    }
 
     this._selected = true;
     this.dataGrid.selectedNode = this;
 
-    if (this._element)
+    if (this._element) {
       this._element.classList.add('selected');
+    }
 
-    if (!supressSelectedEvent)
+    if (!supressSelectedEvent) {
       this.dataGrid.dispatchEventToListeners(DataGrid.DataGrid.Events.SelectedNode, this);
+    }
   }
 
   revealAndSelect() {
-    if (this._isRoot)
+    if (this._isRoot) {
       return;
+    }
     this.reveal();
     this.select();
   }
@@ -1882,17 +2022,20 @@ DataGrid.DataGridNode = class extends Common.Object {
    * @param {boolean=} supressDeselectedEvent
    */
   deselect(supressDeselectedEvent) {
-    if (!this.dataGrid || this.dataGrid.selectedNode !== this || !this.selected)
+    if (!this.dataGrid || this.dataGrid.selectedNode !== this || !this.selected) {
       return;
+    }
 
     this._selected = false;
     this.dataGrid.selectedNode = null;
 
-    if (this._element)
+    if (this._element) {
       this._element.classList.remove('selected');
+    }
 
-    if (!supressDeselectedEvent)
+    if (!supressDeselectedEvent) {
       this.dataGrid.dispatchEventToListeners(DataGrid.DataGrid.Events.DeselectedNode);
+    }
   }
 
   /**
@@ -1903,36 +2046,43 @@ DataGrid.DataGridNode = class extends Common.Object {
    * @return {?NODE_TYPE}
    */
   traverseNextNode(skipHidden, stayWithin, dontPopulate, info) {
-    if (!dontPopulate && this._hasChildren)
+    if (!dontPopulate && this._hasChildren) {
       this.populate();
+    }
 
-    if (info)
+    if (info) {
       info.depthChange = 0;
+    }
 
     let node = (!skipHidden || this.revealed) ? this.children[0] : null;
     if (node && (!skipHidden || this.expanded)) {
-      if (info)
+      if (info) {
         info.depthChange = 1;
+      }
       return node;
     }
 
-    if (this === stayWithin)
+    if (this === stayWithin) {
       return null;
+    }
 
     node = (!skipHidden || this.revealed) ? this.nextSibling : null;
-    if (node)
+    if (node) {
       return node;
+    }
 
     node = this;
     while (node && !node._isRoot && !((!skipHidden || node.revealed) ? node.nextSibling : null) &&
            node.parent !== stayWithin) {
-      if (info)
+      if (info) {
         info.depthChange -= 1;
+      }
       node = node.parent;
     }
 
-    if (!node)
+    if (!node) {
       return null;
+    }
 
     return (!skipHidden || node.revealed) ? node.nextSibling : null;
   }
@@ -1944,21 +2094,25 @@ DataGrid.DataGridNode = class extends Common.Object {
    */
   traversePreviousNode(skipHidden, dontPopulate) {
     let node = (!skipHidden || this.revealed) ? this.previousSibling : null;
-    if (!dontPopulate && node && node._hasChildren)
+    if (!dontPopulate && node && node._hasChildren) {
       node.populate();
+    }
 
     while (node &&
            ((!skipHidden || (node.revealed && node.expanded)) ? node.children[node.children.length - 1] : null)) {
-      if (!dontPopulate && node._hasChildren)
+      if (!dontPopulate && node._hasChildren) {
         node.populate();
+      }
       node = ((!skipHidden || (node.revealed && node.expanded)) ? node.children[node.children.length - 1] : null);
     }
 
-    if (node)
+    if (node) {
       return node;
+    }
 
-    if (!this.parent || this.parent._isRoot)
+    if (!this.parent || this.parent._isRoot) {
       return null;
+    }
 
     return this.parent;
   }
@@ -1968,19 +2122,22 @@ DataGrid.DataGridNode = class extends Common.Object {
    * @return {boolean}
    */
   isEventWithinDisclosureTriangle(event) {
-    if (!this._hasChildren)
+    if (!this._hasChildren) {
       return false;
+    }
     const cell = event.target.enclosingNodeOrSelfWithNodeName('td');
-    if (!cell || !cell.classList.contains('disclosure'))
+    if (!cell || !cell.classList.contains('disclosure')) {
       return false;
+    }
 
     const left = cell.totalOffsetLeft() + this.leftPadding;
     return event.pageX >= left && event.pageX <= left + this.disclosureToggleWidth;
   }
 
   _attach() {
-    if (!this.dataGrid || this._attached)
+    if (!this.dataGrid || this._attached) {
       return;
+    }
 
     this._attached = true;
 
@@ -1989,39 +2146,47 @@ DataGrid.DataGridNode = class extends Common.Object {
     this.dataGrid.dataTableBody.insertBefore(this.element(), previousElement.nextSibling);
 
     if (this.expanded) {
-      for (let i = 0; i < this.children.length; ++i)
+      for (let i = 0; i < this.children.length; ++i) {
         this.children[i]._attach();
+      }
     }
   }
 
   _detach() {
-    if (!this._attached)
+    if (!this._attached) {
       return;
+    }
 
     this._attached = false;
 
-    if (this._element)
+    if (this._element) {
       this._element.remove();
+    }
 
-    for (let i = 0; i < this.children.length; ++i)
+    for (let i = 0; i < this.children.length; ++i) {
       this.children[i]._detach();
+    }
   }
 
   savePosition() {
-    if (this._savedPosition)
+    if (this._savedPosition) {
       return;
+    }
 
-    if (!this.parent)
+    if (!this.parent) {
       throw 'savePosition: Node must have a parent.';
+    }
     this._savedPosition = {parent: this.parent, index: this.parent.children.indexOf(this)};
   }
 
   restorePosition() {
-    if (!this._savedPosition)
+    if (!this._savedPosition) {
       return;
+    }
 
-    if (this.parent !== this._savedPosition.parent)
+    if (this.parent !== this._savedPosition.parent) {
       this._savedPosition.parent.insertChild(this, this._savedPosition.index);
+    }
 
     this._savedPosition = null;
   }
@@ -2091,8 +2256,9 @@ DataGrid.DataGridWidget = class extends UI.VBox {
    */
   detachChildWidgets() {
     super.detachChildWidgets();
-    for (const dataGrid of this._dataGrids)
+    for (const dataGrid of this._dataGrids) {
       this.element.removeChild(dataGrid.element);
+    }
     this._dataGrids = [];
   }
 };

@@ -29,8 +29,9 @@ Changes.ChangesSidebar = class extends UI.Widget {
    */
   selectUISourceCode(uiSourceCode, omitFocus) {
     const treeElement = this._treeElements.get(uiSourceCode);
-    if (!treeElement)
+    if (!treeElement) {
       return;
+    }
     treeElement.select(omitFocus);
   }
 
@@ -49,10 +50,11 @@ Changes.ChangesSidebar = class extends UI.Widget {
    * @param {!Common.Event} event
    */
   _uiSourceCodeMofiedStatusChanged(event) {
-    if (event.data.isModified)
+    if (event.data.isModified) {
       this._addUISourceCode(event.data.uiSourceCode);
-    else
+    } else {
       this._removeUISourceCode(event.data.uiSourceCode);
+    }
   }
 
   /**
@@ -81,8 +83,9 @@ Changes.ChangesSidebar = class extends UI.Widget {
     const treeElement = new Changes.ChangesSidebar.UISourceCodeTreeElement(uiSourceCode);
     this._treeElements.set(uiSourceCode, treeElement);
     this._treeoutline.appendChild(treeElement);
-    if (!this._treeoutline.selectedTreeElement)
+    if (!this._treeoutline.selectedTreeElement) {
       treeElement.select(true);
+    }
   }
 };
 
@@ -103,8 +106,9 @@ Changes.ChangesSidebar.UISourceCodeTreeElement = class extends UI.TreeElement {
     this.listItemElement.classList.add('navigator-' + uiSourceCode.contentType().name() + '-tree-item');
 
     let iconType = 'largeicon-navigator-file';
-    if (Snippets.isSnippetsUISourceCode(this.uiSourceCode))
+    if (Snippets.isSnippetsUISourceCode(this.uiSourceCode)) {
       iconType = 'largeicon-navigator-snippet';
+    }
     const defaultIcon = UI.Icon.create(iconType, 'icon');
     this.setLeadingIcons([defaultIcon]);
 
@@ -119,13 +123,15 @@ Changes.ChangesSidebar.UISourceCodeTreeElement = class extends UI.TreeElement {
 
   _updateTitle() {
     let titleText = this.uiSourceCode.displayName();
-    if (this.uiSourceCode.isDirty())
+    if (this.uiSourceCode.isDirty()) {
       titleText = '*' + titleText;
+    }
     this.title = titleText;
 
     let tooltip = this.uiSourceCode.url();
-    if (this.uiSourceCode.contentType().isFromSourceMap())
+    if (this.uiSourceCode.contentType().isFromSourceMap()) {
       tooltip = Common.UIString('%s (from source map)', this.uiSourceCode.displayName());
+    }
     this.tooltip = tooltip;
   }
 

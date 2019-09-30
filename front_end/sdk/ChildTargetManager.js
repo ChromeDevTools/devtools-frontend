@@ -63,8 +63,9 @@ SDK.ChildTargetManager = class extends SDK.SDKModel {
    * @override
    */
   dispose() {
-    for (const sessionId of this._childTargets.keys())
+    for (const sessionId of this._childTargets.keys()) {
       this.detachedFromTarget(sessionId, undefined);
+    }
   }
 
   /**
@@ -112,8 +113,9 @@ SDK.ChildTargetManager = class extends SDK.SDKModel {
    * @return {!Promise<string>}
    */
   async _getParentTargetId() {
-    if (!this._parentTargetId)
+    if (!this._parentTargetId) {
       this._parentTargetId = (await this._parentTarget.targetAgent().getTargetInfo()).targetId;
+    }
     return this._parentTargetId;
   }
 
@@ -124,8 +126,9 @@ SDK.ChildTargetManager = class extends SDK.SDKModel {
    * @param {boolean} waitingForDebugger
    */
   attachedToTarget(sessionId, targetInfo, waitingForDebugger) {
-    if (this._parentTargetId === targetInfo.targetId)
+    if (this._parentTargetId === targetInfo.targetId) {
       return;
+    }
 
     let targetName = '';
     if (targetInfo.type === 'worker' && targetInfo.title && targetInfo.title !== targetInfo.url) {
@@ -137,15 +140,17 @@ SDK.ChildTargetManager = class extends SDK.SDKModel {
     }
 
     let type = SDK.Target.Type.Browser;
-    if (targetInfo.type === 'iframe')
+    if (targetInfo.type === 'iframe') {
       type = SDK.Target.Type.Frame;
+    }
     // TODO(lfg): ensure proper capabilities for child pages (e.g. portals).
-    else if (targetInfo.type === 'page')
+    else if (targetInfo.type === 'page') {
       type = SDK.Target.Type.Frame;
-    else if (targetInfo.type === 'worker')
+    } else if (targetInfo.type === 'worker') {
       type = SDK.Target.Type.Worker;
-    else if (targetInfo.type === 'service_worker')
+    } else if (targetInfo.type === 'service_worker') {
       type = SDK.Target.Type.ServiceWorker;
+    }
 
     const target =
         this._targetManager.createTarget(targetInfo.targetId, targetName, type, this._parentTarget, sessionId);

@@ -31,8 +31,9 @@ Emulation.SensorsView = class extends UI.VBox {
    * @return {!Emulation.SensorsView}
    */
   static instance() {
-    if (!Emulation.SensorsView._instanceObject)
+    if (!Emulation.SensorsView._instanceObject) {
       Emulation.SensorsView._instanceObject = new Emulation.SensorsView();
+    }
     return Emulation.SensorsView._instanceObject;
   }
 
@@ -65,8 +66,9 @@ Emulation.SensorsView = class extends UI.VBox {
     fields.appendChild(manageButton);
     const fillCustomSettings = () => {
       this._customLocationsGroup.removeChildren();
-      for (const geolocation of customGeolocations.get())
+      for (const geolocation of customGeolocations.get()) {
         this._customLocationsGroup.appendChild(new Option(geolocation.title, JSON.stringify(geolocation)));
+      }
     };
     customGeolocations.addChangeListener(fillCustomSettings);
     fillCustomSettings();
@@ -131,8 +133,9 @@ Emulation.SensorsView = class extends UI.VBox {
       this._geolocationOverrideEnabled = true;
       const geolocation = SDK.EmulationModel.Geolocation.parseUserInput(
           this._latitudeInput.value.trim(), this._longitudeInput.value.trim(), '');
-      if (!geolocation)
+      if (!geolocation) {
         return;
+      }
       this._geolocation = geolocation;
     } else if (value === Emulation.SensorsView.NonPresetOptions.Unavailable) {
       this._geolocationOverrideEnabled = true;
@@ -146,15 +149,17 @@ Emulation.SensorsView = class extends UI.VBox {
     }
 
     this._applyGeolocation();
-    if (value === Emulation.SensorsView.NonPresetOptions.Custom)
+    if (value === Emulation.SensorsView.NonPresetOptions.Custom) {
       this._latitudeInput.focus();
+    }
   }
 
   _applyGeolocationUserInput() {
     const geolocation = SDK.EmulationModel.Geolocation.parseUserInput(
         this._latitudeInput.value.trim(), this._longitudeInput.value.trim(), '');
-    if (!geolocation)
+    if (!geolocation) {
       return;
+    }
 
     this._setSelectElementLabel(this._locationSelectElement, Emulation.SensorsView.NonPresetOptions.Custom);
     this._geolocation = geolocation;
@@ -162,10 +167,12 @@ Emulation.SensorsView = class extends UI.VBox {
   }
 
   _applyGeolocation() {
-    if (this._geolocationOverrideEnabled)
+    if (this._geolocationOverrideEnabled) {
       this._geolocationSetting.set(this._geolocation.toSetting());
-    for (const emulationModel of SDK.targetManager.models(SDK.EmulationModel))
+    }
+    for (const emulationModel of SDK.targetManager.models(SDK.EmulationModel)) {
       emulationModel.emulateGeolocation(this._geolocationOverrideEnabled ? this._geolocation : null);
+    }
   }
 
   _createDeviceOrientationSection() {
@@ -195,8 +202,9 @@ Emulation.SensorsView = class extends UI.VBox {
       const groupElement = this._orientationSelectElement.createChild('optgroup');
       groupElement.label = orientationGroups[i].title;
       const group = orientationGroups[i].value;
-      for (let j = 0; j < group.length; ++j)
+      for (let j = 0; j < group.length; ++j) {
         groupElement.appendChild(new Option(group[j].title, group[j].orientation));
+      }
     }
     this._orientationSelectElement.selectedIndex = 0;
     fields.appendChild(this._orientationSelectElement);
@@ -260,10 +268,12 @@ Emulation.SensorsView = class extends UI.VBox {
   }
 
   _applyDeviceOrientation() {
-    if (this._deviceOrientationOverrideEnabled)
+    if (this._deviceOrientationOverrideEnabled) {
       this._deviceOrientationSetting.set(this._deviceOrientation.toSetting());
-    for (const emulationModel of SDK.targetManager.models(SDK.EmulationModel))
+    }
+    for (const emulationModel of SDK.targetManager.models(SDK.EmulationModel)) {
       emulationModel.emulateDeviceOrientation(this._deviceOrientationOverrideEnabled ? this._deviceOrientation : null);
+    }
   }
 
   /**
@@ -295,8 +305,9 @@ Emulation.SensorsView = class extends UI.VBox {
    * @param {!Emulation.SensorsView.DeviceOrientationModificationSource} modificationSource
    */
   _setDeviceOrientation(deviceOrientation, modificationSource) {
-    if (!deviceOrientation)
+    if (!deviceOrientation) {
       return;
+    }
 
     /**
      * @param {number} angle
@@ -371,10 +382,11 @@ Emulation.SensorsView = class extends UI.VBox {
    * @param {boolean} animate
    */
   _setBoxOrientation(deviceOrientation, animate) {
-    if (animate)
+    if (animate) {
       this._stageElement.classList.add('is-animating');
-    else
+    } else {
       this._stageElement.classList.remove('is-animating');
+    }
 
     // The CSS transform should not depend on matrix3d, which does not interpolate well.
     const matrix = new WebKitCSSMatrix();
@@ -390,8 +402,9 @@ Emulation.SensorsView = class extends UI.VBox {
    */
   _onBoxDrag(event) {
     const mouseMoveVector = this._calculateRadiusVector(event.x, event.y);
-    if (!mouseMoveVector)
+    if (!mouseMoveVector) {
       return true;
+    }
 
     event.consume(true);
     let axis, angle;
@@ -424,14 +437,16 @@ Emulation.SensorsView = class extends UI.VBox {
    * @return {boolean}
    */
   _onBoxDragStart(event) {
-    if (!this._deviceOrientationOverrideEnabled)
+    if (!this._deviceOrientationOverrideEnabled) {
       return false;
+    }
 
     this._mouseDownVector = this._calculateRadiusVector(event.x, event.y);
     this._originalBoxMatrix = this._boxMatrix;
 
-    if (!this._mouseDownVector)
+    if (!this._mouseDownVector) {
       return false;
+    }
 
     event.consume(true);
     return true;
@@ -448,8 +463,9 @@ Emulation.SensorsView = class extends UI.VBox {
     const sphereX = (x - rect.left - rect.width / 2) / radius;
     const sphereY = (y - rect.top - rect.height / 2) / radius;
     const sqrSum = sphereX * sphereX + sphereY * sphereY;
-    if (sqrSum > 0.5)
+    if (sqrSum > 0.5) {
       return new UI.Geometry.Vector(sphereX, sphereY, 0.5 / Math.sqrt(sqrSum));
+    }
 
     return new UI.Geometry.Vector(sphereX, sphereY, Math.sqrt(1 - sqrSum));
   }
@@ -471,8 +487,9 @@ Emulation.SensorsView = class extends UI.VBox {
     UI.ARIAUtils.markAsAlert(reloadWarning);
 
     function applyTouch() {
-      for (const emulationModel of SDK.targetManager.models(SDK.EmulationModel))
+      for (const emulationModel of SDK.targetManager.models(SDK.EmulationModel)) {
         emulationModel.overrideEmulateTouch(select.value === 'enabled');
+      }
       reloadWarning.classList.remove('hidden');
       const resourceTreeModel = SDK.targetManager.models(SDK.ResourceTreeModel)[0];
       if (resourceTreeModel) {

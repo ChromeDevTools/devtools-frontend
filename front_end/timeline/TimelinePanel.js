@@ -73,7 +73,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
     this._startCoverage = Common.settings.createSetting('timelineStartCoverage', false);
     this._startCoverage.setTitle(ls`Coverage`);
 
-    if (!Runtime.experiments.isEnabled('recordCoverageWithPerformanceTracing')) {
+    if (!Root.Runtime.experiments.isEnabled('recordCoverageWithPerformanceTracing')) {
       this._startCoverage.set(false);
     }
 
@@ -235,7 +235,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
         this._createSettingCheckbox(this._showMemorySetting, Common.UIString('Show memory timeline'));
     this._panelToolbar.appendToolbarItem(this._showMemoryToolbarCheckbox);
 
-    if (Runtime.experiments.isEnabled('recordCoverageWithPerformanceTracing')) {
+    if (Root.Runtime.experiments.isEnabled('recordCoverageWithPerformanceTracing')) {
       this._startCoverageCheckbox =
           this._createSettingCheckbox(this._startCoverage, ls`Record coverage with performance trace`);
       this._panelToolbar.appendToolbarItem(this._startCoverageCheckbox);
@@ -431,7 +431,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
   _updateOverviewControls() {
     this._overviewControls = [];
     this._overviewControls.push(new Timeline.TimelineEventOverviewResponsiveness());
-    if (Runtime.experiments.isEnabled('inputEventsOnTimelineOverview')) {
+    if (Root.Runtime.experiments.isEnabled('inputEventsOnTimelineOverview')) {
       this._overviewControls.push(new Timeline.TimelineEventOverviewInput());
     }
     this._overviewControls.push(new Timeline.TimelineEventOverviewFrames());
@@ -626,7 +626,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
    * @param {!Timeline.PerformanceModel} model
    */
   _applyFilters(model) {
-    if (model.timelineModel().isGenericTrace() || Runtime.experiments.isEnabled('timelineShowAllEvents')) {
+    if (model.timelineModel().isGenericTrace() || Root.Runtime.experiments.isEnabled('timelineShowAllEvents')) {
       return;
     }
     model.setFilters([Timeline.TimelineUIUtils.visibleEventsFilter()]);

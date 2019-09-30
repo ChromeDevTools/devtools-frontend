@@ -28,7 +28,7 @@ Emulation.EmulatedDevice = class {
     /** @type {boolean} */
     this._showByDefault = true;
 
-    /** @type {?Runtime.Extension} */
+    /** @type {?Root.Runtime.Extension} */
     this._extension = null;
   }
 
@@ -191,14 +191,14 @@ Emulation.EmulatedDevice = class {
   }
 
   /**
-   * @return {?Runtime.Extension}
+   * @return {?Root.Runtime.Extension}
    */
   extension() {
     return this._extension;
   }
 
   /**
-   * @param {?Runtime.Extension} extension
+   * @param {?Root.Runtime.Extension} extension
    */
   setExtension(extension) {
     this._extension = extension;

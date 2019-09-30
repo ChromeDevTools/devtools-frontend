@@ -210,7 +210,7 @@ UI.ShortcutRegistry = class {
     extensions.forEach(registerExtension, this);
 
     /**
-     * @param {!Runtime.Extension} extension
+     * @param {!Root.Runtime.Extension} extension
      * @this {UI.ShortcutRegistry}
      */
     function registerExtension(extension) {

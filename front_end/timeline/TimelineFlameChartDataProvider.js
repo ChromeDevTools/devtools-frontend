@@ -417,8 +417,8 @@ Timeline.TimelineFlameChartDataProvider = class extends Common.Object {
     }
     const isExtension = entryType === Timeline.TimelineFlameChartDataProvider.EntryType.ExtensionEvent;
     const openEvents = [];
-    const flowEventsEnabled = Runtime.experiments.isEnabled('timelineFlowEvents');
-    const blackboxingEnabled = !isExtension && Runtime.experiments.isEnabled('blackboxJSFramesOnTimeline');
+    const flowEventsEnabled = Root.Runtime.experiments.isEnabled('timelineFlowEvents');
+    const blackboxingEnabled = !isExtension && Root.Runtime.experiments.isEnabled('blackboxJSFramesOnTimeline');
     let maxStackDepth = 0;
     let group = null;
     if (track && track.type === TimelineModel.TimelineModel.TrackType.MainThread) {

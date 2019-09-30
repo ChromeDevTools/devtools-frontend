@@ -329,8 +329,8 @@ SDK.initMainConnection = async function(createMainTarget, websocketConnectionLos
  * @return {!Protocol.Connection}
  */
 SDK._createMainConnection = function(websocketConnectionLost) {
-  const wsParam = Runtime.queryParam('ws');
-  const wssParam = Runtime.queryParam('wss');
+  const wsParam = Root.Runtime.queryParam('ws');
+  const wssParam = Root.Runtime.queryParam('wss');
   if (wsParam || wssParam) {
     const ws = wsParam ? `ws://${wsParam}` : `wss://${wssParam}`;
     return new SDK.WebSocketConnection(ws, websocketConnectionLost);

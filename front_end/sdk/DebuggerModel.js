@@ -121,7 +121,7 @@ SDK.DebuggerModel = class extends SDK.SDKModel {
 
     // Set a limit for the total size of collected script sources retained by debugger.
     // 10MB for remote frontends, 100MB for others.
-    const isRemoteFrontend = Runtime.queryParam('remoteFrontend') || Runtime.queryParam('ws');
+    const isRemoteFrontend = Root.Runtime.queryParam('remoteFrontend') || Root.Runtime.queryParam('ws');
     const maxScriptsCacheSize = isRemoteFrontend ? 10e6 : 100e6;
     const enablePromise = this._agent.enable(maxScriptsCacheSize);
     enablePromise.then(this._registerDebugger.bind(this));
@@ -515,7 +515,7 @@ SDK.DebuggerModel = class extends SDK.SDKModel {
     this._isPausing = false;
     this._debuggerPausedDetails = debuggerPausedDetails;
     if (this._debuggerPausedDetails) {
-      if (Runtime.experiments.isEnabled('emptySourceMapAutoStepping') && this._beforePausedCallback) {
+      if (Root.Runtime.experiments.isEnabled('emptySourceMapAutoStepping') && this._beforePausedCallback) {
         if (!this._beforePausedCallback.call(null, this._debuggerPausedDetails)) {
           return false;
         }

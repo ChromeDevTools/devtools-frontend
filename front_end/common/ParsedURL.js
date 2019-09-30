@@ -269,7 +269,7 @@ export default class ParsedURL {
     if (hrefPath.charAt(0) !== '/') {
       hrefPath = parsedURL.folderPathComponents + '/' + hrefPath;
     }
-    return securityOrigin + Runtime.normalizePath(hrefPath) + hrefSuffix;
+    return securityOrigin + Root.Runtime.normalizePath(hrefPath) + hrefSuffix;
   }
 
   /**

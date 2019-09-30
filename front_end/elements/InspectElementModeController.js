@@ -161,4 +161,4 @@ Elements.InspectElementModeController.ToggleSearchActionDelegate = class {
 
 /** @type {?Elements.InspectElementModeController} */
 Elements.inspectElementModeController =
-    Runtime.queryParam('isSharedWorker') ? null : new Elements.InspectElementModeController();
+    Root.Runtime.queryParam('isSharedWorker') ? null : new Elements.InspectElementModeController();

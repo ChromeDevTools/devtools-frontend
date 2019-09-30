@@ -147,7 +147,7 @@ Audits.AuditsPanel = class extends UI.Panel {
     const dom = new DOM(/** @type {!Document} */ (this._auditResultsElement.ownerDocument));
     const renderer = new Audits.ReportRenderer(dom);
 
-    const templatesHTML = Runtime.cachedResources['audits/lighthouse/templates.html'];
+    const templatesHTML = Root.Runtime.cachedResources['audits/lighthouse/templates.html'];
     const templatesDOM = new DOMParser().parseFromString(templatesHTML, 'text/html');
     if (!templatesDOM) {
       return;

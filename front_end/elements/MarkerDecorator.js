@@ -21,7 +21,7 @@ Elements.MarkerDecorator.prototype = {
  */
 Elements.GenericDecorator = class {
   /**
-   * @param {!Runtime.Extension} extension
+   * @param {!Root.Runtime.Extension} extension
    */
   constructor(extension) {
     this._title = Common.UIString(extension.title());

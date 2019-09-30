@@ -12,8 +12,8 @@ InspectorMain.InspectorMain = class extends Common.Object {
   async run() {
     let firstCall = true;
     await SDK.initMainConnection(async () => {
-      const type = Runtime.queryParam('v8only') ? SDK.Target.Type.Node : SDK.Target.Type.Frame;
-      const waitForDebuggerInPage = type === SDK.Target.Type.Frame && Runtime.queryParam('panel') === 'sources';
+      const type = Root.Runtime.queryParam('v8only') ? SDK.Target.Type.Node : SDK.Target.Type.Frame;
+      const waitForDebuggerInPage = type === SDK.Target.Type.Frame && Root.Runtime.queryParam('panel') === 'sources';
       const target =
           SDK.targetManager.createTarget('main', Common.UIString('Main'), type, null, undefined, waitForDebuggerInPage);
 

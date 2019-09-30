@@ -73,7 +73,7 @@ PerfUI.FlameChart = class extends UI.VBox {
     this._groupExpansionState = groupExpansionSetting && groupExpansionSetting.get() || {};
     this._flameChartDelegate = flameChartDelegate;
 
-    this._useWebGL = Runtime.experiments.isEnabled('timelineWebGL');
+    this._useWebGL = Root.Runtime.experiments.isEnabled('timelineWebGL');
     this._chartViewport = new PerfUI.ChartViewport(this);
     this._chartViewport.show(this.contentElement);
 

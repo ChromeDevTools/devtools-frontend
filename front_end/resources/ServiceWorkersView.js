@@ -353,7 +353,7 @@ Resources.ServiceWorkersView.Section = class {
         this._push.bind(this));
     this._createSyncNotificationField(
         Common.UIString('Sync'), this._syncTagNameSetting.get(), Common.UIString('Sync tag'), this._sync.bind(this));
-    if (Runtime.experiments.isEnabled('backgroundServicesPeriodicBackgroundSync')) {
+    if (Root.Runtime.experiments.isEnabled('backgroundServicesPeriodicBackgroundSync')) {
       this._createSyncNotificationField(
           ls`Periodic Sync`, this._periodicSyncTagNameSetting.get(), ls`Periodic Sync tag`,
           tag => this._periodicSync(tag));

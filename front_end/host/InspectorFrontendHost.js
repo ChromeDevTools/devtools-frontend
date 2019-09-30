@@ -285,7 +285,7 @@ Host.InspectorFrontendHostStub = class {
    * @param {function(!InspectorFrontendHostAPI.LoadNetworkResourceResult)} callback
    */
   loadNetworkResource(url, headers, streamId, callback) {
-    Runtime.loadResourcePromise(url)
+    Root.Runtime.loadResourcePromise(url)
         .then(function(text) {
           Host.ResourceLoader.streamWrite(streamId, text);
           callback({statusCode: 200});
@@ -506,7 +506,7 @@ Host.InspectorFrontendHostStub = class {
 Host.InspectorFrontendAPIImpl = class {
   constructor() {
     this._debugFrontend =
-        !!Runtime.queryParam('debugFrontend') || (window['InspectorTest'] && window['InspectorTest']['debugTest']);
+        !!Root.Runtime.queryParam('debugFrontend') || (window['InspectorTest'] && window['InspectorTest']['debugTest']);
 
     const descriptors = Host.InspectorFrontendAPIImpl.EventDescriptors;
     for (let i = 0; i < descriptors.length; ++i) {
@@ -640,7 +640,7 @@ let InspectorFrontendHost = window.InspectorFrontendHost;
  */
 Host.isUnderTest = function(prefs) {
   // Integration tests rely on test queryParam.
-  if (Runtime.queryParam('test')) {
+  if (Root.Runtime.queryParam('test')) {
     return true;
   }
   // Browser tests rely on prefs.

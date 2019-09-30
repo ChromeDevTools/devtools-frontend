@@ -36,7 +36,7 @@ Sources.SourcesView = class extends UI.VBox {
     this._historyManager = new Sources.EditingLocationHistoryManager(this, this.currentSourceFrame.bind(this));
 
     this._toolbarContainerElement = this.element.createChild('div', 'sources-toolbar');
-    if (!Runtime.experiments.isEnabled('sourcesPrettyPrint')) {
+    if (!Root.Runtime.experiments.isEnabled('sourcesPrettyPrint')) {
       this._toolbarEditorActions = new UI.Toolbar('', this._toolbarContainerElement);
       self.runtime.allInstances(Sources.SourcesView.EditorAction).then(appendButtonsForExtensions.bind(this));
     }

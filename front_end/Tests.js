@@ -1033,7 +1033,7 @@
     }
 
     function reset() {
-      Runtime.experiments.clearForTest();
+      Root.Runtime.experiments.clearForTest();
       InspectorFrontendHost.getPreferences(gotPreferences);
     }
 
@@ -1230,7 +1230,7 @@
   };
 
   TestSuite.prototype.enableExperiment = function(name) {
-    Runtime.experiments.enableForTest(name);
+    Root.Runtime.experiments.enableForTest(name);
   };
 
   TestSuite.prototype.checkInputEventsPresent = function() {

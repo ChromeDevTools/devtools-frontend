@@ -236,7 +236,7 @@ Extensions.ExtensionServer = class extends Common.Object {
    * @suppressGlobalPropertiesCheck
    */
   _onApplyStyleSheet(message) {
-    if (!Runtime.experiments.isEnabled('applyCustomStylesheet')) {
+    if (!Root.Runtime.experiments.isEnabled('applyCustomStylesheet')) {
       return;
     }
     const styleSheet = createElement('style');

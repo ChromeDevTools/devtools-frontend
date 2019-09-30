@@ -104,7 +104,7 @@ Resources.ApplicationPanelSidebar = class extends UI.VBox {
 
     cacheTreeElement.appendChild(this.applicationCacheListTreeElement);
 
-    if (Runtime.experiments.isEnabled('backgroundServices')) {
+    if (Root.Runtime.experiments.isEnabled('backgroundServices')) {
       const backgroundServiceTreeElement = this._addSidebarSection(ls`Background Services`);
 
       this.backgroundFetchTreeElement =
@@ -114,22 +114,22 @@ Resources.ApplicationPanelSidebar = class extends UI.VBox {
           new Resources.BackgroundServiceTreeElement(panel, Protocol.BackgroundService.ServiceName.BackgroundSync);
       backgroundServiceTreeElement.appendChild(this.backgroundSyncTreeElement);
 
-      if (Runtime.experiments.isEnabled('backgroundServicesNotifications')) {
+      if (Root.Runtime.experiments.isEnabled('backgroundServicesNotifications')) {
         this.notificationsTreeElement =
             new Resources.BackgroundServiceTreeElement(panel, Protocol.BackgroundService.ServiceName.Notifications);
         backgroundServiceTreeElement.appendChild(this.notificationsTreeElement);
       }
-      if (Runtime.experiments.isEnabled('backgroundServicesPaymentHandler')) {
+      if (Root.Runtime.experiments.isEnabled('backgroundServicesPaymentHandler')) {
         this.paymentHandlerTreeElement =
             new Resources.BackgroundServiceTreeElement(panel, Protocol.BackgroundService.ServiceName.PaymentHandler);
         backgroundServiceTreeElement.appendChild(this.paymentHandlerTreeElement);
       }
-      if (Runtime.experiments.isEnabled('backgroundServicesPeriodicBackgroundSync')) {
+      if (Root.Runtime.experiments.isEnabled('backgroundServicesPeriodicBackgroundSync')) {
         this.periodicBackgroundSyncTreeElement = new Resources.BackgroundServiceTreeElement(
             panel, Protocol.BackgroundService.ServiceName.PeriodicBackgroundSync);
         backgroundServiceTreeElement.appendChild(this.periodicBackgroundSyncTreeElement);
       }
-      if (Runtime.experiments.isEnabled('backgroundServicesPushMessaging')) {
+      if (Root.Runtime.experiments.isEnabled('backgroundServicesPushMessaging')) {
         this.pushMessagingTreeElement =
             new Resources.BackgroundServiceTreeElement(panel, Protocol.BackgroundService.ServiceName.PushMessaging);
         backgroundServiceTreeElement.appendChild(this.pushMessagingTreeElement);
@@ -265,19 +265,19 @@ Resources.ApplicationPanelSidebar = class extends UI.VBox {
     const serviceWorkerCacheModel = this._target.model(SDK.ServiceWorkerCacheModel);
     this.cacheStorageListTreeElement._initialize(serviceWorkerCacheModel);
     const backgroundServiceModel = this._target.model(Resources.BackgroundServiceModel);
-    if (Runtime.experiments.isEnabled('backgroundServices')) {
+    if (Root.Runtime.experiments.isEnabled('backgroundServices')) {
       this.backgroundFetchTreeElement._initialize(backgroundServiceModel);
       this.backgroundSyncTreeElement._initialize(backgroundServiceModel);
-      if (Runtime.experiments.isEnabled('backgroundServicesNotifications')) {
+      if (Root.Runtime.experiments.isEnabled('backgroundServicesNotifications')) {
         this.notificationsTreeElement._initialize(backgroundServiceModel);
       }
-      if (Runtime.experiments.isEnabled('backgroundServicesPaymentHandler')) {
+      if (Root.Runtime.experiments.isEnabled('backgroundServicesPaymentHandler')) {
         this.paymentHandlerTreeElement._initialize(backgroundServiceModel);
       }
-      if (Runtime.experiments.isEnabled('backgroundServicesPeriodicBackgroundSync')) {
+      if (Root.Runtime.experiments.isEnabled('backgroundServicesPeriodicBackgroundSync')) {
         this.periodicBackgroundSyncTreeElement._initialize(backgroundServiceModel);
       }
-      if (Runtime.experiments.isEnabled('backgroundServicesPushMessaging')) {
+      if (Root.Runtime.experiments.isEnabled('backgroundServicesPushMessaging')) {
         this.pushMessagingTreeElement._initialize(backgroundServiceModel);
       }
     }

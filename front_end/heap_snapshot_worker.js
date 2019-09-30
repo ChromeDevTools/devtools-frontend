@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 // Release build has Runtime.js bundled.
 
-if (!self.Runtime) {
+if (!self.Root || !self.Root.Runtime) {
   self.importScripts('Runtime.js');
 }
 
@@ -65,4 +65,4 @@ self.ls = function(strings, vararg) {
 self.serializeUIString = serializeUIString;
 self.deserializeUIString = deserializeUIString;
 
-Runtime.startWorker('heap_snapshot_worker');
+Root.Runtime.startWorker('heap_snapshot_worker');

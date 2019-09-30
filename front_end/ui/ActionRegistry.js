@@ -15,7 +15,7 @@ UI.ActionRegistry = class {
     self.runtime.extensions('action').forEach(registerExtension, this);
 
     /**
-     * @param {!Runtime.Extension} extension
+     * @param {!Root.Runtime.Extension} extension
      * @this {UI.ActionRegistry}
      */
     function registerExtension(extension) {
@@ -58,7 +58,7 @@ UI.ActionRegistry = class {
     return context.applicableExtensions(extensions).valuesArray().map(extensionToAction.bind(this));
 
     /**
-     * @param {!Runtime.Extension} extension
+     * @param {!Root.Runtime.Extension} extension
      * @return {!UI.Action}
      * @this {UI.ActionRegistry}
      */
@@ -81,7 +81,7 @@ UI.ActionRegistry = class {
  */
 UI.Action = class extends Common.Object {
   /**
-   * @param {!Runtime.Extension} extension
+   * @param {!Root.Runtime.Extension} extension
    */
   constructor(extension) {
     super();

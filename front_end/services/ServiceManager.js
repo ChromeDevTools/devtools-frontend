@@ -11,7 +11,7 @@ Services.ServiceManager = class {
    */
   createRemoteService(serviceName) {
     if (!this._remoteConnection) {
-      const url = Runtime.queryParam('service-backend');
+      const url = Root.Runtime.queryParam('service-backend');
       if (!url) {
         console.error('No endpoint address specified');
         return /** @type {!Promise<?Services.ServiceManager.Service>} */ (Promise.resolve(null));
@@ -29,8 +29,8 @@ Services.ServiceManager = class {
    */
   createAppService(appName, serviceName) {
     let url = appName + '.js';
-    const remoteBase = Runtime.queryParam('remoteBase');
-    const debugFrontend = Runtime.queryParam('debugFrontend');
+    const remoteBase = Root.Runtime.queryParam('remoteBase');
+    const debugFrontend = Root.Runtime.queryParam('debugFrontend');
     const isUnderTest = Host.isUnderTest();
 
     const queryParams = [];

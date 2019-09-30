@@ -59,21 +59,21 @@ Timeline.TimelineController = class {
     ];
     categoriesArray.push(TimelineModel.TimelineModel.Category.LatencyInfo);
 
-    if (Runtime.experiments.isEnabled('timelineFlowEvents')) {
+    if (Root.Runtime.experiments.isEnabled('timelineFlowEvents')) {
       categoriesArray.push('devtools.timeline.async');
     }
 
-    if (Runtime.experiments.isEnabled('timelineV8RuntimeCallStats') && options.enableJSSampling) {
+    if (Root.Runtime.experiments.isEnabled('timelineV8RuntimeCallStats') && options.enableJSSampling) {
       categoriesArray.push(disabledByDefault('v8.runtime_stats_sampling'));
     }
-    if (!Runtime.queryParam('timelineTracingJSProfileDisabled') && options.enableJSSampling) {
+    if (!Root.Runtime.queryParam('timelineTracingJSProfileDisabled') && options.enableJSSampling) {
       categoriesArray.push(disabledByDefault('v8.cpu_profiler'));
       if (Common.moduleSetting('highResolutionCpuProfiling').get()) {
         categoriesArray.push(disabledByDefault('v8.cpu_profiler.hires'));
       }
     }
     categoriesArray.push(disabledByDefault('devtools.timeline.stack'));
-    if (Runtime.experiments.isEnabled('timelineInvalidationTracking')) {
+    if (Root.Runtime.experiments.isEnabled('timelineInvalidationTracking')) {
       categoriesArray.push(disabledByDefault('devtools.timeline.invalidationTracking'));
     }
     if (options.capturePictures) {
@@ -198,7 +198,7 @@ Timeline.TimelineController = class {
     // caused by starting CPU profiler, that needs to traverse JS heap to collect
     // all the functions data.
     await SDK.targetManager.suspendAllTargets('performance-timeline');
-    if (enableJSSampling && Runtime.queryParam('timelineTracingJSProfileDisabled')) {
+    if (enableJSSampling && Root.Runtime.queryParam('timelineTracingJSProfileDisabled')) {
       await this._startProfilingOnAllModels();
     }
     if (!this._tracingManager) {

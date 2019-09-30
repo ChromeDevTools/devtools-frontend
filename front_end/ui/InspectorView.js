@@ -44,7 +44,7 @@ UI.InspectorView = class extends UI.VBox {
     this._drawerSplitWidget.enableShowModeSaving();
     this._drawerSplitWidget.show(this.element);
 
-    if (Runtime.experiments.isEnabled('splitInDrawer')) {
+    if (Root.Runtime.experiments.isEnabled('splitInDrawer')) {
       this._innerDrawerSplitWidget = new UI.SplitWidget(true, true, 'Inspector.drawerSidebarSplitViewState', 200, 200);
       this._drawerSplitWidget.setSidebarWidget(this._innerDrawerSplitWidget);
       this._drawerSidebarTabbedLocation =
@@ -78,7 +78,7 @@ UI.InspectorView = class extends UI.VBox {
     // Create main area tabbed pane.
     this._tabbedLocation = UI.viewManager.createTabbedLocation(
         InspectorFrontendHost.bringToFront.bind(InspectorFrontendHost), 'panel', true, true,
-        Runtime.queryParam('panel'));
+        Root.Runtime.queryParam('panel'));
 
     this._tabbedPane = this._tabbedLocation.tabbedPane();
     this._tabbedPane.registerRequiredCSS('ui/inspectorViewTabbedPane.css');

@@ -597,7 +597,7 @@ FormatterWorker.FormatterWorkerContentParser.parse = function(content, mimeType)
   extension.instance().then(instance => instance.parse(content)).catchException(null).then(postMessage);
 
   /**
-   * @param {!Runtime.Extension} extension
+   * @param {!Root.Runtime.Extension} extension
    * @return {boolean}
    */
   function findExtension(extension) {
@@ -606,7 +606,7 @@ FormatterWorker.FormatterWorkerContentParser.parse = function(content, mimeType)
 };
 
 (function disableLoggingForTest() {
-  if (Runtime.queryParam('test')) {
+  if (Root.Runtime.queryParam('test')) {
     console.error = () => undefined;
   }
 })();

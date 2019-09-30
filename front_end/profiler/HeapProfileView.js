@@ -32,7 +32,7 @@ Profiler.HeapProfileView = class extends Profiler.ProfileView {
 
     this._selectedSizeText = new UI.ToolbarText();
 
-    if (Runtime.experiments.isEnabled('samplingHeapProfilerTimeline')) {
+    if (Root.Runtime.experiments.isEnabled('samplingHeapProfilerTimeline')) {
       this._timelineOverview = new Profiler.HeapTimelineOverview();
       this._timelineOverview.addEventListener(
           Profiler.HeapTimelineOverview.IdsRangeChanged, this._onIdsRangeChanged.bind(this));
@@ -372,7 +372,7 @@ Profiler.SamplingHeapProfileType = class extends Profiler.SamplingHeapProfileTyp
    * @return {boolean}
    */
   hasTemporaryView() {
-    return Runtime.experiments.isEnabled('samplingHeapProfilerTimeline');
+    return Root.Runtime.experiments.isEnabled('samplingHeapProfilerTimeline');
   }
 
   /**
@@ -380,7 +380,7 @@ Profiler.SamplingHeapProfileType = class extends Profiler.SamplingHeapProfileTyp
    */
   _startSampling() {
     this.profileBeingRecorded().heapProfilerModel().startSampling();
-    if (Runtime.experiments.isEnabled('samplingHeapProfilerTimeline')) {
+    if (Root.Runtime.experiments.isEnabled('samplingHeapProfilerTimeline')) {
       this._updateTimer = setTimeout(this._updateStats.bind(this), this._updateIntervalMs);
     }
   }

@@ -30,7 +30,7 @@ TestRunner.setupStartupTest = function(path) {
 };
 
 TestRunner._executeTestScript = function() {
-  const testScriptURL = /** @type {string} */ (Runtime.queryParam('test'));
+  const testScriptURL = /** @type {string} */ (Root.Runtime.queryParam('test'));
   fetch(testScriptURL)
       .then(data => data.text())
       .then(testScript => {
@@ -428,7 +428,7 @@ TestRunner._evaluateInPage = async function(code) {
   const lines = new Error().stack.split('at ');
 
   // Handles cases where the function is safe wrapped
-  const testScriptURL = /** @type {string} */ (Runtime.queryParam('test'));
+  const testScriptURL = /** @type {string} */ (Root.Runtime.queryParam('test'));
   const functionLine = lines.reduce((acc, line) => line.includes(testScriptURL) ? line : acc, lines[lines.length - 2]);
 
   const components = functionLine.trim().split('/');
@@ -1296,7 +1296,7 @@ TestRunner.MockSetting = class {
 };
 
 /**
- * @return {!Array<!Runtime.Module>}
+ * @return {!Array<!Root.Runtime.Module>}
  */
 TestRunner.loadedModules = function() {
   return self.runtime._modules.filter(module => module._loadedForTest)
@@ -1305,8 +1305,8 @@ TestRunner.loadedModules = function() {
 };
 
 /**
- * @param {!Array<!Runtime.Module>} relativeTo
- * @return {!Array<!Runtime.Module>}
+ * @param {!Array<!Root.Runtime.Module>} relativeTo
+ * @return {!Array<!Root.Runtime.Module>}
  */
 TestRunner.dumpLoadedModules = function(relativeTo) {
   const previous = new Set(relativeTo || []);
@@ -1369,7 +1369,7 @@ TestRunner.waitForUISourceCodeRemoved = function(callback) {
  * @return {string}
  */
 TestRunner.url = function(url = '') {
-  const testScriptURL = /** @type {string} */ (Runtime.queryParam('test'));
+  const testScriptURL = /** @type {string} */ (Root.Runtime.queryParam('test'));
 
   // This handles relative (e.g. "../file"), root (e.g. "/resource"),
   // absolute (e.g. "http://", "data:") and empty (e.g. "") paths
@@ -1474,14 +1474,14 @@ TestRunner._TestObserver = class {
  * @return {boolean}
  */
 TestRunner._isDebugTest = function() {
-  return !self.testRunner || !!Runtime.queryParam('debugFrontend');
+  return !self.testRunner || !!Root.Runtime.queryParam('debugFrontend');
 };
 
 /**
  * @return {boolean}
  */
 TestRunner._isStartupTest = function() {
-  return Runtime.queryParam('test').includes('/startup/');
+  return Root.Runtime.queryParam('test').includes('/startup/');
 };
 
 (async function() {

@@ -172,7 +172,7 @@ Settings.GenericSettingsTab = class extends Settings.SettingsTab {
   }
 
   /**
-   * @param {!Runtime.Extension} extension
+   * @param {!Root.Runtime.Extension} extension
    * @return {boolean}
    */
   static isSettingVisible(extension) {
@@ -187,7 +187,7 @@ Settings.GenericSettingsTab = class extends Settings.SettingsTab {
   }
 
   /**
-   * @param {!Runtime.Extension} extension
+   * @param {!Root.Runtime.Extension} extension
    */
   _addSetting(extension) {
     if (!Settings.GenericSettingsTab.isSettingVisible(extension)) {
@@ -202,7 +202,7 @@ Settings.GenericSettingsTab = class extends Settings.SettingsTab {
   }
 
   /**
-   * @param {!Runtime.Extension} extension
+   * @param {!Root.Runtime.Extension} extension
    */
   _addSettingUI(extension) {
     const descriptor = extension.descriptor();
@@ -244,7 +244,7 @@ Settings.ExperimentsSettingsTab = class extends Settings.SettingsTab {
   constructor() {
     super(Common.UIString('Experiments'), 'experiments-tab-content');
 
-    const experiments = Runtime.experiments.allConfigurableExperiments();
+    const experiments = Root.Runtime.experiments.allConfigurableExperiments();
     if (experiments.length) {
       const experimentsSection = this._appendSection();
       experimentsSection.appendChild(this._createExperimentsWarningSubsection());
@@ -332,7 +332,7 @@ Settings.SettingsScreen.Revealer = class {
     return success ? Promise.resolve() : Promise.reject();
 
     /**
-     * @param {!Runtime.Extension} extension
+     * @param {!Root.Runtime.Extension} extension
      */
     function revealModuleSetting(extension) {
       if (!Settings.GenericSettingsTab.isSettingVisible(extension)) {
@@ -346,7 +346,7 @@ Settings.SettingsScreen.Revealer = class {
     }
 
     /**
-     * @param {!Runtime.Extension} extension
+     * @param {!Root.Runtime.Extension} extension
      */
     function revealSettingUI(extension) {
       const settings = extension.descriptor()['settings'];
@@ -358,7 +358,7 @@ Settings.SettingsScreen.Revealer = class {
     }
 
     /**
-     * @param {!Runtime.Extension} extension
+     * @param {!Root.Runtime.Extension} extension
      */
     function revealSettingsView(extension) {
       const location = extension.descriptor()['location'];

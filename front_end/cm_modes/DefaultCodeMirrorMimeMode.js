@@ -6,19 +6,16 @@
  * @constructor
  * @implements {TextEditor.CodeMirrorMimeMode}
  */
-CmModes.DefaultCodeMirrorMimeMode = function()
-{
-}
+CmModes.DefaultCodeMirrorMimeMode = function() {};
 
 CmModes.DefaultCodeMirrorMimeMode.prototype = {
-    /**
-     * @param {!Runtime.Extension} extension
+  /**
+     * @param {!Root.Runtime.Extension} extension
      * @override
      */
-    install: function(extension)
-    {
-        var modeFileName = extension.descriptor()["fileName"];
-        var modeContent = extension.module().resource(modeFileName);
-        self.eval(modeContent + "\n//# sourceURL=" + modeFileName);
-    }
+  install: function(extension) {
+    var modeFileName = extension.descriptor()['fileName'];
+    var modeContent = extension.module().resource(modeFileName);
+    self.eval(modeContent + '\n//# sourceURL=' + modeFileName);
+  }
 }

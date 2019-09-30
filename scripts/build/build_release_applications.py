@@ -183,7 +183,7 @@ class ReleaseBuilder(object):
     def _write_module_resources(self, resource_names, output):
         for resource_name in resource_names:
             resource_name = path.normpath(resource_name).replace('\\', '/')
-            output.write('Runtime.cachedResources["%s"] = "' % resource_name)
+            output.write('Root.Runtime.cachedResources["%s"] = "' % resource_name)
             resource_content = read_file(path.join(self.application_dir, resource_name))
             resource_content += resource_source_url(resource_name).encode('utf-8')
             resource_content = resource_content.replace('\\', '\\\\')
@@ -221,15 +221,15 @@ class ReleaseBuilder(object):
             runtime_contents = read_file(join(self.application_dir, 'Runtime.js'))
             output.write('/* Runtime.js */\n')
             output.write(runtime_contents)
-            output.write('allDescriptors.push(...%s);' % self._release_module_descriptors())
+            output.write('Root.allDescriptors.push(...%s);' % self._release_module_descriptors())
             output.write('/* Application descriptor %s */\n' % self.app_file('json'))
-            output.write('applicationDescriptor = ')
+            output.write('Root.applicationDescriptor = ')
             output.write(self.descriptors.application_json())
         else:
             output.write('/* Additional descriptors */\n')
-            output.write('allDescriptors.push(...%s);' % self._release_module_descriptors())
+            output.write('Root.allDescriptors.push(...%s);' % self._release_module_descriptors())
             output.write('/* Additional descriptors %s */\n' % self.app_file('json'))
-            output.write('applicationDescriptor.modules.push(...%s)' % json.dumps(self.descriptors.application.values()))
+            output.write('Root.applicationDescriptor.modules.push(...%s)' % json.dumps(self.descriptors.application.values()))
 
         output.write('\n/* Autostart modules */\n')
         self._concatenate_autostart_modules(output)

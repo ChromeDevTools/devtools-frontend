@@ -24,14 +24,14 @@ ConsoleCounters.WarningErrorCounter = class {
     });
     const violationShadowRoot =
         UI.createShadowRootWithCoreStyles(this._violationCounter, 'console_counters/errorWarningCounter.css');
-    if (Runtime.experiments.isEnabled('spotlight')) {
+    if (Root.Runtime.experiments.isEnabled('spotlight')) {
       countersWrapper.appendChild(this._violationCounter);
     }
 
 
     this._errors = this._createItem(shadowRoot, 'smallicon-error');
     this._warnings = this._createItem(shadowRoot, 'smallicon-warning');
-    if (Runtime.experiments.isEnabled('spotlight')) {
+    if (Root.Runtime.experiments.isEnabled('spotlight')) {
       this._violations = this._createItem(violationShadowRoot, 'smallicon-info');
     }
     this._titles = [];
@@ -121,7 +121,7 @@ ConsoleCounters.WarningErrorCounter = class {
       this._titles.push(warningCountTitle);
     }
 
-    if (Runtime.experiments.isEnabled('spotlight')) {
+    if (Root.Runtime.experiments.isEnabled('spotlight')) {
       let violationCountTitle = '';
       if (violations === 1) {
         violationCountTitle = ls`${violations} violation`;

@@ -30,7 +30,7 @@ QuickOpen.QuickOpen = class {
   }
 
   /**
-   * @param {!Runtime.Extension} extension
+   * @param {!Root.Runtime.Extension} extension
    */
   _addProvider(extension) {
     const prefix = extension.descriptor()['prefix'];

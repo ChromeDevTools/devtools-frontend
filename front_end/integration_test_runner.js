@@ -7,4 +7,4 @@ if (self.testRunner) {
   testRunner.waitUntilDone();
 }
 
-Runtime.startApplication('integration_test_runner');
+Root.Runtime.startApplication('integration_test_runner');

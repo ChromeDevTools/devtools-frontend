@@ -138,7 +138,7 @@ Sources.DebuggerPlugin = class extends Sources.UISourceCodeFrame.Plugin {
 
     this._hasLineWithoutMapping = false;
     this._updateLinesWithoutMappingHighlight();
-    if (!Runtime.experiments.isEnabled('sourcesPrettyPrint')) {
+    if (!Root.Runtime.experiments.isEnabled('sourcesPrettyPrint')) {
       /** @type {?UI.Infobar} */
       this._prettyPrintInfobar = null;
       this._detectMinified();

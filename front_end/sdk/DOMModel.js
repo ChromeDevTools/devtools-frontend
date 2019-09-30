@@ -1188,7 +1188,7 @@ SDK.DOMModel = class extends SDK.SDKModel {
       this._agent.enable();
     }
 
-    if (Runtime.experiments.isEnabled('captureNodeCreationStacks')) {
+    if (Root.Runtime.experiments.isEnabled('captureNodeCreationStacks')) {
       this._agent.setNodeStackTracesEnabled(true);
     }
   }

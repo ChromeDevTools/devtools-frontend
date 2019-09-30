@@ -50,7 +50,7 @@ export default class Settings {
   }
 
   /**
-   * @param {!Runtime.Extension} extension
+   * @param {!Root.Runtime.Extension} extension
    */
   _registerModuleSetting(extension) {
     const descriptor = extension.descriptor();
@@ -77,7 +77,7 @@ export default class Settings {
       setting.setTitle(extension.title());
     }
     if (descriptor['userActionCondition']) {
-      setting.setRequiresUserAction(!!Runtime.queryParam(descriptor['userActionCondition']));
+      setting.setRequiresUserAction(!!Root.Runtime.queryParam(descriptor['userActionCondition']));
     }
     setting._extension = extension;
     this._moduleSettings.set(settingName, setting);
@@ -367,7 +367,7 @@ export class Setting {
   }
 
   /**
-   * @return {?Runtime.Extension}
+   * @return {?Root.Runtime.Extension}
    */
   extension() {
     return this._extension;

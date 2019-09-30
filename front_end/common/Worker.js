@@ -37,7 +37,7 @@ export default class WorkerWrapper {
    */
   constructor(appName) {
     let url = appName + '.js';
-    url += Runtime.queryParamsString();
+    url += Root.Runtime.queryParamsString();
 
     /** @type {!Promise<!Worker>} */
     this._workerPromise = new Promise(fulfill => {

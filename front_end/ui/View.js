@@ -145,7 +145,7 @@ UI.SimpleView = class extends UI.VBox {
  */
 UI.ProvidedView = class {
   /**
-   * @param {!Runtime.Extension} extension
+   * @param {!Root.Runtime.Extension} extension
    */
   constructor(extension) {
     this._extension = extension;

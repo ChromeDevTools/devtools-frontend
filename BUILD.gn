@@ -570,7 +570,6 @@ all_devtools_files = [
   "front_end/resources/serviceWorkersView.css",
   "front_end/resources/ServiceWorkersView.js",
   "front_end/resources/StorageItemsView.js",
-  "front_end/Runtime.js",
   "front_end/shell.json",
   "front_end/screencast/InputModel.js",
   "front_end/screencast/module.json",
@@ -955,6 +954,7 @@ all_devtools_files += lighthouse_locale_files
 
 all_devtools_modules = [
   "front_end/root.js",
+  "front_end/Runtime.js",
   "front_end/ui/ARIAUtils.js",
   "front_end/ui/ui.js",
   "front_end/common/common.js",
@@ -1178,6 +1178,7 @@ application_templates = [
 
 copied_devtools_modules = [
   "$resources_out_dir/root.js",
+  "$resources_out_dir/Runtime.js",
   "$resources_out_dir/ui/ARIAUtils.js",
   "$resources_out_dir/ui/ui.js",
   "$resources_out_dir/common/common.js",

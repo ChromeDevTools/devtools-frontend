@@ -1375,7 +1375,7 @@ UI.createSlider = function(min, max, tabIndex) {
  * @suppressGlobalPropertiesCheck
  */
 UI.appendStyle = function(node, cssFile) {
-  const content = Runtime.cachedResources[cssFile] || '';
+  const content = Root.Runtime.cachedResources[cssFile] || '';
   if (!content) {
     console.error(cssFile + ' not preloaded. Check module.json');
   }
@@ -1386,7 +1386,7 @@ UI.appendStyle = function(node, cssFile) {
   const themeStyleSheet = UI.themeSupport.themeStyleSheet(cssFile, content);
   if (themeStyleSheet) {
     styleElement = createElement('style');
-    styleElement.textContent = themeStyleSheet + '\n' + Runtime.resolveSourceURL(cssFile + '.theme');
+    styleElement.textContent = themeStyleSheet + '\n' + Root.Runtime.resolveSourceURL(cssFile + '.theme');
     node.appendChild(styleElement);
   }
 };

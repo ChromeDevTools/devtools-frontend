@@ -95,8 +95,8 @@ UI.Context = class {
   }
 
   /**
-   * @param {!Array.<!Runtime.Extension>} extensions
-   * @return {!Set.<!Runtime.Extension>}
+   * @param {!Array.<!Root.Runtime.Extension>} extensions
+   * @return {!Set.<!Root.Runtime.Extension>}
    */
   applicableExtensions(extensions) {
     const targetExtensionSet = new Set();

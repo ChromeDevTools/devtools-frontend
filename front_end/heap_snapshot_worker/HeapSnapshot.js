@@ -3281,7 +3281,7 @@ HeapSnapshotWorker.JSHeapSnapshotRetainerEdge = class extends HeapSnapshotWorker
 (function disableLoggingForTest() {
   // Runtime doesn't exist because this file is loaded as a one-off
   // file in some inspector-protocol tests.
-  if (self.Runtime && Runtime.queryParam('test')) {
+  if (self.Root && self.Root.Runtime && Root.Runtime.queryParam('test')) {
     console.warn = () => undefined;
   }
 })();

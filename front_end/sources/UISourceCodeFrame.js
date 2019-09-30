@@ -34,7 +34,7 @@ Sources.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
     super(workingCopy);
     this._uiSourceCode = uiSourceCode;
 
-    if (Runtime.experiments.isEnabled('sourceDiff')) {
+    if (Root.Runtime.experiments.isEnabled('sourceDiff')) {
       this._diff = new SourceFrame.SourceCodeDiff(this.textEditor);
     }
 
@@ -172,7 +172,7 @@ Sources.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
     this._updateStyle();
     this._decorateAllTypes();
     this._refreshHighlighterType();
-    if (Runtime.experiments.isEnabled('sourcesPrettyPrint')) {
+    if (Root.Runtime.experiments.isEnabled('sourcesPrettyPrint')) {
       const supportedPrettyTypes = new Set(['text/html', 'text/css', 'text/javascript']);
       this.setCanPrettyPrint(supportedPrettyTypes.has(this.highlighterType()), true);
     }
@@ -352,7 +352,7 @@ Sources.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
     if (Sources.ScriptOriginPlugin.accepts(pluginUISourceCode)) {
       this._plugins.push(new Sources.ScriptOriginPlugin(this.textEditor, pluginUISourceCode));
     }
-    if (!this.pretty && Runtime.experiments.isEnabled('sourceDiff') &&
+    if (!this.pretty && Root.Runtime.experiments.isEnabled('sourceDiff') &&
         Sources.GutterDiffPlugin.accepts(pluginUISourceCode)) {
       this._plugins.push(new Sources.GutterDiffPlugin(this.textEditor, pluginUISourceCode));
     }

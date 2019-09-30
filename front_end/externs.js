@@ -1476,3 +1476,28 @@ InspectorFrontendHostAPI.ContextMenuDescriptor;
     headers: (!Object.<string, string>|undefined)
 }} */
 InspectorFrontendHostAPI.LoadNetworkResourceResult;
+
+/**
+ * @interface
+ */
+class ServicePort {
+  /**
+   * @param {function(string)} messageHandler
+   * @param {function(string)} closeHandler
+   */
+  setHandlers(messageHandler, closeHandler) {
+  }
+
+  /**
+   * @param {string} message
+   * @return {!Promise<boolean>}
+   */
+  send(message) {
+  }
+
+  /**
+   * @return {!Promise<boolean>}
+   */
+  close() {
+  }
+}

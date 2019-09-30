@@ -81,8 +81,8 @@ TimelineModel.TimelineJSProfileProcessor = class {
     const jsFramesStack = [];
     const lockedJsStackDepth = [];
     let ordinal = 0;
-    const showAllEvents = Runtime.experiments.isEnabled('timelineShowAllEvents');
-    const showRuntimeCallStats = Runtime.experiments.isEnabled('timelineV8RuntimeCallStats');
+    const showAllEvents = Root.Runtime.experiments.isEnabled('timelineShowAllEvents');
+    const showRuntimeCallStats = Root.Runtime.experiments.isEnabled('timelineV8RuntimeCallStats');
     const showNativeFunctions = Common.moduleSetting('showNativeFunctionsInJSProfile').get();
 
     /**

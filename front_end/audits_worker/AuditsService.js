@@ -42,7 +42,7 @@ var AuditsService = class {  // eslint-disable-line
    * @return {!Promise<!ReportRenderer.RunnerResult>}
    */
   start(params) {
-    if (Runtime.queryParam('isUnderTest')) {
+    if (Root.Runtime.queryParam('isUnderTest')) {
       this._disableLoggingForTest();
       params.flags.maxWaitForLoad = 2 * 1000;
     }

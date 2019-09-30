@@ -10,7 +10,7 @@ QuickOpen.HelpQuickOpen = class extends QuickOpen.FilteredListWidget.Provider {
   }
 
   /**
-   * @param {!Runtime.Extension} extension
+   * @param {!Root.Runtime.Extension} extension
    */
   _addProvider(extension) {
     if (extension.title()) {

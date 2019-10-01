@@ -48,7 +48,8 @@
 .tabbed-pane-placeholder {
     font-size: 14px;
     text-align: center;
-    margin-top: 20px;
+    width: fit-content;
+    margin: 20px auto 0px;
     text-shadow: rgba(255, 255, 255, 0.75) 0 1px 0;
     line-height: 28px;
     overflow: hidden;
@@ -59,12 +60,21 @@
     white-space: nowrap;
 }
 
+.tabbed-pane-placeholder-row[data-keyboard-focus="true"]:focus {
+  outline-width: unset;
+}
+
 .tabbed-pane-placeholder-key {
     flex: 1;
     text-align: right;
     padding-right: 14px;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.tabbed-pane-no-shortcut {
+  flex: 1;
+  text-align: center;
 }
 
 .tabbed-pane-placeholder-value {

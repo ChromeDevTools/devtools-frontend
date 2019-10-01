@@ -38,6 +38,7 @@ UI.TabbedPane = class extends UI.VBox {
     this.element.classList.add('tabbed-pane');
     this.contentElement.classList.add('tabbed-pane-shadow');
     this.contentElement.tabIndex = -1;
+    this.setDefaultFocusedElement(this.contentElement);
     this._headerElement = this.contentElement.createChild('div', 'tabbed-pane-header');
     this._headerContentsElement = this._headerElement.createChild('div', 'tabbed-pane-header-contents');
     this._tabSlider = createElementWithClass('div', 'tabbed-pane-tab-slider');
@@ -156,7 +157,7 @@ UI.TabbedPane = class extends UI.VBox {
     if (this.visibleView) {
       this.visibleView.focus();
     } else {
-      this.contentElement.focus();
+      this._defaultFocusedElement.focus(); /** _defaultFocusedElement defined in Widget.js */
     }
   }
 
@@ -525,10 +526,13 @@ UI.TabbedPane = class extends UI.VBox {
 
   /**
    * @param {!Element} element
+   * @param {!Element=} focusedElement
    */
-  setPlaceholderElement(element) {
+  setPlaceholderElement(element, focusedElement) {
     this._placeholderElement = element;
-
+    if (focusedElement) {
+      this._focusedPlaceholderElement = focusedElement;
+    }
     if (this._placeholderContainerElement) {
       this._placeholderContainerElement.removeChildren();
       this._placeholderContainerElement.appendChild(element);
@@ -545,11 +549,16 @@ UI.TabbedPane = class extends UI.VBox {
       if (this._placeholderElement && !this._placeholderContainerElement) {
         this._placeholderContainerElement = this._contentElement.createChild('div', 'tabbed-pane-placeholder fill');
         this._placeholderContainerElement.appendChild(this._placeholderElement);
+        if (this._focusedPlaceholderElement) {
+          this.setDefaultFocusedElement(this._focusedPlaceholderElement);
+          this.focus();
+        }
       }
     } else {
       this._contentElement.classList.remove('has-no-tabs');
       if (this._placeholderContainerElement) {
         this._placeholderContainerElement.remove();
+        this.setDefaultFocusedElement(this.contentElement);
         delete this._placeholderContainerElement;
       }
     }

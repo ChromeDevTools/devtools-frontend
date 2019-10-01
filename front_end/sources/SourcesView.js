@@ -27,7 +27,8 @@ Sources.SourcesView = class extends UI.VBox {
     this._sourceViewByUISourceCode = new Map();
 
     this._editorContainer = new Sources.TabbedEditorContainer(
-        this, Common.settings.createLocalSetting('previouslyViewedFiles', []), this._placeholderElement());
+        this, Common.settings.createLocalSetting('previouslyViewedFiles', []), this._placeholderElement(),
+        this._focusedPlaceholderElement);
     this._editorContainer.show(this._searchableView.element);
     this._editorContainer.addEventListener(
         Sources.TabbedEditorContainer.Events.EditorSelected, this._editorSelected, this);
@@ -102,25 +103,85 @@ Sources.SourcesView = class extends UI.VBox {
    * @return {!Element}
    */
   _placeholderElement() {
+    /** @type {!Array.<{element: !Element, handler: !Function}>} */
+    this._placeholderOptionArray = [];
+
     const shortcuts = [
-      {actionId: 'quickOpen.show', description: Common.UIString('Open file')},
-      {actionId: 'commandMenu.show', description: Common.UIString('Run command')}
+      {actionId: 'quickOpen.show', description: ls`Open file`},
+      {actionId: 'commandMenu.show', description: ls`Run command`},
+      {actionId: 'sources.add-folder-to-workspace', description: ls`Drop in a folder to add to workspace`}
     ];
 
-    const element = createElementWithClass('span', 'tabbed-pane-placeholder');
-    for (const shortcut of shortcuts) {
+    const element = createElementWithClass('div');
+    const list = element.createChild('div', 'tabbed-pane-placeholder');
+    list.addEventListener('keydown', this._placeholderOnKeyDown.bind(this), false);
+    UI.ARIAUtils.markAsList(list);
+    UI.ARIAUtils.setAccessibleName(list, ls`Empty Source View Actions`);
+
+    for (let i = 0; i < shortcuts.length; i++) {
+      const shortcut = shortcuts[i];
       const shortcutKeyText = UI.shortcutRegistry.shortcutTitleForAction(shortcut.actionId);
-      const row = element.createChild('div', 'tabbed-pane-placeholder-row');
-      row.createChild('div', 'tabbed-pane-placeholder-key').textContent = shortcutKeyText;
-      row.createChild('div', 'tabbed-pane-placeholder-value').textContent = shortcut.description;
+      const listItemElement = list.createChild('div');
+      UI.ARIAUtils.markAsListitem(listItemElement);
+      const row = listItemElement.createChild('div', 'tabbed-pane-placeholder-row');
+      row.tabIndex = -1;
+      UI.ARIAUtils.markAsButton(row);
+      if (shortcutKeyText) {
+        row.createChild('div', 'tabbed-pane-placeholder-key').textContent = shortcutKeyText;
+        row.createChild('div', 'tabbed-pane-placeholder-value').textContent = shortcut.description;
+      } else {
+        row.createChild('div', 'tabbed-pane-no-shortcut').textContent = shortcut.description;
+      }
+      const action = UI.actionRegistry.action(shortcut.actionId);
+      const actionHandler = action.execute.bind(action);
+      this._placeholderOptionArray.push({element: row, handler: actionHandler});
     }
-    element.createChild('div').textContent = Common.UIString('Drop in a folder to add to workspace');
+
+    const firstElement = this._placeholderOptionArray[0].element;
+    firstElement.tabIndex = 0;
+    this._focusedPlaceholderElement = firstElement;
+    this._selectedIndex = 0;
 
     element.appendChild(UI.XLink.create(
         'https://developers.google.com/web/tools/chrome-devtools/sources?utm_source=devtools&utm_campaign=2018Q1',
         'Learn more'));
 
     return element;
+  }
+
+  /**
+   * @param {!Event} event
+   */
+  _placeholderOnKeyDown(event) {
+    if (isEnterOrSpaceKey(event)) {
+      this._placeholderOptionArray[this._selectedIndex].handler.call();
+      return;
+    }
+
+    let offset = 0;
+    if (event.key === 'ArrowDown') {
+      offset = 1;
+    } else if (event.key === 'ArrowUp') {
+      offset = -1;
+    }
+
+    const newIndex = Math.max(Math.min(this._placeholderOptionArray.length - 1, this._selectedIndex + offset), 0);
+    const newElement = this._placeholderOptionArray[newIndex].element;
+    const oldElement = this._placeholderOptionArray[this._selectedIndex].element;
+    if (newElement !== oldElement) {
+      oldElement.tabIndex = -1;
+      newElement.tabIndex = 0;
+      UI.ARIAUtils.setSelected(oldElement, false);
+      UI.ARIAUtils.setSelected(newElement, true);
+      this._selectedIndex = newIndex;
+      newElement.focus();
+    }
+  }
+
+  _resetPlaceholderState() {
+    this._placeholderOptionArray[this._selectedIndex].element.tabIndex = -1;
+    this._placeholderOptionArray[0].element.tabIndex = 0;
+    this._selectedIndex = 0;
   }
 
   /**
@@ -192,6 +253,7 @@ Sources.SourcesView = class extends UI.VBox {
    */
   willHide() {
     UI.context.setFlavor(Sources.SourcesView, null);
+    this._resetPlaceholderState();
     super.willHide();
   }
 

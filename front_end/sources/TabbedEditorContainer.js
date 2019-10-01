@@ -52,13 +52,14 @@ Sources.TabbedEditorContainer = class extends Common.Object {
    * @param {!Sources.TabbedEditorContainerDelegate} delegate
    * @param {!Common.Setting} setting
    * @param {!Element} placeholderElement
+   * @param {!Element=} focusedPlaceholderElement
    */
-  constructor(delegate, setting, placeholderElement) {
+  constructor(delegate, setting, placeholderElement, focusedPlaceholderElement) {
     super();
     this._delegate = delegate;
 
     this._tabbedPane = new UI.TabbedPane();
-    this._tabbedPane.setPlaceholderElement(placeholderElement);
+    this._tabbedPane.setPlaceholderElement(placeholderElement, focusedPlaceholderElement);
     this._tabbedPane.setTabDelegate(new Sources.EditorContainerTabDelegate(this));
 
     this._tabbedPane.setCloseableTabs(true);

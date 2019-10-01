@@ -134,6 +134,20 @@ export function markAsMenuItemSubMenu(element) {
 }
 
 /**
+ * @param {!Element} element
+ */
+export function markAsList(element) {
+  element.setAttribute('role', 'list');
+}
+
+/**
+ * @param {!Element} element
+ */
+export function markAsListitem(element) {
+  element.setAttribute('role', 'listitem');
+}
+
+/**
  * Must contain children whose role is option.
  * @param {!Element} element
  */
@@ -468,6 +482,8 @@ self.UI.ARIAUtils = {
   markAsMenu,
   markAsMenuItem,
   markAsMenuItemSubMenu,
+  markAsList,
+  markAsListitem,
   markAsListBox,
   markAsMultiSelectable,
   markAsOption,

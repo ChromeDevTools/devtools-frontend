@@ -423,6 +423,9 @@
   <message name="IDS_DEVTOOLS_cd26a6a87959e99fdf99f5ccccef0464" desc="Text in Debugger Plugin of the Sources panel">
     Disable breakpoint
   </message>
+  <message name="IDS_DEVTOOLS_d016c1bd981f59db972acf1b83201591" desc="Accessible label for Sources placeholder view actions list">
+    Empty Source View Actions
+  </message>
   <message name="IDS_DEVTOOLS_d07d651006c823c6f008158f6eb63056" desc="Tooltip text that appears when hovering over the largeicon play button in the Sources Panel of the Sources panel">
     Resume with all pauses blocked for 500 ms
   </message>

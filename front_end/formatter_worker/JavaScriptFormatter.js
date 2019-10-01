@@ -51,8 +51,7 @@ FormatterWorker.JavaScriptFormatter = class {
     this._content = text.substring(this._fromOffset, this._toOffset);
     this._lastLineNumber = 0;
     this._tokenizer = new FormatterWorker.AcornTokenizer(this._content);
-    const ast = acorn.parse(
-        this._content, {ranges: false, ecmaVersion: FormatterWorker.ACORN_ECMA_VERSION, preserveParens: true});
+    const ast = acorn.parse(this._content, {ranges: false, preserveParens: true});
     const walker = new FormatterWorker.ESTreeWalker(this._beforeVisit.bind(this), this._afterVisit.bind(this));
     walker.walk(ast);
   }

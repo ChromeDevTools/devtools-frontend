@@ -11,9 +11,9 @@ FormatterWorker.javaScriptOutline = function(content) {
 
   let ast;
   try {
-    ast = acorn.parse(content, {ranges: false, ecmaVersion: FormatterWorker.ACORN_ECMA_VERSION});
+    ast = acorn.parse(content, {ranges: false});
   } catch (e) {
-    ast = acorn.loose.parse(content, {ranges: false, ecmaVersion: FormatterWorker.ACORN_ECMA_VERSION});
+    ast = acorn.loose.parse(content, {ranges: false});
   }
 
   const textCursor = new TextUtils.TextCursor(content.computeLineEndings());

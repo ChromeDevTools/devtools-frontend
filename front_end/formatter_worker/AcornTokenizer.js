@@ -11,8 +11,7 @@ FormatterWorker.AcornTokenizer = class {
   constructor(content) {
     this._content = content;
     this._comments = [];
-    this._tokenizer =
-        acorn.tokenizer(this._content, {ecmaVersion: FormatterWorker.ACORN_ECMA_VERSION, onComment: this._comments});
+    this._tokenizer = acorn.tokenizer(this._content, {onComment: this._comments});
     this._textCursor = new TextUtils.TextCursor(this._content.computeLineEndings());
     this._tokenLineStart = 0;
     this._tokenLineEnd = 0;

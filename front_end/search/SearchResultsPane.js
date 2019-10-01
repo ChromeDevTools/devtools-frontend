@@ -102,6 +102,7 @@ Search.SearchResultsPane.SearchResultsTreeElement = class extends UI.TreeElement
     matchesCountSpan.className = 'search-result-matches-count';
 
     matchesCountSpan.textContent = `${this._searchResult.matchesCount()}`;
+    UI.ARIAUtils.setAccessibleName(matchesCountSpan, ls`Matches Count ${this._searchResult.matchesCount()}`);
 
     this.listItemElement.appendChild(matchesCountSpan);
     if (this.expanded) {
@@ -143,10 +144,15 @@ Search.SearchResultsPane.SearchResultsTreeElement = class extends UI.TreeElement
 
       const anchor = Components.Linkifier.linkifyRevealable(searchResult.matchRevealable(i), '');
       anchor.classList.add('search-match-link');
-      const lineNumberSpan = createElement('span');
-      lineNumberSpan.classList.add('search-match-line-number');
-      lineNumberSpan.textContent = searchResult.matchLabel(i);
-      anchor.appendChild(lineNumberSpan);
+      const labelSpan = createElement('span');
+      labelSpan.classList.add('search-match-line-number');
+      const resultLabel = searchResult.matchLabel(i);
+      labelSpan.textContent = resultLabel;
+      if (typeof resultLabel === 'number' && !isNaN(resultLabel))
+        UI.ARIAUtils.setAccessibleName(labelSpan, ls`Line ${resultLabel}`);
+      else
+        UI.ARIAUtils.setAccessibleName(labelSpan, ls`${resultLabel}`);
+      anchor.appendChild(labelSpan);
 
       const contentSpan = this._createContentSpan(lineContent, matchRanges);
       anchor.appendChild(contentSpan);
@@ -191,6 +197,7 @@ Search.SearchResultsPane.SearchResultsTreeElement = class extends UI.TreeElement
     const contentSpan = createElement('span');
     contentSpan.className = 'search-match-content';
     contentSpan.textContent = lineContent;
+    UI.ARIAUtils.setAccessibleName(contentSpan, `${lineContent} line`);
     UI.highlightRangesWithStyleClass(contentSpan, matchRanges, 'highlighted-match');
     return contentSpan;
   }

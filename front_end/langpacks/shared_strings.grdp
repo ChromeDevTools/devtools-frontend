@@ -52,6 +52,7 @@
   <message name="IDS_DEVTOOLS_1c481aa99d081c32182011a758f73d33" desc="Text that only contain a placeholder">
     <ph name="DURATIONTEXT">$1s<ex>100ms (at 200ms)</ex></ph>
   </message>
+  </message>
   <message name="IDS_DEVTOOLS_1eaeeaeb638fdf7f6eeb047abbfd0f1a" desc="Time of a single activity, as opposed to the total time">
     Self Time
   </message>

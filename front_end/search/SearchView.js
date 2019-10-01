@@ -49,6 +49,7 @@ Search.SearchView = class extends UI.VBox {
     this._search.setAttribute('type', 'text');
     this._search.setAttribute('results', '0');
     this._search.setAttribute('size', 42);
+    UI.ARIAUtils.setAccessibleName(this._search, ls`Search Query`);
     const searchItem = new UI.ToolbarItem(searchContainer);
 
     const toolbar = new UI.Toolbar('search-toolbar', this._searchPanelElement);
@@ -215,6 +216,9 @@ Search.SearchView = class extends UI.VBox {
     }
     this._searchFinished(finished);
     this._searchConfig = null;
+    UI.ARIAUtils.alert(
+        this._searchMessageElement.textContent + ' ' + this._searchResultsMessageElement.textContent,
+        this._searchMessageElement);
   }
 
   /**
@@ -381,6 +385,8 @@ Search.SearchView = class extends UI.VBox {
   }
 
   _onAction() {
+    // Resetting alert variable to prime for next search query result.
+    UI.ARIAUtils.alert(' ', this._searchMessageElement);
     const searchConfig = this._buildSearchConfig();
     if (!searchConfig.query() || !searchConfig.query().length) {
       return;

@@ -24,11 +24,31 @@ SDK.EmulationModel = class extends SDK.SDKModel {
       this._emulationAgent.setScriptExecutionDisabled(true);
     }
 
-    const mediaSetting = Common.moduleSetting('emulatedCSSMedia');
-    mediaSetting.addChangeListener(() => this._emulateCSSMedia(mediaSetting.get()));
-    if (mediaSetting.get()) {
-      this._emulateCSSMedia(mediaSetting.get());
-    }
+    const mediaTypeSetting = Common.moduleSetting('emulatedCSSMedia');
+    const mediaFeaturePrefersColorSchemeSetting = Common.moduleSetting('emulatedCSSMediaFeaturePrefersColorScheme');
+    const mediaFeaturePrefersReducedMotionSetting = Common.moduleSetting('emulatedCSSMediaFeaturePrefersReducedMotion');
+    // Note: this uses a different format than what the CDP API expects,
+    // because we want to update these values per media type/feature
+    // without having to search the `features` array (inefficient) or
+    // hardcoding the indices (not readable/maintainable).
+    this._mediaConfiguration = new Map([
+      ['type', mediaTypeSetting.get()],
+      ['prefers-color-scheme', mediaFeaturePrefersColorSchemeSetting.get()],
+      ['prefers-reduced-motion', mediaFeaturePrefersReducedMotionSetting.get()],
+    ]);
+    mediaTypeSetting.addChangeListener(() => {
+      this._mediaConfiguration.set('type', mediaTypeSetting.get());
+      this._updateCssMedia();
+    });
+    mediaFeaturePrefersColorSchemeSetting.addChangeListener(() => {
+      this._mediaConfiguration.set('prefers-color-scheme', mediaFeaturePrefersColorSchemeSetting.get());
+      this._updateCssMedia();
+    });
+    mediaFeaturePrefersReducedMotionSetting.addChangeListener(() => {
+      this._mediaConfiguration.set('prefers-reduced-motion', mediaFeaturePrefersReducedMotionSetting.get());
+      this._updateCssMedia();
+    });
+    this._updateCssMedia();
 
     this._touchEnabled = false;
     this._touchMobile = false;
@@ -99,10 +119,11 @@ SDK.EmulationModel = class extends SDK.SDKModel {
   }
 
   /**
-   * @param {string} media
+   * @param {string} type
+   * @param {!Array<{name: string, value: string}>} features
    */
-  _emulateCSSMedia(media) {
-    this._emulationAgent.setEmulatedMedia(media);
+  _emulateCSSMedia(type, features) {
+    this._emulationAgent.setEmulatedMedia(type, features);
     if (this._cssModel) {
       this._cssModel.mediaQueryResultChanged();
     }
@@ -157,6 +178,22 @@ SDK.EmulationModel = class extends SDK.SDKModel {
     this._touchConfiguration = configuration;
     this._emulationAgent.setTouchEmulationEnabled(configuration.enabled, 1);
     this._emulationAgent.setEmitTouchEventsForMouse(configuration.enabled, configuration.configuration);
+  }
+
+  _updateCssMedia() {
+    // See the note above, where this._mediaConfiguration is defined.
+    const type = this._mediaConfiguration.get('type');
+    const features = [
+      {
+        name: 'prefers-color-scheme',
+        value: this._mediaConfiguration.get('prefers-color-scheme'),
+      },
+      {
+        name: 'prefers-reduced-motion',
+        value: this._mediaConfiguration.get('prefers-reduced-motion'),
+      },
+    ];
+    this._emulateCSSMedia(type, features);
   }
 };
 

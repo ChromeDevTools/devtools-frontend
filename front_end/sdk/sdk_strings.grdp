@@ -15,11 +15,17 @@
   <message name="IDS_DEVTOOLS_0b4e8f2008c602c781fee001c917dbf9" desc="Tooltip to explain why a cookie was blocked">
     This set-cookie had invalid syntax.
   </message>
+  <message name="IDS_DEVTOOLS_0d66520dddd8718f59f517582fafaebb" desc="Title of a media query that can be emulated via the Rendering drawer">
+    prefers-color-scheme: light
+  </message>
   <message name="IDS_DEVTOOLS_0fe1f9158e2f164da1332501f9e65702" desc="Text in Console Model">
     Navigated to <ph name="EVENT_DATA_URL">$1s<ex>https://example.com</ex></ph>
   </message>
   <message name="IDS_DEVTOOLS_1023bf87beb1d2947824df00fa0898ad" desc="Title of a setting under the Debugger category in Settings">
     Disable async stack traces
+  </message>
+  <message name="IDS_DEVTOOLS_10bdea5cc4e1689c7db90eb7bf7f45c0" desc="Title of a setting under the Rendering drawer">
+    Emulate CSS media type
   </message>
   <message name="IDS_DEVTOOLS_185bf49541541933dc3fd1fb89d3fea3" desc="Title of a setting under the Console category in Settings">
     Enable custom formatters
@@ -45,6 +51,9 @@
   <message name="IDS_DEVTOOLS_23e8e5daea7e9dc939ae4298a6f74e36" desc="Text in Server Timing">
     ServerTiming: <ph name="MSG">$1s<ex>Extraneous trailing characters.</ex></ph>
   </message>
+  <message name="IDS_DEVTOOLS_242dd6b02f1ff7db7cbba7f7226abb4a" desc="Title of a setting under the Rendering drawer that can be invoked through the Command Menu">
+    Do not emulate CSS prefers-color-scheme
+  </message>
   <message name="IDS_DEVTOOLS_25121e2acd3c495847c5592661c2a2f9" desc="Tooltip to explain why a cookie was blocked">
     This set-cookie&apos;s Domain attribute was invalid with regards to the current host url.
   </message>
@@ -59,6 +68,12 @@
   </message>
   <message name="IDS_DEVTOOLS_2cc895b2288b4709e1620a1510322de0" desc="Tooltip to explain why a cookie was blocked">
     This cookie was not sent due to user preferences.
+  </message>
+  <message name="IDS_DEVTOOLS_5e53467e9b005376370c28e92b42b6f5" desc="Title of a setting under the Rendering drawer that can be invoked through the Command Menu">
+    Emulate CSS prefers-reduced-motion: reduce
+  </message>
+  <message name="IDS_DEVTOOLS_685c645cb0cb322c5b9989eb12bada19" desc="Title of a setting under the Rendering drawer that can be invoked through the Command Menu">
+    Emulate CSS media feature prefers-color-scheme
   </message>
   <message name="IDS_DEVTOOLS_3034e08ec0b14678ddb50284eef02ee4" desc="Title of a setting under the Console category that can be invoked through the Command Menu">
     Do not preserve log upon navigation
@@ -95,6 +110,9 @@
   </message>
   <message name="IDS_DEVTOOLS_40dba446b661ae69dea3a8e026f76dfd" desc="Title of a setting under the Rendering category that can be invoked through the Command Menu">
     Hide paint flashing rectangles
+  </message>
+  <message name="IDS_DEVTOOLS_41b61424daffc7d27c709bdd4f1ad0ec" desc="Title of a setting under the Rendering drawer that can be invoked through the Command Menu">
+    Emulate CSS prefers-color-scheme: dark
   </message>
   <message name="IDS_DEVTOOLS_4249b3308a0ed3e1e90e0a91ca11cf21" desc="Text in the Event Listener Breakpoints Panel of the JavaScript Debugger in the Sources Panel">
     WebGL Error Fired
@@ -204,9 +222,6 @@
   <message name="IDS_DEVTOOLS_83f2229658949472d34f78e19475fcdd" desc="Title of a setting under the Rendering category that can be invoked through the Command Menu">
     Show layer borders
   </message>
-  <message name="IDS_DEVTOOLS_869a8b1ed99306604574dca474a13994" desc="Title for emulatedCSSMedia setting">
-    Emulate CSS media
-  </message>
   <message name="IDS_DEVTOOLS_9028784c589c0c809700c7fbc66a5d96" desc="Text in Network Manager">
     Resource interpreted as <ph name="NETWORKREQUEST_RESOURCETYPE___TITLE__">$1s<ex>application</ex></ph> but transferred with MIME type <ph name="NETWORKREQUEST_MIMETYPE">$2s<ex>image</ex></ph>: &quot;<ph name="NETWORKREQUEST_URL__">$3s<ex>https://example.com</ex></ph>&quot;.
   </message>
@@ -276,6 +291,12 @@
   <message name="IDS_DEVTOOLS_ba50636875d999db0c9218b48b23027d" desc="Title of a setting under the Debugger category that can be invoked through the Command Menu">
     Do not capture async stack traces
   </message>
+  <message name="IDS_DEVTOOLS_be06029749b376cc5dec53b60a0cf135" desc="Title of a media query that can be emulated via the Rendering drawer">
+    prefers-reduced-motion: reduce
+  </message>
+  <message name="IDS_DEVTOOLS_beff15b1acf49b84bf1080cceb920ebf" desc="Title of a media query that can be emulated via the Rendering drawer">
+    prefers-color-scheme: dark
+  </message>
   <message name="IDS_DEVTOOLS_c432f4e5fdec5760a2f06b38f646168e" desc="Text in Console Model">
     Profile &apos;<ph name="DATA_TITLE">$1s<ex>title</ex></ph>&apos; started.
   </message>
@@ -290,6 +311,12 @@
   </message>
   <message name="IDS_DEVTOOLS_ccab918ce9f085b521a52ac13f653c0b" desc="Tooltip to explain why a cookie was blocked">
     An unknown error was encountered when trying to send this cookie.
+  </message>
+  <message name="IDS_DEVTOOLS_cdb227ce6e015a5e5570e286ccd8866c" desc="Title of a setting under the Rendering drawer">
+    Emulate CSS media feature prefers-reduced-motion
+  </message>
+  <message name="IDS_DEVTOOLS_ceb19b7234304452f0c748bac8ba3fb8" desc="Title of a setting under the Rendering drawer that can be invoked through the Command Menu">
+    Do not emulate CSS prefers-reduced-motion
   </message>
   <message name="IDS_DEVTOOLS_cedab6b9e4e794e93bba797e8aff218a" desc="Message in Network Manager">
     <ph name="NETWORKREQUEST_RESOURCETYPE___TITLE__">$1s<ex>XHR</ex></ph> finished loading: <ph name="NETWORKREQUEST_REQUESTMETHOD">$2s<ex>GET</ex></ph> &quot;<ph name="NETWORKREQUEST_URL__">$3s<ex>https://example.com</ex></ph>&quot;.
@@ -323,6 +350,9 @@
   </message>
   <message name="IDS_DEVTOOLS_e69d85cd1acdf030f0cede48b61d7720" desc="Title of a setting under the Rendering category that can be invoked through the Command Menu">
     Hide scroll performance bottlenecks
+  </message>
+  <message name="IDS_DEVTOOLS_e8e741c8bebb2da4dc93e5f9c1cecd8c" desc="Title of a setting under the Rendering drawer that can be invoked through the Command Menu">
+    Emulate CSS prefers-color-scheme: light
   </message>
   <message name="IDS_DEVTOOLS_edb020d2175281d94054136e09a3e132" desc="Title of a setting under the Debugger category that can be invoked through the Command Menu">
     Do not pause on exceptions

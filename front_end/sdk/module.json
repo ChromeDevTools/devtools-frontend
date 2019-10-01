@@ -265,7 +265,56 @@
                 }
             ],
             "tags": "query",
-            "title": "Emulate CSS media"
+            "title": "Emulate CSS media type"
+        },
+        {
+            "type": "setting",
+            "category": "Rendering",
+            "settingName": "emulatedCSSMediaFeaturePrefersColorScheme",
+            "settingType": "enum",
+            "storageType": "session",
+            "defaultValue": "no-preference",
+            "options": [
+                {
+                    "title": "Do not emulate CSS prefers-color-scheme",
+                    "text": "No emulation",
+                    "value": "no-preference"
+                },
+                {
+                    "title": "Emulate CSS prefers-color-scheme: light",
+                    "text": "prefers-color-scheme: light",
+                    "value": "light"
+                },
+                {
+                  "title": "Emulate CSS prefers-color-scheme: dark",
+                  "text": "prefers-color-scheme: dark",
+                  "value": "dark"
+                }
+            ],
+            "tags": "query",
+            "title": "Emulate CSS media feature prefers-color-scheme"
+        },
+        {
+          "type": "setting",
+          "category": "Rendering",
+          "settingName": "emulatedCSSMediaFeaturePrefersReducedMotion",
+          "settingType": "enum",
+          "storageType": "session",
+          "defaultValue": "no-preference",
+          "options": [
+              {
+                  "title": "Do not emulate CSS prefers-reduced-motion",
+                  "text": "No emulation",
+                  "value": "no-preference"
+              },
+              {
+                  "title": "Emulate CSS prefers-reduced-motion: reduce",
+                  "text": "prefers-reduced-motion: reduce",
+                  "value": "reduce"
+              }
+          ],
+          "tags": "query",
+          "title": "Emulate CSS media feature prefers-reduced-motion"
         },
         {
             "type": "setting",

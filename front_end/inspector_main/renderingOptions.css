@@ -5,17 +5,21 @@
  */
 
 :host {
-    padding: 12px;
+  padding: 12px;
  }
 
 [is=dt-checkbox] {
-    margin: 0px 0px 10px 0px;
-    flex: none;
+  margin: 0 0 10px 0;
+  flex: none;
 }
 
 .panel-section-separator {
-    height: 1px;
-    margin-bottom: 10px;
-    background: #f0f0f0;
-    flex: none;
+  height: 1px;
+  margin-bottom: 10px;
+  background: #f0f0f0;
+  flex: none;
+}
+
+.chrome-select-label {
+  margin-bottom: 16px;
 }

@@ -36,6 +36,12 @@
   <message name="IDS_DEVTOOLS_53f2f05226edcd77bd4351cb27d07ba8" desc="Text in Rendering Options">
     Highlights frames (red) detected to be ads.
   </message>
+  <message name="IDS_DEVTOOLS_5b67348d29677cd12d3e02b7e1d7cc87" desc="Subtitle for a select box under the Rendering drawer">
+    Forces CSS prefers-reduced-motion media feature
+  </message>
+  <message name="IDS_DEVTOOLS_616e08b00feb46b7abdca3c6190f63ac" desc="Subtitle for a select box under the Rendering drawer">
+    Forces CSS prefers-color-scheme media feature
+  </message>
   <message name="IDS_DEVTOOLS_6526f858ca97d80241dacb00b40504bb" desc="Checkbox subtitle for 'Hit-test borders' in the Rendering tool">
     Shows borders around hit-test regions.
   </message>

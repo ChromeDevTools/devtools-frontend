@@ -75,6 +75,9 @@
   <message name="IDS_DEVTOOLS_09d66464ad53e6080988ad30824ea023" desc="Text in Timeline Flame Chart Data Provider of the Performance panel">
     Frame — <ph name="TRACK_URL">$1s<ex>https://example.com</ex></ph>
   </message>
+  <message name="IDS_DEVTOOLS_0a9d131e2c626ead31d9ecb8c54e3372" desc="Text in UIDevtools Utils of the Performance panel">
+    View::OnPaintBackground
+  </message>
   <message name="IDS_DEVTOOLS_0d015d96f63a8c12d96b8399482b593f" desc="Text in Timeline UIUtils of the Performance panel">
     Uncategorized
   </message>
@@ -175,6 +178,9 @@ Click the reload button <ph name="RELOADBUTTON">$3s<ex>reload</ex></ph> or hit <
   <message name="IDS_DEVTOOLS_2a0e96bf571559add541036a25ca1d36" desc="Text in Timeline UIUtils of the Performance panel">
     Call Stacks
   </message>
+  <message name="IDS_DEVTOOLS_2a4d793c571c935ed156c25249a45219" desc="Text in UIDevtools Utils of the Performance panel">
+    View::OnPaintBorder
+  </message>
   <message name="IDS_DEVTOOLS_2a5021aea912316167342b34cbf358b4" desc="Text in Timeline UIUtils of the Performance panel">
     Compile Module
   </message>
@@ -261,6 +267,9 @@ Click the reload button <ph name="RELOADBUTTON">$3s<ex>reload</ex></ph> or hit <
   </message>
   <message name="IDS_DEVTOOLS_3df7062234c9e55d49648289c5b2c80f" desc="Text in Timeline UIUtils of the Performance panel">
     Time spent in rendering
+  </message>
+  <message name="IDS_DEVTOOLS_3e8436f8c107f458c78f61101ef33bef" desc="Text in UIDevtools Utils of the Performance panel">
+    DirectRenderer::DrawFrame
   </message>
   <message name="IDS_DEVTOOLS_3e8e23cb13898f3f9760a0f1d9203bd1" desc="Text of a DOM element in Timeline UIUtils of the Performance panel">
     Stack trace:
@@ -394,6 +403,9 @@ Click the reload button <ph name="RELOADBUTTON">$3s<ex>reload</ex></ph> or hit <
   <message name="IDS_DEVTOOLS_5fbceaa309bba91ee916d46e06ac0080" desc="Text in Timeline UIUtils of the Performance panel">
     Touch Move
   </message>
+  <message name="IDS_DEVTOOLS_5fc3cf362fe793dce7e093c63b583f88" desc="Text in UIDevtools Utils of the Performance panel">
+    View::Layout(bounds_changed)
+  </message>
   <message name="IDS_DEVTOOLS_5fe7053d3a0e35c2a3242996e690e160" desc="Text in Timeline UIUtils of the Performance panel">
     Update Layer
   </message>
@@ -430,6 +442,9 @@ Click the reload button <ph name="RELOADBUTTON">$3s<ex>reload</ex></ph> or hit <
   <message name="IDS_DEVTOOLS_67eed98f4bc75c4ab261b79a0e2c52cd" desc="Text in Timeline UIUtils of the Performance panel">
     Cache Rejected
   </message>
+  <message name="IDS_DEVTOOLS_681d72abce5de4f856e71bfb1856796b" desc="Text in UIDevtools Utils of the Performance panel">
+    Drawing
+  </message>
   <message name="IDS_DEVTOOLS_686155af75a60a0f6e9d80c1f7edd3e9" desc="Text in Timeline Tree View of the Performance panel">
     JavaScript
   </message>
@@ -454,6 +469,9 @@ Click the reload button <ph name="RELOADBUTTON">$3s<ex>reload</ex></ph> or hit <
   <message name="IDS_DEVTOOLS_6d8a59067ffe0498f3f5f2c03025b799" desc="Text in Timeline Tree View of the Performance panel">
     Group by URL
   </message>
+  <message name="IDS_DEVTOOLS_6ebfbd6a11e852377844c8fd6e1608cc" desc="Text in UIDevtools Utils of the Performance panel">
+    View::OnPaint
+  </message>
   <message name="IDS_DEVTOOLS_70582905817c902e7a334c24718cba88" desc="Text in Timeline UIUtils of the Performance panel">
     Touch End
   </message>
@@ -468,6 +486,9 @@ Click the reload button <ph name="RELOADBUTTON">$3s<ex>reload</ex></ph> or hit <
   </message>
   <message name="IDS_DEVTOOLS_71613aba6474d2e2dc12d00cc46743f0" desc="Text in Timeline UIUtils of the Performance panel">
     Touch Start
+  </message>
+  <message name="IDS_DEVTOOLS_733bca87dd487283ef74a651c4eea432" desc="Text in UIDevtools Utils of the Performance panel">
+    View::PaintChildren
   </message>
   <message name="IDS_DEVTOOLS_7363d05ecc1497f2f8ae05b334b45651" desc="Title of disable capture jsprofile setting in timeline panel of the performance panel">
     Disable JavaScript samples
@@ -522,6 +543,9 @@ Click the reload button <ph name="RELOADBUTTON">$3s<ex>reload</ex></ph> or hit <
   </message>
   <message name="IDS_DEVTOOLS_86c8559f4d7d1d74dc3e04baf2b65cc6" desc="Text in Timeline UIUtils of the Performance panel">
     Decoded Body
+  </message>
+  <message name="IDS_DEVTOOLS_86d31b04bab25c0e7f353b8b3a000445" desc="Text in UIDevtools Utils of the Performance panel">
+    Rasterizing
   </message>
   <message name="IDS_DEVTOOLS_871646cb17b6936aa29df33b8d550051" desc="Text in Timeline UIUtils of the Performance panel">
     Update Layer Tree
@@ -627,6 +651,9 @@ Then, zoom and pan the timeline with the mousewheel or <ph name="NAVIGATENODE">$
   <message name="IDS_DEVTOOLS_a10717d996573373c8f9a01c49bbb6a5" desc="Text in Timeline Panel of the Performance panel">
     Loading profile…
   </message>
+  <message name="IDS_DEVTOOLS_a34991663b140f981410a06acc058849" desc="Text in UIDevtools Utils of the Performance panel">
+    ThreadControllerImpl::RunTask
+  </message>
   <message name="IDS_DEVTOOLS_a3b61900010aa9472919c6c7ac247fed" desc="Text of a DOM element in Timeline UIUtils of the Performance panel">
     (changed id to &quot;<ph name="INVALIDATION_CHANGEDID">$1s<ex>id2</ex></ph>&quot;<ph name="EXTRADATA">$2s<ex>a, b</ex></ph>)
   </message>
@@ -644,6 +671,9 @@ Then, zoom and pan the timeline with the mousewheel or <ph name="NAVIGATENODE">$
   </message>
   <message name="IDS_DEVTOOLS_a7c815fafe60ae637d38216fa6300395" desc="Text in Timeline UIUtils of the Performance panel">
     FCP
+  </message>
+  <message name="IDS_DEVTOOLS_a9e8acf624d918c753e98cefbd2352c9" desc="Text in UIDevtools Utils of the Performance panel">
+    NeedsBeginFrameChanged
   </message>
   <message name="IDS_DEVTOOLS_aa40d845ecb78d5bd01ff8b0cc9e213e" desc="Text in Timeline UIUtils of the Performance panel">
     Receive Data
@@ -695,6 +725,9 @@ Then, zoom and pan the timeline with the mousewheel or <ph name="NAVIGATENODE">$
   </message>
   <message name="IDS_DEVTOOLS_b4c7087912916a68642000d8759baec2" desc="Text in Timeline UIUtils of the Performance panel">
     Scroll Begin
+  </message>
+  <message name="IDS_DEVTOOLS_b4ecf19a9a7427854c0b9bfa03260707" desc="Text in UIDevtools Utils of the Performance panel">
+    View::Layout
   </message>
   <message name="IDS_DEVTOOLS_b53fbbb58656447400f07904e68c0f12" desc="Text in Timeline UIUtils of the Performance panel">
     Create WebSocket
@@ -789,6 +822,9 @@ Then, zoom and pan the timeline with the mousewheel or <ph name="NAVIGATENODE">$
   <message name="IDS_DEVTOOLS_cf56f8ebb3727b1d4d5a17fb18d4df74" desc="Text in Timeline UIUtils of the Performance panel">
     Paint Setup
   </message>
+  <message name="IDS_DEVTOOLS_cfa720bcf2892b7532563ba7e661fc94" desc="Text in UIDevtools Utils of the Performance panel">
+    View::Paint
+  </message>
   <message name="IDS_DEVTOOLS_d0369e883465f2849df8b38966901bbf" desc="Text in Timeline Panel of the Performance panel">
     CPU:
   </message>
@@ -797,6 +833,9 @@ Then, zoom and pan the timeline with the mousewheel or <ph name="NAVIGATENODE">$
   </message>
   <message name="IDS_DEVTOOLS_d0c91aff68287a1a0003af56b91cadde" desc="Range text content in Counters Graph of the Performance panel">
     [<ph name="MIN">$1s<ex>2</ex></ph> – <ph name="MAX">$2s<ex>10</ex></ph>]
+  </message>
+  <message name="IDS_DEVTOOLS_d147f3c372833715f5bcff727b0665aa" desc="Text in UIDevtools Utils of the Performance panel">
+    RasterizerTaskImpl::RunOnWorkerThread
   </message>
   <message name="IDS_DEVTOOLS_d14e91fe7abe33fc8a05c193fc812d68" desc="Text in Timeline UIUtils of the Performance panel">
     Mime Type
@@ -876,6 +915,9 @@ Then, zoom and pan the timeline with the mousewheel or <ph name="NAVIGATENODE">$
   <message name="IDS_DEVTOOLS_dfe67b764ba5e3f6b674f049db64e165" desc="Call site stack label in Timeline UIUtils of the Performance panel">
     First Layout Invalidation
   </message>
+  <message name="IDS_DEVTOOLS_e0421c199e321b5a5c4379892d6e16e9" desc="Text in UIDevtools Utils of the Performance panel">
+    RasterTask
+  </message>
   <message name="IDS_DEVTOOLS_e0c70bcb54d7f58615eb895c232049ce" desc="Text in Timeline UIUtils of the Performance panel">
     Composite Layers
   </message>
@@ -941,6 +983,9 @@ Then, zoom and pan the timeline with the mousewheel or <ph name="NAVIGATENODE">$
   </message>
   <message name="IDS_DEVTOOLS_f5baffc95ebfe1ede488388589db922b" desc="Title in Timeline UIUtils of the Performance panel">
     Other Invalidations
+  </message>
+  <message name="IDS_DEVTOOLS_f8dd1d7ea0aea500de367999ebba5c47" desc="Text in UIDevtools Utils of the Performance panel">
+    Layer::PaintContentsToDisplayList
   </message>
   <message name="IDS_DEVTOOLS_fa7c73b6eb5f3c3b77e47d8a4557af3e" desc="Title of an action in the timeline tool to load from file">
     Load profile…

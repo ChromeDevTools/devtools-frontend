@@ -204,7 +204,7 @@ Timeline.TimelineEventOverviewCPUActivity = class extends Timeline.TimelineEvent
     const scale = width / timeSpan;
     const quantTime = quantSizePx / scale;
     const categories = Timeline.TimelineUIUtils.categories();
-    const categoryOrder = ['idle', 'loading', 'painting', 'rendering', 'scripting', 'other'];
+    const categoryOrder = Timeline.TimelineUIUtils.getTimelineMainEventCategories();
     const otherIndex = categoryOrder.indexOf('other');
     const idleIndex = 0;
     console.assert(idleIndex === categoryOrder.indexOf('idle'));

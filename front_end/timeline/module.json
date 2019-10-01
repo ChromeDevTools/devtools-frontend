@@ -248,7 +248,9 @@
         "TimelineUIUtils.js",
         "TimelineLayersView.js",
         "TimelinePaintProfilerView.js",
-        "TimelinePanel.js"
+        "TimelinePanel.js",
+        "UIDevtoolsUtils.js",
+        "UIDevtoolsController.js"
     ],
     "resources": [
         "historyToolbarButton.css",

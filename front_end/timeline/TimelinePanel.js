@@ -526,7 +526,11 @@ Timeline.TimelinePanel = class extends UI.Panel {
         provider => Timeline.TimelinePanel._settingForTraceProvider(provider).get());
 
     const mainTarget = /** @type {!SDK.Target} */ (SDK.targetManager.mainTarget());
-    this._controller = new Timeline.TimelineController(mainTarget, this);
+    if (Timeline.UIDevtoolsUtils.isUiDevTools()) {
+      this._controller = new Timeline.UIDevtoolsController(mainTarget, this);
+    } else {
+      this._controller = new Timeline.TimelineController(mainTarget, this);
+    }
     this._setUIControlsEnabled(false);
     this._hideLandingPage();
     const response = await this._controller.startRecording(recordingOptions, enabledTraceProviders);

@@ -153,6 +153,10 @@ Timeline.TimelineUIUtils = class {
     return eventStyles;
   }
 
+  static setEventStylesMap(eventStyles) {
+    Timeline.TimelineUIUtils._eventStylesMap = eventStyles;
+  }
+
   /**
    * @param {!TimelineModel.TimelineIRModel.InputEvents} inputEventType
    * @return {?string}
@@ -1664,6 +1668,31 @@ Timeline.TimelineUIUtils = class {
       idle: new Timeline.TimelineCategory('idle', ls`Idle`, false, 'hsl(0, 0%, 98%)', 'hsl(0, 0%, 98%)')
     };
     return Timeline.TimelineUIUtils._categories;
+  }
+
+  /**
+   * @param {!Object.<string, !Timeline.TimelineCategory>} categories
+   */
+  static setCategories(categories) {
+    Timeline.TimelineUIUtils._categories = categories;
+  }
+
+  /**
+   * @return {!Array}
+   */
+  static getTimelineMainEventCategories() {
+    if (Timeline.TimelineUIUtils._eventCategories) {
+      return Timeline.TimelineUIUtils._eventCategories;
+    }
+    Timeline.TimelineUIUtils._eventCategories = ['idle', 'loading', 'painting', 'rendering', 'scripting', 'other'];
+    return Timeline.TimelineUIUtils._eventCategories;
+  }
+
+  /**
+   * @param {!Array} categories
+   */
+  static setTimelineMainEventCategories(categories) {
+    Timeline.TimelineUIUtils._eventCategories = categories;
   }
 
   /**

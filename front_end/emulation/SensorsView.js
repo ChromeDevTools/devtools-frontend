@@ -517,7 +517,7 @@ Emulation.SensorsView.NonPresetOptions = {
 
 /** @type {!Array.<{title: string, value: !Array.<{title: string, orientation: string}>}>} */
 Emulation.SensorsView.PresetOrientations = [{
-  title: 'Presets',
+  title: ls`Presets`,
   value: [
     {title: Common.UIString('Portrait'), orientation: '[0, 90, 0]'},
     {title: Common.UIString('Portrait upside down'), orientation: '[180, -90, 0]'},

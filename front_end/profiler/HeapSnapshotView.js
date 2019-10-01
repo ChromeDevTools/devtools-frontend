@@ -147,7 +147,7 @@ Profiler.HeapSnapshotView = class extends UI.SimpleView {
     this._filterSelect.setVisible(false);
     this._updateFilterOptions();
 
-    this._classNameFilter = new UI.ToolbarInput('Class filter');
+    this._classNameFilter = new UI.ToolbarInput(ls`Class filter`);
     this._classNameFilter.setVisible(false);
     this._constructorsDataGrid.setNameFilter(this._classNameFilter);
     this._diffDataGrid.setNameFilter(this._classNameFilter);

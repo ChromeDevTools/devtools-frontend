@@ -87,9 +87,6 @@
   <message name="IDS_DEVTOOLS_d57c24f3fe52d16e7169b912dd647f0d" desc="Text in Throttling Settings Tab of the Network panel">
     optional
   </message>
-  <message name="IDS_DEVTOOLS_eb81441fe20963ff9e8e69c5b32fc625" desc="Text in Mobile Throttling Selector of the Network panel">
-    Presets
-  </message>
   <message name="IDS_DEVTOOLS_f410c3f1a07f566591283f599701e4ab" desc="Text in Throttling Manager of the Network panel">
     Add…
   </message>

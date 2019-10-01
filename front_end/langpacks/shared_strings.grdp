@@ -545,6 +545,9 @@
   <message name="IDS_DEVTOOLS_eb0f48a107df1a0f343d4cd513b555e6" desc="Text for a security certificate">
     Certificate
   </message>
+  <message name="IDS_DEVTOOLS_eb81441fe20963ff9e8e69c5b32fc625" desc="Title for a group of configuration options">
+    Presets
+  </message>
   <message name="IDS_DEVTOOLS_eb902cf204f3e4dfffeb56d92a9b5c26" desc="Text to show since when an item is valid">
     Valid from
   </message>

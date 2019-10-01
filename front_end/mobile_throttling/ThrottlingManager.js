@@ -54,11 +54,14 @@ MobileThrottling.ThrottlingManager = class extends Common.Object {
         for (const conditions of group.items) {
           const title = conditions.title;
           const option = new Option(title, title);
+          UI.ARIAUtils.setAccessibleName(option, ls`${group.title}: ${title}`);
           groupElement.appendChild(option);
           options.push(conditions);
         }
         if (i === groups.length - 1) {
-          groupElement.appendChild(new Option(Common.UIString('Add\u2026'), Common.UIString('Add\u2026')));
+          const option = new Option(ls`Add\u2026`, ls`Add\u2026`);
+          UI.ARIAUtils.setAccessibleName(option, ls`Add ${group.title}`);
+          groupElement.appendChild(option);
           options.push(null);
         }
       }

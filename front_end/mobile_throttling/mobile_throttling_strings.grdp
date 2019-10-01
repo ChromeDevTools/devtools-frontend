@@ -63,6 +63,9 @@
   <message name="IDS_DEVTOOLS_b27fdc01c81857f96f3d5d37d323bcb6" desc="Title of an action in the network conditions tool to network mid tier mobile">
     Enable fast 3G throttling
   </message>
+  <message name="IDS_DEVTOOLS_b95c09fb28e80cc672fd533a62252d70" desc="Accessibility label for custom add network throttling option">
+    Add <ph name="GROUP_TITLE">$1s<ex>Custom</ex></ph>
+  </message>
   <message name="IDS_DEVTOOLS_c47c85f963782364d32f428fcf7631ff" desc="Text in Throttling Presets of the Network panel">
     No internet connectivity
   </message>

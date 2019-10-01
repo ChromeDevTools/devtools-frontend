@@ -79,7 +79,7 @@ Help.ReleaseNotesActionDelegate = class {
    * @return {boolean}
    */
   handleAction(context, actionId) {
-    InspectorFrontendHost.openInNewTab(Help.latestReleaseNote().link);
+    Host.InspectorFrontendHost.openInNewTab(Help.latestReleaseNote().link);
     return true;
   }
 };
@@ -95,7 +95,8 @@ Help.ReportIssueActionDelegate = class {
    * @return {boolean}
    */
   handleAction(context, actionId) {
-    InspectorFrontendHost.openInNewTab('https://bugs.chromium.org/p/chromium/issues/entry?template=DevTools+issue');
+    Host.InspectorFrontendHost.openInNewTab(
+        'https://bugs.chromium.org/p/chromium/issues/entry?template=DevTools+issue');
     return true;
   }
 };

@@ -4,4 +4,5 @@
 
 import './Runtime.js';
 import './common/common.js';
+import './host/host.js';
 import './ui/ui.js';

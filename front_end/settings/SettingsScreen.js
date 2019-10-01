@@ -300,7 +300,7 @@ Settings.SettingsScreen.ActionDelegate = class {
         Settings.SettingsScreen._showSettingsScreen();
         return true;
       case 'settings.documentation':
-        InspectorFrontendHost.openInNewTab('https://developers.google.com/web/tools/chrome-devtools/');
+        Host.InspectorFrontendHost.openInNewTab('https://developers.google.com/web/tools/chrome-devtools/');
         return true;
       case 'settings.shortcuts':
         Settings.SettingsScreen._showSettingsScreen(Common.UIString('Shortcuts'));
@@ -339,7 +339,7 @@ Settings.SettingsScreen.Revealer = class {
         return;
       }
       if (extension.descriptor()['settingName'] === setting.name) {
-        InspectorFrontendHost.bringToFront();
+        Host.InspectorFrontendHost.bringToFront();
         Settings.SettingsScreen._showSettingsScreen();
         success = true;
       }
@@ -351,7 +351,7 @@ Settings.SettingsScreen.Revealer = class {
     function revealSettingUI(extension) {
       const settings = extension.descriptor()['settings'];
       if (settings && settings.indexOf(setting.name) !== -1) {
-        InspectorFrontendHost.bringToFront();
+        Host.InspectorFrontendHost.bringToFront();
         Settings.SettingsScreen._showSettingsScreen();
         success = true;
       }
@@ -367,7 +367,7 @@ Settings.SettingsScreen.Revealer = class {
       }
       const settings = extension.descriptor()['settings'];
       if (settings && settings.indexOf(setting.name) !== -1) {
-        InspectorFrontendHost.bringToFront();
+        Host.InspectorFrontendHost.bringToFront();
         Settings.SettingsScreen._showSettingsScreen(extension.descriptor()['id']);
         success = true;
       }

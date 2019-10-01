@@ -31,22 +31,23 @@
  * @implements {InspectorFrontendHostAPI}
  * @unrestricted
  */
-Host.InspectorFrontendHostStub = class {
+export class InspectorFrontendHostStub {
   /**
    * @suppressGlobalPropertiesCheck
    */
   constructor() {
     /**
      * @param {!Event} event
+     * @this {InspectorFrontendHostAPI}
      */
     function stopEventPropagation(event) {
       // Let browser handle Ctrl+/Ctrl- shortcuts in hosted mode.
-      const zoomModifier = Host.isMac() ? event.metaKey : event.ctrlKey;
+      const zoomModifier = this.platform() === 'mac' ? event.metaKey : event.ctrlKey;
       if (zoomModifier && (event.keyCode === 187 || event.keyCode === 189)) {
         event.stopPropagation();
       }
     }
-    document.addEventListener('keydown', stopEventPropagation, true);
+    document.addEventListener('keydown', stopEventPropagation.bind(this), true);
     /**
      * @type {!Map<string, !Array<string>>}
      */
@@ -498,17 +499,22 @@ Host.InspectorFrontendHostStub = class {
   setAddExtensionCallback(callback) {
     // Extensions are not supported in hosted mode.
   }
-};
+}
+
+/**
+ * @type {!InspectorFrontendHostStub}
+ */
+let _InspectorFrontendHost = window.InspectorFrontendHost;
 
 /**
  * @unrestricted
  */
-Host.InspectorFrontendAPIImpl = class {
+export class InspectorFrontendAPIImpl {
   constructor() {
     this._debugFrontend =
         !!Root.Runtime.queryParam('debugFrontend') || (window['InspectorTest'] && window['InspectorTest']['debugTest']);
 
-    const descriptors = Host.InspectorFrontendAPIImpl.EventDescriptors;
+    const descriptors = Host.InspectorFrontendHostAPI.EventDescriptors;
     for (let i = 0; i < descriptors.length; ++i) {
       this[descriptors[i][1]] = this._dispatch.bind(this, descriptors[i][0], descriptors[i][2], descriptors[i][3]);
     }
@@ -532,7 +538,7 @@ Host.InspectorFrontendAPIImpl = class {
       // Single argument methods get dispatched with the param.
       if (signature.length < 2) {
         try {
-          InspectorFrontendHost.events.dispatchEventToListeners(name, params[0]);
+          _InspectorFrontendHost.events.dispatchEventToListeners(name, params[0]);
         } catch (e) {
           console.error(e + ' ' + e.stack);
         }
@@ -543,7 +549,7 @@ Host.InspectorFrontendAPIImpl = class {
         data[signature[i]] = params[i];
       }
       try {
-        InspectorFrontendHost.events.dispatchEventToListeners(name, data);
+        _InspectorFrontendHost.events.dispatchEventToListeners(name, data);
       } catch (e) {
         console.error(e + ' ' + e.stack);
       }
@@ -557,88 +563,45 @@ Host.InspectorFrontendAPIImpl = class {
   streamWrite(id, chunk) {
     Host.ResourceLoader.streamWrite(id, chunk);
   }
-};
+}
 
-Host.InspectorFrontendAPIImpl.EventDescriptors = [
-  [Host.InspectorFrontendHostAPI.Events.AppendedToURL, 'appendedToURL', ['url']],
-  [Host.InspectorFrontendHostAPI.Events.CanceledSaveURL, 'canceledSaveURL', ['url']],
-  [Host.InspectorFrontendHostAPI.Events.ContextMenuCleared, 'contextMenuCleared', []],
-  [Host.InspectorFrontendHostAPI.Events.ContextMenuItemSelected, 'contextMenuItemSelected', ['id']],
-  [Host.InspectorFrontendHostAPI.Events.DeviceCountUpdated, 'deviceCountUpdated', ['count']],
-  [Host.InspectorFrontendHostAPI.Events.DevicesDiscoveryConfigChanged, 'devicesDiscoveryConfigChanged', ['config']],
-  [
-    Host.InspectorFrontendHostAPI.Events.DevicesPortForwardingStatusChanged, 'devicesPortForwardingStatusChanged',
-    ['status']
-  ],
-  [Host.InspectorFrontendHostAPI.Events.DevicesUpdated, 'devicesUpdated', ['devices']],
-  [Host.InspectorFrontendHostAPI.Events.DispatchMessage, 'dispatchMessage', ['messageObject']],
-  [Host.InspectorFrontendHostAPI.Events.DispatchMessageChunk, 'dispatchMessageChunk', ['messageChunk', 'messageSize']],
-  [Host.InspectorFrontendHostAPI.Events.EnterInspectElementMode, 'enterInspectElementMode', []],
-  [Host.InspectorFrontendHostAPI.Events.EyeDropperPickedColor, 'eyeDropperPickedColor', ['color']],
-  [Host.InspectorFrontendHostAPI.Events.FileSystemsLoaded, 'fileSystemsLoaded', ['fileSystems']],
-  [Host.InspectorFrontendHostAPI.Events.FileSystemRemoved, 'fileSystemRemoved', ['fileSystemPath']],
-  [Host.InspectorFrontendHostAPI.Events.FileSystemAdded, 'fileSystemAdded', ['errorMessage', 'fileSystem']],
-  [
-    Host.InspectorFrontendHostAPI.Events.FileSystemFilesChangedAddedRemoved, 'fileSystemFilesChangedAddedRemoved',
-    ['changed', 'added', 'removed']
-  ],
-  [
-    Host.InspectorFrontendHostAPI.Events.IndexingTotalWorkCalculated, 'indexingTotalWorkCalculated',
-    ['requestId', 'fileSystemPath', 'totalWork']
-  ],
-  [Host.InspectorFrontendHostAPI.Events.IndexingWorked, 'indexingWorked', ['requestId', 'fileSystemPath', 'worked']],
-  [Host.InspectorFrontendHostAPI.Events.IndexingDone, 'indexingDone', ['requestId', 'fileSystemPath']],
-  [Host.InspectorFrontendHostAPI.Events.KeyEventUnhandled, 'keyEventUnhandled', ['event']],
-  [Host.InspectorFrontendHostAPI.Events.ReloadInspectedPage, 'reloadInspectedPage', ['hard']],
-  [Host.InspectorFrontendHostAPI.Events.RevealSourceLine, 'revealSourceLine', ['url', 'lineNumber', 'columnNumber']],
-  [Host.InspectorFrontendHostAPI.Events.SavedURL, 'savedURL', ['url', 'fileSystemPath']],
-  [Host.InspectorFrontendHostAPI.Events.SearchCompleted, 'searchCompleted', ['requestId', 'fileSystemPath', 'files']],
-  [Host.InspectorFrontendHostAPI.Events.SetInspectedTabId, 'setInspectedTabId', ['tabId']],
-  [Host.InspectorFrontendHostAPI.Events.SetUseSoftMenu, 'setUseSoftMenu', ['useSoftMenu']],
-  [Host.InspectorFrontendHostAPI.Events.ShowPanel, 'showPanel', ['panelName']]
-];
-
-/**
- * @type {!Host.InspectorFrontendHostStub}
- */
-let InspectorFrontendHost = window.InspectorFrontendHost;
 (function() {
 
   function initializeInspectorFrontendHost() {
     let proto;
-    if (!InspectorFrontendHost) {
+    if (!_InspectorFrontendHost) {
       // Instantiate stub for web-hosted mode if necessary.
-      window.InspectorFrontendHost = InspectorFrontendHost = new Host.InspectorFrontendHostStub();
+      window.InspectorFrontendHost = _InspectorFrontendHost = new InspectorFrontendHostStub();
     } else {
       // Otherwise add stubs for missing methods that are declared in the interface.
-      proto = Host.InspectorFrontendHostStub.prototype;
+      proto = InspectorFrontendHostStub.prototype;
       for (const name of Object.getOwnPropertyNames(proto)) {
         const stub = proto[name];
-        if (typeof stub !== 'function' || InspectorFrontendHost[name]) {
+        if (typeof stub !== 'function' || _InspectorFrontendHost[name]) {
           continue;
         }
 
         console.error(
-            'Incompatible embedder: method InspectorFrontendHost.' + name + ' is missing. Using stub instead.');
-        InspectorFrontendHost[name] = stub;
+            'Incompatible embedder: method Host.InspectorFrontendHost.' + name + ' is missing. Using stub instead.');
+        _InspectorFrontendHost[name] = stub;
       }
     }
 
     // Attach the events object.
-    InspectorFrontendHost.events = new Common.Object();
+    _InspectorFrontendHost.events = new Common.Object();
   }
 
   // FIXME: This file is included into both apps, since the devtools_app needs the InspectorFrontendHostAPI only,
   // so the host instance should not initialized there.
   initializeInspectorFrontendHost();
-  window.InspectorFrontendAPI = new Host.InspectorFrontendAPIImpl();
+  window.InspectorFrontendAPI = new InspectorFrontendAPIImpl();
 })();
 
 /**
  * @param {!Object<string, string>=} prefs
  * @return {boolean}
  */
-Host.isUnderTest = function(prefs) {
+export function isUnderTest(prefs) {
   // Integration tests rely on test queryParam.
   if (Root.Runtime.queryParam('test')) {
     return true;
@@ -648,4 +611,21 @@ Host.isUnderTest = function(prefs) {
     return prefs['isUnderTest'] === 'true';
   }
   return Common.settings && Common.settings.createSetting('isUnderTest', false).get();
-};
+}
+
+/* Legacy exported object */
+self.Host = self.Host || {};
+
+/* Legacy exported object */
+Host = Host || {};
+
+/** @type {!InspectorFrontendHostStub} */
+Host.InspectorFrontendHost = _InspectorFrontendHost;
+
+/** @constructor */
+Host.InspectorFrontendHostStub = InspectorFrontendHostStub;
+
+/** @constructor */
+Host.InspectorFrontendAPIImpl = InspectorFrontendAPIImpl;
+
+Host.isUnderTest = isUnderTest;

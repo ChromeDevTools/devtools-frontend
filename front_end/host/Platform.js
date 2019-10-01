@@ -25,65 +25,88 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-/**
- * @return {string}
- */
-Host.platform = function() {
-  if (!Host._platform) {
-    Host._platform = InspectorFrontendHost.platform();
-  }
-  return Host._platform;
-};
 
-/**
- * @return {boolean}
- */
-Host.isMac = function() {
-  if (typeof Host._isMac === 'undefined') {
-    Host._isMac = Host.platform() === 'mac';
-  }
-
-  return Host._isMac;
-};
-
-/**
- * @return {boolean}
- */
-Host.isWin = function() {
-  if (typeof Host._isWin === 'undefined') {
-    Host._isWin = Host.platform() === 'windows';
-  }
-
-  return Host._isWin;
-};
-
-/**
- * @return {boolean}
- */
-Host.isCustomDevtoolsFrontend = function() {
-  if (typeof Host._isCustomDevtoolsFronend === 'undefined') {
-    Host._isCustomDevtoolsFronend = window.location.toString().startsWith('devtools://devtools/custom/');
-  }
-  return Host._isCustomDevtoolsFronend;
-};
+let _platform;
 
 /**
  * @return {string}
  */
-Host.fontFamily = function() {
-  if (Host._fontFamily) {
-    return Host._fontFamily;
+export function platform() {
+  if (!_platform) {
+    _platform = Host.InspectorFrontendHost.platform();
   }
-  switch (Host.platform()) {
+  return _platform;
+}
+
+let _isMac;
+
+/**
+ * @return {boolean}
+ */
+export function isMac() {
+  if (typeof _isMac === 'undefined') {
+    _isMac = platform() === 'mac';
+  }
+
+  return _isMac;
+}
+
+let _isWin;
+
+/**
+ * @return {boolean}
+ */
+export function isWin() {
+  if (typeof _isWin === 'undefined') {
+    _isWin = platform() === 'windows';
+  }
+
+  return _isWin;
+}
+
+let _isCustomDevtoolsFrontend;
+
+/**
+ * @return {boolean}
+ */
+export function isCustomDevtoolsFrontend() {
+  if (typeof _isCustomDevtoolsFrontend === 'undefined') {
+    _isCustomDevtoolsFrontend = window.location.toString().startsWith('devtools://devtools/custom/');
+  }
+  return _isCustomDevtoolsFrontend;
+}
+
+let _fontFamily;
+
+/**
+ * @return {string}
+ */
+export function fontFamily() {
+  if (_fontFamily) {
+    return _fontFamily;
+  }
+  switch (platform()) {
     case 'linux':
-      Host._fontFamily = 'Roboto, Ubuntu, Arial, sans-serif';
+      _fontFamily = 'Roboto, Ubuntu, Arial, sans-serif';
       break;
     case 'mac':
-      Host._fontFamily = '\'Lucida Grande\', sans-serif';
+      _fontFamily = '\'Lucida Grande\', sans-serif';
       break;
     case 'windows':
-      Host._fontFamily = '\'Segoe UI\', Tahoma, sans-serif';
+      _fontFamily = '\'Segoe UI\', Tahoma, sans-serif';
       break;
   }
-  return Host._fontFamily;
-};
+  return _fontFamily;
+}
+
+/* Legacy exported object */
+self.Host = self.Host || {};
+
+/* Legacy exported object */
+Host = Host || {};
+
+Host.platform = platform;
+Host.isWin = isWin;
+Host.isMac = isMac;
+Host.isCustomDevtoolsFrontend = isCustomDevtoolsFrontend;
+Host.fontFamily = fontFamily;

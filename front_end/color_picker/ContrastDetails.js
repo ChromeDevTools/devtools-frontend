@@ -150,7 +150,7 @@ ColorPicker.ContrastDetails = class extends Common.Object {
   }
 
   static _showHelp() {
-    InspectorFrontendHost.openInNewTab(
+    Host.InspectorFrontendHost.openInNewTab(
         'https://developers.google.com/web/fundamentals/accessibility/accessible-styles#color_and_contrast');
   }
 
@@ -254,12 +254,12 @@ ColorPicker.ContrastDetails = class extends Common.Object {
       this.dispatchEventToListeners(ColorPicker.ContrastDetails.Events.BackgroundColorPickerWillBeToggled, enabled);
     }
 
-    InspectorFrontendHost.setEyeDropperActive(enabled);
+    Host.InspectorFrontendHost.setEyeDropperActive(enabled);
     if (enabled) {
-      InspectorFrontendHost.events.addEventListener(
+      Host.InspectorFrontendHost.events.addEventListener(
           Host.InspectorFrontendHostAPI.Events.EyeDropperPickedColor, this._bgColorPickedBound);
     } else {
-      InspectorFrontendHost.events.removeEventListener(
+      Host.InspectorFrontendHost.events.removeEventListener(
           Host.InspectorFrontendHostAPI.Events.EyeDropperPickedColor, this._bgColorPickedBound);
     }
   }
@@ -273,7 +273,7 @@ ColorPicker.ContrastDetails = class extends Common.Object {
     const color = Common.Color.fromRGBA(rgba);
     this._contrastInfo.setBgColor(color);
     this._toggleBackgroundColorPicker(false);
-    InspectorFrontendHost.bringToFront();
+    Host.InspectorFrontendHost.bringToFront();
   }
 };
 

@@ -2179,11 +2179,11 @@ UI.createExpandableText = function(text, maxLength) {
   const copyButton = fragment.createChild('span', 'expandable-inline-button');
   copyButton.setAttribute('data-text', ls`Copy`);
   copyButton.addEventListener('click', () => {
-    InspectorFrontendHost.copyText(text);
+    Host.InspectorFrontendHost.copyText(text);
   });
   copyButton.addEventListener('keydown', event => {
     if (event.key === 'Enter' || event.key === ' ') {
-      InspectorFrontendHost.copyText(text);
+      Host.InspectorFrontendHost.copyText(text);
     }
   });
   UI.ARIAUtils.markAsButton(copyButton);

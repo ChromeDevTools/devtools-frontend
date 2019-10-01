@@ -427,14 +427,14 @@ Network.NetworkLogView = class extends UI.VBox {
    * @param {!SDK.NetworkRequest} request
    */
   static _copyRequestHeaders(request) {
-    InspectorFrontendHost.copyText(request.requestHeadersText());
+    Host.InspectorFrontendHost.copyText(request.requestHeadersText());
   }
 
   /**
    * @param {!SDK.NetworkRequest} request
    */
   static _copyResponseHeaders(request) {
-    InspectorFrontendHost.copyText(request.responseHeadersText);
+    Host.InspectorFrontendHost.copyText(request.responseHeadersText);
   }
 
   /**
@@ -448,7 +448,7 @@ Network.NetworkLogView = class extends UI.VBox {
     } else if (contentData.encoded) {
       content = window.atob(content);
     }
-    InspectorFrontendHost.copyText(content);
+    Host.InspectorFrontendHost.copyText(content);
   }
 
   /**
@@ -1213,7 +1213,8 @@ Network.NetworkLogView = class extends UI.VBox {
     const footerSection = copyMenu.footerSection();
     if (request) {
       copyMenu.defaultSection().appendItem(
-          UI.copyLinkAddressLabel(), InspectorFrontendHost.copyText.bind(InspectorFrontendHost, request.contentURL()));
+          UI.copyLinkAddressLabel(),
+          Host.InspectorFrontendHost.copyText.bind(Host.InspectorFrontendHost, request.contentURL()));
       if (request.requestHeadersText()) {
         copyMenu.defaultSection().appendItem(
             Common.UIString('Copy request headers'), Network.NetworkLogView._copyRequestHeaders.bind(null, request));
@@ -1323,7 +1324,7 @@ Network.NetworkLogView = class extends UI.VBox {
 
   async _copyAll() {
     const harArchive = {log: await SDK.HARLog.build(this._harRequests())};
-    InspectorFrontendHost.copyText(JSON.stringify(harArchive, null, 2));
+    Host.InspectorFrontendHost.copyText(JSON.stringify(harArchive, null, 2));
   }
 
   /**
@@ -1332,7 +1333,7 @@ Network.NetworkLogView = class extends UI.VBox {
    */
   async _copyCurlCommand(request, platform) {
     const command = await this._generateCurlCommand(request, platform);
-    InspectorFrontendHost.copyText(command);
+    Host.InspectorFrontendHost.copyText(command);
   }
 
   /**
@@ -1340,7 +1341,7 @@ Network.NetworkLogView = class extends UI.VBox {
    */
   async _copyAllCurlCommand(platform) {
     const commands = await this._generateAllCurlCommand(SDK.networkLog.requests(), platform);
-    InspectorFrontendHost.copyText(commands);
+    Host.InspectorFrontendHost.copyText(commands);
   }
 
   /**
@@ -1349,12 +1350,12 @@ Network.NetworkLogView = class extends UI.VBox {
    */
   async _copyFetchCall(request, platform) {
     const command = await this._generateFetchCall(request);
-    InspectorFrontendHost.copyText(command);
+    Host.InspectorFrontendHost.copyText(command);
   }
 
   async _copyAllFetchCall() {
     const commands = await this._generateAllFetchCall(SDK.networkLog.requests());
-    InspectorFrontendHost.copyText(commands);
+    Host.InspectorFrontendHost.copyText(commands);
   }
 
   /**
@@ -1362,12 +1363,12 @@ Network.NetworkLogView = class extends UI.VBox {
    */
   async _copyPowerShellCommand(request) {
     const command = await this._generatePowerShellCommand(request);
-    InspectorFrontendHost.copyText(command);
+    Host.InspectorFrontendHost.copyText(command);
   }
 
   async _copyAllPowerShellCommand() {
     const commands = await this._generateAllPowerShellCommand(SDK.networkLog.requests());
-    InspectorFrontendHost.copyText(commands);
+    Host.InspectorFrontendHost.copyText(commands);
   }
 
   async exportAll() {

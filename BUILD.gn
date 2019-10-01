@@ -329,12 +329,7 @@ all_devtools_files = [
   "front_end/help/releaseNote.css",
   "front_end/help/ReleaseNoteText.js",
   "front_end/help/ReleaseNoteView.js",
-  "front_end/host/InspectorFrontendHost.js",
-  "front_end/host/InspectorFrontendHostAPI.js",
   "front_end/host/module.json",
-  "front_end/host/Platform.js",
-  "front_end/host/ResourceLoader.js",
-  "front_end/host/UserMetrics.js",
   "front_end/inline_editor/bezierEditor.css",
   "front_end/inline_editor/BezierEditor.js",
   "front_end/inline_editor/bezierSwatch.css",
@@ -953,6 +948,12 @@ lighthouse_locale_files = [
 all_devtools_files += lighthouse_locale_files
 
 all_devtools_modules = [
+  "front_end/host/host.js",
+  "front_end/host/UserMetrics.js",
+  "front_end/host/ResourceLoader.js",
+  "front_end/host/Platform.js",
+  "front_end/host/InspectorFrontendHost.js",
+  "front_end/host/InspectorFrontendHostAPI.js",
   "front_end/root.js",
   "front_end/Runtime.js",
   "front_end/ui/ARIAUtils.js",
@@ -1177,6 +1178,12 @@ application_templates = [
 ]
 
 copied_devtools_modules = [
+  "$resources_out_dir/host/host.js",
+  "$resources_out_dir/host/UserMetrics.js",
+  "$resources_out_dir/host/ResourceLoader.js",
+  "$resources_out_dir/host/Platform.js",
+  "$resources_out_dir/host/InspectorFrontendHost.js",
+  "$resources_out_dir/host/InspectorFrontendHostAPI.js",
   "$resources_out_dir/root.js",
   "$resources_out_dir/Runtime.js",
   "$resources_out_dir/ui/ARIAUtils.js",

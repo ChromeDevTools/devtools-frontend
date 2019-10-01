@@ -82,14 +82,14 @@ Extensions.ExtensionServer = class extends Common.Object {
     this._registerHandler(commands.UpdateButton, this._onUpdateButton.bind(this));
     window.addEventListener('message', this._onWindowMessage.bind(this), false);  // Only for main window.
 
-    InspectorFrontendHost.events.addEventListener(
+    Host.InspectorFrontendHost.events.addEventListener(
         Host.InspectorFrontendHostAPI.Events.SetInspectedTabId, this._setInspectedTabId, this);
 
     this._initExtensions();
   }
 
   initializeExtensions() {
-    InspectorFrontendHost.setAddExtensionCallback(this._addExtension.bind(this));
+    Host.InspectorFrontendHost.setAddExtensionCallback(this._addExtension.bind(this));
   }
 
   /**
@@ -713,7 +713,7 @@ Extensions.ExtensionServer = class extends Common.Object {
             extensionInfo, this._inspectedTabId, UI.themeSupport.themeName(),
             UI.shortcutRegistry.globalShortcutKeys(),
             Extensions.extensionServer['_extensionAPITestHook']);
-        InspectorFrontendHost.setInjectedScriptForOrigin(extensionOrigin, injectedAPI);
+        Host.InspectorFrontendHost.setInjectedScriptForOrigin(extensionOrigin, injectedAPI);
         this._registeredExtensions[extensionOrigin] = {name: name};
       }
       const iframe = createElement('iframe');

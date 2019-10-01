@@ -749,9 +749,9 @@
       this.assertEquals(119, event.data.keyCode);
       this.assertEquals(0, event.data.modifiers);
       this.assertEquals('', event.data.code);
-      InspectorFrontendHost.events.removeEventListener(
+      Host.InspectorFrontendHost.events.removeEventListener(
           Host.InspectorFrontendHostAPI.Events.KeyEventUnhandled, onKeyEventUnhandledKeyDown, this);
-      InspectorFrontendHost.events.addEventListener(
+      Host.InspectorFrontendHost.events.addEventListener(
           Host.InspectorFrontendHostAPI.Events.KeyEventUnhandled, onKeyEventUnhandledKeyUp, this);
       SDK.targetManager.mainTarget().inputAgent().invoke_dispatchKeyEvent(
           {type: 'keyUp', key: 'F8', code: 'F8', windowsVirtualKeyCode: 119, nativeVirtualKeyCode: 119});
@@ -765,7 +765,7 @@
       this.releaseControl();
     }
     this.takeControl();
-    InspectorFrontendHost.events.addEventListener(
+    Host.InspectorFrontendHost.events.addEventListener(
         Host.InspectorFrontendHostAPI.Events.KeyEventUnhandled, onKeyEventUnhandledKeyDown, this);
     SDK.targetManager.mainTarget().inputAgent().invoke_dispatchKeyEvent(
         {type: 'rawKeyDown', key: 'F8', windowsVirtualKeyCode: 119, nativeVirtualKeyCode: 119});
@@ -780,7 +780,7 @@
 
   // Check that showing the certificate viewer does not crash, crbug.com/954874
   TestSuite.prototype.testShowCertificate = function() {
-    InspectorFrontendHost.showCertificateViewer([
+    Host.InspectorFrontendHost.showCertificateViewer([
       'MIIFIDCCBAigAwIBAgIQE0TsEu6R8FUHQv+9fE7j8TANBgkqhkiG9w0BAQsF' +
           'ADBUMQswCQYDVQQGEwJVUzEeMBwGA1UEChMVR29vZ2xlIFRydXN0IFNlcnZp' +
           'Y2VzMSUwIwYDVQQDExxHb29nbGUgSW50ZXJuZXQgQXV0aG9yaXR5IEczMB4X' +
@@ -1034,7 +1034,7 @@
 
     function reset() {
       Root.Runtime.experiments.clearForTest();
-      InspectorFrontendHost.getPreferences(gotPreferences);
+      Host.InspectorFrontendHost.getPreferences(gotPreferences);
     }
 
     function gotPreferences(prefs) {

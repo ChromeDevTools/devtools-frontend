@@ -7,7 +7,7 @@
  * @suppress {accessControls}
  */
 
-InspectorFrontendHost.isolatedFileSystem = function(name) {
+Host.InspectorFrontendHost.isolatedFileSystem = function(name) {
   return BindingsTestRunner.TestFileSystem._instances[name];
 };
 
@@ -43,7 +43,7 @@ BindingsTestRunner.TestFileSystem.prototype = {
     const fileSystemPath = this.fileSystemPath;
     BindingsTestRunner.TestFileSystem._instances[this.fileSystemPath] = this;
 
-    InspectorFrontendHost.events.dispatchEventToListeners(
+    Host.InspectorFrontendHost.events.dispatchEventToListeners(
         Host.InspectorFrontendHostAPI.Events.FileSystemAdded,
         {fileSystem: {fileSystemPath: this.fileSystemPath, fileSystemName: this.fileSystemPath, type}});
 
@@ -65,7 +65,7 @@ BindingsTestRunner.TestFileSystem.prototype = {
 
   reportRemoved: function() {
     delete BindingsTestRunner.TestFileSystem._instances[this.fileSystemPath];
-    InspectorFrontendHost.events.dispatchEventToListeners(
+    Host.InspectorFrontendHost.events.dispatchEventToListeners(
         Host.InspectorFrontendHostAPI.Events.FileSystemRemoved, this.fileSystemPath);
   },
 
@@ -127,7 +127,7 @@ BindingsTestRunner.TestFileSystem.Entry.prototype = {
     delete this._childrenMap[child.name];
     child.parent = null;
 
-    InspectorFrontendHost.events.dispatchEventToListeners(
+    Host.InspectorFrontendHost.events.dispatchEventToListeners(
         Host.InspectorFrontendHostAPI.Events.FileSystemFilesChangedAddedRemoved,
         {changed: [], added: [], removed: [fullPath]});
 
@@ -152,7 +152,7 @@ BindingsTestRunner.TestFileSystem.Entry.prototype = {
 
     const fullPath = this._fileSystem.fileSystemPath + child.fullPath;
 
-    InspectorFrontendHost.events.dispatchEventToListeners(
+    Host.InspectorFrontendHost.events.dispatchEventToListeners(
         Host.InspectorFrontendHostAPI.Events.FileSystemFilesChangedAddedRemoved,
         {changed: [], added: [fullPath], removed: []});
 
@@ -165,7 +165,7 @@ BindingsTestRunner.TestFileSystem.Entry.prototype = {
     this._timestamp += 1000;
     const fullPath = this._fileSystem.fileSystemPath + this.fullPath;
 
-    InspectorFrontendHost.events.dispatchEventToListeners(
+    Host.InspectorFrontendHost.events.dispatchEventToListeners(
         Host.InspectorFrontendHostAPI.Events.FileSystemFilesChangedAddedRemoved,
         {changed: [fullPath], added: [], removed: []});
   },

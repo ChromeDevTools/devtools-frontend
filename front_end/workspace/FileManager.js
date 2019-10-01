@@ -36,10 +36,11 @@ Workspace.FileManager = class extends Common.Object {
     super();
     /** @type {!Map<string, function(?{fileSystemPath: (string|undefined)})>} */
     this._saveCallbacks = new Map();
-    InspectorFrontendHost.events.addEventListener(Host.InspectorFrontendHostAPI.Events.SavedURL, this._savedURL, this);
-    InspectorFrontendHost.events.addEventListener(
+    Host.InspectorFrontendHost.events.addEventListener(
+        Host.InspectorFrontendHostAPI.Events.SavedURL, this._savedURL, this);
+    Host.InspectorFrontendHost.events.addEventListener(
         Host.InspectorFrontendHostAPI.Events.CanceledSaveURL, this._canceledSavedURL, this);
-    InspectorFrontendHost.events.addEventListener(
+    Host.InspectorFrontendHost.events.addEventListener(
         Host.InspectorFrontendHostAPI.Events.AppendedToURL, this._appendedToURL, this);
   }
 
@@ -52,7 +53,7 @@ Workspace.FileManager = class extends Common.Object {
   save(url, content, forceSaveAs) {
     // Remove this url from the saved URLs while it is being saved.
     const result = new Promise(resolve => this._saveCallbacks.set(url, resolve));
-    InspectorFrontendHost.save(url, content, forceSaveAs);
+    Host.InspectorFrontendHost.save(url, content, forceSaveAs);
     return result;
   }
 
@@ -85,14 +86,14 @@ Workspace.FileManager = class extends Common.Object {
    * @param {string} content
    */
   append(url, content) {
-    InspectorFrontendHost.append(url, content);
+    Host.InspectorFrontendHost.append(url, content);
   }
 
   /**
    * @param {string} url
    */
   close(url) {
-    InspectorFrontendHost.close(url);
+    Host.InspectorFrontendHost.close(url);
   }
 
   /**

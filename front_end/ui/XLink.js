@@ -40,12 +40,12 @@ UI.XLink = class extends UI.XElement {
 
     this._onClick = event => {
       event.consume(true);
-      InspectorFrontendHost.openInNewTab(/** @type {string} */ (this._href));
+      Host.InspectorFrontendHost.openInNewTab(/** @type {string} */ (this._href));
     };
     this._onKeyDown = event => {
       if (isEnterOrSpaceKey(event)) {
         event.consume(true);
-        InspectorFrontendHost.openInNewTab(/** @type {string} */ (this._href));
+        Host.InspectorFrontendHost.openInNewTab(/** @type {string} */ (this._href));
       }
     };
   }
@@ -122,9 +122,9 @@ UI.XLink.ContextMenuProvider = class {
       return;
     }
     contextMenu.revealSection().appendItem(
-        UI.openLinkExternallyLabel(), () => InspectorFrontendHost.openInNewTab(targetNode._href));
+        UI.openLinkExternallyLabel(), () => Host.InspectorFrontendHost.openInNewTab(targetNode._href));
     contextMenu.revealSection().appendItem(
-        UI.copyLinkAddressLabel(), () => InspectorFrontendHost.copyText(targetNode._href));
+        UI.copyLinkAddressLabel(), () => Host.InspectorFrontendHost.copyText(targetNode._href));
   }
 };
 

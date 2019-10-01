@@ -475,7 +475,7 @@ Sources.WatchExpression = class extends Common.Object {
   }
 
   _copyValueButtonClicked() {
-    InspectorFrontendHost.copyText(this._valueElement.textContent);
+    Host.InspectorFrontendHost.copyText(this._valueElement.textContent);
   }
 };
 

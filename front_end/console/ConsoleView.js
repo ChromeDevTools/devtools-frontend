@@ -1554,7 +1554,7 @@ Console.ConsoleView.ActionDelegate = class {
   handleAction(context, actionId) {
     switch (actionId) {
       case 'console.show':
-        InspectorFrontendHost.bringToFront();
+        Host.InspectorFrontendHost.bringToFront();
         Common.console.show();
         Console.ConsoleView.instance()._focusPrompt();
         return true;

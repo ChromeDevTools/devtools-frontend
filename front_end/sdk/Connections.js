@@ -12,9 +12,9 @@ SDK.MainConnection = class {
     this._messageBuffer = '';
     this._messageSize = 0;
     this._eventListeners = [
-      InspectorFrontendHost.events.addEventListener(
+      Host.InspectorFrontendHost.events.addEventListener(
           Host.InspectorFrontendHostAPI.Events.DispatchMessage, this._dispatchMessage, this),
-      InspectorFrontendHost.events.addEventListener(
+      Host.InspectorFrontendHost.events.addEventListener(
           Host.InspectorFrontendHostAPI.Events.DispatchMessageChunk, this._dispatchMessageChunk, this),
     ];
   }
@@ -41,7 +41,7 @@ SDK.MainConnection = class {
    */
   sendRawMessage(message) {
     if (this._onMessage) {
-      InspectorFrontendHost.sendMessageToBackend(message);
+      Host.InspectorFrontendHost.sendMessageToBackend(message);
     }
   }
 
@@ -320,7 +320,7 @@ SDK.ParallelConnection = class {
 SDK.initMainConnection = async function(createMainTarget, websocketConnectionLost) {
   Protocol.Connection.setFactory(SDK._createMainConnection.bind(null, websocketConnectionLost));
   await createMainTarget();
-  InspectorFrontendHost.connectionReady();
+  Host.InspectorFrontendHost.connectionReady();
   return Promise.resolve();
 };
 
@@ -334,7 +334,7 @@ SDK._createMainConnection = function(websocketConnectionLost) {
   if (wsParam || wssParam) {
     const ws = wsParam ? `ws://${wsParam}` : `wss://${wssParam}`;
     return new SDK.WebSocketConnection(ws, websocketConnectionLost);
-  } else if (InspectorFrontendHost.isHostedMode()) {
+  } else if (Host.InspectorFrontendHost.isHostedMode()) {
     return new SDK.StubConnection();
   }
 

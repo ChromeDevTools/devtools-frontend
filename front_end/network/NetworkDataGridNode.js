@@ -817,7 +817,7 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
   }
 
   _openInNewTab() {
-    InspectorFrontendHost.openInNewTab(this._request.url());
+    Host.InspectorFrontendHost.openInNewTab(this._request.url());
   }
 
   /**

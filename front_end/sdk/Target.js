@@ -196,7 +196,7 @@ SDK.Target = class extends Protocol.TargetBase {
     const parsedURL = inspectedURL.asParsedURL();
     this._inspectedURLName = parsedURL ? parsedURL.lastPathComponentWithFragment() : '#' + this._id;
     if (!this.parentTarget()) {
-      InspectorFrontendHost.inspectedURLChanged(inspectedURL || '');
+      Host.InspectorFrontendHost.inspectedURLChanged(inspectedURL || '');
     }
     this._targetManager.dispatchEventToListeners(SDK.TargetManager.Events.InspectedURLChanged, this);
     if (!this._name) {

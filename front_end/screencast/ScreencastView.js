@@ -716,7 +716,7 @@ Screencast.ScreencastView = class extends UI.VBox {
     if (match) {
       url = match[1];
     }
-    InspectorFrontendHost.inspectedURLChanged(url);
+    Host.InspectorFrontendHost.inspectedURLChanged(url);
     this._navigationUrl.value = url;
   }
 

@@ -930,12 +930,12 @@ ColorPicker.Spectrum = class extends UI.VBox {
       this._contrastDetails.toggleBackgroundColorPicker(false);
     }
 
-    InspectorFrontendHost.setEyeDropperActive(enabled);
+    Host.InspectorFrontendHost.setEyeDropperActive(enabled);
     if (enabled) {
-      InspectorFrontendHost.events.addEventListener(
+      Host.InspectorFrontendHost.events.addEventListener(
           Host.InspectorFrontendHostAPI.Events.EyeDropperPickedColor, this._colorPickedBound);
     } else {
-      InspectorFrontendHost.events.removeEventListener(
+      Host.InspectorFrontendHost.events.removeEventListener(
           Host.InspectorFrontendHostAPI.Events.EyeDropperPickedColor, this._colorPickedBound);
     }
   }
@@ -949,7 +949,7 @@ ColorPicker.Spectrum = class extends UI.VBox {
     const color = Common.Color.fromRGBA(rgba);
     this._innerSetColor(
         color.hsva(), '', undefined /* colorName */, undefined, ColorPicker.Spectrum._ChangeSource.Other);
-    InspectorFrontendHost.bringToFront();
+    Host.InspectorFrontendHost.bringToFront();
   }
 };
 
@@ -1151,7 +1151,7 @@ ColorPicker.Spectrum.Swatch = class {
 
   _onCopyIconClick() {
     this._swatchCopyIcon.setIconType('largeicon-checkmark');
-    InspectorFrontendHost.copyText(this._colorString);
+    Host.InspectorFrontendHost.copyText(this._colorString);
   }
 
   _onCopyIconMouseout() {

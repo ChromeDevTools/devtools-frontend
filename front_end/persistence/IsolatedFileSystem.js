@@ -67,7 +67,7 @@ Persistence.IsolatedFileSystem = class extends Persistence.PlatformFileSystem {
    * @return {!Promise<?Persistence.IsolatedFileSystem>}
    */
   static create(manager, path, embedderPath, type, name, rootURL) {
-    const domFileSystem = InspectorFrontendHost.isolatedFileSystem(name, rootURL);
+    const domFileSystem = Host.InspectorFrontendHost.isolatedFileSystem(name, rootURL);
     if (!domFileSystem) {
       return Promise.resolve(/** @type {?Persistence.IsolatedFileSystem} */ (null));
     }
@@ -628,7 +628,7 @@ Persistence.IsolatedFileSystem = class extends Persistence.PlatformFileSystem {
   searchInPath(query, progress) {
     return new Promise(resolve => {
       const requestId = this._manager.registerCallback(innerCallback);
-      InspectorFrontendHost.searchInPath(requestId, this._embedderPath, query);
+      Host.InspectorFrontendHost.searchInPath(requestId, this._embedderPath, query);
 
       /**
        * @param {!Array<string>} files
@@ -647,7 +647,7 @@ Persistence.IsolatedFileSystem = class extends Persistence.PlatformFileSystem {
   indexContent(progress) {
     progress.setTotalWork(1);
     const requestId = this._manager.registerProgress(progress);
-    InspectorFrontendHost.indexPath(requestId, this._embedderPath, JSON.stringify(this._excludedEmbedderFolders));
+    Host.InspectorFrontendHost.indexPath(requestId, this._embedderPath, JSON.stringify(this._excludedEmbedderFolders));
   }
 
   /**

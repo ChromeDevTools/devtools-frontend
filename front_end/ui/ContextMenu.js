@@ -379,7 +379,8 @@ UI.ContextMenu = class extends UI.ContextSubMenu {
   }
 
   static initialize() {
-    InspectorFrontendHost.events.addEventListener(Host.InspectorFrontendHostAPI.Events.SetUseSoftMenu, setUseSoftMenu);
+    Host.InspectorFrontendHost.events.addEventListener(
+        Host.InspectorFrontendHostAPI.Events.SetUseSoftMenu, setUseSoftMenu);
     /**
      * @param {!Common.Event} event
      */
@@ -449,19 +450,19 @@ UI.ContextMenu = class extends UI.ContextSubMenu {
 
   _innerShow() {
     const menuObject = this._buildMenuDescriptors();
-    if (this._useSoftMenu || UI.ContextMenu._useSoftMenu || InspectorFrontendHost.isHostedMode()) {
+    if (this._useSoftMenu || UI.ContextMenu._useSoftMenu || Host.InspectorFrontendHost.isHostedMode()) {
       this._softMenu = new UI.SoftContextMenu(menuObject, this._itemSelected.bind(this));
       this._softMenu.show(this._event.target.ownerDocument, new AnchorBox(this._x, this._y, 0, 0));
     } else {
-      InspectorFrontendHost.showContextMenuAtPoint(this._x, this._y, menuObject, this._event.target.ownerDocument);
+      Host.InspectorFrontendHost.showContextMenuAtPoint(this._x, this._y, menuObject, this._event.target.ownerDocument);
 
       /**
        * @this {UI.ContextMenu}
        */
       function listenToEvents() {
-        InspectorFrontendHost.events.addEventListener(
+        Host.InspectorFrontendHost.events.addEventListener(
             Host.InspectorFrontendHostAPI.Events.ContextMenuCleared, this._menuCleared, this);
-        InspectorFrontendHost.events.addEventListener(
+        Host.InspectorFrontendHost.events.addEventListener(
             Host.InspectorFrontendHostAPI.Events.ContextMenuItemSelected, this._onItemSelected, this);
       }
 
@@ -506,9 +507,9 @@ UI.ContextMenu = class extends UI.ContextSubMenu {
   }
 
   _menuCleared() {
-    InspectorFrontendHost.events.removeEventListener(
+    Host.InspectorFrontendHost.events.removeEventListener(
         Host.InspectorFrontendHostAPI.Events.ContextMenuCleared, this._menuCleared, this);
-    InspectorFrontendHost.events.removeEventListener(
+    Host.InspectorFrontendHost.events.removeEventListener(
         Host.InspectorFrontendHostAPI.Events.ContextMenuItemSelected, this._onItemSelected, this);
   }
 

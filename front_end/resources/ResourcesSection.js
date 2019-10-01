@@ -360,7 +360,7 @@ Resources.FrameResourceTreeElement = class extends Resources.BaseStorageTreeElem
    * @return {boolean}
    */
   ondblclick(event) {
-    InspectorFrontendHost.openInNewTab(this._resource.url);
+    Host.InspectorFrontendHost.openInNewTab(this._resource.url);
     return false;
   }
 

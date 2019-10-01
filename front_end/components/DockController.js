@@ -41,7 +41,7 @@ Components.DockController = class extends Common.Object {
 
     this._closeButton = new UI.ToolbarButton(Common.UIString('Close'), 'largeicon-delete');
     this._closeButton.addEventListener(
-        UI.ToolbarButton.Events.Click, InspectorFrontendHost.closeWindow.bind(InspectorFrontendHost));
+        UI.ToolbarButton.Events.Click, Host.InspectorFrontendHost.closeWindow.bind(Host.InspectorFrontendHost));
 
     if (!canDock) {
       this._dockSide = Components.DockController.State.Undocked;
@@ -125,7 +125,7 @@ Components.DockController = class extends Common.Object {
     console.timeStamp('DockController.setIsDocked');
     this._dockSide = dockSide;
     this._currentDockStateSetting.set(dockSide);
-    InspectorFrontendHost.setIsDocked(
+    Host.InspectorFrontendHost.setIsDocked(
         dockSide !== Components.DockController.State.Undocked, this._setIsDockedResponse.bind(this, eventData));
     this._closeButton.setVisible(this._dockSide !== Components.DockController.State.Undocked);
     this.dispatchEventToListeners(Components.DockController.Events.DockSideChanged, eventData);

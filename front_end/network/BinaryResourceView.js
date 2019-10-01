@@ -78,7 +78,7 @@ Network.BinaryResourceView = class extends UI.VBox {
 
   async _copySelectedViewToClipboard() {
     const viewObject = this._getCurrentViewObject();
-    InspectorFrontendHost.copyText(await viewObject.content());
+    Host.InspectorFrontendHost.copyText(await viewObject.content());
     this._copiedText.setText(viewObject.copiedMessage);
     this._copiedText.element.classList.remove('fadeout');
     /**
@@ -144,11 +144,13 @@ Network.BinaryResourceView = class extends UI.VBox {
     const footerSection = copyMenu.footerSection();
 
     footerSection.appendItem(
-        ls`Copy as Base64`, async () => InspectorFrontendHost.copyText(await this._binaryResourceViewFactory.base64()));
+        ls`Copy as Base64`,
+        async () => Host.InspectorFrontendHost.copyText(await this._binaryResourceViewFactory.base64()));
     footerSection.appendItem(
-        ls`Copy as Hex`, async () => InspectorFrontendHost.copyText(await this._binaryResourceViewFactory.hex()));
+        ls`Copy as Hex`, async () => Host.InspectorFrontendHost.copyText(await this._binaryResourceViewFactory.hex()));
     footerSection.appendItem(
-        ls`Copy as UTF-8`, async () => InspectorFrontendHost.copyText(await this._binaryResourceViewFactory.utf8()));
+        ls`Copy as UTF-8`,
+        async () => Host.InspectorFrontendHost.copyText(await this._binaryResourceViewFactory.utf8()));
   }
 };
 

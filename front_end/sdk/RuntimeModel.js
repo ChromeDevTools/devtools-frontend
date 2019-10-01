@@ -375,11 +375,11 @@ SDK.RuntimeModel = class extends SDK.SDKModel {
    */
   _copyRequested(object) {
     if (!object.objectId) {
-      InspectorFrontendHost.copyText(object.unserializableValue() || /** @type {string} */ (object.value));
+      Host.InspectorFrontendHost.copyText(object.unserializableValue() || /** @type {string} */ (object.value));
       return;
     }
     object.callFunctionJSON(toStringForClipboard, [{value: object.subtype}])
-        .then(InspectorFrontendHost.copyText.bind(InspectorFrontendHost));
+        .then(Host.InspectorFrontendHost.copyText.bind(Host.InspectorFrontendHost));
 
     /**
      * @param {string} subtype

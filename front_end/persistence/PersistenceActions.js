@@ -50,7 +50,7 @@ Persistence.PersistenceActions.ContextMenuProvider = class {
     if (fileURL.startsWith('file://')) {
       const path = Common.ParsedURL.urlToPlatformPath(fileURL, Host.isWin());
       contextMenu.revealSection().appendItem(
-          Common.UIString('Open in containing folder'), () => InspectorFrontendHost.showItemInFolder(path));
+          Common.UIString('Open in containing folder'), () => Host.InspectorFrontendHost.showItemInFolder(path));
     }
   }
 };

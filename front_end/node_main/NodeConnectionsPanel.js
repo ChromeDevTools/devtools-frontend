@@ -13,7 +13,7 @@ NodeMain.NodeConnectionsPanel = class extends UI.Panel {
     const image = container.createChild('img', 'node-panel-logo');
     image.src = 'https://nodejs.org/static/images/logos/nodejs-new-pantone-black.png';
 
-    InspectorFrontendHost.events.addEventListener(
+    Host.InspectorFrontendHost.events.addEventListener(
         Host.InspectorFrontendHostAPI.Events.DevicesDiscoveryConfigChanged, this._devicesDiscoveryConfigChanged, this);
 
     /** @type {!Adb.Config} */
@@ -23,12 +23,12 @@ NodeMain.NodeConnectionsPanel = class extends UI.Panel {
     this.setDefaultFocusedElement(this.contentElement);
 
     // Trigger notification once.
-    InspectorFrontendHost.setDevicesUpdatesEnabled(false);
-    InspectorFrontendHost.setDevicesUpdatesEnabled(true);
+    Host.InspectorFrontendHost.setDevicesUpdatesEnabled(false);
+    Host.InspectorFrontendHost.setDevicesUpdatesEnabled(true);
 
     this._networkDiscoveryView = new NodeMain.NodeConnectionsView(config => {
       this._config.networkDiscoveryConfig = config;
-      InspectorFrontendHost.setDevicesDiscoveryConfig(this._config);
+      Host.InspectorFrontendHost.setDevicesDiscoveryConfig(this._config);
     });
     this._networkDiscoveryView.show(container);
   }

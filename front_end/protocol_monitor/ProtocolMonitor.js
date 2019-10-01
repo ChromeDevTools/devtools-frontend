@@ -122,7 +122,7 @@ ProtocolMonitor.ProtocolMonitor = class extends UI.VBox {
     contextMenu.defaultSection().appendItem(ls`Documentation`, () => {
       const [domain, method] = node.data.method.split('.');
       const type = node.data.direction === 'sent' ? 'method' : 'event';
-      InspectorFrontendHost.openInNewTab(
+      Host.InspectorFrontendHost.openInNewTab(
           `https://chromedevtools.github.io/devtools-protocol/tot/${domain}#${type}-${method}`);
     });
   }

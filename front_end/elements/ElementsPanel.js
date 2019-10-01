@@ -711,7 +711,7 @@ Elements.ElementsPanel = class extends UI.Panel {
       if (!this._notFirstInspectElement) {
         Elements.ElementsPanel._firstInspectElementNodeNameForTest = node.nodeName();
         Elements.ElementsPanel._firstInspectElementCompletedForTest();
-        InspectorFrontendHost.inspectElementCompleted();
+        Host.InspectorFrontendHost.inspectElementCompleted();
       }
       this._notFirstInspectElement = true;
     });

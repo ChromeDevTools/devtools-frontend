@@ -626,10 +626,13 @@ Components.Linkifier = class {
       result.push({
         section: 'reveal',
         title: UI.openLinkExternallyLabel(),
-        handler: () => InspectorFrontendHost.openInNewTab(url)
+        handler: () => Host.InspectorFrontendHost.openInNewTab(url)
       });
-      result.push(
-          {section: 'clipboard', title: UI.copyLinkAddressLabel(), handler: () => InspectorFrontendHost.copyText(url)});
+      result.push({
+        section: 'clipboard',
+        title: UI.copyLinkAddressLabel(),
+        handler: () => Host.InspectorFrontendHost.copyText(url)
+      });
     }
     return result;
   }
@@ -787,7 +790,7 @@ Components.Linkifier.ContentProviderContextMenuProvider = class {
     }
 
     contextMenu.revealSection().appendItem(
-        UI.openLinkExternallyLabel(), () => InspectorFrontendHost.openInNewTab(contentProvider.contentURL()));
+        UI.openLinkExternallyLabel(), () => Host.InspectorFrontendHost.openInNewTab(contentProvider.contentURL()));
     for (const title of Components.Linkifier._linkHandlers.keys()) {
       const handler = Components.Linkifier._linkHandlers.get(title);
       contextMenu.revealSection().appendItem(
@@ -798,6 +801,6 @@ Components.Linkifier.ContentProviderContextMenuProvider = class {
     }
 
     contextMenu.clipboardSection().appendItem(
-        UI.copyLinkAddressLabel(), () => InspectorFrontendHost.copyText(contentProvider.contentURL()));
+        UI.copyLinkAddressLabel(), () => Host.InspectorFrontendHost.copyText(contentProvider.contentURL()));
   }
 };

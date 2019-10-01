@@ -33,7 +33,7 @@ Help.ReleaseNoteView = class extends UI.VBox {
     const actionContainer = container.createChild('div', 'release-note-action-container');
     actionContainer.appendChild(UI.createTextButton(Common.UIString('Learn more'), event => {
       event.consume(true);
-      InspectorFrontendHost.openInNewTab(releaseNote.link);
+      Host.InspectorFrontendHost.openInNewTab(releaseNote.link);
     }));
     actionContainer.appendChild(UI.createTextButton(Common.UIString('Close'), event => {
       event.consume(true);

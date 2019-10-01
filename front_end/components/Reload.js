@@ -4,7 +4,7 @@
 Components.reload = function() {
   if (Components.dockController.canDock() &&
       Components.dockController.dockSide() === Components.DockController.State.Undocked) {
-    InspectorFrontendHost.setIsDocked(true, function() {});
+    Host.InspectorFrontendHost.setIsDocked(true, function() {});
   }
   window.location.reload();
 };

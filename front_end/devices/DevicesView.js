@@ -43,11 +43,11 @@ Devices.DevicesView = class extends UI.VBox {
     this._updateFooter();
     this._selectSidebarListItem(this._discoveryListItem, this._discoveryView);
 
-    InspectorFrontendHost.events.addEventListener(
+    Host.InspectorFrontendHost.events.addEventListener(
         Host.InspectorFrontendHostAPI.Events.DevicesUpdated, this._devicesUpdated, this);
-    InspectorFrontendHost.events.addEventListener(
+    Host.InspectorFrontendHost.events.addEventListener(
         Host.InspectorFrontendHostAPI.Events.DevicesDiscoveryConfigChanged, this._devicesDiscoveryConfigChanged, this);
-    InspectorFrontendHost.events.addEventListener(
+    Host.InspectorFrontendHost.events.addEventListener(
         Host.InspectorFrontendHostAPI.Events.DevicesPortForwardingStatusChanged,
         this._devicesPortForwardingStatusChanged, this);
   }
@@ -191,7 +191,7 @@ Devices.DevicesView = class extends UI.VBox {
    */
   wasShown() {
     super.wasShown();
-    InspectorFrontendHost.setDevicesUpdatesEnabled(true);
+    Host.InspectorFrontendHost.setDevicesUpdatesEnabled(true);
   }
 
   /**
@@ -199,7 +199,7 @@ Devices.DevicesView = class extends UI.VBox {
    */
   willHide() {
     super.willHide();
-    InspectorFrontendHost.setDevicesUpdatesEnabled(false);
+    Host.InspectorFrontendHost.setDevicesUpdatesEnabled(false);
   }
 };
 
@@ -218,7 +218,7 @@ Devices.DevicesView.DiscoveryView = class extends UI.VBox {
     this._discoverUsbDevicesCheckbox = discoverUsbDevicesCheckbox.checkboxElement;
     this._discoverUsbDevicesCheckbox.addEventListener('click', () => {
       this._config.discoverUsbDevices = this._discoverUsbDevicesCheckbox.checked;
-      InspectorFrontendHost.setDevicesDiscoveryConfig(this._config);
+      Host.InspectorFrontendHost.setDevicesDiscoveryConfig(this._config);
     }, false);
 
     const help = this.element.createChild('div', 'discovery-help');
@@ -236,7 +236,7 @@ Devices.DevicesView.DiscoveryView = class extends UI.VBox {
       for (const rule of config) {
         this._config.portForwardingConfig[rule.port] = rule.address;
       }
-      InspectorFrontendHost.setDevicesDiscoveryConfig(this._config);
+      Host.InspectorFrontendHost.setDevicesDiscoveryConfig(this._config);
     });
     this._portForwardingView.show(this.element);
   }
@@ -589,7 +589,7 @@ Devices.DevicesView.DeviceView = class extends UI.VBox {
 
     function openNewTab() {
       if (section.browser) {
-        InspectorFrontendHost.openRemotePage(section.browser.id, newTabInput.value.trim() || 'about:blank');
+        Host.InspectorFrontendHost.openRemotePage(section.browser.id, newTabInput.value.trim() || 'about:blank');
         newTabInput.value = '';
       }
     }
@@ -677,7 +677,7 @@ Devices.DevicesView.DeviceView = class extends UI.VBox {
      */
     function doAction(action) {
       if (section.page) {
-        InspectorFrontendHost.performActionOnRemotePage(section.page.id, action);
+        Host.InspectorFrontendHost.performActionOnRemotePage(section.page.id, action);
       }
     }
   }

@@ -388,7 +388,7 @@ Sources.CallStackSidebarPane = class extends UI.SimpleView {
       }
       text.push(itemText);
     }
-    InspectorFrontendHost.copyText(text.join('\n'));
+    Host.InspectorFrontendHost.copyText(text.join('\n'));
   }
 };
 

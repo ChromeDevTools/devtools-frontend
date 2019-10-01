@@ -103,7 +103,7 @@ Network.ResourceWebSocketFrameView = class extends UI.VBox {
       } else {
         contextMenu.clipboardSection().appendItem(
             Common.UIString('Copy message'),
-            InspectorFrontendHost.copyText.bind(InspectorFrontendHost, node.data.data));
+            Host.InspectorFrontendHost.copyText.bind(Host.InspectorFrontendHost, node.data.data));
       }
       contextMenu.footerSection().appendItem(Common.UIString('Clear all'), this._clearFrames.bind(this));
     }

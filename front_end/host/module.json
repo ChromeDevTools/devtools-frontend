@@ -3,7 +3,9 @@
         "common",
         "platform"
     ],
-    "scripts": [
+    "scripts": [],
+    "modules": [
+        "host.js",
         "InspectorFrontendHostAPI.js",
         "InspectorFrontendHost.js",
         "Platform.js",

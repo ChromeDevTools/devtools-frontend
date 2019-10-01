@@ -321,7 +321,7 @@ Sources.SourcesPanel = class extends UI.Panel {
     this._toggleDebuggerSidebarButton.setEnabled(false);
     this._revealDebuggerSidebar();
     window.focus();
-    InspectorFrontendHost.bringToFront();
+    Host.InspectorFrontendHost.bringToFront();
   }
 
   /**
@@ -1044,7 +1044,7 @@ Sources.SourcesPanel = class extends UI.Panel {
     if (!entry.isDirectory) {
       return;
     }
-    InspectorFrontendHost.upgradeDraggedFileSystemPermissions(entry.filesystem);
+    Host.InspectorFrontendHost.upgradeDraggedFileSystemPermissions(entry.filesystem);
   }
 };
 

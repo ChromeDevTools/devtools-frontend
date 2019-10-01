@@ -40,10 +40,11 @@ InspectorMain.InspectorMain = class extends Common.Object {
     new InspectorMain.BackendSettingsSync();
     new MobileThrottling.NetworkPanelIndicator();
 
-    InspectorFrontendHost.events.addEventListener(Host.InspectorFrontendHostAPI.Events.ReloadInspectedPage, event => {
-      const hard = /** @type {boolean} */ (event.data);
-      SDK.ResourceTreeModel.reloadAllPages(hard);
-    });
+    Host.InspectorFrontendHost.events.addEventListener(
+        Host.InspectorFrontendHostAPI.Events.ReloadInspectedPage, event => {
+          const hard = /** @type {boolean} */ (event.data);
+          SDK.ResourceTreeModel.reloadAllPages(hard);
+        });
   }
 };
 
@@ -96,7 +97,7 @@ InspectorMain.NodeIndicator = class {
     const element = createElement('div');
     const shadowRoot = UI.createShadowRootWithCoreStyles(element, 'inspector_main/nodeIcon.css');
     this._element = shadowRoot.createChild('div', 'node-icon');
-    element.addEventListener('click', () => InspectorFrontendHost.openNodeFrontend(), false);
+    element.addEventListener('click', () => Host.InspectorFrontendHost.openNodeFrontend(), false);
     this._button = new UI.ToolbarItem(element);
     this._button.setTitle(Common.UIString('Open dedicated DevTools for Node.js'));
     SDK.targetManager.addEventListener(
@@ -177,7 +178,7 @@ InspectorMain.BackendSettingsSync = class {
   }
 
   _updateAutoAttach() {
-    InspectorFrontendHost.setOpenNewWindowForPopups(this._autoAttachSetting.get());
+    Host.InspectorFrontendHost.setOpenNewWindowForPopups(this._autoAttachSetting.get());
   }
 
   _update() {

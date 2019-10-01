@@ -65,7 +65,7 @@ Main.Main = class {
     await Root.Runtime.appStarted();
     Root.Runtime.setPlatform(Host.platform());
     Root.Runtime.setL10nCallback(ls);
-    InspectorFrontendHost.getPreferences(this._gotPreferences.bind(this));
+    Host.InspectorFrontendHost.getPreferences(this._gotPreferences.bind(this));
   }
 
   /**
@@ -102,8 +102,8 @@ Main.Main = class {
       localStorage = new Common.SettingsStorage({}, undefined, undefined, undefined, storagePrefix);
     }
     const globalStorage = new Common.SettingsStorage(
-        prefs, InspectorFrontendHost.setPreference, InspectorFrontendHost.removePreference,
-        InspectorFrontendHost.clearPreferences, storagePrefix);
+        prefs, Host.InspectorFrontendHost.setPreference, Host.InspectorFrontendHost.removePreference,
+        Host.InspectorFrontendHost.clearPreferences, storagePrefix);
     Common.settings = new Common.Settings(globalStorage, localStorage);
     if (!Host.isUnderTest()) {
       new Common.VersionController().updateVersion();
@@ -185,7 +185,7 @@ Main.Main = class {
     this._addMainEventListeners(document);
 
     const canDock = !!Root.Runtime.queryParam('can_dock');
-    UI.zoomManager = new UI.ZoomManager(window, InspectorFrontendHost);
+    UI.zoomManager = new UI.ZoomManager(window, Host.InspectorFrontendHost);
     UI.inspectorView = UI.InspectorView.instance();
     UI.ContextMenu.initialize();
     UI.ContextMenu.installHandler(document);
@@ -249,15 +249,15 @@ Main.Main = class {
     const toggleSearchNodeAction = UI.actionRegistry.action('elements.toggle-element-search');
     // TODO: we should not access actions from other modules.
     if (toggleSearchNodeAction) {
-      InspectorFrontendHost.events.addEventListener(
+      Host.InspectorFrontendHost.events.addEventListener(
           Host.InspectorFrontendHostAPI.Events.EnterInspectElementMode,
           toggleSearchNodeAction.execute.bind(toggleSearchNodeAction), this);
     }
-    InspectorFrontendHost.events.addEventListener(
+    Host.InspectorFrontendHost.events.addEventListener(
         Host.InspectorFrontendHostAPI.Events.RevealSourceLine, this._revealSourceLine, this);
 
     UI.inspectorView.createToolbars();
-    InspectorFrontendHost.loadCompleted();
+    Host.InspectorFrontendHost.loadCompleted();
 
     const extensions = self.runtime.extensions(Common.QueryParamHandler);
     for (const extension of extensions) {
@@ -288,7 +288,7 @@ Main.Main = class {
       await /** @type {!Common.Runnable} */ (instance).run();
     }
     // Used for browser tests.
-    InspectorFrontendHost.readyForTest();
+    Host.InspectorFrontendHost.readyForTest();
     // Asynchronously run the extensions.
     setTimeout(this._lateInitialization.bind(this), 100);
     Main.Main.timeEnd('Main._initializeTarget');
@@ -336,7 +336,7 @@ Main.Main = class {
     ];
     const actionKeys =
         UI.shortcutRegistry.keysForActions(forwardedActions).map(UI.KeyboardShortcut.keyCodeAndModifiersFromKey);
-    InspectorFrontendHost.setWhitelistedShortcuts(JSON.stringify(actionKeys));
+    Host.InspectorFrontendHost.setWhitelistedShortcuts(JSON.stringify(actionKeys));
   }
 
   _registerMessageSinkListener() {
@@ -485,19 +485,19 @@ Main.Main.ZoomActionDelegate = class {
    * @return {boolean}
    */
   handleAction(context, actionId) {
-    if (InspectorFrontendHost.isHostedMode()) {
+    if (Host.InspectorFrontendHost.isHostedMode()) {
       return false;
     }
 
     switch (actionId) {
       case 'main.zoom-in':
-        InspectorFrontendHost.zoomIn();
+        Host.InspectorFrontendHost.zoomIn();
         return true;
       case 'main.zoom-out':
-        InspectorFrontendHost.zoomOut();
+        Host.InspectorFrontendHost.zoomOut();
         return true;
       case 'main.zoom-reset':
-        InspectorFrontendHost.resetZoom();
+        Host.InspectorFrontendHost.resetZoom();
         return true;
     }
     return false;

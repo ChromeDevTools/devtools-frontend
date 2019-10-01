@@ -595,7 +595,7 @@ SDK.DOMNode = class {
   async copyNode() {
     const text = await this._agent.getOuterHTML(this.id);
     if (text !== null) {
-      InspectorFrontendHost.copyText(text);
+      Host.InspectorFrontendHost.copyText(text);
     }
     return text;
   }

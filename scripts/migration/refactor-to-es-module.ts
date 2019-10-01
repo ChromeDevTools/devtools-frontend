@@ -107,14 +107,20 @@ function rewriteSource(source: string, refactoringNamespace: string, refactoring
   {
     const legacyNamespaceName = b.memberExpression(b.identifier('self'), b.identifier(refactoringNamespace), false);
     const legacyNamespaceOr = b.logicalExpression("||", legacyNamespaceName, b.objectExpression([]));
-    ast.program.body.push(b.expressionStatement.from({expression: b.assignmentExpression('=', legacyNamespaceName, legacyNamespaceOr), comments: [b.commentBlock('Legacy exported object', true, false)]}));
+    ast.program.body.push(b.expressionStatement.from({
+      expression: b.assignmentExpression('=', legacyNamespaceName, legacyNamespaceOr),
+      comments: [b.commentBlock(' Legacy exported object ', true, false)]
+    }));
   }
 
   // UI = UI || {};
   const legacyNamespaceName = b.identifier(refactoringNamespace)
   {
     const legacyNamespaceOr = b.logicalExpression("||", legacyNamespaceName, b.objectExpression([]));
-    ast.program.body.push(b.expressionStatement.from({expression: b.assignmentExpression('=', legacyNamespaceName, legacyNamespaceOr), comments: [b.commentBlock('Legacy exported object', true, false)]}));
+    ast.program.body.push(b.expressionStatement.from({
+      expression: b.assignmentExpression('=', legacyNamespaceName, legacyNamespaceOr),
+      comments: [b.commentBlock(' Legacy exported object ', true, false)]
+    }));
   }
 
   // UI.ARIAUtils = ARIAUtils;

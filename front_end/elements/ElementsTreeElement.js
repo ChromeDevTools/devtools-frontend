@@ -1726,19 +1726,19 @@ Elements.ElementsTreeElement = class extends UI.TreeElement {
   }
 
   _copyCSSPath() {
-    InspectorFrontendHost.copyText(Elements.DOMPath.cssPath(this._node, true));
+    Host.InspectorFrontendHost.copyText(Elements.DOMPath.cssPath(this._node, true));
   }
 
   _copyJSPath() {
-    InspectorFrontendHost.copyText(Elements.DOMPath.jsPath(this._node, true));
+    Host.InspectorFrontendHost.copyText(Elements.DOMPath.jsPath(this._node, true));
   }
 
   _copyXPath() {
-    InspectorFrontendHost.copyText(Elements.DOMPath.xPath(this._node, true));
+    Host.InspectorFrontendHost.copyText(Elements.DOMPath.xPath(this._node, true));
   }
 
   _copyFullXPath() {
-    InspectorFrontendHost.copyText(Elements.DOMPath.xPath(this._node, false));
+    Host.InspectorFrontendHost.copyText(Elements.DOMPath.xPath(this._node, false));
   }
 
   async _copyStyles() {
@@ -1767,7 +1767,7 @@ Elements.ElementsTreeElement = class extends UI.TreeElement {
         lines.push(`${property.name}: ${property.value};`);
       }
     }
-    InspectorFrontendHost.copyText(lines.join('\n'));
+    Host.InspectorFrontendHost.copyText(lines.join('\n'));
   }
 
   _highlightSearchResults() {

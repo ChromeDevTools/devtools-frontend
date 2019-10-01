@@ -1,35 +1,37 @@
 // Copyright (c) 2015 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-Host.ResourceLoader = {};
+const ResourceLoader = {};
+export default ResourceLoader;
 
-Host.ResourceLoader._lastStreamId = 0;
+export let _lastStreamId = 0;
+
 /** @type {!Object.<number, !Common.OutputStream>} */
-Host.ResourceLoader._boundStreams = {};
+export const _boundStreams = {};
 
 /**
  * @param {!Common.OutputStream} stream
  * @return {number}
  */
-Host.ResourceLoader._bindOutputStream = function(stream) {
-  Host.ResourceLoader._boundStreams[++Host.ResourceLoader._lastStreamId] = stream;
-  return Host.ResourceLoader._lastStreamId;
+export const _bindOutputStream = function(stream) {
+  _boundStreams[++_lastStreamId] = stream;
+  return _lastStreamId;
 };
 
 /**
  * @param {number} id
  */
-Host.ResourceLoader._discardOutputStream = function(id) {
-  Host.ResourceLoader._boundStreams[id].close();
-  delete Host.ResourceLoader._boundStreams[id];
+export const _discardOutputStream = function(id) {
+  _boundStreams[id].close();
+  delete _boundStreams[id];
 };
 
 /**
  * @param {number} id
  * @param {string} chunk
  */
-Host.ResourceLoader.streamWrite = function(id, chunk) {
-  Host.ResourceLoader._boundStreams[id].write(chunk);
+export const streamWrite = function(id, chunk) {
+  _boundStreams[id].write(chunk);
 };
 
 /**
@@ -37,9 +39,9 @@ Host.ResourceLoader.streamWrite = function(id, chunk) {
  * @param {?Object.<string, string>} headers
  * @param {function(number, !Object.<string, string>, string)} callback
  */
-Host.ResourceLoader.load = function(url, headers, callback) {
+export function load(url, headers, callback) {
   const stream = new Common.StringOutputStream();
-  Host.ResourceLoader.loadAsStream(url, headers, stream, mycallback);
+  loadAsStream(url, headers, stream, mycallback);
 
   /**
    * @param {number} statusCode
@@ -48,7 +50,7 @@ Host.ResourceLoader.load = function(url, headers, callback) {
   function mycallback(statusCode, headers) {
     callback(statusCode, headers, stream.data());
   }
-};
+}
 
 /**
  * @param {string} url
@@ -56,8 +58,8 @@ Host.ResourceLoader.load = function(url, headers, callback) {
  * @param {!Common.OutputStream} stream
  * @param {function(number, !Object.<string, string>)=} callback
  */
-Host.ResourceLoader.loadAsStream = function(url, headers, stream, callback) {
-  const streamId = Host.ResourceLoader._bindOutputStream(stream);
+export const loadAsStream = function(url, headers, stream, callback) {
+  const streamId = _bindOutputStream(stream);
   const parsedURL = new Common.ParsedURL(url);
   if (parsedURL.isDataURL()) {
     loadXHR(url).then(dataURLDecodeSuccessful).catch(dataURLDecodeFailed);
@@ -70,7 +72,7 @@ Host.ResourceLoader.loadAsStream = function(url, headers, stream, callback) {
       rawHeaders.push(key + ': ' + headers[key]);
     }
   }
-  InspectorFrontendHost.loadNetworkResource(url, rawHeaders.join('\r\n'), streamId, finishedCallback);
+  Host.InspectorFrontendHost.loadNetworkResource(url, rawHeaders.join('\r\n'), streamId, finishedCallback);
 
   /**
    * @param {!InspectorFrontendHostAPI.LoadNetworkResourceResult} response
@@ -79,14 +81,14 @@ Host.ResourceLoader.loadAsStream = function(url, headers, stream, callback) {
     if (callback) {
       callback(response.statusCode, response.headers || {});
     }
-    Host.ResourceLoader._discardOutputStream(streamId);
+    _discardOutputStream(streamId);
   }
 
   /**
    * @param {string} text
    */
   function dataURLDecodeSuccessful(text) {
-    Host.ResourceLoader.streamWrite(streamId, text);
+    streamWrite(streamId, text);
     finishedCallback(/** @type {!InspectorFrontendHostAPI.LoadNetworkResourceResult} */ ({statusCode: 200}));
   }
 
@@ -94,3 +96,48 @@ Host.ResourceLoader.loadAsStream = function(url, headers, stream, callback) {
     finishedCallback(/** @type {!InspectorFrontendHostAPI.LoadNetworkResourceResult} */ ({statusCode: 404}));
   }
 };
+
+/* Legacy exported object */
+self.Host = self.Host || {};
+
+/* Legacy exported object */
+Host = Host || {};
+
+Host.ResourceLoader = ResourceLoader;
+
+Host.ResourceLoader._lastStreamId = _lastStreamId;
+
+/** @type {!Object.<number, !Common.OutputStream>} */
+Host.ResourceLoader._boundStreams = _boundStreams;
+
+/**
+ * @param {!Common.OutputStream} stream
+ * @return {number}
+ */
+Host.ResourceLoader._bindOutputStream = _bindOutputStream;
+
+/**
+ * @param {number} id
+ */
+Host.ResourceLoader._discardOutputStream = _discardOutputStream;
+
+/**
+ * @param {number} id
+ * @param {string} chunk
+ */
+Host.ResourceLoader.streamWrite = streamWrite;
+
+/**
+ * @param {string} url
+ * @param {?Object.<string, string>} headers
+ * @param {function(number, !Object.<string, string>, string)} callback
+ */
+Host.ResourceLoader.load = load;
+
+/**
+ * @param {string} url
+ * @param {?Object.<string, string>} headers
+ * @param {!Common.OutputStream} stream
+ * @param {function(number, !Object.<string, string>)=} callback
+ */
+Host.ResourceLoader.loadAsStream = loadAsStream;

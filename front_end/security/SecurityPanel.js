@@ -48,7 +48,7 @@ Security.SecurityPanel = class extends UI.PanelWithSidebar {
       e.consume();
       const names = await SDK.multitargetNetworkManager.getCertificate(origin);
       if (names.length > 0) {
-        InspectorFrontendHost.showCertificateViewer(names);
+        Host.InspectorFrontendHost.showCertificateViewer(names);
       }
     }, 'origin-button');
     UI.ARIAUtils.markAsMenuButton(certificateButton);
@@ -63,7 +63,7 @@ Security.SecurityPanel = class extends UI.PanelWithSidebar {
   static createCertificateViewerButtonForCert(text, names) {
     const certificateButton = UI.createTextButton(text, e => {
       e.consume();
-      InspectorFrontendHost.showCertificateViewer(names);
+      Host.InspectorFrontendHost.showCertificateViewer(names);
     }, 'security-certificate-button');
     UI.ARIAUtils.markAsMenuButton(certificateButton);
     return certificateButton;

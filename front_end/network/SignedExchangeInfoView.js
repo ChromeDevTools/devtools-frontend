@@ -89,7 +89,7 @@ Network.SignedExchangeInfoView = class extends UI.VBox {
             const viewCertLink = certURLElement.createChild('span', 'devtools-link header-toggle');
             viewCertLink.textContent = Common.UIString('View certificate');
             viewCertLink.addEventListener(
-                'click', InspectorFrontendHost.showCertificateViewer.bind(null, signature.certificates), false);
+                'click', Host.InspectorFrontendHost.showCertificateViewer.bind(null, signature.certificates), false);
           }
           signatureCategory.createLeaf(certURLElement);
         }

@@ -934,7 +934,8 @@ ObjectUI.ObjectPropertyTreeElement = class extends UI.TreeElement {
       contextMenu.appendApplicableItems(this.property.value);
     }
     if (!this.property.synthetic && this.nameElement && this.nameElement.title) {
-      const copyPathHandler = InspectorFrontendHost.copyText.bind(InspectorFrontendHost, this.nameElement.title);
+      const copyPathHandler =
+          Host.InspectorFrontendHost.copyText.bind(Host.InspectorFrontendHost, this.nameElement.title);
       contextMenu.clipboardSection().appendItem(ls`Copy property path`, copyPathHandler);
     }
     if (this.property.parentObject instanceof SDK.LocalJSONObject) {

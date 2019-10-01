@@ -42,19 +42,19 @@ Persistence.IsolatedFileSystemManager = class extends Common.Object {
     /** @type {!Map<number, !Common.Progress>} */
     this._progresses = new Map();
 
-    InspectorFrontendHost.events.addEventListener(
+    Host.InspectorFrontendHost.events.addEventListener(
         Host.InspectorFrontendHostAPI.Events.FileSystemRemoved, this._onFileSystemRemoved, this);
-    InspectorFrontendHost.events.addEventListener(
+    Host.InspectorFrontendHost.events.addEventListener(
         Host.InspectorFrontendHostAPI.Events.FileSystemAdded, this._onFileSystemAdded, this);
-    InspectorFrontendHost.events.addEventListener(
+    Host.InspectorFrontendHost.events.addEventListener(
         Host.InspectorFrontendHostAPI.Events.FileSystemFilesChangedAddedRemoved, this._onFileSystemFilesChanged, this);
-    InspectorFrontendHost.events.addEventListener(
+    Host.InspectorFrontendHost.events.addEventListener(
         Host.InspectorFrontendHostAPI.Events.IndexingTotalWorkCalculated, this._onIndexingTotalWorkCalculated, this);
-    InspectorFrontendHost.events.addEventListener(
+    Host.InspectorFrontendHost.events.addEventListener(
         Host.InspectorFrontendHostAPI.Events.IndexingWorked, this._onIndexingWorked, this);
-    InspectorFrontendHost.events.addEventListener(
+    Host.InspectorFrontendHost.events.addEventListener(
         Host.InspectorFrontendHostAPI.Events.IndexingDone, this._onIndexingDone, this);
-    InspectorFrontendHost.events.addEventListener(
+    Host.InspectorFrontendHost.events.addEventListener(
         Host.InspectorFrontendHostAPI.Events.SearchCompleted, this._onSearchCompleted, this);
 
     this._initExcludePatterSetting();
@@ -70,9 +70,9 @@ Persistence.IsolatedFileSystemManager = class extends Common.Object {
   _requestFileSystems() {
     let fulfill;
     const promise = new Promise(f => fulfill = f);
-    InspectorFrontendHost.events.addEventListener(
+    Host.InspectorFrontendHost.events.addEventListener(
         Host.InspectorFrontendHostAPI.Events.FileSystemsLoaded, onFileSystemsLoaded, this);
-    InspectorFrontendHost.requestFileSystems();
+    Host.InspectorFrontendHost.requestFileSystems();
     return promise;
 
     /**
@@ -103,7 +103,7 @@ Persistence.IsolatedFileSystemManager = class extends Common.Object {
   addFileSystem(type) {
     return new Promise(resolve => {
       this._fileSystemRequestResolve = resolve;
-      InspectorFrontendHost.addFileSystem(type || '');
+      Host.InspectorFrontendHost.addFileSystem(type || '');
     });
   }
 
@@ -111,7 +111,7 @@ Persistence.IsolatedFileSystemManager = class extends Common.Object {
    * @param {!Persistence.PlatformFileSystem} fileSystem
    */
   removeFileSystem(fileSystem) {
-    InspectorFrontendHost.removeFileSystem(fileSystem.embedderPath());
+    Host.InspectorFrontendHost.removeFileSystem(fileSystem.embedderPath());
   }
 
   /**
@@ -324,7 +324,7 @@ Persistence.IsolatedFileSystemManager = class extends Common.Object {
     }
     progress.worked(worked);
     if (progress.isCanceled()) {
-      InspectorFrontendHost.stopIndexing(requestId);
+      Host.InspectorFrontendHost.stopIndexing(requestId);
       this._onIndexingDone(event);
     }
   }

@@ -186,7 +186,7 @@ Emulation.AdvancedApp = class {
     }
     const bounds = /** @type {{x: number, y: number, width: number, height: number}} */ (event.data);
     console.timeStamp('AdvancedApp.setInspectedPageBounds');
-    InspectorFrontendHost.setInspectedPageBounds(bounds);
+    Host.InspectorFrontendHost.setInspectedPageBounds(bounds);
   }
 };
 

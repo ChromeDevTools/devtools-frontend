@@ -77,7 +77,7 @@ UI.InspectorView = class extends UI.VBox {
 
     // Create main area tabbed pane.
     this._tabbedLocation = UI.viewManager.createTabbedLocation(
-        InspectorFrontendHost.bringToFront.bind(InspectorFrontendHost), 'panel', true, true,
+        Host.InspectorFrontendHost.bringToFront.bind(Host.InspectorFrontendHost), 'panel', true, true,
         Root.Runtime.queryParam('panel'));
 
     this._tabbedPane = this._tabbedLocation.tabbedPane();
@@ -94,7 +94,8 @@ UI.InspectorView = class extends UI.VBox {
     this._drawerSplitWidget.setMainWidget(this._tabbedPane);
 
     this._keyDownBound = this._keyDown.bind(this);
-    InspectorFrontendHost.events.addEventListener(Host.InspectorFrontendHostAPI.Events.ShowPanel, showPanel.bind(this));
+    Host.InspectorFrontendHost.events.addEventListener(
+        Host.InspectorFrontendHostAPI.Events.ShowPanel, showPanel.bind(this));
 
     /**
      * @this {UI.InspectorView}

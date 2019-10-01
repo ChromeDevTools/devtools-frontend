@@ -502,7 +502,7 @@ Sources.DebuggerPlugin = class extends Sources.UISourceCodeFrame.Plugin {
           returnByValue: false,
           generatePreview: false
         });
-        if (!result.object) {
+        if (!result.object || (result.object.type === 'object' && result.object.subtype === 'error')) {
           return false;
         }
         objectPopoverHelper = await ObjectUI.ObjectPopoverHelper.buildObjectPopover(result.object, popover);

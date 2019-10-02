@@ -1485,7 +1485,7 @@ SDK.NetworkRequest.cookieBlockedReasonToUiString = function(blockedReason) {
       `This cookie didn't specify a SameSite attribute when it was stored and was defaulted to "SameSite=Lax" and broke the same rules specified in the SameSiteLax value. The cookie had to have been set with "SameSite=None" to enable third-party usage.`;
     case Protocol.Network.CookieBlockedReason.SameSiteNoneInsecure:
       return ls
-      `This cookie had the "SameSite=None" attribute and the connection was not secure. Cookies without SameSite restrictions must be sent over a secure connection.`;
+      `This cookie had the "SameSite=None" attribute but was not marked "Secure". Cookies without SameSite restrictions must be marked "Secure" and sent over a secure connection.`;
     case Protocol.Network.CookieBlockedReason.UserPreferences:
       return ls`This cookie was not sent due to user preferences.`;
     case Protocol.Network.CookieBlockedReason.UnknownError:

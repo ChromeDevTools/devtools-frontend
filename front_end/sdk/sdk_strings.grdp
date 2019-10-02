@@ -3,6 +3,9 @@
   <message name="IDS_DEVTOOLS_021aa7730980fe55529e460ee1367179" desc="Tooltip to explain why a cookie was blocked">
     This cookie had the &quot;SameSite=Extended&quot; attribute and the request was made on a different site. The different site is outside of the cookie&apos;s trusted first-party set.
   </message>
+  <message name="IDS_DEVTOOLS_04608e209233c72a33b9a80e8ff2bd58" desc="Tooltip to explain why a cookie was blocked">
+    This cookie had the &quot;SameSite=None&quot; attribute but was not marked &quot;Secure&quot;. Cookies without SameSite restrictions must be marked &quot;Secure&quot; and sent over a secure connection.
+  </message>
   <message name="IDS_DEVTOOLS_07553a11db31a4433684be32cc4716e3" desc="Text in Network Manager">
     Cross-Origin Read Blocking (CORB) blocked cross-origin response <ph name="NETWORKREQUEST_URL__">$1s<ex>https://example.com</ex></ph> with MIME type <ph name="NETWORKREQUEST_MIMETYPE">$2s<ex>application</ex></ph>. See https://www.chromestatus.com/feature/5629709824032768 for more details.
   </message>
@@ -203,9 +206,6 @@
   </message>
   <message name="IDS_DEVTOOLS_794f64c7f20487f6e13679201deeab3d" desc="Text in DOMDebugger Model">
     Picture-in-Picture
-  </message>
-  <message name="IDS_DEVTOOLS_7a3a5ae00a1133b1042cf4edf671736a" desc="Tooltip to explain why a cookie was blocked">
-    This cookie had the &quot;SameSite=None&quot; attribute and the connection was not secure. Cookies without SameSite restrictions must be sent over a secure connection.
   </message>
   <message name="IDS_DEVTOOLS_7c2bc755363ab11a1611bfa369654ff8" desc="Title of a setting under the Rendering category that can be invoked through the Command Menu">
     Show frames per second (FPS) meter

@@ -121,10 +121,11 @@ Emulation.DeviceModeModel = class extends Common.Object {
   static scaleValidator(value) {
     let valid = false;
     let errorMessage;
+    const parsedValue = Number(value.trim());
 
     if (!value) {
       valid = true;
-    } else if (!/^[\d]+(\.\d+)?|\.\d+$/.test(value)) {
+    } else if (Number.isNaN(parsedValue)) {
       errorMessage = ls`Device pixel ratio must be a number or blank.`;
     } else if (value > Emulation.DeviceModeModel.MaxDeviceScaleFactor) {
       errorMessage =

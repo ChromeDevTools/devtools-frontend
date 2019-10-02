@@ -184,13 +184,14 @@ Emulation.GeolocationsSettingsTab = class extends UI.VBox {
       const minLat = -90;
       const maxLat = 90;
       const value = input.value.trim();
+      const parsedValue = Number(value);
 
       if (!value) {
         return {valid: true};
       }
 
       let errorMessage;
-      if (!/^-?[\d]+(\.\d+)?|\.\d+$/.test(value)) {
+      if (Number.isNaN(parsedValue)) {
         errorMessage = ls`Latitude must be a number`;
       } else if (parseFloat(value) < minLat) {
         errorMessage = ls`Latitude must be greater than or equal to ${minLat}`;
@@ -214,13 +215,14 @@ Emulation.GeolocationsSettingsTab = class extends UI.VBox {
       const minLong = -180;
       const maxLong = 180;
       const value = input.value.trim();
+      const parsedValue = Number(value);
 
       if (!value) {
         return {valid: true};
       }
 
       let errorMessage;
-      if (!/^-?[\d]+(\.\d+)?|\.\d+$/.test(value)) {
+      if (Number.isNaN(parsedValue)) {
         errorMessage = ls`Longitude must be a number`;
       } else if (parseFloat(value) < minLong) {
         errorMessage = ls`Longitude must be greater than or equal to ${minLong}`;

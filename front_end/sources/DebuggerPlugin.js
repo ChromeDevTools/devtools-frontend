@@ -482,6 +482,21 @@ Sources.DebuggerPlugin = class extends Sources.UISourceCodeFrame.Plugin {
         if (tokenBefore.type === 'js-meta') {
           break;
         }
+        if (tokenBefore.type === 'js-string-2') {
+          // If we hit a template literal, find the opening ` in this line.
+          // TODO(bmeurer): We should eventually replace this tokenization
+          // approach with a proper soluation based on parsing, maybe reusing
+          // the Parser and AST inside V8 for this (or potentially relying on
+          // acorn to do the job).
+          if (tokenBefore.endColumn < 2) {
+            return null;
+          }
+          startHighlight = line.lastIndexOf('`', tokenBefore.endColumn - 2);
+          if (startHighlight < 0) {
+            return null;
+          }
+          break;
+        }
         startHighlight = tokenBefore.startColumn;
       }
     }

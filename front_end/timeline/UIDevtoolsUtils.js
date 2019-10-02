@@ -36,7 +36,7 @@ Timeline.UIDevtoolsUtils = class {
    * @return {boolean}
    */
   static isUiDevTools() {
-    return Runtime.queryParam('uiDevTools') === 'true';
+    return Root.Runtime.queryParam('uiDevTools') === 'true';
   }
 
   /**

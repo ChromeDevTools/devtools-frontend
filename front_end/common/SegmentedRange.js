@@ -12,7 +12,7 @@ export class Segment {
    */
   constructor(begin, end, data) {
     if (begin > end) {
-      console.assert(false, 'Invalid segment');
+      throw new Error('Invalid segment');
     }
     this.begin = begin;
     this.end = end;

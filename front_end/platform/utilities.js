@@ -1160,10 +1160,10 @@ Map.prototype.keysArray = function() {
 };
 
 /**
- * @return {!Multimap<!KEY, !VALUE>}
+ * @return {!Platform.Multimap<!KEY, !VALUE>}
  */
 Map.prototype.inverse = function() {
-  const result = new Multimap();
+  const result = new Platform.Multimap();
   for (const key of this.keys()) {
     const value = this.get(key);
     result.set(value, key);
@@ -1172,70 +1172,69 @@ Map.prototype.inverse = function() {
 };
 
 /**
- * @constructor
  * @template K, V
  */
-var Multimap = function() {  // eslint-disable-line
-  /** @type {!Map.<K, !Set.<!V>>} */
-  this._map = new Map();
-};
+const Multimap = class {
+  constructor() {
+    /** @type {!Map.<K, !Set.<!V>>} */
+    this._map = new Map();
+  }
 
-Multimap.prototype = {
   /**
    * @param {K} key
    * @param {V} value
    */
-  set: function(key, value) {
+  set(key, value) {
     let set = this._map.get(key);
     if (!set) {
       set = new Set();
       this._map.set(key, set);
     }
     set.add(value);
-  },
+  }
 
   /**
    * @param {K} key
    * @return {!Set<!V>}
    */
-  get: function(key) {
+  get(key) {
     return this._map.get(key) || new Set();
-  },
+  }
 
   /**
    * @param {K} key
    * @return {boolean}
    */
-  has: function(key) {
+  has(key) {
     return this._map.has(key);
-  },
+  }
 
   /**
    * @param {K} key
    * @param {V} value
    * @return {boolean}
    */
-  hasValue: function(key, value) {
+  hasValue(key, value) {
     const set = this._map.get(key);
     if (!set) {
       return false;
     }
     return set.has(value);
-  },
+  }
 
   /**
    * @return {number}
    */
   get size() {
     return this._map.size;
-  },
+  }
 
   /**
    * @param {K} key
    * @param {V} value
    * @return {boolean}
    */
-  delete: function(key, value) {
+  delete(key, value) {
     const values = this.get(key);
     if (!values) {
       return false;
@@ -1245,35 +1244,35 @@ Multimap.prototype = {
       this._map.delete(key);
     }
     return result;
-  },
+  }
 
   /**
    * @param {K} key
    */
-  deleteAll: function(key) {
+  deleteAll(key) {
     this._map.delete(key);
-  },
+  }
 
   /**
    * @return {!Array.<K>}
    */
-  keysArray: function() {
+  keysArray() {
     return this._map.keysArray();
-  },
+  }
 
   /**
    * @return {!Array.<!V>}
    */
-  valuesArray: function() {
+  valuesArray() {
     const result = [];
     const keys = this.keysArray();
     for (let i = 0; i < keys.length; ++i) {
       result.pushAll(this.get(keys[i]).valuesArray());
     }
     return result;
-  },
+  }
 
-  clear: function() {
+  clear() {
     this._map.clear();
   }
 };
@@ -1445,3 +1444,9 @@ self.base64ToSize = function(content) {
   }
   return size;
 };
+
+self.Platform = self.Platform || {};
+Platform = Platform || {};
+
+/** @constructor */
+Platform.Multimap = Multimap;

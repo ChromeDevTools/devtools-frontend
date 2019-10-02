@@ -148,10 +148,11 @@ Search.SearchResultsPane.SearchResultsTreeElement = class extends UI.TreeElement
       labelSpan.classList.add('search-match-line-number');
       const resultLabel = searchResult.matchLabel(i);
       labelSpan.textContent = resultLabel;
-      if (typeof resultLabel === 'number' && !isNaN(resultLabel))
+      if (typeof resultLabel === 'number' && !isNaN(resultLabel)) {
         UI.ARIAUtils.setAccessibleName(labelSpan, ls`Line ${resultLabel}`);
-      else
+      } else {
         UI.ARIAUtils.setAccessibleName(labelSpan, ls`${resultLabel}`);
+      }
       anchor.appendChild(labelSpan);
 
       const contentSpan = this._createContentSpan(lineContent, matchRanges);

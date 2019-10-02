@@ -24,10 +24,10 @@ SDK.SourceMapManager = class extends Common.Object {
 
     /** @type {!Map<string, !SDK.SourceMap>} */
     this._sourceMapByURL = new Map();
-    /** @type {!Multimap<string, !T>} */
-    this._sourceMapURLToLoadingClients = new Multimap();
-    /** @type {!Multimap<string, !T>} */
-    this._sourceMapURLToClients = new Multimap();
+    /** @type {!Platform.Multimap<string, !T>} */
+    this._sourceMapURLToLoadingClients = new Platform.Multimap();
+    /** @type {!Platform.Multimap<string, !T>} */
+    this._sourceMapURLToClients = new Platform.Multimap();
 
     SDK.targetManager.addEventListener(SDK.TargetManager.Events.InspectedURLChanged, this._inspectedURLChanged, this);
   }

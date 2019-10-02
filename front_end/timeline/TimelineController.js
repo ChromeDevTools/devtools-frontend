@@ -273,8 +273,8 @@ Timeline.TimelineController = class {
       return null;
     }
 
-    /** @type {!Multimap<string, string>} */
-    const pseudoPidToFrames = new Multimap();
+    /** @type {!Platform.Multimap<string, string>} */
+    const pseudoPidToFrames = new Platform.Multimap();
     /** @type {!Map<string, number>} */
     const targetIdToPid = new Map();
     const frames = browserMetaEvent.args.data['frames'];

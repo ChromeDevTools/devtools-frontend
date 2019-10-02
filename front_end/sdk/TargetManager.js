@@ -11,10 +11,10 @@ SDK.TargetManager = class extends Common.Object {
     this._targets = [];
     /** @type {!Array.<!SDK.TargetManager.Observer>} */
     this._observers = [];
-    /** @type {!Multimap<symbol, !{modelClass: !Function, thisObject: (!Object|undefined), listener: function(!Common.Event)}>} */
-    this._modelListeners = new Multimap();
-    /** @type {!Multimap<function(new:SDK.SDKModel, !SDK.Target), !SDK.SDKModelObserver>} */
-    this._modelObservers = new Multimap();
+    /** @type {!Platform.Multimap<symbol, !{modelClass: !Function, thisObject: (!Object|undefined), listener: function(!Common.Event)}>} */
+    this._modelListeners = new Platform.Multimap();
+    /** @type {!Platform.Multimap<function(new:SDK.SDKModel, !SDK.Target), !SDK.SDKModelObserver>} */
+    this._modelObservers = new Platform.Multimap();
     this._isSuspended = false;
   }
 

@@ -46,11 +46,11 @@ Sources.JavaScriptBreakpointsSidebarPane = class extends UI.ThrottledWidget {
 
     breakpointLocations.sort((item1, item2) => item1.uiLocation.compareTo(item2.uiLocation));
 
-    /** @type {!Multimap<string, string>} */
-    const breakpointEntriesForLine = new Multimap();
+    /** @type {!Platform.Multimap<string, string>} */
+    const breakpointEntriesForLine = new Platform.Multimap();
 
-    /** @type {!Multimap<string, !{breakpoint: !Bindings.BreakpointManager.Breakpoint, uiLocation: !Workspace.UILocation}>} */
-    const locationForEntry = new Multimap();
+    /** @type {!Platform.Multimap<string, !{breakpoint: !Bindings.BreakpointManager.Breakpoint, uiLocation: !Workspace.UILocation}>} */
+    const locationForEntry = new Platform.Multimap();
     for (const breakpointLocation of breakpointLocations) {
       const uiLocation = breakpointLocation.uiLocation;
       const entryDescriptor = `${uiLocation.uiSourceCode.url()}:${uiLocation.lineNumber}:${uiLocation.columnNumber}`;

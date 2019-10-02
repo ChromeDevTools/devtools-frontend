@@ -11,10 +11,10 @@ UI.ShortcutRegistry = class {
    */
   constructor(actionRegistry, document) {
     this._actionRegistry = actionRegistry;
-    /** @type {!Multimap.<string, string>} */
-    this._defaultKeyToActions = new Multimap();
-    /** @type {!Multimap.<string, !UI.KeyboardShortcut.Descriptor>} */
-    this._defaultActionToShortcut = new Multimap();
+    /** @type {!Platform.Multimap.<string, string>} */
+    this._defaultKeyToActions = new Platform.Multimap();
+    /** @type {!Platform.Multimap.<string, !UI.KeyboardShortcut.Descriptor>} */
+    this._defaultActionToShortcut = new Platform.Multimap();
     this._registerBindings(document);
   }
 

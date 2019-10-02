@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import './Runtime.js';
+import './platform/utilities.js';
 import './common/common.js';
 import './host/host.js';
 import './ui/ui.js';

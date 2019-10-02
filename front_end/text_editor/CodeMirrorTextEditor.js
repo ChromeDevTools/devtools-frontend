@@ -179,8 +179,8 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
     this._codeMirrorElement.classList.add('source-code');
     this._codeMirrorElement.classList.add('fill');
 
-    /** @type {!Multimap<number, !TextEditor.CodeMirrorTextEditor.Decoration>} */
-    this._decorations = new Multimap();
+    /** @type {!Platform.Multimap<number, !TextEditor.CodeMirrorTextEditor.Decoration>} */
+    this._decorations = new Platform.Multimap();
 
     this.element.addEventListener('keydown', this._handleKeyDown.bind(this), true);
     this.element.addEventListener('keydown', this._handlePostKeyDown.bind(this), false);

@@ -17,8 +17,8 @@ Persistence.Persistence = class extends Common.Object {
     /** @type {!Map<string, number>} */
     this._filePathPrefixesToBindingCount = new Map();
 
-    /** @type {!Multimap<!Workspace.UISourceCode, function()>} */
-    this._subscribedBindingEventListeners = new Multimap();
+    /** @type {!Platform.Multimap<!Workspace.UISourceCode, function()>} */
+    this._subscribedBindingEventListeners = new Platform.Multimap();
 
     const linkDecorator = new Persistence.PersistenceUtils.LinkDecorator(this);
     Components.Linkifier.setLinkDecorator(linkDecorator);

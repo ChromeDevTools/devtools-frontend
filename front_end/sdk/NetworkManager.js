@@ -1031,8 +1031,8 @@ SDK.MultitargetNetworkManager = class extends Common.Object {
     this._effectiveBlockedURLs = [];
     this._updateBlockedPatterns();
 
-    /** @type {!Multimap<!SDK.MultitargetNetworkManager.RequestInterceptor, !SDK.MultitargetNetworkManager.InterceptionPattern>} */
-    this._urlsForRequestInterceptor = new Multimap();
+    /** @type {!Platform.Multimap<!SDK.MultitargetNetworkManager.RequestInterceptor, !SDK.MultitargetNetworkManager.InterceptionPattern>} */
+    this._urlsForRequestInterceptor = new Platform.Multimap();
 
     SDK.targetManager.observeModels(SDK.NetworkManager, this);
   }

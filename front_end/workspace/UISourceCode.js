@@ -59,7 +59,7 @@ Workspace.UISourceCode = class extends Common.Object {
     this._contentType = contentType;
     /** @type {?Promise<string>} */
     this._requestContentPromise = null;
-    /** @type {?Multimap<string, !Workspace.UISourceCode.LineMarker>} */
+    /** @type {?Platform.Multimap<string, !Workspace.UISourceCode.LineMarker>} */
     this._decorations = null;
     this._hasCommits = false;
     /** @type {?Set<!Workspace.UISourceCode.Message>} */
@@ -567,7 +567,7 @@ Workspace.UISourceCode = class extends Common.Object {
   addDecoration(range, type, data) {
     const marker = new Workspace.UISourceCode.LineMarker(range, type, data);
     if (!this._decorations) {
-      this._decorations = new Multimap();
+      this._decorations = new Platform.Multimap();
     }
     this._decorations.set(type, marker);
     this.dispatchEventToListeners(Workspace.UISourceCode.Events.LineDecorationAdded, marker);

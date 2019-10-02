@@ -209,11 +209,11 @@ Persistence.IsolatedFileSystemManager = class extends Common.Object {
 
     /**
      * @param {!Array<string>} embedderPaths
-     * @return {!Multimap<string, string>}
+     * @return {!Platform.Multimap<string, string>}
      * @this {Persistence.IsolatedFileSystemManager}
      */
     function groupFilePathsIntoFileSystemPaths(embedderPaths) {
-      const paths = new Multimap();
+      const paths = new Platform.Multimap();
       for (const embedderPath of embedderPaths) {
         const filePath = Common.ParsedURL.platformPathToURL(embedderPath);
         for (const fileSystemPath of this._fileSystems.keys()) {
@@ -362,7 +362,7 @@ Persistence.IsolatedFileSystemManager = class extends Common.Object {
 /** @typedef {!{type: string, fileSystemName: string, rootURL: string, fileSystemPath: string}} */
 Persistence.IsolatedFileSystemManager.FileSystem;
 
-/** @typedef {!{changed:!Multimap<string, string>, added:!Multimap<string, string>, removed:!Multimap<string, string>}} */
+/** @typedef {!{changed:!Platform.Multimap<string, string>, added:!Platform.Multimap<string, string>, removed:!Platform.Multimap<string, string>}} */
 Persistence.IsolatedFileSystemManager.FilesChangedData;
 
 /** @enum {symbol} */

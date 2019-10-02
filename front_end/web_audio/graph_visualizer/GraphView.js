@@ -19,15 +19,15 @@ WebAudio.GraphVisualizer.GraphView = class extends Common.Object {
 
     /**
      * For each node ID, keep a set of all out-bound edge IDs.
-     * @type {!Multimap<!Protocol.WebAudio.GraphObjectId, string>}
+     * @type {!Platform.Multimap<!Protocol.WebAudio.GraphObjectId, string>}
      */
-    this._outboundEdgeMap = new Multimap();
+    this._outboundEdgeMap = new Platform.Multimap();
 
     /**
      * For each node ID, keep a set of all in-bound edge IDs.
-     * @type {!Multimap<!Protocol.WebAudio.GraphObjectId, string>}
+     * @type {!Platform.Multimap<!Protocol.WebAudio.GraphObjectId, string>}
      */
-    this._inboundEdgeMap = new Multimap();
+    this._inboundEdgeMap = new Platform.Multimap();
 
     // Use concise node label to replace the long UUID.
     // Each graph has its own label generator so that the label starts from 0.

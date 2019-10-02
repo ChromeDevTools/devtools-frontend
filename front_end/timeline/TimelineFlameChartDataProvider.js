@@ -221,8 +221,8 @@ Timeline.TimelineFlameChartDataProvider = class extends Common.Object {
     const processGroupStyle = this._buildGroupStyle({shareHeaderLine: false});
     const threadGroupStyle = this._buildGroupStyle({padding: 2, nestingLevel: 1, shareHeaderLine: false});
     const eventEntryType = Timeline.TimelineFlameChartDataProvider.EntryType.Event;
-    /** @type {!Multimap<!SDK.TracingModel.Process, !TimelineModel.TimelineModel.Track>} */
-    const tracksByProcess = new Multimap();
+    /** @type {!Platform.Multimap<!SDK.TracingModel.Process, !TimelineModel.TimelineModel.Track>} */
+    const tracksByProcess = new Platform.Multimap();
     for (const track of this._model.tracks()) {
       if (track.thread !== null) {
         tracksByProcess.set(track.thread.process(), track);

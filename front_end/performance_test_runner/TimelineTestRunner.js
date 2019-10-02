@@ -345,7 +345,7 @@ PerformanceTestRunner.dumpFlameChartProvider = function(provider, includeGroups)
   const includeGroupsSet = includeGroups && new Set(includeGroups);
   const timelineData = provider.timelineData();
   const stackDepth = provider.maxStackDepth();
-  const entriesByLevel = new Multimap();
+  const entriesByLevel = new Platform.Multimap();
 
   for (let i = 0; i < timelineData.entryLevels.length; ++i) {
     entriesByLevel.set(timelineData.entryLevels[i], i);

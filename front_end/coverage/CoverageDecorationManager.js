@@ -20,8 +20,8 @@ Coverage.CoverageDecorationManager = class {
     this._coverageModel = coverageModel;
     /** @type {!Map<!Common.ContentProvider, ?TextUtils.Text>} */
     this._textByProvider = new Map();
-    /** @type {!Multimap<!Common.ContentProvider, !Workspace.UISourceCode>} */
-    this._uiSourceCodeByContentProvider = new Multimap();
+    /** @type {!Platform.Multimap<!Common.ContentProvider, !Workspace.UISourceCode>} */
+    this._uiSourceCodeByContentProvider = new Platform.Multimap();
 
     for (const uiSourceCode of Workspace.workspace.uiSourceCodes()) {
       uiSourceCode.addLineDecoration(0, Coverage.CoverageDecorationManager._decoratorType, this);

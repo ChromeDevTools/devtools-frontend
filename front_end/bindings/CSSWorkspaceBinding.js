@@ -155,10 +155,10 @@ Bindings.CSSWorkspaceBinding.ModelInfo = class {
     const sourceMapManager = cssModel.sourceMapManager();
     this._sassSourceMapping = new Bindings.SASSSourceMapping(cssModel.target(), sourceMapManager, workspace);
 
-    /** @type {!Multimap<!SDK.CSSStyleSheetHeader, !Bindings.CSSWorkspaceBinding.LiveLocation>} */
-    this._locations = new Multimap();
-    /** @type {!Multimap<string, !Bindings.CSSWorkspaceBinding.LiveLocation>} */
-    this._unboundLocations = new Multimap();
+    /** @type {!Platform.Multimap<!SDK.CSSStyleSheetHeader, !Bindings.CSSWorkspaceBinding.LiveLocation>} */
+    this._locations = new Platform.Multimap();
+    /** @type {!Platform.Multimap<string, !Bindings.CSSWorkspaceBinding.LiveLocation>} */
+    this._unboundLocations = new Platform.Multimap();
   }
 
   /**

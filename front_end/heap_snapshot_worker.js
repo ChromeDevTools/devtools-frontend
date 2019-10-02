@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 // Release build has Runtime.js bundled.
 
+self.importScripts('platform/utilities.js');
 if (!self.Root || !self.Root.Runtime) {
   self.importScripts('Runtime.js');
 }

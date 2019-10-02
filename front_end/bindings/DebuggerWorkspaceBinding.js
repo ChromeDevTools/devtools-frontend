@@ -264,8 +264,8 @@ Bindings.DebuggerWorkspaceBinding.ModelData = class {
     this._resourceMapping = new Bindings.ResourceScriptMapping(debuggerModel, workspace, debuggerWorkspaceBinding);
     this._compilerMapping = new Bindings.CompilerScriptMapping(debuggerModel, workspace, debuggerWorkspaceBinding);
 
-    /** @type {!Multimap<!SDK.Script, !Bindings.DebuggerWorkspaceBinding.Location>} */
-    this._locations = new Multimap();
+    /** @type {!Platform.Multimap<!SDK.Script, !Bindings.DebuggerWorkspaceBinding.Location>} */
+    this._locations = new Platform.Multimap();
 
     debuggerModel.setBeforePausedCallback(this._beforePaused.bind(this));
   }

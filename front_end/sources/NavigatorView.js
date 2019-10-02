@@ -42,8 +42,8 @@ Sources.NavigatorView = class extends UI.VBox {
     this.contentElement.appendChild(this._scriptsTree.element);
     this.setDefaultFocusedElement(this._scriptsTree.element);
 
-    /** @type {!Multimap<!Workspace.UISourceCode, !Sources.NavigatorUISourceCodeTreeNode>} */
-    this._uiSourceCodeNodes = new Multimap();
+    /** @type {!Platform.Multimap<!Workspace.UISourceCode, !Sources.NavigatorUISourceCodeTreeNode>} */
+    this._uiSourceCodeNodes = new Platform.Multimap();
     /** @type {!Map.<string, !Sources.NavigatorFolderTreeNode>} */
     this._subfolderNodes = new Map();
 

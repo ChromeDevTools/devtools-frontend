@@ -171,6 +171,9 @@
   <message name="IDS_DEVTOOLS_383fc50a38f1666adc3f06d0bdf71467" desc="Text in Network Log View of the Network panel">
     Are you sure you want to clear browser cookies?
   </message>
+  <message name="IDS_DEVTOOLS_39b8414d89adf80e97ec0024e13e3b86" desc="Text in Request Initiator view of the Network Panel">
+    Request call stack
+  </message>
   <message name="IDS_DEVTOOLS_3b5904efd4efd03d09ee9a8f964f39d6" desc="Text in Network Log View of the Network panel">
     <ph name="NUMBER_BYTESTOSTRING_RESOURCESIZE_">$1s<ex>4</ex></ph> resources
   </message>
@@ -464,6 +467,9 @@
   </message>
   <message name="IDS_DEVTOOLS_90198f1c07c67e3a44ccc6853651ca2c" desc="A context menu item in the Network Log View Columns of the Network panel">
     Response Headers
+  </message>
+  <message name="IDS_DEVTOOLS_91398186000d456abea27e5d8805dde7" desc="Tooltip for initiator view in Network panel">
+    Request initiator call stack
   </message>
   <message name="IDS_DEVTOOLS_9146d056f26c33effdc2f83dd9e79395" desc="Text in Network Log View of the Network panel">
     Copy all as cURL (bash)

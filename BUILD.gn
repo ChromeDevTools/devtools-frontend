@@ -423,6 +423,8 @@ all_devtools_files = [
   "front_end/network/RequestHeadersView.js",
   "front_end/network/requestHTMLView.css",
   "front_end/network/RequestHTMLView.js",
+  "front_end/network/requestInitiatorView.css",
+  "front_end/network/RequestInitiatorView.js",
   "front_end/network/RequestPreviewView.js",
   "front_end/network/RequestResponseView.js",
   "front_end/network/RequestTimingView.js",

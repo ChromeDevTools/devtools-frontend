@@ -568,16 +568,14 @@ Network.NetworkLogViewColumns = class {
       return null;
     }
     const request = hoveredNode.request();
-    const initiator = request ? request.initiator() : null;
-    if (!initiator || !initiator.stack) {
+    if (!request) {
       return null;
     }
     return {
       box: anchor.boxInWindow(),
       show: popover => {
-        const manager = anchor.request ? SDK.NetworkManager.forRequest(anchor.request) : null;
-        const content = Components.JSPresentationUtils.buildStackTracePreviewContents(
-            manager ? manager.target() : null, this._popupLinkifier, initiator.stack,
+        const content = Network.RequestInitiatorView.createStackTracePreview(
+            /** @type {!SDK.NetworkRequest} */ (request), this._popupLinkifier, false,
             () => popover.setSizeBehavior(UI.GlassPane.SizeBehavior.MeasureContent));
         popover.contentElement.appendChild(content.element);
         return Promise.resolve(true);

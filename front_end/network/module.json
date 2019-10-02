@@ -201,6 +201,7 @@
         "RequestCookiesView.js",
         "RequestHeadersView.js",
         "RequestHTMLView.js",
+        "RequestInitiatorView.js",
         "RequestResponseView.js",
         "RequestPreviewView.js",
         "RequestTimingView.js",
@@ -222,6 +223,7 @@
         "requestHeadersTree.css",
         "requestHeadersView.css",
         "requestHTMLView.css",
+        "requestInitiatorView.css",
         "signedExchangeInfoTree.css",
         "signedExchangeInfoView.css",
         "webSocketFrameView.css"

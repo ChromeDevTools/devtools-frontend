@@ -39,7 +39,7 @@ Components.JSPresentationUtils = {};
  */
 Components.JSPresentationUtils.buildStackTracePreviewContents = function(
     target, linkifier, stackTrace, contentUpdated) {
-  const element = createElement('span');
+  const element = createElementWithClass('span', 'monospace');
   element.style.display = 'inline-block';
   const shadowRoot = UI.createShadowRootWithCoreStyles(element, 'components/jsUtils.css');
   const contentElement = shadowRoot.createChild('table', 'stack-preview-container');

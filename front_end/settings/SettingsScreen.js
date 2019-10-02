@@ -36,7 +36,6 @@ Settings.SettingsScreen = class extends UI.VBox {
     super(true);
     this.registerRequiredCSS('settings/settingsScreen.css');
 
-    this.contentElement.tabIndex = 0;
     this.contentElement.classList.add('settings-window-main');
     this.contentElement.classList.add('vbox');
 
@@ -73,6 +72,7 @@ Settings.SettingsScreen = class extends UI.VBox {
       return;
     }
     const dialog = new UI.Dialog();
+    dialog.contentElement.tabIndex = -1;
     dialog.addCloseButton();
     settingsScreen.show(dialog.contentElement);
     dialog.show();

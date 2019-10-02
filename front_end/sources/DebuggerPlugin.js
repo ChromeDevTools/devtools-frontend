@@ -435,6 +435,12 @@ Sources.DebuggerPlugin = class extends Sources.UISourceCodeFrame.Plugin {
     let startHighlight;
     let endHighlight;
 
+    const selectedCallFrame =
+        /** @type {!SDK.DebuggerModel.CallFrame} */ (UI.context.flavor(SDK.DebuggerModel.CallFrame));
+    if (!selectedCallFrame) {
+      return null;
+    }
+
     if (textSelection && !textSelection.isEmpty()) {
       if (textSelection.startLine !== textSelection.endLine || textSelection.startLine !== mouseLine ||
           mouseColumn < textSelection.startColumn || mouseColumn > textSelection.endColumn) {
@@ -480,20 +486,34 @@ Sources.DebuggerPlugin = class extends Sources.UISourceCodeFrame.Plugin {
       }
     }
 
+    // The eager evaluation on works sort of reliably within the top-most scope of
+    // the selected call frame, so don't even try outside the top-most scope.
+    const [scope] = selectedCallFrame.scopeChain();
+    if (scope && scope.startLocation() && scope.endLocation()) {
+      if (editorLineNumber < scope.startLocation().lineNumber) {
+        return null;
+      }
+      if (editorLineNumber === scope.startLocation().lineNumber &&
+          startHighlight < scope.startLocation().columnNumber) {
+        return null;
+      }
+      if (editorLineNumber > scope.endLocation().lineNumber) {
+        return null;
+      }
+      if (editorLineNumber === scope.endLocation().lineNumber && endHighlight > scope.endLocation().columnNumber) {
+        return null;
+      }
+    }
+
     let objectPopoverHelper;
     let highlightDescriptor;
 
     return {
       box: anchorBox,
       show: async popover => {
-        const selectedCallFrame = UI.context.flavor(SDK.DebuggerModel.CallFrame);
-        if (!selectedCallFrame) {
-          return false;
-        }
         const evaluationText = this._textEditor.line(editorLineNumber).substring(startHighlight, endHighlight + 1);
         const resolvedText = await Sources.SourceMapNamesResolver.resolveExpression(
-            /** @type {!SDK.DebuggerModel.CallFrame} */ (selectedCallFrame), evaluationText, this._uiSourceCode,
-            editorLineNumber, startHighlight, endHighlight);
+            selectedCallFrame, evaluationText, this._uiSourceCode, editorLineNumber, startHighlight, endHighlight);
         const result = await selectedCallFrame.evaluate({
           expression: resolvedText || evaluationText,
           objectGroup: 'popover',

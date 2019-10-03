@@ -515,32 +515,35 @@ var AnchorBox = class {  // eslint-disable-line
   contains(x, y) {
     return x >= this.x && x <= this.x + this.width && y >= this.y && y <= this.y + this.height;
   }
+
+  /**
+   * @param {!AnchorBox} box
+   * @return {!AnchorBox}
+   */
+  relativeTo(box) {
+    return new AnchorBox(this.x - box.x, this.y - box.y, this.width, this.height);
+  }
+
+  /**
+   * @param {!Element} element
+   * @return {!AnchorBox}
+   */
+  relativeToElement(element) {
+    return this.relativeTo(element.boxInWindow(element.ownerDocument.defaultView));
+  }
+
+  /**
+   * @param {?AnchorBox} anchorBox
+   * @return {boolean}
+   */
+  equals(anchorBox) {
+    return !!anchorBox && this.x === anchorBox.x && this.y === anchorBox.y && this.width === anchorBox.width &&
+        this.height === anchorBox.height;
+  }
 };
 
-/**
- * @param {!AnchorBox} box
- * @return {!AnchorBox}
- */
-AnchorBox.prototype.relativeTo = function(box) {
-  return new AnchorBox(this.x - box.x, this.y - box.y, this.width, this.height);
-};
-
-/**
- * @param {!Element} element
- * @return {!AnchorBox}
- */
-AnchorBox.prototype.relativeToElement = function(element) {
-  return this.relativeTo(element.boxInWindow(element.ownerDocument.defaultView));
-};
-
-/**
- * @param {?AnchorBox} anchorBox
- * @return {boolean}
- */
-AnchorBox.prototype.equals = function(anchorBox) {
-  return !!anchorBox && this.x === anchorBox.x && this.y === anchorBox.y && this.width === anchorBox.width &&
-      this.height === anchorBox.height;
-};
+/** @constructor */
+self.AnchorBox = AnchorBox;
 
 /**
  * @param {?Window=} targetWindow

@@ -4,6 +4,7 @@
 
 import './Runtime.js';
 import './platform/utilities.js';
+import './dom_extension/DOMExtension.js';
 import './common/common.js';
 import './host/host.js';
 import './ui/ui.js';

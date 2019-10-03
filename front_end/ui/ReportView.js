@@ -4,7 +4,7 @@
 /**
  * @unrestricted
  */
-UI.ReportView = class extends UI.VBox {
+export default class ReportView extends UI.VBox {
   /**
    * @param {string=} title
    */
@@ -69,19 +69,19 @@ UI.ReportView = class extends UI.VBox {
   /**
    * @param {string} title
    * @param {string=} className
-   * @return {!UI.ReportView.Section}
+   * @return {!Section}
    */
   appendSection(title, className) {
-    const section = new UI.ReportView.Section(title, className);
+    const section = new Section(title, className);
     section.show(this._sectionList);
     return section;
   }
 
   /**
-   * @param {function(!UI.ReportView.Section, !UI.ReportView.Section): number} comparator
+   * @param {function(!Section, !Section): number} comparator
    */
   sortSections(comparator) {
-    const sections = /** @type {!Array<!UI.ReportView.Section>} */ (this.children().slice());
+    const sections = /** @type {!Array<!Section>} */ (this.children().slice());
     const sorted = sections.every((e, i, a) => !i || comparator(a[i - 1], a[i]) <= 0);
     if (sorted) {
       return;
@@ -108,12 +108,12 @@ UI.ReportView = class extends UI.VBox {
   setBodyScrollable(scrollable) {
     this._contentBox.classList.toggle('no-scroll', !scrollable);
   }
-};
+}
 
 /**
  * @unrestricted
  */
-UI.ReportView.Section = class extends UI.VBox {
+export class Section extends UI.VBox {
   /**
    * @param {string} title
    * @param {string=} className
@@ -232,4 +232,18 @@ UI.ReportView.Section = class extends UI.VBox {
     UI.ARIAUtils.markAsGroup(this._fieldList);
     UI.ARIAUtils.setAccessibleName(this._fieldList, this.title());
   }
-};
+}
+
+/* Legacy exported object*/
+self.UI = self.UI || {};
+
+/* Legacy exported object*/
+UI = UI || {};
+
+/** @constructor */
+UI.ReportView = ReportView;
+
+/**
+ * @constructor
+ */
+UI.ReportView.Section = Section;

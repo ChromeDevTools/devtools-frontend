@@ -30,7 +30,7 @@
 /**
  * @unrestricted
  */
-UI.KeyboardShortcut = class {
+export default class KeyboardShortcut {
   /**
    * Creates a number encoding keyCode in the lower 8 bits and modifiers mask in the higher 8 bits.
    * It is useful for matching pressed keys.
@@ -43,8 +43,8 @@ UI.KeyboardShortcut = class {
     if (typeof keyCode === 'string') {
       keyCode = keyCode.charCodeAt(0) - (/^[a-z]/.test(keyCode) ? 32 : 0);
     }
-    modifiers = modifiers || UI.KeyboardShortcut.Modifiers.None;
-    return UI.KeyboardShortcut._makeKeyFromCodeAndModifiers(keyCode, modifiers);
+    modifiers = modifiers || KeyboardShortcut.Modifiers.None;
+    return KeyboardShortcut._makeKeyFromCodeAndModifiers(keyCode, modifiers);
   }
 
   /**
@@ -52,23 +52,23 @@ UI.KeyboardShortcut = class {
    * @return {number}
    */
   static makeKeyFromEvent(keyboardEvent) {
-    let modifiers = UI.KeyboardShortcut.Modifiers.None;
+    let modifiers = KeyboardShortcut.Modifiers.None;
     if (keyboardEvent.shiftKey) {
-      modifiers |= UI.KeyboardShortcut.Modifiers.Shift;
+      modifiers |= KeyboardShortcut.Modifiers.Shift;
     }
     if (keyboardEvent.ctrlKey) {
-      modifiers |= UI.KeyboardShortcut.Modifiers.Ctrl;
+      modifiers |= KeyboardShortcut.Modifiers.Ctrl;
     }
     if (keyboardEvent.altKey) {
-      modifiers |= UI.KeyboardShortcut.Modifiers.Alt;
+      modifiers |= KeyboardShortcut.Modifiers.Alt;
     }
     if (keyboardEvent.metaKey) {
-      modifiers |= UI.KeyboardShortcut.Modifiers.Meta;
+      modifiers |= KeyboardShortcut.Modifiers.Meta;
     }
 
     // Use either a real or a synthetic keyCode (for events originating from extensions).
     const keyCode = keyboardEvent.keyCode || keyboardEvent['__keyCode'];
-    return UI.KeyboardShortcut._makeKeyFromCodeAndModifiers(keyCode, modifiers);
+    return KeyboardShortcut._makeKeyFromCodeAndModifiers(keyCode, modifiers);
   }
 
   /**
@@ -77,7 +77,7 @@ UI.KeyboardShortcut = class {
    */
   static makeKeyFromEventIgnoringModifiers(keyboardEvent) {
     const keyCode = keyboardEvent.keyCode || keyboardEvent['__keyCode'];
-    return UI.KeyboardShortcut._makeKeyFromCodeAndModifiers(keyCode, UI.KeyboardShortcut.Modifiers.None);
+    return KeyboardShortcut._makeKeyFromCodeAndModifiers(keyCode, KeyboardShortcut.Modifiers.None);
   }
 
   /**
@@ -99,26 +99,26 @@ UI.KeyboardShortcut = class {
   /**
    * @param {string|!UI.KeyboardShortcut.Key} key
    * @param {number=} modifiers
-   * @return {!UI.KeyboardShortcut.Descriptor}
+   * @return {!KeyboardShortcut.Descriptor}
    */
   static makeDescriptor(key, modifiers) {
     return {
-      key: UI.KeyboardShortcut.makeKey(typeof key === 'string' ? key : key.code, modifiers),
-      name: UI.KeyboardShortcut.shortcutToString(key, modifiers)
+      key: KeyboardShortcut.makeKey(typeof key === 'string' ? key : key.code, modifiers),
+      name: KeyboardShortcut.shortcutToString(key, modifiers)
     };
   }
 
   /**
    * @param {string} shortcut
-   * @return {?UI.KeyboardShortcut.Descriptor}
+   * @return {?KeyboardShortcut.Descriptor}
    */
   static makeDescriptorFromBindingShortcut(shortcut) {
     const parts = shortcut.split(/\+(?!$)/);
     let modifiers = 0;
     let keyString;
     for (let i = 0; i < parts.length; ++i) {
-      if (typeof UI.KeyboardShortcut.Modifiers[parts[i]] !== 'undefined') {
-        modifiers |= UI.KeyboardShortcut.Modifiers[parts[i]];
+      if (typeof KeyboardShortcut.Modifiers[parts[i]] !== 'undefined') {
+        modifiers |= KeyboardShortcut.Modifiers[parts[i]];
         continue;
       }
       console.assert(
@@ -131,11 +131,11 @@ UI.KeyboardShortcut = class {
       return null;
     }
 
-    const key = UI.KeyboardShortcut.Keys[keyString] || UI.KeyboardShortcut.KeyBindings[keyString];
+    const key = KeyboardShortcut.Keys[keyString] || KeyboardShortcut.KeyBindings[keyString];
     if (key && key.shiftKey) {
-      modifiers |= UI.KeyboardShortcut.Modifiers.Shift;
+      modifiers |= KeyboardShortcut.Modifiers.Shift;
     }
-    return UI.KeyboardShortcut.makeDescriptor(key ? key : keyString, modifiers);
+    return KeyboardShortcut.makeDescriptor(key ? key : keyString, modifiers);
   }
 
   /**
@@ -144,7 +144,7 @@ UI.KeyboardShortcut = class {
    * @return {string}
    */
   static shortcutToString(key, modifiers) {
-    return UI.KeyboardShortcut._modifiersToString(modifiers) + UI.KeyboardShortcut._keyName(key);
+    return KeyboardShortcut._modifiersToString(modifiers) + KeyboardShortcut._keyName(key);
   }
 
   /**
@@ -184,7 +184,7 @@ UI.KeyboardShortcut = class {
    */
   static _modifiersToString(modifiers) {
     const isMac = Host.isMac();
-    const m = UI.KeyboardShortcut.Modifiers;
+    const m = KeyboardShortcut.Modifiers;
     const modifierNames = new Map([
       [m.Ctrl, isMac ? 'Ctrl\u2004' : 'Ctrl\u200A+\u200A'], [m.Alt, isMac ? '\u2325\u2004' : 'Alt\u200A+\u200A'],
       [m.Shift, isMac ? '\u21e7\u2004' : 'Shift\u200A+\u200A'], [m.Meta, isMac ? '\u2318\u2004' : 'Win\u200A+\u200A']
@@ -199,13 +199,13 @@ UI.KeyboardShortcut = class {
       return modifiers & m ? /** @type {string} */ (modifierNames.get(m)) : '';
     }
   }
-};
+}
 
 /**
  * Constants for encoding modifier key set as a bit mask.
  * @see #_makeKeyFromCodeAndModifiers
  */
-UI.KeyboardShortcut.Modifiers = {
+export const Modifiers = {
   None: 0,  // Constant for empty modifiers set.
   Shift: 1,
   Ctrl: 2,
@@ -221,11 +221,8 @@ UI.KeyboardShortcut.Modifiers = {
   }
 };
 
-/** @typedef {!{code: number, name: (string|!Object.<string, string>)}} */
-UI.KeyboardShortcut.Key;
-
 /** @type {!Object.<string, !UI.KeyboardShortcut.Key>} */
-UI.KeyboardShortcut.Keys = {
+export const Keys = {
   Backspace: {code: 8, name: '\u21a4'},
   Tab: {code: 9, name: {mac: '\u21e5', other: 'Tab'}},
   Enter: {code: 13, name: {mac: '\u21a9', other: 'Enter'}},
@@ -281,18 +278,40 @@ UI.KeyboardShortcut.Keys = {
   },
 };
 
-UI.KeyboardShortcut.KeyBindings = {};
+export const KeyBindings = {};
 
 (function() {
-for (const key in UI.KeyboardShortcut.Keys) {
-  const descriptor = UI.KeyboardShortcut.Keys[key];
+for (const key in KeyboardShortcut.Keys) {
+  const descriptor = KeyboardShortcut.Keys[key];
   if (typeof descriptor === 'object' && descriptor['code']) {
     const name = typeof descriptor['name'] === 'string' ? descriptor['name'] : key;
-    UI.KeyboardShortcut.KeyBindings[name] = descriptor;
+    KeyboardShortcut.KeyBindings[name] = descriptor;
   }
 }
 })();
 
+/* Legacy exported object*/
+self.UI = self.UI || {};
+
+/* Legacy exported object*/
+UI = UI || {};
+
+/** @constructor */
+UI.KeyboardShortcut = KeyboardShortcut;
+
+/**
+ * Constants for encoding modifier key set as a bit mask.
+ * @see #_makeKeyFromCodeAndModifiers
+ */
+UI.KeyboardShortcut.Modifiers = Modifiers;
+
+/** @type {!Object.<string, !UI.KeyboardShortcut.Key>} */
+UI.KeyboardShortcut.Keys = Keys;
+
+UI.KeyboardShortcut.KeyBindings = KeyBindings;
+
+/** @typedef {!{code: number, name: (string|!Object.<string, string>)}} */
+UI.KeyboardShortcut.Key;
 
 /** @typedef {!{key: number, name: string}} */
 UI.KeyboardShortcut.Descriptor;

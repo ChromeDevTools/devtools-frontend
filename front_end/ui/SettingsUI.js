@@ -27,7 +27,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-UI.SettingsUI = {};
+const SettingsUI = {};
+
+export default SettingsUI;
 
 /**
  * @param {string} name
@@ -36,7 +38,7 @@ UI.SettingsUI = {};
  * @param {string=} tooltip
  * @return {!Element}
  */
-UI.SettingsUI.createSettingCheckbox = function(name, setting, omitParagraphElement, tooltip) {
+export const createSettingCheckbox = function(name, setting, omitParagraphElement, tooltip) {
   const label = UI.CheckboxLabel.create(name);
   if (tooltip) {
     label.title = tooltip;
@@ -44,7 +46,7 @@ UI.SettingsUI.createSettingCheckbox = function(name, setting, omitParagraphEleme
 
   const input = label.checkboxElement;
   input.name = name;
-  UI.SettingsUI.bindCheckbox(input, setting);
+  bindCheckbox(input, setting);
 
   if (omitParagraphElement) {
     return label;
@@ -62,7 +64,7 @@ UI.SettingsUI.createSettingCheckbox = function(name, setting, omitParagraphEleme
  * @param {string=} subtitle
  * @return {!Element}
  */
-UI.SettingsUI.createSettingSelect = function(name, options, setting, subtitle) {
+export const createSettingSelect = function(name, options, setting, subtitle) {
   const settingSelectElement = createElement('p');
   const label = settingSelectElement.createChild('label');
   const select = settingSelectElement.createChild('select', 'chrome-select');
@@ -104,7 +106,7 @@ UI.SettingsUI.createSettingSelect = function(name, options, setting, subtitle) {
  * @param {!Element} input
  * @param {!Common.Setting} setting
  */
-UI.SettingsUI.bindCheckbox = function(input, setting) {
+export const bindCheckbox = function(input, setting) {
   function settingChanged() {
     if (input.checked !== setting.get()) {
       input.checked = setting.get();
@@ -126,7 +128,7 @@ UI.SettingsUI.bindCheckbox = function(input, setting) {
  * @param {!Element} element
  * @return {!Element}
  */
-UI.SettingsUI.createCustomSetting = function(name, element) {
+export const createCustomSetting = function(name, element) {
   const p = createElement('p');
   const fieldsetElement = p.createChild('fieldset');
   const label = fieldsetElement.createChild('label');
@@ -141,7 +143,7 @@ UI.SettingsUI.createCustomSetting = function(name, element) {
  * @param {string=} subtitle
  * @return {?Element}
  */
-UI.SettingsUI.createControlForSetting = function(setting, subtitle) {
+export const createControlForSetting = function(setting, subtitle) {
   if (!setting.extension()) {
     return null;
   }
@@ -149,10 +151,10 @@ UI.SettingsUI.createControlForSetting = function(setting, subtitle) {
   const uiTitle = Common.UIString(setting.title() || '');
   switch (descriptor['settingType']) {
     case 'boolean':
-      return UI.SettingsUI.createSettingCheckbox(uiTitle, setting);
+      return createSettingCheckbox(uiTitle, setting);
     case 'enum':
       if (Array.isArray(descriptor['options'])) {
-        return UI.SettingsUI.createSettingSelect(uiTitle, descriptor['options'], setting, subtitle);
+        return createSettingSelect(uiTitle, descriptor['options'], setting, subtitle);
       }
       console.error('Enum setting defined without options');
       return null;
@@ -165,11 +167,60 @@ UI.SettingsUI.createControlForSetting = function(setting, subtitle) {
 /**
  * @interface
  */
-UI.SettingUI = function() {};
-
-UI.SettingUI.prototype = {
+export class SettingUI {
   /**
    * @return {?Element}
    */
   settingElement() {}
-};
+}
+
+/* Legacy exported object*/
+self.UI = self.UI || {};
+
+/* Legacy exported object*/
+UI = UI || {};
+
+UI.SettingsUI = SettingsUI;
+
+/**
+ * @interface
+ */
+UI.SettingUI = SettingUI;
+
+/**
+ * @param {string} name
+ * @param {!Common.Setting} setting
+ * @param {boolean=} omitParagraphElement
+ * @param {string=} tooltip
+ * @return {!Element}
+ */
+UI.SettingsUI.createSettingCheckbox = createSettingCheckbox;
+
+/**
+ * @param {string} name
+ * @param {!Array<!{text: string, value: *, raw: (boolean|undefined)}>} options
+ * @param {!Common.Setting} setting
+ * @param {string=} subtitle
+ * @return {!Element}
+ */
+UI.SettingsUI.createSettingSelect = createSettingSelect;
+
+/**
+ * @param {!Element} input
+ * @param {!Common.Setting} setting
+ */
+UI.SettingsUI.bindCheckbox = bindCheckbox;
+
+/**
+ * @param {string} name
+ * @param {!Element} element
+ * @return {!Element}
+ */
+UI.SettingsUI.createCustomSetting = createCustomSetting;
+
+/**
+ * @param {!Common.Setting} setting
+ * @param {string=} subtitle
+ * @return {?Element}
+ */
+UI.SettingsUI.createControlForSetting = createControlForSetting;

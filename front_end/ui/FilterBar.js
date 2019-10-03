@@ -31,7 +31,7 @@
 /**
  * @unrestricted
  */
-UI.FilterBar = class extends UI.HBox {
+export default class FilterBar extends UI.HBox {
   /**
    * @param {string} name
    * @param {boolean=} visibleByDefault
@@ -59,12 +59,12 @@ UI.FilterBar = class extends UI.HBox {
   }
 
   /**
-   * @param {!UI.FilterUI} filter
+   * @param {!FilterUI} filter
    */
   addFilter(filter) {
     this._filters.push(filter);
     this.element.appendChild(filter.element());
-    filter.addEventListener(UI.FilterUI.Events.FilterChanged, this._filterChanged, this);
+    filter.addEventListener(FilterUI.Events.FilterChanged, this._filterChanged, this);
     this._updateFilterButton();
   }
 
@@ -116,8 +116,8 @@ UI.FilterBar = class extends UI.HBox {
    */
   focus() {
     for (let i = 0; i < this._filters.length; ++i) {
-      if (this._filters[i] instanceof UI.TextFilterUI) {
-        const textFilterUI = /** @type {!UI.TextFilterUI} */ (this._filters[i]);
+      if (this._filters[i] instanceof TextFilterUI) {
+        const textFilterUI = /** @type {!TextFilterUI} */ (this._filters[i]);
         textFilterUI.focus();
         break;
       }
@@ -146,36 +146,34 @@ UI.FilterBar = class extends UI.HBox {
   visible() {
     return this._alwaysShowFilters || (this._stateSetting.get() && this._enabled);
   }
-};
+}
 
 /**
  * @interface
- * @extends {Common.EventTarget}
  */
-UI.FilterUI = function() {};
-
-/** @enum {symbol} */
-UI.FilterUI.Events = {
-  FilterChanged: Symbol('FilterChanged')
-};
-
-UI.FilterUI.prototype = {
+export class FilterUI extends Common.EventTarget {
   /**
    * @return {boolean}
    */
-  isActive() {},
+  isActive() {
+  }
 
   /**
    * @return {!Element}
    */
   element() {}
+}
+
+/** @enum {symbol} */
+FilterUI.Events = {
+  FilterChanged: Symbol('FilterChanged')
 };
 
 /**
  * @implements {UI.FilterUI}
  * @unrestricted
  */
-UI.TextFilterUI = class extends Common.Object {
+export class TextFilterUI extends Common.Object {
   constructor() {
     super();
     this._filterElement = createElement('div');
@@ -250,15 +248,15 @@ UI.TextFilterUI = class extends Common.Object {
   }
 
   _valueChanged() {
-    this.dispatchEventToListeners(UI.FilterUI.Events.FilterChanged, null);
+    this.dispatchEventToListeners(FilterUI.Events.FilterChanged, null);
   }
-};
+}
 
 /**
- * @implements {UI.FilterUI}
+ * @implements {FilterUI}
  * @unrestricted
  */
-UI.NamedBitSetFilterUI = class extends Common.Object {
+export class NamedBitSetFilterUI extends Common.Object {
   /**
    * @param {!Array.<!UI.NamedBitSetFilterUI.Item>} items
    * @param {!Common.Setting=} setting
@@ -275,7 +273,7 @@ UI.NamedBitSetFilterUI = class extends Common.Object {
     this._allowedTypes = {};
     /** @type {!Array.<!Element>} */
     this._typeFilterElements = [];
-    this._addBit(UI.NamedBitSetFilterUI.ALL_TYPES, Common.UIString('All'));
+    this._addBit(NamedBitSetFilterUI.ALL_TYPES, Common.UIString('All'));
     this._typeFilterElements[0].tabIndex = 0;
     this._filtersElement.createChild('div', 'filter-bitset-filter-divider');
 
@@ -288,12 +286,12 @@ UI.NamedBitSetFilterUI = class extends Common.Object {
       setting.addChangeListener(this._settingChanged.bind(this));
       this._settingChanged();
     } else {
-      this._toggleTypeFilter(UI.NamedBitSetFilterUI.ALL_TYPES, false /* allowMultiSelect */);
+      this._toggleTypeFilter(NamedBitSetFilterUI.ALL_TYPES, false /* allowMultiSelect */);
     }
   }
 
   reset() {
-    this._toggleTypeFilter(UI.NamedBitSetFilterUI.ALL_TYPES, false /* allowMultiSelect */);
+    this._toggleTypeFilter(NamedBitSetFilterUI.ALL_TYPES, false /* allowMultiSelect */);
   }
 
   /**
@@ -301,7 +299,7 @@ UI.NamedBitSetFilterUI = class extends Common.Object {
    * @return {boolean}
    */
   isActive() {
-    return !this._allowedTypes[UI.NamedBitSetFilterUI.ALL_TYPES];
+    return !this._allowedTypes[NamedBitSetFilterUI.ALL_TYPES];
   }
 
   /**
@@ -317,7 +315,7 @@ UI.NamedBitSetFilterUI = class extends Common.Object {
    * @return {boolean}
    */
   accept(typeName) {
-    return !!this._allowedTypes[UI.NamedBitSetFilterUI.ALL_TYPES] || !!this._allowedTypes[typeName];
+    return !!this._allowedTypes[NamedBitSetFilterUI.ALL_TYPES] || !!this._allowedTypes[typeName];
   }
 
   _settingChanged() {
@@ -332,9 +330,9 @@ UI.NamedBitSetFilterUI = class extends Common.Object {
   }
 
   _update() {
-    if ((Object.keys(this._allowedTypes).length === 0) || this._allowedTypes[UI.NamedBitSetFilterUI.ALL_TYPES]) {
+    if ((Object.keys(this._allowedTypes).length === 0) || this._allowedTypes[NamedBitSetFilterUI.ALL_TYPES]) {
       this._allowedTypes = {};
-      this._allowedTypes[UI.NamedBitSetFilterUI.ALL_TYPES] = true;
+      this._allowedTypes[NamedBitSetFilterUI.ALL_TYPES] = true;
     }
     for (const element of this._typeFilterElements) {
       const typeName = element.typeName;
@@ -342,7 +340,7 @@ UI.NamedBitSetFilterUI = class extends Common.Object {
       element.classList.toggle('selected', active);
       UI.ARIAUtils.setSelected(element, active);
     }
-    this.dispatchEventToListeners(UI.FilterUI.Events.FilterChanged, null);
+    this.dispatchEventToListeners(FilterUI.Events.FilterChanged, null);
   }
 
   /**
@@ -426,8 +424,8 @@ UI.NamedBitSetFilterUI = class extends Common.Object {
    * @param {boolean} allowMultiSelect
    */
   _toggleTypeFilter(typeName, allowMultiSelect) {
-    if (allowMultiSelect && typeName !== UI.NamedBitSetFilterUI.ALL_TYPES) {
-      this._allowedTypes[UI.NamedBitSetFilterUI.ALL_TYPES] = false;
+    if (allowMultiSelect && typeName !== NamedBitSetFilterUI.ALL_TYPES) {
+      this._allowedTypes[NamedBitSetFilterUI.ALL_TYPES] = false;
     } else {
       this._allowedTypes = {};
     }
@@ -440,18 +438,15 @@ UI.NamedBitSetFilterUI = class extends Common.Object {
       this._update();
     }
   }
-};
+}
 
-/** @typedef {{name: string, label: string, title: (string|undefined)}} */
-UI.NamedBitSetFilterUI.Item;
-
-UI.NamedBitSetFilterUI.ALL_TYPES = 'all';
+NamedBitSetFilterUI.ALL_TYPES = 'all';
 
 /**
  * @implements {UI.FilterUI}
  * @unrestricted
  */
-UI.CheckboxFilterUI = class extends Common.Object {
+export class CheckboxFilterUI extends Common.Object {
   /**
    * @param {string} className
    * @param {string} title
@@ -511,7 +506,7 @@ UI.CheckboxFilterUI = class extends Common.Object {
   }
 
   _fireUpdated() {
-    this.dispatchEventToListeners(UI.FilterUI.Events.FilterChanged, null);
+    this.dispatchEventToListeners(FilterUI.Events.FilterChanged, null);
   }
 
   /**
@@ -522,4 +517,28 @@ UI.CheckboxFilterUI = class extends Common.Object {
     this._label.backgroundColor = backgroundColor;
     this._label.borderColor = borderColor;
   }
-};
+}
+
+/* Legacy exported object*/
+self.UI = self.UI || {};
+
+/* Legacy exported object*/
+UI = UI || {};
+
+/** @constructor */
+UI.FilterBar = FilterBar;
+
+/** @interface */
+UI.FilterUI = FilterUI;
+
+/** @constructor */
+UI.TextFilterUI = TextFilterUI;
+
+/** @constructor */
+UI.NamedBitSetFilterUI = NamedBitSetFilterUI;
+
+/** @constructor */
+UI.CheckboxFilterUI = CheckboxFilterUI;
+
+/** @typedef {{name: string, label: string, title: (string|undefined)}} */
+UI.NamedBitSetFilterUI.Item;

@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-UI.TargetCrashedScreen = class extends UI.VBox {
+export default class TargetCrashedScreen extends UI.VBox {
   /**
    * @param {function()} hideCallback
    */
@@ -22,4 +22,13 @@ UI.TargetCrashedScreen = class extends UI.VBox {
   willHide() {
     this._hideCallback.call(null);
   }
-};
+}
+
+/* Legacy exported object*/
+self.UI = self.UI || {};
+
+/* Legacy exported object*/
+UI = UI || {};
+
+/** @constructor */
+UI.TargetCrashedScreen = TargetCrashedScreen;

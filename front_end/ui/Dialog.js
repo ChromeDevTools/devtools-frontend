@@ -28,8 +28,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-UI.Dialog = class extends UI.GlassPane {
-
+export default class Dialog extends UI.GlassPane {
   constructor() {
     super();
     this.registerRequiredCSS('ui/dialog.css');
@@ -130,4 +129,13 @@ UI.Dialog = class extends UI.GlassPane {
       this.hide();
     }
   }
-};
+}
+
+/* Legacy exported object*/
+self.UI = self.UI || {};
+
+/* Legacy exported object*/
+UI = UI || {};
+
+/** @constructor */
+UI.Dialog = Dialog;

@@ -31,9 +31,9 @@
 /**
  * @unrestricted
  */
-UI.ShortcutsScreen = class {
+export default class ShortcutsScreen {
   constructor() {
-    /** @type {!Object.<string, !UI.ShortcutsSection>} */
+    /** @type {!Object.<string, !ShortcutsSection>} */
     this._sections = {};
   }
 
@@ -41,16 +41,13 @@ UI.ShortcutsScreen = class {
     // Elements panel
     const elementsSection = UI.shortcutsScreen.section(Common.UIString('Elements Panel'));
 
-    const navigate = UI.ShortcutsScreen.ElementsPanelShortcuts.NavigateUp.concat(
-        UI.ShortcutsScreen.ElementsPanelShortcuts.NavigateDown);
+    const navigate = ElementsPanelShortcuts.NavigateUp.concat(ElementsPanelShortcuts.NavigateDown);
     elementsSection.addRelatedKeys(navigate, Common.UIString('Navigate elements'));
 
-    const expandCollapse =
-        UI.ShortcutsScreen.ElementsPanelShortcuts.Expand.concat(UI.ShortcutsScreen.ElementsPanelShortcuts.Collapse);
+    const expandCollapse = ElementsPanelShortcuts.Expand.concat(ElementsPanelShortcuts.Collapse);
     elementsSection.addRelatedKeys(expandCollapse, Common.UIString('Expand/collapse'));
 
-    elementsSection.addAlternateKeys(
-        UI.ShortcutsScreen.ElementsPanelShortcuts.EditAttribute, Common.UIString('Edit attribute'));
+    elementsSection.addAlternateKeys(ElementsPanelShortcuts.EditAttribute, Common.UIString('Edit attribute'));
     elementsSection.addAlternateKeys(
         UI.shortcutRegistry.shortcutDescriptorsForAction('elements.hide-element'), Common.UIString('Hide element'));
     elementsSection.addAlternateKeys(
@@ -60,48 +57,36 @@ UI.ShortcutsScreen = class {
     // Styles pane
     const stylesPaneSection = UI.shortcutsScreen.section(Common.UIString('Styles Pane'));
 
-    const nextPreviousProperty = UI.ShortcutsScreen.ElementsPanelShortcuts.NextProperty.concat(
-        UI.ShortcutsScreen.ElementsPanelShortcuts.PreviousProperty);
+    const nextPreviousProperty = ElementsPanelShortcuts.NextProperty.concat(ElementsPanelShortcuts.PreviousProperty);
     stylesPaneSection.addRelatedKeys(nextPreviousProperty, Common.UIString('Next/previous property'));
 
-    stylesPaneSection.addRelatedKeys(
-        UI.ShortcutsScreen.ElementsPanelShortcuts.IncrementValue, Common.UIString('Increment value'));
-    stylesPaneSection.addRelatedKeys(
-        UI.ShortcutsScreen.ElementsPanelShortcuts.DecrementValue, Common.UIString('Decrement value'));
+    stylesPaneSection.addRelatedKeys(ElementsPanelShortcuts.IncrementValue, Common.UIString('Increment value'));
+    stylesPaneSection.addRelatedKeys(ElementsPanelShortcuts.DecrementValue, Common.UIString('Decrement value'));
 
-    stylesPaneSection.addAlternateKeys(
-        UI.ShortcutsScreen.ElementsPanelShortcuts.IncrementBy10, Common.UIString('Increment by %f', 10));
-    stylesPaneSection.addAlternateKeys(
-        UI.ShortcutsScreen.ElementsPanelShortcuts.DecrementBy10, Common.UIString('Decrement by %f', 10));
+    stylesPaneSection.addAlternateKeys(ElementsPanelShortcuts.IncrementBy10, Common.UIString('Increment by %f', 10));
+    stylesPaneSection.addAlternateKeys(ElementsPanelShortcuts.DecrementBy10, Common.UIString('Decrement by %f', 10));
 
-    stylesPaneSection.addAlternateKeys(
-        UI.ShortcutsScreen.ElementsPanelShortcuts.IncrementBy100, Common.UIString('Increment by %f', 100));
-    stylesPaneSection.addAlternateKeys(
-        UI.ShortcutsScreen.ElementsPanelShortcuts.DecrementBy100, Common.UIString('Decrement by %f', 100));
+    stylesPaneSection.addAlternateKeys(ElementsPanelShortcuts.IncrementBy100, Common.UIString('Increment by %f', 100));
+    stylesPaneSection.addAlternateKeys(ElementsPanelShortcuts.DecrementBy100, Common.UIString('Decrement by %f', 100));
 
-    stylesPaneSection.addAlternateKeys(
-        UI.ShortcutsScreen.ElementsPanelShortcuts.IncrementBy01, Common.UIString('Increment by %f', 0.1));
-    stylesPaneSection.addAlternateKeys(
-        UI.ShortcutsScreen.ElementsPanelShortcuts.DecrementBy01, Common.UIString('Decrement by %f', 0.1));
+    stylesPaneSection.addAlternateKeys(ElementsPanelShortcuts.IncrementBy01, Common.UIString('Increment by %f', 0.1));
+    stylesPaneSection.addAlternateKeys(ElementsPanelShortcuts.DecrementBy01, Common.UIString('Decrement by %f', 0.1));
 
     // Console
     const consoleSection = UI.shortcutsScreen.section(Common.UIString('Console'));
 
     consoleSection.addAlternateKeys(
         UI.shortcutRegistry.shortcutDescriptorsForAction('console.clear'), Common.UIString('Clear console'));
-    consoleSection.addRelatedKeys(
-        UI.ShortcutsScreen.ConsolePanelShortcuts.AcceptSuggestion, Common.UIString('Accept suggestion'));
-    consoleSection.addAlternateKeys(
-        UI.ShortcutsScreen.ConsolePanelShortcuts.ClearConsolePrompt, Common.UIString('Clear console prompt'));
-    consoleSection.addRelatedKeys(
-        UI.ShortcutsScreen.ConsolePanelShortcuts.NextPreviousLine, Common.UIString('Next/previous line'));
+    consoleSection.addRelatedKeys(ConsolePanelShortcuts.AcceptSuggestion, Common.UIString('Accept suggestion'));
+    consoleSection.addAlternateKeys(ConsolePanelShortcuts.ClearConsolePrompt, Common.UIString('Clear console prompt'));
+    consoleSection.addRelatedKeys(ConsolePanelShortcuts.NextPreviousLine, Common.UIString('Next/previous line'));
 
     if (Host.isMac()) {
       consoleSection.addRelatedKeys(
-          UI.ShortcutsScreen.ConsolePanelShortcuts.NextPreviousCommand, Common.UIString('Next/previous command'));
+          ConsolePanelShortcuts.NextPreviousCommand, Common.UIString('Next/previous command'));
     }
 
-    consoleSection.addKey(UI.ShortcutsScreen.ConsolePanelShortcuts.ExecuteCommand, Common.UIString('Execute command'));
+    consoleSection.addKey(ConsolePanelShortcuts.ExecuteCommand, Common.UIString('Execute command'));
 
     // Debugger
     const debuggerSection = UI.shortcutsScreen.section(Common.UIString('Debugger'));
@@ -121,10 +106,9 @@ UI.ShortcutsScreen = class {
     debuggerSection.addRelatedKeys(nextAndPrevFrameKeys, Common.UIString('Next/previous call frame'));
 
     debuggerSection.addAlternateKeys(
-        UI.ShortcutsScreen.SourcesPanelShortcuts.EvaluateSelectionInConsole,
-        Common.UIString('Evaluate selection in console'));
+        SourcesPanelShortcuts.EvaluateSelectionInConsole, Common.UIString('Evaluate selection in console'));
     debuggerSection.addAlternateKeys(
-        UI.ShortcutsScreen.SourcesPanelShortcuts.AddSelectionToWatch, Common.UIString('Add selection to watch'));
+        SourcesPanelShortcuts.AddSelectionToWatch, Common.UIString('Add selection to watch'));
     debuggerSection.addAlternateKeys(
         UI.shortcutRegistry.shortcutDescriptorsForAction('debugger.toggle-breakpoint'),
         Common.UIString('Toggle breakpoint'));
@@ -143,8 +127,7 @@ UI.ShortcutsScreen = class {
 
     editingSection.addAlternateKeys(
         UI.shortcutRegistry.shortcutDescriptorsForAction('sources.go-to-member'), Common.UIString('Go to member'));
-    editingSection.addAlternateKeys(
-        UI.ShortcutsScreen.SourcesPanelShortcuts.ToggleAutocompletion, Common.UIString('Autocompletion'));
+    editingSection.addAlternateKeys(SourcesPanelShortcuts.ToggleAutocompletion, Common.UIString('Autocompletion'));
     editingSection.addAlternateKeys(
         UI.shortcutRegistry.shortcutDescriptorsForAction('sources.go-to-line'), Common.UIString('Go to line'));
     editingSection.addAlternateKeys(
@@ -153,21 +136,20 @@ UI.ShortcutsScreen = class {
     editingSection.addAlternateKeys(
         UI.shortcutRegistry.shortcutDescriptorsForAction('sources.jump-to-next-location'),
         Common.UIString('Jump to next editing location'));
+    editingSection.addAlternateKeys(SourcesPanelShortcuts.ToggleComment, Common.UIString('Toggle comment'));
     editingSection.addAlternateKeys(
-        UI.ShortcutsScreen.SourcesPanelShortcuts.ToggleComment, Common.UIString('Toggle comment'));
+        SourcesPanelShortcuts.IncreaseCSSUnitByOne, Common.UIString('Increment CSS unit by 1'));
     editingSection.addAlternateKeys(
-        UI.ShortcutsScreen.SourcesPanelShortcuts.IncreaseCSSUnitByOne, Common.UIString('Increment CSS unit by 1'));
+        SourcesPanelShortcuts.DecreaseCSSUnitByOne, Common.UIString('Decrement CSS unit by 1'));
     editingSection.addAlternateKeys(
-        UI.ShortcutsScreen.SourcesPanelShortcuts.DecreaseCSSUnitByOne, Common.UIString('Decrement CSS unit by 1'));
+        SourcesPanelShortcuts.IncreaseCSSUnitByTen, Common.UIString('Increment CSS unit by 10'));
     editingSection.addAlternateKeys(
-        UI.ShortcutsScreen.SourcesPanelShortcuts.IncreaseCSSUnitByTen, Common.UIString('Increment CSS unit by 10'));
+        SourcesPanelShortcuts.DecreaseCSSUnitByTen, Common.UIString('Decrement CSS unit by 10'));
     editingSection.addAlternateKeys(
-        UI.ShortcutsScreen.SourcesPanelShortcuts.DecreaseCSSUnitByTen, Common.UIString('Decrement CSS unit by 10'));
+        SourcesPanelShortcuts.SelectNextOccurrence, Common.UIString('Select next occurrence'));
+    editingSection.addAlternateKeys(SourcesPanelShortcuts.SoftUndo, Common.UIString('Soft undo'));
     editingSection.addAlternateKeys(
-        UI.ShortcutsScreen.SourcesPanelShortcuts.SelectNextOccurrence, Common.UIString('Select next occurrence'));
-    editingSection.addAlternateKeys(UI.ShortcutsScreen.SourcesPanelShortcuts.SoftUndo, Common.UIString('Soft undo'));
-    editingSection.addAlternateKeys(
-        UI.ShortcutsScreen.SourcesPanelShortcuts.GotoMatchingBracket, Common.UIString('Go to matching bracket'));
+        SourcesPanelShortcuts.GotoMatchingBracket, Common.UIString('Go to matching bracket'));
     editingSection.addAlternateKeys(
         UI.shortcutRegistry.shortcutDescriptorsForAction('sources.close-editor-tab'),
         Common.UIString('Close editor tab'));
@@ -210,32 +192,27 @@ UI.ShortcutsScreen = class {
     // Layers panel
     const layersSection = UI.shortcutsScreen.section(Common.UIString('Layers Panel'));
 
-    layersSection.addAlternateKeys(UI.ShortcutsScreen.LayersPanelShortcuts.ResetView, Common.UIString('Reset view'));
+    layersSection.addAlternateKeys(LayersPanelShortcuts.ResetView, Common.UIString('Reset view'));
+    layersSection.addAlternateKeys(LayersPanelShortcuts.PanMode, Common.UIString('Switch to pan mode'));
+    layersSection.addAlternateKeys(LayersPanelShortcuts.RotateMode, Common.UIString('Switch to rotate mode'));
     layersSection.addAlternateKeys(
-        UI.ShortcutsScreen.LayersPanelShortcuts.PanMode, Common.UIString('Switch to pan mode'));
-    layersSection.addAlternateKeys(
-        UI.ShortcutsScreen.LayersPanelShortcuts.RotateMode, Common.UIString('Switch to rotate mode'));
-    layersSection.addAlternateKeys(
-        UI.ShortcutsScreen.LayersPanelShortcuts.TogglePanRotate,
-        Common.UIString('Temporarily toggle pan/rotate mode while held'));
-    layersSection.addAlternateKeys(UI.ShortcutsScreen.LayersPanelShortcuts.ZoomIn, Common.UIString('Zoom in'));
-    layersSection.addAlternateKeys(UI.ShortcutsScreen.LayersPanelShortcuts.ZoomOut, Common.UIString('Zoom out'));
+        LayersPanelShortcuts.TogglePanRotate, Common.UIString('Temporarily toggle pan/rotate mode while held'));
+    layersSection.addAlternateKeys(LayersPanelShortcuts.ZoomIn, Common.UIString('Zoom in'));
+    layersSection.addAlternateKeys(LayersPanelShortcuts.ZoomOut, Common.UIString('Zoom out'));
     layersSection.addRelatedKeys(
-        UI.ShortcutsScreen.LayersPanelShortcuts.Up.concat(UI.ShortcutsScreen.LayersPanelShortcuts.Down),
-        Common.UIString('Pan or rotate up/down'));
+        LayersPanelShortcuts.Up.concat(LayersPanelShortcuts.Down), Common.UIString('Pan or rotate up/down'));
     layersSection.addRelatedKeys(
-        UI.ShortcutsScreen.LayersPanelShortcuts.Left.concat(UI.ShortcutsScreen.LayersPanelShortcuts.Right),
-        Common.UIString('Pan or rotate left/right'));
+        LayersPanelShortcuts.Left.concat(LayersPanelShortcuts.Right), Common.UIString('Pan or rotate left/right'));
   }
 
   /**
    * @param {string} name
-   * @return {!UI.ShortcutsSection}
+   * @return {!ShortcutsSection}
    */
   section(name) {
     let section = this._sections[name];
     if (!section) {
-      this._sections[name] = section = new UI.ShortcutsSection(name);
+      this._sections[name] = section = new ShortcutsSection(name);
     }
     return section;
   }
@@ -270,25 +247,25 @@ UI.ShortcutsScreen = class {
 
     return widget;
   }
-};
+}
 
 /**
  * We cannot initialize it here as localized strings are not loaded yet.
- * @type {!UI.ShortcutsScreen}
+ * @type {!ShortcutsScreen}
  */
 UI.shortcutsScreen;
 
 /**
  * @unrestricted
  */
-UI.ShortcutsSection = class {
+export class ShortcutsSection {
   /**
    * @param {string} name
    */
   constructor(name) {
     this.name = name;
     this._lines = /** @type {!Array.<!{key: !Node, text: string}>} */ ([]);
-    this.order = ++UI.ShortcutsSection._sequenceNumber;
+    this.order = ++ShortcutsSection._sequenceNumber;
   }
 
   /**
@@ -390,12 +367,12 @@ UI.ShortcutsSection = class {
     }
     return result;
   }
-};
+}
 
-UI.ShortcutsSection._sequenceNumber = 0;
+ShortcutsSection._sequenceNumber = 0;
 
 
-UI.ShortcutsScreen.ElementsPanelShortcuts = {
+export const ElementsPanelShortcuts = {
   NavigateUp: [UI.KeyboardShortcut.makeDescriptor(UI.KeyboardShortcut.Keys.Up)],
 
   NavigateDown: [UI.KeyboardShortcut.makeDescriptor(UI.KeyboardShortcut.Keys.Down)],
@@ -436,7 +413,7 @@ UI.ShortcutsScreen.ElementsPanelShortcuts = {
   DecrementBy01: [UI.KeyboardShortcut.makeDescriptor(UI.KeyboardShortcut.Keys.Down, UI.KeyboardShortcut.Modifiers.Alt)]
 };
 
-UI.ShortcutsScreen.ConsolePanelShortcuts = {
+export const ConsolePanelShortcuts = {
   AcceptSuggestion: [
     UI.KeyboardShortcut.makeDescriptor(UI.KeyboardShortcut.Keys.Tab),
     UI.KeyboardShortcut.makeDescriptor(UI.KeyboardShortcut.Keys.Right)
@@ -457,7 +434,7 @@ UI.ShortcutsScreen.ConsolePanelShortcuts = {
   ],
 };
 
-UI.ShortcutsScreen.SourcesPanelShortcuts = {
+export const SourcesPanelShortcuts = {
   SelectNextOccurrence: [UI.KeyboardShortcut.makeDescriptor('d', UI.KeyboardShortcut.Modifiers.CtrlOrMeta)],
 
   SoftUndo: [UI.KeyboardShortcut.makeDescriptor('u', UI.KeyboardShortcut.Modifiers.CtrlOrMeta)],
@@ -488,7 +465,7 @@ UI.ShortcutsScreen.SourcesPanelShortcuts = {
       [UI.KeyboardShortcut.makeDescriptor(UI.KeyboardShortcut.Keys.Slash, UI.KeyboardShortcut.Modifiers.CtrlOrMeta)],
 };
 
-UI.ShortcutsScreen.LayersPanelShortcuts = {
+export const LayersPanelShortcuts = {
   ResetView: [UI.KeyboardShortcut.makeDescriptor('0')],
 
   PanMode: [UI.KeyboardShortcut.makeDescriptor('x')],
@@ -515,3 +492,20 @@ UI.ShortcutsScreen.LayersPanelShortcuts = {
 
   Right: [UI.KeyboardShortcut.makeDescriptor(UI.KeyboardShortcut.Keys.Right), UI.KeyboardShortcut.makeDescriptor('d')]
 };
+
+/* Legacy exported object*/
+self.UI = self.UI || {};
+
+/* Legacy exported object*/
+UI = UI || {};
+
+/** @constructor */
+UI.ShortcutsScreen = ShortcutsScreen;
+
+/** @constructor */
+UI.ShortcutsSection = ShortcutsSection;
+
+UI.ShortcutsScreen.ElementsPanelShortcuts = ElementsPanelShortcuts;
+UI.ShortcutsScreen.ConsolePanelShortcuts = ConsolePanelShortcuts;
+UI.ShortcutsScreen.SourcesPanelShortcuts = SourcesPanelShortcuts;
+UI.ShortcutsScreen.LayersPanelShortcuts = LayersPanelShortcuts;

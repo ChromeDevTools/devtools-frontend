@@ -5,7 +5,7 @@
 /**
  * @extends {UI.XElement}
  */
-UI.XLink = class extends UI.XElement {
+export default class XLink extends UI.XElement {
   /**
    * @param {string} url
    * @param {string=} linkText
@@ -101,12 +101,12 @@ UI.XLink = class extends UI.XElement {
       this.style.removeProperty('cursor');
     }
   }
-};
+}
 
 /**
  * @implements {UI.ContextMenu.Provider}
  */
-UI.XLink.ContextMenuProvider = class {
+export class ContextMenuProvider {
   /**
    * @override
    * @param {!Event} event
@@ -115,7 +115,7 @@ UI.XLink.ContextMenuProvider = class {
    */
   appendApplicableItems(event, contextMenu, target) {
     let targetNode = /** @type {!Node} */ (target);
-    while (targetNode && !(targetNode instanceof UI.XLink)) {
+    while (targetNode && !(targetNode instanceof XLink)) {
       targetNode = targetNode.parentNodeOrShadowHost();
     }
     if (!targetNode || !targetNode._href) {
@@ -126,6 +126,20 @@ UI.XLink.ContextMenuProvider = class {
     contextMenu.revealSection().appendItem(
         UI.copyLinkAddressLabel(), () => Host.InspectorFrontendHost.copyText(targetNode._href));
   }
-};
+}
 
-self.customElements.define('x-link', UI.XLink);
+self.customElements.define('x-link', XLink);
+
+/* Legacy exported object*/
+self.UI = self.UI || {};
+
+/* Legacy exported object*/
+UI = UI || {};
+
+/** @constructor */
+UI.XLink = XLink;
+
+/**
+ * @implements {UI.ContextMenu.Provider}
+ */
+UI.XLink.ContextMenuProvider = ContextMenuProvider;

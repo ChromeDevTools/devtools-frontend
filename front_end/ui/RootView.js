@@ -4,7 +4,7 @@
 /**
  * @unrestricted
  */
-UI.RootView = class extends UI.VBox {
+export default class RootView extends UI.VBox {
   constructor() {
     super();
     this.markAsRoot();
@@ -37,4 +37,13 @@ UI.RootView = class extends UI.VBox {
     }
     super.doResize();
   }
-};
+}
+
+/* Legacy exported object*/
+self.UI = self.UI || {};
+
+/* Legacy exported object*/
+UI = UI || {};
+
+/** @constructor */
+UI.RootView = RootView;

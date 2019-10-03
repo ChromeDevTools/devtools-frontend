@@ -4,129 +4,152 @@
 /**
  * @interface
  */
-UI.TextEditorFactory = function() {};
-
-UI.TextEditorFactory.prototype = {
+export class TextEditorFactory {
   /**
    * @param {!UI.TextEditor.Options} options
-   * @return {!UI.TextEditor}
+   * @return {!TextEditor}
    */
   createEditor(options) {}
-};
+}
 
 /**
  * @interface
- * @extends {Common.EventTarget}
  */
-UI.TextEditor = function() {};
-
-UI.TextEditor.prototype = {
-
+export class TextEditor extends Common.EventTarget {
   /**
    * @return {!UI.Widget}
    */
-  widget() {},
+  widget() {
+  }
 
   /**
    * @return {!TextUtils.TextRange}
    */
-  fullRange() {},
+  fullRange() {
+  }
 
   /**
    * @return {!TextUtils.TextRange}
    */
-  selection() {},
+  selection() {
+  }
 
   /**
    * @param {!TextUtils.TextRange} selection
    */
-  setSelection(selection) {},
+  setSelection(selection) {
+  }
 
   /**
    * @param {!TextUtils.TextRange=} textRange
    * @return {string}
    */
-  text(textRange) {},
+  text(textRange) {
+  }
 
   /**
    * @return {string}
    */
-  textWithCurrentSuggestion() {},
+  textWithCurrentSuggestion() {
+  }
 
   /**
    * @param {string} text
    */
-  setText(text) {},
+  setText(text) {
+  }
 
   /**
    * @param {number} lineNumber
    * @return {string}
    */
-  line(lineNumber) {},
+  line(lineNumber) {
+  }
 
-  newlineAndIndent() {},
+  newlineAndIndent() {
+  }
 
   /**
    * @param {function(!KeyboardEvent)} handler
    */
-  addKeyDownHandler(handler) {},
+  addKeyDownHandler(handler) {
+  }
 
   /**
    * @param {?UI.AutocompleteConfig} config
    */
-  configureAutocomplete(config) {},
+  configureAutocomplete(config) {
+  }
 
-  clearAutocomplete() {},
+  clearAutocomplete() {
+  }
 
   /**
    * @param {number} lineNumber
    * @param {number} columnNumber
    * @return {!{x: number, y: number}}
    */
-  visualCoordinates(lineNumber, columnNumber) {},
+  visualCoordinates(lineNumber, columnNumber) {
+  }
 
   /**
    * @param {number} lineNumber
    * @param {number} columnNumber
    * @return {?{startColumn: number, endColumn: number, type: string}}
    */
-  tokenAtTextPosition(lineNumber, columnNumber) {},
+  tokenAtTextPosition(lineNumber, columnNumber) {
+  }
 
   /**
    * @param {string} placeholder
    */
   setPlaceholder(placeholder) {}
-};
+}
 
 /** @enum {symbol} */
-UI.TextEditor.Events = {
+export const Events = {
   CursorChanged: Symbol('CursorChanged'),
   TextChanged: Symbol('TextChanged'),
   SuggestionChanged: Symbol('SuggestionChanged')
 };
 
-/**
- * @typedef {{
- *  bracketMatchingSetting: (!Common.Setting|undefined),
- *  devtoolsAccessibleName: (string|undefined),
- *  lineNumbers: boolean,
- *  lineWrapping: boolean,
- *  mimeType: (string|undefined),
- *  autoHeight: (boolean|undefined),
- *  padBottom: (boolean|undefined),
- *  maxHighlightLength: (number|undefined),
- *  placeholder: (string|undefined)
- * }}
- */
-UI.TextEditor.Options;
+/* Legacy exported object*/
+self.UI = self.UI || {};
+
+/* Legacy exported object*/
+UI = UI || {};
+
+/** @interface */
+UI.TextEditor = TextEditor;
+
+/** @interface */
+UI.TextEditorFactory = TextEditorFactory;
+
+/** @enum {symbol} */
+UI.TextEditor.Events = Events;
 
 /**
  * @typedef {{
- *     substituteRangeCallback: ((function(number, number):?TextUtils.TextRange)|undefined),
- *     tooltipCallback: ((function(number, number):!Promise<?Element>)|undefined),
- *     suggestionsCallback: ((function(!TextUtils.TextRange, !TextUtils.TextRange, boolean=):?Promise.<!UI.SuggestBox.Suggestions>)|undefined),
- *     isWordChar: ((function(string):boolean)|undefined),
- *     anchorBehavior: (UI.GlassPane.AnchorBehavior|undefined)
- * }}
- */
+  *  bracketMatchingSetting: (!Common.Setting|undefined),
+  *  devtoolsAccessibleName: (string|undefined),
+  *  lineNumbers: boolean,
+  *  lineWrapping: boolean,
+  *  mimeType: (string|undefined),
+  *  autoHeight: (boolean|undefined),
+  *  padBottom: (boolean|undefined),
+  *  maxHighlightLength: (number|undefined),
+  *  placeholder: (string|undefined)
+  * }}
+  */
+UI.TextEditor.Options;
+
+/**
+  * @typedef {{
+  *     substituteRangeCallback: ((function(number, number):?TextUtils.TextRange)|undefined),
+  *     tooltipCallback: ((function(number, number):!Promise<?Element>)|undefined),
+  *     suggestionsCallback: ((function(!TextUtils.TextRange, !TextUtils.TextRange, boolean=):?Promise.<!UI.SuggestBox.Suggestions>)|undefined),
+  *     isWordChar: ((function(string):boolean)|undefined),
+  *     anchorBehavior: (UI.GlassPane.AnchorBehavior|undefined)
+  * }}
+  */
 UI.AutocompleteConfig;

@@ -29,7 +29,7 @@
 /**
  * @unrestricted
  */
-UI.SplitWidget = class extends UI.Widget {
+export default class SplitWidget extends UI.Widget {
   /**
    * @param {boolean} isVertical
    * @param {boolean} secondIsSidebar
@@ -92,7 +92,7 @@ UI.SplitWidget = class extends UI.Widget {
     this.setSecondIsSidebar(secondIsSidebar);
 
     this._innerSetVertical(isVertical);
-    this._showMode = UI.SplitWidget.ShowMode.Both;
+    this._showMode = ShowMode.Both;
     this._savedShowMode = this._showMode;
 
     // Should be called after isVertical has the right value.
@@ -171,7 +171,7 @@ UI.SplitWidget = class extends UI.Widget {
     this._mainWidget = widget;
     if (widget) {
       widget.element.slot = 'insertion-point-main';
-      if (this._showMode === UI.SplitWidget.ShowMode.OnlyMain || this._showMode === UI.SplitWidget.ShowMode.Both) {
+      if (this._showMode === ShowMode.OnlyMain || this._showMode === ShowMode.Both) {
         widget.show(this.element);
       }
     }
@@ -192,7 +192,7 @@ UI.SplitWidget = class extends UI.Widget {
     this._sidebarWidget = widget;
     if (widget) {
       widget.element.slot = 'insertion-point-sidebar';
-      if (this._showMode === UI.SplitWidget.ShowMode.OnlySidebar || this._showMode === UI.SplitWidget.ShowMode.Both) {
+      if (this._showMode === ShowMode.OnlySidebar || this._showMode === ShowMode.Both) {
         widget.show(this.element);
       }
     }
@@ -279,7 +279,7 @@ UI.SplitWidget = class extends UI.Widget {
    * @return {?string}
    */
   sidebarSide() {
-    if (this._showMode !== UI.SplitWidget.ShowMode.Both) {
+    if (this._showMode !== ShowMode.Both) {
       return null;
     }
     return this._isVertical ? (this._secondIsSidebar ? 'right' : 'left') : (this._secondIsSidebar ? 'bottom' : 'top');
@@ -297,7 +297,7 @@ UI.SplitWidget = class extends UI.Widget {
    */
   hideMain(animate) {
     this._showOnly(this._sidebarWidget, this._mainWidget, this._sidebarElement, this._mainElement, animate);
-    this._updateShowMode(UI.SplitWidget.ShowMode.OnlySidebar);
+    this._updateShowMode(ShowMode.OnlySidebar);
   }
 
   /**
@@ -305,7 +305,7 @@ UI.SplitWidget = class extends UI.Widget {
    */
   hideSidebar(animate) {
     this._showOnly(this._mainWidget, this._sidebarWidget, this._mainElement, this._sidebarElement, animate);
-    this._updateShowMode(UI.SplitWidget.ShowMode.OnlyMain);
+    this._updateShowMode(ShowMode.OnlyMain);
   }
 
   /**
@@ -334,7 +334,7 @@ UI.SplitWidget = class extends UI.Widget {
     this._cancelAnimation();
 
     /**
-     * @this {UI.SplitWidget}
+     * @this {SplitWidget}
      */
     function callback() {
       if (sideToShow) {
@@ -398,7 +398,7 @@ UI.SplitWidget = class extends UI.Widget {
    * @param {boolean=} animate
    */
   showBoth(animate) {
-    if (this._showMode === UI.SplitWidget.ShowMode.Both) {
+    if (this._showMode === ShowMode.Both) {
       animate = false;
     }
 
@@ -421,7 +421,7 @@ UI.SplitWidget = class extends UI.Widget {
     this.setSecondIsSidebar(this._secondIsSidebar);
 
     this._sidebarSizeDIP = -1;
-    this._updateShowMode(UI.SplitWidget.ShowMode.Both);
+    this._updateShowMode(ShowMode.Both);
     this._updateLayout(animate);
   }
 
@@ -477,7 +477,7 @@ UI.SplitWidget = class extends UI.Widget {
     this._showMode = showMode;
     this._saveShowModeToSettings();
     this._updateShowHideSidebarButton();
-    this.dispatchEventToListeners(UI.SplitWidget.Events.ShowModeChanged, showMode);
+    this.dispatchEventToListeners(SplitWidget.Events.ShowModeChanged, showMode);
     this.invalidateConstraints();
   }
 
@@ -487,7 +487,7 @@ UI.SplitWidget = class extends UI.Widget {
    * @param {boolean=} userAction
    */
   _innerSetSidebarSizeDIP(sizeDIP, animate, userAction) {
-    if (this._showMode !== UI.SplitWidget.ShowMode.Both || !this.isShowing()) {
+    if (this._showMode !== ShowMode.Both || !this.isShowing()) {
       return;
     }
 
@@ -552,7 +552,7 @@ UI.SplitWidget = class extends UI.Widget {
     } else {
       // No need to recalculate this._sidebarSizeDIP and this._totalSizeDIP again.
       this.doResize();
-      this.dispatchEventToListeners(UI.SplitWidget.Events.SidebarSizeChanged, this.sidebarSize());
+      this.dispatchEventToListeners(SplitWidget.Events.SidebarSizeChanged, this.sidebarSize());
     }
   }
 
@@ -593,7 +593,7 @@ UI.SplitWidget = class extends UI.Widget {
     const boundAnimationFrame = animationFrame.bind(this);
     let startTime;
     /**
-     * @this {UI.SplitWidget}
+     * @this {SplitWidget}
      */
     function animationFrame() {
       this._animationFrameHandle = 0;
@@ -613,7 +613,7 @@ UI.SplitWidget = class extends UI.Widget {
         if (this._mainWidget) {
           this._mainWidget.doResize();
         }
-        this.dispatchEventToListeners(UI.SplitWidget.Events.SidebarSizeChanged, this.sidebarSize());
+        this.dispatchEventToListeners(SplitWidget.Events.SidebarSizeChanged, this.sidebarSize());
         return;
       }
       this._animationFrameHandle = this.contentElement.window().requestAnimationFrame(boundAnimationFrame);
@@ -650,7 +650,7 @@ UI.SplitWidget = class extends UI.Widget {
     let constraints = this._sidebarWidget ? this._sidebarWidget.constraints() : new UI.Constraints();
     let minSidebarSize = this.isVertical() ? constraints.minimum.width : constraints.minimum.height;
     if (!minSidebarSize) {
-      minSidebarSize = UI.SplitWidget.MinPadding;
+      minSidebarSize = MinPadding;
     }
     minSidebarSize *= zoomFactor;
     if (this._sidebarMinimized) {
@@ -659,7 +659,7 @@ UI.SplitWidget = class extends UI.Widget {
 
     let preferredSidebarSize = this.isVertical() ? constraints.preferred.width : constraints.preferred.height;
     if (!preferredSidebarSize) {
-      preferredSidebarSize = UI.SplitWidget.MinPadding;
+      preferredSidebarSize = MinPadding;
     }
     preferredSidebarSize *= zoomFactor;
     // Allow sidebar to be less than preferred by explicit user action.
@@ -671,13 +671,13 @@ UI.SplitWidget = class extends UI.Widget {
     constraints = this._mainWidget ? this._mainWidget.constraints() : new UI.Constraints();
     let minMainSize = this.isVertical() ? constraints.minimum.width : constraints.minimum.height;
     if (!minMainSize) {
-      minMainSize = UI.SplitWidget.MinPadding;
+      minMainSize = MinPadding;
     }
     minMainSize *= zoomFactor;
 
     let preferredMainSize = this.isVertical() ? constraints.preferred.width : constraints.preferred.height;
     if (!preferredMainSize) {
-      preferredMainSize = UI.SplitWidget.MinPadding;
+      preferredMainSize = MinPadding;
     }
     preferredMainSize *= zoomFactor;
     const savedMainSize = this.isVertical() ? this._savedVerticalMainSize : this._savedHorizontalMainSize;
@@ -740,16 +740,16 @@ UI.SplitWidget = class extends UI.Widget {
    * @return {!UI.Constraints}
    */
   calculateConstraints() {
-    if (this._showMode === UI.SplitWidget.ShowMode.OnlyMain) {
+    if (this._showMode === ShowMode.OnlyMain) {
       return this._mainWidget ? this._mainWidget.constraints() : new UI.Constraints();
     }
-    if (this._showMode === UI.SplitWidget.ShowMode.OnlySidebar) {
+    if (this._showMode === ShowMode.OnlySidebar) {
       return this._sidebarWidget ? this._sidebarWidget.constraints() : new UI.Constraints();
     }
 
     let mainConstraints = this._mainWidget ? this._mainWidget.constraints() : new UI.Constraints();
     let sidebarConstraints = this._sidebarWidget ? this._sidebarWidget.constraints() : new UI.Constraints();
-    const min = UI.SplitWidget.MinPadding;
+    const min = MinPadding;
     if (this._isVertical) {
       mainConstraints = mainConstraints.widthToMax(min).addWidth(1);  // 1 for splitter
       sidebarConstraints = sidebarConstraints.widthToMax(min);
@@ -837,7 +837,7 @@ UI.SplitWidget = class extends UI.Widget {
   }
 
   /**
-   * @return {?UI.SplitWidget.SettingForOrientation}
+   * @return {?SplitWidget.SettingForOrientation}
    */
   _settingForOrientation() {
     const state = this._setting ? this._setting.get() : {};
@@ -870,13 +870,13 @@ UI.SplitWidget = class extends UI.Widget {
     this._showMode = this._savedShowMode;
 
     switch (this._savedShowMode) {
-      case UI.SplitWidget.ShowMode.Both:
+      case ShowMode.Both:
         this.showBoth();
         break;
-      case UI.SplitWidget.ShowMode.OnlyMain:
+      case ShowMode.OnlyMain:
         this.hideSidebar();
         break;
-      case UI.SplitWidget.ShowMode.OnlySidebar:
+      case ShowMode.OnlySidebar:
         this.hideMain();
         break;
     }
@@ -932,10 +932,10 @@ UI.SplitWidget = class extends UI.Widget {
 
     /**
      * @param {!Common.Event} event
-     * @this {UI.SplitWidget}
+     * @this {SplitWidget}
      */
     function buttonClicked(event) {
-      if (this._showMode !== UI.SplitWidget.ShowMode.Both) {
+      if (this._showMode !== ShowMode.Both) {
         this.showBoth(true);
       } else {
         this.hideSidebar(true);
@@ -949,7 +949,7 @@ UI.SplitWidget = class extends UI.Widget {
     if (!this._showHideSidebarButton) {
       return;
     }
-    const sidebarHidden = this._showMode === UI.SplitWidget.ShowMode.OnlyMain;
+    const sidebarHidden = this._showMode === ShowMode.OnlyMain;
     let glyph = '';
     if (sidebarHidden) {
       glyph = this.isVertical() ?
@@ -965,21 +965,36 @@ UI.SplitWidget = class extends UI.Widget {
         sidebarHidden ? Common.UIString('Show %s', this._showHideSidebarButtonTitle) :
                         Common.UIString('Hide %s', this._showHideSidebarButtonTitle));
   }
-};
+}
 
-/** @typedef {{showMode: string, size: number}} */
-UI.SplitWidget.SettingForOrientation;
-
-UI.SplitWidget.ShowMode = {
+export const ShowMode = {
   Both: 'Both',
   OnlyMain: 'OnlyMain',
   OnlySidebar: 'OnlySidebar'
 };
 
 /** @enum {symbol} */
-UI.SplitWidget.Events = {
+export const Events = {
   SidebarSizeChanged: Symbol('SidebarSizeChanged'),
   ShowModeChanged: Symbol('ShowModeChanged')
 };
 
-UI.SplitWidget.MinPadding = 20;
+export const MinPadding = 20;
+
+/* Legacy exported object*/
+self.UI = self.UI || {};
+
+/* Legacy exported object*/
+UI = UI || {};
+
+/** @constructor */
+UI.SplitWidget = SplitWidget;
+
+UI.SplitWidget.ShowMode = ShowMode;
+UI.SplitWidget.MinPadding = MinPadding;
+
+/** @enum {symbol} */
+UI.SplitWidget.Events = Events;
+
+/** @typedef {{showMode: string, size: number}} */
+UI.SplitWidget.SettingForOrientation;

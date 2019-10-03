@@ -5,10 +5,10 @@
  * @template T
  * @implements {UI.ListDelegate<T>}
  */
-UI.SoftDropDown = class {
+export default class SoftDropDown {
   /**
    * @param {!UI.ListModel<T>} model
-   * @param {!UI.SoftDropDown.Delegate<T>} delegate
+   * @param {!Delegate<T>} delegate
    */
   constructor(model, delegate) {
     this._delegate = delegate;
@@ -312,13 +312,13 @@ UI.SoftDropDown = class {
   refreshItem(item) {
     this._list.refreshItem(item);
   }
-};
+}
 
 /**
  * @interface
  * @template T
  */
-UI.SoftDropDown.Delegate = class {
+export class Delegate {
   /**
    * @param {T} item
    * @return {string}
@@ -354,4 +354,19 @@ UI.SoftDropDown.Delegate = class {
    */
   highlightedItemChanged(from, to, fromElement, toElement) {
   }
-};
+}
+
+/* Legacy exported object*/
+self.UI = self.UI || {};
+
+/* Legacy exported object*/
+UI = UI || {};
+
+/** @constructor */
+UI.SoftDropDown = SoftDropDown;
+
+/**
+ * @interface
+ * @template T
+ */
+UI.SoftDropDown.Delegate = Delegate;

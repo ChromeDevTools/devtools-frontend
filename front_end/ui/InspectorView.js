@@ -31,7 +31,7 @@
  * @implements {UI.ViewLocationResolver}
  * @unrestricted
  */
-UI.InspectorView = class extends UI.VBox {
+export default class InspectorView extends UI.VBox {
   constructor() {
     super();
     UI.GlassPane.setContainer(this.element);
@@ -98,7 +98,7 @@ UI.InspectorView = class extends UI.VBox {
         Host.InspectorFrontendHostAPI.Events.ShowPanel, showPanel.bind(this));
 
     /**
-     * @this {UI.InspectorView}
+     * @this {InspectorView}
      * @param {!Common.Event} event
      */
     function showPanel(event) {
@@ -108,10 +108,10 @@ UI.InspectorView = class extends UI.VBox {
   }
 
   /**
-   * @return {!UI.InspectorView}
+   * @return {!InspectorView}
    */
   static instance() {
-    return /** @type {!UI.InspectorView} */ (self.runtime.sharedInstance(UI.InspectorView));
+    return /** @type {!InspectorView} */ (self.runtime.sharedInstance(InspectorView));
   }
 
   /**
@@ -354,19 +354,13 @@ UI.InspectorView = class extends UI.VBox {
       this._ownerSplitWidget.setSidebarMinimized(false);
     }
   }
-};
-
-
-/**
- * @type {!UI.InspectorView}
- */
-UI.inspectorView;
+}
 
 /**
  * @implements {UI.ActionDelegate}
  * @unrestricted
  */
-UI.InspectorView.ActionDelegate = class {
+export class ActionDelegate {
   /**
    * @override
    * @param {!UI.Context} context
@@ -393,4 +387,24 @@ UI.InspectorView.ActionDelegate = class {
     }
     return false;
   }
-};
+}
+
+/* Legacy exported object*/
+self.UI = self.UI || {};
+
+/* Legacy exported object*/
+UI = UI || {};
+
+/** @constructor */
+UI.InspectorView = InspectorView;
+
+/**
+ * @implements {UI.ActionDelegate}
+ * @unrestricted
+ */
+UI.InspectorView.ActionDelegate = ActionDelegate;
+
+/**
+ * @type {!InspectorView}
+ */
+UI.inspectorView;

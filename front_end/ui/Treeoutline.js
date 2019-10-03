@@ -29,15 +29,15 @@
 /**
  * @unrestricted
  */
-UI.TreeOutline = class extends Common.Object {
+export class TreeOutline extends Common.Object {
   constructor() {
     super();
     this._createRootElement();
 
-    /** @type {?UI.TreeElement} */
+    /** @type {?TreeElement} */
     this.selectedTreeElement = null;
     this.expandTreeElementsWhenArrowing = false;
-    /** @type {?function(!UI.TreeElement, !UI.TreeElement):number} */
+    /** @type {?function(!TreeElement, !TreeElement):number} */
     this._comparator = null;
 
     this.contentElement = this._rootElement._childrenListNode;
@@ -65,7 +65,7 @@ UI.TreeOutline = class extends Common.Object {
   }
 
   _createRootElement() {
-    this._rootElement = new UI.TreeElement();
+    this._rootElement = new TreeElement();
     this._rootElement.treeOutline = this;
     this._rootElement.root = true;
     this._rootElement.selectable = false;
@@ -74,21 +74,21 @@ UI.TreeOutline = class extends Common.Object {
   }
 
   /**
-   * @return {!UI.TreeElement}
+   * @return {!TreeElement}
    */
   rootElement() {
     return this._rootElement;
   }
 
   /**
-   * @return {?UI.TreeElement}
+   * @return {?TreeElement}
    */
   firstChild() {
     return this._rootElement.firstChild();
   }
 
   /**
-   * @return {?UI.TreeElement}
+   * @return {?TreeElement}
    */
   _lastDescendent() {
     let last = this._rootElement.lastChild();
@@ -99,14 +99,14 @@ UI.TreeOutline = class extends Common.Object {
   }
 
   /**
-   * @param {!UI.TreeElement} child
+   * @param {!TreeElement} child
    */
   appendChild(child) {
     this._rootElement.appendChild(child);
   }
 
   /**
-   * @param {!UI.TreeElement} child
+   * @param {!TreeElement} child
    * @param {number} index
    */
   insertChild(child, index) {
@@ -114,7 +114,7 @@ UI.TreeOutline = class extends Common.Object {
   }
 
   /**
-   * @param {!UI.TreeElement} child
+   * @param {!TreeElement} child
    */
   removeChild(child) {
     this._rootElement.removeChild(child);
@@ -127,7 +127,7 @@ UI.TreeOutline = class extends Common.Object {
   /**
    * @param {number} x
    * @param {number} y
-   * @return {?UI.TreeElement}
+   * @return {?TreeElement}
    */
   treeElementFromPoint(x, y) {
     const node = this.contentElement.ownerDocument.deepElementFromPoint(x, y);
@@ -144,14 +144,14 @@ UI.TreeOutline = class extends Common.Object {
 
   /**
    * @param {?Event} event
-   * @return {?UI.TreeElement}
+   * @return {?TreeElement}
    */
   treeElementFromEvent(event) {
     return event ? this.treeElementFromPoint(event.pageX, event.pageY) : null;
   }
 
   /**
-   * @param {?function(!UI.TreeElement, !UI.TreeElement):number} comparator
+   * @param {?function(!TreeElement, !TreeElement):number} comparator
    */
   setComparator(comparator) {
     this._comparator = comparator;
@@ -189,7 +189,7 @@ UI.TreeOutline = class extends Common.Object {
   }
 
   /**
-   * @param {!UI.TreeElement} element
+   * @param {!TreeElement} element
    */
   _bindTreeElement(element) {
     if (element.treeOutline) {
@@ -200,7 +200,7 @@ UI.TreeOutline = class extends Common.Object {
   }
 
   /**
-   * @param {!UI.TreeElement} element
+   * @param {!TreeElement} element
    */
   _unbindTreeElement(element) {
     if (!element.treeOutline) {
@@ -319,7 +319,7 @@ UI.TreeOutline = class extends Common.Object {
   }
 
   /**
-   * @param {!UI.TreeElement} treeElement
+   * @param {!TreeElement} treeElement
    * @param {boolean} center
    */
   _deferredScrollIntoView(treeElement, center) {
@@ -329,7 +329,7 @@ UI.TreeOutline = class extends Common.Object {
     this._treeElementToScrollIntoView = treeElement;
     this._centerUponScrollIntoView = center;
     /**
-     * @this {UI.TreeOutline}
+     * @this {TreeOutline}
      */
     function deferredScrollIntoView() {
       this._treeElementToScrollIntoView.listItemElement.scrollIntoViewIfNeeded(this._centerUponScrollIntoView);
@@ -337,10 +337,10 @@ UI.TreeOutline = class extends Common.Object {
       delete this._centerUponScrollIntoView;
     }
   }
-};
+}
 
 /** @enum {symbol} */
-UI.TreeOutline.Events = {
+const Events = {
   ElementAttached: Symbol('ElementAttached'),
   ElementsDetached: Symbol('ElementsDetached'),
   ElementExpanded: Symbol('ElementExpanded'),
@@ -351,7 +351,7 @@ UI.TreeOutline.Events = {
 /**
  * @unrestricted
  */
-UI.TreeOutlineInShadow = class extends UI.TreeOutline {
+export class TreeOutlineInShadow extends TreeOutline {
   constructor() {
     super();
     this.contentElement.classList.add('tree-outline');
@@ -378,18 +378,18 @@ UI.TreeOutlineInShadow = class extends UI.TreeOutline {
   makeDense() {
     this.contentElement.classList.add('tree-outline-dense');
   }
-};
+}
 
 /**
  * @unrestricted
  */
-UI.TreeElement = class {
+export class TreeElement {
   /**
    * @param {(string|!Node)=} title
    * @param {boolean=} expandable
    */
   constructor(title, expandable) {
-    /** @type {?UI.TreeOutline} */
+    /** @type {?TreeOutline} */
     this.treeOutline = null;
     this.parent = null;
     this.previousSibling = null;
@@ -423,7 +423,7 @@ UI.TreeElement = class {
   }
 
   /**
-   * @param {?UI.TreeElement} ancestor
+   * @param {?TreeElement} ancestor
    * @return {boolean}
    */
   hasAncestor(ancestor) {
@@ -443,7 +443,7 @@ UI.TreeElement = class {
   }
 
   /**
-   * @param {?UI.TreeElement} ancestor
+   * @param {?TreeElement} ancestor
    * @return {boolean}
    */
   hasAncestorOrSelf(ancestor) {
@@ -451,7 +451,7 @@ UI.TreeElement = class {
   }
 
   /**
-   * @return {!Array.<!UI.TreeElement>}
+   * @return {!Array.<!TreeElement>}
    */
   children() {
     return this._children || [];
@@ -465,14 +465,14 @@ UI.TreeElement = class {
   }
 
   /**
-   * @return {?UI.TreeElement}
+   * @return {?TreeElement}
    */
   firstChild() {
     return this._children ? this._children[0] : null;
   }
 
   /**
-   * @return {?UI.TreeElement}
+   * @return {?TreeElement}
    */
   lastChild() {
     return this._children ? this._children[this._children.length - 1] : null;
@@ -480,14 +480,14 @@ UI.TreeElement = class {
 
   /**
    * @param {number} index
-   * @return {?UI.TreeElement}
+   * @return {?TreeElement}
    */
   childAt(index) {
     return this._children ? this._children[index] : null;
   }
 
   /**
-   * @param {!UI.TreeElement} child
+   * @param {!TreeElement} child
    * @return {number}
    */
   indexOfChild(child) {
@@ -495,7 +495,7 @@ UI.TreeElement = class {
   }
 
   /**
-   * @param {!UI.TreeElement} child
+   * @param {!TreeElement} child
    */
   appendChild(child) {
     if (!this._children) {
@@ -512,7 +512,7 @@ UI.TreeElement = class {
   }
 
   /**
-   * @param {!UI.TreeElement} child
+   * @param {!TreeElement} child
    * @param {number} index
    */
   insertChild(child, index) {
@@ -558,7 +558,7 @@ UI.TreeElement = class {
     child.onattach();
     child._ensureSelection();
     if (this.treeOutline) {
-      this.treeOutline.dispatchEventToListeners(UI.TreeOutline.Events.ElementAttached, child);
+      this.treeOutline.dispatchEventToListeners(Events.ElementAttached, child);
     }
     const nextSibling = child.nextSibling ? child.nextSibling._listItemNode : null;
     this._childrenListNode.insertBefore(child._listItemNode, nextSibling);
@@ -612,12 +612,12 @@ UI.TreeElement = class {
 
     child._detach();
     if (this.treeOutline) {
-      this.treeOutline.dispatchEventToListeners(UI.TreeOutline.Events.ElementsDetached);
+      this.treeOutline.dispatchEventToListeners(Events.ElementsDetached);
     }
   }
 
   /**
-   * @param {!UI.TreeElement} child
+   * @param {!TreeElement} child
    */
   removeChild(child) {
     if (!child) {
@@ -658,7 +658,7 @@ UI.TreeElement = class {
     }
     this._children = [];
     if (this.treeOutline) {
-      this.treeOutline.dispatchEventToListeners(UI.TreeOutline.Events.ElementsDetached);
+      this.treeOutline.dispatchEventToListeners(Events.ElementsDetached);
     }
   }
 
@@ -957,7 +957,7 @@ UI.TreeElement = class {
     this.expanded = false;
     this.oncollapse();
     if (this.treeOutline) {
-      this.treeOutline.dispatchEventToListeners(UI.TreeOutline.Events.ElementCollapsed, this);
+      this.treeOutline.dispatchEventToListeners(Events.ElementCollapsed, this);
     }
   }
 
@@ -998,7 +998,7 @@ UI.TreeElement = class {
 
     if (this.treeOutline) {
       this.onexpand();
-      this.treeOutline.dispatchEventToListeners(UI.TreeOutline.Events.ElementExpanded, this);
+      this.treeOutline.dispatchEventToListeners(Events.ElementExpanded, this);
     }
   }
 
@@ -1176,7 +1176,7 @@ UI.TreeElement = class {
     }
 
     this._listItemNode.classList.add('selected');
-    this.treeOutline.dispatchEventToListeners(UI.TreeOutline.Events.ElementSelected, this);
+    this.treeOutline.dispatchEventToListeners(Events.ElementSelected, this);
     if (lastSelected) {
       lastSelected.deselect();
     }
@@ -1309,10 +1309,10 @@ UI.TreeElement = class {
 
   /**
    * @param {boolean} skipUnrevealed
-   * @param {?UI.TreeElement=} stayWithin
+   * @param {?TreeElement=} stayWithin
    * @param {boolean=} dontPopulate
    * @param {!Object=} info
-   * @return {?UI.TreeElement}
+   * @return {?TreeElement}
    */
   traverseNextTreeElement(skipUnrevealed, stayWithin, dontPopulate, info) {
     if (!dontPopulate) {
@@ -1360,7 +1360,7 @@ UI.TreeElement = class {
   /**
    * @param {boolean} skipUnrevealed
    * @param {boolean=} dontPopulate
-   * @return {?UI.TreeElement}
+   * @return {?TreeElement}
    */
   traversePreviousTreeElement(skipUnrevealed, dontPopulate) {
     let element = skipUnrevealed ? (this.revealed() ? this.previousSibling : null) : this.previousSibling;
@@ -1368,8 +1368,9 @@ UI.TreeElement = class {
       element._populateIfNeeded();
     }
 
-    while (element && (skipUnrevealed ? (element.revealed() && element.expanded ? element.lastChild() : null) :
-                                        element.lastChild())) {
+    while (element &&
+           (skipUnrevealed ? (element.revealed() && element.expanded ? element.lastChild() : null) :
+                             element.lastChild())) {
       if (!dontPopulate) {
         element._populateIfNeeded();
       }
@@ -1398,15 +1399,32 @@ UI.TreeElement = class {
     console.assert(paddingLeftValue.endsWith('px'));
     const computedLeftPadding = parseFloat(paddingLeftValue);
     const left = this._listItemNode.totalOffsetLeft() + computedLeftPadding;
-    return event.pageX >= left && event.pageX <= left + UI.TreeElement._ArrowToggleWidth && this._expandable;
+    return event.pageX >= left && event.pageX <= left + TreeElement._ArrowToggleWidth && this._expandable;
   }
-};
+}
 
 /** @const */
-UI.TreeElement._ArrowToggleWidth = 10;
+TreeElement._ArrowToggleWidth = 10;
 
 (function() {
 const img = new Image();
 img.src = 'Images/treeoutlineTriangles.svg';
-UI.TreeElement._imagePreload = img;
+TreeElement._imagePreload = img;
 })();
+
+/* Legacy exported object*/
+self.UI = self.UI || {};
+
+/* Legacy exported object*/
+UI = UI || {};
+
+/** @constructor */
+UI.TreeOutline = TreeOutline;
+
+UI.TreeOutline.Events = Events;
+
+/** @constructor */
+UI.TreeElement = TreeElement;
+
+/** @constructor */
+UI.TreeOutlineInShadow = TreeOutlineInShadow;

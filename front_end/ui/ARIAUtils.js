@@ -462,8 +462,12 @@ export function alert(message, element) {
   document[AlertElementSymbol].textContent = message.trimEndWithMaxLength(10000);
 }
 
-/** Legacy exported object @suppress {const} */
+/** Legacy exported object */
 self.UI = self.UI || {};
+
+/* Legacy exported object*/
+UI = UI || {};
+
 self.UI.ARIAUtils = {
   nextId,
   bindLabelToControl,

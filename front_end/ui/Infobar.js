@@ -4,9 +4,9 @@
 /**
  * @unrestricted
  */
-UI.Infobar = class {
+export default class Infobar {
   /**
-   * @param {!UI.Infobar.Type} type
+   * @param {!Type} type
    * @param {string} text
    * @param {!Common.Setting=} disableSetting
    */
@@ -41,16 +41,16 @@ UI.Infobar = class {
   }
 
   /**
-   * @param {!UI.Infobar.Type} type
+   * @param {!Type} type
    * @param {string} text
    * @param {!Common.Setting=} disableSetting
-   * @return {?UI.Infobar}
+   * @return {?Infobar}
    */
   static create(type, text, disableSetting) {
     if (disableSetting && disableSetting.get()) {
       return null;
     }
-    return new UI.Infobar(type, text, disableSetting);
+    return new Infobar(type, text, disableSetting);
   }
 
   dispose() {
@@ -111,11 +111,22 @@ UI.Infobar = class {
     detailsRowMessage.textContent = message || '';
     return detailsRowMessage;
   }
-};
-
+}
 
 /** @enum {string} */
-UI.Infobar.Type = {
+export const Type = {
   Warning: 'warning',
   Info: 'info'
 };
+
+/* Legacy exported object*/
+self.UI = self.UI || {};
+
+/* Legacy exported object*/
+UI = UI || {};
+
+/** @constructor */
+UI.Infobar = Infobar;
+
+/** @enum {string} */
+UI.Infobar.Type = Type;

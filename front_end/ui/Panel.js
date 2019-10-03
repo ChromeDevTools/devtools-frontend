@@ -25,13 +25,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-// For testing.
-UI.panels = {};
 
 /**
  * @unrestricted
  */
-UI.Panel = class extends UI.VBox {
+export default class Panel extends UI.VBox {
   /**
    * @param {string} name
    */
@@ -87,12 +85,12 @@ UI.Panel = class extends UI.VBox {
     infobar.element.remove();
     this.doResize();
   }
-};
+}
 
 /**
  * @unrestricted
  */
-UI.PanelWithSidebar = class extends UI.Panel {
+export class PanelWithSidebar extends Panel {
   /**
    * @param {string} name
    * @param {number=} defaultWidth
@@ -134,4 +132,19 @@ UI.PanelWithSidebar = class extends UI.Panel {
   splitWidget() {
     return this._panelSplitWidget;
   }
-};
+}
+
+/* Legacy exported object*/
+self.UI = self.UI || {};
+
+/* Legacy exported object*/
+UI = UI || {};
+
+/** @constructor */
+UI.Panel = Panel;
+
+/** @constructor */
+UI.PanelWithSidebar = PanelWithSidebar;
+
+// For testing.
+UI.panels = {};

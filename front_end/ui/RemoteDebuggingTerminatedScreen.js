@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-UI.RemoteDebuggingTerminatedScreen = class extends UI.VBox {
+export default class RemoteDebuggingTerminatedScreen extends UI.VBox {
   /**
    * @param {string} reason
    */
@@ -27,7 +27,16 @@ UI.RemoteDebuggingTerminatedScreen = class extends UI.VBox {
     dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.MeasureContent);
     dialog.addCloseButton();
     dialog.setDimmed(true);
-    new UI.RemoteDebuggingTerminatedScreen(reason).show(dialog.contentElement);
+    new RemoteDebuggingTerminatedScreen(reason).show(dialog.contentElement);
     dialog.show();
   }
-};
+}
+
+/* Legacy exported object*/
+self.UI = self.UI || {};
+
+/* Legacy exported object*/
+UI = UI || {};
+
+/** @constructor */
+UI.RemoteDebuggingTerminatedScreen = RemoteDebuggingTerminatedScreen;

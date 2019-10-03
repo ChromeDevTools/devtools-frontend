@@ -4,7 +4,7 @@
 /**
  * @unrestricted
  */
-UI.DropTarget = class {
+export default class DropTarget {
   /**
    * @param {!Element} element
    * @param {!Array<{kind: string, type: !RegExp}>} transferTypes
@@ -95,12 +95,23 @@ UI.DropTarget = class {
     this._dragMaskElement.remove();
     delete this._dragMaskElement;
   }
-};
+}
 
-UI.DropTarget.Type = {
+export const Type = {
   URI: {kind: 'string', type: /text\/uri-list/},
   Folder: {kind: 'file', type: /$^/},
   File: {kind: 'file', type: /.*/},
   WebFile: {kind: 'file', type: /[\w]+/},
   ImageFile: {kind: 'file', type: /image\/.*/},
 };
+
+/* Legacy exported object*/
+self.UI = self.UI || {};
+
+/* Legacy exported object*/
+UI = UI || {};
+
+/** @constructor */
+UI.DropTarget = DropTarget;
+
+UI.DropTarget.Type = Type;

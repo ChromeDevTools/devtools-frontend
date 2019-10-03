@@ -4,9 +4,9 @@
 /**
  * @template T
  */
-UI.ListWidget = class extends UI.VBox {
+export default class ListWidget extends UI.VBox {
   /**
-   * @param {!UI.ListWidget.Delegate<T>} delegate
+   * @param {!Delegate<T>} delegate
    */
   constructor(delegate) {
     super(true, true /* delegatesFocus */);
@@ -24,7 +24,7 @@ UI.ListWidget = class extends UI.VBox {
     this._editable = [];
     /** @type {!Array<!Element>} */
     this._elements = [];
-    /** @type {?UI.ListWidget.Editor<T>} */
+    /** @type {?Editor<T>} */
     this._editor = null;
     /** @type {?T} */
     this._editItem = null;
@@ -144,7 +144,7 @@ UI.ListWidget = class extends UI.VBox {
     return controls;
 
     /**
-     * @this {UI.ListWidget}
+     * @this {ListWidget}
      */
     function onEditClicked() {
       const index = this._elements.indexOf(element);
@@ -153,7 +153,7 @@ UI.ListWidget = class extends UI.VBox {
     }
 
     /**
-     * @this {UI.ListWidget}
+     * @this {ListWidget}
      */
     function onRemoveClicked() {
       const index = this._elements.indexOf(element);
@@ -214,7 +214,7 @@ UI.ListWidget = class extends UI.VBox {
   _commitEditing() {
     const editItem = this._editItem;
     const isNew = !this._editElement;
-    const editor = /** @type {!UI.ListWidget.Editor<T>} */ (this._editor);
+    const editor = /** @type {!Editor<T>} */ (this._editor);
     this._stopEditing();
     this._delegate.commitEdit(editItem, editor, isNew);
   }
@@ -236,46 +236,47 @@ UI.ListWidget = class extends UI.VBox {
     this._editElement = null;
     this._updatePlaceholder();
   }
-};
+}
 
 /**
  * @template T
  * @interface
  */
-UI.ListWidget.Delegate = function() {};
-
-UI.ListWidget.Delegate.prototype = {
+export class Delegate {
   /**
    * @param {!T} item
    * @param {boolean} editable
    * @return {!Element}
    */
-  renderItem(item, editable) {},
+  renderItem(item, editable) {
+  }
 
   /**
    * @param {!T} item
    * @param {number} index
    */
-  removeItemRequested(item, index) {},
+  removeItemRequested(item, index) {
+  }
 
   /**
    * @param {!T} item
-   * @return {!UI.ListWidget.Editor<T>}
+   * @return {!Editor<T>}
    */
-  beginEdit(item) {},
+  beginEdit(item) {
+  }
 
   /**
    * @param {!T} item
-   * @param {!UI.ListWidget.Editor<T>} editor
+   * @param {!Editor<T>} editor
    * @param {boolean} isNew
    */
   commitEdit(item, editor, isNew) {}
-};
+}
 
 /**
  * @template T
  */
-UI.ListWidget.Editor = class {
+export class Editor {
   constructor() {
     this.element = createElementWithClass('div', 'editor-container');
     this.element.addEventListener('keydown', onKeyDown.bind(null, isEscKey, this._cancelClicked.bind(this)), false);
@@ -451,7 +452,27 @@ UI.ListWidget.Editor = class {
     this._index = -1;
     cancel();
   }
-};
+}
+
+/* Legacy exported object*/
+self.UI = self.UI || {};
+
+/* Legacy exported object*/
+UI = UI || {};
+
+/** @constructor */
+UI.ListWidget = ListWidget;
+
+/**
+ * @template T
+ * @interface
+ */
+UI.ListWidget.Delegate = Delegate;
+
+/**
+ * @constructor
+ */
+UI.ListWidget.Editor = Editor;
 
 /** @typedef {{valid: boolean, errorMessage: (string|undefined)}} */
 UI.ListWidget.ValidatorResult;

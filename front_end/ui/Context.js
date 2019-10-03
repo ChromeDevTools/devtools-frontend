@@ -4,7 +4,7 @@
 /**
  * @unrestricted
  */
-UI.Context = class {
+export default class Context {
   constructor() {
     this._flavors = new Map();
     this._eventDispatchers = new Map();
@@ -45,7 +45,7 @@ UI.Context = class {
     if (!dispatcher) {
       return;
     }
-    dispatcher.dispatchEventToListeners(UI.Context.Events.FlavorChanged, flavorValue);
+    dispatcher.dispatchEventToListeners(Context.Events.FlavorChanged, flavorValue);
   }
 
   /**
@@ -59,7 +59,7 @@ UI.Context = class {
       dispatcher = new Common.Object();
       this._eventDispatchers.set(flavorType, dispatcher);
     }
-    dispatcher.addEventListener(UI.Context.Events.FlavorChanged, listener, thisObject);
+    dispatcher.addEventListener(Context.Events.FlavorChanged, listener, thisObject);
   }
 
   /**
@@ -72,8 +72,8 @@ UI.Context = class {
     if (!dispatcher) {
       return;
     }
-    dispatcher.removeEventListener(UI.Context.Events.FlavorChanged, listener, thisObject);
-    if (!dispatcher.hasEventListeners(UI.Context.Events.FlavorChanged)) {
+    dispatcher.removeEventListener(Context.Events.FlavorChanged, listener, thisObject);
+    if (!dispatcher.hasEventListeners(Context.Events.FlavorChanged)) {
       this._eventDispatchers.remove(flavorType);
     }
   }
@@ -110,23 +110,24 @@ UI.Context = class {
 
     return targetExtensionSet;
   }
-};
+}
 
 /** @enum {symbol} */
-UI.Context.Events = {
+export const Events = {
   FlavorChanged: Symbol('FlavorChanged')
 };
 
-/**
- * @interface
- */
-UI.ContextFlavorListener = function() {};
+/* Legacy exported object*/
+self.UI = self.UI || {};
 
-UI.ContextFlavorListener.prototype = {
-  /**
-   * @param {?Object} object
-   */
-  flavorChanged(object) {}
-};
+/* Legacy exported object*/
+UI = UI || {};
 
-UI.context = new UI.Context();
+/** @constructor */
+UI.Context = Context;
+
+/** @enum {symbol} */
+UI.Context.Events = Events;
+
+/** @type {!Context} */
+UI.context = new Context();

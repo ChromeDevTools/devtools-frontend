@@ -31,13 +31,13 @@
 /**
  * @unrestricted
  */
-UI.Toolbar = class {
+export default class Toolbar {
   /**
    * @param {string} className
    * @param {!Element=} parentElement
    */
   constructor(className, parentElement) {
-    /** @type {!Array.<!UI.ToolbarItem>} */
+    /** @type {!Array.<!ToolbarItem>} */
     this._items = [];
     this.element = parentElement ? parentElement.createChild('div') : createElement('div');
     this.element.className = className;
@@ -50,9 +50,9 @@ UI.Toolbar = class {
 
   /**
    * @param {!UI.Action} action
-   * @param {!Array<!UI.ToolbarButton>} toggledOptions
-   * @param {!Array<!UI.ToolbarButton>} untoggledOptions
-   * @return {!UI.ToolbarButton}
+   * @param {!Array<!ToolbarButton>} toggledOptions
+   * @param {!Array<!ToolbarButton>} untoggledOptions
+   * @return {!ToolbarButton}
    */
   static createLongPressActionButton(action, toggledOptions, untoggledOptions) {
     const button = UI.Toolbar.createActionButton(action);
@@ -60,7 +60,7 @@ UI.Toolbar = class {
 
     /** @type {?UI.LongClickController} */
     let longClickController = null;
-    /** @type {?Array<!UI.ToolbarButton>} */
+    /** @type {?Array<!ToolbarButton>} */
     let longClickButtons = null;
     /** @type {?Element} */
     let longClickGlyph = null;
@@ -165,7 +165,7 @@ UI.Toolbar = class {
   /**
    * @param {!UI.Action} action
    * @param {boolean=} showLabel
-   * @return {!UI.ToolbarButton}
+   * @return {!ToolbarButton}
    */
   static createActionButton(action, showLabel) {
     const button = action.toggleable() ? makeToggle() : makeButton();
@@ -173,17 +173,17 @@ UI.Toolbar = class {
     if (showLabel) {
       button.setText(action.title());
     }
-    button.addEventListener(UI.ToolbarButton.Events.Click, action.execute, action);
+    button.addEventListener(ToolbarButton.Events.Click, action.execute, action);
     action.addEventListener(UI.Action.Events.Enabled, enabledChanged);
     button.setEnabled(action.enabled());
     return button;
 
     /**
-     * @return {!UI.ToolbarButton}
+     * @return {!ToolbarButton}
      */
 
     function makeButton() {
-      const button = new UI.ToolbarButton(action.title(), action.icon());
+      const button = new ToolbarButton(action.title(), action.icon());
       if (action.title()) {
         UI.Tooltip.install(button.element, action.title(), action.id());
       }
@@ -191,10 +191,10 @@ UI.Toolbar = class {
     }
 
     /**
-     * @return {!UI.ToolbarToggle}
+     * @return {!ToolbarToggle}
      */
     function makeToggle() {
-      const toggleButton = new UI.ToolbarToggle(action.title(), action.icon(), action.toggledIcon());
+      const toggleButton = new ToolbarToggle(action.title(), action.icon(), action.toggledIcon());
       toggleButton.setToggleWithRedColor(action.toggleWithRedColor());
       action.addEventListener(UI.Action.Events.Toggled, toggled);
       toggled();
@@ -219,7 +219,7 @@ UI.Toolbar = class {
   /**
    * @param {string} actionId
    * @param {boolean=} showLabel
-   * @return {!UI.ToolbarButton}
+   * @return {!ToolbarButton}
    */
   static createActionButtonForId(actionId, showLabel) {
     const action = UI.actionRegistry.action(actionId);
@@ -277,7 +277,7 @@ UI.Toolbar = class {
   }
 
   /**
-   * @param {!UI.ToolbarItem} item
+   * @param {!ToolbarItem} item
    */
   appendToolbarItem(item) {
     this._items.push(item);
@@ -290,18 +290,18 @@ UI.Toolbar = class {
   }
 
   appendSeparator() {
-    this.appendToolbarItem(new UI.ToolbarSeparator());
+    this.appendToolbarItem(new ToolbarSeparator());
   }
 
   appendSpacer() {
-    this.appendToolbarItem(new UI.ToolbarSeparator(true));
+    this.appendToolbarItem(new ToolbarSeparator(true));
   }
 
   /**
    * @param {string} text
    */
   appendText(text) {
-    this.appendToolbarItem(new UI.ToolbarText(text));
+    this.appendToolbarItem(new ToolbarText(text));
   }
 
   removeToolbarItems() {
@@ -341,7 +341,7 @@ UI.Toolbar = class {
     let lastSeparator;
     let nonSeparatorVisible = false;
     for (let i = 0; i < this._items.length; ++i) {
-      if (this._items[i] instanceof UI.ToolbarSeparator) {
+      if (this._items[i] instanceof ToolbarSeparator) {
         this._items[i].setVisible(!previousIsSeparator);
         previousIsSeparator = true;
         lastSeparator = this._items[i];
@@ -365,12 +365,12 @@ UI.Toolbar = class {
    * @return {!Promise}
    */
   async appendItemsAtLocation(location) {
-    const extensions = self.runtime.extensions(UI.ToolbarItem.Provider);
+    const extensions = self.runtime.extensions(Provider);
     const filtered = extensions.filter(e => e.descriptor()['location'] === location);
     const items = await Promise.all(filtered.map(extension => {
       const descriptor = extension.descriptor();
       if (descriptor['separator']) {
-        return new UI.ToolbarSeparator();
+        return new ToolbarSeparator();
       }
       if (descriptor['actionId']) {
         return UI.Toolbar.createActionButtonForId(descriptor['actionId'], descriptor['showLabel']);
@@ -379,12 +379,12 @@ UI.Toolbar = class {
     }));
     items.filter(item => item).forEach(item => this.appendToolbarItem(item));
   }
-};
+}
 
 /**
  * @unrestricted
  */
-UI.ToolbarItem = class extends Common.Object {
+export class ToolbarItem extends Common.Object {
   /**
    * @param {!Element} element
    */
@@ -442,7 +442,7 @@ UI.ToolbarItem = class extends Common.Object {
     }
     this.element.classList.toggle('hidden', !x);
     this._visible = x;
-    if (this._toolbar && !(this instanceof UI.ToolbarSeparator)) {
+    if (this._toolbar && !(this instanceof ToolbarSeparator)) {
       this._toolbar._hideSeparatorDupes();
     }
   }
@@ -450,12 +450,12 @@ UI.ToolbarItem = class extends Common.Object {
   setRightAligned(alignRight) {
     this.element.classList.toggle('toolbar-item-right-aligned', alignRight);
   }
-};
+}
 
 /**
  * @unrestricted
  */
-UI.ToolbarText = class extends UI.ToolbarItem {
+export class ToolbarText extends ToolbarItem {
   /**
    * @param {string=} text
    */
@@ -478,12 +478,12 @@ UI.ToolbarText = class extends UI.ToolbarItem {
   setText(text) {
     this.element.textContent = text;
   }
-};
+}
 
 /**
  * @unrestricted
  */
-UI.ToolbarButton = class extends UI.ToolbarItem {
+export class ToolbarButton extends ToolbarItem {
   /**
    * @param {string} title
    * @param {string=} glyph
@@ -561,7 +561,7 @@ UI.ToolbarButton = class extends UI.ToolbarItem {
     if (!this._enabled) {
       return;
     }
-    this.dispatchEventToListeners(UI.ToolbarButton.Events.Click, event);
+    this.dispatchEventToListeners(ToolbarButton.Events.Click, event);
     event.consume();
   }
 
@@ -572,16 +572,16 @@ UI.ToolbarButton = class extends UI.ToolbarItem {
     if (!this._enabled) {
       return;
     }
-    this.dispatchEventToListeners(UI.ToolbarButton.Events.MouseDown, event);
+    this.dispatchEventToListeners(ToolbarButton.Events.MouseDown, event);
   }
-};
+}
 
-UI.ToolbarButton.Events = {
+ToolbarButton.Events = {
   Click: Symbol('Click'),
   MouseDown: Symbol('MouseDown')
 };
 
-UI.ToolbarInput = class extends UI.ToolbarItem {
+export class ToolbarInput extends ToolbarItem {
   /**
    * @param {string} placeholder
    * @param {string=} accessiblePlaceholder
@@ -665,22 +665,22 @@ UI.ToolbarInput = class extends UI.ToolbarItem {
 
   _onChangeCallback() {
     this._updateEmptyStyles();
-    this.dispatchEventToListeners(UI.ToolbarInput.Event.TextChanged, this._prompt.text());
+    this.dispatchEventToListeners(ToolbarInput.Event.TextChanged, this._prompt.text());
   }
 
   _updateEmptyStyles() {
     this.element.classList.toggle('toolbar-input-empty', !this._prompt.text());
   }
-};
+}
 
-UI.ToolbarInput.Event = {
+ToolbarInput.Event = {
   TextChanged: Symbol('TextChanged')
 };
 
 /**
  * @unrestricted
  */
-UI.ToolbarToggle = class extends UI.ToolbarButton {
+export class ToolbarToggle extends ToolbarButton {
   /**
    * @param {string} title
    * @param {string=} glyph
@@ -731,13 +731,13 @@ UI.ToolbarToggle = class extends UI.ToolbarButton {
   setToggleWithRedColor(toggleWithRedColor) {
     this.element.classList.toggle('toolbar-toggle-with-red-color', toggleWithRedColor);
   }
-};
+}
 
 
 /**
  * @unrestricted
  */
-UI.ToolbarMenuButton = class extends UI.ToolbarButton {
+export class ToolbarMenuButton extends ToolbarButton {
   /**
    * @param {function(!UI.ContextMenu)} contextMenuHandler
    * @param {boolean=} useSoftMenu
@@ -792,12 +792,12 @@ UI.ToolbarMenuButton = class extends UI.ToolbarButton {
     }
     this._trigger(event);
   }
-};
+}
 
 /**
  * @unrestricted
  */
-UI.ToolbarSettingToggle = class extends UI.ToolbarToggle {
+export class ToolbarSettingToggle extends ToolbarToggle {
   /**
    * @param {!Common.Setting} setting
    * @param {string} glyph
@@ -825,48 +825,44 @@ UI.ToolbarSettingToggle = class extends UI.ToolbarToggle {
     this._setting.set(!this.toggled());
     super._clicked(event);
   }
-};
+}
 
 /**
  * @unrestricted
  */
-UI.ToolbarSeparator = class extends UI.ToolbarItem {
+export class ToolbarSeparator extends ToolbarItem {
   /**
    * @param {boolean=} spacer
    */
   constructor(spacer) {
     super(createElementWithClass('div', spacer ? 'toolbar-spacer' : 'toolbar-divider'));
   }
-};
+}
 
 /**
  * @interface
  */
-UI.ToolbarItem.Provider = function() {};
-
-UI.ToolbarItem.Provider.prototype = {
+export class Provider {
   /**
-   * @return {?UI.ToolbarItem}
+   * @return {?ToolbarItem}
    */
   item() {}
-};
+}
 
 /**
  * @interface
  */
-UI.ToolbarItem.ItemsProvider = function() {};
-
-UI.ToolbarItem.ItemsProvider.prototype = {
+export class ItemsProvider {
   /**
-   * @return {!Array<!UI.ToolbarItem>}
+   * @return {!Array<!ToolbarItem>}
    */
   toolbarItems() {}
-};
+}
 
 /**
  * @unrestricted
  */
-UI.ToolbarComboBox = class extends UI.ToolbarItem {
+export class ToolbarComboBox extends ToolbarItem {
   /**
    * @param {?function(!Event)} changeHandler
    * @param {string} title
@@ -994,12 +990,12 @@ UI.ToolbarComboBox = class extends UI.ToolbarItem {
   setMinWidth(width) {
     this._selectElement.style.minWidth = width + 'px';
   }
-};
+}
 
 /**
  * @unrestricted
  */
-UI.ToolbarSettingComboBox = class extends UI.ToolbarComboBox {
+export class ToolbarSettingComboBox extends ToolbarComboBox {
   /**
    * @param {!Array<!{value: string, label: string}>} options
    * @param {!Common.Setting} setting
@@ -1060,12 +1056,12 @@ UI.ToolbarSettingComboBox = class extends UI.ToolbarComboBox {
     this._setting.set(option.value);
     this._muteSettingListener = false;
   }
-};
+}
 
 /**
  * @unrestricted
  */
-UI.ToolbarCheckbox = class extends UI.ToolbarItem {
+export class ToolbarCheckbox extends ToolbarItem {
   /**
    * @param {string} text
    * @param {string=} tooltip
@@ -1105,9 +1101,9 @@ UI.ToolbarCheckbox = class extends UI.ToolbarItem {
     super._applyEnabledState(enabled);
     this.inputElement.disabled = !enabled;
   }
-};
+}
 
-UI.ToolbarSettingCheckbox = class extends UI.ToolbarCheckbox {
+export class ToolbarSettingCheckbox extends ToolbarCheckbox {
   /**
    * @param {!Common.Setting} setting
    * @param {string=} tooltip
@@ -1117,4 +1113,55 @@ UI.ToolbarSettingCheckbox = class extends UI.ToolbarCheckbox {
     super(alternateTitle || setting.title() || '', tooltip);
     UI.SettingsUI.bindCheckbox(this.inputElement, setting);
   }
-};
+}
+
+/* Legacy exported object*/
+self.UI = self.UI || {};
+
+/* Legacy exported object*/
+UI = UI || {};
+
+/** @constructor */
+UI.Toolbar = Toolbar;
+
+/** @constructor */
+UI.ToolbarItem = ToolbarItem;
+
+/** @constructor */
+UI.ToolbarText = ToolbarText;
+
+/** @constructor */
+UI.ToolbarButton = ToolbarButton;
+
+/** @constructor */
+UI.ToolbarInput = ToolbarInput;
+
+/** @constructor */
+UI.ToolbarToggle = ToolbarToggle;
+
+/** @constructor */
+UI.ToolbarMenuButton = ToolbarMenuButton;
+
+/** @constructor */
+UI.ToolbarSettingToggle = ToolbarSettingToggle;
+
+/** @constructor */
+UI.ToolbarSeparator = ToolbarSeparator;
+
+/** @interface */
+UI.ToolbarItem.Provider = Provider;
+
+/** @interface */
+UI.ToolbarItem.ItemsProvider = ItemsProvider;
+
+/** @constructor */
+UI.ToolbarComboBox = ToolbarComboBox;
+
+/** @constructor */
+UI.ToolbarSettingComboBox = ToolbarSettingComboBox;
+
+/** @constructor */
+UI.ToolbarCheckbox = ToolbarCheckbox;
+
+/** @constructor */
+UI.ToolbarSettingCheckbox = ToolbarSettingCheckbox;

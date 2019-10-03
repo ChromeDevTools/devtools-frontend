@@ -30,27 +30,27 @@
 /**
  * @interface
  */
-UI.SuggestBoxDelegate = function() {};
-
-UI.SuggestBoxDelegate.prototype = {
+export class SuggestBoxDelegate {
   /**
    * @param {?UI.SuggestBox.Suggestion} suggestion
    * @param {boolean=} isIntermediateSuggestion
    */
-  applySuggestion(suggestion, isIntermediateSuggestion) {},
+  applySuggestion(suggestion, isIntermediateSuggestion) {
+  }
 
   /**
    * acceptSuggestion will be always called after call to applySuggestion with isIntermediateSuggestion being equal to false.
    */
-  acceptSuggestion() {},
-};
+  acceptSuggestion() {
+  }
+}
 
 /**
  * @implements {UI.ListDelegate}
  */
-UI.SuggestBox = class {
+export default class SuggestBox {
   /**
-   * @param {!UI.SuggestBoxDelegate} suggestBoxDelegate
+   * @param {!SuggestBoxDelegate} suggestBoxDelegate
    * @param {number=} maxItemsHeight
    */
   constructor(suggestBoxDelegate, maxItemsHeight) {
@@ -368,24 +368,36 @@ UI.SuggestBox = class {
     // to commit the input or handle it otherwise.
     return hasSelectedItem;
   }
-};
+}
+
+/* Legacy exported object*/
+self.UI = self.UI || {};
+
+/* Legacy exported object*/
+UI = UI || {};
+
+/** @constructor */
+UI.SuggestBox = SuggestBox;
+
+/** @interface */
+UI.SuggestBoxDelegate = SuggestBoxDelegate;
 
 /**
  * @typedef {{
- *      text: string,
- *      title: (string|undefined),
- *      subtitle: (string|undefined),
- *      iconType: (string|undefined),
- *      priority: (number|undefined),
- *      isSecondary: (boolean|undefined),
- *      subtitleRenderer: (function():!Element|undefined),
- *      selectionRange: ({startColumn: number, endColumn: number}|undefined),
- *      hideGhostText: (boolean|undefined)
- * }}
- */
+  *      text: string,
+  *      title: (string|undefined),
+  *      subtitle: (string|undefined),
+  *      iconType: (string|undefined),
+  *      priority: (number|undefined),
+  *      isSecondary: (boolean|undefined),
+  *      subtitleRenderer: (function():!Element|undefined),
+  *      selectionRange: ({startColumn: number, endColumn: number}|undefined),
+  *      hideGhostText: (boolean|undefined)
+  * }}
+  */
 UI.SuggestBox.Suggestion;
 
 /**
- * @typedef {!Array<!UI.SuggestBox.Suggestion>}
- */
+  * @typedef {!Array<!UI.SuggestBox.Suggestion>}
+  */
 UI.SuggestBox.Suggestions;

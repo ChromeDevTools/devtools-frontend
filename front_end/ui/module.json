@@ -6,10 +6,18 @@
         "host"
     ],
     "scripts": [
+    ],
+    "modules": [
+        "Action.js",
+        "ActionDelegate.js",
+        "ARIAUtils.js",
+        "ContextFlavorListener.js",
+        "ui.js",
         "XElement.js",
         "Widget.js",
         "View.js",
-        "treeoutline.js",
+        "ViewManager.js",
+        "Treeoutline.js",
         "InspectorView.js",
         "ActionRegistry.js",
         "ShortcutRegistry.js",
@@ -34,7 +42,7 @@
         "ListModel.js",
         "ListWidget.js",
         "Panel.js",
-        "Popover.js",
+        "PopoverHelper.js",
         "ProgressIndicator.js",
         "ResizerWidget.js",
         "RemoteDebuggingTerminatedScreen.js",
@@ -59,10 +67,6 @@
         "Geometry.js",
         "XLink.js",
         "XWidget.js"
-    ],
-    "modules": [
-        "ARIAUtils.js",
-        "ui.js"
     ],
     "resources": [
         "checkboxTextLabel.css",

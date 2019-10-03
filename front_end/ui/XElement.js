@@ -2,10 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/**
- * @extends {HTMLElement}
- */
-UI.XElement = class extends HTMLElement {
+export default class XElement extends HTMLElement {
   /**
    * @override
    */
@@ -50,12 +47,12 @@ UI.XElement = class extends HTMLElement {
       this.style.setProperty(attr, newValue);
     }
   }
-};
+}
 
 /**
- * @extends {UI.XElement}
+ * @extends {XElement}
  */
-UI._XBox = class extends UI.XElement {
+export class _XBox extends XElement {
   /**
    * @param {string} direction
    */
@@ -90,30 +87,30 @@ UI._XBox = class extends UI.XElement {
     }
     super.attributeChangedCallback(attr, oldValue, newValue);
   }
-};
+}
 
 /**
- * @extends {UI._XBox}
+ * @extends {_XBox}
  */
-UI.XVBox = class extends UI._XBox {
+export class XVBox extends _XBox {
   constructor() {
     super('column');
   }
-};
+}
 
 /**
- * @extends {UI._XBox}
+ * @extends {_XBox}
  */
-UI.XHBox = class extends UI._XBox {
+export class XHBox extends _XBox {
   constructor() {
     super('row');
   }
-};
+}
 
 /**
- * @extends {UI.XElement}
+ * @extends {XElement}
  */
-UI.XCBox = class extends UI.XElement {
+export class XCBox extends XElement {
   constructor() {
     super();
     this.style.setProperty('display', 'flex');
@@ -121,42 +118,72 @@ UI.XCBox = class extends UI.XElement {
     this.style.setProperty('justify-content', 'center');
     this.style.setProperty('align-items', 'center');
   }
-};
+}
 
 /**
- * @extends {UI.XElement}
+ * @extends {XElement}
  */
-UI.XDiv = class extends UI.XElement {
+export class XDiv extends XElement {
   constructor() {
     super();
     this.style.setProperty('display', 'block');
   }
-};
+}
 
 /**
- * @extends {UI.XElement}
+ * @extends {XElement}
  */
-UI.XSpan = class extends UI.XElement {
+export class XSpan extends XElement {
   constructor() {
     super();
     this.style.setProperty('display', 'inline');
   }
-};
+}
 
 /**
- * @extends {UI.XElement}
+ * @extends {XElement}
  */
-UI.XText = class extends UI.XElement {
+export class XText extends XElement {
   constructor() {
     super();
     this.style.setProperty('display', 'inline');
     this.style.setProperty('white-space', 'pre');
   }
-};
+}
 
-self.customElements.define('x-vbox', UI.XVBox);
-self.customElements.define('x-hbox', UI.XHBox);
-self.customElements.define('x-cbox', UI.XCBox);
-self.customElements.define('x-div', UI.XDiv);
-self.customElements.define('x-span', UI.XSpan);
-self.customElements.define('x-text', UI.XText);
+self.customElements.define('x-vbox', XVBox);
+self.customElements.define('x-hbox', XHBox);
+self.customElements.define('x-cbox', XCBox);
+self.customElements.define('x-div', XDiv);
+self.customElements.define('x-span', XSpan);
+self.customElements.define('x-text', XText);
+
+/* Legacy exported object*/
+self.UI = self.UI || {};
+
+/* Legacy exported object*/
+UI = UI || {};
+
+/** @constructor */
+UI.XElement = XElement;
+
+/** @constructor */
+UI._XBox = _XBox;
+
+/** @constructor */
+UI.XVBox = XVBox;
+
+/** @constructor */
+UI.XHBox = XHBox;
+
+/** @constructor */
+UI.XCBox = XCBox;
+
+/** @constructor */
+UI.XDiv = XDiv;
+
+/** @constructor */
+UI.XSpan = XSpan;
+
+/** @constructor */
+UI.XText = XText;

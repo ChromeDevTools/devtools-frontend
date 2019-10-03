@@ -31,7 +31,7 @@
 /**
  * @unrestricted
  */
-UI.SyntaxHighlighter = class {
+export default class SyntaxHighlighter {
   /**
    * @param {string} mimeType
    * @param {boolean} stripExtraWhitespace
@@ -69,7 +69,7 @@ UI.SyntaxHighlighter = class {
 
     /**
      * @param {!TextUtils.TokenizerFactory} tokenizerFactory
-     * @this {UI.SyntaxHighlighter}
+     * @this {SyntaxHighlighter}
      */
     function processTokens(tokenizerFactory) {
       node.removeChildren();
@@ -93,7 +93,7 @@ UI.SyntaxHighlighter = class {
      * @param {?string} tokenType
      * @param {number} column
      * @param {number} newColumn
-     * @this {UI.SyntaxHighlighter}
+     * @this {SyntaxHighlighter}
      */
     function processToken(token, tokenType, column, newColumn) {
       if (!tokenType) {
@@ -108,4 +108,13 @@ UI.SyntaxHighlighter = class {
       plainTextStart = newColumn;
     }
   }
-};
+}
+
+/* Legacy exported object*/
+self.UI = self.UI || {};
+
+/* Legacy exported object*/
+UI = UI || {};
+
+/** @constructor */
+UI.SyntaxHighlighter = SyntaxHighlighter;

@@ -4,7 +4,7 @@
 /**
  * @unrestricted
  */
-UI.ZoomManager = class extends Common.Object {
+export default class ZoomManager extends Common.Object {
   /**
    * @param {!Window} window
    * @param {!InspectorFrontendHostAPI} frontendHost
@@ -43,15 +43,27 @@ UI.ZoomManager = class extends Common.Object {
     const oldZoomFactor = this._zoomFactor;
     this._zoomFactor = this._frontendHost.zoomFactor();
     if (oldZoomFactor !== this._zoomFactor) {
-      this.dispatchEventToListeners(UI.ZoomManager.Events.ZoomChanged, {from: oldZoomFactor, to: this._zoomFactor});
+      this.dispatchEventToListeners(Events.ZoomChanged, {from: oldZoomFactor, to: this._zoomFactor});
     }
   }
-};
+}
 
 /** @enum {symbol} */
-UI.ZoomManager.Events = {
+export const Events = {
   ZoomChanged: Symbol('ZoomChanged')
 };
+
+/* Legacy exported object*/
+self.UI = self.UI || {};
+
+/* Legacy exported object*/
+UI = UI || {};
+
+/** @constructor */
+UI.ZoomManager = ZoomManager;
+
+/** @enum {symbol} */
+UI.ZoomManager.Events = Events;
 
 /**
  * @type {!UI.ZoomManager}

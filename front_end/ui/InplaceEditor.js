@@ -4,17 +4,17 @@
 /**
  * @unrestricted
  */
-UI.InplaceEditor = class {
+export default class InplaceEditor {
   /**
    * @param {!Element} element
-   * @param {!UI.InplaceEditor.Config=} config
-   * @return {?UI.InplaceEditor.Controller}
+   * @param {!InplaceEditor.Config=} config
+   * @return {?InplaceEditor.Controller}
    */
   static startEditing(element, config) {
-    if (!UI.InplaceEditor._defaultInstance) {
-      UI.InplaceEditor._defaultInstance = new UI.InplaceEditor();
+    if (!InplaceEditor._defaultInstance) {
+      InplaceEditor._defaultInstance = new InplaceEditor();
     }
-    return UI.InplaceEditor._defaultInstance.startEditing(element, config);
+    return InplaceEditor._defaultInstance.startEditing(element, config);
   }
 
   /**
@@ -80,15 +80,15 @@ UI.InplaceEditor = class {
 
   /**
    * @param {!Element} element
-   * @param {!UI.InplaceEditor.Config=} config
-   * @return {?UI.InplaceEditor.Controller}
+   * @param {!InplaceEditor.Config=} config
+   * @return {?InplaceEditor.Controller}
    */
   startEditing(element, config) {
     if (!UI.markBeingEdited(element, true)) {
       return null;
     }
 
-    config = config || new UI.InplaceEditor.Config(function() {}, function() {});
+    config = config || new InplaceEditor.Config(function() {}, function() {});
     const editingContext = {element: element, config: config};
     const committedCallback = config.commitHandler;
     const cancelledCallback = config.cancelHandler;
@@ -200,19 +200,14 @@ UI.InplaceEditor = class {
     this.augmentEditingHandle(editingContext, handle);
     return handle;
   }
-};
-
-/**
- * @typedef {{cancel: function(), commit: function()}}
- */
-UI.InplaceEditor.Controller;
+}
 
 
 /**
  * @template T
  * @unrestricted
  */
-UI.InplaceEditor.Config = class {
+export class Config {
   /**
    * @param {function(!Element,string,string,T,string)} commitHandler
    * @param {function(!Element,T)} cancelHandler
@@ -246,4 +241,23 @@ UI.InplaceEditor.Config = class {
   setPostKeydownFinishHandler(postKeydownFinishHandler) {
     this.postKeydownFinishHandler = postKeydownFinishHandler;
   }
-};
+}
+
+/* Legacy exported object*/
+self.UI = self.UI || {};
+
+/* Legacy exported object*/
+UI = UI || {};
+
+/** @constructor */
+UI.InplaceEditor = InplaceEditor;
+
+/**
+ * @constructor
+ */
+UI.InplaceEditor.Config = Config;
+
+/**
+ * @typedef {{cancel: function(), commit: function()}}
+ */
+UI.InplaceEditor.Controller;

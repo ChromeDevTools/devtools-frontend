@@ -6,14 +6,13 @@
  * @template T
  * @interface
  */
-UI.ListDelegate = function() {};
-
-UI.ListDelegate.prototype = {
+export class ListDelegate {
   /**
    * @param {T} item
    * @return {!Element}
    */
-  createElementForItem(item) {},
+  createElementForItem(item) {
+  }
 
   /**
    * This method is not called in NonViewport mode.
@@ -21,13 +20,15 @@ UI.ListDelegate.prototype = {
    * @param {T} item
    * @return {number}
    */
-  heightForItem(item) {},
+  heightForItem(item) {
+  }
 
   /**
    * @param {T} item
    * @return {boolean}
    */
-  isItemSelectable(item) {},
+  isItemSelectable(item) {
+  }
 
   /**
    * @param {?T} from
@@ -35,11 +36,12 @@ UI.ListDelegate.prototype = {
    * @param {?Element} fromElement
    * @param {?Element} toElement
    */
-  selectedItemChanged(from, to, fromElement, toElement) {},
-};
+  selectedItemChanged(from, to, fromElement, toElement) {
+  }
+}
 
 /** @enum {symbol} */
-UI.ListMode = {
+export const ListMode = {
   NonViewport: Symbol('UI.ListMode.NonViewport'),
   EqualHeightItems: Symbol('UI.ListMode.EqualHeightItems'),
   VariousHeightItems: Symbol('UI.ListMode.VariousHeightItems')
@@ -48,11 +50,11 @@ UI.ListMode = {
 /**
  * @template T
  */
-UI.ListControl = class {
+export default class ListControl {
   /**
    * @param {!UI.ListModel<T>} model
-   * @param {!UI.ListDelegate<T>} delegate
-   * @param {!UI.ListMode=} mode
+   * @param {!ListDelegate<T>} delegate
+   * @param {!ListMode=} mode
    */
   constructor(model, delegate, mode) {
     this.element = createElement('div');
@@ -697,4 +699,18 @@ UI.ListControl = class {
     this._renderedHeight = totalHeight;
     this.element.scrollTop = scrollTop;
   }
-};
+}
+
+/* Legacy exported object*/
+self.UI = self.UI || {};
+
+/* Legacy exported object*/
+UI = UI || {};
+
+/** @constructor */
+UI.ListControl = ListControl;
+
+/** @interface */
+UI.ListDelegate = ListDelegate;
+
+UI.ListMode = ListMode;

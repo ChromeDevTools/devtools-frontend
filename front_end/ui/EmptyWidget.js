@@ -31,7 +31,7 @@
 /**
  * @unrestricted
  */
-UI.EmptyWidget = class extends UI.VBox {
+export default class EmptyWidget extends UI.VBox {
   /**
    * @param {string} text
    */
@@ -65,4 +65,13 @@ UI.EmptyWidget = class extends UI.VBox {
   set text(text) {
     this._textElement.textContent = text;
   }
-};
+}
+
+/* Legacy exported object*/
+self.UI = self.UI || {};
+
+/* Legacy exported object*/
+UI = UI || {};
+
+/** @constructor */
+UI.EmptyWidget = EmptyWidget;

@@ -28,7 +28,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-UI.PopoverHelper = class {
+export default class PopoverHelper {
   /**
    * @param {!Element} container
    * @param {function(!MouseEvent):?UI.PopoverRequest} getRequest
@@ -237,11 +237,11 @@ UI.PopoverHelper = class {
       }
 
       // This should not happen, but we hide previous popover to be on the safe side.
-      if (UI.PopoverHelper._popoverHelper) {
+      if (PopoverHelper._popoverHelper) {
         console.error('One popover is already visible');
-        UI.PopoverHelper._popoverHelper.hidePopover();
+        PopoverHelper._popoverHelper.hidePopover();
       }
-      UI.PopoverHelper._popoverHelper = this;
+      PopoverHelper._popoverHelper = this;
 
       popover.contentElement.classList.toggle('has-padding', this._hasPadding);
       popover.contentElement.addEventListener('mousemove', this._popoverMouseMove.bind(this), true);
@@ -254,7 +254,7 @@ UI.PopoverHelper = class {
           request.hide.call(null);
         }
         popover.hide();
-        delete UI.PopoverHelper._popoverHelper;
+        delete PopoverHelper._popoverHelper;
       };
     });
   }
@@ -276,7 +276,16 @@ UI.PopoverHelper = class {
     this._container.removeEventListener('mousemove', this._boundMouseMove, false);
     this._container.removeEventListener('mouseout', this._boundMouseOut, false);
   }
-};
+}
 
 /** @typedef {{box: !AnchorBox, show:(function(!UI.GlassPane):!Promise<boolean>), hide:(function()|undefined)}} */
 UI.PopoverRequest;
+
+/* Legacy exported object*/
+self.UI = self.UI || {};
+
+/* Legacy exported object*/
+UI = UI || {};
+
+/** @constructor */
+UI.PopoverHelper = PopoverHelper;

@@ -31,7 +31,7 @@
 /**
  * @unrestricted
  */
-UI.TabbedPane = class extends UI.VBox {
+export default class TabbedPane extends UI.VBox {
   constructor() {
     super(true);
     this.registerRequiredCSS('ui/tabbedPane.css');
@@ -48,11 +48,11 @@ UI.TabbedPane = class extends UI.VBox {
     this._contentElement = this.contentElement.createChild('div', 'tabbed-pane-content');
     this._contentElement.setAttribute('role', 'tabpanel');
     this._contentElement.createChild('slot');
-    /** @type {!Array.<!UI.TabbedPaneTab>} */
+    /** @type {!Array.<!TabbedPaneTab>} */
     this._tabs = [];
-    /** @type {!Array.<!UI.TabbedPaneTab>} */
+    /** @type {!Array.<!TabbedPaneTab>} */
     this._tabsHistory = [];
-    /** @type {!Map<string, !UI.TabbedPaneTab>} */
+    /** @type {!Map<string, !TabbedPaneTab>} */
     this._tabsById = new Map();
     this._currentTabLocked = false;
     this._autoSelectFirstItemOnShow = true;
@@ -178,7 +178,7 @@ UI.TabbedPane = class extends UI.VBox {
   }
 
   /**
-   * @param {!UI.TabbedPaneTabDelegate} delegate
+   * @param {!TabbedPaneTabDelegate} delegate
    */
   setTabDelegate(delegate) {
     const tabs = this._tabs.slice();
@@ -199,7 +199,7 @@ UI.TabbedPane = class extends UI.VBox {
    */
   appendTab(id, tabTitle, view, tabTooltip, userGesture, isCloseable, index) {
     isCloseable = typeof isCloseable === 'boolean' ? isCloseable : this._closeableTabs;
-    const tab = new UI.TabbedPaneTab(this, id, tabTitle, isCloseable, view, tabTooltip);
+    const tab = new TabbedPaneTab(this, id, tabTitle, isCloseable, view, tabTooltip);
     tab.setDelegate(this._delegate);
     console.assert(!this._tabsById.has(id), `Tabbed pane already contains a tab with id '${id}'`);
     this._tabsById.set(id, tab);
@@ -267,7 +267,7 @@ UI.TabbedPane = class extends UI.VBox {
     }
 
     const eventData = {tabId: id, view: tab.view, isUserGesture: userGesture};
-    this.dispatchEventToListeners(UI.TabbedPane.Events.TabClosed, eventData);
+    this.dispatchEventToListeners(Events.TabClosed, eventData);
     return true;
   }
 
@@ -354,7 +354,7 @@ UI.TabbedPane = class extends UI.VBox {
     }
 
     const eventData = {tabId: id, view: tab.view, isUserGesture: userGesture};
-    this.dispatchEventToListeners(UI.TabbedPane.Events.TabSelected, eventData);
+    this.dispatchEventToListeners(Events.TabSelected, eventData);
     return true;
   }
 
@@ -571,7 +571,7 @@ UI.TabbedPane = class extends UI.VBox {
 
   /**
    * @param {number} index
-   * @param {!UI.TabbedPaneTab} tab
+   * @param {!TabbedPaneTab} tab
    */
   _showTabElement(index, tab) {
     if (index >= this._tabsElement.children.length) {
@@ -583,7 +583,7 @@ UI.TabbedPane = class extends UI.VBox {
   }
 
   /**
-   * @param {!UI.TabbedPaneTab} tab
+   * @param {!TabbedPaneTab} tab
    */
   _hideTabElement(tab) {
     this._tabsElement.removeChild(tab.tabElement);
@@ -643,7 +643,7 @@ UI.TabbedPane = class extends UI.VBox {
   }
 
   /**
-   * @param {!UI.TabbedPaneTab} tab
+   * @param {!TabbedPaneTab} tab
    */
   _dropDownMenuItemSelected(tab) {
     this._lastSelectedOverflowTab = tab;
@@ -802,8 +802,8 @@ UI.TabbedPane = class extends UI.VBox {
   }
 
   /**
-   * @param {!Array.<!UI.TabbedPaneTab>} tabsOrdered
-   * @param {!Array.<!UI.TabbedPaneTab>} tabsHistory
+   * @param {!Array.<!TabbedPaneTab>} tabsOrdered
+   * @param {!Array.<!TabbedPaneTab>} tabsHistory
    * @param {number} totalWidth
    * @param {number} measuredDropDownButtonWidth
    * @return {!Array.<number>}
@@ -850,7 +850,7 @@ UI.TabbedPane = class extends UI.VBox {
   }
 
   /**
-   * @param {!UI.TabbedPaneTab} tab
+   * @param {!TabbedPaneTab} tab
    */
   _showTab(tab) {
     tab.tabElement.tabIndex = 0;
@@ -885,7 +885,7 @@ UI.TabbedPane = class extends UI.VBox {
   }
 
   /**
-   * @param {!UI.TabbedPaneTab} tab
+   * @param {!TabbedPaneTab} tab
    */
   _hideTab(tab) {
     tab.tabElement.removeAttribute('tabIndex');
@@ -903,7 +903,7 @@ UI.TabbedPane = class extends UI.VBox {
   }
 
   /**
-   * @param {!UI.TabbedPaneTab} tab
+   * @param {!TabbedPaneTab} tab
    * @param {number} index
    */
   _insertBefore(tab, index) {
@@ -914,7 +914,7 @@ UI.TabbedPane = class extends UI.VBox {
       --index;
     }
     this._tabs.splice(index, 0, tab);
-    this.dispatchEventToListeners(UI.TabbedPane.Events.TabOrderChanged, {tabId: tab.id});
+    this.dispatchEventToListeners(Events.TabOrderChanged, {tabId: tab.id});
   }
 
   /**
@@ -986,10 +986,10 @@ UI.TabbedPane = class extends UI.VBox {
     this.selectTab(tab.id, true);
     nextTabElement.focus();
   }
-};
+}
 
 /** @enum {symbol} */
-UI.TabbedPane.Events = {
+export const Events = {
   TabSelected: Symbol('TabSelected'),
   TabClosed: Symbol('TabClosed'),
   TabOrderChanged: Symbol('TabOrderChanged')
@@ -998,7 +998,7 @@ UI.TabbedPane.Events = {
 /**
  * @unrestricted
  */
-UI.TabbedPaneTab = class {
+export class TabbedPaneTab {
   /**
    * @param {!UI.TabbedPane} tabbedPane
    * @param {string} id
@@ -1143,7 +1143,7 @@ UI.TabbedPaneTab = class {
   }
 
   /**
-   * @param {!UI.TabbedPaneTabDelegate} delegate
+   * @param {!TabbedPaneTabDelegate} delegate
    */
   setDelegate(delegate) {
     this._delegate = delegate;
@@ -1263,28 +1263,28 @@ UI.TabbedPaneTab = class {
 
   _tabContextMenu(event) {
     /**
-     * @this {UI.TabbedPaneTab}
+     * @this {TabbedPaneTab}
      */
     function close() {
       this._closeTabs([this.id]);
     }
 
     /**
-     * @this {UI.TabbedPaneTab}
+     * @this {TabbedPaneTab}
      */
     function closeOthers() {
       this._closeTabs(this._tabbedPane.otherTabs(this.id));
     }
 
     /**
-     * @this {UI.TabbedPaneTab}
+     * @this {TabbedPaneTab}
      */
     function closeAll() {
       this._closeTabs(this._tabbedPane.tabIds());
     }
 
     /**
-     * @this {UI.TabbedPaneTab}
+     * @this {TabbedPaneTab}
      */
     function closeToTheRight() {
       this._closeTabs(this._tabbedPane._tabsToTheRight(this.id));
@@ -1370,23 +1370,40 @@ UI.TabbedPaneTab = class {
     delete this._dragStartX;
     this._tabbedPane._updateTabSlider();
   }
-};
+}
 
 /**
  * @interface
  */
-UI.TabbedPaneTabDelegate = function() {};
-
-UI.TabbedPaneTabDelegate.prototype = {
+export class TabbedPaneTabDelegate {
   /**
    * @param {!UI.TabbedPane} tabbedPane
    * @param {!Array.<string>} ids
    */
-  closeTabs(tabbedPane, ids) {},
+  closeTabs(tabbedPane, ids) {
+  }
 
   /**
    * @param {string} tabId
    * @param {!UI.ContextMenu} contextMenu
    */
   onContextMenu(tabId, contextMenu) {}
-};
+}
+
+/* Legacy exported object*/
+self.UI = self.UI || {};
+
+/* Legacy exported object*/
+UI = UI || {};
+
+/** @constructor */
+UI.TabbedPane = TabbedPane;
+
+/** @enum {symbol} */
+UI.TabbedPane.Events = Events;
+
+/** @constructor */
+UI.TabbedPaneTab = TabbedPaneTab;
+
+/** @interface */
+UI.TabbedPaneTabDelegate = TabbedPaneTabDelegate;

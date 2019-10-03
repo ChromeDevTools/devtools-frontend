@@ -32,15 +32,15 @@
 /**
  * @unrestricted
  */
-UI.SearchableView = class extends UI.VBox {
+export default class SearchableView extends UI.VBox {
   /**
-   * @param {!UI.Searchable} searchable
+   * @param {!Searchable} searchable
    * @param {string=} settingName
    */
   constructor(searchable, settingName) {
     super(true);
     this.registerRequiredCSS('ui/searchableView.css');
-    this.element[UI.SearchableView._symbol] = this;
+    this.element[_symbol] = this;
 
     this._searchProvider = searchable;
     this._setting = settingName ? Common.settings.createSetting(settingName, {}) : null;
@@ -129,12 +129,12 @@ UI.SearchableView = class extends UI.VBox {
 
   /**
    * @param {?Element} element
-   * @return {?UI.SearchableView}
+   * @return {?SearchableView}
    */
   static fromElement(element) {
     let view = null;
     while (element && !view) {
-      view = element[UI.SearchableView._symbol];
+      view = element[_symbol];
       element = element.parentElementOrShadowHost();
     }
     return view;
@@ -200,6 +200,7 @@ UI.SearchableView = class extends UI.VBox {
 
   /**
    * @param {number} matches
+   * @suppress {checkTypes}
    */
   updateSearchMatchesCount(matches) {
     if (this._searchProvider.currentSearchMatches === matches) {
@@ -211,6 +212,7 @@ UI.SearchableView = class extends UI.VBox {
 
   /**
    * @param {number} currentMatchIndex
+   * @suppress {checkTypes}
    */
   updateCurrentMatchIndex(currentMatchIndex) {
     this._updateSearchMatchesCountAndCurrentMatchIndex(this._searchProvider.currentSearchMatches, currentMatchIndex);
@@ -436,6 +438,7 @@ UI.SearchableView = class extends UI.VBox {
     this._searchInputElement.focus();
   }
 
+  /** @suppress {checkTypes} */
   _clearSearch() {
     delete this._currentQuery;
     if (!!this._searchProvider.currentQuery) {
@@ -449,6 +452,7 @@ UI.SearchableView = class extends UI.VBox {
    * @param {boolean} forceSearch
    * @param {boolean} shouldJump
    * @param {boolean=} jumpBackwards
+   * @suppress {checkTypes}
    */
   _performSearch(forceSearch, shouldJump, jumpBackwards) {
     const query = this._searchInputElement.value;
@@ -465,13 +469,13 @@ UI.SearchableView = class extends UI.VBox {
   }
 
   /**
-   * @return {!UI.SearchableView.SearchConfig}
+   * @return {!SearchConfig}
    */
   _currentSearchConfig() {
     const query = this._searchInputElement.value;
     const caseSensitive = this._caseSensitiveButton ? this._caseSensitiveButton.toggled() : false;
     const isRegex = this._regexButton ? this._regexButton.toggled() : false;
-    return new UI.SearchableView.SearchConfig(query, caseSensitive, isRegex);
+    return new SearchConfig(query, caseSensitive, isRegex);
   }
 
   _updateSecondRowVisibility() {
@@ -519,65 +523,66 @@ UI.SearchableView = class extends UI.VBox {
     delete this._valueChangedTimeoutId;
     this._performSearch(false, true);
   }
-};
+}
 
-
-UI.SearchableView._symbol = Symbol('searchableView');
+export const _symbol = Symbol('searchableView');
 
 
 /**
  * @interface
  */
-UI.Searchable = function() {};
-
-UI.Searchable.prototype = {
-  searchCanceled() {},
+export class Searchable {
+  searchCanceled() {
+  }
 
   /**
-   * @param {!UI.SearchableView.SearchConfig} searchConfig
+   * @param {!SearchConfig} searchConfig
    * @param {boolean} shouldJump
    * @param {boolean=} jumpBackwards
    */
-  performSearch(searchConfig, shouldJump, jumpBackwards) {},
+  performSearch(searchConfig, shouldJump, jumpBackwards) {
+  }
 
-  jumpToNextSearchResult() {},
+  jumpToNextSearchResult() {
+  }
 
-  jumpToPreviousSearchResult() {},
+  jumpToPreviousSearchResult() {
+  }
 
   /**
    * @return {boolean}
    */
-  supportsCaseSensitiveSearch() {},
+  supportsCaseSensitiveSearch() {
+  }
 
   /**
    * @return {boolean}
    */
   supportsRegexSearch() {}
-};
+}
 
 /**
  * @interface
  */
-UI.Replaceable = function() {};
-
-UI.Replaceable.prototype = {
+export class Replaceable {
   /**
-   * @param {!UI.SearchableView.SearchConfig} searchConfig
+   * @param {!SearchConfig} searchConfig
    * @param {string} replacement
    */
-  replaceSelectionWith(searchConfig, replacement) {},
+  replaceSelectionWith(searchConfig, replacement) {
+  }
 
   /**
-   * @param {!UI.SearchableView.SearchConfig} searchConfig
+   * @param {!SearchConfig} searchConfig
    * @param {string} replacement
    */
   replaceAllWith(searchConfig, replacement) {}
-};
+}
 
 /**
  * @unrestricted
  */
-UI.SearchableView.SearchConfig = class {
+export class SearchConfig {
   /**
    * @param {string} query
    * @param {boolean} caseSensitive
@@ -619,4 +624,24 @@ UI.SearchableView.SearchConfig = class {
 
     return regex;
   }
-};
+}
+
+/* Legacy exported object*/
+self.UI = self.UI || {};
+
+/* Legacy exported object*/
+UI = UI || {};
+
+/** @constructor */
+UI.SearchableView = SearchableView;
+
+/**
+ * @constructor
+ */
+UI.SearchableView.SearchConfig = SearchConfig;
+
+/** @interface */
+UI.Searchable = Searchable;
+
+/** @interface */
+UI.Replaceable = Replaceable;

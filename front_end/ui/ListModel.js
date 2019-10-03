@@ -6,7 +6,7 @@
  * @implements {Iterable<T>}
  * @template T
  */
-UI.ListModel = class extends Common.Object {
+export default class ListModel extends Common.Object {
   /**
    * @param {!Array<T>=} items
    */
@@ -181,12 +181,23 @@ UI.ListModel = class extends Common.Object {
    * @param {number} inserted
    */
   _replaced(index, removed, inserted) {
-    this.dispatchEventToListeners(
-        UI.ListModel.Events.ItemsReplaced, {index: index, removed: removed, inserted: inserted});
+    this.dispatchEventToListeners(Events.ItemsReplaced, {index: index, removed: removed, inserted: inserted});
   }
-};
+}
 
 /** @enum {symbol} */
-UI.ListModel.Events = {
+export const Events = {
   ItemsReplaced: Symbol('ItemsReplaced'),
 };
+
+/* Legacy exported object*/
+self.UI = self.UI || {};
+
+/* Legacy exported object*/
+UI = UI || {};
+
+/** @constructor */
+UI.ListModel = ListModel;
+
+/** @enum {symbol} */
+UI.ListModel.Events = Events;

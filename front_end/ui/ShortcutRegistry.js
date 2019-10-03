@@ -4,7 +4,7 @@
 /**
  * @unrestricted
  */
-UI.ShortcutRegistry = class {
+export default class ShortcutRegistry {
   /**
    * @param {!UI.ActionRegistry} actionRegistry
    * @param {!Document} document
@@ -211,7 +211,7 @@ UI.ShortcutRegistry = class {
 
     /**
      * @param {!Root.Runtime.Extension} extension
-     * @this {UI.ShortcutRegistry}
+     * @this {ShortcutRegistry}
      */
     function registerExtension(extension) {
       const descriptor = extension.descriptor();
@@ -242,14 +242,28 @@ UI.ShortcutRegistry = class {
       return isMatch;
     }
   }
-};
+}
 
 /**
  * @unrestricted
  */
-UI.ShortcutRegistry.ForwardedShortcut = class {};
+export class ForwardedShortcut {}
 
-UI.ShortcutRegistry.ForwardedShortcut.instance = new UI.ShortcutRegistry.ForwardedShortcut();
+ForwardedShortcut.instance = new ForwardedShortcut();
 
-/** @type {!UI.ShortcutRegistry} */
+/** @type {!ShortcutRegistry} */
 UI.shortcutRegistry;
+
+/* Legacy exported object*/
+self.UI = self.UI || {};
+
+/* Legacy exported object*/
+UI = UI || {};
+
+/** @constructor */
+UI.ShortcutRegistry = ShortcutRegistry;
+
+/**
+ * @unrestricted
+ */
+UI.ShortcutRegistry.ForwardedShortcut = ForwardedShortcut;

@@ -4,7 +4,7 @@
 /**
  * @unrestricted
  */
-UI.ForwardedInputEventHandler = class {
+export default class ForwardedInputEventHandler {
   constructor() {
     Host.InspectorFrontendHost.events.addEventListener(
         Host.InspectorFrontendHostAPI.Events.KeyEventUnhandled, this._onKeyEventUnhandled, this);
@@ -28,7 +28,16 @@ UI.ForwardedInputEventHandler = class {
     UI.shortcutRegistry.handleKey(UI.KeyboardShortcut.makeKey(keyCode, modifiers), key);
     UI.context.setFlavor(UI.ShortcutRegistry.ForwardedShortcut, null);
   }
-};
+}
 
-/** @type {!UI.ForwardedInputEventHandler} */
+/* Legacy exported object*/
+self.UI = self.UI || {};
+
+/* Legacy exported object*/
+UI = UI || {};
+
+/** @constructor */
+UI.ForwardedInputEventHandler = ForwardedInputEventHandler;
+
+/** @type {!ForwardedInputEventHandler} */
 UI.forwardedEventHandler = new UI.ForwardedInputEventHandler();

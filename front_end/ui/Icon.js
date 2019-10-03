@@ -2,12 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-UI.Icon = class extends HTMLSpanElement {
+export default class Icon extends HTMLSpanElement {
   constructor() {
     super();
-    /** @type {?UI.Icon.Descriptor} */
+    /** @type {?Icon.Descriptor} */
     this._descriptor = null;
-    /** @type {?UI.Icon.SpriteSheet} */
+    /** @type {?Icon.SpriteSheet} */
     this._spriteSheet = null;
     /** @type {string} */
     this._iconType = '';
@@ -16,14 +16,14 @@ UI.Icon = class extends HTMLSpanElement {
   /**
    * @param {string=} iconType
    * @param {string=} className
-   * @return {!UI.Icon}
+   * @return {!Icon}
    */
   static create(iconType, className) {
-    if (!UI.Icon._constructor) {
-      UI.Icon._constructor = UI.registerCustomElement('span', 'ui-icon', UI.Icon);
+    if (!Icon._constructor) {
+      Icon._constructor = UI.registerCustomElement('span', 'ui-icon', Icon);
     }
 
-    const icon = /** @type {!UI.Icon} */ (UI.Icon._constructor());
+    const icon = /** @type {!Icon} */ (Icon._constructor());
     if (className) {
       icon.className = className;
     }
@@ -46,11 +46,11 @@ UI.Icon = class extends HTMLSpanElement {
       this._descriptor = null;
       this._spriteSheet = null;
     }
-    const descriptor = UI.Icon.Descriptors[iconType] || null;
+    const descriptor = Icon.Descriptors[iconType] || null;
     if (descriptor) {
       this._iconType = iconType;
       this._descriptor = descriptor;
-      this._spriteSheet = UI.Icon.SpriteSheets[this._descriptor.spritesheet];
+      this._spriteSheet = Icon.SpriteSheets[this._descriptor.spritesheet];
       console.assert(
           this._spriteSheet, `ERROR: icon ${this._iconType} has unknown spritesheet: ${this._descriptor.spritesheet}`);
 
@@ -78,7 +78,7 @@ UI.Icon = class extends HTMLSpanElement {
    */
   _propertyValue() {
     if (!this._descriptor.coordinates) {
-      if (!this._descriptor.position || !UI.Icon._positionRegex.test(this._descriptor.position)) {
+      if (!this._descriptor.position || !Icon._positionRegex.test(this._descriptor.position)) {
         throw new Error(`ERROR: icon '${this._iconType}' has malformed position: '${this._descriptor.position}'`);
       }
       const column = this._descriptor.position[0].toLowerCase().charCodeAt(0) - 97;
@@ -90,26 +90,20 @@ UI.Icon = class extends HTMLSpanElement {
     }
     return `${this._descriptor.coordinates.x}px ${this._descriptor.coordinates.y}px`;
   }
-};
+}
 
-UI.Icon._positionRegex = /^[a-z][1-9][0-9]*$/;
+export const _positionRegex = /^[a-z][1-9][0-9]*$/;
 
-/** @typedef {{position: string, spritesheet: string, isMask: (boolean|undefined), coordinates: ({x: number, y: number}|undefined), invert: (boolean|undefined)}} */
-UI.Icon.Descriptor;
-
-/** @typedef {{cellWidth: number, cellHeight: number, padding: number}} */
-UI.Icon.SpriteSheet;
-
-/** @enum {!UI.Icon.SpriteSheet} */
-UI.Icon.SpriteSheets = {
+/** @enum {!Icon.SpriteSheet} */
+export const SpriteSheets = {
   'smallicons': {cellWidth: 10, cellHeight: 10, padding: 10},
   'mediumicons': {cellWidth: 16, cellHeight: 16, padding: 0},
   'largeicons': {cellWidth: 28, cellHeight: 24, padding: 0},
   'arrowicons': {cellWidth: 19, cellHeight: 19, padding: 0}
 };
 
-/** @enum {!UI.Icon.Descriptor} */
-UI.Icon.Descriptors = {
+/** @enum {!Icon.Descriptor} */
+export const Descriptors = {
   'smallicon-bezier': {position: 'a5', spritesheet: 'smallicons', isMask: true},
   'smallicon-checkmark': {position: 'b5', spritesheet: 'smallicons'},
   'smallicon-checkmark-square': {position: 'b6', spritesheet: 'smallicons', isMask: true},
@@ -253,3 +247,26 @@ UI.Icon.Descriptors = {
   'mediumicon-arrow-left': {position: 'a2', spritesheet: 'arrowicons'},
   'mediumicon-arrow-right': {position: 'a1', spritesheet: 'arrowicons'}
 };
+
+/* Legacy exported object*/
+self.UI = self.UI || {};
+
+/* Legacy exported object*/
+UI = UI || {};
+
+/** @constructor */
+UI.Icon = Icon;
+
+UI.Icon._positionRegex = _positionRegex;
+
+/** @enum {!Icon.SpriteSheet} */
+UI.Icon.SpriteSheets = SpriteSheets;
+
+/** @enum {!Icon.Descriptor} */
+UI.Icon.Descriptors = Descriptors;
+
+/** @typedef {{position: string, spritesheet: string, isMask: (boolean|undefined), coordinates: ({x: number, y: number}|undefined), invert: (boolean|undefined)}} */
+UI.Icon.Descriptor;
+
+/** @typedef {{cellWidth: number, cellHeight: number, padding: number}} */
+UI.Icon.SpriteSheet;

@@ -26,11 +26,11 @@
 /**
  * @unrestricted
  */
-UI.SoftContextMenu = class {
+export default class SoftContextMenu {
   /**
    * @param {!Array.<!InspectorFrontendHostAPI.ContextMenuDescriptor>} items
    * @param {function(string)} itemSelectedCallback
-   * @param {!UI.SoftContextMenu=} parentMenu
+   * @param {!SoftContextMenu=} parentMenu
    */
   constructor(items, itemSelectedCallback, parentMenu) {
     this._items = items;
@@ -222,7 +222,7 @@ UI.SoftContextMenu = class {
   }
 
   /**
-   * @return {!UI.SoftContextMenu}
+   * @return {!SoftContextMenu}
    */
   _root() {
     let root = this;
@@ -256,7 +256,7 @@ UI.SoftContextMenu = class {
       return;
     }
 
-    this._subMenu = new UI.SoftContextMenu(menuItemElement._subItems, this._itemSelectedCallback, this);
+    this._subMenu = new SoftContextMenu(menuItemElement._subItems, this._itemSelectedCallback, this);
     const anchorBox = menuItemElement.boxInWindow();
     // Adjust for padding.
     anchorBox.y -= 5;
@@ -388,4 +388,13 @@ UI.SoftContextMenu = class {
     }
     event.consume(true);
   }
-};
+}
+
+/* Legacy exported object*/
+self.UI = self.UI || {};
+
+/* Legacy exported object*/
+UI = UI || {};
+
+/** @constructor */
+UI.SoftContextMenu = SoftContextMenu;

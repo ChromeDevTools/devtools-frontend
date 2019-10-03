@@ -1487,7 +1487,7 @@ action("generate_devtools_grd") {
   ]
 
   grd_files =
-      all_devtools_modules + generated_applications +
+      copied_devtools_modules + generated_applications +
       generated_non_autostart_non_remote_modules + devtools_embedder_scripts +
       [ "$resources_out_dir/devtools_extension_api.js" ]
 

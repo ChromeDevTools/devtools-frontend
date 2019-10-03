@@ -13,12 +13,6 @@ Click the reload button <ph name="RELOAD_BUTTON_ICON">$2s<ex>reload button icon<
   <message name="IDS_DEVTOOLS_2adbfb69a37aa4a29ca846736d2111db" desc="Text in Coverage List View of the Coverage tab">
     JS (coarse)
   </message>
-  <message name="IDS_DEVTOOLS_2c56c360580420d293172f42d85dfbed" desc="Text in Coverage List View of the Coverage tab">
-    CSS
-  </message>
-  <message name="IDS_DEVTOOLS_5bc06f5800d415cc95e1349edbaca425" desc="Text in Coverage List View of the Coverage tab">
-    JS
-  </message>
   <message name="IDS_DEVTOOLS_73af525212a812236f1a3618e9cfa717" desc="Tooltip text that appears when hovering over the largeicon download button in the Coverage View of the Coverage tab">
     Export...
   </message>

@@ -4,6 +4,7 @@
 
 import './EventTarget.js';
 import './Object.js';
+import './UIString.js';
 
 // Do not reorder these imports as it breaks dependencies.
 

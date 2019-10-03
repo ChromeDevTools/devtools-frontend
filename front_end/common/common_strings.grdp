@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<grit-part>
+  <message name="IDS_DEVTOOLS_0945359809dad1fbf3dea1c95a0da951" desc="Name of a network resource type">
+    Document
+  </message>
+  <message name="IDS_DEVTOOLS_21133d71a056222fa2096906538e4e04" desc="Text that appears on a button for the image resource type filter.">
+    Img
+  </message>
+  <message name="IDS_DEVTOOLS_375c9558f2166cab6515a7ab774c1735" desc="Name of a network resource type">
+    TextTrack
+  </message>
+  <message name="IDS_DEVTOOLS_441d3aea2e55865603a26ca972779831" desc="Text that appears in a tooltip the xhr and fetch resource types filter.">
+    XHR and Fetch
+  </message>
+  <message name="IDS_DEVTOOLS_45edc1b96407d9d213dd1135962a32a0" desc="Name of a network resource type">
+    WebSocket
+  </message>
+  <message name="IDS_DEVTOOLS_4ea7755f84f02d23876d90be2f9765cf" desc="Name of a network resource type">
+    Fetch
+  </message>
+  <message name="IDS_DEVTOOLS_54df3baef130c81e6ae8432a2567320a" desc="Text that appears on a button for the websocket resource type filter.">
+    WS
+  </message>
+  <message name="IDS_DEVTOOLS_59c4ad3f3cb3d812d68fab7a354d4a63" desc="Text that appears in a tooltip for the resource types filter.">
+    Fonts
+  </message>
+  <message name="IDS_DEVTOOLS_7a48ae1b7387f8a8159c488fbd850021" desc="Text that appears on a button for the document resource type filter.">
+    Doc
+  </message>
+  <message name="IDS_DEVTOOLS_85e8231d44b865e90f6a39b356ded9bd" desc="Text that appears in a tooltip for the css types filter.">
+    Stylesheets
+  </message>
+  <message name="IDS_DEVTOOLS_8cf6dd5e7b4fe7b6df3319b9803278f3" desc="Name of a network resource type">
+    EventSource
+  </message>
+  <message name="IDS_DEVTOOLS_a83f1ca5ad00b39773d9e6a26b0e70b2" desc="Text that appears in a tooltip for the javascript types filter.">
+    Scripts
+  </message>
+  <message name="IDS_DEVTOOLS_bef61d7d03206d267fdbab45fdca247d" desc="Name of a network resource type">
+    SignedExchange
+  </message>
+  <message name="IDS_DEVTOOLS_bf4e3c3f0fc3aee351d560e6e026f805" desc="Text that appears in a tooltip for the websocket types filter.">
+    WebSockets
+  </message>
+  <message name="IDS_DEVTOOLS_c350bb18c3cdfbd4e5444faa63be6586" desc="Name of a network resource type">
+    Stylesheet
+  </message>
+  <message name="IDS_DEVTOOLS_fff0d600f8a0b5e19e88bfb821dd1157" desc="Text that appears in a tooltip for the image types filter.">
+    Images
+  </message>
+</grit-part>

@@ -192,7 +192,7 @@ Network.NetworkPanel = class extends UI.Panel {
   }
 
   _setupToolbarButtons(splitWidget) {
-    const searchToggle = new UI.ToolbarToggle('Search', 'largeicon-search');
+    const searchToggle = new UI.ToolbarToggle(ls`Search`, 'largeicon-search');
     function updateSidebarToggle() {
       searchToggle.setToggled(splitWidget.showMode() !== UI.SplitWidget.ShowMode.OnlyMain);
     }

@@ -49,6 +49,9 @@
   <message name="IDS_DEVTOOLS_193cfc9be3b995831c6af2fea6650e60" desc="Text that refers to one or a group of webpages">
     Page
   </message>
+  <message name="IDS_DEVTOOLS_194f5394ae2e9c74dc3c441b92862d1d" desc="Text that appears on a button for the font resource type filter.">
+    Font
+  </message>
   <message name="IDS_DEVTOOLS_1c481aa99d081c32182011a758f73d33" desc="Text that only contain a placeholder">
     <ph name="DURATIONTEXT">$1s<ex>100ms (at 200ms)</ex></ph>
   </message>
@@ -94,6 +97,9 @@
   <message name="IDS_DEVTOOLS_2bbc845892f400626baab5af687527c5" desc="Text for the start time of an activity">
     Start Time
   </message>
+  <message name="IDS_DEVTOOLS_2c56c360580420d293172f42d85dfbed" desc="Text that appears on a button for the css resource type filter.">
+    CSS
+  </message>
   <message name="IDS_DEVTOOLS_2ce2fc341b0bd9219a3634ff43a90bde" desc="Generic text with two placeholders separated by a comma">
     <ph name="ITEM_LABEL">$1s<ex>1 613 680</ex></ph>, <ph name="CHECKEDSTATE">$2s<ex>44 %</ex></ph>
   </message>
@@ -120,6 +126,9 @@
   </message>
   <message name="IDS_DEVTOOLS_3afbd9828e011526955ca93b48b57524" desc="Text for one or a group of screenshots">
     Screenshot
+  </message>
+  <message name="IDS_DEVTOOLS_3b563524fdb17b4a86590470d40bef74" desc="Text that appears on a button for the media resource type filter.">
+    Media
   </message>
   <message name="IDS_DEVTOOLS_3bb3e8c8a24891ba0f7608bcc96f8b0a" desc="Text for a rendering frame">
     Frame
@@ -211,6 +220,9 @@
   <message name="IDS_DEVTOOLS_5b6cf869265c13af8566f192b4ab3d2a" desc="Text for the documentation of something">
     Documentation
   </message>
+  <message name="IDS_DEVTOOLS_5bc06f5800d415cc95e1349edbaca425" desc="Text that appears on a button for the javascript resource type filter.">
+    JS
+  </message>
   <message name="IDS_DEVTOOLS_5de39fa1bce4bbf9232597a2120bc4d4" desc="Text to open the cubic bezier editor">
     Open cubic bezier editor.
   </message>
@@ -264,6 +276,9 @@
   </message>
   <message name="IDS_DEVTOOLS_74540c79e377bea903e1023a46df5574" desc="Text to open a file">
     Open file
+  </message>
+  <message name="IDS_DEVTOOLS_76c3e002d3c052bd6a909366a8dc3845" desc="Text that appears on a button for the manifest resource type filter.">
+    Manifest
   </message>
   <message name="IDS_DEVTOOLS_787ae37366b7a8c53f381abfd315c647" desc="Text that refers to the Elements Panel">
     Elements Panel
@@ -454,6 +469,9 @@
   <message name="IDS_DEVTOOLS_bccaa4aa80831b76c11240a16447975f" desc="Title of the Console tool">
     Console
   </message>
+  <message name="IDS_DEVTOOLS_be53a0541a6d36f6ecb879fa2c584b08" desc="Text in Image View of the Sources panel">
+    Image
+  </message>
   <message name="IDS_DEVTOOLS_be8545ae7ab0276e15898aae7acfbd7a" desc="Text that refers to the resources of the web page">
     Resource
   </message>
@@ -522,6 +540,9 @@
   </message>
   <message name="IDS_DEVTOOLS_e24ee2487879116dcab772c0ac4fe341" desc="Text to focus on something">
     Focus
+  </message>
+  <message name="IDS_DEVTOOLS_e402c138065e7eece783dc30c6079192" desc="Text that appears on a button for the xhr resource type filter.">
+    XHR
   </message>
   <message name="IDS_DEVTOOLS_e55f75a29310d7b60f7ac1d390c8ae42" desc="Text for a module, the programming concept">
     Module

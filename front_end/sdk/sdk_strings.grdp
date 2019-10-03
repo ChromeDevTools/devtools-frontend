@@ -96,9 +96,6 @@
   <message name="IDS_DEVTOOLS_3b2a3c8ed19fc3647432e72885d633e7" desc="Service worker running status displayed in the Service Workers view in the Application panel">
     stopping
   </message>
-  <message name="IDS_DEVTOOLS_3b563524fdb17b4a86590470d40bef74" desc="Text in DOMDebugger Model">
-    Media
-  </message>
   <message name="IDS_DEVTOOLS_3c000cf06aef2d48a8bfe568e1d6ef65" desc="Tooltip to explain why a cookie was blocked">
     This set-cookie was not sent over a secure connection and would have overwritten a cookie with the Secure attribute.
   </message>
@@ -341,9 +338,6 @@
   </message>
   <message name="IDS_DEVTOOLS_e2b60c37530e144372a7943df0f6017d" desc="Text in Resource Tree Model">
     &lt;iframe&gt;
-  </message>
-  <message name="IDS_DEVTOOLS_e402c138065e7eece783dc30c6079192" desc="Text in DOMDebugger Model">
-    XHR
   </message>
   <message name="IDS_DEVTOOLS_e485c975c1d6c17d9dfd81128b83f63a" desc="Text in the Event Listener Breakpoints Panel of the JavaScript Debugger in the Sources Panel">
     Set innerHTML

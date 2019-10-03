@@ -235,16 +235,16 @@ export class ResourceCategory {
  * @enum {!ResourceCategory}
  */
 export const resourceCategories = {
-  XHR: new ResourceCategory('XHR and Fetch', 'XHR'),
-  Script: new ResourceCategory('Scripts', 'JS'),
-  Stylesheet: new ResourceCategory('Stylesheets', 'CSS'),
-  Image: new ResourceCategory('Images', 'Img'),
-  Media: new ResourceCategory('Media', 'Media'),
-  Font: new ResourceCategory('Fonts', 'Font'),
-  Document: new ResourceCategory('Documents', 'Doc'),
-  WebSocket: new ResourceCategory('WebSockets', 'WS'),
-  Manifest: new ResourceCategory('Manifest', 'Manifest'),
-  Other: new ResourceCategory('Other', 'Other')
+  XHR: new ResourceCategory(ls`XHR and Fetch`, ls`XHR`),
+  Script: new ResourceCategory(ls`Scripts`, ls`JS`),
+  Stylesheet: new ResourceCategory(ls`Stylesheets`, ls`CSS`),
+  Image: new ResourceCategory(ls`Images`, ls`Img`),
+  Media: new ResourceCategory(ls`Media`, ls`Media`),
+  Font: new ResourceCategory(ls`Fonts`, ls`Font`),
+  Document: new ResourceCategory(ls`Documents`, ls`Doc`),
+  WebSocket: new ResourceCategory(ls`WebSockets`, ls`WS`),
+  Manifest: new ResourceCategory(ls`Manifest`, ls`Manifest`),
+  Other: new ResourceCategory(ls`Other`, ls`Other`)
 };
 
 /**
@@ -252,22 +252,22 @@ export const resourceCategories = {
  * @enum {!ResourceType}
  */
 export const resourceTypes = {
-  XHR: new ResourceType('xhr', 'XHR', resourceCategories.XHR, true),
-  Fetch: new ResourceType('fetch', 'Fetch', resourceCategories.XHR, true),
-  EventSource: new ResourceType('eventsource', 'EventSource', resourceCategories.XHR, true),
-  Script: new ResourceType('script', 'Script', resourceCategories.Script, true),
-  Stylesheet: new ResourceType('stylesheet', 'Stylesheet', resourceCategories.Stylesheet, true),
-  Image: new ResourceType('image', 'Image', resourceCategories.Image, false),
-  Media: new ResourceType('media', 'Media', resourceCategories.Media, false),
-  Font: new ResourceType('font', 'Font', resourceCategories.Font, false),
-  Document: new ResourceType('document', 'Document', resourceCategories.Document, true),
-  TextTrack: new ResourceType('texttrack', 'TextTrack', resourceCategories.Other, true),
-  WebSocket: new ResourceType('websocket', 'WebSocket', resourceCategories.WebSocket, false),
-  Other: new ResourceType('other', 'Other', resourceCategories.Other, false),
-  SourceMapScript: new ResourceType('sm-script', 'Script', resourceCategories.Script, true),
-  SourceMapStyleSheet: new ResourceType('sm-stylesheet', 'Stylesheet', resourceCategories.Stylesheet, true),
-  Manifest: new ResourceType('manifest', 'Manifest', resourceCategories.Manifest, true),
-  SignedExchange: new ResourceType('signed-exchange', 'SignedExchange', resourceCategories.Other, false),
+  XHR: new ResourceType('xhr', ls`XHR`, resourceCategories.XHR, true),
+  Fetch: new ResourceType('fetch', ls`Fetch`, resourceCategories.XHR, true),
+  EventSource: new ResourceType('eventsource', ls`EventSource`, resourceCategories.XHR, true),
+  Script: new ResourceType('script', ls`Script`, resourceCategories.Script, true),
+  Stylesheet: new ResourceType('stylesheet', ls`Stylesheet`, resourceCategories.Stylesheet, true),
+  Image: new ResourceType('image', ls`Image`, resourceCategories.Image, false),
+  Media: new ResourceType('media', ls`Media`, resourceCategories.Media, false),
+  Font: new ResourceType('font', ls`Font`, resourceCategories.Font, false),
+  Document: new ResourceType('document', ls`Document`, resourceCategories.Document, true),
+  TextTrack: new ResourceType('texttrack', ls`TextTrack`, resourceCategories.Other, true),
+  WebSocket: new ResourceType('websocket', ls`WebSocket`, resourceCategories.WebSocket, false),
+  Other: new ResourceType('other', ls`Other`, resourceCategories.Other, false),
+  SourceMapScript: new ResourceType('sm-script', ls`Script`, resourceCategories.Script, true),
+  SourceMapStyleSheet: new ResourceType('sm-stylesheet', ls`Stylesheet`, resourceCategories.Stylesheet, true),
+  Manifest: new ResourceType('manifest', ls`Manifest`, resourceCategories.Manifest, true),
+  SignedExchange: new ResourceType('signed-exchange', ls`SignedExchange`, resourceCategories.Other, false)
 };
 
 

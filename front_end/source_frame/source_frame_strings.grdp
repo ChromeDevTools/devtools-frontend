@@ -3,9 +3,6 @@
   <message name="IDS_DEVTOOLS_0818b6e40afc14684d727176bd222aa0" desc="Title of a setting under the Sources category that can be invoked through the Command Menu">
     Set indentation to 2 spaces
   </message>
-  <message name="IDS_DEVTOOLS_194f5394ae2e9c74dc3c441b92862d1d" desc="Text in Font View of the Sources panel">
-    Font
-  </message>
   <message name="IDS_DEVTOOLS_22a4f3a07431f171506336782f211c61" desc="Text that appears when user drag and drop something (for example, a file) in Image View of the Sources panel">
     Drop image file here
   </message>
@@ -47,9 +44,6 @@
   </message>
   <message name="IDS_DEVTOOLS_af70cf4b9f56cd69eb56ae32f21e8416" desc="Text in Source Frame of the Sources panel">
     <ph name="SELECTIONS_LENGTH">$1d<ex>2</ex></ph> selection regions
-  </message>
-  <message name="IDS_DEVTOOLS_be53a0541a6d36f6ecb879fa2c584b08" desc="Text in Image View of the Sources panel">
-    Image
   </message>
   <message name="IDS_DEVTOOLS_c144a6b9ff31ca0302b1cf94d4d540a0" desc="Text in Source Frame of the Sources panel">
     <ph name="TEXTRANGE_ENDLINE___TEXTRANGE_STARTLINE____">$1d<ex>2</ex></ph> lines, <ph name="SELECTEDTEXT_LENGTH">$2d<ex>2</ex></ph> characters selected

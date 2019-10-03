@@ -195,6 +195,8 @@ all_devtools_files = [
   "front_end/coverage_test_runner/module.json",
   "front_end/cpu_profiler_test_runner/module.json",
   "front_end/cpu_profiler_test_runner/ProfilerTestRunner.js",
+  "front_end/dagre_layout/dagre.js",
+  "front_end/dagre_layout/module.json",
   "front_end/data_grid/dataGrid.css",
   "front_end/data_grid/DataGrid.js",
   "front_end/data_grid/module.json",
@@ -1356,6 +1358,7 @@ generated_remote_modules = [
   "$resources_out_dir/accessibility/accessibility_module.js",
   "$resources_out_dir/audits_worker/audits_worker_module.js",
   "$resources_out_dir/cm_modes/cm_modes_module.js",
+  "$resources_out_dir/dagre_layout/dagre_layout_module.js",
   "$resources_out_dir/emulated_devices/emulated_devices_module.js",
   "$resources_out_dir/product_registry_impl/product_registry_impl_module.js",
 ]

@@ -723,6 +723,38 @@ Acorn.Comment;
  */
 Acorn.TokenOrComment;
 
+const dagre = {};
+dagre.graphlib = {};
+/**
+ * @constructor
+ */
+dagre.graphlib.Graph = function() {};
+
+dagre.graphlib.json = {};
+
+/**
+ * @param {string} graphData
+ * @return {!dagre.graphlib.Graph}
+ */
+dagre.graphlib.json.read = function(graphData) {};
+
+/**
+ * @param {!dagre.graphlib.Graph} graph
+ * @return {string}
+ */
+dagre.graphlib.json.write = function(graph) {};
+
+/**
+ * @param {!dagre.graphlib.Graph} graph
+ * @param {?Object=} options
+ */
+dagre.layout = function(graph, options) {};
+// Since the object types in JSDoc should use capitalized `Dagre`, dagre is renamed as Dagre below.
+// Note that `var Dagre={}` will be added in dagre_module.js, so to prevent variable redefinition,
+// the workaround is to name the module+folder as `dagre_layout`. This workaround is similar to
+// `cm` and `CodeMirror`.
+const Dagre = dagre;
+
 const ESTree = {};
 
 /**

@@ -1,0 +1,8 @@
+{
+  "scripts": [
+      "dagre.js"
+  ],
+  "skip_compilation": [
+      "dagre.js"
+  ]
+}

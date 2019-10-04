@@ -76,11 +76,13 @@ export function markAsMenuButton(element) {
 
 /**
  * @param {!Element} element
+ * @param {number=} min
+ * @param {number=} max
  */
-export function markAsProgressBar(element) {
+export function markAsProgressBar(element, min = 0, max = 100) {
   element.setAttribute('role', 'progressbar');
-  element.setAttribute('aria-valuemin', 0);
-  element.setAttribute('aria-valuemax', 100);
+  element.setAttribute('aria-valuemin', min);
+  element.setAttribute('aria-valuemax', max);
 }
 
 /**

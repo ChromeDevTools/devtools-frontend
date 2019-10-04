@@ -348,6 +348,11 @@ Console.ConsoleViewMessage = class {
 
     // Append a space to prevent the anchor text from being glued to the console message when the user selects and copies the console messages.
     if (anchorElement) {
+      anchorElement.tabIndex = -1;
+      this._selectableChildren.push({
+        element: anchorElement,
+        forceSelect: () => anchorElement.focus(),
+      });
       const anchorWrapperElement = createElementWithClass('span', 'console-message-anchor');
       anchorWrapperElement.appendChild(anchorElement);
       anchorWrapperElement.createTextChild(' ');

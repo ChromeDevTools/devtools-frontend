@@ -48,13 +48,13 @@ SDKTestRunner.PageMock = class {
     this._enabledDomains.clear();
     SDK.targetManager._targets = [];
 
-    const oldFactory = Protocol.Connection._factory;
-    Protocol.Connection._factory = () => {
+    const oldFactory = Protocol.Connection.getFactory();
+    Protocol.Connection.setFactory(() => {
       this._connection = new MockPageConnection(this);
       return this._connection;
-    };
+    });
     const target = SDK.targetManager.createTarget(nextId('mock-target-'), targetName, this._type, null);
-    Protocol.Connection._factory = oldFactory;
+    Protocol.Connection.setFactory(oldFactory);
 
     this._target = target;
     return target;

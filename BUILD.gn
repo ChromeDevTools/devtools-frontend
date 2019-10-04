@@ -528,8 +528,6 @@ all_devtools_files = [
   "front_end/profiler/ProfileTypeRegistry.js",
   "front_end/profiler/ProfileView.js",
   "front_end/profiler/TopDownProfileDataGrid.js",
-  "front_end/protocol/NodeURL.js",
-  "front_end/protocol/InspectorBackend.js",
   "front_end/protocol/module.json",
   "front_end/quick_open/CommandMenu.js",
   "front_end/quick_open/filteredListWidget.css",
@@ -899,7 +897,9 @@ lighthouse_locale_files = [
 all_devtools_files += lighthouse_locale_files
 
 all_devtools_modules = [
-  "front_end/root.js",
+  "front_end/protocol/protocol.js",
+  "front_end/protocol/NodeURL.js",
+  "front_end/protocol/InspectorBackend.js",
   "front_end/host/host.js",
   "front_end/host/UserMetrics.js",
   "front_end/host/ResourceLoader.js",
@@ -1191,6 +1191,9 @@ application_templates = [
 ]
 
 copied_devtools_modules = [
+  "$resources_out_dir/protocol/protocol.js",
+  "$resources_out_dir/protocol/NodeURL.js",
+  "$resources_out_dir/protocol/InspectorBackend.js",
   "$resources_out_dir/host/host.js",
   "$resources_out_dir/host/UserMetrics.js",
   "$resources_out_dir/host/ResourceLoader.js",
@@ -1492,7 +1495,10 @@ action("generate_devtools_grd") {
   grd_files =
       copied_devtools_modules + generated_applications +
       generated_non_autostart_non_remote_modules + devtools_embedder_scripts +
-      [ "$resources_out_dir/devtools_extension_api.js" ]
+      [
+        "$resources_out_dir/devtools_extension_api.js",
+        "$resources_out_dir/InspectorBackendCommands.js",
+      ]
 
   # Bundle remote modules in ChromeOS.
   if (is_chromeos) {

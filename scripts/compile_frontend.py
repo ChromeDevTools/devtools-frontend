@@ -290,6 +290,12 @@ def prepare_closure_frontend_compile(temp_devtools_path, descriptors, namespace_
         args.extend(['--js', file])
         if "InspectorBackend.js" in file:
             args.extend(['--js', protocol_externs_file])
+
+            # Write a dummy file for InspectorBackendCommands. We don't type-check this file, but we
+            # import it from protocol/protocol.js
+            inspector_backends_commands_file = path.join(temp_frontend_path, 'InspectorBackendCommands.js')
+            modular_build.write_file(inspector_backends_commands_file, '')
+            args.extend(['--js', inspector_backends_commands_file])
     command += args
     command = [arg.replace(DEVTOOLS_FRONTEND_PATH, temp_frontend_path) for arg in command]
     compiler_args_file = tempfile.NamedTemporaryFile(mode='wt', delete=False)

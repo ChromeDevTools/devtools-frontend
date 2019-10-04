@@ -59,6 +59,8 @@ Console.ConsoleViewMessage = class {
     this._traceExpanded = false;
     /** @type {?function(boolean)} */
     this._expandTrace = null;
+    /** @type {?Element} */
+    this._anchorElement = null;
   }
 
   /**

@@ -63,28 +63,6 @@ export default class Panel extends UI.VBox {
   elementsToRestoreScrollPositionsFor() {
     return [];
   }
-
-  /**
-   * @param {!UI.Infobar} infobar
-   */
-  showInfobar(infobar) {
-    infobar.setCloseCallback(this._onInfobarClosed.bind(this, infobar));
-    if (this.element.firstChild) {
-      this.element.insertBefore(infobar.element, this.element.firstChild);
-    } else {
-      this.element.appendChild(infobar.element);
-    }
-    infobar.setParentView(this);
-    this.doResize();
-  }
-
-  /**
-   * @param {!UI.Infobar} infobar
-   */
-  _onInfobarClosed(infobar) {
-    infobar.element.remove();
-    this.doResize();
-  }
 }
 
 /**

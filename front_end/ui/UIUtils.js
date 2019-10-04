@@ -1594,6 +1594,18 @@ registerCustomElement('div', 'dt-close-button', class extends HTMLDivElement {
   setAccessibleName(name) {
     UI.ARIAUtils.setAccessibleName(this._buttonElement, name);
   }
+
+  /**
+   * @param {boolean} tabbable
+   * @this {Element}
+   */
+  setTabbable(tabbable) {
+    if (tabbable) {
+      this._buttonElement.tabIndex = 0;
+    } else {
+      this._buttonElement.tabIndex = -1;
+    }
+  }
 });
 })();
 

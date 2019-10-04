@@ -67,6 +67,8 @@
 .infobar-toggle {
     color: hsl(214, 92%, 50%);
     cursor: pointer;
+    margin-top: 5px;
+    margin-bottom: 5px;
 }
 
 .infobar-toggle:hover {

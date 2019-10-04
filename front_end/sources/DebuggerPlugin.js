@@ -1585,6 +1585,7 @@ Sources.DebuggerPlugin = class extends Sources.UISourceCodeFrame.Plugin {
     toolbar.element.style.verticalAlign = 'middle';
     toolbar.element.style.marginBottom = '3px';
     toolbar.element.style.pointerEvents = 'none';
+    toolbar.element.tabIndex = -1;
     const element = this._prettyPrintInfobar.createDetailsRowMessage();
     element.appendChild(UI.formatLocalized(
         'You can click the %s button on the bottom status bar, and continue debugging with the new formatted source.',

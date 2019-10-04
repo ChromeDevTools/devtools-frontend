@@ -44,6 +44,15 @@
     color: #fff;
 }
 
+.text-button.link-style {
+  background: none;
+  border: none;
+  padding: 0!important;
+  font: inherit;
+  cursor: pointer;
+  height: 18px;
+}
+
 .text-button.primary-button:not(:disabled):focus,
 .text-button.primary-button:not(:disabled):hover,
 .text-button.primary-button:not(:disabled):active, -theme-preserve {

@@ -25,6 +25,14 @@
     display: block;
 }
 
+.close-button[data-keyboard-focus="true"]:focus .default-icon, .close-button:active .default-icon {
+    display: none;
+}
+
+.close-button[data-keyboard-focus="true"]:focus .hover-icon {
+    display: block;
+}
+
 .close-button:active .hover-icon {
     display: none !important;
 }

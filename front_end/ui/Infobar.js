@@ -21,20 +21,21 @@ export default class Infobar {
     this._mainRowText.textContent = text;
     this._detailsRows = this._contentElement.createChild('div', 'infobar-details-rows hidden');
 
-    this._toggleElement = this._mainRow.createChild('div', 'infobar-toggle hidden');
-    this._toggleElement.addEventListener('click', this._onToggleDetails.bind(this), false);
-    this._toggleElement.textContent = Common.UIString('more');
+    this._toggleElement =
+        UI.createTextButton(ls`more`, this._onToggleDetails.bind(this), 'infobar-toggle link-style hidden');
+    this._mainRow.appendChild(this._toggleElement);
 
     /** @type {?Common.Setting} */
     this._disableSetting = disableSetting || null;
     if (disableSetting) {
-      const disableButton = this._mainRow.createChild('div', 'infobar-toggle');
-      disableButton.textContent = Common.UIString('never show');
-      disableButton.addEventListener('click', this._onDisable.bind(this), false);
+      const disableButton =
+          UI.createTextButton(ls`never show`, this._onDisable.bind(this), 'infobar-toggle link-style');
+      this._mainRow.appendChild(disableButton);
     }
 
     this._closeButton = this._contentElement.createChild('div', 'close-button', 'dt-close-button');
-    this._closeButton.addEventListener('click', this.dispose.bind(this), false);
+    this._closeButton.setTabbable(true);
+    self.onInvokeElement(this._closeButton, this.dispose.bind(this));
 
     /** @type {?function()} */
     this._closeCallback = null;

@@ -2,9 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+// TODO(1011259): switch to true.
+let external_devtools_frontend = false;
+let node_modules_path = external_devtools_frontend
+    ? ''
+    : '../../../../third_party/devtools-node-modules/third_party/node_modules/';
+
 module.exports = function(config) {
   const options = {
-    basePath: "",
+    basePath: '',
 
     files: [{
       pattern: 'front_end/**/*.js',
@@ -15,33 +21,33 @@ module.exports = function(config) {
       type: 'module'
     }],
 
-    reporters: ["dots", "coverage-istanbul"],
+    reporters: ['dots', 'coverage-istanbul'],
 
     preprocessors: {
       './tests/**/*.ts': ['karma-typescript'],
       './front_end/common/*.js': ['karma-coverage-istanbul-instrumenter']
     },
 
-    browsers: ["ChromeHeadless"],
+    browsers: ['ChromeHeadless'],
 
-    frameworks: ["mocha", "chai", "karma-typescript"],
+    frameworks: ['mocha', 'chai', 'karma-typescript'],
 
     karmaTypescriptConfig: {
       compilerOptions: {
-        target: "esnext",
-        module: "esnext",
-        typeRoots: ["../../../../third_party/devtools-node-modules/third_party/node_modules/@types"]
+        target: 'esnext',
+        module: 'esnext',
+        typeRoots: [node_modules_path + '@types']
       },
       coverageOptions: {
         instrumentation: false
       },
       bundlerOptions: {
         resolve: {
-          directories: ["../../../../third_party/devtools-node-modules/third_party/node_modules"]
+          directories: [node_modules_path]
         }
       },
       exclude: [
-        "scripts"
+        'scripts'
       ]
     },
 
@@ -50,12 +56,12 @@ module.exports = function(config) {
     },
 
     plugins: [
-      "karma-chrome-launcher",
-      "karma-mocha",
-      "karma-chai",
-      "karma-typescript",
-      require('../../../../third_party/devtools-node-modules/third_party/node_modules/karma-coverage-istanbul-instrumenter'),
-      require('../../../../third_party/devtools-node-modules/third_party/node_modules/karma-coverage-istanbul-reporter')
+      'karma-chrome-launcher',
+      'karma-mocha',
+      'karma-chai',
+      'karma-typescript',
+      require(node_modules_path + 'karma-coverage-istanbul-instrumenter'),
+      require(node_modules_path + 'karma-coverage-istanbul-reporter')
     ],
 
     coverageIstanbulInstrumenter: {
@@ -63,8 +69,8 @@ module.exports = function(config) {
     },
 
     coverageIstanbulReporter: {
-      reports: ["text", "html"],
-      dir: "karma-coverage"
+      reports: ['text', 'html'],
+      dir: 'karma-coverage'
     },
 
     singleRun: true

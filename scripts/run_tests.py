@@ -9,7 +9,7 @@ import re
 import subprocess
 import sys
 
-import local_node
+import devtools_paths
 
 is_cygwin = sys.platform == "cygwin"
 chrome_binary = None
@@ -48,9 +48,9 @@ def run_tests():
     karma_errors_found = False
 
     karmaconfig_path = os.path.join(devtools_path, "karma.conf.js")
-    exec_command = [local_node.node_path(), local_node.karma_path(), "start", to_platform_path_exact(karmaconfig_path)]
+    exec_command = [devtools_paths.node_path(), devtools_paths.karma_path(), "start", to_platform_path_exact(karmaconfig_path)]
 
-    env = {'NODE_PATH': local_node.node_modules_path()}
+    env = {'NODE_PATH': devtools_paths.node_modules_path()}
     if (chrome_binary is not None):
         env['CHROME_BIN'] = chrome_binary
 

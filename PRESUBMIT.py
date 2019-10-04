@@ -25,7 +25,7 @@
 # THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-"""DevTools JSDoc validator presubmit script
+"""DevTools presubmit script
 
 See http://dev.chromium.org/developers/how-tos/depottools/presubmit-scripts
 for more details about the presubmit API built into gcl.
@@ -50,7 +50,7 @@ def _CheckFormat(input_api, output_api):
     original_sys_path = sys.path
     try:
         sys.path = sys.path + [input_api.os_path.join(input_api.PresubmitLocalPath(), "scripts")]
-        import local_node
+        import devtools_paths
     finally:
         sys.path = original_sys_path
 
@@ -77,7 +77,7 @@ def _CheckFormat(input_api, output_api):
 
     # Use eslint to autofix the braces.
     # Also fix semicolon to avoid confusing clang-format.
-    eslint_process = popen([local_node.node_path(), local_node.eslint_path(), '--config', '.eslintrc.js', '--fix'] + affected_files)
+    eslint_process = popen([devtools_paths.node_path(), devtools_paths.eslint_path(), '--config', '.eslintrc.js', '--fix'] + affected_files)
     eslint_process.communicate()
 
     # Need to run clang-format again to align the braces
@@ -228,11 +228,11 @@ def _checkWithNodeScript(input_api, output_api, script_path, script_arguments=No
     original_sys_path = sys.path
     try:
         sys.path = sys.path + [input_api.os_path.join(input_api.PresubmitLocalPath(), "scripts")]
-        import local_node
+        import devtools_paths
     finally:
         sys.path = original_sys_path
 
-    node_path = local_node.node_path()
+    node_path = devtools_paths.node_path()
 
     if script_arguments is None:
         script_arguments = []

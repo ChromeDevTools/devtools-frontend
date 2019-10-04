@@ -1714,7 +1714,7 @@ if (is_linux && !is_chromeos) {
       ".eslintrc.js",
       "front_end/",
       "scripts/lint_javascript.py",
-      "scripts/local_node.py",
+      "scripts/devtools_paths.py",
       "//testing/scripts/common.py",
       "//testing/scripts/run_devtools_check.py",
       "//testing/xvfb.py",

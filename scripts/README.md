@@ -16,7 +16,6 @@ The newer scripts such as for testing and hosted mode are written in Node.js, wh
 - gulp - experimental build process written in node.js & gulp to remove the dependency on Chromium-specific build tools (i.e. gn and ninja)
 - hosted_mode - run DevTools on a localhost development server
 - jsdoc_validator - enforces the use of Closure type annotations
-- local_node - installs a local runtime of node.js
 
 ### Python Scripts
 - compile_frontend.py - runs closure compiler to do static type analysis

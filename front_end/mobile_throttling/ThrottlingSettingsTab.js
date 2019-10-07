@@ -28,7 +28,6 @@ MobileThrottling.ThrottlingSettingsTab = class extends UI.VBox {
     this._customSetting.addChangeListener(this._conditionsUpdated, this);
 
     this.setDefaultFocusedElement(addButton);
-    this.contentElement.tabIndex = 0;
   }
 
   /**

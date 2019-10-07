@@ -4,7 +4,7 @@
 /**
  * @unrestricted
  */
-SDK.ServerTiming = class {
+export default class ServerTiming {
   /**
    * @param {string} metric
    * @param {?number} value
@@ -18,7 +18,7 @@ SDK.ServerTiming = class {
 
   /**
    * @param {!Array<!SDK.NetworkRequest.NameValue>} headers
-   * @return {?Array<!SDK.ServerTiming>}
+   * @return {?Array<!ServerTiming>}
    */
   static parseHeaders(headers) {
     const rawServerTimingHeaders = headers.filter(item => item.name.toLowerCase() === 'server-timing');
@@ -29,7 +29,7 @@ SDK.ServerTiming = class {
     const serverTimings = rawServerTimingHeaders.reduce((memo, header) => {
       const timing = this.createFromHeaderValue(header.value);
       memo.pushAll(timing.map(function(entry) {
-        return new SDK.ServerTiming(
+        return new ServerTiming(
             entry.name, entry.hasOwnProperty('dur') ? entry.dur : null, entry.hasOwnProperty('desc') ? entry.desc : '');
       }));
       return memo;
@@ -195,4 +195,13 @@ SDK.ServerTiming = class {
   static showWarning(msg) {
     Common.console.warn(Common.UIString(`ServerTiming: ${msg}`));
   }
-};
+}
+
+/* Legacy exported object */
+self.SDK = self.SDK || {};
+
+/* Legacy exported object */
+SDK = SDK || {};
+
+/** @constructor */
+SDK.ServerTiming = ServerTiming;

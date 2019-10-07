@@ -29,7 +29,7 @@
  * @implements {Common.ContentProvider}
  * @unrestricted
  */
-SDK.Resource = class {
+export default class Resource {
   /**
    * @param {!SDK.ResourceTreeModel} resourceTreeModel
    * @param {?SDK.NetworkRequest} request
@@ -296,4 +296,13 @@ SDK.Resource = class {
   frame() {
     return this._resourceTreeModel.frameForId(this._frameId);
   }
-};
+}
+
+/* Legacy exported object */
+self.SDK = self.SDK || {};
+
+/* Legacy exported object */
+SDK = SDK || {};
+
+/** @constructor */
+SDK.Resource = Resource;

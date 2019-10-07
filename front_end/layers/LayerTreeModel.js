@@ -100,7 +100,7 @@ Layers.LayerTreeModel = class extends SDK.SDKModel {
       const lastPaintRect = this._lastPaintRectByLayerId[layerId];
       const layer = layerTree.layerById(layerId);
       if (layer) {
-        layer._lastPaintRect = lastPaintRect;
+        /** @type {!Layers.AgentLayer} */ (layer)._lastPaintRect = lastPaintRect;
       }
     }
     this._lastPaintRectByLayerId = {};
@@ -117,7 +117,7 @@ Layers.LayerTreeModel = class extends SDK.SDKModel {
       return;
     }
     const layerTree = /** @type {!Layers.AgentLayerTree} */ (this._layerTree);
-    const layer = layerTree.layerById(layerId);
+    const layer = /** @type {!Layers.AgentLayer} */ (layerTree.layerById(layerId));
     if (!layer) {
       this._lastPaintRectByLayerId[layerId] = clipRect;
       return;
@@ -281,9 +281,10 @@ Layers.AgentLayer = class {
 
   /**
    * @override
-   * @param {!SDK.Layer} child
+   * @param {!SDK.Layer} childParam
    */
-  addChild(child) {
+  addChild(childParam) {
+    const child = /** @type {!Layers.AgentLayer} */ (childParam);
     if (child._parent) {
       console.assert(false, 'Child already has a parent');
     }

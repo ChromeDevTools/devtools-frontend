@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-SDK.PerformanceMetricsModel = class extends SDK.SDKModel {
+export default class PerformanceMetricsModel extends SDK.SDKModel {
   /**
    * @param {!SDK.Target} target
    */
@@ -10,8 +10,8 @@ SDK.PerformanceMetricsModel = class extends SDK.SDKModel {
     super(target);
     this._agent = target.performanceAgent();
 
-    const mode = SDK.PerformanceMetricsModel.MetricMode;
-    /** @type {!Map<string, !SDK.PerformanceMetricsModel.MetricMode>} */
+    const mode = MetricMode;
+    /** @type {!Map<string, !MetricMode>} */
     this._metricModes = new Map([
       ['TaskDuration', mode.CumulativeTime], ['ScriptDuration', mode.CumulativeTime],
       ['LayoutDuration', mode.CumulativeTime], ['RecalcStyleDuration', mode.CumulativeTime],
@@ -51,14 +51,14 @@ SDK.PerformanceMetricsModel = class extends SDK.SDKModel {
       }
       let value;
       switch (this._metricModes.get(metric.name)) {
-        case SDK.PerformanceMetricsModel.MetricMode.CumulativeTime:
+        case MetricMode.CumulativeTime:
           value = data.lastTimestamp ?
               Number.constrain((metric.value - data.lastValue) * 1000 / (timestamp - data.lastTimestamp), 0, 1) :
               0;
           data.lastValue = metric.value;
           data.lastTimestamp = timestamp;
           break;
-        case SDK.PerformanceMetricsModel.MetricMode.CumulativeCount:
+        case MetricMode.CumulativeCount:
           value = data.lastTimestamp ?
               Math.max(0, (metric.value - data.lastValue) * 1000 / (timestamp - data.lastTimestamp)) :
               0;
@@ -73,12 +73,24 @@ SDK.PerformanceMetricsModel = class extends SDK.SDKModel {
     }
     return {metrics: metrics, timestamp: timestamp};
   }
-};
+}
 
 /** @enum {symbol} */
-SDK.PerformanceMetricsModel.MetricMode = {
+export const MetricMode = {
   CumulativeTime: Symbol('CumulativeTime'),
   CumulativeCount: Symbol('CumulativeCount'),
 };
+
+/* Legacy exported object */
+self.SDK = self.SDK || {};
+
+/* Legacy exported object */
+SDK = SDK || {};
+
+/** @constructor */
+SDK.PerformanceMetricsModel = PerformanceMetricsModel;
+
+/** @enum {symbol} */
+SDK.PerformanceMetricsModel.MetricMode = MetricMode;
 
 SDK.SDKModel.register(SDK.PerformanceMetricsModel, SDK.Target.Capability.DOM, false);

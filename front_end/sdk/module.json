@@ -364,11 +364,14 @@
             ]
         }
     ],
-    "scripts": [
+    "scripts": [],
+    "modules": [
+        "sdk.js",
+        "SDKModel.js",
         "Target.js",
         "TargetManager.js",
         "Connections.js",
-        "ContentProviders.js",
+        "CompilerSourceMappingContentProvider.js",
         "CookieModel.js",
         "CookieParser.js",
         "ProfileTreeModel.js",

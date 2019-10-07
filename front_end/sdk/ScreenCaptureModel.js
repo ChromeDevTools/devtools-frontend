@@ -5,7 +5,7 @@
 /**
  * @implements {Protocol.PageDispatcher}
  */
-SDK.ScreenCaptureModel = class extends SDK.SDKModel {
+export default class ScreenCaptureModel extends SDK.SDKModel {
   /**
    * @param {!SDK.Target} target
    */
@@ -253,6 +253,15 @@ SDK.ScreenCaptureModel = class extends SDK.SDKModel {
    */
   downloadWillBegin(frameId, url) {
   }
-};
+}
+
+/* Legacy exported object */
+self.SDK = self.SDK || {};
+
+/* Legacy exported object */
+SDK = SDK || {};
+
+/** @constructor */
+SDK.ScreenCaptureModel = ScreenCaptureModel;
 
 SDK.SDKModel.register(SDK.ScreenCaptureModel, SDK.Target.Capability.ScreenCapture, false);

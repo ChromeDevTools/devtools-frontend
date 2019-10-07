@@ -5,7 +5,7 @@
 /**
  * @implements {Protocol.LogDispatcher}
  */
-SDK.LogModel = class extends SDK.SDKModel {
+export default class LogModel extends SDK.SDKModel {
   /**
    * @param {!SDK.Target} target
    */
@@ -28,17 +28,29 @@ SDK.LogModel = class extends SDK.SDKModel {
    * @param {!Protocol.Log.LogEntry} payload
    */
   entryAdded(payload) {
-    this.dispatchEventToListeners(SDK.LogModel.Events.EntryAdded, {logModel: this, entry: payload});
+    this.dispatchEventToListeners(Events.EntryAdded, {logModel: this, entry: payload});
   }
 
   requestClear() {
     this._logAgent.clear();
   }
-};
-
-SDK.SDKModel.register(SDK.LogModel, SDK.Target.Capability.Log, true);
+}
 
 /** @enum {symbol} */
-SDK.LogModel.Events = {
+export const Events = {
   EntryAdded: Symbol('EntryAdded')
 };
+
+/* Legacy exported object */
+self.SDK = self.SDK || {};
+
+/* Legacy exported object */
+SDK = SDK || {};
+
+/** @constructor */
+SDK.LogModel = LogModel;
+
+/** @enum {symbol} */
+SDK.LogModel.Events = Events;
+
+SDK.SDKModel.register(SDK.LogModel, SDK.Target.Capability.Log, true);

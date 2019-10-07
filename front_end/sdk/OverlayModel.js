@@ -5,7 +5,7 @@
 /**
  * @implements {Protocol.OverlayDispatcher}
  */
-SDK.OverlayModel = class extends SDK.SDKModel {
+export default class OverlayModel extends SDK.SDKModel {
   /**
    * @param {!SDK.Target} target
    */
@@ -30,7 +30,7 @@ SDK.OverlayModel = class extends SDK.SDKModel {
 
     this._inspectModeEnabled = false;
     this._hideHighlightTimeout = null;
-    this._defaultHighlighter = new SDK.OverlayModel.DefaultHighlighter(this);
+    this._defaultHighlighter = new DefaultHighlighter(this);
     this._highlighter = this._defaultHighlighter;
 
     this._showPaintRectsSetting = Common.moduleSetting('showPaintRects');
@@ -60,17 +60,17 @@ SDK.OverlayModel = class extends SDK.SDKModel {
   }
 
   static hideDOMNodeHighlight() {
-    for (const overlayModel of SDK.targetManager.models(SDK.OverlayModel)) {
+    for (const overlayModel of SDK.targetManager.models(OverlayModel)) {
       overlayModel._delayedHideHighlight(0);
     }
   }
 
   static async muteHighlight() {
-    return Promise.all(SDK.targetManager.models(SDK.OverlayModel).map(model => model.suspendModel()));
+    return Promise.all(SDK.targetManager.models(OverlayModel).map(model => model.suspendModel()));
   }
 
   static async unmuteHighlight() {
-    return Promise.all(SDK.targetManager.models(SDK.OverlayModel).map(model => model.resumeModel()));
+    return Promise.all(SDK.targetManager.models(OverlayModel).map(model => model.resumeModel()));
   }
 
   /**
@@ -164,7 +164,7 @@ SDK.OverlayModel = class extends SDK.SDKModel {
   }
 
   /**
-   * @param {?SDK.OverlayModel.Highlighter} highlighter
+   * @param {?Highlighter} highlighter
    */
   setHighlighter(highlighter) {
     this._highlighter = highlighter || this._defaultHighlighter;
@@ -178,7 +178,7 @@ SDK.OverlayModel = class extends SDK.SDKModel {
   async setInspectMode(mode, showStyles = true) {
     await this._domModel.requestDocument();
     this._inspectModeEnabled = mode !== Protocol.Overlay.InspectMode.None;
-    this.dispatchEventToListeners(SDK.OverlayModel.Events.InspectModeWillBeToggled, this);
+    this.dispatchEventToListeners(Events.InspectModeWillBeToggled, this);
     this._highlighter.setInspectMode(mode, this._buildHighlightConfig('all', showStyles));
   }
 
@@ -279,7 +279,7 @@ SDK.OverlayModel = class extends SDK.SDKModel {
   nodeHighlightRequested(nodeId) {
     const node = this._domModel.nodeForId(nodeId);
     if (node) {
-      this.dispatchEventToListeners(SDK.OverlayModel.Events.HighlightNodeRequested, node);
+      this.dispatchEventToListeners(Events.HighlightNodeRequested, node);
     }
   }
 
@@ -287,7 +287,7 @@ SDK.OverlayModel = class extends SDK.SDKModel {
    * @param {function(!SDK.DOMNode)} handler
    */
   static setInspectNodeHandler(handler) {
-    SDK.OverlayModel._inspectNodeHandler = handler;
+    OverlayModel._inspectNodeHandler = handler;
   }
 
   /**
@@ -296,16 +296,16 @@ SDK.OverlayModel = class extends SDK.SDKModel {
    */
   inspectNodeRequested(backendNodeId) {
     const deferredNode = new SDK.DeferredDOMNode(this.target(), backendNodeId);
-    if (SDK.OverlayModel._inspectNodeHandler) {
+    if (OverlayModel._inspectNodeHandler) {
       deferredNode.resolvePromise().then(node => {
         if (node) {
-          SDK.OverlayModel._inspectNodeHandler(node);
+          OverlayModel._inspectNodeHandler(node);
         }
       });
     } else {
       Common.Revealer.reveal(deferredNode);
     }
-    this.dispatchEventToListeners(SDK.OverlayModel.Events.ExitedInspectMode);
+    this.dispatchEventToListeners(Events.ExitedInspectMode);
   }
 
   /**
@@ -313,22 +313,20 @@ SDK.OverlayModel = class extends SDK.SDKModel {
    * @param {!Protocol.Page.Viewport} viewport
    */
   screenshotRequested(viewport) {
-    this.dispatchEventToListeners(SDK.OverlayModel.Events.ScreenshotRequested, viewport);
-    this.dispatchEventToListeners(SDK.OverlayModel.Events.ExitedInspectMode);
+    this.dispatchEventToListeners(Events.ScreenshotRequested, viewport);
+    this.dispatchEventToListeners(Events.ExitedInspectMode);
   }
 
   /**
    * @override
    */
   inspectModeCanceled() {
-    this.dispatchEventToListeners(SDK.OverlayModel.Events.ExitedInspectMode);
+    this.dispatchEventToListeners(Events.ExitedInspectMode);
   }
-};
-
-SDK.SDKModel.register(SDK.OverlayModel, SDK.Target.Capability.DOM, true);
+}
 
 /** @enum {symbol} */
-SDK.OverlayModel.Events = {
+export const Events = {
   InspectModeWillBeToggled: Symbol('InspectModeWillBeToggled'),
   ExitedInspectMode: Symbol('InspectModeExited'),
   HighlightNodeRequested: Symbol('HighlightNodeRequested'),
@@ -338,40 +336,34 @@ SDK.OverlayModel.Events = {
 /**
  * @interface
  */
-SDK.OverlayModel.Highlighter = function() {};
-
-/** @typedef {{node: (!SDK.DOMNode|undefined),
-               deferredNode: (!SDK.DeferredDOMNode|undefined),
-               selectorList: (string|undefined),
-               object:(!SDK.RemoteObject|undefined)}} */
-SDK.OverlayModel.HighlightData;
-
-SDK.OverlayModel.Highlighter.prototype = {
+export class Highlighter {
   /**
    * @param {!SDK.OverlayModel.HighlightData} data
    * @param {!Protocol.Overlay.HighlightConfig} config
    */
-  highlightInOverlay(data, config) {},
+  highlightInOverlay(data, config) {
+  }
 
   /**
    * @param {!Protocol.Overlay.InspectMode} mode
    * @param {!Protocol.Overlay.HighlightConfig} config
    * @return {!Promise}
    */
-  setInspectMode(mode, config) {},
+  setInspectMode(mode, config) {
+  }
 
   /**
    * @param {!Protocol.Page.FrameId} frameId
    */
   highlightFrame(frameId) {}
-};
+}
 
 /**
- * @implements {SDK.OverlayModel.Highlighter}
+ * @implements {Highlighter}
  */
-SDK.OverlayModel.DefaultHighlighter = class {
+export class DefaultHighlighter {
   /**
-   * @param {!SDK.OverlayModel} model
+   * @param {!OverlayModel} model
    */
   constructor(model) {
     this._model = model;
@@ -413,4 +405,34 @@ SDK.OverlayModel.DefaultHighlighter = class {
         frameId, Common.Color.PageHighlight.Content.toProtocolRGBA(),
         Common.Color.PageHighlight.ContentOutline.toProtocolRGBA());
   }
-};
+}
+
+/* Legacy exported object */
+self.SDK = self.SDK || {};
+
+/* Legacy exported object */
+SDK = SDK || {};
+
+/** @constructor */
+SDK.OverlayModel = OverlayModel;
+
+/** @enum {symbol} */
+SDK.OverlayModel.Events = Events;
+
+/**
+ * @interface
+ */
+SDK.OverlayModel.Highlighter = Highlighter;
+
+/**
+ * @implements {Highlighter}
+ */
+SDK.OverlayModel.DefaultHighlighter = DefaultHighlighter;
+
+SDK.SDKModel.register(SDK.OverlayModel, SDK.Target.Capability.DOM, true);
+
+/** @typedef {{node: (!SDK.DOMNode|undefined),
+  deferredNode: (!SDK.DeferredDOMNode|undefined),
+  selectorList: (string|undefined),
+  object:(!SDK.RemoteObject|undefined)}} */
+SDK.OverlayModel.HighlightData;

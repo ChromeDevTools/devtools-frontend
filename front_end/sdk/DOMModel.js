@@ -32,17 +32,17 @@
 /**
  * @unrestricted
  */
-SDK.DOMNode = class {
+export class DOMNode {
   /**
-   * @param {!SDK.DOMModel} domModel
+   * @param {!DOMModel} domModel
    */
   constructor(domModel) {
     this._domModel = domModel;
   }
 
   /**
-   * @param {!SDK.DOMModel} domModel
-   * @param {?SDK.DOMDocument} doc
+   * @param {!DOMModel} domModel
+   * @param {?DOMDocument} doc
    * @param {boolean} isInShadowTree
    * @param {!Protocol.DOM.Node} payload
    * @return {!SDK.DOMNode}
@@ -54,7 +54,7 @@ SDK.DOMNode = class {
   }
 
   /**
-   * @param {?SDK.DOMDocument} doc
+   * @param {?DOMDocument} doc
    * @param {boolean} isInShadowTree
    * @param {!Protocol.DOM.Node} payload
    */
@@ -114,12 +114,12 @@ SDK.DOMNode = class {
     }
 
     if (payload.contentDocument) {
-      this._contentDocument = new SDK.DOMDocument(this._domModel, payload.contentDocument);
+      this._contentDocument = new DOMDocument(this._domModel, payload.contentDocument);
       this._contentDocument.parentNode = this;
       this._children = [];
     } else if ((payload.nodeName === 'IFRAME' || payload.nodeName === 'PORTAL') && payload.frameId) {
       const childTarget = SDK.targetManager.targetById(payload.frameId);
-      const childModel = childTarget ? childTarget.model(SDK.DOMModel) : null;
+      const childModel = childTarget ? childTarget.model(DOMModel) : null;
       if (childModel) {
         this._childDocumentPromiseForTesting = childModel.requestDocument();
       }
@@ -181,7 +181,7 @@ SDK.DOMNode = class {
   }
 
   /**
-   * @return {!SDK.DOMModel}
+   * @return {!DOMModel}
    */
   domModel() {
     return this._domModel;
@@ -328,7 +328,7 @@ SDK.DOMNode = class {
   }
 
   /**
-   * @return {!Array.<!SDK.DOMNodeShortcut>}
+   * @return {!Array.<!DOMNodeShortcut>}
    */
   distributedNodes() {
     return this._distributedNodes || [];
@@ -719,7 +719,7 @@ SDK.DOMNode = class {
     node.parentNode = null;
     this._subtreeMarkerCount -= node._subtreeMarkerCount;
     if (node._subtreeMarkerCount) {
-      this._domModel.dispatchEventToListeners(SDK.DOMModel.Events.MarkersChanged, this);
+      this._domModel.dispatchEventToListeners(Events.MarkersChanged, this);
     }
     this._renumber();
   }
@@ -760,7 +760,7 @@ SDK.DOMNode = class {
     this._distributedNodes = [];
     for (const payload of payloads) {
       this._distributedNodes.push(
-          new SDK.DOMNodeShortcut(this._domModel.target(), payload.backendNodeId, payload.nodeType, payload.nodeName));
+          new DOMNodeShortcut(this._domModel.target(), payload.backendNodeId, payload.nodeType, payload.nodeName));
     }
   }
 
@@ -876,7 +876,7 @@ SDK.DOMNode = class {
         --node._subtreeMarkerCount;
       }
       for (let node = this; node; node = node.parentNode) {
-        this._domModel.dispatchEventToListeners(SDK.DOMModel.Events.MarkersChanged, node);
+        this._domModel.dispatchEventToListeners(Events.MarkersChanged, node);
       }
       return;
     }
@@ -888,7 +888,7 @@ SDK.DOMNode = class {
     }
     this._markers.set(name, value);
     for (let node = this; node; node = node.parentNode) {
-      this._domModel.dispatchEventToListeners(SDK.DOMModel.Events.MarkersChanged, node);
+      this._domModel.dispatchEventToListeners(Events.MarkersChanged, node);
     }
   }
 
@@ -1060,12 +1060,12 @@ SDK.DOMNode = class {
     }
     return lowerCaseName;
   }
-};
+}
 
 /**
  * @enum {string}
  */
-SDK.DOMNode.PseudoElementNames = {
+DOMNode.PseudoElementNames = {
   Before: 'before',
   After: 'after'
 };
@@ -1073,25 +1073,22 @@ SDK.DOMNode.PseudoElementNames = {
 /**
  * @enum {string}
  */
-SDK.DOMNode.ShadowRootTypes = {
+DOMNode.ShadowRootTypes = {
   UserAgent: 'user-agent',
   Open: 'open',
   Closed: 'closed'
 };
 
-/** @typedef {{name: string, value: string, _node: SDK.DOMNode}} */
-SDK.DOMNode.Attribute;
-
 /**
  * @unrestricted
  */
-SDK.DeferredDOMNode = class {
+export class DeferredDOMNode {
   /**
    * @param {!SDK.Target} target
    * @param {number} backendNodeId
    */
   constructor(target, backendNodeId) {
-    this._domModel = /** @type {!SDK.DOMModel} */ (target.model(SDK.DOMModel));
+    this._domModel = /** @type {!DOMModel} */ (target.model(DOMModel));
     this._backendNodeId = backendNodeId;
   }
 
@@ -1118,7 +1115,7 @@ SDK.DeferredDOMNode = class {
   }
 
   /**
-   * @return {!SDK.DOMModel}
+   * @return {!DOMModel}
    */
   domModel() {
     return this._domModel;
@@ -1127,12 +1124,12 @@ SDK.DeferredDOMNode = class {
   highlight() {
     this._domModel.overlayModel().highlightInOverlay({deferredNode: this});
   }
-};
+}
 
 /**
  * @unrestricted
  */
-SDK.DOMNodeShortcut = class {
+export class DOMNodeShortcut {
   /**
    * @param {!SDK.Target} target
    * @param {number} backendNodeId
@@ -1144,14 +1141,14 @@ SDK.DOMNodeShortcut = class {
     this.nodeName = nodeName;
     this.deferredNode = new SDK.DeferredDOMNode(target, backendNodeId);
   }
-};
+}
 
 /**
  * @unrestricted
  */
-SDK.DOMDocument = class extends SDK.DOMNode {
+export class DOMDocument extends DOMNode {
   /**
-   * @param {!SDK.DOMModel} domModel
+   * @param {!DOMModel} domModel
    * @param {!Protocol.DOM.Node} payload
    */
   constructor(domModel, payload) {
@@ -1160,12 +1157,12 @@ SDK.DOMDocument = class extends SDK.DOMNode {
     this.documentURL = payload.documentURL || '';
     this.baseURL = payload.baseURL || '';
   }
-};
+}
 
 /**
  * @unrestricted
  */
-SDK.DOMModel = class extends SDK.SDKModel {
+export default class DOMModel extends SDK.SDKModel {
   /**
    * @param {!SDK.Target} target
    */
@@ -1176,11 +1173,11 @@ SDK.DOMModel = class extends SDK.SDKModel {
 
     /** @type {!Object.<number, !SDK.DOMNode>} */
     this._idToDOMNode = {};
-    /** @type {?SDK.DOMDocument} */
+    /** @type {?DOMDocument} */
     this._document = null;
     /** @type {!Set<number>} */
     this._attributeLoadNodeIds = new Set();
-    target.registerDOMDispatcher(new SDK.DOMDispatcher(this));
+    target.registerDOMDispatcher(new DOMDispatcher(this));
 
     this._runtimeModel = /** @type {!SDK.RuntimeModel} */ (target.model(SDK.RuntimeModel));
 
@@ -1215,7 +1212,7 @@ SDK.DOMModel = class extends SDK.SDKModel {
   }
 
   static cancelSearch() {
-    for (const domModel of SDK.targetManager.models(SDK.DOMModel)) {
+    for (const domModel of SDK.targetManager.models(DOMModel)) {
       domModel._cancelSearch();
     }
   }
@@ -1224,7 +1221,7 @@ SDK.DOMModel = class extends SDK.SDKModel {
    * @param {!SDK.DOMNode} node
    */
   _scheduleMutationEvent(node) {
-    if (!this.hasEventListeners(SDK.DOMModel.Events.DOMMutated)) {
+    if (!this.hasEventListeners(Events.DOMMutated)) {
       return;
     }
 
@@ -1232,21 +1229,21 @@ SDK.DOMModel = class extends SDK.SDKModel {
     Promise.resolve().then(callObserve.bind(this, node, this._lastMutationId));
 
     /**
-     * @this {SDK.DOMModel}
+     * @this {DOMModel}
      * @param {!SDK.DOMNode} node
      * @param {number} mutationId
      */
     function callObserve(node, mutationId) {
-      if (!this.hasEventListeners(SDK.DOMModel.Events.DOMMutated) || this._lastMutationId !== mutationId) {
+      if (!this.hasEventListeners(Events.DOMMutated) || this._lastMutationId !== mutationId) {
         return;
       }
 
-      this.dispatchEventToListeners(SDK.DOMModel.Events.DOMMutated, node);
+      this.dispatchEventToListeners(Events.DOMMutated, node);
     }
   }
 
   /**
-   * @return {!Promise<!SDK.DOMDocument>}
+   * @return {!Promise<!DOMDocument>}
    */
   requestDocument() {
     if (this._document) {
@@ -1259,7 +1256,7 @@ SDK.DOMModel = class extends SDK.SDKModel {
   }
 
   /**
-   * @return {!Promise<?SDK.DOMDocument>}
+   * @return {!Promise<?DOMDocument>}
    */
   async _requestDocument() {
     const documentPayload = await this._agent.getDocument();
@@ -1289,17 +1286,16 @@ SDK.DOMModel = class extends SDK.SDKModel {
       this._frameOwnerNode._children = [];
       if (this._document) {
         this._document.parentNode = this._frameOwnerNode;
-        this.dispatchEventToListeners(SDK.DOMModel.Events.NodeInserted, this._document);
+        this.dispatchEventToListeners(Events.NodeInserted, this._document);
       } else if (oldDocument) {
-        this.dispatchEventToListeners(
-            SDK.DOMModel.Events.NodeRemoved, {node: oldDocument, parent: this._frameOwnerNode});
+        this.dispatchEventToListeners(Events.NodeRemoved, {node: oldDocument, parent: this._frameOwnerNode});
       }
     }
     return this._document;
   }
 
   /**
-   * @return {?SDK.DOMDocument}
+   * @return {?DOMDocument}
    */
   existingDocument() {
     return this._document;
@@ -1374,7 +1370,7 @@ SDK.DOMModel = class extends SDK.SDKModel {
     }
 
     node._setAttribute(name, value);
-    this.dispatchEventToListeners(SDK.DOMModel.Events.AttrModified, {node: node, name: name});
+    this.dispatchEventToListeners(Events.AttrModified, {node: node, name: name});
     this._scheduleMutationEvent(node);
   }
 
@@ -1388,7 +1384,7 @@ SDK.DOMModel = class extends SDK.SDKModel {
       return;
     }
     node._removeAttribute(name);
-    this.dispatchEventToListeners(SDK.DOMModel.Events.AttrRemoved, {node: node, name: name});
+    this.dispatchEventToListeners(Events.AttrRemoved, {node: node, name: name});
     this._scheduleMutationEvent(node);
   }
 
@@ -1415,7 +1411,7 @@ SDK.DOMModel = class extends SDK.SDKModel {
           return;
         }
         if (node._setAttributesPayload(attributes)) {
-          this.dispatchEventToListeners(SDK.DOMModel.Events.AttrModified, {node: node, name: 'style'});
+          this.dispatchEventToListeners(Events.AttrModified, {node: node, name: 'style'});
           this._scheduleMutationEvent(node);
         }
       });
@@ -1430,7 +1426,7 @@ SDK.DOMModel = class extends SDK.SDKModel {
   _characterDataModified(nodeId, newValue) {
     const node = this._idToDOMNode[nodeId];
     node._nodeValue = newValue;
-    this.dispatchEventToListeners(SDK.DOMModel.Events.CharacterDataModified, node);
+    this.dispatchEventToListeners(Events.CharacterDataModified, node);
     this._scheduleMutationEvent(node);
   }
 
@@ -1458,14 +1454,14 @@ SDK.DOMModel = class extends SDK.SDKModel {
   _setDocument(payload) {
     this._idToDOMNode = {};
     if (payload && 'nodeId' in payload) {
-      this._document = new SDK.DOMDocument(this, payload);
+      this._document = new DOMDocument(this, payload);
     } else {
       this._document = null;
     }
     SDK.domModelUndoStack._dispose(this);
 
     if (!this.parentModel()) {
-      this.dispatchEventToListeners(SDK.DOMModel.Events.DocumentUpdated, this);
+      this.dispatchEventToListeners(Events.DocumentUpdated, this);
     }
   }
 
@@ -1474,7 +1470,7 @@ SDK.DOMModel = class extends SDK.SDKModel {
    */
   _setDetachedRoot(payload) {
     if (payload.nodeName === '#document') {
-      new SDK.DOMDocument(this, payload);
+      new DOMDocument(this, payload);
     } else {
       SDK.DOMNode.create(this, null, false, payload);
     }
@@ -1501,7 +1497,7 @@ SDK.DOMModel = class extends SDK.SDKModel {
   _childNodeCountUpdated(nodeId, newValue) {
     const node = this._idToDOMNode[nodeId];
     node._childNodeCount = newValue;
-    this.dispatchEventToListeners(SDK.DOMModel.Events.ChildNodeCountUpdated, node);
+    this.dispatchEventToListeners(Events.ChildNodeCountUpdated, node);
     this._scheduleMutationEvent(node);
   }
 
@@ -1515,7 +1511,7 @@ SDK.DOMModel = class extends SDK.SDKModel {
     const prev = this._idToDOMNode[prevId];
     const node = parent._insertChild(prev, payload);
     this._idToDOMNode[node.id] = node;
-    this.dispatchEventToListeners(SDK.DOMModel.Events.NodeInserted, node);
+    this.dispatchEventToListeners(Events.NodeInserted, node);
     this._scheduleMutationEvent(node);
   }
 
@@ -1528,7 +1524,7 @@ SDK.DOMModel = class extends SDK.SDKModel {
     const node = this._idToDOMNode[nodeId];
     parent._removeChild(node);
     this._unbind(node);
-    this.dispatchEventToListeners(SDK.DOMModel.Events.NodeRemoved, {node: node, parent: parent});
+    this.dispatchEventToListeners(Events.NodeRemoved, {node: node, parent: parent});
     this._scheduleMutationEvent(node);
   }
 
@@ -1545,7 +1541,7 @@ SDK.DOMModel = class extends SDK.SDKModel {
     node.parentNode = host;
     this._idToDOMNode[node.id] = node;
     host._shadowRoots.unshift(node);
-    this.dispatchEventToListeners(SDK.DOMModel.Events.NodeInserted, node);
+    this.dispatchEventToListeners(Events.NodeInserted, node);
     this._scheduleMutationEvent(node);
   }
 
@@ -1564,7 +1560,7 @@ SDK.DOMModel = class extends SDK.SDKModel {
     }
     host._removeChild(root);
     this._unbind(root);
-    this.dispatchEventToListeners(SDK.DOMModel.Events.NodeRemoved, {node: root, parent: host});
+    this.dispatchEventToListeners(Events.NodeRemoved, {node: root, parent: host});
     this._scheduleMutationEvent(root);
   }
 
@@ -1582,7 +1578,7 @@ SDK.DOMModel = class extends SDK.SDKModel {
     this._idToDOMNode[node.id] = node;
     console.assert(!parent._pseudoElements.get(node.pseudoType()));
     parent._pseudoElements.set(node.pseudoType(), node);
-    this.dispatchEventToListeners(SDK.DOMModel.Events.NodeInserted, node);
+    this.dispatchEventToListeners(Events.NodeInserted, node);
     this._scheduleMutationEvent(node);
   }
 
@@ -1601,7 +1597,7 @@ SDK.DOMModel = class extends SDK.SDKModel {
     }
     parent._removeChild(pseudoElement);
     this._unbind(pseudoElement);
-    this.dispatchEventToListeners(SDK.DOMModel.Events.NodeRemoved, {node: pseudoElement, parent: parent});
+    this.dispatchEventToListeners(Events.NodeRemoved, {node: pseudoElement, parent: parent});
     this._scheduleMutationEvent(pseudoElement);
   }
 
@@ -1615,7 +1611,7 @@ SDK.DOMModel = class extends SDK.SDKModel {
       return;
     }
     insertionPoint._setDistributedNodePayloads(distributedNodes);
-    this.dispatchEventToListeners(SDK.DOMModel.Events.DistributedNodesChanged, insertionPoint);
+    this.dispatchEventToListeners(Events.DistributedNodesChanged, insertionPoint);
     this._scheduleMutationEvent(insertionPoint);
   }
 
@@ -1751,18 +1747,16 @@ SDK.DOMModel = class extends SDK.SDKModel {
   }
 
   /**
-   * @return {?SDK.DOMModel}
+   * @return {?DOMModel}
    */
   parentModel() {
     const parentTarget = this.target().parentTarget();
-    return parentTarget ? parentTarget.model(SDK.DOMModel) : null;
+    return parentTarget ? parentTarget.model(DOMModel) : null;
   }
-};
-
-SDK.SDKModel.register(SDK.DOMModel, SDK.Target.Capability.DOM, true);
+}
 
 /** @enum {symbol} */
-SDK.DOMModel.Events = {
+export const Events = {
   AttrModified: Symbol('AttrModified'),
   AttrRemoved: Symbol('AttrRemoved'),
   CharacterDataModified: Symbol('CharacterDataModified'),
@@ -1775,14 +1769,13 @@ SDK.DOMModel.Events = {
   MarkersChanged: Symbol('MarkersChanged')
 };
 
-
 /**
  * @implements {Protocol.DOMDispatcher}
  * @unrestricted
  */
-SDK.DOMDispatcher = class {
+export class DOMDispatcher {
   /**
-   * @param {!SDK.DOMModel} domModel
+   * @param {!DOMModel} domModel
    */
   constructor(domModel) {
     this._domModel = domModel;
@@ -1912,19 +1905,19 @@ SDK.DOMDispatcher = class {
   distributedNodesUpdated(insertionPointId, distributedNodes) {
     this._domModel._distributedNodesUpdated(insertionPointId, distributedNodes);
   }
-};
+}
 
-SDK.DOMModelUndoStack = class {
+export class DOMModelUndoStack {
   constructor() {
-    /** @type {!Array<!SDK.DOMModel>} */
+    /** @type {!Array<!DOMModel>} */
     this._stack = [];
     this._index = 0;
-    /** @type {?SDK.DOMModel} */
+    /** @type {?DOMModel} */
     this._lastModelWithMinorChange = null;
   }
 
   /**
-   * @param {!SDK.DOMModel} model
+   * @param {!DOMModel} model
    * @param {boolean} minorChange
    */
   _markUndoableState(model, minorChange) {
@@ -1979,7 +1972,7 @@ SDK.DOMModelUndoStack = class {
   }
 
   /**
-   * @param {!SDK.DOMModel} model
+   * @param {!DOMModel} model
    */
   _dispose(model) {
     let shift = 0;
@@ -1994,6 +1987,41 @@ SDK.DOMModelUndoStack = class {
       this._lastModelWithMinorChange = null;
     }
   }
-};
+}
 
-SDK.domModelUndoStack = new SDK.DOMModelUndoStack();
+/* Legacy exported object */
+self.SDK = self.SDK || {};
+
+/* Legacy exported object */
+SDK = SDK || {};
+
+/** @constructor */
+SDK.DOMModel = DOMModel;
+
+/** @enum {symbol} */
+SDK.DOMModel.Events = Events;
+
+/** @constructor */
+SDK.DeferredDOMNode = DeferredDOMNode;
+
+/** @constructor */
+SDK.DOMNodeShortcut = DOMNodeShortcut;
+
+/** @constructor */
+SDK.DOMDocument = DOMDocument;
+
+/** @constructor */
+SDK.DOMDispatcher = DOMDispatcher;
+
+/** @constructor */
+SDK.DOMModelUndoStack = DOMModelUndoStack;
+
+/** @constructor */
+SDK.DOMNode = DOMNode;
+
+SDK.domModelUndoStack = new DOMModelUndoStack();
+
+/** @typedef {{name: string, value: string, _node: SDK.DOMNode}} */
+SDK.DOMNode.Attribute;
+
+SDK.SDKModel.register(DOMModel, SDK.Target.Capability.DOM, true);

@@ -282,7 +282,7 @@ Sources.SourceMapNamesResolver._resolveExpression = function(
   if (!script) {
     return Promise.resolve('');
   }
-  const sourceMap = Bindings.debuggerWorkspaceBinding.sourceMapForScript(script);
+  const sourceMap = /** @type {!SDK.TextSourceMap} */ (Bindings.debuggerWorkspaceBinding.sourceMapForScript(script));
   if (!sourceMap) {
     return Promise.resolve('');
   }

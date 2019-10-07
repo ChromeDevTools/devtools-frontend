@@ -31,7 +31,7 @@
  * @implements {Common.ContentProvider}
  * @unrestricted
  */
-SDK.CompilerSourceMappingContentProvider = class {
+export class CompilerSourceMappingContentProvider {
   /**
    * @param {string} sourceURL
    * @param {!Common.ResourceType} contentType
@@ -79,7 +79,7 @@ SDK.CompilerSourceMappingContentProvider = class {
      * @param {number} statusCode
      * @param {!Object.<string, string>} headers
      * @param {string} content
-     * @this {SDK.CompilerSourceMappingContentProvider}
+     * @this {CompilerSourceMappingContentProvider}
      */
     function contentLoaded(statusCode, headers, content) {
       if (statusCode >= 400) {
@@ -108,4 +108,13 @@ SDK.CompilerSourceMappingContentProvider = class {
     }
     return Common.ContentProvider.performSearchInContent(content, query, caseSensitive, isRegex);
   }
-};
+}
+
+/* Legacy exported object */
+self.SDK = self.SDK || {};
+
+/* Legacy exported object */
+SDK = SDK || {};
+
+/** @constructor */
+SDK.CompilerSourceMappingContentProvider = CompilerSourceMappingContentProvider;

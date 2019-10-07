@@ -4,7 +4,7 @@
 /**
  * @unrestricted
  */
-SDK.ProfileNode = class {
+export class ProfileNode {
   /**
    * @param {!Protocol.Runtime.CallFrame} callFrame
    */
@@ -19,9 +19,9 @@ SDK.ProfileNode = class {
     this.total = 0;
     /** @type {number} */
     this.id = 0;
-    /** @type {?SDK.ProfileNode} */
+    /** @type {?ProfileNode} */
     this.parent = null;
-    /** @type {!Array<!SDK.ProfileNode>} */
+    /** @type {!Array<!ProfileNode>} */
     this.children = [];
   }
 
@@ -59,12 +59,12 @@ SDK.ProfileNode = class {
   get columnNumber() {
     return this.callFrame.columnNumber;
   }
-};
+}
 
 /**
  * @unrestricted
  */
-SDK.ProfileTreeModel = class {
+export default class ProfileTreeModel {
   /**
    * @param {?SDK.Target=} target
    */
@@ -73,7 +73,7 @@ SDK.ProfileTreeModel = class {
   }
 
   /**
-   * @param {!SDK.ProfileNode} root
+   * @param {!ProfileNode} root
    * @protected
    */
   initialize(root) {
@@ -108,7 +108,7 @@ SDK.ProfileTreeModel = class {
   }
 
   /**
-   * @param {!SDK.ProfileNode} root
+   * @param {!ProfileNode} root
    * @return {number}
    */
   _calculateTotals(root) {
@@ -133,4 +133,16 @@ SDK.ProfileTreeModel = class {
   target() {
     return this._target;
   }
-};
+}
+
+/* Legacy exported object */
+self.SDK = self.SDK || {};
+
+/* Legacy exported object */
+SDK = SDK || {};
+
+/** @constructor */
+SDK.ProfileTreeModel = ProfileTreeModel;
+
+/** @constructor */
+SDK.ProfileNode = ProfileNode;

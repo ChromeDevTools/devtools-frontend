@@ -31,7 +31,7 @@
 /**
  * @unrestricted
  */
-SDK.CSSModel = class extends SDK.SDKModel {
+export default class CSSModel extends SDK.SDKModel {
   /**
    * @param {!SDK.Target} target
    */
@@ -41,13 +41,13 @@ SDK.CSSModel = class extends SDK.SDKModel {
     /** @type {!SDK.SourceMapManager<!SDK.CSSStyleSheetHeader>} */
     this._sourceMapManager = new SDK.SourceMapManager(target);
     this._agent = target.cssAgent();
-    this._styleLoader = new SDK.CSSModel.ComputedStyleLoader(this);
+    this._styleLoader = new ComputedStyleLoader(this);
     this._resourceTreeModel = target.model(SDK.ResourceTreeModel);
     if (this._resourceTreeModel) {
       this._resourceTreeModel.addEventListener(
           SDK.ResourceTreeModel.Events.MainFrameNavigated, this._resetStyleSheets, this);
     }
-    target.registerCSSDispatcher(new SDK.CSSDispatcher(this));
+    target.registerCSSDispatcher(new CSSDispatcher(this));
     if (!target.suspended()) {
       this._enable();
     }
@@ -86,7 +86,7 @@ SDK.CSSModel = class extends SDK.SDKModel {
    * @param {string} sourceURL
    * @param {number} lineNumber
    * @param {number} columnNumber
-   * @return {!Array<!SDK.CSSLocation>}
+   * @return {!Array<!CSSLocation>}
    */
   createRawLocationsByURL(sourceURL, lineNumber, columnNumber) {
     const headers = this.headersForSourceURL(sourceURL);
@@ -101,7 +101,7 @@ SDK.CSSModel = class extends SDK.SDKModel {
     for (let index = endIndex - 1;
          index >= 0 && headers[index].startLine === last.startLine && headers[index].startColumn === last.startColumn;
          --index) {
-      locations.push(new SDK.CSSLocation(headers[index], lineNumber, columnNumber));
+      locations.push(new CSSLocation(headers[index], lineNumber, columnNumber));
     }
 
 
@@ -172,7 +172,7 @@ SDK.CSSModel = class extends SDK.SDKModel {
       }
 
       this._domModel.markUndoableState(!majorChange);
-      const edit = new SDK.CSSModel.Edit(styleSheetId, range, text, stylePayloads[0]);
+      const edit = new Edit(styleSheetId, range, text, stylePayloads[0]);
       this._fireStyleSheetChanged(styleSheetId, edit);
       return true;
     } catch (e) {
@@ -197,7 +197,7 @@ SDK.CSSModel = class extends SDK.SDKModel {
         return false;
       }
       this._domModel.markUndoableState();
-      const edit = new SDK.CSSModel.Edit(styleSheetId, range, text, selectorPayload);
+      const edit = new Edit(styleSheetId, range, text, selectorPayload);
       this._fireStyleSheetChanged(styleSheetId, edit);
       return true;
     } catch (e) {
@@ -222,7 +222,7 @@ SDK.CSSModel = class extends SDK.SDKModel {
         return false;
       }
       this._domModel.markUndoableState();
-      const edit = new SDK.CSSModel.Edit(styleSheetId, range, text, payload);
+      const edit = new Edit(styleSheetId, range, text, payload);
       this._fireStyleSheetChanged(styleSheetId, edit);
       return true;
     } catch (e) {
@@ -274,7 +274,7 @@ SDK.CSSModel = class extends SDK.SDKModel {
     if (this._isRuleUsageTrackingEnabled) {
       await this.startCoverage();
     }
-    this.dispatchEventToListeners(SDK.CSSModel.Events.ModelWasEnabled);
+    this.dispatchEventToListeners(Events.ModelWasEnabled);
   }
 
   /**
@@ -317,7 +317,7 @@ SDK.CSSModel = class extends SDK.SDKModel {
 
   /**
    * @param {number} nodeId
-   * @return {!Promise<?SDK.CSSModel.ContrastInfo>}
+   * @return {!Promise<?CSSModel.ContrastInfo>}
    */
   async backgroundColorsPromise(nodeId) {
     const response = this._agent.invoke_getBackgroundColors({nodeId});
@@ -361,7 +361,7 @@ SDK.CSSModel = class extends SDK.SDKModel {
 
   /**
    * @param {!Protocol.DOM.NodeId} nodeId
-   * @return {!Promise<?SDK.CSSModel.InlineStyleResult>}
+   * @return {!Promise<?InlineStyleResult>}
    */
   async inlineStylesPromise(nodeId) {
     const response = await this._agent.invoke_getInlineStylesForNode({nodeId});
@@ -374,7 +374,7 @@ SDK.CSSModel = class extends SDK.SDKModel {
     const attributesStyle = response.attributesStyle ?
         new SDK.CSSStyleDeclaration(this, null, response.attributesStyle, SDK.CSSStyleDeclaration.Type.Attributes) :
         null;
-    return new SDK.CSSModel.InlineStyleResult(inlineStyle, attributesStyle);
+    return new InlineStyleResult(inlineStyle, attributesStyle);
   }
 
   /**
@@ -384,28 +384,27 @@ SDK.CSSModel = class extends SDK.SDKModel {
    * @return {boolean}
    */
   forcePseudoState(node, pseudoClass, enable) {
-    const pseudoClasses = node.marker(SDK.CSSModel.PseudoStateMarker) || [];
+    const pseudoClasses = node.marker(PseudoStateMarker) || [];
     if (enable) {
       if (pseudoClasses.indexOf(pseudoClass) >= 0) {
         return false;
       }
       pseudoClasses.push(pseudoClass);
-      node.setMarker(SDK.CSSModel.PseudoStateMarker, pseudoClasses);
+      node.setMarker(PseudoStateMarker, pseudoClasses);
     } else {
       if (pseudoClasses.indexOf(pseudoClass) < 0) {
         return false;
       }
       pseudoClasses.remove(pseudoClass);
       if (pseudoClasses.length) {
-        node.setMarker(SDK.CSSModel.PseudoStateMarker, pseudoClasses);
+        node.setMarker(PseudoStateMarker, pseudoClasses);
       } else {
-        node.setMarker(SDK.CSSModel.PseudoStateMarker, null);
+        node.setMarker(PseudoStateMarker, null);
       }
     }
 
     this._agent.forcePseudoState(node.id, pseudoClasses);
-    this.dispatchEventToListeners(
-        SDK.CSSModel.Events.PseudoStateForced, {node: node, pseudoClass: pseudoClass, enable: enable});
+    this.dispatchEventToListeners(Events.PseudoStateForced, {node: node, pseudoClass: pseudoClass, enable: enable});
     return true;
   }
 
@@ -414,7 +413,7 @@ SDK.CSSModel = class extends SDK.SDKModel {
    * @return {?Array<string>} state
    */
   pseudoState(node) {
-    return node.marker(SDK.CSSModel.PseudoStateMarker) || [];
+    return node.marker(PseudoStateMarker) || [];
   }
 
   /**
@@ -434,7 +433,7 @@ SDK.CSSModel = class extends SDK.SDKModel {
         return false;
       }
       this._domModel.markUndoableState();
-      const edit = new SDK.CSSModel.Edit(styleSheetId, range, newMediaText, mediaPayload);
+      const edit = new Edit(styleSheetId, range, newMediaText, mediaPayload);
       this._fireStyleSheetChanged(styleSheetId, edit);
       return true;
     } catch (e) {
@@ -457,7 +456,7 @@ SDK.CSSModel = class extends SDK.SDKModel {
         return null;
       }
       this._domModel.markUndoableState();
-      const edit = new SDK.CSSModel.Edit(styleSheetId, ruleLocation, ruleText, rulePayload);
+      const edit = new Edit(styleSheetId, ruleLocation, ruleText, rulePayload);
       this._fireStyleSheetChanged(styleSheetId, edit);
       return new SDK.CSSStyleRule(this, rulePayload);
     } catch (e) {
@@ -486,11 +485,11 @@ SDK.CSSModel = class extends SDK.SDKModel {
   }
 
   mediaQueryResultChanged() {
-    this.dispatchEventToListeners(SDK.CSSModel.Events.MediaQueryResultChanged);
+    this.dispatchEventToListeners(Events.MediaQueryResultChanged);
   }
 
   fontsUpdated() {
-    this.dispatchEventToListeners(SDK.CSSModel.Events.FontsUpdated);
+    this.dispatchEventToListeners(Events.FontsUpdated);
   }
 
   /**
@@ -510,10 +509,10 @@ SDK.CSSModel = class extends SDK.SDKModel {
 
   /**
    * @param {!Protocol.CSS.StyleSheetId} styleSheetId
-   * @param {!SDK.CSSModel.Edit=} edit
+   * @param {!Edit=} edit
    */
   _fireStyleSheetChanged(styleSheetId, edit) {
-    this.dispatchEventToListeners(SDK.CSSModel.Events.StyleSheetChanged, {styleSheetId: styleSheetId, edit: edit});
+    this.dispatchEventToListeners(Events.StyleSheetChanged, {styleSheetId: styleSheetId, edit: edit});
   }
 
   /**
@@ -567,7 +566,7 @@ SDK.CSSModel = class extends SDK.SDKModel {
     }
     styleSheetIds.push(styleSheetHeader.id);
     this._sourceMapManager.attachSourceMap(styleSheetHeader, styleSheetHeader.sourceURL, styleSheetHeader.sourceMapURL);
-    this.dispatchEventToListeners(SDK.CSSModel.Events.StyleSheetAdded, styleSheetHeader);
+    this.dispatchEventToListeners(Events.StyleSheetAdded, styleSheetHeader);
   }
 
   /**
@@ -594,7 +593,7 @@ SDK.CSSModel = class extends SDK.SDKModel {
     }
     this._originalStyleSheetText.remove(header);
     this._sourceMapManager.detachSourceMap(header);
-    this.dispatchEventToListeners(SDK.CSSModel.Events.StyleSheetRemoved, header);
+    this.dispatchEventToListeners(Events.StyleSheetRemoved, header);
   }
 
   /**
@@ -623,7 +622,7 @@ SDK.CSSModel = class extends SDK.SDKModel {
   async setStyleSheetText(styleSheetId, newText, majorChange) {
     const header = /** @type {!SDK.CSSStyleSheetHeader} */ (this._styleSheetIdToHeader.get(styleSheetId));
     console.assert(header);
-    newText = SDK.CSSModel.trimSourceURL(newText);
+    newText = CSSModel.trimSourceURL(newText);
     if (header.hasSourceURL) {
       newText += '\n/*# sourceURL=' + header.sourceURL + ' */';
     }
@@ -650,7 +649,7 @@ SDK.CSSModel = class extends SDK.SDKModel {
   async getStyleSheetText(styleSheetId) {
     try {
       const text = await this._agent.getStyleSheetText(styleSheetId);
-      return text && SDK.CSSModel.trimSourceURL(text);
+      return text && CSSModel.trimSourceURL(text);
     } catch (e) {
       return null;
     }
@@ -662,7 +661,7 @@ SDK.CSSModel = class extends SDK.SDKModel {
     this._styleSheetIdToHeader.clear();
     for (let i = 0; i < headers.length; ++i) {
       this._sourceMapManager.detachSourceMap(headers[i]);
-      this.dispatchEventToListeners(SDK.CSSModel.Events.StyleSheetRemoved, headers[i]);
+      this.dispatchEventToListeners(Events.StyleSheetRemoved, headers[i]);
     }
   }
 
@@ -719,18 +718,10 @@ SDK.CSSModel = class extends SDK.SDKModel {
     super.dispose();
     this._sourceMapManager.dispose();
   }
-};
-
-SDK.SDKModel.register(SDK.CSSModel, SDK.Target.Capability.DOM, true);
-
-/** @typedef {!{range: !Protocol.CSS.SourceRange, styleSheetId: !Protocol.CSS.StyleSheetId, wasUsed: boolean}} */
-SDK.CSSModel.RuleUsage;
-
-/** @typedef {{backgroundColors: ?Array<string>, computedFontSize: string, computedFontWeight: string}} */
-SDK.CSSModel.ContrastInfo;
+}
 
 /** @enum {symbol} */
-SDK.CSSModel.Events = {
+export const Events = {
   FontsUpdated: Symbol('FontsUpdated'),
   MediaQueryResultChanged: Symbol('MediaQueryResultChanged'),
   ModelWasEnabled: Symbol('ModelWasEnabled'),
@@ -740,15 +731,14 @@ SDK.CSSModel.Events = {
   StyleSheetRemoved: Symbol('StyleSheetRemoved')
 };
 
-SDK.CSSModel.MediaTypes =
+export const MediaTypes =
     ['all', 'braille', 'embossed', 'handheld', 'print', 'projection', 'screen', 'speech', 'tty', 'tv'];
-
-SDK.CSSModel.PseudoStateMarker = 'pseudo-state-marker';
+export const PseudoStateMarker = 'pseudo-state-marker';
 
 /**
  * @unrestricted
  */
-SDK.CSSModel.Edit = class {
+export class Edit {
   /**
    * @param {!Protocol.CSS.StyleSheetId} styleSheetId
    * @param {!TextUtils.TextRange} oldRange
@@ -762,9 +752,9 @@ SDK.CSSModel.Edit = class {
     this.newText = newText;
     this.payload = payload;
   }
-};
+}
 
-SDK.CSSLocation = class {
+export class CSSLocation {
   /**
    * @param {!SDK.CSSStyleSheetHeader} header
    * @param {number} lineNumber
@@ -779,7 +769,7 @@ SDK.CSSLocation = class {
   }
 
   /**
-   * @return {!SDK.CSSModel}
+   * @return {!CSSModel}
    */
   cssModel() {
     return this._cssModel;
@@ -791,15 +781,15 @@ SDK.CSSLocation = class {
   header() {
     return this._cssModel.styleSheetHeaderForId(this.styleSheetId);
   }
-};
+}
 
 /**
  * @implements {Protocol.CSSDispatcher}
  * @unrestricted
  */
-SDK.CSSDispatcher = class {
+export class CSSDispatcher {
   /**
-   * @param {!SDK.CSSModel} cssModel
+   * @param {!CSSModel} cssModel
    */
   constructor(cssModel) {
     this._cssModel = cssModel;
@@ -842,14 +832,14 @@ SDK.CSSDispatcher = class {
   styleSheetRemoved(id) {
     this._cssModel._styleSheetRemoved(id);
   }
-};
+}
 
 /**
  * @unrestricted
  */
-SDK.CSSModel.ComputedStyleLoader = class {
+export class ComputedStyleLoader {
   /**
-   * @param {!SDK.CSSModel} cssModel
+   * @param {!CSSModel} cssModel
    */
   constructor(cssModel) {
     this._cssModel = cssModel;
@@ -873,7 +863,7 @@ SDK.CSSModel.ComputedStyleLoader = class {
     /**
      * @param {?Array<!Protocol.CSS.CSSComputedStyleProperty>} computedPayload
      * @return {?Map<string, string>}
-     * @this {SDK.CSSModel.ComputedStyleLoader}
+     * @this {ComputedStyleLoader}
      */
     function parsePayload(computedPayload) {
       this._nodeIdToPromise.delete(nodeId);
@@ -887,12 +877,12 @@ SDK.CSSModel.ComputedStyleLoader = class {
       return result;
     }
   }
-};
+}
 
 /**
  * @unrestricted
  */
-SDK.CSSModel.InlineStyleResult = class {
+export class InlineStyleResult {
   /**
    * @param {?SDK.CSSStyleDeclaration} inlineStyle
    * @param {?SDK.CSSStyleDeclaration} attributesStyle
@@ -901,4 +891,42 @@ SDK.CSSModel.InlineStyleResult = class {
     this.inlineStyle = inlineStyle;
     this.attributesStyle = attributesStyle;
   }
-};
+}
+
+/* Legacy exported object */
+self.SDK = self.SDK || {};
+
+/* Legacy exported object */
+SDK = SDK || {};
+
+/** @constructor */
+SDK.CSSModel = CSSModel;
+
+/** @enum {symbol} */
+SDK.CSSModel.Events = Events;
+
+SDK.CSSModel.MediaTypes = MediaTypes;
+SDK.CSSModel.PseudoStateMarker = PseudoStateMarker;
+
+/** @constructor */
+SDK.CSSModel.Edit = Edit;
+
+/** @constructor */
+SDK.CSSModel.ComputedStyleLoader = ComputedStyleLoader;
+
+/** @constructor */
+SDK.CSSModel.InlineStyleResult = InlineStyleResult;
+
+/** @constructor */
+SDK.CSSLocation = CSSLocation;
+
+/** @constructor */
+SDK.CSSDispatcher = CSSDispatcher;
+
+SDK.SDKModel.register(SDK.CSSModel, SDK.Target.Capability.DOM, true);
+
+/** @typedef {!{range: !Protocol.CSS.SourceRange, styleSheetId: !Protocol.CSS.StyleSheetId, wasUsed: boolean}} */
+SDK.CSSModel.RuleUsage;
+
+/** @typedef {{backgroundColors: ?Array<string>, computedFontSize: string, computedFontWeight: string}} */
+SDK.CSSModel.ContrastInfo;

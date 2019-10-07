@@ -28,7 +28,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-SDK.PaintProfilerModel = class extends SDK.SDKModel {
+export class PaintProfilerModel extends SDK.SDKModel {
   /**
    * @param {!SDK.Target} target
    */
@@ -39,16 +39,16 @@ SDK.PaintProfilerModel = class extends SDK.SDKModel {
 
   /**
    * @param {!Array.<!SDK.PictureFragment>} fragments
-   * @return {!Promise<?SDK.PaintProfilerSnapshot>}
+   * @return {!Promise<?PaintProfilerSnapshot>}
    */
   async loadSnapshotFromFragments(fragments) {
     const snapshotId = await this._layerTreeAgent.loadSnapshot(fragments);
-    return snapshotId && new SDK.PaintProfilerSnapshot(this, snapshotId);
+    return snapshotId && new PaintProfilerSnapshot(this, snapshotId);
   }
 
   /**
    * @param {string} encodedPicture
-   * @return {!Promise<?SDK.PaintProfilerSnapshot>}
+   * @return {!Promise<?PaintProfilerSnapshot>}
    */
   loadSnapshot(encodedPicture) {
     const fragment = {x: 0, y: 0, picture: encodedPicture};
@@ -57,24 +57,17 @@ SDK.PaintProfilerModel = class extends SDK.SDKModel {
 
   /**
    * @param {string} layerId
-   * @return {!Promise<?SDK.PaintProfilerSnapshot>}
+   * @return {!Promise<?PaintProfilerSnapshot>}
    */
   async makeSnapshot(layerId) {
     const snapshotId = await this._layerTreeAgent.makeSnapshot(layerId);
-    return snapshotId && new SDK.PaintProfilerSnapshot(this, snapshotId);
+    return snapshotId && new PaintProfilerSnapshot(this, snapshotId);
   }
-};
+}
 
-SDK.SDKModel.register(SDK.PaintProfilerModel, SDK.Target.Capability.DOM, false);
-
-/**
- * @typedef {!{x: number, y: number, picture: string}}
- */
-SDK.PictureFragment;
-
-SDK.PaintProfilerSnapshot = class {
+export class PaintProfilerSnapshot {
   /**
-   * @param {!SDK.PaintProfilerModel} paintProfilerModel
+   * @param {!PaintProfilerModel} paintProfilerModel
    * @param {string} snapshotId
    */
   constructor(paintProfilerModel, snapshotId) {
@@ -114,25 +107,19 @@ SDK.PaintProfilerSnapshot = class {
   }
 
   /**
-   * @return {!Promise<?Array<!SDK.PaintProfilerLogItem>>}
+   * @return {!Promise<?Array<!PaintProfilerLogItem>>}
    */
   async commandLog() {
     const log = await this._paintProfilerModel._layerTreeAgent.snapshotCommandLog(this._id);
     return log &&
-        log.map(
-            (entry, index) => new SDK.PaintProfilerLogItem(/** @type {!SDK.RawPaintProfilerLogItem} */ (entry), index));
+        log.map((entry, index) => new PaintProfilerLogItem(/** @type {!SDK.RawPaintProfilerLogItem} */ (entry), index));
   }
-};
-
-/**
- * @typedef {!{method: string, params: ?Object<string, *>}}
- */
-SDK.RawPaintProfilerLogItem;
+}
 
 /**
  * @unrestricted
  */
-SDK.PaintProfilerLogItem = class {
+export class PaintProfilerLogItem {
   /**
    * @param {!SDK.RawPaintProfilerLogItem} rawEntry
    * @param {number} commandIndex
@@ -142,4 +129,31 @@ SDK.PaintProfilerLogItem = class {
     this.params = rawEntry.params;
     this.commandIndex = commandIndex;
   }
-};
+}
+
+/* Legacy exported object */
+self.SDK = self.SDK || {};
+
+/* Legacy exported object */
+SDK = SDK || {};
+
+/** @constructor */
+SDK.PaintProfilerModel = PaintProfilerModel;
+
+/** @constructor */
+SDK.PaintProfilerSnapshot = PaintProfilerSnapshot;
+
+/** @constructor */
+SDK.PaintProfilerLogItem = PaintProfilerLogItem;
+
+/**
+ * @typedef {!{x: number, y: number, picture: string}}
+ */
+SDK.PictureFragment;
+
+/**
+ * @typedef {!{method: string, params: ?Object<string, *>}}
+ */
+SDK.RawPaintProfilerLogItem;
+
+SDK.SDKModel.register(PaintProfilerModel, SDK.Target.Capability.DOM, false);

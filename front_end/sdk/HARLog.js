@@ -36,7 +36,7 @@
 /**
  * @unrestricted
  */
-SDK.HARLog = class {
+export default class HARLog {
   /**
    * @param {!SDK.NetworkRequest} request
    * @param {number} monotonicTime
@@ -51,10 +51,10 @@ SDK.HARLog = class {
    * @return {!Promise<!Object>}
    */
   static async build(requests) {
-    const log = new SDK.HARLog();
+    const log = new HARLog();
     const entryPromises = [];
     for (const request of requests) {
-      entryPromises.push(SDK.HARLog.Entry.build(request));
+      entryPromises.push(Entry.build(request));
     }
     const entries = await Promise.all(entryPromises);
     return {version: '1.2', creator: log._creator(), pages: log._buildPages(requests), entries: entries};
@@ -92,7 +92,7 @@ SDK.HARLog = class {
    */
   _convertPage(page, request) {
     return {
-      startedDateTime: SDK.HARLog.pseudoWallTime(request, page.startTime).toJSON(),
+      startedDateTime: HARLog.pseudoWallTime(request, page.startTime).toJSON(),
       id: 'page_' + page.id,
       title: page.url,  // We don't have actual page title here. URL is probably better than nothing.
       pageTimings: {
@@ -112,14 +112,14 @@ SDK.HARLog = class {
     if (time === -1 || startTime === -1) {
       return -1;
     }
-    return SDK.HARLog.Entry._toMilliseconds(time - startTime);
+    return Entry._toMilliseconds(time - startTime);
   }
-};
+}
 
 /**
  * @unrestricted
  */
-SDK.HARLog.Entry = class {
+export class Entry {
   /**
    * @param {!SDK.NetworkRequest} request
    */
@@ -140,7 +140,7 @@ SDK.HARLog.Entry = class {
    * @return {!Promise<!Object>}
    */
   static async build(request) {
-    const harEntry = new SDK.HARLog.Entry(request);
+    const harEntry = new Entry(request);
     let ipAddress = harEntry._request.remoteAddress();
     const portPositionInString = ipAddress.lastIndexOf(':');
     if (portPositionInString !== -1) {
@@ -168,7 +168,7 @@ SDK.HARLog.Entry = class {
     }
 
     const entry = {
-      startedDateTime: SDK.HARLog.pseudoWallTime(harEntry._request, harEntry._request.issueTime()).toJSON(),
+      startedDateTime: HARLog.pseudoWallTime(harEntry._request, harEntry._request.issueTime()).toJSON(),
       time: time,
       request: await harEntry._buildRequest(),
       response: harEntry._buildResponse(),
@@ -278,8 +278,8 @@ SDK.HARLog.Entry = class {
     const result = {blocked: -1, dns: -1, ssl: -1, connect: -1, send: 0, wait: 0, receive: 0, _blocked_queueing: -1};
 
     const queuedTime = (issueTime < startTime) ? startTime - issueTime : -1;
-    result.blocked = SDK.HARLog.Entry._toMilliseconds(queuedTime);
-    result._blocked_queueing = SDK.HARLog.Entry._toMilliseconds(queuedTime);
+    result.blocked = Entry._toMilliseconds(queuedTime);
+    result._blocked_queueing = Entry._toMilliseconds(queuedTime);
 
     let highestTime = 0;
     if (timing) {
@@ -328,11 +328,11 @@ SDK.HARLog.Entry = class {
 
     const requestTime = timing ? timing.requestTime : startTime;
     const waitStart = highestTime;
-    const waitEnd = SDK.HARLog.Entry._toMilliseconds(this._request.responseReceivedTime - requestTime);
+    const waitEnd = Entry._toMilliseconds(this._request.responseReceivedTime - requestTime);
     result.wait = waitEnd - waitStart;
 
     const receiveStart = waitEnd;
-    const receiveEnd = SDK.HARLog.Entry._toMilliseconds(this._request.endTime - requestTime);
+    const receiveEnd = Entry._toMilliseconds(this._request.endTime - requestTime);
     result.receive = Math.max(receiveEnd - receiveStart, 0);
 
     return result;
@@ -396,7 +396,7 @@ SDK.HARLog.Entry = class {
       value: cookie.value(),
       path: cookie.path(),
       domain: cookie.domain(),
-      expires: cookie.expiresDate(SDK.HARLog.pseudoWallTime(this._request, this._request.startTime)),
+      expires: cookie.expiresDate(HARLog.pseudoWallTime(this._request, this._request.startTime)),
       httpOnly: cookie.httpOnly(),
       secure: cookie.secure()
     };
@@ -447,7 +447,19 @@ SDK.HARLog.Entry = class {
     }
     return this._request.resourceSize - this.responseBodySize;
   }
-};
+}
+
+/* Legacy exported object */
+self.SDK = self.SDK || {};
+
+/* Legacy exported object */
+SDK = SDK || {};
+
+/** @constructor */
+SDK.HARLog = HARLog;
+
+/** @constructor */
+SDK.HARLog.Entry = Entry;
 
 /** @typedef {!{
   blocked: number,

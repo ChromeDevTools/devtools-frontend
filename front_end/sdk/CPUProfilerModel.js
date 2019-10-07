@@ -29,7 +29,7 @@
 /**
  * @implements {Protocol.ProfilerDispatcher}
  */
-SDK.CPUProfilerModel = class extends SDK.SDKModel {
+export default class CPUProfilerModel extends SDK.SDKModel {
   /**
    * @param {!SDK.Target} target
    */
@@ -69,7 +69,7 @@ SDK.CPUProfilerModel = class extends SDK.SDKModel {
       title = Common.UIString('Profile %d', this._nextAnonymousConsoleProfileNumber++);
       this._anonymousConsoleProfileIdToTitle.set(id, title);
     }
-    this._dispatchProfileEvent(SDK.CPUProfilerModel.Events.ConsoleProfileStarted, id, scriptLocation, title);
+    this._dispatchProfileEvent(Events.ConsoleProfileStarted, id, scriptLocation, title);
   }
 
   /**
@@ -86,8 +86,7 @@ SDK.CPUProfilerModel = class extends SDK.SDKModel {
     }
     // Make sure ProfilesPanel is initialized and CPUProfileType is created.
     self.runtime.loadModulePromise('profiler').then(() => {
-      this._dispatchProfileEvent(
-          SDK.CPUProfilerModel.Events.ConsoleProfileFinished, id, scriptLocation, title, cpuProfile);
+      this._dispatchProfileEvent(Events.ConsoleProfileFinished, id, scriptLocation, title, cpuProfile);
     });
   }
 
@@ -160,15 +159,27 @@ SDK.CPUProfilerModel = class extends SDK.SDKModel {
   bestEffortCoverage() {
     return this._profilerAgent.getBestEffortCoverage().then(result => result || []);
   }
-};
-
-SDK.SDKModel.register(SDK.CPUProfilerModel, SDK.Target.Capability.JS, true);
+}
 
 /** @enum {symbol} */
-SDK.CPUProfilerModel.Events = {
+export const Events = {
   ConsoleProfileStarted: Symbol('ConsoleProfileStarted'),
   ConsoleProfileFinished: Symbol('ConsoleProfileFinished')
 };
+
+/* Legacy exported object */
+self.SDK = self.SDK || {};
+
+/* Legacy exported object */
+SDK = SDK || {};
+
+/** @constructor */
+SDK.CPUProfilerModel = CPUProfilerModel;
+
+/** @enum {symbol} */
+SDK.CPUProfilerModel.Events = Events;
+
+SDK.SDKModel.register(SDK.CPUProfilerModel, SDK.Target.Capability.JS, true);
 
 /** @typedef {!{id: string, scriptLocation: !SDK.DebuggerModel.Location, title: string, cpuProfile: (!Protocol.Profiler.Profile|undefined), cpuProfilerModel: !SDK.CPUProfilerModel}} */
 SDK.CPUProfilerModel.EventData;

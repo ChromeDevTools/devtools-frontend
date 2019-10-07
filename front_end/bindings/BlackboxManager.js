@@ -150,7 +150,7 @@ Bindings.BlackboxManager = class {
       return;
     }
 
-    const mappings = sourceMap.mappings();
+    const mappings = /** @type {!SDK.TextSourceMap} */ (sourceMap).mappings();
     const newRanges = [];
     let currentBlackboxed = false;
     if (mappings[0].lineNumber !== 0 || mappings[0].columnNumber !== 0) {

@@ -33,7 +33,7 @@
 /**
  * @unrestricted
  */
-SDK.CSSMetadata = class {
+export default class CSSMetadata {
   /**
    * @param {!Array.<!{name: string, longhands: !Array.<string>, inherited: boolean, svg: boolean}>} properties
    */
@@ -76,7 +76,7 @@ SDK.CSSMetadata = class {
         }
       }
     }
-    this._values.sort(SDK.CSSMetadata._sortPrefixesToEnd);
+    this._values.sort(CSSMetadata._sortPrefixesToEnd);
     this._valuesSet = new Set(this._values);
 
     /** @type {!Array<string>} */
@@ -86,7 +86,7 @@ SDK.CSSMetadata = class {
     for (const name of this._valuesSet) {
       const values = this._specificPropertyValues(name)
                          .filter(value => CSS.supports(name, value))
-                         .sort(SDK.CSSMetadata._sortPrefixesToEnd);
+                         .sort(CSSMetadata._sortPrefixesToEnd);
       const presets = values.map(value => `${name}: ${value}`);
       if (!this.isSVGProperty(name)) {
         this._nameValuePresets.pushAll(presets);
@@ -156,8 +156,7 @@ SDK.CSSMetadata = class {
    * @return {boolean}
    */
   isColorAwareProperty(propertyName) {
-    return !!SDK.CSSMetadata._colorAwareProperties.has(propertyName.toLowerCase()) ||
-        this.isCustomProperty(propertyName.toLowerCase());
+    return !!_colorAwareProperties.has(propertyName.toLowerCase()) || this.isCustomProperty(propertyName.toLowerCase());
   }
 
   /**
@@ -178,7 +177,7 @@ SDK.CSSMetadata = class {
     if (propertyName === 'line-height') {
       return false;
     }
-    return SDK.CSSMetadata._distanceProperties.has(propertyName) || propertyName.startsWith('margin') ||
+    return _distanceProperties.has(propertyName) || propertyName.startsWith('margin') ||
         propertyName.startsWith('padding') || propertyName.indexOf('width') !== -1 ||
         propertyName.indexOf('height') !== -1;
   }
@@ -189,7 +188,7 @@ SDK.CSSMetadata = class {
    */
   isBezierAwareProperty(propertyName) {
     propertyName = propertyName.toLowerCase();
-    return !!SDK.CSSMetadata._bezierAwareProperties.has(propertyName) || this.isCustomProperty(propertyName);
+    return !!_bezierAwareProperties.has(propertyName) || this.isCustomProperty(propertyName);
   }
 
   /**
@@ -248,7 +247,7 @@ SDK.CSSMetadata = class {
    */
   _specificPropertyValues(propertyName) {
     const unprefixedName = propertyName.replace(/^-webkit-/, '');
-    const entry = SDK.CSSMetadata._propertyDataMap[propertyName] || SDK.CSSMetadata._propertyDataMap[unprefixedName];
+    const entry = _propertyDataMap[propertyName] || _propertyDataMap[unprefixedName];
     const keywords = entry && entry.values ? entry.values.slice() : [];
     for (const commonKeyword of ['auto', 'none']) {
       if (CSS.supports(propertyName, commonKeyword)) {
@@ -272,7 +271,7 @@ SDK.CSSMetadata = class {
         acceptedKeywords.push(color);
       }
     }
-    return acceptedKeywords.sort(SDK.CSSMetadata._sortPrefixesToEnd);
+    return acceptedKeywords.sort(CSSMetadata._sortPrefixesToEnd);
   }
 
   /**
@@ -280,7 +279,7 @@ SDK.CSSMetadata = class {
    * @return {number}
    */
   propertyUsageWeight(property) {
-    return SDK.CSSMetadata.Weight[property] || SDK.CSSMetadata.Weight[this.canonicalPropertyName(property)] || 0;
+    return Weight[property] || Weight[this.canonicalPropertyName(property)] || 0;
   }
 
   /**
@@ -289,7 +288,7 @@ SDK.CSSMetadata = class {
    * @return {?{text: string, startColumn: number, endColumn: number}}
    */
   getValuePreset(key, value) {
-    const values = SDK.CSSMetadata._valuePresets.get(key);
+    const values = _valuePresets.get(key);
     let text = values ? values.get(value) : null;
     if (!text) {
       return null;
@@ -304,10 +303,10 @@ SDK.CSSMetadata = class {
     }
     return {text, startColumn, endColumn};
   }
-};
+}
 
-SDK.CSSMetadata.VariableRegex = /(var\(--.*?\))/g;
-SDK.CSSMetadata.URLRegex = /url\(\s*('.+?'|".+?"|[^)]+)\s*\)/g;
+export const VariableRegex = /(var\(--.*?\))/g;
+export const URLRegex = /url\(\s*('.+?'|".+?"|[^)]+)\s*\)/g;
 
 /**
  * Matches an instance of a grid area 'row' definition.
@@ -317,22 +316,22 @@ SDK.CSSMetadata.URLRegex = /url\(\s*('.+?'|".+?"|[^)]+)\s*\)/g;
  * 'grid', 'grid-template', e.g.
  *    [track-name] "a a ." minmax(50px, auto) [track-name]
  */
-SDK.CSSMetadata.GridAreaRowRegex = /((?:\[[\w\- ]+\]\s*)*(?:"[^"]+"|'[^']+'))[^'"\[]*\[?[^'"\[]*/;
+export const GridAreaRowRegex = /((?:\[[\w\- ]+\]\s*)*(?:"[^"]+"|'[^']+'))[^'"\[]*\[?[^'"\[]*/;
 
 /**
- * @return {!SDK.CSSMetadata}
+ * @return {!CSSMetadata}
  */
-SDK.cssMetadata = function() {
-  if (!SDK.CSSMetadata._instance) {
-    SDK.CSSMetadata._instance = new SDK.CSSMetadata(SDK.CSSMetadata._generatedProperties || []);
+export function cssMetadata() {
+  if (!CSSMetadata._instance) {
+    CSSMetadata._instance = new CSSMetadata(CSSMetadata._generatedProperties || []);
   }
-  return SDK.CSSMetadata._instance;
-};
+  return CSSMetadata._instance;
+}
 
 /**
  * The pipe character '|' indicates where text selection should be set.
  */
-SDK.CSSMetadata._imageValuePresetMap = new Map([
+export const _imageValuePresetMap = new Map([
   ['linear-gradient', 'linear-gradient(|45deg, black, transparent|)'],
   ['radial-gradient', 'radial-gradient(|black, transparent|)'],
   ['repeating-linear-gradient', 'repeating-linear-gradient(|45deg, black, transparent 100px|)'],
@@ -340,7 +339,7 @@ SDK.CSSMetadata._imageValuePresetMap = new Map([
   ['url', 'url(||)'],
 ]);
 
-SDK.CSSMetadata._valuePresets = new Map([
+export const _valuePresets = new Map([
   [
     'filter', new Map([
       ['blur', 'blur(|1px|)'],
@@ -356,8 +355,8 @@ SDK.CSSMetadata._valuePresets = new Map([
       ['url', 'url(||)'],
     ])
   ],
-  ['background', SDK.CSSMetadata._imageValuePresetMap], ['background-image', SDK.CSSMetadata._imageValuePresetMap],
-  ['-webkit-mask-image', SDK.CSSMetadata._imageValuePresetMap],
+  ['background', _imageValuePresetMap], ['background-image', _imageValuePresetMap],
+  ['-webkit-mask-image', _imageValuePresetMap],
   [
     'transform', new Map([
       ['scale', 'scale(|1.5|)'],
@@ -384,18 +383,18 @@ SDK.CSSMetadata._valuePresets = new Map([
   ]
 ]);
 
-SDK.CSSMetadata._distanceProperties = new Set([
+export const _distanceProperties = new Set([
   'background-position', 'border-spacing', 'bottom', 'font-size', 'height', 'left', 'letter-spacing', 'max-height',
   'max-width', 'min-height', 'min-width', 'right', 'text-indent', 'top', 'width', 'word-spacing', 'grid-row-gap',
   'grid-column-gap', 'row-gap'
 ]);
 
-SDK.CSSMetadata._bezierAwareProperties = new Set([
+export const _bezierAwareProperties = new Set([
   'animation', 'animation-timing-function', 'transition', 'transition-timing-function', '-webkit-animation',
   '-webkit-animation-timing-function', '-webkit-transition', '-webkit-transition-timing-function'
 ]);
 
-SDK.CSSMetadata._colorAwareProperties = new Set([
+export const _colorAwareProperties = new Set([
   'backdrop-filter',
   'background',
   'background-color',
@@ -449,7 +448,7 @@ SDK.CSSMetadata._colorAwareProperties = new Set([
   '-webkit-text-stroke-color'
 ]);
 
-SDK.CSSMetadata._propertyDataMap = {
+export const _propertyDataMap = {
   'table-layout': {values: ['fixed']},
   'visibility': {values: ['hidden', 'visible', 'collapse']},
   'background-repeat': {values: ['repeat', 'repeat-x', 'repeat-y', 'no-repeat', 'space', 'round']},
@@ -1242,7 +1241,7 @@ SDK.CSSMetadata._propertyDataMap = {
 };
 
 // Weight of CSS properties based on their usage from https://www.chromestatus.com/metrics/css/popularity
-SDK.CSSMetadata.Weight = {
+export const Weight = {
   'align-content': 57,
   'align-items': 129,
   'align-self': 55,
@@ -1497,3 +1496,25 @@ SDK.CSSMetadata.Weight = {
   'z-index': 239,
   'zoom': 200
 };
+
+/* Legacy exported object */
+self.SDK = self.SDK || {};
+
+/* Legacy exported object */
+SDK = SDK || {};
+
+/** @constructor */
+SDK.CSSMetadata = CSSMetadata;
+
+SDK.CSSMetadata.VariableRegex = VariableRegex;
+SDK.CSSMetadata.URLRegex = URLRegex;
+SDK.CSSMetadata.GridAreaRowRegex = GridAreaRowRegex;
+SDK.CSSMetadata._imageValuePresetMap = _imageValuePresetMap;
+SDK.CSSMetadata._valuePresets = _valuePresets;
+SDK.CSSMetadata._distanceProperties = _distanceProperties;
+SDK.CSSMetadata._bezierAwareProperties = _bezierAwareProperties;
+SDK.CSSMetadata._colorAwareProperties = _colorAwareProperties;
+SDK.CSSMetadata._propertyDataMap = _propertyDataMap;
+SDK.CSSMetadata.Weight = Weight;
+
+SDK.cssMetadata = cssMetadata;

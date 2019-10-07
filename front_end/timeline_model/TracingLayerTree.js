@@ -99,7 +99,7 @@ TimelineModel.TracingLayerTree = class extends SDK.LayerTreeBase {
       Common.console.error(`Tile ${tileId} is missing`);
       return /** @type {!Promise<?SDK.SnapshotWithRect>} */ (Promise.resolve(null));
     }
-    const layer = this.layerById(tile.layer_id);
+    const layer = /** @type {?TimelineModel.TracingLayer} */ (this.layerById(tile.layer_id));
     if (!layer) {
       Common.console.error(`Layer ${tile.layer_id} for tile ${tileId} is not found`);
       return /** @type {!Promise<?SDK.SnapshotWithRect>} */ (Promise.resolve(null));
@@ -238,9 +238,10 @@ TimelineModel.TracingLayer = class {
 
   /**
    * @override
-   * @param {!SDK.Layer} child
+   * @param {!SDK.Layer} childParam
    */
-  addChild(child) {
+  addChild(childParam) {
+    const child = /** @type {!TimelineModel.TracingLayer} */ (childParam);
     if (child._parent) {
       console.assert(false, 'Child already has a parent');
     }

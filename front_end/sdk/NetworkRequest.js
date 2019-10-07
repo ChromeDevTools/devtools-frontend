@@ -31,7 +31,7 @@
  * @implements {Common.ContentProvider}
  * @unrestricted
  */
-SDK.NetworkRequest = class extends Common.Object {
+export default class NetworkRequest extends Common.Object {
   /**
    * @param {!Protocol.Network.RequestId} requestId
    * @param {string} url
@@ -51,9 +51,9 @@ SDK.NetworkRequest = class extends Common.Object {
     this._loaderId = loaderId;
     /** @type {?Protocol.Network.Initiator} */
     this._initiator = initiator;
-    /** @type {?SDK.NetworkRequest} */
+    /** @type {?NetworkRequest} */
     this._redirectSource = null;
-    /** @type {?SDK.NetworkRequest} */
+    /** @type {?NetworkRequest} */
     this._redirectDestination = null;
     this._issueTime = -1;
     this._startTime = -1;
@@ -65,6 +65,7 @@ SDK.NetworkRequest = class extends Common.Object {
     this.statusText = '';
     this.requestMethod = '';
     this.requestTime = 0;
+    /** @type {string} */
     this.protocol = '';
     /** @type {!Protocol.Security.MixedContentType} */
     this.mixedContentType = Protocol.Security.MixedContentType.None;
@@ -125,7 +126,7 @@ SDK.NetworkRequest = class extends Common.Object {
   }
 
   /**
-   * @param {!SDK.NetworkRequest} other
+   * @param {!NetworkRequest} other
    * @return {number}
    */
   indentityCompare(other) {
@@ -215,7 +216,7 @@ SDK.NetworkRequest = class extends Common.Object {
    */
   setRemoteAddress(ip, port) {
     this._remoteAddress = ip + ':' + port;
-    this.dispatchEventToListeners(SDK.NetworkRequest.Events.RemoteAddressChanged, this);
+    this.dispatchEventToListeners(Events.RemoteAddressChanged, this);
   }
 
   /**
@@ -334,7 +335,7 @@ SDK.NetworkRequest = class extends Common.Object {
         this._responseReceivedTime = x;
       }
     }
-    this.dispatchEventToListeners(SDK.NetworkRequest.Events.TimingChanged, this);
+    this.dispatchEventToListeners(Events.TimingChanged, this);
   }
 
   /**
@@ -410,7 +411,7 @@ SDK.NetworkRequest = class extends Common.Object {
     this._finished = x;
 
     if (x) {
-      this.dispatchEventToListeners(SDK.NetworkRequest.Events.FinishedLoading, this);
+      this.dispatchEventToListeners(Events.FinishedLoading, this);
     }
   }
 
@@ -551,7 +552,7 @@ SDK.NetworkRequest = class extends Common.Object {
     }
 
     this._timing = timingInfo;
-    this.dispatchEventToListeners(SDK.NetworkRequest.Events.TimingChanged, this);
+    this.dispatchEventToListeners(Events.TimingChanged, this);
   }
 
   /**
@@ -670,28 +671,28 @@ SDK.NetworkRequest = class extends Common.Object {
   }
 
   /**
-   * @return {?SDK.NetworkRequest}
+   * @return {?NetworkRequest}
    */
   redirectSource() {
     return this._redirectSource;
   }
 
   /**
-   * @param {?SDK.NetworkRequest} originatingRequest
+   * @param {?NetworkRequest} originatingRequest
    */
   setRedirectSource(originatingRequest) {
     this._redirectSource = originatingRequest;
   }
 
   /**
-   * @return {?SDK.NetworkRequest}
+   * @return {?NetworkRequest}
    */
   redirectDestination() {
     return this._redirectDestination;
   }
 
   /**
-   * @param {?SDK.NetworkRequest} redirectDestination
+   * @param {?NetworkRequest} redirectDestination
    */
   setRedirectDestination(redirectDestination) {
     this._redirectDestination = redirectDestination;
@@ -711,7 +712,7 @@ SDK.NetworkRequest = class extends Common.Object {
     this._requestHeaders = headers;
     delete this._requestCookies;
 
-    this.dispatchEventToListeners(SDK.NetworkRequest.Events.RequestHeadersChanged);
+    this.dispatchEventToListeners(Events.RequestHeadersChanged);
   }
 
   /**
@@ -727,7 +728,7 @@ SDK.NetworkRequest = class extends Common.Object {
   setRequestHeadersText(text) {
     this._requestHeadersText = text;
 
-    this.dispatchEventToListeners(SDK.NetworkRequest.Events.RequestHeadersChanged);
+    this.dispatchEventToListeners(Events.RequestHeadersChanged);
   }
 
   /**
@@ -816,7 +817,7 @@ SDK.NetworkRequest = class extends Common.Object {
     delete this._responseCookies;
     this._responseHeaderValues = {};
 
-    this.dispatchEventToListeners(SDK.NetworkRequest.Events.ResponseHeadersChanged);
+    this.dispatchEventToListeners(Events.ResponseHeadersChanged);
   }
 
   /**
@@ -832,7 +833,7 @@ SDK.NetworkRequest = class extends Common.Object {
   set responseHeadersText(x) {
     this._responseHeadersText = x;
 
-    this.dispatchEventToListeners(SDK.NetworkRequest.Events.ResponseHeadersChanged);
+    this.dispatchEventToListeners(Events.ResponseHeadersChanged);
   }
 
   /**
@@ -1263,13 +1264,8 @@ SDK.NetworkRequest = class extends Common.Object {
    * @param {number} time
    */
   addProtocolFrameError(errorMessage, time) {
-    this.addFrame({
-      type: SDK.NetworkRequest.WebSocketFrameType.Error,
-      text: errorMessage,
-      time: this.pseudoWallTime(time),
-      opCode: -1,
-      mask: false
-    });
+    this.addFrame(
+        {type: WebSocketFrameType.Error, text: errorMessage, time: this.pseudoWallTime(time), opCode: -1, mask: false});
   }
 
   /**
@@ -1278,7 +1274,7 @@ SDK.NetworkRequest = class extends Common.Object {
    * @param {boolean} sent
    */
   addProtocolFrame(response, time, sent) {
-    const type = sent ? SDK.NetworkRequest.WebSocketFrameType.Send : SDK.NetworkRequest.WebSocketFrameType.Receive;
+    const type = sent ? WebSocketFrameType.Send : WebSocketFrameType.Receive;
     this.addFrame({
       type: type,
       text: response.payloadData,
@@ -1293,7 +1289,7 @@ SDK.NetworkRequest = class extends Common.Object {
    */
   addFrame(frame) {
     this._frames.push(frame);
-    this.dispatchEventToListeners(SDK.NetworkRequest.Events.WebsocketFrameAdded, frame);
+    this.dispatchEventToListeners(Events.WebsocketFrameAdded, frame);
   }
 
   /**
@@ -1312,7 +1308,7 @@ SDK.NetworkRequest = class extends Common.Object {
   addEventSourceMessage(time, eventName, eventId, data) {
     const message = {time: this.pseudoWallTime(time), eventName: eventName, eventId: eventId, data: data};
     this._eventSourceMessages.push(message);
-    this.dispatchEventToListeners(SDK.NetworkRequest.Events.EventSourceMessageAdded, message);
+    this.dispatchEventToListeners(Events.EventSourceMessageAdded, message);
   }
 
   /**
@@ -1416,10 +1412,10 @@ SDK.NetworkRequest = class extends Common.Object {
   blockedResponseCookies() {
     return this._blockedResponseCookies;
   }
-};
+}
 
 /** @enum {symbol} */
-SDK.NetworkRequest.Events = {
+export const Events = {
   FinishedLoading: Symbol('FinishedLoading'),
   TimingChanged: Symbol('TimingChanged'),
   RemoteAddressChanged: Symbol('RemoteAddressChanged'),
@@ -1430,7 +1426,7 @@ SDK.NetworkRequest.Events = {
 };
 
 /** @enum {string} */
-SDK.NetworkRequest.InitiatorType = {
+export const InitiatorType = {
   Other: 'other',
   Parser: 'parser',
   Redirect: 'redirect',
@@ -1439,30 +1435,18 @@ SDK.NetworkRequest.InitiatorType = {
   SignedExchange: 'signedExchange'
 };
 
-/** @typedef {!{name: string, value: string}} */
-SDK.NetworkRequest.NameValue;
-
 /** @enum {string} */
-SDK.NetworkRequest.WebSocketFrameType = {
+export const WebSocketFrameType = {
   Send: 'send',
   Receive: 'receive',
   Error: 'error'
 };
 
-/** @typedef {!{type: SDK.NetworkRequest.WebSocketFrameType, time: number, text: string, opCode: number, mask: boolean}} */
-SDK.NetworkRequest.WebSocketFrame;
-
-/** @typedef {!{time: number, eventName: string, eventId: string, data: string}} */
-SDK.NetworkRequest.EventSourceMessage;
-
-/** @typedef {!{error: ?string, content: ?string, encoded: boolean}} */
-SDK.NetworkRequest.ContentData;
-
 /**
  * @param {!Protocol.Network.CookieBlockedReason} blockedReason
  * @return {string}
  */
-SDK.NetworkRequest.cookieBlockedReasonToUiString = function(blockedReason) {
+export const cookieBlockedReasonToUiString = function(blockedReason) {
   switch (blockedReason) {
     case Protocol.Network.CookieBlockedReason.SecureOnly:
       return ls`This cookie had the "Secure" attribute and the connection was not secure.`;
@@ -1498,7 +1482,7 @@ SDK.NetworkRequest.cookieBlockedReasonToUiString = function(blockedReason) {
  * @param {!Protocol.Network.SetCookieBlockedReason} blockedReason
  * @return {string}
  */
-SDK.NetworkRequest.setCookieBlockedReasonToUiString = function(blockedReason) {
+export const setCookieBlockedReasonToUiString = function(blockedReason) {
   switch (blockedReason) {
     case Protocol.Network.SetCookieBlockedReason.SecureOnly:
       return ls
@@ -1540,7 +1524,7 @@ SDK.NetworkRequest.setCookieBlockedReasonToUiString = function(blockedReason) {
  * @param {!Protocol.Network.CookieBlockedReason} blockedReason
  * @return {?SDK.Cookie.Attributes}
  */
-SDK.NetworkRequest.cookieBlockedReasonToAttribute = function(blockedReason) {
+export const cookieBlockedReasonToAttribute = function(blockedReason) {
   switch (blockedReason) {
     case Protocol.Network.CookieBlockedReason.SecureOnly:
       return SDK.Cookie.Attributes.Secure;
@@ -1565,7 +1549,7 @@ SDK.NetworkRequest.cookieBlockedReasonToAttribute = function(blockedReason) {
  * @param {!Protocol.Network.SetCookieBlockedReason} blockedReason
  * @return {?SDK.Cookie.Attributes}
  */
-SDK.NetworkRequest.setCookieBlockedReasonToAttribute = function(blockedReason) {
+export const setCookieBlockedReasonToAttribute = function(blockedReason) {
   switch (blockedReason) {
     case Protocol.Network.SetCookieBlockedReason.SecureOnly:
     case Protocol.Network.SetCookieBlockedReason.OverwriteSecure:
@@ -1589,37 +1573,71 @@ SDK.NetworkRequest.setCookieBlockedReasonToAttribute = function(blockedReason) {
   return null;
 };
 
+/* Legacy exported object */
+self.SDK = self.SDK || {};
+
+/* Legacy exported object */
+SDK = SDK || {};
+
+/** @constructor */
+SDK.NetworkRequest = NetworkRequest;
+
+/** @enum {symbol} */
+SDK.NetworkRequest.Events = Events;
+
+/** @enum {string} */
+SDK.NetworkRequest.InitiatorType = InitiatorType;
+
+/** @enum {string} */
+SDK.NetworkRequest.WebSocketFrameType = WebSocketFrameType;
+
+SDK.NetworkRequest.cookieBlockedReasonToUiString = cookieBlockedReasonToUiString;
+SDK.NetworkRequest.setCookieBlockedReasonToUiString = setCookieBlockedReasonToUiString;
+SDK.NetworkRequest.cookieBlockedReasonToAttribute = cookieBlockedReasonToAttribute;
+SDK.NetworkRequest.setCookieBlockedReasonToAttribute = setCookieBlockedReasonToAttribute;
+
+/** @typedef {!{name: string, value: string}} */
+SDK.NetworkRequest.NameValue;
+
+/** @typedef {!{type: WebSocketFrameType, time: number, text: string, opCode: number, mask: boolean}} */
+SDK.NetworkRequest.WebSocketFrame;
+
+/** @typedef {!{time: number, eventName: string, eventId: string, data: string}} */
+SDK.NetworkRequest.EventSourceMessage;
+
+/** @typedef {!{error: ?string, content: ?string, encoded: boolean}} */
+SDK.NetworkRequest.ContentData;
 
 /**
  * @typedef {!{
- *   blockedReasons: !Array<!Protocol.Network.CookieBlockedReason>,
- *   cookie: !SDK.Cookie
- * }}
- */
+  *   blockedReasons: !Array<!Protocol.Network.CookieBlockedReason>,
+  *   cookie: !SDK.Cookie
+  * }}
+  */
 SDK.NetworkRequest.BlockedCookieWithReason;
 
 /**
- * @typedef {!{
- *   blockedRequestCookies: !Array<!SDK.NetworkRequest.BlockedCookieWithReason>,
- *   requestHeaders: !Array<!SDK.NetworkRequest.NameValue>
- * }}
- */
+  * @typedef {!{
+  *   blockedRequestCookies: !Array<!SDK.NetworkRequest.BlockedCookieWithReason>,
+  *   requestHeaders: !Array<!SDK.NetworkRequest.NameValue>
+  * }}
+  */
 SDK.NetworkRequest.ExtraRequestInfo;
 
 /**
- * @typedef {!{
- *   blockedReasons: !Array<!Protocol.Network.SetCookieBlockedReason>,
- *   cookieLine: string,
- *   cookie: ?SDK.Cookie
- * }}
- */
+  * @typedef {!{
+  *   blockedReasons: !Array<!Protocol.Network.SetCookieBlockedReason>,
+  *   cookieLine: string,
+  *   cookie: ?SDK.Cookie
+  * }}
+  */
 SDK.NetworkRequest.BlockedSetCookieWithReason;
 
 /**
- * @typedef {!{
- *   blockedResponseCookies: !Array<!SDK.NetworkRequest.BlockedSetCookieWithReason>,
- *   responseHeaders: !Array<!SDK.NetworkRequest.NameValue>,
- *   responseHeadersText: (string|undefined)
- * }}
- */
+  * @typedef {!{
+  *   blockedResponseCookies: !Array<!SDK.NetworkRequest.BlockedSetCookieWithReason>,
+  *   responseHeaders: !Array<!SDK.NetworkRequest.NameValue>,
+  *   responseHeadersText: (string|undefined)
+  * }}
+  */
 SDK.NetworkRequest.ExtraResponseInfo;

@@ -1,12 +1,13 @@
 // Copyright 2016 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-SDK.CSSStyleDeclaration = class {
+
+export default class CSSStyleDeclaration {
   /**
    * @param {!SDK.CSSModel} cssModel
    * @param {?SDK.CSSRule} parentRule
    * @param {!Protocol.CSS.CSSStyle} payload
-   * @param {!SDK.CSSStyleDeclaration.Type} type
+   * @param {!Type} type
    */
   constructor(cssModel, parentRule, payload, type) {
     this._cssModel = cssModel;
@@ -100,7 +101,7 @@ SDK.CSSStyleDeclaration = class {
     this._leadingProperties = null;
 
     /**
-     * @this {SDK.CSSStyleDeclaration}
+     * @this {CSSStyleDeclaration}
      * @param {!TextUtils.Text} cssText
      * @param {number} startLine
      * @param {number} startColumn
@@ -395,11 +396,23 @@ SDK.CSSStyleDeclaration = class {
   appendProperty(name, value, userCallback) {
     this.insertPropertyAt(this.allProperties().length, name, value, userCallback);
   }
-};
+}
 
 /** @enum {string} */
-SDK.CSSStyleDeclaration.Type = {
+export const Type = {
   Regular: 'Regular',
   Inline: 'Inline',
   Attributes: 'Attributes'
 };
+
+/* Legacy exported object */
+self.SDK = self.SDK || {};
+
+/* Legacy exported object */
+SDK = SDK || {};
+
+/** @constructor */
+SDK.CSSStyleDeclaration = CSSStyleDeclaration;
+
+/** @enum {string} */
+SDK.CSSStyleDeclaration.Type = Type;

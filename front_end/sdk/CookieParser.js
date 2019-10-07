@@ -37,7 +37,7 @@
 /**
  * @unrestricted
  */
-SDK.CookieParser = class {
+export default class CookieParser {
   constructor() {
   }
 
@@ -46,7 +46,7 @@ SDK.CookieParser = class {
    * @return {?Array<!SDK.Cookie>}
    */
   static parseCookie(header) {
-    return (new SDK.CookieParser()).parseCookie(header);
+    return (new CookieParser()).parseCookie(header);
   }
 
   /**
@@ -54,7 +54,7 @@ SDK.CookieParser = class {
    * @return {?Array<!SDK.Cookie>}
    */
   static parseSetCookie(header) {
-    return (new SDK.CookieParser()).parseSetCookie(header);
+    return (new CookieParser()).parseSetCookie(header);
   }
 
   /**
@@ -77,7 +77,7 @@ SDK.CookieParser = class {
       if (kv.key.charAt(0) === '$' && this._lastCookie) {
         this._lastCookie.addAttribute(kv.key.slice(1), kv.value);
       } else if (kv.key.toLowerCase() !== '$version' && typeof kv.value === 'string') {
-        this._addCookie(kv, SDK.Cookie.Type.Request);
+        this._addCookie(kv, Type.Request);
       }
       this._advanceAndCheckCookieDelimiter();
     }
@@ -97,7 +97,7 @@ SDK.CookieParser = class {
       if (this._lastCookie) {
         this._lastCookie.addAttribute(kv.key, kv.value);
       } else {
-        this._addCookie(kv, SDK.Cookie.Type.Response);
+        this._addCookie(kv, Type.Response);
       }
       if (this._advanceAndCheckCookieDelimiter()) {
         this._flushCookie();
@@ -133,7 +133,7 @@ SDK.CookieParser = class {
   }
 
   /**
-   * @return {?SDK.CookieParser.KeyValue}
+   * @return {?KeyValue}
    */
   _extractKeyValue() {
     if (!this._input || !this._input.length) {
@@ -150,7 +150,7 @@ SDK.CookieParser = class {
       return null;
     }
 
-    const result = new SDK.CookieParser.KeyValue(
+    const result = new KeyValue(
         keyValueMatch[1], keyValueMatch[2] && keyValueMatch[2].trim(), this._originalInputLength - this._input.length);
     this._lastCookieLine += keyValueMatch[0];
     this._input = this._input.slice(keyValueMatch[0].length);
@@ -171,8 +171,8 @@ SDK.CookieParser = class {
   }
 
   /**
-   * @param {!SDK.CookieParser.KeyValue} keyValue
-   * @param {!SDK.Cookie.Type} type
+   * @param {!KeyValue} keyValue
+   * @param {!Type} type
    */
   _addCookie(keyValue, type) {
     if (this._lastCookie) {
@@ -186,12 +186,12 @@ SDK.CookieParser = class {
     this._lastCookiePosition = keyValue.position;
     this._cookies.push(this._lastCookie);
   }
-};
+}
 
 /**
  * @unrestricted
  */
-SDK.CookieParser.KeyValue = class {
+export class KeyValue {
   /**
    * @param {string} key
    * @param {string|undefined} value
@@ -202,17 +202,17 @@ SDK.CookieParser.KeyValue = class {
     this.value = value;
     this.position = position;
   }
-};
+}
 
 
 /**
  * @unrestricted
  */
-SDK.Cookie = class {
+export class Cookie {
   /**
    * @param {string} name
    * @param {string} value
-   * @param {?SDK.Cookie.Type} type
+   * @param {?Type} type
    */
   constructor(name, value, type) {
     this._name = name;
@@ -264,7 +264,7 @@ SDK.Cookie = class {
   }
 
   /**
-   * @return {?SDK.Cookie.Type}
+   * @return {?Type}
    */
   type() {
     return this._type;
@@ -402,12 +402,12 @@ SDK.Cookie = class {
   getCookieLine() {
     return this._cookieLine;
   }
-};
+}
 
 /**
  * @enum {number}
  */
-SDK.Cookie.Type = {
+export const Type = {
   Request: 0,
   Response: 1
 };
@@ -415,7 +415,7 @@ SDK.Cookie.Type = {
 /**
  * @enum {string}
  */
-SDK.Cookie.Attributes = {
+export const Attributes = {
   Name: 'name',
   Value: 'value',
   Size: 'size',
@@ -426,3 +426,28 @@ SDK.Cookie.Attributes = {
   Secure: 'secure',
   SameSite: 'sameSite',
 };
+
+/* Legacy exported object */
+self.SDK = self.SDK || {};
+
+/* Legacy exported object */
+SDK = SDK || {};
+
+/** @constructor */
+SDK.CookieParser = CookieParser;
+
+/** @constructor */
+SDK.CookieParser.KeyValue = KeyValue;
+
+/** @constructor */
+SDK.Cookie = Cookie;
+
+/**
+ * @enum {number}
+ */
+SDK.Cookie.Type = Type;
+
+/**
+ * @enum {string}
+ */
+SDK.Cookie.Attributes = Attributes;

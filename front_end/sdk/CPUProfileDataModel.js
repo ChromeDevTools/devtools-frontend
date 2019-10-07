@@ -4,7 +4,7 @@
 /**
  * @unrestricted
  */
-SDK.CPUProfileNode = class extends SDK.ProfileNode {
+export class CPUProfileNode extends SDK.ProfileNode {
   /**
    * @param {!Protocol.Profiler.ProfileNode} node
    * @param {number} sampleTime
@@ -25,12 +25,12 @@ SDK.CPUProfileNode = class extends SDK.ProfileNode {
     // Compatibility: legacy backends could provide "no reason" for optimized functions.
     this.deoptReason = node.deoptReason && node.deoptReason !== 'no reason' ? node.deoptReason : null;
   }
-};
+}
 
 /**
  * @unrestricted
  */
-SDK.CPUProfileDataModel = class extends SDK.ProfileTreeModel {
+export default class CPUProfileDataModel extends SDK.ProfileTreeModel {
   /**
    * @param {!Protocol.Profiler.Profile} profile
    * @param {?SDK.Target} target
@@ -106,7 +106,7 @@ SDK.CPUProfileDataModel = class extends SDK.ProfileTreeModel {
 
   /**
    * @param {!Array<!Protocol.Profiler.ProfileNode>} nodes
-   * @return {!SDK.CPUProfileNode}
+   * @return {!CPUProfileNode}
    */
   _translateProfileTree(nodes) {
     /**
@@ -171,7 +171,7 @@ SDK.CPUProfileDataModel = class extends SDK.ProfileTreeModel {
     const root = nodes[0];
     /** @type {!Map<number, number>} */
     const idMap = new Map([[root.id, root.id]]);
-    const resultRoot = new SDK.CPUProfileNode(root, sampleTime);
+    const resultRoot = new CPUProfileNode(root, sampleTime);
     const parentNodeStack = root.children.map(() => resultRoot);
     const sourceNodeStack = root.children.map(id => nodeByIdMap.get(id));
     while (sourceNodeStack.length) {
@@ -180,7 +180,7 @@ SDK.CPUProfileDataModel = class extends SDK.ProfileTreeModel {
       if (!sourceNode.children) {
         sourceNode.children = [];
       }
-      const targetNode = new SDK.CPUProfileNode(sourceNode, sampleTime);
+      const targetNode = new CPUProfileNode(sourceNode, sampleTime);
       if (keepNatives || !isNativeNode(sourceNode)) {
         parentNode.children.push(targetNode);
         parentNode = targetNode;
@@ -256,7 +256,7 @@ SDK.CPUProfileDataModel = class extends SDK.ProfileTreeModel {
   }
 
   _buildIdToNodeMap() {
-    /** @type {!Map<number, !SDK.CPUProfileNode>} */
+    /** @type {!Map<number, !CPUProfileNode>} */
     this._idToNode = new Map();
     const idToNode = this._idToNode;
     const stack = [this.profileHead];
@@ -333,8 +333,8 @@ SDK.CPUProfileDataModel = class extends SDK.ProfileTreeModel {
   }
 
   /**
-   * @param {function(number, !SDK.CPUProfileNode, number)} openFrameCallback
-   * @param {function(number, !SDK.CPUProfileNode, number, number, number)} closeFrameCallback
+   * @param {function(number, !CPUProfileNode, number)} openFrameCallback
+   * @param {function(number, !CPUProfileNode, number, number, number)} closeFrameCallback
    * @param {number=} startTime
    * @param {number=} stopTime
    */
@@ -415,7 +415,7 @@ SDK.CPUProfileDataModel = class extends SDK.ProfileTreeModel {
         const duration = sampleTime - start;
         stackChildrenDuration[stackTop - 1] += duration;
         closeFrameCallback(
-            prevNode.depth, /** @type {!SDK.CPUProfileNode} */ (prevNode), start, duration,
+            prevNode.depth, /** @type {!CPUProfileNode} */ (prevNode), start, duration,
             duration - stackChildrenDuration[stackTop]);
         --stackTop;
         if (node.depth === prevNode.depth) {
@@ -451,7 +451,7 @@ SDK.CPUProfileDataModel = class extends SDK.ProfileTreeModel {
       const duration = sampleTime - start;
       stackChildrenDuration[stackTop - 1] += duration;
       closeFrameCallback(
-          node.depth, /** @type {!SDK.CPUProfileNode} */ (node), start, duration,
+          node.depth, /** @type {!CPUProfileNode} */ (node), start, duration,
           duration - stackChildrenDuration[stackTop]);
       --stackTop;
     }
@@ -459,9 +459,21 @@ SDK.CPUProfileDataModel = class extends SDK.ProfileTreeModel {
 
   /**
    * @param {number} index
-   * @return {?SDK.CPUProfileNode}
+   * @return {?CPUProfileNode}
    */
   nodeByIndex(index) {
     return this._idToNode.get(this.samples[index]) || null;
   }
-};
+}
+
+/* Legacy exported object */
+self.SDK = self.SDK || {};
+
+/* Legacy exported object */
+SDK = SDK || {};
+
+/** @constructor */
+SDK.CPUProfileDataModel = CPUProfileDataModel;
+
+/** @constructor */
+SDK.CPUProfileNode = CPUProfileNode;

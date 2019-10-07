@@ -1,150 +1,165 @@
 // Copyright 2016 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/** @typedef {!{
-        rect: !Protocol.DOM.Rect,
-        snapshot: !SDK.PaintProfilerSnapshot
-    }}
-*/
-SDK.SnapshotWithRect;
 
 /**
  * @interface
  */
-SDK.Layer = function() {};
-
-SDK.Layer.prototype = {
+export class Layer {
   /**
    * @return {string}
    */
-  id() {},
+  id() {
+  }
 
   /**
    * @return {?string}
    */
-  parentId() {},
+  parentId() {
+  }
 
   /**
-   * @return {?SDK.Layer}
+   * @return {?Layer}
    */
-  parent() {},
+  parent() {
+  }
 
   /**
    * @return {boolean}
    */
-  isRoot() {},
+  isRoot() {
+  }
 
   /**
-   * @return {!Array.<!SDK.Layer>}
+   * @return {!Array.<!Layer>}
    */
-  children() {},
+  children() {
+  }
 
   /**
-   * @param {!SDK.Layer} child
+   * @param {!Layer} child
    */
-  addChild(child) {},
+  addChild(child) {
+  }
 
   /**
    * @return {?SDK.DOMNode}
    */
-  node() {},
+  node() {
+  }
 
   /**
    * @return {?SDK.DOMNode}
    */
-  nodeForSelfOrAncestor() {},
+  nodeForSelfOrAncestor() {
+  }
 
   /**
    * @return {number}
    */
-  offsetX() {},
+  offsetX() {
+  }
 
   /**
    * @return {number}
    */
-  offsetY() {},
+  offsetY() {
+  }
 
   /**
    * @return {number}
    */
-  width() {},
+  width() {
+  }
 
   /**
    * @return {number}
    */
-  height() {},
+  height() {
+  }
 
   /**
    * @return {?Array.<number>}
    */
-  transform() {},
+  transform() {
+  }
 
   /**
    * @return {!Array.<number>}
    */
-  quad() {},
+  quad() {
+  }
 
   /**
    * @return {!Array.<number>}
    */
-  anchorPoint() {},
+  anchorPoint() {
+  }
 
   /**
    * @return {boolean}
    */
-  invisible() {},
+  invisible() {
+  }
 
   /**
    * @return {number}
    */
-  paintCount() {},
+  paintCount() {
+  }
 
   /**
    * @return {?Protocol.DOM.Rect}
    */
-  lastPaintRect() {},
+  lastPaintRect() {
+  }
 
   /**
    * @return {!Array.<!Protocol.LayerTree.ScrollRect>}
    */
-  scrollRects() {},
+  scrollRects() {
+  }
 
   /**
-   * @return {?SDK.Layer.StickyPositionConstraint}
+   * @return {?Layer.StickyPositionConstraint}
    */
-  stickyPositionConstraint() {},
+  stickyPositionConstraint() {
+  }
 
   /**
    * @return {number}
    */
-  gpuMemoryUsage() {},
+  gpuMemoryUsage() {
+  }
 
   /**
    * @return {!Promise<!Array<string>>}
    */
-  requestCompositingReasons() {},
+  requestCompositingReasons() {
+  }
 
   /**
    * @return {boolean}
    */
-  drawsContent() {},
+  drawsContent() {
+  }
 
   /**
    * @return {!Array<!Promise<?SDK.SnapshotWithRect>>}
    */
   snapshots() {}
-};
+}
 
-SDK.Layer.ScrollRectType = {
+Layer.ScrollRectType = {
   NonFastScrollable: 'NonFastScrollable',
   TouchEventHandler: 'TouchEventHandler',
   WheelEventHandler: 'WheelEventHandler',
   RepaintsOnScroll: 'RepaintsOnScroll'
 };
 
-SDK.Layer.StickyPositionConstraint = class {
+export class StickyPositionConstraint {
   /**
-   * @param {?SDK.LayerTreeBase} layerTree
+   * @param {?LayerTreeBase} layerTree
    * @param {!Protocol.LayerTree.StickyPositionConstraint} constraint
    * @struct
    */
@@ -153,13 +168,13 @@ SDK.Layer.StickyPositionConstraint = class {
     this._stickyBoxRect = constraint.stickyBoxRect;
     /** @type {!Protocol.DOM.Rect} */
     this._containingBlockRect = constraint.containingBlockRect;
-    /** @type {?SDK.Layer} */
+    /** @type {?Layer} */
     this._nearestLayerShiftingStickyBox = null;
     if (layerTree && constraint.nearestLayerShiftingStickyBox) {
       this._nearestLayerShiftingStickyBox = layerTree.layerById(constraint.nearestLayerShiftingStickyBox);
     }
 
-    /** @type {?SDK.Layer} */
+    /** @type {?Layer} */
     this._nearestLayerShiftingContainingBlock = null;
     if (layerTree && constraint.nearestLayerShiftingContainingBlock) {
       this._nearestLayerShiftingContainingBlock = layerTree.layerById(constraint.nearestLayerShiftingContainingBlock);
@@ -181,24 +196,24 @@ SDK.Layer.StickyPositionConstraint = class {
   }
 
   /**
-   * @return {?SDK.Layer}
+   * @return {?Layer}
    */
   nearestLayerShiftingStickyBox() {
     return this._nearestLayerShiftingStickyBox;
   }
 
   /**
-   * @return {?SDK.Layer}
+   * @return {?Layer}
    */
   nearestLayerShiftingContainingBlock() {
     return this._nearestLayerShiftingContainingBlock;
   }
-};
+}
 
 /**
  * @unrestricted
  */
-SDK.LayerTreeBase = class {
+export default class LayerTreeBase {
   /**
    * @param {?SDK.Target} target
    */
@@ -220,14 +235,14 @@ SDK.LayerTreeBase = class {
   }
 
   /**
-   * @return {?SDK.Layer}
+   * @return {?Layer}
    */
   root() {
     return this._root;
   }
 
   /**
-   * @param {?SDK.Layer} root
+   * @param {?Layer} root
    * @protected
    */
   setRoot(root) {
@@ -235,14 +250,14 @@ SDK.LayerTreeBase = class {
   }
 
   /**
-   * @return {?SDK.Layer}
+   * @return {?Layer}
    */
   contentRoot() {
     return this._contentRoot;
   }
 
   /**
-   * @param {?SDK.Layer} contentRoot
+   * @param {?Layer} contentRoot
    * @protected
    */
   setContentRoot(contentRoot) {
@@ -250,8 +265,8 @@ SDK.LayerTreeBase = class {
   }
 
   /**
-   * @param {function(!SDK.Layer)} callback
-   * @param {?SDK.Layer=} root
+   * @param {function(!Layer)} callback
+   * @param {?Layer=} root
    * @return {boolean}
    */
   forEachLayer(callback, root) {
@@ -266,7 +281,7 @@ SDK.LayerTreeBase = class {
 
   /**
    * @param {string} id
-   * @return {?SDK.Layer}
+   * @return {?Layer}
    */
   layerById(id) {
     return this._layersById[id] || null;
@@ -319,4 +334,26 @@ SDK.LayerTreeBase = class {
   _nodeForId(id) {
     return this._domModel ? this._domModel.nodeForId(id) : null;
   }
-};
+}
+
+/* Legacy exported object */
+self.SDK = self.SDK || {};
+
+/* Legacy exported object */
+SDK = SDK || {};
+
+/** @interface */
+SDK.Layer = Layer;
+
+/** @constructor */
+SDK.LayerTreeBase = LayerTreeBase;
+
+/** @constructor */
+SDK.Layer.StickyPositionConstraint = StickyPositionConstraint;
+
+/** @typedef {!{
+        rect: !Protocol.DOM.Rect,
+        snapshot: !SDK.PaintProfilerSnapshot
+    }}
+*/
+SDK.SnapshotWithRect;

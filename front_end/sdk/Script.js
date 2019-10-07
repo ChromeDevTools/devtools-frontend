@@ -27,7 +27,7 @@
  * @implements {Common.ContentProvider}
  * @unrestricted
  */
-SDK.Script = class {
+export default class Script {
   /**
    * @param {!SDK.DebuggerModel} debuggerModel
    * @param {string} scriptId
@@ -85,7 +85,7 @@ SDK.Script = class {
       return source;
     }
     const sourceURLLine = source.substr(sourceURLLineIndex + 1);
-    if (!sourceURLLine.match(SDK.Script.sourceURLRegex)) {
+    if (!sourceURLLine.match(sourceURLRegex)) {
       return source;
     }
     return source.substr(0, sourceURLLineIndex);
@@ -149,7 +149,7 @@ SDK.Script = class {
     }
     const source = await this.debuggerModel.target().debuggerAgent().getScriptSource(this.scriptId);
     if (source && this.hasSourceURL) {
-      this._source = SDK.Script._trimSourceURLComment(source);
+      this._source = Script._trimSourceURLComment(source);
     } else {
       this._source = source || '';
     }
@@ -204,7 +204,7 @@ SDK.Script = class {
    * @param {function(?Protocol.Error, !Protocol.Runtime.ExceptionDetails=, !Array.<!Protocol.Debugger.CallFrame>=, !Protocol.Runtime.StackTrace=, !Protocol.Runtime.StackTraceId=, boolean=)} callback
    */
   async editSource(newSource, callback) {
-    newSource = SDK.Script._trimSourceURLComment(newSource);
+    newSource = Script._trimSourceURLComment(newSource);
     // We append correct sourceURL to script for consistency only. It's not actually needed for things to work correctly.
     newSource = this._appendSourceURLCommentIfNeeded(newSource);
 
@@ -278,6 +278,17 @@ SDK.Script = class {
     const beforeEnd = lineNumber < this.endLine || (lineNumber === this.endLine && columnNumber <= this.endColumn);
     return afterStart && beforeEnd;
   }
-};
+}
 
-SDK.Script.sourceURLRegex = /^[\040\t]*\/\/[@#] sourceURL=\s*(\S*?)\s*$/;
+export const sourceURLRegex = /^[\040\t]*\/\/[@#] sourceURL=\s*(\S*?)\s*$/;
+
+/* Legacy exported object */
+self.SDK = self.SDK || {};
+
+/* Legacy exported object */
+SDK = SDK || {};
+
+/** @constructor */
+SDK.Script = Script;
+
+SDK.Script.sourceURLRegex = sourceURLRegex;

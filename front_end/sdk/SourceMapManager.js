@@ -5,7 +5,7 @@
 /**
  * @template T
  */
-SDK.SourceMapManager = class extends Common.Object {
+export default class SourceMapManager extends Common.Object {
   /**
    * @param {!SDK.Target} target
    */
@@ -98,7 +98,7 @@ SDK.SourceMapManager = class extends Common.Object {
         this._sourceMapByURL.has(editResult.map.url()), 'Cannot apply edit result for non-existing source map');
     this._sourceMapByURL.set(editResult.map.url(), editResult.map);
     this.dispatchEventToListeners(
-        SDK.SourceMapManager.Events.SourceMapChanged, {sourceMap: editResult.map, newSources: editResult.newSources});
+        Events.SourceMapChanged, {sourceMap: editResult.map, newSources: editResult.newSources});
   }
 
   /**
@@ -139,7 +139,7 @@ SDK.SourceMapManager = class extends Common.Object {
       return;
     }
 
-    this.dispatchEventToListeners(SDK.SourceMapManager.Events.SourceMapWillAttach, client);
+    this.dispatchEventToListeners(Events.SourceMapWillAttach, client);
 
     if (this._sourceMapByURL.has(sourceMapURL)) {
       attach.call(this, sourceMapURL, client);
@@ -154,7 +154,7 @@ SDK.SourceMapManager = class extends Common.Object {
     /**
      * @param {string} sourceMapURL
      * @param {?SDK.SourceMap} sourceMap
-     * @this {SDK.SourceMapManager}
+     * @this {SourceMapManager}
      */
     function onSourceMap(sourceMapURL, sourceMap) {
       this._sourceMapLoadedForTest();
@@ -165,7 +165,7 @@ SDK.SourceMapManager = class extends Common.Object {
       }
       if (!sourceMap) {
         for (const client of clients) {
-          this.dispatchEventToListeners(SDK.SourceMapManager.Events.SourceMapFailedToAttach, client);
+          this.dispatchEventToListeners(Events.SourceMapFailedToAttach, client);
         }
         return;
       }
@@ -178,13 +178,12 @@ SDK.SourceMapManager = class extends Common.Object {
     /**
      * @param {string} sourceMapURL
      * @param {!T} client
-     * @this {SDK.SourceMapManager}
+     * @this {SourceMapManager}
      */
     function attach(sourceMapURL, client) {
       this._sourceMapURLToClients.set(sourceMapURL, client);
       const sourceMap = this._sourceMapByURL.get(sourceMapURL);
-      this.dispatchEventToListeners(
-          SDK.SourceMapManager.Events.SourceMapAttached, {client: client, sourceMap: sourceMap});
+      this.dispatchEventToListeners(Events.SourceMapAttached, {client: client, sourceMap: sourceMap});
     }
   }
 
@@ -202,7 +201,7 @@ SDK.SourceMapManager = class extends Common.Object {
     }
     if (!this._sourceMapURLToClients.hasValue(sourceMapURL, client)) {
       if (this._sourceMapURLToLoadingClients.delete(sourceMapURL, client)) {
-        this.dispatchEventToListeners(SDK.SourceMapManager.Events.SourceMapFailedToAttach, client);
+        this.dispatchEventToListeners(Events.SourceMapFailedToAttach, client);
       }
       return;
     }
@@ -211,8 +210,7 @@ SDK.SourceMapManager = class extends Common.Object {
     if (!this._sourceMapURLToClients.has(sourceMapURL)) {
       this._sourceMapByURL.delete(sourceMapURL);
     }
-    this.dispatchEventToListeners(
-        SDK.SourceMapManager.Events.SourceMapDetached, {client: client, sourceMap: sourceMap});
+    this.dispatchEventToListeners(Events.SourceMapDetached, {client: client, sourceMap: sourceMap});
   }
 
   _sourceMapLoadedForTest() {
@@ -222,12 +220,23 @@ SDK.SourceMapManager = class extends Common.Object {
     SDK.targetManager.removeEventListener(
         SDK.TargetManager.Events.InspectedURLChanged, this._inspectedURLChanged, this);
   }
-};
+}
 
-SDK.SourceMapManager.Events = {
+export const Events = {
   SourceMapWillAttach: Symbol('SourceMapWillAttach'),
   SourceMapFailedToAttach: Symbol('SourceMapFailedToAttach'),
   SourceMapAttached: Symbol('SourceMapAttached'),
   SourceMapDetached: Symbol('SourceMapDetached'),
   SourceMapChanged: Symbol('SourceMapChanged')
 };
+
+/* Legacy exported object */
+self.SDK = self.SDK || {};
+
+/* Legacy exported object */
+SDK = SDK || {};
+
+/** @constructor */
+SDK.SourceMapManager = SourceMapManager;
+
+SDK.SourceMapManager.Events = Events;

@@ -28,7 +28,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-SDK.ResourceTreeModel = class extends SDK.SDKModel {
+export default class ResourceTreeModel extends SDK.SDKModel {
   /**
    * @param {!SDK.Target} target
    */
@@ -47,13 +47,13 @@ SDK.ResourceTreeModel = class extends SDK.SDKModel {
 
     target.registerPageDispatcher(new SDK.PageDispatcher(this));
 
-    /** @type {!Map<string, !SDK.ResourceTreeFrame>} */
+    /** @type {!Map<string, !ResourceTreeFrame>} */
     this._frames = new Map();
     this._cachedResourcesProcessed = false;
     this._pendingReloadOptions = null;
     this._reloadSuspensionCount = 0;
     this._isInterstitialShowing = false;
-    /** @type {?SDK.ResourceTreeFrame} */
+    /** @type {?ResourceTreeFrame} */
     this.mainFrame = null;
 
     this._agent.getResourceTree().then(this._processCachedResources.bind(this));
@@ -61,11 +61,11 @@ SDK.ResourceTreeModel = class extends SDK.SDKModel {
 
   /**
    * @param {!SDK.NetworkRequest} request
-   * @return {?SDK.ResourceTreeFrame}
+   * @return {?ResourceTreeFrame}
    */
   static frameForRequest(request) {
     const networkManager = SDK.NetworkManager.forRequest(request);
-    const resourceTreeModel = networkManager ? networkManager.target().model(SDK.ResourceTreeModel) : null;
+    const resourceTreeModel = networkManager ? networkManager.target().model(ResourceTreeModel) : null;
     if (!resourceTreeModel) {
       return null;
     }
@@ -73,11 +73,11 @@ SDK.ResourceTreeModel = class extends SDK.SDKModel {
   }
 
   /**
-   * @return {!Array.<!SDK.ResourceTreeFrame>}
+   * @return {!Array.<!ResourceTreeFrame>}
    */
   static frames() {
     let result = [];
-    for (const resourceTreeModel of SDK.targetManager.models(SDK.ResourceTreeModel)) {
+    for (const resourceTreeModel of SDK.targetManager.models(ResourceTreeModel)) {
       result = result.concat(resourceTreeModel._frames.valuesArray());
     }
     return result;
@@ -88,7 +88,7 @@ SDK.ResourceTreeModel = class extends SDK.SDKModel {
    * @return {?SDK.Resource}
    */
   static resourceForURL(url) {
-    for (const resourceTreeModel of SDK.targetManager.models(SDK.ResourceTreeModel)) {
+    for (const resourceTreeModel of SDK.targetManager.models(ResourceTreeModel)) {
       const mainFrame = resourceTreeModel.mainFrame;
       const result = mainFrame ? mainFrame.resourceForURL(url) : null;
       if (result) {
@@ -103,7 +103,7 @@ SDK.ResourceTreeModel = class extends SDK.SDKModel {
    * @param {string=} scriptToEvaluateOnLoad
    */
   static reloadAllPages(bypassCache, scriptToEvaluateOnLoad) {
-    for (const resourceTreeModel of SDK.targetManager.models(SDK.ResourceTreeModel)) {
+    for (const resourceTreeModel of SDK.targetManager.models(ResourceTreeModel)) {
       if (!resourceTreeModel.target().parentTarget()) {
         resourceTreeModel.reloadPage(bypassCache, scriptToEvaluateOnLoad);
       }
@@ -122,7 +122,7 @@ SDK.ResourceTreeModel = class extends SDK.SDKModel {
    */
   _processCachedResources(mainFramePayload) {
     if (mainFramePayload) {
-      this.dispatchEventToListeners(SDK.ResourceTreeModel.Events.WillLoadCachedResources);
+      this.dispatchEventToListeners(Events.WillLoadCachedResources);
       this._addFramesRecursively(null, mainFramePayload);
       this.target().setInspectedURL(mainFramePayload.frame.url);
     }
@@ -132,7 +132,7 @@ SDK.ResourceTreeModel = class extends SDK.SDKModel {
       runtimeModel.setExecutionContextComparator(this._executionContextComparator.bind(this));
       runtimeModel.fireExecutionContextOrderChanged();
     }
-    this.dispatchEventToListeners(SDK.ResourceTreeModel.Events.CachedResourcesLoaded, this);
+    this.dispatchEventToListeners(Events.CachedResourcesLoaded, this);
   }
 
   /**
@@ -150,7 +150,7 @@ SDK.ResourceTreeModel = class extends SDK.SDKModel {
   }
 
   /**
-   * @param {!SDK.ResourceTreeFrame} frame
+   * @param {!ResourceTreeFrame} frame
    * @param {boolean=} aboutToNavigate
    */
   _addFrame(frame, aboutToNavigate) {
@@ -158,7 +158,7 @@ SDK.ResourceTreeModel = class extends SDK.SDKModel {
     if (frame.isMainFrame()) {
       this.mainFrame = frame;
     }
-    this.dispatchEventToListeners(SDK.ResourceTreeModel.Events.FrameAdded, frame);
+    this.dispatchEventToListeners(Events.FrameAdded, frame);
     this._updateSecurityOrigins();
   }
 
@@ -166,7 +166,7 @@ SDK.ResourceTreeModel = class extends SDK.SDKModel {
    * @param {!Protocol.Page.FrameId} frameId
    * @param {?Protocol.Page.FrameId} parentFrameId
    * @param {!Protocol.Runtime.StackTrace=} stackTrace
-   * @return {?SDK.ResourceTreeFrame}
+   * @return {?ResourceTreeFrame}
    */
   _frameAttached(frameId, parentFrameId, stackTrace) {
     const parentFrame = parentFrameId ? (this._frames.get(parentFrameId) || null) : null;
@@ -178,7 +178,7 @@ SDK.ResourceTreeModel = class extends SDK.SDKModel {
       return null;
     }
 
-    const frame = new SDK.ResourceTreeFrame(this, parentFrame, frameId, null, stackTrace || null);
+    const frame = new ResourceTreeFrame(this, parentFrame, frameId, null, stackTrace || null);
     if (parentFrameId && !parentFrame) {
       frame._crossTargetParentFrameId = parentFrameId;
     }
@@ -206,18 +206,18 @@ SDK.ResourceTreeModel = class extends SDK.SDKModel {
       console.assert(frame);
     }
 
-    this.dispatchEventToListeners(SDK.ResourceTreeModel.Events.FrameWillNavigate, frame);
+    this.dispatchEventToListeners(Events.FrameWillNavigate, frame);
     frame._navigate(framePayload);
-    this.dispatchEventToListeners(SDK.ResourceTreeModel.Events.FrameNavigated, frame);
+    this.dispatchEventToListeners(Events.FrameNavigated, frame);
 
     if (frame.isMainFrame()) {
-      this.dispatchEventToListeners(SDK.ResourceTreeModel.Events.MainFrameNavigated, frame);
+      this.dispatchEventToListeners(Events.MainFrameNavigated, frame);
     }
 
     // Fill frame with retained resources (the ones loaded using new loader).
     const resources = frame.resources();
     for (let i = 0; i < resources.length; ++i) {
-      this.dispatchEventToListeners(SDK.ResourceTreeModel.Events.ResourceAdded, resources[i]);
+      this.dispatchEventToListeners(Events.ResourceAdded, resources[i]);
     }
 
     if (frame.isMainFrame()) {
@@ -294,7 +294,7 @@ SDK.ResourceTreeModel = class extends SDK.SDKModel {
 
   /**
    * @param {!Protocol.Page.FrameId} frameId
-   * @return {!SDK.ResourceTreeFrame}
+   * @return {!ResourceTreeFrame}
    */
   frameForId(frameId) {
     return this._frames.get(frameId);
@@ -312,7 +312,7 @@ SDK.ResourceTreeModel = class extends SDK.SDKModel {
   }
 
   /**
-   * @return {!Array<!SDK.ResourceTreeFrame>}
+   * @return {!Array<!ResourceTreeFrame>}
    */
   frames() {
     return this._frames.valuesArray();
@@ -328,12 +328,12 @@ SDK.ResourceTreeModel = class extends SDK.SDKModel {
   }
 
   /**
-   * @param {?SDK.ResourceTreeFrame} parentFrame
+   * @param {?ResourceTreeFrame} parentFrame
    * @param {!Protocol.Page.FrameResourceTree} frameTreePayload
    */
   _addFramesRecursively(parentFrame, frameTreePayload) {
     const framePayload = frameTreePayload.frame;
-    const frame = new SDK.ResourceTreeFrame(this, parentFrame, framePayload.id, framePayload, null);
+    const frame = new ResourceTreeFrame(this, parentFrame, framePayload.id, framePayload, null);
     if (!parentFrame && framePayload.parentId) {
       frame._crossTargetParentFrameId = framePayload.parentId;
     }
@@ -392,14 +392,14 @@ SDK.ResourceTreeModel = class extends SDK.SDKModel {
   reloadPage(bypassCache, scriptToEvaluateOnLoad) {
     // Only dispatch PageReloadRequested upon first reload request to simplify client logic.
     if (!this._pendingReloadOptions) {
-      this.dispatchEventToListeners(SDK.ResourceTreeModel.Events.PageReloadRequested, this);
+      this.dispatchEventToListeners(Events.PageReloadRequested, this);
     }
     if (this._reloadSuspensionCount) {
       this._pendingReloadOptions = [bypassCache, scriptToEvaluateOnLoad];
       return;
     }
     this._pendingReloadOptions = null;
-    this.dispatchEventToListeners(SDK.ResourceTreeModel.Events.WillReloadPage);
+    this.dispatchEventToListeners(Events.WillReloadPage);
     this._agent.reload(bypassCache, scriptToEvaluateOnLoad);
   }
 
@@ -455,8 +455,8 @@ SDK.ResourceTreeModel = class extends SDK.SDKModel {
    */
   _executionContextComparator(a, b) {
     /**
-     * @param {!SDK.ResourceTreeFrame} frame
-     * @return {!Array<!SDK.ResourceTreeFrame>}
+     * @param {!ResourceTreeFrame} frame
+     * @return {!Array<!ResourceTreeFrame>}
      */
     function framePath(frame) {
       let currentFrame = frame;
@@ -543,22 +543,10 @@ SDK.ResourceTreeModel = class extends SDK.SDKModel {
     const data = this._getSecurityOriginData();
     return data.mainSecurityOrigin || data.unreachableMainSecurityOrigin;
   }
-};
-
-SDK.SDKModel.register(SDK.ResourceTreeModel, SDK.Target.Capability.DOM, true);
-
-
-/**
- * @typedef {{
- *      securityOrigins: !Set<string>,
- *      mainSecurityOrigin: ?string,
- *      unreachableMainSecurityOrigin: ?string
- * }}
- */
-SDK.ResourceTreeModel.SecurityOriginData;
+}
 
 /** @enum {symbol} */
-SDK.ResourceTreeModel.Events = {
+export const Events = {
   FrameAdded: Symbol('FrameAdded'),
   FrameNavigated: Symbol('FrameNavigated'),
   FrameDetached: Symbol('FrameDetached'),
@@ -577,14 +565,13 @@ SDK.ResourceTreeModel.Events = {
   InterstitialHidden: Symbol('InterstitialHidden')
 };
 
-
 /**
  * @unrestricted
  */
-SDK.ResourceTreeFrame = class {
+export class ResourceTreeFrame {
   /**
-   * @param {!SDK.ResourceTreeModel} model
-   * @param {?SDK.ResourceTreeFrame} parentFrame
+   * @param {!ResourceTreeModel} model
+   * @param {?ResourceTreeFrame} parentFrame
    * @param {!Protocol.Page.FrameId} frameId
    * @param {?Protocol.Page.Frame} payload
    * @param {?Protocol.Runtime.StackTrace} creationStackTrace
@@ -608,7 +595,7 @@ SDK.ResourceTreeFrame = class {
     this._creationStackTrace = creationStackTrace;
 
     /**
-     * @type {!Array.<!SDK.ResourceTreeFrame>}
+     * @type {!Array.<!ResourceTreeFrame>}
      */
     this._childFrames = [];
 
@@ -642,7 +629,7 @@ SDK.ResourceTreeFrame = class {
   }
 
   /**
-   * @return {!SDK.ResourceTreeModel}
+   * @return {!ResourceTreeModel}
    */
   resourceTreeModel() {
     return this._model;
@@ -691,21 +678,21 @@ SDK.ResourceTreeFrame = class {
   }
 
   /**
-   * @return {?SDK.ResourceTreeFrame}
+   * @return {?ResourceTreeFrame}
    */
   get parentFrame() {
     return this._parentFrame;
   }
 
   /**
-   * @return {!Array.<!SDK.ResourceTreeFrame>}
+   * @return {!Array.<!ResourceTreeFrame>}
    */
   get childFrames() {
     return this._childFrames;
   }
 
   /**
-   * @return {?SDK.ResourceTreeFrame}
+   * @return {?ResourceTreeFrame}
    */
   crossTargetParentFrame() {
     if (!this._crossTargetParentFrameId) {
@@ -714,7 +701,7 @@ SDK.ResourceTreeFrame = class {
     if (!this._model.target().parentTarget()) {
       return null;
     }
-    const parentModel = this._model.target().parentTarget().model(SDK.ResourceTreeModel);
+    const parentModel = this._model.target().parentTarget().model(ResourceTreeModel);
     if (!parentModel) {
       return null;
     }
@@ -762,7 +749,7 @@ SDK.ResourceTreeFrame = class {
   }
 
   /**
-   * @param {!SDK.ResourceTreeFrame} frame
+   * @param {!ResourceTreeFrame} frame
    */
   _removeChildFrame(frame) {
     this._childFrames.remove(frame);
@@ -780,7 +767,7 @@ SDK.ResourceTreeFrame = class {
   _remove() {
     this._removeChildFrames();
     this._model._frames.delete(this.id);
-    this._model.dispatchEventToListeners(SDK.ResourceTreeModel.Events.FrameDetached, this);
+    this._model.dispatchEventToListeners(Events.FrameDetached, this);
   }
 
   /**
@@ -792,7 +779,7 @@ SDK.ResourceTreeFrame = class {
       return;
     }
     this._resourcesMap[resource.url] = resource;
-    this._model.dispatchEventToListeners(SDK.ResourceTreeModel.Events.ResourceAdded, resource);
+    this._model.dispatchEventToListeners(Events.ResourceAdded, resource);
   }
 
   /**
@@ -808,7 +795,7 @@ SDK.ResourceTreeFrame = class {
         this._model, request, request.url(), request.documentURL, request.frameId, request.loaderId,
         request.resourceType(), request.mimeType, null, null);
     this._resourcesMap[resource.url] = resource;
-    this._model.dispatchEventToListeners(SDK.ResourceTreeModel.Events.ResourceAdded, resource);
+    this._model.dispatchEventToListeners(Events.ResourceAdded, resource);
   }
 
   /**
@@ -872,16 +859,15 @@ SDK.ResourceTreeFrame = class {
     }
     return Common.UIString('<iframe>');
   }
-};
-
+}
 
 /**
  * @implements {Protocol.PageDispatcher}
  * @unrestricted
  */
-SDK.PageDispatcher = class {
+export class PageDispatcher {
   /**
-   * @param {!SDK.ResourceTreeModel} resourceTreeModel
+   * @param {!ResourceTreeModel} resourceTreeModel
    */
   constructor(resourceTreeModel) {
     this._resourceTreeModel = resourceTreeModel;
@@ -892,7 +878,7 @@ SDK.PageDispatcher = class {
    * @param {number} time
    */
   domContentEventFired(time) {
-    this._resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.DOMContentLoaded, time);
+    this._resourceTreeModel.dispatchEventToListeners(Events.DOMContentLoaded, time);
   }
 
   /**
@@ -901,7 +887,7 @@ SDK.PageDispatcher = class {
    */
   loadEventFired(time) {
     this._resourceTreeModel.dispatchEventToListeners(
-        SDK.ResourceTreeModel.Events.Load, {resourceTreeModel: this._resourceTreeModel, loadTime: time});
+        Events.Load, {resourceTreeModel: this._resourceTreeModel, loadTime: time});
   }
 
   /**
@@ -912,7 +898,7 @@ SDK.PageDispatcher = class {
    * @param {number} time
    */
   lifecycleEvent(frameId, loaderId, name, time) {
-    this._resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.LifecycleEvent, {frameId, name});
+    this._resourceTreeModel.dispatchEventToListeners(Events.LifecycleEvent, {frameId, name});
   }
 
   /**
@@ -989,7 +975,7 @@ SDK.PageDispatcher = class {
    * @override
    */
   frameResized() {
-    this._resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.FrameResized, null);
+    this._resourceTreeModel.dispatchEventToListeners(Events.FrameResized, null);
   }
 
   /**
@@ -1035,7 +1021,7 @@ SDK.PageDispatcher = class {
    */
   interstitialShown() {
     this._resourceTreeModel._isInterstitialShowing = true;
-    this._resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.InterstitialShown);
+    this._resourceTreeModel.dispatchEventToListeners(Events.InterstitialShown);
   }
 
   /**
@@ -1043,7 +1029,7 @@ SDK.PageDispatcher = class {
    */
   interstitialHidden() {
     this._resourceTreeModel._isInterstitialShowing = false;
-    this._resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.InterstitialHidden);
+    this._resourceTreeModel.dispatchEventToListeners(Events.InterstitialHidden);
   }
 
   /**
@@ -1078,4 +1064,33 @@ SDK.PageDispatcher = class {
    */
   downloadWillBegin(frameId, url) {
   }
-};
+}
+
+/* Legacy exported object */
+self.SDK = self.SDK || {};
+
+/* Legacy exported object */
+SDK = SDK || {};
+
+/** @constructor */
+SDK.ResourceTreeModel = ResourceTreeModel;
+
+/** @enum {symbol} */
+SDK.ResourceTreeModel.Events = Events;
+
+/** @constructor */
+SDK.ResourceTreeFrame = ResourceTreeFrame;
+
+/** @constructor */
+SDK.PageDispatcher = PageDispatcher;
+
+/**
+ * @typedef {{
+  *      securityOrigins: !Set<string>,
+  *      mainSecurityOrigin: ?string,
+  *      unreachableMainSecurityOrigin: ?string
+  * }}
+  */
+SDK.ResourceTreeModel.SecurityOriginData;
+
+SDK.SDKModel.register(ResourceTreeModel, SDK.Target.Capability.DOM, true);

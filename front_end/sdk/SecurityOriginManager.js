@@ -4,7 +4,7 @@
 /**
  * @unrestricted
  */
-SDK.SecurityOriginManager = class extends SDK.SDKModel {
+export default class SecurityOriginManager extends SDK.SDKModel {
   /**
    * @param {!SDK.Target} target
    */
@@ -31,13 +31,13 @@ SDK.SecurityOriginManager = class extends SDK.SDKModel {
 
     for (const origin of oldOrigins) {
       if (!this._securityOrigins.has(origin)) {
-        this.dispatchEventToListeners(SDK.SecurityOriginManager.Events.SecurityOriginRemoved, origin);
+        this.dispatchEventToListeners(Events.SecurityOriginRemoved, origin);
       }
     }
 
     for (const origin of this._securityOrigins) {
       if (!oldOrigins.has(origin)) {
-        this.dispatchEventToListeners(SDK.SecurityOriginManager.Events.SecurityOriginAdded, origin);
+        this.dispatchEventToListeners(Events.SecurityOriginAdded, origin);
       }
     }
   }
@@ -70,19 +70,31 @@ SDK.SecurityOriginManager = class extends SDK.SDKModel {
   setMainSecurityOrigin(securityOrigin, unreachableSecurityOrigin) {
     this._mainSecurityOrigin = securityOrigin;
     this._unreachableMainSecurityOrigin = unreachableSecurityOrigin || null;
-    this.dispatchEventToListeners(SDK.SecurityOriginManager.Events.MainSecurityOriginChanged, {
+    this.dispatchEventToListeners(Events.MainSecurityOriginChanged, {
       mainSecurityOrigin: this._mainSecurityOrigin,
       unreachableMainSecurityOrigin: this._unreachableMainSecurityOrigin
     });
   }
-};
-
-// TODO(jarhar): this is the only usage of Capability.None. Do something about it!
-SDK.SDKModel.register(SDK.SecurityOriginManager, SDK.Target.Capability.None, false);
+}
 
 /** @enum {symbol} */
-SDK.SecurityOriginManager.Events = {
+export const Events = {
   SecurityOriginAdded: Symbol('SecurityOriginAdded'),
   SecurityOriginRemoved: Symbol('SecurityOriginRemoved'),
   MainSecurityOriginChanged: Symbol('MainSecurityOriginChanged')
 };
+
+/* Legacy exported object */
+self.SDK = self.SDK || {};
+
+/* Legacy exported object */
+SDK = SDK || {};
+
+/** @constructor */
+SDK.SecurityOriginManager = SecurityOriginManager;
+
+/** @enum {symbol} */
+SDK.SecurityOriginManager.Events = Events;
+
+// TODO(jarhar): this is the only usage of Capability.None. Do something about it!
+SDK.SDKModel.register(SDK.SecurityOriginManager, SDK.Target.Capability.None, false);

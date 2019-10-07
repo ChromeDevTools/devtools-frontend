@@ -4,7 +4,7 @@
 /**
  * @unrestricted
  */
-SDK.CSSProperty = class {
+export default class CSSProperty {
   /**
    * @param {!SDK.CSSStyleDeclaration} ownerStyle
    * @param {number} index
@@ -37,7 +37,7 @@ SDK.CSSProperty = class {
    * @param {!SDK.CSSStyleDeclaration} ownerStyle
    * @param {number} index
    * @param {!Protocol.CSS.CSSProperty} payload
-   * @return {!SDK.CSSProperty}
+   * @return {!CSSProperty}
    */
   static parsePayload(ownerStyle, index, payload) {
     // The following default field values are used in the payload:
@@ -45,7 +45,7 @@ SDK.CSSProperty = class {
     // parsedOk: true
     // implicit: false
     // disabled: false
-    const result = new SDK.CSSProperty(
+    const result = new CSSProperty(
         ownerStyle, index, payload.name, payload.value, payload.important || false, payload.disabled || false,
         ('parsedOk' in payload) ? !!payload.parsedOk : true, !!payload.implicit, payload.text, payload.range);
     return result;
@@ -179,7 +179,7 @@ SDK.CSSProperty = class {
     const newStyleText = text.replaceRange(range, String.sprintf(';%s;', propertyText));
 
     const tokenizerFactory = await self.runtime.extension(TextUtils.TokenizerFactory).instance();
-    const styleText = SDK.CSSProperty._formatStyle(newStyleText, indentation, endIndentation, tokenizerFactory);
+    const styleText = CSSProperty._formatStyle(newStyleText, indentation, endIndentation, tokenizerFactory);
     return this.ownerStyle.setText(styleText, majorChange);
   }
 
@@ -312,4 +312,13 @@ SDK.CSSProperty = class {
     const text = disabled ? '/* ' + propertyText + ' */' : this.text.substring(2, propertyText.length - 2).trim();
     return this.setText(text, true, true);
   }
-};
+}
+
+/* Legacy exported object */
+self.SDK = self.SDK || {};
+
+/* Legacy exported object */
+SDK = SDK || {};
+
+/** @constructor */
+SDK.CSSProperty = CSSProperty;

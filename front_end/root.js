@@ -8,4 +8,5 @@ import './dom_extension/DOMExtension.js';
 import './common/common.js';
 import './host/host.js';
 import './protocol/protocol.js';
+import './sdk/sdk.js';
 import './ui/ui.js';

@@ -4,27 +4,27 @@
  * found in the LICENSE file.
  */
 
-SDK.TracingModel = class {
+export default class TracingModel {
   /**
-   * @param {!SDK.BackingStorage} backingStorage
+   * @param {!BackingStorage} backingStorage
    */
   constructor(backingStorage) {
     this._backingStorage = backingStorage;
     // Avoid extra reset of the storage as it's expensive.
     this._firstWritePending = true;
-    /** @type {!Map<(number|string), !SDK.TracingModel.Process>} */
+    /** @type {!Map<(number|string), !Process>} */
     this._processById = new Map();
     this._processByName = new Map();
     this._minimumRecordTime = 0;
     this._maximumRecordTime = 0;
     this._devToolsMetadataEvents = [];
-    /** @type {!Array<!SDK.TracingModel.Event>} */
+    /** @type {!Array<!Event>} */
     this._asyncEvents = [];
-    /** @type {!Map<string, !SDK.TracingModel.AsyncEvent>} */
+    /** @type {!Map<string, !AsyncEvent>} */
     this._openAsyncEvents = new Map();
-    /** @type {!Map<string, !Array<!SDK.TracingModel.AsyncEvent>>} */
+    /** @type {!Map<string, !Array<!AsyncEvent>>} */
     this._openNestableAsyncEvents = new Map();
-    /** @type {!Map<string, !SDK.TracingModel.ProfileEventsGroup>} */
+    /** @type {!Map<string, !ProfileEventsGroup>} */
     this._profileGroups = new Map();
     /** @type {!Map<string, !Set<string>>} */
     this._parsedCategories = new Map();
@@ -51,8 +51,7 @@ SDK.TracingModel = class {
    * @return {boolean}
    */
   static isAsyncPhase(phase) {
-    return SDK.TracingModel.isNestableAsyncPhase(phase) || phase === 'S' || phase === 'T' || phase === 'F' ||
-        phase === 'p';
+    return TracingModel.isNestableAsyncPhase(phase) || phase === 'S' || phase === 'T' || phase === 'F' || phase === 'p';
   }
 
   /**
@@ -64,13 +63,13 @@ SDK.TracingModel = class {
   }
 
   /**
-   * @param {!SDK.TracingModel.Event} event
+   * @param {!Event} event
    * @return {boolean}
    */
   static isTopLevelEvent(event) {
-    return event.hasCategory(SDK.TracingModel.DevToolsTimelineEventCategory) && event.name === 'RunTask' ||
-        event.hasCategory(SDK.TracingModel.LegacyTopLevelEventCategory) ||
-        event.hasCategory(SDK.TracingModel.DevToolsMetadataEventCategory) &&
+    return event.hasCategory(DevToolsTimelineEventCategory) && event.name === 'RunTask' ||
+        event.hasCategory(LegacyTopLevelEventCategory) ||
+        event.hasCategory(DevToolsMetadataEventCategory) &&
         event.name === 'Program';  // Older timelines may have this instead of toplevel.
   }
 
@@ -93,8 +92,8 @@ SDK.TracingModel = class {
   }
 
   /**
-   * @param {!SDK.TracingModel} tracingModel
-   * @return {?SDK.TracingModel.Thread}
+   * @param {!TracingModel} tracingModel
+   * @return {?Thread}
    *
    * TODO: Move this to a better place. This is here just for convenience o
    * re-use between modules. This really belongs to a higher level, since it
@@ -131,7 +130,7 @@ SDK.TracingModel = class {
   }
 
   /**
-   * @return {!Array.<!SDK.TracingModel.Event>}
+   * @return {!Array.<!Event>}
    */
   devToolsMetadataEvents() {
     return this._devToolsMetadataEvents;
@@ -194,11 +193,11 @@ SDK.TracingModel = class {
   _addEvent(payload) {
     let process = this._processById.get(payload.pid);
     if (!process) {
-      process = new SDK.TracingModel.Process(this, payload.pid);
+      process = new Process(this, payload.pid);
       this._processById.set(payload.pid, process);
     }
 
-    const phase = SDK.TracingModel.Phase;
+    const phase = Phase;
     const eventsDelimiter = ',\n';
     this._backingStorage.appendString(this._firstWritePending ? '[' : eventsDelimiter);
     this._firstWritePending = false;
@@ -232,11 +231,11 @@ SDK.TracingModel = class {
     // Build async event when we've got events from all threads & processes, so we can sort them and process in the
     // chronological order. However, also add individual async events to the thread flow (above), so we can easily
     // display them on the same chart as other events, should we choose so.
-    if (SDK.TracingModel.isAsyncPhase(payload.ph)) {
+    if (TracingModel.isAsyncPhase(payload.ph)) {
       this._asyncEvents.push(event);
     }
     event._setBackingStorage(backingStorage);
-    if (event.hasCategory(SDK.TracingModel.DevToolsMetadataEventCategory)) {
+    if (event.hasCategory(DevToolsMetadataEventCategory)) {
       this._devToolsMetadataEvents.push(event);
     }
 
@@ -245,25 +244,25 @@ SDK.TracingModel = class {
     }
 
     switch (payload.name) {
-      case SDK.TracingModel.MetadataEvent.ProcessSortIndex:
+      case MetadataEvent.ProcessSortIndex:
         process._setSortIndex(payload.args['sort_index']);
         break;
-      case SDK.TracingModel.MetadataEvent.ProcessName:
+      case MetadataEvent.ProcessName:
         const processName = payload.args['name'];
         process._setName(processName);
         this._processByName.set(processName, process);
         break;
-      case SDK.TracingModel.MetadataEvent.ThreadSortIndex:
+      case MetadataEvent.ThreadSortIndex:
         process.threadById(payload.tid)._setSortIndex(payload.args['sort_index']);
         break;
-      case SDK.TracingModel.MetadataEvent.ThreadName:
+      case MetadataEvent.ThreadName:
         process.threadById(payload.tid)._setName(payload.args['name']);
         break;
     }
   }
 
   /**
-   * @param {!SDK.TracingModel.Event} event
+   * @param {!Event} event
    */
   _addSampleEvent(event) {
     const id = `${event.thread.process().id()}:${event.id}`;
@@ -271,13 +270,13 @@ SDK.TracingModel = class {
     if (group) {
       group._addChild(event);
     } else {
-      this._profileGroups.set(id, new SDK.TracingModel.ProfileEventsGroup(event));
+      this._profileGroups.set(id, new ProfileEventsGroup(event));
     }
   }
 
   /**
-   * @param {!SDK.TracingModel.Event} event
-   * @return {?SDK.TracingModel.ProfileEventsGroup}
+   * @param {!Event} event
+   * @return {?ProfileEventsGroup}
    */
   profileGroup(event) {
     return this._profileGroups.get(`${event.thread.process().id()}:${event.id}`) || null;
@@ -298,15 +297,15 @@ SDK.TracingModel = class {
   }
 
   /**
-   * @return {!Array.<!SDK.TracingModel.Process>}
+   * @return {!Array.<!Process>}
    */
   sortedProcesses() {
-    return SDK.TracingModel.NamedObject._sort(this._processById.valuesArray());
+    return NamedObject._sort(this._processById.valuesArray());
   }
 
   /**
    * @param {string} name
-   * @return {?SDK.TracingModel.Process}
+   * @return {?Process}
    */
   processByName(name) {
     return this._processByName.get(name);
@@ -314,7 +313,7 @@ SDK.TracingModel = class {
 
   /**
    * @param {number} pid
-   * @return {?SDK.TracingModel.Process}
+   * @return {?Process}
    */
   processById(pid) {
     return this._processById.get(pid) || null;
@@ -323,7 +322,7 @@ SDK.TracingModel = class {
   /**
    * @param {string} processName
    * @param {string} threadName
-   * @return {?SDK.TracingModel.Thread}
+   * @return {?Thread}
    */
   threadByName(processName, threadName) {
     const process = this.processByName(processName);
@@ -331,10 +330,10 @@ SDK.TracingModel = class {
   }
 
   _processPendingAsyncEvents() {
-    this._asyncEvents.sort(SDK.TracingModel.Event.compareStartTime);
+    this._asyncEvents.sort(Event.compareStartTime);
     for (let i = 0; i < this._asyncEvents.length; ++i) {
       const event = this._asyncEvents[i];
-      if (SDK.TracingModel.isNestableAsyncPhase(event.phase)) {
+      if (TracingModel.isNestableAsyncPhase(event.phase)) {
         this._addNestableAsyncEvent(event);
       } else {
         this._addAsyncEvent(event);
@@ -362,10 +361,10 @@ SDK.TracingModel = class {
   }
 
   /**
-   * @param {!SDK.TracingModel.Event} event
+   * @param {!Event} event
    */
   _addNestableAsyncEvent(event) {
-    const phase = SDK.TracingModel.Phase;
+    const phase = Phase;
     const key = event.categoriesString + '.' + event.id;
     let openEventsStack = this._openNestableAsyncEvents.get(key);
 
@@ -375,7 +374,7 @@ SDK.TracingModel = class {
           openEventsStack = [];
           this._openNestableAsyncEvents.set(key, openEventsStack);
         }
-        const asyncEvent = new SDK.TracingModel.AsyncEvent(event);
+        const asyncEvent = new AsyncEvent(event);
         openEventsStack.push(asyncEvent);
         event.thread._addAsyncEvent(asyncEvent);
         break;
@@ -401,10 +400,10 @@ SDK.TracingModel = class {
   }
 
   /**
-   * @param {!SDK.TracingModel.Event} event
+   * @param {!Event} event
    */
   _addAsyncEvent(event) {
-    const phase = SDK.TracingModel.Phase;
+    const phase = Phase;
     const key = event.categoriesString + '.' + event.name + '.' + event.id;
     let asyncEvent = this._openAsyncEvents.get(key);
 
@@ -413,7 +412,7 @@ SDK.TracingModel = class {
         console.error(`Event ${event.name} has already been started`);
         return;
       }
-      asyncEvent = new SDK.TracingModel.AsyncEvent(event);
+      asyncEvent = new AsyncEvent(event);
       this._openAsyncEvents.set(key, asyncEvent);
       event.thread._addAsyncEvent(asyncEvent);
       return;
@@ -442,7 +441,7 @@ SDK.TracingModel = class {
   }
 
   /**
-   * @return {!SDK.BackingStorage}
+   * @return {!BackingStorage}
    */
   backingStorage() {
     return this._backingStorage;
@@ -460,12 +459,12 @@ SDK.TracingModel = class {
     }
     return parsedCategories;
   }
-};
+}
 
 /**
  * @enum {string}
  */
-SDK.TracingModel.Phase = {
+export const Phase = {
   Begin: 'B',
   End: 'E',
   Complete: 'X',
@@ -488,7 +487,7 @@ SDK.TracingModel.Phase = {
   DeleteObject: 'D'
 };
 
-SDK.TracingModel.MetadataEvent = {
+export const MetadataEvent = {
   ProcessSortIndex: 'process_sort_index',
   ProcessName: 'process_name',
   ThreadSortIndex: 'thread_sort_index',
@@ -497,43 +496,45 @@ SDK.TracingModel.MetadataEvent = {
 
 // TODO(alph): LegacyTopLevelEventCategory is not recorded since M74 and used for loading
 // legacy profiles. Drop at some point.
-SDK.TracingModel.LegacyTopLevelEventCategory = 'toplevel';
-SDK.TracingModel.DevToolsMetadataEventCategory = 'disabled-by-default-devtools.timeline';
-SDK.TracingModel.DevToolsTimelineEventCategory = 'disabled-by-default-devtools.timeline';
-SDK.TracingModel.FrameLifecycleEventCategory = 'cc,devtools';
+export const LegacyTopLevelEventCategory = 'toplevel';
+
+export const DevToolsMetadataEventCategory = 'disabled-by-default-devtools.timeline';
+export const DevToolsTimelineEventCategory = 'disabled-by-default-devtools.timeline';
+export const FrameLifecycleEventCategory = 'cc,devtools';
 
 /**
  * @interface
  */
-SDK.BackingStorage = function() {};
-
-SDK.BackingStorage.prototype = {
+export class BackingStorage {
   /**
    * @param {string} string
    */
-  appendString(string) {},
+  appendString(string) {
+  }
 
   /**
    * @param {string} string
    * @return {function():!Promise.<?string>}
    */
-  appendAccessibleString(string) {},
+  appendAccessibleString(string) {
+  }
 
-  finishWriting() {},
+  finishWriting() {
+  }
 
   reset() {}
-};
+}
 
 /**
  * @unrestricted
  */
-SDK.TracingModel.Event = class {
+export class Event {
   /**
    * @param {string|undefined} categories
    * @param {string} name
-   * @param {!SDK.TracingModel.Phase} phase
+   * @param {!Phase} phase
    * @param {number} startTime
-   * @param {!SDK.TracingModel.Thread} thread
+   * @param {!Thread} thread
    */
   constructor(categories, name, phase, startTime, thread) {
     /** @type {string} */
@@ -542,11 +543,11 @@ SDK.TracingModel.Event = class {
     this._parsedCategories = thread._model._parsedCategoriesForString(this.categoriesString);
     /** @type {string} */
     this.name = name;
-    /** @type {!SDK.TracingModel.Phase} */
+    /** @type {!Phase} */
     this.phase = phase;
     /** @type {number} */
     this.startTime = startTime;
-    /** @type {!SDK.TracingModel.Thread} */
+    /** @type {!Thread} */
     this.thread = thread;
     /** @type {!Object} */
     this.args = {};
@@ -558,19 +559,18 @@ SDK.TracingModel.Event = class {
   /**
    * @this {null}
    * @param {!SDK.TracingManager.EventPayload} payload
-   * @param {!SDK.TracingModel.Thread} thread
-   * @return {!SDK.TracingModel.Event}
+   * @param {!Thread} thread
+   * @return {!Event}
    */
   static fromPayload(payload, thread) {
-    const event = new SDK.TracingModel.Event(
-        payload.cat, payload.name, /** @type {!SDK.TracingModel.Phase} */ (payload.ph), payload.ts / 1000, thread);
+    const event = new Event(payload.cat, payload.name, /** @type {!Phase} */ (payload.ph), payload.ts / 1000, thread);
     if (payload.args) {
       event.addArgs(payload.args);
     }
     if (typeof payload.dur === 'number') {
       event.setEndTime((payload.ts + payload.dur) / 1000);
     }
-    const id = SDK.TracingModel._extractId(payload);
+    const id = TracingModel._extractId(payload);
     if (typeof id !== 'undefined') {
       event.id = id;
     }
@@ -582,8 +582,8 @@ SDK.TracingModel.Event = class {
   }
 
   /**
-   * @param {!SDK.TracingModel.Event} a
-   * @param {!SDK.TracingModel.Event} b
+   * @param {!Event} a
+   * @param {!Event} b
    * @return {number}
    */
   static compareStartTime(a, b) {
@@ -591,8 +591,8 @@ SDK.TracingModel.Event = class {
   }
 
   /**
-   * @param {!SDK.TracingModel.Event} a
-   * @param {!SDK.TracingModel.Event} b
+   * @param {!Event} a
+   * @param {!Event} b
    * @return {number}
    */
   static orderedCompareStartTime(a, b) {
@@ -636,7 +636,7 @@ SDK.TracingModel.Event = class {
   }
 
   /**
-   * @param {!SDK.TracingModel.Event} endEvent
+   * @param {!Event} endEvent
    */
   _complete(endEvent) {
     if (endEvent.args) {
@@ -652,17 +652,17 @@ SDK.TracingModel.Event = class {
    */
   _setBackingStorage(backingStorage) {
   }
-};
+}
 
-SDK.TracingModel.ObjectSnapshot = class extends SDK.TracingModel.Event {
+export class ObjectSnapshot extends Event {
   /**
    * @param {string|undefined} category
    * @param {string} name
    * @param {number} startTime
-   * @param {!SDK.TracingModel.Thread} thread
+   * @param {!Thread} thread
    */
   constructor(category, name, startTime, thread) {
-    super(category, name, SDK.TracingModel.Phase.SnapshotObject, startTime, thread);
+    super(category, name, Phase.SnapshotObject, startTime, thread);
     /** @type {?function():!Promise<?string>} */
     this._backingStorage = null;
     /** @type {string} */
@@ -675,12 +675,12 @@ SDK.TracingModel.ObjectSnapshot = class extends SDK.TracingModel.Event {
    * @override
    * @this {null}
    * @param {!SDK.TracingManager.EventPayload} payload
-   * @param {!SDK.TracingModel.Thread} thread
-   * @return {!SDK.TracingModel.ObjectSnapshot}
+   * @param {!Thread} thread
+   * @return {!ObjectSnapshot}
    */
   static fromPayload(payload, thread) {
-    const snapshot = new SDK.TracingModel.ObjectSnapshot(payload.cat, payload.name, payload.ts / 1000, thread);
-    const id = SDK.TracingModel._extractId(payload);
+    const snapshot = new ObjectSnapshot(payload.cat, payload.name, payload.ts / 1000, thread);
+    const id = TracingModel._extractId(payload);
     if (typeof id !== 'undefined') {
       snapshot.id = id;
     }
@@ -743,15 +743,14 @@ SDK.TracingModel.ObjectSnapshot = class extends SDK.TracingModel.Event {
     this._backingStorage = backingStorage;
     this.args = {};
   }
-};
-
+}
 
 /**
  * @unrestricted
  */
-SDK.TracingModel.AsyncEvent = class extends SDK.TracingModel.Event {
+export class AsyncEvent extends Event {
   /**
-   * @param {!SDK.TracingModel.Event} startEvent
+   * @param {!Event} startEvent
    */
   constructor(startEvent) {
     super(startEvent.categoriesString, startEvent.name, startEvent.phase, startEvent.startTime, startEvent.thread);
@@ -760,42 +759,42 @@ SDK.TracingModel.AsyncEvent = class extends SDK.TracingModel.Event {
   }
 
   /**
-   * @param {!SDK.TracingModel.Event} event
+   * @param {!Event} event
    */
   _addStep(event) {
     this.steps.push(event);
-    if (event.phase === SDK.TracingModel.Phase.AsyncEnd || event.phase === SDK.TracingModel.Phase.NestableAsyncEnd) {
+    if (event.phase === Phase.AsyncEnd || event.phase === Phase.NestableAsyncEnd) {
       this.setEndTime(event.startTime);
       // FIXME: ideally, we shouldn't do this, but this makes the logic of converting
       // async console events to sync ones much simpler.
       this.steps[0].setEndTime(event.startTime);
     }
   }
-};
+}
 
 /**
  * @unrestricted
  */
-SDK.TracingModel.ProfileEventsGroup = class {
+export class ProfileEventsGroup {
   /**
-   * @param {!SDK.TracingModel.Event} event
+   * @param {!Event} event
    */
   constructor(event) {
-    /** @type {!Array<!SDK.TracingModel.Event>} */
+    /** @type {!Array<!Event>} */
     this.children = [event];
   }
 
   /**
-   * @param {!SDK.TracingModel.Event} event
+   * @param {!Event} event
    */
   _addChild(event) {
     this.children.push(event);
   }
-};
+}
 
-SDK.TracingModel.NamedObject = class {
+export class NamedObject {
   /**
-   * @param {!SDK.TracingModel} model
+   * @param {!TracingModel} model
    * @param {number} id
    */
   constructor(model, id) {
@@ -806,12 +805,12 @@ SDK.TracingModel.NamedObject = class {
   }
 
   /**
-   * @param {!Array.<!SDK.TracingModel.NamedObject>} array
+   * @param {!Array.<!NamedObject>} array
    */
   static _sort(array) {
     /**
-     * @param {!SDK.TracingModel.NamedObject} a
-     * @param {!SDK.TracingModel.NamedObject} b
+     * @param {!NamedObject} a
+     * @param {!NamedObject} b
      */
     function comparator(a, b) {
       return a._sortIndex !== b._sortIndex ? a._sortIndex - b._sortIndex : a.name().localeCompare(b.name());
@@ -839,16 +838,16 @@ SDK.TracingModel.NamedObject = class {
   _setSortIndex(sortIndex) {
     this._sortIndex = sortIndex;
   }
-};
+}
 
-SDK.TracingModel.Process = class extends SDK.TracingModel.NamedObject {
+export class Process extends NamedObject {
   /**
-   * @param {!SDK.TracingModel} model
+   * @param {!TracingModel} model
    * @param {number} id
    */
   constructor(model, id) {
     super(model, id);
-    /** @type {!Map<number, !SDK.TracingModel.Thread>} */
+    /** @type {!Map<number, !Thread>} */
     this._threads = new Map();
     this._threadByName = new Map();
   }
@@ -862,12 +861,12 @@ SDK.TracingModel.Process = class extends SDK.TracingModel.NamedObject {
 
   /**
    * @param {number} id
-   * @return {!SDK.TracingModel.Thread}
+   * @return {!Thread}
    */
   threadById(id) {
     let thread = this._threads.get(id);
     if (!thread) {
-      thread = new SDK.TracingModel.Thread(this, id);
+      thread = new Thread(this, id);
       this._threads.set(id, thread);
     }
     return thread;
@@ -875,7 +874,7 @@ SDK.TracingModel.Process = class extends SDK.TracingModel.NamedObject {
 
   /**
    * @param {string} name
-   * @return {?SDK.TracingModel.Thread}
+   * @return {?Thread}
    */
   threadByName(name) {
     return this._threadByName.get(name) || null;
@@ -883,7 +882,7 @@ SDK.TracingModel.Process = class extends SDK.TracingModel.NamedObject {
 
   /**
    * @param {string} name
-   * @param {!SDK.TracingModel.Thread} thread
+   * @param {!Thread} thread
    */
   _setThreadByName(name, thread) {
     this._threadByName.set(name, thread);
@@ -891,23 +890,23 @@ SDK.TracingModel.Process = class extends SDK.TracingModel.NamedObject {
 
   /**
    * @param {!SDK.TracingManager.EventPayload} payload
-   * @return {?SDK.TracingModel.Event} event
+   * @return {?Event} event
    */
   _addEvent(payload) {
     return this.threadById(payload.tid)._addEvent(payload);
   }
 
   /**
-   * @return {!Array.<!SDK.TracingModel.Thread>}
+   * @return {!Array.<!Thread>}
    */
   sortedThreads() {
-    return SDK.TracingModel.NamedObject._sort(this._threads.valuesArray());
+    return NamedObject._sort(this._threads.valuesArray());
   }
-};
+}
 
-SDK.TracingModel.Thread = class extends SDK.TracingModel.NamedObject {
+export class Thread extends NamedObject {
   /**
-   * @param {!SDK.TracingModel.Process} process
+   * @param {!Process} process
    * @param {number} id
    */
   constructor(process, id) {
@@ -919,9 +918,9 @@ SDK.TracingModel.Thread = class extends SDK.TracingModel.NamedObject {
   }
 
   tracingComplete() {
-    this._asyncEvents.sort(SDK.TracingModel.Event.compareStartTime);
-    this._events.sort(SDK.TracingModel.Event.compareStartTime);
-    const phases = SDK.TracingModel.Phase;
+    this._asyncEvents.sort(Event.compareStartTime);
+    this._events.sort(Event.compareStartTime);
+    const phases = Phase;
     const stack = [];
     for (let i = 0; i < this._events.length; ++i) {
       const e = this._events[i];
@@ -955,13 +954,12 @@ SDK.TracingModel.Thread = class extends SDK.TracingModel.NamedObject {
 
   /**
    * @param {!SDK.TracingManager.EventPayload} payload
-   * @return {?SDK.TracingModel.Event} event
+   * @return {?Event} event
    */
   _addEvent(payload) {
-    const event = payload.ph === SDK.TracingModel.Phase.SnapshotObject ?
-        SDK.TracingModel.ObjectSnapshot.fromPayload(payload, this) :
-        SDK.TracingModel.Event.fromPayload(payload, this);
-    if (SDK.TracingModel.isTopLevelEvent(event)) {
+    const event = payload.ph === Phase.SnapshotObject ? ObjectSnapshot.fromPayload(payload, this) :
+                                                        Event.fromPayload(payload, this);
+    if (TracingModel.isTopLevelEvent(event)) {
       // Discard nested "top-level" events.
       if (this._lastTopLevelEvent && this._lastTopLevelEvent.endTime > event.startTime) {
         return null;
@@ -973,7 +971,7 @@ SDK.TracingModel.Thread = class extends SDK.TracingModel.NamedObject {
   }
 
   /**
-   * @param {!SDK.TracingModel.AsyncEvent} asyncEvent
+   * @param {!AsyncEvent} asyncEvent
    */
   _addAsyncEvent(asyncEvent) {
     this._asyncEvents.push(asyncEvent);
@@ -996,23 +994,63 @@ SDK.TracingModel.Thread = class extends SDK.TracingModel.NamedObject {
   }
 
   /**
-   * @return {!SDK.TracingModel.Process}
+   * @return {!Process}
    */
   process() {
     return this._process;
   }
 
   /**
-   * @return {!Array.<!SDK.TracingModel.Event>}
+   * @return {!Array.<!Event>}
    */
   events() {
     return this._events;
   }
 
   /**
-   * @return {!Array.<!SDK.TracingModel.AsyncEvent>}
+   * @return {!Array.<!AsyncEvent>}
    */
   asyncEvents() {
     return this._asyncEvents;
   }
-};
+}
+
+/* Legacy exported object */
+self.SDK = self.SDK || {};
+
+/* Legacy exported object */
+SDK = SDK || {};
+
+/** @constructor */
+SDK.TracingModel = TracingModel;
+
+SDK.TracingModel.Phase = Phase;
+SDK.TracingModel.MetadataEvent = MetadataEvent;
+SDK.TracingModel.LegacyTopLevelEventCategory = LegacyTopLevelEventCategory;
+SDK.TracingModel.DevToolsMetadataEventCategory = DevToolsMetadataEventCategory;
+SDK.TracingModel.DevToolsTimelineEventCategory = DevToolsTimelineEventCategory;
+SDK.TracingModel.FrameLifecycleEventCategory = FrameLifecycleEventCategory;
+
+/** @constructor */
+SDK.TracingModel.Event = Event;
+
+/** @constructor */
+SDK.TracingModel.ObjectSnapshot = ObjectSnapshot;
+
+/** @constructor */
+SDK.TracingModel.AsyncEvent = AsyncEvent;
+
+/** @constructor */
+SDK.TracingModel.ProfileEventsGroup = ProfileEventsGroup;
+
+/** @constructor */
+SDK.TracingModel.NamedObject = NamedObject;
+
+/** @constructor */
+SDK.TracingModel.Process = Process;
+
+/** @constructor */
+SDK.TracingModel.Thread = Thread;
+
+/** @interface */
+SDK.BackingStorage = BackingStorage;

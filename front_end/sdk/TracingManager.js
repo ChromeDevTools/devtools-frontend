@@ -3,40 +3,20 @@
  * Use of this source code is governed by a BSD-style license that can be
  * found in the LICENSE file.
  */
-/**
- * @interface
- */
-SDK.TracingManagerClient = function() {};
-
-SDK.TracingManagerClient.prototype = {
-  /**
-   * @param {!Array.<!SDK.TracingManager.EventPayload>} events
-   */
-  traceEventsCollected(events) {},
-  tracingComplete() {},
-  /**
-   * @param {number} usage
-   */
-  tracingBufferUsage(usage) {},
-  /**
-   * @param {number} progress
-   */
-  eventsRetrievalProgress(progress) {}
-};
 
 /**
  * @unrestricted
  */
-SDK.TracingManager = class extends SDK.SDKModel {
+export default class TracingManager extends SDK.SDKModel {
   /**
    * @param {!SDK.Target} target
    */
   constructor(target) {
     super(target);
     this._tracingAgent = target.tracingAgent();
-    target.registerTracingDispatcher(new SDK.TracingDispatcher(this));
+    target.registerTracingDispatcher(new TracingDispatcher(this));
 
-    /** @type {?SDK.TracingManagerClient} */
+    /** @type {?TracingManagerClient} */
     this._activeClient = null;
     this._eventBufferSize = 0;
     this._eventsRetrieved = 0;
@@ -78,7 +58,7 @@ SDK.TracingManager = class extends SDK.SDKModel {
   }
 
   /**
-   * @param {!SDK.TracingManagerClient} client
+   * @param {!TracingManagerClient} client
    * @param {string} categoryFilter
    * @param {string} options
    * @return {!Promise<!Object>}
@@ -93,7 +73,7 @@ SDK.TracingManager = class extends SDK.SDKModel {
       bufferUsageReportingInterval: bufferUsageReportingIntervalMs,
       categories: categoryFilter,
       options: options,
-      transferMode: SDK.TracingManager.TransferMode.ReportEvents
+      transferMode: TransferMode.ReportEvents
     };
     const response = await this._tracingAgent.invoke_start(args);
     if (response[Protocol.Error]) {
@@ -112,40 +92,44 @@ SDK.TracingManager = class extends SDK.SDKModel {
     this._finishing = true;
     this._tracingAgent.end();
   }
-};
+}
 
-SDK.SDKModel.register(SDK.TracingManager, SDK.Target.Capability.Tracing, false);
-
-/** @typedef {!{
-        cat: (string|undefined),
-        pid: number,
-        tid: number,
-        ts: number,
-        ph: string,
-        name: string,
-        args: !Object,
-        dur: number,
-        id: string,
-        id2: (!{global: (string|undefined), local: (string|undefined)}|undefined),
-        scope: string,
-        bind_id: string,
-        s: string
-    }}
- */
-SDK.TracingManager.EventPayload;
-
-SDK.TracingManager.TransferMode = {
+export const TransferMode = {
   ReportEvents: 'ReportEvents',
   ReturnAsStream: 'ReturnAsStream'
 };
 
 /**
+ * @interface
+ */
+export class TracingManagerClient {
+  /**
+   * @param {!Array.<!SDK.TracingManager.EventPayload>} events
+   */
+  traceEventsCollected(events) {
+  }
+
+  tracingComplete() {
+  }
+  /**
+   * @param {number} usage
+   */
+  tracingBufferUsage(usage) {
+  }
+  /**
+   * @param {number} progress
+   */
+  eventsRetrievalProgress(progress) {
+  }
+}
+
+/**
  * @implements {Protocol.TracingDispatcher}
  * @unrestricted
  */
-SDK.TracingDispatcher = class {
+export class TracingDispatcher {
   /**
-   * @param {!SDK.TracingManager} tracingManager
+   * @param {!TracingManager} tracingManager
    */
   constructor(tracingManager) {
     this._tracingManager = tracingManager;
@@ -175,4 +159,41 @@ SDK.TracingDispatcher = class {
   tracingComplete() {
     this._tracingManager._tracingComplete();
   }
-};
+}
+
+/* Legacy exported object */
+self.SDK = self.SDK || {};
+
+/* Legacy exported object */
+SDK = SDK || {};
+
+/** @constructor */
+SDK.TracingManager = TracingManager;
+
+SDK.TracingManager.TransferMode = TransferMode;
+
+/** @interface */
+SDK.TracingManagerClient = TracingManagerClient;
+
+/** @constructor */
+SDK.TracingDispatcher = TracingDispatcher;
+
+/** @typedef {!{
+        cat: (string|undefined),
+        pid: number,
+        tid: number,
+        ts: number,
+        ph: string,
+        name: string,
+        args: !Object,
+        dur: number,
+        id: string,
+        id2: (!{global: (string|undefined), local: (string|undefined)}|undefined),
+        scope: string,
+        bind_id: string,
+        s: string
+    }}
+ */
+SDK.TracingManager.EventPayload;
+
+SDK.SDKModel.register(SDK.TracingManager, SDK.Target.Capability.Tracing, false);

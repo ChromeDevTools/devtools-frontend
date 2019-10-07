@@ -5,23 +5,23 @@
 /**
  * @implements {SDK.SDKModelObserver}
  */
-SDK.IsolateManager = class extends Common.Object {
+export default class IsolateManager extends Common.Object {
   constructor() {
     super();
     console.assert(!SDK.isolateManager, 'Use SDK.isolateManager singleton.');
-    /** @type {!Map<string, !SDK.IsolateManager.Isolate>} */
+    /** @type {!Map<string, !Isolate>} */
     this._isolates = new Map();
     // _isolateIdByModel contains null while the isolateId is being retrieved.
     /** @type {!Map<!SDK.RuntimeModel, ?string>} */
     this._isolateIdByModel = new Map();
-    /** @type {!Set<!SDK.IsolateManager.Observer>} */
+    /** @type {!Set<!Observer>} */
     this._observers = new Set();
     SDK.targetManager.observeModels(SDK.RuntimeModel, this);
     this._pollId = 0;
   }
 
   /**
-   * @param {!SDK.IsolateManager.Observer} observer
+   * @param {!Observer} observer
    */
   observeIsolates(observer) {
     if (this._observers.has(observer)) {
@@ -37,7 +37,7 @@ SDK.IsolateManager = class extends Common.Object {
   }
 
   /**
-   * @param {!SDK.IsolateManager.Observer} observer
+   * @param {!Observer} observer
    */
   unobserveIsolates(observer) {
     this._observers.delete(observer);
@@ -71,7 +71,7 @@ SDK.IsolateManager = class extends Common.Object {
     this._isolateIdByModel.set(model, isolateId);
     let isolate = this._isolates.get(isolateId);
     if (!isolate) {
-      isolate = new SDK.IsolateManager.Isolate(isolateId);
+      isolate = new Isolate(isolateId);
       this._isolates.set(isolateId, isolate);
     }
     isolate._models.add(model);
@@ -112,14 +112,14 @@ SDK.IsolateManager = class extends Common.Object {
 
   /**
    * @param {!SDK.RuntimeModel} model
-   * @return {?SDK.IsolateManager.Isolate}
+   * @return {?Isolate}
    */
   isolateByModel(model) {
     return this._isolates.get(this._isolateIdByModel.get(model) || '') || null;
   }
 
   /**
-   * @return {!IteratorIterable<!SDK.IsolateManager.Isolate>}
+   * @return {!IteratorIterable<!Isolate>}
    */
   isolates() {
     return this._isolates.values();
@@ -129,41 +129,42 @@ SDK.IsolateManager = class extends Common.Object {
     const pollId = this._pollId;
     while (pollId === this._pollId) {
       await Promise.all(Array.from(this.isolates(), isolate => isolate._update()));
-      await new Promise(r => setTimeout(r, SDK.IsolateManager.PollIntervalMs));
+      await new Promise(r => setTimeout(r, PollIntervalMs));
     }
   }
-};
+}
 
 /**
  * @interface
  */
-SDK.IsolateManager.Observer = function() {};
+export class Observer {
+  /**
+   * @param {!Isolate} isolate
+   */
+  isolateAdded(isolate) {
+  }
 
-SDK.IsolateManager.Observer.prototype = {
   /**
-   * @param {!SDK.IsolateManager.Isolate} isolate
+   * @param {!Isolate} isolate
    */
-  isolateAdded(isolate) {},
-
+  isolateRemoved(isolate) {
+  }
   /**
-   * @param {!SDK.IsolateManager.Isolate} isolate
+   * @param {!Isolate} isolate
    */
-  isolateRemoved(isolate) {},
-  /**
-   * @param {!SDK.IsolateManager.Isolate} isolate
-   */
-  isolateChanged(isolate) {},
-};
+  isolateChanged(isolate) {
+  }
+}
 
 /** @enum {symbol} */
-SDK.IsolateManager.Events = {
+export const Events = {
   MemoryChanged: Symbol('MemoryChanged')
 };
 
-SDK.IsolateManager.MemoryTrendWindowMs = 120e3;
-SDK.IsolateManager.PollIntervalMs = 2e3;
+export const MemoryTrendWindowMs = 120e3;
+export const PollIntervalMs = 2e3;
 
-SDK.IsolateManager.Isolate = class {
+export class Isolate {
   /**
    * @param {string} id
    */
@@ -172,8 +173,8 @@ SDK.IsolateManager.Isolate = class {
     /** @type {!Set<!SDK.RuntimeModel>} */
     this._models = new Set();
     this._usedHeapSize = 0;
-    const count = SDK.IsolateManager.MemoryTrendWindowMs / SDK.IsolateManager.PollIntervalMs;
-    this._memoryTrend = new SDK.IsolateManager.MemoryTrend(count);
+    const count = MemoryTrendWindowMs / PollIntervalMs;
+    this._memoryTrend = new MemoryTrend(count);
   }
 
   /**
@@ -213,7 +214,7 @@ SDK.IsolateManager.Isolate = class {
     }
     this._usedHeapSize = usage.usedSize;
     this._memoryTrend.add(this._usedHeapSize);
-    SDK.isolateManager.dispatchEventToListeners(SDK.IsolateManager.Events.MemoryChanged, this);
+    SDK.isolateManager.dispatchEventToListeners(Events.MemoryChanged, this);
   }
 
   /**
@@ -236,12 +237,12 @@ SDK.IsolateManager.Isolate = class {
   usedHeapSizeGrowRate() {
     return this._memoryTrend.fitSlope();
   }
-};
+}
 
 /**
  * @unrestricted
  */
-SDK.IsolateManager.MemoryTrend = class {
+export class MemoryTrend {
   /**
    * @param {number} maxCount
    */
@@ -303,6 +304,30 @@ SDK.IsolateManager.MemoryTrend = class {
     const n = this.count();
     return n < 2 ? 0 : (this._sxy - this._sx * this._sy / n) / (this._sxx - this._sx * this._sx / n);
   }
-};
+}
 
-SDK.isolateManager = new SDK.IsolateManager();
+/* Legacy exported object */
+self.SDK = self.SDK || {};
+
+/* Legacy exported object */
+SDK = SDK || {};
+
+/** @constructor */
+SDK.IsolateManager = IsolateManager;
+
+/** @interface */
+SDK.IsolateManager.Observer = Observer;
+
+/** @enum {symbol} */
+SDK.IsolateManager.Events = Events;
+
+SDK.IsolateManager.MemoryTrendWindowMs = MemoryTrendWindowMs;
+SDK.IsolateManager.PollIntervalMs = PollIntervalMs;
+
+/** @constructor */
+SDK.IsolateManager.Isolate = Isolate;
+
+/** @constructor */
+SDK.IsolateManager.MemoryTrend = MemoryTrend;
+
+SDK.isolateManager = new IsolateManager();

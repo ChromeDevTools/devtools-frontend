@@ -2,10 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+export let _lastAnonymousTargetId = 0;
+
 /**
  * @implements {Protocol.TargetDispatcher}
  */
-SDK.ChildTargetManager = class extends SDK.SDKModel {
+export default class ChildTargetManager extends SDK.SDKModel {
   /**
    * @param {!SDK.Target} parentTarget
    */
@@ -135,8 +137,7 @@ SDK.ChildTargetManager = class extends SDK.SDKModel {
       targetName = targetInfo.title;
     } else if (targetInfo.type !== 'iframe') {
       const parsedURL = targetInfo.url.asParsedURL();
-      targetName = parsedURL ? parsedURL.lastPathComponentWithFragment() :
-                               '#' + (++SDK.ChildTargetManager._lastAnonymousTargetId);
+      targetName = parsedURL ? parsedURL.lastPathComponentWithFragment() : '#' + (++_lastAnonymousTargetId);
     }
 
     let type = SDK.Target.Type.Browser;
@@ -221,9 +222,18 @@ SDK.ChildTargetManager = class extends SDK.SDKModel {
     });
     return {connection, sessionId};
   }
-};
+}
 
-SDK.ChildTargetManager._lastAnonymousTargetId = 0;
+/* Legacy exported object */
+self.SDK = self.SDK || {};
+
+/* Legacy exported object */
+SDK = SDK || {};
+
+/** @constructor */
+SDK.ChildTargetManager = ChildTargetManager;
+
+SDK.ChildTargetManager._lastAnonymousTargetId = _lastAnonymousTargetId;
 
 /** @type {function({target: !SDK.Target, waitingForDebugger: boolean})|undefined} */
 SDK.ChildTargetManager._attachCallback;

@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-SDK.CookieModel = class extends SDK.SDKModel {
+export default class CookieModel extends SDK.SDKModel {
   /**
    * @param {!SDK.Target} target
    */
@@ -17,7 +17,7 @@ SDK.CookieModel = class extends SDK.SDKModel {
    */
   static cookieMatchesResourceURL(cookie, resourceURL) {
     const url = resourceURL.asParsedURL();
-    if (!url || !SDK.CookieModel.cookieDomainMatchesResourceDomain(cookie.domain(), url.host)) {
+    if (!url || !CookieModel.cookieDomainMatchesResourceDomain(cookie.domain(), url.host)) {
       return false;
     }
     return (
@@ -118,6 +118,15 @@ SDK.CookieModel = class extends SDK.SDKModel {
             cookies.map(cookie => networkAgent.deleteCookies(cookie.name(), undefined, cookie.domain(), cookie.path())))
         .then(callback || function() {});
   }
-};
+}
+
+/* Legacy exported object */
+self.SDK = self.SDK || {};
+
+/* Legacy exported object */
+SDK = SDK || {};
+
+/** @constructor */
+SDK.CookieModel = CookieModel;
 
 SDK.SDKModel.register(SDK.CookieModel, SDK.Target.Capability.Network, false);

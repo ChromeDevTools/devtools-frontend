@@ -5,7 +5,7 @@
  * @implements {Common.ContentProvider}
  * @unrestricted
  */
-SDK.CSSStyleSheetHeader = class {
+export default class CSSStyleSheetHeader {
   /**
    * @param {!SDK.CSSModel} cssModel
    * @param {!Protocol.CSS.CSSStyleSheetHeader} payload
@@ -170,4 +170,13 @@ SDK.CSSStyleSheetHeader = class {
   isViaInspector() {
     return this.origin === 'inspector';
   }
-};
+}
+
+/* Legacy exported object */
+self.SDK = self.SDK || {};
+
+/* Legacy exported object */
+SDK = SDK || {};
+
+/** @constructor */
+SDK.CSSStyleSheetHeader = CSSStyleSheetHeader;

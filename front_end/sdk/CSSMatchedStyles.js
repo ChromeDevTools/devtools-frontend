@@ -4,7 +4,7 @@
 /**
  * @unrestricted
  */
-SDK.CSSMatchedStyles = class {
+export default class CSSMatchedStyles {
   /**
    * @param {!SDK.CSSModel} cssModel
    * @param {!SDK.DOMNode} node
@@ -48,7 +48,7 @@ SDK.CSSMatchedStyles = class {
     this._mainDOMCascade = this._buildMainCascade(inlinePayload, attributesPayload, matchedPayload, inheritedPayload);
     this._pseudoDOMCascades = this._buildPseudoCascades(pseudoPayload);
 
-    /** @type {!Map<!SDK.CSSStyleDeclaration, !SDK.CSSMatchedStyles.DOMInheritanceCascade>} */
+    /** @type {!Map<!SDK.CSSStyleDeclaration, !DOMInheritanceCascade>} */
     this._styleToDOMCascade = new Map();
     for (const domCascade of Array.from(this._pseudoDOMCascades.values()).concat(this._mainDOMCascade)) {
       for (const style of domCascade.styles()) {
@@ -133,17 +133,17 @@ SDK.CSSMatchedStyles = class {
    * @param {?Protocol.CSS.CSSStyle} attributesPayload
    * @param {!Array.<!Protocol.CSS.RuleMatch>} matchedPayload
    * @param {!Array.<!Protocol.CSS.InheritedStyleEntry>} inheritedPayload
-   * @return {!SDK.CSSMatchedStyles.DOMInheritanceCascade}
+   * @return {!DOMInheritanceCascade}
    */
   _buildMainCascade(inlinePayload, attributesPayload, matchedPayload, inheritedPayload) {
-    /** @type {!Array<!SDK.CSSMatchedStyles.NodeCascade>} */
+    /** @type {!Array<!NodeCascade>} */
     const nodeCascades = [];
 
     /** @type {!Array<!SDK.CSSStyleDeclaration>} */
     const nodeStyles = [];
 
     /**
-     * @this {SDK.CSSMatchedStyles}
+     * @this {CSSMatchedStyles}
      */
     function addAttributesStyle() {
       if (!attributesPayload) {
@@ -180,7 +180,7 @@ SDK.CSSMatchedStyles = class {
     if (!addedAttributesStyle) {
       addAttributesStyle.call(this);
     }
-    nodeCascades.push(new SDK.CSSMatchedStyles.NodeCascade(this, nodeStyles, false /* isInherited */));
+    nodeCascades.push(new NodeCascade(this, nodeStyles, false /* isInherited */));
 
     // Walk the node structure and identify styles with inherited properties.
     let parentNode = this._node.parentNode;
@@ -213,10 +213,10 @@ SDK.CSSMatchedStyles = class {
         this._inheritedStyles.add(inheritedRule.style);
       }
       parentNode = parentNode.parentNode;
-      nodeCascades.push(new SDK.CSSMatchedStyles.NodeCascade(this, inheritedStyles, true /* isInherited */));
+      nodeCascades.push(new NodeCascade(this, inheritedStyles, true /* isInherited */));
     }
 
-    return new SDK.CSSMatchedStyles.DOMInheritanceCascade(nodeCascades);
+    return new DOMInheritanceCascade(nodeCascades);
 
     /**
      * @param {!Array<!SDK.CSSStyleDeclaration>|!Set<!SDK.CSSStyleDeclaration>} styles
@@ -238,10 +238,10 @@ SDK.CSSMatchedStyles = class {
 
   /**
    * @param {!Array.<!Protocol.CSS.PseudoElementMatches>} pseudoPayload
-   * @return {!Map<!Protocol.DOM.PseudoType, !SDK.CSSMatchedStyles.DOMInheritanceCascade>}
+   * @return {!Map<!Protocol.DOM.PseudoType, !DOMInheritanceCascade>}
    */
   _buildPseudoCascades(pseudoPayload) {
-    /** @type {!Map<!Protocol.DOM.PseudoType, !SDK.CSSMatchedStyles.DOMInheritanceCascade>} */
+    /** @type {!Map<!Protocol.DOM.PseudoType, !DOMInheritanceCascade>} */
     const pseudoCascades = new Map();
     if (!pseudoPayload) {
       return pseudoCascades;
@@ -260,8 +260,8 @@ SDK.CSSMatchedStyles = class {
           this._addMatchingSelectors(pseudoElement, pseudoRule, rules[j].matchingSelectors);
         }
       }
-      const nodeCascade = new SDK.CSSMatchedStyles.NodeCascade(this, pseudoStyles, false /* isInherited */);
-      pseudoCascades.set(entryPayload.pseudoType, new SDK.CSSMatchedStyles.DOMInheritanceCascade([nodeCascade]));
+      const nodeCascade = new NodeCascade(this, pseudoStyles, false /* isInherited */);
+      pseudoCascades.set(entryPayload.pseudoType, new DOMInheritanceCascade([nodeCascade]));
     }
     return pseudoCascades;
   }
@@ -270,7 +270,7 @@ SDK.CSSMatchedStyles = class {
    * @param {!SDK.DOMNode} node
    * @param {!SDK.CSSStyleRule} rule
    * @param {!Array<number>} matchingSelectorIndices
-   * @this {SDK.CSSMatchedStyles}
+   * @this {CSSMatchedStyles}
    */
   _addMatchingSelectors(node, rule, matchingSelectorIndices) {
     for (const matchingSelectorIndex of matchingSelectorIndices) {
@@ -342,7 +342,7 @@ SDK.CSSMatchedStyles = class {
     /**
      * @param {!SDK.DOMNode} node
      * @param {string} selectorText
-     * @this {SDK.CSSMatchedStyles}
+     * @this {CSSMatchedStyles}
      */
     async function querySelector(node, selectorText) {
       const ownerDocument = node.ownerDocument || null;
@@ -492,7 +492,7 @@ SDK.CSSMatchedStyles = class {
 
   /**
    * @param {!SDK.CSSProperty} property
-   * @return {?SDK.CSSMatchedStyles.PropertyState}
+   * @return {?PropertyState}
    */
   propertyState(property) {
     const domCascade = this._styleToDOMCascade.get(property.ownerStyle);
@@ -505,11 +505,11 @@ SDK.CSSMatchedStyles = class {
       domCascade.reset();
     }
   }
-};
+}
 
-SDK.CSSMatchedStyles.NodeCascade = class {
+export class NodeCascade {
   /**
-   * @param {!SDK.CSSMatchedStyles} matchedStyles
+   * @param {!CSSMatchedStyles} matchedStyles
    * @param {!Array<!SDK.CSSStyleDeclaration>} styles
    * @param {boolean} isInherited
    */
@@ -517,7 +517,7 @@ SDK.CSSMatchedStyles.NodeCascade = class {
     this._matchedStyles = matchedStyles;
     this._styles = styles;
     this._isInherited = isInherited;
-    /** @type {!Map<!SDK.CSSProperty, !SDK.CSSMatchedStyles.PropertyState>} */
+    /** @type {!Map<!SDK.CSSProperty, !PropertyState>} */
     this._propertiesState = new Map();
     /** @type {!Map.<string, !SDK.CSSProperty>} */
     this._activeProperties = new Map();
@@ -544,42 +544,42 @@ SDK.CSSMatchedStyles.NodeCascade = class {
         }
 
         if (!property.activeInStyle()) {
-          this._propertiesState.set(property, SDK.CSSMatchedStyles.PropertyState.Overloaded);
+          this._propertiesState.set(property, PropertyState.Overloaded);
           continue;
         }
 
         const canonicalName = SDK.cssMetadata().canonicalPropertyName(property.name);
         const activeProperty = this._activeProperties.get(canonicalName);
         if (activeProperty && (activeProperty.important || !property.important)) {
-          this._propertiesState.set(property, SDK.CSSMatchedStyles.PropertyState.Overloaded);
+          this._propertiesState.set(property, PropertyState.Overloaded);
           continue;
         }
 
         if (activeProperty) {
-          this._propertiesState.set(activeProperty, SDK.CSSMatchedStyles.PropertyState.Overloaded);
+          this._propertiesState.set(activeProperty, PropertyState.Overloaded);
         }
-        this._propertiesState.set(property, SDK.CSSMatchedStyles.PropertyState.Active);
+        this._propertiesState.set(property, PropertyState.Active);
         this._activeProperties.set(canonicalName, property);
       }
     }
   }
-};
+}
 
-SDK.CSSMatchedStyles.DOMInheritanceCascade = class {
+export class DOMInheritanceCascade {
   /**
-   * @param {!Array<!SDK.CSSMatchedStyles.NodeCascade>} nodeCascades
+   * @param {!Array<!NodeCascade>} nodeCascades
    */
   constructor(nodeCascades) {
     this._nodeCascades = nodeCascades;
-    /** @type {!Map<!SDK.CSSProperty, !SDK.CSSMatchedStyles.PropertyState>} */
+    /** @type {!Map<!SDK.CSSProperty, !PropertyState>} */
     this._propertiesState = new Map();
-    /** @type {!Map<!SDK.CSSMatchedStyles.NodeCascade, !Map<string, string>>} */
+    /** @type {!Map<!NodeCascade, !Map<string, string>>} */
     this._availableCSSVariables = new Map();
-    /** @type {!Map<!SDK.CSSMatchedStyles.NodeCascade, !Map<string, ?string>>} */
+    /** @type {!Map<!NodeCascade, !Map<string, ?string>>} */
     this._computedCSSVariables = new Map();
     this._initialized = false;
 
-    /** @type {!Map<!SDK.CSSStyleDeclaration, !SDK.CSSMatchedStyles.NodeCascade>} */
+    /** @type {!Map<!SDK.CSSStyleDeclaration, !NodeCascade>} */
     this._styleToNodeCascade = new Map();
     for (const nodeCascade of nodeCascades) {
       for (const style of nodeCascade._styles) {
@@ -696,7 +696,7 @@ SDK.CSSMatchedStyles.DOMInheritanceCascade = class {
 
   /**
    * @param {!SDK.CSSProperty} property
-   * @return {?SDK.CSSMatchedStyles.PropertyState}
+   * @return {?PropertyState}
    */
   propertyState(property) {
     this._ensureInitialized();
@@ -721,18 +721,18 @@ SDK.CSSMatchedStyles.DOMInheritanceCascade = class {
       nodeCascade._computeActiveProperties();
       for (const entry of nodeCascade._propertiesState.entries()) {
         const property = /** @type {!SDK.CSSProperty} */ (entry[0]);
-        const state = /** @type {!SDK.CSSMatchedStyles.PropertyState} */ (entry[1]);
-        if (state === SDK.CSSMatchedStyles.PropertyState.Overloaded) {
-          this._propertiesState.set(property, SDK.CSSMatchedStyles.PropertyState.Overloaded);
+        const state = /** @type {!PropertyState} */ (entry[1]);
+        if (state === PropertyState.Overloaded) {
+          this._propertiesState.set(property, PropertyState.Overloaded);
           continue;
         }
         const canonicalName = SDK.cssMetadata().canonicalPropertyName(property.name);
         if (activeProperties.has(canonicalName)) {
-          this._propertiesState.set(property, SDK.CSSMatchedStyles.PropertyState.Overloaded);
+          this._propertiesState.set(property, PropertyState.Overloaded);
           continue;
         }
         activeProperties.set(canonicalName, property);
-        this._propertiesState.set(property, SDK.CSSMatchedStyles.PropertyState.Active);
+        this._propertiesState.set(property, PropertyState.Active);
       }
     }
     // If every longhand of the shorthand is not active, then the shorthand is not active too.
@@ -760,7 +760,7 @@ SDK.CSSMatchedStyles.DOMInheritanceCascade = class {
         continue;
       }
       activeProperties.delete(canonicalName);
-      this._propertiesState.set(shorthandProperty, SDK.CSSMatchedStyles.PropertyState.Overloaded);
+      this._propertiesState.set(shorthandProperty, PropertyState.Overloaded);
     }
 
     // Work inheritance chain backwards to compute visible CSS Variables.
@@ -778,10 +778,28 @@ SDK.CSSMatchedStyles.DOMInheritanceCascade = class {
       this._computedCSSVariables.set(nodeCascade, new Map());
     }
   }
-};
+}
 
 /** @enum {string} */
-SDK.CSSMatchedStyles.PropertyState = {
+export const PropertyState = {
   Active: 'Active',
   Overloaded: 'Overloaded'
 };
+
+/* Legacy exported object */
+self.SDK = self.SDK || {};
+
+/* Legacy exported object */
+SDK = SDK || {};
+
+/** @constructor */
+SDK.CSSMatchedStyles = CSSMatchedStyles;
+
+/** @constructor */
+SDK.CSSMatchedStyles.NodeCascade = NodeCascade;
+
+/** @constructor */
+SDK.CSSMatchedStyles.DOMInheritanceCascade = DOMInheritanceCascade;
+
+/** @enum {string} */
+SDK.CSSMatchedStyles.PropertyState = PropertyState;

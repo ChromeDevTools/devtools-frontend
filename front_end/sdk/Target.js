@@ -7,54 +7,52 @@
 /**
  * @unrestricted
  */
-SDK.Target = class extends Protocol.TargetBase {
+export default class Target extends Protocol.TargetBase {
   /**
    * @param {!SDK.TargetManager} targetManager
    * @param {string} id
    * @param {string} name
-   * @param {!SDK.Target.Type} type
+   * @param {!Type} type
    * @param {?SDK.Target} parentTarget
    * @param {string} sessionId
    * @param {boolean} suspended
    * @param {?Protocol.Connection} connection
    */
   constructor(targetManager, id, name, type, parentTarget, sessionId, suspended, connection) {
-    const needsNodeJSPatching = type === SDK.Target.Type.Node;
+    const needsNodeJSPatching = type === Type.Node;
     super(needsNodeJSPatching, parentTarget, sessionId, connection);
     this._targetManager = targetManager;
     this._name = name;
     this._inspectedURL = '';
     this._capabilitiesMask = 0;
     switch (type) {
-      case SDK.Target.Type.Frame:
-        this._capabilitiesMask = SDK.Target.Capability.Browser | SDK.Target.Capability.Storage |
-            SDK.Target.Capability.DOM | SDK.Target.Capability.JS | SDK.Target.Capability.Log |
-            SDK.Target.Capability.Network | SDK.Target.Capability.Target | SDK.Target.Capability.Tracing |
-            SDK.Target.Capability.Emulation | SDK.Target.Capability.Input | SDK.Target.Capability.Inspector;
+      case Type.Frame:
+        this._capabilitiesMask = Capability.Browser | Capability.Storage | Capability.DOM | Capability.JS |
+            Capability.Log | Capability.Network | Capability.Target | Capability.Tracing | Capability.Emulation |
+            Capability.Input | Capability.Inspector;
         if (!parentTarget) {
           // This matches backend exposing certain capabilities only for the main frame.
-          this._capabilitiesMask |= SDK.Target.Capability.DeviceEmulation | SDK.Target.Capability.ScreenCapture |
-              SDK.Target.Capability.Security | SDK.Target.Capability.ServiceWorker;
+          this._capabilitiesMask |=
+              Capability.DeviceEmulation | Capability.ScreenCapture | Capability.Security | Capability.ServiceWorker;
           // TODO(dgozman): we report service workers for the whole frame tree on the main frame,
           // while we should be able to only cover the subtree corresponding to the target.
         }
         break;
-      case SDK.Target.Type.ServiceWorker:
-        this._capabilitiesMask = SDK.Target.Capability.JS | SDK.Target.Capability.Log | SDK.Target.Capability.Network |
-            SDK.Target.Capability.Target | SDK.Target.Capability.Inspector;
+      case Type.ServiceWorker:
+        this._capabilitiesMask =
+            Capability.JS | Capability.Log | Capability.Network | Capability.Target | Capability.Inspector;
         if (!parentTarget) {
-          this._capabilitiesMask |= SDK.Target.Capability.Browser;
+          this._capabilitiesMask |= Capability.Browser;
         }
         break;
-      case SDK.Target.Type.Worker:
-        this._capabilitiesMask = SDK.Target.Capability.JS | SDK.Target.Capability.Log | SDK.Target.Capability.Network |
-            SDK.Target.Capability.Target;
+      case Type.Worker:
+        this._capabilitiesMask = Capability.JS | Capability.Log | Capability.Network | Capability.Target;
         break;
-      case SDK.Target.Type.Node:
-        this._capabilitiesMask = SDK.Target.Capability.JS;
+      case Type.Node:
+        this._capabilitiesMask = Capability.JS;
         break;
-      case SDK.Target.Type.Browser:
-        this._capabilitiesMask = SDK.Target.Capability.Target;
+      case Type.Browser:
+        this._capabilitiesMask = Capability.Target;
         break;
     }
     this._type = type;
@@ -68,9 +66,9 @@ SDK.Target = class extends Protocol.TargetBase {
     this._creatingModels = true;
     // TODO(dgozman): fix this in bindings layer.
     this.model(SDK.ResourceTreeModel);
-    const registered = Array.from(SDK.SDKModel._registeredModels.keys());
+    const registered = Array.from(SDK.SDKModel.registeredModels.keys());
     for (const modelClass of registered) {
-      const info = SDK.SDKModel._registeredModels.get(modelClass);
+      const info = SDK.SDKModel.registeredModels.get(modelClass);
       if (info.autostart || required.has(modelClass)) {
         this.model(modelClass);
       }
@@ -93,7 +91,7 @@ SDK.Target = class extends Protocol.TargetBase {
   }
 
   /**
-   * @return {!SDK.Target.Type}
+   * @return {!Type}
    */
   type() {
     return this._type;
@@ -104,7 +102,7 @@ SDK.Target = class extends Protocol.TargetBase {
    */
   markAsNodeJSForTest() {
     super.markAsNodeJSForTest();
-    this._type = SDK.Target.Type.Node;
+    this._type = Type.Node;
   }
 
   /**
@@ -129,8 +127,7 @@ SDK.Target = class extends Protocol.TargetBase {
    * @return {string}
    */
   decorateLabel(label) {
-    return (this._type === SDK.Target.Type.Worker || this._type === SDK.Target.Type.ServiceWorker) ? '\u2699 ' + label :
-                                                                                                     label;
+    return (this._type === Type.Worker || this._type === Type.ServiceWorker) ? '\u2699 ' + label : label;
   }
 
   /**
@@ -159,7 +156,7 @@ SDK.Target = class extends Protocol.TargetBase {
    */
   model(modelClass) {
     if (!this._modelByConstructor.get(modelClass)) {
-      const info = SDK.SDKModel._registeredModels.get(modelClass);
+      const info = SDK.SDKModel.registeredModels.get(modelClass);
       if (info === undefined) {
         throw 'Model class is not registered @' + new Error().stack;
       }
@@ -237,12 +234,12 @@ SDK.Target = class extends Protocol.TargetBase {
   suspended() {
     return this._isSuspended;
   }
-};
+}
 
 /**
  * @enum {number}
  */
-SDK.Target.Capability = {
+export const Capability = {
   Browser: 1 << 0,
   DOM: 1 << 1,
   JS: 1 << 2,
@@ -265,7 +262,7 @@ SDK.Target.Capability = {
 /**
  * @enum {string}
  */
-SDK.Target.Type = {
+export const Type = {
   Frame: 'frame',
   ServiceWorker: 'service-worker',
   Worker: 'worker',
@@ -273,75 +270,21 @@ SDK.Target.Type = {
   Browser: 'browser',
 };
 
-/**
- * @unrestricted
- */
-SDK.SDKModel = class extends Common.Object {
-  /**
-   * @param {!SDK.Target} target
-   */
-  constructor(target) {
-    super();
-    this._target = target;
-  }
+/* Legacy exported object */
+self.SDK = self.SDK || {};
 
-  /**
-   * @return {!SDK.Target}
-   */
-  target() {
-    return this._target;
-  }
+/* Legacy exported object */
+SDK = SDK || {};
 
-  /**
-   * Override this method to perform tasks that are required to suspend the
-   * model and that still need other models in an unsuspended state.
-   * @param {string=} reason - optionally provide a reason, the model can respond accordingly
-   * @return {!Promise}
-   */
-  preSuspendModel(reason) {
-    return Promise.resolve();
-  }
-
-  /**
-   * @param {string=} reason - optionally provide a reason, the model can respond accordingly
-   * @return {!Promise}
-   */
-  suspendModel(reason) {
-    return Promise.resolve();
-  }
-
-  /**
-   * @return {!Promise}
-   */
-  resumeModel() {
-    return Promise.resolve();
-  }
-
-  /**
-   * Override this method to perform tasks that are required to after resuming
-   * the model and that require all models already in an unsuspended state.
-   * @return {!Promise}
-   */
-  postResumeModel() {
-    return Promise.resolve();
-  }
-
-  dispose() {
-  }
-};
-
+/** @constructor */
+SDK.Target = Target;
 
 /**
- * @param {function(new:SDK.SDKModel, !SDK.Target)} modelClass
- * @param {number} capabilities
- * @param {boolean} autostart
+ * @enum {number}
  */
-SDK.SDKModel.register = function(modelClass, capabilities, autostart) {
-  if (!SDK.SDKModel._registeredModels) {
-    SDK.SDKModel._registeredModels = new Map();
-  }
-  SDK.SDKModel._registeredModels.set(modelClass, {capabilities: capabilities, autostart: autostart});
-};
+SDK.Target.Capability = Capability;
 
-/** @type {!Map<function(new:SDK.SDKModel, !SDK.Target), !{capabilities: number, autostart: boolean}>} */
-SDK.SDKModel._registeredModels;
+/**
+ * @enum {string}
+ */
+SDK.Target.Type = Type;

@@ -106,6 +106,12 @@ Security.SecurityDispatcher = class {
     this._model.dispatchEventToListeners(Security.SecurityModel.Events.SecurityStateChanged, pageSecurityState);
   }
 
+  /**
+   * @override
+   * @param {!Protocol.Security.VisibleSecurityState} visibleSecurityState
+   */
+  visibleSecurityStateChanged(visibleSecurityState) {
+  }
 
   /**
    * @override

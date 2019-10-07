@@ -490,5 +490,5 @@
 
 .console-view-pinpane {
     flex: none;
-    max-height: 200px;
+    max-height: 50%;
 }

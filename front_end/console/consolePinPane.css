@@ -5,6 +5,7 @@
  */
 
 .console-pins {
+  max-height: 200px;
   overflow-y: auto;
   background: var(--toolbar-bg-color);
   --error-background-color: hsl(0, 100%, 97%);

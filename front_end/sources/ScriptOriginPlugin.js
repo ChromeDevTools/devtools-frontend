@@ -51,7 +51,7 @@ Sources.ScriptOriginPlugin = class extends Sources.UISourceCodeFrame.Plugin {
     const locations = Bindings.debuggerWorkspaceBinding.uiLocationToRawLocations(uiSourceCode, 0, 0);
     for (const location of locations) {
       const script = location.script();
-      if (script.originStackTrace) {
+      if (script && script.originStackTrace) {
         return script;
       }
     }

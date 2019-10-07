@@ -84,11 +84,11 @@ SDK.Script = class {
     if (sourceURLLineIndex === -1) {
       return source;
     }
-    const sourceURLLine = source.substr(sourceURLLineIndex + 1).split('\n', 1)[0];
-    if (sourceURLLine.search(SDK.Script.sourceURLRegex) === -1) {
+    const sourceURLLine = source.substr(sourceURLLineIndex + 1);
+    if (!sourceURLLine.match(SDK.Script.sourceURLRegex)) {
       return source;
     }
-    return source.substr(0, sourceURLLineIndex) + source.substr(sourceURLLineIndex + sourceURLLine.length + 1);
+    return source.substr(0, sourceURLLineIndex);
   }
 
   /**
@@ -280,4 +280,4 @@ SDK.Script = class {
   }
 };
 
-SDK.Script.sourceURLRegex = /^[\040\t]*\/\/[@#] sourceURL=\s*(\S*?)\s*$/m;
+SDK.Script.sourceURLRegex = /^[\040\t]*\/\/[@#] sourceURL=\s*(\S*?)\s*$/;

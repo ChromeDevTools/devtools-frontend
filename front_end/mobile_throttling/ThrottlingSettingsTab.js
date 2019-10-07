@@ -11,7 +11,9 @@ MobileThrottling.ThrottlingSettingsTab = class extends UI.VBox {
     super(true);
     this.registerRequiredCSS('mobile_throttling/throttlingSettingsTab.css');
 
-    this.contentElement.createChild('div', 'header').textContent = Common.UIString('Network Throttling Profiles');
+    const header = this.contentElement.createChild('div', 'header');
+    header.textContent = ls`Network Throttling Profiles`;
+    UI.ARIAUtils.markAsHeading(header, 1);
 
     const addButton = UI.createTextButton(
         Common.UIString('Add custom profile...'), this._addButtonClicked.bind(this), 'add-conditions-button');

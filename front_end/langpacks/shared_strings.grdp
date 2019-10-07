@@ -253,6 +253,9 @@
   <message name="IDS_DEVTOOLS_65b4c7424dd695c30efa73da8396c90c" desc="Title of the Profiler tool">
     Profiler
   </message>
+  <message name="IDS_DEVTOOLS_686155af75a60a0f6e9d80c1f7edd3e9" desc="Text in Timeline Tree View of the Performance panel">
+    JavaScript
+  </message>
   <message name="IDS_DEVTOOLS_689202409e48743b914713f96d93947c" desc="Text for the value of something">
     Value
   </message>

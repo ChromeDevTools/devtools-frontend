@@ -48,6 +48,33 @@ Coverage.CoverageView = class extends UI.VBox {
     toolbar.appendToolbarItem(this._filterInput);
 
     toolbar.appendSeparator();
+
+    this._typeFilterValue = null;
+    this._filterByTypeComboBox =
+        new UI.ToolbarComboBox(this._onFilterByTypeChanged.bind(this), ls`Filter coverage by type`);
+    const options = [
+      {
+        label: ls`All`,
+        value: '',
+      },
+      {
+        label: ls`CSS`,
+        value: Coverage.CoverageType.CSS,
+      },
+      {
+        label: ls`JavaScript`,
+        value: Coverage.CoverageType.JavaScript | Coverage.CoverageType.JavaScriptCoarse,
+      },
+    ];
+    for (const option of options) {
+      this._filterByTypeComboBox.addOption(this._filterByTypeComboBox.createOption(option.label, option.value));
+    }
+
+    this._filterByTypeComboBox.setSelectedIndex(0);
+    this._filterByTypeComboBox.setEnabled(false);
+    toolbar.appendToolbarItem(this._filterByTypeComboBox);
+
+    toolbar.appendSeparator();
     this._showContentScriptsSetting = Common.settings.createSetting('showContentScripts', false);
     this._showContentScriptsSetting.addChangeListener(this._onFilterChanged, this);
     const contentScriptsCheckbox = new UI.ToolbarSettingCheckbox(
@@ -102,6 +129,7 @@ Coverage.CoverageView = class extends UI.VBox {
     this._landingPage.show(this._coverageResultsElement);
     this._statusMessageElement.textContent = '';
     this._filterInput.setEnabled(false);
+    this._filterByTypeComboBox.setEnabled(false);
   }
 
   _toggleRecording() {
@@ -154,6 +182,7 @@ Coverage.CoverageView = class extends UI.VBox {
       this._startWithReloadButton.setEnabled(false);
     }
     this._filterInput.setEnabled(true);
+    this._filterByTypeComboBox.setEnabled(true);
     if (this._landingPage.isShowing()) {
       this._landingPage.detach();
     }
@@ -229,6 +258,19 @@ Coverage.CoverageView = class extends UI.VBox {
     this._updateStats();
   }
 
+  _onFilterByTypeChanged() {
+    if (!this._listView) {
+      return;
+    }
+
+    Host.userMetrics.actionTaken(Host.UserMetrics.Action.CoverageReportFiltered);
+
+    const type = this._filterByTypeComboBox.selectedOption().value;
+    this._typeFilterValue = parseInt(type, 10) || null;
+    this._listView.updateFilterAndHighlight(this._textFilterRegExp);
+    this._updateStats();
+  }
+
   /**
    * @param {boolean} ignoreTextFilter
    * @param {!Coverage.URLCoverageInfo} coverageInfo
@@ -242,6 +284,10 @@ Coverage.CoverageView = class extends UI.VBox {
     if (coverageInfo.isContentScript() && !this._showContentScriptsSetting.get()) {
       return false;
     }
+    if (this._typeFilterValue && !(coverageInfo.type() & this._typeFilterValue)) {
+      return false;
+    }
+
     return ignoreTextFilter || !this._textFilterRegExp || this._textFilterRegExp.test(url);
   }
 

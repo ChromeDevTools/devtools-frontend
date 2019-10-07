@@ -442,9 +442,6 @@ Click the reload button <ph name="RELOADBUTTON">$3s<ex>reload</ex></ph> or hit <
   <message name="IDS_DEVTOOLS_681d72abce5de4f856e71bfb1856796b" desc="Text in UIDevtools Utils of the Performance panel">
     Drawing
   </message>
-  <message name="IDS_DEVTOOLS_686155af75a60a0f6e9d80c1f7edd3e9" desc="Text in Timeline Tree View of the Performance panel">
-    JavaScript
-  </message>
   <message name="IDS_DEVTOOLS_6978c23868116ca3eccb809bc699742e" desc="Text in Timeline Panel of the Performance panel">
     - Significant overhead due to paint instrumentation
   </message>

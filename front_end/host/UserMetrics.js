@@ -137,6 +137,7 @@ export const Action = {
   ShowedThirdPartyBadges: 31,
   AuditsViewTrace: 32,
   FilmStripStartedRecording: 33,
+  CoverageReportFiltered: 34,
 };
 
 export const _PanelCodes = {

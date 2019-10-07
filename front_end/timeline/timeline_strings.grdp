@@ -214,9 +214,6 @@ Click the reload button <ph name="RELOADBUTTON">$3s<ex>reload</ex></ph> or hit <
   <message name="IDS_DEVTOOLS_2fc3f5e968c02091e3ba9863088f0651" desc="Text in Timeline UIUtils of the Performance panel">
     Callback Function
   </message>
-  <message name="IDS_DEVTOOLS_31084046e4a000cc4ac980dc68ea9ce9" desc="Text in Timeline UIUtils of the Performance panel">
-    Parse Script
-  </message>
   <message name="IDS_DEVTOOLS_316853cc3718335f11c048e33b9be98a" desc="Text in Timeline UIUtils of the Performance panel">
     Click
   </message>
@@ -519,6 +516,9 @@ Click the reload button <ph name="RELOADBUTTON">$3s<ex>reload</ex></ph> or hit <
   </message>
   <message name="IDS_DEVTOOLS_7ac6c415cd08c0ba2c0a1f54c0a62a52" desc="Text in Timeline UIUtils of the Performance panel">
     ''' (from push)
+  </message>
+  <message name="IDS_DEVTOOLS_80a0135dfd4156f542f097a6351c727f" desc="Text in Timeline UIUtils of the Performance panel">
+    Streaming Compile Script
   </message>
   <message name="IDS_DEVTOOLS_80a4b8755d836d50c19e6eefb976bc2e" desc="Text in Timeline UIUtils of the Performance panel">
     <ph name="SELFCATEGORY_TITLE">$1s<ex>blink.console</ex></ph> (self)

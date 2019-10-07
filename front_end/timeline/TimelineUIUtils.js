@@ -86,7 +86,8 @@ Timeline.TimelineUIUtils = class {
     eventStyles[type.EvaluateScript] = new Timeline.TimelineRecordStyle(ls`Evaluate Script`, scripting);
     eventStyles[type.CompileModule] = new Timeline.TimelineRecordStyle(ls`Compile Module`, scripting);
     eventStyles[type.EvaluateModule] = new Timeline.TimelineRecordStyle(ls`Evaluate Module`, scripting);
-    eventStyles[type.ParseScriptOnBackground] = new Timeline.TimelineRecordStyle(ls`Parse Script`, scripting);
+    eventStyles[type.StreamingCompileScript] =
+        new Timeline.TimelineRecordStyle(ls`Streaming Compile Script`, scripting);
     eventStyles[type.WasmStreamFromResponseCallback] =
         new Timeline.TimelineRecordStyle(ls`Streaming Wasm Response`, scripting);
     eventStyles[type.WasmCompiledModule] = new Timeline.TimelineRecordStyle(ls`Compiled Wasm Module`, scripting);
@@ -533,7 +534,7 @@ Timeline.TimelineUIUtils = class {
         break;
       }
 
-      case recordType.ParseScriptOnBackground:
+      case recordType.StreamingCompileScript:
       case recordType.XHRReadyStateChange:
       case recordType.XHRLoad: {
         const url = eventData['url'];
@@ -697,7 +698,7 @@ Timeline.TimelineUIUtils = class {
         }
         break;
       }
-      case recordType.ParseScriptOnBackground: {
+      case recordType.StreamingCompileScript: {
         const url = eventData['url'];
         if (url) {
           details = linkifyLocation('', url, 0, 0);

@@ -43,7 +43,7 @@ export default class KeyboardShortcut {
     if (typeof keyCode === 'string') {
       keyCode = keyCode.charCodeAt(0) - (/^[a-z]/.test(keyCode) ? 32 : 0);
     }
-    modifiers = modifiers || KeyboardShortcut.Modifiers.None;
+    modifiers = modifiers || Modifiers.None;
     return KeyboardShortcut._makeKeyFromCodeAndModifiers(keyCode, modifiers);
   }
 
@@ -52,18 +52,18 @@ export default class KeyboardShortcut {
    * @return {number}
    */
   static makeKeyFromEvent(keyboardEvent) {
-    let modifiers = KeyboardShortcut.Modifiers.None;
+    let modifiers = Modifiers.None;
     if (keyboardEvent.shiftKey) {
-      modifiers |= KeyboardShortcut.Modifiers.Shift;
+      modifiers |= Modifiers.Shift;
     }
     if (keyboardEvent.ctrlKey) {
-      modifiers |= KeyboardShortcut.Modifiers.Ctrl;
+      modifiers |= Modifiers.Ctrl;
     }
     if (keyboardEvent.altKey) {
-      modifiers |= KeyboardShortcut.Modifiers.Alt;
+      modifiers |= Modifiers.Alt;
     }
     if (keyboardEvent.metaKey) {
-      modifiers |= KeyboardShortcut.Modifiers.Meta;
+      modifiers |= Modifiers.Meta;
     }
 
     // Use either a real or a synthetic keyCode (for events originating from extensions).
@@ -77,7 +77,7 @@ export default class KeyboardShortcut {
    */
   static makeKeyFromEventIgnoringModifiers(keyboardEvent) {
     const keyCode = keyboardEvent.keyCode || keyboardEvent['__keyCode'];
-    return KeyboardShortcut._makeKeyFromCodeAndModifiers(keyCode, KeyboardShortcut.Modifiers.None);
+    return KeyboardShortcut._makeKeyFromCodeAndModifiers(keyCode, Modifiers.None);
   }
 
   /**
@@ -117,8 +117,8 @@ export default class KeyboardShortcut {
     let modifiers = 0;
     let keyString;
     for (let i = 0; i < parts.length; ++i) {
-      if (typeof KeyboardShortcut.Modifiers[parts[i]] !== 'undefined') {
-        modifiers |= KeyboardShortcut.Modifiers[parts[i]];
+      if (typeof Modifiers[parts[i]] !== 'undefined') {
+        modifiers |= Modifiers[parts[i]];
         continue;
       }
       console.assert(
@@ -133,7 +133,7 @@ export default class KeyboardShortcut {
 
     const key = KeyboardShortcut.Keys[keyString] || KeyboardShortcut.KeyBindings[keyString];
     if (key && key.shiftKey) {
-      modifiers |= KeyboardShortcut.Modifiers.Shift;
+      modifiers |= Modifiers.Shift;
     }
     return KeyboardShortcut.makeDescriptor(key ? key : keyString, modifiers);
   }
@@ -184,7 +184,7 @@ export default class KeyboardShortcut {
    */
   static _modifiersToString(modifiers) {
     const isMac = Host.isMac();
-    const m = KeyboardShortcut.Modifiers;
+    const m = Modifiers;
     const modifierNames = new Map([
       [m.Ctrl, isMac ? 'Ctrl\u2004' : 'Ctrl\u200A+\u200A'], [m.Alt, isMac ? '\u2325\u2004' : 'Alt\u200A+\u200A'],
       [m.Shift, isMac ? '\u21e7\u2004' : 'Shift\u200A+\u200A'], [m.Meta, isMac ? '\u2318\u2004' : 'Win\u200A+\u200A']
@@ -281,11 +281,11 @@ export const Keys = {
 export const KeyBindings = {};
 
 (function() {
-for (const key in KeyboardShortcut.Keys) {
-  const descriptor = KeyboardShortcut.Keys[key];
+for (const key in Keys) {
+  const descriptor = Keys[key];
   if (typeof descriptor === 'object' && descriptor['code']) {
     const name = typeof descriptor['name'] === 'string' ? descriptor['name'] : key;
-    KeyboardShortcut.KeyBindings[name] = descriptor;
+    KeyBindings[name] = descriptor;
   }
 }
 })();

@@ -1125,8 +1125,10 @@ ColorPicker.Spectrum.Swatch = class {
     this._swatchInnerElement = swatchElement.createChild('span', 'swatch-inner');
 
     this._swatchOverlayElement = swatchElement.createChild('span', 'swatch-overlay');
-    this._swatchOverlayElement.addEventListener('click', this._onCopyIconClick.bind(this));
+    this._swatchOverlayElement.tabIndex = 0;
+    self.onInvokeElement(this._swatchOverlayElement, this._onCopyText.bind(this));
     this._swatchOverlayElement.addEventListener('mouseout', this._onCopyIconMouseout.bind(this));
+    this._swatchOverlayElement.addEventListener('blur', this._onCopyIconMouseout.bind(this));
     this._swatchCopyIcon = UI.Icon.create('largeicon-copy', 'copy-color-icon');
     this._swatchCopyIcon.title = Common.UIString('Copy color to clipboard');
     this._swatchOverlayElement.appendChild(this._swatchCopyIcon);
@@ -1149,9 +1151,13 @@ ColorPicker.Spectrum.Swatch = class {
     }
   }
 
-  _onCopyIconClick() {
+  /**
+   * @param {!Event} event
+   */
+  _onCopyText(event) {
     this._swatchCopyIcon.setIconType('largeicon-checkmark');
     Host.InspectorFrontendHost.copyText(this._colorString);
+    event.consume();
   }
 
   _onCopyIconMouseout() {

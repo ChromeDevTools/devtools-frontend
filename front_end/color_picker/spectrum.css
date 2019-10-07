@@ -259,7 +259,8 @@
     padding: 4px;
 }
 
-.swatch-overlay:hover {
+.swatch-overlay:hover,
+.swatch-overlay[data-keyboard-focus="true"]:focus {
     background-color: rgba(0, 0, 0, .3);
     opacity: 1;
 }

@@ -273,12 +273,12 @@
             "settingName": "emulatedCSSMediaFeaturePrefersColorScheme",
             "settingType": "enum",
             "storageType": "session",
-            "defaultValue": "no-preference",
+            "defaultValue": "",
             "options": [
                 {
                     "title": "Do not emulate CSS prefers-color-scheme",
                     "text": "No emulation",
-                    "value": "no-preference"
+                    "value": ""
                 },
                 {
                     "title": "Emulate CSS prefers-color-scheme: light",
@@ -300,12 +300,12 @@
           "settingName": "emulatedCSSMediaFeaturePrefersReducedMotion",
           "settingType": "enum",
           "storageType": "session",
-          "defaultValue": "no-preference",
+          "defaultValue": "",
           "options": [
               {
                   "title": "Do not emulate CSS prefers-reduced-motion",
                   "text": "No emulation",
-                  "value": "no-preference"
+                  "value": ""
               },
               {
                   "title": "Emulate CSS prefers-reduced-motion: reduce",

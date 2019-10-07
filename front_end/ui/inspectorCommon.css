@@ -166,6 +166,10 @@ input {
     color: inherit;
 }
 
+input::placeholder {
+    color: rgba(0, 0, 0, 0.54);
+}
+
 :host-context(.-theme-with-dark-background) input[type="checkbox"]:not(.-theme-preserve) {
     -webkit-filter: invert(80%);
 }

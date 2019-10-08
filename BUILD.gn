@@ -590,7 +590,6 @@ all_devtools_files = [
   "front_end/security_test_runner/module.json",
   "front_end/security_test_runner/SecurityTestRunner.js",
   "front_end/services/module.json",
-  "front_end/services/ServiceManager.js",
   "front_end/settings/frameworkBlackboxSettingsTab.css",
   "front_end/settings/FrameworkBlackboxSettingsTab.js",
   "front_end/settings/module.json",
@@ -848,6 +847,8 @@ lighthouse_locale_files = [
 all_devtools_files += lighthouse_locale_files
 
 all_devtools_modules = [
+  "front_end/services/services.js",
+  "front_end/services/ServiceManager.js",
   "front_end/sdk/sdk.js",
   "front_end/sdk/TracingModel.js",
   "front_end/sdk/TracingManager.js",
@@ -1193,6 +1194,8 @@ application_templates = [
 ]
 
 copied_devtools_modules = [
+  "$resources_out_dir/services/services.js",
+  "$resources_out_dir/services/ServiceManager.js",
   "$resources_out_dir/sdk/sdk.js",
   "$resources_out_dir/sdk/TracingModel.js",
   "$resources_out_dir/sdk/TracingManager.js",

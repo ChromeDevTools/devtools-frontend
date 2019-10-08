@@ -10,3 +10,5 @@ import './host/host.js';
 import './protocol/protocol.js';
 import './sdk/sdk.js';
 import './ui/ui.js';
+
+import './services/services.js';

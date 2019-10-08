@@ -3,7 +3,9 @@
         "common",
         "host"
     ],
-    "scripts": [
+    "scripts": [],
+    "modules": [
+        "services.js",
         "ServiceManager.js"
     ]
 }

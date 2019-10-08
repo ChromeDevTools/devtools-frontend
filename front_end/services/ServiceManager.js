@@ -4,20 +4,19 @@
 /**
  * @unrestricted
  */
-Services.ServiceManager = class {
+export default class ServiceManager {
   /**
    * @param {string} serviceName
-   * @return {!Promise<?Services.ServiceManager.Service>}
+   * @return {!Promise<?Service>}
    */
   createRemoteService(serviceName) {
     if (!this._remoteConnection) {
       const url = Root.Runtime.queryParam('service-backend');
       if (!url) {
         console.error('No endpoint address specified');
-        return /** @type {!Promise<?Services.ServiceManager.Service>} */ (Promise.resolve(null));
+        return /** @type {!Promise<?Service>} */ (Promise.resolve(null));
       }
-      this._remoteConnection =
-          new Services.ServiceManager.Connection(new Services.ServiceManager.RemoteServicePort(url));
+      this._remoteConnection = new Connection(new RemoteServicePort(url));
     }
     return this._remoteConnection._createService(serviceName);
   }
@@ -25,7 +24,7 @@ Services.ServiceManager = class {
   /**
    * @param {string} appName
    * @param {string} serviceName
-   * @return {!Promise<?Services.ServiceManager.Service>}
+   * @return {!Promise<?Service>}
    */
   createAppService(appName, serviceName) {
     let url = appName + '.js';
@@ -49,15 +48,15 @@ Services.ServiceManager = class {
     }
 
     const worker = new Worker(url);
-    const connection = new Services.ServiceManager.Connection(new Services.ServiceManager.WorkerServicePort(worker));
+    const connection = new Connection(new WorkerServicePort(worker));
     return connection._createService(serviceName);
   }
-};
+}
 
 /**
  * @unrestricted
  */
-Services.ServiceManager.Connection = class {
+export class Connection {
   /**
    * @param {!ServicePort} port
    */
@@ -68,13 +67,13 @@ Services.ServiceManager.Connection = class {
     this._lastId = 1;
     /** @type {!Map<number, function(?Object)>}*/
     this._callbacks = new Map();
-    /** @type {!Map<string, !Services.ServiceManager.Service>}*/
+    /** @type {!Map<string, !Service>}*/
     this._services = new Map();
   }
 
   /**
    * @param {string} serviceName
-   * @return {!Promise<?Services.ServiceManager.Service>}
+   * @return {!Promise<?Service>}
    */
   _createService(serviceName) {
     return this._sendCommand(serviceName + '.create').then(result => {
@@ -82,14 +81,14 @@ Services.ServiceManager.Connection = class {
         console.error('Could not initialize service: ' + serviceName);
         return null;
       }
-      const service = new Services.ServiceManager.Service(this, serviceName, result.id);
+      const service = new Service(this, serviceName, result.id);
       this._services.set(serviceName + ':' + result.id, service);
       return service;
     });
   }
 
   /**
-   * @param {!Services.ServiceManager.Service} service
+   * @param {!Service} service
    */
   _serviceDisposed(service) {
     this._services.delete(service._serviceName + ':' + service._objectId);
@@ -156,14 +155,14 @@ Services.ServiceManager.Connection = class {
     }
     this._services.clear();
   }
-};
+}
 
 /**
  * @unrestricted
  */
-Services.ServiceManager.Service = class {
+export class Service {
   /**
-   * @param {!Services.ServiceManager.Connection} connection
+   * @param {!Connection} connection
    * @param {string} serviceName
    * @param {string} objectId
    */
@@ -216,13 +215,13 @@ Services.ServiceManager.Service = class {
     }
     handler(params);
   }
-};
+}
 
 /**
  * @implements {ServicePort}
  * @unrestricted
  */
-Services.ServiceManager.RemoteServicePort = class {
+export class RemoteServicePort {
   /**
    * @param {string} url
    */
@@ -251,7 +250,7 @@ Services.ServiceManager.RemoteServicePort = class {
 
     /**
      * @param {function(boolean)} fulfill
-     * @this {Services.ServiceManager.RemoteServicePort}
+     * @this {RemoteServicePort}
      */
     function promiseBody(fulfill) {
       let socket;
@@ -265,7 +264,7 @@ Services.ServiceManager.RemoteServicePort = class {
       }
 
       /**
-       * @this {Services.ServiceManager.RemoteServicePort}
+       * @this {RemoteServicePort}
        */
       function onConnect() {
         this._socket = socket;
@@ -274,14 +273,14 @@ Services.ServiceManager.RemoteServicePort = class {
 
       /**
        * @param {!Event} event
-       * @this {Services.ServiceManager.RemoteServicePort}
+       * @this {RemoteServicePort}
        */
       function onMessage(event) {
         this._messageHandler(event.data);
       }
 
       /**
-       * @this {Services.ServiceManager.RemoteServicePort}
+       * @this {RemoteServicePort}
        */
       function onClose() {
         if (!this._socket) {
@@ -331,13 +330,13 @@ Services.ServiceManager.RemoteServicePort = class {
       this._closeHandler();
     }
   }
-};
+}
 
 /**
  * @implements {ServicePort}
  * @unrestricted
  */
-Services.ServiceManager.WorkerServicePort = class {
+export class WorkerServicePort {
   /**
    * @param {!Worker} worker
    */
@@ -352,7 +351,7 @@ Services.ServiceManager.WorkerServicePort = class {
 
     /**
      * @param {!Event} event
-     * @this {Services.ServiceManager.WorkerServicePort}
+     * @this {WorkerServicePort}
      */
     function onMessage(event) {
       if (event.data === 'workerReady') {
@@ -401,6 +400,27 @@ Services.ServiceManager.WorkerServicePort = class {
       return false;
     });
   }
-};
+}
 
-Services.serviceManager = new Services.ServiceManager();
+/* Legacy exported object */
+self.Services = self.Services || {};
+
+/* Legacy exported object */
+Services = Services || {};
+
+/** @constructor */
+Services.ServiceManager = ServiceManager;
+
+/** @constructor */
+Services.ServiceManager.Connection = Connection;
+
+/** @constructor */
+Services.ServiceManager.Service = Service;
+
+/** @constructor */
+Services.ServiceManager.RemoteServicePort = RemoteServicePort;
+
+/** @constructor */
+Services.ServiceManager.WorkerServicePort = WorkerServicePort;
+
+Services.serviceManager = new ServiceManager();

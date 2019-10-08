@@ -1,0 +1,34 @@
+{
+  "extensions": [
+      {
+          "type": "view",
+          "location": "panel",
+          "id": "media",
+          "title": "Media",
+          "persistence": "closeable",
+          "order": 100,
+          "className": "Media.MainView",
+          "tags": "media, video",
+          "experiment": "mediaInspector"
+      }
+  ],
+  "dependencies": [
+      "components",
+      "sdk",
+      "ui",
+      "data_grid"
+  ],
+  "scripts": [
+      "EventDisplayTable.js",
+      "MainView.js",
+      "MediaTable.js",
+      "PlayerDetailView.js",
+      "PlayerListView.js",
+      "MediaModel.js"
+  ],
+  "resources": [
+    "eventDisplayTable.css",
+    "mediaView.css",
+    "playerListView.css"
+  ]
+}

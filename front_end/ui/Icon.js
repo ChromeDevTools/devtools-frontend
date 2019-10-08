@@ -139,6 +139,9 @@ export const Descriptors = {
   'smallicon-clear-info': {position: 'f2', spritesheet: 'smallicons'},
   'smallicon-clear-error': {position: 'f3', spritesheet: 'smallicons'},
   'smallicon-account-circle': {position: 'f4', spritesheet: 'smallicons'},
+  'smallicon-videoplayer-paused': {position: 'f6', spritesheet: 'smallicons', isMask: true},
+  'smallicon-videoplayer-playing': {position: 'g6', spritesheet: 'smallicons', isMask: true},
+  'smallicon-videoplayer-destroyed': {position: 'g5', spritesheet: 'smallicons', isMask: true},
 
   'mediumicon-clear-storage': {position: 'a4', spritesheet: 'mediumicons', isMask: true},
   'mediumicon-cookie': {position: 'b4', spritesheet: 'mediumicons', isMask: true},

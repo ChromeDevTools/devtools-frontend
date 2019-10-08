@@ -8,11 +8,11 @@
    xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="110"
+   width="130"
    height="110"
    id="svg4185"
    version="1.1"
-   inkscape:version="0.92.2pre0 (973e216, 2017-07-25)"
+   inkscape:version="0.92.4 (5da689c313, 2019-01-14)"
    sodipodi:docname="smallIcons.svg"
    inkscape:export-filename="/Users/pfeldman/code/chromium/src/third_party/WebKit/Source/devtools/front_end/Images/smallIcons_2x.png"
    inkscape:export-xdpi="180"
@@ -78,16 +78,16 @@
      guidetolerance="10"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:window-width="1272"
-     inkscape:window-height="1006"
+     inkscape:window-width="1432"
+     inkscape:window-height="1419"
      id="namedview4455"
      showgrid="true"
-     inkscape:zoom="7.4167646"
-     inkscape:cx="72.154899"
-     inkscape:cy="32.871453"
-     inkscape:window-x="768"
-     inkscape:window-y="0"
-     inkscape:window-maximized="0"
+     inkscape:zoom="5.2444445"
+     inkscape:cx="94.607116"
+     inkscape:cy="82.226632"
+     inkscape:window-x="4002"
+     inkscape:window-y="1063"
+     inkscape:window-maximized="1"
      inkscape:current-layer="svg4185">
     <inkscape:grid
        type="xygrid"
@@ -1046,4 +1046,61 @@
      inkscape:connector-curvature="0"
      d="M 88.06,3.059999 85,6.113332 81.94,3.059999 l -0.94,0.94 4,4 4,-4 z"
      id="path3974" />
+  <path
+     style="stroke-width:0.02383474"
+     d=""
+     id="path5923"
+     inkscape:connector-curvature="0" />
+  <path
+     style="stroke-width:0.02383474"
+     d=""
+     id="path5925"
+     inkscape:connector-curvature="0" />
+  <path
+     style="stroke-width:0.02383474"
+     d=""
+     id="path5927"
+     inkscape:connector-curvature="0" />
+  <rect
+     id="rect5943"
+     width="2"
+     height="6"
+     x="102"
+     y="1.9999998"
+     style="stroke-width:1.13202608" />
+  <a
+     id="a6015">
+    <rect
+       style="stroke-width:1.13202608"
+       y="2"
+       x="106"
+       height="6"
+       width="2"
+       id="rect5943-5" />
+  </a>
+  <text
+     xml:space="preserve"
+     style="font-style:normal;font-weight:normal;line-height:0%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#cccccc;fill-opacity:1;stroke:none"
+     x="122.66023"
+     y="117.2188"
+     id="text5191-77-3-3"><tspan
+       sodipodi:role="line"
+       id="tspan5193-6-6-5"
+       x="122.66023"
+       y="117.2188"
+       style="font-size:8px;line-height:1.25;font-family:sans-serif">g</tspan></text>
+  <path
+     inkscape:transform-center-x="0.029808665"
+     inkscape:transform-center-y="-0.33844643"
+     d="m 128,5 -6,3 V 2 Z"
+     id="path6489"
+     inkscape:connector-curvature="0"
+     sodipodi:nodetypes="cccc" />
+  <path
+     inkscape:transform-center-x="0.34573841"
+     inkscape:transform-center-y="-0.78316773"
+     d="M 128,26.5 126.5,28 125,26.5 123.5,28 122,26.5 123.5,25 122,23.5 l 1.5,-1.5 1.5,1.5 1.5,-1.5 1.5,1.5 -1.5,1.5 z"
+     id="path6495"
+     inkscape:connector-curvature="0"
+     sodipodi:nodetypes="ccccccccccccc" />
 </svg>

@@ -41,6 +41,7 @@
       <part file="../layer_viewer/layer_viewer_strings.grdp" />
       <part file="../layers/layers_strings.grdp" />
       <part file="../main/main_strings.grdp" />
+      <part file="../media/media_strings.grdp" />
       <part file="../mobile_throttling/mobile_throttling_strings.grdp" />
       <part file="../network/network_strings.grdp" />
       <part file="../node_debugger/node_debugger_strings.grdp" />

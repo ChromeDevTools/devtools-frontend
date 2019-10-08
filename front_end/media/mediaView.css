@@ -1,0 +1,26 @@
+/*
+ * Copyright (c) 2019 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+
+.playerlist-sidebar {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.playerlist-sidebar-header {
+  font-size: 22px;
+  padding: 8px 20px;
+  border-bottom:1px solid var(--divider-color);
+}
+
+.playerlist-entry-title>pre {
+  margin: 0px;
+}
+
+.playerlist-entry-title {
+  float: left;
+}

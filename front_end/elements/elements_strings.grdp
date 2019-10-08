@@ -189,9 +189,6 @@
   <message name="IDS_DEVTOOLS_9a0364b9e99bb480dd25e1f0284c8555" desc="Text in Metrics Sidebar Pane of the Elements panel">
     content
   </message>
-  <message name="IDS_DEVTOOLS_9fc2d28c05ed9eb1d75ba4465abf15a9" desc="Title of the 'Properties' tool in the sidebar of the elements tool">
-    Properties
-  </message>
   <message name="IDS_DEVTOOLS_a05fb8660778069f6d4a5c5b40a6dbc9" desc="Title of a setting under the Elements category in Settings">
     Show user agent shadow DOM
   </message>

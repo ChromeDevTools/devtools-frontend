@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<grit-part>
+  <message name="IDS_DEVTOOLS_421b47ffd946ca083b65cd668c6b17e6" desc="Video player">
+    video
+  </message>
+  <message name="IDS_DEVTOOLS_62933a2951ef01f4eafd9bdf4d3cd2f0" desc="Media player">
+    media
+  </message>
+  <message name="IDS_DEVTOOLS_83341e272df7a4f2982e7b96b7f26a4a" desc="Button text for viewing properties.">
+    Player properties
+  </message>
+  <message name="IDS_DEVTOOLS_87f9f735a1d36793ceaecd4e47124b63" desc="Button text for viewing events.">
+    Events
+  </message>
+  <message name="IDS_DEVTOOLS_cf6523ecab64a91c7a9b3d83b58f9e61" desc="Hover text for the Events button.">
+    Player events
+  </message>
+  <message name="IDS_DEVTOOLS_93ec972c68d5caca43370a9746a08cea" desc="Side-panel entry title text for the players section.">
+    Players
+  </message>
+  <message name="IDS_DEVTOOLS_a20467c4e87b5469cbb1a6c31775393c" desc="Side-panel entry title text for the audio devices section.">
+    Audio I/O
+  </message>
+  <message name="IDS_DEVTOOLS_d9f6db9c0f0579391eccedbac66aef9b" desc="Side-panel entry title text for the video capture devices section.">
+    Video Capture Devices
+  </message>
+</grit-part>

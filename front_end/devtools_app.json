@@ -25,7 +25,8 @@
     { "name": "security" },
     { "name": "timeline" },
     { "name": "timeline_model" },
-    { "name": "web_audio" }
+    { "name": "web_audio" },
+    { "name": "media" }
   ],
   "extends": "shell",
   "has_html": true

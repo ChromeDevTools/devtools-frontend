@@ -382,6 +382,9 @@
   <message name="IDS_DEVTOOLS_9f29da220ed82809ec5dd70af4e52904" desc="Text for the total time of something">
     Total Time
   </message>
+  <message name="IDS_DEVTOOLS_9fc2d28c05ed9eb1d75ba4465abf15a9" desc="Title of the 'Properties' tool in the sidebar of the elements tool">
+    Properties
+  </message>
   <message name="IDS_DEVTOOLS_a02c83a7dbd96295beaefb72c2bee2de" desc="Text that refers to the main target">
     Main
   </message>

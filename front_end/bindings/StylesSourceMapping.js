@@ -32,7 +32,7 @@
  * @implements {Bindings.CSSWorkspaceBinding.SourceMapping}
  * @unrestricted
  */
-Bindings.StylesSourceMapping = class {
+export default class StylesSourceMapping {
   /**
    * @param {!SDK.CSSModel} cssModel
    * @param {!Workspace.Workspace} workspace
@@ -44,7 +44,7 @@ Bindings.StylesSourceMapping = class {
         workspace, 'css:' + target.id(), Workspace.projectTypes.Network, '', false /* isServiceProject */);
     Bindings.NetworkProject.setTargetForProject(this._project, target);
 
-    /** @type {!Map.<string, !Bindings.StyleFile>} */
+    /** @type {!Map.<string, !StyleFile>} */
     this._styleFiles = new Map();
     this._eventListeners = [
       this._cssModel.addEventListener(SDK.CSSModel.Events.StyleSheetAdded, this._styleSheetAdded, this),
@@ -82,7 +82,7 @@ Bindings.StylesSourceMapping = class {
    * @return {!Array<!SDK.CSSLocation>}
    */
   uiLocationToRawLocations(uiLocation) {
-    const styleFile = uiLocation.uiSourceCode[Bindings.StyleFile._symbol];
+    const styleFile = uiLocation.uiSourceCode[StyleFile._symbol];
     if (!styleFile) {
       return [];
     }
@@ -124,7 +124,7 @@ Bindings.StylesSourceMapping = class {
     const url = header.resourceURL();
     let styleFile = this._styleFiles.get(url);
     if (!styleFile) {
-      styleFile = new Bindings.StyleFile(this._cssModel, this._project, header);
+      styleFile = new StyleFile(this._cssModel, this._project, header);
       this._styleFiles.set(url, styleFile);
     } else {
       styleFile.addHeader(header);
@@ -169,13 +169,13 @@ Bindings.StylesSourceMapping = class {
     Common.EventTarget.removeEventListeners(this._eventListeners);
     this._project.removeProject();
   }
-};
+}
 
 /**
  * @implements {Common.ContentProvider}
  * @unrestricted
  */
-Bindings.StyleFile = class {
+export class StyleFile {
   /**
    * @param {!SDK.CSSModel} cssModel
    * @param {!Bindings.ContentProviderBasedProject} project
@@ -193,7 +193,7 @@ Bindings.StyleFile = class {
     const metadata = Bindings.metadataForURL(target, header.frameId, url);
 
     this._uiSourceCode = this._project.createUISourceCode(url, header.contentType());
-    this._uiSourceCode[Bindings.StyleFile._symbol] = this;
+    this._uiSourceCode[StyleFile._symbol] = this;
     Bindings.NetworkProject.setInitialFrameAttribution(this._uiSourceCode, header.frameId);
     this._project.addUISourceCodeWithProvider(this._uiSourceCode, this, metadata, 'text/css');
 
@@ -203,7 +203,7 @@ Bindings.StyleFile = class {
       this._uiSourceCode.addEventListener(
           Workspace.UISourceCode.Events.WorkingCopyCommitted, this._workingCopyCommitted, this)
     ];
-    this._throttler = new Common.Throttler(Bindings.StyleFile.updateTimeout);
+    this._throttler = new Common.Throttler(StyleFile.updateTimeout);
     this._terminated = false;
   }
 
@@ -355,8 +355,20 @@ Bindings.StyleFile = class {
   searchInContent(query, caseSensitive, isRegex) {
     return this._headers.firstValue().originalContentProvider().searchInContent(query, caseSensitive, isRegex);
   }
-};
+}
 
-Bindings.StyleFile._symbol = Symbol('Bindings.StyleFile._symbol');
+StyleFile._symbol = Symbol('Bindings.StyleFile._symbol');
 
-Bindings.StyleFile.updateTimeout = 200;
+StyleFile.updateTimeout = 200;
+
+/* Legacy exported object */
+self.Bindings = self.Bindings || {};
+
+/* Legacy exported object */
+Bindings = Bindings || {};
+
+/** @constructor */
+Bindings.StylesSourceMapping = StylesSourceMapping;
+
+/** @constructor */
+Bindings.StyleFile = StyleFile;

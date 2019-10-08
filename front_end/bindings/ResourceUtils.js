@@ -31,7 +31,7 @@
  * @param {string} url
  * @return {?SDK.Resource}
  */
-Bindings.resourceForURL = function(url) {
+export function resourceForURL(url) {
   for (const resourceTreeModel of SDK.targetManager.models(SDK.ResourceTreeModel)) {
     const resource = resourceTreeModel.resourceForURL(url);
     if (resource) {
@@ -39,22 +39,22 @@ Bindings.resourceForURL = function(url) {
     }
   }
   return null;
-};
+}
 
 /**
  * @param {function(!SDK.Resource)} callback
  */
-Bindings.forAllResources = function(callback) {
+export function forAllResources(callback) {
   for (const resourceTreeModel of SDK.targetManager.models(SDK.ResourceTreeModel)) {
     resourceTreeModel.forAllResources(callback);
   }
-};
+}
 
 /**
  * @param {string} url
  * @return {string}
  */
-Bindings.displayNameForURL = function(url) {
+export function displayNameForURL(url) {
   if (!url) {
     return '';
   }
@@ -91,7 +91,7 @@ Bindings.displayNameForURL = function(url) {
 
   const displayName = url.trimURL(parsedURL.host);
   return displayName === '/' ? parsedURL.host + '/' : displayName;
-};
+}
 
 /**
  * @param {!SDK.Target} target
@@ -99,7 +99,7 @@ Bindings.displayNameForURL = function(url) {
  * @param {string} url
  * @return {?Workspace.UISourceCodeMetadata}
  */
-Bindings.metadataForURL = function(target, frameId, url) {
+export function metadataForURL(target, frameId, url) {
   const resourceTreeModel = target.model(SDK.ResourceTreeModel);
   if (!resourceTreeModel) {
     return null;
@@ -109,24 +109,24 @@ Bindings.metadataForURL = function(target, frameId, url) {
     return null;
   }
   return Bindings.resourceMetadata(frame.resourceForURL(url));
-};
+}
 
 /**
  * @param {?SDK.Resource} resource
  * @return {?Workspace.UISourceCodeMetadata}
  */
-Bindings.resourceMetadata = function(resource) {
+export function resourceMetadata(resource) {
   if (!resource || (typeof resource.contentSize() !== 'number' && !resource.lastModified())) {
     return null;
   }
   return new Workspace.UISourceCodeMetadata(resource.lastModified(), resource.contentSize());
-};
+}
 
 /**
  * @param {!SDK.Script} script
  * @return {string}
  */
-Bindings.frameIdForScript = function(script) {
+export function frameIdForScript(script) {
   const executionContext = script.executionContext();
   if (executionContext) {
     return executionContext.frameId || '';
@@ -137,4 +137,17 @@ Bindings.frameIdForScript = function(script) {
     return '';
   }
   return resourceTreeModel.mainFrame.id;
-};
+}
+
+/* Legacy exported object */
+self.Bindings = self.Bindings || {};
+
+/* Legacy exported object */
+Bindings = Bindings || {};
+
+Bindings.resourceForURL = resourceForURL;
+Bindings.forAllResources = forAllResources;
+Bindings.displayNameForURL = displayNameForURL;
+Bindings.metadataForURL = metadataForURL;
+Bindings.resourceMetadata = resourceMetadata;
+Bindings.frameIdForScript = frameIdForScript;

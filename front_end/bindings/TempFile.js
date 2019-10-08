@@ -28,7 +28,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-Bindings.TempFile = class {
+export default class TempFile {
   constructor() {
     /** @type {?Blob} */
     this._lastBlob = null;
@@ -103,14 +103,14 @@ Bindings.TempFile = class {
   remove() {
     this._lastBlob = null;
   }
-};
+}
 
 /**
  * @implements {SDK.BackingStorage}
  */
-Bindings.TempFileBackingStorage = class {
+export class TempFileBackingStorage {
   constructor() {
-    /** @type {?Bindings.TempFile} */
+    /** @type {?TempFile} */
     this._file = null;
     /** @type {!Array<string>} */
     this._strings;
@@ -150,7 +150,7 @@ Bindings.TempFileBackingStorage = class {
       return;
     }
     if (!this._file) {
-      this._file = new Bindings.TempFile();
+      this._file = new TempFile();
     }
     this._stringsLength = 0;
     this._file.write(this._strings.splice(0));
@@ -183,12 +183,24 @@ Bindings.TempFileBackingStorage = class {
   writeToStream(outputStream) {
     return this._file ? this._file.copyToOutputStream(outputStream) : Promise.resolve(null);
   }
-};
+}
+
+/* Legacy exported object */
+self.Bindings = self.Bindings || {};
+
+/* Legacy exported object */
+Bindings = Bindings || {};
+
+/** @constructor */
+Bindings.TempFile = TempFile;
+
+/** @constructor */
+Bindings.TempFileBackingStorage = TempFileBackingStorage;
 
 /**
  * @typedef {{
- *      startOffset: number,
- *      endOffset: number
- * }}
- */
+  *      startOffset: number,
+  *      endOffset: number
+  * }}
+  */
 Bindings.TempFileBackingStorage.Chunk;

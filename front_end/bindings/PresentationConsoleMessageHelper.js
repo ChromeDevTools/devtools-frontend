@@ -31,7 +31,7 @@
 /**
  * @implements {SDK.SDKModelObserver<!SDK.DebuggerModel>}
  */
-Bindings.PresentationConsoleMessageManager = class {
+export class PresentationConsoleMessageManager {
   constructor() {
     SDK.targetManager.observeModels(SDK.DebuggerModel, this);
 
@@ -47,8 +47,7 @@ Bindings.PresentationConsoleMessageManager = class {
    * @param {!SDK.DebuggerModel} debuggerModel
    */
   modelAdded(debuggerModel) {
-    debuggerModel[Bindings.PresentationConsoleMessageManager._symbol] =
-        new Bindings.PresentationConsoleMessageHelper(debuggerModel);
+    debuggerModel[PresentationConsoleMessageManager._symbol] = new PresentationConsoleMessageHelper(debuggerModel);
   }
 
   /**
@@ -56,7 +55,7 @@ Bindings.PresentationConsoleMessageManager = class {
    * @param {!SDK.DebuggerModel} debuggerModel
    */
   modelRemoved(debuggerModel) {
-    debuggerModel[Bindings.PresentationConsoleMessageManager._symbol]._consoleCleared();
+    debuggerModel[PresentationConsoleMessageManager._symbol]._consoleCleared();
   }
 
   /**
@@ -68,19 +67,19 @@ Bindings.PresentationConsoleMessageManager = class {
       return;
     }
     const debuggerModel = message.runtimeModel().debuggerModel();
-    debuggerModel[Bindings.PresentationConsoleMessageManager._symbol]._consoleMessageAdded(message);
+    debuggerModel[PresentationConsoleMessageManager._symbol]._consoleMessageAdded(message);
   }
 
   _consoleCleared() {
     for (const debuggerModel of SDK.targetManager.models(SDK.DebuggerModel)) {
-      debuggerModel[Bindings.PresentationConsoleMessageManager._symbol]._consoleCleared();
+      debuggerModel[PresentationConsoleMessageManager._symbol]._consoleCleared();
     }
   }
-};
+}
 
-Bindings.PresentationConsoleMessageManager._symbol = Symbol('PresentationConsoleMessageHelper');
+PresentationConsoleMessageManager._symbol = Symbol('PresentationConsoleMessageHelper');
 
-Bindings.PresentationConsoleMessageHelper = class {
+export default class PresentationConsoleMessageHelper {
   /**
    * @param {!SDK.DebuggerModel} debuggerModel
    */
@@ -90,7 +89,7 @@ Bindings.PresentationConsoleMessageHelper = class {
     /** @type {!Object.<string, !Array.<!SDK.ConsoleMessage>>} */
     this._pendingConsoleMessages = {};
 
-    /** @type {!Array.<!Bindings.PresentationConsoleMessage>} */
+    /** @type {!Array.<!PresentationConsoleMessage>} */
     this._presentationConsoleMessages = [];
 
     // TODO(dgozman): setImmediate because we race with DebuggerWorkspaceBinding on ParsedScriptSource event delivery.
@@ -137,8 +136,7 @@ Bindings.PresentationConsoleMessageHelper = class {
    * @param {!SDK.DebuggerModel.Location} rawLocation
    */
   _addConsoleMessageToScript(message, rawLocation) {
-    this._presentationConsoleMessages.push(
-        new Bindings.PresentationConsoleMessage(message, rawLocation, this._locationPool));
+    this._presentationConsoleMessages.push(new PresentationConsoleMessage(message, rawLocation, this._locationPool));
   }
 
   /**
@@ -198,12 +196,12 @@ Bindings.PresentationConsoleMessageHelper = class {
     this._presentationConsoleMessages = [];
     this._locationPool.disposeAll();
   }
-};
+}
 
 /**
  * @unrestricted
  */
-Bindings.PresentationConsoleMessage = class {
+export class PresentationConsoleMessage {
   /**
    * @param {!SDK.ConsoleMessage} message
    * @param {!SDK.DebuggerModel.Location} rawLocation
@@ -237,4 +235,19 @@ Bindings.PresentationConsoleMessage = class {
       this._uiMessage.remove();
     }
   }
-};
+}
+
+/* Legacy exported object */
+self.Bindings = self.Bindings || {};
+
+/* Legacy exported object */
+Bindings = Bindings || {};
+
+/** @constructor */
+Bindings.PresentationConsoleMessageHelper = PresentationConsoleMessageHelper;
+
+/** @constructor */
+Bindings.PresentationConsoleMessageManager = PresentationConsoleMessageManager;
+
+/** @constructor */
+Bindings.PresentationConsoleMessage = PresentationConsoleMessage;

@@ -27,10 +27,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-Bindings.NetworkProjectManager = class extends Common.Object {
-};
+export class NetworkProjectManager extends Common.Object {}
 
-Bindings.NetworkProjectManager.Events = {
+export const Events = {
   FrameAttributionAdded: Symbol('FrameAttributionAdded'),
   FrameAttributionRemoved: Symbol('FrameAttributionRemoved')
 };
@@ -38,13 +37,13 @@ Bindings.NetworkProjectManager.Events = {
 /**
  * @unrestricted
  */
-Bindings.NetworkProject = class {
+export default class NetworkProject {
   /**
    * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {string} frameId
    */
   static _resolveFrame(uiSourceCode, frameId) {
-    const target = Bindings.NetworkProject.targetForUISourceCode(uiSourceCode);
+    const target = NetworkProject.targetForUISourceCode(uiSourceCode);
     const resourceTreeModel = target && target.model(SDK.ResourceTreeModel);
     return resourceTreeModel ? resourceTreeModel.frameForId(frameId) : null;
   }
@@ -54,14 +53,14 @@ Bindings.NetworkProject = class {
    * @param {string} frameId
    */
   static setInitialFrameAttribution(uiSourceCode, frameId) {
-    const frame = Bindings.NetworkProject._resolveFrame(uiSourceCode, frameId);
+    const frame = NetworkProject._resolveFrame(uiSourceCode, frameId);
     if (!frame) {
       return;
     }
     /** @type {!Map<string, !{frame: !SDK.ResourceTreeFrame, count: number}>} */
     const attribution = new Map();
     attribution.set(frameId, {frame: frame, count: 1});
-    uiSourceCode[Bindings.NetworkProject._frameAttributionSymbol] = attribution;
+    uiSourceCode[_frameAttributionSymbol] = attribution;
   }
 
   /**
@@ -69,13 +68,13 @@ Bindings.NetworkProject = class {
    * @param {!Workspace.UISourceCode} toUISourceCode
    */
   static cloneInitialFrameAttribution(fromUISourceCode, toUISourceCode) {
-    const fromAttribution = fromUISourceCode[Bindings.NetworkProject._frameAttributionSymbol];
+    const fromAttribution = fromUISourceCode[_frameAttributionSymbol];
     if (!fromAttribution) {
       return;
     }
     /** @type {!Map<string, !{frame: !SDK.ResourceTreeFrame, count: number}>} */
     const toAttribution = new Map();
-    toUISourceCode[Bindings.NetworkProject._frameAttributionSymbol] = toAttribution;
+    toUISourceCode[_frameAttributionSymbol] = toAttribution;
     for (const frameId of fromAttribution.keys()) {
       const value = fromAttribution.get(frameId);
       toAttribution.set(frameId, {frame: value.frame, count: value.count});
@@ -87,11 +86,11 @@ Bindings.NetworkProject = class {
    * @param {string} frameId
    */
   static addFrameAttribution(uiSourceCode, frameId) {
-    const frame = Bindings.NetworkProject._resolveFrame(uiSourceCode, frameId);
+    const frame = NetworkProject._resolveFrame(uiSourceCode, frameId);
     if (!frame) {
       return;
     }
-    const frameAttribution = uiSourceCode[Bindings.NetworkProject._frameAttributionSymbol];
+    const frameAttribution = uiSourceCode[_frameAttributionSymbol];
     const attributionInfo = frameAttribution.get(frameId) || {frame: frame, count: 0};
     attributionInfo.count += 1;
     frameAttribution.set(frameId, attributionInfo);
@@ -100,8 +99,7 @@ Bindings.NetworkProject = class {
     }
 
     const data = {uiSourceCode: uiSourceCode, frame: frame};
-    Bindings.networkProjectManager.dispatchEventToListeners(
-        Bindings.NetworkProjectManager.Events.FrameAttributionAdded, data);
+    Bindings.networkProjectManager.dispatchEventToListeners(Events.FrameAttributionAdded, data);
   }
 
   /**
@@ -109,7 +107,7 @@ Bindings.NetworkProject = class {
    * @param {string} frameId
    */
   static removeFrameAttribution(uiSourceCode, frameId) {
-    const frameAttribution = uiSourceCode[Bindings.NetworkProject._frameAttributionSymbol];
+    const frameAttribution = uiSourceCode[_frameAttributionSymbol];
     if (!frameAttribution) {
       return;
     }
@@ -121,8 +119,7 @@ Bindings.NetworkProject = class {
     }
     frameAttribution.delete(frameId);
     const data = {uiSourceCode: uiSourceCode, frame: attributionInfo.frame};
-    Bindings.networkProjectManager.dispatchEventToListeners(
-        Bindings.NetworkProjectManager.Events.FrameAttributionRemoved, data);
+    Bindings.networkProjectManager.dispatchEventToListeners(Events.FrameAttributionRemoved, data);
   }
 
   /**
@@ -130,7 +127,7 @@ Bindings.NetworkProject = class {
    * @return {?SDK.Target} target
    */
   static targetForUISourceCode(uiSourceCode) {
-    return uiSourceCode.project()[Bindings.NetworkProject._targetSymbol] || null;
+    return uiSourceCode.project()[_targetSymbol] || null;
   }
 
   /**
@@ -138,7 +135,7 @@ Bindings.NetworkProject = class {
    * @param {!SDK.Target} target
    */
   static setTargetForProject(project, target) {
-    project[Bindings.NetworkProject._targetSymbol] = target;
+    project[_targetSymbol] = target;
   }
 
   /**
@@ -146,16 +143,33 @@ Bindings.NetworkProject = class {
    * @return {!Array<!SDK.ResourceTreeFrame>}
    */
   static framesForUISourceCode(uiSourceCode) {
-    const target = Bindings.NetworkProject.targetForUISourceCode(uiSourceCode);
+    const target = NetworkProject.targetForUISourceCode(uiSourceCode);
     const resourceTreeModel = target && target.model(SDK.ResourceTreeModel);
-    const attribution = uiSourceCode[Bindings.NetworkProject._frameAttributionSymbol];
+    const attribution = uiSourceCode[_frameAttributionSymbol];
     if (!resourceTreeModel || !attribution) {
       return [];
     }
     const frames = Array.from(attribution.keys()).map(frameId => resourceTreeModel.frameForId(frameId));
     return frames.filter(frame => !!frame);
   }
-};
+}
 
-Bindings.NetworkProject._targetSymbol = Symbol('target');
-Bindings.NetworkProject._frameAttributionSymbol = Symbol('Bindings.NetworkProject._frameAttributionSymbol');
+export const _targetSymbol = Symbol('target');
+export const _frameAttributionSymbol = Symbol('_frameAttributionSymbol');
+
+/* Legacy exported object */
+self.Bindings = self.Bindings || {};
+
+/* Legacy exported object */
+Bindings = Bindings || {};
+
+/** @constructor */
+Bindings.NetworkProjectManager = NetworkProjectManager;
+
+Bindings.NetworkProjectManager.Events = Events;
+
+/** @constructor */
+Bindings.NetworkProject = NetworkProject;
+
+Bindings.NetworkProject._targetSymbol = _targetSymbol;
+Bindings.NetworkProject._frameAttributionSymbol = _frameAttributionSymbol;

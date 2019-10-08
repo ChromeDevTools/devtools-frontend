@@ -5,7 +5,7 @@
 /**
  * @implements {SDK.SDKModelObserver<!SDK.CSSModel>}
  */
-Bindings.CSSWorkspaceBinding = class {
+export default class CSSWorkspaceBinding {
   /**
    * @param {!SDK.TargetManager} targetManager
    * @param {!Workspace.Workspace} workspace
@@ -13,9 +13,9 @@ Bindings.CSSWorkspaceBinding = class {
   constructor(targetManager, workspace) {
     this._workspace = workspace;
 
-    /** @type {!Map.<!SDK.CSSModel, !Bindings.CSSWorkspaceBinding.ModelInfo>} */
+    /** @type {!Map.<!SDK.CSSModel, !ModelInfo>} */
     this._modelToInfo = new Map();
-    /** @type {!Array<!Bindings.CSSWorkspaceBinding.SourceMapping>} */
+    /** @type {!Array<!SourceMapping>} */
     this._sourceMappings = [];
     targetManager.observeModels(SDK.CSSModel, this);
   }
@@ -25,7 +25,7 @@ Bindings.CSSWorkspaceBinding = class {
    * @param {!SDK.CSSModel} cssModel
    */
   modelAdded(cssModel) {
-    this._modelToInfo.set(cssModel, new Bindings.CSSWorkspaceBinding.ModelInfo(cssModel, this._workspace));
+    this._modelToInfo.set(cssModel, new ModelInfo(cssModel, this._workspace));
   }
 
   /**
@@ -48,7 +48,7 @@ Bindings.CSSWorkspaceBinding = class {
    * @param {!SDK.CSSLocation} rawLocation
    * @param {function(!Bindings.LiveLocation)} updateDelegate
    * @param {!Bindings.LiveLocationPool} locationPool
-   * @return {!Bindings.CSSWorkspaceBinding.LiveLocation}
+   * @return {!LiveLocation}
    */
   createLiveLocation(rawLocation, updateDelegate, locationPool) {
     return this._modelToInfo.get(rawLocation.cssModel())._createLiveLocation(rawLocation, updateDelegate, locationPool);
@@ -114,33 +114,33 @@ Bindings.CSSWorkspaceBinding = class {
   }
 
   /**
-   * @param {!Bindings.CSSWorkspaceBinding.SourceMapping} sourceMapping
+   * @param {!SourceMapping} sourceMapping
    */
   addSourceMapping(sourceMapping) {
     this._sourceMappings.push(sourceMapping);
   }
-};
+}
 
 /**
  * @interface
  */
-Bindings.CSSWorkspaceBinding.SourceMapping = function() {};
-
-Bindings.CSSWorkspaceBinding.SourceMapping.prototype = {
+export class SourceMapping {
   /**
    * @param {!SDK.CSSLocation} rawLocation
    * @return {?Workspace.UILocation}
    */
-  rawLocationToUILocation(rawLocation) {},
+  rawLocationToUILocation(rawLocation) {
+  }
 
   /**
    * @param {!Workspace.UILocation} uiLocation
    * @return {!Array<!SDK.CSSLocation>}
    */
-  uiLocationToRawLocations(uiLocation) {},
-};
+  uiLocationToRawLocations(uiLocation) {
+  }
+}
 
-Bindings.CSSWorkspaceBinding.ModelInfo = class {
+export class ModelInfo {
   /**
    * @param {!SDK.CSSModel} cssModel
    * @param {!Workspace.Workspace} workspace
@@ -155,9 +155,9 @@ Bindings.CSSWorkspaceBinding.ModelInfo = class {
     const sourceMapManager = cssModel.sourceMapManager();
     this._sassSourceMapping = new Bindings.SASSSourceMapping(cssModel.target(), sourceMapManager, workspace);
 
-    /** @type {!Platform.Multimap<!SDK.CSSStyleSheetHeader, !Bindings.CSSWorkspaceBinding.LiveLocation>} */
+    /** @type {!Platform.Multimap<!SDK.CSSStyleSheetHeader, !LiveLocation>} */
     this._locations = new Platform.Multimap();
-    /** @type {!Platform.Multimap<string, !Bindings.CSSWorkspaceBinding.LiveLocation>} */
+    /** @type {!Platform.Multimap<string, !LiveLocation>} */
     this._unboundLocations = new Platform.Multimap();
   }
 
@@ -165,10 +165,10 @@ Bindings.CSSWorkspaceBinding.ModelInfo = class {
    * @param {!SDK.CSSLocation} rawLocation
    * @param {function(!Bindings.LiveLocation)} updateDelegate
    * @param {!Bindings.LiveLocationPool} locationPool
-   * @return {!Bindings.CSSWorkspaceBinding.LiveLocation}
+   * @return {!LiveLocation}
    */
   _createLiveLocation(rawLocation, updateDelegate, locationPool) {
-    const location = new Bindings.CSSWorkspaceBinding.LiveLocation(rawLocation, this, updateDelegate, locationPool);
+    const location = new LiveLocation(rawLocation, this, updateDelegate, locationPool);
     const header = rawLocation.header();
     if (header) {
       location._header = header;
@@ -181,7 +181,7 @@ Bindings.CSSWorkspaceBinding.ModelInfo = class {
   }
 
   /**
-   * @param {!Bindings.CSSWorkspaceBinding.LiveLocation} location
+   * @param {!LiveLocation} location
    */
   _disposeLocation(location) {
     if (location._header) {
@@ -263,15 +263,15 @@ Bindings.CSSWorkspaceBinding.ModelInfo = class {
     this._stylesSourceMapping.dispose();
     this._sassSourceMapping.dispose();
   }
-};
+}
 
 /**
  * @unrestricted
  */
-Bindings.CSSWorkspaceBinding.LiveLocation = class extends Bindings.LiveLocationWithPool {
+export class LiveLocation extends Bindings.LiveLocationWithPool {
   /**
    * @param {!SDK.CSSLocation} rawLocation
-   * @param {!Bindings.CSSWorkspaceBinding.ModelInfo} info
+   * @param {!ModelInfo} info
    * @param {function(!Bindings.LiveLocation)} updateDelegate
    * @param {!Bindings.LiveLocationPool} locationPool
    */
@@ -311,9 +311,30 @@ Bindings.CSSWorkspaceBinding.LiveLocation = class extends Bindings.LiveLocationW
   isBlackboxed() {
     return false;
   }
-};
+}
+
+/* Legacy exported object */
+self.Bindings = self.Bindings || {};
+
+/* Legacy exported object */
+Bindings = Bindings || {};
+
+/** @constructor */
+Bindings.CSSWorkspaceBinding = CSSWorkspaceBinding;
+
+/** @interface */
+Bindings.CSSWorkspaceBinding.SourceMapping = SourceMapping;
+
+/** @interface */
+Bindings.SourceMapping = SourceMapping;
+
+/** @constructor */
+Bindings.CSSWorkspaceBinding.ModelInfo = ModelInfo;
+
+/** @constructor */
+Bindings.CSSWorkspaceBinding.LiveLocation = LiveLocation;
 
 /**
- * @type {!Bindings.CSSWorkspaceBinding}
+ * @type {!CSSWorkspaceBinding}
  */
 Bindings.cssWorkspaceBinding;

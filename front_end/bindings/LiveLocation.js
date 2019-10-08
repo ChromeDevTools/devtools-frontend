@@ -1,33 +1,35 @@
 // Copyright 2014 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/** @interface */
-Bindings.LiveLocation = function() {};
 
-Bindings.LiveLocation.prototype = {
-  update() {},
+/** @interface */
+export default class LiveLocation {
+  update() {
+  }
 
   /**
    * @return {?Workspace.UILocation}
    */
-  uiLocation() {},
+  uiLocation() {
+  }
 
-  dispose() {},
+  dispose() {
+  }
 
   /**
    * @return {boolean}
    */
   isBlackboxed() {}
-};
+}
 
 /**
- * @implements {Bindings.LiveLocation}
+ * @implements {LiveLocation}
  * @unrestricted
  */
-Bindings.LiveLocationWithPool = class {
+export class LiveLocationWithPool {
   /**
-   * @param {function(!Bindings.LiveLocation)} updateDelegate
-   * @param {!Bindings.LiveLocationPool} locationPool
+   * @param {function(!LiveLocation)} updateDelegate
+   * @param {!LiveLocationPool} locationPool
    */
   constructor(updateDelegate, locationPool) {
     this._updateDelegate = updateDelegate;
@@ -65,25 +67,25 @@ Bindings.LiveLocationWithPool = class {
   isBlackboxed() {
     throw 'Not implemented';
   }
-};
+}
 
 /**
  * @unrestricted
  */
-Bindings.LiveLocationPool = class {
+export class LiveLocationPool {
   constructor() {
     this._locations = new Set();
   }
 
   /**
-   * @param {!Bindings.LiveLocation} location
+   * @param {!LiveLocation} location
    */
   _add(location) {
     this._locations.add(location);
   }
 
   /**
-   * @param {!Bindings.LiveLocation} location
+   * @param {!LiveLocation} location
    */
   _delete(location) {
     this._locations.delete(location);
@@ -94,4 +96,19 @@ Bindings.LiveLocationPool = class {
       location.dispose();
     }
   }
-};
+}
+
+/* Legacy exported object */
+self.Bindings = self.Bindings || {};
+
+/* Legacy exported object */
+Bindings = Bindings || {};
+
+/** @interface */
+Bindings.LiveLocation = LiveLocation;
+
+/** @constructor */
+Bindings.LiveLocationWithPool = LiveLocationWithPool;
+
+/** @constructor */
+Bindings.LiveLocationPool = LiveLocationPool;

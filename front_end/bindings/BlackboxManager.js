@@ -5,7 +5,7 @@
  * @unrestricted
  * @implements {SDK.SDKModelObserver<!SDK.DebuggerModel>}
  */
-Bindings.BlackboxManager = class {
+export default class BlackboxManager {
   /**
    * @param {!Bindings.DebuggerWorkspaceBinding} debuggerWorkspaceBinding
    */
@@ -143,8 +143,8 @@ Bindings.BlackboxManager = class {
       hasBlackboxedMappings = sourceMap ? sourceMap.sourceURLs().some(url => this.isBlackboxedURL(url)) : false;
     }
     if (!hasBlackboxedMappings) {
-      if (script[Bindings.BlackboxManager._blackboxedRanges] && await script.setBlackboxedRanges([])) {
-        delete script[Bindings.BlackboxManager._blackboxedRanges];
+      if (script[_blackboxedRanges] && await script.setBlackboxedRanges([])) {
+        delete script[_blackboxedRanges];
       }
       this._debuggerWorkspaceBinding.updateLocations(script);
       return;
@@ -164,9 +164,9 @@ Bindings.BlackboxManager = class {
       }
     }
 
-    const oldRanges = script[Bindings.BlackboxManager._blackboxedRanges] || [];
+    const oldRanges = script[_blackboxedRanges] || [];
     if (!isEqual(oldRanges, newRanges) && await script.setBlackboxedRanges(newRanges)) {
-      script[Bindings.BlackboxManager._blackboxedRanges] = newRanges;
+      script[_blackboxedRanges] = newRanges;
     }
     this._debuggerWorkspaceBinding.updateLocations(script);
 
@@ -344,9 +344,20 @@ Bindings.BlackboxManager = class {
     }
     return prefix + name.escapeForRegExp() + (url.endsWith(name) ? '$' : '\\b');
   }
-};
+}
 
-Bindings.BlackboxManager._blackboxedRanges = Symbol('blackboxedRanged');
+export const _blackboxedRanges = Symbol('blackboxedRanged');
 
-/** @type {!Bindings.BlackboxManager} */
+/* Legacy exported object */
+self.Bindings = self.Bindings || {};
+
+/* Legacy exported object */
+Bindings = Bindings || {};
+
+/** @constructor */
+Bindings.BlackboxManager = BlackboxManager;
+
+Bindings.BlackboxManager._blackboxedRanges = _blackboxedRanges;
+
+/** @type {!BlackboxManager} */
 Bindings.blackboxManager;

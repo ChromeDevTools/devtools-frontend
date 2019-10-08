@@ -5,7 +5,9 @@
         "services",
         "workspace"
     ],
-    "scripts": [
+    "scripts": [],
+    "modules": [
+        "bindings.js",
         "LiveLocation.js",
         "ResourceMapping.js",
         "CompilerScriptMapping.js",

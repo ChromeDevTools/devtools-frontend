@@ -31,7 +31,7 @@
 /**
  * @implements {Bindings.CSSWorkspaceBinding.SourceMapping}
  */
-Bindings.SASSSourceMapping = class {
+export default class SASSSourceMapping {
   /**
    * @param {!SDK.Target} target
    * @param {!SDK.SourceMapManager} sourceMapManager
@@ -79,7 +79,7 @@ Bindings.SASSSourceMapping = class {
           typeof embeddedContent === 'string' ? new Workspace.UISourceCodeMetadata(null, embeddedContent.length) : null;
       uiSourceCode = this._project.createUISourceCode(sassURL, contentProvider.contentType());
       Bindings.NetworkProject.setInitialFrameAttribution(uiSourceCode, header.frameId);
-      uiSourceCode[Bindings.SASSSourceMapping._sourceMapSymbol] = sourceMap;
+      uiSourceCode[_sourceMapSymbol] = sourceMap;
       this._project.addUISourceCodeWithProvider(uiSourceCode, contentProvider, metadata, mimeType);
     }
     Bindings.cssWorkspaceBinding.updateLocations(header);
@@ -156,7 +156,7 @@ Bindings.SASSSourceMapping = class {
    * @return {!Array<!SDK.CSSLocation>}
    */
   uiLocationToRawLocations(uiLocation) {
-    const sourceMap = uiLocation.uiSourceCode[Bindings.SASSSourceMapping._sourceMapSymbol];
+    const sourceMap = uiLocation.uiSourceCode[_sourceMapSymbol];
     if (!sourceMap) {
       return [];
     }
@@ -173,6 +173,17 @@ Bindings.SASSSourceMapping = class {
     this._project.dispose();
     Common.EventTarget.removeEventListeners(this._eventListeners);
   }
-};
+}
 
-Bindings.SASSSourceMapping._sourceMapSymbol = Symbol('sourceMap');
+export const _sourceMapSymbol = Symbol('sourceMap');
+
+/* Legacy exported object */
+self.Bindings = self.Bindings || {};
+
+/* Legacy exported object */
+Bindings = Bindings || {};
+
+/** @constructor */
+Bindings.SASSSourceMapping = SASSSourceMapping;
+
+Bindings.SASSSourceMapping._sourceMapSymbol = _sourceMapSymbol;

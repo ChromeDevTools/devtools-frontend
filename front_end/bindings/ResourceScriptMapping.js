@@ -31,7 +31,7 @@
  * @implements {Bindings.DebuggerSourceMapping}
  * @unrestricted
  */
-Bindings.ResourceScriptMapping = class {
+export default class ResourceScriptMapping {
   /**
    * @param {!SDK.DebuggerModel} debuggerModel
    * @param {!Workspace.Workspace} workspace
@@ -41,7 +41,7 @@ Bindings.ResourceScriptMapping = class {
     this._debuggerModel = debuggerModel;
     this._workspace = workspace;
     this._debuggerWorkspaceBinding = debuggerWorkspaceBinding;
-    /** @type {!Map.<!Workspace.UISourceCode, !Bindings.ResourceScriptFile>} */
+    /** @type {!Map.<!Workspace.UISourceCode, !ResourceScriptFile>} */
     this._uiSourceCodeToScriptFile = new Map();
 
     /** @type {!Map<string, !Bindings.ContentProviderBasedProject>} */
@@ -64,7 +64,7 @@ Bindings.ResourceScriptMapping = class {
    * @return {!Bindings.ContentProviderBasedProject}
    */
   _project(script) {
-    const frameId = script[Bindings.ResourceScriptMapping._frameIdSymbol];
+    const frameId = script[_frameIdSymbol];
     const prefix = script.isContentScript() ? 'js:extensions:' : 'js::';
     const projectId = prefix + this._debuggerModel.target().id() + ':' + frameId;
     let project = this._projects.get(projectId);
@@ -161,7 +161,7 @@ Bindings.ResourceScriptMapping = class {
     this._acceptedScripts.add(script);
     const originalContentProvider = script.originalContentProvider();
     const frameId = Bindings.frameIdForScript(script);
-    script[Bindings.ResourceScriptMapping._frameIdSymbol] = frameId;
+    script[_frameIdSymbol] = frameId;
 
     const url = script.sourceURL;
     const project = this._project(script);
@@ -179,7 +179,7 @@ Bindings.ResourceScriptMapping = class {
     const metadata = Bindings.metadataForURL(this._debuggerModel.target(), frameId, url);
 
     // Bind UISourceCode to scripts.
-    const scriptFile = new Bindings.ResourceScriptFile(this, uiSourceCode, [script]);
+    const scriptFile = new ResourceScriptFile(this, uiSourceCode, [script]);
     this._uiSourceCodeToScriptFile.set(uiSourceCode, scriptFile);
 
     project.addUISourceCodeWithProvider(uiSourceCode, originalContentProvider, metadata, 'text/javascript');
@@ -188,7 +188,7 @@ Bindings.ResourceScriptMapping = class {
 
   /**
    * @param {!Workspace.UISourceCode} uiSourceCode
-   * @return {?Bindings.ResourceScriptFile}
+   * @return {?ResourceScriptFile}
    */
   scriptFile(uiSourceCode) {
     return this._uiSourceCodeToScriptFile.get(uiSourceCode) || null;
@@ -250,14 +250,14 @@ Bindings.ResourceScriptMapping = class {
     }
     this._projects.clear();
   }
-};
+}
 
 /**
  * @unrestricted
  */
-Bindings.ResourceScriptFile = class extends Common.Object {
+export class ResourceScriptFile extends Common.Object {
   /**
-   * @param {!Bindings.ResourceScriptMapping} resourceScriptMapping
+   * @param {!ResourceScriptMapping} resourceScriptMapping
    * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {!Array.<!SDK.Script>} scripts
    */
@@ -338,7 +338,7 @@ Bindings.ResourceScriptFile = class extends Common.Object {
     /**
      * @param {?string} error
      * @param {!Protocol.Runtime.ExceptionDetails=} exceptionDetails
-     * @this {Bindings.ResourceScriptFile}
+     * @this {ResourceScriptFile}
      */
     async function scriptSourceWasSet(error, exceptionDetails) {
       if (!error && !exceptionDetails) {
@@ -376,7 +376,7 @@ Bindings.ResourceScriptFile = class extends Common.Object {
     this._resourceScriptMapping._debuggerWorkspaceBinding.updateLocations(this._script);
     delete this._isDivergingFromVM;
     this._hasDivergedFromVM = true;
-    this.dispatchEventToListeners(Bindings.ResourceScriptFile.Events.DidDivergeFromVM, this._uiSourceCode);
+    this.dispatchEventToListeners(ResourceScriptFile.Events.DidDivergeFromVM, this._uiSourceCode);
   }
 
   _mergeToVM() {
@@ -384,7 +384,7 @@ Bindings.ResourceScriptFile = class extends Common.Object {
     this._isMergingToVM = true;
     this._resourceScriptMapping._debuggerWorkspaceBinding.updateLocations(this._script);
     delete this._isMergingToVM;
-    this.dispatchEventToListeners(Bindings.ResourceScriptFile.Events.DidMergeToVM, this._uiSourceCode);
+    this.dispatchEventToListeners(ResourceScriptFile.Events.DidMergeToVM, this._uiSourceCode);
   }
 
   /**
@@ -417,7 +417,7 @@ Bindings.ResourceScriptFile = class extends Common.Object {
 
     /**
      * @param {?string} source
-     * @this {Bindings.ResourceScriptFile}
+     * @this {ResourceScriptFile}
      */
     function callback(source) {
       this._scriptSource = source;
@@ -452,12 +452,26 @@ Bindings.ResourceScriptFile = class extends Common.Object {
   hasSourceMapURL() {
     return this._script && !!this._script.sourceMapURL;
   }
-};
+}
 
-Bindings.ResourceScriptMapping._frameIdSymbol = Symbol('frameid');
+export const _frameIdSymbol = Symbol('frameid');
 
 /** @enum {symbol} */
-Bindings.ResourceScriptFile.Events = {
+ResourceScriptFile.Events = {
   DidMergeToVM: Symbol('DidMergeToVM'),
   DidDivergeFromVM: Symbol('DidDivergeFromVM'),
 };
+
+/* Legacy exported object */
+self.Bindings = self.Bindings || {};
+
+/* Legacy exported object */
+Bindings = Bindings || {};
+
+/** @constructor */
+Bindings.ResourceScriptMapping = ResourceScriptMapping;
+
+Bindings.ResourceScriptMapping._frameIdSymbol = _frameIdSymbol;
+
+/** @constructor */
+Bindings.ResourceScriptFile = ResourceScriptFile;

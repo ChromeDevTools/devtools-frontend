@@ -5,14 +5,14 @@
 /**
  * @implements {SDK.SDKModelObserver<!SDK.ResourceTreeModel>}
  */
-Bindings.ResourceMapping = class {
+export default class ResourceMapping {
   /**
    * @param {!SDK.TargetManager} targetManager
    * @param {!Workspace.Workspace} workspace
    */
   constructor(targetManager, workspace) {
     this._workspace = workspace;
-    /** @type {!Map<!SDK.ResourceTreeModel, !Bindings.ResourceMapping.ModelInfo>} */
+    /** @type {!Map<!SDK.ResourceTreeModel, !ModelInfo>} */
     this._modelToInfo = new Map();
     targetManager.observeModels(SDK.ResourceTreeModel, this);
   }
@@ -22,7 +22,7 @@ Bindings.ResourceMapping = class {
    * @param {!SDK.ResourceTreeModel} resourceTreeModel
    */
   modelAdded(resourceTreeModel) {
-    const info = new Bindings.ResourceMapping.ModelInfo(this._workspace, resourceTreeModel);
+    const info = new ModelInfo(this._workspace, resourceTreeModel);
     this._modelToInfo.set(resourceTreeModel, info);
   }
 
@@ -38,7 +38,7 @@ Bindings.ResourceMapping = class {
 
   /**
    * @param {!SDK.Target} target
-   * @return {?Bindings.ResourceMapping.ModelInfo}
+   * @return {?ModelInfo}
    */
   _infoForTarget(target) {
     const resourceTreeModel = target.model(SDK.ResourceTreeModel);
@@ -62,8 +62,8 @@ Bindings.ResourceMapping = class {
     if (!uiSourceCode) {
       return null;
     }
-    const offset = header[Bindings.ResourceMapping._offsetSymbol] ||
-        TextUtils.TextRange.createFromLocation(header.startLine, header.startColumn);
+    const offset =
+        header[_offsetSymbol] || TextUtils.TextRange.createFromLocation(header.startLine, header.startColumn);
     const lineNumber = cssLocation.lineNumber + offset.startLine - header.startLine;
     let columnNumber = cssLocation.columnNumber;
     if (cssLocation.lineNumber === header.startLine) {
@@ -89,8 +89,8 @@ Bindings.ResourceMapping = class {
     if (!uiSourceCode) {
       return null;
     }
-    const offset = script[Bindings.ResourceMapping._offsetSymbol] ||
-        TextUtils.TextRange.createFromLocation(script.lineOffset, script.columnOffset);
+    const offset =
+        script[_offsetSymbol] || TextUtils.TextRange.createFromLocation(script.lineOffset, script.columnOffset);
     const lineNumber = jsLocation.lineNumber + offset.startLine - script.lineOffset;
     let columnNumber = jsLocation.columnNumber;
     if (jsLocation.lineNumber === script.lineOffset) {
@@ -106,7 +106,7 @@ Bindings.ResourceMapping = class {
    * @return {!Array<!SDK.DebuggerModel.Location>}
    */
   uiLocationToJSLocations(uiSourceCode, lineNumber, columnNumber) {
-    if (!uiSourceCode[Bindings.ResourceMapping._symbol]) {
+    if (!uiSourceCode[_symbol]) {
       return [];
     }
     const target = Bindings.NetworkProject.targetForUISourceCode(uiSourceCode);
@@ -129,7 +129,7 @@ Bindings.ResourceMapping = class {
    * @return {!Array<!SDK.CSSLocation>}
    */
   uiLocationToCSSLocations(uiLocation) {
-    if (!uiLocation.uiSourceCode[Bindings.ResourceMapping._symbol]) {
+    if (!uiLocation.uiSourceCode[_symbol]) {
       return [];
     }
     const target = Bindings.NetworkProject.targetForUISourceCode(uiLocation.uiSourceCode);
@@ -154,9 +154,9 @@ Bindings.ResourceMapping = class {
       info._resetForTest();
     }
   }
-};
+}
 
-Bindings.ResourceMapping.ModelInfo = class {
+export class ModelInfo {
   /**
    * @param {!Workspace.Workspace} workspace
    * @param {!SDK.ResourceTreeModel} resourceTreeModel
@@ -167,7 +167,7 @@ Bindings.ResourceMapping.ModelInfo = class {
         workspace, 'resources:' + target.id(), Workspace.projectTypes.Network, '', false /* isServiceProject */);
     Bindings.NetworkProject.setTargetForProject(this._project, target);
 
-    /** @type {!Map<string, !Bindings.ResourceMapping.Binding>} */
+    /** @type {!Map<string, !Binding>} */
     this._bindings = new Map();
 
     const cssModel = target.model(SDK.CSSModel);
@@ -231,7 +231,7 @@ Bindings.ResourceMapping.ModelInfo = class {
 
     let binding = this._bindings.get(resource.url);
     if (!binding) {
-      binding = new Bindings.ResourceMapping.Binding(this._project, resource);
+      binding = new Binding(this._project, resource);
       this._bindings.set(resource.url, binding);
     } else {
       binding.addResource(resource);
@@ -287,12 +287,12 @@ Bindings.ResourceMapping.ModelInfo = class {
     this._bindings.clear();
     this._project.removeProject();
   }
-};
+}
 
 /**
  * @implements {Common.ContentProvider}
  */
-Bindings.ResourceMapping.Binding = class {
+export class Binding {
   /**
    * @param {!Bindings.ContentProviderBasedProject} project
    * @param {!SDK.Resource} resource
@@ -301,7 +301,7 @@ Bindings.ResourceMapping.Binding = class {
     this._resources = new Set([resource]);
     this._project = project;
     this._uiSourceCode = this._project.createUISourceCode(resource.url, resource.contentType());
-    this._uiSourceCode[Bindings.ResourceMapping._symbol] = true;
+    this._uiSourceCode[_symbol] = true;
     Bindings.NetworkProject.setInitialFrameAttribution(this._uiSourceCode, resource.frameId);
     this._project.addUISourceCodeWithProvider(
         this._uiSourceCode, this, Bindings.resourceMetadata(resource), resource.mimeType);
@@ -366,28 +366,28 @@ Bindings.ResourceMapping.Binding = class {
     for (const data of this._edits) {
       const edit = data.edit;
       const stylesheet = data.stylesheet;
-      const startLocation = stylesheet[Bindings.ResourceMapping._offsetSymbol] ||
+      const startLocation = stylesheet[_offsetSymbol] ||
           TextUtils.TextRange.createFromLocation(stylesheet.startLine, stylesheet.startColumn);
 
       const oldRange = edit.oldRange.relativeFrom(startLocation.startLine, startLocation.startColumn);
       const newRange = edit.newRange.relativeFrom(startLocation.startLine, startLocation.startColumn);
       text = new TextUtils.Text(text.replaceRange(oldRange, edit.newText));
       for (const script of scripts) {
-        const scriptOffset = script[Bindings.ResourceMapping._offsetSymbol] ||
-            TextUtils.TextRange.createFromLocation(script.lineOffset, script.columnOffset);
+        const scriptOffset =
+            script[_offsetSymbol] || TextUtils.TextRange.createFromLocation(script.lineOffset, script.columnOffset);
         if (!scriptOffset.follows(oldRange)) {
           continue;
         }
-        script[Bindings.ResourceMapping._offsetSymbol] = scriptOffset.rebaseAfterTextEdit(oldRange, newRange);
+        script[_offsetSymbol] = scriptOffset.rebaseAfterTextEdit(oldRange, newRange);
         Bindings.debuggerWorkspaceBinding.updateLocations(script);
       }
       for (const style of styles) {
-        const styleOffset = style[Bindings.ResourceMapping._offsetSymbol] ||
-            TextUtils.TextRange.createFromLocation(style.startLine, style.startColumn);
+        const styleOffset =
+            style[_offsetSymbol] || TextUtils.TextRange.createFromLocation(style.startLine, style.startColumn);
         if (!styleOffset.follows(oldRange)) {
           continue;
         }
-        style[Bindings.ResourceMapping._offsetSymbol] = styleOffset.rebaseAfterTextEdit(oldRange, newRange);
+        style[_offsetSymbol] = styleOffset.rebaseAfterTextEdit(oldRange, newRange);
         Bindings.cssWorkspaceBinding.updateLocations(style);
       }
     }
@@ -456,7 +456,25 @@ Bindings.ResourceMapping.Binding = class {
   searchInContent(query, caseSensitive, isRegex) {
     return this._resources.firstValue().searchInContent(query, caseSensitive, isRegex);
   }
-};
+}
 
-Bindings.ResourceMapping._symbol = Symbol('Bindings.ResourceMapping._symbol');
-Bindings.ResourceMapping._offsetSymbol = Symbol('Bindings.ResourceMapping._offsetSymbol');
+export const _symbol = Symbol('Bindings.ResourceMapping._symbol');
+export const _offsetSymbol = Symbol('Bindings.ResourceMapping._offsetSymbol');
+
+/* Legacy exported object */
+self.Bindings = self.Bindings || {};
+
+/* Legacy exported object */
+Bindings = Bindings || {};
+
+/** @constructor */
+Bindings.ResourceMapping = ResourceMapping;
+
+/** @constructor */
+Bindings.ResourceMapping.ModelInfo = ModelInfo;
+
+/** @constructor */
+Bindings.ResourceMapping.Binding = Binding;
+
+Bindings.ResourceMapping._symbol = _symbol;
+Bindings.ResourceMapping._offsetSymbol = _offsetSymbol;

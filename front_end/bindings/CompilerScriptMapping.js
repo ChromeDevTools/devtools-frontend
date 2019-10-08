@@ -31,7 +31,7 @@
  * @implements {Bindings.DebuggerSourceMapping}
  * @unrestricted
  */
-Bindings.CompilerScriptMapping = class {
+export default class CompilerScriptMapping {
   /**
    * @param {!SDK.DebuggerModel} debuggerModel
    * @param {!Workspace.Workspace} workspace
@@ -52,9 +52,9 @@ Bindings.CompilerScriptMapping = class {
     Bindings.NetworkProject.setTargetForProject(this._regularProject, target);
     Bindings.NetworkProject.setTargetForProject(this._contentScriptsProject, target);
 
-    /** @type {!Map<string, !Bindings.CompilerScriptMapping.Binding>} */
+    /** @type {!Map<string, !Binding>} */
     this._regularBindings = new Map();
-    /** @type {!Map<string, !Bindings.CompilerScriptMapping.Binding>} */
+    /** @type {!Map<string, !Binding>} */
     this._contentScriptsBindings = new Map();
 
     /** @type {!Map<!SDK.Script, !Workspace.UISourceCode>} */
@@ -102,7 +102,7 @@ Bindings.CompilerScriptMapping = class {
    * @return {?string}
    */
   static uiSourceCodeOrigin(uiSourceCode) {
-    const sourceMap = uiSourceCode[Bindings.CompilerScriptMapping._sourceMapSymbol];
+    const sourceMap = uiSourceCode[_sourceMapSymbol];
     if (!sourceMap) {
       return null;
     }
@@ -178,7 +178,7 @@ Bindings.CompilerScriptMapping = class {
    * @return {!Array<!SDK.DebuggerModel.Location>}
    */
   uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber) {
-    const sourceMap = uiSourceCode[Bindings.CompilerScriptMapping._sourceMapSymbol];
+    const sourceMap = uiSourceCode[_sourceMapSymbol];
     if (!sourceMap) {
       return [];
     }
@@ -236,7 +236,7 @@ Bindings.CompilerScriptMapping = class {
    */
   _sourceMapDetached(event) {
     const script = /** @type {!SDK.Script} */ (event.data.client);
-    const frameId = script[Bindings.CompilerScriptMapping._frameIdSymbol];
+    const frameId = script[_frameIdSymbol];
     const sourceMap = /** @type {!SDK.SourceMap} */ (event.data.sourceMap);
     const bindings = script.isContentScript() ? this._contentScriptsBindings : this._regularBindings;
     for (const sourceURL of sourceMap.sourceURLs()) {
@@ -271,13 +271,13 @@ Bindings.CompilerScriptMapping = class {
    */
   _populateSourceMapSources(script, sourceMap) {
     const frameId = Bindings.frameIdForScript(script);
-    script[Bindings.CompilerScriptMapping._frameIdSymbol] = frameId;
+    script[_frameIdSymbol] = frameId;
     const project = script.isContentScript() ? this._contentScriptsProject : this._regularProject;
     const bindings = script.isContentScript() ? this._contentScriptsBindings : this._regularBindings;
     for (const sourceURL of sourceMap.sourceURLs()) {
       let binding = bindings.get(sourceURL);
       if (!binding) {
-        binding = new Bindings.CompilerScriptMapping.Binding(project, sourceURL);
+        binding = new Binding(project, sourceURL);
         bindings.set(sourceURL, binding);
       }
       binding.addSourceMap(sourceMap, frameId);
@@ -291,7 +291,7 @@ Bindings.CompilerScriptMapping = class {
    * @return {boolean}
    */
   static uiLineHasMapping(uiSourceCode, lineNumber) {
-    const sourceMap = uiSourceCode[Bindings.CompilerScriptMapping._sourceMapSymbol];
+    const sourceMap = uiSourceCode[_sourceMapSymbol];
     if (!sourceMap) {
       return true;
     }
@@ -304,13 +304,12 @@ Bindings.CompilerScriptMapping = class {
     this._contentScriptsProject.dispose();
     this._stubProject.dispose();
   }
-};
+}
 
-Bindings.CompilerScriptMapping._frameIdSymbol = Symbol('Bindings.CompilerScriptMapping._frameIdSymbol');
-Bindings.CompilerScriptMapping._sourceMapSymbol = Symbol('Bindings.CompilerScriptMapping._sourceMapSymbol');
+export const _frameIdSymbol = Symbol('_frameIdSymbol');
+export const _sourceMapSymbol = Symbol('_sourceMapSymbol');
 
-
-Bindings.CompilerScriptMapping.Binding = class {
+export class Binding {
   /**
    * @param {!Bindings.ContentProviderBasedProject} project
    * @param {string} url
@@ -336,7 +335,7 @@ Bindings.CompilerScriptMapping.Binding = class {
     this._activeSourceMap = sourceMap;
 
     const newUISourceCode = this._project.createUISourceCode(this._url, Common.resourceTypes.SourceMapScript);
-    newUISourceCode[Bindings.CompilerScriptMapping._sourceMapSymbol] = sourceMap;
+    newUISourceCode[_sourceMapSymbol] = sourceMap;
     const contentProvider = sourceMap.sourceContentProvider(this._url, Common.resourceTypes.SourceMapScript);
     const mimeType = Common.ResourceType.mimeFromURL(this._url) || 'text/javascript';
     const embeddedContent = sourceMap.embeddedContentByURL(this._url);
@@ -383,4 +382,19 @@ Bindings.CompilerScriptMapping.Binding = class {
       this._recreateUISourceCodeIfNeeded(frameId);
     }
   }
-};
+}
+
+/* Legacy exported object */
+self.Bindings = self.Bindings || {};
+
+/* Legacy exported object */
+Bindings = Bindings || {};
+
+/** @constructor */
+Bindings.CompilerScriptMapping = CompilerScriptMapping;
+
+Bindings.CompilerScriptMapping._frameIdSymbol = _frameIdSymbol;
+Bindings.CompilerScriptMapping._sourceMapSymbol = _sourceMapSymbol;
+
+/** @constructor */
+Bindings.CompilerScriptMapping.Binding = Binding;

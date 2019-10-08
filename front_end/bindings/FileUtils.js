@@ -31,41 +31,43 @@
 /**
  * @interface
  */
-Bindings.ChunkedReader = function() {};
-
-Bindings.ChunkedReader.prototype = {
+export class ChunkedReader {
   /**
    * @return {number}
    */
-  fileSize() {},
+  fileSize() {
+  }
 
   /**
    * @return {number}
    */
-  loadedSize() {},
+  loadedSize() {
+  }
 
   /**
    * @return {string}
    */
-  fileName() {},
+  fileName() {
+  }
 
-  cancel() {},
+  cancel() {
+  }
 
   /**
    * @return {?FileError}
    */
   error() {}
-};
+}
 
 /**
- * @implements {Bindings.ChunkedReader}
+ * @implements {ChunkedReader}
  * @unrestricted
  */
-Bindings.ChunkedFileReader = class {
+export class ChunkedFileReader {
   /**
    * @param {!Blob} blob
    * @param {number} chunkSize
-   * @param {function(!Bindings.ChunkedReader)=} chunkTransferredCallback
+   * @param {function(!ChunkedReader)=} chunkTransferredCallback
    */
   constructor(blob, chunkSize, chunkTransferredCallback) {
     this._file = blob;
@@ -183,13 +185,13 @@ Bindings.ChunkedFileReader = class {
     this._error = event.target.error;
     this._transferFinished(false);
   }
-};
+}
 
 /**
  * @implements {Common.OutputStream}
  * @unrestricted
  */
-Bindings.FileOutputStream = class {
+export class FileOutputStream {
   /**
    * @param {string} fileName
    * @return {!Promise<boolean>}
@@ -247,4 +249,19 @@ Bindings.FileOutputStream = class {
     Workspace.fileManager.removeEventListener(Workspace.FileManager.Events.AppendedToURL, this._onAppendDone, this);
     Workspace.fileManager.close(this._fileName);
   }
-};
+}
+
+/* Legacy exported object */
+self.Bindings = self.Bindings || {};
+
+/* Legacy exported object */
+Bindings = Bindings || {};
+
+/** @interface */
+Bindings.ChunkedReader = ChunkedReader;
+
+/** @constructor */
+Bindings.ChunkedFileReader = ChunkedFileReader;
+
+/** @constructor */
+Bindings.FileOutputStream = FileOutputStream;

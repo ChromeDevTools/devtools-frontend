@@ -76,7 +76,11 @@ ColorPicker.Spectrum = class extends UI.VBox {
 
     const displaySwitcher = toolsContainer.createChild('div', 'spectrum-display-switcher spectrum-switcher');
     appendSwitcherIcon(displaySwitcher);
-    displaySwitcher.addEventListener('click', this._formatViewSwitch.bind(this));
+    displaySwitcher.tabIndex = 0;
+    self.onInvokeElement(displaySwitcher, event => {
+      this._formatViewSwitch();
+      event.consume(true);
+    });
 
     // RGBA/HSLA display.
     this._displayContainer = toolsContainer.createChild('div', 'spectrum-text source-code');
@@ -1125,13 +1129,16 @@ ColorPicker.Spectrum.Swatch = class {
     this._swatchInnerElement = swatchElement.createChild('span', 'swatch-inner');
 
     this._swatchOverlayElement = swatchElement.createChild('span', 'swatch-overlay');
+    UI.ARIAUtils.markAsButton(this._swatchOverlayElement);
+    UI.ARIAUtils.setPressed(this._swatchOverlayElement, false);
     this._swatchOverlayElement.tabIndex = 0;
     self.onInvokeElement(this._swatchOverlayElement, this._onCopyText.bind(this));
     this._swatchOverlayElement.addEventListener('mouseout', this._onCopyIconMouseout.bind(this));
     this._swatchOverlayElement.addEventListener('blur', this._onCopyIconMouseout.bind(this));
     this._swatchCopyIcon = UI.Icon.create('largeicon-copy', 'copy-color-icon');
-    this._swatchCopyIcon.title = Common.UIString('Copy color to clipboard');
+    this._swatchCopyIcon.title = ls`Copy color to clipboard`;
     this._swatchOverlayElement.appendChild(this._swatchCopyIcon);
+    UI.ARIAUtils.setAccessibleName(this._swatchOverlayElement, this._swatchCopyIcon.title);
   }
 
   /**
@@ -1157,10 +1164,12 @@ ColorPicker.Spectrum.Swatch = class {
   _onCopyText(event) {
     this._swatchCopyIcon.setIconType('largeicon-checkmark');
     Host.InspectorFrontendHost.copyText(this._colorString);
+    UI.ARIAUtils.setPressed(this._swatchOverlayElement, true);
     event.consume();
   }
 
   _onCopyIconMouseout() {
     this._swatchCopyIcon.setIconType('largeicon-copy');
+    UI.ARIAUtils.setPressed(this._swatchOverlayElement, false);
   }
 };

@@ -117,9 +117,6 @@
   <message name="IDS_DEVTOOLS_2537b3e6907e17001b7cdf121cd39dc0" desc="Text in Request Headers View of the Network panel">
     (from ServiceWorker)
   </message>
-  <message name="IDS_DEVTOOLS_25f77a709e3c31285e8411402420b72d" desc="Text in Blocked URLs Pane of the Network panel">
-    Requests are not blocked. <ph name="ADDLINK">$1s<ex>Add pattern</ex></ph>.
-  </message>
   <message name="IDS_DEVTOOLS_26b6b5ae2c6e2575b2a451c35e94df23" desc="Text in Request Timing View of the Network panel">
     Waiting (TTFB)
   </message>
@@ -263,6 +260,9 @@
   </message>
   <message name="IDS_DEVTOOLS_5101cdda28ea3097ac00cdbfdcedc353" desc="Title of a setting under the Network category that can be invoked through the Command Menu">
     Use default colors
+  </message>
+  <message name="IDS_DEVTOOLS_52c2263c92c8b0f41e36892ccd8cb119" desc="Accessible label for the button to add request blocking patterns in the Request blocking tool">
+    Add request blocking pattern
   </message>
   <message name="IDS_DEVTOOLS_53fa249ce3d02c8a686b657b31d02ee7" desc="Text in Network Log View of the Network panel">
     Copy response
@@ -713,6 +713,9 @@
   </message>
   <message name="IDS_DEVTOOLS_cc0af601bfd673427a8abb171f62c707" desc="Reason in Network Data Grid Node of the Network panel">
     content-type
+  </message>
+  <message name="IDS_DEVTOOLS_cc910147ba0845397ea686345faf7340" desc="Button to add a pattern to block requests in the Request Blocking tool">
+    Requests are not blocked. <ph name="ADD_BUTTON">$1s<ex>Add pattern</ex></ph>
   </message>
   <message name="IDS_DEVTOOLS_ce9d64b8fde226fd9e5fa4c0947c7ee0" desc="Tooltip to explain what response cookies are">
     Cookies that were received from the server in the &apos;set-cookie&apos; header of the response

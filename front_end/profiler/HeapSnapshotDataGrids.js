@@ -146,6 +146,9 @@ Profiler.HeapSnapshotSortableDataGrid = class extends DataGrid.DataGrid {
     contextMenu.revealSection().appendItem(ls`Reveal in Summary view`, () => {
       this._dataDisplayDelegate.showObject(node.snapshotNodeId, ls`Summary`);
     });
+    if (gridNode.linkElement && !contextMenu.containsTarget(gridNode.linkElement)) {
+      contextMenu.appendApplicableItems(gridNode.linkElement);
+    }
   }
 
   resetSortingCache() {

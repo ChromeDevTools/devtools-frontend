@@ -616,6 +616,7 @@ Profiler.HeapSnapshotGenericObjectNode = class extends Profiler.HeapSnapshotGrid
     const link = await this._dataGrid.dataDisplayDelegate().linkifyObject(this.snapshotNodeIndex);
     if (link) {
       linkContainer.appendChild(link);
+      this.linkElement = link;
     } else {
       linkContainer.remove();
     }

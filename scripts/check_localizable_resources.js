@@ -36,7 +36,6 @@ async function main() {
       getErrors();
   } catch (e) {
     console.log(e.stack);
-    console.log(`Error: ${e.message}`);
     process.exit(1);
   }
 }

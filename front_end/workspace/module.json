@@ -4,9 +4,11 @@
         "host",
         "platform"
     ],
-    "scripts": [
+    "scripts": [],
+    "modules": [
+        "workspace.js",
         "FileManager.js",
         "UISourceCode.js",
-        "Workspace.js"
+        "WorkspaceImpl.js"
     ]
 }

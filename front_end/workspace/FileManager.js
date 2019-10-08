@@ -31,7 +31,7 @@
 /**
  * @unrestricted
  */
-Workspace.FileManager = class extends Common.Object {
+export default class FileManager extends Common.Object {
   constructor() {
     super();
     /** @type {!Map<string, function(?{fileSystemPath: (string|undefined)})>} */
@@ -101,16 +101,28 @@ Workspace.FileManager = class extends Common.Object {
    */
   _appendedToURL(event) {
     const url = /** @type {string} */ (event.data);
-    this.dispatchEventToListeners(Workspace.FileManager.Events.AppendedToURL, url);
+    this.dispatchEventToListeners(Events.AppendedToURL, url);
   }
-};
+}
 
 /** @enum {symbol} */
-Workspace.FileManager.Events = {
+export const Events = {
   AppendedToURL: Symbol('AppendedToURL')
 };
 
+/* Legacy exported object */
+self.Workspace = self.Workspace || {};
+
+/* Legacy exported object */
+Workspace = Workspace || {};
+
+/** @constructor */
+Workspace.FileManager = FileManager;
+
+/** @enum {symbol} */
+Workspace.FileManager.Events = Events;
+
 /**
- * @type {?Workspace.FileManager}
+ * @type {?FileManager}
  */
 Workspace.fileManager;

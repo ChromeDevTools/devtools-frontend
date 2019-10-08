@@ -88,7 +88,9 @@ Persistence.WorkspaceSettingsTab = class extends UI.VBox {
     }
     const networkPersistenceProject = Persistence.networkPersistenceManager.project();
     if (networkPersistenceProject &&
-        Persistence.isolatedFileSystemManager.fileSystem(networkPersistenceProject.fileSystemPath()) === fileSystem) {
+        Persistence.isolatedFileSystemManager.fileSystem(
+            /** @type {!Persistence.FileSystemWorkspaceBinding.FileSystem} */ (networkPersistenceProject)
+                .fileSystemPath()) === fileSystem) {
       return;
     }
     const element = this._renderFileSystem(fileSystem);

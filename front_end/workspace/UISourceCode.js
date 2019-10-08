@@ -31,7 +31,7 @@
  * @implements {Common.ContentProvider}
  * @unrestricted
  */
-Workspace.UISourceCode = class extends Common.Object {
+export default class UISourceCode extends Common.Object {
   /**
    * @param {!Workspace.Project} project
    * @param {string} url
@@ -59,10 +59,10 @@ Workspace.UISourceCode = class extends Common.Object {
     this._contentType = contentType;
     /** @type {?Promise<string>} */
     this._requestContentPromise = null;
-    /** @type {?Platform.Multimap<string, !Workspace.UISourceCode.LineMarker>} */
+    /** @type {?Platform.Multimap<string, !LineMarker>} */
     this._decorations = null;
     this._hasCommits = false;
-    /** @type {?Set<!Workspace.UISourceCode.Message>} */
+    /** @type {?Set<!Message>} */
     this._messages = null;
     this._contentLoaded = false;
     /** @type {?string} */
@@ -80,7 +80,7 @@ Workspace.UISourceCode = class extends Common.Object {
   }
 
   /**
-   * @return {!Promise<?Workspace.UISourceCodeMetadata>}
+   * @return {!Promise<?UISourceCodeMetadata>}
    */
   requestMetadata() {
     return this._project.requestMetadata(this);
@@ -170,7 +170,7 @@ Workspace.UISourceCode = class extends Common.Object {
      * @param {string=} newName
      * @param {string=} newURL
      * @param {!Common.ResourceType=} newContentType
-     * @this {Workspace.UISourceCode}
+     * @this {UISourceCode}
      */
     function innerCallback(success, newName, newURL, newContentType) {
       if (success) {
@@ -201,7 +201,7 @@ Workspace.UISourceCode = class extends Common.Object {
     if (contentType) {
       this._contentType = contentType;
     }
-    this.dispatchEventToListeners(Workspace.UISourceCode.Events.TitleChanged, this);
+    this.dispatchEventToListeners(Events.TitleChanged, this);
     this.project().workspace().dispatchEventToListeners(
         Workspace.Workspace.Events.UISourceCodeRenamed, {oldURL: oldURL, uiSourceCode: this});
   }
@@ -279,7 +279,7 @@ Workspace.UISourceCode = class extends Common.Object {
     /**
      * @param {?string} updatedContent
      * @param {boolean} encoded
-     * @this {Workspace.UISourceCode}
+     * @this {UISourceCode}
      */
     async function contentLoaded(updatedContent, encoded) {
       this._checkingContent = false;
@@ -346,7 +346,7 @@ Workspace.UISourceCode = class extends Common.Object {
 
     this._innerResetWorkingCopy();
     const data = {uiSourceCode: this, content, encoded: this._contentEncoded};
-    this.dispatchEventToListeners(Workspace.UISourceCode.Events.WorkingCopyCommitted, data);
+    this.dispatchEventToListeners(Events.WorkingCopyCommitted, data);
     this._project.workspace().dispatchEventToListeners(Workspace.Workspace.Events.WorkingCopyCommitted, data);
     if (committedByUser) {
       this._project.workspace().dispatchEventToListeners(Workspace.Workspace.Events.WorkingCopyCommittedByUser, data);
@@ -422,7 +422,7 @@ Workspace.UISourceCode = class extends Common.Object {
 
   _workingCopyChanged() {
     this._removeAllMessages();
-    this.dispatchEventToListeners(Workspace.UISourceCode.Events.WorkingCopyChanged, this);
+    this.dispatchEventToListeners(Events.WorkingCopyChanged, this);
     this._project.workspace().dispatchEventToListeners(
         Workspace.Workspace.Events.WorkingCopyChanged, {uiSourceCode: this});
   }
@@ -487,28 +487,28 @@ Workspace.UISourceCode = class extends Common.Object {
   /**
    * @param {number} lineNumber
    * @param {number=} columnNumber
-   * @return {!Workspace.UILocation}
+   * @return {!UILocation}
    */
   uiLocation(lineNumber, columnNumber) {
     if (typeof columnNumber === 'undefined') {
       columnNumber = 0;
     }
-    return new Workspace.UILocation(this, lineNumber, columnNumber);
+    return new UILocation(this, lineNumber, columnNumber);
   }
 
   /**
-   * @return {!Set<!Workspace.UISourceCode.Message>}
+   * @return {!Set<!Message>}
    */
   messages() {
     return this._messages ? new Set(this._messages) : new Set();
   }
 
   /**
-   * @param {!Workspace.UISourceCode.Message.Level} level
+   * @param {!Message.Level} level
    * @param {string} text
    * @param {number} lineNumber
    * @param {number=} columnNumber
-   * @return {!Workspace.UISourceCode.Message} message
+   * @return {!Message} message
    */
   addLineMessage(level, text, lineNumber, columnNumber) {
     return this.addMessage(
@@ -516,27 +516,27 @@ Workspace.UISourceCode = class extends Common.Object {
   }
 
   /**
-   * @param {!Workspace.UISourceCode.Message.Level} level
+   * @param {!Message.Level} level
    * @param {string} text
    * @param {!TextUtils.TextRange} range
-   * @return {!Workspace.UISourceCode.Message} message
+   * @return {!Message} message
    */
   addMessage(level, text, range) {
-    const message = new Workspace.UISourceCode.Message(this, level, text, range);
+    const message = new Message(this, level, text, range);
     if (!this._messages) {
       this._messages = new Set();
     }
     this._messages.add(message);
-    this.dispatchEventToListeners(Workspace.UISourceCode.Events.MessageAdded, message);
+    this.dispatchEventToListeners(Events.MessageAdded, message);
     return message;
   }
 
   /**
-   * @param {!Workspace.UISourceCode.Message} message
+   * @param {!Message} message
    */
   removeMessage(message) {
     if (this._messages && this._messages.delete(message)) {
-      this.dispatchEventToListeners(Workspace.UISourceCode.Events.MessageRemoved, message);
+      this.dispatchEventToListeners(Events.MessageRemoved, message);
     }
   }
 
@@ -545,7 +545,7 @@ Workspace.UISourceCode = class extends Common.Object {
       return;
     }
     for (const message of this._messages) {
-      this.dispatchEventToListeners(Workspace.UISourceCode.Events.MessageRemoved, message);
+      this.dispatchEventToListeners(Events.MessageRemoved, message);
     }
     this._messages = null;
   }
@@ -565,12 +565,12 @@ Workspace.UISourceCode = class extends Common.Object {
    * @param {?} data
    */
   addDecoration(range, type, data) {
-    const marker = new Workspace.UISourceCode.LineMarker(range, type, data);
+    const marker = new LineMarker(range, type, data);
     if (!this._decorations) {
       this._decorations = new Platform.Multimap();
     }
     this._decorations.set(type, marker);
-    this.dispatchEventToListeners(Workspace.UISourceCode.Events.LineDecorationAdded, marker);
+    this.dispatchEventToListeners(Events.LineDecorationAdded, marker);
   }
 
   /**
@@ -583,12 +583,12 @@ Workspace.UISourceCode = class extends Common.Object {
     const markers = this._decorations.get(type);
     this._decorations.deleteAll(type);
     markers.forEach(marker => {
-      this.dispatchEventToListeners(Workspace.UISourceCode.Events.LineDecorationRemoved, marker);
+      this.dispatchEventToListeners(Events.LineDecorationRemoved, marker);
     });
   }
 
   /**
-   * @return {!Array<!Workspace.UISourceCode.LineMarker>}
+   * @return {!Array<!LineMarker>}
    */
   allDecorations() {
     return this._decorations ? this._decorations.valuesArray() : [];
@@ -600,21 +600,20 @@ Workspace.UISourceCode = class extends Common.Object {
     }
     const decorationList = this._decorations.valuesArray();
     this._decorations.clear();
-    decorationList.forEach(
-        marker => this.dispatchEventToListeners(Workspace.UISourceCode.Events.LineDecorationRemoved, marker));
+    decorationList.forEach(marker => this.dispatchEventToListeners(Events.LineDecorationRemoved, marker));
   }
 
   /**
    * @param {string} type
-   * @return {?Set<!Workspace.UISourceCode.LineMarker>}
+   * @return {?Set<!LineMarker>}
    */
   decorationsForType(type) {
     return this._decorations ? this._decorations.get(type) : null;
   }
-};
+}
 
 /** @enum {symbol} */
-Workspace.UISourceCode.Events = {
+export const Events = {
   WorkingCopyChanged: Symbol('WorkingCopyChanged'),
   WorkingCopyCommitted: Symbol('WorkingCopyCommitted'),
   TitleChanged: Symbol('TitleChanged'),
@@ -627,9 +626,9 @@ Workspace.UISourceCode.Events = {
 /**
  * @unrestricted
  */
-Workspace.UILocation = class {
+export class UILocation {
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!UISourceCode} uiSourceCode
    * @param {number} lineNumber
    * @param {number} columnNumber
    */
@@ -667,8 +666,8 @@ Workspace.UILocation = class {
   }
 
   /**
-   * @param {!Workspace.UILocation} location1
-   * @param {!Workspace.UILocation} location2
+   * @param {!UILocation} location1
+   * @param {!UILocation} location2
    * @return {number}
    */
   static comparator(location1, location2) {
@@ -676,7 +675,7 @@ Workspace.UILocation = class {
   }
 
   /**
-   * @param {!Workspace.UILocation} other
+   * @param {!UILocation} other
    * @return {number}
    */
   compareTo(other) {
@@ -688,15 +687,15 @@ Workspace.UILocation = class {
     }
     return this.columnNumber - other.columnNumber;
   }
-};
+}
 
 /**
  * @unrestricted
  */
-Workspace.UISourceCode.Message = class {
+export class Message {
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
-   * @param {!Workspace.UISourceCode.Message.Level} level
+   * @param {!UISourceCode} uiSourceCode
+   * @param {!Message.Level} level
    * @param {string} text
    * @param {!TextUtils.TextRange} range
    */
@@ -708,14 +707,14 @@ Workspace.UISourceCode.Message = class {
   }
 
   /**
-   * @return {!Workspace.UISourceCode}
+   * @return {!UISourceCode}
    */
   uiSourceCode() {
     return this._uiSourceCode;
   }
 
   /**
-   * @return {!Workspace.UISourceCode.Message.Level}
+   * @return {!Message.Level}
    */
   level() {
     return this._level;
@@ -750,7 +749,7 @@ Workspace.UISourceCode.Message = class {
   }
 
   /**
-   * @param {!Workspace.UISourceCode.Message} another
+   * @param {!Message} another
    * @return {boolean}
    */
   isEqual(another) {
@@ -761,12 +760,12 @@ Workspace.UISourceCode.Message = class {
   remove() {
     this._uiSourceCode.removeMessage(this);
   }
-};
+}
 
 /**
  * @enum {string}
  */
-Workspace.UISourceCode.Message.Level = {
+Message.Level = {
   Error: 'Error',
   Warning: 'Warning'
 };
@@ -774,7 +773,7 @@ Workspace.UISourceCode.Message.Level = {
 /**
  * @unrestricted
  */
-Workspace.UISourceCode.LineMarker = class {
+export class LineMarker {
   /**
    * @param {!TextUtils.TextRange} range
    * @param {string} type
@@ -806,12 +805,12 @@ Workspace.UISourceCode.LineMarker = class {
   data() {
     return this._data;
   }
-};
+}
 
 /**
  * @unrestricted
  */
-Workspace.UISourceCodeMetadata = class {
+export class UISourceCodeMetadata {
   /**
    * @param {?Date} modificationTime
    * @param {?number} contentSize
@@ -820,4 +819,28 @@ Workspace.UISourceCodeMetadata = class {
     this.modificationTime = modificationTime;
     this.contentSize = contentSize;
   }
-};
+}
+
+/* Legacy exported object */
+self.Workspace = self.Workspace || {};
+
+/* Legacy exported object */
+Workspace = Workspace || {};
+
+/** @constructor */
+Workspace.UISourceCode = UISourceCode;
+
+/** @enum {symbol} */
+Workspace.UISourceCode.Events = Events;
+
+/** @constructor */
+Workspace.UISourceCode.Message = Message;
+
+/** @constructor */
+Workspace.UISourceCode.LineMarker = LineMarker;
+
+/** @constructor */
+Workspace.UILocation = UILocation;
+
+/** @constructor */
+Workspace.UISourceCodeMetadata = UISourceCodeMetadata;

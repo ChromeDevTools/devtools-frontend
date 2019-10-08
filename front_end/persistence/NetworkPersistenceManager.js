@@ -324,8 +324,9 @@ Persistence.NetworkPersistenceManager = class extends Common.Object {
     const url = Common.ParsedURL.urlWithoutHash(uiSourceCode.url());
     this._networkUISourceCodeForEncodedPath.set(this._encodedPathFromUrl(url), uiSourceCode);
 
-    const fileSystemUISourceCode =
-        this._project.uiSourceCodeForURL(this._project.fileSystemPath() + '/' + this._encodedPathFromUrl(url));
+    const fileSystemUISourceCode = this._project.uiSourceCodeForURL(
+        /** @type {!Persistence.FileSystemWorkspaceBinding.FileSystem} */ (this._project).fileSystemPath() + '/' +
+        this._encodedPathFromUrl(url));
     if (!fileSystemUISourceCode) {
       return;
     }
@@ -465,7 +466,8 @@ Persistence.NetworkPersistenceManager = class extends Common.Object {
     if (!this._active || (method !== 'GET' && method !== 'POST')) {
       return;
     }
-    const path = this._project.fileSystemPath() + '/' + this._encodedPathFromUrl(interceptedRequest.request.url);
+    const path = /** @type {!Persistence.FileSystemWorkspaceBinding.FileSystem} */ (this._project).fileSystemPath() +
+        '/' + this._encodedPathFromUrl(interceptedRequest.request.url);
     const fileSystemUISourceCode = this._project.uiSourceCodeForURL(path);
     if (!fileSystemUISourceCode) {
       return;

@@ -785,10 +785,7 @@ all_devtools_files = [
   "front_end/worker_main/module.json",
   "front_end/worker_service/module.json",
   "front_end/worker_service/ServiceDispatcher.js",
-  "front_end/workspace/FileManager.js",
   "front_end/workspace/module.json",
-  "front_end/workspace/UISourceCode.js",
-  "front_end/workspace/Workspace.js",
   "front_end/workspace_diff/WorkspaceDiff.js",
   "front_end/workspace_diff/module.json",
 ]
@@ -847,6 +844,10 @@ lighthouse_locale_files = [
 all_devtools_files += lighthouse_locale_files
 
 all_devtools_modules = [
+  "front_end/workspace/workspace.js",
+  "front_end/workspace/WorkspaceImpl.js",
+  "front_end/workspace/UISourceCode.js",
+  "front_end/workspace/FileManager.js",
   "front_end/services/services.js",
   "front_end/services/ServiceManager.js",
   "front_end/sdk/sdk.js",
@@ -1194,6 +1195,10 @@ application_templates = [
 ]
 
 copied_devtools_modules = [
+  "$resources_out_dir/workspace/workspace.js",
+  "$resources_out_dir/workspace/WorkspaceImpl.js",
+  "$resources_out_dir/workspace/UISourceCode.js",
+  "$resources_out_dir/workspace/FileManager.js",
   "$resources_out_dir/services/services.js",
   "$resources_out_dir/services/ServiceManager.js",
   "$resources_out_dir/sdk/sdk.js",

@@ -12,3 +12,4 @@ import './sdk/sdk.js';
 import './ui/ui.js';
 
 import './services/services.js';
+import './workspace/workspace.js';

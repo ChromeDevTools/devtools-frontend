@@ -30,83 +30,92 @@
 /**
  * @interface
  */
-Workspace.ProjectSearchConfig = function() {};
-
-Workspace.ProjectSearchConfig.prototype = {
+export class ProjectSearchConfig {
   /**
    * @return {string}
    */
-  query() {},
+  query() {
+  }
 
   /**
    * @return {boolean}
    */
-  ignoreCase() {},
+  ignoreCase() {
+  }
 
   /**
    * @return {boolean}
    */
-  isRegex() {},
+  isRegex() {
+  }
 
   /**
    * @return {!Array.<string>}
    */
-  queries() {},
+  queries() {
+  }
 
   /**
    * @param {string} filePath
    * @return {boolean}
    */
-  filePathMatchesFileQuery(filePath) {}
-};
+  filePathMatchesFileQuery(filePath) {
+  }
+}
 
 /**
  * @interface
  */
-Workspace.Project = function() {};
-
-Workspace.Project.prototype = {
+export class Project {
   /**
-   * @return {!Workspace.Workspace}
+   * @return {!WorkspaceImpl}
    */
-  workspace() {},
-
-  /**
-   * @return {string}
-   */
-  id() {},
+  workspace() {
+  }
 
   /**
    * @return {string}
    */
-  type() {},
+  id() {
+  }
+
+  /**
+   * @return {string}
+   */
+  type() {
+  }
 
   /**
    * @return {boolean}
    */
-  isServiceProject() {},
+  isServiceProject() {
+  }
 
   /**
    * @return {string}
    */
-  displayName() {},
+  displayName() {
+  }
 
   /**
    * @param {!Workspace.UISourceCode} uiSourceCode
    * @return {!Promise<?Workspace.UISourceCodeMetadata>}
    */
-  requestMetadata(uiSourceCode) {},
+  requestMetadata(uiSourceCode) {
+  }
 
   /**
    * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {function(?string,boolean)} callback
    */
-  requestFileContent(uiSourceCode, callback) {},
+  requestFileContent(uiSourceCode, callback) {
+  }
 
   /**
    * @return {boolean}
    */
-  canSetFileContent() {},
+  canSetFileContent() {
+  }
 
   /**
    * @param {!Workspace.UISourceCode} uiSourceCode
@@ -114,42 +123,49 @@ Workspace.Project.prototype = {
    * @param {boolean} isBase64
    * @return {!Promise}
    */
-  setFileContent(uiSourceCode, newContent, isBase64) {},
+  setFileContent(uiSourceCode, newContent, isBase64) {
+  }
 
   /**
    * @param {!Workspace.UISourceCode} uiSourceCode
    * @return {string}
    */
-  fullDisplayName(uiSourceCode) {},
+  fullDisplayName(uiSourceCode) {
+  }
 
   /**
    * @param {!Workspace.UISourceCode} uiSourceCode
    * @return {string}
    */
-  mimeType(uiSourceCode) {},
+  mimeType(uiSourceCode) {
+  }
 
   /**
    * @return {boolean}
    */
-  canRename() {},
+  canRename() {
+  }
 
   /**
    * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {string} newName
    * @param {function(boolean, string=, string=, !Common.ResourceType=)} callback
    */
-  rename(uiSourceCode, newName, callback) {},
+  rename(uiSourceCode, newName, callback) {
+  }
 
   /**
    * @param {string} path
    */
-  excludeFolder(path) {},
+  excludeFolder(path) {
+  }
 
   /**
    * @param {string} path
    * @return {boolean}
    */
-  canExcludeFolder(path) {},
+  canExcludeFolder(path) {
+  }
 
   /**
    * @param {string} path
@@ -158,19 +174,23 @@ Workspace.Project.prototype = {
    * @param {boolean=} isBase64
    * @return {!Promise<?Workspace.UISourceCode>}
    */
-  createFile(path, name, content, isBase64) {},
+  createFile(path, name, content, isBase64) {
+  }
 
   /**
    * @return {boolean}
    */
-  canCreateFile() {},
+  canCreateFile() {
+  }
 
   /**
    * @param {!Workspace.UISourceCode} uiSourceCode
    */
-  deleteFile(uiSourceCode) {},
+  deleteFile(uiSourceCode) {
+  }
 
-  remove() {},
+  remove() {
+  }
 
   /**
    * @param {!Workspace.UISourceCode} uiSourceCode
@@ -179,37 +199,42 @@ Workspace.Project.prototype = {
    * @param {boolean} isRegex
    * @return {!Promise<!Array<!Common.ContentProvider.SearchMatch>>}
    */
-  searchInFileContent(uiSourceCode, query, caseSensitive, isRegex) {},
+  searchInFileContent(uiSourceCode, query, caseSensitive, isRegex) {
+  }
 
   /**
-   * @param {!Workspace.ProjectSearchConfig} searchConfig
+   * @param {!ProjectSearchConfig} searchConfig
    * @param {!Array.<string>} filesMathingFileQuery
    * @param {!Common.Progress} progress
    * @return {!Promise<!Array<string>>}
    */
-  findFilesMatchingSearchRequest(searchConfig, filesMathingFileQuery, progress) {},
+  findFilesMatchingSearchRequest(searchConfig, filesMathingFileQuery, progress) {
+  }
 
   /**
    * @param {!Common.Progress} progress
    */
-  indexContent(progress) {},
+  indexContent(progress) {
+  }
 
   /**
    * @param {string} url
    * @return {?Workspace.UISourceCode}
    */
-  uiSourceCodeForURL(url) {},
+  uiSourceCodeForURL(url) {
+  }
 
   /**
    * @return {!Array.<!Workspace.UISourceCode>}
    */
-  uiSourceCodes() {}
-};
+  uiSourceCodes() {
+  }
+}
 
 /**
  * @enum {string}
  */
-Workspace.projectTypes = {
+export const projectTypes = {
   Debugger: 'debugger',
   Formatter: 'formatter',
   Network: 'network',
@@ -221,9 +246,9 @@ Workspace.projectTypes = {
 /**
  * @unrestricted
  */
-Workspace.ProjectStore = class {
+export class ProjectStore {
   /**
-   * @param {!Workspace.Workspace} workspace
+   * @param {!WorkspaceImpl} workspace
    * @param {string} id
    * @param {!Workspace.projectTypes} type
    * @param {string} displayName
@@ -239,7 +264,7 @@ Workspace.ProjectStore = class {
     /** @type {!Array.<!Workspace.UISourceCode>} */
     this._uiSourceCodesList = [];
 
-    this._project = /** @type {!Workspace.Project} */ (this);
+    this._project = /** @type {!Project} */ (this);
   }
 
   /**
@@ -264,7 +289,7 @@ Workspace.ProjectStore = class {
   }
 
   /**
-   * @return {!Workspace.Workspace}
+   * @return {!WorkspaceImpl}
    */
   workspace() {
     return this._workspace;
@@ -290,7 +315,7 @@ Workspace.ProjectStore = class {
     }
     this._uiSourceCodesMap.set(url, {uiSourceCode: uiSourceCode, index: this._uiSourceCodesList.length});
     this._uiSourceCodesList.push(uiSourceCode);
-    this._workspace.dispatchEventToListeners(Workspace.Workspace.Events.UISourceCodeAdded, uiSourceCode);
+    this._workspace.dispatchEventToListeners(Events.UISourceCodeAdded, uiSourceCode);
     return true;
   }
 
@@ -310,7 +335,7 @@ Workspace.ProjectStore = class {
     movedEntry.index = entry.index;
     this._uiSourceCodesList.splice(this._uiSourceCodesList.length - 1, 1);
     this._uiSourceCodesMap.delete(url);
-    this._workspace.dispatchEventToListeners(Workspace.Workspace.Events.UISourceCodeRemoved, entry.uiSourceCode);
+    this._workspace.dispatchEventToListeners(Events.UISourceCodeRemoved, entry.uiSourceCode);
   }
 
   removeProject() {
@@ -347,15 +372,15 @@ Workspace.ProjectStore = class {
     this._uiSourceCodesMap.set(newPath, value);
     this._uiSourceCodesMap.delete(oldPath);
   }
-};
+}
 
 /**
  * @unrestricted
  */
-Workspace.Workspace = class extends Common.Object {
+export default class WorkspaceImpl extends Common.Object {
   constructor() {
     super();
-    /** @type {!Map<string, !Workspace.Project>} */
+    /** @type {!Map<string, !Project>} */
     this._projects = new Map();
     this._hasResourceContentTrackingExtensions = false;
   }
@@ -399,32 +424,32 @@ Workspace.Workspace = class extends Common.Object {
   }
 
   /**
-   * @param {!Workspace.Project} project
+   * @param {!Project} project
    */
   addProject(project) {
     console.assert(!this._projects.has(project.id()), `A project with id ${project.id()} already exists!`);
     this._projects.set(project.id(), project);
-    this.dispatchEventToListeners(Workspace.Workspace.Events.ProjectAdded, project);
+    this.dispatchEventToListeners(Events.ProjectAdded, project);
   }
 
   /**
-   * @param {!Workspace.Project} project
+   * @param {!Project} project
    */
   _removeProject(project) {
     this._projects.delete(project.id());
-    this.dispatchEventToListeners(Workspace.Workspace.Events.ProjectRemoved, project);
+    this.dispatchEventToListeners(Events.ProjectRemoved, project);
   }
 
   /**
    * @param {string} projectId
-   * @return {?Workspace.Project}
+   * @return {?Project}
    */
   project(projectId) {
     return this._projects.get(projectId) || null;
   }
 
   /**
-   * @return {!Array.<!Workspace.Project>}
+   * @return {!Array.<!Project>}
    */
   projects() {
     return this._projects.valuesArray();
@@ -432,7 +457,7 @@ Workspace.Workspace = class extends Common.Object {
 
   /**
    * @param {string} type
-   * @return {!Array.<!Workspace.Project>}
+   * @return {!Array.<!Project>}
    */
   projectsForType(type) {
     function filterByType(project) {
@@ -465,10 +490,10 @@ Workspace.Workspace = class extends Common.Object {
   hasResourceContentTrackingExtensions() {
     return this._hasResourceContentTrackingExtensions;
   }
-};
+}
 
 /** @enum {symbol} */
-Workspace.Workspace.Events = {
+export const Events = {
   UISourceCodeAdded: Symbol('UISourceCodeAdded'),
   UISourceCodeRemoved: Symbol('UISourceCodeRemoved'),
   UISourceCodeRenamed: Symbol('UISourceCodeRenamed'),
@@ -479,7 +504,31 @@ Workspace.Workspace.Events = {
   ProjectRemoved: Symbol('ProjectRemoved')
 };
 
+/* Legacy exported object */
+self.Workspace = self.Workspace || {};
+
+/* Legacy exported object */
+Workspace = Workspace || {};
+
+/** @constructor */
+Workspace.Workspace = WorkspaceImpl;
+
+/** @enum {symbol} */
+Workspace.Workspace.Events = Events;
+
+/** @interface */
+Workspace.ProjectSearchConfig = ProjectSearchConfig;
+
+/** @interface */
+Workspace.Project = Project;
+
+/** @enum {string} */
+Workspace.projectTypes = projectTypes;
+
+/** @constructor */
+Workspace.ProjectStore = ProjectStore;
+
 /**
- * @type {!Workspace.Workspace}
+ * @type {!WorkspaceImpl}
  */
 Workspace.workspace;

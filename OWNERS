@@ -1,8 +1,11 @@
+aerotwist@chromium.org
+bmeurer@chromium.org
 dgozman@chromium.org
-pfeldman@chromium.org
-lushnikov@chromium.org
 einbinder@chromium.org
+lomitch@microsoft.com
 luoe@chromium.org
+lushnikov@chromium.org
+pfeldman@chromium.org
 yangguo@chromium.org
 
 per-file BUILD.gn=*

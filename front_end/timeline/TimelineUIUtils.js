@@ -273,13 +273,13 @@ Timeline.TimelineUIUtils = class {
 
   /**
    * @param {!SDK.TracingModel.Event} event
-   * @return {!{title: string, category: !Timeline.TimelineCategory}}
+   * @return {!Timeline.TimelineRecordStyle}
    */
   static eventStyle(event) {
     const eventStyles = Timeline.TimelineUIUtils._initEventStyles();
     if (event.hasCategory(TimelineModel.TimelineModel.Category.Console) ||
         event.hasCategory(TimelineModel.TimelineModel.Category.UserTiming)) {
-      return {title: event.name, category: Timeline.TimelineUIUtils.categories()['scripting']};
+      return new Timeline.TimelineRecordStyle(event.name, Timeline.TimelineUIUtils.categories()['scripting']);
     }
 
     if (event.hasCategory(TimelineModel.TimelineModel.Category.LatencyInfo)) {
@@ -288,7 +288,8 @@ Timeline.TimelineUIUtils = class {
       const inputEventType = event.name.startsWith(prefix) ? event.name.substr(prefix.length) : event.name;
       const displayName = Timeline.TimelineUIUtils.inputEventDisplayName(
           /** @type {!TimelineModel.TimelineIRModel.InputEvents} */ (inputEventType));
-      return {title: displayName || inputEventType, category: Timeline.TimelineUIUtils.categories()['scripting']};
+      return new Timeline.TimelineRecordStyle(
+          displayName || inputEventType, Timeline.TimelineUIUtils.categories()['scripting']);
     }
     let result = eventStyles[event.name];
     if (!result) {
@@ -2051,19 +2052,16 @@ Timeline.TimelineUIUtils = class {
   }
 };
 
-/**
- * @unrestricted
- */
 Timeline.TimelineRecordStyle = class {
   /**
    * @param {string} title
    * @param {!Timeline.TimelineCategory} category
    * @param {boolean=} hidden
    */
-  constructor(title, category, hidden) {
+  constructor(title, category, hidden = false) {
     this.title = title;
     this.category = category;
-    this.hidden = !!hidden;
+    this.hidden = hidden;
   }
 };
 

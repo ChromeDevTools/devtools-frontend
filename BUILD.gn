@@ -77,7 +77,6 @@ if (!external_devtools_frontend) {
     "front_end/browser_debugger/eventListenerBreakpoints.css",
     "front_end/browser_debugger/module.json",
     "front_end/browser_debugger/xhrBreakpointsSidebarPane.css",
-    "front_end/browser_sdk/LogManager.js",
     "front_end/browser_sdk/module.json",
     "front_end/css_overview/cssOverview.css",
     "front_end/css_overview/cssOverviewStartView.css",
@@ -821,6 +820,8 @@ if (!external_devtools_frontend) {
   all_devtools_files += lighthouse_locale_files
 
   all_devtools_modules = [
+    "front_end/browser_sdk/browser_sdk.js",
+    "front_end/browser_sdk/LogManager.js",
     "front_end/persistence/persistence.js",
     "front_end/persistence/WorkspaceSettingsTab.js",
     "front_end/persistence/PlatformFileSystem.js",
@@ -1209,6 +1210,8 @@ if (!external_devtools_frontend) {
   ]
 
   copied_devtools_modules = [
+    "$resources_out_dir/browser_sdk/browser_sdk.js",
+    "$resources_out_dir/browser_sdk/LogManager.js",
     "$resources_out_dir/persistence/persistence.js",
     "$resources_out_dir/persistence/WorkspaceSettingsTab.js",
     "$resources_out_dir/persistence/PlatformFileSystem.js",

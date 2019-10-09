@@ -5,7 +5,7 @@
 /**
  * @implements {SDK.SDKModelObserver<!SDK.LogModel>}
  */
-BrowserSDK.LogManager = class {
+export default class LogManager {
   constructor() {
     SDK.targetManager.observeModels(SDK.LogModel, this);
   }
@@ -17,7 +17,7 @@ BrowserSDK.LogManager = class {
   modelAdded(logModel) {
     const eventListeners = [];
     eventListeners.push(logModel.addEventListener(SDK.LogModel.Events.EntryAdded, this._logEntryAdded, this));
-    logModel[BrowserSDK.LogManager._eventSymbol] = eventListeners;
+    logModel[_eventSymbol] = eventListeners;
   }
 
   /**
@@ -25,7 +25,7 @@ BrowserSDK.LogManager = class {
    * @param {!SDK.LogModel} logModel
    */
   modelRemoved(logModel) {
-    Common.EventTarget.removeEventListeners(logModel[BrowserSDK.LogManager._eventSymbol]);
+    Common.EventTarget.removeEventListeners(logModel[_eventSymbol]);
   }
 
   /**
@@ -62,8 +62,20 @@ BrowserSDK.LogManager = class {
       SDK.consoleModel.addMessage(consoleMessage);
     }
   }
-};
+}
 
-BrowserSDK.LogManager._eventSymbol = Symbol('_events');
+export const _eventSymbol = Symbol('_events');
 
-new BrowserSDK.LogManager();
+/* Legacy exported object */
+self.BrowserSDK = self.BrowserSDK || {};
+
+/* Legacy exported object */
+BrowserSDK = BrowserSDK || {};
+
+/** @constructor */
+BrowserSDK.LogManager = LogManager;
+
+BrowserSDK.LogManager._eventSymbol = _eventSymbol;
+
+// TODO(crbug.com/1006759): Move out of this module
+new LogManager();

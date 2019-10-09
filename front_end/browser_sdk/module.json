@@ -20,7 +20,9 @@
             ]
         }
     ],
-    "scripts": [
+    "scripts": [],
+    "modules": [
+        "browser_sdk.js",
         "LogManager.js"
     ],
     "dependencies": [

@@ -65,6 +65,7 @@ Network.RequestHTMLView = class extends UI.VBox {
     iframe.setAttribute('sandbox', '');  // Forbid to run JavaScript and set unique origin.
     iframe.setAttribute('src', this._dataURL);
     iframe.setAttribute('tabIndex', -1);
+    UI.ARIAUtils.markAsPresentation(iframe);
     this.contentElement.appendChild(iframe);
   }
 };

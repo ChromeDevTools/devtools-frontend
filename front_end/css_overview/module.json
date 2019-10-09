@@ -13,7 +13,8 @@
   "dependencies": [
       "elements",
       "ui",
-      "sdk"
+      "sdk",
+      "data_grid"
   ],
   "scripts": [
       "CSSOverviewController.js",

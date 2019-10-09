@@ -27,9 +27,6 @@
   <message name="IDS_DEVTOOLS_5d50889672f6f860d14f502de3de1957" desc="Title of colors subsection in the CSS Overview Panel">
     Colors
   </message>
-  <message name="IDS_DEVTOOLS_62d79b9db9edfb64bd8c538cb9ed0190" desc="Label for the number of media rules in the CSS Overview report">
-    Media rules
-  </message>
   <message name="IDS_DEVTOOLS_6ad170a0581c9c116ca254758bd0c5b9" desc="Label for the number of ID selectors in the CSS Overview report">
     ID selectors
   </message>
@@ -56,6 +53,9 @@
   </message>
   <message name="IDS_DEVTOOLS_d4a993a4b0d13c2cc4ce9387af1604ce" desc="Label for the 'Clear overview' button in the CSS Overview report">
     Clear overview
+  </message>
+  <message name="IDS_DEVTOOLS_daee0f0fc555c02342c4e00a1dbf642a" desc="Label for the number of media rules in the CSS Overview report">
+    Media queries
   </message>
   <message name="IDS_DEVTOOLS_e9c6934e961dad71d311f68c679dfd3b" desc="Label for the capture button in the CSS Overview Panel">
     Capture overview

@@ -25,12 +25,17 @@ CssOverview.CSSOverviewModel = class extends SDK.SDKModel {
     return this._cssAgent.getComputedStyleForNode(nodeId);
   }
 
+  async getMediaQueries() {
+    // Ignore media queries applied to stylesheets; instead only use declared media rules.
+    const queries = await this._cssAgent.getMediaQueries();
+    return queries.filter(query => query.source !== 'linkedSheet');
+  }
+
   async getGlobalStylesheetStats() {
     // There are no ways to pull CSSOM values directly today, due to its unserializable format,
     // so instead we execute some JS within the page that extracts the relevant data and send that instead.
     const expression = `(function() {
       let styleRules = 0;
-      let mediaRules = 0;
       let inlineStyles = 0;
       let externalSheets = 0;
       for (const { rules, href } of document.styleSheets) {
@@ -43,15 +48,12 @@ CssOverview.CSSOverviewModel = class extends SDK.SDKModel {
         for (const rule of rules) {
           if ('selectorText' in rule) {
             styleRules++;
-          } else if ('conditionText' in rule) {
-            mediaRules++;
           }
         }
       }
 
       return {
         styleRules,
-        mediaRules,
         inlineStyles,
         externalSheets
       }

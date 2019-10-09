@@ -11,13 +11,14 @@ CssOverview.CSSOverviewPanel = class extends UI.Panel {
     this.registerRequiredCSS('css_overview/cssOverview.css');
     this.element.classList.add('css-overview-panel');
 
+    const [model] = SDK.targetManager.models(CssOverview.CSSOverviewModel);
+    this._model = model;
+
     this._controller = new CssOverview.OverviewController();
     this._startView = new CssOverview.CSSOverviewStartView(this._controller);
     this._processingView = new CssOverview.CSSOverviewProcessingView(this._controller);
-    this._completedView = new CssOverview.CSSOverviewCompletedView(this._controller);
+    this._completedView = new CssOverview.CSSOverviewCompletedView(this._controller, model.target());
 
-    const [model] = SDK.targetManager.models(CssOverview.CSSOverviewModel);
-    this._model = model;
     this._controller.addEventListener(CssOverview.Events.RequestOverviewStart, this._startOverview, this);
     this._controller.addEventListener(CssOverview.Events.RequestOverviewCancel, this._cancelOverview, this);
     this._controller.addEventListener(CssOverview.Events.OverviewCompleted, this._overviewCompleted, this);
@@ -30,6 +31,7 @@ CssOverview.CSSOverviewPanel = class extends UI.Panel {
     this._backgroundColors = new Set();
     this._textColors = new Set();
     this._fontSizes = new Map();
+    this._mediaQueries = [];
     this._elementCount = 0;
     this._elementStyleStats = {
       // Simple.
@@ -43,7 +45,7 @@ CssOverview.CSSOverviewPanel = class extends UI.Panel {
       nonSimple: new Set()
     };
     this._cancelled = false;
-    this._globalStyleStats = {styleRules: 0, mediaRules: 0, inlineStyles: 0, externalSheets: 0};
+    this._globalStyleStats = {styleRules: 0, inlineStyles: 0, externalSheets: 0};
     this._renderInitialView();
   }
 
@@ -73,7 +75,8 @@ CssOverview.CSSOverviewPanel = class extends UI.Panel {
       globalStyleStats: this._globalStyleStats,
       elementStyleStats: this._elementStyleStats,
       fontSizes: this._fontSizes,
-      elementCount: this._elementCount
+      elementCount: this._elementCount,
+      mediaQueries: this._mediaQueries
     });
   }
 
@@ -90,6 +93,11 @@ CssOverview.CSSOverviewPanel = class extends UI.Panel {
     const globalStyleStats = await this._model.getGlobalStylesheetStats();
     if (globalStyleStats) {
       this._globalStyleStats = globalStyleStats;
+    }
+
+    const mediaQueries = await this._model.getMediaQueries();
+    if (mediaQueries) {
+      this._mediaQueries = mediaQueries;
     }
 
     // 2. Get the total element count.

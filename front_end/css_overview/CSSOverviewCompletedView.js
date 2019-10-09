@@ -6,7 +6,7 @@
  * @unrestricted
  */
 CssOverview.CSSOverviewCompletedView = class extends UI.PanelWithSidebar {
-  constructor(controller) {
+  constructor(controller, target) {
     super('css_overview_completed_view');
     this.registerRequiredCSS('css_overview/cssOverviewCompletedView.css');
 
@@ -18,14 +18,39 @@ CssOverview.CSSOverviewCompletedView = class extends UI.PanelWithSidebar {
     this.splitWidget().setSidebarWidget(this._sideBar);
     this.splitWidget().setMainWidget(this._mainContainer);
 
+    this._cssModel = target.model(SDK.CSSModel);
+    this._linkifier = new Components.Linkifier(/* maxLinkLength */ 20, /* useLinkDecorator */ true);
+
+    this._columns = [
+      {id: 'text', title: ls`Text`, visible: true, sortable: true, weight: 60},
+      {id: 'sourceURL', title: ls`Source`, visible: true, sortable: true, weight: 40}
+    ];
+
+    this._mediaQueryGrid = new DataGrid.SortableDataGrid(this._columns);
+    this._mediaQueryGrid.element.classList.add('media-query-grid');
+    this._mediaQueryGrid.setStriped(true);
+    this._mediaQueryGrid.addEventListener(
+        DataGrid.DataGrid.Events.SortingChanged, this._sortMediaQueryDataGrid.bind(this));
+
     this._sideBar.addItem(ls`Overview summary`, 'summary');
     this._sideBar.addItem(ls`Colors`, 'colors');
+    this._sideBar.addItem(ls`Media queries`, 'media-queries');
     this._sideBar.select('summary');
 
     this._sideBar.addEventListener(CssOverview.SidebarEvents.ItemSelected, this._sideBarItemSelected, this);
     this._sideBar.addEventListener(CssOverview.SidebarEvents.Reset, this._sideBarReset, this);
     this._controller.addEventListener(CssOverview.Events.Reset, this._reset, this);
     this._render({});
+  }
+
+  _sortMediaQueryDataGrid() {
+    const sortColumnId = this._mediaQueryGrid.sortColumnId();
+    if (!sortColumnId) {
+      return;
+    }
+
+    const comparator = DataGrid.SortableDataGrid.StringComparator.bind(null, sortColumnId);
+    this._mediaQueryGrid.sortNodes(comparator, !this._mediaQueryGrid.isSortOrderAscending());
   }
 
   _sideBarItemSelected(event) {
@@ -43,6 +68,7 @@ CssOverview.CSSOverviewCompletedView = class extends UI.PanelWithSidebar {
 
   _reset() {
     this._mainContainer.element.removeChildren();
+    this._mediaQueryGrid.rootNode().removeChildren();
   }
 
   _render(data) {
@@ -50,7 +76,7 @@ CssOverview.CSSOverviewCompletedView = class extends UI.PanelWithSidebar {
       return;
     }
 
-    const {elementStyleStats, elementCount, backgroundColors, textColors, globalStyleStats} = data;
+    const {elementStyleStats, elementCount, backgroundColors, textColors, globalStyleStats, mediaQueries} = data;
 
     // Convert rgb values from the computed styles to either undefined or HEX(A) strings.
     const nonTransparentBackgroundColors = this._getNonTransparentColorStrings(backgroundColors);
@@ -79,8 +105,8 @@ CssOverview.CSSOverviewCompletedView = class extends UI.PanelWithSidebar {
             <div class="value">${this._formatter.format(globalStyleStats.styleRules)}</div>
           </li>
           <li>
-            <div class="label">${ls`Media rules`}</div>
-            <div class="value">${this._formatter.format(globalStyleStats.mediaRules)}</div>
+            <div class="label">${ls`Media queries`}</div>
+            <div class="value">${this._formatter.format(mediaQueries.length)}</div>
           </li>
           <li>
             <div class="label">${ls`Type selectors`}</div>
@@ -121,9 +147,24 @@ CssOverview.CSSOverviewCompletedView = class extends UI.PanelWithSidebar {
           ${nonTransparentTextColors.map(this._colorsToFragment)}
         </ul>
       </div>
+
+      <div $="media-queries" class="results-section media-queries">
+        <h1>${ls`Media queries`}</h1>
+        ${this._mediaQueryGrid.element}
+      </div>
     </div>`;
 
+    // Media Queries.
+    for (const mediaQuery of mediaQueries) {
+      const mediaQueryNode = new CssOverview.CSSOverviewCompletedView.MediaQueryNode(
+          this._mediaQueryGrid, mediaQuery, this._cssModel, this._linkifier);
+      mediaQueryNode.selectable = false;
+      this._mediaQueryGrid.insertChild(mediaQueryNode);
+    }
+
     this._mainContainer.element.appendChild(this._fragment.element());
+    this._mediaQueryGrid.renderInline();
+    this._mediaQueryGrid.wasShown();
   }
 
   _colorsToFragment(color) {
@@ -166,5 +207,51 @@ CssOverview.CSSOverviewCompletedView = class extends UI.PanelWithSidebar {
 
   setOverviewData(data) {
     this._render(data);
+  }
+};
+
+CssOverview.CSSOverviewCompletedView.MediaQueryNode = class extends DataGrid.SortableDataGridNode {
+  /**
+   * @param {!DataGrid.SortableDataGrid} dataGrid
+   * @param {!Object<string,*>} mediaQueryData
+   * @param {!SDK.CSSModel} cssModel
+   * @param {!Components.Linkifier} linkifier
+   */
+  constructor(dataGrid, mediaQueryData, cssModel, linkifier) {
+    super(dataGrid, mediaQueryData.hasChildren);
+
+    this.data = mediaQueryData;
+    this._cssModel = cssModel;
+    this._linkifier = linkifier;
+  }
+
+  /**
+   * @override
+   * @param {string} columnId
+   * @return {!Element}
+   */
+  createCell(columnId) {
+    if (this.data.range && columnId === 'sourceURL') {
+      const cell = this.createTD(columnId);
+      const link = this._linkifyRuleLocation(
+          this._cssModel, this._linkifier, this.data.styleSheetId, TextUtils.TextRange.fromObject(this.data.range));
+
+      if (link.textContent !== '') {
+        cell.appendChild(link);
+      } else {
+        cell.textContent = `${this.data.sourceURL} (not available)`;
+      }
+      return cell;
+    }
+
+    return super.createCell(columnId);
+  }
+
+  _linkifyRuleLocation(cssModel, linkifier, styleSheetId, ruleLocation) {
+    const styleSheetHeader = cssModel.styleSheetHeaderForId(styleSheetId);
+    const lineNumber = styleSheetHeader.lineNumberInSource(ruleLocation.startLine);
+    const columnNumber = styleSheetHeader.columnNumberInSource(ruleLocation.startLine, ruleLocation.startColumn);
+    const matchingSelectorLocation = new SDK.CSSLocation(styleSheetHeader, lineNumber, columnNumber);
+    return linkifier.linkifyCSSLocation(matchingSelectorLocation);
   }
 };

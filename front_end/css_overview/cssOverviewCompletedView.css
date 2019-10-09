@@ -46,6 +46,17 @@
   font-weight: bold;
 }
 
+.media-query-grid .header-container,
+.media-query-grid .data-container,
+.media-query-grid table.data {
+  position: relative;
+}
+
+.media-query-grid .data-container {
+  top: 0;
+  max-height: 400px;
+}
+
 .block {
   width: 65px;
   height: 25px;

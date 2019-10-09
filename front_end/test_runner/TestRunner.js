@@ -1444,11 +1444,13 @@ TestRunner._TestObserver = class {
    * @override
    */
   targetAdded(target) {
+    if (target.id() === 'main') {
+      TestRunner._setupTestHelpers(target);
+    }
     if (TestRunner._startedTest) {
       return;
     }
     TestRunner._startedTest = true;
-    TestRunner._setupTestHelpers(target);
     if (TestRunner._isStartupTest()) {
       return;
     }

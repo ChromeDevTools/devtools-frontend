@@ -240,6 +240,15 @@ ConsoleTestRunner.evaluateInConsoleAndDump = function(code, callback, dontForceM
 };
 
 /**
+ * @param {string} code
+ * @param {boolean=} dontForceMainContext
+ * @return {!Promise}
+ */
+ConsoleTestRunner.evaluateInConsoleAndDumpPromise = function(code, dontForceMainContext) {
+  return new Promise(fulfill => ConsoleTestRunner.evaluateInConsoleAndDump(code, fulfill, dontForceMainContext));
+};
+
+/**
  * @return {number}
  */
 ConsoleTestRunner.consoleMessagesCount = function() {

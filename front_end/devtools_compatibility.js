@@ -253,6 +253,10 @@
       }
     }
 
+    reattachMainTarget() {
+      this._dispatchOnInspectorFrontendAPI('reattachMainTarget', []);
+    }
+
     /**
      * @param {boolean} hard
      */

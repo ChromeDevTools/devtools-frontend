@@ -224,6 +224,8 @@ Elements.ComputedStyleWidget = class extends UI.ThrottledWidget {
         treeElement.listItemElement.addEventListener('mousedown', e => e.consume(), false);
         treeElement.listItemElement.addEventListener('dblclick', e => e.consume(), false);
         treeElement.listItemElement.addEventListener('click', handleClick.bind(null, treeElement), false);
+        treeElement.listItemElement.addEventListener(
+            'contextmenu', this._handleContextMenuEvent.bind(this, matchedStyles, activeProperty));
         const gotoSourceElement = UI.Icon.create('mediumicon-arrow-in-circle', 'goto-source-icon');
         gotoSourceElement.addEventListener('click', this._navigateToSource.bind(this, activeProperty));
         propertyValueElement.appendChild(gotoSourceElement);
@@ -319,9 +321,34 @@ Elements.ComputedStyleWidget = class extends UI.ThrottledWidget {
 
       const traceTreeElement = new UI.TreeElement();
       traceTreeElement.title = trace;
+
+      traceTreeElement.listItemElement.addEventListener(
+          'contextmenu', this._handleContextMenuEvent.bind(this, matchedStyles, property));
       rootTreeElement.appendChild(traceTreeElement);
     }
     return /** @type {!SDK.CSSProperty} */ (activeProperty);
+  }
+
+  /**
+   * @param {!SDK.CSSMatchedStyles} matchedStyles
+   * @param {!SDK.CSSProperty} property
+   * @param {!Event} event
+   */
+  _handleContextMenuEvent(matchedStyles, property, event) {
+    const contextMenu = new UI.ContextMenu(event);
+    const rule = property.ownerStyle.parentRule;
+
+    if (rule) {
+      const header = rule.styleSheetId ? matchedStyles.cssModel().styleSheetHeaderForId(rule.styleSheetId) : null;
+      if (header && !header.isAnonymousInlineStyleSheet()) {
+        contextMenu.defaultSection().appendItem(ls`Navigate to selector source`, () => {
+          Elements.StylePropertiesSection.tryNavigateToRuleLocation(matchedStyles, rule);
+        });
+      }
+    }
+
+    contextMenu.defaultSection().appendItem(ls`Navigate to style`, () => Common.Revealer.reveal(property));
+    contextMenu.show();
   }
 
   /**

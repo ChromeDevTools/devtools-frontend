@@ -42,6 +42,9 @@
   <message name="IDS_DEVTOOLS_26396cca3eae28fc6e39123edb2f1510" desc="Context menu item for style property in edit mode">
     Reveal in Sources panel
   </message>
+  <message name="IDS_DEVTOOLS_2864a2d95e17e3032a3a6e69a51d0256" desc="Context menu item in Elements panel to navigate to style in styles pane">
+    Navigate to style
+  </message>
   <message name="IDS_DEVTOOLS_28c0a3050f784583d52339ddb0bc1274" desc="Text in Elements Tree Element of the Elements panel">
     Paste element
   </message>
@@ -182,6 +185,9 @@
   </message>
   <message name="IDS_DEVTOOLS_91d17eff6a1529e8a4f67a5aa4cabec7" desc="No matches element text content in Computed Style Widget of the Elements panel">
     No matching property
+  </message>
+  <message name="IDS_DEVTOOLS_924843c5b24bc69ed7da2bff699de4f1" desc="Context menu item in Elements panel to navigate to css selector source">
+    Navigate to selector source
   </message>
   <message name="IDS_DEVTOOLS_97d28fbc573f9f331f5b1886b5c1eeef" desc="Text in Elements Tree Element of the Elements panel">
     Copy full XPath

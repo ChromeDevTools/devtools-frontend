@@ -31,7 +31,7 @@
 /**
  * @unrestricted
  */
-Components.DockController = class extends Common.Object {
+export default class DockController extends Common.Object {
   /**
    * @param {boolean} canDock
    */
@@ -44,15 +44,12 @@ Components.DockController = class extends Common.Object {
         UI.ToolbarButton.Events.Click, Host.InspectorFrontendHost.closeWindow.bind(Host.InspectorFrontendHost));
 
     if (!canDock) {
-      this._dockSide = Components.DockController.State.Undocked;
+      this._dockSide = State.Undocked;
       this._closeButton.setVisible(false);
       return;
     }
 
-    this._states = [
-      Components.DockController.State.DockedToRight, Components.DockController.State.DockedToBottom,
-      Components.DockController.State.DockedToLeft, Components.DockController.State.Undocked
-    ];
+    this._states = [State.DockedToRight, State.DockedToBottom, State.DockedToLeft, State.Undocked];
     this._currentDockStateSetting = Common.settings.moduleSetting('currentDockState');
     this._currentDockStateSetting.addChangeListener(this._dockSideChanged, this);
     this._lastDockStateSetting = Common.settings.createSetting('lastDockState', 'bottom');
@@ -98,8 +95,7 @@ Components.DockController = class extends Common.Object {
    * @return {boolean}
    */
   isVertical() {
-    return this._dockSide === Components.DockController.State.DockedToRight ||
-        this._dockSide === Components.DockController.State.DockedToLeft;
+    return this._dockSide === State.DockedToRight || this._dockSide === State.DockedToLeft;
   }
 
   /**
@@ -121,21 +117,21 @@ Components.DockController = class extends Common.Object {
 
     this._savedFocus = document.deepActiveElement();
     const eventData = {from: this._dockSide, to: dockSide};
-    this.dispatchEventToListeners(Components.DockController.Events.BeforeDockSideChanged, eventData);
+    this.dispatchEventToListeners(Events.BeforeDockSideChanged, eventData);
     console.timeStamp('DockController.setIsDocked');
     this._dockSide = dockSide;
     this._currentDockStateSetting.set(dockSide);
     Host.InspectorFrontendHost.setIsDocked(
-        dockSide !== Components.DockController.State.Undocked, this._setIsDockedResponse.bind(this, eventData));
-    this._closeButton.setVisible(this._dockSide !== Components.DockController.State.Undocked);
-    this.dispatchEventToListeners(Components.DockController.Events.DockSideChanged, eventData);
+        dockSide !== State.Undocked, this._setIsDockedResponse.bind(this, eventData));
+    this._closeButton.setVisible(this._dockSide !== State.Undocked);
+    this.dispatchEventToListeners(Events.DockSideChanged, eventData);
   }
 
   /**
    * @param {{from: string, to: string}} eventData
    */
   _setIsDockedResponse(eventData) {
-    this.dispatchEventToListeners(Components.DockController.Events.AfterDockSideChanged, eventData);
+    this.dispatchEventToListeners(Events.AfterDockSideChanged, eventData);
     if (this._savedFocus) {
       this._savedFocus.focus();
       this._savedFocus = null;
@@ -149,9 +145,9 @@ Components.DockController = class extends Common.Object {
     }
     this.setDockSide(this._lastDockStateSetting.get());
   }
-};
+}
 
-Components.DockController.State = {
+export const State = {
   DockedToBottom: 'bottom',
   DockedToRight: 'right',
   DockedToLeft: 'left',
@@ -163,7 +159,7 @@ Components.DockController.State = {
 // after frontend is docked/undocked in the browser.
 
 /** @enum {symbol} */
-Components.DockController.Events = {
+export const Events = {
   BeforeDockSideChanged: Symbol('BeforeDockSideChanged'),
   DockSideChanged: Symbol('DockSideChanged'),
   AfterDockSideChanged: Symbol('AfterDockSideChanged')
@@ -173,7 +169,7 @@ Components.DockController.Events = {
  * @implements {UI.ActionDelegate}
  * @unrestricted
  */
-Components.DockController.ToggleDockActionDelegate = class {
+export class ToggleDockActionDelegate {
   /**
    * @override
    * @param {!UI.Context} context
@@ -184,13 +180,13 @@ Components.DockController.ToggleDockActionDelegate = class {
     Components.dockController._toggleDockSide();
     return true;
   }
-};
+}
 
 /**
  * @implements {UI.ToolbarItem.Provider}
  * @unrestricted
  */
-Components.DockController.CloseButtonProvider = class {
+export class CloseButtonProvider {
   /**
    * @override
    * @return {?UI.ToolbarItem}
@@ -198,7 +194,27 @@ Components.DockController.CloseButtonProvider = class {
   item() {
     return Components.dockController._closeButton;
   }
-};
+}
+
+/* Legacy exported object */
+self.Components = self.Components || {};
+
+/* Legacy exported object */
+Components = Components || {};
+
+/** @constructor */
+Components.DockController = DockController;
+
+Components.DockController.State = State;
+
+/** @enum {symbol} */
+Components.DockController.Events = Events;
+
+/** @constructor */
+Components.DockController.ToggleDockActionDelegate = ToggleDockActionDelegate;
+
+/** @constructor */
+Components.DockController.CloseButtonProvider = CloseButtonProvider;
 
 /**
  * @type {!Components.DockController}

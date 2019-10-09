@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-Components.JSPresentationUtils = {};
 
 /**
  * @param {?SDK.Target} target
@@ -37,8 +36,7 @@ Components.JSPresentationUtils = {};
  * @param {function()=} contentUpdated
  * @return {{element: !Element, links: !Array<!Element>}}
  */
-Components.JSPresentationUtils.buildStackTracePreviewContents = function(
-    target, linkifier, stackTrace, contentUpdated) {
+export function buildStackTracePreviewContents(target, linkifier, stackTrace, contentUpdated) {
   const element = createElementWithClass('span', 'monospace');
   element.style.display = 'inline-block';
   const shadowRoot = UI.createShadowRootWithCoreStyles(element, 'components/jsUtils.css');
@@ -146,4 +144,14 @@ Components.JSPresentationUtils.buildStackTracePreviewContents = function(
   }
 
   return {element, links};
-};
+}
+
+/* Legacy exported object */
+self.Components = self.Components || {};
+
+/* Legacy exported object */
+Components = Components || {};
+
+Components.JSPresentationUtils = {};
+
+Components.JSPresentationUtils.buildStackTracePreviewContents = buildStackTracePreviewContents;

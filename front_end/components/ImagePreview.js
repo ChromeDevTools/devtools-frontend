@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-Components.ImagePreview = class {
+export default class ImagePreview {
   /**
    * @param {!SDK.Target} target
    * @param {string} originalImageURL
@@ -113,4 +113,13 @@ Components.ImagePreview = class {
     const imageSourceText = parsedImageURL.isValid ? parsedImageURL.displayName : ls`unknown source`;
     return ls`Image from ${imageSourceText}`;
   }
-};
+}
+
+/* Legacy exported object */
+self.Components = self.Components || {};
+
+/* Legacy exported object */
+Components = Components || {};
+
+/** @constructor */
+Components.ImagePreview = ImagePreview;

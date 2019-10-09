@@ -4,7 +4,9 @@
         "platform",
         "ui"
     ],
-    "scripts": [
+    "scripts": [],
+    "modules": [
+        "components.js",
         "JSPresentationUtils.js",
         "DockController.js",
         "ImagePreview.js",

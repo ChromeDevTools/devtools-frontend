@@ -137,13 +137,7 @@ if (!external_devtools_frontend) {
     "front_end/color_picker/spectrum.css",
     "front_end/color_picker/Spectrum.js",
     "front_end/common/module.json",
-    "front_end/components/DockController.js",
-    "front_end/components/ImagePreview.js",
     "front_end/components/imagePreview.css",
-    "front_end/components/JSPresentationUtils.js",
-    "front_end/components/Linkifier.js",
-    "front_end/components/TargetDetachedDialog.js",
-    "front_end/components/Reload.js",
     "front_end/components/jsUtils.css",
     "front_end/components/module.json",
     "front_end/console/ConsoleContextSelector.js",
@@ -838,6 +832,13 @@ if (!external_devtools_frontend) {
   all_devtools_files += lighthouse_locale_files
 
   all_devtools_modules = [
+    "front_end/components/components.js",
+    "front_end/components/TargetDetachedDialog.js",
+    "front_end/components/Reload.js",
+    "front_end/components/Linkifier.js",
+    "front_end/components/JSPresentationUtils.js",
+    "front_end/components/ImagePreview.js",
+    "front_end/components/DockController.js",
     "front_end/bindings/bindings.js",
     "front_end/bindings/TempFile.js",
     "front_end/bindings/StylesSourceMapping.js",
@@ -1207,6 +1208,13 @@ if (!external_devtools_frontend) {
   ]
 
   copied_devtools_modules = [
+    "$resources_out_dir/components/components.js",
+    "$resources_out_dir/components/TargetDetachedDialog.js",
+    "$resources_out_dir/components/Reload.js",
+    "$resources_out_dir/components/Linkifier.js",
+    "$resources_out_dir/components/JSPresentationUtils.js",
+    "$resources_out_dir/components/ImagePreview.js",
+    "$resources_out_dir/components/DockController.js",
     "$resources_out_dir/bindings/bindings.js",
     "$resources_out_dir/bindings/TempFile.js",
     "$resources_out_dir/bindings/StylesSourceMapping.js",

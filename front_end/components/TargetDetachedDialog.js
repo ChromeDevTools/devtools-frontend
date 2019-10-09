@@ -5,7 +5,7 @@
 /**
  * @implements {Protocol.InspectorDispatcher}
  */
-Components.TargetDetachedDialog = class extends SDK.SDKModel {
+export default class TargetDetachedDialog extends SDK.SDKModel {
   /**
    * @param {!SDK.Target} target
    */
@@ -17,7 +17,7 @@ Components.TargetDetachedDialog = class extends SDK.SDKModel {
     target.registerInspectorDispatcher(this);
     target.inspectorAgent().enable();
     this._hideCrashedDialog = null;
-    Components.TargetDetachedDialog._disconnectedScreenWithReasonWasShown = false;
+    TargetDetachedDialog._disconnectedScreenWithReasonWasShown = false;
   }
 
   /**
@@ -25,7 +25,7 @@ Components.TargetDetachedDialog = class extends SDK.SDKModel {
    * @param {string} reason
    */
   detached(reason) {
-    Components.TargetDetachedDialog._disconnectedScreenWithReasonWasShown = true;
+    TargetDetachedDialog._disconnectedScreenWithReasonWasShown = true;
     UI.RemoteDebuggingTerminatedScreen.show(reason);
   }
 
@@ -56,6 +56,15 @@ Components.TargetDetachedDialog = class extends SDK.SDKModel {
       this._hideCrashedDialog = null;
     }
   }
-};
+}
 
-SDK.SDKModel.register(Components.TargetDetachedDialog, SDK.Target.Capability.Inspector, true);
+/* Legacy exported object */
+self.Components = self.Components || {};
+
+/* Legacy exported object */
+Components = Components || {};
+
+/** @constructor */
+Components.TargetDetachedDialog = TargetDetachedDialog;
+
+SDK.SDKModel.register(TargetDetachedDialog, SDK.Target.Capability.Inspector, true);

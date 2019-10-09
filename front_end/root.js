@@ -15,3 +15,4 @@ import './services/services.js';
 import './workspace/workspace.js';
 import './bindings/bindings.js';
 import './components/components.js';
+import './persistence/persistence.js';

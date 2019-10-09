@@ -31,7 +31,7 @@
 /**
  * @unrestricted
  */
-Persistence.FileSystemWorkspaceBinding = class {
+export default class FileSystemWorkspaceBinding {
   /**
    * @param {!Persistence.IsolatedFileSystemManager} isolatedFileSystemManager
    * @param {!Workspace.Workspace} workspace
@@ -47,7 +47,7 @@ Persistence.FileSystemWorkspaceBinding = class {
       this._isolatedFileSystemManager.addEventListener(
           Persistence.IsolatedFileSystemManager.Events.FileSystemFilesChanged, this._fileSystemFilesChanged, this)
     ];
-    /** @type {!Map.<string, !Persistence.FileSystemWorkspaceBinding.FileSystem>} */
+    /** @type {!Map.<string, !FileSystem>} */
     this._boundFileSystems = new Map();
     this._isolatedFileSystemManager.waitForFileSystems().then(this._onFileSystemsLoaded.bind(this));
   }
@@ -66,7 +66,7 @@ Persistence.FileSystemWorkspaceBinding = class {
    */
   static relativePath(uiSourceCode) {
     const baseURL =
-        /** @type {!Persistence.FileSystemWorkspaceBinding.FileSystem}*/ (uiSourceCode.project())._fileSystemBaseURL;
+        /** @type {!FileSystem}*/ (uiSourceCode.project())._fileSystemBaseURL;
     return uiSourceCode.url().substring(baseURL.length).split('/');
   }
 
@@ -76,7 +76,7 @@ Persistence.FileSystemWorkspaceBinding = class {
    */
   static tooltipForUISourceCode(uiSourceCode) {
     const fileSystem =
-        /** @type {!Persistence.FileSystemWorkspaceBinding.FileSystem}*/ (uiSourceCode.project())._fileSystem;
+        /** @type {!FileSystem}*/ (uiSourceCode.project())._fileSystem;
     return fileSystem.tooltipForURL(uiSourceCode.url());
   }
 
@@ -86,7 +86,7 @@ Persistence.FileSystemWorkspaceBinding = class {
    */
   static fileSystemType(project) {
     const fileSystem =
-        /** @type {!Persistence.FileSystemWorkspaceBinding.FileSystem}*/ (project)._fileSystem;
+        /** @type {!FileSystem}*/ (project)._fileSystem;
     return fileSystem.type();
   }
 
@@ -96,7 +96,7 @@ Persistence.FileSystemWorkspaceBinding = class {
    */
   static fileSystemSupportsAutomapping(project) {
     const fileSystem =
-        /** @type {!Persistence.FileSystemWorkspaceBinding.FileSystem}*/ (project)._fileSystem;
+        /** @type {!FileSystem}*/ (project)._fileSystem;
     return fileSystem.supportsAutomapping();
   }
 
@@ -106,7 +106,7 @@ Persistence.FileSystemWorkspaceBinding = class {
    * @return {string}
    */
   static completeURL(project, relativePath) {
-    const fsProject = /** @type {!Persistence.FileSystemWorkspaceBinding.FileSystem}*/ (project);
+    const fsProject = /** @type {!FileSystem}*/ (project);
     return fsProject._fileSystemBaseURL + relativePath;
   }
 
@@ -146,7 +146,7 @@ Persistence.FileSystemWorkspaceBinding = class {
    * @param {!Persistence.PlatformFileSystem} fileSystem
    */
   _addFileSystem(fileSystem) {
-    const boundFileSystem = new Persistence.FileSystemWorkspaceBinding.FileSystem(this, fileSystem, this._workspace);
+    const boundFileSystem = new FileSystem(this, fileSystem, this._workspace);
     this._boundFileSystems.set(fileSystem.path(), boundFileSystem);
   }
 
@@ -197,21 +197,21 @@ Persistence.FileSystemWorkspaceBinding = class {
       this._boundFileSystems.remove(fileSystem._fileSystem.path());
     }
   }
-};
+}
 
 /**
  * @implements {Workspace.Project}
  * @unrestricted
  */
-Persistence.FileSystemWorkspaceBinding.FileSystem = class extends Workspace.ProjectStore {
+export class FileSystem extends Workspace.ProjectStore {
   /**
-   * @param {!Persistence.FileSystemWorkspaceBinding} fileSystemWorkspaceBinding
+   * @param {!FileSystemWorkspaceBinding} fileSystemWorkspaceBinding
    * @param {!Persistence.PlatformFileSystem} isolatedFileSystem
    * @param {!Workspace.Workspace} workspace
    */
   constructor(fileSystemWorkspaceBinding, isolatedFileSystem, workspace) {
     const fileSystemPath = isolatedFileSystem.path();
-    const id = Persistence.FileSystemWorkspaceBinding.projectId(fileSystemPath);
+    const id = FileSystemWorkspaceBinding.projectId(fileSystemPath);
     console.assert(!workspace.project(id));
     const displayName = fileSystemPath.substr(fileSystemPath.lastIndexOf('/') + 1);
 
@@ -274,12 +274,12 @@ Persistence.FileSystemWorkspaceBinding.FileSystem = class extends Workspace.Proj
    * @return {!Promise<?Workspace.UISourceCodeMetadata>}
    */
   requestMetadata(uiSourceCode) {
-    if (uiSourceCode[Persistence.FileSystemWorkspaceBinding._metadata]) {
-      return uiSourceCode[Persistence.FileSystemWorkspaceBinding._metadata];
+    if (uiSourceCode[_metadata]) {
+      return uiSourceCode[_metadata];
     }
     const relativePath = this._filePathForUISourceCode(uiSourceCode);
     const promise = this._fileSystem.getMetadata(relativePath).then(onMetadata);
-    uiSourceCode[Persistence.FileSystemWorkspaceBinding._metadata] = promise;
+    uiSourceCode[_metadata] = promise;
     return promise;
 
     /**
@@ -339,7 +339,7 @@ Persistence.FileSystemWorkspaceBinding.FileSystem = class extends Workspace.Proj
    */
   fullDisplayName(uiSourceCode) {
     const baseURL =
-        /** @type {!Persistence.FileSystemWorkspaceBinding.FileSystem}*/ (uiSourceCode.project())._fileSystemParentURL;
+        /** @type {!FileSystem}*/ (uiSourceCode.project())._fileSystemParentURL;
     return uiSourceCode.url().substring(baseURL.length);
   }
 
@@ -369,7 +369,7 @@ Persistence.FileSystemWorkspaceBinding.FileSystem = class extends Workspace.Proj
     /**
      * @param {boolean} success
      * @param {string=} newName
-     * @this {Persistence.FileSystemWorkspaceBinding.FileSystem}
+     * @this {FileSystem}
      */
     function innerCallback(success, newName) {
       if (!success || !newName) {
@@ -450,7 +450,7 @@ Persistence.FileSystemWorkspaceBinding.FileSystem = class extends Workspace.Proj
 
     /**
      * @param {number} from
-     * @this {Persistence.FileSystemWorkspaceBinding.FileSystem}
+     * @this {FileSystem}
      */
     function reportFileChunk(from) {
       const to = Math.min(from + chunkSize, filePaths.length);
@@ -569,7 +569,7 @@ Persistence.FileSystemWorkspaceBinding.FileSystem = class extends Workspace.Proj
       this.addUISourceCode(this.createUISourceCode(path, contentType));
       return;
     }
-    uiSourceCode[Persistence.FileSystemWorkspaceBinding._metadata] = null;
+    uiSourceCode[_metadata] = null;
     uiSourceCode.checkContentUpdated();
   }
 
@@ -584,6 +584,20 @@ Persistence.FileSystemWorkspaceBinding.FileSystem = class extends Workspace.Proj
   dispose() {
     this.removeProject();
   }
-};
+}
 
-Persistence.FileSystemWorkspaceBinding._metadata = Symbol('FileSystemWorkspaceBinding.Metadata');
+export const _metadata = Symbol('FileSystemWorkspaceBinding.Metadata');
+
+/* Legacy exported object */
+self.Persistence = self.Persistence || {};
+
+/* Legacy exported object */
+Persistence = Persistence || {};
+
+/** @constructor */
+Persistence.FileSystemWorkspaceBinding = FileSystemWorkspaceBinding;
+
+/** @constructor */
+Persistence.FileSystemWorkspaceBinding.FileSystem = FileSystem;
+
+Persistence.FileSystemWorkspaceBinding._metadata = _metadata;

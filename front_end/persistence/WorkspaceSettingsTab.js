@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-Persistence.WorkspaceSettingsTab = class extends UI.VBox {
+export default class WorkspaceSettingsTab extends UI.VBox {
   constructor() {
     super();
     this.registerRequiredCSS('persistence/workspaceSettingsTab.css');
@@ -166,4 +166,13 @@ Persistence.WorkspaceSettingsTab = class extends UI.VBox {
       element.remove();
     }
   }
-};
+}
+
+/* Legacy exported object */
+self.Persistence = self.Persistence || {};
+
+/* Legacy exported object */
+Persistence = Persistence || {};
+
+/** @constructor */
+Persistence.WorkspaceSettingsTab = WorkspaceSettingsTab;

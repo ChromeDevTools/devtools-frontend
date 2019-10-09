@@ -31,7 +31,7 @@
 /**
  * @unrestricted
  */
-Persistence.IsolatedFileSystemManager = class extends Common.Object {
+export default class IsolatedFileSystemManager extends Common.Object {
   constructor() {
     super();
 
@@ -77,7 +77,7 @@ Persistence.IsolatedFileSystemManager = class extends Common.Object {
 
     /**
      * @param {!Common.Event} event
-     * @this {Persistence.IsolatedFileSystemManager}
+     * @this {IsolatedFileSystemManager}
      */
     function onFileSystemsLoaded(event) {
       const fileSystems = /** @type {!Array.<!Persistence.IsolatedFileSystemManager.FileSystem>} */ (event.data);
@@ -135,7 +135,7 @@ Persistence.IsolatedFileSystemManager = class extends Common.Object {
 
     /**
      * @param {?Persistence.PlatformFileSystem} fileSystem
-     * @this {Persistence.IsolatedFileSystemManager}
+     * @this {IsolatedFileSystemManager}
      */
     function storeFileSystem(fileSystem) {
       if (!fileSystem) {
@@ -143,7 +143,7 @@ Persistence.IsolatedFileSystemManager = class extends Common.Object {
       }
       this._fileSystems.set(fileSystemURL, fileSystem);
       if (dispatchEvent) {
-        this.dispatchEventToListeners(Persistence.IsolatedFileSystemManager.Events.FileSystemAdded, fileSystem);
+        this.dispatchEventToListeners(Events.FileSystemAdded, fileSystem);
       }
       return fileSystem;
     }
@@ -155,7 +155,7 @@ Persistence.IsolatedFileSystemManager = class extends Common.Object {
    */
   addPlatformFileSystem(fileSystemURL, fileSystem) {
     this._fileSystems.set(fileSystemURL, fileSystem);
-    this.dispatchEventToListeners(Persistence.IsolatedFileSystemManager.Events.FileSystemAdded, fileSystem);
+    this.dispatchEventToListeners(Events.FileSystemAdded, fileSystem);
   }
 
   /**
@@ -192,7 +192,7 @@ Persistence.IsolatedFileSystemManager = class extends Common.Object {
     }
     this._fileSystems.delete(fileSystemPath);
     isolatedFileSystem.fileSystemRemoved();
-    this.dispatchEventToListeners(Persistence.IsolatedFileSystemManager.Events.FileSystemRemoved, isolatedFileSystem);
+    this.dispatchEventToListeners(Events.FileSystemRemoved, isolatedFileSystem);
   }
 
   /**
@@ -205,12 +205,12 @@ Persistence.IsolatedFileSystemManager = class extends Common.Object {
       removed: groupFilePathsIntoFileSystemPaths.call(this, event.data.removed)
     };
 
-    this.dispatchEventToListeners(Persistence.IsolatedFileSystemManager.Events.FileSystemFilesChanged, urlPaths);
+    this.dispatchEventToListeners(Events.FileSystemFilesChanged, urlPaths);
 
     /**
      * @param {!Array<string>} embedderPaths
      * @return {!Platform.Multimap<string, string>}
-     * @this {Persistence.IsolatedFileSystemManager}
+     * @this {IsolatedFileSystemManager}
      */
     function groupFilePathsIntoFileSystemPaths(embedderPaths) {
       const paths = new Platform.Multimap();
@@ -282,7 +282,7 @@ Persistence.IsolatedFileSystemManager = class extends Common.Object {
    * @return {number}
    */
   registerCallback(callback) {
-    const requestId = ++Persistence.IsolatedFileSystemManager._lastRequestId;
+    const requestId = ++_lastRequestId;
     this._callbacks.set(requestId, callback);
     return requestId;
   }
@@ -292,7 +292,7 @@ Persistence.IsolatedFileSystemManager = class extends Common.Object {
    * @return {number}
    */
   registerProgress(progress) {
-    const requestId = ++Persistence.IsolatedFileSystemManager._lastRequestId;
+    const requestId = ++_lastRequestId;
     this._progresses.set(requestId, progress);
     return requestId;
   }
@@ -357,16 +357,10 @@ Persistence.IsolatedFileSystemManager = class extends Common.Object {
     callback.call(null, files);
     this._callbacks.delete(requestId);
   }
-};
-
-/** @typedef {!{type: string, fileSystemName: string, rootURL: string, fileSystemPath: string}} */
-Persistence.IsolatedFileSystemManager.FileSystem;
-
-/** @typedef {!{changed:!Platform.Multimap<string, string>, added:!Platform.Multimap<string, string>, removed:!Platform.Multimap<string, string>}} */
-Persistence.IsolatedFileSystemManager.FilesChangedData;
+}
 
 /** @enum {symbol} */
-Persistence.IsolatedFileSystemManager.Events = {
+export const Events = {
   FileSystemAdded: Symbol('FileSystemAdded'),
   FileSystemRemoved: Symbol('FileSystemRemoved'),
   FileSystemFilesChanged: Symbol('FileSystemFilesChanged'),
@@ -374,9 +368,28 @@ Persistence.IsolatedFileSystemManager.Events = {
   ExcludedFolderRemoved: Symbol('ExcludedFolderRemoved')
 };
 
-Persistence.IsolatedFileSystemManager._lastRequestId = 0;
+export let _lastRequestId = 0;
+
+/* Legacy exported object */
+self.Persistence = self.Persistence || {};
+
+/* Legacy exported object */
+Persistence = Persistence || {};
+
+/** @constructor */
+Persistence.IsolatedFileSystemManager = IsolatedFileSystemManager;
+
+/** @enum {symbol} */
+Persistence.IsolatedFileSystemManager.Events = Events;
+Persistence.IsolatedFileSystemManager._lastRequestId = _lastRequestId;
+
+/** @typedef {!{type: string, fileSystemName: string, rootURL: string, fileSystemPath: string}} */
+Persistence.IsolatedFileSystemManager.FileSystem;
+
+/** @typedef {!{changed:!Platform.Multimap<string, string>, added:!Platform.Multimap<string, string>, removed:!Platform.Multimap<string, string>}} */
+Persistence.IsolatedFileSystemManager.FilesChangedData;
 
 /**
- * @type {!Persistence.IsolatedFileSystemManager}
+ * @type {!IsolatedFileSystemManager}
  */
 Persistence.isolatedFileSystemManager;

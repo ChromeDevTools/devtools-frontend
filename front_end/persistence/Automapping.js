@@ -2,18 +2,18 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-Persistence.Automapping = class {
+export default class Automapping {
   /**
    * @param {!Workspace.Workspace} workspace
-   * @param {function(!Persistence.AutomappingStatus)} onStatusAdded
-   * @param {function(!Persistence.AutomappingStatus)} onStatusRemoved
+   * @param {function(!AutomappingStatus)} onStatusAdded
+   * @param {function(!AutomappingStatus)} onStatusRemoved
    */
   constructor(workspace, onStatusAdded, onStatusRemoved) {
     this._workspace = workspace;
 
     this._onStatusAdded = onStatusAdded;
     this._onStatusRemoved = onStatusRemoved;
-    /** @type {!Set<!Persistence.AutomappingStatus>} */
+    /** @type {!Set<!AutomappingStatus>} */
     this._statuses = new Set();
     this._statusSymbol = Symbol('Automapping.Status');
     this._processingPromiseSymbol = Symbol('Automapping.ProcessingPromise');
@@ -25,9 +25,9 @@ Persistence.Automapping = class {
     this._sweepThrottler = new Common.Throttler(100);
 
     const pathEncoder = new Persistence.PathEncoder();
-    this._filesIndex = new Persistence.Automapping.FilePathIndex(pathEncoder);
-    this._projectFoldersIndex = new Persistence.Automapping.FolderIndex(pathEncoder);
-    this._activeFoldersIndex = new Persistence.Automapping.FolderIndex(pathEncoder);
+    this._filesIndex = new FilePathIndex(pathEncoder);
+    this._projectFoldersIndex = new FolderIndex(pathEncoder);
+    this._activeFoldersIndex = new FolderIndex(pathEncoder);
 
     /** @type {!Array<function(!Workspace.UISourceCode):boolean>} */
     this._interceptors = [];
@@ -73,7 +73,7 @@ Persistence.Automapping = class {
     this._sweepThrottler.schedule(sweepUnmapped.bind(this));
 
     /**
-     * @this {Persistence.Automapping}
+     * @this {Automapping}
      * @return {!Promise}
      */
     function sweepUnmapped() {
@@ -198,9 +198,9 @@ Persistence.Automapping = class {
     networkSourceCode[this._processingPromiseSymbol] = createBindingPromise;
 
     /**
-     * @param {?Persistence.AutomappingStatus} status
-     * @return {!Promise<?Persistence.AutomappingStatus>}
-     * @this {Persistence.Automapping}
+     * @param {?AutomappingStatus} status
+     * @return {!Promise<?AutomappingStatus>}
+     * @this {Automapping}
      */
     async function validateStatus(status) {
       if (!status) {
@@ -266,8 +266,8 @@ Persistence.Automapping = class {
     }
 
     /**
-     * @param {?Persistence.AutomappingStatus} status
-     * @this {Persistence.Automapping}
+     * @param {?AutomappingStatus} status
+     * @this {Automapping}
      */
     function onStatus(status) {
       if (networkSourceCode[this._processingPromiseSymbol] !== createBindingPromise) {
@@ -298,7 +298,7 @@ Persistence.Automapping = class {
   }
 
   /**
-   * @param {!Persistence.AutomappingStatus} binding
+   * @param {!AutomappingStatus} binding
    */
   _prevalidationFailedForTest(binding) {
   }
@@ -333,20 +333,19 @@ Persistence.Automapping = class {
 
   /**
    * @param {!Workspace.UISourceCode} networkSourceCode
-   * @return {!Promise<?Persistence.AutomappingStatus>}
+   * @return {!Promise<?AutomappingStatus>}
    */
   _createBinding(networkSourceCode) {
     if (networkSourceCode.url().startsWith('file://') || networkSourceCode.url().startsWith('snippet://')) {
       const decodedUrl = decodeURI(networkSourceCode.url());
       const fileSourceCode = this._fileSystemUISourceCodes.get(decodedUrl);
-      const status =
-          fileSourceCode ? new Persistence.AutomappingStatus(networkSourceCode, fileSourceCode, false) : null;
+      const status = fileSourceCode ? new AutomappingStatus(networkSourceCode, fileSourceCode, false) : null;
       return Promise.resolve(status);
     }
 
     let networkPath = Common.ParsedURL.extractPath(networkSourceCode.url());
     if (networkPath === null) {
-      return Promise.resolve(/** @type {?Persistence.AutomappingStatus} */ (null));
+      return Promise.resolve(/** @type {?AutomappingStatus} */ (null));
     }
 
     if (networkPath.endsWith('/')) {
@@ -356,13 +355,13 @@ Persistence.Automapping = class {
     const similarFiles =
         this._filesIndex.similarFiles(urlDecodedNetworkPath).map(path => this._fileSystemUISourceCodes.get(path));
     if (!similarFiles.length) {
-      return Promise.resolve(/** @type {?Persistence.AutomappingStatus} */ (null));
+      return Promise.resolve(/** @type {?AutomappingStatus} */ (null));
     }
 
     return this._pullMetadatas(similarFiles.concat(networkSourceCode)).then(onMetadatas.bind(this));
 
     /**
-     * @this {Persistence.Automapping}
+     * @this {Automapping}
      */
     function onMetadatas() {
       const activeFiles = similarFiles.filter(file => !!this._activeFoldersIndex.closestParentFolder(file.url()));
@@ -372,7 +371,7 @@ Persistence.Automapping = class {
         if (activeFiles.length !== 1) {
           return null;
         }
-        return new Persistence.AutomappingStatus(networkSourceCode, activeFiles[0], false);
+        return new AutomappingStatus(networkSourceCode, activeFiles[0], false);
       }
 
       // Try to find exact matches, prioritizing active folders.
@@ -383,7 +382,7 @@ Persistence.Automapping = class {
       if (exactMatches.length !== 1) {
         return null;
       }
-      return new Persistence.AutomappingStatus(networkSourceCode, exactMatches[0], true);
+      return new AutomappingStatus(networkSourceCode, exactMatches[0], true);
     }
   }
 
@@ -415,12 +414,12 @@ Persistence.Automapping = class {
       return timeMatches && contentMatches;
     });
   }
-};
+}
 
 /**
  * @unrestricted
  */
-Persistence.Automapping.FilePathIndex = class {
+export class FilePathIndex {
   /**
    * @param {!Persistence.PathEncoder} encoder
    */
@@ -458,12 +457,12 @@ Persistence.Automapping.FilePathIndex = class {
     return this._reversedIndex.words(longestCommonPrefix)
         .map(encodedPath => this._encoder.decode(encodedPath.reverse()));
   }
-};
+}
 
 /**
  * @unrestricted
  */
-Persistence.Automapping.FolderIndex = class {
+export class FolderIndex {
   /**
    * @param {!Persistence.PathEncoder} encoder
    */
@@ -520,12 +519,12 @@ Persistence.Automapping.FolderIndex = class {
     const commonPrefix = this._index.longestPrefix(encodedPath, true);
     return this._encoder.decode(commonPrefix);
   }
-};
+}
 
 /**
  * @unrestricted
  */
-Persistence.AutomappingStatus = class {
+export class AutomappingStatus {
   /**
    * @param {!Workspace.UISourceCode} network
    * @param {!Workspace.UISourceCode} fileSystem
@@ -536,4 +535,22 @@ Persistence.AutomappingStatus = class {
     this.fileSystem = fileSystem;
     this.exactMatch = exactMatch;
   }
-};
+}
+
+/* Legacy exported object */
+self.Persistence = self.Persistence || {};
+
+/* Legacy exported object */
+Persistence = Persistence || {};
+
+/** @constructor */
+Persistence.Automapping = Automapping;
+
+/** @constructor */
+Persistence.Automapping.FilePathIndex = FilePathIndex;
+
+/** @constructor */
+Persistence.Automapping.FolderIndex = FolderIndex;
+
+/** @constructor */
+Persistence.AutomappingStatus = AutomappingStatus;

@@ -31,7 +31,7 @@
  * @implements {UI.ListWidget.Delegate}
  * @unrestricted
  */
-Persistence.EditFileSystemView = class extends UI.VBox {
+export default class EditFileSystemView extends UI.VBox {
   /**
    * @param {string} fileSystemPath
    */
@@ -166,7 +166,7 @@ Persistence.EditFileSystemView = class extends UI.VBox {
      * @param {number} index
      * @param {!HTMLInputElement|!HTMLSelectElement} input
      * @return {!UI.ListWidget.ValidatorResult}
-     * @this {Persistence.EditFileSystemView}
+     * @this {EditFileSystemView}
      */
     function pathPrefixValidator(item, index, input) {
       const prefix = this._normalizePrefix(input.value.trim());
@@ -196,4 +196,13 @@ Persistence.EditFileSystemView = class extends UI.VBox {
     }
     return prefix + (prefix[prefix.length - 1] === '/' ? '' : '/');
   }
-};
+}
+
+/* Legacy exported object */
+self.Persistence = self.Persistence || {};
+
+/* Legacy exported object */
+Persistence = Persistence || {};
+
+/** @constructor */
+Persistence.EditFileSystemView = EditFileSystemView;

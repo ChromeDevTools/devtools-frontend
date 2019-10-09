@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-Persistence.PlatformFileSystem = class {
+export default class PlatformFileSystem {
   /**
    * @param {string} path
    * @param {string} type
@@ -191,4 +191,13 @@ Persistence.PlatformFileSystem = class {
   supportsAutomapping() {
     throw new Error('Not implemented');
   }
-};
+}
+
+/* Legacy exported object */
+self.Persistence = self.Persistence || {};
+
+/* Legacy exported object */
+Persistence = Persistence || {};
+
+/** @constructor */
+Persistence.PlatformFileSystem = PlatformFileSystem;

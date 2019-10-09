@@ -43,14 +43,16 @@
             "className": "Persistence.PersistenceActions.ContextMenuProvider"
         }
     ],
-    "scripts": [
+    "scripts": [],
+    "modules": [
+        "persistence.js",
         "PlatformFileSystem.js",
         "IsolatedFileSystem.js",
         "IsolatedFileSystemManager.js",
         "FileSystemWorkspaceBinding.js",
         "Automapping.js",
         "NetworkPersistenceManager.js",
-        "Persistence.js",
+        "PersistenceImpl.js",
         "PersistenceActions.js",
         "PersistenceUtils.js",
         "EditFileSystemView.js",

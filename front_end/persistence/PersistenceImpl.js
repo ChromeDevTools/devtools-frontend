@@ -5,7 +5,7 @@
 /**
  * @unrestricted
  */
-Persistence.Persistence = class extends Common.Object {
+export default class PersistenceImpl extends Common.Object {
   /**
    * @param {!Workspace.Workspace} workspace
    * @param {!Bindings.BreakpointManager} breakpointManager
@@ -39,39 +39,39 @@ Persistence.Persistence = class extends Common.Object {
   }
 
   /**
-   * @param {!Persistence.PersistenceBinding} binding
+   * @param {!PersistenceBinding} binding
    */
   addBinding(binding) {
     this._innerAddBinding(binding);
   }
 
   /**
-   * @param {!Persistence.PersistenceBinding} binding
+   * @param {!PersistenceBinding} binding
    */
   addBindingForTest(binding) {
     this._innerAddBinding(binding);
   }
 
   /**
-   * @param {!Persistence.PersistenceBinding} binding
+   * @param {!PersistenceBinding} binding
    */
   removeBinding(binding) {
     this._innerRemoveBinding(binding);
   }
 
   /**
-   * @param {!Persistence.PersistenceBinding} binding
+   * @param {!PersistenceBinding} binding
    */
   removeBindingForTest(binding) {
     this._innerRemoveBinding(binding);
   }
 
   /**
-   * @param {!Persistence.PersistenceBinding} binding
+   * @param {!PersistenceBinding} binding
    */
   _innerAddBinding(binding) {
-    binding.network[Persistence.Persistence._binding] = binding;
-    binding.fileSystem[Persistence.Persistence._binding] = binding;
+    binding.network[_binding] = binding;
+    binding.fileSystem[_binding] = binding;
 
     binding.fileSystem.forceLoadOnCheckContent();
 
@@ -100,22 +100,22 @@ Persistence.Persistence = class extends Common.Object {
 
     this._notifyBindingEvent(binding.network);
     this._notifyBindingEvent(binding.fileSystem);
-    this.dispatchEventToListeners(Persistence.Persistence.Events.BindingCreated, binding);
+    this.dispatchEventToListeners(Events.BindingCreated, binding);
   }
 
   /**
-   * @param {!Persistence.PersistenceBinding} binding
+   * @param {!PersistenceBinding} binding
    */
   _innerRemoveBinding(binding) {
-    if (binding.network[Persistence.Persistence._binding] !== binding) {
+    if (binding.network[_binding] !== binding) {
       return;
     }
     console.assert(
-        binding.network[Persistence.Persistence._binding] === binding.fileSystem[Persistence.Persistence._binding],
+        binding.network[_binding] === binding.fileSystem[_binding],
         'ERROR: inconsistent binding for networkURL ' + binding.network.url());
 
-    binding.network[Persistence.Persistence._binding] = null;
-    binding.fileSystem[Persistence.Persistence._binding] = null;
+    binding.network[_binding] = null;
+    binding.fileSystem[_binding] = null;
 
     binding.network.removeEventListener(
         Workspace.UISourceCode.Events.WorkingCopyCommitted, this._onWorkingCopyCommitted, this);
@@ -131,15 +131,15 @@ Persistence.Persistence = class extends Common.Object {
 
     this._notifyBindingEvent(binding.network);
     this._notifyBindingEvent(binding.fileSystem);
-    this.dispatchEventToListeners(Persistence.Persistence.Events.BindingRemoved, binding);
+    this.dispatchEventToListeners(Events.BindingRemoved, binding);
   }
 
   /**
    * @param {!Persistence.AutomappingStatus} status
    */
   _onStatusAdded(status) {
-    const binding = new Persistence.PersistenceBinding(status.network, status.fileSystem);
-    status[Persistence.Persistence._binding] = binding;
+    const binding = new PersistenceBinding(status.network, status.fileSystem);
+    status[_binding] = binding;
     this._innerAddBinding(binding);
   }
 
@@ -147,7 +147,7 @@ Persistence.Persistence = class extends Common.Object {
    * @param {!Persistence.AutomappingStatus} status
    */
   _onStatusRemoved(status) {
-    const binding = /** @type {!Persistence.PersistenceBinding} */ (status[Persistence.Persistence._binding]);
+    const binding = /** @type {!PersistenceBinding} */ (status[_binding]);
     this._innerRemoveBinding(binding);
   }
 
@@ -163,15 +163,15 @@ Persistence.Persistence = class extends Common.Object {
    * @param {!Workspace.UISourceCode} uiSourceCode
    */
   _syncWorkingCopy(uiSourceCode) {
-    const binding = uiSourceCode[Persistence.Persistence._binding];
-    if (!binding || binding[Persistence.Persistence._muteWorkingCopy]) {
+    const binding = uiSourceCode[_binding];
+    if (!binding || binding[_muteWorkingCopy]) {
       return;
     }
     const other = binding.network === uiSourceCode ? binding.fileSystem : binding.network;
     if (!uiSourceCode.isDirty()) {
-      binding[Persistence.Persistence._muteWorkingCopy] = true;
+      binding[_muteWorkingCopy] = true;
       other.resetWorkingCopy();
-      binding[Persistence.Persistence._muteWorkingCopy] = false;
+      binding[_muteWorkingCopy] = false;
       this._contentSyncedForTest();
       return;
     }
@@ -180,7 +180,7 @@ Persistence.Persistence = class extends Common.Object {
     if (target.type() === SDK.Target.Type.Node) {
       const newContent = uiSourceCode.workingCopy();
       other.requestContent().then(() => {
-        const nodeJSContent = Persistence.Persistence.rewrapNodeJSContent(other, other.workingCopy(), newContent);
+        const nodeJSContent = PersistenceImpl.rewrapNodeJSContent(other, other.workingCopy(), newContent);
         setWorkingCopy.call(this, () => nodeJSContent);
       });
       return;
@@ -190,12 +190,12 @@ Persistence.Persistence = class extends Common.Object {
 
     /**
      * @param {function():string} workingCopyGetter
-     * @this {Persistence.Persistence}
+     * @this {PersistenceImpl}
      */
     function setWorkingCopy(workingCopyGetter) {
-      binding[Persistence.Persistence._muteWorkingCopy] = true;
+      binding[_muteWorkingCopy] = true;
       other.setWorkingCopyGetter(workingCopyGetter);
-      binding[Persistence.Persistence._muteWorkingCopy] = false;
+      binding[_muteWorkingCopy] = false;
       this._contentSyncedForTest();
     }
   }
@@ -215,15 +215,15 @@ Persistence.Persistence = class extends Common.Object {
    * @param {boolean} encoded
    */
   syncContent(uiSourceCode, newContent, encoded) {
-    const binding = uiSourceCode[Persistence.Persistence._binding];
-    if (!binding || binding[Persistence.Persistence._muteCommit]) {
+    const binding = uiSourceCode[_binding];
+    if (!binding || binding[_muteCommit]) {
       return;
     }
     const other = binding.network === uiSourceCode ? binding.fileSystem : binding.network;
     const target = Bindings.NetworkProject.targetForUISourceCode(binding.network);
     if (target.type() === SDK.Target.Type.Node) {
       other.requestContent().then(currentContent => {
-        const nodeJSContent = Persistence.Persistence.rewrapNodeJSContent(other, currentContent, newContent);
+        const nodeJSContent = PersistenceImpl.rewrapNodeJSContent(other, currentContent, newContent);
         setContent.call(this, nodeJSContent);
       });
       return;
@@ -232,12 +232,12 @@ Persistence.Persistence = class extends Common.Object {
 
     /**
      * @param {string} newContent
-     * @this {Persistence.Persistence}
+     * @this {PersistenceImpl}
      */
     function setContent(newContent) {
-      binding[Persistence.Persistence._muteCommit] = true;
+      binding[_muteCommit] = true;
       other.setContent(newContent, encoded);
-      binding[Persistence.Persistence._muteCommit] = false;
+      binding[_muteCommit] = false;
       this._contentSyncedForTest();
     }
   }
@@ -250,21 +250,18 @@ Persistence.Persistence = class extends Common.Object {
    */
   static rewrapNodeJSContent(uiSourceCode, currentContent, newContent) {
     if (uiSourceCode.project().type() === Workspace.projectTypes.FileSystem) {
-      if (newContent.startsWith(Persistence.Persistence._NodePrefix) &&
-          newContent.endsWith(Persistence.Persistence._NodeSuffix)) {
-        newContent = newContent.substring(
-            Persistence.Persistence._NodePrefix.length, newContent.length - Persistence.Persistence._NodeSuffix.length);
+      if (newContent.startsWith(_NodePrefix) && newContent.endsWith(_NodeSuffix)) {
+        newContent = newContent.substring(_NodePrefix.length, newContent.length - _NodeSuffix.length);
       }
-      if (currentContent.startsWith(Persistence.Persistence._NodeShebang)) {
-        newContent = Persistence.Persistence._NodeShebang + newContent;
+      if (currentContent.startsWith(_NodeShebang)) {
+        newContent = _NodeShebang + newContent;
       }
     } else {
-      if (newContent.startsWith(Persistence.Persistence._NodeShebang)) {
-        newContent = newContent.substring(Persistence.Persistence._NodeShebang.length);
+      if (newContent.startsWith(_NodeShebang)) {
+        newContent = newContent.substring(_NodeShebang.length);
       }
-      if (currentContent.startsWith(Persistence.Persistence._NodePrefix) &&
-          currentContent.endsWith(Persistence.Persistence._NodeSuffix)) {
-        newContent = Persistence.Persistence._NodePrefix + newContent + Persistence.Persistence._NodeSuffix;
+      if (currentContent.startsWith(_NodePrefix) && currentContent.endsWith(_NodeSuffix)) {
+        newContent = _NodePrefix + newContent + _NodeSuffix;
       }
     }
     return newContent;
@@ -298,7 +295,7 @@ Persistence.Persistence = class extends Common.Object {
     if (uiSourceCode.project().canSetFileContent()) {
       return false;
     }
-    if (uiSourceCode[Persistence.Persistence._binding]) {
+    if (uiSourceCode[_binding]) {
       return false;
     }
     return !!uiSourceCode.hasCommits();
@@ -306,10 +303,10 @@ Persistence.Persistence = class extends Common.Object {
 
   /**
    * @param {!Workspace.UISourceCode} uiSourceCode
-   * @return {?Persistence.PersistenceBinding}
+   * @return {?PersistenceBinding}
    */
   binding(uiSourceCode) {
-    return uiSourceCode[Persistence.Persistence._binding] || null;
+    return uiSourceCode[_binding] || null;
   }
 
   /**
@@ -397,17 +394,16 @@ Persistence.Persistence = class extends Common.Object {
     }
     return this._filePathPrefixesToBindingCount.has(filePath);
   }
-};
+}
 
-Persistence.Persistence._binding = Symbol('Persistence.Binding');
-Persistence.Persistence._muteCommit = Symbol('Persistence.MuteCommit');
-Persistence.Persistence._muteWorkingCopy = Symbol('Persistence.MuteWorkingCopy');
+export const _binding = Symbol('Persistence.Binding');
+export const _muteCommit = Symbol('Persistence.MuteCommit');
+export const _muteWorkingCopy = Symbol('Persistence.MuteWorkingCopy');
+export const _NodePrefix = '(function (exports, require, module, __filename, __dirname) { ';
+export const _NodeSuffix = '\n});';
+export const _NodeShebang = '#!/usr/bin/env node';
 
-Persistence.Persistence._NodePrefix = '(function (exports, require, module, __filename, __dirname) { ';
-Persistence.Persistence._NodeSuffix = '\n});';
-Persistence.Persistence._NodeShebang = '#!/usr/bin/env node';
-
-Persistence.Persistence.Events = {
+export const Events = {
   BindingCreated: Symbol('BindingCreated'),
   BindingRemoved: Symbol('BindingRemoved')
 };
@@ -415,7 +411,7 @@ Persistence.Persistence.Events = {
 /**
  * @unrestricted
  */
-Persistence.PathEncoder = class {
+export class PathEncoder {
   constructor() {
     /** @type {!Common.CharacterIdMap<string>} */
     this._encoder = new Common.CharacterIdMap();
@@ -436,12 +432,12 @@ Persistence.PathEncoder = class {
   decode(path) {
     return path.split('').map(token => this._encoder.fromChar(token)).join('/');
   }
-};
+}
 
 /**
  * @unrestricted
  */
-Persistence.PersistenceBinding = class {
+export class PersistenceBinding {
   /**
    * @param {!Workspace.UISourceCode} network
    * @param {!Workspace.UISourceCode} fileSystem
@@ -450,7 +446,30 @@ Persistence.PersistenceBinding = class {
     this.network = network;
     this.fileSystem = fileSystem;
   }
-};
+}
 
-/** @type {!Persistence.Persistence} */
+/* Legacy exported object */
+self.Persistence = self.Persistence || {};
+
+/* Legacy exported object */
+Persistence = Persistence || {};
+
+/** @constructor */
+Persistence.Persistence = PersistenceImpl;
+
+Persistence.Persistence._binding = _binding;
+Persistence.Persistence._muteCommit = _muteCommit;
+Persistence.Persistence._muteWorkingCopy = _muteWorkingCopy;
+Persistence.Persistence._NodePrefix = _NodePrefix;
+Persistence.Persistence._NodeSuffix = _NodeSuffix;
+Persistence.Persistence._NodeShebang = _NodeShebang;
+Persistence.Persistence.Events = Events;
+
+/** @constructor */
+Persistence.PathEncoder = PathEncoder;
+
+/** @constructor */
+Persistence.PersistenceBinding = PersistenceBinding;
+
+/** @type {!PersistenceImpl} */
 Persistence.persistence;

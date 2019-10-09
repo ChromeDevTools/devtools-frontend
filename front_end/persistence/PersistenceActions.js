@@ -2,13 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-Persistence.PersistenceActions = {};
-
 /**
  * @implements {UI.ContextMenu.Provider}
  * @unrestricted
  */
-Persistence.PersistenceActions.ContextMenuProvider = class {
+export class ContextMenuProvider {
   /**
    * @override
    * @param {!Event} event
@@ -53,4 +51,15 @@ Persistence.PersistenceActions.ContextMenuProvider = class {
           Common.UIString('Open in containing folder'), () => Host.InspectorFrontendHost.showItemInFolder(path));
     }
   }
-};
+}
+
+/* Legacy exported object */
+self.Persistence = self.Persistence || {};
+
+/* Legacy exported object */
+Persistence = Persistence || {};
+
+Persistence.PersistenceActions = {};
+
+/** @constructor */
+Persistence.PersistenceActions.ContextMenuProvider = ContextMenuProvider;

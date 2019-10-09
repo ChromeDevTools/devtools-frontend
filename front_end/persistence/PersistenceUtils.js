@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-Persistence.PersistenceUtils = class {
+export default class PersistenceUtils {
   /**
    * @param {!Workspace.UISourceCode} uiSourceCode
    * @return {string}
@@ -32,7 +32,7 @@ Persistence.PersistenceUtils = class {
         return null;
       }
       const icon = UI.Icon.create('mediumicon-file-sync');
-      icon.title = Persistence.PersistenceUtils.tooltipForUISourceCode(binding.network);
+      icon.title = PersistenceUtils.tooltipForUISourceCode(binding.network);
       // TODO(allada) This will not work properly with dark theme.
       if (Persistence.networkPersistenceManager.project() === binding.fileSystem.project()) {
         icon.style.filter = 'hue-rotate(160deg)';
@@ -45,16 +45,16 @@ Persistence.PersistenceUtils = class {
     }
 
     const icon = UI.Icon.create('mediumicon-file');
-    icon.title = Persistence.PersistenceUtils.tooltipForUISourceCode(uiSourceCode);
+    icon.title = PersistenceUtils.tooltipForUISourceCode(uiSourceCode);
     return icon;
   }
-};
+}
 
 /**
  * @extends {Common.Object}
  * @implements {Components.LinkDecorator}
  */
-Persistence.PersistenceUtils.LinkDecorator = class extends Common.Object {
+export class LinkDecorator extends Common.Object {
   /**
    * @param {!Persistence.Persistence} persistence
    */
@@ -78,6 +78,18 @@ Persistence.PersistenceUtils.LinkDecorator = class extends Common.Object {
    * @return {?UI.Icon}
    */
   linkIcon(uiSourceCode) {
-    return Persistence.PersistenceUtils.iconForUISourceCode(uiSourceCode);
+    return PersistenceUtils.iconForUISourceCode(uiSourceCode);
   }
-};
+}
+
+/* Legacy exported object */
+self.Persistence = self.Persistence || {};
+
+/* Legacy exported object */
+Persistence = Persistence || {};
+
+/** @constructor */
+Persistence.PersistenceUtils = PersistenceUtils;
+
+/** @constructor */
+Persistence.PersistenceUtils.LinkDecorator = LinkDecorator;

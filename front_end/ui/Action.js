@@ -118,11 +118,11 @@ export default class Action extends Common.Object {
     if (options) {
       for (const pair of options) {
         if (pair['value'] !== this._toggled) {
-          title = pair['title'];
+          title = ls(pair['title']);
         }
       }
     }
-    return ls(title);
+    return title;
   }
 
   /**

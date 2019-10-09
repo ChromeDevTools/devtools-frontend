@@ -15,8 +15,8 @@
   <message name="IDS_DEVTOOLS_04c247c2ba261c7511e4f479728bd7ea" desc="Title of a setting under the Console category that can be invoked through the Command Menu">
     Do not treat evaluation as user activation
   </message>
-  <message name="IDS_DEVTOOLS_07213a0161f52846ab198be103b5ab43" desc="Text in Console Sidebar of the Console panel">
-    errors
+  <message name="IDS_DEVTOOLS_0598dbc1dda8ffdd9f5015fccf675ae1" desc="Text in Console Sidebar of the Console panel to show that there are no user messages">
+    No user messages
   </message>
   <message name="IDS_DEVTOOLS_0a2f561bf52ee6d8cd2dda123c8f74fe" desc="Text in Console View of the Console panel">
     Default levels
@@ -36,6 +36,12 @@
   <message name="IDS_DEVTOOLS_1a37d25ba6689d174f51ba8e2425fde6" desc="Filter name in Console Sidebar of the Console panel">
     &lt;other&gt;
   </message>
+  <message name="IDS_DEVTOOLS_20b290881fd9c9f310c38f92e963193f" desc="Text in Console Sidebar of the Console panel to show that there are more than 1 verbose messages">
+    <ph name="PH1">$1d<ex>2</ex></ph> verbose
+  </message>
+  <message name="IDS_DEVTOOLS_2169b4627df97333ed94d1e30a9b8148" desc="Text in Console Sidebar of the Console panel to show that there are more than 1 errors">
+    <ph name="PH1">$1d<ex>2</ex></ph> errors
+  </message>
   <message name="IDS_DEVTOOLS_26649c8f3cadc9c0170f2443e6fc0252" desc="Text in Console View Message of the Console panel">
     &lt;attribute&gt;
   </message>
@@ -51,9 +57,6 @@
   <message name="IDS_DEVTOOLS_2b918231caba2d08f2223246ac06222c" desc="A context menu item in the Console View of the Console panel">
     Copy visible styled selection
   </message>
-  <message name="IDS_DEVTOOLS_2c7aea4237e25b4f8ee3b0bf77d6fed0" desc="Text in Console Sidebar of the Console panel">
-    verbose
-  </message>
   <message name="IDS_DEVTOOLS_2d82fe5a069854a35204b4e64e8e08ae" desc="Tooltip text that appears when hovering over the largeicon settings gear in show settings pane setting in console view of the console panel">
     Console settings
   </message>
@@ -65,9 +68,6 @@
   </message>
   <message name="IDS_DEVTOOLS_383b1deb90603a79d86f3ae82e55a9e2" desc="Text in Console View of the Console panel">
     <ph name="THIS__HIDDENBYFILTERCOUNT">$1s<ex>3</ex></ph> hidden
-  </message>
-  <message name="IDS_DEVTOOLS_3879149292f9af4469cec013785d6dfd" desc="Text in Console Sidebar of the Console panel">
-    warnings
   </message>
   <message name="IDS_DEVTOOLS_388024c56c38c3d1c635b09a2b28b8ac" desc="Note title in Console View Message of the Console panel">
     Value below was evaluated just now.
@@ -96,6 +96,18 @@
   <message name="IDS_DEVTOOLS_53f0fca28a013c116a1df533d9bdf764" desc="Message text in Console View Message of the Console panel">
     [Deprecation] <ph name="MESSAGETEXT">$1s<ex>console.log(1)</ex></ph>
   </message>
+  <message name="IDS_DEVTOOLS_5045f70382e14de07fd8328426d7083b" desc="Text in Console Sidebar of the Console panel to show that there is 1 error">
+    1 error
+  </message>
+  <message name="IDS_DEVTOOLS_58a747ef5d07d22101bdcd058e772ff9" desc="Text in Console Sidebar of the Console panel to show that there are no messages">
+    No messages
+  </message>
+  <message name="IDS_DEVTOOLS_59d96b10d94add90060c79efdd8db191" desc="Text in Console Sidebar of the Console panel to show that there are no warnings">
+    No warnings
+  </message>
+  <message name="IDS_DEVTOOLS_5cc9e9d6312328b3f61b7aa86b0b5b5e" desc="Text in Console Sidebar of the Console panel to show that there is 1 user message">
+    1 user message
+  </message>
   <message name="IDS_DEVTOOLS_6047a6c9fb775557639afb3fbc90b4e7" desc="Text in Console View of the Console panel">
     Log levels
   </message>
@@ -114,23 +126,23 @@
   <message name="IDS_DEVTOOLS_6eed4ce2d5859b11dc44a5e3bd91af20" desc="Title of a setting under the Console category in Settings">
     Eager evaluation
   </message>
-  <message name="IDS_DEVTOOLS_78e731027d8fd50ed642340b7c9a63b3" desc="Text in Console Sidebar of the Console panel">
-    message
-  </message>
   <message name="IDS_DEVTOOLS_7a1920d61156abc05a60135aefe8bc67" desc="A context menu item in the Console View of the Console panel">
     Default
   </message>
-  <message name="IDS_DEVTOOLS_7b83d3f08fa392b79e3f553b585971cd" desc="Text in Console Sidebar of the Console panel">
-    warning
-  </message>
   <message name="IDS_DEVTOOLS_7be1a30a7758269755609f1f7434d828" desc="Title of a setting under the Console category that can be invoked through the Command Menu">
     Group similar messages in console
+  </message>
+  <message name="IDS_DEVTOOLS_7c1e3c25af10fa5d8046dff929148280" desc="Text in Console Sidebar of the Console panel to show that there is 1 info">
+    1 info
   </message>
   <message name="IDS_DEVTOOLS_93977f1310f482395375a9950b512462" desc="Title of a setting under the Console category that can be invoked through the Command Menu">
     Eagerly evaluate console prompt text
   </message>
   <message name="IDS_DEVTOOLS_95c74dafb449d894014c2eb1d80ded01" desc="A context menu item in the Console Pin Pane of the Console panel">
     Edit expression
+  </message>
+  <message name="IDS_DEVTOOLS_97b0da743d68f96933d990003383ccf1" desc="Text in Console Sidebar of the Console panel to show that there is 1 warning">
+    1 warning
   </message>
   <message name="IDS_DEVTOOLS_a092483ed730ed040e5df5776dca49e5" desc="Title of a setting under the Console category in Settings">
     Log XMLHttpRequests
@@ -144,17 +156,23 @@
   <message name="IDS_DEVTOOLS_a3eb3c95c4cb8e06fd3682c1f0d70bc0" desc="Tooltip text that appears on the setting when hovering over it in Console View of the Console panel">
     Only show messages from the current context (top, iframe, worker, extension)
   </message>
+  <message name="IDS_DEVTOOLS_a5e4febd4637e35098ee6e8f493ca390" desc="Text in Console Sidebar of the Console panel to show that there is 1 message">
+    1 message
+  </message>
+  <message name="IDS_DEVTOOLS_a6f9c9bba5831ed632218f165adcfeed" desc="Text in Console Sidebar of the Console panel to show that there are more than 1 messages">
+    <ph name="PH1">$1d<ex>2</ex></ph> messages
+  </message>
   <message name="IDS_DEVTOOLS_abba8787b900565790eae8ceceed3c2b" desc="Title of a setting under the Console category that can be invoked through the Command Menu">
     Do not autocomplete from history
   </message>
   <message name="IDS_DEVTOOLS_ac17bdcb3f6c8d86ccb64aff1ab8db7c" desc="Message element text content in Console View Message of the Console panel">
     Console was cleared
   </message>
-  <message name="IDS_DEVTOOLS_ac2671ba859591dd83845c680aaa144e" desc="Text in Console Sidebar of the Console panel">
-    user messages
-  </message>
   <message name="IDS_DEVTOOLS_ace3e0307b2ce23a81b18747fc5f555f" desc="Note title in Console View Message of the Console panel">
     Function was resolved from bound function.
+  </message>
+  <message name="IDS_DEVTOOLS_ad410611ff249a09acdba47cc8505186" desc="Text in Console Sidebar of the Console panel to show that there is no verbose messages">
+    No verbose
   </message>
   <message name="IDS_DEVTOOLS_b184e7a44bed11a41d9c104529010e23" desc="Text in Console View of the Console panel">
     <ph name="THIS__LEVELLABELS_NAME_">$1s<ex>Warnings</ex></ph> only
@@ -162,14 +180,20 @@
   <message name="IDS_DEVTOOLS_b2f8489bbd55a4e9b9edbbbfe49edf70" desc="Text of a DOM element in Console Pin Pane of the Console panel">
     not available
   </message>
-  <message name="IDS_DEVTOOLS_bafd7322c6e97d25b6299b5d6fe8920b" desc="Text in Console Sidebar of the Console panel">
-    No
+  <message name="IDS_DEVTOOLS_b4372757bcd49be89af758f485f8666f" desc="Text in Console Sidebar of the Console panel to show that there are more than 1 warnings">
+    <ph name="PH1">$1d<ex>2</ex></ph> warnings
+  </message>
+  <message name="IDS_DEVTOOLS_bb9a56bce1ad1ae114ffd9807146f3f4" desc="Text in Console Sidebar of the Console panel to show that there is no info">
+    No info
   </message>
   <message name="IDS_DEVTOOLS_c0274fa278f2e0dfef862234e0eb9b8b" desc="Element text content in Console View Message of the Console panel">
     &lt;exception&gt;
   </message>
   <message name="IDS_DEVTOOLS_c43a34d2abee57824fac5bb704994d88" desc="Text in Console Prompt of the Console panel">
     Console prompt
+  </message>
+  <message name="IDS_DEVTOOLS_c795329f17cb738005b904b650167704" desc="Text in Console Sidebar of the Console panel to show that there is 1 verbose message">
+    1 verbose
   </message>
   <message name="IDS_DEVTOOLS_c9818b2c0890a205d294a2b31354f8b4" desc="Text in Console View of the Console panel">
     All levels
@@ -182,12 +206,6 @@
   </message>
   <message name="IDS_DEVTOOLS_caf037034c3205725511c1216f772402" desc="Text in Console View Message of the Console panel">
     &lt;some&gt; event
-  </message>
-  <message name="IDS_DEVTOOLS_caf9b6b99962bf5c2264824231d7a40c" desc="Text in Console Sidebar of the Console panel">
-    info
-  </message>
-  <message name="IDS_DEVTOOLS_cb5e100e5a9a3e7f6d1fd97512215282" desc="Text in Console Sidebar of the Console panel">
-    error
   </message>
   <message name="IDS_DEVTOOLS_cf3eed6aa30c47cec1321a835dc7b1ac" desc="Title of a setting under the Console category that can be invoked through the Command Menu">
     Treat evaluation as user activation
@@ -213,11 +231,11 @@
   <message name="IDS_DEVTOOLS_d779282283c011149d163edbcd5e5f11" desc="Side effect label title in Console Pin Pane of the Console panel">
     Evaluate, allowing side effects
   </message>
+  <message name="IDS_DEVTOOLS_dd4a2c85f951ba07ba460abc6b726615" desc="Text in Console Sidebar of the Console panel to show that there are more than 1 user messages">
+    <ph name="PH1">$1d<ex>2</ex></ph> user messages
+  </message>
   <message name="IDS_DEVTOOLS_de6fc8cb2d1b20158aeda5cd1cb2e03c" desc="Title of a setting under the Console category that can be invoked through the Command Menu">
     Show messages from all contexts
-  </message>
-  <message name="IDS_DEVTOOLS_de70938849b75d3db63bba421c93e018" desc="Text in Console Sidebar of the Console panel">
-    messages
   </message>
   <message name="IDS_DEVTOOLS_dfcc689f6e70e39a408b78912822cec9" desc="Accessible name in Console View Message of the Console panel">
     Error <ph name="ACCESSIBLENAME">$1s<ex>Repeat 4</ex></ph>
@@ -231,20 +249,23 @@
   <message name="IDS_DEVTOOLS_e1dd1b8e32626f508bd3a5612a60ab97" desc="Title of an action in the console tool to create pin">
     Create live expression
   </message>
+  <message name="IDS_DEVTOOLS_e6009dd637bf0d330cc5316cd67d9533" desc="Text in Console Sidebar of the Console panel to show that there are more than 1 info">
+    <ph name="PH1">$1d<ex>2</ex></ph> info
+  </message>
   <message name="IDS_DEVTOOLS_e6320ee2b5f66ac1520e6156e5ac8fb3" desc="Text in Console Context Selector of the Console panel">
     JavaScript context: <ph name="THIS_TITLEFOR_ITEM_">$1s<ex>top</ex></ph>
   </message>
   <message name="IDS_DEVTOOLS_eacaf2bd1c1414e5086cf04573e154ef" desc="Text in Console View of the Console panel">
     e.g. <ph name="LOCKED_1">/event\d/ -cdn url:a.com</ph>
   </message>
+  <message name="IDS_DEVTOOLS_eb7431d253e289bd63b3d73927cd40c1" desc="Text in Console Sidebar of the Console panel to show that there are no errors">
+    No errors
+  </message>
   <message name="IDS_DEVTOOLS_ebfab4df1bb91688c62d4523eba870a5" desc="Title of a setting under the Console category in Settings">
     Evaluate triggers user activation
   </message>
   <message name="IDS_DEVTOOLS_f0b0e075af71ecd9b3435697417c1f05" desc="Title of level menu button in console view of the console panel">
     Log level: <ph name="TEXT">$1s<ex>All levels</ex></ph>
-  </message>
-  <message name="IDS_DEVTOOLS_f8ec55cf268ca6106fb23a98523b7549" desc="Text in Console Sidebar of the Console panel">
-    user message
   </message>
   <message name="IDS_DEVTOOLS_fb554075057f4d116097df434bcef393" desc="Note title in Console View Message of the Console panel">
     This value will not be collected until console is cleared.

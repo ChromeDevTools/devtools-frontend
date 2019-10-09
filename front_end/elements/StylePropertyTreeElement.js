@@ -1000,6 +1000,7 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
      */
     function moveToNextCallback(alreadyNew, valueChanged, section) {
       if (!moveDirection) {
+        this._parentPane.resetFocus();
         return;
       }
 

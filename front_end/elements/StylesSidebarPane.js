@@ -249,6 +249,10 @@ Elements.StylesSidebarPane = class extends Elements.ElementsSidebarPane {
   }
 
   _sectionsContainerFocusChanged() {
+    this.resetFocus();
+  }
+
+  resetFocus() {
     // When a styles section is focused, shift+tab should leave the section.
     // Leaving tabIndex = 0 on the first element would cause it to be focused instead.
     if (this._sectionBlocks[0] && this._sectionBlocks[0].sections[0]) {

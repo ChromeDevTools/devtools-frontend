@@ -182,8 +182,7 @@
 
 .tabbed-pane-header-tabs-drop-down-container:hover,
 .tabbed-pane-header-tabs-drop-down-container[data-keyboard-focus="true"]:focus {
-    background-color: rgb(229, 229, 229);
-    opacity: 1.0;
+    background-color: rgba(0, 0, 0, 0.08);
 }
 
 .tabbed-pane-header-tabs-drop-down-container.measuring {

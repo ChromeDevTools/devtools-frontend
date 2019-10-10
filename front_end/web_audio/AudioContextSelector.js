@@ -61,8 +61,7 @@ WebAudio.AudioContextSelector = class extends Common.Object {
     const changedContext = /** @type {!Protocol.WebAudio.BaseAudioContext} */ (event.data);
     const contextIndex = this._items.findIndex(context => context.contextId === changedContext.contextId);
     if (contextIndex > -1) {
-      this._items.remove(contextIndex);
-      this._items.insert(contextIndex, changedContext);
+      this._items.replace(contextIndex, changedContext);
 
       // If the changed context is currently selected by user. Re-select it
       // because the actual element is replaced with a new one.

@@ -270,9 +270,6 @@
   <message name="IDS_DEVTOOLS_f750c8807bc5f4a7bd259788114a4ebd" desc="Tooltip text that appears when hovering over the largeicon background color button in the Styles Sidebar Pane of the Elements panel">
     Add background-color
   </message>
-  <message name="IDS_DEVTOOLS_f80bc338b6146b566004a046f8137c85" desc="Text in Event Listeners Widget of the Elements panel">
-    Passive
-  </message>
   <message name="IDS_DEVTOOLS_f8d0f1896a9e4ad16d43caa28534df32" desc="Show all button text content in Styles Sidebar Pane of the Elements panel">
     Show All Properties (<ph name="PROPERTIES_LENGTH___COUNT">$1s<ex>3</ex></ph> more)
   </message>

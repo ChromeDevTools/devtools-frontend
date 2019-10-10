@@ -303,7 +303,8 @@ EventListeners.ObjectEventListenerBar = class extends UI.TreeElement {
   _setTitle(object, linkifier) {
     const title = this.listItemElement.createChild('span', 'event-listener-details');
     const subtitle = this.listItemElement.createChild('span', 'event-listener-tree-subtitle');
-    subtitle.appendChild(linkifier.linkifyRawLocation(this._eventListener.location(), this._eventListener.sourceURL()));
+    const linkElement = linkifier.linkifyRawLocation(this._eventListener.location(), this._eventListener.sourceURL());
+    subtitle.appendChild(linkElement);
 
     this._valueTitle =
         ObjectUI.ObjectPropertiesSection.createValueElement(object, false /* wasThrown */, false /* showPreview */);
@@ -313,7 +314,10 @@ EventListeners.ObjectEventListenerBar = class extends UI.TreeElement {
       const deleteButton = title.createChild('span', 'event-listener-button');
       deleteButton.textContent = Common.UIString('Remove');
       deleteButton.title = Common.UIString('Delete event listener');
-      deleteButton.addEventListener('click', removeListener.bind(this), false);
+      deleteButton.addEventListener('click', event => {
+        this._removeListener();
+        event.consume();
+      }, false);
       title.appendChild(deleteButton);
     }
 
@@ -321,28 +325,34 @@ EventListeners.ObjectEventListenerBar = class extends UI.TreeElement {
       const passiveButton = title.createChild('span', 'event-listener-button');
       passiveButton.textContent = Common.UIString('Toggle Passive');
       passiveButton.title = Common.UIString('Toggle whether event listener is passive or blocking');
-      passiveButton.addEventListener('click', togglePassiveListener.bind(this), false);
+      passiveButton.addEventListener('click', event => {
+        this._togglePassiveListener();
+        event.consume();
+      }, false);
       title.appendChild(passiveButton);
     }
 
-    /**
-     * @param {!Event} event
-     * @this {EventListeners.ObjectEventListenerBar}
-     */
-    function removeListener(event) {
-      event.consume();
-      this._removeListenerBar();
-      this._eventListener.remove();
-    }
+    this.listItemElement.addEventListener('contextmenu', event => {
+      const menu = new UI.ContextMenu(event);
+      if (event.target !== linkElement) {
+        menu.appendApplicableItems(linkElement);
+      }
+      menu.defaultSection().appendItem(
+          ls`Delete event listener`, this._removeListener.bind(this), !this._eventListener.canRemove());
+      menu.defaultSection().appendCheckboxItem(
+          ls`Passive`, this._togglePassiveListener.bind(this), this._eventListener.passive(),
+          !this._eventListener.canTogglePassive());
+      menu.show();
+    });
+  }
 
-    /**
-     * @param {!Event} event
-     * @this {EventListeners.ObjectEventListenerBar}
-     */
-    function togglePassiveListener(event) {
-      event.consume();
-      this._eventListener.togglePassive().then(this._changeCallback());
-    }
+  _removeListener() {
+    this._removeListenerBar();
+    this._eventListener.remove();
+  }
+
+  _togglePassiveListener() {
+    this._eventListener.togglePassive().then(this._changeCallback());
   }
 
   _removeListenerBar() {

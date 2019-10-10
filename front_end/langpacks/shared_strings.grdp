@@ -616,6 +616,9 @@
   <message name="IDS_DEVTOOLS_f53944c3a55bdb5ad65c6226e358a626" desc="Text to undock the DevTools">
     Undock into separate window
   </message>
+  <message name="IDS_DEVTOOLS_f80bc338b6146b566004a046f8137c85" desc="Text in Event Listeners Widget of the Elements panel">
+    Passive
+  </message>
   <message name="IDS_DEVTOOLS_f907e651164789346ae0a1e257c462d8" desc="Label for a group of JavaScript files">
     Script
   </message>

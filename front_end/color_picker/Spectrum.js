@@ -317,6 +317,7 @@ ColorPicker.Spectrum = class extends UI.VBox {
     for (let i = 0; i < palette.colors.length; i++) {
       const animationDelay = animate ? i * 100 / palette.colors.length : 0;
       const colorElement = this._createPaletteColor(palette.colors[i], palette.colorNames[i], animationDelay);
+      colorElement.tabIndex = -1;
       colorElement.addEventListener(
           'mousedown',
           this._paletteColorSelected.bind(this, palette.colors[i], palette.colorNames[i], palette.matchUserFormat));
@@ -627,6 +628,8 @@ ColorPicker.Spectrum = class extends UI.VBox {
     palette.colors.push(this.colorString());
     this._customPaletteSetting.set(palette);
     this._showPalette(this._customPaletteSetting.get(), false);
+    const colorElements = this._paletteContainer.querySelectorAll('.spectrum-palette-color');
+    colorElements[colorElements.length - 1].focus();
   }
 
   /**

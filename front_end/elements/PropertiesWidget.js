@@ -43,6 +43,16 @@ Elements.PropertiesWidget = class extends UI.ThrottledWidget {
         SDK.DOMModel, SDK.DOMModel.Events.ChildNodeCountUpdated, this._onNodeChange, this);
     UI.context.addFlavorChangeListener(SDK.DOMNode, this._setNode, this);
     this._node = UI.context.flavor(SDK.DOMNode);
+
+    this._treeOutline = new ObjectUI.ObjectPropertiesSectionsTreeOutline({readOnly: true});
+    this._treeOutline.setShowSelectionOnKeyboardFocus(/* show */ true, /* preventTabOrder */ false);
+    this._expandController = new ObjectUI.ObjectPropertiesSectionsTreeExpandController(this._treeOutline);
+    this.contentElement.appendChild(this._treeOutline.element);
+
+    this._treeOutline.addEventListener(UI.TreeOutline.Events.ElementExpanded, () => {
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.DOMPropertiesExpanded);
+    });
+
     this.update();
   }
 
@@ -67,7 +77,6 @@ Elements.PropertiesWidget = class extends UI.ThrottledWidget {
 
     if (!this._node) {
       this.contentElement.removeChildren();
-      this.sections = [];
       return;
     }
 
@@ -92,15 +101,9 @@ Elements.PropertiesWidget = class extends UI.ThrottledWidget {
     }
 
     const properties = propertiesResult.properties;
-    const expanded = [];
-    const sections = this.sections || [];
-    for (let i = 0; i < sections.length; ++i) {
-      expanded.push(sections[i].expanded);
-    }
+    this._treeOutline.removeChildren();
 
-    this.contentElement.removeChildren();
-    this.sections = [];
-
+    let selected = false;
     // Get array of property user-friendly names.
     for (let i = 0; i < properties.length; ++i) {
       if (!parseInt(properties[i].name, 10)) {
@@ -109,14 +112,13 @@ Elements.PropertiesWidget = class extends UI.ThrottledWidget {
       const property = properties[i].value;
       let title = property.description;
       title = title.replace(/Prototype$/, '');
-      const section = new ObjectUI.ObjectPropertiesSection(property, title);
-      section.element.classList.add('properties-widget-section');
-      this.sections.push(section);
-      this.contentElement.appendChild(section.element);
-      if (expanded[this.sections.length - 1]) {
-        section.expand();
+
+      const section = this._createSectionTreeElement(property, title);
+      this._treeOutline.appendChild(section);
+      if (!selected) {
+        section.select(/* omitFocus= */ true, /* selectedByUser= */ false);
+        selected = true;
       }
-      section.addEventListener(UI.TreeOutline.Events.ElementExpanded, this._propertyExpanded, this);
     }
 
     /**
@@ -136,13 +138,19 @@ Elements.PropertiesWidget = class extends UI.ThrottledWidget {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!SDK.RemoteObject} property
+   * @param {string} title
+   * @returns {!ObjectUI.ObjectPropertiesSection.RootElement}
    */
-  _propertyExpanded(event) {
-    Host.userMetrics.actionTaken(Host.UserMetrics.Action.DOMPropertiesExpanded);
-    for (const section of this.sections) {
-      section.removeEventListener(UI.TreeOutline.Events.ElementExpanded, this._propertyExpanded, this);
-    }
+  _createSectionTreeElement(property, title) {
+    const titleElement = createElementWithClass('span', 'tree-element-title');
+    titleElement.textContent = title;
+
+    const section = new ObjectUI.ObjectPropertiesSection.RootElement(property);
+    section.title = titleElement;
+    this._expandController.watchSection(title, section);
+
+    return section;
   }
 
   /**

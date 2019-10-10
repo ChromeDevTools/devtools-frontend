@@ -468,13 +468,22 @@ ObjectUI.ObjectPropertiesSection = class extends UI.TreeOutlineInShadow {
 ObjectUI.ObjectPropertiesSection._arrayLoadThreshold = 100;
 /** @const */
 ObjectUI.ObjectPropertiesSection._maxRenderableStringLength = 10000;
+/**
+ * @typedef {{
+ *   readOnly: (boolean|undefined),
+ * }}
+ */
+ObjectUI.ObjectPropertiesSectionsTreeOutlineOptions;
 
 ObjectUI.ObjectPropertiesSectionsTreeOutline = class extends UI.TreeOutlineInShadow {
-  constructor() {
+  /**
+   * @param {?ObjectUI.ObjectPropertiesSectionsTreeOutlineOptions=} options
+   */
+  constructor(options) {
     super();
     this.registerRequiredCSS('object_ui/objectValue.css');
     this.registerRequiredCSS('object_ui/objectPropertiesSection.css');
-    this._editable = true;
+    this._editable = !(options && options.readOnly);
     this.contentElement.classList.add('source-code');
     this.contentElement.classList.add('object-properties-section');
     this.hideOverflow();

@@ -192,17 +192,20 @@ CssOverview.CSSOverviewCompletedView = class extends UI.PanelWithSidebar {
     return blockFragment;
   }
 
-  _getNonTransparentColorStrings(colors) {
-    return Array.from(colors)
-        .map(colorText => {
-          const color = Common.Color.parse(colorText);
-          if (color.rgba()[3] === 0) {
-            return;
-          }
+  _getNonTransparentColorStrings(srcColors) {
+    const colors = [];
+    for (const colorText of Array.from(srcColors)) {
+      const color = Common.Color.parse(colorText);
+      if (color.rgba()[3] === 0) {
+        continue;
+      }
 
-          return color;
-        })
-        .filter(color => !!color);
+      colors.push(color);
+    }
+
+    return colors.sort((colorA, colorB) => {
+      return Common.Color.luminance(colorB.rgba()) - Common.Color.luminance(colorA.rgba());
+    });
   }
 
   setOverviewData(data) {

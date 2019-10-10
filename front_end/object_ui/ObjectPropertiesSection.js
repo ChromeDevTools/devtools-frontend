@@ -469,6 +469,17 @@ ObjectUI.ObjectPropertiesSection._arrayLoadThreshold = 100;
 /** @const */
 ObjectUI.ObjectPropertiesSection._maxRenderableStringLength = 10000;
 
+ObjectUI.ObjectPropertiesSectionsTreeOutline = class extends UI.TreeOutlineInShadow {
+  constructor() {
+    super();
+    this.registerRequiredCSS('object_ui/objectValue.css');
+    this.registerRequiredCSS('object_ui/objectPropertiesSection.css');
+    this._editable = true;
+    this.contentElement.classList.add('source-code');
+    this.contentElement.classList.add('object-properties-section');
+    this.hideOverflow();
+  }
+};
 
 /**
  * @unrestricted
@@ -797,6 +808,18 @@ ObjectUI.ObjectPropertyTreeElement = class extends UI.TreeElement {
 
   /**
    * @override
+   * @return {boolean}
+   */
+  onenter() {
+    if (!this.property.value.customPreview() && (this.property.writable || this.property.setter)) {
+      this._startEditing();
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * @override
    */
   onattach() {
     this.update();
@@ -981,6 +1004,7 @@ ObjectUI.ObjectPropertyTreeElement = class extends UI.TreeElement {
     this._updateExpandable();
     this.listItemElement.scrollLeft = 0;
     this.listItemElement.classList.remove('editing-sub-part');
+    this.select();
   }
 
   _editingCancelled() {
@@ -1429,7 +1453,7 @@ ObjectUI.ObjectPropertiesSectionExpandController = class {
     section.addEventListener(UI.TreeOutline.Events.ElementAttached, this._elementAttached, this);
     section.addEventListener(UI.TreeOutline.Events.ElementExpanded, this._elementExpanded, this);
     section.addEventListener(UI.TreeOutline.Events.ElementCollapsed, this._elementCollapsed, this);
-    section[ObjectUI.ObjectPropertiesSectionExpandController._treeOutlineId] = id;
+    section[ObjectUI.ObjectPropertiesSectionsTreeExpandController._treeOutlineId] = id;
 
     if (this._expandedProperties.has(id)) {
       section.expand();
@@ -1478,7 +1502,7 @@ ObjectUI.ObjectPropertiesSectionExpandController = class {
    * @return {string}
    */
   _propertyPath(treeElement) {
-    const cachedPropertyPath = treeElement[ObjectUI.ObjectPropertiesSectionExpandController._cachedPathSymbol];
+    const cachedPropertyPath = treeElement[ObjectUI.ObjectPropertiesSectionsTreeExpandController._cachedPathSymbol];
     if (cachedPropertyPath) {
       return cachedPropertyPath;
     }
@@ -1499,15 +1523,114 @@ ObjectUI.ObjectPropertiesSectionExpandController = class {
       result = currentName + (result ? '.' + result : '');
       current = current.parent;
     }
-    const treeOutlineId = treeElement.treeOutline[ObjectUI.ObjectPropertiesSectionExpandController._treeOutlineId];
+    const treeOutlineId = treeElement.treeOutline[ObjectUI.ObjectPropertiesSectionsTreeExpandController._treeOutlineId];
     result = treeOutlineId + (result ? ':' + result : '');
-    treeElement[ObjectUI.ObjectPropertiesSectionExpandController._cachedPathSymbol] = result;
+    treeElement[ObjectUI.ObjectPropertiesSectionsTreeExpandController._cachedPathSymbol] = result;
     return result;
   }
 };
 
-ObjectUI.ObjectPropertiesSectionExpandController._cachedPathSymbol = Symbol('cachedPath');
-ObjectUI.ObjectPropertiesSectionExpandController._treeOutlineId = Symbol('treeOutlineId');
+/**
+ * @unrestricted
+ */
+ObjectUI.ObjectPropertiesSectionsTreeExpandController = class {
+  /**
+   * @param {!UI.TreeOutline} treeOutline
+   */
+  constructor(treeOutline) {
+    /** @type {!Set.<string>} */
+    this._expandedProperties = new Set();
+    treeOutline.addEventListener(UI.TreeOutline.Events.ElementAttached, this._elementAttached, this);
+    treeOutline.addEventListener(UI.TreeOutline.Events.ElementExpanded, this._elementExpanded, this);
+    treeOutline.addEventListener(UI.TreeOutline.Events.ElementCollapsed, this._elementCollapsed, this);
+  }
+
+  /**
+   * @param {string} id
+   * @param {!ObjectUI.ObjectPropertiesSection.RootElement} section
+   */
+  watchSection(id, section) {
+    section[ObjectUI.ObjectPropertiesSectionsTreeExpandController._treeOutlineId] = id;
+
+    if (this._expandedProperties.has(id)) {
+      section.expand();
+    }
+  }
+
+  /**
+   * @param {string} id
+   */
+  stopWatchSectionsWithId(id) {
+    for (const property of this._expandedProperties) {
+      if (property.startsWith(id + ':')) {
+        this._expandedProperties.delete(property);
+      }
+    }
+  }
+
+  /**
+   * @param {!Common.Event} event
+   */
+  _elementAttached(event) {
+    const element = /** @type {!UI.TreeElement} */ (event.data);
+    if (element.isExpandable() && this._expandedProperties.has(this._propertyPath(element))) {
+      element.expand();
+    }
+  }
+
+  /**
+   * @param {!Common.Event} event
+   */
+  _elementExpanded(event) {
+    const element = /** @type {!UI.TreeElement} */ (event.data);
+    this._expandedProperties.add(this._propertyPath(element));
+  }
+
+  /**
+   * @param {!Common.Event} event
+   */
+  _elementCollapsed(event) {
+    const element = /** @type {!UI.TreeElement} */ (event.data);
+    this._expandedProperties.delete(this._propertyPath(element));
+  }
+
+  /**
+   * @param {!UI.TreeElement} treeElement
+   * @return {string}
+   */
+  _propertyPath(treeElement) {
+    const cachedPropertyPath = treeElement[ObjectUI.ObjectPropertiesSectionsTreeExpandController._cachedPathSymbol];
+    if (cachedPropertyPath) {
+      return cachedPropertyPath;
+    }
+
+    let current = treeElement;
+    let sectionRoot = current;
+    const rootElement = treeElement.treeOutline.rootElement();
+
+    let result;
+
+    while (current !== rootElement) {
+      let currentName = '';
+      if (current.property) {
+        currentName = current.property.name;
+      } else {
+        currentName = typeof current.title === 'string' ? current.title : current.title.textContent;
+      }
+
+      result = currentName + (result ? '.' + result : '');
+      sectionRoot = current;
+      current = current.parent;
+    }
+    const treeOutlineId = sectionRoot[ObjectUI.ObjectPropertiesSectionsTreeExpandController._treeOutlineId];
+    result = treeOutlineId + (result ? ':' + result : '');
+    treeElement[ObjectUI.ObjectPropertiesSectionsTreeExpandController._cachedPathSymbol] = result;
+    return result;
+  }
+};
+
+ObjectUI.ObjectPropertiesSectionsTreeExpandController._cachedPathSymbol = Symbol('cachedPath');
+ObjectUI.ObjectPropertiesSectionsTreeExpandController._treeOutlineId = Symbol('treeOutlineId');
 
 /**
  * @implements {UI.Renderer}

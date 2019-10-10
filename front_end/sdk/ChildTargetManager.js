@@ -216,8 +216,8 @@ export default class ChildTargetManager extends SDK.SDKModel {
     const sessionId = /** @type {string} */ (await targetAgent.attachToTarget(targetId, true /* flatten */));
     const connection = new SDK.ParallelConnection(targetRouter.connection(), sessionId);
     targetRouter.registerSession(target, sessionId, connection);
-    connection.setOnDisconnect(async () => {
-      await targetAgent.detachFromTarget(sessionId);
+    connection.setOnDisconnect(() => {
+      targetAgent.detachFromTarget(sessionId);
       targetRouter.unregisterSession(sessionId);
     });
     return {connection, sessionId};

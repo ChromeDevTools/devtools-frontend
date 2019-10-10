@@ -294,7 +294,10 @@ export class ParallelConnection {
    */
   sendRawMessage(message) {
     const messageObject = JSON.parse(message);
-    messageObject.sessionId = this._sessionId;
+    // If the message isn't for a specific session, it must be for the root session.
+    if (!messageObject.sessionId) {
+      messageObject.sessionId = this._sessionId;
+    }
     this._connection.sendRawMessage(JSON.stringify(messageObject));
   }
 

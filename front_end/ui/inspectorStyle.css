@@ -36,6 +36,7 @@
     --accent-color: #1a73e8;
     --accent-fg-color: #1a73e8;
     --accent-color-hover: #3b86e8;
+    --active-control-bg-color: #5a5a5a;
     --focus-bg-color: hsl(214, 40%, 92%);
     --toolbar-bg-color: #f3f3f3;
     --toolbar-hover-bg-color: #eaeaea;
@@ -57,6 +58,7 @@
     --accent-color: #0e639c;
     --accent-fg-color: #cccccc;
     --accent-color-hover: rgb(17, 119, 187);
+    --active-control-bg-color: #cdcdcd;
     --focus-bg-color: hsl(214, 19%, 27%);
     --toolbar-bg-color: #333333;
     --toolbar-hover-bg-color: #202020;

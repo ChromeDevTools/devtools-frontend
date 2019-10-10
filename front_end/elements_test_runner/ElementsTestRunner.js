@@ -148,6 +148,15 @@ ElementsTestRunner.expandAndDumpEventListeners = function(eventListenersView, ca
   }
 };
 
+/**
+ * @param {!EventListeners.EventListenersView} eventListenersView
+ * @param {boolean=} force
+ * @return {!Promise}
+ */
+ElementsTestRunner.expandAndDumpEventListenersPromise = function(eventListenersView, force) {
+  return new Promise(resolve => ElementsTestRunner.expandAndDumpEventListeners(eventListenersView, resolve, force));
+};
+
 ElementsTestRunner.inlineStyleSection = function() {
   return UI.panels.elements._stylesWidget._sectionBlocks[0].sections[0];
 };

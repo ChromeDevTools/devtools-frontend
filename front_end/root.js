@@ -17,3 +17,4 @@ import './bindings/bindings.js';
 import './components/components.js';
 import './persistence/persistence.js';
 import './browser_sdk/browser_sdk.js';
+import './extensions/extensions.js';

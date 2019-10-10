@@ -4,7 +4,9 @@
         "browser_sdk",
         "common"
     ],
-    "scripts": [
+    "scripts": [],
+    "modules": [
+        "extensions.js",
         "ExtensionAPI.js",
         "ExtensionTraceProvider.js",
         "ExtensionServer.js",

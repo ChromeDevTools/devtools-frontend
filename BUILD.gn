@@ -259,11 +259,6 @@ if (!external_devtools_frontend) {
     "front_end/event_listeners/eventListenersView.css",
     "front_end/event_listeners/EventListenersView.js",
     "front_end/event_listeners/module.json",
-    "front_end/extensions/ExtensionAPI.js",
-    "front_end/extensions/ExtensionPanel.js",
-    "front_end/extensions/ExtensionServer.js",
-    "front_end/extensions/ExtensionTraceProvider.js",
-    "front_end/extensions/ExtensionView.js",
     "front_end/extensions/module.json",
     "front_end/extensions_test_runner/ExtensionsNetworkTestRunner.js",
     "front_end/extensions_test_runner/ExtensionsTestRunner.js",
@@ -820,6 +815,12 @@ if (!external_devtools_frontend) {
   all_devtools_files += lighthouse_locale_files
 
   all_devtools_modules = [
+    "front_end/extensions/extensions.js",
+    "front_end/extensions/ExtensionAPI.js",
+    "front_end/extensions/ExtensionPanel.js",
+    "front_end/extensions/ExtensionServer.js",
+    "front_end/extensions/ExtensionTraceProvider.js",
+    "front_end/extensions/ExtensionView.js",
     "front_end/browser_sdk/browser_sdk.js",
     "front_end/browser_sdk/LogManager.js",
     "front_end/persistence/persistence.js",
@@ -1210,6 +1211,12 @@ if (!external_devtools_frontend) {
   ]
 
   copied_devtools_modules = [
+    "$resources_out_dir/extensions/extensions.js",
+    "$resources_out_dir/extensions/ExtensionAPI.js",
+    "$resources_out_dir/extensions/ExtensionPanel.js",
+    "$resources_out_dir/extensions/ExtensionServer.js",
+    "$resources_out_dir/extensions/ExtensionTraceProvider.js",
+    "$resources_out_dir/extensions/ExtensionView.js",
     "$resources_out_dir/browser_sdk/browser_sdk.js",
     "$resources_out_dir/browser_sdk/LogManager.js",
     "$resources_out_dir/persistence/persistence.js",

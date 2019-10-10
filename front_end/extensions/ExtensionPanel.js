@@ -31,7 +31,7 @@
  * @implements {UI.Searchable}
  * @unrestricted
  */
-Extensions.ExtensionPanel = class extends UI.Panel {
+export default class ExtensionPanel extends UI.Panel {
   /**
    * @param {!Extensions.ExtensionServer} server
    * @param {string} panelName
@@ -116,12 +116,12 @@ Extensions.ExtensionPanel = class extends UI.Panel {
   supportsRegexSearch() {
     return false;
   }
-};
+}
 
 /**
  * @unrestricted
  */
-Extensions.ExtensionButton = class {
+export class ExtensionButton {
   /**
    * @param {!Extensions.ExtensionServer} server
    * @param {string} id
@@ -161,12 +161,12 @@ Extensions.ExtensionButton = class {
   toolbarButton() {
     return this._toolbarButton;
   }
-};
+}
 
 /**
  * @unrestricted
  */
-Extensions.ExtensionSidebarPane = class extends UI.SimpleView {
+export class ExtensionSidebarPane extends UI.SimpleView {
   /**
    * @param {!Extensions.ExtensionServer} server
    * @param {string} panelName
@@ -296,4 +296,19 @@ Extensions.ExtensionSidebarPane = class extends UI.SimpleView {
       callback();
     });
   }
-};
+}
+
+/* Legacy exported object */
+self.Extensions = self.Extensions || {};
+
+/* Legacy exported object */
+Extensions = Extensions || {};
+
+/** @constructor */
+Extensions.ExtensionPanel = ExtensionPanel;
+
+/** @constructor */
+Extensions.ExtensionButton = ExtensionButton;
+
+/** @constructor */
+Extensions.ExtensionSidebarPane = ExtensionSidebarPane;

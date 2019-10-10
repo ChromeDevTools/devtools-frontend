@@ -31,7 +31,7 @@
 /**
  * @unrestricted
  */
-Extensions.ExtensionServer = class extends Common.Object {
+export default class ExtensionServer extends Common.Object {
   /**
    * @suppressGlobalPropertiesCheck
    */
@@ -46,7 +46,7 @@ Extensions.ExtensionServer = class extends Common.Object {
     this._requests = {};
     this._lastRequestId = 0;
     this._registeredExtensions = {};
-    this._status = new Extensions.ExtensionStatus();
+    this._status = new ExtensionStatus();
     /** @type {!Array<!Extensions.ExtensionSidebarPane>} */
     this._sidebarPanes = [];
     /** @type {!Array<!Extensions.ExtensionTraceProvider>} */
@@ -263,7 +263,7 @@ Extensions.ExtensionServer = class extends Common.Object {
     const page = this._expandResourcePath(port._extensionOrigin, message.page);
     let persistentId = port._extensionOrigin + message.title;
     persistentId = persistentId.replace(/\s/g, '');
-    const panelView = new Extensions.ExtensionServerPanelView(
+    const panelView = new ExtensionServerPanelView(
         persistentId, message.title, new Extensions.ExtensionPanel(this, persistentId, id, page));
     this._clientObjects[id] = panelView;
     UI.inspectorView.addPanel(panelView);
@@ -273,7 +273,7 @@ Extensions.ExtensionServer = class extends Common.Object {
   _onShowPanel(message) {
     let panelViewId = message.id;
     const panelView = this._clientObjects[message.id];
-    if (panelView && panelView instanceof Extensions.ExtensionServerPanelView) {
+    if (panelView && panelView instanceof ExtensionServerPanelView) {
       panelViewId = panelView.viewId();
     }
     UI.inspectorView.showPanel(panelViewId);
@@ -281,7 +281,7 @@ Extensions.ExtensionServer = class extends Common.Object {
 
   _onCreateToolbarButton(message, port) {
     const panelView = this._clientObjects[message.panel];
-    if (!panelView || !(panelView instanceof Extensions.ExtensionServerPanelView)) {
+    if (!panelView || !(panelView instanceof ExtensionServerPanelView)) {
       return this._status.E_NOTFOUND(message.panel);
     }
     const button = new Extensions.ExtensionButton(
@@ -330,7 +330,7 @@ Extensions.ExtensionServer = class extends Common.Object {
     const sidebar = new Extensions.ExtensionSidebarPane(this, message.panel, message.title, id);
     this._sidebarPanes.push(sidebar);
     this._clientObjects[id] = sidebar;
-    this.dispatchEventToListeners(Extensions.ExtensionServer.Events.SidebarPaneAdded, sidebar);
+    this.dispatchEventToListeners(Events.SidebarPaneAdded, sidebar);
 
     return this._status.OK();
   }
@@ -358,7 +358,7 @@ Extensions.ExtensionServer = class extends Common.Object {
     }
 
     /**
-     * @this {Extensions.ExtensionServer}
+     * @this {ExtensionServer}
      */
     function callback(error) {
       const result = error ? this._status.E_FAILED(error) : this._status.OK();
@@ -432,7 +432,7 @@ Extensions.ExtensionServer = class extends Common.Object {
      * @param {?Protocol.Error} error
      * @param {?SDK.RemoteObject} object
      * @param {boolean} wasThrown
-     * @this {Extensions.ExtensionServer}
+     * @this {ExtensionServer}
      */
     function callback(error, object, wasThrown) {
       let result;
@@ -474,7 +474,7 @@ Extensions.ExtensionServer = class extends Common.Object {
     const resources = new Map();
 
     /**
-     * @this {Extensions.ExtensionServer}
+     * @this {ExtensionServer}
      */
     function pushResourceData(contentProvider) {
       if (!resources.has(contentProvider.contentURL())) {
@@ -522,7 +522,7 @@ Extensions.ExtensionServer = class extends Common.Object {
   _onSetResourceContent(message, port) {
     /**
      * @param {?Protocol.Error} error
-     * @this {Extensions.ExtensionServer}
+     * @this {ExtensionServer}
      */
     function callbackWrapper(error) {
       const response = error ? this._status.E_FAILED(error) : this._status.OK();
@@ -566,7 +566,7 @@ Extensions.ExtensionServer = class extends Common.Object {
         port._extensionOrigin, message.id, message.categoryName, message.categoryTooltip);
     this._clientObjects[message.id] = provider;
     this._traceProviders.push(provider);
-    this.dispatchEventToListeners(Extensions.ExtensionServer.Events.TraceProviderAdded, provider);
+    this.dispatchEventToListeners(Events.TraceProviderAdded, provider);
   }
 
   /**
@@ -627,14 +627,14 @@ Extensions.ExtensionServer = class extends Common.Object {
         SDK.NetworkManager.Events.RequestFinished, this._notifyRequestFinished);
 
     /**
-     * @this {Extensions.ExtensionServer}
+     * @this {ExtensionServer}
      */
     function onElementsSubscriptionStarted() {
       UI.context.addFlavorChangeListener(SDK.DOMNode, this._notifyElementsSelectionChanged, this);
     }
 
     /**
-     * @this {Extensions.ExtensionServer}
+     * @this {ExtensionServer}
      */
     function onElementsSubscriptionStopped() {
       UI.context.removeFlavorChangeListener(SDK.DOMNode, this._notifyElementsSelectionChanged, this);
@@ -709,9 +709,8 @@ Extensions.ExtensionServer = class extends Common.Object {
       const extensionOrigin = originMatch[1];
       if (!this._registeredExtensions[extensionOrigin]) {
         // See ExtensionAPI.js for details.
-        const injectedAPI = buildExtensionAPIInjectedScript(
-            extensionInfo, this._inspectedTabId, UI.themeSupport.themeName(),
-            UI.shortcutRegistry.globalShortcutKeys(),
+        const injectedAPI = self.buildExtensionAPIInjectedScript(
+            extensionInfo, this._inspectedTabId, UI.themeSupport.themeName(), UI.shortcutRegistry.globalShortcutKeys(),
             Extensions.extensionServer['_extensionAPITestHook']);
         Host.InspectorFrontendHost.setInjectedScriptForOrigin(extensionOrigin, injectedAPI);
         this._registeredExtensions[extensionOrigin] = {name: name};
@@ -798,7 +797,7 @@ Extensions.ExtensionServer = class extends Common.Object {
 
   _registerResourceContentCommittedHandler(handler) {
     /**
-     * @this {Extensions.ExtensionServer}
+     * @this {ExtensionServer}
      */
     function addFirstEventListener() {
       Workspace.workspace.addEventListener(Workspace.Workspace.Events.WorkingCopyCommittedByUser, handler, this);
@@ -806,7 +805,7 @@ Extensions.ExtensionServer = class extends Common.Object {
     }
 
     /**
-     * @this {Extensions.ExtensionServer}
+     * @this {ExtensionServer}
      */
     function removeLastEventListener() {
       Workspace.workspace.setHasResourceContentTrackingExtensions(false);
@@ -947,10 +946,10 @@ Extensions.ExtensionServer = class extends Common.Object {
       callback(null, result.object || null, !!result.exceptionDetails);
     }
   }
-};
+}
 
 /** @enum {symbol} */
-Extensions.ExtensionServer.Events = {
+export const Events = {
   SidebarPaneAdded: Symbol('SidebarPaneAdded'),
   TraceProviderAdded: Symbol('TraceProviderAdded')
 };
@@ -958,7 +957,7 @@ Extensions.ExtensionServer.Events = {
 /**
  * @unrestricted
  */
-Extensions.ExtensionServerPanelView = class extends UI.SimpleView {
+export class ExtensionServerPanelView extends UI.SimpleView {
   /**
    * @param {string} name
    * @param {string} title
@@ -985,12 +984,12 @@ Extensions.ExtensionServerPanelView = class extends UI.SimpleView {
   widget() {
     return /** @type {!Promise.<!UI.Widget>} */ (Promise.resolve(this._panel));
   }
-};
+}
 
 /**
  * @unrestricted
  */
-Extensions.ExtensionStatus = class {
+export class ExtensionStatus {
   constructor() {
     /**
      * @param {string} code
@@ -1016,15 +1015,30 @@ Extensions.ExtensionStatus = class {
     this.E_PROTOCOLERROR = makeStatus.bind(null, 'E_PROTOCOLERROR', 'Inspector protocol error: %s');
     this.E_FAILED = makeStatus.bind(null, 'E_FAILED', 'Operation failed: %s');
   }
-};
+}
+
+/* Legacy exported object */
+self.Extensions = self.Extensions || {};
+
+/* Legacy exported object */
+Extensions = Extensions || {};
+
+/** @constructor */
+Extensions.ExtensionServer = ExtensionServer;
+
+/** @enum {symbol} */
+Extensions.ExtensionServer.Events = Events;
+
+/** @constructor */
+Extensions.ExtensionServerPanelView = ExtensionServerPanelView;
+
+/** @constructor */
+Extensions.ExtensionStatus = ExtensionStatus;
 
 /**
  * @typedef {{code: string, description: string, details: !Array.<*>}}
  */
 Extensions.ExtensionStatus.Record;
 
-Extensions.extensionAPI = {};
-defineCommonExtensionSymbols(Extensions.extensionAPI);
-
-/** @type {!Extensions.ExtensionServer} */
+/** @type {!ExtensionServer} */
 Extensions.extensionServer;

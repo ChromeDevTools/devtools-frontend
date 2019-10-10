@@ -31,7 +31,7 @@
 /**
  * @unrestricted
  */
-Extensions.ExtensionView = class extends UI.Widget {
+export default class ExtensionView extends UI.Widget {
   /**
    * @param {!Extensions.ExtensionServer} server
    * @param {string} id
@@ -84,12 +84,12 @@ Extensions.ExtensionView = class extends UI.Widget {
       this._server.notifyViewShown(this._id, this._frameIndex);
     }
   }
-};
+}
 
 /**
  * @unrestricted
  */
-Extensions.ExtensionNotifierView = class extends UI.VBox {
+export class ExtensionNotifierView extends UI.VBox {
   /**
    * @param {!Extensions.ExtensionServer} server
    * @param {string} id
@@ -114,4 +114,16 @@ Extensions.ExtensionNotifierView = class extends UI.VBox {
   willHide() {
     this._server.notifyViewHidden(this._id);
   }
-};
+}
+
+/* Legacy exported object */
+self.Extensions = self.Extensions || {};
+
+/* Legacy exported object */
+Extensions = Extensions || {};
+
+/** @constructor */
+Extensions.ExtensionView = ExtensionView;
+
+/** @constructor */
+Extensions.ExtensionNotifierView = ExtensionNotifierView;

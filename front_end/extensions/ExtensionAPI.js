@@ -28,8 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint-disable indent */
-
 function defineCommonExtensionSymbols(apiPrivate) {
   if (!apiPrivate.panels) {
     apiPrivate.panels = {};
@@ -95,7 +93,8 @@ function defineCommonExtensionSymbols(apiPrivate) {
  * @param {function(!Object, !Object)} testHook
  * @suppressGlobalPropertiesCheck
  */
-function injectedExtensionAPI(extensionInfo, inspectedTabId, themeName, keysToForward, testHook, injectedScriptId) {
+self.injectedExtensionAPI = function(
+    extensionInfo, inspectedTabId, themeName, keysToForward, testHook, injectedScriptId) {
   const keysToForwardSet = new Set(keysToForward);
   const chrome = window.chrome || {};
   const devtools_descriptor = Object.getOwnPropertyDescriptor(chrome, 'devtools');
@@ -827,7 +826,7 @@ function injectedExtensionAPI(extensionInfo, inspectedTabId, themeName, keysToFo
     window.webInspector = coreAPI;
   }
   testHook(extensionServer, coreAPI);
-}
+};
 
 /**
  * @param {!ExtensionDescriptor} extensionInfo
@@ -843,6 +842,15 @@ self.buildExtensionAPIInjectedScript = function(extensionInfo, inspectedTabId, t
     testHook = () => {};
   }
   return '(function(injectedScriptId){ ' + defineCommonExtensionSymbols.toString() + ';' +
-      '(' + injectedExtensionAPI.toString() + ')(' + argumentsJSON + ',' + testHook + ', injectedScriptId);' +
+      '(' + self.injectedExtensionAPI.toString() + ')(' + argumentsJSON + ',' + testHook + ', injectedScriptId);' +
       '})';
 };
+
+/* Legacy exported object */
+self.Extensions = self.Extensions || {};
+
+/* Legacy exported object */
+Extensions = Extensions || {};
+
+Extensions.extensionAPI = {};
+defineCommonExtensionSymbols(Extensions.extensionAPI);

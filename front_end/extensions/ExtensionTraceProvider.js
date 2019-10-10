@@ -5,7 +5,7 @@
 /**
  * @unrestricted
  */
-Extensions.ExtensionTraceProvider = class {
+export default class ExtensionTraceProvider {
   /**
    * @param {string} extensionOrigin
    * @param {string} id
@@ -20,10 +20,10 @@ Extensions.ExtensionTraceProvider = class {
   }
 
   /**
-   * @param {!Extensions.TracingSession} session
+   * @param {!TracingSession} session
    */
   start(session) {
-    const sessionId = String(++Extensions.ExtensionTraceProvider._lastSessionId);
+    const sessionId = String(++_lastSessionId);
     Extensions.extensionServer.startTraceRecording(this._id, sessionId, session);
   }
 
@@ -51,19 +51,32 @@ Extensions.ExtensionTraceProvider = class {
   persistentIdentifier() {
     return `${this._extensionOrigin}/${this._categoryName}`;
   }
-};
+}
 
-Extensions.ExtensionTraceProvider._lastSessionId = 0;
+export let _lastSessionId = 0;
 
 /**
  * @interface
  */
-Extensions.TracingSession = function() {};
-
-Extensions.TracingSession.prototype = {
+export class TracingSession {
   /**
    * @param {string} url
    * @param {number} timeOffsetMicroseconds
    */
-  complete: function(url, timeOffsetMicroseconds) {}
-};
+  complete(url, timeOffsetMicroseconds) {
+  }
+}
+
+/* Legacy exported object */
+self.Extensions = self.Extensions || {};
+
+/* Legacy exported object */
+Extensions = Extensions || {};
+
+/** @constructor */
+Extensions.ExtensionTraceProvider = ExtensionTraceProvider;
+
+Extensions.ExtensionTraceProvider._lastSessionId = _lastSessionId;
+
+/** @interface */
+Extensions.TracingSession = TracingSession;

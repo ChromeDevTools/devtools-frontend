@@ -18,6 +18,7 @@ Accessibility.AXNodeSubPane = class extends Accessibility.AccessibilitySubPane {
 
     this.element.classList.add('accessibility-computed');
     this.registerRequiredCSS('accessibility/accessibilityNode.css');
+    this._treeOutline.setFocusable(true);
   }
 
   /**
@@ -93,6 +94,11 @@ Accessibility.AXNodeSubPane = class extends Accessibility.AccessibilitySubPane {
     addProperty(roleProperty);
     for (const property of /** @type {!Array.<!Protocol.Accessibility.AXProperty>} */ (axNode.properties())) {
       addProperty(property);
+    }
+
+    const firstNode = treeOutline.firstChild();
+    if (firstNode) {
+      firstNode.select(/* omitFocus= */ true, /* selectedByUser= */ false);
     }
   }
 
@@ -280,7 +286,6 @@ Accessibility.AXNodePropertyTreePropertyElement = class extends Accessibility.AX
 
     this._property = property;
     this.toggleOnClick = true;
-    this.selectable = false;
 
     this.listItemElement.classList.add('property');
   }
@@ -314,7 +319,6 @@ Accessibility.AXValueSourceTreeElement = class extends Accessibility.AXNodePrope
   constructor(source, axNode) {
     super(axNode);
     this._source = source;
-    this.selectable = false;
   }
 
   /**
@@ -479,7 +483,7 @@ Accessibility.AXRelatedNodeSourceTreeElement = class extends UI.TreeElement {
 
     this._value = value;
     this._axRelatedNodeElement = new Accessibility.AXRelatedNodeElement(node, value);
-    this.selectable = false;
+    this.selectable = true;
   }
 
   /**
@@ -495,6 +499,14 @@ Accessibility.AXRelatedNodeSourceTreeElement = class extends UI.TreeElement {
       this.listItemElement.appendChild(Accessibility.AXNodePropertyTreeElement.createSimpleValueElement(
           Protocol.Accessibility.AXValueType.ComputedString, this._value.text));
     }
+  }
+
+  /**
+   * @override
+   */
+  onenter() {
+    this._axRelatedNodeElement.revealNode();
+    return true;
   }
 };
 
@@ -534,6 +546,13 @@ Accessibility.AXRelatedNodeElement = class {
     }
 
     return element;
+  }
+
+  /**
+   * Attempts to cause the node referred to by the related node to be selected in the tree.
+   */
+  revealNode() {
+    this._deferredNode.resolvePromise().then(node => Common.Revealer.reveal(node));
   }
 };
 

@@ -6,9 +6,9 @@
  * @implements {UI.ToolbarItem.Provider}
  * @unrestricted
  */
-ConsoleCounters.WarningErrorCounter = class {
+export default class WarningErrorCounter {
   constructor() {
-    ConsoleCounters.WarningErrorCounter._instanceForTest = this;
+    WarningErrorCounter._instanceForTest = this;
 
     const countersWrapper = createElement('div');
     this._toolbarItem = new UI.ToolbarItem(countersWrapper);
@@ -146,4 +146,13 @@ ConsoleCounters.WarningErrorCounter = class {
   item() {
     return this._toolbarItem;
   }
-};
+}
+
+/* Legacy exported object */
+self.ConsoleCounters = self.ConsoleCounters || {};
+
+/* Legacy exported object */
+ConsoleCounters = ConsoleCounters || {};
+
+/** @constructor */
+ConsoleCounters.WarningErrorCounter = WarningErrorCounter;

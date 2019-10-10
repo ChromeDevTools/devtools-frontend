@@ -49,6 +49,10 @@ do
   echo "import * as $FILE from './$FILE.js';" >> $MODULE_FILE
 done
 
+# Add module entrypoint to GN variables
+sed -i -e "s/all\_devtools\_modules = \[/all\_devtools\_modules = \[ \"front\_end\/$1\/$1.js\"\,/" "$BUILD_GN_PATH"
+sed -i -e "s/copied\_devtools\_modules = \[/copied\_devtools\_modules = \[ \"\$resources\_out\_dir\/$1\/$1.js\"\,/" "$BUILD_GN_PATH"
+
 echo "" >> $MODULE_FILE
 echo "export {" >> $MODULE_FILE
 

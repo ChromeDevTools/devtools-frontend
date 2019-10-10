@@ -12,7 +12,9 @@
     "ui",
     "sdk"
   ],
-  "scripts": [
+  "scripts": [],
+  "modules": [
+    "console_counters.js",
     "WarningErrorCounter.js"
   ],
   "resources": [

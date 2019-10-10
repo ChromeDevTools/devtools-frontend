@@ -276,19 +276,9 @@ Sources.SourceFormatter.StyleMapping = class {
     }
     const [originalLine, originalColumn] =
         formatData.mapping.formattedToOriginal(uiLocation.lineNumber, uiLocation.columnNumber);
-    const headers = formatData.originalSourceCode[this._headersSymbol];
-    const locations = [];
-    for (const header of headers) {
-      // TODO(chromium:1005708): Remove this computation and use the end location from `header` once the back-end provides it.
-      const [formattedStartLine, formattedStartColumn] =
-          formatData.mapping.originalToFormatted(header.startLine, header.startColumn);
-      const [originalEndLine, originalEndColumn] =
-          formatData.mapping.formattedToOriginal(formattedStartLine, formattedStartColumn, header.contentLength);
-      if (header.containsLocation(originalLine, originalColumn, originalEndLine, originalEndColumn)) {
-        locations.push(new SDK.CSSLocation(header, originalLine, originalColumn));
-      }
-    }
-    return locations;
+    const headers = formatData.originalSourceCode[this._headersSymbol].filter(
+        header => header.containsLocation(originalLine, originalColumn));
+    return headers.map(header => new SDK.CSSLocation(header, originalLine, originalColumn));
   }
 
   /**

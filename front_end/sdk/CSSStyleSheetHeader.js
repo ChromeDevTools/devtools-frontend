@@ -22,6 +22,8 @@ export default class CSSStyleSheetHeader {
     this.isInline = payload.isInline;
     this.startLine = payload.startLine;
     this.startColumn = payload.startColumn;
+    this.endLine = payload.endLine;
+    this.endColumn = payload.endColumn;
     this.contentLength = payload.length;
     if (payload.ownerNode) {
       this.ownerNode = new SDK.DeferredDOMNode(cssModel.target(), payload.ownerNode);
@@ -104,19 +106,14 @@ export default class CSSStyleSheetHeader {
   /**
    * Checks whether the position is in this style sheet. Assumes that the
    * position's columnNumber is consistent with line endings.
-   * TODO(chromium:1005708): Ensure that this object knows its end position,
-   * and remove {line,column}NumberOfCSSEnd parameters.
    * @param {number} lineNumber
    * @param {number} columnNumber
-   * @param {number} lineNumberOfCSSEnd
-   * @param {number} columnNumberOfCSSEnd
    * @return {boolean}
    */
-  containsLocation(lineNumber, columnNumber, lineNumberOfCSSEnd, columnNumberOfCSSEnd) {
+  containsLocation(lineNumber, columnNumber) {
     const afterStart =
         (lineNumber === this.startLine && columnNumber >= this.startColumn) || lineNumber > this.startLine;
-    const beforeEnd =
-        lineNumber < lineNumberOfCSSEnd || (lineNumber === lineNumberOfCSSEnd && columnNumber <= columnNumberOfCSSEnd);
+    const beforeEnd = lineNumber < this.endLine || (lineNumber === this.endLine && columnNumber <= this.endColumn);
     return afterStart && beforeEnd;
   }
 

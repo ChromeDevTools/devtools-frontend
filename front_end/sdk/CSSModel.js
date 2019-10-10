@@ -101,7 +101,9 @@ export default class CSSModel extends SDK.SDKModel {
     for (let index = endIndex - 1;
          index >= 0 && headers[index].startLine === last.startLine && headers[index].startColumn === last.startColumn;
          --index) {
-      locations.push(new CSSLocation(headers[index], lineNumber, columnNumber));
+      if (headers[index].containsLocation(lineNumber, columnNumber)) {
+        locations.push(new SDK.CSSLocation(headers[index], lineNumber, columnNumber));
+      }
     }
 
 

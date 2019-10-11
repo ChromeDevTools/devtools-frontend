@@ -74,6 +74,12 @@ Settings.SettingsScreen = class extends UI.VBox {
     const dialog = new UI.Dialog();
     dialog.contentElement.tabIndex = -1;
     dialog.addCloseButton();
+
+    // Prevent clicks outside the Settings dialog from dismissing the dialog
+    // Settings screen is fullscreen and has its own close button, unlike other dialogs
+    // This also prevents screen readers (NVDA) from dismissing the dialog on Enter keypresses
+    dialog.setOutsideClickCallback(event => event.consume());
+
     settingsScreen.show(dialog.contentElement);
     dialog.show();
     settingsScreen._selectTab(name || 'preferences');

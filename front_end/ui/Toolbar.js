@@ -570,8 +570,9 @@ export class ToolbarButton extends ToolbarItem {
    * @param {!Event} event
    */
   _keydown(event) {
-    if (!this._enabled)
+    if (!this._enabled) {
       return;
+    }
     this.dispatchEventToListeners(UI.ToolbarButton.Events.KeyDown, event);
     event.consume();
   }

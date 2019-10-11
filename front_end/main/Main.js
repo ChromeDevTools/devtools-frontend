@@ -138,7 +138,6 @@ Main.Main = class {
     Root.Runtime.experiments.register('sourceDiff', 'Source diff');
     Root.Runtime.experiments.register('splitInDrawer', 'Split in drawer', true);
     Root.Runtime.experiments.register('spotlight', 'Spotlight', true);
-    Root.Runtime.experiments.register('terminalInDrawer', 'Terminal in drawer', true);
 
     // Timeline
     Root.Runtime.experiments.register('timelineEventInitiators', 'Timeline: event initiators');

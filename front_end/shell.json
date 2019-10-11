@@ -41,7 +41,6 @@
     { "name": "snippets" },
     { "name": "source_frame" },
     { "name": "sources" },
-    { "name": "terminal", "type": "remote" },
     { "name": "text_editor" },
     { "name": "workspace_diff" },
     { "name": "protocol_monitor"}

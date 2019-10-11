@@ -63,7 +63,6 @@
       <part file="../snippets/snippets_strings.grdp" />
       <part file="../source_frame/source_frame_strings.grdp" />
       <part file="../sources/sources_strings.grdp" />
-      <part file="../terminal/terminal_strings.grdp" />
       <part file="../text_editor/text_editor_strings.grdp" />
       <part file="../timeline/timeline_strings.grdp" />
       <part file="../timeline_model/timeline_model_strings.grdp" />

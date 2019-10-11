@@ -17,6 +17,15 @@ const DISABLED_RULES = {
   // Slow rules
   // https://github.com/dequelabs/axe-core/blob/develop/doc/API.md#section-4-performance
   // (more performance investigation) https://github.com/dequelabs/axe-core/pull/1503
+  'aria-hidden-focus': {
+    enabled: false,
+  },
+  'aria-input-field-name': {
+    enabled: false,
+  },
+  'aria-toggle-field-name': {
+    enabled: false,
+  },
   'color-contrast': {
     enabled: false,
   },
@@ -29,16 +38,55 @@ const DISABLED_RULES = {
     enabled: false,
   },
   // Low value rules
+  'aria-allowed-role': {
+    enabled: false,
+  },
+  'aria-dpub-role-fallback': {
+    enabled: false,
+  },
   'audio-caption': {
     enabled: false,
   },
   'blink': {
     enabled: false,
   },
+  'form-field-multiple-labels': {
+    enabled: false,
+  },
+  'frame-tested': {
+    enabled: false,
+  },
   'html-has-lang': {
     enabled: false,
   },
   'html-lang-valid': {
+    enabled: false,
+  },
+  'html-xml-lang-mismatch': {
+    enabled: false,
+  },
+  'landmark-banner-is-top-level': {
+    enabled: false,
+  },
+  'landmark-complementary-is-top-level': {
+    enabled: false,
+  },
+  'landmark-contentinfo-is-top-level': {
+    enabled: false,
+  },
+  'landmark-main-is-top-level': {
+    enabled: false,
+  },
+  'landmark-no-duplicate-banner': {
+    enabled: false,
+  },
+  'landmark-no-duplicate-contentinfo': {
+    enabled: false,
+  },
+  'landmark-one-main': {
+    enabled: false,
+  },
+  'landmark-unique': {
     enabled: false,
   },
   'marquee': {
@@ -54,6 +102,12 @@ const DISABLED_RULES = {
     enabled: false,
   },
   'object-alt': {
+    enabled: false,
+  },
+  'page-has-heading-one': {
+    enabled: false,
+  },
+  'scrollable-region-focusable': {
     enabled: false,
   },
   'video-caption': {
@@ -76,7 +130,8 @@ const DEFAULT_CONFIG = {
     // This should be removed after axe-core is updated.
     // See: https://github.com/dequelabs/axe-core/issues/1457
     {id: 'aria-valid-attr', options: ['aria-placeholder']}
-  ]
+  ],
+  runOnly: {type: 'tags', values: {include: ['wcag2a', 'best-practice'], exclude: ['experimental']}}
 };
 
 AxeCoreTestRunner.processAxeResult = function(violations) {

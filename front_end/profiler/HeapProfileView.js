@@ -723,6 +723,15 @@ Profiler.HeapProfileView.NodeFormatter = class {
   /**
    * @override
    * @param {number} value
+   * @return {string}
+   */
+  formatValueAccessibleText(value) {
+    return ls`${value} bytes`;
+  }
+
+  /**
+   * @override
+   * @param {number} value
    * @param {!Profiler.ProfileDataGridNode} node
    * @return {string}
    */

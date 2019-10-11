@@ -282,6 +282,15 @@ Profiler.CPUProfileView.NodeFormatter = class {
   /**
    * @override
    * @param {number} value
+   * @return {string}
+   */
+  formatValueAccessibleText(value) {
+    return this.formatValue(value);
+  }
+
+  /**
+   * @override
+   * @param {number} value
    * @param {!Profiler.ProfileDataGridNode} node
    * @return {string}
    */

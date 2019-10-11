@@ -205,8 +205,16 @@ Profiler.ProfileDataGridNode = class extends DataGrid.DataGridNode {
   _createValueCell(value, percent) {
     const cell = createElementWithClass('td', 'numeric-column');
     const div = cell.createChild('div', 'profile-multiple-values');
-    div.createChild('span').textContent = this.tree._formatter.formatValue(value, this);
-    div.createChild('span', 'percent-column').textContent = this.tree._formatter.formatPercent(percent, this);
+    const valueSpan = div.createChild('span');
+    const valueText = this.tree._formatter.formatValue(value, this);
+    valueSpan.textContent = valueText;
+    const percentSpan = div.createChild('span', 'percent-column');
+    const percentText = this.tree._formatter.formatPercent(percent, this);
+    percentSpan.textContent = percentText;
+    UI.ARIAUtils.markAsHidden(valueSpan);
+    UI.ARIAUtils.markAsHidden(percentSpan);
+    const valueAccessibleText = this.tree._formatter.formatValueAccessibleText(value, this);
+    UI.ARIAUtils.setAccessibleName(div, ls`${valueAccessibleText}, ${percentText}`);
     return cell;
   }
 
@@ -685,6 +693,12 @@ Profiler.ProfileDataGridNode.Formatter.prototype = {
    * @return {string}
    */
   formatValue(value, node) {},
+
+  /**
+   * @param {number} value
+   * @return {string}
+   */
+  formatValueAccessibleText(value) {},
 
   /**
    * @param {number} value

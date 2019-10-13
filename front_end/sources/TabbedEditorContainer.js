@@ -491,7 +491,25 @@ Sources.TabbedEditorContainer = class extends Common.Object {
 
     this._updateFileTitle(uiSourceCode);
     this._addUISourceCodeListeners(uiSourceCode);
+    if (uiSourceCode.loadError()) {
+      this._addLoadErrorIcon(tabId);
+    } else if (!uiSourceCode.contentLoaded()) {
+      uiSourceCode.requestContent().then(content => {
+        if (uiSourceCode.loadError()) {
+          this._addLoadErrorIcon(tabId);
+        }
+      });
+    }
     return tabId;
+  }
+
+  /**
+   * @param {string} tabId
+   */
+  _addLoadErrorIcon(tabId) {
+    const icon = UI.Icon.create('smallicon-error');
+    icon.title = ls`Unable to load this content.`;
+    this._tabbedPane.setTabIcon(tabId, icon);
   }
 
   /**
@@ -581,7 +599,10 @@ Sources.TabbedEditorContainer = class extends Common.Object {
       const tooltip = this._tooltipForFile(uiSourceCode);
       this._tabbedPane.changeTabTitle(tabId, title, tooltip);
       let icon = null;
-      if (Persistence.persistence.hasUnsavedCommittedChanges(uiSourceCode)) {
+      if (uiSourceCode.loadError()) {
+        icon = UI.Icon.create('smallicon-error');
+        icon.title = ls`Unable to load this content.`;
+      } else if (Persistence.persistence.hasUnsavedCommittedChanges(uiSourceCode)) {
         icon = UI.Icon.create('smallicon-warning');
         icon.title = Common.UIString('Changes to this file were not saved to file system.');
       } else {

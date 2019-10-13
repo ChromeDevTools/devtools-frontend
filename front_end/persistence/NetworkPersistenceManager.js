@@ -237,7 +237,7 @@ export default class NetworkPersistenceManager extends Common.Object {
     fileSystemUISourceCode[this._bindingSymbol] = binding;
     Persistence.persistence.addBinding(binding);
     const uiSourceCodeOfTruth = networkUISourceCode[this._savingSymbol] ? networkUISourceCode : fileSystemUISourceCode;
-    const [content, encoded] =
+    const [{content}, encoded] =
         await Promise.all([uiSourceCodeOfTruth.requestContent(), uiSourceCodeOfTruth.contentEncoded()]);
     Persistence.persistence.syncContent(uiSourceCodeOfTruth, content, encoded);
   }
@@ -266,7 +266,7 @@ export default class NetworkPersistenceManager extends Common.Object {
     }
     uiSourceCode[this._savingSymbol] = true;
     let encodedPath = this._encodedPathFromUrl(uiSourceCode.url());
-    const content = await uiSourceCode.requestContent();
+    const content = (await uiSourceCode.requestContent()).content || '';
     const encoded = await uiSourceCode.contentEncoded();
     const lastIndexOfSlash = encodedPath.lastIndexOf('/');
     const encodedFileName = encodedPath.substr(lastIndexOfSlash + 1);

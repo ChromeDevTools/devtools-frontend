@@ -3,6 +3,9 @@
   <message name="IDS_DEVTOOLS_412dac8227bbaf752fecaad8826f20e6" desc="Text in Resource Script Mapping">
     LiveEdit failed: <ph name="ERROR">$1s<ex>warning</ex></ph>
   </message>
+  <message name="IDS_DEVTOOLS_5e2c3eac46d298d72b51f1500601d7be" desc="Error message that is displayed in the Sources panel when can't be loaded.">
+    Unknown error loading file
+  </message>
   <message name="IDS_DEVTOOLS_d3ff22990e37ccce8a501ffba38626b7" desc="Text in Resource Script Mapping">
     LiveEdit compile failed: <ph name="EXCEPTIONDETAILS_TEXT">$1s<ex>connection lost</ex></ph>
   </message>

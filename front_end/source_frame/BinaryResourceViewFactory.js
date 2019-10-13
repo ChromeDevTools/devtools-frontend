@@ -16,7 +16,7 @@ SourceFrame.BinaryResourceViewFactory = class {
     this._arrayPromise = null;
     /** @type {?Promise<string>} */
     this._hexPromise = null;
-    /** @type {?Promise<string>} */
+    /** @type {?Promise<!Common.DeferredContent>} */
     this._utf8Promise = null;
   }
 
@@ -31,14 +31,14 @@ SourceFrame.BinaryResourceViewFactory = class {
   }
 
   /**
-   * @return {!Promise<string>}
+   * @return {!Promise<!Common.DeferredContent>}
    */
   async hex() {
     if (!this._hexPromise) {
       this._hexPromise = new Promise(async resolve => {
         const content = await this._fetchContentAsArray();
         const hexString = SourceFrame.BinaryResourceViewFactory.uint8ArrayToHexString(content);
-        resolve(hexString);
+        resolve({content: hexString, isEncoded: false});
       });
     }
 
@@ -46,21 +46,21 @@ SourceFrame.BinaryResourceViewFactory = class {
   }
 
   /**
-   * @return {!Promise<string>}
+   * @return {!Promise<!Common.DeferredContent>}
    */
   async base64() {
-    return this._base64content;
+    return {content: this._base64content, isEncoded: true};
   }
 
   /**
-   * @return {!Promise<string>}
+   * @return {!Promise<!Common.DeferredContent>}
    */
   async utf8() {
     if (!this._utf8Promise) {
       this._utf8Promise = new Promise(async resolve => {
         const content = await this._fetchContentAsArray();
         const utf8String = new TextDecoder('utf8').decode(content);
-        resolve(utf8String);
+        resolve({content: utf8String, isEncoded: false});
       });
     }
 
@@ -80,9 +80,12 @@ SourceFrame.BinaryResourceViewFactory = class {
    * @return {!SourceFrame.ResourceSourceFrame}
    */
   createHexView() {
-    const hexViewerContentProvider = new Common.StaticContentProvider(
-        this._contentUrl, this._resourceType,
-        async () => SourceFrame.BinaryResourceViewFactory.uint8ArrayToHexViewer(await this._fetchContentAsArray()));
+    const hexViewerContentProvider =
+        new Common.StaticContentProvider(this._contentUrl, this._resourceType, async () => {
+          const contentAsArray = await this._fetchContentAsArray();
+          const content = SourceFrame.BinaryResourceViewFactory.uint8ArrayToHexViewer(contentAsArray);
+          return {content, isEncoded: false};
+        });
     return new SourceFrame.ResourceSourceFrame(
         hexViewerContentProvider,
         /* autoPrettyPrint */ false, {lineNumbers: false, lineWrapping: false});

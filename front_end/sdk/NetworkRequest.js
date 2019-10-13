@@ -1136,10 +1136,15 @@ export default class NetworkRequest extends Common.Object {
 
   /**
    * @override
-   * @return {!Promise<string>}
+   * @return {!Promise<!Common.DeferredContent>}
    */
   async requestContent() {
-    return /** @type {string} */ ((await this.contentData()).content);
+    const {content, error, encoded} = await this.contentData();
+    return /** @type{!Common.DeferredContent} */ ({
+      content,
+      error,
+      isEncoded: encoded,
+    });
   }
 
   /**

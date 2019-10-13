@@ -291,8 +291,8 @@ Sources.SnippetsNavigatorView = class extends Sources.NavigatorView {
    */
   async _handleSaveAs(uiSourceCode) {
     uiSourceCode.commitWorkingCopy();
-    const content = await uiSourceCode.requestContent();
-    Workspace.fileManager.save(uiSourceCode.url(), content, true);
+    const {content} = await uiSourceCode.requestContent();
+    Workspace.fileManager.save(uiSourceCode.url(), content || '', true);
     Workspace.fileManager.close(uiSourceCode.url());
   }
 };

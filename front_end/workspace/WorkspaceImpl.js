@@ -106,9 +106,9 @@ export class Project {
 
   /**
    * @param {!Workspace.UISourceCode} uiSourceCode
-   * @param {function(?string,boolean)} callback
+   * @returns {!Promise<!Common.DeferredContent>}
    */
-  requestFileContent(uiSourceCode, callback) {
+  requestFileContent(uiSourceCode) {
   }
 
   /**

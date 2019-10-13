@@ -57,7 +57,7 @@ export default class UISourceCode extends Common.Object {
     }
 
     this._contentType = contentType;
-    /** @type {?Promise<string>} */
+    /** @type {?Promise<!Common.DeferredContent>} */
     this._requestContentPromise = null;
     /** @type {?Platform.Multimap<string, !LineMarker>} */
     this._decorations = null;
@@ -65,10 +65,8 @@ export default class UISourceCode extends Common.Object {
     /** @type {?Set<!Message>} */
     this._messages = null;
     this._contentLoaded = false;
-    /** @type {?string} */
+    /** @type {?Common.DeferredContent} */
     this._content = null;
-    /** @type {boolean|undefined} */
-    this._contentEncoded;
     this._forceLoadOnCheckContent = false;
     this._checkingContent = false;
     /** @type {?string} */
@@ -240,7 +238,7 @@ export default class UISourceCode extends Common.Object {
 
   /**
    * @override
-   * @return {!Promise<string>}
+   * @return {!Promise<!Common.DeferredContent>}
    */
   requestContent() {
     if (this._requestContentPromise) {
@@ -248,23 +246,34 @@ export default class UISourceCode extends Common.Object {
     }
 
     if (this._contentLoaded) {
-      this._requestContentPromise = Promise.resolve(this._content || '');
-    } else {
-      let fulfill;
-      this._requestContentPromise = new Promise(x => fulfill = x);
-      this._project.requestFileContent(this, (content, encoded) => {
-        if (!this._contentLoaded) {
-          this._contentLoaded = true;
-          this._content = content;
-          this._contentEncoded = encoded;
-        }
-        fulfill(this._content);
-      });
+      return Promise.resolve(/** @type {!Common.DeferredContent} */ (this._content));
     }
+
+
+    this._requestContentPromise = this._requestContentImpl();
     return this._requestContentPromise;
   }
 
-  checkContentUpdated() {
+  /**
+   * @returns {!Promise<!Common.DeferredContent>}
+   */
+  async _requestContentImpl() {
+    try {
+      const content = await this._project.requestFileContent(this);
+      if (!this._contentLoaded) {
+        this._contentLoaded = true;
+        this._content = content;
+        this._contentEncoded = content.isEncoded;
+      }
+    } catch (err) {
+      this._contentLoaded = true;
+      this._content = {error: err ? String(err) : '', isEncoded: false};
+    }
+
+    return /** @type {!Common.DeferredContent} */ (this._content);
+  }
+
+  async checkContentUpdated() {
     if (!this._contentLoaded && !this._forceLoadOnCheckContent) {
       return;
     }
@@ -274,47 +283,38 @@ export default class UISourceCode extends Common.Object {
     }
 
     this._checkingContent = true;
-    this._project.requestFileContent(this, contentLoaded.bind(this));
+    const updatedContent = await this._project.requestFileContent(this);
+    this._checkingContent = false;
+    if (updatedContent.content === null) {
+      const workingCopy = this.workingCopy();
+      this._contentCommitted('', false);
+      this.setWorkingCopy(workingCopy);
+      return;
+    }
+    if (this._lastAcceptedContent === updatedContent.content) {
+      return;
+    }
 
-    /**
-     * @param {?string} updatedContent
-     * @param {boolean} encoded
-     * @this {UISourceCode}
-     */
-    async function contentLoaded(updatedContent, encoded) {
-      this._checkingContent = false;
-      if (updatedContent === null) {
-        const workingCopy = this.workingCopy();
-        this._contentCommitted('', false);
-        this.setWorkingCopy(workingCopy);
-        return;
-      }
-      if (this._lastAcceptedContent === updatedContent) {
-        return;
-      }
+    if (this._content && this._content.content === updatedContent.content) {
+      this._lastAcceptedContent = null;
+      return;
+    }
 
-      if (this._content === updatedContent) {
-        this._lastAcceptedContent = null;
-        return;
-      }
+    if (!this.isDirty() || this._workingCopy === updatedContent.content) {
+      this._contentCommitted(/** @type {string} */ (updatedContent.content), false);
+      return;
+    }
 
-      if (!this.isDirty() || this._workingCopy === updatedContent) {
-        this._contentCommitted(/** @type {string} */ (updatedContent), false);
-        return;
-      }
+    await Common.Revealer.reveal(this);
 
-      await Common.Revealer.reveal(this);
+    // Make sure we are in the next frame before stopping the world with confirm
+    await new Promise(resolve => setTimeout(resolve, 0));
 
-      // Make sure we are in the next frame before stopping the world with confirm
-      await new Promise(resolve => setTimeout(resolve, 0));
-
-      const shouldUpdate =
-          window.confirm(Common.UIString('This file was changed externally. Would you like to reload it?'));
-      if (shouldUpdate) {
-        this._contentCommitted(/** @type {string} */ (updatedContent), false);
-      } else {
-        this._lastAcceptedContent = updatedContent;
-      }
+    const shouldUpdate = window.confirm(ls`This file was changed externally. Would you like to reload it?`);
+    if (shouldUpdate) {
+      this._contentCommitted(/** @type {string} */ (updatedContent.content), false);
+    } else {
+      this._lastAcceptedContent = updatedContent.content;
     }
   }
 
@@ -338,7 +338,7 @@ export default class UISourceCode extends Common.Object {
    */
   _contentCommitted(content, committedByUser) {
     this._lastAcceptedContent = null;
-    this._content = content;
+    this._content = {content, isEncoded: false};
     this._contentLoaded = true;
     this._requestContentPromise = null;
 
@@ -378,7 +378,7 @@ export default class UISourceCode extends Common.Object {
     if (this.isDirty()) {
       return /** @type {string} */ (this._workingCopy);
     }
-    return this._content || '';
+    return (this._content && this._content.content) || '';
   }
 
   resetWorkingCopy() {
@@ -456,10 +456,17 @@ export default class UISourceCode extends Common.Object {
   }
 
   /**
-   * @return {?string}
+   * @return {string}
    */
   content() {
-    return this._content;
+    return (this._content && this._content.content) || '';
+  }
+
+  /**
+   * @return {?string}
+   */
+  loadError() {
+    return (this._content && this._content.error);
   }
 
   /**

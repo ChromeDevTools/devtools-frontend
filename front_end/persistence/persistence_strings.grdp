@@ -18,11 +18,17 @@
   <message name="IDS_DEVTOOLS_17d5f7dcd4ef6b9702a8b2ac7d237e5b" desc="Title of a setting under the Persistence category that can be invoked through the Command Menu">
     Enable override network requests
   </message>
+  <message name="IDS_DEVTOOLS_1c02bb01227ee7caca379039bfc5e85d" desc="Assertion error message when failing to load a file">
+    Unable to read files with this implementation.
+  </message>
   <message name="IDS_DEVTOOLS_1c5594ed57047449210c4b4d803f7787" desc="A tag of Enable Local Overrides setting that can be searched in the command menu">
     interception
   </message>
   <message name="IDS_DEVTOOLS_25ee7702f0b5dbe737d8f0f2ba3ce591" desc="A context menu item in the Persistence Actions of the Workspace settings in Settings">
     Save for overrides
+  </message>
+  <message name="IDS_DEVTOOLS_3f117c10eacf50ac452cf2bea0295951" desc="Error message when failing to load a file">
+    Unknown error reading file: <ph name="PATH"><ex>c:\dir\file.js</ex>$1s</ph>
   </message>
   <message name="IDS_DEVTOOLS_57e01423e2b182ada052707cbb8d7b3a" desc="Error message when a file system path is an empty string.">
     Enter a path
@@ -35,6 +41,9 @@
   </message>
   <message name="IDS_DEVTOOLS_62def4422771353f5e30763d92474b43" desc="Text in Persistence Utils of the Workspace settings in Settings">
     Linked to source map: <ph name="BINDING_NETWORK_URL___TRIMMIDDLE_____">$1s<ex>example.url</ex></ph>
+  </message>
+  <message name="IDS_DEVTOOLS_6b8a6e4cad0454926dd845d32b525f04" desc="Error message when reading a file.">
+    Can&apos;t read file: <ph name="PATH"><ex>c:\dir\file.js</ex>$1s</ph>: <ph name="READER_ERROR"><ex>Underlying error</ex>$2s</ph>
   </message>
   <message name="IDS_DEVTOOLS_7b4639e8d528d7a3eedafe23e9cdfee1" desc="A tag of Enable Local Overrides setting that can be searched in the command menu">
     rewrite
@@ -62,6 +71,9 @@
   </message>
   <message name="IDS_DEVTOOLS_e3b3f56615d1e5f2608d2f1130a7ef54" desc="A tag of Enable Local Overrides setting that can be searched in the command menu">
     override
+  </message>
+  <message name="IDS_DEVTOOLS_ef1e313a589a406cf35afebfba156df5" desc="Error message when reading a remote blob">
+    Blob could not be loaded.
   </message>
   <message name="IDS_DEVTOOLS_fddede572fa09e1b1bb28504d8c43343" desc="Text in Edit File System View of the Workspace settings in Settings">
     Folder path

@@ -57,6 +57,7 @@ export default class Resource {
     this._contentSize = contentSize;
 
     /** @type {?string} */ this._content;
+    /** @type {?string} */ this._contentLoadError;
     /** @type {boolean} */ this._contentEncoded;
     this._pendingContentCallbacks = [];
     if (this._request && !this._request.finished) {
@@ -192,11 +193,11 @@ export default class Resource {
 
   /**
    * @override
-   * @return {!Promise<string>}
+   * @return {!Promise<!Common.DeferredContent>}
    */
   requestContent() {
     if (typeof this._content !== 'undefined') {
-      return Promise.resolve(/** @type {string} */ (this._content));
+      return Promise.resolve({content: /** @type {string} */ (this._content), isEncoded: this._contentEncoded});
     }
 
     let callback;
@@ -238,7 +239,7 @@ export default class Resource {
    * @param {!Element} image
    */
   async populateImageSource(image) {
-    const content = await this.requestContent();
+    const {content} = await this.requestContent();
     const encoded = this._contentEncoded;
     image.src = Common.ContentProvider.contentAsDataURL(content, this._mimeType, encoded) || this._url;
   }
@@ -256,14 +257,25 @@ export default class Resource {
     }
     this._contentRequested = true;
 
+    /** @type {!Common.DeferredContent} */
+    let loadResult;
     if (this.request) {
       const contentData = await this.request.contentData();
       this._content = contentData.content;
       this._contentEncoded = contentData.encoded;
+      loadResult = {content: /** @type{string} */ (contentData.content), isEncoded: contentData.encoded};
     } else {
       const response = await this._resourceTreeModel.target().pageAgent().invoke_getResourceContent(
           {frameId: this.frameId, url: this.url});
-      this._content = response[Protocol.Error] ? null : response.content;
+      if (response[Protocol.Error]) {
+        this._contentLoadError = response[Protocol.Error];
+        this._content = null;
+        loadResult = {error: response[Protocol.Error], isEncoded: false};
+      } else {
+        this._content = response.content;
+        this._contentLoadError = null;
+        loadResult = {content: response.content, isEncoded: response.base64Encoded};
+      }
       this._contentEncoded = response.base64Encoded;
     }
 
@@ -272,8 +284,9 @@ export default class Resource {
     }
 
     for (const callback of this._pendingContentCallbacks.splice(0)) {
-      callback(this._content);
+      callback(loadResult);
     }
+
     delete this._contentRequested;
   }
 

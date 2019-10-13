@@ -83,10 +83,10 @@ export default class PlatformFileSystem {
 
   /**
    * @param {string} path
-   * @param {function(?string,boolean)} callback
+   * @returns {!Promise<!Common.DeferredContent>}
    */
-  requestFileContent(path, callback) {
-    callback(null, false);
+  async requestFileContent(path) {
+    return {error: ls`Unable to read files with this implementation.`, isEncoded: false};
   }
 
   /**

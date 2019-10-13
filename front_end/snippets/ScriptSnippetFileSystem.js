@@ -55,12 +55,12 @@ Snippets.SnippetFileSystem = class extends Persistence.PlatformFileSystem {
   /**
    * @override
    * @param {string} path
-   * @param {function(?string,boolean)} callback
+   * @returns {!Promise<!Common.DeferredContent>}
    */
-  requestFileContent(path, callback) {
+  async requestFileContent(path) {
     const name = unescape(path.substring(1));
     const snippet = this._snippetsSetting.get().find(snippet => snippet.name === name);
-    callback(snippet ? snippet.content : null, /* encoded */ false);
+    return {content: snippet ? snippet.content : null, isEncoded: false};
   }
 
   /**
@@ -163,7 +163,6 @@ Snippets.evaluateScriptSnippet = async function(uiSourceCode) {
   }
 
   const runtimeModel = executionContext.runtimeModel;
-
   await uiSourceCode.requestContent();
   uiSourceCode.commitWorkingCopy();
   const expression = uiSourceCode.workingCopy();

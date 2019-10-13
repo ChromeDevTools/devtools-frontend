@@ -349,7 +349,7 @@ export class Binding {
       return;
     }  // There is already a _styleSheetChanged loop running
 
-    const content = await this._uiSourceCode.requestContent();
+    const {content} = await this._uiSourceCode.requestContent();
     if (content !== null) {
       this._innerStyleSheetChanged(content);
     }
@@ -440,7 +440,7 @@ export class Binding {
 
   /**
    * @override
-   * @return {!Promise<string>}
+   * @return {!Promise<!Common.DeferredContent>}
    */
   requestContent() {
     return this._resources.firstValue().requestContent();

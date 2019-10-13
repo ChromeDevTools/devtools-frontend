@@ -38,11 +38,11 @@ SourceFrame.ResourceSourceFrame = class extends SourceFrame.SourceFrame {
    */
   constructor(resource, autoPrettyPrint, codeMirrorOptions) {
     super(async () => {
-      let content = await resource.requestContent();
+      let content = (await resource.requestContent()).content || '';
       if (await resource.contentEncoded()) {
         content = window.atob(content);
       }
-      return content;
+      return {content, isEncoded: false};
     }, codeMirrorOptions);
     this._resource = resource;
     this.setCanPrettyPrint(this._resource.contentType().isDocumentOrScriptOrStyleSheet(), autoPrettyPrint);

@@ -9,7 +9,7 @@ export default class StaticContentProvider {
   /**
    * @param {string} contentURL
    * @param {!Common.ResourceType} contentType
-   * @param {function():!Promise<string>} lazyContent
+   * @param {function():!Promise<!Common.DeferredContent>} lazyContent
    */
   constructor(contentURL, contentType, lazyContent) {
     this._contentURL = contentURL;
@@ -24,7 +24,7 @@ export default class StaticContentProvider {
    * @return {!Common.StaticContentProvider}
    */
   static fromString(contentURL, contentType, content) {
-    const lazyContent = () => Promise.resolve(content);
+    const lazyContent = () => Promise.resolve({content, isEncoded: false});
     return new Common.StaticContentProvider(contentURL, contentType, lazyContent);
   }
 
@@ -54,7 +54,7 @@ export default class StaticContentProvider {
 
   /**
    * @override
-   * @return {!Promise<string>}
+   * @return {!Promise<!Common.DeferredContent>}
    */
   requestContent() {
     return this._lazyContent();
@@ -68,7 +68,7 @@ export default class StaticContentProvider {
    * @return {!Promise<!Array<!Common.ContentProvider.SearchMatch>>}
    */
   async searchInContent(query, caseSensitive, isRegex) {
-    const content = await this._lazyContent();
+    const {content} = (await this._lazyContent());
     return content ? Common.ContentProvider.performSearchInContent(content, query, caseSensitive, isRegex) : [];
   }
 }

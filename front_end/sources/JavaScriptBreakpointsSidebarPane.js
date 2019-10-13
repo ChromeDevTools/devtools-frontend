@@ -129,7 +129,7 @@ Sources.JavaScriptBreakpointsSidebarPane = class extends UI.ThrottledWidget {
     checkboxLabel.checkboxElement.indeterminate = hasEnabled && hasDisabled;
 
     const snippetElement = element[Sources.JavaScriptBreakpointsSidebarPane._snippetElementSymbol];
-    const content = await uiLocation.uiSourceCode.requestContent();
+    const {content} = await uiLocation.uiSourceCode.requestContent();
     const lineNumber = uiLocation.lineNumber;
     const text = new TextUtils.Text(content || '');
     if (lineNumber < text.lineCount()) {

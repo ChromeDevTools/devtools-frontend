@@ -27,6 +27,18 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+/**
+ * @typedef {{
+ *    content: string,
+ *    isEncoded: boolean,
+ * }|{
+ *    error: string,
+ *    isEncoded: boolean,
+ * }}
+ */
+Common.DeferredContent;
+
 /**
  * @interface
  */
@@ -50,7 +62,7 @@ export default class ContentProvider {
   }
 
   /**
-   * @return {!Promise<string>}
+   * @return {!Promise<!Common.DeferredContent>}
    */
   requestContent() {
   }

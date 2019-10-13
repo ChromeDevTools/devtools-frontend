@@ -139,10 +139,9 @@ Coverage.CoverageListView = class extends UI.VBox {
     if (!sourceCode) {
       return;
     }
-    const content = await sourceCode.requestContent();
+    const content = (await sourceCode.requestContent()).content || '';
     if (TextUtils.isMinified(content)) {
       const formatData = await Sources.sourceFormatter.format(sourceCode);
-      // ------------ ASYNC ------------
       sourceCode = formatData.formattedSourceCode;
     }
     if (this._dataGrid.selectedNode !== node) {

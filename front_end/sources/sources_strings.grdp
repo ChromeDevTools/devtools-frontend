@@ -474,6 +474,9 @@
   <message name="IDS_DEVTOOLS_e68f8487d76aeb933b5b06d7999a0e44" desc="Title of a setting under the Sources category that can be invoked through the Command Menu">
     Enable JavaScript source maps
   </message>
+  <message name="IDS_DEVTOOLS_eb2f2225858078738d498794cd737d18" desc="Error message for tooltip showing that a file in Sources could not be loaded">
+    Unable to load this content.
+  </message>
   <message name="IDS_DEVTOOLS_ed5eceb0fe85ceeeabf4b4b93eeca711" desc="A context menu item in the Sources Panel of the Sources panel">
     Continue to here
   </message>

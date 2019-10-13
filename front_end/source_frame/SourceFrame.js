@@ -35,7 +35,7 @@
  */
 SourceFrame.SourceFrame = class extends UI.SimpleView {
   /**
-   * @param {function(): !Promise<string>} lazyContent
+   * @param {function(): !Promise<!Common.DeferredContent>} lazyContent
    * @param {!UI.TextEditor.Options=} codeMirrorOptions
    */
   constructor(lazyContent, codeMirrorOptions) {
@@ -69,6 +69,7 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
     this._currentSearchResultIndex = -1;
     this._searchResults = [];
     this._searchRegex = null;
+    this._loadError = false;
 
     this._textEditor.addEventListener(
         SourceFrame.SourcesTextEditor.Events.EditorFocused, this._resetCurrentSearchResultIndex, this);
@@ -149,13 +150,13 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
     if (this._pretty) {
       const formatInfo = await this._requestFormattedContent();
       this._formattedMap = formatInfo.map;
-      this.setContent(formatInfo.content);
+      this.setContent(formatInfo.content, null);
       this._prettyCleanGeneration = this._textEditor.markClean();
       const start = this._rawToPrettyLocation(selection.startLine, selection.startColumn);
       const end = this._rawToPrettyLocation(selection.endLine, selection.endColumn);
       newSelection = new TextUtils.TextRange(start[0], start[1], end[0], end[1]);
     } else {
-      this.setContent(this._rawContent);
+      this.setContent(this._rawContent, null);
       this._cleanGeneration = this._textEditor.markClean();
       const start = this._prettyToRawLocation(selection.startLine, selection.startColumn);
       const end = this._prettyToRawLocation(selection.endLine, selection.endColumn);
@@ -234,6 +235,13 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
   }
 
   /**
+   * @return {boolean}
+   */
+  hasLoadError() {
+    return this._loadError;
+  }
+
+  /**
    * @override
    */
   wasShown() {
@@ -276,15 +284,32 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
   async _ensureContentLoaded() {
     if (!this._contentRequested) {
       this._contentRequested = true;
-      const content = await this._lazyContent();
-      this._rawContent = content || '';
+      const {content, error} = (await this._lazyContent());
+      this._rawContent = error || content || '';
       this._formattedContentPromise = null;
       this._formattedMap = null;
       this._prettyToggle.setEnabled(true);
-      if (this._shouldAutoPrettyPrint && TextUtils.isMinified(content)) {
-        await this._setPretty(true);
+
+      if (error) {
+        this.setContent(null, error);
+        this._prettyToggle.setEnabled(false);
+
+        // Occasionally on load, there can be a race in which it appears the CodeMirror plugin
+        // runs the highlighter type assignment out of order. In case of an error then, set
+        // the highlighter type after a short delay. This appears to only occur the first
+        // time that CodeMirror is initialized, likely because the highlighter type was first
+        // initialized based on the file type, and the syntax highlighting is in a race
+        // with the new highlighter assignment. As the option is just an option and is not
+        // observable, we can't handle waiting for it here.
+        // https://github.com/codemirror/CodeMirror/issues/6019
+        // CRBug 1011445
+        setTimeout(() => this.setHighlighterType('text/plain'), 50);
       } else {
-        this.setContent(this._rawContent);
+        if (this._shouldAutoPrettyPrint && TextUtils.isMinified(content || '')) {
+          await this._setPretty(true);
+        } else {
+          this.setContent(this._rawContent, null);
+        }
       }
     }
   }
@@ -472,14 +497,23 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
 
   /**
    * @param {?string} content
+   * @param {?string} loadError
    */
-  setContent(content) {
+  setContent(content, loadError) {
     this._muteChangeEventsForSetContent = true;
     if (!this._loaded) {
       this._loaded = true;
-      this._textEditor.setText(content || '');
-      this._cleanGeneration = this._textEditor.markClean();
-      this._textEditor.setReadOnly(!this._editable);
+      if (!loadError) {
+        this._textEditor.setText(content || '');
+        this._cleanGeneration = this._textEditor.markClean();
+        this._textEditor.setReadOnly(!this._editable);
+        this._loadError = false;
+      } else {
+        this._textEditor.setText(loadError || '');
+        this._highlighterType = 'text/plain';
+        this._textEditor.setReadOnly(true);
+        this._loadError = true;
+      }
     } else {
       const scrollTop = this._textEditor.scrollTop();
       const selection = this._textEditor.selection();

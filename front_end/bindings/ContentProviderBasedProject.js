@@ -51,13 +51,18 @@ export default class ContentProviderBasedProject extends Workspace.ProjectStore 
   /**
    * @override
    * @param {!Workspace.UISourceCode} uiSourceCode
-   * @param {function(?string,boolean)} callback
+   * @returns {!Promise<!Common.DeferredContent>}
    */
-  requestFileContent(uiSourceCode, callback) {
+  async requestFileContent(uiSourceCode) {
     const contentProvider = this._contentProviders[uiSourceCode.url()];
-    (async () => {
-      callback(await contentProvider.requestContent(), await contentProvider.contentEncoded());
-    })();
+    try {
+      const [content, isEncoded] =
+          await Promise.all([contentProvider.requestContent(), contentProvider.contentEncoded()]);
+      return {content: content.content, isEncoded, error: content.error};
+    } catch (err) {
+      // TODO(rob.paveza): CRBug 1013683 - Consider propagating exceptions full-stack
+      return {isEncoded: false, error: err ? String(err) : ls`Unknown error loading file`};
+    }
   }
 
   /**

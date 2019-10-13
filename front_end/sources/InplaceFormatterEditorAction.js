@@ -79,38 +79,44 @@ Sources.InplaceFormatterEditorAction = class {
     }
 
     if (uiSourceCode.isDirty()) {
-      contentLoaded.call(this, uiSourceCode.workingCopy());
+      this._contentLoaded(uiSourceCode, uiSourceCode.workingCopy());
     } else {
-      uiSourceCode.requestContent().then(contentLoaded.bind(this));
+      uiSourceCode.requestContent().then(deferredContent => {
+        this._contentLoaded(uiSourceCode, deferredContent.content);
+      });
     }
+  }
 
-    /**
-     * @this {Sources.InplaceFormatterEditorAction}
-     * @param {?string} content
-     */
-    function contentLoaded(content) {
-      const highlighterType = uiSourceCode.mimeType();
-      Formatter.Formatter.format(uiSourceCode.contentType(), highlighterType, content || '', innerCallback.bind(this));
-    }
+  /**
+   * @param {?Workspace.UISourceCode} uiSourceCode
+   * @param {string} content
+   */
+  _contentLoaded(uiSourceCode, content) {
+    const highlighterType = uiSourceCode.mimeType();
+    Formatter.Formatter.format(
+        uiSourceCode.contentType(), highlighterType, content, (formattedContent, formatterMapping) => {
+          this._formattingComplete(uiSourceCode, formattedContent, formatterMapping);
+        });
+  }
 
-    /**
-     * @this {Sources.InplaceFormatterEditorAction}
+  /**
+     * Post-format callback
+     * @param {?Workspace.UISourceCode} uiSourceCode
      * @param {string} formattedContent
      * @param {!Formatter.FormatterSourceMapping} formatterMapping
      */
-    function innerCallback(formattedContent, formatterMapping) {
-      if (uiSourceCode.workingCopy() === formattedContent) {
-        return;
-      }
-      const sourceFrame = this._sourcesView.viewForFile(uiSourceCode);
-      let start = [0, 0];
-      if (sourceFrame) {
-        const selection = sourceFrame.selection();
-        start = formatterMapping.originalToFormatted(selection.startLine, selection.startColumn);
-      }
-      uiSourceCode.setWorkingCopy(formattedContent);
-
-      this._sourcesView.showSourceLocation(uiSourceCode, start[0], start[1]);
+  _formattingComplete(uiSourceCode, formattedContent, formatterMapping) {
+    if (uiSourceCode.workingCopy() === formattedContent) {
+      return;
     }
+    const sourceFrame = this._sourcesView.viewForFile(uiSourceCode);
+    let start = [0, 0];
+    if (sourceFrame) {
+      const selection = sourceFrame.selection();
+      start = formatterMapping.originalToFormatted(selection.startLine, selection.startColumn);
+    }
+    uiSourceCode.setWorkingCopy(formattedContent);
+
+    this._sourcesView.showSourceLocation(uiSourceCode, start[0], start[1]);
   }
 };

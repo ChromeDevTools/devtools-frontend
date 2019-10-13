@@ -67,31 +67,28 @@ export class CompilerSourceMappingContentProvider {
 
   /**
    * @override
-   * @return {!Promise<string>}
+   * @return {!Promise<!Common.DeferredContent>}
    */
   requestContent() {
-    let callback;
-    const promise = new Promise(fulfill => callback = fulfill);
-    SDK.multitargetNetworkManager.loadResource(this._sourceURL, contentLoaded.bind(this));
-    return promise;
-
-    /**
-     * @param {number} statusCode
-     * @param {!Object.<string, string>} headers
-     * @param {string} content
-     * @this {CompilerSourceMappingContentProvider}
-     */
-    function contentLoaded(statusCode, headers, content) {
-      if (statusCode >= 400) {
-        console.error(
-            'Could not load content for ' + this._sourceURL + ' : ' +
-            'HTTP status code: ' + statusCode);
-        callback(null);
-        return;
-      }
-
-      callback(content);
-    }
+    return new Promise(resolve => {
+      SDK.multitargetNetworkManager.loadResource(
+          this._sourceURL,
+          /**
+         * @param {number} statusCode
+         * @param {!Object.<string, string>} _headers (unused)
+         * @param {string} content
+         * @this {SDK.CompilerSourceMappingContentProvider}
+         */
+          (statusCode, _headers, content) => {
+            if (statusCode >= 400) {
+              const error = ls`Could not load content for ${this._sourceURL} : HTTP status code: ${statusCode}`;
+              console.error(error);
+              resolve({error, isEncoded: false});
+            } else {
+              resolve({content, isEncoded: false});
+            }
+          });
+    });
   }
 
   /**
@@ -102,7 +99,7 @@ export class CompilerSourceMappingContentProvider {
    * @return {!Promise<!Array<!Common.ContentProvider.SearchMatch>>}
    */
   async searchInContent(query, caseSensitive, isRegex) {
-    const content = await this.requestContent();
+    const {content} = await this.requestContent();
     if (typeof content !== 'string') {
       return [];
     }

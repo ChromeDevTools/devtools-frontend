@@ -623,7 +623,8 @@ Elements.StylesSidebarPane = class extends Elements.ElementsSidebarPane {
     if (!styleSheetHeader) {
       return;
     }
-    const text = await styleSheetHeader.requestContent() || '';
+
+    const text = (await styleSheetHeader.requestContent()).content || '';
     const lines = text.split('\n');
     const range = TextUtils.TextRange.createFromLocation(lines.length - 1, lines[lines.length - 1].length);
     this._addBlankSection(this._sectionBlocks[0].sections[0], styleSheetHeader.id, range);

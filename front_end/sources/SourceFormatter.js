@@ -103,7 +103,7 @@ Sources.SourceFormatter = class {
       fulfillFormatPromise = fulfill;
     });
     this._formattedSourceCodes.set(uiSourceCode, {promise: resultPromise, formatData: null});
-    const content = await uiSourceCode.requestContent();
+    const {content} = await uiSourceCode.requestContent();
     // ------------ ASYNC ------------
     Formatter.Formatter.format(
         uiSourceCode.contentType(), uiSourceCode.mimeType(), content || '', formatDone.bind(this));

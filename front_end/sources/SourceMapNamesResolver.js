@@ -40,14 +40,15 @@ Sources.SourceMapNamesResolver._scopeIdentifiers = function(scope) {
   return script.requestContent().then(onContent);
 
   /**
-   * @param {?string} content
+   * @param {!Common.DeferredContent} deferredContent
    * @return {!Promise<!Array<!Sources.SourceMapNamesResolver.Identifier>>}
    */
-  function onContent(content) {
-    if (!content) {
+  function onContent(deferredContent) {
+    if (!deferredContent.content) {
       return Promise.resolve(/** @type {!Array<!Sources.SourceMapNamesResolver.Identifier>}*/ ([]));
     }
 
+    const content = deferredContent.content;
     const text = new TextUtils.Text(content);
     const scopeRange = new TextUtils.TextRange(
         startLocation.lineNumber, startLocation.columnNumber, endLocation.lineNumber, endLocation.columnNumber);
@@ -167,7 +168,10 @@ Sources.SourceMapNamesResolver._resolveScope = function(scope) {
       return Promise.resolve(/** @type {?string} */ (null));
     }
 
-    return uiSourceCode.requestContent().then(onSourceContent.bind(null, sourceTextRange));
+    return uiSourceCode.requestContent().then(deferredContent => {
+      const content = deferredContent.content;
+      return onSourceContent(sourceTextRange, content);
+    });
   }
 
   /**
@@ -290,10 +294,11 @@ Sources.SourceMapNamesResolver._resolveExpression = function(
   return script.requestContent().then(onContent);
 
   /**
-   * @param {?string} content
+   * @param {!Common.DeferredContent} deferredContent
    * @return {!Promise<string>}
    */
-  function onContent(content) {
+  function onContent(deferredContent) {
+    const content = deferredContent.content;
     if (!content) {
       return Promise.resolve('');
     }

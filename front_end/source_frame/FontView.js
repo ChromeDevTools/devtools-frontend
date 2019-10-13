@@ -55,9 +55,10 @@ SourceFrame.FontView = class extends UI.SimpleView {
 
   /**
    * @param {string} uniqueFontName
-   * @param {?string} content
+   * @param {!Common.DeferredContent} deferredContent
    */
-  _onFontContentLoaded(uniqueFontName, content) {
+  _onFontContentLoaded(uniqueFontName, deferredContent) {
+    const {content} = deferredContent;
     const url = content ? Common.ContentProvider.contentAsDataURL(content, this._mimeType, true) : this._url;
     this.fontStyleElement.textContent =
         String.sprintf('@font-face { font-family: "%s"; src: url(%s); }', uniqueFontName, url);
@@ -71,7 +72,9 @@ SourceFrame.FontView = class extends UI.SimpleView {
     const uniqueFontName = 'WebInspectorFontPreview' + (++SourceFrame.FontView._fontId);
 
     this.fontStyleElement = createElement('style');
-    this._contentProvider.requestContent().then(this._onFontContentLoaded.bind(this, uniqueFontName));
+    this._contentProvider.requestContent().then(deferredContent => {
+      this._onFontContentLoaded(uniqueFontName, deferredContent);
+    });
     this.element.appendChild(this.fontStyleElement);
 
     const fontPreview = createElement('div');

@@ -138,25 +138,31 @@ export default class Script {
 
   /**
    * @override
-   * @return {!Promise<string>}
+   * @return {!Promise<!Common.DeferredContent>}
    */
   async requestContent() {
     if (this._source) {
-      return this._source;
+      return {content: this._source, isEncoded: false};
     }
     if (!this.scriptId) {
-      return '';
+      return {error: ls`Script removed or deleted.`, isEncoded: false};
     }
-    const source = await this.debuggerModel.target().debuggerAgent().getScriptSource(this.scriptId);
-    if (source && this.hasSourceURL) {
-      this._source = Script._trimSourceURLComment(source);
-    } else {
-      this._source = source || '';
+
+    try {
+      const source = await this.debuggerModel.target().debuggerAgent().getScriptSource(this.scriptId);
+      if (source && this.hasSourceURL) {
+        this._source = SDK.Script._trimSourceURLComment(source);
+      } else {
+        this._source = source || '';
+      }
+
+      if (this._originalSource === null) {
+        this._originalSource = this._source;
+      }
+      return {content: this._source, isEncoded: false};
+    } catch (err) {
+      return {error: ls`Unable to fetch script source.`, isEncoded: false};
     }
-    if (this._originalSource === null) {
-      this._originalSource = this._source;
-    }
-    return this._source;
   }
 
   /**
@@ -164,7 +170,12 @@ export default class Script {
    */
   originalContentProvider() {
     if (!this._originalContentProvider) {
-      const lazyContent = () => this.requestContent().then(() => this._originalSource);
+      const lazyContent = () => this.requestContent().then(() => {
+        return {
+          content: this._originalSource,
+          isEncoded: false,
+        };
+      });
       this._originalContentProvider =
           new Common.StaticContentProvider(this.contentURL(), this.contentType(), lazyContent);
     }

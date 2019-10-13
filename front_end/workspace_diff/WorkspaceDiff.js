@@ -167,8 +167,11 @@ WorkspaceDiff.WorkspaceDiff = class extends Common.Object {
       return;
     }
 
-    const contentsPromise =
-        Promise.all([this.requestOriginalContentForUISourceCode(uiSourceCode), uiSourceCode.requestContent()]);
+    const contentsPromise = Promise.all([
+      this.requestOriginalContentForUISourceCode(uiSourceCode),
+      uiSourceCode.requestContent().then(deferredContent => deferredContent.content)
+    ]);
+
     this._loadingUISourceCodes.set(uiSourceCode, contentsPromise);
     const contents = await contentsPromise;
     if (this._loadingUISourceCodes.get(uiSourceCode) !== contentsPromise) {
@@ -262,17 +265,15 @@ WorkspaceDiff.WorkspaceDiff.UISourceCodeDiff = class extends Common.Object {
   /**
    * @return {!Promise<?string>}
    */
-  _originalContent() {
+  async _originalContent() {
     const originalNetworkContent =
         Persistence.networkPersistenceManager.originalContentForUISourceCode(this._uiSourceCode);
     if (originalNetworkContent) {
       return originalNetworkContent;
     }
 
-    let callback;
-    const promise = new Promise(fulfill => callback = fulfill);
-    this._uiSourceCode.project().requestFileContent(this._uiSourceCode, callback);
-    return promise;
+    const content = await this._uiSourceCode.project().requestFileContent(this._uiSourceCode);
+    return content.content || content.error || '';
   }
 
   /**
@@ -294,12 +295,12 @@ WorkspaceDiff.WorkspaceDiff.UISourceCodeDiff = class extends Common.Object {
 
     let current = this._uiSourceCode.workingCopy();
     if (!current && !this._uiSourceCode.contentLoaded()) {
-      current = await this._uiSourceCode.requestContent();
+      current = (await this._uiSourceCode.requestContent()).content;
     }
+
     if (current.length > 1024 * 1024) {
       return null;
     }
-    // ------------ ASYNC ------------
 
     if (this._dispose) {
       return null;

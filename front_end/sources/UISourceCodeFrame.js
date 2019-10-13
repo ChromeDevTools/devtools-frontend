@@ -75,11 +75,11 @@ Sources.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
     this._initializeUISourceCode();
 
     /**
-     * @return {!Promise<string>}
+     * @return {!Promise<!Common.DeferredContent>}
      */
     function workingCopy() {
       if (uiSourceCode.isDirty()) {
-        return Promise.resolve(uiSourceCode.workingCopy());
+        return Promise.resolve({content: uiSourceCode.workingCopy(), isEncoded: false});
       }
       return uiSourceCode.requestContent();
     }
@@ -219,6 +219,9 @@ Sources.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
    * @return {boolean}
    */
   _canEditSource() {
+    if (this.hasLoadError()) {
+      return false;
+    }
     if (Persistence.persistence.binding(this._uiSourceCode)) {
       return true;
     }
@@ -256,11 +259,12 @@ Sources.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
   /**
    * @override
    * @param {?string} content
+   * @param {?string} loadError
    */
-  setContent(content) {
+  setContent(content, loadError) {
     this._disposePlugins();
     this._rowMessageBuckets.clear();
-    super.setContent(content);
+    super.setContent(content, loadError);
     for (const message of this._allMessages()) {
       this._addMessageToSource(message);
     }
@@ -396,7 +400,7 @@ Sources.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
       this._diff.highlightModifiedLines(oldContent, content);
     }
     if (oldContent !== content) {
-      this.setContent(content);
+      this.setContent(content, null);
     }
     this._isSettingContent = false;
   }

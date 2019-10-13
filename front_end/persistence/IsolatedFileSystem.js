@@ -338,46 +338,51 @@ export default class IsolatedFileSystem extends Persistence.PlatformFileSystem {
   /**
    * @override
    * @param {string} path
-   * @param {function(?string,boolean)} callback
+   * @returns {!Promise<!Common.DeferredContent>}
    */
-  requestFileContent(path, callback) {
-    const innerRequestFileContent = async () => {
-      const blob = await this.requestFileBlob(path);
-      if (!blob) {
-        callback(null, false);
-        return;
-      }
+  requestFileContent(path) {
+    return this._serializedFileOperation(path, () => this._innerRequestFileContent(path));
+  }
 
-      const reader = new FileReader();
-      const extension = Common.ParsedURL.extractExtension(path);
-      const encoded = BinaryExtensions.has(extension);
-      const readPromise = new Promise(x => reader.onloadend = x);
-      if (encoded) {
-        reader.readAsBinaryString(blob);
-      } else {
-        reader.readAsText(blob);
-      }
-      await readPromise;
-      if (reader.error) {
-        console.error('Can\'t read file: ' + path + ': ' + reader.error);
-        callback(null, false);
-        return;
-      }
-      let result;
-      try {
-        result = /** @type {string} */ (reader.result);
-      } catch (e) {
-        result = null;
-        console.error('Can\'t read file: ' + path + ': ' + e);
-      }
-      if (result === undefined || result === null) {
-        callback(null, false);
-        return;
-      }
-      callback(encoded ? btoa(result) : result, encoded);
-    };
+  /**
+   * @param {string} path
+   * @return {!Promise<!Common.DeferredContent>}
+   */
+  async _innerRequestFileContent(path) {
+    const blob = await this.requestFileBlob(path);
+    if (!blob) {
+      return {error: ls`Blob could not be loaded.`, isEncoded: false};
+    }
 
-    this._serializedFileOperation(path, innerRequestFileContent);
+    const reader = new FileReader();
+    const extension = Common.ParsedURL.extractExtension(path);
+    const encoded = Persistence.IsolatedFileSystem.BinaryExtensions.has(extension);
+    const readPromise = new Promise(x => reader.onloadend = x);
+    if (encoded) {
+      reader.readAsBinaryString(blob);
+    } else {
+      reader.readAsText(blob);
+    }
+    await readPromise;
+    if (reader.error) {
+      const error = ls`Can't read file: ${path}: ${reader.error}`;
+      console.error(error);
+      return {isEncoded: false, error};
+    }
+    let result = null;
+    let error = null;
+    try {
+      result = /** @type {string} */ (reader.result);
+    } catch (e) {
+      result = null;
+      error = ls`Can't read file: ${path}: ${e.message}`;
+    }
+    if (result === undefined || result === null) {
+      error = error || ls`Unknown error reading file: ${path}`;
+      console.error(error);
+      return {isEncoded: false, error};
+    }
+    return {isEncoded: encoded, content: encoded ? btoa(result) : result};
   }
 
   /**

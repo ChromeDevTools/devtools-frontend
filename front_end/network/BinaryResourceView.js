@@ -78,7 +78,7 @@ Network.BinaryResourceView = class extends UI.VBox {
 
   async _copySelectedViewToClipboard() {
     const viewObject = this._getCurrentViewObject();
-    Host.InspectorFrontendHost.copyText(await viewObject.content());
+    Host.InspectorFrontendHost.copyText((await viewObject.content()).content);
     this._copiedText.setText(viewObject.copiedMessage);
     this._copiedText.element.classList.remove('fadeout');
     /**
@@ -143,14 +143,18 @@ Network.BinaryResourceView = class extends UI.VBox {
     const copyMenu = contextMenu.clipboardSection().appendSubMenuItem(submenuItemText);
     const footerSection = copyMenu.footerSection();
 
-    footerSection.appendItem(
-        ls`Copy as Base64`,
-        async () => Host.InspectorFrontendHost.copyText(await this._binaryResourceViewFactory.base64()));
-    footerSection.appendItem(
-        ls`Copy as Hex`, async () => Host.InspectorFrontendHost.copyText(await this._binaryResourceViewFactory.hex()));
-    footerSection.appendItem(
-        ls`Copy as UTF-8`,
-        async () => Host.InspectorFrontendHost.copyText(await this._binaryResourceViewFactory.utf8()));
+    footerSection.appendItem(ls`Copy as Base64`, async () => {
+      const content = await this._binaryResourceViewFactory.base64();
+      Host.InspectorFrontendHost.copyText(content.content);
+    });
+    footerSection.appendItem(ls`Copy as Hex`, async () => {
+      const content = await this._binaryResourceViewFactory.hex();
+      Host.InspectorFrontendHost.copyText(content.content);
+    });
+    footerSection.appendItem(ls`Copy as UTF-8`, async () => {
+      const content = await this._binaryResourceViewFactory.utf8();
+      Host.InspectorFrontendHost.copyText(content.content);
+    });
   }
 };
 
@@ -160,13 +164,13 @@ Network.BinaryResourceView.BinaryViewObject = class {
    * @param {string} label
    * @param {string} copiedMessage
    * @param {function():!UI.Widget} createViewFn
-   * @param {function():Promise<string>} content
+   * @param {function():Promise<!Common.DeferredContent>} deferredContent
    */
-  constructor(type, label, copiedMessage, createViewFn, content) {
+  constructor(type, label, copiedMessage, createViewFn, deferredContent) {
     this.type = type;
     this.label = label;
     this.copiedMessage = copiedMessage;
-    this.content = content;
+    this.content = deferredContent;
     this._createViewFn = createViewFn;
 
     /** @type {?UI.Widget} */

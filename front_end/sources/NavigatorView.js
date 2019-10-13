@@ -870,7 +870,7 @@ Sources.NavigatorView = class extends UI.VBox {
   async create(project, path, uiSourceCodeToCopy) {
     let content = '';
     if (uiSourceCodeToCopy) {
-      content = (await uiSourceCodeToCopy.requestContent()) || '';
+      content = (await uiSourceCodeToCopy.requestContent()).content || '';
     }
     const uiSourceCode = await project.createFile(path, null, content);
     if (!uiSourceCode) {

@@ -305,11 +305,11 @@ export class FileSystem extends Workspace.ProjectStore {
   /**
    * @override
    * @param {!Workspace.UISourceCode} uiSourceCode
-   * @param {function(?string,boolean)} callback
+   * @returns {!Promise<!Common.DeferredContent>}
    */
-  requestFileContent(uiSourceCode, callback) {
+  requestFileContent(uiSourceCode) {
     const filePath = this._filePathForUISourceCode(uiSourceCode);
-    this._fileSystem.requestFileContent(filePath, callback);
+    return this._fileSystem.requestFileContent(filePath);
   }
 
   /**
@@ -396,18 +396,13 @@ export class FileSystem extends Workspace.ProjectStore {
    * @param {boolean} isRegex
    * @return {!Promise<!Array<!Common.ContentProvider.SearchMatch>>}
    */
-  searchInFileContent(uiSourceCode, query, caseSensitive, isRegex) {
-    return new Promise(resolve => {
-      const filePath = this._filePathForUISourceCode(uiSourceCode);
-      this._fileSystem.requestFileContent(filePath, contentCallback);
-
-      /**
-       * @param {?string} content
-       */
-      function contentCallback(content) {
-        resolve(content ? Common.ContentProvider.performSearchInContent(content, query, caseSensitive, isRegex) : []);
-      }
-    });
+  async searchInFileContent(uiSourceCode, query, caseSensitive, isRegex) {
+    const filePath = this._filePathForUISourceCode(uiSourceCode);
+    const {content} = await this._fileSystem.requestFileContent(filePath);
+    if (content) {
+      return Common.ContentProvider.performSearchInContent(content, query, caseSensitive, isRegex);
+    }
+    return [];
   }
 
   /**

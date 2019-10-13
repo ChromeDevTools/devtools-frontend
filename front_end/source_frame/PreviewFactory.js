@@ -21,11 +21,14 @@ SourceFrame.PreviewFactory = class {
         return new SourceFrame.FontView(mimeType, provider);
     }
 
-    let content = await provider.requestContent();
-    if (!content) {
+    const deferredContent = await provider.requestContent();
+    if (deferredContent.error) {
+      return new UI.EmptyWidget(deferredContent.error);
+    } else if (!deferredContent.content) {
       return new UI.EmptyWidget(Common.UIString('Nothing to preview'));
     }
 
+    let content = deferredContent.content;
     if (await provider.contentEncoded()) {
       content = window.atob(content);
     }

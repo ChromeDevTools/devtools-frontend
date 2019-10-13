@@ -242,7 +242,9 @@ Sources.SourcesSearchScope = class {
       if (uiSourceCode.isDirty()) {
         contentLoaded.call(this, uiSourceCode, uiSourceCode.workingCopy());
       } else {
-        uiSourceCode.requestContent().then(contentLoaded.bind(this, uiSourceCode));
+        uiSourceCode.requestContent().then(deferredContent => {
+          contentLoaded.call(this, uiSourceCode, deferredContent.content || '');
+        });
       }
     }
 
@@ -266,7 +268,7 @@ Sources.SourcesSearchScope = class {
 
     /**
      * @param {!Workspace.UISourceCode} uiSourceCode
-     * @param {?string} content
+     * @param {string} content
      * @this {Sources.SourcesSearchScope}
      */
     function contentLoaded(uiSourceCode, content) {

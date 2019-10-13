@@ -234,13 +234,9 @@ export default class Automapping {
         return null;
       }
 
-      const contents = await Promise.all([
-        status.fileSystem.requestContent(),
-        new Promise(x => status.network.project().requestFileContent(status.network, x))
-      ]);
-      const fileSystemContent = contents[0];
-      const networkContent = contents[1];
-      if (fileSystemContent === null || networkContent === null) {
+      const [fileSystemContent, networkContent] = await Promise.all(
+          [status.fileSystem.requestContent(), status.network.project().requestFileContent(status.network)]);
+      if (fileSystemContent.content === null || networkContent === null) {
         return null;
       }
 
@@ -250,13 +246,14 @@ export default class Automapping {
 
       const target = Bindings.NetworkProject.targetForUISourceCode(status.network);
       let isValid = false;
+      const fileContent = fileSystemContent.content;
       if (target && target.type() === SDK.Target.Type.Node) {
         const rewrappedNetworkContent =
-            Persistence.Persistence.rewrapNodeJSContent(status.fileSystem, fileSystemContent, networkContent);
-        isValid = fileSystemContent === rewrappedNetworkContent;
+            Persistence.Persistence.rewrapNodeJSContent(status.fileSystem, fileContent, networkContent.content);
+        isValid = fileContent === rewrappedNetworkContent;
       } else {
         // Trim trailing whitespaces because V8 adds trailing newline.
-        isValid = fileSystemContent.trimRight() === networkContent.trimRight();
+        isValid = fileContent.trimRight() === networkContent.content.trimRight();
       }
       if (!isValid) {
         this._prevalidationFailedForTest(status);

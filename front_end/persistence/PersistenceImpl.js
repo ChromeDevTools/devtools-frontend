@@ -223,7 +223,7 @@ export default class PersistenceImpl extends Common.Object {
     const target = Bindings.NetworkProject.targetForUISourceCode(binding.network);
     if (target.type() === SDK.Target.Type.Node) {
       other.requestContent().then(currentContent => {
-        const nodeJSContent = PersistenceImpl.rewrapNodeJSContent(other, currentContent, newContent);
+        const nodeJSContent = PersistenceImpl.rewrapNodeJSContent(other, currentContent.content, newContent);
         setContent.call(this, nodeJSContent);
       });
       return;

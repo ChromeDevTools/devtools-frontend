@@ -497,7 +497,7 @@ export default class ExtensionServer extends Common.Object {
    * @param {!MessagePort} port
    */
   async _getResourceContent(contentProvider, message, port) {
-    const content = await contentProvider.requestContent();
+    const {content} = await contentProvider.requestContent();
     const encoded = await contentProvider.contentEncoded();
     this._dispatchCallback(message.requestId, port, {encoding: encoded ? 'base64' : '', content: content});
   }

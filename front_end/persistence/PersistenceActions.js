@@ -19,7 +19,7 @@ export class ContextMenuProvider {
       if (contentProvider instanceof Workspace.UISourceCode) {
         /** @type {!Workspace.UISourceCode} */ (contentProvider).commitWorkingCopy();
       }
-      let content = await contentProvider.requestContent();
+      let content = (await contentProvider.requestContent()).content || '';
       if (await contentProvider.contentEncoded()) {
         content = window.atob(content);
       }

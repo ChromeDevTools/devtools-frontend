@@ -272,8 +272,8 @@ export class StyleFile {
     if (fromProvider === this._uiSourceCode) {
       newContent = this._uiSourceCode.workingCopy();
     } else {
-      // ------ ASYNC ------
-      newContent = await fromProvider.requestContent();
+      const deferredContent = await fromProvider.requestContent();
+      newContent = deferredContent.content;
     }
 
     if (newContent === null || this._terminated) {
@@ -339,7 +339,7 @@ export class StyleFile {
 
   /**
    * @override
-   * @return {!Promise<string>}
+   * @return {!Promise<!Common.DeferredContent>}
    */
   requestContent() {
     return this._headers.firstValue().originalContentProvider().requestContent();

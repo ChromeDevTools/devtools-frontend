@@ -413,17 +413,11 @@ export class ResourceScriptFile extends Common.Object {
       this._mappingCheckedForTest();
       return;
     }
-    this._script.requestContent().then(callback.bind(this));
-
-    /**
-     * @param {?string} source
-     * @this {ResourceScriptFile}
-     */
-    function callback(source) {
-      this._scriptSource = source;
+    this._script.requestContent().then(deferredContent => {
+      this._scriptSource = deferredContent.content;
       this._update();
       this._mappingCheckedForTest();
-    }
+    });
   }
 
   _mappingCheckedForTest() {

@@ -36,9 +36,15 @@ export default class CSSStyleSheetHeader {
    */
   originalContentProvider() {
     if (!this._originalContentProvider) {
-      const lazyContent = this._cssModel.originalStyleSheetText.bind(this._cssModel, this);
-      this._originalContentProvider = new Common.StaticContentProvider(
-          this.contentURL(), this.contentType(), /** @type {function():!Promise<string>} */ (lazyContent));
+      const lazyContent = /** @type {function():!Promise<!Common.DeferredContent>} */ (async () => {
+        const originalText = await this._cssModel.originalStyleSheetText(this);
+        if (!originalText) {
+          return {error: ls`Could not find the original style sheet.`, isEncoded: false};
+        }
+        return {content: originalText, isEncoded: false};
+      });
+      this._originalContentProvider =
+          new Common.StaticContentProvider(this.contentURL(), this.contentType(), lazyContent);
     }
     return this._originalContentProvider;
   }
@@ -143,10 +149,18 @@ export default class CSSStyleSheetHeader {
 
   /**
    * @override
-   * @return {!Promise<string>}
+   * @return {!Promise<!Common.DeferredContent>}
    */
-  requestContent() {
-    return /** @type {!Promise<string>} */ (this._cssModel.getStyleSheetText(this.id));
+  async requestContent() {
+    try {
+      const cssText = await this._cssModel.getStyleSheetText(this.id);
+      return {content: /** @type{string} */ (cssText), isEncoded: false};
+    } catch (err) {
+      return {
+        error: ls`There was an error retrieving the source styles.`,
+        isEncoded: false,
+      };
+    }
   }
 
   /**
@@ -157,8 +171,8 @@ export default class CSSStyleSheetHeader {
    * @return {!Promise<!Array<!Common.ContentProvider.SearchMatch>>}
    */
   async searchInContent(query, caseSensitive, isRegex) {
-    const content = await this.requestContent();
-    return Common.ContentProvider.performSearchInContent(content, query, caseSensitive, isRegex);
+    const {content} = await this.requestContent();
+    return Common.ContentProvider.performSearchInContent(content || '', query, caseSensitive, isRegex);
   }
 
   /**

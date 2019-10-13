@@ -94,7 +94,7 @@ SourceFrame.ImageView = class extends UI.SimpleView {
   }
 
   async _updateContentIfNeeded() {
-    const content = await this._contentProvider.requestContent();
+    const {content} = await this._contentProvider.requestContent();
     if (this._cachedContent === content) {
       return;
     }

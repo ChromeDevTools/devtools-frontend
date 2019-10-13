@@ -1061,7 +1061,7 @@ ColorPicker.Spectrum.PaletteGenerator = class {
    * @return {!Promise}
    */
   async _processStylesheet(stylesheet) {
-    let text = await stylesheet.requestContent() || '';
+    let text = (await stylesheet.requestContent()).content || '';
     text = text.toLowerCase();
     const regexResult = text.match(/((?:rgb|hsl)a?\([^)]+\)|#[0-9a-f]{6}|#[0-9a-f]{3})/g) || [];
     for (const c of regexResult) {

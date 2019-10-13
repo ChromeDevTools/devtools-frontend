@@ -655,7 +655,7 @@ SourcesTestRunner.createScriptMock = function(
 
   script.requestContent = function() {
     const trimmedSource = SDK.Script._trimSourceURLComment(source);
-    return Promise.resolve(trimmedSource);
+    return Promise.resolve({content: trimmedSource, isEncoded: false});
   };
 
   if (preRegisterCallback) {

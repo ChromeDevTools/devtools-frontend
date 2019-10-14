@@ -4,7 +4,7 @@
 
 const { assert } = chai;
 
-import { default as ObjectWrapper } from '../../../front_end/common/Object.js';
+import { default as ObjectWrapper } from '../../../../front_end/common/Object.js';
 
 describe('ObjectWrapper', () => {
   let obj: ObjectWrapper;

@@ -4,7 +4,7 @@
 
 const { assert } = chai;
 
-import { default as SegmentedRange, Segment } from '../../../front_end/common/SegmentedRange.js';
+import { default as SegmentedRange, Segment } from '../../../../front_end/common/SegmentedRange.js';
 
 describe('Segment', () => {
   it('calculates intersections', () => {

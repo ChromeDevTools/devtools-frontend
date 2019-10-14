@@ -17,14 +17,14 @@ module.exports = function(config) {
       included: false,
       served: true
     },{
-      pattern: 'tests/**/*.ts',
+      pattern: 'test/unittests/**/*.ts',
       type: 'module'
     }],
 
     reporters: ['dots', 'coverage-istanbul'],
 
     preprocessors: {
-      './tests/**/*.ts': ['karma-typescript'],
+      './test/unittests/**/*.ts': ['karma-typescript'],
       './front_end/common/*.js': ['karma-coverage-istanbul-instrumenter']
     },
 

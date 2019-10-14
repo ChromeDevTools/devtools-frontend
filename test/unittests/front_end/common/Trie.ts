@@ -4,7 +4,7 @@
 
 const { assert } = chai;
 
-import { default as Trie } from '../../../front_end/common/Trie.js';
+import { default as Trie } from '../../../../front_end/common/Trie.js';
 
 describe('Trie', () => {
   let trie: Trie;

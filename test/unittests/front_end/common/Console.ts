@@ -4,7 +4,7 @@
 
 const { assert } = chai;
 
-import { default as Console, Events, MessageLevel } from '../../../front_end/common/Console.js';
+import { default as Console, Events, MessageLevel } from '../../../../front_end/common/Console.js';
 
 describe('Console', () => {
   let consoleImpl: Console;

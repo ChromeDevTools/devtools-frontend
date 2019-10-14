@@ -4,7 +4,7 @@
 
 const { assert } = chai;
 
-import { default as Color } from '../../../front_end/common/Color.js';
+import { default as Color } from '../../../../front_end/common/Color.js';
 
 describe('Color', () => {
   describe('parse', () => {

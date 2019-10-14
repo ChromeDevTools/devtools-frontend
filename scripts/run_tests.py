@@ -11,14 +11,14 @@ import sys
 
 import devtools_paths
 
-is_cygwin = sys.platform == "cygwin"
+is_cygwin = sys.platform == 'cygwin'
 chrome_binary = None
 
 if len(sys.argv) >= 2:
-    chrome_binary = re.sub(r"^\-\-chrome-binary=(.*)", "\\1", sys.argv[1])
+    chrome_binary = re.sub(r'^\-\-chrome-binary=(.*)', '\\1', sys.argv[1])
     is_executable = os.path.exists(chrome_binary) and os.path.isfile(chrome_binary) and os.access(chrome_binary, os.X_OK)
     if not is_executable:
-        print("Unable to find a Chrome binary at \"%s\"" % chrome_binary)
+        print('Unable to find a Chrome binary at \'%s\'' % chrome_binary)
         sys.exit(1)
 
 
@@ -29,26 +29,26 @@ def popen(arguments, cwd=None, env=None):
 def to_platform_path_exact(filepath):
     if not is_cygwin:
         return filepath
-    output, _ = popen(["cygpath", "-w", filepath]).communicate()
+    output, _ = popen(['cygpath', '-w', filepath]).communicate()
     # pylint: disable=E1103
-    return output.strip().replace("\\", "\\\\")
+    return output.strip().replace('\\', '\\\\')
 
 
 scripts_path = os.path.dirname(os.path.abspath(__file__))
 devtools_path = os.path.dirname(scripts_path)
 
-print("Running tests with Karma...")
+print('Running tests with Karma...')
 if (chrome_binary is not None):
-    print("Using custom Chrome Binary (%s)\n" % chrome_binary)
+    print('Using custom Chrome Binary (%s)\n' % chrome_binary)
 else:
-    print("Using system Chrome")
+    print('Using system Chrome')
 
 
 def run_tests():
     karma_errors_found = False
 
-    karmaconfig_path = os.path.join(devtools_path, "karma.conf.js")
-    exec_command = [devtools_paths.node_path(), devtools_paths.karma_path(), "start", to_platform_path_exact(karmaconfig_path)]
+    karmaconfig_path = os.path.join(devtools_path, 'karma.conf.js')
+    exec_command = [devtools_paths.node_path(), devtools_paths.karma_path(), 'start', to_platform_path_exact(karmaconfig_path)]
 
     env = {'NODE_PATH': devtools_paths.node_modules_path()}
     if (chrome_binary is not None):
@@ -60,7 +60,7 @@ def run_tests():
     if karma_proc.returncode != 0:
         karma_errors_found = True
     else:
-        print("Karma exited successfully")
+        print('Karma exited successfully')
 
     print(karma_proc_out)
     return karma_errors_found
@@ -69,5 +69,5 @@ def run_tests():
 errors_found = run_tests()
 
 if errors_found:
-    print("ERRORS DETECTED")
+    print('ERRORS DETECTED')
     sys.exit(1)

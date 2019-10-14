@@ -4,8 +4,8 @@
 
 const {assert} = chai;
 
-import {default as TextDictionary} from '../../../front_end/common/TextDictionary.js';
-import {default as Trie} from '../../../front_end/common/Trie.js';
+import {default as TextDictionary} from '../../../../front_end/common/TextDictionary.js';
+import {default as Trie} from '../../../../front_end/common/Trie.js';
 
 describe('Text Dictionary', () => {
   it('can be created with its basic attributes', () => {

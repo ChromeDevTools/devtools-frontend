@@ -119,7 +119,8 @@ export default class CompilerScriptMapping {
     if (!sourceMap) {
       return true;
     }
-    return !!sourceMap.findEntry(rawLocation.lineNumber, rawLocation.columnNumber);
+    const entry = sourceMap.findEntry(rawLocation.lineNumber, rawLocation.columnNumber);
+    return !!entry && entry.lineNumber === rawLocation.lineNumber && entry.columnNumber === rawLocation.columnNumber;
   }
 
   /**

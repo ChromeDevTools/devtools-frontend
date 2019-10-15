@@ -21,8 +21,8 @@
   <message name="IDS_DEVTOOLS_ab7799fb0ebb5a4167781f756efb820a" desc="Text in Audio Context Content Builder">
     Callback Interval
   </message>
-  <message name="IDS_DEVTOOLS_b78dc7712ef83a078c1c68822d2a1a3f" desc="Text in Web Audio View">
-    BaseAudioContexts
+  <message name="IDS_DEVTOOLS_d1adc6d57af38b75e7b7c3bb0b9a44ee" desc="Label prefix for an audio context selection">
+    Audio context: <ph name="THIS__PLACEHOLDERTEXT">$1s<ex>realtime (1e03ec)</ex></ph>
   </message>
   <message name="IDS_DEVTOOLS_f047f03535a9154caf9a858b5aed17c0" desc="Text in Audio Context Content Builder">
     Current Time

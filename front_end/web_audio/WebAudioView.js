@@ -14,7 +14,7 @@ WebAudio.WebAudioView = class extends UI.ThrottledWidget {
     // Creates the toolbar.
     const toolbarContainer = this.contentElement.createChild(
       'div', 'web-audio-toolbar-container vbox');
-    this._contextSelector = new WebAudio.AudioContextSelector(ls`BaseAudioContexts`);
+    this._contextSelector = new WebAudio.AudioContextSelector();
     const toolbar = new UI.Toolbar('web-audio-toolbar', toolbarContainer);
     toolbar.appendToolbarItem(UI.Toolbar.createActionButtonForId('components.collect-garbage'));
     toolbar.appendSeparator();

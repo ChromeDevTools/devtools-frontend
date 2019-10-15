@@ -215,6 +215,9 @@ Profiler.CPUProfileFlameChart = class extends UI.VBox {
     this._mainPane.setTextPadding(2);
     this._mainPane.show(this.element);
     this._mainPane.addEventListener(PerfUI.FlameChart.Events.EntrySelected, this._onEntrySelected, this);
+    this._mainPane.addEventListener(PerfUI.FlameChart.Events.EntryInvoked, this._onEntryInvoked, this);
+    this._entrySelected = false;
+    this._mainPane.addEventListener(PerfUI.FlameChart.Events.CanvasFocused, this._onEntrySelected, this);
     this._overviewPane.addEventListener(PerfUI.OverviewGrid.Events.WindowChanged, this._onWindowChanged, this);
     this._dataProvider = dataProvider;
     this._searchResults = [];
@@ -248,7 +251,26 @@ Profiler.CPUProfileFlameChart = class extends UI.VBox {
    * @param {!Common.Event} event
    */
   _onEntrySelected(event) {
-    this.dispatchEventToListeners(PerfUI.FlameChart.Events.EntrySelected, event.data);
+    if (event.data) {
+      const eventIndex = Number(event.data);
+      this._mainPane.setSelectedEntry(eventIndex);
+      if (eventIndex === -1) {
+        this._entrySelected = false;
+      } else {
+        this._entrySelected = true;
+      }
+    } else if (!this._entrySelected) {
+      this._mainPane.setSelectedEntry(0);
+      this._entrySelected = true;
+    }
+  }
+
+  /**
+   * @param {!Common.Event} event
+   */
+  _onEntryInvoked(event) {
+    this._onEntrySelected(event);
+    this.dispatchEventToListeners(PerfUI.FlameChart.Events.EntryInvoked, event.data);
   }
 
   update() {

@@ -74,7 +74,9 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
     this._onMainEntrySelected = this._onEntrySelected.bind(this, this._mainDataProvider);
     this._onNetworkEntrySelected = this._onEntrySelected.bind(this, this._networkDataProvider);
     this._mainFlameChart.addEventListener(PerfUI.FlameChart.Events.EntrySelected, this._onMainEntrySelected, this);
+    this._mainFlameChart.addEventListener(PerfUI.FlameChart.Events.EntryInvoked, this._onMainEntrySelected, this);
     this._networkFlameChart.addEventListener(PerfUI.FlameChart.Events.EntrySelected, this._onNetworkEntrySelected, this);
+    this._networkFlameChart.addEventListener(PerfUI.FlameChart.Events.EntryInvoked, this._onNetworkEntrySelected, this);
     this._mainFlameChart.addEventListener(PerfUI.FlameChart.Events.EntryHighlighted, this._onEntryHighlighted, this);
     this._nextExtensionIndex = 0;
 

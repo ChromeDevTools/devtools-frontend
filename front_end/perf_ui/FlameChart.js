@@ -100,6 +100,13 @@ PerfUI.FlameChart = class extends UI.VBox {
     this._markerHighlighElement = this._viewportElement.createChild('div', 'flame-chart-marker-highlight-element');
     this._highlightElement = this._viewportElement.createChild('div', 'flame-chart-highlight-element');
     this._selectedElement = this._viewportElement.createChild('div', 'flame-chart-selected-element');
+    this._canvas.addEventListener('focus', () => {
+      this._selectedElement.classList.remove('flame-chart-unfocused-selected-element');
+      this.dispatchEventToListeners(PerfUI.FlameChart.Events.CanvasFocused);
+    }, false);
+    this._canvas.addEventListener('blur', () => {
+      this._selectedElement.classList.add('flame-chart-unfocused-selected-element');
+    }, false);
 
     UI.installDragHandle(
         this._viewportElement, this._startDragging.bind(this), this._dragging.bind(this), this._endDragging.bind(this),
@@ -447,7 +454,7 @@ PerfUI.FlameChart = class extends UI.VBox {
       this._chartViewport.setRangeSelection(start, end);
     } else {
       this._chartViewport.onClick(event);
-      this.dispatchEventToListeners(PerfUI.FlameChart.Events.EntrySelected, this._highlightedEntryIndex);
+      this.dispatchEventToListeners(PerfUI.FlameChart.Events.EntryInvoked, this._highlightedEntryIndex);
     }
   }
 
@@ -768,6 +775,11 @@ PerfUI.FlameChart = class extends UI.VBox {
       }
       e.consume(true);
       this.dispatchEventToListeners(PerfUI.FlameChart.Events.EntrySelected, levelIndexes[indexOnLevel]);
+      return true;
+    }
+    if (isEnterKey(e)) {
+      e.consume(true);
+      this.dispatchEventToListeners(PerfUI.FlameChart.Events.EntryInvoked, this._selectedEntryIndex);
       return true;
     }
     return false;
@@ -2244,6 +2256,8 @@ PerfUI.FlameChartMarker.prototype = {
 
 /** @enum {symbol} */
 PerfUI.FlameChart.Events = {
+  CanvasFocused: Symbol('CanvasFocused'),
+  EntryInvoked: Symbol('EntryInvoked'),
   EntrySelected: Symbol('EntrySelected'),
   EntryHighlighted: Symbol('EntryHighlighted')
 };

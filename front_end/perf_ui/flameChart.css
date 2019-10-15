@@ -36,6 +36,10 @@
     background-color: rgba(56, 121, 217, 0.1);
 }
 
+.flame-chart-unfocused-selected-element {
+    outline: 2px solid rgba(123, 123, 123, 1);
+}
+
 .chart-cursor-element {
     position: absolute;
     top: 0;

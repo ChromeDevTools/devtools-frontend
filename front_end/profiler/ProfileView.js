@@ -298,13 +298,13 @@ Profiler.ProfileView = class extends UI.SimpleView {
     }
     this._dataProvider = this.createFlameChartDataProvider();
     this._flameChart = new Profiler.CPUProfileFlameChart(this._searchableView, this._dataProvider);
-    this._flameChart.addEventListener(PerfUI.FlameChart.Events.EntrySelected, this._onEntrySelected.bind(this));
+    this._flameChart.addEventListener(PerfUI.FlameChart.Events.EntryInvoked, this._onEntryInvoked.bind(this));
   }
 
   /**
    * @param {!Common.Event} event
    */
-  _onEntrySelected(event) {
+  _onEntryInvoked(event) {
     const entryIndex = event.data;
     const node = this._dataProvider._entryNodes[entryIndex];
     const debuggerModel = this._profileHeader._debuggerModel;

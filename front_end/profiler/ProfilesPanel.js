@@ -374,7 +374,6 @@ Profiler.ProfilesPanel = class extends UI.PanelWithSidebar {
     this.closeVisibleView();
 
     view.show(this.profileViews);
-    view.focus();
     this._toolbarElement.classList.remove('hidden');
     this.visibleView = view;
 

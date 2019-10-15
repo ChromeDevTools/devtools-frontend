@@ -19,6 +19,7 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
 
     this.contentElement.classList.add('filtered-list-widget');
     this.contentElement.addEventListener('keydown', this._onKeyDown.bind(this), true);
+    UI.ARIAUtils.markAsCombobox(this.contentElement);
     this.registerRequiredCSS('quick_open/filteredListWidget.css');
 
     this._promptElement = this.contentElement.createChild('div', 'filtered-list-widget-input');
@@ -43,6 +44,9 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
     this._itemElementsContainer.classList.add('container');
     this._bottomElementsContainer.appendChild(this._itemElementsContainer);
     this._itemElementsContainer.addEventListener('click', this._onClick.bind(this), false);
+    UI.ARIAUtils.markAsListBox(this._itemElementsContainer);
+    UI.ARIAUtils.setControls(this._promptElement, this._itemElementsContainer);
+    UI.ARIAUtils.setAutocomplete(this._promptElement, 'list');
 
     this._notFoundElement = this._bottomElementsContainer.createChild('div', 'not-found-text');
     this._notFoundElement.classList.add('hidden');
@@ -113,6 +117,7 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
     this._dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.SetExactWidthMaxHeight);
     this._dialog.setContentPosition(null, 22);
     this.show(this._dialog.contentElement);
+    UI.ARIAUtils.setExpanded(this.contentElement, true);
     this._dialog.show();
   }
 
@@ -178,6 +183,7 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
       this._provider.detach();
     }
     this._clearTimers();
+    UI.ARIAUtils.setExpanded(this.contentElement, false);
   }
 
   _clearTimers() {
@@ -232,6 +238,7 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
     const subtitleElement = itemElement.createChild('div', 'filtered-list-widget-subtitle');
     subtitleElement.textContent = '\u200B';
     this._provider.renderItem(item, this._cleanValue(), titleElement, subtitleElement);
+    UI.ARIAUtils.markAsOption(itemElement);
     return itemElement;
   }
 
@@ -267,8 +274,8 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
     }
     if (toElement) {
       toElement.classList.add('selected');
-      UI.ARIAUtils.alert(toElement.textContent, toElement);
     }
+    UI.ARIAUtils.setActiveDescendant(this._promptElement, toElement);
   }
 
   /**

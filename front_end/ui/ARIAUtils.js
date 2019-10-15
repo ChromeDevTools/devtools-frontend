@@ -47,6 +47,13 @@ export function markAsCheckbox(element) {
 /**
  * @param {!Element} element
  */
+export function markAsCombobox(element) {
+  element.setAttribute('role', 'combobox');
+}
+
+/**
+ * @param {!Element} element
+ */
 export function markAsModalDialog(element) {
   element.setAttribute('role', 'dialog');
   element.setAttribute('aria-modal', 'true');
@@ -283,6 +290,14 @@ export function unsetExpandable(element) {
 
 /**
  * @param {!Element} element
+ * @param {string} interactionModel can be 'inline', 'list', 'both' or 'none' (default).
+ */
+export function setAutocomplete(element, interactionModel = 'none') {
+  element.setAttribute('aria-autocomplete', interactionModel);
+}
+
+/**
+ * @param {!Element} element
  * @param {boolean} value
  */
 export function setSelected(element, value) {
@@ -476,6 +491,7 @@ self.UI.ARIAUtils = {
   markAsAlert,
   markAsButton,
   markAsCheckbox,
+  markAsCombobox,
   markAsModalDialog,
   markAsGroup,
   markAsLink,
@@ -506,6 +522,7 @@ self.UI.ARIAUtils = {
   setCheckboxAsIndeterminate,
   setExpanded,
   unsetExpandable,
+  setAutocomplete,
   setSelected,
   setInvalid,
   setPressed,

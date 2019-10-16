@@ -473,6 +473,20 @@ export default class ContextMenu extends SubMenu {
   }
 
   /**
+   * @param {number} x
+   */
+  setX(x) {
+    this._x = x;
+  }
+
+  /**
+   * @param {number} y
+   */
+  setY(y) {
+    this._y = y;
+  }
+
+  /**
    * @param {number} id
    * @param {function(?)} handler
    */

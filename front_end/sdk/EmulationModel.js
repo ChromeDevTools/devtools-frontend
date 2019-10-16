@@ -95,14 +95,17 @@ export default class EmulationModel extends SDK.SDKModel {
   emulateGeolocation(geolocation) {
     if (!geolocation) {
       this._emulationAgent.clearGeolocationOverride();
+      this._emulationAgent.setTimezoneOverride('');
       return;
     }
 
     if (geolocation.error) {
       this._emulationAgent.setGeolocationOverride();
+      this._emulationAgent.setTimezoneOverride('');
     } else {
       this._emulationAgent.setGeolocationOverride(
           geolocation.latitude, geolocation.longitude, Geolocation.DefaultMockAccuracy);
+      this._emulationAgent.setTimezoneOverride(geolocation.timezoneId);
     }
   }
 
@@ -201,11 +204,13 @@ export class Geolocation {
   /**
    * @param {number} latitude
    * @param {number} longitude
+   * @param {string} timezoneId
    * @param {boolean} error
    */
-  constructor(latitude, longitude, error) {
+  constructor(latitude, longitude, timezoneId, error) {
     this.latitude = latitude;
     this.longitude = longitude;
+    this.timezoneId = timezoneId;
     this.error = error;
   }
 
@@ -214,24 +219,20 @@ export class Geolocation {
    */
   static parseSetting(value) {
     if (value) {
-      const splitError = value.split(':');
-      if (splitError.length === 2) {
-        const splitPosition = splitError[0].split('@');
-        if (splitPosition.length === 2) {
-          return new Geolocation(parseFloat(splitPosition[0]), parseFloat(splitPosition[1]), !!splitError[1]);
-        }
-      }
+      const [position, timezoneId, error] = value.split(':');
+      const [latitude, longitude] = position.split('@');
+      return new Geolocation(parseFloat(latitude), parseFloat(longitude), timezoneId, Boolean(error));
     }
-    return new Geolocation(0, 0, false);
+    return new Geolocation(0, 0, '', false);
   }
 
   /**
    * @param {string} latitudeString
    * @param {string} longitudeString
-   * @param {string} errorStatus
+   * @param {string} timezoneId
    * @return {?Geolocation}
    */
-  static parseUserInput(latitudeString, longitudeString, errorStatus) {
+  static parseUserInput(latitudeString, longitudeString, timezoneId) {
     if (!latitudeString && !longitudeString) {
       return null;
     }
@@ -245,7 +246,7 @@ export class Geolocation {
 
     const latitude = isLatitudeValid ? parseFloat(latitudeString) : -1;
     const longitude = isLongitudeValid ? parseFloat(longitudeString) : -1;
-    return new Geolocation(latitude, longitude, !!errorStatus);
+    return new Geolocation(latitude, longitude, timezoneId, false);
   }
 
   /**
@@ -269,10 +270,24 @@ export class Geolocation {
   }
 
   /**
+   * @param {string} value
+   * @return {{valid: boolean, errorMessage: (string|undefined)}}
+   */
+  static timezoneIdValidator(value) {
+    // Chromium uses ICU's timezone implementation, which is very
+    // liberal in what it accepts. ICU does not simply use an allowlist
+    // but instead tries to make sense of the input, even for
+    // weird-looking timezone IDs. There's not much point in validating
+    // the input other than checking if it contains at least one slash.
+    const valid = value.includes('/');
+    return {valid};
+  }
+
+  /**
    * @return {string}
    */
   toSetting() {
-    return this.latitude + '@' + this.longitude + ':' + (this.error || '');
+    return `${this.latitude}@${this.longitude}:${this.timezoneId}:${this.error || ''}`;
   }
 }
 

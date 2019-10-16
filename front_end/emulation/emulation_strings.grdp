@@ -123,6 +123,9 @@
   <message name="IDS_DEVTOOLS_5b4f1c0e2bd8bc1ba726cd51dd70c1a6" desc="City name in Geolocations Settings">
     Mountain View
   </message>
+  <message name="IDS_DEVTOOLS_5cacd64cfc65b4f4ea83306b6cebf0be" desc="A tag of Sensors tool that can be searched in the command menu">
+    timezones
+  </message>
   <message name="IDS_DEVTOOLS_614103b76fd0d9de068d69034fb6f987" desc="Text in Device Mode View of the Device Toolbar">
     (<ph name="THIS__MODEL_DEVICE___TITLE">$1s<ex>iPhone X</ex></ph>)
   </message>
@@ -179,6 +182,9 @@
   </message>
   <message name="IDS_DEVTOOLS_815dff01257e5ef182b25d4c1ef0a7a0" desc="Text in Device Mode Toolbar of the Device Toolbar">
     Landscape
+  </message>
+  <message name="IDS_DEVTOOLS_8189965036f7d675e0b7af67a2a873a0" desc="Text in Sensors View of the Device Toolbar">
+    Timezone ID
   </message>
   <message name="IDS_DEVTOOLS_81c3744a7fe979d029d1e7b84afd613f" desc="Reload warning text content in Sensors View of the Device Toolbar">
     *Requires reload
@@ -308,6 +314,9 @@
   </message>
   <message name="IDS_DEVTOOLS_d15305d7a4e34e02489c74a5ef542f36" desc="Text in Sensors View of the Device Toolbar">
     Off
+  </message>
+  <message name="IDS_DEVTOOLS_d9e39d238ea8f70b277a68d9c07b5046" desc="Error message in the Geolocations settings pane that declares timezone ID input invalid">
+    Timezone ID must contain &quot;/&quot;
   </message>
   <message name="IDS_DEVTOOLS_da31f3ff326e70f6b08748520c553920" desc="Text in Sensors View of the Device Toolbar">
     γ (gamma)

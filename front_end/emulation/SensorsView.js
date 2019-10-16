@@ -95,6 +95,10 @@ Emulation.SensorsView = class extends UI.VBox {
 
     const latitudeGroup = this._fieldsetElement.createChild('div', 'latlong-group');
     const longitudeGroup = this._fieldsetElement.createChild('div', 'latlong-group');
+    const timezoneGroup = this._fieldsetElement.createChild('div', 'latlong-group');
+
+    const cmdOrCtrl = Host.isMac() ? '\u2318' : 'Ctrl';
+    const modifierKeyMessage = ls`Adjust with mousewheel or up/down keys. ${cmdOrCtrl}: ±10, Shift: ±1, Alt: ±0.01`;
 
     this._latitudeInput = UI.createInput('', 'number');
     latitudeGroup.appendChild(this._latitudeInput);
@@ -104,6 +108,8 @@ Emulation.SensorsView = class extends UI.VBox {
         this._latitudeInput, this._applyGeolocationUserInput.bind(this),
         SDK.EmulationModel.Geolocation.latitudeValidator, true, 0.1);
     this._latitudeSetter(String(geolocation.latitude));
+    this._latitudeInput.title = modifierKeyMessage;
+    latitudeGroup.appendChild(UI.createLabel(ls`Latitude`, 'latlong-title', this._latitudeInput));
 
     this._longitudeInput = UI.createInput('', 'number');
     longitudeGroup.appendChild(this._longitudeInput);
@@ -113,14 +119,17 @@ Emulation.SensorsView = class extends UI.VBox {
         this._longitudeInput, this._applyGeolocationUserInput.bind(this),
         SDK.EmulationModel.Geolocation.longitudeValidator, true, 0.1);
     this._longitudeSetter(String(geolocation.longitude));
-
-    const cmdOrCtrl = Host.isMac() ? '\u2318' : 'Ctrl';
-    const modifierKeyMessage = ls`Adjust with mousewheel or up/down keys. ${cmdOrCtrl}: ±10, Shift: ±1, Alt: ±0.01`;
-    this._latitudeInput.title = modifierKeyMessage;
     this._longitudeInput.title = modifierKeyMessage;
-
-    latitudeGroup.appendChild(UI.createLabel(ls`Latitude`, 'latlong-title', this._latitudeInput));
     longitudeGroup.appendChild(UI.createLabel(ls`Longitude`, 'latlong-title', this._longitudeInput));
+
+    this._timezoneInput = UI.createInput('', 'text');
+    timezoneGroup.appendChild(this._timezoneInput);
+    this._timezoneInput.value = 'Europe/Berlin';
+    this._timezoneSetter = UI.bindInput(
+        this._timezoneInput, this._applyGeolocationUserInput.bind(this),
+        SDK.EmulationModel.Geolocation.timezoneIdValidator, false);
+    this._timezoneSetter(String(geolocation.timezoneId));
+    timezoneGroup.appendChild(UI.createLabel(ls`Timezone ID`, 'timezone-title', this._timezoneInput));
   }
 
   _geolocationSelectChanged() {
@@ -132,20 +141,22 @@ Emulation.SensorsView = class extends UI.VBox {
     } else if (value === Emulation.SensorsView.NonPresetOptions.Custom) {
       this._geolocationOverrideEnabled = true;
       const geolocation = SDK.EmulationModel.Geolocation.parseUserInput(
-          this._latitudeInput.value.trim(), this._longitudeInput.value.trim(), '');
+          this._latitudeInput.value.trim(), this._longitudeInput.value.trim(), this._timezoneInput.value.trim());
       if (!geolocation) {
         return;
       }
       this._geolocation = geolocation;
     } else if (value === Emulation.SensorsView.NonPresetOptions.Unavailable) {
       this._geolocationOverrideEnabled = true;
-      this._geolocation = new SDK.EmulationModel.Geolocation(0, 0, true);
+      this._geolocation = new SDK.EmulationModel.Geolocation(0, 0, '', true);
     } else {
       this._geolocationOverrideEnabled = true;
       const coordinates = JSON.parse(value);
-      this._geolocation = new SDK.EmulationModel.Geolocation(coordinates.lat, coordinates.long, false);
+      this._geolocation =
+          new SDK.EmulationModel.Geolocation(coordinates.lat, coordinates.long, coordinates.timezoneId, false);
       this._latitudeSetter(coordinates.lat);
       this._longitudeSetter(coordinates.long);
+      this._timezoneSetter(coordinates.timezoneId);
     }
 
     this._applyGeolocation();
@@ -156,7 +167,7 @@ Emulation.SensorsView = class extends UI.VBox {
 
   _applyGeolocationUserInput() {
     const geolocation = SDK.EmulationModel.Geolocation.parseUserInput(
-        this._latitudeInput.value.trim(), this._longitudeInput.value.trim(), '');
+        this._latitudeInput.value.trim(), this._longitudeInput.value.trim(), this._timezoneInput.value.trim());
     if (!geolocation) {
       return;
     }

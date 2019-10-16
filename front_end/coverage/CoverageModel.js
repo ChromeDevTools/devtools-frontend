@@ -445,7 +445,9 @@ Coverage.CoverageModel = class extends SDK.SDKModel {
       return null;
     }
     let urlCoverage = this._coverageByURL.get(url);
+    let isNewUrlCoverage = false;
     if (!urlCoverage) {
+      isNewUrlCoverage = true;
       urlCoverage = new Coverage.URLCoverageInfo(url);
       this._coverageByURL.set(url, urlCoverage);
     }
@@ -458,7 +460,7 @@ Coverage.CoverageModel = class extends SDK.SDKModel {
     }
     const oldUsedSize = coverageInfo._usedSize;
     coverageInfo.mergeCoverage(segments);
-    if (coverageInfo._usedSize === oldUsedSize) {
+    if (!isNewUrlCoverage && coverageInfo._usedSize === oldUsedSize) {
       return null;
     }
     urlCoverage._usedSize += coverageInfo._usedSize - oldUsedSize;

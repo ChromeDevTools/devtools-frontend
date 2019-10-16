@@ -614,10 +614,21 @@ Main.Main.MainMenuItem = class {
       contextMenu.headerSection().appendCustomItem(dockItemElement);
     }
 
+
+    const button = this._item.element;
+
     /**
      * @param {string} side
+     * @suppressGlobalPropertiesCheck
      */
     function setDockSide(side) {
+      const hadKeyboardFocus = document.deepActiveElement().hasAttribute('data-keyboard-focus');
+      Components.dockController.once(Components.DockController.Events.AfterDockSideChanged).then(() => {
+        button.focus();
+        if (hadKeyboardFocus) {
+          UI.markAsFocusedByKeyboard(button);
+        }
+      });
       Components.dockController.setDockSide(side);
       contextMenu.discard();
     }

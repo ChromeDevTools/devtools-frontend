@@ -12,6 +12,9 @@
   <message name="IDS_DEVTOOLS_39c145d69ad05e44e74017346c116251" desc="A context menu item in the DOMBreakpoints Sidebar Pane of the JavaScript Debugging pane in the Sources panel or the DOM Breakpoints pane in the Elements panel">
     Remove all DOM breakpoints
   </message>
+  <message name="IDS_DEVTOOLS_3ea566249a507705d9a7ff4d3bd31440" desc="Screen reader description of a hit breakpoint in the Sources panel">
+    breakpoint hit
+  </message>
   <message name="IDS_DEVTOOLS_59eaf6955f44a94237b6d26911c1d983" desc="A context menu item in the DOMBreakpoints Sidebar Pane of the JavaScript Debugging pane in the Sources panel or the DOM Breakpoints pane in the Elements panel">
     Break on
   </message>

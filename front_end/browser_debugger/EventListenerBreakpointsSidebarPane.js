@@ -8,8 +8,8 @@ BrowserDebugger.EventListenerBreakpointsSidebarPane = class extends UI.VBox {
   constructor() {
     super(true);
     this._categoriesTreeOutline = new UI.TreeOutlineInShadow();
-    this._categoriesTreeOutline.element.tabIndex = 0;
     this._categoriesTreeOutline.registerRequiredCSS('browser_debugger/eventListenerBreakpoints.css');
+    this._categoriesTreeOutline.setShowSelectionOnKeyboardFocus(/* show */ true);
     this.contentElement.appendChild(this._categoriesTreeOutline.element);
 
     /** @type {!Map<string, !BrowserDebugger.EventListenerBreakpointsSidebarPane.Item>} */
@@ -20,6 +20,10 @@ BrowserDebugger.EventListenerBreakpointsSidebarPane = class extends UI.VBox {
       if (!this._categories.has(category)) {
         this._createCategory(category);
       }
+    }
+    if (categories.length > 0) {
+      const firstCategory = this._categories.get(categories[0]);
+      firstCategory.element.select();
     }
 
     /** @type {!Map<!SDK.DOMDebuggerModel.EventListenerBreakpoint, !BrowserDebugger.EventListenerBreakpointsSidebarPane.Item>} */
@@ -34,14 +38,28 @@ BrowserDebugger.EventListenerBreakpointsSidebarPane = class extends UI.VBox {
   }
 
   /**
+   * @override
+   */
+  focus() {
+    this._categoriesTreeOutline.forceSelect();
+  }
+
+  /**
    * @param {string} name
    */
   _createCategory(name) {
     const labelNode = UI.CheckboxLabel.create(name);
     labelNode.checkboxElement.addEventListener('click', this._categoryCheckboxClicked.bind(this, name), true);
+    labelNode.checkboxElement.tabIndex = -1;
 
     const treeElement = new UI.TreeElement(labelNode);
-    treeElement.selectable = false;
+    treeElement.listItemElement.addEventListener('keydown', event => {
+      if (event.key === ' ') {
+        this._categories.get(name).checkbox.click();
+        event.consume(true);
+      }
+    });
+    UI.ARIAUtils.setChecked(treeElement.listItemElement, false);
     this._categoriesTreeOutline.appendChild(treeElement);
 
     this._categories.set(name, {element: treeElement, checkbox: labelNode.checkboxElement});
@@ -54,10 +72,17 @@ BrowserDebugger.EventListenerBreakpointsSidebarPane = class extends UI.VBox {
     const labelNode = UI.CheckboxLabel.create(breakpoint.title());
     labelNode.classList.add('source-code');
     labelNode.checkboxElement.addEventListener('click', this._breakpointCheckboxClicked.bind(this, breakpoint), true);
+    labelNode.checkboxElement.tabIndex = -1;
 
     const treeElement = new UI.TreeElement(labelNode);
+    treeElement.listItemElement.addEventListener('keydown', event => {
+      if (event.key === ' ') {
+        this._breakpoints.get(breakpoint).checkbox.click();
+        event.consume(true);
+      }
+    });
+    UI.ARIAUtils.setChecked(treeElement.listItemElement, false);
     treeElement.listItemElement.createChild('div', 'breakpoint-hit-marker');
-    treeElement.selectable = false;
     this._categories.get(breakpoint.category()).element.appendChild(treeElement);
 
     this._breakpoints.set(breakpoint, {element: treeElement, checkbox: labelNode.checkboxElement});
@@ -70,6 +95,7 @@ BrowserDebugger.EventListenerBreakpointsSidebarPane = class extends UI.VBox {
 
     if (!details || details.reason !== SDK.DebuggerModel.BreakReason.EventListener || !details.auxData) {
       if (this._highlightedElement) {
+        UI.ARIAUtils.setDescription(this._highlightedElement, '');
         this._highlightedElement.classList.remove('breakpoint-hit');
         delete this._highlightedElement;
       }
@@ -84,6 +110,7 @@ BrowserDebugger.EventListenerBreakpointsSidebarPane = class extends UI.VBox {
     UI.viewManager.showView('sources.eventListenerBreakpoints');
     this._categories.get(breakpoint.category()).element.expand();
     this._highlightedElement = this._breakpoints.get(breakpoint).element.listItemElement;
+    UI.ARIAUtils.setDescription(this._highlightedElement, ls`breakpoint hit`);
     this._highlightedElement.classList.add('breakpoint-hit');
   }
 
@@ -93,6 +120,8 @@ BrowserDebugger.EventListenerBreakpointsSidebarPane = class extends UI.VBox {
   _categoryCheckboxClicked(category) {
     const item = this._categories.get(category);
     const enabled = item.checkbox.checked;
+    UI.ARIAUtils.setChecked(item.element.listItemElement, enabled);
+
     for (const breakpoint of this._breakpoints.keys()) {
       if (breakpoint.category() === category) {
         breakpoint.setEnabled(enabled);
@@ -107,6 +136,7 @@ BrowserDebugger.EventListenerBreakpointsSidebarPane = class extends UI.VBox {
   _breakpointCheckboxClicked(breakpoint) {
     const item = this._breakpoints.get(breakpoint);
     breakpoint.setEnabled(item.checkbox.checked);
+    UI.ARIAUtils.setChecked(item.element.listItemElement, item.checkbox.checked);
 
     let hasEnabled = false;
     let hasDisabled = false;
@@ -120,9 +150,14 @@ BrowserDebugger.EventListenerBreakpointsSidebarPane = class extends UI.VBox {
       }
     }
 
-    const checkbox = this._categories.get(breakpoint.category()).checkbox;
-    checkbox.checked = hasEnabled;
-    checkbox.indeterminate = hasEnabled && hasDisabled;
+    const category = this._categories.get(breakpoint.category());
+    category.checkbox.checked = hasEnabled;
+    category.checkbox.indeterminate = hasEnabled && hasDisabled;
+    if (category.checkbox.indeterminate) {
+      UI.ARIAUtils.setCheckboxAsIndeterminate(category.element.listItemElement);
+    } else {
+      UI.ARIAUtils.setChecked(category.element.listItemElement, hasEnabled);
+    }
   }
 };
 

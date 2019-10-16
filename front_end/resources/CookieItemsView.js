@@ -104,7 +104,7 @@ Resources.CookieItemsView = class extends Resources.StorageItemsView {
     }
 
     if (!preview) {
-      preview = new UI.EmptyWidget(ls`Select a cookie to preview it value`);
+      preview = new UI.EmptyWidget(ls`Select a cookie to preview its value`);
     }
 
     this._previewValue = value;

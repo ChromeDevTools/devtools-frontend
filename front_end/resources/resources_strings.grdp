@@ -215,9 +215,6 @@ read the &quot;<ph name="THIS_TABLENAME">$1s<ex>database</ex></ph>&quot; table.
   <message name="IDS_DEVTOOLS_9dce9dd0f39a17c2e029174f5bc86ef9" desc="Text in Background Service View of the Application panel">
     Background Sync
   </message>
-  <message name="IDS_DEVTOOLS_9ea4dd36a0094fc33b5ea341a1f909ee" desc="Text in Cookie Items View of the Application panel">
-    Select a cookie to preview it value
-  </message>
   <message name="IDS_DEVTOOLS_9ff9f5649294f7200b671d6389d17d9a" desc="Text in Application Panel Sidebar of the Application panel">
     multiEntry
   </message>
@@ -394,6 +391,9 @@ read the &quot;<ph name="THIS_TABLENAME">$1s<ex>database</ex></ph>&quot; table.
   </message>
   <message name="IDS_DEVTOOLS_ef399b2d446bb37b7c32ad2cc1b6045b" desc="Text in Service Workers View of the Application panel">
     stop
+  </message>
+  <message name="IDS_DEVTOOLS_f75623bb4626a57e8a7a3c0e1c092463" desc="Text in Cookie Items View of the Application panel">
+    Select a cookie to preview its value
   </message>
   <message name="IDS_DEVTOOLS_fb1508747fe448fd8b006e923ba1c3ef" desc="Text in Background Service View of the Application panel">
     Payment Handler

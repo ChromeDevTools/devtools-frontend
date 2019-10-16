@@ -64,6 +64,8 @@ Audits.StartView = class extends UI.Widget {
       row.title = preset.description;
       row.appendChild(checkbox.element);
     }
+    UI.ARIAUtils.markAsGroup(categoryFormElements);
+    UI.ARIAUtils.setAccessibleName(categoryFormElements, ls`Audits`);
 
     // Populate the throttling
     const throttlingFormElements = fragment.$('throttling-form-elements');

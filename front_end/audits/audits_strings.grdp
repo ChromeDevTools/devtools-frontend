@@ -135,7 +135,7 @@
   <message name="IDS_DEVTOOLS_b002a564ceda05dbdf012a48a145d0d3" desc="Status header in the Audits panel">
     Printing
   </message>
-  <message name="IDS_DEVTOOLS_b06c94565d768dd75535120f2f8482a7" desc="Text in Audits Start View">
+  <message name="IDS_DEVTOOLS_b06c94565d768dd75535120f2f8482a7" desc="Text in Audits Start View labeling audit configuraion control group">
     Audits
   </message>
   <message name="IDS_DEVTOOLS_b1b01acb63f79615b05f6d816705d7d3" desc="Text in Audits Controller">

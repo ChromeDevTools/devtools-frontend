@@ -51,6 +51,8 @@ Profiler.ProfileDataGridNode = class extends DataGrid.DataGridNode {
     this.functionName = UI.beautifyFunctionName(profileNode.functionName);
     this._deoptReason = profileNode.deoptReason || '';
     this.url = profileNode.url;
+    /** @type {?Element} */
+    this.linkElement = null;
   }
 
   /**
@@ -188,6 +190,7 @@ Profiler.ProfileDataGridNode = class extends DataGrid.DataGridNode {
         }
         urlElement.style.maxWidth = '75%';
         cell.appendChild(urlElement);
+        this.linkElement = urlElement;
         break;
 
       default:

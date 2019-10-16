@@ -32,6 +32,7 @@ Profiler.ProfileView = class extends UI.SimpleView {
     this.dataGrid.addEventListener(DataGrid.DataGrid.Events.SortingChanged, this._sortProfile, this);
     this.dataGrid.addEventListener(DataGrid.DataGrid.Events.SelectedNode, this._nodeSelected.bind(this, true));
     this.dataGrid.addEventListener(DataGrid.DataGrid.Events.DeselectedNode, this._nodeSelected.bind(this, false));
+    this.dataGrid.setRowContextMenuCallback(this._populateContextMenu.bind(this));
 
     this.viewSelectComboBox = new UI.ToolbarComboBox(this._changeView.bind(this), ls`Profile view mode`);
 
@@ -172,6 +173,17 @@ Profiler.ProfileView = class extends UI.SimpleView {
           this._nodeFormatter, this._searchableView, this._profile.root, this.adjustedTotal);
     }
     return this._topDownProfileDataGridTree;
+  }
+
+  /**
+   * @param {!UI.ContextMenu} contextMenu
+   * @param {!DataGrid.DataGridNode} gridNode
+   */
+  _populateContextMenu(contextMenu, gridNode) {
+    const node = /** @type {!Profiler.ProfileDataGridNode} */ (gridNode);
+    if (node.linkElement && !contextMenu.containsTarget(node.linkElement)) {
+      contextMenu.appendApplicableItems(node.linkElement);
+    }
   }
 
   /**

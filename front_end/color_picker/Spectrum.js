@@ -135,7 +135,6 @@ ColorPicker.Spectrum = class extends UI.VBox {
     /** @type {!Map.<string, !ColorPicker.Spectrum.Palette>} */
     this._palettes = new Map();
     this._palettePanel = this.contentElement.createChild('div', 'palette-panel');
-    this._palettePanel.tabIndex = -1;
     this._palettePanel.addEventListener('keydown', this._onPalettePanelKeydown.bind(this));
     this._palettePanelShowing = false;
     this._paletteSectionContainer = this.contentElement.createChild('div', 'spectrum-palette-container');
@@ -321,6 +320,9 @@ ColorPicker.Spectrum = class extends UI.VBox {
       colorElement.addEventListener(
           'mousedown',
           this._paletteColorSelected.bind(this, palette.colors[i], palette.colorNames[i], palette.matchUserFormat));
+      colorElement.addEventListener(
+          'keydown',
+          this._onPaletteColorKeydown.bind(this, palette.colors[i], palette.colorNames[i], palette.matchUserFormat));
       if (palette.mutable) {
         colorElement.__mutable = true;
         colorElement.__color = palette.colors[i];
@@ -335,6 +337,9 @@ ColorPicker.Spectrum = class extends UI.VBox {
         new UI.LongClickController(colorElement, this._showLightnessShades.bind(this, colorElement, palette.colors[i]));
       }
       this._paletteContainer.appendChild(colorElement);
+    }
+    if (this._paletteContainer.childNodes.length > 0) {
+      this._paletteContainer.childNodes[0].tabIndex = 0;
     }
     this._paletteContainerMutable = palette.mutable;
 
@@ -618,6 +623,26 @@ ColorPicker.Spectrum = class extends UI.VBox {
     this._innerSetColor(
         color.hsva(), colorText, colorName, matchUserFormat ? this._colorFormat : color.format(),
         ColorPicker.Spectrum._ChangeSource.Other);
+  }
+
+  /**
+   * @param {string} colorText
+   * @param {(string|undefined)} colorName
+   * @param {boolean} matchUserFormat
+   * @param {!Event} event
+   */
+  _onPaletteColorKeydown(colorText, colorName, matchUserFormat, event) {
+    if (isEnterOrSpaceKey(event)) {
+      this._paletteColorSelected(colorText, colorName, matchUserFormat);
+      // If this is a long keypress on color palette of type Material then, it needs to handled by _showLightnessShades on same element. So, just stopPropagation instead of consuming it.
+      event.stopPropagation();
+    } else if (event.key === 'ArrowLeft' && event.target.previousElementSibling) {
+      event.target.previousElementSibling.focus();
+      event.consume(true);
+    } else if (event.key === 'ArrowRight' && event.target.nextElementSibling) {
+      event.target.nextElementSibling.focus();
+      event.consume(true);
+    }
   }
 
   /**

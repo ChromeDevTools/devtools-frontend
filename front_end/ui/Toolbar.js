@@ -759,6 +759,7 @@ export class ToolbarMenuButton extends ToolbarButton {
     super('', 'largeicon-menu');
     this._contextMenuHandler = contextMenuHandler;
     this._useSoftMenu = !!useSoftMenu;
+    UI.ARIAUtils.markAsMenuButton(this.element);
   }
 
   /**

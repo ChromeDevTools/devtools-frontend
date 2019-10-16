@@ -289,10 +289,20 @@ export function unsetExpandable(element) {
 }
 
 /**
- * @param {!Element} element
- * @param {string} interactionModel can be 'inline', 'list', 'both' or 'none' (default).
+ * @enum {string}
  */
-export function setAutocomplete(element, interactionModel = 'none') {
+export const AutocompleteInteractionModel = {
+  inline: 'inline',
+  list: 'list',
+  both: 'both',
+  none: 'none',
+};
+
+/**
+ * @param {!Element} element
+ * @param {!AutocompleteInteractionModel=} interactionModel
+ */
+export function setAutocomplete(element, interactionModel = AutocompleteInteractionModel.none) {
   element.setAttribute('aria-autocomplete', interactionModel);
 }
 
@@ -522,6 +532,7 @@ self.UI.ARIAUtils = {
   setCheckboxAsIndeterminate,
   setExpanded,
   unsetExpandable,
+  AutocompleteInteractionModel,
   setAutocomplete,
   setSelected,
   setInvalid,

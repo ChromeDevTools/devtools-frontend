@@ -46,7 +46,7 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
     this._itemElementsContainer.addEventListener('click', this._onClick.bind(this), false);
     UI.ARIAUtils.markAsListBox(this._itemElementsContainer);
     UI.ARIAUtils.setControls(this._promptElement, this._itemElementsContainer);
-    UI.ARIAUtils.setAutocomplete(this._promptElement, 'list');
+    UI.ARIAUtils.setAutocomplete(this._promptElement, UI.ARIAUtils.AutocompleteInteractionModel.list);
 
     this._notFoundElement = this._bottomElementsContainer.createChild('div', 'not-found-text');
     this._notFoundElement.classList.add('hidden');

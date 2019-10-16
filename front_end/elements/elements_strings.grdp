@@ -123,6 +123,9 @@
   <message name="IDS_DEVTOOLS_5c6236c705b0086fbbdb2df3133f8a06" desc="Title of a setting under the Elements category in Settings">
     Reveal DOM node on hover
   </message>
+  <message name="IDS_DEVTOOLS_5e1078f1bee74e1e385b7813280b0c74" desc="Text when node can not be found in page">
+    Node cannot be found in the current page.
+  </message>
   <message name="IDS_DEVTOOLS_5eeb03a9c080c299d4804ac765c818c2" desc="No matches element text content in Styles Sidebar Pane of the Elements panel">
     No matching selector or style
   </message>

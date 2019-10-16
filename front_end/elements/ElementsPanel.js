@@ -993,6 +993,24 @@ Elements.ElementsPanel.DOMNodeRevealer = class {
       function onNodeResolved(resolvedNode) {
         panel._pendingNodeReveal = false;
 
+        // A detached node could still have a parent and ownerDocument
+        // properties, which means stepping up through the hierarchy to ensure
+        // that the root node is the document itself. Any break implies
+        // detachment.
+        let currentNode = resolvedNode;
+        while (currentNode.parentNode) {
+          currentNode = currentNode.parentNode;
+        }
+        const isDetached = !(currentNode instanceof SDK.DOMDocument);
+
+        const isDocument = node instanceof SDK.DOMDocument;
+        if (!isDocument && isDetached) {
+          const msg = ls`Node cannot be found in the current page.`;
+          Common.console.warn(msg);
+          reject(new Error(msg));
+          return;
+        }
+
         if (resolvedNode) {
           panel.revealAndSelectNode(resolvedNode, !omitFocus).then(resolve);
           return;

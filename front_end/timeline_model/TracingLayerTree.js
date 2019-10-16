@@ -190,7 +190,12 @@ TimelineModel.TracingLayer = class {
     this._parent = null;
     this._quad = payload.layer_quad || [];
     this._createScrollRects(payload);
-    this._compositingReasons = payload.compositing_reasons || [];
+
+    // Keep payload.compositing_reasons as a default
+    // but use the newer payload.debug_info.compositing_reasons
+    // if the first one is not set.
+    this._compositingReasons =
+        payload.compositing_reasons || (payload.debug_info && payload.debug_info.compositing_reasons) || [];
     this._drawsContent = !!payload.draws_content;
     this._gpuMemoryUsage = payload.gpu_memory_usage;
     this._paints = [];

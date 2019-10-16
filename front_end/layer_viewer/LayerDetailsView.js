@@ -230,7 +230,8 @@ LayerViewer.LayerDetailsView = class extends UI.Widget {
     this._compositingReasonsCell.removeChildren();
     const list = this._compositingReasonsCell.createChild('ul');
     for (let i = 0; i < compositingReasons.length; ++i) {
-      let text = LayerViewer.LayerDetailsView.CompositingReasonDetail[compositingReasons[i]] || compositingReasons[i];
+      // The reason is coming straight from third_party/blink/renderer/platform/graphics/compositing_reasons.cc
+      let text = compositingReasons[i];
       // If the text is more than one word but does not terminate with period, add the period.
       if (/\s.*[^.]$/.test(text)) {
         text += '.';
@@ -246,57 +247,6 @@ LayerViewer.LayerDetailsView = class extends UI.Widget {
 /** @enum {symbol} */
 LayerViewer.LayerDetailsView.Events = {
   PaintProfilerRequested: Symbol('PaintProfilerRequested')
-};
-
-/**
- * @type {!Object.<string, string>}
- */
-LayerViewer.LayerDetailsView.CompositingReasonDetail = {
-  'transform3D': Common.UIString('Composition due to association with an element with a CSS 3D transform.'),
-  'video': Common.UIString('Composition due to association with a <video> element.'),
-  'canvas': Common.UIString('Composition due to the element being a <canvas> element.'),
-  'plugin': Common.UIString('Composition due to association with a plugin.'),
-  'iFrame': Common.UIString('Composition due to association with an <iframe> element.'),
-  'backfaceVisibilityHidden':
-      Common.UIString('Composition due to association with an element with a "backface-visibility: hidden" style.'),
-  'animation': Common.UIString('Composition due to association with an animated element.'),
-  'filters': Common.UIString('Composition due to association with an element with CSS filters applied.'),
-  'scrollDependentPosition': Common.UIString(
-      'Composition due to association with an element with a "position: fixed" or "position: sticky" style.'),
-  'overflowScrollingTouch':
-      Common.UIString('Composition due to association with an element with a "overflow-scrolling: touch" style.'),
-  'blending':
-      Common.UIString('Composition due to association with an element that has blend mode other than "normal".'),
-  'assumedOverlap':
-      Common.UIString('Composition due to association with an element that may overlap other composited elements.'),
-  'overlap': Common.UIString('Composition due to association with an element overlapping other composited elements.'),
-  'negativeZIndexChildren':
-      Common.UIString('Composition due to association with an element with descendants that have a negative z-index.'),
-  'transformWithCompositedDescendants':
-      Common.UIString('Composition due to association with an element with composited descendants.'),
-  'opacityWithCompositedDescendants': Common.UIString(
-      'Composition due to association with an element with opacity applied and composited descendants.'),
-  'maskWithCompositedDescendants':
-      Common.UIString('Composition due to association with a masked element and composited descendants.'),
-  'reflectionWithCompositedDescendants':
-      Common.UIString('Composition due to association with an element with a reflection and composited descendants.'),
-  'filterWithCompositedDescendants': Common.UIString(
-      'Composition due to association with an element with CSS filters applied and composited descendants.'),
-  'blendingWithCompositedDescendants': Common.UIString(
-      'Composition due to association with an element with CSS blending applied and composited descendants.'),
-  'clipsCompositingDescendants':
-      Common.UIString('Composition due to association with an element clipping compositing descendants.'),
-  'perspective': Common.UIString('Composition due to association with an element with perspective applied.'),
-  'preserve3D':
-      Common.UIString('Composition due to association with an element with a "transform-style: preserve-3d" style.'),
-  'root': Common.UIString('Root layer.'),
-  'layerForClip': Common.UIString('Layer for clip.'),
-  'layerForScrollbar': Common.UIString('Layer for scrollbar.'),
-  'layerForScrollingContainer': Common.UIString('Layer for scrolling container.'),
-  'layerForForeground': Common.UIString('Layer for foreground.'),
-  'layerForBackground': Common.UIString('Layer for background.'),
-  'layerForMask': Common.UIString('Layer for mask.'),
-  'layerForVideoOverlay': Common.UIString('Layer for video overlay.'),
 };
 
 LayerViewer.LayerDetailsView._slowScrollRectNames = new Map([

@@ -209,6 +209,9 @@ read the &quot;<ph name="THIS_TABLENAME">$1s<ex>database</ex></ph>&quot; table.
   <message name="IDS_DEVTOOLS_9999106349673567ecaf1c32c07301a5" desc="Text in Service Workers View of the Application panel">
     #<ph name="WAITING_ID">$1s<ex>2</ex></ph> waiting to activate
   </message>
+  <message name="IDS_DEVTOOLS_99ccbbe2741019f0bbc87f4eb83dbc1d" desc="Screen reader title for a section of the Service Workers view of the Application panel">
+    Service worker for <ph name="TITLE"><ex>https://example.com</ex>$1s</ph>
+  </message>
   <message name="IDS_DEVTOOLS_9b2a7456cec10d8b5ab8ce656598320b" desc="Text in Indexed DBViews of the Application panel">
     Key path: '''
   </message>

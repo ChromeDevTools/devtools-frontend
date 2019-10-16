@@ -243,6 +243,7 @@ Resources.ServiceWorkersView = class extends UI.VBox {
     if (!section) {
       const title = registration.scopeURL;
       const uiSection = this._getReportViewForOrigin(registration.securityOrigin).appendSection(title);
+      uiSection.setUiGroupTitle(ls`Service worker for ${title}`);
       uiSection[this._registrationSymbol] = registration;
       section = new Resources.ServiceWorkersView.Section(
           /** @type {!SDK.ServiceWorkerManager} */ (this._manager), uiSection, registration);

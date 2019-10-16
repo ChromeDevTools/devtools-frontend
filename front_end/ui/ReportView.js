@@ -151,6 +151,15 @@ export class Section extends UI.VBox {
   }
 
   /**
+   * Declares the overall container to be a group and assigns a title.
+   * @param {string} groupTitle
+   */
+  setUiGroupTitle(groupTitle) {
+    UI.ARIAUtils.markAsGroup(this.element);
+    UI.ARIAUtils.setAccessibleName(this.element, groupTitle);
+  }
+
+  /**
    * @return {!UI.Toolbar}
    */
   createToolbar() {

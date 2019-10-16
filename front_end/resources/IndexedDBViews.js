@@ -252,6 +252,22 @@ Resources.IDBDataView = class extends UI.SimpleView {
     this._updateData(false);
   }
 
+  /**
+   * @param {!UI.ContextMenu} contextMenu
+   * @param {!DataGrid.DataGridNode} gridNode
+   */
+  _populateContextMenu(contextMenu, gridNode) {
+    const node = /** @type {!Resources.IDBDataGridNode} */ (gridNode);
+    if (node.valueObjectPresentation) {
+      contextMenu.revealSection().appendItem(ls`Expand Recursively`, () => {
+        node.valueObjectPresentation.objectTreeElement().expandRecursively();
+      });
+      contextMenu.revealSection().appendItem(ls`Collapse`, () => {
+        node.valueObjectPresentation.objectTreeElement().collapse();
+      });
+    }
+  }
+
   refreshData() {
     this._updateData(true);
   }
@@ -268,6 +284,7 @@ Resources.IDBDataView = class extends UI.SimpleView {
       this._dataGrid.asWidget().detach();
     }
     this._dataGrid = this._createDataGrid();
+    this._dataGrid.setRowContextMenuCallback(this._populateContextMenu.bind(this));
     this._dataGrid.asWidget().show(this.element);
 
     this._skipCount = 0;
@@ -443,6 +460,8 @@ Resources.IDBDataGridNode = class extends DataGrid.DataGridNode {
   constructor(data) {
     super(data, false);
     this.selectable = true;
+    /** @type {?ObjectUI.ObjectPropertiesSection} */
+    this.valueObjectPresentation = null;
   }
 
   /**
@@ -455,10 +474,17 @@ Resources.IDBDataGridNode = class extends DataGrid.DataGridNode {
 
     switch (columnIdentifier) {
       case 'value':
+        cell.removeChildren();
+        const objectPropSection = ObjectUI.ObjectPropertiesSection.defaultObjectPropertiesSection(
+            value, undefined /* linkifier */, true /* skipProto */, true /* readOnly */);
+        cell.appendChild(objectPropSection.element);
+        this.valueObjectPresentation = objectPropSection;
+        break;
       case 'key':
       case 'primaryKey':
         cell.removeChildren();
-        const objectElement = ObjectUI.ObjectPropertiesSection.defaultObjectPresentation(value, undefined, true, true);
+        const objectElement = ObjectUI.ObjectPropertiesSection.defaultObjectPresentation(
+            value, undefined /* linkifier */, true /* skipProto */, true /* readOnly */);
         cell.appendChild(objectElement);
         break;
       default:

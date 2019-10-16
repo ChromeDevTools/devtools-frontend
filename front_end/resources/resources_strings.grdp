@@ -52,6 +52,9 @@ table is empty.
   <message name="IDS_DEVTOOLS_29104d3ede0231043a4b92a90b9c2873" desc="Title of needs refresh in indexed dbviews of the application panel">
     Some entries may have been modified
   </message>
+  <message name="IDS_DEVTOOLS_2b31634e3cfef1bfdd7d0d2cdfdc3f9d" desc="Text in Context menu for collapsing objects in IndexedDB tables">
+    Collapse
+  </message>
   <message name="IDS_DEVTOOLS_2bf0a735c3ff964861a2b55319edd355" desc="Text in Clear Storage View of the Application panel">
     Unregister service workers
   </message>
@@ -69,6 +72,9 @@ table is empty.
   </message>
   <message name="IDS_DEVTOOLS_368d9ac76af05f714092bc808a426bfc" desc="Text in App Manifest View of the Application panel">
     Background color
+  </message>
+  <message name="IDS_DEVTOOLS_36e256f915286539621b57d8c80f0105" desc="Text in Context menu for expanding objects in IndexedDB tables">
+    Expand Recursively
   </message>
   <message name="IDS_DEVTOOLS_37acadd70183e7ed00222ff38248a6ff" desc="Quota row text content in Clear Storage View of the Application panel">
     <ph name="NUMBER_BYTESTOSTRING_RESPONSE_USAGE_">$1s<ex>30 MB</ex></ph> used out of <ph name="NUMBER_BYTESTOSTRING_RESPONSE_QUOTA_">$2s<ex>100 MB</ex></ph> storage quota. '''

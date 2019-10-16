@@ -74,15 +74,28 @@ ObjectUI.ObjectPropertiesSection = class extends UI.TreeOutlineInShadow {
    * @return {!Element}
    */
   static defaultObjectPresentation(object, linkifier, skipProto, readOnly) {
-    const componentRoot = createElementWithClass('span', 'source-code');
-    const shadowRoot = UI.createShadowRootWithCoreStyles(componentRoot, 'object_ui/objectValue.css');
-    shadowRoot.appendChild(
-        ObjectUI.ObjectPropertiesSection.createValueElement(object, false /* wasThrown */, true /* showPreview */));
+    const objectPropertiesSection =
+        ObjectUI.ObjectPropertiesSection.defaultObjectPropertiesSection(object, linkifier, skipProto, readOnly);
     if (!object.hasChildren) {
-      return componentRoot;
+      return objectPropertiesSection.titleElement;
+    } else {
+      return objectPropertiesSection.element;
     }
+  }
 
-    const objectPropertiesSection = new ObjectUI.ObjectPropertiesSection(object, componentRoot, linkifier);
+  /**
+   * @param {!SDK.RemoteObject} object
+   * @param {!Components.Linkifier=} linkifier
+   * @param {boolean=} skipProto
+   * @param {boolean=} readOnly
+   * @return {!ObjectUI.ObjectPropertiesSection}
+   */
+  static defaultObjectPropertiesSection(object, linkifier, skipProto, readOnly) {
+    const titleElement = createElementWithClass('span', 'source-code');
+    const shadowRoot = UI.createShadowRootWithCoreStyles(titleElement, 'object_ui/objectValue.css');
+    shadowRoot.appendChild(
+        ObjectUI.ObjectPropertiesSection.createValueElement(object, /* wasThrown */ false, /* showPreview */ true));
+    const objectPropertiesSection = new ObjectUI.ObjectPropertiesSection(object, titleElement, linkifier);
     objectPropertiesSection.editable = false;
     if (skipProto) {
       objectPropertiesSection.skipProto();
@@ -91,7 +104,7 @@ ObjectUI.ObjectPropertiesSection = class extends UI.TreeOutlineInShadow {
       objectPropertiesSection.setEditable(false);
     }
 
-    return objectPropertiesSection.element;
+    return objectPropertiesSection;
   }
 
   /**

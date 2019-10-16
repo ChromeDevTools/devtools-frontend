@@ -189,8 +189,25 @@
     padding: 2px;
 }
 
+.heap-allocation-stack .stack-frame:hover:not(:focus) {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.heap-allocation-stack .stack-frame:focus {
+    background-color: var(--selection-bg-color);
+    color: var(--selection-fg-color);
+}
+
+.heap-allocation-stack .stack-frame:focus:hover {
+    background-color: var(--accent-color-hover);
+}
+
 .heap-allocation-stack .stack-frame .devtools-link {
     color: rgb(33%, 33%, 33%);
+}
+
+.heap-allocation-stack .stack-frame:focus .devtools-link {
+    color: var(--selection-fg-color);
 }
 
 .no-heap-allocation-stack {

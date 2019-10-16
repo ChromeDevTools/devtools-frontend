@@ -1757,6 +1757,65 @@ Profiler.HeapAllocationStackView = class extends UI.Widget {
     super();
     this._heapProfilerModel = heapProfilerModel;
     this._linkifier = new Components.Linkifier();
+    /** @type {!Array<!Element>} */
+    this._frameElements = [];
+  }
+
+  /**
+   * @param {!Element} link
+   * @param {!Event} event
+   */
+  _onContextMenu(link, event) {
+    const contextMenu = new UI.ContextMenu(event);
+    if (!contextMenu.containsTarget(link)) {
+      contextMenu.appendApplicableItems(link);
+    }
+    contextMenu.show();
+    event.consume(true);
+  }
+
+  /**
+   * @param {!Event} event
+   */
+  _onStackViewKeydown(event) {
+    const target = /** @type {?Element} */ (event.target);
+    if (!target) {
+      return;
+    }
+    if (isEnterKey(event)) {
+      const link = target._linkElement;
+      if (!link) {
+        return;
+      }
+      if (Components.Linkifier.invokeFirstAction(link)) {
+        event.consume(true);
+      }
+      return;
+    }
+
+    let navDown;
+    if (event.key === 'ArrowUp') {
+      navDown = false;
+    } else if (event.key === 'ArrowDown') {
+      navDown = true;
+    } else {
+      return;
+    }
+
+    const index = this._frameElements.indexOf(target);
+    if (index === -1) {
+      return;
+    }
+    const nextIndex = navDown ? index + 1 : index - 1;
+    if (nextIndex < 0 || nextIndex >= this._frameElements.length) {
+      return;
+    }
+
+    const nextFrame = this._frameElements[nextIndex];
+    nextFrame.tabIndex = 0;
+    target.tabIndex = -1;
+    nextFrame.focus();
+    event.consume(true);
   }
 
   /**
@@ -1775,8 +1834,11 @@ Profiler.HeapAllocationStackView = class extends UI.Widget {
     }
 
     const stackDiv = this.element.createChild('div', 'heap-allocation-stack');
+    stackDiv.addEventListener('keydown', this._onStackViewKeydown.bind(this), false);
     for (const frame of frames) {
       const frameDiv = stackDiv.createChild('div', 'stack-frame');
+      this._frameElements.push(frameDiv);
+      frameDiv.tabIndex = -1;
       const name = frameDiv.createChild('div');
       name.textContent = UI.beautifyFunctionName(frame.functionName);
       if (!frame.scriptId) {
@@ -1786,11 +1848,15 @@ Profiler.HeapAllocationStackView = class extends UI.Widget {
           this._heapProfilerModel ? this._heapProfilerModel.target() : null, String(frame.scriptId), frame.scriptName,
           frame.line - 1, frame.column - 1);
       frameDiv.appendChild(urlElement);
+      frameDiv._linkElement = urlElement;
+      frameDiv.addEventListener('contextmenu', this._onContextMenu.bind(this, urlElement));
     }
+    this._frameElements[0].tabIndex = 0;
   }
 
   clear() {
     this.element.removeChildren();
+    this._frameElements = [];
     this._linkifier.reset();
   }
 };

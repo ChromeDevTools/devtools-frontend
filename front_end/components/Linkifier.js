@@ -527,7 +527,15 @@ export default class Linkifier {
     if (UI.isBeingEdited(/** @type {!Node} */ (event.target)) || link.hasSelection()) {
       return false;
     }
-    const actions = Linkifier._linkActions(link);
+    return Components.Linkifier.invokeFirstAction(link);
+  }
+
+  /**
+   * @param {!Element} link
+   * @return {boolean}
+   */
+  static invokeFirstAction(link) {
+    const actions = Components.Linkifier._linkActions(link);
     if (actions.length) {
       actions[0].handler.call(null);
       return true;

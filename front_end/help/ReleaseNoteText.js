@@ -12,6 +12,50 @@ const commandMenuShortcut = Host.isMac() ? 'Command+Shift+P' : 'Control+Shift+P'
 
 /** @type {!Array<!Help.ReleaseNote>} */
 Help.releaseNoteText = [
+
+  {
+    version: 21,
+    header: 'Highlights from the Chrome 79 update',
+    highlights: [
+      {
+        title: 'Debug why a cookie was blocked',
+        subtitle: 'Click a resource in the Network panel and go to the updated Cookies tab.',
+        link: 'https://developers.google.com/web/updates/2019/10/devtools#blockedcookies',
+      },
+      {
+        title: 'View cookie values',
+        subtitle: 'Click a row in the Cookies pane in the Application panel to see the cookie\'s value.',
+        link: 'https://developers.google.com/web/updates/2019/10/devtools#cookiepreviews',
+      },
+      {
+        title: 'Simulate prefers-color-scheme and prefers-reduced-motion preferences',
+        subtitle: 'Open the Rendering tab to force your site into dark or light mode or set motion preferences.',
+        link: 'https://developers.google.com/web/updates/2019/10/devtools#userpreferences',
+      },
+      {
+        title: 'Code coverage updates',
+        subtitle: 'More accessible colors, a filter text box, and a new integration with the Sources panel.',
+        link: 'https://developers.google.com/web/updates/2019/10/devtools#coverage',
+      },
+      {
+        title: 'Debug why a network resource was requested',
+        subtitle: 'Click a resource in the Network panel and go to the new Initiator tab.',
+        link: 'https://developers.google.com/web/updates/2019/10/devtools#initiator',
+      },
+      {
+        title: 'Console and Sources panels respect indentation preferences again',
+        subtitle: 'Set your preference in Settings > Preferences > Sources > Default Indentation.',
+        link: 'https://developers.google.com/web/updates/2019/10/devtools#indentation',
+      },
+      {
+        title: 'New shortcuts for cursor navigation',
+        subtitle: 'Press Control+P or Control+N to move your cursor to the line above or below.',
+        link: 'https://developers.google.com/web/updates/2019/10/devtools#console',
+      },
+    ],
+    link: 'https://developers.google.com/web/updates/2019/10/devtools',
+  },
+
   {
     version: 20,
     header: 'Highlights from the Chrome 78 update',

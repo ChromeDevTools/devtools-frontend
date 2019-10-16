@@ -21,6 +21,9 @@
   <message name="IDS_DEVTOOLS_66b74432bdc2797086f419010cc5ff86" desc="Title of the 'DOM Breakpoints' tool in the bottom sidebar of the Sources tool">
     DOM Breakpoints
   </message>
+  <message name="IDS_DEVTOOLS_9f76c421048cb58ab03988d2ce1c813e" desc="Label for a button in the sources panel that refreshes the list of global event listeners.">
+    Refresh global listeners
+  </message>
   <message name="IDS_DEVTOOLS_b839f802a330e4d4145cb182e6767f45" desc="Text in XHRBreakpoints Sidebar Pane of the JavaScript Debugging pane in the Sources panel or the DOM Breakpoints pane in the Elements panel">
     Any XHR or fetch
   </message>

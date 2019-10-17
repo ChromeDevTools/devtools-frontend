@@ -27,6 +27,9 @@
   <message name="IDS_DEVTOOLS_a03d142f9d52eae6793de3951b4b58f9" desc="Screen reader reads this text when palette switcher button receives focus">
     Preview palettes
   </message>
+  <message name="IDS_DEVTOOLS_aba9beb2d259a7cff58a65229dcbbaf4" desc="Aria label which declares hex value of a swatch in the Color Picker">
+    Color <ph name="PALETTE_COLORS_I_">$1s<ex>#969696</ex></ph>
+  </message>
   <message name="IDS_DEVTOOLS_b201b2e7e7a20df48b625f20c2f0933e" desc="Title text content in Spectrum of the Color Picker">
     Color Palettes
   </message>

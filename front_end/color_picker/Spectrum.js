@@ -317,6 +317,8 @@ ColorPicker.Spectrum = class extends UI.VBox {
       const animationDelay = animate ? i * 100 / palette.colors.length : 0;
       const colorElement = this._createPaletteColor(palette.colors[i], palette.colorNames[i], animationDelay);
       colorElement.tabIndex = -1;
+      UI.ARIAUtils.markAsButton(colorElement);
+      UI.ARIAUtils.setAccessibleName(colorElement, ls`Color ${palette.colors[i]}`);
       colorElement.addEventListener(
           'mousedown',
           this._paletteColorSelected.bind(this, palette.colors[i], palette.colorNames[i], palette.matchUserFormat));
@@ -334,6 +336,7 @@ ColorPicker.Spectrum = class extends UI.VBox {
         shadow = colorElement.createChild('div', 'spectrum-palette-color spectrum-palette-color-shadow');
         shadow.style.background = palette.colors[i];
         colorElement.title = ls`${palette.colors[i]}. Long-click to show alternate shades.`;
+        UI.ARIAUtils.setAccessibleName(colorElement, colorElement.title);
         new UI.LongClickController(colorElement, this._showLightnessShades.bind(this, colorElement, palette.colors[i]));
       }
       this._paletteContainer.appendChild(colorElement);
@@ -393,6 +396,8 @@ ColorPicker.Spectrum = class extends UI.VBox {
     for (let i = shades.length - 1; i >= 0; i--) {
       const shadeElement =
           this._createPaletteColor(shades[i], undefined /* colorName */, i * 200 / shades.length + 100);
+      UI.ARIAUtils.markAsButton(shadeElement);
+      UI.ARIAUtils.setAccessibleName(shadeElement, ls`Color ${shades[i]}`);
       shadeElement.addEventListener('mousedown', this._paletteColorSelected.bind(this, shades[i], shades[i], false));
       this._shadesContainer.appendChild(shadeElement);
     }

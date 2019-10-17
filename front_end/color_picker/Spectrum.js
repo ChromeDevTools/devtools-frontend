@@ -135,7 +135,6 @@ ColorPicker.Spectrum = class extends UI.VBox {
     /** @type {!Map.<string, !ColorPicker.Spectrum.Palette>} */
     this._palettes = new Map();
     this._palettePanel = this.contentElement.createChild('div', 'palette-panel');
-    this._palettePanel.addEventListener('keydown', this._onPalettePanelKeydown.bind(this));
     this._palettePanelShowing = false;
     this._paletteSectionContainer = this.contentElement.createChild('div', 'spectrum-palette-container');
     this._paletteContainer = this._paletteSectionContainer.createChild('div', 'spectrum-palette');
@@ -241,9 +240,10 @@ ColorPicker.Spectrum = class extends UI.VBox {
     const title = this._palettePanel.createChild('div', 'palette-title');
     title.textContent = Common.UIString('Color Palettes');
     const toolbar = new UI.Toolbar('', this._palettePanel);
-    const closeButton = new UI.ToolbarButton('Return to color picker', 'largeicon-delete');
-    closeButton.addEventListener(UI.ToolbarButton.Events.Click, this._togglePalettePanel.bind(this, false));
-    toolbar.appendToolbarItem(closeButton);
+    this._closeButton = new UI.ToolbarButton(ls`Return to color picker`, 'largeicon-delete');
+    this._closeButton.addEventListener(UI.ToolbarButton.Events.Click, this._togglePalettePanel.bind(this, false));
+    this._closeButton.element.addEventListener('keydown', this._onCloseBtnKeydown.bind(this));
+    toolbar.appendToolbarItem(this._closeButton);
     for (const palette of this._palettes.values()) {
       this._palettePanel.appendChild(this._createPreviewPaletteElement(palette));
     }
@@ -267,8 +267,8 @@ ColorPicker.Spectrum = class extends UI.VBox {
   /**
    * @param {!Event} event
    */
-  _onPalettePanelKeydown(event) {
-    if (isEscKey(event)) {
+  _onCloseBtnKeydown(event) {
+    if (isEscKey(event) || isEnterOrSpaceKey(event)) {
       this._togglePalettePanel(false);
       event.consume(true);
     }
@@ -283,7 +283,7 @@ ColorPicker.Spectrum = class extends UI.VBox {
       return;
     }
     if (this._palettePanelShowing) {
-      this._palettePanel.focus({preventScroll: true});
+      this._closeButton.element.focus({preventScroll: true});
     } else {
       this.contentElement.focus();
     }

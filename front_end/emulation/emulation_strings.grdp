@@ -147,6 +147,9 @@
   <message name="IDS_DEVTOOLS_673a7b89eb57bf2bf891306c98cbecc3" desc="Error message in the Geolocations settings pane that declares that the value for the latitude input must be a number">
     Latitude must be a number
   </message>
+  <message name="IDS_DEVTOOLS_6bdb3457630d1a73c9cdc3a7db7062b9" desc="Message in the Sensors tool that is alerted (for screen readers) when  the device orientation setting is changed">
+    Device orientation set to alpha: <ph name="DEVICEORIENTATION_ALPHA">$1s<ex>180</ex></ph>, beta: <ph name="DEVICEORIENTATION_BETA">$2s<ex>-90</ex></ph>, gamma: <ph name="DEVICEORIENTATION_GAMMA">$3s<ex>0</ex></ph>
+  </message>
   <message name="IDS_DEVTOOLS_6e641146898080ed83f3007cd712f58f" desc="Error message in the Devices settings pane that declares the maximum value for the device pixel ratio input">
     Device pixel ratio must be less than or equal to <ph name="EMULATION_DEVICEMODEMODEL_MAXDEVICESCALEFACTOR">$1s<ex>10</ex></ph>.
   </message>

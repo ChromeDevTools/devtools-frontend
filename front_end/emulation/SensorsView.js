@@ -339,6 +339,11 @@ Emulation.SensorsView = class extends UI.VBox {
 
     this._deviceOrientation = deviceOrientation;
     this._applyDeviceOrientation();
+
+    UI.ARIAUtils.alert(
+        ls`Device orientation set to alpha: ${deviceOrientation.alpha}, beta: ${deviceOrientation.beta}, gamma: ${
+            deviceOrientation.gamma}`,
+        this._orientationSelectElement);
   }
 
   /**

@@ -1704,8 +1704,9 @@ Network.NetworkLogView = class extends UI.VBox {
    */
   async _generateCurlCommand(request, platform) {
     let command = ['curl'];
-    // These headers are derived from URL (except "version") and would be added by cURL anyway.
-    const ignoredHeaders = {'host': 1, 'method': 1, 'path': 1, 'scheme': 1, 'version': 1};
+    // Most of these headers are derived from the URL and are automatically added by cURL.
+    // The |Accept-Encoding| header is ignored to prevent decompression errors. crbug.com/1015321
+    const ignoredHeaders = {'accept-encoding': 1, 'host': 1, 'method': 1, 'path': 1, 'scheme': 1, 'version': 1};
 
     function escapeStringWin(str) {
       /* If there are no new line characters do not escape the " characters

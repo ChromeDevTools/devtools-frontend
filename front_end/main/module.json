@@ -185,6 +185,14 @@
                 {
                     "platform": "mac",
                     "shortcut": "Meta+G"
+                },
+                {
+                    "platform": "windows,linux",
+                    "shortcut": "Ctrl+G"
+                },
+                {
+                    "platform": "windows,linux",
+                    "shortcut": "F3"
                 }
             ]
         },
@@ -196,6 +204,14 @@
                 {
                     "platform": "mac",
                     "shortcut": "Meta+Shift+G"
+                },
+                {
+                    "platform": "windows,linux",
+                    "shortcut": "Ctrl+Shift+G"
+                },
+                {
+                    "platform": "windows,linux",
+                    "shortcut": "Shift+F3"
                 }
             ]
         },

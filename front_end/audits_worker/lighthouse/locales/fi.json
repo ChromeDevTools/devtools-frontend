@@ -30,10 +30,10 @@
     "message": "Voidakseen suorittaa esteettömyyteen liittyvät toiminnot joidenkin alatason ARIA-roolien on kuuluttava tiettyihin ylätason rooleihin. [Lue lisää](https://web.dev/aria-required-children/)."
   },
   "lighthouse-core/audits/accessibility/aria-required-children.js | failureTitle": {
-    "message": "Sellaisia `[role]`:n sisältäviä elementtejä puuttuu, jotka edellyttävät tiettyjä alatason `[role]`-elementtejä"
+    "message": "ARIAn `[role]` sisältämät elementit edellyttävät alatasoilta tiettyä elementtiä (`[role]`), mutta se puuttuu osalta tai kaikilta alatasoilta."
   },
   "lighthouse-core/audits/accessibility/aria-required-children.js | title": {
-    "message": "Käytössä on `[role]`:n sisältäviä elementtejä, jotka edellyttävät tiettyjä alatason `[role]`-elementtejä"
+    "message": "ARIAn `[role]` sisältämät elementit edellyttävät alatasoilta tiettyä elementtiä (`[role]`), joka on kaikilla alatasoilla."
   },
   "lighthouse-core/audits/accessibility/aria-required-parent.js | description": {
     "message": "Voidakseen suorittaa esteettömyyteen liittyvät toiminnot joidenkin alatason ARIA-roolien on kuuluttava tiettyihin ylätason rooleihin. [Lue lisää](https://web.dev/aria-required-parent/)."
@@ -276,10 +276,10 @@
     "message": "Näytönlukuohjelmissa on ominaisuuksia, jotka tekevät taulukoissa siirtymisestä helpompaa. Voit parantaa näytönlukuohjelman käyttäjien kokemusta varmistamalla, että `[headers]`-määritettä käyttävät `<td>`-solut viittaavat vain toisiin soluihin samassa taulukossa. [Lue lisää](https://web.dev/td-headers-attr/)."
   },
   "lighthouse-core/audits/accessibility/td-headers-attr.js | failureTitle": {
-    "message": "`<table>`-elementissä on soluja, joiden `[headers]`-määritteet viittaavat saman taulukon toisiin soluihin"
+    "message": "`[headers]`-määritettä käyttävät `<table>`-elementin solut viittaavat elementtiin (`id`), joka ei ole samassa taulukossa."
   },
   "lighthouse-core/audits/accessibility/td-headers-attr.js | title": {
-    "message": "`<table>`-määritettä käyttävät `[headers]`-elementin solut viittaavat vain toisiin soluihin samassa taulukossa"
+    "message": "`[headers]`-määritettä käyttävät `<table>`-elementin solut viittaavat soluihin samassa taulukossa"
   },
   "lighthouse-core/audits/accessibility/th-has-data-cells.js | description": {
     "message": "Näytönlukuohjelmissa on ominaisuuksia, jotka tekevät taulukoissa siirtymisestä helpompaa. Voit parantaa näytönlukuohjelmaa käyttävien kokemusta varmistamalla, että taulukoiden otsikot viittaavat aina johonkin solujoukkoon. [Lue lisää](https://web.dev/th-has-data-cells/)."
@@ -318,7 +318,7 @@
     "message": "`<video>`-elementit sisältävät `<track>`-elementin, jossa on `[kind=\"description\"]`"
   },
   "lighthouse-core/audits/apple-touch-icon.js | description": {
-    "message": "Määritä `apple-touch-icon`, jotta iOS-näkyvyys on paras mahdollinen, kun käyttäjä lisää progressiivisen web-sovelluksen aloitusnäytölle. Sen on viitattava läpinäkymättömään neliön muotoiseen (192 px tai 180 px) PNG-tiedostoon. [Lue lisää](https://developers.google.com/web/fundamentals/design-and-ux/browser-customization/)."
+    "message": "Määritä `apple-touch-icon`, jotta iOS-näkyvyys on paras mahdollinen, kun käyttäjä lisää progressiivisen web-sovelluksen aloitusnäytölle. Sen on viitattava läpinäkymättömään neliön muotoiseen (192 px tai 180 px) PNG-tiedostoon. [Lue lisää](https://web.dev/apple-touch-icon/)."
   },
   "lighthouse-core/audits/apple-touch-icon.js | failureTitle": {
     "message": "Ei sisällä kelvollista `apple-touch-icon`-arvoa"
@@ -342,7 +342,7 @@
     "message": "Prosessoriaika yhteensä"
   },
   "lighthouse-core/audits/bootup-time.js | description": {
-    "message": "Suosittelemme lyhentämään JS:n jäsentämiseen, kääntämiseen ja suorittamiseen kuluvaa aikaa. Pienempien JS-resurssien jakaminen voi helpottaa tätä. [Lue lisää](https://developers.google.com/web/tools/lighthouse/audits/bootup)."
+    "message": "Suosittelemme lyhentämään JS:n jäsentämiseen, kääntämiseen ja suorittamiseen kuluvaa aikaa. Pienempien JS-resurssien jakaminen voi helpottaa tätä. [Lue lisää](https://web.dev/bootup-time)."
   },
   "lighthouse-core/audits/bootup-time.js | failureTitle": {
     "message": "Vähennä JavaScriptin suorittamiseen kuluvaa aikaa"
@@ -351,25 +351,25 @@
     "message": "JavaScriptin suorittamiseen kuluva aika"
   },
   "lighthouse-core/audits/byte-efficiency/efficient-animated-content.js | description": {
-    "message": "Suuret GIFit eivät ole tehokas tapa jaella animoitua sisältöä. Voit pienentää ladattavien tavujen määrää jakelemalla animaatioita MPEG4- tai WebM-muodossa ja staattisia kuvia PNG- tai WebP-muodossa. [Lue lisää](https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/replace-animated-gifs-with-video/)"
+    "message": "Suuret GIFit eivät ole tehokas tapa jaella animoitua sisältöä. Voit pienentää ladattavien tavujen määrää jakelemalla animaatioita MPEG4- tai WebM-muodossa ja staattisia kuvia PNG- tai WebP-muodossa. [Lue lisää](https://web.dev/efficient-animated-content)"
   },
   "lighthouse-core/audits/byte-efficiency/efficient-animated-content.js | title": {
     "message": "Jakele animaatiosisältöä videomuodossa"
   },
   "lighthouse-core/audits/byte-efficiency/offscreen-images.js | description": {
-    "message": "Suosittelemme lykkäämään poissa näkyvistä olevien ja piilotettujen kuvien lataamista, kunnes kaikki kriittiset resurssit on ladattu. [Lue lisää](https://developers.google.com/web/tools/lighthouse/audits/offscreen-images)."
+    "message": "Suosittelemme lykkäämään poissa näkyvistä olevien ja piilotettujen kuvien lataamista, kunnes kaikki kriittiset resurssit on ladattu. [Lue lisää](https://web.dev/offscreen-images)."
   },
   "lighthouse-core/audits/byte-efficiency/offscreen-images.js | title": {
     "message": "Lykkää kuvien lataamista, jos ne eivät ole näkyvissä"
   },
   "lighthouse-core/audits/byte-efficiency/render-blocking-resources.js | description": {
-    "message": "Resurssit estävät sivun ensimmäisen renderöinnin. Suosittelemme jakelemaan kriittiset JS- ja CSS-osat sivuun upotettuina ja lykkäämään kaikkien ei-kriittisten JS- tai tyyliosien lataamista. [Lue lisää](https://developers.google.com/web/tools/lighthouse/audits/blocking-resources)."
+    "message": "Resurssit estävät sivun ensimmäisen renderöinnin. Suosittelemme jakelemaan kriittiset JS- ja CSS-osat sivuun upotettuina ja lykkäämään kaikkien ei-kriittisten JS- tai tyyliosien lataamista. [Lue lisää](https://web.dev/render-blocking-resources)."
   },
   "lighthouse-core/audits/byte-efficiency/render-blocking-resources.js | title": {
     "message": "Poista renderöinnin estävät resurssit"
   },
   "lighthouse-core/audits/byte-efficiency/total-byte-weight.js | description": {
-    "message": "Suuret verkkoresurssit aiheuttavat kuluja käyttäjille ja liittyvät vahvasti pitkiin latausaikoihin. [Lue lisää](https://developers.google.com/web/tools/lighthouse/audits/network-payloads)."
+    "message": "Suuret verkkoresurssit aiheuttavat kuluja käyttäjille ja liittyvät vahvasti pitkiin latausaikoihin. [Lue lisää](https://web.dev/total-byte-weight)."
   },
   "lighthouse-core/audits/byte-efficiency/total-byte-weight.js | displayValue": {
     "message": "Yhteenlaskettu koko oli {totalBytes, number, bytes} kt"
@@ -381,19 +381,19 @@
     "message": "Välttää valtavia verkkoresursseja"
   },
   "lighthouse-core/audits/byte-efficiency/unminified-css.js | description": {
-    "message": "CSS-tiedostojen pienentäminen voi auttaa pienentämään verkkoresurssien kokoa. [Lue lisää](https://developers.google.com/web/tools/lighthouse/audits/minify-css)."
+    "message": "CSS-tiedostojen pienentäminen voi auttaa pienentämään verkkoresurssien kokoa. [Lue lisää](https://web.dev/unminified-css)."
   },
   "lighthouse-core/audits/byte-efficiency/unminified-css.js | title": {
     "message": "Pienennä CSS-tiedostoja"
   },
   "lighthouse-core/audits/byte-efficiency/unminified-javascript.js | description": {
-    "message": "JavaScript-tiedostojen pienentäminen voi auttaa pienentämään resurssien kokoa ja lyhentämään skriptin jäsentämiseen kuluvaa aikaa. [Lue lisää](https://developers.google.com/speed/docs/insights/MinifyResources)."
+    "message": "JavaScript-tiedostojen pienentäminen voi auttaa pienentämään resurssien kokoa ja lyhentämään skriptin jäsentämiseen kuluvaa aikaa. [Lue lisää](https://web.dev/unminified-javascript)."
   },
   "lighthouse-core/audits/byte-efficiency/unminified-javascript.js | title": {
     "message": "Pienennä JavaScript-tiedostoja"
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | description": {
-    "message": "Poista käyttämättömät säännöt tyylisivuilta ja lykkää sellaisen CSS:n lataamista, jota ei käytetä sivun yläosan sisältöön, niin vähennät verkkotoiminnan turhaa tavujen kulutusta. [Lue lisää](https://developers.google.com/web/tools/lighthouse/audits/unused-css)."
+    "message": "Poista käyttämättömät säännöt tyylisivuilta ja lykkää sellaisen CSS:n lataamista, jota ei käytetä sivun yläosan sisältöön, niin vähennät verkkotoiminnan turhaa tavujen kulutusta. [Lue lisää](https://web.dev/unused-css-rules)."
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | title": {
     "message": "Poista käyttämätön CSS"
@@ -405,7 +405,7 @@
     "message": "Poista käyttämätön JavaScript"
   },
   "lighthouse-core/audits/byte-efficiency/uses-long-cache-ttl.js | description": {
-    "message": "Pitkä välimuistin käyttöikä voi nopeuttaa sivun lataamista, kun käyttäjä avaa sen uudelleen. [Lue lisää](https://developers.google.com/web/tools/lighthouse/audits/cache-policy)."
+    "message": "Pitkä välimuistin käyttöikä voi nopeuttaa sivun lataamista, kun käyttäjä avaa sen uudelleen. [Lue lisää](https://web.dev/uses-long-cache-ttl)."
   },
   "lighthouse-core/audits/byte-efficiency/uses-long-cache-ttl.js | displayValue": {
     "message": "{itemCount,plural, =1{1 resurssi löydetty}other{# resurssia löydetty}}"
@@ -417,31 +417,31 @@
     "message": "Käyttää tehokasta välimuistikäytäntöä staattisten resurssien käsittelyyn"
   },
   "lighthouse-core/audits/byte-efficiency/uses-optimized-images.js | description": {
-    "message": "Optimoidut kuvat latautuvat nopeammin ja kuluttavat vähemmän mobiilidataa. [Lue lisää](https://developers.google.com/web/tools/lighthouse/audits/optimize-images)."
+    "message": "Optimoidut kuvat latautuvat nopeammin ja kuluttavat vähemmän mobiilidataa. [Lue lisää](https://web.dev/uses-optimized-images)."
   },
   "lighthouse-core/audits/byte-efficiency/uses-optimized-images.js | title": {
     "message": "Koodaa kuvat tehokkaasti"
   },
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | description": {
-    "message": "Näytä sopivan kokoisia kuvia, jotta voit vähentää mobiilidatan kulutusta ja lyhentää latausaikoja. [Lue lisää](https://developers.google.com/web/tools/lighthouse/audits/oversized-images)."
+    "message": "Näytä sopivan kokoisia kuvia, jotta voit vähentää mobiilidatan kulutusta ja lyhentää latausaikoja. [Lue lisää](https://web.dev/uses-responsive-images)."
   },
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | title": {
     "message": "Määritä kuvien koko oikein"
   },
   "lighthouse-core/audits/byte-efficiency/uses-text-compression.js | description": {
-    "message": "Tekstipohjaiset resurssit on hyvä pakata ennen jakelua (gzip, deflate tai brotli), jotta ladattavien tavujen määrä voidaan minimoida. [Lue lisää](https://developers.google.com/web/tools/lighthouse/audits/text-compression)."
+    "message": "Tekstipohjaiset resurssit on hyvä pakata ennen jakelua (gzip, deflate tai brotli), jotta ladattavien tavujen määrä voidaan minimoida. [Lue lisää](https://web.dev/uses-text-compression)."
   },
   "lighthouse-core/audits/byte-efficiency/uses-text-compression.js | title": {
     "message": "Ota tekstin pakkaus käyttöön"
   },
   "lighthouse-core/audits/byte-efficiency/uses-webp-images.js | description": {
-    "message": "Tietyt kuvamuodot, kuten JPEG 2000, JPEG XR ja WebP, pakkaavat sisältöä usein paremmin kuin PNG tai JPEG, minkä vuoksi ne auttavat nopeuttamaan latauksia ja vähentämään datan kulutusta. [Lue lisää](https://developers.google.com/web/tools/lighthouse/audits/webp)."
+    "message": "Tietyt kuvamuodot, kuten JPEG 2000, JPEG XR ja WebP, pakkaavat sisältöä usein paremmin kuin PNG tai JPEG, minkä vuoksi ne auttavat nopeuttamaan latauksia ja vähentämään datan kulutusta. [Lue lisää](https://web.dev/uses-webp-images)."
   },
   "lighthouse-core/audits/byte-efficiency/uses-webp-images.js | title": {
     "message": "Jakele kuvat seuraavan sukupolven muodoissa"
   },
   "lighthouse-core/audits/content-width.js | description": {
-    "message": "Jos sovelluksesi leveys ei vastaa näkymän leveyttä, sovelluksesi ei välttämättä ole mobiilinäytöille optimoitu. [Lue lisää](https://developers.google.com/web/tools/lighthouse/audits/content-sized-correctly-for-viewport)."
+    "message": "Jos sovelluksesi leveys ei vastaa näkymän leveyttä, sovelluksesi ei välttämättä ole mobiilinäytöille optimoitu. [Lue lisää](https://web.dev/content-width)."
   },
   "lighthouse-core/audits/content-width.js | explanation": {
     "message": "Näkymän koko, {innerWidth} px, ei vastaa ikkunan kokoa, {outerWidth} px."
@@ -453,7 +453,7 @@
     "message": "Sisällön koko on näkymän mukainen"
   },
   "lighthouse-core/audits/critical-request-chains.js | description": {
-    "message": "Alla olevat kriittiset pyyntöketjut kertovat, minkä resurssien lataaminen priorisoidaan. Suosittelemme parantamaan sivun latausaikaa lyhentämällä ketjuja, pienentämällä resurssien latauskokoa ja lykkäämällä tarpeettomien resurssien lataamista. [Lue lisää](https://developers.google.com/web/tools/lighthouse/audits/critical-request-chains)."
+    "message": "Alla olevat kriittiset pyyntöketjut kertovat, minkä resurssien lataaminen priorisoidaan. Suosittelemme parantamaan sivun latausaikaa lyhentämällä ketjuja, pienentämällä resurssien latauskokoa ja lykkäämällä tarpeettomien resurssien lataamista. [Lue lisää](https://web.dev/critical-request-chains)."
   },
   "lighthouse-core/audits/critical-request-chains.js | displayValue": {
     "message": "{itemCount,plural, =1{1 ketju löydetty}other{# ketjua löydetty}}"
@@ -675,7 +675,7 @@
     "message": "Konsoliin ei kirjattu selainvirheitä"
   },
   "lighthouse-core/audits/font-display.js | description": {
-    "message": "Käytä CSS:n kirjasimennäyttöominaisuutta, jotta voit varmistaa, että käyttäjä näkee tekstin myös verkkofonttien lataamisen aikana. [Lue lisää](https://developers.google.com/web/updates/2016/02/font-display)."
+    "message": "Käytä CSS:n kirjasimennäyttöominaisuutta, jotta voit varmistaa, että käyttäjä näkee tekstin myös verkkofonttien lataamisen aikana. [Lue lisää](https://web.dev/font-display)."
   },
   "lighthouse-core/audits/font-display.js | failureTitle": {
     "message": "Varmista, että teksti pysyy näkyvissä verkkofontin lataamisen aikana"
@@ -705,7 +705,7 @@
     "message": "Virheelliset kuvan kokotiedot: {url}"
   },
   "lighthouse-core/audits/installable-manifest.js | description": {
-    "message": "Selain voi aktiivisesti suositella käyttäjille sovelluksesi lisäämistä aloitusnäytölle, mikä voi edistää aktivoitumista. [Lue lisää](https://developers.google.com/web/tools/lighthouse/audits/install-prompt)."
+    "message": "Selain voi aktiivisesti suositella käyttäjille sovelluksesi lisäämistä aloitusnäytölle, mikä voi edistää aktivoitumista. [Lue lisää](https://web.dev/installable-manifest)."
   },
   "lighthouse-core/audits/installable-manifest.js | failureTitle": {
     "message": "Verkkosovelluksen luettelo ei vastaa asennettavuusvaatimuksia"
@@ -729,7 +729,7 @@
     "message": "Käyttää HTTPS:ää"
   },
   "lighthouse-core/audits/load-fast-enough-for-pwa.js | description": {
-    "message": "Nopea sivun lataus mobiiliverkon kautta varmistaa hyvän mobiilikäyttökokemuksen. [Lue lisää](https://developers.google.com/web/tools/lighthouse/audits/fast-3g)."
+    "message": "Nopea sivun lataus mobiiliverkon kautta varmistaa hyvän mobiilikäyttökokemuksen. [Lue lisää](https://web.dev/load-fast-enough-for-pwa)."
   },
   "lighthouse-core/audits/load-fast-enough-for-pwa.js | displayValueText": {
     "message": "Interaktiivinen: {timeInMs, number, seconds} s"
@@ -750,7 +750,7 @@
     "message": "Luokka"
   },
   "lighthouse-core/audits/mainthread-work-breakdown.js | description": {
-    "message": "Suosittelemme vähentämään JS:n jäsentämiseen, kääntämiseen ja suorittamiseen kuluvaa aikaa. Pienempien JS-resurssien jakaminen voi helpottaa tätä."
+    "message": "Suosittelemme lyhentämään JS:n jäsentämiseen, kääntämiseen ja suorittamiseen kuluvaa aikaa. Pienempien JS-resurssien jakeleminen voi auttaa. [Lue lisää](https://web.dev/mainthread-work-breakdown)"
   },
   "lighthouse-core/audits/mainthread-work-breakdown.js | failureTitle": {
     "message": "Minimoi pääsäikeen työkuorma"
@@ -759,49 +759,49 @@
     "message": "Minimoi pääsäikeen työkuorman"
   },
   "lighthouse-core/audits/manual/pwa-cross-browser.js | description": {
-    "message": "Tavoittaakseen maksimimäärän käyttäjiä sivustojen tulee toimia kaikilla tärkeillä selaimilla. [Lue lisää](https://developers.google.com/web/progressive-web-apps/checklist#site-works-cross-browser)."
+    "message": "Tavoittaakseen maksimimäärän käyttäjiä sivustojen tulee toimia kaikilla tärkeillä selaimilla. [Lue lisää](https://web.dev/pwa-cross-browser)."
   },
   "lighthouse-core/audits/manual/pwa-cross-browser.js | title": {
     "message": "Sivusto toimii eri selaimilla"
   },
   "lighthouse-core/audits/manual/pwa-each-page-has-url.js | description": {
-    "message": "Varmista, että yksittäisiin sivuihin voi täsmälinkittää URL-osoitteella ja että URL-osoitteet ovat ainutlaatuisia, jotta jaettavuus somessa paranee. [Lue lisää](https://developers.google.com/web/progressive-web-apps/checklist#each-page-has-a-url)."
+    "message": "Varmista, että yksittäisiin sivuihin voi täsmälinkittää URL-osoitteella ja että URL-osoitteet ovat ainutlaatuisia, jotta jaettavuus somessa paranee. [Lue lisää](https://web.dev/pwa-each-page-has-url)."
   },
   "lighthouse-core/audits/manual/pwa-each-page-has-url.js | title": {
     "message": "Joka sivulla on URL-osoite"
   },
   "lighthouse-core/audits/manual/pwa-page-transitions.js | description": {
-    "message": "Napautuksilla navigoitaessa siirtymien tulee olla saumattomia, vaikka verkko olisi hidas, jotta syntyy vaikutelma toimivuudesta. [Lue lisää](https://developers.google.com/web/progressive-web-apps/checklist#page-transitions-dont-feel-like-they-block-on-the-network)."
+    "message": "Napautuksilla navigoitaessa siirtymien tulee olla saumattomia, vaikka verkko olisi hidas. Näin syntyy vaikutelma toimivuudesta. [Lue lisää](https://web.dev/pwa-page-transitions)."
   },
   "lighthouse-core/audits/manual/pwa-page-transitions.js | title": {
     "message": "Verkko ei estä sivujen välisiä siirtymiä"
   },
   "lighthouse-core/audits/metrics/estimated-input-latency.js | description": {
-    "message": "Arvioitu syöttöviive on millisekunteina annettu arvio siitä, kuinka kauan sovelluksellasi kestää vastata käyttäjän syötteeseen sivun lataamisen kiireisimmän, viiden sekunnin mittaisen jakson aikana. Jos viive on yli 50 ms, sovelluksesi voi toimia käyttäjien mielestä hitaasti. [Lue lisää](https://developers.google.com/web/tools/lighthouse/audits/estimated-input-latency)."
+    "message": "Arvioitu syöttöviive on millisekunteina annettu arvio siitä, kuinka kauan sovelluksellasi kestää vastata käyttäjän syötteeseen sivun lataamisen kiireisimmän, viiden sekunnin mittaisen jakson aikana. Jos viive on yli 50 ms, sovelluksesi voi toimia käyttäjien mielestä hitaasti. [Lue lisää](https://web.dev/estimated-input-latency)."
   },
   "lighthouse-core/audits/metrics/estimated-input-latency.js | title": {
     "message": "Arvioitu syöttöviive"
   },
   "lighthouse-core/audits/metrics/first-contentful-paint.js | description": {
-    "message": "Ensimmäinen sisällön renderöinti kertoo, milloin ensimmäinen tekstikohde tai kuva renderöidään. [Lue lisää](https://developers.google.com/web/tools/lighthouse/audits/first-contentful-paint)."
+    "message": "Ensimmäinen sisällön renderöinti kertoo, milloin ensimmäinen tekstikohde tai kuva renderöidään. [Lue lisää](https://web.dev/first-contentful-paint)."
   },
   "lighthouse-core/audits/metrics/first-contentful-paint.js | title": {
     "message": "Ensimmäinen sisällön renderöinti"
   },
   "lighthouse-core/audits/metrics/first-cpu-idle.js | description": {
-    "message": "CPU:n ensimmäinen toimettomuusjakso kertoo, milloin sivun pääsäikeen tilanne sallii syötteiden käsittelyn. [Lue lisää](https://developers.google.com/web/tools/lighthouse/audits/first-interactive)."
+    "message": "CPU:n ensimmäinen toimettomuusjakso kertoo, milloin sivun pääsäikeen tilanne sallii syötteiden käsittelyn.  [Lue lisää](https://web.dev/first-cpu-idle)."
   },
   "lighthouse-core/audits/metrics/first-cpu-idle.js | title": {
     "message": "CPU:n ensimmäinen toimettomuusjakso"
   },
   "lighthouse-core/audits/metrics/first-meaningful-paint.js | description": {
-    "message": "Ensimmäinen merkityksellinen renderöinti kertoo, milloin sivun ensisijainen sisältö tulee näkyviin. [Lue lisää](https://developers.google.com/web/tools/lighthouse/audits/first-meaningful-paint)."
+    "message": "Ensimmäinen merkityksellinen renderöinti kertoo, milloin sivun ensisijainen sisältö tulee näkyviin. [Lue lisää](https://web.dev/first-meaningful-paint)."
   },
   "lighthouse-core/audits/metrics/first-meaningful-paint.js | title": {
     "message": "Ensimmäinen merkityksellinen renderöinti"
   },
   "lighthouse-core/audits/metrics/interactive.js | description": {
-    "message": "Interaktiivisuutta edeltävä aika tarkoittaa aikaa, joka sivulla kestää siihen, että se on täysin interaktiivinen. [Lue lisää](https://developers.google.com/web/tools/lighthouse/audits/consistently-interactive)."
+    "message": "Interaktiivisuutta edeltävä aika tarkoittaa aikaa, joka sivulla kestää siihen, että se on täysin interaktiivinen. [Lue lisää](https://web.dev/interactive)."
   },
   "lighthouse-core/audits/metrics/interactive.js | title": {
     "message": "Interaktiivisuutta edeltävä aika"
@@ -813,7 +813,7 @@
     "message": "Suurin mahdollinen ensimmäisen toiminnon viive"
   },
   "lighthouse-core/audits/metrics/speed-index.js | description": {
-    "message": "Nopeusindeksi kertoo, kuinka nopeasti sivun sisältö tulee näkyviin. [Lue lisää](https://developers.google.com/web/tools/lighthouse/audits/speed-index)."
+    "message": "Nopeusindeksi kertoo, kuinka nopeasti sivun sisältö tulee näkyviin. [Lue lisää](https://web.dev/speed-index)."
   },
   "lighthouse-core/audits/metrics/speed-index.js | title": {
     "message": "Nopeusindeksi"
@@ -837,7 +837,7 @@
     "message": "Palvelimen taustaviiveet"
   },
   "lighthouse-core/audits/offline-start-url.js | description": {
-    "message": "Service worker auttaa tekemään verkkosovelluksesta luotettavan, jos verkko-olosuhteet ovat vaikeita ennustaa. [Lue lisää](https://developers.google.com/web/tools/lighthouse/audits/http-200-when-offline)."
+    "message": "Service worker auttaa tekemään verkkosovelluksesta luotettavan, jos verkko-olosuhteet ovat vaikeita ennustaa. [Lue lisää](https://web.dev/offline-start-url)."
   },
   "lighthouse-core/audits/offline-start-url.js | failureTitle": {
     "message": "`start_url` ei vastaa 200-viestillä offline-tilassa"
@@ -861,7 +861,7 @@
     "message": "Tehokkuusbudjetti"
   },
   "lighthouse-core/audits/redirects-http.js | description": {
-    "message": "Jos määritit jo HTTPS:n, varmista että ohjaat kaiken HTTP-liikenteen HTTPS:ään, jotta kaikki käyttäjät saavat turvalliset verkko-ominaisuudet. [Lue lisää](https://developers.google.com/web/tools/lighthouse/audits/http-redirects-to-https)."
+    "message": "Jos määritit jo HTTPS:n, varmista että ohjaat kaiken HTTP-liikenteen HTTPS:ään, jotta kaikki käyttäjät saavat turvalliset verkko-ominaisuudet. [Lue lisää](https://web.dev/redirects-http)."
   },
   "lighthouse-core/audits/redirects-http.js | failureTitle": {
     "message": "Ei uudelleenohjaa HTTP-liikennettä HTTPS:ään"
@@ -870,7 +870,7 @@
     "message": "Uudelleenohjaa HTTP-liikennettä HTTPS:ään"
   },
   "lighthouse-core/audits/redirects.js | description": {
-    "message": "Uudelleenohjaukset viivästyttävät sivun lataamista. [Lue lisää](https://developers.google.com/web/tools/lighthouse/audits/redirects)."
+    "message": "Uudelleenohjaukset viivästyttävät sivun lataamista. [Lue lisää](https://web.dev/redirects)."
   },
   "lighthouse-core/audits/redirects.js | title": {
     "message": "Vältä useita uudelleenohjauksia"
@@ -1035,7 +1035,7 @@
     "message": "Napautuskohteet ovat sopivan kokoisia"
   },
   "lighthouse-core/audits/service-worker.js | description": {
-    "message": "Service worker ‑teknologia tuo sovelluksen käyttöön monia progressiivisen web-sovelluksen ominaisuuksia, kuten offline-käytön, aloitusnäytölle lisäämisen ja ilmoitukset. [Lue lisää](https://developers.google.com/web/tools/lighthouse/audits/registered-service-worker)."
+    "message": "Service worker ‑teknologia tuo sovelluksen käyttöön monia progressiivisen web-sovelluksen ominaisuuksia, kuten offline-käytön, aloitusnäytölle lisäämisen ja ilmoitukset. [Lue lisää](https://web.dev/service-worker)."
   },
   "lighthouse-core/audits/service-worker.js | explanationBadManifest": {
     "message": "Service worker hallitsee sivua, mutta osoitetta (`start_url`) ei löytynyt, koska luetteloa ei voitu jäsentää kelvollisena JSONina."
@@ -1056,7 +1056,7 @@
     "message": "Rekisteröi service workerin, jonka hallinnassa sivu ja `start_url` ovat"
   },
   "lighthouse-core/audits/splash-screen.js | description": {
-    "message": "Teeman sisältävä aloitussivu varmistaa laadukkaan kokemuksen, kun käyttäjä avaa sovelluksen aloitusnäytöltään. [Lue lisää](https://developers.google.com/web/tools/lighthouse/audits/custom-splash-screen)."
+    "message": "Teeman sisältävä aloitussivu varmistaa laadukkaan kokemuksen, kun käyttäjä avaa sovelluksen aloitusnäytöltään. [Lue lisää](https://web.dev/splash-screen)."
   },
   "lighthouse-core/audits/splash-screen.js | failureTitle": {
     "message": "Yksilöityä aloitusnäyttöä ei ole määritetty"
@@ -1065,7 +1065,7 @@
     "message": "Yksilöity aloitusnäyttö määritetty"
   },
   "lighthouse-core/audits/themed-omnibox.js | description": {
-    "message": "Voit muokata selaimen osoitepalkkia sivustosi teeman mukaiseksi. [Lue lisää](https://developers.google.com/web/tools/lighthouse/audits/address-bar)."
+    "message": "Voit muokata selaimen osoitepalkkia sivustosi teeman mukaiseksi. [Lue lisää](https://web.dev/themed-omnibox)."
   },
   "lighthouse-core/audits/themed-omnibox.js | failureTitle": {
     "message": "Ei aseta osoitepalkin teemaväriä"
@@ -1092,7 +1092,7 @@
     "message": "Kolmannen osapuolen käyttö"
   },
   "lighthouse-core/audits/time-to-first-byte.js | description": {
-    "message": "Ensimmäistä tavua edeltävä aika kertoo, kuinka kauan kestää, ennen kuin palvelimesi lähettää vastauksen. [Lue lisää](https://developers.google.com/web/tools/lighthouse/audits/ttfb)."
+    "message": "Ensimmäistä tavua edeltävä aika kertoo, kuinka kauan kestää, ennen kuin palvelimesi lähettää vastauksen. [Lue lisää](https://web.dev/time-to-first-byte)."
   },
   "lighthouse-core/audits/time-to-first-byte.js | displayValue": {
     "message": "Päädokumentti käytti {timeInMs, number, milliseconds} ms"
@@ -1113,7 +1113,7 @@
     "message": "Tyyppi"
   },
   "lighthouse-core/audits/user-timings.js | description": {
-    "message": "Suosittelemme käyttämään sovelluksen kehittämisessä User Timing ‑sovellusliittymää mittaamaan todellista toimivuutta tärkeiden käyttökokemusten aikana. [Lue lisää](https://developers.google.com/web/tools/lighthouse/audits/user-timing)."
+    "message": "Suosittelemme käyttämään sovelluksen kehittämisessä User Timing ‑sovellusliittymää mittaamaan todellista toimivuutta tärkeiden käyttökokemusten aikana. [Lue lisää](https://web.dev/user-timings)."
   },
   "lighthouse-core/audits/user-timings.js | displayValue": {
     "message": "{itemCount,plural, =1{1 käyttäjän ajankäyttömerkintä}other{# käyttäjän ajankäyttömerkintää}}"
@@ -1125,7 +1125,7 @@
     "message": "Yhteyttä edeltävä linkki (<link>) löytyi osoitteelle {securityOrigin}, mutta selain ei käyttänyt sitä. Varmista, että käytät eri lähteiden `crossorigin`-määritettä oikein."
   },
   "lighthouse-core/audits/uses-rel-preconnect.js | description": {
-    "message": "Suosittelemme lisäämään sivulle `preconnect`- tai `dns-prefetch` ‑resurssivihjeitä, joiden avulla yhteydet tärkeisiin kolmannen osapuolen lähteisiin voidaan muodostaa ajoissa. [Lue lisää](https://developers.google.com/web/fundamentals/performance/resource-prioritization#preconnect)."
+    "message": "Suosittelemme lisäämään sivulle `preconnect`- tai `dns-prefetch` ‑resurssivihjeitä, joiden avulla yhteydet tärkeisiin kolmannen osapuolen lähteisiin voidaan muodostaa ajoissa. [Lue lisää](https://web.dev/uses-rel-preconnect)."
   },
   "lighthouse-core/audits/uses-rel-preconnect.js | title": {
     "message": "Muodosta yhteydet pakollisiin kohteisiin etukäteen"
@@ -1134,13 +1134,13 @@
     "message": "Esilatauslinkki <link> löytyi osoitteelle {preloadURL}, mutta selain ei käyttänyt sitä. Varmista, että käytät eri lähteiden `crossorigin`-määritettä oikein."
   },
   "lighthouse-core/audits/uses-rel-preload.js | description": {
-    "message": "Suosittelemme käyttämään `<link rel=preload>`-tagia, jotta voit priorisoida resursseja, joiden noutamista pyydetään sivun lataamisen myöhemmässä vaiheessa. [Lue lisää](https://developers.google.com/web/tools/lighthouse/audits/preload)."
+    "message": "Suosittelemme käyttämään `<link rel=preload>`-tagia, jotta voit priorisoida resursseja, joiden noutamista pyydetään sivun lataamisen myöhemmässä vaiheessa. [Lue lisää](https://web.dev/uses-rel-preload)."
   },
   "lighthouse-core/audits/uses-rel-preload.js | title": {
     "message": "Lataa tärkeät pyynnöt etukäteen"
   },
   "lighthouse-core/audits/viewport.js | description": {
-    "message": "Lisää `<meta name=\"viewport\">`-tagi optimoidaksesi sovelluksen mobiilinäytöille. [Lue lisää](https://developers.google.com/web/tools/lighthouse/audits/has-viewport-meta-tag)."
+    "message": "Lisää `<meta name=\"viewport\">`-tagi optimoidaksesi sovelluksen mobiilinäytöille. [Lue lisää](https://web.dev/viewport)."
   },
   "lighthouse-core/audits/viewport.js | explanationNoTag": {
     "message": "`<meta name=\"viewport\">`-tagia ei löytynyt"
@@ -1152,7 +1152,7 @@
     "message": "`<meta name=\"viewport\">` ‑tagi, jossa `width` tai `initial-scale`, löytyy"
   },
   "lighthouse-core/audits/without-javascript.js | description": {
-    "message": "Sovelluksen tulee näyttää jotakin sisältöä, vaikka JavaScript ei ole toiminnassa. Näytä käyttäjälle vähintään varoitus, että JavaScript on pakollinen sovelluksen käyttöä varten. [Lue lisää](https://developers.google.com/web/tools/lighthouse/audits/no-js)."
+    "message": "Sovelluksen tulee näyttää jotakin sisältöä, vaikka JavaScript ei ole toiminnassa. Näytä käyttäjälle vähintään varoitus, että JavaScript on pakollinen sovelluksen käyttöä varten. [Lue lisää](https://web.dev/without-javascript)."
   },
   "lighthouse-core/audits/without-javascript.js | explanation": {
     "message": "Sivun runko-osan pitäisi renderöidä sisältöä, vaikka sen skriptit eivät ole saatavilla."
@@ -1164,7 +1164,7 @@
     "message": "Palauttaa sisältöä, vaikka JavaScript ei ole käytettävissä"
   },
   "lighthouse-core/audits/works-offline.js | description": {
-    "message": "Jos kehität progressiivista web-sovellusta, harkitse service workerin käyttöä tukemaan sovelluksen toimintaa offline-tilassa. [Lue lisää](https://developers.google.com/web/tools/lighthouse/audits/http-200-when-offline)."
+    "message": "Jos kehität progressiivista web-sovellusta, harkitse service workerin käyttöä tukemaan sovelluksen toimintaa offline-tilassa. [Lue lisää](https://web.dev/works-offline)."
   },
   "lighthouse-core/audits/works-offline.js | failureTitle": {
     "message": "Nykyinen sivu ei vastaa 200-viestillä offline-tilassa"

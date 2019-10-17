@@ -30,10 +30,10 @@
     "message": "Algunes funcions dels elements ARIA superiors han d'incloure funcions concretes dels elements secundaris perquè puguin dur a terme les funcions d'accessibilitat per a les quals s'han dissenyat. [Obtén més informació](https://web.dev/aria-required-children/)."
   },
   "lighthouse-core/audits/accessibility/aria-required-children.js | failureTitle": {
-    "message": "Falten elements amb l'atribut `[role]` que requereixen determinats atributs `[role]` secundaris."
+    "message": "Els elements amb un `[role]` ARIA que requereixen que els elements secundaris continguin un atribut `[role]` específic no tenen alguns o tots els elements secundaris requerits."
   },
   "lighthouse-core/audits/accessibility/aria-required-children.js | title": {
-    "message": "Hi ha elements amb l'atribut `[role]` que requereixen determinats atributs `[role]` secundaris"
+    "message": "Els elements amb un ARIA `[role]` que requereixen que els elements secundaris continguin un atribut `[role]` específic tenen tots els elements secundaris requerits."
   },
   "lighthouse-core/audits/accessibility/aria-required-parent.js | description": {
     "message": "Les funcions de determinats elements superiors han d'incloure algunes funcions dels elements ARIA secundaris perquè puguin dur a terme les funcions d'accessibilitat per a les quals s'han dissenyat. [Obtén més informació](https://web.dev/aria-required-parent/)."
@@ -276,10 +276,10 @@
     "message": "Els lectors de pantalla inclouen funcions perquè sigui més fàcil navegar per les taules. Assegura't que les cel·les `<td>` que fan servir l'atribut `[headers]` només facin referència a altres cel·les de la mateixa taula. Això pot millorar l'experiència dels usuaris de lectors de pantalla. [Obtén més informació](https://web.dev/td-headers-attr/)."
   },
   "lighthouse-core/audits/accessibility/td-headers-attr.js | failureTitle": {
-    "message": "Algunes cel·les d'un element `<table>` que fan servir l'atribut `[headers]` fan referència a altres cel·les de la mateixa taula."
+    "message": "Les cel·les d'un element `<table>` que fan servir l'atribut `[headers]` fan referència a un element `id` que no és a la mateixa taula."
   },
   "lighthouse-core/audits/accessibility/td-headers-attr.js | title": {
-    "message": "Algunes cel·les d'un element `<table>` que fan servir l'atribut `[headers]` només fan referència a altres cel·les de la mateixa taula."
+    "message": "Les cel·les d'un element `<table>` que fan servir l'atribut `[headers]` fan referència a cel·les de taula incloses a la mateixa taula."
   },
   "lighthouse-core/audits/accessibility/th-has-data-cells.js | description": {
     "message": "Els lectors de pantalla inclouen funcions perquè sigui més fàcil navegar per les taules. Assegura't que els encapçalaments de les taules facin sempre referència a un conjunt de cel·les. Això pot millorar l'experiència dels usuaris de lectors de pantalla. [Obtén més informació](https://web.dev/th-has-data-cells/)."
@@ -318,7 +318,7 @@
     "message": "Els elements `<video>` contenen un element `<track>` amb `[kind=\"description\"]`"
   },
   "lighthouse-core/audits/apple-touch-icon.js | description": {
-    "message": "Perquè l'aspecte a iOS sigui l'ideal quan els usuaris afegeixin una aplicació web progressiva a la pantalla d'inici, defineix un atribut `apple-touch-icon`. Ha de dirigir a una imatge PNG quadrada de 192 píxels o de 180 píxels que no sigui transparent. [Obtén més informació](https://developers.google.com/web/fundamentals/design-and-ux/browser-customization/)."
+    "message": "Perquè l'aspecte a iOS sigui l'ideal quan els usuaris afegeixin una aplicació web progressiva a la pantalla d'inici, defineix un atribut `apple-touch-icon`. Ha de dirigir a una imatge PNG quadrada de 192 píxels o de 180 píxels que no sigui transparent. [Obtén més informació](https://web.dev/apple-touch-icon/)."
   },
   "lighthouse-core/audits/apple-touch-icon.js | failureTitle": {
     "message": "No conté un atribut `apple-touch-icon` vàlid"
@@ -342,7 +342,7 @@
     "message": "Temps total de la CPU"
   },
   "lighthouse-core/audits/bootup-time.js | description": {
-    "message": "Et recomanem que redueixis el temps dedicat a analitzar, compilar i executar JavaScript. Et pot ajudar utilitzar càrregues útils de JavaScript més petites. [Obtén més informació](https://developers.google.com/web/tools/lighthouse/audits/bootup)."
+    "message": "Et recomanem que redueixis el temps dedicat a analitzar, compilar i executar JavaScript. Et pot ajudar utilitzar càrregues útils de JavaScript més petites. [Obtén més informació](https://web.dev/bootup-time)."
   },
   "lighthouse-core/audits/bootup-time.js | failureTitle": {
     "message": "Redueix el temps d'execució de JavaScript"
@@ -351,25 +351,25 @@
     "message": "Temps d'execució de JavaScript"
   },
   "lighthouse-core/audits/byte-efficiency/efficient-animated-content.js | description": {
-    "message": "Els GIF grans no són eficients per publicar contingut animat. A fi d'estalviar bytes a la xarxa, pots substituir els GIF per vídeos MPEG4/WebM en el cas de les animacions i per PNG/WebP en el cas de les imatges estàtiques. [Més informació](https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/replace-animated-gifs-with-video/)"
+    "message": "Els GIF grans no són eficients per publicar contingut animat. A fi d'estalviar bytes a la xarxa, pots substituir els GIF per vídeos MPEG4/WebM en el cas de les animacions i per PNG/WebP en el cas de les imatges estàtiques. [Més informació](https://web.dev/efficient-animated-content)"
   },
   "lighthouse-core/audits/byte-efficiency/efficient-animated-content.js | title": {
     "message": "Utilitza formats de vídeo per al contingut animat"
   },
   "lighthouse-core/audits/byte-efficiency/offscreen-images.js | description": {
-    "message": "Et recomanem que utilitzis la càrrega diferida de les imatges amagades i que no es mostren a la pantalla un cop s'acabin de carregar tots els recursos essencials a fi de reduir el temps necessari perquè la pàgina sigui interactiva. [Obtén més informació](https://developers.google.com/web/tools/lighthouse/audits/offscreen-images)."
+    "message": "Et recomanem que utilitzis la càrrega diferida de les imatges amagades i que no es mostren a la pantalla un cop s'acabin de carregar tots els recursos essencials a fi de reduir el temps necessari perquè la pàgina sigui interactiva. [Obtén més informació](https://web.dev/offscreen-images)."
   },
   "lighthouse-core/audits/byte-efficiency/offscreen-images.js | title": {
     "message": "Ajorna les imatges fora de pantalla"
   },
   "lighthouse-core/audits/byte-efficiency/render-blocking-resources.js | description": {
-    "message": "Els recursos estan bloquejant la primera renderització de la pàgina. Et recomanem que publiquis els fitxers JavaScript o CSS inserits que siguin essencials i ajornis tots els estils i els fitxers JavaScript que no ho siguin. [Obtén més informació](https://developers.google.com/web/tools/lighthouse/audits/blocking-resources)."
+    "message": "Els recursos estan bloquejant la primera renderització de la pàgina. Et recomanem que publiquis els fitxers JavaScript o CSS inserits que siguin essencials i ajornis tots els estils i els fitxers JavaScript que no ho siguin. [Obtén més informació](https://web.dev/render-blocking-resources)."
   },
   "lighthouse-core/audits/byte-efficiency/render-blocking-resources.js | title": {
     "message": "Elimina els recursos que bloquegen la renderització"
   },
   "lighthouse-core/audits/byte-efficiency/total-byte-weight.js | description": {
-    "message": "Si la càrrega útil de la xarxa és molt gran, els usuaris consumeixen més dades mòbils i els temps de càrrega són més llargs. [Obtén més informació](https://developers.google.com/web/tools/lighthouse/audits/network-payloads)."
+    "message": "Si la càrrega útil de la xarxa és molt gran, els usuaris consumeixen més dades mòbils i els temps de càrrega són més llargs. [Obtén més informació](https://web.dev/total-byte-weight)."
   },
   "lighthouse-core/audits/byte-efficiency/total-byte-weight.js | displayValue": {
     "message": "Mida total: {totalBytes, number, bytes} kB"
@@ -381,19 +381,19 @@
     "message": "Evita càrregues útils de xarxa enormes"
   },
   "lighthouse-core/audits/byte-efficiency/unminified-css.js | description": {
-    "message": "Reduir els fitxers CSS pot disminuir les mides de càrrega útil a la xarxa. [Obtén més informació](https://developers.google.com/web/tools/lighthouse/audits/minify-css)."
+    "message": "Reduir els fitxers CSS pot disminuir les mides de càrrega útil a la xarxa. [Obtén més informació](https://web.dev/unminified-css)."
   },
   "lighthouse-core/audits/byte-efficiency/unminified-css.js | title": {
     "message": "Redueix els CSS"
   },
   "lighthouse-core/audits/byte-efficiency/unminified-javascript.js | description": {
-    "message": "Reduir els fitxers JavaScript pot disminuir les mides de càrrega i els temps d'anàlisi de scripts. [Obtén més informació](https://developers.google.com/speed/docs/insights/MinifyResources)."
+    "message": "Reduir els fitxers JavaScript pot disminuir les mides de càrrega i els temps d'anàlisi de scripts. [Obtén més informació](https://web.dev/unminified-javascript)."
   },
   "lighthouse-core/audits/byte-efficiency/unminified-javascript.js | title": {
     "message": "Redueix els fitxers JavaScript"
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | description": {
-    "message": "Per reduir els bytes que es consumeixen de manera innecessària durant l'activitat de la xarxa, suprimeix dels fulls d'estil les regles que no s'utilitzin i ajorna la càrrega dels CSS que no es facin servir per al contingut de la part superior visible. [Obtén més informació](https://developers.google.com/web/tools/lighthouse/audits/unused-css)."
+    "message": "Per reduir els bytes que es consumeixen de manera innecessària durant l'activitat de la xarxa, suprimeix dels fulls d'estil les regles que no s'utilitzin i ajorna la càrrega dels CSS que no es facin servir per al contingut de la part superior visible. [Obtén més informació](https://web.dev/unused-css-rules)."
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | title": {
     "message": "Suprimeix els CSS no utilitzats"
@@ -405,7 +405,7 @@
     "message": "Suprimeix els fitxers JavaScript no utilitzats"
   },
   "lighthouse-core/audits/byte-efficiency/uses-long-cache-ttl.js | description": {
-    "message": "Si la memòria cau té una vida llarga, es poden accelerar les visites repetides a la teva pàgina. [Obtén més informació](https://developers.google.com/web/tools/lighthouse/audits/cache-policy)."
+    "message": "Si la memòria cau té una vida llarga, es poden accelerar les visites repetides a la teva pàgina. [Obtén més informació](https://web.dev/uses-long-cache-ttl)."
   },
   "lighthouse-core/audits/byte-efficiency/uses-long-cache-ttl.js | displayValue": {
     "message": "{itemCount,plural, =1{S'ha trobat 1 recurs}other{S'han trobat # recursos}}"
@@ -417,31 +417,31 @@
     "message": "Utilitza una política de memòria cau eficient per als recursos estàtics"
   },
   "lighthouse-core/audits/byte-efficiency/uses-optimized-images.js | description": {
-    "message": "Les imatges optimitzades es carreguen més ràpidament i utilitzen menys dades mòbils. [Obtén més informació](https://developers.google.com/web/tools/lighthouse/audits/optimize-images)."
+    "message": "Les imatges optimitzades es carreguen més ràpidament i utilitzen menys dades mòbils. [Obtén més informació](https://web.dev/uses-optimized-images)."
   },
   "lighthouse-core/audits/byte-efficiency/uses-optimized-images.js | title": {
     "message": "Codifica les imatges amb eficiència"
   },
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | description": {
-    "message": "Publica imatges amb la mida correcta per estalviar dades mòbils i millorar el temps de càrrega. [Obtén més informació](https://developers.google.com/web/tools/lighthouse/audits/oversized-images)."
+    "message": "Publica imatges amb la mida correcta per estalviar dades mòbils i millorar el temps de càrrega. [Obtén més informació](https://web.dev/uses-responsive-images)."
   },
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | title": {
     "message": "Adapta la mida de les imatges"
   },
   "lighthouse-core/audits/byte-efficiency/uses-text-compression.js | description": {
-    "message": "Els recursos basats en text s'han de publicar comprimits (gzip, deflate o brotli) per minimitzar el total de bytes a la xarxa. [Obtén més informació](https://developers.google.com/web/tools/lighthouse/audits/text-compression)."
+    "message": "Els recursos basats en text s'han de publicar comprimits (gzip, deflate o brotli) per minimitzar el total de bytes a la xarxa. [Obtén més informació](https://web.dev/uses-text-compression)."
   },
   "lighthouse-core/audits/byte-efficiency/uses-text-compression.js | title": {
     "message": "Activa la compressió de text"
   },
   "lighthouse-core/audits/byte-efficiency/uses-webp-images.js | description": {
-    "message": "Els formats d'imatge com JPEG 2000, JPEG XR i WebP solen oferir millors resultats de compressió que PNG o JPEG. Això implica baixades més ràpides i menys consum de dades. [Obtén més informació](https://developers.google.com/web/tools/lighthouse/audits/webp)."
+    "message": "Els formats d'imatge com JPEG 2000, JPEG XR i WebP solen oferir millors resultats de compressió que PNG o JPEG. Això implica baixades més ràpides i menys consum de dades. [Obtén més informació](https://web.dev/uses-webp-images)."
   },
   "lighthouse-core/audits/byte-efficiency/uses-webp-images.js | title": {
     "message": "Publica imatges en format d'última generació"
   },
   "lighthouse-core/audits/content-width.js | description": {
-    "message": "Si l'amplada del contingut de l'aplicació no coincideix amb l'amplada de la finestra gràfica, és possible que l'aplicació no s'optimitzi per a pantalles de dispositius mòbils. [Obtén més informació](https://developers.google.com/web/tools/lighthouse/audits/content-sized-correctly-for-viewport)."
+    "message": "Si l'amplada del contingut de l'aplicació no coincideix amb l'amplada de la finestra gràfica, és possible que l'aplicació no s'optimitzi per a pantalles de dispositius mòbils. [Obtén més informació](https://web.dev/content-width)."
   },
   "lighthouse-core/audits/content-width.js | explanation": {
     "message": "La mida de la finestra gràfica ({innerWidth} píxels) no coincideix amb la mida de la finestra ({outerWidth} píxels)."
@@ -453,7 +453,7 @@
     "message": "El contingut té la mida correcta per a la finestra gràfica"
   },
   "lighthouse-core/audits/critical-request-chains.js | description": {
-    "message": "Les cadenes de sol·licituds essencials de sota et mostren quins recursos es carreguen amb prioritat alta. Et recomanem que escurcis les cadenes, redueixis la mida de baixada dels recursos o ajornis la baixada de recursos innecessaris per millorar la càrrega de pàgines. [Obtén més informació](https://developers.google.com/web/tools/lighthouse/audits/critical-request-chains)."
+    "message": "Les cadenes de sol·licituds essencials de sota et mostren quins recursos es carreguen amb prioritat alta. Et recomanem que escurcis les cadenes, redueixis la mida de baixada dels recursos o ajornis la baixada de recursos innecessaris per millorar la càrrega de pàgines. [Obtén més informació](https://web.dev/critical-request-chains)."
   },
   "lighthouse-core/audits/critical-request-chains.js | displayValue": {
     "message": "{itemCount,plural, =1{S'ha trobat 1 cadena}other{S'han trobat # cadenes}}"
@@ -675,7 +675,7 @@
     "message": "No s'ha registrat cap error del navegador a la consola"
   },
   "lighthouse-core/audits/font-display.js | description": {
-    "message": "Aprofita la funció CSS que permet mostrar els tipus de lletra per assegurar-te que els usuaris puguin veure el text mentre es carreguen els tipus de lletra per a llocs web. [Obtén més informació](https://developers.google.com/web/updates/2016/02/font-display)."
+    "message": "Aprofita la funció CSS que permet mostrar els tipus de lletra per assegurar-te que els usuaris puguin veure el text mentre es carreguen els tipus de lletra per a llocs web. [Obtén més informació](https://web.dev/font-display)."
   },
   "lighthouse-core/audits/font-display.js | failureTitle": {
     "message": "Assegura't que el text continuï visible durant la càrrega dels tipus de lletra per a llocs web"
@@ -705,7 +705,7 @@
     "message": "La informació sobre la mida de la imatge no és vàlida: {url}"
   },
   "lighthouse-core/audits/installable-manifest.js | description": {
-    "message": "Els navegadors poden demanar de manera proactiva als usuaris que afegeixin la teva aplicació a la pantalla d'inici, cosa que permet que hi interaccionin més. [Obtén més informació](https://developers.google.com/web/tools/lighthouse/audits/install-prompt)."
+    "message": "Els navegadors poden demanar de manera proactiva als usuaris que afegeixin la teva aplicació a la pantalla d'inici, cosa que permet que hi interaccionin més. [Obtén més informació](https://web.dev/installable-manifest)."
   },
   "lighthouse-core/audits/installable-manifest.js | failureTitle": {
     "message": "El fitxer de manifest de l'aplicació web no compleix els requisits d'instal·lació"
@@ -729,7 +729,7 @@
     "message": "Utilitza HTTPS"
   },
   "lighthouse-core/audits/load-fast-enough-for-pwa.js | description": {
-    "message": "Carregar les pàgines ràpidament mitjançant una xarxa mòbil garanteix una experiència satisfactòria per als usuaris de mòbils. [Obtén més informació](https://developers.google.com/web/tools/lighthouse/audits/fast-3g)."
+    "message": "Carregar les pàgines ràpidament mitjançant una xarxa mòbil garanteix una experiència satisfactòria per als usuaris de mòbils. [Obtén més informació](https://web.dev/load-fast-enough-for-pwa)."
   },
   "lighthouse-core/audits/load-fast-enough-for-pwa.js | displayValueText": {
     "message": "Ha tardat {timeInMs, number, seconds} segons a fer-se interactiva"
@@ -750,7 +750,7 @@
     "message": "Categoria"
   },
   "lighthouse-core/audits/mainthread-work-breakdown.js | description": {
-    "message": "Et recomanem que redueixis el temps dedicat a analitzar, compilar i executar JavaScript. Et pot ajudar utilitzar càrregues útils de JavaScript més petites."
+    "message": "Et recomanem que redueixis el temps dedicat a analitzar, compilar i executar JavaScript. Et pot ajudar utilitzar càrregues útils de JavaScript més petites. [Més informació](https://web.dev/mainthread-work-breakdown)"
   },
   "lighthouse-core/audits/mainthread-work-breakdown.js | failureTitle": {
     "message": "Minimitza el treball al fil principal"
@@ -759,49 +759,49 @@
     "message": "Minimitza el treball al fil principal"
   },
   "lighthouse-core/audits/manual/pwa-cross-browser.js | description": {
-    "message": "Per arribar al major nombre d'usuaris possible, els llocs web han de funcionar en tots els navegadors principals. [Obtén més informació](https://developers.google.com/web/progressive-web-apps/checklist#site-works-cross-browser)."
+    "message": "Per arribar al major nombre d'usuaris possible, els llocs web han de funcionar en tots els navegadors principals. [Obtén més informació](https://web.dev/pwa-cross-browser)."
   },
   "lighthouse-core/audits/manual/pwa-cross-browser.js | title": {
     "message": "El lloc web funciona en diversos navegadors"
   },
   "lighthouse-core/audits/manual/pwa-each-page-has-url.js | description": {
-    "message": "Comprova que l'URL de cada pàgina sigui un enllaç profund i únic per poder compartir-lo als mitjans socials. [Obtén més informació](https://developers.google.com/web/progressive-web-apps/checklist#each-page-has-a-url)."
+    "message": "Comprova que l'URL de cada pàgina sigui un enllaç profund i únic per poder compartir-lo als mitjans socials. [Obtén més informació](https://web.dev/pwa-each-page-has-url)."
   },
   "lighthouse-core/audits/manual/pwa-each-page-has-url.js | title": {
     "message": "Cada pàgina té un URL"
   },
   "lighthouse-core/audits/manual/pwa-page-transitions.js | description": {
-    "message": "Les transicions en navegar per l'aplicació han de ser àgils, fins i tot en xarxes lentes. És una qüestió clau en la percepció del rendiment. [Obtén més informació](https://developers.google.com/web/progressive-web-apps/checklist#page-transitions-dont-feel-like-they-block-on-the-network)."
+    "message": "Les transicions en navegar per l'aplicació han de ser àgils, fins i tot en xarxes lentes. És una experiència clau en la percepció del rendiment per part de l'usuari. [Obtén més informació](https://web.dev/pwa-page-transitions)."
   },
   "lighthouse-core/audits/manual/pwa-page-transitions.js | title": {
     "message": "No sembla que les transicions entre pàgines es bloquegin a la xarxa"
   },
   "lighthouse-core/audits/metrics/estimated-input-latency.js | description": {
-    "message": "La latència estimada d'una acció és un càlcul de quant tarda en mil·lisegons la teva aplicació a respondre a una acció de l'usuari durant el període de 5 segons amb més càrregues de pàgines. Si la latència és superior a 50 ms, és possible que els usuaris considerin que l'aplicació és lenta. [Obtén més informació](https://developers.google.com/web/tools/lighthouse/audits/estimated-input-latency)."
+    "message": "La latència estimada d'una acció és un càlcul de quant tarda en mil·lisegons la teva aplicació a respondre a una acció de l'usuari durant el període de 5 segons amb més càrregues de pàgines. Si la latència és superior a 50 ms, és possible que els usuaris considerin que l'aplicació és lenta. [Obtén més informació](https://web.dev/estimated-input-latency)."
   },
   "lighthouse-core/audits/metrics/estimated-input-latency.js | title": {
     "message": "Latència estimada de les accions"
   },
   "lighthouse-core/audits/metrics/first-contentful-paint.js | description": {
-    "message": "La mètrica Primera renderització de contingut marca el moment en què es renderitza el primer text o la primera imatge. [Obtén més informació](https://developers.google.com/web/tools/lighthouse/audits/first-contentful-paint)."
+    "message": "La mètrica Primera renderització de contingut marca el moment en què es renderitza el primer text o la primera imatge. [Obtén més informació](https://web.dev/first-contentful-paint)."
   },
   "lighthouse-core/audits/metrics/first-contentful-paint.js | title": {
     "message": "Primera renderització de contingut"
   },
   "lighthouse-core/audits/metrics/first-cpu-idle.js | description": {
-    "message": "La mètrica Primera inactivitat de la CPU marca el primer moment en què el fil principal de la pàgina està suficientment inactiu per gestionar accions. [Obtén més informació](https://developers.google.com/web/tools/lighthouse/audits/first-interactive)."
+    "message": "La mètrica Primera inactivitat de la CPU marca el primer moment en què el fil principal de la pàgina està suficientment inactiu per gestionar accions.  [Obtén més informació](https://web.dev/first-cpu-idle)."
   },
   "lighthouse-core/audits/metrics/first-cpu-idle.js | title": {
     "message": "Primera inactivitat de la CPU"
   },
   "lighthouse-core/audits/metrics/first-meaningful-paint.js | description": {
-    "message": "La mètrica Primera renderització significativa mesura el moment en què el contingut principal d'una pàgina és visible. [Obtén més informació](https://developers.google.com/web/tools/lighthouse/audits/first-meaningful-paint)."
+    "message": "La mètrica Primera renderització significativa mesura el moment en què el contingut principal d'una pàgina és visible. [Obtén més informació](https://web.dev/first-meaningful-paint)."
   },
   "lighthouse-core/audits/metrics/first-meaningful-paint.js | title": {
     "message": "Primera renderització significativa"
   },
   "lighthouse-core/audits/metrics/interactive.js | description": {
-    "message": "La mètrica Temps fins que és interactiva és el que tarda la pàgina a fer-se completament interactiva. [Obtén més informació](https://developers.google.com/web/tools/lighthouse/audits/consistently-interactive)."
+    "message": "La mètrica Temps fins que és interactiva és el que tarda la pàgina a fer-se completament interactiva. [Obtén més informació](https://web.dev/interactive)."
   },
   "lighthouse-core/audits/metrics/interactive.js | title": {
     "message": "Temps fins que és interactiva"
@@ -813,7 +813,7 @@
     "message": "Retard potencial màxim respecte a la primera interacció"
   },
   "lighthouse-core/audits/metrics/speed-index.js | description": {
-    "message": "L'índex de velocitat mostra la rapidesa amb què s'emplena el contingut d'una pàgina. [Obtén més informació](https://developers.google.com/web/tools/lighthouse/audits/speed-index)."
+    "message": "L'índex de velocitat mostra la rapidesa amb què s'emplena el contingut d'una pàgina. [Obtén més informació](https://web.dev/speed-index)."
   },
   "lighthouse-core/audits/metrics/speed-index.js | title": {
     "message": "Índex de velocitat"
@@ -837,7 +837,7 @@
     "message": "Latències dorsals del servidor"
   },
   "lighthouse-core/audits/offline-start-url.js | description": {
-    "message": "Els Service Workers permeten que la teva aplicació sigui fiable en condicions imprevisibles de la xarxa. [Obtén més informació](https://developers.google.com/web/tools/lighthouse/audits/http-200-when-offline)."
+    "message": "Els Service Workers permeten que la teva aplicació sigui fiable en condicions imprevisibles de la xarxa. [Obtén més informació](https://web.dev/offline-start-url)."
   },
   "lighthouse-core/audits/offline-start-url.js | failureTitle": {
     "message": "`start_url` no respon amb un codi 200 quan no hi ha connexió"
@@ -861,7 +861,7 @@
     "message": "Pressupost de rendiment"
   },
   "lighthouse-core/audits/redirects-http.js | description": {
-    "message": "Si ja has configurat el format HTTPS, assegura't de redirigir tot el trànsit HTTP cap a HTTPS per activar funcions web segures per a tots els usuaris. [Obtén més informació](https://developers.google.com/web/tools/lighthouse/audits/http-redirects-to-https)."
+    "message": "Si ja has configurat el format HTTPS, assegura't de redirigir tot el trànsit HTTP cap a HTTPS per activar funcions web segures per a tots els usuaris. [Obtén més informació](https://web.dev/redirects-http)."
   },
   "lighthouse-core/audits/redirects-http.js | failureTitle": {
     "message": "No redirigeix el trànsit HTTP cap a HTTPS"
@@ -870,7 +870,7 @@
     "message": "Redirigeix el trànsit HTTP cap a HTTPS"
   },
   "lighthouse-core/audits/redirects.js | description": {
-    "message": "La mètrica Redireccions introdueix retards addicionals abans de poder carregar la pàgina. [Obtén més informació](https://developers.google.com/web/tools/lighthouse/audits/redirects)."
+    "message": "La mètrica Redireccions introdueix retards addicionals abans de poder carregar la pàgina. [Obtén més informació](https://web.dev/redirects)."
   },
   "lighthouse-core/audits/redirects.js | title": {
     "message": "Evita les redireccions múltiples a pàgines"
@@ -918,7 +918,7 @@
     "message": "El {decimalProportion, number, extendedPercent} del text és llegible"
   },
   "lighthouse-core/audits/seo/font-size.js | explanationViewport": {
-    "message": "El text és il·legible perquè no hi ha cap metaetiqueta de finestra gràfica optimitzada per a pantalles de mòbil."
+    "message": "El text és il·legible perquè no hi ha cap metaetiqueta de finestra gràfica optimitzada per a pantalles de dispositius mòbils."
   },
   "lighthouse-core/audits/seo/font-size.js | explanationWithDisclaimer": {
     "message": "El {decimalProportion, number, extendedPercent} del text és massa petit (d'acord amb una mostra del {decimalProportionVisited, number, extendedPercent})."
@@ -999,7 +999,7 @@
     "message": "Si el format del fitxer robots.txt no és correcte, és possible que els rastrejadors no puguin entendre com vols que rastregin o indexin el lloc web. [Obtén més informació](https://web.dev/robots-txt)."
   },
   "lighthouse-core/audits/seo/robots-txt.js | displayValueHttpBadCode": {
-    "message": "La sol·licitud del fitxer robots.txt ha tornat l'estat HTTP: {statusCode}"
+    "message": "La sol·licitud del fitxer robots.txt ha tornat l'estat HTTP següent: {statusCode}"
   },
   "lighthouse-core/audits/seo/robots-txt.js | displayValueValidationError": {
     "message": "{itemCount,plural, =1{S'ha trobat 1 error}other{S'han trobat # errors}}"
@@ -1035,7 +1035,7 @@
     "message": "La mida dels elements tàctils és correcta"
   },
   "lighthouse-core/audits/service-worker.js | description": {
-    "message": "El Service Worker és la tecnologia que fa possible que la teva aplicació utilitzi moltes funcions d'aplicació web progressiva, com ara funcionar sense connexió, poder afegir-se a la pàgina d'inici i mostrar notificacions automàtiques. [Obtén més informació](https://developers.google.com/web/tools/lighthouse/audits/registered-service-worker)."
+    "message": "El Service Worker és la tecnologia que fa possible que la teva aplicació utilitzi moltes funcions d'aplicació web progressiva, com ara funcionar sense connexió, poder afegir-se a la pàgina d'inici i mostrar notificacions automàtiques. [Obtén més informació](https://web.dev/service-worker)."
   },
   "lighthouse-core/audits/service-worker.js | explanationBadManifest": {
     "message": "Tot i que un Service Worker controla aquesta pàgina, no s'ha trobat cap atribut `start_url` perquè el fitxer de manifest no s'ha pogut analitzar com a format JSON vàlid"
@@ -1056,7 +1056,7 @@
     "message": "Registra un Service Worker que controla la pàgina i l'atribut `start_url`"
   },
   "lighthouse-core/audits/splash-screen.js | description": {
-    "message": "Utilitzar una pantalla inicial temàtica garanteix una experiència d'alta qualitat quan els usuaris inicien l'aplicació des de la pantalla d'inici. [Obtén més informació](https://developers.google.com/web/tools/lighthouse/audits/custom-splash-screen)."
+    "message": "Utilitzar una pantalla inicial temàtica garanteix una experiència d'alta qualitat quan els usuaris inicien l'aplicació des de la pantalla d'inici. [Obtén més informació](https://web.dev/splash-screen)."
   },
   "lighthouse-core/audits/splash-screen.js | failureTitle": {
     "message": "No està configurat per a una pantalla inicial personalitzada"
@@ -1065,7 +1065,7 @@
     "message": "Està configurat per a una pantalla inicial personalitzada"
   },
   "lighthouse-core/audits/themed-omnibox.js | description": {
-    "message": "Es pot aplicar un tema a la barra d'adreces del navegador perquè faci joc amb el teu lloc web. [Obtén més informació](https://developers.google.com/web/tools/lighthouse/audits/address-bar)."
+    "message": "Es pot aplicar un tema a la barra d'adreces del navegador perquè faci joc amb el teu lloc web. [Obtén més informació](https://web.dev/themed-omnibox)."
   },
   "lighthouse-core/audits/themed-omnibox.js | failureTitle": {
     "message": "No estableix un color temàtic per a la barra d'adreces."
@@ -1092,7 +1092,7 @@
     "message": "Ús de tercers"
   },
   "lighthouse-core/audits/time-to-first-byte.js | description": {
-    "message": "La mètrica Temps fins al primer byte identifica el moment en què el teu servidor envia una resposta. [Obtén més informació](https://developers.google.com/web/tools/lighthouse/audits/ttfb)."
+    "message": "La mètrica Temps fins al primer byte identifica el moment en què el teu servidor envia una resposta. [Obtén més informació](https://web.dev/time-to-first-byte)."
   },
   "lighthouse-core/audits/time-to-first-byte.js | displayValue": {
     "message": "El document arrel ha tardat {timeInMs, number, milliseconds} ms"
@@ -1113,7 +1113,7 @@
     "message": "Tipus"
   },
   "lighthouse-core/audits/user-timings.js | description": {
-    "message": "Et recomanem que utilitzis l'API Temps d'usuari amb la teva aplicació per mesurar-ne el rendiment al món real durant experiències clau dels usuaris. [Obtén més informació](https://developers.google.com/web/tools/lighthouse/audits/user-timing)."
+    "message": "Et recomanem que utilitzis l'API Temps d'usuari amb la teva aplicació per mesurar-ne el rendiment al món real durant experiències clau dels usuaris. [Obtén més informació](https://web.dev/user-timings)."
   },
   "lighthouse-core/audits/user-timings.js | displayValue": {
     "message": "{itemCount,plural, =1{1 temps d'usuari}other{# temps d'usuari}}"
@@ -1125,7 +1125,7 @@
     "message": "S'ha trobat un element <link> de connexió prèvia per a \"{securityOrigin}\", però el navegador no l'ha utilitzat. Comprova que estiguis utilitzant correctament l'atribut `crossorigin`."
   },
   "lighthouse-core/audits/uses-rel-preconnect.js | description": {
-    "message": "Et recomanem que afegeixis suggeriments de recursos `preconnect` o `dns-prefetch` per establir connexions anticipades a orígens importants de tercers. [Obtén més informació](https://developers.google.com/web/fundamentals/performance/resource-prioritization#preconnect)."
+    "message": "Et recomanem que afegeixis suggeriments de recursos `preconnect` o `dns-prefetch` per establir connexions anticipades a orígens importants de tercers. [Obtén més informació](https://web.dev/uses-rel-preconnect)."
   },
   "lighthouse-core/audits/uses-rel-preconnect.js | title": {
     "message": "Connecta't prèviament als orígens necessaris"
@@ -1134,13 +1134,13 @@
     "message": "S'ha trobat un element <link> de càrrega prèvia per a \"{preloadURL}\", però el navegador no l'ha utilitzat. Comprova que estiguis utilitzant correctament l'atribut `crossorigin`."
   },
   "lighthouse-core/audits/uses-rel-preload.js | description": {
-    "message": "Et recomanem que utilitzis `<link rel=preload>` per prioritzar l'obtenció de recursos que en aquests moments se sol·liciten en un moment posterior de la càrrega de pàgines. [Obtén més informació](https://developers.google.com/web/tools/lighthouse/audits/preload)."
+    "message": "Et recomanem que utilitzis `<link rel=preload>` per prioritzar l'obtenció de recursos que en aquests moments se sol·liciten en un moment posterior de la càrrega de pàgines. [Obtén més informació](https://web.dev/uses-rel-preload)."
   },
   "lighthouse-core/audits/uses-rel-preload.js | title": {
     "message": "Carrega prèviament les sol·licituds de clau"
   },
   "lighthouse-core/audits/viewport.js | description": {
-    "message": "Afegeix una etiqueta `<meta name=\"viewport\">` a fi d'optimitzar l'aplicació per a pantalles de dispositius mòbils. [Obtén més informació](https://developers.google.com/web/tools/lighthouse/audits/has-viewport-meta-tag)."
+    "message": "Afegeix una etiqueta `<meta name=\"viewport\">` a fi d'optimitzar l'aplicació per a pantalles de dispositius mòbils. [Obtén més informació](https://web.dev/viewport)."
   },
   "lighthouse-core/audits/viewport.js | explanationNoTag": {
     "message": "No s'ha trobat cap etiqueta `<meta name=\"viewport\">`"
@@ -1152,7 +1152,7 @@
     "message": "Té una etiqueta `<meta name=\"viewport\">` amb l'atribut `width` o `initial-scale`"
   },
   "lighthouse-core/audits/without-javascript.js | description": {
-    "message": "L'aplicació ha de mostrar algun tipus de contingut quan JavaScript estigui desactivat, encara que només sigui per avisar l'usuari que es requereix JavaScript per utilitzar l'aplicació. [Obtén més informació](https://developers.google.com/web/tools/lighthouse/audits/no-js)."
+    "message": "L'aplicació ha de mostrar algun tipus de contingut quan JavaScript estigui desactivat, encara que només sigui per avisar l'usuari que es requereix JavaScript per utilitzar l'aplicació. [Obtén més informació](https://web.dev/without-javascript)."
   },
   "lighthouse-core/audits/without-javascript.js | explanation": {
     "message": "El cos de la pàgina ha de renderitzar algun tipus de contingut si els scripts no estan disponibles."
@@ -1164,7 +1164,7 @@
     "message": "Inclou algun tipus de contingut quan JavaScript no està disponible"
   },
   "lighthouse-core/audits/works-offline.js | description": {
-    "message": "Si vols crear una aplicació web progressiva, considera la possibilitat d'utilitzar un Service Worker perquè l'aplicació funcioni sense connexió. [Obtén més informació](https://developers.google.com/web/tools/lighthouse/audits/http-200-when-offline)."
+    "message": "Si vols crear una aplicació web progressiva, considera la possibilitat d'utilitzar un Service Worker perquè l'aplicació funcioni sense connexió. [Obtén més informació](https://web.dev/works-offline)."
   },
   "lighthouse-core/audits/works-offline.js | failureTitle": {
     "message": "La pàgina actual no respon amb un codi 200 quan no hi ha connexió"

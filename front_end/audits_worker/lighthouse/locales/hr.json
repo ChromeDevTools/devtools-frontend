@@ -30,10 +30,10 @@
     "message": "Neke nadređene uloge ARIA moraju sadržavati posebne podređene uloge za izvršavanje svojih namijenjenih funkcija pristupačnosti. [Saznajte više](https://web.dev/aria-required-children/)."
   },
   "lighthouse-core/audits/accessibility/aria-required-children.js | failureTitle": {
-    "message": "Nedostaju elementi s ulogom `[role]` koji zahtijevaju određene podređene elemente `[role]`."
+    "message": "Elementi s ARIA-om `[role]` koji zahtijevaju da podređeni elementi sadrže određenu ulogu `[role]` ne sadrže neke ili sve te obavezne podređene elemente."
   },
   "lighthouse-core/audits/accessibility/aria-required-children.js | title": {
-    "message": "Prisutni su elementi s ulogom `[role]` koji zahtijevaju određene podređene elemente `[role]`."
+    "message": "Elementi s ARIA-om `[role]` koji zahtijevaju da podređeni elementi sadrže određenu ulogu `[role]` imaju sve obavezne podređene elemente."
   },
   "lighthouse-core/audits/accessibility/aria-required-parent.js | description": {
     "message": "Određene nadređene uloge moraju sadržavati neke podređene uloge ARIA kako bi mogle pravilno izvršavati namijenjene funkcije pristupačnosti. [Saznajte više](https://web.dev/aria-required-parent/)."
@@ -276,10 +276,10 @@
     "message": "Čitači zaslona sadrže značajke za olakšavanje kretanja po tablicama. Potrebno je pripaziti da se ćelije `<td>` koje upotrebljavaju atribut `[headers]` odnose samo na druge ćelije u istoj tablici kako bi se korisnicima čitača zaslona omogućio bolji doživljaj. [Saznajte više](https://web.dev/td-headers-attr/)."
   },
   "lighthouse-core/audits/accessibility/td-headers-attr.js | failureTitle": {
-    "message": "Ćelije u elementu `<table>` koje upotrebljavaju atribut `[headers]` odnose se na druge ćelije te iste tablice."
+    "message": "Ćelije u elementu `<table>` koje upotrebljavaju atribut `[headers]` odnose se na element `id` koji nije pronađen unutar iste tablice."
   },
   "lighthouse-core/audits/accessibility/td-headers-attr.js | title": {
-    "message": "Ćelije u elementu `<table>`koje upotrebljavaju atribut `[headers]` odnose se samo na druge ćelije u toj istoj tablici."
+    "message": "Ćelije u elementu `<table>` koje upotrebljavaju atribut `[headers]` odnose se na ćelije tablice unutar iste tablice."
   },
   "lighthouse-core/audits/accessibility/th-has-data-cells.js | description": {
     "message": "Čitači zaslona sadrže značajke za olakšavanje kretanja po tablicama. Osiguravanje da se zaglavlja tablice uvijek odnose na neki skup ćelija može poboljšati doživljaj za korisnike čitača zaslona. [Saznajte više](https://web.dev/th-has-data-cells/)."
@@ -318,7 +318,7 @@
     "message": "Elementi `<video>` sadržavaju element `<track>` s `[kind=\"description\"]`"
   },
   "lighthouse-core/audits/apple-touch-icon.js | description": {
-    "message": "Za idealan izgled na iOS-u kad korisnici na početni zaslon dodaju progresivnu web-aplikaciju definirajte `apple-touch-icon`. Mora ukazivati na neprozirni kvadratni PNG od 192 px (ili 180 px). [Saznajte više](https://developers.google.com/web/fundamentals/design-and-ux/browser-customization/)."
+    "message": "Za idealan izgled na iOS-u kad korisnici na početni zaslon dodaju progresivnu web-aplikaciju definirajte `apple-touch-icon`. Mora ukazivati na neprozirni kvadratni PNG od 192 px (ili 180 px). [Saznajte više](https://web.dev/apple-touch-icon/)."
   },
   "lighthouse-core/audits/apple-touch-icon.js | failureTitle": {
     "message": "Ne pruža valjani `apple-touch-icon`"
@@ -342,7 +342,7 @@
     "message": "Ukupno vrijeme CPU-a"
   },
   "lighthouse-core/audits/bootup-time.js | description": {
-    "message": "Savjetujemo vam da skratite vrijeme potrebno za raščlambu, kompiliranje i izvršavanje JS-a. Isporuka manjih JS-ova mogla bi vam pomoći da to postignete. [Saznajte više](https://developers.google.com/web/tools/lighthouse/audits/bootup)."
+    "message": "Savjetujemo vam da skratite vrijeme potrebno za raščlambu, kompiliranje i izvršavanje JS-a. Isporuka manjih JS-ova mogla bi vam pomoći da to postignete. [Saznajte više](https://web.dev/bootup-time)."
   },
   "lighthouse-core/audits/bootup-time.js | failureTitle": {
     "message": "Skratite vrijeme izvršavanja JavaScripta"
@@ -351,25 +351,25 @@
     "message": "Vrijeme izvršavanja JavaScripta"
   },
   "lighthouse-core/audits/byte-efficiency/efficient-animated-content.js | description": {
-    "message": "Veliki GIF-ovi nisu učinkoviti za prikaz animiranog sadržaja. Savjetujemo vam da umjesto GIF-a upotrebljavate MPEG4/WebM videozapise za animacije i PNG/WebP za statične slike da biste smanjili količinu mrežnih bajtova. [Saznajte više](https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/replace-animated-gifs-with-video/)"
+    "message": "Veliki GIF-ovi nisu učinkoviti za prikaz animiranog sadržaja. Savjetujemo vam da umjesto GIF-a upotrebljavate MPEG4/WebM videozapise za animacije i PNG/WebP za statične slike da biste smanjili količinu mrežnih bajtova. [Saznajte više](https://web.dev/efficient-animated-content)"
   },
   "lighthouse-core/audits/byte-efficiency/efficient-animated-content.js | title": {
     "message": "Upotrebljavajte formate videozapisa za animirani sadržaj"
   },
   "lighthouse-core/audits/byte-efficiency/offscreen-images.js | description": {
-    "message": "Za slike izvan zaslona i skrivene slike savjetujemo odgođeno učitavanje nakon što se učitaju svi kritični resursi da biste skratili vrijeme do interaktivnosti. [Saznajte više](https://developers.google.com/web/tools/lighthouse/audits/offscreen-images)."
+    "message": "Za slike izvan zaslona i skrivene slike savjetujemo odgođeno učitavanje nakon što se učitaju svi kritični resursi da biste skratili vrijeme do interaktivnosti. [Saznajte više](https://web.dev/offscreen-images)."
   },
   "lighthouse-core/audits/byte-efficiency/offscreen-images.js | title": {
     "message": "Odgodite slike izvan zaslona"
   },
   "lighthouse-core/audits/byte-efficiency/render-blocking-resources.js | description": {
-    "message": "Resursi blokiraju prvo renderiranje vaše stranice. Savjetujemo vam da kljulan JS/CSS isporučite u tekstu te da da odgodite sve JS-ove/stilove koji nisu ključni. [Saznajte više](https://developers.google.com/web/tools/lighthouse/audits/blocking-resources)."
+    "message": "Resursi blokiraju prvo renderiranje vaše stranice. Savjetujemo vam da kljulan JS/CSS isporučite u tekstu te da da odgodite sve JS-ove/stilove koji nisu ključni. [Saznajte više](https://web.dev/render-blocking-resources)."
   },
   "lighthouse-core/audits/byte-efficiency/render-blocking-resources.js | title": {
     "message": "Uklonite resurse koji blokiraju generiranje"
   },
   "lighthouse-core/audits/byte-efficiency/total-byte-weight.js | description": {
-    "message": "Veliki mrežni resursi korisnicima uzrokuju stvarne novčane troškove i usko koreliraju s dugim vremenom učitavanja. [Saznajte više](https://developers.google.com/web/tools/lighthouse/audits/network-payloads)."
+    "message": "Veliki mrežni resursi korisnicima uzrokuju stvarne novčane troškove i usko koreliraju s dugim vremenom učitavanja. [Saznajte više](https://web.dev/total-byte-weight)."
   },
   "lighthouse-core/audits/byte-efficiency/total-byte-weight.js | displayValue": {
     "message": "Ukupna veličina bila je {totalBytes, number, bytes} KB"
@@ -381,19 +381,19 @@
     "message": "Izbjegava ogromne mrežne resurse"
   },
   "lighthouse-core/audits/byte-efficiency/unminified-css.js | description": {
-    "message": "Umanjenjem CSS datoteka mogu se smanjiti veličine mrežnih resursa. [Saznajte više](https://developers.google.com/web/tools/lighthouse/audits/minify-css)."
+    "message": "Umanjenjem CSS datoteka mogu se smanjiti veličine mrežnih resursa. [Saznajte više](https://web.dev/unminified-css)."
   },
   "lighthouse-core/audits/byte-efficiency/unminified-css.js | title": {
     "message": "Umanjite CSS"
   },
   "lighthouse-core/audits/byte-efficiency/unminified-javascript.js | description": {
-    "message": "Umanjenjem JavaScript datoteka mogu se smanjiti veličine resursa i skratiti vrijeme raščlambe skripte. [Saznajte više](https://developers.google.com/speed/docs/insights/MinifyResources)."
+    "message": "Umanjenjem JavaScript datoteka mogu se smanjiti veličine resursa i skratiti vrijeme raščlambe skripte. [Saznajte više](https://web.dev/unminified-javascript)."
   },
   "lighthouse-core/audits/byte-efficiency/unminified-javascript.js | title": {
     "message": "Umanjite JavaScript"
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | description": {
-    "message": "Uklonite nepotrebna pravila iz stilskih tablica i odgodite učitavanje CSS-a koji se ne koristi za sadržaj na vidljivom dijelu stranice kako biste smanjili nepotrebnu potrošnju bajtova u mrežnoj aktivnosti. [Saznajte više](https://developers.google.com/web/tools/lighthouse/audits/unused-css)."
+    "message": "Uklonite nepotrebna pravila iz stilskih tablica i odgodite učitavanje CSS-a koji se ne koristi za sadržaj na vidljivom dijelu stranice kako biste smanjili nepotrebnu potrošnju bajtova u mrežnoj aktivnosti. [Saznajte više](https://web.dev/unused-css-rules)."
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | title": {
     "message": "Uklonite CSS koji se ne koristi"
@@ -405,7 +405,7 @@
     "message": "Uklonite nekorišteni JavaScript"
   },
   "lighthouse-core/audits/byte-efficiency/uses-long-cache-ttl.js | description": {
-    "message": "Dugotrajno predmemoriranje može ubrzati ponovljene posjete vašoj stranici. [Saznajte više](https://developers.google.com/web/tools/lighthouse/audits/cache-policy)."
+    "message": "Dugotrajno predmemoriranje može ubrzati ponovljene posjete vašoj stranici. [Saznajte više](https://web.dev/uses-long-cache-ttl)."
   },
   "lighthouse-core/audits/byte-efficiency/uses-long-cache-ttl.js | displayValue": {
     "message": "{itemCount,plural, =1{Pronađen je jedan resurs}one{Pronađen je # resurs}few{Pronađena su # resursa}other{Pronađeno je # resursa}}"
@@ -417,31 +417,31 @@
     "message": "Upotrebljava pravila učinkovitog predmemoriranja za statične elemente"
   },
   "lighthouse-core/audits/byte-efficiency/uses-optimized-images.js | description": {
-    "message": "Optimizirane slike učitavaju se brže i troše manje mobilnih podataka. [Saznajte više](https://developers.google.com/web/tools/lighthouse/audits/optimize-images)."
+    "message": "Optimizirane slike učitavaju se brže i troše manje mobilnih podataka. [Saznajte više](https://web.dev/uses-optimized-images)."
   },
   "lighthouse-core/audits/byte-efficiency/uses-optimized-images.js | title": {
     "message": "Kodirajte slike učinkovito"
   },
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | description": {
-    "message": "Poslužite slike prikladnih veličina da biste uštedjeli mobilne podatke i poboljšali vrijeme učitavanja. [Saznajte više](https://developers.google.com/web/tools/lighthouse/audits/oversized-images)."
+    "message": "Poslužite slike prikladnih veličina da biste uštedjeli mobilne podatke i poboljšali vrijeme učitavanja. [Saznajte više](https://web.dev/uses-responsive-images)."
   },
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | title": {
     "message": "Postavite slike u odgovarajućoj veličini"
   },
   "lighthouse-core/audits/byte-efficiency/uses-text-compression.js | description": {
-    "message": "Tekstualni resursi trebaju se posluživati s kompresijom (gzip, deflate ili brotli) radi minimiziranja ukupne količine mrežnih bajtova. [Saznajte više](https://developers.google.com/web/tools/lighthouse/audits/text-compression)."
+    "message": "Tekstualni resursi trebaju se posluživati s kompresijom (gzip, deflate ili brotli) radi minimiziranja ukupne količine mrežnih bajtova. [Saznajte više](https://web.dev/uses-text-compression)."
   },
   "lighthouse-core/audits/byte-efficiency/uses-text-compression.js | title": {
     "message": "Omogućite sažimanje teksta"
   },
   "lighthouse-core/audits/byte-efficiency/uses-webp-images.js | description": {
-    "message": "Formati slike kao što su JPEG 2000, JPEG XR i WebP često pružaju bolje sažimanje nego PNG ili JPEG, što znači brža preuzimanja i manju potrošnju podataka. [Saznajte više](https://developers.google.com/web/tools/lighthouse/audits/webp)."
+    "message": "Formati slike kao što su JPEG 2000, JPEG XR i WebP često pružaju bolje sažimanje nego PNG ili JPEG, što znači brža preuzimanja i manju potrošnju podataka. [Saznajte više](https://web.dev/uses-webp-images)."
   },
   "lighthouse-core/audits/byte-efficiency/uses-webp-images.js | title": {
     "message": "Poslužite slike u modernim formatima"
   },
   "lighthouse-core/audits/content-width.js | description": {
-    "message": "Ako se širina sadržaja vaše aplikacije ne podudara s vidljivim dijelom, vaša aplikacija možda neće biti optimizirana za mobilne zaslone. [Saznajte više](https://developers.google.com/web/tools/lighthouse/audits/content-sized-correctly-for-viewport)."
+    "message": "Ako se širina sadržaja vaše aplikacije ne podudara s vidljivim dijelom, vaša aplikacija možda neće biti optimizirana za mobilne zaslone. [Saznajte više](https://web.dev/content-width)."
   },
   "lighthouse-core/audits/content-width.js | explanation": {
     "message": "Veličina vidljivog dijela od {innerWidth} px ne podudara se s veličinom prozora od {outerWidth} px."
@@ -453,7 +453,7 @@
     "message": "Sadržaj je ispravne veličine za vidljivi dio"
   },
   "lighthouse-core/audits/critical-request-chains.js | description": {
-    "message": "Lanci kritičkih zahtjeva u nastavku prikazuju koji se resursi učitavaju s visokim prioritetom. Savjetujemo vam da skratite duljinu lanaca, smanjite veličinu resursa za preuzimanje ili odgodite preuzimanje resursa koji nisu nužni kako biste poboljšali učitavanje stranice. [Saznajte više](https://developers.google.com/web/tools/lighthouse/audits/critical-request-chains)."
+    "message": "Lanci kritičkih zahtjeva u nastavku prikazuju koji se resursi učitavaju s visokim prioritetom. Savjetujemo vam da skratite duljinu lanaca, smanjite veličinu resursa za preuzimanje ili odgodite preuzimanje resursa koji nisu nužni kako biste poboljšali učitavanje stranice. [Saznajte više](https://web.dev/critical-request-chains)."
   },
   "lighthouse-core/audits/critical-request-chains.js | displayValue": {
     "message": "{itemCount,plural, =1{Pronađen je jedan lanac}one{Pronađen je # lanac}few{Pronađena su # lanca}other{Pronađeno je # lanaca}}"
@@ -675,7 +675,7 @@
     "message": "Na konzoli nema zabilježenih pogrešaka preglednika"
   },
   "lighthouse-core/audits/font-display.js | description": {
-    "message": "Iskoristite CSS značajku za prikaz fontova kako bi tekst bio vidljiv korisnicima dok se web-fontovi učitavaju. [Saznajte više](https://developers.google.com/web/updates/2016/02/font-display)."
+    "message": "Iskoristite CSS značajku za prikaz fontova kako bi tekst bio vidljiv korisnicima dok se web-fontovi učitavaju. [Saznajte više](https://web.dev/font-display)."
   },
   "lighthouse-core/audits/font-display.js | failureTitle": {
     "message": "Neka tekst ostaje vidljiv tijekom učitavanja web-fontova"
@@ -705,7 +705,7 @@
     "message": "Nevažeće informacije o veličini slike {url}"
   },
   "lighthouse-core/audits/installable-manifest.js | description": {
-    "message": "Preglednici mogu proaktivno zatražiti od korisnika da dodaju vašu aplikaciju na početni zaslon, što može dovesti do veće angažiranosti. [Saznajte više](https://developers.google.com/web/tools/lighthouse/audits/install-prompt)."
+    "message": "Preglednici mogu proaktivno zatražiti od korisnika da dodaju vašu aplikaciju na početni zaslon, što može dovesti do veće angažiranosti. [Saznajte više](https://web.dev/installable-manifest)."
   },
   "lighthouse-core/audits/installable-manifest.js | failureTitle": {
     "message": "Manifest web-aplikacije ne udovoljava zahtjevima za instalaciju"
@@ -729,7 +729,7 @@
     "message": "Upotrebljava HTTPS"
   },
   "lighthouse-core/audits/load-fast-enough-for-pwa.js | description": {
-    "message": "Brzo učitavanje stranice putem mobilne mreže omogućuje dobar doživljaj korisnicima na mobilnim uređajima. [Saznajte više](https://developers.google.com/web/tools/lighthouse/audits/fast-3g)."
+    "message": "Brzo učitavanje stranice putem mobilne mreže omogućuje dobar doživljaj korisnicima na mobilnim uređajima. [Saznajte više](https://web.dev/load-fast-enough-for-pwa)."
   },
   "lighthouse-core/audits/load-fast-enough-for-pwa.js | displayValueText": {
     "message": "Interaktivno u {timeInMs, number, seconds} s"
@@ -750,7 +750,7 @@
     "message": "Kategorija"
   },
   "lighthouse-core/audits/mainthread-work-breakdown.js | description": {
-    "message": "Savjetujemo vam da skratite vrijeme potrebno za raščlambu, kompiliranje i izvršavanje JS-a. Isporuka manjih JS-ova mogla bi vam pomoći da to postignete."
+    "message": "Savjetujemo vam da skratite vrijeme potrebno za raščlambu, kompiliranje i izvršavanje JS-a. Isporuka manjih JS-ova mogla bi vam pomoći da to postignete. [Saznajte više](https://web.dev/mainthread-work-breakdown)"
   },
   "lighthouse-core/audits/mainthread-work-breakdown.js | failureTitle": {
     "message": "Minimizirajte rad glavne niti"
@@ -759,49 +759,49 @@
     "message": "Minimizira rad glavne niti"
   },
   "lighthouse-core/audits/manual/pwa-cross-browser.js | description": {
-    "message": "Da bi dosegle najveći broj korisnika, web-lokacije bi trebale funkcionirati u svakom značajnijem pregledniku. [Saznajte više](https://developers.google.com/web/progressive-web-apps/checklist#site-works-cross-browser)."
+    "message": "Da bi dosegle najveći broj korisnika, web-lokacije bi trebale funkcionirati u svakom značajnijem pregledniku. [Saznajte više](https://web.dev/pwa-cross-browser)."
   },
   "lighthouse-core/audits/manual/pwa-cross-browser.js | title": {
     "message": "Web-lokacija funkcionira na različitim preglednicima"
   },
   "lighthouse-core/audits/manual/pwa-each-page-has-url.js | description": {
-    "message": "Pobrinite se da su sve individualne stranice dubinski povezane putem URL-a i da su URL-ovi jedinstveni radi dijeljenja na društvenim medijima. [Saznajte više](https://developers.google.com/web/progressive-web-apps/checklist#each-page-has-a-url)."
+    "message": "Pobrinite se da su sve individualne stranice dubinski povezane putem URL-a i da su URL-ovi jedinstveni radi dijeljenja na društvenim medijima. [Saznajte više](https://web.dev/pwa-each-page-has-url)."
   },
   "lighthouse-core/audits/manual/pwa-each-page-has-url.js | title": {
     "message": "Svaka stranica ima URL"
   },
   "lighthouse-core/audits/manual/pwa-page-transitions.js | description": {
-    "message": "Pri dodirivanju stavki prijelazi bi trebali biti brzi, čak i na sporoj mreži, što je ključno za percepciju izvedbe. [Saznajte više](https://developers.google.com/web/progressive-web-apps/checklist#page-transitions-dont-feel-like-they-block-on-the-network)."
+    "message": "Pri dodirivanju stavki prijelazi bi trebali biti brzi, čak i na sporoj mreži. To je ključno za korisnikovu percepciju izvedbe. [Saznajte više](https://web.dev/pwa-page-transitions)."
   },
   "lighthouse-core/audits/manual/pwa-page-transitions.js | title": {
     "message": "Ne čini se da se prijelazi stranica blokiraju na mreži"
   },
   "lighthouse-core/audits/metrics/estimated-input-latency.js | description": {
-    "message": "Procijenjena latencija unosa procjena je vremena koje je potrebno da vaša aplikacija reagira na korisnički unos, u milisekundama, tijekom najintenzivnijih pet sekundi učitavanja stranice. Ako je latencija viša od 50 ms, korisnici mogu doživjeti vašu aplikaciju kao usporenu. [Saznajte više](https://developers.google.com/web/tools/lighthouse/audits/estimated-input-latency)."
+    "message": "Procijenjena latencija unosa procjena je vremena koje je potrebno da vaša aplikacija reagira na korisnički unos, u milisekundama, tijekom najintenzivnijih pet sekundi učitavanja stranice. Ako je latencija viša od 50 ms, korisnici mogu doživjeti vašu aplikaciju kao usporenu. [Saznajte više](https://web.dev/estimated-input-latency)."
   },
   "lighthouse-core/audits/metrics/estimated-input-latency.js | title": {
     "message": "Procijenjena latencija unosa"
   },
   "lighthouse-core/audits/metrics/first-contentful-paint.js | description": {
-    "message": "Prvo renderiranje sadržaja označava vrijeme renderiranja prvog teksta ili slike. [Saznajte više](https://developers.google.com/web/tools/lighthouse/audits/first-contentful-paint)."
+    "message": "Prvo renderiranje sadržaja označava vrijeme renderiranja prvog teksta ili slike. [Saznajte više](https://web.dev/first-contentful-paint)."
   },
   "lighthouse-core/audits/metrics/first-contentful-paint.js | title": {
     "message": "Prvo bojenje sadržaja"
   },
   "lighthouse-core/audits/metrics/first-cpu-idle.js | description": {
-    "message": "Prvi procesor u mirovanju označava prvi trenutak u kojem je glavna nit stranice dovoljno neopterećena da bi obradila unos. [Saznajte više](https://developers.google.com/web/tools/lighthouse/audits/first-interactive)."
+    "message": "Prvi procesor u mirovanju označava prvi trenutak u kojem je glavna nit stranice dovoljno neopterećena da bi obradila unos.  [Saznajte više](https://web.dev/first-cpu-idle)."
   },
   "lighthouse-core/audits/metrics/first-cpu-idle.js | title": {
     "message": "Prvi procesor u mirovanju"
   },
   "lighthouse-core/audits/metrics/first-meaningful-paint.js | description": {
-    "message": "Prvo korisno renderiranje mjeri kada je vidljiv primarni sadržaj stranice. [Saznajte više](https://developers.google.com/web/tools/lighthouse/audits/first-meaningful-paint)."
+    "message": "Prvo korisno renderiranje mjeri kada je vidljiv primarni sadržaj stranice. [Saznajte više](https://web.dev/first-meaningful-paint)."
   },
   "lighthouse-core/audits/metrics/first-meaningful-paint.js | title": {
     "message": "Prvo smisleno bojenje"
   },
   "lighthouse-core/audits/metrics/interactive.js | description": {
-    "message": "Vrijeme do interaktivnosti količina je vremena koje je potrebno da stranica postane potpuno interaktivna. [Saznajte više](https://developers.google.com/web/tools/lighthouse/audits/consistently-interactive)."
+    "message": "Vrijeme do interaktivnosti količina je vremena koje je potrebno da stranica postane potpuno interaktivna. [Saznajte više](https://web.dev/interactive)."
   },
   "lighthouse-core/audits/metrics/interactive.js | title": {
     "message": "Vrijeme do interaktivnosti"
@@ -813,7 +813,7 @@
     "message": "Maks. potencijalno kašnjenje odgovora na prvi unos"
   },
   "lighthouse-core/audits/metrics/speed-index.js | description": {
-    "message": "Indeks brzine prikazuje koliko se brzo sadržaj stranice vidljivo popunjava. [Saznajte više](https://developers.google.com/web/tools/lighthouse/audits/speed-index)."
+    "message": "Indeks brzine prikazuje koliko se brzo sadržaj stranice vidljivo popunjava. [Saznajte više](https://web.dev/speed-index)."
   },
   "lighthouse-core/audits/metrics/speed-index.js | title": {
     "message": "Indeks brzine"
@@ -837,7 +837,7 @@
     "message": "Pozadinske latencije poslužitelja"
   },
   "lighthouse-core/audits/offline-start-url.js | description": {
-    "message": "Uslužni alat omogućava web-aplikaciji da bude pouzdana u nepredvidivim mrežnim uvjetima. [Saznajte više](https://developers.google.com/web/tools/lighthouse/audits/http-200-when-offline)."
+    "message": "Uslužni alat omogućava web-aplikaciji da bude pouzdana u nepredvidivim mrežnim uvjetima. [Saznajte više](https://web.dev/offline-start-url)."
   },
   "lighthouse-core/audits/offline-start-url.js | failureTitle": {
     "message": "Za `start_url` ne prikazuje se kôd 200 kad je offline"
@@ -861,7 +861,7 @@
     "message": "Proračun za izvedbu"
   },
   "lighthouse-core/audits/redirects-http.js | description": {
-    "message": "Ako ste već postavili HTTPS, provjerite preusmjeravate li sav HTTP promet na HTTPS kako biste omogućili sigurne web-značajke za sve korisnike. [Saznajte više](https://developers.google.com/web/tools/lighthouse/audits/http-redirects-to-https)."
+    "message": "Ako ste već postavili HTTPS, provjerite preusmjeravate li sav HTTP promet na HTTPS kako biste omogućili sigurne web-značajke za sve korisnike. [Saznajte više](https://web.dev/redirects-http)."
   },
   "lighthouse-core/audits/redirects-http.js | failureTitle": {
     "message": "Ne preusmjerava HTTP promet na HTTPS"
@@ -870,7 +870,7 @@
     "message": "Preusmjerava HTTP promet na HTTPS"
   },
   "lighthouse-core/audits/redirects.js | description": {
-    "message": "Preusmjeravanja uvode dodatna kašnjenja prije nego što se stranica može učitati. [Saznajte više](https://developers.google.com/web/tools/lighthouse/audits/redirects)."
+    "message": "Preusmjeravanja uvode dodatna kašnjenja prije nego što se stranica može učitati. [Saznajte više](https://web.dev/redirects)."
   },
   "lighthouse-core/audits/redirects.js | title": {
     "message": "Izbjegavajte višestruka preusmjeravanja stranica"
@@ -1035,7 +1035,7 @@
     "message": "Ciljevi dodira odgovarajuće su veličine"
   },
   "lighthouse-core/audits/service-worker.js | description": {
-    "message": "Uslužni alat jest tehnologija koja aplikaciji omogućava korištenje brojnih značajki progresivne web-aplikacije, kao što je offline rad, dodavanje na početni zaslon i push obavijesti. [Saznajte više](https://developers.google.com/web/tools/lighthouse/audits/registered-service-worker)."
+    "message": "Uslužni alat jest tehnologija koja aplikaciji omogućava korištenje brojnih značajki progresivne web-aplikacije, kao što je offline rad, dodavanje na početni zaslon i push obavijesti. [Saznajte više](https://web.dev/service-worker)."
   },
   "lighthouse-core/audits/service-worker.js | explanationBadManifest": {
     "message": "Ovom stranicom upravlja uslužni alat, no nije pronađen `start_url` jer manifest nije raščlanjen kao važeći JSON"
@@ -1056,7 +1056,7 @@
     "message": "Registrira uslužni alat koji upravlja stranicom i `start_url`"
   },
   "lighthouse-core/audits/splash-screen.js | description": {
-    "message": "Tematski pozdravni zaslon pruža bolji doživljaj korisnicima koji pokreću vašu aplikaciju na početnom zaslonu. [Saznajte više](https://developers.google.com/web/tools/lighthouse/audits/custom-splash-screen)."
+    "message": "Tematski pozdravni zaslon pruža bolji doživljaj korisnicima koji pokreću vašu aplikaciju na početnom zaslonu. [Saznajte više](https://web.dev/splash-screen)."
   },
   "lighthouse-core/audits/splash-screen.js | failureTitle": {
     "message": "Nije konfigurirano za prilagođeni pozdravni zaslon"
@@ -1065,7 +1065,7 @@
     "message": "Konfiguriran za prilagođeni pozdravni zaslon"
   },
   "lighthouse-core/audits/themed-omnibox.js | description": {
-    "message": "Adresna traka preglednika može se tematski podudarati s vašom web-lokacijom. [Saznajte više](https://developers.google.com/web/tools/lighthouse/audits/address-bar)."
+    "message": "Adresna traka preglednika može se tematski podudarati s vašom web-lokacijom. [Saznajte više](https://web.dev/themed-omnibox)."
   },
   "lighthouse-core/audits/themed-omnibox.js | failureTitle": {
     "message": "Ne postavlja boju teme za adresnu traku."
@@ -1092,7 +1092,7 @@
     "message": "Upotreba treće strane"
   },
   "lighthouse-core/audits/time-to-first-byte.js | description": {
-    "message": "Vrijeme do prvog bajta navodi vrijeme u koje poslužitelj šalje odgovor. [Saznajte više](https://developers.google.com/web/tools/lighthouse/audits/ttfb)."
+    "message": "Vrijeme do prvog bajta navodi vrijeme u koje poslužitelj šalje odgovor. [Saznajte više](https://web.dev/time-to-first-byte)."
   },
   "lighthouse-core/audits/time-to-first-byte.js | displayValue": {
     "message": "Za korijenski dokument bilo je potrebno {timeInMs, number, milliseconds} ms"
@@ -1113,7 +1113,7 @@
     "message": "Vrsta"
   },
   "lighthouse-core/audits/user-timings.js | description": {
-    "message": "Savjetujemo vam da na aplikaciju primijenite API za praćenje korisničkog vremena radi mjerenja izvedbe aplikacije u stvarnom vremenu tijekom važnih korisničkih doživljaja. [Saznajte više](https://developers.google.com/web/tools/lighthouse/audits/user-timing)."
+    "message": "Savjetujemo vam da na aplikaciju primijenite API za praćenje korisničkog vremena radi mjerenja izvedbe aplikacije u stvarnom vremenu tijekom važnih korisničkih doživljaja. [Saznajte više](https://web.dev/user-timings)."
   },
   "lighthouse-core/audits/user-timings.js | displayValue": {
     "message": "{itemCount,plural, =1{Jedno praćenje korisničkog vremena}one{# praćenje korisničkog vremena}few{# praćenja korisničkog vremena}other{# praćenja korisničkog vremena}}"
@@ -1125,7 +1125,7 @@
     "message": "Pronađen je <link> za pretpovezivanje za „{securityOrigin}”, ali ga preglednik nije upotrijebio. Provjerite upotrebljavate li atribut `crossorigin` pravilno."
   },
   "lighthouse-core/audits/uses-rel-preconnect.js | description": {
-    "message": "Savjetujemo vam da dodate `preconnect` ili `dns-prefetch` prilagodbe resursa radi uspostavljanja ranih veza s važnim izvorima trećih strana. [Saznajte više](https://developers.google.com/web/fundamentals/performance/resource-prioritization#preconnect)."
+    "message": "Savjetujemo vam da dodate `preconnect` ili `dns-prefetch` prilagodbe resursa radi uspostavljanja ranih veza s važnim izvorima trećih strana. [Saznajte više](https://web.dev/uses-rel-preconnect)."
   },
   "lighthouse-core/audits/uses-rel-preconnect.js | title": {
     "message": "Rano se povežite s potrebnim izvorima"
@@ -1134,13 +1134,13 @@
     "message": "Za „{preloadURL}” pronađen je <link> za predučitavanje, no preglednik ga nije upotrijebio. Provjerite upotrebljavate li atribut `crossorigin` pravilno."
   },
   "lighthouse-core/audits/uses-rel-preload.js | description": {
-    "message": "Savjetujemo vam da koristite `<link rel=preload>` da biste dali prednost dohvaćanju resursa koji se trenutačno traže kasnije u učitavanju stranice. [Saznajte više](https://developers.google.com/web/tools/lighthouse/audits/preload)."
+    "message": "Savjetujemo vam da koristite `<link rel=preload>` da biste dali prednost dohvaćanju resursa koji se trenutačno traže kasnije u učitavanju stranice. [Saznajte više](https://web.dev/uses-rel-preload)."
   },
   "lighthouse-core/audits/uses-rel-preload.js | title": {
     "message": "Unaprijed učitajte ključne zahtjeve"
   },
   "lighthouse-core/audits/viewport.js | description": {
-    "message": "Dodajte oznaku `<meta name=\"viewport\">` da biste optimizirali svoju aplikaciju za mobilne zaslone. [Saznajte više](https://developers.google.com/web/tools/lighthouse/audits/has-viewport-meta-tag)."
+    "message": "Dodajte oznaku `<meta name=\"viewport\">` da biste optimizirali svoju aplikaciju za mobilne zaslone. [Saznajte više](https://web.dev/viewport)."
   },
   "lighthouse-core/audits/viewport.js | explanationNoTag": {
     "message": "Nijedna oznaka `<meta name=\"viewport\">` nije pronađena"
@@ -1152,7 +1152,7 @@
     "message": "Ima oznaku `<meta name=\"viewport\">` s `width` ili `initial-scale`"
   },
   "lighthouse-core/audits/without-javascript.js | description": {
-    "message": "Vaša aplikacija trebala bi prikazati bilo kakav sadržaj kada je onemogućen JavaScript, čak i ako je to samo upozorenje da je JavaScript obavezan za korištenje aplikacije. [Saznajte više](https://developers.google.com/web/tools/lighthouse/audits/no-js)."
+    "message": "Vaša aplikacija trebala bi prikazati bilo kakav sadržaj kada je onemogućen JavaScript, čak i ako je to samo upozorenje da je JavaScript obavezan za korištenje aplikacije. [Saznajte više](https://web.dev/without-javascript)."
   },
   "lighthouse-core/audits/without-javascript.js | explanation": {
     "message": "Tijelo stranice trebalo bi generirati bilo kakav sadržaj ako skripte nisu dostupne."
@@ -1164,7 +1164,7 @@
     "message": "Prikazuje se bilo kakav sadržaj kada JavaScript nije dostupan"
   },
   "lighthouse-core/audits/works-offline.js | description": {
-    "message": "Ako razvijate progresivnu web-aplikaciju, razmislite o korištenju uslužnog alata tako da aplikacija može funkcionirati offline. [Saznajte više](https://developers.google.com/web/tools/lighthouse/audits/http-200-when-offline)."
+    "message": "Ako razvijate progresivnu web-aplikaciju, razmislite o korištenju uslužnog alata tako da aplikacija može funkcionirati offline. [Saznajte više](https://web.dev/works-offline)."
   },
   "lighthouse-core/audits/works-offline.js | failureTitle": {
     "message": "Za trenutačnu stranicu ne prikazuje se kôd 200 kad je offline"

@@ -30,10 +30,10 @@
     "message": "Bazı ARIA üst rollerinin amaçlanan erişilebilirlik işlevlerini gerçekleştirebilmek için belirli alt rolleri içermesi gerekir. [Daha fazla bilgi](https://web.dev/aria-required-children/)."
   },
   "lighthouse-core/audits/accessibility/aria-required-children.js | failureTitle": {
-    "message": "Belirli alt `[role]`rolleri gerektiren,`[role]` rolüne sahip öğeler eksik."
+    "message": "ARIA `[role]` sahibi olup alt öğelerin belirli bir `[role]` içermesini gerektiren öğelerde bu gerekli alt öğelerin bazıları veya hiçbiri bulunmuyor."
   },
   "lighthouse-core/audits/accessibility/aria-required-children.js | title": {
-    "message": "Belirli alt `[role]` rolleri gerektiren,`[role]` rolüne sahip öğeler mevcut"
+    "message": "ARIA `[role]` sahibi olup alt öğelerin belirli bir `[role]` içermesini gerektiren öğelerde gerekli alt öğelerin hepsi bulunuyor."
   },
   "lighthouse-core/audits/accessibility/aria-required-parent.js | description": {
     "message": "Bazı ARIA alt rollerinin amaçlanan erişilebilirlik işlevlerini gerektiği gibi gerçekleştirebilmesi için belirli üst rollerin içinde bulunması gerekir. [Daha fazla bilgi](https://web.dev/aria-required-parent/)."
@@ -276,10 +276,10 @@
     "message": "Ekran okuyucuların tablolarda daha kolay gezinmeyi sağlayan özellikleri vardır. `[headers]` özelliğini kullanan`<td>` hücrelerinin yalnızca aynı tablodaki diğer hücrelere atıfta bulunmasını sağlamak, ekran okuyucu kullanıcılarına daha iyi bir deneyim sunabilir. [Daha fazla bilgi](https://web.dev/td-headers-attr/)."
   },
   "lighthouse-core/audits/accessibility/td-headers-attr.js | failureTitle": {
-    "message": "`<table>` öğesinde olup `[headers]` özelliğini kullanan hücreler, aynı tablodaki diğer hücrelere atıfta bulunuyor."
+    "message": "`<table>` öğesinde olup `[headers]` özelliğini kullanan hücrelerin atıfta bulunduğu öğe `id` aynı tabloda yer almıyor."
   },
   "lighthouse-core/audits/accessibility/td-headers-attr.js | title": {
-    "message": "`<table>` öğesinde olup `[headers]` özelliğini kullanan hücreler yalnızca aynı tablodaki diğer hücrelere atıfta bulunuyor."
+    "message": "`<table>` öğesinde olup `[headers]` özelliğini kullanan hücreler, aynı tablodaki tablo hücrelerine atıfta bulunuyor."
   },
   "lighthouse-core/audits/accessibility/th-has-data-cells.js | description": {
     "message": "Ekran okuyucuların tablolarda daha kolay gezinmeyi sağlayan özellikleri vardır. Tablo başlıklarının her zaman bazı hücre kümelerine atıfta bulunmasını sağlamak, ekran okuyucu kullanıcılarına daha iyi bir deneyim sunabilir. [Daha fazla bilgi](https://web.dev/th-has-data-cells/)."
@@ -318,7 +318,7 @@
     "message": "`<video>` öğelerinde `[kind=\"description\"]`içeren bir `<track>` öğesi bulunuyor"
   },
   "lighthouse-core/audits/apple-touch-icon.js | description": {
-    "message": "Kullanıcılar ana ekranlarına progresif web uygulaması eklerinde iOS'ta ideal görünüm için bir `apple-touch-icon` öğesi tanımlayın. Tanım, saydam olmayan bir 192 piksel (veya 180 piksel) kare PNG'ye götürmelidir. [Daha Fazla Bilgi](https://developers.google.com/web/fundamentals/design-and-ux/browser-customization/)."
+    "message": "Kullanıcılar ana ekranlarına progresif web uygulaması eklerinde iOS'ta ideal görünüm için bir `apple-touch-icon` öğesi tanımlayın. Tanım, saydam olmayan bir 192 piksel (veya 180 piksel) kare PNG'ye götürmelidir. [Daha Fazla Bilgi](https://web.dev/apple-touch-icon/)."
   },
   "lighthouse-core/audits/apple-touch-icon.js | failureTitle": {
     "message": "Geçerli bir `apple-touch-icon` öğesi içermiyor"
@@ -342,7 +342,7 @@
     "message": "Toplam CPU Süresi"
   },
   "lighthouse-core/audits/bootup-time.js | description": {
-    "message": "JS'yi ayrıştırma, derleme ve yürütme için harcanan zamanı kısaltmayı düşünün. Daha küçük JS yüklerinin sağlanması bu konuda yardımcı olabilir. [Daha fazla bilgi](https://developers.google.com/web/tools/lighthouse/audits/bootup)."
+    "message": "JS'yi ayrıştırma, derleme ve yürütme için harcanan zamanı kısaltmayı düşünün. Daha küçük JS yüklerinin sağlanması bu konuda yardımcı olabilir. [Daha fazla bilgi](https://web.dev/bootup-time)."
   },
   "lighthouse-core/audits/bootup-time.js | failureTitle": {
     "message": "JavaScript yürütme süresini azaltın"
@@ -351,25 +351,25 @@
     "message": "JavaScript yürütme süresi"
   },
   "lighthouse-core/audits/byte-efficiency/efficient-animated-content.js | description": {
-    "message": "Büyük GIF'ler, animasyonlu içeriğin sunulmasında verimli olmaz. Ağ veri miktarından tasarruf etmek üzere animasyonlar için MPEG4/WebM videoları ve statik resimler için GIF yerine PNG/WebP kullanma seçeneğini değerlendirin. [Daha fazla bilgi](https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/replace-animated-gifs-with-video/)"
+    "message": "Büyük GIF'ler, animasyonlu içeriğin sunulmasında verimli olmaz. Ağ veri miktarından tasarruf etmek üzere animasyonlar için MPEG4/WebM videoları ve statik resimler için GIF yerine PNG/WebP kullanma seçeneğini değerlendirin. [Daha fazla bilgi](https://web.dev/efficient-animated-content)"
   },
   "lighthouse-core/audits/byte-efficiency/efficient-animated-content.js | title": {
     "message": "Animasyonlu içerik için video biçimleri kullanın"
   },
   "lighthouse-core/audits/byte-efficiency/offscreen-images.js | description": {
-    "message": "Etkileşim için hazır olma süresini kısaltmak için ekran dışı ve gizli resimleri, tüm kritik kaynakların yüklenmesi bittikten sonra gecikmeli olarak yükleme seçeneğini değerlendirin. [Daha fazla bilgi](https://developers.google.com/web/tools/lighthouse/audits/offscreen-images)."
+    "message": "Etkileşim için hazır olma süresini kısaltmak için ekran dışı ve gizli resimleri, tüm kritik kaynakların yüklenmesi bittikten sonra gecikmeli olarak yükleme seçeneğini değerlendirin. [Daha fazla bilgi](https://web.dev/offscreen-images)."
   },
   "lighthouse-core/audits/byte-efficiency/offscreen-images.js | title": {
     "message": "Ekran dışındaki resimleri ertele"
   },
   "lighthouse-core/audits/byte-efficiency/render-blocking-resources.js | description": {
-    "message": "Kaynaklar, sayfanızda ilk boyamayı engelliyor. Kritik JS/CSS'yi satır içinde yayınlama ve kritik olmayan tüm JS/stilleri erteleme seçeneğini değerlendirin. [Daha fazla bilgi](https://developers.google.com/web/tools/lighthouse/audits/blocking-resources)."
+    "message": "Kaynaklar, sayfanızda ilk boyamayı engelliyor. Kritik JS/CSS'yi satır içinde yayınlama ve kritik olmayan tüm JS/stilleri erteleme seçeneğini değerlendirin. [Daha fazla bilgi](https://web.dev/render-blocking-resources)."
   },
   "lighthouse-core/audits/byte-efficiency/render-blocking-resources.js | title": {
     "message": "Oluşturmayı engelleyen kaynakları ortadan kaldırın"
   },
   "lighthouse-core/audits/byte-efficiency/total-byte-weight.js | description": {
-    "message": "Büyük ağ yükleri kullanıcılar için parasal maliyet anlamına gelir ve yükleme sürelerinin uzamasında yüksek bir etkiye sahiptir. [Daha fazla bilgi](https://developers.google.com/web/tools/lighthouse/audits/network-payloads)."
+    "message": "Büyük ağ yükleri kullanıcılar için parasal maliyet anlamına gelir ve yükleme sürelerinin uzamasında yüksek bir etkiye sahiptir. [Daha fazla bilgi](https://web.dev/total-byte-weight)."
   },
   "lighthouse-core/audits/byte-efficiency/total-byte-weight.js | displayValue": {
     "message": "Toplam boyut {totalBytes, number, bytes} KB'tı"
@@ -381,19 +381,19 @@
     "message": "Çok büyük ağ yüklerini önler"
   },
   "lighthouse-core/audits/byte-efficiency/unminified-css.js | description": {
-    "message": "CSS dosyalarının küçültülmesi ağ yükü boyutlarını azaltabilir. [Daha fazla bilgi](https://developers.google.com/web/tools/lighthouse/audits/minify-css)."
+    "message": "CSS dosyalarının küçültülmesi ağ yükü boyutlarını azaltabilir. [Daha fazla bilgi](https://web.dev/unminified-css)."
   },
   "lighthouse-core/audits/byte-efficiency/unminified-css.js | title": {
     "message": "CSS'yi küçültün"
   },
   "lighthouse-core/audits/byte-efficiency/unminified-javascript.js | description": {
-    "message": "JavaScript dosyalarının küçültülmesi yük boyutlarını azaltabilir ve komut dosyası ayrıştırma süresini kısaltabilir. [Daha fazla bilgi](https://developers.google.com/speed/docs/insights/MinifyResources)."
+    "message": "JavaScript dosyalarının küçültülmesi yük boyutlarını azaltabilir ve komut dosyası ayrıştırma süresini kısaltabilir. [Daha fazla bilgi](https://web.dev/unminified-javascript)."
   },
   "lighthouse-core/audits/byte-efficiency/unminified-javascript.js | title": {
     "message": "JavaScript'i küçült"
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | description": {
-    "message": "Ağ etkinliğinin gereksiz yere kullandığı bayt sayısını azaltmak için, kullanılmayan kuralları stil sayfalarından kaldırın ve ekranın üst kısmında içerik için kullanılmayan CSS'nin yüklenmesini erteleyin. [Daha fazla bilgi](https://developers.google.com/web/tools/lighthouse/audits/unused-css)."
+    "message": "Ağ etkinliğinin gereksiz yere kullandığı bayt sayısını azaltmak için, kullanılmayan kuralları stil sayfalarından kaldırın ve ekranın üst kısmında içerik için kullanılmayan CSS'nin yüklenmesini erteleyin. [Daha fazla bilgi](https://web.dev/unused-css-rules)."
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | title": {
     "message": "Kullanılmayan CSS'yi kaldırın"
@@ -405,7 +405,7 @@
     "message": "Kullanılmayan JavaScript'i kaldırın"
   },
   "lighthouse-core/audits/byte-efficiency/uses-long-cache-ttl.js | description": {
-    "message": "Uzun önbellek ömrü, sayfanızın tekrar ziyaret edilmesi sürecini hızlandırabilir. [Daha fazla bilgi](https://developers.google.com/web/tools/lighthouse/audits/cache-policy)."
+    "message": "Uzun önbellek ömrü, sayfanızın tekrar ziyaret edilmesi sürecini hızlandırabilir. [Daha fazla bilgi](https://web.dev/uses-long-cache-ttl)."
   },
   "lighthouse-core/audits/byte-efficiency/uses-long-cache-ttl.js | displayValue": {
     "message": "{itemCount,plural, =1{1 kaynak bulundu}other{# kaynak bulundu}}"
@@ -417,31 +417,31 @@
     "message": "Statik öğelerde verimli önbellek politikası kullanır"
   },
   "lighthouse-core/audits/byte-efficiency/uses-optimized-images.js | description": {
-    "message": "Optimize edilmiş resimler daha hızlı yüklenir ve daha az hücresel veri kullanır. [Daha fazla bilgi](https://developers.google.com/web/tools/lighthouse/audits/optimize-images)."
+    "message": "Optimize edilmiş resimler daha hızlı yüklenir ve daha az hücresel veri kullanır. [Daha fazla bilgi](https://web.dev/uses-optimized-images)."
   },
   "lighthouse-core/audits/byte-efficiency/uses-optimized-images.js | title": {
     "message": "Resimleri verimli bir şekilde kodlayın"
   },
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | description": {
-    "message": "Hücresel veriden tasarruf etmek ve yükleme süresini kısaltmak için uygun boyutlu resimler sunun. [Daha fazla bilgi](https://developers.google.com/web/tools/lighthouse/audits/oversized-images)."
+    "message": "Hücresel veriden tasarruf etmek ve yükleme süresini kısaltmak için uygun boyutlu resimler sunun. [Daha fazla bilgi](https://web.dev/uses-responsive-images)."
   },
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | title": {
     "message": "Doğru boyuta sahip resimler"
   },
   "lighthouse-core/audits/byte-efficiency/uses-text-compression.js | description": {
-    "message": "Metne dayalı kaynaklar, toplam ağ baytı sayısını en aza indirmek için sıkıştırılarak (gizp, deflate veya brotli) yayınlanmalıdır. [Daha fazla bilgi](https://developers.google.com/web/tools/lighthouse/audits/text-compression)."
+    "message": "Metne dayalı kaynaklar, toplam ağ baytı sayısını en aza indirmek için sıkıştırılarak (gizp, deflate veya brotli) yayınlanmalıdır. [Daha fazla bilgi](https://web.dev/uses-text-compression)."
   },
   "lighthouse-core/audits/byte-efficiency/uses-text-compression.js | title": {
     "message": "Metin sıkıştırmayı etkinleştirin"
   },
   "lighthouse-core/audits/byte-efficiency/uses-webp-images.js | description": {
-    "message": "JPEG 2000, JPEG XR ve WebP gibi resim biçimleri genellikle PNG veya JPEG'den daha iyi sıkıştırma sağlar. Böylece indirme işlemleri daha hızlı tamamlanır ve veri tüketimi daha az olur. [Daha fazla bilgi](https://developers.google.com/web/tools/lighthouse/audits/webp)."
+    "message": "JPEG 2000, JPEG XR ve WebP gibi resim biçimleri genellikle PNG veya JPEG'den daha iyi sıkıştırma sağlar. Böylece indirme işlemleri daha hızlı tamamlanır ve veri tüketimi daha az olur. [Daha fazla bilgi](https://web.dev/uses-webp-images)."
   },
   "lighthouse-core/audits/byte-efficiency/uses-webp-images.js | title": {
     "message": "Resimleri yeni nesil biçimlerde yayınlayın"
   },
   "lighthouse-core/audits/content-width.js | description": {
-    "message": "Uygulamanızın içeriğinin genişliği, görüntü alanının genişliğiyle eşleşmiyorsa uygulamanız mobil ekranlar için optimize edilmemiş olabilir. [Daha fazla bilgi](https://developers.google.com/web/tools/lighthouse/audits/content-sized-correctly-for-viewport)."
+    "message": "Uygulamanızın içeriğinin genişliği, görüntü alanının genişliğiyle eşleşmiyorsa uygulamanız mobil ekranlar için optimize edilmemiş olabilir. [Daha fazla bilgi](https://web.dev/content-width)."
   },
   "lighthouse-core/audits/content-width.js | explanation": {
     "message": "{innerWidth} piksel görüntü alanı boyutu, {outerWidth} piksel pencere boyutuyla eşleşmiyor."
@@ -453,7 +453,7 @@
     "message": "İçerik görüntü alanı için doğru boyutlandırıldı"
   },
   "lighthouse-core/audits/critical-request-chains.js | description": {
-    "message": "Aşağıdaki Kritik İstek Zincirleri, hangi kaynakların yüksek öncelikle yüklendiğini göstermektedir. Sayfa yüklemesini iyileştirmek için zincir uzunluğunu azaltma, kaynakların indirme boyutunu küçültme veya gereksiz kaynakların indirilmesini erteleme seçeneğini değerlendirin. [Daha fazla bilgi](https://developers.google.com/web/tools/lighthouse/audits/critical-request-chains)."
+    "message": "Aşağıdaki Kritik İstek Zincirleri, hangi kaynakların yüksek öncelikle yüklendiğini göstermektedir. Sayfa yüklemesini iyileştirmek için zincir uzunluğunu azaltma, kaynakların indirme boyutunu küçültme veya gereksiz kaynakların indirilmesini erteleme seçeneğini değerlendirin. [Daha fazla bilgi](https://web.dev/critical-request-chains)."
   },
   "lighthouse-core/audits/critical-request-chains.js | displayValue": {
     "message": "{itemCount,plural, =1{1 zincir bulundu}other{# zincir bulundu}}"
@@ -675,7 +675,7 @@
     "message": "Konsola tarayıcı hatası kaydedilmedi"
   },
   "lighthouse-core/audits/font-display.js | description": {
-    "message": "Web yazı tipleri yüklenirken kullanıcının metni görebilmesini sağlamak için yazı tipi görüntüleme CSS özelliğinden yararlanın. [Daha fazla bilgi](https://developers.google.com/web/updates/2016/02/font-display)."
+    "message": "Web yazı tipleri yüklenirken kullanıcının metni görebilmesini sağlamak için yazı tipi görüntüleme CSS özelliğinden yararlanın. [Daha fazla bilgi](https://web.dev/font-display)."
   },
   "lighthouse-core/audits/font-display.js | failureTitle": {
     "message": "Web yazı tipi yüklemesi sırasında metnin görünür halde kalmasını sağlayın"
@@ -705,7 +705,7 @@
     "message": "Geçersiz resim boyutlandırma bilgileri {url}"
   },
   "lighthouse-core/audits/installable-manifest.js | description": {
-    "message": "Tarayıcılar proaktif olarak kullanıcılardan uygulamanızı ana ekranlarına eklemelerini isteyebilirler ve bu da daha yüksek etkileşim sağlayabilir. [Daha fazla bilgi](https://developers.google.com/web/tools/lighthouse/audits/install-prompt)."
+    "message": "Tarayıcılar proaktif olarak kullanıcılardan uygulamanızı ana ekranlarına eklemelerini isteyebilirler ve bu da daha yüksek etkileşim sağlayabilir. [Daha fazla bilgi](https://web.dev/installable-manifest)."
   },
   "lighthouse-core/audits/installable-manifest.js | failureTitle": {
     "message": "Web uygulaması manifest dosyası yüklenebilir olma gerekliliklerini karşılamıyor"
@@ -729,7 +729,7 @@
     "message": "HTTPS kullanıyor"
   },
   "lighthouse-core/audits/load-fast-enough-for-pwa.js | description": {
-    "message": "Sayfaların hücresel ağ üzerinden hızlı bir şekilde yüklenmesi, mobil cihaz kullanıcılarının iyi bir deneyim yaşamalarını sağlar. [Daha fazla bilgi](https://developers.google.com/web/tools/lighthouse/audits/fast-3g)."
+    "message": "Sayfaların hücresel ağ üzerinden hızlı bir şekilde yüklenmesi, mobil cihaz kullanıcılarının iyi bir deneyim yaşamalarını sağlar. [Daha fazla bilgi](https://web.dev/load-fast-enough-for-pwa)."
   },
   "lighthouse-core/audits/load-fast-enough-for-pwa.js | displayValueText": {
     "message": "Etkileşimli hale gelme süresi: {timeInMs, number, seconds} sn."
@@ -750,7 +750,7 @@
     "message": "Kategori"
   },
   "lighthouse-core/audits/mainthread-work-breakdown.js | description": {
-    "message": "JS'yi ayrıştırma, derleme ve yürütme için harcanan zamanı kısaltma seçeneğini değerlendirin. Daha küçük JS yüklerinin sağlanması bu konuda yardımcı olabilir."
+    "message": "JS'yi ayrıştırma, derleme ve yürütme için harcanan zamanı kısaltmayı düşünün. Daha küçük JS yüklerinin sağlanması bu konuda yardımcı olabilir. [Daha fazla bilgi](https://web.dev/mainthread-work-breakdown)"
   },
   "lighthouse-core/audits/mainthread-work-breakdown.js | failureTitle": {
     "message": "Ana iş parçacığı çalışmasını en aza indir"
@@ -759,49 +759,49 @@
     "message": "Ana iş parçacığının çalışmasını en aza indirir"
   },
   "lighthouse-core/audits/manual/pwa-cross-browser.js | description": {
-    "message": "Mümkün olduğunca fazla sayıda kullanıcıya ulaşmak için sitelerin belli başlı her tarayıcıda çalışması gerekir. [Daha fazla bilgi](https://developers.google.com/web/progressive-web-apps/checklist#site-works-cross-browser)."
+    "message": "Mümkün olduğunca fazla sayıda kullanıcıya ulaşmak için sitelerin belli başlı her tarayıcıda çalışması gerekir. [Daha fazla bilgi](https://web.dev/pwa-cross-browser)."
   },
   "lighthouse-core/audits/manual/pwa-cross-browser.js | title": {
     "message": "Site farklı tarayıcılarda çalışıyor"
   },
   "lighthouse-core/audits/manual/pwa-each-page-has-url.js | description": {
-    "message": "Her bir sayfaya URL aracılığıyla derin bağlantı verilebildiğinden ve URL'lerin sosyal medyada paylaşılabilmesi için benzersiz olduğundan emin olun. [Daha fazla bilgi](https://developers.google.com/web/progressive-web-apps/checklist#each-page-has-a-url)."
+    "message": "Her bir sayfaya URL aracılığıyla derin bağlantı verilebildiğinden ve URL'lerin sosyal medyada paylaşılabilmesi için benzersiz olduğundan emin olun. [Daha fazla bilgi](https://web.dev/pwa-each-page-has-url)."
   },
   "lighthouse-core/audits/manual/pwa-each-page-has-url.js | title": {
     "message": "Her sayfa bir URL'ye sahip"
   },
   "lighthouse-core/audits/manual/pwa-page-transitions.js | description": {
-    "message": "Yavaş ağlarda bile sağa sola dokundukça geçişlerin hızlı gerçekleştiği hissedilmelidir. Bu, algılanan performansın temel unsurlarındandır. [Daha fazla bilgi](https://developers.google.com/web/progressive-web-apps/checklist#page-transitions-dont-feel-like-they-block-on-the-network)."
+    "message": "Yavaş ağlarda bile sağa sola dokundukça geçişlerin hızlı gerçekleştiği hissedilmelidir. Bu deneyim, kullanıcının performans algısının temelinde yatar. [Daha fazla bilgi](https://web.dev/pwa-page-transitions)."
   },
   "lighthouse-core/audits/manual/pwa-page-transitions.js | title": {
     "message": "Sayfa geçişleri ağda takılıyorlarmış gibi hissedilmiyor"
   },
   "lighthouse-core/audits/metrics/estimated-input-latency.js | description": {
-    "message": "Tahmini Giriş Gecikmesi, sayfa yüklemesinin en yoğun olduğu 5 saniyelik zaman aralığında uygulamanızın kullanıcı girişine kaç milisaniye içinde yanıt vereceğine dair bir tahmindir. Gecikmeniz 50 ms.nin üzerinde olursa kullanıcılar uygulamanızın durakladığını düşünebilir. [Daha fazla bilgi](https://developers.google.com/web/tools/lighthouse/audits/estimated-input-latency)."
+    "message": "Tahmini Giriş Gecikmesi, sayfa yüklemesinin en yoğun olduğu 5 saniyelik zaman aralığında uygulamanızın kullanıcı girişine kaç milisaniye içinde yanıt vereceğine dair bir tahmindir. Gecikmeniz 50 ms.nin üzerinde olursa kullanıcılar uygulamanızın durakladığını düşünebilir. [Daha fazla bilgi](https://web.dev/estimated-input-latency)."
   },
   "lighthouse-core/audits/metrics/estimated-input-latency.js | title": {
     "message": "Tahmini Giriş Gecikmesi"
   },
   "lighthouse-core/audits/metrics/first-contentful-paint.js | description": {
-    "message": "İlk Zengin İçerikli Boyama, ilk metnin veya resmin boyandığı zamanı işaret eder. [Daha fazla bilgi](https://developers.google.com/web/tools/lighthouse/audits/first-contentful-paint)."
+    "message": "İlk Zengin İçerikli Boyama, ilk metnin veya resmin boyandığı zamanı işaret eder. [Daha fazla bilgi](https://web.dev/first-contentful-paint)."
   },
   "lighthouse-core/audits/metrics/first-contentful-paint.js | title": {
     "message": "İlk Zengin İçerikli Boya"
   },
   "lighthouse-core/audits/metrics/first-cpu-idle.js | description": {
-    "message": "İlk CPU Boşta metriği, sayfanın ana iş parçacığının girişi işlemek için yeterli olduğu ilk anı işaret eder. [Daha fazla bilgi](https://developers.google.com/web/tools/lighthouse/audits/first-interactive)."
+    "message": "İlk CPU Boşta metriği, sayfanın ana iş parçacığının girişi işlemek için yeterli olduğu ilk anı işaret eder.  [Daha fazla bilgi](https://web.dev/first-cpu-idle)."
   },
   "lighthouse-core/audits/metrics/first-cpu-idle.js | title": {
     "message": "İlk CPU Boşta"
   },
   "lighthouse-core/audits/metrics/first-meaningful-paint.js | description": {
-    "message": "İlk Anlamlı Boyama, bir sayfanın ana içeriğinin ne zaman görünür hale geldiğini ölçer. [Daha fazla bilgi](https://developers.google.com/web/tools/lighthouse/audits/first-meaningful-paint)."
+    "message": "İlk Anlamlı Boyama, bir sayfanın ana içeriğinin ne zaman görünür hale geldiğini ölçer. [Daha fazla bilgi](https://web.dev/first-meaningful-paint)."
   },
   "lighthouse-core/audits/metrics/first-meaningful-paint.js | title": {
     "message": "İlk Anlamlı Boya"
   },
   "lighthouse-core/audits/metrics/interactive.js | description": {
-    "message": "Etkileşime hazır olma süresi, sayfanın tamamen etkileşime hazır hale gelmesi için geçmesi gereken süreyi ifade eder. [Daha fazla bilgi](https://developers.google.com/web/tools/lighthouse/audits/consistently-interactive)."
+    "message": "Etkileşime hazır olma süresi, sayfanın tamamen etkileşime hazır hale gelmesi için geçmesi gereken süreyi ifade eder. [Daha fazla bilgi](https://web.dev/interactive)."
   },
   "lighthouse-core/audits/metrics/interactive.js | title": {
     "message": "Etkileşim Süresi"
@@ -813,7 +813,7 @@
     "message": "Maksimum Olası İlk Giriş Gecikmesi"
   },
   "lighthouse-core/audits/metrics/speed-index.js | description": {
-    "message": "Hız Endeksi, bir sayfa içeriğinin görsel olarak ne kadar hızlı doldurulabildiğini gösterir. [Daha fazla bilgi](https://developers.google.com/web/tools/lighthouse/audits/speed-index)."
+    "message": "Hız Endeksi, bir sayfa içeriğinin görsel olarak ne kadar hızlı doldurulabildiğini gösterir. [Daha fazla bilgi](https://web.dev/speed-index)."
   },
   "lighthouse-core/audits/metrics/speed-index.js | title": {
     "message": "Hız İndeksi"
@@ -837,7 +837,7 @@
     "message": "Sunucunun Arka Uç Gecikmeleri"
   },
   "lighthouse-core/audits/offline-start-url.js | description": {
-    "message": "Hizmet çalışanı web uygulamanızın öngörülemeyen ağ koşullarında güvenilir olmasını sağlar. [Daha fazla bilgi](https://developers.google.com/web/tools/lighthouse/audits/http-200-when-offline)."
+    "message": "Hizmet çalışanı web uygulamanızın öngörülemeyen ağ koşullarında güvenilir olmasını sağlar. [Daha fazla bilgi](https://web.dev/offline-start-url)."
   },
   "lighthouse-core/audits/offline-start-url.js | failureTitle": {
     "message": "`start_url` çevrimdışıyken 200 koduyla yanıt vermiyor"
@@ -861,7 +861,7 @@
     "message": "Performans bütçesi"
   },
   "lighthouse-core/audits/redirects-http.js | description": {
-    "message": "Zaten HTTPS kurduysanız kullanıcılarınıza güvenli web özellikleri sağlayabilmek için tüm HTTP trafiğini HTTPS'ye yönlendirdiğinizden emin olun. [Daha fazla bilgi](https://developers.google.com/web/tools/lighthouse/audits/http-redirects-to-https)."
+    "message": "Zaten HTTPS kurduysanız kullanıcılarınıza güvenli web özellikleri sağlayabilmek için tüm HTTP trafiğini HTTPS'ye yönlendirdiğinizden emin olun. [Daha fazla bilgi](https://web.dev/redirects-http)."
   },
   "lighthouse-core/audits/redirects-http.js | failureTitle": {
     "message": "HTTP trafiğini HTTPS'ye yönlendirmiyor"
@@ -870,7 +870,7 @@
     "message": "HTTP trafiğini HTTPS'ye yönlendiriyor"
   },
   "lighthouse-core/audits/redirects.js | description": {
-    "message": "Yönlendirmeler, sayfanın yüklenmesinden önce ek gecikmelere neden olur. [Daha fazla bilgi](https://developers.google.com/web/tools/lighthouse/audits/redirects)."
+    "message": "Yönlendirmeler, sayfanın yüklenmesinden önce ek gecikmelere neden olur. [Daha fazla bilgi](https://web.dev/redirects)."
   },
   "lighthouse-core/audits/redirects.js | title": {
     "message": "Birden çok sayfa yönlendirmesini önleyin"
@@ -1035,7 +1035,7 @@
     "message": "Dokunma hedefleri uygun boyutta"
   },
   "lighthouse-core/audits/service-worker.js | description": {
-    "message": "Servis çalışanı, uygulamanızın çevrimdışı çalışma, ana ekrana ekleme ve push bildirimleri gibi pek çok Progresif Web Uygulaması özelliğini kullanmasını sağlayan teknolojidir. [Daha fazla bilgi](https://developers.google.com/web/tools/lighthouse/audits/registered-service-worker)."
+    "message": "Servis çalışanı, uygulamanızın çevrimdışı çalışma, ana ekrana ekleme ve push bildirimleri gibi pek çok Progresif Web Uygulaması özelliğini kullanmasını sağlayan teknolojidir. [Daha fazla bilgi](https://web.dev/service-worker)."
   },
   "lighthouse-core/audits/service-worker.js | explanationBadManifest": {
     "message": "Sayfa bir hizmet çalışanı tarafından kontrol ediliyor ancak manifest dosyası geçerli JSON olarak ayrışmadığından `start_url` bulunamadı"
@@ -1056,7 +1056,7 @@
     "message": "Sayfayı kontrol eden bir hizmet çalışanı ve `start_url` öğesi kaydediliyor"
   },
   "lighthouse-core/audits/splash-screen.js | description": {
-    "message": "Temalı başlangıç ekranı, kullanıcılar uygulamanızı ana ekranlarında başlattığında yüksek kaliteli bir deneyim sağlar. [Daha fazla bilgi](https://developers.google.com/web/tools/lighthouse/audits/custom-splash-screen)."
+    "message": "Temalı başlangıç ekranı, kullanıcılar uygulamanızı ana ekranlarında başlattığında yüksek kaliteli bir deneyim sağlar. [Daha fazla bilgi](https://web.dev/splash-screen)."
   },
   "lighthouse-core/audits/splash-screen.js | failureTitle": {
     "message": "Özel başlangıç ekranı için yapılandırılmadı"
@@ -1065,7 +1065,7 @@
     "message": "Özel başlangıç ekranı için yapılandırıldı"
   },
   "lighthouse-core/audits/themed-omnibox.js | description": {
-    "message": "Sitenizle eşleşmesi için tarayıcı adres çubuğu temalı yapılabilir. [Daha fazla bilgi](https://developers.google.com/web/tools/lighthouse/audits/address-bar)."
+    "message": "Sitenizle eşleşmesi için tarayıcı adres çubuğu temalı yapılabilir. [Daha fazla bilgi](https://web.dev/themed-omnibox)."
   },
   "lighthouse-core/audits/themed-omnibox.js | failureTitle": {
     "message": "Adres çubuğu için tema rengi ayarlamıyor."
@@ -1092,7 +1092,7 @@
     "message": "Üçüncü Taraf Kullanımı"
   },
   "lighthouse-core/audits/time-to-first-byte.js | description": {
-    "message": "İlk Bayt Zamanı, sunucunuzun yanıt gönderme zamanını tanımlar. [Daha fazla bilgi](https://developers.google.com/web/tools/lighthouse/audits/ttfb)."
+    "message": "İlk Bayt Zamanı, sunucunuzun yanıt gönderme zamanını tanımlar. [Daha fazla bilgi](https://web.dev/time-to-first-byte)."
   },
   "lighthouse-core/audits/time-to-first-byte.js | displayValue": {
     "message": "Root doküman {timeInMs, number, milliseconds} ms. sürdü"
@@ -1113,7 +1113,7 @@
     "message": "Tür"
   },
   "lighthouse-core/audits/user-timings.js | description": {
-    "message": "Önemli kullanıcı deneyimleri esnasında uygulamanızın gerçek dünya performansını ölçmek için uygulamanıza User Timing API'si ekleme seçeneğini değerlendirin. [Daha fazla bilgi](https://developers.google.com/web/tools/lighthouse/audits/user-timing)."
+    "message": "Önemli kullanıcı deneyimleri esnasında uygulamanızın gerçek dünya performansını ölçmek için uygulamanıza User Timing API'si ekleme seçeneğini değerlendirin. [Daha fazla bilgi](https://web.dev/user-timings)."
   },
   "lighthouse-core/audits/user-timings.js | displayValue": {
     "message": "{itemCount,plural, =1{1 kullanıcı zamanlaması}other{# kullanıcı zamanlaması}}"
@@ -1125,7 +1125,7 @@
     "message": "\"{securityOrigin}\" için bir önceden bağlanma <link> öğesi bulundu ancak tarayıcı tarafından kullanılmadı. `crossorigin` özelliğini gerektiği gibi kullandığınızdan emin olun."
   },
   "lighthouse-core/audits/uses-rel-preconnect.js | description": {
-    "message": "Önemli üçüncü taraf kaynaklarına erken bağlantılar oluşturmak için `preconnect` veya `dns-prefetch` kaynak ipuçları ekleme seçeneğini değerlendirin. [Daha fazla bilgi](https://developers.google.com/web/fundamentals/performance/resource-prioritization#preconnect)."
+    "message": "Önemli üçüncü taraf kaynaklarına erken bağlantılar oluşturmak için `preconnect` veya `dns-prefetch` kaynak ipuçları ekleme seçeneğini değerlendirin. [Daha fazla bilgi](https://web.dev/uses-rel-preconnect)."
   },
   "lighthouse-core/audits/uses-rel-preconnect.js | title": {
     "message": "Gerekli kaynaklara önceden bağlan"
@@ -1134,13 +1134,13 @@
     "message": "\"{preloadURL}\" için bir önceden yükleme <link> bulundu ancak tarayıcı tarafından kullanılmadı. `crossorigin` özelliğini gerektiği gibi kullandığınızdan emin olun."
   },
   "lighthouse-core/audits/uses-rel-preload.js | description": {
-    "message": "Mevcut durumda sayfa yüklemesinden sonra istenen kaynakları daha önce getirmek için `<link rel=preload>` kullanmayı düşünün. [Daha fazla bilgi](https://developers.google.com/web/tools/lighthouse/audits/preload)."
+    "message": "Mevcut durumda sayfa yüklemesinden sonra istenen kaynakları daha önce getirmek için `<link rel=preload>` kullanmayı düşünün. [Daha fazla bilgi](https://web.dev/uses-rel-preload)."
   },
   "lighthouse-core/audits/uses-rel-preload.js | title": {
     "message": "Önemli istekleri önceden yükleyin"
   },
   "lighthouse-core/audits/viewport.js | description": {
-    "message": "Uygulamanızı mobil ekranlar için optimize etmek üzere `<meta name=\"viewport\">` etiketi ekleyin. [Daha fazla bilgi](https://developers.google.com/web/tools/lighthouse/audits/has-viewport-meta-tag)."
+    "message": "Uygulamanızı mobil ekranlar için optimize etmek üzere `<meta name=\"viewport\">` etiketi ekleyin. [Daha fazla bilgi](https://web.dev/viewport)."
   },
   "lighthouse-core/audits/viewport.js | explanationNoTag": {
     "message": "`<meta name=\"viewport\">` etiketi bulunamadı"
@@ -1152,7 +1152,7 @@
     "message": "`width` veya `initial-scale` değerleri olan bir `<meta name=\"viewport\">` etiketi var"
   },
   "lighthouse-core/audits/without-javascript.js | description": {
-    "message": "Uygulamanız, JavaScript devre dışı bırakıldığında bazı içerikler görüntülemelidir. Bu içerik, kullanıcıya uygulamayı kullanmak için JavaScript gerektiğini belirten bir uyarı bile olabilir. [Daha fazla bilgi](https://developers.google.com/web/tools/lighthouse/audits/no-js)."
+    "message": "Uygulamanız, JavaScript devre dışı bırakıldığında bazı içerikler görüntülemelidir. Bu içerik, kullanıcıya uygulamayı kullanmak için JavaScript gerektiğini belirten bir uyarı bile olabilir. [Daha fazla bilgi](https://web.dev/without-javascript)."
   },
   "lighthouse-core/audits/without-javascript.js | explanation": {
     "message": "Komut dosyaları kullanılamıyorsa sayfa gövdesi bazı içerikler oluşturmalıdır."
@@ -1164,7 +1164,7 @@
     "message": "JavaScript kullanılamadığında bazı içerikler bulundurur"
   },
   "lighthouse-core/audits/works-offline.js | description": {
-    "message": "Progresif Web Uygulaması oluşturuyorsanız uygulamanızın çevrimdışı da çalışabilmesi için hizmet çalışanı kullanmayı düşünün. [Daha fazla bilgi](https://developers.google.com/web/tools/lighthouse/audits/http-200-when-offline)."
+    "message": "Progresif Web Uygulaması oluşturuyorsanız uygulamanızın çevrimdışı da çalışabilmesi için hizmet çalışanı kullanmayı düşünün. [Daha fazla bilgi](https://web.dev/works-offline)."
   },
   "lighthouse-core/audits/works-offline.js | failureTitle": {
     "message": "Geçerli sayfa çevrimdışıyken 200 koduyla yanıt vermiyor"

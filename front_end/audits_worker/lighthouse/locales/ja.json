@@ -30,10 +30,10 @@
     "message": "目的のユーザー補助機能を実行するには、一部の ARIA 親役割に特定の子役割を含める必要があります。[詳細](https://web.dev/aria-required-children/)"
   },
   "lighthouse-core/audits/accessibility/aria-required-children.js | failureTitle": {
-    "message": "特定の子 `[role]` を必要とする `[role]` を指定した要素が見つかりません。"
+    "message": "Elements with an ARIA `[role]` that require children to contain a specific `[role]` are missing some or all of those required children."
   },
   "lighthouse-core/audits/accessibility/aria-required-children.js | title": {
-    "message": "特定の子 `[role]` を必要とする `[role]` を指定した要素があります"
+    "message": "Elements with an ARIA `[role]` that require children to contain a specific `[role]` have all required children."
   },
   "lighthouse-core/audits/accessibility/aria-required-parent.js | description": {
     "message": "目的のユーザー補助機能を正しく実行するには、一部の ARIA 子役割を特定の親役割に含める必要があります。[詳細](https://web.dev/aria-required-parent/)"
@@ -276,10 +276,10 @@
     "message": "スクリーン リーダーには、表内の移動を補助する機能があります。`[headers]` 属性を使用している `<td>` セルが同じ表の他のセルのみを参照するように設定すると、スクリーン リーダーの利便性が向上する可能性があります。[詳細](https://web.dev/td-headers-attr/)"
   },
   "lighthouse-core/audits/accessibility/td-headers-attr.js | failureTitle": {
-    "message": "`[headers]` 属性を使用している `<table>` 要素内のセルは、同じ表の他のセルを参照しています。"
+    "message": "Cells in a `<table>` element that use the `[headers]` attribute refer to an element `id` not found within the same table."
   },
   "lighthouse-core/audits/accessibility/td-headers-attr.js | title": {
-    "message": "`[headers]` 属性を使用している `<table>` 要素内のセルは、同じ表の他のセルのみを参照しています。"
+    "message": "Cells in a `<table>` element that use the `[headers]` attribute refer to table cells within the same table."
   },
   "lighthouse-core/audits/accessibility/th-has-data-cells.js | description": {
     "message": "スクリーン リーダーには、表内の移動を補助する機能があります。表のヘッダーが常に一部のセルを参照するように設定すると、スクリーン リーダーの利便性が向上する可能性があります。[詳細](https://web.dev/th-has-data-cells/)"
@@ -318,7 +318,7 @@
     "message": "`<video>` 要素に `[kind=\"description\"]` が指定された `<track>` 要素が含まれています"
   },
   "lighthouse-core/audits/apple-touch-icon.js | description": {
-    "message": "ユーザーがプログレッシブ ウェブアプリを iOS のホーム画面に追加したとき、アプリが希望どおりのデザインで表示されるようにするには、`apple-touch-icon` を定義します。参照先は不透明な 192 ピクセル（または 180 ピクセル）の正方形の PNG 画像とする必要があります。[詳細](https://developers.google.com/web/fundamentals/design-and-ux/browser-customization/)"
+    "message": "ユーザーがプログレッシブ ウェブアプリを iOS のホーム画面に追加したとき、アプリが希望どおりのデザインで表示されるようにするには、`apple-touch-icon` を定義します。参照先は不透明な 192 ピクセル（または 180 ピクセル）の正方形の PNG 画像とする必要があります。[詳細](https://web.dev/apple-touch-icon/)"
   },
   "lighthouse-core/audits/apple-touch-icon.js | failureTitle": {
     "message": "有効な `apple-touch-icon` が提供されていません"
@@ -342,7 +342,7 @@
     "message": "合計 CPU 時間"
   },
   "lighthouse-core/audits/bootup-time.js | description": {
-    "message": "JavaScript の解析、コンパイル、実行にかかる時間の短縮をご検討ください。配信する JavaScript ペイロードのサイズを抑えると効果が見込めます。[詳細](https://developers.google.com/web/tools/lighthouse/audits/bootup)"
+    "message": "JavaScript の解析、コンパイル、実行にかかる時間の短縮をご検討ください。配信する JavaScript ペイロードのサイズを抑えると効果が見込めます。[詳細](https://web.dev/bootup-time)"
   },
   "lighthouse-core/audits/bootup-time.js | failureTitle": {
     "message": "JavaScript の実行にかかる時間の低減"
@@ -351,25 +351,25 @@
     "message": "JavaScript の実行にかかる時間"
   },
   "lighthouse-core/audits/byte-efficiency/efficient-animated-content.js | description": {
-    "message": "サイズの大きい GIF は、アニメーション コンテンツの配信方法として効率的ではありません。ネットワークの通信量を抑えるため、GIF を使用する代わりに、アニメーションには MPEG4/WebM 動画、静止画像には PNG/WebP を使用することをご検討ください。[詳細](https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/replace-animated-gifs-with-video/)"
+    "message": "サイズの大きい GIF は、アニメーション コンテンツの配信方法として効率的ではありません。ネットワークの通信量を抑えるため、GIF を使用する代わりに、アニメーションには MPEG4/WebM 動画、静止画像には PNG/WebP を使用することをご検討ください。[詳細](https://web.dev/efficient-animated-content)"
   },
   "lighthouse-core/audits/byte-efficiency/efficient-animated-content.js | title": {
     "message": "アニメーション コンテンツでの動画フォーマットの使用"
   },
   "lighthouse-core/audits/byte-efficiency/offscreen-images.js | description": {
-    "message": "オフスクリーンの非表示の画像は、重要なリソースをすべて読み込んだ後に遅れて読み込むようにして、操作可能になるまでの時間を短縮することをご検討ください。[詳細](https://developers.google.com/web/tools/lighthouse/audits/offscreen-images)"
+    "message": "オフスクリーンの非表示の画像は、重要なリソースをすべて読み込んだ後に遅れて読み込むようにして、操作可能になるまでの時間を短縮することをご検討ください。[詳細](https://web.dev/offscreen-images)"
   },
   "lighthouse-core/audits/byte-efficiency/offscreen-images.js | title": {
     "message": "オフスクリーン画像の遅延読み込み"
   },
   "lighthouse-core/audits/byte-efficiency/render-blocking-resources.js | description": {
-    "message": "ページの初回ペイントをリソースがブロックしています。重要な JavaScript や CSS はインラインで配信し、それ以外の JavaScript やスタイルはすべて遅らせることをご検討ください。[詳細](https://developers.google.com/web/tools/lighthouse/audits/blocking-resources)"
+    "message": "ページの First Paint をリソースがブロックしています。重要な JavaScript や CSS はインラインで配信し、それ以外の JavaScript やスタイルはすべて遅らせることをご検討ください。[詳細](https://web.dev/render-blocking-resources)"
   },
   "lighthouse-core/audits/byte-efficiency/render-blocking-resources.js | title": {
     "message": "レンダリングを妨げるリソースの除外"
   },
   "lighthouse-core/audits/byte-efficiency/total-byte-weight.js | description": {
-    "message": "ネットワーク ペイロードのサイズが大きいと、ユーザーの金銭的負担が大きくなり、多くの場合、読み込み時間が長くなります。[詳細](https://developers.google.com/web/tools/lighthouse/audits/network-payloads)"
+    "message": "ネットワーク ペイロードのサイズが大きいと、ユーザーの金銭的負担が大きくなり、多くの場合、読み込み時間が長くなります。[詳細](https://web.dev/total-byte-weight)"
   },
   "lighthouse-core/audits/byte-efficiency/total-byte-weight.js | displayValue": {
     "message": "合計サイズは {totalBytes, number, bytes} KB でした"
@@ -381,19 +381,19 @@
     "message": "過大なネットワーク ペイロードの回避"
   },
   "lighthouse-core/audits/byte-efficiency/unminified-css.js | description": {
-    "message": "CSS ファイルを最小化すると、ネットワーク ペイロードのサイズを抑えることができます。[詳細](https://developers.google.com/web/tools/lighthouse/audits/minify-css)"
+    "message": "CSS ファイルを最小化すると、ネットワーク ペイロードのサイズを抑えることができます。[詳細](https://web.dev/unminified-css)"
   },
   "lighthouse-core/audits/byte-efficiency/unminified-css.js | title": {
     "message": "CSS の最小化"
   },
   "lighthouse-core/audits/byte-efficiency/unminified-javascript.js | description": {
-    "message": "JavaScript ファイルを最小化すると、ペイロード サイズとスクリプトの解析時間を抑えることができます。[詳細](https://developers.google.com/speed/docs/insights/MinifyResources)"
+    "message": "JavaScript ファイルを最小化すると、ペイロード サイズとスクリプトの解析時間を抑えることができます。[詳細](https://web.dev/unminified-javascript)"
   },
   "lighthouse-core/audits/byte-efficiency/unminified-javascript.js | title": {
     "message": "JavaScript の最小化"
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | description": {
-    "message": "スタイルシートから古いルールを削除し、スクロールせずに見える範囲のコンテンツに使用されていない CSS の読み込みを遅延させると、データ通信量を減らすことができます。[詳細](https://developers.google.com/web/tools/lighthouse/audits/unused-css)"
+    "message": "スタイルシートから古いルールを削除し、スクロールせずに見える範囲のコンテンツに使用されていない CSS の読み込みを遅延させると、データ通信量を減らすことができます。[詳細](https://web.dev/unused-css-rules)"
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | title": {
     "message": "使用していない CSS を削除してください"
@@ -405,7 +405,7 @@
     "message": "使用していない JavaScript の削除"
   },
   "lighthouse-core/audits/byte-efficiency/uses-long-cache-ttl.js | description": {
-    "message": "キャッシュの有効期間を長くすると、再訪問したユーザーへのページの読み込み速度を向上できます。[詳細](https://developers.google.com/web/tools/lighthouse/audits/cache-policy)"
+    "message": "キャッシュの有効期間を長くすると、再訪問したユーザーへのページの読み込み速度を向上できます。[詳細](https://web.dev/uses-long-cache-ttl)"
   },
   "lighthouse-core/audits/byte-efficiency/uses-long-cache-ttl.js | displayValue": {
     "message": "{itemCount,plural, =1{1 件のリソースが見つかりました}other{# 件のリソースが見つかりました}}"
@@ -417,31 +417,31 @@
     "message": "静的なアセットでの効率的なキャッシュ ポリシーの使用"
   },
   "lighthouse-core/audits/byte-efficiency/uses-optimized-images.js | description": {
-    "message": "画像を最適化すると、読み込み時間を短縮しモバイルデータ量を抑えることができます。[詳細](https://developers.google.com/web/tools/lighthouse/audits/optimize-images)"
+    "message": "画像を最適化すると、読み込み時間を短縮しモバイルデータ量を抑えることができます。[詳細](https://web.dev/uses-optimized-images)"
   },
   "lighthouse-core/audits/byte-efficiency/uses-optimized-images.js | title": {
     "message": "効率的な画像フォーマット"
   },
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | description": {
-    "message": "適切なサイズの画像を配信して、モバイルデータ量を節約し読み込み時間を短縮してください。[詳細](https://developers.google.com/web/tools/lighthouse/audits/oversized-images)"
+    "message": "適切なサイズの画像を配信して、モバイルデータ量を節約し読み込み時間を短縮してください。[詳細](https://web.dev/uses-responsive-images)"
   },
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | title": {
     "message": "適切なサイズの画像"
   },
   "lighthouse-core/audits/byte-efficiency/uses-text-compression.js | description": {
-    "message": "テキストベースのリソースは圧縮（gzip、deflate、または brotli）して配信し、ネットワークの全体的な通信量を最小限に抑えてください。[詳細](https://developers.google.com/web/tools/lighthouse/audits/text-compression)"
+    "message": "テキストベースのリソースは圧縮（gzip、deflate、または brotli）して配信し、ネットワークの全体的な通信量を最小限に抑えてください。[詳細](https://web.dev/uses-text-compression)"
   },
   "lighthouse-core/audits/byte-efficiency/uses-text-compression.js | title": {
     "message": "テキスト圧縮の有効化"
   },
   "lighthouse-core/audits/byte-efficiency/uses-webp-images.js | description": {
-    "message": "JPEG 2000、JPEG XR、WebP などの画像フォーマットは、PNG や JPEG より圧縮性能が高く、ダウンロード時間やデータ使用量を抑えることができます。[詳細](https://developers.google.com/web/tools/lighthouse/audits/webp)"
+    "message": "JPEG 2000、JPEG XR、WebP などの画像フォーマットは、PNG や JPEG より圧縮性能が高く、ダウンロード時間やデータ使用量を抑えることができます。[詳細](https://web.dev/uses-webp-images)"
   },
   "lighthouse-core/audits/byte-efficiency/uses-webp-images.js | title": {
     "message": "次世代フォーマットでの画像の配信"
   },
   "lighthouse-core/audits/content-width.js | description": {
-    "message": "アプリのコンテンツの幅がビューポートの幅と一致しない場合、アプリがモバイル画面に合わせて最適化されない可能性があります。[詳細](https://developers.google.com/web/tools/lighthouse/audits/content-sized-correctly-for-viewport)"
+    "message": "アプリのコンテンツの幅がビューポートの幅と一致しない場合、アプリがモバイル画面に合わせて最適化されない可能性があります。[詳細](https://web.dev/content-width)"
   },
   "lighthouse-core/audits/content-width.js | explanation": {
     "message": "ビューポートのサイズ（{innerWidth} ピクセル）がウィンドウのサイズ（{outerWidth} ピクセル）と一致していません。"
@@ -453,7 +453,7 @@
     "message": "コンテンツのサイズとビューポートのサイズが一致しています"
   },
   "lighthouse-core/audits/critical-request-chains.js | description": {
-    "message": "下のクリティカル リクエスト チェーンでは、高い優先度で読み込まれたリソースを確認できます。チェーンの長さを縮小する、リソースのダウンロード サイズを抑える、不要なリソースのダウンロードを遅らせるなどの手段を行って、ページの読み込み速度を改善することをご検討ください。[詳細](https://developers.google.com/web/tools/lighthouse/audits/critical-request-chains)"
+    "message": "下のクリティカル リクエスト チェーンでは、高い優先度で読み込まれたリソースを確認できます。チェーンの長さを縮小する、リソースのダウンロード サイズを抑える、不要なリソースのダウンロードを遅らせるなどの手段を行って、ページの読み込み速度を改善することをご検討ください。[詳細](https://web.dev/critical-request-chains)"
   },
   "lighthouse-core/audits/critical-request-chains.js | displayValue": {
     "message": "{itemCount,plural, =1{1 件のチェーンが見つかりました}other{# 件のチェーンが見つかりました}}"
@@ -675,7 +675,7 @@
     "message": "コンソールに記録されたブラウザのエラーはありません"
   },
   "lighthouse-core/audits/font-display.js | description": {
-    "message": "フォント表示の CSS 機能を使用して、Web フォントの読み込み中にユーザーがテキストを読めるようにしてください。[詳細](https://developers.google.com/web/updates/2016/02/font-display)"
+    "message": "フォント表示の CSS 機能を使用して、Web フォントの読み込み中にユーザーがテキストを読めるようにしてください。[詳細](https://web.dev/font-display)"
   },
   "lighthouse-core/audits/font-display.js | failureTitle": {
     "message": "ウェブフォント読み込み中のテキストの表示"
@@ -705,7 +705,7 @@
     "message": "画像サイズに関する情報（{url}）が正しくありません"
   },
   "lighthouse-core/audits/installable-manifest.js | description": {
-    "message": "ブラウザではホーム画面へのアプリの追加を促すメッセージを事前にユーザーに表示できます。これによりエンゲージメントが向上します。[詳細](https://developers.google.com/web/tools/lighthouse/audits/install-prompt)"
+    "message": "ブラウザではホーム画面へのアプリの追加を促すメッセージを事前にユーザーに表示できます。これによりエンゲージメントが向上します。[詳細](https://web.dev/installable-manifest)"
   },
   "lighthouse-core/audits/installable-manifest.js | failureTitle": {
     "message": "ウェブアプリのマニフェストはインストール可能となる要件を満たしていません"
@@ -729,7 +729,7 @@
     "message": "HTTPS を使用しています"
   },
   "lighthouse-core/audits/load-fast-enough-for-pwa.js | description": {
-    "message": "モバイル ネットワークでのページ読み込みを速くすることで、優れたモバイル ユーザー エクスペリエンスが実現されます。[詳細](https://developers.google.com/web/tools/lighthouse/audits/fast-3g)"
+    "message": "モバイル ネットワークでのページ読み込みを速くすることで、優れたモバイル ユーザー エクスペリエンスが実現されます。[詳細](https://web.dev/load-fast-enough-for-pwa)"
   },
   "lighthouse-core/audits/load-fast-enough-for-pwa.js | displayValueText": {
     "message": "操作可能になるまでの時間: {timeInMs, number, seconds} 秒"
@@ -750,7 +750,7 @@
     "message": "カテゴリ"
   },
   "lighthouse-core/audits/mainthread-work-breakdown.js | description": {
-    "message": "JS の解析、コンパイル、実行にかかる時間の短縮をご検討ください。配信する JS ペイロードのサイズを抑えると効果が見込めます。"
+    "message": "Consider reducing the time spent parsing, compiling and executing JS. You may find delivering smaller JS payloads helps with this. [Learn more](https://web.dev/mainthread-work-breakdown)"
   },
   "lighthouse-core/audits/mainthread-work-breakdown.js | failureTitle": {
     "message": "メインスレッド処理の最小化"
@@ -759,49 +759,49 @@
     "message": "メインスレッド処理の最小化"
   },
   "lighthouse-core/audits/manual/pwa-cross-browser.js | description": {
-    "message": "ユーザー数を最大限に増やすには、サイトがすべての主要ブラウザで機能するようにします。[詳細](https://developers.google.com/web/progressive-web-apps/checklist#site-works-cross-browser)"
+    "message": "ユーザー数を最大限に増やすには、サイトがすべての主要ブラウザで機能するようにします。[詳細](https://web.dev/pwa-cross-browser)"
   },
   "lighthouse-core/audits/manual/pwa-cross-browser.js | title": {
     "message": "サイトがクロスブラウザに対応している"
   },
   "lighthouse-core/audits/manual/pwa-each-page-has-url.js | description": {
-    "message": "ソーシャル メディアで共有できるように、個々のページが URL によるディープリンクに対応していることと、それらの URL が固有であることを確認してください。[詳細](https://developers.google.com/web/progressive-web-apps/checklist#each-page-has-a-url)"
+    "message": "ソーシャル メディアで共有できるように、個々のページが URL によるディープリンクに対応していることと、それらの URL が固有であることを確認してください。[詳細](https://web.dev/pwa-each-page-has-url)"
   },
   "lighthouse-core/audits/manual/pwa-each-page-has-url.js | title": {
     "message": "ページごとに 1 つの URL を使用している"
   },
   "lighthouse-core/audits/manual/pwa-page-transitions.js | description": {
-    "message": "遅いネットワークであってもタップしたときに画面がすばやく切り替われば、パフォーマンスが悪いと感じにくくなります。[詳細](https://developers.google.com/web/progressive-web-apps/checklist#page-transitions-dont-feel-like-they-block-on-the-network)"
+    "message": "Transitions should feel snappy as you tap around, even on a slow network. This experience is key to a user's perception of performance. [Learn more](https://web.dev/pwa-page-transitions)."
   },
   "lighthouse-core/audits/manual/pwa-page-transitions.js | title": {
     "message": "ページの切り替え時、ネットワークが遅いという印象を与えない"
   },
   "lighthouse-core/audits/metrics/estimated-input-latency.js | description": {
-    "message": "入力の推定待ち時間とは、ページ読み込みの最もビジーな 5 秒間における、ユーザーの入力に対するアプリの推定応答時間（ミリ秒単位）です。待ち時間が 50 ミリ秒より長い場合、ユーザーはアプリの反応が悪いと感じる可能性があります。[詳細](https://developers.google.com/web/tools/lighthouse/audits/estimated-input-latency)"
+    "message": "入力の推定待ち時間とは、ページ読み込みの最もビジーな 5 秒間における、ユーザーの入力に対するアプリの推定応答時間（ミリ秒単位）です。待ち時間が 50 ミリ秒より長い場合、ユーザーはアプリの反応が悪いと感じる可能性があります。[詳細](https://web.dev/estimated-input-latency)"
   },
   "lighthouse-core/audits/metrics/estimated-input-latency.js | title": {
     "message": "入力の推定待ち時間"
   },
   "lighthouse-core/audits/metrics/first-contentful-paint.js | description": {
-    "message": "コンテンツの初回ペイントは、テキストまたは画像が初めてペイントされるまでにかかった時間です。[詳細](https://developers.google.com/web/tools/lighthouse/audits/first-contentful-paint)"
+    "message": "First Contentful Paint は、テキストまたは画像が初めてペイントされるまでにかかった時間です。[詳細](https://web.dev/first-contentful-paint)"
   },
   "lighthouse-core/audits/metrics/first-contentful-paint.js | title": {
-    "message": "コンテンツの初回ペイント"
+    "message": "First Contentful Paint"
   },
   "lighthouse-core/audits/metrics/first-cpu-idle.js | description": {
-    "message": "CPU の初回アイドルは、ページのメインスレッド処理が静止し、初めて入力の処理が可能になるまでにかかった時間です。[詳細](https://developers.google.com/web/tools/lighthouse/audits/first-interactive)"
+    "message": "First CPU Idle marks the first time at which the page's main thread is quiet enough to handle input.  [Learn more](https://web.dev/first-cpu-idle)."
   },
   "lighthouse-core/audits/metrics/first-cpu-idle.js | title": {
     "message": "CPU の初回アイドル"
   },
   "lighthouse-core/audits/metrics/first-meaningful-paint.js | description": {
-    "message": "意味のあるコンテンツの初回ペイントは、ページの主要なコンテンツが可視化されるまでにかかった時間です。[詳細](https://developers.google.com/web/tools/lighthouse/audits/first-meaningful-paint)"
+    "message": "First Meaningful Paint は、ページの主要なコンテンツが可視化されるまでにかかった時間です。[詳細](https://web.dev/first-meaningful-paint)"
   },
   "lighthouse-core/audits/metrics/first-meaningful-paint.js | title": {
-    "message": "意味のあるコンテンツの初回ペイント"
+    "message": "First Meaningful Paint"
   },
   "lighthouse-core/audits/metrics/interactive.js | description": {
-    "message": "操作可能になるまでの時間とは、ページが完全に操作可能になるのに要する時間です。[詳細](https://developers.google.com/web/tools/lighthouse/audits/consistently-interactive)"
+    "message": "操作可能になるまでの時間とは、ページが完全に操作可能になるのに要する時間です。[詳細](https://web.dev/interactive)"
   },
   "lighthouse-core/audits/metrics/interactive.js | title": {
     "message": "インタラクティブになるまでの時間"
@@ -813,7 +813,7 @@
     "message": "初回入力遅延の最大推定時間"
   },
   "lighthouse-core/audits/metrics/speed-index.js | description": {
-    "message": "速度インデックスは、ページのコンテンツが取り込まれて表示される速さを表します。[詳細](https://developers.google.com/web/tools/lighthouse/audits/speed-index)"
+    "message": "速度インデックスは、ページのコンテンツが取り込まれて表示される速さを表します。[詳細](https://web.dev/speed-index)"
   },
   "lighthouse-core/audits/metrics/speed-index.js | title": {
     "message": "速度インデックス"
@@ -837,7 +837,7 @@
     "message": "サーバーのバックエンド待ち時間"
   },
   "lighthouse-core/audits/offline-start-url.js | description": {
-    "message": "Service Worker によって、ネットワークが予期しない状態になったときでもウェブアプリの安定した動作が可能になります。[詳細](https://developers.google.com/web/tools/lighthouse/audits/http-200-when-offline)"
+    "message": "Service Worker によって、ネットワークが予期しない状態になったときでもウェブアプリの安定した動作が可能になります。[詳細](https://web.dev/offline-start-url)"
   },
   "lighthouse-core/audits/offline-start-url.js | failureTitle": {
     "message": "`start_url` は、オフライン時にステータス 200 の応答を返しません"
@@ -861,7 +861,7 @@
     "message": "パフォーマンス予算"
   },
   "lighthouse-core/audits/redirects-http.js | description": {
-    "message": "HTTPS を設定済みの場合は、すべてのユーザーに安全なウェブ機能を提供できるように、すべての HTTP トラフィックが HTTPS にリダイレクトされることを確認してください。[詳細](https://developers.google.com/web/tools/lighthouse/audits/http-redirects-to-https)"
+    "message": "HTTPS を設定済みの場合は、すべてのユーザーに安全なウェブ機能を提供できるように、すべての HTTP トラフィックが HTTPS にリダイレクトされることを確認してください。[詳細](https://web.dev/redirects-http)"
   },
   "lighthouse-core/audits/redirects-http.js | failureTitle": {
     "message": "HTTP トラフィックは HTTPS にリダイレクトされません"
@@ -870,7 +870,7 @@
     "message": "HTTP トラフィックは HTTPS にリダイレクトされます"
   },
   "lighthouse-core/audits/redirects.js | description": {
-    "message": "リダイレクトを行うと、ページの読み込みにさらに時間がかかる可能性があります。[詳細](https://developers.google.com/web/tools/lighthouse/audits/redirects)"
+    "message": "リダイレクトを行うと、ページの読み込みにさらに時間がかかる可能性があります。[詳細](https://web.dev/redirects)"
   },
   "lighthouse-core/audits/redirects.js | title": {
     "message": "複数のページ リダイレクトの回避"
@@ -1035,7 +1035,7 @@
     "message": "タップ ターゲットのサイズは適切に設定されています"
   },
   "lighthouse-core/audits/service-worker.js | description": {
-    "message": "Service Worker は、多くのプログレッシブ ウェブアプリ機能（オフライン、ホーム画面への追加、プッシュ通知など）をアプリで使用できるようにするための技術です。[詳細](https://developers.google.com/web/tools/lighthouse/audits/registered-service-worker)"
+    "message": "Service Worker は、多くのプログレッシブ ウェブアプリ機能（オフライン、ホーム画面への追加、プッシュ通知など）をアプリで使用できるようにするための技術です。[詳細](https://web.dev/service-worker)"
   },
   "lighthouse-core/audits/service-worker.js | explanationBadManifest": {
     "message": "このページは Service Worker によって制御されていますが、マニフェストが有効な JSON としてパースされなかったため、`start_url` は見つかりませんでした"
@@ -1056,7 +1056,7 @@
     "message": "ページと `start_url` を制御する Service Worker が登録されています"
   },
   "lighthouse-core/audits/splash-screen.js | description": {
-    "message": "テーマのあるスプラッシュ画面を設定すると、ホーム画面からのアプリの起動時に、質の良いアプリであることをユーザーにアピールできます。[詳細](https://developers.google.com/web/tools/lighthouse/audits/custom-splash-screen)"
+    "message": "テーマのあるスプラッシュ画面を設定すると、ホーム画面からのアプリの起動時に、質の良いアプリであることをユーザーにアピールできます。[詳細](https://web.dev/splash-screen)"
   },
   "lighthouse-core/audits/splash-screen.js | failureTitle": {
     "message": "カスタムのスプラッシュ画面が設定されていません"
@@ -1065,7 +1065,7 @@
     "message": "カスタムのスプラッシュ画面が設定されています"
   },
   "lighthouse-core/audits/themed-omnibox.js | description": {
-    "message": "ブラウザのアドレスバーにサイトに合わせたテーマを設定できます。[詳細](https://developers.google.com/web/tools/lighthouse/audits/address-bar)"
+    "message": "ブラウザのアドレスバーにサイトに合わせたテーマを設定できます。[詳細](https://web.dev/themed-omnibox)"
   },
   "lighthouse-core/audits/themed-omnibox.js | failureTitle": {
     "message": "アドレスバーにテーマの色が設定されていません。"
@@ -1092,7 +1092,7 @@
     "message": "第三者コードの利用"
   },
   "lighthouse-core/audits/time-to-first-byte.js | description": {
-    "message": "最初の 1 バイトまでの時間は、サーバーが応答を返すまでにかかった時間を表しています。[詳細](https://developers.google.com/web/tools/lighthouse/audits/ttfb)"
+    "message": "最初の 1 バイトまでの時間は、サーバーが応答を返すまでにかかった時間を表しています。[詳細](https://web.dev/time-to-first-byte)"
   },
   "lighthouse-core/audits/time-to-first-byte.js | displayValue": {
     "message": "ルート ドキュメントの読み込みに {timeInMs, number, milliseconds} ミリ秒かかりました"
@@ -1113,7 +1113,7 @@
     "message": "タイプ"
   },
   "lighthouse-core/audits/user-timings.js | description": {
-    "message": "User Timing API を使用してアプリをインストルメント化し、主要なユーザー エクスペリエンスでのアプリの実際のパフォーマンスを測定できるようにしてください。[詳細](https://developers.google.com/web/tools/lighthouse/audits/user-timing)"
+    "message": "User Timing API を使用してアプリをインストルメント化し、主要なユーザー エクスペリエンスでのアプリの実際のパフォーマンスを測定できるようにしてください。[詳細](https://web.dev/user-timings)"
   },
   "lighthouse-core/audits/user-timings.js | displayValue": {
     "message": "{itemCount,plural, =1{1 件のカスタム速度}other{# 件のカスタム速度}}"
@@ -1125,7 +1125,7 @@
     "message": "「{securityOrigin}」で事前接続の <link> が見つかりましたが、ブラウザで使用されませんでした。`crossorigin` 属性を適切に使用していることをご確認ください。"
   },
   "lighthouse-core/audits/uses-rel-preconnect.js | description": {
-    "message": "重要な第三者ドメインへの接続を早期に確立できるように、`preconnect` または `dns-prefetch` のリソースヒントを追加することを検討してください。[詳細](https://developers.google.com/web/fundamentals/performance/resource-prioritization#preconnect)"
+    "message": "重要な第三者ドメインへの接続を早期に確立できるように、`preconnect` または `dns-prefetch` のリソースヒントを追加することを検討してください。[詳細](https://web.dev/uses-rel-preconnect)"
   },
   "lighthouse-core/audits/uses-rel-preconnect.js | title": {
     "message": "必須のドメインへの事前接続"
@@ -1134,13 +1134,13 @@
     "message": "「{preloadURL}」のプリロード <link> が見つかりましたが、ブラウザで使用されませんでした。`crossorigin` 属性を適切に使用していることをご確認ください。"
   },
   "lighthouse-core/audits/uses-rel-preload.js | description": {
-    "message": "`<link rel=preload>` を使用して、現在ページ読み込みの後のほうでリクエストしているリソースを優先的に取得することをご検討ください。[詳細](https://developers.google.com/web/tools/lighthouse/audits/preload)"
+    "message": "`<link rel=preload>` を使用して、現在ページ読み込みの後のほうでリクエストしているリソースを優先的に取得することをご検討ください。[詳細](https://web.dev/uses-rel-preload)"
   },
   "lighthouse-core/audits/uses-rel-preload.js | title": {
     "message": "キー リクエストのプリロード"
   },
   "lighthouse-core/audits/viewport.js | description": {
-    "message": "モバイル画面用にアプリを最適化するには、`<meta name=\"viewport\">` タグを追加してください。[詳細](https://developers.google.com/web/tools/lighthouse/audits/has-viewport-meta-tag)"
+    "message": "モバイル画面用にアプリを最適化するには、`<meta name=\"viewport\">` タグを追加してください。[詳細](https://web.dev/viewport)"
   },
   "lighthouse-core/audits/viewport.js | explanationNoTag": {
     "message": "`<meta name=\"viewport\">` タグが見つかりません"
@@ -1152,7 +1152,7 @@
     "message": "`width` または `initial-scale` を指定した `<meta name=\"viewport\">` タグがあります"
   },
   "lighthouse-core/audits/without-javascript.js | description": {
-    "message": "JavaScript が無効になっている場合でも、アプリではなんらかのコンテンツを表示する必要があります。「アプリの使用には JavaScript が必要」という旨の警告を表示するだけでもかまいません。[詳細](https://developers.google.com/web/tools/lighthouse/audits/no-js)"
+    "message": "JavaScript が無効になっている場合でも、アプリではなんらかのコンテンツを表示する必要があります。「アプリの使用には JavaScript が必要」という旨の警告を表示するだけでもかまいません。[詳細](https://web.dev/without-javascript)"
   },
   "lighthouse-core/audits/without-javascript.js | explanation": {
     "message": "スクリプトを利用できない場合でも、ページの本文にはなんらかのコンテンツを表示する必要があります。"
@@ -1164,7 +1164,7 @@
     "message": "JavaScript を利用できない場合のコンテンツが含まれています"
   },
   "lighthouse-core/audits/works-offline.js | description": {
-    "message": "プログレッシブ ウェブアプリを作成している場合は、アプリがオフラインでも動作するように、Service Worker の使用を検討してください。[詳細](https://developers.google.com/web/tools/lighthouse/audits/http-200-when-offline)"
+    "message": "プログレッシブ ウェブアプリを作成している場合は、アプリがオフラインでも動作するように、Service Worker の使用を検討してください。[詳細](https://web.dev/works-offline)"
   },
   "lighthouse-core/audits/works-offline.js | failureTitle": {
     "message": "現在のページは、オフライン時にステータス 200 の応答を返しません"
@@ -1248,10 +1248,10 @@
     "message": "診断"
   },
   "lighthouse-core/config/default-config.js | firstPaintImprovementsGroupDescription": {
-    "message": "パフォーマンスの最も重要な点は、ピクセルをどのくらい速く画面にレンダリングできるかです。主要な指標: コンテンツの初回ペイント、意味のあるコンテンツの初回ペイント"
+    "message": "パフォーマンスの最も重要な点は、ピクセルをどのくらい速く画面にレンダリングできるかです。主要な指標: First Contentful Paint、First Meaningful Paint"
   },
   "lighthouse-core/config/default-config.js | firstPaintImprovementsGroupTitle": {
-    "message": "初回ペイントの改善点"
+    "message": "First Paint の改善点"
   },
   "lighthouse-core/config/default-config.js | loadOpportunitiesGroupDescription": {
     "message": "これらの提案を実施すると、ページの読み込み時間を短縮できる可能性があります。なお、パフォーマンス スコアには[直接影響](https://github.com/GoogleChrome/lighthouse/blob/d2ec9ffbb21de9ad1a0f86ed24575eda32c796f0/docs/scoring.md#how-are-the-scores-weighted)しません。"

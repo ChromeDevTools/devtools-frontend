@@ -318,7 +318,7 @@
     "message": "`<video>` êĺêḿêńt̂ś ĉón̂t́âín̂ á `<track>` êĺêḿêńt̂ ẃît́ĥ `[kind=\"description\"]`"
   },
   "lighthouse-core/audits/apple-touch-icon.js | description": {
-    "message": "F̂ór̂ íd̂éâĺ âṕp̂éâŕâńĉé ôń îÓŜ ẃĥén̂ úŝér̂ś âd́d̂ á p̂ŕôǵr̂éŝśîv́ê ẃêb́ âṕp̂ t́ô t́ĥé ĥóm̂é ŝćr̂éêń, d̂éf̂ín̂é âń `apple-touch-icon`. Ît́ m̂úŝt́ p̂óîńt̂ t́ô á n̂ón̂-t́r̂án̂śp̂ár̂én̂t́ 192p̂x́ (ôŕ 180p̂x́) ŝq́ûár̂é P̂ŃĜ. [Ĺêár̂ń M̂ór̂é](https://developers.google.com/web/fundamentals/design-and-ux/browser-customization/)."
+    "message": "F̂ór̂ íd̂éâĺ âṕp̂éâŕâńĉé ôń îÓŜ ẃĥén̂ úŝér̂ś âd́d̂ á p̂ŕôǵr̂éŝśîv́ê ẃêb́ âṕp̂ t́ô t́ĥé ĥóm̂é ŝćr̂éêń, d̂éf̂ín̂é âń `apple-touch-icon`. Ît́ m̂úŝt́ p̂óîńt̂ t́ô á n̂ón̂-t́r̂án̂śp̂ár̂én̂t́ 192p̂x́ (ôŕ 180p̂x́) ŝq́ûár̂é P̂ŃĜ. [Ĺêár̂ń M̂ór̂é](https://web.dev/apple-touch-icon/)."
   },
   "lighthouse-core/audits/apple-touch-icon.js | failureTitle": {
     "message": "D̂óêś n̂ót̂ ṕr̂óv̂íd̂é â v́âĺîd́ `apple-touch-icon`"
@@ -342,7 +342,7 @@
     "message": "T̂ót̂ál̂ ĆP̂Ú T̂ím̂é"
   },
   "lighthouse-core/audits/bootup-time.js | description": {
-    "message": "Ĉón̂śîd́êŕ r̂éd̂úĉín̂ǵ t̂h́ê t́îḿê śp̂én̂t́ p̂ár̂śîńĝ, ćôḿp̂íl̂ín̂ǵ, âńd̂ éx̂éĉút̂ín̂ǵ ĴŚ. Ŷóû ḿâý f̂ín̂d́ d̂él̂ív̂ér̂ín̂ǵ ŝḿâĺl̂ér̂ J́Ŝ ṕâýl̂óâd́ŝ h́êĺp̂ś ŵít̂h́ t̂h́îś. [L̂éâŕn̂ ḿôŕê](https://developers.google.com/web/tools/lighthouse/audits/bootup)."
+    "message": "Ĉón̂śîd́êŕ r̂éd̂úĉín̂ǵ t̂h́ê t́îḿê śp̂én̂t́ p̂ár̂śîńĝ, ćôḿp̂íl̂ín̂ǵ, âńd̂ éx̂éĉút̂ín̂ǵ ĴŚ. Ŷóû ḿâý f̂ín̂d́ d̂él̂ív̂ér̂ín̂ǵ ŝḿâĺl̂ér̂ J́Ŝ ṕâýl̂óâd́ŝ h́êĺp̂ś ŵít̂h́ t̂h́îś. [L̂éâŕn̂ ḿôŕê](https://web.dev/bootup-time)."
   },
   "lighthouse-core/audits/bootup-time.js | failureTitle": {
     "message": "R̂éd̂úĉé Ĵáv̂áŜćr̂íp̂t́ êx́êćût́îón̂ t́îḿê"
@@ -351,25 +351,25 @@
     "message": "Ĵáv̂áŜćr̂íp̂t́ êx́êćût́îón̂ t́îḿê"
   },
   "lighthouse-core/audits/byte-efficiency/efficient-animated-content.js | description": {
-    "message": "L̂ár̂ǵê ǴÎF́ŝ ár̂é îńêf́f̂íĉíêńt̂ f́ôŕ d̂él̂ív̂ér̂ín̂ǵ âńîḿât́êd́ ĉón̂t́êńt̂. Ćôńŝíd̂ér̂ úŝín̂ǵ M̂ṔÊǴ4/Ŵéb̂Ḿ v̂íd̂éôś f̂ór̂ án̂ím̂át̂íôńŝ án̂d́ P̂ŃĜ/Ẃêb́P̂ f́ôŕ ŝt́ât́îć îḿâǵêś îńŝt́êád̂ óf̂ ǴÎF́ t̂ó ŝáv̂é n̂ét̂ẃôŕk̂ b́ŷt́êś. [L̂éâŕn̂ ḿôŕê](https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/replace-animated-gifs-with-video/)"
+    "message": "L̂ár̂ǵê ǴÎF́ŝ ár̂é îńêf́f̂íĉíêńt̂ f́ôŕ d̂él̂ív̂ér̂ín̂ǵ âńîḿât́êd́ ĉón̂t́êńt̂. Ćôńŝíd̂ér̂ úŝín̂ǵ M̂ṔÊǴ4/Ŵéb̂Ḿ v̂íd̂éôś f̂ór̂ án̂ím̂át̂íôńŝ án̂d́ P̂ŃĜ/Ẃêb́P̂ f́ôŕ ŝt́ât́îć îḿâǵêś îńŝt́êád̂ óf̂ ǴÎF́ t̂ó ŝáv̂é n̂ét̂ẃôŕk̂ b́ŷt́êś. [L̂éâŕn̂ ḿôŕê](https://web.dev/efficient-animated-content)"
   },
   "lighthouse-core/audits/byte-efficiency/efficient-animated-content.js | title": {
     "message": "Ûśê v́îd́êó f̂ór̂ḿât́ŝ f́ôŕ âńîḿât́êd́ ĉón̂t́êńt̂"
   },
   "lighthouse-core/audits/byte-efficiency/offscreen-images.js | description": {
-    "message": "Ĉón̂śîd́êŕ l̂áẑý-l̂óâd́îńĝ óf̂f́ŝćr̂éêń âńd̂ h́îd́d̂én̂ ím̂áĝéŝ áf̂t́êŕ âĺl̂ ćr̂ít̂íĉál̂ ŕêśôúr̂ćêś ĥáv̂é f̂ín̂íŝh́êd́ l̂óâd́îńĝ t́ô ĺôẃêŕ t̂ím̂é t̂ó îńt̂ér̂áĉt́îv́ê. [Ĺêár̂ń m̂ór̂é](https://developers.google.com/web/tools/lighthouse/audits/offscreen-images)."
+    "message": "Ĉón̂śîd́êŕ l̂áẑý-l̂óâd́îńĝ óf̂f́ŝćr̂éêń âńd̂ h́îd́d̂én̂ ím̂áĝéŝ áf̂t́êŕ âĺl̂ ćr̂ít̂íĉál̂ ŕêśôúr̂ćêś ĥáv̂é f̂ín̂íŝh́êd́ l̂óâd́îńĝ t́ô ĺôẃêŕ t̂ím̂é t̂ó îńt̂ér̂áĉt́îv́ê. [Ĺêár̂ń m̂ór̂é](https://web.dev/offscreen-images)."
   },
   "lighthouse-core/audits/byte-efficiency/offscreen-images.js | title": {
     "message": "D̂éf̂ér̂ óf̂f́ŝćr̂éêń îḿâǵêś"
   },
   "lighthouse-core/audits/byte-efficiency/render-blocking-resources.js | description": {
-    "message": "R̂éŝóûŕĉéŝ ár̂é b̂ĺôćk̂ín̂ǵ t̂h́ê f́îŕŝt́ p̂áîńt̂ óf̂ ýôúr̂ ṕâǵê. Ćôńŝíd̂ér̂ d́êĺîv́êŕîńĝ ćr̂ít̂íĉál̂ J́Ŝ/ĆŜŚ îńl̂ín̂é âńd̂ d́êf́êŕr̂ín̂ǵ âĺl̂ ńôń-ĉŕît́îćâĺ ĴŚ/ŝt́ŷĺêś. [L̂éâŕn̂ ḿôŕê](https://developers.google.com/web/tools/lighthouse/audits/blocking-resources)."
+    "message": "R̂éŝóûŕĉéŝ ár̂é b̂ĺôćk̂ín̂ǵ t̂h́ê f́îŕŝt́ p̂áîńt̂ óf̂ ýôúr̂ ṕâǵê. Ćôńŝíd̂ér̂ d́êĺîv́êŕîńĝ ćr̂ít̂íĉál̂ J́Ŝ/ĆŜŚ îńl̂ín̂é âńd̂ d́êf́êŕr̂ín̂ǵ âĺl̂ ńôń-ĉŕît́îćâĺ ĴŚ/ŝt́ŷĺêś. [L̂éâŕn̂ ḿôŕê](https://web.dev/render-blocking-resources)."
   },
   "lighthouse-core/audits/byte-efficiency/render-blocking-resources.js | title": {
     "message": "Êĺîḿîńât́ê ŕêńd̂ér̂-b́l̂óĉḱîńĝ ŕêśôúr̂ćêś"
   },
   "lighthouse-core/audits/byte-efficiency/total-byte-weight.js | description": {
-    "message": "L̂ár̂ǵê ńêt́ŵór̂ḱ p̂áŷĺôád̂ś ĉóŝt́ ûśêŕŝ ŕêál̂ ḿôńêý âńd̂ ár̂é ĥíĝh́l̂ý ĉór̂ŕêĺât́êd́ ŵít̂h́ l̂ón̂ǵ l̂óâd́ t̂ím̂éŝ. [Ĺêár̂ń m̂ór̂é](https://developers.google.com/web/tools/lighthouse/audits/network-payloads)."
+    "message": "L̂ár̂ǵê ńêt́ŵór̂ḱ p̂áŷĺôád̂ś ĉóŝt́ ûśêŕŝ ŕêál̂ ḿôńêý âńd̂ ár̂é ĥíĝh́l̂ý ĉór̂ŕêĺât́êd́ ŵít̂h́ l̂ón̂ǵ l̂óâd́ t̂ím̂éŝ. [Ĺêár̂ń m̂ór̂é](https://web.dev/total-byte-weight)."
   },
   "lighthouse-core/audits/byte-efficiency/total-byte-weight.js | displayValue": {
     "message": "T̂ót̂ál̂ śîźê ẃâś {totalBytes, number, bytes} K̂B́"
@@ -381,19 +381,19 @@
     "message": "Âv́ôíd̂ś êńôŕm̂óûś n̂ét̂ẃôŕk̂ ṕâýl̂óâd́ŝ"
   },
   "lighthouse-core/audits/byte-efficiency/unminified-css.js | description": {
-    "message": "M̂ín̂íf̂ýîńĝ ĆŜŚ f̂íl̂éŝ ćâń r̂éd̂úĉé n̂ét̂ẃôŕk̂ ṕâýl̂óâd́ ŝíẑéŝ. [Ĺêár̂ń m̂ór̂é](https://developers.google.com/web/tools/lighthouse/audits/minify-css)."
+    "message": "M̂ín̂íf̂ýîńĝ ĆŜŚ f̂íl̂éŝ ćâń r̂éd̂úĉé n̂ét̂ẃôŕk̂ ṕâýl̂óâd́ ŝíẑéŝ. [Ĺêár̂ń m̂ór̂é](https://web.dev/unminified-css)."
   },
   "lighthouse-core/audits/byte-efficiency/unminified-css.js | title": {
     "message": "M̂ín̂íf̂ý ĈŚŜ"
   },
   "lighthouse-core/audits/byte-efficiency/unminified-javascript.js | description": {
-    "message": "M̂ín̂íf̂ýîńĝ J́âv́âŚĉŕîṕt̂ f́îĺêś ĉán̂ ŕêd́ûćê ṕâýl̂óâd́ ŝíẑéŝ án̂d́ ŝćr̂íp̂t́ p̂ár̂śê t́îḿê. [Ĺêár̂ń m̂ór̂é](https://developers.google.com/speed/docs/insights/MinifyResources)."
+    "message": "M̂ín̂íf̂ýîńĝ J́âv́âŚĉŕîṕt̂ f́îĺêś ĉán̂ ŕêd́ûćê ṕâýl̂óâd́ ŝíẑéŝ án̂d́ ŝćr̂íp̂t́ p̂ár̂śê t́îḿê. [Ĺêár̂ń m̂ór̂é](https://web.dev/unminified-javascript)."
   },
   "lighthouse-core/audits/byte-efficiency/unminified-javascript.js | title": {
     "message": "M̂ín̂íf̂ý Ĵáv̂áŜćr̂íp̂t́"
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | description": {
-    "message": "R̂ém̂óv̂é d̂éâd́ r̂úl̂éŝ f́r̂óm̂ śt̂ýl̂éŝh́êét̂ś âńd̂ d́êf́êŕ t̂h́ê ĺôád̂ín̂ǵ ôf́ ĈŚŜ ńôt́ ûśêd́ f̂ór̂ áb̂óv̂é-t̂h́ê-f́ôĺd̂ ćôńt̂én̂t́ t̂ó r̂éd̂úĉé ûńn̂éĉéŝśâŕŷ b́ŷt́êś ĉón̂śûḿêd́ b̂ý n̂ét̂ẃôŕk̂ áĉt́îv́ît́ŷ. [Ĺêár̂ń m̂ór̂é](https://developers.google.com/web/tools/lighthouse/audits/unused-css)."
+    "message": "R̂ém̂óv̂é d̂éâd́ r̂úl̂éŝ f́r̂óm̂ śt̂ýl̂éŝh́êét̂ś âńd̂ d́êf́êŕ t̂h́ê ĺôád̂ín̂ǵ ôf́ ĈŚŜ ńôt́ ûśêd́ f̂ór̂ áb̂óv̂é-t̂h́ê-f́ôĺd̂ ćôńt̂én̂t́ t̂ó r̂éd̂úĉé ûńn̂éĉéŝśâŕŷ b́ŷt́êś ĉón̂śûḿêd́ b̂ý n̂ét̂ẃôŕk̂ áĉt́îv́ît́ŷ. [Ĺêár̂ń m̂ór̂é](https://web.dev/unused-css-rules)."
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | title": {
     "message": "R̂ém̂óv̂é ûńûśêd́ ĈŚŜ"
@@ -405,7 +405,7 @@
     "message": "R̂ém̂óv̂é ûńûśêd́ Ĵáv̂áŜćr̂íp̂t́"
   },
   "lighthouse-core/audits/byte-efficiency/uses-long-cache-ttl.js | description": {
-    "message": "Â ĺôńĝ ćâćĥé l̂íf̂ét̂ím̂é ĉán̂ śp̂éêd́ ûṕ r̂ép̂éât́ v̂íŝít̂ś t̂ó ŷóûŕ p̂áĝé. [L̂éâŕn̂ ḿôŕê](https://developers.google.com/web/tools/lighthouse/audits/cache-policy)."
+    "message": "Â ĺôńĝ ćâćĥé l̂íf̂ét̂ím̂é ĉán̂ śp̂éêd́ ûṕ r̂ép̂éât́ v̂íŝít̂ś t̂ó ŷóûŕ p̂áĝé. [L̂éâŕn̂ ḿôŕê](https://web.dev/uses-long-cache-ttl)."
   },
   "lighthouse-core/audits/byte-efficiency/uses-long-cache-ttl.js | displayValue": {
     "message": "{itemCount, plural,\n    =1 {1 r̂éŝóûŕĉé f̂óûńd̂}\n    other {# ŕêśôúr̂ćêś f̂óûńd̂}\n    }"
@@ -417,25 +417,25 @@
     "message": "Ûśêś êf́f̂íĉíêńt̂ ćâćĥé p̂ól̂íĉý ôń ŝt́ât́îć âśŝét̂ś"
   },
   "lighthouse-core/audits/byte-efficiency/uses-optimized-images.js | description": {
-    "message": "Ôṕt̂ím̂íẑéd̂ ím̂áĝéŝ ĺôád̂ f́âśt̂ér̂ án̂d́ ĉón̂śûḿê ĺêśŝ ćêĺl̂úl̂ár̂ d́ât́â. [Ĺêár̂ń m̂ór̂é](https://developers.google.com/web/tools/lighthouse/audits/optimize-images)."
+    "message": "Ôṕt̂ím̂íẑéd̂ ím̂áĝéŝ ĺôád̂ f́âśt̂ér̂ án̂d́ ĉón̂śûḿê ĺêśŝ ćêĺl̂úl̂ár̂ d́ât́â. [Ĺêár̂ń m̂ór̂é](https://web.dev/uses-optimized-images)."
   },
   "lighthouse-core/audits/byte-efficiency/uses-optimized-images.js | title": {
     "message": "Êf́f̂íĉíêńt̂ĺŷ én̂ćôd́ê ím̂áĝéŝ"
   },
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | description": {
-    "message": "Ŝér̂v́ê ím̂áĝéŝ t́ĥát̂ ár̂é âṕp̂ŕôṕr̂íât́êĺŷ-śîźêd́ t̂ó ŝáv̂é ĉél̂ĺûĺâŕ d̂át̂á âńd̂ ím̂ṕr̂óv̂é l̂óâd́ t̂ím̂é. [L̂éâŕn̂ ḿôŕê](https://developers.google.com/web/tools/lighthouse/audits/oversized-images)."
+    "message": "Ŝér̂v́ê ím̂áĝéŝ t́ĥát̂ ár̂é âṕp̂ŕôṕr̂íât́êĺŷ-śîźêd́ t̂ó ŝáv̂é ĉél̂ĺûĺâŕ d̂át̂á âńd̂ ím̂ṕr̂óv̂é l̂óâd́ t̂ím̂é. [L̂éâŕn̂ ḿôŕê](https://web.dev/uses-responsive-images)."
   },
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | title": {
     "message": "P̂ŕôṕêŕl̂ý ŝíẑé îḿâǵêś"
   },
   "lighthouse-core/audits/byte-efficiency/uses-text-compression.js | description": {
-    "message": "T̂éx̂t́-b̂áŝéd̂ ŕêśôúr̂ćêś ŝh́ôúl̂d́ b̂é ŝér̂v́êd́ ŵít̂h́ ĉóm̂ṕr̂éŝśîón̂ (ǵẑíp̂, d́êf́l̂át̂é ôŕ b̂ŕôt́l̂í) t̂ó m̂ín̂ím̂íẑé t̂ót̂ál̂ ńêt́ŵór̂ḱ b̂ýt̂éŝ. [Ĺêár̂ń m̂ór̂é](https://developers.google.com/web/tools/lighthouse/audits/text-compression)."
+    "message": "T̂éx̂t́-b̂áŝéd̂ ŕêśôúr̂ćêś ŝh́ôúl̂d́ b̂é ŝér̂v́êd́ ŵít̂h́ ĉóm̂ṕr̂éŝśîón̂ (ǵẑíp̂, d́êf́l̂át̂é ôŕ b̂ŕôt́l̂í) t̂ó m̂ín̂ím̂íẑé t̂ót̂ál̂ ńêt́ŵór̂ḱ b̂ýt̂éŝ. [Ĺêár̂ń m̂ór̂é](https://web.dev/uses-text-compression)."
   },
   "lighthouse-core/audits/byte-efficiency/uses-text-compression.js | title": {
     "message": "Êńâb́l̂é t̂éx̂t́ ĉóm̂ṕr̂éŝśîón̂"
   },
   "lighthouse-core/audits/byte-efficiency/uses-webp-images.js | description": {
-    "message": "Îḿâǵê f́ôŕm̂át̂ś l̂ík̂é ĴṔÊǴ 2000, ĴṔÊǴ X̂Ŕ, âńd̂ Ẃêb́P̂ óf̂t́êń p̂ŕôv́îd́ê b́êt́t̂ér̂ ćôḿp̂ŕêśŝíôń t̂h́âń P̂ŃĜ ór̂ J́P̂ÉĜ, ẃĥíĉh́ m̂éâńŝ f́âśt̂ér̂ d́ôẃn̂ĺôád̂ś âńd̂ ĺêśŝ d́ât́â ćôńŝúm̂ṕt̂íôń. [L̂éâŕn̂ ḿôŕê](https://developers.google.com/web/tools/lighthouse/audits/webp)."
+    "message": "Îḿâǵê f́ôŕm̂át̂ś l̂ík̂é ĴṔÊǴ 2000, ĴṔÊǴ X̂Ŕ, âńd̂ Ẃêb́P̂ óf̂t́êń p̂ŕôv́îd́ê b́êt́t̂ér̂ ćôḿp̂ŕêśŝíôń t̂h́âń P̂ŃĜ ór̂ J́P̂ÉĜ, ẃĥíĉh́ m̂éâńŝ f́âśt̂ér̂ d́ôẃn̂ĺôád̂ś âńd̂ ĺêśŝ d́ât́â ćôńŝúm̂ṕt̂íôń. [L̂éâŕn̂ ḿôŕê](https://web.dev/uses-webp-images)."
   },
   "lighthouse-core/audits/byte-efficiency/uses-webp-images.js | title": {
     "message": "Ŝér̂v́ê ím̂áĝéŝ ín̂ ńêx́t̂-ǵêń f̂ór̂ḿât́ŝ"
@@ -453,13 +453,13 @@
     "message": "Ĉón̂t́êńt̂ íŝ śîźêd́ ĉór̂ŕêćt̂ĺŷ f́ôŕ t̂h́ê v́îéŵṕôŕt̂"
   },
   "lighthouse-core/audits/critical-request-chains.js | description": {
-    "message": "T̂h́ê Ćr̂ít̂íĉál̂ Ŕêq́ûéŝt́ Ĉh́âín̂ś b̂él̂óŵ śĥóŵ ýôú ŵh́ât́ r̂éŝóûŕĉéŝ ár̂é l̂óâd́êd́ ŵít̂h́ â h́îǵĥ ṕr̂íôŕît́ŷ. Ćôńŝíd̂ér̂ ŕêd́ûćîńĝ t́ĥé l̂én̂ǵt̂h́ ôf́ ĉh́âín̂ś, r̂éd̂úĉín̂ǵ t̂h́ê d́ôẃn̂ĺôád̂ śîźê óf̂ ŕêśôúr̂ćêś, ôŕ d̂éf̂ér̂ŕîńĝ t́ĥé d̂óŵńl̂óâd́ ôf́ ûńn̂éĉéŝśâŕŷ ŕêśôúr̂ćêś t̂ó îḿp̂ŕôv́ê ṕâǵê ĺôád̂. [Ĺêár̂ń m̂ór̂é](https://developers.google.com/web/tools/lighthouse/audits/critical-request-chains)."
+    "message": "T̂h́ê Ćr̂ít̂íĉál̂ Ŕêq́ûéŝt́ Ĉh́âín̂ś b̂él̂óŵ śĥóŵ ýôú ŵh́ât́ r̂éŝóûŕĉéŝ ár̂é l̂óâd́êd́ ŵít̂h́ â h́îǵĥ ṕr̂íôŕît́ŷ. Ćôńŝíd̂ér̂ ŕêd́ûćîńĝ t́ĥé l̂én̂ǵt̂h́ ôf́ ĉh́âín̂ś, r̂éd̂úĉín̂ǵ t̂h́ê d́ôẃn̂ĺôád̂ śîźê óf̂ ŕêśôúr̂ćêś, ôŕ d̂éf̂ér̂ŕîńĝ t́ĥé d̂óŵńl̂óâd́ ôf́ ûńn̂éĉéŝśâŕŷ ŕêśôúr̂ćêś t̂ó îḿp̂ŕôv́ê ṕâǵê ĺôád̂. [Ĺêár̂ń m̂ór̂é](https://web.dev/critical-request-chains)."
   },
   "lighthouse-core/audits/critical-request-chains.js | displayValue": {
     "message": "{itemCount, plural,\n    =1 {1 ĉh́âín̂ f́ôún̂d́}\n    other {# ĉh́âín̂ś f̂óûńd̂}\n    }"
   },
   "lighthouse-core/audits/critical-request-chains.js | title": {
-    "message": "M̂ín̂ím̂íẑé Ĉŕît́îćâĺ R̂éq̂úêśt̂ś D̂ép̂t́ĥ"
+    "message": "Âv́ôíd̂ ćĥáîńîńĝ ćr̂ít̂íĉál̂ ŕêq́ûéŝt́ŝ"
   },
   "lighthouse-core/audits/deprecations.js | columnDeprecate": {
     "message": "D̂ép̂ŕêćât́îón̂ / Ẃâŕn̂ín̂ǵ"
@@ -522,7 +522,7 @@
     "message": "V̂ál̂úê"
   },
   "lighthouse-core/audits/dobetterweb/dom-size.js | description": {
-    "message": "B̂ŕôẃŝér̂ én̂ǵîńêér̂ś r̂éĉóm̂ḿêńd̂ ṕâǵêś ĉón̂t́âín̂ f́êẃêŕ t̂h́âń ~1,500 D̂ÓM̂ él̂ém̂én̂t́ŝ. T́ĥé ŝẃêét̂ śp̂ót̂ íŝ á t̂ŕêé d̂ép̂t́ĥ < 32 él̂ém̂én̂t́ŝ án̂d́ f̂éŵér̂ t́ĥán̂ 60 ćĥíl̂d́r̂én̂/ṕâŕêńt̂ él̂ém̂én̂t́. Â ĺâŕĝé D̂ÓM̂ ćâń îńĉŕêáŝé m̂ém̂ór̂ý ûśâǵê, ćâúŝé l̂ón̂ǵêŕ [ŝt́ŷĺê ćâĺĉúl̂át̂íôńŝ](https://developers.google.com/web/fundamentals/performance/rendering/reduce-the-scope-and-complexity-of-style-calculations), án̂d́ p̂ŕôd́ûćê ćôśt̂ĺŷ [ĺâýôút̂ ŕêf́l̂óŵś](https://developers.google.com/speed/articles/reflow). [L̂éâŕn̂ ḿôŕê](https://web.dev/dom-size)."
+    "message": "Â ĺâŕĝé D̂ÓM̂ ẃîĺl̂ ín̂ćr̂éâśê ḿêḿôŕŷ úŝáĝé, ĉáûśê ĺôńĝér̂ [śt̂ýl̂é ĉál̂ćûĺât́îón̂ś](https://developers.google.com/web/fundamentals/performance/rendering/reduce-the-scope-and-complexity-of-style-calculations), âńd̂ ṕr̂ód̂úĉé ĉóŝt́l̂ý [l̂áŷóût́ r̂éf̂ĺôẃŝ](https://developers.google.com/speed/articles/reflow). [Ĺêár̂ń m̂ór̂é](https://web.dev/dom-size)."
   },
   "lighthouse-core/audits/dobetterweb/dom-size.js | displayValue": {
     "message": "{itemCount, plural,\n    =1 {1 êĺêḿêńt̂}\n    other {# él̂ém̂én̂t́ŝ}\n    }"
@@ -675,7 +675,7 @@
     "message": "N̂ó b̂ŕôẃŝér̂ ér̂ŕôŕŝ ĺôǵĝéd̂ t́ô t́ĥé ĉón̂śôĺê"
   },
   "lighthouse-core/audits/font-display.js | description": {
-    "message": "L̂év̂ér̂áĝé t̂h́ê f́ôńt̂-d́îśp̂ĺâý ĈŚŜ f́êát̂úr̂é t̂ó êńŝúr̂é t̂éx̂t́ îś ûśêŕ-v̂íŝíb̂ĺê ẃĥíl̂é ŵéb̂f́ôńt̂ś âŕê ĺôád̂ín̂ǵ. [L̂éâŕn̂ ḿôŕê](https://developers.google.com/web/updates/2016/02/font-display)."
+    "message": "L̂év̂ér̂áĝé t̂h́ê f́ôńt̂-d́îśp̂ĺâý ĈŚŜ f́êát̂úr̂é t̂ó êńŝúr̂é t̂éx̂t́ îś ûśêŕ-v̂íŝíb̂ĺê ẃĥíl̂é ŵéb̂f́ôńt̂ś âŕê ĺôád̂ín̂ǵ. [L̂éâŕn̂ ḿôŕê](https://web.dev/font-display)."
   },
   "lighthouse-core/audits/font-display.js | failureTitle": {
     "message": "Êńŝúr̂é t̂éx̂t́ r̂ém̂áîńŝ v́îśîb́l̂é d̂úr̂ín̂ǵ ŵéb̂f́ôńt̂ ĺôád̂"
@@ -750,7 +750,7 @@
     "message": "Ĉát̂éĝór̂ý"
   },
   "lighthouse-core/audits/mainthread-work-breakdown.js | description": {
-    "message": "Ĉón̂śîd́êŕ r̂éd̂úĉín̂ǵ t̂h́ê t́îḿê śp̂én̂t́ p̂ár̂śîńĝ, ćôḿp̂íl̂ín̂ǵ âńd̂ éx̂éĉút̂ín̂ǵ ĴŚ. Ŷóû ḿâý f̂ín̂d́ d̂él̂ív̂ér̂ín̂ǵ ŝḿâĺl̂ér̂ J́Ŝ ṕâýl̂óâd́ŝ h́êĺp̂ś ŵít̂h́ t̂h́îś."
+    "message": "Ĉón̂śîd́êŕ r̂éd̂úĉín̂ǵ t̂h́ê t́îḿê śp̂én̂t́ p̂ár̂śîńĝ, ćôḿp̂íl̂ín̂ǵ âńd̂ éx̂éĉút̂ín̂ǵ ĴŚ. Ŷóû ḿâý f̂ín̂d́ d̂él̂ív̂ér̂ín̂ǵ ŝḿâĺl̂ér̂ J́Ŝ ṕâýl̂óâd́ŝ h́êĺp̂ś ŵít̂h́ t̂h́îś. [L̂éâŕn̂ ḿôŕê](https://web.dev/mainthread-work-breakdown)"
   },
   "lighthouse-core/audits/mainthread-work-breakdown.js | failureTitle": {
     "message": "M̂ín̂ím̂íẑé m̂áîń-t̂h́r̂éâd́ ŵór̂ḱ"
@@ -777,31 +777,31 @@
     "message": "P̂áĝé t̂ŕâńŝít̂íôńŝ d́ôń't̂ f́êél̂ ĺîḱê t́ĥéŷ b́l̂óĉḱ ôń t̂h́ê ńêt́ŵór̂ḱ"
   },
   "lighthouse-core/audits/metrics/estimated-input-latency.js | description": {
-    "message": "Êśt̂ím̂át̂éd̂ Ín̂ṕût́ L̂át̂én̂ćŷ íŝ án̂ éŝt́îḿât́ê óf̂ h́ôẃ l̂ón̂ǵ ŷóûŕ âṕp̂ t́âḱêś t̂ó r̂éŝṕôńd̂ t́ô úŝér̂ ín̂ṕût́, îń m̂íl̂ĺîśêćôńd̂ś, d̂úr̂ín̂ǵ t̂h́ê b́ûśîéŝt́ 5ŝ ẃîńd̂óŵ óf̂ ṕâǵê ĺôád̂. Íf̂ ýôúr̂ ĺât́êńĉý îś ĥíĝh́êŕ t̂h́âń 50 m̂ś, ûśêŕŝ ḿâý p̂ér̂ćêív̂é ŷóûŕ âṕp̂ áŝ ĺâǵĝý. [L̂éâŕn̂ ḿôŕê](https://developers.google.com/web/tools/lighthouse/audits/estimated-input-latency)."
+    "message": "Êśt̂ím̂át̂éd̂ Ín̂ṕût́ L̂át̂én̂ćŷ íŝ án̂ éŝt́îḿât́ê óf̂ h́ôẃ l̂ón̂ǵ ŷóûŕ âṕp̂ t́âḱêś t̂ó r̂éŝṕôńd̂ t́ô úŝér̂ ín̂ṕût́, îń m̂íl̂ĺîśêćôńd̂ś, d̂úr̂ín̂ǵ t̂h́ê b́ûśîéŝt́ 5ŝ ẃîńd̂óŵ óf̂ ṕâǵê ĺôád̂. Íf̂ ýôúr̂ ĺât́êńĉý îś ĥíĝh́êŕ t̂h́âń 50 m̂ś, ûśêŕŝ ḿâý p̂ér̂ćêív̂é ŷóûŕ âṕp̂ áŝ ĺâǵĝý. [L̂éâŕn̂ ḿôŕê](https://web.dev/estimated-input-latency)."
   },
   "lighthouse-core/audits/metrics/estimated-input-latency.js | title": {
     "message": "Êśt̂ím̂át̂éd̂ Ín̂ṕût́ L̂át̂én̂ćŷ"
   },
   "lighthouse-core/audits/metrics/first-contentful-paint.js | description": {
-    "message": "F̂ír̂śt̂ Ćôńt̂én̂t́f̂úl̂ Ṕâín̂t́ m̂ár̂ḱŝ t́ĥé t̂ím̂é ât́ ŵh́îćĥ t́ĥé f̂ír̂śt̂ t́êx́t̂ ór̂ ím̂áĝé îś p̂áîńt̂éd̂. [Ĺêár̂ń m̂ór̂é](https://developers.google.com/web/tools/lighthouse/audits/first-contentful-paint)."
+    "message": "F̂ír̂śt̂ Ćôńt̂én̂t́f̂úl̂ Ṕâín̂t́ m̂ár̂ḱŝ t́ĥé t̂ím̂é ât́ ŵh́îćĥ t́ĥé f̂ír̂śt̂ t́êx́t̂ ór̂ ím̂áĝé îś p̂áîńt̂éd̂. [Ĺêár̂ń m̂ór̂é](https://web.dev/first-contentful-paint)."
   },
   "lighthouse-core/audits/metrics/first-contentful-paint.js | title": {
     "message": "F̂ír̂śt̂ Ćôńt̂én̂t́f̂úl̂ Ṕâín̂t́"
   },
   "lighthouse-core/audits/metrics/first-cpu-idle.js | description": {
-    "message": "F̂ír̂śt̂ ĆP̂Ú Îd́l̂é m̂ár̂ḱŝ t́ĥé f̂ír̂śt̂ t́îḿê át̂ ẃĥíĉh́ t̂h́ê ṕâǵê'ś m̂áîń t̂h́r̂éâd́ îś q̂úîét̂ én̂óûǵĥ t́ô h́âńd̂ĺê ín̂ṕût́. [L̂éâŕn̂ ḿôŕê](https://developers.google.com/web/tools/lighthouse/audits/first-interactive)."
+    "message": "F̂ír̂śt̂ ĆP̂Ú Îd́l̂é m̂ár̂ḱŝ t́ĥé f̂ír̂śt̂ t́îḿê át̂ ẃĥíĉh́ t̂h́ê ṕâǵê'ś m̂áîń t̂h́r̂éâd́ îś q̂úîét̂ én̂óûǵĥ t́ô h́âńd̂ĺê ín̂ṕût́.  [L̂éâŕn̂ ḿôŕê](https://web.dev/first-cpu-idle)."
   },
   "lighthouse-core/audits/metrics/first-cpu-idle.js | title": {
     "message": "F̂ír̂śt̂ ĆP̂Ú Îd́l̂é"
   },
   "lighthouse-core/audits/metrics/first-meaningful-paint.js | description": {
-    "message": "F̂ír̂śt̂ Ḿêán̂ín̂ǵf̂úl̂ Ṕâín̂t́ m̂éâśûŕêś ŵh́êń t̂h́ê ṕr̂ím̂ár̂ý ĉón̂t́êńt̂ óf̂ á p̂áĝé îś v̂íŝíb̂ĺê. [Ĺêár̂ń m̂ór̂é](https://developers.google.com/web/tools/lighthouse/audits/first-meaningful-paint)."
+    "message": "F̂ír̂śt̂ Ḿêán̂ín̂ǵf̂úl̂ Ṕâín̂t́ m̂éâśûŕêś ŵh́êń t̂h́ê ṕr̂ím̂ár̂ý ĉón̂t́êńt̂ óf̂ á p̂áĝé îś v̂íŝíb̂ĺê. [Ĺêár̂ń m̂ór̂é](https://web.dev/first-meaningful-paint)."
   },
   "lighthouse-core/audits/metrics/first-meaningful-paint.js | title": {
     "message": "F̂ír̂śt̂ Ḿêán̂ín̂ǵf̂úl̂ Ṕâín̂t́"
   },
   "lighthouse-core/audits/metrics/interactive.js | description": {
-    "message": "T̂ím̂é t̂ó îńt̂ér̂áĉt́îv́ê íŝ t́ĥé âḿôún̂t́ ôf́ t̂ím̂é ît́ t̂ák̂éŝ f́ôŕ t̂h́ê ṕâǵê t́ô b́êćôḿê f́ûĺl̂ý îńt̂ér̂áĉt́îv́ê. [Ĺêár̂ń m̂ór̂é](https://developers.google.com/web/tools/lighthouse/audits/consistently-interactive)."
+    "message": "T̂ím̂é t̂ó îńt̂ér̂áĉt́îv́ê íŝ t́ĥé âḿôún̂t́ ôf́ t̂ím̂é ît́ t̂ák̂éŝ f́ôŕ t̂h́ê ṕâǵê t́ô b́êćôḿê f́ûĺl̂ý îńt̂ér̂áĉt́îv́ê. [Ĺêár̂ń m̂ór̂é](https://web.dev/interactive)."
   },
   "lighthouse-core/audits/metrics/interactive.js | title": {
     "message": "T̂ím̂é t̂ó Îńt̂ér̂áĉt́îv́ê"
@@ -813,7 +813,7 @@
     "message": "M̂áx̂ Ṕôt́êńt̂íâĺ F̂ír̂śt̂ Ín̂ṕût́ D̂él̂áŷ"
   },
   "lighthouse-core/audits/metrics/speed-index.js | description": {
-    "message": "Ŝṕêéd̂ Ín̂d́êx́ ŝh́ôẃŝ h́ôẃ q̂úîćk̂ĺŷ t́ĥé ĉón̂t́êńt̂ś ôf́ â ṕâǵê ár̂é v̂íŝíb̂ĺŷ ṕôṕûĺât́êd́. [L̂éâŕn̂ ḿôŕê](https://developers.google.com/web/tools/lighthouse/audits/speed-index)."
+    "message": "Ŝṕêéd̂ Ín̂d́êx́ ŝh́ôẃŝ h́ôẃ q̂úîćk̂ĺŷ t́ĥé ĉón̂t́êńt̂ś ôf́ â ṕâǵê ár̂é v̂íŝíb̂ĺŷ ṕôṕûĺât́êd́. [L̂éâŕn̂ ḿôŕê](https://web.dev/speed-index)."
   },
   "lighthouse-core/audits/metrics/speed-index.js | title": {
     "message": "Ŝṕêéd̂ Ín̂d́êx́"
@@ -870,7 +870,7 @@
     "message": "R̂éd̂ír̂éĉt́ŝ H́T̂T́P̂ t́r̂áf̂f́îć t̂ó ĤT́T̂ṔŜ"
   },
   "lighthouse-core/audits/redirects.js | description": {
-    "message": "R̂éd̂ír̂éĉt́ŝ ín̂t́r̂ód̂úĉé âd́d̂ít̂íôńâĺ d̂él̂áŷś b̂éf̂ór̂é t̂h́ê ṕâǵê ćâń b̂é l̂óâd́êd́. [L̂éâŕn̂ ḿôŕê](https://developers.google.com/web/tools/lighthouse/audits/redirects)."
+    "message": "R̂éd̂ír̂éĉt́ŝ ín̂t́r̂ód̂úĉé âd́d̂ít̂íôńâĺ d̂él̂áŷś b̂éf̂ór̂é t̂h́ê ṕâǵê ćâń b̂é l̂óâd́êd́. [L̂éâŕn̂ ḿôŕê](https://web.dev/redirects)."
   },
   "lighthouse-core/audits/redirects.js | title": {
     "message": "Âv́ôíd̂ ḿûĺt̂íp̂ĺê ṕâǵê ŕêd́îŕêćt̂ś"
@@ -1089,10 +1089,10 @@
     "message": "R̂éd̂úĉé t̂h́ê ím̂ṕâćt̂ óf̂ t́ĥír̂d́-p̂ár̂t́ŷ ćôd́ê"
   },
   "lighthouse-core/audits/third-party-summary.js | title": {
-    "message": "T̂h́îŕd̂-Ṕâŕt̂ý ûśâǵê"
+    "message": "M̂ín̂ím̂íẑé t̂h́îŕd̂-ṕâŕt̂ý ûśâǵê"
   },
   "lighthouse-core/audits/time-to-first-byte.js | description": {
-    "message": "T̂ím̂é T̂ó F̂ír̂śt̂ B́ŷt́ê íd̂én̂t́îf́îéŝ t́ĥé t̂ím̂é ât́ ŵh́îćĥ ýôúr̂ śêŕv̂ér̂ śêńd̂ś â ŕêśp̂ón̂śê. [Ĺêár̂ń m̂ór̂é](https://developers.google.com/web/tools/lighthouse/audits/ttfb)."
+    "message": "T̂ím̂é T̂ó F̂ír̂śt̂ B́ŷt́ê íd̂én̂t́îf́îéŝ t́ĥé t̂ím̂é ât́ ŵh́îćĥ ýôúr̂ śêŕv̂ér̂ śêńd̂ś â ŕêśp̂ón̂śê. [Ĺêár̂ń m̂ór̂é](https://web.dev/time-to-first-byte)."
   },
   "lighthouse-core/audits/time-to-first-byte.js | displayValue": {
     "message": "R̂óôt́ d̂óĉúm̂én̂t́ t̂óôḱ {timeInMs, number, milliseconds} m̂ś"
@@ -1113,7 +1113,7 @@
     "message": "T̂ýp̂é"
   },
   "lighthouse-core/audits/user-timings.js | description": {
-    "message": "Ĉón̂śîd́êŕ îńŝt́r̂úm̂én̂t́îńĝ ýôúr̂ áp̂ṕ ŵít̂h́ t̂h́ê Úŝér̂ T́îḿîńĝ ÁP̂Í t̂ó m̂éâśûŕê ýôúr̂ áp̂ṕ'ŝ ŕêál̂-ẃôŕl̂d́ p̂ér̂f́ôŕm̂án̂ćê d́ûŕîńĝ ḱêý ûśêŕ êx́p̂ér̂íêńĉéŝ. [Ĺêár̂ń m̂ór̂é](https://developers.google.com/web/tools/lighthouse/audits/user-timing)."
+    "message": "Ĉón̂śîd́êŕ îńŝt́r̂úm̂én̂t́îńĝ ýôúr̂ áp̂ṕ ŵít̂h́ t̂h́ê Úŝér̂ T́îḿîńĝ ÁP̂Í t̂ó m̂éâśûŕê ýôúr̂ áp̂ṕ'ŝ ŕêál̂-ẃôŕl̂d́ p̂ér̂f́ôŕm̂án̂ćê d́ûŕîńĝ ḱêý ûśêŕ êx́p̂ér̂íêńĉéŝ. [Ĺêár̂ń m̂ór̂é](https://web.dev/user-timings)."
   },
   "lighthouse-core/audits/user-timings.js | displayValue": {
     "message": "{itemCount, plural,\n    =1 {1 ûśêŕ t̂ím̂ín̂ǵ}\n    other {# ûśêŕ t̂ím̂ín̂ǵŝ}\n    }"
@@ -1125,7 +1125,7 @@
     "message": "Â ṕr̂éĉón̂ńêćt̂ <ĺîńk̂> ẃâś f̂óûńd̂ f́ôŕ \"{securityOrigin}\" b̂út̂ ẃâś n̂ót̂ úŝéd̂ b́ŷ t́ĥé b̂ŕôẃŝér̂. Ćĥéĉḱ t̂h́ât́ ŷóû ár̂é ûśîńĝ t́ĥé `crossorigin` ât́t̂ŕîb́ût́ê ṕr̂óp̂ér̂ĺŷ."
   },
   "lighthouse-core/audits/uses-rel-preconnect.js | description": {
-    "message": "Ĉón̂śîd́êŕ âd́d̂ín̂ǵ `preconnect` ôŕ `dns-prefetch` r̂éŝóûŕĉé ĥín̂t́ŝ t́ô éŝt́âb́l̂íŝh́ êár̂ĺŷ ćôńn̂éĉt́îón̂ś t̂ó îḿp̂ór̂t́âńt̂ t́ĥír̂d́-p̂ár̂t́ŷ ór̂íĝín̂ś. [L̂éâŕn̂ ḿôŕê](https://developers.google.com/web/fundamentals/performance/resource-prioritization#preconnect)."
+    "message": "Ĉón̂śîd́êŕ âd́d̂ín̂ǵ `preconnect` ôŕ `dns-prefetch` r̂éŝóûŕĉé ĥín̂t́ŝ t́ô éŝt́âb́l̂íŝh́ êár̂ĺŷ ćôńn̂éĉt́îón̂ś t̂ó îḿp̂ór̂t́âńt̂ t́ĥír̂d́-p̂ár̂t́ŷ ór̂íĝín̂ś. [L̂éâŕn̂ ḿôŕê](https://web.dev/uses-rel-preconnect)."
   },
   "lighthouse-core/audits/uses-rel-preconnect.js | title": {
     "message": "P̂ŕêćôńn̂éĉt́ t̂ó r̂éq̂úîŕêd́ ôŕîǵîńŝ"
@@ -1134,7 +1134,7 @@
     "message": "Â ṕr̂él̂óâd́ <l̂ín̂ḱ> ŵáŝ f́ôún̂d́ f̂ór̂ \"{preloadURL}\" b́ût́ ŵáŝ ńôt́ ûśêd́ b̂ý t̂h́ê b́r̂óŵśêŕ. Ĉh́êćk̂ t́ĥát̂ ýôú âŕê úŝín̂ǵ t̂h́ê `crossorigin` át̂t́r̂íb̂út̂é p̂ŕôṕêŕl̂ý."
   },
   "lighthouse-core/audits/uses-rel-preload.js | description": {
-    "message": "Ĉón̂śîd́êŕ ûśîńĝ `<link rel=preload>` t́ô ṕr̂íôŕît́îźê f́êt́ĉh́îńĝ ŕêśôúr̂ćêś t̂h́ât́ âŕê ćûŕr̂én̂t́l̂ý r̂éq̂úêśt̂éd̂ ĺât́êŕ îń p̂áĝé l̂óâd́. [L̂éâŕn̂ ḿôŕê](https://developers.google.com/web/tools/lighthouse/audits/preload)."
+    "message": "Ĉón̂śîd́êŕ ûśîńĝ `<link rel=preload>` t́ô ṕr̂íôŕît́îźê f́êt́ĉh́îńĝ ŕêśôúr̂ćêś t̂h́ât́ âŕê ćûŕr̂én̂t́l̂ý r̂éq̂úêśt̂éd̂ ĺât́êŕ îń p̂áĝé l̂óâd́. [L̂éâŕn̂ ḿôŕê](https://web.dev/uses-rel-preload)."
   },
   "lighthouse-core/audits/uses-rel-preload.js | title": {
     "message": "P̂ŕêĺôád̂ ḱêý r̂éq̂úêśt̂ś"
@@ -1495,6 +1495,99 @@
   },
   "lighthouse-core/report/html/renderer/util.js | warningHeader": {
     "message": "Ŵár̂ńîńĝś: "
+  },
+  "stack-packs/packs/amp.js | efficient_animated_content": {
+    "message": "F̂ór̂ án̂ím̂át̂éd̂ ćôńt̂én̂t́, ûśê [ám̂ṕ-âńîḿ](https://amp.dev/documentation/components/amp-anim/) t̂ó m̂ín̂ím̂íẑé ĈṔÛ úŝáĝé ŵh́îĺê t́ĥé ĉón̂t́êńt̂ ŕêḿâín̂ś ôf́f̂śĉŕêén̂."
+  },
+  "stack-packs/packs/amp.js | offscreen_images": {
+    "message": "Êńŝúr̂é t̂h́ât́ ŷóû ár̂é ŷóû úŝín̂ǵ v̂ál̂íd̂ `amp-img` t́âǵŝ f́ôŕ ŷóûŕ îḿâǵêś ŵh́îćĥ áût́ôḿât́îćâĺl̂ý l̂áẑý-l̂óâd́ ôút̂śîd́ê t́ĥé f̂ír̂śt̂ v́îéŵṕôŕt̂. [Ĺêár̂ń m̂ór̂é](https://amp.dev/documentation/guides-and-tutorials/develop/media_iframes_3p/?format=websites#images)."
+  },
+  "stack-packs/packs/amp.js | render_blocking_resources": {
+    "message": "Ûśê t́ôól̂ś ŝúĉh́ âś [ÂḾP̂ Óp̂t́îḿîźêŕ](https://github.com/ampproject/amp-toolbox/tree/master/packages/optimizer) t̂ó [ŝér̂v́êŕ-ŝíd̂é r̂én̂d́êŕ ÂḾP̂ ĺâýôút̂ś](https://amp.dev/documentation/guides-and-tutorials/optimize-and-measure/server-side-rendering/)."
+  },
+  "stack-packs/packs/amp.js | unminified_css": {
+    "message": "R̂éf̂ér̂ t́ô t́ĥé [ÂḾP̂ d́ôćûḿêńt̂át̂íôń](https://amp.dev/documentation/guides-and-tutorials/develop/style_and_layout/style_pages/) t̂ó êńŝúr̂é âĺl̂ ýôúr̂ śt̂ýl̂éŝ ár̂é ŝúp̂ṕôŕt̂éd̂."
+  },
+  "stack-packs/packs/amp.js | uses_responsive_images": {
+    "message": "T̂h́ê `amp-img` él̂ém̂én̂t́ ŝúp̂ṕôŕt̂ś t̂h́ê `srcset` át̂t́r̂íb̂út̂é t̂ó ŝṕêćîf́ŷ ẃĥíĉh́ îḿâǵê áŝśêt́ŝ t́ô úŝé b̂áŝéd̂ ón̂ t́ĥé ŝćr̂éêń ŝíẑé.  [L̂éâŕn̂ ḿôŕê](https://amp.dev/documentation/guides-and-tutorials/develop/style_and_layout/art_direction/)."
+  },
+  "stack-packs/packs/amp.js | uses_webp_images": {
+    "message": "Ĉón̂śîd́êŕ d̂íŝṕl̂áŷín̂ǵ âĺl̂ ýôúr̂ `amp-img` ćôḿp̂ón̂én̂t́ŝ ín̂ Ẃêb́P̂ f́ôŕm̂át̂ś ŵh́îĺê śp̂éĉíf̂ýîńĝ án̂ áp̂ṕr̂óp̂ŕîát̂é f̂ál̂ĺb̂áĉḱ f̂ór̂ ót̂h́êŕ b̂ŕôẃŝér̂ś. [L̂éâŕn̂ ḿôŕê](https://amp.dev/documentation/components/amp-img/#example:-specifying-a-fallback-image)."
+  },
+  "stack-packs/packs/angular.js | dom_size": {
+    "message": "Ĉón̂śîd́êŕ v̂ír̂t́ûál̂ śĉŕôĺl̂ín̂ǵ ŵít̂h́ t̂h́ê Ćôḿp̂ón̂én̂t́ D̂év̂ Ḱît́ (ĈD́K̂) íf̂ v́êŕŷ ĺâŕĝé l̂íŝt́ŝ ár̂é b̂éîńĝ ŕêńd̂ér̂éd̂. [Ĺêár̂ń m̂ór̂é](https://web.dev/virtualize-lists-with-angular-cdk/)."
+  },
+  "stack-packs/packs/angular.js | total_byte_weight": {
+    "message": "Âṕp̂ĺŷ [ŕôút̂é-l̂év̂él̂ ćôd́ê-śp̂ĺît́t̂ín̂ǵ](https://web.dev/route-level-code-splitting-in-angular/) t̂ó m̂ín̂ím̂íẑé t̂h́ê śîźê óf̂ ýôúr̂ J́âv́âŚĉŕîṕt̂ b́ûńd̂ĺêś. Âĺŝó, ĉón̂śîd́êŕ p̂ŕêćâćĥín̂ǵ âśŝét̂ś ŵít̂h́ t̂h́ê [Án̂ǵûĺâŕ ŝér̂v́îćê ẃôŕk̂ér̂](https://web.dev/precaching-with-the-angular-service-worker/)."
+  },
+  "stack-packs/packs/angular.js | unminified_warning": {
+    "message": "Îf́ ŷóû ár̂é ûśîńĝ Án̂ǵûĺâŕ ĈĹÎ, én̂śûŕê t́ĥát̂ b́ûíl̂d́ŝ ár̂é ĝén̂ér̂át̂éd̂ ín̂ ṕr̂ód̂úĉt́îón̂ ḿôd́ê. [Ĺêár̂ń m̂ór̂é](https://angular.io/guide/deployment#enable-runtime-production-mode)."
+  },
+  "stack-packs/packs/angular.js | unused_javascript": {
+    "message": "Îf́ ŷóû ár̂é ûśîńĝ Án̂ǵûĺâŕ ĈĹÎ, ín̂ćl̂úd̂é ŝóûŕĉé m̂áp̂ś îńt̂ó ŷóûŕ p̂ŕôd́ûćt̂íôń b̂úîĺd̂ t́ô ín̂śp̂éĉt́ ŷóûŕ b̂ún̂d́l̂éŝ. [Ĺêár̂ń m̂ór̂é](https://angular.io/guide/deployment#inspect-the-bundles)."
+  },
+  "stack-packs/packs/angular.js | uses_rel_preload": {
+    "message": "P̂ŕêĺôád̂ ŕôút̂éŝ áĥéâd́ ôf́ t̂ím̂é t̂ó ŝṕêéd̂ úp̂ ńâv́îǵât́îón̂. [Ĺêár̂ń m̂ór̂é](https://web.dev/route-preloading-in-angular/)."
+  },
+  "stack-packs/packs/angular.js | uses_responsive_images": {
+    "message": "Ĉón̂śîd́êŕ ûśîńĝ t́ĥé `BreakpointObserver` ût́îĺît́ŷ ín̂ t́ĥé Ĉóm̂ṕôńêńt̂ D́êv́ K̂ít̂ (ĆD̂Ḱ) t̂ó m̂án̂áĝé îḿâǵê b́r̂éâḱp̂óîńt̂ś. [L̂éâŕn̂ ḿôŕê](https://material.angular.io/cdk/layout/overview)."
+  },
+  "stack-packs/packs/magento.js | critical_request_chains": {
+    "message": "Îf́ ŷóû ár̂é n̂ót̂ b́ûńd̂ĺîńĝ ýôúr̂ J́âv́âŚĉŕîṕt̂ áŝśêt́ŝ, ćôńŝíd̂ér̂ úŝín̂ǵ [b̂ál̂ér̂](https://github.com/magento/baler)."
+  },
+  "stack-packs/packs/magento.js | disable_bundling": {
+    "message": "D̂íŝáb̂ĺê Ḿâǵêńt̂ó'ŝ b́ûíl̂t́-îń [Ĵáv̂áŜćr̂íp̂t́ b̂ún̂d́l̂ín̂ǵ âńd̂ ḿîńîf́îćât́îón̂](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/themes/js-bundling.html), án̂d́ ĉón̂śîd́êŕ ûśîńĝ [b́âĺêŕ](https://github.com/magento/baler/) îńŝt́êád̂."
+  },
+  "stack-packs/packs/magento.js | font_display": {
+    "message": "Ŝṕêćîf́ŷ `@font-display` ẃĥén̂ [d́êf́îńîńĝ ćûśt̂óm̂ f́ôńt̂ś](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/css-topics/using-fonts.html)."
+  },
+  "stack-packs/packs/magento.js | offscreen_images": {
+    "message": "Ĉón̂śîd́êŕ m̂ód̂íf̂ýîńĝ ýôúr̂ ṕr̂ód̂úĉt́ âńd̂ ćât́âĺôǵ t̂ém̂ṕl̂át̂éŝ t́ô ḿâḱê úŝé ôf́ t̂h́ê ẃêb́ p̂ĺât́f̂ór̂ḿ'ŝ [ĺâźŷ ĺôád̂ín̂ǵ](https://web.dev/native-lazy-loading) f̂éât́ûŕê."
+  },
+  "stack-packs/packs/magento.js | time_to_first_byte": {
+    "message": "Ûśê Ḿâǵêńt̂ó'ŝ [V́âŕn̂íŝh́ îńt̂éĝŕât́îón̂](https://devdocs.magento.com/guides/v2.3/config-guide/varnish/config-varnish.html)."
+  },
+  "stack-packs/packs/magento.js | unminified_css": {
+    "message": "Êńâb́l̂é t̂h́ê \"Ḿîńîf́ŷ ĆŜŚ F̂íl̂éŝ\" óp̂t́îón̂ ín̂ ýôúr̂ śt̂ór̂é'ŝ D́êv́êĺôṕêŕ ŝét̂t́îńĝś. [L̂éâŕn̂ ḿôŕê](https://devdocs.magento.com/guides/v2.3/performance-best-practices/configuration.html?itm_source=devdocs&itm_medium=search_page&itm_campaign=federated_search&itm_term=minify%20css%20files)."
+  },
+  "stack-packs/packs/magento.js | unminified_javascript": {
+    "message": "Ûśê [T́êŕŝér̂](https://www.npmjs.com/package/terser) t́ô ḿîńîf́ŷ ál̂ĺ Ĵáv̂áŜćr̂íp̂t́ âśŝét̂ś ôút̂f́r̂óm̂ f́r̂óm̂ śt̂át̂íĉ ćôńt̂én̂t́ d̂ép̂ĺôým̂én̂t́, âńd̂ d́îśâb́l̂é t̂h́ê b́ûíl̂t́-îń m̂ín̂íf̂íĉát̂íôń f̂éât́ûŕê."
+  },
+  "stack-packs/packs/magento.js | unused_javascript": {
+    "message": "D̂íŝáb̂ĺê Ḿâǵêńt̂ó'ŝ b́ûíl̂t́-îń [Ĵáv̂áŜćr̂íp̂t́ b̂ún̂d́l̂ín̂ǵ](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/themes/js-bundling.html)."
+  },
+  "stack-packs/packs/magento.js | uses_optimized_images": {
+    "message": "Ĉón̂śîd́êŕ ŝéâŕĉh́îńĝ t́ĥé [M̂áĝén̂t́ô Ḿâŕk̂ét̂ṕl̂áĉé](https://marketplace.magento.com/catalogsearch/result/?q=optimize%20image) f̂ór̂ á v̂ár̂íêt́ŷ óf̂ t́ĥír̂d́ p̂ár̂t́ŷ éx̂t́êńŝíôńŝ t́ô óp̂t́îḿîźê ím̂áĝéŝ."
+  },
+  "stack-packs/packs/magento.js | uses_rel_preconnect": {
+    "message": "P̂ŕêćôńn̂éĉt́ ôŕ d̂ńŝ-ṕr̂éf̂ét̂ćĥ ŕêśôúr̂ćê h́îńt̂ś ĉán̂ b́ê ád̂d́êd́ b̂ý [m̂ód̂íf̂ýîńĝ á t̂h́êḿêś'ŝ ĺâýôút̂](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)."
+  },
+  "stack-packs/packs/magento.js | uses_rel_preload": {
+    "message": "`<link rel=preload>` t̂áĝś ĉán̂ b́ê ád̂d́êd́ b̂ý [m̂ód̂íf̂ýîńĝ á t̂h́êḿêś'ŝ ĺâýôút̂](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)."
+  },
+  "stack-packs/packs/magento.js | uses_webp_images": {
+    "message": "Ĉón̂śîd́êŕ ŝéâŕĉh́îńĝ t́ĥé [M̂áĝén̂t́ô Ḿâŕk̂ét̂ṕl̂áĉé](https://marketplace.magento.com/catalogsearch/result/?q=webp) f̂ór̂ á v̂ár̂íêt́ŷ óf̂ t́ĥír̂d́-p̂ár̂t́ŷ éx̂t́êńŝíôńŝ t́ô ĺêv́êŕâǵê ńêẃêŕ îḿâǵê f́ôŕm̂át̂ś."
+  },
+  "stack-packs/packs/react.js | dom_size": {
+    "message": "Ĉón̂śîd́êŕ ûśîńĝ á “ŵín̂d́ôẃîńĝ” ĺîb́r̂ár̂ý l̂ík̂é `react-window` t̂ó m̂ín̂ím̂íẑé t̂h́ê ńûḿb̂ér̂ óf̂ D́ÔḾ n̂ód̂éŝ ćr̂éât́êd́ îf́ ŷóû ár̂é r̂én̂d́êŕîńĝ ḿâńŷ ŕêṕêát̂éd̂ él̂ém̂én̂t́ŝ ón̂ t́ĥé p̂áĝé. [L̂éâŕn̂ ḿôŕê](https://web.dev/virtualize-long-lists-react-window/). Ál̂śô, ḿîńîḿîźê ún̂éĉéŝśâŕŷ ŕê-ŕêńd̂ér̂ś ûśîńĝ [śĥóûĺd̂Ćôḿp̂ón̂én̂t́Ûṕd̂át̂é](https://reactjs.org/docs/optimizing-performance.html#shouldcomponentupdate-in-action), [P̂úr̂éĈóm̂ṕôńêńt̂](https://reactjs.org/docs/react-api.html#reactpurecomponent), ór̂ [Ŕêáĉt́.m̂ém̂ó](https://reactjs.org/docs/react-api.html#reactmemo) âńd̂ [śk̂íp̂ éf̂f́êćt̂ś](https://reactjs.org/docs/hooks-effect.html#tip-optimizing-performance-by-skipping-effects) ôńl̂ý ûńt̂íl̂ ćêŕt̂áîń d̂ép̂én̂d́êńĉíêś ĥáv̂é ĉh́âńĝéd̂ íf̂ ýôú âŕê úŝín̂ǵ t̂h́ê Éf̂f́êćt̂ h́ôók̂ t́ô ím̂ṕr̂óv̂é r̂ún̂t́îḿê ṕêŕf̂ór̂ḿâńĉé."
+  },
+  "stack-packs/packs/react.js | redirects": {
+    "message": "Îf́ ŷóû ár̂é ûśîńĝ Ŕêáĉt́ R̂óût́êŕ, m̂ín̂ím̂íẑé ûśâǵê óf̂ t́ĥé `<Redirect>` ĉóm̂ṕôńêńt̂ f́ôŕ [r̂óût́ê ńâv́îǵât́îón̂ś](https://reacttraining.com/react-router/web/api/Redirect)."
+  },
+  "stack-packs/packs/react.js | time_to_first_byte": {
+    "message": "Îf́ ŷóû ár̂é ŝér̂v́êŕ-ŝíd̂é r̂én̂d́êŕîńĝ án̂ý R̂éâćt̂ ćôḿp̂ón̂én̂t́ŝ, ćôńŝíd̂ér̂ úŝín̂ǵ `renderToNodeStream()` ôŕ `renderToStaticNodeStream()` t̂ó âĺl̂óŵ t́ĥé ĉĺîén̂t́ t̂ó r̂éĉéîv́ê án̂d́ ĥýd̂ŕât́ê d́îf́f̂ér̂én̂t́ p̂ár̂t́ŝ óf̂ t́ĥé m̂ár̂ḱûṕ îńŝt́êád̂ óf̂ ál̂ĺ ât́ ôńĉé. [L̂éâŕn̂ ḿôŕê](https://reactjs.org/docs/react-dom-server.html#rendertonodestream)."
+  },
+  "stack-packs/packs/react.js | unminified_css": {
+    "message": "Îf́ ŷóûŕ b̂úîĺd̂ śŷśt̂ém̂ ḿîńîf́îéŝ ýôúr̂ ĆŜŚ f̂íl̂éŝ áût́ôḿât́îćâĺl̂ý, êńŝúr̂é t̂h́ât́ ŷóû ár̂é d̂ép̂ĺôýîńĝ t́ĥé p̂ŕôd́ûćt̂íôń b̂úîĺd̂ óf̂ ýôúr̂ áp̂ṕl̂íĉát̂íôń. Ŷóû ćâń ĉh́êćk̂ t́ĥíŝ ẃît́ĥ t́ĥé R̂éâćt̂ D́êv́êĺôṕêŕ T̂óôĺŝ éx̂t́êńŝíôń. [L̂éâŕn̂ ḿôŕê](https://reactjs.org/docs/optimizing-performance.html#use-the-production-build)."
+  },
+  "stack-packs/packs/react.js | unminified_javascript": {
+    "message": "Îf́ ŷóûŕ b̂úîĺd̂ śŷśt̂ém̂ ḿîńîf́îéŝ ýôúr̂ J́Ŝ f́îĺêś âút̂óm̂át̂íĉál̂ĺŷ, én̂śûŕê t́ĥát̂ ýôú âŕê d́êṕl̂óŷín̂ǵ t̂h́ê ṕr̂ód̂úĉt́îón̂ b́ûíl̂d́ ôf́ ŷóûŕ âṕp̂ĺîćât́îón̂. Ýôú ĉán̂ ćĥéĉḱ t̂h́îś ŵít̂h́ t̂h́ê Ŕêáĉt́ D̂év̂él̂óp̂ér̂ T́ôól̂ś êx́t̂én̂śîón̂. [Ĺêár̂ń m̂ór̂é](https://reactjs.org/docs/optimizing-performance.html#use-the-production-build)."
+  },
+  "stack-packs/packs/react.js | unused_javascript": {
+    "message": "Îf́ ŷóû ár̂é n̂ót̂ śêŕv̂ér̂-śîd́ê ŕêńd̂ér̂ín̂ǵ, [ŝṕl̂ít̂ ýôúr̂ J́âv́âŚĉŕîṕt̂ b́ûńd̂ĺêś](https://web.dev/code-splitting-suspense/) ŵít̂h́ `React.lazy()`. Ôt́ĥér̂ẃîśê, ćôd́ê-śp̂ĺît́ ûśîńĝ á t̂h́îŕd̂-ṕâŕt̂ý l̂íb̂ŕâŕŷ śûćĥ áŝ [ĺôád̂áb̂ĺê-ćôḿp̂ón̂én̂t́ŝ](https://www.smooth-code.com/open-source/loadable-components/docs/getting-started/)."
+  },
+  "stack-packs/packs/react.js | user_timings": {
+    "message": "Ûśê t́ĥé R̂éâćt̂ D́êv́T̂óôĺŝ Ṕr̂óf̂íl̂ér̂, ẃĥíĉh́ m̂ák̂éŝ úŝé ôf́ t̂h́ê Ṕr̂óf̂íl̂ér̂ ÁP̂Í, t̂ó m̂éâśûŕê t́ĥé r̂én̂d́êŕîńĝ ṕêŕf̂ór̂ḿâńĉé ôf́ ŷóûŕ ĉóm̂ṕôńêńt̂ś. [L̂éâŕn̂ ḿôŕê.](https://reactjs.org/blog/2018/09/10/introducing-the-react-profiler.html)"
   },
   "stack-packs/packs/wordpress.js | efficient_animated_content": {
     "message": "Ĉón̂śîd́êŕ ûṕl̂óâd́îńĝ ýôúr̂ ǴÎF́ t̂ó â śêŕv̂íĉé ŵh́îćĥ ẃîĺl̂ ḿâḱê ít̂ áv̂áîĺâb́l̂é t̂ó êḿb̂éd̂ áŝ án̂ H́T̂ḾL̂5 v́îd́êó."

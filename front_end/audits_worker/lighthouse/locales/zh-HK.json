@@ -30,10 +30,10 @@
     "message": "部分 ARIA 父角色必須包含特定的子角色，才能正確執行無障礙功能。[瞭解詳情](https://web.dev/aria-required-children/)。"
   },
   "lighthouse-core/audits/accessibility/aria-required-children.js | failureTitle": {
-    "message": "設有 `[role]` 的元素缺少必需的特定子元素 `[role]`。"
+    "message": "包含 ARIA `[role]` 且要求子元素包含特定 `[role]` 的元素缺少部分或全部的必要子元素。"
   },
   "lighthouse-core/audits/accessibility/aria-required-children.js | title": {
-    "message": "`[role]` 的元素具備必需的特定子元素 `[role]`。"
+    "message": "包含 ARIA `[role]` 且要求子元素包含特定 `[role]` 的元素具有全部必要的子元素。"
   },
   "lighthouse-core/audits/accessibility/aria-required-parent.js | description": {
     "message": "部分 ARIA 子角色必須包括在特定的父角色中，才能正確執行無障礙功能。[瞭解詳情](https://web.dev/aria-required-parent/)。"
@@ -276,10 +276,10 @@
     "message": "螢幕閱讀器的功能可讓使用者更輕鬆瀏覽表格。如能確保採用 `[headers]` 屬性的 `<td>` 儲存格只參照同一表格中的其他儲存格，或許能改善螢幕閱讀器的使用體驗。[瞭解詳情](https://web.dev/td-headers-attr/)。"
   },
   "lighthouse-core/audits/accessibility/td-headers-attr.js | failureTitle": {
-    "message": "`<table>` 元素中採用 `[headers]` 屬性的儲存格，參照了同一表格中的其他儲存格。"
+    "message": "`<table>` 元素中採用 `[headers]` 屬性的儲存格參照了 `id`，無法在同一表格中找到此元素。"
   },
   "lighthouse-core/audits/accessibility/td-headers-attr.js | title": {
-    "message": "`[headers]` 元素中採用 `<table>` 屬性的儲存格，只參照了同一表格中的其他儲存格。"
+    "message": "`<table>` 元素中採用 `[headers]` 屬性的儲存格，參照了同一表格中的其他儲存格。"
   },
   "lighthouse-core/audits/accessibility/th-has-data-cells.js | description": {
     "message": "螢幕閱讀器的功能可讓使用者更輕鬆瀏覽表格。如能確保表格標題一律參照特定一組儲存格，或許能有助改善螢幕閱讀器使用者的體驗。[瞭解詳情](https://web.dev/th-has-data-cells/)。"
@@ -318,7 +318,7 @@
     "message": "`<video>` 元素包含帶有 `[kind=\"description\"]` 的`<track>` 元素"
   },
   "lighthouse-core/audits/apple-touch-icon.js | description": {
-    "message": "請定義 `apple-touch-icon`。這樣，當 iOS 使用者將漸進式網絡應用程式新增到主畫面時，系統才會顯示正確圖示。apple-touch-icon 必須指向大小為 192 像素 (或 180 像素) 的不透明正方形 PNG。[瞭解詳情](https://developers.google.com/web/fundamentals/design-and-ux/browser-customization/)。"
+    "message": "請定義 `apple-touch-icon`。這樣，當 iOS 使用者將漸進式網絡應用程式新增到主畫面時，系統才會顯示正確圖示。apple-touch-icon 必須指向大小為 192 像素 (或 180 像素) 的不透明正方形 PNG。[瞭解詳情](https://web.dev/apple-touch-icon/)。"
   },
   "lighthouse-core/audits/apple-touch-icon.js | failureTitle": {
     "message": "未提供有效的 `apple-touch-icon`"
@@ -342,7 +342,7 @@
     "message": "CPU 總執行時間"
   },
   "lighthouse-core/audits/bootup-time.js | description": {
-    "message": "建議減少剖析、編譯和執行 JS 所用的時間。傳送較小的 JS 負載可能有所幫助。[瞭解詳情](https://developers.google.com/web/tools/lighthouse/audits/bootup)。"
+    "message": "建議減少剖析、編譯和執行 JS 所用的時間。傳送較小的 JS 負載可能有所幫助。[瞭解詳情](https://web.dev/bootup-time)。"
   },
   "lighthouse-core/audits/bootup-time.js | failureTitle": {
     "message": "縮短 JavaScript 執行時間"
@@ -351,25 +351,25 @@
     "message": "JavaScript 執行時間"
   },
   "lighthouse-core/audits/byte-efficiency/efficient-animated-content.js | description": {
-    "message": "大型 GIF 放送動畫內容效率往往不佳。建議改用 MPEG4/WebM 格式的動畫影片和 PNG/WebP 格式的靜態圖片，以節省網絡位元組。[瞭解詳情](https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/replace-animated-gifs-with-video/)"
+    "message": "大型 GIF 放送動畫內容效率往往不佳。建議改用 MPEG4/WebM 格式的動畫影片和 PNG/WebP 格式的靜態圖片，以節省網絡位元組。[瞭解詳情](https://web.dev/efficient-animated-content)"
   },
   "lighthouse-core/audits/byte-efficiency/efficient-animated-content.js | title": {
     "message": "使用影片格式的動畫內容"
   },
   "lighthouse-core/audits/byte-efficiency/offscreen-images.js | description": {
-    "message": "建議延遲載入螢幕外的項目並隱藏圖片，直到重要資源全部載入後再開始操作，以縮短可互動時間。[瞭解詳情](https://developers.google.com/web/tools/lighthouse/audits/offscreen-images)。"
+    "message": "建議延遲載入螢幕外的項目並隱藏圖片，直到重要資源全部載入後再開始操作，以縮短可互動時間。[瞭解詳情](https://web.dev/offscreen-images)。"
   },
   "lighthouse-core/audits/byte-efficiency/offscreen-images.js | title": {
     "message": "延遲載入螢幕外圖片"
   },
   "lighthouse-core/audits/byte-efficiency/render-blocking-resources.js | description": {
-    "message": "過多資源往往會阻止系統首次繪製頁面。建議內嵌重要的 JS/CSS，延遲所有不重要的 JS/樣式。[瞭解詳情](https://developers.google.com/web/tools/lighthouse/audits/blocking-resources)。"
+    "message": "過多資源往往會阻止系統首次繪製頁面。建議內嵌重要的 JS/CSS，延遲所有不重要的 JS/樣式。[瞭解詳情](https://web.dev/render-blocking-resources)。"
   },
   "lighthouse-core/audits/byte-efficiency/render-blocking-resources.js | title": {
     "message": "排除阻止呈現的資源"
   },
   "lighthouse-core/audits/byte-efficiency/total-byte-weight.js | description": {
-    "message": "網絡負載過大會造成使用者的費用負擔，且往往與過長載入時間息息相關。[瞭解詳情](https://developers.google.com/web/tools/lighthouse/audits/network-payloads)。"
+    "message": "網絡負載過大會造成使用者的費用負擔，且往往與過長載入時間息息相關。[瞭解詳情](https://web.dev/total-byte-weight)。"
   },
   "lighthouse-core/audits/byte-efficiency/total-byte-weight.js | displayValue": {
     "message": "總大小為 {totalBytes, number, bytes} KB"
@@ -381,19 +381,19 @@
     "message": "避免網絡負載過大"
   },
   "lighthouse-core/audits/byte-efficiency/unminified-css.js | description": {
-    "message": "壓縮 CSS 檔案可減少網絡負載大小。[瞭解詳情](https://developers.google.com/web/tools/lighthouse/audits/minify-css)。"
+    "message": "壓縮 CSS 檔案可減少網絡負載大小。[瞭解詳情](https://web.dev/unminified-css)。"
   },
   "lighthouse-core/audits/byte-efficiency/unminified-css.js | title": {
     "message": "壓縮 CSS"
   },
   "lighthouse-core/audits/byte-efficiency/unminified-javascript.js | description": {
-    "message": "壓縮 JavaScript 檔案可減少負載大小和指令碼剖析時間。[瞭解詳情](https://developers.google.com/speed/docs/insights/MinifyResources)。"
+    "message": "壓縮 JavaScript 檔案可減少負載大小和指令碼剖析時間。[瞭解詳情](https://web.dev/unminified-javascript)。"
   },
   "lighthouse-core/audits/byte-efficiency/unminified-javascript.js | title": {
     "message": "壓縮 Javascript"
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | description": {
-    "message": "從樣式表中移除無用的規則，並延遲載在毋需捲動的當眼位置內容中未使用的 CSS，減少網絡活動耗用不必要的位元組。[瞭解詳情](https://developers.google.com/web/tools/lighthouse/audits/unused-css)。"
+    "message": "從樣式表中移除無用的規則，並延遲載在毋需捲動的當眼位置內容中未使用的 CSS，減少網絡活動耗用不必要的位元組。[瞭解詳情](https://web.dev/unused-css-rules)。"
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | title": {
     "message": "移除未使用的 CSS"
@@ -405,7 +405,7 @@
     "message": "移除未使用的 JavaScript"
   },
   "lighthouse-core/audits/byte-efficiency/uses-long-cache-ttl.js | description": {
-    "message": "延長快取期限可加快重覆瀏覽頁面的速度。[瞭解詳情](https://developers.google.com/web/tools/lighthouse/audits/cache-policy)。"
+    "message": "延長快取期限可加快重覆瀏覽頁面的速度。[瞭解詳情](https://web.dev/uses-long-cache-ttl)。"
   },
   "lighthouse-core/audits/byte-efficiency/uses-long-cache-ttl.js | displayValue": {
     "message": "{itemCount,plural, =1{已找到 1 項資源}other{已找到 # 項資源}}"
@@ -417,31 +417,31 @@
     "message": "使用有效的快取政策處理靜態資產"
   },
   "lighthouse-core/audits/byte-efficiency/uses-optimized-images.js | description": {
-    "message": "優化圖片以加快載入速度，減少流動數據用量。[瞭解詳情](https://developers.google.com/web/tools/lighthouse/audits/optimize-images)。"
+    "message": "優化圖片以加快載入速度，減少流動數據用量。[瞭解詳情](https://web.dev/uses-optimized-images)。"
   },
   "lighthouse-core/audits/byte-efficiency/uses-optimized-images.js | title": {
     "message": "有效地進行圖片編碼"
   },
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | description": {
-    "message": "提供適當大小的圖片有助節省流動數據用量，並縮短載入時間。[瞭解詳情](https://developers.google.com/web/tools/lighthouse/audits/oversized-images)。"
+    "message": "提供適當大小的圖片有助節省流動數據用量，並縮短載入時間。[瞭解詳情](https://web.dev/uses-responsive-images)。"
   },
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | title": {
     "message": "適當調整圖片大小"
   },
   "lighthouse-core/audits/byte-efficiency/uses-text-compression.js | description": {
-    "message": "文字資源應經過 (gzip、deflate 或 brotli) 壓縮，以將網絡位元總數減至最少。[瞭解詳情](https://developers.google.com/web/tools/lighthouse/audits/text-compression)。"
+    "message": "文字資源應經過 (gzip、deflate 或 brotli) 壓縮，以將網絡位元總數減至最少。[瞭解詳情](https://web.dev/uses-text-compression)。"
   },
   "lighthouse-core/audits/byte-efficiency/uses-text-compression.js | title": {
     "message": "啟用文字壓縮"
   },
   "lighthouse-core/audits/byte-efficiency/uses-webp-images.js | description": {
-    "message": "JPEG 2000、JPEG XR 和 WebP 等圖片格式通常比 PNG 或 JPEG 有更好的壓縮效果，能夠更快完成下載及減少數據用量。[瞭解詳情](https://developers.google.com/web/tools/lighthouse/audits/webp)。"
+    "message": "JPEG 2000、JPEG XR 和 WebP 等圖片格式通常比 PNG 或 JPEG 有更好的壓縮效果，能夠更快完成下載及減少數據用量。[瞭解詳情](https://web.dev/uses-webp-images)。"
   },
   "lighthouse-core/audits/byte-efficiency/uses-webp-images.js | title": {
     "message": "提供 next-gen 格式的圖片"
   },
   "lighthouse-core/audits/content-width.js | description": {
-    "message": "如果應用程式內容寬度與檢視區的寬度不相符，應用程式可能無法在流動裝置螢幕上呈現優化效果。[瞭解詳情](https://developers.google.com/web/tools/lighthouse/audits/content-sized-correctly-for-viewport)。"
+    "message": "如果應用程式內容寬度與檢視區的寬度不相符，應用程式可能無法在流動裝置螢幕上呈現優化效果。[瞭解詳情](https://web.dev/content-width)。"
   },
   "lighthouse-core/audits/content-width.js | explanation": {
     "message": "檢視區大小 ({innerWidth} 像素) 與視窗大小 ({outerWidth} 像素) 不相符。"
@@ -453,7 +453,7 @@
     "message": "已將檢視區正確調整內容大小"
   },
   "lighthouse-core/audits/critical-request-chains.js | description": {
-    "message": "下方的「關鍵要求鏈結」顯示以高優先次序發佈的資源。為了提高頁面載入速度，建議您縮短鏈結長度，縮減下載資源的大小，或延遲下載不必要資源。[瞭解詳情](https://developers.google.com/web/tools/lighthouse/audits/critical-request-chains)。"
+    "message": "下方的「關鍵要求鏈結」顯示以高優先次序發佈的資源。為了提高頁面載入速度，建議您縮短鏈結長度，縮減下載資源的大小，或延遲下載不必要資源。[瞭解詳情](https://web.dev/critical-request-chains)。"
   },
   "lighthouse-core/audits/critical-request-chains.js | displayValue": {
     "message": "{itemCount,plural, =1{已找到 1 個鏈結}other{已找到 # 個鏈結}}"
@@ -675,7 +675,7 @@
     "message": "系統未在管理中心記錄瀏覽器發生的錯誤"
   },
   "lighthouse-core/audits/font-display.js | description": {
-    "message": "運用顯示字型的 CSS 功能，確保使用者可在網頁字型載入時看到文字。[瞭解詳情](https://developers.google.com/web/updates/2016/02/font-display)。"
+    "message": "運用顯示字型的 CSS 功能，確保使用者可在網頁字型載入時看到文字。[瞭解詳情](https://web.dev/font-display)。"
   },
   "lighthouse-core/audits/font-display.js | failureTitle": {
     "message": "確保文字在網頁字型載入時仍然顯示"
@@ -705,7 +705,7 @@
     "message": "圖片大小資料無效 {url}"
   },
   "lighthouse-core/audits/installable-manifest.js | description": {
-    "message": "瀏覽器可主動提示使用者，建議他們將您的應用程式新增至主畫面，藉此提高參與度[瞭解詳情](https://developers.google.com/web/tools/lighthouse/audits/install-prompt)。"
+    "message": "瀏覽器可主動提示使用者，建議他們將您的應用程式新增至主畫面，藉此提高參與度[瞭解詳情](https://web.dev/installable-manifest)。"
   },
   "lighthouse-core/audits/installable-manifest.js | failureTitle": {
     "message": "網絡應用程式資訊清單不符合可安裝性要求"
@@ -729,7 +729,7 @@
     "message": "使用 HTTPS"
   },
   "lighthouse-core/audits/load-fast-enough-for-pwa.js | description": {
-    "message": "如果網頁在流動網絡中能快速載入，可為流動裝置使用者提供良好的使用體驗。[瞭解詳情](https://developers.google.com/web/tools/lighthouse/audits/fast-3g)。"
+    "message": "如果網頁在流動網絡中能快速載入，可為流動裝置使用者提供良好的使用體驗。[瞭解詳情](https://web.dev/load-fast-enough-for-pwa)。"
   },
   "lighthouse-core/audits/load-fast-enough-for-pwa.js | displayValueText": {
     "message": "在 {timeInMs, number, seconds} 秒開始互動"
@@ -750,7 +750,7 @@
     "message": "類別"
   },
   "lighthouse-core/audits/mainthread-work-breakdown.js | description": {
-    "message": "建議減少剖析、編譯和執行 JS 所用的時間。傳送較小的 JS 負載可能有所幫助。"
+    "message": "建議減少剖析、編譯和執行 JS 所用的時間。傳送較小的 JS 負載可能有所幫助。[瞭解詳情](https://web.dev/mainthread-work-breakdown)"
   },
   "lighthouse-core/audits/mainthread-work-breakdown.js | failureTitle": {
     "message": "將主要執行緒的工作減至最少"
@@ -759,49 +759,49 @@
     "message": "將主要執行緒的工作減至最少"
   },
   "lighthouse-core/audits/manual/pwa-cross-browser.js | description": {
-    "message": "為盡量觸及最多使用者，網站應能在每個主要瀏覽器上暢順運作。[瞭解詳情](https://developers.google.com/web/progressive-web-apps/checklist#site-works-cross-browser)。"
+    "message": "為盡量觸及最多使用者，網站應能在每個主要瀏覽器上暢順運作。[瞭解詳情](https://web.dev/pwa-cross-browser)。"
   },
   "lighthouse-core/audits/manual/pwa-cross-browser.js | title": {
     "message": "網站可以在不同瀏覽器上運作"
   },
   "lighthouse-core/audits/manual/pwa-each-page-has-url.js | description": {
-    "message": "確保每個網頁都可透過網址進行深層連結，且具有專屬網址，方便您在社交媒體上分享。[瞭解詳情](https://developers.google.com/web/progressive-web-apps/checklist#each-page-has-a-url)。"
+    "message": "確保每個網頁都可透過網址進行深層連結，且具有專屬網址，方便您在社交媒體上分享。[瞭解詳情](https://web.dev/pwa-each-page-has-url)。"
   },
   "lighthouse-core/audits/manual/pwa-each-page-has-url.js | title": {
     "message": "每個網頁都有一個網址"
   },
   "lighthouse-core/audits/manual/pwa-page-transitions.js | description": {
-    "message": "即使網絡速度緩慢，只要使用者瀏覽不同網頁也能營造流暢切換的感覺，這就是高效感觀的關鍵。[瞭解詳情](https://developers.google.com/web/progressive-web-apps/checklist#page-transitions-dont-feel-like-they-block-on-the-network)。"
+    "message": "即使網絡速度緩慢，只要使用者瀏覽不同網頁也能營造流暢切換的感覺。這就是為使用者帶來高效感觀的關鍵。[瞭解詳情](https://web.dev/pwa-page-transitions)。"
   },
   "lighthouse-core/audits/manual/pwa-page-transitions.js | title": {
     "message": "使用者在切換頁面時不會覺得網絡速度緩慢"
   },
   "lighthouse-core/audits/metrics/estimated-input-latency.js | description": {
-    "message": "預計輸入延遲時間是在頁面載入視窗最忙碌的 5 秒期間，您的應用程式對使用者輸入動作的預計回應時間 (以毫秒為單位)。如果延遲超過 50 毫秒，使用者可能會認為應用程式的速度緩慢。[瞭解詳情](https://developers.google.com/web/tools/lighthouse/audits/estimated-input-latency)。"
+    "message": "預計輸入延遲時間是在頁面載入視窗最忙碌的 5 秒期間，您的應用程式對使用者輸入動作的預計回應時間 (以毫秒為單位)。如果延遲超過 50 毫秒，使用者可能會認為應用程式的速度緩慢。[瞭解詳情](https://web.dev/estimated-input-latency)。"
   },
   "lighthouse-core/audits/metrics/estimated-input-latency.js | title": {
     "message": "預計輸入延遲時間"
   },
   "lighthouse-core/audits/metrics/first-contentful-paint.js | description": {
-    "message": "「首次內容繪製時間」標示繪製首個文字/首張圖片的時間。[瞭解詳情](https://developers.google.com/web/tools/lighthouse/audits/first-contentful-paint)。"
+    "message": "「首次內容繪製時間」標示繪製首個文字/首張圖片的時間。[瞭解詳情](https://web.dev/first-contentful-paint)。"
   },
   "lighthouse-core/audits/metrics/first-contentful-paint.js | title": {
     "message": "首次內容繪製時間"
   },
   "lighthouse-core/audits/metrics/first-cpu-idle.js | description": {
-    "message": "「首次 CPU 閒置時間」標示頁面的主要執行緒首次有空處理輸入的時間。[瞭解詳情](https://developers.google.com/web/tools/lighthouse/audits/first-interactive)。"
+    "message": "「首次 CPU 閒置時間」標示頁面的主要執行緒首次有空處理輸入的時間。[瞭解詳情](https://web.dev/first-cpu-idle)。"
   },
   "lighthouse-core/audits/metrics/first-cpu-idle.js | title": {
     "message": "首次 CPU 閒置時間"
   },
   "lighthouse-core/audits/metrics/first-meaningful-paint.js | description": {
-    "message": "「首次有效繪製時間」評估頁面主要內容顯示的時間。[瞭解詳情](https://developers.google.com/web/tools/lighthouse/audits/first-meaningful-paint)。"
+    "message": "「首次有效繪製時間」評估頁面主要內容顯示的時間。[瞭解詳情](https://web.dev/first-meaningful-paint)。"
   },
   "lighthouse-core/audits/metrics/first-meaningful-paint.js | title": {
     "message": "首次有效繪製時間"
   },
   "lighthouse-core/audits/metrics/interactive.js | description": {
-    "message": "互動準備時間是網頁進入完整互動狀態前所花的時間。[瞭解詳情](https://developers.google.com/web/tools/lighthouse/audits/consistently-interactive)。"
+    "message": "互動準備時間是網頁進入完整互動狀態前所花的時間。[瞭解詳情](https://web.dev/interactive)。"
   },
   "lighthouse-core/audits/metrics/interactive.js | title": {
     "message": "可互動所需時間"
@@ -813,7 +813,7 @@
     "message": "首次輸入延遲時間最長預計值"
   },
   "lighthouse-core/audits/metrics/speed-index.js | description": {
-    "message": "「速度指數」會顯示頁面內容的展現速度。[瞭解詳情](https://developers.google.com/web/tools/lighthouse/audits/speed-index)。"
+    "message": "「速度指數」會顯示頁面內容的展現速度。[瞭解詳情](https://web.dev/speed-index)。"
   },
   "lighthouse-core/audits/metrics/speed-index.js | title": {
     "message": "速度指數"
@@ -837,7 +837,7 @@
     "message": "伺服器後端延遲時間"
   },
   "lighthouse-core/audits/offline-start-url.js | description": {
-    "message": "Service Worker 可確保您的網絡應用程式運作可靠，即使網絡連線不穩定亦然。[瞭解詳情](https://developers.google.com/web/tools/lighthouse/audits/http-200-when-offline)。"
+    "message": "Service Worker 可確保您的網絡應用程式運作可靠，即使網絡連線不穩定亦然。[瞭解詳情](https://web.dev/offline-start-url)。"
   },
   "lighthouse-core/audits/offline-start-url.js | failureTitle": {
     "message": "`start_url` 在離線時不會傳回狀態碼 200 的回應"
@@ -861,7 +861,7 @@
     "message": "效能預算"
   },
   "lighthouse-core/audits/redirects-http.js | description": {
-    "message": "如果您已設定 HTTPS，請確認是否已將所有 HTTP 流量重新導向至 HTTPS，以便為所有使用者提供安全的網絡功能。[瞭解詳情](https://developers.google.com/web/tools/lighthouse/audits/http-redirects-to-https)。"
+    "message": "如果您已設定 HTTPS，請確認是否已將所有 HTTP 流量重新導向至 HTTPS，以便為所有使用者提供安全的網絡功能。[瞭解詳情](https://web.dev/redirects-http)。"
   },
   "lighthouse-core/audits/redirects-http.js | failureTitle": {
     "message": "尚未將 HTTP 流量重新導向至 HTTPS"
@@ -870,7 +870,7 @@
     "message": "將 HTTP 流量重新導向至 HTTPS"
   },
   "lighthouse-core/audits/redirects.js | description": {
-    "message": "重新導向會導致頁面延遲載入。[瞭解詳情](https://developers.google.com/web/tools/lighthouse/audits/redirects)。"
+    "message": "重新導向會導致頁面延遲載入。[瞭解詳情](https://web.dev/redirects)。"
   },
   "lighthouse-core/audits/redirects.js | title": {
     "message": "避免多次頁面重新導向"
@@ -1035,7 +1035,7 @@
     "message": "輕按目標已設定成適當大小"
   },
   "lighthouse-core/audits/service-worker.js | description": {
-    "message": "Service Worker 技術可讓您的應用程式使用多項漸進式網絡應用程式的功能，例如離線存取、新增到主畫面和推送通知。[瞭解詳情](https://developers.google.com/web/tools/lighthouse/audits/registered-service-worker)。"
+    "message": "Service Worker 技術可讓您的應用程式使用多項漸進式網絡應用程式的功能，例如離線存取、新增到主畫面和推送通知。[瞭解詳情](https://web.dev/service-worker)。"
   },
   "lighthouse-core/audits/service-worker.js | explanationBadManifest": {
     "message": "此網頁由 Service Worker 控制，但系統無法將資訊清單剖析為有效的 JSON，因此找不到任何 `start_url`"
@@ -1056,7 +1056,7 @@
     "message": "已註冊可控制網頁和 `start_url` 的 Service Worker"
   },
   "lighthouse-core/audits/splash-screen.js | description": {
-    "message": "透過設定啟動畫面的主題，可確保使用者從主畫面啟動您的應用程式時享有優質體驗。[瞭解詳情](https://developers.google.com/web/tools/lighthouse/audits/custom-splash-screen)。"
+    "message": "透過設定啟動畫面的主題，可確保使用者從主畫面啟動您的應用程式時享有優質體驗。[瞭解詳情](https://web.dev/splash-screen)。"
   },
   "lighthouse-core/audits/splash-screen.js | failureTitle": {
     "message": "未設定自訂啟動畫面"
@@ -1065,7 +1065,7 @@
     "message": "設有自訂啟動畫面"
   },
   "lighthouse-core/audits/themed-omnibox.js | description": {
-    "message": "您可以將瀏覽器網址列的主題設定為與網站相符。[瞭解詳情](https://developers.google.com/web/tools/lighthouse/audits/address-bar)。"
+    "message": "您可以將瀏覽器網址列的主題設定為與網站相符。[瞭解詳情](https://web.dev/themed-omnibox)。"
   },
   "lighthouse-core/audits/themed-omnibox.js | failureTitle": {
     "message": "未設定網址列的主題顏色。"
@@ -1092,7 +1092,7 @@
     "message": "第三方程式碼使用情況"
   },
   "lighthouse-core/audits/time-to-first-byte.js | description": {
-    "message": "「首個字節時間」會指出您的伺服器傳送回應的時間。[瞭解詳情](https://developers.google.com/web/tools/lighthouse/audits/ttfb)。"
+    "message": "「首個字節時間」會指出您的伺服器傳送回應的時間。[瞭解詳情](https://web.dev/time-to-first-byte)。"
   },
   "lighthouse-core/audits/time-to-first-byte.js | displayValue": {
     "message": "根文件回應時間為 {timeInMs, number, milliseconds} 毫秒"
@@ -1113,7 +1113,7 @@
     "message": "類別"
   },
   "lighthouse-core/audits/user-timings.js | description": {
-    "message": "建議使用「用戶使用時間」檢測您的應用程式，評估其在關鍵使用者體驗期間的實際成效。[瞭解詳情](https://developers.google.com/web/tools/lighthouse/audits/user-timing)。"
+    "message": "建議使用「用戶使用時間」檢測您的應用程式，評估其在關鍵使用者體驗期間的實際成效。[瞭解詳情](https://web.dev/user-timings)。"
   },
   "lighthouse-core/audits/user-timings.js | displayValue": {
     "message": "{itemCount,plural, =1{1 個用戶使用時間標記}other{# 個用戶使用時間標記}}"
@@ -1125,7 +1125,7 @@
     "message": "「{securityOrigin}」有預先連線的 <link>，但瀏覽器沒有使用。請檢查您使用 `crossorigin` 屬性的方式是否正確。"
   },
   "lighthouse-core/audits/uses-rel-preconnect.js | description": {
-    "message": "建議您新增 `preconnect` 或 `dns-prefetch` 資源提示，及早連線至重要的第三方來源。[瞭解詳情](https://developers.google.com/web/fundamentals/performance/resource-prioritization#preconnect)。"
+    "message": "建議您新增 `preconnect` 或 `dns-prefetch` 資源提示，及早連線至重要的第三方來源。[瞭解詳情](https://web.dev/uses-rel-preconnect)。"
   },
   "lighthouse-core/audits/uses-rel-preconnect.js | title": {
     "message": "預先連接至必要來源"
@@ -1134,13 +1134,13 @@
     "message": "{preloadURL} 有預先載入的 <link>，但瀏覽器沒有使用。請檢查您使用 `crossorigin` 屬性的方式是否正確。"
   },
   "lighthouse-core/audits/uses-rel-preload.js | description": {
-    "message": "建議使用 `<link rel=preload>` 來指定優先需要的網絡要求，並預先擷取資源。[瞭解詳情](https://developers.google.com/web/tools/lighthouse/audits/preload)。"
+    "message": "建議使用 `<link rel=preload>` 來指定優先需要的網絡要求，並預先擷取資源。[瞭解詳情](https://web.dev/uses-rel-preload)。"
   },
   "lighthouse-core/audits/uses-rel-preload.js | title": {
     "message": "預先載入關鍵要求"
   },
   "lighthouse-core/audits/viewport.js | description": {
-    "message": "新增 `<meta name=\"viewport\">` 標籤以對流動裝置螢幕優化您的應用程式。[瞭解詳情](https://developers.google.com/web/tools/lighthouse/audits/has-viewport-meta-tag)。"
+    "message": "新增 `<meta name=\"viewport\">` 標籤以對流動裝置螢幕優化您的應用程式。[瞭解詳情](https://web.dev/viewport)。"
   },
   "lighthouse-core/audits/viewport.js | explanationNoTag": {
     "message": "找不到任何 `<meta name=\"viewport\">` 標籤"
@@ -1152,7 +1152,7 @@
     "message": "具備包括 `<meta name=\"viewport\">` 或 `width` 的 `initial-scale` 標籤"
   },
   "lighthouse-core/audits/without-javascript.js | description": {
-    "message": "當 JavaScript 停用時，您的應用程式應該要顯示一些內容，即使只是向使用者顯示「必須啟用 JavaScript 才能使用此應用程式」這類警告訊息亦可。[瞭解詳情](https://developers.google.com/web/tools/lighthouse/audits/no-js)。"
+    "message": "當 JavaScript 停用時，您的應用程式應該要顯示一些內容，即使只是向使用者顯示「必須啟用 JavaScript 才能使用此應用程式」這類警告訊息亦可。[瞭解詳情](https://web.dev/without-javascript)。"
   },
   "lighthouse-core/audits/without-javascript.js | explanation": {
     "message": "即使網頁的指令碼無法使用，網頁內文仍應顯示一些內容。"
@@ -1164,7 +1164,7 @@
     "message": "當 JavaScript 無法使用時包含一些內容"
   },
   "lighthouse-core/audits/works-offline.js | description": {
-    "message": "如果您正在建立漸進式網絡應用程式，請考慮使用 Service Worker，以便您的應用程式離線運作。[瞭解詳情](https://developers.google.com/web/tools/lighthouse/audits/http-200-when-offline)。"
+    "message": "如果您正在建立漸進式網絡應用程式，請考慮使用 Service Worker，以便您的應用程式離線運作。[瞭解詳情](https://web.dev/works-offline)。"
   },
   "lighthouse-core/audits/works-offline.js | failureTitle": {
     "message": "目前的網頁在離線時不會傳回狀態碼 200 的回應"

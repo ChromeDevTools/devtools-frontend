@@ -30,10 +30,10 @@
     "message": "תפקידי הורה מסוימים של ARIA צריכים לכלול תפקידי צאצא ספציפיים כדי לבצע את פונקציות הנגישות שלהם. [מידע נוסף](https://web.dev/aria-required-children/)."
   },
   "lighthouse-core/audits/accessibility/aria-required-children.js | failureTitle": {
-    "message": "חסרים רכיבים עם `[role]` שדורשים רכיבי צאצא ספציפיים של `[role]`."
+    "message": "ברכיבים עם `[role]` של ARIA שדורשים מצאצאים לכלול `[role]` ספציפי, חסרים חלק מהצאצאים הנדרשים האלה, או שכולם חסרים בהם."
   },
   "lighthouse-core/audits/accessibility/aria-required-children.js | title": {
-    "message": "קיימים רכיבים עם `[role]` שדורשים רכיבי צאצא ספציפיים של `[role]`"
+    "message": "ברכיבים עם `[role]` של ARIA שדורשים מצאצאים לכלול `[role]` ספציפי, קיימים כל הצאצאים הנדרשים."
   },
   "lighthouse-core/audits/accessibility/aria-required-parent.js | description": {
     "message": "חלק מתפקידי הצאצא מסוג ARIA חייבים להיכלל בין תפקידי הורה ספציפיים כדי למלא באופן תקין את פונקציות הנגישות שלהם. [מידע נוסף](https://web.dev/aria-required-parent/)."
@@ -276,10 +276,10 @@
     "message": "קוראי מסך כוללים תכונות שמקלות את הניווט בטבלאות. כשתאי `<td>` שמשתמשים במאפיין `[headers]` מתייחסים רק לתאים אחרים באותה טבלה, משתמשים הנעזרים בקוראי מסך יכולים ליהנות מחוויה טובה יותר. [מידע נוסף](https://web.dev/td-headers-attr/)."
   },
   "lighthouse-core/audits/accessibility/td-headers-attr.js | failureTitle": {
-    "message": "תאים ברכיב `<table>` שמשתמשים במאפיין `[headers]` מתייחסים לתאים אחרים באותה הטבלה."
+    "message": "תאים ברכיב `<table>` שמשתמשים במאפיין `[headers]`, מתייחסים לרכיב `id` שלא נמצא באותה טבלה."
   },
   "lighthouse-core/audits/accessibility/td-headers-attr.js | title": {
-    "message": "כל התאים שמוצבים בתוך רכיב `<table>` ומשתמשים במאפיין `[headers]` מתייחסים רק לתאים אחרים באותה טבלה."
+    "message": "תאים ברכיב `<table>` שמשתמשים במאפיין `[headers]`, מתייחסים לתאים אחרים באותה הטבלה."
   },
   "lighthouse-core/audits/accessibility/th-has-data-cells.js | description": {
     "message": "קוראי מסך כוללים תכונות שמקלות את הניווט בטבלאות. כשכותרות של טבלאות מתייחסות תמיד לקבוצה כלשהי של תאים, משתמשים הנעזרים בקורא מסך יכולים ליהנות מחוויה טובה יותר. [מידע נוסף](https://web.dev/th-has-data-cells/)."
@@ -318,7 +318,7 @@
     "message": "רכיבי `<video>` מכילים רכיב `<track>` עם `[kind=\"description\"]`"
   },
   "lighthouse-core/audits/apple-touch-icon.js | description": {
-    "message": "כדי שהדף יוצג למשתמשים באופן אידיאלי ב-iOS לאחר הוספת Progressive Web App למסך הבית, מומלץ להגדיר `apple-touch-icon`. המאפיין חייב להפנות לתמונת PNG לא שקופה בפורמט ריבוע בגודל 192 פיקסלים (או 180 פיקסלים). [מידע נוסף](https://developers.google.com/web/fundamentals/design-and-ux/browser-customization/)."
+    "message": "כדי שהדף יוצג למשתמשים באופן אידיאלי ב-iOS לאחר הוספת Progressive Web App למסך הבית, מומלץ להגדיר `apple-touch-icon`. המאפיין חייב להפנות לתמונת PNG לא שקופה בפורמט ריבוע בגודל 192 פיקסלים (או 180 פיקסלים). [מידע נוסף](https://web.dev/apple-touch-icon/)."
   },
   "lighthouse-core/audits/apple-touch-icon.js | failureTitle": {
     "message": "הדף לא מכיל `apple-touch-icon` חוקי"
@@ -342,7 +342,7 @@
     "message": "זמן כולל של CPU (יחידת עיבוד מרכזית)"
   },
   "lighthouse-core/audits/bootup-time.js | description": {
-    "message": "כדאי לשקול את האפשרות לקצר את הזמן הדרוש לניתוח, הידור וביצוע של JS. לשם כך כדאי להשתמש במטענים ייעודיים (payloads) קטנים יותר של JS. [מידע נוסף](https://developers.google.com/web/tools/lighthouse/audits/bootup)."
+    "message": "כדאי לשקול את האפשרות לקצר את הזמן הדרוש לניתוח, הידור וביצוע של JS. לשם כך כדאי להשתמש במטענים ייעודיים (payloads) קטנים יותר של JS. [מידע נוסף](https://web.dev/bootup-time)."
   },
   "lighthouse-core/audits/bootup-time.js | failureTitle": {
     "message": "יש לקצר את זמן הביצוע של JavaScript"
@@ -351,25 +351,25 @@
     "message": "זמן ביצוע של JavaScript"
   },
   "lighthouse-core/audits/byte-efficiency/efficient-animated-content.js | description": {
-    "message": "קובצי GIF גדולים לא מעבירים אנימציות בצורה יעילה. כדי לצמצם את מספר הבייטים שמועברים ברשת, במקום קובצי GIF כדאי לשקול את האפשרות להשתמש בסרטוני MPEG4/WebM בשביל אנימציות ובקובצי PNG/WebP בשביל תמונות סטטיות. [מידע נוסף](https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/replace-animated-gifs-with-video/)"
+    "message": "קובצי GIF גדולים לא מעבירים אנימציות בצורה יעילה. כדי לצמצם את מספר הבייטים שמועברים ברשת, במקום קובצי GIF כדאי לשקול את האפשרות להשתמש בסרטוני MPEG4/WebM בשביל אנימציות ובקובצי PNG/WebP בשביל תמונות סטטיות. [מידע נוסף](https://web.dev/efficient-animated-content)"
   },
   "lighthouse-core/audits/byte-efficiency/efficient-animated-content.js | title": {
     "message": "יש להשתמש בפורמטים של וידאו כדי להציג תוכן אנימציה"
   },
   "lighthouse-core/audits/byte-efficiency/offscreen-images.js | description": {
-    "message": "כדי לקצר את הזמן עד לפעילות מלאה, כדאי לשקול לבצע טעינה הדרגתית של תמונות מוסתרות ותמונות שלא מופיעות מיד במסך, כך שייטענו רק אחרי סיום הטעינה של כל המשאבים הקריטיים. [מידע נוסף](https://developers.google.com/web/tools/lighthouse/audits/offscreen-images)."
+    "message": "כדי לקצר את הזמן עד לפעילות מלאה, כדאי לשקול לבצע טעינה הדרגתית של תמונות מוסתרות ותמונות שלא מופיעות מיד במסך, כך שייטענו רק אחרי סיום הטעינה של כל המשאבים הקריטיים. [מידע נוסף](https://web.dev/offscreen-images)."
   },
   "lighthouse-core/audits/byte-efficiency/offscreen-images.js | title": {
     "message": "יש לעכב טעינה של תמונות שאינן מופיעות במסך"
   },
   "lighthouse-core/audits/byte-efficiency/render-blocking-resources.js | description": {
-    "message": "משאבים חוסמים את הצגת התמונה הראשונית של הדף במסך כדאי לשקול את האפשרות לספק תוכן JS/CSS קריטי באופן מוטבע ולדחות את הטעינה של כל תוכן ה-JS/הסגנונות שאינם קריטיים. [מידע נוסף](https://developers.google.com/web/tools/lighthouse/audits/blocking-resources)."
+    "message": "משאבים חוסמים את הצגת התמונה הראשונית של הדף במסך כדאי לשקול את האפשרות לספק תוכן JS/CSS קריטי באופן מוטבע ולדחות את הטעינה של כל תוכן ה-JS/הסגנונות שאינם קריטיים. [מידע נוסף](https://web.dev/render-blocking-resources)."
   },
   "lighthouse-core/audits/byte-efficiency/render-blocking-resources.js | title": {
     "message": "יש להימנע ממשאבים שחוסמים עיבוד"
   },
   "lighthouse-core/audits/byte-efficiency/total-byte-weight.js | description": {
-    "message": "מטענים ייעודיים (payload) בנפח גדול המועברים ברשת עולים למשתמשים כסף ולעתים קרובות מאריכים את זמני הטעינה. [מידע נוסף](https://developers.google.com/web/tools/lighthouse/audits/network-payloads)."
+    "message": "מטענים ייעודיים (payload) בנפח גדול המועברים ברשת עולים למשתמשים כסף ולעתים קרובות מאריכים את זמני הטעינה. [מידע נוסף](https://web.dev/total-byte-weight)."
   },
   "lighthouse-core/audits/byte-efficiency/total-byte-weight.js | displayValue": {
     "message": "הגודל הכולל היה ‎{totalBytes, number, bytes} KB"
@@ -381,19 +381,19 @@
     "message": "נמנע מהעברה של מטענים ייעודיים ענקיים (payload) ברשת"
   },
   "lighthouse-core/audits/byte-efficiency/unminified-css.js | description": {
-    "message": "הקטנה של קובצי CSS יכולה לצמצם את הגודל של מטענים ייעודיים (payloads) שמועברים ברשת. [מידע נוסף](https://developers.google.com/web/tools/lighthouse/audits/minify-css)."
+    "message": "הקטנה של קובצי CSS יכולה לצמצם את הגודל של מטענים ייעודיים (payloads) שמועברים ברשת. [מידע נוסף](https://web.dev/unminified-css)."
   },
   "lighthouse-core/audits/byte-efficiency/unminified-css.js | title": {
     "message": "יש להקטין קובצי CSS"
   },
   "lighthouse-core/audits/byte-efficiency/unminified-javascript.js | description": {
-    "message": "הקטנה של קובצי JavaScript יכולה לצמצם את המטען הייעודי (payload) ולקצר את משך הזמן הנדרש לניתוח סקריפט. [מידע נוסף](https://developers.google.com/speed/docs/insights/MinifyResources)."
+    "message": "הקטנה של קובצי JavaScript יכולה לצמצם את המטען הייעודי (payload) ולקצר את משך הזמן הנדרש לניתוח סקריפט. [מידע נוסף](https://web.dev/unminified-javascript)."
   },
   "lighthouse-core/audits/byte-efficiency/unminified-javascript.js | title": {
     "message": "יש לקצר את קוד JavaScript למינימום ההכרחי"
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | description": {
-    "message": "יש להסיר מגיליונות הסגנונות כללים שאינם בשימוש ולדחות את הטעינה של רכיבי CSS שאינם חלק מהתוכן בחלק העליון והקבוע. הפעולה הזו תצמצם צריכה בלתי נחוצה של בייטים כתוצאה מפעילות הרשת. [מידע נוסף](https://developers.google.com/web/tools/lighthouse/audits/unused-css)."
+    "message": "יש להסיר מגיליונות הסגנונות כללים שאינם בשימוש ולדחות את הטעינה של רכיבי CSS שאינם חלק מהתוכן בחלק העליון והקבוע. הפעולה הזו תצמצם צריכה בלתי נחוצה של בייטים כתוצאה מפעילות הרשת. [מידע נוסף](https://web.dev/unused-css-rules)."
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | title": {
     "message": "יש להסיר CSS שאינו בשימוש"
@@ -405,7 +405,7 @@
     "message": "יש להסיר JavaScript שאינו בשימוש"
   },
   "lighthouse-core/audits/byte-efficiency/uses-long-cache-ttl.js | description": {
-    "message": "משך חיים ארוך של מטמון יכול לזרז את הביקורים החוזרים בדף. [מידע נוסף](https://developers.google.com/web/tools/lighthouse/audits/cache-policy)."
+    "message": "משך חיים ארוך של מטמון יכול לזרז את הביקורים החוזרים בדף. [מידע נוסף](https://web.dev/uses-long-cache-ttl)."
   },
   "lighthouse-core/audits/byte-efficiency/uses-long-cache-ttl.js | displayValue": {
     "message": "{itemCount,plural, =1{נמצא משאב אחד}two{נמצאו # משאבים}many{נמצאו # משאבים}other{נמצאו # משאבים}}"
@@ -417,31 +417,31 @@
     "message": "יש להשתמש במדיניות מטמון יעילה בנכסים סטטיים"
   },
   "lighthouse-core/audits/byte-efficiency/uses-optimized-images.js | description": {
-    "message": "תמונות שעברו אופטימיזציה נטענות מהר יותר וצורכות פחות נתונים בחבילת הגלישה. [מידע נוסף](https://developers.google.com/web/tools/lighthouse/audits/optimize-images)."
+    "message": "תמונות שעברו אופטימיזציה נטענות מהר יותר וצורכות פחות נתונים בחבילת הגלישה. [מידע נוסף](https://web.dev/uses-optimized-images)."
   },
   "lighthouse-core/audits/byte-efficiency/uses-optimized-images.js | title": {
     "message": "יש לקודד תמונות בצורה יעילה"
   },
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | description": {
-    "message": "הצגת תמונות שהגודל שלהן הוגדר בצורה נכונה עוזרת לחסוך בניצול חבילת הגלישה ולקצר את זמן הטעינה. [מידע נוסף](https://developers.google.com/web/tools/lighthouse/audits/oversized-images)."
+    "message": "הצגת תמונות שהגודל שלהן הוגדר בצורה נכונה עוזרת לחסוך בניצול חבילת הגלישה ולקצר את זמן הטעינה. [מידע נוסף](https://web.dev/uses-responsive-images)."
   },
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | title": {
     "message": "יש להגדיר את גודל התמונות בצורה נכונה"
   },
   "lighthouse-core/audits/byte-efficiency/uses-text-compression.js | description": {
-    "message": "הצגת משאבים המבוססים על טקסט צריכה להתבצע עם דחיסה (gzip‏, deflate או brotli) כדי לצמצם את כמות הבייטים שמועברים ברשת. [מידע נוסף](https://developers.google.com/web/tools/lighthouse/audits/text-compression)."
+    "message": "הצגת משאבים המבוססים על טקסט צריכה להתבצע עם דחיסה (gzip‏, deflate או brotli) כדי לצמצם את כמות הבייטים שמועברים ברשת. [מידע נוסף](https://web.dev/uses-text-compression)."
   },
   "lighthouse-core/audits/byte-efficiency/uses-text-compression.js | title": {
     "message": "יש להפעיל דחיסת טקסט"
   },
   "lighthouse-core/audits/byte-efficiency/uses-webp-images.js | description": {
-    "message": "לעתים קרובות, פורמטים של תמונות כמו JPEG 2000‏, JPEG XR ו-WebP מספקים דחיסה טובה יותר מאשר PNG או JPEG. הדחיסה המשופרת מקצרת את זמן ההורדות ומצמצמת את צריכת הנתונים. [מידע נוסף](https://developers.google.com/web/tools/lighthouse/audits/webp)."
+    "message": "לעתים קרובות, פורמטים של תמונות כמו JPEG 2000‏, JPEG XR ו-WebP מספקים דחיסה טובה יותר מאשר PNG או JPEG. הדחיסה המשופרת מקצרת את זמן ההורדות ומצמצמת את צריכת הנתונים. [מידע נוסף](https://web.dev/uses-webp-images)."
   },
   "lighthouse-core/audits/byte-efficiency/uses-webp-images.js | title": {
     "message": "יש להציג תמונות בפורמטים עדכניים"
   },
   "lighthouse-core/audits/content-width.js | description": {
-    "message": "אם הרוחב של תוכן האפליקציה לא תואם לרוחב של אזור התצוגה, ייתכן שלא בוצעה אופטימיזציה לאפליקציה שלך עבור מסכים של ניידים. [מידע נוסף](https://developers.google.com/web/tools/lighthouse/audits/content-sized-correctly-for-viewport)."
+    "message": "אם הרוחב של תוכן האפליקציה לא תואם לרוחב של אזור התצוגה, ייתכן שלא בוצעה אופטימיזציה לאפליקציה שלך עבור מסכים של ניידים. [מידע נוסף](https://web.dev/content-width)."
   },
   "lighthouse-core/audits/content-width.js | explanation": {
     "message": "גודל אזור התצוגה של {innerWidth} פיקסלים לא תואם לגודל החלון של {outerWidth} פיקסלים."
@@ -453,7 +453,7 @@
     "message": "הגודל של התוכן הוגדר בצורה תקינה עבור אזור התצוגה"
   },
   "lighthouse-core/audits/critical-request-chains.js | description": {
-    "message": "בקטע 'שרשראות בקשה קריטיות' שבהמשך מוצגים המשאבים שנטענים עם עדיפות גבוהה. כדי לשפר את מהירות טעינת הדף, מומלץ לקצר את השרשראות, להקטין את גודל ההורדה של משאבים או לעכב את ההורדה של משאבים לא נחוצים. [מידע נוסף](https://developers.google.com/web/tools/lighthouse/audits/critical-request-chains)."
+    "message": "בקטע 'שרשראות בקשה קריטיות' שבהמשך מוצגים המשאבים שנטענים עם עדיפות גבוהה. כדי לשפר את מהירות טעינת הדף, מומלץ לקצר את השרשראות, להקטין את גודל ההורדה של משאבים או לעכב את ההורדה של משאבים לא נחוצים. [מידע נוסף](https://web.dev/critical-request-chains)."
   },
   "lighthouse-core/audits/critical-request-chains.js | displayValue": {
     "message": "{itemCount,plural, =1{נמצאה שרשרת אחת}two{נמצאו # שרשראות}many{נמצאו # שרשראות}other{נמצאו # שרשראות}}"
@@ -675,7 +675,7 @@
     "message": "לא נרשמו במסוף שגיאות דפדפן"
   },
   "lighthouse-core/audits/font-display.js | description": {
-    "message": "שימוש בתכונת תצוגת הגופן של CSS מבטיח שהטקסט מוצג למשתמש בזמן טעינה של גופני webfont. [מידע נוסף](https://developers.google.com/web/updates/2016/02/font-display)."
+    "message": "שימוש בתכונת תצוגת הגופן של CSS מבטיח שהטקסט מוצג למשתמש בזמן טעינה של גופני webfont. [מידע נוסף](https://web.dev/font-display)."
   },
   "lighthouse-core/audits/font-display.js | failureTitle": {
     "message": "יש לוודא שטקסט ממשיך להופיע במהלך טעינת webfont"
@@ -705,7 +705,7 @@
     "message": "נתוני הגודל של תמונה לא חוקיים: {url}"
   },
   "lighthouse-core/audits/installable-manifest.js | description": {
-    "message": "הדפדפנים יכולים לבקש ממשתמשים באופן יזום להוסיף את האפליקציה שלך אל מסך הבית שלהם, פעולה שמגדילה את הסיכוי להשגת מעורבות גבוהה יותר. [מידע נוסף](https://developers.google.com/web/tools/lighthouse/audits/install-prompt)."
+    "message": "הדפדפנים יכולים לבקש ממשתמשים באופן יזום להוסיף את האפליקציה שלך אל מסך הבית שלהם, פעולה שמגדילה את הסיכוי להשגת מעורבות גבוהה יותר. [מידע נוסף](https://web.dev/installable-manifest)."
   },
   "lighthouse-core/audits/installable-manifest.js | failureTitle": {
     "message": "המניפסט של אפליקציית האינטרנט לא עומד בדרישות יכולת ההתקנה"
@@ -729,7 +729,7 @@
     "message": "שימוש ב-HTTPS"
   },
   "lighthouse-core/audits/load-fast-enough-for-pwa.js | description": {
-    "message": "כשהדף נטען במהירות ברשת סלולרית, חוויית המשתמש איכותית. [מידע נוסף](https://developers.google.com/web/tools/lighthouse/audits/fast-3g)."
+    "message": "כשהדף נטען במהירות ברשת סלולרית, חוויית המשתמש איכותית. [מידע נוסף](https://web.dev/load-fast-enough-for-pwa)."
   },
   "lighthouse-core/audits/load-fast-enough-for-pwa.js | displayValueText": {
     "message": "פעילות מלאה תוך {timeInMs, number, seconds} שנ'"
@@ -750,7 +750,7 @@
     "message": "קטגוריה"
   },
   "lighthouse-core/audits/mainthread-work-breakdown.js | description": {
-    "message": "כדאי לשקול את האפשרות לקצר את הזמן הדרוש לניתוח, הידור וביצוע JS. לשם כך כדאי להשתמש במטענים ייעודיים (payload) קטנים יותר של JS."
+    "message": "כדאי לשקול את האפשרות לקצר את הזמן הדרוש לניתוח, הידור וביצוע של JS. לשם כך, כדאי להשתמש במטענים ייעודיים (payloads) קטנים יותר של JS. [מידע נוסף](https://web.dev/mainthread-work-breakdown)"
   },
   "lighthouse-core/audits/mainthread-work-breakdown.js | failureTitle": {
     "message": "צריך לצמצם את העבודה על התהליכון הראשי"
@@ -759,49 +759,49 @@
     "message": "מצמצם את העבודה על התהליכון הראשי"
   },
   "lighthouse-core/audits/manual/pwa-cross-browser.js | description": {
-    "message": "כדי להגדיל את היקף החשיפה לכמה שיותר משתמשים, האתרים צריכים לעבוד בכל הדפדפנים המובילים. [מידע נוסף](https://developers.google.com/web/progressive-web-apps/checklist#site-works-cross-browser)."
+    "message": "כדי להגדיל את היקף החשיפה לכמה שיותר משתמשים, האתרים צריכים לעבוד בכל הדפדפנים המובילים. [מידע נוסף](https://web.dev/pwa-cross-browser)."
   },
   "lighthouse-core/audits/manual/pwa-cross-browser.js | title": {
     "message": "האתר עובד בדפדפנים שונים"
   },
   "lighthouse-core/audits/manual/pwa-each-page-has-url.js | description": {
-    "message": "יש לוודא שניתן לבצע קישור עמוק לדפים נפרדים דרך כתובת URL ושכתובות ה-URL ייחודיות, כדי שניתן יהיה לשתף אותן ברשתות חברתיות. [מידע נוסף](https://developers.google.com/web/progressive-web-apps/checklist#each-page-has-a-url)."
+    "message": "יש לוודא שניתן לבצע קישור עמוק לדפים נפרדים דרך כתובת URL ושכתובות ה-URL ייחודיות, כדי שניתן יהיה לשתף אותן ברשתות חברתיות. [מידע נוסף](https://web.dev/pwa-each-page-has-url)."
   },
   "lighthouse-core/audits/manual/pwa-each-page-has-url.js | title": {
     "message": "לכל דף יש כתובת URL"
   },
   "lighthouse-core/audits/manual/pwa-page-transitions.js | description": {
-    "message": "כשמקישים באפליקציה, התחושה של המעברים צריכה להיות מהירה, גם ברשת איטית. זוהי נקודת מפתח לתפיסת הביצועים שלה. [מידע נוסף](https://developers.google.com/web/progressive-web-apps/checklist#page-transitions-dont-feel-like-they-block-on-the-network)."
+    "message": "כשמקישים באפליקציה, התחושה של המעברים צריכה להיות מהירה, גם ברשת איטית. החוויה הזו היא אחד הגורמים החשובים לתפיסת הביצועים בעיני משתמשים. [מידע נוסף](https://web.dev/pwa-page-transitions)."
   },
   "lighthouse-core/audits/manual/pwa-page-transitions.js | title": {
     "message": "מעברי הדפים לא מרגישים חסומים ברשת"
   },
   "lighthouse-core/audits/metrics/estimated-input-latency.js | description": {
-    "message": "זמן אחזור מוערך של קלט הוא אומדן של משך הזמן הנדרש לאפליקציה כדי להגיב לקלט של משתמש. הערך מצוין באלפיות שנייה ומתייחס ל-5 השניות העמוסות ביותר בטעינת הדף. אם זמן האחזור ארוך מ-50 אלפיות שנייה, ייתכן שהמשתמשים יבחינו בעיכוב בפעילות האפליקציה. [מידע נוסף](https://developers.google.com/web/tools/lighthouse/audits/estimated-input-latency)."
+    "message": "זמן אחזור מוערך של קלט הוא אומדן של משך הזמן הנדרש לאפליקציה כדי להגיב לקלט של משתמש. הערך מצוין באלפיות שנייה ומתייחס ל-5 השניות העמוסות ביותר בטעינת הדף. אם זמן האחזור ארוך מ-50 אלפיות שנייה, ייתכן שהמשתמשים יבחינו בעיכוב בפעילות האפליקציה. [מידע נוסף](https://web.dev/estimated-input-latency)."
   },
   "lighthouse-core/audits/metrics/estimated-input-latency.js | title": {
     "message": "אומדן זמן האחזור של קלט"
   },
   "lighthouse-core/audits/metrics/first-contentful-paint.js | description": {
-    "message": "המדד 'הצגת תוכן ראשוני (FCP)' מציין את הזמן שבו הטקסט או התמונה הראשונים מוצגים. [מידע נוסף](https://developers.google.com/web/tools/lighthouse/audits/first-contentful-paint)."
+    "message": "המדד 'הצגת תוכן ראשוני (FCP)' מציין את הזמן שבו הטקסט או התמונה הראשונים מוצגים. [מידע נוסף](https://web.dev/first-contentful-paint)."
   },
   "lighthouse-core/audits/metrics/first-contentful-paint.js | title": {
     "message": "הצגת התוכן הראשוני"
   },
   "lighthouse-core/audits/metrics/first-cpu-idle.js | description": {
-    "message": "הערך 'מצב ראשון של חוסר פעילות ב-CPU' מציין את הפעם הראשונה שבה התהליכון הראשי של הדף פנוי מספיק בשביל להגיב לקלט. [מידע נוסף](https://developers.google.com/web/tools/lighthouse/audits/first-interactive)."
+    "message": "הערך 'מצב ראשון של חוסר פעילות ב-CPU' מציין את הפעם הראשונה שבה התהליכון הראשי של הדף פנוי מספיק בשביל להגיב לקלט.  [מידע נוסף](https://web.dev/first-cpu-idle)."
   },
   "lighthouse-core/audits/metrics/first-cpu-idle.js | title": {
     "message": "מצב ראשון של חוסר פעילות ב-CPU"
   },
   "lighthouse-core/audits/metrics/first-meaningful-paint.js | description": {
-    "message": "הערך 'הצגת התוכן העיקרי (FMP)' מציין מתי מוצג התוכן העיקרי של הדף. [מידע נוסף](https://developers.google.com/web/tools/lighthouse/audits/first-meaningful-paint)."
+    "message": "הערך 'הצגת התוכן העיקרי (FMP)' מציין מתי מוצג התוכן העיקרי של הדף. [מידע נוסף](https://web.dev/first-meaningful-paint)."
   },
   "lighthouse-core/audits/metrics/first-meaningful-paint.js | title": {
     "message": "הצגת התוכן העיקרי"
   },
   "lighthouse-core/audits/metrics/interactive.js | description": {
-    "message": "הזמן עד לפעילות מלאה הוא משך הזמן שחולף עד שהדף מאפשר פעילות מלאה. [מידע נוסף](https://developers.google.com/web/tools/lighthouse/audits/consistently-interactive)."
+    "message": "הזמן עד לפעילות מלאה הוא משך הזמן שחולף עד שהדף מאפשר פעילות מלאה. [מידע נוסף](https://web.dev/interactive)."
   },
   "lighthouse-core/audits/metrics/interactive.js | title": {
     "message": "זמן עד לאינטראקטיביות"
@@ -813,7 +813,7 @@
     "message": "השהיה פוטנציאלית מרבית לאחר קלט ראשוני"
   },
   "lighthouse-core/audits/metrics/speed-index.js | description": {
-    "message": "מדד המהירות (Speed Index) מראה באיזו מהירות מוצג התוכן בדף [מידע נוסף](https://developers.google.com/web/tools/lighthouse/audits/speed-index)."
+    "message": "מדד המהירות (Speed Index) מראה באיזו מהירות מוצג התוכן בדף [מידע נוסף](https://web.dev/speed-index)."
   },
   "lighthouse-core/audits/metrics/speed-index.js | title": {
     "message": "מדד מהירות (Speed Index)"
@@ -837,7 +837,7 @@
     "message": "זמני אחזור בקצה עורפי של שרת"
   },
   "lighthouse-core/audits/offline-start-url.js | description": {
-    "message": "קובץ שירות (service worker) מאפשר לאפליקציית האינטרנט שלך להיות אמינה יותר בתנאי רשת לא צפויים. [מידע נוסף](https://developers.google.com/web/tools/lighthouse/audits/http-200-when-offline)."
+    "message": "קובץ שירות (service worker) מאפשר לאפליקציית האינטרנט שלך להיות אמינה יותר בתנאי רשת לא צפויים. [מידע נוסף](https://web.dev/offline-start-url)."
   },
   "lighthouse-core/audits/offline-start-url.js | failureTitle": {
     "message": "`start_url` לא מגיב בסטטוס 200 כשהוא במצב לא מקוון"
@@ -861,7 +861,7 @@
     "message": "תקציב ביצועים"
   },
   "lighthouse-core/audits/redirects-http.js | description": {
-    "message": "אם כבר הגדרת HTTPS, יש לוודא שכל תנועת ה-HTTP מופנית אוטומטית ל-HTTPS כדי להפעיל תכונות רשת מאובטחות לכל המשתמשים שלך. [מידע נוסף](https://developers.google.com/web/tools/lighthouse/audits/http-redirects-to-https)."
+    "message": "אם כבר הגדרת HTTPS, יש לוודא שכל תנועת ה-HTTP מופנית אוטומטית ל-HTTPS כדי להפעיל תכונות רשת מאובטחות לכל המשתמשים שלך. [מידע נוסף](https://web.dev/redirects-http)."
   },
   "lighthouse-core/audits/redirects-http.js | failureTitle": {
     "message": "לא מפנה תנועת HTTP באופן אוטומטי אל HTTPS"
@@ -870,7 +870,7 @@
     "message": "מפנה תנועת HTTP באופן אוטומטי אל HTTPS"
   },
   "lighthouse-core/audits/redirects.js | description": {
-    "message": "הפניות אוטומטיות מעכבות את טעינת הדף. [מידע נוסף](https://developers.google.com/web/tools/lighthouse/audits/redirects)."
+    "message": "הפניות אוטומטיות מעכבות את טעינת הדף. [מידע נוסף](https://web.dev/redirects)."
   },
   "lighthouse-core/audits/redirects.js | title": {
     "message": "יש להימנע מהפניות אוטומטיות מרובות"
@@ -879,7 +879,7 @@
     "message": "כדי להגדיר תקציבים עבור הכמות והגודל של משאבי הדף, יש להוסיף קובץ budget.json. [מידע נוסף](https://developers.google.com/web/tools/lighthouse/audits/budgets)."
   },
   "lighthouse-core/audits/resource-summary.js | displayValue": {
-    "message": "{requestCount,plural, =1{בקשה אחת •KB‎‎ {byteCount, number, bytes}‏}two{# בקשות • KB {byteCount, number, bytes}}many{# בקשות • KB {byteCount, number, bytes}}other{# בקשות • KB {byteCount, number, bytes}}}"
+    "message": "{requestCount,plural, =1{בקשה אחת • ‎{byteCount, number, bytes} KB‏}two{# בקשות • ‎KB {byteCount, number, bytes}}many{# בקשות • ‎KB {byteCount, number, bytes}}other{# בקשות • ‎KB {byteCount, number, bytes}}}"
   },
   "lighthouse-core/audits/resource-summary.js | title": {
     "message": "יש לצמצם ככל האפשר את מספר הבקשות ואת גודל ההעברות"
@@ -1035,7 +1035,7 @@
     "message": "הרכיבים להקשה הוגדרו בגודל המתאים"
   },
   "lighthouse-core/audits/service-worker.js | description": {
-    "message": "קובץ השירות (service worker) הוא הטכנולוגיה שמאפשרת לאפליקציה שלך להשתמש במספר תכונות Progressive Web App, כמו 'מצב לא מקוון', 'הוספה לדף הבית' ו'התראות'. [מידע נוסף](https://developers.google.com/web/tools/lighthouse/audits/registered-service-worker)."
+    "message": "קובץ השירות (service worker) הוא הטכנולוגיה שמאפשרת לאפליקציה שלך להשתמש במספר תכונות Progressive Web App, כמו 'מצב לא מקוון', 'הוספה לדף הבית' ו'התראות'. [מידע נוסף](https://web.dev/service-worker)."
   },
   "lighthouse-core/audits/service-worker.js | explanationBadManifest": {
     "message": "דף זה נשלט על ידי קובץ שירות (service worker), אך לא נמצא `start_url` כי לא ניתן היה לנתח את המניפסט בתור JSON תקף"
@@ -1056,7 +1056,7 @@
     "message": "רושם קובץ שירות (service worker) ששולט בדף וב-`start_url`"
   },
   "lighthouse-core/audits/splash-screen.js | description": {
-    "message": "מסך פתיחה מעוצב מבטיח חוויה באיכות גבוהה כשמשתמשים מפעילים את האפליקציה שלך ממסכי הבית שלהם. [מידע נוסף](https://developers.google.com/web/tools/lighthouse/audits/custom-splash-screen)."
+    "message": "מסך פתיחה מעוצב מבטיח חוויה באיכות גבוהה כשמשתמשים מפעילים את האפליקציה שלך ממסכי הבית שלהם. [מידע נוסף](https://web.dev/splash-screen)."
   },
   "lighthouse-core/audits/splash-screen.js | failureTitle": {
     "message": "לא מוגדר עבור מסך פתיחה בהתאמה אישית"
@@ -1065,7 +1065,7 @@
     "message": "מוגדר עבור מסך פתיחה בהתאמה אישית"
   },
   "lighthouse-core/audits/themed-omnibox.js | description": {
-    "message": "ניתן לעצב את סרגל הכתובות של הדפדפן כך שיתאים לאתר שלך. [מידע נוסף](https://developers.google.com/web/tools/lighthouse/audits/address-bar)."
+    "message": "ניתן לעצב את סרגל הכתובות של הדפדפן כך שיתאים לאתר שלך. [מידע נוסף](https://web.dev/themed-omnibox)."
   },
   "lighthouse-core/audits/themed-omnibox.js | failureTitle": {
     "message": "לא מגדיר צבע עיצוב עבור סרגל הכתובות."
@@ -1092,7 +1092,7 @@
     "message": "שימוש של צד שלישי"
   },
   "lighthouse-core/audits/time-to-first-byte.js | description": {
-    "message": "'זמן עד בייט ראשון' (Time To First Byte) הוא פרק הזמן שחולף עד שהשרת שולח תגובה. [מידע נוסף](https://developers.google.com/web/tools/lighthouse/audits/ttfb)."
+    "message": "'זמן עד בייט ראשון' (Time To First Byte) הוא פרק הזמן שחולף עד שהשרת שולח תגובה. [מידע נוסף](https://web.dev/time-to-first-byte)."
   },
   "lighthouse-core/audits/time-to-first-byte.js | displayValue": {
     "message": "טעינת מסמך השורש ארכה {timeInMs, number, milliseconds} אלפיות שנייה"
@@ -1113,7 +1113,7 @@
     "message": "סוג"
   },
   "lighthouse-core/audits/user-timings.js | description": {
-    "message": "כדי למדוד את ביצועי האפליקציה בפועל במהלך חוויות משתמש חשובות, כדאי לשקול את האפשרות להוסיף לאפליקציה את User Timing API. [מידע נוסף](https://developers.google.com/web/tools/lighthouse/audits/user-timing)."
+    "message": "כדי למדוד את ביצועי האפליקציה בפועל במהלך חוויות משתמש חשובות, כדאי לשקול את האפשרות להוסיף לאפליקציה את User Timing API. [מידע נוסף](https://web.dev/user-timings)."
   },
   "lighthouse-core/audits/user-timings.js | displayValue": {
     "message": "{itemCount,plural, =1{תזמון משתמש אחד}two{# תזמוני משתמש}many{# תזמוני משתמש}other{# תזמוני משתמש}}"
@@ -1125,7 +1125,7 @@
     "message": "נמצא רכיב <link> לקישור מראש בשביל \"{securityOrigin}\", אבל הדפדפן לא השתמש בו. יש לוודא שנעשה שימוש תקין במאפיין `crossorigin`."
   },
   "lighthouse-core/audits/uses-rel-preconnect.js | description": {
-    "message": "כדאי לשקול להוסיף את ההינטים של המשאבים `preconnect` או `dns-prefetch` כדי ליצור מראש קישורים אל מקורות חשובים של צד שלישי. [מידע נוסף](https://developers.google.com/web/fundamentals/performance/resource-prioritization#preconnect)."
+    "message": "כדאי לשקול להוסיף את ההינטים של המשאבים `preconnect` או `dns-prefetch` כדי ליצור מראש קישורים אל מקורות חשובים של צד שלישי. [מידע נוסף](https://web.dev/uses-rel-preconnect)."
   },
   "lighthouse-core/audits/uses-rel-preconnect.js | title": {
     "message": "יש להתחבר מראש למקורות נדרשים"
@@ -1134,13 +1134,13 @@
     "message": "נמצא ערך <link> של טעינה מראש בשביל \"{preloadURL}\", אבל הדפדפן לא השתמש בו. יש לוודא שנעשה שימוש תקין במאפיין `crossorigin`."
   },
   "lighthouse-core/audits/uses-rel-preload.js | description": {
-    "message": "כדאי לשקול את האפשרות להשתמש ב-`<link rel=preload>` כדי לקבוע את סדר העדיפויות של אחזור משאבים שנדרשים בשלב מאוחר יותר של טעינת הדף. [מידע נוסף](https://developers.google.com/web/tools/lighthouse/audits/preload)."
+    "message": "כדאי לשקול את האפשרות להשתמש ב-`<link rel=preload>` כדי לקבוע את סדר העדיפויות של אחזור משאבים שנדרשים בשלב מאוחר יותר של טעינת הדף. [מידע נוסף](https://web.dev/uses-rel-preload)."
   },
   "lighthouse-core/audits/uses-rel-preload.js | title": {
     "message": "יש לטעון מראש בקשות עיקריות"
   },
   "lighthouse-core/audits/viewport.js | description": {
-    "message": "כדי לבצע אופטימיזציה של האפליקציה למסכים של ניידים, עליך להוסיף את התג `<meta name=\"viewport\">`. [מידע נוסף](https://developers.google.com/web/tools/lighthouse/audits/has-viewport-meta-tag)."
+    "message": "כדי לבצע אופטימיזציה של האפליקציה למסכים של ניידים, עליך להוסיף את התג `<meta name=\"viewport\">`. [מידע נוסף](https://web.dev/viewport)."
   },
   "lighthouse-core/audits/viewport.js | explanationNoTag": {
     "message": "לא נמצא תג `<meta name=\"viewport\">`"
@@ -1152,7 +1152,7 @@
     "message": "יש תג `<meta name=\"viewport\">` עם `width` או `initial-scale`"
   },
   "lighthouse-core/audits/without-javascript.js | description": {
-    "message": "האפליקציה שלך צריכה להציג תוכן כלשהו כשה-JavaScript מושבת, גם אם זו רק אזהרה למשתמש שנדרש JavaScript כדי להשתמש באפליקציה. [מידע נוסף](https://developers.google.com/web/tools/lighthouse/audits/no-js)."
+    "message": "האפליקציה שלך צריכה להציג תוכן כלשהו כשה-JavaScript מושבת, גם אם זו רק אזהרה למשתמש שנדרש JavaScript כדי להשתמש באפליקציה. [מידע נוסף](https://web.dev/without-javascript)."
   },
   "lighthouse-core/audits/without-javascript.js | explanation": {
     "message": "אם הסקריפטים של גוף הדף לא זמינים, הוא צריך לעבד תוכן כלשהו."
@@ -1164,7 +1164,7 @@
     "message": "מכיל תוכן כלשהו כש-JavaScript לא זמין"
   },
   "lighthouse-core/audits/works-offline.js | description": {
-    "message": "אם בונים Progressive Web App, מומלץ לשקול להשתמש בקובץ שירות (service worker) כדי שהאפליקציה תוכל לעבוד במצב לא מקוון. [מידע נוסף](https://developers.google.com/web/tools/lighthouse/audits/http-200-when-offline)."
+    "message": "אם בונים Progressive Web App, מומלץ לשקול להשתמש בקובץ שירות (service worker) כדי שהאפליקציה תוכל לעבוד במצב לא מקוון. [מידע נוסף](https://web.dev/works-offline)."
   },
   "lighthouse-core/audits/works-offline.js | failureTitle": {
     "message": "דף זה לא מגיב בסטטוס 200 כשהוא במצב לא מקוון"

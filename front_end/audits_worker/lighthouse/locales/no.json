@@ -30,10 +30,10 @@
     "message": "Noen overordnede ARIA-roller må inneholde spesifikke underordnede roller for å utføre de tiltenkte tilgjengelighetsfunksjonene. [Finn ut mer](https://web.dev/aria-required-children/)."
   },
   "lighthouse-core/audits/accessibility/aria-required-children.js | failureTitle": {
-    "message": "Elementer med `[role]` som krever spesifikke underordnede `[role]`-elementer, mangler."
+    "message": "Elementer som har en ARIA-`[role]` og krever underordnede elementer som inneholder en spesifikk `[role]`, mangler noen av eller alle disse underordnede elementene."
   },
   "lighthouse-core/audits/accessibility/aria-required-children.js | title": {
-    "message": "Det finnes elementer med `[role]` som krever spesifikke underordnede `[role]`-elementer."
+    "message": "Elementer som har en ARIA-`[role]` og krever underordnede elementer som inneholder en spesifikk `[role]`, har alle de nødvendige underordnede elementene."
   },
   "lighthouse-core/audits/accessibility/aria-required-parent.js | description": {
     "message": "Noen underordnede ARIA-roller må ligge innenfor de spesifikke overordnede rollene for å utføre de tiltenkte tilgjengelighetsfunksjonene på riktig måte. [Finn ut mer](https://web.dev/aria-required-parent/)."
@@ -276,10 +276,10 @@
     "message": "Skjermlesere har funksjonalitet som gjør det enklere å navigere i tabeller. Ved å sørge for at `<td>`-celler som bruker `[headers]`-attributtet, kun refererer til andre celler i den samme tabellen, kan du gjøre opplevelsen bedre for brukere av skjermlesere. [Finn ut mer](https://web.dev/td-headers-attr/)."
   },
   "lighthouse-core/audits/accessibility/td-headers-attr.js | failureTitle": {
-    "message": "Celler som er en del av et `<table>`-element og bruker `[headers]`-attributtet, refererer bare til andre celler i den samme tabellen."
+    "message": "Celler som er en del av et `<table>`-element og bruker `[headers]`-attributtet, refererer til et element (`id`) som ikke finnes i den samme tabellen."
   },
   "lighthouse-core/audits/accessibility/td-headers-attr.js | title": {
-    "message": "Celler som er en del av et `<table>`-element som bruker `[headers]`-attributtet, refererer bare til andre celler i den samme tabellen."
+    "message": "Celler som er en del av et `<table>`-element og bruker `[headers]`-attributtet, refererer til tabellceller i den samme tabellen."
   },
   "lighthouse-core/audits/accessibility/th-has-data-cells.js | description": {
     "message": "Skjermlesere har funksjonalitet som gjør det enklere å navigere i tabeller. Ved å sørge for at tabelloverskrifter alltid refererer til spesifikke cellesett, kan du gjøre opplevelsen bedre for brukere av skjermlesere. [Finn ut mer](https://web.dev/th-has-data-cells/)."
@@ -318,7 +318,7 @@
     "message": "`<video>`-elementer inneholder et `<track>`-element med `[kind=\"description\"]`"
   },
   "lighthouse-core/audits/apple-touch-icon.js | description": {
-    "message": "For å oppnå det ideelle utseendet på iOS når brukere legger til progressive nettprogrammer på startskjermen, definer et `apple-touch-icon`. Det må peke til et ugjennomsiktig, kvadratisk PNG-bilde med sidelengde på 192 (eller 180) piksler. [Finn ut mer](https://developers.google.com/web/fundamentals/design-and-ux/browser-customization/)."
+    "message": "For å oppnå det ideelle utseendet på iOS når brukere legger til progressive nettprogrammer på startskjermen, definer et `apple-touch-icon`. Det må peke til et ugjennomsiktig, kvadratisk PNG-bilde med sidelengde på 192 (eller 180) piksler. [Finn ut mer](https://web.dev/apple-touch-icon/)."
   },
   "lighthouse-core/audits/apple-touch-icon.js | failureTitle": {
     "message": "Har ikke noe gyldig `apple-touch-icon`"
@@ -342,7 +342,7 @@
     "message": "Total CPU-tid"
   },
   "lighthouse-core/audits/bootup-time.js | description": {
-    "message": "Vurder å redusere tiden som brukes til parsing, kompilering og kjøring av JavaScript. Levering av mindre JS-ressurser kan bidra til dette. [Finn ut mer](https://developers.google.com/web/tools/lighthouse/audits/bootup)."
+    "message": "Vurder å redusere tiden som brukes til parsing, kompilering og kjøring av JavaScript. Levering av mindre JS-ressurser kan bidra til dette. [Finn ut mer](https://web.dev/bootup-time)."
   },
   "lighthouse-core/audits/bootup-time.js | failureTitle": {
     "message": "Reduser JavaScript-kjøretiden"
@@ -351,25 +351,25 @@
     "message": "JavaScript-kjøretid"
   },
   "lighthouse-core/audits/byte-efficiency/efficient-animated-content.js | description": {
-    "message": "Store GIF-er er mindre effektive for visning av animert innhold. I stedet for GIF bør du vurdere å bruke MPEG4/WebM-videoer for animasjon og PNG/WebP for statiske bilder, da dette belaster nettverket mindre. [Finn ut mer](https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/replace-animated-gifs-with-video/)"
+    "message": "Store GIF-er er mindre effektive for visning av animert innhold. I stedet for GIF bør du vurdere å bruke MPEG4/WebM-videoer for animasjon og PNG/WebP for statiske bilder, da dette belaster nettverket mindre. [Finn ut mer](https://web.dev/efficient-animated-content)"
   },
   "lighthouse-core/audits/byte-efficiency/efficient-animated-content.js | title": {
     "message": "Bruk videoformat for animert innhold"
   },
   "lighthouse-core/audits/byte-efficiency/offscreen-images.js | description": {
-    "message": "Vurder «lat» innlasting av bilder som er utenfor skjermen eller skjult, etter at alle kritiske ressurser er ferdig innlastet, for å redusere tiden det tar før siden blir interaktiv. [Finn ut mer](https://developers.google.com/web/tools/lighthouse/audits/offscreen-images)."
+    "message": "Vurder «lat» innlasting av bilder som er utenfor skjermen eller skjult, etter at alle kritiske ressurser er ferdig innlastet, for å redusere tiden det tar før siden blir interaktiv. [Finn ut mer](https://web.dev/offscreen-images)."
   },
   "lighthouse-core/audits/byte-efficiency/offscreen-images.js | title": {
     "message": "Utsett bilder utenfor skjermen"
   },
   "lighthouse-core/audits/byte-efficiency/render-blocking-resources.js | description": {
-    "message": "Ressurser blokkerer første opptegning (FP) av siden. Vurder å levere kritisk JS/CSS innebygd og utsette all JS/CSS som ikke er kritisk. [Finn ut mer](https://developers.google.com/web/tools/lighthouse/audits/blocking-resources)."
+    "message": "Ressurser blokkerer første opptegning (FP) av siden. Vurder å levere kritisk JS/CSS innebygd og utsette all JS/CSS som ikke er kritisk. [Finn ut mer](https://web.dev/render-blocking-resources)."
   },
   "lighthouse-core/audits/byte-efficiency/render-blocking-resources.js | title": {
     "message": "Eliminer ressurser som blokkerer gjengivelse"
   },
   "lighthouse-core/audits/byte-efficiency/total-byte-weight.js | description": {
-    "message": "Store nettverksressurser koster brukerne ekte penger og er hovedgrunnen til lange innlastingstider. [Finn ut mer](https://developers.google.com/web/tools/lighthouse/audits/network-payloads)."
+    "message": "Store nettverksressurser koster brukerne ekte penger og er hovedgrunnen til lange innlastingstider. [Finn ut mer](https://web.dev/total-byte-weight)."
   },
   "lighthouse-core/audits/byte-efficiency/total-byte-weight.js | displayValue": {
     "message": "Den totale størrelsen var {totalBytes, number, bytes} kB"
@@ -381,19 +381,19 @@
     "message": "Unngår enorme nettverksbelastninger"
   },
   "lighthouse-core/audits/byte-efficiency/unminified-css.js | description": {
-    "message": "Forminskede CSS-filer kan redusere nettverksbelastningen. [Finn ut mer](https://developers.google.com/web/tools/lighthouse/audits/minify-css)."
+    "message": "Forminskede CSS-filer kan redusere nettverksbelastningen. [Finn ut mer](https://web.dev/unminified-css)."
   },
   "lighthouse-core/audits/byte-efficiency/unminified-css.js | title": {
     "message": "Forminsk CSS"
   },
   "lighthouse-core/audits/byte-efficiency/unminified-javascript.js | description": {
-    "message": "Forminskede JavaScript-filer kan redusere mengden data som må overføres, og parsetiden for skript. [Finn ut mer](https://developers.google.com/speed/docs/insights/MinifyResources)."
+    "message": "Forminskede JavaScript-filer kan redusere mengden data som må overføres, og parsetiden for skript. [Finn ut mer](https://web.dev/unminified-javascript)."
   },
   "lighthouse-core/audits/byte-efficiency/unminified-javascript.js | title": {
     "message": "Forminsk JavaScript"
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | description": {
-    "message": "Fjern overflødige regler fra stilark og utsett å laste inn CSS som ikke brukes på innholdet i den synlige delen av nettsiden. Da reduserer du antall byte som går med til unødvendig nettverksaktivitet. [Finn ut mer](https://developers.google.com/web/tools/lighthouse/audits/unused-css)."
+    "message": "Fjern overflødige regler fra stilark og utsett å laste inn CSS som ikke brukes på innholdet i den synlige delen av nettsiden. Da reduserer du antall byte som går med til unødvendig nettverksaktivitet. [Finn ut mer](https://web.dev/unused-css-rules)."
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | title": {
     "message": "Fjern ubrukt CSS"
@@ -405,7 +405,7 @@
     "message": "Fjern ubrukt JavaScript"
   },
   "lighthouse-core/audits/byte-efficiency/uses-long-cache-ttl.js | description": {
-    "message": "En lang bufferlevetid kan gjøre at gjentatte besøk på siden din går raskere. [Finn ut mer](https://developers.google.com/web/tools/lighthouse/audits/cache-policy)."
+    "message": "En lang bufferlevetid kan gjøre at gjentatte besøk på siden din går raskere. [Finn ut mer](https://web.dev/uses-long-cache-ttl)."
   },
   "lighthouse-core/audits/byte-efficiency/uses-long-cache-ttl.js | displayValue": {
     "message": "{itemCount,plural, =1{1 ressurs funnet}other{# ressurser funnet}}"
@@ -417,31 +417,31 @@
     "message": "Bruker effektive buffer-retningslinjer på statiske ressurser"
   },
   "lighthouse-core/audits/byte-efficiency/uses-optimized-images.js | description": {
-    "message": "Optimaliserte bilder lastes inn raskere og bruker mindre mobildata. [Finn ut mer](https://developers.google.com/web/tools/lighthouse/audits/optimize-images)."
+    "message": "Optimaliserte bilder lastes inn raskere og bruker mindre mobildata. [Finn ut mer](https://web.dev/uses-optimized-images)."
   },
   "lighthouse-core/audits/byte-efficiency/uses-optimized-images.js | title": {
     "message": "Effektiviser omgjøring av bilder til kode"
   },
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | description": {
-    "message": "Vis bilder som har passende størrelse, for å spare mobildata og redusere innlastingstiden. [Finn ut mer](https://developers.google.com/web/tools/lighthouse/audits/oversized-images)."
+    "message": "Vis bilder som har passende størrelse, for å spare mobildata og redusere innlastingstiden. [Finn ut mer](https://web.dev/uses-responsive-images)."
   },
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | title": {
     "message": "Velg riktige bildestørrelser"
   },
   "lighthouse-core/audits/byte-efficiency/uses-text-compression.js | description": {
-    "message": "Tekstbaserte ressurser bør leveres komprimert (gzip, deflate eller brotli) for å minimere antall byte som sendes over nettverket. [Finn ut mer](https://developers.google.com/web/tools/lighthouse/audits/text-compression)."
+    "message": "Tekstbaserte ressurser bør leveres komprimert (gzip, deflate eller brotli) for å minimere antall byte som sendes over nettverket. [Finn ut mer](https://web.dev/uses-text-compression)."
   },
   "lighthouse-core/audits/byte-efficiency/uses-text-compression.js | title": {
     "message": "Aktiver tekstkomprimering"
   },
   "lighthouse-core/audits/byte-efficiency/uses-webp-images.js | description": {
-    "message": "Bildeformater som JPEG 2000, JPEG XR og WebP gir ofte bedre komprimering enn PNG eller JPEG, noe som betyr raskere nedlasting og mindre databruk. [Finn ut mer](https://developers.google.com/web/tools/lighthouse/audits/webp)."
+    "message": "Bildeformater som JPEG 2000, JPEG XR og WebP gir ofte bedre komprimering enn PNG eller JPEG, noe som betyr raskere nedlasting og mindre databruk. [Finn ut mer](https://web.dev/uses-webp-images)."
   },
   "lighthouse-core/audits/byte-efficiency/uses-webp-images.js | title": {
     "message": "Bruk nyere bildeformater"
   },
   "lighthouse-core/audits/content-width.js | description": {
-    "message": "Hvis bredden på appinnholdet ikke samsvarer med bredden på det synlige området, er appen kanskje ikke optimalisert for mobilskjermer. [Finn ut mer](https://developers.google.com/web/tools/lighthouse/audits/content-sized-correctly-for-viewport)."
+    "message": "Hvis bredden på appinnholdet ikke samsvarer med bredden på det synlige området, er appen kanskje ikke optimalisert for mobilskjermer. [Finn ut mer](https://web.dev/content-width)."
   },
   "lighthouse-core/audits/content-width.js | explanation": {
     "message": "Det synlige områdets størrelse på {innerWidth} px samsvarer ikke med vindusstørrelsen på {outerWidth} px."
@@ -453,7 +453,7 @@
     "message": "Innholdet har riktig størrelse i forhold til det synlige området"
   },
   "lighthouse-core/audits/critical-request-chains.js | description": {
-    "message": "De kritiske forespørselskjedene nedenfor viser hvilke ressurser som lastes inn med høy prioritet. Vurder å redusere lengden på kjedene, redusere nedlastingsstørrelsen på ressursene eller utsette nedlasting av unødvendige ressurser for å bedre sideinnlastingen. [Finn ut mer](https://developers.google.com/web/tools/lighthouse/audits/critical-request-chains)."
+    "message": "De kritiske forespørselskjedene nedenfor viser hvilke ressurser som lastes inn med høy prioritet. Vurder å redusere lengden på kjedene, redusere nedlastingsstørrelsen på ressursene eller utsette nedlasting av unødvendige ressurser for å bedre sideinnlastingen. [Finn ut mer](https://web.dev/critical-request-chains)."
   },
   "lighthouse-core/audits/critical-request-chains.js | displayValue": {
     "message": "{itemCount,plural, =1{1 kjede funnet}other{# kjeder funnet}}"
@@ -675,7 +675,7 @@
     "message": "Ingen nettleserfeil ble loggført i konsollen"
   },
   "lighthouse-core/audits/font-display.js | description": {
-    "message": "Bruk CSS-funksjonen font-display til å forsikre deg om at brukerne ser teksten mens skrifttypene for nettet lastes inn. [Finn ut mer](https://developers.google.com/web/updates/2016/02/font-display)."
+    "message": "Bruk CSS-funksjonen font-display til å forsikre deg om at brukerne ser teksten mens skrifttypene for nettet lastes inn. [Finn ut mer](https://web.dev/font-display)."
   },
   "lighthouse-core/audits/font-display.js | failureTitle": {
     "message": "Sørg for at teksten forblir synlig under innlasting av skrifttyper for nettet"
@@ -705,7 +705,7 @@
     "message": "Ugyldig informasjon om bildestørrelse – {url}"
   },
   "lighthouse-core/audits/installable-manifest.js | description": {
-    "message": "Nettlesere kan aktivt spørre brukere om de vil legge til appen på startskjermen sin. Det kan føre til økt interaksjon. [Finn ut mer](https://developers.google.com/web/tools/lighthouse/audits/install-prompt)."
+    "message": "Nettlesere kan aktivt spørre brukere om de vil legge til appen på startskjermen sin. Det kan føre til økt interaksjon. [Finn ut mer](https://web.dev/installable-manifest)."
   },
   "lighthouse-core/audits/installable-manifest.js | failureTitle": {
     "message": "Manifestet til nettprogrammet oppfyller ikke kravene til installerbarhet"
@@ -729,7 +729,7 @@
     "message": "Bruker HTTPS"
   },
   "lighthouse-core/audits/load-fast-enough-for-pwa.js | description": {
-    "message": "Når sider lastes inn raskt over mobilnettverk, gir det en god brukeropplevelse på mobilenheter. [Finn ut mer](https://developers.google.com/web/tools/lighthouse/audits/fast-3g)."
+    "message": "Når sider lastes inn raskt over mobilnettverk, gir det en god brukeropplevelse på mobilenheter. [Finn ut mer](https://web.dev/load-fast-enough-for-pwa)."
   },
   "lighthouse-core/audits/load-fast-enough-for-pwa.js | displayValueText": {
     "message": "Interaktiv etter {timeInMs, number, seconds} s"
@@ -750,7 +750,7 @@
     "message": "Kategori"
   },
   "lighthouse-core/audits/mainthread-work-breakdown.js | description": {
-    "message": "Vurder å redusere tiden som brukes til parsing, kompilering og kjøring i JS. Levering av mindre JS-ressurser kan bidra til dette."
+    "message": "Vurder å redusere tiden som brukes til parsing, kompilering og kjøring av JS. Levering av mindre JS-ressurser kan bidra til dette. [Finn ut mer](https://web.dev/mainthread-work-breakdown)"
   },
   "lighthouse-core/audits/mainthread-work-breakdown.js | failureTitle": {
     "message": "Minimer arbeidet på hovedtråden"
@@ -759,49 +759,49 @@
     "message": "Minimerer arbeidet på hovedtråden"
   },
   "lighthouse-core/audits/manual/pwa-cross-browser.js | description": {
-    "message": "For å nå så mange brukere som mulig bør nettsteder fungere i alle de vanligste nettleserne. [Finn ut mer](https://developers.google.com/web/progressive-web-apps/checklist#site-works-cross-browser)."
+    "message": "For å nå så mange brukere som mulig bør nettsteder fungere i alle de vanligste nettleserne. [Finn ut mer](https://web.dev/pwa-cross-browser)."
   },
   "lighthouse-core/audits/manual/pwa-cross-browser.js | title": {
     "message": "Nettstedet fungerer i ulike nettlesere"
   },
   "lighthouse-core/audits/manual/pwa-each-page-has-url.js | description": {
-    "message": "Sørg for at individuelle sider kan dyplinkes via nettadresser, og at nettadressene er unike, slik at de kan deles på sosiale medier. [Finn ut mer](https://developers.google.com/web/progressive-web-apps/checklist#each-page-has-a-url)."
+    "message": "Sørg for at individuelle sider kan dyplinkes via nettadresser, og at nettadressene er unike, slik at de kan deles på sosiale medier. [Finn ut mer](https://web.dev/pwa-each-page-has-url)."
   },
   "lighthouse-core/audits/manual/pwa-each-page-has-url.js | title": {
     "message": "Hver side har en nettadresse"
   },
   "lighthouse-core/audits/manual/pwa-page-transitions.js | description": {
-    "message": "Overganger skal føles smidige når du trykker deg rundt, selv på et tregt nettverk. Dette er sentralt for den opplevde ytelsen. [Finn ut mer](https://developers.google.com/web/progressive-web-apps/checklist#page-transitions-dont-feel-like-they-block-on-the-network)."
+    "message": "Overganger skal føles smidige når du trykker deg rundt, selv på et tregt nettverk. Denne opplevelsen er avgjørende for brukerens opplevelse av ytelsen. [Finn ut mer](https://web.dev/pwa-page-transitions)."
   },
   "lighthouse-core/audits/manual/pwa-page-transitions.js | title": {
     "message": "Sideoverganger føles ikke som om de blokkerer på nettverket"
   },
   "lighthouse-core/audits/metrics/estimated-input-latency.js | description": {
-    "message": "Beregnet inndataforsinkelse er et estimat av hvor lang tid (i millisekunder) det tar for appen å svare på brukerinndata i det travleste 5-sekunders tidsrommet mens siden lastes inn. Hvis tidsforsinkelsen er høyere enn 50 ms, kan brukere oppleve appen som treg. [Finn ut mer](https://developers.google.com/web/tools/lighthouse/audits/estimated-input-latency)."
+    "message": "Beregnet inndataforsinkelse er et estimat av hvor lang tid (i millisekunder) det tar for appen å svare på brukerinndata i det travleste 5-sekunders tidsrommet mens siden lastes inn. Hvis tidsforsinkelsen er høyere enn 50 ms, kan brukere oppleve appen som treg. [Finn ut mer](https://web.dev/estimated-input-latency)."
   },
   "lighthouse-core/audits/metrics/estimated-input-latency.js | title": {
     "message": "Anslått tidsforsinkelse for inndata"
   },
   "lighthouse-core/audits/metrics/first-contentful-paint.js | description": {
-    "message": "Den første innholdsrike opptegningen (FCP) markerer den første gangen tekst eller bilder tegnes opp. [Finn ut mer](https://developers.google.com/web/tools/lighthouse/audits/first-contentful-paint)."
+    "message": "Den første innholdsrike opptegningen (FCP) markerer den første gangen tekst eller bilder tegnes opp. [Finn ut mer](https://web.dev/first-contentful-paint)."
   },
   "lighthouse-core/audits/metrics/first-contentful-paint.js | title": {
     "message": "Første innholdsrike opptegning"
   },
   "lighthouse-core/audits/metrics/first-cpu-idle.js | description": {
-    "message": "Første prosessor ledig markerer den første gangen sidens hovedtråd er stille nok til å klare å håndtere inndata. [Finn ut mer](https://developers.google.com/web/tools/lighthouse/audits/first-interactive)."
+    "message": "Første prosessor ledig markerer den første gangen at sidens hovedtråd er rolig nok til å klare å håndtere inndata.  [Finn ut mer](https://web.dev/first-cpu-idle)."
   },
   "lighthouse-core/audits/metrics/first-cpu-idle.js | title": {
     "message": "Første prosessor ledig"
   },
   "lighthouse-core/audits/metrics/first-meaningful-paint.js | description": {
-    "message": "Første vesentlige opptegning måler når hovedinnholdet på en side er synlig. [Finn ut mer](https://developers.google.com/web/tools/lighthouse/audits/first-meaningful-paint)."
+    "message": "Første vesentlige opptegning måler når hovedinnholdet på en side er synlig. [Finn ut mer](https://web.dev/first-meaningful-paint)."
   },
   "lighthouse-core/audits/metrics/first-meaningful-paint.js | title": {
     "message": "Første vesentlige opptegning"
   },
   "lighthouse-core/audits/metrics/interactive.js | description": {
-    "message": "Tid til interaktiv vil si hvor lang tid det tar før siden blir helt interaktiv. [Finn ut mer](https://developers.google.com/web/tools/lighthouse/audits/consistently-interactive)."
+    "message": "Tid til interaktiv vil si hvor lang tid det tar før siden blir helt interaktiv. [Finn ut mer](https://web.dev/interactive)."
   },
   "lighthouse-core/audits/metrics/interactive.js | title": {
     "message": "Tid til interaktiv"
@@ -813,7 +813,7 @@
     "message": "Maks forsinkelse for første inndata"
   },
   "lighthouse-core/audits/metrics/speed-index.js | description": {
-    "message": "Hastighetsindeksen viser hvor raskt innholdet på siden blir synlig. [Finn ut mer](https://developers.google.com/web/tools/lighthouse/audits/speed-index)."
+    "message": "Hastighetsindeksen viser hvor raskt innholdet på siden blir synlig. [Finn ut mer](https://web.dev/speed-index)."
   },
   "lighthouse-core/audits/metrics/speed-index.js | title": {
     "message": "Hastighetsindeks"
@@ -837,7 +837,7 @@
     "message": "Forsinkelser i tjenerdelen"
   },
   "lighthouse-core/audits/offline-start-url.js | description": {
-    "message": "Med en tjenestearbeider kan nettprogrammet ditt vært pålitelig under uforutsigbare nettverksforhold. [Finn ut mer](https://developers.google.com/web/tools/lighthouse/audits/http-200-when-offline)."
+    "message": "Med en tjenestearbeider kan nettprogrammet ditt vært pålitelig under uforutsigbare nettverksforhold. [Finn ut mer](https://web.dev/offline-start-url)."
   },
   "lighthouse-core/audits/offline-start-url.js | failureTitle": {
     "message": "`start_url` svarer ikke med 200 når siden er uten nett"
@@ -861,7 +861,7 @@
     "message": "Ytelsesbudsjett"
   },
   "lighthouse-core/audits/redirects-http.js | description": {
-    "message": "Hvis du allerede har satt opp HTTPS, må du sørge for at du viderekobler all HTTP-trafikk til HTTPS, slik at du gir alle brukerne dine tilgang til sikker nettfunksjonalitet. [Finn ut mer](https://developers.google.com/web/tools/lighthouse/audits/http-redirects-to-https)."
+    "message": "Hvis du allerede har satt opp HTTPS, må du sørge for at du viderekobler all HTTP-trafikk til HTTPS, slik at du gir alle brukerne dine tilgang til sikker nettfunksjonalitet. [Finn ut mer](https://web.dev/redirects-http)."
   },
   "lighthouse-core/audits/redirects-http.js | failureTitle": {
     "message": "Viderekobler ikke HTTP-trafikk til HTTPS"
@@ -870,7 +870,7 @@
     "message": "Viderekobler HTTP-trafikk til HTTPS"
   },
   "lighthouse-core/audits/redirects.js | description": {
-    "message": "Viderekoblinger fører til flere forsinkelser før siden kan lastes inn. [Finn ut mer](https://developers.google.com/web/tools/lighthouse/audits/redirects)."
+    "message": "Viderekoblinger fører til flere forsinkelser før siden kan lastes inn. [Finn ut mer](https://web.dev/redirects)."
   },
   "lighthouse-core/audits/redirects.js | title": {
     "message": "Unngå flere viderekoblinger av siden"
@@ -1035,7 +1035,7 @@
     "message": "Trykkbare elementer er store nok"
   },
   "lighthouse-core/audits/service-worker.js | description": {
-    "message": "Tjenestearbeideren er teknologien som gjør at appen din kan bruke mange funksjoner for progressive nettprogrammer, f.eks. muligheten til å bruke appen uten nett, legge den til på startskjermen og sende pushvarslinger. [Finn ut mer](https://developers.google.com/web/tools/lighthouse/audits/registered-service-worker)."
+    "message": "Tjenestearbeideren er teknologien som gjør at appen din kan bruke mange funksjoner for progressive nettprogrammer, f.eks. muligheten til å bruke appen uten nett, legge den til på startskjermen og sende pushvarslinger. [Finn ut mer](https://web.dev/service-worker)."
   },
   "lighthouse-core/audits/service-worker.js | explanationBadManifest": {
     "message": "Denne siden styres av en tjenestearbeider, men ingen `start_url` ble funnet fordi manifestet ikke kunne parses som gyldig JSON"
@@ -1056,7 +1056,7 @@
     "message": "Registrerer en tjenestearbeider som styrer siden og `start_url`"
   },
   "lighthouse-core/audits/splash-screen.js | description": {
-    "message": "Tematiske splash-skjermer gjør at brukerne får en kvalitetsopplevelse når de starter appen fra startskjermen. [Finn ut mer](https://developers.google.com/web/tools/lighthouse/audits/custom-splash-screen)."
+    "message": "Tematiske splash-skjermer gjør at brukerne får en kvalitetsopplevelse når de starter appen fra startskjermen. [Finn ut mer](https://web.dev/splash-screen)."
   },
   "lighthouse-core/audits/splash-screen.js | failureTitle": {
     "message": "Er ikke konfigurert med tilpasset splash-skjerm"
@@ -1065,7 +1065,7 @@
     "message": "Konfigurert med tilpasset splash-skjerm"
   },
   "lighthouse-core/audits/themed-omnibox.js | description": {
-    "message": "Adressefeltet i nettleseren kan gis et tema for å stå i stil med nettstedet ditt. [Finn ut mer](https://developers.google.com/web/tools/lighthouse/audits/address-bar)."
+    "message": "Adressefeltet i nettleseren kan gis et tema for å stå i stil med nettstedet ditt. [Finn ut mer](https://web.dev/themed-omnibox)."
   },
   "lighthouse-core/audits/themed-omnibox.js | failureTitle": {
     "message": "Angir ikke en temafarge for adressefeltet."
@@ -1092,7 +1092,7 @@
     "message": "Tredjepartsbruk"
   },
   "lighthouse-core/audits/time-to-first-byte.js | description": {
-    "message": "Tid til første byte identifiserer tidspunktet da tjeneren sendte et svar. [Finn ut mer](https://developers.google.com/web/tools/lighthouse/audits/ttfb)."
+    "message": "Tid til første byte identifiserer tidspunktet da tjeneren sendte et svar. [Finn ut mer](https://web.dev/time-to-first-byte)."
   },
   "lighthouse-core/audits/time-to-first-byte.js | displayValue": {
     "message": "Root-dokumentet brukte {timeInMs, number, milliseconds} ms"
@@ -1113,7 +1113,7 @@
     "message": "Type"
   },
   "lighthouse-core/audits/user-timings.js | description": {
-    "message": "Vurder å utstyre appen din med brukertiming-API-et for å måle appens reelle ytelse under viktige brukeropplevelser. [Finn ut mer](https://developers.google.com/web/tools/lighthouse/audits/user-timing)."
+    "message": "Vurder å utstyre appen din med brukertiming-API-et for å måle appens reelle ytelse under viktige brukeropplevelser. [Finn ut mer](https://web.dev/user-timings)."
   },
   "lighthouse-core/audits/user-timings.js | displayValue": {
     "message": "{itemCount,plural, =1{ 1 brukertiming}other{# brukertiminger}}"
@@ -1125,7 +1125,7 @@
     "message": "Det ble funnet en <link> for forhåndstilkobling for {securityOrigin}, men denne ble ikke brukt av nettleseren. Kontrollér at du bruker `crossorigin`-attributtet riktig."
   },
   "lighthouse-core/audits/uses-rel-preconnect.js | description": {
-    "message": "Vurder å legge til `preconnect`- eller `dns-prefetch`-ressurshint for å opprette tidlige tilkoblinger til viktige tredjepartsplasseringer. [Finn ut mer](https://developers.google.com/web/fundamentals/performance/resource-prioritization#preconnect)."
+    "message": "Vurder å legge til `preconnect`- eller `dns-prefetch`-ressurshint for å opprette tidlige tilkoblinger til viktige tredjepartsplasseringer. [Finn ut mer](https://web.dev/uses-rel-preconnect)."
   },
   "lighthouse-core/audits/uses-rel-preconnect.js | title": {
     "message": "Opprett forhåndstilkobling til nødvendige domenenavn"
@@ -1134,13 +1134,13 @@
     "message": "Det ble funnet en <link> for forhåndsinnlasting for {preloadURL}, men denne ble ikke brukt av nettleseren. Kontrollér at du bruker `crossorigin`-attributtet riktig."
   },
   "lighthouse-core/audits/uses-rel-preload.js | description": {
-    "message": "Vurder å bruke `<link rel=preload>` for å prioritere henting av ressurser som for øyeblikket blir forespurt senere i sideinnlastingen. [Finn ut mer](https://developers.google.com/web/tools/lighthouse/audits/preload)."
+    "message": "Vurder å bruke `<link rel=preload>` for å prioritere henting av ressurser som for øyeblikket blir forespurt senere i sideinnlastingen. [Finn ut mer](https://web.dev/uses-rel-preload)."
   },
   "lighthouse-core/audits/uses-rel-preload.js | title": {
     "message": "Forhåndsinnlast (preload) nøkkelforespørsler"
   },
   "lighthouse-core/audits/viewport.js | description": {
-    "message": "Legg til en `<meta name=\"viewport\">`-tag for å optimalisere appen for mobilskjermer. [Finn ut mer](https://developers.google.com/web/tools/lighthouse/audits/has-viewport-meta-tag)."
+    "message": "Legg til en `<meta name=\"viewport\">`-tag for å optimalisere appen for mobilskjermer. [Finn ut mer](https://web.dev/viewport)."
   },
   "lighthouse-core/audits/viewport.js | explanationNoTag": {
     "message": "Fant ingen `<meta name=\"viewport\">`-tag"
@@ -1152,7 +1152,7 @@
     "message": "Har en `<meta name=\"viewport\">`-tag med `width` eller `initial-scale`"
   },
   "lighthouse-core/audits/without-javascript.js | description": {
-    "message": "Appen bør vise noe innhold når JavaScript er deaktivert, selv om det bare er en advarsel til brukeren om at JavaScript kreves for å bruke appen. [Finn ut mer](https://developers.google.com/web/tools/lighthouse/audits/no-js)."
+    "message": "Appen bør vise noe innhold når JavaScript er deaktivert, selv om det bare er en advarsel til brukeren om at JavaScript kreves for å bruke appen. [Finn ut mer](https://web.dev/without-javascript)."
   },
   "lighthouse-core/audits/without-javascript.js | explanation": {
     "message": "Sidekroppen bør vise noe innhold hvis skriptene ikke er tilgjengelige."
@@ -1164,7 +1164,7 @@
     "message": "Inneholder noe innhold når JavaScript ikke er tilgjengelig"
   },
   "lighthouse-core/audits/works-offline.js | description": {
-    "message": "Hvis du utvikler et progressivt nettprogram, kan du vurdere å bruke en tjenestearbeider, så appen fungerer uten nett. [Finn ut mer](https://developers.google.com/web/tools/lighthouse/audits/http-200-when-offline)."
+    "message": "Hvis du utvikler et progressivt nettprogram, kan du vurdere å bruke en tjenestearbeider, så appen fungerer uten nett. [Finn ut mer](https://web.dev/works-offline)."
   },
   "lighthouse-core/audits/works-offline.js | failureTitle": {
     "message": "Den gjeldende siden svarer ikke med 200 når den er uten nett"

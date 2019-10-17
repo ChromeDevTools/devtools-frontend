@@ -30,10 +30,10 @@
     "message": "Dažām ARIA vecāklomām ir jāietver konkrētas pakārtotās lomas, lai varētu nodrošināt pieejamības funkcijas. [Uzziniet vairāk](https://web.dev/aria-required-children/)."
   },
   "lighthouse-core/audits/accessibility/aria-required-children.js | failureTitle": {
-    "message": "Trūkst elementu ar elementiem `[role]`, kuriem ir nepieciešamas konkrētas bērna lomas (`[role]`)"
+    "message": "Elementos ar ARIA lomu `[role]`, kuru pakārtotajiem elementiem ir jāsatur konkrēts vienums `[role]`, trūkst dažu vai visu šo obligāto pakārtoto elementu."
   },
   "lighthouse-core/audits/accessibility/aria-required-children.js | title": {
-    "message": "Elementi ar atribūtiem `[role]`, kuriem ir nepieciešamas konkrētas bērna lomas (`[role]`), ir klātesoši"
+    "message": "Elementos ar ARIA lomu `[role]`, kuru pakārtotajiem elementiem ir jāsatur konkrēts vienums `[role]`, ir visi obligātie pakārtotie elementi."
   },
   "lighthouse-core/audits/accessibility/aria-required-parent.js | description": {
     "message": "Dažām ARIA pakārtotajām lomām ir jābūt ietvertām konkrētās vecāklomās, lai varētu nodrošināt pieejamības funkcijas. [Uzziniet vairāk](https://web.dev/aria-required-parent/)."
@@ -276,10 +276,10 @@
     "message": "Ekrāna lasītāju funkcijas atvieglo pārvietošanos tabulās. Ja elementa `<td>` šūnās, kas izmanto atribūtu `[headers]`, ir atsauces tikai uz citām šūnām tajā pašā tabulā, tiek nodrošināta labāka pieredze lietotājiem, kuri izmanto ekrāna lasītājus. [Uzziniet vairāk](https://web.dev/td-headers-attr/)."
   },
   "lighthouse-core/audits/accessibility/td-headers-attr.js | failureTitle": {
-    "message": "Elementa `<table>` šūnās, kas izmanto atribūtu `[headers]`, ir atsauces uz citām šūnām tajā pašā tabulā"
+    "message": "Elementa `<table>` šūnās, kuras izmanto atribūtu `[headers]`, ir atsauces uz elementu `id`, kas netika atrasts tajā pašā tabulā."
   },
   "lighthouse-core/audits/accessibility/td-headers-attr.js | title": {
-    "message": "Elementa `<table>` šūnās, kas izmanto atribūtu `[headers]` ir atsauces tikai uz citām šūnām tajā pašā tabulā"
+    "message": "Elementa `<table>` šūnās, kuras izmanto atribūtu `[headers]`, ir atsauces uz citām šūnām tajā pašā tabulā."
   },
   "lighthouse-core/audits/accessibility/th-has-data-cells.js | description": {
     "message": "Ekrāna lasītāju funkcijas atvieglo pārvietošanos tabulās. Ja tabulu virsrakstos vienmēr ir atsauces uz citām šūnām, tas var nodrošināt labāku pieredzi lietotājiem, kuri izmanto ekrāna lasītājus. [Uzziniet vairāk](https://web.dev/th-has-data-cells/)."
@@ -318,7 +318,7 @@
     "message": "Elementi `<video>` ietver elementu `<track>` ar parametru `[kind=\"description\"]`"
   },
   "lighthouse-core/audits/apple-touch-icon.js | description": {
-    "message": "Lai iegūtu ideālu izskatu iOS ierīcē, lietotājiem pievienojot progresīvo tīmekļa lietotni sākuma ekrānam, definējiet atribūtu `apple-touch-icon`. Tam ir jānorāda uz necaurspīdīgu 192 pikseļu (vai 180 pikseļu) kvadrātveida PNG. [Uzziniet vairāk](https://developers.google.com/web/fundamentals/design-and-ux/browser-customization/)."
+    "message": "Lai iegūtu ideālu izskatu iOS ierīcē, lietotājiem pievienojot progresīvo tīmekļa lietotni sākuma ekrānam, definējiet atribūtu `apple-touch-icon`. Tam ir jānorāda uz necaurspīdīgu 192 pikseļu (vai 180 pikseļu) kvadrātveida PNG. [Uzziniet vairāk](https://web.dev/apple-touch-icon/)."
   },
   "lighthouse-core/audits/apple-touch-icon.js | failureTitle": {
     "message": "Netiek nodrošināts derīgs atribūts “`apple-touch-icon`”"
@@ -342,7 +342,7 @@
     "message": "Kopējais centrālā procesora laiks"
   },
   "lighthouse-core/audits/bootup-time.js | description": {
-    "message": "Ieteicams samazināt laiku, kas tiek izmantots JS parsēšanai, kompilēšanai un izpildei. Iespējams, konstatēsiet, ka ir noderīgi izmantot mazākas JS lietderīgās slodzes. [Uzziniet vairāk](https://developers.google.com/web/tools/lighthouse/audits/bootup)."
+    "message": "Ieteicams samazināt laiku, kas tiek izmantots JS parsēšanai, kompilēšanai un izpildei. Iespējams, konstatēsiet, ka ir noderīgi izmantot mazākas JS lietderīgās slodzes. [Uzziniet vairāk](https://web.dev/bootup-time)."
   },
   "lighthouse-core/audits/bootup-time.js | failureTitle": {
     "message": "JavaScript izpildes laika samazināšana"
@@ -351,25 +351,25 @@
     "message": "JavaScript izpildes laiks"
   },
   "lighthouse-core/audits/byte-efficiency/efficient-animated-content.js | description": {
-    "message": "Lieli GIF attēli nav efektīvi animēta satura rādīšanai. Animācijām ieteicams izmantot MPEG4/WebM video, bet statiskiem attēliem — PNG/WebP, nevis GIF, lai samazinātu tīkla lietojumu (baitos). [Uzziniet vairāk](https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/replace-animated-gifs-with-video/)."
+    "message": "Lieli GIF attēli nav efektīvi animēta satura rādīšanai. Animācijām ieteicams izmantot MPEG4/WebM video, bet statiskiem attēliem — PNG/WebP, nevis GIF, lai samazinātu tīkla lietojumu (baitos). [Uzziniet vairāk](https://web.dev/efficient-animated-content)."
   },
   "lighthouse-core/audits/byte-efficiency/efficient-animated-content.js | title": {
     "message": "Izmantojiet video failu formātus animētam saturam"
   },
   "lighthouse-core/audits/byte-efficiency/offscreen-images.js | description": {
-    "message": "Lai samazinātu laiku līdz interaktivitātei, ārpus ekrāna attēlus un paslēptos attēlus ar lēnu ielādi ieteicams atlikt līdz visu svarīgo resursu ielādes pabeigšanai. [Uzziniet vairāk](https://developers.google.com/web/tools/lighthouse/audits/offscreen-images)."
+    "message": "Lai samazinātu laiku līdz interaktivitātei, ārpus ekrāna attēlus un paslēptos attēlus ar lēnu ielādi ieteicams atlikt līdz visu svarīgo resursu ielādes pabeigšanai. [Uzziniet vairāk](https://web.dev/offscreen-images)."
   },
   "lighthouse-core/audits/byte-efficiency/offscreen-images.js | title": {
     "message": "Ārpus ekrāna esošo attēlu atlikšana"
   },
   "lighthouse-core/audits/byte-efficiency/render-blocking-resources.js | description": {
-    "message": "Resursi bloķē jūsu lapas pirmo satura atveidojumu. Ieteicams rādīt svarīgos JS/CSS iekļautā veidā un atteikties no visiem nesvarīgajiem JS/stiliem. [Uzziniet vairāk](https://developers.google.com/web/tools/lighthouse/audits/blocking-resources)."
+    "message": "Resursi bloķē jūsu lapas pirmo satura atveidojumu. Ieteicams rādīt svarīgos JS/CSS iekļautā veidā un atteikties no visiem nesvarīgajiem JS/stiliem. [Uzziniet vairāk](https://web.dev/render-blocking-resources)."
   },
   "lighthouse-core/audits/byte-efficiency/render-blocking-resources.js | title": {
     "message": "Samaziniet resursus, kas bloķē renderēšanu"
   },
   "lighthouse-core/audits/byte-efficiency/total-byte-weight.js | description": {
-    "message": "Lielas tīkla lietderīgās slodzes izmaksā lietotājiem īstu naudu un ir cieši saistītas ar ilgu ielādes laiku. [Uzziniet vairāk](https://developers.google.com/web/tools/lighthouse/audits/network-payloads)."
+    "message": "Lielas tīkla lietderīgās slodzes izmaksā lietotājiem īstu naudu un ir cieši saistītas ar ilgu ielādes laiku. [Uzziniet vairāk](https://web.dev/total-byte-weight)."
   },
   "lighthouse-core/audits/byte-efficiency/total-byte-weight.js | displayValue": {
     "message": "Kopējais lielums bija {totalBytes, number, bytes} KB."
@@ -381,19 +381,19 @@
     "message": "Nepieļauj pārāk lielu tīkla lietderīgo slodzi"
   },
   "lighthouse-core/audits/byte-efficiency/unminified-css.js | description": {
-    "message": "Samazinot CSS failus, var samazināties tīkla lietderīgā slodze. [Uzziniet vairāk](https://developers.google.com/web/tools/lighthouse/audits/minify-css)."
+    "message": "Samazinot CSS failus, var samazināties tīkla lietderīgā slodze. [Uzziniet vairāk](https://web.dev/unminified-css)."
   },
   "lighthouse-core/audits/byte-efficiency/unminified-css.js | title": {
     "message": "Samaziniet CSS"
   },
   "lighthouse-core/audits/byte-efficiency/unminified-javascript.js | description": {
-    "message": "Samazinot JavaScript failus, var samazināties lietderīgās slodzes apjomi un skriptu parsēšanas laiks. [Uzziniet vairāk](https://developers.google.com/speed/docs/insights/MinifyResources)."
+    "message": "Samazinot JavaScript failus, var samazināties lietderīgās slodzes apjomi un skriptu parsēšanas laiks. [Uzziniet vairāk](https://web.dev/unminified-javascript)."
   },
   "lighthouse-core/audits/byte-efficiency/unminified-javascript.js | title": {
     "message": "JavaScript·samazināšana"
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | description": {
-    "message": "Noņemiet stila lapās kārtulas, kas nedarbojas, un atlieciet pirmajā ekrāna saturā neizmantotā CSS ielādi, lai samazinātu tīkla aktivitātes nevajadzīgi izmantoto baitu apjomu. [Uzziniet vairāk](https://developers.google.com/web/tools/lighthouse/audits/unused-css)."
+    "message": "Noņemiet stila lapās kārtulas, kas nedarbojas, un atlieciet pirmajā ekrāna saturā neizmantotā CSS ielādi, lai samazinātu tīkla aktivitātes nevajadzīgi izmantoto baitu apjomu. [Uzziniet vairāk](https://web.dev/unused-css-rules)."
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | title": {
     "message": "Noņemt neizmantoto CSS"
@@ -405,7 +405,7 @@
     "message": "Noņemiet neizmantoto JavaScript"
   },
   "lighthouse-core/audits/byte-efficiency/uses-long-cache-ttl.js | description": {
-    "message": "Iestatot ilgu kešatmiņas mūžu, lapas atkārtoti apmeklējumi varētu paātrināties. [Uzziniet vairāk](https://developers.google.com/web/tools/lighthouse/audits/cache-policy)."
+    "message": "Iestatot ilgu kešatmiņas mūžu, lapas atkārtoti apmeklējumi varētu paātrināties. [Uzziniet vairāk](https://web.dev/uses-long-cache-ttl)."
   },
   "lighthouse-core/audits/byte-efficiency/uses-long-cache-ttl.js | displayValue": {
     "message": "{itemCount,plural, =1{Atrasts 1 resurss}zero{Atrasti # resursi}one{Atrasts # resurss}other{Atrasti # resursi}}"
@@ -417,31 +417,31 @@
     "message": "Efektīvas kešatmiņas politikas izmantošana statiskiem elementiem"
   },
   "lighthouse-core/audits/byte-efficiency/uses-optimized-images.js | description": {
-    "message": "Optimizēti attēli tiek ielādēti ātrāk un izmanto mazāku mobilo datu apjomu. [Uzziniet vairāk](https://developers.google.com/web/tools/lighthouse/audits/optimize-images)."
+    "message": "Optimizēti attēli tiek ielādēti ātrāk un izmanto mazāku mobilo datu apjomu. [Uzziniet vairāk](https://web.dev/uses-optimized-images)."
   },
   "lighthouse-core/audits/byte-efficiency/uses-optimized-images.js | title": {
     "message": "Efektīva attēlu kodēšana"
   },
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | description": {
-    "message": "Rādiet atbilstoša izmēra attēlus, lai tiktu izmantots mazāks mobilo datu apjoms un tiktu uzlabots ielādes laiks. [Uzziniet vairāk](https://developers.google.com/web/tools/lighthouse/audits/oversized-images)."
+    "message": "Rādiet atbilstoša izmēra attēlus, lai tiktu izmantots mazāks mobilo datu apjoms un tiktu uzlabots ielādes laiks. [Uzziniet vairāk](https://web.dev/uses-responsive-images)."
   },
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | title": {
     "message": "Atbilstoša lieluma attēli"
   },
   "lighthouse-core/audits/byte-efficiency/uses-text-compression.js | description": {
-    "message": "Lai samazinātu kopējo tīkla lietojumu (baitos), ieteicams izmantot saspiešanu (Gzip, Deflate vai Brotli). [Uzziniet vairāk](https://developers.google.com/web/tools/lighthouse/audits/text-compression)."
+    "message": "Lai samazinātu kopējo tīkla lietojumu (baitos), ieteicams izmantot saspiešanu (Gzip, Deflate vai Brotli). [Uzziniet vairāk](https://web.dev/uses-text-compression)."
   },
   "lighthouse-core/audits/byte-efficiency/uses-text-compression.js | title": {
     "message": "Iespējojiet teksta saspiešanu"
   },
   "lighthouse-core/audits/byte-efficiency/uses-webp-images.js | description": {
-    "message": "Tādi attēlu formāti kā JPEG 2000, JPEG XR un WebP bieži ir veiksmīgāk saspiežami nekā PNG vai JPEG. Tas nozīmē ātrāku lejupielādi un mazāku datu patēriņu. [Uzziniet vairāk](https://developers.google.com/web/tools/lighthouse/audits/webp)."
+    "message": "Tādi attēlu formāti kā JPEG 2000, JPEG XR un WebP bieži ir veiksmīgāk saspiežami nekā PNG vai JPEG. Tas nozīmē ātrāku lejupielādi un mazāku datu patēriņu. [Uzziniet vairāk](https://web.dev/uses-webp-images)."
   },
   "lighthouse-core/audits/byte-efficiency/uses-webp-images.js | title": {
     "message": "Rādiet attēlus nākamās paaudzes formātos"
   },
   "lighthouse-core/audits/content-width.js | description": {
-    "message": "Ja lietotnes satura platums neatbilst skatvietas platumam, lietotne var nebūt optimizēta mobilo ierīču ekrāniem. [Uzziniet vairāk](https://developers.google.com/web/tools/lighthouse/audits/content-sized-correctly-for-viewport)."
+    "message": "Ja lietotnes satura platums neatbilst skatvietas platumam, lietotne var nebūt optimizēta mobilo ierīču ekrāniem. [Uzziniet vairāk](https://web.dev/content-width)."
   },
   "lighthouse-core/audits/content-width.js | explanation": {
     "message": "Skatvietas izmērs ({innerWidth} px) neatbilst loga izmēram ({outerWidth} px)."
@@ -453,7 +453,7 @@
     "message": "Satura izmērs ir pareizs, salīdzinot ar skatvietu"
   },
   "lighthouse-core/audits/critical-request-chains.js | description": {
-    "message": "Metrika “Kritisko pieprasījumu ķēdes” tālāk parāda, kuri resursi ir ielādēti ar augstāko prioritāti. Lai uzlabotu lapas ielādi, ieteicams samazināt ķēžu garumu, samazināt resursu lejupielādes apjomu vai atlikt nevajadzīgo resursu lejupielādi. [Uzziniet vairāk](https://developers.google.com/web/tools/lighthouse/audits/critical-request-chains)."
+    "message": "Metrika “Kritisko pieprasījumu ķēdes” tālāk parāda, kuri resursi ir ielādēti ar augstāko prioritāti. Lai uzlabotu lapas ielādi, ieteicams samazināt ķēžu garumu, samazināt resursu lejupielādes apjomu vai atlikt nevajadzīgo resursu lejupielādi. [Uzziniet vairāk](https://web.dev/critical-request-chains)."
   },
   "lighthouse-core/audits/critical-request-chains.js | displayValue": {
     "message": "{itemCount,plural, =1{Atrasta 1 ķēde}zero{Atrastas # ķēdes}one{Atrasta # ķēde}other{Atrastas # ķēdes}}"
@@ -675,7 +675,7 @@
     "message": "Neviena pārlūkprogrammas kļūda nav reģistrēta konsolē"
   },
   "lighthouse-core/audits/font-display.js | description": {
-    "message": "Izmantojiet fonta rādīšanas CSS funkciju, lai lietotāji tīmekļa fontu ielādes laikā varētu redzēt tekstu. [Uzziniet vairāk](https://developers.google.com/web/updates/2016/02/font-display)."
+    "message": "Izmantojiet fonta rādīšanas CSS funkciju, lai lietotāji tīmekļa fontu ielādes laikā varētu redzēt tekstu. [Uzziniet vairāk](https://web.dev/font-display)."
   },
   "lighthouse-core/audits/font-display.js | failureTitle": {
     "message": "Visa teksta redzamības nodrošināšana tīmekļa fonta ielādes laikā"
@@ -705,7 +705,7 @@
     "message": "Nederīga attēla lieluma informācija: {url}"
   },
   "lighthouse-core/audits/installable-manifest.js | description": {
-    "message": "Pārlūkprogrammās var aktīvi rādīt lietotājiem uzvednes ar ierosinājumu pievienot jūsu lietotni sākuma ekrānam. Tādējādi var izdoties palielināt iesaisti. [Uzziniet vairāk](https://developers.google.com/web/tools/lighthouse/audits/install-prompt)."
+    "message": "Pārlūkprogrammās var aktīvi rādīt lietotājiem uzvednes ar ierosinājumu pievienot jūsu lietotni sākuma ekrānam. Tādējādi var izdoties palielināt iesaisti. [Uzziniet vairāk](https://web.dev/installable-manifest)."
   },
   "lighthouse-core/audits/installable-manifest.js | failureTitle": {
     "message": "Tīmekļa lietotnes manifests neatbilst instalējamības prasībām"
@@ -729,7 +729,7 @@
     "message": "Tiek izmantots protokols HTTPS"
   },
   "lighthouse-core/audits/load-fast-enough-for-pwa.js | description": {
-    "message": "Ātra lapas ielāde, izmantojot mobilo datu tīklu, nodrošina labu pieredzi mobilo ierīču lietotājiem. [Uzziniet vairāk](https://developers.google.com/web/tools/lighthouse/audits/fast-3g)."
+    "message": "Ātra lapas ielāde, izmantojot mobilo datu tīklu, nodrošina labu pieredzi mobilo ierīču lietotājiem. [Uzziniet vairāk](https://web.dev/load-fast-enough-for-pwa)."
   },
   "lighthouse-core/audits/load-fast-enough-for-pwa.js | displayValueText": {
     "message": "Interaktīvais laiks: {timeInMs, number, seconds} s"
@@ -750,7 +750,7 @@
     "message": "Kategorija"
   },
   "lighthouse-core/audits/mainthread-work-breakdown.js | description": {
-    "message": "Ieteicams samazināt laiku, kas tiek izmantots JS parsēšanai, kompilēšanai un izpildei. Iespējams, konstatēsiet, ka ir noderīgi izmantot mazākas JS lietderīgās slodzes."
+    "message": "Ieteicams samazināt laiku, kas tiek izmantots JS parsēšanai, kompilēšanai un izpildei. Iespējams, konstatēsiet, ka ir noderīgi izmantot mazākas JS lietderīgās slodzes. [Uzziniet vairāk](https://web.dev/mainthread-work-breakdown)."
   },
   "lighthouse-core/audits/mainthread-work-breakdown.js | failureTitle": {
     "message": "Samaziniet galvenā pavediena darbu"
@@ -759,49 +759,49 @@
     "message": "Galvenā pavediena darba samazināšana"
   },
   "lighthouse-core/audits/manual/pwa-cross-browser.js | description": {
-    "message": "Lai sasniegtu pēc iespējas vairāk lietotāju, ieteicams izstrādāt vietnes, kas darbojas visās lielākajās pārlūkprogrammās. [Uzziniet vairāk](https://developers.google.com/web/progressive-web-apps/checklist#site-works-cross-browser)."
+    "message": "Lai sasniegtu pēc iespējas vairāk lietotāju, ieteicams izstrādāt vietnes, kas darbojas visās lielākajās pārlūkprogrammās. [Uzziniet vairāk](https://web.dev/pwa-cross-browser)."
   },
   "lighthouse-core/audits/manual/pwa-cross-browser.js | title": {
     "message": "Vietne darbojas dažādās pārlūkprogrammās"
   },
   "lighthouse-core/audits/manual/pwa-each-page-has-url.js | description": {
-    "message": "Nodrošiniet, lai lietotāji varētu veidot un atvērt dziļās saites uz atsevišķām lapām, izmantojot URL. Turklāt URL jābūt unikāliem, lai varētu kopīgot lapas sociālajos saziņas līdzekļos. [Uzziniet vairāk](https://developers.google.com/web/progressive-web-apps/checklist#each-page-has-a-url)."
+    "message": "Nodrošiniet, lai lietotāji varētu veidot un atvērt dziļās saites uz atsevišķām lapām, izmantojot URL. Turklāt URL jābūt unikāliem, lai varētu kopīgot lapas sociālajos saziņas līdzekļos. [Uzziniet vairāk](https://web.dev/pwa-each-page-has-url)."
   },
   "lighthouse-core/audits/manual/pwa-each-page-has-url.js | title": {
     "message": "Katrai lapai ir URL"
   },
   "lighthouse-core/audits/manual/pwa-page-transitions.js | description": {
-    "message": "Ieteicams, lai pārejas būtu ātras pat tad, ja tīkls ir lēns. Pāreju ātrums stipri ietekmē lietotāju priekšstatu par lietotnes veiktspēju. [Uzziniet vairāk](https://developers.google.com/web/progressive-web-apps/checklist#page-transitions-dont-feel-like-they-block-on-the-network)."
+    "message": "Ieteicams, lai, pieskaroties lietotnes elementiem, pārejas būtu ātras pat tad, ja tīkla darbība ir lēna. Šis ir galvenais faktors, kas nosaka to, kā lietotājs uztver veiktspēju. [Uzziniet vairāk](https://web.dev/pwa-page-transitions)."
   },
   "lighthouse-core/audits/manual/pwa-page-transitions.js | title": {
     "message": "Tīklā nerodas sajūta, ka lēna ielāde bloķētu pārejas starp lapām"
   },
   "lighthouse-core/audits/metrics/estimated-input-latency.js | description": {
-    "message": "Paredzētais ievades latentums aptuveni norāda, pēc cik ilga laika (milisekundēs) uz lietotāja ievadi reaģēs jūsu lietotne aizņemtākajā lapas ielādes 5 s periodā. Ja latentums pārsniedz 50 ms, iespējams, lietotājiem liksies, ka jūsu lietotne strādā ar traucējumiem. [Uzziniet vairāk](https://developers.google.com/web/tools/lighthouse/audits/estimated-input-latency)."
+    "message": "Paredzētais ievades latentums aptuveni norāda, pēc cik ilga laika (milisekundēs) uz lietotāja ievadi reaģēs jūsu lietotne aizņemtākajā lapas ielādes 5 s periodā. Ja latentums pārsniedz 50 ms, iespējams, lietotājiem liksies, ka jūsu lietotne strādā ar traucējumiem. [Uzziniet vairāk](https://web.dev/estimated-input-latency)."
   },
   "lighthouse-core/audits/metrics/estimated-input-latency.js | title": {
     "message": "Paredzētais ievades latentums"
   },
   "lighthouse-core/audits/metrics/first-contentful-paint.js | description": {
-    "message": "Metrika \"Pirmais satura marķējums\" atzīmē laiku, kad tiek marķēts pirmais teksts vai attēls. [Uzziniet vairāk](https://developers.google.com/web/tools/lighthouse/audits/first-contentful-paint)."
+    "message": "Metrika \"Pirmais satura marķējums\" atzīmē laiku, kad tiek marķēts pirmais teksts vai attēls. [Uzziniet vairāk](https://web.dev/first-contentful-paint)."
   },
   "lighthouse-core/audits/metrics/first-contentful-paint.js | title": {
     "message": "Pirmais saturīgais satura atveidojums"
   },
   "lighthouse-core/audits/metrics/first-cpu-idle.js | description": {
-    "message": "Metrika “Pirmā CPU dīkstāve” norāda laiku, kad lapas galvenais pavediens ir kļuvis pietiekami mazs, lai varētu apstrādāt ievadi. [Uzziniet vairāk](https://developers.google.com/web/tools/lighthouse/audits/first-interactive)."
+    "message": "Metrika “Pirmā CPU dīkstāve” norāda laiku, kad lapas galvenais pavediens ir kļuvis pietiekami mazs, lai varētu apstrādāt ievadi.  [Uzziniet vairāk](https://web.dev/first-cpu-idle)."
   },
   "lighthouse-core/audits/metrics/first-cpu-idle.js | title": {
     "message": "Pirmā CPU dīkstāve"
   },
   "lighthouse-core/audits/metrics/first-meaningful-paint.js | description": {
-    "message": "Metrika “Pirmais nozīmīgais satura atveidojums” norāda, kad kļūst redzams lapas galvenais saturs. [Uzziniet vairāk](https://developers.google.com/web/tools/lighthouse/audits/first-meaningful-paint)."
+    "message": "Metrika “Pirmais nozīmīgais satura atveidojums” norāda, kad kļūst redzams lapas galvenais saturs. [Uzziniet vairāk](https://web.dev/first-meaningful-paint)."
   },
   "lighthouse-core/audits/metrics/first-meaningful-paint.js | title": {
     "message": "Pirmais nozīmīgais satura atveidojums"
   },
   "lighthouse-core/audits/metrics/interactive.js | description": {
-    "message": "Laiks līdz interaktivitātei ir laika apjoms, kas nepieciešams, lai lapa kļūtu pilnībā interaktīva. [Uzziniet vairāk](https://developers.google.com/web/tools/lighthouse/audits/consistently-interactive)."
+    "message": "Laiks līdz interaktivitātei ir laika apjoms, kas nepieciešams, lai lapa kļūtu pilnībā interaktīva. [Uzziniet vairāk](https://web.dev/interactive)."
   },
   "lighthouse-core/audits/metrics/interactive.js | title": {
     "message": "Laiks līdz interaktivitātei"
@@ -813,7 +813,7 @@
     "message": "Maks. potenciālā pirmā ievades aizkave"
   },
   "lighthouse-core/audits/metrics/speed-index.js | description": {
-    "message": "Ātruma rādītājs norāda, cik ātri tiek parādīts lapas saturs. [Uzziniet vairāk](https://developers.google.com/web/tools/lighthouse/audits/speed-index)."
+    "message": "Ātruma rādītājs norāda, cik ātri tiek parādīts lapas saturs. [Uzziniet vairāk](https://web.dev/speed-index)."
   },
   "lighthouse-core/audits/metrics/speed-index.js | title": {
     "message": "Ātruma rādītājs"
@@ -837,7 +837,7 @@
     "message": "Servera aizmugursistēmas latentums"
   },
   "lighthouse-core/audits/offline-start-url.js | description": {
-    "message": "Izmantojot pakalpojumu skriptu, varat nodrošināt uzticamu tīmekļa lietotnes darbību neparedzamos tīkla apstākļos. [Uzziniet vairāk](https://developers.google.com/web/tools/lighthouse/audits/http-200-when-offline)."
+    "message": "Izmantojot pakalpojumu skriptu, varat nodrošināt uzticamu tīmekļa lietotnes darbību neparedzamos tīkla apstākļos. [Uzziniet vairāk](https://web.dev/offline-start-url)."
   },
   "lighthouse-core/audits/offline-start-url.js | failureTitle": {
     "message": "`start_url` bezsaistē nereaģē ar statusa kodu 200"
@@ -861,7 +861,7 @@
     "message": "Izpildes budžets"
   },
   "lighthouse-core/audits/redirects-http.js | description": {
-    "message": "Ja HTTPS protokols jau ir iestatīts, noteikti novirziet visu HTTP datplūsmu uz HTTPS, lai visiem lietotājiem iespējotu droša tīmekļa funkcijas. [Uzziniet vairāk](https://developers.google.com/web/tools/lighthouse/audits/http-redirects-to-https)."
+    "message": "Ja HTTPS protokols jau ir iestatīts, noteikti novirziet visu HTTP datplūsmu uz HTTPS, lai visiem lietotājiem iespējotu droša tīmekļa funkcijas. [Uzziniet vairāk](https://web.dev/redirects-http)."
   },
   "lighthouse-core/audits/redirects-http.js | failureTitle": {
     "message": "HTTP datplūsma netiek novirzīta uz HTTPS lapām"
@@ -870,7 +870,7 @@
     "message": "HTTP datplūsma tiek novirzīta uz HTTPS lapām"
   },
   "lighthouse-core/audits/redirects.js | description": {
-    "message": "Novirzīšana rada papildu aizkaves pirms lapas ielādes. [Uzziniet vairāk](https://developers.google.com/web/tools/lighthouse/audits/redirects)."
+    "message": "Novirzīšana rada papildu aizkaves pirms lapas ielādes. [Uzziniet vairāk](https://web.dev/redirects)."
   },
   "lighthouse-core/audits/redirects.js | title": {
     "message": "Nepieļaujiet vairākas lapas novirzīšanas"
@@ -1035,7 +1035,7 @@
     "message": "Pieskārienu mērķi ir pietiekami liela izmēra"
   },
   "lighthouse-core/audits/service-worker.js | description": {
-    "message": "Pakalpojuma skripts ir tehnoloģija, kas palīdz nodrošināt daudzas progresīvo tīmekļa lietotņu funkcijas, piemēram, lietotnes izmantošanu bezsaistē, pievienošanu sākuma ekrānam un informatīvos paziņojumus. [Uzziniet vairāk](https://developers.google.com/web/tools/lighthouse/audits/registered-service-worker)."
+    "message": "Pakalpojuma skripts ir tehnoloģija, kas palīdz nodrošināt daudzas progresīvo tīmekļa lietotņu funkcijas, piemēram, lietotnes izmantošanu bezsaistē, pievienošanu sākuma ekrānam un informatīvos paziņojumus. [Uzziniet vairāk](https://web.dev/service-worker)."
   },
   "lighthouse-core/audits/service-worker.js | explanationBadManifest": {
     "message": "Lapu kontrolē pakalpojumu skripts, taču netika atrasts `start_url`, jo neizdevās analizēt manifestu kā derīgu JSON failu"
@@ -1056,7 +1056,7 @@
     "message": "Ir reģistrēts pakalpojumu skripts, kas kontrolē lapu un `start_url`"
   },
   "lighthouse-core/audits/splash-screen.js | description": {
-    "message": "Uzplaiksnījuma ekrāns ar piemērotu motīvu nodrošina labu pieredzi, lietotājiem palaižot lietotni no sākuma ekrāna. [Uzziniet vairāk](https://developers.google.com/web/tools/lighthouse/audits/custom-splash-screen)."
+    "message": "Uzplaiksnījuma ekrāns ar piemērotu motīvu nodrošina labu pieredzi, lietotājiem palaižot lietotni no sākuma ekrāna. [Uzziniet vairāk](https://web.dev/splash-screen)."
   },
   "lighthouse-core/audits/splash-screen.js | failureTitle": {
     "message": "Nav konfigurēta ar pielāgotu uzplaiksnījuma ekrānu"
@@ -1065,7 +1065,7 @@
     "message": "Konfigurēta ar pielāgotu uzplaiksnījuma ekrānu"
   },
   "lighthouse-core/audits/themed-omnibox.js | description": {
-    "message": "Pārlūkprogrammas adreses joslu var noformēt atbilstoši jūsu vietnes motīvam. [Uzziniet vairāk](https://developers.google.com/web/tools/lighthouse/audits/address-bar)."
+    "message": "Pārlūkprogrammas adreses joslu var noformēt atbilstoši jūsu vietnes motīvam. [Uzziniet vairāk](https://web.dev/themed-omnibox)."
   },
   "lighthouse-core/audits/themed-omnibox.js | failureTitle": {
     "message": "Lapa neiestata adreses joslas motīva krāsu."
@@ -1092,7 +1092,7 @@
     "message": "Trešo pušu lietojums"
   },
   "lighthouse-core/audits/time-to-first-byte.js | description": {
-    "message": "Metrika “Laiks līdz pirmajam baitam” norāda laiku, kad jūsu serveris nosūta atbildi. [Uzziniet vairāk](https://developers.google.com/web/tools/lighthouse/audits/ttfb)."
+    "message": "Metrika “Laiks līdz pirmajam baitam” norāda laiku, kad jūsu serveris nosūta atbildi. [Uzziniet vairāk](https://web.dev/time-to-first-byte)."
   },
   "lighthouse-core/audits/time-to-first-byte.js | displayValue": {
     "message": "Saknes dokumentam nepieciešamais laiks: {timeInMs, number, milliseconds} ms"
@@ -1113,7 +1113,7 @@
     "message": "Veids"
   },
   "lighthouse-core/audits/user-timings.js | description": {
-    "message": "Ieteicams pievienot lietotnei “Lietotāja laika API”, lai noteiktu lietotnes aktuālo veiktspēju lietotāju pamata darbības laikā. [Uzziniet vairāk](https://developers.google.com/web/tools/lighthouse/audits/user-timing)."
+    "message": "Ieteicams pievienot lietotnei “Lietotāja laika API”, lai noteiktu lietotnes aktuālo veiktspēju lietotāju pamata darbības laikā. [Uzziniet vairāk](https://web.dev/user-timings)."
   },
   "lighthouse-core/audits/user-timings.js | displayValue": {
     "message": "{itemCount,plural, =1{1 lietotāja laiks}zero{# lietotāju laiks}one{# lietotāja laiks}other{# lietotāju laiks}}"
@@ -1125,7 +1125,7 @@
     "message": "Elementam “{securityOrigin}” tika atrasta iepriekšējas pieslēgšanās parametrs <link>, taču pārlūkprogramma to neizmantoja. Pārbaudiet, vai pareizi izmantojat atribūtu “`crossorigin`”."
   },
   "lighthouse-core/audits/uses-rel-preconnect.js | description": {
-    "message": "Ieteicams pievienot “`preconnect`” vai “`dns-prefetch`” resursa norādes, lai savlaicīgi izveidotu savienojumus ar svarīgiem trešo pušu sākumpunktiem. [Uzziniet vairāk](https://developers.google.com/web/fundamentals/performance/resource-prioritization#preconnect)."
+    "message": "Ieteicams pievienot “`preconnect`” vai “`dns-prefetch`” resursa norādes, lai savlaicīgi izveidotu savienojumus ar svarīgiem trešo pušu sākumpunktiem. [Uzziniet vairāk](https://web.dev/uses-rel-preconnect)."
   },
   "lighthouse-core/audits/uses-rel-preconnect.js | title": {
     "message": "Veiciet iepriekšēju pieslēgšanu obligātajiem sākumpunktiem"
@@ -1134,13 +1134,13 @@
     "message": "Saitei “{preloadURL}” tika atrasts iepriekšējas ielādes parametrs <link>, taču pārlūkprogramma to neizmantoja. Pārbaudiet, vai pareizi izmantojat atribūtu “`crossorigin`”."
   },
   "lighthouse-core/audits/uses-rel-preload.js | description": {
-    "message": "Ieteicams izmantot atribūtu `<link rel=preload>`, lai noteiktu prioritāti tādu resursu iegūšanai, kas pašlaik lapas ielādē tiek pieprasīti vēlāk. [Uzziniet vairāk](https://developers.google.com/web/tools/lighthouse/audits/preload)."
+    "message": "Ieteicams izmantot atribūtu `<link rel=preload>`, lai noteiktu prioritāti tādu resursu iegūšanai, kas pašlaik lapas ielādē tiek pieprasīti vēlāk. [Uzziniet vairāk](https://web.dev/uses-rel-preload)."
   },
   "lighthouse-core/audits/uses-rel-preload.js | title": {
     "message": "Veiciet svarīgāko pieprasījumu iepriekšēju ielādi"
   },
   "lighthouse-core/audits/viewport.js | description": {
-    "message": "Pievienojiet tagu `<meta name=\"viewport\">`, lai optimizētu lietotni mobilo ierīču ekrāniem. [Uzziniet vairāk](https://developers.google.com/web/tools/lighthouse/audits/has-viewport-meta-tag)."
+    "message": "Pievienojiet tagu `<meta name=\"viewport\">`, lai optimizētu lietotni mobilo ierīču ekrāniem. [Uzziniet vairāk](https://web.dev/viewport)."
   },
   "lighthouse-core/audits/viewport.js | explanationNoTag": {
     "message": "Netika atrasts tags `<meta name=\"viewport\">`"
@@ -1152,7 +1152,7 @@
     "message": "Ir tags `<meta name=\"viewport\">` ar `width` vai `initial-scale`"
   },
   "lighthouse-core/audits/without-javascript.js | description": {
-    "message": "Ja JavaScript ir atspējots, lietotnē jāparāda zināms saturs — kaut vai tikai brīdinājums, ka lietotnes izmantošanai nepieciešams JavaScript. [Uzziniet vairāk](https://developers.google.com/web/tools/lighthouse/audits/no-js)."
+    "message": "Ja JavaScript ir atspējots, lietotnē jāparāda zināms saturs — kaut vai tikai brīdinājums, ka lietotnes izmantošanai nepieciešams JavaScript. [Uzziniet vairāk](https://web.dev/without-javascript)."
   },
   "lighthouse-core/audits/without-javascript.js | explanation": {
     "message": "Ja lapas skripti nav pieejami, lapas pamattekstā jātiek vismaz daļēji attēlotam saturam."
@@ -1164,7 +1164,7 @@
     "message": "Ja JavaScript nav pieejams, lapas saturs zināmā mērā tiek parādīts"
   },
   "lighthouse-core/audits/works-offline.js | description": {
-    "message": "Ja izstrādājat progresīvo tīmekļa lietotni, apsveriet iespēju izmantot pakalpojumu skriptu, lai lietotne varētu darboties bezsaistē. [Uzziniet vairāk](https://developers.google.com/web/tools/lighthouse/audits/http-200-when-offline)."
+    "message": "Ja izstrādājat progresīvo tīmekļa lietotni, apsveriet iespēju izmantot pakalpojumu skriptu, lai lietotne varētu darboties bezsaistē. [Uzziniet vairāk](https://web.dev/works-offline)."
   },
   "lighthouse-core/audits/works-offline.js | failureTitle": {
     "message": "Pašreizējā lapa bezsaistē nereaģē ar statusa kodu 200"

@@ -2293,7 +2293,6 @@ class ReportUIFeatures {
     this.onCopy = this.onCopy.bind(this);
     this.onDropDownMenuClick = this.onDropDownMenuClick.bind(this);
     this.onKeyUp = this.onKeyUp.bind(this);
-    this.onChevronClick = this.onChevronClick.bind(this);
     this.collapseAllDetails = this.collapseAllDetails.bind(this);
     this.expandAllDetails = this.expandAllDetails.bind(this);
     this._toggleDarkTheme = this._toggleDarkTheme.bind(this);
@@ -2588,16 +2587,6 @@ class ReportUIFeatures {
     } catch (/** @type {Error} */ e) {
       this._copyAttempt = false;
       this._fireEventOn('lh-log', this._document, {cmd: 'log', msg: e.message});
-    }
-  }
-
-  onChevronClick() {
-    const toggle = this._dom.find('.lh-config__settings-toggle', this._document);
-
-    if (toggle.hasAttribute('open')) {
-      toggle.removeAttribute('open');
-    } else {
-      toggle.setAttribute('open', 'true');
     }
   }
 

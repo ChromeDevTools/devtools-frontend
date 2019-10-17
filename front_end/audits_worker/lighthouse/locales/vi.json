@@ -30,10 +30,10 @@
     "message": "Một số vai trò mẹ của Ứng dụng Internet phong phú dễ dùng (ARIA) phải chứa vai trò con cụ thể để thực hiện các chức năng hỗ trợ tiếp cận chủ định tương ứng. [Tìm hiểu thêm](https://web.dev/aria-required-children/)."
   },
   "lighthouse-core/audits/accessibility/aria-required-children.js | failureTitle": {
-    "message": "Thiếu các phần tử có `[role]` yêu cầu phải có vai trò con `[role]` cụ thể."
+    "message": "Các phần tử có `[role]` ARIA yêu cầu phần tử con phải chứa một `[role]` cụ thể hiện đang thiếu một số hoặc tất cả các phần tử con bắt buộc đó."
   },
   "lighthouse-core/audits/accessibility/aria-required-children.js | title": {
-    "message": "Các phần tử có `[role]` yêu cầu phải có phần tử con `[role]` cụ thể đang hiện diện"
+    "message": "Các phần tử có `[role]` ARIA yêu cầu phần tử con phải chứa một `[role]` cụ thể có tất cả các phần tử con bắt buộc."
   },
   "lighthouse-core/audits/accessibility/aria-required-parent.js | description": {
     "message": "Các vai trò mẹ cụ thể phải chứa một số vai trò con của Ứng dụng Internet phong phú dễ dùng (ARIA) để thực hiện đúng cách các chức năng hỗ trợ tiếp cận chủ định tương ứng. [Tìm hiểu thêm](https://web.dev/aria-required-parent/)."
@@ -276,10 +276,10 @@
     "message": "Trình đọc màn hình có các tính năng giúp người dùng dễ sử dụng bảng hơn. Việc đảm bảo các ô `<td>` sử dụng thuộc tính `[headers]` chỉ tham chiếu các ô khác trong cùng bảng có thể cải thiện trải nghiệm của người dùng trình đọc màn hình. [Tìm hiểu thêm](https://web.dev/td-headers-attr/)."
   },
   "lighthouse-core/audits/accessibility/td-headers-attr.js | failureTitle": {
-    "message": "Các ô trong một phần tử `<table>` sử dụng thuộc tính `[headers]` tham chiếu các ô khác trong chính bảng đó."
+    "message": "Các ô trong phần tử `<table>` sử dụng thuộc tính `[headers]` tham chiếu đến một phần tử `id` không tìm thấy trong cùng một bảng."
   },
   "lighthouse-core/audits/accessibility/td-headers-attr.js | title": {
-    "message": "Các ô trong phần tử `<table>` dùng thuộc tính `[headers]` chỉ tham chiếu các ô khác trong chính bảng đó."
+    "message": "Các ô trong phần tử `<table>` sử dụng thuộc tính `[headers]` tham chiếu đến các ô trong cùng một bảng."
   },
   "lighthouse-core/audits/accessibility/th-has-data-cells.js | description": {
     "message": "Trình đọc màn hình có các tính năng giúp người dùng dễ sử dụng bảng hơn. Việc đảm bảo tiêu đề bảng luôn tham chiếu đến một nhóm ô nào đó có thể cải thiện trải nghiệm của người dùng trình đọc màn hình. [Tìm hiểu thêm](https://web.dev/th-has-data-cells/)."
@@ -318,7 +318,7 @@
     "message": "Các phần tử `<video>` chứa phần tử `<track>` có `[kind=\"description\"]`"
   },
   "lighthouse-core/audits/apple-touch-icon.js | description": {
-    "message": "Hãy xác định `apple-touch-icon` để hiển thị đúng cách trên iOS khi người dùng thêm một ứng dụng web tiến bộ vào màn hình chính. Thuộc tính này phải trỏ đến ảnh PNG vuông có kích thước 192px (hoặc 180px) ở dạng không trong suốt. [Tìm hiểu thêm](https://developers.google.com/web/fundamentals/design-and-ux/browser-customization/)"
+    "message": "Hãy xác định `apple-touch-icon` để khi người dùng thêm một ứng dụng web tiến bộ vào màn hình chính trên iOS, biểu tượng ứng dụng sẽ hiển thị chính xác. Thuộc tính này phải trỏ đến ảnh PNG vuông có kích thước 192px (hoặc 180px) ở dạng không trong suốt. [Tìm hiểu thêm](https://web.dev/apple-touch-icon/)"
   },
   "lighthouse-core/audits/apple-touch-icon.js | failureTitle": {
     "message": "Chưa cung cấp `apple-touch-icon` hợp lệ"
@@ -342,7 +342,7 @@
     "message": "Tổng thời gian của CPU"
   },
   "lighthouse-core/audits/bootup-time.js | description": {
-    "message": "Hãy cân nhắc giảm thời gian dùng để phân tích cú pháp, biên soạn và thực thi JS. Bạn có thể giải quyết vấn đề này bằng cách phân phối các tải trọng JS nhỏ hơn. [Tìm hiểu thêm](https://developers.google.com/web/tools/lighthouse/audits/bootup)."
+    "message": "Hãy cân nhắc giảm thời gian dùng để phân tích cú pháp, biên soạn và thực thi JS. Bạn có thể giải quyết vấn đề này bằng cách phân phối các tải trọng JS nhỏ hơn. [Tìm hiểu thêm](https://web.dev/bootup-time)."
   },
   "lighthouse-core/audits/bootup-time.js | failureTitle": {
     "message": "Giảm thời gian thực thi JavaScript"
@@ -351,25 +351,25 @@
     "message": "Thời gian thực thi JavaScript"
   },
   "lighthouse-core/audits/byte-efficiency/efficient-animated-content.js | description": {
-    "message": "Ảnh GIF lớn không có hiệu quả trong việc phân phối nội dung động. Hãy cân nhắc sử dụng video MPEG4/WebM cho ảnh động và PNG/WebP cho ảnh tĩnh thay vì ảnh GIF để tiết kiệm dữ liệu mạng. [Tìm hiểu thêm](https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/replace-animated-gifs-with-video/)"
+    "message": "Ảnh GIF lớn không có hiệu quả trong việc phân phối nội dung động. Hãy cân nhắc sử dụng video MPEG4/WebM cho ảnh động và PNG/WebP cho ảnh tĩnh thay vì ảnh GIF để tiết kiệm dữ liệu mạng. [Tìm hiểu thêm](https://web.dev/efficient-animated-content)"
   },
   "lighthouse-core/audits/byte-efficiency/efficient-animated-content.js | title": {
     "message": "Sử dụng các định dạng video cho nội dung động"
   },
   "lighthouse-core/audits/byte-efficiency/offscreen-images.js | description": {
-    "message": "Hãy cân nhắc tải từng phần các hình ảnh ẩn và nằm ngoài màn hình sau khi tải xong tất cả tài nguyên quan trọng nhằm giảm thời gian tương tác. [Tìm hiểu thêm](https://developers.google.com/web/tools/lighthouse/audits/offscreen-images)."
+    "message": "Hãy cân nhắc tải từng phần các hình ảnh ẩn và nằm ngoài màn hình sau khi tải xong tất cả tài nguyên quan trọng nhằm giảm thời gian tương tác. [Tìm hiểu thêm](https://web.dev/offscreen-images)."
   },
   "lighthouse-core/audits/byte-efficiency/offscreen-images.js | title": {
     "message": "Trì hoãn tải các hình ảnh ngoài màn hình"
   },
   "lighthouse-core/audits/byte-efficiency/render-blocking-resources.js | description": {
-    "message": "Các tài nguyên đang chặn lần hiển thị đầu tiên của trang. Hãy cân nhắc phân phối nội dòng JS/Biểu định kiểu xếp chồng (CSS) quan trọng và trì hoãn mọi JS/kiểu không quan trọng. [Tìm hiểu thêm](https://developers.google.com/web/tools/lighthouse/audits/blocking-resources)."
+    "message": "Các tài nguyên đang chặn lần hiển thị đầu tiên của trang. Hãy cân nhắc phân phối nội dòng JS/Biểu định kiểu xếp chồng (CSS) quan trọng và trì hoãn mọi JS/kiểu không quan trọng. [Tìm hiểu thêm](https://web.dev/render-blocking-resources)."
   },
   "lighthouse-core/audits/byte-efficiency/render-blocking-resources.js | title": {
     "message": "Loại bỏ các tài nguyên chặn hiển thị"
   },
   "lighthouse-core/audits/byte-efficiency/total-byte-weight.js | description": {
-    "message": "Tải trọng mạng lớn gây tốn kém cho người dùng và thường khiến thời gian tải lâu. [Tìm hiểu thêm](https://developers.google.com/web/tools/lighthouse/audits/network-payloads)."
+    "message": "Tải trọng mạng lớn gây tốn kém cho người dùng và thường khiến thời gian tải lâu. [Tìm hiểu thêm](https://web.dev/total-byte-weight)."
   },
   "lighthouse-core/audits/byte-efficiency/total-byte-weight.js | displayValue": {
     "message": "Tổng kích thước là {totalBytes, number, bytes} KB"
@@ -381,19 +381,19 @@
     "message": "Tránh tài nguyên lớn trên mạng"
   },
   "lighthouse-core/audits/byte-efficiency/unminified-css.js | description": {
-    "message": "Việc giảm kích thước tệp Biểu định kiểu xếp chồng (CSS) có thể giảm kích thước tải trọng mạng. [Tìm hiểu thêm](https://developers.google.com/web/tools/lighthouse/audits/minify-css)."
+    "message": "Việc giảm kích thước tệp Biểu định kiểu xếp chồng (CSS) có thể giảm kích thước tải trọng mạng. [Tìm hiểu thêm](https://web.dev/unminified-css)."
   },
   "lighthouse-core/audits/byte-efficiency/unminified-css.js | title": {
     "message": "Rút gọn CSS"
   },
   "lighthouse-core/audits/byte-efficiency/unminified-javascript.js | description": {
-    "message": "Việc giảm kích thước tệp JavaScript có thể giảm kích thước tải trọng và thời gian phân tích cú pháp tập lệnh. [Tìm hiểu thêm](https://developers.google.com/speed/docs/insights/MinifyResources)."
+    "message": "Việc giảm kích thước tệp JavaScript có thể giảm kích thước tải trọng và thời gian phân tích cú pháp tập lệnh. [Tìm hiểu thêm](https://web.dev/unminified-javascript)."
   },
   "lighthouse-core/audits/byte-efficiency/unminified-javascript.js | title": {
     "message": "Rút gọn JavaScript"
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | description": {
-    "message": "Hãy xóa các quy tắc vô hiệu khỏi biểu định kiểu và trì hoãn tải Biểu định kiểu xếp chồng (CSS) không dùng cho nội dung trong màn hình đầu tiên để giảm số byte không cần thiết mà hoạt động mạng sử dụng. [Tìm hiểu thêm](https://developers.google.com/web/tools/lighthouse/audits/unused-css)."
+    "message": "Hãy xóa các quy tắc vô hiệu khỏi biểu định kiểu và trì hoãn tải Biểu định kiểu xếp chồng (CSS) không dùng cho nội dung trong màn hình đầu tiên để giảm số byte không cần thiết mà hoạt động mạng sử dụng. [Tìm hiểu thêm](https://web.dev/unused-css-rules)."
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | title": {
     "message": "Xóa biểu định kiểu xếp chồng (CSS) không dùng"
@@ -405,7 +405,7 @@
     "message": "Xóa JavaScript không dùng"
   },
   "lighthouse-core/audits/byte-efficiency/uses-long-cache-ttl.js | description": {
-    "message": "Bộ nhớ đệm có thời gian hữu dụng dài có thể giúp tăng tốc số lượt truy cập lặp lại vào trang của bạn. [Tìm hiểu thêm](https://developers.google.com/web/tools/lighthouse/audits/cache-policy)."
+    "message": "Bộ nhớ đệm có thời gian hữu dụng dài có thể giúp tăng tốc số lượt truy cập lặp lại vào trang của bạn. [Tìm hiểu thêm](https://web.dev/uses-long-cache-ttl)."
   },
   "lighthouse-core/audits/byte-efficiency/uses-long-cache-ttl.js | displayValue": {
     "message": "{itemCount,plural, =1{Đã tìm thấy 1 tài nguyên}other{Đã tìm thấy # tài nguyên}}"
@@ -417,31 +417,31 @@
     "message": "Sử dụng chính sách bộ nhớ đệm hiệu quả cho các nội dung tĩnh"
   },
   "lighthouse-core/audits/byte-efficiency/uses-optimized-images.js | description": {
-    "message": "Hình ảnh được tối ưu hóa sẽ tải nhanh hơn và tiêu tốn ít dữ liệu di động hơn. [Tìm hiểu thêm](https://developers.google.com/web/tools/lighthouse/audits/optimize-images)."
+    "message": "Hình ảnh được tối ưu hóa sẽ tải nhanh hơn và tiêu tốn ít dữ liệu di động hơn. [Tìm hiểu thêm](https://web.dev/uses-optimized-images)."
   },
   "lighthouse-core/audits/byte-efficiency/uses-optimized-images.js | title": {
     "message": "Mã hóa hình ảnh hiệu quả"
   },
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | description": {
-    "message": "Phân phát hình ảnh có kích thước phù hợp để tiết kiệm dữ liệu di động và cải thiện thời gian tải. [Tìm hiểu thêm](https://developers.google.com/web/tools/lighthouse/audits/oversized-images)."
+    "message": "Phân phát hình ảnh có kích thước phù hợp để tiết kiệm dữ liệu di động và cải thiện thời gian tải. [Tìm hiểu thêm](https://web.dev/uses-responsive-images)."
   },
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | title": {
     "message": "Thay đổi kích thước hình ảnh cho phù hợp"
   },
   "lighthouse-core/audits/byte-efficiency/uses-text-compression.js | description": {
-    "message": "Phải phân phát các tài nguyên dựa trên văn bản ở định dạng nén (gzip, deflate hoặc brotli) để giảm thiểu tổng số byte mạng. [Tìm hiểu thêm](https://developers.google.com/web/tools/lighthouse/audits/text-compression)."
+    "message": "Phải phân phát các tài nguyên dựa trên văn bản ở định dạng nén (gzip, deflate hoặc brotli) để giảm thiểu tổng số byte mạng. [Tìm hiểu thêm](https://web.dev/uses-text-compression)."
   },
   "lighthouse-core/audits/byte-efficiency/uses-text-compression.js | title": {
     "message": "Bật tính năng nén văn bản"
   },
   "lighthouse-core/audits/byte-efficiency/uses-webp-images.js | description": {
-    "message": "Các định dạng hình ảnh như JPEG 2000, JPEG XR và WebP thường nén tốt hơn PNG hoặc JPEG, tức là tải xuống nhanh hơn và tiêu tốn ít dữ liệu hơn. [Tìm hiểu thêm](https://developers.google.com/web/tools/lighthouse/audits/webp)."
+    "message": "Các định dạng hình ảnh như JPEG 2000, JPEG XR và WebP thường nén tốt hơn PNG hoặc JPEG, tức là tải xuống nhanh hơn và tiêu tốn ít dữ liệu hơn. [Tìm hiểu thêm](https://web.dev/uses-webp-images)."
   },
   "lighthouse-core/audits/byte-efficiency/uses-webp-images.js | title": {
     "message": "Phân phối hình ảnh ở định dạng mới và hiệu quả hơn"
   },
   "lighthouse-core/audits/content-width.js | description": {
-    "message": "Nếu chiều rộng của nội dung trong ứng dụng không khớp với chiều rộng của khung nhìn, thì ứng dụng có thể không được tối ưu hóa cho màn hình thiết bị di động. [Tìm hiểu thêm](https://developers.google.com/web/tools/lighthouse/audits/content-sized-correctly-for-viewport)"
+    "message": "Nếu chiều rộng của nội dung trong ứng dụng không khớp với chiều rộng của khung nhìn, thì ứng dụng có thể không được tối ưu hóa cho màn hình thiết bị di động. [Tìm hiểu thêm](https://web.dev/content-width)"
   },
   "lighthouse-core/audits/content-width.js | explanation": {
     "message": "Kích thước khung nhìn {innerWidth}px không khớp với kích thước cửa sổ {outerWidth}px."
@@ -453,7 +453,7 @@
     "message": "Kích thước của nội dung phù hợp với khung nhìn"
   },
   "lighthouse-core/audits/critical-request-chains.js | description": {
-    "message": "Các Chuỗi yêu cầu quan trọng dưới đây cho bạn biết những tài nguyên có mức độ ưu tiên cao sẽ được tải. Hãy cân nhắc giảm độ dài chuỗi, giảm kích thước tài nguyên tải xuống hoặc trì hoãn tải xuống các tài nguyên không cần thiết để cải thiện tốc độ tải trang. [Tìm hiểu thêm](https://developers.google.com/web/tools/lighthouse/audits/critical-request-chains)."
+    "message": "Các Chuỗi yêu cầu quan trọng dưới đây cho bạn biết những tài nguyên có mức độ ưu tiên cao sẽ được tải. Hãy cân nhắc giảm độ dài chuỗi, giảm kích thước tài nguyên tải xuống hoặc trì hoãn tải xuống các tài nguyên không cần thiết để cải thiện tốc độ tải trang. [Tìm hiểu thêm](https://web.dev/critical-request-chains)."
   },
   "lighthouse-core/audits/critical-request-chains.js | displayValue": {
     "message": "{itemCount,plural, =1{Đã tìm thấy 1 chuỗi}other{Đã tìm thấy # chuỗi}}"
@@ -573,7 +573,7 @@
     "message": "Phiên bản"
   },
   "lighthouse-core/audits/dobetterweb/js-libraries.js | description": {
-    "message": "Phát hiện tất cả thư viện giao diện người dùng JavaScript trên trang này. [Tìm hiểu thêm](https://web.dev/js-libraries)"
+    "message": "Phát hiện tất cả thư viện JavaScript ở phía giao diện người dùng trên trang này. [Tìm hiểu thêm](https://web.dev/js-libraries)"
   },
   "lighthouse-core/audits/dobetterweb/js-libraries.js | title": {
     "message": "Thư viện JavaScript phát hiện được"
@@ -675,7 +675,7 @@
     "message": "Chưa ghi lỗi nào của trình duyệt vào bảng điều khiển"
   },
   "lighthouse-core/audits/font-display.js | description": {
-    "message": "Sử dụng tính năng Biểu định kiểu xếp chồng (CSS) hiển thị phông chữ để đảm bảo văn bản hiển thị với người dùng khi phông chữ web đang tải. [Tìm hiểu thêm](https://developers.google.com/web/updates/2016/02/font-display)."
+    "message": "Sử dụng tính năng Biểu định kiểu xếp chồng (CSS) hiển thị phông chữ để đảm bảo văn bản hiển thị với người dùng khi phông chữ web đang tải. [Tìm hiểu thêm](https://web.dev/font-display)."
   },
   "lighthouse-core/audits/font-display.js | failureTitle": {
     "message": "Đảm bảo văn bản vẫn hiển thị trong khi tải phông chữ web"
@@ -705,7 +705,7 @@
     "message": "Thông tin kích thước hình ảnh không hợp lệ {url}"
   },
   "lighthouse-core/audits/installable-manifest.js | description": {
-    "message": "Các trình duyệt có thể chủ động nhắc người dùng thêm ứng dụng của bạn vào màn hình chính để tăng mức độ tương tác. [Tìm hiểu thêm](https://developers.google.com/web/tools/lighthouse/audits/install-prompt)"
+    "message": "Các trình duyệt có thể chủ động nhắc người dùng thêm ứng dụng của bạn vào màn hình chính để tăng mức độ tương tác. [Tìm hiểu thêm](https://web.dev/installable-manifest)"
   },
   "lighthouse-core/audits/installable-manifest.js | failureTitle": {
     "message": "Tệp kê khai ứng dụng web không đáp ứng các yêu cầu về khả năng cài đặt"
@@ -729,7 +729,7 @@
     "message": "Sử dụng HTTPS"
   },
   "lighthouse-core/audits/load-fast-enough-for-pwa.js | description": {
-    "message": "Tốc độ tải trang nhanh trên mạng di động giúp mang đến trải nghiệm tích cực cho người dùng thiết bị di động. [Tìm hiểu thêm](https://developers.google.com/web/tools/lighthouse/audits/fast-3g)."
+    "message": "Tốc độ tải trang nhanh trên mạng di động giúp mang đến trải nghiệm tích cực cho người dùng thiết bị di động. [Tìm hiểu thêm](https://web.dev/load-fast-enough-for-pwa)."
   },
   "lighthouse-core/audits/load-fast-enough-for-pwa.js | displayValueText": {
     "message": "Tương tác ở giây thứ {timeInMs, number, seconds}"
@@ -738,7 +738,7 @@
     "message": "Tương tác trên mạng di động mô phỏng ở giây thứ {timeInMs, number, seconds}"
   },
   "lighthouse-core/audits/load-fast-enough-for-pwa.js | explanationLoadSlow": {
-    "message": "Trang của bạn tải quá chậm và không tương tác trong vòng 10 giây. Hãy xem các cơ hội và thông tin chẩn đoán trong phần \"Hiệu suất\" để tìm hiểu cách cải thiện."
+    "message": "Trang của bạn tải quá chậm và không tương tác trong vòng 10 giây. Hãy xem các lựa chọn tối ưu hóa và thông tin chẩn đoán trong phần \"Hiệu suất\" để tìm hiểu cách cải thiện."
   },
   "lighthouse-core/audits/load-fast-enough-for-pwa.js | failureTitle": {
     "message": "Tốc độ tải trang không đủ nhanh trên mạng di động"
@@ -750,7 +750,7 @@
     "message": "Danh mục"
   },
   "lighthouse-core/audits/mainthread-work-breakdown.js | description": {
-    "message": "Hãy xem xét giảm thời gian dùng để phân tích cú pháp, biên soạn và thực thi JS. Bạn có thể giải quyết vấn đề này bằng cách phân phối các tải trọng JS nhỏ hơn."
+    "message": "Hãy cân nhắc giảm thời gian dùng để phân tích cú pháp, biên soạn và thực thi JS. Bạn có thể giải quyết vấn đề này bằng cách phân phối các tải trọng JS nhỏ hơn. [Tìm hiểu thêm](https://web.dev/mainthread-work-breakdown)"
   },
   "lighthouse-core/audits/mainthread-work-breakdown.js | failureTitle": {
     "message": "Giảm thiểu công việc theo chuỗi chính"
@@ -759,49 +759,49 @@
     "message": "Giảm thiểu công việc theo chuỗi chính"
   },
   "lighthouse-core/audits/manual/pwa-cross-browser.js | description": {
-    "message": "Để tiếp cận nhiều người dùng nhất, các trang web phải hoạt động trên mọi trình duyệt chính. [Tìm hiểu thêm](https://developers.google.com/web/progressive-web-apps/checklist#site-works-cross-browser)"
+    "message": "Để tiếp cận nhiều người dùng nhất, các trang web phải hoạt động trên mọi trình duyệt chính. [Tìm hiểu thêm](https://web.dev/pwa-cross-browser)"
   },
   "lighthouse-core/audits/manual/pwa-cross-browser.js | title": {
     "message": "Trang web hoạt động trên nhiều trình duyệt"
   },
   "lighthouse-core/audits/manual/pwa-each-page-has-url.js | description": {
-    "message": "Đảm bảo từng trang có thể liên kết sâu qua URL và URL là duy nhất, có như vậy thì mới chia sẻ được trên mạng xã hội. [Tìm hiểu thêm](https://developers.google.com/web/progressive-web-apps/checklist#each-page-has-a-url)"
+    "message": "Đảm bảo từng trang có thể liên kết sâu qua URL và URL là duy nhất để có thể chia sẻ trên mạng xã hội. [Tìm hiểu thêm](https://web.dev/pwa-each-page-has-url)"
   },
   "lighthouse-core/audits/manual/pwa-each-page-has-url.js | title": {
     "message": "Mỗi trang có một URL"
   },
   "lighthouse-core/audits/manual/pwa-page-transitions.js | description": {
-    "message": "Quá trình chuyển tiếp phải diễn ra ngay khi bạn nhấn vào, kể cả khi mạng chậm, một yếu tố then chốt để tăng hiệu suất cảm nhận. [Tìm hiểu thêm](https://developers.google.com/web/progressive-web-apps/checklist#page-transitions-dont-feel-like-they-block-on-the-network)"
+    "message": "Quá trình chuyển tiếp phải diễn ra ngay khi bạn nhấn vào, kể cả khi mạng chậm. Trải nghiệm này là một yếu tố quan trọng quyết định cảm nhận của người dùng về hiệu suất. [Tìm hiểu thêm](https://web.dev/pwa-page-transitions)"
   },
   "lighthouse-core/audits/manual/pwa-page-transitions.js | title": {
-    "message": "Quá trình chuyển tiếp trang không bị chậm trễ do mạng"
+    "message": "Người dùng không cảm thấy mạng chậm khi chuyển trang"
   },
   "lighthouse-core/audits/metrics/estimated-input-latency.js | description": {
-    "message": "Thời gian chờ nhập thông tin theo ước tính là thời gian ước tính mà ứng dụng cần để phản hồi thông tin do người dùng nhập (tính bằng mili giây) trong khoảng thời gian 5 giây tải nhiều trang nhất. Nếu người dùng phải chờ quá 50 mili giây, thì ứng dụng của bạn bị coi là chạy chậm. [Tìm hiểu thêm](https://developers.google.com/web/tools/lighthouse/audits/estimated-input-latency)."
+    "message": "Thời gian chờ nhập thông tin theo ước tính là thời gian ước tính mà ứng dụng cần để phản hồi thông tin do người dùng nhập (tính bằng mili giây) trong khoảng thời gian 5 giây tải nhiều trang nhất. Nếu người dùng phải chờ quá 50 mili giây, thì ứng dụng của bạn bị coi là chạy chậm. [Tìm hiểu thêm](https://web.dev/estimated-input-latency)."
   },
   "lighthouse-core/audits/metrics/estimated-input-latency.js | title": {
     "message": "Thời gian chờ nhập thông tin theo ước tính"
   },
   "lighthouse-core/audits/metrics/first-contentful-paint.js | description": {
-    "message": "Chỉ số Hiển thị nội dung đầu tiên đánh dấu thời điểm hiển thị văn bản hoặc hình ảnh đầu tiên. [Tìm hiểu thêm](https://developers.google.com/web/tools/lighthouse/audits/first-contentful-paint)."
+    "message": "Chỉ số Hiển thị nội dung đầu tiên đánh dấu thời điểm hiển thị văn bản hoặc hình ảnh đầu tiên. [Tìm hiểu thêm](https://web.dev/first-contentful-paint)."
   },
   "lighthouse-core/audits/metrics/first-contentful-paint.js | title": {
     "message": "Hình ảnh có nội dung đầu tiên"
   },
   "lighthouse-core/audits/metrics/first-cpu-idle.js | description": {
-    "message": "Chỉ số CPU nhàn rỗi đầu tiên đánh dấu thời điểm đầu tiên chuỗi chính của trang không phải xử lý quá nhiều thông tin nhập vào. [Tìm hiểu thêm](https://developers.google.com/web/tools/lighthouse/audits/first-interactive)."
+    "message": "Chỉ số CPU nhàn rỗi đầu tiên đánh dấu thời điểm đầu tiên chuỗi chính của trang không phải xử lý quá nhiều thông tin nhập vào.  [Tìm hiểu thêm](https://web.dev/first-cpu-idle)"
   },
   "lighthouse-core/audits/metrics/first-cpu-idle.js | title": {
     "message": "CPU nhàn rỗi đầu tiên"
   },
   "lighthouse-core/audits/metrics/first-meaningful-paint.js | description": {
-    "message": "Chỉ số Hiển thị nội dung đầu tiên đo lường thời điểm hiển thị nội dung chính của trang. [Tìm hiểu thêm](https://developers.google.com/web/tools/lighthouse/audits/first-meaningful-paint)."
+    "message": "Chỉ số Hiển thị nội dung đầu tiên đo lường thời điểm hiển thị nội dung chính của trang. [Tìm hiểu thêm](https://web.dev/first-meaningful-paint)."
   },
   "lighthouse-core/audits/metrics/first-meaningful-paint.js | title": {
     "message": "Hình ảnh có ý nghĩa đầu tiên"
   },
   "lighthouse-core/audits/metrics/interactive.js | description": {
-    "message": "Thời điểm tương tác là khoảng thời gian mà trang cần để trở nên hoàn toàn tương tác. [Tìm hiểu thêm](https://developers.google.com/web/tools/lighthouse/audits/consistently-interactive)."
+    "message": "Thời điểm tương tác là khoảng thời gian mà trang cần để trở nên hoàn toàn tương tác. [Tìm hiểu thêm](https://web.dev/interactive)."
   },
   "lighthouse-core/audits/metrics/interactive.js | title": {
     "message": "Thời điểm tương tác"
@@ -813,7 +813,7 @@
     "message": "Thời gian phản hồi lần tương tác đầu tiên tối đa có thể"
   },
   "lighthouse-core/audits/metrics/speed-index.js | description": {
-    "message": "Chỉ số tốc độ cho biết nội dung của một trang hiển thị nhanh chóng đến mức nào. [Tìm hiểu thêm](https://developers.google.com/web/tools/lighthouse/audits/speed-index)."
+    "message": "Chỉ số tốc độ cho biết nội dung của một trang hiển thị nhanh chóng đến mức nào. [Tìm hiểu thêm](https://web.dev/speed-index)."
   },
   "lighthouse-core/audits/metrics/speed-index.js | title": {
     "message": "Chỉ số tốc độ"
@@ -837,13 +837,13 @@
     "message": "Thời gian dưới nền của máy chủ"
   },
   "lighthouse-core/audits/offline-start-url.js | description": {
-    "message": "Trình chạy dịch vụ giúp ứng dụng web của bạn hoạt động ổn định trong điều kiện mạng chập chờn. [Tìm hiểu thêm](https://developers.google.com/web/tools/lighthouse/audits/http-200-when-offline)"
+    "message": "Trình chạy dịch vụ giúp ứng dụng web của bạn hoạt động ổn định trong điều kiện mạng chập chờn. [Tìm hiểu thêm](https://web.dev/offline-start-url)"
   },
   "lighthouse-core/audits/offline-start-url.js | failureTitle": {
-    "message": "`start_url` không phản hồi kèm mã trạng thái 200 khi không có mạng"
+    "message": "`start_url` không trả về mã trạng thái 200 khi không có mạng"
   },
   "lighthouse-core/audits/offline-start-url.js | title": {
-    "message": "`start_url` phản hồi kèm mã trạng thái 200 khi không có mạng"
+    "message": "`start_url` trả về mã trạng thái 200 khi không có mạng"
   },
   "lighthouse-core/audits/offline-start-url.js | warningCantStart": {
     "message": "Lighthouse không đọc được `start_url` trong tệp kê khai. Do đó, `start_url` được giả định là URL của tài liệu. Thông báo lỗi: '{manifestWarning}'."
@@ -861,7 +861,7 @@
     "message": "Ngân sách hiệu suất"
   },
   "lighthouse-core/audits/redirects-http.js | description": {
-    "message": "Nếu bạn thiết lập HTTPS từ trước, hãy nhớ chuyển hướng toàn bộ lưu lượng truy cập HTTP tới HTTPS để bật các tính năng web an toàn cho tất cả người dùng. [Tìm hiểu thêm](https://developers.google.com/web/tools/lighthouse/audits/http-redirects-to-https)"
+    "message": "Nếu bạn thiết lập HTTPS từ trước, hãy nhớ chuyển hướng toàn bộ lưu lượng truy cập HTTP tới HTTPS để bật các tính năng web an toàn cho tất cả người dùng. [Tìm hiểu thêm](https://web.dev/redirects-http)"
   },
   "lighthouse-core/audits/redirects-http.js | failureTitle": {
     "message": "Không chuyển hướng lưu lượng truy cập HTTP tới HTTPS"
@@ -870,7 +870,7 @@
     "message": "Chuyển hướng lưu lượng truy cập HTTP tới HTTPS"
   },
   "lighthouse-core/audits/redirects.js | description": {
-    "message": "Các lần chuyển hướng sẽ làm giảm tốc độ tải trang. [Tìm hiểu thêm](https://developers.google.com/web/tools/lighthouse/audits/redirects)."
+    "message": "Các lần chuyển hướng sẽ làm giảm tốc độ tải trang. [Tìm hiểu thêm](https://web.dev/redirects)."
   },
   "lighthouse-core/audits/redirects.js | title": {
     "message": "Tránh chuyển hướng trang nhiều lần"
@@ -996,7 +996,7 @@
     "message": "Tài liệu tránh sử dụng plugin"
   },
   "lighthouse-core/audits/seo/robots-txt.js | description": {
-    "message": "Nếu định dạng của tệp robots.txt không đúng, thì trình thu thập thông tin có thể không hiểu được cách bạn muốn thu thập thông tin hoặc lập chỉ mục trang web. [Tìm hiểu thêm](https://web.dev/robots-txt)"
+    "message": "Nếu định dạng của tệp robots.txt không đúng, thì trình thu thập thông tin có thể không hiểu được cách bạn muốn thu thập thông tin hoặc lập chỉ mục trang web của mình. [Tìm hiểu thêm](https://web.dev/robots-txt)"
   },
   "lighthouse-core/audits/seo/robots-txt.js | displayValueHttpBadCode": {
     "message": "Yêu cầu robots.txt trả về trạng thái HTTP: {statusCode}"
@@ -1035,19 +1035,19 @@
     "message": "Mục tiêu nhấn có kích thước phù hợp"
   },
   "lighthouse-core/audits/service-worker.js | description": {
-    "message": "Trình chạy dịch vụ là công nghệ cho phép ứng dụng của bạn dùng nhiều tính năng của Ứng dụng web tiến bộ, chẳng hạn như thêm vào màn hình chính khi không có mạng và thông báo đẩy. [Tìm hiểu thêm](https://developers.google.com/web/tools/lighthouse/audits/registered-service-worker)"
+    "message": "Trình chạy dịch vụ là công nghệ cho phép ứng dụng của bạn dùng nhiều tính năng của Ứng dụng web tiến bộ, chẳng hạn như hoạt động khi không có mạng, thêm vào màn hình chính, và thông báo đẩy. [Tìm hiểu thêm](https://web.dev/service-worker)"
   },
   "lighthouse-core/audits/service-worker.js | explanationBadManifest": {
     "message": "Trang này do một trình chạy dịch vụ kiểm soát. Tuy nhiên, không tìm thấy `start_url` vì tệp kê khai không thể phân tích cú pháp thành tệp JSON hợp lệ"
   },
   "lighthouse-core/audits/service-worker.js | explanationBadStartUrl": {
-    "message": "Trang này do một trình chạy dịch vụ kiểm soát. Tuy nhiên, `start_url` ({startUrl}) không thuộc phạm vi kiểm soát của trình chạy này ({scopeUrl})"
+    "message": "Trang này do một trình chạy dịch vụ kiểm soát. Tuy nhiên, `start_url` ({startUrl}) không thuộc phạm vi của trình chạy dịch vụ này ({scopeUrl})"
   },
   "lighthouse-core/audits/service-worker.js | explanationNoManifest": {
     "message": "Trang này do một trình chạy dịch vụ kiểm soát. Tuy nhiên, không tìm thấy `start_url` vì không tìm nạp được tệp kê khai."
   },
   "lighthouse-core/audits/service-worker.js | explanationOutOfScope": {
-    "message": "Nguồn gốc này có tối thiểu một trình chạy dịch vụ. Tuy nhiên, trang ({pageUrl}) không thuộc phạm vi kiểm soát của các trình chạy này."
+    "message": "Nguồn gốc này có một hoặc nhiều trình chạy dịch vụ. Tuy nhiên, trang ({pageUrl}) không thuộc phạm vi của các trình chạy dịch vụ này."
   },
   "lighthouse-core/audits/service-worker.js | failureTitle": {
     "message": "Không đăng ký một trình chạy dịch vụ kiểm soát trang và `start_url`"
@@ -1056,7 +1056,7 @@
     "message": "Đăng ký một trình chạy dịch vụ kiểm soát trang và `start_url`"
   },
   "lighthouse-core/audits/splash-screen.js | description": {
-    "message": "Màn hình chờ theo chủ đề giúp đảm bảo người dùng có trải nghiệm chất lượng cao khi chạy ứng dụng từ màn hình chính. [Tìm hiểu thêm](https://developers.google.com/web/tools/lighthouse/audits/custom-splash-screen)"
+    "message": "Màn hình chờ có giao diện giúp đảm bảo người dùng có trải nghiệm chất lượng cao khi chạy ứng dụng từ màn hình chính. [Tìm hiểu thêm](https://web.dev/splash-screen)"
   },
   "lighthouse-core/audits/splash-screen.js | failureTitle": {
     "message": "Chưa được định cấu hình cho màn hình chờ tùy chỉnh"
@@ -1065,13 +1065,13 @@
     "message": "Đã định cấu hình cho màn hình chờ tùy chỉnh"
   },
   "lighthouse-core/audits/themed-omnibox.js | description": {
-    "message": "Bạn có thể đặt màu chủ đề cho thanh địa chỉ trên trình duyệt để phù hợp với trang web của mình. [Tìm hiểu thêm](https://developers.google.com/web/tools/lighthouse/audits/address-bar)"
+    "message": "Bạn có thể đặt giao diện cho thanh địa chỉ trên trình duyệt để phù hợp với trang web của mình. [Tìm hiểu thêm](https://web.dev/themed-omnibox)"
   },
   "lighthouse-core/audits/themed-omnibox.js | failureTitle": {
-    "message": "Không đặt màu chủ đề cho thanh địa chỉ."
+    "message": "Không đặt màu giao diện cho thanh địa chỉ."
   },
   "lighthouse-core/audits/themed-omnibox.js | title": {
-    "message": "Đặt màu chủ đề cho thanh địa chỉ."
+    "message": "Đặt màu giao diện cho thanh địa chỉ."
   },
   "lighthouse-core/audits/third-party-summary.js | columnBlockingTime": {
     "message": "Thời gian chặn chuỗi chính"
@@ -1092,7 +1092,7 @@
     "message": "Việc sử dụng mã của bên thứ ba"
   },
   "lighthouse-core/audits/time-to-first-byte.js | description": {
-    "message": "Chỉ số Thời gian cho byte đầu tiên xác định thời gian máy chủ của bạn gửi phản hồi. [Tìm hiểu thêm](https://developers.google.com/web/tools/lighthouse/audits/ttfb)."
+    "message": "Chỉ số Thời gian cho byte đầu tiên xác định thời gian máy chủ của bạn gửi phản hồi. [Tìm hiểu thêm](https://web.dev/time-to-first-byte)."
   },
   "lighthouse-core/audits/time-to-first-byte.js | displayValue": {
     "message": "Tài liệu gốc mất {timeInMs, number, milliseconds} mili giây"
@@ -1113,7 +1113,7 @@
     "message": "Loại"
   },
   "lighthouse-core/audits/user-timings.js | description": {
-    "message": "Hãy cân nhắc trang bị API Thời gian người dùng cho ứng dụng để đo lường hiệu suất thực tế của ứng dụng trong trải nghiệm người dùng chính. [Tìm hiểu thêm](https://developers.google.com/web/tools/lighthouse/audits/user-timing)."
+    "message": "Hãy cân nhắc trang bị API Thời gian người dùng cho ứng dụng để đo lường hiệu suất thực tế của ứng dụng trong trải nghiệm người dùng chính. [Tìm hiểu thêm](https://web.dev/user-timings)."
   },
   "lighthouse-core/audits/user-timings.js | displayValue": {
     "message": "{itemCount,plural, =1{1 dấu thời gian người dùng}other{# dấu thời gian người dùng}}"
@@ -1125,7 +1125,7 @@
     "message": "Tìm thấy <link> kết nối trước cho \"{securityOrigin}\" nhưng trình duyệt không sử dụng phần tử liên kết này. Hãy kiểm tra để đảm bảo rằng bạn đang sử dụng thuộc tính `crossorigin` đúng cách."
   },
   "lighthouse-core/audits/uses-rel-preconnect.js | description": {
-    "message": "Hãy cân nhắc thêm các gợi ý về tài nguyên `preconnect` hoặc `dns-prefetch` để thiết lập kết nối sớm tới những nguồn gốc quan trọng của bên thứ ba. [Tìm hiểu thêm](https://developers.google.com/web/fundamentals/performance/resource-prioritization#preconnect)"
+    "message": "Hãy cân nhắc thêm các gợi ý về tài nguyên `preconnect` hoặc `dns-prefetch` để thiết lập kết nối sớm tới những nguồn gốc quan trọng của bên thứ ba. [Tìm hiểu thêm](https://web.dev/uses-rel-preconnect)"
   },
   "lighthouse-core/audits/uses-rel-preconnect.js | title": {
     "message": "Kết nối trước với các tên miền bắt buộc"
@@ -1134,13 +1134,13 @@
     "message": "Tìm thấy <link> tải trước cho \"{preloadURL}\" nhưng trình duyệt không sử dụng phần tử liên kết này. Hãy kiểm tra để đảm bảo rằng bạn đang sử dụng thuộc tính `crossorigin` đúng cách."
   },
   "lighthouse-core/audits/uses-rel-preload.js | description": {
-    "message": "Hãy cân nhắc sử dụng `<link rel=preload>` để ưu tiên tìm nạp các tài nguyên đang được yêu cầu vào một thời điểm khác trong quá trình tải trang. [Tìm hiểu thêm](https://developers.google.com/web/tools/lighthouse/audits/preload)."
+    "message": "Hãy cân nhắc sử dụng `<link rel=preload>` để ưu tiên tìm nạp các tài nguyên đang được yêu cầu vào một thời điểm khác trong quá trình tải trang. [Tìm hiểu thêm](https://web.dev/uses-rel-preload)."
   },
   "lighthouse-core/audits/uses-rel-preload.js | title": {
     "message": "Tải trước các yêu cầu chính"
   },
   "lighthouse-core/audits/viewport.js | description": {
-    "message": "Thêm thẻ `<meta name=\"viewport\">` để tối ưu hóa ứng dụng của bạn cho màn hình thiết bị di động. [Tìm hiểu thêm](https://developers.google.com/web/tools/lighthouse/audits/has-viewport-meta-tag)"
+    "message": "Thêm thẻ `<meta name=\"viewport\">` để tối ưu hóa ứng dụng của bạn cho màn hình thiết bị di động. [Tìm hiểu thêm](https://web.dev/viewport)"
   },
   "lighthouse-core/audits/viewport.js | explanationNoTag": {
     "message": "Không tìm thấy thẻ `<meta name=\"viewport\">`"
@@ -1152,25 +1152,25 @@
     "message": "Có thẻ `<meta name=\"viewport\">` có `width` hoặc `initial-scale`"
   },
   "lighthouse-core/audits/without-javascript.js | description": {
-    "message": "Ứng dụng của bạn phải hiển thị nội dung nào đó khi JavaScript bị tắt, ngay cả khi đó chỉ là cảnh báo cho người dùng biết phải có JavaScript mới dùng được ứng dụng. [Tìm hiểu thêm](https://developers.google.com/web/tools/lighthouse/audits/no-js)."
+    "message": "Ứng dụng của bạn phải hiển thị một số nội dung khi JavaScript bị tắt, ngay cả khi đó chỉ là một cảnh báo cho người dùng biết phải có JavaScript mới dùng được ứng dụng. [Tìm hiểu thêm](https://web.dev/without-javascript)."
   },
   "lighthouse-core/audits/without-javascript.js | explanation": {
-    "message": "Phần nội dung trang phải hiển thị nội dung nào đó ngay cả khi không tải được tập lệnh"
+    "message": "Phần nội dung trang phải hiển thị một số nội dung nếu không có sẵn tập lệnh."
   },
   "lighthouse-core/audits/without-javascript.js | failureTitle": {
-    "message": "Không cung cấp nội dung dự phòng khi JavaScript không hoạt động"
+    "message": "Không cung cấp nội dung dự phòng khi JavaScript không có sẵn"
   },
   "lighthouse-core/audits/without-javascript.js | title": {
-    "message": "Chứa nội dung nào đó khi JavaScript không hoạt động"
+    "message": "Chứa một số nội dung khi JavaScript không có sẵn"
   },
   "lighthouse-core/audits/works-offline.js | description": {
-    "message": "Nếu bạn đang tạo một Ứng dụng web tiến bộ, hãy cân nhắc dùng trình chạy dịch vụ để ứng dụng có thể hoạt động khi không có mạng. [Tìm hiểu thêm](https://developers.google.com/web/tools/lighthouse/audits/http-200-when-offline)"
+    "message": "Nếu bạn đang tạo một Ứng dụng web tiến bộ, hãy cân nhắc dùng trình chạy dịch vụ để ứng dụng có thể hoạt động khi không có mạng. [Tìm hiểu thêm](https://web.dev/works-offline)"
   },
   "lighthouse-core/audits/works-offline.js | failureTitle": {
-    "message": "Trang hiện tại không phản hồi kèm mã trạng thái 200 khi không có mạng"
+    "message": "Trang hiện tại không trả về mã trạng thái 200 khi không có mạng"
   },
   "lighthouse-core/audits/works-offline.js | title": {
-    "message": "Trang hiện tại phản hồi kèm mã trạng thái 200 khi không có mạng"
+    "message": "Trang hiện tại trả về mã trạng thái 200 khi không có mạng"
   },
   "lighthouse-core/audits/works-offline.js | warningNoLoad": {
     "message": "Trang này có thể không tải được khi không có mạng vì URL kiểm tra ({requested}) đã được chuyển hướng tới \"{final}\". Hãy thử kiểm tra trực tiếp URL thứ hai."
@@ -1275,7 +1275,7 @@
     "message": "Những hoạt động kiểm tra này sẽ xác thực các khía cạnh của một Ứng dụng web tiến bộ. [Tìm hiểu thêm](https://developers.google.com/web/progressive-web-apps/checklist)."
   },
   "lighthouse-core/config/default-config.js | pwaCategoryManualDescription": {
-    "message": "Bạn phải tiến hành những hoạt động kiểm tra mà Lighthouse không tự động thực hiện trong [Danh sách kiểm tra ứng dụng web tiến bộ (PWA)](https://developers.google.com/web/progressive-web-apps/checklist). Các hoạt động kiểm tra này không ảnh hưởng đến điểm số của bạn, nhưng bạn phải xác minh theo cách thủ công."
+    "message": "Đây là những hoạt động kiểm tra được chỉ định trong [Danh sách kiểm tra ứng dụng web tiến bộ (PWA)](https://developers.google.com/web/progressive-web-apps/checklist) cơ bản, nhưng Lighthouse không tự động kiểm tra các mục này. Các hoạt động kiểm tra này không ảnh hưởng đến điểm số của bạn, nhưng bạn nên xác minh theo cách thủ công."
   },
   "lighthouse-core/config/default-config.js | pwaCategoryTitle": {
     "message": "Ứng dụng web tiến bộ"

@@ -30,10 +30,10 @@
     "message": "يجب أن تحتوي بعض أدوار ARIA الرئيسية على أدوار ثانوية محدّدة لأداء وظائف إمكانية الوصول المقصودة. [مزيد من المعلومات](https://web.dev/aria-required-children/)"
   },
   "lighthouse-core/audits/accessibility/aria-required-children.js | failureTitle": {
-    "message": "العناصر التي تتضمّن `[role]` والتي تتطلب `[role]`محدّدة للأطفال مفقودة."
+    "message": "العناصر التي تتضمن ARIA `[role]` والتي تتطلب عناصر ثانوية للاحتواء على `[role]` محدد تفقد بعض هذه العناصر الثانوية المطلوبة أو جميعها."
   },
   "lighthouse-core/audits/accessibility/aria-required-children.js | title": {
-    "message": "العناصر التي تتضمن `[role]` والتي تتطلب `[role]` محدّدة للأطفال متوفّرة"
+    "message": "العناصر التي تتضمن ARIA `[role]` والتي تتطلب عناصر ثانوية للاحتواء على `[role]` محدد تشتمل على جميع العناصر الثانوية المطلوبة."
   },
   "lighthouse-core/audits/accessibility/aria-required-parent.js | description": {
     "message": "يجب أن يتم تضمين بعض أدوار ثانوية ARIA ضمن أدوار رئيسية محدّدة لتنفيذ وظائف إمكانية الوصول المقصودة بشكل صحيح. [مزيد من المعلومات](https://web.dev/aria-required-parent/)"
@@ -276,10 +276,10 @@
     "message": "تحتوي برامج قراءة الشاشة على ميزات لتسهيل التنقل بين الجداول. يمكن تحسين تجربة استخدام برامج قراءة الشاشة من خلال ضمان إشارة الخلايا `<td>` التي تستخدم السمة `[headers]` إلى خلايا أخرى في الجدول نفسه فقط. [مزيد من المعلومات](https://web.dev/td-headers-attr/)"
   },
   "lighthouse-core/audits/accessibility/td-headers-attr.js | failureTitle": {
-    "message": "الخلايا الواردة في عنصر `<table>` التي تستخدم السمة `[headers]` تشير فقط إلى خلايا أخرى في الجدول نفسه."
+    "message": "الخلايا الواردة في عنصر `<table>` التي تستخدم السمة `[headers]` تشير إلى عنصر `id` لم يتم العثور عليه في الجدول نفسه."
   },
   "lighthouse-core/audits/accessibility/td-headers-attr.js | title": {
-    "message": "الخلايا الموجودة في عنصر `<table>` والتي تستخدم السمة `[headers]` تشير فقط إلى خلايا أخرى في الجدول نفسه."
+    "message": "الخلايا الواردة في عنصر `<table>` التي تستخدم السمة `[headers]` تشير إلى خلايا الجدول في الجدول نفسه."
   },
   "lighthouse-core/audits/accessibility/th-has-data-cells.js | description": {
     "message": "تحتوي برامج قراءة الشاشة على ميزات لتسهيل التنقل بين الجداول. قد يؤدي ضمان أن عناوين الجداول تشير دائمًا إلى بعض مجموعات الخلايا إلى تحسين تجربة مستخدمي برامج قراءة الشاشة. [مزيد من المعلومات](https://web.dev/th-has-data-cells/)"
@@ -318,7 +318,7 @@
     "message": "العناصر `<video>` تحتوي على عنصر `<track>` مع `[kind=\"description\"]`"
   },
   "lighthouse-core/audits/apple-touch-icon.js | description": {
-    "message": "للحصول على المظهر المثالي على نظام التشغيل iOS عند إضافة المستخدمين تطبيق ويب تقدّمي إلى الشاشة الرئيسية، يمكنك تحديد `apple-touch-icon`. يجب أن تشير هذه السمة إلى مربع غير شفاف بتنسيق PNG مقاسه 192 بكسل (أو 180 بكسل). [مزيد من المعلومات](https://developers.google.com/web/fundamentals/design-and-ux/browser-customization/)"
+    "message": "للحصول على المظهر المثالي على نظام التشغيل iOS عند إضافة المستخدمين تطبيق ويب تقدّمي إلى الشاشة الرئيسية، يمكنك تحديد `apple-touch-icon`. يجب أن تشير هذه السمة إلى مربع غير شفاف بتنسيق PNG مقاسه 192 بكسل (أو 180 بكسل). [مزيد من المعلومات](https://web.dev/apple-touch-icon/)"
   },
   "lighthouse-core/audits/apple-touch-icon.js | failureTitle": {
     "message": "لا يتم تقديم رمز `apple-touch-icon` صالح"
@@ -342,7 +342,7 @@
     "message": "الوقت الإجمالي لوحدة المعالجة المركزية"
   },
   "lighthouse-core/audits/bootup-time.js | description": {
-    "message": "يمكنك تقليل الوقت المستغرق في تحليل جافا سكريبت وإنشائها وتنفيذها. قد يتبين لك أن تسليم أحمال جافا سكريبت بحجم أصغر يساعد على ذلك. [مزيد من المعلومات](https://developers.google.com/web/tools/lighthouse/audits/bootup)"
+    "message": "يمكنك تقليل الوقت المستغرق في تحليل جافا سكريبت وإنشائها وتنفيذها. قد يتبين لك أن تسليم أحمال جافا سكريبت بحجم أصغر يساعد على ذلك. [مزيد من المعلومات](https://web.dev/bootup-time)"
   },
   "lighthouse-core/audits/bootup-time.js | failureTitle": {
     "message": "تقليل وقت تنفيذ جافا سكريبت"
@@ -351,25 +351,25 @@
     "message": "وقت تنفيذ جافا سكريبت"
   },
   "lighthouse-core/audits/byte-efficiency/efficient-animated-content.js | description": {
-    "message": "ملفات GIF الكبيرة غير كافية لعرض محتوى صور متحركة. يمكنك استخدام فيديوهات MPEG4/WebM للصور المتحركة وملفات PNG/WebP للصور الثابتة بدلاً من ملف GIF لحفظ وحدات البايت للشبكة. [مزيد من المعلومات](https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/replace-animated-gifs-with-video/)"
+    "message": "ملفات GIF الكبيرة غير كافية لعرض محتوى صور متحركة. يمكنك استخدام فيديوهات MPEG4/WebM للصور المتحركة وملفات PNG/WebP للصور الثابتة بدلاً من ملف GIF لحفظ وحدات البايت للشبكة. [مزيد من المعلومات](https://web.dev/efficient-animated-content)"
   },
   "lighthouse-core/audits/byte-efficiency/efficient-animated-content.js | title": {
     "message": "استخدام تنسيقات الفيديو لمحتوى الصور المتحركة"
   },
   "lighthouse-core/audits/byte-efficiency/offscreen-images.js | description": {
-    "message": "يمكنك إجراء تحميل بطيء للصور الموجودة خارج الشاشة والصور المخفية بعد الانتهاء من تحميل جميع الموارد المهمة من أجل تقليص وقت التفاعل. [مزيد من المعلومات](https://developers.google.com/web/tools/lighthouse/audits/offscreen-images)"
+    "message": "يمكنك إجراء تحميل بطيء للصور الموجودة خارج الشاشة والصور المخفية بعد الانتهاء من تحميل جميع الموارد المهمة من أجل تقليص وقت التفاعل. [مزيد من المعلومات](https://web.dev/offscreen-images)"
   },
   "lighthouse-core/audits/byte-efficiency/offscreen-images.js | title": {
     "message": "تأجيل الصور خارج الشاشة"
   },
   "lighthouse-core/audits/byte-efficiency/render-blocking-resources.js | description": {
-    "message": "تحظر الموارد سرعة عرض الصفحة لصفحتك. ويمكنك تضمين عناصر جافا سكريبت/CSS المهمة وتأجيل جميع الأنماط/عناصر جافا سكريبت غير المهمة. [مزيد من المعلومات](https://developers.google.com/web/tools/lighthouse/audits/blocking-resources)"
+    "message": "تحظر الموارد سرعة عرض الصفحة لصفحتك. ويمكنك تضمين عناصر جافا سكريبت/CSS المهمة وتأجيل جميع الأنماط/عناصر جافا سكريبت غير المهمة. [مزيد من المعلومات](https://web.dev/render-blocking-resources)"
   },
   "lighthouse-core/audits/byte-efficiency/render-blocking-resources.js | title": {
     "message": "استبعاد موارد حظر العرض"
   },
   "lighthouse-core/audits/byte-efficiency/total-byte-weight.js | description": {
-    "message": "تُكلِّف أحمال الشبكة الكبيرة المستخدمين الكثير من الأموال وترتبط مباشرةً بأوقات التحميل الطويلة. [مزيد من المعلومات](https://developers.google.com/web/tools/lighthouse/audits/network-payloads)"
+    "message": "تُكلِّف أحمال الشبكة الكبيرة المستخدمين الكثير من الأموال وترتبط مباشرةً بأوقات التحميل الطويلة. [مزيد من المعلومات](https://web.dev/total-byte-weight)"
   },
   "lighthouse-core/audits/byte-efficiency/total-byte-weight.js | displayValue": {
     "message": "كان إجمالي الحجم {totalBytes, number, bytes} كيلوبايت."
@@ -381,19 +381,19 @@
     "message": "تجنُّب الأحمال الضخمة للشبكة"
   },
   "lighthouse-core/audits/byte-efficiency/unminified-css.js | description": {
-    "message": "يمكن أن يؤدي تصغير ملفات CSS إلى تقليل أحجام حمولة الشبكة. [مزيد من المعلومات](https://developers.google.com/web/tools/lighthouse/audits/minify-css)"
+    "message": "يمكن أن يؤدي تصغير ملفات CSS إلى تقليل أحجام حمولة الشبكة. [مزيد من المعلومات](https://web.dev/unminified-css)"
   },
   "lighthouse-core/audits/byte-efficiency/unminified-css.js | title": {
     "message": "تصغير CSS"
   },
   "lighthouse-core/audits/byte-efficiency/unminified-javascript.js | description": {
-    "message": "يمكن أن يؤدي تصغير ملفات جافا سكريبت إلى تقليل أحجام الأحمال ووقت تحليل النص البرمجي. [مزيد من المعلومات](https://developers.google.com/speed/docs/insights/MinifyResources)"
+    "message": "يمكن أن يؤدي تصغير ملفات جافا سكريبت إلى تقليل أحجام الأحمال ووقت تحليل النص البرمجي. [مزيد من المعلومات](https://web.dev/unminified-javascript)"
   },
   "lighthouse-core/audits/byte-efficiency/unminified-javascript.js | title": {
     "message": "تصغير جافا سكريبت"
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | description": {
-    "message": "يمكنك إزالة القواعد الضارة من أوراق الأنماط وتأجيل تحميل خدمة CSS غير المستخدمة في محتوى الجزء المرئي من الصفحة للحد من وحدات البايت غير الضرورية المستهلكة من خلال نشاط الشبكة. [مزيد من المعلومات](https://developers.google.com/web/tools/lighthouse/audits/unused-css)"
+    "message": "يمكنك إزالة القواعد الضارة من أوراق الأنماط وتأجيل تحميل خدمة CSS غير المستخدمة في محتوى الجزء المرئي من الصفحة للحد من وحدات البايت غير الضرورية المستهلكة من خلال نشاط الشبكة. [مزيد من المعلومات](https://web.dev/unused-css-rules)"
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | title": {
     "message": "إزالة خدمة CSS غير المُستخدَمة"
@@ -405,7 +405,7 @@
     "message": "إزالة جافا سكريبت غير المستخدم"
   },
   "lighthouse-core/audits/byte-efficiency/uses-long-cache-ttl.js | description": {
-    "message": "يمكن لفترة التخزين المؤقت الطويلة تسريع عملية تكرار الزيارات إلى صفحتك. [مزيد من المعلومات](https://developers.google.com/web/tools/lighthouse/audits/cache-policy)"
+    "message": "يمكن لفترة التخزين المؤقت الطويلة تسريع عملية تكرار الزيارات إلى صفحتك. [مزيد من المعلومات](https://web.dev/uses-long-cache-ttl)"
   },
   "lighthouse-core/audits/byte-efficiency/uses-long-cache-ttl.js | displayValue": {
     "message": "{itemCount,plural, =1{تم العثور على مورد واحد}zero{تم العثور على # مورد}two{تم العثور على مورديْنِ (#)}few{تم العثور على # موارد}many{تم العثور على # موردًا}other{تم العثور على # مورد}}"
@@ -417,31 +417,31 @@
     "message": "استخدام سياسة ذاكرة التخزين المؤقت الفعالة على الأصول الثابتة"
   },
   "lighthouse-core/audits/byte-efficiency/uses-optimized-images.js | description": {
-    "message": "يتم تحميل الصور المحسَّنة بشكلٍ أسرع وتستهلك بيانات أقل لشبكة الجوّال. [مزيد من المعلومات](https://developers.google.com/web/tools/lighthouse/audits/optimize-images)"
+    "message": "يتم تحميل الصور المحسَّنة بشكلٍ أسرع وتستهلك بيانات أقل لشبكة الجوّال. [مزيد من المعلومات](https://web.dev/uses-optimized-images)"
   },
   "lighthouse-core/audits/byte-efficiency/uses-optimized-images.js | title": {
     "message": "تشفير الصور بكفاءة"
   },
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | description": {
-    "message": "يمكنك عرض صور بحجم مناسب لحفظ بيانات شبكة الجوّال وتحسين وقت التحميل. [مزيد من المعلومات](https://developers.google.com/web/tools/lighthouse/audits/oversized-images)"
+    "message": "يمكنك عرض صور بحجم مناسب لحفظ بيانات شبكة الجوّال وتحسين وقت التحميل. [مزيد من المعلومات](https://web.dev/uses-responsive-images)"
   },
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | title": {
     "message": "الصور ذات الحجم المناسب"
   },
   "lighthouse-core/audits/byte-efficiency/uses-text-compression.js | description": {
-    "message": "يجب عرض الموارد المستندة إلى النص باستخدام الضغط (gzip أو الانكماش أو brotli) لتقليل إجمالي وحدات البايت للشبكة. [مزيد من المعلومات](https://developers.google.com/web/tools/lighthouse/audits/text-compression)"
+    "message": "يجب عرض الموارد المستندة إلى النص باستخدام الضغط (gzip أو الانكماش أو brotli) لتقليل إجمالي وحدات البايت للشبكة. [مزيد من المعلومات](https://web.dev/uses-text-compression)"
   },
   "lighthouse-core/audits/byte-efficiency/uses-text-compression.js | title": {
     "message": "تفعيل ضغط النص"
   },
   "lighthouse-core/audits/byte-efficiency/uses-webp-images.js | description": {
-    "message": "غالبًا ما توفِّر تنسيقات الصور، مثل JPEG 2000 وJPEG XR وWebP، ضغطًا أفضل من تنسيق PNG أو JPEG، وهذا يعني تنزيلاً أسرع واستهلاكًا أقل للبيانات. [مزيد من المعلومات](https://developers.google.com/web/tools/lighthouse/audits/webp)"
+    "message": "غالبًا ما توفِّر تنسيقات الصور، مثل JPEG 2000 وJPEG XR وWebP، ضغطًا أفضل من تنسيق PNG أو JPEG، وهذا يعني تنزيلاً أسرع واستهلاكًا أقل للبيانات. [مزيد من المعلومات](https://web.dev/uses-webp-images)"
   },
   "lighthouse-core/audits/byte-efficiency/uses-webp-images.js | title": {
     "message": "عرض الصور بتنسيقات الجيل القادم"
   },
   "lighthouse-core/audits/content-width.js | description": {
-    "message": "في حال كان عرض محتوى التطبيق لا يتطابق مع عرض إطار العرض، قد لا يتم تحسين تطبيقك لشاشات الجوّال. [مزيد من المعلومات](https://developers.google.com/web/tools/lighthouse/audits/content-sized-correctly-for-viewport)"
+    "message": "في حال كان عرض محتوى التطبيق لا يتطابق مع عرض إطار العرض، قد لا يتم تحسين تطبيقك لشاشات الجوّال. [مزيد من المعلومات](https://web.dev/content-width)"
   },
   "lighthouse-core/audits/content-width.js | explanation": {
     "message": "لا يتطابق حجم إطار العرض {innerWidth} بكسل مع حجم النافذة {outerWidth} بكسل."
@@ -453,7 +453,7 @@
     "message": "تحديد حجم المحتوى بشكلٍ صحيح لإطار العرض"
   },
   "lighthouse-core/audits/critical-request-chains.js | description": {
-    "message": "توضح لك \"سلاسل الطلبات المهمة\" أدناه الموارد التي تم تحميلها بأولوية عالية. ويمكنك تقليل طول السلاسل أو تقليل حجم تنزيل الموارد أو تأجيل تنزيل الموارد غير الضرورية لتحسين تحميل الصفحة. [مزيد من المعلومات](https://developers.google.com/web/tools/lighthouse/audits/critical-request-chains)"
+    "message": "توضح لك \"سلاسل الطلبات المهمة\" أدناه الموارد التي تم تحميلها بأولوية عالية. ويمكنك تقليل طول السلاسل أو تقليل حجم تنزيل الموارد أو تأجيل تنزيل الموارد غير الضرورية لتحسين تحميل الصفحة. [مزيد من المعلومات](https://web.dev/critical-request-chains)"
   },
   "lighthouse-core/audits/critical-request-chains.js | displayValue": {
     "message": "{itemCount,plural, =1{تم العثور على سلسلة واحدة}zero{تم العثور على # سلسلة}two{تم العثور على سلسلتيْنِ (#)}few{تم العثور على # سلاسل}many{تم العثور على # سلسلةً}other{تم العثور على # سلسلة}}"
@@ -675,7 +675,7 @@
     "message": "لم يتم تسجيل أخطاء المتصفح في وحدة التحكّم"
   },
   "lighthouse-core/audits/font-display.js | description": {
-    "message": "يمكنك الاستفادة من ميزة CSS لعرض الخطوط لضمان أن يكون النص مرئيًا للمستخدم أثناء تحميل خطوط موقع ويب. [مزيد من المعلومات](https://developers.google.com/web/updates/2016/02/font-display)"
+    "message": "يمكنك الاستفادة من ميزة CSS لعرض الخطوط لضمان أن يكون النص مرئيًا للمستخدم أثناء تحميل خطوط موقع ويب. [مزيد من المعلومات](https://web.dev/font-display)"
   },
   "lighthouse-core/audits/font-display.js | failureTitle": {
     "message": "التأكد من بقاء النص مرئيًا أثناء تحميل خط موقع ويب"
@@ -705,7 +705,7 @@
     "message": "معلومات تغيير حجم الصورة غير صالحة {url}"
   },
   "lighthouse-core/audits/installable-manifest.js | description": {
-    "message": "يمكن للمتصفحات أن تطلب من المستخدمين بشكل مسبق إضافة تطبيقك إلى الشاشة الرئيسية، ويمكن بذلك زيادة التفاعل. [مزيد من المعلومات](https://developers.google.com/web/tools/lighthouse/audits/install-prompt)"
+    "message": "يمكن للمتصفحات أن تطلب من المستخدمين بشكل مسبق إضافة تطبيقك إلى الشاشة الرئيسية، ويمكن بذلك زيادة التفاعل. [مزيد من المعلومات](https://web.dev/installable-manifest)"
   },
   "lighthouse-core/audits/installable-manifest.js | failureTitle": {
     "message": "عدم استيفاء بيان تطبيق الويب متطلبات التثبيت"
@@ -729,7 +729,7 @@
     "message": "يتم استخدام HTTPS"
   },
   "lighthouse-core/audits/load-fast-enough-for-pwa.js | description": {
-    "message": "إنّ تحميل الصفحات بشكل سريع عبر شبكة الجوّال يضمن توفير تجربة استخدام عالية الجودة. [مزيد من المعلومات](https://developers.google.com/web/tools/lighthouse/audits/fast-3g)"
+    "message": "إنّ تحميل الصفحات بشكل سريع عبر شبكة الجوّال يضمن توفير تجربة استخدام عالية الجودة. [مزيد من المعلومات](https://web.dev/load-fast-enough-for-pwa)"
   },
   "lighthouse-core/audits/load-fast-enough-for-pwa.js | displayValueText": {
     "message": "الوقت التفاعلي {timeInMs, number, seconds} ثانية"
@@ -750,7 +750,7 @@
     "message": "الفئة"
   },
   "lighthouse-core/audits/mainthread-work-breakdown.js | description": {
-    "message": "يمكنك تقليل الوقت المستغرق في تحليل جافا سكريبت وإنشائه وتنفيذه. قد يتبين لك أن تسليم أحمال جافا سكريبت بحجم أصغر يساعد في ذلك."
+    "message": "يمكنك تقليل الوقت المستغرق في تحليل جافا سكريبت وإنشائه وتنفيذه. قد يتبين لك أن تسليم أحمال جافا سكريبت بحجم أصغر يساعد على ذلك. [مزيد من المعلومات](https://web.dev/mainthread-work-breakdown)"
   },
   "lighthouse-core/audits/mainthread-work-breakdown.js | failureTitle": {
     "message": "تقليل سلسلة العمل الرئيسية"
@@ -759,49 +759,49 @@
     "message": "تقليل سلسلة العمل الرئيسية"
   },
   "lighthouse-core/audits/manual/pwa-cross-browser.js | description": {
-    "message": "للوصول إلى أكبر عدد من المستخدمين، يجب استخدام المواقع الإلكترونية على كل متصفح رئيسي. [مزيد من المعلومات](https://developers.google.com/web/progressive-web-apps/checklist#site-works-cross-browser)"
+    "message": "للوصول إلى أكبر عدد من المستخدمين، يجب استخدام المواقع الإلكترونية على كل متصفح رئيسي. [مزيد من المعلومات](https://web.dev/pwa-cross-browser)"
   },
   "lighthouse-core/audits/manual/pwa-cross-browser.js | title": {
     "message": "الموقع الإلكتروني يعمل عبر المتصفح"
   },
   "lighthouse-core/audits/manual/pwa-each-page-has-url.js | description": {
-    "message": "يُرجى التأكّد من أن الصفحات الفردية قابلة للربط بشكلٍ كبير عبر عنوان URL وأن عناوين URL فريدة لغرض إمكانية المشاركة على وسائل التواصل الاجتماعي. [مزيد من المعلومات](https://developers.google.com/web/progressive-web-apps/checklist#each-page-has-a-url)"
+    "message": "يُرجى التأكّد من أن الصفحات الفردية قابلة للربط بشكلٍ كبير عبر عنوان URL وأن عناوين URL فريدة لغرض إمكانية المشاركة على وسائل التواصل الاجتماعي. [مزيد من المعلومات](https://web.dev/pwa-each-page-has-url)"
   },
   "lighthouse-core/audits/manual/pwa-each-page-has-url.js | title": {
     "message": "كل صفحة تحتوي على عنوان URL"
   },
   "lighthouse-core/audits/manual/pwa-page-transitions.js | description": {
-    "message": "من المفترض إجراء عمليات النقل بسرعة عند النقر حولها، حتى على شبكة بطيئة، وهو مفتاح للأداء المُلاحظ. [مزيد من المعلومات](https://developers.google.com/web/progressive-web-apps/checklist#page-transitions-dont-feel-like-they-block-on-the-network)"
+    "message": "من المفترض إجراء عمليات النقل بسرعة عند النقر حولها، حتى على شبكة بطيئة. هذه التجربة هي عنصر أساسي لإدراك مستخدم لمستوى الأداء. [مزيد من المعلومات](https://web.dev/pwa-page-transitions)"
   },
   "lighthouse-core/audits/manual/pwa-page-transitions.js | title": {
     "message": "عمليات نقل الصفحة لا تبدو أنها محظورة على الشبكة"
   },
   "lighthouse-core/audits/metrics/estimated-input-latency.js | description": {
-    "message": "إن \"وقت الاستجابة المقدر للإدخال\" هو تقدير لطول المدة التي يستغرقها تطبيقك للاستجابة لإدخال المستخدم بالمللي ثانية، وذلك أثناء الثواني الخمس الأكثر انشغالاً في فترة تحميل الصفحة. وفي حال كان وقت الاستجابة أكثر من 50 مللي ثانية، يمكن للمستخدمين اعتبار تطبيقك بأنه بطيء في التفاعل. [مزيد من المعلومات](https://developers.google.com/web/tools/lighthouse/audits/estimated-input-latency)"
+    "message": "إن \"وقت الاستجابة المقدر للإدخال\" هو تقدير لطول المدة التي يستغرقها تطبيقك للاستجابة لإدخال المستخدم بالمللي ثانية، وذلك أثناء الثواني الخمس الأكثر انشغالاً في فترة تحميل الصفحة. وفي حال كان وقت الاستجابة أكثر من 50 مللي ثانية، يمكن للمستخدمين اعتبار تطبيقك بأنه بطيء في التفاعل. [مزيد من المعلومات](https://web.dev/estimated-input-latency)"
   },
   "lighthouse-core/audits/metrics/estimated-input-latency.js | title": {
     "message": "وقت الاستجابة المُقدّر للإدخال"
   },
   "lighthouse-core/audits/metrics/first-contentful-paint.js | description": {
-    "message": "تحدد \"سرعة عرض المحتوى على الصفحة\" الوقت الذي يُعرَض فيه أول صورة أو نص. [مزيد من المعلومات](https://developers.google.com/web/tools/lighthouse/audits/first-contentful-paint)"
+    "message": "تحدد \"سرعة عرض المحتوى على الصفحة\" الوقت الذي يُعرَض فيه أول صورة أو نص. [مزيد من المعلومات](https://web.dev/first-contentful-paint)"
   },
   "lighthouse-core/audits/metrics/first-contentful-paint.js | title": {
     "message": "First Contentful Paint"
   },
   "lighthouse-core/audits/metrics/first-cpu-idle.js | description": {
-    "message": "تشير \"وحدة المعالجة المركزية الأولى الخاملة\" إلى المرة الأولى التي يتوفر فيها وقت كافٍ للعملية الرئيسية للصفحة حتى تعالج إدخالات المستخدم. [مزيد من المعلومات](https://developers.google.com/web/tools/lighthouse/audits/first-interactive)"
+    "message": "تشير \"وحدة المعالجة المركزية الأولى الخاملة\" إلى المرة الأولى التي يتوفر فيها وقت كافٍ للعملية الرئيسية للصفحة حتى تعالج إدخالات المستخدم.  [مزيد من المعلومات](https://web.dev/first-cpu-idle)"
   },
   "lighthouse-core/audits/metrics/first-cpu-idle.js | title": {
     "message": "وحدة المعالجة المركزية الأولى الخاملة"
   },
   "lighthouse-core/audits/metrics/first-meaningful-paint.js | description": {
-    "message": "تقيس \"سرعة عرض أوّل محتوى مفيد على الصفحة\" الوقت الذي يكون فيه المحتوى الأساسي لصفحة مرئيًا. [مزيد من المعلومات](https://developers.google.com/web/tools/lighthouse/audits/first-meaningful-paint)"
+    "message": "تقيس \"سرعة عرض أوّل محتوى مفيد على الصفحة\" الوقت الذي يكون فيه المحتوى الأساسي لصفحة مرئيًا. [مزيد من المعلومات](https://web.dev/first-meaningful-paint)"
   },
   "lighthouse-core/audits/metrics/first-meaningful-paint.js | title": {
     "message": "First Meaningful Paint"
   },
   "lighthouse-core/audits/metrics/interactive.js | description": {
-    "message": "وقت التفاعل هو مقدار الوقت المستغرق حتى تصبح الصفحة تفاعلية بالكامل. [مزيد من المعلومات](https://developers.google.com/web/tools/lighthouse/audits/consistently-interactive)"
+    "message": "وقت التفاعل هو مقدار الوقت المستغرق حتى تصبح الصفحة تفاعلية بالكامل. [مزيد من المعلومات](https://web.dev/interactive)"
   },
   "lighthouse-core/audits/metrics/interactive.js | title": {
     "message": "وقت التفاعل"
@@ -813,7 +813,7 @@
     "message": "الحد الأقصى المحتمل من مهلة الاستجابة لأوّل إدخال"
   },
   "lighthouse-core/audits/metrics/speed-index.js | description": {
-    "message": "يوضح مؤشر السرعة وتيرة تعبئة محتوى الصفحة على شاشة المستخدم. [مزيد من المعلومات](https://developers.google.com/web/tools/lighthouse/audits/speed-index)"
+    "message": "يوضح مؤشر السرعة وتيرة تعبئة محتوى الصفحة على شاشة المستخدم. [مزيد من المعلومات](https://web.dev/speed-index)"
   },
   "lighthouse-core/audits/metrics/speed-index.js | title": {
     "message": "مؤشر السرعة"
@@ -837,7 +837,7 @@
     "message": "أوقات الاستجابة لواجهة الخادم الخلفية"
   },
   "lighthouse-core/audits/offline-start-url.js | description": {
-    "message": "يمكّن مشغّل الخدمات تطبيق الويب من أن يصبح موثوقًا به في ظروف الشبكة التي لا يمكن التنبؤ بها. [مزيد من المعلومات](https://developers.google.com/web/tools/lighthouse/audits/http-200-when-offline)"
+    "message": "يمكّن مشغّل الخدمات تطبيق الويب من أن يصبح موثوقًا به في ظروف الشبكة التي لا يمكن التنبؤ بها. [مزيد من المعلومات](https://web.dev/offline-start-url)"
   },
   "lighthouse-core/audits/offline-start-url.js | failureTitle": {
     "message": "`start_url` لا تستجيب باستخدام رمز 200 عند عدم الاتصال بالإنترنت"
@@ -861,7 +861,7 @@
     "message": "ميزانية الأداء"
   },
   "lighthouse-core/audits/redirects-http.js | description": {
-    "message": "في حال أعددت HTTPS مسبقًا، تأكّد من إعادة توجيه جميع زيارات HTTP إلى HTTPS من أجل تفعيل ميزات الويب الآمنة لجميع المستخدمين. [مزيد من المعلومات](https://developers.google.com/web/tools/lighthouse/audits/http-redirects-to-https)"
+    "message": "في حال أعددت HTTPS مسبقًا، تأكّد من إعادة توجيه جميع زيارات HTTP إلى HTTPS من أجل تفعيل ميزات الويب الآمنة لجميع المستخدمين. [مزيد من المعلومات](https://web.dev/redirects-http)"
   },
   "lighthouse-core/audits/redirects-http.js | failureTitle": {
     "message": "عدم إعادة توجيه زيارات HTTP إلى HTTPS"
@@ -870,7 +870,7 @@
     "message": "إعادة توجيه زيارات HTTP إلى HTTPS"
   },
   "lighthouse-core/audits/redirects.js | description": {
-    "message": "تؤدي عمليات إعادة التوجيه إلى حدوث تأخيرات إضافية قبل أن يتم تحميل الصفحة. [مزيد من المعلومات](https://developers.google.com/web/tools/lighthouse/audits/redirects)"
+    "message": "تؤدي عمليات إعادة التوجيه إلى حدوث تأخيرات إضافية قبل أن يتم تحميل الصفحة. [مزيد من المعلومات](https://web.dev/redirects)"
   },
   "lighthouse-core/audits/redirects.js | title": {
     "message": "تجنُب عمليات إعادة توجيه الصفحات المتعددة"
@@ -1035,7 +1035,7 @@
     "message": "يتم تحديد حجم أهداف النقر بشكل مناسب"
   },
   "lighthouse-core/audits/service-worker.js | description": {
-    "message": "مشغّل الخدمات هو التكنولوجيا التي تمكّن تطبيقك من استخدام ميزات عديدة من \"تطبيق الويب التقدّمي\"، مثل الاستجابة عند عدم الاتصال بالإنترنت والإضافة إلى الشاشة الرئيسية والإشعارات الفورية. [مزيد من المعلومات](https://developers.google.com/web/tools/lighthouse/audits/registered-service-worker)"
+    "message": "مشغّل الخدمات هو التكنولوجيا التي تمكّن تطبيقك من استخدام ميزات عديدة من \"تطبيق الويب التقدّمي\"، مثل الاستجابة عند عدم الاتصال بالإنترنت والإضافة إلى الشاشة الرئيسية والإشعارات الفورية. [مزيد من المعلومات](https://web.dev/service-worker)"
   },
   "lighthouse-core/audits/service-worker.js | explanationBadManifest": {
     "message": "يتحكم مشغّل الخدمات في هذه الصفحة، ومع ذلك لم يتم العثور على `start_url` بسبب تعذّر تحليل البيان كملف JSON صالح"
@@ -1056,7 +1056,7 @@
     "message": "تسجيل مشغّل الخدمات الذي يتحكّم في صفحة و`start_url`"
   },
   "lighthouse-core/audits/splash-screen.js | description": {
-    "message": "تضمن شاشة البداية المميزة توفير تجربة عالية الجودة عند إطلاق المستخدمين تطبيقك من الشاشات الرئيسية. [مزيد من المعلومات](https://developers.google.com/web/tools/lighthouse/audits/custom-splash-screen)"
+    "message": "تضمن شاشة البداية المميزة توفير تجربة عالية الجودة عند إطلاق المستخدمين تطبيقك من الشاشات الرئيسية. [مزيد من المعلومات](https://web.dev/splash-screen)"
   },
   "lighthouse-core/audits/splash-screen.js | failureTitle": {
     "message": "عدم الضبط لشاشة بداية مخصّصة"
@@ -1065,7 +1065,7 @@
     "message": "تم الضبط لشاشة البداية المخصّصة"
   },
   "lighthouse-core/audits/themed-omnibox.js | description": {
-    "message": "يمكن تصميم شريط العناوين للمتصفح لمطابقة موقعك الإلكتروني. [مزيد من المعلومات](https://developers.google.com/web/tools/lighthouse/audits/address-bar)"
+    "message": "يمكن تصميم شريط العناوين للمتصفح لمطابقة موقعك الإلكتروني. [مزيد من المعلومات](https://web.dev/themed-omnibox)"
   },
   "lighthouse-core/audits/themed-omnibox.js | failureTitle": {
     "message": "عدم ضبط لون تصميم لشريط العناوين"
@@ -1092,7 +1092,7 @@
     "message": "استخدام جهة خارجية"
   },
   "lighthouse-core/audits/time-to-first-byte.js | description": {
-    "message": "يحدّد \"وقت وصول أول بايت\" الوقت الذي يُرسل فيه الخادم استجابة. [مزيد من المعلومات](https://developers.google.com/web/tools/lighthouse/audits/ttfb)"
+    "message": "يحدّد \"وقت وصول أول بايت\" الوقت الذي يُرسل فيه الخادم استجابة. [مزيد من المعلومات](https://web.dev/time-to-first-byte)"
   },
   "lighthouse-core/audits/time-to-first-byte.js | displayValue": {
     "message": "استغرق مستند الجذر {timeInMs, number, milliseconds} مللي ثانية"
@@ -1113,7 +1113,7 @@
     "message": "النوع"
   },
   "lighthouse-core/audits/user-timings.js | description": {
-    "message": "يمكنك توجيه تطبيقك باستخدام \"واجهة برمجة التطبيقات لأوقات المستخدم\" لقياس الأداء الفعلي العالمي لتطبيقك أثناء التجارب الأساسية للمستخدمين. [مزيد من المعلومات](https://developers.google.com/web/tools/lighthouse/audits/user-timing)"
+    "message": "يمكنك توجيه تطبيقك باستخدام \"واجهة برمجة التطبيقات لأوقات المستخدم\" لقياس الأداء الفعلي العالمي لتطبيقك أثناء التجارب الأساسية للمستخدمين. [مزيد من المعلومات](https://web.dev/user-timings)"
   },
   "lighthouse-core/audits/user-timings.js | displayValue": {
     "message": "{itemCount,plural, =1{وقت واحد للمستخدم}zero{# وقت للمستخدم}two{وقتا (#) المستخدم}few{# أوقات للمستخدم}many{# وقتًا للمستخدم}other{# وقت للمستخدم}}"
@@ -1125,7 +1125,7 @@
     "message": "تم العثور على <link> للربط المسبق لـ \"{securityOrigin}\"، ولكن لم يتم استخدامه من خلال المتصفح. يُرجى التحقّق من استخدام السمة `crossorigin` بشكل صحيح."
   },
   "lighthouse-core/audits/uses-rel-preconnect.js | description": {
-    "message": "يمكنك إضافة تعديلات المورد `preconnect` أو `dns-prefetch` لإنشاء اتصالات مبكرة بأصول مهمة تابعة لجهة خارجية. [مزيد من المعلومات](https://developers.google.com/web/fundamentals/performance/resource-prioritization#preconnect)"
+    "message": "يمكنك إضافة تعديلات المورد `preconnect` أو `dns-prefetch` لإنشاء اتصالات مبكرة بأصول مهمة تابعة لجهة خارجية. [مزيد من المعلومات](https://web.dev/uses-rel-preconnect)"
   },
   "lighthouse-core/audits/uses-rel-preconnect.js | title": {
     "message": "الاتصال المسبق للأصول المطلوبة"
@@ -1134,13 +1134,13 @@
     "message": "تم العثور على <link> للتحميل المسبق لـ \"{preloadURL}\"، ولكن لم يتم استخدامه من خلال المتصفح. يُرجى التحقّق من استخدام السمة `crossorigin` بشكل صحيح."
   },
   "lighthouse-core/audits/uses-rel-preload.js | description": {
-    "message": "يمكنك استخدام `<link rel=preload>` لتحديد أولويات جلب الموارد المطلوبة حاليًا في وقتٍ لاحق في تحميل الصفحة. [مزيد من المعلومات](https://developers.google.com/web/tools/lighthouse/audits/preload)"
+    "message": "يمكنك استخدام `<link rel=preload>` لتحديد أولويات جلب الموارد المطلوبة حاليًا في وقتٍ لاحق في تحميل الصفحة. [مزيد من المعلومات](https://web.dev/uses-rel-preload)"
   },
   "lighthouse-core/audits/uses-rel-preload.js | title": {
     "message": "التحميل المسبق للطلبات الأساسية"
   },
   "lighthouse-core/audits/viewport.js | description": {
-    "message": "يُرجى إضافة علامة `<meta name=\"viewport\">` لتحسين تطبيقك لشاشات الجوّال. [مزيد من المعلومات](https://developers.google.com/web/tools/lighthouse/audits/has-viewport-meta-tag)"
+    "message": "يُرجى إضافة علامة `<meta name=\"viewport\">` لتحسين تطبيقك لشاشات الجوّال. [مزيد من المعلومات](https://web.dev/viewport)"
   },
   "lighthouse-core/audits/viewport.js | explanationNoTag": {
     "message": "لم يتم العثور على علامة `<meta name=\"viewport\">`"
@@ -1152,7 +1152,7 @@
     "message": "تضمين علامة `<meta name=\"viewport\">` مع `width` أو `initial-scale`"
   },
   "lighthouse-core/audits/without-javascript.js | description": {
-    "message": "يجب أن يعرض تطبيقك بعض المحتوى عند إيقاف جافا سكريبت، حتى في حال كان مجرد تحذير للمستخدم يشير إلى ضرورة وجود جافا سكريبت لاستخدام التطبيق. [مزيد من المعلومات](https://developers.google.com/web/tools/lighthouse/audits/no-js)"
+    "message": "يجب أن يعرض تطبيقك بعض المحتوى عند إيقاف جافا سكريبت، حتى في حال كان مجرد تحذير للمستخدم يشير إلى ضرورة وجود جافا سكريبت لاستخدام التطبيق. [مزيد من المعلومات](https://web.dev/without-javascript)"
   },
   "lighthouse-core/audits/without-javascript.js | explanation": {
     "message": "يجب أن يعرض نص الصفحة بعض المحتوى في حالة عدم توفر النصوص البرمجية."
@@ -1164,7 +1164,7 @@
     "message": "تضمين بعض المحتوى عند عدم توفّر جافا سكريبت"
   },
   "lighthouse-core/audits/works-offline.js | description": {
-    "message": "في حال كنت تنشئ \"تطبيق ويب تقدّمي\"، يمكنك استخدام مشغّل الخدمات حتى يتمكّن التطبيق من العمل بلا اتصال بالإنترنت. [مزيد من المعلومات](https://developers.google.com/web/tools/lighthouse/audits/http-200-when-offline)"
+    "message": "في حال كنت تنشئ \"تطبيق ويب تقدّمي\"، يمكنك استخدام مشغّل الخدمات حتى يتمكّن التطبيق من العمل بلا اتصال بالإنترنت. [مزيد من المعلومات](https://web.dev/works-offline)"
   },
   "lighthouse-core/audits/works-offline.js | failureTitle": {
     "message": "الصفحة الحالية لا تستجيب باستخدام رمز 200 عند عدم الاتصال بالإنترنت"

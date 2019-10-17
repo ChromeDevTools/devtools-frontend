@@ -30,10 +30,10 @@
     "message": "कुछ ARIA पैरंट भूमिकाओं में खास चाइल्ड भूमिकाएं होनी चाहिए ताकि वे तय किए गए सुलभता फ़ंक्शन कर सकें. [ज़्यादा जानें](https://web.dev/aria-required-children/)."
   },
   "lighthouse-core/audits/accessibility/aria-required-children.js | failureTitle": {
-    "message": "`[role]` वाले वे एलिमेंट नहीं मिले जिन्हें खास चिल्ड्रन `[role]` चाहिए होते हैं."
+    "message": "Elements with an ARIA `[role]` that require children to contain a specific `[role]` are missing some or all of those required children."
   },
   "lighthouse-core/audits/accessibility/aria-required-children.js | title": {
-    "message": "`[role]` वाले वे एलिमेंट मौजूद हैं जिन्हें खास चिल्ड्रन `[role]` चाहिए होते हैं."
+    "message": "Elements with an ARIA `[role]` that require children to contain a specific `[role]` have all required children."
   },
   "lighthouse-core/audits/accessibility/aria-required-parent.js | description": {
     "message": "कुछ ARIA चाइल्ड रोल अपने तय सुलभता फ़ंक्शन को ठीक से कर पाएं. इसके लिए, उन्हें खास पैरंट रोल में शामिल होना चाहिए. [ज़्यादा जानें](https://web.dev/aria-required-parent/)."
@@ -276,10 +276,10 @@
     "message": "स्क्रीन रीडर में ऐसी सुविधाएं होती हैं जिनसे टेबल में जाना आसान हो जाता है. `[headers]` विशेषता का इस्तेमाल करके `<td>` सेल की मौजूदगी पक्की करने के लिए उसी टेबल में मौजूद दूसरे सेल का हवाला दिया जाता है. इससे स्क्रीन रीडर उपयोगकर्ताओं के अनुभव को बेहतर बनाया जा सकता है. [ज़्यादा जानें](https://web.dev/td-headers-attr/)."
   },
   "lighthouse-core/audits/accessibility/td-headers-attr.js | failureTitle": {
-    "message": "`<table>` विशेषता का इस्तेमाल करने वाले `[headers]` एलिमेंट में मौजूद सेल, उसी टेबल में दूसरे सेल का हवाला देते हैं."
+    "message": "Cells in a `<table>` element that use the `[headers]` attribute refer to an element `id` not found within the same table."
   },
   "lighthouse-core/audits/accessibility/td-headers-attr.js | title": {
-    "message": "`<table>` एलिमेंट में शामिल सेल जो `[headers]` विशेषता का इस्तेमाल करते हैं, वे सिर्फ़ उसी टेबल में शामिल सेल का हवाला देते हैं."
+    "message": "Cells in a `<table>` element that use the `[headers]` attribute refer to table cells within the same table."
   },
   "lighthouse-core/audits/accessibility/th-has-data-cells.js | description": {
     "message": "स्क्रीन रीडर में ऐसी सुविधाएं होती हैं जिनसे टेबल में जाना आसान हो जाता है. यह पक्का करें कि टेबल हेडर हमेशा कुछ सेल के सेट के बारे में बताते हों. इससे स्क्रीन रीडर के उपयोगकर्ताओं को बेहतर अनुभव मिल सकता है. [ज़्यादा जानें](https://web.dev/th-has-data-cells/)."
@@ -318,7 +318,7 @@
     "message": "`<video>` एलिमेंट में `[kind=\"description\"]` वाला एक `<track>` एलिमेंट है"
   },
   "lighthouse-core/audits/apple-touch-icon.js | description": {
-    "message": "उपयोगकर्ता जब होम स्क्रीन पर प्रगतिशील वेब ऐप जोड़ें, तो iOS पर वह अच्छे से नज़र आए, इसके लिए `apple-touch-icon` तय करें. यह ज़रूरी है कि यह आइकॉन किसी ऐसे 192px (या 180px) के चौकोर PNG की तरफ़ इशारा करे जिसके आर-पार न देखा जा सके. [ज़्यादा जानें](https://developers.google.com/web/fundamentals/design-and-ux/browser-customization/)."
+    "message": "उपयोगकर्ता जब होम स्क्रीन पर प्रगतिशील वेब ऐप्लिकेशन जोड़ें, तो iOS पर वह अच्छे से नज़र आए, इसके लिए `apple-touch-icon` तय करें. यह ज़रूरी है कि यह आइकॉन किसी ऐसे 192px (या 180px) के वर्गाकार PNG की तरफ़ इशारा करे जिसके आर-पार न देखा जा सके. [ज़्यादा जानें](https://web.dev/apple-touch-icon/)."
   },
   "lighthouse-core/audits/apple-touch-icon.js | failureTitle": {
     "message": "एक सही `apple-touch-icon` नहीं उपलब्ध कराता"
@@ -342,7 +342,7 @@
     "message": "कुल सीपीयू समय"
   },
   "lighthouse-core/audits/bootup-time.js | description": {
-    "message": "JS को पार्स करने, कंपाइल करने, और एक्ज़ीक्यूट करने में लगने वाला समय कम करें. आप देखेंगे कि इसकी मदद से छोटे-छोटे JS पेलोड डिलीवर करने में मदद मिलती है. [ज़्यादा जानें](https://developers.google.com/web/tools/lighthouse/audits/bootup)."
+    "message": "JS को पार्स करने, कंपाइल करने, और एक्ज़ीक्यूट करने में लगने वाला समय कम करें. आप देखेंगे कि इसकी मदद से छोटे-छोटे JS पेलोड डिलीवर करने में मदद मिलती है. [ज़्यादा जानें](https://web.dev/bootup-time)."
   },
   "lighthouse-core/audits/bootup-time.js | failureTitle": {
     "message": "JavaScript क्रियान्वयन समय कम करें"
@@ -351,25 +351,25 @@
     "message": "JavaScript क्रियान्वयन समय"
   },
   "lighthouse-core/audits/byte-efficiency/efficient-animated-content.js | description": {
-    "message": "बड़ी GIFs ऐनिमेशन वाली सामग्री डिलीवर नहीं कर सकते. नेटवर्क बाइट बचाने के लिए GIF का इस्तेमाल करने के बजाय, ऐनिमेशन के लिए MPEG4/WebM वीडियो और स्टैटिक इमेज के लिए PNG/WebP का इस्तेमाल करें. [ज़्यादा जानें](https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/replace-animated-gifs-with-video/)"
+    "message": "बड़ी GIFs ऐनिमेशन वाली सामग्री डिलीवर नहीं कर सकते. नेटवर्क बाइट बचाने के लिए GIF का इस्तेमाल करने के बजाय, ऐनिमेशन के लिए MPEG4/WebM वीडियो और स्टैटिक इमेज के लिए PNG/WebP का इस्तेमाल करें. [ज़्यादा जानें](https://web.dev/efficient-animated-content)"
   },
   "lighthouse-core/audits/byte-efficiency/efficient-animated-content.js | title": {
     "message": "ऐनिमेट की गई सामग्री के लिए वीडियो फ़ॉर्मेट का इस्तेमाल करें"
   },
   "lighthouse-core/audits/byte-efficiency/offscreen-images.js | description": {
-    "message": "इंटरैक्टिव में लगने वाला समय कम करने के लिए, सभी अहम संसाधन लोड हो जाने के बाद ऑफ़स्क्रीन और छिपी हुई इमेज को धीरे-धीरे लोड करें. [ज़्यादा जानें](https://developers.google.com/web/tools/lighthouse/audits/offscreen-images)."
+    "message": "इंटरैक्टिव में लगने वाला समय कम करने के लिए, सभी अहम संसाधन लोड हो जाने के बाद ऑफ़स्क्रीन और छिपी हुई इमेज को धीरे-धीरे लोड करें. [ज़्यादा जानें](https://web.dev/offscreen-images)."
   },
   "lighthouse-core/audits/byte-efficiency/offscreen-images.js | title": {
     "message": "ऑफ़स्क्रीन इमेज टालें"
   },
   "lighthouse-core/audits/byte-efficiency/render-blocking-resources.js | description": {
-    "message": "संसाधन आपके पेज का फ़र्स्ट पेंट ब्लॉक कर रहे हैं. ज़रूरी JS/सीएसएस इनलाइन डिलीवर करने और सभी गैर-ज़रूरी JS/शैलियों को टाल दें. [ज़्यादा जानें](https://developers.google.com/web/tools/lighthouse/audits/blocking-resources)."
+    "message": "संसाधन आपके पेज का फ़र्स्ट पेंट ब्लॉक कर रहे हैं. ज़रूरी JS/सीएसएस इनलाइन डिलीवर करने और सभी गैर-ज़रूरी JS/शैलियों को टाल दें. [ज़्यादा जानें](https://web.dev/render-blocking-resources)."
   },
   "lighthouse-core/audits/byte-efficiency/render-blocking-resources.js | title": {
     "message": "रेंडर ब्लॉक करने वाले संसाधनों को खत्म करें"
   },
   "lighthouse-core/audits/byte-efficiency/total-byte-weight.js | description": {
-    "message": "बड़े नेटवर्क वाले पेलोड के लिए उपयोगकर्ताओं को रकम खर्च करनी होती है. साथ ही, उन पर लोड होने में ज़्यादा समय भी लगता है. [ज़्यादा जानें](https://developers.google.com/web/tools/lighthouse/audits/network-payloads)."
+    "message": "बड़े नेटवर्क वाले पेलोड के लिए उपयोगकर्ताओं को रकम खर्च करनी होती है. साथ ही, उन पर लोड होने में ज़्यादा समय भी लगता है. [ज़्यादा जानें](https://web.dev/total-byte-weight)."
   },
   "lighthouse-core/audits/byte-efficiency/total-byte-weight.js | displayValue": {
     "message": "कुल आकार {totalBytes, number, bytes} केबी था"
@@ -381,19 +381,19 @@
     "message": "भारी नेटवर्क पेलोड से बचाता है"
   },
   "lighthouse-core/audits/byte-efficiency/unminified-css.js | description": {
-    "message": "CSS फ़ाइलों को छोटा करने से नेटवर्क पेलोड आकार कम किए जा सकते हैं. [ज़्यादा जानें](https://developers.google.com/web/tools/lighthouse/audits/minify-css)."
+    "message": "CSS फ़ाइलों को छोटा करने से नेटवर्क पेलोड आकार कम किए जा सकते हैं. [ज़्यादा जानें](https://web.dev/unminified-css)."
   },
   "lighthouse-core/audits/byte-efficiency/unminified-css.js | title": {
     "message": "CSS कम करें"
   },
   "lighthouse-core/audits/byte-efficiency/unminified-javascript.js | description": {
-    "message": "JavaScript फ़ाइलों को छोटा करने से पेलोड का आकार और स्क्रिप्ट पार्स करने में लगने वाला समय कम हो सकता है. [ज़्यादा जानें](https://developers.google.com/speed/docs/insights/MinifyResources)."
+    "message": "JavaScript फ़ाइलों को छोटा करने से पेलोड का आकार और स्क्रिप्ट पार्स करने में लगने वाला समय कम हो सकता है. [ज़्यादा जानें](https://web.dev/unminified-javascript)."
   },
   "lighthouse-core/audits/byte-efficiency/unminified-javascript.js | title": {
     "message": "JavaScript का आकार कम करें"
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | description": {
-    "message": "स्टाइलशीट से इस्तेमाल न किए गए नियमों को हटाएं और पेज के ऊपरी हिस्से की सामग्री के लिए इस्तेमाल न होने वाले CSS को लोड होने से टालें. ऐसा करके, नेटवर्क गतिविधि में खर्च होने वाले गैर-ज़रूरी बाइट कम किए जा सकते हैं. [ज़्यादा जानें](https://developers.google.com/web/tools/lighthouse/audits/unused-css)."
+    "message": "स्टाइलशीट से इस्तेमाल न किए गए नियमों को हटाएं और पेज के ऊपरी हिस्से की सामग्री के लिए इस्तेमाल न होने वाले CSS को लोड होने से टालें. ऐसा करके, नेटवर्क गतिविधि में खर्च होने वाले गैर-ज़रूरी बाइट कम किए जा सकते हैं. [ज़्यादा जानें](https://web.dev/unused-css-rules)."
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | title": {
     "message": "इस्तेमाल नहीं किए गए CSS को हटाएं"
@@ -405,7 +405,7 @@
     "message": "इस्तेमाल नहीं किया गया JavaScript हटाएं"
   },
   "lighthouse-core/audits/byte-efficiency/uses-long-cache-ttl.js | description": {
-    "message": "अगर कैश मेमोरी ज़्यादा समय तक रहेगी, तो लोगों के आपकी साइट पर लौटने की प्रक्रिया में तेज़ी आएगी. [ज़्यादा जानें](https://developers.google.com/web/tools/lighthouse/audits/cache-policy)."
+    "message": "अगर कैश मेमोरी ज़्यादा समय तक रहेगी, तो लोगों के आपकी साइट पर लौटने की प्रक्रिया में तेज़ी आएगी. [ज़्यादा जानें](https://web.dev/uses-long-cache-ttl)."
   },
   "lighthouse-core/audits/byte-efficiency/uses-long-cache-ttl.js | displayValue": {
     "message": "{itemCount,plural, =1{1 संसाधन मिला}one{# संसाधन मिले}other{# संसाधन मिले}}"
@@ -417,31 +417,31 @@
     "message": "स्थिर एसेट पर कुशल कैश नीति का इस्तेमाल करता है"
   },
   "lighthouse-core/audits/byte-efficiency/uses-optimized-images.js | description": {
-    "message": "ऑप्टिमाइज़ की गई इमेज तेज़ी से लोड होती हैं. साथ ही, इसमें कम सेल्युलर डेटा खर्च होता है. [ज़्यादा जानें](https://developers.google.com/web/tools/lighthouse/audits/optimize-images)."
+    "message": "ऑप्टिमाइज़ की गई इमेज तेज़ी से लोड होती हैं. साथ ही, इसमें कम सेल्युलर डेटा खर्च होता है. [ज़्यादा जानें](https://web.dev/uses-optimized-images)."
   },
   "lighthouse-core/audits/byte-efficiency/uses-optimized-images.js | title": {
     "message": "इमेज को कुशलता से एन्कोड करें"
   },
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | description": {
-    "message": "ऐसी इमेज ऑफ़र करें जिनका आकार सही हो, ताकि सेल्युलर डेटा बचाया जा सके और लोड होने में लगने वाले समय को कम किया जा सके. [ज़्यादा जानें](https://developers.google.com/web/tools/lighthouse/audits/oversized-images)."
+    "message": "ऐसी इमेज ऑफ़र करें जिनका आकार सही हो, ताकि सेल्युलर डेटा बचाया जा सके और लोड होने में लगने वाले समय को कम किया जा सके. [ज़्यादा जानें](https://web.dev/uses-responsive-images)."
   },
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | title": {
     "message": "सही तरीके के आकार वाली इमेज"
   },
   "lighthouse-core/audits/byte-efficiency/uses-text-compression.js | description": {
-    "message": "कुल नेटवर्क बाइट को कम से कम करने के लिए, टेक्स्ट आधारित संसाधन, कंप्रेशन (gzip, deflate या brotli) के साथ ऑफ़र किए जाने चाहिए. [ज़्यादा जानें](https://developers.google.com/web/tools/lighthouse/audits/text-compression)."
+    "message": "कुल नेटवर्क बाइट को कम से कम करने के लिए, टेक्स्ट आधारित संसाधन, कंप्रेशन (gzip, deflate या brotli) के साथ ऑफ़र किए जाने चाहिए. [ज़्यादा जानें](https://web.dev/uses-text-compression)."
   },
   "lighthouse-core/audits/byte-efficiency/uses-text-compression.js | title": {
     "message": "लेख कंप्रेशन चालू करें"
   },
   "lighthouse-core/audits/byte-efficiency/uses-webp-images.js | description": {
-    "message": "JPEG 2000, JPEG XR, और WebP जैसे इमेज फ़ॉर्मैट, ज़्यादातर PNG या JPEG से बेहतर कंप्रेस करते हैं जिससे उपयोगकर्ता कम डेटा खर्च करके तेज़ डाउनलोड कर सकते हैं. [ज़्यादा जानें](https://developers.google.com/web/tools/lighthouse/audits/webp)."
+    "message": "JPEG 2000, JPEG XR, और WebP जैसे इमेज फ़ॉर्मैट, ज़्यादातर PNG या JPEG से बेहतर कंप्रेस करते हैं जिससे उपयोगकर्ता कम डेटा खर्च करके तेज़ डाउनलोड कर सकते हैं. [ज़्यादा जानें](https://web.dev/uses-webp-images)."
   },
   "lighthouse-core/audits/byte-efficiency/uses-webp-images.js | title": {
     "message": "इमेज अगली जेनरेशन के फ़ॉर्मेट में ऑफ़र करें"
   },
   "lighthouse-core/audits/content-width.js | description": {
-    "message": "आपके ऐप्लिकेशन की सामग्री की चौड़ाई व्यूपोर्ट की चौड़ाई से मेल नहीं खाती है, तो आपका ऐप्लिकेशन मोबाइल स्क्रीन पर ऑप्टिमाइज़ नहीं किया जा सकेगा. [ज़्यादा जानें](https://developers.google.com/web/tools/lighthouse/audits/content-sized-correctly-for-viewport)."
+    "message": "अगर आपके ऐप्लिकेशन की सामग्री की चौड़ाई व्यूपोर्ट की चौड़ाई से मेल नहीं खाती है, तो आपका ऐप्लिकेशन मोबाइल स्क्रीन पर ऑप्टिमाइज़ नहीं किया जा सकेगा. [ज़्यादा जानें](https://web.dev/content-width)."
   },
   "lighthouse-core/audits/content-width.js | explanation": {
     "message": "{innerWidth}px के व्यूपोर्ट का आकार {outerWidth}px की विंडो के आकार से मेल नहीं खाता है."
@@ -453,7 +453,7 @@
     "message": "सामग्री का आकार व्यूपोर्ट (किसी वेब पेज के स्क्रीन पर दिखने वाले हिस्से) के मुताबिक है"
   },
   "lighthouse-core/audits/critical-request-chains.js | description": {
-    "message": "नीचे दी गई अहम अनुरोध शृंखलाएं बताती हैं कि किन संसाधनों को ज़्यादा प्राथमिकता से लोड किया गया है. शृंखलाओं की अवधि कम करें. इससे संसाधनों का डाउनलोड आकार कम हो जाएगा या पेज लोड को बेहतर बनाने के लिए गैर-ज़रूरी संसाधनों का डाउनलोड टल जाएगा. [ज़्यादा जानें](https://developers.google.com/web/tools/lighthouse/audits/critical-request-chains)."
+    "message": "नीचे दी गई अहम अनुरोध शृंखलाएं बताती हैं कि किन संसाधनों को ज़्यादा प्राथमिकता से लोड किया गया है. शृंखलाओं की अवधि कम करें. इससे संसाधनों का डाउनलोड आकार कम हो जाएगा या पेज लोड को बेहतर बनाने के लिए गैर-ज़रूरी संसाधनों का डाउनलोड टल जाएगा. [ज़्यादा जानें](https://web.dev/critical-request-chains)."
   },
   "lighthouse-core/audits/critical-request-chains.js | displayValue": {
     "message": "{itemCount,plural, =1{1 शृंखला मिली}one{# शृंखलाएं मिलीं}other{# शृंखलाएं मिलीं}}"
@@ -675,7 +675,7 @@
     "message": "ब्राउज़र की किसी गड़बड़ी को कंसोल में लॉग नहीं किया गया"
   },
   "lighthouse-core/audits/font-display.js | description": {
-    "message": "यह पक्का करने के लिए कि वेबफ़ॉन्ट लोड होने के दौरान उपयोगकर्ता को टेक्स्ट दिखाई देता रहे, फ़ॉन्ट-डिसप्ले सीएसएस फ़ीचर का फ़ायदा लें. [ज़्यादा जानें](https://developers.google.com/web/updates/2016/02/font-display)."
+    "message": "यह पक्का करने के लिए कि वेबफ़ॉन्ट लोड होने के दौरान उपयोगकर्ता को टेक्स्ट दिखाई देता रहे, फ़ॉन्ट-डिसप्ले सीएसएस फ़ीचर का फ़ायदा लें. [ज़्यादा जानें](https://web.dev/font-display)."
   },
   "lighthouse-core/audits/font-display.js | failureTitle": {
     "message": "पक्का करें कि वेबफ़ॉन्ट लोड होने के दौरान लेख दिखाई देता रहे"
@@ -705,7 +705,7 @@
     "message": "इमेज के आकार की जानकारी गलत है {url}"
   },
   "lighthouse-core/audits/installable-manifest.js | description": {
-    "message": "ब्राउज़र अपनी ओर से, उपयोगकर्ताओं को आपके ऐप्लिकेशन को उनकी होमस्क्रीन पर जोड़ने के लिए कह सकते हैं. इससे उपयोगकर्ताओं के साथ बेहतरी से जुड़ने में मदद मिलती है. [ज़्यादा जानें](https://developers.google.com/web/tools/lighthouse/audits/install-prompt)."
+    "message": "ब्राउज़र अपनी ओर से उपयोगकर्ताओं को आपके ऐप्लिकेशन को उनकी होमस्क्रीन पर जोड़ने का सुझाव दे सकते हैं. इससे उपयोगकर्ताओं के साथ बेहतर तरीके से जुड़ने में मदद मिलती है. [ज़्यादा जानें](https://web.dev/installable-manifest)."
   },
   "lighthouse-core/audits/installable-manifest.js | failureTitle": {
     "message": "वेब ऐप्लिकेशन का मेनिफ़ेस्ट, इंस्टॉल करने की ज़रूरतों को पूरा नहीं करता है"
@@ -729,7 +729,7 @@
     "message": "HTTPS का इस्तेमाल करता है"
   },
   "lighthouse-core/audits/load-fast-enough-for-pwa.js | description": {
-    "message": "सेल्युलर नेटवर्क पर तेज़ी से पेज लोड होने की सुविधा से मोबाइल इस्तेमाल करने वालों को अच्छा अनुभव मिलता है. [ज़्यादा जानें](https://developers.google.com/web/tools/lighthouse/audits/fast-3g)."
+    "message": "सेल्युलर नेटवर्क पर तेज़ी से पेज लोड होने की सुविधा से मोबाइल इस्तेमाल करने वालों को अच्छा अनुभव मिलता है. [ज़्यादा जानें](https://web.dev/load-fast-enough-for-pwa)."
   },
   "lighthouse-core/audits/load-fast-enough-for-pwa.js | displayValueText": {
     "message": "इंटरैक्शन {timeInMs, number, seconds} से. में शुरू हुआ"
@@ -738,7 +738,7 @@
     "message": "{timeInMs, number, seconds} से. में सिम्युलेट किए गए मोबाइल नेटवर्क पर इंटरैक्शन शुरू हुआ"
   },
   "lighthouse-core/audits/load-fast-enough-for-pwa.js | explanationLoadSlow": {
-    "message": "आपका पेज बहुत धीरे लोड होता है और 10 सेकंड में इंटरैक्टिव (पेज लोड होने के दौरान उपयोगकर्ता के इनपुट जैसे कि क्लिक, टैप, और बटन दबाने का जवाब देने में लगने वाला समय) नहीं होता है. सुधार करने के तरीके जानने के लिए \"प्रदर्शन\" सेक्शन में अवसरों पर नज़र डालें और गड़बड़ी की जानकारी लें."
+    "message": "आपका पेज बहुत धीरे लोड होता है और 10 सेकंड में इंटरैक्टिव नहीं होता है. सुधार करने के तरीके जानने के लिए \"परफ़ॉर्मेंस\" सेक्शन में अवसरों पर नज़र डालें और गड़बड़ी की जानकारी लें."
   },
   "lighthouse-core/audits/load-fast-enough-for-pwa.js | failureTitle": {
     "message": "मोबाइल नेटवर्क पर पेज लोड होने की गति ज़रूरत के मुताबिक तेज़ नहीं है"
@@ -750,7 +750,7 @@
     "message": "श्रेणी"
   },
   "lighthouse-core/audits/mainthread-work-breakdown.js | description": {
-    "message": "JS को पार्स करने, कंपाइल करने और एक्ज़ीक्यूट करने में लगने वाला समय कम करने पर विचार करें. आप देखेंगे कि इसके ज़रिए छोटे-छोटे JS पेलोड डिलीवर करने में मदद मिलती है."
+    "message": "Consider reducing the time spent parsing, compiling and executing JS. You may find delivering smaller JS payloads helps with this. [Learn more](https://web.dev/mainthread-work-breakdown)"
   },
   "lighthouse-core/audits/mainthread-work-breakdown.js | failureTitle": {
     "message": "मुख्य थ्रेड के काम को कम करना"
@@ -759,49 +759,49 @@
     "message": "मुख्य थ्रेड के काम को कम करता है"
   },
   "lighthouse-core/audits/manual/pwa-cross-browser.js | description": {
-    "message": "ज़्यादा से ज़्यादा उपयोगकर्ताओं तक पहुंचने के लिए, साइटों का सभी प्रमुख ब्राउज़र पर काम करना ज़रूरी है. [ज़्यादा जानें](https://developers.google.com/web/progressive-web-apps/checklist#site-works-cross-browser)."
+    "message": "ज़्यादा से ज़्यादा उपयोगकर्ताओं तक पहुंचने के लिए, साइटों का सभी प्रमुख ब्राउज़र पर काम करना ज़रूरी है. [ज़्यादा जानें](https://web.dev/pwa-cross-browser)."
   },
   "lighthouse-core/audits/manual/pwa-cross-browser.js | title": {
-    "message": "यह क्रॉस-ब्राउज़र वेबसाइट है जो अलग-अलग ब्राउज़र पर काम करती है"
+    "message": "यह वेबसाइट अलग-अलग ब्राउज़र पर काम करती है"
   },
   "lighthouse-core/audits/manual/pwa-each-page-has-url.js | description": {
-    "message": "पक्का करें कि अलग-अलग पेज, यूआरएल के ज़रिए डीप लिंक के लायक हैं. साथ ही, वे ऐसे खास यूआरएल हैं जो सोशल मीडिया पर शेयर करने के मकसद को पूरा करते हैं. [ज़्यादा जानें](https://developers.google.com/web/progressive-web-apps/checklist#each-page-has-a-url)."
+    "message": "पक्का करें कि हर पेज को यूआरएल के ज़रिए डीप लिंक किया जा सकता हो. साथ ही, वे ऐसे खास यूआरएल हों जिन्हें सोशल मीडिया पर शेयर किया जा सकता है. [ज़्यादा जानें](https://web.dev/pwa-each-page-has-url)."
   },
   "lighthouse-core/audits/manual/pwa-each-page-has-url.js | title": {
     "message": "हर पेज का एक यूआरएल होता है"
   },
   "lighthouse-core/audits/manual/pwa-page-transitions.js | description": {
-    "message": "नेटवर्क धीमा होने के बाद भी वेब ऐप्लिकेशन पर टैप करने पर ट्रांज़िशन की रफ़्तार तेज़ महसूस होनी चाहिए. यह आपके पेज की अच्छी परफ़ॉर्मेंस के लिए अहम है. [ज़्यादा जानें](https://developers.google.com/web/progressive-web-apps/checklist#page-transitions-dont-feel-like-they-block-on-the-network)."
+    "message": "Transitions should feel snappy as you tap around, even on a slow network. This experience is key to a user's perception of performance. [Learn more](https://web.dev/pwa-page-transitions)."
   },
   "lighthouse-core/audits/manual/pwa-page-transitions.js | title": {
-    "message": "पेज ट्रांज़िशन को देखकर ऐसा नहीं लगना चाहिए जैसे वे नेटवर्क लोड होने का इंतज़ार कर रहे हैं"
+    "message": "पेज ट्रांज़िशन को देखकर ऐसा नहीं लगना चाहिए जैसे कि वे नेटवर्क लोड होने का इंतज़ार कर रहे हैं"
   },
   "lighthouse-core/audits/metrics/estimated-input-latency.js | description": {
-    "message": "इनपुट के इंतज़ार के समय का अंदाज़ा, इस बात से लगाया जाता है कि पेज लोड होने की सबसे व्यस्त पांच सेकंड की विंडो के दौरान आपके ऐप्लिकेशन को इस्तेमाल करने वाले के इनपुट का जवाब देने में कितना समय लगेगा. इस समय का हिसाब मिलीसेकंड में लगाया जाता है. अगर इंतज़ार का समय 50 मिलीसेकंड से ज़्यादा हो, तो इस्तेमाल करने वाले आपके ऐप्लिकेशन को धीमा मान सकते हैं. [ज़्यादा जानें](https://developers.google.com/web/tools/lighthouse/audits/estimated-input-latency)."
+    "message": "इनपुट के इंतज़ार के समय का अंदाज़ा, इस बात से लगाया जाता है कि पेज लोड होने की सबसे व्यस्त पांच सेकंड की विंडो के दौरान आपके ऐप्लिकेशन को इस्तेमाल करने वाले के इनपुट का जवाब देने में कितना समय लगेगा. इस समय का हिसाब मिलीसेकंड में लगाया जाता है. अगर इंतज़ार का समय 50 मिलीसेकंड से ज़्यादा हो, तो इस्तेमाल करने वाले आपके ऐप्लिकेशन को धीमा मान सकते हैं. [ज़्यादा जानें](https://web.dev/estimated-input-latency)."
   },
   "lighthouse-core/audits/metrics/estimated-input-latency.js | title": {
     "message": "अनुमानित इनपुट प्रतीक्षा समय"
   },
   "lighthouse-core/audits/metrics/first-contentful-paint.js | description": {
-    "message": "फ़र्स्ट कॉन्टेंटफ़ुल पेंट से उस समय का पता चलता है जब पहले टेक्स्ट या इमेज को पेंट किया गया था. [ज़्यादा जानें](https://developers.google.com/web/tools/lighthouse/audits/first-contentful-paint)."
+    "message": "फ़र्स्ट कॉन्टेंटफ़ुल पेंट से उस समय का पता चलता है जब पहले टेक्स्ट या इमेज को पेंट किया गया था. [ज़्यादा जानें](https://web.dev/first-contentful-paint)."
   },
   "lighthouse-core/audits/metrics/first-contentful-paint.js | title": {
     "message": "उपयोगी सामग्री वाला पहला पेंट"
   },
   "lighthouse-core/audits/metrics/first-cpu-idle.js | description": {
-    "message": "इस्तेमाल में न होने वाले पहले सीपीयू (CPU) का आंकड़ा, वह समय बताता है जब पेज का मुख्य थ्रेड पहली बार इनपुट को संभालने के लिए काफ़ी होता है. [ज़्यादा जानें](https://developers.google.com/web/tools/lighthouse/audits/first-interactive)."
+    "message": "First CPU Idle marks the first time at which the page's main thread is quiet enough to handle input.  [Learn more](https://web.dev/first-cpu-idle)."
   },
   "lighthouse-core/audits/metrics/first-cpu-idle.js | title": {
     "message": "पहला सीपीयू (CPU) इस्तेमाल में नहीं"
   },
   "lighthouse-core/audits/metrics/first-meaningful-paint.js | description": {
-    "message": "फ़र्स्ट मीनिंगफ़ुल पेंट, पेज की मुख्य सामग्री दिखाई देने का समय बताता है. [ज़्यादा जानें](https://developers.google.com/web/tools/lighthouse/audits/first-meaningful-paint)."
+    "message": "फ़र्स्ट मीनिंगफ़ुल पेंट, पेज की मुख्य सामग्री दिखाई देने का समय बताता है. [ज़्यादा जानें](https://web.dev/first-meaningful-paint)."
   },
   "lighthouse-core/audits/metrics/first-meaningful-paint.js | title": {
     "message": "पहला सार्थक पेंट"
   },
   "lighthouse-core/audits/metrics/interactive.js | description": {
-    "message": "इंटरैक्टिव में लगने वाला समय, वह समय है जितनी देर में पेज पूरी तरह से इंटरैक्टिव हो जाता है. [ज़्यादा जानें](https://developers.google.com/web/tools/lighthouse/audits/consistently-interactive)."
+    "message": "इंटरैक्टिव में लगने वाला समय, वह समय है जितनी देर में पेज पूरी तरह से इंटरैक्टिव हो जाता है. [ज़्यादा जानें](https://web.dev/interactive)."
   },
   "lighthouse-core/audits/metrics/interactive.js | title": {
     "message": "इंटरएक्टिव में लगने वाला समय"
@@ -813,7 +813,7 @@
     "message": "सबसे ज़्यादा संभावित फ़र्स्ट इनपुट डिले"
   },
   "lighthouse-core/audits/metrics/speed-index.js | description": {
-    "message": "स्पीड इंडेक्स से पता चलता है कि किसी पेज की सामग्री, विज़ुअल रूप से कितनी तेज़ी से डाली गई है. [ज़्यादा जानें](https://developers.google.com/web/tools/lighthouse/audits/speed-index)."
+    "message": "स्पीड इंडेक्स से पता चलता है कि किसी पेज की सामग्री, विज़ुअल रूप से कितनी तेज़ी से डाली गई है. [ज़्यादा जानें](https://web.dev/speed-index)."
   },
   "lighthouse-core/audits/metrics/speed-index.js | title": {
     "message": "गति इंडेक्स"
@@ -837,7 +837,7 @@
     "message": "सर्वर बैकएंड के इंतज़ार का समय"
   },
   "lighthouse-core/audits/offline-start-url.js | description": {
-    "message": "सर्विस वर्कर की वजह से आपका वेब ऐप्लिकेशन ऑनलाइन, ऑफ़लाइन, और रुक-रुककर चलने वाले नेटवर्क कनेक्शन जैसी स्थितियों में भी अच्छे ढंग से काम करता है. [ज़्यादा जानें](https://developers.google.com/web/tools/lighthouse/audits/http-200-when-offline)."
+    "message": "सर्विस वर्कर की वजह से आपका वेब ऐप्लिकेशन ऑनलाइन, ऑफ़लाइन, और रुक-रुककर चलने वाले नेटवर्क जैसी स्थितियों में भी अच्छे ढंग से काम करता है. [ज़्यादा जानें](https://web.dev/offline-start-url)."
   },
   "lighthouse-core/audits/offline-start-url.js | failureTitle": {
     "message": "`start_url` ऑफ़लाइन होने पर, \"200\" कोड का जवाब नहीं देता है"
@@ -861,7 +861,7 @@
     "message": "परफ़ॉर्मेंस बजट"
   },
   "lighthouse-core/audits/redirects-http.js | description": {
-    "message": "अगर आप एचटीटीपीएस पहले ही सेट अप कर चुके हैं, तो पक्का करें कि अपने सभी उपयोगकर्ताओं के लिए सुरक्षित वेब फ़ीचर चालू करने के मकसद से आप सभी एचटीटीपी ट्रैफ़िक को एचटीटीपीएस पर रीडायरेक्ट करें. [ज़्यादा जानें](https://developers.google.com/web/tools/lighthouse/audits/http-redirects-to-https)."
+    "message": "अगर आप एचटीटीपीएस पहले ही सेट अप कर चुके हैं, तो पक्का करें कि अपने सभी उपयोगकर्ताओं के लिए सुरक्षित वेब फ़ीचर चालू करने के मकसद से आप सभी एचटीटीपी ट्रैफ़िक को एचटीटीपीएस पर रीडायरेक्ट करें. [ज़्यादा जानें](https://web.dev/redirects-http)."
   },
   "lighthouse-core/audits/redirects-http.js | failureTitle": {
     "message": "वेब पेज, एचटीटीपी ट्रैफ़िक को एचटीटीपीएस पर रीडायरेक्ट नहीं करता है"
@@ -870,7 +870,7 @@
     "message": "वेब पेज, एचटीटीपी ट्रैफ़िक को एचटीटीपीएस पर रीडायरेक्ट करता है"
   },
   "lighthouse-core/audits/redirects.js | description": {
-    "message": "रीडायरेक्ट की वजह से पेज के लोड होने से लगने वाला समय और बढ़ जाता है. [ज़्यादा जानें](https://developers.google.com/web/tools/lighthouse/audits/redirects)."
+    "message": "रीडायरेक्ट की वजह से पेज के लोड होने से लगने वाला समय और बढ़ जाता है. [ज़्यादा जानें](https://web.dev/redirects)."
   },
   "lighthouse-core/audits/redirects.js | title": {
     "message": "एक से ज़्यादा पेज रीडायरेक्ट करने से बचें"
@@ -1035,7 +1035,7 @@
     "message": "टैप की जाने वाली जगहें सही आकार में हैं"
   },
   "lighthouse-core/audits/service-worker.js | description": {
-    "message": "सर्विस वर्कर एक ऐसी तकनीक है जो आपके ऐप्लिकेशन के लिए कई प्रगतिशील वेब ऐप फ़ीचर जैसे कि ऑफ़लाइन, होमस्क्रीन पर जोड़ें, और पुश नोटिफ़िकेशन को चालू करती है. [ज़्यादा जानें](https://developers.google.com/web/tools/lighthouse/audits/registered-service-worker)."
+    "message": "सर्विस वर्कर एक ऐसी तकनीक है जो आपके ऐप्लिकेशन के लिए कई प्रगतिशील वेब ऐप्लिकेशन फ़ीचर जैसे कि ऑफ़लाइन, होमस्क्रीन पर जोड़ें, और पुश नोटिफ़िकेशन को चालू करती है. [ज़्यादा जानें](https://web.dev/service-worker)."
   },
   "lighthouse-core/audits/service-worker.js | explanationBadManifest": {
     "message": "इस पेज का नियंत्रण सर्विस वर्कर के पास है. हालांकि, कोई `start_url` नहीं मिला, क्योंकि मेनिफ़ेस्ट को मान्य JSON के रूप में पार्स नहीं किया जा सका"
@@ -1044,10 +1044,10 @@
     "message": "इस पेज का नियंत्रण सर्विस वर्कर के पास है. हालांकि, `start_url` ({startUrl}) सर्विस वर्कर के दायरे में नहीं है ({scopeUrl})"
   },
   "lighthouse-core/audits/service-worker.js | explanationNoManifest": {
-    "message": "इस पेज का नियंत्रण सर्विस वर्कर के पास है. हालांकि, कोई `start_url` नहीं मिला, क्योंकि कोई पेज पर कोई मेनिफ़ेस्ट ही नहीं था."
+    "message": "इस पेज का नियंत्रण सर्विस वर्कर के पास है. हालांकि, कोई `start_url` नहीं मिला, क्योंकि किसी पेज पर कोई मेनिफ़ेस्ट ही नहीं था."
   },
   "lighthouse-core/audits/service-worker.js | explanationOutOfScope": {
-    "message": "इस मूल में एक या ज़्यादा सर्विस वर्कर हैं. हालांकि, पेज ({pageUrl}) दायरे में नहीं है."
+    "message": "यहां पर एक या ज़्यादा सर्विस वर्कर हैं. हालांकि, पेज ({pageUrl}) दायरे में नहीं है."
   },
   "lighthouse-core/audits/service-worker.js | failureTitle": {
     "message": "किसी ऐसे सर्विस वर्कर को रजिस्टर नहीं करता जो पेज और `start_url` को नियंत्रित करता है"
@@ -1056,7 +1056,7 @@
     "message": "किसी ऐसे सर्विस वर्कर को रजिस्टर करता है जो पेज और `start_url` को नियंत्रित करता है"
   },
   "lighthouse-core/audits/splash-screen.js | description": {
-    "message": "उपयोगकर्ता जब अपनी होमस्क्रीन से आपका ऐप्लिकेशन लॉन्च करते हैं, तो थीम वाली स्प्लैश स्क्रीन की वजह से इसका इस्तेमाल करने वालों को अच्छा अनुभव मिलता है. [ज़्यादा जानें](https://developers.google.com/web/tools/lighthouse/audits/custom-splash-screen)."
+    "message": "उपयोगकर्ता जब अपनी होमस्क्रीन से आपका ऐप्लिकेशन लॉन्च करते हैं, तो थीम वाली स्प्लैश स्क्रीन की वजह से इस्तेमाल करने वालों को अच्छा अनुभव मिलता है. [ज़्यादा जानें](https://web.dev/splash-screen)."
   },
   "lighthouse-core/audits/splash-screen.js | failureTitle": {
     "message": "पसंद के मुताबिक स्प्लैश स्क्रीन के लिए कॉन्फ़िगर नहीं किया गया"
@@ -1065,13 +1065,13 @@
     "message": "पसंद के मुताबिक स्प्लैश स्क्रीन के लिए कॉन्फ़िगर किया गया"
   },
   "lighthouse-core/audits/themed-omnibox.js | description": {
-    "message": "ब्राउज़र का पता बार आपकी वेबसाइट से मेल खाए, इसके लिए थीम इस्तेमाल कर सकते हैं. [ज़्यादा जानें](https://developers.google.com/web/tools/lighthouse/audits/address-bar)."
+    "message": "ब्राउज़र के 'पता बार' की थीम ऐसी हो सकती है जो आपकी वेबसाइट से मेल खाए. [ज़्यादा जानें](https://web.dev/themed-omnibox)."
   },
   "lighthouse-core/audits/themed-omnibox.js | failureTitle": {
-    "message": "पता बार के लिए थीम का रंग सेट नहीं करता है."
+    "message": "'पता बार' के लिए थीम का रंग सेट नहीं करता है."
   },
   "lighthouse-core/audits/themed-omnibox.js | title": {
-    "message": "पता बार के लिए थीम का रंग सेट करता है."
+    "message": "'पता बार' के लिए थीम का रंग सेट करता है."
   },
   "lighthouse-core/audits/third-party-summary.js | columnBlockingTime": {
     "message": "मुख्य थ्रेड ब्लॉक होने का समय"
@@ -1092,7 +1092,7 @@
     "message": "इसका इस्तेमाल तीसरा पक्ष करता है"
   },
   "lighthouse-core/audits/time-to-first-byte.js | description": {
-    "message": "पहली बाइट का समय, उस समय की पहचान करता है जब आपका सर्वर कोई जवाब भेजता है. [ज़्यादा जानें](https://developers.google.com/web/tools/lighthouse/audits/ttfb)."
+    "message": "पहली बाइट का समय, उस समय की पहचान करता है जब आपका सर्वर कोई जवाब भेजता है. [ज़्यादा जानें](https://web.dev/time-to-first-byte)."
   },
   "lighthouse-core/audits/time-to-first-byte.js | displayValue": {
     "message": "रुट दस्तावेज़ बनने में {timeInMs, number, milliseconds} मि.से. का समय लगा"
@@ -1113,7 +1113,7 @@
     "message": "प्रकार"
   },
   "lighthouse-core/audits/user-timings.js | description": {
-    "message": "मुख्य उपयोगकर्ता अनुभवों के दौरान, असली दुनिया के माप तैयार करने के लिए अपने ऐप्लिकेशन को 'उपयोगकर्ता समय एपीआई' की मदद से तैयार करें. [ज़्यादा जानें](https://developers.google.com/web/tools/lighthouse/audits/user-timing)."
+    "message": "मुख्य उपयोगकर्ता अनुभवों के दौरान, असली दुनिया के माप तैयार करने के लिए अपने ऐप्लिकेशन को 'उपयोगकर्ता समय एपीआई' की मदद से तैयार करें. [ज़्यादा जानें](https://web.dev/user-timings)."
   },
   "lighthouse-core/audits/user-timings.js | displayValue": {
     "message": "{itemCount,plural, =1{1 उपयोगकर्ता समय}one{# उपयोगकर्ता समय}other{# उपयोगकर्ता समय}}"
@@ -1125,7 +1125,7 @@
     "message": "\"{securityOrigin}\" के लिए पहले से कनेक्ट किया गया <link> मिला, लेकिन ब्राउज़र ने इसका इस्तेमाल नहीं किया था. यह पक्का कर लें कि आप `crossorigin` विशेषता का इस्तेमाल ठीक से कर रहे हैं."
   },
   "lighthouse-core/audits/uses-rel-preconnect.js | description": {
-    "message": "तीसरे पक्ष के मूल से जल्दी कनेक्शन बनाने के लिए `preconnect` या `dns-prefetch` संसाधन संकेत जोड़ें. [ज़्यादा जानें](https://developers.google.com/web/fundamentals/performance/resource-prioritization#preconnect)."
+    "message": "तीसरे पक्ष से जल्दी कनेक्शन बनाने के लिए `preconnect` या `dns-prefetch` संसाधन संकेत जोड़ें. [ज़्यादा जानें](https://web.dev/uses-rel-preconnect)."
   },
   "lighthouse-core/audits/uses-rel-preconnect.js | title": {
     "message": "ज़रूरी मूल से प्री-कनेक्ट करें"
@@ -1134,13 +1134,13 @@
     "message": "\"{preloadURL}\" के लिए पहले से लोड किया गया <link> मिला, लेकिन ब्राउज़र ने इसका इस्तेमाल नहीं किया था. यह पक्का कर लें कि आप `crossorigin` विशेषता का इस्तेमाल ठीक से कर रहे हैं."
   },
   "lighthouse-core/audits/uses-rel-preload.js | description": {
-    "message": "`<link rel=preload>` का इस्तेमाल करके उन संसाधनों को पाने को प्राथमिकता दें जिन्हें फ़िलहाल पेज लोड में 'बाद में चाहिए होंगे' का दर्जा दिया गया है. [ज़्यादा जानें](https://developers.google.com/web/tools/lighthouse/audits/preload)."
+    "message": "`<link rel=preload>` का इस्तेमाल करके उन संसाधनों को पाने को प्राथमिकता दें जिन्हें फ़िलहाल पेज लोड में 'बाद में चाहिए होंगे' का दर्जा दिया गया है. [ज़्यादा जानें](https://web.dev/uses-rel-preload)."
   },
   "lighthouse-core/audits/uses-rel-preload.js | title": {
     "message": "प्रमुख अनुरोधों को पहले से लोड करें"
   },
   "lighthouse-core/audits/viewport.js | description": {
-    "message": "अपने ऐप्लिकेशन को किसी भी मोबाइल स्क्रीन पर ऑप्टिमाइज़ करने के लिए `<meta name=\"viewport\">` टैग जोड़ें. [ज़्यादा जानें](https://developers.google.com/web/tools/lighthouse/audits/has-viewport-meta-tag)."
+    "message": "अपने ऐप्लिकेशन को किसी भी मोबाइल स्क्रीन पर ऑप्टिमाइज़ करने के लिए `<meta name=\"viewport\">` टैग जोड़ें. [ज़्यादा जानें](https://web.dev/viewport)."
   },
   "lighthouse-core/audits/viewport.js | explanationNoTag": {
     "message": "कोई `<meta name=\"viewport\">` टैग नहीं मिला"
@@ -1152,28 +1152,28 @@
     "message": "वेब पेज पर `width` या `initial-scale` वाला `<meta name=\"viewport\">` टैग है"
   },
   "lighthouse-core/audits/without-javascript.js | description": {
-    "message": "JavaScript बंद होने पर भी आपके ऐप्लिकेशन की कुछ सामग्री दिखाई देनी चाहिए. भले ही वह उपयोगकर्ता को दी जाने वाली एक चेतावनी हो कि ऐप्लिकेशन को इस्तेमाल करने के लिए JavaScript ज़रूरी है. [ज़्यादा जानें](https://developers.google.com/web/tools/lighthouse/audits/no-js)."
+    "message": "JavaScript बंद होने पर भी आपके ऐप्लिकेशन की कुछ सामग्री दिखाई देनी चाहिए. भले ही वह उपयोगकर्ता को दी जाने वाली एक चेतावनी हो कि ऐप्लिकेशन को इस्तेमाल करने के लिए JavaScript ज़रूरी है. [ज़्यादा जानें](https://web.dev/without-javascript)."
   },
   "lighthouse-core/audits/without-javascript.js | explanation": {
     "message": "अगर इसकी स्क्रिप्ट उपलब्ध नहीं हैं, तो पेज के मुख्य हिस्से को कुछ सामग्री रेंडर करनी चाहिए या उसकी इमेज बनानी चाहिए."
   },
   "lighthouse-core/audits/without-javascript.js | failureTitle": {
-    "message": "यह वेब पेज, JavaScript उपलब्ध न होने पर फ़ॉलबैक सामग्री मुहैया नहीं करवाता है"
+    "message": "यह वेब पेज, JavaScript उपलब्ध न होने पर फ़ॉलबैक सामग्री मुहैया नहीं कराता है"
   },
   "lighthouse-core/audits/without-javascript.js | title": {
     "message": "यह वेब पेज, JavaScript उपलब्ध नहीं होने पर कुछ सामग्री दिखाता है"
   },
   "lighthouse-core/audits/works-offline.js | description": {
-    "message": "अगर आप एक प्रगतिशील वेब ऐप्लिकेशन बना रहे हैं, तो सर्विस वर्कर का इस्तेमाल करें, ताकि आपका ऐप्लिकेशन ऑफ़लाइन भी काम कर सके. [ज़्यादा जानें](https://developers.google.com/web/tools/lighthouse/audits/http-200-when-offline)."
+    "message": "अगर आप एक प्रगतिशील वेब ऐप्लिकेशन बना रहे हैं, तो सर्विस वर्कर का इस्तेमाल करें, ताकि आपका ऐप्लिकेशन ऑफ़लाइन भी काम कर सके. [ज़्यादा जानें](https://web.dev/works-offline)."
   },
   "lighthouse-core/audits/works-offline.js | failureTitle": {
-    "message": "ऑफ़लाइन होने पर, मौजूदा पेज \"200\" कोड (एचटीटीपी स्टेटस कोड जिसका मतलब है कि एचटीटीपी स्तर पर ट्रांसमिशन ठीक है) का जवाब नहीं देता है"
+    "message": "ऑफ़लाइन होने पर, मौजूदा पेज \"200\" कोड का जवाब नहीं देता है"
   },
   "lighthouse-core/audits/works-offline.js | title": {
     "message": "ऑफ़लाइन होने पर, मौजूदा पेज \"200\" कोड का जवाब देता है"
   },
   "lighthouse-core/audits/works-offline.js | warningNoLoad": {
-    "message": "ऐसा हो सकता है कि ऑफ़लाइन होने पर पेज इसलिए लोड नहीं हो रहा है, क्योंकि आपका टेस्ट यूआरएल ({requested}) को \"{final}\" की ओर रीडायरेक्ट किया गया था. टेस्टिंग के लिए सीधे दूसरी यूआरएल आज़माएं."
+    "message": "ऐसा हो सकता है कि ऑफ़लाइन होने पर पेज इसलिए लोड नहीं हो रहा है, क्योंकि आपका टेस्ट यूआरएल ({requested}) को \"{final}\" की ओर रीडायरेक्ट किया गया था. टेस्टिंग के लिए सीधे दूसरा यूआरएल आज़माएं."
   },
   "lighthouse-core/config/default-config.js | a11yAriaGroupDescription": {
     "message": "ये आपके ऐप्लिकेशन में ARIA के इस्तेमाल को बेहतर बनाने के अवसर हैं, जिससे उपयोगकर्ताओं का स्क्रीन रीडर जैसी सहायक तकनीक का अनुभव बेहतर हो सकता है."

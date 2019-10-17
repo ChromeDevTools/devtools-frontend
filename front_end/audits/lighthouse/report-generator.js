@@ -12,9 +12,9 @@
  * lighthouse-core/report/html/html-report-assets.js in Devtools.
  */
 
-/* global Runtime */
+/* global Root */
 
-// @ts-ignore: Runtime exists in Devtools.
+// @ts-ignore: Root.Runtime exists in Devtools.
 const cachedResources = Root.Runtime.cachedResources;
 
 // Getters are necessary because the DevTools bundling processes

@@ -359,11 +359,34 @@ limitations under the License.
   </style>
 
   <div class="lh-topbar">
-    <!-- Flat Lighthouse logo.  -->
-    <svg class="lh-topbar__logo" viewBox="0 0 192 192">
+    <!-- Lighthouse logo.  -->
+    <svg class="lh-topbar__logo" viewBox="0 0 24 24">
+      <defs>
+        <linearGradient x1="57.456%" y1="13.086%" x2="18.259%" y2="72.322%" id="lh-topbar__logo--a">
+          <stop stop-color="#262626" stop-opacity=".1" offset="0%"/>
+          <stop stop-color="#262626" stop-opacity="0" offset="100%"/>
+        </linearGradient>
+        <linearGradient x1="100%" y1="50%" x2="0%" y2="50%" id="lh-topbar__logo--b">
+          <stop stop-color="#262626" stop-opacity=".1" offset="0%"/>
+          <stop stop-color="#262626" stop-opacity="0" offset="100%"/>
+        </linearGradient>
+        <linearGradient x1="58.764%" y1="65.756%" x2="36.939%" y2="50.14%" id="lh-topbar__logo--c">
+          <stop stop-color="#262626" stop-opacity=".1" offset="0%"/>
+          <stop stop-color="#262626" stop-opacity="0" offset="100%"/>
+        </linearGradient>
+        <linearGradient x1="41.635%" y1="20.358%" x2="72.863%" y2="85.424%" id="lh-topbar__logo--d">
+          <stop stop-color="#FFF" stop-opacity=".1" offset="0%"/>
+          <stop stop-color="#FFF" stop-opacity="0" offset="100%"/>
+        </linearGradient>
+      </defs>
       <g fill="none" fill-rule="evenodd">
-        <path d="M0 0h192v192H0z"/>
-        <path class="shape" d="M67.705 179.352l2.603-20.82 49.335-16.39 4.652 37.21A87.893 87.893 0 0 1 96 184a87.893 87.893 0 0 1-28.295-4.648zM52.44 172.48C25.894 157.328 8 128.754 8 96 8 47.399 47.399 8 96 8s88 39.399 88 88c0 32.754-17.894 61.328-44.44 76.48L130 96h6V80h-8V48L96 28 64 48v32h-8v16h6l-9.56 76.48zM113.875 96l2.882 23.05-43.318 14.433L78.125 96h35.75zM80 80V56.868l16-10 16 10V80H80z"/>
+        <path d="M12 3l4.125 2.625v3.75H18v2.25h-1.688l1.5 9.375H6.188l1.5-9.375H6v-2.25h1.875V5.648L12 3zm2.201 9.938L9.54 14.633 9 18.028l5.625-2.062-.424-3.028zM12.005 5.67l-1.88 1.207v2.498h3.75V6.86l-1.87-1.19z" fill="#F44B21"/>
+        <path fill="#FFF" d="M14.201 12.938L9.54 14.633 9 18.028l5.625-2.062z"/>
+        <path d="M6 18c-2.042 0-3.95-.01-5.813 0l1.5-9.375h4.326L6 18z" fill="url(#lh-topbar__logo--a)" fill-rule="nonzero" transform="translate(6 3)"/>
+        <path fill="#FFF176" fill-rule="nonzero" d="M13.875 9.375v-2.56l-1.87-1.19-1.88 1.207v2.543z"/>
+        <path fill="url(#lh-topbar__logo--b)" fill-rule="nonzero" d="M0 6.375h6v2.25H0z" transform="translate(6 3)"/>
+        <path fill="url(#lh-topbar__logo--c)" fill-rule="nonzero" d="M6 6.375H1.875v-3.75L6 0z" transform="translate(6 3)"/>
+        <path fill="url(#lh-topbar__logo--d)" fill-rule="nonzero" d="M6 0l4.125 2.625v3.75H12v2.25h-1.688l1.5 9.375H.188l1.5-9.375H0v-2.25h1.875V2.648z" transform="translate(6 3)"/>
       </g>
     </svg>
 
@@ -394,29 +417,6 @@ limitations under the License.
 <!-- Lighthouse header -->
 <template id="tmpl-lh-heading">
   <style>
-/*
-    TODO: Enable animating the clouds
-    .lh-lighthouse__clouds {
-      animation: panacross 30s linear infinite;
-      animation-play-state: paused;
-    }
-    @keyframes panacross {
-      0% { transform: translateX(0px); }
-      77% { transform: translateX(-680px); }
-      77.0001% { transform: translateX(195px); }
-      100% { transform: translateX(0px); }
-    } */
-
-    .score100 .lh-header-bg {
-      background-color: hsl(234, 64%, 19%);
-    }
-    .score100 .lh-metadata, .score100 .lh-toolbar__metadata, .score100 .lh-product-info {
-      color: #fff;
-    }
-    .score100 .lh-config {
-      color: #eee;
-    }
-
     /* CSS Fireworks. Originally by Eddie Lin
        https://codepen.io/paulirish/pen/yEVMbP
     */

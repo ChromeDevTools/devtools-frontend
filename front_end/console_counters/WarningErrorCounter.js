@@ -57,6 +57,7 @@ export default class WarningErrorCounter {
    */
   _createItem(shadowRoot, iconType) {
     const item = createElementWithClass('span', 'counter-item');
+    UI.ARIAUtils.markAsHidden(item);
     const icon = item.createChild('span', '', 'dt-icon-label');
     icon.type = iconType;
     const text = icon.createChild('span');
@@ -132,7 +133,9 @@ export default class WarningErrorCounter {
       this._violationCounter.title = violationCountTitle;
     }
 
-    this._counter.title = this._titles.join(', ');
+    const titles = this._titles.join(', ');
+    this._counter.title = titles;
+    UI.ARIAUtils.setAccessibleName(this._counter, titles);
     UI.inspectorView.toolbarItemResized();
     this._updatingForTest = false;
     this._updatedForTest();

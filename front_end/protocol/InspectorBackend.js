@@ -312,6 +312,17 @@ export class SessionRouter {
    * @param {?Connection} proxyConnection
    */
   registerSession(target, sessionId, proxyConnection) {
+    // Only the Audits panel uses proxy connections. If it is ever possible to have multiple active at the
+    // same time, it should be tested thoroughly.
+    if (proxyConnection) {
+      for (const session of this._sessions.values()) {
+        if (session.proxyConnection) {
+          console.error('Multiple simultaneous proxy connections are currently unsupported');
+          break;
+        }
+      }
+    }
+
     this._sessions.set(sessionId, {target, callbacks: new Map(), proxyConnection});
   }
 
@@ -414,32 +425,26 @@ export class SessionRouter {
     const messageObject = /** @type {!Object} */ ((typeof message === 'string') ? JSON.parse(message) : message);
 
     // Send all messages to proxy connections.
-    let proxyConnectionIsActive = false;
+    let suppressUnknownMessageErrors = false;
     for (const session of this._sessions.values()) {
       if (!session.proxyConnection) {
         continue;
       }
 
-      // Only the Audits panel has use proxy connections. If it is ever possible to have multiple active at the
-      // same time, it should be test thoroughly.
-      if (proxyConnectionIsActive) {
-        Protocol.InspectorBackend.reportProtocolError(
-            'Protocol Error: multiple proxy connections are not explicitly supported right now', messageObject);
-      }
-
-      if (session.proxyConnection._onMessage) {
-        session.proxyConnection._onMessage(messageObject);
-        proxyConnectionIsActive = true;
-      } else {
+      if (!session.proxyConnection._onMessage) {
         Protocol.InspectorBackend.reportProtocolError(
             'Protocol Error: the session has a proxyConnection with no _onMessage', messageObject);
+        continue;
       }
+
+      session.proxyConnection._onMessage(messageObject);
+      suppressUnknownMessageErrors = true;
     }
 
     const sessionId = messageObject.sessionId || '';
     const session = this._sessions.get(sessionId);
     if (!session) {
-      if (!proxyConnectionIsActive) {
+      if (!suppressUnknownMessageErrors) {
         Protocol.InspectorBackend.reportProtocolError(
             'Protocol Error: the message with wrong session id', messageObject);
       }
@@ -459,7 +464,7 @@ export class SessionRouter {
       const callback = session.callbacks.get(messageObject.id);
       session.callbacks.delete(messageObject.id);
       if (!callback) {
-        if (!proxyConnectionIsActive) {
+        if (!suppressUnknownMessageErrors) {
           Protocol.InspectorBackend.reportProtocolError('Protocol Error: the message with wrong id', messageObject);
         }
         return;

@@ -241,7 +241,7 @@ export default class NetworkLog extends Common.Object {
     const initiated = new Set();
     const networkManager = SDK.NetworkManager.forRequest(request);
     for (const otherRequest of this._requests) {
-      const otherRequestManager = SDK.NetworkManager.forRequest(request);
+      const otherRequestManager = SDK.NetworkManager.forRequest(otherRequest);
       if (networkManager === otherRequestManager && this._initiatorChain(otherRequest).has(request)) {
         initiated.add(otherRequest);
       }
@@ -265,6 +265,7 @@ export default class NetworkLog extends Common.Object {
 
     let checkRequest = request;
     do {
+      this._initializeInitiatorSymbolIfNeeded(checkRequest);
       if (checkRequest[_initiatorDataSymbol].chain) {
         initiatorChainCache.addAll(checkRequest[_initiatorDataSymbol].chain);
         break;

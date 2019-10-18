@@ -10,11 +10,17 @@ Click the reload button <ph name="RELOAD_BUTTON_ICON">$2s<ex>reload button icon<
   <message name="IDS_DEVTOOLS_1a49594b5f00e4f511ae8935c027cd8e" desc="Text in Coverage List View of the Coverage tab">
     Unused Bytes
   </message>
+  <message name="IDS_DEVTOOLS_1b720c2038c3cf92379c5054abda47ae" desc="Accessible text for the visualization column of coverage tool. Contains percentage of unused bytes to used bytes.">
+    <ph name="UNUSEDPERCENT">$1s<ex>20%</ex></ph> of file unused, <ph name="USEDPERCENT">$2s<ex>80%</ex></ph> of file used
+  </message>
   <message name="IDS_DEVTOOLS_2adbfb69a37aa4a29ca846736d2111db" desc="Text in Coverage List View of the Coverage tab">
     JS (coarse)
   </message>
   <message name="IDS_DEVTOOLS_44ea86aada1381cf21cf9899b3dd32fe" desc="Label for the type filter in the Converage Panel">
     Filter coverage by type
+  </message>
+  <message name="IDS_DEVTOOLS_6861e4e238e968ec0ee3e9d3cb3b893f" desc="Accessible text for the unused bytes column in the coverage tool that describes the total unused bytes and percentage of the file unused.">
+    <ph name="UNUSEDSIZE">$1s<ex>100000</ex></ph> bytes, <ph name="UNUSEDPERCENTFORMATED">$2s<ex>88%</ex></ph>
   </message>
   <message name="IDS_DEVTOOLS_73af525212a812236f1a3618e9cfa717" desc="Tooltip text that appears when hovering over the largeicon download button in the Coverage View of the Coverage tab">
     Export...

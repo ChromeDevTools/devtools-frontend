@@ -430,6 +430,9 @@ Click the reload button <ph name="RELOADBUTTON">$3s<ex>reload</ex></ph> or hit <
   <message name="IDS_DEVTOOLS_640d76ebf7917e7353ea0444790c9794" desc="Text in Timeline UIUtils of the Performance panel">
     Image Resize
   </message>
+  <message name="IDS_DEVTOOLS_6525b37c568c526bde7c02fac8195c73" desc="Number followed by percent sign">
+    <ph name="VALUE___THIS__GRANDTOTALTIME______">$1.1f<ex>20</ex></ph> %%
+  </message>
   <message name="IDS_DEVTOOLS_66f1aed235ade25269a561e81cbbb43a" desc="Text in Timeline UIUtils of the Performance panel">
     Scripting
   </message>

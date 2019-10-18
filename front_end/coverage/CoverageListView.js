@@ -302,23 +302,43 @@ Coverage.CoverageListView.GridNode = class extends DataGrid.SortableDataGridNode
         }
         break;
       case 'size':
-        cell.textContent = Number.withThousandsSeparator(this._coverageInfo.size() || 0);
+        const sizeSpan = cell.createChild('span');
+        sizeSpan.textContent = Number.withThousandsSeparator(this._coverageInfo.size() || 0);
+        UI.ARIAUtils.markAsHidden(sizeSpan);
+        UI.ARIAUtils.setAccessibleName(cell, ls`${this._coverageInfo.size() || 0} bytes`);
         break;
       case 'unusedSize':
         const unusedSize = this._coverageInfo.unusedSize() || 0;
         const unusedSizeSpan = cell.createChild('span');
         const unusedPercentsSpan = cell.createChild('span', 'percent-value');
         unusedSizeSpan.textContent = Number.withThousandsSeparator(unusedSize);
-        unusedPercentsSpan.textContent = Common.UIString('%.1f\xa0%%', unusedSize / this._coverageInfo.size() * 100);
+        const unusedPercentFormatted = ls`${this._percentageString(unusedSize, this._coverageInfo.size(), 1)}`;
+        unusedPercentsSpan.textContent = unusedPercentFormatted;
+        UI.ARIAUtils.markAsHidden(unusedPercentsSpan);
+        UI.ARIAUtils.markAsHidden(unusedSizeSpan);
+        UI.ARIAUtils.setAccessibleName(cell, ls`${unusedSize} bytes, ${unusedPercentFormatted}`);
         break;
       case 'bars':
         const barContainer = cell.createChild('div', 'bar-container');
         const unusedSizeBar = barContainer.createChild('div', 'bar bar-unused-size');
-        unusedSizeBar.style.width = (100 * this._coverageInfo.unusedSize() / this._maxSize).toFixed(4) + '%';
+        unusedSizeBar.style.width = this._percentageString(this._coverageInfo.unusedSize(), this._maxSize, 4);
         const usedSizeBar = barContainer.createChild('div', 'bar bar-used-size');
-        usedSizeBar.style.width = (100 * this._coverageInfo.usedSize() / this._maxSize).toFixed(4) + '%';
+        usedSizeBar.style.width = this._percentageString(this._coverageInfo.usedSize(), this._maxSize, 4);
+        const unusedPercent = this._percentageString(this._coverageInfo.unusedSize(), this._coverageInfo.size(), 1);
+        const usedPercent = this._percentageString(this._coverageInfo.usedSize(), this._maxSize, 1);
+        UI.ARIAUtils.setAccessibleName(barContainer, ls`${unusedPercent} of file unused, ${usedPercent} of file used`);
     }
     return cell;
+  }
+
+  /**
+   * @param {number} value
+   * @param {number} max
+   * @param {number} numDecimalPlaces
+   * @return {string}
+   */
+  _percentageString(value, max, numDecimalPlaces) {
+    return (value / max * 100).toFixed(numDecimalPlaces) + '%';
   }
 
   /**

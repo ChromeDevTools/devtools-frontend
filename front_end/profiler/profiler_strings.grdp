@@ -12,9 +12,6 @@
   <message name="IDS_DEVTOOLS_030361ea56fa177ebcbefe708a45b0f2" desc="Text in Heap Snapshot Data Grids of a profiler tool">
     # Deleted
   </message>
-  <message name="IDS_DEVTOOLS_03301bd5f0d1517cf88b2f8348b82dfc" desc="Accessible text for the value in bytes of a Memory allocation.">
-    <ph name="VALUE">$1s<ex>12345</ex></ph> bytes
-  </message>
   <message name="IDS_DEVTOOLS_04042b5589b3d4fd4e1e7e44265ad247" desc="Total trend div title in Isolate Selector of a profiler tool">
     Total page JS heap size change trend over the last <ph name="TRENDINTERVALMINUTES">$1s<ex>3</ex></ph> minutes.
   </message>

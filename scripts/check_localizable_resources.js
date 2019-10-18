@@ -65,6 +65,7 @@ async function autofix(existingError) {
   const resourceAdded = await addResourcesToGRDP(keysToAddToGRD, keysToRemoveFromGRD);
   const resourceModified = await modifyResourcesInGRDP();
   const resourceRemoved = await removeResourcesFromGRDP(keysToRemoveFromGRD);
+  const shouldAddExampleTag = checkShouldAddExampleTag(keysToAddToGRD);
 
   if (!resourceAdded && !resourceRemoved && !resourceModified && existingError === '') {
     console.log('DevTools localizable resources checker passed.');
@@ -78,12 +79,27 @@ async function autofix(existingError) {
         `\nGrd/Grdp files have been updated. Please verify the updated grdp files and/or the <part> file references in ${
             localizationUtils.getRelativeFilePathFromSrc(localizationUtils.GRD_PATH)} are correct.`;
   }
-  if (resourceAdded)
+  if (resourceAdded) {
     message += '\nManually write a description for any new <message> entries.';
+    if (shouldAddExampleTag) {
+      message += ' Add example tag(s) <ex> for messages that contain placeholder(s)';
+    }
+    message += '\nFor more details, see devtools/docs/langpacks/grdp_files.md';
+  }
   if (resourceRemoved && duplicateRemoved(keysToRemoveFromGRD))
     message += '\nDuplicate <message> entries are removed. Please verify the retained descriptions are correct.';
+  message += '\n'
   message += '\nUse git status to see what has changed.';
   throw new Error(message);
+}
+
+function checkShouldAddExampleTag(keys) {
+  if (keys.size === 0) {
+    return false;
+  }
+  const stringObjs = [...keys.values()];
+  const stringsWithArgument = stringObjs.filter(stringObj => !!stringObj.arguments);
+  return stringsWithArgument.length > 0;
 }
 
 function duplicateRemoved(keysToRemoveFromGRD) {

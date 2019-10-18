@@ -138,33 +138,54 @@ MobileThrottling.ThrottlingSettingsTab = class extends UI.VBox {
     const content = editor.contentElement();
 
     const titles = content.createChild('div', 'conditions-edit-row');
-    titles.createChild('div', 'conditions-list-text conditions-list-title').textContent =
-        Common.UIString('Profile Name');
+    const nameLabel = titles.createChild('div', 'conditions-list-text conditions-list-title');
+    const nameStr = ls`Profile Name`;
+    nameLabel.textContent = nameStr;
     titles.createChild('div', 'conditions-list-separator conditions-list-separator-invisible');
-    titles.createChild('div', 'conditions-list-text').textContent = Common.UIString('Download');
+    const downloadLabel = titles.createChild('div', 'conditions-list-text');
+    const downloadStr = ls`Download`;
+    downloadLabel.textContent = downloadStr;
     titles.createChild('div', 'conditions-list-separator conditions-list-separator-invisible');
-    titles.createChild('div', 'conditions-list-text').textContent = Common.UIString('Upload');
+    const uploadLabel = titles.createChild('div', 'conditions-list-text');
+    const uploadStr = ls`Upload`;
+    uploadLabel.textContent = uploadStr;
     titles.createChild('div', 'conditions-list-separator conditions-list-separator-invisible');
-    titles.createChild('div', 'conditions-list-text').textContent = Common.UIString('Latency');
+    const latencyLabel = titles.createChild('div', 'conditions-list-text');
+    const latencyStr = ls`Latency`;
+    latencyLabel.textContent = latencyStr;
 
     const fields = content.createChild('div', 'conditions-edit-row');
-    fields.createChild('div', 'conditions-list-text conditions-list-title')
-        .appendChild(editor.createInput('title', 'text', '', titleValidator));
+    const nameInput = editor.createInput('title', 'text', '', titleValidator);
+    UI.ARIAUtils.setAccessibleName(nameInput, nameStr);
+    fields.createChild('div', 'conditions-list-text conditions-list-title').appendChild(nameInput);
     fields.createChild('div', 'conditions-list-separator conditions-list-separator-invisible');
 
     let cell = fields.createChild('div', 'conditions-list-text');
-    cell.appendChild(editor.createInput('download', 'text', Common.UIString('kb/s'), throughputValidator));
-    cell.createChild('div', 'conditions-edit-optional').textContent = Common.UIString('optional');
+    const downloadInput = editor.createInput('download', 'text', ls`kb/s`, throughputValidator);
+    cell.appendChild(downloadInput);
+    UI.ARIAUtils.setAccessibleName(downloadInput, downloadStr);
+    const downloadOptional = cell.createChild('div', 'conditions-edit-optional');
+    const optionalStr = ls`optional`;
+    downloadOptional.textContent = optionalStr;
+    UI.ARIAUtils.setDescription(downloadInput, optionalStr);
     fields.createChild('div', 'conditions-list-separator conditions-list-separator-invisible');
 
     cell = fields.createChild('div', 'conditions-list-text');
-    cell.appendChild(editor.createInput('upload', 'text', Common.UIString('kb/s'), throughputValidator));
-    cell.createChild('div', 'conditions-edit-optional').textContent = Common.UIString('optional');
+    const uploadInput = editor.createInput('upload', 'text', ls`kb/s`, throughputValidator);
+    UI.ARIAUtils.setAccessibleName(uploadInput, uploadStr);
+    cell.appendChild(uploadInput);
+    const uploadOptional = cell.createChild('div', 'conditions-edit-optional');
+    uploadOptional.textContent = optionalStr;
+    UI.ARIAUtils.setDescription(uploadInput, optionalStr);
     fields.createChild('div', 'conditions-list-separator conditions-list-separator-invisible');
 
     cell = fields.createChild('div', 'conditions-list-text');
-    cell.appendChild(editor.createInput('latency', 'text', Common.UIString('ms'), latencyValidator));
-    cell.createChild('div', 'conditions-edit-optional').textContent = Common.UIString('optional');
+    const latencyInput = editor.createInput('latency', 'text', ls`ms`, latencyValidator);
+    UI.ARIAUtils.setAccessibleName(latencyInput, latencyStr);
+    cell.appendChild(latencyInput);
+    const latencyOptional = cell.createChild('div', 'conditions-edit-optional');
+    latencyOptional.textContent = optionalStr;
+    UI.ARIAUtils.setDescription(latencyInput, optionalStr);
 
     return editor;
 

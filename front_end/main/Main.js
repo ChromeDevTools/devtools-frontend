@@ -136,7 +136,6 @@ Main.Main = class {
         'recordCoverageWithPerformanceTracing', 'Record coverage while performance tracing');
     Root.Runtime.experiments.register('samplingHeapProfilerTimeline', 'Sampling heap profiler timeline', true);
     Root.Runtime.experiments.register('sourceDiff', 'Source diff');
-    Root.Runtime.experiments.register('splitInDrawer', 'Split in drawer', true);
     Root.Runtime.experiments.register('spotlight', 'Spotlight', true);
 
     // Timeline

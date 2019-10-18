@@ -44,16 +44,6 @@ export default class InspectorView extends UI.VBox {
     this._drawerSplitWidget.enableShowModeSaving();
     this._drawerSplitWidget.show(this.element);
 
-    if (Root.Runtime.experiments.isEnabled('splitInDrawer')) {
-      this._innerDrawerSplitWidget = new UI.SplitWidget(true, true, 'Inspector.drawerSidebarSplitViewState', 200, 200);
-      this._drawerSplitWidget.setSidebarWidget(this._innerDrawerSplitWidget);
-      this._drawerSidebarTabbedLocation =
-          UI.viewManager.createTabbedLocation(this._showDrawer.bind(this, false), 'drawer-sidebar', true, true);
-      this._drawerSidebarTabbedPane = this._drawerSidebarTabbedLocation.tabbedPane();
-      this._drawerSidebarTabbedPane.addEventListener(UI.TabbedPane.Events.TabSelected, this._drawerTabSelected, this);
-      this._innerDrawerSplitWidget.setSidebarWidget(this._drawerSidebarTabbedPane);
-    }
-
     // Create drawer tabbed pane.
     this._drawerTabbedLocation =
         UI.viewManager.createTabbedLocation(this._showDrawer.bind(this, false), 'drawer-view', true, true);
@@ -66,14 +56,8 @@ export default class InspectorView extends UI.VBox {
     this._drawerSplitWidget.installResizer(this._drawerTabbedPane.headerElement());
     this._drawerTabbedPane.addEventListener(UI.TabbedPane.Events.TabSelected, this._drawerTabSelected, this);
 
-    if (this._drawerSidebarTabbedPane) {
-      this._innerDrawerSplitWidget.setMainWidget(this._drawerTabbedPane);
-      this._drawerSidebarTabbedPane.rightToolbar().appendToolbarItem(closeDrawerButton);
-      this._drawerSplitWidget.installResizer(this._drawerSidebarTabbedPane.headerElement());
-    } else {
-      this._drawerSplitWidget.setSidebarWidget(this._drawerTabbedPane);
-      this._drawerTabbedPane.rightToolbar().appendToolbarItem(closeDrawerButton);
-    }
+    this._drawerSplitWidget.setSidebarWidget(this._drawerTabbedPane);
+    this._drawerTabbedPane.rightToolbar().appendToolbarItem(closeDrawerButton);
 
     // Create main area tabbed pane.
     this._tabbedLocation = UI.viewManager.createTabbedLocation(
@@ -139,9 +123,6 @@ export default class InspectorView extends UI.VBox {
     }
     if (locationName === 'panel') {
       return this._tabbedLocation;
-    }
-    if (locationName === 'drawer-sidebar') {
-      return this._drawerSidebarTabbedLocation;
     }
     return null;
   }

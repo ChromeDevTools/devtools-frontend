@@ -279,7 +279,8 @@ export class Geolocation {
     // but instead tries to make sense of the input, even for
     // weird-looking timezone IDs. There's not much point in validating
     // the input other than checking if it contains at least one slash.
-    const valid = value.includes('/');
+    // The empty string resets the override, and is accepted as well.
+    const valid = value === '' || value.includes('/');
     return {valid};
   }
 

@@ -90,6 +90,11 @@ Elements.ElementsPanel = class extends UI.Panel {
         SDK.DOMModel, SDK.DOMModel.Events.DocumentUpdated, this._documentUpdatedEvent, this);
     Extensions.extensionServer.addEventListener(
         Extensions.ExtensionServer.Events.SidebarPaneAdded, this._extensionSidebarPaneAdded, this);
+
+    /**
+     * @type {!Array.<{domModel: !SDK.DOMModel, index: number, node: (?SDK.DOMNode|undefined)}>|undefined}
+     */
+    this._searchResults;
   }
 
   /**
@@ -452,9 +457,6 @@ Elements.ElementsPanel = class extends UI.Panel {
      * @this {Elements.ElementsPanel}
      */
     function resultCountCallback(resultCounts) {
-      /**
-       * @type {!Array.<{domModel: !SDK.DOMModel, index: number, node: (?SDK.DOMNode|undefined)}>}
-       */
       this._searchResults = [];
       for (let i = 0; i < resultCounts.length; ++i) {
         const resultCount = resultCounts[i];
@@ -528,6 +530,10 @@ Elements.ElementsPanel = class extends UI.Panel {
   }
 
   _jumpToSearchResult(index) {
+    if (!this._searchResults) {
+      return;
+    }
+
     this._currentSearchResultIndex = (index + this._searchResults.length) % this._searchResults.length;
     this._highlightCurrentSearchResult();
   }
@@ -571,6 +577,9 @@ Elements.ElementsPanel = class extends UI.Panel {
   _highlightCurrentSearchResult() {
     const index = this._currentSearchResultIndex;
     const searchResults = this._searchResults;
+    if (!searchResults) {
+      return;
+    }
     const searchResult = searchResults[index];
 
     this._searchableView.updateCurrentMatchIndex(index);

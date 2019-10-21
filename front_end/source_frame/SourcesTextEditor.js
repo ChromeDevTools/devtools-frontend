@@ -75,13 +75,21 @@ SourceFrame.SourcesTextEditor = class extends TextEditor.CodeMirrorTextEditor {
 
     this._onUpdateEditorIndentation();
     this._setupWhitespaceHighlight();
+
+    /** @type {?Element} */
+    this._infoBarDiv = null;
   }
 
   /**
    * @param {!UI.Infobar} infobar
    */
   attachInfobar(infobar) {
-    this.element.insertBefore(infobar.element, this.element.firstChild);
+    if (!this._infoBarDiv) {
+      this._infoBarDiv = createElementWithClass('div', 'flex-none');
+      UI.ARIAUtils.markAsAlert(this._infoBarDiv);
+      this.element.insertBefore(this._infoBarDiv, this.element.firstChild);
+    }
+    this._infoBarDiv.appendChild(infobar.element);
     infobar.setParentView(this);
     this.doResize();
   }

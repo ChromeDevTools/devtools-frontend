@@ -643,6 +643,13 @@ export default class NetworkRequest extends Common.Object {
   }
 
   /**
+   * @return {string}
+   */
+  get pathname() {
+    return this._parsedURL.path;
+  }
+
+  /**
    * @return {!Common.ResourceType}
    */
   resourceType() {

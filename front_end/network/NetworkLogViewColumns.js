@@ -668,7 +668,6 @@ Network.NetworkLogViewColumns._defaultColumnConfig = {
   hideable: true,
   nonSelectable: true,
   isResponseHeader: false,
-  alwaysVisible: false,
   isCustomHeader: false
 };
 
@@ -684,8 +683,21 @@ Network.NetworkLogViewColumns._defaultColumns = [
     weight: 20,
     hideable: false,
     nonSelectable: false,
-    alwaysVisible: true,
     sortingFunction: Network.NetworkRequestNode.NameComparator
+  },
+  {
+    id: 'path',
+    title: ls`Path`,
+    nonSelectable: false,
+    hideable: true,
+    sortingFunction: Network.NetworkRequestNode.RequestPropertyComparator.bind(null, 'path')
+  },
+  {
+    id: 'url',
+    title: ls`Url`,
+    nonSelectable: false,
+    hideable: true,
+    sortingFunction: Network.NetworkRequestNode.RequestPropertyComparator.bind(null, 'url')
   },
   {
     id: 'method',

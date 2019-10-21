@@ -55,6 +55,11 @@ Elements.ElementsTreeElement = class extends UI.TreeElement {
     this._searchQuery = null;
     this._expandedChildrenLimit = Elements.ElementsTreeElement.InitialChildrenLimit;
     this._decorationsThrottler = new Common.Throttler(100);
+
+    /**
+     * @type {!Element|undefined}
+     */
+    this._htmlEditElement;
   }
 
   /**
@@ -862,7 +867,8 @@ Elements.ElementsTreeElement = class extends UI.TreeElement {
           {commit: commit.bind(this), cancel: dispose.bind(this), editor: editor, resize: resize.bind(this)};
       resize.call(this);
 
-      editor.widget().show(this._htmlEditElement);
+      editor.widget().show(
+          /** @type {!Element} */ (this._htmlEditElement));
       editor.setText(initialValue);
       editor.widget().focus();
       editor.widget().element.addEventListener('focusout', event => {
@@ -880,7 +886,9 @@ Elements.ElementsTreeElement = class extends UI.TreeElement {
      * @this {Elements.ElementsTreeElement}
      */
     function resize() {
-      this._htmlEditElement.style.width = this.treeOutline.visibleWidth() - this._computeLeftIndent() - 30 + 'px';
+      if (this._htmlEditElement) {
+        this._htmlEditElement.style.width = this.treeOutline.visibleWidth() - this._computeLeftIndent() - 30 + 'px';
+      }
       this._editing.editor.onResize();
     }
 

@@ -45,6 +45,7 @@ LayerViewer.LayerTreeOutline = class extends Common.Object {
     this._treeOutline.element.addEventListener('mousemove', this._onMouseMove.bind(this), false);
     this._treeOutline.element.addEventListener('mouseout', this._onMouseMove.bind(this), false);
     this._treeOutline.element.addEventListener('contextmenu', this._onContextMenu.bind(this), true);
+    UI.ARIAUtils.setAccessibleName(this._treeOutline.contentElement, ls`Layers Tree Pane`);
 
     this._lastHoveredNode = null;
     this.element = this._treeOutline.element;
@@ -205,6 +206,17 @@ LayerViewer.LayerTreeOutline = class extends Common.Object {
   _onContextMenu(event) {
     const selection = this._selectionForNode(this._treeOutline.treeElementFromEvent(event));
     const contextMenu = new UI.ContextMenu(event);
+    const layer = selection && selection.layer();
+    if (layer) {
+      this._layerSnapshotMap = this._layerViewHost.getLayerSnapshotMap();
+      if (this._layerSnapshotMap.has(layer)) {
+        contextMenu.defaultSection().appendItem(
+            ls`Show Paint Profiler`,
+            this.dispatchEventToListeners.bind(
+                this, LayerViewer.LayerTreeOutline.Events.PaintProfilerRequested, selection),
+            false);
+      }
+    }
     this._layerViewHost.showContextMenu(contextMenu, selection);
   }
 
@@ -215,6 +227,13 @@ LayerViewer.LayerTreeOutline = class extends Common.Object {
   _selectionForNode(node) {
     return node && node._layer ? new LayerViewer.LayerView.LayerSelection(node._layer) : null;
   }
+};
+
+/**
+ * @enum {symbol}
+ */
+LayerViewer.LayerTreeOutline.Events = {
+  PaintProfilerRequested: Symbol('PaintProfilerRequested')
 };
 
 /**

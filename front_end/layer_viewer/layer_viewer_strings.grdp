@@ -93,6 +93,9 @@
   <message name="IDS_DEVTOOLS_c634209b1884c963528d21a21cb64ac8" desc="Text in Layer Details View of the Layers panel">
     Nearest Layer Shifting Containing Block
   </message>
+  <message name="IDS_DEVTOOLS_c874f8e5eb4a8b49e80cc524acde3f23" desc="Label for layers sidepanel tree">
+    Layers Tree Pane
+  </message>
   <message name="IDS_DEVTOOLS_cd5be434fea99c341680590738e3b6d5" desc="Text in DView of the Layers panel">
     WebGL support is disabled in your browser.
   </message>

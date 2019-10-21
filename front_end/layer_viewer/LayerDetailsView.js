@@ -41,6 +41,7 @@ LayerViewer.LayerDetailsView = class extends UI.Widget {
     this._layerViewHost = layerViewHost;
     this._layerViewHost.registerView(this);
     this._emptyWidget = new UI.EmptyWidget(Common.UIString('Select a layer to see its details'));
+    this._layerSnapshotMap = this._layerViewHost.getLayerSnapshotMap();
     this._buildContent();
   }
 
@@ -88,9 +89,12 @@ LayerViewer.LayerDetailsView = class extends UI.Widget {
     this._layerViewHost.selectObject(new LayerViewer.LayerView.ScrollRectSelection(this._selection.layer(), index));
   }
 
-  _onPaintProfilerButtonClicked() {
-    if (this._selection.type() === LayerViewer.LayerView.Selection.Type.Snapshot || this._selection.layer()) {
-      this.dispatchEventToListeners(LayerViewer.LayerDetailsView.Events.PaintProfilerRequested, this._selection);
+  _invokeProfilerLink() {
+    const snapshotSelection = this._selection.type() === LayerViewer.LayerView.Selection.Type.Snapshot ?
+        this._selection :
+        this._layerSnapshotMap.get(this._selection.layer());
+    if (snapshotSelection) {
+      this.dispatchEventToListeners(LayerViewer.LayerDetailsView.Events.PaintProfilerRequested, snapshotSelection);
     }
   }
 
@@ -173,13 +177,13 @@ LayerViewer.LayerDetailsView = class extends UI.Widget {
     const layer = this._selection && this._selection.layer();
     if (!layer) {
       this._tableElement.remove();
-      this._paintProfilerButton.remove();
+      this._paintProfilerLink.remove();
       this._emptyWidget.show(this.contentElement);
       return;
     }
     this._emptyWidget.detach();
     this.contentElement.appendChild(this._tableElement);
-    this.contentElement.appendChild(this._paintProfilerButton);
+    this.contentElement.appendChild(this._paintProfilerLink);
     this._sizeCell.textContent =
         Common.UIString('%d × %d (at %d,%d)', layer.width(), layer.height(), layer.offsetX(), layer.offsetY());
     this._paintCountCell.parentElement.classList.toggle('hidden', !layer.paintCount());
@@ -192,7 +196,8 @@ LayerViewer.LayerDetailsView = class extends UI.Widget {
     const snapshot = this._selection.type() === LayerViewer.LayerView.Selection.Type.Snapshot ?
         /** @type {!LayerViewer.LayerView.SnapshotSelection} */ (this._selection).snapshot() :
         null;
-    this._paintProfilerButton.classList.toggle('hidden', !snapshot);
+
+    this._paintProfilerLink.classList.toggle('hidden', !(this._layerSnapshotMap.has(layer) || snapshot));
   }
 
   _buildContent() {
@@ -204,9 +209,20 @@ LayerViewer.LayerDetailsView = class extends UI.Widget {
     this._paintCountCell = this._createRow(Common.UIString('Paint count'));
     this._scrollRectsCell = this._createRow(Common.UIString('Slow scroll regions'));
     this._stickyPositionConstraintCell = this._createRow(Common.UIString('Sticky position constraint'));
-    this._paintProfilerButton = this.contentElement.createChild('a', 'hidden link');
-    this._paintProfilerButton.textContent = Common.UIString('Paint Profiler');
-    this._paintProfilerButton.addEventListener('click', this._onPaintProfilerButtonClicked.bind(this));
+    this._paintProfilerLink = this.contentElement.createChild('span', 'hidden devtools-link link-margin');
+    UI.ARIAUtils.markAsLink(this._paintProfilerLink);
+    this._paintProfilerLink.textContent = ls`Paint Profiler`;
+    this._paintProfilerLink.tabIndex = 0;
+    this._paintProfilerLink.addEventListener('click', e => {
+      e.consume(true);
+      this._invokeProfilerLink();
+    });
+    this._paintProfilerLink.addEventListener('keydown', event => {
+      if (isEnterKey(event)) {
+        event.consume();
+        this._invokeProfilerLink();
+      }
+    });
   }
 
   /**

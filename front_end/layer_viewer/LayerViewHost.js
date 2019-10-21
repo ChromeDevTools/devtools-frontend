@@ -177,6 +177,20 @@ LayerViewer.LayerViewHost = class {
   }
 
   /**
+   * @param {!Map<!SDK.Layer, !LayerViewer.LayerView.SnapshotSelection>} snapshotLayers
+   */
+  setLayerSnapshotMap(snapshotLayers) {
+    this._snapshotLayers = snapshotLayers;
+  }
+
+  /**
+   * @return {!Map<!SDK.Layer, !LayerViewer.LayerView.SnapshotSelection>}
+   */
+  getLayerSnapshotMap() {
+    return this._snapshotLayers;
+  }
+
+  /**
    * @param {?SDK.LayerTreeBase} layerTree
    */
   setLayerTree(layerTree) {

@@ -41,6 +41,8 @@ Layers.LayersPanel = class extends UI.PanelWithSidebar {
     SDK.targetManager.observeTargets(this);
     this._layerViewHost = new LayerViewer.LayerViewHost();
     this._layerTreeOutline = new LayerViewer.LayerTreeOutline(this._layerViewHost);
+    this._layerTreeOutline.addEventListener(
+        LayerViewer.LayerTreeOutline.Events.PaintProfilerRequested, this._onPaintProfileRequested, this);
     this.panelSidebarElement().appendChild(this._layerTreeOutline.element);
     this.setDefaultFocusedElement(this._layerTreeOutline.element);
 

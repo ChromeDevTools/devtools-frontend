@@ -69,6 +69,10 @@ LayerViewer.Layers3DView = class extends UI.VBox {
     this._chromeTextures = [];
     this._rects = [];
 
+    /** @type Map<SDK.Layer, LayerViewer.LayerView.SnapshotSelection> */
+    this._snapshotLayers = new Map();
+    this._layerViewHost.setLayerSnapshotMap(this._snapshotLayers);
+
     this._layerViewHost.showInternalLayersSetting().addChangeListener(this._update, this);
   }
 
@@ -462,6 +466,10 @@ LayerViewer.Layers3DView = class extends UI.VBox {
       }
       const selection = new LayerViewer.LayerView.SnapshotSelection(layer, {rect: tile.rect, snapshot: tile.snapshot});
       const rect = new LayerViewer.Layers3DView.Rectangle(selection);
+      if (!this._snapshotLayers.has(layer)) {
+        this._snapshotLayers.set(layer, selection);
+      }
+
       rect.calculateVerticesFromRect(layer, tile.rect, this._depthForLayer(layer) + 1);
       rect.texture = tile.texture;
       this._appendRect(rect);
@@ -470,6 +478,7 @@ LayerViewer.Layers3DView = class extends UI.VBox {
 
   _calculateRects() {
     this._rects = [];
+    this._snapshotLayers.clear();
     this._dimensionsForAutoscale = {width: 0, height: 0};
     this._layerTree.forEachLayer(this._calculateLayerRect.bind(this));
 

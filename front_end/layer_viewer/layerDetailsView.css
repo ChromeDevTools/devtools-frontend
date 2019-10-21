@@ -23,7 +23,7 @@ ul {
     margin-block-end: 0;
 }
 
-a {
-    padding: 8px;
-    display: block;
+.devtools-link.link-margin {
+    margin: 8px;
+    display: inline-block;
 }

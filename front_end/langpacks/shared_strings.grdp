@@ -7,6 +7,9 @@
   <message name="IDS_DEVTOOLS_03301bd5f0d1517cf88b2f8348b82dfc" desc="Accessible text for the value in bytes in memory allocation or coverage view.">
     <ph name="THIS__COVERAGEINFO_SIZE_______">$1s<ex>12345</ex></ph> bytes
   </message>
+  <message name="IDS_DEVTOOLS_02a3a357710cc2a5dfdfb74ed012fb59" desc="Text in Timeline UIUtils of the Performance panel">
+    Url
+  </message>
   <message name="IDS_DEVTOOLS_040c4b52a3c06c6067fac76c4c7c3a2c" desc="Title of the 'Network conditions' tool in the bottom drawer">
     Network conditions
   </message>

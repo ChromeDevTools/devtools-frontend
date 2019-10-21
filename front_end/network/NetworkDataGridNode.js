@@ -729,6 +729,12 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
       case 'name':
         this._renderNameCell(cell);
         break;
+      case 'path':
+        this._setTextAndTitle(cell, this._request.pathname);
+        break;
+      case 'url':
+        this._setTextAndTitle(cell, this._request.url());
+        break;
       case 'method':
         this._setTextAndTitle(cell, this._request.requestMethod);
         break;

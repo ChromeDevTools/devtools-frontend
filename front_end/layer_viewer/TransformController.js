@@ -16,14 +16,10 @@ LayerViewer.TransformController = class extends Common.Object {
     super();
     this._shortcuts = {};
     this.element = element;
-    if (this.element.tabIndex < 0) {
-      this.element.tabIndex = 0;
-    }
     this._registerShortcuts();
     UI.installDragHandle(
         element, this._onDragStart.bind(this), this._onDrag.bind(this), this._onDragEnd.bind(this), 'move', null);
     element.addEventListener('keydown', this._onKeyDown.bind(this), false);
-    element.addEventListener('keyup', this._onKeyUp.bind(this), false);
     element.addEventListener('mousewheel', this._onMouseWheel.bind(this), false);
     this._minScale = 0;
     this._maxScale = Infinity;
@@ -61,21 +57,10 @@ LayerViewer.TransformController = class extends Common.Object {
   }
 
   _onKeyDown(event) {
-    if (event.keyCode === UI.KeyboardShortcut.Keys.Shift.code) {
-      this._toggleMode();
-      return;
-    }
-
     const shortcutKey = UI.KeyboardShortcut.makeKeyFromEventIgnoringModifiers(event);
     const handler = this._shortcuts[shortcutKey];
     if (handler && handler(event)) {
       event.consume();
-    }
-  }
-
-  _onKeyUp(event) {
-    if (event.keyCode === UI.KeyboardShortcut.Keys.Shift.code) {
-      this._toggleMode();
     }
   }
 
@@ -115,12 +100,6 @@ LayerViewer.TransformController = class extends Common.Object {
     this._rotateY = 0;
   }
 
-  _toggleMode() {
-    this._setMode(
-        this._mode === LayerViewer.TransformController.Modes.Pan ? LayerViewer.TransformController.Modes.Rotate :
-                                                                   LayerViewer.TransformController.Modes.Pan);
-  }
-
   /**
    * @param {!LayerViewer.TransformController.Modes} mode
    */
@@ -130,7 +109,6 @@ LayerViewer.TransformController = class extends Common.Object {
     }
     this._mode = mode;
     this._updateModeButtons();
-    this.element.focus();
   }
 
   _updateModeButtons() {

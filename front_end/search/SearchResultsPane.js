@@ -33,6 +33,9 @@ Search.SearchResultsPane = class extends UI.VBox {
   _addTreeElement(searchResult) {
     const treeElement = new Search.SearchResultsPane.SearchResultsTreeElement(this._searchConfig, searchResult);
     this._treeOutline.appendChild(treeElement);
+    if (!this._treeOutline.selectedTreeElement) {
+      treeElement.select(/* omitFocus */ true, /* selectedByUser */ true);
+    }
     // Expand until at least a certain number of matches is expanded.
     if (this._matchesExpandedCount < Search.SearchResultsPane._matchesExpandedByDefault) {
       treeElement.expand();
@@ -54,9 +57,7 @@ Search.SearchResultsPane.SearchResultsTreeElement = class extends UI.TreeElement
     this._searchConfig = searchConfig;
     this._searchResult = searchResult;
     this._initialized = false;
-
     this.toggleOnClick = true;
-    this.selectable = false;
   }
 
   /**
@@ -159,10 +160,15 @@ Search.SearchResultsPane.SearchResultsTreeElement = class extends UI.TreeElement
       anchor.appendChild(contentSpan);
 
       const searchMatchElement = new UI.TreeElement();
-      searchMatchElement.selectable = false;
       this.appendChild(searchMatchElement);
       searchMatchElement.listItemElement.className = 'search-match';
       searchMatchElement.listItemElement.appendChild(anchor);
+      searchMatchElement.listItemElement.addEventListener('keydown', event => {
+        if (isEnterKey(event)) {
+          event.consume(true);
+          Common.Revealer.reveal(searchResult.matchRevealable(i));
+        }
+      });
       searchMatchElement.tooltip = lineContent;
     }
   }

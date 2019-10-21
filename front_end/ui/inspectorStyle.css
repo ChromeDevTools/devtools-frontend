@@ -38,6 +38,7 @@
     --accent-color-hover: #3b86e8;
     --active-control-bg-color: #5a5a5a;
     --focus-bg-color: hsl(214, 40%, 92%);
+    --input-validation-error: #db1600;
     --toolbar-bg-color: #f3f3f3;
     --toolbar-hover-bg-color: #eaeaea;
     --selection-fg-color: white;

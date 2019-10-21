@@ -765,6 +765,9 @@
   <message name="IDS_DEVTOOLS_dc5d60b066d9a30e68dd648dcabf8579" desc="Text in Request Cookies View of the Network panel">
     This request has no cookies.
   </message>
+  <message name="IDS_DEVTOOLS_dc60edf1e84f3d9f68244037711fc3fe" desc="Error message for empty custom user agent input">
+    Custom user agent field is required
+  </message>
   <message name="IDS_DEVTOOLS_dc66e209093fbef0daa224f2b6401b39" desc="Text in Request Timing View of the Network panel">
     Request/Response
   </message>

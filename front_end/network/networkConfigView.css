@@ -40,6 +40,11 @@
     padding-top: 0;
 }
 
+.network-config-input-validation-error {
+  color: var(--input-validation-error);
+  margin: 5px 0;
+}
+
 /* Network throttling */
 
 .network-config-throttling .chrome-select {

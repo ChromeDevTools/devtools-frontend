@@ -17,7 +17,7 @@ Network.NetworkConfigView = class extends UI.VBox {
 
   /**
    * @param {string} title
-   * @return {{select: !Element, input: !Element}}
+   * @return {{select: !Element, input: !Element, error: !Element}}
    */
   static createUserAgentSelectAndInput(title) {
     const userAgentSetting = Common.settings.createSetting('customUserAgent', '');
@@ -46,6 +46,12 @@ Network.NetworkConfigView = class extends UI.VBox {
     otherUserAgentElement.required = true;
     UI.ARIAUtils.setAccessibleName(otherUserAgentElement, otherUserAgentElement.placeholder);
 
+    const errorElement = createElementWithClass('div', 'network-config-input-validation-error');
+    UI.ARIAUtils.markAsAlert(errorElement);
+    if (!otherUserAgentElement.value) {
+      errorElement.textContent = ls`Custom user agent field is required`;
+    }
+
     settingChanged();
     userAgentSelectElement.addEventListener('change', userAgentSelected, false);
     otherUserAgentElement.addEventListener('input', applyOtherUserAgent, false);
@@ -59,6 +65,7 @@ Network.NetworkConfigView = class extends UI.VBox {
       } else {
         otherUserAgentElement.select();
       }
+      errorElement.textContent = '';
     }
 
     function settingChanged() {
@@ -80,13 +87,18 @@ Network.NetworkConfigView = class extends UI.VBox {
 
     function applyOtherUserAgent() {
       if (userAgentSetting.get() !== otherUserAgentElement.value) {
+        if (!otherUserAgentElement.value) {
+          errorElement.textContent = ls`Custom user agent field is required`;
+        } else {
+          errorElement.textContent = '';
+        }
         userAgentSetting.set(otherUserAgentElement.value);
         otherUserAgentElement.title = otherUserAgentElement.value;
         settingChanged();
       }
     }
 
-    return {select: userAgentSelectElement, input: otherUserAgentElement};
+    return {select: userAgentSelectElement, input: otherUserAgentElement, error: errorElement};
   }
 
   /**
@@ -138,6 +150,7 @@ Network.NetworkConfigView = class extends UI.VBox {
     customSelectAndInput.select.classList.add('chrome-select');
     customUserAgentSelectBox.appendChild(customSelectAndInput.select);
     customUserAgentSelectBox.appendChild(customSelectAndInput.input);
+    customUserAgentSelectBox.appendChild(customSelectAndInput.error);
     userAgentSelectBoxChanged();
 
     function userAgentSelectBoxChanged() {
@@ -145,6 +158,7 @@ Network.NetworkConfigView = class extends UI.VBox {
       customUserAgentSelectBox.classList.toggle('checked', useCustomUA);
       customSelectAndInput.select.disabled = !useCustomUA;
       customSelectAndInput.input.disabled = !useCustomUA;
+      customSelectAndInput.error.hidden = !useCustomUA;
       const customUA = useCustomUA ? customUserAgentSetting.get() : '';
       SDK.multitargetNetworkManager.setCustomUserAgentOverride(customUA);
     }

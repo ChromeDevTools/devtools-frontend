@@ -30,7 +30,7 @@
 }
 
 .list-widget-input-validation-error {
-    color: #db1600;
+    color: var(--input-validation-error);
     margin: 0 5px;
 }
 

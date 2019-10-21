@@ -1002,6 +1002,9 @@ export class DOMNode {
 
   async scrollIntoView() {
     const node = this.enclosingElementOrSelf();
+    if (!node) {
+      return;
+    }
     const object = await node.resolveToObject();
     if (!object) {
       return;

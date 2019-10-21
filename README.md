@@ -74,7 +74,7 @@ Formats your Python code using [yapf](https://github.com/google/yapf)
 > Note: Yapf is a command line tool. You will have to install this manually, either from PyPi through `pip install yapf` or if you want to enable multiprocessing in Python 2.7, `pip install futures`
 
 ### Development
-* All devtools commits: [View the log], [RSS feed] or [@DevToolsCommits] on Twitter
+* All devtools commits: [View the log] or follow [@DevToolsCommits] on Twitter
 * [All open DevTools tickets] on crbug.com
 * File a new DevTools ticket: [new.crbug.com](https://bugs.chromium.org/p/chromium/issues/entry?labels=OS-All,Type-Bug,Pri-2&components=Platform%3EDevTools)
 * Code reviews mailing list: [devtools-reviews@chromium.org]
@@ -91,7 +91,6 @@ The version number of the npm package (e.g. `1.0.373466`) refers to the Chromium
 * Chrome DevTools mailing list: [groups.google.com/forum/google-chrome-developer-tools](https://groups.google.com/forum/#!forum/google-chrome-developer-tools)
 
   [devtools-reviews@chromium.org]: https://groups.google.com/a/chromium.org/forum/#!forum/devtools-reviews
-  [RSS feed]: https://feeds.peter.sh/chrome-devtools/
   [View the log]: https://chromium.googlesource.com/devtools/devtools-frontend/+log/master
   [@ChromeDevTools]: http://twitter.com/ChromeDevTools
   [@DevToolsCommits]: http://twitter.com/DevToolsCommits

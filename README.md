@@ -6,15 +6,10 @@
 
 The client-side of the Chrome DevTools, including all JS & CSS to run the DevTools webapp.
 
-It is available on NPM as the [chrome-devtools-frontend](https://www.npmjs.com/package/chrome-devtools-frontend) package. It's not currently available via CJS or ES2015 modules, so consuming this package in other tools may require [some effort](https://github.com/paulirish/devtools-timeline-model/blob/master/index.js).
-
-#### Package versioning
-The version number of the npm package (e.g. `1.0.373466`) refers to the Chromium commit position of latest frontend git commit. It's incremented with every Chromium commit, however the package is updated roughly daily.
-
 ### Source code
 The frontend is available on [chromium.googlesource.com](https://chromium.googlesource.com/devtools/devtools-frontend).
 
-### Getting Started
+### Getting Started (Standalone)
 
 As standalone project, Chrome DevTools front-end can be checked out and built independently from Chromium.
 
@@ -36,11 +31,22 @@ gn gen out
 autoninja -C out
 ```
 
-#### Run in Chromium (from M78 onwards)
-Build Chromium with the GN flag `debug_devtools=true`
+#### Run in Chromium (from M79 onwards)
 ```bash
 <path-to-chrome>/chrome --custom-devtools-frontend=$(realpath out/resources/inspector)
 ```
+
+### Getting Started (as part of Chromium)
+
+DevTools frontend can also be developed as part of Chromium.
+
+Follow [instructions](https://www.chromium.org/developers/how-tos/get-the-code) to check out Chromium.
+DevTools frontend can be found under `chromium/src/third_party/devtools-frontend/src/`.
+
+#### Build as part of Chromium
+
+Refer to [instructions](https://www.chromium.org/developers/how-tos/get-the-code) to build Chromium.
+To only build DevTools frontend, use `devtools_frontend_resources` as build target.
 
 ### Hacking
 * DevTools documentation: [devtools.chrome.com](https://devtools.chrome.com)
@@ -62,6 +68,12 @@ Formats your Python code using [yapf](https://github.com/google/yapf)
 * File a new DevTools ticket: [new.crbug.com](https://bugs.chromium.org/p/chromium/issues/entry?labels=OS-All,Type-Bug,Pri-2&components=Platform%3EDevTools)
 * Code reviews mailing list: [devtools-reviews@chromium.org]
 * [Test waterfall]
+
+### NPM package
+
+DevTools frontend is available on NPM as the [chrome-devtools-frontend](https://www.npmjs.com/package/chrome-devtools-frontend) package. It's not currently available via CJS or ES2015 modules, so consuming this package in other tools may require [some effort](https://github.com/paulirish/devtools-timeline-model/blob/master/index.js).
+
+The version number of the npm package (e.g. `1.0.373466`) refers to the Chromium commit position of latest frontend git commit. It's incremented with every Chromium commit, however the package is updated roughly daily.
 
 ### Getting in touch
 * [@ChromeDevTools] on Twitter

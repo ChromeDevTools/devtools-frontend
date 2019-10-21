@@ -582,6 +582,9 @@ Elements.ElementsTreeOutline = class extends UI.TreeOutline {
       box: link.boxInWindow(),
       show: async popover => {
         const listItem = link.enclosingNodeOrSelfWithNodeName('li');
+        if (!listItem) {
+          return false;
+        }
         const node = /** @type {!Elements.ElementsTreeElement} */ (listItem.treeElement).node();
         const precomputedFeatures = await Components.ImagePreview.loadDimensionsForNode(node);
         const preview = await Components.ImagePreview.build(

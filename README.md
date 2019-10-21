@@ -26,14 +26,15 @@ gclient config https://chromium.googlesource.com/devtools/devtools-frontend --un
 
 #### Build
 ```bash
+cd devtools-frontend
 gclient sync
-gn gen out
-autoninja -C out
+gn gen out/Default
+autoninja -C out/Default
 ```
 
 #### Run in Chromium (from M79 onwards)
 ```bash
-<path-to-chrome>/chrome --custom-devtools-frontend=$(realpath out/resources/inspector)
+<path-to-chrome>/chrome --custom-devtools-frontend=$(realpath out/Default/resources/inspector)
 ```
 
 ### Getting Started (as part of Chromium)

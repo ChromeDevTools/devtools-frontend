@@ -3,7 +3,6 @@
 # Copyright 2019 The Chromium Authors. All rights reserved.
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
-
 """
 Run Karma unit tests on a pre-built chrome or one specified via --chrome-binary.
 """
@@ -22,6 +21,7 @@ def check_chrome_binary(chrome_binary):
 
 def popen(arguments, cwd=None, env=None):
     return subprocess.Popen(arguments, cwd=cwd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, env=env)
+
 
 def to_platform_path_exact(filepath):
     if not is_cygwin:

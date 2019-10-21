@@ -59,8 +59,9 @@ def _CheckFormat(input_api, output_api):
     with open(eslint_ignore_path, 'r') as ignore_manifest:
         for line in ignore_manifest:
             ignore_files.append(line.strip())
-    formattable_files = [affected_file for affected_file in affected_files
-                         if all(ignore_file not in affected_file for ignore_file in ignore_files)]
+    formattable_files = [
+        affected_file for affected_file in affected_files if all(ignore_file not in affected_file for ignore_file in ignore_files)
+    ]
     if len(formattable_files) == 0:
         return []
 
@@ -77,7 +78,8 @@ def _CheckFormat(input_api, output_api):
 
     # Use eslint to autofix the braces.
     # Also fix semicolon to avoid confusing clang-format.
-    eslint_process = popen([devtools_paths.node_path(), devtools_paths.eslint_path(), '--config', '.eslintrc.js', '--fix'] + affected_files)
+    eslint_process = popen(
+        [devtools_paths.node_path(), devtools_paths.eslint_path(), '--config', '.eslintrc.js', '--fix'] + affected_files)
     eslint_process.communicate()
 
     # Need to run clang-format again to align the braces
@@ -173,17 +175,19 @@ def _CheckCSSViolations(input_api, output_api):
                 results.append(output_api.PresubmitError(("%s:%d uses ::shadow selector") % (f.LocalPath(), line_number)))
     return results
 
+
 def _CommonChecks(input_api, output_api):
-  """Checks common to both upload and commit."""
-  results = []
-  results.extend(input_api.canned_checks.CheckOwnersFormat(input_api, output_api))
-  results.extend(input_api.canned_checks.CheckOwners(input_api, output_api))
-  results.extend(input_api.canned_checks.CheckChangeHasNoCrAndHasOnlyOneEol(input_api, output_api))
-  results.extend(input_api.canned_checks.CheckChangeHasNoStrayWhitespace(input_api, output_api))
-  results.extend(input_api.canned_checks.CheckGenderNeutral(input_api, output_api))
-  results.extend(_CheckDevtoolsLocalizableResources(input_api, output_api))
-  results.extend(_CheckDevtoolsLocalization(input_api, output_api))
-  return results
+    """Checks common to both upload and commit."""
+    results = []
+    results.extend(input_api.canned_checks.CheckOwnersFormat(input_api, output_api))
+    results.extend(input_api.canned_checks.CheckOwners(input_api, output_api))
+    results.extend(input_api.canned_checks.CheckChangeHasNoCrAndHasOnlyOneEol(input_api, output_api))
+    results.extend(input_api.canned_checks.CheckChangeHasNoStrayWhitespace(input_api, output_api))
+    results.extend(input_api.canned_checks.CheckGenderNeutral(input_api, output_api))
+    results.extend(_CheckDevtoolsLocalizableResources(input_api, output_api))
+    results.extend(_CheckDevtoolsLocalization(input_api, output_api))
+    return results
+
 
 def CheckChangeOnUpload(input_api, output_api):
     results = []
@@ -199,8 +203,7 @@ def CheckChangeOnUpload(input_api, output_api):
 def CheckChangeOnCommit(input_api, output_api):
     results = []
     results.extend(_CommonChecks(input_api, output_api))
-    results.extend(input_api.canned_checks.CheckChangeHasDescription(
-      input_api, output_api))
+    results.extend(input_api.canned_checks.CheckChangeHasDescription(input_api, output_api))
     return results
 
 

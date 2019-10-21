@@ -46,7 +46,6 @@ export default class TabbedPane extends UI.VBox {
     this._tabsElement.setAttribute('role', 'tablist');
     this._tabsElement.addEventListener('keydown', this._keyDown.bind(this), false);
     this._contentElement = this.contentElement.createChild('div', 'tabbed-pane-content');
-    this._contentElement.setAttribute('role', 'tabpanel');
     this._contentElement.createChild('slot');
     /** @type {!Array.<!TabbedPaneTab>} */
     this._tabs = [];

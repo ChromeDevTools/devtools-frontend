@@ -171,6 +171,8 @@ export class _ContainerWidget extends UI.VBox {
     this.element.classList.add('flex-auto', 'view-container', 'overflow-auto');
     this._view = view;
     this.element.tabIndex = -1;
+    UI.ARIAUtils.markAsTabpanel(this.element);
+    UI.ARIAUtils.setAccessibleName(this.element, ls`${view.title()} panel`);
     this.setDefaultFocusedElement(this.element);
   }
 

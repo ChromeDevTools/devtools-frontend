@@ -201,6 +201,9 @@
   <message name="IDS_DEVTOOLS_894dab8359b886762113f6b64ce9f107" desc="Text on a button to replace all instances with input text for the ctrl+F search bar">
     Replace all
   </message>
+  <message name="IDS_DEVTOOLS_8ca37a9854bdfeea9616a8f52ff6f9de" desc="Aria label for the tab panel view container">
+    <ph name="VIEW_TITLE__">$1s<ex>Sensors</ex></ph> panel
+  </message>
   <message name="IDS_DEVTOOLS_8e44b2127a4fb456a78feced6731a496" desc="Text to indicate the current match index and the total number of matches for the ctrl+F search bar">
     <ph name="CURRENTMATCHINDEX____">$1d<ex>2</ex></ph> of <ph name="MATCHES">$2d<ex>3</ex></ph>
   </message>

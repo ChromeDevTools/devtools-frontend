@@ -33,8 +33,18 @@ autoninja -C out/Default
 ```
 
 #### Run in Chromium (from M79 onwards)
+
+To run the production build, use
+
 ```bash
-<path-to-chrome>/chrome --custom-devtools-frontend=$(realpath out/Default/resources/inspector)
+<path-to-chrome>/chrome --custom-devtools-frontend=file://$(realpath out/Default/resources/inspector)
+```
+
+To run the debug build (directly symlinked to the original unminified source files),
+build both Chromium and DevTools frontend with the GN flag `debug_devtools=true`, and use
+
+```bash
+<path-to-chrome>/chrome --custom-devtools-frontend=file://$(realpath out/Default/resources/inspector/debug)
 ```
 
 ### Getting Started (as part of Chromium)

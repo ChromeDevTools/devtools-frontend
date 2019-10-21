@@ -24,11 +24,14 @@ Coverage.CoverageView = class extends UI.VBox {
     toolbar.appendToolbarItem(this._toggleRecordButton);
 
     const mainTarget = SDK.targetManager.mainTarget();
-    if (mainTarget && mainTarget.model(SDK.ResourceTreeModel)) {
+    const mainTargetSupportsRecordOnReload = mainTarget && mainTarget.model(SDK.ResourceTreeModel);
+    if (mainTargetSupportsRecordOnReload) {
       const startWithReloadAction =
           /** @type {!UI.Action }*/ (UI.actionRegistry.action('coverage.start-with-reload'));
       this._startWithReloadButton = UI.Toolbar.createActionButton(startWithReloadAction);
       toolbar.appendToolbarItem(this._startWithReloadButton);
+      this._toggleRecordButton.setEnabled(false);
+      this._toggleRecordButton.setVisible(false);
     }
     this._clearButton = new UI.ToolbarButton(Common.UIString('Clear all'), 'largeicon-clear');
     this._clearButton.addEventListener(UI.ToolbarButton.Events.Click, this._clear.bind(this));
@@ -95,15 +98,14 @@ Coverage.CoverageView = class extends UI.VBox {
    * @return {!UI.VBox}
    */
   _buildLandingPage() {
-    const recordButton = UI.createInlineButton(UI.Toolbar.createActionButton(this._toggleRecordAction));
     const widget = new UI.VBox();
     let message;
     if (this._startWithReloadButton) {
       const reloadButton = UI.createInlineButton(UI.Toolbar.createActionButtonForId('coverage.start-with-reload'));
-      message = UI.formatLocalized(
-          'Click the record button %s to start capturing coverage.\nClick the reload button %s to reload and start capturing coverage.',
-          [recordButton, reloadButton]);
+      message =
+          UI.formatLocalized('Click the reload button %s to reload and start capturing coverage.', [reloadButton]);
     } else {
+      const recordButton = UI.createInlineButton(UI.Toolbar.createActionButton(this._toggleRecordAction));
       message = UI.formatLocalized('Click the record button %s to start capturing coverage.', [recordButton]);
     }
     message.classList.add('message');
@@ -180,6 +182,9 @@ Coverage.CoverageView = class extends UI.VBox {
     this._clearButton.setEnabled(false);
     if (this._startWithReloadButton) {
       this._startWithReloadButton.setEnabled(false);
+      this._startWithReloadButton.setVisible(false);
+      this._toggleRecordButton.setEnabled(true);
+      this._toggleRecordButton.setVisible(true);
     }
     this._filterInput.setEnabled(true);
     this._filterByTypeComboBox.setEnabled(true);
@@ -210,6 +215,9 @@ Coverage.CoverageView = class extends UI.VBox {
     this._toggleRecordAction.setToggled(false);
     if (this._startWithReloadButton) {
       this._startWithReloadButton.setEnabled(true);
+      this._startWithReloadButton.setVisible(true);
+      this._toggleRecordButton.setEnabled(false);
+      this._toggleRecordButton.setVisible(false);
     }
     this._clearButton.setEnabled(true);
   }

@@ -3,15 +3,14 @@
   <message name="IDS_DEVTOOLS_0975cd80b6efbfa27546aa1567bc8143" desc="Title of an action under the Performance category that can be invoked through the Command Menu">
     Instrument coverage
   </message>
-  <message name="IDS_DEVTOOLS_140f5ed61f8c7390c3e38d7f6af6bd4b" desc="Message in Coverage View of the Coverage tab">
-    Click the record button <ph name="RECORD_BUTTON_ICON">$1s<ex>record button icon</ex></ph> to start capturing coverage.
-Click the reload button <ph name="RELOAD_BUTTON_ICON">$2s<ex>reload button icon</ex></ph> to reload and start capturing coverage.
-  </message>
   <message name="IDS_DEVTOOLS_1a49594b5f00e4f511ae8935c027cd8e" desc="Text in Coverage List View of the Coverage tab">
     Unused Bytes
   </message>
   <message name="IDS_DEVTOOLS_1b720c2038c3cf92379c5054abda47ae" desc="Accessible text for the visualization column of coverage tool. Contains percentage of unused bytes to used bytes.">
     <ph name="UNUSEDPERCENT">$1s<ex>20%</ex></ph> of file unused, <ph name="USEDPERCENT">$2s<ex>80%</ex></ph> of file used
+  </message>
+  <message name="IDS_DEVTOOLS_26e2927eed5054f8ec4eaecf90e3614d" desc="Message in Coverage View of the Coverage tab">
+    Click the reload button <ph name="RELOADBUTTON">$1s<ex>record button icon</ex></ph> to reload and start capturing coverage.
   </message>
   <message name="IDS_DEVTOOLS_2adbfb69a37aa4a29ca846736d2111db" desc="Text in Coverage List View of the Coverage tab">
     JS (coarse)

@@ -801,7 +801,8 @@ export class ExecutionContext {
       awaitPromise: awaitPromise,
       throwOnSideEffect: options.throwOnSideEffect,
       timeout: options.timeout,
-      disableBreaks: options.disableBreaks
+      disableBreaks: options.disableBreaks,
+      replMode: options.replMode
     });
 
     const error = response[Protocol.Error];
@@ -888,7 +889,8 @@ SDK.RuntimeModel.CompileScriptResult;
  *    generatePreview: (boolean|undefined),
  *    throwOnSideEffect: (boolean|undefined),
  *    timeout: (number|undefined),
- *    disableBreaks: (boolean|undefined)
+ *    disableBreaks: (boolean|undefined),
+ *    replMode: (boolean|undefined)
  *  }}
  */
 SDK.RuntimeModel.EvaluationOptions;

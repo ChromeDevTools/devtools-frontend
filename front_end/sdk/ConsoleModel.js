@@ -133,7 +133,8 @@ export default class ConsoleModel extends Common.Object {
           includeCommandLineAPI: useCommandLineAPI,
           silent: false,
           returnByValue: false,
-          generatePreview: true
+          generatePreview: true,
+          replMode: true
         },
         Common.settings.moduleSetting('consoleUserActivationEval').get(), awaitPromise);
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.ConsoleEvaluated);

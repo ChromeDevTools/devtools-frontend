@@ -12,9 +12,6 @@
   <message name="IDS_DEVTOOLS_03bfaee27b3b5cfb28deef84a0f416e5" desc="Title of the sources threads">
     Threads
   </message>
-  <message name="IDS_DEVTOOLS_03c2e7e41ffc181a4e84080b4710e81e" desc="A context menu item in the Sources Navigator of the Sources panel">
-    New
-  </message>
   <message name="IDS_DEVTOOLS_05184fe2fb6c76214bc56796837f1c9b" desc="Title of an action in the debugger tool to next call frame">
     Next call frame
   </message>

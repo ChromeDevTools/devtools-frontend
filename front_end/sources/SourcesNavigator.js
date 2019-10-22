@@ -266,7 +266,7 @@ Sources.SnippetsNavigatorView = class extends Sources.NavigatorView {
    */
   handleContextMenu(event) {
     const contextMenu = new UI.ContextMenu(event);
-    contextMenu.headerSection().appendItem(Common.UIString('New'), () => this.create(Snippets.project, ''));
+    contextMenu.headerSection().appendItem(ls`Create new snippet`, () => this.create(Snippets.project, ''));
     contextMenu.show();
   }
 

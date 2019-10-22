@@ -59,6 +59,20 @@ DevTools frontend can be found under `chromium/src/third_party/devtools-frontend
 Refer to [instructions](https://www.chromium.org/developers/how-tos/get-the-code) to build Chromium.
 To only build DevTools frontend, use `devtools_frontend_resources` as build target.
 
+### Integrate standalone DevTools into Chromium
+
+Change your working directory to the integrated DevTools frontend:
+```bash
+cd path/to/chromium/src/third_party/devtools-frontend/src
+```
+
+Add standalone DevTools frontend as remote:
+```bash
+git remote add standalone file://path/to/devtools/devtools-frontend/
+git fetch standalone
+git checkout standalone/branch-of-your-choice
+```
+
 ### Hacking
 * DevTools documentation: [devtools.chrome.com](https://devtools.chrome.com)
 * [Debugging protocol docs](https://developer.chrome.com/devtools/docs/debugger-protocol) and [Chrome Debugging Protocol Viewer](http://chromedevtools.github.io/debugger-protocol-viewer/)

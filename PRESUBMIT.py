@@ -58,7 +58,7 @@ def _CheckFormat(input_api, output_api):
     eslint_ignore_path = input_api.os_path.join(input_api.PresubmitLocalPath(), '.eslintignore')
     with open(eslint_ignore_path, 'r') as ignore_manifest:
         for line in ignore_manifest:
-            ignore_files.append(line.strip())
+            ignore_files.append(input_api.os_path.normpath(line.strip()))
     formattable_files = [
         affected_file for affected_file in affected_files if all(ignore_file not in affected_file for ignore_file in ignore_files)
     ]

@@ -170,8 +170,8 @@ Sources.SourceFormatter.ScriptMapping = class {
     if (!formatData) {
       return null;
     }
-    const lineNumber = rawLocation.lineNumber - script.lineOffset;
-    const columnNumber = (rawLocation.columnNumber || 0) - (lineNumber === 0 ? script.columnOffset : 0);
+    const lineNumber = rawLocation.lineNumber;
+    const columnNumber = rawLocation.columnNumber || 0;
     const formattedLocation = formatData.mapping.originalToFormatted(lineNumber, columnNumber);
     return formatData.formattedSourceCode.uiLocation(formattedLocation[0], formattedLocation[1]);
   }
@@ -189,20 +189,9 @@ Sources.SourceFormatter.ScriptMapping = class {
       return [];
     }
     const [originalLine, originalColumn] = formatData.mapping.formattedToOriginal(lineNumber, columnNumber);
-    const scripts = this._scriptsForUISourceCode(formatData.originalSourceCode).filter(script => {
-      const [scriptLine, scriptColumn] = originalToScript(script);
-      return script.containsLocation(scriptLine, scriptColumn);
-    });
-    return scripts.map(script => {
-      const [scriptLine, scriptColumn] = originalToScript(script);
-      return script.debuggerModel.createRawLocation(script, scriptLine, scriptColumn);
-    });
-
-    function originalToScript(script) {
-      const scriptLine = originalLine + script.lineOffset;
-      const scriptColumn = originalColumn + (originalLine === 0 ? script.columnOffset : 0);
-      return [scriptLine, scriptColumn];
-    }
+    const scripts = this._scriptsForUISourceCode(formatData.originalSourceCode)
+                        .filter(script => script.containsLocation(originalLine, originalColumn));
+    return scripts.map(script => script.debuggerModel.createRawLocation(script, originalLine, originalColumn));
   }
 
   /**

@@ -1697,42 +1697,31 @@ Elements.ElementsTreeOutline.Renderer = class {
    * @param {!Object} object
    * @return {!Promise<?{node: !Node, tree: ?UI.TreeOutline}>}
    */
-  render(object) {
-    return new Promise(renderPromise);
+  async render(object) {
+    /** @type {?SDK.DOMNode} */
+    let node;
 
-    /**
-     * @param {function(!{node: !Node, tree: ?UI.TreeOutline})} resolve
-     * @param {function(!Error)} reject
-     */
-    function renderPromise(resolve, reject) {
-      if (object instanceof SDK.DOMNode) {
-        onNodeResolved(/** @type {!SDK.DOMNode} */ (object));
-      } else if (object instanceof SDK.DeferredDOMNode) {
-        (/** @type {!SDK.DeferredDOMNode} */ (object)).resolve(onNodeResolved);
-      } else {
-        reject(new Error('Can\'t reveal not a node.'));
-      }
-
-
-      /**
-       * @param {?SDK.DOMNode} node
-       */
-      function onNodeResolved(node) {
-        if (!node) {
-          reject(new Error('Could not resolve node.'));
-          return;
-        }
-        const treeOutline = new Elements.ElementsTreeOutline(false, true /* selectEnabled */, true /* hideGutter */);
-        treeOutline.rootDOMNode = node;
-        if (!treeOutline.firstChild().isExpandable()) {
-          treeOutline._element.classList.add('single-node');
-        }
-        treeOutline.setVisible(true);
-        treeOutline.element.treeElementForTest = treeOutline.firstChild();
-        treeOutline.setShowSelectionOnKeyboardFocus(true, true);
-        resolve({node: treeOutline.element, tree: treeOutline});
-      }
+    if (object instanceof SDK.DOMNode) {
+      node = /** @type {!SDK.DOMNode} */ (object);
+    } else if (object instanceof SDK.DeferredDOMNode) {
+      node = await (/** @type {!SDK.DeferredDOMNode} */ (object)).resolvePromise();
     }
+
+    if (!node) {
+      // Can't render not-a-node, or couldn't resolve deferred node.
+      return null;
+    }
+
+    const treeOutline = new Elements.ElementsTreeOutline(
+        /* omitRootDOMNode: */ false, /* selectEnabled: */ true, /* hideGutter: */ true);
+    treeOutline.rootDOMNode = node;
+    if (!treeOutline.firstChild().isExpandable()) {
+      treeOutline._element.classList.add('single-node');
+    }
+    treeOutline.setVisible(true);
+    treeOutline.element.treeElementForTest = treeOutline.firstChild();
+    treeOutline.setShowSelectionOnKeyboardFocus(/* show: */ true, /* preventTabOrder: */ true);
+    return {node: treeOutline.element, tree: treeOutline};
   }
 };
 

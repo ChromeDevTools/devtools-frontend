@@ -105,8 +105,9 @@ Console.ConsoleView = class extends UI.VBox {
     toolbar.appendSeparator();
     toolbar.appendToolbarItem(this._consoleContextSelector.toolbarItem());
     toolbar.appendSeparator();
-    toolbar.appendToolbarItem(UI.Toolbar.createActionButton(
-        /** @type {!UI.Action }*/ (UI.actionRegistry.action('console.create-pin'))));
+    const liveExpressionButton =
+        UI.Toolbar.createActionButton(/** @type {!UI.Action }*/ (UI.actionRegistry.action('console.create-pin')));
+    toolbar.appendToolbarItem(liveExpressionButton);
     toolbar.appendSeparator();
     toolbar.appendToolbarItem(this._filter._textFilterUI);
     toolbar.appendToolbarItem(this._filter._levelMenuButton);
@@ -158,7 +159,7 @@ Console.ConsoleView = class extends UI.VBox {
     this._showSettingsPaneSetting.addChangeListener(
         () => settingsPane.element.classList.toggle('hidden', !this._showSettingsPaneSetting.get()));
 
-    this._pinPane = new Console.ConsolePinPane();
+    this._pinPane = new Console.ConsolePinPane(liveExpressionButton);
     this._pinPane.element.classList.add('console-view-pinpane');
     this._pinPane.show(this._contentsElement);
     this._pinPane.element.addEventListener('keydown', event => {

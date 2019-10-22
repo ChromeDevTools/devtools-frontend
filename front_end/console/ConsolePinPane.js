@@ -3,8 +3,12 @@
 // found in the LICENSE file.
 
 Console.ConsolePinPane = class extends UI.ThrottledWidget {
-  constructor() {
+  /**
+   * @param {!UI.ToolbarButton} liveExpressionButton
+   */
+  constructor(liveExpressionButton) {
     super(true, 250);
+    this._liveExpressionButton = liveExpressionButton;
     this.registerRequiredCSS('console/consolePinPane.css');
     this.registerRequiredCSS('object_ui/objectValue.css');
     this.contentElement.classList.add('console-pins', 'monospace');
@@ -64,6 +68,7 @@ Console.ConsolePinPane = class extends UI.ThrottledWidget {
     pin.element().remove();
     this._pins.delete(pin);
     this._savePins();
+    this._liveExpressionButton.element.focus();
   }
 
   /**
@@ -107,7 +112,10 @@ Console.ConsolePin = class extends Common.Object {
   constructor(expression, pinPane) {
     super();
     const deletePinIcon = UI.Icon.create('smallicon-cross', 'console-delete-pin');
-    self.onInvokeElement(deletePinIcon, () => pinPane._removePin(this));
+    self.onInvokeElement(deletePinIcon, event => {
+      pinPane._removePin(this);
+      event.consume(true);
+    });
     deletePinIcon.tabIndex = 0;
     UI.ARIAUtils.setAccessibleName(deletePinIcon, ls`Remove expression`);
     UI.ARIAUtils.markAsButton(deletePinIcon);

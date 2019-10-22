@@ -19,6 +19,8 @@ CssOverview.OverviewController = class extends Common.Object {
 
 CssOverview.Events = {
   RequestOverviewStart: Symbol('RequestOverviewStart'),
+  RequestNodeHighlight: Symbol('RequestNodeHighlight'),
+  PopulateNodes: Symbol('PopulateNodes'),
   RequestOverviewCancel: Symbol('RequestOverviewCancel'),
   OverviewCompleted: Symbol('OverviewCompleted'),
   Reset: Symbol('Reset'),

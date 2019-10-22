@@ -54,7 +54,14 @@
 
 .media-query-grid .data-container {
   top: 0;
-  max-height: 400px;
+  max-height: 350px;
+}
+
+.element-grid {
+  flex: 1;
+  border-left: none;
+  border-right: none;
+  overflow: auto;
 }
 
 .block {

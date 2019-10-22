@@ -23,30 +23,40 @@ CssOverview.CSSOverviewPanel = class extends UI.Panel {
     this._controller.addEventListener(CssOverview.Events.RequestOverviewCancel, this._cancelOverview, this);
     this._controller.addEventListener(CssOverview.Events.OverviewCompleted, this._overviewCompleted, this);
     this._controller.addEventListener(CssOverview.Events.Reset, this._reset, this);
+    this._controller.addEventListener(CssOverview.Events.RequestNodeHighlight, this._requestNodeHighlight, this);
 
     this._reset();
   }
 
   _reset() {
-    this._backgroundColors = new Set();
-    this._textColors = new Set();
+    this._backgroundColors = new Map();
+    this._textColors = new Map();
     this._fontSizes = new Map();
+    this._fontWeights = new Map();
     this._mediaQueries = [];
     this._elementCount = 0;
-    this._elementStyleStats = {
-      // Simple.
-      type: new Set(),
-      class: new Set(),
-      id: new Set(),
-      universal: new Set(),
-      attribute: new Set(),
-
-      // Non-simple.
-      nonSimple: new Set()
-    };
     this._cancelled = false;
-    this._globalStyleStats = {styleRules: 0, inlineStyles: 0, externalSheets: 0};
+    this._globalStyleStats = {
+      styleRules: 0,
+      inlineStyles: 0,
+      externalSheets: 0,
+      stats: {
+        // Simple.
+        type: 0,
+        class: 0,
+        id: 0,
+        universal: 0,
+        attribute: 0,
+
+        // Non-simple.
+        nonSimple: 0
+      }
+    };
     this._renderInitialView();
+  }
+
+  _requestNodeHighlight(evt) {
+    this._model.highlightNode(evt.data);
   }
 
   _renderInitialView() {
@@ -56,12 +66,11 @@ CssOverview.CSSOverviewPanel = class extends UI.Panel {
     this._startView.show(this.contentElement);
   }
 
-  _renderOverviewStartedView(elementsHandled = 0, total = 0) {
+  _renderOverviewStartedView() {
     this._startView.hideWidget();
     this._completedView.hideWidget();
 
     this._processingView.show(this.contentElement);
-    this._processingView.setElementsHandled(elementsHandled, total);
   }
 
   _renderOverviewCompletedView() {
@@ -73,8 +82,8 @@ CssOverview.CSSOverviewPanel = class extends UI.Panel {
       backgroundColors: this._backgroundColors,
       textColors: this._textColors,
       globalStyleStats: this._globalStyleStats,
-      elementStyleStats: this._elementStyleStats,
       fontSizes: this._fontSizes,
+      fontWeights: this._fontWeights,
       elementCount: this._elementCount,
       mediaQueries: this._mediaQueries
     });
@@ -83,74 +92,40 @@ CssOverview.CSSOverviewPanel = class extends UI.Panel {
   async _startOverview() {
     this._renderOverviewStartedView();
 
-    const document = await this._model.getFlattenedDocument();
-    if (this._cancelled) {
-      this._reset();
-      return;
+    const [nodes, globalStyleStats, {backgroundColors, textColors, fontSizes, fontWeights}, mediaQueries] =
+        await Promise.all([
+          this._model.getFlattenedDocument(), this._model.getGlobalStylesheetStats(), this._model.getNodeStyleStats(),
+          this._model.getMediaQueries()
+        ]);
+
+    if (nodes) {
+      this._elementCount = nodes.length;
     }
 
-    // 1. Get the global style stats.
-    const globalStyleStats = await this._model.getGlobalStylesheetStats();
     if (globalStyleStats) {
       this._globalStyleStats = globalStyleStats;
     }
 
-    const mediaQueries = await this._model.getMediaQueries();
     if (mediaQueries) {
       this._mediaQueries = mediaQueries;
     }
 
-    // 2. Get the total element count.
-    this._elementCount = document.length;
-
-    // 3. Process every element in the doc.
-    for (let idx = 0; idx < document.length; idx++) {
-      if (this._cancelled) {
-        this._reset();
-        return;
-      }
-
-      const node = document[idx];
-      const [computedStyles, styleStats] = await Promise.all(
-          [this._model.getComputedStyleForNode(node.nodeId), this._model.getStylesStatsForNode(node.nodeId)]);
-
-      // 3a. Capture any colors from the computed styles.
-      if (computedStyles) {
-        const backgroundColor = this._getStyleValue(computedStyles, 'background-color');
-        if (backgroundColor) {
-          this._backgroundColors.add(backgroundColor);
-        }
-
-        if (node.nodeType === Node.TEXT_NODE) {
-          const textColor = this._getStyleValue(computedStyles, 'color');
-          this._textColors.add(textColor);
-
-          const fontSize = this._getStyleValue(computedStyles, 'font-size');
-          if (!this._fontSizes.has(fontSize)) {
-            this._fontSizes.set(fontSize, 0);
-          }
-
-          this._fontSizes.set(fontSize, this._fontSizes.get(fontSize) + 1);
-        }
-      }
-
-      // 3b. Tally the selector stats.
-      if (styleStats) {
-        for (const section of Object.keys(this._elementStyleStats)) {
-          if (!styleStats[section]) {
-            continue;
-          }
-
-          for (const value of styleStats[section]) {
-            this._elementStyleStats[section].add(value);
-          }
-        }
-      }
-
-      this._renderOverviewStartedView(idx + 1, document.length);
+    if (backgroundColors) {
+      this._backgroundColors = backgroundColors;
     }
 
-    // 4. Finish.
+    if (textColors) {
+      this._textColors = textColors;
+    }
+
+    if (fontSizes) {
+      this._fontSizes = fontSizes;
+    }
+
+    if (fontWeights) {
+      this._fontWeights = fontWeights;
+    }
+
     this._controller.dispatchEventToListeners(CssOverview.Events.OverviewCompleted);
   }
 

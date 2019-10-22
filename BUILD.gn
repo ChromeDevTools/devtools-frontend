@@ -1530,6 +1530,10 @@ if (external_devtools_frontend) {
 
   group("devtools_all_files") {
     data = all_devtools_files + all_devtools_modules
+    data += [
+      # This enalbes us to test bots with whitespace changes.
+      "scripts/whitespaces.txt",
+    ]
     deps = [
       ":devtools_frontend_resources_data",
     ]

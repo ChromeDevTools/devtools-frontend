@@ -194,7 +194,11 @@ Network.NetworkPanel = class extends UI.Panel {
   _setupToolbarButtons(splitWidget) {
     const searchToggle = new UI.ToolbarToggle(ls`Search`, 'largeicon-search');
     function updateSidebarToggle() {
-      searchToggle.setToggled(splitWidget.showMode() !== UI.SplitWidget.ShowMode.OnlyMain);
+      const isSidebarShowing = splitWidget.showMode() !== UI.SplitWidget.ShowMode.OnlyMain;
+      searchToggle.setToggled(isSidebarShowing);
+      if (!isSidebarShowing) {
+        searchToggle.element.focus();
+      }
     }
     this._panelToolbar.appendToolbarItem(UI.Toolbar.createActionButton(this._toggleRecordAction));
     const clearButton = new UI.ToolbarButton(Common.UIString('Clear'), 'largeicon-clear');

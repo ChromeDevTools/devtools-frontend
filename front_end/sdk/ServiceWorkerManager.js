@@ -466,18 +466,6 @@ ServiceWorkerVersion.RunningStatus = {
 };
 
 /**
- * @type {!Object<string, string>}
- */
-SDK.ServiceWorkerVersion.Status = {
-  [Protocol.ServiceWorker.ServiceWorkerVersionStatus.Activated]: ls`activated`,
-  [Protocol.ServiceWorker.ServiceWorkerVersionStatus.Activating]: ls`activating`,
-  [Protocol.ServiceWorker.ServiceWorkerVersionStatus.Installed]: ls`installed`,
-  [Protocol.ServiceWorker.ServiceWorkerVersionStatus.Installing]: ls`installing`,
-  [Protocol.ServiceWorker.ServiceWorkerVersionStatus.New]: ls`new`,
-  [Protocol.ServiceWorker.ServiceWorkerVersionStatus.Redundant]: ls`redundant`,
-};
-
-/**
  * @enum {string}
  */
 ServiceWorkerVersion.Modes = {
@@ -669,8 +657,7 @@ export class ServiceWorkerContextNamer {
     }
     const parsedUrl = context.origin.asParsedURL();
     const label = parsedUrl ? parsedUrl.lastPathComponentWithFragment() : context.name;
-    const localizedStatus = SDK.ServiceWorkerVersion.Status[version.status];
-    context.setLabel(ls`${label} #${version.id} (${localizedStatus})`);
+    context.setLabel(label + ' #' + version.id + ' (' + version.status + ')');
   }
 }
 

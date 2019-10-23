@@ -10,6 +10,8 @@ Timeline.TimelineHistoryManager = class {
     /** @type {!Map<string, number>} */
     this._nextNumberByDomain = new Map();
     this._button = new Timeline.TimelineHistoryManager.ToolbarButton(this._action);
+
+    UI.ARIAUtils.markAsMenuButton(this._button.element);
     this.clear();
 
     this._allOverviews = [
@@ -31,7 +33,10 @@ Timeline.TimelineHistoryManager = class {
     this._lastActiveModel = performanceModel;
     this._recordings.unshift(performanceModel);
     this._buildPreview(performanceModel);
-    this._button.setText(this._title(performanceModel));
+    const modelTitle = this._title(performanceModel);
+    this._button.setText(modelTitle);
+    const buttonTitle = this._action.title();
+    UI.ARIAUtils.setAccessibleName(this._button.element, ls`Current Session: ${modelTitle}. ${buttonTitle}`);
     this._updateState();
     if (this._recordings.length <= Timeline.TimelineHistoryManager._maxRecordings) {
       return;
@@ -78,6 +83,7 @@ Timeline.TimelineHistoryManager = class {
       return null;
     }
 
+    // DropDown.show() function finishes when the dropdown menu is closed via selection or losing focus
     const model = await Timeline.TimelineHistoryManager.DropDown.show(
         this._recordings, /** @type {!Timeline.PerformanceModel} */ (this._lastActiveModel), this._button.element);
     if (!model) {
@@ -120,7 +126,10 @@ Timeline.TimelineHistoryManager = class {
   _setCurrentModel(model) {
     Timeline.TimelineHistoryManager._dataForModel(model).lastUsed = Date.now();
     this._lastActiveModel = model;
-    this._button.setText(this._title(model));
+    const modelTitle = this._title(model);
+    const buttonTitle = this._action.title();
+    this._button.setText(modelTitle);
+    UI.ARIAUtils.setAccessibleName(this._button.element, ls`Current Session: ${modelTitle}. ${buttonTitle}`);
   }
 
   _updateState() {
@@ -194,7 +203,9 @@ Timeline.TimelineHistoryManager = class {
    */
   _buildTextDetails(performanceModel, title, timeElement) {
     const container = createElementWithClass('div', 'text-details hbox');
-    container.createChild('span', 'name').textContent = title;
+    const nameSpan = container.createChild('span', 'name');
+    nameSpan.textContent = title;
+    UI.ARIAUtils.setAccessibleName(nameSpan, title);
     const tracingModel = performanceModel.tracingModel();
     const duration = Number.millisToString(tracingModel.maximumRecordTime() - tracingModel.minimumRecordTime(), false);
     const timeContainer = container.createChild('span', 'time');
@@ -280,6 +291,7 @@ Timeline.TimelineHistoryManager.DropDown = class {
     this._glassPane.setOutsideClickCallback(() => this._close(null));
     this._glassPane.setPointerEventsBehavior(UI.GlassPane.PointerEventsBehavior.BlockedByGlassPane);
     this._glassPane.setAnchorBehavior(UI.GlassPane.AnchorBehavior.PreferBottom);
+    this._glassPane.element.addEventListener('blur', () => this._close(null));
 
     const shadowRoot =
         UI.createShadowRootWithCoreStyles(this._glassPane.contentElement, 'timeline/timelineHistoryManager.css');
@@ -290,10 +302,13 @@ Timeline.TimelineHistoryManager.DropDown = class {
     this._listControl.element.addEventListener('mousemove', this._onMouseMove.bind(this), false);
     listModel.replaceAll(models);
 
+    UI.ARIAUtils.markAsMenu(this._listControl.element);
+    UI.ARIAUtils.setAccessibleName(this._listControl.element, ls`Select Timeline Session`);
     contentElement.appendChild(this._listControl.element);
     contentElement.addEventListener('keydown', this._onKeyDown.bind(this), false);
     contentElement.addEventListener('click', this._onClick.bind(this), false);
 
+    this._focusRestorer = new UI.ElementFocusRestorer(this._listControl.element);
     /** @type {?function(?Timeline.PerformanceModel)} */
     this._selectionDone = null;
   }
@@ -361,6 +376,7 @@ Timeline.TimelineHistoryManager.DropDown = class {
    */
   _onKeyDown(event) {
     switch (event.key) {
+      case 'Tab':
       case 'Escape':
         this._close(null);
         break;
@@ -378,6 +394,7 @@ Timeline.TimelineHistoryManager.DropDown = class {
    */
   _close(model) {
     this._selectionDone(model);
+    this._focusRestorer.restore();
     this._glassPane.hide();
     Timeline.TimelineHistoryManager.DropDown._instance = null;
   }
@@ -389,6 +406,7 @@ Timeline.TimelineHistoryManager.DropDown = class {
    */
   createElementForItem(item) {
     const element = Timeline.TimelineHistoryManager._previewElement(item);
+    UI.ARIAUtils.markAsMenuItem(element);
     element.classList.remove('selected');
     return element;
   }
@@ -433,7 +451,6 @@ Timeline.TimelineHistoryManager.DropDown = class {
  * @type {?Timeline.TimelineHistoryManager.DropDown}
  */
 Timeline.TimelineHistoryManager.DropDown._instance = null;
-
 
 Timeline.TimelineHistoryManager.ToolbarButton = class extends UI.ToolbarItem {
   /**

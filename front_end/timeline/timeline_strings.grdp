@@ -517,6 +517,9 @@ Click the reload button <ph name="RELOADBUTTON">$3s<ex>reload</ex></ph> or hit <
   <message name="IDS_DEVTOOLS_80a0135dfd4156f542f097a6351c727f" desc="Text in Timeline UIUtils of the Performance panel">
     Streaming Compile Script
   </message>
+  <message name="IDS_DEVTOOLS_7b8c1a72c279c468ba1729548e05181c" desc="Screen reader label for the Timeline History dropdown button">
+    Current Session: <ph name="THIS__TITLE_PERFORMANCEMODEL_">$1s<ex>example.com #3</ex></ph>. <ph name="THIS__BUTTON_GETTITLE__">$2s<ex>Show recent timeline sessions</ex></ph>
+  </message>
   <message name="IDS_DEVTOOLS_80a4b8755d836d50c19e6eefb976bc2e" desc="Text in Timeline UIUtils of the Performance panel">
     <ph name="SELFCATEGORY_TITLE">$1s<ex>blink.console</ex></ph> (self)
   </message>
@@ -549,6 +552,9 @@ Click the reload button <ph name="RELOADBUTTON">$3s<ex>reload</ex></ph> or hit <
   </message>
   <message name="IDS_DEVTOOLS_87644f7e0957c4bf2990aedfe046b71e" desc="Text in Counters Graph of the Performance panel">
     GPU Memory [KB]: <ph name="PH1">$1s<ex>hsl(300, 90%, 43%)</ex></ph>
+  </message>
+  <message name="IDS_DEVTOOLS_8767b19ee08e463a7355033924ea7112" desc="Accessible label for the timeline session selection menu">
+    Select Timeline Session
   </message>
   <message name="IDS_DEVTOOLS_87ba2ecc8b6915e8bd6f5089918229fd" desc="Text in Timeline UIUtils of the Performance panel">
     Range

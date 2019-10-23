@@ -45,6 +45,9 @@
   <message name="IDS_DEVTOOLS_1a4157cb54ce78ee862a88ecd1a66916" desc="Tooltip to explain why a cookie was blocked">
     This set-cookie used the &quot;__Secure-&quot; or &quot;__Host-&quot; prefix in its name and broke the additional rules applied to cookies with these prefixes as defined in https://tools.ietf.org/html/draft-west-cookie-prefixes-05.
   </message>
+  <message name="IDS_DEVTOOLS_1ccfb518c1eb59a48fa9b2c578073557" desc="Service worker version status displayed in the Threads view of the Debugging side pane in the Sources panel">
+    redundant
+  </message>
   <message name="IDS_DEVTOOLS_1ee85f6c60017a7f0646ba8dc5824de6" desc="Service worker running status displayed in the Service Workers view in the Application panel">
     starting
   </message>
@@ -53,6 +56,9 @@
   </message>
   <message name="IDS_DEVTOOLS_212af9ab36fa426a9e52bc1ebfd8665b" desc="Text in DOMDebugger Model">
     Drag / drop
+  </message>
+  <message name="IDS_DEVTOOLS_22af645d1859cb5ca6da0c484f1f37ea" desc="Service worker version status displayed in the Threads view of the Debugging side pane in the Sources panel">
+    new
   </message>
   <message name="IDS_DEVTOOLS_23e5a7b7976e412ece233ceaf8257bc2" desc="Text in DOMDebugger Model">
     Clipboard
@@ -98,6 +104,9 @@
   </message>
   <message name="IDS_DEVTOOLS_38fe155e13d77298cfd5688c3378fa85" desc="Title of a setting under the Rendering category that can be invoked through the Command Menu">
     Emulate CSS screen media type
+  </message>
+  <message name="IDS_DEVTOOLS_3a61bf1744eb364af52e107aec676f62" desc="Service worker version status displayed in the Threads view of the Debugging side pane in the Sources panel">
+    installing
   </message>
   <message name="IDS_DEVTOOLS_3b2a3c8ed19fc3647432e72885d633e7" desc="Service worker running status displayed in the Service Workers view in the Application panel">
     stopping
@@ -204,6 +213,9 @@
   <message name="IDS_DEVTOOLS_7121afd196f5c52bef488d5a0f4c097b" desc="Text in the Event Listener Breakpoints Panel of the JavaScript Debugger in the Sources Panel">
     Script First Statement
   </message>
+  <message name="IDS_DEVTOOLS_73329564760013a7824ff9d5d1af91ff" desc="Service worker version status displayed in the Threads view of the Debugging side pane in the Sources panel">
+    installed
+  </message>
   <message name="IDS_DEVTOOLS_75101dcdfc88455bcafc9e53e0b06689" desc="Service worker running status displayed in the Service Workers view in the Application panel">
     running
   </message>
@@ -248,6 +260,9 @@
   </message>
   <message name="IDS_DEVTOOLS_93dee6366d66361f36985cf5c88346aa" desc="Text in the Event Listener Breakpoints Panel of the JavaScript Debugger in the Sources Panel">
     Create AudioContext
+  </message>
+  <message name="IDS_DEVTOOLS_948eea612456562bf255d3a9c59c40a3" desc="Service worker version status displayed in the Threads view of the Debugging side pane in the Sources panel">
+    activating
   </message>
   <message name="IDS_DEVTOOLS_96d008db67fc0b5551a926842bbb6a71" desc="Text in DOMDebugger Model">
     Notification
@@ -309,6 +324,9 @@
   <message name="IDS_DEVTOOLS_beff15b1acf49b84bf1080cceb920ebf" desc="Title of a media query that can be emulated via the Rendering drawer">
     prefers-color-scheme: dark
   </message>
+  <message name="IDS_DEVTOOLS_c3905c37f4127686d512a7665206852e" desc="Service worker version status displayed in the Threads view of the Debugging side pane in the Sources panel">
+    activated
+  </message>
   <message name="IDS_DEVTOOLS_c432f4e5fdec5760a2f06b38f646168e" desc="Text in Console Model">
     Profile &apos;<ph name="DATA_TITLE">$1s<ex>title</ex></ph>&apos; started.
   </message>
@@ -362,6 +380,9 @@
   </message>
   <message name="IDS_DEVTOOLS_e8e741c8bebb2da4dc93e5f9c1cecd8c" desc="Title of a setting under the Rendering drawer that can be invoked through the Command Menu">
     Emulate CSS prefers-color-scheme: light
+  </message>
+  <message name="IDS_DEVTOOLS_eb6ff454fb651bb604121a229e5baec3" desc="Service worker version status displayed in the Threads view of the Debugging side pane in the Sources panel">
+    <ph name="LABEL">$1s<ex>sw.js</ex></ph> #<ph name="VERSION_ID">$2s<ex>117</ex></ph> (<ph name="STATUS">$3s<ex>activated</ex></ph>)
   </message>
   <message name="IDS_DEVTOOLS_edb020d2175281d94054136e09a3e132" desc="Title of a setting under the Debugger category that can be invoked through the Command Menu">
     Do not pause on exceptions

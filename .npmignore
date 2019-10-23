@@ -1,5 +1,13 @@
-devtools.gyp
-devtools.gypi
 BUILD.gn
+.gn
+build_overrides
+DEPS
+
 PRESUBMIT.py
 OWNERS
+ENG_REVIEW_OWNERS
+
+third_party
+test
+htaccess
+v8/include

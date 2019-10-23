@@ -8,3 +8,5 @@ build_with_chromium = false
 
 # Skip assertions about 4GiB file size limit.
 ignore_elf32_limitations = true
+
+use_system_xcode = true

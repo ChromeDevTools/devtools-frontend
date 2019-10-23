@@ -314,7 +314,16 @@ Network.NetworkLogViewColumns = class {
         visibleColumns[columnConfig.id] = columnConfig.visible;
       }
     } else {
-      visibleColumns.name = true;
+      // Find the first visible column from the path group
+      const visibleColumn = this._columns.find(c => c.hideableGroup === 'path' && c.visible);
+      if (visibleColumn) {
+        visibleColumns[visibleColumn.id] = true;
+      } else {
+        // This should not happen because inside a hideableGroup
+        // there should always be at least one column visible
+        // This is just in case.
+        visibleColumns.name = true;
+      }
     }
     this._dataGrid.setColumnsVisiblity(visibleColumns);
   }
@@ -403,7 +412,44 @@ Network.NetworkLogViewColumns = class {
   _innerHeaderContextMenu(contextMenu) {
     const columnConfigs = this._columns.filter(columnConfig => columnConfig.hideable);
     const nonResponseHeaders = columnConfigs.filter(columnConfig => !columnConfig.isResponseHeader);
+
+    /** @type {!Map<string, !Array<!Network.NetworkLogViewColumns.Descriptor>>} */
+    const hideableGroups = new Map();
+    /** @type {!Array.<!Network.NetworkLogViewColumns.Descriptor>} */
+    const nonResponseHeadersWithoutGroup = [];
+
+    // Sort columns into their groups
     for (const columnConfig of nonResponseHeaders) {
+      if (!columnConfig.hideableGroup) {
+        nonResponseHeadersWithoutGroup.push(columnConfig);
+      } else {
+        const name = columnConfig.hideableGroup;
+        if (!hideableGroups.has(name)) {
+          hideableGroups.set(name, []);
+        }
+
+        hideableGroups.get(name).push(columnConfig);
+      }
+    }
+
+    // Add all the groups first
+    for (const group of hideableGroups.values()) {
+      const visibleColumns = group.filter(columnConfig => columnConfig.visible);
+
+      for (const columnConfig of group) {
+        // Make sure that at least one item in every group is enabled
+        const isDisabled = visibleColumns.length === 1 && visibleColumns[0] === columnConfig;
+
+        contextMenu.headerSection().appendCheckboxItem(
+            columnConfig.title, this._toggleColumnVisibility.bind(this, columnConfig), columnConfig.visible,
+            isDisabled);
+      }
+
+      contextMenu.headerSection().appendSeparator();
+    }
+
+    // Add normal columns not belonging to any group
+    for (const columnConfig of nonResponseHeadersWithoutGroup) {
       contextMenu.headerSection().appendCheckboxItem(
           columnConfig.title, this._toggleColumnVisibility.bind(this, columnConfig), columnConfig.visible);
     }
@@ -641,6 +687,7 @@ Network.NetworkLogViewColumns._initialSortColumn = 'waterfall';
  *     visible: boolean,
  *     weight: number,
  *     hideable: boolean,
+ *     hideableGroup: ?string,
  *     nonSelectable: boolean,
  *     sortable: boolean,
  *     align: (?DataGrid.DataGrid.Align|undefined),
@@ -666,6 +713,7 @@ Network.NetworkLogViewColumns._defaultColumnConfig = {
   weight: 6,
   sortable: true,
   hideable: true,
+  hideableGroup: null,
   nonSelectable: true,
   isResponseHeader: false,
   isCustomHeader: false
@@ -681,7 +729,8 @@ Network.NetworkLogViewColumns._defaultColumns = [
     subtitle: Common.UIString('Path'),
     visible: true,
     weight: 20,
-    hideable: false,
+    hideable: true,
+    hideableGroup: 'path',
     nonSelectable: false,
     sortingFunction: Network.NetworkRequestNode.NameComparator
   },
@@ -690,6 +739,7 @@ Network.NetworkLogViewColumns._defaultColumns = [
     title: ls`Path`,
     nonSelectable: false,
     hideable: true,
+    hideableGroup: 'path',
     sortingFunction: Network.NetworkRequestNode.RequestPropertyComparator.bind(null, 'path')
   },
   {
@@ -697,6 +747,7 @@ Network.NetworkLogViewColumns._defaultColumns = [
     title: ls`Url`,
     nonSelectable: false,
     hideable: true,
+    hideableGroup: 'path',
     sortingFunction: Network.NetworkRequestNode.RequestPropertyComparator.bind(null, 'url')
   },
   {

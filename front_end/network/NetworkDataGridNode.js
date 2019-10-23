@@ -727,13 +727,13 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
   renderCell(cell, columnId) {
     switch (columnId) {
       case 'name':
-        this._renderNameCell(cell);
+        this._renderPrimaryCell(cell, columnId);
         break;
       case 'path':
-        this._setTextAndTitle(cell, this._request.pathname);
+        this._renderPrimaryCell(cell, columnId, this._request.pathname);
         break;
       case 'url':
-        this._setTextAndTitle(cell, this._request.url());
+        this._renderPrimaryCell(cell, columnId, this._request.url());
         break;
       case 'method':
         this._setTextAndTitle(cell, this._request.requestMethod);
@@ -836,37 +836,48 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
 
   /**
    * @param {!Element} cell
+   * @param {string} columnId
+   * @param {string=} text
    */
-  _renderNameCell(cell) {
-    const leftPadding = this.leftPadding ? this.leftPadding + 'px' : '';
-    cell.style.setProperty('padding-left', leftPadding);
-    this._nameCell = cell;
-    cell.addEventListener('dblclick', this._openInNewTab.bind(this), false);
-    let iconElement;
-    if (this._request.resourceType() === Common.resourceTypes.Image) {
-      const previewImage = createElementWithClass('img', 'image-network-icon-preview');
-      previewImage.alt = this._request.resourceType().title();
-      this._request.populateImageSource(previewImage);
+  _renderPrimaryCell(cell, columnId, text) {
+    const columnIndex = this.dataGrid.indexOfVisibleColumn(columnId);
+    if (columnIndex === 0) {
+      const leftPadding = this.leftPadding ? this.leftPadding + 'px' : '';
+      cell.style.setProperty('padding-left', leftPadding);
+      this._nameCell = cell;
+      cell.addEventListener('dblclick', this._openInNewTab.bind(this), false);
+      let iconElement;
+      if (this._request.resourceType() === Common.resourceTypes.Image) {
+        const previewImage = createElementWithClass('img', 'image-network-icon-preview');
+        previewImage.alt = this._request.resourceType().title();
+        this._request.populateImageSource(previewImage);
 
-      iconElement = createElementWithClass('div', 'icon');
-      iconElement.appendChild(previewImage);
-    } else {
-      iconElement = createElementWithClass('img', 'icon');
-      iconElement.alt = this._request.resourceType().title();
-    }
-    iconElement.classList.add(this._request.resourceType().name());
+        iconElement = createElementWithClass('div', 'icon');
+        iconElement.appendChild(previewImage);
+      } else {
+        iconElement = createElementWithClass('img', 'icon');
+        iconElement.alt = this._request.resourceType().title();
+      }
+      iconElement.classList.add(this._request.resourceType().name());
 
-    cell.appendChild(iconElement);
-    if (!this._nameBadgeElement) {
-      this._nameBadgeElement = this.parentView().badgePool.badgeForURL(this._request.parsedURL);
-      this._nameBadgeElement.classList.add('network-badge');
+      cell.appendChild(iconElement);
+      if (!this._nameBadgeElement) {
+        this._nameBadgeElement = this.parentView().badgePool.badgeForURL(this._request.parsedURL);
+        this._nameBadgeElement.classList.add('network-badge');
+      }
+      cell.appendChild(this._nameBadgeElement);
     }
-    cell.appendChild(this._nameBadgeElement);
-    const name = this._request.name().trimMiddle(100);
-    const networkManager = SDK.NetworkManager.forRequest(this._request);
-    cell.createTextChild(networkManager ? networkManager.target().decorateLabel(name) : name);
-    this._appendSubtitle(cell, this._request.path());
-    cell.title = this._request.url();
+
+    if (columnId === 'name') {
+      const name = this._request.name().trimMiddle(100);
+      const networkManager = SDK.NetworkManager.forRequest(this._request);
+      cell.createTextChild(networkManager ? networkManager.target().decorateLabel(name) : name);
+      this._appendSubtitle(cell, this._request.path());
+      cell.title = this._request.url();
+    } else if (text) {
+      cell.createTextChild(text);
+      cell.title = text;
+    }
   }
 
   /**
@@ -1069,7 +1080,8 @@ Network.NetworkGroupNode = class extends Network.NetworkNode {
    * @param {string} columnId
    */
   renderCell(cell, columnId) {
-    if (columnId === 'name') {
+    const columnIndex = this.dataGrid.indexOfVisibleColumn(columnId);
+    if (columnIndex === 0) {
       const leftPadding = this.leftPadding ? this.leftPadding + 'px' : '';
       cell.style.setProperty('padding-left', leftPadding);
       cell.classList.add('disclosure');

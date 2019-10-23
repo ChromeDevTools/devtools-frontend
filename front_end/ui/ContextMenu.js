@@ -146,6 +146,15 @@ export class Section {
   }
 
   /**
+   * @return {!UI.ContextMenuItem}
+   */
+  appendSeparator() {
+    const item = new UI.ContextMenuItem(this._contextMenu, 'separator');
+    this._items.push(item);
+    return item;
+  }
+
+  /**
    * @param {string} actionId
    * @param {string=} label
    * @param {boolean=} optional

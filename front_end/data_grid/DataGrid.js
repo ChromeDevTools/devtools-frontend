@@ -698,6 +698,14 @@ DataGrid.DataGrid = class extends Common.Object {
   }
 
   /**
+   * @param {string} columnId
+   * @returns {number}
+   */
+  indexOfVisibleColumn(columnId) {
+    return this._visibleColumnsArray.findIndex(column => column.id === columnId);
+  }
+
+  /**
    * @param {string} name
    */
   setName(name) {

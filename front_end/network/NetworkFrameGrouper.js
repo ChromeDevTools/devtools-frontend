@@ -68,7 +68,8 @@ Network.FrameGroupNode = class extends Network.NetworkGroupNode {
    */
   renderCell(cell, columnId) {
     super.renderCell(cell, columnId);
-    if (columnId === 'name') {
+    const columnIndex = this.dataGrid.indexOfVisibleColumn(columnId);
+    if (columnIndex === 0) {
       const name = this.displayName();
       if (!this._productBadge) {
         this._productBadge = this.parentView().badgePool.badgeForFrame(this._frame);

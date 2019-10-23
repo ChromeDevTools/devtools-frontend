@@ -1,0 +1,40 @@
+{
+  "comment": ["This is a configuration file for gatekeeper_ng.py",
+              "Look at that for documentation on this file's format."],
+  "masters": {
+    "https://build.chromium.org/p/client.devtools-frontend.integration": [
+      {
+        "builders": {
+          "*": {
+            "categories": [
+              "devtools_all"
+            ]
+          }
+        }
+      }
+    ]
+  },
+
+  "categories": {
+    "devtools_all": {
+      "closing_optional": [
+        "*"
+      ],
+      "excluded_steps": [
+        "Failure reason",
+        "steps",
+        "* (flakes)"
+      ],
+      "forgiving_optional": [
+        "bot_update",
+        "isolate tests",
+        "package build",
+        "extract build",
+        "cleanup_temp",
+        "gsutil upload",
+        "taskkill"
+      ],
+      "status_template": "closed (\"%(unsatisfied)s\" on %(build_url)s \"%(builder_name)s\" from %(revision)s)"
+    }
+  }
+}

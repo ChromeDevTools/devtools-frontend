@@ -457,6 +457,7 @@ Network.NetworkPanel = class extends UI.Panel {
   _onRequestSelected(event) {
     const request = /** @type {?SDK.NetworkRequest} */ (event.data);
     this._showRequest(request);
+    this._networkOverview.setHighlightedRequest(request);
   }
 
   /**

@@ -195,7 +195,6 @@
         "NetworkLogViewColumns.js",
         "NetworkFrameGrouper.js",
         "NetworkManageCustomHeadersView.js",
-        "NetworkOverview.js",
         "NetworkSearchScope.js",
         "NetworkWaterfallColumn.js",
         "RequestCookiesView.js",
@@ -207,6 +206,7 @@
         "RequestTimingView.js",
         "ResourceWebSocketFrameView.js",
         "SignedExchangeInfoView.js",
+        "NetworkOverview.js",
         "NetworkPanel.js"
     ],
     "resources": [

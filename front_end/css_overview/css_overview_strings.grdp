@@ -18,6 +18,9 @@
   <message name="IDS_DEVTOOLS_23717568804f63f75e7596dcced3119e" desc="Label for the number of universal selectors in the CSS Overview report">
     Universal selectors
   </message>
+  <message name="IDS_DEVTOOLS_35870a8141aef89d26337451a06be0d6" desc="Label for unique fill colors in the CSS Overview Panel">
+    Unique fill colors: <ph name="SORTEDFILLCOLORS_LENGTH">$1s<ex>32</ex></ph>
+  </message>
   <message name="IDS_DEVTOOLS_4b3e6e4359cfb882a3b8b551f38a92c7" desc="Label for unique text colors in the CSS Overview Panel">
     Unique text colors: <ph name="TEXTCOLORS_LENGTH">$1s<ex>32</ex></ph>
   </message>
@@ -44,6 +47,9 @@
   </message>
   <message name="IDS_DEVTOOLS_cd9c2b5232bcbda828c542a9f5306f8e" desc="Label for the 'Elements processed' button in the CSS Overview report">
     Elements processed
+  </message>
+  <message name="IDS_DEVTOOLS_d27df09d3ce06c6c98c5d106147fa11c" desc="Label for unique border colors in the CSS Overview Panel">
+    Unique border colors: <ph name="SORTEDBORDERCOLORS_LENGTH">$1s<ex>32</ex></ph>
   </message>
   <message name="IDS_DEVTOOLS_d4a993a4b0d13c2cc4ce9387af1604ce" desc="Label for the 'Clear overview' button in the CSS Overview report">
     Clear overview

@@ -106,8 +106,25 @@ CssOverview.CSSOverviewCompletedView = class extends UI.PanelWithSidebar {
       return;
     }
 
-    const colorNodes =
-        section === 'background' ? this._data.backgroundColors.get(color) : this._data.textColors.get(color);
+    let colorNodes;
+    switch (section) {
+      case 'text':
+        colorNodes = this._data.textColors.get(color);
+        break;
+
+      case 'background':
+        colorNodes = this._data.backgroundColors.get(color);
+        break;
+
+      case 'fill':
+        colorNodes = this._data.fillColors.get(color);
+        break;
+
+      case 'border':
+        colorNodes = this._data.borderColors.get(color);
+        break;
+    }
+
     if (!colorNodes) {
       return;
     }
@@ -134,11 +151,14 @@ CssOverview.CSSOverviewCompletedView = class extends UI.PanelWithSidebar {
     }
 
     this._data = data;
-    const {elementCount, backgroundColors, textColors, globalStyleStats, mediaQueries} = this._data;
+    const {elementCount, backgroundColors, textColors, fillColors, borderColors, globalStyleStats, mediaQueries} =
+        this._data;
 
     // Convert rgb values from the computed styles to either undefined or HEX(A) strings.
     const sortedBackgroundColors = this._sortColorsByLuminance(backgroundColors);
     const sortedTextColors = this._sortColorsByLuminance(textColors);
+    const sortedFillColors = this._sortColorsByLuminance(fillColors);
+    const sortedBorderColors = this._sortColorsByLuminance(borderColors);
 
     this._fragment = UI.Fragment.build`
     <div class="vbox overview-completed-view">
@@ -203,6 +223,16 @@ CssOverview.CSSOverviewCompletedView = class extends UI.PanelWithSidebar {
         <h2>${ls`Unique text colors: ${sortedTextColors.length}`}</h2>
         <ul>
           ${sortedTextColors.map(this._colorsToFragment.bind(this, 'text'))}
+        </ul>
+
+        <h2>${ls`Unique fill colors: ${sortedFillColors.length}`}</h2>
+        <ul>
+          ${sortedFillColors.map(this._colorsToFragment.bind(this, 'fill'))}
+        </ul>
+
+        <h2>${ls`Unique border colors: ${sortedBorderColors.length}`}</h2>
+        <ul>
+          ${sortedBorderColors.map(this._colorsToFragment.bind(this, 'border'))}
         </ul>
       </div>
 

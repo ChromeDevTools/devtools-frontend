@@ -33,9 +33,17 @@ CssOverview.CSSOverviewModel = class extends SDK.SDKModel {
   async getNodeStyleStats() {
     const backgroundColors = new Map();
     const textColors = new Map();
+    const fillColors = new Map();
+    const borderColors = new Map();
     const fontSizes = new Map();
     const fontWeights = new Map();
-    const snapshotConfig = {computedStyles: ['background-color', 'color', 'font-size', 'font-weight']};
+    const snapshotConfig = {
+      computedStyles: [
+        'background-color', 'color', 'fill', 'border-top-width', 'border-top-color', 'border-bottom-width',
+        'border-bottom-color', 'border-left-width', 'border-left-color', 'border-right-width', 'border-right-color',
+        'font-size', 'font-weight'
+      ]
+    };
 
     const storeColor = (id, nodeId, target) => {
       if (id === -1) {
@@ -61,23 +69,45 @@ CssOverview.CSSOverviewModel = class extends SDK.SDKModel {
       target.set(colorFormatted, colorValues);
     };
 
+    const isSVGNode = nodeName => {
+      const validNodes =
+          ['altGlyph', 'circle', 'ellipse', 'path', 'polygon', 'polyline', 'rect', 'text', 'textPath', 'tref', 'tspan'];
+      return validNodes.indexOf(nodeName) !== -1;
+    };
+
     const {documents, strings} = await this._domSnapshotAgent.invoke_captureSnapshot(snapshotConfig);
     for (const {nodes, layout} of documents) {
       for (let idx = 0; idx < layout.styles.length; idx++) {
         const styles = layout.styles[idx];
         const nodeIdx = layout.nodeIndex[idx];
         const nodeId = nodes.backendNodeId[nodeIdx];
+        const nodeName = nodes.nodeName[nodeIdx];
 
-        // Skip text nodes.
-        const nodeType = nodes.nodeType[idx];
-        if (nodeType === Node.TEXT_NODE) {
-          continue;
-        }
-
-        const [backgroundColorIdx, textColorIdx, fontSizeIdx, fontWeightIdx] = styles;
+        const [backgroundColorIdx, textColorIdx, fillIdx, borderTopWidthIdx, borderTopColorIdx, borderBottomWidthIdx, borderBottomColorIdx, borderLeftWidthIdx, borderLeftColorIdx, borderRightWidthIdx, borderRightColorIdx, fontSizeIdx, fontWeightIdx] =
+            styles;
 
         storeColor(backgroundColorIdx, nodeId, backgroundColors);
         storeColor(textColorIdx, nodeId, textColors);
+
+        if (isSVGNode(strings[nodeName])) {
+          storeColor(fillIdx, nodeId, fillColors);
+        }
+
+        if (strings[borderTopWidthIdx] !== '0px') {
+          storeColor(borderTopColorIdx, nodeId, borderColors);
+        }
+
+        if (strings[borderBottomWidthIdx] !== '0px') {
+          storeColor(borderBottomColorIdx, nodeId, borderColors);
+        }
+
+        if (strings[borderLeftWidthIdx] !== '0px') {
+          storeColor(borderLeftColorIdx, nodeId, borderColors);
+        }
+
+        if (strings[borderRightWidthIdx] !== '0px') {
+          storeColor(borderRightColorIdx, nodeId, borderColors);
+        }
 
         if (fontSizeIdx !== -1) {
           const fontSize = strings[fontSizeIdx];
@@ -93,7 +123,7 @@ CssOverview.CSSOverviewModel = class extends SDK.SDKModel {
       }
     }
 
-    return {backgroundColors, textColors, fontSizes, fontWeights};
+    return {backgroundColors, textColors, fillColors, borderColors, fontSizes, fontWeights};
   }
 
   getComputedStyleForNode(nodeId) {

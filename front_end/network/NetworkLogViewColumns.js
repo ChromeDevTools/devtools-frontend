@@ -57,7 +57,8 @@ Network.NetworkLogViewColumns = class {
       sortable: columnConfig.sortable,
       align: columnConfig.align,
       nonSelectable: columnConfig.nonSelectable,
-      weight: columnConfig.weight
+      weight: columnConfig.weight,
+      allowInSortByEvenWhenHidden: columnConfig.allowInSortByEvenWhenHidden,
     });
   }
 
@@ -225,8 +226,9 @@ Network.NetworkLogViewColumns = class {
      */
     function waterfallHeaderClicked() {
       const sortOrders = DataGrid.DataGrid.Order;
-      const sortOrder =
-          this._dataGrid.sortOrder() === sortOrders.Ascending ? sortOrders.Descending : sortOrders.Ascending;
+      const wasSortedByWaterfall = this._dataGrid.sortColumnId() === 'waterfall';
+      const wasSortedAscending = this._dataGrid.isSortOrderAscending();
+      const sortOrder = wasSortedByWaterfall && wasSortedAscending ? sortOrders.Descending : sortOrders.Ascending;
       this._dataGrid.markColumnAsSortedBy('waterfall', sortOrder);
       this._sortHandler();
     }
@@ -693,7 +695,8 @@ Network.NetworkLogViewColumns._initialSortColumn = 'waterfall';
  *     align: (?DataGrid.DataGrid.Align|undefined),
  *     isResponseHeader: boolean,
  *     sortingFunction: (!function(!Network.NetworkNode, !Network.NetworkNode):number|undefined),
- *     isCustomHeader: boolean
+ *     isCustomHeader: boolean,
+ *     allowInSortByEvenWhenHidden: boolean
  * }}
  */
 Network.NetworkLogViewColumns.Descriptor;
@@ -716,7 +719,8 @@ Network.NetworkLogViewColumns._defaultColumnConfig = {
   hideableGroup: null,
   nonSelectable: true,
   isResponseHeader: false,
-  isCustomHeader: false
+  isCustomHeader: false,
+  allowInSortByEvenWhenHidden: false
 };
 
 /**
@@ -889,7 +893,7 @@ Network.NetworkLogViewColumns._defaultColumns = [
     sortingFunction: Network.NetworkRequestNode.ResponseHeaderStringComparator.bind(null, 'vary')
   },
   // This header is a placeholder to let datagrid know that it can be sorted by this column, but never shown.
-  {id: 'waterfall', title: '', visible: false, hideable: false}
+  {id: 'waterfall', title: ls`Waterfall`, visible: false, hideable: false, allowInSortByEvenWhenHidden: true}
 ];
 
 Network.NetworkLogViewColumns._filmStripDividerColor = '#fccc49';

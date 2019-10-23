@@ -1106,9 +1106,14 @@ DataGrid.DataGrid = class extends Common.Object {
     const sortableVisibleColumns = this._visibleColumnsArray.filter(column => {
       return (column.sortable && column.title);
     });
-    if (sortableVisibleColumns.length > 0) {
+
+    const sortableHiddenColumns = this._columnsArray.filter(
+        column => sortableVisibleColumns.indexOf(column) === -1 && column.allowInSortByEvenWhenHidden);
+
+    const sortableColumns = [...sortableVisibleColumns, ...sortableHiddenColumns];
+    if (sortableColumns.length > 0) {
       const sortMenu = contextMenu.defaultSection().appendSubMenuItem(ls`Sort By`);
-      for (const column of sortableVisibleColumns) {
+      for (const column of sortableColumns) {
         const headerCell = this._headerTableHeaders[column.id];
         sortMenu.defaultSection().appendItem(
             /** @type {string} */ (column.title), this._sortByColumnHeaderCell.bind(this, headerCell));
@@ -1339,7 +1344,8 @@ DataGrid.DataGrid.CornerWidth = 14;
  *   nonSelectable: (boolean|undefined),
  *   longText: (boolean|undefined),
  *   disclosure: (boolean|undefined),
- *   weight: (number|undefined)
+ *   weight: (number|undefined),
+ *   allowInSortByEvenWhenHidden: (boolean|undefined)
  * }}
  */
 DataGrid.DataGrid.ColumnDescriptor;

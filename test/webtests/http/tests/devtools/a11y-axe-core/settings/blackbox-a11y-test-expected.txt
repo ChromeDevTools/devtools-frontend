@@ -13,3 +13,5 @@ aXe violations: []
 Running: testPatternError
 Error message: Pattern cannot be empty
 aXe violations: []
+
+

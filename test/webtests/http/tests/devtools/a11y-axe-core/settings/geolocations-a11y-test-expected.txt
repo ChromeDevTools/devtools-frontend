@@ -13,3 +13,5 @@ Error message: Latitude must be a number
 Invalidating the Longitude input
 Error message: Longitude must be a number
 aXe violations: []
+
+

@@ -6,3 +6,5 @@ aXe violations: []
 
 Tests accessibility in the sensors view using the axe-core linter.
 aXe violations: []
+
+

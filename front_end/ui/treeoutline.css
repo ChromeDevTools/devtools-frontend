@@ -21,6 +21,10 @@
     position: relative;
 }
 
+.tree-outline[data-keyboard-focus="true"] {
+    box-shadow: 0px 0px 0px 2px var(--accent-color) inset;
+}
+
 .tree-outline:not(.hide-selection-when-blurred) li.hovered:not(.selected) .selection {
     display: block;
     left: 3px;

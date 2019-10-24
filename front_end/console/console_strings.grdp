@@ -75,9 +75,6 @@
   <message name="IDS_DEVTOOLS_3cec12c2368b11d9585823ac9d631edb" desc="Text in Console View of the Console panel">
     Hide all
   </message>
-  <message name="IDS_DEVTOOLS_4059b0251f66a18cb56f544728796875" desc="Sdk console message message level info of level Labels in Console View of the Console panel">
-    Info
-  </message>
   <message name="IDS_DEVTOOLS_405b66a12f196edc715fe9f3f2c84b04" desc="Title of a setting under the Console category that can be invoked through the Command Menu">
     Hide timestamps
   </message>

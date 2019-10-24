@@ -43,7 +43,8 @@
 
 .security-summary:not(.security-summary-secure) .lock-icon-secure,
 .security-summary:not(.security-summary-neutral) .lock-icon-neutral,
-.security-summary:not(.security-summary-insecure) .lock-icon-insecure {
+.security-summary:not(.security-summary-insecure) .lock-icon-insecure,
+.security-summary:not(.security-summary-insecure-broken) .lock-icon-insecure-broken {
     background-color: rgba(90, 90, 90, 0.25);
 }
 
@@ -83,6 +84,10 @@
     transform: translateX(64px);
 }
 
+.security-summary-insecure-broken .triangle-pointer-wrapper {
+    transform: translateX(64px);
+}
+
 .security-summary-text {
     padding: 16px 24px;
     border-style: solid;
@@ -99,10 +104,11 @@
     color: #0b8043;
 }
 
-.security-summary-insecure .triangle-pointer,
-.security-summary-insecure .security-summary-text,
+.security-summary-insecure-broken .triangle-pointer,
+.security-summary-insecure-broken .security-summary-text,
 .security-explanation-title-neutral,
-.security-explanation-title-insecure {
+.security-explanation-title-insecure,
+.security-explanation-title-insecure-broken {
     color: #cb3626;
 }
 

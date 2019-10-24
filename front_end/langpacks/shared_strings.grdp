@@ -154,6 +154,9 @@
   <message name="IDS_DEVTOOLS_3f8f88e3686b2345cecc9530e19e6172" desc="Text to store an HTML element or JavaScript variable or expression result as a global variable">
     Store as global variable
   </message>
+  <message name="IDS_DEVTOOLS_4059b0251f66a18cb56f544728796875" desc="Sdk console message message level info of level Labels in Console View of the Console panel">
+    Info
+  </message>
   <message name="IDS_DEVTOOLS_41fdb410354e76ef7674f98e1cc84c8f" desc="Text for throttling the network">
     Throttling
   </message>

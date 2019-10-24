@@ -34,6 +34,11 @@
 
 .lock-icon-insecure {
     -webkit-mask-position: -32px 0px;
+    background-color: #5A5A5A;
+}
+
+.lock-icon-insecure-broken {
+    -webkit-mask-position: -32px 0px;
     background-color: #C63626;
 }
 
@@ -48,6 +53,11 @@
 }
 
 .security-property-insecure {
+    -webkit-mask-position: -32px -16px;
+    background-color: #C63626;
+}
+
+.security-property-insecure-broken {
     -webkit-mask-position: -32px -16px;
     background-color: #C63626;
 }
@@ -67,7 +77,8 @@
 }
 
 .url-scheme-neutral,
-.url-scheme-insecure {
+.url-scheme-insecure,
+.url-scheme-insecure-broken {
     color: #cb3626;
 }
 

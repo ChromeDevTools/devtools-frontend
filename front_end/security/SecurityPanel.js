@@ -102,7 +102,15 @@ Security.SecurityPanel = class extends UI.PanelWithSidebar {
    * @param {?string} summary
    */
   _updateSecurityState(newSecurityState, explanations, summary) {
-    this._sidebarMainViewElement.setSecurityState(newSecurityState);
+    // TODO(crbug.com/1008218): Remove this code once the InsecureBroken state gets
+    // sent over the protocol for broken HTTPS (crrev.com/c/1879498). Restore
+    // the commented out code as well.
+    if (newSecurityState === Protocol.Security.SecurityState.Insecure) {
+      this._sidebarMainViewElement.setSecurityState(Protocol.Security.SecurityState.InsecureBroken);
+    } else {
+      this._sidebarMainViewElement.setSecurityState(newSecurityState);
+    }
+    // this._sidebarMainViewElement.setSecurityState(newSecurityState);
     this._mainView.updateSecurityState(newSecurityState, explanations, summary);
   }
 
@@ -630,9 +638,14 @@ Security.SecurityMainView = class extends UI.VBox {
     UI.ARIAUtils.markAsHeading(summaryDiv, 1);
 
     const lockSpectrum = this._summarySection.createChild('div', 'lock-spectrum');
-    lockSpectrum.createChild('div', 'lock-icon lock-icon-secure').title = Common.UIString('Secure');
-    lockSpectrum.createChild('div', 'lock-icon lock-icon-neutral').title = Common.UIString('Not secure');
-    lockSpectrum.createChild('div', 'lock-icon lock-icon-insecure').title = Common.UIString('Not secure (broken)');
+    this._lockSpectrum = new Map([
+      [Protocol.Security.SecurityState.Secure, lockSpectrum.createChild('div', 'lock-icon lock-icon-secure')],
+      [Protocol.Security.SecurityState.Neutral, lockSpectrum.createChild('div', 'lock-icon lock-icon-neutral')],
+      [Protocol.Security.SecurityState.Insecure, lockSpectrum.createChild('div', 'lock-icon lock-icon-insecure')],
+    ]);
+    this._lockSpectrum.get(Protocol.Security.SecurityState.Secure).title = Common.UIString('Secure');
+    this._lockSpectrum.get(Protocol.Security.SecurityState.Neutral).title = Common.UIString('Info');
+    this._lockSpectrum.get(Protocol.Security.SecurityState.Insecure).title = Common.UIString('Not secure');
 
     this._summarySection.createChild('div', 'triangle-pointer-container')
         .createChild('div', 'triangle-pointer-wrapper')
@@ -693,13 +706,33 @@ Security.SecurityMainView = class extends UI.VBox {
 
     // Add new state.
     this._securityState = newSecurityState;
+
+    // TODO(crbug.com/1008218): Remove this code once the InsecureBroken state gets
+    // sent over the protocol for broken HTTPS (crrev.com/c/1879498).
+    if (this._securityState === Protocol.Security.SecurityState.Insecure) {
+      this._securityState = Protocol.Security.SecurityState.InsecureBroken;
+    }
+
     this._summarySection.classList.add('security-summary-' + this._securityState);
     const summaryExplanationStrings = {
       'unknown': ls`The security of this page is unknown.`,
-      'insecure': ls`This page is not secure (broken HTTPS).`,
+      'insecure': ls`This page is not secure.`,
       'neutral': ls`This page is not secure.`,
-      'secure': ls`This page is secure (valid HTTPS).`
+      'secure': ls`This page is secure (valid HTTPS).`,
+      'insecure-broken': ls`This page is not secure (broken HTTPS).`
     };
+
+    // Update the color and title of the triangle icon in the lock spectrum to
+    // match the security state.
+    if (this._securityState === Protocol.Security.SecurityState.Insecure) {
+      this._lockSpectrum.get(Protocol.Security.SecurityState.Insecure).classList.add('lock-icon-insecure');
+      this._lockSpectrum.get(Protocol.Security.SecurityState.Insecure).classList.remove('lock-icon-insecure-broken');
+      this._lockSpectrum.get(Protocol.Security.SecurityState.Insecure).title = Common.UIString('Not secure');
+    } else if (this._securityState === Protocol.Security.SecurityState.InsecureBroken) {
+      this._lockSpectrum.get(Protocol.Security.SecurityState.Insecure).classList.add('lock-icon-insecure-broken');
+      this._lockSpectrum.get(Protocol.Security.SecurityState.Insecure).classList.remove('lock-icon-insecure');
+      this._lockSpectrum.get(Protocol.Security.SecurityState.Insecure).title = Common.UIString('Not secure (broken)');
+    }
 
     // Use override summary if present, otherwise use base explanation
     this._summaryText.textContent = summary || summaryExplanationStrings[this._securityState];

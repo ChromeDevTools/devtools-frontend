@@ -170,10 +170,24 @@ Sources.SourceFormatter.ScriptMapping = class {
     if (!formatData) {
       return null;
     }
-    const lineNumber = rawLocation.lineNumber;
-    const columnNumber = rawLocation.columnNumber || 0;
-    const formattedLocation = formatData.mapping.originalToFormatted(lineNumber, columnNumber);
-    return formatData.formattedSourceCode.uiLocation(formattedLocation[0], formattedLocation[1]);
+    if (script.isInlineScriptWithSourceURL()) {
+      // Inline scripts with #sourceURL= have lineEndings wrt. the inline script (and not wrt. the containing document),
+      // but `rawLocation` will always use locations wrt. the containing document, because that is what the back-end is
+      // sending. This is a hack, because what we are really doing here is deciding the location based on /how/ the
+      // script is displayed, which is really something this layer cannot and should not have to decide: The
+      // SourceFormatter should not have to know wether a script is displayed inline (in its containing document) or
+      // stand-alone.
+      const [relativeLineNumber, relativeColumnNumber] = script.toRelativeLocation(rawLocation);
+      const [formattedLineNumber, formattedColumnNumber] =
+          formatData.mapping.originalToFormatted(relativeLineNumber, relativeColumnNumber);
+      return formatData.formattedSourceCode.uiLocation(formattedLineNumber, formattedColumnNumber);
+    }
+    // Here we either have an inline script without a #sourceURL= or a stand-alone script. For stand-alone scripts, no
+    // translation must be applied. For inline scripts, also no translation must be applied, because the line-endings
+    // tables in the mapping are the same as in the containing document.
+    const [lineNumber, columnNumber] =
+        formatData.mapping.originalToFormatted(rawLocation.lineNumber, rawLocation.columnNumber || 0);
+    return formatData.formattedSourceCode.uiLocation(lineNumber, columnNumber);
   }
 
   /**
@@ -189,9 +203,29 @@ Sources.SourceFormatter.ScriptMapping = class {
       return [];
     }
     const [originalLine, originalColumn] = formatData.mapping.formattedToOriginal(lineNumber, columnNumber);
-    const scripts = this._scriptsForUISourceCode(formatData.originalSourceCode)
-                        .filter(script => script.containsLocation(originalLine, originalColumn));
-    return scripts.map(script => script.debuggerModel.createRawLocation(script, originalLine, originalColumn));
+    if (formatData.originalSourceCode.contentType().isScript()) {
+      // Here we have a script that is displayed on its own (i.e. it has a dedicated uiSourceCode). This means it is
+      // either a stand-alone script or an inline script with a #sourceURL= and in both cases we can just forward the
+      // question to the original (unformatted) source code.
+      const rawLocations = Bindings.debuggerWorkspaceBinding.uiLocationToRawLocations(
+          formatData.originalSourceCode, originalLine, originalColumn);
+      console.assert(rawLocations.every(l => l && !!l.script()));
+      return rawLocations;
+    }
+    if (formatData.originalSourceCode.contentType() === Common.resourceTypes.Document) {
+      const target = Bindings.NetworkProject.targetForUISourceCode(formatData.originalSourceCode);
+      const debuggerModel = target && target.model(SDK.DebuggerModel);
+      if (debuggerModel) {
+        const scripts = debuggerModel.scriptsForSourceURL(formatData.originalSourceCode.url())
+                            .filter(script => script.isInlineScript() && !script.hasSourceURL);
+        // Here we have an inline script, which was formatted together with the containing document, so we must not
+        // translate locations as they are relative to the start of the document.
+        const locations = scripts.map(script => script.rawLocation(originalLine, originalColumn)).filter(l => !!l);
+        console.assert(locations.every(l => l && !!l.script()));
+        return locations;
+      }
+    }
+    return [];
   }
 
   /**

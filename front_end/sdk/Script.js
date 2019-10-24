@@ -245,10 +245,26 @@ export default class Script {
   /**
    * @param {number} lineNumber
    * @param {number=} columnNumber
-   * @return {!SDK.DebuggerModel.Location}
+   * @return {?SDK.DebuggerModel.Location}
    */
   rawLocation(lineNumber, columnNumber) {
-    return new SDK.DebuggerModel.Location(this.debuggerModel, this.scriptId, lineNumber, columnNumber || 0);
+    if (this.containsLocation(lineNumber, columnNumber)) {
+      return new SDK.DebuggerModel.Location(this.debuggerModel, this.scriptId, lineNumber, columnNumber);
+    }
+    return null;
+  }
+
+  /**
+   *
+   * @param {!SDK.DebuggerModel.Location} location
+   * @return {!Array.<number>}
+   */
+  toRelativeLocation(location) {
+    console.assert(
+        location.scriptId === this.scriptId, '`toRelativeLocation` must be used with location of the same script');
+    const relativeLineNumber = location.lineNumber - this.lineOffset;
+    const relativeColumnNumber = (location.columnNumber || 0) - (relativeLineNumber === 0 ? this.columnOffset : 0);
+    return [relativeLineNumber, relativeColumnNumber];
   }
 
   /**

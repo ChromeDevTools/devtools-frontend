@@ -178,6 +178,7 @@ Snippets.evaluateScriptSnippet = async function(uiSourceCode) {
         includeCommandLineAPI: true,
         returnByValue: false,
         generatePreview: true,
+        replMode: true,
       },
       /* userGesture */ false,
       /* awaitPromise */ true);

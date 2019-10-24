@@ -244,17 +244,23 @@ export class TreeOutline extends Common.Object {
     return true;
   }
 
-  forceSelect() {
+  /**
+   * @param {boolean=} omitFocus
+   * @param {boolean=} selectedByUser
+   */
+  forceSelect(omitFocus = false, selectedByUser = true) {
     if (this.selectedTreeElement) {
       this.selectedTreeElement.deselect();
     }
-    this._selectFirst();
+    this._selectFirst(omitFocus, selectedByUser);
   }
 
   /**
+   * @param {boolean=} omitFocus
+   * @param {boolean=} selectedByUser
    * @return {boolean}
    */
-  _selectFirst() {
+  _selectFirst(omitFocus = false, selectedByUser = true) {
     let first = this.firstChild();
     while (first && !first.selectable) {
       first = first.traverseNextTreeElement(true);
@@ -262,7 +268,7 @@ export class TreeOutline extends Common.Object {
     if (!first) {
       return false;
     }
-    first.select(false, true);
+    first.select(omitFocus, selectedByUser);
     return true;
   }
 
@@ -456,6 +462,25 @@ export class TreeElement {
    */
   hasAncestorOrSelf(ancestor) {
     return this === ancestor || this.hasAncestor(ancestor);
+  }
+
+  /**
+   * @return {boolean}
+   */
+  isHidden() {
+    if (this.hidden) {
+      return true;
+    }
+
+    let currentNode = this.parent;
+    while (currentNode) {
+      if (currentNode.hidden) {
+        return true;
+      }
+      currentNode = currentNode.parent;
+    }
+
+    return false;
   }
 
   /**
@@ -671,7 +696,7 @@ export class TreeElement {
   }
 
   get selectable() {
-    if (this._hidden) {
+    if (this.isHidden()) {
       return false;
     }
     return this._selectable;
@@ -857,6 +882,12 @@ export class TreeElement {
 
     this._listItemNode.classList.toggle('hidden', x);
     this._childrenListNode.classList.toggle('hidden', x);
+
+    if (x && this.treeOutline && this.treeOutline.selectedTreeElement &&
+        this.treeOutline.selectedTreeElement.hasAncestorOrSelf(this)) {
+      const hadFocus = this.treeOutline.selectedTreeElement.listItemElement.hasFocus();
+      this.treeOutline.forceSelect(!hadFocus, /* selectedByUser */ false);
+    }
   }
 
   invalidateChildren() {
@@ -966,6 +997,11 @@ export class TreeElement {
     this.oncollapse();
     if (this.treeOutline) {
       this.treeOutline.dispatchEventToListeners(Events.ElementCollapsed, this);
+    }
+
+    const selectedTreeElement = this.treeOutline.selectedTreeElement;
+    if (selectedTreeElement && selectedTreeElement.hasAncestor(this)) {
+      this.select(/* omitFocus */ true, /* selectedByUser */ true);
     }
   }
 

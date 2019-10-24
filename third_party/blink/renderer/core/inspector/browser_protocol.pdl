@@ -1368,9 +1368,9 @@ experimental domain CacheStorage
       # ID of cache to get entries from.
       CacheId cacheId
       # Number of records to skip.
-      integer skipCount
+      optional integer skipCount
       # Number of records to fetch.
-      integer pageSize
+      optional integer pageSize
       # If present, only return the entries containing this substring in the path
       optional string pathFilter
     returns

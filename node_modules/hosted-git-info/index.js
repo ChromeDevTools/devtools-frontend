@@ -64,6 +64,7 @@ function fromUrl (giturl, opts) {
         var pathmatch = gitHostInfo.pathmatch
         var matched = parsed.path.match(pathmatch)
         if (!matched) return
+        /* istanbul ignore else */
         if (matched[1] !== null && matched[1] !== undefined) {
           user = decodeURIComponent(matched[1].replace(/^:/, ''))
         }

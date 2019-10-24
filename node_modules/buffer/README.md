@@ -404,6 +404,9 @@ To test that the code conforms to the style, `npm install` and run:
 
 This was originally forked from [buffer-browserify](https://github.com/toots/buffer-browserify).
 
+## Security Policies and Procedures
+
+The `buffer` team and community take all security bugs in `buffer` seriously. Please see our [security policies and procedures](https://github.com/feross/security) document to learn how to report issues.
 
 ## license
 

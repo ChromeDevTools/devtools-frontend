@@ -32,3 +32,17 @@ test('throws', function (t) {
 
 	t.end();
 });
+
+test('base intrinsics', function (t) {
+	t.equal(GetIntrinsic('%Object%'), Object, '%Object% yields Object');
+	t.equal(GetIntrinsic('%Array%'), Array, '%Array% yields Array');
+
+	t.end();
+});
+
+test('dotted paths', function (t) {
+	t.equal(GetIntrinsic('%Object.prototype.toString%'), Object.prototype.toString, '%Object.prototype.toString% yields Object.prototype.toString');
+	t.equal(GetIntrinsic('%Array.prototype.push%'), Array.prototype.push, '%Array.prototype.push% yields Array.prototype.push');
+
+	t.end();
+});

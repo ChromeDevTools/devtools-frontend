@@ -6,9 +6,11 @@ type AnymatchTester = {
   (testString: string|any[]): boolean;
 }
 
+type PicomatchOptions = {dot: boolean};
+
 declare const anymatch: {
   (matchers: AnymatchMatcher): AnymatchTester;
-  (matchers: AnymatchMatcher, testString: string|any[], returnIndex: true): number;
+  (matchers: AnymatchMatcher, testString: string|any[], returnIndex: true | PicomatchOptions): number;
   (matchers: AnymatchMatcher, testString: string|any[]): boolean;
 }
 

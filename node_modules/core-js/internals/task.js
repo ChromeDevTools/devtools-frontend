@@ -4,6 +4,7 @@ var classof = require('../internals/classof-raw');
 var bind = require('../internals/bind-context');
 var html = require('../internals/html');
 var createElement = require('../internals/document-create-element');
+var userAgent = require('../internals/user-agent');
 
 var location = global.location;
 var set = global.setImmediate;
@@ -67,7 +68,8 @@ if (!set || !clear) {
       Dispatch.now(runner(id));
     };
   // Browsers with MessageChannel, includes WebWorkers
-  } else if (MessageChannel) {
+  // except iOS - https://github.com/zloirock/core-js/issues/624
+  } else if (MessageChannel && !/(iphone|ipod|ipad).*applewebkit/i.test(userAgent)) {
     channel = new MessageChannel();
     port = channel.port2;
     channel.port1.onmessage = listener;

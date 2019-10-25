@@ -943,12 +943,16 @@ Security.SecurityOriginView = class extends UI.VBox {
       // Add link to toggle between displaying of the summary of the SCT(s) and the detailed SCT(s).
       if (sctListLength) {
         function toggleSctDetailsDisplay() {
+          let buttonText;
           const isDetailsShown = !sctTableWrapper.classList.contains('hidden');
           if (isDetailsShown) {
-            toggleSctsDetailsLink.textContent = ls`Show full details`;
+            buttonText = ls`Show full details`;
           } else {
-            toggleSctsDetailsLink.textContent = ls`Hide full details`;
+            buttonText = ls`Hide full details`;
           }
+          toggleSctsDetailsLink.textContent = buttonText;
+          UI.ARIAUtils.setAccessibleName(toggleSctsDetailsLink, buttonText);
+          UI.ARIAUtils.setExpanded(toggleSctsDetailsLink, !isDetailsShown);
           sctSummaryTable.element().classList.toggle('hidden');
           sctTableWrapper.classList.toggle('hidden');
         }
@@ -1024,21 +1028,20 @@ Security.SecurityOriginView = class extends UI.VBox {
       }
       if (listIsTruncated) {
         function toggleSANTruncation() {
-          if (sanDiv.classList.contains('truncated-san')) {
+          const isTruncated = sanDiv.classList.contains('truncated-san');
+          let buttonText;
+          if (isTruncated) {
             sanDiv.classList.remove('truncated-san');
-            truncatedSANToggle.classList.remove('show-more');
-            truncatedSANToggle.classList.add('show-less');
-            truncatedSANToggle.textContent = ls`Show less`;
+            buttonText = ls`Show less`;
           } else {
             sanDiv.classList.add('truncated-san');
-            truncatedSANToggle.classList.add('show-more');
-            truncatedSANToggle.classList.remove('show-less');
-            truncatedSANToggle.textContent = ls`Show more (${sanList.length} total)`;
+            buttonText = ls`Show more (${sanList.length} total)`;
           }
+          truncatedSANToggle.textContent = buttonText;
+          UI.ARIAUtils.setAccessibleName(truncatedSANToggle, buttonText);
+          UI.ARIAUtils.setExpanded(truncatedSANToggle, isTruncated);
         }
-
-        const truncatedSANToggle = sanDiv.createChild('span', 'devtools-link');
-        truncatedSANToggle.addEventListener('click', toggleSANTruncation);
+        const truncatedSANToggle = UI.createTextButton(ls`Show more (${sanList.length} total)`, toggleSANTruncation);
         sanDiv.appendChild(truncatedSANToggle);
         toggleSANTruncation();
       }

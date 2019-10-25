@@ -102,15 +102,7 @@ Security.SecurityPanel = class extends UI.PanelWithSidebar {
    * @param {?string} summary
    */
   _updateSecurityState(newSecurityState, explanations, summary) {
-    // TODO(crbug.com/1008218): Remove this code once the InsecureBroken state gets
-    // sent over the protocol for broken HTTPS (crrev.com/c/1879498). Restore
-    // the commented out code as well.
-    if (newSecurityState === Protocol.Security.SecurityState.Insecure) {
-      this._sidebarMainViewElement.setSecurityState(Protocol.Security.SecurityState.InsecureBroken);
-    } else {
-      this._sidebarMainViewElement.setSecurityState(newSecurityState);
-    }
-    // this._sidebarMainViewElement.setSecurityState(newSecurityState);
+    this._sidebarMainViewElement.setSecurityState(newSecurityState);
     this._mainView.updateSecurityState(newSecurityState, explanations, summary);
   }
 
@@ -706,12 +698,6 @@ Security.SecurityMainView = class extends UI.VBox {
 
     // Add new state.
     this._securityState = newSecurityState;
-
-    // TODO(crbug.com/1008218): Remove this code once the InsecureBroken state gets
-    // sent over the protocol for broken HTTPS (crrev.com/c/1879498).
-    if (this._securityState === Protocol.Security.SecurityState.Insecure) {
-      this._securityState = Protocol.Security.SecurityState.InsecureBroken;
-    }
 
     this._summarySection.classList.add('security-summary-' + this._securityState);
     const summaryExplanationStrings = {

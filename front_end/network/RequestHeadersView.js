@@ -233,31 +233,63 @@ Network.RequestHeadersView = class extends UI.VBox {
     headerCount.textContent = Common.UIString('\xA0(%d)', params.length);
     paramsTreeElement.listItemElement.appendChild(headerCount);
 
+    const shouldViewSource = paramsTreeElement[Network.RequestHeadersView._viewSourceSymbol];
+    if (shouldViewSource) {
+      this._appendParamsSource(title, params, sourceText, paramsTreeElement);
+    } else {
+      this._appendParamsParsed(title, params, sourceText, paramsTreeElement);
+    }
+  }
+
+  /**
+   * @param {string} title
+   * @param {?Array.<!SDK.NetworkRequest.NameValue>} params
+   * @param {?string} sourceText
+   * @param {!UI.TreeElement} paramsTreeElement
+   */
+  _appendParamsSource(title, params, sourceText, paramsTreeElement) {
+    this._populateTreeElementWithSourceText(paramsTreeElement, sourceText);
+
+    const listItemElement = paramsTreeElement.listItemElement;
+
     /**
      * @param {!Event} event
      * @this {Network.RequestHeadersView}
      */
-    function toggleViewSource(event) {
-      paramsTreeElement[Network.RequestHeadersView._viewSourceSymbol] =
-          !paramsTreeElement[Network.RequestHeadersView._viewSourceSymbol];
+    const viewParsed = function(event) {
+      listItemElement.removeEventListener('contextmenu', viewParsedContextMenu);
+
+      paramsTreeElement[Network.RequestHeadersView._viewSourceSymbol] = false;
       this._refreshParams(title, params, sourceText, paramsTreeElement);
       event.consume();
-    }
+    };
 
-    paramsTreeElement.listItemElement.appendChild(this._createViewSourceToggle(
-        paramsTreeElement[Network.RequestHeadersView._viewSourceSymbol], toggleViewSource.bind(this)));
+    /**
+     * @param {!Event} event
+     * @this {Network.RequestHeadersView}
+     */
+    const viewParsedContextMenu = function(event) {
+      if (!paramsTreeElement.expanded) {
+        return;
+      }
+      const contextMenu = new UI.ContextMenu(event);
+      contextMenu.newSection().appendItem(ls`View parsed`, viewParsed.bind(this, event));
+      contextMenu.show();
+    }.bind(this);
 
-    if (paramsTreeElement[Network.RequestHeadersView._viewSourceSymbol]) {
-      this._populateTreeElementWithSourceText(paramsTreeElement, sourceText);
-      return;
-    }
+    const viewParsedButton = this._createViewSourceToggle(/* viewSource */ true, viewParsed.bind(this));
+    listItemElement.appendChild(viewParsedButton);
 
-    const toggleTitle =
-        this._decodeRequestParameters ? Common.UIString('view URL encoded') : Common.UIString('view decoded');
-    const toggleButton = this._createToggleButton(toggleTitle);
-    toggleButton.addEventListener('click', this._toggleURLDecoding.bind(this), false);
-    paramsTreeElement.listItemElement.appendChild(toggleButton);
+    listItemElement.addEventListener('contextmenu', viewParsedContextMenu);
+  }
 
+  /**
+   * @param {string} title
+   * @param {?Array.<!SDK.NetworkRequest.NameValue>} params
+   * @param {?string} sourceText
+   * @param {!UI.TreeElement} paramsTreeElement
+   */
+  _appendParamsParsed(title, params, sourceText, paramsTreeElement) {
     for (let i = 0; i < params.length; ++i) {
       const paramNameValue = createDocumentFragment();
       if (params[i].name !== '') {
@@ -274,6 +306,55 @@ Network.RequestHeadersView = class extends UI.VBox {
       const paramTreeElement = new UI.TreeElement(paramNameValue);
       paramsTreeElement.appendChild(paramTreeElement);
     }
+
+    const listItemElement = paramsTreeElement.listItemElement;
+
+    /**
+     * @param {!Event} event
+     * @this {Network.RequestHeadersView}
+     */
+    const viewSource = function(event) {
+      listItemElement.removeEventListener('contextmenu', viewSourceContextMenu);
+
+      paramsTreeElement[Network.RequestHeadersView._viewSourceSymbol] = true;
+      this._refreshParams(title, params, sourceText, paramsTreeElement);
+      event.consume();
+    };
+
+    /**
+     * @param {!Event} event
+     * @this {Network.RequestHeadersView}
+     */
+    const toggleURLDecoding = function(event) {
+      listItemElement.removeEventListener('contextmenu', viewSourceContextMenu);
+      this._toggleURLDecoding(event);
+    };
+
+    /**
+     * @param {!Event} event
+     * @this {Network.RequestHeadersView}
+     */
+    const viewSourceContextMenu = function(event) {
+      if (!paramsTreeElement.expanded) {
+        return;
+      }
+      const contextMenu = new UI.ContextMenu(event);
+      const section = contextMenu.newSection();
+      section.appendItem(ls`View source`, viewSource.bind(this, event));
+      const viewURLEncodedText = this._decodeRequestParameters ? ls`View URL encoded` : ls`View decoded`;
+      section.appendItem(viewURLEncodedText, toggleURLDecoding.bind(this, event));
+      contextMenu.show();
+    }.bind(this);
+
+    const viewSourceButton = this._createViewSourceToggle(/* viewSource */ false, viewSource.bind(this));
+    listItemElement.appendChild(viewSourceButton);
+
+    const toggleTitle = this._decodeRequestParameters ? ls`view URL encoded` : ls`view decoded`;
+    const toggleButton = this._createToggleButton(toggleTitle);
+    toggleButton.addEventListener('click', toggleURLDecoding.bind(this), false);
+    listItemElement.appendChild(toggleButton);
+
+    listItemElement.addEventListener('contextmenu', viewSourceContextMenu);
   }
 
   /**

@@ -354,6 +354,18 @@
   <message name="IDS_DEVTOOLS_722e6ea747a62b7f93bb017d3dd04cbd" desc="Op codes continuation frame of map in Resource Web Socket Frame View of the Network panel">
     Continuation Frame
   </message>
+  <message name="IDS_DEVTOOLS_ca092ce554360617d7bb503ff16dcb7c" desc="Text for toggling the view of header data (e.g. query string parameters) from parsed to source in the headers tab">
+    View source
+  </message>
+  <message name="IDS_DEVTOOLS_d07d8b2f741d82961c330af95e739d27" desc="Text for toggling header data (e.g. query string parameters) from encoded to decoded in the headers tab">
+    View decoded
+  </message>
+  <message name="IDS_DEVTOOLS_d55df13c735b6066e930b3e66c4588ab" desc="Text for toggling header data (e.g. query string parameters) from decoded to encoded in the headers tab">
+    View URL encoded
+  </message>
+  <message name="IDS_DEVTOOLS_e4217cfa8bdee0baaa2249db59b8671b" desc="Text for toggling the view of header data (e.g. query string parameters) from source to parsed in the headers tab">
+    View parsed
+  </message>
   <message name="IDS_DEVTOOLS_f5a6d40aab4d260009df79b7dab7e6a0" desc="An option in the user agent dropdown menu in the Network conditions tool">
     <ph name="LOCKED_1">Microsoft Edge — iPhone</ph>
   </message>

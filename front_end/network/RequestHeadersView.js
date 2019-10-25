@@ -48,13 +48,12 @@ Network.RequestHeadersView = class extends UI.VBox {
     const root = new UI.TreeOutlineInShadow();
     root.registerRequiredCSS('network/requestHeadersTree.css');
     root.element.classList.add('request-headers-tree');
-    root.setFocusable(false);
     root.makeDense();
-    root.expandTreeElementsWhenArrowing = true;
     this.element.appendChild(root.element);
 
     const generalCategory = new Network.RequestHeadersView.Category(root, 'general', Common.UIString('General'));
     generalCategory.hidden = false;
+    this._root = generalCategory;
     this._urlItem = generalCategory.createLeaf();
     this._requestMethodItem = generalCategory.createLeaf();
     this._statusCodeItem = generalCategory.createLeaf();
@@ -89,6 +88,7 @@ Network.RequestHeadersView = class extends UI.VBox {
     this._refreshHTTPInformation();
     this._refreshRemoteAddress();
     this._refreshReferrerPolicy();
+    this._root.select(/* omitFocus */ true, /* selectedByUser */ false);
   }
 
   /**
@@ -199,7 +199,6 @@ Network.RequestHeadersView = class extends UI.VBox {
     sourceTextElement.textContent = trim ? text.substr(0, max_len) : text;
 
     const sourceTreeElement = new UI.TreeElement(sourceTextElement);
-    sourceTreeElement.selectable = false;
     treeElement.removeChildren();
     treeElement.appendChild(sourceTreeElement);
     if (!trim) {
@@ -225,6 +224,7 @@ Network.RequestHeadersView = class extends UI.VBox {
     paramsTreeElement.removeChildren();
 
     paramsTreeElement.listItemElement.removeChildren();
+    paramsTreeElement.listItemElement.createChild('div', 'selection fill');
     paramsTreeElement.listItemElement.createTextChild(title);
 
     const headerCount = createElementWithClass('span', 'header-count');
@@ -270,7 +270,6 @@ Network.RequestHeadersView = class extends UI.VBox {
       }
 
       const paramTreeElement = new UI.TreeElement(paramNameValue);
-      paramTreeElement.selectable = false;
       paramsTreeElement.appendChild(paramTreeElement);
     }
   }
@@ -285,6 +284,7 @@ Network.RequestHeadersView = class extends UI.VBox {
 
     const listItem = this._requestPayloadCategory.listItemElement;
     listItem.removeChildren();
+    listItem.createChild('div', 'selection fill');
     listItem.createTextChild(this._requestPayloadCategory.title);
 
     /**
@@ -434,6 +434,7 @@ Network.RequestHeadersView = class extends UI.VBox {
    */
   _refreshHeadersTitle(title, headersTreeElement, headersLength) {
     headersTreeElement.listItemElement.removeChildren();
+    headersTreeElement.listItemElement.createChild('div', 'selection fill');
     headersTreeElement.listItemElement.createTextChild(title);
 
     const headerCount = Common.UIString('\xA0(%d)', headersLength);
@@ -459,7 +460,6 @@ Network.RequestHeadersView = class extends UI.VBox {
       cautionFragment.createChild('span', '', 'dt-icon-label').type = 'smallicon-warning';
       cautionFragment.createChild('div', 'caution').textContent = cautionText;
       const cautionTreeElement = new UI.TreeElement(cautionFragment);
-      cautionTreeElement.selectable = false;
       headersTreeElement.appendChild(cautionTreeElement);
     }
 
@@ -474,7 +474,6 @@ Network.RequestHeadersView = class extends UI.VBox {
     headersTreeElement.hidden = !length && !provisionalHeaders;
     for (let i = 0; i < length; ++i) {
       const headerTreeElement = new UI.TreeElement(this._formatHeader(headers[i].name, headers[i].value));
-      headerTreeElement.selectable = false;
       headerTreeElement[Network.RequestHeadersView._headerNameSymbol] = headers[i].name;
 
       if (headers[i].name.toLowerCase() === 'set-cookie') {
@@ -618,7 +617,6 @@ Network.RequestHeadersView.Category = class extends UI.TreeElement {
    */
   constructor(root, name, title) {
     super(title || '', true);
-    this.selectable = false;
     this.toggleOnClick = true;
     this.hidden = true;
     this._expandedSetting = Common.settings.createSetting('request-info-' + name + '-category-expanded', true);
@@ -631,7 +629,6 @@ Network.RequestHeadersView.Category = class extends UI.TreeElement {
    */
   createLeaf() {
     const leaf = new UI.TreeElement();
-    leaf.selectable = false;
     this.appendChild(leaf);
     return leaf;
   }

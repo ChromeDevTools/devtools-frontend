@@ -46,6 +46,8 @@ Network.RequestHeadersView = class extends UI.VBox {
     this._highlightedElement = null;
 
     const root = new UI.TreeOutlineInShadow();
+    root.registerRequiredCSS('object_ui/objectValue.css');
+    root.registerRequiredCSS('object_ui/objectPropertiesSection.css');
     root.registerRequiredCSS('network/requestHeadersTree.css');
     root.element.classList.add('request-headers-tree');
     root.makeDense();
@@ -303,11 +305,13 @@ Network.RequestHeadersView = class extends UI.VBox {
     if (treeElement[Network.RequestHeadersView._viewSourceSymbol]) {
       this._populateTreeElementWithSourceText(this._requestPayloadCategory, sourceText);
     } else {
-      const object = SDK.RemoteObject.fromLocalObject(parsedObject);
-      const section = new ObjectUI.ObjectPropertiesSection(object, object.description);
+      const object = /** @type {!SDK.LocalJSONObject} */ (SDK.RemoteObject.fromLocalObject(parsedObject));
+      const section = new ObjectUI.ObjectPropertiesSection.RootElement(object);
+      section.title = object.description;
       section.expand();
       section.editable = false;
-      treeElement.appendChild(new UI.TreeElement(section.element));
+      treeElement.childrenListElement.classList.add('source-code', 'object-properties-section');
+      treeElement.appendChild(section);
     }
   }
 

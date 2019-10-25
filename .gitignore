@@ -14,7 +14,6 @@ npm-debug.log
 /release
 /scripts/visualize_deps/out
 /front_end/protocol_externs.js
-package-lock.json
 .vscode
 /front_end/*/jsconfig.json
 karma-coverage
@@ -30,3 +29,4 @@ karma-coverage
 !/third_party/axe-core
 !/third_party/blink
 !/third_party/pyjson5
+.DS_Store

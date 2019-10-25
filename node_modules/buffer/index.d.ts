@@ -29,6 +29,7 @@ export class Buffer extends Uint8Array {
     readFloatBE(offset: number, noAssert?: boolean): number;
     readDoubleLE(offset: number, noAssert?: boolean): number;
     readDoubleBE(offset: number, noAssert?: boolean): number;
+    reverse(): this;
     swap16(): Buffer;
     swap32(): Buffer;
     swap64(): Buffer;
@@ -113,7 +114,7 @@ export class Buffer extends Uint8Array {
      *
      * @param buffer
      */
-    static from(buffer: Buffer): Buffer;
+    static from(buffer: Buffer | Uint8Array): Buffer;
     /**
      * Creates a new Buffer containing the given JavaScript string {str}.
      * If provided, the {encoding} parameter identifies the character encoding.

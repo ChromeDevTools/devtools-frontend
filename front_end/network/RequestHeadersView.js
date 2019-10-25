@@ -209,10 +209,24 @@ Network.RequestHeadersView = class extends UI.VBox {
 
     const showMoreButton = createElementWithClass('button', 'request-headers-show-more-button');
     showMoreButton.textContent = Common.UIString('Show more');
-    showMoreButton.addEventListener('click', () => {
+
+    function showMore() {
       showMoreButton.remove();
       sourceTextElement.textContent = text;
-    });
+      sourceTreeElement.listItemElement.removeEventListener('contextmenu', onContextMenuShowMore);
+    }
+    showMoreButton.addEventListener('click', showMore);
+
+    /**
+     * @param {!Event} event
+     */
+    function onContextMenuShowMore(event) {
+      const contextMenu = new UI.ContextMenu(event);
+      const section = contextMenu.newSection();
+      section.appendItem(ls`Show more`, showMore);
+      contextMenu.show();
+    }
+    sourceTreeElement.listItemElement.addEventListener('contextmenu', onContextMenuShowMore);
     sourceTextElement.appendChild(showMoreButton);
   }
 

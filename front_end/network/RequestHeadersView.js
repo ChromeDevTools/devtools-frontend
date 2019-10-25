@@ -376,38 +376,106 @@ Network.RequestHeadersView = class extends UI.VBox {
    * @param {string} sourceText
    */
   _refreshRequestJSONPayload(parsedObject, sourceText) {
-    const treeElement = this._requestPayloadCategory;
-    treeElement.removeChildren();
+    const rootListItem = this._requestPayloadCategory;
+    rootListItem.removeChildren();
 
-    const listItem = this._requestPayloadCategory.listItemElement;
-    listItem.removeChildren();
-    listItem.createChild('div', 'selection fill');
-    listItem.createTextChild(this._requestPayloadCategory.title);
+    const rootListItemElement = rootListItem.listItemElement;
+    rootListItemElement.removeChildren();
+    rootListItemElement.createChild('div', 'selection fill');
+    rootListItemElement.createTextChild(this._requestPayloadCategory.title);
+
+    const shouldViewSource = rootListItem[Network.RequestHeadersView._viewSourceSymbol];
+    if (shouldViewSource) {
+      this._appendJSONPayloadSource(rootListItem, parsedObject, sourceText);
+    } else {
+      this._appendJSONPayloadParsed(rootListItem, parsedObject, sourceText);
+    }
+  }
+
+  /**
+   * @param {!Network.RequestHeadersView.Category} rootListItem
+   * @param {*} parsedObject
+   * @param {string} sourceText
+   */
+  _appendJSONPayloadSource(rootListItem, parsedObject, sourceText) {
+    const rootListItemElement = rootListItem.listItemElement;
+    this._populateTreeElementWithSourceText(rootListItem, sourceText);
 
     /**
      * @param {!Event} event
      * @this {Network.RequestHeadersView}
      */
-    function toggleViewSource(event) {
-      treeElement[Network.RequestHeadersView._viewSourceSymbol] =
-          !treeElement[Network.RequestHeadersView._viewSourceSymbol];
+    const viewParsed = function(event) {
+      rootListItemElement.removeEventListener('contextmenu', viewParsedContextMenu);
+      rootListItem[Network.RequestHeadersView._viewSourceSymbol] = false;
       this._refreshRequestJSONPayload(parsedObject, sourceText);
       event.consume();
-    }
+    };
 
-    listItem.appendChild(this._createViewSourceToggle(
-        treeElement[Network.RequestHeadersView._viewSourceSymbol], toggleViewSource.bind(this)));
-    if (treeElement[Network.RequestHeadersView._viewSourceSymbol]) {
-      this._populateTreeElementWithSourceText(this._requestPayloadCategory, sourceText);
-    } else {
-      const object = /** @type {!SDK.LocalJSONObject} */ (SDK.RemoteObject.fromLocalObject(parsedObject));
-      const section = new ObjectUI.ObjectPropertiesSection.RootElement(object);
-      section.title = object.description;
-      section.expand();
-      section.editable = false;
-      treeElement.childrenListElement.classList.add('source-code', 'object-properties-section');
-      treeElement.appendChild(section);
-    }
+    const viewParsedButton = this._createViewSourceToggle(/* viewSource */ true, viewParsed.bind(this));
+    rootListItemElement.appendChild(viewParsedButton);
+
+    /**
+     * @param {!Event} event
+     * @this {Network.RequestHeadersView}
+     */
+    const viewParsedContextMenu = function(event) {
+      if (!rootListItem.expanded) {
+        return;
+      }
+      const contextMenu = new UI.ContextMenu(event);
+      contextMenu.newSection().appendItem(ls`View parsed`, viewParsed.bind(this, event));
+      contextMenu.show();
+    }.bind(this);
+
+    rootListItemElement.addEventListener('contextmenu', viewParsedContextMenu);
+  }
+
+  /**
+   * @param {!Network.RequestHeadersView.Category} rootListItem
+   * @param {*} parsedObject
+   * @param {string} sourceText
+   */
+  _appendJSONPayloadParsed(rootListItem, parsedObject, sourceText) {
+    const object = /** @type {!SDK.LocalJSONObject} */ (SDK.RemoteObject.fromLocalObject(parsedObject));
+    const section = new ObjectUI.ObjectPropertiesSection.RootElement(object);
+    section.title = object.description;
+    section.expand();
+    section.editable = false;
+    rootListItem.childrenListElement.classList.add('source-code', 'object-properties-section');
+
+    rootListItem.appendChild(section);
+    const rootListItemElement = rootListItem.listItemElement;
+
+    /**
+     * @param {!Event} event
+     * @this {Network.RequestHeadersView}
+     */
+    const viewSource = function(event) {
+      rootListItemElement.removeEventListener('contextmenu', viewSourceContextMenu);
+
+      rootListItem[Network.RequestHeadersView._viewSourceSymbol] = true;
+      this._refreshRequestJSONPayload(parsedObject, sourceText);
+      event.consume();
+    };
+
+    /**
+     * @param {!Event} event
+     * @this {Network.RequestHeadersView}
+     */
+    const viewSourceContextMenu = function(event) {
+      if (!rootListItem.expanded) {
+        return;
+      }
+      const contextMenu = new UI.ContextMenu(event);
+      contextMenu.newSection().appendItem(ls`View source`, viewSource.bind(this, event));
+      contextMenu.show();
+    }.bind(this);
+
+    const viewSourceButton = this._createViewSourceToggle(/* viewSource */ false, viewSource.bind(this));
+    rootListItemElement.appendChild(viewSourceButton);
+
+    rootListItemElement.addEventListener('contextmenu', viewSourceContextMenu);
   }
 
   /**

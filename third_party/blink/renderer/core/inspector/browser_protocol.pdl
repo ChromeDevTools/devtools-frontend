@@ -6061,6 +6061,7 @@ domain Security
       insecure
       secure
       info
+      insecure-broken
 
   # Details about the security state of the page certificate.
   experimental type CertificateSecurityState extends object

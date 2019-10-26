@@ -4,16 +4,16 @@
 
 vars = {
   'build_url': 'https://chromium.googlesource.com/chromium/src/build.git',
-  'build_revision': '0cb62099e91e4056944932f52cf732dab1c5b41f',
+  'build_revision': '5ffa0f30c92229be2408ab24dcd74ff6b06978a7',
 
   'buildtools_url': 'https://chromium.googlesource.com/chromium/src/buildtools.git',
   'buildtools_revision': 'cf454b247c611167388742c7a31ef138a6031172',
 
   'depot_tools_url': 'https://chromium.googlesource.com/chromium/tools/depot_tools',
-  'depot_tools_revision': 'be83c310e3d5601c400d856a9963d1f413183d42',
+  'depot_tools_revision': 'ebba8d75bf65250198a1f5c84295e119129915bd',
 
   'inspector_protocol_url': 'https://chromium.googlesource.com/deps/inspector_protocol',
-  'inspector_protocol_revision': 'a14dad30f0e5b0fc05911856d5a20b1ffe89fd9b',
+  'inspector_protocol_revision': 'bbc72612409377752c8fd2e7a63a1a5947b7dc4b',
 
   'clang_format_url': 'https://chromium.googlesource.com/chromium/llvm-project/cfe/tools/clang-format.git',
   'clang_format_revision': '96636aa0e9f047f17447f2d45a094d0b59ed7917',
@@ -23,7 +23,7 @@ vars = {
 
   # Chromium build number for unit tests. It should be regularly updated to
   # the content of https://commondatastorage.googleapis.com/chromium-browser-snapshots/Linux_x64/LAST_CHANGE
-  'chromium_build': '705006',
+  'chromium_build': '709754',
 }
 
 # Only these hosts are allowed for dependencies in this DEPS file.

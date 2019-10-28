@@ -6,4 +6,5 @@
 
 from test import run_lint_check
 
-run_lint_check.main()
+if __name__ == '__main__':
+    run_lint_check.main()

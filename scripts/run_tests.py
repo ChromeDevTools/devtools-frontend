@@ -6,4 +6,5 @@
 
 from test import run_unittests
 
-run_unittests.main()
+if __name__ == '__main__':
+    run_unittests.main()

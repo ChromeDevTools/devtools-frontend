@@ -154,7 +154,8 @@ Layer.ScrollRectType = {
   NonFastScrollable: 'NonFastScrollable',
   TouchEventHandler: 'TouchEventHandler',
   WheelEventHandler: 'WheelEventHandler',
-  RepaintsOnScroll: 'RepaintsOnScroll'
+  RepaintsOnScroll: 'RepaintsOnScroll',
+  MainThreadScrollingReason: 'MainThreadScrollingReason'
 };
 
 export class StickyPositionConstraint {

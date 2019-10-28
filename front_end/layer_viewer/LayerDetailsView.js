@@ -112,7 +112,7 @@ LayerViewer.LayerDetailsView = class extends UI.Widget {
     }
     element.textContent = Common.UIString(
         '%s %d × %d (at %d, %d)', LayerViewer.LayerDetailsView._slowScrollRectNames.get(scrollRect.type),
-        scrollRect.rect.x, scrollRect.rect.y, scrollRect.rect.width, scrollRect.rect.height);
+        scrollRect.rect.width, scrollRect.rect.height, scrollRect.rect.x, scrollRect.rect.y);
     element.addEventListener('click', this._onScrollRectClicked.bind(this, index), false);
   }
 
@@ -269,5 +269,6 @@ LayerViewer.LayerDetailsView._slowScrollRectNames = new Map([
   [SDK.Layer.ScrollRectType.NonFastScrollable, Common.UIString('Non fast scrollable')],
   [SDK.Layer.ScrollRectType.TouchEventHandler, Common.UIString('Touch event handler')],
   [SDK.Layer.ScrollRectType.WheelEventHandler, Common.UIString('Wheel event handler')],
-  [SDK.Layer.ScrollRectType.RepaintsOnScroll, Common.UIString('Repaints on scroll')]
+  [SDK.Layer.ScrollRectType.RepaintsOnScroll, Common.UIString('Repaints on scroll')],
+  [SDK.Layer.ScrollRectType.MainThreadScrollingReason, Common.UIString('Main thread scrolling reason')]
 ]);

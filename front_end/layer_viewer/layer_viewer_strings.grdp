@@ -117,4 +117,7 @@
   <message name="IDS_DEVTOOLS_4f6faa156251f75fbefe3270d94a7a28" desc="Text for a checkbox in the toolbar of the Layers panel to show the area of slow scroll rect">
     Slow scroll rects
   </message>
+  <message name="IDS_DEVTOOLS_fdf193b625172465932a139feb6963a9" desc="Text in Layer Details View of the Layers panel">
+    Main thread scrolling reason
+  </message>
 </grit-part>

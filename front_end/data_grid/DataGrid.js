@@ -150,6 +150,13 @@ DataGrid.DataGrid = class extends Common.Object {
   }
 
   /**
+   * @param {boolean} focusable
+   */
+  setFocusable(focusable) {
+    this.element.tabIndex = focusable ? 0 : -1;
+  }
+
+  /**
    * @return {!Element}
    */
   headerTableBody() {

@@ -198,6 +198,7 @@ Console.ConsoleViewMessage = class {
     if (flatValues.length) {
       this._dataGrid = DataGrid.SortableDataGrid.create(columnDisplayNames, flatValues);
       this._dataGrid.setStriped(true);
+      this._dataGrid.setFocusable(false);
 
       const formattedResult = createElementWithClass('span', 'console-message-text');
       const tableElement = formattedResult.createChild('div', 'console-message-formatted-table');

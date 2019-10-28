@@ -1810,6 +1810,67 @@ if (external_devtools_frontend) {
     }
   }
 
+  group("devtools_type_check") {
+    data = [
+      # Needed for isolate script to execute.
+      "front_end/",
+      "scripts/build/",
+      "scripts/closure/",
+      "scripts/compile_frontend.py",
+      "scripts/devtools_paths.py",
+      "scripts/jsdoc_validator/",
+      "scripts/utils.py",
+      "scripts/test/",
+      "//testing/scripts/common.py",
+      "//testing/scripts/run_devtools_check.py",
+      "//testing/xvfb.py",
+      "//third_party/blink/renderer/core/inspector/browser_protocol.pdl",
+      "//third_party/inspector_protocol/pdl.py",
+      "//v8/include/js_protocol.pdl",
+    ]
+  }
+
+  if (is_linux && !is_chromeos) {
+    group("devtools_lint_check") {
+      data = [
+        # Needed for isolate script to execute.
+        ".eslintignore",
+        ".eslintrc.js",
+        "front_end/",
+        "node_modules/",
+        "scripts/devtools_paths.py",
+        "scripts/lint_javascript.py",
+        "scripts/test/",
+        "//testing/scripts/common.py",
+        "//testing/scripts/run_devtools_check.py",
+        "//testing/xvfb.py",
+        "//third_party/node/node.py",
+        "//third_party/node/linux/node-linux-x64/",
+      ]
+    }
+
+    group("devtools_unittests") {
+      data = [
+        # Needed for isolate script to execute.
+        "front_end/",
+        "karma.conf.js",
+        "node_modules/",
+        "scripts/devtools_paths.py",
+        "scripts/run_tests.py",
+        "scripts/test/",
+        "tests/unittests",
+        "third_party/chrome/",
+        "tsconfig.json",
+        "//testing/scripts/common.py",
+        "//testing/scripts/run_devtools_check.py",
+        "//testing/xvfb.py",
+        "//third_party/node/node.py",
+        "//third_party/node/linux/node-linux-x64/",
+      ]
+    }
+  }
+
+  # TODO(1018122): remove out-datedly named duplicates
   group("devtools_closure_compile") {
     data = [
       # Needed for isolate script to execute.
@@ -1820,7 +1881,7 @@ if (external_devtools_frontend) {
       "scripts/devtools_paths.py",
       "scripts/jsdoc_validator/",
       "scripts/utils.py",
-      "scripts/test/run_type_check.py",
+      "scripts/test/",
       "//testing/scripts/common.py",
       "//testing/scripts/run_devtools_check.py",
       "//testing/xvfb.py",
@@ -1840,7 +1901,7 @@ if (external_devtools_frontend) {
         "node_modules/",
         "scripts/devtools_paths.py",
         "scripts/lint_javascript.py",
-        "scripts/test/run_lint_check.py",
+        "scripts/test/",
         "//testing/scripts/common.py",
         "//testing/scripts/run_devtools_check.py",
         "//testing/xvfb.py",
@@ -1857,7 +1918,7 @@ if (external_devtools_frontend) {
         "node_modules/",
         "scripts/devtools_paths.py",
         "scripts/run_tests.py",
-        "scripts/test/run_unittests.py",
+        "scripts/test/",
         "tests/unittests",
         "third_party/chrome/",
         "tsconfig.json",

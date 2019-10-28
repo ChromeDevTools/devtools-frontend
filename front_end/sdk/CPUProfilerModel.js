@@ -135,7 +135,7 @@ export default class CPUProfilerModel extends SDK.SDKModel {
    */
   startPreciseCoverage() {
     const callCount = false;
-    const detailed = true;
+    const detailed = false;  // Request per-function coverage.
     return this._profilerAgent.startPreciseCoverage(callCount, detailed);
   }
 
@@ -151,13 +151,6 @@ export default class CPUProfilerModel extends SDK.SDKModel {
    */
   stopPreciseCoverage() {
     return this._profilerAgent.stopPreciseCoverage();
-  }
-
-  /**
-   * @return {!Promise<!Array<!Protocol.Profiler.ScriptCoverage>>}
-   */
-  bestEffortCoverage() {
-    return this._profilerAgent.getBestEffortCoverage().then(result => result || []);
   }
 }
 

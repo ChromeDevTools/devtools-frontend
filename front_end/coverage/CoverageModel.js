@@ -38,8 +38,6 @@ Coverage.CoverageModel = class extends SDK.SDKModel {
     this._coverageByURL = new Map();
     /** @type {!Map<!Common.ContentProvider, !Coverage.CoverageInfo>} */
     this._coverageByContentProvider = new Map();
-    /** @type {?Promise<!Array<!Protocol.Profiler.ScriptCoverage>>} */
-    this._bestEffortCoveragePromise = null;
 
     /** @type {!Coverage.SuspensionState} */
     this._suspensionState = Coverage.SuspensionState.Active;
@@ -72,9 +70,9 @@ Coverage.CoverageModel = class extends SDK.SDKModel {
       promises.push(this._cssModel.startCoverage());
     }
     if (this._cpuProfilerModel) {
-      this._bestEffortCoveragePromise = this._cpuProfilerModel.bestEffortCoverage();
       promises.push(this._cpuProfilerModel.startPreciseCoverage());
     }
+
     await Promise.all(promises);
     return !!(this._cssModel || this._cpuProfilerModel);
   }
@@ -262,12 +260,7 @@ Coverage.CoverageModel = class extends SDK.SDKModel {
       return [];
     }
     const now = Date.now();
-    let freshRawCoverageData = await this._cpuProfilerModel.takePreciseCoverage();
-    if (this._bestEffortCoveragePromise) {
-      const bestEffortCoverage = await this._bestEffortCoveragePromise;
-      this._bestEffortCoveragePromise = null;
-      freshRawCoverageData = bestEffortCoverage.concat(freshRawCoverageData);
-    }
+    const freshRawCoverageData = await this._cpuProfilerModel.takePreciseCoverage();
     if (this._suspensionState !== Coverage.SuspensionState.Active) {
       if (freshRawCoverageData.length > 0) {
         this._jsBacklog.push({rawCoverageData: freshRawCoverageData, stamp: now});

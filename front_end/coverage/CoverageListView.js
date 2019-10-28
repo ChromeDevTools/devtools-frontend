@@ -225,7 +225,7 @@ Coverage.CoverageListView = class extends UI.VBox {
       types.push(Common.UIString('CSS'));
     }
     if (type & Coverage.CoverageType.JavaScriptCoarse) {
-      types.push(Common.UIString('JS (coarse)'));
+      types.push(Common.UIString('JS (per function)'));
     } else if (type & Coverage.CoverageType.JavaScript) {
       types.push(Common.UIString('JS'));
     }
@@ -298,7 +298,8 @@ Coverage.CoverageListView.GridNode = class extends DataGrid.SortableDataGridNode
       case 'type':
         cell.textContent = Coverage.CoverageListView._typeToString(this._coverageInfo.type());
         if (this._coverageInfo.type() & Coverage.CoverageType.JavaScriptCoarse) {
-          cell.title = Common.UIString('JS coverage is function-level only. Reload the page for block-level coverage.');
+          cell.title = ls
+          `JS coverage with per function granularity: Once a function was executed, the whole function is marked as covered.`;
         }
         break;
       case 'size':
@@ -320,12 +321,21 @@ Coverage.CoverageListView.GridNode = class extends DataGrid.SortableDataGridNode
         break;
       case 'bars':
         const barContainer = cell.createChild('div', 'bar-container');
-        const unusedSizeBar = barContainer.createChild('div', 'bar bar-unused-size');
-        unusedSizeBar.style.width = this._percentageString(this._coverageInfo.unusedSize(), this._maxSize, 4);
-        const usedSizeBar = barContainer.createChild('div', 'bar bar-used-size');
-        usedSizeBar.style.width = this._percentageString(this._coverageInfo.usedSize(), this._maxSize, 4);
         const unusedPercent = this._percentageString(this._coverageInfo.unusedSize(), this._coverageInfo.size(), 1);
-        const usedPercent = this._percentageString(this._coverageInfo.usedSize(), this._maxSize, 1);
+        const usedPercent = this._percentageString(this._coverageInfo.usedSize(), this._coverageInfo.size(), 1);
+        if (this._coverageInfo.unusedSize() > 0) {
+          const unusedSizeBar = barContainer.createChild('div', 'bar bar-unused-size');
+          unusedSizeBar.style.width = this._percentageString(this._coverageInfo.unusedSize(), this._maxSize, 4);
+          unusedSizeBar.title = ls`${this._coverageInfo.unusedSize()} bytes (${
+              unusedPercent}) belong to functions that have not (yet) been executed.`;
+        }
+        if (this._coverageInfo.usedSize() > 0) {
+          const usedSizeBar = barContainer.createChild('div', 'bar bar-used-size');
+          const usedPercentageString = this._percentageString(this._coverageInfo.usedSize(), this._maxSize, 4);
+          usedSizeBar.style.width = usedPercentageString;
+          usedSizeBar.title = ls`${this._coverageInfo.usedSize()} bytes (${
+              usedPercent}) belong to functions that have executed at least once.`;
+        }
         UI.ARIAUtils.setAccessibleName(barContainer, ls`${unusedPercent} of file unused, ${usedPercent} of file used`);
     }
     return cell;

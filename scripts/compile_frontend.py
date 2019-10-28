@@ -29,4 +29,5 @@
 
 from test import run_type_check
 
-run_type_check.main()
+if __name__ == '__main__':
+    run_type_check.main()

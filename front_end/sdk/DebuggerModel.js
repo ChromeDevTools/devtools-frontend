@@ -59,6 +59,9 @@ export default class DebuggerModel extends SDK.SDKModel {
     /** @type {!Common.Object} */
     this._breakpointResolvedEventTarget = new Common.Object();
 
+    /** @type {boolean} */
+    this._autoStepOver = false;
+
     this._isPausing = false;
     Common.moduleSetting('pauseOnExceptionEnabled').addChangeListener(this._pauseOnExceptionStateChanged, this);
     Common.moduleSetting('pauseOnCaughtException').addChangeListener(this._pauseOnExceptionStateChanged, this);
@@ -233,6 +236,9 @@ export default class DebuggerModel extends SDK.SDKModel {
   }
 
   stepOver() {
+    // Mark that in case of auto-stepping, we should be doing
+    // step-over instead of step-in.
+    this._autoStepOver = true;
     this._agent.stepOver();
   }
 
@@ -414,6 +420,7 @@ export default class DebuggerModel extends SDK.SDKModel {
     this._scriptsBySourceURL.clear();
     this._stringMap.clear();
     this._discardableScripts = [];
+    this._autoStepOver = false;
   }
 
   /**
@@ -519,6 +526,9 @@ export default class DebuggerModel extends SDK.SDKModel {
           return false;
         }
       }
+      // If we resolved a location in auto-stepping callback, reset the
+      // step-over marker.
+      this._autoStepOver = false;
       this.dispatchEventToListeners(Events.DebuggerPaused, this);
     }
     if (debuggerPausedDetails) {
@@ -571,7 +581,11 @@ export default class DebuggerModel extends SDK.SDKModel {
     }
 
     if (!this._setDebuggerPausedDetails(pausedDetails)) {
-      this._agent.stepInto();
+      if (this._autoStepOver) {
+        this._agent.stepOver();
+      } else {
+        this._agent.stepInto();
+      }
     }
 
     SDK.DebuggerModel._scheduledPauseOnAsyncCall = null;

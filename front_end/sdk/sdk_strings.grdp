@@ -3,9 +3,6 @@
   <message name="IDS_DEVTOOLS_0203e27fe44545283879b18e7084391b" desc="Error message when failing to load a script source text">
     Unable to fetch script source.
   </message>
-  <message name="IDS_DEVTOOLS_021aa7730980fe55529e460ee1367179" desc="Tooltip to explain why a cookie was blocked">
-    This cookie had the &quot;SameSite=Extended&quot; attribute and the request was made on a different site. The different site is outside of the cookie&apos;s trusted first-party set.
-  </message>
   <message name="IDS_DEVTOOLS_04608e209233c72a33b9a80e8ff2bd58" desc="Tooltip to explain why a cookie was blocked">
     This cookie had the &quot;SameSite=None&quot; attribute but was not marked &quot;Secure&quot;. Cookies without SameSite restrictions must be marked &quot;Secure&quot; and sent over a secure connection.
   </message>
@@ -164,9 +161,6 @@
   </message>
   <message name="IDS_DEVTOOLS_58b76a3d0e2c9313c7742f409bc0afa9" desc="Error message to display when a source CSS file could not be retrieved.">
     There was an error retrieving the source styles.
-  </message>
-  <message name="IDS_DEVTOOLS_58c00b9a5a2a60122f4ac08e4610d9e2" desc="Tooltip to explain why a cookie was blocked">
-    This set-cookie had the &quot;SameSite=Extended&quot; attribute but came from a cross-origin response.
   </message>
   <message name="IDS_DEVTOOLS_599eba19aa93a929cb8589f148b8a6c4" desc="A drop-down menu option to emulate css screen media type">
     screen

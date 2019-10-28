@@ -1473,9 +1473,6 @@ export const cookieBlockedReasonToUiString = function(blockedReason) {
     case Protocol.Network.CookieBlockedReason.SameSiteLax:
       return ls
       `This cookie had the "SameSite=Lax" attribute and the request was made on a different site. This does not include navigation requests initiated by other sites.`;
-    case Protocol.Network.CookieBlockedReason.SameSiteExtended:
-      return ls
-      `This cookie had the "SameSite=Extended" attribute and the request was made on a different site. The different site is outside of the cookie's trusted first-party set.`;
     case Protocol.Network.CookieBlockedReason.SameSiteUnspecifiedTreatedAsLax:
       return ls
       `This cookie didn't specify a SameSite attribute when it was stored and was defaulted to "SameSite=Lax" and broke the same rules specified in the SameSiteLax value. The cookie had to have been set with "SameSite=None" to enable third-party usage.`;
@@ -1504,8 +1501,6 @@ export const setCookieBlockedReasonToUiString = function(blockedReason) {
       `This set-cookie had the "SameSite=Strict" attribute but came from a cross-origin response. This includes navigation requests intitiated by other origins.`;
     case Protocol.Network.SetCookieBlockedReason.SameSiteLax:
       return ls`This set-cookie had the "SameSite=Lax" attribute but came from a cross-origin response.`;
-    case Protocol.Network.SetCookieBlockedReason.SameSiteExtended:
-      return ls`This set-cookie had the "SameSite=Extended" attribute but came from a cross-origin response.`;
     case Protocol.Network.SetCookieBlockedReason.SameSiteUnspecifiedTreatedAsLax:
       return ls
       `This set-cookie didn't specify a "SameSite" attribute and was defaulted to "SameSite=Lax" and broke the same rules specified in the SameSiteLax value.`;
@@ -1546,7 +1541,6 @@ export const cookieBlockedReasonToAttribute = function(blockedReason) {
       return SDK.Cookie.Attributes.Domain;
     case Protocol.Network.CookieBlockedReason.SameSiteStrict:
     case Protocol.Network.CookieBlockedReason.SameSiteLax:
-    case Protocol.Network.CookieBlockedReason.SameSiteExtended:
     case Protocol.Network.CookieBlockedReason.SameSiteUnspecifiedTreatedAsLax:
     case Protocol.Network.CookieBlockedReason.SameSiteNoneInsecure:
       return SDK.Cookie.Attributes.SameSite;
@@ -1568,7 +1562,6 @@ export const setCookieBlockedReasonToAttribute = function(blockedReason) {
       return SDK.Cookie.Attributes.Secure;
     case Protocol.Network.SetCookieBlockedReason.SameSiteStrict:
     case Protocol.Network.SetCookieBlockedReason.SameSiteLax:
-    case Protocol.Network.SetCookieBlockedReason.SameSiteExtended:
     case Protocol.Network.SetCookieBlockedReason.SameSiteUnspecifiedTreatedAsLax:
     case Protocol.Network.SetCookieBlockedReason.SameSiteNoneInsecure:
       return SDK.Cookie.Attributes.SameSite;

@@ -18,12 +18,12 @@ from os import path
 import re
 import shutil
 
+import special_case_namespaces
+
 try:
     import simplejson as json
 except ImportError:
     import json
-
-special_case_namespaces_path = path.join(path.dirname(path.abspath(__file__)), 'special_case_namespaces.json')
 
 
 class DependencyPreprocessor(object):
@@ -34,8 +34,7 @@ class DependencyPreprocessor(object):
         self.module_descriptors = descriptors.modules
         self.modules = set(self.descriptors.sorted_modules())
         shutil.copytree(devtools_frontend_path, self.temp_frontend_path)
-        with open(special_case_namespaces_path) as json_file:
-            self._special_case_namespaces = json.load(json_file)
+        self._special_case_namespaces = special_case_namespaces.special_case_namespaces
 
     def enforce_dependencies(self):
         arg_list = []

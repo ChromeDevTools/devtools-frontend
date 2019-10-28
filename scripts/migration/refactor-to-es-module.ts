@@ -148,7 +148,7 @@ function rewriteSource(source: string, refactoringNamespace: string, refactoring
   return print(ast).code;
 }
 
-const FOLDER_MAPPING: {[name: string]: string} = require(path.join('..', 'special_case_namespaces.json'));
+const FOLDER_MAPPING: {[name: string]: string} = require(path.join('..', 'build', 'special_case_namespaces.json'));
 
 function computeNamespaceName(folderName: string): string {
   if (folderName in FOLDER_MAPPING) {

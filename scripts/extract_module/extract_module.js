@@ -9,7 +9,7 @@ const utils = require('../utils');
 
 const FRONTEND_PATH = path.resolve(__dirname, '..', '..', 'front_end');
 const BUILD_GN_PATH = path.resolve(__dirname, '..', '..', 'BUILD.gn');
-const SPECIAL_CASE_NAMESPACES_PATH = path.resolve(__dirname, '..', 'special_case_namespaces.json');
+const SPECIAL_CASE_NAMESPACES_PATH = path.resolve(__dirname, '..', 'build', 'special_case_namespaces.json');
 
 /*
  * This is used to extract a new module from an existing module by:

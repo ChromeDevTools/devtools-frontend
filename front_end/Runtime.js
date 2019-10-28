@@ -804,7 +804,7 @@ class Module {
     }
 
     // Module namespaces.
-    // NOTE: Update scripts/special_case_namespaces.json if you add a special cased namespace.
+    // NOTE: Update scripts/build/special_case_namespaces.json if you add a special cased namespace.
     // The namespace keyword confuses clang-format.
     // clang-format off
     const specialCases = {

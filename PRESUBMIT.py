@@ -25,7 +25,8 @@
 # THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-"""DevTools presubmit script
+"""
+DevTools presubmit script
 
 See http://dev.chromium.org/developers/how-tos/depottools/presubmit-scripts
 for more details about the presubmit API built into gcl.
@@ -35,7 +36,7 @@ import sys
 
 
 def _CheckBuildGN(input_api, output_api):
-    script_path = input_api.os_path.join(input_api.PresubmitLocalPath(), "scripts", "check_gn.js")
+    script_path = input_api.os_path.join(input_api.PresubmitLocalPath(), 'scripts', 'check_gn.js')
     return _checkWithNodeScript(input_api, output_api, script_path)
 
 
@@ -49,7 +50,7 @@ def _CheckFormat(input_api, output_api):
         return []
     original_sys_path = sys.path
     try:
-        sys.path = sys.path + [input_api.os_path.join(input_api.PresubmitLocalPath(), "scripts")]
+        sys.path = sys.path + [input_api.os_path.join(input_api.PresubmitLocalPath(), 'scripts')]
         import devtools_paths
     finally:
         sys.path = original_sys_path
@@ -86,36 +87,36 @@ def _CheckFormat(input_api, output_api):
     popen(format_args).communicate()
 
     return [
-        output_api.PresubmitError("ERROR: Found formatting violations in third_party/blink/renderer/devtools.\n"
-                                  "Ran clang-format on diff\n"
-                                  "Use git status to check the formatting changes"),
+        output_api.PresubmitError('ERROR: Found formatting violations in third_party/blink/renderer/devtools.\n'
+                                  'Ran clang-format on diff\n'
+                                  'Use git status to check the formatting changes'),
         output_api.PresubmitError(format_out),
     ]
 
 
 def _CheckDevtoolsLocalizableResources(input_api, output_api):  # pylint: disable=invalid-name
     devtools_root = input_api.PresubmitLocalPath()
-    devtools_front_end = input_api.os_path.join(devtools_root, "front_end")
-    affected_front_end_files = _getAffectedFiles(input_api, [devtools_front_end], [], [".js", "module.json", ".grd", ".grdp"])
+    devtools_front_end = input_api.os_path.join(devtools_root, 'front_end')
+    affected_front_end_files = _getAffectedFiles(input_api, [devtools_front_end], [], ['.js', 'module.json', '.grd', '.grdp'])
     if len(affected_front_end_files) == 0:
         return []
-    script_path = input_api.os_path.join(input_api.PresubmitLocalPath(), "scripts", "check_localizable_resources.js")
+    script_path = input_api.os_path.join(input_api.PresubmitLocalPath(), 'scripts', 'check_localizable_resources.js')
     args = ['--autofix']
     return _checkWithNodeScript(input_api, output_api, script_path, args)
 
 
 def _CheckDevtoolsLocalization(input_api, output_api):  # pylint: disable=invalid-name
     devtools_root = input_api.PresubmitLocalPath()
-    devtools_front_end = input_api.os_path.join(devtools_root, "front_end")
-    affected_front_end_files = _getAffectedFiles(input_api, [devtools_front_end], ["D"], [".js", ".grdp"])
+    devtools_front_end = input_api.os_path.join(devtools_root, 'front_end')
+    affected_front_end_files = _getAffectedFiles(input_api, [devtools_front_end], ['D'], ['.js', '.grdp'])
     if len(affected_front_end_files) == 0:
         return []
-    script_path = input_api.os_path.join(input_api.PresubmitLocalPath(), "scripts", "check_localizability.js")
+    script_path = input_api.os_path.join(input_api.PresubmitLocalPath(), 'scripts', 'check_localizability.js')
     return _checkWithNodeScript(input_api, output_api, script_path, affected_front_end_files)
 
 
 def _CheckDevtoolsStyle(input_api, output_api):
-    lint_path = input_api.os_path.join(input_api.PresubmitLocalPath(), "scripts", "lint_javascript.py")
+    lint_path = input_api.os_path.join(input_api.PresubmitLocalPath(), 'scripts', 'test', 'run_lint_check.py')
     process = input_api.subprocess.Popen([input_api.python_executable, lint_path],
                                          stdout=input_api.subprocess.PIPE,
                                          stderr=input_api.subprocess.STDOUT)
@@ -123,18 +124,6 @@ def _CheckDevtoolsStyle(input_api, output_api):
     if process.returncode != 0:
         return [output_api.PresubmitError(out)]
     return [output_api.PresubmitNotifyResult(out)]
-
-
-def _CompileDevtoolsFrontend(input_api, output_api):
-    compile_path = input_api.os_path.join(input_api.PresubmitLocalPath(), "scripts", "compile_frontend.py")
-    out, _ = input_api.subprocess.Popen([input_api.python_executable, compile_path],
-                                        stdout=input_api.subprocess.PIPE,
-                                        stderr=input_api.subprocess.STDOUT).communicate()
-    if "ERROR" in out or "WARNING" in out:
-        return [output_api.PresubmitError(out)]
-    if "NOTE" in out:
-        return [output_api.PresubmitPromptWarning(out)]
-    return []
 
 
 def _CheckOptimizeSVGHashes(input_api, output_api):
@@ -149,30 +138,30 @@ def _CheckOptimizeSVGHashes(input_api, output_api):
         sys.path = original_sys_path
 
     absolute_local_paths = [af.AbsoluteLocalPath() for af in input_api.AffectedFiles(include_deletes=False)]
-    images_src_path = input_api.os_path.join("devtools", "front_end", "Images", "src")
-    image_source_file_paths = [path for path in absolute_local_paths if images_src_path in path and path.endswith(".svg")]
-    image_sources_path = input_api.os_path.join(input_api.PresubmitLocalPath(), "front_end", "Images", "src")
-    hashes_file_name = "optimize_svg.hashes"
+    images_src_path = input_api.os_path.join('devtools', 'front_end', 'Images', 'src')
+    image_source_file_paths = [path for path in absolute_local_paths if images_src_path in path and path.endswith('.svg')]
+    image_sources_path = input_api.os_path.join(input_api.PresubmitLocalPath(), 'front_end', 'Images', 'src')
+    hashes_file_name = 'optimize_svg.hashes'
     hashes_file_path = input_api.os_path.join(image_sources_path, hashes_file_name)
     invalid_hash_file_paths = devtools_file_hashes.files_with_invalid_hashes(hashes_file_path, image_source_file_paths)
     if len(invalid_hash_file_paths) == 0:
         return []
     invalid_hash_file_names = [input_api.os_path.basename(file_path) for file_path in invalid_hash_file_paths]
-    file_paths_str = ", ".join(invalid_hash_file_names)
-    error_message = "The following SVG files should be optimized using optimize_svg_images script before uploading: \n  - %s" % file_paths_str
+    file_paths_str = ', '.join(invalid_hash_file_names)
+    error_message = 'The following SVG files should be optimized using optimize_svg_images script before uploading: \n  - %s' % file_paths_str
     return [output_api.PresubmitError(error_message)]
 
 
 def _CheckCSSViolations(input_api, output_api):
     results = []
     for f in input_api.AffectedFiles(include_deletes=False):
-        if not f.LocalPath().endswith(".css"):
+        if not f.LocalPath().endswith('.css'):
             continue
         for line_number, line in f.ChangedContents():
-            if "/deep/" in line:
-                results.append(output_api.PresubmitError(("%s:%d uses /deep/ selector") % (f.LocalPath(), line_number)))
-            if "::shadow" in line:
-                results.append(output_api.PresubmitError(("%s:%d uses ::shadow selector") % (f.LocalPath(), line_number)))
+            if '/deep/' in line:
+                results.append(output_api.PresubmitError(('%s:%d uses /deep/ selector') % (f.LocalPath(), line_number)))
+            if '::shadow' in line:
+                results.append(output_api.PresubmitError(('%s:%d uses ::shadow selector') % (f.LocalPath(), line_number)))
     return results
 
 
@@ -208,9 +197,9 @@ def CheckChangeOnCommit(input_api, output_api):
 
 
 def _getAffectedFiles(input_api, parent_directories, excluded_actions, accepted_endings):  # pylint: disable=invalid-name
-    '''Return absolute file paths of affected files (not due to an excluded action)
+    """Return absolute file paths of affected files (not due to an excluded action)
        under a parent directory with an accepted file ending.
-    '''
+    """
     local_paths = [
         f.AbsoluteLocalPath() for f in input_api.AffectedFiles() if all(f.Action() != action for action in excluded_actions)
     ]
@@ -224,23 +213,23 @@ def _getAffectedFiles(input_api, parent_directories, excluded_actions, accepted_
 
 def _getAffectedFrontEndFiles(input_api):
     devtools_root = input_api.PresubmitLocalPath()
-    devtools_front_end = input_api.os_path.join(devtools_root, "front_end")
-    affected_front_end_files = _getAffectedFiles(input_api, [devtools_front_end], ["D"], [".js"])
+    devtools_front_end = input_api.os_path.join(devtools_root, 'front_end')
+    affected_front_end_files = _getAffectedFiles(input_api, [devtools_front_end], ['D'], ['.js'])
     return [input_api.os_path.relpath(file_name, devtools_root) for file_name in affected_front_end_files]
 
 
 def _getAffectedJSFiles(input_api):
     devtools_root = input_api.PresubmitLocalPath()
-    devtools_front_end = input_api.os_path.join(devtools_root, "front_end")
-    devtools_scripts = input_api.os_path.join(devtools_root, "scripts")
-    affected_js_files = _getAffectedFiles(input_api, [devtools_front_end, devtools_scripts], ["D"], [".js"])
+    devtools_front_end = input_api.os_path.join(devtools_root, 'front_end')
+    devtools_scripts = input_api.os_path.join(devtools_root, 'scripts')
+    affected_js_files = _getAffectedFiles(input_api, [devtools_front_end, devtools_scripts], ['D'], ['.js'])
     return [input_api.os_path.relpath(file_name, devtools_root) for file_name in affected_js_files]
 
 
 def _checkWithNodeScript(input_api, output_api, script_path, script_arguments=None):  # pylint: disable=invalid-name
     original_sys_path = sys.path
     try:
-        sys.path = sys.path + [input_api.os_path.join(input_api.PresubmitLocalPath(), "scripts")]
+        sys.path = sys.path + [input_api.os_path.join(input_api.PresubmitLocalPath(), 'scripts')]
         import devtools_paths
     finally:
         sys.path = original_sys_path

@@ -23,14 +23,12 @@ import sys
 from modular_build import read_file, write_file, bail_error
 import modular_build
 import rjsmin
+import special_case_namespaces
 
 try:
     import simplejson as json
 except ImportError:
     import json
-
-special_case_namespaces_path = path.join(path.dirname(path.dirname(path.abspath(__file__))), 'special_case_namespaces.json')
-
 
 def main(argv):
     try:
@@ -95,8 +93,7 @@ class ReleaseBuilder(object):
         self.descriptors = descriptors
         self.application_dir = application_dir
         self.output_dir = output_dir
-        with open(special_case_namespaces_path) as json_file:
-            self._special_case_namespaces = json.load(json_file)
+        self._special_case_namespaces = special_case_namespaces.special_case_namespaces
 
     def app_file(self, extension):
         return self.application_name + '.' + extension

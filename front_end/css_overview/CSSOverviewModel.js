@@ -53,7 +53,7 @@ CssOverview.CSSOverviewModel = class extends SDK.SDKModel {
       // Parse the color, discard transparent ones.
       const colorText = strings[id];
       const color = Common.Color.parse(colorText);
-      if (color.rgba()[3] === 0) {
+      if (!color || color.rgba()[3] === 0) {
         return;
       }
 

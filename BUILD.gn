@@ -1623,12 +1623,6 @@ if (external_devtools_frontend) {
           "$resources_out_dir/InspectorBackendCommands.js",
         ]
 
-    # Bundle remote modules in ChromeOS.
-    if (is_chromeos) {
-      grd_files += generated_remote_modules + devtools_emulated_devices_images +
-                   lighthouse_locale_files
-    }
-
     inputs = grd_files + devtools_image_files
     outfile = "$root_gen_dir/devtools/devtools_resources.grd"
     outputs = [

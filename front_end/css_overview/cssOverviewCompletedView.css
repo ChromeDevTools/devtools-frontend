@@ -97,8 +97,9 @@
   padding: var(--overview-default-padding) 0 var(--overview-default-padding) 0;
 }
 
-.results-section.horizontally-padded {
-  padding: var(--overview-default-padding);
+.horizontally-padded {
+  padding-left: var(--overview-default-padding);
+  padding-right: var(--overview-default-padding);
 }
 
 .results-section h1 {

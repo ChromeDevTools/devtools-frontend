@@ -27,6 +27,9 @@
   <message name="IDS_DEVTOOLS_23717568804f63f75e7596dcced3119e" desc="Label for the number of universal selectors in the CSS Overview report">
     Universal selectors
   </message>
+  <message name="IDS_DEVTOOLS_2a8d89583e80580b7c9fbdba5e249562" desc="Message to show when no media queries are found in the target page">
+    There are no media queries.
+  </message>
   <message name="IDS_DEVTOOLS_35870a8141aef89d26337451a06be0d6" desc="Label for unique fill colors in the CSS Overview Panel">
     Unique fill colors: <ph name="SORTEDFILLCOLORS_LENGTH">$1s<ex>32</ex></ph>
   </message>
@@ -50,6 +53,9 @@
   </message>
   <message name="IDS_DEVTOOLS_8a2d39bc733e82310760e2767889673a" desc="Title of the CSS Overview Panel">
     CSS Overview
+  </message>
+  <message name="IDS_DEVTOOLS_93936d5ce040a34f129f1211a1efac9c" desc="Message to show when no unused rules in the target page">
+    There are no unused rules.
   </message>
   <message name="IDS_DEVTOOLS_95d366a44bd7bad09d9916e05b512cc6" desc="Label for the number of External stylesheets in the CSS Overview report">
     External stylesheets

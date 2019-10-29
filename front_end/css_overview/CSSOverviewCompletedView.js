@@ -274,14 +274,20 @@ CssOverview.CSSOverviewCompletedView = class extends UI.PanelWithSidebar {
 
       <div $="ignored-rules" class="results-section unused-rules">
         <h1>${ls`Unused rules`}</h1>
-        ${unusedRules.length > 0 ? this._unusedRulesGrid.element : `There are no unused rules.`}
+        ${
+        unusedRules.length > 0 ?
+            this._unusedRulesGrid.element :
+            UI.Fragment.build`<div class="horizontally-padded">${ls`There are no unused rules.`}</div>`}
       </div>
 
       <!-- TODO: Fonts -->
 
       <div $="media-queries" class="results-section media-queries">
         <h1>${ls`Media queries`}</h1>
-        ${mediaQueries.length > 0 ? this._mediaQueryGrid.element : `There are no media queries.`}
+        ${
+        mediaQueries.length > 0 ?
+            this._mediaQueryGrid.element :
+            UI.Fragment.build`<div class="horizontally-padded">${ls`There are no media queries.`}</div>`}
       </div>
     </div>`;
 

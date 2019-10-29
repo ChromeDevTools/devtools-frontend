@@ -9,10 +9,17 @@ CssOverview.OverviewController = class extends Common.Object {
   constructor() {
     super();
 
-    SDK.targetManager.addEventListener(SDK.TargetManager.Events.InspectedURLChanged, this._reset, this);
+    this.currentUrl = SDK.targetManager.inspectedURL();
+    SDK.targetManager.addEventListener(
+        SDK.TargetManager.Events.InspectedURLChanged, this._checkUrlAndResetIfChanged, this);
   }
 
-  _reset() {
+  _checkUrlAndResetIfChanged() {
+    if (this.currentUrl === SDK.targetManager.inspectedURL()) {
+      return;
+    }
+
+    this.currentUrl = SDK.targetManager.inspectedURL();
     this.dispatchEventToListeners(CssOverview.Events.Reset);
   }
 };

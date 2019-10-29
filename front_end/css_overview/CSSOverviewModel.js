@@ -85,9 +85,16 @@ CssOverview.CSSOverviewModel = class extends SDK.SDKModel {
     };
 
     const isSVGNode = nodeName => {
-      const validNodes =
-          ['altGlyph', 'circle', 'ellipse', 'path', 'polygon', 'polyline', 'rect', 'text', 'textPath', 'tref', 'tspan'];
-      return validNodes.indexOf(nodeName) !== -1;
+      const validNodes = new Set([
+        'altGlyph', 'circle', 'ellipse', 'path', 'polygon', 'polyline', 'rect', 'svg', 'text', 'textPath', 'tref',
+        'tspan'
+      ]);
+      return validNodes.has(nodeName.toLowerCase());
+    };
+
+    const isReplacedContent = nodeName => {
+      const validNodes = new Set(['iframe', 'video', 'embed', 'img']);
+      return validNodes.has(nodeName.toLowerCase());
     };
 
     let elementCount = 0;
@@ -142,8 +149,9 @@ CssOverview.CSSOverviewModel = class extends SDK.SDKModel {
         CssOverview.CSSOverviewUnusedRules.checkForUnusedPositionValues(
             unusedRules, nodeId, strings, positionIdx, topIdx, leftIdx, rightIdx, bottomIdx);
 
-        // Ignore SVGs as, despite being inline by default, they can have width & height specified.
-        if (strings[nodeName] !== 'svg') {
+        // Ignore SVG elements as, despite being inline by default, they can have width & height specified.
+        // Also ignore replaced content, for similar reasons.
+        if (!isSVGNode(strings[nodeName]) && !isReplacedContent(strings[nodeName])) {
           CssOverview.CSSOverviewUnusedRules.checkForUnusedWidthAndHeightValues(
               unusedRules, nodeId, strings, displayIdx, widthIdx, heightIdx);
         }

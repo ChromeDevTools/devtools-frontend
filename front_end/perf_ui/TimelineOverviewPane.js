@@ -40,7 +40,7 @@ PerfUI.TimelineOverviewPane = class extends UI.VBox {
     this.element.id = prefix + '-overview-pane';
 
     this._overviewCalculator = new PerfUI.TimelineOverviewCalculator();
-    this._overviewGrid = new PerfUI.OverviewGrid(prefix);
+    this._overviewGrid = new PerfUI.OverviewGrid(prefix, this._overviewCalculator);
     this.element.appendChild(this._overviewGrid.element);
     this._cursorArea = this._overviewGrid.element.createChild('div', 'overview-grid-cursor-area');
     this._cursorElement = this._overviewGrid.element.createChild('div', 'overview-grid-cursor-position');
@@ -228,14 +228,10 @@ PerfUI.TimelineOverviewPane = class extends UI.VBox {
       return;
     }
 
-    const absoluteMin = this._overviewCalculator.minimumBoundary();
-    const timeSpan = this._overviewCalculator.maximumBoundary() - absoluteMin;
-    const windowTimes = {
-      startTime: absoluteMin + timeSpan * this._overviewGrid.windowLeft(),
-      endTime: absoluteMin + timeSpan * this._overviewGrid.windowRight()
-    };
-    this._windowStartTime = windowTimes.startTime;
-    this._windowEndTime = windowTimes.endTime;
+    this._windowStartTime = event.data.rawStartValue;
+    this._windowEndTime = event.data.rawEndValue;
+    const windowTimes = {startTime: this._windowStartTime, endTime: this._windowEndTime};
+
     this.dispatchEventToListeners(PerfUI.TimelineOverviewPane.Events.WindowChanged, windowTimes);
   }
 

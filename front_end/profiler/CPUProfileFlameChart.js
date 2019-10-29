@@ -436,11 +436,11 @@ Profiler.CPUProfileFlameChart.OverviewPane = class extends UI.VBox {
     super();
     this.element.classList.add('cpu-profile-flame-chart-overview-pane');
     this._overviewContainer = this.element.createChild('div', 'cpu-profile-flame-chart-overview-container');
-    this._overviewGrid = new PerfUI.OverviewGrid('cpu-profile-flame-chart');
+    this._overviewCalculator = new Profiler.CPUProfileFlameChart.OverviewCalculator(dataProvider);
+    this._overviewGrid = new PerfUI.OverviewGrid('cpu-profile-flame-chart', this._overviewCalculator);
     this._overviewGrid.element.classList.add('fill');
     this._overviewCanvas = this._overviewContainer.createChild('canvas', 'cpu-profile-flame-chart-overview-canvas');
     this._overviewContainer.appendChild(this._overviewGrid.element);
-    this._overviewCalculator = new Profiler.CPUProfileFlameChart.OverviewCalculator(dataProvider);
     this._dataProvider = dataProvider;
     this._overviewGrid.addEventListener(PerfUI.OverviewGrid.Events.WindowChanged, this._onWindowChanged, this);
   }
@@ -484,13 +484,11 @@ Profiler.CPUProfileFlameChart.OverviewPane = class extends UI.VBox {
    * @param {!Common.Event} event
    */
   _onWindowChanged(event) {
-    const startTime = this._dataProvider.minimumBoundary();
-    const totalTime = this._dataProvider.totalTime();
-    const data = {
-      windowTimeLeft: startTime + this._overviewGrid.windowLeft() * totalTime,
-      windowTimeRight: startTime + this._overviewGrid.windowRight() * totalTime
-    };
-    this.dispatchEventToListeners(PerfUI.OverviewGrid.Events.WindowChanged, data);
+    const windowPosition = {windowTimeLeft: event.data.rawStartValue, windowTimeRight: event.data.rawEndValue};
+    this._windowTimeLeft = windowPosition.windowTimeLeft;
+    this._windowTimeRight = windowPosition.windowTimeRight;
+
+    this.dispatchEventToListeners(PerfUI.OverviewGrid.Events.WindowChanged, windowPosition);
   }
 
   /**

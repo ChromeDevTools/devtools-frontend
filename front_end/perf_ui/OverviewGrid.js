@@ -34,8 +34,9 @@
 PerfUI.OverviewGrid = class {
   /**
    * @param {string} prefix
+   * @param {!PerfUI.TimelineGrid.Calculator=} calculator
    */
-  constructor(prefix) {
+  constructor(prefix, calculator) {
     this.element = createElement('div');
     this.element.id = prefix + '-overview-container';
 
@@ -45,7 +46,7 @@ PerfUI.OverviewGrid = class {
 
     this.element.appendChild(this._grid.element);
 
-    this._window = new PerfUI.OverviewGrid.Window(this.element, this._grid.dividersLabelBarElement);
+    this._window = new PerfUI.OverviewGrid.Window(this.element, this._grid.dividersLabelBarElement, calculator);
   }
 
   /**
@@ -147,10 +148,15 @@ PerfUI.OverviewGrid.Window = class extends Common.Object {
   /**
    * @param {!Element} parentElement
    * @param {!Element=} dividersLabelBarElement
+   * @param {!PerfUI.TimelineGrid.Calculator=} calculator
    */
-  constructor(parentElement, dividersLabelBarElement) {
+  constructor(parentElement, dividersLabelBarElement, calculator) {
     super();
     this._parentElement = parentElement;
+    UI.ARIAUtils.markAsGroup(this._parentElement);
+    this._calculator = calculator;
+
+    UI.ARIAUtils.setAccessibleName(this._parentElement, ls`Overview grid window`);
 
     UI.installDragHandle(
         this._parentElement, this._startWindowSelectorDragging.bind(this), this._windowSelectorDragging.bind(this),
@@ -174,9 +180,13 @@ PerfUI.OverviewGrid.Window = class extends Common.Object {
         this._rightResizeElement, this._resizerElementStartDragging.bind(this),
         this._rightResizeElementDragging.bind(this), null, 'ew-resize');
 
+    UI.ARIAUtils.setAccessibleName(this._leftResizeElement, ls`Left Resizer`);
+    UI.ARIAUtils.markAsSlider(this._leftResizeElement);
     this._leftResizeElement.tabIndex = 0;
     this._leftResizeElement.addEventListener('keydown', event => this._handleKeyboardResizing(event, false));
 
+    UI.ARIAUtils.setAccessibleName(this._rightResizeElement, ls`Right Resizer`);
+    UI.ARIAUtils.markAsSlider(this._rightResizeElement);
     this._rightResizeElement.tabIndex = 0;
     this._rightResizeElement.addEventListener('keydown', event => this._handleKeyboardResizing(event, true));
     this._rightResizeElement.addEventListener('focus', this._onRightResizeElementFocused.bind(this));
@@ -389,6 +399,64 @@ PerfUI.OverviewGrid.Window = class extends Common.Object {
     this._setWindowPosition(0, this._parentElement.clientWidth);
   }
 
+
+  /**
+   * @param {boolean=} leftSlider
+   * @return {number}
+   */
+  _getRawSliderValue(leftSlider) {
+    const minimumValue = this._calculator.minimumBoundary();
+    const valueSpan = this._calculator.maximumBoundary() - minimumValue;
+    if (leftSlider) {
+      return minimumValue + valueSpan * this.windowLeft;
+    } else {
+      return minimumValue + valueSpan * this.windowRight;
+    }
+  }
+
+  /**
+   * @param {number} leftValue
+   * @param {number} rightValue
+   */
+  _updateResizeElementPositionValue(leftValue, rightValue) {
+    const roundedLeftValue = leftValue.toFixed(2);
+    const roundedRightValue = rightValue.toFixed(2);
+    UI.ARIAUtils.setAriaValueNow(this._leftResizeElement, roundedLeftValue);
+    UI.ARIAUtils.setAriaValueNow(this._rightResizeElement, roundedRightValue);
+
+    // Left and right sliders cannot be within 0.5% of each other (Range of AriaValueMin/Max/Now is from 0-100).
+    const leftResizeCeiling = roundedRightValue - 0.5;
+    const rightResizeFloor = Number(roundedLeftValue) + 0.5;
+    UI.ARIAUtils.setAriaValueMinMax(this._leftResizeElement, '0', leftResizeCeiling.toString());
+    UI.ARIAUtils.setAriaValueMinMax(this._rightResizeElement, rightResizeFloor.toString(), '100');
+  }
+
+  _updateResizeElementPositionLabels() {
+    const startValue = this._calculator.formatValue(this._getRawSliderValue(/* leftSlider */ true));
+    const endValue = this._calculator.formatValue(this._getRawSliderValue(/* leftSlider */ false));
+    UI.ARIAUtils.setAriaValueText(this._leftResizeElement, String(startValue));
+    UI.ARIAUtils.setAriaValueText(this._rightResizeElement, String(endValue));
+  }
+
+  /**
+   * @param {string} leftValue
+   * @param {string} rightValue
+   */
+  _updateResizeElementPercentageLabels(leftValue, rightValue) {
+    UI.ARIAUtils.setAriaValueText(this._leftResizeElement, leftValue);
+    UI.ARIAUtils.setAriaValueText(this._rightResizeElement, rightValue);
+  }
+
+  /**
+   * @return {{rawStartValue: number, rawEndValue: number}}
+   */
+  _calculateWindowPosition() {
+    return {
+      rawStartValue: Number(this._getRawSliderValue(/* leftSlider */ true)),
+      rawEndValue: Number(this._getRawSliderValue(/* leftSlider */ false))
+    };
+  }
+
   /**
    * @param {number} windowLeft
    * @param {number} windowRight
@@ -397,7 +465,11 @@ PerfUI.OverviewGrid.Window = class extends Common.Object {
     this.windowLeft = windowLeft;
     this.windowRight = windowRight;
     this._updateCurtains();
-    this.dispatchEventToListeners(PerfUI.OverviewGrid.Events.WindowChanged);
+    let windowPosition;
+    if (this._calculator) {
+      windowPosition = this._calculateWindowPosition();
+    }
+    this.dispatchEventToListeners(PerfUI.OverviewGrid.Events.WindowChanged, windowPosition);
   }
 
   _updateCurtains() {
@@ -416,11 +488,25 @@ PerfUI.OverviewGrid.Window = class extends Common.Object {
         right = ((this.windowRight + this.windowLeft) + width * factor) / 2;
       }
     }
-    this._leftResizeElement.style.left = (100 * left).toFixed(2) + '%';
-    this._rightResizeElement.style.left = (100 * right).toFixed(2) + '%';
+    const leftResizerPercLeftOffset = (100 * left);
+    const rightResizerPercLeftOffset = (100 * right);
+    const rightResizerPercRightOffset = (100 - (100 * right));
 
-    this._leftCurtainElement.style.width = (100 * left).toFixed(2) + '%';
-    this._rightCurtainElement.style.width = (100 * (1 - right)).toFixed(2) + '%';
+    const leftResizerPercLeftOffsetString = leftResizerPercLeftOffset + '%';
+    const rightResizerPercLeftOffsetString = rightResizerPercLeftOffset + '%';
+
+    this._leftResizeElement.style.left = leftResizerPercLeftOffsetString;
+    this._rightResizeElement.style.left = rightResizerPercLeftOffsetString;
+
+    this._leftCurtainElement.style.width = leftResizerPercLeftOffsetString;
+    this._rightCurtainElement.style.width = rightResizerPercRightOffset + '%';
+
+    this._updateResizeElementPositionValue(leftResizerPercLeftOffset, rightResizerPercLeftOffset);
+    if (this._calculator) {
+      this._updateResizeElementPositionLabels();
+    } else {
+      this._updateResizeElementPercentageLabels(leftResizerPercLeftOffsetString, rightResizerPercLeftOffsetString);
+    }
   }
 
   /**

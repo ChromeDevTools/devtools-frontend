@@ -11,13 +11,13 @@ Profiler.HeapTimelineOverview = class extends UI.VBox {
     this.element.id = 'heap-recording-view';
     this.element.classList.add('heap-tracking-overview');
 
+    this._overviewCalculator = new Profiler.HeapTimelineOverview.OverviewCalculator();
     this._overviewContainer = this.element.createChild('div', 'heap-overview-container');
-    this._overviewGrid = new PerfUI.OverviewGrid('heap-recording');
+    this._overviewGrid = new PerfUI.OverviewGrid('heap-recording', this._overviewCalculator);
     this._overviewGrid.element.classList.add('fill');
 
     this._overviewCanvas = this._overviewContainer.createChild('canvas', 'heap-recording-overview-canvas');
     this._overviewContainer.appendChild(this._overviewGrid.element);
-    this._overviewCalculator = new Profiler.HeapTimelineOverview.OverviewCalculator();
     this._overviewGrid.addEventListener(PerfUI.OverviewGrid.Events.WindowChanged, this._onWindowChanged, this);
 
     this._windowLeft = 0.0;

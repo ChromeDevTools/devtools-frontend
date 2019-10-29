@@ -9,53 +9,48 @@ Sources.AddSourceMapURLDialog = class extends UI.HBox {
    * @param {function(string)} callback
    */
   constructor(callback) {
-    super(true);
+    super(/* isWebComponent */ true);
     this.registerRequiredCSS('sources/dialog.css');
     this.contentElement.createChild('label').textContent = Common.UIString('Source map URL: ');
 
-    this._input = UI.createInput();
-    this.contentElement.appendChild(this._input);
-    this._input.setAttribute('type', 'text');
+    this._input = UI.createInput('add-source-map', 'text');
     this._input.addEventListener('keydown', this._onKeyDown.bind(this), false);
+    this.contentElement.appendChild(this._input);
 
-    const addButton = this.contentElement.createChild('button');
-    addButton.textContent = Common.UIString('Add');
-    addButton.addEventListener('click', this._apply.bind(this), false);
+    const addButton = UI.createTextButton(ls`Add`, this._apply.bind(this));
+    this.contentElement.appendChild(addButton);
 
-    this.setDefaultFocusedElement(this._input);
-    this._callback = callback;
-    this.contentElement.tabIndex = 0;
+    this._dialog = new UI.Dialog();
+    this._dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.MeasureContent);
+    this._dialog.setDefaultFocusedElement(this._input);
+
+    /**
+     * @this {Sources.AddSourceMapURLDialog}
+     */
+    this._done = function(value) {
+      this._dialog.hide();
+      callback(value);
+    };
   }
 
   /**
-   * @param {function(string)} callback
+   * @override
    */
-  static show(callback) {
-    const dialog = new UI.Dialog();
-    const addSourceMapURLDialog = new Sources.AddSourceMapURLDialog(done);
-    addSourceMapURLDialog.show(dialog.contentElement);
-    dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.MeasureContent);
-    dialog.show();
-
-    /**
-     * @param {string} value
-     */
-    function done(value) {
-      dialog.hide();
-      callback(value);
-    }
+  show() {
+    super.show(this._dialog.contentElement);
+    this._dialog.show();
   }
 
   _apply() {
-    this._callback(this._input.value);
+    this._done(this._input.value);
   }
 
   /**
    * @param {!Event} event
    */
   _onKeyDown(event) {
-    if (event.keyCode === UI.KeyboardShortcut.Keys.Enter.code) {
-      event.preventDefault();
+    if (isEnterKey(event)) {
+      event.consume(true);
       this._apply();
     }
   }

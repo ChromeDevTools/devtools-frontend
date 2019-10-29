@@ -293,7 +293,8 @@ Sources.DebuggerPlugin = class extends Sources.UISourceCodeFrame.Plugin {
      * @param {!Bindings.ResourceScriptFile} scriptFile
      */
     function addSourceMapURL(scriptFile) {
-      Sources.AddSourceMapURLDialog.show(addSourceMapURLDialogCallback.bind(null, scriptFile));
+      const dialog = new Sources.AddSourceMapURLDialog(addSourceMapURLDialogCallback.bind(null, scriptFile));
+      dialog.show();
     }
 
     /**

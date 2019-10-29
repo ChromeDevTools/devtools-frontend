@@ -521,7 +521,7 @@ export default class DebuggerModel extends SDK.SDKModel {
     this._isPausing = false;
     this._debuggerPausedDetails = debuggerPausedDetails;
     if (this._debuggerPausedDetails) {
-      if (Root.Runtime.experiments.isEnabled('emptySourceMapAutoStepping') && this._beforePausedCallback) {
+      if (this._beforePausedCallback) {
         if (!this._beforePausedCallback.call(null, this._debuggerPausedDetails)) {
           return false;
         }

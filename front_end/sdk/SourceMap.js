@@ -72,6 +72,24 @@ export default class SourceMap {
    */
   findEntry(lineNumber, columnNumber) {
   }
+
+  /**
+   * @param {string} sourceURL
+   * @param {number} lineNumber
+   * @param {number} columnNumber
+   * @return {?SourceMapEntry}
+   */
+  sourceLineMapping(sourceURL, lineNumber, columnNumber) {
+  }
+
+  /**
+   * @return {!Array<!SourceMapEntry>}
+   */
+  mappings() {
+  }
+
+  dispose() {
+  }
 }
 
 /**
@@ -204,35 +222,24 @@ export class TextSourceMap {
    * @return {!Promise<?TextSourceMap>}
    * @this {TextSourceMap}
    */
-  static load(sourceMapURL, compiledURL) {
-    let callback;
-    const promise = new Promise(fulfill => callback = fulfill);
-    SDK.multitargetNetworkManager.loadResource(sourceMapURL, contentLoaded);
-    return promise;
+  static async load(sourceMapURL, compiledURL) {
+    let content = await new Promise((resolve, reject) => {
+      SDK.multitargetNetworkManager.loadResource(sourceMapURL, (statusCode, _headers, content) => {
+        if (!content || statusCode >= 400) {
+          const error = new Error(ls`Could not load content for ${sourceMapURL} : HTTP status code: ${statusCode}`);
+          reject(error);
+        } else {
+          resolve(content);
+        }
+      });
+    });
 
-    /**
-     * @param {number} statusCode
-     * @param {!Object.<string, string>} headers
-     * @param {string} content
-     */
-    function contentLoaded(statusCode, headers, content) {
-      if (!content || statusCode >= 400) {
-        callback(null);
-        return;
-      }
-
-      if (content.slice(0, 3) === ')]}') {
-        content = content.substring(content.indexOf('\n'));
-      }
-      try {
-        const payload = /** @type {!SourceMapV3} */ (JSON.parse(content));
-        callback(new TextSourceMap(compiledURL, sourceMapURL, payload));
-      } catch (e) {
-        console.error(e);
-        Common.console.warn('DevTools failed to parse SourceMap: ' + sourceMapURL);
-        callback(null);
-      }
+    if (content.slice(0, 3) === ')]}') {
+      content = content.substring(content.indexOf('\n'));
     }
+
+    const payload = /** @type {!SourceMapV3} */ (JSON.parse(content));
+    return new TextSourceMap(compiledURL, sourceMapURL, payload);
   }
 
   /**
@@ -299,6 +306,7 @@ export class TextSourceMap {
   }
 
   /**
+   * @override
    * @param {string} sourceURL
    * @param {number} lineNumber
    * @param {number} columnNumber
@@ -349,6 +357,7 @@ export class TextSourceMap {
   }
 
   /**
+   * @override
    * @return {!Array<!SourceMapEntry>}
    */
   mappings() {
@@ -549,6 +558,12 @@ export class TextSourceMap {
     return new TextUtils.TextRange(
         startMapping.lineNumber, startMapping.columnNumber, endMapping.lineNumber, endMapping.columnNumber);
   }
+
+  /**
+   * @override
+   */
+  dispose() {
+  }
 }
 
 TextSourceMap._VLQ_BASE_SHIFT = 5;
@@ -605,6 +620,130 @@ TextSourceMap.SourceInfo = class {
 
 TextSourceMap._sourcesListSymbol = Symbol('sourcesList');
 
+/**
+ * @implements {SDK.SourceMap}
+ * @unrestricted
+ */
+export class WasmSourceMap {
+  /**
+   * Implements SourceMap interface for DWARF information in Wasm.
+   * @param {string} wasmUrl
+   * @param {*} resolver
+   */
+  constructor(wasmUrl, resolver) {
+    this._wasmUrl = wasmUrl;
+    this._resolver = resolver;
+  }
+
+  /**
+   * @private
+   */
+  static async _loadBindings() {
+    const arrayBuffer =
+        await Root.Runtime.loadBinaryResourcePromise('./sdk/wasm_source_map/pkg/wasm_source_map_bg.wasm');
+    await self.wasm_bindgen(arrayBuffer);
+    return self.wasm_bindgen.Resolver;
+  }
+
+  /**
+   * @private
+   */
+  static _loadBindingsOnce() {
+    return WasmSourceMap._asyncResolver = WasmSourceMap._asyncResolver || WasmSourceMap._loadBindings();
+  }
+
+  static async load(script, wasmUrl) {
+    const [Resolver, wasm] = await Promise.all([WasmSourceMap._loadBindingsOnce(), script.getWasmBytecode()]);
+
+    return new SDK.WasmSourceMap(wasmUrl, new Resolver(new Uint8Array(wasm)));
+  }
+
+  /**
+   * @override
+   * @return {string}
+   */
+  compiledURL() {
+    return this._wasmUrl;
+  }
+
+  /**
+   * @override
+   * @return {string}
+   */
+  url() {
+    return WasmSourceMap.FAKE_URL;
+  }
+
+  /**
+   * @override
+   * @return {!Array.<string>}
+   */
+  sourceURLs() {
+    return this._resolver.listFiles();
+  }
+
+  /**
+   * @override
+   * @param {string} sourceURL
+   * @param {!Common.ResourceType} contentType
+   * @return {!Common.ContentProvider}
+   */
+  sourceContentProvider(sourceURL, contentType) {
+    return new SDK.CompilerSourceMappingContentProvider(sourceURL, contentType);
+  }
+
+  /**
+   * @override
+   * @param {string} sourceURL
+   * @return {?string}
+   */
+  embeddedContentByURL(sourceURL) {
+    return null;
+  }
+
+  /**
+   * @override
+   * @param {number} lineNumber in compiled resource
+   * @param {number} columnNumber in compiled resource
+   * @return {?SDK.SourceMapEntry}
+   */
+  findEntry(lineNumber, columnNumber) {
+    if (lineNumber !== 0) {
+      console.warn(new Error(`Invalid non-zero line number.`));
+    }
+    return this._resolver.resolve(columnNumber);
+  }
+
+  /**
+   * @override
+   * @param {string} sourceURL
+   * @param {number} lineNumber
+   * @param {number} columnNumber
+   * @return {?SourceMapEntry}
+   */
+  sourceLineMapping(sourceURL, lineNumber, columnNumber) {
+    return this._resolver.resolveReverse(sourceURL, lineNumber, columnNumber);
+  }
+
+  /**
+   * @override
+   * @return {!Array<!SourceMapEntry>}
+   */
+  mappings() {
+    return this._resolver.listMappings();
+  }
+
+  /**
+   * @override
+   */
+  dispose() {
+    this._resolver.free();
+  }
+}
+
+/* Special URL that should be kept in sync with one in V8 */
+WasmSourceMap.FAKE_URL = 'wasm://dwarf';
+
 /* Legacy exported object */
 self.SDK = self.SDK || {};
 
@@ -622,6 +761,9 @@ SDK.SourceMapEntry = SourceMapEntry;
 
 /** @constructor */
 SDK.TextSourceMap = TextSourceMap;
+
+/** @constructor */
+SDK.WasmSourceMap = WasmSourceMap;
 
 /** @constructor */
 SDK.SourceMap.EditResult = EditResult;

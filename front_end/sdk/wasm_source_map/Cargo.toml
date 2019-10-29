@@ -1,0 +1,25 @@
+[package]
+name = "wasm-source-map"
+version = "0.1.0"
+description = "WebAssembly DWARF parser and location resolver for DevTools"
+authors = ["Ingvar Stepanyan <rreverser@google.com>"]
+edition = "2018"
+publish = false
+readme = "README"
+license-file = "../../LICENSE"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+gimli = { version = "0.19.0", default-features = false, features = ["std", "read"] }
+wasm-bindgen = "0.2.50"
+js-sys = "0.3.27"
+fallible-iterator = "0.2.0"
+console_error_panic_hook = { version = "0.1.6", optional = true }
+failure = "0.1.5"
+indexmap = "1.2.0"
+once_cell = "1.2.0"
+
+[features]
+log = ["console_error_panic_hook"]

@@ -263,6 +263,7 @@ common_closure_args = [
 GENERATED_SKIP_COMPILATION_FILES = [
     'SupportedCSSProperties.js',
     'InspectorBackendCommands.js',
+    'sdk/wasm_source_map/pkg/wasm_source_map.js',
 ]
 
 

@@ -1,0 +1,14 @@
+This is a Rust library that is used to parse DWARF from WebAssembly
+files and resolve source locations <-> addresses.
+
+It's compiled to Wasm + JS bindings that are used by SDK.WasmSourceMap.
+
+Currently the built artifacts are checked in to the repo to avoid
+adding dependency on Rust toolchain for everyone working on the
+DevTools frontend code.
+
+To modify and recompile the library, you'll need:
+1) Rust toolchain - install as per https://rustup.rs/.
+2) Wasm-pack toolchain - install as per https://rustwasm.github.io/wasm-pack/.
+3) Change code in `src/` folder.
+4) Rebuild with `wasm-pack build --target no-modules`.

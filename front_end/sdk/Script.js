@@ -166,6 +166,15 @@ export default class Script {
   }
 
   /**
+   * @return {!Promise<!ArrayBuffer>}
+   */
+  async getWasmBytecode() {
+    const base64 = await this.debuggerModel.target().debuggerAgent().getWasmBytecode(this.scriptId);
+    const response = await fetch(`data:application/wasm;base64,${base64}`);
+    return response.arrayBuffer();
+  }
+
+  /**
    * @return {!Common.ContentProvider}
    */
   originalContentProvider() {

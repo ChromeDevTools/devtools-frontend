@@ -338,7 +338,12 @@ export class ModelData {
    * @return {boolean}
    */
   _beforePaused(debuggerPausedDetails) {
-    return !!this._compilerMapping.mapsToSourceCode(debuggerPausedDetails.callFrames[0].location());
+    const callFrame = debuggerPausedDetails.callFrames[0];
+    if (callFrame.script.sourceMapURL !== SDK.WasmSourceMap.FAKE_URL &&
+        !Root.Runtime.experiments.isEnabled('emptySourceMapAutoStepping')) {
+      return true;
+    }
+    return !!this._compilerMapping.mapsToSourceCode(callFrame.location());
   }
 
   _dispose() {

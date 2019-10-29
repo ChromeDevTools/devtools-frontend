@@ -161,7 +161,16 @@ export default class SourceMapManager extends Common.Object {
       return;
     }
     if (!this._sourceMapIdToLoadingClients.has(sourceMapId)) {
-      SDK.TextSourceMap.load(sourceMapURL, sourceURL).then(onSourceMap.bind(this, sourceMapId));
+      const sourceMapPromise = sourceMapURL === SDK.WasmSourceMap.FAKE_URL ?
+          SDK.WasmSourceMap.load(client, sourceURL) :
+          SDK.TextSourceMap.load(sourceMapURL, sourceURL);
+
+      sourceMapPromise
+          .catch(e => {
+            console.error(e);
+            Common.console.warn('DevTools failed to parse SourceMap: ' + sourceMapURL);
+          })
+          .then(onSourceMap.bind(this, sourceMapId));
     }
     this._sourceMapIdToLoadingClients.set(sourceMapId, client);
 
@@ -221,16 +230,20 @@ export default class SourceMapManager extends Common.Object {
     }
     this._sourceMapIdToClients.delete(sourceMapId, client);
     const sourceMap = this._sourceMapById.get(sourceMapId);
+    this.dispatchEventToListeners(Events.SourceMapDetached, {client: client, sourceMap: sourceMap});
     if (!this._sourceMapIdToClients.has(sourceMapId)) {
+      sourceMap.dispose();
       this._sourceMapById.delete(sourceMapId);
     }
-    this.dispatchEventToListeners(Events.SourceMapDetached, {client: client, sourceMap: sourceMap});
   }
 
   _sourceMapLoadedForTest() {
   }
 
   dispose() {
+    for (const sourceMap of this._sourceMapById.values()) {
+      sourceMap.dispose();
+    }
     SDK.targetManager.removeEventListener(
         SDK.TargetManager.Events.InspectedURLChanged, this._inspectedURLChanged, this);
   }

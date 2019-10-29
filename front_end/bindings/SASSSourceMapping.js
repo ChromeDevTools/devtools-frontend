@@ -64,7 +64,7 @@ export default class SASSSourceMapping {
    */
   _sourceMapAttached(event) {
     const header = /** @type {!SDK.CSSStyleSheetHeader} */ (event.data.client);
-    const sourceMap = /** @type {!SDK.SourceMap} */ (event.data.sourceMap);
+    const sourceMap = /** @type {!SDK.TextSourceMap} */ (event.data.sourceMap);
     for (const sassURL of sourceMap.sourceURLs()) {
       let uiSourceCode = this._project.uiSourceCodeForURL(sassURL);
       if (uiSourceCode) {
@@ -156,6 +156,7 @@ export default class SASSSourceMapping {
    * @return {!Array<!SDK.CSSLocation>}
    */
   uiLocationToRawLocations(uiLocation) {
+    /** @type {!SDK.TextSourceMap} */
     const sourceMap = uiLocation.uiSourceCode[_sourceMapSymbol];
     if (!sourceMap) {
       return [];

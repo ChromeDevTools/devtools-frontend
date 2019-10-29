@@ -61,10 +61,13 @@ class Runtime {
   }
 
   /**
+   * @private
    * @param {string} url
-   * @return {!Promise.<string>}
+   * @param {boolean} asBinary
+   * @template T
+   * @return {!Promise.<T>}
    */
-  static loadResourcePromise(url) {
+  static _loadResourcePromise(url, asBinary) {
     return new Promise(load);
 
     /**
@@ -74,6 +77,9 @@ class Runtime {
     function load(fulfill, reject) {
       const xhr = new XMLHttpRequest();
       xhr.open('GET', url, true);
+      if (asBinary) {
+        xhr.responseType = 'arraybuffer';
+      }
       xhr.onreadystatechange = onreadystatechange;
 
       /**
@@ -84,18 +90,38 @@ class Runtime {
           return;
         }
 
+        const {response} = e.target;
+
+        const text = asBinary ? new TextDecoder().decode(response) : response;
+
         // DevTools Proxy server can mask 404s as 200s, check the body to be sure
-        const status = /^HTTP\/1.1 404/.test(e.target.response) ? 404 : xhr.status;
+        const status = /^HTTP\/1.1 404/.test(text) ? 404 : xhr.status;
 
         if ([0, 200, 304].indexOf(status) === -1)  // Testing harness file:/// results in 0.
         {
           reject(new Error('While loading from url ' + url + ' server responded with a status of ' + status));
         } else {
-          fulfill(e.target.response);
+          fulfill(response);
         }
       }
       xhr.send(null);
     }
+  }
+
+  /**
+   * @param {string} url
+   * @return {!Promise.<string>}
+   */
+  static loadResourcePromise(url) {
+    return Runtime._loadResourcePromise(url, false);
+  }
+
+  /**
+   * @param {string} url
+   * @return {!Promise.<!ArrayBuffer>}
+   */
+  static loadBinaryResourcePromise(url) {
+    return Runtime._loadResourcePromise(url, true);
   }
 
   /**

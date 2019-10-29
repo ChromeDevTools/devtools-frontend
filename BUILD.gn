@@ -86,6 +86,7 @@ if (external_devtools_frontend) {
     "front_end/css_overview/CSSOverviewStartView.js",
     "front_end/css_overview/CSSOverviewProcessingView.js",
     "front_end/css_overview/CSSOverviewCompletedView.js",
+    "front_end/css_overview/CSSOverviewUnusedRules.js",
     "front_end/css_overview/CSSOverviewModel.js",
     "front_end/css_overview/CSSOverviewSidebarPanel.js",
     "front_end/css_overview/cssOverviewSidebarPanel.css",

@@ -3,8 +3,17 @@
   <message name="IDS_DEVTOOLS_01ac702a8b31775d1cdbc30ec453e611" desc="Label for the number of non-simple selectors in the CSS Overview report">
     Non-simple selectors
   </message>
+  <message name="IDS_DEVTOOLS_070f6fa2b6ef278eaa894fa0cd00a7d0" desc="Label for unused rules in the CSS Overview report">
+    Unused rules
+  </message>
+  <message name="IDS_DEVTOOLS_0ea334a2748ee1170ae958009e427b10" desc="Label to explain why bottom values are ignored">
+    Bottom applied to a statically positioned element
+  </message>
   <message name="IDS_DEVTOOLS_1049ae5279b7a1b50dddec905ed992df" desc="Label for the number ofstyle rules in CSS Overview report">
     Style rules
+  </message>
+  <message name="IDS_DEVTOOLS_10ec75beede86934cfa07f69eddcfd65" desc="Label to explain why left values are ignored">
+    Left applied to a statically positioned element
   </message>
   <message name="IDS_DEVTOOLS_196c5897880c864a303527f5d8e7cb77" desc="Label for unique background colors in the CSS Overview report">
     Unique background colors: <ph name="BACKGROUNDCOLORS_LENGTH">$1s<ex>17</ex></ph>
@@ -33,6 +42,9 @@
   <message name="IDS_DEVTOOLS_811b0dc0576a9743353448d08b400f45" desc="Label for the number of Attribute selectors in the CSS Overview report">
     Attribute selectors
   </message>
+  <message name="IDS_DEVTOOLS_85f7c76f6d3a5cb3a3731b8e7446a410" desc="Label to explain why right values are ignored">
+    Right applied to a statically positioned element
+  </message>
   <message name="IDS_DEVTOOLS_8781fdba66e6cf7177ce03ea3db8a35a" desc="Label for the number of class selectors in the CSS Overview report">
     Class selectors
   </message>
@@ -41,6 +53,12 @@
   </message>
   <message name="IDS_DEVTOOLS_95d366a44bd7bad09d9916e05b512cc6" desc="Label for the number of External stylesheets in the CSS Overview report">
     External stylesheets
+  </message>
+  <message name="IDS_DEVTOOLS_985cb652a91ccbc2c28c617412af2823" desc="Label to explain why top values are ignored">
+    Top applied to a statically positioned element
+  </message>
+  <message name="IDS_DEVTOOLS_ab7a485ebe75b6dd7243ad719f23c7de" desc="Column header title denoting which rule is unused">
+    Rule
   </message>
   <message name="IDS_DEVTOOLS_aff1062318f6d07520a0feba60f3f253" desc="Label for the number of type selectors in the CSS Overview report">
     Type selectors
@@ -62,5 +80,8 @@
   </message>
   <message name="IDS_DEVTOOLS_f1637e0528f8c9d37be5de8b50fd2926" desc="Label for the number of inline style elements in the CSS Overview report">
     Inline style elements
+  </message>
+  <message name="IDS_DEVTOOLS_fffcb4d1e12c96b2f571f77ad25878b8" desc="Column header title denoting why a rule is unused">
+    Reason
   </message>
 </grit-part>

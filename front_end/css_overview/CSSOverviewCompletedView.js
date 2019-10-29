@@ -34,7 +34,9 @@ CssOverview.CSSOverviewCompletedView = class extends UI.PanelWithSidebar {
     this._domModel = target.model(SDK.DOMModel);
     this._domAgent = target.domAgent();
     this._linkifier = new Components.Linkifier(/* maxLinkLength */ 20, /* useLinkDecorator */ true);
+
     this._relatedNodesMap = new Map();
+    this._unusedRulesNodesMap = new Map();
 
     this._mediaQueryColumns = [
       {id: 'text', title: ls`Text`, visible: true, sortable: true, weight: 60},
@@ -49,8 +51,21 @@ CssOverview.CSSOverviewCompletedView = class extends UI.PanelWithSidebar {
 
     this._sideBar.addItem(ls`Overview summary`, 'summary');
     this._sideBar.addItem(ls`Colors`, 'colors');
+    this._sideBar.addItem(ls`Unused rules`, 'unused-rules');
     this._sideBar.addItem(ls`Media queries`, 'media-queries');
     this._sideBar.select('summary');
+
+    this._unusedRulesColumns = [
+      {id: 'nodeId', title: ls`Element`, visible: true, sortable: true, weight: 10},
+      {id: 'rule', title: ls`Rule`, visible: true, sortable: true, weight: 40},
+      {id: 'reason', title: ls`Reason`, visible: true, sortable: true, weight: 50}
+    ];
+
+    this._unusedRulesGrid = new DataGrid.SortableDataGrid(this._unusedRulesColumns);
+    this._unusedRulesGrid.element.classList.add('unused-rules-grid');
+    this._unusedRulesGrid.setStriped(true);
+    this._unusedRulesGrid.addEventListener(
+        DataGrid.DataGrid.Events.SortingChanged, this._sortUnusedRulesDataGrid.bind(this));
 
     this._elementGridColumns = [{id: 'nodeId', title: ls`Element`, visible: true, sortable: true, weight: 100}];
 
@@ -78,6 +93,16 @@ CssOverview.CSSOverviewCompletedView = class extends UI.PanelWithSidebar {
     this._mediaQueryGrid.sortNodes(comparator, !this._mediaQueryGrid.isSortOrderAscending());
   }
 
+  _sortUnusedRulesDataGrid() {
+    const sortColumnId = this._unusedRulesGrid.sortColumnId();
+    if (!sortColumnId) {
+      return;
+    }
+
+    const comparator = DataGrid.SortableDataGrid.StringComparator.bind(null, sortColumnId);
+    this._unusedRulesGrid.sortNodes(comparator, !this._unusedRulesGrid.isSortOrderAscending());
+  }
+
   _sideBarItemSelected(event) {
     const section = this._fragment.$(event.data);
     if (!section) {
@@ -95,8 +120,11 @@ CssOverview.CSSOverviewCompletedView = class extends UI.PanelWithSidebar {
     this._resultsContainer.element.removeChildren();
     this._mediaQueryGrid.rootNode().removeChildren();
     this._elementGrid.rootNode().removeChildren();
-    this._relatedNodesMap = new Map();
+    this._unusedRulesGrid.rootNode().removeChildren();
     this._mainContainer.setSidebarMinimized(true);
+
+    this._relatedNodesMap = new Map();
+    this._unusedRulesNodesMap = new Map();
   }
 
   _onClick(evt) {
@@ -145,14 +173,22 @@ CssOverview.CSSOverviewCompletedView = class extends UI.PanelWithSidebar {
     this._controller.dispatchEventToListeners(CssOverview.Events.RequestNodeHighlight, backendNodeId);
   }
 
-  _render(data) {
+  async _render(data) {
     if (!data || !('backgroundColors' in data) || !('textColors' in data)) {
       return;
     }
 
     this._data = data;
-    const {elementCount, backgroundColors, textColors, fillColors, borderColors, globalStyleStats, mediaQueries} =
-        this._data;
+    const {
+      elementCount,
+      backgroundColors,
+      textColors,
+      fillColors,
+      borderColors,
+      globalStyleStats,
+      mediaQueries,
+      unusedRules
+    } = this._data;
 
     // Convert rgb values from the computed styles to either undefined or HEX(A) strings.
     const sortedBackgroundColors = this._sortColorsByLuminance(backgroundColors);
@@ -162,7 +198,7 @@ CssOverview.CSSOverviewCompletedView = class extends UI.PanelWithSidebar {
 
     this._fragment = UI.Fragment.build`
     <div class="vbox overview-completed-view">
-      <div $="summary" class="results-section summary">
+      <div $="summary" class="results-section horizontally-padded summary">
         <h1>${ls`Overview summary`}</h1>
 
         <ul>
@@ -213,7 +249,7 @@ CssOverview.CSSOverviewCompletedView = class extends UI.PanelWithSidebar {
         </ul>
       </div>
 
-      <div $="colors" class="results-section colors">
+      <div $="colors" class="results-section horizontally-padded colors">
         <h1>${ls`Colors`}</h1>
         <h2>${ls`Unique background colors: ${sortedBackgroundColors.length}`}</h2>
         <ul>
@@ -236,6 +272,11 @@ CssOverview.CSSOverviewCompletedView = class extends UI.PanelWithSidebar {
         </ul>
       </div>
 
+      <div $="ignored-rules" class="results-section unused-rules">
+        <h1>${ls`Unused rules`}</h1>
+        ${unusedRules.length > 0 ? this._unusedRulesGrid.element : `There are no unused rules.`}
+      </div>
+
       <!-- TODO: Fonts -->
 
       <div $="media-queries" class="results-section media-queries">
@@ -252,11 +293,41 @@ CssOverview.CSSOverviewCompletedView = class extends UI.PanelWithSidebar {
       this._mediaQueryGrid.insertChild(mediaQueryNode);
     }
 
+    // Unused Rules.
+    const unusedRulesNodeIds = unusedRules.reduce((prev, curr) => {
+      // Only request nodes from the backend that have not already been requested.
+      if (this._unusedRulesNodesMap.has(curr.nodeId)) {
+        return prev;
+      }
+
+      return prev.add(curr.nodeId);
+    }, new Set());
+
+
+    // Merge the existing nodes map and the new.
+    const unusedRulesNodeMap = await this._domModel.pushNodesByBackendIdsToFrontend(unusedRulesNodeIds);
+    this._unusedRulesNodesMap = new Map([...this._unusedRulesNodesMap.entries(), ...unusedRulesNodeMap.entries()]);
+
+    for (const unusedRule of unusedRules) {
+      const node = this._unusedRulesNodesMap.get(unusedRule.nodeId);
+      if (!node) {
+        continue;
+      }
+
+      const unusedRuleNode =
+          new CssOverview.CSSOverviewCompletedView.UnusedRuleNode(this._unusedRulesGrid, unusedRule, node);
+      unusedRuleNode.selectable = false;
+      this._unusedRulesGrid.insertChild(unusedRuleNode);
+    }
+
     this._resultsContainer.element.appendChild(this._fragment.element());
     this._elementContainer.element.appendChild(this._elementGrid.element);
 
     this._mediaQueryGrid.renderInline();
     this._mediaQueryGrid.wasShown();
+
+    this._unusedRulesGrid.renderInline();
+    this._unusedRulesGrid.wasShown();
   }
 
   async _populateNodes(evt) {
@@ -390,6 +461,41 @@ CssOverview.CSSOverviewCompletedView.ColorNode = class extends DataGrid.Sortable
       Common.Linkifier.linkify(this.data).then(link => {
         cell.textContent = '';
         link.dataset.backendNodeId = this.data.backendNodeId();
+        cell.appendChild(link);
+      });
+      return cell;
+    }
+
+    return super.createCell(columnId);
+  }
+};
+
+CssOverview.CSSOverviewCompletedView.UnusedRuleNode = class extends DataGrid.SortableDataGridNode {
+  /**
+   * @param {!DataGrid.SortableDataGrid} dataGrid
+   * @param {!Object<string,*>} unusedRuleData
+   * @param {!SDK.DOMNode} node
+   */
+  constructor(dataGrid, unusedRuleData, node) {
+    super(dataGrid, unusedRuleData.hasChildren);
+
+    this.data = unusedRuleData;
+    this.node = node;
+  }
+
+  /**
+   * @override
+   * @param {string} columnId
+   * @return {!Element}
+   */
+  createCell(columnId) {
+    if (columnId === 'nodeId' && this.node) {
+      const cell = this.createTD(columnId);
+      cell.textContent = '...';
+
+      Common.Linkifier.linkify(this.node).then(link => {
+        cell.textContent = '';
+        link.dataset.backendNodeId = this.node.backendNodeId();
         cell.appendChild(link);
       });
       return cell;

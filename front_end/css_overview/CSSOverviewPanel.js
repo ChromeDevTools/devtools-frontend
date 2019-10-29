@@ -36,6 +36,7 @@ CssOverview.CSSOverviewPanel = class extends UI.Panel {
     this._fontSizes = new Map();
     this._fontWeights = new Map();
     this._mediaQueries = [];
+    this._unusedRules = [];
     this._elementCount = 0;
     this._cancelled = false;
     this._globalStyleStats = {
@@ -89,21 +90,22 @@ CssOverview.CSSOverviewPanel = class extends UI.Panel {
       fontSizes: this._fontSizes,
       fontWeights: this._fontWeights,
       elementCount: this._elementCount,
-      mediaQueries: this._mediaQueries
+      mediaQueries: this._mediaQueries,
+      unusedRules: this._unusedRules,
     });
   }
 
   async _startOverview() {
     this._renderOverviewStartedView();
 
-    const [nodes, globalStyleStats, {backgroundColors, textColors, fillColors, borderColors, fontSizes, fontWeights}, mediaQueries] =
+    const [globalStyleStats, {elementCount, backgroundColors, textColors, fillColors, borderColors, fontSizes, fontWeights, unusedRules}, mediaQueries] =
         await Promise.all([
-          this._model.getFlattenedDocument(), this._model.getGlobalStylesheetStats(), this._model.getNodeStyleStats(),
+          this._model.getGlobalStylesheetStats(), this._model.getNodeStyleStats(),
           this._model.getMediaQueries()
         ]);
 
-    if (nodes) {
-      this._elementCount = nodes.length;
+    if (elementCount) {
+      this._elementCount = elementCount;
     }
 
     if (globalStyleStats) {
@@ -136,6 +138,10 @@ CssOverview.CSSOverviewPanel = class extends UI.Panel {
 
     if (fontWeights) {
       this._fontWeights = fontWeights;
+    }
+
+    if (unusedRules) {
+      this._unusedRules = unusedRules;
     }
 
     this._controller.dispatchEventToListeners(CssOverview.Events.OverviewCompleted);

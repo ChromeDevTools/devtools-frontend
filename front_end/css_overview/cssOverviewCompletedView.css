@@ -6,6 +6,7 @@
 
 .overview-completed-view {
   overflow: auto;
+  --overview-default-padding: 28px;
 }
 
 .overview-completed-view .summary ul,
@@ -48,13 +49,23 @@
 
 .media-query-grid .header-container,
 .media-query-grid .data-container,
-.media-query-grid table.data {
+.media-query-grid table.data,
+.unused-rules-grid .header-container,
+.unused-rules-grid .data-container,
+.unused-rules-grid table.data {
   position: relative;
 }
 
+.unused-rules-grid .data-container,
 .media-query-grid .data-container {
   top: 0;
   max-height: 350px;
+}
+
+.unused-rules-grid,
+.media-query-grid {
+  border-left: none;
+  border-right: none;
 }
 
 .element-grid {
@@ -69,6 +80,7 @@
   height: 25px;
   border-radius: 3px;
   margin-right: 16px;
+  cursor: pointer;
 }
 
 .block-title {
@@ -81,8 +93,12 @@
 
 .results-section {
   flex-shrink: 0;
-  padding: 28px;
   border-bottom: 1px solid #E6E6E6;
+  padding: var(--overview-default-padding) 0 var(--overview-default-padding) 0;
+}
+
+.results-section.horizontally-padded {
+  padding: var(--overview-default-padding);
 }
 
 .results-section h1 {
@@ -90,6 +106,11 @@
   font-weight: normal;
   padding: 0;
   margin: 0 0 20px 0;
+  padding-left: var(--overview-default-padding);
+}
+
+.results-section.horizontally-padded h1 {
+  padding-left: 0;
 }
 
 .results-section.colors h2 {

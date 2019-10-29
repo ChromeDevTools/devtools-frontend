@@ -19,6 +19,7 @@
     ],
     "scripts": [
         "CSSOverviewController.js",
+        "CSSOverviewUnusedRules.js",
         "CSSOverviewModel.js",
         "CSSOverviewStartView.js",
         "CSSOverviewProcessingView.js",

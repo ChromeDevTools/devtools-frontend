@@ -141,8 +141,12 @@ CssOverview.CSSOverviewModel = class extends SDK.SDKModel {
 
         CssOverview.CSSOverviewUnusedRules.checkForUnusedPositionValues(
             unusedRules, nodeId, strings, positionIdx, topIdx, leftIdx, rightIdx, bottomIdx);
-        CssOverview.CSSOverviewUnusedRules.checkForUnusedWidthAndHeightValues(
-            unusedRules, nodeId, strings, displayIdx, widthIdx, heightIdx);
+
+        // Ignore SVGs as, despite being inline by default, they can have width & height specified.
+        if (strings[nodeName] !== 'svg') {
+          CssOverview.CSSOverviewUnusedRules.checkForUnusedWidthAndHeightValues(
+              unusedRules, nodeId, strings, displayIdx, widthIdx, heightIdx);
+        }
       }
     }
 

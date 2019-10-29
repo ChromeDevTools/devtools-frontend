@@ -272,7 +272,7 @@ CssOverview.CSSOverviewCompletedView = class extends UI.PanelWithSidebar {
         </ul>
       </div>
 
-      <div $="ignored-rules" class="results-section unused-rules">
+      <div $="unused-rules" class="results-section unused-rules">
         <h1>${ls`Unused rules`}</h1>
         ${
         unusedRules.length > 0 ?

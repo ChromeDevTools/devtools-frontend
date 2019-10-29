@@ -13,9 +13,13 @@
     'all': {
       'filepath': '.',
     },
+    'chromedriver': {
+      'filepath': 'front_end/emulated_devices/module.json',
+    },
   },
 
   'WATCHLISTS': {
     'all': ['devtools-reviews+devtools@chromium.org'],
+    'chromedriver': ['johnchen+watch@chromium.org'],
   },
 }

@@ -86,7 +86,7 @@ CssOverview.CSSOverviewModel = class extends SDK.SDKModel {
 
     const isSVGNode = nodeName => {
       const validNodes = new Set([
-        'altGlyph', 'circle', 'ellipse', 'path', 'polygon', 'polyline', 'rect', 'svg', 'text', 'textPath', 'tref',
+        'altglyph', 'circle', 'ellipse', 'path', 'polygon', 'polyline', 'rect', 'svg', 'text', 'textpath', 'tref',
         'tspan'
       ]);
       return validNodes.has(nodeName.toLowerCase());

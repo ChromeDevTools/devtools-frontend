@@ -110,7 +110,7 @@ export class UIStringFormat {
  * @param {...*} vararg
  * @return {string}
  */
-self.ls = function(strings, vararg) {
+export function ls(strings, vararg) {
   if (typeof strings === 'string') {
     return strings;
   }
@@ -121,6 +121,13 @@ self.ls = function(strings, vararg) {
   }
   return Common.UIString(substitutionString, ...Array.prototype.slice.call(arguments, 1));
 };
+
+/**
+ * @param {!Array<string>|string} strings
+ * @param {...*} vararg
+ * @return {string}
+ */
+self.ls = ls;
 
 /* Legacy exported object */
 self.Common = self.Common || {};

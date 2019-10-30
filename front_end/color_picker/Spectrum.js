@@ -69,8 +69,12 @@ ColorPicker.Spectrum = class extends UI.VBox {
     this._swatch = new ColorPicker.Spectrum.Swatch(toolsContainer);
 
     this._hueElement = toolsContainer.createChild('div', 'spectrum-hue');
+    this._hueElement.tabIndex = 0;
+    this._hueElement.addEventListener('keydown', this._onSliderKeydown.bind(this, positionHue.bind(this)));
     this._hueSlider = this._hueElement.createChild('div', 'spectrum-slider');
     this._alphaElement = toolsContainer.createChild('div', 'spectrum-alpha');
+    this._alphaElement.tabIndex = 0;
+    this._alphaElement.addEventListener('keydown', this._onSliderKeydown.bind(this, positionAlpha.bind(this)));
     this._alphaElementBackground = this._alphaElement.createChild('div', 'spectrum-alpha-background');
     this._alphaSlider = this._alphaElement.createChild('div', 'spectrum-slider');
 
@@ -184,10 +188,28 @@ ColorPicker.Spectrum = class extends UI.VBox {
      * @this {ColorPicker.Spectrum}
      */
     function dragStart(callback, event) {
-      this._hueAlphaLeft = this._hueElement.totalOffsetLeft();
       this._colorOffset = this._colorElement.totalOffset();
       callback(event);
       return true;
+    }
+
+    /**
+     * @param {!Element} element
+     * @param {!Event} event
+     * @return {number};
+     */
+    function getUpdatedSliderPosition(element, event) {
+      const elementPosition = element.getBoundingClientRect();
+      switch (event.key) {
+        case 'ArrowLeft':
+        case 'ArrowDown':
+          return elementPosition.left - 1;
+        case 'ArrowRight':
+        case 'ArrowUp':
+          return elementPosition.right + 1;
+        default:
+          return event.x;
+      }
     }
 
     /**
@@ -196,7 +218,11 @@ ColorPicker.Spectrum = class extends UI.VBox {
      */
     function positionHue(event) {
       const hsva = this._hsv.slice();
-      hsva[0] = Number.constrain(1 - (event.x - this._hueAlphaLeft) / this._hueAlphaWidth, 0, 1);
+      const sliderPosition = getUpdatedSliderPosition(this._hueSlider, event);
+      const hueAlphaLeft = this._hueElement.getBoundingClientRect().left;
+      const positionFraction = (sliderPosition - hueAlphaLeft) / this._hueAlphaWidth;
+      const newHue = 1 - positionFraction;
+      hsva[0] = Number.constrain(newHue, 0, 1);
       this._innerSetColor(hsva, '', undefined /* colorName */, undefined, ColorPicker.Spectrum._ChangeSource.Other);
     }
 
@@ -205,8 +231,11 @@ ColorPicker.Spectrum = class extends UI.VBox {
      * @this {ColorPicker.Spectrum}
      */
     function positionAlpha(event) {
-      const newAlpha = Math.round((event.x - this._hueAlphaLeft) / this._hueAlphaWidth * 100) / 100;
       const hsva = this._hsv.slice();
+      const sliderPosition = getUpdatedSliderPosition(this._alphaSlider, event);
+      const hueAlphaLeft = this._hueElement.getBoundingClientRect().left;
+      const positionFraction = (sliderPosition - hueAlphaLeft) / this._hueAlphaWidth;
+      const newAlpha = Math.round(positionFraction * 100) / 100;
       hsva[3] = Number.constrain(newAlpha, 0, 1);
       this._innerSetColor(hsva, '', undefined /* colorName */, undefined, ColorPicker.Spectrum._ChangeSource.Other);
     }
@@ -271,6 +300,21 @@ ColorPicker.Spectrum = class extends UI.VBox {
     if (isEscKey(event) || isEnterOrSpaceKey(event)) {
       this._togglePalettePanel(false);
       event.consume(true);
+    }
+  }
+
+  /**
+   * @param {function(!Event)} sliderNewPosition
+   * @param {!Event} event
+   */
+  _onSliderKeydown(sliderNewPosition, event) {
+    switch (event.key) {
+      case 'ArrowLeft':
+      case 'ArrowRight':
+      case 'ArrowDown':
+      case 'ArrowUp':
+        sliderNewPosition(event);
+        event.consume(true);
     }
   }
 

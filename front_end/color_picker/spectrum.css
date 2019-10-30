@@ -50,6 +50,14 @@
     border-radius: 2px;
 }
 
+.spectrum-hue[data-keyboard-focus="true"] .spectrum-slider,
+.spectrum-alpha[data-keyboard-focus="true"] .spectrum-slider {
+  border: 1px solid var(--accent-color-hover);
+  width: 14px;
+  height: 14px;
+  border-radius: 14px;
+}
+
 .spectrum-dragger,
 .spectrum-slider {
     -webkit-user-select: none;

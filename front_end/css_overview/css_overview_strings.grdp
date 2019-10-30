@@ -3,8 +3,14 @@
   <message name="IDS_DEVTOOLS_01ac702a8b31775d1cdbc30ec453e611" desc="Label for the number of non-simple selectors in the CSS Overview report">
     Non-simple selectors
   </message>
+  <message name="IDS_DEVTOOLS_024ce32f9a4959e44181823d762a4bd3" desc="Label to explain why vertical-align values are ignored">
+    Vertical alignment applied to element which is neither inline nor table-cell
+  </message>
   <message name="IDS_DEVTOOLS_070f6fa2b6ef278eaa894fa0cd00a7d0" desc="Label for unused rules in the CSS Overview report">
     Unused rules
+  </message>
+  <message name="IDS_DEVTOOLS_075259bbfcbdbd997b9b912505d96b8a" desc="Label to explain why height values are ignored">
+    Height applied to an inline element
   </message>
   <message name="IDS_DEVTOOLS_0ea334a2748ee1170ae958009e427b10" desc="Label to explain why bottom values are ignored">
     Bottom applied to a statically positioned element
@@ -32,6 +38,9 @@
   </message>
   <message name="IDS_DEVTOOLS_35870a8141aef89d26337451a06be0d6" desc="Label for unique fill colors in the CSS Overview Panel">
     Unique fill colors: <ph name="SORTEDFILLCOLORS_LENGTH">$1s<ex>32</ex></ph>
+  </message>
+  <message name="IDS_DEVTOOLS_3c264e24d2c16a849812538b08dba8cd" desc="Label to explain why width values are ignored">
+    Width applied to an inline element
   </message>
   <message name="IDS_DEVTOOLS_4b3e6e4359cfb882a3b8b551f38a92c7" desc="Label for unique text colors in the CSS Overview Panel">
     Unique text colors: <ph name="TEXTCOLORS_LENGTH">$1s<ex>32</ex></ph>

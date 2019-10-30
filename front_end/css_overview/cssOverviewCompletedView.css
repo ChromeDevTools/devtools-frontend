@@ -68,6 +68,12 @@
   border-right: none;
 }
 
+/** Ensure links are rendered at the correct height */
+.unused-rules-grid .monospace {
+  display: block;
+  height: 18px;
+}
+
 .element-grid {
   flex: 1;
   border-left: none;

@@ -56,9 +56,9 @@ CssOverview.CSSOverviewCompletedView = class extends UI.PanelWithSidebar {
     this._sideBar.select('summary');
 
     this._unusedRulesColumns = [
-      {id: 'nodeId', title: ls`Element`, visible: true, sortable: true, weight: 10},
-      {id: 'rule', title: ls`Rule`, visible: true, sortable: true, weight: 40},
-      {id: 'reason', title: ls`Reason`, visible: true, sortable: true, weight: 50}
+      {id: 'nodeId', title: ls`Element`, visible: true, sortable: true, weight: 20},
+      {id: 'rule', title: ls`Rule`, visible: true, sortable: true, weight: 20},
+      {id: 'reason', title: ls`Reason`, visible: true, sortable: true, weight: 55}
     ];
 
     this._unusedRulesGrid = new DataGrid.SortableDataGrid(this._unusedRulesColumns);

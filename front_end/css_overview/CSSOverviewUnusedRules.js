@@ -51,7 +51,7 @@ CssOverview.CSSOverviewUnusedRules = class {
 
     if (strings[widthIdx] !== 'auto') {
       unusedRules.push({
-        reason: `Width applied to an inline element`,
+        reason: ls`Width applied to an inline element`,
         rule: `width: ${strings[widthIdx]}`,
         nodeId,
       });
@@ -59,8 +59,22 @@ CssOverview.CSSOverviewUnusedRules = class {
 
     if (strings[heightIdx] !== 'auto') {
       unusedRules.push({
-        reason: `Height applied to an inline element`,
+        reason: ls`Height applied to an inline element`,
         rule: `height: ${strings[heightIdx]}`,
+        nodeId,
+      });
+    }
+  }
+
+  static checkForInvalidVerticalAlignment(unusedRules, nodeId, strings, displayIdx, verticalAlignIdx) {
+    if (strings[displayIdx] === 'inline' || strings[displayIdx].startsWith('table')) {
+      return;
+    }
+
+    if (strings[verticalAlignIdx] !== 'baseline') {
+      unusedRules.push({
+        reason: ls`Vertical alignment applied to element which is neither inline nor table-cell`,
+        rule: `vertical-align: ${strings[verticalAlignIdx]}`,
         nodeId,
       });
     }

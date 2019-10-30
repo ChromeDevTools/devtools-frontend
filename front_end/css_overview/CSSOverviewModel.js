@@ -56,7 +56,8 @@ CssOverview.CSSOverviewModel = class extends SDK.SDKModel {
         'left',
         'display',
         'width',
-        'height'
+        'height',
+        'vertical-align'
       ]
     };
 
@@ -97,6 +98,11 @@ CssOverview.CSSOverviewModel = class extends SDK.SDKModel {
       return validNodes.has(nodeName.toLowerCase());
     };
 
+    const isTableElementWithDefaultStyles = (nodeName, display) => {
+      const validNodes = new Set(['tr', 'td', 'thead', 'tbody']);
+      return validNodes.has(nodeName.toLowerCase()) && display.startsWith('table');
+    };
+
     let elementCount = 0;
     const {documents, strings} = await this._domSnapshotAgent.invoke_captureSnapshot(snapshotConfig);
     for (const {nodes, layout} of documents) {
@@ -109,7 +115,8 @@ CssOverview.CSSOverviewModel = class extends SDK.SDKModel {
         const nodeId = nodes.backendNodeId[nodeIdx];
         const nodeName = nodes.nodeName[nodeIdx];
 
-        const [backgroundColorIdx, textColorIdx, fillIdx, borderTopWidthIdx, borderTopColorIdx, borderBottomWidthIdx, borderBottomColorIdx, borderLeftWidthIdx, borderLeftColorIdx, borderRightWidthIdx, borderRightColorIdx, fontSizeIdx, fontWeightIdx, positionIdx, topIdx, rightIdx, bottomIdx, leftIdx, displayIdx, widthIdx, heightIdx] = styles;
+        const [backgroundColorIdx, textColorIdx, fillIdx, borderTopWidthIdx, borderTopColorIdx, borderBottomWidthIdx, borderBottomColorIdx, borderLeftWidthIdx, borderLeftColorIdx, borderRightWidthIdx, borderRightColorIdx, fontSizeIdx, fontWeightIdx, positionIdx, topIdx, rightIdx, bottomIdx, leftIdx, displayIdx, widthIdx, heightIdx, verticalAlignIdx] =
+            styles;
 
         storeColor(backgroundColorIdx, nodeId, backgroundColors);
         storeColor(textColorIdx, nodeId, textColors);
@@ -154,6 +161,11 @@ CssOverview.CSSOverviewModel = class extends SDK.SDKModel {
         if (!isSVGNode(strings[nodeName]) && !isReplacedContent(strings[nodeName])) {
           CssOverview.CSSOverviewUnusedRules.checkForUnusedWidthAndHeightValues(
               unusedRules, nodeId, strings, displayIdx, widthIdx, heightIdx);
+        }
+
+        if (verticalAlignIdx !== -1 && !isTableElementWithDefaultStyles(strings[nodeName], strings[displayIdx])) {
+          CssOverview.CSSOverviewUnusedRules.checkForInvalidVerticalAlignment(
+              unusedRules, nodeId, strings, displayIdx, verticalAlignIdx);
         }
       }
     }

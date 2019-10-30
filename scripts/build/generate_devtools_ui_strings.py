@@ -9,7 +9,7 @@ import sys
 
 _HERE_PATH = os.path.abspath(os.path.dirname(__file__))
 _JS_SCRIPT_PATH = os.path.join(_HERE_PATH, 'generate_devtools_ui_strings.js')
-_SRC_PATH = os.path.normpath(os.path.join(_HERE_PATH, '..', '..', '..', '..', '..', '..'))
+_SRC_PATH = os.path.normpath(os.path.join(_HERE_PATH, '..', '..', '..', '..', '..'))
 
 sys.path.append(os.path.join(_SRC_PATH, 'third_party', 'node'))
 # pylint: disable=wrong-import-position

@@ -120,7 +120,7 @@ export function ls(strings, vararg) {
     Common._substitutionStrings.set(strings, substitutionString);
   }
   return Common.UIString(substitutionString, ...Array.prototype.slice.call(arguments, 1));
-};
+}
 
 /**
  * @param {!Array<string>|string} strings

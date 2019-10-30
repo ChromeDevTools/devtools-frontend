@@ -15,7 +15,7 @@
 }
 
 .request-initiator-view-section-title[data-keyboard-focus="true"]:focus {
-    background-color: var(--item-selection-bg-color);
+    background-color: rgba(0, 0, 0, 0.08);
 }
 
 .request-initiator-view-section-content {

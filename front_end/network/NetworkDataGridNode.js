@@ -592,7 +592,7 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
       }
       node._setIsOnInitiatorPath(showInitiatorChain);
     }
-    for (const request of initiatorGraph.initiated) {
+    for (const request of initiatorGraph.initiated.keys()) {
       if (request === this._request) {
         continue;
       }

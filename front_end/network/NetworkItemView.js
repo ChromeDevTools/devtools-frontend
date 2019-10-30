@@ -74,13 +74,15 @@ Network.NetworkItemView = class extends UI.TabbedPane {
     }
 
     this.appendTab(
+        Network.NetworkItemView.Tabs.Initiator, ls`Initiator`, new Network.RequestInitiatorView(request),
+        ls`Request initiator call stack`);
+
+    this.appendTab(
         Network.NetworkItemView.Tabs.Timing, Common.UIString('Timing'),
         new Network.RequestTimingView(request, calculator), Common.UIString('Request and response timeline'));
 
     /** @type {?Network.RequestCookiesView} */
     this._cookiesView = null;
-    /** @type {?Network.RequestInitiatorView} */
-    this._initiatorView = null;
   }
 
   /**
@@ -93,7 +95,6 @@ Network.NetworkItemView = class extends UI.TabbedPane {
     this._request.addEventListener(
         SDK.NetworkRequest.Events.ResponseHeadersChanged, this._maybeAppendCookiesPanel, this);
     this._maybeAppendCookiesPanel();
-    this._maybeAppendInitiatorPanel();
     this._selectTab();
   }
 
@@ -115,15 +116,6 @@ Network.NetworkItemView = class extends UI.TabbedPane {
       this.appendTab(
           Network.NetworkItemView.Tabs.Cookies, Common.UIString('Cookies'), this._cookiesView,
           Common.UIString('Request and response cookies'));
-    }
-  }
-
-  _maybeAppendInitiatorPanel() {
-    const initiator = this._request.initiator();
-    if (initiator && initiator.stack && !this._initiatorView) {
-      this._initiatorView = new Network.RequestInitiatorView(this._request);
-      this.appendTab(
-          Network.NetworkItemView.Tabs.Initiator, ls`Initiator`, this._initiatorView, ls`Request initiator call stack`);
     }
   }
 

@@ -442,11 +442,16 @@ ColorPicker.Spectrum = class extends UI.VBox {
           this._createPaletteColor(shades[i], undefined /* colorName */, i * 200 / shades.length + 100);
       UI.ARIAUtils.markAsButton(shadeElement);
       UI.ARIAUtils.setAccessibleName(shadeElement, ls`Color ${shades[i]}`);
+      shadeElement.tabIndex = -1;
       shadeElement.addEventListener('mousedown', this._paletteColorSelected.bind(this, shades[i], shades[i], false));
+      shadeElement.addEventListener(
+          'keydown', this._onShadeColorKeydown.bind(this, shades[i], shades[i], false, colorElement));
       this._shadesContainer.appendChild(shadeElement);
     }
 
-    this._shadesContainer.focus();
+    if (this._shadesContainer.childNodes.length > 0) {
+      this._shadesContainer.childNodes[this._shadesContainer.childNodes.length - 1].focus();
+    }
     this._shadesCloseHandler = closeLightnessShades.bind(this, colorElement);
     this._shadesContainer.ownerDocument.addEventListener('mousedown', this._shadesCloseHandler, true);
   }
@@ -689,6 +694,30 @@ ColorPicker.Spectrum = class extends UI.VBox {
       event.target.previousElementSibling.focus();
       event.consume(true);
     } else if (event.key === 'ArrowRight' && event.target.nextElementSibling) {
+      event.target.nextElementSibling.focus();
+      event.consume(true);
+    }
+  }
+
+  /**
+   * @param {string} colorText
+   * @param {(string|undefined)} colorName
+   * @param {boolean} matchUserFormat
+   * @param {!Element} colorElement
+   * @param {!Event} event
+   */
+  _onShadeColorKeydown(colorText, colorName, matchUserFormat, colorElement, event) {
+    if (isEnterOrSpaceKey(event)) {
+      this._paletteColorSelected(colorText, colorName, matchUserFormat);
+      event.consume(true);
+    } else if (isEscKey(event) || event.key === 'Tab') {
+      colorElement.focus();
+      this._shadesCloseHandler();
+      event.consume(true);
+    } else if (event.key === 'ArrowUp' && event.target.previousElementSibling) {
+      event.target.previousElementSibling.focus();
+      event.consume(true);
+    } else if (event.key === 'ArrowDown' && event.target.nextElementSibling) {
       event.target.nextElementSibling.focus();
       event.consume(true);
     }

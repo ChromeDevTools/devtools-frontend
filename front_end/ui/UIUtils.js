@@ -1168,11 +1168,13 @@ export class LongClickController extends Common.Object {
   /**
    * @param {!Element} element
    * @param {function(!Event)} callback
+   * @param {function(!Event)} isEditKeyFunc
    */
-  constructor(element, callback) {
+  constructor(element, callback, isEditKeyFunc = event => isEnterOrSpaceKey(event)) {
     super();
     this._element = element;
     this._callback = callback;
+    this._editKey = isEditKeyFunc;
     this._enable();
   }
 
@@ -1187,10 +1189,15 @@ export class LongClickController extends Common.Object {
     if (this._longClickData) {
       return;
     }
+    const boundKeyDown = keyDown.bind(this);
+    const boundKeyUp = keyUp.bind(this);
     const boundMouseDown = mouseDown.bind(this);
     const boundMouseUp = mouseUp.bind(this);
     const boundReset = this.reset.bind(this);
 
+
+    this._element.addEventListener('keydown', boundKeyDown, false);
+    this._element.addEventListener('keyup', boundKeyUp, false);
     this._element.addEventListener('mousedown', boundMouseDown, false);
     this._element.addEventListener('mouseout', boundReset, false);
     this._element.addEventListener('mouseup', boundMouseUp, false);
@@ -1202,12 +1209,35 @@ export class LongClickController extends Common.Object {
      * @param {!Event} e
      * @this {LongClickController}
      */
+    function keyDown(e) {
+      if (this._editKey(e)) {
+        e.consume(true);
+        const callback = this._callback;
+        this._longClickInterval = setTimeout(callback.bind(null, e), LongClickController.TIME_MS);
+      }
+    }
+
+    /**
+     * @param {!Event} e
+     * @this {UI.LongClickController}
+     */
+    function keyUp(e) {
+      if (this._editKey(e)) {
+        e.consume(true);
+        this.reset();
+      }
+    }
+
+    /**
+     * @param {!Event} e
+     * @this {UI.LongClickController}
+     */
     function mouseDown(e) {
       if (e.which !== 1) {
         return;
       }
       const callback = this._callback;
-      this._longClickInterval = setTimeout(callback.bind(null, e), 200);
+      this._longClickInterval = setTimeout(callback.bind(null, e), LongClickController.TIME_MS);
     }
 
     /**
@@ -1233,6 +1263,8 @@ export class LongClickController extends Common.Object {
     delete this._longClickData;
   }
 }
+
+LongClickController.TIME_MS = 200;
 
 /**
  * @param {!Document} document

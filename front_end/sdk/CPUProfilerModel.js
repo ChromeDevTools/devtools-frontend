@@ -131,12 +131,12 @@ export default class CPUProfilerModel extends SDK.SDKModel {
   }
 
   /**
+   * @param {boolean} jsCoveragePerBlock - Collect per Block coverage if `true`, per function coverage otherwise.
    * @return {!Promise}
    */
-  startPreciseCoverage() {
+  startPreciseCoverage(jsCoveragePerBlock) {
     const callCount = false;
-    const detailed = false;  // Request per-function coverage.
-    return this._profilerAgent.startPreciseCoverage(callCount, detailed);
+    return this._profilerAgent.startPreciseCoverage(callCount, jsCoveragePerBlock);
   }
 
   /**

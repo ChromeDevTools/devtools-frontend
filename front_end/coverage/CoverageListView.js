@@ -227,7 +227,7 @@ Coverage.CoverageListView = class extends UI.VBox {
     if (type & Coverage.CoverageType.JavaScriptCoarse) {
       types.push(Common.UIString('JS (per function)'));
     } else if (type & Coverage.CoverageType.JavaScript) {
-      types.push(Common.UIString('JS'));
+      types.push(Common.UIString('JS (per block)'));
     }
     return types.join('+');
   }

@@ -24,6 +24,9 @@
   <message name="IDS_DEVTOOLS_59c4ad3f3cb3d812d68fab7a354d4a63" desc="Text that appears in a tooltip for the resource types filter.">
     Fonts
   </message>
+  <message name="IDS_DEVTOOLS_5bc06f5800d415cc95e1349edbaca425" desc="Text that appears on a button for the JavaScript resource type filter.">
+    JS
+  </message>
   <message name="IDS_DEVTOOLS_7a48ae1b7387f8a8159c488fbd850021" desc="Text that appears on a button for the document resource type filter.">
     Doc
   </message>
@@ -33,7 +36,7 @@
   <message name="IDS_DEVTOOLS_8cf6dd5e7b4fe7b6df3319b9803278f3" desc="Name of a network resource type">
     EventSource
   </message>
-  <message name="IDS_DEVTOOLS_a83f1ca5ad00b39773d9e6a26b0e70b2" desc="Text that appears in a tooltip for the javascript types filter.">
+  <message name="IDS_DEVTOOLS_a83f1ca5ad00b39773d9e6a26b0e70b2" desc="Text that appears in a tooltip for the JavaScript types filter.">
     Scripts
   </message>
   <message name="IDS_DEVTOOLS_bef61d7d03206d267fdbab45fdca247d" desc="Name of a network resource type">

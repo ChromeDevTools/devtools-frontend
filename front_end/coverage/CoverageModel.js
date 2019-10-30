@@ -56,9 +56,10 @@ Coverage.CoverageModel = class extends SDK.SDKModel {
   }
 
   /**
+   * @param {boolean} jsCoveragePerBlock - Collect per Block coverage if `true`, per function coverage otherwise.
    * @return {!Promise<boolean>}
    */
-  async start() {
+  async start(jsCoveragePerBlock) {
     if (this._suspensionState !== Coverage.SuspensionState.Active) {
       throw Error('Cannot start CoverageModel while it is not active.');
     }
@@ -70,7 +71,7 @@ Coverage.CoverageModel = class extends SDK.SDKModel {
       promises.push(this._cssModel.startCoverage());
     }
     if (this._cpuProfilerModel) {
-      promises.push(this._cpuProfilerModel.startPreciseCoverage());
+      promises.push(this._cpuProfilerModel.startPreciseCoverage(jsCoveragePerBlock));
     }
 
     await Promise.all(promises);

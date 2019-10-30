@@ -7,10 +7,14 @@
  * @suppress {accessControls}
  */
 
-CoverageTestRunner.startCoverage = async function() {
+/**
+ * @param jsCoveragePerBlock - Collect per Block coverage if `true`, per function coverage otherwise.
+ * @return {!Promise}
+ */
+CoverageTestRunner.startCoverage = async function(jsCoveragePerBlock) {
   UI.viewManager.showView('coverage');
   const coverageView = self.runtime.sharedInstance(Coverage.CoverageView);
-  await coverageView._startRecording();
+  await coverageView._startRecording({reload: false, jsCoveragePerBlock});
 };
 
 /**

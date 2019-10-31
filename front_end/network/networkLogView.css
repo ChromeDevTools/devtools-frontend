@@ -29,7 +29,7 @@
  */
 
 .network-log-grid.data-grid {
-    border: none;
+    border: none !important;
     flex: auto;
 }
 

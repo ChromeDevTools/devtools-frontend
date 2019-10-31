@@ -27,6 +27,8 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import {ls} from './UIString.js';
+
 /**
  * @unrestricted
  */

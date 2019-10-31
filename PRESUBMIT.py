@@ -122,7 +122,7 @@ def _CheckFormat(input_api, output_api):
     popen(format_args).communicate()
 
     return [
-        output_api.PresubmitError('ERROR: Found formatting violations in third_party/blink/renderer/devtools.\n'
+        output_api.PresubmitError('ERROR: Found formatting violations.\n'
                                   'Ran clang-format on diff\n'
                                   'Use git status to check the formatting changes'),
         output_api.PresubmitError(format_out),

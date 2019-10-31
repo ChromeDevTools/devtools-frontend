@@ -26,6 +26,7 @@ Network.NetworkOverview = class extends PerfUI.TimelineOverviewBase {
 
   setHighlightedRequest(request) {
     this._highlightedRequest = request;
+    this.scheduleUpdate();
   }
 
   /**

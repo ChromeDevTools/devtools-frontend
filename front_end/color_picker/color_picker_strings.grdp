@@ -21,8 +21,14 @@
   <message name="IDS_DEVTOOLS_3b98e2dffc6cb06a89dcb0d5c60a0206" desc="Label aa text content in Contrast Details of the Color Picker">
     AA
   </message>
+  <message name="IDS_DEVTOOLS_58c9566f3c750ce7147b045fdd14202b" desc="Aria label for HEX color format input">
+    HEX
+  </message>
   <message name="IDS_DEVTOOLS_74421a69b1bc40c166be4de5caf0b036" desc="Text of a DOM element in Contrast Details of the Color Picker">
     Contrast ratio
+  </message>
+  <message name="IDS_DEVTOOLS_8ddbf32368d9216105c893235f8f634e" desc="Aria label for color format switcher button in Color Picker">
+    Change color format
   </message>
   <message name="IDS_DEVTOOLS_a03d142f9d52eae6793de3951b4b58f9" desc="Screen reader reads this text when palette switcher button receives focus">
     Preview palettes
@@ -44,6 +50,9 @@
   </message>
   <message name="IDS_DEVTOOLS_d1e2107b34fa404fabd54bcce4fd858f" desc="Tooltip text that appears when hovering over the largeicon add button in the Spectrum of the Color Picker">
     Add to palette
+  </message>
+  <message name="IDS_DEVTOOLS_df5b49c2e7eb48841103d5bec2d12ffd" desc="Aria label for RGBA and HSLA color format inputs in Color Picker">
+    <ph name="THIS__TEXTLABELS_TEXTCONTENT_CHARAT_I_">$1s<ex>R</ex></ph> in <ph name="THIS__TEXTLABELS_TEXTCONTENT">$2s<ex>RGBA</ex></ph>
   </message>
   <message name="IDS_DEVTOOLS_e1faffb3e614e6c2fba74296962386b7" desc="Label aaa text content in Contrast Details of the Color Picker">
     AAA

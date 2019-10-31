@@ -85,6 +85,8 @@ ColorPicker.Spectrum = class extends UI.VBox {
       this._formatViewSwitch();
       event.consume(true);
     });
+    UI.ARIAUtils.setAccessibleName(displaySwitcher, ls`Change color format`);
+    UI.ARIAUtils.markAsButton(displaySwitcher);
 
     // RGBA/HSLA display.
     this._displayContainer = toolsContainer.createChild('div', 'spectrum-text source-code');
@@ -111,7 +113,8 @@ ColorPicker.Spectrum = class extends UI.VBox {
     this._hexValue.addEventListener('mousewheel', this._inputChanged.bind(this), false);
 
     const label = this._hexContainer.createChild('div', 'spectrum-text-label');
-    label.textContent = 'HEX';
+    label.textContent = ls`HEX`;
+    UI.ARIAUtils.setAccessibleName(this._hexValue, label.textContent);
 
     UI.installDragHandle(
         this._hueElement, dragStart.bind(this, positionHue.bind(this)), positionHue.bind(this), null, 'pointer',
@@ -913,11 +916,17 @@ ColorPicker.Spectrum = class extends UI.VBox {
       this._textLabels.textContent = isRgb ? 'RGBA' : 'HSLA';
       const colorValues = isRgb ? this._color().canonicalRGBA() : this._color().canonicalHSLA();
       for (let i = 0; i < 3; ++i) {
+        UI.ARIAUtils.setAccessibleName(
+            this._textValues[i],
+            /** R in RGBA */ ls`${this._textLabels.textContent.charAt(i)} in ${this._textLabels.textContent}`);
         this._textValues[i].value = colorValues[i];
         if (!isRgb && (i === 1 || i === 2)) {
           this._textValues[i].value += '%';
         }
       }
+      UI.ARIAUtils.setAccessibleName(
+          this._textValues[3],
+          /** A in RGBA */ ls`${this._textLabels.textContent.charAt(3)} in ${this._textLabels.textContent}`);
       this._textValues[3].value = Math.round(colorValues[3] * 100) / 100;
     }
   }

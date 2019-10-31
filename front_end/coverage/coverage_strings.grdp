@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <grit-part>
+  <message name="IDS_DEVTOOLS_05c0232ed8f68dccdc4d5e2516644b5a" desc="Text in Coverage List View of the Coverage tab">
+    Per block
+  </message>
   <message name="IDS_DEVTOOLS_0975cd80b6efbfa27546aa1567bc8143" desc="Title of an action under the Performance category that can be invoked through the Command Menu">
     Instrument coverage
   </message>
@@ -15,14 +18,17 @@
   <message name="IDS_DEVTOOLS_26e2927eed5054f8ec4eaecf90e3614d" desc="Message in Coverage View of the Coverage tab">
     Click the reload button <ph name="RELOADBUTTON">$1s<ex>record button icon</ex></ph> to reload and start capturing coverage.
   </message>
-  <message name="IDS_DEVTOOLS_3c9a5fff80df025e13bf402d77269d6f" desc="Tooltip text for the bar in the coverage list view of the coverage tool that displays the illustrates the relation between used and unused bytes.">
+  <message name="IDS_DEVTOOLS_3c9a5fff80df025e13bf402d77269d6f" desc="Tooltip text for the bar in the coverage list view of the coverage tool that illustrates the relation between used and unused bytes.">
     <ph name="THIS__COVERAGEINFO_UNUSEDSIZE__">$1s<ex>100000</ex></ph> bytes (<ph name="UNUSEDPERCENT">$2s<ex>88%</ex></ph>) belong to functions that have not (yet) been executed.
   </message>
-  <message name="IDS_DEVTOOLS_42ce18a630cd3f3bb68a747c557e2b03" desc="Tooltip text for the bar in the coverage list view of the coverage tool that displays the illustrates the relation between used and unused bytes.">
+  <message name="IDS_DEVTOOLS_42ce18a630cd3f3bb68a747c557e2b03" desc="Tooltip text for the bar in the coverage list view of the coverage tool that illustrates the relation between used and unused bytes.">
     <ph name="THIS__COVERAGEINFO_USEDSIZE__">$1s<ex>100000</ex></ph> bytes (<ph name="USEDPERCENT">$2s<ex>88%</ex></ph>) belong to functions that have executed at least once.
   </message>
   <message name="IDS_DEVTOOLS_44ea86aada1381cf21cf9899b3dd32fe" desc="Label for the type filter in the Converage Panel">
     Filter coverage by type
+  </message>
+  <message name="IDS_DEVTOOLS_489c66d1c281f01d6ba6c2ff31207892" desc="Tooltip text for the bar in the coverage list view of the coverage tool that illustrates the relation between used and unused bytes.">
+    <ph name="THIS__COVERAGEINFO_UNUSEDSIZE__">$1s<ex>100000</ex></ph> bytes (<ph name="UNUSEDPERCENT">$2s<ex>88%</ex></ph>) belong to blocks of JavaScript that have not (yet) been executed.
   </message>
   <message name="IDS_DEVTOOLS_59bdd6e83a19520c44717bfc6f16efa5" desc="Text in Coverage List View of the Coverage tab">
     JS (per block)
@@ -32,6 +38,9 @@
   </message>
   <message name="IDS_DEVTOOLS_73af525212a812236f1a3618e9cfa717" desc="Tooltip text that appears when hovering over the largeicon download button in the Coverage View of the Coverage tab">
     Export...
+  </message>
+  <message name="IDS_DEVTOOLS_7891df934bf19f4585ef11831f9e59bd" desc="Tooltip text for the bar in the coverage list view of the coverage tool that illustrates the relation between used and unused bytes.">
+    <ph name="THIS__COVERAGEINFO_USEDSIZE__">$1s<ex>100000</ex></ph> bytes (<ph name="USEDPERCENT">$2s<ex>88%</ex></ph>) belong to blocks of JavaScript that have executed at least once.
   </message>
   <message name="IDS_DEVTOOLS_8324d82d6d4baaa0405621a1a15f365a" desc="Title of an action under the Performance category that can be invoked through the Command Menu">
     Stop instrumenting coverage and show results
@@ -45,9 +54,15 @@
   <message name="IDS_DEVTOOLS_95dd3a82779cda9791819969c51c97d3" desc="Message in Coverage View of the Coverage tab">
     Click the record button <ph name="RECORD_BUTTON_ICON">$1s<ex>record button icon</ex></ph> to start capturing coverage.
   </message>
+  <message name="IDS_DEVTOOLS_9701031c88ee71479025c1ff34a9a724" desc="Cell title in Coverage List View of the Coverage tab">
+    JS coverage with per block granularity: Once a block of JavaScript was executed, that block is marked as covered.
+  </message>
   <message name="IDS_DEVTOOLS_977836743b030a9eda23b81f3c7b6193" desc="Footer message in Coverage View of the Coverage tab">
     <ph name="NUMBER_BYTESTOSTRING_USED_">$1s<ex>1.5 MB</ex></ph> of <ph name="NUMBER_BYTESTOSTRING_TOTAL_">$2s<ex>2.1 MB</ex></ph> (<ph name="PERCENTUSED">$3s<ex>71%</ex></ph>%) used so far.
         <ph name="NUMBER_BYTESTOSTRING_UNUSED_">$4s<ex>29%</ex></ph> unused.
+  </message>
+  <message name="IDS_DEVTOOLS_9cbded4db6983462972dedf22e87ce0b" desc="Text in Coverage List View of the Coverage tab">
+    Per function
   </message>
   <message name="IDS_DEVTOOLS_abf40479a73de9470180b5ad67707286" desc="Text in Coverage List View of the Coverage tab">
     JS (per function)
@@ -57,5 +72,8 @@
   </message>
   <message name="IDS_DEVTOOLS_d98bd5257b9f29c266777264411735a3" desc="Tooltip text that appears on the setting when hovering over it in Coverage View of the Coverage tab">
     Include extension content scripts
+  </message>
+  <message name="IDS_DEVTOOLS_fd645ae7bb063289a70dc0ac20655d51" desc="Tooltip in Coverage List View of the Coverage tab for selecting JavaScript coverage mode">
+    Choose coverage granularity: Per function has low overhead, per block has significant overhead.
   </message>
 </grit-part>

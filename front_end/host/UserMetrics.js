@@ -138,6 +138,7 @@ export const Action = {
   AuditsViewTrace: 32,
   FilmStripStartedRecording: 33,
   CoverageReportFiltered: 34,
+  CoverageStartedPerBlock: 35,
 };
 
 export const _PanelCodes = {

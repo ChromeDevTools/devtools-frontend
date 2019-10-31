@@ -18,6 +18,26 @@ Coverage.CoverageView = class extends UI.VBox {
     const toolbarContainer = this.contentElement.createChild('div', 'coverage-toolbar-container');
     const toolbar = new UI.Toolbar('coverage-toolbar', toolbarContainer);
 
+    this._coverageType = null;
+    this._coverageTypeComboBox = new UI.ToolbarComboBox(
+        null, ls`Choose coverage granularity: Per function has low overhead, per block has significant overhead.`);
+    const coverageTypes = [
+      {
+        label: ls`Per function`,
+        value: Coverage.CoverageType.JavaScriptPerFunction,
+      },
+      {
+        label: ls`Per block`,
+        value: Coverage.CoverageType.JavaScriptPerBlock,
+      },
+    ];
+    for (const type of coverageTypes) {
+      this._coverageTypeComboBox.addOption(this._coverageTypeComboBox.createOption(type.label, type.value));
+    }
+    this._coverageTypeComboBox.setSelectedIndex(0);
+    this._coverageTypeComboBox.setEnabled(true);
+    toolbar.appendToolbarItem(this._coverageTypeComboBox);
+
     this._toggleRecordAction =
         /** @type {!UI.Action }*/ (UI.actionRegistry.action('coverage.toggle-recording'));
     this._toggleRecordButton = UI.Toolbar.createActionButton(this._toggleRecordAction);
@@ -66,7 +86,7 @@ Coverage.CoverageView = class extends UI.VBox {
       },
       {
         label: ls`JavaScript`,
-        value: Coverage.CoverageType.JavaScript | Coverage.CoverageType.JavaScriptCoarse,
+        value: Coverage.CoverageType.JavaScriptPerBlock | Coverage.CoverageType.JavaScriptPerFunction,
       },
     ];
     for (const option of options) {
@@ -138,10 +158,26 @@ Coverage.CoverageView = class extends UI.VBox {
     const enable = !this._toggleRecordAction.toggled();
 
     if (enable) {
-      this._startRecording({reload: false, jsCoveragePerBlock: false});
+      this._startRecording({reload: false, jsCoveragePerBlock: this.isBlockCoverageSelected()});
     } else {
       this.stopRecording();
     }
+  }
+
+  /**
+   * @return {boolean}
+   */
+  isBlockCoverageSelected() {
+    const coverageType = this._coverageTypeComboBox.selectedOption().value;
+    return coverageType === Coverage.CoverageType.JavaScriptPerBlock;
+  }
+
+  /**
+   * @param {boolean} jsCoveragePerBlock
+   */
+  _selectCoverageType(jsCoveragePerBlock) {
+    const selectedIndex = jsCoveragePerBlock ? 1 : 0;
+    this._coverageTypeComboBox.setSelectedIndex(selectedIndex);
   }
 
   async ensureRecordingStarted() {
@@ -172,10 +208,15 @@ Coverage.CoverageView = class extends UI.VBox {
       this._model = mainTarget.model(Coverage.CoverageModel);
     }
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.CoverageStarted);
-    const success = await this._model.start(jsCoveragePerBlock === true);
+    if (jsCoveragePerBlock) {
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.CoverageStartedPerBlock);
+    }
+    const success = await this._model.start(jsCoveragePerBlock);
     if (!success) {
       return;
     }
+    this._selectCoverageType(jsCoveragePerBlock);
+
     this._model.addEventListener(Coverage.CoverageModel.Events.CoverageUpdated, this._onCoverageDataReceived, this);
     this._resourceTreeModel = /** @type {?SDK.ResourceTreeModel} */ (mainTarget.model(SDK.ResourceTreeModel));
     if (this._resourceTreeModel) {
@@ -192,6 +233,7 @@ Coverage.CoverageView = class extends UI.VBox {
       this._toggleRecordButton.setEnabled(true);
       this._toggleRecordButton.setVisible(true);
     }
+    this._coverageTypeComboBox.setEnabled(false);
     this._filterInput.setEnabled(true);
     this._filterByTypeComboBox.setEnabled(true);
     if (this._landingPage.isShowing()) {
@@ -219,6 +261,7 @@ Coverage.CoverageView = class extends UI.VBox {
     await this._model.stop();
     this._model.removeEventListener(Coverage.CoverageModel.Events.CoverageUpdated, this._onCoverageDataReceived, this);
     this._toggleRecordAction.setToggled(false);
+    this._coverageTypeComboBox.setEnabled(true);
     if (this._startWithReloadButton) {
       this._startWithReloadButton.setEnabled(true);
       this._startWithReloadButton.setVisible(true);
@@ -351,7 +394,7 @@ Coverage.CoverageView.ActionDelegate = class {
         coverageView._toggleRecording();
         break;
       case 'coverage.start-with-reload':
-        coverageView._startRecording({reload: true, jsCoveragePerBlock: false});
+        coverageView._startRecording({reload: true, jsCoveragePerBlock: coverageView.isBlockCoverageSelected()});
         break;
       default:
         console.assert(false, `Unknown action: ${actionId}`);

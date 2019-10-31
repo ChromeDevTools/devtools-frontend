@@ -463,7 +463,7 @@ async function parseGRDPFile(filePath) {
   // match[1]: 'IDS_DEVTOOLS_md5_hash'
   // match[2]: 'Description of this message'
   // match[3]: '     Message text here with optional placeholders <ph name="phname">$1s</ph>\n  '
-  const messageRegex = new RegExp('<message[^>]*name="([^"]*)"[^>]*desc="([^"]*)"[^>]*>\s*\n(.*?)<\/message>', 'gms');
+  const messageRegex = new RegExp('<message[^>]*name="([^"]*)"[^>]*desc="([^"]*)"[^>]*>\s*\r?\n(.*?)<\/message>', 'gms');
   let match;
   while ((match = messageRegex.exec(fileContent)) !== null) {
     const line = localizationUtils.lineNumberOfIndex(fileContent, match.index);

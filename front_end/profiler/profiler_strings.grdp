@@ -21,6 +21,9 @@
   <message name="IDS_DEVTOOLS_05ce989cc1015cd221844376fc4cf206" desc="Profile title in Heap Snapshot View of a profiler tool">
     Snapshot <ph name="PROFILE_UID">$1d<ex>1</ex></ph>
   </message>
+  <message name="IDS_DEVTOOLS_072601db05446105324a952ed068aa6c" desc="A context menu item in the Heap Profiler Panel of a profiler tool">
+    Reveal object &apos;<ph name="MATCH_GROUPS_OBJECTNAME">$1s<ex>SomeClassConstructor</ex></ph>&apos; with id @<ph name="MATCH_GROUPS_SNAPSHOTNODEID">$2s<ex>12345</ex></ph> in Summary view
+  </message>
   <message name="IDS_DEVTOOLS_07b20ae970048fc2002d756f27acc863" desc="Text in Heap Profile View of a profiler tool">
     Renderer
   </message>

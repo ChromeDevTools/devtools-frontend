@@ -49,6 +49,8 @@ Network.NetworkPanel = class extends UI.Panel {
     this._filmStripView = null;
     /** @type {?Network.NetworkPanel.FilmStripRecorder} */
     this._filmStripRecorder = null;
+    /** @type {?SDK.NetworkRequest} */
+    this._currentRequest = null;
 
     const panel = new UI.VBox();
 
@@ -128,7 +130,7 @@ Network.NetworkPanel = class extends UI.Panel {
     this._splitWidget.setMainWidget(this._detailsWidget);
 
     this._closeButtonElement = createElement('div', 'dt-close-button');
-    this._closeButtonElement.addEventListener('click', this._showRequest.bind(this, null), false);
+    this._closeButtonElement.addEventListener('click', this._hideRequestPanel.bind(this), false);
     this._closeButtonElement.style.margin = '0 5px';
 
     this._networkLogShowOverviewSetting.addChangeListener(this._toggleShowOverview, this);
@@ -150,6 +152,8 @@ Network.NetworkPanel = class extends UI.Panel {
         SDK.ResourceTreeModel, SDK.ResourceTreeModel.Events.WillReloadPage, this._willReloadPage, this);
     SDK.targetManager.addModelListener(SDK.ResourceTreeModel, SDK.ResourceTreeModel.Events.Load, this._load, this);
     this._networkLogView.addEventListener(Network.NetworkLogView.Events.RequestSelected, this._onRequestSelected, this);
+    this._networkLogView.addEventListener(
+        Network.NetworkLogView.Events.RequestActivated, this._onRequestActivated, this);
     SDK.networkLog.addEventListener(SDK.NetworkLog.Events.RequestAdded, this._onUpdateRequest, this);
     SDK.networkLog.addEventListener(SDK.NetworkLog.Events.RequestUpdated, this._onUpdateRequest, this);
     SDK.networkLog.addEventListener(SDK.NetworkLog.Events.Reset, this._onNetworkLogReset, this);
@@ -432,7 +436,7 @@ Network.NetworkPanel = class extends UI.Panel {
    * @param {!SDK.NetworkRequest} request
    */
   revealAndHighlightRequest(request) {
-    this._showRequest(null);
+    this._hideRequestPanel();
     if (request) {
       this._networkLogView.revealAndHighlightRequest(request);
     }
@@ -460,29 +464,60 @@ Network.NetworkPanel = class extends UI.Panel {
    */
   _onRequestSelected(event) {
     const request = /** @type {?SDK.NetworkRequest} */ (event.data);
-    this._showRequest(request);
-    this._networkOverview.setHighlightedRequest(request);
+    this._currentRequest = request;
+    this._updateNetworkItemView();
   }
 
   /**
-   * @param {?SDK.NetworkRequest} request
+   * @param {!Common.Event} event
    */
-  _showRequest(request) {
+  _onRequestActivated(event) {
+    const showPanel = /** @type {boolean} */ (event.data);
+    if (showPanel) {
+      this._showRequestPanel();
+    } else {
+      this._hideRequestPanel();
+    }
+  }
+
+  _showRequestPanel() {
+    this._clearNetworkItemView();
+    if (this._currentRequest) {
+      this._createNetworkItemView();
+    }
+    this._updateUI();
+  }
+
+  _hideRequestPanel() {
+    this._clearNetworkItemView();
+    this._splitWidget.hideMain();
+    this._networkLogView.resetFocus();
+    this._updateUI();
+  }
+
+  _updateNetworkItemView() {
+    if (this._splitWidget.showMode() === UI.SplitWidget.ShowMode.Both) {
+      this._clearNetworkItemView();
+      this._createNetworkItemView();
+      this._updateUI();
+    }
+  }
+
+  _clearNetworkItemView() {
     if (this._networkItemView) {
       this._networkItemView.detach();
       this._networkItemView = null;
     }
+  }
 
-    if (request) {
-      this._networkItemView = new Network.NetworkItemView(request, this._networkLogView.timeCalculator());
-      this._networkItemView.leftToolbar().appendToolbarItem(new UI.ToolbarItem(this._closeButtonElement));
-      this._networkItemView.show(this._detailsWidget.element);
-      this._splitWidget.showBoth();
-    } else {
-      this._splitWidget.hideMain();
-      this._networkLogView.clearSelection();
+  _createNetworkItemView() {
+    if (!this._currentRequest) {
+      return;
     }
-    this._updateUI();
+    this._networkItemView = new Network.NetworkItemView(this._currentRequest, this._networkLogView.timeCalculator());
+    this._networkItemView.leftToolbar().appendToolbarItem(new UI.ToolbarItem(this._closeButtonElement));
+    this._networkItemView.show(this._detailsWidget.element);
+    this._splitWidget.showBoth();
   }
 
   _updateUI() {
@@ -757,7 +792,7 @@ Network.NetworkPanel.ActionDelegate = class {
         if (!panel._networkItemView) {
           return false;
         }
-        panel._showRequest(null);
+        panel._hideRequestPanel();
         return true;
       case 'network.search':
         const selection = UI.inspectorView.element.window().getSelection();

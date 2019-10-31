@@ -7,10 +7,15 @@ Helper to manage DEPS.
 
 import os
 import os.path as path
-import subprocess
-import devtools_paths
-import shutil
 import json
+import shutil
+import subprocess
+import sys
+
+scripts_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(scripts_path)
+
+import devtools_paths
 
 # List all DEPS here.
 DEPS = {

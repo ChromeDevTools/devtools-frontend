@@ -181,7 +181,7 @@ hooks = [
     'pattern': '.',
     'condition': 'host_os == "linux"',
     'action': [ 'python',
-                'devtools-frontend/scripts/download_chromium.py',
+                'devtools-frontend/scripts/deps/download_chromium.py',
                 'https://commondatastorage.googleapis.com/chromium-browser-snapshots/Linux_x64/' + Var('chromium_build') + '/chrome-linux.zip',
                 'devtools-frontend/third_party/chrome',
                 'chrome-linux/chrome',

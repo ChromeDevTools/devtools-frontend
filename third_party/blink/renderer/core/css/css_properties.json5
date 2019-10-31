@@ -354,9 +354,9 @@
       physical_group: {
         valid_type: "str",
         valid_values: ["border", "border-color", "border-style", "border-width",
-                       "inset", "margin", "max-size", "min-size", "overflow",
-                       "padding", "scroll-margin", "scroll-padding", "size",
-                       "visited-border-color"],
+                       "inset", "intrinsic-size", "margin", "max-size",
+                       "min-size", "overflow", "padding", "scroll-margin",
+                       "scroll-padding", "size", "visited-border-color"],
       }
     },
 
@@ -1980,6 +1980,50 @@
       name_for_methods: "RespectImageOrientation",
       type_name: "bool",
       converter: "ConvertImageOrientation",
+    },
+    {
+      name: "intrinsic-block-size",
+      property_methods: ["ParseSingleValue"],
+      direction_aware_options: {
+        resolver: "block",
+        physical_group: "intrinsic-size"
+      },
+      runtime_flag: "CSSIntrinsicSize"
+    },
+    {
+      name: "intrinsic-height",
+      property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
+      interpolable: true,
+      field_group: "box",
+      field_template: "external",
+      keywords: ["auto", "legacy"],
+      default_value: "IntrinsicLength()",
+      type_name: "IntrinsicLength",
+      converter: "ConvertIntrinsicLength",
+      include_paths: ["third_party/blink/renderer/core/style/intrinsic_length.h"],
+      runtime_flag: "CSSIntrinsicSize"
+    },
+    {
+      name: "intrinsic-inline-size",
+      property_methods: ["ParseSingleValue"],
+      direction_aware_options: {
+        resolver: "inline",
+        physical_group: "intrinsic-size"
+      },
+      runtime_flag: "CSSIntrinsicSize"
+    },
+    {
+      name: "intrinsic-width",
+      property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
+      interpolable: true,
+      field_group: "box",
+      field_template: "external",
+      keywords: ["auto", "legacy"],
+      default_value: "IntrinsicLength()",
+      type_name: "IntrinsicLength",
+      converter: "ConvertIntrinsicLength",
+      include_paths: ["third_party/blink/renderer/core/style/intrinsic_length.h"],
+      runtime_flag: "CSSIntrinsicSize"
     },
     {
       name: "isolation",
@@ -4860,18 +4904,6 @@
       property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
     },
     {
-      name: "content-size",
-      property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
-      field_group: "box",
-      field_template: "external",
-      keywords: ["none"],
-      default_value: "ContentSize()",
-      type_name: "ContentSize",
-      converter: "ConvertContentSize",
-      include_paths: ["third_party/blink/renderer/core/style/content_size.h"],
-      runtime_flag: "CSSContentSize"
-    },
-    {
       name: "flex",
       longhands: ["flex-grow", "flex-shrink", "flex-basis"],
       property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
@@ -4986,6 +5018,12 @@
       longhands: ["inset-inline-start", "inset-inline-end"],
       property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
       runtime_flag: "CSSLogical",
+    },
+    {
+      name: "intrinsic-size",
+      longhands: ["intrinsic-width", "intrinsic-height"],
+      property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
+      runtime_flag: "CSSIntrinsicSize"
     },
     {
       name: "list-style",

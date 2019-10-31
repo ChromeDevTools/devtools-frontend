@@ -3451,7 +3451,6 @@ experimental domain LayerTree
         RepaintsOnScroll
         TouchEventHandler
         WheelEventHandler
-        MainThreadScrollingReason
 
   # Sticky position constraints.
   type StickyPositionConstraint extends object
@@ -3861,7 +3860,6 @@ domain Network
     enum
       Strict
       Lax
-      Extended
       None
 
   # Timing information for the request.

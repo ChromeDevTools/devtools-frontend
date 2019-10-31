@@ -34,6 +34,41 @@ for more details about the presubmit API built into gcl.
 
 import sys
 
+EXCLUSIVE_CHANGE_DIRECTORIES = [
+    [ 'third_party', 'v8' ],
+    [ 'node_modules' ],
+    [ 'OWNERS' ],
+]
+
+def _CheckChangesAreExclusiveToDirectory(input_api, output_api):
+    def IsParentDir(file, dir):
+        while file != '':
+            if file == dir:
+                return True
+            file = input_api.os_path.dirname(file)
+            print(file)
+        return False
+
+    def FileIsInDir(file, dirs):
+        for dir in dirs:
+            if IsParentDir(file, dir):
+                return True
+
+    affected_files = input_api.LocalPaths()
+    print(affected_files)
+    num_affected = len(affected_files)
+    for dirs in EXCLUSIVE_CHANGE_DIRECTORIES:
+        affected_in_dir = filter(lambda f: FileIsInDir(f, dirs), affected_files)
+        num_in_dir = len(affected_in_dir)
+        if num_in_dir == 0:
+            continue
+        if num_in_dir < num_affected:
+            return [
+                output_api.PresubmitError(
+                    'CLs that affect files in "%s" should be limited to these files/directories.' % ', '.join(dirs))
+            ]
+    return []
+
 
 def _CheckBuildGN(input_api, output_api):
     script_path = input_api.os_path.join(input_api.PresubmitLocalPath(), 'scripts', 'check_gn.js')
@@ -190,6 +225,7 @@ def CheckChangeOnUpload(input_api, output_api):
     results.extend(_CheckCSSViolations(input_api, output_api))
     results.extend(_CheckDevtoolsLocalizableResources(input_api, output_api))
     results.extend(_CheckDevtoolsLocalization(input_api, output_api))
+    results.extend(_CheckChangesAreExclusiveToDirectory(input_api, output_api))
     return results
 
 
@@ -198,6 +234,7 @@ def CheckChangeOnCommit(input_api, output_api):
     results.extend(_CommonChecks(input_api, output_api))
     results.extend(_CheckDevtoolsLocalizableResources(input_api, output_api, True))
     results.extend(_CheckDevtoolsLocalization(input_api, output_api, True))
+    results.extend(_CheckChangesAreExclusiveToDirectory(input_api, output_api))
     results.extend(input_api.canned_checks.CheckChangeHasDescription(input_api, output_api))
     return results
 

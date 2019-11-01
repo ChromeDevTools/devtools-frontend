@@ -351,6 +351,9 @@ Network.NetworkLogViewColumns = class {
     this._gridMode = gridMode;
 
     if (gridMode) {
+      if (this._dataGrid.selectedNode) {
+        this._dataGrid.selectedNode.selected = false;
+      }
       this._splitWidget.showBoth();
       this._activeScroller = this._waterfallScroller;
       this._waterfallScroller.scrollTop = this._dataGridScroller.scrollTop;
@@ -725,7 +728,7 @@ Network.NetworkLogViewColumns._defaultColumnConfig = {
   sortable: true,
   hideable: true,
   hideableGroup: null,
-  nonSelectable: false,
+  nonSelectable: true,
   isResponseHeader: false,
   isCustomHeader: false,
   allowInSortByEvenWhenHidden: false
@@ -743,11 +746,13 @@ Network.NetworkLogViewColumns._defaultColumns = [
     weight: 20,
     hideable: true,
     hideableGroup: 'path',
+    nonSelectable: false,
     sortingFunction: Network.NetworkRequestNode.NameComparator
   },
   {
     id: 'path',
     title: ls`Path`,
+    nonSelectable: false,
     hideable: true,
     hideableGroup: 'path',
     sortingFunction: Network.NetworkRequestNode.RequestPropertyComparator.bind(null, 'path')
@@ -755,6 +760,7 @@ Network.NetworkLogViewColumns._defaultColumns = [
   {
     id: 'url',
     title: ls`Url`,
+    nonSelectable: false,
     hideable: true,
     hideableGroup: 'path',
     sortingFunction: Network.NetworkRequestNode.RequestPropertyComparator.bind(null, 'url')

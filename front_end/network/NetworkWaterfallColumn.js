@@ -11,7 +11,7 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
     this.registerRequiredCSS('network/networkWaterfallColumn.css');
 
     this._canvas = this.contentElement.createChild('canvas');
-    this._canvas.tabIndex = -1;
+    this._canvas.tabIndex = 0;
     this.setDefaultFocusedElement(this._canvas);
     this._canvasPosition = this._canvas.getBoundingClientRect();
 
@@ -54,7 +54,6 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
 
     this.element.addEventListener('mousemove', this._onMouseMove.bind(this), true);
     this.element.addEventListener('mouseleave', event => this._setHoveredNode(null, false), true);
-    this.element.addEventListener('click', this._onClick.bind(this), true);
 
     this._styleForTimeRangeName = Network.NetworkWaterfallColumn._buildRequestTimeRangeStyle();
 
@@ -74,9 +73,6 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
     this._pathForStyle = new Map();
     /** @type {!Array<!Network.NetworkWaterfallColumn._TextLayer>} */
     this._textLayers = [];
-
-    /** @type {?CSSStyleDeclaration} */
-    this._computedDatagridStyle = null;
   }
 
   /**
@@ -187,16 +183,6 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
 
   /**
    * @param {!Event} event
-   */
-  _onClick(event) {
-    const handled = this._setSelectedNode(this.getNodeFromPoint(event.offsetX, event.offsetY));
-    if (handled) {
-      event.consume(true);
-    }
-  }
-
-  /**
-   * @param {!Event} event
    * @return {?UI.PopoverRequest}
    */
   _getPopoverRequest(event) {
@@ -269,19 +255,6 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
     if (this._hoveredNode) {
       this._hoveredNode.setHovered(true, highlightInitiatorChain);
     }
-  }
-
-  /**
-   * @param {?Network.NetworkNode} node
-   * @returns {boolean}
-   */
-  _setSelectedNode(node) {
-    if (node && node.dataGrid) {
-      node.select();
-      node.dataGrid.element.focus();
-      return true;
-    }
-    return false;
   }
 
   /**
@@ -647,18 +620,9 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
    * @param {number} y
    */
   _decorateRow(context, node, y) {
-    if (!this._computedDatagridStyle && node.dataGrid) {
-      // Get BackgroundColor for Waterfall from css variable on datagrid
-      this._computedDatagridStyle = window.getComputedStyle(node.dataGrid.element);
-    }
-    if (!this._computedDatagridStyle) {
-      context.restore();
-      return;
-    }
-    const nodeBgColor = node.backgroundColor();
     context.save();
     context.beginPath();
-    context.fillStyle = this._computedDatagridStyle.getPropertyValue(nodeBgColor);
+    context.fillStyle = node.backgroundColor();
     context.rect(0, y, this._offsetWidth, this._rowHeight);
     context.fill();
     context.restore();

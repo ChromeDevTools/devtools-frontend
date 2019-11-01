@@ -55,8 +55,11 @@ function shouldParseFile(filepath) {
 }
 
 async function parseFileContent(filePath) {
-  const fileContent = await readFileAsync(filePath);
-  return fileContent.toString();
+  let fileContent = await readFileAsync(filePath);
+  fileContent = fileContent.toString();
+  // normalize line ending to LF
+  fileContent = fileContent.replace(/\r\n/g, '\n');
+  return fileContent;
 }
 
 function isNodeCallOnObject(node, objectName, propertyName) {

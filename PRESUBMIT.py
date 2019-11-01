@@ -46,7 +46,6 @@ def _CheckChangesAreExclusiveToDirectory(input_api, output_api):
             if file == dir:
                 return True
             file = input_api.os_path.dirname(file)
-            print(file)
         return False
 
     def FileIsInDir(file, dirs):
@@ -55,7 +54,6 @@ def _CheckChangesAreExclusiveToDirectory(input_api, output_api):
                 return True
 
     affected_files = input_api.LocalPaths()
-    print(affected_files)
     num_affected = len(affected_files)
     for dirs in EXCLUSIVE_CHANGE_DIRECTORIES:
         affected_in_dir = filter(lambda f: FileIsInDir(f, dirs), affected_files)

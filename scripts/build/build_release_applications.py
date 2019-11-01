@@ -170,6 +170,7 @@ class ReleaseBuilder(object):
                 else:
                     # Non-autostart modules are vulcanized.
                     module['scripts'] = [name + '_module.js']
+                    module['modules'] = module.get('modules', [])
             # Resources are already baked into scripts.
             if resources is not None:
                 del module['resources']

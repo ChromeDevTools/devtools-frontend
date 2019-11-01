@@ -16,6 +16,7 @@ In order to make changes to DevTools frontend, build, run, test, and submit chan
 #### Standalone workflow
 As a standalone project, Chrome DevTools frontend can be checked out and built independently from Chromium. The main advantage is not having to check out and build Chromium. However, there is also no way to run layout tests in this workflow.
 <details>
+
 ##### Checking out source
 
 To check out the source for DevTools frontend only, follow these steps:
@@ -43,6 +44,8 @@ The resulting build artifacts can be found in `out/Default/resources/inspector`.
 These steps work with Chromium 79 or later.
 To run the production build, use
 
+**(Requires `brew install coreutils` on Mac.)**
+
 ```bash
 <path-to-chrome>/chrome --custom-devtools-frontend=file://$(realpath out/Default/resources/inspector)
 ```
@@ -53,6 +56,8 @@ build both Chromium and DevTools frontend with the [GN flag](https://www.chromiu
 ```bash
 <path-to-chrome>/chrome --custom-devtools-frontend=file://$(realpath out/Default/resources/inspector/debug)
 ```
+
+You can inspect DevTools with DevTools by undocking DevTools and then open the developers tools (F12 on Windows/Linux, Cmd+Option+I on Mac).
 
 ##### Test
 Test are available by running scripts in `scripts/test/`.
@@ -69,6 +74,7 @@ Usual [steps](https://chromium.googlesource.com/chromium/src/+/master/docs/contr
 #### Chromium workflow
 DevTools frontend can also be developed as part of the full Chromium checkout.
 <details>
+
 ##### Checking out source
 Follow [instructions](https://www.chromium.org/developers/how-tos/get-the-code) to check out Chromium. DevTools frontend can be found under `third_party/devtools-frontend/src/`.
 
@@ -158,4 +164,4 @@ The version number of the npm package (e.g. `1.0.373466`) refers to the Chromium
   [@ChromeDevTools]: http://twitter.com/ChromeDevTools
   [@DevToolsCommits]: http://twitter.com/DevToolsCommits
   [all open DevTools tickets]: https://bugs.chromium.org/p/chromium/issues/list?can=2&q=component%3APlatform%3EDevTools&sort=&groupby=&colspec=ID+Stars+Owner+Summary+Modified+Opened
-
+  [test waterfall]: https://ci.chromium.org/p/devtools-frontend/g/main/console

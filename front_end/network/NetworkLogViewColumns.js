@@ -266,17 +266,6 @@ Network.NetworkLogViewColumns = class {
   }
 
   /**
-   * @param {boolean} value
-   */
-  setHidden(value) {
-    if (value) {
-      this._splitWidget.element.classList.add('hidden');
-    } else {
-      this._splitWidget.element.classList.remove('hidden');
-    }
-  }
-
-  /**
    * @return {!DataGrid.SortableDataGrid<!Network.NetworkNode>} dataGrid
    */
   dataGrid() {

@@ -684,11 +684,6 @@ class ModuleDescriptor {
     this.scripts;
 
     /**
-     * @type {!Array.<string>}
-     */
-    this.modules;
-
-    /**
      * @type {string|undefined}
      */
     this.condition;
@@ -728,21 +723,6 @@ class RuntimeExtensionDescriptor {
     this.contextTypes;
   }
 }
-
-// Module namespaces.
-// NOTE: Update scripts/build/special_case_namespaces.json if you add a special cased namespace.
-const specialCases = {
-  'sdk': 'SDK',
-  'js_sdk': 'JSSDK',
-  'browser_sdk': 'BrowserSDK',
-  'ui': 'UI',
-  'object_ui': 'ObjectUI',
-  'javascript_metadata': 'JavaScriptMetadata',
-  'perf_ui': 'PerfUI',
-  'har_importer': 'HARImporter',
-  'sdk_test_runner': 'SDKTestRunner',
-  'cpu_profiler_test_runner': 'CPUProfilerTestRunner'
-};
 
 /**
  * @unrestricted
@@ -817,7 +797,6 @@ class Module {
 
     this._pendingLoadPromise = Promise.all(dependencyPromises)
                                    .then(this._loadResources.bind(this))
-                                   .then(this._loadModules.bind(this))
                                    .then(this._loadScripts.bind(this))
                                    .then(() => this._loadedForTest = true);
 
@@ -842,23 +821,6 @@ class Module {
     return Promise.all(promises).then(undefined);
   }
 
-  _loadModules() {
-    if (!this._descriptor.modules || !this._descriptor.modules.length) {
-      return Promise.resolve();
-    }
-
-    const namespace = this._computeNamespace();
-    self[namespace] = self[namespace] || {};
-
-    // TODO(crbug.com/680046): We are in a worker and we dont support modules yet
-    if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScope) {
-      return Promise.resolve();
-    }
-
-    // TODO(crbug.com/1011811): Remove eval when we use TypeScript which does support dynamic imports
-    return eval(`import('./${this._name}/${this._name}.js')`);
-  }
-
   /**
    * @return {!Promise.<undefined>}
    */
@@ -867,17 +829,26 @@ class Module {
       return Promise.resolve();
     }
 
-    const namespace = this._computeNamespace();
+    // Module namespaces.
+    // NOTE: Update scripts/build/special_case_namespaces.json if you add a special cased namespace.
+    // The namespace keyword confuses clang-format.
+    // clang-format off
+    const specialCases = {
+      'sdk': 'SDK',
+      'js_sdk': 'JSSDK',
+      'browser_sdk': 'BrowserSDK',
+      'ui': 'UI',
+      'object_ui': 'ObjectUI',
+      'javascript_metadata': 'JavaScriptMetadata',
+      'perf_ui': 'PerfUI',
+      'har_importer': 'HARImporter',
+      'sdk_test_runner': 'SDKTestRunner',
+      'cpu_profiler_test_runner': 'CPUProfilerTestRunner'
+    };
+    const namespace = specialCases[this._name] || this._name.split('_').map(a => a.substring(0, 1).toUpperCase() + a.substring(1)).join('');
     self[namespace] = self[namespace] || {};
+    // clang-format on
     return Runtime._loadScriptsPromise(this._descriptor.scripts.map(this._modularizeURL, this), this._remoteBase());
-  }
-
-  /**
-   * @return {string}
-   */
-  _computeNamespace() {
-    return specialCases[this._name] ||
-        this._name.split('_').map(a => a.substring(0, 1).toUpperCase() + a.substring(1)).join('');
   }
 
   /**

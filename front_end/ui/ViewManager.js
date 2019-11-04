@@ -227,7 +227,7 @@ export class _ExpandableContainerWidget extends UI.VBox {
     this.registerRequiredCSS('ui/viewContainers.css');
 
     this._titleElement = createElementWithClass('div', 'expandable-view-title');
-    UI.ARIAUtils.markAsLink(this._titleElement);
+    UI.ARIAUtils.markAsButton(this._titleElement);
     this._titleExpandIcon = UI.Icon.create('smallicon-triangle-right', 'title-expand-icon');
     this._titleElement.appendChild(this._titleExpandIcon);
     const titleText = view.title();
@@ -238,7 +238,7 @@ export class _ExpandableContainerWidget extends UI.VBox {
     this._titleElement.addEventListener('keydown', this._onTitleKeyDown.bind(this), false);
     this.contentElement.insertBefore(this._titleElement, this.contentElement.firstChild);
 
-    this.contentElement.createChild('slot');
+    UI.ARIAUtils.setControls(this._titleElement, this.contentElement.createChild('slot'));
     this._view = view;
     view[UI.ViewManager._ExpandableContainerWidget._symbol] = this;
   }

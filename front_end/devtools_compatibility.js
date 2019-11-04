@@ -294,12 +294,21 @@
      * @param {string} tabId
      */
     setInspectedTabId(tabId) {
+      this._inspectedTabIdValue = tabId;
+
       // Support for legacy front-ends (<M41).
       if (window['WebInspector'] && window['WebInspector']['setInspectedTabId']) {
         window['WebInspector']['setInspectedTabId'](tabId);
       } else {
         this._dispatchOnInspectorFrontendAPI('setInspectedTabId', [tabId]);
       }
+    }
+
+    /**
+     * @return {string|undefined}
+     */
+    getInspectedTabId() {
+      return this._inspectedTabIdValue;
     }
 
     /**

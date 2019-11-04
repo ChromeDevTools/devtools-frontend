@@ -82,6 +82,12 @@ export default class ExtensionServer extends Common.Object {
     this._registerHandler(commands.UpdateButton, this._onUpdateButton.bind(this));
     window.addEventListener('message', this._onWindowMessage.bind(this), false);  // Only for main window.
 
+    /** @suppress {checkTypes} */
+    const existingTabId = window.DevToolsAPI && window.DevToolsAPI.getInspectedTabId();
+
+    if (existingTabId) {
+      this._setInspectedTabId({data: existingTabId});
+    }
     Host.InspectorFrontendHost.events.addEventListener(
         Host.InspectorFrontendHostAPI.Events.SetInspectedTabId, this._setInspectedTabId, this);
 

@@ -33,6 +33,7 @@ module.exports = {
     'new-parens': 2,
     'func-call-spacing': 2,
     'arrow-parens': [2, 'as-needed'],
+    'eol-last': 2,
 
     // anti-patterns
     'no-with': 2,

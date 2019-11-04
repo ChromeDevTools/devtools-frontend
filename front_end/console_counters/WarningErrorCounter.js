@@ -34,7 +34,7 @@ export default class WarningErrorCounter {
     if (Root.Runtime.experiments.isEnabled('spotlight')) {
       this._violations = this._createItem(violationShadowRoot, 'smallicon-info');
     }
-    this._titles = [];
+    this._titles = '';
     this._errorCount = -1;
     this._warningCount = -1;
     this._violationCount = -1;
@@ -95,7 +95,6 @@ export default class WarningErrorCounter {
     this._warningCount = warnings;
     this._violationCount = violations;
 
-    this._titles = [];
     this._counter.classList.toggle('hidden', !(errors || warnings));
     this._violationCounter.classList.toggle('hidden', !violations);
     this._toolbarItem.setVisible(!!(errors || warnings || violations));
@@ -107,9 +106,6 @@ export default class WarningErrorCounter {
       errorCountTitle = ls`${errors} errors`;
     }
     this._updateItem(this._errors, errors, false);
-    if (errors) {
-      this._titles.push(errorCountTitle);
-    }
 
     let warningCountTitle = '';
     if (warnings === 1) {
@@ -118,9 +114,6 @@ export default class WarningErrorCounter {
       warningCountTitle = ls`${warnings} warnings`;
     }
     this._updateItem(this._warnings, warnings, !errors);
-    if (warnings) {
-      this._titles.push(warningCountTitle);
-    }
 
     if (Root.Runtime.experiments.isEnabled('spotlight')) {
       let violationCountTitle = '';
@@ -133,9 +126,17 @@ export default class WarningErrorCounter {
       this._violationCounter.title = violationCountTitle;
     }
 
-    const titles = this._titles.join(', ');
-    this._counter.title = titles;
-    UI.ARIAUtils.setAccessibleName(this._counter, titles);
+    this._titles = '';
+    if (errors & warnings) {
+      this._titles = ls`${errorCountTitle}, ${warningCountTitle}`;
+    } else if (errors) {
+      this._titles = errorCountTitle;
+    } else if (warnings) {
+      this._titles = warningCountTitle;
+    }
+
+    this._counter.title = this._titles;
+    UI.ARIAUtils.setAccessibleName(this._counter, this._titles);
     UI.inspectorView.toolbarItemResized();
     this._updatingForTest = false;
     this._updatedForTest();

@@ -348,8 +348,8 @@ ConsoleTestRunner.dumpConsoleCounters = async function() {
   if (counter._updatingForTest) {
     await TestRunner.addSnifferPromise(counter, '_updatedForTest');
   }
-  for (let index = 0; index < counter._titles.length; ++index) {
-    TestRunner.addResult(counter._titles[index]);
+  if (counter._titles) {
+    TestRunner.addResult(counter._titles);
   }
   ConsoleTestRunner.dumpConsoleClassesBrief();
 };

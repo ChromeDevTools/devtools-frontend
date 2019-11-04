@@ -20,18 +20,18 @@ export default class ViewManager {
   }
 
   /**
-   * @param {!Element} element
    * @param {!Array<!UI.ToolbarItem>} toolbarItems
+   * @return {?Element}
    */
-  static _populateToolbar(element, toolbarItems) {
+  static _createToolbar(toolbarItems) {
     if (!toolbarItems.length) {
-      return;
+      return null;
     }
     const toolbar = new UI.Toolbar('');
-    element.insertBefore(toolbar.element, element.firstChild);
     for (const item of toolbarItems) {
       toolbar.appendToolbarItem(item);
     }
+    return toolbar.element;
   }
 
   /**
@@ -185,7 +185,12 @@ export class _ContainerWidget extends UI.VBox {
     }
     const promises = [];
     // TODO(crbug.com/1006759): Transform to async-await
-    promises.push(this._view.toolbarItems().then(UI.ViewManager._populateToolbar.bind(UI.ViewManager, this.element)));
+    promises.push(this._view.toolbarItems().then(toolbarItems => {
+      const toolbarElement = UI.ViewManager._createToolbar(toolbarItems);
+      if (toolbarElement) {
+        this.element.insertBefore(toolbarElement, this.element.firstChild);
+      }
+    }));
     promises.push(this._view.widget().then(widget => {
       // Move focus from |this| to loaded |widget| if any.
       const shouldFocus = this.element.hasFocus();
@@ -252,8 +257,12 @@ export class _ExpandableContainerWidget extends UI.VBox {
     }
     // TODO(crbug.com/1006759): Transform to async-await
     const promises = [];
-    promises.push(
-        this._view.toolbarItems().then(UI.ViewManager._populateToolbar.bind(UI.ViewManager, this._titleElement)));
+    promises.push(this._view.toolbarItems().then(toolbarItems => {
+      const toolbarElement = UI.ViewManager._createToolbar(toolbarItems);
+      if (toolbarElement) {
+        this._titleElement.appendChild(toolbarElement);
+      }
+    }));
     promises.push(this._view.widget().then(widget => {
       this._widget = widget;
       this._view[UI.View.widgetSymbol] = widget;

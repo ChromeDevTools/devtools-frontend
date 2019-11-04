@@ -234,7 +234,7 @@ export class _ExpandableContainerWidget extends UI.VBox {
     this._titleElement.createTextChild(titleText);
     UI.ARIAUtils.setAccessibleName(this._titleElement, titleText);
     this._titleElement.tabIndex = 0;
-    this._titleElement.addEventListener('click', this._toggleExpanded.bind(this), false);
+    self.onInvokeElement(this._titleElement, this._toggleExpanded.bind(this));
     this._titleElement.addEventListener('keydown', this._onTitleKeyDown.bind(this), false);
     this.contentElement.insertBefore(this._titleElement, this.contentElement.firstChild);
 
@@ -286,7 +286,13 @@ export class _ExpandableContainerWidget extends UI.VBox {
     this._materialize().then(() => this._widget.detach());
   }
 
-  _toggleExpanded() {
+  /**
+   * @param {!Event} event
+   */
+  _toggleExpanded(event) {
+    if (event.type === 'keydown' && event.target !== this._titleElement) {
+      return;
+    }
     if (this._titleElement.classList.contains('expanded')) {
       this._collapse();
     } else {
@@ -298,9 +304,10 @@ export class _ExpandableContainerWidget extends UI.VBox {
    * @param {!Event} event
    */
   _onTitleKeyDown(event) {
-    if (isEnterOrSpaceKey(event)) {
-      this._toggleExpanded();
-    } else if (event.key === 'ArrowLeft') {
+    if (event.target !== this._titleElement) {
+      return;
+    }
+    if (event.key === 'ArrowLeft') {
       this._collapse();
     } else if (event.key === 'ArrowRight') {
       if (!this._titleElement.classList.contains('expanded')) {

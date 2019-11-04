@@ -1613,10 +1613,10 @@ if (external_devtools_frontend) {
 
   copy("copy_wasm_deps") {
     sources = [
-      "front_end/sdk/wasm_source_map/pkg/wasm_source_map_bg.wasm"
+      "front_end/sdk/wasm_source_map/pkg/wasm_source_map_bg.wasm",
     ]
     outputs = [
-      "$resources_out_dir/sdk/wasm_source_map/pkg/wasm_source_map_bg.wasm"
+      "$resources_out_dir/sdk/wasm_source_map/pkg/wasm_source_map_bg.wasm",
     ]
   }
 
@@ -1734,7 +1734,10 @@ if (external_devtools_frontend) {
 
     inputs =
         helper_scripts + all_devtools_files + devtools_test_files +
-        generated_scripts + generated_aria_properties + application_templates
+        generated_scripts + generated_aria_properties + application_templates +
+        # In `build_release_applications` we sometimes include
+        # the content of Runtime.js into the build output.
+        [ "front_end/Runtime.js" ]
     outputs =
         generated_applications + generated_non_autostart_non_remote_modules +
         generated_remote_modules + generated_test_modules

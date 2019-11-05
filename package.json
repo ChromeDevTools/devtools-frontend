@@ -26,7 +26,7 @@
     "check-grdp": "node scripts/check_localizable_resources.js", 
     "check-json": "node scripts/json_validator/validate_module_json.js", 
     "check-loc": "node scripts/check_localizability.js -a", 
-    "chrome": "node scripts/chrome_debug_launcher/launch_chrome.js", 
+    "chrome": "node scripts/hosted_mode/launch_chrome.js",
     "closure": "python scripts/compile_frontend.py", 
     "debug-test": "node scripts/npm_test.js --debug-devtools", 
     "extract": "node scripts/extract_module/extract_module.js", 
@@ -37,7 +37,7 @@
     "optimize-svg-images": "python scripts/optimize_svg_images.py", 
     "server": "node scripts/hosted_mode/server.js", 
     "setup-dtrun": "cd scripts/devtools_run && npm link", 
-    "start": "node scripts/start_chrome_and_server.js", 
+    "start": "node scripts/hosted_mode/start_chrome_and_server.js",
     "test": "node scripts/npm_test.js"
   }
 }

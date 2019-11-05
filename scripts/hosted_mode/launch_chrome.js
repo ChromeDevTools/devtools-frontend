@@ -11,7 +11,7 @@ var utils = require('../utils');
 
 var REMOTE_DEBUGGING_PORT = parseInt(process.env.REMOTE_DEBUGGING_PORT, 10) || 9222;
 var SERVER_PORT = parseInt(process.env.PORT, 10) || 8090;
-var CHROMIUM_DEFAULT_PATH = path.resolve(__dirname, '..', '..', '..', '..', '..', '..', 'out', 'Release', 'chrome');
+var CHROMIUM_DEFAULT_PATH = path.resolve(__dirname, '..', '..', 'third_party', 'chrome', 'chrome-linux', 'chrome');
 var CHROME_PROFILE_PATH = path.resolve(__dirname, '..', '..', '.dev_profile');
 
 var Flags = {

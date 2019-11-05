@@ -5,8 +5,8 @@
 var childProcess = require('child_process');
 var path = require('path');
 
-var chrome = childProcess.fork(path.join(__dirname, 'chrome_debug_launcher/launch_chrome.js'), process.argv.slice(2));
-var server = childProcess.fork(path.join(__dirname, 'hosted_mode/server.js'));
+var chrome = childProcess.fork('scripts/hosted_mode/launch_chrome.js', process.argv.slice(2));
+var server = childProcess.fork('scripts/hosted_mode/server.js');
 
 chrome.on('exit', function() {
   server.kill();

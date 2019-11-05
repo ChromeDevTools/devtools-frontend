@@ -104,6 +104,7 @@ Usual [steps](https://chromium.googlesource.com/chromium/src/+/master/docs/contr
 #### Integrate standalone checkout into Chromium
 If you prefer working on a standalone checkout of DevTools frontend, but want to build, test, and run inside the full Chromium checkout. This way, you combine the best of both worlds.
 <details>
+
 Disable `gclient sync` for DevTools frontend inside of Chromium by editing `.gclient` config. From `chromium/src/`, simply run
 ```bash
 vim $(gclient root)/.gclient
@@ -120,9 +121,12 @@ gclient sync -D
 ```
 This removes the DevTools frontend dependency. We now create a symlink to refer to the standalone checkout:
 
+**(Note that the folder names do NOT include the trailing slash)**
+
 ```bash
 ln -s path/to/standalone/devtools-frontend third_party/devtools-frontend/src
 ```
+
 </details>
 
 Running `gclient sync` in `chromium/src/` will update dependencies for the Chromium checkout. Running `gclient sync` in `chromium/src/third_party/devtools-frontend/src` will update dependencies for the standalone checkout.

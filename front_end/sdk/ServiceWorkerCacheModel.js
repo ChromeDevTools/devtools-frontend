@@ -104,6 +104,15 @@ export default class ServiceWorkerCacheModel extends SDK.SDKModel {
   }
 
   /**
+   * @param {!Cache} cache
+   * @param {string} pathFilter
+   * @param {function(!Array.<!Protocol.CacheStorage.DataEntry>, number)} callback
+   */
+  loadAllCacheData(cache, pathFilter, callback) {
+    this._requestAllEntries(cache, pathFilter, callback);
+  }
+
+  /**
    * @return {!Array.<!Cache>}
    */
   caches() {
@@ -250,6 +259,20 @@ export default class ServiceWorkerCacheModel extends SDK.SDKModel {
   async _requestEntries(cache, skipCount, pageSize, pathFilter, callback) {
     const response =
         await this._cacheAgent.invoke_requestEntries({cacheId: cache.cacheId, skipCount, pageSize, pathFilter});
+    if (response[Protocol.Error]) {
+      console.error('ServiceWorkerCacheAgent error while requesting entries: ', response[Protocol.Error]);
+      return;
+    }
+    callback(response.cacheDataEntries, response.returnCount);
+  }
+
+  /**
+   * @param {!Cache} cache
+   * @param {string} pathFilter
+   * @param {function(!Array<!Protocol.CacheStorage.DataEntry>, number)} callback
+   */
+  async _requestAllEntries(cache, pathFilter, callback) {
+    const response = await this._cacheAgent.invoke_requestEntries({cacheId: cache.cacheId, pathFilter});
     if (response[Protocol.Error]) {
       console.error('ServiceWorkerCacheAgent error while requesting entries: ', response[Protocol.Error]);
       return;

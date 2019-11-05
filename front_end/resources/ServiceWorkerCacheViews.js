@@ -32,21 +32,7 @@ Resources.ServiceWorkerCacheView = class extends UI.SimpleView {
     this._cache = cache;
     /** @type {?DataGrid.DataGrid} */
     this._dataGrid = null;
-    /** @type {?number} */
-    this._lastPageSize = null;
-    /** @type {?number} */
-    this._lastSkipCount = null;
     this._refreshThrottler = new Common.Throttler(300);
-
-    this._pageBackButton = new UI.ToolbarButton(Common.UIString('Show previous page'), 'largeicon-play-back');
-    this._pageBackButton.addEventListener(UI.ToolbarButton.Events.Click, this._pageBackButtonClicked, this);
-    editorToolbar.appendToolbarItem(this._pageBackButton);
-
-    this._pageForwardButton = new UI.ToolbarButton(Common.UIString('Show next page'), 'largeicon-play');
-    this._pageForwardButton.setEnabled(false);
-    this._pageForwardButton.addEventListener(UI.ToolbarButton.Events.Click, this._pageForwardButtonClicked, this);
-    editorToolbar.appendToolbarItem(this._pageForwardButton);
-
     this._refreshButton = new UI.ToolbarButton(Common.UIString('Refresh'), 'largeicon-refresh');
     this._refreshButton.addEventListener(UI.ToolbarButton.Events.Click, this._refreshButtonClicked, this);
     editorToolbar.appendToolbarItem(this._refreshButton);
@@ -62,15 +48,13 @@ Resources.ServiceWorkerCacheView = class extends UI.SimpleView {
     entryPathFilterBox.addEventListener(UI.ToolbarInput.Event.TextChanged, () => {
       entryPathFilterThrottler.schedule(() => {
         this._entryPathFilter = entryPathFilterBox.value();
-        this._skipCount = 0;
         return this._updateData(true);
       });
     });
 
-    this._pageSize = 50;
-    this._skipCount = 0;
     this._returnCount = /** @type {?number} */ (null);
     this._summaryBarElement = /** @type {?Element} */ (null);
+    this._loadingPromise = /** @type {?Promise} */ (null);
 
     this.update(cache);
   }
@@ -83,7 +67,6 @@ Resources.ServiceWorkerCacheView = class extends UI.SimpleView {
     const dataGridWidget = this._dataGrid.asWidget();
     this._splitWidget.setSidebarWidget(dataGridWidget);
     dataGridWidget.setMinimumSize(0, 250);
-    this._skipCount = 0;
   }
 
   /**
@@ -185,22 +168,6 @@ Resources.ServiceWorkerCacheView = class extends UI.SimpleView {
   }
 
   /**
-   * @param {!Common.Event} event
-   */
-  _pageBackButtonClicked(event) {
-    this._skipCount = Math.max(0, this._skipCount - this._pageSize);
-    this._updateData(false);
-  }
-
-  /**
-   * @param {!Common.Event} event
-   */
-  _pageForwardButtonClicked(event) {
-    this._skipCount = this._skipCount + this._pageSize;
-    this._updateData(false);
-  }
-
-  /**
    * @param {?DataGrid.DataGridNode} node
    */
   async _deleteButtonClicked(node) {
@@ -249,7 +216,6 @@ Resources.ServiceWorkerCacheView = class extends UI.SimpleView {
     this._entriesForTest = entries;
     this._returnCount = returnCount;
     this._updateSummaryBar();
-    const hasMore = (this._skipCount + this._pageSize) < returnCount;
 
     /** @type {!Map<string, !DataGrid.DataGridNode>} */
     const oldEntries = new Map();
@@ -263,19 +229,16 @@ Resources.ServiceWorkerCacheView = class extends UI.SimpleView {
       const entry = entries[i];
       let node = oldEntries.get(entry.requestURL);
       if (!node || node.data.responseTime !== entry.responseTime) {
-        node = new Resources.ServiceWorkerCacheView.DataGridNode(
-            i + this._skipCount, this._createRequest(entry), entry.responseType);
+        node = new Resources.ServiceWorkerCacheView.DataGridNode(i, this._createRequest(entry), entry.responseType);
         node.selectable = true;
       } else {
-        node.data.number = i + this._skipCount;
+        node.data.number = i;
       }
       rootNode.appendChild(node);
       if (entry.requestURL === selected) {
         selectedNode = node;
       }
     }
-    this._pageBackButton.setEnabled(!!skipCount);
-    this._pageForwardButton.setEnabled(hasMore);
     if (!selectedNode) {
       this._showPreview(null);
     } else {
@@ -287,27 +250,25 @@ Resources.ServiceWorkerCacheView = class extends UI.SimpleView {
   /**
    * @param {boolean} force
    */
-  _updateData(force) {
-    const pageSize = this._pageSize;
-    let skipCount = this._skipCount;
-
-    if (!force && this._lastPageSize === pageSize && this._lastSkipCount === skipCount) {
-      return;
+  async _updateData(force) {
+    if (!force && this._loadingPromise) {
+      return this._loadingPromise;
     }
     this._refreshButton.setEnabled(false);
-    if (this._lastPageSize !== pageSize) {
-      skipCount = 0;
-      this._skipCount = 0;
-    }
-    this._lastPageSize = pageSize;
-    this._lastSkipCount = skipCount;
 
-    return new Promise(resolve => {
-      this._model.loadCacheData(this._cache, skipCount, pageSize, this._entryPathFilter, (entries, returnCount) => {
-        this._updateDataCallback(skipCount, entries, returnCount);
-        resolve();
+    if (this._loadingPromise) {
+      return this._loadingPromise;
+    }
+
+    this._loadingPromise = new Promise(resolve => {
+      this._model.loadAllCacheData(this._cache, this._entryPathFilter, (entries, returnCount) => {
+        resolve([entries, returnCount]);
       });
     });
+
+    const [entries, returnCount] = await this._loadingPromise;
+    this._updateDataCallback(0, entries, returnCount);
+    this._loadingPromise = null;
   }
 
   /**

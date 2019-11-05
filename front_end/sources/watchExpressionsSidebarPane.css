@@ -35,7 +35,6 @@
     text-overflow: ellipsis;
     overflow: hidden;
     line-height: 20px;
-    margin-left: 16px;
 }
 
 .watch-expression-object-header .watch-expression-title {
@@ -44,7 +43,7 @@
 
 .watch-expression {
     position: relative;
-    flex: none;
+    flex: auto;
     min-height: 20px;
 }
 
@@ -84,24 +83,28 @@
 }
 
 .watch-expression-text-prompt-proxy {
-    margin: 2px 12px;
+    margin: 2px 12px 2px -4px;
     padding-bottom: 3px;
 }
 
 .watch-expression-header {
     flex: auto;
-}
-
-.watch-expression-object-header {
     margin-left: -16px;
     padding-left: 15px;
 }
 
-.watch-expression-header:hover {
+li.watch-expression-tree-item:hover {
     background-color: #F0F0F0;
-    padding-right: 28px;
 }
 
-.watch-expression-object {
-    padding-left: 5px;
+li.watch-expression-tree-item {
+    padding-left: 4px;
+}
+
+.watch-expression-header:focus[data-keyboard-focus="true"] {
+    background: var(--focus-bg-color);
+}
+
+li.watch-expression-editing::before {
+    background-color: transparent;
 }

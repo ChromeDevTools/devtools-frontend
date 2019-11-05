@@ -2,14 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-var childProcess = require('child_process');
-var fs = require('fs');
-var path = require('path');
-var shell = require('child_process').execSync;
+const childProcess = require('child_process');
+const fs = require('fs');
+const path = require('path');
+const shell = require('child_process').execSync;
+const utils = require('./utils');
 
-var utils = require('./utils');
-
-var Flags = {
+const Flags = {
   DEBUG_DEVTOOLS: '--debug-devtools',
   DEBUG_DEVTOOLS_SHORTHAND: '-d',
   FETCH_CONTENT_SHELL: '--fetch-content-shell',
@@ -17,23 +16,24 @@ var Flags = {
   TARGET: '--target',                // build sub-directory (e.g. Release, Default)
 };
 
-var IS_DEBUG_ENABLED =
+const IS_DEBUG_ENABLED =
     utils.includes(process.argv, Flags.DEBUG_DEVTOOLS) || utils.includes(process.argv, Flags.DEBUG_DEVTOOLS_SHORTHAND);
-var CUSTOM_CHROMIUM_PATH = utils.parseArgs(process.argv)[Flags.CHROMIUM_PATH];
-var IS_FETCH_CONTENT_SHELL = utils.includes(process.argv, Flags.FETCH_CONTENT_SHELL);
-var TARGET = utils.parseArgs(process.argv)[Flags.TARGET] || 'Release';
+const CUSTOM_CHROMIUM_PATH = utils.parseArgs(process.argv)[Flags.CHROMIUM_PATH];
+const IS_FETCH_CONTENT_SHELL = utils.includes(process.argv, Flags.FETCH_CONTENT_SHELL);
+const TARGET = utils.parseArgs(process.argv)[Flags.TARGET] || 'Release';
 
-var CONTENT_SHELL_ZIP = 'content-shell.zip';
-var MAX_CONTENT_SHELLS = 10;
-var PLATFORM = getPlatform();
-var PYTHON = process.platform === 'win32' ? 'python.bat' : 'python';
+const CONTENT_SHELL_ZIP = 'content-shell.zip';
+const MAX_CONTENT_SHELLS = 10;
+const PLATFORM = getPlatform();
+const PYTHON = process.platform === 'win32' ? 'python.bat' : 'python';
 
-var CHROMIUM_SRC_PATH = CUSTOM_CHROMIUM_PATH || path.resolve(__dirname, '..', '..', '..', '..');
-var RELEASE_PATH = path.resolve(CHROMIUM_SRC_PATH, 'out', TARGET);
-var BLINK_TEST_PATH = path.resolve(CHROMIUM_SRC_PATH, 'third_party', 'blink', 'tools', 'run_web_tests.py');
-var DEVTOOLS_PATH = path.resolve(CHROMIUM_SRC_PATH, 'third_party', 'devtools-frontend', 'src');
-var CACHE_PATH = path.resolve(DEVTOOLS_PATH, '.test_cache');
-var SOURCE_PATH = path.resolve(DEVTOOLS_PATH, 'front_end');
+const CURRENT_PATH = process.env.PWD;  // Using env.PWD to account for symlinks.
+const CHROMIUM_SRC_PATH = CUSTOM_CHROMIUM_PATH || path.resolve(CURRENT_PATH, '..', '..', '..');
+const RELEASE_PATH = path.resolve(CHROMIUM_SRC_PATH, 'out', TARGET);
+const BLINK_TEST_PATH = path.resolve(CHROMIUM_SRC_PATH, 'third_party', 'blink', 'tools', 'run_web_tests.py');
+const DEVTOOLS_PATH = path.resolve(CHROMIUM_SRC_PATH, 'third_party', 'devtools-frontend', 'src');
+const CACHE_PATH = path.resolve(DEVTOOLS_PATH, '.test_cache');
+const SOURCE_PATH = path.resolve(DEVTOOLS_PATH, 'front_end');
 
 function main() {
   if (!utils.isDir(CACHE_PATH))

@@ -220,6 +220,7 @@ export const _MIMETypes = {
   'text/css': {'stylesheet': true},
   'text/xsl': {'stylesheet': true},
   'text/vtt': {'texttrack': true},
+  'application/pdf': {'document': true},
 };
 
 /** @type {!SDK.NetworkManager.Conditions} */

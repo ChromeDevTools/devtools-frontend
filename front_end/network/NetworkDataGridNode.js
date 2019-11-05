@@ -39,7 +39,6 @@ Network.NetworkNode = class extends DataGrid.SortableDataGridNode {
     super({});
     this._parentView = parentView;
     this._isHovered = false;
-    this._isProduct = false;
     this._showingInitiatorChain = false;
     /** @type {?SDK.NetworkRequest} */
     this._requestOrFirstKnownChildRequest = null;
@@ -263,7 +262,6 @@ Network.NetworkNode._backgroundColors = {
   Selected: '--network-grid-selected-color',
   FocusSelected: '--network-grid-focus-selected-color',
   FromFrame: '--network-grid-from-frame-color',
-  IsProduct: '--network-grid-is-product-color',
 };
 
 /** @typedef {!{
@@ -274,13 +272,9 @@ Network.NetworkNode._backgroundColors = {
   InitiatorPath: string,
   InitiatedPath: string,
   Selected: string,
-  FromFrame: string,
-  IsProduct: string
+  FromFrame: string
 }} */
 Network.NetworkNode._SupportedBackgroundColors;
-
-/** @typedef {!{entry: !ProductRegistry.Registry.ProductEntry, matchedURL: !Common.ParsedURL}} */
-Network.NetworkNode._ProductEntryInfo;
 
 /**
  * @unrestricted
@@ -294,8 +288,6 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
     super(parentView);
     /** @type {?Element} */
     this._nameCell = null;
-    /** @type {?Element} */
-    this._nameBadgeElement = null;
     /** @type {?Element} */
     this._initiatorCell = null;
     this._request = request;
@@ -346,23 +338,6 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
       return -1;
     }
     return aRequest.indentityCompare(bRequest);
-  }
-
-  /**
-   * @param {!ProductRegistry.Registry} productRegistry
-   * @param {!Network.NetworkNode} a
-   * @param {!Network.NetworkNode} b
-   * @return {number}
-   */
-  static ProductComparator(productRegistry, a, b) {
-    const aRequest = a.request();
-    const bRequest = b.request();
-    if (!aRequest || !bRequest) {
-      return !aRequest ? -1 : 1;
-    }
-    const aName = productRegistry.nameForUrl(aRequest.parsedURL) || '';
-    const bName = productRegistry.nameForUrl(bRequest.parsedURL) || '';
-    return aName.localeCompare(bName) || aRequest.indentityCompare(bRequest);
   }
 
   /**
@@ -701,12 +676,6 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
     element.classList.toggle('network-navigation-row', this._isNavigationRequest);
     super.createCells(element);
     this.updateBackgroundColor();
-    ProductRegistry.instance().then(productRegistry => {
-      if (productRegistry.entryForUrl(this._request.parsedURL)) {
-        this._isProduct = true;
-        this.updateBackgroundColor();
-      }
-    });
   }
 
   /**
@@ -864,11 +833,6 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
       iconElement.classList.add(this._request.resourceType().name());
 
       cell.appendChild(iconElement);
-      if (!this._nameBadgeElement) {
-        this._nameBadgeElement = this.parentView().badgePool.badgeForURL(this._request.parsedURL);
-        this._nameBadgeElement.classList.add('network-badge');
-      }
-      cell.appendChild(this._nameBadgeElement);
     }
 
     if (columnId === 'name') {

@@ -226,7 +226,6 @@
         "perf_ui",
         "extensions",
         "data_grid",
-        "product_registry",
         "profiler",
         "mobile_throttling"
     ],

@@ -674,15 +674,10 @@ Timeline.AggregatedTimelineTreeView = class extends Timeline.TimelineTreeView {
     this._stackView = new Timeline.TimelineStackView(this);
     this._stackView.addEventListener(
         Timeline.TimelineStackView.Events.SelectionChanged, this._onStackViewSelectionChanged, this);
-    this._badgePool = new ProductRegistry.BadgePool(true);
     /** @type {!Map<string, string>} */
     this._productByURLCache = new Map();
     /** @type {!Map<string, string>} */
     this._colorByURLCache = new Map();
-    ProductRegistry.instance().then(registry => {
-      this._productRegistry = registry;
-      this.refreshTree();
-    });
   }
 
   /**
@@ -691,7 +686,6 @@ Timeline.AggregatedTimelineTreeView = class extends Timeline.TimelineTreeView {
    * @param {?TimelineModel.TimelineModel.Track} track
    */
   setModel(model, track) {
-    this._badgePool.reset();
     super.setModel(model, track);
   }
 
@@ -739,8 +733,8 @@ Timeline.AggregatedTimelineTreeView = class extends Timeline.TimelineTreeView {
    */
   _displayInfoForGroupNode(node) {
     const categories = Timeline.TimelineUIUtils.categories();
-    let color = node.id ? Timeline.TimelineUIUtils.eventColor(/** @type {!SDK.TracingModel.Event} */ (node.event)) :
-                          categories['other'].color;
+    const color = node.id ? Timeline.TimelineUIUtils.eventColor(/** @type {!SDK.TracingModel.Event} */ (node.event)) :
+                            categories['other'].color;
     const unattributed = Common.UIString('[unattributed]');
 
     const id = typeof node.id === 'symbol' ? undefined : node.id;
@@ -753,13 +747,7 @@ Timeline.AggregatedTimelineTreeView = class extends Timeline.TimelineTreeView {
 
       case Timeline.AggregatedTimelineTreeView.GroupBy.Domain:
       case Timeline.AggregatedTimelineTreeView.GroupBy.Subdomain: {
-        let domainName = id ? this._beautifyDomainName(id) : undefined;
-        if (domainName) {
-          const productName = this._productByEvent(/** @type {!SDK.TracingModel.Event} */ (node.event));
-          if (productName) {
-            domainName += ' \u2014 ' + productName;
-          }
-        }
+        const domainName = id ? this._beautifyDomainName(id) : undefined;
         return {name: domainName || unattributed, color: color};
       }
 
@@ -773,14 +761,6 @@ Timeline.AggregatedTimelineTreeView = class extends Timeline.TimelineTreeView {
               Timeline.TimelineUIUtils.eventStyle(node.event).category.color :
               color
         };
-      }
-      case Timeline.AggregatedTimelineTreeView.GroupBy.Product: {
-        const event = /** @type {!SDK.TracingModel.Event} */ (node.event);
-        const info = this._productAndBadgeByEvent(event);
-        const name = info && info.name || unattributed;
-        color = Timeline.TimelineUIUtils.eventColorByProduct(
-            this._productRegistry, this._model.timelineModel(), this._colorByURLCache, event);
-        return {name: name, color: color, icon: info && info.badge || undefined};
       }
 
       case Timeline.AggregatedTimelineTreeView.GroupBy.URL:
@@ -811,7 +791,6 @@ Timeline.AggregatedTimelineTreeView = class extends Timeline.TimelineTreeView {
       {label: Common.UIString('Group by Category'), value: groupBy.Category},
       {label: Common.UIString('Group by Domain'), value: groupBy.Domain},
       {label: Common.UIString('Group by Frame'), value: groupBy.Frame},
-      {label: Common.UIString('Group by Product'), value: groupBy.Product},
       {label: Common.UIString('Group by Subdomain'), value: groupBy.Subdomain},
       {label: Common.UIString('Group by URL'), value: groupBy.URL},
     ];
@@ -884,8 +863,6 @@ Timeline.AggregatedTimelineTreeView = class extends Timeline.TimelineTreeView {
         return this._domainByEvent.bind(this, false);
       case GroupBy.Domain:
         return this._domainByEvent.bind(this, true);
-      case GroupBy.Product:
-        return event => this._productByEvent(event) || this._domainByEvent(true, event) || '';
       case GroupBy.URL:
         return event => TimelineModel.TimelineProfileTree.eventURL(event) || '';
       case GroupBy.Frame:
@@ -927,45 +904,6 @@ Timeline.AggregatedTimelineTreeView = class extends Timeline.TimelineTreeView {
     }
     const domainMatch = /([^.]*\.)?[^.]*$/.exec(parsedURL.host);
     return domainMatch && domainMatch[0] || '';
-  }
-
-  /**
-   * @param {!SDK.TracingModel.Event} event
-   * @return {string}
-   */
-  _productByEvent(event) {
-    const url = TimelineModel.TimelineProfileTree.eventURL(event);
-    if (!url) {
-      return '';
-    }
-    if (this._productByURLCache.has(url)) {
-      return this._productByURLCache.get(url);
-    }
-    if (!this._productRegistry) {
-      return '';
-    }
-    const parsedURL = url.asParsedURL();
-    const name = parsedURL && this._productRegistry.nameForUrl(parsedURL) || '';
-    this._productByURLCache.set(url, name);
-    return name;
-  }
-
-  /**
-   * @param {!SDK.TracingModel.Event} event
-   * @return {?{name: string, badge: ?Element}}
-   */
-  _productAndBadgeByEvent(event) {
-    const url = TimelineModel.TimelineProfileTree.eventURL(event);
-    if (!url || !this._productRegistry) {
-      return null;
-    }
-    const parsedURL = url.asParsedURL();
-    const name = parsedURL && this._productRegistry.nameForUrl(parsedURL) || this._domainByEvent(true, event);
-    if (!name) {
-      return null;
-    }
-    const icon = parsedURL && this._badgePool.badgeForURL(parsedURL);
-    return {name: this._beautifyDomainName(name), badge: icon};
   }
 
   /**
@@ -1016,7 +954,6 @@ Timeline.AggregatedTimelineTreeView.GroupBy = {
   Category: 'Category',
   Domain: 'Domain',
   Subdomain: 'Subdomain',
-  Product: 'Product',
   URL: 'URL',
   Frame: 'Frame'
 };

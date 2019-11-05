@@ -88,7 +88,6 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
         Common.settings.createSetting('timelineTreeGroupBy', Timeline.AggregatedTimelineTreeView.GroupBy.None);
     this._groupBySetting.addChangeListener(this._updateColorMapper, this);
     this._updateColorMapper();
-    ProductRegistry.instance().then(registry => this._productRegistry = registry);
   }
 
   _updateColorMapper() {
@@ -97,19 +96,8 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
     if (!this._model) {
       return;
     }
-    const colorByProduct = this._groupBySetting.get() === Timeline.AggregatedTimelineTreeView.GroupBy.Product;
-    this._mainDataProvider.setEventColorMapping(
-        colorByProduct ? this._colorByProductForEvent.bind(this) : Timeline.TimelineUIUtils.eventColor);
+    this._mainDataProvider.setEventColorMapping(Timeline.TimelineUIUtils.eventColor);
     this._mainFlameChart.update();
-  }
-
-  /**
-   * @param {!SDK.TracingModel.Event} event
-   * @return {string}
-   */
-  _colorByProductForEvent(event) {
-    return Timeline.TimelineUIUtils.eventColorByProduct(
-        this._productRegistry, this._model.timelineModel(), this._urlToColorCache, event);
   }
 
   /**
@@ -526,5 +514,4 @@ Timeline.TimelineFlameChartMarker = class {
 /** @enum {string} */
 Timeline.TimelineFlameChartView._ColorBy = {
   URL: 'URL',
-  Product: 'Product'
 };

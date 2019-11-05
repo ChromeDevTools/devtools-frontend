@@ -3,10 +3,7 @@
 // found in the LICENSE file.
 
 Console.ConsoleSidebar = class extends UI.VBox {
-  /**
-   * @param {!ProductRegistry.BadgePool} badgePool
-   */
-  constructor(badgePool) {
+  constructor() {
     super(true);
     this.setMinimumSize(125, 0);
 
@@ -28,23 +25,23 @@ Console.ConsoleSidebar = class extends UI.VBox {
     }];
     this._appendGroup(
         Console.ConsoleSidebar._groupName.All, [], Console.ConsoleFilter.allLevelsFilterValue(),
-        UI.Icon.create('mediumicon-list'), badgePool, selectedFilterSetting);
+        UI.Icon.create('mediumicon-list'), selectedFilterSetting);
     this._appendGroup(
         Console.ConsoleSidebar._groupName.ConsoleAPI, consoleAPIParsedFilters,
-        Console.ConsoleFilter.allLevelsFilterValue(), UI.Icon.create('mediumicon-account-circle'), badgePool,
+        Console.ConsoleFilter.allLevelsFilterValue(), UI.Icon.create('mediumicon-account-circle'),
         selectedFilterSetting);
     this._appendGroup(
         Console.ConsoleSidebar._groupName.Error, [], Console.ConsoleFilter.singleLevelMask(Levels.Error),
-        UI.Icon.create('mediumicon-error-circle'), badgePool, selectedFilterSetting);
+        UI.Icon.create('mediumicon-error-circle'), selectedFilterSetting);
     this._appendGroup(
         Console.ConsoleSidebar._groupName.Warning, [], Console.ConsoleFilter.singleLevelMask(Levels.Warning),
-        UI.Icon.create('mediumicon-warning-triangle'), badgePool, selectedFilterSetting);
+        UI.Icon.create('mediumicon-warning-triangle'), selectedFilterSetting);
     this._appendGroup(
         Console.ConsoleSidebar._groupName.Info, [], Console.ConsoleFilter.singleLevelMask(Levels.Info),
-        UI.Icon.create('mediumicon-info-circle'), badgePool, selectedFilterSetting);
+        UI.Icon.create('mediumicon-info-circle'), selectedFilterSetting);
     this._appendGroup(
         Console.ConsoleSidebar._groupName.Verbose, [], Console.ConsoleFilter.singleLevelMask(Levels.Verbose),
-        UI.Icon.create('mediumicon-bug'), badgePool, selectedFilterSetting);
+        UI.Icon.create('mediumicon-bug'), selectedFilterSetting);
     const selectedTreeElementName = selectedFilterSetting.get();
     const defaultTreeElement =
         this._treeElements.find(x => x.name() === selectedTreeElementName) || this._treeElements[0];
@@ -56,12 +53,11 @@ Console.ConsoleSidebar = class extends UI.VBox {
    * @param {!Array<!TextUtils.FilterParser.ParsedFilter>} parsedFilters
    * @param {!Object<string, boolean>} levelsMask
    * @param {!Element} icon
-   * @param {!ProductRegistry.BadgePool} badgePool
    * @param {!Common.Setting} selectedFilterSetting
    */
-  _appendGroup(name, parsedFilters, levelsMask, icon, badgePool, selectedFilterSetting) {
+  _appendGroup(name, parsedFilters, levelsMask, icon, selectedFilterSetting) {
     const filter = new Console.ConsoleFilter(name, parsedFilters, null, levelsMask);
-    const treeElement = new Console.ConsoleSidebar.FilterTreeElement(filter, icon, badgePool, selectedFilterSetting);
+    const treeElement = new Console.ConsoleSidebar.FilterTreeElement(filter, icon, selectedFilterSetting);
     this._tree.appendChild(treeElement);
     this._treeElements.push(treeElement);
   }
@@ -109,16 +105,12 @@ Console.ConsoleSidebar.Events = {
 Console.ConsoleSidebar.URLGroupTreeElement = class extends UI.TreeElement {
   /**
    * @param {!Console.ConsoleFilter} filter
-   * @param {?Element} badge
    */
-  constructor(filter, badge) {
+  constructor(filter) {
     super(filter.name);
     this._filter = filter;
     this._countElement = this.listItemElement.createChild('span', 'count');
     const leadingIcons = [UI.Icon.create('largeicon-navigator-file')];
-    if (badge) {
-      leadingIcons.push(badge);
-    }
     this.setLeadingIcons(leadingIcons);
     this._messageCount = 0;
   }
@@ -133,13 +125,11 @@ Console.ConsoleSidebar.FilterTreeElement = class extends UI.TreeElement {
   /**
    * @param {!Console.ConsoleFilter} filter
    * @param {!Element} icon
-   * @param {!ProductRegistry.BadgePool} badgePool
    * @param {!Common.Setting} selectedFilterSetting
    */
-  constructor(filter, icon, badgePool, selectedFilterSetting) {
+  constructor(filter, icon, selectedFilterSetting) {
     super(filter.name);
     this._filter = filter;
-    this._badgePool = badgePool;
     this._selectedFilterSetting = selectedFilterSetting;
     /** @type {!Map<?string, !Console.ConsoleSidebar.URLGroupTreeElement>} */
     this._urlTreeElements = new Map();
@@ -220,8 +210,7 @@ Console.ConsoleSidebar.FilterTreeElement = class extends UI.TreeElement {
       filter.name = Common.UIString('<other>');
     }
     filter.parsedFilters.push({key: Console.ConsoleFilter.FilterType.Url, text: urlValue, negative: false});
-    const badge = parsedURL ? this._badgePool.badgeForURL(parsedURL) : null;
-    child = new Console.ConsoleSidebar.URLGroupTreeElement(filter, badge);
+    child = new Console.ConsoleSidebar.URLGroupTreeElement(filter);
     if (urlValue) {
       child.tooltip = urlValue;
     }

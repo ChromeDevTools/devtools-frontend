@@ -663,9 +663,6 @@ Then, zoom and pan the timeline with the mousewheel or <ph name="NAVIGATENODE">$
   <message name="IDS_DEVTOOLS_a45da96d0bf6575970f2d27af22be28a" desc="Text in Timeline UIUtils of the Performance panel">
     System
   </message>
-  <message name="IDS_DEVTOOLS_a580a76abe8b0912889d80f5c4cb9559" desc="Text in Timeline Tree View of the Performance panel">
-    Group by Product
-  </message>
   <message name="IDS_DEVTOOLS_a5d91e1697b7c75863fb9c6163a3446e" desc="Text in Timeline Event Overview of the Performance panel">
     COVERAGE
   </message>

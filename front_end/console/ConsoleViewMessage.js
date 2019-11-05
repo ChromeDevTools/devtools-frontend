@@ -35,14 +35,12 @@ Console.ConsoleViewMessage = class {
   /**
    * @param {!SDK.ConsoleMessage} consoleMessage
    * @param {!Components.Linkifier} linkifier
-   * @param {!ProductRegistry.BadgePool} badgePool
    * @param {number} nestingLevel
    * @param {function(!Common.Event)} onResize
    */
-  constructor(consoleMessage, linkifier, badgePool, nestingLevel, onResize) {
+  constructor(consoleMessage, linkifier, nestingLevel, onResize) {
     this._message = consoleMessage;
     this._linkifier = linkifier;
-    this._badgePool = badgePool;
     this._repeatCount = 1;
     this._closeGroupDecorationCount = 0;
     this._nestingLevel = nestingLevel;
@@ -132,10 +130,6 @@ Console.ConsoleViewMessage = class {
     this._anchorElement = this._buildMessageAnchor();
     if (this._anchorElement) {
       formattedMessage.appendChild(this._anchorElement);
-    }
-    const badgeElement = this._buildMessageBadge();
-    if (badgeElement) {
-      formattedMessage.appendChild(badgeElement);
     }
 
     let table = this._message.parameters && this._message.parameters.length ? this._message.parameters[0] : null;
@@ -281,10 +275,6 @@ Console.ConsoleViewMessage = class {
     if (this._anchorElement) {
       formattedMessage.appendChild(this._anchorElement);
     }
-    const badgeElement = this._buildMessageBadge();
-    if (badgeElement) {
-      formattedMessage.appendChild(badgeElement);
-    }
     formattedMessage.appendChild(messageElement);
     return formattedMessage;
   }
@@ -360,58 +350,6 @@ Console.ConsoleViewMessage = class {
       return anchorWrapperElement;
     }
     return null;
-  }
-
-  /**
-   * @return {?Element}
-   */
-  _buildMessageBadge() {
-    const badgeElement = this._badgeElement();
-    if (!badgeElement) {
-      return null;
-    }
-    badgeElement.classList.add('console-message-badge');
-    return badgeElement;
-  }
-
-  /**
-   * @return {?Element}
-   */
-  _badgeElement() {
-    if (this._message._url) {
-      return this._badgePool.badgeForURL(new Common.ParsedURL(this._message._url));
-    }
-    if (this._message.stackTrace) {
-      let stackTrace = this._message.stackTrace;
-      while (stackTrace) {
-        for (const callFrame of this._message.stackTrace.callFrames) {
-          if (callFrame.url) {
-            return this._badgePool.badgeForURL(new Common.ParsedURL(callFrame.url));
-          }
-        }
-        stackTrace = stackTrace.parent;
-      }
-    }
-    if (!this._message.executionContextId) {
-      return null;
-    }
-    const runtimeModel = this._message.runtimeModel();
-    if (!runtimeModel) {
-      return null;
-    }
-    const executionContext = runtimeModel.executionContext(this._message.executionContextId);
-    if (!executionContext || !executionContext.frameId) {
-      return null;
-    }
-    const resourceTreeModel = executionContext.target().model(SDK.ResourceTreeModel);
-    if (!resourceTreeModel) {
-      return null;
-    }
-    const frame = resourceTreeModel.frameForId(executionContext.frameId);
-    if (!frame || !frame.parentFrame) {
-      return null;
-    }
-    return this._badgePool.badgeForFrame(frame);
   }
 
   /**
@@ -1752,14 +1690,13 @@ Console.ConsoleGroupViewMessage = class extends Console.ConsoleViewMessage {
   /**
    * @param {!SDK.ConsoleMessage} consoleMessage
    * @param {!Components.Linkifier} linkifier
-   * @param {!ProductRegistry.BadgePool} badgePool
    * @param {number} nestingLevel
    * @param {function()} onToggle
    * @param {function(!Common.Event)} onResize
    */
-  constructor(consoleMessage, linkifier, badgePool, nestingLevel, onToggle, onResize) {
+  constructor(consoleMessage, linkifier, nestingLevel, onToggle, onResize) {
     console.assert(consoleMessage.isGroupStartMessage());
-    super(consoleMessage, linkifier, badgePool, nestingLevel, onResize);
+    super(consoleMessage, linkifier, nestingLevel, onResize);
     this._collapsed = consoleMessage.type === SDK.ConsoleMessage.MessageType.StartGroupCollapsed;
     /** @type {?UI.Icon} */
     this._expandGroupIcon = null;

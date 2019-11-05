@@ -211,7 +211,6 @@
         "data_grid",
         "object_ui",
         "sdk",
-        "product_registry",
         "formatter"
     ],
     "scripts": [

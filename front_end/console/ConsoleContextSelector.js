@@ -18,9 +18,6 @@ Console.ConsoleContextSelector = class {
     this._items.addEventListener(
         UI.ListModel.Events.ItemsReplaced, () => this._toolbarItem.setEnabled(!!this._items.length));
 
-    /** @type {!Map<!SDK.ExecutionContext, !ProductRegistry.BadgePool>} */
-    this._badgePoolForExecutionContext = new Map();
-
     this._toolbarItem.element.classList.add('toolbar-has-dropdown');
 
     SDK.targetManager.addModelListener(
@@ -122,36 +119,6 @@ Console.ConsoleContextSelector = class {
 
   /**
    * @param {!SDK.ExecutionContext} executionContext
-   * @return {?Element}
-   */
-  _badgeFor(executionContext) {
-    if (!executionContext.frameId || !executionContext.isDefault) {
-      return null;
-    }
-    const resourceTreeModel = executionContext.target().model(SDK.ResourceTreeModel);
-    const frame = resourceTreeModel && resourceTreeModel.frameForId(executionContext.frameId);
-    if (!frame) {
-      return null;
-    }
-    const badgePool = new ProductRegistry.BadgePool();
-    this._badgePoolForExecutionContext.set(executionContext, badgePool);
-    return badgePool.badgeForFrame(frame);
-  }
-
-  /**
-   * @param {!SDK.ExecutionContext} executionContext
-   */
-  _disposeExecutionContextBadge(executionContext) {
-    const badgePool = this._badgePoolForExecutionContext.get(executionContext);
-    if (!badgePool) {
-      return;
-    }
-    badgePool.reset();
-    this._badgePoolForExecutionContext.delete(executionContext);
-  }
-
-  /**
-   * @param {!SDK.ExecutionContext} executionContext
    */
   _executionContextCreated(executionContext) {
     this._items.insertWithComparator(executionContext, executionContext.runtimeModel.executionContextComparator());
@@ -189,7 +156,6 @@ Console.ConsoleContextSelector = class {
     if (index === -1) {
       return;
     }
-    this._disposeExecutionContextBadge(executionContext);
     this._items.remove(index);
   }
 
@@ -264,11 +230,6 @@ Console.ConsoleContextSelector = class {
     const title = shadowRoot.createChild('div', 'title');
     title.createTextChild(this.titleFor(item).trimEndWithMaxLength(100));
     const subTitle = shadowRoot.createChild('div', 'subtitle');
-    const badgeElement = this._badgeFor(item);
-    if (badgeElement) {
-      badgeElement.classList.add('badge');
-      subTitle.appendChild(badgeElement);
-    }
     subTitle.createTextChild(this._subtitleFor(item));
     element.style.paddingLeft = (8 + this._depthFor(item) * 15) + 'px';
     return element;
@@ -342,7 +303,6 @@ Console.ConsoleContextSelector = class {
     const debuggerModel = /** @type {!SDK.DebuggerModel} */ (event.data);
     for (const executionContext of this._items) {
       if (executionContext.debuggerModel === debuggerModel) {
-        this._disposeExecutionContextBadge(executionContext);
         this._dropDown.refreshItem(executionContext);
       }
     }
@@ -359,7 +319,6 @@ Console.ConsoleContextSelector = class {
     }
     for (const executionContext of runtimeModel.executionContexts()) {
       if (frame.id === executionContext.frameId) {
-        this._disposeExecutionContextBadge(executionContext);
         this._dropDown.refreshItem(executionContext);
       }
     }

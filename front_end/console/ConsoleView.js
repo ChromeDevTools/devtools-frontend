@@ -42,8 +42,7 @@ Console.ConsoleView = class extends UI.VBox {
     this._searchableView.element.classList.add('console-searchable-view');
     this._searchableView.setPlaceholder(Common.UIString('Find string in logs'));
     this._searchableView.setMinimalSearchQuerySize(0);
-    this._badgePool = new ProductRegistry.BadgePool();
-    this._sidebar = new Console.ConsoleSidebar(this._badgePool);
+    this._sidebar = new Console.ConsoleSidebar();
     this._sidebar.addEventListener(Console.ConsoleSidebar.Events.FilterSelected, this._onFilterChanged.bind(this));
     this._isSidebarOpen = false;
     this._filter = new Console.ConsoleViewFilter(this._onFilterChanged.bind(this));
@@ -653,19 +652,15 @@ Console.ConsoleView = class extends UI.VBox {
     const nestingLevel = this._currentGroup.nestingLevel();
     switch (message.type) {
       case SDK.ConsoleMessage.MessageType.Command:
-        return new Console.ConsoleCommand(
-            message, this._linkifier, this._badgePool, nestingLevel, this._onMessageResizedBound);
+        return new Console.ConsoleCommand(message, this._linkifier, nestingLevel, this._onMessageResizedBound);
       case SDK.ConsoleMessage.MessageType.Result:
-        return new Console.ConsoleCommandResult(
-            message, this._linkifier, this._badgePool, nestingLevel, this._onMessageResizedBound);
+        return new Console.ConsoleCommandResult(message, this._linkifier, nestingLevel, this._onMessageResizedBound);
       case SDK.ConsoleMessage.MessageType.StartGroupCollapsed:
       case SDK.ConsoleMessage.MessageType.StartGroup:
         return new Console.ConsoleGroupViewMessage(
-            message, this._linkifier, this._badgePool, nestingLevel, this._updateMessageList.bind(this),
-            this._onMessageResizedBound);
+            message, this._linkifier, nestingLevel, this._updateMessageList.bind(this), this._onMessageResizedBound);
       default:
-        return new Console.ConsoleViewMessage(
-            message, this._linkifier, this._badgePool, nestingLevel, this._onMessageResizedBound);
+        return new Console.ConsoleViewMessage(message, this._linkifier, nestingLevel, this._onMessageResizedBound);
     }
   }
 
@@ -702,7 +697,6 @@ Console.ConsoleView = class extends UI.VBox {
     this._hidePromptSuggestBox();
     this._viewport.setStickToBottom(true);
     this._linkifier.reset();
-    this._badgePool.reset();
     this._filter.clear();
     if (hadFocus) {
       this._prompt.focus();

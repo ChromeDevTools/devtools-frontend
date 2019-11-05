@@ -10,7 +10,6 @@
     { "name": "help" },
     { "name": "layer_viewer" },
     { "name": "network" },
-    { "name": "product_registry_impl", "type": "remote" },
     { "name": "resources" },
     { "name": "timeline" },
     { "name": "timeline_model" }

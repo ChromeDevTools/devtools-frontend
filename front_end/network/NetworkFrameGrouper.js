@@ -50,8 +50,6 @@ Network.FrameGroupNode = class extends Network.NetworkGroupNode {
   constructor(parentView, frame) {
     super(parentView);
     this._frame = frame;
-    /** @type {?Element} */
-    this._productBadge = null;
   }
 
   /**
@@ -71,12 +69,7 @@ Network.FrameGroupNode = class extends Network.NetworkGroupNode {
     const columnIndex = this.dataGrid.indexOfVisibleColumn(columnId);
     if (columnIndex === 0) {
       const name = this.displayName();
-      if (!this._productBadge) {
-        this._productBadge = this.parentView().badgePool.badgeForFrame(this._frame);
-        this._productBadge.classList.add('network-frame-group-badge');
-      }
       cell.appendChild(UI.Icon.create('largeicon-navigator-frame', 'network-frame-group-icon'));
-      cell.appendChild(this._productBadge);
       cell.createTextChild(name);
       cell.title = name;
     }

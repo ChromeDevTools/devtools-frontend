@@ -177,7 +177,6 @@
         "cookie_table",
         "data_grid",
         "browser_sdk",
-        "product_registry",
         "mobile_throttling",
         "har_importer",
         "persistence"

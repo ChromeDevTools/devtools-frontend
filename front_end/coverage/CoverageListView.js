@@ -226,7 +226,7 @@ Coverage.CoverageListView = class extends UI.VBox {
     }
     if (type & Coverage.CoverageType.JavaScriptPerFunction) {
       types.push(Common.UIString('JS (per function)'));
-    } else if (type & Coverage.CoverageType.JavaScriptPerBlock) {
+    } else if (type & Coverage.CoverageType.JavaScript) {
       types.push(Common.UIString('JS (per block)'));
     }
     return types.join('+');
@@ -300,8 +300,7 @@ Coverage.CoverageListView.GridNode = class extends DataGrid.SortableDataGridNode
         if (this._coverageInfo.type() & Coverage.CoverageType.JavaScriptPerFunction) {
           cell.title = ls
           `JS coverage with per function granularity: Once a function was executed, the whole function is marked as covered.`;
-        }
-        if (this._coverageInfo.type() & Coverage.CoverageType.JavaScriptPerBlock) {
+        } else if (this._coverageInfo.type() & Coverage.CoverageType.JavaScript) {
           cell.title = ls
           `JS coverage with per block granularity: Once a block of JavaScript was executed, that block is marked as covered.`;
         }
@@ -333,7 +332,7 @@ Coverage.CoverageListView.GridNode = class extends DataGrid.SortableDataGridNode
           if (this._coverageInfo.type() & Coverage.CoverageType.JavaScriptPerFunction) {
             unusedSizeBar.title = ls`${this._coverageInfo.unusedSize()} bytes (${
                 unusedPercent}) belong to functions that have not (yet) been executed.`;
-          } else if (this._coverageInfo.type() & Coverage.CoverageType.JavaScriptPerBlock) {
+          } else if (this._coverageInfo.type() & Coverage.CoverageType.JavaScript) {
             unusedSizeBar.title = ls`${this._coverageInfo.unusedSize()} bytes (${
                 unusedPercent}) belong to blocks of JavaScript that have not (yet) been executed.`;
           }

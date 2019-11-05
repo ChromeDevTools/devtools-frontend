@@ -24,11 +24,11 @@ Coverage.CoverageView = class extends UI.VBox {
     const coverageTypes = [
       {
         label: ls`Per function`,
-        value: Coverage.CoverageType.JavaScriptPerFunction,
+        value: Coverage.CoverageType.JavaScript | Coverage.CoverageType.JavaScriptPerFunction,
       },
       {
         label: ls`Per block`,
-        value: Coverage.CoverageType.JavaScriptPerBlock,
+        value: Coverage.CoverageType.JavaScript,
       },
     ];
     for (const type of coverageTypes) {
@@ -86,7 +86,7 @@ Coverage.CoverageView = class extends UI.VBox {
       },
       {
         label: ls`JavaScript`,
-        value: Coverage.CoverageType.JavaScriptPerBlock | Coverage.CoverageType.JavaScriptPerFunction,
+        value: Coverage.CoverageType.JavaScript | Coverage.CoverageType.JavaScriptPerFunction,
       },
     ];
     for (const option of options) {
@@ -168,8 +168,9 @@ Coverage.CoverageView = class extends UI.VBox {
    * @return {boolean}
    */
   isBlockCoverageSelected() {
-    const coverageType = this._coverageTypeComboBox.selectedOption().value;
-    return coverageType === Coverage.CoverageType.JavaScriptPerBlock;
+    const coverageType = Number(this._coverageTypeComboBox.selectedOption().value);
+    // Check that Coverage.CoverageType.JavaScriptPerFunction is not present.
+    return coverageType === Coverage.CoverageType.JavaScript;
   }
 
   /**

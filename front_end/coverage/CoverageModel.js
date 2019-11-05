@@ -13,7 +13,7 @@ Coverage.CoverageSegment;
  */
 Coverage.CoverageType = {
   CSS: (1 << 0),
-  JavaScriptPerBlock: (1 << 1),
+  JavaScript: (1 << 1),
   JavaScriptPerFunction: (1 << 2),
 };
 
@@ -294,7 +294,7 @@ Coverage.CoverageModel = class extends SDK.SDKModel {
       }
 
       const ranges = [];
-      let type = Coverage.CoverageType.JavaScriptPerBlock;
+      let type = Coverage.CoverageType.JavaScript;
       for (const func of entry.functions) {
         // Do not coerce undefined to false, i.e. only consider blockLevel to be false
         // if back-end explicitly provides blockLevel field, otherwise presume blockLevel
@@ -619,7 +619,7 @@ Coverage.URLCoverageInfo = class {
     const key = `${lineOffset}:${columnOffset}`;
     let entry = this._coverageInfoByLocation.get(key);
 
-    if ((type & Coverage.CoverageType.JavaScriptPerBlock) && !this._coverageInfoByLocation.size) {
+    if ((type & Coverage.CoverageType.JavaScript) && !this._coverageInfoByLocation.size) {
       this._isContentScript = /** @type {!SDK.Script} */ (contentProvider).isContentScript();
     }
     this._type |= type;
@@ -629,7 +629,7 @@ Coverage.URLCoverageInfo = class {
       return entry;
     }
 
-    if ((type & Coverage.CoverageType.JavaScriptPerBlock) && !this._coverageInfoByLocation.size) {
+    if ((type & Coverage.CoverageType.JavaScript) && !this._coverageInfoByLocation.size) {
       this._isContentScript = /** @type {!SDK.Script} */ (contentProvider).isContentScript();
     }
 

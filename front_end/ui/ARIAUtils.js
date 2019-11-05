@@ -330,6 +330,14 @@ export function unsetExpandable(element) {
 }
 
 /**
+ * @param {!Element} element
+ * @param {boolean} value
+ */
+export function setHidden(element, value) {
+  element.setAttribute('aria-hidden', !!value);
+}
+
+/**
  * @enum {string}
  */
 export const AutocompleteInteractionModel = {
@@ -578,6 +586,7 @@ self.UI.ARIAUtils = {
   setCheckboxAsIndeterminate,
   setExpanded,
   unsetExpandable,
+  setHidden,
   AutocompleteInteractionModel,
   setAutocomplete,
   setSelected,

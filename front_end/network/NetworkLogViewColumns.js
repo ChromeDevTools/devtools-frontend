@@ -266,6 +266,13 @@ Network.NetworkLogViewColumns = class {
   }
 
   /**
+   * @param {boolean} value
+   */
+  setHidden(value) {
+    UI.ARIAUtils.setHidden(this._splitWidget.element, value);
+  }
+
+  /**
    * @return {!DataGrid.SortableDataGrid<!Network.NetworkNode>} dataGrid
    */
   dataGrid() {

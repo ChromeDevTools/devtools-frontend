@@ -393,8 +393,8 @@
   <message name="IDS_DEVTOOLS_c081841ffd8efaef2ee0c7bf0507758a" desc="Title of a setting under the Sources category that can be invoked through the Command Menu">
     Enable bracket matching
   </message>
-  <message name="IDS_DEVTOOLS_c12de9f9edb401ca79a3291f1831ae6f" desc="Title in Scope Chain Sidebar Pane of the Sources panel">
-    Closure (<ph name="UI_BEAUTIFYFUNCTIONNAME_SCOPENAME_">$1s<ex>Scope.funtionName</ex></ph>)
+  <message name="IDS_DEVTOOLS_c12de9f9edb401ca79a3291f1831ae6f" desc="Text in the Sources panel Scope pane describing a closure scope.">
+    Closure (<ph name="UI_BEAUTIFYFUNCTIONNAME_SCOPENAME_">$1s<ex>func</ex></ph>)
   </message>
   <message name="IDS_DEVTOOLS_c2e59ab4f410655458110ae524bdc9be" desc="Text of a DOM element in Debugger Plugin of the Sources panel">
     Go to &quot;<ph name="COMMON_UISTRING__BLACKBOXING__">$1s<ex>Blackboxing</ex></ph>&quot; tab in settings

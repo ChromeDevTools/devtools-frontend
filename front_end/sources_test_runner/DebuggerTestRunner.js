@@ -542,29 +542,29 @@ SourcesTestRunner.dumpScopeVariablesSidebarPane = function() {
   TestRunner.addResult('Scope variables sidebar pane:');
   const sections = SourcesTestRunner.scopeChainSections();
 
-  for (let i = 0; i < sections.length; ++i) {
-    const textContent = TestRunner.textContentWithLineBreaks(sections[i].element);
+  SourcesTestRunner.dumpSectionsWithIndent(sections, 0);
+};
+
+SourcesTestRunner.dumpSectionsWithIndent = function(treeElements, depth) {
+  if (!treeElements || treeElements.length === 0) {
+    return;
+  }
+
+  for (const treeElement of treeElements) {
+    const textContent = TestRunner.textContentWithLineBreaks(treeElement.listItemElement);
     const text = TestRunner.clearSpecificInfoFromStackFrames(textContent);
-
     if (text.length > 0) {
-      TestRunner.addResult(text);
+      TestRunner.addResult('    '.repeat(depth) + text);
     }
-
-    if (!sections[i].objectTreeElement().expanded) {
+    if (!treeElement.expanded && depth === 0) {
       TestRunner.addResult('    <section collapsed>');
     }
+    SourcesTestRunner.dumpSectionsWithIndent(treeElement.children(), depth + 1);
   }
 };
 
 SourcesTestRunner.scopeChainSections = function() {
-  const children = self.runtime.sharedInstance(Sources.ScopeChainSidebarPane).contentElement.children;
-  const sections = [];
-
-  for (let i = 0; i < children.length; ++i) {
-    sections.push(children[i]._section);
-  }
-
-  return sections;
+  return self.runtime.sharedInstance(Sources.ScopeChainSidebarPane)._treeOutline.rootElement().children();
 };
 
 SourcesTestRunner.expandScopeVariablesSidebarPane = function(callback) {

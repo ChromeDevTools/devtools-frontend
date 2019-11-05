@@ -83,7 +83,8 @@ export default class ExtensionServer extends Common.Object {
     window.addEventListener('message', this._onWindowMessage.bind(this), false);  // Only for main window.
 
     /** @suppress {checkTypes} */
-    const existingTabId = window.DevToolsAPI && window.DevToolsAPI.getInspectedTabId();
+    const existingTabId =
+        window.DevToolsAPI && window.DevToolsAPI.getInspectedTabId && window.DevToolsAPI.getInspectedTabId();
 
     if (existingTabId) {
       this._setInspectedTabId({data: existingTabId});

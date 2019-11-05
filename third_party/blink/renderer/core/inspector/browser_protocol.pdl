@@ -580,6 +580,7 @@ domain Browser
       geolocation
       midi
       midiSysex
+      nfc
       notifications
       paymentHandler
       periodicBackgroundSync
@@ -4151,8 +4152,6 @@ domain Network
       SameSiteStrict
       # The cookie had the "SameSite=Lax" attribute but came from a cross-origin response.
       SameSiteLax
-      # The cookie had the "SameSite=Extended" attribute but came from a cross-origin response.
-      SameSiteExtended
       # The cookie didn't specify a "SameSite" attribute and was defaulted to "SameSite=Lax" and
       # broke the same rules specified in the SameSiteLax value.
       SameSiteUnspecifiedTreatedAsLax
@@ -4193,9 +4192,6 @@ domain Network
       # The cookie had the "SameSite=Lax" attribute and the request was made on a different site.
       # This does not include navigation requests initiated by other sites.
       SameSiteLax
-      # The cookie had the "SameSite=Extended" attribute and the request was made on a different
-      # site. The different site is outside of the cookie's trusted first-party set.
-      SameSiteExtended
       # The cookie didn't specify a SameSite attribute when it was stored and was defaulted to
       # "SameSite=Lax" and broke the same rules specified in the SameSiteLax value. The cookie had
       # to have been set with "SameSite=None" to enable third-party usage.

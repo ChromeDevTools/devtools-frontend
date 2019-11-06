@@ -24,6 +24,7 @@ karma-coverage
 /front_end/accessibility/ARIAProperties.js
 
 /build
+/buildtools
 /out
 /third_party/*
 !/third_party/axe-core

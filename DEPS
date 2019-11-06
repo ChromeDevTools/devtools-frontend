@@ -31,13 +31,13 @@ vars = {
 allowed_hosts = [ 'chromium.googlesource.com' ]
 
 deps = {
-  'buildtools/clang_format/script':
+  'devtools-frontend/buildtools/clang_format/script':
     Var('clang_format_url') + '@' + Var('clang_format_revision'),
 
-  'buildtools':
+  'devtools-frontend/buildtools':
     Var('buildtools_url') + '@' + Var('buildtools_revision'),
 
-  'buildtools/linux64': {
+  'devtools-frontend/buildtools/linux64': {
     'packages': [
       {
         'package': 'gn/gn/linux-amd64',
@@ -47,7 +47,7 @@ deps = {
     'dep_type': 'cipd',
     'condition': 'host_os == "linux"',
   },
-  'buildtools/mac': {
+  'devtools-frontend/buildtools/mac': {
     'packages': [
       {
         'package': 'gn/gn/mac-amd64',
@@ -57,7 +57,7 @@ deps = {
     'dep_type': 'cipd',
     'condition': 'host_os == "mac"',
   },
-  'buildtools/win': {
+  'devtools-frontend/buildtools/win': {
     'packages': [
       {
         'package': 'gn/gn/windows-amd64',
@@ -147,7 +147,7 @@ hooks = [
                 '--no_resume',
                 '--no_auth',
                 '--bucket', 'chromium-clang-format',
-                '-s', 'buildtools/win/clang-format.exe.sha1',
+                '-s', 'devtools-frontend/buildtools/win/clang-format.exe.sha1',
     ],
   },
   {
@@ -159,7 +159,7 @@ hooks = [
                 '--no_resume',
                 '--no_auth',
                 '--bucket', 'chromium-clang-format',
-                '-s', 'buildtools/mac/clang-format.sha1',
+                '-s', 'devtools-frontend/buildtools/mac/clang-format.sha1',
     ],
   },
   {
@@ -171,7 +171,7 @@ hooks = [
                 '--no_resume',
                 '--no_auth',
                 '--bucket', 'chromium-clang-format',
-                '-s', 'buildtools/linux64/clang-format.sha1',
+                '-s', 'devtools-frontend/buildtools/linux64/clang-format.sha1',
     ],
   },
 

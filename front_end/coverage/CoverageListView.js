@@ -344,7 +344,7 @@ Coverage.CoverageListView.GridNode = class extends DataGrid.SortableDataGridNode
           if (this._coverageInfo.type() & Coverage.CoverageType.JavaScriptPerFunction) {
             usedSizeBar.title = ls`${this._coverageInfo.usedSize()} bytes (${
                 usedPercent}) belong to functions that have executed at least once.`;
-          } else {
+          } else if (this._coverageInfo.type() & Coverage.CoverageType.JavaScript) {
             usedSizeBar.title = ls`${this._coverageInfo.usedSize()} bytes (${
                 usedPercent}) belong to blocks of JavaScript that have executed at least once.`;
           }

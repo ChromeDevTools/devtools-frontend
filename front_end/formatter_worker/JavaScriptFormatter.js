@@ -51,7 +51,8 @@ FormatterWorker.JavaScriptFormatter = class {
     this._content = text.substring(this._fromOffset, this._toOffset);
     this._lastLineNumber = 0;
     this._tokenizer = new FormatterWorker.AcornTokenizer(this._content);
-    const ast = acorn.parse(this._content, {ranges: false, preserveParens: true});
+    const options = {ranges: false, preserveParens: true, allowImportExportEverywhere: true, ecmaVersion: 2020};
+    const ast = acorn.parse(this._content, options);
     const walker = new FormatterWorker.ESTreeWalker(this._beforeVisit.bind(this), this._afterVisit.bind(this));
     walker.walk(ast);
   }
@@ -304,6 +305,27 @@ FormatterWorker.JavaScriptFormatter = class {
       return 't';
     } else if (node.type === 'Super') {
       return 't';
+    } else if (node.type === 'ImportExpression') {
+      return 't';
+    } else if (node.type === 'ExportAllDeclaration') {
+      if (AT.punctuator(token, '*')) {
+        return 'sts';
+      }
+      return 't';
+    } else if (node.type === 'ExportNamedDeclaration' || node.type === 'ImportDeclaration') {
+      if (AT.punctuator(token, '{')) {
+        return 'st';
+      }
+      if (AT.punctuator(token, ',')) {
+        return 'ts';
+      }
+      if (AT.punctuator(token, '}')) {
+        return node.source ? 'ts' : 't';
+      }
+      if (AT.punctuator(token, '*')) {
+        return 'sts';
+      }
+      return 't';
     }
     return AT.keyword(token) && !AT.keyword(token, 'this') ? 'ts' : 't';
   }
@@ -369,6 +391,10 @@ FormatterWorker.JavaScriptFormatter = class {
     } else if (
         node.type === 'BreakStatement' || node.type === 'ContinueStatement' || node.type === 'ThrowStatement' ||
         node.type === 'ReturnStatement' || node.type === 'ExpressionStatement') {
+      return 'n';
+    } else if (
+        node.type === 'ImportDeclaration' || node.type === 'ExportAllDeclaration' ||
+        node.type === 'ExportDefaultDeclaration' || node.type === 'ExportNamedDeclaration') {
       return 'n';
     }
     return '';

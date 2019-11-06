@@ -36,7 +36,7 @@ CssOverview.CSSOverviewPanel = class extends UI.Panel {
     this._fontSizes = new Map();
     this._fontWeights = new Map();
     this._mediaQueries = [];
-    this._unusedRules = [];
+    this._unusedDeclarations = new Map();
     this._elementCount = 0;
     this._cancelled = false;
     this._globalStyleStats = {
@@ -91,14 +91,14 @@ CssOverview.CSSOverviewPanel = class extends UI.Panel {
       fontWeights: this._fontWeights,
       elementCount: this._elementCount,
       mediaQueries: this._mediaQueries,
-      unusedRules: this._unusedRules,
+      unusedDeclarations: this._unusedDeclarations,
     });
   }
 
   async _startOverview() {
     this._renderOverviewStartedView();
 
-    const [globalStyleStats, {elementCount, backgroundColors, textColors, fillColors, borderColors, fontSizes, fontWeights, unusedRules}, mediaQueries] =
+    const [globalStyleStats, {elementCount, backgroundColors, textColors, fillColors, borderColors, fontSizes, fontWeights, unusedDeclarations}, mediaQueries] =
         await Promise.all([
           this._model.getGlobalStylesheetStats(), this._model.getNodeStyleStats(),
           this._model.getMediaQueries()
@@ -140,8 +140,8 @@ CssOverview.CSSOverviewPanel = class extends UI.Panel {
       this._fontWeights = fontWeights;
     }
 
-    if (unusedRules) {
-      this._unusedRules = unusedRules;
+    if (unusedDeclarations) {
+      this._unusedDeclarations = unusedDeclarations;
     }
 
     this._controller.dispatchEventToListeners(CssOverview.Events.OverviewCompleted);

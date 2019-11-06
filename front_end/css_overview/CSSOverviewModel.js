@@ -33,7 +33,7 @@ CssOverview.CSSOverviewModel = class extends SDK.SDKModel {
     const borderColors = new Map();
     const fontSizes = new Map();
     const fontWeights = new Map();
-    const unusedRules = [];
+    const unusedDeclarations = new Map();
     const snapshotConfig = {
       computedStyles: [
         'background-color',
@@ -153,24 +153,33 @@ CssOverview.CSSOverviewModel = class extends SDK.SDKModel {
           fontWeights.set(fontWeight, fontWeightInstances);
         }
 
-        CssOverview.CSSOverviewUnusedRules.checkForUnusedPositionValues(
-            unusedRules, nodeId, strings, positionIdx, topIdx, leftIdx, rightIdx, bottomIdx);
+        CssOverview.CSSOverviewUnusedDeclarations.checkForUnusedPositionValues(
+            unusedDeclarations, nodeId, strings, positionIdx, topIdx, leftIdx, rightIdx, bottomIdx);
 
         // Ignore SVG elements as, despite being inline by default, they can have width & height specified.
         // Also ignore replaced content, for similar reasons.
         if (!isSVGNode(strings[nodeName]) && !isReplacedContent(strings[nodeName])) {
-          CssOverview.CSSOverviewUnusedRules.checkForUnusedWidthAndHeightValues(
-              unusedRules, nodeId, strings, displayIdx, widthIdx, heightIdx);
+          CssOverview.CSSOverviewUnusedDeclarations.checkForUnusedWidthAndHeightValues(
+              unusedDeclarations, nodeId, strings, displayIdx, widthIdx, heightIdx);
         }
 
         if (verticalAlignIdx !== -1 && !isTableElementWithDefaultStyles(strings[nodeName], strings[displayIdx])) {
-          CssOverview.CSSOverviewUnusedRules.checkForInvalidVerticalAlignment(
-              unusedRules, nodeId, strings, displayIdx, verticalAlignIdx);
+          CssOverview.CSSOverviewUnusedDeclarations.checkForInvalidVerticalAlignment(
+              unusedDeclarations, nodeId, strings, displayIdx, verticalAlignIdx);
         }
       }
     }
 
-    return {backgroundColors, textColors, fillColors, borderColors, fontSizes, fontWeights, unusedRules, elementCount};
+    return {
+      backgroundColors,
+      textColors,
+      fillColors,
+      borderColors,
+      fontSizes,
+      fontWeights,
+      unusedDeclarations,
+      elementCount
+    };
   }
 
   getComputedStyleForNode(nodeId) {
@@ -178,9 +187,25 @@ CssOverview.CSSOverviewModel = class extends SDK.SDKModel {
   }
 
   async getMediaQueries() {
-    // Ignore media queries applied to stylesheets; instead only use declared media rules.
     const queries = await this._cssAgent.getMediaQueries();
-    return queries.filter(query => query.source !== 'linkedSheet');
+    const queryMap = new Map();
+
+    if (!queries) {
+      return queryMap;
+    }
+
+    for (const query of queries) {
+      // Ignore media queries applied to stylesheets; instead only use declared media rules.
+      if (query.source === 'linkedSheet') {
+        continue;
+      }
+
+      const entries = queryMap.get(query.text) || [];
+      entries.push(query);
+      queryMap.set(query.text, entries);
+    }
+
+    return queryMap;
   }
 
   async getGlobalStylesheetStats() {

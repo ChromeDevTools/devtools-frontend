@@ -116,7 +116,7 @@ Sources.SourcesView = class extends UI.VBox {
     const list = element.createChild('div', 'tabbed-pane-placeholder');
     list.addEventListener('keydown', this._placeholderOnKeyDown.bind(this), false);
     UI.ARIAUtils.markAsList(list);
-    UI.ARIAUtils.setAccessibleName(list, ls`Empty Source View Actions`);
+    UI.ARIAUtils.setAccessibleName(list, ls`Source View Actions`);
 
     for (let i = 0; i < shortcuts.length; i++) {
       const shortcut = shortcuts[i];

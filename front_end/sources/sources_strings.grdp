@@ -249,6 +249,9 @@
   <message name="IDS_DEVTOOLS_77898d40c8a26a07d05eedb991359804" desc="Text in Script Origin Plugin of the Sources panel">
     (source mapped from <ph name="COMPONENTS_LINKIFIER_LINKIFYURL_ORIGINURL_">$1s<ex>example.com</ex></ph>)
   </message>
+  <message name="IDS_DEVTOOLS_7a6364731fbe9e4571bd0cf4078a8344" desc="Accessible label for Sources placeholder view actions list">
+    Source View Actions
+  </message>
   <message name="IDS_DEVTOOLS_7b4181bd55aaaf857e8ac861019fb530" desc="Text in Sources Navigator of the Sources panel">
     Content scripts served by extensions appear here
   </message>
@@ -419,9 +422,6 @@
   </message>
   <message name="IDS_DEVTOOLS_cd26a6a87959e99fdf99f5ccccef0464" desc="Text in Debugger Plugin of the Sources panel">
     Disable breakpoint
-  </message>
-  <message name="IDS_DEVTOOLS_d016c1bd981f59db972acf1b83201591" desc="Accessible label for Sources placeholder view actions list">
-    Empty Source View Actions
   </message>
   <message name="IDS_DEVTOOLS_d07d651006c823c6f008158f6eb63056" desc="Tooltip text that appears when hovering over the largeicon play button in the Sources Panel of the Sources panel">
     Resume with all pauses blocked for 500 ms

@@ -33,8 +33,7 @@ CssOverview.CSSOverviewPanel = class extends UI.Panel {
     this._textColors = new Map();
     this._fillColors = new Map();
     this._borderColors = new Map();
-    this._fontSizes = new Map();
-    this._fontWeights = new Map();
+    this._fontInfo = new Map();
     this._mediaQueries = [];
     this._unusedDeclarations = new Map();
     this._elementCount = 0;
@@ -87,8 +86,7 @@ CssOverview.CSSOverviewPanel = class extends UI.Panel {
       fillColors: this._fillColors,
       borderColors: this._borderColors,
       globalStyleStats: this._globalStyleStats,
-      fontSizes: this._fontSizes,
-      fontWeights: this._fontWeights,
+      fontInfo: this._fontInfo,
       elementCount: this._elementCount,
       mediaQueries: this._mediaQueries,
       unusedDeclarations: this._unusedDeclarations,
@@ -98,7 +96,7 @@ CssOverview.CSSOverviewPanel = class extends UI.Panel {
   async _startOverview() {
     this._renderOverviewStartedView();
 
-    const [globalStyleStats, {elementCount, backgroundColors, textColors, fillColors, borderColors, fontSizes, fontWeights, unusedDeclarations}, mediaQueries] =
+    const [globalStyleStats, {elementCount, backgroundColors, textColors, fillColors, borderColors, fontInfo, unusedDeclarations}, mediaQueries] =
         await Promise.all([
           this._model.getGlobalStylesheetStats(), this._model.getNodeStyleStats(),
           this._model.getMediaQueries()
@@ -132,12 +130,8 @@ CssOverview.CSSOverviewPanel = class extends UI.Panel {
       this._borderColors = borderColors;
     }
 
-    if (fontSizes) {
-      this._fontSizes = fontSizes;
-    }
-
-    if (fontWeights) {
-      this._fontWeights = fontWeights;
+    if (fontInfo) {
+      this._fontInfo = fontInfo;
     }
 
     if (unusedDeclarations) {

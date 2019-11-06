@@ -6,6 +6,9 @@
   <message name="IDS_DEVTOOLS_024ce32f9a4959e44181823d762a4bd3" desc="Label to explain why vertical-align values are ignored">
     Vertical alignment applied to element which is neither inline nor table-cell
   </message>
+  <message name="IDS_DEVTOOLS_052ec138a6199af20e1bec29621d9574" desc="Label to indicate that there are no fonts in use">
+    There are no fonts.
+  </message>
   <message name="IDS_DEVTOOLS_075259bbfcbdbd997b9b912505d96b8a" desc="Label to explain why height values are ignored">
     Height applied to an inline element
   </message>
@@ -65,6 +68,9 @@
   </message>
   <message name="IDS_DEVTOOLS_8781fdba66e6cf7177ce03ea3db8a35a" desc="Label for the number of class selectors in the CSS Overview report">
     Class selectors
+  </message>
+  <message name="IDS_DEVTOOLS_8903ce2f16e7301cf4fa082448f20b2e" desc="Title of font info subsection in the CSS Overview Panel">
+    Font info
   </message>
   <message name="IDS_DEVTOOLS_8a2d39bc733e82310760e2767889673a" desc="Title of the CSS Overview Panel">
     CSS Overview

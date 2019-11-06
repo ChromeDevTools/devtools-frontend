@@ -46,6 +46,7 @@ CssOverview.CSSOverviewCompletedView = class extends UI.PanelWithSidebar {
 
     this._sideBar.addItem(ls`Overview summary`, 'summary');
     this._sideBar.addItem(ls`Colors`, 'colors');
+    this._sideBar.addItem(ls`Font info`, 'font-info');
     this._sideBar.addItem(ls`Unused declarations`, 'unused-declarations');
     this._sideBar.addItem(ls`Media queries`, 'media-queries');
     this._sideBar.select('summary');
@@ -155,6 +156,20 @@ CssOverview.CSSOverviewCompletedView = class extends UI.PanelWithSidebar {
         break;
       }
 
+      case 'font-info': {
+        const value = evt.target.dataset.value;
+        const [fontFamily, fontMetric] = evt.target.dataset.path.split('/');
+        const nodesIds = this._data.fontInfo.get(fontFamily).get(fontMetric).get(value);
+        if (!nodesIds) {
+          return;
+        }
+
+        const nodes = nodesIds.map(nodeId => ({nodeId}));
+        const name = `${value} (${fontFamily}, ${fontMetric})`;
+        payload = {type, name, nodes};
+        break;
+      }
+
       default:
         return;
     }
@@ -190,7 +205,8 @@ CssOverview.CSSOverviewCompletedView = class extends UI.PanelWithSidebar {
       borderColors,
       globalStyleStats,
       mediaQueries,
-      unusedDeclarations
+      unusedDeclarations,
+      fontInfo
     } = this._data;
 
     // Convert rgb values from the computed styles to either undefined or HEX(A) strings.
@@ -275,6 +291,13 @@ CssOverview.CSSOverviewCompletedView = class extends UI.PanelWithSidebar {
         </ul>
       </div>
 
+      <div $="font-info" class="results-section horizontally-padded font-info">
+        <h1>${ls`Font info`}</h1>
+        ${
+        fontInfo.size > 0 ? this._fontInfoToFragment(fontInfo) :
+                            UI.Fragment.build`<div>${ls`There are no fonts.`}</div>`}
+      </div>
+
       <div $="unused-declarations" class="results-section unused-declarations">
         <h1>${ls`Unused declarations`}</h1>
         ${
@@ -319,6 +342,12 @@ CssOverview.CSSOverviewCompletedView = class extends UI.PanelWithSidebar {
         id = `${text}`;
         tabTitle = `${text}`;
         break;
+
+      case 'font-info':
+        const {name} = evt.data;
+        id = `${name}`;
+        tabTitle = `${name}`;
+        break;
     }
 
     let view = this._viewMap.get(id);
@@ -332,7 +361,33 @@ CssOverview.CSSOverviewCompletedView = class extends UI.PanelWithSidebar {
     this._elementContainer.appendTab(id, tabTitle, view, true);
   }
 
-  _groupToFragment(items, type, dataLabel) {
+  _fontInfoToFragment(fontInfo) {
+    const fonts = Array.from(fontInfo.entries());
+    return UI.Fragment.build`
+      ${fonts.map(([font, fontMetrics]) => {
+      return UI.Fragment.build
+      `<section class="font-family"><h2>${font}</h2> ${this._fontMetricsToFragment(font, fontMetrics)}</section>`;
+    })}
+    `;
+  }
+
+  _fontMetricsToFragment(font, fontMetrics) {
+    const fontMetricInfo = Array.from(fontMetrics.entries());
+
+    return UI.Fragment.build`
+      <div class="font-metric">
+      ${fontMetricInfo.map(([label, values]) => {
+      const sanitizedPath = `${font}/${label}`;
+      return UI.Fragment.build`
+          <div>
+            <h3>${label}</h3>
+            ${this._groupToFragment(values, 'font-info', 'value', sanitizedPath)}
+          </div>`;
+    })}
+      </div>`;
+  }
+
+  _groupToFragment(items, type, dataLabel, path = '') {
     // Sort by number of items descending.
     const values = Array.from(items.entries()).sort((d1, d2) => {
       const v1Nodes = d1[1];
@@ -349,7 +404,7 @@ CssOverview.CSSOverviewCompletedView = class extends UI.PanelWithSidebar {
 
       return UI.Fragment.build`<li>
         <div class="title">${title}</div>
-        <button data-type="${type}" data-${dataLabel}="${title}">
+        <button data-type="${type}" data-path="${path}" data-${dataLabel}="${title}">
           <div class="details">${ls`${nodes.length} ${itemLabel}`}</div>
           <div class="bar-container">
             <div class="bar" style="width: ${width}%"></div>

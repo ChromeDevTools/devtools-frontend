@@ -121,6 +121,7 @@
   font-weight: normal;
 }
 
+.overview-completed-view .font-info ul,
 .overview-completed-view .media-queries ul,
 .overview-completed-view .unused-declarations ul {
   width: 100%;
@@ -129,6 +130,7 @@
   padding: 0 var(--overview-default-padding);
 }
 
+.overview-completed-view .font-info ul li,
 .overview-completed-view .media-queries ul li,
 .overview-completed-view .unused-declarations ul li {
   display: grid;
@@ -138,6 +140,7 @@
   align-items: center;
 }
 
+.overview-completed-view .font-info button,
 .overview-completed-view .media-queries button,
 .overview-completed-view .unused-declarations button {
   border: none;
@@ -150,6 +153,7 @@
   height: 28px;
 }
 
+.overview-completed-view .font-info button .details,
 .overview-completed-view .media-queries button .details,
 .overview-completed-view .unused-declarations button .details {
   min-width: 100px;
@@ -159,18 +163,23 @@
   pointer-events: none;
 }
 
+.overview-completed-view .font-info button .bar-container,
 .overview-completed-view .media-queries button .bar-container,
 .overview-completed-view .unused-declarations button .bar-container {
   flex: 1;
   pointer-events: none;
 }
 
+.overview-completed-view .font-info button .bar,
 .overview-completed-view .media-queries button .bar,
 .overview-completed-view .unused-declarations button .bar {
   height: 8px;
   background: var(--accent-color);
   border-radius: 2px;
 }
+
+.overview-completed-view .font-info button:hover .details,
+.overview-completed-view .font-info button:focus .details,
 .overview-completed-view .media-queries button:hover .details,
 .overview-completed-view .media-queries button:focus .details,
 .overview-completed-view .unused-declarations button:hover .details,
@@ -178,6 +187,8 @@
   color: var(--accent-color-hover);
 }
 
+.overview-completed-view .font-info button:hover .bar,
+.overview-completed-view .font-info button:focus .bar,
 .overview-completed-view .media-queries button:hover .bar,
 .overview-completed-view .media-queries button:focus .bar,
 .overview-completed-view .unused-declarations button:hover .bar,
@@ -185,4 +196,31 @@
   background-color: var(--accent-color-hover);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1), 0 0 0 2px rgba(66, 133, 244, 0.4);
   color: #FFF;
+}
+
+.overview-completed-view .font-info .font-metric {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-gap: 12px;
+  padding-bottom: var(--overview-default-padding);
+}
+
+.overview-completed-view .font-info ul {
+  padding: 0;
+}
+
+.overview-completed-view .font-info ul li {
+  grid-template-columns: 1fr 4fr;
+}
+
+.overview-completed-view .font-info h2 {
+  font-size: 14px;
+  font-weight: normal;
+  margin: 0 0 1em 0;
+}
+
+.overview-completed-view .font-info h3 {
+  font-size: 12px;
+  font-weight: bold;
+  margin: 0 0 1em 0;
 }

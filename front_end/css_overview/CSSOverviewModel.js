@@ -31,8 +31,7 @@ CssOverview.CSSOverviewModel = class extends SDK.SDKModel {
     const textColors = new Map();
     const fillColors = new Map();
     const borderColors = new Map();
-    const fontSizes = new Map();
-    const fontWeights = new Map();
+    const fontInfo = new Map();
     const unusedDeclarations = new Map();
     const snapshotConfig = {
       computedStyles: [
@@ -47,8 +46,10 @@ CssOverview.CSSOverviewModel = class extends SDK.SDKModel {
         'border-left-color',
         'border-right-width',
         'border-right-color',
+        'font-family',
         'font-size',
         'font-weight',
+        'line-height',
         'position',
         'top',
         'right',
@@ -115,7 +116,7 @@ CssOverview.CSSOverviewModel = class extends SDK.SDKModel {
         const nodeId = nodes.backendNodeId[nodeIdx];
         const nodeName = nodes.nodeName[nodeIdx];
 
-        const [backgroundColorIdx, textColorIdx, fillIdx, borderTopWidthIdx, borderTopColorIdx, borderBottomWidthIdx, borderBottomColorIdx, borderLeftWidthIdx, borderLeftColorIdx, borderRightWidthIdx, borderRightColorIdx, fontSizeIdx, fontWeightIdx, positionIdx, topIdx, rightIdx, bottomIdx, leftIdx, displayIdx, widthIdx, heightIdx, verticalAlignIdx] =
+        const [backgroundColorIdx, textColorIdx, fillIdx, borderTopWidthIdx, borderTopColorIdx, borderBottomWidthIdx, borderBottomColorIdx, borderLeftWidthIdx, borderLeftColorIdx, borderRightWidthIdx, borderRightColorIdx, fontFamilyIdx, fontSizeIdx, fontWeightIdx, lineHeightIdx, positionIdx, topIdx, rightIdx, bottomIdx, leftIdx, displayIdx, widthIdx, heightIdx, verticalAlignIdx] =
             styles;
 
         storeColor(backgroundColorIdx, nodeId, backgroundColors);
@@ -141,16 +142,53 @@ CssOverview.CSSOverviewModel = class extends SDK.SDKModel {
           storeColor(borderRightColorIdx, nodeId, borderColors);
         }
 
-        if (fontSizeIdx !== -1) {
-          const fontSize = strings[fontSizeIdx];
-          const fontSizeInstances = (fontSizes.get(fontSize) || 0) + 1;
-          fontSizes.set(fontSize, fontSizeInstances);
-        }
+        /**
+         * Create a structure like this for font info:
+         *
+         *                 / size (Map) -- nodes (Array)
+         *                /
+         * Font family (Map) ----- weight (Map) -- nodes (Array)
+         *                \
+         *                 \ line-height (Map) -- nodes (Array)
+         */
+        if (fontFamilyIdx !== -1) {
+          const fontFamily = strings[fontFamilyIdx];
+          const fontFamilyInfo = fontInfo.get(fontFamily) || new Map();
 
-        if (fontWeightIdx !== -1) {
-          const fontWeight = strings[fontWeightIdx];
-          const fontWeightInstances = (fontWeights.get(fontWeight) || 0) + 1;
-          fontWeights.set(fontWeight, fontWeightInstances);
+          const sizeLabel = 'font-size';
+          const weightLabel = 'font-weight';
+          const lineHeightLabel = 'line-height';
+
+          const size = fontFamilyInfo.get(sizeLabel) || new Map();
+          const weight = fontFamilyInfo.get(weightLabel) || new Map();
+          const lineHeight = fontFamilyInfo.get(lineHeightLabel) || new Map();
+
+          if (fontSizeIdx !== -1) {
+            const fontSizeValue = strings[fontSizeIdx];
+            const nodes = size.get(fontSizeValue) || [];
+            nodes.push(nodeId);
+            size.set(fontSizeValue, nodes);
+          }
+
+          if (fontWeightIdx !== -1) {
+            const fontWeightValue = strings[fontWeightIdx];
+            const nodes = weight.get(fontWeightValue) || [];
+            nodes.push(nodeId);
+            weight.set(fontWeightValue, nodes);
+          }
+
+          if (lineHeightIdx !== -1) {
+            const lineHeightValue = strings[lineHeightIdx];
+            const nodes = lineHeight.get(lineHeightValue) || [];
+            nodes.push(nodeId);
+            lineHeight.set(lineHeightValue, nodes);
+          }
+
+          // Set the data back.
+          fontFamilyInfo.set(sizeLabel, size);
+          fontFamilyInfo.set(weightLabel, weight);
+          fontFamilyInfo.set(lineHeightLabel, lineHeight);
+          fontInfo.set(fontFamily, fontFamilyInfo);
         }
 
         CssOverview.CSSOverviewUnusedDeclarations.checkForUnusedPositionValues(
@@ -170,16 +208,7 @@ CssOverview.CSSOverviewModel = class extends SDK.SDKModel {
       }
     }
 
-    return {
-      backgroundColors,
-      textColors,
-      fillColors,
-      borderColors,
-      fontSizes,
-      fontWeights,
-      unusedDeclarations,
-      elementCount
-    };
+    return {backgroundColors, textColors, fillColors, borderColors, fontInfo, unusedDeclarations, elementCount};
   }
 
   getComputedStyleForNode(nodeId) {

@@ -1479,7 +1479,6 @@ if (external_devtools_frontend) {
     "$resources_out_dir/cm_modes/cm_modes_module.js",
     "$resources_out_dir/dagre_layout/dagre_layout_module.js",
     "$resources_out_dir/emulated_devices/emulated_devices_module.js",
-    "$resources_out_dir/product_registry_impl/product_registry_impl_module.js",
   ]
 
   generated_test_modules = [

@@ -30,9 +30,9 @@
 /**
  * @implements {UI.Searchable}
  */
-SourceFrame.JSONView = class extends UI.VBox {
+export class JSONView extends UI.VBox {
   /**
-   * @param {!SourceFrame.ParsedJSON} parsedJSON
+   * @param {!ParsedJSON} parsedJSON
    */
   constructor(parsedJSON) {
     super();
@@ -59,12 +59,12 @@ SourceFrame.JSONView = class extends UI.VBox {
    */
   static async createView(content) {
     // We support non-strict JSON parsing by parsing an AST tree which is why we offload it to a worker.
-    const parsedJSON = await SourceFrame.JSONView._parseJSON(content);
+    const parsedJSON = await JSONView._parseJSON(content);
     if (!parsedJSON || typeof parsedJSON.data !== 'object') {
       return null;
     }
 
-    const jsonView = new SourceFrame.JSONView(parsedJSON);
+    const jsonView = new JSONView(parsedJSON);
     const searchableView = new UI.SearchableView(jsonView);
     searchableView.setPlaceholder(Common.UIString('Find'));
     jsonView._searchableView = searchableView;
@@ -77,7 +77,7 @@ SourceFrame.JSONView = class extends UI.VBox {
    * @return {!UI.SearchableView}
    */
   static createViewSync(obj) {
-    const jsonView = new SourceFrame.JSONView(new SourceFrame.ParsedJSON(obj, '', ''));
+    const jsonView = new JSONView(new ParsedJSON(obj, '', ''));
     const searchableView = new UI.SearchableView(jsonView);
     searchableView.setPlaceholder(Common.UIString('Find'));
     jsonView._searchableView = searchableView;
@@ -88,21 +88,21 @@ SourceFrame.JSONView = class extends UI.VBox {
 
   /**
    * @param {?string} text
-   * @return {!Promise<?SourceFrame.ParsedJSON>}
+   * @return {!Promise<?ParsedJSON>}
    */
   static _parseJSON(text) {
     let returnObj = null;
     if (text) {
-      returnObj = SourceFrame.JSONView._extractJSON(/** @type {string} */ (text));
+      returnObj = JSONView._extractJSON(/** @type {string} */ (text));
     }
     if (!returnObj) {
-      return Promise.resolve(/** @type {?SourceFrame.ParsedJSON} */ (null));
+      return Promise.resolve(/** @type {?ParsedJSON} */ (null));
     }
     return Formatter.formatterWorkerPool().parseJSONRelaxed(returnObj.data).then(handleReturnedJSON);
 
     /**
      * @param {*} data
-     * @return {?SourceFrame.ParsedJSON}
+     * @return {?ParsedJSON}
      */
     function handleReturnedJSON(data) {
       if (!data) {
@@ -115,15 +115,15 @@ SourceFrame.JSONView = class extends UI.VBox {
 
   /**
    * @param {string} text
-   * @return {?SourceFrame.ParsedJSON}
+   * @return {?ParsedJSON}
    */
   static _extractJSON(text) {
     // Do not treat HTML as JSON.
     if (text.startsWith('<')) {
       return null;
     }
-    let inner = SourceFrame.JSONView._findBrackets(text, '{', '}');
-    const inner2 = SourceFrame.JSONView._findBrackets(text, '[', ']');
+    let inner = JSONView._findBrackets(text, '{', '}');
+    const inner2 = JSONView._findBrackets(text, '[', ']');
     inner = inner2.length > inner.length ? inner2 : inner;
 
     // Return on blank payloads or on payloads significantly smaller than original text.
@@ -140,7 +140,7 @@ SourceFrame.JSONView = class extends UI.VBox {
       return null;
     }
 
-    return new SourceFrame.ParsedJSON(text, prefix, suffix);
+    return new ParsedJSON(text, prefix, suffix);
   }
 
   /**
@@ -320,13 +320,13 @@ SourceFrame.JSONView = class extends UI.VBox {
   supportsRegexSearch() {
     return true;
   }
-};
+}
 
 
 /**
  * @unrestricted
  */
-SourceFrame.ParsedJSON = class {
+export class ParsedJSON {
   /**
    * @param {*} data
    * @param {string} prefix
@@ -337,4 +337,16 @@ SourceFrame.ParsedJSON = class {
     this.prefix = prefix;
     this.suffix = suffix;
   }
-};
+}
+
+/* Legacy exported object */
+self.SourceFrame = self.SourceFrame || {};
+
+/* Legacy exported object */
+SourceFrame = SourceFrame || {};
+
+/** @constructor */
+SourceFrame.JSONView = JSONView;
+
+/** @constructor */
+SourceFrame.ParsedJSON = ParsedJSON;

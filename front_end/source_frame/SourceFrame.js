@@ -27,13 +27,14 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 /**
  * @implements {UI.Searchable}
  * @implements {UI.Replaceable}
  * @implements {SourceFrame.SourcesTextEditorDelegate}
  * @unrestricted
  */
-SourceFrame.SourceFrame = class extends UI.SimpleView {
+export class SourceFrameImpl extends UI.SimpleView {
   /**
    * @param {function(): !Promise<!Common.DeferredContent>} lazyContent
    * @param {!UI.TextEditor.Options=} codeMirrorOptions
@@ -818,26 +819,36 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
           '%d lines, %d characters selected', textRange.endLine - textRange.startLine + 1, selectedText.length));
     }
   }
-};
+}
 
 /**
  * @interface
  */
-SourceFrame.LineDecorator = function() {};
-
-SourceFrame.LineDecorator.prototype = {
+export class LineDecorator {
   /**
    * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {!TextEditor.CodeMirrorTextEditor} textEditor
    * @param {string} type
    */
   decorate(uiSourceCode, textEditor, type) {}
-};
+}
+
+/* Legacy exported object */
+self.SourceFrame = self.SourceFrame || {};
+
+/* Legacy exported object */
+SourceFrame = SourceFrame || {};
+
+/** @constructor */
+SourceFrame.SourceFrame = SourceFrameImpl;
+
+/** @interface */
+SourceFrame.LineDecorator = LineDecorator;
 
 /**
  * @typedef {{
- *  editorToRawLocation: function(number, number=):!Array<number>,
- *  rawToEditorLocation: function(number, number=):!Array<number>
- * }}
- */
+  *  editorToRawLocation: function(number, number=):!Array<number>,
+  *  rawToEditorLocation: function(number, number=):!Array<number>
+  * }}
+  */
 SourceFrame.Transformer;

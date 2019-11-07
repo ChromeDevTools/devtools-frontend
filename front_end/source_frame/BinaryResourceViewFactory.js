@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-SourceFrame.BinaryResourceViewFactory = class {
+export class BinaryResourceViewFactory {
   /**
    * @param {string} base64content
    * @param {string} contentUrl
@@ -37,7 +37,7 @@ SourceFrame.BinaryResourceViewFactory = class {
     if (!this._hexPromise) {
       this._hexPromise = new Promise(async resolve => {
         const content = await this._fetchContentAsArray();
-        const hexString = SourceFrame.BinaryResourceViewFactory.uint8ArrayToHexString(content);
+        const hexString = BinaryResourceViewFactory.uint8ArrayToHexString(content);
         resolve({content: hexString, isEncoded: false});
       });
     }
@@ -83,7 +83,7 @@ SourceFrame.BinaryResourceViewFactory = class {
     const hexViewerContentProvider =
         new Common.StaticContentProvider(this._contentUrl, this._resourceType, async () => {
           const contentAsArray = await this._fetchContentAsArray();
-          const content = SourceFrame.BinaryResourceViewFactory.uint8ArrayToHexViewer(contentAsArray);
+          const content = BinaryResourceViewFactory.uint8ArrayToHexViewer(contentAsArray);
           return {content, isEncoded: false};
         });
     return new SourceFrame.ResourceSourceFrame(
@@ -109,7 +109,7 @@ SourceFrame.BinaryResourceViewFactory = class {
   static uint8ArrayToHexString(uint8Array) {
     let output = '';
     for (let i = 0; i < uint8Array.length; i++) {
-      output += SourceFrame.BinaryResourceViewFactory.numberToHex(uint8Array[i], 2);
+      output += BinaryResourceViewFactory.numberToHex(uint8Array[i], 2);
     }
     return output;
   }
@@ -139,7 +139,7 @@ SourceFrame.BinaryResourceViewFactory = class {
       const lineArray = array.slice(line * 16, (line + 1) * 16);
 
       // line number
-      output += SourceFrame.BinaryResourceViewFactory.numberToHex(line, 8) + ':';
+      output += BinaryResourceViewFactory.numberToHex(line, 8) + ':';
 
       // hex
       let hexColsPrinted = 0;
@@ -148,7 +148,7 @@ SourceFrame.BinaryResourceViewFactory = class {
           output += ' ';
           hexColsPrinted++;
         }
-        output += SourceFrame.BinaryResourceViewFactory.numberToHex(lineArray[i], 2);
+        output += BinaryResourceViewFactory.numberToHex(lineArray[i], 2);
         hexColsPrinted += 2;
       }
 
@@ -175,4 +175,13 @@ SourceFrame.BinaryResourceViewFactory = class {
     }
     return output;
   }
-};
+}
+
+/* Legacy exported object */
+self.SourceFrame = self.SourceFrame || {};
+
+/* Legacy exported object */
+SourceFrame = SourceFrame || {};
+
+/** @constructor */
+SourceFrame.BinaryResourceViewFactory = BinaryResourceViewFactory;

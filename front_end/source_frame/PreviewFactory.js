@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-SourceFrame.PreviewFactory = class {
+export class PreviewFactory {
   /**
    * @param {!Common.ContentProvider} provider
    * @param {string} mimeType
@@ -52,4 +52,13 @@ SourceFrame.PreviewFactory = class {
 
     return null;
   }
-};
+}
+
+/* Legacy exported object */
+self.SourceFrame = self.SourceFrame || {};
+
+/* Legacy exported object */
+SourceFrame = SourceFrame || {};
+
+/** @constructor */
+SourceFrame.PreviewFactory = PreviewFactory;

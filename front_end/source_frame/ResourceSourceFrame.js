@@ -30,7 +30,7 @@
 /**
  * @unrestricted
  */
-SourceFrame.ResourceSourceFrame = class extends SourceFrame.SourceFrame {
+export class ResourceSourceFrame extends SourceFrame.SourceFrame {
   /**
    * @param {!Common.ContentProvider} resource
    * @param {boolean=} autoPrettyPrint
@@ -55,7 +55,7 @@ SourceFrame.ResourceSourceFrame = class extends SourceFrame.SourceFrame {
    * @return {!UI.Widget}
    */
   static createSearchableView(resource, highlighterType, autoPrettyPrint) {
-    return new SourceFrame.ResourceSourceFrame.SearchableContainer(resource, highlighterType, autoPrettyPrint);
+    return new SearchableContainer(resource, highlighterType, autoPrettyPrint);
   }
 
   get resource() {
@@ -73,9 +73,9 @@ SourceFrame.ResourceSourceFrame = class extends SourceFrame.SourceFrame {
     contextMenu.appendApplicableItems(this._resource);
     return Promise.resolve();
   }
-};
+}
 
-SourceFrame.ResourceSourceFrame.SearchableContainer = class extends UI.VBox {
+export class SearchableContainer extends UI.VBox {
   /**
    * @param {!Common.ContentProvider} resource
    * @param {string} highlighterType
@@ -85,7 +85,7 @@ SourceFrame.ResourceSourceFrame.SearchableContainer = class extends UI.VBox {
   constructor(resource, highlighterType, autoPrettyPrint) {
     super(true);
     this.registerRequiredCSS('source_frame/resourceSourceFrame.css');
-    const sourceFrame = new SourceFrame.ResourceSourceFrame(resource, autoPrettyPrint);
+    const sourceFrame = new ResourceSourceFrame(resource, autoPrettyPrint);
     this._sourceFrame = sourceFrame;
     sourceFrame.setHighlighterType(highlighterType);
     const searchableView = new UI.SearchableView(sourceFrame);
@@ -108,4 +108,16 @@ SourceFrame.ResourceSourceFrame.SearchableContainer = class extends UI.VBox {
   async revealPosition(lineNumber, columnNumber) {
     this._sourceFrame.revealPosition(lineNumber, columnNumber, true);
   }
-};
+}
+
+/* Legacy exported object */
+self.SourceFrame = self.SourceFrame || {};
+
+/* Legacy exported object */
+SourceFrame = SourceFrame || {};
+
+/** @constructor */
+SourceFrame.ResourceSourceFrame = ResourceSourceFrame;
+
+/** @constructor */
+SourceFrame.ResourceSourceFrame.SearchableContainer = SearchableContainer;

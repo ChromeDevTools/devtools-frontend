@@ -4,9 +4,9 @@
 /**
  * @unrestricted
  */
-SourceFrame.SourcesTextEditor = class extends TextEditor.CodeMirrorTextEditor {
+export class SourcesTextEditor extends TextEditor.CodeMirrorTextEditor {
   /**
-   * @param {!SourceFrame.SourcesTextEditorDelegate} delegate
+   * @param {!SourcesTextEditorDelegate} delegate
    * @param {!UI.TextEditor.Options=} codeMirrorOptions
    */
   constructor(delegate, codeMirrorOptions) {
@@ -43,11 +43,11 @@ SourceFrame.SourcesTextEditor = class extends TextEditor.CodeMirrorTextEditor {
       this.element.classList.toggle('CodeMirror-gutter-hovered', false);
     };
 
-    this.codeMirror().addKeyMap(SourceFrame.SourcesTextEditor._BlockIndentController);
-    this._tokenHighlighter = new SourceFrame.SourcesTextEditor.TokenHighlighter(this, this.codeMirror());
+    this.codeMirror().addKeyMap(_BlockIndentController);
+    this._tokenHighlighter = new TokenHighlighter(this, this.codeMirror());
 
     /** @type {!Array<string>} */
-    this._gutters = [SourceFrame.SourcesTextEditor.lineNumbersGutterType];
+    this._gutters = [lineNumbersGutterType];
     this.codeMirror().setOption('gutters', this._gutters.slice());
 
     this.codeMirror().setOption('electricChars', false);
@@ -353,7 +353,7 @@ SourceFrame.SourcesTextEditor = class extends TextEditor.CodeMirrorTextEditor {
   }
 
   _gutterClick(instance, lineNumber, gutterType, event) {
-    this.dispatchEventToListeners(SourceFrame.SourcesTextEditor.Events.GutterClick, {gutterType, lineNumber, event});
+    this.dispatchEventToListeners(Events.GutterClick, {gutterType, lineNumber, event});
   }
 
   _contextMenu(event) {
@@ -397,8 +397,8 @@ SourceFrame.SourcesTextEditor = class extends TextEditor.CodeMirrorTextEditor {
   }
 
   _onUpdateEditorIndentation() {
-    this._setEditorIndentation(TextEditor.CodeMirrorUtils.pullLines(
-        this.codeMirror(), SourceFrame.SourcesTextEditor.LinesToScanForIndentationGuessing));
+    this._setEditorIndentation(
+        TextEditor.CodeMirrorUtils.pullLines(this.codeMirror(), LinesToScanForIndentationGuessing));
   }
 
   /**
@@ -468,8 +468,7 @@ SourceFrame.SourcesTextEditor = class extends TextEditor.CodeMirrorTextEditor {
 
     const start = this.codeMirror().getCursor('anchor');
     const end = this.codeMirror().getCursor('head');
-    this.dispatchEventToListeners(
-        SourceFrame.SourcesTextEditor.Events.SelectionChanged, TextEditor.CodeMirrorUtils.toRange(start, end));
+    this.dispatchEventToListeners(Events.SelectionChanged, TextEditor.CodeMirrorUtils.toRange(start, end));
   }
 
   /**
@@ -480,20 +479,20 @@ SourceFrame.SourcesTextEditor = class extends TextEditor.CodeMirrorTextEditor {
     if (from && to && from.equal(to)) {
       return;
     }
-    this.dispatchEventToListeners(SourceFrame.SourcesTextEditor.Events.JumpHappened, {from: from, to: to});
+    this.dispatchEventToListeners(Events.JumpHappened, {from: from, to: to});
   }
 
   _scroll() {
     const topmostLineNumber = this.codeMirror().lineAtHeight(this.codeMirror().getScrollInfo().top, 'local');
-    this.dispatchEventToListeners(SourceFrame.SourcesTextEditor.Events.ScrollChanged, topmostLineNumber);
+    this.dispatchEventToListeners(Events.ScrollChanged, topmostLineNumber);
   }
 
   _focus() {
-    this.dispatchEventToListeners(SourceFrame.SourcesTextEditor.Events.EditorFocused);
+    this.dispatchEventToListeners(Events.EditorFocused);
   }
 
   _blur() {
-    this.dispatchEventToListeners(SourceFrame.SourcesTextEditor.Events.EditorBlurred);
+    this.dispatchEventToListeners(Events.EditorBlurred);
   }
 
   /**
@@ -529,8 +528,7 @@ SourceFrame.SourcesTextEditor = class extends TextEditor.CodeMirrorTextEditor {
    * @param {string} text
    */
   setText(text) {
-    this._setEditorIndentation(
-        text.split('\n').slice(0, SourceFrame.SourcesTextEditor.LinesToScanForIndentationGuessing));
+    this._setEditorIndentation(text.split('\n').slice(0, LinesToScanForIndentationGuessing));
     super.setText(text);
   }
 
@@ -590,8 +588,7 @@ SourceFrame.SourcesTextEditor = class extends TextEditor.CodeMirrorTextEditor {
       function nextToken(stream) {
         if (stream.peek() === ' ') {
           let spaces = 0;
-          while (spaces < SourceFrame.SourcesTextEditor.MaximumNumberOfWhitespacesPerSingleSpan &&
-                 stream.peek() === ' ') {
+          while (spaces < MaximumNumberOfWhitespacesPerSingleSpan && stream.peek() === ' ') {
             ++spaces;
             stream.next();
           }
@@ -649,7 +646,7 @@ SourceFrame.SourcesTextEditor = class extends TextEditor.CodeMirrorTextEditor {
     const spaceChar = '·';
     let spaceChars = '';
     let rules = '';
-    for (let i = 1; i <= SourceFrame.SourcesTextEditor.MaximumNumberOfWhitespacesPerSingleSpan; ++i) {
+    for (let i = 1; i <= MaximumNumberOfWhitespacesPerSingleSpan; ++i) {
       spaceChars += spaceChar;
       const rule = classBase + i + '::before { content: \'' + spaceChars + '\';}\n';
       rules += rule;
@@ -672,13 +669,10 @@ SourceFrame.SourcesTextEditor = class extends TextEditor.CodeMirrorTextEditor {
     super.configureAutocomplete(
         Common.moduleSetting('textEditorAutocompletion').get() ? this._autocompleteConfig : null);
   }
-};
-
-/** @typedef {{gutterType: string, lineNumber: number, event: !Event}} */
-SourceFrame.SourcesTextEditor.GutterClickEventData;
+}
 
 /** @enum {symbol} */
-SourceFrame.SourcesTextEditor.Events = {
+export const Events = {
   GutterClick: Symbol('GutterClick'),
   SelectionChanged: Symbol('SelectionChanged'),
   ScrollChanged: Symbol('ScrollChanged'),
@@ -690,14 +684,14 @@ SourceFrame.SourcesTextEditor.Events = {
 /**
  * @interface
  */
-SourceFrame.SourcesTextEditorDelegate = function() {};
-SourceFrame.SourcesTextEditorDelegate.prototype = {
+export class SourcesTextEditorDelegate {
   /**
    * @param {!UI.ContextMenu} contextMenu
    * @param {number} lineNumber
    * @return {!Promise}
    */
-  populateLineGutterContextMenu(contextMenu, lineNumber) {},
+  populateLineGutterContextMenu(contextMenu, lineNumber) {
+  }
 
   /**
    * @param {!UI.ContextMenu} contextMenu
@@ -705,8 +699,9 @@ SourceFrame.SourcesTextEditorDelegate.prototype = {
    * @param {number} columnNumber
    * @return {!Promise}
    */
-  populateTextAreaContextMenu(contextMenu, lineNumber, columnNumber) {},
-};
+  populateTextAreaContextMenu(contextMenu, lineNumber, columnNumber) {
+  }
+}
 
 /**
  * @param {!CodeMirror} codeMirror
@@ -738,7 +733,7 @@ CodeMirror.commands.sourcesDismiss = function(codemirror) {
   return CodeMirror.commands.dismiss(codemirror);
 };
 
-SourceFrame.SourcesTextEditor._BlockIndentController = {
+export const _BlockIndentController = {
   name: 'blockIndentKeymap',
 
   /**
@@ -828,7 +823,7 @@ SourceFrame.SourcesTextEditor._BlockIndentController = {
 /**
  * @unrestricted
  */
-SourceFrame.SourcesTextEditor.TokenHighlighter = class {
+export class TokenHighlighter {
   /**
    * @param {!SourceFrame.SourcesTextEditor} textEditor
    * @param {!CodeMirror} codeMirror
@@ -989,8 +984,28 @@ SourceFrame.SourcesTextEditor.TokenHighlighter = class {
     this._codeMirror.addOverlay(overlayMode);
     this._highlightDescriptor = {overlay: overlayMode, selectionStart: selectionStart};
   }
-};
+}
 
-SourceFrame.SourcesTextEditor.LinesToScanForIndentationGuessing = 1000;
-SourceFrame.SourcesTextEditor.MaximumNumberOfWhitespacesPerSingleSpan = 16;
-SourceFrame.SourcesTextEditor.lineNumbersGutterType = 'CodeMirror-linenumbers';
+const LinesToScanForIndentationGuessing = 1000;
+const MaximumNumberOfWhitespacesPerSingleSpan = 16;
+export const lineNumbersGutterType = 'CodeMirror-linenumbers';
+
+/* Legacy exported object */
+self.SourceFrame = self.SourceFrame || {};
+
+/* Legacy exported object */
+SourceFrame = SourceFrame || {};
+
+/** @constructor */
+SourceFrame.SourcesTextEditor = SourcesTextEditor;
+
+SourceFrame.SourcesTextEditor.Events = Events;
+SourceFrame.SourcesTextEditor.lineNumbersGutterType = lineNumbersGutterType;
+
+/** @interface */
+SourceFrame.SourcesTextEditorDelegate = SourcesTextEditorDelegate;
+
+SourceFrame.SourcesTextEditor.TokenHighlighter = TokenHighlighter;
+
+/** @typedef {{gutterType: string, lineNumber: number, event: !Event}} */
+SourceFrame.SourcesTextEditor.GutterClickEventData;

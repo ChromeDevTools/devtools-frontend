@@ -5,7 +5,7 @@
  * @implements {UI.Searchable}
  * @unrestricted
  */
-SourceFrame.XMLView = class extends UI.Widget {
+export class XMLView extends UI.Widget {
   /**
    * @param {!Document} parsedXML
    */
@@ -26,7 +26,7 @@ SourceFrame.XMLView = class extends UI.Widget {
     /** @type {?UI.SearchableView.SearchConfig} */
     this._searchConfig;
 
-    SourceFrame.XMLView.Node.populate(this._treeOutline, parsedXML, this);
+    XMLViewNode.populate(this._treeOutline, parsedXML, this);
     this._treeOutline.firstChild().select(true /* omitFocus */, false /* selectedByUser */);
   }
 
@@ -35,7 +35,7 @@ SourceFrame.XMLView = class extends UI.Widget {
    * @return {!UI.SearchableView}
    */
   static createSearchableView(parsedXML) {
-    const xmlView = new SourceFrame.XMLView(parsedXML);
+    const xmlView = new XMLView(parsedXML);
     const searchableView = new UI.SearchableView(xmlView);
     searchableView.setPlaceholder(Common.UIString('Find'));
     xmlView._searchableView = searchableView;
@@ -123,7 +123,7 @@ SourceFrame.XMLView = class extends UI.Widget {
     const regex = this._searchConfig.toSearchRegex(true);
 
     for (let element = this._treeOutline.rootElement(); element; element = element.traverseNextTreeElement(false)) {
-      if (!(element instanceof SourceFrame.XMLView.Node)) {
+      if (!(element instanceof XMLViewNode)) {
         continue;
       }
       const hasMatch = element.setSearchRegex(regex);
@@ -152,7 +152,7 @@ SourceFrame.XMLView = class extends UI.Widget {
 
   _innerSearchCanceled() {
     for (let element = this._treeOutline.rootElement(); element; element = element.traverseNextTreeElement(false)) {
-      if (!(element instanceof SourceFrame.XMLView.Node)) {
+      if (!(element instanceof XMLViewNode)) {
         continue;
       }
       element.revertHighlightChanges();
@@ -220,17 +220,17 @@ SourceFrame.XMLView = class extends UI.Widget {
   supportsRegexSearch() {
     return true;
   }
-};
+}
 
 
 /**
  * @unrestricted
  */
-SourceFrame.XMLView.Node = class extends UI.TreeElement {
+export class XMLViewNode extends UI.TreeElement {
   /**
    * @param {!Node} node
    * @param {boolean} closeTag
-   * @param {!SourceFrame.XMLView} xmlView
+   * @param {!XMLView} xmlView
    */
   constructor(node, closeTag, xmlView) {
     super('', !closeTag && !!node.childElementCount);
@@ -246,7 +246,7 @@ SourceFrame.XMLView.Node = class extends UI.TreeElement {
   /**
    * @param {!UI.TreeOutline|!UI.TreeElement} root
    * @param {!Node} xmlNode
-   * @param {!SourceFrame.XMLView} xmlView
+   * @param {!XMLView} xmlView
    */
   static populate(root, xmlNode, xmlView) {
     let node = xmlNode.firstChild;
@@ -262,7 +262,7 @@ SourceFrame.XMLView.Node = class extends UI.TreeElement {
       if ((nodeType !== 1) && (nodeType !== 3) && (nodeType !== 4) && (nodeType !== 7) && (nodeType !== 8)) {
         continue;
       }
-      root.appendChild(new SourceFrame.XMLView.Node(currentNode, false, xmlView));
+      root.appendChild(new XMLViewNode(currentNode, false, xmlView));
     }
   }
 
@@ -390,7 +390,19 @@ SourceFrame.XMLView.Node = class extends UI.TreeElement {
    * @returns {!Promise}
    */
   async onpopulate() {
-    SourceFrame.XMLView.Node.populate(this, this._node, this._xmlView);
-    this.appendChild(new SourceFrame.XMLView.Node(this._node, true, this._xmlView));
+    XMLViewNode.populate(this, this._node, this._xmlView);
+    this.appendChild(new XMLViewNode(this._node, true, this._xmlView));
   }
-};
+}
+
+/* Legacy exported object */
+self.SourceFrame = self.SourceFrame || {};
+
+/* Legacy exported object */
+SourceFrame = SourceFrame || {};
+
+/** @constructor */
+SourceFrame.XMLView = XMLView;
+
+/** @constructor */
+SourceFrame.XMLView.Node = XMLViewNode;

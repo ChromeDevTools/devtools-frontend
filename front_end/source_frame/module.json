@@ -40,7 +40,9 @@
         "object_ui",
         "workspace_diff"
     ],
-    "scripts": [
+    "scripts": [],
+    "modules": [
+        "source_frame.js",
         "BinaryResourceViewFactory.js",
         "SourcesTextEditor.js",
         "FontView.js",

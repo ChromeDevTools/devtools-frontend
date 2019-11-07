@@ -31,7 +31,7 @@
 /**
  * @unrestricted
  */
-DataGrid.ShowMoreDataGridNode = class extends DataGrid.DataGridNode {
+export default class ShowMoreDataGridNode extends DataGrid.DataGridNode {
   /**
    * @param {function(number, number)} callback
    * @param {number} startPosition
@@ -141,4 +141,15 @@ DataGrid.ShowMoreDataGridNode = class extends DataGrid.DataGridNode {
 
   dispose() {
   }
-};
+}
+
+/* Legacy exported object */
+self.DataGrid = self.DataGrid || {};
+
+/* Legacy exported object */
+DataGrid = DataGrid || {};
+
+/**
+ * @constructor
+ */
+DataGrid.ShowMoreDataGridNode = ShowMoreDataGridNode;

@@ -27,7 +27,7 @@
  * @unrestricted
  * @template NODE_TYPE
  */
-DataGrid.DataGrid = class extends Common.Object {
+export default class DataGridImpl extends Common.Object {
   /**
    * @param {!Array.<!DataGrid.DataGrid.ColumnDescriptor>} columnsArray
    * @param {function(!NODE_TYPE, string, string, string)=} editCallback
@@ -107,7 +107,7 @@ DataGrid.DataGrid = class extends Common.Object {
     this.selectedNode = null;
     /** @type {boolean} */
     this.expandNodesWhenArrowing = false;
-    this.setRootNode(/** @type {!NODE_TYPE} */ (new DataGrid.DataGridNode()));
+    this.setRootNode(/** @type {!NODE_TYPE} */ (new DataGridNode()));
 
     this.setHasSelection(false);
 
@@ -118,9 +118,9 @@ DataGrid.DataGrid = class extends Common.Object {
     /** @type {boolean} */
     this._columnWidthsInitialized = false;
     /** @type {number} */
-    this._cornerWidth = DataGrid.DataGrid.CornerWidth;
-    /** @type {!DataGrid.DataGrid.ResizeMethod} */
-    this._resizeMethod = DataGrid.DataGrid.ResizeMethod.Nearest;
+    this._cornerWidth = CornerWidth;
+    /** @type {!ResizeMethod} */
+    this._resizeMethod = ResizeMethod.Nearest;
 
     /** @type {?function(!UI.ContextMenu)} */
     this._headerContextMenuCallback = null;
@@ -163,11 +163,11 @@ DataGrid.DataGrid = class extends Common.Object {
     if (longText && newText.length > 1000) {
       element.textContent = newText.trimEndWithMaxLength(1000);
       element.title = newText;
-      element[DataGrid.DataGrid._longTextSymbol] = newText;
+      element[DataGrid._longTextSymbol] = newText;
     } else {
       element.textContent = newText;
       element.title = '';
-      element[DataGrid.DataGrid._longTextSymbol] = undefined;
+      element[DataGrid._longTextSymbol] = undefined;
     }
   }
 
@@ -222,7 +222,7 @@ DataGrid.DataGrid = class extends Common.Object {
 
     const cell = createElement('th');
     cell.className = columnId + '-column';
-    cell[DataGrid.DataGrid._columnIdSymbol] = columnId;
+    cell[DataGrid._columnIdSymbol] = columnId;
     this._headerTableHeaders[columnId] = cell;
 
     const div = createElement('div');
@@ -243,7 +243,7 @@ DataGrid.DataGrid = class extends Common.Object {
       cell.classList.add('sortable');
       const icon = UI.Icon.create('', 'sort-order-icon');
       cell.createChild('div', 'sort-order-icon-container').appendChild(icon);
-      cell[DataGrid.DataGrid._sortIconSymbol] = icon;
+      cell[DataGrid._sortIconSymbol] = icon;
     }
   }
 
@@ -307,7 +307,7 @@ DataGrid.DataGrid = class extends Common.Object {
       const topFillerRowCell = this._topFillerRow.createChild('th', 'top-filler-td');
       topFillerRowCell.textContent = column.title;
       topFillerRowCell.scope = 'col';
-      this._bottomFillerRow.createChild('td', 'bottom-filler-td')[DataGrid.DataGrid._columnIdSymbol] = columnId;
+      this._bottomFillerRow.createChild('td', 'bottom-filler-td')[DataGrid._columnIdSymbol] = columnId;
     }
 
     this._headerRow.createChild('th', 'corner');
@@ -332,7 +332,7 @@ DataGrid.DataGrid = class extends Common.Object {
     }
     this._topFillerRow.style.height = topPx;
     this._bottomFillerRow.style.height = bottomPx;
-    this.dispatchEventToListeners(DataGrid.DataGrid.Events.PaddingChanged);
+    this.dispatchEventToListeners(Events.PaddingChanged);
   }
 
   /**
@@ -378,12 +378,12 @@ DataGrid.DataGrid = class extends Common.Object {
   }
 
   /**
-   * @param {!DataGrid.DataGridNode} node
+   * @param {!DataGridNode} node
    * @param {number} cellIndex
    */
   _startEditingColumnOfDataGridNode(node, cellIndex) {
     this._editing = true;
-    /** @type {?DataGrid.DataGridNode} */
+    /** @type {?DataGridNode} */
     this._editingNode = node;
     this._editingNode.select();
 
@@ -393,7 +393,7 @@ DataGrid.DataGrid = class extends Common.Object {
   }
 
   /**
-   * @param {!DataGrid.DataGridNode} node
+   * @param {!DataGridNode} node
    * @param {string} columnIdentifier
    */
   startEditingNextEditableColumnOfDataGridNode(node, columnIdentifier) {
@@ -429,8 +429,8 @@ DataGrid.DataGrid = class extends Common.Object {
     }
 
     this._editing = true;
-    if (element[DataGrid.DataGrid._longTextSymbol]) {
-      element.textContent = element[DataGrid.DataGrid._longTextSymbol];
+    if (element[DataGrid._longTextSymbol]) {
+      element.textContent = element[DataGrid._longTextSymbol];
     }
     UI.InplaceEditor.startEditing(element, this._startEditingConfig(element));
 
@@ -575,18 +575,18 @@ DataGrid.DataGrid = class extends Common.Object {
     if (!this._sortColumnCell) {
       return null;
     }
-    return this._sortColumnCell[DataGrid.DataGrid._columnIdSymbol];
+    return this._sortColumnCell[DataGrid._columnIdSymbol];
   }
 
   /**
    * @return {?string}
    */
   sortOrder() {
-    if (!this._sortColumnCell || this._sortColumnCell.classList.contains(DataGrid.DataGrid.Order.Ascending)) {
-      return DataGrid.DataGrid.Order.Ascending;
+    if (!this._sortColumnCell || this._sortColumnCell.classList.contains(Order.Ascending)) {
+      return Order.Ascending;
     }
-    if (this._sortColumnCell.classList.contains(DataGrid.DataGrid.Order.Descending)) {
-      return DataGrid.DataGrid.Order.Descending;
+    if (this._sortColumnCell.classList.contains(Order.Descending)) {
+      return Order.Descending;
     }
     return null;
   }
@@ -595,7 +595,7 @@ DataGrid.DataGrid = class extends Common.Object {
    * @return {boolean}
    */
   isSortOrderAscending() {
-    return !this._sortColumnCell || this._sortColumnCell.classList.contains(DataGrid.DataGrid.Order.Ascending);
+    return !this._sortColumnCell || this._sortColumnCell.classList.contains(Order.Ascending);
   }
 
   /**
@@ -686,8 +686,8 @@ DataGrid.DataGrid = class extends Common.Object {
   }
 
   /**
-   * @param {!DataGrid.DataGridNode} rootNode
-   * @param {!Array<!DataGrid.DataGridNode>} result
+   * @param {!DataGridNode} rootNode
+   * @param {!Array<!DataGridNode>} result
    * @param {number} maxLevel
    * @return {!Array<!NODE_TYPE>}
    */
@@ -802,7 +802,7 @@ DataGrid.DataGrid = class extends Common.Object {
     for (let i = 0; i < this._visibleColumnsArray.length; ++i) {
       const column = this._visibleColumnsArray[i];
       if (column.fixedWidth) {
-        const width = this._headerTableColumnGroup.children[i][DataGrid.DataGrid._preferredWidthSymbol] ||
+        const width = this._headerTableColumnGroup.children[i][DataGrid._preferredWidthSymbol] ||
             this._headerTableBody.rows[0].cells[i].offsetWidth;
         fixedColumnWidths[i] = width;
         tableWidth -= width;
@@ -980,7 +980,7 @@ DataGrid.DataGrid = class extends Common.Object {
         handled = true;
         this._startEditing(this.selectedNode._element.children[this._nextEditableColumn(-1)]);
       } else {
-        this.dispatchEventToListeners(DataGrid.DataGrid.Events.OpenedNode, this.selectedNode);
+        this.dispatchEventToListeners(Events.OpenedNode, this.selectedNode);
       }
     }
 
@@ -1047,7 +1047,7 @@ DataGrid.DataGrid = class extends Common.Object {
    */
   columnIdFromNode(target) {
     const cellElement = target.enclosingNodeOrSelfWithNodeName('td');
-    return cellElement && cellElement[DataGrid.DataGrid._columnIdSymbol];
+    return cellElement && cellElement[DataGrid._columnIdSymbol];
   }
 
   /**
@@ -1065,35 +1065,34 @@ DataGrid.DataGrid = class extends Common.Object {
    * @param {!Node} cell
    */
   _sortByColumnHeaderCell(cell) {
-    if ((cell[DataGrid.DataGrid._columnIdSymbol] === undefined) || !cell.classList.contains('sortable')) {
+    if ((cell[DataGrid._columnIdSymbol] === undefined) || !cell.classList.contains('sortable')) {
       return;
     }
 
-    let sortOrder = DataGrid.DataGrid.Order.Ascending;
+    let sortOrder = Order.Ascending;
     if ((cell === this._sortColumnCell) && this.isSortOrderAscending()) {
-      sortOrder = DataGrid.DataGrid.Order.Descending;
+      sortOrder = Order.Descending;
     }
 
     if (this._sortColumnCell) {
-      this._sortColumnCell.classList.remove(DataGrid.DataGrid.Order.Ascending, DataGrid.DataGrid.Order.Descending);
+      this._sortColumnCell.classList.remove(Order.Ascending, Order.Descending);
     }
     this._sortColumnCell = cell;
 
     cell.classList.add(sortOrder);
-    const icon = cell[DataGrid.DataGrid._sortIconSymbol];
-    icon.setIconType(
-        sortOrder === DataGrid.DataGrid.Order.Ascending ? 'smallicon-triangle-up' : 'smallicon-triangle-down');
+    const icon = cell[DataGrid._sortIconSymbol];
+    icon.setIconType(sortOrder === Order.Ascending ? 'smallicon-triangle-up' : 'smallicon-triangle-down');
 
-    this.dispatchEventToListeners(DataGrid.DataGrid.Events.SortingChanged);
+    this.dispatchEventToListeners(Events.SortingChanged);
   }
 
   /**
    * @param {string} columnId
-   * @param {!DataGrid.DataGrid.Order} sortOrder
+   * @param {!Order} sortOrder
    */
   markColumnAsSortedBy(columnId, sortOrder) {
     if (this._sortColumnCell) {
-      this._sortColumnCell.classList.remove(DataGrid.DataGrid.Order.Ascending, DataGrid.DataGrid.Order.Descending);
+      this._sortColumnCell.classList.remove(Order.Ascending, Order.Descending);
     }
     this._sortColumnCell = this._headerTableHeaders[columnId];
     this._sortColumnCell.classList.add(sortOrder);
@@ -1130,7 +1129,7 @@ DataGrid.DataGrid = class extends Common.Object {
       }
     } else {
       gridNode.select();
-      this.dispatchEventToListeners(DataGrid.DataGrid.Events.OpenedNode, gridNode);
+      this.dispatchEventToListeners(Events.OpenedNode, gridNode);
     }
   }
 
@@ -1254,7 +1253,7 @@ DataGrid.DataGrid = class extends Common.Object {
   }
 
   /**
-   * @param {!DataGrid.DataGrid.ResizeMethod} method
+   * @param {!ResizeMethod} method
    */
   setResizeMethod(method) {
     this._resizeMethod = method;
@@ -1297,9 +1296,9 @@ DataGrid.DataGrid = class extends Common.Object {
     }
 
     // Differences for other resize methods
-    if (this._resizeMethod === DataGrid.DataGrid.ResizeMethod.Last) {
+    if (this._resizeMethod === ResizeMethod.Last) {
       rightCellIndex = this._resizers.length;
-    } else if (this._resizeMethod === DataGrid.DataGrid.ResizeMethod.First) {
+    } else if (this._resizeMethod === ResizeMethod.First) {
       leftEdgeOfPreviousColumn += firstRowCells[leftCellIndex].offsetWidth - firstRowCells[0].offsetWidth;
       leftCellIndex = 0;
     }
@@ -1308,15 +1307,15 @@ DataGrid.DataGrid = class extends Common.Object {
         leftEdgeOfPreviousColumn + firstRowCells[leftCellIndex].offsetWidth + firstRowCells[rightCellIndex].offsetWidth;
 
     // Give each column some padding so that they don't disappear.
-    const leftMinimum = leftEdgeOfPreviousColumn + DataGrid.DataGrid.ColumnResizePadding;
-    const rightMaximum = rightEdgeOfNextColumn - DataGrid.DataGrid.ColumnResizePadding;
+    const leftMinimum = leftEdgeOfPreviousColumn + ColumnResizePadding;
+    const rightMaximum = rightEdgeOfNextColumn - ColumnResizePadding;
     if (leftMinimum > rightMaximum) {
       return;
     }
 
     dragPoint = Number.constrain(dragPoint, leftMinimum, rightMaximum);
 
-    const position = (dragPoint - DataGrid.DataGrid.CenterResizerOverBorderAdjustment);
+    const position = (dragPoint - CenterResizerOverBorderAdjustment);
     resizer.__position = position;
     resizer.style.left = position + 'px';
 
@@ -1342,7 +1341,7 @@ DataGrid.DataGrid = class extends Common.Object {
    */
   _setPreferredWidth(columnIndex, width) {
     const pxWidth = width + 'px';
-    this._headerTableColumnGroup.children[columnIndex][DataGrid.DataGrid._preferredWidthSymbol] = width;
+    this._headerTableColumnGroup.children[columnIndex][DataGrid._preferredWidthSymbol] = width;
     this._headerTableColumnGroup.children[columnIndex].style.width = pxWidth;
     this._dataTableColumnGroup.children[columnIndex].style.width = pxWidth;
   }
@@ -1366,11 +1365,11 @@ DataGrid.DataGrid = class extends Common.Object {
   }
 
   /**
-   * @return {!DataGrid.DataGridWidget}
+   * @return {!DataGridWidget}
    */
   asWidget() {
     if (!this._dataGridWidget) {
-      this._dataGridWidget = new DataGrid.DataGridWidget(this);
+      this._dataGridWidget = new DataGridWidget(this);
     }
     return this._dataGridWidget;
   }
@@ -1378,32 +1377,14 @@ DataGrid.DataGrid = class extends Common.Object {
   topFillerRowElement() {
     return this._topFillerRow;
   }
-};
+}
 
 // Keep in sync with .data-grid col.corner style rule.
-DataGrid.DataGrid.CornerWidth = 14;
+export const CornerWidth = 14;
 
-/**
- * @typedef {{
- *   id: string,
- *   title: (string|undefined),
- *   titleDOMFragment: (?DocumentFragment|undefined),
- *   sortable: boolean,
- *   sort: (?DataGrid.DataGrid.Order|undefined),
- *   align: (?DataGrid.DataGrid.Align|undefined),
- *   fixedWidth: (boolean|undefined),
- *   editable: (boolean|undefined),
- *   nonSelectable: (boolean|undefined),
- *   longText: (boolean|undefined),
- *   disclosure: (boolean|undefined),
- *   weight: (number|undefined),
- *   allowInSortByEvenWhenHidden: (boolean|undefined)
- * }}
- */
-DataGrid.DataGrid.ColumnDescriptor;
 
 /** @enum {symbol} */
-DataGrid.DataGrid.Events = {
+export const Events = {
   SelectedNode: Symbol('SelectedNode'),
   DeselectedNode: Symbol('DeselectedNode'),
   OpenedNode: Symbol('OpenedNode'),
@@ -1412,27 +1393,22 @@ DataGrid.DataGrid.Events = {
 };
 
 /** @enum {string} */
-DataGrid.DataGrid.Order = {
+export const Order = {
   Ascending: 'sort-ascending',
   Descending: 'sort-descending'
 };
 
 /** @enum {string} */
-DataGrid.DataGrid.Align = {
+export const Align = {
   Center: 'center',
   Right: 'right'
 };
 
-DataGrid.DataGrid._preferredWidthSymbol = Symbol('preferredWidth');
-DataGrid.DataGrid._columnIdSymbol = Symbol('columnId');
-DataGrid.DataGrid._sortIconSymbol = Symbol('sortIcon');
-DataGrid.DataGrid._longTextSymbol = Symbol('longText');
-
-DataGrid.DataGrid.ColumnResizePadding = 24;
-DataGrid.DataGrid.CenterResizerOverBorderAdjustment = 3;
+export const ColumnResizePadding = 24;
+export const CenterResizerOverBorderAdjustment = 3;
 
 /** @enum {string} */
-DataGrid.DataGrid.ResizeMethod = {
+export const ResizeMethod = {
   Nearest: 'nearest',
   First: 'first',
   Last: 'last'
@@ -1442,7 +1418,7 @@ DataGrid.DataGrid.ResizeMethod = {
  * @unrestricted
  * @template NODE_TYPE
  */
-DataGrid.DataGridNode = class extends Common.Object {
+export class DataGridNode extends Common.Object {
   /**
    * @param {?Object.<string, *>=} data
    * @param {boolean=} hasChildren
@@ -1796,7 +1772,7 @@ DataGrid.DataGridNode = class extends Common.Object {
    */
   createTD(columnId) {
     const cell = this._createTDWithClass(columnId + '-column');
-    cell[DataGrid.DataGrid._columnIdSymbol] = columnId;
+    cell[DataGrid._columnIdSymbol] = columnId;
 
     const alignment = this.dataGrid._columns[columnId].align;
     if (alignment) {
@@ -2093,7 +2069,7 @@ DataGrid.DataGridNode = class extends Common.Object {
     }
 
     if (!supressSelectedEvent) {
-      this.dataGrid.dispatchEventToListeners(DataGrid.DataGrid.Events.SelectedNode, this);
+      this.dataGrid.dispatchEventToListeners(Events.SelectedNode, this);
     }
   }
 
@@ -2122,7 +2098,7 @@ DataGrid.DataGridNode = class extends Common.Object {
     }
 
     if (!supressDeselectedEvent) {
-      this.dataGrid.dispatchEventToListeners(DataGrid.DataGrid.Events.DeselectedNode);
+      this.dataGrid.dispatchEventToListeners(Events.DeselectedNode);
     }
   }
 
@@ -2278,14 +2254,14 @@ DataGrid.DataGridNode = class extends Common.Object {
 
     this._savedPosition = null;
   }
-};
+}
 
 /**
  * @unrestricted
- * @extends {DataGrid.DataGridNode<!NODE_TYPE>}
+ * @extends {DataGridNode<!NODE_TYPE>}
  * @template NODE_TYPE
  */
-DataGrid.CreationDataGridNode = class extends DataGrid.DataGridNode {
+export class CreationDataGridNode extends DataGridNode {
   constructor(data, hasChildren) {
     super(data, hasChildren);
     /** @type {boolean} */
@@ -2295,12 +2271,12 @@ DataGrid.CreationDataGridNode = class extends DataGrid.DataGridNode {
   makeNormal() {
     this.isCreationNode = false;
   }
-};
+}
 
 /**
  * @unrestricted
  */
-DataGrid.DataGridWidget = class extends UI.VBox {
+export class DataGridWidget extends UI.VBox {
   /**
    * @param {!DataGrid.DataGrid} dataGrid
    */
@@ -2349,4 +2325,84 @@ DataGrid.DataGridWidget = class extends UI.VBox {
     }
     this._dataGrids = [];
   }
-};
+}
+
+/* Legacy exported object */
+self.DataGrid = self.DataGrid || {};
+
+/* Legacy exported object */
+DataGrid = DataGrid || {};
+
+/**
+ * @typedef {{
+ *   id: string,
+ *   title: (string|undefined),
+ *   titleDOMFragment: (?DocumentFragment|undefined),
+ *   sortable: boolean,
+ *   sort: (?Order|undefined),
+ *   align: (?Align|undefined),
+ *   fixedWidth: (boolean|undefined),
+ *   editable: (boolean|undefined),
+ *   nonSelectable: (boolean|undefined),
+ *   longText: (boolean|undefined),
+ *   disclosure: (boolean|undefined),
+ *   weight: (number|undefined),
+ *   allowInSortByEvenWhenHidden: (boolean|undefined)
+ * }}
+ */
+DataGrid.ColumnDescriptor;
+
+DataGrid._preferredWidthSymbol = Symbol('preferredWidth');
+DataGrid._columnIdSymbol = Symbol('columnId');
+DataGrid._sortIconSymbol = Symbol('sortIcon');
+DataGrid._longTextSymbol = Symbol('longText');
+
+/**
+ * @unrestricted
+ * @constructor
+ */
+DataGrid.DataGrid = DataGridImpl;
+
+/**
+ * @unrestricted
+ * @constructor
+ */
+DataGrid.CreationDataGridNode = CreationDataGridNode;
+
+/**
+ * @unrestricted
+ * @constructor
+ */
+DataGrid.DataGridNode = DataGridNode;
+DataGrid.DataGridWidget = DataGridWidget;
+
+/** @enum {symbol} */
+DataGrid.DataGrid.Events = Events;
+
+/** @enum {string} */
+DataGrid.DataGrid.Order = Order;
+
+/** @enum {string} */
+DataGrid.DataGrid.Align = Align;
+
+/** @enum {string} */
+DataGrid.DataGrid.ResizeMethod = ResizeMethod;
+
+/**
+ * @typedef {{
+  *   id: string,
+  *   title: (string|undefined),
+  *   titleDOMFragment: (?DocumentFragment|undefined),
+  *   sortable: boolean,
+  *   sort: (?Order|undefined),
+  *   align: (?Align|undefined),
+  *   fixedWidth: (boolean|undefined),
+  *   editable: (boolean|undefined),
+  *   nonSelectable: (boolean|undefined),
+  *   longText: (boolean|undefined),
+  *   disclosure: (boolean|undefined),
+  *   weight: (number|undefined),
+  *   allowInSortByEvenWhenHidden: (boolean|undefined)
+  * }}
+  */
+DataGrid.DataGrid.ColumnDescriptor = DataGrid.ColumnDescriptor;

@@ -6,7 +6,7 @@
  * @extends {DataGrid.DataGrid<!NODE_TYPE>}
  * @template NODE_TYPE
  */
-DataGrid.ViewportDataGrid = class extends DataGrid.DataGrid {
+export default class ViewportDataGrid extends DataGrid.DataGrid {
   /**
    * @param {!Array.<!DataGrid.DataGrid.ColumnDescriptor>} columnsArray
    * @param {function(!NODE_TYPE, string, string, string)=} editCallback
@@ -252,7 +252,7 @@ DataGrid.ViewportDataGrid = class extends DataGrid.DataGrid {
       this.updateWidths();
     }
     this._visibleNodes = visibleNodes;
-    this.dispatchEventToListeners(DataGrid.ViewportDataGrid.Events.ViewportCalculated);
+    this.dispatchEventToListeners(Events.ViewportCalculated);
   }
 
   /**
@@ -279,12 +279,12 @@ DataGrid.ViewportDataGrid = class extends DataGrid.DataGrid {
     }
     this.scrollContainer.scrollTop = scrollTop;
   }
-};
+}
 
 /**
  * @override @suppress {checkPrototypalTypes} @enum {symbol}
  */
-DataGrid.ViewportDataGrid.Events = {
+export const Events = {
   ViewportCalculated: Symbol('ViewportCalculated')
 };
 
@@ -293,7 +293,7 @@ DataGrid.ViewportDataGrid.Events = {
  * @extends {DataGrid.DataGridNode<!NODE_TYPE>}
  * @template NODE_TYPE
  */
-DataGrid.ViewportDataGridNode = class extends DataGrid.DataGridNode {
+export class ViewportDataGridNode extends DataGrid.DataGridNode {
   /**
    * @param {?Object.<string, *>=} data
    * @param {boolean=} hasChildren
@@ -532,4 +532,29 @@ DataGrid.ViewportDataGridNode = class extends DataGrid.DataGridNode {
     this.clearFlatNodes();
     super.recalculateSiblings(index);
   }
-};
+}
+
+/* Legacy exported object */
+self.DataGrid = self.DataGrid || {};
+
+/* Legacy exported object */
+DataGrid = DataGrid || {};
+
+/**
+ * @unrestricted
+ * @extends {DataGrid.DataGrid<!NODE_TYPE>}
+ * @constructor
+ */
+DataGrid.ViewportDataGrid = ViewportDataGrid;
+
+/**
+ * @override @suppress {checkPrototypalTypes} @enum {symbol}
+ */
+DataGrid.ViewportDataGrid.Events = Events;
+
+/**
+ * @unrestricted
+ * @extends {DataGrid.DataGridNode<!NODE_TYPE>}
+ * @constructor
+ */
+DataGrid.ViewportDataGridNode = ViewportDataGridNode;

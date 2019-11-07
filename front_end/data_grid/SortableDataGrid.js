@@ -6,7 +6,7 @@
  * @extends {DataGrid.ViewportDataGrid<!NODE_TYPE>}
  * @template NODE_TYPE
  */
-DataGrid.SortableDataGrid = class extends DataGrid.ViewportDataGrid {
+export default class SortableDataGrid extends DataGrid.ViewportDataGrid {
   /**
    * @param {!Array<!DataGrid.DataGrid.ColumnDescriptor>} columnsArray
    * @param {function(!NODE_TYPE, string, string, string)=} editCallback
@@ -147,14 +147,14 @@ DataGrid.SortableDataGrid = class extends DataGrid.ViewportDataGrid {
     this.rootNode()._sortChildren(reverseMode);
     this.scheduleUpdateStructure();
   }
-};
+}
 
 /**
  * @unrestricted
  * @extends {DataGrid.ViewportDataGridNode<!NODE_TYPE>}
  * @template NODE_TYPE
  */
-DataGrid.SortableDataGridNode = class extends DataGrid.ViewportDataGridNode {
+export class SortableDataGridNode extends DataGrid.ViewportDataGridNode {
   /**
    * @param {?Object.<string, *>=} data
    * @param {boolean=} hasChildren
@@ -179,4 +179,23 @@ DataGrid.SortableDataGridNode = class extends DataGrid.ViewportDataGridNode {
       child._sortChildren();
     }
   }
-};
+}
+
+/* Legacy exported object */
+self.DataGrid = self.DataGrid || {};
+
+/* Legacy exported object */
+DataGrid = DataGrid || {};
+
+/**
+ * @unrestricted
+ * @constructor
+ */
+DataGrid.SortableDataGrid = SortableDataGrid;
+
+/**
+ * @unrestricted
+ * @constructor
+ * @extends {DataGrid.ViewportDataGridNode<!NODE_TYPE>}
+ */
+DataGrid.SortableDataGridNode = SortableDataGridNode;

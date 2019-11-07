@@ -151,6 +151,7 @@
   border-radius: 2px;
   cursor: pointer;
   height: 28px;
+  background: none;
 }
 
 .overview-completed-view .font-info button .details,
@@ -176,6 +177,7 @@
   height: 8px;
   background: var(--accent-color);
   border-radius: 2px;
+  min-width: 2px;
 }
 
 .overview-completed-view .font-info button:hover .details,
@@ -202,7 +204,6 @@
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   grid-gap: 12px;
-  padding-bottom: var(--overview-default-padding);
 }
 
 .overview-completed-view .font-info ul {
@@ -215,12 +216,29 @@
 
 .overview-completed-view .font-info h2 {
   font-size: 14px;
-  font-weight: normal;
+  font-weight: bold;
   margin: 0 0 1em 0;
 }
 
 .overview-completed-view .font-info h3 {
-  font-size: 12px;
-  font-weight: bold;
-  margin: 0 0 1em 0;
+  font-size: 13px;
+  font-weight: normal;
+  font-style: italic;
+  margin: 0 0 0.5em 0;
+}
+
+.overview-completed-view .font-info {
+  padding-bottom: 0;
+}
+
+.overview-completed-view .font-family {
+  padding: var(--overview-default-padding);
+}
+
+.overview-completed-view .font-family:nth-child(2n+1) {
+  background: #FAFAFA;
+}
+
+.overview-completed-view .font-family:first-of-type {
+  padding-top: 0;
 }

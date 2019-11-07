@@ -291,7 +291,7 @@ CssOverview.CSSOverviewCompletedView = class extends UI.PanelWithSidebar {
         </ul>
       </div>
 
-      <div $="font-info" class="results-section horizontally-padded font-info">
+      <div $="font-info" class="results-section font-info">
         <h1>${ls`Font info`}</h1>
         ${
         fontInfo.size > 0 ? this._fontInfoToFragment(fontInfo) :

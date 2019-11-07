@@ -509,7 +509,9 @@ Sources.TabbedEditorContainer = class extends Common.Object {
   _addLoadErrorIcon(tabId) {
     const icon = UI.Icon.create('smallicon-error');
     icon.title = ls`Unable to load this content.`;
-    this._tabbedPane.setTabIcon(tabId, icon);
+    if (this._tabbedPane.tabView(tabId)) {
+      this._tabbedPane.setTabIcon(tabId, icon);
+    }
   }
 
   /**

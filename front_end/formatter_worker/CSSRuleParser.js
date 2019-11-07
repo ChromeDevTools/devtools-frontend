@@ -1,7 +1,8 @@
 // Copyright 2016 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-FormatterWorker.CSSParserStates = {
+
+export const CSSParserStates = {
   Initial: 'Initial',
   Selector: 'Selector',
   Style: 'Style',
@@ -13,21 +14,21 @@ FormatterWorker.CSSParserStates = {
 /**
  * @param {string} text
  */
-FormatterWorker.parseCSS = function(text) {
-  FormatterWorker._innerParseCSS(text, postMessage);
-};
+export function parseCSS(text) {
+  _innerParseCSS(text, postMessage);
+}
 
 /**
  * @param {string} text
  * @param {function(*)} chunkCallback
  */
-FormatterWorker._innerParseCSS = function(text, chunkCallback) {
+export function _innerParseCSS(text, chunkCallback) {
   const chunkSize = 100000;  // characters per data chunk
   const lines = text.split('\n');
   let rules = [];
   let processedChunkCharacters = 0;
 
-  let state = FormatterWorker.CSSParserStates.Initial;
+  let state = CSSParserStates.Initial;
   let rule;
   let property;
   const UndefTokenType = new Set();
@@ -46,7 +47,7 @@ FormatterWorker._innerParseCSS = function(text, chunkCallback) {
   function processToken(tokenValue, tokenTypes, column, newColumn) {
     const tokenType = tokenTypes ? new Set(tokenTypes.split(' ')) : UndefTokenType;
     switch (state) {
-      case FormatterWorker.CSSParserStates.Initial:
+      case CSSParserStates.Initial:
         if (tokenType.has('qualifier') || tokenType.has('builtin') || tokenType.has('tag')) {
           rule = {
             selectorText: tokenValue,
@@ -54,35 +55,35 @@ FormatterWorker._innerParseCSS = function(text, chunkCallback) {
             columnNumber: column,
             properties: [],
           };
-          state = FormatterWorker.CSSParserStates.Selector;
+          state = CSSParserStates.Selector;
         } else if (tokenType.has('def')) {
           rule = {
             atRule: tokenValue,
             lineNumber: lineNumber,
             columnNumber: column,
           };
-          state = FormatterWorker.CSSParserStates.AtRule;
+          state = CSSParserStates.AtRule;
         }
         break;
-      case FormatterWorker.CSSParserStates.Selector:
+      case CSSParserStates.Selector:
         if (tokenValue === '{' && tokenType === UndefTokenType) {
           rule.selectorText = rule.selectorText.trim();
           rule.styleRange = createRange(lineNumber, newColumn);
-          state = FormatterWorker.CSSParserStates.Style;
+          state = CSSParserStates.Style;
         } else {
           rule.selectorText += tokenValue;
         }
         break;
-      case FormatterWorker.CSSParserStates.AtRule:
+      case CSSParserStates.AtRule:
         if ((tokenValue === ';' || tokenValue === '{') && tokenType === UndefTokenType) {
           rule.atRule = rule.atRule.trim();
           rules.push(rule);
-          state = FormatterWorker.CSSParserStates.Initial;
+          state = CSSParserStates.Initial;
         } else {
           rule.atRule += tokenValue;
         }
         break;
-      case FormatterWorker.CSSParserStates.Style:
+      case CSSParserStates.Style:
         if (tokenType.has('meta') || tokenType.has('property')) {
           property = {
             name: tokenValue,
@@ -90,12 +91,12 @@ FormatterWorker._innerParseCSS = function(text, chunkCallback) {
             range: createRange(lineNumber, column),
             nameRange: createRange(lineNumber, column)
           };
-          state = FormatterWorker.CSSParserStates.PropertyName;
+          state = CSSParserStates.PropertyName;
         } else if (tokenValue === '}' && tokenType === UndefTokenType) {
           rule.styleRange.endLine = lineNumber;
           rule.styleRange.endColumn = column;
           rules.push(rule);
-          state = FormatterWorker.CSSParserStates.Initial;
+          state = CSSParserStates.Initial;
         } else if (tokenType.has('comment')) {
           // The |processToken| is called per-line, so no token spans more than one line.
           // Support only a one-line comments.
@@ -105,7 +106,7 @@ FormatterWorker._innerParseCSS = function(text, chunkCallback) {
           const uncommentedText = tokenValue.substring(2, tokenValue.length - 2);
           const fakeRule = 'a{\n' + uncommentedText + '}';
           disabledRules = [];
-          FormatterWorker._innerParseCSS(fakeRule, disabledRulesCallback);
+          _innerParseCSS(fakeRule, disabledRulesCallback);
           if (disabledRules.length === 1 && disabledRules[0].properties.length === 1) {
             const disabledProperty = disabledRules[0].properties[0];
             disabledProperty.disabled = true;
@@ -125,18 +126,18 @@ FormatterWorker._innerParseCSS = function(text, chunkCallback) {
           }
         }
         break;
-      case FormatterWorker.CSSParserStates.PropertyName:
+      case CSSParserStates.PropertyName:
         if (tokenValue === ':' && tokenType === UndefTokenType) {
           property.name = property.name;
           property.nameRange.endLine = lineNumber;
           property.nameRange.endColumn = column;
           property.valueRange = createRange(lineNumber, newColumn);
-          state = FormatterWorker.CSSParserStates.PropertyValue;
+          state = CSSParserStates.PropertyValue;
         } else if (tokenType.has('property')) {
           property.name += tokenValue;
         }
         break;
-      case FormatterWorker.CSSParserStates.PropertyValue:
+      case CSSParserStates.PropertyValue:
         if ((tokenValue === ';' || tokenValue === '}') && tokenType === UndefTokenType) {
           property.value = property.value;
           property.valueRange.endLine = lineNumber;
@@ -148,9 +149,9 @@ FormatterWorker._innerParseCSS = function(text, chunkCallback) {
             rule.styleRange.endLine = lineNumber;
             rule.styleRange.endColumn = column;
             rules.push(rule);
-            state = FormatterWorker.CSSParserStates.Initial;
+            state = CSSParserStates.Initial;
           } else {
-            state = FormatterWorker.CSSParserStates.Style;
+            state = CSSParserStates.Style;
           }
         } else if (!tokenType.has('comment')) {
           property.value += tokenValue;
@@ -181,4 +182,14 @@ FormatterWorker._innerParseCSS = function(text, chunkCallback) {
   function createRange(lineNumber, columnNumber) {
     return {startLine: lineNumber, startColumn: columnNumber, endLine: lineNumber, endColumn: columnNumber};
   }
-};
+}
+
+/* Legacy exported object */
+self.FormatterWorker = self.FormatterWorker || {};
+
+/* Legacy exported object */
+FormatterWorker = FormatterWorker || {};
+
+FormatterWorker.CSSParserStates = CSSParserStates;
+FormatterWorker.parseCSS = parseCSS;
+FormatterWorker._innerParseCSS = _innerParseCSS;

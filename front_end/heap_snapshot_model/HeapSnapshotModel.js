@@ -28,33 +28,33 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-HeapSnapshotModel.HeapSnapshotProgressEvent = {
+export const HeapSnapshotProgressEvent = {
   Update: 'ProgressUpdate',
   BrokenSnapshot: 'BrokenSnapshot'
 };
 
-HeapSnapshotModel.baseSystemDistance = 100000000;
+export const baseSystemDistance = 100000000;
 
 /**
  * @unrestricted
  */
-HeapSnapshotModel.AllocationNodeCallers = class {
+export class AllocationNodeCallers {
   /**
-   * @param {!Array.<!HeapSnapshotModel.SerializedAllocationNode>} nodesWithSingleCaller
-   * @param {!Array.<!HeapSnapshotModel.SerializedAllocationNode>} branchingCallers
+   * @param {!Array.<!SerializedAllocationNode>} nodesWithSingleCaller
+   * @param {!Array.<!SerializedAllocationNode>} branchingCallers
    */
   constructor(nodesWithSingleCaller, branchingCallers) {
-    /** @type {!Array.<!HeapSnapshotModel.SerializedAllocationNode>} */
+    /** @type {!Array.<!SerializedAllocationNode>} */
     this.nodesWithSingleCaller = nodesWithSingleCaller;
-    /** @type {!Array.<!HeapSnapshotModel.SerializedAllocationNode>} */
+    /** @type {!Array.<!SerializedAllocationNode>} */
     this.branchingCallers = branchingCallers;
   }
-};
+}
 
 /**
  * @unrestricted
  */
-HeapSnapshotModel.SerializedAllocationNode = class {
+export class SerializedAllocationNode {
   /**
    * @param {number} nodeId
    * @param {string} functionName
@@ -92,12 +92,12 @@ HeapSnapshotModel.SerializedAllocationNode = class {
     /** @type {boolean} */
     this.hasChildren = hasChildren;
   }
-};
+}
 
 /**
  * @unrestricted
  */
-HeapSnapshotModel.AllocationStackFrame = class {
+export class AllocationStackFrame {
   /**
    * @param {string} functionName
    * @param {string} scriptName
@@ -117,12 +117,12 @@ HeapSnapshotModel.AllocationStackFrame = class {
     /** @type {number} */
     this.column = column;
   }
-};
+}
 
 /**
  * @unrestricted
  */
-HeapSnapshotModel.Node = class {
+export class Node {
   /**
    * @param {number} id
    * @param {string} name
@@ -144,15 +144,15 @@ HeapSnapshotModel.Node = class {
     this.canBeQueried = false;
     this.detachedDOMTreeNode = false;
   }
-};
+}
 
 /**
  * @unrestricted
  */
-HeapSnapshotModel.Edge = class {
+export class Edge {
   /**
    * @param {string} name
-   * @param {!HeapSnapshotModel.Node} node
+   * @param {!Node} node
    * @param {string} type
    * @param {number} edgeIndex
    */
@@ -162,12 +162,12 @@ HeapSnapshotModel.Edge = class {
     this.type = type;
     this.edgeIndex = edgeIndex;
   }
-};
+}
 
 /**
  * @unrestricted
  */
-HeapSnapshotModel.Aggregate = class {
+export class Aggregate {
   constructor() {
     /** @type {number} */
     this.count;
@@ -184,12 +184,12 @@ HeapSnapshotModel.Aggregate = class {
     /** @type {!Array.<number>} */
     this.idxs;
   }
-};
+}
 
 /**
  * @unrestricted
  */
-HeapSnapshotModel.AggregateForDiff = class {
+export class AggregateForDiff {
   constructor() {
     /** @type {!Array.<number>} */
     this.indexes = [];
@@ -198,12 +198,12 @@ HeapSnapshotModel.AggregateForDiff = class {
     /** @type {!Array.<number>} */
     this.selfSizes = [];
   }
-};
+}
 
 /**
  * @unrestricted
  */
-HeapSnapshotModel.Diff = class {
+export class Diff {
   constructor() {
     /** @type {number} */
     this.addedCount = 0;
@@ -218,12 +218,12 @@ HeapSnapshotModel.Diff = class {
     /** @type {!Array.<number>} */
     this.addedIndexes = [];
   }
-};
+}
 
 /**
  * @unrestricted
  */
-HeapSnapshotModel.DiffForClass = class {
+export class DiffForClass {
   constructor() {
     /** @type {number} */
     this.addedCount;
@@ -243,12 +243,12 @@ HeapSnapshotModel.DiffForClass = class {
     /** @type {number} */
     this.sizeDelta;
   }
-};
+}
 
 /**
  * @unrestricted
  */
-HeapSnapshotModel.ComparatorConfig = class {
+export class ComparatorConfig {
   constructor() {
     /** @type {string} */
     this.fieldName1;
@@ -259,12 +259,12 @@ HeapSnapshotModel.ComparatorConfig = class {
     /** @type {boolean} */
     this.ascending2;
   }
-};
+}
 
 /**
  * @unrestricted
  */
-HeapSnapshotModel.WorkerCommand = class {
+export class WorkerCommand {
   constructor() {
     /** @type {number} */
     this.callId;
@@ -281,12 +281,12 @@ HeapSnapshotModel.WorkerCommand = class {
     /** @type {string} */
     this.source;
   }
-};
+}
 
 /**
  * @unrestricted
  */
-HeapSnapshotModel.ItemsRange = class {
+export class ItemsRange {
   /**
    * @param {number} startPosition
    * @param {number} endPosition
@@ -303,12 +303,12 @@ HeapSnapshotModel.ItemsRange = class {
     /** @type {!Array.<*>} */
     this.items = items;
   }
-};
+}
 
 /**
  * @unrestricted
  */
-HeapSnapshotModel.StaticData = class {
+export class StaticData {
   /**
    * @param {number} nodeCount
    * @param {number} rootNodeIndex
@@ -325,12 +325,12 @@ HeapSnapshotModel.StaticData = class {
     /** @type {number} */
     this.maxJSObjectId = maxJSObjectId;
   }
-};
+}
 
 /**
  * @unrestricted
  */
-HeapSnapshotModel.Statistics = class {
+export class Statistics {
   constructor() {
     /** @type {number} */
     this.total;
@@ -347,12 +347,12 @@ HeapSnapshotModel.Statistics = class {
     /** @type {number} */
     this.system;
   }
-};
+}
 
 /**
  * @unrestricted
  */
-HeapSnapshotModel.NodeFilter = class {
+export class NodeFilter {
   /**
    * @param {number=} minNodeId
    * @param {number=} maxNodeId
@@ -367,19 +367,19 @@ HeapSnapshotModel.NodeFilter = class {
   }
 
   /**
-   * @param {!HeapSnapshotModel.NodeFilter} o
+   * @param {!NodeFilter} o
    * @return {boolean}
    */
   equals(o) {
     return this.minNodeId === o.minNodeId && this.maxNodeId === o.maxNodeId &&
         this.allocationNodeId === o.allocationNodeId;
   }
-};
+}
 
 /**
  * @unrestricted
  */
-HeapSnapshotModel.SearchConfig = class {
+export class SearchConfig {
   /**
    * @param {string} query
    * @param {boolean} caseSensitive
@@ -394,12 +394,12 @@ HeapSnapshotModel.SearchConfig = class {
     this.shouldJump = shouldJump;
     this.jumpBackward = jumpBackward;
   }
-};
+}
 
 /**
  * @unrestricted
  */
-HeapSnapshotModel.Samples = class {
+export class Samples {
   /**
    * @param {!Array.<number>} timestamps
    * @param {!Array.<number>} lastAssignedIds
@@ -410,12 +410,12 @@ HeapSnapshotModel.Samples = class {
     this.lastAssignedIds = lastAssignedIds;
     this.sizes = sizes;
   }
-};
+}
 
 /**
  * @unrestricted
  */
-HeapSnapshotModel.Location = class {
+export class Location {
   /**
    * @param {number} scriptId
    * @param {number} lineNumber
@@ -426,4 +426,67 @@ HeapSnapshotModel.Location = class {
     this.lineNumber = lineNumber;
     this.columnNumber = columnNumber;
   }
-};
+}
+
+/* Legacy exported object */
+self.HeapSnapshotModel = self.HeapSnapshotModel || {};
+
+/* Legacy exported object */
+HeapSnapshotModel = HeapSnapshotModel || {};
+
+HeapSnapshotModel.HeapSnapshotProgressEvent = HeapSnapshotProgressEvent;
+HeapSnapshotModel.baseSystemDistance = baseSystemDistance;
+
+/** @constructor */
+HeapSnapshotModel.AllocationNodeCallers = AllocationNodeCallers;
+
+/** @constructor */
+HeapSnapshotModel.SerializedAllocationNode = SerializedAllocationNode;
+
+/** @constructor */
+HeapSnapshotModel.AllocationStackFrame = AllocationStackFrame;
+
+/** @constructor */
+HeapSnapshotModel.Node = Node;
+
+/** @constructor */
+HeapSnapshotModel.Edge = Edge;
+
+/** @constructor */
+HeapSnapshotModel.Aggregate = Aggregate;
+
+/** @constructor */
+HeapSnapshotModel.AggregateForDiff = AggregateForDiff;
+
+/** @constructor */
+HeapSnapshotModel.Diff = Diff;
+
+/** @constructor */
+HeapSnapshotModel.DiffForClass = DiffForClass;
+
+/** @constructor */
+HeapSnapshotModel.ComparatorConfig = ComparatorConfig;
+
+/** @constructor */
+HeapSnapshotModel.WorkerCommand = WorkerCommand;
+
+/** @constructor */
+HeapSnapshotModel.ItemsRange = ItemsRange;
+
+/** @constructor */
+HeapSnapshotModel.StaticData = StaticData;
+
+/** @constructor */
+HeapSnapshotModel.Statistics = Statistics;
+
+/** @constructor */
+HeapSnapshotModel.NodeFilter = NodeFilter;
+
+/** @constructor */
+HeapSnapshotModel.SearchConfig = SearchConfig;
+
+/** @constructor */
+HeapSnapshotModel.Samples = Samples;
+
+/** @constructor */
+HeapSnapshotModel.Location = Location;

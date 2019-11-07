@@ -30,27 +30,26 @@
 /**
  * @interface
  */
-HeapSnapshotWorker.HeapSnapshotItem = function() {};
-
-HeapSnapshotWorker.HeapSnapshotItem.prototype = {
+export class HeapSnapshotItem {
   /**
    * @return {number}
    */
-  itemIndex() {},
+  itemIndex() {
+  }
 
   /**
    * @return {!Object}
    */
   serialize() {}
-};
+}
 
 /**
- * @implements {HeapSnapshotWorker.HeapSnapshotItem}
+ * @implements {HeapSnapshotItem}
  * @unrestricted
  */
-HeapSnapshotWorker.HeapSnapshotEdge = class {
+export class HeapSnapshotEdge {
   /**
-   * @param {!HeapSnapshotWorker.HeapSnapshot} snapshot
+   * @param {!HeapSnapshot} snapshot
    * @param {number=} edgeIndex
    */
   constructor(snapshot, edgeIndex) {
@@ -60,10 +59,10 @@ HeapSnapshotWorker.HeapSnapshotEdge = class {
   }
 
   /**
-   * @return {!HeapSnapshotWorker.HeapSnapshotEdge}
+   * @return {!HeapSnapshotEdge}
    */
   clone() {
-    return new HeapSnapshotWorker.HeapSnapshotEdge(this._snapshot, this.edgeIndex);
+    return new HeapSnapshotEdge(this._snapshot, this.edgeIndex);
   }
 
   /**
@@ -81,7 +80,7 @@ HeapSnapshotWorker.HeapSnapshotEdge = class {
   }
 
   /**
-   * @return {!HeapSnapshotWorker.HeapSnapshotNode}
+   * @return {!HeapSnapshotNode}
    */
   node() {
     return this._snapshot.createNode(this.nodeIndex());
@@ -132,47 +131,46 @@ HeapSnapshotWorker.HeapSnapshotEdge = class {
   rawType() {
     return this._edges[this.edgeIndex + this._snapshot._edgeTypeOffset];
   }
-};
+}
 
 /**
  * @interface
  */
-HeapSnapshotWorker.HeapSnapshotItemIterator = function() {};
-
-HeapSnapshotWorker.HeapSnapshotItemIterator.prototype = {
+export class HeapSnapshotItemIterator {
   /**
    * @return {boolean}
    */
-  hasNext() {},
+  hasNext() {
+  }
 
   /**
-   * @return {!HeapSnapshotWorker.HeapSnapshotItem}
+   * @return {!HeapSnapshotItem}
    */
-  item() {},
+  item() {
+  }
 
   next() {}
-};
+}
 
 /**
  * @interface
  */
-HeapSnapshotWorker.HeapSnapshotItemIndexProvider = function() {};
-
-HeapSnapshotWorker.HeapSnapshotItemIndexProvider.prototype = {
+export class HeapSnapshotItemIndexProvider {
   /**
    * @param {number} newIndex
-   * @return {!HeapSnapshotWorker.HeapSnapshotItem}
+   * @return {!HeapSnapshotItem}
    */
-  itemForIndex(newIndex) {},
-};
+  itemForIndex(newIndex) {
+  }
+}
 
 /**
- * @implements {HeapSnapshotWorker.HeapSnapshotItemIndexProvider}
+ * @implements {HeapSnapshotItemIndexProvider}
  * @unrestricted
  */
-HeapSnapshotWorker.HeapSnapshotNodeIndexProvider = class {
+export class HeapSnapshotNodeIndexProvider {
   /**
-   * @param {!HeapSnapshotWorker.HeapSnapshot} snapshot
+   * @param {!HeapSnapshot} snapshot
    */
   constructor(snapshot) {
     this._node = snapshot.createNode();
@@ -181,21 +179,21 @@ HeapSnapshotWorker.HeapSnapshotNodeIndexProvider = class {
   /**
    * @override
    * @param {number} index
-   * @return {!HeapSnapshotWorker.HeapSnapshotNode}
+   * @return {!HeapSnapshotNode}
    */
   itemForIndex(index) {
     this._node.nodeIndex = index;
     return this._node;
   }
-};
+}
 
 /**
- * @implements {HeapSnapshotWorker.HeapSnapshotItemIndexProvider}
+ * @implements {HeapSnapshotItemIndexProvider}
  * @unrestricted
  */
-HeapSnapshotWorker.HeapSnapshotEdgeIndexProvider = class {
+export class HeapSnapshotEdgeIndexProvider {
   /**
-   * @param {!HeapSnapshotWorker.HeapSnapshot} snapshot
+   * @param {!HeapSnapshot} snapshot
    */
   constructor(snapshot) {
     this._edge = snapshot.createEdge(0);
@@ -204,21 +202,21 @@ HeapSnapshotWorker.HeapSnapshotEdgeIndexProvider = class {
   /**
    * @override
    * @param {number} index
-   * @return {!HeapSnapshotWorker.HeapSnapshotEdge}
+   * @return {!HeapSnapshotEdge}
    */
   itemForIndex(index) {
     this._edge.edgeIndex = index;
     return this._edge;
   }
-};
+}
 
 /**
- * @implements {HeapSnapshotWorker.HeapSnapshotItemIndexProvider}
+ * @implements {HeapSnapshotItemIndexProvider}
  * @unrestricted
  */
-HeapSnapshotWorker.HeapSnapshotRetainerEdgeIndexProvider = class {
+export class HeapSnapshotRetainerEdgeIndexProvider {
   /**
-   * @param {!HeapSnapshotWorker.HeapSnapshot} snapshot
+   * @param {!HeapSnapshot} snapshot
    */
   constructor(snapshot) {
     this._retainerEdge = snapshot.createRetainingEdge(0);
@@ -227,21 +225,21 @@ HeapSnapshotWorker.HeapSnapshotRetainerEdgeIndexProvider = class {
   /**
    * @override
    * @param {number} index
-   * @return {!HeapSnapshotWorker.HeapSnapshotRetainerEdge}
+   * @return {!HeapSnapshotRetainerEdge}
    */
   itemForIndex(index) {
     this._retainerEdge.setRetainerIndex(index);
     return this._retainerEdge;
   }
-};
+}
 
 /**
- * @implements {HeapSnapshotWorker.HeapSnapshotItemIterator}
+ * @implements {HeapSnapshotItemIterator}
  * @unrestricted
  */
-HeapSnapshotWorker.HeapSnapshotEdgeIterator = class {
+export class HeapSnapshotEdgeIterator {
   /**
-   * @param {!HeapSnapshotWorker.HeapSnapshotNode} node
+   * @param {!HeapSnapshotNode} node
    */
   constructor(node) {
     this._sourceNode = node;
@@ -258,7 +256,7 @@ HeapSnapshotWorker.HeapSnapshotEdgeIterator = class {
 
   /**
    * @override
-   * @return {!HeapSnapshotWorker.HeapSnapshotEdge}
+   * @return {!HeapSnapshotEdge}
    */
   item() {
     return this.edge;
@@ -270,15 +268,15 @@ HeapSnapshotWorker.HeapSnapshotEdgeIterator = class {
   next() {
     this.edge.edgeIndex += this.edge._snapshot._edgeFieldsCount;
   }
-};
+}
 
 /**
- * @implements {HeapSnapshotWorker.HeapSnapshotItem}
+ * @implements {HeapSnapshotItem}
  * @unrestricted
  */
-HeapSnapshotWorker.HeapSnapshotRetainerEdge = class {
+export class HeapSnapshotRetainerEdge {
   /**
-   * @param {!HeapSnapshotWorker.HeapSnapshot} snapshot
+   * @param {!HeapSnapshot} snapshot
    * @param {number} retainerIndex
    */
   constructor(snapshot, retainerIndex) {
@@ -287,10 +285,10 @@ HeapSnapshotWorker.HeapSnapshotRetainerEdge = class {
   }
 
   /**
-   * @return {!HeapSnapshotWorker.HeapSnapshotRetainerEdge}
+   * @return {!HeapSnapshotRetainerEdge}
    */
   clone() {
-    return new HeapSnapshotWorker.HeapSnapshotRetainerEdge(this._snapshot, this.retainerIndex());
+    return new HeapSnapshotRetainerEdge(this._snapshot, this.retainerIndex());
   }
 
   /**
@@ -308,7 +306,7 @@ HeapSnapshotWorker.HeapSnapshotRetainerEdge = class {
   }
 
   /**
-   * @return {!HeapSnapshotWorker.HeapSnapshotNode}
+   * @return {!HeapSnapshotNode}
    */
   node() {
     return this._node();
@@ -393,15 +391,15 @@ HeapSnapshotWorker.HeapSnapshotRetainerEdge = class {
   type() {
     return this._edge().type();
   }
-};
+}
 
 /**
- * @implements {HeapSnapshotWorker.HeapSnapshotItemIterator}
+ * @implements {HeapSnapshotItemIterator}
  * @unrestricted
  */
-HeapSnapshotWorker.HeapSnapshotRetainerEdgeIterator = class {
+export class HeapSnapshotRetainerEdgeIterator {
   /**
-   * @param {!HeapSnapshotWorker.HeapSnapshotNode} retainedNode
+   * @param {!HeapSnapshotNode} retainedNode
    */
   constructor(retainedNode) {
     const snapshot = retainedNode._snapshot;
@@ -421,7 +419,7 @@ HeapSnapshotWorker.HeapSnapshotRetainerEdgeIterator = class {
 
   /**
    * @override
-   * @return {!HeapSnapshotWorker.HeapSnapshotRetainerEdge}
+   * @return {!HeapSnapshotRetainerEdge}
    */
   item() {
     return this.retainer;
@@ -433,15 +431,15 @@ HeapSnapshotWorker.HeapSnapshotRetainerEdgeIterator = class {
   next() {
     this.retainer.setRetainerIndex(this.retainer.retainerIndex() + 1);
   }
-};
+}
 
 /**
- * @implements {HeapSnapshotWorker.HeapSnapshotItem}
+ * @implements {HeapSnapshotItem}
  * @unrestricted
  */
-HeapSnapshotWorker.HeapSnapshotNode = class {
+export class HeapSnapshotNode {
   /**
-   * @param {!HeapSnapshotWorker.HeapSnapshot} snapshot
+   * @param {!HeapSnapshot} snapshot
    * @param {number=} nodeIndex
    */
   constructor(snapshot, nodeIndex) {
@@ -479,10 +477,10 @@ HeapSnapshotWorker.HeapSnapshotNode = class {
   }
 
   /**
-   * @return {!HeapSnapshotWorker.HeapSnapshotEdgeIterator}
+   * @return {!HeapSnapshotEdgeIterator}
    */
   edges() {
-    return new HeapSnapshotWorker.HeapSnapshotEdgeIterator(this);
+    return new HeapSnapshotEdgeIterator(this);
   }
 
   /**
@@ -521,10 +519,10 @@ HeapSnapshotWorker.HeapSnapshotNode = class {
   }
 
   /**
-   * @return {!HeapSnapshotWorker.HeapSnapshotRetainerEdgeIterator}
+   * @return {!HeapSnapshotRetainerEdgeIterator}
    */
   retainers() {
-    return new HeapSnapshotWorker.HeapSnapshotRetainerEdgeIterator(this);
+    return new HeapSnapshotRetainerEdgeIterator(this);
   }
 
   /**
@@ -620,15 +618,15 @@ HeapSnapshotWorker.HeapSnapshotNode = class {
     const snapshot = this._snapshot;
     return snapshot.nodes[this.nodeIndex + snapshot._nodeTypeOffset];
   }
-};
+}
 
 /**
- * @implements {HeapSnapshotWorker.HeapSnapshotItemIterator}
+ * @implements {HeapSnapshotItemIterator}
  * @unrestricted
  */
-HeapSnapshotWorker.HeapSnapshotNodeIterator = class {
+export class HeapSnapshotNodeIterator {
   /**
-   * @param {!HeapSnapshotWorker.HeapSnapshotNode} node
+   * @param {!HeapSnapshotNode} node
    */
   constructor(node) {
     this.node = node;
@@ -645,7 +643,7 @@ HeapSnapshotWorker.HeapSnapshotNodeIterator = class {
 
   /**
    * @override
-   * @return {!HeapSnapshotWorker.HeapSnapshotNode}
+   * @return {!HeapSnapshotNode}
    */
   item() {
     return this.node;
@@ -657,15 +655,15 @@ HeapSnapshotWorker.HeapSnapshotNodeIterator = class {
   next() {
     this.node.nodeIndex = this.node._nextNodeIndex();
   }
-};
+}
 
 /**
- * @implements {HeapSnapshotWorker.HeapSnapshotItemIterator}
+ * @implements {HeapSnapshotItemIterator}
  * @unrestricted
  */
-HeapSnapshotWorker.HeapSnapshotIndexRangeIterator = class {
+export class HeapSnapshotIndexRangeIterator {
   /**
-   * @param {!HeapSnapshotWorker.HeapSnapshotItemIndexProvider} itemProvider
+   * @param {!HeapSnapshotItemIndexProvider} itemProvider
    * @param {!Array.<number>|!Uint32Array} indexes
    */
   constructor(itemProvider, indexes) {
@@ -684,7 +682,7 @@ HeapSnapshotWorker.HeapSnapshotIndexRangeIterator = class {
 
   /**
    * @override
-   * @return {!HeapSnapshotWorker.HeapSnapshotItem}
+   * @return {!HeapSnapshotItem}
    */
   item() {
     const index = this._indexes[this._position];
@@ -697,16 +695,16 @@ HeapSnapshotWorker.HeapSnapshotIndexRangeIterator = class {
   next() {
     ++this._position;
   }
-};
+}
 
 /**
- * @implements {HeapSnapshotWorker.HeapSnapshotItemIterator}
+ * @implements {HeapSnapshotItemIterator}
  * @unrestricted
  */
-HeapSnapshotWorker.HeapSnapshotFilteredIterator = class {
+export class HeapSnapshotFilteredIterator {
   /**
-   * @param {!HeapSnapshotWorker.HeapSnapshotItemIterator} iterator
-   * @param {function(!HeapSnapshotWorker.HeapSnapshotItem):boolean=} filter
+   * @param {!HeapSnapshotItemIterator} iterator
+   * @param {function(!HeapSnapshotItem):boolean=} filter
    */
   constructor(iterator, filter) {
     this._iterator = iterator;
@@ -724,7 +722,7 @@ HeapSnapshotWorker.HeapSnapshotFilteredIterator = class {
 
   /**
    * @override
-   * @return {!HeapSnapshotWorker.HeapSnapshotItem}
+   * @return {!HeapSnapshotItem}
    */
   item() {
     return this._iterator.item();
@@ -743,12 +741,12 @@ HeapSnapshotWorker.HeapSnapshotFilteredIterator = class {
       this._iterator.next();
     }
   }
-};
+}
 
 /**
  * @unrestricted
  */
-HeapSnapshotWorker.HeapSnapshotProgress = class {
+export class HeapSnapshotProgress {
   /**
    * @param {!HeapSnapshotWorker.HeapSnapshotWorkerDispatcher=} dispatcher
    */
@@ -760,7 +758,7 @@ HeapSnapshotWorker.HeapSnapshotProgress = class {
    * @param {string} status
    */
   updateStatus(status) {
-    this._sendUpdateEvent(self.serializeUIString(status));
+    this._sendUpdateEvent(Common.serializeUIString(status));
   }
 
   /**
@@ -770,7 +768,7 @@ HeapSnapshotWorker.HeapSnapshotProgress = class {
    */
   updateProgress(title, value, total) {
     const percentValue = ((total ? (value / total) : 0) * 100).toFixed(0);
-    this._sendUpdateEvent(self.serializeUIString(title, [percentValue]));
+    this._sendUpdateEvent(Common.serializeUIString(title, [percentValue]));
   }
 
   /**
@@ -792,12 +790,12 @@ HeapSnapshotWorker.HeapSnapshotProgress = class {
       this._dispatcher.sendEvent(HeapSnapshotModel.HeapSnapshotProgressEvent.Update, serializedText);
     }
   }
-};
+}
 
 /**
  * @unrestricted
  */
-HeapSnapshotWorker.HeapSnapshotProblemReport = class {
+export class HeapSnapshotProblemReport {
   /**
    * @param {string} title
    */
@@ -822,15 +820,15 @@ HeapSnapshotWorker.HeapSnapshotProblemReport = class {
   toString() {
     return this._errors.join('\n  ');
   }
-};
+}
 
 /**
  * @unrestricted
  */
-HeapSnapshotWorker.HeapSnapshot = class {
+export class HeapSnapshot {
   /**
    * @param {!Object} profile
-   * @param {!HeapSnapshotWorker.HeapSnapshotProgress} progress
+   * @param {!HeapSnapshotProgress} progress
    */
   constructor(profile, progress) {
     /** @type {!Uint32Array} */
@@ -1040,7 +1038,7 @@ HeapSnapshotWorker.HeapSnapshot = class {
 
   /**
    * @param {number} edgeIndex
-   * @return {!HeapSnapshotWorker.JSHeapSnapshotEdge}
+   * @return {!JSHeapSnapshotEdge}
    */
   createEdge(edgeIndex) {
     throw new Error('Not implemented');
@@ -1048,21 +1046,21 @@ HeapSnapshotWorker.HeapSnapshot = class {
 
   /**
    * @param {number} retainerIndex
-   * @return {!HeapSnapshotWorker.JSHeapSnapshotRetainerEdge}
+   * @return {!JSHeapSnapshotRetainerEdge}
    */
   createRetainingEdge(retainerIndex) {
     throw new Error('Not implemented');
   }
 
   /**
-   * @return {!HeapSnapshotWorker.HeapSnapshotNodeIterator}
+   * @return {!HeapSnapshotNodeIterator}
    */
   _allNodes() {
-    return new HeapSnapshotWorker.HeapSnapshotNodeIterator(this.rootNode());
+    return new HeapSnapshotNodeIterator(this.rootNode());
   }
 
   /**
-   * @return {!HeapSnapshotWorker.HeapSnapshotNode}
+   * @return {!HeapSnapshotNode}
    */
   rootNode() {
     return this.createNode(this._rootNodeIndex);
@@ -1095,7 +1093,7 @@ HeapSnapshotWorker.HeapSnapshot = class {
 
   /**
    * @param {!HeapSnapshotModel.NodeFilter} nodeFilter
-   * @return {undefined|function(!HeapSnapshotWorker.HeapSnapshotNode):boolean}
+   * @return {undefined|function(!HeapSnapshotNode):boolean}
    */
   _createFilter(nodeFilter) {
     const minNodeId = nodeFilter.minNodeId;
@@ -1176,11 +1174,11 @@ HeapSnapshotWorker.HeapSnapshot = class {
   /**
    * @param {number} minNodeId
    * @param {number} maxNodeId
-   * @return {function(!HeapSnapshotWorker.HeapSnapshotNode):boolean}
+   * @return {function(!HeapSnapshotNode):boolean}
    */
   _createNodeIdFilter(minNodeId, maxNodeId) {
     /**
-     * @param {!HeapSnapshotWorker.HeapSnapshotNode} node
+     * @param {!HeapSnapshotNode} node
      * @return {boolean}
      */
     function nodeIdFilter(node) {
@@ -1192,7 +1190,7 @@ HeapSnapshotWorker.HeapSnapshot = class {
 
   /**
    * @param {number} bottomUpAllocationNodeId
-   * @return {function(!HeapSnapshotWorker.HeapSnapshotNode):boolean|undefined}
+   * @return {function(!HeapSnapshotNode):boolean|undefined}
    */
   _createAllocationStackFilter(bottomUpAllocationNodeId) {
     const traceIds = this._allocationProfile.traceIds(bottomUpAllocationNodeId);
@@ -1204,7 +1202,7 @@ HeapSnapshotWorker.HeapSnapshot = class {
       set[traceIds[i]] = true;
     }
     /**
-     * @param {!HeapSnapshotWorker.HeapSnapshotNode} node
+     * @param {!HeapSnapshotNode} node
      * @return {boolean}
      */
     function traceIdFilter(node) {
@@ -1216,7 +1214,7 @@ HeapSnapshotWorker.HeapSnapshot = class {
   /**
    * @param {boolean} sortedIndexes
    * @param {string=} key
-   * @param {function(!HeapSnapshotWorker.HeapSnapshotNode):boolean=} filter
+   * @param {function(!HeapSnapshotNode):boolean=} filter
    * @return {!Object.<string, !HeapSnapshotModel.Aggregate>}
    */
   aggregates(sortedIndexes, key, filter) {
@@ -1297,7 +1295,7 @@ HeapSnapshotWorker.HeapSnapshot = class {
 
   /**
    * @protected
-   * @param {!HeapSnapshotWorker.HeapSnapshotNode} node
+   * @param {!HeapSnapshotNode} node
    * @return {boolean}
    */
   isUserRoot(node) {
@@ -1305,7 +1303,7 @@ HeapSnapshotWorker.HeapSnapshot = class {
   }
 
   /**
-   * @param {function(!HeapSnapshotWorker.HeapSnapshotNode,!HeapSnapshotWorker.HeapSnapshotEdge):boolean=} filter
+   * @param {function(!HeapSnapshotNode,!HeapSnapshotEdge):boolean=} filter
    */
   calculateDistances(filter) {
     const nodeCount = this.nodeCount;
@@ -1339,7 +1337,7 @@ HeapSnapshotWorker.HeapSnapshot = class {
    * @param {!Uint32Array} nodesToVisit
    * @param {number} nodesToVisitLength
    * @param {!Int32Array} distances
-   * @param {function(!HeapSnapshotWorker.HeapSnapshotNode,!HeapSnapshotWorker.HeapSnapshotEdge):boolean=} filter
+   * @param {function(!HeapSnapshotNode,!HeapSnapshotEdge):boolean=} filter
    */
   _bfs(nodesToVisit, nodesToVisitLength, distances, filter) {
     // Preload fields into local variables for better performance.
@@ -1388,7 +1386,7 @@ HeapSnapshotWorker.HeapSnapshot = class {
   }
 
   /**
-   * @param {function(!HeapSnapshotWorker.HeapSnapshotNode):boolean=} filter
+   * @param {function(!HeapSnapshotNode):boolean=} filter
    * @return {!{aggregatesByClassName: !Object<string, !HeapSnapshotWorker.HeapSnapshot.AggregatedInfo>,
    *     aggregatesByClassIndex: !Object<number, !HeapSnapshotWorker.HeapSnapshot.AggregatedInfo>}}
    */
@@ -1451,7 +1449,7 @@ HeapSnapshotWorker.HeapSnapshot = class {
 
   /**
    * @param {!Object<number, !HeapSnapshotWorker.HeapSnapshot.AggregatedInfo>} aggregates
-   * @param {function(!HeapSnapshotWorker.HeapSnapshotNode):boolean=} filter
+   * @param {function(!HeapSnapshotNode):boolean=} filter
    */
   _calculateClassesRetainedSize(aggregates, filter) {
     const rootNodeIndex = this._rootNodeIndex;
@@ -1595,10 +1593,8 @@ HeapSnapshotWorker.HeapSnapshot = class {
       if (postOrderIndex === nodeCount || iteration > 1) {
         break;
       }
-      const errors = new HeapSnapshotWorker.HeapSnapshotProblemReport(
-          `Heap snapshot: ${
-                            nodeCount - postOrderIndex
-                          } nodes are unreachable from the root. Following nodes have only weak retainers:`);
+      const errors = new HeapSnapshotProblemReport(`Heap snapshot: ${
+          nodeCount - postOrderIndex} nodes are unreachable from the root. Following nodes have only weak retainers:`);
       const dumpNode = this.rootNode();
       // Remove root from the result (last node in the array) and put it at the bottom of the stack so that it is
       // visited after all orphan nodes and their subgraphs.
@@ -1628,7 +1624,7 @@ HeapSnapshotWorker.HeapSnapshot = class {
 
     // If we already processed all orphan nodes that have only weak retainers and still have some orphans...
     if (postOrderIndex !== nodeCount) {
-      const errors = new HeapSnapshotWorker.HeapSnapshotProblemReport(
+      const errors = new HeapSnapshotProblemReport(
           'Still found ' + (nodeCount - postOrderIndex) + ' unreachable nodes in heap snapshot:');
       const dumpNode = this.rootNode();
       // Remove root from the result (last node in the array) and put it at the bottom of the stack so that it is
@@ -2095,35 +2091,35 @@ HeapSnapshotWorker.HeapSnapshot = class {
 
   /**
    * @param {number} nodeIndex
-   * @return {!HeapSnapshotWorker.HeapSnapshotEdgesProvider}
+   * @return {!HeapSnapshotEdgesProvider}
    */
   createEdgesProvider(nodeIndex) {
     const node = this.createNode(nodeIndex);
     const filter = this.containmentEdgesFilter();
-    const indexProvider = new HeapSnapshotWorker.HeapSnapshotEdgeIndexProvider(this);
-    return new HeapSnapshotWorker.HeapSnapshotEdgesProvider(this, filter, node.edges(), indexProvider);
+    const indexProvider = new HeapSnapshotEdgeIndexProvider(this);
+    return new HeapSnapshotEdgesProvider(this, filter, node.edges(), indexProvider);
   }
 
   /**
    * @param {number} nodeIndex
-   * @param {?function(!HeapSnapshotWorker.HeapSnapshotEdge):boolean} filter
-   * @return {!HeapSnapshotWorker.HeapSnapshotEdgesProvider}
+   * @param {?function(!HeapSnapshotEdge):boolean} filter
+   * @return {!HeapSnapshotEdgesProvider}
    */
   createEdgesProviderForTest(nodeIndex, filter) {
     const node = this.createNode(nodeIndex);
-    const indexProvider = new HeapSnapshotWorker.HeapSnapshotEdgeIndexProvider(this);
-    return new HeapSnapshotWorker.HeapSnapshotEdgesProvider(this, filter, node.edges(), indexProvider);
+    const indexProvider = new HeapSnapshotEdgeIndexProvider(this);
+    return new HeapSnapshotEdgesProvider(this, filter, node.edges(), indexProvider);
   }
 
   /**
-   * @return {?function(!HeapSnapshotWorker.HeapSnapshotEdge):boolean}
+   * @return {?function(!HeapSnapshotEdge):boolean}
    */
   retainingEdgesFilter() {
     return null;
   }
 
   /**
-   * @return {?function(!HeapSnapshotWorker.HeapSnapshotEdge):boolean}
+   * @return {?function(!HeapSnapshotEdge):boolean}
    */
   containmentEdgesFilter() {
     return null;
@@ -2131,42 +2127,41 @@ HeapSnapshotWorker.HeapSnapshot = class {
 
   /**
    * @param {number} nodeIndex
-   * @return {!HeapSnapshotWorker.HeapSnapshotEdgesProvider}
+   * @return {!HeapSnapshotEdgesProvider}
    */
   createRetainingEdgesProvider(nodeIndex) {
     const node = this.createNode(nodeIndex);
     const filter = this.retainingEdgesFilter();
-    const indexProvider = new HeapSnapshotWorker.HeapSnapshotRetainerEdgeIndexProvider(this);
-    return new HeapSnapshotWorker.HeapSnapshotEdgesProvider(this, filter, node.retainers(), indexProvider);
+    const indexProvider = new HeapSnapshotRetainerEdgeIndexProvider(this);
+    return new HeapSnapshotEdgesProvider(this, filter, node.retainers(), indexProvider);
   }
 
   /**
    * @param {string} baseSnapshotId
    * @param {string} className
-   * @return {!HeapSnapshotWorker.HeapSnapshotNodesProvider}
+   * @return {!HeapSnapshotNodesProvider}
    */
   createAddedNodesProvider(baseSnapshotId, className) {
     const snapshotDiff = this._snapshotDiffs[baseSnapshotId];
     const diffForClass = snapshotDiff[className];
-    return new HeapSnapshotWorker.HeapSnapshotNodesProvider(this, diffForClass.addedIndexes);
+    return new HeapSnapshotNodesProvider(this, diffForClass.addedIndexes);
   }
 
   /**
    * @param {!Array.<number>} nodeIndexes
-   * @return {!HeapSnapshotWorker.HeapSnapshotNodesProvider}
+   * @return {!HeapSnapshotNodesProvider}
    */
   createDeletedNodesProvider(nodeIndexes) {
-    return new HeapSnapshotWorker.HeapSnapshotNodesProvider(this, nodeIndexes);
+    return new HeapSnapshotNodesProvider(this, nodeIndexes);
   }
 
   /**
    * @param {string} className
    * @param {!HeapSnapshotModel.NodeFilter} nodeFilter
-   * @return {!HeapSnapshotWorker.HeapSnapshotNodesProvider}
+   * @return {!HeapSnapshotNodesProvider}
    */
   createNodesProviderForClass(className, nodeFilter) {
-    return new HeapSnapshotWorker.HeapSnapshotNodesProvider(
-        this, this.aggregatesWithFilter(nodeFilter)[className].idxs);
+    return new HeapSnapshotNodesProvider(this, this.aggregatesWithFilter(nodeFilter)[className].idxs);
   }
 
   /**
@@ -2196,19 +2191,7 @@ HeapSnapshotWorker.HeapSnapshot = class {
   updateStaticData() {
     return new HeapSnapshotModel.StaticData(this.nodeCount, this._rootNodeIndex, this.totalSize, this._maxJsNodeId());
   }
-};
-
-/**
- * @typedef {!{
- *   count: number,
- *   distance: number,
- *   self: number,
- *   maxRet: number,
- *   name: ?string,
- *   idxs: !Array<number>
- * }}
- */
-HeapSnapshotWorker.HeapSnapshot.AggregatedInfo;
+}
 
 /**
  * @unrestricted
@@ -2230,7 +2213,7 @@ const HeapSnapshotMetainfo = class {
 /**
  * @unrestricted
  */
-HeapSnapshotWorker.HeapSnapshotHeader = class {
+export class HeapSnapshotHeader {
   constructor() {
     // New format.
     this.title = '';
@@ -2239,15 +2222,15 @@ HeapSnapshotWorker.HeapSnapshotHeader = class {
     this.edge_count = 0;
     this.trace_function_count = 0;
   }
-};
+}
 
 /**
  * @unrestricted
  */
-HeapSnapshotWorker.HeapSnapshotItemProvider = class {
+export class HeapSnapshotItemProvider {
   /**
-   * @param {!HeapSnapshotWorker.HeapSnapshotItemIterator} iterator
-   * @param {!HeapSnapshotWorker.HeapSnapshotItemIndexProvider} indexProvider
+   * @param {!HeapSnapshotItemIterator} iterator
+   * @param {!HeapSnapshotItemIndexProvider} indexProvider
    */
   constructor(iterator, indexProvider) {
     this._iterator = iterator;
@@ -2317,22 +2300,21 @@ HeapSnapshotWorker.HeapSnapshotItemProvider = class {
     this._sortedPrefixLength = 0;
     this._sortedSuffixLength = 0;
   }
-};
+}
 
 /**
  * @unrestricted
  */
-HeapSnapshotWorker.HeapSnapshotEdgesProvider = class extends HeapSnapshotWorker.HeapSnapshotItemProvider {
+export class HeapSnapshotEdgesProvider extends HeapSnapshotItemProvider {
   /**
-   * @param {!HeapSnapshotWorker.HeapSnapshot} snapshot
-   * @param {?function(!HeapSnapshotWorker.HeapSnapshotEdge):boolean} filter
-   * @param {!HeapSnapshotWorker.HeapSnapshotEdgeIterator} edgesIter
-   * @param {!HeapSnapshotWorker.HeapSnapshotItemIndexProvider} indexProvider
+   * @param {!HeapSnapshot} snapshot
+   * @param {?function(!HeapSnapshotEdge):boolean} filter
+   * @param {!HeapSnapshotEdgeIterator} edgesIter
+   * @param {!HeapSnapshotItemIndexProvider} indexProvider
    */
   constructor(snapshot, filter, edgesIter, indexProvider) {
     const iter = filter ?
-        new HeapSnapshotWorker.HeapSnapshotFilteredIterator(
-            edgesIter, /** @type {function(!HeapSnapshotWorker.HeapSnapshotItem):boolean} */ (filter)) :
+        new HeapSnapshotFilteredIterator(edgesIter, /** @type {function(!HeapSnapshotItem):boolean} */ (filter)) :
         edgesIter;
     super(iter, indexProvider);
     this.snapshot = snapshot;
@@ -2351,7 +2333,7 @@ HeapSnapshotWorker.HeapSnapshotEdgesProvider = class extends HeapSnapshotWorker.
     const ascending1 = comparator.ascending1;
     const ascending2 = comparator.ascending2;
 
-    const edgeA = this._iterator.item().clone();
+    const edgeA = /** @type {!HeapSnapshotEdge} */ (this._iterator.item()).clone();
     const edgeB = edgeA.clone();
     const nodeA = this.snapshot.createNode();
     const nodeB = this.snapshot.createNode();
@@ -2425,19 +2407,19 @@ HeapSnapshotWorker.HeapSnapshotEdgesProvider = class extends HeapSnapshotWorker.
       this._iterationOrder.sortRange(compareNodeAndNode, leftBound, rightBound, windowLeft, windowRight);
     }
   }
-};
+}
 
 /**
  * @unrestricted
  */
-HeapSnapshotWorker.HeapSnapshotNodesProvider = class extends HeapSnapshotWorker.HeapSnapshotItemProvider {
+export class HeapSnapshotNodesProvider extends HeapSnapshotItemProvider {
   /**
-   * @param {!HeapSnapshotWorker.HeapSnapshot} snapshot
+   * @param {!HeapSnapshot} snapshot
    * @param {!Array<number>|!Uint32Array} nodeIndexes
    */
   constructor(snapshot, nodeIndexes) {
-    const indexProvider = new HeapSnapshotWorker.HeapSnapshotNodeIndexProvider(snapshot);
-    const it = new HeapSnapshotWorker.HeapSnapshotIndexRangeIterator(indexProvider, nodeIndexes);
+    const indexProvider = new HeapSnapshotNodeIndexProvider(snapshot);
+    const it = new HeapSnapshotIndexRangeIterator(indexProvider, nodeIndexes);
     super(it, indexProvider);
     this.snapshot = snapshot;
   }
@@ -2521,15 +2503,15 @@ HeapSnapshotWorker.HeapSnapshotNodesProvider = class extends HeapSnapshotWorker.
     this._iterationOrder.sortRange(
         this._buildCompareFunction(comparator), leftBound, rightBound, windowLeft, windowRight);
   }
-};
+}
 
 /**
  * @unrestricted
  */
-HeapSnapshotWorker.JSHeapSnapshot = class extends HeapSnapshotWorker.HeapSnapshot {
+export class JSHeapSnapshot extends HeapSnapshot {
   /**
    * @param {!Object} profile
-   * @param {!HeapSnapshotWorker.HeapSnapshotProgress} progress
+   * @param {!HeapSnapshotProgress} progress
    */
   constructor(profile, progress) {
     super(profile, progress);
@@ -2546,33 +2528,33 @@ HeapSnapshotWorker.JSHeapSnapshot = class extends HeapSnapshotWorker.HeapSnapsho
   /**
    * @override
    * @param {number=} nodeIndex
-   * @return {!HeapSnapshotWorker.JSHeapSnapshotNode}
+   * @return {!JSHeapSnapshotNode}
    */
   createNode(nodeIndex) {
-    return new HeapSnapshotWorker.JSHeapSnapshotNode(this, nodeIndex === undefined ? -1 : nodeIndex);
+    return new JSHeapSnapshotNode(this, nodeIndex === undefined ? -1 : nodeIndex);
   }
 
   /**
    * @override
    * @param {number} edgeIndex
-   * @return {!HeapSnapshotWorker.JSHeapSnapshotEdge}
+   * @return {!JSHeapSnapshotEdge}
    */
   createEdge(edgeIndex) {
-    return new HeapSnapshotWorker.JSHeapSnapshotEdge(this, edgeIndex);
+    return new JSHeapSnapshotEdge(this, edgeIndex);
   }
 
   /**
    * @override
    * @param {number} retainerIndex
-   * @return {!HeapSnapshotWorker.JSHeapSnapshotRetainerEdge}
+   * @return {!JSHeapSnapshotRetainerEdge}
    */
   createRetainingEdge(retainerIndex) {
-    return new HeapSnapshotWorker.JSHeapSnapshotRetainerEdge(this, retainerIndex);
+    return new JSHeapSnapshotRetainerEdge(this, retainerIndex);
   }
 
   /**
    * @override
-   * @return {function(!HeapSnapshotWorker.HeapSnapshotEdge):boolean}
+   * @return {function(!HeapSnapshotEdge):boolean}
    */
   containmentEdgesFilter() {
     return edge => !edge.isInvisible();
@@ -2580,7 +2562,7 @@ HeapSnapshotWorker.JSHeapSnapshot = class extends HeapSnapshotWorker.HeapSnapsho
 
   /**
    * @override
-   * @return {function(!HeapSnapshotWorker.HeapSnapshotEdge):boolean}
+   * @return {function(!HeapSnapshotEdge):boolean}
    */
   retainingEdgesFilter() {
     const containmentEdgesFilter = this.containmentEdgesFilter();
@@ -2605,8 +2587,8 @@ HeapSnapshotWorker.JSHeapSnapshot = class extends HeapSnapshotWorker.HeapSnapsho
    */
   calculateDistances() {
     /**
-     * @param {!HeapSnapshotWorker.HeapSnapshotNode} node
-     * @param {!HeapSnapshotWorker.HeapSnapshotEdge} edge
+     * @param {!HeapSnapshotNode} node
+     * @param {!HeapSnapshotEdge} edge
      * @return {boolean}
      */
     function filter(node, edge) {
@@ -2641,7 +2623,7 @@ HeapSnapshotWorker.JSHeapSnapshot = class extends HeapSnapshotWorker.HeapSnapsho
   /**
    * @override
    * @protected
-   * @param {!HeapSnapshotWorker.HeapSnapshotNode} node
+   * @param {!HeapSnapshotNode} node
    * @return {boolean}
    */
   isUserRoot(node) {
@@ -2657,7 +2639,7 @@ HeapSnapshotWorker.JSHeapSnapshot = class extends HeapSnapshotWorker.HeapSnapsho
   }
 
   /**
-   * @param {!HeapSnapshotWorker.HeapSnapshotNode} node
+   * @param {!HeapSnapshotNode} node
    * @return {number}
    */
   _flagsOfNode(node) {
@@ -2843,7 +2825,7 @@ HeapSnapshotWorker.JSHeapSnapshot = class extends HeapSnapshotWorker.HeapSnapsho
   }
 
   /**
-   * @param {!HeapSnapshotWorker.HeapSnapshotNode} node
+   * @param {!HeapSnapshotNode} node
    * @return {number}
    */
   _calculateArraySize(node) {
@@ -2882,14 +2864,14 @@ HeapSnapshotWorker.JSHeapSnapshot = class extends HeapSnapshotWorker.HeapSnapsho
   getStatistics() {
     return this._statistics;
   }
-};
+}
 
 /**
  * @unrestricted
  */
-HeapSnapshotWorker.JSHeapSnapshotNode = class extends HeapSnapshotWorker.HeapSnapshotNode {
+export class JSHeapSnapshotNode extends HeapSnapshotNode {
   /**
-   * @param {!HeapSnapshotWorker.JSHeapSnapshot} snapshot
+   * @param {!JSHeapSnapshot} snapshot
    * @param {number=} nodeIndex
    */
   constructor(snapshot, nodeIndex) {
@@ -3071,14 +3053,14 @@ HeapSnapshotWorker.JSHeapSnapshotNode = class extends HeapSnapshotWorker.HeapSna
     }
     return result;
   }
-};
+}
 
 /**
  * @unrestricted
  */
-HeapSnapshotWorker.JSHeapSnapshotEdge = class extends HeapSnapshotWorker.HeapSnapshotEdge {
+export class JSHeapSnapshotEdge extends HeapSnapshotEdge {
   /**
-   * @param {!HeapSnapshotWorker.JSHeapSnapshot} snapshot
+   * @param {!JSHeapSnapshot} snapshot
    * @param {number=} edgeIndex
    */
   constructor(snapshot, edgeIndex) {
@@ -3087,11 +3069,11 @@ HeapSnapshotWorker.JSHeapSnapshotEdge = class extends HeapSnapshotWorker.HeapSna
 
   /**
    * @override
-   * @return {!HeapSnapshotWorker.JSHeapSnapshotEdge}
+   * @return {!JSHeapSnapshotEdge}
    */
   clone() {
-    const snapshot = /** @type {!HeapSnapshotWorker.JSHeapSnapshot} */ (this._snapshot);
-    return new HeapSnapshotWorker.JSHeapSnapshotEdge(snapshot, this.edgeIndex);
+    const snapshot = /** @type {!JSHeapSnapshot} */ (this._snapshot);
+    return new JSHeapSnapshotEdge(snapshot, this.edgeIndex);
   }
 
   /**
@@ -3219,14 +3201,14 @@ HeapSnapshotWorker.JSHeapSnapshotEdge = class extends HeapSnapshotWorker.HeapSna
   rawType() {
     return this._edges[this.edgeIndex + this._snapshot._edgeTypeOffset];
   }
-};
+}
 
 /**
  * @unrestricted
  */
-HeapSnapshotWorker.JSHeapSnapshotRetainerEdge = class extends HeapSnapshotWorker.HeapSnapshotRetainerEdge {
+export class JSHeapSnapshotRetainerEdge extends HeapSnapshotRetainerEdge {
   /**
-   * @param {!HeapSnapshotWorker.JSHeapSnapshot} snapshot
+   * @param {!JSHeapSnapshot} snapshot
    * @param {number} retainerIndex
    */
   constructor(snapshot, retainerIndex) {
@@ -3235,11 +3217,11 @@ HeapSnapshotWorker.JSHeapSnapshotRetainerEdge = class extends HeapSnapshotWorker
 
   /**
    * @override
-   * @return {!HeapSnapshotWorker.JSHeapSnapshotRetainerEdge}
+   * @return {!JSHeapSnapshotRetainerEdge}
    */
   clone() {
-    const snapshot = /** @type {!HeapSnapshotWorker.JSHeapSnapshot} */ (this._snapshot);
-    return new HeapSnapshotWorker.JSHeapSnapshotRetainerEdge(snapshot, this.retainerIndex());
+    const snapshot = /** @type {!JSHeapSnapshot} */ (this._snapshot);
+    return new JSHeapSnapshotRetainerEdge(snapshot, this.retainerIndex());
   }
 
   /**
@@ -3276,7 +3258,7 @@ HeapSnapshotWorker.JSHeapSnapshotRetainerEdge = class extends HeapSnapshotWorker
   isWeak() {
     return this._edge().isWeak();
   }
-};
+}
 
 (function disableLoggingForTest() {
   // Runtime doesn't exist because this file is loaded as a one-off
@@ -3285,3 +3267,96 @@ HeapSnapshotWorker.JSHeapSnapshotRetainerEdge = class extends HeapSnapshotWorker
     console.warn = () => undefined;
   }
 })();
+
+/* Legacy exported object */
+self.HeapSnapshotWorker = self.HeapSnapshotWorker || {};
+
+/* Legacy exported object */
+HeapSnapshotWorker = HeapSnapshotWorker || {};
+
+/** @interface */
+HeapSnapshotWorker.HeapSnapshotItem = HeapSnapshotItem;
+
+/** @constructor */
+HeapSnapshotWorker.HeapSnapshotEdge = HeapSnapshotEdge;
+
+/** @interface */
+HeapSnapshotWorker.HeapSnapshotItemIterator = HeapSnapshotItemIterator;
+
+/** @interface */
+HeapSnapshotWorker.HeapSnapshotItemIndexProvider = HeapSnapshotItemIndexProvider;
+
+/** @constructor */
+HeapSnapshotWorker.HeapSnapshotNodeIndexProvider = HeapSnapshotNodeIndexProvider;
+
+/** @constructor */
+HeapSnapshotWorker.HeapSnapshotEdgeIndexProvider = HeapSnapshotEdgeIndexProvider;
+
+/** @constructor */
+HeapSnapshotWorker.HeapSnapshotRetainerEdgeIndexProvider = HeapSnapshotRetainerEdgeIndexProvider;
+
+/** @constructor */
+HeapSnapshotWorker.HeapSnapshotEdgeIterator = HeapSnapshotEdgeIterator;
+
+/** @constructor */
+HeapSnapshotWorker.HeapSnapshotRetainerEdge = HeapSnapshotRetainerEdge;
+
+/** @constructor */
+HeapSnapshotWorker.HeapSnapshotRetainerEdgeIterator = HeapSnapshotRetainerEdgeIterator;
+
+/** @constructor */
+HeapSnapshotWorker.HeapSnapshotNode = HeapSnapshotNode;
+
+/** @constructor */
+HeapSnapshotWorker.HeapSnapshotNodeIterator = HeapSnapshotNodeIterator;
+
+/** @constructor */
+HeapSnapshotWorker.HeapSnapshotIndexRangeIterator = HeapSnapshotIndexRangeIterator;
+
+/** @constructor */
+HeapSnapshotWorker.HeapSnapshotFilteredIterator = HeapSnapshotFilteredIterator;
+
+/** @constructor */
+HeapSnapshotWorker.HeapSnapshotProgress = HeapSnapshotProgress;
+
+/** @constructor */
+HeapSnapshotWorker.HeapSnapshotProblemReport = HeapSnapshotProblemReport;
+
+/** @constructor */
+HeapSnapshotWorker.HeapSnapshot = HeapSnapshot;
+
+/** @constructor */
+HeapSnapshotWorker.HeapSnapshotHeader = HeapSnapshotHeader;
+
+/** @constructor */
+HeapSnapshotWorker.HeapSnapshotItemProvider = HeapSnapshotItemProvider;
+
+/** @constructor */
+HeapSnapshotWorker.HeapSnapshotEdgesProvider = HeapSnapshotEdgesProvider;
+
+/** @constructor */
+HeapSnapshotWorker.HeapSnapshotNodesProvider = HeapSnapshotNodesProvider;
+
+/** @constructor */
+HeapSnapshotWorker.JSHeapSnapshot = JSHeapSnapshot;
+
+/** @constructor */
+HeapSnapshotWorker.JSHeapSnapshotNode = JSHeapSnapshotNode;
+
+/** @constructor */
+HeapSnapshotWorker.JSHeapSnapshotEdge = JSHeapSnapshotEdge;
+
+/** @constructor */
+HeapSnapshotWorker.JSHeapSnapshotRetainerEdge = JSHeapSnapshotRetainerEdge;
+
+/**
+ * @typedef {!{
+ *   count: number,
+ *   distance: number,
+ *   self: number,
+ *   maxRet: number,
+ *   name: ?string,
+ *   idxs: !Array<number>
+ * }}
+ */
+HeapSnapshotWorker.HeapSnapshot.AggregatedInfo;

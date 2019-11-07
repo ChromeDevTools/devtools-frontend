@@ -31,7 +31,7 @@
 /**
  * @unrestricted
  */
-HeapSnapshotWorker.AllocationProfile = class {
+export class AllocationProfile {
   constructor(profile, liveObjectStats) {
     this._strings = profile.strings;
     this._liveObjectStats = liveObjectStats;
@@ -64,7 +64,7 @@ HeapSnapshotWorker.AllocationProfile = class {
     const functionInfos = this._functionInfos = new Array(infoLength / functionInfoFieldCount);
     let index = 0;
     for (let i = 0; i < infoLength; i += functionInfoFieldCount) {
-      functionInfos[index++] = new HeapSnapshotWorker.FunctionAllocationInfo(
+      functionInfos[index++] = new FunctionAllocationInfo(
           strings[rawInfos[i + functionNameOffset]], strings[rawInfos[i + scriptNameOffset]],
           rawInfos[i + scriptIdOffset], rawInfos[i + lineOffset], rawInfos[i + columnOffset]);
     }
@@ -89,7 +89,7 @@ HeapSnapshotWorker.AllocationProfile = class {
       const stats = liveObjectStats[id];
       const liveCount = stats ? stats.count : 0;
       const liveSize = stats ? stats.size : 0;
-      const result = new HeapSnapshotWorker.TopDownAllocationNode(
+      const result = new TopDownAllocationNode(
           id, functionInfo, rawNodeArray[nodeOffset + allocationCountOffset],
           rawNodeArray[nodeOffset + allocationSizeOffset], liveCount, liveSize, parent);
       idToTopDownNode[id] = result;
@@ -180,7 +180,7 @@ HeapSnapshotWorker.AllocationProfile = class {
 
   /**
    * @param {number} nodeId
-   * @return {!HeapSnapshotWorker.BottomUpAllocationNode}
+   * @return {!BottomUpAllocationNode}
    */
   _ensureBottomUpNode(nodeId) {
     let node = this._idToNode[nodeId];
@@ -194,7 +194,7 @@ HeapSnapshotWorker.AllocationProfile = class {
   }
 
   /**
-   * @param {!HeapSnapshotWorker.BottomUpAllocationNode} node
+   * @param {!BottomUpAllocationNode} node
    * @return {!HeapSnapshotModel.SerializedAllocationNode}
    */
   _serializeCaller(node) {
@@ -207,7 +207,7 @@ HeapSnapshotWorker.AllocationProfile = class {
 
   /**
    * @param {number} nodeId
-   * @param {!HeapSnapshotWorker.FunctionAllocationInfo} functionInfo
+   * @param {!FunctionAllocationInfo} functionInfo
    * @param {number} count
    * @param {number} size
    * @param {number} liveCount
@@ -220,20 +220,20 @@ HeapSnapshotWorker.AllocationProfile = class {
         nodeId, functionInfo.functionName, functionInfo.scriptName, functionInfo.scriptId, functionInfo.line,
         functionInfo.column, count, size, liveCount, liveSize, hasChildren);
   }
-};
+}
 
 /**
  * @unrestricted
  */
-HeapSnapshotWorker.TopDownAllocationNode = class {
+export class TopDownAllocationNode {
   /**
    * @param {number} id
-   * @param {!HeapSnapshotWorker.FunctionAllocationInfo} functionInfo
+   * @param {!FunctionAllocationInfo} functionInfo
    * @param {number} count
    * @param {number} size
    * @param {number} liveCount
    * @param {number} liveSize
-   * @param {?HeapSnapshotWorker.TopDownAllocationNode} parent
+   * @param {?TopDownAllocationNode} parent
    */
   constructor(id, functionInfo, count, size, liveCount, liveSize, parent) {
     this.id = id;
@@ -245,14 +245,14 @@ HeapSnapshotWorker.TopDownAllocationNode = class {
     this.parent = parent;
     this.children = [];
   }
-};
+}
 
 /**
  * @unrestricted
  */
-HeapSnapshotWorker.BottomUpAllocationNode = class {
+export class BottomUpAllocationNode {
   /**
-   * @param {!HeapSnapshotWorker.FunctionAllocationInfo} functionInfo
+   * @param {!FunctionAllocationInfo} functionInfo
    */
   constructor(functionInfo) {
     this.functionInfo = functionInfo;
@@ -265,8 +265,8 @@ HeapSnapshotWorker.BottomUpAllocationNode = class {
   }
 
   /**
-   * @param {!HeapSnapshotWorker.TopDownAllocationNode} traceNode
-   * @return {!HeapSnapshotWorker.BottomUpAllocationNode}
+   * @param {!TopDownAllocationNode} traceNode
+   * @return {!BottomUpAllocationNode}
    */
   addCaller(traceNode) {
     const functionInfo = traceNode.functionInfo;
@@ -279,14 +279,14 @@ HeapSnapshotWorker.BottomUpAllocationNode = class {
       }
     }
     if (!result) {
-      result = new HeapSnapshotWorker.BottomUpAllocationNode(functionInfo);
+      result = new BottomUpAllocationNode(functionInfo);
       this._callers.push(result);
     }
     return result;
   }
 
   /**
-   * @return {!Array.<!HeapSnapshotWorker.BottomUpAllocationNode>}
+   * @return {!Array.<!BottomUpAllocationNode>}
    */
   callers() {
     return this._callers;
@@ -298,12 +298,12 @@ HeapSnapshotWorker.BottomUpAllocationNode = class {
   hasCallers() {
     return this._callers.length > 0;
   }
-};
+}
 
 /**
  * @unrestricted
  */
-HeapSnapshotWorker.FunctionAllocationInfo = class {
+export class FunctionAllocationInfo {
   /**
    * @param {string} functionName
    * @param {string} scriptName
@@ -325,7 +325,7 @@ HeapSnapshotWorker.FunctionAllocationInfo = class {
   }
 
   /**
-   * @param {!HeapSnapshotWorker.TopDownAllocationNode} node
+   * @param {!TopDownAllocationNode} node
    */
   addTraceTopNode(node) {
     if (node.allocationCount === 0) {
@@ -339,7 +339,7 @@ HeapSnapshotWorker.FunctionAllocationInfo = class {
   }
 
   /**
-   * @return {?HeapSnapshotWorker.BottomUpAllocationNode}
+   * @return {?BottomUpAllocationNode}
    */
   bottomUpRoot() {
     if (!this._traceTops.length) {
@@ -352,7 +352,7 @@ HeapSnapshotWorker.FunctionAllocationInfo = class {
   }
 
   _buildAllocationTraceTree() {
-    this._bottomUpTree = new HeapSnapshotWorker.BottomUpAllocationNode(this);
+    this._bottomUpTree = new BottomUpAllocationNode(this);
 
     for (let i = 0; i < this._traceTops.length; i++) {
       let node = this._traceTops[i];
@@ -377,4 +377,22 @@ HeapSnapshotWorker.FunctionAllocationInfo = class {
       }
     }
   }
-};
+}
+
+/* Legacy exported object */
+self.HeapSnapshotWorker = self.HeapSnapshotWorker || {};
+
+/* Legacy exported object */
+HeapSnapshotWorker = HeapSnapshotWorker || {};
+
+/** @constructor */
+HeapSnapshotWorker.AllocationProfile = AllocationProfile;
+
+/** @constructor */
+HeapSnapshotWorker.TopDownAllocationNode = TopDownAllocationNode;
+
+/** @constructor */
+HeapSnapshotWorker.BottomUpAllocationNode = BottomUpAllocationNode;
+
+/** @constructor */
+HeapSnapshotWorker.FunctionAllocationInfo = FunctionAllocationInfo;

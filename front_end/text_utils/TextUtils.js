@@ -27,7 +27,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-TextUtils.TextUtils = {
+const Utils = {
   /**
    * @param {string} char
    * @return {boolean}
@@ -196,7 +196,9 @@ TextUtils.TextUtils = {
   }
 };
 
-TextUtils.FilterParser = class {
+export default Utils;
+
+export class FilterParser {
   /**
    * @param {!Array<string>} keys
    */
@@ -246,20 +248,17 @@ TextUtils.FilterParser = class {
     }
     return filters;
   }
-};
+}
 
-/** @typedef {{key:(string|undefined), text:(?string|undefined), regex:(!RegExp|undefined), negative:boolean}} */
-TextUtils.FilterParser.ParsedFilter;
-
-TextUtils.TextUtils._keyValueFilterRegex = /(?:^|\s)(\-)?([\w\-]+):([^\s]+)/;
-TextUtils.TextUtils._regexFilterRegex = /(?:^|\s)(\-)?\/([^\s]+)\//;
-TextUtils.TextUtils._textFilterRegex = /(?:^|\s)(\-)?([^\s]+)/;
-TextUtils.TextUtils._SpaceCharRegex = /\s/;
+Utils._keyValueFilterRegex = /(?:^|\s)(\-)?([\w\-]+):([^\s]+)/;
+Utils._regexFilterRegex = /(?:^|\s)(\-)?\/([^\s]+)\//;
+Utils._textFilterRegex = /(?:^|\s)(\-)?([^\s]+)/;
+Utils._SpaceCharRegex = /\s/;
 
 /**
  * @enum {string}
  */
-TextUtils.TextUtils.Indent = {
+Utils.Indent = {
   TwoSpaces: '  ',
   FourSpaces: '    ',
   EightSpaces: '        ',
@@ -269,7 +268,7 @@ TextUtils.TextUtils.Indent = {
 /**
  * @unrestricted
  */
-TextUtils.TextUtils.BalancedJSONTokenizer = class {
+export class BalancedJSONTokenizer {
   /**
    * @param {function(string)} callback
    * @param {boolean=} findMultiple
@@ -340,26 +339,24 @@ TextUtils.TextUtils.BalancedJSONTokenizer = class {
   remainder() {
     return this._buffer;
   }
-};
+}
 
 /**
  * @interface
  */
-TextUtils.TokenizerFactory = function() {};
-
-TextUtils.TokenizerFactory.prototype = {
+export class TokenizerFactory {
   /**
    * @param {string} mimeType
    * @return {function(string, function(string, ?string, number, number))}
    */
   createTokenizer(mimeType) {}
-};
+}
 
 /**
  * @param {string} text
  * @return {boolean}
  */
-TextUtils.isMinified = function(text) {
+export function isMinified(text) {
   const kMaxNonMinifiedLength = 500;
   let linesToCheck = 10;
   let lastPosition = 0;
@@ -388,4 +385,26 @@ TextUtils.isMinified = function(text) {
     lastPosition = eolIndex - 1;
   } while (--linesToCheck >= 0 && lastPosition > 0);
   return false;
-};
+}
+
+/* Legacy exported object */
+self.TextUtils = self.TextUtils || {};
+
+/* Legacy exported object */
+TextUtils = TextUtils || {};
+
+TextUtils.TextUtils = Utils;
+
+/** @constructor */
+TextUtils.FilterParser = FilterParser;
+
+/** @constructor */
+TextUtils.BalancedJSONTokenizer = BalancedJSONTokenizer;
+
+/** @interface */
+TextUtils.TokenizerFactory = TokenizerFactory;
+
+TextUtils.isMinified = isMinified;
+
+/** @typedef {{key:(string|undefined), text:(?string|undefined), regex:(!RegExp|undefined), negative:boolean}} */
+TextUtils.FilterParser.ParsedFilter;

@@ -4,7 +4,7 @@
 /**
  * @unrestricted
  */
-FormatterWorker.FormattedContentBuilder = class {
+export class FormattedContentBuilder {
   /**
    * @param {string} indentString
    */
@@ -166,4 +166,13 @@ FormatterWorker.FormattedContentBuilder = class {
     this._mapping.formatted.push(this._formattedContentLength);
     this._lastFormattedPosition = this._formattedContentLength;
   }
-};
+}
+
+/* Legacy exported object */
+self.FormatterWorker = self.FormatterWorker || {};
+
+/* Legacy exported object */
+FormatterWorker = FormatterWorker || {};
+
+/** @constructor */
+FormatterWorker.FormattedContentBuilder = FormattedContentBuilder;

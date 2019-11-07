@@ -4,7 +4,7 @@
 /**
  * @unrestricted
  */
-FormatterWorker.IdentityFormatter = class {
+export class IdentityFormatter {
   /**
    * @param {!FormatterWorker.FormattedContentBuilder} builder
    */
@@ -22,4 +22,13 @@ FormatterWorker.IdentityFormatter = class {
     const content = text.substring(fromOffset, toOffset);
     this._builder.addToken(content, fromOffset);
   }
-};
+}
+
+/* Legacy exported object */
+self.FormatterWorker = self.FormatterWorker || {};
+
+/* Legacy exported object */
+FormatterWorker = FormatterWorker || {};
+
+/** @constructor */
+FormatterWorker.IdentityFormatter = IdentityFormatter;

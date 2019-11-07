@@ -4,7 +4,9 @@
         "text_utils",
         "cm_headless"
     ],
-    "scripts": [
+    "scripts": [],
+    "modules": [
+        "formatter_worker.js",
         "../cm_web_modes/css.js",
         "../cm_web_modes/xml.js",
         "ESTreeWalker.js",

@@ -31,7 +31,7 @@
 /**
  * @unrestricted
  */
-HeapSnapshotWorker.HeapSnapshotLoader = class {
+export class HeapSnapshotLoader {
   /**
    * @param {!HeapSnapshotWorker.HeapSnapshotWorkerDispatcher} dispatcher
    */
@@ -186,7 +186,7 @@ HeapSnapshotWorker.HeapSnapshotLoader = class {
 
     this._progress.updateStatus(ls`Loading snapshot info\u2026`);
     const json = this._json.slice(snapshotTokenIndex + snapshotToken.length + 1);
-    this._jsonTokenizer = new TextUtils.TextUtils.BalancedJSONTokenizer(metaJSON => {
+    this._jsonTokenizer = new TextUtils.BalancedJSONTokenizer(metaJSON => {
       this._json = this._jsonTokenizer.remainder();
       this._jsonTokenizer = null;
       this._snapshot.snapshot = /** @type {!HeapSnapshotWorker.HeapSnapshotHeader} */ (JSON.parse(metaJSON));
@@ -237,4 +237,13 @@ HeapSnapshotWorker.HeapSnapshotLoader = class {
     }
     this._parseStringsArray();
   }
-};
+}
+
+/* Legacy exported object */
+self.HeapSnapshotWorker = self.HeapSnapshotWorker || {};
+
+/* Legacy exported object */
+HeapSnapshotWorker = HeapSnapshotWorker || {};
+
+/** @constructor */
+HeapSnapshotWorker.HeapSnapshotLoader = HeapSnapshotLoader;

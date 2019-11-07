@@ -25,7 +25,7 @@ Timeline.TimelineLoader = class {
     this._loadedBytes = 0;
     /** @type {number} */
     this._totalSize;
-    this._jsonTokenizer = new TextUtils.TextUtils.BalancedJSONTokenizer(this._writeBalancedJSON.bind(this), true);
+    this._jsonTokenizer = new TextUtils.BalancedJSONTokenizer(this._writeBalancedJSON.bind(this), true);
   }
 
   /**

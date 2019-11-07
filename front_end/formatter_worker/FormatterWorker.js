@@ -32,7 +32,7 @@
  * @param {string} mimeType
  * @return {function(string, function(string, ?string, number, number):(!Object|undefined))}
  */
-FormatterWorker.createTokenizer = function(mimeType) {
+export function createTokenizer(mimeType) {
   const mode = CodeMirror.getMode({indentUnit: 2}, mimeType);
   const state = CodeMirror.startState(mode);
   /**
@@ -44,16 +44,16 @@ FormatterWorker.createTokenizer = function(mimeType) {
     while (!stream.eol()) {
       const style = mode.token(stream, state);
       const value = stream.current();
-      if (callback(value, style, stream.start, stream.start + value.length) === FormatterWorker.AbortTokenization) {
+      if (callback(value, style, stream.start, stream.start + value.length) === AbortTokenization) {
         return;
       }
       stream.start = stream.pos;
     }
   }
   return tokenize;
-};
+}
 
-FormatterWorker.AbortTokenization = {};
+export const AbortTokenization = {};
 
 self.onmessage = function(event) {
   const method = /** @type {string} */ (event.data.method);
@@ -64,37 +64,37 @@ self.onmessage = function(event) {
 
   switch (method) {
     case 'format':
-      FormatterWorker.format(params.mimeType, params.content, params.indentString);
+      format(params.mimeType, params.content, params.indentString);
       break;
     case 'parseCSS':
       FormatterWorker.parseCSS(params.content);
       break;
     case 'parseSCSS':
-      FormatterWorker.FormatterWorkerContentParser.parse(params.content, 'text/x-scss');
+      FormatterWorkerContentParser.parse(params.content, 'text/x-scss');
       break;
     case 'javaScriptOutline':
       FormatterWorker.javaScriptOutline(params.content);
       break;
     case 'javaScriptIdentifiers':
-      FormatterWorker.javaScriptIdentifiers(params.content);
+      javaScriptIdentifiers(params.content);
       break;
     case 'evaluatableJavaScriptSubstring':
-      FormatterWorker.evaluatableJavaScriptSubstring(params.content);
+      evaluatableJavaScriptSubstring(params.content);
       break;
     case 'parseJSONRelaxed':
-      FormatterWorker.parseJSONRelaxed(params.content);
+      parseJSONRelaxed(params.content);
       break;
     case 'preprocessTopLevelAwaitExpressions':
-      FormatterWorker.preprocessTopLevelAwaitExpressions(params.content);
+      preprocessTopLevelAwaitExpressions(params.content);
       break;
     case 'findLastExpression':
-      postMessage(FormatterWorker.findLastExpression(params.content));
+      postMessage(findLastExpression(params.content));
       break;
     case 'findLastFunctionCall':
-      postMessage(FormatterWorker.findLastFunctionCall(params.content));
+      postMessage(findLastFunctionCall(params.content));
       break;
     case 'argumentsList':
-      postMessage(FormatterWorker.argumentsList(params.content));
+      postMessage(argumentsList(params.content));
       break;
     default:
       console.error('Unsupport method name: ' + method);
@@ -104,14 +104,14 @@ self.onmessage = function(event) {
 /**
  * @param {string} content
  */
-FormatterWorker.parseJSONRelaxed = function(content) {
+export function parseJSONRelaxed(content) {
   postMessage(FormatterWorker.RelaxedJSONParser.parse(content));
-};
+}
 
 /**
  * @param {string} content
  */
-FormatterWorker.evaluatableJavaScriptSubstring = function(content) {
+export function evaluatableJavaScriptSubstring(content) {
   const tokenizer = acorn.tokenizer(content, {});
   let result = '';
   try {
@@ -151,12 +151,12 @@ FormatterWorker.evaluatableJavaScriptSubstring = function(content) {
     console.error(e);
   }
   postMessage(result);
-};
+}
 
 /**
  * @param {string} content
  */
-FormatterWorker.preprocessTopLevelAwaitExpressions = function(content) {
+export function preprocessTopLevelAwaitExpressions(content) {
   let wrapped = '(async () => {' + content + '\n})()';
   let root;
   let body;
@@ -255,12 +255,12 @@ FormatterWorker.preprocessTopLevelAwaitExpressions = function(content) {
     wrapped = wrapped.substr(0, change.start) + change.text + wrapped.substr(change.end);
   }
   postMessage(wrapped);
-};
+}
 
 /**
  * @param {string} content
  */
-FormatterWorker.javaScriptIdentifiers = function(content) {
+export function javaScriptIdentifiers(content) {
   let root = null;
   try {
     root = acorn.parse(content, {ranges: false});
@@ -314,14 +314,14 @@ FormatterWorker.javaScriptIdentifiers = function(content) {
   walker.walk(functionNode.body);
   const reduced = identifiers.map(id => ({name: id.name, offset: id.start}));
   postMessage(reduced);
-};
+}
 
 /**
  * @param {string} mimeType
  * @param {string} text
  * @param {string=} indentString
  */
-FormatterWorker.format = function(mimeType, text, indentString) {
+export function format(mimeType, text, indentString) {
   // Default to a 4-space indent.
   indentString = indentString || '    ';
   const result = {};
@@ -357,13 +357,13 @@ FormatterWorker.format = function(mimeType, text, indentString) {
     result.content = text;
   }
   postMessage(result);
-};
+}
 
 /**
  * @param {string} content
  * @return {?{baseExpression: string, possibleSideEffects:boolean, receiver: string, argumentIndex: number, functionName: string}}
  */
-FormatterWorker.findLastFunctionCall = function(content) {
+export function findLastFunctionCall(content) {
   if (content.length > 10000) {
     return null;
   }
@@ -376,7 +376,7 @@ FormatterWorker.findLastFunctionCall = function(content) {
   }
 
   const suffix = '000)';
-  const base = FormatterWorker._lastCompleteExpression(content, suffix, new Set(['CallExpression', 'NewExpression']));
+  const base = _lastCompleteExpression(content, suffix, new Set(['CallExpression', 'NewExpression']));
   if (!base) {
     return null;
   }
@@ -395,7 +395,7 @@ FormatterWorker.findLastFunctionCall = function(content) {
   const argumentIndex = base.baseNode['arguments'].length - 1;
   const baseExpression =
       `(${base.baseExpression.substring(callee.start - base.baseNode.start, callee.end - base.baseNode.start)})`;
-  const possibleSideEffects = FormatterWorker._nodeHasPossibleSideEffects(callee);
+  const possibleSideEffects = _nodeHasPossibleSideEffects(callee);
   let receiver = '(function(){return this})()';
   if (callee.type === 'MemberExpression') {
     const receiverBase = callee['object'];
@@ -403,13 +403,13 @@ FormatterWorker.findLastFunctionCall = function(content) {
         base.baseExpression.substring(receiverBase.start - base.baseNode.start, receiverBase.end - base.baseNode.start);
   }
   return {baseExpression, receiver, possibleSideEffects, argumentIndex, functionName};
-};
+}
 
 /**
  * @param {string} content
  * @return {!Array<string>}
  */
-FormatterWorker.argumentsList = function(content) {
+export function argumentsList(content) {
   if (content.length > 10000) {
     return [];
   }
@@ -472,13 +472,13 @@ FormatterWorker.argumentsList = function(content) {
     }
     return '?';
   }
-};
+}
 
 /**
  * @param {string} content
  * @return {?{baseExpression: string, possibleSideEffects:boolean}}
  */
-FormatterWorker.findLastExpression = function(content) {
+export function findLastExpression(content) {
   if (content.length > 10000) {
     return null;
   }
@@ -499,14 +499,14 @@ FormatterWorker.findLastExpression = function(content) {
       return null;
     }
   }
-  const base = FormatterWorker._lastCompleteExpression(content, suffix, new Set(['MemberExpression', 'Identifier']));
+  const base = _lastCompleteExpression(content, suffix, new Set(['MemberExpression', 'Identifier']));
   if (!base) {
     return null;
   }
   const {baseExpression, baseNode} = base;
-  const possibleSideEffects = FormatterWorker._nodeHasPossibleSideEffects(baseNode);
+  const possibleSideEffects = _nodeHasPossibleSideEffects(baseNode);
   return {baseExpression, possibleSideEffects};
-};
+}
 
 /**
  * @param {string} content
@@ -514,7 +514,7 @@ FormatterWorker.findLastExpression = function(content) {
  * @param {!Set<string>} types
  * @return {?{baseNode: !ESTree.Node, baseExpression: string}}
  */
-FormatterWorker._lastCompleteExpression = function(content, suffix, types) {
+export function _lastCompleteExpression(content, suffix, types) {
   /** @type {!ESTree.Node} */
   let ast;
   let parsedContent = '';
@@ -548,13 +548,13 @@ FormatterWorker._lastCompleteExpression = function(content, suffix, types) {
     baseExpression = `(${baseExpression})`;
   }
   return {baseNode, baseExpression};
-};
+}
 
 /**
  * @param {!ESTree.Node} baseNode
  * @return {boolean}
  */
-FormatterWorker._nodeHasPossibleSideEffects = function(baseNode) {
+export function _nodeHasPossibleSideEffects(baseNode) {
   const sideEffectFreeTypes = new Set([
     'MemberExpression', 'Identifier', 'BinaryExpression', 'Literal', 'TemplateLiteral', 'TemplateElement',
     'ObjectExpression', 'ArrayExpression', 'Property', 'ThisExpression'
@@ -570,27 +570,25 @@ FormatterWorker._nodeHasPossibleSideEffects = function(baseNode) {
   });
   sideEffectwalker.walk(/** @type {!ESTree.Node} */ (baseNode));
   return possibleSideEffects;
-};
+}
 
 /**
  * @interface
  */
-FormatterWorker.FormatterWorkerContentParser = function() {};
-
-FormatterWorker.FormatterWorkerContentParser.prototype = {
+export class FormatterWorkerContentParser {
   /**
    * @param {string} content
    * @return {!Object}
    */
   parse(content) {}
-};
+}
 
 /**
  * @param {string} content
  * @param {string} mimeType
  */
-FormatterWorker.FormatterWorkerContentParser.parse = function(content, mimeType) {
-  const extension = self.runtime.extensions(FormatterWorker.FormatterWorkerContentParser).find(findExtension);
+FormatterWorkerContentParser.parse = function(content, mimeType) {
+  const extension = self.runtime.extensions(FormatterWorkerContentParser).find(findExtension);
   console.assert(extension);
   extension.instance().then(instance => instance.parse(content)).catchException(null).then(postMessage);
 
@@ -608,3 +606,23 @@ FormatterWorker.FormatterWorkerContentParser.parse = function(content, mimeType)
     console.error = () => undefined;
   }
 })();
+
+/* Legacy exported object */
+self.FormatterWorker = self.FormatterWorker || {};
+
+/* Legacy exported object */
+FormatterWorker = FormatterWorker || {};
+
+FormatterWorker.AbortTokenization = AbortTokenization;
+FormatterWorker.createTokenizer = createTokenizer;
+FormatterWorker.parseJSONRelaxed = parseJSONRelaxed;
+FormatterWorker.evaluatableJavaScriptSubstring = evaluatableJavaScriptSubstring;
+FormatterWorker.preprocessTopLevelAwaitExpressions = preprocessTopLevelAwaitExpressions;
+FormatterWorker.javaScriptIdentifiers = javaScriptIdentifiers;
+FormatterWorker.format = format;
+FormatterWorker.findLastFunctionCall = findLastFunctionCall;
+FormatterWorker.argumentsList = argumentsList;
+FormatterWorker.findLastExpression = findLastExpression;
+FormatterWorker._lastCompleteExpression = _lastCompleteExpression;
+FormatterWorker._nodeHasPossibleSideEffects = _nodeHasPossibleSideEffects;
+FormatterWorker.FormatterWorkerContentParser = FormatterWorkerContentParser;

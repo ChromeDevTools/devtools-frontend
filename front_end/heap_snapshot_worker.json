@@ -1,4 +1,5 @@
 {
+  "worker": true,
   "modules": [
     { "name": "heap_snapshot_worker", "type": "autostart" },
     { "name": "heap_snapshot_model", "type": "autostart" },

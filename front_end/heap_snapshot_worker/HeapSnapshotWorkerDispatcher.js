@@ -31,7 +31,7 @@
 /**
  * @unrestricted
  */
-HeapSnapshotWorker.HeapSnapshotWorkerDispatcher = class {
+export class HeapSnapshotWorkerDispatcher {
   constructor(globalObject, postMessage) {
     this._objects = [];
     this._global = globalObject;
@@ -104,4 +104,13 @@ HeapSnapshotWorker.HeapSnapshotWorkerDispatcher = class {
     }
     this._postMessage(response);
   }
-};
+}
+
+/* Legacy exported object */
+self.HeapSnapshotWorker = self.HeapSnapshotWorker || {};
+
+/* Legacy exported object */
+HeapSnapshotWorker = HeapSnapshotWorker || {};
+
+/** @constructor */
+HeapSnapshotWorker.HeapSnapshotWorkerDispatcher = HeapSnapshotWorkerDispatcher;

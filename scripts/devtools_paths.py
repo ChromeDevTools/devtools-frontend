@@ -61,5 +61,15 @@ def karma_path():
     return path.join(node_modules_path(), 'karma', 'bin', 'karma')
 
 
+def rollup_path():
+    return path.join(
+        node_modules_path(),
+        'rollup',
+        'dist',
+        'bin',
+        'rollup',
+    )
+
+
 def package_json_path():
     return path.join(devtools_root_path(), 'package.json')

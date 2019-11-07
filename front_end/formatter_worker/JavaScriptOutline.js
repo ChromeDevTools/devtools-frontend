@@ -4,7 +4,7 @@
 /**
  * @param {string} content
  */
-FormatterWorker.javaScriptOutline = function(content) {
+export function javaScriptOutline(content) {
   const chunkSize = 100000;
   let outlineChunk = [];
   let lastReportedOffset = 0;
@@ -167,4 +167,12 @@ FormatterWorker.javaScriptOutline = function(content) {
     outlineChunk = [];
     lastReportedOffset = textCursor.offset();
   }
-};
+}
+
+/* Legacy exported object */
+self.FormatterWorker = self.FormatterWorker || {};
+
+/* Legacy exported object */
+FormatterWorker = FormatterWorker || {};
+
+FormatterWorker.javaScriptOutline = javaScriptOutline;

@@ -5,7 +5,7 @@
 /**
  * @unrestricted
  */
-TextUtils.Text = class {
+export class Text {
   /**
    * @param {string} value
    */
@@ -86,7 +86,7 @@ TextUtils.Text = class {
    * @return {!TextUtils.TextRange}
    */
   toTextRange(sourceRange) {
-    const cursor = new TextUtils.TextCursor(this.lineEndings());
+    const cursor = new TextCursor(this.lineEndings());
     const result = TextUtils.TextRange.createFromLocation(0, 0);
 
     cursor.resetTo(sourceRange.offset);
@@ -118,15 +118,12 @@ TextUtils.Text = class {
     const sourceRange = this.toSourceRange(range);
     return this._value.substr(sourceRange.offset, sourceRange.length);
   }
-};
-
-/** @typedef {{lineNumber: number, columnNumber: number}} */
-TextUtils.Text.Position;
+}
 
 /**
  * @unrestricted
  */
-TextUtils.TextCursor = class {
+export class TextCursor {
   /**
    * @param {!Array<number>} lineEndings
    */
@@ -177,4 +174,19 @@ TextUtils.TextCursor = class {
   columnNumber() {
     return this._columnNumber;
   }
-};
+}
+
+/* Legacy exported object */
+self.TextUtils = self.TextUtils || {};
+
+/* Legacy exported object */
+TextUtils = TextUtils || {};
+
+/** @constructor */
+TextUtils.Text = Text;
+
+/** @constructor */
+TextUtils.TextCursor = TextCursor;
+
+/** @typedef {{lineNumber: number, columnNumber: number}} */
+TextUtils.Text.Position;

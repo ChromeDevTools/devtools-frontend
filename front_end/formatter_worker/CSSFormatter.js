@@ -31,7 +31,7 @@
 /**
  * @unrestricted
  */
-FormatterWorker.CSSFormatter = class {
+export class CSSFormatter {
   /**
    * @param {!FormatterWorker.FormattedContentBuilder} builder
    */
@@ -124,4 +124,13 @@ FormatterWorker.CSSFormatter = class {
       this._builder.addNewLine();
     }
   }
-};
+}
+
+/* Legacy exported object */
+self.FormatterWorker = self.FormatterWorker || {};
+
+/* Legacy exported object */
+FormatterWorker = FormatterWorker || {};
+
+/** @constructor */
+FormatterWorker.CSSFormatter = CSSFormatter;

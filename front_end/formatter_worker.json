@@ -1,4 +1,5 @@
 {
+  "worker": true,
   "modules": [
     { "name": "platform", "type": "autostart" },
     { "name": "text_utils", "type": "autostart" },

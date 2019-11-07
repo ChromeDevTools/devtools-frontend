@@ -4,7 +4,7 @@
 /**
  * @unrestricted
  */
-FormatterWorker.ESTreeWalker = class {
+export class ESTreeWalker {
   /**
    * @param {function(!ESTree.Node):(!Object|undefined)} beforeVisit
    * @param {function(!ESTree.Node)=} afterVisit
@@ -50,7 +50,7 @@ FormatterWorker.ESTreeWalker = class {
       return;
     }
 
-    const walkOrder = FormatterWorker.ESTreeWalker._walkOrder[node.type];
+    const walkOrder = _walkOrder[node.type];
     if (!walkOrder) {
       console.error('Walk order not defined for ' + node.type);
       return;
@@ -87,13 +87,10 @@ FormatterWorker.ESTreeWalker = class {
       this._innerWalk(nodeArray[i], parentNode);
     }
   }
-};
-
-/** @typedef {!Object} FormatterWorker.ESTreeWalker.SkipSubtree */
-FormatterWorker.ESTreeWalker.SkipSubtree = {};
+}
 
 /** @enum {!Array.<string>} */
-FormatterWorker.ESTreeWalker._walkOrder = {
+const _walkOrder = {
   'AwaitExpression': ['arguments'],
   'ArrayExpression': ['elements'],
   'ArrayPattern': ['elements'],
@@ -158,3 +155,15 @@ FormatterWorker.ESTreeWalker._walkOrder = {
   'WithStatement': ['object', 'body'],
   'YieldExpression': ['argument']
 };
+
+/* Legacy exported object */
+self.FormatterWorker = self.FormatterWorker || {};
+
+/* Legacy exported object */
+FormatterWorker = FormatterWorker || {};
+
+/** @constructor */
+FormatterWorker.ESTreeWalker = ESTreeWalker;
+
+/** @typedef {!Object} FormatterWorker.ESTreeWalker.SkipSubtree */
+FormatterWorker.ESTreeWalker.SkipSubtree = {};

@@ -2,7 +2,9 @@
     "dependencies": [
         "platform"
     ],
-    "scripts": [
+    "scripts": [],
+    "modules": [
+        "text_utils.js",
         "Text.js",
         "TextUtils.js",
         "TextRange.js"

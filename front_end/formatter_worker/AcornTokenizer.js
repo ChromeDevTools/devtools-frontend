@@ -4,7 +4,7 @@
 /**
  * @unrestricted
  */
-FormatterWorker.AcornTokenizer = class {
+export class AcornTokenizer {
   /**
    * @param {string} content
    */
@@ -125,4 +125,13 @@ FormatterWorker.AcornTokenizer = class {
   tokenColumnStart() {
     return this._tokenColumnStart;
   }
-};
+}
+
+/* Legacy exported object */
+self.FormatterWorker = self.FormatterWorker || {};
+
+/* Legacy exported object */
+FormatterWorker = FormatterWorker || {};
+
+/** @constructor */
+FormatterWorker.AcornTokenizer = AcornTokenizer;

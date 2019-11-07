@@ -264,6 +264,11 @@ GENERATED_SKIP_COMPILATION_FILES = [
     'SupportedCSSProperties.js',
     'InspectorBackendCommands.js',
     'sdk/wasm_source_map/pkg/wasm_source_map.js',
+    'formatter_worker/acorn/acorn.js',
+    'formatter_worker/acorn/acorn_loose.js',
+    'cm_web_modes/css.js',
+    'cm_web_modes/xml.js',
+    'cm_headless/headlesscodemirror.js',
 ]
 
 

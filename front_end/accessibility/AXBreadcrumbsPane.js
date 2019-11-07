@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-Accessibility.AXBreadcrumbsPane = class extends Accessibility.AccessibilitySubPane {
+export default class AXBreadcrumbsPane extends Accessibility.AccessibilitySubPane {
   /**
    * @param {!Accessibility.AccessibilitySidebarView} axSidebarView
    */
@@ -307,9 +307,9 @@ Accessibility.AXBreadcrumbsPane = class extends Accessibility.AccessibilitySubPa
     contextMenu.appendApplicableItems(axNode.deferredDOMNode());
     contextMenu.show();
   }
-};
+}
 
-Accessibility.AXBreadcrumb = class {
+export class AXBreadcrumb {
   /**
    * @param {!Accessibility.AccessibilityNode} axNode
    * @param {number} depth
@@ -525,10 +525,29 @@ Accessibility.AXBreadcrumb = class {
     ignoredNodeElement.classList.add('ax-breadcrumbs-ignored-node');
     this._nodeWrapper.appendChild(ignoredNodeElement);
   }
-};
+}
 
 /** @type {!Object<string, string>} */
-Accessibility.AXBreadcrumb.RoleStyles = {
+export const RoleStyles = {
   internalRole: 'ax-internal-role',
   role: 'ax-role',
 };
+
+/* Legacy exported object */
+self.Accessibility = self.Accessibility || {};
+
+/* Legacy exported object */
+Accessibility = Accessibility || {};
+
+/**
+ * @constructor
+ */
+Accessibility.AXBreadcrumbsPane = AXBreadcrumbsPane;
+
+/**
+ * @constructor
+ */
+Accessibility.AXBreadcrumb = AXBreadcrumb;
+
+/** @type {!Object<string, string>} */
+Accessibility.AXBreadcrumb.RoleStyles = RoleStyles;

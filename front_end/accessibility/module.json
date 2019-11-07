@@ -12,6 +12,9 @@
     ],
     "dependencies": ["elements"],
     "scripts": [
+    ],
+    "modules": [
+        "accessibility.js",
         "AccessibilityModel.js",
         "AccessibilitySidebarView.js",
         "AccessibilityNodeView.js",

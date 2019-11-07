@@ -4,7 +4,7 @@
 /**
  * @unrestricted
  */
-Accessibility.ARIAAttributesPane = class extends Accessibility.AccessibilitySubPane {
+export default class ARIAAttributesPane extends Accessibility.AccessibilitySubPane {
   constructor() {
     super(ls`ARIA Attributes`);
 
@@ -36,12 +36,12 @@ Accessibility.ARIAAttributesPane = class extends Accessibility.AccessibilitySubP
     this._noPropertiesInfo.classList.toggle('hidden', foundAttributes);
     this._treeOutline.element.classList.toggle('hidden', !foundAttributes);
   }
-};
+}
 
 /**
  * @unrestricted
  */
-Accessibility.ARIAAttributesTreeElement = class extends UI.TreeElement {
+export class ARIAAttributesTreeElement extends UI.TreeElement {
   /**
    * @param {!Accessibility.ARIAAttributesPane} parentPane
    * @param {!SDK.DOMNode.Attribute} attribute
@@ -190,13 +190,13 @@ Accessibility.ARIAAttributesTreeElement = class extends UI.TreeElement {
       return;
     }
   }
-};
+}
 
 
 /**
  * @unrestricted
  */
-Accessibility.ARIAAttributesPane.ARIAAttributePrompt = class extends UI.TextPrompt {
+export class ARIAAttributePrompt extends UI.TextPrompt {
   /**
    * @param {!Array<string>} ariaCompletions
    * @param {!Accessibility.ARIAAttributesTreeElement} treeElement
@@ -222,9 +222,9 @@ Accessibility.ARIAAttributesPane.ARIAAttributePrompt = class extends UI.TextProm
     }
     return Promise.resolve(this._ariaCompletions.filter(value => value.startsWith(prefix)).map(c => ({text: c})));
   }
-};
+}
 
-Accessibility.ARIAAttributesPane._attributes = [
+const _attributes = [
   'role',
   'aria-busy',
   'aria-checked',
@@ -262,3 +262,27 @@ Accessibility.ARIAAttributesPane._attributes = [
   'aria-valuenow',
   'aria-valuetext',
 ];
+
+/* Legacy exported object */
+self.Accessibility = self.Accessibility || {};
+
+/* Legacy exported object */
+Accessibility = Accessibility || {};
+
+/**
+ * @constructor
+ */
+Accessibility.ARIAAttributesPane = ARIAAttributesPane;
+
+/**
+ * @constructor
+ */
+Accessibility.ARIAAttributesTreeElement = ARIAAttributesTreeElement;
+
+/**
+ * @constructor
+ */
+Accessibility.ARIAAttributesPane.ARIAAttributePrompt = ARIAAttributePrompt;
+
+/** @type {!Array<string>} */
+Accessibility.ARIAAttributesPane._attributes = _attributes;

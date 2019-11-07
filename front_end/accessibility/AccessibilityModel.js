@@ -1,10 +1,11 @@
 // Copyright (c) 2014 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
 /**
  * @unrestricted
  */
-Accessibility.AccessibilityNode = class {
+export class AccessibilityNode {
   /**
    * @param {!Accessibility.AccessibilityModel} accessibilityModel
    * @param {!Protocol.Accessibility.AXNode} payload
@@ -223,12 +224,12 @@ Accessibility.AccessibilityNode = class {
     }
     return string;
   }
-};
+}
 
 /**
  * @unrestricted
  */
-Accessibility.AccessibilityModel = class extends SDK.SDKModel {
+export default class AccessibilityModel extends SDK.SDKModel {
   /**
    * @param {!SDK.Target} target
    */
@@ -312,6 +313,22 @@ Accessibility.AccessibilityModel = class extends SDK.SDKModel {
     }
     console.log(rootNode.printSelfAndChildren(inspectedNode));  // eslint-disable-line no-console
   }
-};
+}
+
+/* Legacy exported object */
+self.Accessibility = self.Accessibility || {};
+
+/* Legacy exported object */
+Accessibility = Accessibility || {};
+
+/**
+ * @constructor
+ */
+Accessibility.AccessibilityNode = AccessibilityNode;
+
+/**
+ * @constructor
+ */
+Accessibility.AccessibilityModel = AccessibilityModel;
 
 SDK.SDKModel.register(Accessibility.AccessibilityModel, SDK.Target.Capability.DOM, false);

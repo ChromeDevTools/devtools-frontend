@@ -1,9 +1,8 @@
 // Copyright 2015 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-Accessibility.AccessibilityStrings = {};
 
-Accessibility.AccessibilityStrings.AXAttributes = {
+export const AXAttributes = {
   'disabled': {
     name: ls`Disabled`,
     description: ls`If true, this element currently cannot be interacted with.`,
@@ -166,25 +165,38 @@ Accessibility.AccessibilityStrings.AXAttributes = {
       {name: ls`Description`, description: ls`The accessible description for this element.`, group: 'Default'}
 };
 
-Accessibility.AccessibilityStrings.AXSourceTypes = {
-  'attribute': {name: ls`From attribute`, description: ls`Value from attribute.`},
-  'implicit': {
-    name: ls`Implicit`,
-    description: ls`Implicit value.`,
-  },
-  'style': {name: ls`From style`, description: ls`Value from style.`},
-  'contents': {name: ls`Contents`, description: ls`Value from element contents.`},
-  'placeholder': {name: ls`From placeholder attribute`, description: ls`Value from placeholder attribute.`},
-  'relatedElement': {name: ls`Related element`, description: ls`Value from related element.`}
-};
+    export const AXSourceTypes = {
+      'attribute': {name: ls`From attribute`, description: ls`Value from attribute.`},
+      'implicit': {
+        name: ls`Implicit`,
+        description: ls`Implicit value.`,
+      },
+      'style': {name: ls`From style`, description: ls`Value from style.`},
+      'contents': {name: ls`Contents`, description: ls`Value from element contents.`},
+      'placeholder': {name: ls`From placeholder attribute`, description: ls`Value from placeholder attribute.`},
+      'relatedElement': {name: ls`Related element`, description: ls`Value from related element.`}
+    };
 
-Accessibility.AccessibilityStrings.AXNativeSourceTypes = {
-  'figcaption': {name: ls`From caption`, description: ls`Value from figcaption element.`},
-  'label': {name: ls`From label`, description: ls`Value from label element.`},
-  'labelfor': {name: ls`From label (for)`, description: ls`Value from label element with for= attribute.`},
-  'labelwrapped': {name: ls`From label (wrapped)`, description: ls`Value from label element wrapped.`},
-  'tablecaption': {name: ls`From caption`, description: ls`Value from table caption.`},
-  'title': {name: ls`From title`, description: ls`Value from title attribute.`},
-  'other': {name: ls`From native HTML`, description: ls`Value from native HTML (unknown source).`},
+    export const AXNativeSourceTypes = {
+      'figcaption': {name: ls`From caption`, description: ls`Value from figcaption element.`},
+      'label': {name: ls`From label`, description: ls`Value from label element.`},
+      'labelfor': {name: ls`From label (for)`, description: ls`Value from label element with for= attribute.`},
+      'labelwrapped': {name: ls`From label (wrapped)`, description: ls`Value from label element wrapped.`},
+      'tablecaption': {name: ls`From caption`, description: ls`Value from table caption.`},
+      'title': {name: ls`From title`, description: ls`Value from title attribute.`},
+      'other': {name: ls`From native HTML`, description: ls`Value from native HTML (unknown source).`},
+    };
 
-};
+    /* Legacy exported object */
+    self.Accessibility = self.Accessibility || {};
+
+    /* Legacy exported object */
+    Accessibility = Accessibility || {};
+
+    Accessibility.AccessibilityStrings = {};
+
+    Accessibility.AccessibilityStrings.AXAttributes = AXAttributes;
+
+    Accessibility.AccessibilityStrings.AXSourceTypes = AXSourceTypes;
+
+    Accessibility.AccessibilityStrings.AXNativeSourceTypes = AXNativeSourceTypes;

@@ -4,7 +4,7 @@
 /**
  * @unrestricted
  */
-Accessibility.AccessibilitySidebarView = class extends UI.ThrottledWidget {
+export default class AccessibilitySidebarView extends UI.ThrottledWidget {
   constructor() {
     super();
     this._node = null;
@@ -157,12 +157,12 @@ Accessibility.AccessibilitySidebarView = class extends UI.ThrottledWidget {
     }
     this.update();
   }
-};
+}
 
 /**
  * @unrestricted
  */
-Accessibility.AccessibilitySubPane = class extends UI.SimpleView {
+export class AccessibilitySubPane extends UI.SimpleView {
   /**
    * @param {string} name
    */
@@ -220,4 +220,20 @@ Accessibility.AccessibilitySubPane = class extends UI.SimpleView {
     this.element.appendChild(treeOutline.element);
     return treeOutline;
   }
-};
+}
+
+/* Legacy exported object */
+self.Accessibility = self.Accessibility || {};
+
+/* Legacy exported object */
+Accessibility = Accessibility || {};
+
+/**
+ * @constructor
+ */
+Accessibility.AccessibilitySidebarView = AccessibilitySidebarView;
+
+/**
+ * @constructor
+ */
+Accessibility.AccessibilitySubPane = AccessibilitySubPane;

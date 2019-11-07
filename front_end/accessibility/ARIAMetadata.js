@@ -4,7 +4,7 @@
 /**
  * @unrestricted
  */
-Accessibility.ARIAMetadata = class {
+export default class ARIAMetadata {
   /**
    * @param {?Object} config
    */
@@ -50,22 +50,22 @@ Accessibility.ARIAMetadata = class {
 
     return [];
   }
-};
+}
 
 /**
  * @return {!Accessibility.ARIAMetadata}
  */
-Accessibility.ariaMetadata = function() {
+export function ariaMetadata() {
   if (!Accessibility.ARIAMetadata._instance) {
     Accessibility.ARIAMetadata._instance = new Accessibility.ARIAMetadata(Accessibility.ARIAMetadata._config || null);
   }
   return Accessibility.ARIAMetadata._instance;
-};
+}
 
 /**
  * @unrestricted
  */
-Accessibility.ARIAMetadata.Attribute = class {
+export class Attribute {
   /**
    * @param {!Object} config
    */
@@ -84,4 +84,26 @@ Accessibility.ARIAMetadata.Attribute = class {
   getEnum() {
     return this._enum;
   }
-};
+}
+
+/* Legacy exported object */
+self.Accessibility = self.Accessibility || {};
+
+/* Legacy exported object */
+Accessibility = Accessibility || {};
+
+/**
+ * @constructor
+ */
+Accessibility.ARIAMetadata = ARIAMetadata;
+
+/**
+ * @unrestricted
+ * @constructor
+ */
+Accessibility.ARIAMetadata.Attribute = Attribute;
+
+/**
+ * @return {!Accessibility.ARIAMetadata}
+ */
+Accessibility.ariaMetadata = ariaMetadata;

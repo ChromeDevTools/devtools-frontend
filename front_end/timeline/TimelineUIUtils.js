@@ -48,6 +48,7 @@ Timeline.TimelineUIUtils = class {
     const loading = categories['loading'];
     const painting = categories['painting'];
     const other = categories['other'];
+    const idle = categories['idle'];
 
     const eventStyles = {};
     eventStyles[type.Task] = new Timeline.TimelineRecordStyle(ls`Task`, other);
@@ -86,8 +87,10 @@ Timeline.TimelineUIUtils = class {
     eventStyles[type.EvaluateScript] = new Timeline.TimelineRecordStyle(ls`Evaluate Script`, scripting);
     eventStyles[type.CompileModule] = new Timeline.TimelineRecordStyle(ls`Compile Module`, scripting);
     eventStyles[type.EvaluateModule] = new Timeline.TimelineRecordStyle(ls`Evaluate Module`, scripting);
-    eventStyles[type.StreamingCompileScript] =
-        new Timeline.TimelineRecordStyle(ls`Streaming Compile Script`, scripting);
+    eventStyles[type.StreamingCompileScript] = new Timeline.TimelineRecordStyle(ls`Streaming Compile Task`, other);
+    eventStyles[type.StreamingCompileScriptWaiting] = new Timeline.TimelineRecordStyle(ls`Waiting for Network`, idle);
+    eventStyles[type.StreamingCompileScriptParsing] =
+        new Timeline.TimelineRecordStyle(ls`Parse and Compile`, scripting);
     eventStyles[type.WasmStreamFromResponseCallback] =
         new Timeline.TimelineRecordStyle(ls`Streaming Wasm Response`, scripting);
     eventStyles[type.WasmCompiledModule] = new Timeline.TimelineRecordStyle(ls`Compiled Wasm Module`, scripting);
@@ -310,7 +313,16 @@ Timeline.TimelineUIUtils = class {
         return Timeline.TimelineUIUtils.colorForId(frame.url);
       }
     }
-    return Timeline.TimelineUIUtils.eventStyle(event).category.color;
+    const color = Timeline.TimelineUIUtils.eventStyle(event).category.color;
+
+    // This event is considered idle time but still rendered as a scripting event here
+    // to connect the StreamingCompileScriptParsing events it belongs to.
+    if (event.name === TimelineModel.TimelineModel.RecordType.StreamingCompileScriptWaiting) {
+      return /** @type string */ (
+          Common.Color.parse(Timeline.TimelineUIUtils.categories().scripting.color).setAlpha(0.3).asString(null));
+    }
+
+    return color;
   }
 
   /**

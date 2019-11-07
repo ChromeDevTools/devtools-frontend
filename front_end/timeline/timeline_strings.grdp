@@ -127,6 +127,9 @@ Click the reload button <ph name="RELOADBUTTON">$3s<ex>reload</ex></ph> or hit <
   <message name="IDS_DEVTOOLS_1e3eaaac8d3c9cffea8ee7f03a8a6121" desc="Text in Timeline UIUtils of the Performance panel">
     DOMContentLoaded Event
   </message>
+  <message name="IDS_DEVTOOLS_1ea4e2d272090544b2c4c492b67cb7ce" desc="Text in Timeline UIUtils of the Performance panel">
+    Waiting for Network
+  </message>
   <message name="IDS_DEVTOOLS_1f114223c455157e25d2544f39d50397" desc="Text in Timeline UIUtils of the Performance panel">
     <ph name="DURATIONTEXT">$1s<ex>Took 3ms</ex></ph>. Long frame times are an indication of <ph name="LINK">$2s<ex>jank</ex></ph>
   </message>
@@ -382,6 +385,9 @@ Click the reload button <ph name="RELOADBUTTON">$3s<ex>reload</ex></ph> or hit <
   <message name="IDS_DEVTOOLS_5bcd94bc1f71db5659b35ad5deeb94c7" desc="Text in Timeline UIUtils of the Performance panel">
     Fling
   </message>
+  <message name="IDS_DEVTOOLS_5c3ea30dc6fa4ecbc5140f686cab3147" desc="Text in Timeline UIUtils of the Performance panel">
+    Streaming Compile Task
+  </message>
   <message name="IDS_DEVTOOLS_5c593b83b0fca15af4b50ca95c9d3e87" desc="Text in Timeline UIUtils of the Performance panel">
     Sign Reply
   </message>
@@ -513,9 +519,6 @@ Click the reload button <ph name="RELOADBUTTON">$3s<ex>reload</ex></ph> or hit <
   </message>
   <message name="IDS_DEVTOOLS_7ac6c415cd08c0ba2c0a1f54c0a62a52" desc="Text in Timeline UIUtils of the Performance panel">
     ''' (from push)
-  </message>
-  <message name="IDS_DEVTOOLS_80a0135dfd4156f542f097a6351c727f" desc="Text in Timeline UIUtils of the Performance panel">
-    Streaming Compile Script
   </message>
   <message name="IDS_DEVTOOLS_7b8c1a72c279c468ba1729548e05181c" desc="Screen reader label for the Timeline History dropdown button">
     Current Session: <ph name="THIS__TITLE_PERFORMANCEMODEL_">$1s<ex>example.com #3</ex></ph>. <ph name="THIS__BUTTON_GETTITLE__">$2s<ex>Show recent timeline sessions</ex></ph>
@@ -926,6 +929,9 @@ Then, zoom and pan the timeline with the mousewheel or <ph name="NAVIGATENODE">$
   </message>
   <message name="IDS_DEVTOOLS_e2daed94bbd6483ac087b1da9a06e3fd" desc="Text in Timeline Flame Chart Data Provider of the Performance panel">
     <ph name="NUMBER_PRECISEMILLISTOSTRING_FRAME_DURATION____">$1s<ex>10ms</ex></ph> ~ <ph name="_______FRAME_DURATION">$2.0f<ex>100.0</ex></ph> fps
+  </message>
+  <message name="IDS_DEVTOOLS_e43eecf7486865246d49c311c7c57524" desc="Text in Timeline UIUtils of the Performance panel">
+    Parse and Compile
   </message>
   <message name="IDS_DEVTOOLS_e599161956d626eda4cb0a5ffb85271c" desc="Text in Timeline UIUtils of the Performance panel">
     Idle

@@ -6,20 +6,11 @@
   <message name="IDS_DEVTOOLS_0503ffa75a95f35877fe7420d061b6a9" desc="Text in Audits Controller">
     Progressive Web App
   </message>
-  <message name="IDS_DEVTOOLS_070716fc9cd3859f51f3860a349bad2f" desc="Text in Audits Controller">
-    Simulated Slow 4G, 4x CPU Slowdown
-  </message>
   <message name="IDS_DEVTOOLS_0f39dfdd740bf99080ca83e56e2cfb4c" desc="Text in Audits Status View">
     💡 <ph name="THIS__FASTFACTSQUEUED_FASTFACTINDEX_">$1s<ex>75% of global mobile users in 2016 were on 2G or 3G [Source: GSMA Mobile]</ex></ph>
   </message>
   <message name="IDS_DEVTOOLS_1076f1bac69647c846ac3b822b133518" desc="Fast fact in the pop-up dialog when lighthouse is running in the Audits panel">
     The average user device costs less than 200 USD. [Source: <ph name="LOCKED_1">International Data Corporation</ph>]
-  </message>
-  <message name="IDS_DEVTOOLS_1421c82f3616812789ac346b1638e39d" desc="Text of audits start button in Audits Start View">
-    Run audits
-  </message>
-  <message name="IDS_DEVTOOLS_15a895a381c23eff5397d8b1f318a726" desc="Text in Audits Controller">
-    No network or CPU throttling used. (Useful when not evaluating performance)
   </message>
   <message name="IDS_DEVTOOLS_161bf73e31de6b8e3d856815473cbe1c" desc="Text of the timeline button in Audits Report Renderer">
     View Trace
@@ -29,9 +20,6 @@
   </message>
   <message name="IDS_DEVTOOLS_17de62900ceac9101c8814b4c4874328" desc="Text in Audits Controller">
     Apply mobile emulation during auditing
-  </message>
-  <message name="IDS_DEVTOOLS_193c4edb3ab576449959f6710e017a49" desc="Text in Audits Controller">
-    Typical <ph name="LOCKED_1">DevTools</ph> throttling, with actual traffic shaping and CPU slowdown applied
   </message>
   <message name="IDS_DEVTOOLS_2046d43f4cc1f59c06f764da2ca2355a" desc="Status text in the Audits panel">
     The print popup window is open. Please close it to continue.
@@ -48,14 +36,8 @@
   <message name="IDS_DEVTOOLS_3b7e043f46813f1d8ffbd462eb77fb6c" desc="Text in Audits Controller">
     How long does this app take to show content and become usable
   </message>
-  <message name="IDS_DEVTOOLS_3ee3aab0791156ff1d5e0481ed4589b2" desc="Text in Audits Controller">
-    Applied Slow 4G, 4x CPU Slowdown
-  </message>
   <message name="IDS_DEVTOOLS_47e2dbd37d8d524f5c4105a96db27b59" desc="Fast fact in the pop-up dialog when lighthouse is running in the Audits panel">
     75% of global mobile users in 2016 were on 2G or 3G [Source: <ph name="LOCKED_1">GSMA Mobile</ph>]
-  </message>
-  <message name="IDS_DEVTOOLS_48d24d11c7c71282366fe2007d4cee3b" desc="Text in Audits Controller">
-    Throttling is simulated, resulting in faster audit runs with similar measurement accuracy
   </message>
   <message name="IDS_DEVTOOLS_4ab5093468559edd5940ac59f1c6ac02" desc="Text in Audits Status View">
     Try to navigate to the URL in a fresh <ph name="LOCKED_1">Chrome</ph> profile without any other tabs or extensions open and try again.
@@ -71,6 +53,9 @@
   </message>
   <message name="IDS_DEVTOOLS_5a73519018eaaacb7882caf8f0971ac1" desc="Fast fact in the pop-up dialog when lighthouse is running in the Audits panel">
     1MB takes a minimum of 5 seconds to download on a typical 3G connection [Source: <ph name="LOCKED_1">WebPageTest</ph> and <ph name="LOCKED_2">DevTools</ph> 3G definition].
+  </message>
+  <message name="IDS_DEVTOOLS_5d800f971c3d02bf5accd5f205e31f2a" desc="Text for option to enable simulated throttling in Audits Panel">
+    Simulated throttling
   </message>
   <message name="IDS_DEVTOOLS_5f0c08bc61549e7455c9e8b46bfe9aa9" desc="Fast fact in the pop-up dialog when lighthouse is running in the Audits panel">
     70% of mobile pages weigh over 1MB, 36% over 2MB, and 12% over 4MB. [Source: <ph name="LOCKED_1">Think with Google</ph>]
@@ -92,6 +77,9 @@
   </message>
   <message name="IDS_DEVTOOLS_6e394d18cb68d551f58fa35f4dfc70bb" desc="Fast fact in the pop-up dialog when lighthouse is running in the Audits panel">
     As page load time increases from one second to seven seconds, the probability of a mobile site visitor bouncing increases 113%. [Source: <ph name="LOCKED_1">Think with Google</ph>]
+  </message>
+  <message name="IDS_DEVTOOLS_6e95267358acef2bcb448acc98374e79" desc="Tooltip text that appears when hovering over the largeicon settings gear in show settings pane setting in start view of the audits panel">
+    Audits settings
   </message>
   <message name="IDS_DEVTOOLS_72c4a2e545d220fd8c9ead876a59a89d" desc="Text in Audits Controller">
     Is this page optimized for search engine results ranking
@@ -132,6 +120,9 @@
   <message name="IDS_DEVTOOLS_a99169b94755be554b65f8dcc2c2b842" desc="Text in the pop-up dialog when lighthouse is gathering information in the Audits panel">
     <ph name="LOCKED_1">Lighthouse</ph> is gathering information about the page to compute your score.
   </message>
+  <message name="IDS_DEVTOOLS_af1b98adf7f686b84cd0b443e022b7a0" desc="Title in the Audits Start View for list of categories to run during audit">
+    Categories
+  </message>
   <message name="IDS_DEVTOOLS_b002a564ceda05dbdf012a48a145d0d3" desc="Status header in the Audits panel">
     Printing
   </message>
@@ -143,6 +134,9 @@
   </message>
   <message name="IDS_DEVTOOLS_b29bb7427a05d89f1dae6ab5459e2d5c" desc="Fast fact in the pop-up dialog when lighthouse is running in the Audits panel">
     By reducing the response size of JSON needed for displaying comments, Instagram saw increased impressions [Source: <ph name="LOCKED_1">WPO Stats</ph>]
+  </message>
+  <message name="IDS_DEVTOOLS_b40b80f075ebae0e3a75c6896abdc949" desc="Text of audits start button in Audits Start View">
+    Generate report
   </message>
   <message name="IDS_DEVTOOLS_bcf2457dd80557dd7ebdc1504b6149e6" desc="Text in Audits Controller">
     Does this page follow best practices for modern web development

@@ -139,9 +139,6 @@
   <message name="IDS_DEVTOOLS_3bb3e8c8a24891ba0f7608bcc96f8b0a" desc="Text for a rendering frame">
     Frame
   </message>
-  <message name="IDS_DEVTOOLS_3e3f8a3abd60f2389b744ca8ed0aa4d9" desc="Text for no network throttling">
-    No throttling
-  </message>
   <message name="IDS_DEVTOOLS_3ec365dd533ddb7ef3d1c111186ce872" desc="Text for the details of something">
     Details
   </message>

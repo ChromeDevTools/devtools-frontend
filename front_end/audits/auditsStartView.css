@@ -6,75 +6,60 @@
 
 .audits-start-view {
   font-family: Roboto, sans-serif;
-  font-size: 13px;
+  font-size: var(--font-size);
   line-height: 18px;
+
+  --color-blue: #0535C1;
+  /* for buttons */
+  --accent-color: var(--color-blue);
+  --color-bg: white;
+  --font-size: 14px;
+  --report-font-family: Roboto, Helvetica, Arial, sans-serif;
 }
 
 .audits-start-view header {
-  padding: 0 16px;
-  display: flex;
+  flex: 2 1;
+  padding: 16px;
+  display: grid;
+  justify-items: center;
 }
 
 .audits-logo {
-    width: 150px;
-    height: 150px;
+    width: 75px;
+    height: 75px;
     flex-shrink: 0;
     background-repeat: no-repeat;
     background-size: contain;
-    margin-right: 20px;
     background-image: url(Images/audits_logo.svg);
 }
 
 .audits-start-view-text {
-  color: #757575;
-  margin-top: 24px;
-}
-
-.audits-start-view-text h1 {
-  color: black;
-  font-weight: normal;
-  font-size: 18px;
-  margin-bottom: 12px;
-}
-
-.audits-start-view-text p {
-  margin-top: 0;
-}
-
-.audits-start-view-text .text {
-  display: inline-block;
-  margin-right: 5px;
+  margin: 0 40px;
+  text-align: center;
 }
 
 .audits-start-view form {
-  padding: 0 16px;
+  display: contents;
+}
+
+.audits-form-section {
+  padding: 8px;
+  flex: 1 1;
 }
 
 .audits-form-section {
   border-top: 1px solid #ebebeb;
-  display: flex;
-  padding: 16px 8px;
-}
-
-.audits-form-section:last-child {
-  border-top: none;
-  padding-top: 0;
 }
 
 .audits-form-section-label {
-  display: flex;
-  width: 160px;
+  margin: 7px 0 7px;
+  font-weight: 500;
 }
 
-.audits-form-section-label i {
-  width: 16px;
-  height: 16px;
-  display: block;
-  text-align: center;
-}
-
-.audits-icon-label {
-  margin: 0 14px;
+.audits-form-section input {
+  margin-top: 0;
+  margin-bottom: 0;
+  margin-left: 0;
 }
 
 .audits-form-section-label i span {
@@ -87,28 +72,36 @@
 }
 
 .audits-radio {
-  display: block;
-  margin-bottom: 8px;
-}
-
-.audits-radio:last-child {
-  margin-bottom: 0;
+  display: flex;
+  align-items: center;
 }
 
 .audits-start-button-container {
   align-items: center;
 }
 
+.audits-start-button-container button {
+  margin: 8px auto;
+  font-family: var(--report-font-family);
+  font-weight: 500;
+  font-size: var(--font-size);
+}
+.audits-start-button-container button:disabled {
+  cursor: not-allowed;
+}
+
 .audits-start-view .toolbar-dropdown-arrow {
   display: none;
 }
 
-.audits-launcher-row {
-  padding-bottom: 8px;
+.audits-launcher-row,
+.audits-radio {
+  margin-bottom: 6px;
 }
 
-.audits-launcher-row:last-of-type {
-  padding-bottom: 0;
+.audits-launcher-row:last-of-type,
+.audits-radio:last-of-type {
+  margin-bottom: 0;
 }
 
 .audits-launcher-row .dimmed {
@@ -116,6 +109,7 @@
 }
 
 .audits-help-text {
+  text-align: center;
   color: red;
   font-weight: bold;
   padding-left: 10px;

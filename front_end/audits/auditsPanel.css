@@ -31,3 +31,20 @@ button.view-trace {
 .lh-tools--viewer {
   display: none !important;
 }
+
+.audits-settings-pane {
+  flex: none;
+}
+
+.audits-settings-pane .toolbar {
+  flex: 1 1;
+}
+
+.audits-toolbar-container {
+  display: flex;
+  flex: none;
+}
+
+.audits-toolbar-container > :first-child {
+  flex: 1 1 auto;
+}

@@ -24,6 +24,9 @@
   <message name="IDS_DEVTOOLS_38c8cb828795cd6ff1cddda9b4ffcfa8" desc="Text in Throttling Settings Tab of the Network panel">
     <ph name="THROUGHPUTINKBPS___________">$1d<ex>25</ex></ph><ph name="DELIMITER">$2s<ex>''' '''</ex></ph>Mb/s
   </message>
+  <message name="IDS_DEVTOOLS_3e3f8a3abd60f2389b744ca8ed0aa4d9" desc="Text for no network throttling">
+    No throttling
+  </message>
   <message name="IDS_DEVTOOLS_4121424dddde880a0e380f82c57e9944" desc="Screen reader label for a select box that chooses the CPU throttling speed in the Performance panel">
     CPU throttling
   </message>

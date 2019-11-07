@@ -13,7 +13,15 @@ Audits.StartView = class extends UI.Widget {
     super();
     this.registerRequiredCSS('audits/auditsStartView.css');
     this._controller = controller;
+    this._settingsToolbar = new UI.Toolbar('');
     this._render();
+  }
+
+  /**
+   * @return {!UI.Toolbar}
+   */
+  settingsToolbar() {
+    return this._settingsToolbar;
   }
 
   /**
@@ -34,9 +42,9 @@ Audits.StartView = class extends UI.Widget {
 
   /**
    * @param {string} settingName
-   * @param {!Element} parentElement
+   * @param {!UI.Toolbar} toolbar
    */
-  _populateRuntimeSettingAsCheckbox(settingName, parentElement) {
+  _populateRuntimeSettingAsToolbarCheckbox(settingName, toolbar) {
     const runtimeSetting = Audits.RuntimeSettings.find(item => item.setting.name === settingName);
     if (!runtimeSetting || !runtimeSetting.title) {
       throw new Error(`${settingName} is not a setting with a title`);
@@ -44,7 +52,12 @@ Audits.StartView = class extends UI.Widget {
 
     runtimeSetting.setting.setTitle(runtimeSetting.title);
     const control = new UI.ToolbarSettingCheckbox(runtimeSetting.setting, runtimeSetting.description);
-    parentElement.appendChild(control.element);
+    toolbar.appendToolbarItem(control);
+    if (runtimeSetting.learnMore) {
+      const link = UI.XLink.create(runtimeSetting.learnMore, ls`Learn more`, 'audits-learn-more');
+      link.style.padding = '5px';
+      control.element.appendChild(link);
+    }
   }
 
   /**
@@ -55,7 +68,7 @@ Audits.StartView = class extends UI.Widget {
     const deviceTypeFormElements = fragment.$('device-type-form-elements');
     this._populateRuntimeSettingAsRadio('audits.device_type', ls`Device`, deviceTypeFormElements);
 
-    // Populate the audit categories
+    // Populate the categories
     const categoryFormElements = fragment.$('categories-form-elements');
     for (const preset of Audits.Presets) {
       preset.setting.setTitle(preset.title);
@@ -65,27 +78,18 @@ Audits.StartView = class extends UI.Widget {
       row.appendChild(checkbox.element);
     }
     UI.ARIAUtils.markAsGroup(categoryFormElements);
-    UI.ARIAUtils.setAccessibleName(categoryFormElements, ls`Audits`);
-
-    // Populate the throttling
-    const throttlingFormElements = fragment.$('throttling-form-elements');
-    this._populateRuntimeSettingAsRadio('audits.throttling', ls`Throttling`, throttlingFormElements);
-
-
-    // Populate other settings
-    const otherFormElements = fragment.$('other-form-elements');
-    this._populateRuntimeSettingAsCheckbox('audits.clear_storage', otherFormElements);
+    UI.ARIAUtils.setAccessibleName(categoryFormElements, ls`Categories`);
   }
 
   _render() {
+    this._populateRuntimeSettingAsToolbarCheckbox('audits.clear_storage', this._settingsToolbar);
+    this._populateRuntimeSettingAsToolbarCheckbox('audits.throttling', this._settingsToolbar);
+
     this._startButton = UI.createTextButton(
-        ls`Run audits`, () => this._controller.dispatchEventToListeners(Audits.Events.RequestAuditStart), '',
+        ls`Generate report`, () => this._controller.dispatchEventToListeners(Audits.Events.RequestAuditStart), '',
         true /* primary */);
     this.setDefaultFocusedElement(this._startButton);
 
-    const deviceIcon = UI.Icon.create('largeicon-phone');
-    const categoriesIcon = UI.Icon.create('largeicon-checkmark');
-    const throttlingIcon = UI.Icon.create('largeicon-settings-gear');
     const auditsDescription = ls
     `Identify and fix common problems that affect your site's performance, accessibility, and user experience.`;  // crbug.com/972969
 
@@ -93,46 +97,27 @@ Audits.StartView = class extends UI.Widget {
       <div class="vbox audits-start-view">
         <header>
           <div class="audits-logo"></div>
+          <div class="audits-start-button-container hbox">
+            ${this._startButton}
+            </div>
+          <div $="help-text" class="audits-help-text hidden"></div>
           <div class="audits-start-view-text">
-          <h1>${ls`Audits`}</h1>
-          <p>
-            <span class="text">${auditsDescription}</span>
+            <span>${auditsDescription}</span>
             ${UI.XLink.create('https://developers.google.com/web/tools/lighthouse/', ls`Learn more`)}
-          </p>
           </div>
         </header>
         <form>
           <div class="audits-form-section">
             <div class="audits-form-section-label">
-              <i>${deviceIcon}</i>
-              <div class="audits-icon-label">${ls`Device`}</div>
-            </div>
-            <div class="audits-form-elements" $="device-type-form-elements"></div>
-          </div>
-          <div class="audits-form-section">
-            <div class="audits-form-section-label">
-              <i>${categoriesIcon}</i>
-              <div class="audits-icon-label">${ls`Audits`}</div>
+              ${ls`Categories`}
             </div>
             <div class="audits-form-elements" $="categories-form-elements"></div>
           </div>
           <div class="audits-form-section">
             <div class="audits-form-section-label">
-              <i>${throttlingIcon}</i>
-              <div class="audits-icon-label">${ls`Throttling`}</div>
+              ${ls`Device`}
             </div>
-            <div class="audits-form-elements" $="throttling-form-elements"></div>
-          </div>
-          <div class="audits-form-section">
-            <div class="audits-form-section-label"></div>
-            <div class="audits-form-elements" $="other-form-elements"></div>
-          </div>
-          <div class="audits-form-section">
-            <div class="audits-form-section-label"></div>
-            <div class="audits-form-elements audits-start-button-container hbox">
-              ${this._startButton}
-              <div $="help-text" class="audits-help-text hidden"></div>
-            </div>
+            <div class="audits-form-elements" $="device-type-form-elements"></div>
           </div>
         </form>
       </div>
@@ -142,6 +127,16 @@ Audits.StartView = class extends UI.Widget {
     this._populateFormControls(fragment);
     this.contentElement.appendChild(fragment.element());
     this.contentElement.style.overflow = 'auto';
+  }
+
+  /**
+   * @override
+   */
+  onResize() {
+    const useNarrowLayout = this.contentElement.offsetWidth < 560;
+    const startViewEl = this.contentElement.querySelector('.audits-start-view');
+    startViewEl.classList.toggle('hbox', !useNarrowLayout);
+    startViewEl.classList.toggle('vbox', useNarrowLayout);
   }
 
   focusStartButton() {

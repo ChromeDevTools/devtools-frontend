@@ -261,36 +261,15 @@ Audits.RuntimeSettings = [
     ],
   },
   {
-    setting: Common.settings.createSetting('audits.throttling', 'default'),
+    // This setting is disabled, but we keep it around to show in the UI.
+    setting: Common.settings.createSetting('audits.throttling', true),
+    title: ls`Simulated throttling`,
+    // We will disable this when we have a Lantern trace viewer within DevTools.
+    learnMore:
+        'https://github.com/GoogleChrome/lighthouse/blob/master/docs/throttling.md#devtools-audits-panel-throttling',
     setFlags: (flags, value) => {
-      switch (value) {
-        case 'devtools':
-          flags.throttlingMethod = 'devtools';
-          break;
-        case 'off':
-          flags.throttlingMethod = 'provided';
-          break;
-        default:
-          flags.throttlingMethod = 'simulate';
-      }
+      flags.throttlingMethod = value ? 'simulate' : 'devtools';
     },
-    options: [
-      {
-        label: ls`Simulated Slow 4G, 4x CPU Slowdown`,
-        value: 'default',
-        title: ls`Throttling is simulated, resulting in faster audit runs with similar measurement accuracy`
-      },
-      {
-        label: ls`Applied Slow 4G, 4x CPU Slowdown`,
-        value: 'devtools',
-        title: ls`Typical DevTools throttling, with actual traffic shaping and CPU slowdown applied`
-      },
-      {
-        label: ls`No throttling`,
-        value: 'off',
-        title: ls`No network or CPU throttling used. (Useful when not evaluating performance)`
-      },
-    ],
   },
   {
     setting: Common.settings.createSetting('audits.clear_storage', true),

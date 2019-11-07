@@ -36,6 +36,9 @@
   <message name="IDS_DEVTOOLS_3b7e043f46813f1d8ffbd462eb77fb6c" desc="Text in Audits Controller">
     How long does this app take to show content and become usable
   </message>
+  <message name="IDS_DEVTOOLS_43a6eb8709bea6ad1b8e128bf174d80e" desc="Help text in Audits Controller">
+    Is this page optimized for ad speed and quality
+  </message>
   <message name="IDS_DEVTOOLS_47e2dbd37d8d524f5c4105a96db27b59" desc="Fast fact in the pop-up dialog when lighthouse is running in the Audits panel">
     75% of global mobile users in 2016 were on 2G or 3G [Source: <ph name="LOCKED_1">GSMA Mobile</ph>]
   </message>
@@ -81,6 +84,9 @@
   <message name="IDS_DEVTOOLS_6e95267358acef2bcb448acc98374e79" desc="Tooltip text that appears when hovering over the largeicon settings gear in show settings pane setting in start view of the audits panel">
     Audits settings
   </message>
+  <message name="IDS_DEVTOOLS_6f4495ebc9e34bfc4a7748c568ddd6f0" desc="Text in Audits Status View">
+    Community Plugins (beta)
+  </message>
   <message name="IDS_DEVTOOLS_72c4a2e545d220fd8c9ead876a59a89d" desc="Text in Audits Controller">
     Is this page optimized for search engine results ranking
   </message>
@@ -119,6 +125,9 @@
   </message>
   <message name="IDS_DEVTOOLS_a99169b94755be554b65f8dcc2c2b842" desc="Text in the pop-up dialog when lighthouse is gathering information in the Audits panel">
     <ph name="LOCKED_1">Lighthouse</ph> is gathering information about the page to compute your score.
+  </message>
+  <message name="IDS_DEVTOOLS_abef61c6093b932176b80c40ce8a4023" desc="Text in Audits Controller">
+    Publisher Ads
   </message>
   <message name="IDS_DEVTOOLS_af1b98adf7f686b84cd0b443e022b7a0" desc="Title in the Audits Start View for list of categories to run during audit">
     Categories

@@ -1,4 +1,4 @@
-// lighthouse, browserified. 5.5.0 (33af3dbb7c10890c9d9e67e16af4968b7c49206c)
+// lighthouse, browserified. 5.7.0 (005c2e6f48e7cc4bfefaa4b0551122edbe04a993)
 require=function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a;}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r);},p,p.exports,r,e,n,t);}return n[i].exports;}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o;}return r;}()({"../audits/accessibility/accesskeys":[function(require,module,exports){
 (function(__filename){
 
@@ -48,7 +48,7 @@ module.exports=Accesskeys;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/accesskeys.js");
-},{"../../lib/i18n/i18n.js":67,"./axe-audit.js":2}],"../audits/accessibility/aria-allowed-attr":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":66,"./axe-audit.js":2}],"../audits/accessibility/aria-allowed-attr":[function(require,module,exports){
 (function(__filename){
 
 
@@ -97,7 +97,7 @@ module.exports=ARIAAllowedAttr;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/aria-allowed-attr.js");
-},{"../../lib/i18n/i18n.js":67,"./axe-audit.js":2}],"../audits/accessibility/aria-required-attr":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":66,"./axe-audit.js":2}],"../audits/accessibility/aria-required-attr":[function(require,module,exports){
 (function(__filename){
 
 
@@ -145,7 +145,7 @@ module.exports=ARIARequiredAttr;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/aria-required-attr.js");
-},{"../../lib/i18n/i18n.js":67,"./axe-audit.js":2}],"../audits/accessibility/aria-required-children":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":66,"./axe-audit.js":2}],"../audits/accessibility/aria-required-children":[function(require,module,exports){
 (function(__filename){
 
 
@@ -197,7 +197,7 @@ module.exports=AriaRequiredChildren;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/aria-required-children.js");
-},{"../../lib/i18n/i18n.js":67,"./axe-audit.js":2}],"../audits/accessibility/aria-required-parent":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":66,"./axe-audit.js":2}],"../audits/accessibility/aria-required-parent":[function(require,module,exports){
 (function(__filename){
 
 
@@ -247,7 +247,7 @@ module.exports=AriaRequiredParent;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/aria-required-parent.js");
-},{"../../lib/i18n/i18n.js":67,"./axe-audit.js":2}],"../audits/accessibility/aria-roles":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":66,"./axe-audit.js":2}],"../audits/accessibility/aria-roles":[function(require,module,exports){
 (function(__filename){
 
 
@@ -296,7 +296,7 @@ module.exports=AriaRoles;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/aria-roles.js");
-},{"../../lib/i18n/i18n.js":67,"./axe-audit.js":2}],"../audits/accessibility/aria-valid-attr-value":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":66,"./axe-audit.js":2}],"../audits/accessibility/aria-valid-attr-value":[function(require,module,exports){
 (function(__filename){
 
 
@@ -345,7 +345,7 @@ module.exports=ARIAValidAttr;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/aria-valid-attr-value.js");
-},{"../../lib/i18n/i18n.js":67,"./axe-audit.js":2}],"../audits/accessibility/aria-valid-attr":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":66,"./axe-audit.js":2}],"../audits/accessibility/aria-valid-attr":[function(require,module,exports){
 (function(__filename){
 
 
@@ -394,7 +394,7 @@ module.exports=ARIAValidAttr;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/aria-valid-attr.js");
-},{"../../lib/i18n/i18n.js":67,"./axe-audit.js":2}],"../audits/accessibility/audio-caption":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":66,"./axe-audit.js":2}],"../audits/accessibility/audio-caption":[function(require,module,exports){
 (function(__filename){
 
 
@@ -445,7 +445,7 @@ module.exports=AudioCaption;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/audio-caption.js");
-},{"../../lib/i18n/i18n.js":67,"./axe-audit.js":2}],"../audits/accessibility/button-name":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":66,"./axe-audit.js":2}],"../audits/accessibility/button-name":[function(require,module,exports){
 (function(__filename){
 
 
@@ -494,7 +494,7 @@ module.exports=ButtonName;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/button-name.js");
-},{"../../lib/i18n/i18n.js":67,"./axe-audit.js":2}],"../audits/accessibility/bypass":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":66,"./axe-audit.js":2}],"../audits/accessibility/bypass":[function(require,module,exports){
 (function(__filename){
 
 
@@ -544,7 +544,7 @@ module.exports=Bypass;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/bypass.js");
-},{"../../lib/i18n/i18n.js":67,"./axe-audit.js":2}],"../audits/accessibility/color-contrast":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":66,"./axe-audit.js":2}],"../audits/accessibility/color-contrast":[function(require,module,exports){
 (function(__filename){
 
 
@@ -594,7 +594,7 @@ module.exports=ColorContrast;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/color-contrast.js");
-},{"../../lib/i18n/i18n.js":67,"./axe-audit.js":2}],"../audits/accessibility/definition-list":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":66,"./axe-audit.js":2}],"../audits/accessibility/definition-list":[function(require,module,exports){
 (function(__filename){
 
 
@@ -645,7 +645,7 @@ module.exports=DefinitionList;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/definition-list.js");
-},{"../../lib/i18n/i18n.js":67,"./axe-audit.js":2}],"../audits/accessibility/dlitem":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":66,"./axe-audit.js":2}],"../audits/accessibility/dlitem":[function(require,module,exports){
 (function(__filename){
 
 
@@ -694,7 +694,7 @@ module.exports=DLItem;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/dlitem.js");
-},{"../../lib/i18n/i18n.js":67,"./axe-audit.js":2}],"../audits/accessibility/document-title":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":66,"./axe-audit.js":2}],"../audits/accessibility/document-title":[function(require,module,exports){
 (function(__filename){
 
 
@@ -743,7 +743,7 @@ module.exports=DocumentTitle;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/document-title.js");
-},{"../../lib/i18n/i18n.js":67,"./axe-audit.js":2}],"../audits/accessibility/duplicate-id":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":66,"./axe-audit.js":2}],"../audits/accessibility/duplicate-id":[function(require,module,exports){
 (function(__filename){
 
 
@@ -792,7 +792,7 @@ module.exports=DuplicateId;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/duplicate-id.js");
-},{"../../lib/i18n/i18n.js":67,"./axe-audit.js":2}],"../audits/accessibility/frame-title":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":66,"./axe-audit.js":2}],"../audits/accessibility/frame-title":[function(require,module,exports){
 (function(__filename){
 
 
@@ -840,7 +840,7 @@ module.exports=FrameTitle;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/frame-title.js");
-},{"../../lib/i18n/i18n.js":67,"./axe-audit.js":2}],"../audits/accessibility/html-has-lang":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":66,"./axe-audit.js":2}],"../audits/accessibility/html-has-lang":[function(require,module,exports){
 (function(__filename){
 
 
@@ -891,7 +891,7 @@ module.exports=HTMLHasLang;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/html-has-lang.js");
-},{"../../lib/i18n/i18n.js":67,"./axe-audit.js":2}],"../audits/accessibility/html-lang-valid":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":66,"./axe-audit.js":2}],"../audits/accessibility/html-lang-valid":[function(require,module,exports){
 (function(__filename){
 
 
@@ -941,7 +941,7 @@ module.exports=HTMLLangValid;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/html-lang-valid.js");
-},{"../../lib/i18n/i18n.js":67,"./axe-audit.js":2}],"../audits/accessibility/image-alt":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":66,"./axe-audit.js":2}],"../audits/accessibility/image-alt":[function(require,module,exports){
 (function(__filename){
 
 
@@ -990,7 +990,7 @@ module.exports=ImageAlt;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/image-alt.js");
-},{"../../lib/i18n/i18n.js":67,"./axe-audit.js":2}],"../audits/accessibility/input-image-alt":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":66,"./axe-audit.js":2}],"../audits/accessibility/input-image-alt":[function(require,module,exports){
 (function(__filename){
 
 
@@ -1039,7 +1039,7 @@ module.exports=InputImageAlt;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/input-image-alt.js");
-},{"../../lib/i18n/i18n.js":67,"./axe-audit.js":2}],"../audits/accessibility/label":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":66,"./axe-audit.js":2}],"../audits/accessibility/label":[function(require,module,exports){
 (function(__filename){
 
 
@@ -1088,7 +1088,7 @@ module.exports=Label;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/label.js");
-},{"../../lib/i18n/i18n.js":67,"./axe-audit.js":2}],"../audits/accessibility/layout-table":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":66,"./axe-audit.js":2}],"../audits/accessibility/layout-table":[function(require,module,exports){
 (function(__filename){
 
 
@@ -1141,7 +1141,7 @@ module.exports=LayoutTable;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/layout-table.js");
-},{"../../lib/i18n/i18n.js":67,"./axe-audit.js":2}],"../audits/accessibility/link-name":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":66,"./axe-audit.js":2}],"../audits/accessibility/link-name":[function(require,module,exports){
 (function(__filename){
 
 
@@ -1191,7 +1191,7 @@ module.exports=LinkName;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/link-name.js");
-},{"../../lib/i18n/i18n.js":67,"./axe-audit.js":2}],"../audits/accessibility/listitem":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":66,"./axe-audit.js":2}],"../audits/accessibility/listitem":[function(require,module,exports){
 (function(__filename){
 
 
@@ -1241,7 +1241,7 @@ module.exports=ListItem;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/listitem.js");
-},{"../../lib/i18n/i18n.js":67,"./axe-audit.js":2}],"../audits/accessibility/list":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":66,"./axe-audit.js":2}],"../audits/accessibility/list":[function(require,module,exports){
 (function(__filename){
 
 
@@ -1292,7 +1292,7 @@ module.exports=List;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/list.js");
-},{"../../lib/i18n/i18n.js":67,"./axe-audit.js":2}],"../audits/accessibility/manual/custom-controls-labels":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":66,"./axe-audit.js":2}],"../audits/accessibility/manual/custom-controls-labels":[function(require,module,exports){
 
 
 
@@ -1673,7 +1673,7 @@ module.exports=MetaRefresh;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/meta-refresh.js");
-},{"../../lib/i18n/i18n.js":67,"./axe-audit.js":2}],"../audits/accessibility/meta-viewport":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":66,"./axe-audit.js":2}],"../audits/accessibility/meta-viewport":[function(require,module,exports){
 (function(__filename){
 
 
@@ -1724,7 +1724,7 @@ module.exports=MetaViewport;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/meta-viewport.js");
-},{"../../lib/i18n/i18n.js":67,"./axe-audit.js":2}],"../audits/accessibility/object-alt":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":66,"./axe-audit.js":2}],"../audits/accessibility/object-alt":[function(require,module,exports){
 (function(__filename){
 
 
@@ -1773,7 +1773,7 @@ module.exports=ObjectAlt;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/object-alt.js");
-},{"../../lib/i18n/i18n.js":67,"./axe-audit.js":2}],"../audits/accessibility/tabindex":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":66,"./axe-audit.js":2}],"../audits/accessibility/tabindex":[function(require,module,exports){
 (function(__filename){
 
 
@@ -1822,7 +1822,7 @@ module.exports=TabIndex;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/tabindex.js");
-},{"../../lib/i18n/i18n.js":67,"./axe-audit.js":2}],"../audits/accessibility/td-headers-attr":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":66,"./axe-audit.js":2}],"../audits/accessibility/td-headers-attr":[function(require,module,exports){
 (function(__filename){
 
 
@@ -1875,7 +1875,7 @@ module.exports=TDHeadersAttr;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/td-headers-attr.js");
-},{"../../lib/i18n/i18n.js":67,"./axe-audit.js":2}],"../audits/accessibility/th-has-data-cells":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":66,"./axe-audit.js":2}],"../audits/accessibility/th-has-data-cells":[function(require,module,exports){
 (function(__filename){
 
 
@@ -1927,7 +1927,7 @@ module.exports=THHasDataCells;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/th-has-data-cells.js");
-},{"../../lib/i18n/i18n.js":67,"./axe-audit.js":2}],"../audits/accessibility/valid-lang":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":66,"./axe-audit.js":2}],"../audits/accessibility/valid-lang":[function(require,module,exports){
 (function(__filename){
 
 
@@ -1976,7 +1976,7 @@ module.exports=ValidLang;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/valid-lang.js");
-},{"../../lib/i18n/i18n.js":67,"./axe-audit.js":2}],"../audits/accessibility/video-caption":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":66,"./axe-audit.js":2}],"../audits/accessibility/video-caption":[function(require,module,exports){
 (function(__filename){
 
 
@@ -2026,7 +2026,7 @@ module.exports=VideoCaption;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/video-caption.js");
-},{"../../lib/i18n/i18n.js":67,"./axe-audit.js":2}],"../audits/accessibility/video-description":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":66,"./axe-audit.js":2}],"../audits/accessibility/video-description":[function(require,module,exports){
 (function(__filename){
 
 
@@ -2076,7 +2076,7 @@ module.exports=VideoDescription;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/video-description.js");
-},{"../../lib/i18n/i18n.js":67,"./axe-audit.js":2}],"../audits/apple-touch-icon":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":66,"./axe-audit.js":2}],"../audits/apple-touch-icon":[function(require,module,exports){
 (function(__filename){
 
 
@@ -2151,7 +2151,7 @@ module.exports=AppleTouchIcon;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/apple-touch-icon.js");
-},{"../lib/i18n/i18n.js":67,"./audit.js":3}],"../audits/bootup-time":[function(require,module,exports){
+},{"../lib/i18n/i18n.js":66,"./audit.js":3}],"../audits/bootup-time":[function(require,module,exports){
 (function(__filename){
 
 
@@ -2355,7 +2355,7 @@ module.exports=BootupTime;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/bootup-time.js");
-},{"../computed/main-thread-tasks.js":12,"../computed/network-records.js":34,"../lib/i18n/i18n.js":67,"../lib/network-request.js":76,"../lib/tracehouse/task-groups.js":85,"./audit.js":3}],"../audits/byte-efficiency/efficient-animated-content":[function(require,module,exports){
+},{"../computed/main-thread-tasks.js":12,"../computed/network-records.js":34,"../lib/i18n/i18n.js":66,"../lib/network-request.js":75,"../lib/tracehouse/task-groups.js":84,"./audit.js":3}],"../audits/byte-efficiency/efficient-animated-content":[function(require,module,exports){
 (function(__filename){
 
 
@@ -2451,7 +2451,7 @@ module.exports=EfficientAnimatedContent;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/byte-efficiency/efficient-animated-content.js");
-},{"../../lib/i18n/i18n.js":67,"../../lib/network-request.js":76,"./byte-efficiency-audit.js":4}],"../audits/byte-efficiency/offscreen-images":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":66,"../../lib/network-request.js":75,"./byte-efficiency-audit.js":4}],"../audits/byte-efficiency/offscreen-images":[function(require,module,exports){
 (function(__filename){
 
 
@@ -2698,7 +2698,7 @@ module.exports=OffscreenImages;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/byte-efficiency/offscreen-images.js");
-},{"../../computed/metrics/interactive.js":18,"../../computed/trace-of-tab.js":39,"../../lib/i18n/i18n.js":67,"../../lib/sentry.js":79,"../../lib/url-shim.js":"url","./byte-efficiency-audit.js":4}],"../audits/byte-efficiency/render-blocking-resources":[function(require,module,exports){
+},{"../../computed/metrics/interactive.js":18,"../../computed/trace-of-tab.js":39,"../../lib/i18n/i18n.js":66,"../../lib/sentry.js":78,"../../lib/url-shim.js":"url","./byte-efficiency-audit.js":4}],"../audits/byte-efficiency/render-blocking-resources":[function(require,module,exports){
 (function(__filename){
 
 
@@ -2935,7 +2935,7 @@ module.exports=RenderBlockingResources;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/byte-efficiency/render-blocking-resources.js");
-},{"../../computed/load-simulator.js":10,"../../computed/metrics/first-contentful-paint.js":15,"../../computed/trace-of-tab.js":39,"../../lib/dependency-graph/base-node.js":58,"../../lib/i18n/i18n.js":67,"../../lib/network-request.js":76,"../audit.js":3,"./byte-efficiency-audit.js":4,"./unused-css-rules.js":"../audits/byte-efficiency/unused-css-rules"}],"../audits/byte-efficiency/total-byte-weight":[function(require,module,exports){
+},{"../../computed/load-simulator.js":10,"../../computed/metrics/first-contentful-paint.js":15,"../../computed/trace-of-tab.js":39,"../../lib/dependency-graph/base-node.js":57,"../../lib/i18n/i18n.js":66,"../../lib/network-request.js":75,"../audit.js":3,"./byte-efficiency-audit.js":4,"./unused-css-rules.js":"../audits/byte-efficiency/unused-css-rules"}],"../audits/byte-efficiency/total-byte-weight":[function(require,module,exports){
 (function(__filename){
 
 
@@ -3055,7 +3055,7 @@ module.exports=TotalByteWeight;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/byte-efficiency/total-byte-weight.js");
-},{"../../computed/network-records.js":34,"../../lib/i18n/i18n.js":67,"./byte-efficiency-audit.js":4}],"../audits/byte-efficiency/unminified-css":[function(require,module,exports){
+},{"../../computed/network-records.js":34,"../../lib/i18n/i18n.js":66,"./byte-efficiency-audit.js":4}],"../audits/byte-efficiency/unminified-css":[function(require,module,exports){
 (function(__filename){
 
 
@@ -3176,7 +3176,7 @@ module.exports=UnminifiedCSS;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/byte-efficiency/unminified-css.js");
-},{"../../lib/i18n/i18n.js":67,"../../lib/minification-estimator.js":74,"./byte-efficiency-audit.js":4,"./unused-css-rules.js":"../audits/byte-efficiency/unused-css-rules"}],"../audits/byte-efficiency/unminified-javascript":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":66,"../../lib/minification-estimator.js":73,"./byte-efficiency-audit.js":4,"./unused-css-rules.js":"../audits/byte-efficiency/unused-css-rules"}],"../audits/byte-efficiency/unminified-javascript":[function(require,module,exports){
 (function(__filename){
 
 
@@ -3298,7 +3298,7 @@ module.exports=UnminifiedJavaScript;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/byte-efficiency/unminified-javascript.js");
-},{"../../lib/i18n/i18n.js":67,"../../lib/minification-estimator.js":74,"./byte-efficiency-audit.js":4}],"../audits/byte-efficiency/unused-css-rules":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":66,"../../lib/minification-estimator.js":73,"./byte-efficiency-audit.js":4}],"../audits/byte-efficiency/unused-css-rules":[function(require,module,exports){
 (function(__filename){
 
 
@@ -3499,7 +3499,7 @@ module.exports=UnusedCSSRules;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/byte-efficiency/unused-css-rules.js");
-},{"../../lib/i18n/i18n.js":67,"./byte-efficiency-audit.js":4}],"../audits/byte-efficiency/unused-javascript":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":66,"./byte-efficiency-audit.js":4}],"../audits/byte-efficiency/unused-javascript":[function(require,module,exports){
 (function(__filename){
 
 
@@ -3637,7 +3637,7 @@ module.exports=UnusedJavaScript;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/byte-efficiency/unused-javascript.js");
-},{"../../lib/i18n/i18n.js":67,"./byte-efficiency-audit.js":4}],"../audits/byte-efficiency/uses-long-cache-ttl":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":66,"./byte-efficiency-audit.js":4}],"../audits/byte-efficiency/uses-long-cache-ttl":[function(require,module,exports){
 (function(__filename){
 
 
@@ -3944,7 +3944,7 @@ module.exports=CacheHeaders;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/byte-efficiency/uses-long-cache-ttl.js");
-},{"../../computed/network-records.js":34,"../../lib/i18n/i18n.js":67,"../../lib/network-request.js":76,"../../lib/statistics.js":82,"../../lib/url-shim.js":"url","../audit.js":3,"assert":92,"parse-cache-control":139}],"../audits/byte-efficiency/uses-optimized-images":[function(require,module,exports){
+},{"../../computed/network-records.js":34,"../../lib/i18n/i18n.js":66,"../../lib/network-request.js":75,"../../lib/statistics.js":81,"../../lib/url-shim.js":"url","../audit.js":3,"assert":92,"parse-cache-control":155}],"../audits/byte-efficiency/uses-optimized-images":[function(require,module,exports){
 (function(__filename){
 
 
@@ -4083,7 +4083,7 @@ module.exports=UsesOptimizedImages;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/byte-efficiency/uses-optimized-images.js");
-},{"../../lib/i18n/i18n.js":67,"../../lib/url-shim.js":"url","./byte-efficiency-audit.js":4}],"../audits/byte-efficiency/uses-responsive-images":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":66,"../../lib/url-shim.js":"url","./byte-efficiency-audit.js":4}],"../audits/byte-efficiency/uses-responsive-images":[function(require,module,exports){
 (function(__filename){
 
 
@@ -4229,7 +4229,7 @@ module.exports=UsesResponsiveImages;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/byte-efficiency/uses-responsive-images.js");
-},{"../../lib/i18n/i18n.js":67,"../../lib/sentry.js":79,"../../lib/url-shim.js":"url","./byte-efficiency-audit.js":4}],"../audits/byte-efficiency/uses-text-compression":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":66,"../../lib/sentry.js":78,"../../lib/url-shim.js":"url","./byte-efficiency-audit.js":4}],"../audits/byte-efficiency/uses-text-compression":[function(require,module,exports){
 (function(__filename){
 
 
@@ -4333,7 +4333,7 @@ module.exports=ResponsesAreCompressed;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/byte-efficiency/uses-text-compression.js");
-},{"../../lib/i18n/i18n.js":67,"../../lib/url-shim.js":"url","./byte-efficiency-audit.js":4}],"../audits/byte-efficiency/uses-webp-images":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":66,"../../lib/url-shim.js":"url","./byte-efficiency-audit.js":4}],"../audits/byte-efficiency/uses-webp-images":[function(require,module,exports){
 (function(__filename){
 
 
@@ -4471,7 +4471,7 @@ module.exports=UsesWebPImages;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/byte-efficiency/uses-webp-images.js");
-},{"../../lib/i18n/i18n.js":67,"../../lib/url-shim.js":"url","./byte-efficiency-audit.js":4}],"../audits/content-width":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":66,"../../lib/url-shim.js":"url","./byte-efficiency-audit.js":4}],"../audits/content-width":[function(require,module,exports){
 (function(__filename){
 
 
@@ -4552,7 +4552,7 @@ module.exports=ContentWidth;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/content-width.js");
-},{"../lib/i18n/i18n.js":67,"./audit.js":3}],"../audits/critical-request-chains":[function(require,module,exports){
+},{"../lib/i18n/i18n.js":66,"./audit.js":3}],"../audits/critical-request-chains":[function(require,module,exports){
 (function(__filename){
 
 
@@ -4780,7 +4780,7 @@ module.exports=CriticalRequestChains;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/critical-request-chains.js");
-},{"../computed/critical-request-chains.js":9,"../lib/i18n/i18n.js":67,"./audit.js":3}],"../audits/deprecations":[function(require,module,exports){
+},{"../computed/critical-request-chains.js":9,"../lib/i18n/i18n.js":66,"./audit.js":3}],"../audits/deprecations":[function(require,module,exports){
 (function(__filename){
 
 
@@ -4877,7 +4877,7 @@ module.exports=Deprecations;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/deprecations.js");
-},{"../lib/i18n/i18n.js":67,"./audit.js":3}],"../audits/diagnostics":[function(require,module,exports){
+},{"../lib/i18n/i18n.js":66,"./audit.js":3}],"../audits/diagnostics":[function(require,module,exports){
 
 
 
@@ -4957,7 +4957,7 @@ items:[diagnostics]}};
 
 module.exports=Diagnostics;
 
-},{"../computed/main-thread-tasks.js":12,"../computed/network-analysis.js":33,"../computed/network-records.js":34,"../lib/dependency-graph/simulator/network-analyzer.js":63,"./audit.js":3}],"../audits/dobetterweb/appcache-manifest":[function(require,module,exports){
+},{"../computed/main-thread-tasks.js":12,"../computed/network-analysis.js":33,"../computed/network-records.js":34,"../lib/dependency-graph/simulator/network-analyzer.js":62,"./audit.js":3}],"../audits/dobetterweb/appcache-manifest":[function(require,module,exports){
 (function(__filename){
 
 
@@ -5028,7 +5028,7 @@ module.exports=AppCacheManifestAttr;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/dobetterweb/appcache-manifest.js");
-},{"../../lib/i18n/i18n.js":67,"../audit.js":3}],"../audits/dobetterweb/doctype":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":66,"../audit.js":3}],"../audits/dobetterweb/doctype":[function(require,module,exports){
 (function(__filename){
 
 
@@ -5126,7 +5126,7 @@ module.exports=Doctype;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/dobetterweb/doctype.js");
-},{"../../lib/i18n/i18n.js":67,"../audit.js":3}],"../audits/dobetterweb/dom-size":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":66,"../audit.js":3}],"../audits/dobetterweb/dom-size":[function(require,module,exports){
 (function(__filename){
 
 
@@ -5268,7 +5268,7 @@ module.exports=DOMSize;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/dobetterweb/dom-size.js");
-},{"../../lib/i18n/i18n.js":67,"../../report/html/renderer/util.js":88,"../audit.js":3}],"../audits/dobetterweb/external-anchors-use-rel-noopener":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":66,"../../report/html/renderer/util.js":87,"../audit.js":3}],"../audits/dobetterweb/external-anchors-use-rel-noopener":[function(require,module,exports){
 (function(__filename){
 
 
@@ -5374,7 +5374,7 @@ module.exports=ExternalAnchorsUseRelNoopenerAudit;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js");
-},{"../../lib/i18n/i18n.js":67,"../../lib/url-shim.js":"url","../audit.js":3}],"../audits/dobetterweb/geolocation-on-start":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":66,"../../lib/url-shim.js":"url","../audit.js":3}],"../audits/dobetterweb/geolocation-on-start":[function(require,module,exports){
 (function(__filename){
 
 
@@ -5450,7 +5450,7 @@ module.exports=GeolocationOnStart;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/dobetterweb/geolocation-on-start.js");
-},{"../../lib/i18n/i18n.js":67,"../violation-audit.js":7}],"../audits/dobetterweb/js-libraries":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":66,"../violation-audit.js":7}],"../audits/dobetterweb/js-libraries":[function(require,module,exports){
 (function(__filename){
 
 
@@ -5522,7 +5522,7 @@ module.exports=JsLibrariesAudit;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/dobetterweb/js-libraries.js");
-},{"../../lib/i18n/i18n.js":67,"../audit.js":3}],"../audits/dobetterweb/no-document-write":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":66,"../audit.js":3}],"../audits/dobetterweb/no-document-write":[function(require,module,exports){
 (function(__filename){
 
 
@@ -5613,7 +5613,7 @@ module.exports=NoDocWriteAudit;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/dobetterweb/no-document-write.js");
-},{"../../lib/i18n/i18n.js":67,"../violation-audit.js":7}],"../audits/dobetterweb/no-vulnerable-libraries":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":66,"../violation-audit.js":7}],"../audits/dobetterweb/no-vulnerable-libraries":[function(require,module,exports){
 (function(__filename){
 
 
@@ -5860,7 +5860,7 @@ module.exports=NoVulnerableLibrariesAudit;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js");
-},{"../../../third-party/snyk/snapshot.json":183,"../../lib/i18n/i18n.js":67,"../../lib/sentry.js":79,"../audit.js":3,"semver":163}],"../audits/dobetterweb/notification-on-start":[function(require,module,exports){
+},{"../../../third-party/snyk/snapshot.json":199,"../../lib/i18n/i18n.js":66,"../../lib/sentry.js":78,"../audit.js":3,"semver":179}],"../audits/dobetterweb/notification-on-start":[function(require,module,exports){
 (function(__filename){
 
 
@@ -5934,7 +5934,7 @@ module.exports=NotificationOnStart;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/dobetterweb/notification-on-start.js");
-},{"../../lib/i18n/i18n.js":67,"../violation-audit.js":7}],"../audits/dobetterweb/password-inputs-can-be-pasted-into":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":66,"../violation-audit.js":7}],"../audits/dobetterweb/password-inputs-can-be-pasted-into":[function(require,module,exports){
 (function(__filename){
 
 
@@ -6008,7 +6008,7 @@ module.exports=PasswordInputsCanBePastedIntoAudit;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/dobetterweb/password-inputs-can-be-pasted-into.js");
-},{"../../lib/i18n/i18n.js":67,"../audit.js":3}],"../audits/dobetterweb/uses-http2":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":66,"../audit.js":3}],"../audits/dobetterweb/uses-http2":[function(require,module,exports){
 (function(__filename){
 
 
@@ -6123,7 +6123,7 @@ module.exports=UsesHTTP2Audit;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/dobetterweb/uses-http2.js");
-},{"../../computed/network-records.js":34,"../../lib/i18n/i18n.js":67,"../../lib/url-shim.js":"url","../audit.js":3}],"../audits/dobetterweb/uses-passive-event-listeners":[function(require,module,exports){
+},{"../../computed/network-records.js":34,"../../lib/i18n/i18n.js":66,"../../lib/url-shim.js":"url","../audit.js":3}],"../audits/dobetterweb/uses-passive-event-listeners":[function(require,module,exports){
 (function(__filename){
 
 
@@ -6197,7 +6197,7 @@ module.exports=PassiveEventsAudit;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/dobetterweb/uses-passive-event-listeners.js");
-},{"../../lib/i18n/i18n.js":67,"../violation-audit.js":7}],"../audits/errors-in-console":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":66,"../violation-audit.js":7}],"../audits/errors-in-console":[function(require,module,exports){
 (function(__filename){
 
 
@@ -6335,7 +6335,7 @@ module.exports=ErrorLogs;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/errors-in-console.js");
-},{"../lib/i18n/i18n.js":67,"./audit.js":3,"lighthouse-logger":125}],"../audits/final-screenshot":[function(require,module,exports){
+},{"../lib/i18n/i18n.js":66,"./audit.js":3,"lighthouse-logger":125}],"../audits/final-screenshot":[function(require,module,exports){
 
 
 
@@ -6392,7 +6392,7 @@ data:finalScreenshot.datauri}};
 
 module.exports=FinalScreenshot;
 
-},{"../computed/screenshots.js":37,"../computed/trace-of-tab.js":39,"../lib/lh-error.js":72,"./audit.js":3}],"../audits/font-display":[function(require,module,exports){
+},{"../computed/screenshots.js":37,"../computed/trace-of-tab.js":39,"../lib/lh-error.js":71,"./audit.js":3}],"../audits/font-display":[function(require,module,exports){
 (function(__filename){
 
 
@@ -6560,7 +6560,7 @@ module.exports=FontDisplay;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/font-display.js");
-},{"../computed/network-records.js":34,"../lib/i18n/i18n.js":67,"../lib/sentry.js":79,"../lib/url-shim.js":"url","./audit.js":3}],"../audits/image-aspect-ratio":[function(require,module,exports){
+},{"../computed/network-records.js":34,"../lib/i18n/i18n.js":66,"../lib/sentry.js":78,"../lib/url-shim.js":"url","./audit.js":3}],"../audits/image-aspect-ratio":[function(require,module,exports){
 (function(__filename){
 
 
@@ -6701,7 +6701,7 @@ module.exports=ImageAspectRatio;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/image-aspect-ratio.js");
-},{"../lib/i18n/i18n.js":67,"../lib/url-shim.js":"url","./audit.js":3}],"../audits/installable-manifest":[function(require,module,exports){
+},{"../lib/i18n/i18n.js":66,"../lib/url-shim.js":"url","./audit.js":3}],"../audits/installable-manifest":[function(require,module,exports){
 (function(__filename){
 
 
@@ -6812,7 +6812,7 @@ module.exports=InstallableManifest;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/installable-manifest.js");
-},{"../computed/manifest-values.js":13,"../lib/i18n/i18n.js":67,"./multi-check-audit.js":6}],"../audits/is-on-https":[function(require,module,exports){
+},{"../computed/manifest-values.js":13,"../lib/i18n/i18n.js":66,"./multi-check-audit.js":6}],"../audits/is-on-https":[function(require,module,exports){
 (function(__filename){
 
 
@@ -6915,7 +6915,7 @@ module.exports=HTTPS;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/is-on-https.js");
-},{"../computed/network-records.js":34,"../lib/i18n/i18n.js":67,"../lib/url-shim.js":"url","./audit.js":3}],"../audits/load-fast-enough-for-pwa":[function(require,module,exports){
+},{"../computed/network-records.js":34,"../lib/i18n/i18n.js":66,"../lib/url-shim.js":"url","./audit.js":3}],"../audits/load-fast-enough-for-pwa":[function(require,module,exports){
 (function(__filename){
 
 
@@ -7025,7 +7025,7 @@ module.exports=LoadFastEnough4Pwa;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/load-fast-enough-for-pwa.js");
-},{"../computed/metrics/interactive.js":18,"../config/constants.js":46,"../lib/i18n/i18n.js":67,"./audit.js":3,"lodash.isequal":126}],"../audits/main-thread-tasks":[function(require,module,exports){
+},{"../computed/metrics/interactive.js":18,"../config/constants.js":46,"../lib/i18n/i18n.js":66,"./audit.js":3,"lodash.isequal":142}],"../audits/main-thread-tasks":[function(require,module,exports){
 
 
 
@@ -7225,7 +7225,7 @@ module.exports=MainThreadWorkBreakdown;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/mainthread-work-breakdown.js");
-},{"../computed/main-thread-tasks.js":12,"../lib/i18n/i18n.js":67,"../lib/tracehouse/task-groups.js":85,"./audit.js":3}],"../audits/manual/pwa-cross-browser":[function(require,module,exports){
+},{"../computed/main-thread-tasks.js":12,"../lib/i18n/i18n.js":66,"../lib/tracehouse/task-groups.js":84,"./audit.js":3}],"../audits/manual/pwa-cross-browser":[function(require,module,exports){
 (function(__filename){
 
 
@@ -7270,7 +7270,7 @@ module.exports.UIStrings=UIStrings;
 
 
 }).call(this,"/lighthouse-core/audits/manual/pwa-cross-browser.js");
-},{"../../lib/i18n/i18n.js":67,"./manual-audit.js":5}],"../audits/manual/pwa-each-page-has-url":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":66,"./manual-audit.js":5}],"../audits/manual/pwa-each-page-has-url":[function(require,module,exports){
 (function(__filename){
 
 
@@ -7313,7 +7313,7 @@ module.exports=PWAEachPageHasURL;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/manual/pwa-each-page-has-url.js");
-},{"../../lib/i18n/i18n.js":67,"./manual-audit.js":5}],"../audits/manual/pwa-page-transitions":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":66,"./manual-audit.js":5}],"../audits/manual/pwa-page-transitions":[function(require,module,exports){
 (function(__filename){
 
 
@@ -7356,7 +7356,7 @@ module.exports=PWAPageTransitions;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/manual/pwa-page-transitions.js");
-},{"../../lib/i18n/i18n.js":67,"./manual-audit.js":5}],"../audits/metrics/estimated-input-latency":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":66,"./manual-audit.js":5}],"../audits/metrics/estimated-input-latency":[function(require,module,exports){
 (function(__filename){
 
 
@@ -7436,7 +7436,7 @@ module.exports=EstimatedInputLatency;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/metrics/estimated-input-latency.js");
-},{"../../computed/metrics/estimated-input-latency.js":14,"../../lib/i18n/i18n.js":67,"../audit.js":3}],"../audits/metrics/first-contentful-paint-3g":[function(require,module,exports){
+},{"../../computed/metrics/estimated-input-latency.js":14,"../../lib/i18n/i18n.js":66,"../audit.js":3}],"../audits/metrics/first-contentful-paint-3g":[function(require,module,exports){
 
 
 
@@ -7579,7 +7579,7 @@ module.exports=FirstContentfulPaint;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/metrics/first-contentful-paint.js");
-},{"../../computed/metrics/first-contentful-paint.js":15,"../../lib/i18n/i18n.js":67,"../audit.js":3}],"../audits/metrics/first-cpu-idle":[function(require,module,exports){
+},{"../../computed/metrics/first-contentful-paint.js":15,"../../lib/i18n/i18n.js":66,"../audit.js":3}],"../audits/metrics/first-cpu-idle":[function(require,module,exports){
 (function(__filename){
 
 
@@ -7659,7 +7659,7 @@ module.exports=FirstCPUIdle;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/metrics/first-cpu-idle.js");
-},{"../../computed/metrics/first-cpu-idle.js":16,"../../lib/i18n/i18n.js":67,"../audit.js":3}],"../audits/metrics/first-meaningful-paint":[function(require,module,exports){
+},{"../../computed/metrics/first-cpu-idle.js":16,"../../lib/i18n/i18n.js":66,"../audit.js":3}],"../audits/metrics/first-meaningful-paint":[function(require,module,exports){
 (function(__filename){
 
 
@@ -7739,7 +7739,7 @@ module.exports=FirstMeaningfulPaint;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/metrics/first-meaningful-paint.js");
-},{"../../computed/metrics/first-meaningful-paint.js":17,"../../lib/i18n/i18n.js":67,"../audit.js":3}],"../audits/metrics/interactive":[function(require,module,exports){
+},{"../../computed/metrics/first-meaningful-paint.js":17,"../../lib/i18n/i18n.js":66,"../audit.js":3}],"../audits/metrics/interactive":[function(require,module,exports){
 (function(__filename){
 
 
@@ -7834,7 +7834,7 @@ module.exports=InteractiveMetric;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/metrics/interactive.js");
-},{"../../computed/metrics/interactive.js":18,"../../lib/i18n/i18n.js":67,"../audit.js":3}],"../audits/metrics/max-potential-fid":[function(require,module,exports){
+},{"../../computed/metrics/interactive.js":18,"../../lib/i18n/i18n.js":66,"../audit.js":3}],"../audits/metrics/max-potential-fid":[function(require,module,exports){
 (function(__filename){
 
 
@@ -7914,7 +7914,7 @@ module.exports=MaxPotentialFID;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/metrics/max-potential-fid.js");
-},{"../../computed/metrics/max-potential-fid.js":29,"../../lib/i18n/i18n.js":67,"../audit.js":3}],"../audits/metrics/speed-index":[function(require,module,exports){
+},{"../../computed/metrics/max-potential-fid.js":29,"../../lib/i18n/i18n.js":66,"../audit.js":3}],"../audits/metrics/speed-index":[function(require,module,exports){
 (function(__filename){
 
 
@@ -7993,7 +7993,7 @@ module.exports=SpeedIndex;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/metrics/speed-index.js");
-},{"../../computed/metrics/speed-index.js":31,"../../lib/i18n/i18n.js":67,"../audit.js":3}],"../audits/metrics/total-blocking-time":[function(require,module,exports){
+},{"../../computed/metrics/speed-index.js":31,"../../lib/i18n/i18n.js":66,"../audit.js":3}],"../audits/metrics/total-blocking-time":[function(require,module,exports){
 (function(__filename){
 
 
@@ -8080,7 +8080,7 @@ module.exports=TotalBlockingTime;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/metrics/total-blocking-time.js");
-},{"../../computed/metrics/total-blocking-time.js":32,"../../lib/i18n/i18n.js":67,"../audit.js":3}],"../audits/metrics":[function(require,module,exports){
+},{"../../computed/metrics/total-blocking-time.js":32,"../../lib/i18n/i18n.js":66,"../audit.js":3}],"../audits/metrics":[function(require,module,exports){
 
 
 
@@ -8409,7 +8409,7 @@ details};
 
 module.exports=MixedContent;
 
-},{"../computed/network-records.js":34,"../lib/url-shim.js":"url","../report/html/renderer/util.js":88,"./audit.js":3}],"../audits/network-requests":[function(require,module,exports){
+},{"../computed/network-records.js":34,"../lib/url-shim.js":"url","../report/html/renderer/util.js":87,"./audit.js":3}],"../audits/network-requests":[function(require,module,exports){
 
 
 
@@ -8595,7 +8595,7 @@ module.exports=NetworkRTT;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/network-rtt.js");
-},{"../computed/network-analysis.js":33,"../lib/i18n/i18n.js":67,"./audit.js":3}],"../audits/network-server-latency":[function(require,module,exports){
+},{"../computed/network-analysis.js":33,"../lib/i18n/i18n.js":66,"./audit.js":3}],"../audits/network-server-latency":[function(require,module,exports){
 (function(__filename){
 
 
@@ -8678,7 +8678,7 @@ module.exports=NetworkServerLatency;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/network-server-latency.js");
-},{"../computed/network-analysis.js":33,"../lib/i18n/i18n.js":67,"./audit.js":3}],"../audits/offline-start-url":[function(require,module,exports){
+},{"../computed/network-analysis.js":33,"../lib/i18n/i18n.js":66,"./audit.js":3}],"../audits/offline-start-url":[function(require,module,exports){
 (function(__filename){
 
 
@@ -8750,7 +8750,7 @@ module.exports=OfflineStartUrl;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/offline-start-url.js");
-},{"../lib/i18n/i18n.js":67,"./audit.js":3}],"../audits/performance-budget":[function(require,module,exports){
+},{"../lib/i18n/i18n.js":66,"./audit.js":3}],"../audits/performance-budget":[function(require,module,exports){
 (function(__filename){
 
 
@@ -8913,7 +8913,7 @@ module.exports=ResourceBudget;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/performance-budget.js");
-},{"../computed/main-resource.js":11,"../computed/resource-summary.js":36,"../config/budget.js":42,"../lib/i18n/i18n.js":67,"./audit.js":3}],"../audits/predictive-perf":[function(require,module,exports){
+},{"../computed/main-resource.js":11,"../computed/resource-summary.js":36,"../config/budget.js":42,"../lib/i18n/i18n.js":66,"./audit.js":3}],"../audits/predictive-perf":[function(require,module,exports){
 
 
 
@@ -9017,7 +9017,7 @@ items:[values]}};
 
 module.exports=PredictivePerf;
 
-},{"../computed/metrics/lantern-estimated-input-latency.js":19,"../computed/metrics/lantern-first-contentful-paint.js":20,"../computed/metrics/lantern-first-cpu-idle.js":21,"../computed/metrics/lantern-first-meaningful-paint.js":22,"../computed/metrics/lantern-interactive.js":23,"../computed/metrics/lantern-speed-index.js":26,"../report/html/renderer/util.js":88,"./audit.js":3}],"../audits/redirects-http":[function(require,module,exports){
+},{"../computed/metrics/lantern-estimated-input-latency.js":19,"../computed/metrics/lantern-first-contentful-paint.js":20,"../computed/metrics/lantern-first-cpu-idle.js":21,"../computed/metrics/lantern-first-meaningful-paint.js":22,"../computed/metrics/lantern-interactive.js":23,"../computed/metrics/lantern-speed-index.js":26,"../report/html/renderer/util.js":87,"./audit.js":3}],"../audits/redirects-http":[function(require,module,exports){
 (function(__filename){
 
 
@@ -9070,7 +9070,7 @@ module.exports=RedirectsHTTP;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/redirects-http.js");
-},{"../lib/i18n/i18n.js":67,"./audit.js":3}],"../audits/redirects":[function(require,module,exports){
+},{"../lib/i18n/i18n.js":66,"./audit.js":3}],"../audits/redirects":[function(require,module,exports){
 (function(__filename){
 
 
@@ -9200,7 +9200,7 @@ module.exports=Redirects;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/redirects.js");
-},{"../computed/main-resource.js":11,"../computed/metrics/lantern-interactive.js":23,"../computed/network-records.js":34,"../computed/trace-of-tab.js":39,"../lib/i18n/i18n.js":67,"./audit.js":3,"./byte-efficiency/byte-efficiency-audit.js":4}],"../audits/resource-summary":[function(require,module,exports){
+},{"../computed/main-resource.js":11,"../computed/metrics/lantern-interactive.js":23,"../computed/network-records.js":34,"../computed/trace-of-tab.js":39,"../lib/i18n/i18n.js":66,"./audit.js":3,"./byte-efficiency/byte-efficiency-audit.js":4}],"../audits/resource-summary":[function(require,module,exports){
 (function(__filename){
 
 
@@ -9308,7 +9308,7 @@ module.exports=ResourceSummary;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/resource-summary.js");
-},{"../computed/resource-summary.js":36,"../lib/i18n/i18n.js":67,"./audit.js":3}],"../audits/screenshot-thumbnails":[function(require,module,exports){
+},{"../computed/resource-summary.js":36,"../lib/i18n/i18n.js":66,"./audit.js":3}],"../audits/screenshot-thumbnails":[function(require,module,exports){
 
 
 
@@ -9458,7 +9458,7 @@ items:thumbnails}};
 
 module.exports=ScreenshotThumbnails;
 
-},{"../computed/metrics/interactive.js":18,"../computed/speedline.js":38,"../lib/lh-error.js":72,"./audit.js":3,"jpeg-js":122}],"../audits/seo/canonical":[function(require,module,exports){
+},{"../computed/metrics/interactive.js":18,"../computed/speedline.js":38,"../lib/lh-error.js":71,"./audit.js":3,"jpeg-js":122}],"../audits/seo/canonical":[function(require,module,exports){
 (function(__filename){
 
 
@@ -9693,7 +9693,7 @@ module.exports=Canonical;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/seo/canonical.js");
-},{"../../computed/main-resource.js":11,"../../lib/i18n/i18n.js":67,"../../lib/url-shim.js":"url","../audit.js":3}],"../audits/seo/font-size":[function(require,module,exports){
+},{"../../computed/main-resource.js":11,"../../lib/i18n/i18n.js":66,"../../lib/url-shim.js":"url","../audit.js":3}],"../audits/seo/font-size":[function(require,module,exports){
 (function(__filename){
 
 
@@ -10039,7 +10039,7 @@ module.exports=FontSize;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/seo/font-size.js");
-},{"../../computed/viewport-meta.js":41,"../../lib/i18n/i18n.js":67,"../../lib/url-shim.js":"url","../audit.js":3}],"../audits/seo/hreflang":[function(require,module,exports){
+},{"../../computed/viewport-meta.js":41,"../../lib/i18n/i18n.js":66,"../../lib/url-shim.js":"url","../audit.js":3}],"../audits/seo/hreflang":[function(require,module,exports){
 (function(global,__filename){
 
 
@@ -10159,7 +10159,7 @@ module.exports=Hreflang;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,typeof global!=="undefined"?global:typeof self!=="undefined"?self:typeof window!=="undefined"?window:{},"/lighthouse-core/audits/seo/hreflang.js");
-},{"../../lib/i18n/i18n.js":67,"../audit.js":3,"axe-core/lib/core/utils/valid-langs.js":96}],"../audits/seo/http-status-code":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":66,"../audit.js":3,"axe-core/lib/core/utils/valid-langs.js":96}],"../audits/seo/http-status-code":[function(require,module,exports){
 (function(__filename){
 
 
@@ -10232,7 +10232,7 @@ module.exports=HTTPStatusCode;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/seo/http-status-code.js");
-},{"../../computed/main-resource.js":11,"../../lib/i18n/i18n.js":67,"../audit.js":3}],"../audits/seo/is-crawlable":[function(require,module,exports){
+},{"../../computed/main-resource.js":11,"../../lib/i18n/i18n.js":66,"../audit.js":3}],"../audits/seo/is-crawlable":[function(require,module,exports){
 (function(__filename){
 
 
@@ -10385,7 +10385,7 @@ module.exports=IsCrawlable;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/seo/is-crawlable.js");
-},{"../../computed/main-resource.js":11,"../../lib/i18n/i18n.js":67,"../../lib/url-shim.js":"url","../audit.js":3,"robots-parser":161}],"../audits/seo/link-text":[function(require,module,exports){
+},{"../../computed/main-resource.js":11,"../../lib/i18n/i18n.js":66,"../../lib/url-shim.js":"url","../audit.js":3,"robots-parser":177}],"../audits/seo/link-text":[function(require,module,exports){
 (function(__filename){
 
 
@@ -10537,7 +10537,7 @@ module.exports=LinkText;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/seo/link-text.js");
-},{"../../lib/i18n/i18n.js":67,"../../lib/url-shim.js":"url","../audit.js":3}],"../audits/seo/manual/structured-data":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":66,"../../lib/url-shim.js":"url","../audit.js":3}],"../audits/seo/manual/structured-data":[function(require,module,exports){
 (function(__filename){
 
 
@@ -10579,7 +10579,7 @@ module.exports=StructuredData;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/seo/manual/structured-data.js");
-},{"../../../lib/i18n/i18n.js":67,"../../manual/manual-audit.js":5}],"../audits/seo/meta-description":[function(require,module,exports){
+},{"../../../lib/i18n/i18n.js":66,"../../manual/manual-audit.js":5}],"../audits/seo/meta-description":[function(require,module,exports){
 (function(__filename){
 
 
@@ -10650,7 +10650,7 @@ module.exports=Description;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/seo/meta-description.js");
-},{"../../lib/i18n/i18n.js":67,"../audit.js":3}],"../audits/seo/plugins":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":66,"../audit.js":3}],"../audits/seo/plugins":[function(require,module,exports){
 (function(__filename){
 
 
@@ -10824,7 +10824,7 @@ module.exports=Plugins;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/seo/plugins.js");
-},{"../../lib/i18n/i18n.js":67,"../../lib/url-shim.js":"url","../audit.js":3}],"../audits/seo/robots-txt":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":66,"../../lib/url-shim.js":"url","../audit.js":3}],"../audits/seo/robots-txt":[function(require,module,exports){
 (function(__filename){
 
 
@@ -11084,7 +11084,7 @@ module.exports=RobotsTxt;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/seo/robots-txt.js");
-},{"../../lib/i18n/i18n.js":67,"../../lib/url-shim.js":"url","../audit.js":3}],"../audits/seo/tap-targets":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":66,"../../lib/url-shim.js":"url","../audit.js":3}],"../audits/seo/tap-targets":[function(require,module,exports){
 (function(__filename){
 
 
@@ -11454,7 +11454,7 @@ module.exports.UIStrings=UIStrings;
 
 
 }).call(this,"/lighthouse-core/audits/seo/tap-targets.js");
-},{"../../computed/viewport-meta.js":41,"../../lib/i18n/i18n.js":67,"../../lib/rect-helpers.js":78,"../../lib/tappable-rects.js":83,"../audit.js":3}],"../audits/service-worker":[function(require,module,exports){
+},{"../../computed/viewport-meta.js":41,"../../lib/i18n/i18n.js":66,"../../lib/rect-helpers.js":77,"../../lib/tappable-rects.js":82,"../audit.js":3}],"../audits/service-worker":[function(require,module,exports){
 (function(__filename){
 
 
@@ -11616,7 +11616,7 @@ module.exports=ServiceWorker;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/service-worker.js");
-},{"../lib/i18n/i18n.js":67,"../lib/url-shim.js":"url","./audit.js":3}],"../audits/splash-screen":[function(require,module,exports){
+},{"../lib/i18n/i18n.js":66,"../lib/url-shim.js":"url","./audit.js":3}],"../audits/splash-screen":[function(require,module,exports){
 (function(__filename){
 
 
@@ -11718,7 +11718,7 @@ module.exports=SplashScreen;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/splash-screen.js");
-},{"../computed/manifest-values.js":13,"../lib/i18n/i18n.js":67,"./multi-check-audit.js":6}],"../audits/themed-omnibox":[function(require,module,exports){
+},{"../computed/manifest-values.js":13,"../lib/i18n/i18n.js":66,"./multi-check-audit.js":6}],"../audits/themed-omnibox":[function(require,module,exports){
 (function(__filename){
 
 
@@ -11831,7 +11831,7 @@ module.exports=ThemedOmnibox;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/themed-omnibox.js");
-},{"../computed/manifest-values.js":13,"../lib/i18n/i18n.js":67,"./multi-check-audit.js":6,"cssstyle/lib/parsers":105}],"../audits/third-party-summary":[function(require,module,exports){
+},{"../computed/manifest-values.js":13,"../lib/i18n/i18n.js":66,"./multi-check-audit.js":6,"cssstyle/lib/parsers":105}],"../audits/third-party-summary":[function(require,module,exports){
 (function(__filename){
 
 
@@ -12011,7 +12011,7 @@ module.exports=ThirdPartySummary;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/third-party-summary.js");
-},{"../computed/main-thread-tasks.js":12,"../computed/network-records.js":34,"../lib/i18n/i18n.js":67,"./audit.js":3,"./bootup-time.js":"../audits/bootup-time","third-party-web/httparchive-nostats-subset":169}],"../audits/time-to-first-byte":[function(require,module,exports){
+},{"../computed/main-thread-tasks.js":12,"../computed/network-records.js":34,"../lib/i18n/i18n.js":66,"./audit.js":3,"./bootup-time.js":"../audits/bootup-time","third-party-web/httparchive-nostats-subset":185}],"../audits/time-to-first-byte":[function(require,module,exports){
 (function(__filename){
 
 
@@ -12101,7 +12101,7 @@ module.exports=TTFBMetric;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/time-to-first-byte.js");
-},{"../computed/main-resource.js":11,"../lib/i18n/i18n.js":67,"./audit.js":3}],"../audits/user-timings":[function(require,module,exports){
+},{"../computed/main-resource.js":11,"../lib/i18n/i18n.js":66,"./audit.js":3}],"../audits/user-timings":[function(require,module,exports){
 (function(__filename){
 
 
@@ -12232,7 +12232,7 @@ module.exports=UserTimings;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/user-timings.js");
-},{"../computed/user-timings.js":40,"../lib/i18n/i18n.js":67,"./audit.js":3}],"../audits/uses-rel-preconnect":[function(require,module,exports){
+},{"../computed/user-timings.js":40,"../lib/i18n/i18n.js":66,"./audit.js":3}],"../audits/uses-rel-preconnect":[function(require,module,exports){
 (function(__filename){
 
 
@@ -12444,7 +12444,7 @@ module.exports=UsesRelPreconnectAudit;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/uses-rel-preconnect.js");
-},{"../computed/load-simulator.js":10,"../computed/main-resource.js":11,"../computed/network-records.js":34,"../lib/i18n/i18n.js":67,"../lib/url-shim.js":"url","./audit.js":3,"./byte-efficiency/byte-efficiency-audit.js":4}],"../audits/uses-rel-preload":[function(require,module,exports){
+},{"../computed/load-simulator.js":10,"../computed/main-resource.js":11,"../computed/network-records.js":34,"../lib/i18n/i18n.js":66,"../lib/url-shim.js":"url","./audit.js":3,"./byte-efficiency/byte-efficiency-audit.js":4}],"../audits/uses-rel-preload":[function(require,module,exports){
 (function(__filename){
 
 
@@ -12690,7 +12690,7 @@ module.exports=UsesRelPreloadAudit;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/uses-rel-preload.js");
-},{"../computed/critical-request-chains.js":9,"../computed/load-simulator.js":10,"../computed/main-resource.js":11,"../computed/page-dependency-graph.js":35,"../lib/i18n/i18n.js":67,"../lib/url-shim.js":"url","./audit.js":3,"./byte-efficiency/byte-efficiency-audit.js":4}],"../audits/viewport":[function(require,module,exports){
+},{"../computed/critical-request-chains.js":9,"../computed/load-simulator.js":10,"../computed/main-resource.js":11,"../computed/page-dependency-graph.js":35,"../lib/i18n/i18n.js":66,"../lib/url-shim.js":"url","./audit.js":3,"./byte-efficiency/byte-efficiency-audit.js":4}],"../audits/viewport":[function(require,module,exports){
 (function(__filename){
 
 
@@ -12758,7 +12758,7 @@ module.exports=Viewport;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/viewport.js");
-},{"../computed/viewport-meta.js":41,"../lib/i18n/i18n.js":67,"./audit.js":3}],"../audits/without-javascript":[function(require,module,exports){
+},{"../computed/viewport-meta.js":41,"../lib/i18n/i18n.js":66,"./audit.js":3}],"../audits/without-javascript":[function(require,module,exports){
 (function(__filename){
 
 
@@ -12824,7 +12824,7 @@ module.exports=WithoutJavaScript;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/without-javascript.js");
-},{"../lib/i18n/i18n.js":67,"./audit.js":3}],"../audits/works-offline":[function(require,module,exports){
+},{"../lib/i18n/i18n.js":66,"./audit.js":3}],"../audits/works-offline":[function(require,module,exports){
 (function(__filename){
 
 
@@ -12896,7 +12896,7 @@ module.exports=WorksOffline;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/works-offline.js");
-},{"../lib/i18n/i18n.js":67,"../lib/url-shim.js":"url","./audit.js":3}],"../gather/gatherers/accessibility":[function(require,module,exports){
+},{"../lib/i18n/i18n.js":66,"../lib/url-shim.js":"url","./audit.js":3}],"../gather/gatherers/accessibility":[function(require,module,exports){
 
 
 
@@ -12999,7 +12999,7 @@ return returnedValue;
 
 module.exports=Accessibility;
 
-},{"../../lib/page-functions.js":77,"./gatherer.js":54}],"../gather/gatherers/anchor-elements":[function(require,module,exports){
+},{"../../lib/page-functions.js":76,"./gatherer.js":53}],"../gather/gatherers/anchor-elements":[function(require,module,exports){
 
 
 
@@ -13081,7 +13081,7 @@ return driver.evaluateAsync(expression,{useIsolation:true});
 
 module.exports=AnchorElements;
 
-},{"../../lib/page-functions.js":77,"./gatherer.js":54}],"../gather/gatherers/cache-contents":[function(require,module,exports){
+},{"../../lib/page-functions.js":76,"./gatherer.js":53}],"../gather/gatherers/cache-contents":[function(require,module,exports){
 
 
 
@@ -13142,7 +13142,7 @@ return cacheUrls;
 
 module.exports=CacheContents;
 
-},{"./gatherer.js":54}],"../gather/gatherers/console-messages":[function(require,module,exports){
+},{"./gatherer.js":53}],"../gather/gatherers/console-messages":[function(require,module,exports){
 
 
 
@@ -13198,7 +13198,7 @@ return this._logEntries;
 
 module.exports=ConsoleMessages;
 
-},{"./gatherer.js":54}],"../gather/gatherers/css-usage":[function(require,module,exports){
+},{"./gatherer.js":53}],"../gather/gatherers/css-usage":[function(require,module,exports){
 
 
 
@@ -13259,7 +13259,7 @@ stylesheets:Array.from(dedupedStylesheets.values())};
 
 module.exports=CSSUsage;
 
-},{"./gatherer.js":54}],"../gather/gatherers/dobetterweb/appcache":[function(require,module,exports){
+},{"./gatherer.js":53}],"../gather/gatherers/dobetterweb/appcache":[function(require,module,exports){
 
 
 
@@ -13286,7 +13286,7 @@ then(node=>node&&node.getAttribute('manifest'));
 
 module.exports=AppCacheManifest;
 
-},{"../gatherer.js":54}],"../gather/gatherers/dobetterweb/doctype":[function(require,module,exports){
+},{"../gatherer.js":53}],"../gather/gatherers/dobetterweb/doctype":[function(require,module,exports){
 
 
 
@@ -13324,7 +13324,7 @@ return driver.evaluateAsync(`(${getDoctype.toString()}())`);
 
 module.exports=Doctype;
 
-},{"../gatherer.js":54}],"../gather/gatherers/dobetterweb/domstats":[function(require,module,exports){
+},{"../gatherer.js":53}],"../gather/gatherers/dobetterweb/domstats":[function(require,module,exports){
 
 
 
@@ -13487,7 +13487,7 @@ return results;
 
 module.exports=DOMStats;
 
-},{"../../../lib/page-functions.js":77,"../gatherer.js":54}],"../gather/gatherers/dobetterweb/optimized-images":[function(require,module,exports){
+},{"../../../lib/page-functions.js":76,"../gatherer.js":53}],"../gather/gatherers/dobetterweb/optimized-images":[function(require,module,exports){
 
 
 
@@ -13660,7 +13660,7 @@ return results;
 
 module.exports=OptimizedImages;
 
-},{"../../../lib/network-request.js":76,"../../../lib/sentry.js":79,"../../../lib/url-shim.js":"url","../../driver.js":52,"../gatherer.js":54,"lighthouse-logger":125}],"../gather/gatherers/dobetterweb/password-inputs-with-prevented-paste":[function(require,module,exports){
+},{"../../../lib/network-request.js":75,"../../../lib/sentry.js":78,"../../../lib/url-shim.js":"url","../../driver.js":51,"../gatherer.js":53,"lighthouse-logger":125}],"../gather/gatherers/dobetterweb/password-inputs-with-prevented-paste":[function(require,module,exports){
 
 
 
@@ -13707,7 +13707,7 @@ return passContext.driver.evaluateAsync(`(() => {
 
 module.exports=PasswordInputsWithPreventedPaste;
 
-},{"../../../lib/page-functions.js":77,"../gatherer.js":54}],"../gather/gatherers/dobetterweb/response-compression":[function(require,module,exports){
+},{"../../../lib/page-functions.js":76,"../gatherer.js":53}],"../gather/gatherers/dobetterweb/response-compression":[function(require,module,exports){
 (function(Buffer){
 
 
@@ -13833,7 +13833,7 @@ return record;
 module.exports=ResponseCompression;
 
 }).call(this,require("buffer").Buffer);
-},{"../../../lib/network-request.js":76,"../../../lib/sentry.js":79,"../../../lib/url-shim.js":"url","../gatherer.js":54,"buffer":102,"zlib":100}],"../gather/gatherers/dobetterweb/tags-blocking-first-paint":[function(require,module,exports){
+},{"../../../lib/network-request.js":75,"../../../lib/sentry.js":78,"../../../lib/url-shim.js":"url","../gatherer.js":53,"buffer":102,"zlib":100}],"../gather/gatherers/dobetterweb/tags-blocking-first-paint":[function(require,module,exports){
 
 
 
@@ -14026,7 +14026,7 @@ return TagsBlockingFirstPaint.findBlockingTags(passContext.driver,loadData.netwo
 
 module.exports=TagsBlockingFirstPaint;
 
-},{"../../driver.js":52,"../gatherer.js":54}],"../gather/gatherers/html-without-javascript":[function(require,module,exports){
+},{"../../driver.js":51,"../gatherer.js":53}],"../gather/gatherers/html-without-javascript":[function(require,module,exports){
 
 
 
@@ -14084,7 +14084,7 @@ hasNoScript};
 
 module.exports=HTMLWithoutJavaScript;
 
-},{"./gatherer.js":54}],"../gather/gatherers/http-redirect":[function(require,module,exports){
+},{"./gatherer.js":53}],"../gather/gatherers/http-redirect":[function(require,module,exports){
 
 
 
@@ -14131,7 +14131,7 @@ value:isHttps};
 
 module.exports=HTTPRedirect;
 
-},{"./gatherer.js":54}],"../gather/gatherers/iframe-elements":[function(require,module,exports){
+},{"./gatherer.js":53}],"../gather/gatherers/iframe-elements":[function(require,module,exports){
 
 
 
@@ -14188,7 +14188,7 @@ return iframeElements;
 
 module.exports=IFrameElements;
 
-},{"../../lib/page-functions.js":77,"./gatherer.js":54}],"../gather/gatherers/image-elements":[function(require,module,exports){
+},{"../../lib/page-functions.js":76,"./gatherer.js":53}],"../gather/gatherers/image-elements":[function(require,module,exports){
 
 
 
@@ -14420,7 +14420,7 @@ return imageUsage;
 
 module.exports=ImageElements;
 
-},{"../../lib/page-functions.js":77,"../driver.js":52,"./gatherer.js":54}],"../gather/gatherers/js-usage":[function(require,module,exports){
+},{"../../lib/page-functions.js":76,"../driver.js":51,"./gatherer.js":53}],"../gather/gatherers/js-usage":[function(require,module,exports){
 
 
 
@@ -14458,7 +14458,7 @@ return coverageResponse.result;
 
 module.exports=JsUsage;
 
-},{"./gatherer.js":54}],"../gather/gatherers/link-elements":[function(require,module,exports){
+},{"./gatherer.js":53}],"../gather/gatherers/link-elements":[function(require,module,exports){
 
 
 
@@ -14603,7 +14603,7 @@ return linkElements;
 
 module.exports=LinkElements;
 
-},{"../../lib/dependency-graph/simulator/network-analyzer.js":63,"../../lib/page-functions.js":77,"../../lib/url-shim.js":"url","./gatherer.js":54,"http-link-header":109}],"../gather/gatherers/main-document-content":[function(require,module,exports){
+},{"../../lib/dependency-graph/simulator/network-analyzer.js":62,"../../lib/page-functions.js":76,"../../lib/url-shim.js":"url","./gatherer.js":53,"http-link-header":109}],"../gather/gatherers/main-document-content":[function(require,module,exports){
 
 
 
@@ -14633,7 +14633,7 @@ return driver.getRequestContent(mainResource.requestId);
 
 module.exports=MainDocumentContent;
 
-},{"../../lib/dependency-graph/simulator/network-analyzer.js":63,"./gatherer.js":54}],"../gather/gatherers/meta-elements":[function(require,module,exports){
+},{"../../lib/dependency-graph/simulator/network-analyzer.js":62,"./gatherer.js":53}],"../gather/gatherers/meta-elements":[function(require,module,exports){
 
 
 
@@ -14669,7 +14669,7 @@ return driver.evaluateAsync(`(() => {
 
 module.exports=MetaElements;
 
-},{"../../lib/page-functions.js":77,"./gatherer.js":54}],"../gather/gatherers/mixed-content":[function(require,module,exports){
+},{"../../lib/page-functions.js":76,"./gatherer.js":53}],"../gather/gatherers/mixed-content":[function(require,module,exports){
 (function(Buffer){
 
 
@@ -14793,7 +14793,7 @@ return{url:passContext.url};
 module.exports=MixedContent;
 
 }).call(this,require("buffer").Buffer);
-},{"../../lib/url-shim.js":"url","../driver.js":52,"./gatherer.js":54,"buffer":102}],"../gather/gatherers/offline":[function(require,module,exports){
+},{"../../lib/url-shim.js":"url","../driver.js":51,"./gatherer.js":53,"buffer":102}],"../gather/gatherers/offline":[function(require,module,exports){
 
 
 
@@ -14832,7 +14832,7 @@ return navigationRecord?navigationRecord.statusCode:-1;
 
 module.exports=Offline;
 
-},{"../../lib/url-shim.js":"url","./gatherer.js":54}],"../gather/gatherers/runtime-exceptions":[function(require,module,exports){
+},{"../../lib/url-shim.js":"url","./gatherer.js":53}],"../gather/gatherers/runtime-exceptions":[function(require,module,exports){
 
 
 
@@ -14882,7 +14882,7 @@ return this._exceptions;
 
 module.exports=RuntimeExceptions;
 
-},{"./gatherer.js":54}],"../gather/gatherers/script-elements":[function(require,module,exports){
+},{"./gatherer.js":53}],"../gather/gatherers/script-elements":[function(require,module,exports){
 
 
 
@@ -14984,7 +14984,7 @@ return scripts;
 
 module.exports=ScriptElements;
 
-},{"../../lib/dependency-graph/simulator/network-analyzer.js":63,"../../lib/network-request.js":76,"../../lib/page-functions.js":77,"./gatherer.js":54}],"../gather/gatherers/seo/embedded-content":[function(require,module,exports){
+},{"../../lib/dependency-graph/simulator/network-analyzer.js":62,"../../lib/network-request.js":75,"../../lib/page-functions.js":76,"./gatherer.js":53}],"../gather/gatherers/seo/embedded-content":[function(require,module,exports){
 
 
 
@@ -15027,7 +15027,7 @@ return passContext.driver.evaluateAsync(expression);
 
 module.exports=EmbeddedContent;
 
-},{"../../../lib/page-functions.js":77,"../gatherer.js":54}],"../gather/gatherers/seo/font-size":[function(require,module,exports){
+},{"../../../lib/page-functions.js":76,"../gatherer.js":53}],"../gather/gatherers/seo/font-size":[function(require,module,exports){
 
 
 
@@ -15393,7 +15393,7 @@ module.exports.TEXT_NODE_TYPE=TEXT_NODE_TYPE;
 module.exports.computeSelectorSpecificity=computeSelectorSpecificity;
 module.exports.getEffectiveFontRule=getEffectiveFontRule;
 
-},{"../../../lib/sentry.js":79,"../gatherer.js":54}],"../gather/gatherers/seo/robots-txt":[function(require,module,exports){
+},{"../../../lib/sentry.js":78,"../gatherer.js":53}],"../gather/gatherers/seo/robots-txt":[function(require,module,exports){
 
 
 
@@ -15434,7 +15434,7 @@ return passContext.driver.evaluateAsync(`(${getRobotsTxtContent.toString()}())`)
 
 module.exports=RobotsTxt;
 
-},{"../gatherer.js":54}],"../gather/gatherers/seo/tap-targets":[function(require,module,exports){
+},{"../gatherer.js":53}],"../gather/gatherers/seo/tap-targets":[function(require,module,exports){
 
 
 
@@ -15771,7 +15771,7 @@ return passContext.driver.evaluateAsync(expression,{useIsolation:true});
 
 module.exports=TapTargets;
 
-},{"../../../lib/page-functions.js":77,"../../../lib/rect-helpers.js":78,"../gatherer.js":54}],"../gather/gatherers/service-worker":[function(require,module,exports){
+},{"../../../lib/page-functions.js":76,"../../../lib/rect-helpers.js":77,"../gatherer.js":53}],"../gather/gatherers/service-worker":[function(require,module,exports){
 
 
 
@@ -15799,7 +15799,7 @@ registrations};
 
 module.exports=ServiceWorker;
 
-},{"./gatherer.js":54}],"../gather/gatherers/source-maps":[function(require,module,exports){
+},{"./gatherer.js":53}],"../gather/gatherers/source-maps":[function(require,module,exports){
 (function(Buffer){
 
 
@@ -15962,7 +15962,7 @@ return Promise.all(eventProcessPromises);
 module.exports=SourceMaps;
 
 }).call(this,require("buffer").Buffer);
-},{"../../lib/url-shim.js":"url","./gatherer.js":54,"buffer":102}],"../gather/gatherers/start-url":[function(require,module,exports){
+},{"../../lib/url-shim.js":"url","./gatherer.js":53,"buffer":102}],"../gather/gatherers/start-url":[function(require,module,exports){
 
 
 
@@ -16074,7 +16074,7 @@ then(()=>Promise.race([fetchPromise,timeoutPromise]));
 
 module.exports=StartUrl;
 
-},{"./gatherer.js":54}],"../gather/gatherers/viewport-dimensions":[function(require,module,exports){
+},{"./gatherer.js":53}],"../gather/gatherers/viewport-dimensions":[function(require,module,exports){
 
 
 
@@ -16127,7 +16127,8 @@ return dimensions;
 
 module.exports=ViewportDimensions;
 
-},{"./gatherer.js":54}],1:[function(require,module,exports){
+},{"./gatherer.js":53}],1:[function(require,module,exports){
+(function(global){
 
 
 
@@ -16148,9 +16149,11 @@ const{registerLocaleData,lookupLocale}=require('../lighthouse-core/lib/i18n/i18n
 
 
 
+
 function getDefaultConfigForCategories(categoryIDs){
 return{
 extends:'lighthouse:default',
+plugins:['lighthouse-plugin-publisher-ads'],
 settings:{
 onlyCategories:categoryIDs}};
 
@@ -16168,6 +16171,7 @@ function runLighthouseInWorker(port,url,flags,categoryIDs){
 
 flags.logLevel=flags.logLevel||'info';
 flags.channel='devtools';
+global.devtools=true;
 const config=getDefaultConfigForCategories(categoryIDs);
 const connection=new RawProtocol(port);
 
@@ -16202,7 +16206,8 @@ self.registerLocaleData=registerLocaleData;
 self.lookupLocale=lookupLocale;
 }
 
-},{"../lighthouse-core/gather/connections/raw.js":50,"../lighthouse-core/index.js":55,"../lighthouse-core/lib/i18n/i18n.js":67,"lighthouse-logger":125}],2:[function(require,module,exports){
+}).call(this,typeof global!=="undefined"?global:typeof self!=="undefined"?self:typeof window!=="undefined"?window:{});
+},{"../lighthouse-core/gather/connections/raw.js":49,"../lighthouse-core/index.js":54,"../lighthouse-core/lib/i18n/i18n.js":66,"lighthouse-logger":125}],2:[function(require,module,exports){
 (function(__filename){
 
 
@@ -16294,7 +16299,7 @@ module.exports=AxeAudit;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/axe-audit.js");
-},{"../../lib/i18n/i18n.js":67,"../audit.js":3}],3:[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":66,"../audit.js":3}],3:[function(require,module,exports){
 
 
 
@@ -16581,7 +16586,7 @@ details:product.details};
 
 module.exports=Audit;
 
-},{"../lib/statistics.js":82,"../report/html/renderer/util.js":88}],4:[function(require,module,exports){
+},{"../lib/statistics.js":81,"../report/html/renderer/util.js":87}],4:[function(require,module,exports){
 (function(__filename){
 
 
@@ -16826,7 +16831,7 @@ throw new Error('audit_ unimplemented');
 module.exports=UnusedBytes;
 
 }).call(this,"/lighthouse-core/audits/byte-efficiency/byte-efficiency-audit.js");
-},{"../../computed/load-simulator.js":10,"../../computed/metrics/lantern-interactive.js":23,"../../computed/network-records.js":34,"../../computed/page-dependency-graph.js":35,"../../lib/i18n/i18n.js":67,"../../lib/statistics.js":82,"../audit.js":3}],5:[function(require,module,exports){
+},{"../../computed/load-simulator.js":10,"../../computed/metrics/lantern-interactive.js":23,"../../computed/network-records.js":34,"../../computed/page-dependency-graph.js":35,"../../lib/i18n/i18n.js":66,"../../lib/statistics.js":81,"../audit.js":3}],5:[function(require,module,exports){
 
 
 
@@ -17041,7 +17046,7 @@ return Object.assign(computableArtifact,{request});
 
 module.exports=makeComputedArtifact;
 
-},{"../lib/arbitrary-equality-map.js":56,"lighthouse-logger":125}],9:[function(require,module,exports){
+},{"../lib/arbitrary-equality-map.js":55,"lighthouse-logger":125}],9:[function(require,module,exports){
 
 
 
@@ -17210,7 +17215,7 @@ return CriticalRequestChains.extractChain(networkRecords,mainResource);
 
 module.exports=makeComputedArtifact(CriticalRequestChains);
 
-},{"../lib/network-request.js":76,"./computed-artifact.js":8,"./main-resource.js":11,"./network-records.js":34,"assert":92}],10:[function(require,module,exports){
+},{"../lib/network-request.js":75,"./computed-artifact.js":8,"./main-resource.js":11,"./network-records.js":34,"assert":92}],10:[function(require,module,exports){
 
 
 
@@ -17303,7 +17308,7 @@ return lanternData;
 
 module.exports=makeComputedArtifact(LoadSimulator);
 
-},{"../config/constants.js":46,"../lib/dependency-graph/simulator/simulator.js":64,"./computed-artifact.js":8,"./network-analysis.js":33}],11:[function(require,module,exports){
+},{"../config/constants.js":46,"../lib/dependency-graph/simulator/simulator.js":63,"./computed-artifact.js":8,"./network-analysis.js":33}],11:[function(require,module,exports){
 
 
 
@@ -17339,7 +17344,7 @@ return mainResource;
 
 module.exports=makeComputedArtifact(MainResource);
 
-},{"../lib/dependency-graph/simulator/network-analyzer.js":63,"./computed-artifact.js":8,"./network-records.js":34}],12:[function(require,module,exports){
+},{"../lib/dependency-graph/simulator/network-analyzer.js":62,"./computed-artifact.js":8,"./network-records.js":34}],12:[function(require,module,exports){
 
 
 
@@ -17365,7 +17370,7 @@ return MainThreadTasks_.getMainThreadTasks(mainThreadEvents,timestamps.traceEnd)
 
 module.exports=makeComputedArtifact(MainThreadTasks);
 
-},{"../lib/tracehouse/main-thread-tasks.js":84,"./computed-artifact.js":8,"./trace-of-tab.js":39}],13:[function(require,module,exports){
+},{"../lib/tracehouse/main-thread-tasks.js":83,"./computed-artifact.js":8,"./trace-of-tab.js":39}],13:[function(require,module,exports){
 
 
 
@@ -17484,7 +17489,7 @@ allChecks:remainingChecks};
 
 module.exports=makeComputedArtifact(ManifestValues);
 
-},{"../lib/icons.js":69,"./computed-artifact.js":8}],14:[function(require,module,exports){
+},{"../lib/icons.js":68,"./computed-artifact.js":8}],14:[function(require,module,exports){
 
 
 
@@ -17560,7 +17565,7 @@ timing:EstimatedInputLatency.calculateRollingWindowEIL(events)});
 
 module.exports=makeComputedArtifact(EstimatedInputLatency);
 
-},{"../../lib/lh-error.js":72,"../../lib/tracehouse/trace-processor.js":86,"../computed-artifact.js":8,"./lantern-estimated-input-latency.js":19,"./metric.js":30}],15:[function(require,module,exports){
+},{"../../lib/lh-error.js":71,"../../lib/tracehouse/trace-processor.js":85,"../computed-artifact.js":8,"./lantern-estimated-input-latency.js":19,"./metric.js":30}],15:[function(require,module,exports){
 
 
 
@@ -17814,7 +17819,7 @@ timestamp:valueInMs*1000+navStart});
 
 module.exports=makeComputedArtifact(FirstCPUIdle);
 
-},{"../../lib/lh-error.js":72,"../../lib/tracehouse/trace-processor.js":86,"../computed-artifact.js":8,"./lantern-first-cpu-idle.js":21,"./metric.js":30}],17:[function(require,module,exports){
+},{"../../lib/lh-error.js":71,"../../lib/tracehouse/trace-processor.js":85,"../computed-artifact.js":8,"./lantern-first-cpu-idle.js":21,"./metric.js":30}],17:[function(require,module,exports){
 
 
 
@@ -17857,7 +17862,7 @@ timestamp:traceOfTab.timestamps.firstMeaningfulPaint};
 
 module.exports=makeComputedArtifact(FirstMeaningfulPaint);
 
-},{"../../lib/lh-error.js":72,"../computed-artifact.js":8,"./lantern-first-meaningful-paint.js":22,"./metric.js":30}],18:[function(require,module,exports){
+},{"../../lib/lh-error.js":71,"../computed-artifact.js":8,"./lantern-first-meaningful-paint.js":22,"./metric.js":30}],18:[function(require,module,exports){
 
 
 
@@ -18048,7 +18053,7 @@ module.exports=makeComputedArtifact(Interactive);
 
 
 
-},{"../../lib/lh-error.js":72,"../../lib/network-recorder.js":75,"../../lib/tracehouse/trace-processor.js":86,"../computed-artifact.js":8,"./lantern-interactive.js":23,"./metric.js":30}],19:[function(require,module,exports){
+},{"../../lib/lh-error.js":71,"../../lib/network-recorder.js":74,"../../lib/tracehouse/trace-processor.js":85,"../computed-artifact.js":8,"./lantern-interactive.js":23,"./metric.js":30}],19:[function(require,module,exports){
 
 
 
@@ -18151,7 +18156,7 @@ return events.sort((a,b)=>a.start-b.start);
 
 module.exports=makeComputedArtifact(LanternEstimatedInputLatency);
 
-},{"../../lib/dependency-graph/base-node.js":58,"../computed-artifact.js":8,"./estimated-input-latency.js":14,"./lantern-first-meaningful-paint.js":22,"./lantern-metric.js":25}],20:[function(require,module,exports){
+},{"../../lib/dependency-graph/base-node.js":57,"../computed-artifact.js":8,"./estimated-input-latency.js":14,"./lantern-first-meaningful-paint.js":22,"./lantern-metric.js":25}],20:[function(require,module,exports){
 
 
 
@@ -18352,7 +18357,7 @@ node=>node.hasRenderBlockingPriority());
 
 module.exports=makeComputedArtifact(LanternFirstContentfulPaint);
 
-},{"../../lib/dependency-graph/base-node.js":58,"../computed-artifact.js":8,"./lantern-metric.js":25}],21:[function(require,module,exports){
+},{"../../lib/dependency-graph/base-node.js":57,"../computed-artifact.js":8,"./lantern-metric.js":25}],21:[function(require,module,exports){
 
 
 
@@ -18425,7 +18430,7 @@ return super.compute_(data,context);
 
 module.exports=makeComputedArtifact(LanternFirstCPUIdle);
 
-},{"../../lib/dependency-graph/base-node.js":58,"../computed-artifact.js":8,"./first-cpu-idle.js":16,"./lantern-interactive.js":23}],22:[function(require,module,exports){
+},{"../../lib/dependency-graph/base-node.js":57,"../computed-artifact.js":8,"./first-cpu-idle.js":16,"./lantern-interactive.js":23}],22:[function(require,module,exports){
 
 
 
@@ -18507,7 +18512,7 @@ return metricResult;
 
 module.exports=makeComputedArtifact(LanternFirstMeaningfulPaint);
 
-},{"../../lib/lh-error.js":72,"../computed-artifact.js":8,"./lantern-first-contentful-paint.js":20,"./lantern-metric.js":25}],23:[function(require,module,exports){
+},{"../../lib/lh-error.js":71,"../computed-artifact.js":8,"./lantern-first-contentful-paint.js":20,"./lantern-metric.js":25}],23:[function(require,module,exports){
 
 
 
@@ -18617,7 +18622,7 @@ reduce((max,x)=>Math.max(max||0,x||0),0);
 
 module.exports=makeComputedArtifact(LanternInteractive);
 
-},{"../../lib/dependency-graph/base-node.js":58,"../../lib/network-request.js":76,"../computed-artifact.js":8,"./lantern-first-meaningful-paint.js":22,"./lantern-metric.js":25}],24:[function(require,module,exports){
+},{"../../lib/dependency-graph/base-node.js":57,"../../lib/network-request.js":75,"../computed-artifact.js":8,"./lantern-first-meaningful-paint.js":22,"./lantern-metric.js":25}],24:[function(require,module,exports){
 
 
 
@@ -18707,7 +18712,7 @@ map(([_,timing])=>timing);
 
 module.exports=makeComputedArtifact(LanternMaxPotentialFID);
 
-},{"../../lib/dependency-graph/base-node.js":58,"../computed-artifact.js":8,"./lantern-first-contentful-paint.js":20,"./lantern-metric.js":25}],25:[function(require,module,exports){
+},{"../../lib/dependency-graph/base-node.js":57,"../computed-artifact.js":8,"./lantern-first-contentful-paint.js":20,"./lantern-metric.js":25}],25:[function(require,module,exports){
 
 
 
@@ -18860,7 +18865,7 @@ return this.computeMetricWithGraphs(data,context);
 
 module.exports=LanternMetricArtifact;
 
-},{"../../lib/dependency-graph/base-node.js":58,"../../lib/network-request.js":76,"../load-simulator.js":10,"../page-dependency-graph.js":35,"../trace-of-tab.js":39}],26:[function(require,module,exports){
+},{"../../lib/dependency-graph/base-node.js":57,"../../lib/network-request.js":75,"../load-simulator.js":10,"../page-dependency-graph.js":35,"../trace-of-tab.js":39}],26:[function(require,module,exports){
 
 
 
@@ -19008,7 +19013,7 @@ return totalWeightedTime/totalWeight;
 
 module.exports=makeComputedArtifact(LanternSpeedIndex);
 
-},{"../../config/constants.js":46,"../../lib/dependency-graph/base-node.js":58,"../computed-artifact.js":8,"../speedline.js":38,"./lantern-first-contentful-paint.js":20,"./lantern-metric.js":25}],27:[function(require,module,exports){
+},{"../../config/constants.js":46,"../../lib/dependency-graph/base-node.js":57,"../computed-artifact.js":8,"../speedline.js":38,"./lantern-first-contentful-paint.js":20,"./lantern-metric.js":25}],27:[function(require,module,exports){
 
 
 
@@ -19131,7 +19136,7 @@ return events;
 
 module.exports=makeComputedArtifact(LanternTotalBlockingTime);
 
-},{"../../lib/dependency-graph/base-node.js":58,"../computed-artifact.js":8,"./lantern-first-contentful-paint.js":20,"./lantern-interactive.js":23,"./lantern-metric.js":25,"./total-blocking-time.js":32}],28:[function(require,module,exports){
+},{"../../lib/dependency-graph/base-node.js":57,"../computed-artifact.js":8,"./lantern-first-contentful-paint.js":20,"./lantern-interactive.js":23,"./lantern-metric.js":25,"./total-blocking-time.js":32}],28:[function(require,module,exports){
 
 
 
@@ -19174,7 +19179,7 @@ timestamp:traceOfTab.timestamps.largestContentfulPaint};
 
 module.exports=makeComputedArtifact(LargestContentfulPaint);
 
-},{"../../lib/lh-error.js":72,"../computed-artifact.js":8,"./metric.js":30}],29:[function(require,module,exports){
+},{"../../lib/lh-error.js":71,"../computed-artifact.js":8,"./metric.js":30}],29:[function(require,module,exports){
 
 
 
@@ -19221,7 +19226,7 @@ timing:Math.max(...events.map(evt=>evt.duration),16)});
 
 module.exports=makeComputedArtifact(MaxPotentialFID);
 
-},{"../../lib/lh-error.js":72,"../../lib/tracehouse/trace-processor.js":86,"../computed-artifact.js":8,"./lantern-max-potential-fid.js":24,"./metric.js":30}],30:[function(require,module,exports){
+},{"../../lib/lh-error.js":71,"../../lib/tracehouse/trace-processor.js":85,"../computed-artifact.js":8,"./lantern-max-potential-fid.js":24,"./metric.js":30}],30:[function(require,module,exports){
 
 
 
@@ -19295,7 +19300,7 @@ throw new TypeError(`Unrecognized throttling method: ${settings.throttlingMethod
 
 module.exports=ComputedMetric;
 
-},{"../../lib/tracehouse/trace-processor.js":86,"../network-records.js":34,"../trace-of-tab.js":39}],31:[function(require,module,exports){
+},{"../../lib/tracehouse/trace-processor.js":85,"../network-records.js":34,"../trace-of-tab.js":39}],31:[function(require,module,exports){
 
 
 
@@ -19449,7 +19454,7 @@ interactiveTimeMs)};
 
 module.exports=makeComputedArtifact(TotalBlockingTime);
 
-},{"../../lib/lh-error.js":72,"../../lib/tracehouse/trace-processor.js":86,"../computed-artifact.js":8,"./interactive.js":18,"./lantern-total-blocking-time.js":27,"./metric.js":30}],33:[function(require,module,exports){
+},{"../../lib/lh-error.js":71,"../../lib/tracehouse/trace-processor.js":85,"../computed-artifact.js":8,"./interactive.js":18,"./lantern-total-blocking-time.js":27,"./metric.js":30}],33:[function(require,module,exports){
 
 
 
@@ -19515,7 +19520,7 @@ return{throughput,...rttAndServerResponseTime};
 
 module.exports=makeComputedArtifact(NetworkAnalysis);
 
-},{"../lib/dependency-graph/simulator/network-analyzer.js":63,"./computed-artifact.js":8,"./network-records.js":34}],34:[function(require,module,exports){
+},{"../lib/dependency-graph/simulator/network-analyzer.js":62,"./computed-artifact.js":8,"./network-records.js":34}],34:[function(require,module,exports){
 
 
 
@@ -19538,7 +19543,7 @@ return NetworkRecorder.recordsFromLogs(devtoolsLog);
 
 module.exports=makeComputedArtifact(NetworkRecords);
 
-},{"../lib/network-recorder.js":75,"./computed-artifact.js":8}],35:[function(require,module,exports){
+},{"../lib/network-recorder.js":74,"./computed-artifact.js":8}],35:[function(require,module,exports){
 
 
 
@@ -19912,7 +19917,7 @@ module.exports=makeComputedArtifact(PageDependencyGraph);
 
 
 
-},{"../lib/dependency-graph/cpu-node.js":59,"../lib/dependency-graph/network-node.js":60,"../lib/dependency-graph/simulator/network-analyzer.js":63,"../lib/network-request.js":76,"../lib/tracehouse/trace-processor.js":86,"./computed-artifact.js":8,"./network-records.js":34,"./trace-of-tab.js":39}],36:[function(require,module,exports){
+},{"../lib/dependency-graph/cpu-node.js":58,"../lib/dependency-graph/network-node.js":59,"../lib/dependency-graph/simulator/network-analyzer.js":62,"../lib/network-request.js":75,"../lib/tracehouse/trace-processor.js":85,"./computed-artifact.js":8,"./network-records.js":34,"./trace-of-tab.js":39}],36:[function(require,module,exports){
 
 
 
@@ -20085,7 +20090,7 @@ return speedline;
 
 module.exports=makeComputedArtifact(Speedline);
 
-},{"../lib/lh-error.js":72,"./computed-artifact.js":8,"./trace-of-tab.js":39,"speedline-core":165}],39:[function(require,module,exports){
+},{"../lib/lh-error.js":71,"./computed-artifact.js":8,"./trace-of-tab.js":39,"speedline-core":181}],39:[function(require,module,exports){
 
 
 
@@ -20152,7 +20157,7 @@ timestamps:{...timestamps,firstContentfulPaint:firstContentfulPaintTs}};
 
 module.exports=makeComputedArtifact(TraceOfTab);
 
-},{"../lib/lh-error.js":72,"../lib/tracehouse/trace-processor.js":86,"./computed-artifact.js":8}],40:[function(require,module,exports){
+},{"../lib/lh-error.js":71,"../lib/tracehouse/trace-processor.js":85,"./computed-artifact.js":8}],40:[function(require,module,exports){
 
 
 
@@ -20295,7 +20300,7 @@ module.exports=makeComputedArtifact(ViewportMeta);
 
 
 
-},{"./computed-artifact.js":8,"metaviewport-parser":129}],42:[function(require,module,exports){
+},{"./computed-artifact.js":8,"metaviewport-parser":145}],42:[function(require,module,exports){
 
 
 
@@ -20576,7 +20581,7 @@ return budgets;
 module.exports=Budget;
 
 },{}],43:[function(require,module,exports){
-(function(process,__dirname){
+(function(process,global,__dirname){
 
 
 
@@ -20717,8 +20722,14 @@ const auditPathJs=`${audit.path}.js`;
 const coreAudit=coreList.find(a=>a===auditPathJs);
 let requirePath=`../audits/${audit.path}`;
 if(!coreAudit){
+if(global.devtools){
+requirePath=audit.path;
+}else{
 
-requirePath=resolveModule(audit.path,configDir,'audit');
+const absolutePath=resolveModule(audit.path,configDir,'audit');
+
+requirePath=path.relative(__dirname,absolutePath);
+}
 }
 implementation=require(requirePath);
 }
@@ -20788,8 +20799,8 @@ requireAudits,
 resolveModule};
 
 
-}).call(this,require('_process'),"/lighthouse-core/config");
-},{"../audits/audit.js":3,"../runner.js":90,"_process":142,"path":140}],44:[function(require,module,exports){
+}).call(this,require('_process'),typeof global!=="undefined"?global:typeof self!=="undefined"?self:typeof window!=="undefined"?window:{},"/lighthouse-core/config");
+},{"../audits/audit.js":3,"../runner.js":89,"_process":158,"path":156}],44:[function(require,module,exports){
 
 
 
@@ -21015,7 +21026,7 @@ groups:ConfigPlugin._parseGroups(pluginGroupsJson,pluginName)};
 module.exports=ConfigPlugin;
 
 },{}],45:[function(require,module,exports){
-(function(__dirname){
+(function(global,__dirname){
 
 
 
@@ -21025,7 +21036,6 @@ module.exports=ConfigPlugin;
 
 const defaultConfigPath='./default-config.js';
 const defaultConfig=require('./default-config.js');
-const fullConfig=require('./full-config.js');
 const constants=require('./constants.js');
 const i18n=require('./../lib/i18n/i18n.js');
 
@@ -21333,11 +21343,7 @@ throw new Error('configPath must be an absolute path.');
 configJSON=deepCloneConfigJson(configJSON);
 
 
-if(configJSON.extends==='lighthouse:full'){
-const explodedFullConfig=Config.extendConfigJSON(deepCloneConfigJson(defaultConfig),
-deepCloneConfigJson(fullConfig));
-configJSON=Config.extendConfigJSON(explodedFullConfig,configJSON);
-}else if(configJSON.extends){
+if(configJSON.extends){
 configJSON=Config.extendConfigJSON(deepCloneConfigJson(defaultConfig),configJSON);
 }
 
@@ -21454,7 +21460,9 @@ const pluginNames=new Set([...configPlugins,...flagPlugins]);
 for(const pluginName of pluginNames){
 assertValidPluginName(configJSON,pluginName);
 
-const pluginPath=resolveModule(pluginName,configDir,'plugin');
+const pluginPath=global.devtools?
+pluginName:
+resolveModule(pluginName,configDir,'plugin');
 const rawPluginJson=require(pluginPath);
 const pluginJson=ConfigPlugin.parsePlugin(rawPluginJson,pluginName);
 
@@ -21841,8 +21849,8 @@ return fullPasses;
 
 module.exports=Config;
 
-}).call(this,"/lighthouse-core/config");
-},{"../runner.js":90,"./../lib/i18n/i18n.js":67,"./budget.js":42,"./config-helpers.js":43,"./config-plugin.js":44,"./constants.js":46,"./default-config.js":47,"./full-config.js":48,"lighthouse-logger":125,"lodash.isequal":126,"path":140}],46:[function(require,module,exports){
+}).call(this,typeof global!=="undefined"?global:typeof self!=="undefined"?self:typeof window!=="undefined"?window:{},"/lighthouse-core/config");
+},{"../runner.js":89,"./../lib/i18n/i18n.js":66,"./budget.js":42,"./config-helpers.js":43,"./config-plugin.js":44,"./constants.js":46,"./default-config.js":47,"lighthouse-logger":125,"lodash.isequal":142,"path":156}],46:[function(require,module,exports){
 
 
 
@@ -21896,7 +21904,7 @@ auditMode:false,
 gatherMode:false,
 disableStorageReset:false,
 emulatedFormFactor:'mobile',
-deviceScreenEmulationMethod:'devtools',
+internalDisableDeviceScreenEmulation:false,
 channel:'node',
 
 
@@ -22498,42 +22506,7 @@ get:()=>UIStrings});
 
 
 }).call(this,"/lighthouse-core/config/default-config.js");
-},{"../lib/i18n/i18n.js":67,"./constants.js":46}],48:[function(require,module,exports){
-
-
-
-
-
-'use strict';
-
-
-const fullConfig={
-extends:'lighthouse:default',
-settings:{},
-passes:[
-{
-passName:'extraPass',
-gatherers:[
-'js-usage']}],
-
-
-
-audits:[
-'byte-efficiency/unused-javascript'],
-
-
-categories:{
-'performance':{
-auditRefs:[
-{id:'unused-javascript',weight:0,group:'load-opportunities'}]}}};
-
-
-
-
-
-module.exports=fullConfig;
-
-},{}],49:[function(require,module,exports){
+},{"../lib/i18n/i18n.js":66,"./constants.js":46}],48:[function(require,module,exports){
 
 
 
@@ -22697,7 +22670,7 @@ this._eventEmitter=null;
 
 module.exports=Connection;
 
-},{"../../lib/lh-error.js":72,"events":108,"lighthouse-logger":125}],50:[function(require,module,exports){
+},{"../../lib/lh-error.js":71,"events":108,"lighthouse-logger":125}],49:[function(require,module,exports){
 
 
 
@@ -22757,7 +22730,7 @@ this._port.send(message);
 
 module.exports=RawConnection;
 
-},{"./connection.js":49}],51:[function(require,module,exports){
+},{"./connection.js":48}],50:[function(require,module,exports){
 
 
 
@@ -22814,7 +22787,7 @@ this._messages.push(message);
 
 module.exports=DevtoolsLog;
 
-},{}],52:[function(require,module,exports){
+},{}],51:[function(require,module,exports){
 (function(Buffer){
 
 
@@ -24342,7 +24315,7 @@ await this.sendCommand('Page.enable');
 module.exports=Driver;
 
 }).call(this,require("buffer").Buffer);
-},{"../config/constants.js":46,"../lib/emulation.js":66,"../lib/lh-element.js":71,"../lib/lh-error.js":72,"../lib/network-recorder.js":75,"../lib/network-request.js":76,"../lib/page-functions.js":77,"../lib/url-shim.js":"url","./connections/connection.js":49,"./devtools-log.js":51,"buffer":102,"events":108,"lighthouse-logger":125}],53:[function(require,module,exports){
+},{"../config/constants.js":46,"../lib/emulation.js":65,"../lib/lh-element.js":70,"../lib/lh-error.js":71,"../lib/network-recorder.js":74,"../lib/network-request.js":75,"../lib/page-functions.js":76,"../lib/url-shim.js":"url","./connections/connection.js":48,"./devtools-log.js":50,"buffer":102,"events":108,"lighthouse-logger":125}],52:[function(require,module,exports){
 
 
 
@@ -25014,7 +24987,7 @@ return GatherRunner.collectArtifacts(gathererResults);
 
 module.exports=GatherRunner;
 
-},{"../config/constants.js":46,"../lib/dependency-graph/simulator/network-analyzer.js":63,"../lib/i18n/i18n.js":67,"../lib/lh-error.js":72,"../lib/manifest-parser.js":73,"../lib/network-recorder.js":75,"../lib/stack-collector.js":80,"lighthouse-logger":125}],54:[function(require,module,exports){
+},{"../config/constants.js":46,"../lib/dependency-graph/simulator/network-analyzer.js":62,"../lib/i18n/i18n.js":66,"../lib/lh-error.js":71,"../lib/manifest-parser.js":72,"../lib/network-recorder.js":74,"../lib/stack-collector.js":79,"lighthouse-logger":125}],53:[function(require,module,exports){
 
 
 
@@ -25075,7 +25048,7 @@ afterPass(passContext,loadData){}}
 
 module.exports=Gatherer;
 
-},{}],55:[function(require,module,exports){
+},{}],54:[function(require,module,exports){
 
 
 
@@ -25147,7 +25120,7 @@ lighthouse.NetworkRecords=require('./computed/network-records.js');
 
 module.exports=lighthouse;
 
-},{"./audits/audit.js":3,"./computed/network-records.js":34,"./config/config.js":45,"./gather/connections/cri.js":101,"./gather/driver.js":52,"./gather/gatherers/gatherer.js":54,"./runner.js":90,"lighthouse-logger":125}],56:[function(require,module,exports){
+},{"./audits/audit.js":3,"./computed/network-records.js":34,"./config/config.js":45,"./gather/connections/cri.js":101,"./gather/driver.js":51,"./gather/gatherers/gatherer.js":53,"./runner.js":89,"lighthouse-logger":125}],55:[function(require,module,exports){
 
 
 
@@ -25230,7 +25203,7 @@ return isEqual(objA,objB);
 
 module.exports=ArbitraryEqualityMap;
 
-},{"lodash.isequal":126}],57:[function(require,module,exports){
+},{"lodash.isequal":142}],56:[function(require,module,exports){
 (function(process){
 
 
@@ -25526,7 +25499,7 @@ stringifyReplacer};
 
 
 }).call(this,require('_process'));
-},{"../computed/load-simulator.js":10,"../computed/network-analysis.js":33,"../lib/lh-error.js":72,"./dependency-graph/simulator/simulator.js":64,"./lantern-trace-saver.js":70,"./traces/pwmetrics-events.js":87,"_process":142,"fs":101,"lighthouse-logger":125,"mkdirp":101,"path":140,"rimraf":101,"stream":167}],58:[function(require,module,exports){
+},{"../computed/load-simulator.js":10,"../computed/network-analysis.js":33,"../lib/lh-error.js":71,"./dependency-graph/simulator/simulator.js":63,"./lantern-trace-saver.js":69,"./traces/pwmetrics-events.js":86,"_process":158,"fs":101,"lighthouse-logger":125,"mkdirp":101,"path":156,"rimraf":101,"stream":183}],57:[function(require,module,exports){
 
 
 
@@ -25841,7 +25814,7 @@ CPU:'cpu'};
 
 module.exports=BaseNode;
 
-},{}],59:[function(require,module,exports){
+},{}],58:[function(require,module,exports){
 
 
 
@@ -25929,7 +25902,7 @@ return new CPUNode(this._event,this._childEvents);
 
 module.exports=CPUNode;
 
-},{"./base-node.js":58}],60:[function(require,module,exports){
+},{"./base-node.js":57}],59:[function(require,module,exports){
 
 
 
@@ -26013,7 +25986,7 @@ return node;
 
 module.exports=NetworkNode;
 
-},{"../network-request.js":76,"./base-node.js":58}],61:[function(require,module,exports){
+},{"../network-request.js":75,"./base-node.js":57}],60:[function(require,module,exports){
 
 
 
@@ -26184,7 +26157,7 @@ this._connectionsInUse.delete(connection);
 }};
 
 
-},{"./network-analyzer.js":63,"./tcp-connection.js":65}],62:[function(require,module,exports){
+},{"./network-analyzer.js":62,"./tcp-connection.js":64}],61:[function(require,module,exports){
 
 
 
@@ -26259,7 +26232,7 @@ DNSCache.RTT_MULTIPLIER=DNS_RESOLUTION_RTT_MULTIPLIER;
 
 module.exports=DNSCache;
 
-},{}],63:[function(require,module,exports){
+},{}],62:[function(require,module,exports){
 
 
 
@@ -26736,7 +26709,7 @@ module.exports=NetworkAnalyzer;
 
 
 
-},{"../../network-request.js":76,"../../url-shim.js":"url"}],64:[function(require,module,exports){
+},{"../../network-request.js":75,"../../url-shim.js":"url"}],63:[function(require,module,exports){
 
 
 
@@ -27247,7 +27220,7 @@ module.exports=Simulator;
 
 
 
-},{"../../../config/constants.js":46,"../base-node.js":58,"./connection-pool.js":61,"./dns-cache.js":62,"./tcp-connection.js":65}],65:[function(require,module,exports){
+},{"../../../config/constants.js":46,"../base-node.js":57,"./connection-pool.js":60,"./dns-cache.js":61,"./tcp-connection.js":64}],64:[function(require,module,exports){
 
 
 
@@ -27455,7 +27428,7 @@ module.exports=TcpConnection;
 
 
 
-},{}],66:[function(require,module,exports){
+},{}],65:[function(require,module,exports){
 
 
 
@@ -27551,7 +27524,7 @@ const params=emulationParams[settings.emulatedFormFactor];
 await driver.sendCommand('Network.enable');
 await driver.sendCommand('Network.setUserAgentOverride',{userAgent:params.userAgent});
 
-if(settings.deviceScreenEmulationMethod==='devtools'){
+if(!settings.internalDisableDeviceScreenEmulation){
 await driver.sendCommand('Emulation.setDeviceMetricsOverride',params.metrics);
 await driver.sendCommand('Emulation.setTouchEmulationEnabled',{enabled:params.touchEnabled});
 }
@@ -27623,7 +27596,7 @@ MOBILE_USERAGENT:NEXUS5X_USERAGENT,
 DESKTOP_USERAGENT};
 
 
-},{}],67:[function(require,module,exports){
+},{}],66:[function(require,module,exports){
 (function(__filename,__dirname){
 
 
@@ -27900,7 +27873,7 @@ localeMessage=uiStringMessage;
 
 
 if(!LOCALES.en[icuMessageId]||localeMessage!==LOCALES.en[icuMessageId].message){
-log.warn('i18n',`Message "${icuMessageId}" does not match its 'en' counterpart. `+
+log.verbose('i18n',`Message "${icuMessageId}" does not match its 'en' counterpart. `+
 `Run 'i18n' to update.`);
 }
 }
@@ -28129,7 +28102,7 @@ registerLocaleData};
 
 
 }).call(this,"/lighthouse-core/lib/i18n/i18n.js","/lighthouse-core/lib/i18n");
-},{"./locales.js":68,"intl":101,"intl-messageformat":119,"intl-pluralrules":101,"lighthouse-logger":125,"lodash.isequal":126,"lookup-closest-locale":127,"path":140}],68:[function(require,module,exports){
+},{"./locales.js":67,"intl":101,"intl-messageformat":119,"intl-pluralrules":101,"lighthouse-logger":125,"lodash.isequal":142,"lookup-closest-locale":143,"path":156}],67:[function(require,module,exports){
 
 
 
@@ -28246,7 +28219,7 @@ const locales={
 
 module.exports=locales;
 
-},{"./locales/ar-XB.json":101,"./locales/ar.json":101,"./locales/bg.json":101,"./locales/ca.json":101,"./locales/cs.json":101,"./locales/da.json":101,"./locales/de.json":101,"./locales/el.json":101,"./locales/en-GB.json":101,"./locales/en-US.json":101,"./locales/en-XA.json":101,"./locales/en-XL.json":101,"./locales/es-419.json":101,"./locales/es.json":101,"./locales/fi.json":101,"./locales/fil.json":101,"./locales/fr.json":101,"./locales/he.json":101,"./locales/hi.json":101,"./locales/hr.json":101,"./locales/hu.json":101,"./locales/id.json":101,"./locales/it.json":101,"./locales/ja.json":101,"./locales/ko.json":101,"./locales/lt.json":101,"./locales/lv.json":101,"./locales/nl.json":101,"./locales/no.json":101,"./locales/pl.json":101,"./locales/pt-PT.json":101,"./locales/pt.json":101,"./locales/ro.json":101,"./locales/ru.json":101,"./locales/sk.json":101,"./locales/sl.json":101,"./locales/sr-Latn.json":101,"./locales/sr.json":101,"./locales/sv.json":101,"./locales/ta.json":101,"./locales/te.json":101,"./locales/th.json":101,"./locales/tr.json":101,"./locales/uk.json":101,"./locales/vi.json":101,"./locales/zh-HK.json":101,"./locales/zh-TW.json":101,"./locales/zh.json":101}],69:[function(require,module,exports){
+},{"./locales/ar-XB.json":101,"./locales/ar.json":101,"./locales/bg.json":101,"./locales/ca.json":101,"./locales/cs.json":101,"./locales/da.json":101,"./locales/de.json":101,"./locales/el.json":101,"./locales/en-GB.json":101,"./locales/en-US.json":101,"./locales/en-XA.json":101,"./locales/en-XL.json":101,"./locales/es-419.json":101,"./locales/es.json":101,"./locales/fi.json":101,"./locales/fil.json":101,"./locales/fr.json":101,"./locales/he.json":101,"./locales/hi.json":101,"./locales/hr.json":101,"./locales/hu.json":101,"./locales/id.json":101,"./locales/it.json":101,"./locales/ja.json":101,"./locales/ko.json":101,"./locales/lt.json":101,"./locales/lv.json":101,"./locales/nl.json":101,"./locales/no.json":101,"./locales/pl.json":101,"./locales/pt-PT.json":101,"./locales/pt.json":101,"./locales/ro.json":101,"./locales/ru.json":101,"./locales/sk.json":101,"./locales/sl.json":101,"./locales/sr-Latn.json":101,"./locales/sr.json":101,"./locales/sv.json":101,"./locales/ta.json":101,"./locales/te.json":101,"./locales/th.json":101,"./locales/tr.json":101,"./locales/uk.json":101,"./locales/vi.json":101,"./locales/zh-HK.json":101,"./locales/zh-TW.json":101,"./locales/zh.json":101}],68:[function(require,module,exports){
 
 
 
@@ -28320,7 +28293,7 @@ doExist,
 pngSizedAtLeast};
 
 
-},{"./url-shim.js":"url"}],70:[function(require,module,exports){
+},{"./url-shim.js":"url"}],69:[function(require,module,exports){
 
 
 
@@ -28528,7 +28501,7 @@ simulationNamesToIgnore:[
 convertNodeTimingsToTrace};
 
 
-},{}],71:[function(require,module,exports){
+},{}],70:[function(require,module,exports){
 
 
 
@@ -28601,7 +28574,7 @@ catch(()=>null);
 
 module.exports=LHElement;
 
-},{"../gather/driver.js":52}],72:[function(require,module,exports){
+},{"../gather/driver.js":51}],71:[function(require,module,exports){
 (function(__filename){
 
 
@@ -28725,10 +28698,7 @@ const protocolErrors=Object.values(LighthouseError.errors).filter(e=>e.pattern);
 
 const matchedErrorDefinition=protocolErrors.find(e=>e.pattern.test(protocolError.message));
 if(matchedErrorDefinition){
-return new LighthouseError(matchedErrorDefinition,{
-protocolMethod:method,
-protocolError:protocolError.message});
-
+return new LighthouseError(matchedErrorDefinition);
 }
 
 
@@ -28994,7 +28964,7 @@ module.exports=LighthouseError;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/lib/lh-error.js");
-},{"./i18n/i18n.js":67}],73:[function(require,module,exports){
+},{"./i18n/i18n.js":66}],72:[function(require,module,exports){
 
 
 
@@ -29495,7 +29465,7 @@ warning:manifestUrlWarning};
 
 module.exports=parse;
 
-},{"./url-shim.js":"url","cssstyle/lib/parsers":105}],74:[function(require,module,exports){
+},{"./url-shim.js":"url","cssstyle/lib/parsers":105}],73:[function(require,module,exports){
 
 
 
@@ -29666,7 +29636,7 @@ return computeTokenLength(content,{singlelineComments:false,regex:false});
 
 module.exports={computeJSTokenLength,computeCSSTokenLength};
 
-},{}],75:[function(require,module,exports){
+},{}],74:[function(require,module,exports){
 
 
 
@@ -30049,7 +30019,7 @@ return records;
 
 module.exports=NetworkRecorder;
 
-},{"./network-request.js":76,"events":108,"lighthouse-logger":125}],76:[function(require,module,exports){
+},{"./network-request.js":75,"events":108,"lighthouse-logger":125}],75:[function(require,module,exports){
 (function(global){
 
 
@@ -30519,7 +30489,7 @@ NetworkRequest.HEADER_FETCHED_SIZE=HEADER_FETCHED_SIZE;
 module.exports=NetworkRequest;
 
 }).call(this,typeof global!=="undefined"?global:typeof self!=="undefined"?self:typeof window!=="undefined"?window:{});
-},{"./url-shim.js":"url"}],77:[function(require,module,exports){
+},{"./url-shim.js":"url"}],76:[function(require,module,exports){
 
 
 
@@ -30842,7 +30812,7 @@ getNodeLabelString:getNodeLabel.toString(),
 isPositionFixedString:isPositionFixed.toString()};
 
 
-},{}],78:[function(require,module,exports){
+},{}],77:[function(require,module,exports){
 
 
 
@@ -31092,7 +31062,7 @@ filterOutRectsContainedByOthers,
 filterOutTinyRects};
 
 
-},{}],79:[function(require,module,exports){
+},{}],78:[function(require,module,exports){
 
 
 
@@ -31219,7 +31189,7 @@ log.warn(
 
 module.exports=sentryDelegate;
 
-},{"lighthouse-logger":125,"raven":101}],80:[function(require,module,exports){
+},{"lighthouse-logger":125,"raven":101}],79:[function(require,module,exports){
 
 
 
@@ -31310,7 +31280,7 @@ npm:lib.npm||undefined}));
 
 module.exports=collectStacks;
 
-},{}],81:[function(require,module,exports){
+},{}],80:[function(require,module,exports){
 
 
 
@@ -31388,7 +31358,7 @@ module.exports={
 getStackPacks};
 
 
-},{"../../stack-packs/index.js":177,"lighthouse-logger":125}],82:[function(require,module,exports){
+},{"../../stack-packs/index.js":193,"lighthouse-logger":125}],81:[function(require,module,exports){
 
 
 
@@ -31469,7 +31439,7 @@ linearInterpolation,
 getLogNormalDistribution};
 
 
-},{}],83:[function(require,module,exports){
+},{}],82:[function(require,module,exports){
 
 
 
@@ -31577,7 +31547,7 @@ module.exports={
 getTappableRectsFromClientRects};
 
 
-},{"./rect-helpers.js":78}],84:[function(require,module,exports){
+},{"./rect-helpers.js":77}],83:[function(require,module,exports){
 
 
 
@@ -32094,7 +32064,7 @@ return tasks;
 
 module.exports=MainThreadTasks;
 
-},{"./task-groups.js":85}],85:[function(require,module,exports){
+},{"./task-groups.js":84}],84:[function(require,module,exports){
 
 
 
@@ -32207,7 +32177,7 @@ taskGroups,
 taskNameToGroup};
 
 
-},{}],86:[function(require,module,exports){
+},{}],85:[function(require,module,exports){
 
 
 
@@ -32834,7 +32804,7 @@ module.exports=TraceProcessor;
 
 
 
-},{"lighthouse-logger":125}],87:[function(require,module,exports){
+},{"lighthouse-logger":125}],86:[function(require,module,exports){
 
 
 
@@ -33039,7 +33009,7 @@ return fakeEvents;
 
 module.exports=Metrics;
 
-},{"lighthouse-logger":125}],88:[function(require,module,exports){
+},{"lighthouse-logger":125}],87:[function(require,module,exports){
 
 
 
@@ -33723,7 +33693,7 @@ module.exports=Util;
 self.Util=Util;
 }
 
-},{}],89:[function(require,module,exports){
+},{}],88:[function(require,module,exports){
 
 
 
@@ -33843,7 +33813,7 @@ return outputAsArray?output:output[0];
 
 module.exports=ReportGenerator;
 
-},{"./html/html-report-assets.js":101}],90:[function(require,module,exports){
+},{"./html/html-report-assets.js":101}],89:[function(require,module,exports){
 (function(process){
 
 
@@ -34295,7 +34265,7 @@ return path.join(process.cwd(),'latest-run');
 module.exports=Runner;
 
 }).call(this,require('_process'));
-},{"../package.json":176,"./audits/audit.js":3,"./gather/driver.js":52,"./gather/gather-runner.js":53,"./lib/asset-saver.js":57,"./lib/i18n/i18n.js":67,"./lib/lh-error.js":72,"./lib/sentry.js":79,"./lib/stack-packs.js":81,"./lib/url-shim.js":"url","./report/report-generator.js":89,"./scoring.js":91,"_process":142,"lighthouse-logger":125,"lodash.isequal":126,"path":140}],91:[function(require,module,exports){
+},{"../package.json":192,"./audits/audit.js":3,"./gather/driver.js":51,"./gather/gather-runner.js":52,"./lib/asset-saver.js":56,"./lib/i18n/i18n.js":66,"./lib/lh-error.js":71,"./lib/sentry.js":78,"./lib/stack-packs.js":80,"./lib/url-shim.js":"url","./report/report-generator.js":88,"./scoring.js":90,"_process":158,"lighthouse-logger":125,"lodash.isequal":142,"path":156}],90:[function(require,module,exports){
 
 
 
@@ -34390,7 +34360,189 @@ return scoredCategories;
 
 module.exports=ReportScoring;
 
-},{"./audits/audit.js":3}],92:[function(require,module,exports){
+},{"./audits/audit.js":3}],91:[function(require,module,exports){
+const HEADER_REGEXP=/([a-zA-Z][a-zA-Z_-]*)\s*(?:=(?:"([^"]*)"|([^ \t",;]*)))?/g;
+
+const STRINGS={
+maxAge:'max-age',
+sharedMaxAge:'s-maxage',
+maxStale:'max-stale',
+minFresh:'min-fresh',
+immutable:'immutable',
+mustRevalidate:'must-revalidate',
+noCache:'no-cache',
+noStore:'no-store',
+noTransform:'no-transform',
+onlyIfCached:'only-if-cached',
+private:'private',
+proxyRevalidate:'proxy-revalidate',
+public:'public'};
+
+
+function parseBooleanOnly(value){
+return value===null;
+}
+
+function parseDuration(value){
+if(!value){
+return null;
+}
+
+const duration=parseInt(value,10);
+
+if(!Number.isFinite(duration)||duration<0){
+return null;
+}
+
+return duration;
+}
+
+class CacheControl{
+constructor(){
+this.maxAge=null;
+this.sharedMaxAge=null;
+this.maxStale=null;
+this.maxStaleDuration=null;
+this.minFresh=null;
+this.immutable=null;
+this.mustRevalidate=null;
+this.noCache=null;
+this.noStore=null;
+this.noTransform=null;
+this.onlyIfCached=null;
+this.private=null;
+this.proxyRevalidate=null;
+this.public=null;
+}
+
+parse(header){
+if(!header||header.length===0){
+return this;
+}
+
+const values={};
+const matches=header.match(HEADER_REGEXP)||[];
+
+Array.prototype.forEach.call(matches,match=>{
+const tokens=match.split('=',2);
+
+const[key]=tokens;
+let value=null;
+
+if(tokens.length>1){
+value=tokens[1].trim();
+}
+
+values[key.toLowerCase()]=value;
+});
+
+this.maxAge=parseDuration(values[STRINGS.maxAge]);
+this.sharedMaxAge=parseDuration(values[STRINGS.sharedMaxAge]);
+
+this.maxStale=parseBooleanOnly(values[STRINGS.maxStale]);
+this.maxStaleDuration=parseDuration(values[STRINGS.maxStale]);
+if(this.maxStaleDuration){
+this.maxStale=true;
+}
+
+this.minFresh=parseDuration(values[STRINGS.minFresh]);
+
+this.immutable=parseBooleanOnly(values[STRINGS.immutable]);
+this.mustRevalidate=parseBooleanOnly(values[STRINGS.mustRevalidate]);
+this.noCache=parseBooleanOnly(values[STRINGS.noCache]);
+this.noStore=parseBooleanOnly(values[STRINGS.noStore]);
+this.noTransform=parseBooleanOnly(values[STRINGS.noTransform]);
+this.onlyIfCached=parseBooleanOnly(values[STRINGS.onlyIfCached]);
+this.private=parseBooleanOnly(values[STRINGS.private]);
+this.proxyRevalidate=parseBooleanOnly(values[STRINGS.proxyRevalidate]);
+this.public=parseBooleanOnly(values[STRINGS.public]);
+
+return this;
+}
+
+format(){
+const tokens=[];
+
+if(this.maxAge){
+tokens.push(`${STRINGS.maxAge}=${this.maxAge}`);
+}
+
+if(this.sharedMaxAge){
+tokens.push(`${STRINGS.sharedMaxAge}=${this.sharedMaxAge}`);
+}
+
+if(this.maxStale){
+if(this.maxStaleDuration){
+tokens.push(`${STRINGS.maxStale}=${this.maxStaleDuration}`);
+}else{
+tokens.push(STRINGS.maxStale);
+}
+}
+
+if(this.minFresh){
+tokens.push(`${STRINGS.minFresh}=${this.minFresh}`);
+}
+
+if(this.immutable){
+tokens.push(STRINGS.immutable);
+}
+
+if(this.mustRevalidate){
+tokens.push(STRINGS.mustRevalidate);
+}
+
+if(this.noCache){
+tokens.push(STRINGS.noCache);
+}
+
+if(this.noStore){
+tokens.push(STRINGS.noStore);
+}
+
+if(this.noTransform){
+tokens.push(STRINGS.noTransform);
+}
+
+if(this.onlyIfCached){
+tokens.push(STRINGS.onlyIfCached);
+}
+
+if(this.private){
+tokens.push(STRINGS.private);
+}
+
+if(this.proxyRevalidate){
+tokens.push(STRINGS.proxyRevalidate);
+}
+
+if(this.public){
+tokens.push(STRINGS.public);
+}
+
+return tokens.join(', ');
+}}
+
+
+function parse(header){
+const cc=new CacheControl();
+return cc.parse(header);
+}
+
+function format(cc){
+if(!(cc instanceof CacheControl)){
+return CacheControl.prototype.format.call(cc);
+}
+
+return cc.format();
+}
+
+module.exports={
+CacheControl,
+parse,
+format};
+
+
+},{}],92:[function(require,module,exports){
 (function(global){
 'use strict';
 
@@ -35506,7 +35658,7 @@ return Object.prototype.hasOwnProperty.call(obj,prop);
 }
 
 }).call(this,require('_process'),typeof global!=="undefined"?global:typeof self!=="undefined"?self:typeof window!=="undefined"?window:{});
-},{"./support/isBuffer":94,"_process":142,"inherits":93}],96:[function(require,module,exports){
+},{"./support/isBuffer":94,"_process":158,"inherits":93}],96:[function(require,module,exports){
 
 const langs=[
 'aa',
@@ -44227,7 +44379,7 @@ this._error('Failed to reset stream');
 
 exports.Zlib=Zlib;
 }).call(this,require('_process'),require("buffer").Buffer);
-},{"_process":142,"assert":92,"buffer":102,"pako/lib/zlib/constants":133,"pako/lib/zlib/deflate.js":135,"pako/lib/zlib/inflate.js":101,"pako/lib/zlib/zstream":138}],100:[function(require,module,exports){
+},{"_process":158,"assert":92,"buffer":102,"pako/lib/zlib/constants":149,"pako/lib/zlib/deflate.js":151,"pako/lib/zlib/inflate.js":101,"pako/lib/zlib/zstream":154}],100:[function(require,module,exports){
 (function(process){
 'use strict';
 
@@ -44839,7 +44991,7 @@ util.inherits(DeflateRaw,Zlib);
 util.inherits(InflateRaw,Zlib);
 util.inherits(Unzip,Zlib);
 }).call(this,require('_process'));
-},{"./binding":99,"_process":142,"assert":92,"buffer":102,"stream":167,"util":175}],101:[function(require,module,exports){
+},{"./binding":99,"_process":158,"assert":92,"buffer":102,"stream":183,"util":191}],101:[function(require,module,exports){
 arguments[4][98][0].apply(exports,arguments);
 },{"dup":98}],102:[function(require,module,exports){
 (function(Buffer){
@@ -47773,7 +47925,7 @@ return window.localStorage;
 }
 
 }).call(this,require('_process'));
-},{"./debug":107,"_process":142}],107:[function(require,module,exports){
+},{"./debug":107,"_process":158}],107:[function(require,module,exports){
 
 
 
@@ -47977,7 +48129,7 @@ if(val instanceof Error)return val.stack||val.message;
 return val;
 }
 
-},{"ms":130}],108:[function(require,module,exports){
+},{"ms":146}],108:[function(require,module,exports){
 
 
 
@@ -48809,7 +48961,7 @@ return refs.join(', ');
 module.exports=Link;
 
 }).call(this,{"isBuffer":require("../../is-buffer/index.js")});
-},{"../../is-buffer/index.js":120,"./trim":110,"querystring":145}],110:[function(require,module,exports){
+},{"../../is-buffer/index.js":120,"./trim":110,"querystring":161}],110:[function(require,module,exports){
 module.exports=function trim(value){
 return value.replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g,'');
 };
@@ -53129,7 +53281,2544 @@ Log.getTimeEntries=()=>marky.getEntries();
 module.exports=Log;
 
 }).call(this,require('_process'));
-},{"_process":142,"debug":106,"events":108,"marky":128}],126:[function(require,module,exports){
+},{"_process":158,"debug":106,"events":108,"marky":144}],126:[function(require,module,exports){
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const BaseNode=require('lighthouse/lighthouse-core/lib/dependency-graph/base-node.js');
+
+const CpuNode=require('lighthouse/lighthouse-core/lib/dependency-graph/cpu-node.js');
+
+const LanternMetric=require('lighthouse/lighthouse-core/computed/metrics/lantern-metric');
+
+const NetworkNode=require('lighthouse/lighthouse-core/lib/dependency-graph/network-node.js');
+const{isBidRelatedRequest,isImpressionPing,isGoogleAds,isGptAdRequest}=require('../utils/resource-classification');
+const{URL}=require('url');
+
+
+
+
+
+
+
+
+
+function getFrame(event){
+
+return event.args.frame||event.args.data&&event.args.data.frame||null;
+}
+
+
+
+
+
+
+function getCpuNodeUrls(cpuNode){
+const results=new Set();
+for(const{args}of cpuNode.childEvents){
+if(args.data&&args.data.url){
+results.add(args.data.url);
+}
+}
+return Array.from(results);
+}
+
+
+
+
+
+
+function isAdTask(cpuNode){
+return!!getCpuNodeUrls(cpuNode).find(
+url=>isBidRelatedRequest(url)||isGoogleAds(new URL(url)));
+}
+
+
+
+
+
+
+function isLongTask(cpuNode){
+
+
+return cpuNode.event.dur>50*1000;
+}
+
+
+
+
+
+function addEdges(graph){
+const adRequestNodes=[];
+graph.traverse(node=>{
+if(node.type===BaseNode.TYPES.NETWORK&&isGptAdRequest(node.record)){
+adRequestNodes.push(node);
+}
+});
+graph.traverse(node=>{
+if(node.type!==BaseNode.TYPES.NETWORK){
+return;
+}
+if(isBidRelatedRequest(node.record)){
+for(const adNode of adRequestNodes){
+
+
+if(adNode.record.startTime>=node.record.endTime){
+node.addDependent(adNode);
+}
+}
+}
+if(isImpressionPing(node.record.url)){
+for(const adNode of adRequestNodes){
+if(adNode.record.endTime>node.record.startTime){
+continue;
+}
+adNode.addDependent(node);
+for(const dependent of adNode.getDependents()){
+if(dependent.endTime<=node.startTime){
+dependent.addDependency(node);
+}
+}
+}
+}
+});
+}
+
+
+class AdLanternMetric extends LanternMetric{
+
+
+
+
+static get COEFFICIENTS(){
+return{
+intercept:0,
+
+optimistic:1,
+pessimistic:0};
+
+}
+
+
+
+
+
+
+
+static getPessimisticGraph(graph){
+
+const pessimisticGraph=graph.cloneWithRelationships(_=>true);
+addEdges(pessimisticGraph);
+return pessimisticGraph;
+}
+
+
+
+
+
+
+
+static getOptimisticGraph(graph){
+
+const mainFrame=graph.record.frameId;
+const pessimisticGraph=AdLanternMetric.getPessimisticGraph(graph);
+
+const optimisticGraph=pessimisticGraph.cloneWithRelationships(node=>{
+if(node.type===BaseNode.TYPES.CPU){
+return(
+isLongTask(node)||
+isAdTask(node)||
+!!getFrame(node.event)&&getFrame(node.event)!==mainFrame);
+}
+if(node.hasRenderBlockingPriority()){
+return true;
+}
+const url=node.record.url;
+return isBidRelatedRequest(url)||isGoogleAds(new URL(url));
+});
+return optimisticGraph;
+}
+
+
+
+
+
+
+
+static getEstimateFromSimulation(simulationResult,extras){
+throw new Error(
+'getEstimateFromSimulation not implemented by '+this.name);
+}
+
+
+
+
+
+
+static findTiming(nodeTimings,isTargetNode){
+let leastTiming={startTime:Infinity,endTime:-Infinity,duration:0};
+for(const[node,timing]of nodeTimings.entries()){
+if(isTargetNode(node,timing)&&
+leastTiming.startTime>timing.startTime){
+leastTiming=timing;
+}
+}
+return leastTiming;
+}
+
+
+
+
+
+
+static findNetworkTiming(nodeTimings,isTargetRequest){
+return this.findTiming(
+nodeTimings,
+node=>
+node.type===BaseNode.TYPES.NETWORK&&isTargetRequest(node.record));
+}}
+
+
+module.exports=AdLanternMetric;
+
+},{"../utils/resource-classification":140,"lighthouse/lighthouse-core/computed/metrics/lantern-metric":25,"lighthouse/lighthouse-core/lib/dependency-graph/base-node.js":57,"lighthouse/lighthouse-core/lib/dependency-graph/cpu-node.js":58,"lighthouse/lighthouse-core/lib/dependency-graph/network-node.js":59,"url":"url"}],127:[function(require,module,exports){
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const AdLanternMetric=require('./ad-lantern-metric');
+
+const ComputedMetric=require('lighthouse/lighthouse-core/computed/metrics/metric');
+
+const makeComputedArtifact=require('lighthouse/lighthouse-core/computed/computed-artifact');
+const{getPageStartTime,getImpressionStartTime}=require('../utils/network-timing');
+const{isImpressionPing}=require('../utils/resource-classification');
+
+
+
+
+
+
+class LanternAdRenderTime extends AdLanternMetric{
+
+
+
+
+
+
+static getEstimateFromSimulation(simulationResult,extras){
+const{nodeTimings}=simulationResult;
+const timeInMs=AdLanternMetric.findNetworkTiming(
+nodeTimings,
+req=>!!req.url&&isImpressionPing(new URL(req.url))).startTime;
+return{timeInMs,nodeTimings};
+}}
+
+
+
+
+
+LanternAdRenderTime=makeComputedArtifact(LanternAdRenderTime);
+
+
+class AdRenderTime extends ComputedMetric{
+
+
+
+
+
+
+static async computeSimulatedMetric(data,context){
+
+return LanternAdRenderTime.request(data,context);
+}
+
+
+
+
+
+
+
+static async computeObservedMetric(data,context){
+const{networkRecords}=data;
+const pageStartTime=getPageStartTime(networkRecords);
+const impressionStartTime=getImpressionStartTime(networkRecords);
+const firstPaintMs=(impressionStartTime-pageStartTime)*1000;
+return Promise.resolve({timing:firstPaintMs});
+}}
+
+
+
+
+
+AdRenderTime=makeComputedArtifact(AdRenderTime);
+
+module.exports=AdRenderTime;
+
+
+},{"../utils/network-timing":138,"../utils/resource-classification":140,"./ad-lantern-metric":126,"lighthouse/lighthouse-core/computed/computed-artifact":8,"lighthouse/lighthouse-core/computed/metrics/metric":30}],128:[function(require,module,exports){
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const AdLanternMetric=require('./ad-lantern-metric');
+
+const ComputedMetric=require('lighthouse/lighthouse-core/computed/metrics/metric');
+
+const makeComputedArtifact=require('lighthouse/lighthouse-core/computed/computed-artifact');
+const{getAdStartTime,getPageStartTime}=require('../utils/network-timing');
+const{isAdRequest}=require('../utils/resource-classification');
+
+
+
+
+
+
+class LanternAdRequestTime extends AdLanternMetric{
+
+
+
+
+
+
+static getEstimateFromSimulation(simulationResult,extras){
+const{nodeTimings}=simulationResult;
+const timeInMs=AdLanternMetric.findNetworkTiming(
+nodeTimings,isAdRequest).startTime;
+return{timeInMs,nodeTimings};
+}}
+
+
+
+
+
+LanternAdRequestTime=makeComputedArtifact(LanternAdRequestTime);
+
+
+class AdRequestTime extends ComputedMetric{
+
+
+
+
+
+
+static async computeSimulatedMetric(data,context){
+
+return LanternAdRequestTime.request(data,context);
+}
+
+
+
+
+
+
+static async computeObservedMetric(data){
+const{networkRecords}=data;
+const pageStartTime=getPageStartTime(networkRecords);
+const adStartTime=getAdStartTime(networkRecords);
+const adRequestTimeMs=(adStartTime-pageStartTime)*1000;
+return Promise.resolve({timing:adRequestTimeMs});
+}}
+
+
+
+
+
+AdRequestTime=makeComputedArtifact(AdRequestTime);
+
+module.exports=AdRequestTime;
+
+},{"../utils/network-timing":138,"../utils/resource-classification":140,"./ad-lantern-metric":126,"lighthouse/lighthouse-core/computed/computed-artifact":8,"lighthouse/lighthouse-core/computed/metrics/metric":30}],129:[function(require,module,exports){
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const AdLanternMetric=require('./ad-lantern-metric');
+
+const ComputedMetric=require('lighthouse/lighthouse-core/computed/metrics/metric');
+
+const makeComputedArtifact=require('lighthouse/lighthouse-core/computed/computed-artifact');
+const{getBidStartTime,getPageStartTime}=require('../utils/network-timing');
+const{isBidRequest}=require('../utils/resource-classification');
+
+
+
+
+
+
+class LanternBidRequestTime extends AdLanternMetric{
+
+
+
+
+
+
+static getEstimateFromSimulation(simulationResult,extras){
+const{nodeTimings}=simulationResult;
+const timeInMs=AdLanternMetric.findNetworkTiming(
+nodeTimings,isBidRequest).startTime;
+return{timeInMs,nodeTimings};
+}}
+
+
+
+
+
+LanternBidRequestTime=makeComputedArtifact(LanternBidRequestTime);
+
+
+class BidRequestTime extends ComputedMetric{
+
+
+
+
+
+
+static async computeSimulatedMetric(data,context){
+
+return LanternBidRequestTime.request(data,context);
+}
+
+
+
+
+
+
+static async computeObservedMetric(data){
+const{networkRecords}=data;
+const pageStartTime=getPageStartTime(networkRecords);
+const bidStartTime=getBidStartTime(networkRecords);
+const bidRequestTimeMs=(bidStartTime-pageStartTime)*1000;
+return Promise.resolve({timing:bidRequestTimeMs});
+}}
+
+
+
+
+
+BidRequestTime=makeComputedArtifact(BidRequestTime);
+
+module.exports=BidRequestTime;
+
+},{"../utils/network-timing":138,"../utils/resource-classification":140,"./ad-lantern-metric":126,"lighthouse/lighthouse-core/computed/computed-artifact":8,"lighthouse/lighthouse-core/computed/metrics/metric":30}],130:[function(require,module,exports){
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const AdLanternMetric=require('../computed/ad-lantern-metric');
+const BaseNode=require('lighthouse/lighthouse-core/lib/dependency-graph/base-node.js');
+
+const ComputedMetric=require('lighthouse/lighthouse-core/computed/metrics/metric');
+
+const CpuNode=require('lighthouse/lighthouse-core/lib/dependency-graph/cpu-node.js');
+const{getAttributableUrl}=require('../utils/tasks');
+
+const LoadSimulator=require('lighthouse/lighthouse-core/computed/load-simulator');
+const MainThreadTasks=require('lighthouse/lighthouse-core/computed/main-thread-tasks');
+
+const makeComputedArtifact=require('lighthouse/lighthouse-core/computed/computed-artifact');
+
+const NetworkNode=require('lighthouse/lighthouse-core/lib/dependency-graph/network-node.js');
+const NetworkRecords=require('lighthouse/lighthouse-core/computed/network-records');
+const PageDependencyGraph=require('lighthouse/lighthouse-core/computed/page-dependency-graph');
+
+const LONG_TASK_THRESHOLD_MS=50;
+
+
+
+
+
+
+function isLong(task,knownScripts){
+if(task.duration<LONG_TASK_THRESHOLD_MS){
+return false;
+}
+const script=getAttributableUrl(task,knownScripts);
+if(!script){
+return false;
+}
+if(task.parent){
+
+
+const parentScript=getAttributableUrl(task.parent,knownScripts);
+return script!=parentScript;
+}
+return true;
+}
+
+
+class LongTasks extends ComputedMetric{
+
+
+
+
+
+
+static async getSimulationGraph(trace,devtoolsLog,context){
+
+const documentNode=
+
+await PageDependencyGraph.request({trace,devtoolsLog},context);
+return AdLanternMetric.getOptimisticGraph(documentNode);
+}
+
+
+
+
+
+
+
+static async computeSimulatedResult(trace,devtoolsLog,context){
+const graph=await this.getSimulationGraph(trace,devtoolsLog,context);
+const simulator=await LoadSimulator.request(
+{devtoolsLog,settings:context.settings},context);
+const{nodeTimings}=simulator.simulate(graph,{});
+
+const tasks=[];
+for(const[node,timing]of nodeTimings.entries()){
+if(node.type!==BaseNode.TYPES.CPU||
+timing.duration<LONG_TASK_THRESHOLD_MS){
+continue;
+}
+tasks.push({
+event:node.event,
+startTime:timing.startTime,
+endTime:timing.endTime,
+duration:timing.duration,
+selfTime:timing.duration,
+attributableURLs:Array.from(node.getEvaluateScriptURLs()),
+children:[]});
+
+}
+return tasks;
+}
+
+
+
+
+
+
+
+static async computeObservedResult(trace,devtoolsLog,context){
+const tasks=await MainThreadTasks.request(trace,context);
+const networkRecords=await NetworkRecords.request(devtoolsLog,context);
+
+const knownScripts=new Set(networkRecords.
+filter(record=>record.resourceType==='Script').
+map(record=>record.url));
+return tasks.filter(t=>isLong(t,knownScripts));
+}
+
+
+
+
+
+
+static async compute_({trace,devtoolsLog},context){
+return context.settings.throttlingMethod=='simulate'?
+this.computeSimulatedResult(trace,devtoolsLog,context):
+this.computeObservedResult(trace,devtoolsLog,context);
+}}
+
+
+
+
+
+LongTasks=makeComputedArtifact(LongTasks);
+
+module.exports=LongTasks;
+
+},{"../computed/ad-lantern-metric":126,"../utils/tasks":141,"lighthouse/lighthouse-core/computed/computed-artifact":8,"lighthouse/lighthouse-core/computed/load-simulator":10,"lighthouse/lighthouse-core/computed/main-thread-tasks":12,"lighthouse/lighthouse-core/computed/metrics/metric":30,"lighthouse/lighthouse-core/computed/network-records":34,"lighthouse/lighthouse-core/computed/page-dependency-graph":35,"lighthouse/lighthouse-core/lib/dependency-graph/base-node.js":57,"lighthouse/lighthouse-core/lib/dependency-graph/cpu-node.js":58,"lighthouse/lighthouse-core/lib/dependency-graph/network-node.js":59}],131:[function(require,module,exports){
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const AdLanternMetric=require('./ad-lantern-metric');
+
+const ComputedMetric=require('lighthouse/lighthouse-core/computed/metrics/metric');
+
+const makeComputedArtifact=require('lighthouse/lighthouse-core/computed/computed-artifact');
+const{getPageStartTime,getTagEndTime}=require('../utils/network-timing');
+const{isImplTag}=require('../utils/resource-classification');
+const{URL}=require('url');
+
+
+
+
+
+
+class LanternTagLoadTime extends AdLanternMetric{
+
+
+
+
+
+
+static getEstimateFromSimulation(simulationResult,extras){
+const{nodeTimings}=simulationResult;
+const timeInMs=AdLanternMetric.findNetworkTiming(
+nodeTimings,req=>!!req.url&&isImplTag(new URL(req.url))).endTime;
+return{timeInMs,nodeTimings};
+}}
+
+
+
+
+
+LanternTagLoadTime=makeComputedArtifact(LanternTagLoadTime);
+
+
+class TagLoadTime extends ComputedMetric{
+
+
+
+
+
+
+static async computeSimulatedMetric(data,context){
+
+return LanternTagLoadTime.request(data,context);
+}
+
+
+
+
+
+
+
+static async computeObservedMetric(data,context){
+const{networkRecords}=data;
+const pageStartTime=getPageStartTime(networkRecords);
+const tagEndTime=getTagEndTime(networkRecords);
+const tagLoadMs=(tagEndTime-pageStartTime)*1000;
+return Promise.resolve({timing:tagLoadMs});
+}}
+
+
+
+
+
+TagLoadTime=makeComputedArtifact(TagLoadTime);
+
+module.exports=TagLoadTime;
+
+
+},{"../utils/network-timing":138,"../utils/resource-classification":140,"./ad-lantern-metric":126,"lighthouse/lighthouse-core/computed/computed-artifact":8,"lighthouse/lighthouse-core/computed/metrics/metric":30,"url":"url"}],132:[function(require,module,exports){
+(function(__filename){
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const UIStrings={
+GROUPS__METRICS:'Metrics',
+GROUPS__ADS_PERFORMANCE:'Ad Speed',
+GROUPS__ADS_BEST_PRACTICES:'Tag Best Practices',
+
+NOT_APPLICABLE__DEFAULT:'Audit not applicable',
+NOT_APPLICABLE__INVALID_TIMING:'Invalid timing task data',
+NOT_APPLICABLE__NO_AD_RELATED_REQ:'No ad-related requests',
+NOT_APPLICABLE__NO_AD_RENDERED:'No ads rendered',
+NOT_APPLICABLE__NO_ADS_VIEWPORT:'No ads in viewport',
+NOT_APPLICABLE__NO_ADS:'No ads requested',
+NOT_APPLICABLE__NO_BIDS:'No bids detected',
+NOT_APPLICABLE__NO_EVENT_MATCHING_REQ:'No event matches network records',
+NOT_APPLICABLE__NO_GPT:'GPT not requested',
+NOT_APPLICABLE__NO_RECORDS:'No successful network records',
+NOT_APPLICABLE__NO_VISIBLE_SLOTS:'No visible slots',
+NOT_APPLICABLE__NO_TAG:'No tag requested',
+NOT_APPLICABLE__NO_TAGS:'No tags requested',
+NOT_APPLICABLE__NO_TASKS:'No tasks to compare',
+NOT_APPLICABLE__NO_VALID_AD_WIDTHS:'No requested ads contain ads of valid width',
+
+ERRORS__AREA_LARGER_THAN_VIEWPORT:'Calculated ad area is larger than viewport',
+ERRORS__VIEWPORT_AREA_ZERO:'Viewport area is zero',
+
+WARNINGS__NO_ADS:'No ads were requested when fetching this page.',
+WARNINGS__NO_AD_RENDERED:'No ads were rendered when rendering this page.',
+WARNINGS__NO_TAG:'The GPT tag was not requested.'};
+
+const i18n=require('lighthouse/lighthouse-core/lib/i18n/i18n');
+
+const str_=i18n.createMessageInstanceIdFn(__filename,UIStrings);
+
+
+
+
+
+
+const notApplicableObj=message=>({
+notApplicable:true,
+score:1,
+displayValue:str_(message)});
+
+
+
+
+
+
+const auditNotApplicable={
+Default:notApplicableObj(UIStrings.NOT_APPLICABLE__DEFAULT),
+InvalidTiming:notApplicableObj(UIStrings.NOT_APPLICABLE__INVALID_TIMING),
+NoAdRelatedReq:notApplicableObj(UIStrings.NOT_APPLICABLE__NO_AD_RELATED_REQ),
+NoAdRendered:notApplicableObj(UIStrings.NOT_APPLICABLE__NO_AD_RENDERED),
+NoAdsViewport:notApplicableObj(UIStrings.NOT_APPLICABLE__NO_ADS_VIEWPORT),
+NoAds:notApplicableObj(UIStrings.NOT_APPLICABLE__NO_ADS),
+NoBids:notApplicableObj(UIStrings.NOT_APPLICABLE__NO_BIDS),
+NoEventMatchingReq:notApplicableObj(
+UIStrings.NOT_APPLICABLE__NO_EVENT_MATCHING_REQ),
+NoGpt:notApplicableObj(UIStrings.NOT_APPLICABLE__NO_GPT),
+NoRecords:notApplicableObj(UIStrings.NOT_APPLICABLE__NO_RECORDS),
+NoVisibleSlots:notApplicableObj(UIStrings.NOT_APPLICABLE__NO_VISIBLE_SLOTS),
+NoTag:notApplicableObj(UIStrings.NOT_APPLICABLE__NO_TAG),
+NoTags:notApplicableObj(UIStrings.NOT_APPLICABLE__NO_TAGS),
+NoTasks:notApplicableObj(UIStrings.NOT_APPLICABLE__NO_TASKS),
+NoValidAdWidths:notApplicableObj(
+UIStrings.NOT_APPLICABLE__NO_VALID_AD_WIDTHS)};
+
+
+const runWarning={
+NoAds:str_(UIStrings.WARNINGS__NO_ADS),
+NoAdRendered:str_(UIStrings.WARNINGS__NO_AD_RENDERED),
+NoTag:str_(UIStrings.WARNINGS__NO_TAG)};
+
+
+const auditError={
+AreaLargerThanViewport:str_(UIStrings.ERRORS__AREA_LARGER_THAN_VIEWPORT),
+ViewportAreaZero:str_(UIStrings.ERRORS__VIEWPORT_AREA_ZERO)};
+
+
+const group={
+Metrics:str_(UIStrings.GROUPS__METRICS),
+AdsPerformance:str_(UIStrings.GROUPS__ADS_PERFORMANCE),
+AdsBestPractices:str_(UIStrings.GROUPS__ADS_BEST_PRACTICES)};
+
+
+module.exports={auditNotApplicable,runWarning,auditError,group};
+module.exports.UIStrings=UIStrings;
+
+}).call(this,"/node_modules/lighthouse-plugin-publisher-ads/messages/common-strings.js");
+},{"lighthouse/lighthouse-core/lib/i18n/i18n":66}],133:[function(require,module,exports){
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function count(arr,pred){
+let num=0;
+for(const el of arr){
+if(pred(el)){
+num++;
+}
+}
+return num;
+}
+
+
+
+
+
+
+
+
+
+
+function bucket(array,splitter){
+
+const buckets=new Map();
+for(const element of array){
+const result=splitter(element);
+if(result!=null){
+
+
+const bucket=buckets.get(result)||[];
+bucket.push(element);
+buckets.set(result,bucket);
+}
+}
+return buckets;
+}
+
+
+
+
+
+
+
+function flatten(arrs){
+const result=[];
+for(const arr of arrs){
+result.push(...arr);
+}
+return result;
+}
+
+module.exports={
+count,bucket,flatten};
+
+
+},{}],134:[function(require,module,exports){
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function assert(x){
+if(x==null)throw new Error('Expected not to be null');
+return x;
+}
+
+module.exports={
+assert};
+
+
+},{}],135:[function(require,module,exports){
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+module.exports=[
+{
+label:'Prebid JS',
+patterns:[
+`^https?://([^.]*.)?prebid[.]org/.*`,
+'^https?://acdn[.]adnxs[.]com/prebid/.*']},
+
+
+{
+label:'33Across',
+patterns:[
+'^https?://ssc[.]33across.com/api/.*']},
+
+
+{
+label:'AppNexus',
+patterns:[
+'^https?://ib[.]adnxs[.]com/.*']},
+
+
+{
+label:'Amazon',
+patterns:[
+'^https?://[a-z-_.]*[.]amazon-adsystem[.]com/.*bid.*']},
+
+
+{
+label:'AdTechus (AOL)',
+patterns:[
+'^https?://([^.]*.)?adserver[.]adtechus[.]com/.*']},
+
+
+{
+label:'Aardvark',
+patterns:[
+'^https?://thor[.]rtk[.]io/.*']},
+
+
+{
+label:'AdBlade',
+patterns:[
+'^https?://rtb[.]adblade[.]com/prebidjs/bid.*']},
+
+
+{
+label:'AdBund',
+patterns:[
+'^https?://us-east-engine[.]adbund[.]xyz/prebid/ad/get.*',
+'^https?://us-west-engine[.]adbund[.]xyz/prebid/ad/get.*']},
+
+
+{
+label:'AdButler',
+patterns:[
+'^https?://servedbyadbutler[.]com/adserve.*']},
+
+
+{
+label:'Adequant',
+patterns:[
+'^https?://rex[.]adequant[.]com/rex/c2s_prebid.*']},
+
+
+{
+label:'AdForm',
+patterns:[
+'^https?://adx[.]adform[.]net/adx.*']},
+
+
+{
+label:'AdMedia',
+patterns:[
+'^https?://b[.]admedia[.]com/banner/prebid/bidder.*']},
+
+
+{
+label:'AdMixer',
+patterns:[
+'^https?://inv-nets[.]admixer[.]net/prebid[.]aspx.*',
+'^https?://inv-nets[.]admixer[.]net/videoprebid[.]aspx.*']},
+
+
+{
+label:'AOL',
+patterns:[
+'^https?://adserver-us[.]adtech[.]advertising[.]com.*',
+'^https?://adserver-eu[.]adtech[.]advertising[.]com.*',
+'^https?://adserver-as[.]adtech[.]advertising[.]com.*',
+'^https?://adserver[.]adtech[.]de/pubapi/.*']},
+
+
+{
+label:'Beachfront',
+patterns:[
+'^https?://reachms[.]bfmio[.]com/bid[.]json?exchange_id=.*']},
+
+
+{
+label:'Bidfluence',
+patterns:[
+'^https?://cdn[.]bidfluence[.]com/forge[.]js.*']},
+
+
+{
+label:'Brightcom',
+patterns:[
+'^https?://hb[.]iselephant[.]com/auc/ortb.*']},
+
+
+{
+label:'C1x',
+patterns:[
+'^https?://ht-integration[.]c1exchange[.]com:9000/ht.*']},
+
+
+{
+label:'CentroBid',
+patterns:[
+'^https?://t[.]brand-server[.]com/hb.*']},
+
+
+{
+label:'Conversant',
+patterns:[
+'^https?://media[.]msg[.]dotomi[.]com/s2s/.*']},
+
+
+{
+label:'Criteo',
+patterns:[
+'^https?://static[.]criteo[.]net/js/ld/publishertag[.]js.*',
+'^https?://([^.]*.)?bidder[.]criteo[.]com/cdb.*',
+'^https?://([^.]*.)?rtax[.]criteo[.]com/delivery/rta.*',
+'^https?://([^.]*.)?rtax[.]eu[.]criteo[.]com/delivery/rta.*']},
+
+
+{
+label:'Districtm',
+patterns:[
+'^https?://prebid[.]districtm[.]ca/lib[.]js.*']},
+
+
+{
+label:'E-Planning',
+patterns:[
+'^https?://ads[.]us[.]e-planning[.]net.*']},
+
+
+{
+label:'Essens',
+patterns:[
+'^https?://bid[.]essrtb[.]com/bid/prebid_call.*']},
+
+
+{
+label:'Facebook',
+patterns:[
+'^https?://an[.]facebook[.]com/v2/placementbid[.]json.*']},
+
+
+{
+label:'FeatureForward',
+patterns:[
+'^https?://prmbdr[.]featureforward[.]com/newbidder/.*']},
+
+
+{
+label:'Fidelity',
+patterns:[
+'^https?://x[.]fidelity-media[.]com.*']},
+
+
+{
+label:'GetIntent',
+patterns:[
+'^https?://px[.]adhigh[.]net/rtb/direct_banner.*',
+'^https?://px[.]adhigh[.]net/rtb/direct_vast.*']},
+
+
+{
+label:'GumGum',
+patterns:[
+'^https?://g2[.]gumgum[.]com/hbid/imp.*']},
+
+
+{
+label:'Hiromedia',
+patterns:[
+'^https?://hb-rtb[.]ktdpublishers[.]com/bid/get.*']},
+
+
+{
+label:'Imonomy',
+patterns:[
+'^https?://b[.]imonomy[.]com/openrtb/hb/.*']},
+
+
+{
+label:'ImproveDigital',
+patterns:[
+'^https?://ad[.]360yield[.]com/hb.*']},
+
+
+{
+label:'IndexExchange',
+patterns:[
+'^https?://as(-sec)?[.]casalemedia[.]com/(cygnus|headertag).*',
+'^https?://js(-sec)?[.]indexww[.]com/ht/.*']},
+
+
+{
+label:'InnerActive',
+patterns:[
+'^https?://ad-tag[.]inner-active[.]mobi/simpleM2M/requestJsonAd.*']},
+
+
+{
+label:'Innity',
+patterns:[
+'^https?://as[.]innity[.]com/synd/.*']},
+
+
+{
+label:'JCM',
+patterns:[
+'^https?://media[.]adfrontiers[.]com/pq.*']},
+
+
+{
+label:'JustPremium',
+patterns:[
+'^https?://pre[.]ads[.]justpremium[.]com/v/.*']},
+
+
+{
+label:'Kargo',
+patterns:[
+'^https?://krk[.]kargo[.]com/api/v1/bid.*']},
+
+
+{
+label:'Komoona',
+patterns:[
+'^https?://bidder[.]komoona[.]com/v1/GetSBids.*']},
+
+
+{
+label:'KruxLink',
+patterns:[
+'^https?://link[.]krxd[.]net/hb.*']},
+
+
+{
+label:'Kumma',
+patterns:[
+'^https?://cdn[.]kumma[.]com/pb_ortb[.]js.*']},
+
+
+{
+label:'Mantis',
+patterns:[
+'^https?://mantodea[.]mantisadnetwork[.]com/website/prebid.*']},
+
+
+{
+label:'MarsMedia',
+patterns:[
+'^https?://bid306[.]rtbsrv[.]com:9306/bidder.*']},
+
+
+{
+label:'Media.net',
+patterns:[
+'^https?://contextual[.]media[.]net/bidexchange.*']},
+
+
+{
+label:'MemeGlobal',
+patterns:[
+'^https?://stinger[.]memeglobal[.]com/api/v1/services/prebid.*']},
+
+
+{
+label:'MobFox',
+patterns:[
+'^https?://my[.]mobfox[.]com/request[.]php.*']},
+
+
+{
+label:'NanoInteractive',
+patterns:[
+'^https?://tmp[.]audiencemanager[.]de/hb.*']},
+
+
+{
+label:'OpenX',
+patterns:[
+'^https?://([^.]*.)?d[.]openx[.]net/w/1[.]0/arj.*',
+'^https?://([^.]*.)?servedbyopenx[.]com/.*']},
+
+
+{
+label:'Piximedia',
+patterns:[
+'^https?://static[.]adserver[.]pm/prebid.*']},
+
+
+{
+label:'Platformio',
+patterns:[
+'^https?://piohbdisp[.]hb[.]adx1[.]com.*']},
+
+
+{
+label:'Pollux',
+patterns:[
+'^https?://adn[.]plxnt[.]com/prebid.*']},
+
+
+{
+label:'PubGears',
+patterns:[
+'^https?://c[.]pubgears[.]com/tags.*']},
+
+
+{
+label:'Pubmatic',
+patterns:[
+'^https?://ads[.]pubmatic[.]com/AdServer/js/gshowad[.]js.*',
+'^https?://([^.]*.)?gads.pubmatic[.]com/.*',
+'^https?://hbopenbid.pubmatic[.]com/.*']},
+
+
+{
+label:'Pulsepoint',
+patterns:[
+'^https?://bid[.]contextweb[.]com/header/tag.*']},
+
+
+{
+label:'Quantcast',
+patterns:[
+'^https?://global[.]qc[.]rtb[.]quantserve[.]com:8080/qchb.*']},
+
+
+{
+label:'Rhythmone',
+patterns:[
+'^https?://tag[.]1rx[.]io/rmp/.*']},
+
+
+{
+label:'Roxot',
+patterns:[
+'^https?://r[.]rxthdr[.]com.*']},
+
+
+{
+label:'Rubicon',
+patterns:[
+'^https?://([^.]*.)?(fastlane|optimized-by|anvil)[.]rubiconproject[.]com/a/api.*',
+'^https?://fastlane-adv[.]rubiconproject[.]com/v1/auction/video.*']},
+
+
+{
+label:'Sekindo',
+patterns:[
+'^https?://hb[.]sekindo[.]com/live/liveView[.]php.*']},
+
+
+{
+label:'ShareThrough',
+patterns:[
+'^https?://btlr[.]sharethrough[.]com/header-bid/.*']},
+
+
+{
+label:'Smart AdServer',
+patterns:[
+'^https?://prg[.]smartadserver[.]com/prebid.*']},
+
+
+{
+label:'Sonobi',
+patterns:[
+'^https?://apex[.]go[.]sonobi[.]com/trinity[.]js.*']},
+
+
+{
+label:'Sovrn',
+patterns:[
+'^https?://ap[.]lijit[.]com/rtb/bid.*']},
+
+
+{
+label:'SpringServe',
+patterns:[
+'^https?://bidder[.]springserve[.]com/display/hbid.*']},
+
+
+{
+label:'StickyAds',
+patterns:[
+'^https?://cdn[.]stickyadstv[.]com/mustang/mustang[.]min[.]js.*',
+'^https?://cdn[.]stickyadstv[.]com/prime-time/.*']},
+
+
+{
+label:'TapSense3',
+patterns:[
+'^https?://ads04[.]tapsense[.]com/ads/headerad.*']},
+
+
+{
+label:'ThoughtLeadr',
+patterns:[
+'^https?://a[.]thoughtleadr[.]com/v4/.*']},
+
+
+{
+label:'TremorBid',
+patterns:[
+'^https?://([^.]*.)?ads[.]tremorhub[.]com/ad/tag.*']},
+
+
+{
+label:'Trion',
+patterns:[
+'^https?://in-appadvertising[.]com/api/bidRequest.*']},
+
+
+{
+label:'TripleLift',
+patterns:[
+'^https?://tlx[.]3lift[.]com/header/auction.*']},
+
+
+{
+label:'TrustX',
+patterns:[
+'^https?://sofia[.]trustx[.]org/hb.*']},
+
+
+{
+label:'UCFunnel',
+patterns:[
+'^https?://agent[.]aralego[.]com/header.*']},
+
+
+{
+label:'Underdog Media',
+patterns:[
+'^https?://udmserve[.]net/udm/img[.]fetch.*']},
+
+
+{
+label:'UnRuly',
+patterns:[
+'^https?://targeting[.]unrulymedia[.]com/prebid.*']},
+
+
+{
+label:'VertaMedia',
+patterns:[
+'^https?://rtb[.]vertamedia[.]com/hb/.*']},
+
+
+{
+label:'Vertoz',
+patterns:[
+'^https?://hb[.]vrtzads[.]com/vzhbidder/bid.*']},
+
+
+{
+label:'WideOrbig',
+patterns:[
+'^https?://([^.]*.)?atemda[.]com/JSAdservingMP[.]ashx.*']},
+
+
+{
+label:'WideSpace',
+patterns:[
+'^https?://engine[.]widespace[.]com/map/engine/hb/.*']},
+
+
+{
+label:'YieldBot',
+patterns:[
+'^https?://cdn[.]yldbt[.]com/js/yieldbot[.]intent[.]js.*']},
+
+
+{
+label:'YieldMo',
+patterns:[
+'^https?://ads[.]yieldmo[.]com/exchange/prebid.*']}];
+
+
+
+
+},{}],136:[function(require,module,exports){
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function isBoxInViewport(clientRect,viewport){
+const{innerWidth,innerHeight}=viewport;
+const{left,top,right,bottom}=clientRect;
+
+return left<right&&top<bottom&&
+left<innerWidth&&top<innerHeight&&0<right&&0<bottom;
+}
+
+
+
+
+
+
+function boxViewableArea(clientRect,viewport){
+if(!isBoxInViewport(clientRect,viewport))return 0;
+
+const{innerWidth,innerHeight}=viewport;
+const{left,top,right,bottom}=clientRect;
+
+return(Math.min(right,innerWidth)-Math.max(left,0))*(
+Math.min(bottom,innerHeight)-Math.max(top,0));
+}
+
+module.exports={
+isBoxInViewport,
+boxViewableArea};
+
+
+
+},{}],137:[function(require,module,exports){
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const BaseNode=require('lighthouse/lighthouse-core/lib/dependency-graph/base-node');
+
+const CpuNode=require('lighthouse/lighthouse-core/lib/dependency-graph/cpu-node.js');
+
+const NetworkNode=require('lighthouse/lighthouse-core/lib/dependency-graph/network-node.js');
+const NetworkRecords=require('lighthouse/lighthouse-core/computed/network-records');
+const{assert}=require('./asserts');
+const{getAbbreviatedUrl,trimUrl}=require('../utils/resource-classification');
+const{getNetworkInitiators}=require('lighthouse/lighthouse-core/computed/page-dependency-graph');
+const{getTimingsByRecord}=require('../utils/network-timing');
+const{isAdRequest,getHeaderBidder}=require('./resource-classification');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function findTargetRequest(root,isTargetRequest){
+
+let firstTarget=null;
+root.traverse(node=>{
+if(node.type===BaseNode.TYPES.CPU||!isTargetRequest(node.record)){
+return;
+}
+if(firstTarget&&firstTarget.startTime<node.startTime){
+return;
+}
+firstTarget=node;
+});
+return firstTarget;
+}
+
+
+
+
+
+
+
+
+function getTransitiveClosure(root,isTargetRequest){
+
+const closure=new Set();
+
+const firstTarget=findTargetRequest(root,isTargetRequest);
+
+
+const requests=[];
+
+const traceEvents=[];
+
+if(firstTarget==null){
+return{requests,traceEvents};
+}
+
+const stack=[firstTarget];
+
+
+while(stack.length){
+const node=stack.pop();
+if(!node||closure.has(node)){
+continue;
+}
+closure.add(node);
+stack.push(...node.getDependencies());
+}
+
+
+const visited=new Set();
+stack.push(...root.getDependents());
+while(stack.length){
+const node=stack.pop();
+if(!node||visited.has(node)){
+continue;
+}
+visited.add(node);
+if(closure.has(node)){
+for(const n of stack){
+closure.add(n);
+}
+}
+stack.push(...node.getDependents());
+}
+
+
+for(const node of closure){
+if(node.type===BaseNode.TYPES.NETWORK){
+if(node.endTime<assert(firstTarget).startTime){
+requests.push(node.record);
+}
+}else if(node.type===BaseNode.TYPES.CPU){
+if(node.event.ts<assert(firstTarget).startTime*1e6){
+traceEvents.push(node.event,...node.childEvents);
+}
+}
+}
+return{requests,traceEvents};
+}
+
+
+
+
+
+
+
+
+function isXhrCritical(xhrReq,networkSummary,criticalRequests){
+const edges=networkSummary.xhrEdges.get(xhrReq.url);
+if(!edges){
+return false;
+}
+for(const{url}of criticalRequests){
+if(edges.has(url)){
+return true;
+}
+}
+return false;
+}
+
+
+
+
+
+
+
+
+
+function addInitiatedRequests(
+scriptReq,parentReq,networkSummary,criticalRequests){
+const initiatedRequests=networkSummary.allRecords.
+filter(r=>r.resourceType!=undefined).
+filter(r=>['Script','XHR'].includes(r.resourceType||'')&&
+r.endTime<parentReq.startTime).
+filter(r=>r.initiatorRequest==scriptReq||
+getNetworkInitiators(r).includes(scriptReq.url));
+
+for(const initiatedReq of initiatedRequests){
+
+const blocking=
+initiatedReq.resourceType=='XHR'&&
+isXhrCritical(initiatedReq,networkSummary,criticalRequests);
+if(blocking){
+linkGraph(networkSummary,initiatedReq,criticalRequests);
+}
+}
+}
+
+
+
+
+
+
+
+
+function getCriticalGraph(networkRecords,traceEvents,targetRequest){
+const summary=buildNetworkSummary(networkRecords,traceEvents);
+const criticalRequests=new Set();
+linkGraph(summary,targetRequest,criticalRequests);
+return criticalRequests;
+}
+
+
+
+
+
+
+
+
+function linkGraph(
+networkSummary,targetRequest,criticalRequests=new Set()){
+if(!targetRequest||criticalRequests.has(targetRequest)){
+return criticalRequests;
+}
+criticalRequests.add(targetRequest);
+const seen=new Set();
+for(let stack=targetRequest.initiator.stack;stack;stack=stack.parent){
+for(const{url}of stack.callFrames){
+if(seen.has(url))continue;
+seen.add(url);
+
+const request=networkSummary.requestsByUrl.get(url);
+if(!request)continue;
+
+linkGraph(networkSummary,request,criticalRequests);
+
+if(request.resourceType=='Script'){
+const scriptUrl=stack.callFrames[0].url;
+const scriptReq=networkSummary.requestsByUrl.get(scriptUrl);
+if(scriptReq){
+addInitiatedRequests(
+scriptReq,
+targetRequest,
+networkSummary,
+criticalRequests);
+}
+}
+}
+}
+
+linkGraph(
+networkSummary,targetRequest.initiatorRequest||null,criticalRequests);
+return criticalRequests;
+}
+
+
+
+
+
+
+function buildNetworkSummary(networkRecords,traceEvents){
+const requestsByUrl=new Map();
+for(const req of networkRecords){
+requestsByUrl.set(req.url,req);
+}
+
+const xhrEvents=traceEvents.
+filter(t=>t.name.startsWith('XHR')).
+filter(t=>!!(t.args.data||{}).url);
+const xhrEdges=new Map();
+for(const e of xhrEvents){
+const data=e.args.data||{};
+const edges=xhrEdges.get(data.url)||new Set();
+for(const{url}of data.stackTrace||[]){
+edges.add(url);
+}
+xhrEdges.set(data.url,edges);
+}
+return{requestsByUrl,xhrEdges,allRecords:networkRecords};
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function areSimilarRequests(r1,r2){
+if(Math.max(r1.startTime,r2.startTime)>Math.min(r1.endTime,r2.endTime)){
+return false;
+}
+if(r1.type&&r2.type&&r1.type!=r2.type){
+return false;
+}
+return r1.abbreviatedUrl==r2.abbreviatedUrl;
+}
+
+
+
+
+
+
+
+function computeSummaries(requests){
+
+
+
+requests.sort((a,b)=>{
+if(a.abbreviatedUrl!=b.abbreviatedUrl){
+return a.abbreviatedUrl<b.abbreviatedUrl?-1:1;
+}
+if(a.type!=b.type){
+return a.type<b.type?-1:1;
+}
+if(a.startTime!=b.startTime){
+return a.startTime<b.startTime?-1:1;
+}
+return a.endTime-b.endTime;
+});
+const result=[];
+for(let i=0;i<requests.length;i++){
+const current=requests[i];
+let next;
+while(i<requests.length){
+next=requests[i+1];
+if(!next||!areSimilarRequests(next,current)){
+break;
+}
+current.url=current.abbreviatedUrl;
+current.endTime=Math.max(current.endTime,next.endTime);
+current.duration=current.endTime-current.startTime;
+i++;
+}
+result.push(current);
+}
+result.sort((a,b)=>a.startTime-b.startTime);
+return result;
+}
+
+
+
+
+
+function computeSelfTimes(requests){
+if(!requests.length){
+return[];
+}
+
+let bottlneckRequest=assert(requests[0]);
+bottlneckRequest.selfTime=bottlneckRequest.duration;
+
+let scanEnd=bottlneckRequest.startTime;
+
+for(const current of requests){
+if(current.endTime<scanEnd||current==bottlneckRequest){
+
+continue;
+}
+const left=Math.max(scanEnd,current.startTime);
+const right=Math.min(bottlneckRequest.endTime,current.endTime);
+if(left<right){
+
+bottlneckRequest.selfTime-=right-left;
+}
+scanEnd=Math.max(scanEnd,right);
+if(current.endTime>bottlneckRequest.endTime){
+current.selfTime=current.endTime-left;
+bottlneckRequest=current;
+}
+}
+}
+
+
+
+
+
+
+
+
+
+
+async function computeAdRequestWaterfall(trace,devtoolsLog,context){
+const networkRecords=await NetworkRecords.request(devtoolsLog,context);
+
+const maybeFirstAdRequest=networkRecords.find(isAdRequest);
+const criticalRequests=new Set();
+if(maybeFirstAdRequest==null){
+return Promise.resolve([]);
+}
+const firstAdRequest=assert(maybeFirstAdRequest);
+const bidRequests=networkRecords.filter(r=>
+!!getHeaderBidder(r.url)&&r.endTime<=firstAdRequest.startTime);
+const summary=buildNetworkSummary(networkRecords,trace.traceEvents);
+for(const req of[firstAdRequest,...bidRequests]){
+linkGraph(summary,req,criticalRequests);
+}
+
+const REQUEST_TYPES=new Set([
+'Script','XHR','Fetch','EventStream','Document',undefined]);
+const waterfall=Array.from(criticalRequests).
+filter(r=>r.endTime<firstAdRequest.startTime).
+filter(r=>REQUEST_TYPES.has(r.resourceType)).
+filter(r=>r.mimeType!='text/css');
+
+
+const timingsByRecord=
+await getTimingsByRecord(trace,devtoolsLog,context);
+const timedWaterfall=waterfall.map(req=>{
+const{startTime,endTime}=timingsByRecord.get(req)||req;
+return{
+startTime,
+endTime,
+duration:endTime-startTime,
+selfTime:0,
+url:trimUrl(req.url),
+abbreviatedUrl:getAbbreviatedUrl(req.url),
+type:req.resourceType,
+record:req};
+
+});
+const result=computeSummaries(timedWaterfall);
+computeSelfTimes(result);
+return result;
+}
+
+module.exports={
+getTransitiveClosure,
+getCriticalGraph,
+computeAdRequestWaterfall};
+
+
+},{"../utils/network-timing":138,"../utils/resource-classification":140,"./asserts":134,"./resource-classification":140,"lighthouse/lighthouse-core/computed/network-records":34,"lighthouse/lighthouse-core/computed/page-dependency-graph":35,"lighthouse/lighthouse-core/lib/dependency-graph/base-node":57,"lighthouse/lighthouse-core/lib/dependency-graph/cpu-node.js":58,"lighthouse/lighthouse-core/lib/dependency-graph/network-node.js":59}],138:[function(require,module,exports){
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const AdLanternMetric=require('../computed/ad-lantern-metric');
+
+const LoadSimulator=require('lighthouse/lighthouse-core/computed/load-simulator');
+const NetworkRecords=require('lighthouse/lighthouse-core/computed/network-records');
+const PageDependencyGraph=require('lighthouse/lighthouse-core/computed/page-dependency-graph');
+const{isAdRequest,isBidRequest,isImplTag,isImpressionPing}=require('./resource-classification');
+const{URL}=require('url');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function getTagEndTime(networkRecords){
+const tagRecord=networkRecords.find(
+record=>isImplTag(new URL(record.url)));
+return tagRecord?tagRecord.endTime:-1;
+}
+
+
+
+
+
+
+function getAdStartTime(networkRecords){
+const firstAdRecord=networkRecords.find(isAdRequest);
+return firstAdRecord?firstAdRecord.startTime:-1;
+}
+
+
+
+
+
+
+function getBidStartTime(networkRecords){
+const firstBidRecord=networkRecords.find(isBidRequest);
+return firstBidRecord?firstBidRecord.startTime:-1;
+}
+
+
+
+
+
+
+function getImpressionStartTime(networkRecords){
+const firstImpressionRecord=networkRecords.find(
+record=>isImpressionPing(record.url));
+return firstImpressionRecord?firstImpressionRecord.startTime:-1;
+}
+
+
+
+
+
+
+
+function getPageStartTime(networkRecords,defaultValue=-1){
+const firstSuccessRecord=networkRecords.find(
+record=>record.statusCode==200);
+return firstSuccessRecord?firstSuccessRecord.startTime:defaultValue;
+}
+
+
+
+
+
+
+
+function getPageResponseTime(networkRecords,defaultValue=-1){
+const firstSuccessRecord=networkRecords.find(
+record=>record.statusCode==200);
+return firstSuccessRecord?
+firstSuccessRecord.responseReceivedTime:defaultValue;
+}
+
+
+
+
+
+
+
+async function getTimingsByRecord(trace,devtoolsLog,context){
+
+const timingsByRecord=new Map();
+const networkRecords=await NetworkRecords.request(devtoolsLog,context);
+if(context.settings.throttlingMethod=='simulate'){
+
+const documentNode=
+
+await PageDependencyGraph.request({trace,devtoolsLog},context);
+const releventGraph=AdLanternMetric.getOptimisticGraph(documentNode);
+const simulator=await LoadSimulator.request(
+{devtoolsLog,settings:context.settings},context);
+const{nodeTimings}=simulator.simulate(releventGraph,{});
+for(const[{record},timing]of nodeTimings.entries()){
+if(!record)continue;
+timingsByRecord.set(record,timing);
+}
+}else{
+const pageStartTime=getPageStartTime(networkRecords);
+for(const record of networkRecords){
+timingsByRecord.set(record,{
+startTime:(record.startTime-pageStartTime)*1000,
+endTime:(record.endTime-pageStartTime)*1000,
+duration:(record.endTime-record.startTime)*1000});
+
+}
+}
+return timingsByRecord;
+}
+
+
+
+
+
+function getScriptUrl(e){
+if(!e.args.data){
+return undefined;
+}
+if(!['EvaluateScript','FunctionCall'].includes(e.name)){
+return undefined;
+}
+if(e.args.data.url){
+return e.args.data.url;
+}
+if(e.args.data.stackTrace){
+return e.args.data.stackTrace[0].url;
+}
+return undefined;
+}
+
+
+
+
+
+
+
+
+
+
+
+async function getScriptEvaluationTimes(trace,devtoolsLog,context){
+const networkRecords=await NetworkRecords.request(devtoolsLog,context);
+const pageStartTime=getPageStartTime(networkRecords)*1000;
+
+const results=new Map();
+for(const e of trace.traceEvents){
+const script=getScriptUrl(e);
+if(script&&!results.has(script)){
+results.set(script,e.ts/1000-pageStartTime);
+}
+}
+if(context.settings.throttlingMethod!=='simulate'){
+return results;
+}
+
+const timingsByRecord=await getTimingsByRecord(trace,devtoolsLog,context);
+for(const[req,timing]of timingsByRecord.entries()){
+const scriptEvalTime=results.get(req.url);
+if(!scriptEvalTime){
+continue;
+}
+const unsimulatedNetworkTime=req.startTime*1000-pageStartTime;
+const simulatedNetworkTime=timing.endTime;
+
+const cpuFactor=context.settings.throttling.cpuSlowdownMultiplier;
+
+const unsimulatedCpuTime=scriptEvalTime-unsimulatedNetworkTime;
+const simulatedCpuTime=cpuFactor*unsimulatedCpuTime;
+
+results.set(req.url,simulatedNetworkTime+simulatedCpuTime);
+}
+return results;
+}
+
+module.exports={
+getTagEndTime,
+getImpressionStartTime,
+getAdStartTime,
+getBidStartTime,
+getPageStartTime,
+getPageResponseTime,
+getTimingsByRecord,
+getScriptEvaluationTimes};
+
+
+},{"../computed/ad-lantern-metric":126,"./resource-classification":140,"lighthouse/lighthouse-core/computed/load-simulator":10,"lighthouse/lighthouse-core/computed/network-records":34,"lighthouse/lighthouse-core/computed/page-dependency-graph":35,"url":"url"}],139:[function(require,module,exports){
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const CacheHeaders=require('lighthouse/lighthouse-core/audits/byte-efficiency/uses-long-cache-ttl');
+
+const{parse:parseCacheControl}=require('@tusbar/cache-control');
+
+
+
+
+
+
+function getHeader(req,header){
+const lowerHeader=header.toLowerCase();
+return(req.responseHeaders||[]).find(
+h=>h.name.toLowerCase()===lowerHeader);
+}
+
+
+
+
+
+
+function isCacheable(req){
+
+if(!CacheHeaders.isCacheableAsset(req)){
+return false;
+}
+const cacheControlHeader=getHeader(req,'cache-control');
+if(cacheControlHeader){
+try{
+const cacheControl=parseCacheControl(cacheControlHeader.value);
+if(cacheControl.noStore||cacheControl.noCache||
+cacheControl.maxAge===0){
+return false;
+}
+}catch(e){}
+return true;
+}
+
+return!!getHeader(req,'expires')||!!getHeader(req,'last-modified');
+}
+
+module.exports={
+isCacheable};
+
+
+},{"@tusbar/cache-control":91,"lighthouse/lighthouse-core/audits/byte-efficiency/uses-long-cache-ttl":"../audits/byte-efficiency/uses-long-cache-ttl"}],140:[function(require,module,exports){
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const bidderPatterns=require('./bidder-patterns');
+const{isCacheable}=require('../utils/network');
+const{URL}=require('url');
+
+
+
+
+
+
+
+function toURL(urlOrStr){
+return typeof urlOrStr==='string'?new URL(urlOrStr):urlOrStr;
+}
+
+
+
+
+
+
+function isGoogleAds(url){
+return /(^|\.)(doubleclick.net|google(syndication|tagservices).com)$/.
+test(url.hostname);
+}
+
+
+
+
+
+
+function isAdSenseTag(url){
+url=toURL(url);
+const matchesHost=url.host==='pagead2.googlesyndication.com';
+const matchesPath=
+[
+'/pagead/js/adsbygoogle.js',
+'/pagead/show_ads.js'].
+includes(url.pathname);
+return matchesHost&&matchesPath;
+}
+
+
+
+
+
+
+function isAdSenseImplTag(url){
+url=toURL(url);
+const matchesHost=url.host==='pagead2.googlesyndication.com';
+const matchesPath=
+/(^\/pagead\/js\/.*\/show_ads_impl\.js)/.test(url.pathname);
+return matchesHost&&matchesPath;
+}
+
+
+
+
+
+
+function isAdSense(url){
+return isAdSenseTag(url)||isAdSenseImplTag(url);
+}
+
+
+
+
+
+
+function isAdSenseAdRequest(request){
+if(!request)return false;
+const url=new URL(request.url);
+return(
+url.pathname==='/pagead/ads'&&
+url.host==='googleads.g.doubleclick.net');
+
+}
+
+
+
+
+
+function isAdSenseIframe(iframe){
+return /(^aswift_\d+)/.test(iframe.id);
+}
+
+
+
+
+
+
+function isImpressionPing(url){
+const{host,pathname}=toURL(url);
+return(
+[
+'securepubads.g.doubleclick.net',
+'googleads4.g.doubleclick.net'].
+includes(host)&&
+['/pcs/view','/pagead/adview'].includes(pathname));
+
+}
+
+
+
+
+
+
+function isGptTag(url){
+const{host,pathname}=toURL(url);
+const matchesHost=[
+'www.googletagservices.com',
+'securepubads.g.doubleclick.net'].includes(host);
+const matchesPath=
+['/tag/js/gpt.js','/tag/js/gpt_mobile.js'].includes(pathname);
+return matchesHost&&matchesPath;
+}
+
+
+
+
+
+
+function isGptImplTag(url){
+return(
+/(^\/gpt\/pubads_impl([a-z_]*)((?<!rendering)_)\d+\.js)/.
+test(toURL(url).pathname));
+
+}
+
+
+
+
+
+
+function isGpt(url){
+return isGptTag(url)||isGptImplTag(url);
+}
+
+
+
+
+
+
+function isGptAdRequest(request){
+if(!request)return false;
+const url=new URL(request.url);
+return(
+url.pathname==='/gampad/ads'&&
+url.host==='securepubads.g.doubleclick.net'&&
+request.resourceType==='XHR');
+
+}
+
+
+
+
+
+function isGptIframe(iframe){
+return /(^google_ads_iframe_)/.test(iframe.id);
+}
+
+
+
+
+
+
+function isAdTag(url){
+return isAdSenseTag(url)||isGptTag(url);
+}
+
+
+
+
+
+
+function isAdScript(url){
+return isAdSense(url)||isGpt(url);
+}
+
+
+
+
+
+
+function isAdRequest(request){
+return isAdSenseAdRequest(request)||isGptAdRequest(request);
+}
+
+
+
+
+
+
+function isAdIframe(iframe){
+return isAdSenseIframe(iframe)||isGptIframe(iframe);
+}
+
+
+
+
+
+
+function isImplTag(url){
+return isAdSenseTag(url)||isGptImplTag(url);
+}
+
+
+
+
+
+
+
+function containsAnySubstring(str,substrings){
+return substrings.some(substring=>str.includes(substring));
+}
+
+
+
+
+
+
+function hasImpressionPath(url){
+return url.pathname==='/pcs/view'||
+url.pathname==='/pagead/adview';
+}
+
+
+
+
+
+
+function getHeaderBidder(url){
+for(const def of bidderPatterns){
+for(const pattern of def.patterns){
+if(new RegExp(pattern).test(url)){
+return def.label;
+}
+}
+}
+return undefined;
+}
+
+
+
+
+
+
+
+function isBidRelatedRequest(requestOrUrl){
+return!!getHeaderBidder(
+typeof requestOrUrl=='string'?requestOrUrl:requestOrUrl.url);
+}
+
+
+
+
+
+
+function isPossibleBidRequest(req){
+return(req.resourceSize==null||req.resourceSize>0)&&
+req.resourceType!='Image'&&
+!isCacheable(req);
+}
+
+
+
+
+
+
+function isBidRequest(req){
+return isBidRelatedRequest(req)&&isPossibleBidRequest(req);
+}
+
+
+
+
+
+function isStaticRequest(request){
+
+return['parser','preload','other'].includes(request.initiator.type);
+}
+
+
+
+
+
+
+function trimUrl(url){
+const u=new URL(url);
+const PATH_MAX=60;
+const path=u.pathname.length>PATH_MAX?
+u.pathname.substr(0,PATH_MAX)+'...':u.pathname;
+return u.origin+path;
+}
+
+
+
+
+
+
+
+function getAbbreviatedUrl(url){
+const u=new URL(trimUrl(url));
+const parts=u.pathname.split('/');
+if(parts.length>4){
+u.pathname=[...parts.splice(0,4),'...'].join('/');
+}
+return u.toString();
+}
+
+module.exports={
+isGoogleAds,
+isGptAdRequest,
+isImpressionPing,
+isGpt,
+isAdSense,
+isAdSenseTag,
+isAdSenseImplTag,
+isAdSenseAdRequest,
+isAdSenseIframe,
+isGptTag,
+isGptImplTag,
+isGptIframe,
+isAdTag,
+isAdScript,
+isAdRequest,
+isAdIframe,
+isImplTag,
+containsAnySubstring,
+hasImpressionPath,
+getHeaderBidder,
+isBidRelatedRequest,
+isBidRequest,
+isStaticRequest,
+trimUrl,
+getAbbreviatedUrl};
+
+
+},{"../utils/network":139,"./bidder-patterns":135,"url":"url"}],141:[function(require,module,exports){
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function getAttributableUrl(longTask,knownScripts=new Set()){
+const scriptUrl=longTask.attributableURLs.find(
+url=>knownScripts.has(url));
+const fallbackUrl=longTask.attributableURLs[0]||
+(longTask.event.args.data||{}).url;
+const attributableUrl=scriptUrl||fallbackUrl;
+
+if(attributableUrl){
+return attributableUrl;
+}
+let maxChildDuration=50;
+let childUrl='';
+for(const child of longTask.children){
+const url=getAttributableUrl(child,knownScripts);
+if(url&&child.duration>maxChildDuration){
+childUrl=url;
+maxChildDuration=child.duration;
+}
+}
+return childUrl;
+}
+
+module.exports={getAttributableUrl};
+
+},{}],142:[function(require,module,exports){
 (function(global){
 
 
@@ -54981,7 +57670,7 @@ return false;
 module.exports=isEqual;
 
 }).call(this,typeof global!=="undefined"?global:typeof self!=="undefined"?self:typeof window!=="undefined"?window:{});
-},{}],127:[function(require,module,exports){
+},{}],143:[function(require,module,exports){
 
 
 
@@ -54998,7 +57687,7 @@ current.pop();
 }
 };
 
-},{}],128:[function(require,module,exports){
+},{}],144:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports,'__esModule',{value:true});
@@ -55078,7 +57767,7 @@ exports.getEntries=function(){return entries;};
 exports.clear=function(){entries=[];};
 }
 
-},{}],129:[function(require,module,exports){
+},{}],145:[function(require,module,exports){
 exports.getRenderingDataFromViewport=function(viewportProperties,uaDeviceWidth,uaDeviceHeight,uaMaxZoom,uaMinZoom){
 
 var vw=uaDeviceWidth/100;
@@ -55421,7 +58110,7 @@ exports.expectedValues={
 "viewport-fit":["auto","cover"]};
 
 
-},{}],130:[function(require,module,exports){
+},{}],146:[function(require,module,exports){
 
 
 
@@ -55575,7 +58264,7 @@ return Math.floor(ms/n)+' '+name;
 return Math.ceil(ms/n)+' '+name+'s';
 }
 
-},{}],131:[function(require,module,exports){
+},{}],147:[function(require,module,exports){
 'use strict';
 
 
@@ -55682,7 +58371,7 @@ exports.assign(exports,fnUntyped);
 
 exports.setTyped(TYPED_OK);
 
-},{}],132:[function(require,module,exports){
+},{}],148:[function(require,module,exports){
 'use strict';
 
 
@@ -55735,7 +58424,7 @@ return s1|s2<<16|0;
 
 module.exports=adler32;
 
-},{}],133:[function(require,module,exports){
+},{}],149:[function(require,module,exports){
 'use strict';
 
 
@@ -55805,7 +58494,7 @@ Z_DEFLATED:8};
 
 
 
-},{}],134:[function(require,module,exports){
+},{}],150:[function(require,module,exports){
 'use strict';
 
 
@@ -55866,7 +58555,7 @@ return crc^-1;
 
 module.exports=crc32;
 
-},{}],135:[function(require,module,exports){
+},{}],151:[function(require,module,exports){
 'use strict';
 
 
@@ -57742,7 +60431,7 @@ exports.deflateInfo='pako deflate (from Nodeca project)';
 
 
 
-},{"../utils/common":131,"./adler32":132,"./crc32":134,"./messages":136,"./trees":137}],136:[function(require,module,exports){
+},{"../utils/common":147,"./adler32":148,"./crc32":150,"./messages":152,"./trees":153}],152:[function(require,module,exports){
 'use strict';
 
 
@@ -57776,7 +60465,7 @@ module.exports={
 '-6':'incompatible version'};
 
 
-},{}],137:[function(require,module,exports){
+},{}],153:[function(require,module,exports){
 'use strict';
 
 
@@ -59000,7 +61689,7 @@ exports._tr_flush_block=_tr_flush_block;
 exports._tr_tally=_tr_tally;
 exports._tr_align=_tr_align;
 
-},{"../utils/common":131}],138:[function(require,module,exports){
+},{"../utils/common":147}],154:[function(require,module,exports){
 'use strict';
 
 
@@ -59049,7 +61738,7 @@ this.adler=0;
 
 module.exports=ZStream;
 
-},{}],139:[function(require,module,exports){
+},{}],155:[function(require,module,exports){
 module.exports=function parseCacheControl(field){
 
 if(typeof field!=='string'){
@@ -59088,7 +61777,7 @@ catch(err){}
 return err?null:header;
 };
 
-},{}],140:[function(require,module,exports){
+},{}],156:[function(require,module,exports){
 (function(process){
 
 
@@ -59394,7 +62083,7 @@ return str.substr(start,len);
 
 
 }).call(this,require('_process'));
-},{"_process":142}],141:[function(require,module,exports){
+},{"_process":158}],157:[function(require,module,exports){
 (function(process){
 'use strict';
 
@@ -59442,7 +62131,7 @@ fn.apply(null,args);
 
 
 }).call(this,require('_process'));
-},{"_process":142}],142:[function(require,module,exports){
+},{"_process":158}],158:[function(require,module,exports){
 
 var process=module.exports={};
 
@@ -59628,7 +62317,7 @@ throw new Error('process.chdir is not supported');
 };
 process.umask=function(){return 0;};
 
-},{}],143:[function(require,module,exports){
+},{}],159:[function(require,module,exports){
 
 
 
@@ -59714,7 +62403,7 @@ var isArray=Array.isArray||function(xs){
 return Object.prototype.toString.call(xs)==='[object Array]';
 };
 
-},{}],144:[function(require,module,exports){
+},{}],160:[function(require,module,exports){
 
 
 
@@ -59801,16 +62490,16 @@ if(Object.prototype.hasOwnProperty.call(obj,key))res.push(key);
 return res;
 };
 
-},{}],145:[function(require,module,exports){
+},{}],161:[function(require,module,exports){
 'use strict';
 
 exports.decode=exports.parse=require('./decode');
 exports.encode=exports.stringify=require('./encode');
 
-},{"./decode":143,"./encode":144}],146:[function(require,module,exports){
+},{"./decode":159,"./encode":160}],162:[function(require,module,exports){
 module.exports=require('./lib/_stream_duplex.js');
 
-},{"./lib/_stream_duplex.js":147}],147:[function(require,module,exports){
+},{"./lib/_stream_duplex.js":163}],163:[function(require,module,exports){
 
 
 
@@ -59942,7 +62631,7 @@ this.end();
 
 pna.nextTick(cb,err);
 };
-},{"./_stream_readable":149,"./_stream_writable":151,"core-util-is":103,"inherits":113,"process-nextick-args":141}],148:[function(require,module,exports){
+},{"./_stream_readable":165,"./_stream_writable":167,"core-util-is":103,"inherits":113,"process-nextick-args":157}],164:[function(require,module,exports){
 
 
 
@@ -59990,7 +62679,7 @@ Transform.call(this,options);
 PassThrough.prototype._transform=function(chunk,encoding,cb){
 cb(null,chunk);
 };
-},{"./_stream_transform":150,"core-util-is":103,"inherits":113}],149:[function(require,module,exports){
+},{"./_stream_transform":166,"core-util-is":103,"inherits":113}],165:[function(require,module,exports){
 (function(process,global){
 
 
@@ -61012,7 +63701,7 @@ if(xs[i]===x)return i;
 return-1;
 }
 }).call(this,require('_process'),typeof global!=="undefined"?global:typeof self!=="undefined"?self:typeof window!=="undefined"?window:{});
-},{"./_stream_duplex":147,"./internal/streams/BufferList":152,"./internal/streams/destroy":153,"./internal/streams/stream":154,"_process":142,"core-util-is":103,"events":108,"inherits":113,"isarray":121,"process-nextick-args":141,"safe-buffer":162,"string_decoder/":155,"util":98}],150:[function(require,module,exports){
+},{"./_stream_duplex":163,"./internal/streams/BufferList":168,"./internal/streams/destroy":169,"./internal/streams/stream":170,"_process":158,"core-util-is":103,"events":108,"inherits":113,"isarray":121,"process-nextick-args":157,"safe-buffer":178,"string_decoder/":171,"util":98}],166:[function(require,module,exports){
 
 
 
@@ -61227,7 +63916,7 @@ if(stream._transformState.transforming)throw new Error('Calling transform done w
 
 return stream.push(null);
 }
-},{"./_stream_duplex":147,"core-util-is":103,"inherits":113}],151:[function(require,module,exports){
+},{"./_stream_duplex":163,"core-util-is":103,"inherits":113}],167:[function(require,module,exports){
 (function(process,global,setImmediate){
 
 
@@ -61917,7 +64606,7 @@ this.end();
 cb(err);
 };
 }).call(this,require('_process'),typeof global!=="undefined"?global:typeof self!=="undefined"?self:typeof window!=="undefined"?window:{},require("timers").setImmediate);
-},{"./_stream_duplex":147,"./internal/streams/destroy":153,"./internal/streams/stream":154,"_process":142,"core-util-is":103,"inherits":113,"process-nextick-args":141,"safe-buffer":162,"timers":172,"util-deprecate":173}],152:[function(require,module,exports){
+},{"./_stream_duplex":163,"./internal/streams/destroy":169,"./internal/streams/stream":170,"_process":158,"core-util-is":103,"inherits":113,"process-nextick-args":157,"safe-buffer":178,"timers":188,"util-deprecate":189}],168:[function(require,module,exports){
 'use strict';
 
 function _classCallCheck(instance,Constructor){if(!(instance instanceof Constructor)){throw new TypeError("Cannot call a class as a function");}}
@@ -61997,7 +64686,7 @@ var obj=util.inspect({length:this.length});
 return this.constructor.name+' '+obj;
 };
 }
-},{"safe-buffer":162,"util":98}],153:[function(require,module,exports){
+},{"safe-buffer":178,"util":98}],169:[function(require,module,exports){
 'use strict';
 
 
@@ -62072,10 +64761,10 @@ module.exports={
 destroy:destroy,
 undestroy:undestroy};
 
-},{"process-nextick-args":141}],154:[function(require,module,exports){
+},{"process-nextick-args":157}],170:[function(require,module,exports){
 module.exports=require('events').EventEmitter;
 
-},{"events":108}],155:[function(require,module,exports){
+},{"events":108}],171:[function(require,module,exports){
 
 
 
@@ -62372,10 +65061,10 @@ return buf.toString(this.encoding);
 function simpleEnd(buf){
 return buf&&buf.length?this.write(buf):'';
 }
-},{"safe-buffer":162}],156:[function(require,module,exports){
+},{"safe-buffer":178}],172:[function(require,module,exports){
 module.exports=require('./readable').PassThrough;
 
-},{"./readable":157}],157:[function(require,module,exports){
+},{"./readable":173}],173:[function(require,module,exports){
 exports=module.exports=require('./lib/_stream_readable.js');
 exports.Stream=exports;
 exports.Readable=exports;
@@ -62384,13 +65073,13 @@ exports.Duplex=require('./lib/_stream_duplex.js');
 exports.Transform=require('./lib/_stream_transform.js');
 exports.PassThrough=require('./lib/_stream_passthrough.js');
 
-},{"./lib/_stream_duplex.js":147,"./lib/_stream_passthrough.js":148,"./lib/_stream_readable.js":149,"./lib/_stream_transform.js":150,"./lib/_stream_writable.js":151}],158:[function(require,module,exports){
+},{"./lib/_stream_duplex.js":163,"./lib/_stream_passthrough.js":164,"./lib/_stream_readable.js":165,"./lib/_stream_transform.js":166,"./lib/_stream_writable.js":167}],174:[function(require,module,exports){
 module.exports=require('./readable').Transform;
 
-},{"./readable":157}],159:[function(require,module,exports){
+},{"./readable":173}],175:[function(require,module,exports){
 module.exports=require('./lib/_stream_writable.js');
 
-},{"./lib/_stream_writable.js":151}],160:[function(require,module,exports){
+},{"./lib/_stream_writable.js":167}],176:[function(require,module,exports){
 var URL=require('url').URL;
 
 
@@ -62813,13 +65502,13 @@ return this._sitemaps.slice(0);
 
 module.exports=Robots;
 
-},{"url":"url"}],161:[function(require,module,exports){
+},{"url":"url"}],177:[function(require,module,exports){
 var Robots=require('./Robots');
 
 module.exports=function(url,contents){
 return new Robots(url,contents);
 };
-},{"./Robots":160}],162:[function(require,module,exports){
+},{"./Robots":176}],178:[function(require,module,exports){
 
 var buffer=require('buffer');
 var Buffer=buffer.Buffer;
@@ -62883,7 +65572,7 @@ throw new TypeError('Argument must be a number');
 return buffer.SlowBuffer(size);
 };
 
-},{"buffer":102}],163:[function(require,module,exports){
+},{"buffer":102}],179:[function(require,module,exports){
 (function(process){
 exports=module.exports=SemVer;
 
@@ -64370,7 +67059,7 @@ return parse(match[1]+
 }
 
 }).call(this,require('_process'));
-},{"_process":142}],164:[function(require,module,exports){
+},{"_process":158}],180:[function(require,module,exports){
 (function(Buffer){
 'use strict';
 
@@ -64612,7 +67301,7 @@ create:frame};
 
 
 }).call(this,require("buffer").Buffer);
-},{"buffer":102,"fs":101,"jpeg-js":122}],165:[function(require,module,exports){
+},{"buffer":102,"fs":101,"jpeg-js":122}],181:[function(require,module,exports){
 'use strict';
 
 const frame=require('./frame');
@@ -64682,7 +67371,7 @@ return calculateValues(frames,data);
 });
 };
 
-},{"./frame":164,"./speed-index":166}],166:[function(require,module,exports){
+},{"./frame":180,"./speed-index":182}],182:[function(require,module,exports){
 'use strict';
 
 const imageSSIM=require('image-ssim');
@@ -64954,7 +67643,7 @@ calculatePerceptualProgress,
 calculateSpeedIndexes};
 
 
-},{"image-ssim":112}],167:[function(require,module,exports){
+},{"image-ssim":112}],183:[function(require,module,exports){
 
 
 
@@ -65083,12 +67772,12 @@ dest.emit('pipe',source);
 return dest;
 };
 
-},{"events":108,"inherits":113,"readable-stream/duplex.js":146,"readable-stream/passthrough.js":156,"readable-stream/readable.js":157,"readable-stream/transform.js":158,"readable-stream/writable.js":159}],168:[function(require,module,exports){
+},{"events":108,"inherits":113,"readable-stream/duplex.js":162,"readable-stream/passthrough.js":172,"readable-stream/readable.js":173,"readable-stream/transform.js":174,"readable-stream/writable.js":175}],184:[function(require,module,exports){
 module.exports=[{"name":"Google Analytics","company":"Google","homepage":"https://www.google.com/analytics/analytics/","categories":["analytics"],"domains":["*.google-analytics.com","*.urchin.com"],"examples":["www.google-analytics.com","ssl.google-analytics.com"]},{"name":"Facebook","homepage":"https://www.facebook.com","categories":["social"],"domains":["*.atlassbx.com","*.facebook.com","*.fbsbx.com","fbcdn-photos-e-a.akamaihd.net","*.facebook.net","*.fbcdn.net"],"examples":["www.facebook.com","connect.facebook.net","staticxx.facebook.com","static.xx.fbcdn.net","m.facebook.com","an.facebook.com","platform-lookaside.fbsbx.com"]},{"name":"Google CDN","company":"Google","homepage":"https://developers.google.com/speed/libraries/","categories":["cdn"],"domains":["ajax.googleapis.com","commondatastorage.googleapis.com","www.gstatic.com"]},{"name":"Google/Doubleclick Ads","company":"Google","homepage":"https://www.doubleclickbygoogle.com/","categories":["ad"],"domains":["adservice.google.com","adservice.google.com.au","adservice.google.com.sg","adservice.google.com.br","adservice.google.com.ua","adservice.google.co.uk","adservice.google.co.jp","adservice.google.co.in","adservice.google.co.kr","adservice.google.co.id","adservice.google.co.nz","adservice.google.ie","adservice.google.se","adservice.google.de","adservice.google.ca","adservice.google.be","adservice.google.es","adservice.google.ch","adservice.google.fr","adservice.google.nl","*.googleadservices.com","*.googlesyndication.com","*.googletagservices.com","*.2mdn.net","*.doubleclick.net"],"examples":["pagead2.googlesyndication.com","tpc.googlesyndication.com","ade.googlesyndication.com","googleads.g.doubleclick.net","googleads4.g.doubleclick.net","securepubads.g.doubleclick.net","pubads.g.doubleclick.net","static.doubleclick.net","cm.g.doubleclick.net","bid.g.doubleclick.net","s0.2mdn.net","stats.g.doubleclick.net","survey.g.doubleclick.net","fls.doubleclick.net","ad.doubleclick.net","www.googleadservices.com","https://www.googletagservices.com/tag/js/gpt.js"]},{"name":"Google Tag Manager","company":"Google","homepage":"https://marketingplatform.google.com/about/tag-manager/","categories":["tag-manager"],"domains":["*.googletagmanager.com"],"examples":["www.googletagmanager.com"]},{"name":"Other Google APIs/SDKs","company":"Google","homepage":"https://developers.google.com/apis-explorer/#p/","categories":["utility"],"domains":["accounts.google.com","apis.google.com","calendar.google.com","clients2.google.com","cse.google.com","news.google.com","pay.google.com","payments.google.com","play.google.com","smartlock.google.com","www.google.com","www.google.de","www.google.co.jp","www.google.com.au","www.google.co.uk","www.google.ie","www.google.com.sg","www.google.co.in","www.google.com.br","www.google.ca","www.google.co.kr","www.google.co.nz","www.google.co.id","www.google.fr","www.google.be","www.google.com.ua","www.google.nl","www.google.ru","www.google.se","imasdk.googleapis.com","storage.googleapis.com","translate.googleapis.com","lh3.googleusercontent.com","csi.gstatic.com"]},{"name":"YouTube","homepage":"https://youtube.com","categories":["video"],"domains":["*.ggpht.com","*.youtube-nocookie.com","*.youtube.com","*.ytimg.com"],"examples":["www.youtube.com","s.ytimg.com","yt3.ggpht.com","img.youtube.com","fcmatch.youtube.com"]},{"name":"Google Maps","company":"Google","homepage":"https://www.google.com/maps","categories":["utility"],"domains":["maps.google.com","maps-api-ssl.google.com","maps.googleapis.com","mts.googleapis.com","maps.gstatic.com"]},{"name":"Twitter","homepage":"https://twitter.com","categories":["social"],"domains":["*.vine.co","*.twimg.com","*.twitpic.com","platform.twitter.com","syndication.twitter.com"],"examples":["cdn.syndication.twimg.com","abs.twimg.com","pbs.twimg.com"]},{"name":"Yandex Metrica","company":"Yandex","homepage":"https://metrica.yandex.com/about?","categories":["analytics"],"domains":["d31j93rd8oukbv.cloudfront.net","mc.yandex.ru"]},{"name":"jQuery CDN","homepage":"https://code.jquery.com/","categories":["cdn"],"domains":["*.jquery.com"],"examples":["code.jquery.com"]},{"name":"Hotjar","homepage":"https://www.hotjar.com/","categories":["analytics"],"domains":["*.hotjar.com","*.hotjar.io"],"examples":["script.hotjar.com","static.hotjar.com","in.hotjar.com","vc.hotjar.io","vars.hotjar.com"]},{"name":"AddThis","homepage":"http://www.addthis.com/","categories":["social"],"domains":["*.addthis.com","*.addthiscdn.com","*.addthisedge.com"],"examples":["s7.addthis.com","r.dlx.addthis.com","su.addthis.com","x.dlx.addthis.com"]},{"name":"WordPress","company":"Automattic","homepage":"https://wp.com/","categories":["hosting"],"domains":["*.wordpress.com","s0.wp.com","s2.wp.com","*.w.org","c0.wp.com","s1.wp.com","widgets.wp.com"],"examples":["s.w.org"]},{"name":"Cloudflare CDN","homepage":"https://cdnjs.com/","categories":["cdn"],"domains":["amp.cloudflare.com","cdnjs.cloudflare.com"]},{"name":"Shopify","homepage":"https://www.shopify.com/","categories":["hosting"],"domains":["*.shopify.com","*.shopifyapps.com","*.shopifycdn.com"],"examples":["cdn.shopify.com","productreviews.shopifycdn.com"]},{"name":"ZenDesk","homepage":"https://zendesk.com/","categories":["customer-success"],"domains":["*.zdassets.com","*.zendesk.com","*.zopim.com"],"examples":["assets.zendesk.com","static.zdassets.com","v2.zopim.com"]},{"name":"Criteo","homepage":"https://www.criteo.com/","categories":["ad"],"domains":["*.criteo.com","*.emailretargeting.com","*.criteo.net"],"examples":["static.criteo.net","bidder.criteo.com","dis.criteo.com","gum.criteo.com","sslwidget.criteo.com","dis.us.criteo.com"]},{"name":"Pubmatic","homepage":"https://pubmatic.com/","categories":["ad"],"domains":["*.pubmatic.com"],"examples":["image6.pubmatic.com","ads.pubmatic.com","image2.pubmatic.com","simage2.pubmatic.com","image4.pubmatic.com","simage4.pubmatic.com","image5.pubmatic.com","hbopenbid.pubmatic.com"]},{"name":"Tawk.to","homepage":"https://www.tawk.to/","categories":["customer-success"],"domains":["*.tawk.to"],"examples":["embed.tawk.to"]},{"name":"AMP","homepage":"https://amp.dev/","categories":["content"],"domains":["*.ampproject.org"],"examples":["cdn.ampproject.org"]},{"name":"Wix","homepage":"https://www.wix.com/","categories":["hosting"],"domains":["*.parastorage.com","*.wix.com","*.wixstatic.com","*.wixapps.net"],"examples":["static.parastorage.com","static.wixstatic.com","www.wix.com","instagram.codev.wixapps.net"]},{"name":"Squarespace","homepage":"https://www.squarespace.com/","categories":["hosting"],"domains":["*.squarespace.com"],"examples":["static.squarespace.com","static1.squarespace.com"]},{"name":"Amazon Web Services","homepage":"https://aws.amazon.com/s3/","categories":["other"],"domains":["*.amazon.com","*.amazonaws.com","*.amazonwebapps.com","*.amazonwebservices.com","*.elasticbeanstalk.com","*.images-amazon.com","*.amazon.co.uk"],"examples":["s3.amazonaws.com","us-east-1.amazonaws.com","api-cdn.amazon.com","ecx.images-amazon.com","ws.amazon.co.uk"]},{"name":"ShareThis","homepage":"https://www.sharethis.com/","categories":["social"],"domains":["*.sharethis.com"],"examples":["w.sharethis.com","ws.sharethis.com","t.sharethis.com"]},{"name":"Vimeo","homepage":"http://vimeo.com/","categories":["video"],"domains":["*.vimeo.com","*.vimeocdn.com"],"examples":["f.vimeocdn.com","player.vimeo.com","i.vimeocdn.com"]},{"name":"JSDelivr CDN","homepage":"https://www.jsdelivr.com/","categories":["cdn"],"domains":["*.jsdelivr.net"],"examples":["cdn.jsdelivr.net"]},{"name":"Adobe Tag Manager","company":"Adobe","homepage":"https://www.adobe.com/experience-platform/","categories":["tag-manager"],"domains":["*.adobedtm.com","*.demdex.net","*.everesttech.net"],"examples":["assets.adobedtm.com","sync-tm.everesttech.net","cm.everesttech.net"]},{"name":"Jivochat","homepage":"https://www.jivochat.com/","categories":["customer-success"],"domains":["*.jivosite.com"],"examples":["cdn-ca.jivosite.com","code.jivosite.com"]},{"name":"PIXNET","homepage":"https://www.pixnet.net/","categories":["social"],"domains":["*.pixfs.net"],"examples":["front.pixfs.net","falcon-asset.pixfs.net","pixgame-asset.pixfs.net"]},{"name":"Yandex Share","company":"Yandex","homepage":"https://yastatic.net/share2/share.js","categories":["social"],"domains":["*.yastatic.net"]},{"name":"Scorecard Research","homepage":"https://www.scorecardresearch.com/","categories":["ad"],"domains":["*.scorecardresearch.com"],"examples":["sb.scorecardresearch.com","sa.scorecardresearch.com","b.scorecardresearch.com"]},{"name":"Rubicon Project","homepage":"https://rubiconproject.com/","categories":["ad"],"domains":["*.chango.com","*.fimserve.com","*.rubiconproject.com"],"examples":["pixel.rubiconproject.com","fastlane.rubiconproject.com","secure-assets.rubiconproject.com","eus.rubiconproject.com","pixel-us-east.rubiconproject.com","token.rubiconproject.com","ads.rubiconproject.com"]},{"name":"FontAwesome CDN","homepage":"https://fontawesome.com/","categories":["cdn"],"domains":["*.fontawesome.com"],"examples":["use.fontawesome.com"]},{"name":"Cloudflare","homepage":"https://www.cloudflare.com/website-optimization/","categories":["utility"],"domains":["ajax.cloudflare.com"]},{"name":"Blogger","homepage":"http://www.blogger.com/","categories":["hosting"],"domains":["*.blogblog.com","*.blogger.com","*.blogspot.com","images-blogger-opensocial.googleusercontent.com"],"examples":["1.bp.blogspot.com","www.blogger.com"]},{"name":"Salesforce","homepage":"https://www.salesforce.com/products/marketing-cloud/","categories":["analytics"],"domains":["*.krxd.net"],"examples":["cdn.krxd.net","beacon.krxd.net","consumer.krxd.net","usermatch.krxd.net"]},{"name":"Yandex Ads","company":"Yandex","homepage":"https://yandex.com/adv/","categories":["ad"],"domains":["an.yandex.ru"]},{"name":"Tynt","company":"33 Across","categories":["ad"],"domains":["*.tynt.com"]},{"name":"Yandex APIs","company":"Yandex","homepage":"https://yandex.ru/","categories":["utility"],"domains":["api-maps.yandex.ru","money.yandex.ru"]},{"name":"Micropat","categories":["social"],"domains":["*.addtoany.com"]},{"name":"Hubspot","homepage":"https://hubspot.com/","categories":["marketing"],"domains":["*.hs-scripts.com","*.hubspot.com","*.leadin.com","*.hs-analytics.net","*.hscollectedforms.net","*.hscta.net","*.hsforms.net","*.hsleadflows.net","*.hsstatic.net","*.hubspot.net"],"examples":["forms.hubspot.com","js.hsforms.net","js.hs-analytics.net","js.leadin.com"]},{"name":"Sumo","homepage":"https://sumo.com/","categories":["marketing"],"domains":["*.sumo.com","*.sumome.com","sumo.b-cdn.net"],"examples":["sumo.b-cdn.net","load.sumo.com","load.sumome.com"]},{"name":"Beeketing","homepage":"https://beeketing.com/","categories":["marketing"],"domains":["*.beeketing.com"],"examples":["sdk-cdn.beeketing.com","sdk.beeketing.com"]},{"name":"Mailchimp","homepage":"https://mailchimp.com/","categories":["marketing"],"domains":["*.chimpstatic.com","*.list-manage.com","*.mailchimp.com"],"examples":["downloads.mailchimp.com"]},{"name":"Media.net","homepage":"https://www.media.net/","categories":["ad"],"domains":["*.media.net","*.mnet-ad.net"],"examples":["contextual.media.net","cdnwest-xch.media.net","hbx.media.net","cs.media.net","hblg.media.net"]},{"name":"Skimbit","categories":["ad"],"domains":["*.redirectingat.com","*.skimresources.com","*.skimresources.net"]},{"name":"Moat","homepage":"https://moat.com/","categories":["ad"],"domains":["*.moatads.com","*.moatpixel.com"],"examples":["z.moatads.com","px.moatads.com","geo.moatads.com","sejs.moatads.com","mb.moatads.com","v4.moatads.com"]},{"name":"AppNexus","homepage":"https://www.appnexus.com/","categories":["ad"],"domains":["*.adnxs.com","*.ctasnet.com"],"examples":["acdn.adnxs.com","secure.adnxs.com","ib.adnxs.com","sharethrough.adnxs.com","cdn.adnxs.com","vcdn.adnxs.com"]},{"name":"VK","homepage":"https://vk.com/","categories":["social"],"domains":["*.vk.com"]},{"name":"LiveChat","homepage":"https://www.livechatinc.com/","categories":["customer-success"],"domains":["*.livechatinc.com"],"examples":["cdn.livechatinc.com","secure.livechatinc.com"]},{"name":"OneSignal","homepage":"https://onesignal.com/","categories":["utility"],"domains":["*.onesignal.com"],"examples":["cdn.onesignal.com","https://onesignal.com/api/v1/sync/"]},{"name":"WordAds","company":"Automattic","homepage":"https://wordads.co/","categories":["ad"],"domains":["*.pubmine.com"],"examples":["s.pubmine.com"]},{"name":"Integral Ad Science","homepage":"https://integralads.com/uk/","categories":["ad"],"domains":["*.adsafeprotected.com","*.iasds01.com"],"examples":["pixel.adsafeprotected.com","static.adsafeprotected.com","fw.adsafeprotected.com","cdn.adsafeprotected.com","dt.adsafeprotected.com"]},{"name":"Amazon Ads","homepage":"https://ad.amazon.com/","categories":["ad"],"domains":["*.amazon-adsystem.com"],"examples":["s.amazon-adsystem.com","c.amazon-adsystem.com","aax.amazon-adsystem.com","z-na.amazon-adsystem.com","fls-na.amazon-adsystem.com","aax-us-east.amazon-adsystem.com","ir-na.amazon-adsystem.com"]},{"name":"Yahoo!","homepage":"https://www.yahoo.com/","categories":["ad"],"domains":["*.bluelithium.com","*.hostingprod.com","*.lexity.com","*.yahoo.com","*.yahooapis.com","*.yimg.com","*.yimg.jp","*.zenfs.com","*.yahoo.net"],"examples":["ads.yahoo.com","analytics.yahoo.com","geo.yahoo.com","udc.yahoo.com","ganon.yahoo.com","ads.yap.yahoo.com"]},{"name":"Hatena Blog","homepage":"https://hatenablog.com/","categories":["hosting"],"domains":["*.st-hatena.com","*.hatena.ne.jp"],"examples":["cdn.blog.st-hatena.com","cdn.pool.st-hatena.com","cdn7.www.st-hatena.com","s.hatena.ne.jp","b.st-hatena.com"]},{"name":"Pinterest","homepage":"https://pinterest.com/","categories":["social"],"domains":["*.pinimg.com","*.pinterest.com"],"examples":["assets.pinterest.com","ct.pinterest.com","log.pinterest.com"]},{"name":"LinkedIn","homepage":"https://www.linkedin.com/","categories":["social"],"domains":["*.bizographics.com","platform.linkedin.com","*.slideshare.com","*.slidesharecdn.com"]},{"name":"Stripe","homepage":"https://stripe.com","categories":["utility"],"domains":["*.stripe.com","*.stripecdn.com","*.stripe.network"],"examples":["m.stripe.network","js.stripe.com"]},{"name":"Taboola","homepage":"https://www.taboola.com/","categories":["ad"],"domains":["*.taboola.com","*.taboolasyndication.com"],"examples":["cdn.taboola.com","trc.taboola.com","vidstat.taboola.com","images.taboola.com"]},{"name":"Weebly","homepage":"https://www.weebly.com/","categories":["hosting"],"domains":["*.editmysite.com"]},{"name":"Bing Ads","homepage":"https://bingads.microsoft.com","categories":["ad"],"domains":["*.bing.com","*.microsoft.com","*.msn.com","*.s-msft.com","*.s-msn.com","*.msads.net","*.msecnd.net","*.windows.net"],"examples":["bat.bing.com","c.bing.com","bat.r.msn.com","ajax.microsoft.com"]},{"name":"Intercom","homepage":"https://www.intercom.com","categories":["customer-success"],"domains":["*.intercomcdn.com","*.intercom.io"],"examples":["js.intercomcdn.com","api-iam.intercom.io","widget.intercom.io","nexus-websocket-a.intercom.io"]},{"name":"Crazy Egg","homepage":"https://www.crazyegg.com/","categories":["analytics"],"domains":["*.cetrk.com","*.crazyegg.com","*.hellobar.com","dnn506yrbagrg.cloudfront.net"]},{"name":"Amazon Pay","homepage":"https://pay.amazon.com","categories":["utility"],"domains":["payments.amazon.com","*.payments-amazon.com"]},{"name":"Histats","homepage":"http://histats.com/","categories":["analytics"],"domains":["*.histats.com"],"examples":["s10.histats.com"]},{"name":"Adform","categories":["ad"],"domains":["*.adform.net","*.adformdsp.net"]},{"name":"Datacamp","categories":["utility"],"domains":["*.cdn77.org"]},{"name":"Tealium","homepage":"https://tealium.com/","categories":["tag-manager"],"domains":["*.aniview.com","*.delvenetworks.com","*.limelight.com","*.tiqcdn.com","*.llnwd.net","*.tealiumiq.com"],"examples":["tags.tiqcdn.com","tealium.hs.llnwd.net","link.videoplatform.limelight.com","datacloud.tealiumiq.com"]},{"name":"Optimizely","homepage":"https://www.optimizely.com/","categories":["analytics"],"domains":["*.optimizely.com"],"examples":["cdn.optimizely.com","cdn-pci.optimizely.com","logx.optimizely.com","cdn3.optimizely.com"]},{"name":"Yotpo","homepage":"https://www.yotpo.com/","categories":["marketing"],"domains":["*.yotpo.com"]},{"name":"Trust Pilot","categories":["analytics"],"domains":["*.trustpilot.com"]},{"name":"Privy","categories":["ad"],"domains":["*.privy.com","*.privymktg.com"]},{"name":"Baidu Analytics","homepage":"https://tongji.baidu.com/web/welcome/login","categories":["analytics"],"domains":["*.baidu.com"],"examples":["hm.baidu.com"]},{"name":"Wistia","homepage":"https://wistia.com/","categories":["video"],"domains":["*.wistia.com","embedwistia-a.akamaihd.net","*.wistia.net"],"examples":["fast.wistia.com","fast.wistia.net","distillery.wistia.com","pipedream.wistia.com"]},{"name":"iubenda","categories":["utility"],"domains":["*.iubenda.com"],"examples":["www.iubenda.com"]},{"name":"Nielsen NetRatings SiteCensus","company":"The Nielsen Company","homepage":"http://www.nielsen-online.com/intlpage.html","categories":["analytics"],"domains":["*.imrworldwide.com"]},{"name":"BrightTag / Signal","company":"Signal","homepage":"https://www.signal.co","categories":["tag-manager"],"domains":["*.btstatic.com","*.thebrighttag.com"]},{"name":"mPulse","homepage":"https://developer.akamai.com/akamai-mpulse","categories":["analytics"],"domains":["*.akstat.io","*.go-mpulse.net","*.mpulse.net","*.mpstat.us"],"examples":["c.go-mpulse.net","0211c83c.akstat.io"]},{"name":"PayPal","homepage":"https://paypal.com","categories":["utility"],"domains":["*.paypal.com","*.paypalobjects.com"],"examples":["www.paypalobjects.com"]},{"name":"Sentry","homepage":"https://sentry.io/","categories":["utility"],"domains":["*.getsentry.com","*.ravenjs.com","*.sentry-cdn.com"],"examples":["cdn.ravenjs.com","browser.sentry-cdn.com"]},{"name":"Cookiebot","homepage":"https://www.cookiebot.com/","categories":["utility"],"domains":["*.cookiebot.com"],"examples":["consent.cookiebot.com"]},{"name":"Distil Networks","homepage":"https://www.distilnetworks.com/","categories":["utility"],"domains":["*.areyouahuman.com"],"examples":["n-cdn.areyouahuman.com"]},{"name":"Adobe TypeKit","company":"Adobe","homepage":"https://fonts.adobe.com/","categories":["cdn"],"domains":["*.typekit.com","*.typekit.net"],"examples":["use.typekit.net","p.typekit.net"]},{"name":"Kakao","categories":["social"],"domains":["*.daum.net","*.daumcdn.net"]},{"name":"Bold Commerce","categories":["utility"],"domains":["*.shappify-cdn.com","*.shappify.com","*.boldapps.net"]},{"name":"Akamai","homepage":"https://www.akamai.com/","categories":["cdn"],"domains":["23.62.3.183","*.akamaitechnologies.com","*.akamaitechnologies.fr","*.akamai.net","*.akamaiedge.net","*.akamaihd.net","*.akamaized.net","*.edgefcs.net","*.edgekey.net","edgesuite.net","*.srip.net"]},{"name":"Segment","homepage":"https://segment.com/","categories":["analytics"],"domains":["*.segment.com","*.segment.io"],"examples":["cdn.segment.com","api.segment.io"]},{"name":"District M","categories":["ad"],"domains":["*.districtm.io"]},{"name":"Bigcommerce","categories":["marketing"],"domains":["*.bigcommerce.com"]},{"name":"Dealer","homepage":"https://www.dealer.com/","categories":["hosting"],"domains":["*.dealer.com"],"examples":["static.dealer.com"]},{"name":"Klaviyo","categories":["ad"],"domains":["*.klaviyo.com"]},{"name":"Rambler","company":"Rambler & Co","categories":["utility"],"domains":["*.rambler.ru"]},{"name":"Tumblr","homepage":"https://tumblr.com/","categories":["social"],"domains":["*.tumblr.com"],"examples":["assets.tumblr.com","static.tumblr.com"]},{"name":"Snapchat","homepage":"https://www.snapchat.com","categories":["analytics"],"domains":["*.snapchat.com","*.sc-static.net"],"examples":["tr.snapchat.com"]},{"name":"VigLink","categories":["ad"],"domains":["*.viglink.com"]},{"name":"StatCounter","categories":["analytics"],"domains":["*.statcounter.com"]},{"name":"TrustArc","homepage":"https://www.trustarc.com/","categories":["utility"],"domains":["*.trustarc.com"],"examples":["choices.trustarc.com","consent.trustarc.com"]},{"name":"Tidio Live Chat","company":"Tidio","homepage":"https://www.tidiochat.com/en/","categories":["customer-success"],"domains":["*.tidiochat.com"]},{"name":"DoubleVerify","homepage":"https://www.doubleverify.com/","categories":["ad"],"domains":["*.doubleverify.com","*.dvtps.com","*.iqfp1.com"],"examples":["cdn.doubleverify.com","cdn3.doubleverify.com","tps.doubleverify.com","tps712.doubleverify.com","tps714.doubleverify.com","tps706.doubleverify.com","tps700.doubleverify.com","tps707.doubleverify.com","rtb2.doubleverify.com","rtb0.doubleverify.com","rtbcdn.doubleverify.com","tps11020.doubleverify.com","tm.iqfp1.com"]},{"name":"Instagram","homepage":"https://www.instagram.com","categories":["social"],"domains":["*.cdninstagram.com","*.instagram.com"],"examples":["scontent.cdninstagram.com"]},{"name":"OptinMonster","homepage":"https://optinmonster.com/","categories":["marketing"],"domains":["*.opmnstr.com","*.optmnstr.com","*.optmstr.com"],"examples":["a.optmstr.com","api.opmnstr.com","a.optmnstr.com"]},{"name":"Evidon","categories":["analytics"],"domains":["*.evidon.com"]},{"name":"Lucky Orange","homepage":"https://www.luckyorange.com/","categories":["analytics"],"domains":["*.luckyorange.com","d10lpsik1i8c69.cloudfront.net","*.luckyorange.net"]},{"name":"Gemius","categories":["ad"],"domains":["*.gemius.pl"]},{"name":"Olark","homepage":"https://www.olark.com/","categories":["customer-success"],"domains":["*.olark.com"],"examples":["static.olark.com"]},{"name":"CallRail","categories":["analytics"],"domains":["*.callrail.com"]},{"name":"Mixpanel","homepage":"https://mixpanel.com/","categories":["analytics"],"domains":["*.mixpanel.com","*.mxpnl.com"],"examples":["cdn.mxpnl.com"]},{"name":"OpenX","homepage":"https://www.openx.com/","categories":["ad"],"domains":["*.deliverimp.com","*.openxadexchange.com","*.servedbyopenx.com","*.jump-time.net","*.openx.net"],"examples":["uk-ads.openx.net","us-ads.openx.net","33across-d.openx.net","rtb.openx.net","us-u.openx.net","eu-u.openx.net","u.openx.net"]},{"name":"CreateJS CDN","homepage":"http://code.createjs.com/","categories":["cdn"],"domains":["*.createjs.com"],"examples":["code.createjs.com"]},{"name":"Chartbeat","categories":["analytics"],"domains":["*.chartbeat.com","*.chartbeat.net"]},{"name":"Sizmek","homepage":"https://www.sizmek.com/","categories":["ad"],"domains":["*.serving-sys.com","*.peer39.net"],"examples":["secure-ds.serving-sys.com","ds.serving-sys.com","bs.serving-sys.com"]},{"name":"FullStory","categories":["analytics"],"domains":["*.fullstory.com"],"examples":["rs.fullstory.com"]},{"name":"Snowplow","homepage":"https://snowplowanalytics.com/","categories":["analytics"],"domains":["d32hwlnfiv2gyn.cloudfront.net"]},{"name":"Brightcove","homepage":"https://www.brightcove.com/en/","categories":["video"],"domains":["*.brightcove.com","*.brightcove.net","*.zencdn.net"],"examples":["vjs.zencdn.net","players.brightcove.net"]},{"name":"GoDaddy","homepage":"https://www.godaddy.com/","categories":["utility"],"domains":["*.godaddy.com","*.wsimg.com"],"examples":["ocsp.godaddy.com","seal.godaddy.com"]},{"name":"Inspectlet","categories":["analytics"],"domains":["*.inspectlet.com"]},{"name":"Teads","categories":["ad"],"domains":["*.teads.tv"]},{"name":"New Relic","homepage":"https://newrelic.com/","categories":["utility"],"domains":["*.newrelic.com","*.nr-data.net"],"examples":["js-agent.newrelic.com","bam.nr-data.net"]},{"name":"Ensighten","homepage":"https://www.ensighten.com/","categories":["tag-manager"],"domains":["*.ensighten.com"],"examples":["nexus.ensighten.com"]},{"name":"Parking Crew","homepage":"http://parkingcrew.net/","categories":["other"],"domains":["d1lxhc4jvstzrp.cloudfront.net","*.parkingcrew.net"]},{"name":"Azure Web Services","company":"Microsoft","categories":["cdn"],"domains":["*.azurewebsites.net","*.azureedge.net","*.msedge.net"]},{"name":"BlueKai","company":"Oracle","categories":["ad"],"domains":["*.bkrtx.com","*.bluekai.com"]},{"name":"Treasure Data","categories":["analytics"],"domains":["*.treasuredata.com"]},{"name":"Drift","homepage":"https://www.drift.com/","categories":["marketing"],"domains":["*.drift.com","*.driftt.com"],"examples":["js.driftt.com","api.drift.com"]},{"name":"MGID","homepage":"https://www.mgid.com/","categories":["ad"],"domains":["*.mgid.com","*.dt07.net"],"examples":["servicer.mgid.com"]},{"name":"Microsoft Hosted Libs","company":"Microsoft","categories":["cdn"],"domains":["*.aspnetcdn.com"],"examples":["ajax.aspnetcdn.com"]},{"name":"33 Across","homepage":"https://33across.com/","categories":["ad"],"domains":["*.33across.com"],"examples":["sic.33across.com","cdn-sic.33across.com"]},{"name":"Monotype","categories":["cdn"],"domains":["*.fonts.com","*.fonts.net"]},{"name":"DTSCOUT","categories":["ad"],"domains":["*.dtscout.com"]},{"name":"WordPress Site Stats","company":"Automattic","homepage":"https://wp.com/","categories":["analytics"],"domains":["pixel.wp.com","stats.wp.com"]},{"name":"Mapbox","categories":["utility"],"domains":["*.mapbox.com"]},{"name":"MediaVine","homepage":"https://www.mediavine.com/","categories":["ad"],"domains":["*.mediavine.com"],"examples":["scripts.mediavine.com","video.mediavine.com"]},{"name":"Shareaholic","homepage":"https://www.shareaholic.com/","categories":["social"],"domains":["*.shareaholic.com","dsms0mj1bbhn4.cloudfront.net"]},{"name":"Dataxu","categories":["marketing"],"domains":["*.w55c.net"]},{"name":"MailMunch","categories":["ad"],"domains":["*.mailmunch.co"]},{"name":"Cxense","categories":["ad"],"domains":["*.cxense.com","*.cxpublic.com","*.emediate.dk","*.emediate.eu"]},{"name":"Marchex","categories":["analytics"],"domains":["*.voicestar.com","*.marchex.io"]},{"name":"Fastly","categories":["utility"],"domains":["*.fastly.net"]},{"name":"Unpkg","homepage":"https://unpkg.com","categories":["cdn"],"domains":["*.unpkg.com"]},{"name":"LivePerson","categories":["customer-success"],"homepage":"https://www.liveperson.com/","domains":["*.liveperson.com","*.look.io","*.liveperson.net","*.lpsnmedia.net"]},{"name":"SoundCloud","homepage":"https://www.soundcloud.com/","categories":["content"],"domains":["*.sndcdn.com","*.soundcloud.com","*.stratus.sc"],"examples":["widget.sndcdn.com"]},{"name":"VWO","homepage":"https://vwo.com","categories":["analytics"],"domains":["*.visualwebsiteoptimizer.com"],"examples":["dev.visualwebsiteoptimizer.com"]},{"name":"StickyADS.tv","categories":["ad"],"domains":["*.stickyadstv.com"]},{"name":"PushCrew","categories":["ad"],"domains":["*.pushcrew.com"]},{"name":"Embedly","categories":["content"],"domains":["*.embedly.com","*.embed.ly"]},{"name":"CDK Dealer Management","company":"CDK Global","homepage":"https://www.cdkglobal.com/us","categories":["hosting"],"domains":["*.assets-cdk.com"],"examples":["media-cf.assets-cdk.com"]},{"name":"Popads","homepage":"https://www.popads.net/","categories":["ad"],"domains":["*.popads.net"],"examples":["serve.popads.net","c1.popads.net"]},{"name":"FreakOut","categories":["ad"],"domains":["*.fout.jp"]},{"name":"SnapWidget","categories":["content"],"domains":["*.snapwidget.com"]},{"name":"Pure Chat","categories":["customer-success"],"domains":["*.purechat.com"]},{"name":"Outbrain","homepage":"https://www.outbrain.com/","categories":["ad"],"domains":["*.outbrain.com","*.outbrainimg.com","*.visualrevenue.com"]},{"name":"RD Station","homepage":"https://www.rdstation.com/en/","categories":["marketing"],"domains":["d335luupugsy2.cloudfront.net"]},{"name":"LiveJournal","categories":["social"],"domains":["*.livejournal.com","*.livejournal.net"]},{"name":"ContactAtOnce","homepage":"https://www.contactatonce.com/","categories":["customer-success"],"domains":["*.contactatonce.com"],"examples":["tag.contactatonce.com","agentpresence.contactatonce.com"]},{"name":"Ezoic","categories":["analytics"],"domains":["*.ezoic.net"]},{"name":"AB Tasty","categories":["analytics"],"domains":["*.abtasty.com","d1447tq2m68ekg.cloudfront.net"]},{"name":"Quantcast","homepage":"https://www.quantcast.com","categories":["analytics"],"domains":["*.brtstats.com","*.quantcount.com","*.quantserve.com","*.semantictec.com","*.ntv.io"],"examples":["pixel.quantserve.com","secure.quantserve.com","cms.quantserve.com","rules.quantcount.com"]},{"name":"DigiTrust","homepage":"http://www.digitru.st/","categories":["analytics"],"domains":["*.digitru.st"],"examples":["cdn.digitru.st"]},{"name":"LongTail Ad Solutions","categories":["ad"],"domains":["*.jwpcdn.com","*.jwplatform.com","*.jwplayer.com","*.jwpltx.com","*.jwpsrv.com","*.longtailvideo.com"]},{"name":"Parse.ly","categories":["analytics"],"domains":["*.parsely.com","d1z2jf7jlzjs58.cloudfront.net"]},{"name":"Index Exchange","company":"WPP","categories":["ad"],"domains":["*.casalemedia.com","*.indexww.com"]},{"name":"Clicktripz","categories":["content"],"domains":["*.clicktripz.com"],"examples":["static.clicktripz.com","www.clicktripz.com"]},{"name":"Ve","company":"Ve Interactive","categories":["marketing"],"domains":["*.veinteractive.com"]},{"name":"Adloox","categories":["ad"],"domains":["*.adlooxtracking.com"]},{"name":"GumGum","categories":["ad"],"domains":["*.gumgum.com"]},{"name":"Digital ad Consortium","categories":["ad"],"domains":["*.impact-ad.jp"]},{"name":"Amplitude Mobile Analytics","company":"Amplitude","categories":["analytics"],"domains":["*.amplitude.com","d24n15hnbwhuhn.cloudfront.net"]},{"name":"Adobe Business Catalyst","homepage":"https://www.businesscatalyst.com/","categories":["hosting"],"domains":["*.businesscatalyst.com"]},{"name":"LightWidget","categories":["utility"],"domains":["*.lightwidget.com"]},{"name":"Spotify","homepage":"https://www.spotify.com/","categories":["content"],"domains":["*.scdn.co","*.spotify.com"],"examples":["open.spotify.com","open.scdn.co","i.scdn.co"]},{"name":"SmartAdServer","categories":["ad"],"domains":["*.01net.com","*.sascdn.com"],"examples":["securite.01net.com"]},{"name":"Adroll","homepage":"https://www.adroll.com/","categories":["ad"],"domains":["*.adroll.com"],"examples":["d.adroll.com","s.adroll.com"]},{"name":"PureCars","homepage":"https://www.purecars.com/","categories":["marketing"],"domains":["*.purecars.com"],"examples":["cdn.purecars.com"]},{"name":"Keen","company":"Keen","homepage":"https://keen.io/","categories":["analytics"],"domains":["*.keen.io","d26b395fwzu5fz.cloudfront.net"]},{"name":"Infolinks","categories":["ad"],"domains":["*.infolinks.com"]},{"name":"Unbounce","categories":["ad"],"domains":["*.ubembed.com","*.unbounce.com","d2xxq4ijfwetlm.cloudfront.net","d9hhrg4mnvzow.cloudfront.net"]},{"name":"Roxr Software","categories":["analytics"],"domains":["*.getclicky.com"]},{"name":"OpenTable","company":"Priceline Group","categories":["content"],"domains":["*.opentable.com","*.opentable.co.uk","*.toptable.co.uk"],"examples":["www.toptable.co.uk"]},{"name":"uLogin","categories":["other"],"domains":["*.ulogin.ru"]},{"name":"Searchanise","categories":["analytics"],"domains":["*.searchanise.com"],"examples":["www.searchanise.com"]},{"name":"Gigya","categories":["analytics"],"domains":["*.gigya.com"]},{"name":"Net Reviews","categories":["analytics"],"domains":["*.avis-verifies.com"],"examples":["www.avis-verifies.com"]},{"name":"Booking.com","categories":["content"],"domains":["*.bstatic.com"]},{"name":"Disqus","homepage":"http://disqus.com/","categories":["social"],"domains":["*.disqus.com","*.disquscdn.com"],"examples":["c.disquscdn.com"]},{"name":"Tray Commerce","homepage":"https://www.tray.com.br/","categories":["marketing"],"domains":["*.tcdn.com.br"],"examples":["images.tcdn.com.br"]},{"name":"Crowd Control","company":"Lotame","categories":["ad"],"domains":["*.crwdcntrl.net"]},{"name":"Intent Media","homepage":"https://intent.com/","categories":["ad"],"domains":["*.intentmedia.net"]},{"name":"issuu","categories":["content"],"domains":["*.issuu.com","*.isu.pub"]},{"name":"Salesforce Commerce Cloud","homepage":"https://www.salesforce.com/products/commerce-cloud/overview/","categories":["hosting"],"domains":["*.cquotient.com","*.demandware.net","demandware.edgesuite.net"]},{"name":"sovrn","categories":["ad"],"domains":["*.lijit.com"]},{"name":"JuicyAds","categories":["ad"],"domains":["*.juicyads.com"]},{"name":"Sharethrough","categories":["ad"],"domains":["*.sharethrough.com"]},{"name":"Heap","categories":["analytics"],"domains":["*.heapanalytics.com"]},{"name":"LiveTex","categories":["customer-success"],"domains":["*.livetex.ru"]},{"name":"Nosto","categories":["analytics"],"domains":["*.nosto.com"]},{"name":"fluct","categories":["ad"],"domains":["*.adingo.jp"]},{"name":"Smart AdServer","categories":["ad"],"domains":["*.sasqos.com","*.smartadserver.com"]},{"name":"fam","company":"Fing Co Ltd.","homepage":"http://admin.fam-ad.com/report/","categories":["ad"],"domains":["*.fam-ad.com"],"examples":["img.fam-ad.com"]},{"name":"ExoClick","categories":["ad"],"domains":["*.exoclick.com"]},{"name":"BannerFlow","company":"Nordic Factory Solutions","categories":["ad"],"domains":["*.bannerflow.com"]},{"name":"iPerceptions","categories":["customer-success"],"domains":["*.iperceptions.com"]},{"name":"Albacross","homepage":"https://albacross.com/","categories":["marketing"],"domains":["*.albacross.com"],"examples":["serve.albacross.com"]},{"name":"RevJet","homepage":"https://www.revjet.com/","categories":["ad"],"domains":["*.revjet.com"],"examples":["pix.revjet.com","ads.revjet.com"]},{"name":"Trusted Shops","categories":["utility"],"domains":["*.trustedshops.com"]},{"name":"MaxCDN Enterprise","company":"MaxCDN","categories":["utility"],"domains":["*.netdna-cdn.com","*.netdna-ssl.com"]},{"name":"etracker","categories":["analytics"],"domains":["*.etracker.com","*.etracker.de"],"examples":["www.etracker.com"]},{"name":"Yandex CDN","company":"Yandex","homepage":"https://yandex.ru/","categories":["cdn"],"domains":["*.yandex.st"]},{"name":"LKQD","categories":["ad"],"domains":["*.lkqd.net"]},{"name":"Sift Science","categories":["utility"],"domains":["*.siftscience.com"]},{"name":"Help Scout","homepage":"https://www.helpscout.net/","categories":["customer-success"],"domains":["djtflbt20bdde.cloudfront.net","*.helpscout.net"],"examples":["beacon-v2.helpscout.net"]},{"name":"Seznam","categories":["utility"],"domains":["*.imedia.cz"]},{"name":"Vidible","categories":["ad"],"domains":["*.vidible.tv"]},{"name":"Media Math","homepage":"http://www.mediamath.com/","categories":["ad"],"domains":["*.mathads.com","*.mathtag.com"],"examples":["mathid.mathtag.com","sync.mathtag.com","pixel.mathtag.com"]},{"name":"Simplicity Marketing","categories":["ad"],"domains":["*.flashtalking.com"]},{"name":"Mouseflow","categories":["analytics"],"domains":["*.mouseflow.com"]},{"name":"Siteimprove","categories":["utility"],"domains":["*.siteimprove.com","*.siteimproveanalytics.com"]},{"name":"GetSiteControl","company":"GetWebCraft","categories":["utility"],"domains":["*.getsitecontrol.com"]},{"name":"AOL / Oath / Verizon Media","homepage":"https://www.oath.com/","categories":["ad"],"domains":["*.advertising.com","*.aol.com","*.aolcdn.com","*.blogsmithmedia.com","*.oath.com","*.aol.net","*.tacoda.net","*.aol.co.uk"],"examples":["pixel.advertising.com","dtm.advertising.com","tag.sp.advertising.com","service.sp.advertising.com","adtech.advertising.com","adaptv.advertising.com","mighty.aol.net","consent.cmp.oath.com"]},{"name":"Accuweather","categories":["content"],"domains":["*.accuweather.com"]},{"name":"Feefo.com","company":"Feefo","categories":["analytics"],"domains":["*.feefo.com"]},{"name":"Constant Contact","categories":["ad"],"domains":["*.ctctcdn.com"]},{"name":"Rakuten Marketing","company":"Rakuten","categories":["ad"],"domains":["*.rakuten-static.com","*.rmtag.com"]},{"name":"TrafficStars","categories":["ad"],"domains":["*.trafficstars.com","*.tsyndicate.com"]},{"name":"ForeSee","company":"Answers","categories":["analytics"],"domains":["*.4seeresults.com","*.answerscloud.com","*.foresee.com","*.foreseeresults.com"]},{"name":"Swiftype","categories":["utility"],"domains":["*.swiftype.com","*.swiftypecdn.com"]},{"name":"Bazaarvoice","categories":["analytics"],"domains":["*.bazaarvoice.com","*.feedmagnet.com"]},{"name":"SocialShopWave","categories":["social"],"domains":["*.socialshopwave.com"]},{"name":"Bootstrap CDN","homepage":"https://www.bootstrapcdn.com/","categories":["cdn"],"domains":["*.bootstrapcdn.com"],"examples":["maxcdn.bootstrapcdn.com","stackpath.bootstrapcdn.com"]},{"name":"SessionCam","company":"ServiceTick","categories":["analytics"],"domains":["*.sessioncam.com","d2oh4tlt9mrke9.cloudfront.net"]},{"name":"AppDynamics","homepage":"https://www.appdynamics.com/","categories":["utility"],"domains":["*.appdynamics.com","*.eum-appdynamics.com","d3tjaysgumg9lf.cloudfront.net"],"examples":["cdn.appdynamics.com"]},{"name":"Adyoulike","categories":["ad"],"domains":["*.adyoulike.com","*.omnitagjs.com","*.adyoulike.net"]},{"name":"Affirm","categories":["utility"],"domains":["*.affirm.com"]},{"name":"Sortable","categories":["ad"],"domains":["*.deployads.com"]},{"name":"Neodata","categories":["ad"],"domains":["*.neodatagroup.com"]},{"name":"Adnium","categories":["ad"],"domains":["*.adnium.com"]},{"name":"AdScore","homepage":"https://www.adscore.com/","categories":["ad"],"domains":["*.adsco.re"],"examples":["c.adsco.re"]},{"name":"Comm100","categories":["customer-success"],"domains":["*.comm100.com"]},{"name":"Medium","categories":["content"],"domains":["*.medium.com"]},{"name":"Esri ArcGIS","company":"Esri","categories":["utility"],"domains":["*.arcgis.com","*.arcgisonline.com"]},{"name":"iBillboard","categories":["ad"],"domains":["*.ibillboard.com"]},{"name":"Hotmart","homepage":"https://www.hotmart.com/","categories":["content"],"domains":["*.hotmart.com"],"examples":["launchermodule.hotmart.com"]},{"name":"Secomapp","categories":["utility"],"domains":["*.secomapp.com"]},{"name":"AdMatic","categories":["ad"],"domains":["*.admatic.com.tr"]},{"name":"Dailymotion","categories":["content"],"domains":["*.dailymotion.com","*.dmxleo.com","*.dm.gg","*.pxlad.io","*.dmcdn.net","*.sublimevideo.net"],"examples":["ad.pxlad.io","www.dailymotion.com"]},{"name":"Foursixty","categories":["customer-success"],"domains":["*.foursixty.com"]},{"name":"OptiMonk","categories":["ad"],"domains":["*.optimonk.com"]},{"name":"Refersion","categories":["ad"],"domains":["*.refersion.com"]},{"name":"Pardot","categories":["marketing"],"domains":["*.pardot.com"]},{"name":"GitHub","categories":["utility"],"domains":["*.rawgit.com"],"examples":["cdn.rawgit.com"]},{"name":"Alexa","homepage":"https://www.alexa.com/","categories":["analytics"],"domains":["*.alexametrics.com","d31qbv1cthcecs.cloudfront.net"],"examples":["certify.alexametrics.com"]},{"name":"Bugsnag","categories":["utility"],"domains":["*.bugsnag.com","d2wy8f7a9ursnm.cloudfront.net"],"examples":["notify.bugsnag.com"]},{"name":"ResponsiveVoice","categories":["other"],"domains":["*.responsivevoice.org"]},{"name":"ContentSquare","categories":["analytics"],"domains":["d1m6l9dfulcyw7.cloudfront.net","*.content-square.net","*.contentsquare.net"]},{"name":"BounceX","categories":["analytics"],"homepage":"https://www.bouncex.com/","domains":["*.bounceexchange.com","*.bouncex.net"],"examples":["events.bouncex.net"]},{"name":"Tencent","categories":["content"],"domains":["*.qq.com","*.ywxi.net"]},{"name":"TagCommander","categories":["tag-manager"],"domains":["*.commander1.com","*.tagcommander.com"]},{"name":"Between Digital","categories":["ad"],"domains":["*.betweendigital.com"]},{"name":"Tribal Fusion","company":"Exponential Interactive","categories":["ad"],"domains":["*.tribalfusion.com"]},{"name":"iovation","categories":["utility"],"domains":["*.iesnare.com"]},{"name":"Auto Link Maker","company":"Apple","categories":["ad"],"domains":["*.apple.com"],"examples":["autolinkmaker.itunes.apple.com"]},{"name":"SnapEngage","categories":["customer-success"],"domains":["*.snapengage.com"]},{"name":"iAdvize SAS","categories":["customer-success"],"domains":["*.iadvize.com"]},{"name":"Listrak","homepage":"https://www.listrak.com/","categories":["marketing"],"domains":["*.listrak.com","*.listrakbi.com"],"examples":["cdn.listrakbi.com","s1.listrakbi.com"]},{"name":"Branch Metrics","categories":["ad"],"domains":["*.branch.io","*.app.link"]},{"name":"Admixer for Publishers","company":"Admixer","categories":["ad"],"domains":["*.admixer.net"]},{"name":"Tail Target","company":"Tail","categories":["ad"],"domains":["*.tailtarget.com"]},{"name":"Clicktale","categories":["analytics"],"domains":["*.cdngc.net","*.clicktale.net"],"examples":["clicktalecdn.sslcs.cdngc.net"]},{"name":"Maxymiser","categories":["analytics"],"domains":["*.maxymiser.net"]},{"name":"Marketo","homepage":"https://www.marketo.com","categories":["analytics"],"domains":["*.marketo.com","*.mktoresp.com","*.marketo.net"],"examples":["munchkin.marketo.net"]},{"name":"Bizible","categories":["ad"],"domains":["*.bizible.com","*.bizibly.com"]},{"name":"LoyaltyLion","categories":["ad"],"domains":["*.loyaltylion.com","*.loyaltylion.net","dg1f2pfrgjxdq.cloudfront.net"]},{"name":"Convert Insights","categories":["analytics"],"domains":["*.convertexperiments.com"]},{"name":"Opentag","company":"Qubit","categories":["tag-manager"],"domains":["*.qutics.com","d3c3cq33003psk.cloudfront.net"],"examples":["opentag-stats.qutics.com"]},{"name":"Adverline Board","company":"Adverline","categories":["ad"],"domains":["*.adverline.com","*.adnext.fr"]},{"name":"Optanon","homepage":"https://www.cookielaw.org/","categories":["utility"],"domains":["*.onetrust.com","*.cookielaw.org"],"examples":["cdn.cookielaw.org","geolocation.onetrust.com"]},{"name":"Adocean","company":"Gemius","categories":["ad"],"domains":["*.adocean.pl"]},{"name":"Po.st","company":"RadiumOne","categories":["utility"],"domains":["*.po.st"]},{"name":"Yieldmo","categories":["ad"],"domains":["*.yieldmo.com"]},{"name":"Market GID","homepage":"https://www.marketgid.com/","categories":["ad"],"domains":["*.marketgid.com"],"examples":["jsc.marketgid.com"]},{"name":"TRUSTe","categories":["utility"],"domains":["*.truste.com"]},{"name":"One by AOL","company":"AOL","categories":["ad"],"domains":["*.adtechjp.com","*.adtech.de"]},{"name":"Affiliate Window","company":"Digital Window","categories":["ad"],"domains":["*.dwin1.com"]},{"name":"Pagely","categories":["other"],"domains":["*.optnmstr.com"]},{"name":"Perfect Market","categories":["ad"],"domains":["*.perfectmarket.com"]},{"name":"Symantec","categories":["utility"],"domains":["*.norton.com","*.symantec.com","*.symcb.com","*.symcd.com"],"examples":["extended-validation-ssl.websecurity.symantec.com"]},{"name":"piano","categories":["ad"],"domains":["*.npttech.com","*.tinypass.com"],"examples":["www.npttech.com"]},{"name":"Elastic Ad","categories":["ad"],"domains":["*.elasticad.net"]},{"name":"Freshdesk","homepage":"https://freshdesk.com/","categories":["customer-success"],"domains":["d36mpcpuzc4ztk.cloudfront.net"]},{"name":"IPONWEB","categories":["ad"],"domains":["*.company-target.com","*.liadm.com","*.iponweb.net","*.p161.net"],"examples":["pool.udsp.iponweb.net"]},{"name":"Ecwid","categories":["hosting"],"domains":["*.ecwid.com","*.shopsettings.com","d3fi9i0jj23cau.cloudfront.net","d3j0zfs7paavns.cloudfront.net"]},{"name":"Digioh","categories":["ad"],"domains":["*.lightboxcdn.com"]},{"name":"Fort Awesome","categories":["cdn"],"domains":["*.fortawesome.com"]},{"name":"Nend","categories":["ad"],"domains":["*.nend.net"]},{"name":"Bronto Software","categories":["marketing"],"domains":["*.bm23.com","*.bronto.com","*.brontops.com"]},{"name":"TrackJS","categories":["analytics"],"domains":["*.trackjs.com","d2zah9y47r7bi2.cloudfront.net"],"examples":["usage.trackjs.com"]},{"name":"Dynamic Yield","categories":["customer-success"],"domains":["*.dynamicyield.com"]},{"name":"Clerk.io ApS","categories":["analytics"],"domains":["*.clerk.io"]},{"name":"IBM Digital Analytics","company":"IBM","categories":["analytics"],"domains":["*.cmcore.com","coremetrics.com","data.coremetrics.com","data.de.coremetrics.com","libs.de.coremetrics.com","tmscdn.de.coremetrics.com","iocdn.coremetrics.com","libs.coremetrics.com","tmscdn.coremetrics.com","*.s81c.com","*.unica.com","*.coremetrics.eu"],"examples":["data.coremetrics.eu"]},{"name":"Usabilla","homepage":"https://usabilla.com","categories":["analytics"],"domains":["*.usabilla.com","d6tizftlrpuof.cloudfront.net"],"examples":["w.usabilla.com"]},{"name":"Meetrics","categories":["ad"],"domains":["*.de.com","*.meetrics.net","*.mxcdn.net"],"examples":["research.de.com"]},{"name":"Forensiq","categories":["utility"],"domains":["*.fqtag.com"]},{"name":"Revolver Maps","categories":["analytics"],"domains":["*.revolvermaps.com"]},{"name":"Monetate","categories":["analytics"],"domains":["*.monetate.net"]},{"name":"Fraudlogix","categories":["utility"],"domains":["*.yabidos.com"]},{"name":"Mather Economics","categories":["analytics"],"domains":["*.matheranalytics.com"]},{"name":"Blindado","categories":["utility"],"domains":["*.siteblindado.com"]},{"name":"UserReport","categories":["analytics"],"domains":["*.userreport.com"]},{"name":"OwnerIQ","categories":["ad"],"domains":["*.owneriq.net"]},{"name":"CPEx","categories":["content"],"domains":["*.cpex.cz"]},{"name":"eBay","categories":["ad"],"domains":["*.ebay.com","*.ebayimg.com","*.fetchback.com"]},{"name":"Skype","categories":["other"],"domains":["*.skype.com"]},{"name":"DialogTech","categories":["ad"],"domains":["*.dialogtech.com"]},{"name":"WebsiteBuilder.com","homepage":"https://www.websitebuilder.com","categories":["hosting"],"domains":["*.mywebsitebuilder.com"]},{"name":"iZooto","homepage":"https://www.izooto.com","categories":["marketing"],"domains":["*.izooto.com"],"examples":["cdn.izooto.com"]},{"name":"AddEvent","categories":["utility"],"domains":["*.addevent.com"],"examples":["www.addevent.com"]},{"name":"GetResponse","categories":["ad"],"domains":["*.getresponse.com"]},{"name":"Twitch","homepage":"https://twitch.tv/","categories":["video"],"domains":["*.twitch.tv"],"examples":["player.twitch.tv"]},{"name":"Radar","company":"Cedexis","homepage":"https://www.cedexis.com/radar/","categories":["analytics"],"domains":["*.cedexis-test.com","*.cedexis.com","*.cmdolb.com","cedexis.leasewebcdn.com","*.cedexis-radar.net","*.cedexis.net","cedexis-test01.insnw.net","cedexisakamaitest.azureedge.net","cedexispub.cdnetworks.net","cs600.wac.alphacdn.net","cs600.wpc.edgecastdns.net","global2.cmdolb.com","img-cedexis.mncdn.com","a-cedexis.msedge.net","zn3vgszfh.fastestcdn.net"],"examples":["radar.cedexis.com","rpt.cedexis.com","2-01-49cd-0002.cdx.cedexis.net","bench.cedexis-test.com"]},{"name":"Smart Insight Tracking","company":"Emarsys","categories":["analytics"],"domains":["*.scarabresearch.com"]},{"name":"Polar","homepage":"https://polar.me/","categories":["ad"],"domains":["*.polarmobile.ca","*.mediaeverywhere.com","*.mediavoice.com","*.plrsrvcs.com","*.polarcdn-engine.com","*.polarcdn-meraxes.com","*.polarcdn-pentos.com","*.polarcdn-static.com","*.polarcdn-terrax.com","*.polarcdn.com","*.polarmobile.com","*.poweredbypolar.com","*.mediaconductor.me","*.polaracademy.me"]},{"name":"AudienceSearch","company":"Intimate Merger","categories":["ad"],"domains":["*.im-apps.net"]},{"name":"Autopilot","categories":["ad"],"domains":["*.autopilothq.com"]},{"name":"Rackspace","categories":["hosting"],"domains":["*.rackcdn.com","*.rackspacecloud.com","*.raxcdn.com","*.websitetestlink.com"]},{"name":"PowerReviews","categories":["analytics"],"domains":["*.powerreviews.com"]},{"name":"Rocket Fuel","categories":["ad"],"domains":["*.rfihub.com","*.ru4.com","*.rfihub.net","*.ad1x.com"]},{"name":"Okas Concepts","categories":["utility"],"domains":["*.okasconcepts.com"]},{"name":"Madison Logic","categories":["marketing"],"domains":["*.ml314.com"]},{"name":"Celtra","categories":["ad"],"domains":["*.celtra.com"]},{"name":"Snacktools","categories":["ad"],"domains":["*.bannersnack.com"]},{"name":"ClickDesk","categories":["customer-success"],"domains":["*.clickdesk.com","d1gwclp1pmzk26.cloudfront.net"]},{"name":"F@N Communications","homepage":"https://www.fancs.com/","categories":["ad"],"domains":["*.ladsp.com"],"examples":["px.ladsp.com"]},{"name":"Tradelab","categories":["ad"],"domains":["*.tradelab.fr"]},{"name":"CleverDATA","categories":["ad"],"domains":["*.1dmp.io"]},{"name":"Media Management Technologies","categories":["ad"],"domains":["*.speedshiftmedia.com"]},{"name":"Wishpond Technologies","categories":["marketing"],"domains":["*.wishpond.com","*.wishpond.net"]},{"name":"Reviews.co.uk","categories":["analytics"],"domains":["*.reviews.co.uk"]},{"name":"Adobe Scene7","company":"Adobe Systems","categories":["content"],"domains":["wwwimages.adobe.com","*.scene7.com","*.everestads.net","*.everestjs.net"]},{"name":"Permutive","categories":["ad"],"domains":["*.permutive.com","d3alqb8vzo7fun.cloudfront.net"]},{"name":"plista","categories":["ad"],"domains":["*.plista.com"]},{"name":"Kampyle","categories":["analytics"],"domains":["*.kampyle.com"]},{"name":"LinkedIn Ads","categories":["ad"],"domains":["*.licdn.com","ads.linkedin.com","www.linkedin.com"],"examples":["snap.licdn.com"]},{"name":"Survicate","categories":["analytics"],"domains":["*.survicate.com"]},{"name":"Nativo","categories":["ad"],"domains":["*.postrelease.com"]},{"name":"Decibel Insight","categories":["analytics"],"domains":["*.decibelinsight.net"]},{"name":"Github","categories":["utility"],"domains":["*.github.com","*.githubusercontent.com","*.github.io"],"examples":["raw.githubusercontent.com"]},{"name":"WebEngage","categories":["customer-success"],"domains":["*.webengage.co","*.webengage.com","d23nd6ymopvz52.cloudfront.net","d3701cc9l7v9a6.cloudfront.net"]},{"name":"Geniee","categories":["ad"],"domains":["*.href.asia","*.genieessp.jp","*.genieesspv.jp","*.gssprt.jp"],"examples":["cs.gssprt.jp"]},{"name":"The Trade Desk","homepage":"https://www.thetradedesk.com/","categories":["ad"],"domains":["d1eoo1tco6rr5e.cloudfront.net","*.adsrvr.org"],"examples":["js.adsrvr.org","match.adsrvr.org","insight.adsrvr.org","usw-lax.adsrvr.org","data.adsrvr.org","snap.adsrvr.org"]},{"name":"Lytics","categories":["ad"],"domains":["*.lytics.io"]},{"name":"rewardStyle.com","categories":["ad"],"domains":["*.rewardstyle.com"]},{"name":"Kaltura Video Platform","company":"Kaltura","categories":["content"],"domains":["*.kaltura.com"],"examples":["cdnsecakmi.kaltura.com"]},{"name":"WisePops","categories":["utility"],"domains":["*.wisepops.com"]},{"name":"Picreel","categories":["analytics"],"domains":["*.pcrl.co","*.picreel.com"]},{"name":"Riskified","categories":["utility"],"domains":["*.riskified.com"]},{"name":"Supership","homepage":"https://supership.jp/","categories":["ad"],"domains":["*.socdm.com"]},{"name":"Google Plus","company":"Google","categories":["social"],"domains":["plus.google.com"]},{"name":"Yieldify","categories":["ad"],"domains":["*.yieldify.com","*.yieldifylabs.com","d33wq5gej88ld6.cloudfront.net","dwmvwp56lzq5t.cloudfront.net"],"examples":["geo.yieldifylabs.com"]},{"name":"Smarter Click","categories":["ad"],"domains":["*.smct.co","*.smarterclick.co.uk"]},{"name":"Evergage","categories":["analytics"],"domains":["*.evergage.com","*.evgnet.com"],"examples":["cdn.evgnet.com"]},{"name":"SaleCycle","categories":["ad"],"domains":["*.salecycle.com","d16fk4ms6rqz1v.cloudfront.net","d22j4fzzszoii2.cloudfront.net","d30ke5tqu2tkyx.cloudfront.net"]},{"name":"Zanox","categories":["ad"],"domains":["*.zanox.com","*.zanox.ws"]},{"name":"AddShoppers","categories":["social"],"domains":["*.addshoppers.com","d3rr3d0n31t48m.cloudfront.net","*.shop.pe"]},{"name":"Interpublic Group","categories":["ad"],"domains":["*.mbww.com"]},{"name":"Qualaroo","categories":["analytics"],"domains":["*.qualaroo.com"]},{"name":"BoldChat","company":"LogMeIn","categories":["customer-success"],"domains":["*.boldchat.com"]},{"name":"Effective Measure","categories":["ad"],"domains":["*.effectivemeasure.net"]},{"name":"LoopMe","categories":["ad"],"domains":["*.loopme.biz","*.loopme.com","*.vntsm.com","*.loopme.me"]},{"name":"Sooqr Search","company":"Sooqr","categories":["utility"],"domains":["*.sooqr.com"]},{"name":"smartclip","categories":["ad"],"domains":["*.smartclip.net"]},{"name":"Cloudinary","categories":["content"],"domains":["*.cloudinary.com"]},{"name":"Gleam","categories":["marketing"],"domains":["*.gleam.io"]},{"name":"Revcontent","categories":["content"],"domains":["*.revcontent.com"]},{"name":"Browsealoud","homepage":"https://www.texthelp.com/en-gb/products/browsealoud/","categories":["other"],"domains":["*.browsealoud.com","*.texthelp.com"],"examples":["www.browsealoud.com"]},{"name":"Ooyala","categories":["ad"],"domains":["*.ooyala.com"]},{"name":"Intercept Interactive","categories":["ad"],"domains":["*.undertone.com"]},{"name":"Appier","categories":["ad"],"domains":["*.appier.net"]},{"name":"SublimeSkinz","categories":["ad"],"domains":["*.ayads.co"]},{"name":"KISSmetrics","categories":["analytics"],"domains":["*.kissmetrics.com","doug1izaerwt3.cloudfront.net","dsyszv14g9ymi.cloudfront.net"]},{"name":"Pixlee","categories":["social"],"domains":["*.pixlee.com"]},{"name":"NetFlix","categories":["content"],"domains":["*.nflxext.com","*.nflximg.net"]},{"name":"Shopgate","categories":["utility"],"domains":["*.shopgate.com"]},{"name":"Highcharts","categories":["utility"],"domains":["*.highcharts.com"]},{"name":"Audience 360","company":"Datapoint Media","categories":["ad"],"domains":["*.dpmsrv.com"]},{"name":"Bootstrap Chinese network","categories":["cdn"],"domains":["*.bootcss.com"]},{"name":"Sparkflow","company":"Intercept Interactive","categories":["ad"],"domains":["*.sparkflow.net"]},{"name":"Flowplayer","categories":["content"],"domains":["*.flowplayer.org"]},{"name":"Fresh Relevance","categories":["analytics"],"domains":["*.freshrelevance.com","*.cloudfront.ne","d1y9qtn9cuc3xw.cloudfront.net","d81mfvml8p5ml.cloudfront.net","dkpklk99llpj0.cloudfront.net"],"examples":["d1y9qtn9cuc3xw.cloudfront.ne"]},{"name":"WebpageFX","categories":["ad"],"domains":["*.leadmanagerfx.com"]},{"name":"Simpli.fi","categories":["ad"],"domains":["*.simpli.fi"]},{"name":"Omniconvert","categories":["analytics"],"domains":["*.omniconvert.com","d2tgfbvjf3q6hn.cloudfront.net","d3vbj265bmdenw.cloudfront.net"]},{"name":"Adscale","categories":["ad"],"domains":["*.adscale.de"]},{"name":"Covert Pics","categories":["content"],"domains":["*.covet.pics"]},{"name":"Curalate","categories":["marketing"],"domains":["*.curalate.com","d116tqlcqfmz3v.cloudfront.net"]},{"name":"ReadSpeaker","homepage":"https://www.readspeaker.com","categories":["other"],"domains":["*.readspeaker.com"],"examples":["sf1-eu.readspeaker.com"]},{"name":"Stackla PTY","categories":["social"],"domains":["*.stackla.com"]},{"name":"SpotXchange","categories":["ad"],"domains":["*.spotxcdn.com","*.spotxchange.com","*.spotx.tv"]},{"name":"Qubit Deliver","company":"Qubit","categories":["analytics"],"domains":["d1m54pdnjzjnhe.cloudfront.net","d22rutvoghj3db.cloudfront.net","dd6zx4ibq538k.cloudfront.net"]},{"name":"Opta","company":"Perform Group","categories":["content"],"domains":["*.opta.net"]},{"name":"Unruly Media","categories":["ad"],"domains":["*.unrulymedia.com"]},{"name":"Quantum Metric","homepage":"https://www.quantummetric.com/","categories":["analytics"],"domains":["*.quantummetric.com"]},{"name":"Weborama","categories":["ad"],"domains":["*.weborama.com","*.weborama.fr"]},{"name":"Republer","categories":["ad"],"domains":["*.republer.com"],"examples":["sync.republer.com"]},{"name":"Vox Media","homepage":"https://www.voxmedia.com/","categories":["content"],"domains":["*.vox-cdn.com","*.voxmedia.com"],"examples":["cdn.vox-cdn.com"]},{"name":"FoxyCart","categories":["utility"],"domains":["*.foxycart.com"]},{"name":"Adition","homepage":"https://www.adition.com","categories":["ad"],"domains":["*.adition.com"],"examples":["dsp.adfarm1.adition.com"]},{"name":"LiveHelpNow","categories":["customer-success"],"domains":["*.livehelpnow.net"]},{"name":"DemandBase","categories":["marketing"],"domains":["*.demandbase.com"]},{"name":"Concert","homepage":"https://concert.io/","categories":["ad"],"domains":["*.concert.io"],"examples":["cdn.concert.io"]},{"name":"TINT","categories":["content"],"domains":["*.71n7.com","d33w9bm0n1egwm.cloudfront.net","d36hc0p18k1aoc.cloudfront.net","d3l7tj34e9fc43.cloudfront.net"],"examples":["www.71n7.com"]},{"name":"Arbor","company":"LiveRamp","categories":["other"],"domains":["*.pippio.com"]},{"name":"Vidyard","homepage":"https://www.vidyard.com/","categories":["utility"],"domains":["*.vidyard.com"]},{"name":"linkpulse","categories":["analytics"],"domains":["*.lp4.io"]},{"name":"Edge Web Fonts","company":"Adobe Systems","categories":["cdn"],"domains":["*.edgefonts.net"],"examples":["use.edgefonts.net"]},{"name":"ShopiMind","company":"ShopIMind","categories":["ad"],"domains":["*.shopimind.com"]},{"name":"Feedbackify","company":"InsideMetrics","categories":["analytics"],"domains":["*.feedbackify.com"]},{"name":"Sidecar","categories":["other"],"domains":["*.getsidecar.com","d3v27wwd40f0xu.cloudfront.net"]},{"name":"SearchSpring","categories":["utility"],"domains":["*.searchspring.net"]},{"name":"DMD Marketing","homepage":"https://www.dmdconnects.com/","categories":["ad"],"domains":["*.medtargetsystem.com"]},{"name":"C3 Metrics","categories":["analytics"],"domains":["*.c3tag.com"]},{"name":"FirstImpression","categories":["ad"],"domains":["*.firstimpression.io"]},{"name":"GetIntent RTBSuite","company":"GetIntent","categories":["ad"],"domains":["*.adhigh.net"]},{"name":"unpkg","categories":["utility"],"domains":["*.npmcdn.com"]},{"name":"PerimeterX Bot Defender","company":"PerimeterX","categories":["utility"],"domains":["*.perimeterx.net","*.pxi.pub"]},{"name":"JustPremium Ads","company":"JustPremium","categories":["ad"],"domains":["*.justpremium.com"]},{"name":"Talkable","categories":["ad"],"domains":["*.talkable.com","d2jjzw81hqbuqv.cloudfront.net"],"examples":["www.talkable.com"]},{"name":"Steelhouse","categories":["ad"],"domains":["*.steelhousemedia.com"]},{"name":"Adtech (AOL)","categories":["ad"],"domains":["*.adtechus.com"]},{"name":"Technorati","company":"Synacor","categories":["ad"],"domains":["*.technoratimedia.com"]},{"name":"Drip","company":"The Numa Group","categories":["ad"],"domains":["*.getdrip.com"]},{"name":"VoiceFive","categories":["analytics"],"domains":["*.voicefive.com"]},{"name":"Adkontekst","categories":["ad"],"domains":["*.adkontekst.pl"]},{"name":"Cedato","categories":["ad"],"domains":["*.algovid.com","*.vdoserv.com"]},{"name":"TripAdvisor","categories":["content"],"domains":["*.jscache.com","*.tacdn.com","*.tamgrt.com","*.tripadvisor.com","*.viator.com","*.tripadvisor.co.uk"],"examples":["www.jscache.com","www.tamgrt.com"]},{"name":"Typepad","categories":["hosting"],"domains":["*.typepad.com"]},{"name":"Silverpop","company":"IBM","categories":["ad"],"domains":["*.mkt912.com","*.mkt922.com","*.mkt932.com","*.mkt941.com","*.mkt51.net","*.mkt61.net","*.pages01.net","*.pages02.net","*.pages03.net","*.pages04.net","*.pages05.net"]},{"name":"Attentive","homepage":"https://attentivemobile.com/","categories":["ad"],"domains":["*.attn.tv","*.attentivemobile.com"]},{"name":"Salesforce.com","categories":["ad"],"domains":["*.force.com","*.salesforce.com"],"examples":["secure.force.com"]},{"name":"WebSpectator","categories":["ad"],"domains":["*.webspectator.com"]},{"name":"Kaizen Platform","categories":["analytics"],"domains":["*.kaizenplatform.net"],"examples":["cdn.kaizenplatform.net","log-v4.kaizenplatform.net"]},{"name":"Global-e","categories":["hosting"],"domains":["*.global-e.com"]},{"name":"TruConversion","categories":["analytics"],"domains":["*.truconversion.com"]},{"name":"White Ops","categories":["utility"],"domains":["*.acexedge.com","*.tagsrvcs.com"]},{"name":"Accordant Media","categories":["ad"],"domains":["*.a3cloud.net"],"examples":["segment.a3cloud.net"]},{"name":"Keywee","categories":["ad"],"domains":["*.keywee.co"]},{"name":"Hupso Website Analyzer","company":"Hupso","categories":["analytics"],"domains":["*.hupso.com"]},{"name":"ThreatMetrix","categories":["utility"],"domains":["*.online-metrix.net"]},{"name":"eXelate","categories":["ad"],"domains":["*.exelator.com"]},{"name":"Delta Projects AB","categories":["ad"],"domains":["*.de17a.com"]},{"name":"Profitshare","categories":["ad"],"domains":["*.profitshare.ro"]},{"name":"TubeMogul","categories":["ad"],"domains":["*.tubemogul.com"]},{"name":"Ipify","homepage":"https://www.ipify.org","categories":["utility"],"domains":["*.ipify.org"],"examples":["api.ipify.org","geo.ipify.org"]},{"name":"Marketplace Web Service","company":"Amazon","categories":["other"],"domains":["*.ssl-images-amazon.com"]},{"name":"Key CDN","categories":["utility"],"domains":["*.kxcdn.com"]},{"name":"The ADEX","categories":["ad"],"domains":["*.theadex.com"]},{"name":"ZEDO","categories":["ad"],"domains":["*.zedo.com"]},{"name":"Sajari Pty","categories":["utility"],"domains":["*.sajari.com"]},{"name":"The Hut Group","categories":["content"],"domains":["*.thcdn.com"]},{"name":"Signyfyd","categories":["utility"],"domains":["*.signifyd.com"]},{"name":"Apester","categories":["analytics"],"domains":["*.apester.com","*.qmerce.com"]},{"name":"mParticle","homepage":"https://www.mparticle.com/","categories":["utility"],"domains":["*.mparticle.com"],"examples":["jssdks.mparticle.com","identity.mparticle.com"]},{"name":"AdSniper","categories":["ad"],"domains":["*.adsniper.ru","*.sniperlog.ru"]},{"name":"Time","categories":["content"],"domains":["*.timeinc.net"]},{"name":"SurveyMonkey","categories":["analytics"],"domains":["*.surveymonkey.com"]},{"name":"GIPHY","categories":["content"],"domains":["*.giphy.com"]},{"name":"Socialphotos","categories":["social"],"domains":["*.slpht.com"]},{"name":"Livefyre","categories":["content"],"domains":["*.fyre.co","*.livefyre.com"]},{"name":"Civic","categories":["hosting"],"domains":["*.civiccomputing.com"]},{"name":"Auth0","homepage":"https://auth0.com/","categories":["utility"],"domains":["*.auth0.com"],"examples":["cdn.auth0.com"]},{"name":"Flickr","categories":["content"],"domains":["*.flickr.com","*.staticflickr.com"]},{"name":"Reevoo","categories":["analytics"],"domains":["*.reevoo.com"]},{"name":"Sirv","categories":["other"],"domains":["*.sirv.com"]},{"name":"Underdog Media","categories":["ad"],"domains":["*.underdog.media","*.udmserve.net"]},{"name":"Petametrics","categories":["analytics"],"domains":["*.petametrics.com"]},{"name":"Sweet Tooth","categories":["ad"],"domains":["*.sweettooth.io"]},{"name":"Hola Networks","categories":["other"],"domains":["*.h-cdn.com"]},{"name":"Verizon Digital Media CDN","homepage":"https://www.verizondigitalmedia.com/","categories":["cdn"],"domains":["*.edgecastcdn.net","*.edgecastdns.net"]},{"name":"Zarget","categories":["analytics"],"domains":["*.zarget.com"]},{"name":"ResponseTap","categories":["analytics"],"domains":["*.adinsight.com","*.responsetap.com"]},{"name":"ReTargeter","categories":["ad"],"domains":["*.retargeter.com"]},{"name":"Yottaa","categories":["hosting"],"domains":["*.yottaa.com","*.yottaa.net"]},{"name":"Connatix","categories":["ad"],"domains":["*.connatix.com"]},{"name":"Klevu Search","company":"Klevu","categories":["utility"],"domains":["*.klevu.com"]},{"name":"Best Of Media S.A.","categories":["content"],"domains":["*.servebom.com"]},{"name":"AdTrue","company":"FPT AdTrue","categories":["ad"],"domains":["*.adtrue.com"]},{"name":"Customer.io","categories":["ad"],"domains":["*.customer.io"]},{"name":"Advance Magazine Group","categories":["content"],"domains":["*.condenastdigital.com","*.condenet.com","*.condenast.co.uk"]},{"name":"StreamRail","categories":["ad"],"domains":["*.streamrail.com","*.streamrail.net"]},{"name":"Opinion Stage","categories":["analytics"],"domains":["*.opinionstage.com"],"examples":["www.opinionstage.com"]},{"name":"CleverTap","categories":["analytics"],"domains":["d2r1yp2w7bby2u.cloudfront.net"]},{"name":"Fanplayr","categories":["analytics"],"domains":["*.fanplayr.com","d38nbbai6u794i.cloudfront.net"]},{"name":"Calendly","categories":["other"],"domains":["*.calendly.com"]},{"name":"Adobe Test & Target","company":"Adobe Systems","categories":["analytics"],"domains":["*.omtrdc.net"],"examples":["tt.omtrdc.net"]},{"name":"Navegg","categories":["ad"],"domains":["*.navdmp.com"]},{"name":"Sekindo","categories":["content"],"domains":["*.sekindo.com"]},{"name":"Conversio","categories":["ad"],"domains":["*.conversio.com"]},{"name":"CyberSource (Visa)","categories":["utility"],"domains":["*.authorize.net"]},{"name":"Pixalate","categories":["utility"],"domains":["*.adrta.com"]},{"name":"Reviews.io","categories":["analytics"],"domains":["*.reviews.io"]},{"name":"NetAffiliation","company":"Kwanco","categories":["ad"],"domains":["*.metaffiliation.com"]},{"name":"FuelX","categories":["ad"],"domains":["*.fuelx.com"]},{"name":"Touch Commerce","categories":["customer-success"],"domains":["*.inq.com","*.touchcommerce.com"]},{"name":"TripleLift","categories":["ad"],"domains":["*.3lift.com"]},{"name":"Ambassador","categories":["ad"],"domains":["*.getambassador.com"]},{"name":"epoq internet services","categories":["analytics"],"domains":["*.epoq.de"]},{"name":"Woopra","categories":["analytics"],"domains":["*.woopra.com"]},{"name":"Playbuzz","categories":["hosting"],"domains":["*.playbuzz.com"]},{"name":"Exponential Interactive","categories":["ad"],"domains":["*.exponential.com"]},{"name":"JustUno","categories":["ad"],"domains":["*.justuno.com"]},{"name":"Widespace","homepage":"https://www.widespace.com","categories":["ad"],"domains":["*.widespace.com"],"examples":["sync.widespace.com"]},{"name":"VisScore","categories":["analytics"],"domains":["*.visscore.com","d2hkbi3gan6yg6.cloudfront.net"]},{"name":"AWeber","categories":["ad"],"domains":["*.aweber.com"]},{"name":"AvantLink","categories":["ad"],"domains":["*.avmws.com"]},{"name":"Conversant Tag Manager","company":"Conversant","categories":["tag-manager"],"domains":["*.mplxtms.com"]},{"name":"Postcode Anywhere (Holdings)","categories":["utility"],"domains":["*.postcodeanywhere.co.uk"]},{"name":"Conversant","categories":["analytics"],"domains":["*.dotomi.com","*.dtmpub.com","*.emjcd.com","mediaplex.com","*.tqlkg.com","*.fastclick.net"],"examples":["www.tqlkg.com"]},{"name":"FLXone","company":"Teradata","categories":["ad"],"domains":["*.pangolin.blue","*.flx1.com","d2hlpp31teaww3.cloudfront.net"]},{"name":"Infinity Tracking","categories":["analytics"],"domains":["*.infinity-tracking.net"]},{"name":"reEmbed","categories":["other"],"domains":["*.reembed.com"]},{"name":"Kameleoon","categories":["analytics"],"domains":["*.kameleoon.com"]},{"name":"Impact Radius","categories":["ad"],"domains":["*.impactradius-event.com","*.impactradius-go.com","*.7eer.net","d3cxv97fi8q177.cloudfront.net","*.evyy.net","*.ojrq.net"],"examples":["a.impactradius-go.com","microsoft-uk.evyy.net"]},{"name":"Heroku","categories":["other"],"domains":["*.herokuapp.com"]},{"name":"AdsWizz","categories":["ad"],"domains":["*.adswizz.com"]},{"name":"MaxMind","categories":["utility"],"domains":["*.maxmind.com"]},{"name":"Pusher","homepage":"https://pusher.com/","categories":["utility"],"domains":["*.pusher.com","*.pusherapp.com"],"examples":["stats.pusher.com"]},{"name":"Admitad","categories":["ad"],"domains":["*.lenmit.com"]},{"name":"AdsNative","categories":["ad"],"domains":["*.adsnative.com"]},{"name":"Viacom","categories":["content"],"domains":["*.mtvnservices.com"]},{"name":"Cookie-Script.com","categories":["utility"],"domains":["*.cookie-script.com"]},{"name":"MonetizeMore","categories":["ad"],"domains":["*.m2.ai"]},{"name":"Mediahawk","categories":["analytics"],"domains":["*.mediahawk.co.uk"]},{"name":"GoSquared","homepage":"https://www.gosquared.com","categories":["analytics"],"domains":["*.gosquared.com","d1l6p2sc9645hc.cloudfront.net"],"examples":["data.gosquared.com","data2.gosquared.com"]},{"name":"Datonics","categories":["ad"],"domains":["*.pro-market.net"],"examples":["pbid.pro-market.net"]},{"name":"Adobe Marketing Cloud","company":"Adobe Systems","categories":["ad"],"domains":["*.adobetag.com"]},{"name":"News","categories":["social"],"domains":["*.news.com.au","*.newsanalytics.com.au","*.newsapi.com.au","*.newscdn.com.au","*.newsdata.com.au","*.newsdiscover.com.au","*.news-static.com"]},{"name":"Experian Cross-Channel Marketing Platform","company":"Experian","categories":["marketing"],"domains":["*.eccmp.com","*.ccmp.eu"]},{"name":"SkyScanner","categories":["content"],"domains":["*.skyscanner.net"],"examples":["api.skyscanner.net"]},{"name":"Vibrant Media","categories":["ad"],"domains":["*.intellitxt.com","*.picadmedia.com"]},{"name":"Mobify","categories":["utility"],"domains":["*.mobify.com","*.mobify.net"]},{"name":"Bookatable","categories":["content"],"domains":["*.bookatable.com","*.livebookings.com"]},{"name":"SecuredVisit","company":"4Cite Marketing","categories":["ad"],"domains":["*.securedvisit.com"]},{"name":"[24]7","categories":["customer-success"],"domains":["*.247-inc.net","*.247inc.net","d1af033869koo7.cloudfront.net"]},{"name":"Transifex","categories":["utility"],"domains":["*.transifex.com"]},{"name":"Tagboard","categories":["social"],"domains":["*.tagboard.com"]},{"name":"Council ad Network","categories":["ad"],"domains":["*.counciladvertising.net"]},{"name":"WalkMe","categories":["customer-success"],"domains":["*.walkme.com"]},{"name":"Betgenius","company":"Genius Sports","categories":["content"],"domains":["*.connextra.com"]},{"name":"Exactag","categories":["ad"],"domains":["*.exactag.com"]},{"name":"Knight Lab","company":"Northwestern University","categories":["utility"],"domains":["*.knightlab.com"]},{"name":"Reflektion","categories":["analytics"],"domains":["*.reflektion.com","d26opx5dl8t69i.cloudfront.net"]},{"name":"Expedia","categories":["content"],"domains":["*.travel-assets.com","*.trvl-media.com","*.trvl-px.com","*.uciservice.com"],"examples":["www.trvl-px.com","www.uciservice.com"]},{"name":"Performio","categories":["ad"],"domains":["*.performax.cz"],"examples":["ut.performax.cz"]},{"name":"Janrain","categories":["analytics"],"domains":["*.janrain.com","*.janrainbackplane.com","*.rpxnow.com","d3hmp0045zy3cs.cloudfront.net"]},{"name":"Resonance Insights","categories":["analytics"],"domains":["*.res-x.com"]},{"name":"cloudIQ","categories":["analytics"],"domains":["*.cloud-iq.com"]},{"name":"Snack Media","categories":["content"],"domains":["*.snack-media.com"]},{"name":"Ekm Systems","categories":["analytics"],"domains":["*.ekmsecure.com","*.ekmpinpoint.co.uk"],"examples":["globalstats.ekmsecure.com"]},{"name":"Wow Analytics","categories":["analytics"],"domains":["*.wowanalytics.co.uk"]},{"name":"AdvertServe","categories":["ad"],"domains":["*.advertserve.com"]},{"name":"Pingdom RUM","homepage":"https://www.pingdom.com/product/performance-monitoring/","categories":["analytics"],"domains":["*.pingdom.net"],"examples":["rum-static.pingdom.net","rum-collector-2.pingdom.net"]},{"name":"DialogTech SourceTrak","company":"DialogTech","categories":["ad"],"domains":["d31y97ze264gaa.cloudfront.net"]},{"name":"bRealTime","categories":["ad"],"domains":["*.brealtime.com"]},{"name":"Tag Inspector","company":"InfoTrust","categories":["analytics"],"domains":["d22xmn10vbouk4.cloudfront.net"]},{"name":"Zmags","categories":["marketing"],"domains":["*.zmags.com"]},{"name":"LeasdBoxer","company":"LeadBoxer","categories":["ad"],"domains":["*.leadboxer.com"]},{"name":"Friendbuy","categories":["ad"],"domains":["*.friendbuy.com","djnf6e5yyirys.cloudfront.net"]},{"name":"Acceptable Ads","homepage":"https://acceptableads.com/","categories":["ad"],"domains":["*.aaxads.com","*.aaxdetect.com"]},{"name":"Onet","categories":["ad"],"domains":["*.onet.pl"]},{"name":"Netlify","homepage":"https://www.netlify.com/","categories":["utility"],"domains":["*.netlify.com","*.netlifyusercontent.com"],"examples":["cloud.netlifyusercontent.com"]},{"name":"Twitter Online Conversion Tracking","company":"Twitter","categories":["ad"],"domains":["*.ads-twitter.com","analytics.twitter.com"],"examples":["static.ads-twitter.com"]},{"name":"AdRiver","categories":["ad"],"domains":["*.adriver.ru"]},{"name":"Proper Media","categories":["content"],"domains":["*.proper.io"]},{"name":"Storygize","categories":["ad"],"domains":["*.storygize.net"],"examples":["www.storygize.net"]},{"name":"Oracle Recommendations On Demand","company":"Oracle","categories":["analytics"],"domains":["*.atgsvcs.com"]},{"name":"Raygun","categories":["utility"],"domains":["*.raygun.io"]},{"name":"Rakuten LinkShare","company":"Rakuten","categories":["ad"],"domains":["*.linksynergy.com"]},{"name":"BlueCava","categories":["ad"],"domains":["*.bluecava.com"]},{"name":"Hull.js","categories":["utility"],"domains":["*.hull.io","*.hullapp.io"]},{"name":"PERFORM","categories":["content"],"domains":["*.performgroup.com"]},{"name":"Moxie","homepage":"https://www.gomoxie.com/","categories":["utility"],"domains":["*.gomoxie.solutions"]},{"name":"Vee24","categories":["customer-success"],"domains":["*.vee24.com"]},{"name":"Aggregate Knowledge","company":"Neustar","categories":["ad"],"domains":["*.agkn.com"]},{"name":"Cookie Reports","categories":["utility"],"domains":["*.cookiereports.com"]},{"name":"PlayAd Media Group","categories":["ad"],"domains":["*.youplay.se"]},{"name":"Exponea","categories":["analytics"],"domains":["*.exponea.com"]},{"name":"AIR.TV","categories":["ad"],"domains":["*.air.tv"]},{"name":"SlimCut Media Outstream","company":"SlimCut Media","categories":["ad"],"domains":["*.freeskreen.com"]},{"name":"Mopinion","categories":["analytics"],"domains":["*.mopinion.com"]},{"name":"Dynamic Converter","categories":["utility"],"domains":["*.dynamicconverter.com"]},{"name":"Remintrex","company":"SmartUp Venture","categories":["ad"],"domains":["*.remintrex.com"]},{"name":"Attribution","categories":["ad"],"domains":["*.attributionapp.com"]},{"name":"Browser-Update.org","categories":["other"],"domains":["*.browser-update.org"]},{"name":"Sailthru","categories":["analytics"],"domains":["*.sail-horizon.com","*.sail-personalize.com","*.sail-track.com"]},{"name":"AnswerDash","categories":["customer-success"],"domains":["*.answerdash.com"],"examples":["p1.answerdash.com"]},{"name":"Ziff Davis Tech","categories":["ad"],"domains":["*.adziff.com","*.zdbb.net"]},{"name":"Adthink","company":"Adthink Media","categories":["ad"],"domains":["*.adxcore.com","*.dcoengine.com"],"examples":["d.adxcore.com"]},{"name":"Site24x7 Real User Monitoring","company":"Site24x7","categories":["analytics"],"domains":["*.site24x7rum.com"]},{"name":"SpringServer","categories":["ad"],"domains":["*.springserve.com"]},{"name":"Freespee","categories":["customer-success"],"domains":["*.freespee.com"],"examples":["analytics.freespee.com"]},{"name":"VidPulse","categories":["analytics"],"domains":["*.vidpulse.com"]},{"name":"InAuth","categories":["utility"],"homepage":"https://www.inauth.com/","domains":["*.cdn-net.com"],"examples":["uk.cdn-net.com"]},{"name":"MLveda","categories":["utility"],"domains":["*.mlveda.com"],"examples":["www.mlveda.com"]},{"name":"Microad","categories":["ad"],"domains":["*.microad.jp"]},{"name":"ShopRunner","categories":["content"],"domains":["*.shoprunner.com","*.s-9.us"]},{"name":"Reactful","categories":["analytics"],"domains":["*.reactful.com"]},{"name":"Vergic AB","categories":["customer-success"],"domains":["*.psplugin.com"]},{"name":"Alliance for Audited Media","categories":["ad"],"domains":["*.aamsitecertifier.com"]},{"name":"Forter","categories":["utility"],"domains":["*.forter.com"]},{"name":"Swoop","categories":["ad"],"domains":["*.swoop.com"]},{"name":"Gfycat","company":"Gycat","categories":["utility"],"domains":["*.gfycat.com"]},{"name":"Optimove","company":"Mobius Solutions","categories":["analytics"],"domains":["*.optimove.net"]},{"name":"LoginRadius","categories":["social"],"domains":["*.loginradius.com"]},{"name":"Flockler","categories":["ad"],"domains":["*.flockler.com"]},{"name":"Moovweb","categories":["utility"],"domains":["*.moovweb.net"]},{"name":"Cachefly","categories":["utility"],"domains":["*.cachefly.net"]},{"name":"emetriq","homepage":"https://www.emetriq.com/","categories":["ad"],"domains":["*.emetriq.de","*.xplosion.de"]},{"name":"CANDDi","company":"Campaign and Digital Intelligence","categories":["ad"],"domains":["*.canddi.com"]},{"name":"Braintree Payments","company":"Paypal","categories":["utility"],"domains":["*.braintreegateway.com"]},{"name":"Meltwater Group","categories":["customer-success"],"domains":["*.meltwaternews.com"]},{"name":"Video Media Groep","categories":["ad"],"domains":["*.vmg.host","*.inpagevideo.nl"]},{"name":"Polldaddy","company":"Automattic","categories":["analytics"],"domains":["polldaddy.com"]},{"name":"Triblio","categories":["marketing"],"domains":["*.tribl.io"]},{"name":"Wufoo","categories":["utility"],"domains":["*.wufoo.com"]},{"name":"User Replay","categories":["analytics"],"domains":["*.userreplay.net"]},{"name":"Barilliance","categories":["analytics"],"domains":["*.barilliance.net","dn3y71tq7jf07.cloudfront.net"]},{"name":"Boomtrain","categories":["ad"],"domains":["*.boomtrain.com","*.boomtrain.net"]},{"name":"Extole","categories":["ad"],"domains":["*.extole.com","*.extole.io"],"examples":["origin.extole.io"]},{"name":"infogr.am","categories":["utility"],"domains":["*.infogr.am","*.jifo.co"]},{"name":"Catchpoint","homepage":"https://www.catchpoint.com/","categories":["analytics"],"domains":["*.3gl.net"]},{"name":"InSkin Media","categories":["ad"],"domains":["*.inskinad.com","*.inskinmedia.com"]},{"name":"Kargo","categories":["marketing"],"domains":["*.kargo.com"]},{"name":"Byside","homepage":"http://www.byside.com","categories":["analytics"],"domains":["*.byside.com"],"examples":["byce2.byside.com","wce2.byside.com"]},{"name":"CNET Content Solutions","company":"CBS Interactive","categories":["content"],"domains":["*.cnetcontent.com"],"examples":["cdn.cnetcontent.com","ws.cnetcontent.com"]},{"name":"HotelsCombined","categories":["content"],"domains":["*.datahc.com"]},{"name":"Hawk Search","categories":["utility"],"domains":["*.hawksearch.com"]},{"name":"Vergic Engage Platform","company":"Vergic","categories":["customer-success"],"domains":["*.vergic.com"]},{"name":"Vertical Mass","categories":["ad"],"domains":["*.vmweb.net"]},{"name":"ShopStorm","categories":["utility"],"domains":["*.shopstorm.com"]},{"name":"Borderfree","company":"pitney bowes","categories":["utility"],"domains":["*.borderfree.com","*.fiftyone.com"]},{"name":"Fonecall","categories":["analytics"],"domains":["*.web-call-analytics.com"]},{"name":"PebblePost","categories":["ad"],"domains":["*.pbbl.co"]},{"name":"DemandJump","categories":["analytics"],"domains":["*.demandjump.com"]},{"name":"Kiosked","categories":["ad"],"domains":["*.kiosked.com"]},{"name":"Ad6Media","categories":["ad"],"domains":["*.ad6media.fr"]},{"name":"The Publisher Desk","categories":["ad"],"domains":["*.206ads.com","*.publisherdesk.com"]},{"name":"Ghostery Enterprise","company":"Ghostery","categories":["marketing"],"domains":["*.betrad.com"]},{"name":"content.ad","categories":["ad"],"domains":["*.content.ad"]},{"name":"Innovid","categories":["ad"],"homepage":"https://www.innovid.com/","domains":["*.innovid.com"],"examples":["ag.innovid.com","rtr.innovid.com"]},{"name":"RightNow Service Cloud","company":"Oracle","categories":["customer-success"],"domains":["*.rightnowtech.com","*.rnengage.com"]},{"name":"Polyfill service","company":"Polyfill.io","categories":["other"],"domains":["*.polyfill.io"]},{"name":"Prezi","categories":["utility"],"domains":["*.prezi.com"]},{"name":"Sourcepoint","categories":["ad"],"domains":["*.decenthat.com","*.fallingfalcon.com","*.summerhamster.com","d2lv4zbk7v5f93.cloudfront.net","d3qxwzhswv93jk.cloudfront.net"],"examples":["www.decenthat.com","www.fallingfalcon.com","www.summerhamster.com"]},{"name":"PowerFront","categories":["hosting"],"domains":["*.inside-graph.com"]},{"name":"Bidswitch","homepage":"https://www.bidswitch.com/","categories":["ad"],"domains":["*.bidswitch.net"],"examples":["x.bidswitch.net"]},{"name":"Bet365","categories":["ad"],"domains":["*.bet365affiliates.com"]},{"name":"RichRelevance","categories":["analytics"],"domains":["*.richrelevance.com"]},{"name":"Elecard StreamEye","company":"Elecard","categories":["other"],"domains":["*.streameye.net"]},{"name":"NaviStone","categories":["ad"],"domains":["*.murdoog.com"]},{"name":"MailPlus","categories":["ad"],"domains":["*.mailplus.nl"]},{"name":"Cross Pixel Media","categories":["ad"],"domains":["*.crsspxl.com"]},{"name":"TurnTo","homepage":"https://www.turntonetworks.com/","categories":["utility"],"domains":["*.turnto.com"]},{"name":"Connexity","homepage":"http://connexity.com/","categories":["analytics"],"domains":["*.connexity.net"]},{"name":"Iterate","homepage":"https://iteratehq.com/","categories":["analytics"],"domains":["*.iteratehq.com"]},{"name":"OnScroll","categories":["ad"],"domains":["*.onscroll.com"]},{"name":"Web Dissector","company":"Beijing Gridsum Technologies","categories":["analytics"],"domains":["*.gridsumdissector.com","*.webdissector.com"],"examples":["www.webdissector.com"]},{"name":"Bluecore","categories":["analytics"],"domains":["*.bluecore.com"],"examples":["www.bluecore.com"]},{"name":"Flipboard","categories":["social"],"domains":["*.flipboard.com"]},{"name":"UPS i-parcel","company":"UPS","categories":["other"],"domains":["*.i-parcel.com"]},{"name":"TechTarget","categories":["content"],"domains":["*.techtarget.com","*.ttgtmedia.com"]},{"name":"Realytics","categories":["analytics"],"domains":["dcniko1cv0rz.cloudfront.net","*.realytics.net"]},{"name":"Dropbox","categories":["utility"],"domains":["*.dropboxusercontent.com"]},{"name":"StumbleUpon","categories":["content"],"domains":["*.stumble-upon.com","*.stumbleupon.com"]},{"name":"ReCollect","categories":["utility"],"domains":["*.recollect.net"]},{"name":"AdSpruce","categories":["ad"],"domains":["*.adspruce.com"]},{"name":"RebelMouse","categories":["ad"],"domains":["*.rebelmouse.com","*.rbl.ms"],"examples":["www.rebelmouse.com"]},{"name":"Intilery","categories":["customer-success"],"domains":["*.intilery-analytics.com"]},{"name":"Adunity","categories":["ad"],"domains":["*.adunity.com"]},{"name":"UpSellit","categories":["analytics"],"domains":["*.upsellit.com"],"examples":["www.upsellit.com"]},{"name":"AdSupply","categories":["ad"],"domains":["*.doublepimp.com"]},{"name":"Better Business Bureau","categories":["analytics"],"domains":["*.bbb.org"]},{"name":"Spot.IM","categories":["social"],"domains":["*.spot.im"]},{"name":"Improve Digital","categories":["ad"],"domains":["*.360yield.com"]},{"name":"Sociomantic Labs","company":"DunnHumby","categories":["ad"],"domains":["*.sociomantic.com"]},{"name":"MathJax","categories":["utility"],"domains":["*.mathjax.org"]},{"name":"Qualtrics","categories":["analytics"],"domains":["*.qualtrics.com"]},{"name":"ConvertMedia","categories":["ad"],"domains":["*.admailtiser.com","*.basebanner.com","*.cmbestsrv.com","*.vidfuture.com","*.zorosrv.com"],"examples":["www.cmbestsrv.com"]},{"name":"Soundest","categories":["ad"],"domains":["*.soundestlink.com","*.soundest.net"]},{"name":"Xaxis","homepage":"https://www.xaxis.com/","categories":["ad"],"domains":["*.247realmedia.com","*.mookie1.com","*.gmads.net"],"examples":["t.mookie1.com","odr.mookie1.com"]},{"name":"Research Online","company":"Skills Development Scotland","categories":["content"],"domains":["*.org.uk"],"examples":["www.researchonline.org.uk"]},{"name":"DistroScale","categories":["ad"],"domains":["*.jsrdn.com"]},{"name":"StackExchange","categories":["social"],"domains":["*.sstatic.net"]},{"name":"BuySellAds","categories":["ad"],"domains":["*.buysellads.com"]},{"name":"Reklama","categories":["ad"],"domains":["*.o2.pl","*.wp.pl"],"examples":["dot.wp.pl","px.o2.pl","px.wp.pl"]},{"name":"eGain","categories":["analytics"],"domains":["*.analytics-egain.com","*.egain.com"]},{"name":"Sonobi","categories":["ad"],"domains":["*.sonobi.com"]},{"name":"AliveChat","company":"AYU Technology Solutions","categories":["customer-success"],"domains":["*.websitealive.com","*.websitealive7.com"]},{"name":"Zolando","categories":["content"],"domains":["*.ztat.net"]},{"name":"AdCurve","categories":["ad"],"domains":["*.shop2market.com"]},{"name":"Pagefair","categories":["ad"],"domains":["*.pagefair.com","*.pagefair.net"]},{"name":"StackAdapt","categories":["ad"],"domains":["*.stackadapt.com"]},{"name":"United Internet","categories":["hosting"],"domains":["*.uicdn.com"]},{"name":"Nanorep","company":"Nanorep Technologies","categories":["customer-success"],"domains":["*.nanorep.com"]},{"name":"Fastest Forward","categories":["analytics"],"domains":["*.gaug.es"]},{"name":"Ceros","categories":["other"],"domains":["ceros.com","view.ceros.com"]},{"name":"Investis","categories":["utility"],"domains":["*.investis.com"]},{"name":"Channel.me","categories":["customer-success"],"domains":["*.channel.me"]},{"name":"ARM","categories":["analytics"],"domains":["*.tag4arm.com"]},{"name":"Webtrends","categories":["analytics"],"domains":["*.webtrends.com","*.webtrendslive.com","d1q62gfb8siqnm.cloudfront.net"]},{"name":"Scoota","categories":["ad"],"domains":["*.rockabox.co","*.scoota.co","d31i2625d5nv27.cloudfront.net","dyjnzf8evxrp2.cloudfront.net"]},{"name":"TrafficJunky","homepage":"https://www.trafficjunky.com/","categories":["ad"],"domains":["*.contentabc.com","*.trafficjunky.net"],"examples":["ads2.contentabc.com","hw-cdn.contentabc.com","media.trafficjunky.net","ads.trafficjunky.net","hw-cdn.trafficjunky.net"]},{"name":"PrintFriendly","categories":["utility"],"domains":["*.printfriendly.com"]},{"name":"Datawrapper","categories":["utility"],"domains":["*.datawrapper.de","*.dwcdn.net"],"examples":["www.datawrapper.de"]},{"name":"Click4Assistance","categories":["customer-success"],"domains":["*.click4assistance.co.uk"]},{"name":"Glassdoor","categories":["content"],"domains":["*.glassdoor.com"]},{"name":"Highwinds","categories":["utility"],"domains":["*.hwcdn.net"]},{"name":"YoYo","categories":["utility"],"domains":["*.goadservices.com"]},{"name":"Webtrekk","categories":["analytics"],"domains":["*.wbtrk.net","*.webtrekk-asia.net","*.webtrekk.net","*.wt-eu02.net"]},{"name":"Fastly Insights","homepage":"https://insights.fastlylabs.com","categories":["analytics"],"domains":["*.fastly-insights.com"],"examples":["www.fastly-insights.com"]},{"name":"HP Optimost","company":"Hewlett-Packard Development Company","categories":["marketing"],"domains":["*.hp.com","d2uncb19xzxhzx.cloudfront.net"],"examples":["by.marketinghub.hp.com","marketinghub.hp.com"]},{"name":"Eyeota","categories":["ad"],"domains":["*.eyeota.net"]},{"name":"PhotoBucket","categories":["content"],"domains":["*.photobucket.com"]},{"name":"ContextWeb","categories":["ad"],"domains":["*.contextweb.com"]},{"name":"Captify Media","categories":["ad"],"domains":["*.cpx.to"]},{"name":"Intent IQ","categories":["ad"],"domains":["*.intentiq.com"]},{"name":"Vindico","company":"Viant","categories":["ad"],"domains":["*.vindicosuite.com"]},{"name":"Pictela (AOL)","categories":["analytics"],"domains":["*.pictela.net"]},{"name":"PubNation","categories":["ad"],"domains":["*.pubnation.com"]},{"name":"Freshchat","homepage":"https://www.freshworks.com/live-chat-software/","categories":["utility"],"domains":["*.freshchat.com"]},{"name":"Bridgewell DSP","homepage":"https://www.bridgewell.com/","categories":["ad"],"domains":["*.scupio.com"],"examples":["img.scupio.com"]},{"name":"PageSense","homepage":"https://www.zoho.com/pagesense/","categories":["analytics"],"domains":["*.pagesense.io"],"examples":["cdn.pagesense.io"]},{"name":"Wicked Reports","homepage":"https://www.wickedreports.com/","categories":["marketing"],"domains":["*.wickedreports.com"],"examples":["widget.wickedreports.com"]},{"name":"Pendo","homepage":"https://www.pendo.io","categories":["analytics"],"domains":["*.pendo.io"],"examples":["app.pendo.io"]},{"name":"Dynatrace","categories":["analytics"],"domains":["*.ruxit.com","js-cdn.dynatrace.com"]},{"name":"Click Guardian","homepage":"https://www.clickguardian.co.uk/","categories":["advertising"],"domains":["*.clickguardian.app","*.clickguardian.co.uk"],"examples":["v2.clickguardian.app","protection.clickguardian.co.uk"]}];
-},{}],169:[function(require,module,exports){
+},{}],185:[function(require,module,exports){
 module.exports=require("./lib/subsets/httparchive-nostats.js");
 
-},{"./lib/subsets/httparchive-nostats.js":171}],170:[function(require,module,exports){
+},{"./lib/subsets/httparchive-nostats.js":187}],186:[function(require,module,exports){
 const DOMAIN_IN_URL_REGEX=/:\/\/(\S*?)(:\d+)?(\/|$)/;
 const DOMAIN_CHARACTERS=/([a-z0-9.-]+\.[a-z0-9]+|localhost)/i;
 const IP_REGEX=/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/;
@@ -65151,12 +67840,12 @@ return{getEntity,getRootDomain,entities};
 
 module.exports={createAPIFromDataset};
 
-},{}],171:[function(require,module,exports){
+},{}],187:[function(require,module,exports){
 const{createAPIFromDataset}=require('../create-entity-finder-api.js');
 const entities=require('../../dist/entities-httparchive-nostats.json');
 module.exports=createAPIFromDataset(entities);
 
-},{"../../dist/entities-httparchive-nostats.json":168,"../create-entity-finder-api.js":170}],172:[function(require,module,exports){
+},{"../../dist/entities-httparchive-nostats.json":184,"../create-entity-finder-api.js":186}],188:[function(require,module,exports){
 (function(setImmediate,clearImmediate){
 var nextTick=require('process/browser.js').nextTick;
 var apply=Function.prototype.apply;
@@ -65235,7 +67924,7 @@ exports.clearImmediate=typeof clearImmediate==="function"?clearImmediate:functio
 delete immediateIds[id];
 };
 }).call(this,require("timers").setImmediate,require("timers").clearImmediate);
-},{"process/browser.js":142,"timers":172}],173:[function(require,module,exports){
+},{"process/browser.js":158,"timers":188}],189:[function(require,module,exports){
 (function(global){
 
 
@@ -65306,15 +67995,15 @@ return String(val).toLowerCase()==='true';
 }
 
 }).call(this,typeof global!=="undefined"?global:typeof self!=="undefined"?self:typeof window!=="undefined"?window:{});
-},{}],174:[function(require,module,exports){
+},{}],190:[function(require,module,exports){
 arguments[4][94][0].apply(exports,arguments);
-},{"dup":94}],175:[function(require,module,exports){
+},{"dup":94}],191:[function(require,module,exports){
 arguments[4][95][0].apply(exports,arguments);
-},{"./support/isBuffer":174,"_process":142,"dup":95,"inherits":113}],176:[function(require,module,exports){
+},{"./support/isBuffer":190,"_process":158,"dup":95,"inherits":113}],192:[function(require,module,exports){
 module.exports={
-"version":"5.5.0"};
+"version":"5.7.0"};
 
-},{}],177:[function(require,module,exports){
+},{}],193:[function(require,module,exports){
 
 
 
@@ -65334,7 +68023,7 @@ require('./packs/magento.js')];
 
 module.exports=stackPacks;
 
-},{"./packs/amp.js":178,"./packs/angular.js":179,"./packs/magento.js":180,"./packs/react.js":181,"./packs/wordpress.js":182}],178:[function(require,module,exports){
+},{"./packs/amp.js":194,"./packs/angular.js":195,"./packs/magento.js":196,"./packs/react.js":197,"./packs/wordpress.js":198}],194:[function(require,module,exports){
 (function(__filename){
 
 
@@ -65382,7 +68071,7 @@ descriptions:{
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/stack-packs/packs/amp.js");
-},{"../../lighthouse-core/lib/i18n/i18n.js":67}],179:[function(require,module,exports){
+},{"../../lighthouse-core/lib/i18n/i18n.js":66}],195:[function(require,module,exports){
 (function(__filename){
 
 
@@ -65431,7 +68120,7 @@ descriptions:{
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/stack-packs/packs/angular.js");
-},{"../../lighthouse-core/lib/i18n/i18n.js":67}],180:[function(require,module,exports){
+},{"../../lighthouse-core/lib/i18n/i18n.js":66}],196:[function(require,module,exports){
 (function(__filename){
 
 
@@ -65498,7 +68187,7 @@ descriptions:{
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/stack-packs/packs/magento.js");
-},{"../../lighthouse-core/lib/i18n/i18n.js":67}],181:[function(require,module,exports){
+},{"../../lighthouse-core/lib/i18n/i18n.js":66}],197:[function(require,module,exports){
 (function(__filename){
 
 
@@ -65549,7 +68238,7 @@ descriptions:{
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/stack-packs/packs/react.js");
-},{"../../lighthouse-core/lib/i18n/i18n.js":67}],182:[function(require,module,exports){
+},{"../../lighthouse-core/lib/i18n/i18n.js":66}],198:[function(require,module,exports){
 (function(__filename){
 
 
@@ -65621,7 +68310,7 @@ descriptions:{
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/stack-packs/packs/wordpress.js");
-},{"../../lighthouse-core/lib/i18n/i18n.js":67}],183:[function(require,module,exports){
+},{"../../lighthouse-core/lib/i18n/i18n.js":66}],199:[function(require,module,exports){
 module.exports={
 "npm":{
 "angular":[
@@ -65752,7 +68441,2712 @@ module.exports={
 
 
 
-},{}],"url":[function(require,module,exports){
+},{}],"lighthouse-plugin-publisher-ads/audits/ad-blocking-tasks":[function(require,module,exports){
+(function(__filename){
+
+
+
+
+
+
+
+
+
+const AdRequestTime=require('../computed/ad-request-time');
+const i18n=require('lighthouse/lighthouse-core/lib/i18n/i18n');
+const LongTasks=require('../computed/long-tasks');
+const{auditNotApplicable}=require('../messages/common-strings');
+const{Audit}=require('lighthouse');
+const{getAttributableUrl}=require('../utils/tasks');
+const{isAdScript}=require('../utils/resource-classification');
+const{URL}=require('url');
+
+const UIStrings={
+
+title:'No long tasks blocking ad-related network requests',
+failureTitle:'Avoid long tasks that block ad-related network requests',
+description:'Tasks blocking the main thread can delay ad requests and cause '+
+'a poor user experience. Consider removing long blocking tasks or moving '+
+'them off of the main thread. These tasks can be especially detrimental to '+
+'performance on less powerful devices. [Learn more]('+
+'https://developers.google.com/publisher-ads-audits/reference/audits/ad-blocking-tasks'+
+').',
+failureDisplayValue:'{timeInMs, number, seconds} s blocked',
+columnScript:'Attributable URL',
+columnStartTime:'Start',
+columnDuration:'Duration'};
+
+
+const str_=i18n.createMessageInstanceIdFn(__filename,UIStrings);
+
+
+
+
+
+
+
+
+
+
+
+
+
+const LONG_TASK_DUR_MS=100;
+
+
+
+
+
+const HEADINGS=[
+{
+key:'script',
+itemType:'url',
+text:str_(UIStrings.columnScript)},
+
+{
+key:'startTime',
+itemType:'ms',
+text:str_(UIStrings.columnStartTime),
+granularity:1},
+
+{
+key:'duration',
+itemType:'ms',
+text:str_(UIStrings.columnDuration),
+granularity:1}];
+
+
+
+
+class AdBlockingTasks extends Audit{
+
+
+
+
+static get meta(){
+return{
+id:'ad-blocking-tasks',
+title:str_(UIStrings.title),
+failureTitle:str_(UIStrings.failureTitle),
+description:str_(UIStrings.description),
+requiredArtifacts:['traces','devtoolsLogs']};
+
+}
+
+
+
+
+
+
+
+static async audit(artifacts,context){
+const trace=artifacts.traces[Audit.DEFAULT_PASS];
+const devtoolsLog=artifacts.devtoolsLogs[Audit.DEFAULT_PASS];
+const metricData={trace,devtoolsLog,settings:context.settings};
+let longTasks=[];
+try{
+longTasks=await LongTasks.request(metricData,context);
+}catch(e){
+return auditNotApplicable.InvalidTiming;
+}
+
+if(!longTasks.length){
+return auditNotApplicable.NoTasks;
+}
+
+const{timing:endTime}=
+await AdRequestTime.request(metricData,context);
+
+if(!(endTime>0)){
+return auditNotApplicable.NoAdRelatedReq;
+}
+
+let blocking=[];
+for(const longTask of longTasks){
+if(longTask.startTime>endTime||
+longTask.duration<LONG_TASK_DUR_MS){
+continue;
+}
+const scriptUrl=getAttributableUrl(longTask);
+if(scriptUrl&&isAdScript(new URL(scriptUrl))){
+continue;
+}
+
+const url=scriptUrl&&new URL(scriptUrl);
+const displayUrl=url&&url.origin+url.pathname;
+
+blocking.push({
+
+script:displayUrl,
+startTime:longTask.startTime,
+endTime:longTask.endTime,
+duration:longTask.duration,
+isTopLevel:!longTask.parent});
+
+}
+
+const taskLimit=10;
+if(blocking.length>taskLimit){
+
+
+
+blocking=blocking.filter(b=>b.script&&b.isTopLevel).
+
+sort((a,b)=>b.duration-a.duration).
+splice(0,taskLimit).
+sort((a,b)=>a.startTime-b.startTime);
+}
+
+const blockedTime=blocking.reduce(
+(sum,t)=>t.isTopLevel?sum+t.duration:sum,0);
+const failed=blocking.length>0;
+return{
+score:failed?0:1,
+displayValue:failed?
+str_(UIStrings.failureDisplayValue,{timeInMs:blockedTime}):
+'',
+details:AdBlockingTasks.makeTableDetails(HEADINGS,blocking)};
+
+}}
+
+
+module.exports=AdBlockingTasks;
+module.exports.UIStrings=UIStrings;
+
+}).call(this,"/node_modules/lighthouse-plugin-publisher-ads/audits/ad-blocking-tasks.js");
+},{"../computed/ad-request-time":128,"../computed/long-tasks":130,"../messages/common-strings":132,"../utils/resource-classification":140,"../utils/tasks":141,"lighthouse":54,"lighthouse/lighthouse-core/lib/i18n/i18n":66,"url":"url"}],"lighthouse-plugin-publisher-ads/audits/ad-render-blocking-resources":[function(require,module,exports){
+(function(__filename){
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const i18n=require('lighthouse/lighthouse-core/lib/i18n/i18n');
+const NetworkRecords=require('lighthouse/lighthouse-core/computed/network-records');
+
+const{auditNotApplicable}=require('../messages/common-strings');
+const{Audit}=require('lighthouse');
+const{getTimingsByRecord}=require('../utils/network-timing');
+const{isAdTag}=require('../utils/resource-classification');
+const{URL}=require('url');
+
+const UIStrings={
+title:'Minimal render-blocking resources found',
+failureTitle:'Avoid render-blocking resources',
+description:'Render-blocking resources slow down tag load times. Consider '+
+'loading critical JS/CSS inline or loading scripts asynchronously or '+
+'loading the tag earlier in the head. [Learn more]('+
+'https://developers.google.com/web/tools/lighthouse/audits/blocking-resources'+
+').',
+failureDisplayValue:'Up to {timeInMs, number, seconds} s tag load time '+
+'improvement',
+columnUrl:'Resource',
+columnStartTime:'Start',
+columnDuration:'Duration'};
+
+
+
+
+
+const str_=i18n.createMessageInstanceIdFn(__filename,UIStrings);
+
+
+
+
+
+const HEADINGS=[
+{
+key:'url',
+itemType:'url',
+text:str_(UIStrings.columnUrl)},
+
+{
+key:'startTime',
+itemType:'ms',
+text:str_(UIStrings.columnStartTime),
+granularity:1},
+
+{
+key:'duration',
+itemType:'ms',
+text:str_(UIStrings.columnDuration),
+granularity:1}];
+
+
+
+
+class AdRenderBlockingResources extends Audit{
+
+
+
+
+static get meta(){
+return{
+id:'ad-render-blocking-resources',
+title:str_(UIStrings.title),
+failureTitle:str_(UIStrings.failureTitle),
+scoreDisplayMode:'binary',
+description:str_(UIStrings.description),
+requiredArtifacts:
+['LinkElements','ScriptElements','devtoolsLogs','traces']};
+
+}
+
+
+
+
+
+
+static async audit(artifacts,context){
+const devtoolsLog=artifacts.devtoolsLogs[Audit.DEFAULT_PASS];
+const trace=artifacts.traces[Audit.DEFAULT_PASS];
+const networkRecords=await NetworkRecords.request(devtoolsLog,context);
+const tag=networkRecords.find(req=>isAdTag(new URL(req.url)));
+if(!tag){
+return auditNotApplicable.NoTag;
+}
+
+
+const timingsByRecord=
+await getTimingsByRecord(trace,devtoolsLog,context);
+
+
+
+
+const blockingElementUrls=new Set();
+for(const link of artifacts.LinkElements){
+
+
+if(link.href&&link.rel=='stylesheet'){
+
+blockingElementUrls.add(link.href);
+}
+}
+for(const script of artifacts.ScriptElements){
+if(script.src&&!script.defer&&!script.async){
+blockingElementUrls.add(script.src);
+}
+}
+
+const blockingNetworkRecords=networkRecords.
+
+
+filter(r=>r.endTime<tag.startTime).
+filter(r=>r!=tag.initiatorRequest).
+
+
+
+filter(r=>r.initiator.type='parser').
+filter(r=>blockingElementUrls.has(r.url));
+
+const tableView=blockingNetworkRecords.
+map(r=>Object.assign({url:r.url},timingsByRecord.get(r)));
+
+tableView.sort((a,b)=>a.endTime-b.endTime);
+
+
+const endTimes=tableView.map(r=>r.endTime);
+const opportunity=Math.max(...endTimes)-Math.min(...endTimes);
+let displayValue='';
+if(tableView.length>0&&opportunity>0){
+displayValue=str_(
+UIStrings.failureDisplayValue,{timeInMs:opportunity});
+}
+
+const failed=tableView.length>0;
+return{
+score:failed?0:1,
+numericValue:tableView.length,
+displayValue,
+details:AdRenderBlockingResources.makeTableDetails(HEADINGS,tableView)};
+
+}}
+
+
+module.exports=AdRenderBlockingResources;
+module.exports.UIStrings=UIStrings;
+
+}).call(this,"/node_modules/lighthouse-plugin-publisher-ads/audits/ad-render-blocking-resources.js");
+},{"../messages/common-strings":132,"../utils/network-timing":138,"../utils/resource-classification":140,"lighthouse":54,"lighthouse/lighthouse-core/computed/network-records":34,"lighthouse/lighthouse-core/lib/i18n/i18n":66,"url":"url"}],"lighthouse-plugin-publisher-ads/audits/ad-request-critical-path":[function(require,module,exports){
+(function(__filename){
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const i18n=require('lighthouse/lighthouse-core/lib/i18n/i18n');
+const{auditNotApplicable}=require('../messages/common-strings');
+const{Audit}=require('lighthouse');
+const{computeAdRequestWaterfall}=require('../utils/graph');
+
+
+
+
+const UIStrings={
+title:'Ad request waterfall',
+failureTitle:'Reduce critical path for ad loading',
+description:'Consider reducing the number of resources, loading multiple '+
+'resources simultaneously, or loading resources earlier to improve ad '+
+'speed. Requests that block ad loading can be found below. [Learn more]('+
+'https://developers.google.com/publisher-ads-audits/reference/audits/ad-request-critical-path'+
+').',
+displayValue:'{serialResources, plural, =1 {1 serial resource} other {# serial resources}}',
+columnUrl:'Request',
+columnType:'Type',
+columnStartTime:'Start',
+columnEndTime:'End'};
+
+
+const str_=i18n.createMessageInstanceIdFn(__filename,UIStrings);
+
+
+
+
+
+const HEADINGS=[
+{
+key:'url',
+itemType:'url',
+text:str_(UIStrings.columnUrl)},
+
+{
+key:'type',
+itemType:'text',
+text:str_(UIStrings.columnType)},
+
+{
+key:'startTime',
+itemType:'ms',
+text:str_(UIStrings.columnStartTime),
+granularity:1},
+
+{
+key:'endTime',
+itemType:'ms',
+text:str_(UIStrings.columnEndTime),
+granularity:1}];
+
+
+
+
+
+
+
+
+function computeDepth(requests){
+let prevEnd=0;
+let hops=0;
+for(const{startTime,endTime}of requests){
+if(startTime>prevEnd){
+++hops;
+prevEnd=endTime;
+}else{
+prevEnd=Math.min(prevEnd,endTime);
+}
+}
+return hops;
+}
+
+
+
+
+
+class AdRequestCriticalPath extends Audit{
+
+
+
+
+static get meta(){
+return{
+id:'ad-request-critical-path',
+title:str_(UIStrings.title),
+failureTitle:str_(UIStrings.failureTitle),
+description:str_(UIStrings.description),
+scoreDisplayMode:'informative',
+requiredArtifacts:['devtoolsLogs','traces']};
+
+}
+
+
+
+
+
+
+static async audit(artifacts,context){
+const trace=artifacts.traces[Audit.DEFAULT_PASS];
+const devtoolsLog=artifacts.devtoolsLogs[Audit.DEFAULT_PASS];
+
+const tableView=
+(await computeAdRequestWaterfall(trace,devtoolsLog,context)).
+filter(r=>r.startTime>0);
+if(!tableView.length){
+return auditNotApplicable.NoAds;
+}
+const depth=computeDepth(tableView);
+const failed=depth>3;
+
+for(const row of tableView){
+delete row.record;
+}
+
+return{
+numericValue:depth,
+score:failed?0:1,
+displayValue:str_(UIStrings.displayValue,
+{
+serialResources:depth}),
+
+details:AdRequestCriticalPath.makeTableDetails(HEADINGS,tableView)};
+
+}}
+
+
+module.exports=AdRequestCriticalPath;
+module.exports.UIStrings=UIStrings;
+
+}).call(this,"/node_modules/lighthouse-plugin-publisher-ads/audits/ad-request-critical-path.js");
+},{"../messages/common-strings":132,"../utils/graph":137,"lighthouse":54,"lighthouse/lighthouse-core/lib/i18n/i18n":66}],"lighthouse-plugin-publisher-ads/audits/ad-request-from-page-start":[function(require,module,exports){
+(function(__filename){
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const ComputedAdRequestTime=require('../computed/ad-request-time');
+const i18n=require('lighthouse/lighthouse-core/lib/i18n/i18n');
+const{auditNotApplicable,runWarning}=require('../messages/common-strings');
+const{Audit}=require('lighthouse');
+
+const UIStrings={
+title:'First ad request time',
+failureTitle:'Reduce time to send the first ad request',
+description:'This metric measures the elapsed time from the start of page '+
+'load until the first ad request is made. Delayed ad requests will '+
+'decrease impressions and viewability, and have a negative impact on ad '+
+'revenue. [Learn more]('+
+'https://developers.google.com/publisher-ads-audits/reference/audits/metrics'+
+').',
+displayValue:'{timeInMs, number, seconds} s'};
+
+
+const str_=i18n.createMessageInstanceIdFn(__filename,UIStrings);
+
+
+const PODR=1500;
+const MEDIAN=3500;
+
+
+
+
+class AdRequestFromPageStart extends Audit{
+
+
+
+
+static get meta(){
+return{
+id:'ad-request-from-page-start',
+title:str_(UIStrings.title),
+failureTitle:str_(UIStrings.failureTitle),
+description:str_(UIStrings.description),
+
+scoreDisplayMode:Audit.SCORING_MODES.NUMERIC,
+requiredArtifacts:['devtoolsLogs','traces']};
+
+}
+
+
+
+
+
+
+static async audit(artifacts,context){
+const trace=artifacts.traces[Audit.DEFAULT_PASS];
+const devtoolsLog=artifacts.devtoolsLogs[Audit.DEFAULT_PASS];
+const metricData={trace,devtoolsLog,settings:context.settings};
+
+const{timing}=await ComputedAdRequestTime.request(metricData,context);
+if(!(timing>0)){
+context.LighthouseRunWarnings.push(runWarning.NoAds);
+return auditNotApplicable.NoAds;
+}
+
+let normalScore=Audit.computeLogNormalScore(timing,PODR,MEDIAN);
+
+
+if(normalScore>=.9){
+normalScore=1;
+}
+
+return{
+numericValue:timing*1e-3,
+score:normalScore,
+displayValue:str_(UIStrings.displayValue,{timeInMs:timing})};
+
+}}
+
+
+module.exports=AdRequestFromPageStart;
+module.exports.UIStrings=UIStrings;
+
+}).call(this,"/node_modules/lighthouse-plugin-publisher-ads/audits/ad-request-from-page-start.js");
+},{"../computed/ad-request-time":128,"../messages/common-strings":132,"lighthouse":54,"lighthouse/lighthouse-core/lib/i18n/i18n":66}],"lighthouse-plugin-publisher-ads/audits/ad-top-of-viewport":[function(require,module,exports){
+(function(__filename){
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const i18n=require('lighthouse/lighthouse-core/lib/i18n/i18n');
+const{auditNotApplicable}=require('../messages/common-strings');
+const{Audit}=require('lighthouse');
+const{isAdIframe}=require('../utils/resource-classification');
+
+const UIStrings={
+title:'No ad found at the very top of the viewport',
+failureTitle:'Move the top ad further down the page',
+description:'Over 10% of ads are never viewed because users scroll past '+
+'them before they become viewable. By moving ad slots away from the very '+
+'top of the viewport, users are more likely to see ads before scrolling '+
+'away. [Learn more]('+
+'https://developers.google.com/publisher-ads-audits/reference/audits/ad-top-of-viewport'+
+').',
+failureDisplayValue:'A scroll of {valueInPx, number} px would hide half of your topmost ad',
+columnSlot:'Top Slot ID'};
+
+
+const str_=i18n.createMessageInstanceIdFn(__filename,UIStrings);
+
+
+const SCROLL_PX_THRESHOLD=100;
+
+
+
+
+
+const HEADINGS=[
+{key:'slot',itemType:'text',text:str_(UIStrings.columnSlot)}];
+
+
+
+
+class AdTopOfViewport extends Audit{
+
+
+
+
+static get meta(){
+return{
+id:'ad-top-of-viewport',
+title:str_(UIStrings.title),
+failureTitle:str_(UIStrings.failureTitle),
+description:str_(UIStrings.description),
+requiredArtifacts:['ViewportDimensions','IFrameElements']};
+
+}
+
+
+
+
+
+
+static audit(artifacts){
+const viewport=artifacts.ViewportDimensions;
+const slots=artifacts.IFrameElements.filter(isAdIframe).
+filter(slot=>
+slot.clientRect.width*slot.clientRect.height>1&&
+!slot.isPositionFixed).
+map(slot=>({
+midpoint:slot.clientRect.top+slot.clientRect.height/2,
+id:slot.id}));
+
+
+if(!slots.length){
+return auditNotApplicable.NoVisibleSlots;
+}
+
+const topSlot=slots.reduce((a,b)=>a.midpoint<b.midpoint?a:b);
+
+const inViewport=topSlot.midpoint<viewport.innerHeight;
+
+if(!inViewport){
+return auditNotApplicable.NoAdsViewport;
+}
+
+const score=inViewport&&topSlot.midpoint<SCROLL_PX_THRESHOLD?0:1;
+
+return{
+score,
+numericValue:topSlot.midpoint,
+
+displayValue:score?'':
+str_(UIStrings.failureDisplayValue,{valueInPx:topSlot.midpoint}),
+details:AdTopOfViewport.makeTableDetails(
+HEADINGS,
+score?[]:[{slot:topSlot.id}])};
+
+
+}}
+
+
+module.exports=AdTopOfViewport;
+module.exports.UIStrings=UIStrings;
+
+}).call(this,"/node_modules/lighthouse-plugin-publisher-ads/audits/ad-top-of-viewport.js");
+},{"../messages/common-strings":132,"../utils/resource-classification":140,"lighthouse":54,"lighthouse/lighthouse-core/lib/i18n/i18n":66}],"lighthouse-plugin-publisher-ads/audits/ads-in-viewport":[function(require,module,exports){
+(function(__filename){
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const{auditNotApplicable}=require('../messages/common-strings');
+const{Audit}=require('lighthouse');
+
+const i18n=require('lighthouse/lighthouse-core/lib/i18n/i18n');
+const{isAdIframe}=require('../utils/resource-classification');
+const{isBoxInViewport}=require('../utils/geometry');
+
+const UIStrings={
+title:'Few or no ads loaded outside viewport',
+failureTitle:'Avoid loading ads until they are nearly on-screen',
+description:'Too many ads loaded outside the viewport lowers viewability '+
+'rates and impacts user experience. Consider loading ads below the fold '+
+'lazily as the user scrolls down. Consider using GPT\'s [Lazy Loading API]('+
+'https://developers.google.com/doubleclick-gpt/reference#googletag.PubAdsService_enableLazyLoad'+
+'). [Learn more]('+
+'https://developers.google.com/publisher-ads-audits/reference/audits/ads-in-viewport'+
+').',
+failureDisplayValue:'{hiddenAds, plural, =1 {1 ad} '+
+'other {# ads}} out of view',
+columnSlot:'Slots Outside Viewport'};
+
+
+const str_=i18n.createMessageInstanceIdFn(__filename,UIStrings);
+
+
+
+
+
+const HEADINGS=[
+{key:'slot',itemType:'text',text:str_(UIStrings.columnSlot)}];
+
+
+
+class AdsInViewport extends Audit{
+
+
+
+
+static get meta(){
+return{
+id:'ads-in-viewport',
+title:str_(UIStrings.title),
+failureTitle:str_(UIStrings.failureTitle),
+description:str_(UIStrings.description),
+requiredArtifacts:['ViewportDimensions','IFrameElements']};
+
+}
+
+
+
+
+
+static audit(artifacts){
+const viewport=artifacts.ViewportDimensions;
+const slots=artifacts.IFrameElements.
+filter(iframe=>isAdIframe(iframe)&&
+iframe.clientRect.height*iframe.clientRect.width>1);
+
+if(!slots.length){
+return auditNotApplicable.NoVisibleSlots;
+}
+
+
+const nonvisible=slots.
+filter(slot=>!isBoxInViewport(slot.clientRect,viewport)).
+map(slot=>({slot:slot.id})).
+sort((a,b)=>a.slot.localeCompare(b.slot));
+
+const visibleCount=slots.length-nonvisible.length;
+
+return{
+numericValue:visibleCount/slots.length,
+score:nonvisible.length>3?0:1,
+displayValue:nonvisible.length?
+str_(UIStrings.failureDisplayValue,{hiddenAds:nonvisible.length}):
+'',
+details:AdsInViewport.makeTableDetails(HEADINGS,nonvisible)};
+
+}}
+
+
+module.exports=AdsInViewport;
+module.exports.UIStrings=UIStrings;
+
+}).call(this,"/node_modules/lighthouse-plugin-publisher-ads/audits/ads-in-viewport.js");
+},{"../messages/common-strings":132,"../utils/geometry":136,"../utils/resource-classification":140,"lighthouse":54,"lighthouse/lighthouse-core/lib/i18n/i18n":66}],"lighthouse-plugin-publisher-ads/audits/async-ad-tags":[function(require,module,exports){
+(function(__filename){
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const array=require('../utils/array.js');
+const i18n=require('lighthouse/lighthouse-core/lib/i18n/i18n');
+
+const MainResource=require('lighthouse/lighthouse-core/computed/main-resource');
+const NetworkRecords=require('lighthouse/lighthouse-core/computed/network-records');
+const{auditNotApplicable}=require('../messages/common-strings');
+const{Audit}=require('lighthouse');
+const{isAdTag,isStaticRequest}=require('../utils/resource-classification');
+const{URL}=require('url');
+
+const UIStrings={
+title:'Ad tag is loaded asynchronously',
+failureTitle:'Load ad tag asynchronously',
+description:'Loading the ad tag synchronously blocks content rendering '+
+'until the tag is fetched and loaded. Consider using the `async` attribute '+
+'to load gpt.js and/or adsbygoogle.js asynchronously. [Learn more]('+
+'https://developers.google.com/publisher-ads-audits/reference/audits/async-ad-tags'+
+').'};
+
+
+const str_=i18n.createMessageInstanceIdFn(__filename,UIStrings);
+
+
+
+
+function isAsync(tagReq){
+
+
+
+
+return tagReq.priority=='Low'||isStaticRequest(tagReq);
+}
+
+
+class AsyncAdTags extends Audit{
+
+
+
+
+static get meta(){
+return{
+id:'async-ad-tags',
+title:str_(UIStrings.title),
+failureTitle:str_(UIStrings.failureTitle),
+description:str_(UIStrings.description),
+requiredArtifacts:['devtoolsLogs','URL']};
+
+}
+
+
+
+
+
+
+static async audit(artifacts,context){
+const devtoolsLog=artifacts.devtoolsLogs[Audit.DEFAULT_PASS];
+const networkRecords=await NetworkRecords.request(devtoolsLog,context);
+const mainResource=
+await MainResource.request({URL:artifacts.URL,devtoolsLog},context);
+const tagReqs=networkRecords.
+filter(req=>isAdTag(new URL(req.url))).
+filter(req=>req.frameId===mainResource.frameId);
+
+if(!tagReqs.length){
+return auditNotApplicable.NoTag;
+}
+
+const numAsync=array.count(tagReqs,isAsync);
+const numTags=tagReqs.length;
+return{
+score:Number(numAsync===numTags)};
+
+}}
+
+
+module.exports=AsyncAdTags;
+module.exports.UIStrings=UIStrings;
+
+}).call(this,"/node_modules/lighthouse-plugin-publisher-ads/audits/async-ad-tags.js");
+},{"../messages/common-strings":132,"../utils/array.js":133,"../utils/resource-classification":140,"lighthouse":54,"lighthouse/lighthouse-core/computed/main-resource":11,"lighthouse/lighthouse-core/computed/network-records":34,"lighthouse/lighthouse-core/lib/i18n/i18n":66,"url":"url"}],"lighthouse-plugin-publisher-ads/audits/bid-request-from-page-start":[function(require,module,exports){
+(function(__filename){
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const ComputedBidRequestTime=require('../computed/bid-request-time');
+const i18n=require('lighthouse/lighthouse-core/lib/i18n/i18n');
+const{auditNotApplicable}=require('../messages/common-strings');
+const{Audit}=require('lighthouse');
+
+const UIStrings={
+title:'First bid request time',
+failureTitle:'Reduce time to send the first bid request',
+description:'This metric measures the elapsed time from the start of page '+
+'load until the first bid request is made. Delayed bid requests will '+
+'decrease impressions and viewability, and have a negative impact on ad '+
+'revenue. [Learn more]('+
+'https://developers.google.com/publisher-ads-audits/reference/audits/metrics'+
+').',
+displayValue:'{timeInMs, number, seconds} s'};
+
+
+const str_=i18n.createMessageInstanceIdFn(__filename,UIStrings);
+
+
+const PODR=1500;
+const MEDIAN=3500;
+
+
+
+
+class BidRequestFromPageStart extends Audit{
+
+
+
+
+static get meta(){
+return{
+id:'bid-request-from-page-start',
+title:str_(UIStrings.title),
+failureTitle:str_(UIStrings.failureTitle),
+description:str_(UIStrings.description),
+
+scoreDisplayMode:Audit.SCORING_MODES.NUMERIC,
+requiredArtifacts:['devtoolsLogs','traces']};
+
+}
+
+
+
+
+
+
+static async audit(artifacts,context){
+const trace=artifacts.traces[Audit.DEFAULT_PASS];
+const devtoolsLog=artifacts.devtoolsLogs[Audit.DEFAULT_PASS];
+const metricData={trace,devtoolsLog,settings:context.settings};
+
+const{timing}=await ComputedBidRequestTime.request(metricData,context);
+if(!(timing>0)){
+return auditNotApplicable.NoBids;
+}
+
+let normalScore=Audit.computeLogNormalScore(timing,PODR,MEDIAN);
+
+
+if(normalScore>=.9){
+normalScore=1;
+}
+
+return{
+numericValue:timing*1e-3,
+score:normalScore,
+displayValue:str_(UIStrings.displayValue,{timeInMs:timing})};
+
+}}
+
+
+module.exports=BidRequestFromPageStart;
+module.exports.UIStrings=UIStrings;
+
+}).call(this,"/node_modules/lighthouse-plugin-publisher-ads/audits/bid-request-from-page-start.js");
+},{"../computed/bid-request-time":129,"../messages/common-strings":132,"lighthouse":54,"lighthouse/lighthouse-core/lib/i18n/i18n":66}],"lighthouse-plugin-publisher-ads/audits/blocking-load-events":[function(require,module,exports){
+(function(__filename){
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const i18n=require('lighthouse/lighthouse-core/lib/i18n/i18n');
+const NetworkRecords=require('lighthouse/lighthouse-core/computed/network-records');
+
+const TraceOfTab=require('lighthouse/lighthouse-core/computed/trace-of-tab');
+const{auditNotApplicable}=require('../messages/common-strings');
+const{Audit}=require('lighthouse');
+const{computeAdRequestWaterfall}=require('../utils/graph');
+const{getTimingsByRecord}=require('../utils/network-timing');
+
+
+
+
+const UIStrings={
+title:'Ads not blocked by load events',
+failureTitle:'Avoid waiting on load events',
+description:'Waiting on load events increases ad latency. '+
+'To speed up ads, eliminate the following load event handlers.',
+displayValue:'{timeInMs, number, seconds} s blocked',
+columnEvent:'Event Name',
+columnTime:'Event Time',
+columnScript:'Script',
+columnBlockedUrl:'Blocked URL',
+columnFunctionName:'Function'};
+
+
+const str_=i18n.createMessageInstanceIdFn(__filename,UIStrings);
+
+
+
+
+
+const HEADINGS=[
+{key:'eventName',itemType:'text',text:str_(UIStrings.columnEvent)},
+{key:'time',itemType:'ms',text:str_(UIStrings.columnTime),granularity:1},
+{key:'url',itemType:'url',text:str_(UIStrings.columnScript)},
+{key:'functionName',itemType:'text',text:str_(UIStrings.columnFunctionName)}];
+
+
+
+
+
+
+
+
+function findOriginalCallFrame(request){
+const{record}=request;
+let stack=record&&record.initiator&&record.initiator.stack;
+if(!stack){
+return undefined;
+}
+while(stack.parent){
+stack=stack.parent;
+}
+return stack.callFrames[stack.callFrames.length-1];
+}
+
+
+
+
+
+function findTraceEventOfCallFrame(callFrame,traceEvents){
+return traceEvents.find(e=>e.name=='FunctionCall'&&
+e.args.data&&
+
+e.args.data.functionName==callFrame.functionName&&
+
+e.args.data.scriptId==callFrame.scriptId&&
+
+e.args.data.url==callFrame.url&&
+
+
+Math.abs(e.args.data.lineNumber==callFrame.lineNumber)<2&&
+
+Math.abs(e.args.data.columnNumber==callFrame.columnNumber)<2);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function findEventIntervals(eventName,traceEvents){
+let openInterval={};
+const intervals=[];
+for(const e of traceEvents){
+if(e.name==`${eventName}EventStart`){
+openInterval={start:e.ts,end:Infinity,eventName};
+}else if(e.name==`${eventName}EventEnd`){
+openInterval.end=e.ts;
+intervals.push(openInterval);
+}
+}
+return intervals;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function quantifyBlockedTime(blockingEvent,networkRecords,timingsByRecord){
+const eventScript=networkRecords.find(
+r=>r.url==blockingEvent.url);
+const blockedRequest=networkRecords.find(
+r=>r.url==blockingEvent.blockedUrl);
+if(!eventScript||!blockedRequest){
+return 0;
+}
+const scriptLoadTime=timingsByRecord.get(eventScript);
+const blockedRequestLoadTime=timingsByRecord.get(blockedRequest);
+if(!scriptLoadTime||!blockedRequestLoadTime){
+return 0;
+}
+return blockedRequestLoadTime.startTime-scriptLoadTime.endTime;
+}
+
+
+
+
+
+class BlockingLoadEvents extends Audit{
+
+
+
+
+static get meta(){
+return{
+id:'blocking-load-events',
+title:str_(UIStrings.title),
+failureTitle:str_(UIStrings.failureTitle),
+description:str_(UIStrings.description),
+requiredArtifacts:['devtoolsLogs','traces']};
+
+}
+
+
+
+
+
+
+static async audit(artifacts,context){
+const trace=artifacts.traces[Audit.DEFAULT_PASS];
+const devtoolsLog=artifacts.devtoolsLogs[Audit.DEFAULT_PASS];
+const networkRecords=await NetworkRecords.request(devtoolsLog,context);
+const{timings,processEvents}=await TraceOfTab.request(trace,context);
+
+const timingsByRecord=
+await getTimingsByRecord(trace,devtoolsLog,context);
+
+const criticalRequests=
+(await computeAdRequestWaterfall(trace,devtoolsLog,context)).
+
+sort((a,b)=>a.startTime-b.startTime);
+
+if(!criticalRequests.length){
+return auditNotApplicable.NoAdRelatedReq;
+}
+
+const eventTimes=[
+...findEventIntervals('domContentLoaded',processEvents),
+...findEventIntervals('load',processEvents)];
+
+const blockingEvents=[];
+const seen=new Set();
+for(const r of criticalRequests){
+const callFrame=findOriginalCallFrame(r);
+if(!callFrame){
+
+
+continue;
+}
+const json=JSON.stringify(callFrame);
+if(seen.has(json)){
+
+continue;
+}
+seen.add(json);
+const traceEvent=findTraceEventOfCallFrame(callFrame,processEvents);
+if(!traceEvent){
+continue;
+}
+const interval=eventTimes.find(interval=>
+interval.start<=traceEvent.ts&&traceEvent.ts<=interval.end);
+if(interval){
+
+const blockingEvent=Object.assign({
+eventName:interval.eventName,
+blockedUrl:r.url,
+time:timings[interval.eventName],
+blockedTime:Infinity},
+callFrame);
+blockingEvent.blockedTime=quantifyBlockedTime(
+blockingEvent,networkRecords,timingsByRecord);
+blockingEvents.push(blockingEvent);
+}
+}
+
+const failed=blockingEvents.length>0;
+let blockedTime=0;
+if(failed){
+blockedTime=Math.min(...blockingEvents.map(e=>e.blockedTime));
+}
+return{
+numericValue:blockingEvents.length,
+score:failed?0:1,
+displayValue:failed&&blockedTime?
+str_(UIStrings.displayValue,{timeInMs:blockedTime}):
+'',
+details:BlockingLoadEvents.makeTableDetails(HEADINGS,blockingEvents)};
+
+}}
+
+
+module.exports=BlockingLoadEvents;
+module.exports.UIStrings=UIStrings;
+
+}).call(this,"/node_modules/lighthouse-plugin-publisher-ads/audits/blocking-load-events.js");
+},{"../messages/common-strings":132,"../utils/graph":137,"../utils/network-timing":138,"lighthouse":54,"lighthouse/lighthouse-core/computed/network-records":34,"lighthouse/lighthouse-core/computed/trace-of-tab":39,"lighthouse/lighthouse-core/lib/i18n/i18n":66}],"lighthouse-plugin-publisher-ads/audits/bottleneck-requests":[function(require,module,exports){
+(function(__filename){
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const i18n=require('lighthouse/lighthouse-core/lib/i18n/i18n');
+const{auditNotApplicable}=require('../messages/common-strings');
+const{Audit}=require('lighthouse');
+const{computeAdRequestWaterfall}=require('../utils/graph');
+
+
+
+
+const UIStrings={
+title:'No bottleneck requests found',
+failureTitle:'Avoid bottleneck requests',
+description:'Speed up, load earlier, parallelize, or eliminate the '+
+'following requests and their dependencies in order to speed up ad '+
+'loading.',
+displayValue:'{blockedTime, number, seconds} s spent blocked on requests',
+columnUrl:'Blocking Request',
+columnInitiatorUrl:'Initiator Request',
+columnStartTime:'Start',
+columnSelfTime:'Exclusive Time',
+columnDuration:'Total Time'};
+
+
+const str_=i18n.createMessageInstanceIdFn(__filename,UIStrings);
+
+
+
+
+
+
+const HEADINGS=[
+{
+key:'url',
+itemType:'url',
+text:str_(UIStrings.columnUrl)},
+
+{
+key:'selfTime',
+itemType:'ms',
+text:str_(UIStrings.columnSelfTime),
+granularity:1},
+
+{
+key:'duration',
+itemType:'ms',
+text:str_(UIStrings.columnDuration),
+granularity:1}];
+
+
+
+
+
+
+
+class BottleneckRequests extends Audit{
+
+
+
+
+static get meta(){
+return{
+id:'bottleneck-requests',
+title:str_(UIStrings.title),
+failureTitle:str_(UIStrings.failureTitle),
+description:str_(UIStrings.description),
+requiredArtifacts:['devtoolsLogs','traces']};
+
+}
+
+
+
+
+
+
+static async audit(artifacts,context){
+const trace=artifacts.traces[Audit.DEFAULT_PASS];
+const devtoolsLog=artifacts.devtoolsLogs[Audit.DEFAULT_PASS];
+
+const waterfall=
+(await computeAdRequestWaterfall(trace,devtoolsLog,context)).
+filter(r=>r.startTime>0);
+if(!waterfall.length){
+return auditNotApplicable.NoAdRelatedReq;
+}
+const CRITICAL_SELF_TIME_MS=250;
+const CRITICAL_DURATION_MS=1000;
+
+const isBottleneck=r=>
+r.selfTime>CRITICAL_SELF_TIME_MS||r.duration>CRITICAL_DURATION_MS;
+
+
+const cost=r=>r.selfTime*3+r.duration;
+const criticalRequests=waterfall.
+filter(isBottleneck).
+sort((a,b)=>cost(b)-cost(a)).
+
+slice(0,5);
+const blockedTime=
+
+criticalRequests.reduce((sum,r)=>sum+r.selfTime,0)/1000;
+const failed=blockedTime*1e3>CRITICAL_SELF_TIME_MS*4;
+
+for(const row of criticalRequests){
+delete row.record;
+}
+return{
+numericValue:criticalRequests.length,
+score:failed?0:1,
+displayValue:failed?str_(UIStrings.displayValue,{blockedTime}):'',
+details:
+BottleneckRequests.makeTableDetails(HEADINGS,criticalRequests)};
+
+}}
+
+
+module.exports=BottleneckRequests;
+module.exports.UIStrings=UIStrings;
+
+}).call(this,"/node_modules/lighthouse-plugin-publisher-ads/audits/bottleneck-requests.js");
+},{"../messages/common-strings":132,"../utils/graph":137,"lighthouse":54,"lighthouse/lighthouse-core/lib/i18n/i18n":66}],"lighthouse-plugin-publisher-ads/audits/duplicate-tags":[function(require,module,exports){
+(function(__filename){
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const i18n=require('lighthouse/lighthouse-core/lib/i18n/i18n');
+const NetworkRecords=require('lighthouse/lighthouse-core/computed/network-records');
+const{auditNotApplicable}=require('../messages/common-strings');
+const{Audit}=require('lighthouse');
+const{containsAnySubstring}=require('../utils/resource-classification');
+const{URL}=require('url');
+
+const UIStrings={
+title:'No duplicate tags found in any frame',
+failureTitle:'Load tags only once per frame',
+description:'Loading a tag more than once in the same frame is redundant '+
+'and adds overhead without benefit. [Learn more]('+
+'https://developers.google.com/publisher-ads-audits/reference/audits/duplicate-tags'+
+').',
+failureDisplayValue:'{duplicateTags, plural, =1 {1 duplicate tag} other {# duplicate tags}}',
+columnScript:'Script',
+columnNumReqs:'Duplicate Requests',
+columnFrameId:'Frame ID'};
+
+
+const str_=i18n.createMessageInstanceIdFn(__filename,UIStrings);
+
+const tags=[
+'googletagservices.com/tag/js/gpt.js',
+'securepubads.g.doubleclick.net/tag/js/gpt.js',
+'pagead2.googlesyndication.com/pagead/js/adsbygoogle.js',
+'imasdk.googleapis.com/js/sdkloader/ima3.js',
+'google-analytics.com/analytics.js'];
+
+
+
+
+
+
+const HEADINGS=[
+{key:'script',itemType:'url',text:str_(UIStrings.columnScript)},
+{key:'numReqs',itemType:'text',text:str_(UIStrings.columnNumReqs)},
+{key:'frameId',itemType:'text',text:str_(UIStrings.columnFrameId)}];
+
+
+
+
+
+class DuplicateTags extends Audit{
+
+
+
+
+static get meta(){
+return{
+id:'duplicate-tags',
+title:str_(UIStrings.title),
+failureTitle:str_(UIStrings.failureTitle),
+description:str_(UIStrings.description),
+requiredArtifacts:['devtoolsLogs']};
+
+}
+
+
+
+
+
+
+static async audit(artifacts,context){
+const devtoolsLogs=artifacts.devtoolsLogs[Audit.DEFAULT_PASS];
+const networkRecords=await NetworkRecords.request(devtoolsLogs,context);
+const tagReqs=networkRecords.
+filter(record=>containsAnySubstring(record.url,tags));
+
+if(!tagReqs.length){
+return auditNotApplicable.NoTags;
+}
+
+const tagsByFrame={};
+tagReqs.forEach(record=>{
+const frameId=record.frameId||'';
+
+const script=new URL(record.url).pathname;
+if(!tagsByFrame[frameId]){
+tagsByFrame[frameId]={};
+}
+tagsByFrame[frameId][script]=
+tagsByFrame[frameId][script]?tagsByFrame[frameId][script]+1:1;
+});
+
+
+const dups=[];
+for(const frameId of Object.keys(tagsByFrame)){
+for(const script of Object.keys(tagsByFrame[frameId])){
+const numReqs=tagsByFrame[frameId][script];
+if(numReqs>1){
+dups.push({script,numReqs,frameId});
+}
+}
+}
+
+return{
+numericValue:dups.length,
+score:dups.length?0:1,
+details:DuplicateTags.makeTableDetails(HEADINGS,dups),
+displayValue:dups.length?
+str_(UIStrings.failureDisplayValue,{duplicateTags:dups.length}):
+''};
+
+}}
+
+
+module.exports=DuplicateTags;
+module.exports.UIStrings=UIStrings;
+
+}).call(this,"/node_modules/lighthouse-plugin-publisher-ads/audits/duplicate-tags.js");
+},{"../messages/common-strings":132,"../utils/resource-classification":140,"lighthouse":54,"lighthouse/lighthouse-core/computed/network-records":34,"lighthouse/lighthouse-core/lib/i18n/i18n":66,"url":"url"}],"lighthouse-plugin-publisher-ads/audits/first-ad-render":[function(require,module,exports){
+(function(__filename){
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const ComputedAdRenderTime=require('../computed/ad-render-time');
+const i18n=require('lighthouse/lighthouse-core/lib/i18n/i18n');
+const{auditNotApplicable,runWarning}=require('../messages/common-strings');
+const{Audit}=require('lighthouse');
+
+const UIStrings={
+title:'Latency of first ad render',
+failureTitle:'Reduce time to render first ad',
+description:'This metric measures the time for the first ad iframe to '+
+'render from page navigation. [Learn more]('+
+'https://developers.google.com/publisher-ads-audits/reference/audits/metrics'+
+').',
+displayValue:'{timeInMs, number, seconds} s'};
+
+
+const str_=i18n.createMessageInstanceIdFn(__filename,UIStrings);
+
+
+const PODR=2700;
+const MEDIAN=3700;
+
+
+
+
+class FirstAdRender extends Audit{
+
+
+
+
+static get meta(){
+
+return{
+id:'first-ad-render',
+title:str_(UIStrings.title),
+failureTitle:str_(UIStrings.failureTitle),
+description:str_(UIStrings.description),
+
+scoreDisplayMode:Audit.SCORING_MODES.NUMERIC,
+
+requiredArtifacts:['devtoolsLogs','traces']};
+
+}
+
+
+
+
+
+static async audit(artifacts,context){
+const trace=artifacts.traces[Audit.DEFAULT_PASS];
+const devtoolsLog=artifacts.devtoolsLogs[Audit.DEFAULT_PASS];
+const metricData={
+devtoolsLog,
+trace,
+settings:context.settings};
+
+const{timing}=await ComputedAdRenderTime.request(metricData,context);
+
+if(!(timing>0)){
+context.LighthouseRunWarnings.push(runWarning.NoAdRendered);
+return auditNotApplicable.NoAdRendered;
+}
+
+let normalScore=
+Audit.computeLogNormalScore(timing,PODR,MEDIAN);
+if(normalScore>=0.9)normalScore=1;
+
+return{
+numericValue:timing*1e-3,
+score:normalScore,
+displayValue:
+str_(UIStrings.displayValue,{timeInMs:timing})};
+
+}}
+
+module.exports=FirstAdRender;
+module.exports.UIStrings=UIStrings;
+
+}).call(this,"/node_modules/lighthouse-plugin-publisher-ads/audits/first-ad-render.js");
+},{"../computed/ad-render-time":127,"../messages/common-strings":132,"lighthouse":54,"lighthouse/lighthouse-core/lib/i18n/i18n":66}],"lighthouse-plugin-publisher-ads/audits/full-width-slots":[function(require,module,exports){
+(function(__filename){
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const i18n=require('lighthouse/lighthouse-core/lib/i18n/i18n');
+const NetworkRecords=require('lighthouse/lighthouse-core/computed/network-records');
+const{auditNotApplicable}=require('../messages/common-strings');
+const{Audit}=require('lighthouse');
+const{isAdRequest}=require('../utils/resource-classification');
+const{URL}=require('url');
+
+const UIStrings={
+title:'Ad slots effectively use horizontal space',
+failureTitle:'Increase the width of ad slots',
+description:'Ad slots that utilize most of the page width generally '+
+'experience increased click-through rate over smaller ad sizes. We '+
+'recommend leaving no more than 25% of the viewport width unutilized on '+
+'mobile devices.',
+failureDisplayValue:'{percentUnused, number, percent} of viewport width '+
+'is underutilized'};
+
+
+const str_=i18n.createMessageInstanceIdFn(__filename,UIStrings);
+
+
+class FullWidthSlots extends Audit{
+
+
+
+
+static get meta(){
+return{
+id:'full-width-slots',
+title:str_(UIStrings.title),
+failureTitle:str_(UIStrings.failureTitle),
+description:str_(UIStrings.description),
+requiredArtifacts:['ViewportDimensions','devtoolsLogs']};
+
+}
+
+
+
+
+
+
+static async audit(artifacts,context){
+const devtoolsLogs=artifacts.devtoolsLogs[Audit.DEFAULT_PASS];
+const networkRecords=await NetworkRecords.request(devtoolsLogs,context);
+const viewport=artifacts.ViewportDimensions;
+const vpWidth=viewport.innerWidth;
+
+
+const adRequestUrls=networkRecords.
+filter(isAdRequest).
+map(record=>new URL(record.url));
+
+if(!adRequestUrls.length){
+return auditNotApplicable.NoAds;
+}
+
+const sizeArrs=adRequestUrls.map(url=>
+url.searchParams.get('prev_iu_szs')||url.searchParams.get('sz'));
+
+
+
+const sizes=sizeArrs.join('|').split(/[|,]/);
+
+const widths=sizes.map(size=>parseInt(size.split('x')[0])).
+filter(w=>w<=vpWidth&&w>1);
+
+if(!widths.length){
+return auditNotApplicable.NoValidAdWidths;
+}
+
+const maxWidth=Math.max(...widths);
+
+const pctUnoccupied=1-maxWidth/vpWidth;
+
+const score=pctUnoccupied>.25?0:1;
+
+
+return{
+score,
+numericValue:pctUnoccupied,
+
+displayValue:score?
+'':
+str_(UIStrings.failureDisplayValue,{percentUnused:pctUnoccupied})};
+
+}}
+
+
+module.exports=FullWidthSlots;
+module.exports.UIStrings=UIStrings;
+
+}).call(this,"/node_modules/lighthouse-plugin-publisher-ads/audits/full-width-slots.js");
+},{"../messages/common-strings":132,"../utils/resource-classification":140,"lighthouse":54,"lighthouse/lighthouse-core/computed/network-records":34,"lighthouse/lighthouse-core/lib/i18n/i18n":66,"url":"url"}],"lighthouse-plugin-publisher-ads/audits/gpt-bids-parallel":[function(require,module,exports){
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const NetworkRecords=require('lighthouse/lighthouse-core/computed/network-records');
+const{assert}=require('../utils/asserts');
+const{auditNotApplicable}=require('../messages/common-strings');
+const{Audit}=require('lighthouse');
+const{getCriticalGraph}=require('../utils/graph');
+const{getTimingsByRecord}=require('../utils/network-timing');
+const{isGptImplTag,isBidRequest,getAbbreviatedUrl,getHeaderBidder}=require('../utils/resource-classification');
+
+
+
+
+const id='gpt-bids-parallel';
+const UIStrings={
+title:'GPT and bids loaded in parallel',
+failureTitle:'Load GPT and bids in parallel',
+description:'To optimize ad loading, bid requests should not wait on GPT to load. This issue can often be fixed by making sure that bid requests do not wait on `googletag.pubadsReady` or `googletag.cmd.push`.',
+columnBidder:'Bidder',
+columnUrl:'URL',
+columnStartTime:'Start',
+columnDuration:'Duration'};
+
+
+
+
+
+
+const HEADINGS=[
+{key:'bidder',itemType:'text',text:UIStrings.columnBidder},
+{key:'url',itemType:'url',text:UIStrings.columnUrl},
+{key:'startTime',itemType:'ms',text:UIStrings.columnStartTime},
+{key:'duration',itemType:'ms',text:UIStrings.columnDuration}];
+
+
+
+
+
+class GptBidsInParallel extends Audit{
+
+
+
+
+static get meta(){
+return{
+id,
+title:UIStrings.title,
+failureTitle:UIStrings.failureTitle,
+description:UIStrings.description,
+requiredArtifacts:['devtoolsLogs','traces']};
+
+}
+
+
+
+
+
+
+static async audit(artifacts,context){
+const devtoolsLog=artifacts.devtoolsLogs[Audit.DEFAULT_PASS];
+const trace=artifacts.traces[Audit.DEFAULT_PASS];
+const network=await NetworkRecords.request(devtoolsLog,context);
+
+const pubadsImpl=network.find(r=>isGptImplTag(r.url));
+if(!pubadsImpl){
+return auditNotApplicable.NoGpt;
+}
+
+const bids=network.filter(isBidRequest).
+filter(b=>b.frameId==pubadsImpl.frameId);
+if(!bids.length){
+return auditNotApplicable.NoBids;
+}
+
+
+const timingsByRecord=await getTimingsByRecord(
+trace,devtoolsLog,context);
+const tableView=[];
+const seen=new Set();
+for(const bid of bids){
+if(getCriticalGraph(network,trace.traceEvents,bid).has(pubadsImpl)){
+const{startTime,endTime}=timingsByRecord.get(bid)||bid;
+const bidder=assert(getHeaderBidder(bid.url));
+if(seen.has(bidder)){
+
+
+continue;
+}
+seen.add(bidder);
+tableView.push({
+bidder,
+url:getAbbreviatedUrl(bid.url),
+startTime,
+duration:endTime-startTime});
+
+}
+}
+const failed=tableView.length>0;
+return{
+numericValue:tableView.length,
+score:failed?0:1,
+details:failed?
+GptBidsInParallel.makeTableDetails(HEADINGS,tableView):undefined};
+
+}}
+
+
+module.exports=GptBidsInParallel;
+module.exports.UIStrings=UIStrings;
+
+},{"../messages/common-strings":132,"../utils/asserts":134,"../utils/graph":137,"../utils/network-timing":138,"../utils/resource-classification":140,"lighthouse":54,"lighthouse/lighthouse-core/computed/network-records":34}],"lighthouse-plugin-publisher-ads/audits/loads-ad-tag-over-https":[function(require,module,exports){
+(function(__filename){
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const i18n=require('lighthouse/lighthouse-core/lib/i18n/i18n');
+const NetworkRecords=require('lighthouse/lighthouse-core/computed/network-records');
+const{auditNotApplicable}=require('../messages/common-strings');
+const{Audit}=require('lighthouse');
+const{isAdTag}=require('../utils/resource-classification');
+const{URL}=require('url');
+
+const UIStrings={
+title:'Ad tag is loaded over HTTPS',
+failureTitle:'Load ad tag over HTTPS',
+description:'For privacy and security, always load GPT/AdSense over '+
+'HTTPS. Insecure pages should explicitly request the ad script securely. '+
+'GPT Example: `<script async '+
+'src=\"https://securepubads.g.doubleclick.net/tag/js/gpt.js\">` '+
+'AdSense Example: `<script async '+
+'src=\"https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js\">`'+
+'. [Learn more]('+
+'https://developers.google.com/publisher-ads-audits/reference/audits/loads-ad-tag-over-https'+
+').'};
+
+
+const str_=i18n.createMessageInstanceIdFn(__filename,UIStrings);
+
+
+
+
+
+
+
+class LoadsAdTagOverHttps extends Audit{
+
+
+
+
+static get meta(){
+return{
+id:'loads-ad-tag-over-https',
+title:str_(UIStrings.title),
+failureTitle:str_(UIStrings.failureTitle),
+description:str_(UIStrings.description),
+requiredArtifacts:['devtoolsLogs']};
+
+}
+
+
+
+
+
+
+static async audit(artifacts,context){
+const devtoolsLogs=artifacts.devtoolsLogs[Audit.DEFAULT_PASS];
+const networkRecords=await NetworkRecords.request(devtoolsLogs,context);
+
+const pageReq=networkRecords.find(record=>record.statusCode==200);
+if(!pageReq){
+return auditNotApplicable.NoRecords;
+}
+
+const adRequests=networkRecords.
+filter(record=>isAdTag(new URL(record.url)));
+
+const secureAdRequests=adRequests.filter(request=>request.isSecure);
+
+
+const details={
+type:'debugdata',
+numAdTagHttpReqs:adRequests.length-secureAdRequests.length,
+numAdTagHttpsReqs:secureAdRequests.length};
+
+
+if(!adRequests.length){
+const returnVal=auditNotApplicable.NoTag;
+returnVal.details=details;
+return returnVal;
+}
+
+
+
+return{
+numericValue:details.numAdTagHttpReqs,
+score:details.numAdTagHttpReqs?0:1,
+details};
+
+}}
+
+
+module.exports=LoadsAdTagOverHttps;
+module.exports.UIStrings=UIStrings;
+
+}).call(this,"/node_modules/lighthouse-plugin-publisher-ads/audits/loads-ad-tag-over-https.js");
+},{"../messages/common-strings":132,"../utils/resource-classification":140,"lighthouse":54,"lighthouse/lighthouse-core/computed/network-records":34,"lighthouse/lighthouse-core/lib/i18n/i18n":66,"url":"url"}],"lighthouse-plugin-publisher-ads/audits/loads-gpt-from-sgdn":[function(require,module,exports){
+(function(__filename){
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const i18n=require('lighthouse/lighthouse-core/lib/i18n/i18n');
+const NetworkRecords=require('lighthouse/lighthouse-core/computed/network-records');
+const{auditNotApplicable}=require('../messages/common-strings');
+const{Audit}=require('lighthouse');
+const{isGptTag}=require('../utils/resource-classification');
+const{URL}=require('url');
+
+const UIStrings={
+title:'GPT tag is loaded from recommended host',
+failureTitle:'Load GPT from recommended host',
+description:'Load GPT from \'securepubads.g.doubleclick.net\' to reduce '+
+'GPT load time. By loading GPT from the same host as ad requests, browsers '+
+'can avoid an additional DNS lookup and HTTP connection. Example:`'+
+'<script async src=\"https://securepubads.g.doubleclick.net/tag/js/gpt.js\">'+
+'`. [Learn more]('+
+'https://developers.google.com/publisher-ads-audits/reference/audits/loads-gpt-from-sgdn'+
+').'};
+
+
+const str_=i18n.createMessageInstanceIdFn(__filename,UIStrings);
+
+
+
+
+class LoadsGptFromSgdn extends Audit{
+
+
+
+
+static get meta(){
+return{
+id:'loads-gpt-from-sgdn',
+title:str_(UIStrings.title),
+failureTitle:str_(UIStrings.failureTitle),
+description:str_(UIStrings.description),
+requiredArtifacts:['devtoolsLogs']};
+
+}
+
+
+
+
+
+
+static async audit(artifacts,context){
+const devtoolsLog=artifacts.devtoolsLogs[Audit.DEFAULT_PASS];
+const networkRecords=await NetworkRecords.request(devtoolsLog,context);
+const gptUrl=networkRecords.map(r=>new URL(r.url)).find(isGptTag);
+if(!gptUrl){
+return auditNotApplicable.NoGpt;
+}
+return{
+score:Number(gptUrl.host==='securepubads.g.doubleclick.net')};
+
+}}
+
+
+module.exports=LoadsGptFromSgdn;
+module.exports.UIStrings=UIStrings;
+
+}).call(this,"/node_modules/lighthouse-plugin-publisher-ads/audits/loads-gpt-from-sgdn.js");
+},{"../messages/common-strings":132,"../utils/resource-classification":140,"lighthouse":54,"lighthouse/lighthouse-core/computed/network-records":34,"lighthouse/lighthouse-core/lib/i18n/i18n":66,"url":"url"}],"lighthouse-plugin-publisher-ads/audits/script-injected-tags":[function(require,module,exports){
+(function(__filename){
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const array=require('../utils/array.js');
+const i18n=require('lighthouse/lighthouse-core/lib/i18n/i18n');
+const PageDependencyGraph=require('lighthouse/lighthouse-core/computed/page-dependency-graph');
+const{auditNotApplicable}=require('../messages/common-strings');
+const{Audit}=require('lighthouse');
+const{computeAdRequestWaterfall}=require('../utils/graph');
+const{getScriptEvaluationTimes}=require('../utils/network-timing');
+
+
+
+
+
+
+const MINIMUM_LOAD_TIME_MS=400;
+
+const UIStrings={
+title:'Ad scripts are loaded statically',
+failureTitle:'Load ad scripts statically',
+description:'Load the following scripts directly with '+
+'`<script async src=...>` instead of injecting scripts with JavaScript. '+
+'Doing so allows the browser to preload scripts sooner. [Learn more]('+
+'https://developers.google.com/publisher-ads-audits/reference/audits/script-injected-tags'+
+').',
+failureDisplayValue:'Load {tags, plural, =1 {1 script} other {# scripts}} statically',
+columnUrl:'Script',
+columnLoadTime:'Load Time'};
+
+
+const str_=i18n.createMessageInstanceIdFn(__filename,UIStrings);
+
+
+
+
+
+const HEADINGS=[
+{
+key:'url',
+itemType:'url',
+text:str_(UIStrings.columnUrl)},
+
+{
+key:'loadTime',
+itemType:'ms',
+granularity:1,
+text:str_(UIStrings.columnLoadTime)}];
+
+
+
+const STATICALLY_LOADABLE_TAGS=[
+/amazon-adsystem\.com\/aax2\/apstag.js/,
+/js-sec\.indexww\.com\/ht\/p\/.*\.js/,
+/pubads\.g\.doubleclick\.net\/tag\/js\/gpt\.js/,
+/static\.criteo\.net\/js\/.*\/publishertag\.js/,
+/www\.googletagservices\.com\/tag\/js\/gpt\.js/,
+/pagead2\.googlesyndication\.com\/pagead\/js\/adsbygoogle\.js/];
+
+
+
+
+
+
+
+
+
+
+function initiatedByInlineScript(record){
+if(record.initiator.type!=='script'){
+
+return false;
+}
+const initiators=PageDependencyGraph.getNetworkInitiators(record);
+if(initiators.length!==1||initiators[0]!==record.documentURL){
+
+return false;
+}
+return true;
+}
+
+
+
+
+
+
+
+async function findStaticallyLoadableTags(artifacts,context){
+const devtoolsLog=artifacts.devtoolsLogs[Audit.DEFAULT_PASS];
+const trace=artifacts.traces[Audit.DEFAULT_PASS];
+
+const tagReqs=[];
+
+
+
+const criticalRequests=
+await computeAdRequestWaterfall(trace,devtoolsLog,context);
+for(const{record}of criticalRequests){
+if(record.resourceType!=='Script'){
+
+continue;
+}
+if(initiatedByInlineScript(record)||
+STATICALLY_LOADABLE_TAGS.find(t=>record.url.match(t))){
+tagReqs.push(record);
+}
+}
+return tagReqs;
+}
+
+
+class StaticAdTags extends Audit{
+
+
+
+
+static get meta(){
+return{
+id:'script-injected-tags',
+title:str_(UIStrings.title),
+failureTitle:str_(UIStrings.failureTitle),
+description:str_(UIStrings.description),
+requiredArtifacts:['devtoolsLogs','traces']};
+
+}
+
+
+
+
+
+
+static async audit(artifacts,context){
+const tagReqs=await findStaticallyLoadableTags(artifacts,context);
+if(!tagReqs.length){
+return auditNotApplicable.NoTag;
+}
+
+const seenUrls=new Set();
+const tableView=[];
+
+const devtoolsLog=artifacts.devtoolsLogs[Audit.DEFAULT_PASS];
+const trace=artifacts.traces[Audit.DEFAULT_PASS];
+const scriptTimes=
+await getScriptEvaluationTimes(trace,devtoolsLog,context);
+for(const tag of tagReqs){
+if(seenUrls.has(tag.url))continue;
+seenUrls.add(tag.url);
+const relatedTags=tagReqs.filter(t=>t.url===tag.url);
+
+const numStatic=array.count(
+relatedTags,t=>t.initiator.type==='parser'&&!t.isLinkPreload);
+if(numStatic===0){
+const loadTime=scriptTimes.get(tag.url)||0;
+if(loadTime<MINIMUM_LOAD_TIME_MS){
+continue;
+}
+tableView.push({
+url:tag.url,
+loadTime});
+
+}
+}
+tableView.sort((a,b)=>a.loadTime-b.loadTime);
+
+const failed=tableView.length>0;
+return{
+displayValue:failed?
+str_(UIStrings.failureDisplayValue,{tags:tableView.length}):'',
+score:Number(!failed),
+numericValue:tableView.length,
+details:StaticAdTags.makeTableDetails(HEADINGS,tableView)};
+
+}}
+
+
+module.exports=StaticAdTags;
+module.exports.UIStrings=UIStrings;
+
+}).call(this,"/node_modules/lighthouse-plugin-publisher-ads/audits/script-injected-tags.js");
+},{"../messages/common-strings":132,"../utils/array.js":133,"../utils/graph":137,"../utils/network-timing":138,"lighthouse":54,"lighthouse/lighthouse-core/computed/page-dependency-graph":35,"lighthouse/lighthouse-core/lib/i18n/i18n":66}],"lighthouse-plugin-publisher-ads/audits/serial-header-bidding":[function(require,module,exports){
+(function(__filename){
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const ComputedAdRequestTime=require('../computed/ad-request-time');
+const i18n=require('lighthouse/lighthouse-core/lib/i18n/i18n');
+const NetworkRecords=require('lighthouse/lighthouse-core/computed/network-records');
+const{auditNotApplicable}=require('../messages/common-strings');
+const{Audit}=require('lighthouse');
+const{bucket}=require('../utils/array');
+const{getTimingsByRecord}=require('../utils/network-timing');
+const{isCacheable}=require('../utils/network');
+const{isGoogleAds,getHeaderBidder,getAbbreviatedUrl}=require('../utils/resource-classification');
+const{URL}=require('url');
+
+
+
+
+const UIStrings={
+title:'Header bidding is parallelized',
+failureTitle:'Parallelize bid requests',
+description:'Send header bidding requests simultaneously, rather than '+
+'serially, to retrieve bids more quickly. [Learn more]('+
+'https://developers.google.com/publisher-ads-audits/reference/audits/serial-header-bidding'+
+').',
+columnBidder:'Bidder',
+columnUrl:'URL',
+columnStartTime:'Start',
+columnDuration:'Duration'};
+
+
+const str_=i18n.createMessageInstanceIdFn(__filename,UIStrings);
+
+
+const MIN_BID_DURATION=.05;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const HEADINGS=[
+{key:'bidder',itemType:'text',text:str_(UIStrings.columnBidder)},
+{key:'url',itemType:'url',text:str_(UIStrings.columnUrl)},
+{key:'startTime',itemType:'ms',text:str_(UIStrings.columnStartTime)},
+{key:'duration',itemType:'ms',text:str_(UIStrings.columnDuration)}];
+
+
+
+
+
+
+
+const RequestType={
+AD:'ad',
+BID:'bid',
+UNKNOWN:'unknown'};
+
+
+
+
+
+
+
+
+
+function constructRecords(records,recordType,timings){
+
+const results=[];
+for(const record of records){
+const timing=timings.get(record);
+if(!timing)continue;
+results.push(Object.assign({},timing,{
+url:getAbbreviatedUrl(record.url),
+type:recordType}));
+
+}
+return results;
+}
+
+
+
+
+
+
+function checkRecordType(record){
+if(isGoogleAds(new URL(record.url))){
+return RequestType.AD;
+}else if(getHeaderBidder(record.url)){
+return RequestType.BID;
+}else{
+return RequestType.UNKNOWN;
+}
+}
+
+
+
+
+
+
+
+function isPossibleBid(rec){
+return(rec.resourceSize==null||rec.resourceSize>0)&&
+rec.resourceType!='Image'&&
+rec.endTime-rec.startTime>=MIN_BID_DURATION&&
+!isCacheable(rec);
+}
+
+
+
+
+
+
+function clearQueryString(url){
+const u=new URL(url);
+delete u.search;
+return u.toString();
+}
+
+
+
+
+
+class SerialHeaderBidding extends Audit{
+
+
+
+
+static get meta(){
+return{
+id:'serial-header-bidding',
+title:str_(UIStrings.title),
+failureTitle:str_(UIStrings.failureTitle),
+description:str_(UIStrings.description),
+requiredArtifacts:['devtoolsLogs','traces']};
+
+}
+
+
+
+
+
+
+static async audit(artifacts,context){
+const devtoolsLog=artifacts.devtoolsLogs[Audit.DEFAULT_PASS];
+const trace=artifacts.traces[Audit.DEFAULT_PASS];
+const unfilteredNetworkRecords=
+await NetworkRecords.request(devtoolsLog,context);
+if(!unfilteredNetworkRecords.length){
+return auditNotApplicable.NoRecords;
+}
+
+const mainFrameId=unfilteredNetworkRecords[0].frameId;
+
+
+
+const networkRecords=unfilteredNetworkRecords.
+filter(isPossibleBid).
+filter(r=>r.frameId==mainFrameId);
+
+
+
+
+
+
+
+const recordsByType=bucket(networkRecords,checkRecordType);
+
+if(!recordsByType.has(RequestType.BID)){
+return auditNotApplicable.NoBids;
+}
+
+const metricData={trace,devtoolsLog,settings:context.settings};
+const{timing:adRequestTime}=
+await ComputedAdRequestTime.request(metricData,context);
+
+
+const timingsByRecord=await getTimingsByRecord(
+trace,devtoolsLog,context);
+
+const headerBiddingRecords=constructRecords(
+recordsByType.get(RequestType.BID)||[],RequestType.BID,
+timingsByRecord);
+
+let serialBids=[];
+let previousBid;
+
+
+for(const record of headerBiddingRecords){
+
+
+if(adRequestTime>0&&record.endTime>adRequestTime){
+continue;
+}
+record.bidder=getHeaderBidder(record.url);
+record.url=clearQueryString(record.url);
+
+if(previousBid&&record.startTime>=previousBid.endTime){
+serialBids.push(previousBid);
+serialBids.push(record);
+}
+
+if(!previousBid||record.endTime<previousBid.endTime||
+
+record.startTime>=previousBid.endTime){
+previousBid=record;
+}
+}
+
+
+serialBids=Array.from(new Set(serialBids));
+
+
+const hasSerialHeaderBidding=serialBids.length>1;
+return{
+numericValue:Number(hasSerialHeaderBidding),
+score:hasSerialHeaderBidding?0:1,
+details:hasSerialHeaderBidding?
+SerialHeaderBidding.makeTableDetails(HEADINGS,serialBids):undefined};
+
+}}
+
+
+module.exports=SerialHeaderBidding;
+module.exports.UIStrings=UIStrings;
+
+}).call(this,"/node_modules/lighthouse-plugin-publisher-ads/audits/serial-header-bidding.js");
+},{"../computed/ad-request-time":128,"../messages/common-strings":132,"../utils/array":133,"../utils/network":139,"../utils/network-timing":138,"../utils/resource-classification":140,"lighthouse":54,"lighthouse/lighthouse-core/computed/network-records":34,"lighthouse/lighthouse-core/lib/i18n/i18n":66,"url":"url"}],"lighthouse-plugin-publisher-ads/audits/tag-load-time":[function(require,module,exports){
+(function(__filename){
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const ComputedTagLoadTime=require('../computed/tag-load-time');
+const i18n=require('lighthouse/lighthouse-core/lib/i18n/i18n');
+const{auditNotApplicable,runWarning}=require('../messages/common-strings');
+const{Audit}=require('lighthouse');
+
+const UIStrings={
+title:'Tag load time',
+failureTitle:'Reduce tag load time',
+description:'This metric measures the time for the ad tag\'s '+
+'implementation script (pubads_impl.js for GPT; adsbygoogle.js for '+
+'AdSense) to load after the page loads. [Learn more]('+
+'https://developers.google.com/publisher-ads-audits/reference/audits/metrics'+
+').',
+displayValue:'{timeInMs, number, seconds} s'};
+
+
+const str_=i18n.createMessageInstanceIdFn(__filename,UIStrings);
+
+
+const PODR=1000;
+const MEDIAN=2000;
+
+
+
+
+class TagLoadTime extends Audit{
+
+
+
+
+static get meta(){
+return{
+id:'tag-load-time',
+title:str_(UIStrings.title),
+failureTitle:str_(UIStrings.failureTitle),
+description:str_(UIStrings.description),
+
+scoreDisplayMode:Audit.SCORING_MODES.NUMERIC,
+requiredArtifacts:['devtoolsLogs','traces']};
+
+}
+
+
+
+
+
+static async audit(artifacts,context){
+const trace=artifacts.traces[Audit.DEFAULT_PASS];
+const devtoolsLog=artifacts.devtoolsLogs[Audit.DEFAULT_PASS];
+const metricData={trace,devtoolsLog,settings:context.settings};
+
+const{timing}=await ComputedTagLoadTime.request(metricData,context);
+if(!(timing>0)){
+context.LighthouseRunWarnings.push(runWarning.NoTag);
+return auditNotApplicable.NoTag;
+}
+
+
+
+let normalScore=Audit.computeLogNormalScore(timing,PODR,MEDIAN);
+
+
+if(normalScore>=.9){
+normalScore=1;
+}
+
+return{
+numericValue:timing*1e-3,
+score:normalScore,
+displayValue:str_(UIStrings.displayValue,{timeInMs:timing})};
+
+}}
+
+module.exports=TagLoadTime;
+module.exports.UIStrings=UIStrings;
+
+}).call(this,"/node_modules/lighthouse-plugin-publisher-ads/audits/tag-load-time.js");
+},{"../computed/tag-load-time":131,"../messages/common-strings":132,"lighthouse":54,"lighthouse/lighthouse-core/lib/i18n/i18n":66}],"lighthouse-plugin-publisher-ads/audits/viewport-ad-density":[function(require,module,exports){
+(function(__filename){
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const i18n=require('lighthouse/lighthouse-core/lib/i18n/i18n');
+const{auditNotApplicable,auditError}=require('../messages/common-strings');
+const{Audit}=require('lighthouse');
+const{boxViewableArea}=require('../utils/geometry');
+const{isAdIframe}=require('../utils/resource-classification');
+
+const UIStrings={
+title:'Ad density in initial viewport is within recommended range',
+failureTitle:'Reduce ad density in initial viewport',
+description:'The ads-to-content ratio inside the viewport can have an '+
+'impact on user experience and ultimately user retention. The Better Ads '+
+'Standard [recommends having an ad density below 30%]'+
+'(https://www.betterads.org/mobile-ad-density-higher-than-30/). '+
+'[Learn more]('+
+'https://developers.google.com/publisher-ads-audits/reference/audits/viewport-ad-density'+
+').',
+displayValue:'{adDensity, number, percent} covered by ads'};
+
+
+const str_=i18n.createMessageInstanceIdFn(__filename,UIStrings);
+
+
+class ViewportAdDensity extends Audit{
+
+
+
+
+static get meta(){
+return{
+id:'viewport-ad-density',
+title:str_(UIStrings.title),
+failureTitle:str_(UIStrings.failureTitle),
+description:str_(UIStrings.description),
+requiredArtifacts:['ViewportDimensions','IFrameElements']};
+
+}
+
+
+
+
+
+
+static audit(artifacts){
+const viewport=artifacts.ViewportDimensions;
+const slots=artifacts.IFrameElements.filter(
+slot=>isAdIframe(slot)&&
+slot.clientRect.width*slot.clientRect.height>1);
+
+if(!slots.length){
+return auditNotApplicable.NoVisibleSlots;
+}
+
+const adArea=slots.reduce((sum,slot)=>
+sum+boxViewableArea(slot.clientRect,viewport),0);
+
+const viewArea=viewport.innerWidth*viewport.innerHeight;
+
+if(viewArea<=0){
+throw new Error(auditError.ViewportAreaZero);
+}
+if(adArea>viewArea){
+throw new Error(auditError.AreaLargerThanViewport);
+}
+const adDensity=adArea/viewArea;
+const score=adDensity>0.3?0:1;
+return{
+score,
+numericValue:adArea/viewArea,
+displayValue:str_(UIStrings.displayValue,{adDensity})};
+
+}}
+
+
+module.exports=ViewportAdDensity;
+module.exports.UIStrings=UIStrings;
+
+}).call(this,"/node_modules/lighthouse-plugin-publisher-ads/audits/viewport-ad-density.js");
+},{"../messages/common-strings":132,"../utils/geometry":136,"../utils/resource-classification":140,"lighthouse":54,"lighthouse/lighthouse-core/lib/i18n/i18n":66}],"lighthouse-plugin-publisher-ads":[function(require,module,exports){
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const{group}=require('./messages/common-strings');
+
+const PLUGIN_PATH='lighthouse-plugin-publisher-ads';
+
+
+module.exports={
+audits:[
+{path:`${PLUGIN_PATH}/audits/ad-blocking-tasks`},
+{path:`${PLUGIN_PATH}/audits/ad-render-blocking-resources`},
+{path:`${PLUGIN_PATH}/audits/ad-request-critical-path`},
+{path:`${PLUGIN_PATH}/audits/bid-request-from-page-start`},
+{path:`${PLUGIN_PATH}/audits/ad-request-from-page-start`},
+{path:`${PLUGIN_PATH}/audits/ad-top-of-viewport`},
+{path:`${PLUGIN_PATH}/audits/ads-in-viewport`},
+{path:`${PLUGIN_PATH}/audits/async-ad-tags`},
+{path:`${PLUGIN_PATH}/audits/blocking-load-events`},
+{path:`${PLUGIN_PATH}/audits/bottleneck-requests`},
+{path:`${PLUGIN_PATH}/audits/duplicate-tags`},
+{path:`${PLUGIN_PATH}/audits/first-ad-render`},
+{path:`${PLUGIN_PATH}/audits/full-width-slots`},
+{path:`${PLUGIN_PATH}/audits/gpt-bids-parallel`},
+{path:`${PLUGIN_PATH}/audits/loads-gpt-from-sgdn`},
+{path:`${PLUGIN_PATH}/audits/loads-ad-tag-over-https`},
+{path:`${PLUGIN_PATH}/audits/script-injected-tags`},
+{path:`${PLUGIN_PATH}/audits/serial-header-bidding`},
+{path:`${PLUGIN_PATH}/audits/tag-load-time`},
+{path:`${PLUGIN_PATH}/audits/viewport-ad-density`}],
+
+groups:{
+'metrics':{
+title:group.Metrics},
+
+'ads-performance':{
+title:group.AdsPerformance},
+
+'ads-best-practices':{
+title:group.AdsBestPractices}},
+
+
+category:{
+title:'Publisher Ads [Beta]',
+auditRefs:[
+
+{id:'tag-load-time',weight:4,group:'metrics'},
+{id:'ad-request-from-page-start',weight:4,group:'metrics'},
+{id:'bid-request-from-page-start',weight:8,group:'metrics'},
+{id:'first-ad-render',weight:8,group:'metrics'},
+
+{id:'gpt-bids-parallel',weight:1,group:'ads-performance'},
+{id:'serial-header-bidding',weight:1,group:'ads-performance'},
+{id:'bottleneck-requests',weight:1,group:'ads-performance'},
+{id:'script-injected-tags',weight:1,group:'ads-performance'},
+{id:'blocking-load-events',weight:1,group:'ads-performance'},
+{id:'ad-render-blocking-resources',weight:1,group:'ads-performance'},
+{id:'ad-blocking-tasks',weight:1,group:'ads-performance'},
+{id:'ad-request-critical-path',weight:1,group:'ads-performance'},
+
+{id:'ads-in-viewport',weight:4,group:'ads-best-practices'},
+{id:'async-ad-tags',weight:2,group:'ads-best-practices'},
+{id:'loads-ad-tag-over-https',weight:1,group:'ads-best-practices'},
+{id:'loads-gpt-from-sgdn',weight:1,group:'ads-best-practices'},
+{id:'viewport-ad-density',weight:1,group:'ads-best-practices'},
+{id:'ad-top-of-viewport',weight:2,group:'ads-best-practices'},
+{id:'duplicate-tags',weight:1,group:'ads-best-practices'}]}};
+
+
+
+
+},{"./messages/common-strings":132}],"url":[function(require,module,exports){
 
 
 
@@ -65939,4 +71333,4 @@ URLShim.INVALID_URL_DEBUG_STRING=
 
 module.exports=URLShim;
 
-},{"../report/html/renderer/util.js":88}]},{},[1]);
+},{"../report/html/renderer/util.js":87}]},{},[1]);

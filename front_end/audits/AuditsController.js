@@ -153,7 +153,7 @@ Audits.AuditController = class extends Common.Object {
   getFlags() {
     const flags = {
       // DevTools handles all the emulation. This tells Lighthouse to not bother with emulation.
-      deviceScreenEmulationMethod: 'provided'
+      internalDisableDeviceScreenEmulation: true
     };
     for (const runtimeSetting of Audits.RuntimeSettings) {
       runtimeSetting.setFlags(flags, runtimeSetting.setting.get());
@@ -240,6 +240,13 @@ Audits.Presets = [
     configID: 'seo',
     title: ls`SEO`,
     description: ls`Is this page optimized for search engine results ranking`
+  },
+  {
+    setting: Common.settings.createSetting('audits.cat_pubads', false),
+    plugin: true,
+    configID: 'lighthouse-plugin-publisher-ads',
+    title: ls`Publisher Ads`,
+    description: ls`Is this page optimized for ad speed and quality`
   },
 ];
 

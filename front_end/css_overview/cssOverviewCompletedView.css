@@ -7,6 +7,7 @@
 .overview-completed-view {
   overflow: auto;
   --overview-default-padding: 28px;
+  --overview-icon-padding: 32px;
 }
 
 .overview-completed-view .summary ul,
@@ -108,11 +109,54 @@
   font-weight: normal;
   padding: 0;
   margin: 0 0 20px 0;
-  padding-left: var(--overview-default-padding);
+  padding-left: calc(var(--overview-default-padding) + var(--overview-icon-padding));
+  position: relative;
+  height: 26px;
+  line-height: 26px;
+}
+
+.results-section h1::before {
+  content: '';
+  display: block;
+  position: absolute;
+  left: var(--overview-default-padding);
+  top: 0;
+  width: 26px;
+  height: 26px;
+  background-image: url(Images/cssoverview_icons_2x.png);
+  background-size: 104px 26px;
 }
 
 .results-section.horizontally-padded h1 {
+  padding-left: var(--overview-icon-padding);
+}
+
+.results-section.horizontally-padded h1::before {
+  left: 0;
+}
+
+.results-section.summary h1 {
   padding-left: 0;
+}
+
+.results-section.summary h1::before {
+  display: none;
+}
+
+.results-section.colors h1::before {
+  background-position: 0 0;
+}
+
+.results-section.font-info h1::before {
+  background-position: -26px 0;
+}
+
+.results-section.unused-declarations h1::before {
+  background-position: -52px 0;
+}
+
+.results-section.media-queries h1::before {
+  background-position: -78px 0;
 }
 
 .results-section.colors h2 {

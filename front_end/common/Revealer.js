@@ -5,7 +5,7 @@
 /**
  * @interface
  */
-export default class Revealer {
+export class Revealer {
   /**
    * @param {!Object} object
    * @param {boolean=} omitFocus
@@ -24,10 +24,10 @@ export const reveal = function(revealable, omitFocus) {
   if (!revealable) {
     return Promise.reject(new Error('Can\'t reveal ' + revealable));
   }
-  return self.runtime.allInstances(Common.Revealer, revealable).then(reveal);
+  return self.runtime.allInstances(Revealer, revealable).then(reveal);
 
   /**
-   * @param {!Array.<!Common.Revealer>} revealers
+   * @param {!Array.<!Revealer>} revealers
    * @return {!Promise.<undefined>}
    */
   function reveal(revealers) {
@@ -44,7 +44,7 @@ export const reveal = function(revealable, omitFocus) {
  * @return {?string}
  */
 export const revealDestination = function(revealable) {
-  const extension = self.runtime.extension(Common.Revealer, revealable);
+  const extension = self.runtime.extension(Revealer, revealable);
   if (!extension) {
     return null;
   }

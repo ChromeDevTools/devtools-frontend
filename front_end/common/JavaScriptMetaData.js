@@ -5,7 +5,7 @@
 /**
  * @interface
  */
-export default class JavaScriptMetadata {
+export class JavaScriptMetaData {
   /**
    * @param {string} name
    * @return {?Array<!Array<string>>}
@@ -37,4 +37,4 @@ Common = Common || {};
 /**
  * @interface
  */
-Common.JavaScriptMetadata = JavaScriptMetadata;
+Common.JavaScriptMetadata = JavaScriptMetaData;

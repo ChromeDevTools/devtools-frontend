@@ -5,7 +5,7 @@
 /**
  * @interface
  */
-export default class QueryParamHandler {
+export class QueryParamHandler {
   /**
    * @param {string} value
    */

@@ -4,24 +4,23 @@
 
 const {assert} = chai;
 
-import {default as TextDictionary} from '../../../../front_end/common/TextDictionary.js';
-import {default as Trie} from '../../../../front_end/common/Trie.js';
+import * as Common from '../../../../front_end/common/common.js';
 
 describe('Text Dictionary', () => {
   it('can be created with its basic attributes', () => {
-    const textDic = new TextDictionary();
+    const textDic = new Common.TextDictionary.TextDictionary();
     assert.instanceOf(textDic._words, Map, 'did not create a Map named _words');
-    assert.instanceOf(textDic._index, Trie, 'did not create a Trie named _index');
+    assert.instanceOf(textDic._index, Common.Trie.Trie, 'did not create a Trie named _index');
   });
 
   it('can add a word successfully', () => {
-    const textDic = new TextDictionary();
+    const textDic = new Common.TextDictionary.TextDictionary();
     textDic.addWord('test');
     assert.isTrue(textDic.hasWord('test'), 'word was not added successfully');
   });
 
   it('can remove a word successfully', () => {
-    const textDic = new TextDictionary();
+    const textDic = new Common.TextDictionary.TextDictionary();
     textDic.addWord('test');
     assert.isTrue(textDic.hasWord('test'), 'word was not added successfully');
     textDic.removeWord('test');
@@ -29,13 +28,13 @@ describe('Text Dictionary', () => {
   });
 
   it('returns nothing when trying to remove a word that does not exist', () => {
-    const textDic = new TextDictionary();
+    const textDic = new Common.TextDictionary.TextDictionary();
     assert.isUndefined(
         textDic.removeWord('test'), 'removeWord function did not return Undefined for a word not in the dictionaty');
   });
 
   it('removes a word that was added twice', () => {
-    const textDic = new TextDictionary();
+    const textDic = new Common.TextDictionary.TextDictionary();
     textDic.addWord('test');
     textDic.addWord('test');
     assert.isTrue(textDic.hasWord('test'), 'words were not added successfully');
@@ -46,7 +45,7 @@ describe('Text Dictionary', () => {
   });
 
   it('retrieve words with a certain prefix', () => {
-    const textDic = new TextDictionary();
+    const textDic = new Common.TextDictionary.TextDictionary();
     textDic.addWord('test');
     textDic.addWord('ten');
     textDic.addWord('nine');
@@ -56,7 +55,7 @@ describe('Text Dictionary', () => {
   });
 
   it('retrieve the word count for a certain word', () => {
-    const textDic = new TextDictionary();
+    const textDic = new Common.TextDictionary.TextDictionary();
     textDic.addWord('test');
     textDic.addWord('test');
     textDic.addWord('ten');
@@ -64,7 +63,7 @@ describe('Text Dictionary', () => {
   });
 
   it('retrieve the word count for a certain word that is not in the dictionary', () => {
-    const textDic = new TextDictionary();
+    const textDic = new Common.TextDictionary.TextDictionary();
     textDic.addWord('test');
     textDic.addWord('test');
     textDic.addWord('ten');
@@ -72,7 +71,7 @@ describe('Text Dictionary', () => {
   });
 
   it('reset the dictionary after adding words to it', () => {
-    const textDic = new TextDictionary();
+    const textDic = new Common.TextDictionary.TextDictionary();
     textDic.addWord('test');
     textDic.addWord('test');
     textDic.addWord('ten');

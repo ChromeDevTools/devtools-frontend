@@ -4,7 +4,7 @@
 
 const {assert} = chai;
 
-import {default as StringOutputStream} from '../../../../front_end/common/StringOutputStream.js';
+import * as Common from '../../../../front_end/common/common.js';
 import {default as TempFile, TempFileBackingStorage} from '../../../../front_end/bindings/TempFile.js';
 
 describe('TempFile', () => {
@@ -66,7 +66,7 @@ describe('TempFile', () => {
 
   it('returns null when trying to copy an empty file to an output stream', async () => {
     const tempFile = new TempFile();
-    const stringOutputStream = new StringOutputStream();
+    const stringOutputStream = new Common.StringOutputStream.StringOutputStream();
     const readResult = await tempFile.copyToOutputStream(stringOutputStream);
     assert.isNull(readResult, 'function did not return null');
   });

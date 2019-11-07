@@ -34,7 +34,7 @@
  * @param {...*} vararg
  * @return {string}
  */
-export default function UIString(string, vararg) {
+export function UIString(string, vararg) {
   return String.vsprintf(Common.localize(string), Array.prototype.slice.call(arguments, 1));
 }
 
@@ -99,11 +99,13 @@ export class UIStringFormat {
   format(vararg) {
     return String
         .format(
-            this._localizedFormat, arguments, String.standardFormatters, '', Common.UIStringFormat._append,
+            this._localizedFormat, arguments, String.standardFormatters, '', UIStringFormat._append,
             this._tokenizedFormat)
         .formattedResult;
   }
 }
+
+const _substitutionStrings = new WeakMap();
 
 /**
  * @param {!Array<string>|string} strings
@@ -114,12 +116,12 @@ export function ls(strings, vararg) {
   if (typeof strings === 'string') {
     return strings;
   }
-  let substitutionString = Common._substitutionStrings.get(strings);
+  let substitutionString = _substitutionStrings.get(strings);
   if (!substitutionString) {
     substitutionString = strings.join('%s');
-    Common._substitutionStrings.set(strings, substitutionString);
+    _substitutionStrings.set(strings, substitutionString);
   }
-  return Common.UIString(substitutionString, ...Array.prototype.slice.call(arguments, 1));
+  return UIString(substitutionString, ...Array.prototype.slice.call(arguments, 1));
 }
 
 /**
@@ -142,6 +144,3 @@ Common.UIString = UIString;
 Common.serializeUIString = serializeUIString;
 Common.deserializeUIString = deserializeUIString;
 Common.localize = localize;
-
-/** @type {!WeakMap<!Array<string>, string>} */
-Common._substitutionStrings = new WeakMap();

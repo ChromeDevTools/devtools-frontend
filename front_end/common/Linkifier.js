@@ -5,7 +5,7 @@
 /**
  * @interface
  */
-export default class Linkifier {
+export class Linkifier {
   /**
    * @param {!Object} object
    * @param {!Common.Linkifier.Options=} options
@@ -13,20 +13,18 @@ export default class Linkifier {
    */
   linkify(object, options) {
   }
-}
 
-/**
- * @param {?Object} object
- * @param {!Common.Linkifier.Options=} options
- * @return {!Promise<!Node>}
- */
-export function linkify(object, options) {
-  if (!object) {
-    return Promise.reject(new Error('Can\'t linkify ' + object));
+  /**
+   * @param {?Object} object
+   * @param {!Common.Linkifier.Options=} options
+   * @return {!Promise<!Node>}
+   */
+  static linkify(object, options) {
+    if (!object) {
+      return Promise.reject(new Error('Can\'t linkify ' + object));
+    }
+    return self.runtime.extension(Linkifier, object).instance().then(linkifier => linkifier.linkify(object, options));
   }
-  return self.runtime.extension(Common.Linkifier, object)
-      .instance()
-      .then(linkifier => linkifier.linkify(object, options));
 }
 
 /* Legacy exported object */
@@ -37,7 +35,6 @@ Common = Common || {};
  * @interface
  */
 Common.Linkifier = Linkifier;
-Common.Linkifier.linkify = linkify;
 
 /** @typedef {{tooltip: (string|undefined), preventKeyboardFocus: (boolean|undefined)}} */
 Common.Linkifier.Options;

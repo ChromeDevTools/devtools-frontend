@@ -30,7 +30,7 @@
 /**
  * @unrestricted
  */
-export default class Color {
+export class Color {
   /**
    * @param {!Array.<number>} rgba
    * @param {!Format} format

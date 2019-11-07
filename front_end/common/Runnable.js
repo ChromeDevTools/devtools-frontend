@@ -5,7 +5,7 @@
 /**
  * @interface
  */
-export default class Runnable {
+export class Runnable {
   /**
    * @return {!Promise}
    */

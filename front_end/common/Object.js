@@ -23,11 +23,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import {EventTarget} from './EventTarget.js';  // eslint-disable-line no-unused-vars
+
 /**
- * @implements {Common.EventTarget}
+ * @implements {EventTarget}
  * @unrestricted
  */
-export default class ObjectWrapper {
+export class ObjectWrapper {
   constructor() {
     /** @type {(!Map<string|symbol, !Array<!Common.Object._listenerCallbackTuple>>|undefined)} */
     this._listeners;

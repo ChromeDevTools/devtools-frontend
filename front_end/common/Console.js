@@ -2,12 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import ObjectWrapper from './Object.js';
+import {ObjectWrapper} from './Object.js';
 
 /**
  * @unrestricted
  */
-export default class Console extends ObjectWrapper {
+export class Console extends ObjectWrapper {
   constructor() {
     super();
     /** @type {!Array.<!Message>} */
@@ -22,7 +22,7 @@ export default class Console extends ObjectWrapper {
   addMessage(text, level, show) {
     const message = new Message(text, level || MessageLevel.Info, Date.now(), show || false);
     this._messages.push(message);
-    this.dispatchEventToListeners(Common.Console.Events.MessageAdded, message);
+    this.dispatchEventToListeners(Events.MessageAdded, message);
   }
 
   /**

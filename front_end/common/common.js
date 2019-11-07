@@ -2,11 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import './EventTarget.js';
-import './Object.js';
-import './UIString.js';
-
-// Do not reorder these imports as it breaks dependencies.
+import '../platform/platform.js';
 
 import * as App from './App.js';
 import * as AppProvider from './AppProvider.js';
@@ -17,7 +13,7 @@ import * as ContentProvider from './ContentProvider.js';
 import * as EventTarget from './EventTarget.js';
 import * as JavaScriptMetaData from './JavaScriptMetaData.js';
 import * as Linkifier from './Linkifier.js';
-import * as Object from './Object.js';
+import * as ObjectWrapper from './Object.js';
 import * as ParsedURL from './ParsedURL.js';
 import * as Progress from './Progress.js';
 import * as QueryParamHandler from './QueryParamHandler.js';
@@ -44,7 +40,7 @@ export {
   EventTarget,
   JavaScriptMetaData,
   Linkifier,
-  Object,
+  ObjectWrapper,
   ParsedURL,
   Progress,
   QueryParamHandler,

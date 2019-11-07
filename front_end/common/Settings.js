@@ -28,23 +28,25 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import {ObjectWrapper} from './Object.js';
+
 /**
  * @unrestricted
  */
-export default class Settings {
+export class Settings {
   /**
-   * @param {!Common.SettingsStorage} globalStorage
-   * @param {!Common.SettingsStorage} localStorage
+   * @param {!SettingsStorage} globalStorage
+   * @param {!SettingsStorage} localStorage
    */
   constructor(globalStorage, localStorage) {
     this._globalStorage = globalStorage;
     this._localStorage = localStorage;
-    this._sessionStorage = new Common.SettingsStorage({});
+    this._sessionStorage = new SettingsStorage({});
 
-    this._eventSupport = new Common.Object();
-    /** @type {!Map<string, !Common.Setting>} */
+    this._eventSupport = new ObjectWrapper();
+    /** @type {!Map<string, !Setting>} */
     this._registry = new Map();
-    /** @type {!Map<string, !Common.Setting>} */
+    /** @type {!Map<string, !Setting>} */
     this._moduleSettings = new Map();
     self.runtime.extensions('setting').forEach(this._registerModuleSetting.bind(this));
   }
@@ -60,16 +62,16 @@ export default class Settings {
     let storageType;
     switch (descriptor['storageType']) {
       case ('local'):
-        storageType = Common.SettingStorageType.Local;
+        storageType = SettingStorageType.Local;
         break;
       case ('session'):
-        storageType = Common.SettingStorageType.Session;
+        storageType = SettingStorageType.Session;
         break;
       case ('global'):
-        storageType = Common.SettingStorageType.Global;
+        storageType = SettingStorageType.Global;
         break;
       default:
-        storageType = Common.SettingStorageType.Global;
+        storageType = SettingStorageType.Global;
     }
     const setting = isRegex ? this.createRegExpSetting(settingName, defaultValue, undefined, storageType) :
                               this.createSetting(settingName, defaultValue, storageType);
@@ -85,7 +87,7 @@ export default class Settings {
 
   /**
    * @param {string} settingName
-   * @return {!Common.Setting}
+   * @return {!Setting}
    */
   moduleSetting(settingName) {
     const setting = this._moduleSettings.get(settingName);
@@ -97,7 +99,7 @@ export default class Settings {
 
   /**
    * @param {string} settingName
-   * @return {!Common.Setting}
+   * @return {!Setting}
    */
   settingForTest(settingName) {
     const setting = this._registry.get(settingName);
@@ -110,61 +112,61 @@ export default class Settings {
   /**
    * @param {string} key
    * @param {*} defaultValue
-   * @param {!Common.SettingStorageType=} storageType
-   * @return {!Common.Setting}
+   * @param {!SettingStorageType=} storageType
+   * @return {!Setting}
    */
   createSetting(key, defaultValue, storageType) {
     const storage = this._storageFromType(storageType);
     if (!this._registry.get(key)) {
-      this._registry.set(key, new Common.Setting(this, key, defaultValue, this._eventSupport, storage));
+      this._registry.set(key, new Setting(this, key, defaultValue, this._eventSupport, storage));
     }
-    return /** @type {!Common.Setting} */ (this._registry.get(key));
+    return /** @type {!Setting} */ (this._registry.get(key));
   }
 
   /**
    * @param {string} key
    * @param {*} defaultValue
-   * @return {!Common.Setting}
+   * @return {!Setting}
    */
   createLocalSetting(key, defaultValue) {
-    return this.createSetting(key, defaultValue, Common.SettingStorageType.Local);
+    return this.createSetting(key, defaultValue, SettingStorageType.Local);
   }
 
   /**
    * @param {string} key
    * @param {string} defaultValue
    * @param {string=} regexFlags
-   * @param {!Common.SettingStorageType=} storageType
-   * @return {!Common.RegExpSetting}
+   * @param {!SettingStorageType=} storageType
+   * @return {!RegExpSetting}
    */
   createRegExpSetting(key, defaultValue, regexFlags, storageType) {
     if (!this._registry.get(key)) {
       this._registry.set(
           key,
-          new Common.RegExpSetting(
+          new RegExpSetting(
               this, key, defaultValue, this._eventSupport, this._storageFromType(storageType), regexFlags));
     }
-    return /** @type {!Common.RegExpSetting} */ (this._registry.get(key));
+    return /** @type {!RegExpSetting} */ (this._registry.get(key));
   }
 
   clearAll() {
     this._globalStorage.removeAll();
     this._localStorage.removeAll();
-    const versionSetting = Common.settings.createSetting(Common.VersionController._currentVersionName, 0);
-    versionSetting.set(Common.VersionController.currentVersion);
+    const versionSetting = Common.settings.createSetting(VersionController._currentVersionName, 0);
+    versionSetting.set(VersionController.currentVersion);
   }
 
   /**
-   * @param {!Common.SettingStorageType=} storageType
-   * @return {!Common.SettingsStorage}
+   * @param {!SettingStorageType=} storageType
+   * @return {!SettingsStorage}
    */
   _storageFromType(storageType) {
     switch (storageType) {
-      case (Common.SettingStorageType.Local):
+      case (SettingStorageType.Local):
         return this._localStorage;
-      case (Common.SettingStorageType.Session):
+      case (SettingStorageType.Session):
         return this._sessionStorage;
-      case (Common.SettingStorageType.Global):
+      case (SettingStorageType.Global):
         return this._globalStorage;
     }
     return this._globalStorage;
@@ -259,11 +261,11 @@ export class SettingsStorage {
  */
 export class Setting {
   /**
-   * @param {!Common.Settings} settings
+   * @param {!Settings} settings
    * @param {string} name
    * @param {V} defaultValue
-   * @param {!Common.Object} eventSupport
-   * @param {!Common.SettingsStorage} storage
+   * @param {!ObjectWrapper} eventSupport
+   * @param {!SettingsStorage} storage
    */
   constructor(settings, name, defaultValue, eventSupport, storage) {
     this._settings = settings;
@@ -392,11 +394,11 @@ export class Setting {
  */
 export class RegExpSetting extends Setting {
   /**
-   * @param {!Common.Settings} settings
+   * @param {!Settings} settings
    * @param {string} name
    * @param {string} defaultValue
-   * @param {!Common.Object} eventSupport
-   * @param {!Common.SettingsStorage} storage
+   * @param {!ObjectWrapper} eventSupport
+   * @param {!SettingsStorage} storage
    * @param {string=} regexFlags
    */
   constructor(settings, name, defaultValue, eventSupport, storage, regexFlags) {
@@ -466,11 +468,18 @@ export class RegExpSetting extends Setting {
  * @unrestricted
  */
 export class VersionController {
+  static get _currentVersionName() {
+    return 'inspectorVersion';
+  }
+
+  static get currentVersion() {
+    return 28;
+  }
+
   updateVersion() {
-    const localStorageVersion =
-        window.localStorage ? window.localStorage[Common.VersionController._currentVersionName] : 0;
-    const versionSetting = Common.settings.createSetting(Common.VersionController._currentVersionName, 0);
-    const currentVersion = Common.VersionController.currentVersion;
+    const localStorageVersion = window.localStorage ? window.localStorage[VersionController._currentVersionName] : 0;
+    const versionSetting = Common.settings.createSetting(VersionController._currentVersionName, 0);
+    const currentVersion = VersionController.currentVersion;
     const oldVersion = versionSetting.get() || parseInt(localStorageVersion || '0', 10);
     if (oldVersion === 0) {
       // First run, no need to do anything.
@@ -903,7 +912,7 @@ export class VersionController {
   }
 
   /**
-   * @param {!Common.Setting} breakpointsSetting
+   * @param {!Setting} breakpointsSetting
    * @param {number} maxBreakpointsCount
    */
   _clearBreakpointsWhenTooMany(breakpointsSetting, maxBreakpointsCount) {
@@ -926,7 +935,7 @@ export const SettingStorageType = {
 
 /**
  * @param {string} settingName
- * @return {!Common.Setting}
+ * @return {!Setting}
  */
 export function moduleSetting(settingName) {
   return Common.settings.moduleSetting(settingName);
@@ -934,7 +943,7 @@ export function moduleSetting(settingName) {
 
 /**
  * @param {string} settingName
- * @return {!Common.Setting}
+ * @return {!Setting}
  */
 export function settingForTest(settingName) {
   return Common.settings.settingForTest(settingName);
@@ -975,9 +984,6 @@ Common.moduleSetting = moduleSetting;
  * @enum {symbol}
  */
 Common.SettingStorageType = SettingStorageType;
-
-Common.VersionController._currentVersionName = 'inspectorVersion';
-Common.VersionController.currentVersion = 28;
 
 /**
  * @type {!Common.Settings}

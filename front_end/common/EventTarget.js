@@ -16,7 +16,7 @@ export function removeEventListeners(eventList) {
 /**
  * @interface
  */
-export default class EventTarget {
+export class EventTarget {
   /**
    * @param {symbol} eventType
    * @param {function(!Common.Event)} listener
@@ -61,11 +61,6 @@ self.Common = self.Common || {};
 Common = Common || {};
 
 /**
- * @typedef {!{data: *}}
- */
-Common.Event;
-
-/**
  * @interface
  */
 Common.EventTarget = EventTarget;
@@ -76,3 +71,8 @@ EventTarget.removeEventListeners = removeEventListeners;
  * @typedef {!{eventTarget: !Common.EventTarget, eventType: (string|symbol), thisObject: (!Object|undefined), listener: function(!Common.Event)}}
  */
 Common.EventTarget.EventDescriptor;
+
+/**
+ * @typedef {!{data: *}}
+ */
+Common.Event;

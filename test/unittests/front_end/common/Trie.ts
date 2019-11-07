@@ -4,12 +4,12 @@
 
 const { assert } = chai;
 
-import { default as Trie } from '../../../../front_end/common/Trie.js';
+import * as Common from '../../../../front_end/common/common.js';
 
 describe('Trie', () => {
-  let trie: Trie;
+  let trie: Common.Trie.Trie;
   beforeEach(() => {
-    trie = new Trie();
+    trie = new Common.Trie.Trie();
   });
 
   it('stores and retrieves words', () => {

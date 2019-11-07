@@ -5,7 +5,7 @@
 /**
  * @interface
  */
-export default class App {
+export class App {
   /**
    * @param {!Document} document
    */

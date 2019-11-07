@@ -1,14 +1,18 @@
 // Copyright 2014 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
+import {ContentProvider, SearchMatch} from './ContentProvider.js';  // eslint-disable-line no-unused-vars
+import {ResourceType} from './ResourceType.js';                     // eslint-disable-line no-unused-vars
+
 /**
- * @implements {Common.ContentProvider}
+ * @implements {ContentProvider}
  * @unrestricted
  */
-export default class StaticContentProvider {
+export class StaticContentProvider {
   /**
    * @param {string} contentURL
-   * @param {!Common.ResourceType} contentType
+   * @param {!ResourceType} contentType
    * @param {function():!Promise<!Common.DeferredContent>} lazyContent
    */
   constructor(contentURL, contentType, lazyContent) {
@@ -19,13 +23,13 @@ export default class StaticContentProvider {
 
   /**
    * @param {string} contentURL
-   * @param {!Common.ResourceType} contentType
+   * @param {!ResourceType} contentType
    * @param {string} content
-   * @return {!Common.StaticContentProvider}
+   * @return {!StaticContentProvider}
    */
   static fromString(contentURL, contentType, content) {
     const lazyContent = () => Promise.resolve({content, isEncoded: false});
-    return new Common.StaticContentProvider(contentURL, contentType, lazyContent);
+    return new StaticContentProvider(contentURL, contentType, lazyContent);
   }
 
   /**
@@ -38,7 +42,7 @@ export default class StaticContentProvider {
 
   /**
    * @override
-   * @return {!Common.ResourceType}
+   * @return {!ResourceType}
    */
   contentType() {
     return this._contentType;
@@ -65,11 +69,11 @@ export default class StaticContentProvider {
    * @param {string} query
    * @param {boolean} caseSensitive
    * @param {boolean} isRegex
-   * @return {!Promise<!Array<!Common.ContentProvider.SearchMatch>>}
+   * @return {!Promise<!Array<!SearchMatch>>}
    */
   async searchInContent(query, caseSensitive, isRegex) {
     const {content} = (await this._lazyContent());
-    return content ? Common.ContentProvider.performSearchInContent(content, query, caseSensitive, isRegex) : [];
+    return content ? ContentProvider.performSearchInContent(content, query, caseSensitive, isRegex) : [];
   }
 }
 

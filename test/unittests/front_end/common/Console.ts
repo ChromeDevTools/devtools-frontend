@@ -4,16 +4,16 @@
 
 const { assert } = chai;
 
-import { default as Console, Events, MessageLevel } from '../../../../front_end/common/Console.js';
+import * as Common from '../../../../front_end/common/common.js';
 
 describe('Console', () => {
-  let consoleImpl: Console;
+  let consoleImpl: Common.Console.Console;
   beforeEach(() => {
-    consoleImpl = new Console();
+    consoleImpl = new Common.Console.Console();
   });
 
   it('adds messages', () => {
-    consoleImpl.addMessage('Foo', MessageLevel.Info, true);
+    consoleImpl.addMessage('Foo', Common.Console.MessageLevel.Info, true);
     const messages = consoleImpl.messages();
     assert.equal(messages.length, 1);
     assert.equal(messages[0].text, 'Foo');
@@ -27,7 +27,7 @@ describe('Console', () => {
     ]);
 
     for (const [type, method] of messageTypes) {
-      consoleImpl = new Console();
+      consoleImpl = new Common.Console.Console();
 
       // Dispatch the message of the appropriate type.
       consoleImpl[method](type);
@@ -36,25 +36,25 @@ describe('Console', () => {
       const messages = consoleImpl.messages();
       assert.equal(messages.length, 1);
       assert.equal(messages[0].text, type);
-      assert.equal(messages[0].level, MessageLevel[type]);
+      assert.equal(messages[0].level, Common.Console.MessageLevel[type]);
     }
   });
 
   it('stores messages', () => {
-    consoleImpl.addMessage('Foo', MessageLevel.Info, true);
-    consoleImpl.addMessage('Baz', MessageLevel.Warning, true);
-    consoleImpl.addMessage('Bar', MessageLevel.Error, true);
-    consoleImpl.addMessage('Donkey', MessageLevel.Info, true);
+    consoleImpl.addMessage('Foo', Common.Console.MessageLevel.Info, true);
+    consoleImpl.addMessage('Baz', Common.Console.MessageLevel.Warning, true);
+    consoleImpl.addMessage('Bar', Common.Console.MessageLevel.Error, true);
+    consoleImpl.addMessage('Donkey', Common.Console.MessageLevel.Info, true);
     const messages = consoleImpl.messages();
     assert.equal(messages.length, 4);
   });
 
   it('dispatches events to listeners', (done) => {
-    consoleImpl.addEventListener(Events.MessageAdded, ({ data }) => {
+    consoleImpl.addEventListener(Common.Console.Events.MessageAdded, ({data}) => {
       assert.equal(data.text, 'Foo');
       done();
     });
 
-    consoleImpl.addMessage('Foo', MessageLevel.Info, true);
+    consoleImpl.addMessage('Foo', Common.Console.MessageLevel.Info, true);
   });
 });

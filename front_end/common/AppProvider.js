@@ -2,12 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {App} from './App.js';  // eslint-disable-line no-unused-vars
+
 /**
  * @interface
  */
-export default class AppProvider {
+export class AppProvider {
   /**
-   * @return {!Common.App}
+   * @return {!App}
    */
   createApp() {
   }

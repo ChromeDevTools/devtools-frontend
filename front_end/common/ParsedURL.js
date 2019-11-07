@@ -29,7 +29,7 @@
 /**
  * @unrestricted
  */
-export default class ParsedURL {
+export class ParsedURL {
   /**
    * @param {string} url
    */
@@ -48,7 +48,7 @@ export default class ParsedURL {
 
     const isBlobUrl = this.url.startsWith('blob:');
     const urlToMatch = isBlobUrl ? url.substring(5) : url;
-    const match = urlToMatch.match(Common.ParsedURL._urlRegex());
+    const match = urlToMatch.match(ParsedURL._urlRegex());
     if (match) {
       this.isValid = true;
       if (isBlobUrl) {
@@ -133,8 +133,8 @@ export default class ParsedURL {
    * @return {!RegExp}
    */
   static _urlRegex() {
-    if (Common.ParsedURL._urlRegexInstance) {
-      return Common.ParsedURL._urlRegexInstance;
+    if (ParsedURL._urlRegexInstance) {
+      return ParsedURL._urlRegexInstance;
     }
     // RegExp groups:
     // 1 - scheme, hostname, ?port
@@ -153,10 +153,10 @@ export default class ParsedURL {
     const queryRegex = /(?:\?([^#]*))?/;
     const fragmentRegex = /(?:#(.*))?/;
 
-    Common.ParsedURL._urlRegexInstance = new RegExp(
+    ParsedURL._urlRegexInstance = new RegExp(
         '^(' + schemeRegex.source + userRegex.source + hostRegex.source + portRegex.source + ')' + pathRegex.source +
         queryRegex.source + fragmentRegex.source + '$');
-    return Common.ParsedURL._urlRegexInstance;
+    return ParsedURL._urlRegexInstance;
   }
 
   /**
@@ -182,7 +182,7 @@ export default class ParsedURL {
    * @return {string}
    */
   static extractExtension(url) {
-    url = Common.ParsedURL.urlWithoutHash(url);
+    url = ParsedURL.urlWithoutHash(url);
     const indexOfQuestionMark = url.indexOf('?');
     if (indexOfQuestionMark !== -1) {
       url = url.substr(0, indexOfQuestionMark);
@@ -278,7 +278,7 @@ export default class ParsedURL {
    */
   static splitLineAndColumn(string) {
     // Only look for line and column numbers in the path to avoid matching port numbers.
-    const beforePathMatch = string.match(Common.ParsedURL._urlRegex());
+    const beforePathMatch = string.match(ParsedURL._urlRegex());
     let beforePath = '';
     let pathAndAfter = string;
     if (beforePathMatch) {
@@ -417,10 +417,10 @@ export default class ParsedURL {
 }
 
 /**
- * @return {?Common.ParsedURL}
+ * @return {?ParsedURL}
  */
 String.prototype.asParsedURL = function() {
-  const parsedURL = new Common.ParsedURL(this.toString());
+  const parsedURL = new ParsedURL(this.toString());
   if (parsedURL.isValid) {
     return parsedURL;
   }

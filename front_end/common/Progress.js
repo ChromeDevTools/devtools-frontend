@@ -31,7 +31,7 @@
 /**
  * @interface
  */
-export default class Progress {
+export class Progress {
   /**
    * @param {number} totalWork
    */
@@ -73,7 +73,7 @@ export default class Progress {
  */
 export class CompositeProgress {
   /**
-   * @param {!Common.Progress} parent
+   * @param {!Progress} parent
    */
   constructor(parent) {
     this._parent = parent;
@@ -92,10 +92,10 @@ export class CompositeProgress {
 
   /**
    * @param {number=} weight
-   * @return {!Common.SubProgress}
+   * @return {!SubProgress}
    */
   createSubProgress(weight) {
-    const child = new Common.SubProgress(this, weight);
+    const child = new SubProgress(this, weight);
     this._children.push(child);
     return child;
   }
@@ -116,12 +116,12 @@ export class CompositeProgress {
 }
 
 /**
- * @implements {Common.Progress}
+ * @implements {Progress}
  * @unrestricted
  */
 export class SubProgress {
   /**
-   * @param {!Common.CompositeProgress} composite
+   * @param {!CompositeProgress} composite
    * @param {number=} weight
    */
   constructor(composite, weight) {
@@ -186,12 +186,12 @@ export class SubProgress {
 }
 
 /**
- * @implements {Common.Progress}
+ * @implements {Progress}
  * @unrestricted
  */
 export class ProgressProxy {
   /**
-   * @param {?Common.Progress} delegate
+   * @param {?Progress} delegate
    * @param {function()=} doneCallback
    */
   constructor(delegate, doneCallback) {

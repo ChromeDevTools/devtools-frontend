@@ -28,21 +28,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * @typedef {{
- *    content: string,
- *    isEncoded: boolean,
- * }|{
- *    error: string,
- *    isEncoded: boolean,
- * }}
- */
-Common.DeferredContent;
+import {ResourceType} from './ResourceType.js';  // eslint-disable-line no-unused-vars
 
 /**
  * @interface
  */
-export default class ContentProvider {
+export class ContentProvider {
   /**
    * @return {string}
    */
@@ -50,7 +41,7 @@ export default class ContentProvider {
   }
 
   /**
-   * @return {!Common.ResourceType}
+   * @return {!ResourceType}
    */
   contentType() {
   }
@@ -71,7 +62,7 @@ export default class ContentProvider {
    * @param {string} query
    * @param {boolean} caseSensitive
    * @param {boolean} isRegex
-   * @return {!Promise<!Array<!Common.ContentProvider.SearchMatch>>}
+   * @return {!Promise<!Array<!SearchMatch>>}
    */
   searchInContent(query, caseSensitive, isRegex) {}
 }
@@ -95,7 +86,7 @@ export class SearchMatch {
  * @param {string} query
  * @param {boolean} caseSensitive
  * @param {boolean} isRegex
- * @return {!Array.<!Common.ContentProvider.SearchMatch>}
+ * @return {!Array.<!SearchMatch>}
  */
 export const performSearchInContent = function(content, query, caseSensitive, isRegex) {
   const regex = createSearchRegex(query, caseSensitive, isRegex);
@@ -106,7 +97,7 @@ export const performSearchInContent = function(content, query, caseSensitive, is
     const lineContent = text.lineAt(i);
     regex.lastIndex = 0;
     if (regex.exec(lineContent)) {
-      result.push(new Common.ContentProvider.SearchMatch(i, lineContent));
+      result.push(new SearchMatch(i, lineContent));
     }
   }
   return result;
@@ -144,3 +135,14 @@ Common.ContentProvider = ContentProvider;
 Common.ContentProvider.SearchMatch = SearchMatch;
 Common.ContentProvider.performSearchInContent = performSearchInContent;
 Common.ContentProvider.contentAsDataURL = contentAsDataURL;
+
+/**
+ * @typedef {{
+  *    content: string,
+  *    isEncoded: boolean,
+  * }|{
+  *    error: string,
+  *    isEncoded: boolean,
+  * }}
+  */
+Common.DeferredContent;

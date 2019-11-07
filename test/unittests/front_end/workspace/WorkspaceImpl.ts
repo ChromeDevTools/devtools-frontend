@@ -4,7 +4,7 @@
 
 const {assert} = chai;
 
-import {default as ResourceType, ResourceCategory} from '../../../../front_end/common/ResourceType.js';
+import * as Common from '../../../../front_end/common/common.js';
 import {default as WorkspaceImpl, ProjectStore, projectTypes} from '../../../../front_end/workspace/WorkspaceImpl.js';
 import {default as UISourceCode} from '../../../../front_end/workspace/UISourceCode.js';
 
@@ -29,8 +29,10 @@ describe('ProjectStore', () => {
 
   it('is able to add a UI source code', () => {
     const workspaceImpl = new WorkspaceImpl();
-    const testResourceCategory = new ResourceCategory('Category Test Title', 'Category Test Short Title');
-    const resourceType = new ResourceType('Type Test Name', 'Type Test Title', testResourceCategory, true);
+    const testResourceCategory =
+        new Common.ResourceType.ResourceCategory('Category Test Title', 'Category Test Short Title');
+    const resourceType =
+        new Common.ResourceType.ResourceType('Type Test Name', 'Type Test Title', testResourceCategory, true);
     const testProjectStore = new ProjectStore(workspaceImpl, 1, projectTypes.Service, 'Test Project');
     const testUISourceCode = new UISourceCode(testProjectStore, 'www.test.com', resourceType);
     testProjectStore.addUISourceCode(testUISourceCode);
@@ -40,8 +42,10 @@ describe('ProjectStore', () => {
 
   it('returns false when trying to add a UI source code that has already been added', () => {
     const workspaceImpl = new WorkspaceImpl();
-    const testResourceCategory = new ResourceCategory('Category Test Title', 'Category Test Short Title');
-    const resourceType = new ResourceType('Type Test Name', 'Type Test Title', testResourceCategory, true);
+    const testResourceCategory =
+        new Common.ResourceType.ResourceCategory('Category Test Title', 'Category Test Short Title');
+    const resourceType =
+        new Common.ResourceType.ResourceType('Type Test Name', 'Type Test Title', testResourceCategory, true);
     const testProjectStore = new ProjectStore(workspaceImpl, 1, projectTypes.Service, 'Test Project');
     const testUISourceCode = new UISourceCode(testProjectStore, 'www.test.com', resourceType);
     testProjectStore.addUISourceCode(testUISourceCode);
@@ -51,8 +55,10 @@ describe('ProjectStore', () => {
 
   it('is able to remove a UI source code using the URL', () => {
     const workspaceImpl = new WorkspaceImpl();
-    const testResourceCategory = new ResourceCategory('Category Test Title', 'Category Test Short Title');
-    const resourceType = new ResourceType('Type Test Name', 'Type Test Title', testResourceCategory, true);
+    const testResourceCategory =
+        new Common.ResourceType.ResourceCategory('Category Test Title', 'Category Test Short Title');
+    const resourceType =
+        new Common.ResourceType.ResourceType('Type Test Name', 'Type Test Title', testResourceCategory, true);
     const testProjectStore = new ProjectStore(workspaceImpl, 1, projectTypes.Service, 'Test Project');
     const testUISourceCode = new UISourceCode(testProjectStore, 'www.test.com', resourceType);
     testProjectStore.addUISourceCode(testUISourceCode);
@@ -71,8 +77,10 @@ describe('ProjectStore', () => {
 
   it('is able to rename a UI source code', () => {
     const workspaceImpl = new WorkspaceImpl();
-    const testResourceCategory = new ResourceCategory('Category Test Title', 'Category Test Short Title');
-    const resourceType = new ResourceType('Type Test Name', 'Type Test Title', testResourceCategory, true);
+    const testResourceCategory =
+        new Common.ResourceType.ResourceCategory('Category Test Title', 'Category Test Short Title');
+    const resourceType =
+        new Common.ResourceType.ResourceType('Type Test Name', 'Type Test Title', testResourceCategory, true);
     const testProjectStore = new ProjectStore(workspaceImpl, 1, projectTypes.Service, 'Test Project');
     const testUISourceCode = new UISourceCode(testProjectStore, 'www.test.com', resourceType);
     testProjectStore.addUISourceCode(testUISourceCode);
@@ -132,8 +140,10 @@ describe('WorkspaceImpl', () => {
 
   it('is able to return UI source code for URL from a certain project', () => {
     const workspaceImpl = new WorkspaceImpl();
-    const testResourceCategory = new ResourceCategory('Category Test Title', 'Category Test Short Title');
-    const resourceType = new ResourceType('Type Test Name', 'Type Test Title', testResourceCategory, true);
+    const testResourceCategory =
+        new Common.ResourceType.ResourceCategory('Category Test Title', 'Category Test Short Title');
+    const resourceType =
+        new Common.ResourceType.ResourceType('Type Test Name', 'Type Test Title', testResourceCategory, true);
     const testProjectStore = new ProjectStore(workspaceImpl, 1, projectTypes.Service, 'Test Project');
     const testUISourceCode = new UISourceCode(testProjectStore, 'www.test.com', resourceType);
     testProjectStore.addUISourceCode(testUISourceCode);
@@ -152,8 +162,10 @@ describe('WorkspaceImpl', () => {
 
   it('is able to return all the UI source codes given the URL from all the projects', () => {
     const workspaceImpl = new WorkspaceImpl();
-    const testResourceCategory = new ResourceCategory('Category Test Title', 'Category Test Short Title');
-    const resourceType = new ResourceType('Type Test Name', 'Type Test Title', testResourceCategory, true);
+    const testResourceCategory =
+        new Common.ResourceType.ResourceCategory('Category Test Title', 'Category Test Short Title');
+    const resourceType =
+        new Common.ResourceType.ResourceType('Type Test Name', 'Type Test Title', testResourceCategory, true);
 
     const testProjectStore1 = new ProjectStore(workspaceImpl, 1, projectTypes.Service, 'Test Project 1');
     const testUISourceCode1 = new UISourceCode(testProjectStore1, 'www.test1.com', resourceType);
@@ -177,8 +189,10 @@ describe('WorkspaceImpl', () => {
 
   it('returns UI source codes for a certain type', () => {
     const workspaceImpl = new WorkspaceImpl();
-    const testResourceCategory = new ResourceCategory('Category Test Title', 'Category Test Short Title');
-    const resourceType = new ResourceType('Type Test Name', 'Type Test Title', testResourceCategory, true);
+    const testResourceCategory =
+        new Common.ResourceType.ResourceCategory('Category Test Title', 'Category Test Short Title');
+    const resourceType =
+        new Common.ResourceType.ResourceType('Type Test Name', 'Type Test Title', testResourceCategory, true);
 
     const testProjectStore1 = new ProjectStore(workspaceImpl, 1, projectTypes.Service, 'Test Project 1');
     const testUISourceCode1 = new UISourceCode(testProjectStore1, 'www.test1.com', resourceType);
@@ -214,8 +228,10 @@ describe('WorkspaceImpl', () => {
 
   it('returns UI source codes for all its projects', () => {
     const workspaceImpl = new WorkspaceImpl();
-    const testResourceCategory = new ResourceCategory('Category Test Title', 'Category Test Short Title');
-    const resourceType = new ResourceType('Type Test Name', 'Type Test Title', testResourceCategory, true);
+    const testResourceCategory =
+        new Common.ResourceType.ResourceCategory('Category Test Title', 'Category Test Short Title');
+    const resourceType =
+        new Common.ResourceType.ResourceType('Type Test Name', 'Type Test Title', testResourceCategory, true);
 
     const testProjectStore1 = new ProjectStore(workspaceImpl, 1, projectTypes.Service, 'Test Project 1');
     const testUISourceCode1 = new UISourceCode(testProjectStore1, 'www.test1.com', resourceType);

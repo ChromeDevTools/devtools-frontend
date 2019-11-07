@@ -5,7 +5,7 @@
 /**
  * @unrestricted
  */
-export default class Throttler {
+export class Throttler {
   /**
    * @param {number} timeout
    */

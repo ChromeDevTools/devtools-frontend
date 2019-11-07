@@ -5,6 +5,7 @@
     ],
     "modules": [
         "common.js",
+        "common-legacy.js",
         "EventTarget.js",
         "Object.js",
         "Worker.js",

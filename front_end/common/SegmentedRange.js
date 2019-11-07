@@ -20,7 +20,7 @@ export class Segment {
   }
 
   /**
-   * @param {!Common.Segment} that
+   * @param {!Segment} that
    * @return {boolean}
    */
   intersects(that) {
@@ -31,18 +31,18 @@ export class Segment {
 /**
  * @unrestricted
  */
-export default class SegmentedRange {
+export class SegmentedRange {
   /**
-   * @param {(function(!Common.Segment, !Common.Segment): ?Common.Segment)=} mergeCallback
+   * @param {(function(!Segment, !Segment): ?Segment)=} mergeCallback
    */
   constructor(mergeCallback) {
-    /** @type {!Array<!Common.Segment>} */
+    /** @type {!Array<!Segment>} */
     this._segments = [];
     this._mergeCallback = mergeCallback;
   }
 
   /**
-   * @param {!Common.Segment} newSegment
+   * @param {!Segment} newSegment
    */
   append(newSegment) {
     // 1. Find the proper insertion point for new segment
@@ -61,7 +61,7 @@ export default class SegmentedRange {
         // If an old segment entirely contains new one, split it in two.
         if (newSegment.end < precedingSegment.end) {
           this._segments.splice(
-              startIndex, 0, new Common.Segment(newSegment.end, precedingSegment.end, precedingSegment.data));
+              startIndex, 0, new Segment(newSegment.end, precedingSegment.end, precedingSegment.data));
         }
         precedingSegment.end = newSegment.begin;
       }
@@ -84,23 +84,23 @@ export default class SegmentedRange {
   }
 
   /**
-   * @param {!Common.SegmentedRange} that
+   * @param {!SegmentedRange} that
    */
   appendRange(that) {
     that.segments().forEach(segment => this.append(segment));
   }
 
   /**
-   * @return {!Array<!Common.Segment>}
+   * @return {!Array<!Segment>}
    */
   segments() {
     return this._segments;
   }
 
   /**
-   * @param {!Common.Segment} first
-   * @param {!Common.Segment} second
-   * @return {?Common.Segment}
+   * @param {!Segment} first
+   * @param {!Segment} second
+   * @return {?Segment}
    */
   _tryMerge(first, second) {
     const merged = this._mergeCallback && this._mergeCallback(first, second);

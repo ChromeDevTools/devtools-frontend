@@ -303,7 +303,7 @@ CssOverview.CSSOverviewCompletedView = class extends UI.PanelWithSidebar {
         ${
         unusedDeclarations.size > 0 ?
             this._groupToFragment(unusedDeclarations, 'unused-declarations', 'declaration') :
-            UI.Fragment.build`<div class="horizontally-padded">${ls`There are no unused rules.`}</div>`}
+            UI.Fragment.build`<div class="horizontally-padded">${ls`There are no unused declarations.`}</div>`}
       </div>
 
       <div $="media-queries" class="results-section media-queries">

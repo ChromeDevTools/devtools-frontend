@@ -15,7 +15,7 @@
   <message name="IDS_DEVTOOLS_0ea334a2748ee1170ae958009e427b10" desc="Label to explain why bottom values are ignored">
     Bottom applied to a statically positioned element
   </message>
-  <message name="IDS_DEVTOOLS_1049ae5279b7a1b50dddec905ed992df" desc="Label for the number ofstyle rules in CSS Overview report">
+  <message name="IDS_DEVTOOLS_1049ae5279b7a1b50dddec905ed992df" desc="Label for the number of style rules in CSS Overview report">
     Style rules
   </message>
   <message name="IDS_DEVTOOLS_10ec75beede86934cfa07f69eddcfd65" desc="Label to explain why left values are ignored">
@@ -75,9 +75,6 @@
   <message name="IDS_DEVTOOLS_8a2d39bc733e82310760e2767889673a" desc="Title of the CSS Overview Panel">
     CSS Overview
   </message>
-  <message name="IDS_DEVTOOLS_93936d5ce040a34f129f1211a1efac9c" desc="Message to show when no unused rules in the target page">
-    There are no unused rules.
-  </message>
   <message name="IDS_DEVTOOLS_95a1c24d3f76e7b904c4dc2aeddb3ff1" desc="Label for unique border colors in the CSS Overview Panel">
     Border colors: <ph name="SORTEDBORDERCOLORS_LENGTH">$1s<ex>32</ex></ph>
   </message>
@@ -96,8 +93,11 @@
   <message name="IDS_DEVTOOLS_d4a993a4b0d13c2cc4ce9387af1604ce" desc="Label for the 'Clear overview' button in the CSS Overview report">
     Clear overview
   </message>
-  <message name="IDS_DEVTOOLS_daee0f0fc555c02342c4e00a1dbf642a" desc="Label for the number of media rules in the CSS Overview report">
+  <message name="IDS_DEVTOOLS_daee0f0fc555c02342c4e00a1dbf642a" desc="Label for the number of media queries in the CSS Overview report">
     Media queries
+  </message>
+  <message name="IDS_DEVTOOLS_db67f7f9291639f023033f5cc4954bca" desc="Message to show when no unused declarations in the target page">
+    There are no unused declarations.
   </message>
   <message name="IDS_DEVTOOLS_e9c6934e961dad71d311f68c679dfd3b" desc="Label for the capture button in the CSS Overview Panel">
     Capture overview

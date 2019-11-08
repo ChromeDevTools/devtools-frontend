@@ -57,6 +57,14 @@ def eslint_path():
     return path.join(node_modules_path(), 'eslint', 'bin', 'eslint.js')
 
 
+def check_localizable_resources_path():
+    return path.join(devtools_root_path(), 'scripts', 'check_localizable_resources.js')
+
+
+def check_localized_strings_path():
+    return path.join(devtools_root_path(), 'scripts', 'check_localizability.js')
+
+
 def karma_path():
     return path.join(node_modules_path(), 'karma', 'bin', 'karma')
 

@@ -127,29 +127,30 @@ def _CheckFormat(input_api, output_api):
     ]
 
 
-def _CheckDevtoolsLocalizableResources(input_api, output_api, check_all_files=False):  # pylint: disable=invalid-name
-    devtools_root = input_api.PresubmitLocalPath()
-    devtools_front_end = input_api.os_path.join(devtools_root, 'front_end')
-    affected_front_end_files = _getAffectedFiles(input_api, [devtools_front_end], [], ['.js', 'module.json', '.grd', '.grdp'])
-    if len(affected_front_end_files) == 0 and check_all_files == False:
-        return []
-    script_path = input_api.os_path.join(input_api.PresubmitLocalPath(), 'scripts', 'check_localizable_resources.js')
-    args = ['--autofix']
-    return _checkWithNodeScript(input_api, output_api, script_path, args)
-
-
 def _CheckDevtoolsLocalization(input_api, output_api, check_all_files=False):  # pylint: disable=invalid-name
     devtools_root = input_api.PresubmitLocalPath()
-    devtools_front_end = input_api.os_path.join(devtools_root, 'front_end')
-    affected_front_end_files = _getAffectedFiles(input_api, [devtools_front_end], ['D'], ['.js', '.grdp'])
-    if len(affected_front_end_files) == 0 and check_all_files == False:
-        return []
-
-    script_path = input_api.os_path.join(input_api.PresubmitLocalPath(), 'scripts', 'check_localizability.js')
+    script_path = input_api.os_path.join(devtools_root, 'scripts', 'test', 'run_localization_check.py')
     if check_all_files == True:
-        return _checkWithNodeScript(input_api, output_api, script_path, ['-a'])
+        # Scan all files and fix any errors
+        args = ['--autofix', '--a']
     else:
-        return _checkWithNodeScript(input_api, output_api, script_path, affected_front_end_files)
+        devtools_front_end = input_api.os_path.join(devtools_root, 'front_end')
+        affected_front_end_files = _getAffectedFiles(input_api, [devtools_front_end], ['D'],
+                                                     ['.js', '.grdp', '.grd', 'module.json'])
+
+        if len(affected_front_end_files) == 0:
+            return []
+        # Scan only added or modified files with specific extensions.
+        args = [
+            '--autofix',
+            '--files',
+        ] + affected_front_end_files
+    process = input_api.subprocess.Popen(
+        [input_api.python_executable, script_path] + args, stdout=input_api.subprocess.PIPE, stderr=input_api.subprocess.STDOUT)
+    out, _ = process.communicate()
+    if process.returncode != 0:
+        return [output_api.PresubmitError(out)]
+    return [output_api.PresubmitNotifyResult(out)]
 
 
 def _CheckDevtoolsStyle(input_api, output_api):
@@ -221,7 +222,6 @@ def CheckChangeOnUpload(input_api, output_api):
     results.extend(_CheckDevtoolsStyle(input_api, output_api))
     results.extend(_CheckOptimizeSVGHashes(input_api, output_api))
     results.extend(_CheckCSSViolations(input_api, output_api))
-    results.extend(_CheckDevtoolsLocalizableResources(input_api, output_api))
     results.extend(_CheckDevtoolsLocalization(input_api, output_api))
     results.extend(_CheckChangesAreExclusiveToDirectory(input_api, output_api))
     return results
@@ -230,7 +230,6 @@ def CheckChangeOnUpload(input_api, output_api):
 def CheckChangeOnCommit(input_api, output_api):
     results = []
     results.extend(_CommonChecks(input_api, output_api))
-    results.extend(_CheckDevtoolsLocalizableResources(input_api, output_api, True))
     results.extend(_CheckDevtoolsLocalization(input_api, output_api, True))
     results.extend(_CheckChangesAreExclusiveToDirectory(input_api, output_api))
     results.extend(input_api.canned_checks.CheckChangeHasDescription(input_api, output_api))

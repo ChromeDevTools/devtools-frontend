@@ -2529,7 +2529,7 @@
       inherited: true,
       field_group: "*",
       field_template: "keyword",
-      keywords: ["normal", "break-word"],
+      keywords: ["normal", "break-word", "anywhere"],
       default_value: "normal",
       typedom_types: ["Keyword"]
     },

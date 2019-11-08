@@ -6,17 +6,11 @@ vars = {
   'build_url': 'https://chromium.googlesource.com/chromium/src/build.git',
   'build_revision': '61ec5dc258b9fbc17504d1276e0c3eaf4656e372',
 
-  'buildtools_url': 'https://chromium.googlesource.com/chromium/src/buildtools.git',
-  'buildtools_revision': '140e4d7c45ffb55ce5dc4d11a0c3938363cd8257',
-
   'depot_tools_url': 'https://chromium.googlesource.com/chromium/tools/depot_tools',
   'depot_tools_revision': '512f92b73181c8e1d99d38cd9b73fbf41151636a',
 
   'inspector_protocol_url': 'https://chromium.googlesource.com/deps/inspector_protocol',
   'inspector_protocol_revision': 'd2fc9b958e1eeb1e956f3e2208afa9923bdc9b67',
-
-  'clang_format_url': 'https://chromium.googlesource.com/chromium/llvm-project/cfe/tools/clang-format.git',
-  'clang_format_revision': 'bb994c6f067340c1135eb43eed84f4b33cfa7397',
 
   # GN CIPD package version.
   'gn_version': 'git_revision:ad9e442d92dcd9ee73a557428cfc336b55cbd533',
@@ -31,12 +25,6 @@ vars = {
 allowed_hosts = [ 'chromium.googlesource.com' ]
 
 deps = {
-  'devtools-frontend/buildtools/clang_format/script':
-    Var('clang_format_url') + '@' + Var('clang_format_revision'),
-
-  'devtools-frontend/buildtools':
-    Var('buildtools_url') + '@' + Var('buildtools_revision'),
-
   'devtools-frontend/buildtools/linux64': {
     'packages': [
       {
@@ -125,53 +113,6 @@ hooks = [
         'python',
         'devtools-frontend/third_party/depot_tools/update_depot_tools_toggle.py',
         '--disable',
-    ],
-  },
-
-  {
-    'name': 'sysroot_x64',
-    'pattern': '.',
-    'condition': 'checkout_linux and checkout_x64',
-    'action': ['python',
-               'devtools-frontend/build/linux/sysroot_scripts/install-sysroot.py',
-               '--arch=x64'],
-  },
-
-  # Pull clang-format binaries using checked-in hashes.
-  {
-    'name': 'clang_format_win',
-    'pattern': '.',
-    'condition': 'host_os == "win"',
-    'action': [ 'python',
-                'devtools-frontend/third_party/depot_tools/download_from_google_storage.py',
-                '--no_resume',
-                '--no_auth',
-                '--bucket', 'chromium-clang-format',
-                '-s', 'devtools-frontend/buildtools/win/clang-format.exe.sha1',
-    ],
-  },
-  {
-    'name': 'clang_format_mac',
-    'pattern': '.',
-    'condition': 'host_os == "mac"',
-    'action': [ 'python',
-                'devtools-frontend/third_party/depot_tools/download_from_google_storage.py',
-                '--no_resume',
-                '--no_auth',
-                '--bucket', 'chromium-clang-format',
-                '-s', 'devtools-frontend/buildtools/mac/clang-format.sha1',
-    ],
-  },
-  {
-    'name': 'clang_format_linux',
-    'pattern': '.',
-    'condition': 'host_os == "linux"',
-    'action': [ 'python',
-                'devtools-frontend/third_party/depot_tools/download_from_google_storage.py',
-                '--no_resume',
-                '--no_auth',
-                '--bucket', 'chromium-clang-format',
-                '-s', 'devtools-frontend/buildtools/linux64/clang-format.sha1',
     ],
   },
 

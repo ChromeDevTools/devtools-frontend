@@ -47,9 +47,11 @@ CoverageTestRunner.resumeCoverageModel = async function() {
 /**
  * @return {!Promise}
  */
-CoverageTestRunner.pollCoverage = function() {
+CoverageTestRunner.pollCoverage = async function() {
   const coverageView = self.runtime.sharedInstance(Coverage.CoverageView);
-  return coverageView._model._takeAllCoverage();
+  // Make sure not to have two instances of _pollAndCallback running at the same time.
+  await coverageView._model._currentPollPromise;
+  return coverageView._model._pollAndCallback();
 };
 
 /**

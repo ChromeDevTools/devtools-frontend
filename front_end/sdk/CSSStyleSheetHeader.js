@@ -38,7 +38,8 @@ export default class CSSStyleSheetHeader {
     if (!this._originalContentProvider) {
       const lazyContent = /** @type {function():!Promise<!Common.DeferredContent>} */ (async () => {
         const originalText = await this._cssModel.originalStyleSheetText(this);
-        if (!originalText) {
+        // originalText might be an empty string which should not trigger the error
+        if (originalText === null) {
           return {error: ls`Could not find the original style sheet.`, isEncoded: false};
         }
         return {content: originalText, isEncoded: false};

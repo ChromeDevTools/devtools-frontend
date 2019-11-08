@@ -316,7 +316,7 @@ Coverage.CoverageListView.GridNode = class extends DataGrid.SortableDataGridNode
         const unusedSizeSpan = cell.createChild('span');
         const unusedPercentsSpan = cell.createChild('span', 'percent-value');
         unusedSizeSpan.textContent = Number.withThousandsSeparator(unusedSize);
-        const unusedPercentFormatted = ls`${this._percentageString(unusedSize, this._coverageInfo.size(), 1)}`;
+        const unusedPercentFormatted = ls`${this._percentageString(unusedSize, this._coverageInfo.size(), 1, 100)}`;
         unusedPercentsSpan.textContent = unusedPercentFormatted;
         UI.ARIAUtils.markAsHidden(unusedPercentsSpan);
         UI.ARIAUtils.markAsHidden(unusedSizeSpan);
@@ -324,11 +324,12 @@ Coverage.CoverageListView.GridNode = class extends DataGrid.SortableDataGridNode
         break;
       case 'bars':
         const barContainer = cell.createChild('div', 'bar-container');
-        const unusedPercent = this._percentageString(this._coverageInfo.unusedSize(), this._coverageInfo.size(), 1);
-        const usedPercent = this._percentageString(this._coverageInfo.usedSize(), this._coverageInfo.size(), 1);
+        const unusedPercent =
+            this._percentageString(this._coverageInfo.unusedSize(), this._coverageInfo.size(), 1, 100);
+        const usedPercent = this._percentageString(this._coverageInfo.usedSize(), this._coverageInfo.size(), 1, 0);
         if (this._coverageInfo.unusedSize() > 0) {
           const unusedSizeBar = barContainer.createChild('div', 'bar bar-unused-size');
-          unusedSizeBar.style.width = this._percentageString(this._coverageInfo.unusedSize(), this._maxSize, 4);
+          unusedSizeBar.style.width = this._percentageString(this._coverageInfo.unusedSize(), this._maxSize, 4, 100);
           if (this._coverageInfo.type() & Coverage.CoverageType.JavaScriptPerFunction) {
             unusedSizeBar.title = ls`${this._coverageInfo.unusedSize()} bytes (${
                 unusedPercent}) belong to functions that have not (yet) been executed.`;
@@ -339,7 +340,7 @@ Coverage.CoverageListView.GridNode = class extends DataGrid.SortableDataGridNode
         }
         if (this._coverageInfo.usedSize() > 0) {
           const usedSizeBar = barContainer.createChild('div', 'bar bar-used-size');
-          const usedPercentageString = this._percentageString(this._coverageInfo.usedSize(), this._maxSize, 4);
+          const usedPercentageString = this._percentageString(this._coverageInfo.usedSize(), this._maxSize, 4, 0);
           usedSizeBar.style.width = usedPercentageString;
           if (this._coverageInfo.type() & Coverage.CoverageType.JavaScriptPerFunction) {
             usedSizeBar.title = ls`${this._coverageInfo.usedSize()} bytes (${
@@ -358,10 +359,12 @@ Coverage.CoverageListView.GridNode = class extends DataGrid.SortableDataGridNode
    * @param {number} value
    * @param {number} max
    * @param {number} numDecimalPlaces
+   * @param {number} defaultValue
    * @return {string}
    */
-  _percentageString(value, max, numDecimalPlaces) {
-    return (value / max * 100).toFixed(numDecimalPlaces) + '%';
+  _percentageString(value, max, numDecimalPlaces, defaultValue) {
+    const percentage = (value / max) * 100 || defaultValue;
+    return percentage.toFixed(numDecimalPlaces) + '%';
   }
 
   /**

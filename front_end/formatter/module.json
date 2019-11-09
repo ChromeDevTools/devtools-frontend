@@ -2,7 +2,9 @@
     "dependencies": [
         "common"
     ],
-    "scripts": [
+    "scripts": [],
+    "modules": [
+        "formatter.js",
         "FormatterWorkerPool.js",
         "ScriptFormatter.js"
     ]

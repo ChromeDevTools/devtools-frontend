@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-ColorPicker.ContrastOverlay = class {
+export class ContrastOverlay {
   /**
    * @param {!ColorPicker.ContrastInfo} contrastInfo
    * @param {!Element} colorElement
@@ -67,9 +67,9 @@ ColorPicker.ContrastOverlay = class {
       }
     }
   }
-};
+}
 
-ColorPicker.ContrastRatioLineBuilder = class {
+export class ContrastRatioLineBuilder {
   /**
    * @param {!ColorPicker.ContrastInfo} contrastInfo
    */
@@ -213,4 +213,16 @@ ColorPicker.ContrastRatioLineBuilder = class {
     }
     return pathBuilder.join(' ');
   }
-};
+}
+
+/* Legacy exported object */
+self.ColorPicker = self.ColorPicker || {};
+
+/* Legacy exported object */
+ColorPicker = ColorPicker || {};
+
+/** @constructor */
+ColorPicker.ContrastOverlay = ContrastOverlay;
+
+/** @constructor */
+ColorPicker.ContrastRatioLineBuilder = ContrastRatioLineBuilder;

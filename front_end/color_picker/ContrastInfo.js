@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-ColorPicker.ContrastInfo = class extends Common.Object {
+export class ContrastInfo extends Common.Object {
   /**
    * @param {?SDK.CSSModel.ContrastInfo} contrastInfo
    */
@@ -28,11 +28,9 @@ ColorPicker.ContrastInfo = class extends Common.Object {
     }
 
     this._isNull = false;
-    const isLargeFont =
-        ColorPicker.ContrastInfo.computeIsLargeFont(contrastInfo.computedFontSize, contrastInfo.computedFontWeight);
+    const isLargeFont = ContrastInfo.computeIsLargeFont(contrastInfo.computedFontSize, contrastInfo.computedFontWeight);
 
-    this._contrastRatioThresholds =
-        ColorPicker.ContrastInfo._ContrastThresholds[(isLargeFont ? 'largeFont' : 'normalFont')];
+    this._contrastRatioThresholds = _ContrastThresholds[(isLargeFont ? 'largeFont' : 'normalFont')];
     const bgColorText = contrastInfo.backgroundColors[0];
     const bgColor = Common.Color.parse(bgColorText);
     if (bgColor) {
@@ -53,7 +51,7 @@ ColorPicker.ContrastInfo = class extends Common.Object {
   setColor(fgColor) {
     this._fgColor = fgColor;
     this._updateContrastRatio();
-    this.dispatchEventToListeners(ColorPicker.ContrastInfo.Events.ContrastInfoUpdated);
+    this.dispatchEventToListeners(Events.ContrastInfoUpdated);
   }
 
   /**
@@ -75,7 +73,7 @@ ColorPicker.ContrastInfo = class extends Common.Object {
    */
   setBgColor(bgColor) {
     this._setBgColorInternal(bgColor);
-    this.dispatchEventToListeners(ColorPicker.ContrastInfo.Events.ContrastInfoUpdated);
+    this.dispatchEventToListeners(Events.ContrastInfoUpdated);
   }
 
   /**
@@ -145,14 +143,25 @@ ColorPicker.ContrastInfo = class extends Common.Object {
       return fontSizePt >= 18;
     }
   }
-};
+}
 
 /** @enum {symbol} */
-ColorPicker.ContrastInfo.Events = {
+export const Events = {
   ContrastInfoUpdated: Symbol('ContrastInfoUpdated')
 };
 
-ColorPicker.ContrastInfo._ContrastThresholds = {
+const _ContrastThresholds = {
   largeFont: {aa: 3.0, aaa: 4.5},
   normalFont: {aa: 4.5, aaa: 7.0}
 };
+
+/* Legacy exported object */
+self.ColorPicker = self.ColorPicker || {};
+
+/* Legacy exported object */
+ColorPicker = ColorPicker || {};
+
+/** @constructor */
+ColorPicker.ContrastInfo = ContrastInfo;
+
+ColorPicker.ContrastInfo.Events = Events;

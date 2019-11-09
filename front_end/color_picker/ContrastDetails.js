@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-ColorPicker.ContrastDetails = class extends Common.Object {
+export class ContrastDetails extends Common.Object {
   /**
    * @param {!ColorPicker.ContrastInfo} contrastInfo
    * @param {!Element} contentElement
@@ -85,7 +85,7 @@ ColorPicker.ContrastDetails = class extends Common.Object {
     pickerToolbar.appendToolbarItem(this._bgColorPickerButton);
     this._bgColorPickedBound = this._bgColorPicked.bind(this);
 
-    this._bgColorSwatch = new ColorPicker.ContrastDetails.Swatch(bgColorContainer);
+    this._bgColorSwatch = new Swatch(bgColorContainer);
 
     this._contrastInfo.addEventListener(ColorPicker.ContrastInfo.Events.ContrastInfoUpdated, this._update.bind(this));
   }
@@ -251,7 +251,7 @@ ColorPicker.ContrastDetails = class extends Common.Object {
     this._bgColorPickerButton.setToggled(enabled);
 
     if (shouldTriggerEvent) {
-      this.dispatchEventToListeners(ColorPicker.ContrastDetails.Events.BackgroundColorPickerWillBeToggled, enabled);
+      this.dispatchEventToListeners(Events.BackgroundColorPickerWillBeToggled, enabled);
     }
 
     Host.InspectorFrontendHost.setEyeDropperActive(enabled);
@@ -275,13 +275,13 @@ ColorPicker.ContrastDetails = class extends Common.Object {
     this._toggleBackgroundColorPicker(false);
     Host.InspectorFrontendHost.bringToFront();
   }
-};
+}
 
-ColorPicker.ContrastDetails.Events = {
+export const Events = {
   BackgroundColorPickerWillBeToggled: Symbol('BackgroundColorPickerWillBeToggled')
 };
 
-ColorPicker.ContrastDetails.Swatch = class {
+export class Swatch {
   /**
    * @param {!Element} parentElement
    */
@@ -304,4 +304,18 @@ ColorPicker.ContrastDetails.Swatch = class {
     // Show border if the swatch is white.
     this._swatchElement.classList.toggle('swatch-inner-white', bgColor.hsla()[2] > 0.9);
   }
-};
+}
+
+/* Legacy exported object */
+self.ColorPicker = self.ColorPicker || {};
+
+/* Legacy exported object */
+ColorPicker = ColorPicker || {};
+
+/** @constructor */
+ColorPicker.ContrastDetails = ContrastDetails;
+
+ColorPicker.ContrastDetails.Events = Events;
+
+/** @constructor */
+ColorPicker.ContrastDetails.Swatch = Swatch;

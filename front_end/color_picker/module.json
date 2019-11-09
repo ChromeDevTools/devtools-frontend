@@ -3,7 +3,9 @@
         "ui",
         "sdk"
     ],
-    "scripts": [
+    "scripts": [],
+    "modules": [
+        "color_picker.js",
         "ContrastInfo.js",
         "ContrastOverlay.js",
         "ContrastDetails.js",

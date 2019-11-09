@@ -270,6 +270,7 @@ GENERATED_SKIP_COMPILATION_FILES = [
     'cm_web_modes/css.js',
     'cm_web_modes/xml.js',
     'cm_headless/headlesscodemirror.js',
+    'diff/diff_match_patch.js',
 ]
 
 

@@ -2,8 +2,10 @@
     "dependencies": [
         "common"
     ],
-    "scripts": [
-        "Diff.js",
+    "scripts": [],
+    "modules": [
+        "diff.js",
+        "DiffWrapper.js",
         "diff_match_patch.js"
     ],
     "skip_compilation": [

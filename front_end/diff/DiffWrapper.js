@@ -1,7 +1,8 @@
 // Copyright 2015 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-Diff.Diff = {
+
+export const DiffWrapper = {
   /**
    * @param {string} text1
    * @param {string} text2
@@ -28,7 +29,7 @@ Diff.Diff = {
     const text1 = lines1.map(line => idMap.toChar(line)).join('');
     const text2 = lines2.map(line => idMap.toChar(line)).join('');
 
-    const diff = Diff.Diff.charDiff(text1, text2);
+    const diff = DiffWrapper.charDiff(text1, text2);
     const lineDiff = [];
     for (let i = 0; i < diff.length; i++) {
       const lines = [];
@@ -51,10 +52,10 @@ Diff.Diff = {
     let removed = 0;
     for (let i = 0; i < diff.length; ++i) {
       const token = diff[i];
-      if (token[0] === Diff.Diff.Operation.Equal) {
+      if (token[0] === Operation.Equal) {
         flush();
-        normalized.push([Diff.Diff.Operation.Equal, token[1].length]);
-      } else if (token[0] === Diff.Diff.Operation.Delete) {
+        normalized.push([Operation.Equal, token[1].length]);
+      } else if (token[0] === Operation.Delete) {
         removed += token[1].length;
       } else {
         added += token[1].length;
@@ -66,13 +67,13 @@ Diff.Diff = {
     function flush() {
       if (added && removed) {
         const min = Math.min(added, removed);
-        normalized.push([Diff.Diff.Operation.Edit, min]);
+        normalized.push([Operation.Edit, min]);
         added -= min;
         removed -= min;
       }
       if (added || removed) {
         const balance = added - removed;
-        const type = balance < 0 ? Diff.Diff.Operation.Delete : Diff.Diff.Operation.Insert;
+        const type = balance < 0 ? Operation.Delete : Operation.Insert;
         normalized.push([type, Math.abs(balance)]);
         added = 0;
         removed = 0;
@@ -83,12 +84,23 @@ Diff.Diff = {
 };
 
 /** @enum {number} */
-Diff.Diff.Operation = {
+export const Operation = {
   Equal: 0,
   Insert: 1,
   Delete: -1,
   Edit: 2
 };
+
+/* Legacy exported object */
+self.Diff = self.Diff || {};
+
+/* Legacy exported object */
+Diff = Diff || {};
+
+Diff.Diff = DiffWrapper;
+
+/** @enum {number} */
+Diff.Diff.Operation = Operation;
 
 /** @typedef {!Array<!{0: !Diff.Diff.Operation, 1: !Array<string>}>} */
 Diff.Diff.DiffArray;

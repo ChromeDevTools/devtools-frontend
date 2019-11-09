@@ -4,7 +4,7 @@
 /**
  * @unrestricted
  */
-InlineEditor.CSSShadowModel = class {
+export class CSSShadowModel {
   /**
    * @param {boolean} isBoxShadow
    */
@@ -16,29 +16,29 @@ InlineEditor.CSSShadowModel = class {
     this._blurRadius = InlineEditor.CSSLength.zero();
     this._spreadRadius = InlineEditor.CSSLength.zero();
     this._color = /** @type {!Common.Color} */ (Common.Color.parse('black'));
-    this._format = [InlineEditor.CSSShadowModel._Part.OffsetX, InlineEditor.CSSShadowModel._Part.OffsetY];
+    this._format = [_Part.OffsetX, _Part.OffsetY];
   }
 
   /**
    * @param {string} text
-   * @return {!Array<!InlineEditor.CSSShadowModel>}
+   * @return {!Array<!CSSShadowModel>}
    */
   static parseTextShadow(text) {
-    return InlineEditor.CSSShadowModel._parseShadow(text, false);
+    return CSSShadowModel._parseShadow(text, false);
   }
 
   /**
    * @param {string} text
-   * @return {!Array<!InlineEditor.CSSShadowModel>}
+   * @return {!Array<!CSSShadowModel>}
    */
   static parseBoxShadow(text) {
-    return InlineEditor.CSSShadowModel._parseShadow(text, true);
+    return CSSShadowModel._parseShadow(text, true);
   }
 
   /**
    * @param {string} text
    * @param {boolean} isBoxShadow
-   * @return {!Array<!InlineEditor.CSSShadowModel>}
+   * @return {!Array<!CSSShadowModel>}
    */
   static _parseShadow(text, isBoxShadow) {
     const shadowTexts = [];
@@ -56,7 +56,7 @@ InlineEditor.CSSShadowModel = class {
 
     const shadows = [];
     for (let i = 0; i < shadowTexts.length; i++) {
-      const shadow = new InlineEditor.CSSShadowModel(isBoxShadow);
+      const shadow = new CSSShadowModel(isBoxShadow);
       shadow._format = [];
       let nextPartAllowed = true;
       const regexes = [/inset/gi, Common.Color.Regex, InlineEditor.CSSLength.Regex];
@@ -78,42 +78,40 @@ InlineEditor.CSSShadowModel = class {
 
           if (result.regexIndex === 0) {
             shadow._inset = true;
-            shadow._format.push(InlineEditor.CSSShadowModel._Part.Inset);
+            shadow._format.push(_Part.Inset);
           } else if (result.regexIndex === 1) {
             const color = Common.Color.parse(result.value);
             if (!color) {
               return [];
             }
             shadow._color = color;
-            shadow._format.push(InlineEditor.CSSShadowModel._Part.Color);
+            shadow._format.push(_Part.Color);
           } else if (result.regexIndex === 2) {
             const length = InlineEditor.CSSLength.parse(result.value);
             if (!length) {
               return [];
             }
             const previousPart = shadow._format.length > 0 ? shadow._format[shadow._format.length - 1] : '';
-            if (previousPart === InlineEditor.CSSShadowModel._Part.OffsetX) {
+            if (previousPart === _Part.OffsetX) {
               shadow._offsetY = length;
-              shadow._format.push(InlineEditor.CSSShadowModel._Part.OffsetY);
-            } else if (previousPart === InlineEditor.CSSShadowModel._Part.OffsetY) {
+              shadow._format.push(_Part.OffsetY);
+            } else if (previousPart === _Part.OffsetY) {
               shadow._blurRadius = length;
-              shadow._format.push(InlineEditor.CSSShadowModel._Part.BlurRadius);
-            } else if (previousPart === InlineEditor.CSSShadowModel._Part.BlurRadius) {
+              shadow._format.push(_Part.BlurRadius);
+            } else if (previousPart === _Part.BlurRadius) {
               shadow._spreadRadius = length;
-              shadow._format.push(InlineEditor.CSSShadowModel._Part.SpreadRadius);
+              shadow._format.push(_Part.SpreadRadius);
             } else {
               shadow._offsetX = length;
-              shadow._format.push(InlineEditor.CSSShadowModel._Part.OffsetX);
+              shadow._format.push(_Part.OffsetX);
             }
           }
         }
       }
-      if (invalidCount(shadow, InlineEditor.CSSShadowModel._Part.OffsetX, 1, 1) ||
-          invalidCount(shadow, InlineEditor.CSSShadowModel._Part.OffsetY, 1, 1) ||
-          invalidCount(shadow, InlineEditor.CSSShadowModel._Part.Color, 0, 1) ||
-          invalidCount(shadow, InlineEditor.CSSShadowModel._Part.BlurRadius, 0, 1) ||
-          invalidCount(shadow, InlineEditor.CSSShadowModel._Part.Inset, 0, isBoxShadow ? 1 : 0) ||
-          invalidCount(shadow, InlineEditor.CSSShadowModel._Part.SpreadRadius, 0, isBoxShadow ? 1 : 0)) {
+      if (invalidCount(shadow, _Part.OffsetX, 1, 1) || invalidCount(shadow, _Part.OffsetY, 1, 1) ||
+          invalidCount(shadow, _Part.Color, 0, 1) || invalidCount(shadow, _Part.BlurRadius, 0, 1) ||
+          invalidCount(shadow, _Part.Inset, 0, isBoxShadow ? 1 : 0) ||
+          invalidCount(shadow, _Part.SpreadRadius, 0, isBoxShadow ? 1 : 0)) {
         return [];
       }
       shadows.push(shadow);
@@ -121,7 +119,7 @@ InlineEditor.CSSShadowModel = class {
     return shadows;
 
     /**
-     * @param {!InlineEditor.CSSShadowModel} shadow
+     * @param {!CSSShadowModel} shadow
      * @param {string} part
      * @param {number} min
      * @param {number} max
@@ -143,8 +141,8 @@ InlineEditor.CSSShadowModel = class {
    */
   setInset(inset) {
     this._inset = inset;
-    if (this._format.indexOf(InlineEditor.CSSShadowModel._Part.Inset) === -1) {
-      this._format.unshift(InlineEditor.CSSShadowModel._Part.Inset);
+    if (this._format.indexOf(_Part.Inset) === -1) {
+      this._format.unshift(_Part.Inset);
     }
   }
 
@@ -167,9 +165,9 @@ InlineEditor.CSSShadowModel = class {
    */
   setBlurRadius(blurRadius) {
     this._blurRadius = blurRadius;
-    if (this._format.indexOf(InlineEditor.CSSShadowModel._Part.BlurRadius) === -1) {
-      const yIndex = this._format.indexOf(InlineEditor.CSSShadowModel._Part.OffsetY);
-      this._format.splice(yIndex + 1, 0, InlineEditor.CSSShadowModel._Part.BlurRadius);
+    if (this._format.indexOf(_Part.BlurRadius) === -1) {
+      const yIndex = this._format.indexOf(_Part.OffsetY);
+      this._format.splice(yIndex + 1, 0, _Part.BlurRadius);
     }
   }
 
@@ -178,10 +176,10 @@ InlineEditor.CSSShadowModel = class {
    */
   setSpreadRadius(spreadRadius) {
     this._spreadRadius = spreadRadius;
-    if (this._format.indexOf(InlineEditor.CSSShadowModel._Part.SpreadRadius) === -1) {
+    if (this._format.indexOf(_Part.SpreadRadius) === -1) {
       this.setBlurRadius(this._blurRadius);
-      const blurIndex = this._format.indexOf(InlineEditor.CSSShadowModel._Part.BlurRadius);
-      this._format.splice(blurIndex + 1, 0, InlineEditor.CSSShadowModel._Part.SpreadRadius);
+      const blurIndex = this._format.indexOf(_Part.BlurRadius);
+      this._format.splice(blurIndex + 1, 0, _Part.SpreadRadius);
     }
   }
 
@@ -190,8 +188,8 @@ InlineEditor.CSSShadowModel = class {
    */
   setColor(color) {
     this._color = color;
-    if (this._format.indexOf(InlineEditor.CSSShadowModel._Part.Color) === -1) {
-      this._format.push(InlineEditor.CSSShadowModel._Part.Color);
+    if (this._format.indexOf(_Part.Color) === -1) {
+      this._format.push(_Part.Color);
     }
   }
 
@@ -251,28 +249,28 @@ InlineEditor.CSSShadowModel = class {
     const parts = [];
     for (let i = 0; i < this._format.length; i++) {
       const part = this._format[i];
-      if (part === InlineEditor.CSSShadowModel._Part.Inset && this._inset) {
+      if (part === _Part.Inset && this._inset) {
         parts.push('inset');
-      } else if (part === InlineEditor.CSSShadowModel._Part.OffsetX) {
+      } else if (part === _Part.OffsetX) {
         parts.push(this._offsetX.asCSSText());
-      } else if (part === InlineEditor.CSSShadowModel._Part.OffsetY) {
+      } else if (part === _Part.OffsetY) {
         parts.push(this._offsetY.asCSSText());
-      } else if (part === InlineEditor.CSSShadowModel._Part.BlurRadius) {
+      } else if (part === _Part.BlurRadius) {
         parts.push(this._blurRadius.asCSSText());
-      } else if (part === InlineEditor.CSSShadowModel._Part.SpreadRadius) {
+      } else if (part === _Part.SpreadRadius) {
         parts.push(this._spreadRadius.asCSSText());
-      } else if (part === InlineEditor.CSSShadowModel._Part.Color) {
+      } else if (part === _Part.Color) {
         parts.push(this._color.asString(this._color.format()));
       }
     }
     return parts.join(' ');
   }
-};
+}
 
 /**
  * @enum {string}
  */
-InlineEditor.CSSShadowModel._Part = {
+export const _Part = {
   Inset: 'I',
   OffsetX: 'X',
   OffsetY: 'Y',
@@ -285,7 +283,7 @@ InlineEditor.CSSShadowModel._Part = {
 /**
  * @unrestricted
  */
-InlineEditor.CSSLength = class {
+export class CSSLength {
   /**
    * @param {number} amount
    * @param {string} unit
@@ -324,12 +322,27 @@ InlineEditor.CSSLength = class {
   asCSSText() {
     return this.amount + this.unit;
   }
-};
+}
 
 /** @type {!RegExp} */
-InlineEditor.CSSLength.Regex = (function() {
+CSSLength.Regex = (function() {
   const number = '([+-]?(?:[0-9]*[.])?[0-9]+(?:[eE][+-]?[0-9]+)?)';
   const unit = '(ch|cm|em|ex|in|mm|pc|pt|px|rem|vh|vmax|vmin|vw)';
   const zero = '[+-]?(?:0*[.])?0+(?:[eE][+-]?[0-9]+)?';
   return new RegExp(number + unit + '|' + zero, 'gi');
 })();
+
+/* Legacy exported object */
+self.InlineEditor = self.InlineEditor || {};
+
+/* Legacy exported object */
+InlineEditor = InlineEditor || {};
+
+/** @constructor */
+InlineEditor.CSSShadowModel = CSSShadowModel;
+
+/** @enum {string} */
+InlineEditor.CSSShadowModel._Part = _Part;
+
+/** @constructor */
+InlineEditor.CSSLength = CSSLength;

@@ -4,7 +4,7 @@
 /**
  * @unrestricted
  */
-InlineEditor.SwatchPopoverHelper = class extends Common.Object {
+export class SwatchPopoverHelper extends Common.Object {
   constructor() {
     super();
     this._popover = new UI.GlassPane();
@@ -118,4 +118,13 @@ InlineEditor.SwatchPopoverHelper = class extends Common.Object {
       event.consume(true);
     }
   }
-};
+}
+
+/* Legacy exported object */
+self.InlineEditor = self.InlineEditor || {};
+
+/* Legacy exported object */
+InlineEditor = InlineEditor || {};
+
+/** @constructor */
+InlineEditor.SwatchPopoverHelper = SwatchPopoverHelper;

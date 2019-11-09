@@ -3,6 +3,9 @@
         "ui"
     ],
     "scripts": [
+    ],
+    "modules": [
+        "inline_editor.js",
         "BezierEditor.js",
         "BezierUI.js",
         "ColorSwatch.js",

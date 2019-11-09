@@ -4,7 +4,7 @@
 /**
  * @unrestricted
  */
-InlineEditor.BezierEditor = class extends UI.VBox {
+export class BezierEditor extends UI.VBox {
   constructor() {
     super(true);
     this.registerRequiredCSS('inline_editor/bezierEditor.css');
@@ -24,8 +24,8 @@ InlineEditor.BezierEditor = class extends UI.VBox {
     this._presetsContainer = this._outerContainer.createChild('div', 'bezier-presets');
     this._presetUI = new InlineEditor.BezierUI(40, 40, 0, 2, false);
     this._presetCategories = [];
-    for (let i = 0; i < InlineEditor.BezierEditor.Presets.length; i++) {
-      this._presetCategories[i] = this._createCategory(InlineEditor.BezierEditor.Presets[i]);
+    for (let i = 0; i < Presets.length; i++) {
+      this._presetCategories[i] = this._createCategory(Presets[i]);
       this._presetsContainer.appendChild(this._presetCategories[i].icon);
     }
 
@@ -82,7 +82,7 @@ InlineEditor.BezierEditor = class extends UI.VBox {
 
   _onchange() {
     this._updateUI();
-    this.dispatchEventToListeners(InlineEditor.BezierEditor.Events.BezierChanged, this._bezier.asCSSText());
+    this.dispatchEventToListeners(Events.BezierChanged, this._bezier.asCSSText());
   }
 
   _updateUI() {
@@ -242,14 +242,14 @@ InlineEditor.BezierEditor = class extends UI.VBox {
       player.currentTime = animationDuration * i / numberOnionSlices;
     }
   }
-};
+}
 
 /** @enum {symbol} */
-InlineEditor.BezierEditor.Events = {
+export const Events = {
   BezierChanged: Symbol('BezierChanged')
 };
 
-InlineEditor.BezierEditor.Presets = [
+export const Presets = [
   [
     {name: 'ease-in-out', value: 'ease-in-out'}, {name: 'In Out · Sine', value: 'cubic-bezier(0.45, 0.05, 0.55, 0.95)'},
     {name: 'In Out · Quadratic', value: 'cubic-bezier(0.46, 0.03, 0.52, 0.96)'},
@@ -272,6 +272,18 @@ InlineEditor.BezierEditor.Presets = [
     {name: 'Out · Back', value: 'cubic-bezier(0.18, 0.89, 0.32, 1.28)'}
   ]
 ];
+
+/* Legacy exported object */
+self.InlineEditor = self.InlineEditor || {};
+
+/* Legacy exported object */
+InlineEditor = InlineEditor || {};
+
+/** @constructor */
+InlineEditor.BezierEditor = BezierEditor;
+
+InlineEditor.BezierEditor.Events = Events;
+InlineEditor.BezierEditor.Presets = Presets;
 
 /** @typedef {{presets: !Array.<{name: string, value: string}>, icon: !Element, presetIndex: number}} */
 InlineEditor.BezierEditor.PresetCategory;

@@ -4,7 +4,7 @@
 /**
  * @unrestricted
  */
-InlineEditor.BezierUI = class {
+export class BezierUI {
   /**
    * @param {number} width
    * @param {number} height
@@ -26,7 +26,7 @@ InlineEditor.BezierUI = class {
    * @param {number} width
    */
   static drawVelocityChart(bezier, path, width) {
-    const height = InlineEditor.BezierUI.Height;
+    const height = Height;
     let pathBuilder = ['M', 0, height];
     /** @const */ const sampleSize = 1 / 40;
 
@@ -125,6 +125,17 @@ InlineEditor.BezierUI = class {
     this._drawControlPoints(
         group, width, 0, bezier.controlPoints[1].x * width, (1 - bezier.controlPoints[1].y) * height);
   }
-};
+}
 
-InlineEditor.BezierUI.Height = 26;
+export const Height = 26;
+
+/* Legacy exported object */
+self.InlineEditor = self.InlineEditor || {};
+
+/* Legacy exported object */
+InlineEditor = InlineEditor || {};
+
+/** @constructor */
+InlineEditor.BezierUI = BezierUI;
+
+InlineEditor.BezierUI.Height = Height;

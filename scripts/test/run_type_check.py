@@ -271,6 +271,17 @@ GENERATED_SKIP_COMPILATION_FILES = [
     'cm_web_modes/xml.js',
     'cm_headless/headlesscodemirror.js',
     'diff/diff_match_patch.js',
+    'cm/codemirror.js',
+    'cm/multiplex.js',
+    'cm/matchbrackets.js',
+    'cm/closebrackets.js',
+    'cm/mark-selection.js',
+    'cm/comment.js',
+    'cm/overlay.js',
+    'cm/active-line.js',
+    'cm/foldcode.js',
+    'cm/foldgutter.js',
+    'cm/brace-fold.js',
 ]
 
 

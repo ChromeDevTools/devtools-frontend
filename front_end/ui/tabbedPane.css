@@ -58,6 +58,7 @@
 .tabbed-pane-placeholder-row {
     display: flex;
     white-space: nowrap;
+    padding: 0 5px;
 }
 
 .tabbed-pane-placeholder-row[data-keyboard-focus="true"]:focus {

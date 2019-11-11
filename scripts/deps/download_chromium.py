@@ -43,7 +43,13 @@ def download_and_extract(options):
     filehandle, headers = urllib.urlretrieve(options.url)
     zip_file = zipfile.ZipFile(filehandle, 'r')
     zip_file.extractall(path=options.target)
-    os.chmod(EXPECTED_BINARY, 0o555)
+    # Fix permissions. Do this recursively is necessary for MacOS bundles.
+    if os.path.isfile(EXPECTED_BINARY):
+        os.chmod(EXPECTED_BINARY, 0o555)
+    else:
+        for root, dirs, files in os.walk(EXPECTED_BINARY):
+            for f in files:
+                os.chmod(os.path.join(root, f), 0o555)
     with open(BUILD_NUMBER_FILE, 'w') as file:
         file.write(options.build_number)
 

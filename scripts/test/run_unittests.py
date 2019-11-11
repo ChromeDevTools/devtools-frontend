@@ -8,6 +8,7 @@ Run Karma unit tests on a pre-built chrome or one specified via --chrome-binary.
 """
 
 import os
+import platform
 import re
 import subprocess
 import sys
@@ -38,8 +39,8 @@ def run_tests():
     karma_errors_found = False
     karmaconfig_path = os.path.join(devtools_path, 'karma.conf.js')
     exec_command = [devtools_paths.node_path(), devtools_paths.karma_path(), 'start', to_platform_path_exact(karmaconfig_path)]
-
-    env = {'NODE_PATH': devtools_paths.node_modules_path()}
+    env = os.environ.copy()
+    env['NODE_PATH'] = devtools_paths.node_path()
     if (chrome_binary is not None):
         env['CHROME_BIN'] = chrome_binary
 
@@ -58,10 +59,15 @@ def run_tests():
 devtools_path = devtools_paths.devtools_root_path()
 is_cygwin = sys.platform == 'cygwin'
 chrome_binary = None
-DOWNLOADED_CHROME_BINARY = os.path.abspath(os.path.join(devtools_path, 'third_party', 'chrome', 'chrome-linux', 'chrome'))
+downloaded_chrome_binary = os.path.abspath(os.path.join(
+    *{
+        'Linux': (devtools_path, 'third_party', 'chrome', 'chrome-linux', 'chrome'),
+        'Darwin': (devtools_path, 'third_party', 'chrome', 'chrome-mac', 'Chromium.app', 'Contents', 'MacOS', 'Chromium'),
+        'Windows': (devtools_path, 'third_party', 'chrome', 'chrome-win', 'chrome.exe'),
+    }[platform.system()]))
 
-if check_chrome_binary(DOWNLOADED_CHROME_BINARY):
-    chrome_binary = DOWNLOADED_CHROME_BINARY
+if check_chrome_binary(downloaded_chrome_binary):
+    chrome_binary = downloaded_chrome_binary
 
 if len(sys.argv) >= 2:
     chrome_binary = re.sub(r'^\-\-chrome-binary=(.*)', '\\1', sys.argv[1])

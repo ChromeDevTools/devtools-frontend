@@ -9,6 +9,9 @@ The client-side of the Chrome DevTools, including all JS & CSS to run the DevToo
 ### Source code
 The frontend is available on [chromium.googlesource.com](https://chromium.googlesource.com/devtools/devtools-frontend).
 
+### Design Guidelines
+Please be aware that DevTools follows additional [development guidelines](DESIGN_GUIDELINES.md).
+
 ### Workflows
 
 In order to make changes to DevTools frontend, build, run, test, and submit changes, several workflows exist. Having [depot_tools](https://commondatastorage.googleapis.com/chrome-infra-docs/flat/depot_tools/docs/html/depot_tools_tutorial.html#_setting_up) set up is a common prerequisite.
@@ -140,6 +143,8 @@ Please refer to the [overview document](https://docs.google.com/document/d/1c2KL
 * [awesome-chrome-devtools](https://github.com/paulirish/awesome-chrome-devtools): recommended tools and resources
 * Contributing to DevTools: [bit.ly/devtools-contribution-guide](http://bit.ly/devtools-contribution-guide)
 * Contributing To Chrome DevTools Protocol: [docs.google.com](https://docs.google.com/document/d/1c-COD2kaK__5iMM5SEx-PzNA7HFmgttcYfOHHX0HaOM/edit?usp=sharing)
+* DevTools Design Review Guidelines:
+  [DESGN_GUIDELINES.MD](DESIGN_GUIDELINES.MD)
 
 ### Useful Commands
 

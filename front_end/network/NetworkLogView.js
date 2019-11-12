@@ -809,17 +809,19 @@ Network.NetworkLogView = class extends UI.VBox {
       this._summaryToolbar.appendSeparator();
       appendChunk(
           ls`${Number.bytesToString(selectedTransferSize)} / ${Number.bytesToString(transferSize)} transferred`,
-          ls`${selectedTransferSize} B / ${transferSize} B transferred`);
+          ls`${selectedTransferSize} B / ${transferSize} B transferred over network`);
       this._summaryToolbar.appendSeparator();
       appendChunk(
           ls`${Number.bytesToString(selectedResourceSize)} / ${Number.bytesToString(resourceSize)} resources`,
-          ls`${selectedResourceSize} B / ${resourceSize} B resources`);
+          ls`${selectedResourceSize} B / ${resourceSize} B resources loaded by the page`);
     } else {
       appendChunk(ls`${nodeCount} requests`);
       this._summaryToolbar.appendSeparator();
-      appendChunk(ls`${Number.bytesToString(transferSize)} transferred`, ls`${transferSize} B transferred`);
+      appendChunk(
+          ls`${Number.bytesToString(transferSize)} transferred`, ls`${transferSize} B transferred over network`);
       this._summaryToolbar.appendSeparator();
-      appendChunk(ls`${Number.bytesToString(resourceSize)} resources`, ls`${resourceSize} B resources`);
+      appendChunk(
+          ls`${Number.bytesToString(resourceSize)} resources`, ls`${resourceSize} B resources loaded by the page`);
     }
 
     if (baseTime !== -1 && maxTime !== -1) {

@@ -434,11 +434,6 @@
     border-color: transparent;
 }
 
-.spectrum-palette-color:not(.has-material-shades):focus {
-  border: 1px solid var(--accent-color-hover);
-  transform: scale(1.4);
-}
-
 .spectrum-palette > .spectrum-palette-color:not(.empty-color):not(.has-material-shades):hover,
 .palette-color-shades > .spectrum-palette-color:not(.empty-color):hover {
     transform: scale(1.15);

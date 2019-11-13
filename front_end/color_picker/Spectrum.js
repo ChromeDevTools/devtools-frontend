@@ -363,7 +363,6 @@ export class Spectrum extends UI.VBox {
     for (let i = 0; i < palette.colors.length; i++) {
       const animationDelay = animate ? i * 100 / palette.colors.length : 0;
       const colorElement = this._createPaletteColor(palette.colors[i], palette.colorNames[i], animationDelay);
-      colorElement.tabIndex = -1;
       UI.ARIAUtils.markAsButton(colorElement);
       UI.ARIAUtils.setAccessibleName(colorElement, ls`Color ${palette.colors[i]}`);
       colorElement.addEventListener(
@@ -726,8 +725,6 @@ export class Spectrum extends UI.VBox {
     palette.colors.push(this.colorString());
     this._customPaletteSetting.set(palette);
     this._showPalette(this._customPaletteSetting.get(), false);
-    const colorElements = this._paletteContainer.querySelectorAll('.spectrum-palette-color');
-    colorElements[colorElements.length - 1].focus();
   }
 
   /**

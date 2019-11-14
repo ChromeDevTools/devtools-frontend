@@ -96,11 +96,8 @@ export default class AccessibilitySidebarView extends UI.ThrottledWidget {
   wasShown() {
     super.wasShown();
 
-    this._breadcrumbsSubPane.setNode(this.node());
-    this._breadcrumbsSubPane.setAXNode(this.axNode());
-    this._axNodeSubPane.setNode(this.node());
-    this._axNodeSubPane.setAXNode(this.axNode());
-    this._ariaSubPane.setNode(this.node());
+    // Pull down the latest date for this node.
+    this.doUpdate();
 
     SDK.targetManager.addModelListener(SDK.DOMModel, SDK.DOMModel.Events.AttrModified, this._onAttrChange, this);
     SDK.targetManager.addModelListener(SDK.DOMModel, SDK.DOMModel.Events.AttrRemoved, this._onAttrChange, this);

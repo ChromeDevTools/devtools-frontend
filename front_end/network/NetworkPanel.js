@@ -130,7 +130,8 @@ Network.NetworkPanel = class extends UI.Panel {
     this._splitWidget.setMainWidget(this._detailsWidget);
 
     this._closeButtonElement = createElement('div', 'dt-close-button');
-    this._closeButtonElement.addEventListener('click', this._hideRequestPanel.bind(this), false);
+    this._closeButtonElement.addEventListener(
+        'click', async () => await UI.actionRegistry.action('network.hide-request-details').execute(), false);
     this._closeButtonElement.style.margin = '0 5px';
 
     this._networkLogShowOverviewSetting.addChangeListener(this._toggleShowOverview, this);
@@ -492,7 +493,6 @@ Network.NetworkPanel = class extends UI.Panel {
   _hideRequestPanel() {
     this._clearNetworkItemView();
     this._splitWidget.hideMain();
-    this._networkLogView.resetFocus();
     this._updateUI();
   }
 
@@ -794,6 +794,7 @@ Network.NetworkPanel.ActionDelegate = class {
           return false;
         }
         panel._hideRequestPanel();
+        panel._networkLogView.resetFocus();
         return true;
       case 'network.search':
         const selection = UI.inspectorView.element.window().getSelection();

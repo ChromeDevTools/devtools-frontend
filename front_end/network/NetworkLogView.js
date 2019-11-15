@@ -1115,7 +1115,7 @@ Network.NetworkLogView = class extends UI.VBox {
   }
 
   _reset() {
-    this.dispatchEventToListeners(Network.NetworkLogView.Events.RequestActivated, /* showPanel */ true);
+    this.dispatchEventToListeners(Network.NetworkLogView.Events.RequestActivated, /* showPanel */ false);
 
     this._setHoveredNode(null);
     this._columns.reset();

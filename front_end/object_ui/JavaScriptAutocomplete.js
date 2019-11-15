@@ -169,6 +169,11 @@ export default class JavaScriptAutocomplete {
         return result;
       }, []);
     }
+
+    if (!protoNames) {
+      return [];
+    }
+
     for (const proto of protoNames) {
       const instanceSignatures = javaScriptMetadata.signaturesForInstanceMethod(name, proto);
       if (instanceSignatures) {

@@ -33,4 +33,5 @@ karma-coverage
 !/third_party/axe-core
 !/third_party/blink
 !/third_party/pyjson5
+!/third_party/typescript
 .DS_Store

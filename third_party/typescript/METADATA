@@ -1,0 +1,17 @@
+name: "TypeScript"
+description:
+    "TypeScript is a typed superset of JavaScript that compiles to plain JavaScript."
+third_party {
+  url {
+    type: HOMEPAGE
+    value: "https://www.typescriptlang.org/"
+  }
+  url {
+    type: GIT
+    value: "https://github.com/microsoft/typescript"
+  }
+  version: "26655db1dd04d93217002ac87f950aba812c53eb"
+  last_upgrade_date { year: 2019 month: 10 day: 9 }
+  license_type: NOTICE
+  local_modifications: "None"
+}

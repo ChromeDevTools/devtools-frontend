@@ -60,6 +60,9 @@ def _CheckChangesAreExclusiveToDirectory(input_api, output_api):
         num_in_dir = len(affected_in_dir)
         if num_in_dir == 0:
             continue
+        # Addition of new third_party folders must have a new entry in `.gitignore`
+        if '.gitignore' in affected_files:
+            num_in_dir = num_in_dir + 1
         if num_in_dir < num_affected:
             return [
                 output_api.PresubmitError(

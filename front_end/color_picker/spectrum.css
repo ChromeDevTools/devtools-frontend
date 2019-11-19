@@ -439,6 +439,11 @@
     transform: scale(1.15);
 }
 
+.spectrum-palette-color:not(.has-material-shades):focus {
+  border: 1px solid var(--accent-color-hover);
+  transform: scale(1.4);
+}
+
 .add-color-toolbar {
     margin-left: -3px;
     margin-top: -1px;

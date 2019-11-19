@@ -170,7 +170,8 @@ export class Spectrum extends UI.VBox {
 
     this._addColorToolbar = new UI.Toolbar('add-color-toolbar');
     const addColorButton = new UI.ToolbarButton(Common.UIString('Add to palette'), 'largeicon-add');
-    addColorButton.addEventListener(UI.ToolbarButton.Events.Click, this._addColorToCustomPalette, this);
+    addColorButton.addEventListener(UI.ToolbarButton.Events.Click, this._onAddColorMousedown.bind(this));
+    addColorButton.element.addEventListener('keydown', this._onAddColorKeydown.bind(this));
     this._addColorToolbar.appendToolbarItem(addColorButton);
 
     this._colorPickedBound = this._colorPicked.bind(this);
@@ -365,6 +366,7 @@ export class Spectrum extends UI.VBox {
       const colorElement = this._createPaletteColor(palette.colors[i], palette.colorNames[i], animationDelay);
       UI.ARIAUtils.markAsButton(colorElement);
       UI.ARIAUtils.setAccessibleName(colorElement, ls`Color ${palette.colors[i]}`);
+      colorElement.tabIndex = -1;
       colorElement.addEventListener(
           'mousedown',
           this._paletteColorSelected.bind(this, palette.colors[i], palette.colorNames[i], palette.matchUserFormat));
@@ -717,14 +719,27 @@ export class Spectrum extends UI.VBox {
     }
   }
 
+  _onAddColorMousedown() {
+    this._addColorToCustomPalette();
+  }
+
   /**
-   * @param {!Common.Event} event
+   * @param {!Event} event
    */
-  _addColorToCustomPalette(event) {
+  _onAddColorKeydown(event) {
+    if (isEnterOrSpaceKey(event)) {
+      this._addColorToCustomPalette();
+      event.consume(true);
+    }
+  }
+
+  _addColorToCustomPalette() {
     const palette = this._customPaletteSetting.get();
     palette.colors.push(this.colorString());
     this._customPaletteSetting.set(palette);
     this._showPalette(this._customPaletteSetting.get(), false);
+    const colorElements = this._paletteContainer.querySelectorAll('.spectrum-palette-color');
+    colorElements[colorElements.length - 1].focus();
   }
 
   /**

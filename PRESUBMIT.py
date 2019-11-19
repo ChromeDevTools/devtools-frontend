@@ -13,6 +13,8 @@ def _CommonChecks(input_api, output_api):
   results = []
   results.extend(
       input_api.canned_checks.CheckChangedLUCIConfigs(input_api, output_api))
+  results.extend(input_api.RunTests(input_api.canned_checks.CheckLucicfgGenOutput(
+      input_api, output_api, 'main.star')))
   return results
 
 

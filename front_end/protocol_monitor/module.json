@@ -12,7 +12,9 @@
     }
   ],
   "dependencies": ["platform", "ui", "host", "components", "data_grid", "source_frame"],
-  "scripts": [
+  "scripts": [],
+  "modules": [
+    "protocol_monitor.js",
     "ProtocolMonitor.js"
   ],
   "resources": [

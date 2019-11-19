@@ -191,6 +191,7 @@ Audits.AuditsPanel = class extends UI.Panel {
     // could take awhile to load.
     this._waitForMainTargetLoad().then(() => {
       Audits.ReportRenderer.linkifyNodeDetails(el);
+      Audits.ReportRenderer.linkifySourceLocationDetails(el);
     });
     Audits.ReportRenderer.handleDarkMode(el);
 

@@ -67,6 +67,27 @@ Audits.ReportRenderer = class extends ReportRenderer {
   /**
    * @param {!Element} el
    */
+  static async linkifySourceLocationDetails(el) {
+    for (const origElement of el.getElementsByClassName('lh-source-location')) {
+      /** @type {!DetailsRenderer.SourceLocationDetailsJSON} */
+      const detailsItem = origElement.dataset;
+      if (!detailsItem.sourceUrl || !detailsItem.sourceLine || !detailsItem.sourceColumn) {
+        continue;
+      }
+      const url = detailsItem.sourceUrl;
+      const line = Number(detailsItem.sourceLine);
+      const column = Number(detailsItem.sourceColumn);
+      const element = await Components.Linkifier.linkifyURL(
+          url, {lineNumber: line, column, maxLength: Audits.ReportRenderer.MaxLengthForLinks});
+      origElement.title = '';
+      origElement.textContent = '';
+      origElement.appendChild(element);
+    }
+  }
+
+  /**
+   * @param {!Element} el
+   */
   static handleDarkMode(el) {
     if (UI.themeSupport.themeName() === 'dark') {
       el.classList.add('dark');
@@ -162,3 +183,9 @@ Audits.ReportUIFeatures = class extends ReportUIFeatures {
     this._resetUIState();
   }
 };
+
+/**
+ * @const
+ * @type {number}
+ */
+Audits.ReportRenderer.MaxLengthForLinks = 40;

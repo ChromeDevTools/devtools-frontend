@@ -27,7 +27,8 @@
       "snippets",
       "ui"
     ],
-    "scripts": [
+    "scripts": [],
+    "modules": [
       "ChangesHighlighter.js",
       "ChangesView.js",
       "ChangesSidebar.js"

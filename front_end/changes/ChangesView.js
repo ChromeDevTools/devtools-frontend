@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-Changes.ChangesView = class extends UI.VBox {
+export default class ChangesView extends UI.VBox {
   constructor() {
     super(true);
     this.registerRequiredCSS('changes/changesView.css');
@@ -165,7 +165,7 @@ Changes.ChangesView = class extends UI.VBox {
           break;
         case Diff.Diff.Operation.Insert:
           for (const line of token[1]) {
-            this._diffRows.push(createRow(line, Changes.ChangesView.RowType.Addition));
+            this._diffRows.push(createRow(line, RowType.Addition));
           }
           insertions += token[1].length;
           currentLines.pushAll(token[1]);
@@ -180,7 +180,7 @@ Changes.ChangesView = class extends UI.VBox {
             currentLines.pushAll(diff[i][1]);
           } else {
             for (const line of token[1]) {
-              this._diffRows.push(createRow(line, Changes.ChangesView.RowType.Deletion));
+              this._diffRows.push(createRow(line, RowType.Deletion));
             }
           }
           break;
@@ -230,12 +230,12 @@ Changes.ChangesView = class extends UI.VBox {
       const equalRows = [];
       if (!atStart) {
         for (let i = 0; i < paddingLines && i < lines.length; i++) {
-          equalRows.push(createRow(lines[i], Changes.ChangesView.RowType.Equal));
+          equalRows.push(createRow(lines[i], RowType.Equal));
         }
         if (lines.length > paddingLines * 2 + 1 && !atEnd) {
           equalRows.push(createRow(
               Common.UIString('( \u2026 Skipping %d matching lines \u2026 )', lines.length - paddingLines * 2),
-              Changes.ChangesView.RowType.Spacer));
+              RowType.Spacer));
         }
       }
       if (!atEnd) {
@@ -250,7 +250,7 @@ Changes.ChangesView = class extends UI.VBox {
         }
 
         for (let i = start; i < lines.length; i++) {
-          equalRows.push(createRow(lines[i], Changes.ChangesView.RowType.Equal));
+          equalRows.push(createRow(lines[i], RowType.Equal));
         }
       }
       return equalRows;
@@ -263,8 +263,8 @@ Changes.ChangesView = class extends UI.VBox {
      */
     function createModifyRows(before, after) {
       const internalDiff = Diff.Diff.charDiff(before, after, true /* cleanup diff */);
-      const deletionRows = [createRow('', Changes.ChangesView.RowType.Deletion)];
-      const insertionRows = [createRow('', Changes.ChangesView.RowType.Addition)];
+      const deletionRows = [createRow('', RowType.Deletion)];
+      const insertionRows = [createRow('', RowType.Addition)];
 
       for (const token of internalDiff) {
         const text = token[1];
@@ -273,10 +273,10 @@ Changes.ChangesView = class extends UI.VBox {
         const lines = text.split('\n');
         for (let i = 0; i < lines.length; i++) {
           if (i > 0 && type !== Diff.Diff.Operation.Insert) {
-            deletionRows.push(createRow('', Changes.ChangesView.RowType.Deletion));
+            deletionRows.push(createRow('', RowType.Deletion));
           }
           if (i > 0 && type !== Diff.Diff.Operation.Delete) {
-            insertionRows.push(createRow('', Changes.ChangesView.RowType.Addition));
+            insertionRows.push(createRow('', RowType.Addition));
           }
           if (!lines[i]) {
             continue;
@@ -298,13 +298,13 @@ Changes.ChangesView = class extends UI.VBox {
      * @return {!Changes.ChangesView.Row}
      */
     function createRow(text, type) {
-      if (type === Changes.ChangesView.RowType.Addition) {
+      if (type === RowType.Addition) {
         currentLineNumber++;
       }
-      if (type === Changes.ChangesView.RowType.Deletion) {
+      if (type === RowType.Deletion) {
         baselineLineNumber++;
       }
-      if (type === Changes.ChangesView.RowType.Equal) {
+      if (type === RowType.Equal) {
         baselineLineNumber++;
         currentLineNumber++;
       }
@@ -319,9 +319,9 @@ Changes.ChangesView = class extends UI.VBox {
    */
   _lineFormatter(lineNumber) {
     const row = this._diffRows[lineNumber - 1];
-    let showBaseNumber = row.type === Changes.ChangesView.RowType.Deletion;
-    let showCurrentNumber = row.type === Changes.ChangesView.RowType.Addition;
-    if (row.type === Changes.ChangesView.RowType.Equal) {
+    let showBaseNumber = row.type === RowType.Deletion;
+    let showCurrentNumber = row.type === RowType.Addition;
+    if (row.type === RowType.Equal) {
       showBaseNumber = true;
       showCurrentNumber = true;
     }
@@ -331,20 +331,10 @@ Changes.ChangesView = class extends UI.VBox {
                                         spacesPadding(this._maxLineDigits);
     return base + spacesPadding(1) + current;
   }
-};
-
-/**
- * @typedef {!{
- *  baselineLineNumber: number,
- *  currentLineNumber: number,
- *  tokens: !Array<!{text: string, className: string}>,
- *  type: !Changes.ChangesView.RowType
- * }}
- */
-Changes.ChangesView.Row;
+}
 
 /** @enum {string} */
-Changes.ChangesView.RowType = {
+export const RowType = {
   Deletion: 'deletion',
   Addition: 'addition',
   Equal: 'equal',
@@ -354,7 +344,7 @@ Changes.ChangesView.RowType = {
 /**
  * @implements {Common.Revealer}
  */
-Changes.ChangesView.DiffUILocationRevealer = class {
+export class DiffUILocationRevealer {
   /**
    * @override
    * @param {!Object} diffUILocation
@@ -370,4 +360,33 @@ Changes.ChangesView.DiffUILocationRevealer = class {
     await UI.viewManager.showView('changes.changes');
     changesView._changesSidebar.selectUISourceCode(diffUILocation.uiSourceCode, omitFocus);
   }
-};
+}
+
+/* Legacy exported object */
+self.Changes = self.Changes || {};
+
+/* Legacy exported object */
+Changes = Changes || {};
+
+/**
+ * @constructor
+ */
+Changes.ChangesView = ChangesView;
+
+/** @enum {string} */
+Changes.ChangesView.RowType = RowType;
+
+/**
+ * @typedef {!{
+  *  baselineLineNumber: number,
+  *  currentLineNumber: number,
+  *  tokens: !Array<!{text: string, className: string}>,
+  *  type: !Changes.ChangesView.RowType
+  * }}
+  */
+Changes.ChangesView.Row;
+
+/**
+ * @implements {Common.Revealer}
+ */
+Changes.ChangesView.DiffUILocationRevealer = DiffUILocationRevealer;

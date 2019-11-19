@@ -12,7 +12,7 @@
  *  copyState: function(!Changes.ChangesHighlighter.DiffState):Changes.ChangesHighlighter.DiffState
  * }}
  */
-Changes.ChangesHighlighter = function(config, parserConfig) {
+export default function ChangesHighlighter(config, parserConfig) {
   const diffRows = parserConfig.diffRows;
   const baselineLines = parserConfig.baselineLines;
   const currentLines = parserConfig.currentLines;
@@ -166,22 +166,30 @@ Changes.ChangesHighlighter = function(config, parserConfig) {
       return /** @type {!Changes.ChangesHighlighter.DiffState} */ (newState);
     }
   };
-};
+}
+
+CodeMirror.defineMode('devtools-diff', ChangesHighlighter);
+
+/* Legacy exported object */
+self.Changes = self.Changes || {};
+
+/* Legacy exported object */
+Changes = Changes || {};
+
+Changes.ChangesHighlighter = ChangesHighlighter;
 
 /**
  * @typedef {!{
- *  rowNumber: number,
- *  diffTokenIndex: number,
- *  currentLineNumber: number,
- *  baselineLineNumber: number,
- *  currentSyntaxState: !Object,
- *  baselineSyntaxState: !Object,
- *  syntaxPosition: number,
- *  diffPosition: number,
- *  syntaxStyle: string,
- *  diffStyle: string
- * }}
- */
+  *  rowNumber: number,
+  *  diffTokenIndex: number,
+  *  currentLineNumber: number,
+  *  baselineLineNumber: number,
+  *  currentSyntaxState: !Object,
+  *  baselineSyntaxState: !Object,
+  *  syntaxPosition: number,
+  *  diffPosition: number,
+  *  syntaxStyle: string,
+  *  diffStyle: string
+  * }}
+  */
 Changes.ChangesHighlighter.DiffState;
-
-CodeMirror.defineMode('devtools-diff', Changes.ChangesHighlighter);

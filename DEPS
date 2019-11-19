@@ -132,15 +132,6 @@ hooks = [
     ],
   },
 
-  {
-    'name': 'sysroot_x64',
-    'pattern': '.',
-    'condition': 'checkout_linux and checkout_x64',
-    'action': ['python',
-               'devtools-frontend/build/linux/sysroot_scripts/install-sysroot.py',
-               '--arch=x64'],
-  },
-
   # Pull clang-format binaries using checked-in hashes.
   {
     'name': 'clang_format_win',
@@ -178,6 +169,7 @@ hooks = [
                 '-s', 'devtools-frontend/buildtools/linux64/clang-format.sha1',
     ],
   },
+
   # Pull chromium from common storage
   {
     'name': 'download_chromium_win',

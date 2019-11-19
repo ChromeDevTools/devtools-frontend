@@ -928,7 +928,6 @@
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
       interpolable: true,
       compositable: true,
-      runtime_flag: "CSSBackdropFilter",
       field_group: "*",
       field_template: "external",
       include_paths: ["third_party/blink/renderer/core/style/style_filter_data.h"],
@@ -2723,6 +2722,20 @@
       converter: "ConvertQuotes",
       keywords: ["none"],
       typedom_types: ["Keyword"]
+    },
+    {
+      name: "render-subtree",
+      property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
+      field_group: "*",
+      field_size: 3,
+      field_template: "multi_keyword",
+      keywords: ["none", "invisible", "skip-activation", "skip-viewport-activation"],
+      default_value: "none",
+      name_for_methods: "RenderSubtree",
+      type_name: "RenderSubtreeFlags",
+      converter: "ConvertFlags<RenderSubtreeFlags>",
+      typedom_types: ["Keyword"],
+      runtime_flag: "CSSRenderSubtree"
     },
     {
       name: "resize",

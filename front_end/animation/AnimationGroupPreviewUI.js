@@ -4,7 +4,7 @@
 /**
  * @unrestricted
  */
-Animation.AnimationGroupPreviewUI = class {
+export default class AnimationGroupPreviewUI {
   /**
    * @param {!Animation.AnimationModel.AnimationGroup} model
    */
@@ -71,4 +71,16 @@ Animation.AnimationGroupPreviewUI = class {
       line.style.stroke = Animation.AnimationUI.Color(this._model.animations()[i]);
     }
   }
-};
+}
+
+/* Legacy exported object */
+self.Animation = self.Animation || {};
+
+/* Legacy exported object */
+Animation = Animation || {};
+
+/**
+ * @constructor
+ * @unrestricted
+ */
+Animation.AnimationGroupPreviewUI = AnimationGroupPreviewUI;

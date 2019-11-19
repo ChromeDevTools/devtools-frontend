@@ -13,7 +13,9 @@
     "dependencies": [
         "elements"
     ],
-    "scripts": [
+    "scripts": [],
+    "modules": [
+        "animation.js",
         "AnimationModel.js",
         "AnimationGroupPreviewUI.js",
         "AnimationScreenshotPopover.js",

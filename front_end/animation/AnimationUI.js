@@ -4,7 +4,7 @@
 /**
  * @unrestricted
  */
-Animation.AnimationUI = class {
+export default class AnimationUI {
   /**
    * @param {!Animation.AnimationModel.Animation} animation
    * @param {!Animation.AnimationTimeline} timeline
@@ -400,19 +400,19 @@ Animation.AnimationUI = class {
     this._animation.remoteObjectPromise().then(showContextMenu);
     event.consume(true);
   }
-};
+}
 
 /**
  * @enum {string}
  */
-Animation.AnimationUI.MouseEvents = {
+export const MouseEvents = {
   AnimationDrag: 'AnimationDrag',
   KeyframeMove: 'KeyframeMove',
   StartEndpointMove: 'StartEndpointMove',
   FinishEndpointMove: 'FinishEndpointMove'
 };
 
-Animation.AnimationUI.Options = {
+export const Options = {
   AnimationHeight: 26,
   AnimationSVGHeight: 50,
   AnimationMargin: 7,
@@ -420,7 +420,7 @@ Animation.AnimationUI.Options = {
   GridCanvasHeight: 40
 };
 
-Animation.AnimationUI.Colors = {
+export const Colors = {
   'Purple': Common.Color.parse('#9C27B0'),
   'Light Blue': Common.Color.parse('#03A9F4'),
   'Deep Orange': Common.Color.parse('#FF5722'),
@@ -432,3 +432,23 @@ Animation.AnimationUI.Colors = {
   'Brown': Common.Color.parse('#795548'),
   'Cyan': Common.Color.parse('#00BCD4')
 };
+
+/* Legacy exported object */
+self.Animation = self.Animation || {};
+
+/* Legacy exported object */
+Animation = Animation || {};
+
+/**
+ * @constructor
+ */
+Animation.AnimationUI = AnimationUI;
+
+/**
+ * @enum {string}
+ */
+Animation.AnimationUI.MouseEvents = MouseEvents;
+
+Animation.AnimationUI.Options = Options;
+
+Animation.AnimationUI.Colors = Colors;

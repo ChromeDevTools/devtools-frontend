@@ -13,13 +13,8 @@ if (external_devtools_frontend) {
     "front_end/accessibility/module.json",
     "front_end/accessibility_test_runner/AccessibilityPaneTestRunner.js",
     "front_end/accessibility_test_runner/module.json",
-    "front_end/animation/AnimationGroupPreviewUI.js",
-    "front_end/animation/AnimationModel.js",
     "front_end/animation/animationScreenshotPopover.css",
-    "front_end/animation/AnimationScreenshotPopover.js",
     "front_end/animation/animationTimeline.css",
-    "front_end/animation/AnimationTimeline.js",
-    "front_end/animation/AnimationUI.js",
     "front_end/animation/module.json",
     "front_end/application_test_runner/AppcacheTestRunner.js",
     "front_end/application_test_runner/CacheStorageTestRunner.js",
@@ -728,6 +723,12 @@ if (external_devtools_frontend) {
   all_devtools_files += lighthouse_locale_files
 
   all_devtools_modules = [
+    "front_end/animation/animation.js",
+    "front_end/animation/AnimationUI.js",
+    "front_end/animation/AnimationTimeline.js",
+    "front_end/animation/AnimationScreenshotPopover.js",
+    "front_end/animation/AnimationModel.js",
+    "front_end/animation/AnimationGroupPreviewUI.js",
     "front_end/source_frame/source_frame.js",
     "front_end/source_frame/XMLView.js",
     "front_end/source_frame/SourcesTextEditor.js",
@@ -1215,6 +1216,12 @@ if (external_devtools_frontend) {
   ]
 
   copied_devtools_modules = [
+    "$resources_out_dir/animation/animation.js",
+    "$resources_out_dir/animation/AnimationUI.js",
+    "$resources_out_dir/animation/AnimationTimeline.js",
+    "$resources_out_dir/animation/AnimationScreenshotPopover.js",
+    "$resources_out_dir/animation/AnimationModel.js",
+    "$resources_out_dir/animation/AnimationGroupPreviewUI.js",
     "$resources_out_dir/source_frame/source_frame.js",
     "$resources_out_dir/source_frame/XMLView.js",
     "$resources_out_dir/source_frame/SourcesTextEditor.js",

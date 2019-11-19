@@ -5,7 +5,7 @@
  * @implements {SDK.SDKModelObserver<!Animation.AnimationModel>}
  * @unrestricted
  */
-Animation.AnimationTimeline = class extends UI.VBox {
+export default class AnimationTimeline extends UI.VBox {
   constructor() {
     super(true);
     this.registerRequiredCSS('animation/animationTimeline.css');
@@ -683,12 +683,12 @@ Animation.AnimationTimeline = class extends UI.VBox {
     this._scrubberPlayer.currentTime = currentTime;
     this._currentTime.window().requestAnimationFrame(this._updateScrubber.bind(this));
   }
-};
+}
 
-Animation.AnimationTimeline.GlobalPlaybackRates = [1, 0.25, 0.1];
+export const GlobalPlaybackRates = [1, 0.25, 0.1];
 
 /** @enum {string} */
-Animation.AnimationTimeline._ControlState = {
+export const _ControlState = {
   Play: 'play-outline',
   Replay: 'replay-outline',
   Pause: 'pause-outline'
@@ -697,7 +697,7 @@ Animation.AnimationTimeline._ControlState = {
 /**
  * @unrestricted
  */
-Animation.AnimationTimeline.NodeUI = class {
+export class NodeUI {
   /**
    * @param {!Animation.AnimationModel.AnimationEffect} animationEffect
    */
@@ -739,12 +739,12 @@ Animation.AnimationTimeline.NodeUI = class {
     this.element.classList.toggle(
         'animation-node-selected', this._node && this._node === UI.context.flavor(SDK.DOMNode));
   }
-};
+}
 
 /**
  * @unrestricted
  */
-Animation.AnimationTimeline.StepTimingFunction = class {
+export class StepTimingFunction {
   /**
    * @param {number} steps
    * @param {string} stepAtPosition
@@ -769,4 +769,34 @@ Animation.AnimationTimeline.StepTimingFunction = class {
     }
     return null;
   }
-};
+}
+
+/* Legacy exported object */
+self.Animation = self.Animation || {};
+
+/* Legacy exported object */
+Animation = Animation || {};
+
+/**
+ * @implements {SDK.SDKModelObserver<!Animation.AnimationModel>}
+ * @constructor
+ * @unrestricted
+ */
+Animation.AnimationTimeline = AnimationTimeline;
+
+Animation.AnimationTimeline.GlobalPlaybackRates = GlobalPlaybackRates;
+
+/** @enum {string} */
+Animation.AnimationTimeline._ControlState = _ControlState;
+
+/**
+ * @unrestricted
+ * @constructor
+ */
+Animation.AnimationTimeline.NodeUI = NodeUI;
+
+/**
+ * @unrestricted
+ * @constructor
+ */
+Animation.AnimationTimeline.StepTimingFunction = StepTimingFunction;

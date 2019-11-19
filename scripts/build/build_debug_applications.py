@@ -25,11 +25,16 @@ def main(argv):
         input_path = argv[input_path_flag_index + 1]
         output_path_flag_index = argv.index('--output_path')
         output_path = argv[output_path_flag_index + 1]
+        build_stamp_index = argv.index('--build_stamp')
+        build_stamp_path = argv[build_stamp_index + 1]
     except:
         print('Usage: %s app_1 app_2 ... app_N --input_path <input_path> --output_path <output_path>' % argv[0])
         raise
 
     symlink_dir_or_copy(input_path, output_path)
+
+    with open(build_stamp_path, 'w') as file:
+        file.write('stamp')
 
 
 def symlink_dir_or_copy(src, dest):
@@ -61,7 +66,7 @@ def copy_dir(src, dest):
     for src_dir, dirs, files in os.walk(src):
         subpath = path.relpath(src_dir, src)
         dest_dir = path.normpath(join(dest, subpath))
-        os.mkdir(dest_dir)
+        os.makedirs(dest_dir)
         for name in files:
             src_name = join(os.getcwd(), src_dir, name)
             dest_name = join(dest_dir, name)

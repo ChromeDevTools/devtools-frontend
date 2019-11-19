@@ -1854,24 +1854,17 @@ if (external_devtools_frontend) {
 
     action("build_debug_devtools") {
       script = "scripts/build/build_debug_applications.py"
-
       inputs = all_devtools_files + application_templates
-      outputs = [
-        "$resources_out_debug_dir/devtools_app.html",
-        "$resources_out_debug_dir/inspector.html",
-        "$resources_out_debug_dir/integration_test_runner.html",
-        "$resources_out_debug_dir/js_app.html",
-        "$resources_out_debug_dir/ndb_app.html",
-        "$resources_out_debug_dir/node_app.html",
-        "$resources_out_debug_dir/toolbox.html",
-        "$resources_out_debug_dir/worker_app.html",
-      ]
+      stamp = "$resources_out_debug_dir/build.stamp"
+      outputs = [ stamp ]
 
       args = [
         "--input_path",
         rebase_path("front_end", root_build_dir),
         "--output_path",
         rebase_path(resources_out_debug_dir, root_build_dir),
+        "--build_stamp",
+        rebase_path(stamp, root_build_dir)
       ]
     }
 

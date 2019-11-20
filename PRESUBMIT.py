@@ -135,7 +135,7 @@ def _CheckDevtoolsLocalization(input_api, output_api, check_all_files=False):  #
     script_path = input_api.os_path.join(devtools_root, 'scripts', 'test', 'run_localization_check.py')
     if check_all_files == True:
         # Scan all files and fix any errors
-        args = ['--autofix', '--all']
+        args = ['--autofix', '--a']
     else:
         devtools_front_end = input_api.os_path.join(devtools_root, 'front_end')
         affected_front_end_files = _getAffectedFiles(input_api, [devtools_front_end], ['D'],

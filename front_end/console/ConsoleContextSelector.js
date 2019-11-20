@@ -5,7 +5,7 @@
  * @implements {SDK.SDKModelObserver<!SDK.RuntimeModel>}
  * @implements {UI.SoftDropDown.Delegate<!SDK.ExecutionContext>}
  */
-Console.ConsoleContextSelector = class {
+export default class ConsoleContextSelector {
   constructor() {
     /** @type {!UI.ListModel<!SDK.ExecutionContext>} */
     this._items = new UI.ListModel();
@@ -323,4 +323,15 @@ Console.ConsoleContextSelector = class {
       }
     }
   }
-};
+}
+
+/* Legacy exported object */
+self.Console = self.Console || {};
+
+/* Legacy exported object */
+Console = Console || {};
+
+/**
+ * @constructor
+ */
+Console.ConsoleContextSelector = ConsoleContextSelector;

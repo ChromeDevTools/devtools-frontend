@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-Console.ConsoleFilter = class {
+export default class ConsoleFilter {
   /**
    * @param {string} name
    * @param {!Array<!TextUtils.FilterParser.ParsedFilter>} parsedFilters
@@ -86,12 +86,12 @@ Console.ConsoleFilter = class {
         }
       } else {
         switch (filter.key) {
-          case Console.ConsoleFilter.FilterType.Context:
+          case FilterType.Context:
             if (!passesFilter(filter, message.context, false /* exactMatch */)) {
               return false;
             }
             break;
-          case Console.ConsoleFilter.FilterType.Source:
+          case FilterType.Source:
             const sourceNameForMessage = message.source ?
                 SDK.ConsoleMessage.MessageSourceDisplayName.get(
                     /** @type {!SDK.ConsoleMessage.MessageSource} */ (message.source)) :
@@ -100,7 +100,7 @@ Console.ConsoleFilter = class {
               return false;
             }
             break;
-          case Console.ConsoleFilter.FilterType.Url:
+          case FilterType.Url:
             if (!passesFilter(filter, message.url, false /* exactMatch */)) {
               return false;
             }
@@ -134,11 +134,25 @@ Console.ConsoleFilter = class {
       return true;
     }
   }
-};
+}
 
 /** @enum {string} */
-Console.ConsoleFilter.FilterType = {
+export const FilterType = {
   Context: 'context',
   Source: 'source',
   Url: 'url'
 };
+
+/* Legacy exported object */
+self.Console = self.Console || {};
+
+/* Legacy exported object */
+Console = Console || {};
+
+/**
+ * @constructor
+ */
+Console.ConsoleFilter = ConsoleFilter;
+
+/** @enum {string} */
+Console.ConsoleFilter.FilterType = FilterType;

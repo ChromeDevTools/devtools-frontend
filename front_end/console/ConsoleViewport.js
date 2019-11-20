@@ -31,7 +31,7 @@
 /**
  * @unrestricted
  */
-Console.ConsoleViewport = class {
+export default class ConsoleViewport {
   /**
    * @param {!Console.ConsoleViewportProvider} provider
    */
@@ -762,35 +762,33 @@ Console.ConsoleViewport = class {
     // Use offsetHeight instead of clientHeight to avoid being affected by horizontal scroll.
     return this.element.offsetHeight;
   }
-};
+}
 
 /**
  * @interface
  */
-Console.ConsoleViewportProvider = function() {};
-
-Console.ConsoleViewportProvider.prototype = {
+class ConsoleViewportProvider {
   /**
    * @param {number} index
    * @return {number}
    */
   fastHeight(index) {
     return 0;
-  },
+  }
 
   /**
    * @return {number}
    */
   itemCount() {
     return 0;
-  },
+  }
 
   /**
    * @return {number}
    */
   minimumRowHeight() {
     return 0;
-  },
+  }
 
   /**
    * @param {number} index
@@ -799,19 +797,42 @@ Console.ConsoleViewportProvider.prototype = {
   itemElement(index) {
     return null;
   }
-};
+}
 
 /**
  * @interface
  */
-Console.ConsoleViewportElement = function() {};
-Console.ConsoleViewportElement.prototype = {
-  willHide() {},
+export class ConsoleViewportElement {
+  willHide() {
+  }
 
-  wasShown() {},
+  wasShown() {
+  }
 
   /**
    * @return {!Element}
    */
-  element() {},
-};
+  element() {
+  }
+}
+
+/* Legacy exported object */
+self.Console = self.Console || {};
+
+/* Legacy exported object */
+Console = Console || {};
+
+/**
+ * @constructor
+ */
+Console.ConsoleViewport = ConsoleViewport;
+
+/**
+ * @interface
+ */
+Console.ConsoleViewportProvider = ConsoleViewportProvider;
+
+/**
+ * @interface
+ */
+Console.ConsoleViewportElement = ConsoleViewportElement;

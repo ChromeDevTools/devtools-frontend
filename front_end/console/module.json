@@ -213,7 +213,8 @@
         "sdk",
         "formatter"
     ],
-    "scripts": [
+    "scripts": [],
+    "modules": [
         "ConsoleContextSelector.js",
         "ConsoleFilter.js",
         "ConsolePinPane.js",

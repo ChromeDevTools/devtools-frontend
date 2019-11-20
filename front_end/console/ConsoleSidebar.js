@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-Console.ConsoleSidebar = class extends UI.VBox {
+export default class ConsoleSidebar extends UI.VBox {
   constructor() {
     super(true);
     this.setMinimumSize(125, 0);
@@ -24,24 +24,23 @@ Console.ConsoleSidebar = class extends UI.VBox {
       negative: false
     }];
     this._appendGroup(
-        Console.ConsoleSidebar._groupName.All, [], Console.ConsoleFilter.allLevelsFilterValue(),
-        UI.Icon.create('mediumicon-list'), selectedFilterSetting);
-    this._appendGroup(
-        Console.ConsoleSidebar._groupName.ConsoleAPI, consoleAPIParsedFilters,
-        Console.ConsoleFilter.allLevelsFilterValue(), UI.Icon.create('mediumicon-account-circle'),
+        _groupName.All, [], Console.ConsoleFilter.allLevelsFilterValue(), UI.Icon.create('mediumicon-list'),
         selectedFilterSetting);
     this._appendGroup(
-        Console.ConsoleSidebar._groupName.Error, [], Console.ConsoleFilter.singleLevelMask(Levels.Error),
+        _groupName.ConsoleAPI, consoleAPIParsedFilters, Console.ConsoleFilter.allLevelsFilterValue(),
+        UI.Icon.create('mediumicon-account-circle'), selectedFilterSetting);
+    this._appendGroup(
+        _groupName.Error, [], Console.ConsoleFilter.singleLevelMask(Levels.Error),
         UI.Icon.create('mediumicon-error-circle'), selectedFilterSetting);
     this._appendGroup(
-        Console.ConsoleSidebar._groupName.Warning, [], Console.ConsoleFilter.singleLevelMask(Levels.Warning),
+        _groupName.Warning, [], Console.ConsoleFilter.singleLevelMask(Levels.Warning),
         UI.Icon.create('mediumicon-warning-triangle'), selectedFilterSetting);
     this._appendGroup(
-        Console.ConsoleSidebar._groupName.Info, [], Console.ConsoleFilter.singleLevelMask(Levels.Info),
+        _groupName.Info, [], Console.ConsoleFilter.singleLevelMask(Levels.Info),
         UI.Icon.create('mediumicon-info-circle'), selectedFilterSetting);
     this._appendGroup(
-        Console.ConsoleSidebar._groupName.Verbose, [], Console.ConsoleFilter.singleLevelMask(Levels.Verbose),
-        UI.Icon.create('mediumicon-bug'), selectedFilterSetting);
+        _groupName.Verbose, [], Console.ConsoleFilter.singleLevelMask(Levels.Verbose), UI.Icon.create('mediumicon-bug'),
+        selectedFilterSetting);
     const selectedTreeElementName = selectedFilterSetting.get();
     const defaultTreeElement =
         this._treeElements.find(x => x.name() === selectedTreeElementName) || this._treeElements[0];
@@ -57,7 +56,7 @@ Console.ConsoleSidebar = class extends UI.VBox {
    */
   _appendGroup(name, parsedFilters, levelsMask, icon, selectedFilterSetting) {
     const filter = new Console.ConsoleFilter(name, parsedFilters, null, levelsMask);
-    const treeElement = new Console.ConsoleSidebar.FilterTreeElement(filter, icon, selectedFilterSetting);
+    const treeElement = new FilterTreeElement(filter, icon, selectedFilterSetting);
     this._tree.appendChild(treeElement);
     this._treeElements.push(treeElement);
   }
@@ -93,16 +92,16 @@ Console.ConsoleSidebar = class extends UI.VBox {
    */
   _selectionChanged(event) {
     this._selectedTreeElement = /** @type {!UI.TreeElement} */ (event.data);
-    this.dispatchEventToListeners(Console.ConsoleSidebar.Events.FilterSelected);
+    this.dispatchEventToListeners(Events.FilterSelected);
   }
-};
+}
 
 /** @enum {symbol} */
-Console.ConsoleSidebar.Events = {
+export const Events = {
   FilterSelected: Symbol('FilterSelected')
 };
 
-Console.ConsoleSidebar.URLGroupTreeElement = class extends UI.TreeElement {
+export class URLGroupTreeElement extends UI.TreeElement {
   /**
    * @param {!Console.ConsoleFilter} filter
    */
@@ -119,9 +118,9 @@ Console.ConsoleSidebar.URLGroupTreeElement = class extends UI.TreeElement {
     this._messageCount++;
     this._countElement.textContent = this._messageCount;
   }
-};
+}
 
-Console.ConsoleSidebar.FilterTreeElement = class extends UI.TreeElement {
+export class FilterTreeElement extends UI.TreeElement {
   /**
    * @param {!Console.ConsoleFilter} filter
    * @param {!Element} icon
@@ -164,12 +163,11 @@ Console.ConsoleSidebar.FilterTreeElement = class extends UI.TreeElement {
 
   _updateCounter() {
     if (!this._messageCount) {
-      this.title = Console.ConsoleSidebar._groupNoMessageTitleMap.get(this._filter.name);
+      this.title = _groupNoMessageTitleMap.get(this._filter.name);
     } else if (this._messageCount === 1) {
-      this.title = Console.ConsoleSidebar._groupSingularTitleMap.get(this._filter.name);
+      this.title = _groupSingularTitleMap.get(this._filter.name);
     } else {
-      this.title =
-          String.sprintf(Console.ConsoleSidebar._groupPluralTitleMap.get(this._filter.name), this._messageCount);
+      this.title = String.sprintf(_groupPluralTitleMap.get(this._filter.name), this._messageCount);
     }
 
     this.setExpandable(!!this.childCount());
@@ -210,7 +208,7 @@ Console.ConsoleSidebar.FilterTreeElement = class extends UI.TreeElement {
       filter.name = Common.UIString('<other>');
     }
     filter.parsedFilters.push({key: Console.ConsoleFilter.FilterType.Url, text: urlValue, negative: false});
-    child = new Console.ConsoleSidebar.URLGroupTreeElement(filter);
+    child = new URLGroupTreeElement(filter);
     if (urlValue) {
       child.tooltip = urlValue;
     }
@@ -218,10 +216,10 @@ Console.ConsoleSidebar.FilterTreeElement = class extends UI.TreeElement {
     this.appendChild(child);
     return child;
   }
-};
+}
 
 /** @enum {string} */
-Console.ConsoleSidebar._groupName = {
+export const _groupName = {
   ConsoleAPI: 'user message',
   All: 'message',
   Error: 'error',
@@ -231,25 +229,55 @@ Console.ConsoleSidebar._groupName = {
 };
 
 /** @const {!Map<string, string>} */
-Console.ConsoleSidebar._groupSingularTitleMap = new Map([
-  [Console.ConsoleSidebar._groupName.ConsoleAPI, ls`1 user message`],
-  [Console.ConsoleSidebar._groupName.All, ls`1 message`], [Console.ConsoleSidebar._groupName.Error, ls`1 error`],
-  [Console.ConsoleSidebar._groupName.Warning, ls`1 warning`], [Console.ConsoleSidebar._groupName.Info, ls`1 info`],
-  [Console.ConsoleSidebar._groupName.Verbose, ls`1 verbose`]
+export const _groupSingularTitleMap = new Map([
+  [_groupName.ConsoleAPI, ls`1 user message`], [_groupName.All, ls`1 message`], [_groupName.Error, ls`1 error`],
+  [_groupName.Warning, ls`1 warning`], [_groupName.Info, ls`1 info`], [_groupName.Verbose, ls`1 verbose`]
 ]);
 
 /** @const {!Map<string, string>} */
-Console.ConsoleSidebar._groupPluralTitleMap = new Map([
-  [Console.ConsoleSidebar._groupName.ConsoleAPI, ls`%d user messages`],
-  [Console.ConsoleSidebar._groupName.All, ls`%d messages`], [Console.ConsoleSidebar._groupName.Error, ls`%d errors`],
-  [Console.ConsoleSidebar._groupName.Warning, ls`%d warnings`], [Console.ConsoleSidebar._groupName.Info, ls`%d info`],
-  [Console.ConsoleSidebar._groupName.Verbose, ls`%d verbose`]
+export const _groupPluralTitleMap = new Map([
+  [_groupName.ConsoleAPI, ls`%d user messages`], [_groupName.All, ls`%d messages`], [_groupName.Error, ls`%d errors`],
+  [_groupName.Warning, ls`%d warnings`], [_groupName.Info, ls`%d info`], [_groupName.Verbose, ls`%d verbose`]
 ]);
 
 /** @const {!Map<string, string>} */
-Console.ConsoleSidebar._groupNoMessageTitleMap = new Map([
-  [Console.ConsoleSidebar._groupName.ConsoleAPI, ls`No user messages`],
-  [Console.ConsoleSidebar._groupName.All, ls`No messages`], [Console.ConsoleSidebar._groupName.Error, ls`No errors`],
-  [Console.ConsoleSidebar._groupName.Warning, ls`No warnings`], [Console.ConsoleSidebar._groupName.Info, ls`No info`],
-  [Console.ConsoleSidebar._groupName.Verbose, ls`No verbose`]
+export const _groupNoMessageTitleMap = new Map([
+  [_groupName.ConsoleAPI, ls`No user messages`], [_groupName.All, ls`No messages`], [_groupName.Error, ls`No errors`],
+  [_groupName.Warning, ls`No warnings`], [_groupName.Info, ls`No info`], [_groupName.Verbose, ls`No verbose`]
 ]);
+
+/* Legacy exported object */
+self.Console = self.Console || {};
+
+/* Legacy exported object */
+Console = Console || {};
+
+/**
+ * @constructor
+ */
+Console.ConsoleSidebar = ConsoleSidebar;
+
+/** @enum {symbol} */
+Console.ConsoleSidebar.Events = Events;
+
+/**
+ * @constructor
+ */
+Console.ConsoleSidebar.URLGroupTreeElement = URLGroupTreeElement;
+
+/**
+ * @constructor
+ */
+Console.ConsoleSidebar.FilterTreeElement = FilterTreeElement;
+
+/** @enum {string} */
+Console.ConsoleSidebar._groupName = _groupName;
+
+/** @const {!Map<string, string>} */
+Console.ConsoleSidebar._groupSingularTitleMap = _groupSingularTitleMap;
+
+/** @const {!Map<string, string>} */
+Console.ConsoleSidebar._groupPluralTitleMap = _groupPluralTitleMap;
+
+/** @const {!Map<string, string>} */
+Console.ConsoleSidebar._groupNoMessageTitleMap = _groupNoMessageTitleMap;

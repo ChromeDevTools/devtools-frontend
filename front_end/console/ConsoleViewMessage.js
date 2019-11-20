@@ -31,7 +31,7 @@
  * @implements {Console.ConsoleViewportElement}
  * @unrestricted
  */
-Console.ConsoleViewMessage = class {
+export default class ConsoleViewMessage {
   /**
    * @param {!SDK.ConsoleMessage} consoleMessage
    * @param {!Components.Linkifier} linkifier
@@ -1681,12 +1681,12 @@ Console.ConsoleViewMessage = class {
     }, '');
     return result.replace(/[%]o/g, '');
   }
-};
+}
 
 /**
  * @unrestricted
  */
-Console.ConsoleGroupViewMessage = class extends Console.ConsoleViewMessage {
+export class ConsoleGroupViewMessage extends ConsoleViewMessage {
   /**
    * @param {!SDK.ConsoleMessage} consoleMessage
    * @param {!Components.Linkifier} linkifier
@@ -1766,14 +1766,39 @@ Console.ConsoleGroupViewMessage = class extends Console.ConsoleViewMessage {
       this._repeatCountElement.insertBefore(this._expandGroupIcon, this._repeatCountElement.firstChild);
     }
   }
-};
+}
 
 /**
  * @const
  * @type {number}
  */
-Console.ConsoleViewMessage.MaxLengthForLinks = 40;
+export const MaxLengthForLinks = 40;
 
-Console.ConsoleViewMessage._MaxTokenizableStringLength = 10000;
+export const _MaxTokenizableStringLength = 10000;
+export const _LongStringVisibleLength = 5000;
 
-Console.ConsoleViewMessage._LongStringVisibleLength = 5000;
+/* Legacy exported object */
+self.Console = self.Console || {};
+
+/* Legacy exported object */
+Console = Console || {};
+
+/**
+ * @implements {Console.ConsoleViewportElement}
+ * @unrestricted
+ * @constructor
+ */
+Console.ConsoleViewMessage = ConsoleViewMessage;
+
+/**
+ * @constructor
+ */
+Console.ConsoleGroupViewMessage = ConsoleGroupViewMessage;
+
+/**
+ * @const
+ * @type {number}
+ */
+Console.ConsoleViewMessage.MaxLengthForLinks = MaxLengthForLinks;
+Console.ConsoleViewMessage._MaxTokenizableStringLength = _MaxTokenizableStringLength;
+Console.ConsoleViewMessage._LongStringVisibleLength = _LongStringVisibleLength;

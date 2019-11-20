@@ -29,7 +29,7 @@
 /**
  * @unrestricted
  */
-Console.ConsolePanel = class extends UI.Panel {
+export default class ConsolePanel extends UI.Panel {
   constructor() {
     super('console');
     this._view = Console.ConsoleView.instance();
@@ -81,12 +81,12 @@ Console.ConsolePanel = class extends UI.Panel {
   searchableView() {
     return Console.ConsoleView.instance().searchableView();
   }
-};
+}
 
 /**
  * @unrestricted
  */
-Console.ConsolePanel.WrapperView = class extends UI.VBox {
+export class WrapperView extends UI.VBox {
   constructor() {
     super();
     this.element.classList.add('console-view-wrapper');
@@ -119,13 +119,13 @@ Console.ConsolePanel.WrapperView = class extends UI.VBox {
   _showViewInWrapper() {
     this._view.show(this.element);
   }
-};
+}
 
 /**
  * @implements {Common.Revealer}
  * @unrestricted
  */
-Console.ConsolePanel.ConsoleRevealer = class {
+export class ConsoleRevealer {
   /**
    * @override
    * @param {!Object} object
@@ -140,4 +140,25 @@ Console.ConsolePanel.ConsoleRevealer = class {
     UI.viewManager.showView('console-view');
     return Promise.resolve();
   }
-};
+}
+
+/* Legacy exported object */
+self.Console = self.Console || {};
+
+/* Legacy exported object */
+Console = Console || {};
+
+/**
+ * @constructor
+ */
+Console.ConsolePanel = ConsolePanel;
+
+/**
+ * @constructor
+ */
+Console.ConsolePanel.WrapperView = WrapperView;
+
+/**
+ * @implements {Common.Revealer}
+ */
+Console.ConsolePanel.ConsoleRevealer = ConsoleRevealer;

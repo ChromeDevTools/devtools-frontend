@@ -632,7 +632,6 @@ if (external_devtools_frontend) {
     "front_end/worker_service/module.json",
     "front_end/worker_service/ServiceDispatcher.js",
     "front_end/workspace/module.json",
-    "front_end/workspace_diff/WorkspaceDiff.js",
     "front_end/workspace_diff/module.json",
   ]
 
@@ -690,6 +689,8 @@ if (external_devtools_frontend) {
   all_devtools_files += lighthouse_locale_files
 
   all_devtools_modules = [
+    "front_end/workspace_diff/workspace_diff.js",
+    "front_end/workspace_diff/WorkspaceDiff.js",
     "front_end/event_listeners/event_listeners.js",
     "front_end/event_listeners/EventListenersView.js",
     "front_end/event_listeners/EventListenersUtils.js",
@@ -1223,6 +1224,8 @@ if (external_devtools_frontend) {
   ]
 
   copied_devtools_modules = [
+    "$resources_out_dir/workspace_diff/workspace_diff.js",
+    "$resources_out_dir/workspace_diff/WorkspaceDiff.js",
     "$resources_out_dir/event_listeners/event_listeners.js",
     "$resources_out_dir/event_listeners/EventListenersView.js",
     "$resources_out_dir/event_listeners/EventListenersUtils.js",

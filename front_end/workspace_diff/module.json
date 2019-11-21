@@ -1,10 +1,12 @@
 {
   "dependencies": [
-      "workspace",
-      "diff",
-      "persistence"
+    "workspace",
+    "diff",
+    "persistence"
   ],
-  "scripts": [
-      "WorkspaceDiff.js"
+  "scripts": [],
+  "modules": [
+    "workspace_diff.js",
+    "WorkspaceDiff.js"
   ]
 }

@@ -3,11 +3,22 @@
   <message name="IDS_DEVTOOLS_02e168aecffdbc00d48c952eba310b02" desc="Text in Security Panel of the Security panel">
     Main origin
   </message>
+  <message name="IDS_DEVTOOLS_068531d231001bcd9e61ec84f61d29ae" desc="Description for the page when it contains active content with certificate error">
+    You have recently allowed content loaded with certificate errors (such as scripts or iframes) to run on this site.
+  </message>
+  <message name="IDS_DEVTOOLS_0bfcb0a5e01effdab6e9e61a2f5062c8" desc="Body of message to display in devtools security tab when you are viewing a page that triggered a safety tip.">
+    Chrome has determined that this site could be fake or fraudulent.
+
+If you believe this is shown in error please visit https://bugs.chromium.org/p/chromium/issues/entry?template=Safety+Tips+Appeals.
+  </message>
   <message name="IDS_DEVTOOLS_0f22d804f6720086f2ffe6c4e9d7d3fd" desc="Text in Security Panel of the Security panel">
     Unknown / canceled
   </message>
   <message name="IDS_DEVTOOLS_1238f21584e6dc18c44c4d96fc9bef13" desc="Text in Security Panel of the Security panel">
     Issued at
+  </message>
+  <message name="IDS_DEVTOOLS_1acb4324b3a21f6d6cfd4124e346fd73" desc="Summary for page when there is active mixed content">
+    active mixed content
   </message>
   <message name="IDS_DEVTOOLS_1dc6f97ea55d39e862637dcb0298a3ff" desc="Text in Security Panel of the Security panel">
     Open full certificate details
@@ -18,14 +29,26 @@
   <message name="IDS_DEVTOOLS_22fcd09f19102f883a8e337ea1624b20" desc="Text in Security Panel of the Security panel">
     Log ID
   </message>
+  <message name="IDS_DEVTOOLS_25bac93dc70921caee0b68a4d741190a" desc="Main summary for page when it has been deemed unsafe by the SafeBrowsing service.">
+    This page is dangerous (flagged by Google Safe Browsing).
+  </message>
   <message name="IDS_DEVTOOLS_278dded33791cce4bb389fdf6a516856" desc="Text in Security Panel of the Security panel">
     Your connection to this origin is not secure.
   </message>
   <message name="IDS_DEVTOOLS_2ad7083a628c9593e4c538deab838d77" desc="Text in Security Panel of the Security panel">
     This page is not secure (broken HTTPS).
   </message>
+  <message name="IDS_DEVTOOLS_2eceed1e0d7fca78cb8113e90e07de0c" desc="Summary phrase for a security problem where the site's certificate chain contains a SHA1 signature.">
+    insecure (SHA-1)
+  </message>
   <message name="IDS_DEVTOOLS_2fae32629d4ef4fc6341f1751b405e45" desc="Title of the 'Security' tool">
     Security
+  </message>
+  <message name="IDS_DEVTOOLS_327b7960c5a9f1601c2054fef8dd8640" desc="Summary phrase for a security problem where the site's certificate is missing a subjectAltName extension.">
+    Subject Alternative Name missing
+  </message>
+  <message name="IDS_DEVTOOLS_34040294fa67acc711e3fb0a99e78cf0" desc="Summary phrase for a site that uses a modern, secure TLS protocol and cipher.">
+    secure connection settings
   </message>
   <message name="IDS_DEVTOOLS_36cc7ab088ee5ea657c3d1e47016901b" desc="Text in Security Panel of the Security panel">
     The security details above are from the first inspected response.
@@ -48,29 +71,53 @@
   <message name="IDS_DEVTOOLS_472acd9e75af12adb6421b3eedc8f975" desc="Refresh prompt text content in Security Panel of the Security panel">
     Reload the page to record requests for HTTP resources.
   </message>
+  <message name="IDS_DEVTOOLS_4ac06e46028e74c7fcdf3360a5eb149f" desc="Description of a security problem where the site's certificate chain contains a SHA1 signature.">
+    The certificate chain for this site contains a certificate signed using SHA-1.
+  </message>
   <message name="IDS_DEVTOOLS_4b1f76eea8c3d555f4fe2a9efe4513a5" desc="Text in Security Panel of the Security panel">
     SCT
   </message>
-  <message name="IDS_DEVTOOLS_4e6509e12a8c0ebf2b39fd7e158d48c2" desc="Text in Security Panel of the Security panel">
+  <message name="IDS_DEVTOOLS_4e6509e12a8c0ebf2b39fd7e158d48c2" desc="Main summary for where the site has a non-cryptographic secure origin.">
     This origin is a non-HTTPS secure origin.
   </message>
   <message name="IDS_DEVTOOLS_55c917250d323e0d8572a1c3673bc80d" desc="Text in Security Panel of the Security panel">
     The security of this page is unknown.
   </message>
+  <message name="IDS_DEVTOOLS_56d31ab25d3eafc81549bc134b0f8e90" desc="Summary phrase for a site that has a valid server certificate.">
+    valid and trusted
+  </message>
   <message name="IDS_DEVTOOLS_5a70e1c7b4fa71a69851e44cda14dff7" desc="Text in Security Panel of the Security panel">
     Secure origins
+  </message>
+  <message name="IDS_DEVTOOLS_5cbba895e48c3d869c0fa5bb98334d31" desc="Summary phrase for a security state where Private Key Pinning is ignored because the certificate chains to a locally-trusted root.">
+    Public-Key-Pinning bypassed
   </message>
   <message name="IDS_DEVTOOLS_62a0282d39568be094470486eaf70c4f" desc="Text in Security Panel of the Security panel">
     SAN
   </message>
+  <message name="IDS_DEVTOOLS_64d8cfca977768b9091d697aadb7bfad" desc="Description for page when all resources are served securely">
+    All resources on this page are served securely.
+  </message>
   <message name="IDS_DEVTOOLS_6792733f0a02ad04a0a660c9a0bcfad1" desc="New parent title in Security Panel of the Security panel">
     Main origin (non-secure)
+  </message>
+  <message name="IDS_DEVTOOLS_69fdcaa6d42b715fcf0810552b37936c" desc="Description of a site's TLS settings.">
+    The connection to this site is encrypted and authenticated using <ph name="PROTOCOL_VERSION">$1s<ex>TLS 1.2</ex></ph>, <ph name="KEY_EXCHANGE">$2s<ex>ECDHE_RSA</ex></ph>, and <ph name="CIPHER_SUTE">$3s<ex>AES_128_GCM</ex></ph>.
+  </message>
+  <message name="IDS_DEVTOOLS_6e1ee54d160a5da1eb5990ae20893445" desc="Summary of a warning when the user visits a page that triggered a Safety Tip because the domain looked like another domain.">
+    Possible spoofing URL
   </message>
   <message name="IDS_DEVTOOLS_6f5168da8d36a44f8c196c8aa3ff3e40" desc="Sct div text content in Security Panel of the Security panel">
     Certificate Transparency
   </message>
   <message name="IDS_DEVTOOLS_71d09158378f6d5172ac991d5f26a1c1" desc="Text in Security Panel of the Security panel">
     Log name
+  </message>
+  <message name="IDS_DEVTOOLS_72f396267f5191d9149f98fdfd65d8ac" desc="A recommendation to the site owner to use a modern TLS protocol">
+    <ph name="PROTOCOL">$1s<ex>TLS 1.0</ex></ph> is obsolete. Enable TLS 1.2 or later.
+  </message>
+  <message name="IDS_DEVTOOLS_770358727e4d60491b5e4d6fbca0b257" desc="Summary phrase for a security problem where the site is non-secure (HTTP) and user has entered data in a form field.">
+    Form field edited on a non-secure page
   </message>
   <message name="IDS_DEVTOOLS_77ee7df08008633ded94db7e019a2bcc" desc="Text in Security Panel of the Security panel">
     Non-secure origins
@@ -81,14 +128,29 @@
   <message name="IDS_DEVTOOLS_7e025c9c2b87ac6d946747ea156b3f37" desc="Text in Security Panel of the Security panel">
     Blocked mixed content
   </message>
+  <message name="IDS_DEVTOOLS_8b890b07698a624caf7cec0ecca9245a" desc="Title of the devtools security tab when the page you are on triggered a safety tip.">
+    This page is suspicious (flagged by Chrome).
+  </message>
+  <message name="IDS_DEVTOOLS_910937797e6e2f8dc11be1c2ccdc11e5" desc="Summary for page when there is mixed content">
+    mixed content
+  </message>
   <message name="IDS_DEVTOOLS_918fa99baa381e2902ad2185ea659228" desc="Text in Security Panel of the Security panel">
     Hash algorithm
+  </message>
+  <message name="IDS_DEVTOOLS_91fc1ccd6800a2af8c7537f9435ffdc2" desc="Main summary for a non cert error page.">
+    This is an error page.
   </message>
   <message name="IDS_DEVTOOLS_9859694a15c021aa640bfda6b3e4423f" desc="Text in Security Panel of the Security panel">
     Key exchange group
   </message>
+  <message name="IDS_DEVTOOLS_9866c096a164e33f577c2e4fe5915c4c" desc="Summary phrase for a security problem where the site is deemed unsafe by the SafeBrowsing service.">
+    Flagged by Google Safe Browsing
+  </message>
   <message name="IDS_DEVTOOLS_98bce0cf672e732251f6f4327749ed18" desc="San div text content in Security Panel of the Security panel">
     (n/a)
+  </message>
+  <message name="IDS_DEVTOOLS_9a04d50e41588e0688709af19fc271a1" desc="Summary phrase for a site that uses an outdated SSL settings (protocol, key exchange, or cipher).">
+    obsolete connection settings
   </message>
   <message name="IDS_DEVTOOLS_9b30e34fce49de00a7fefd64aa5371fd" desc="Text in Security Panel of the Security panel">
     This page is not secure.
@@ -114,11 +176,40 @@
   <message name="IDS_DEVTOOLS_aa043eca48e5c05602ee440521a2d8fc" desc="Truncated santoggle text content in Security Panel of the Security panel">
     Show more (<ph name="SANLIST_LENGTH">$1s<ex>2</ex></ph> total)
   </message>
+  <message name="IDS_DEVTOOLS_b120bcc69bb6a4025722fb99100a66d2" desc="Body of a warning when the user visits a page that triggered a Safety Tip because the domain looked like another domain.">
+    This site&apos;s hostname looks similar to <ph name='LOOKALIKE_DOMAIN'>$1s<ex>google.com</ex></ph>. Attackers sometimes mimic sites by making small, hard-to-see changes to the domain name.
+
+If you believe this is shown in error please visit https://bugs.chromium.org/p/chromium/issues/entry?template=Safety+Tips+Appeals.
+  </message>
+  <message name="IDS_DEVTOOLS_b1286e11ceb64bb3df56ecabea348630" desc="Description of a security problem where the site's certificate is missing a subjectAltName extension.">
+    The certificate for this site does not contain a Subject Alternative Name extension containing a domain name or IP address.
+  </message>
+  <message name="IDS_DEVTOOLS_b1f14f646ef8806a292a6e7d58e488e2" desc="Description for page when there is mixed content">
+    This page includes HTTP resources.
+  </message>
+  <message name="IDS_DEVTOOLS_b307d76798aaa401114787fc39b5fbfb" desc="Description for page when there is a non-secure form">
+    This page includes a form with a non-secure &quot;action&quot; attribute.
+  </message>
+  <message name="IDS_DEVTOOLS_b415366f5e0747118965d90632d7a955" desc="Description of an SSL cipher that contains a separate (bulk) cipher and MAC.">
+    <ph name="CIPHER">$1s<ex>AES_256_CBC</ex></ph> with <ph name="MAC">$2s<ex>HMAC-SHA1</ex></ph>
+  </message>
+  <message name="IDS_DEVTOOLS_b496dccd8f41590669652442bb503bb5" desc="Description of a security problem where the site is non-secure (HTTP) and user has entered data in a form field.">
+    Data was entered in a field on a non-secure page. A warning has been added to the URL bar.
+  </message>
+  <message name="IDS_DEVTOOLS_b7c3bc8136d5373a4125cfe56ab29aac" desc="Main summary for where the site has a non-cryptographic secure origin.">
+    This page has a non-HTTPS secure origin.
+  </message>
   <message name="IDS_DEVTOOLS_b92f649b203ca680d444432324771186" desc="Text in Security Panel of the Security panel">
     This request does not comply with <ph name="LOCKED_1">Chrome</ph>&apos;s Certificate Transparency policy.
   </message>
+  <message name="IDS_DEVTOOLS_bb8d649973b912d55123ef29293d2279" desc="Description of a security problem where the site is deemed unsafe by the SafeBrowsing service.">
+    To check this page&apos;s status, visit g.co/safebrowsingstatus.
+  </message>
   <message name="IDS_DEVTOOLS_c3db8a95444ea6caa45cc7dcb6e78d64" desc="Summary div text content in Security Panel of the Security panel">
     Security overview
+  </message>
+  <message name="IDS_DEVTOOLS_c3deb1e1fa8fe7033a011cdbdc3dbb0d" desc="Summary for page when there is active content with certificate errors">
+    content with certificate errors
   </message>
   <message name="IDS_DEVTOOLS_c64a179b75e6bf377700187bea8de65e" desc="Text in Security Panel of the Security panel">
     Reload to view details
@@ -126,20 +217,68 @@
   <message name="IDS_DEVTOOLS_c8ef68c0fce4f4bfe0219809473d3651" desc="Text in Security Panel of the Security panel">
     Cipher
   </message>
+  <message name="IDS_DEVTOOLS_cd44d6e85ebeacf77c2b858715a8eda3" desc="Description for page when there is content with certificate errors">
+    This page includes resources that were loaded with certificate errors.
+  </message>
+  <message name="IDS_DEVTOOLS_cf01c994d38e620da2ccb4d423ee8131" desc="Description of a site that has a valid server certificate.">
+    The connection to this site is using a valid, trusted server certificate issued by <ph name="ISSUER">$1s<ex>Let's Encrypt Authority X3</ex></ph>.
+  </message>
+  <message name="IDS_DEVTOOLS_d2bd19d22af31a7316dbd49145394a7d" desc="Main summary for where the site is non-secure HTTP.">
+    This page is insecure (unencrypted HTTP).
+  </message>
   <message name="IDS_DEVTOOLS_d42c8bbf1d0f4a65f4dec450f2bc4439" desc="Text in Security Panel of the Security panel">
     Key exchange
+  </message>
+  <message name="IDS_DEVTOOLS_d477c2211bba631790dec856cd7e8a9c" desc="Summary for page when there is a non-secure form">
+    non-secure form
+  </message>
+  <message name="IDS_DEVTOOLS_d5e20aa6585ac7f3a4e06433caf8577f" desc="A recommendation to the site owner to use a modern TLS key exchange">
+    RSA key exchange is obsolete. Enable an ECDHE-based cipher suite.
+  </message>
+  <message name="IDS_DEVTOOLS_d9121fdacdd2cf068a271df5a8ced041" desc="Description for a site with a certificate that is expiring soon.">
+    The certificate for this site expires in less than 48 hours and needs to be renewed.
   </message>
   <message name="IDS_DEVTOOLS_daa52ee980b16f68bc0d3a9b5cc8deb7" desc="Text in Security Panel of the Security panel">
     View requests in Network Panel
   </message>
+  <message name="IDS_DEVTOOLS_dadad4a3c90b2870c1821d5f302f15f1" desc="A recommendation to the site owner to use a modern TLS cipher">
+    <ph name="CIPHER">$1s<ex>3DES_EDE_CBC</ex></ph> is obsolete. Enable an AES-GCM-based cipher suite.
+  </message>
   <message name="IDS_DEVTOOLS_decb9f523d4cf5dc037b61cb555e6bf3" desc="Not secure div text content in Security Panel of the Security panel">
     Not secure
+  </message>
+  <message name="IDS_DEVTOOLS_e372a2bdb6592aecd275978b2191c054" desc="Description for page when there is active mixed content">
+    You have recently allowed non-secure content (such as scripts or iframes) to run on this site.
+  </message>
+  <message name="IDS_DEVTOOLS_ea21841da70e6405af19fabc4ff8bdd9" desc="Summary phrase for a security problem with the site's certificate.">
+    missing
   </message>
   <message name="IDS_DEVTOOLS_ebcaa68d6546adbf82e22d0384d945cf" desc="Toggle scts details link text content in Security Panel of the Security panel">
     Hide full details
   </message>
+  <message name="IDS_DEVTOOLS_edcf69e13ef9d55ba8abdbfdcf5e69d2" desc="Description of a security state where Private Key Pinning is ignored because the certificate chains to a locally-trusted root.">
+    Public-Key-Pinning was bypassed by a local root certificate.
+  </message>
+  <message name="IDS_DEVTOOLS_ede518c4ebafd86e09af142f8eeb0e65" desc="Summary for the page when it contains active content with certificate error">
+    active content with certificate errors
+  </message>
+  <message name="IDS_DEVTOOLS_ee898e10abc0f1d3979b5c71f96e6103" desc="Summary for page when all resources are served securely">
+    all served securely
+  </message>
+  <message name="IDS_DEVTOOLS_f44a4ffed595cd947141f336ca1d4e48" desc="Description of a security problem with the site's certificate.">
+    This site is missing a valid, trusted certificate (<ph name="CERT_ERROR_DESCRIPTION">$1s<ex>net::ERR_CERT_AUTHORITY_INVALID</ex></ph>).
+  </message>
   <message name="IDS_DEVTOOLS_f701897bd65f88245ebde54a818953a1" desc="Text in Security Panel of the Security panel">
     Signature data
+  </message>
+  <message name="IDS_DEVTOOLS_fbc3ec784c649b8a6ce526c23de37743" desc="Message to display in devtools security tab when the page you are on triggered a safety tip.">
+    This page is suspicious
+  </message>
+  <message name="IDS_DEVTOOLS_fc58d57fae17aad47ca6f28330cef023" desc="A recommendation to the site owner to use a modern TLS server signature">
+    The server signature uses SHA-1, which is obsolete. Enable a SHA-2 signature algorithm instead. (Note this is different from the signature in the certificate.)
+  </message>
+  <message name="IDS_DEVTOOLS_ffa3ce4de571636471dbc9234fa1fc57" desc="Summary phrase for a site with a certificate that is expiring soon.">
+    Certificate expires soon
   </message>
   <message name="IDS_DEVTOOLS_ffb9069b5d779f0a9e37dfbd47d9edfb" desc="Text in Security Panel of the Security panel">
     Validation status

@@ -359,9 +359,6 @@ read the &quot;<ph name="THIS_TABLENAME">$1s<ex>database</ex></ph>&quot; table.
   <message name="IDS_DEVTOOLS_dc87ca61695d643744b53bca9bf3f1d5" desc="Span text content in Indexed DBViews of the Application panel">
     Total entries: <ph name="STRING_METADATA_ENTRIESCOUNT_">$1s<ex>2</ex></ph>
   </message>
-  <message name="IDS_DEVTOOLS_ddcf50c29294d4414f3f7c1bbc892cb5" desc="A title of the 'Resources' action category">
-    Resources
-  </message>
   <message name="IDS_DEVTOOLS_e00a7ac13697ba51e098449fd644935b" desc="Text in Background Service View of the Application panel">
     Show events from other domains
   </message>

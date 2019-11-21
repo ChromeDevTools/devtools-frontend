@@ -65,9 +65,18 @@ SDK.SDKModel.register(Security.SecurityModel, SDK.Target.Capability.Security, fa
 
 /** @enum {symbol} */
 Security.SecurityModel.Events = {
-  SecurityStateChanged: Symbol('SecurityStateChanged')
+  SecurityStateChanged: Symbol('SecurityStateChanged'),
+  VisibleSecurityStateChanged: Symbol('VisibleSecurityStateChanged')
 };
 
+/** @type {!Object<string, string>} */
+Security.SummaryMessages = {
+  [Protocol.Security.SecurityState.Unknown]: ls`The security of this page is unknown.`,
+  [Protocol.Security.SecurityState.Insecure]: ls`This page is not secure.`,
+  [Protocol.Security.SecurityState.Neutral]: ls`This page is not secure.`,
+  [Protocol.Security.SecurityState.Secure]: ls`This page is secure (valid HTTPS).`,
+  [Protocol.Security.SecurityState.InsecureBroken]: ls`This page is not secure (broken HTTPS).`
+};
 
 /**
  * @unrestricted
@@ -82,6 +91,120 @@ Security.PageSecurityState = class {
     this.securityState = securityState;
     this.explanations = explanations;
     this.summary = summary;
+  }
+};
+
+/**
+ * @unrestricted
+ */
+Security.PageVisibleSecurityState = class {
+  constructor(securityState, certificateSecurityState, safetyTipInfo, securityStateIssueIds) {
+    this.securityState = securityState;
+    this.certificateSecurityState =
+        certificateSecurityState ? new Security.CertificateSecurityState(certificateSecurityState) : null;
+    this.safetyTipInfo = safetyTipInfo ? new Security.SafetyTipInfo(safetyTipInfo) : null;
+    this.securityStateIssueIds = securityStateIssueIds;
+  }
+};
+
+Security.CertificateSecurityState = class {
+  /**
+   * @param {!Protocol.Security.CertificateSecurityState} certificateSecurityState
+   */
+  constructor(certificateSecurityState) {
+    /** @type {string} */
+    this.protocol = certificateSecurityState.protocol;
+    /** @type {string} */
+    this.keyExchange = certificateSecurityState.keyExchange;
+    /** @type {?string} */
+    this.keyExchangeGroup = certificateSecurityState.keyExchangeGroup || null;
+    /** @type {string} */
+    this.cipher = certificateSecurityState.cipher;
+    /** @type {?string} */
+    this.mac = certificateSecurityState.mac || null;
+    /** @type {!Array<string>} */
+    this.certificate = certificateSecurityState.certificate;
+    /** @type {string} */
+    this.subjectName = certificateSecurityState.subjectName;
+    /** @type {string} */
+    this.issuer = certificateSecurityState.issuer;
+    /** @type {!Protocol.Network.TimeSinceEpoch} */
+    this.validFrom = certificateSecurityState.validFrom;
+    /** @type {!Protocol.Network.TimeSinceEpoch} */
+    this.validTo = certificateSecurityState.validTo;
+    /** @type {?string} */
+    this.certificateNetworkError = certificateSecurityState.certificateNetworkError || null;
+    /** @type {boolean} */
+    this.certificateHasWeakSignature = certificateSecurityState.certificateHasWeakSignature;
+    /** @type {boolean} */
+    this.certificateHasSha1Signature = certificateSecurityState.certificateHasSha1Signature;
+    /** @type {boolean} */
+    this.modernSSL = certificateSecurityState.modernSSL;
+    /** @type {boolean} */
+    this.obsoleteSslProtocol = certificateSecurityState.obsoleteSslProtocol;
+    /** @type {boolean} */
+    this.obsoleteSslKeyExchange = certificateSecurityState.obsoleteSslKeyExchange;
+    /** @type {boolean} */
+    this.obsoleteSslCipher = certificateSecurityState.obsoleteSslCipher;
+    /** @type {boolean} */
+    this.obsoleteSslSignature = certificateSecurityState.obsoleteSslSignature;
+  }
+
+  /**
+   * @return {boolean}
+   */
+  isCertificateExpiringSoon() {
+    const expiryDate = new Date(this.validTo * 1000);
+    return (expiryDate < new Date(Date.now()).setHours(48)) && (expiryDate > Date.now());
+  }
+
+  /**
+   * @return {string}
+   */
+  getKeyExchangeName() {
+    if (this.keyExchangeGroup) {
+      return this.keyExchange ? ls`${this.keyExchange} with ${this.keyExchangeGroup}` : this.keyExchangeGroup;
+    }
+    return this.keyExchange;
+  }
+
+  /**
+   * @return {string}
+   */
+  getCipherFullName() {
+    return this.mac ? ls`${this.cipher} with ${this.mac}` : this.cipher;
+  }
+};
+
+Security.SafetyTipInfo = class {
+  constructor(safetyTipInfo) {
+    /** @type {string} */
+    this.safetyTipStatus = safetyTipInfo.safetyTipStatus;
+    /** @type {?string} */
+    this.safeUrl = safetyTipInfo.safeUrl || null;
+  }
+};
+
+Security.SecurityStyleExplanation = class {
+  /**
+   * @param {!Protocol.Security.SecurityState} securityState
+   * @param {string|undefined} title
+   * @param {string} summary
+   * @param {string} description
+   * @param {!Array<string>=} certificate
+   * @param {!Protocol.Security.MixedContentType=} mixedContentType
+   * @param {!Array<string>=} recommendations
+   */
+  constructor(
+      securityState, title, summary, description, certificate = [],
+      mixedContentType = Protocol.Security.MixedContentType.None, recommendations = []) {
+    this.securityState = securityState;
+    this.title = title;
+    this.summary = summary;
+    this.description = description;
+    this.certificate = certificate;
+    this.mixedContentType = mixedContentType;
+    this.recommendations = recommendations;
   }
 };
 
@@ -112,6 +235,11 @@ Security.SecurityDispatcher = class {
    * @param {!Protocol.Security.VisibleSecurityState} visibleSecurityState
    */
   visibleSecurityStateChanged(visibleSecurityState) {
+    const pageVisibleSecurityState = new Security.PageVisibleSecurityState(
+        visibleSecurityState.securityState, visibleSecurityState.certificateSecurityState || null,
+        visibleSecurityState.safetyTipInfo || null, visibleSecurityState.securityStateIssueIds);
+    this._model.dispatchEventToListeners(
+        Security.SecurityModel.Events.VisibleSecurityStateChanged, pageVisibleSecurityState);
   }
 
   /**

@@ -117,6 +117,22 @@ Security.SecurityPanel = class extends UI.PanelWithSidebar {
     this._updateSecurityState(securityState, explanations, summary);
   }
 
+  /**
+   * @param {!Security.PageVisibleSecurityState} visibleSecurityState
+   */
+  _updateVisibleSecurityState(visibleSecurityState) {
+    this._sidebarMainViewElement.setSecurityState(visibleSecurityState.securityState);
+    this._mainView.updateVisibleSecurityState(visibleSecurityState);
+  }
+
+  /**
+   * @param {!Common.Event} event
+   */
+  _onVisibleSecurityStateChanged(event) {
+    const data = /** @type {!Security.PageVisibleSecurityState} */ (event.data);
+    this._updateVisibleSecurityState(data);
+  }
+
   selectAndSwitchToMainView() {
     // The sidebar element will trigger displaying the main view. Rather than making a redundant call to display the main view, we rely on this.
     this._sidebarMainViewElement.select(true);
@@ -299,8 +315,6 @@ Security.SecurityPanel = class extends UI.PanelWithSidebar {
     const resourceTreeModel = securityModel.resourceTreeModel();
     const networkManager = securityModel.networkManager();
     this._eventListeners = [
-      securityModel.addEventListener(
-          Security.SecurityModel.Events.SecurityStateChanged, this._onSecurityStateChanged, this),
       resourceTreeModel.addEventListener(
           SDK.ResourceTreeModel.Events.MainFrameNavigated, this._onMainFrameNavigated, this),
       resourceTreeModel.addEventListener(
@@ -310,6 +324,13 @@ Security.SecurityPanel = class extends UI.PanelWithSidebar {
       networkManager.addEventListener(SDK.NetworkManager.Events.ResponseReceived, this._onResponseReceived, this),
       networkManager.addEventListener(SDK.NetworkManager.Events.RequestFinished, this._onRequestFinished, this),
     ];
+    if (Root.Runtime.experiments.isEnabled('handleVisibleSecurityStateChanged')) {
+      this._eventListeners.push(securityModel.addEventListener(
+          Security.SecurityModel.Events.VisibleSecurityStateChanged, this._onVisibleSecurityStateChanged, this));
+    } else {
+      this._eventListeners.push(securityModel.addEventListener(
+          Security.SecurityModel.Events.SecurityStateChanged, this._onSecurityStateChanged, this));
+    }
 
     if (resourceTreeModel.isInterstitialShowing()) {
       this._onInterstitialShown();
@@ -726,6 +747,300 @@ Security.SecurityMainView = class extends UI.VBox {
     this._explanations = explanations;
 
     this.refreshExplanations();
+  }
+
+  /**
+   * @param {!Security.PageVisibleSecurityState} visibleSecurityState
+   */
+  updateVisibleSecurityState(visibleSecurityState) {
+    // Remove old state.
+    // It's safe to call this even when this._securityState is undefined.
+    this._summarySection.classList.remove('security-summary-' + this._securityState);
+
+    // Add new state.
+    this._securityState = visibleSecurityState.securityState;
+    this._summarySection.classList.add('security-summary-' + this._securityState);
+
+    // Update the color and title of the triangle icon in the lock spectrum to
+    // match the security state.
+    if (this._securityState === Protocol.Security.SecurityState.Insecure) {
+      this._lockSpectrum.get(Protocol.Security.SecurityState.Insecure).classList.add('lock-icon-insecure');
+      this._lockSpectrum.get(Protocol.Security.SecurityState.Insecure).classList.remove('lock-icon-insecure-broken');
+      this._lockSpectrum.get(Protocol.Security.SecurityState.Insecure).title = ls`Not secure`;
+    } else if (this._securityState === Protocol.Security.SecurityState.InsecureBroken) {
+      this._lockSpectrum.get(Protocol.Security.SecurityState.Insecure).classList.add('lock-icon-insecure-broken');
+      this._lockSpectrum.get(Protocol.Security.SecurityState.Insecure).classList.remove('lock-icon-insecure');
+      this._lockSpectrum.get(Protocol.Security.SecurityState.Insecure).title = ls`Not secure (broken)`;
+    }
+
+    const {summary, explanations} = this._getSecuritySummaryAndExplanations(visibleSecurityState);
+    // Use override summary if present, otherwise use base explanation
+    this._summaryText.textContent = summary || Security.SummaryMessages[this._securityState];
+
+    this._explanations = this._orderExplanations(explanations);
+
+    this.refreshExplanations();
+  }
+
+  /**
+   * @param {!Security.PageVisibleSecurityState} visibleSecurityState
+   * @returns {!{summary: (string|undefined), explanations: !Array<Security.SecurityStyleExplanation>}}
+   */
+  _getSecuritySummaryAndExplanations(visibleSecurityState) {
+    const {securityState, securityStateIssueIds} = visibleSecurityState;
+    let summary;
+    const explanations = [];
+    summary = this._explainSafetyTipSecurity(visibleSecurityState, summary, explanations);
+    if (securityStateIssueIds.includes('malicious-content')) {
+      summary = ls`This page is dangerous (flagged by Google Safe Browsing).`;
+      // Always insert SafeBrowsing explanation at the front.
+      explanations.unshift(new Security.SecurityStyleExplanation(
+          Protocol.Security.SecurityState.Insecure, undefined, ls`Flagged by Google Safe Browsing`,
+          ls`To check this page's status, visit g.co/safebrowsingstatus.`));
+    } else if (
+        securityStateIssueIds.includes('is-error-page') &&
+        (visibleSecurityState.certificateSecurityState === null ||
+         visibleSecurityState.certificateSecurityState.certificateNetworkError === null)) {
+      summary = ls`This is an error page.`;
+      // In the case of a non cert error page, we usually don't have a
+      // certificate, connection, or content that needs to be explained, e.g. in
+      // the case of a net error, so we can early return.
+      return {summary, explanations};
+    } else if (
+        securityState === Protocol.Security.SecurityState.InsecureBroken &&
+        securityStateIssueIds.includes('scheme-is-not-cryptographic')) {
+      summary = summary || ls`This page is insecure (unencrypted HTTP).`;
+      if (securityStateIssueIds.includes('insecure-input-events')) {
+        explanations.push(new Security.SecurityStyleExplanation(
+            Protocol.Security.SecurityState.Insecure, undefined, ls`Form field edited on a non-secure page`,
+            ls`Data was entered in a field on a non-secure page. A warning has been added to the URL bar.`));
+      }
+    }
+
+    if (securityStateIssueIds.includes('scheme-is-not-cryptographic')) {
+      if (securityState === Protocol.Security.SecurityState.Neutral &&
+          !securityStateIssueIds.includes('insecure-origin')) {
+        summary = ls`This page has a non-HTTPS secure origin.`;
+      }
+      return {summary, explanations};
+    }
+
+    this._explainCertificateSecurity(visibleSecurityState, explanations);
+    this._explainConnectionSecurity(visibleSecurityState, explanations);
+    this._explainContentSecurity(visibleSecurityState, explanations);
+    return {summary, explanations};
+  }
+
+  /**
+   * @param {!Security.PageVisibleSecurityState} visibleSecurityState
+   * @param {string|undefined} summary
+   * @param {!Array<!Security.SecurityStyleExplanation>} explanations
+   * @returns {string|undefined}
+   */
+  _explainSafetyTipSecurity(visibleSecurityState, summary, explanations) {
+    const {securityStateIssueIds, safetyTipInfo} = visibleSecurityState;
+    const currentExplanations = [];
+
+    if (securityStateIssueIds.includes('bad_reputation')) {
+      currentExplanations.push({
+        summary: ls`This page is suspicious`,
+        description: ls
+        `Chrome has determined that this site could be fake or fraudulent.\n\nIf you believe this is shown in error please visit https://bugs.chromium.org/p/chromium/issues/entry?template=Safety+Tips+Appeals.`
+      });
+    } else if (securityStateIssueIds.includes('lookalike') && safetyTipInfo.safeUrl) {
+      currentExplanations.push({
+        summary: ls`Possible spoofing URL`,
+        description: ls`This site's hostname looks similar to ${
+            new URL(safetyTipInfo.safeUrl)
+                .hostname}. Attackers sometimes mimic sites by making small, hard-to-see changes to the domain name.\n\nIf you believe this is shown in error please visit https://bugs.chromium.org/p/chromium/issues/entry?template=Safety+Tips+Appeals.`
+      });
+    }
+
+    if (currentExplanations.length > 0) {
+      // To avoid overwriting SafeBrowsing's title, set the main summary only if
+      // it's empty. The title set here can be overridden by later checks (e.g.
+      // bad HTTP).
+      summary = summary || ls`This page is suspicious (flagged by Chrome).`;
+      explanations.push(new Security.SecurityStyleExplanation(
+          Protocol.Security.SecurityState.Insecure, undefined, currentExplanations[0].summary,
+          currentExplanations[0].description));
+    }
+    return summary;
+  }
+
+  /**
+   * @param {!Security.PageVisibleSecurityState} visibleSecurityState
+   * @param {!Array<!Security.SecurityStyleExplanation>} explanations
+   */
+  _explainCertificateSecurity(visibleSecurityState, explanations) {
+    const {certificateSecurityState, securityStateIssueIds} = visibleSecurityState;
+    const title = ls`Certificate`;
+    if (certificateSecurityState && certificateSecurityState.certificateHasSha1Signature) {
+      const explanationSummary = ls`insecure (SHA-1)`;
+      const description = ls`The certificate chain for this site contains a certificate signed using SHA-1.`;
+      if (certificateSecurityState.certificateHasWeakSignature) {
+        explanations.push(new Security.SecurityStyleExplanation(
+            Protocol.Security.SecurityState.Insecure, title, explanationSummary, description,
+            certificateSecurityState.certificate, Protocol.Security.MixedContentType.None));
+      } else {
+        explanations.push(new Security.SecurityStyleExplanation(
+            Protocol.Security.SecurityState.Neutral, title, explanationSummary, description,
+            certificateSecurityState.certificate, Protocol.Security.MixedContentType.None));
+      }
+    }
+
+    if (certificateSecurityState && securityStateIssueIds.includes('cert-missing-subject-alt-name')) {
+      explanations.push(new Security.SecurityStyleExplanation(
+          Protocol.Security.SecurityState.Insecure, title, ls`Subject Alternative Name missing`,
+          ls
+          `The certificate for this site does not contain a Subject Alternative Name extension containing a domain name or IP address.`,
+          certificateSecurityState.certificate, Protocol.Security.MixedContentType.None));
+    }
+
+    if (certificateSecurityState && certificateSecurityState.certificateNetworkError !== null) {
+      explanations.push(new Security.SecurityStyleExplanation(
+          Protocol.Security.SecurityState.Insecure, title, ls`missing`,
+          ls`This site is missing a valid, trusted certificate (${certificateSecurityState.certificateNetworkError}).`,
+          certificateSecurityState.certificate, Protocol.Security.MixedContentType.None));
+    } else if (certificateSecurityState && !certificateSecurityState.certificateHasSha1Signature) {
+      explanations.push(new Security.SecurityStyleExplanation(
+          Protocol.Security.SecurityState.Secure, title, ls`valid and trusted`,
+          ls`The connection to this site is using a valid, trusted server certificate issued by ${
+              certificateSecurityState.issuer}.`,
+          certificateSecurityState.certificate, Protocol.Security.MixedContentType.None));
+    }
+
+    if (securityStateIssueIds.includes('pkp-bypassed')) {
+      explanations.push(new Security.SecurityStyleExplanation(
+          Protocol.Security.SecurityState.Info, title, ls`Public-Key-Pinning bypassed`,
+          ls`Public-Key-Pinning was bypassed by a local root certificate.`));
+    }
+
+    if (certificateSecurityState && certificateSecurityState.isCertificateExpiringSoon()) {
+      explanations.push(new Security.SecurityStyleExplanation(
+          Protocol.Security.SecurityState.Info, undefined, ls`Certificate expires soon`,
+          ls`The certificate for this site expires in less than 48 hours and needs to be renewed.`));
+    }
+  }
+
+  /**
+   * @param {!Security.PageVisibleSecurityState} visibleSecurityState
+   * @param {!Array<!Security.SecurityStyleExplanation>} explanations
+   */
+  _explainConnectionSecurity(visibleSecurityState, explanations) {
+    const certificateSecurityState = visibleSecurityState.certificateSecurityState;
+    if (!certificateSecurityState) {
+      return;
+    }
+
+    const title = ls`Connection`;
+    if (certificateSecurityState.modernSSL) {
+      explanations.push(new Security.SecurityStyleExplanation(
+          Protocol.Security.SecurityState.Secure, title, ls`secure connection settings`,
+          ls`The connection to this site is encrypted and authenticated using ${certificateSecurityState.protocol}, ${
+              certificateSecurityState.getKeyExchangeName()}, and ${certificateSecurityState.getCipherFullName()}.`));
+      return;
+    }
+
+    const recommendations = [];
+    if (certificateSecurityState.obsoleteSslProtocol) {
+      recommendations.push(ls`${certificateSecurityState.protocol} is obsolete. Enable TLS 1.2 or later.`);
+    }
+    if (certificateSecurityState.obsoleteSslKeyExchange) {
+      recommendations.push(ls`RSA key exchange is obsolete. Enable an ECDHE-based cipher suite.`);
+    }
+    if (certificateSecurityState.obsoleteSslCipher) {
+      recommendations.push(ls`${certificateSecurityState.cipher} is obsolete. Enable an AES-GCM-based cipher suite.`);
+    }
+    if (certificateSecurityState.obsoleteSslSignature) {
+      recommendations.push(
+          ls
+          `The server signature uses SHA-1, which is obsolete. Enable a SHA-2 signature algorithm instead. (Note this is different from the signature in the certificate.)`);
+    }
+
+    explanations.push(new Security.SecurityStyleExplanation(
+        Protocol.Security.SecurityState.Info, title, ls`obsolete connection settings`,
+        ls`The connection to this site is encrypted and authenticated using ${certificateSecurityState.protocol}, ${
+            certificateSecurityState.getKeyExchangeName()}, and ${certificateSecurityState.getCipherFullName()}.`,
+        undefined, undefined, recommendations));
+  }
+
+  /**
+   * @param {!Security.PageVisibleSecurityState} visibleSecurityState
+   * @param {!Array<!Security.SecurityStyleExplanation>} explanations
+   */
+  _explainContentSecurity(visibleSecurityState, explanations) {
+    // Add the secure explanation unless there is an issue.
+    let addSecureExplanation = true;
+    const title = ls`Resources`;
+    const securityStateIssueIds = visibleSecurityState.securityStateIssueIds;
+
+    if (securityStateIssueIds.includes('ran-mixed-content')) {
+      addSecureExplanation = false;
+      explanations.push(new Security.SecurityStyleExplanation(
+          Protocol.Security.SecurityState.Insecure, title, ls`active mixed content`,
+          ls`You have recently allowed non-secure content (such as scripts or iframes) to run on this site.`, [],
+          Protocol.Security.MixedContentType.Blockable));
+    }
+
+    if (securityStateIssueIds.includes('displayed-mixed-content')) {
+      addSecureExplanation = false;
+      explanations.push(new Security.SecurityStyleExplanation(
+          Protocol.Security.SecurityState.Neutral, title, ls`mixed content`, ls`This page includes HTTP resources.`, [],
+          Protocol.Security.MixedContentType.OptionallyBlockable));
+    }
+
+    if (securityStateIssueIds.includes('contained-mixed-form')) {
+      addSecureExplanation = false;
+      explanations.push(new Security.SecurityStyleExplanation(
+          Protocol.Security.SecurityState.Neutral, title, ls`non-secure form`,
+          ls`This page includes a form with a non-secure "action" attribute.`));
+    }
+
+    if (visibleSecurityState.certificateSecurityState === null ||
+        visibleSecurityState.certificateSecurityState.certificateNetworkError === null) {
+      if (securityStateIssueIds.includes('ran-content-with-cert-error')) {
+        addSecureExplanation = false;
+        explanations.push(new Security.SecurityStyleExplanation(
+            Protocol.Security.SecurityState.Insecure, title, ls`active content with certificate errors`,
+            ls
+            `You have recently allowed content loaded with certificate errors (such as scripts or iframes) to run on this site.`));
+      }
+
+      if (securityStateIssueIds.includes('displayed-content-with-cert-errors')) {
+        addSecureExplanation = false;
+        explanations.push(new Security.SecurityStyleExplanation(
+            Protocol.Security.SecurityState.Neutral, title, ls`content with certificate errors`,
+            ls`This page includes resources that were loaded with certificate errors.`));
+      }
+    }
+
+    if (addSecureExplanation) {
+      if (!securityStateIssueIds.includes('scheme-is-not-cryptographic')) {
+        explanations.push(new Security.SecurityStyleExplanation(
+            Protocol.Security.SecurityState.Secure, title, ls`all served securely`,
+            ls`All resources on this page are served securely.`));
+      }
+    }
+  }
+
+  /**
+   * @param {!Array<!Security.SecurityStyleExplanation>} explanations
+   * @return {!Array<!Security.SecurityStyleExplanation>}
+   */
+  _orderExplanations(explanations) {
+    if (explanations.length === 0) {
+      return explanations;
+    }
+    const securityStateOrder = [
+      Protocol.Security.SecurityState.Insecure, Protocol.Security.SecurityState.Neutral,
+      Protocol.Security.SecurityState.Secure, Protocol.Security.SecurityState.Info
+    ];
+    const orderedExplanations = [];
+    securityStateOrder.forEach(
+        securityState => orderedExplanations.push(
+            ...explanations.filter(explanation => explanation.securityState === securityState)));
+    return orderedExplanations;
   }
 
   refreshExplanations() {

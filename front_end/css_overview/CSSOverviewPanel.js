@@ -5,7 +5,7 @@
 /**
  * @unrestricted
  */
-CssOverview.CSSOverviewPanel = class extends UI.Panel {
+export class CSSOverviewPanel extends UI.Panel {
   constructor() {
     super('css_overview');
     this.registerRequiredCSS('css_overview/cssOverview.css');
@@ -157,4 +157,15 @@ CssOverview.CSSOverviewPanel = class extends UI.Panel {
   _overviewCompleted() {
     this._renderOverviewCompletedView();
   }
-};
+}
+
+/* Legacy exported object */
+self.CssOverview = self.CssOverview || {};
+
+/* Legacy exported object */
+CssOverview = CssOverview || {};
+
+/**
+ * @constructor
+ */
+CssOverview.CSSOverviewPanel = CSSOverviewPanel;

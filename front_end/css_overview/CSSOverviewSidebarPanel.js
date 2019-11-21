@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-CssOverview.CSSOverviewSidebarPanel = class extends UI.VBox {
+export default class CSSOverviewSidebarPanel extends UI.VBox {
   static get ITEM_CLASS_NAME() {
     return 'overview-sidebar-panel-item';
   }
@@ -35,7 +35,7 @@ CssOverview.CSSOverviewSidebarPanel = class extends UI.VBox {
   }
 
   _reset() {
-    this.dispatchEventToListeners(CssOverview.SidebarEvents.Reset);
+    this.dispatchEventToListeners(SidebarEvents.Reset);
   }
 
   _deselectAllItems() {
@@ -53,7 +53,7 @@ CssOverview.CSSOverviewSidebarPanel = class extends UI.VBox {
 
     const {id} = target.dataset;
     this.select(id);
-    this.dispatchEventToListeners(CssOverview.SidebarEvents.ItemSelected, id);
+    this.dispatchEventToListeners(SidebarEvents.ItemSelected, id);
   }
 
   select(id) {
@@ -69,9 +69,22 @@ CssOverview.CSSOverviewSidebarPanel = class extends UI.VBox {
     this._deselectAllItems();
     target.classList.add(CssOverview.CSSOverviewSidebarPanel.SELECTED);
   }
-};
+}
 
-CssOverview.SidebarEvents = {
+export const SidebarEvents = {
   ItemSelected: Symbol('ItemSelected'),
   Reset: Symbol('Reset')
 };
+
+/* Legacy exported object */
+self.CssOverview = self.CssOverview || {};
+
+/* Legacy exported object */
+CssOverview = CssOverview || {};
+
+/**
+ * @constructor
+ */
+CssOverview.CSSOverviewSidebarPanel = CSSOverviewSidebarPanel;
+
+CssOverview.SidebarEvents = SidebarEvents;

@@ -5,7 +5,7 @@
 /**
  * @unrestricted
  */
-CssOverview.CSSOverviewModel = class extends SDK.SDKModel {
+export default class CSSOverviewModel extends SDK.SDKModel {
   /**
    * @param {!SDK.Target} target
    */
@@ -333,6 +333,17 @@ CssOverview.CSSOverviewModel = class extends SDK.SDKModel {
 
     return result.value;
   }
-};
+}
 
-SDK.SDKModel.register(CssOverview.CSSOverviewModel, SDK.Target.Capability.DOM, false);
+SDK.SDKModel.register(CSSOverviewModel, SDK.Target.Capability.DOM, false);
+
+/* Legacy exported object */
+self.CssOverview = self.CssOverview || {};
+
+/* Legacy exported object */
+CssOverview = CssOverview || {};
+
+/**
+ * @constructor
+ */
+CssOverview.CSSOverviewModel = CSSOverviewModel;

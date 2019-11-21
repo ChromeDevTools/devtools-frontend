@@ -5,7 +5,7 @@
 /**
  * @unrestricted
  */
-CssOverview.CSSOverviewCompletedView = class extends UI.PanelWithSidebar {
+export default class CSSOverviewCompletedView extends UI.PanelWithSidebar {
   constructor(controller, target) {
     super('css_overview_completed_view');
     this.registerRequiredCSS('css_overview/cssOverviewCompletedView.css');
@@ -15,7 +15,7 @@ CssOverview.CSSOverviewCompletedView = class extends UI.PanelWithSidebar {
 
     this._mainContainer = new UI.SplitWidget(true, true);
     this._resultsContainer = new UI.VBox();
-    this._elementContainer = new CssOverview.CSSOverviewCompletedView.DetailsView();
+    this._elementContainer = new DetailsView();
 
     // If closing the last tab, collapse the sidebar.
     this._elementContainer.addEventListener(UI.TabbedPane.Events.TabClosed, evt => {
@@ -352,8 +352,7 @@ CssOverview.CSSOverviewCompletedView = class extends UI.PanelWithSidebar {
 
     let view = this._viewMap.get(id);
     if (!view) {
-      view = new CssOverview.CSSOverviewCompletedView.ElementDetailsView(
-          this._controller, this._domModel, this._cssModel, this._linkifier);
+      view = new ElementDetailsView(this._controller, this._domModel, this._cssModel, this._linkifier);
       view.populateNodes(nodes);
       this._viewMap.set(id, view);
     }
@@ -450,12 +449,11 @@ CssOverview.CSSOverviewCompletedView = class extends UI.PanelWithSidebar {
   setOverviewData(data) {
     this._render(data);
   }
-};
+}
 
-/**
- * @constructor
- */
-CssOverview.CSSOverviewCompletedView.DetailsView = class extends UI.VBox {
+CSSOverviewCompletedView.pushedNodes = new Set();
+
+export class DetailsView extends UI.VBox {
   constructor() {
     super();
 
@@ -483,14 +481,9 @@ CssOverview.CSSOverviewCompletedView.DetailsView = class extends UI.VBox {
   closeTabs() {
     this._tabbedPane.closeTabs(this._tabbedPane.tabIds());
   }
-};
+}
 
-CssOverview.CSSOverviewCompletedView.pushedNodes = new Set();
-
-/**
- * @constructor
- */
-CssOverview.CSSOverviewCompletedView.ElementDetailsView = class extends UI.Widget {
+export class ElementDetailsView extends UI.Widget {
   constructor(controller, domModel, cssModel, linkifier) {
     super();
 
@@ -576,8 +569,7 @@ CssOverview.CSSOverviewCompletedView.ElementDetailsView = class extends UI.Widge
         item.node = frontendNode;
       }
 
-      const node = new CssOverview.CSSOverviewCompletedView.ElementNode(
-          this._elementGrid, item, this._linkifier, this._cssModel);
+      const node = new ElementNode(this._elementGrid, item, this._linkifier, this._cssModel);
       node.selectable = false;
       this._elementGrid.insertChild(node);
     }
@@ -586,9 +578,9 @@ CssOverview.CSSOverviewCompletedView.ElementDetailsView = class extends UI.Widge
     this._elementGrid.renderInline();
     this._elementGrid.wasShown();
   }
-};
+}
 
-CssOverview.CSSOverviewCompletedView.ElementNode = class extends DataGrid.SortableDataGridNode {
+export class ElementNode extends DataGrid.SortableDataGridNode {
   /**
    * @param {!DataGrid.SortableDataGrid} dataGrid
    * @param {!Object<string,*>} data
@@ -651,4 +643,28 @@ CssOverview.CSSOverviewCompletedView.ElementNode = class extends DataGrid.Sortab
     const matchingSelectorLocation = new SDK.CSSLocation(styleSheetHeader, lineNumber, columnNumber);
     return linkifier.linkifyCSSLocation(matchingSelectorLocation);
   }
-};
+}
+
+/* Legacy exported object */
+self.CssOverview = self.CssOverview || {};
+
+/* Legacy exported object */
+CssOverview = CssOverview || {};
+
+/**
+ * @constructor
+ */
+CssOverview.CSSOverviewCompletedView = CSSOverviewCompletedView;
+
+
+/**
+ * @constructor
+ */
+CssOverview.CSSOverviewCompletedView.DetailsView = DetailsView;
+
+/**
+ * @constructor
+ */
+CssOverview.CSSOverviewCompletedView.ElementDetailsView = ElementDetailsView;
+
+CssOverview.CSSOverviewCompletedView.ElementNode = ElementNode;

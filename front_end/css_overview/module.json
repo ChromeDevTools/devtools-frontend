@@ -17,7 +17,7 @@
         "data_grid",
         "extensions"
     ],
-    "scripts": [
+    "modules": [
         "CSSOverviewController.js",
         "CSSOverviewUnusedDeclarations.js",
         "CSSOverviewModel.js",
@@ -26,7 +26,8 @@
         "CSSOverviewCompletedView.js",
         "CSSOverviewSidebarPanel.js",
         "CSSOverviewPanel.js"
-      ],
+    ],
+    "scripts": [],
     "resources": [
         "cssOverview.css",
         "cssOverviewStartView.css",

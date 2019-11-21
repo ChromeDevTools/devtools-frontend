@@ -5,7 +5,7 @@
 /**
  * @unrestricted
  */
-CssOverview.OverviewController = class extends Common.Object {
+export class OverviewController extends Common.Object {
   constructor() {
     super();
 
@@ -20,11 +20,11 @@ CssOverview.OverviewController = class extends Common.Object {
     }
 
     this.currentUrl = SDK.targetManager.inspectedURL();
-    this.dispatchEventToListeners(CssOverview.Events.Reset);
+    this.dispatchEventToListeners(Events.Reset);
   }
-};
+}
 
-CssOverview.Events = {
+export const Events = {
   RequestOverviewStart: Symbol('RequestOverviewStart'),
   RequestNodeHighlight: Symbol('RequestNodeHighlight'),
   PopulateNodes: Symbol('PopulateNodes'),
@@ -32,3 +32,16 @@ CssOverview.Events = {
   OverviewCompleted: Symbol('OverviewCompleted'),
   Reset: Symbol('Reset'),
 };
+
+/* Legacy exported object */
+self.CssOverview = self.CssOverview || {};
+
+/* Legacy exported object */
+CssOverview = CssOverview || {};
+
+/**
+ * @constructor
+ */
+CssOverview.OverviewController = OverviewController;
+
+CssOverview.Events = Events;

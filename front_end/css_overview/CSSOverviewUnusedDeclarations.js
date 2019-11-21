@@ -5,7 +5,7 @@
 /**
  * @unrestricted
  */
-CssOverview.CSSOverviewUnusedDeclarations = class {
+export class CSSOverviewUnusedDeclarations {
   static _add(target, key, item) {
     const values = target.get(key) || [];
     values.push(item);
@@ -86,4 +86,12 @@ CssOverview.CSSOverviewUnusedDeclarations = class {
       });
     }
   }
-};
+}
+
+/* Legacy exported object */
+self.CssOverview = self.CssOverview || {};
+
+/* Legacy exported object */
+CssOverview = CssOverview || {};
+
+CssOverview.CSSOverviewUnusedDeclarations = CSSOverviewUnusedDeclarations;

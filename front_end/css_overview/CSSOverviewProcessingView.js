@@ -5,7 +5,7 @@
 /**
  * @unrestricted
  */
-CssOverview.CSSOverviewProcessingView = class extends UI.Widget {
+export default class CSSOverviewProcessingView extends UI.Widget {
   constructor(controller) {
     super();
     this.registerRequiredCSS('css_overview/cssOverviewProcessingView.css');
@@ -31,4 +31,15 @@ CssOverview.CSSOverviewProcessingView = class extends UI.Widget {
     this.contentElement.appendChild(this.fragment.element());
     this.contentElement.style.overflow = 'auto';
   }
-};
+}
+
+/* Legacy exported object */
+self.CssOverview = self.CssOverview || {};
+
+/* Legacy exported object */
+CssOverview = CssOverview || {};
+
+/**
+ * @constructor
+ */
+CssOverview.CSSOverviewProcessingView = CSSOverviewProcessingView;

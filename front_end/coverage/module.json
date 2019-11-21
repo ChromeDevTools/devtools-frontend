@@ -50,7 +50,8 @@
         "sources",
         "data_grid"
     ],
-    "scripts": [
+    "scripts": [],
+    "modules": [
         "CoverageModel.js",
         "CoverageListView.js",
         "CoverageView.js",

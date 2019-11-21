@@ -121,11 +121,7 @@ if (external_devtools_frontend) {
     "front_end/cookie_table/CookiesTable.js",
     "front_end/cookie_table/module.json",
     "front_end/coverage/coverageListView.css",
-    "front_end/coverage/CoverageDecorationManager.js",
-    "front_end/coverage/CoverageListView.js",
-    "front_end/coverage/CoverageModel.js",
     "front_end/coverage/coverageView.css",
-    "front_end/coverage/CoverageView.js",
     "front_end/coverage/module.json",
     "front_end/coverage_test_runner/CoverageTestRunner.js",
     "front_end/coverage_test_runner/module.json",
@@ -711,6 +707,11 @@ if (external_devtools_frontend) {
   all_devtools_files += lighthouse_locale_files
 
   all_devtools_modules = [
+    "front_end/coverage/coverage.js",
+    "front_end/coverage/CoverageView.js",
+    "front_end/coverage/CoverageModel.js",
+    "front_end/coverage/CoverageListView.js",
+    "front_end/coverage/CoverageDecorationManager.js",
     "front_end/console/console.js",
     "front_end/console/ConsoleContextSelector.js",
     "front_end/console/ConsoleFilter.js",
@@ -1218,6 +1219,11 @@ if (external_devtools_frontend) {
   ]
 
   copied_devtools_modules = [
+    "$resources_out_dir/coverage/coverage.js",
+    "$resources_out_dir/coverage/CoverageView.js",
+    "$resources_out_dir/coverage/CoverageModel.js",
+    "$resources_out_dir/coverage/CoverageListView.js",
+    "$resources_out_dir/coverage/CoverageDecorationManager.js",
     "$resources_out_dir/console/console.js",
     "$resources_out_dir/console/ConsoleContextSelector.js",
     "$resources_out_dir/console/ConsoleFilter.js",
@@ -1881,7 +1887,9 @@ if (external_devtools_frontend) {
       script = "scripts/build/build_debug_applications.py"
       inputs = all_devtools_files + application_templates
       stamp = "$resources_out_debug_dir/build.stamp"
-      outputs = [ stamp ]
+      outputs = [
+        stamp,
+      ]
 
       args = [
         "--input_path",
@@ -1889,7 +1897,7 @@ if (external_devtools_frontend) {
         "--output_path",
         rebase_path(resources_out_debug_dir, root_build_dir),
         "--build_stamp",
-        rebase_path(stamp, root_build_dir)
+        rebase_path(stamp, root_build_dir),
       ]
     }
 

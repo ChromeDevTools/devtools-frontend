@@ -11,20 +11,28 @@ Coverage.CoverageSegment;
 /**
  * @enum {number}
  */
-Coverage.CoverageType = {
+export const CoverageType = {
   CSS: (1 << 0),
   JavaScript: (1 << 1),
   JavaScriptPerFunction: (1 << 2),
 };
 
 /** @enum {symbol} */
-Coverage.SuspensionState = {
+export const SuspensionState = {
   Active: Symbol('Active'),
   Suspending: Symbol('Suspending'),
   Suspended: Symbol('Suspended')
 };
 
-Coverage.CoverageModel = class extends SDK.SDKModel {
+/** @enum {symbol} */
+export const Events = {
+  CoverageUpdated: Symbol('CoverageUpdated')
+};
+
+/** @type {number} */
+export const _coveragePollingPeriodMs = 200;
+
+export default class CoverageModel extends SDK.SDKModel {
   /**
    * @param {!SDK.Target} target
    */
@@ -40,7 +48,7 @@ Coverage.CoverageModel = class extends SDK.SDKModel {
     this._coverageByContentProvider = new Map();
 
     /** @type {!Coverage.SuspensionState} */
-    this._suspensionState = Coverage.SuspensionState.Active;
+    this._suspensionState = SuspensionState.Active;
     /** @type {?number} */
     this._pollTimer = null;
     /** @type {?Promise} */
@@ -60,7 +68,7 @@ Coverage.CoverageModel = class extends SDK.SDKModel {
    * @return {!Promise<boolean>}
    */
   async start(jsCoveragePerBlock) {
-    if (this._suspensionState !== Coverage.SuspensionState.Active) {
+    if (this._suspensionState !== SuspensionState.Active) {
       throw Error('Cannot start CoverageModel while it is not active.');
     }
     const promises = [];
@@ -105,7 +113,7 @@ Coverage.CoverageModel = class extends SDK.SDKModel {
    * @return {!Promise}
    */
   async startPolling() {
-    if (this._currentPollPromise || this._suspensionState !== Coverage.SuspensionState.Active) {
+    if (this._currentPollPromise || this._suspensionState !== SuspensionState.Active) {
       return;
     }
     await this._pollLoop();
@@ -118,8 +126,8 @@ Coverage.CoverageModel = class extends SDK.SDKModel {
     this._clearTimer();
     this._currentPollPromise = this._pollAndCallback();
     await this._currentPollPromise;
-    if (this._suspensionState === Coverage.SuspensionState.Active || this._performanceTraceRecording) {
-      this._pollTimer = setTimeout(() => this._pollLoop(), Coverage.CoverageModel._coveragePollingPeriodMs);
+    if (this._suspensionState === SuspensionState.Active || this._performanceTraceRecording) {
+      this._pollTimer = setTimeout(() => this._pollLoop(), _coveragePollingPeriodMs);
     }
   }
 
@@ -135,17 +143,17 @@ Coverage.CoverageModel = class extends SDK.SDKModel {
    * @return {!Promise<undefined>}
    */
   async _pollAndCallback() {
-    if (this._suspensionState === Coverage.SuspensionState.Suspended && !this._performanceTraceRecording) {
+    if (this._suspensionState === SuspensionState.Suspended && !this._performanceTraceRecording) {
       return;
     }
     const updates = await this._takeAllCoverage();
     // This conditional should never trigger, as all intended ways to stop
     // polling are awaiting the `_currentPollPromise` before suspending.
     console.assert(
-        this._suspensionState !== Coverage.SuspensionState.Suspended || this._performanceTraceRecording,
+        this._suspensionState !== SuspensionState.Suspended || this._performanceTraceRecording,
         'CoverageModel was suspended while polling.');
     if (updates.length) {
-      this.dispatchEventToListeners(Coverage.CoverageModel.Events.CoverageUpdated, updates);
+      this.dispatchEventToListeners(Events.CoverageUpdated, updates);
     }
   }
 
@@ -164,10 +172,10 @@ Coverage.CoverageModel = class extends SDK.SDKModel {
    * @return {!Promise<undefined>}
    */
   async preSuspendModel(reason) {
-    if (this._suspensionState !== Coverage.SuspensionState.Active) {
+    if (this._suspensionState !== SuspensionState.Active) {
       return;
     }
-    this._suspensionState = Coverage.SuspensionState.Suspending;
+    this._suspensionState = SuspensionState.Suspending;
     if (reason === 'performance-timeline') {
       this._performanceTraceRecording = true;
       // Keep polling to the backlog if a performance trace is recorded.
@@ -185,7 +193,7 @@ Coverage.CoverageModel = class extends SDK.SDKModel {
    * @return {!Promise<undefined>}
    */
   async suspendModel(reason) {
-    this._suspensionState = Coverage.SuspensionState.Suspended;
+    this._suspensionState = SuspensionState.Suspended;
   }
 
   /**
@@ -202,7 +210,7 @@ Coverage.CoverageModel = class extends SDK.SDKModel {
    * @return {!Promise<undefined>}
    */
   async postResumeModel() {
-    this._suspensionState = Coverage.SuspensionState.Active;
+    this._suspensionState = SuspensionState.Active;
     this._performanceTraceRecording = false;
     if (this._shouldResumePollingOnResume) {
       this._shouldResumePollingOnResume = false;
@@ -230,7 +238,7 @@ Coverage.CoverageModel = class extends SDK.SDKModel {
 
   _clearCSS() {
     for (const entry of this._coverageByContentProvider.values()) {
-      if (entry.type() !== Coverage.CoverageType.CSS) {
+      if (entry.type() !== CoverageType.CSS) {
         continue;
       }
       const contentProvider = /** @type {!SDK.CSSStyleSheetHeader} */ (entry.contentProvider());
@@ -268,7 +276,7 @@ Coverage.CoverageModel = class extends SDK.SDKModel {
     }
     const now = Date.now();
     const freshRawCoverageData = await this._cpuProfilerModel.takePreciseCoverage();
-    if (this._suspensionState !== Coverage.SuspensionState.Active) {
+    if (this._suspensionState !== SuspensionState.Active) {
       if (freshRawCoverageData.length > 0) {
         this._jsBacklog.push({rawCoverageData: freshRawCoverageData, stamp: now});
       }
@@ -300,14 +308,14 @@ Coverage.CoverageModel = class extends SDK.SDKModel {
       }
 
       const ranges = [];
-      let type = Coverage.CoverageType.JavaScript;
+      let type = CoverageType.JavaScript;
       for (const func of entry.functions) {
         // Do not coerce undefined to false, i.e. only consider blockLevel to be false
         // if back-end explicitly provides blockLevel field, otherwise presume blockLevel
         // coverage is not available. Also, ignore non-block level functions that weren't
         // ever called.
         if (func.isBlockCoverage === false && !(func.ranges.length === 1 && !func.ranges[0].count)) {
-          type |= Coverage.CoverageType.JavaScriptPerFunction;
+          type |= CoverageType.JavaScriptPerFunction;
         }
         for (const range of func.ranges) {
           ranges.push(range);
@@ -338,7 +346,7 @@ Coverage.CoverageModel = class extends SDK.SDKModel {
     }
     const now = Date.now();
     const freshRawCoverageData = await this._cssModel.takeCoverageDelta();
-    if (this._suspensionState !== Coverage.SuspensionState.Active) {
+    if (this._suspensionState !== SuspensionState.Active) {
       if (freshRawCoverageData.length > 0) {
         this._cssBacklog.push({rawCoverageData: freshRawCoverageData, stamp: now});
       }
@@ -382,7 +390,7 @@ Coverage.CoverageModel = class extends SDK.SDKModel {
       const ranges = /** @type {!Array<!Coverage.RangeUseCount>} */ (entry[1]);
       const subentry = this._addCoverage(
           styleSheetHeader, styleSheetHeader.contentLength, styleSheetHeader.startLine, styleSheetHeader.startColumn,
-          ranges, Coverage.CoverageType.CSS, stamp);
+          ranges, CoverageType.CSS, stamp);
       if (subentry) {
         updatedEntries.push(subentry);
       }
@@ -442,7 +450,7 @@ Coverage.CoverageModel = class extends SDK.SDKModel {
   _addStyleSheetToCSSCoverage(styleSheetHeader) {
     this._addCoverage(
         styleSheetHeader, styleSheetHeader.contentLength, styleSheetHeader.startLine, styleSheetHeader.startColumn, [],
-        Coverage.CoverageType.CSS, Date.now());
+        CoverageType.CSS, Date.now());
   }
 
   /**
@@ -555,19 +563,14 @@ Coverage.CoverageModel = class extends SDK.SDKModel {
     await fos.write(JSON.stringify(result, undefined, 2));
     fos.close();
   }
-};
+}
 
-/** @enum {symbol} */
-Coverage.CoverageModel.Events = {
-  CoverageUpdated: Symbol('CoverageUpdated')
-};
+SDK.SDKModel.register(CoverageModel, SDK.Target.Capability.None, false);
 
-/** @type {number} */
-Coverage.CoverageModel._coveragePollingPeriodMs = 200;
-
-SDK.SDKModel.register(Coverage.CoverageModel, SDK.Target.Capability.None, false);
-
-Coverage.URLCoverageInfo = class {
+/**
+ * @unrestricted
+ */
+export class URLCoverageInfo {
   /**
    * @param {string} url
    */
@@ -645,7 +648,7 @@ Coverage.URLCoverageInfo = class {
     const key = `${lineOffset}:${columnOffset}`;
     let entry = this._coverageInfoByLocation.get(key);
 
-    if ((type & Coverage.CoverageType.JavaScript) && !this._coverageInfoByLocation.size) {
+    if ((type & CoverageType.JavaScript) && !this._coverageInfoByLocation.size) {
       this._isContentScript = /** @type {!SDK.Script} */ (contentProvider).isContentScript();
     }
     this._type |= type;
@@ -655,7 +658,7 @@ Coverage.URLCoverageInfo = class {
       return entry;
     }
 
-    if ((type & Coverage.CoverageType.JavaScript) && !this._coverageInfoByLocation.size) {
+    if ((type & CoverageType.JavaScript) && !this._coverageInfoByLocation.size) {
       this._isContentScript = /** @type {!SDK.Script} */ (contentProvider).isContentScript();
     }
 
@@ -665,9 +668,12 @@ Coverage.URLCoverageInfo = class {
 
     return entry;
   }
-};
+}
 
-Coverage.CoverageInfo = class {
+/**
+ * @unrestricted
+ */
+export class CoverageInfo {
   /**
    * @param {!Common.ContentProvider} contentProvider
    * @param {number} size
@@ -797,4 +803,39 @@ Coverage.CoverageInfo = class {
       last = segment.end;
     }
   }
-};
+}
+
+/* Legacy exported object */
+self.Coverage = self.Coverage || {};
+
+/* Legacy exported object */
+Coverage = Coverage || {};
+
+/**
+ * @constructor
+ */
+Coverage.CoverageModel = CoverageModel;
+
+/** @enum {symbol} */
+Coverage.CoverageModel.Events = Events;
+
+/** @type {number} */
+Coverage.CoverageModel._coveragePollingPeriodMs = _coveragePollingPeriodMs;
+
+/**
+ * @enum {number}
+ */
+Coverage.CoverageType = CoverageType;
+
+/** @enum {symbol} */
+Coverage.SuspensionState = SuspensionState;
+
+/**
+ * @constructor
+ */
+Coverage.URLCoverageInfo = URLCoverageInfo;
+
+/**
+ * @constructor
+ */
+Coverage.CoverageInfo = CoverageInfo;

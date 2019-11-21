@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-Coverage.CoverageListView = class extends UI.VBox {
+export default class CoverageListView extends UI.VBox {
   /**
    * @param {function(!Coverage.URLCoverageInfo):boolean} filterCallback
    */
@@ -61,7 +61,7 @@ Coverage.CoverageListView = class extends UI.VBox {
         }
         continue;
       }
-      node = new Coverage.CoverageListView.GridNode(entry, maxSize);
+      node = new GridNode(entry, maxSize);
       this._nodeForCoverageInfo.set(entry, node);
       if (this._filterCallback(node._coverageInfo)) {
         rootNode.appendChild(node);
@@ -231,9 +231,9 @@ Coverage.CoverageListView = class extends UI.VBox {
     }
     return types.join('+');
   }
-};
+}
 
-Coverage.CoverageListView.GridNode = class extends DataGrid.SortableDataGridNode {
+export class GridNode extends DataGrid.SortableDataGridNode {
   /**
    * @param {!Coverage.URLCoverageInfo} coverageInfo
    * @param {number} maxSize
@@ -379,4 +379,20 @@ Coverage.CoverageListView.GridNode = class extends DataGrid.SortableDataGridNode
     const range = new TextUtils.SourceRange(matches.index, matches[0].length);
     UI.highlightRangesWithStyleClass(element, [range], 'filter-highlight');
   }
-};
+}
+
+/* Legacy exported object */
+self.Coverage = self.Coverage || {};
+
+/* Legacy exported object */
+Coverage = Coverage || {};
+
+/**
+ * @constructor
+ */
+Coverage.CoverageListView = CoverageListView;
+
+/**
+ * @constructor
+ */
+Coverage.CoverageListView.GridNode = GridNode;

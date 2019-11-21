@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-Coverage.CoverageView = class extends UI.VBox {
+export class CoverageView extends UI.VBox {
   constructor() {
     super(true);
 
@@ -362,14 +362,14 @@ Coverage.CoverageView = class extends UI.VBox {
   selectCoverageItemByUrl(url) {
     this._listView.selectByUrl(url);
   }
-};
+}
 
-Coverage.CoverageView._extensionBindingsURLPrefix = 'extensions::';
+CoverageView._extensionBindingsURLPrefix = 'extensions::';
 
 /**
  * @implements {UI.ActionDelegate}
  */
-Coverage.CoverageView.ActionDelegate = class {
+export class ActionDelegate {
   /**
    * @override
    * @param {!UI.Context} context
@@ -401,4 +401,123 @@ Coverage.CoverageView.ActionDelegate = class {
         console.assert(false, `Unknown action: ${actionId}`);
     }
   }
-};
+}
+
+/**
+ * @implements {SourceFrame.LineDecorator}
+ */
+export class LineDecorator {
+  constructor() {
+    /** @type {!WeakMap<!TextEditor.CodeMirrorTextEditor, function(!Common.Event)>} */
+    this._listeners = new WeakMap();
+  }
+
+  /**
+   * @override
+   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!TextEditor.CodeMirrorTextEditor} textEditor
+   */
+  decorate(uiSourceCode, textEditor) {
+    const decorations = uiSourceCode.decorationsForType(Coverage.CoverageDecorationManager.decoratorType);
+    if (!decorations || !decorations.size) {
+      this._uninstallGutter(textEditor);
+      return;
+    }
+    const decorationManager =
+        /** @type {!Coverage.CoverageDecorationManager} */ (decorations.values().next().value.data());
+    decorationManager.usageByLine(uiSourceCode).then(lineUsage => {
+      textEditor.operation(() => this._innerDecorate(uiSourceCode, textEditor, lineUsage));
+    });
+  }
+
+  /**
+   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!TextEditor.CodeMirrorTextEditor} textEditor
+   * @param {!Array<boolean>} lineUsage
+   */
+  _innerDecorate(uiSourceCode, textEditor, lineUsage) {
+    const gutterType = Coverage.CoverageView.LineDecorator._gutterType;
+    this._uninstallGutter(textEditor);
+    if (lineUsage.length) {
+      this._installGutter(textEditor, uiSourceCode.url());
+    }
+    for (let line = 0; line < lineUsage.length; ++line) {
+      // Do not decorate the line if we don't have data.
+      if (typeof lineUsage[line] !== 'boolean') {
+        continue;
+      }
+      const className = lineUsage[line] ? 'text-editor-coverage-used-marker' : 'text-editor-coverage-unused-marker';
+      const gutterElement = createElementWithClass('div', className);
+      textEditor.setGutterDecoration(line, gutterType, gutterElement);
+    }
+  }
+
+  /**
+   * @param {string} url - the url of the file  this click handler will select in the coverage drawer
+   * @return {function(!Common.Event)}
+   */
+  makeGutterClickHandler(url) {
+    function handleGutterClick(event) {
+      const eventData = /** @type {!SourceFrame.SourcesTextEditor.GutterClickEventData} */ (event.data);
+      if (eventData.gutterType !== Coverage.CoverageView.LineDecorator._gutterType) {
+        return;
+      }
+      const coverageViewId = 'coverage';
+      UI.viewManager.showView(coverageViewId).then(() => UI.viewManager.view(coverageViewId).widget()).then(widget => {
+        const matchFormattedSuffix = url.match(/(.*):formatted$/);
+        const urlWithoutFormattedSuffix = (matchFormattedSuffix && matchFormattedSuffix[1]) || url;
+        widget.selectCoverageItemByUrl(urlWithoutFormattedSuffix);
+      });
+    }
+    return handleGutterClick;
+  }
+
+  /**
+     * @param {!TextEditor.CodeMirrorTextEditor} textEditor - the text editor to install the gutter on
+     * @param {string} url - the url of the file in the text editor
+   */
+  _installGutter(textEditor, url) {
+    let listener = this._listeners.get(textEditor);
+    if (!listener) {
+      listener = this.makeGutterClickHandler(url);
+      this._listeners.set(textEditor, listener);
+    }
+    textEditor.installGutter(Coverage.CoverageView.LineDecorator._gutterType, false);
+    textEditor.addEventListener(SourceFrame.SourcesTextEditor.Events.GutterClick, listener, this);
+  }
+
+  /**
+     * @param {!TextEditor.CodeMirrorTextEditor} textEditor  - the text editor to uninstall the gutter from
+     */
+  _uninstallGutter(textEditor) {
+    textEditor.uninstallGutter(Coverage.CoverageView.LineDecorator._gutterType);
+    const listener = this._listeners.get(textEditor);
+    if (listener) {
+      textEditor.removeEventListener(SourceFrame.SourcesTextEditor.Events.GutterClick, listener, this);
+      this._listeners.delete(textEditor);
+    }
+  }
+}
+
+LineDecorator._gutterType = 'CodeMirror-gutter-coverage';
+
+/* Legacy exported object */
+self.Coverage = self.Coverage || {};
+
+/* Legacy exported object */
+Coverage = Coverage || {};
+
+/**
+ * @constructor
+ */
+Coverage.CoverageView = CoverageView;
+
+/**
+ * @constructor
+ */
+Coverage.CoverageView.LineDecorator = LineDecorator;
+
+/**
+ * @constructor
+ */
+Coverage.CoverageView.ActionDelegate = ActionDelegate;

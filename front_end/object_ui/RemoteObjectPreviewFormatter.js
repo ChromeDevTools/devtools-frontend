@@ -4,7 +4,7 @@
 /**
  * @unrestricted
  */
-ObjectUI.RemoteObjectPreviewFormatter = class {
+export default class RemoteObjectPreviewFormatter {
   /**
    * @param {!Protocol.Runtime.PropertyPreview} a
    * @param {!Protocol.Runtime.PropertyPreview} b
@@ -19,7 +19,7 @@ ObjectUI.RemoteObjectPreviewFormatter = class {
      */
     function sortValue(property) {
       // TODO(einbinder) expose whether preview properties are actually internal.
-      const internalName = ObjectUI.RemoteObjectPreviewFormatter._internalName;
+      const internalName = _internalName;
       if (property.name === internalName.PromiseStatus) {
         return 1;
       } else if (property.name === internalName.PromiseValue) {
@@ -97,9 +97,9 @@ ObjectUI.RemoteObjectPreviewFormatter = class {
    * @param {!Protocol.Runtime.ObjectPreview} preview
    */
   _appendObjectPropertiesPreview(parentElement, preview) {
-    const internalName = ObjectUI.RemoteObjectPreviewFormatter._internalName;
+    const internalName = _internalName;
     const properties = preview.properties.filter(p => p.type !== 'accessor')
-                           .sort(ObjectUI.RemoteObjectPreviewFormatter._objectPropertyComparator);
+                           .sort(RemoteObjectPreviewFormatter._objectPropertyComparator);
     for (let i = 0; i < properties.length; ++i) {
       if (i > 0) {
         parentElement.createTextChild(', ');
@@ -138,7 +138,7 @@ ObjectUI.RemoteObjectPreviewFormatter = class {
     const arrayLength = SDK.RemoteObject.arrayLength(preview);
     const indexProperties = preview.properties.filter(p => toArrayIndex(p.name) !== -1).sort(arrayEntryComparator);
     const otherProperties = preview.properties.filter(p => toArrayIndex(p.name) === -1)
-                                .sort(ObjectUI.RemoteObjectPreviewFormatter._objectPropertyComparator);
+                                .sort(RemoteObjectPreviewFormatter._objectPropertyComparator);
 
     /**
      * @param {!Protocol.Runtime.PropertyPreview} a
@@ -276,7 +276,7 @@ ObjectUI.RemoteObjectPreviewFormatter = class {
     }
 
     if (type === 'object' && subtype === 'node' && description) {
-      ObjectUI.RemoteObjectPreviewFormatter.createSpansForNodeTitle(span, description);
+      createSpansForNodeTitle(span, description);
       return span;
     }
 
@@ -298,10 +298,10 @@ ObjectUI.RemoteObjectPreviewFormatter = class {
     span.textContent = description;
     return span;
   }
-};
+}
 
 /** @enum {string} */
-ObjectUI.RemoteObjectPreviewFormatter._internalName = {
+export const _internalName = {
   GeneratorStatus: '[[GeneratorStatus]]',
   PrimitiveValue: '[[PrimitiveValue]]',
   PromiseStatus: '[[PromiseStatus]]',
@@ -312,7 +312,7 @@ ObjectUI.RemoteObjectPreviewFormatter._internalName = {
  * @param {!Element} container
  * @param {string} nodeTitle
  */
-ObjectUI.RemoteObjectPreviewFormatter.createSpansForNodeTitle = function(container, nodeTitle) {
+export const createSpansForNodeTitle = function(container, nodeTitle) {
   const match = nodeTitle.match(/([^#.]+)(#[^.]+)?(\..*)?/);
   container.createChild('span', 'webkit-html-tag-name').textContent = match[1];
   if (match[2]) {
@@ -322,3 +322,20 @@ ObjectUI.RemoteObjectPreviewFormatter.createSpansForNodeTitle = function(contain
     container.createChild('span', 'webkit-html-attribute-name').textContent = match[3];
   }
 };
+
+/* Legacy exported object */
+self.ObjectUI = self.ObjectUI || {};
+
+/* Legacy exported object */
+ObjectUI = ObjectUI || {};
+
+/** @constructor */
+ObjectUI.RemoteObjectPreviewFormatter = RemoteObjectPreviewFormatter;
+
+ObjectUI.RemoteObjectPreviewFormatter._internalName = _internalName;
+
+/**
+ * @param {!Element} container
+ * @param {string} nodeTitle
+ */
+ObjectUI.RemoteObjectPreviewFormatter.createSpansForNodeTitle = createSpansForNodeTitle;

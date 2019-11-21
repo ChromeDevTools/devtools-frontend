@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-ObjectUI.JavaScriptREPL = class {
+export default class JavaScriptREPL {
   /**
    * @param {string} code
    * @return {string}
@@ -33,7 +33,7 @@ ObjectUI.JavaScriptREPL = class {
    * @return {!Promise<!{text: string, preprocessed: boolean}>}
    */
   static async preprocessExpression(text) {
-    text = ObjectUI.JavaScriptREPL.wrapObjectLiteral(text);
+    text = JavaScriptREPL.wrapObjectLiteral(text);
     let preprocessed = false;
     if (text.indexOf('await') !== -1) {
       const preprocessedText = await Formatter.formatterWorkerPool().preprocessTopLevelAwaitExpressions(text);
@@ -58,7 +58,7 @@ ObjectUI.JavaScriptREPL = class {
       return {preview: createDocumentFragment(), result: null};
     }
 
-    const wrappedResult = await ObjectUI.JavaScriptREPL.preprocessExpression(text);
+    const wrappedResult = await JavaScriptREPL.preprocessExpression(text);
     const options = {
       expression: wrappedResult.text,
       generatePreview: true,
@@ -70,7 +70,7 @@ ObjectUI.JavaScriptREPL = class {
     };
     const result = await executionContext.evaluate(
         options, false /* userGesture */, wrappedResult.preprocessed /* awaitPromise */);
-    const preview = ObjectUI.JavaScriptREPL._buildEvaluationPreview(result, allowErrors);
+    const preview = JavaScriptREPL._buildEvaluationPreview(result, allowErrors);
     return {preview, result};
   }
 
@@ -103,10 +103,21 @@ ObjectUI.JavaScriptREPL = class {
     }
     return fragment;
   }
-};
+}
 
 /**
  * @const
  * @type {number}
  */
-ObjectUI.JavaScriptREPL._MaxLengthForEvaluation = 2000;
+export const _MaxLengthForEvaluation = 2000;
+
+/* Legacy exported object */
+self.ObjectUI = self.ObjectUI || {};
+
+/* Legacy exported object */
+ObjectUI = ObjectUI || {};
+
+/** @constructor */
+ObjectUI.JavaScriptREPL = JavaScriptREPL;
+
+ObjectUI.JavaScriptREPL._MaxLengthForEvaluation = _MaxLengthForEvaluation;

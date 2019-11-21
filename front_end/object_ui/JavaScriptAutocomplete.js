@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-ObjectUI.JavaScriptAutocomplete = class {
+export default class JavaScriptAutocomplete {
   constructor() {
     /** @type {!Map<string, {date: number, value: !Promise<?Object>}>} */
     this._expressionCache = new Map();
@@ -354,7 +354,7 @@ ObjectUI.JavaScriptAutocomplete = class {
         completionGroups.slice(0), dotNotation, bracketNotation, expressionString, query);
 
     /**
-     * @this {ObjectUI.JavaScriptAutocomplete}
+     * @this {JavaScriptAutocomplete}
      * @param {!SDK.RuntimeModel.EvaluationResult} result
      * @return {!Promise<!Array<!ObjectUI.JavaScriptAutocomplete.CompletionGroup>>}
      */
@@ -665,14 +665,9 @@ ObjectUI.JavaScriptAutocomplete = class {
     return !description.startsWith('SyntaxError: Unexpected end of input') &&
         !description.startsWith('SyntaxError: Unterminated template literal');
   }
-};
+}
 
-/** @typedef {{title:(string|undefined), items:Array<string>}} */
-ObjectUI.JavaScriptAutocomplete.CompletionGroup;
-
-ObjectUI.javaScriptAutocomplete = new ObjectUI.JavaScriptAutocomplete();
-
-ObjectUI.JavaScriptAutocompleteConfig = class {
+export class JavaScriptAutocompleteConfig {
   /**
    * @param {!UI.TextEditor} editor
    */
@@ -685,7 +680,7 @@ ObjectUI.JavaScriptAutocompleteConfig = class {
    * @return {!UI.AutocompleteConfig}
    */
   static createConfigForEditor(editor) {
-    const autocomplete = new ObjectUI.JavaScriptAutocompleteConfig(editor);
+    const autocomplete = new JavaScriptAutocompleteConfig(editor);
     return {
       substituteRangeCallback: autocomplete._substituteRange.bind(autocomplete),
       suggestionsCallback: autocomplete._suggestionsCallback.bind(autocomplete),
@@ -776,4 +771,21 @@ ObjectUI.JavaScriptAutocompleteConfig = class {
     }
     return tooltip;
   }
-};
+}
+
+/* Legacy exported object */
+self.ObjectUI = self.ObjectUI || {};
+
+/* Legacy exported object */
+ObjectUI = ObjectUI || {};
+
+/** @constructor */
+ObjectUI.JavaScriptAutocomplete = JavaScriptAutocomplete;
+
+/** @constructor */
+ObjectUI.JavaScriptAutocompleteConfig = JavaScriptAutocompleteConfig;
+
+ObjectUI.javaScriptAutocomplete = new JavaScriptAutocomplete();
+
+/** @typedef {{title:(string|undefined), items:Array<string>}} */
+ObjectUI.JavaScriptAutocomplete.CompletionGroup;

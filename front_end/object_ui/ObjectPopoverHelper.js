@@ -28,7 +28,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-ObjectUI.ObjectPopoverHelper = class {
+export default class ObjectPopoverHelper {
   /**
    * @param {?Components.Linkifier} linkifier
    * @param {boolean} resultHighlightedAsDOM
@@ -50,10 +50,10 @@ ObjectUI.ObjectPopoverHelper = class {
   /**
    * @param {!SDK.RemoteObject} result
    * @param {!UI.GlassPane} popover
-   * @return {!Promise<?ObjectUI.ObjectPopoverHelper>}
+   * @return {!Promise<?ObjectPopoverHelper>}
    */
   static async buildObjectPopover(result, popover) {
-    const description = result.description.trimEndWithMaxLength(ObjectUI.ObjectPopoverHelper.MaxPopoverTextLength);
+    const description = result.description.trimEndWithMaxLength(MaxPopoverTextLength);
     let popoverContentElement = null;
     if (result.type === 'object') {
       let linkifier = null;
@@ -82,7 +82,7 @@ ObjectUI.ObjectPopoverHelper = class {
       popover.setMaxContentSize(new UI.Size(300, 250));
       popover.setSizeBehavior(UI.GlassPane.SizeBehavior.SetExactSize);
       popover.contentElement.appendChild(popoverContentElement);
-      return new ObjectUI.ObjectPopoverHelper(linkifier, resultHighlightedAsDOM);
+      return new ObjectPopoverHelper(linkifier, resultHighlightedAsDOM);
     }
 
     popoverContentElement = createElement('span');
@@ -99,7 +99,7 @@ ObjectUI.ObjectPopoverHelper = class {
 
     if (result.type !== 'function') {
       popover.contentElement.appendChild(popoverContentElement);
-      return new ObjectUI.ObjectPopoverHelper(null, false);
+      return new ObjectPopoverHelper(null, false);
     }
 
     ObjectUI.ObjectPropertiesSection.formatObjectAsFunction(result, valueElement, true);
@@ -124,8 +124,19 @@ ObjectUI.ObjectPopoverHelper = class {
     }
     container.appendChild(popoverContentElement);
     popover.contentElement.appendChild(container);
-    return new ObjectUI.ObjectPopoverHelper(linkifier, false);
+    return new ObjectPopoverHelper(linkifier, false);
   }
-};
+}
 
-ObjectUI.ObjectPopoverHelper.MaxPopoverTextLength = 10000;
+export const MaxPopoverTextLength = 10000;
+
+/* Legacy exported object */
+self.ObjectUI = self.ObjectUI || {};
+
+/* Legacy exported object */
+ObjectUI = ObjectUI || {};
+
+/** @constructor */
+ObjectUI.ObjectPopoverHelper = ObjectPopoverHelper;
+
+ObjectUI.ObjectPopoverHelper.MaxPopoverTextLength = MaxPopoverTextLength;

@@ -14,7 +14,9 @@
         "components",
         "formatter"
     ],
-    "scripts": [
+    "scripts": [],
+    "modules": [
+        "object_ui.js",
         "CustomPreviewComponent.js",
         "ObjectPopoverHelper.js",
         "ObjectPropertiesSection.js",

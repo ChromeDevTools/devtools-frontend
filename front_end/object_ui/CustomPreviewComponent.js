@@ -4,7 +4,7 @@
 /**
  * @unrestricted
  */
-ObjectUI.CustomPreviewSection = class {
+export class CustomPreviewSection {
   /**
    * @param {!SDK.RemoteObject} object
    */
@@ -65,7 +65,7 @@ ObjectUI.CustomPreviewSection = class {
    */
   _renderElement(object) {
     const tagName = object.shift();
-    if (!ObjectUI.CustomPreviewSection._tagsWhiteList.has(tagName)) {
+    if (!CustomPreviewSection._tagsWhiteList.has(tagName)) {
       Common.console.error('Broken formatter: element ' + tagName + ' is not allowed!');
       return createElement('span');
     }
@@ -96,7 +96,7 @@ ObjectUI.CustomPreviewSection = class {
     const remoteObject = this._object.runtimeModel().createRemoteObject(
         /** @type {!Protocol.Runtime.RemoteObject} */ (attributes));
     if (remoteObject.customPreview()) {
-      return (new ObjectUI.CustomPreviewSection(remoteObject)).element();
+      return (new CustomPreviewSection(remoteObject)).element();
     }
 
     const sectionElement = ObjectUI.ObjectPropertiesSection.defaultObjectPresentation(remoteObject);
@@ -204,7 +204,7 @@ ObjectUI.CustomPreviewSection = class {
 
     /**
      * @param {*} bodyJsonML
-     * @this {ObjectUI.CustomPreviewSection}
+     * @this {CustomPreviewSection}
      */
     function onBodyLoaded(bodyJsonML) {
       if (!bodyJsonML) {
@@ -216,18 +216,18 @@ ObjectUI.CustomPreviewSection = class {
       this._toggleExpand();
     }
   }
-};
+}
 
 /**
  * @unrestricted
  */
-ObjectUI.CustomPreviewComponent = class {
+export default class CustomPreviewComponent {
   /**
    * @param {!SDK.RemoteObject} object
    */
   constructor(object) {
     this._object = object;
-    this._customPreviewSection = new ObjectUI.CustomPreviewSection(object);
+    this._customPreviewSection = new CustomPreviewSection(object);
     this.element = createElementWithClass('span', 'source-code');
     const shadowRoot = UI.createShadowRootWithCoreStyles(this.element, 'object_ui/customPreviewComponent.css');
     this.element.addEventListener('contextmenu', this._contextMenuEventFired.bind(this), false);
@@ -259,6 +259,18 @@ ObjectUI.CustomPreviewComponent = class {
     this._customPreviewSection = null;
     this.element.shadowRoot.appendChild(ObjectUI.ObjectPropertiesSection.defaultObjectPresentation(this._object));
   }
-};
+}
 
-ObjectUI.CustomPreviewSection._tagsWhiteList = new Set(['span', 'div', 'ol', 'li', 'table', 'tr', 'td']);
+CustomPreviewSection._tagsWhiteList = new Set(['span', 'div', 'ol', 'li', 'table', 'tr', 'td']);
+
+/* Legacy exported object */
+self.ObjectUI = self.ObjectUI || {};
+
+/* Legacy exported object */
+ObjectUI = ObjectUI || {};
+
+/** @constructor */
+ObjectUI.CustomPreviewComponent = CustomPreviewComponent;
+
+/** @constructor */
+ObjectUI.CustomPreviewSection = CustomPreviewSection;

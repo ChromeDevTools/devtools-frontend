@@ -1,15 +1,11 @@
 // Copyright 2015 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/**
- * @typedef {Array<{object: !SDK.RemoteObject, eventListeners: ?Array<!SDK.EventListener>, frameworkEventListeners: ?{eventListeners: ?Array<!SDK.EventListener>, internalHandlers: ?SDK.RemoteArray}, isInternal: ?Array<boolean>}>}
- */
-EventListeners.EventListenersResult;
 
 /**
  * @unrestricted
  */
-EventListeners.EventListenersView = class extends UI.VBox {
+export class EventListenersView extends UI.VBox {
   /**
    * @param {function()} changeCallback
    */
@@ -20,7 +16,7 @@ EventListeners.EventListenersView = class extends UI.VBox {
     this._treeOutline.hideOverflow();
     this._treeOutline.registerRequiredCSS('object_ui/objectValue.css');
     this._treeOutline.registerRequiredCSS('event_listeners/eventListenersView.css');
-    this._treeOutline.setComparator(EventListeners.EventListenersTreeElement.comparator);
+    this._treeOutline.setComparator(EventListenersTreeElement.comparator);
     this._treeOutline.element.classList.add('monospace');
     this._treeOutline.setShowSelectionOnKeyboardFocus(true);
     this._treeOutline.setFocusable(true);
@@ -29,7 +25,7 @@ EventListeners.EventListenersView = class extends UI.VBox {
     this._emptyHolder.textContent = Common.UIString('No event listeners');
     this._emptyHolder.tabIndex = -1;
     this._linkifier = new Components.Linkifier();
-    /** @type {!Map<string, !EventListeners.EventListenersTreeElement>} */
+    /** @type {!Map<string, !EventListenersTreeElement>} */
     this._treeItemMap = new Map();
   }
 
@@ -134,7 +130,7 @@ EventListeners.EventListenersView = class extends UI.VBox {
     }
 
     /**
-     * @this {EventListeners.EventListenersView}
+     * @this {EventListenersView}
      */
     function addEventListeners() {
       this._addObjectEventListeners(object, eventListeners);
@@ -189,12 +185,12 @@ EventListeners.EventListenersView = class extends UI.VBox {
 
   /**
    * @param {string} type
-   * @return {!EventListeners.EventListenersTreeElement}
+   * @return {!EventListenersTreeElement}
    */
   _getOrCreateTreeElementForType(type) {
     let treeItem = this._treeItemMap.get(type);
     if (!treeItem) {
-      treeItem = new EventListeners.EventListenersTreeElement(type, this._linkifier, this._changeCallback);
+      treeItem = new EventListenersTreeElement(type, this._linkifier, this._changeCallback);
       this._treeItemMap.set(type, treeItem);
       treeItem.hidden = true;
       this._treeOutline.appendChild(treeItem);
@@ -231,12 +227,12 @@ EventListeners.EventListenersView = class extends UI.VBox {
 
   _eventListenersArrivedForTest() {
   }
-};
+}
 
 /**
  * @unrestricted
  */
-EventListeners.EventListenersTreeElement = class extends UI.TreeElement {
+export class EventListenersTreeElement extends UI.TreeElement {
   /**
    * @param {string} type
    * @param {!Components.Linkifier} linkifier
@@ -266,17 +262,16 @@ EventListeners.EventListenersTreeElement = class extends UI.TreeElement {
    * @param {!SDK.RemoteObject} object
    */
   addObjectEventListener(eventListener, object) {
-    const treeElement =
-        new EventListeners.ObjectEventListenerBar(eventListener, object, this._linkifier, this._changeCallback);
+    const treeElement = new ObjectEventListenerBar(eventListener, object, this._linkifier, this._changeCallback);
     this.appendChild(/** @type {!UI.TreeElement} */ (treeElement));
   }
-};
+}
 
 
 /**
  * @unrestricted
  */
-EventListeners.ObjectEventListenerBar = class extends UI.TreeElement {
+export class ObjectEventListenerBar extends UI.TreeElement {
   /**
    * @param {!SDK.EventListener} eventListener
    * @param {!SDK.RemoteObject} object
@@ -400,4 +395,24 @@ EventListeners.ObjectEventListenerBar = class extends UI.TreeElement {
 
     return false;
   }
-};
+}
+
+/* Legacy exported object */
+self.EventListeners = self.EventListeners || {};
+
+/* Legacy exported object */
+EventListeners = EventListeners || {};
+
+/** @constructor */
+EventListeners.EventListenersView = EventListenersView;
+
+/** @constructor */
+EventListeners.EventListenersTreeElement = EventListenersTreeElement;
+
+/** @constructor */
+EventListeners.ObjectEventListenerBar = ObjectEventListenerBar;
+
+/**
+ * @typedef {Array<{object: !SDK.RemoteObject, eventListeners: ?Array<!SDK.EventListener>, frameworkEventListeners: ?{eventListeners: ?Array<!SDK.EventListener>, internalHandlers: ?SDK.RemoteArray}, isInternal: ?Array<boolean>}>}
+ */
+EventListeners.EventListenersResult;

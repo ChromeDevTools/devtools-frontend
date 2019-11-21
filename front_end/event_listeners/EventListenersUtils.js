@@ -1,17 +1,12 @@
 // Copyright 2015 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/** @typedef {{eventListeners:!Array<!SDK.EventListener>, internalHandlers:?SDK.RemoteArray}} */
-EventListeners.FrameworkEventListenersObject;
-
-/** @typedef {{type: string, useCapture: boolean, passive: boolean, once: boolean, handler: function()}} */
-EventListeners.EventListenerObjectInInspectedPage;
 
 /**
  * @param {!SDK.RemoteObject} object
  * @return {!Promise<!EventListeners.FrameworkEventListenersObject>}
  */
-EventListeners.frameworkEventListeners = function(object) {
+export function frameworkEventListeners(object) {
   const domDebuggerModel = object.runtimeModel().target().model(SDK.DOMDebuggerModel);
   if (!domDebuggerModel) {
     // TODO(kozyatinskiy): figure out how this should work for |window|.
@@ -20,7 +15,7 @@ EventListeners.frameworkEventListeners = function(object) {
   }
 
   const listenersResult = /** @type {!EventListeners.FrameworkEventListenersObject} */ ({eventListeners: []});
-  return object.callFunction(frameworkEventListeners, undefined)
+  return object.callFunction(frameworkEventListenersImpl, undefined)
       .then(assertCallFunctionResult)
       .then(getOwnProperties)
       .then(createEventListeners)
@@ -291,7 +286,7 @@ EventListeners.frameworkEventListeners = function(object) {
    * @return {!{eventListeners:!Array<!EventListeners.EventListenerObjectInInspectedPage>, internalHandlers:?Array<function()>}}
    * @this {Object}
    */
-  function frameworkEventListeners() {
+  function frameworkEventListenersImpl() {
     const errorLines = [];
     let eventListeners = [];
     let internalHandlers = [];
@@ -503,4 +498,18 @@ EventListeners.frameworkEventListeners = function(object) {
       jQueryFunction(node).off(type, selector, handler);
     }
   }
-};
+}
+
+/* Legacy exported object */
+self.EventListeners = self.EventListeners || {};
+
+/* Legacy exported object */
+EventListeners = EventListeners || {};
+
+EventListeners.frameworkEventListeners = frameworkEventListeners;
+
+/** @typedef {{eventListeners:!Array<!SDK.EventListener>, internalHandlers:?SDK.RemoteArray}} */
+EventListeners.FrameworkEventListenersObject;
+
+/** @typedef {{type: string, useCapture: boolean, passive: boolean, once: boolean, handler: function()}} */
+EventListeners.EventListenerObjectInInspectedPage;

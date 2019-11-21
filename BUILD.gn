@@ -195,9 +195,7 @@ if (external_devtools_frontend) {
     "front_end/emulation/module.json",
     "front_end/emulation/sensors.css",
     "front_end/emulation/SensorsView.js",
-    "front_end/event_listeners/EventListenersUtils.js",
     "front_end/event_listeners/eventListenersView.css",
-    "front_end/event_listeners/EventListenersView.js",
     "front_end/event_listeners/module.json",
     "front_end/extensions/module.json",
     "front_end/extensions_test_runner/ExtensionsNetworkTestRunner.js",
@@ -692,6 +690,9 @@ if (external_devtools_frontend) {
   all_devtools_files += lighthouse_locale_files
 
   all_devtools_modules = [
+    "front_end/event_listeners/event_listeners.js",
+    "front_end/event_listeners/EventListenersView.js",
+    "front_end/event_listeners/EventListenersUtils.js",
     "front_end/object_ui/object_ui.js",
     "front_end/object_ui/RemoteObjectPreviewFormatter.js",
     "front_end/object_ui/ObjectPropertiesSection.js",
@@ -1222,6 +1223,9 @@ if (external_devtools_frontend) {
   ]
 
   copied_devtools_modules = [
+    "$resources_out_dir/event_listeners/event_listeners.js",
+    "$resources_out_dir/event_listeners/EventListenersView.js",
+    "$resources_out_dir/event_listeners/EventListenersUtils.js",
     "$resources_out_dir/object_ui/object_ui.js",
     "$resources_out_dir/object_ui/RemoteObjectPreviewFormatter.js",
     "$resources_out_dir/object_ui/ObjectPropertiesSection.js",

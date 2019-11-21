@@ -505,18 +505,31 @@ Sources.DebuggerPlugin = class extends Sources.UISourceCodeFrame.Plugin {
     // The eager evaluation on works sort of reliably within the top-most scope of
     // the selected call frame, so don't even try outside the top-most scope.
     const [scope] = selectedCallFrame.scopeChain();
-    if (scope && scope.startLocation() && scope.endLocation()) {
-      if (editorLineNumber < scope.startLocation().lineNumber) {
+    const scopeStartLocation = scope && scope.startLocation();
+    const scopeEndLocation = scope && scope.endLocation();
+
+    if (scopeStartLocation && scopeEndLocation) {
+      let {lineNumber: scopeStartLineNumber, columnNumber: scopeStartColNumber} = scopeStartLocation;
+      let {lineNumber: scopeEndLineNumber, columnNumber: scopeEndColNumber} = scopeEndLocation;
+
+      const scopeUIStartLocation = Bindings.debuggerWorkspaceBinding.rawLocationToUILocation(scopeStartLocation);
+      const scopeUIEndLocation = Bindings.debuggerWorkspaceBinding.rawLocationToUILocation(scopeEndLocation);
+
+      if (scopeUIStartLocation && scopeUIEndLocation) {
+        ({lineNumber: scopeStartLineNumber, columnNumber: scopeStartColNumber} = scopeUIStartLocation);
+        ({lineNumber: scopeEndLineNumber, columnNumber: scopeEndColNumber} = scopeUIEndLocation);
+      }
+
+      if (editorLineNumber < scopeStartLineNumber) {
         return null;
       }
-      if (editorLineNumber === scope.startLocation().lineNumber &&
-          startHighlight < scope.startLocation().columnNumber) {
+      if (editorLineNumber === scopeStartLineNumber && startHighlight < scopeStartColNumber) {
         return null;
       }
-      if (editorLineNumber > scope.endLocation().lineNumber) {
+      if (editorLineNumber > scopeEndLineNumber) {
         return null;
       }
-      if (editorLineNumber === scope.endLocation().lineNumber && endHighlight > scope.endLocation().columnNumber) {
+      if (editorLineNumber === scopeEndLineNumber && endHighlight > scopeEndColNumber) {
         return null;
       }
     }

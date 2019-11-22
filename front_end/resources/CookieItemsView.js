@@ -84,8 +84,10 @@ Resources.CookieItemsView = class extends Resources.StorageItemsView {
     this.refreshItems();
     Common.EventTarget.removeEventListeners(this._eventDescriptors);
     const networkManager = model.target().model(SDK.NetworkManager);
-    this._eventDescriptors =
-        [networkManager.addEventListener(SDK.NetworkManager.Events.ResponseReceived, this._onResponseReceived, this)];
+    this._eventDescriptors = [
+      networkManager.addEventListener(SDK.NetworkManager.Events.ResponseReceived, this._onResponseReceived, this),
+      networkManager.addEventListener(SDK.NetworkManager.Events.LoadingFinished, this._onLoadingFinished, this),
+    ];
 
     this._showPreview(null, null);
   }
@@ -206,7 +208,15 @@ Resources.CookieItemsView = class extends Resources.StorageItemsView {
     this._model.getCookiesForDomain(this._cookieDomain).then(this._updateWithCookies.bind(this));
   }
 
-  _onResponseReceived() {
+  refreshItemsThrottled() {
     this._refreshThrottler.schedule(() => Promise.resolve(this.refreshItems()));
+  }
+
+  _onResponseReceived() {
+    this.refreshItemsThrottled()
+  }
+
+  _onLoadingFinished() {
+    this.refreshItemsThrottled()
   }
 };

@@ -209,6 +209,7 @@ export const Events = {
   ResponseReceived: Symbol('ResponseReceived'),
   MessageGenerated: Symbol('MessageGenerated'),
   RequestRedirected: Symbol('RequestRedirected'),
+  LoadingFinished: Symbol('LoadingFinished'),
 };
 
 export const _MIMETypes = {
@@ -600,6 +601,7 @@ export class NetworkDispatcher {
     }
     this._getExtraInfoBuilder(requestId).finished();
     this._finishNetworkRequest(networkRequest, finishTime, encodedDataLength, shouldReportCorbBlocking);
+    this._manager.dispatchEventToListeners(Events.LoadingFinished, networkRequest);
   }
 
   /**

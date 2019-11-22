@@ -157,14 +157,6 @@ export class FormatterWorkerPool {
 
   /**
    * @param {string} content
-   * @return {!Promise<string>}
-   */
-  preprocessTopLevelAwaitExpressions(content) {
-    return this._runTask('preprocessTopLevelAwaitExpressions', {content: content}).then(text => text || '');
-  }
-
-  /**
-   * @param {string} content
    * @param {function(boolean, !Array<!Formatter.FormatterWorkerPool.CSSRule>)} callback
    */
   parseCSS(content, callback) {

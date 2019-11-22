@@ -63,8 +63,10 @@
     "ui",
     "host"
   ],
-  "scripts": [
-    "Help.js",
+  "scripts": [],
+  "modules": [
+    "help.js",
+    "HelpImpl.js",
     "ReleaseNoteView.js",
     "ReleaseNoteText.js"
   ],

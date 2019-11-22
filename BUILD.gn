@@ -204,11 +204,8 @@ if (external_devtools_frontend) {
     "front_end/heap_snapshot_model/module.json",
     "front_end/heap_snapshot_worker.json",
     "front_end/heap_snapshot_worker/module.json",
-    "front_end/help/Help.js",
     "front_end/help/module.json",
     "front_end/help/releaseNote.css",
-    "front_end/help/ReleaseNoteText.js",
-    "front_end/help/ReleaseNoteView.js",
     "front_end/host/module.json",
     "front_end/inline_editor/bezierEditor.css",
     "front_end/inline_editor/bezierSwatch.css",
@@ -670,6 +667,10 @@ if (external_devtools_frontend) {
   all_devtools_files += lighthouse_locale_files
 
   all_devtools_modules = [
+    "front_end/help/help.js",
+    "front_end/help/ReleaseNoteView.js",
+    "front_end/help/ReleaseNoteText.js",
+    "front_end/help/HelpImpl.js",
     "front_end/workspace_diff/workspace_diff.js",
     "front_end/workspace_diff/WorkspaceDiff.js",
     "front_end/mobile_throttling/mobile_throttling.js",
@@ -1227,6 +1228,10 @@ if (external_devtools_frontend) {
   ]
 
   copied_devtools_modules = [
+    "$resources_out_dir/help/help.js",
+    "$resources_out_dir/help/ReleaseNoteView.js",
+    "$resources_out_dir/help/ReleaseNoteText.js",
+    "$resources_out_dir/help/HelpImpl.js",
     "$resources_out_dir/workspace_diff/workspace_diff.js",
     "$resources_out_dir/workspace_diff/WorkspaceDiff.js",
     "$resources_out_dir/mobile_throttling/mobile_throttling.js",

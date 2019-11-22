@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-Help.ReleaseNoteView = class extends UI.VBox {
+export default class ReleaseNoteView extends UI.VBox {
   constructor() {
     super(true);
     this.registerRequiredCSS('help/releaseNote.css');
@@ -48,4 +48,15 @@ Help.ReleaseNoteView = class extends UI.VBox {
     image.src = 'Images/whatsnew.png';
     return hbox;
   }
-};
+}
+
+/* Legacy exported object */
+self.Help = self.Help || {};
+
+/* Legacy exported object */
+Help = Help || {};
+
+/**
+ * @constructor
+ */
+Help.ReleaseNoteView = ReleaseNoteView;

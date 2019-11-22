@@ -11,7 +11,7 @@ const networkSearchShortcut = Host.isMac() ? 'Command+F' : 'Control+F';
 const commandMenuShortcut = Host.isMac() ? 'Command+Shift+P' : 'Control+Shift+P';
 
 /** @type {!Array<!Help.ReleaseNote>} */
-Help.releaseNoteText = [
+export const releaseNoteText = [
 
   {
     version: 21,
@@ -726,3 +726,11 @@ Help.releaseNoteText = [
     link: 'https://developers.google.com/web/updates/2017/03/devtools-release-notes',
   }
 ];
+
+/* Legacy exported object */
+self.Help = self.Help || {};
+
+/* Legacy exported object */
+Help = Help || {};
+
+Help.releaseNoteText = releaseNoteText;

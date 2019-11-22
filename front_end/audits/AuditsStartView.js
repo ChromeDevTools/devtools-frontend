@@ -5,7 +5,7 @@
 /**
  * @unrestricted
  */
-Audits.StartView = class extends UI.Widget {
+export default class StartView extends UI.Widget {
   /**
    * @param {!Audits.AuditController} controller
    */
@@ -176,4 +176,15 @@ Audits.StartView = class extends UI.Widget {
       this._helpText.textContent = text;
     }
   }
-};
+}
+
+/* Legacy exported object */
+self.Audits = self.Audits || {};
+
+/* Legacy exported object */
+Audits = Audits || {};
+
+/**
+ * @constructor
+ */
+Audits.StartView = StartView;

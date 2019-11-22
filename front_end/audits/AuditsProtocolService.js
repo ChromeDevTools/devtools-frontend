@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-Audits.ProtocolService = class extends Common.Object {
+export class ProtocolService extends Common.Object {
   constructor() {
     super();
     /** @type {?Protocol.Connection} */
@@ -90,4 +90,15 @@ Audits.ProtocolService = class extends Common.Object {
 
     return this._backendPromise.then(_ => this._backend.send(method, params));
   }
-};
+}
+
+/* Legacy exported object */
+self.Audits = self.Audits || {};
+
+/* Legacy exported object */
+Audits = Audits || {};
+
+/**
+ * @constructor
+ */
+Audits.ProtocolService = ProtocolService;

@@ -19,7 +19,9 @@
         "services",
         "ui"
     ],
-    "scripts": [
+    "scripts": [],
+    "modules": [
+        "audits.js",
         "lighthouse/report.js",
         "lighthouse/report-generator.js",
         "RadioSetting.js",
@@ -37,9 +39,7 @@
         "auditsStartView.css",
         "lighthouse/template.html",
         "lighthouse/templates.html",
-        "lighthouse/report.css",
-        "lighthouse/report-generator.js",
-        "lighthouse/report.js"
+        "lighthouse/report.css"
     ],
     "skip_compilation": [
       "lighthouse/report.js",

@@ -6,7 +6,7 @@
  * @implements {SDK.SDKModelObserver<!SDK.ServiceWorkerManager>}
  * @unrestricted
  */
-Audits.AuditController = class extends Common.Object {
+class AuditController extends Common.Object {
   constructor(protocolService) {
     super();
 
@@ -202,14 +202,10 @@ Audits.AuditController = class extends Common.Object {
 
     this.dispatchEventToListeners(Audits.Events.PageAuditabilityChanged, {helpText});
   }
-};
-
-
-/** @typedef {{setting: !Common.Setting, configID: string, title: string, description: string}} */
-Audits.Preset;
+}
 
 /** @type {!Array.<!Audits.Preset>} */
-Audits.Presets = [
+export const Presets = [
   // configID maps to Lighthouse's Object.keys(config.categories)[0] value
   {
     setting: Common.settings.createSetting('audits.cat_perf', true),
@@ -250,11 +246,8 @@ Audits.Presets = [
   },
 ];
 
-/** @typedef {{setting: !Common.Setting, description: string, setFlags: function(!Object, string), options: (!Array|undefined), title: (string|undefined)}} */
-Audits.RuntimeSetting;
-
 /** @type {!Array.<!Audits.RuntimeSetting>} */
-Audits.RuntimeSettings = [
+export const RuntimeSettings = [
   {
     setting: Common.settings.createSetting('audits.device_type', 'mobile'),
     description: ls`Apply mobile emulation during auditing`,
@@ -288,9 +281,34 @@ Audits.RuntimeSettings = [
   },
 ];
 
-Audits.Events = {
+export const Events = {
   PageAuditabilityChanged: Symbol('PageAuditabilityChanged'),
   AuditProgressChanged: Symbol('AuditProgressChanged'),
   RequestAuditStart: Symbol('RequestAuditStart'),
   RequestAuditCancel: Symbol('RequestAuditCancel'),
 };
+
+/* Legacy exported object */
+self.Audits = self.Audits || {};
+
+/* Legacy exported object */
+Audits = Audits || {};
+
+/**
+ * @constructor
+ */
+Audits.AuditController = AuditController;
+
+/** @typedef {{setting: !Common.Setting, configID: string, title: string, description: string}} */
+Audits.Preset;
+
+Audits.Events = Events;
+
+/** @typedef {{setting: !Common.Setting, description: string, setFlags: function(!Object, string), options: (!Array|undefined), title: (string|undefined)}} */
+Audits.RuntimeSetting;
+
+/** @type {!Array.<!Audits.RuntimeSetting>} */
+Audits.RuntimeSettings = RuntimeSettings;
+
+/** @type {!Array.<!Audits.Preset>} */
+Audits.Presets = Presets;

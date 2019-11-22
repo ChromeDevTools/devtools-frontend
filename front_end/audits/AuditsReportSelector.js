@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-Audits.ReportSelector = class {
+export default class ReportSelector {
   constructor(renderNewAuditView) {
     this._renderNewAuditView = renderNewAuditView;
     this._newAuditItem = createElement('option');
@@ -94,9 +94,9 @@ Audits.ReportSelector = class {
   selectNewAudit() {
     this._comboBox.select(this._newAuditItem);
   }
-};
+}
 
-Audits.ReportSelector.Item = class {
+export class Item {
   /**
    * @param {!ReportRenderer.ReportJSON} lighthouseResult
    * @param {function()} renderReport
@@ -130,4 +130,20 @@ Audits.ReportSelector.Item = class {
     }
     this._showLandingCallback();
   }
-};
+}
+
+/* Legacy exported object */
+self.Audits = self.Audits || {};
+
+/* Legacy exported object */
+Audits = Audits || {};
+
+/**
+ * @constructor
+ */
+Audits.ReportSelector = ReportSelector;
+
+/**
+ * @constructor
+ */
+Audits.ReportSelector.Item = Item;

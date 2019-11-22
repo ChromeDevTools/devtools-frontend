@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-Audits.RadioSetting = class {
+export default class RadioSetting {
   /**
    * @param {!Array<!{value: string, label: string}>} options
    * @param {!Common.Setting} setting
@@ -65,4 +65,13 @@ Audits.RadioSetting = class {
     const selectedRadio = this._radioElements.find(radio => radio.checked);
     this._setting.set(selectedRadio.value);
   }
-};
+}
+
+/* Legacy exported object */
+self.Audits = self.Audits || {};
+
+/* Legacy exported object */
+Audits = Audits || {};
+
+// TODO(http://crbug.com/1006759): Add type information if necessary
+Audits.RadioSetting = RadioSetting;

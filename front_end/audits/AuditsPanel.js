@@ -5,7 +5,7 @@
 /**
  * @unrestricted
  */
-Audits.AuditsPanel = class extends UI.Panel {
+export default class AuditsPanel extends UI.Panel {
   constructor() {
     super('audits');
     this.registerRequiredCSS('audits/lighthouse/report.css');
@@ -364,4 +364,15 @@ Audits.AuditsPanel = class extends UI.Panel {
     const inspectedURL = await this._controller.getInspectedURL();
     await resourceTreeModel.navigate(inspectedURL);
   }
-};
+}
+
+/* Legacy exported object */
+self.Audits = self.Audits || {};
+
+/* Legacy exported object */
+Audits = Audits || {};
+
+/**
+ * @constructor
+ */
+Audits.AuditsPanel = AuditsPanel;

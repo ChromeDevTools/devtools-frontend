@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-Audits.StatusView = class {
+export default class StatusView {
   /**
    * @param {!Audits.AuditController} controller
    */
@@ -18,7 +18,7 @@ Audits.StatusView = class {
 
     this._inspectedURL = '';
     this._textChangedAt = 0;
-    this._fastFactsQueued = Audits.StatusView.FastFacts.slice();
+    this._fastFactsQueued = FastFacts.slice();
     this._currentPhase = null;
     this._scheduledTextChangeTimeout = null;
     this._scheduledFastFactTimeout = null;
@@ -68,7 +68,7 @@ Audits.StatusView = class {
     clearTimeout(this._scheduledFastFactTimeout);
 
     this._textChangedAt = 0;
-    this._fastFactsQueued = Audits.StatusView.FastFacts.slice();
+    this._fastFactsQueued = FastFacts.slice();
     this._currentPhase = null;
     this._scheduledTextChangeTimeout = null;
     this._scheduledFastFactTimeout = null;
@@ -150,7 +150,7 @@ Audits.StatusView = class {
 
     const deviceType = Audits.RuntimeSettings.find(item => item.setting.name === 'audits.device_type').setting.get();
     const throttling = Audits.RuntimeSettings.find(item => item.setting.name === 'audits.throttling').setting.get();
-    const match = Audits.StatusView.LoadingMessages.find(item => {
+    const match = LoadingMessages.find(item => {
       return item.deviceType === deviceType && item.throttling === throttling;
     });
 
@@ -162,7 +162,7 @@ Audits.StatusView = class {
    * @return {?Audits.StatusView.StatusPhases}
    */
   _getPhaseForMessage(message) {
-    return Audits.StatusView.StatusPhases.find(phase => message.startsWith(phase.statusMessagePrefix));
+    return StatusPhases.find(phase => message.startsWith(phase.statusMessagePrefix));
   }
 
   _resetProgressBarClasses() {
@@ -188,7 +188,7 @@ Audits.StatusView = class {
 
   _updateFastFactIfNecessary() {
     const now = performance.now();
-    if (now - this._textChangedAt < Audits.StatusView.fastFactRotationInterval) {
+    if (now - this._textChangedAt < fastFactRotationInterval) {
       return;
     }
     if (!this._fastFactsQueued.length) {
@@ -220,7 +220,7 @@ Audits.StatusView = class {
     }
 
     const msSinceLastChange = performance.now() - this._textChangedAt;
-    const msToTextChange = Audits.StatusView.minimumTextVisibilityDuration - msSinceLastChange;
+    const msToTextChange = minimumTextVisibilityDuration - msSinceLastChange;
 
     this._scheduledTextChangeTimeout = setTimeout(() => {
       this._commitTextChange(text);
@@ -239,7 +239,7 @@ Audits.StatusView = class {
 
     this._commitTextChange('');
     this._statusText.createChild('p').createTextChild(Common.UIString('Ah, sorry! We ran into an error.'));
-    if (Audits.StatusView.KnownBugPatterns.some(pattern => pattern.test(err.message))) {
+    if (KnownBugPatterns.some(pattern => pattern.test(err.message))) {
       const message = Common.UIString(
           'Try to navigate to the URL in a fresh Chrome profile without any other tabs or extensions open and try again.');
       this._statusText.createChild('p').createTextChild(message);
@@ -282,11 +282,16 @@ Stack Trace: ${err.stack}
         ls`If this issue is reproducible, please report it at the Lighthouse GitHub repo.`);
     this._statusText.createChild('code', 'monospace').createTextChild(issueBody.trim());
   }
-};
+}
 
+/** @const */
+export const fastFactRotationInterval = 6000;
+
+/** @const */
+export const minimumTextVisibilityDuration = 3000;
 
 /** @type {!Array.<!RegExp>} */
-Audits.StatusView.KnownBugPatterns = [
+export const KnownBugPatterns = [
   /PARSING_PROBLEM/,
   /DOCUMENT_REQUEST/,
   /READ_FAILED/,
@@ -296,7 +301,7 @@ Audits.StatusView.KnownBugPatterns = [
 ];
 
 /** @typedef {{message: string, progressBarClass: string, order: number}} */
-Audits.StatusView.StatusPhases = [
+export const StatusPhases = [
   {
     id: 'loading',
     progressBarClass: 'loading',
@@ -320,7 +325,7 @@ Audits.StatusView.StatusPhases = [
 ];
 
 /** @typedef {{message: string, deviceType: string, throttling: string}} */
-Audits.StatusView.LoadingMessages = [
+export const LoadingMessages = [
   {
     deviceType: 'mobile',
     throttling: 'on',
@@ -343,26 +348,49 @@ Audits.StatusView.LoadingMessages = [
   },
 ];
 
-Audits.StatusView.FastFacts = [
-  ls`1MB takes a minimum of 5 seconds to download on a typical 3G connection [Source: WebPageTest and DevTools 3G definition].`,
-  ls`Rebuilding Pinterest pages for performance increased conversion rates by 15% [Source: WPO Stats]`,
-  ls`BBC has seen a loss of 10% of their users for every extra second of page load [Source: WPO Stats]`,
-  ls`By reducing the response size of JSON needed for displaying comments, Instagram saw increased impressions [Source: WPO Stats]`,
-  ls`Walmart saw a 1% increase in revenue for every 100ms improvement in page load [Source: WPO Stats]`,
-  ls`If a site takes >1 second to become interactive, users lose attention, and their perception of completing the page task is broken [Source: Google Developers Blog]`,
-  ls`75% of global mobile users in 2016 were on 2G or 3G [Source: GSMA Mobile]`,
-  ls`The average user device costs less than 200 USD. [Source: International Data Corporation]`,
-  ls`53% of all site visits are abandoned if page load takes more than 3 seconds [Source: Google DoubleClick blog]`,
-  ls`19 seconds is the average time a mobile web page takes to load on a 3G connection [Source: Google DoubleClick blog]`,
-  ls`14 seconds is the average time a mobile web page takes to load on a 4G connection [Source: Google DoubleClick blog]`,
-  ls`70% of mobile pages take nearly 7 seconds for the visual content above the fold to display on the screen. [Source: Think with Google]`,
-  ls`As page load time increases from one second to seven seconds, the probability of a mobile site visitor bouncing increases 113%. [Source: Think with Google]`,
-  ls`As the number of elements on a page increases from 400 to 6,000, the probability of conversion drops 95%. [Source: Think with Google]`,
-  ls`70% of mobile pages weigh over 1MB, 36% over 2MB, and 12% over 4MB. [Source: Think with Google]`,
-  ls`Lighthouse only simulates mobile performance; to measure performance on a real device, try WebPageTest.org [Source: Lighthouse team]`,
+export const FastFacts = [
+  ls
+`1MB takes a minimum of 5 seconds to download on a typical 3G connection [Source: WebPageTest and DevTools 3G definition].`,
+    ls`Rebuilding Pinterest pages for performance increased conversion rates by 15% [Source: WPO Stats]`,
+    ls`BBC has seen a loss of 10% of their users for every extra second of page load [Source: WPO Stats]`, ls
+`By reducing the response size of JSON needed for displaying comments, Instagram saw increased impressions [Source: WPO Stats]`,
+    ls`Walmart saw a 1% increase in revenue for every 100ms improvement in page load [Source: WPO Stats]`, ls
+`If a site takes >1 second to become interactive, users lose attention, and their perception of completing the page task is broken [Source: Google Developers Blog]`,
+    ls`75% of global mobile users in 2016 were on 2G or 3G [Source: GSMA Mobile]`,
+    ls`The average user device costs less than 200 USD. [Source: International Data Corporation]`,
+    ls`53% of all site visits are abandoned if page load takes more than 3 seconds [Source: Google DoubleClick blog]`,
+    ls
+`19 seconds is the average time a mobile web page takes to load on a 3G connection [Source: Google DoubleClick blog]`,
+    ls
+`14 seconds is the average time a mobile web page takes to load on a 4G connection [Source: Google DoubleClick blog]`,
+    ls
+`70% of mobile pages take nearly 7 seconds for the visual content above the fold to display on the screen. [Source: Think with Google]`,
+    ls
+`As page load time increases from one second to seven seconds, the probability of a mobile site visitor bouncing increases 113%. [Source: Think with Google]`,
+    ls
+`As the number of elements on a page increases from 400 to 6,000, the probability of conversion drops 95%. [Source: Think with Google]`,
+    ls`70% of mobile pages weigh over 1MB, 36% over 2MB, and 12% over 4MB. [Source: Think with Google]`, ls
+  `Lighthouse only simulates mobile performance; to measure performance on a real device, try WebPageTest.org [Source: Lighthouse team]`,
 ];
 
-/** @const */
-Audits.StatusView.fastFactRotationInterval = 6000;
-/** @const */
-Audits.StatusView.minimumTextVisibilityDuration = 3000;
+  /* Legacy exported object */
+  self.Audits = self.Audits || {};
+
+  /* Legacy exported object */
+  Audits = Audits || {};
+
+  /**
+ * @constructor
+ */
+  Audits.StatusView = StatusView;
+
+  Audits.StatusView.FastFacts = FastFacts;
+
+  /** @type {!Array.<!RegExp>} */
+  Audits.StatusView.KnownBugPatterns = KnownBugPatterns;
+
+  /** @typedef {{message: string, progressBarClass: string, order: number}} */
+  Audits.StatusView.StatusPhases = StatusPhases;
+
+  /** @typedef {{message: string, deviceType: string, throttling: string}} */
+  Audits.StatusView.LoadingMessages = LoadingMessages;

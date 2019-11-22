@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-MobileThrottling.NetworkPanelIndicator = class {
+export class NetworkPanelIndicator {
   constructor() {
     // TODO: we should not access network from other modules.
     if (!UI.inspectorView.hasPanel('network')) {
@@ -29,4 +29,13 @@ MobileThrottling.NetworkPanelIndicator = class {
       UI.inspectorView.setPanelIcon('network', icon);
     }
   }
-};
+}
+
+/* Legacy exported object */
+self.MobileThrottling = self.MobileThrottling || {};
+
+/* Legacy exported object */
+MobileThrottling = MobileThrottling || {};
+
+/** @constructor */
+MobileThrottling.NetworkPanelIndicator = NetworkPanelIndicator;

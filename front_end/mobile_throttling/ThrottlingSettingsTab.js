@@ -6,7 +6,7 @@
  * @implements {UI.ListWidget.Delegate}
  * @unrestricted
  */
-MobileThrottling.ThrottlingSettingsTab = class extends UI.VBox {
+export class ThrottlingSettingsTab extends UI.VBox {
   constructor() {
     super(true);
     this.registerRequiredCSS('mobile_throttling/throttlingSettingsTab.css');
@@ -67,10 +67,9 @@ MobileThrottling.ThrottlingSettingsTab = class extends UI.VBox {
     titleText.textContent = conditions.title;
     titleText.title = conditions.title;
     element.createChild('div', 'conditions-list-separator');
-    element.createChild('div', 'conditions-list-text').textContent =
-        MobileThrottling.throughputText(conditions.download);
+    element.createChild('div', 'conditions-list-text').textContent = throughputText(conditions.download);
     element.createChild('div', 'conditions-list-separator');
-    element.createChild('div', 'conditions-list-text').textContent = MobileThrottling.throughputText(conditions.upload);
+    element.createChild('div', 'conditions-list-text').textContent = throughputText(conditions.upload);
     element.createChild('div', 'conditions-list-separator');
     element.createChild('div', 'conditions-list-text').textContent = Common.UIString('%dms', conditions.latency);
     return element;
@@ -225,14 +224,14 @@ MobileThrottling.ThrottlingSettingsTab = class extends UI.VBox {
       return {valid};
     }
   }
-};
+}
 
 /**
  * @param {number} throughput
  * @param {boolean=} plainText
  * @return {string}
  */
-MobileThrottling.throughputText = function(throughput, plainText) {
+export function throughputText(throughput, plainText) {
   if (throughput < 0) {
     return '';
   }
@@ -245,4 +244,15 @@ MobileThrottling.throughputText = function(throughput, plainText) {
     return Common.UIString('%.1f%sMb/s', throughputInKbps / 1024, delimiter);
   }
   return Common.UIString('%d%sMb/s', (throughputInKbps / 1024) | 0, delimiter);
-};
+}
+
+/* Legacy exported object */
+self.MobileThrottling = self.MobileThrottling || {};
+
+/* Legacy exported object */
+MobileThrottling = MobileThrottling || {};
+
+/** @constructor */
+MobileThrottling.ThrottlingSettingsTab = ThrottlingSettingsTab;
+
+MobileThrottling.throughputText = throughputText;

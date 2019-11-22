@@ -56,7 +56,9 @@
         "ui",
         "protocol"
     ],
-    "scripts": [
+    "scripts": [],
+    "modules": [
+        "mobile_throttling.js",
         "ThrottlingPresets.js",
         "MobileThrottlingSelector.js",
         "NetworkPanelIndicator.js",

@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-MobileThrottling.NetworkThrottlingSelector = class {
+export class NetworkThrottlingSelector {
   /**
    * @param {function(!Array<!MobileThrottling.NetworkThrottlingConditionsGroup>):!Array<?SDK.NetworkManager.Conditions>} populateCallback
    * @param {function(number)} selectCallback
@@ -62,4 +62,13 @@ MobileThrottling.NetworkThrottlingSelector = class {
     }
     return false;
   }
-};
+}
+
+/* Legacy exported object */
+self.MobileThrottling = self.MobileThrottling || {};
+
+/* Legacy exported object */
+MobileThrottling = MobileThrottling || {};
+
+/** @constructor */
+MobileThrottling.NetworkThrottlingSelector = NetworkThrottlingSelector;

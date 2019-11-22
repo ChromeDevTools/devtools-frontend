@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-MobileThrottling.MobileThrottlingSelector = class {
+export class MobileThrottlingSelector {
   /**
    * @param {function(!Array<!MobileThrottling.MobileThrottlingConditionsGroup>):!MobileThrottling.ConditionsList} populateCallback
    * @param {function(number)} selectCallback
@@ -49,4 +49,13 @@ MobileThrottling.MobileThrottlingSelector = class {
     }
     this._selectCallback(this._options.indexOf(MobileThrottling.CustomConditions));
   }
-};
+}
+
+/* Legacy exported object */
+self.MobileThrottling = self.MobileThrottling || {};
+
+/* Legacy exported object */
+MobileThrottling = MobileThrottling || {};
+
+/** @constructor */
+MobileThrottling.MobileThrottlingSelector = MobileThrottlingSelector;

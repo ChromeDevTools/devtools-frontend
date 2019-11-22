@@ -5,7 +5,7 @@
 /**
  * @implements {SDK.SDKModelObserver<!SDK.EmulationModel>}
  */
-MobileThrottling.ThrottlingManager = class extends Common.Object {
+export class ThrottlingManager extends Common.Object {
   constructor() {
     super();
     /** @type {!MobileThrottling.CPUThrottlingRates} */
@@ -97,7 +97,7 @@ MobileThrottling.ThrottlingManager = class extends Common.Object {
     checkbox.setChecked(SDK.multitargetNetworkManager.networkConditions() === SDK.NetworkManager.OfflineConditions);
 
     /**
-     * @this {!MobileThrottling.ThrottlingManager}
+     * @this {!ThrottlingManager}
      */
     function forceOffline() {
       if (checkbox.checked()) {
@@ -202,7 +202,7 @@ MobileThrottling.ThrottlingManager = class extends Common.Object {
       control.setSelectedIndex(index);
     }
     UI.inspectorView.setPanelIcon('timeline', icon);
-    this.dispatchEventToListeners(MobileThrottling.ThrottlingManager.Events.RateChanged, this._cpuThrottlingRate);
+    this.dispatchEventToListeners(Events.RateChanged, this._cpuThrottlingRate);
   }
 
   /**
@@ -242,17 +242,17 @@ MobileThrottling.ThrottlingManager = class extends Common.Object {
     }
     return control;
   }
-};
+}
 
 /** @enum {symbol} */
-MobileThrottling.ThrottlingManager.Events = {
+export const Events = {
   RateChanged: Symbol('RateChanged')
 };
 
 /**
  * @implements {UI.ActionDelegate}
  */
-MobileThrottling.ThrottlingManager.ActionDelegate = class {
+export class ActionDelegate {
   /**
    * @override
    * @param {!UI.Context} context
@@ -278,11 +278,27 @@ MobileThrottling.ThrottlingManager.ActionDelegate = class {
     }
     return false;
   }
-};
+}
 
 /**
- * @return {!MobileThrottling.ThrottlingManager}
+ * @return {!ThrottlingManager}
  */
-MobileThrottling.throttlingManager = function() {
-  return self.singleton(MobileThrottling.ThrottlingManager);
-};
+export function throttlingManager() {
+  return self.singleton(ThrottlingManager);
+}
+
+/* Legacy exported object */
+self.MobileThrottling = self.MobileThrottling || {};
+
+/* Legacy exported object */
+MobileThrottling = MobileThrottling || {};
+
+/** @constructor */
+MobileThrottling.ThrottlingManager = ThrottlingManager;
+
+MobileThrottling.ThrottlingManager.Events = Events;
+
+/** @constructor */
+MobileThrottling.ThrottlingManager.ActionDelegate = ActionDelegate;
+
+MobileThrottling.throttlingManager = throttlingManager;

@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-Elements.StylePropertyTreeElement = class extends UI.TreeElement {
+export default class StylePropertyTreeElement extends UI.TreeElement {
   /**
    * @param {!Elements.StylesSidebarPane} stylesPane
    * @param {!SDK.CSSMatchedStyles} matchedStyles
@@ -376,7 +376,7 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
             this._matchedStyles.propertyState(longhandProperties[i]) === SDK.CSSMatchedStyles.PropertyState.Overloaded;
       }
 
-      const item = new Elements.StylePropertyTreeElement(
+      const item = new StylePropertyTreeElement(
           this._parentPane, this._matchedStyles, longhandProperties[i], false, inherited, overloaded, false);
       this.appendChild(item);
     }
@@ -390,7 +390,7 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
 
     this.listItemElement.addEventListener('mousedown', event => {
       if (event.which === 1) {
-        this._parentPane[Elements.StylePropertyTreeElement.ActiveSymbol] = this;
+        this._parentPane[ActiveSymbol] = this;
       }
     }, false);
     this.listItemElement.addEventListener('mouseup', this._mouseUp.bind(this));
@@ -517,8 +517,8 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
    * @param {!Event} event
    */
   _mouseUp(event) {
-    const activeTreeElement = this._parentPane[Elements.StylePropertyTreeElement.ActiveSymbol];
-    this._parentPane[Elements.StylePropertyTreeElement.ActiveSymbol] = null;
+    const activeTreeElement = this._parentPane[ActiveSymbol];
+    this._parentPane[ActiveSymbol] = null;
     if (activeTreeElement !== this) {
       return;
     }
@@ -666,7 +666,7 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
     /**
      * @param {!Elements.StylePropertyTreeElement.Context} context
      * @param {!Event} event
-     * @this {Elements.StylePropertyTreeElement}
+     * @this {StylePropertyTreeElement}
      */
     function pasteHandler(context, event) {
       const data = event.clipboardData.getData('Text');
@@ -699,7 +699,7 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
     /**
      * @param {!Elements.StylePropertyTreeElement.Context} context
      * @param {!Event} event
-     * @this {Elements.StylePropertyTreeElement}
+     * @this {StylePropertyTreeElement}
      */
     function blurListener(context, event) {
       let text = event.target.textContent;
@@ -912,7 +912,7 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
 
   /**
    * @param {string} moveDirection
-   * @return {?Elements.StylePropertyTreeElement}
+   * @return {?StylePropertyTreeElement}
    */
   _findSibling(moveDirection) {
     let target = this;
@@ -996,7 +996,7 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
      * @param {boolean} alreadyNew
      * @param {boolean} valueChanged
      * @param {!Elements.StylePropertiesSection} section
-     * @this {Elements.StylePropertyTreeElement}
+     * @this {StylePropertyTreeElement}
      */
     function moveToNextCallback(alreadyNew, valueChanged, section) {
       if (!moveDirection) {
@@ -1170,7 +1170,20 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
   isEventWithinDisclosureTriangle(event) {
     return event.target === this._expandElement;
   }
-};
+}
+
+export const ActiveSymbol = Symbol('ActiveSymbol');
+
+/* Legacy exported object */
+self.Elements = self.Elements || {};
+
+/* Legacy exported object */
+Elements = Elements || {};
+
+/** @constructor */
+Elements.StylePropertyTreeElement = StylePropertyTreeElement;
+
+Elements.StylePropertyTreeElement.ActiveSymbol = ActiveSymbol;
 
 /** @typedef {{
  *    expanded: boolean,
@@ -1183,4 +1196,3 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
  *  }}
  */
 Elements.StylePropertyTreeElement.Context;
-Elements.StylePropertyTreeElement.ActiveSymbol = Symbol('ActiveSymbol');

@@ -31,7 +31,7 @@
 /**
  * @unrestricted
  */
-Elements.ElementsTreeElement = class extends UI.TreeElement {
+export default class ElementsTreeElement extends UI.TreeElement {
   /**
    * @param {!SDK.DOMNode} node
    * @param {boolean=} elementCloseTag
@@ -53,7 +53,7 @@ Elements.ElementsTreeElement = class extends UI.TreeElement {
       this._canAddAttributes = true;
     }
     this._searchQuery = null;
-    this._expandedChildrenLimit = Elements.ElementsTreeElement.InitialChildrenLimit;
+    this._expandedChildrenLimit = InitialChildrenLimit;
     this._decorationsThrottler = new Common.Throttler(100);
 
     /**
@@ -63,7 +63,7 @@ Elements.ElementsTreeElement = class extends UI.TreeElement {
   }
 
   /**
-   * @param {!Elements.ElementsTreeElement} treeElement
+   * @param {!ElementsTreeElement} treeElement
    */
   static animateOnDOMUpdate(treeElement) {
     const tagName = treeElement.listItemElement.querySelector('.webkit-html-tag-name');
@@ -95,7 +95,7 @@ Elements.ElementsTreeElement = class extends UI.TreeElement {
    */
   static canShowInlineText(node) {
     if (node.contentDocument() || node.importedDocument() || node.templateContent() ||
-        Elements.ElementsTreeElement.visibleShadowRoots(node).length || node.hasPseudoElements()) {
+        ElementsTreeElement.visibleShadowRoots(node).length || node.hasPseudoElements()) {
       return false;
     }
     if (node.nodeType() !== Node.ELEMENT_NODE) {
@@ -514,7 +514,7 @@ Elements.ElementsTreeElement = class extends UI.TreeElement {
           Common.UIString('Edit attribute'), this._startEditingAttribute.bind(this, attribute, event.target));
     }
     this.populateNodeContextMenu(contextMenu);
-    Elements.ElementsTreeElement.populateForcedPseudoStateItems(contextMenu, treeElement.node());
+    ElementsTreeElement.populateForcedPseudoStateItems(contextMenu, treeElement.node());
     this.populateScrollIntoView(contextMenu);
     contextMenu.viewSection().appendItem(Common.UIString('Focus'), async () => {
       await this._node.focus();
@@ -758,7 +758,7 @@ Elements.ElementsTreeElement = class extends UI.TreeElement {
     }
 
     const tagName = tagNameElement.textContent;
-    if (Elements.ElementsTreeElement.EditTagBlacklist.has(tagName.toLowerCase())) {
+    if (EditTagBlacklist.has(tagName.toLowerCase())) {
       return false;
     }
 
@@ -791,7 +791,7 @@ Elements.ElementsTreeElement = class extends UI.TreeElement {
     /**
      * @param {!Element} element
      * @param {string} newTagName
-     * @this {Elements.ElementsTreeElement}
+     * @this {ElementsTreeElement}
      */
     function editingComitted(element, newTagName) {
       tagNameElement.removeEventListener('keyup', keyupListener, false);
@@ -800,7 +800,7 @@ Elements.ElementsTreeElement = class extends UI.TreeElement {
     }
 
     /**
-     * @this {Elements.ElementsTreeElement}
+     * @this {ElementsTreeElement}
      */
     function editingCancelled() {
       tagNameElement.removeEventListener('keyup', keyupListener, false);
@@ -853,7 +853,7 @@ Elements.ElementsTreeElement = class extends UI.TreeElement {
 
     /**
      * @param {!UI.TextEditorFactory} factory
-     * @this {Elements.ElementsTreeElement}
+     * @this {ElementsTreeElement}
      */
     function gotFactory(factory) {
       const editor = factory.createEditor({
@@ -883,7 +883,7 @@ Elements.ElementsTreeElement = class extends UI.TreeElement {
     }
 
     /**
-     * @this {Elements.ElementsTreeElement}
+     * @this {ElementsTreeElement}
      */
     function resize() {
       if (this._htmlEditElement) {
@@ -893,7 +893,7 @@ Elements.ElementsTreeElement = class extends UI.TreeElement {
     }
 
     /**
-     * @this {Elements.ElementsTreeElement}
+     * @this {ElementsTreeElement}
      */
     function commit() {
       commitCallback(initialValue, this._editing.editor.text());
@@ -901,7 +901,7 @@ Elements.ElementsTreeElement = class extends UI.TreeElement {
     }
 
     /**
-     * @this {Elements.ElementsTreeElement}
+     * @this {ElementsTreeElement}
      */
     function dispose() {
       this._editing.editor.widget().element.removeEventListener('blur', this._editing.commit, true);
@@ -932,7 +932,7 @@ Elements.ElementsTreeElement = class extends UI.TreeElement {
 
     /**
      * @param {!Event} event
-     * @this {!Elements.ElementsTreeElement}
+     * @this {!ElementsTreeElement}
      */
     function keydown(event) {
       const isMetaOrCtrl = UI.KeyboardShortcut.eventHasCtrlOrMeta(/** @type {!KeyboardEvent} */ (event)) &&
@@ -954,7 +954,7 @@ Elements.ElementsTreeElement = class extends UI.TreeElement {
 
     /**
      * @param {?Protocol.Error=} error
-     * @this {Elements.ElementsTreeElement}
+     * @this {ElementsTreeElement}
      */
     function moveToNextAttributeIfNeeded(error) {
       if (error) {
@@ -1037,7 +1037,7 @@ Elements.ElementsTreeElement = class extends UI.TreeElement {
     }
 
     /**
-     * @this {Elements.ElementsTreeElement}
+     * @this {ElementsTreeElement}
      */
     function moveToNextAttributeIfNeeded() {
       if (moveDirection !== 'forward') {
@@ -1081,7 +1081,7 @@ Elements.ElementsTreeElement = class extends UI.TreeElement {
     delete this._editing;
 
     /**
-     * @this {Elements.ElementsTreeElement}
+     * @this {ElementsTreeElement}
      */
     function callback() {
       this.updateTitle();
@@ -1249,7 +1249,7 @@ Elements.ElementsTreeElement = class extends UI.TreeElement {
     return Promise.all(promises).then(updateDecorationsUI.bind(this));
 
     /**
-     * @this {Elements.ElementsTreeElement}
+     * @this {ElementsTreeElement}
      */
     function updateDecorationsUI() {
       this._decorationsElement.removeChildren();
@@ -1294,7 +1294,7 @@ Elements.ElementsTreeElement = class extends UI.TreeElement {
       /**
        * @param {!Set<string>} colors
        * @param {string} className
-       * @this {Elements.ElementsTreeElement}
+       * @this {ElementsTreeElement}
        */
       function processColors(colors, className) {
         for (const color of colors) {
@@ -1343,7 +1343,7 @@ Elements.ElementsTreeElement = class extends UI.TreeElement {
     /**
      * @param {!Element} element
      * @param {string} value
-     * @this {Elements.ElementsTreeElement}
+     * @this {ElementsTreeElement}
      */
     function setValueWithEntities(element, value) {
       result = this._convertWhitespaceToEntities(value);
@@ -1373,7 +1373,7 @@ Elements.ElementsTreeElement = class extends UI.TreeElement {
     }
 
     /**
-     * @this {Elements.ElementsTreeElement}
+     * @this {ElementsTreeElement}
      * @param {string} value
      * @return {!Element}
      */
@@ -1391,7 +1391,7 @@ Elements.ElementsTreeElement = class extends UI.TreeElement {
       const link = node.nodeName().toLowerCase() === 'a' ?
           UI.XLink.create(rewrittenHref, value, '', true /* preventClick */) :
           Components.Linkifier.linkifyURL(rewrittenHref, {text: value, preventClick: true});
-      link[Elements.ElementsTreeElement.HrefSymbol] = rewrittenHref;
+      link[HrefSymbol] = rewrittenHref;
       return link;
     }
 
@@ -1411,7 +1411,7 @@ Elements.ElementsTreeElement = class extends UI.TreeElement {
     /**
      * @param {string} value
      * @return {!DocumentFragment}
-     * @this {!Elements.ElementsTreeElement}
+     * @this {!ElementsTreeElement}
      */
     function linkifySrcset(value) {
       // Splitting normally on commas or spaces will break on valid srcsets "foo 1x,bar 2x" and "data:,foo 1x".
@@ -1578,7 +1578,7 @@ Elements.ElementsTreeElement = class extends UI.TreeElement {
           break;
         }
 
-        if (Elements.ElementsTreeElement.canShowInlineText(node)) {
+        if (ElementsTreeElement.canShowInlineText(node)) {
           const textNodeElement = titleDOM.createChild('span', 'webkit-html-text-node');
           const result = this._convertWhitespaceToEntities(node.firstChild.nodeValue());
           textNodeElement.textContent = result.text;
@@ -1594,7 +1594,7 @@ Elements.ElementsTreeElement = class extends UI.TreeElement {
           break;
         }
 
-        if (this.treeOutline.isXMLMimeType || !Elements.ElementsTreeElement.ForbiddenClosingTagElements.has(tagName)) {
+        if (this.treeOutline.isXMLMimeType || !ForbiddenClosingTagElements.has(tagName)) {
           this._buildTagDOM(titleDOM, tagName, true, false, updateRecord);
         }
         break;
@@ -1665,7 +1665,7 @@ Elements.ElementsTreeElement = class extends UI.TreeElement {
     }
 
     /**
-     * @this {Elements.ElementsTreeElement}
+     * @this {ElementsTreeElement}
      */
     function updateSearchHighlight() {
       delete this._highlightResult;
@@ -1807,21 +1807,34 @@ Elements.ElementsTreeElement = class extends UI.TreeElement {
     const promise = Common.Revealer.reveal(this.node());
     promise.then(() => UI.actionRegistry.action('elements.edit-as-html').execute());
   }
-};
+}
 
-Elements.ElementsTreeElement.HrefSymbol = Symbol('ElementsTreeElement.Href');
-
-Elements.ElementsTreeElement.InitialChildrenLimit = 500;
+export const HrefSymbol = Symbol('ElementsTreeElement.Href');
+export const InitialChildrenLimit = 500;
 
 // A union of HTML4 and HTML5-Draft elements that explicitly
 // or implicitly (for HTML5) forbid the closing tag.
-Elements.ElementsTreeElement.ForbiddenClosingTagElements = new Set([
+export const ForbiddenClosingTagElements = new Set([
   'area', 'base',  'basefont', 'br',   'canvas',   'col',  'command', 'embed',  'frame', 'hr',
   'img',  'input', 'keygen',   'link', 'menuitem', 'meta', 'param',   'source', 'track', 'wbr'
 ]);
 
 // These tags we do not allow editing their tag name.
-Elements.ElementsTreeElement.EditTagBlacklist = new Set(['html', 'head', 'body']);
+export const EditTagBlacklist = new Set(['html', 'head', 'body']);
+
+/* Legacy exported object */
+self.Elements = self.Elements || {};
+
+/* Legacy exported object */
+Elements = Elements || {};
+
+/** @constructor */
+Elements.ElementsTreeElement = ElementsTreeElement;
+
+Elements.ElementsTreeElement.HrefSymbol = HrefSymbol;
+Elements.ElementsTreeElement.InitialChildrenLimit = InitialChildrenLimit;
+Elements.ElementsTreeElement.ForbiddenClosingTagElements = ForbiddenClosingTagElements;
+Elements.ElementsTreeElement.EditTagBlacklist = EditTagBlacklist;
 
 /** @typedef {{cancel: function(), commit: function(), resize: function(), editor:!UI.TextEditor}} */
 Elements.MultilineEditorController;

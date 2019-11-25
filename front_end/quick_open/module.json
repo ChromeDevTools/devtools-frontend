@@ -59,7 +59,9 @@
         "ui",
         "diff"
     ],
-    "scripts": [
+    "scripts": [],
+    "modules": [
+        "quick_open.js",
         "FilteredListWidget.js",
         "QuickOpen.js",
         "CommandMenu.js",

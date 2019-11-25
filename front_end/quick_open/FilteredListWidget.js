@@ -7,7 +7,7 @@
  * @unrestricted
  * @implements {UI.ListDelegate}
  */
-QuickOpen.FilteredListWidget = class extends UI.VBox {
+export class FilteredListWidget extends UI.VBox {
   /**
    * @param {?QuickOpen.FilteredListWidget.Provider} provider
    * @param {!Array<string>=} promptHistory
@@ -532,13 +532,13 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
     }
     this._provider.selectItem(itemIndex, this._cleanValue());
   }
-};
+}
 
 
 /**
  * @unrestricted
  */
-QuickOpen.FilteredListWidget.Provider = class {
+export class Provider {
   /**
    * @param {function():void} refreshCallback
    */
@@ -624,4 +624,20 @@ QuickOpen.FilteredListWidget.Provider = class {
 
   detach() {
   }
-};
+}
+
+/* Legacy exported object */
+self.QuickOpen = self.QuickOpen || {};
+
+/* Legacy exported object */
+QuickOpen = QuickOpen || {};
+
+/**
+ * @constructor
+ */
+QuickOpen.FilteredListWidget = FilteredListWidget;
+
+/**
+ * @constructor
+ */
+QuickOpen.FilteredListWidget.Provider = Provider;

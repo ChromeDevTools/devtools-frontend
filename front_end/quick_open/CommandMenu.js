@@ -4,7 +4,7 @@
 /**
  * @unrestricted
  */
-QuickOpen.CommandMenu = class {
+export class CommandMenu {
   constructor() {
     this._commands = [];
     this._loadCommands();
@@ -27,7 +27,7 @@ QuickOpen.CommandMenu = class {
       key += (ls(k.trim()) + '\0');
     });
 
-    return new QuickOpen.CommandMenu.Command(category, title, key, shortcut, executeHandler, availableHandler);
+    return new Command(category, title, key, shortcut, executeHandler, availableHandler);
   }
 
   /**
@@ -111,9 +111,9 @@ QuickOpen.CommandMenu = class {
   commands() {
     return this._commands;
   }
-};
+}
 
-QuickOpen.CommandMenuProvider = class extends QuickOpen.FilteredListWidget.Provider {
+export class CommandMenuProvider extends QuickOpen.FilteredListWidget.Provider {
   constructor() {
     super();
     this._commands = [];
@@ -123,7 +123,7 @@ QuickOpen.CommandMenuProvider = class extends QuickOpen.FilteredListWidget.Provi
    * @override
    */
   attach() {
-    const allCommands = QuickOpen.commandMenu.commands();
+    const allCommands = commandMenu.commands();
 
     // Populate whitelisted actions.
     const actions = UI.actionRegistry.availableActions();
@@ -214,8 +214,8 @@ QuickOpen.CommandMenuProvider = class extends QuickOpen.FilteredListWidget.Provi
     const command = this._commands[itemIndex];
     titleElement.removeChildren();
     const tagElement = titleElement.createChild('span', 'tag');
-    const index = String.hashCode(command.category()) % QuickOpen.CommandMenuProvider.MaterialPaletteColors.length;
-    tagElement.style.backgroundColor = QuickOpen.CommandMenuProvider.MaterialPaletteColors[index];
+    const index = String.hashCode(command.category()) % MaterialPaletteColors.length;
+    tagElement.style.backgroundColor = MaterialPaletteColors[index];
     tagElement.textContent = command.category();
     titleElement.createTextChild(command.title());
     QuickOpen.FilteredListWidget.highlightRanges(titleElement, query, true);
@@ -242,9 +242,9 @@ QuickOpen.CommandMenuProvider = class extends QuickOpen.FilteredListWidget.Provi
   notFoundText() {
     return ls`No commands found`;
   }
-};
+}
 
-QuickOpen.CommandMenuProvider.MaterialPaletteColors = [
+export const MaterialPaletteColors = [
   '#F44336', '#E91E63', '#9C27B0', '#673AB7', '#3F51B5', '#03A9F4', '#00BCD4', '#009688', '#4CAF50', '#8BC34A',
   '#CDDC39', '#FFC107', '#FF9800', '#FF5722', '#795548', '#9E9E9E', '#607D8B'
 ];
@@ -252,7 +252,7 @@ QuickOpen.CommandMenuProvider.MaterialPaletteColors = [
 /**
  * @unrestricted
  */
-QuickOpen.CommandMenu.Command = class {
+export class Command {
   /**
    * @param {string} category
    * @param {string} title
@@ -308,17 +308,14 @@ QuickOpen.CommandMenu.Command = class {
   execute() {
     this._executeHandler();
   }
-};
+}
 
-
-/** @type {!QuickOpen.CommandMenu} */
-QuickOpen.commandMenu = new QuickOpen.CommandMenu();
 
 /**
  * @implements {UI.ActionDelegate}
  * @unrestricted
  */
-QuickOpen.CommandMenu.ShowActionDelegate = class {
+export class ShowActionDelegate {
   /**
    * @override
    * @param {!UI.Context} context
@@ -330,4 +327,35 @@ QuickOpen.CommandMenu.ShowActionDelegate = class {
     QuickOpen.QuickOpen.show('>');
     return true;
   }
-};
+}
+
+/* Legacy exported object */
+self.QuickOpen = self.QuickOpen || {};
+
+/* Legacy exported object */
+QuickOpen = QuickOpen || {};
+
+/**
+ * @constructor
+ */
+QuickOpen.CommandMenu = CommandMenu;
+
+/**
+ * @constructor
+ */
+QuickOpen.CommandMenu.Command = Command;
+
+/**
+ * @constructor
+ */
+QuickOpen.CommandMenu.ShowActionDelegate = ShowActionDelegate;
+
+/**
+ * @constructor
+ */
+QuickOpen.CommandMenuProvider = CommandMenuProvider;
+QuickOpen.CommandMenuProvider.MaterialPaletteColors = MaterialPaletteColors;
+
+/** @type {!QuickOpen.CommandMenu} */
+const commandMenu = new CommandMenu();
+QuickOpen.commandMenu = commandMenu;

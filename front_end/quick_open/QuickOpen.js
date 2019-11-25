@@ -2,7 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-QuickOpen.QuickOpen = class {
+export const _history = [];
+
+/**
+ * @unrestricted
+ */
+export class QuickOpenImpl {
   constructor() {
     this._prefix = null;
     this._query = '';
@@ -66,14 +71,12 @@ QuickOpen.QuickOpen = class {
    */
   _providerLoadedForTest(provider) {
   }
-};
-
-QuickOpen.QuickOpen._history = [];
+}
 
 /**
  * @implements {UI.ActionDelegate}
  */
-QuickOpen.QuickOpen.ShowActionDelegate = class {
+export class ShowActionDelegate {
   /**
    * @override
    * @param {!UI.Context} context
@@ -83,9 +86,27 @@ QuickOpen.QuickOpen.ShowActionDelegate = class {
   handleAction(context, actionId) {
     switch (actionId) {
       case 'quickOpen.show':
-        QuickOpen.QuickOpen.show('');
+        QuickOpenImpl.show('');
         return true;
     }
     return false;
   }
-};
+}
+
+/* Legacy exported object */
+self.QuickOpen = self.QuickOpen || {};
+
+/* Legacy exported object */
+QuickOpen = QuickOpen || {};
+
+/**
+ * @constructor
+ */
+QuickOpen.QuickOpen = QuickOpenImpl;
+
+QuickOpen.QuickOpen._history = _history;
+
+/**
+ * @constructor
+ */
+QuickOpen.QuickOpen.ShowActionDelegate = ShowActionDelegate;

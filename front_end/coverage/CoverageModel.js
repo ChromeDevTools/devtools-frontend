@@ -621,6 +621,28 @@ export class URLCoverageInfo {
   }
 
   /**
+   * @return {number}
+   */
+  usedPercentage() {
+    // Per convention, empty files are reported as 100 % uncovered
+    if (this._size === 0) {
+      return 0;
+    }
+    return this.usedSize() / this.size() * 100;
+  }
+
+  /**
+   * @return {number}
+   */
+  unusedPercentage() {
+    // Per convention, empty files are reported as 100 % uncovered
+    if (this._size === 0) {
+      return 100;
+    }
+    return this.unusedSize() / this.size() * 100;
+  }
+
+  /**
    * @return {boolean}
    */
   isContentScript() {

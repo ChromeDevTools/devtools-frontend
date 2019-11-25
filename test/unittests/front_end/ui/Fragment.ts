@@ -18,11 +18,6 @@ describe('Fragment', () => {
     assert.equal(build.element().outerHTML, '<p>Test Text</p>', 'the element was not built correctly');
   });
 
-  it('is able to find a certain element by its ID', () => {
-    const build = Fragment.build(['<p $="testID">Test Text</p>']);
-    assert.equal(build.$('testID').outerHTML, '<p class="">Test Text</p>', 'the element was not retrieved correctly');
-  });
-
   it('is able to retrieve cached fragment', () => {
     const cached = Fragment.cached(['<p>', '</p>'], 'Test Text');
     assert.equal(cached.element().outerHTML, '<p>Test Text</p>', 'the element was not cached correctly');

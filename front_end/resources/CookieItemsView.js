@@ -213,10 +213,10 @@ Resources.CookieItemsView = class extends Resources.StorageItemsView {
   }
 
   _onResponseReceived() {
-    this.refreshItemsThrottled()
+    this.refreshItemsThrottled();
   }
 
   _onLoadingFinished() {
-    this.refreshItemsThrottled()
+    this.refreshItemsThrottled();
   }
 };

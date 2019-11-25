@@ -542,7 +542,7 @@ experimental domain BackgroundService
 
 # The Browser domain defines methods and events for browser managing.
 domain Browser
-
+  experimental type BrowserContextID extends string
   experimental type WindowID extends integer
 
   # The state of the browser window.
@@ -622,7 +622,7 @@ domain Browser
       # Setting of the permission.
       PermissionSetting setting
       # Context to override. When omitted, default browser context is used.
-      optional Target.TargetID browserContextId
+      optional BrowserContextID browserContextId
 
   # Grant specific permissions to the given origin and reject all others.
   experimental command grantPermissions
@@ -630,13 +630,13 @@ domain Browser
       string origin
       array of PermissionType permissions
       # BrowserContext to override permissions. When omitted, default browser context is used.
-      optional Target.BrowserContextID browserContextId
+      optional BrowserContextID browserContextId
 
   # Reset all permission management for all origins.
   experimental command resetPermissions
     parameters
       # BrowserContext to reset permissions. When omitted, default browser context is used.
-      optional Target.BrowserContextID browserContextId
+      optional BrowserContextID browserContextId
 
 
   # Close browser gracefully.
@@ -6081,8 +6081,12 @@ domain Security
       Network.TimeSinceEpoch validFrom
       # Certificate valid to (expiration) date
       Network.TimeSinceEpoch validTo
+      # The highest priority network error code, if the certificate has an error.
+      optional string certificateNetworkError
       # True if the certificate uses a weak signature aglorithm.
-      boolean certifcateHasWeakSignature
+      boolean certificateHasWeakSignature
+      # True if the certificate has a SHA1 signature in the chain.
+      boolean certificateHasSha1Signature
       # True if modern SSL
       boolean modernSSL
       # True if the connection is using an obsolete SSL protocol.
@@ -6094,6 +6098,18 @@ domain Security
       # True if the connection is using an obsolete SSL signature.
       boolean obsoleteSslSignature
 
+  experimental type SafetyTipStatus extends string
+    enum
+      badReputation
+      lookalike
+
+  experimental type SafetyTipInfo extends object
+    properties
+      # Describes whether the page triggers any safety tips or reputation warnings. Default is unknown.
+      SafetyTipStatus safetyTipStatus
+      # The URL the safety tip suggested ("Did you mean?"). Only filled in for lookalike matches.
+      optional string safeUrl
+
   # Security state information about the page.
   experimental type VisibleSecurityState extends object
     properties
@@ -6101,6 +6117,8 @@ domain Security
       SecurityState securityState
       # Security state details about the page certificate.
       optional CertificateSecurityState certificateSecurityState
+      # The type of Safety Tip triggered on the page. Note that this field will be set even if the Safety Tip UI was not actually shown.
+      optional SafetyTipInfo safetyTipInfo
       # Array of security state issues ids.
       array of string securityStateIssueIds
 
@@ -6326,6 +6344,8 @@ experimental domain ServiceWorker
       array of ServiceWorkerVersion versions
 
 experimental domain Storage
+  depends on Browser
+  depends on Network
 
   # Enum of possible storage types.
   type StorageType extends string
@@ -6357,6 +6377,29 @@ experimental domain Storage
       string origin
       # Comma separated list of StorageType to clear.
       string storageTypes
+
+  # Returns all browser cookies.
+  command getCookies
+    parameters
+      # Browser context to use when called on the browser endpoint.
+      optional Browser.BrowserContextID browserContextId
+    returns
+      # Array of cookie objects.
+      array of Network.Cookie cookies
+
+  # Sets given cookies.
+  command setCookies
+    parameters
+      # Cookies to be set.
+      array of Network.CookieParam cookies
+      # Browser context to use when called on the browser endpoint.
+      optional Browser.BrowserContextID browserContextId
+
+  # Clears cookies.
+  command clearCookies
+    parameters
+      # Browser context to use when called on the browser endpoint.
+      optional Browser.BrowserContextID browserContextId
 
   # Returns usage and quota in bytes.
   command getUsageAndQuota
@@ -6566,8 +6609,6 @@ domain Target
   # Unique identifier of attached debugging session.
   type SessionID extends string
 
-  experimental type BrowserContextID extends string
-
   type TargetInfo extends object
     properties
       TargetID targetId
@@ -6578,7 +6619,7 @@ domain Target
       boolean attached
       # Opener target Id
       optional TargetID openerId
-      experimental optional BrowserContextID browserContextId
+      experimental optional Browser.BrowserContextID browserContextId
 
   experimental type RemoteLocation extends object
     properties
@@ -6634,13 +6675,13 @@ domain Target
   experimental command createBrowserContext
     returns
       # The id of the context created.
-      BrowserContextID browserContextId
+      Browser.BrowserContextID browserContextId
 
   # Returns all browser contexts created with `Target.createBrowserContext` method.
   experimental command getBrowserContexts
     returns
       # An array of browser context ids.
-      array of BrowserContextID browserContextIds
+      array of Browser.BrowserContextID browserContextIds
 
   # Creates a new page.
   command createTarget
@@ -6652,7 +6693,7 @@ domain Target
       # Frame height in DIP (headless chrome only).
       optional integer height
       # The browser context to create the page in.
-      optional BrowserContextID browserContextId
+      optional Browser.BrowserContextID browserContextId
       # Whether BeginFrames for this target will be controlled via DevTools (headless chrome only,
       # not supported on MacOS yet, false by default).
       experimental optional boolean enableBeginFrameControl
@@ -6677,7 +6718,7 @@ domain Target
   # beforeunload hooks.
   experimental command disposeBrowserContext
     parameters
-      BrowserContextID browserContextId
+      Browser.BrowserContextID browserContextId
 
   # Returns information about a target.
   experimental command getTargetInfo

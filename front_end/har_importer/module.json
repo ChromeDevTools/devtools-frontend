@@ -3,7 +3,8 @@
         "common",
         "browser_sdk"
     ],
-    "scripts": [
+    "modules": [
+        "har_importer.js",
         "HARFormat.js",
         "HARImporter.js"
     ]

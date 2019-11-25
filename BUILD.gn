@@ -173,8 +173,6 @@ if (external_devtools_frontend) {
     "front_end/formatter_worker/acorn/acorn.js",
     "front_end/formatter_worker/acorn/acorn_loose.js",
     "front_end/formatter_worker/module.json",
-    "front_end/har_importer/HARFormat.js",
-    "front_end/har_importer/HARImporter.js",
     "front_end/har_importer/module.json",
     "front_end/heap_profiler_test_runner/HeapProfilerTestRunner.js",
     "front_end/heap_profiler_test_runner/module.json",
@@ -640,6 +638,9 @@ if (external_devtools_frontend) {
   all_devtools_files += lighthouse_locale_files
 
   all_devtools_modules = [
+    "front_end/har_importer/har_importer.js",
+    "front_end/har_importer/HARImporter.js",
+    "front_end/har_importer/HARFormat.js",
     "front_end/elements/elements.js",
     "front_end/elements/StylesSidebarPane.js",
     "front_end/elements/StylePropertyTreeElement.js",
@@ -1230,6 +1231,9 @@ if (external_devtools_frontend) {
   ]
 
   copied_devtools_modules = [
+    "$resources_out_dir/har_importer/har_importer.js",
+    "$resources_out_dir/har_importer/HARImporter.js",
+    "$resources_out_dir/har_importer/HARFormat.js",
     "$resources_out_dir/elements/elements.js",
     "$resources_out_dir/elements/StylesSidebarPane.js",
     "$resources_out_dir/elements/StylePropertyTreeElement.js",

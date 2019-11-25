@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-HARImporter.HARBase = class {
+export class HARBase {
   /**
    * @param {*} data
    */
@@ -41,7 +41,7 @@ HARImporter.HARBase = class {
    * @return {number|undefined}
    */
   static _optionalNumber(data) {
-    return data !== undefined ? HARImporter.HARBase._safeNumber(data) : undefined;
+    return data !== undefined ? HARBase._safeNumber(data) : undefined;
   }
 
   /**
@@ -87,38 +87,37 @@ HARImporter.HARBase = class {
     const value = /** @type {!Object} */ (this)['_' + name];
     return Array.isArray(value) ? value : undefined;
   }
-};
+}
 
-// Using any of these classes may throw.
-HARImporter.HARRoot = class extends HARImporter.HARBase {
+export class HARRoot extends HARBase {
   /**
    * @param {*} data
    */
   constructor(data) {
     super(data);
-    this.log = new HARImporter.HARLog(data['log']);
+    this.log = new HARLog(data['log']);
   }
-};
+}
 
-HARImporter.HARLog = class extends HARImporter.HARBase {
+export class HARLog extends HARBase {
   /**
    * @param {*} data
    */
   constructor(data) {
     super(data);
     this.version = String(data['version']);
-    this.creator = new HARImporter.HARCreator(data['creator']);
-    this.browser = data['browser'] ? new HARImporter.HARCreator(data['browser']) : undefined;
+    this.creator = new HARCreator(data['creator']);
+    this.browser = data['browser'] ? new HARCreator(data['browser']) : undefined;
     this.pages = Array.isArray(data['pages']) ? data['pages'].map(page => new HARImporter.HARPage(page)) : [];
     if (!Array.isArray(data['entries'])) {
       throw 'log.entries is expected to be an array';
     }
-    this.entries = data['entries'].map(entry => new HARImporter.HAREntry(entry));
-    this.comment = HARImporter.HARBase._optionalString(data['comment']);
+    this.entries = data['entries'].map(entry => new HAREntry(entry));
+    this.comment = HARBase._optionalString(data['comment']);
   }
-};
+}
 
-HARImporter.HARCreator = class extends HARImporter.HARBase {
+export class HARCreator extends HARBase {
   /**
    * @param {*} data
    */
@@ -126,58 +125,58 @@ HARImporter.HARCreator = class extends HARImporter.HARBase {
     super(data);
     this.name = String(data['name']);
     this.version = String(data['version']);
-    this.comment = HARImporter.HARBase._optionalString(data['comment']);
+    this.comment = HARBase._optionalString(data['comment']);
   }
-};
+}
 
-HARImporter.HARPage = class extends HARImporter.HARBase {
+export class HARPage extends HARBase {
   /**
    * @param {*} data
    */
   constructor(data) {
     super(data);
-    this.startedDateTime = HARImporter.HARBase._safeDate(data['startedDateTime']);
+    this.startedDateTime = HARBase._safeDate(data['startedDateTime']);
     this.id = String(data['id']);
     this.title = String(data['title']);
-    this.pageTimings = new HARImporter.HARPageTimings(data['pageTimings']);
-    this.comment = HARImporter.HARBase._optionalString(data['comment']);
+    this.pageTimings = new HARPageTimings(data['pageTimings']);
+    this.comment = HARBase._optionalString(data['comment']);
   }
-};
+}
 
-HARImporter.HARPageTimings = class extends HARImporter.HARBase {
+export class HARPageTimings extends HARBase {
   /**
    * @param {*} data
    */
   constructor(data) {
     super(data);
-    this.onContentLoad = HARImporter.HARBase._optionalNumber(data['onContentLoad']);
-    this.onLoad = HARImporter.HARBase._optionalNumber(data['onLoad']);
-    this.comment = HARImporter.HARBase._optionalString(data['comment']);
+    this.onContentLoad = HARBase._optionalNumber(data['onContentLoad']);
+    this.onLoad = HARBase._optionalNumber(data['onLoad']);
+    this.comment = HARBase._optionalString(data['comment']);
   }
-};
+}
 
-HARImporter.HAREntry = class extends HARImporter.HARBase {
+export class HAREntry extends HARBase {
   /**
    * @param {*} data
    */
   constructor(data) {
     super(data);
-    this.pageref = HARImporter.HARBase._optionalString(data['pageref']);
-    this.startedDateTime = HARImporter.HARBase._safeDate(data['startedDateTime']);
-    this.time = HARImporter.HARBase._safeNumber(data['time']);
-    this.request = new HARImporter.HARRequest(data['request']);
-    this.response = new HARImporter.HARResponse(data['response']);
+    this.pageref = HARBase._optionalString(data['pageref']);
+    this.startedDateTime = HARBase._safeDate(data['startedDateTime']);
+    this.time = HARBase._safeNumber(data['time']);
+    this.request = new HARRequest(data['request']);
+    this.response = new HARResponse(data['response']);
     this.cache = {};  // Not yet implemented.
-    this.timings = new HARImporter.HARTimings(data['timings']);
-    this.serverIPAddress = HARImporter.HARBase._optionalString(data['serverIPAddress']);
-    this.connection = HARImporter.HARBase._optionalString(data['connection']);
-    this.comment = HARImporter.HARBase._optionalString(data['comment']);
+    this.timings = new HARTimings(data['timings']);
+    this.serverIPAddress = HARBase._optionalString(data['serverIPAddress']);
+    this.connection = HARBase._optionalString(data['connection']);
+    this.comment = HARBase._optionalString(data['comment']);
 
     // Chrome specific.
-    this._fromCache = HARImporter.HARBase._optionalString(data['_fromCache']);
+    this._fromCache = HARBase._optionalString(data['_fromCache']);
     this._initiator = this._importInitiator(data['_initiator']);
-    this._priority = HARImporter.HARBase._optionalString(data['_priority']);
-    this._resourceType = HARImporter.HARBase._optionalString(data['_resourceType']);
+    this._priority = HARBase._optionalString(data['_priority']);
+    this._resourceType = HARBase._optionalString(data['_resourceType']);
     this._webSocketMessages = this._importWebSocketMessages(data['_webSocketMessages']);
   }
 
@@ -190,7 +189,7 @@ HARImporter.HAREntry = class extends HARImporter.HARBase {
       return;
     }
 
-    return new HARImporter.HARInitiator(initiator);
+    return new HARInitiator(initiator);
   }
 
   /**
@@ -207,13 +206,13 @@ HARImporter.HAREntry = class extends HARImporter.HARBase {
       if (typeof message !== 'object') {
         return;
       }
-      outputMessages.push(new HARImporter.HARWebSocketMessage(message));
+      outputMessages.push(new HARWebSocketMessage(message));
     }
     return outputMessages;
   }
-};
+}
 
-HARImporter.HARRequest = class extends HARImporter.HARBase {
+export class HARRequest extends HARBase {
   /**
    * @param {*} data
    */
@@ -222,45 +221,40 @@ HARImporter.HARRequest = class extends HARImporter.HARBase {
     this.method = String(data['method']);
     this.url = String(data['url']);
     this.httpVersion = String(data['httpVersion']);
-    this.cookies =
-        Array.isArray(data['cookies']) ? data['cookies'].map(cookie => new HARImporter.HARCookie(cookie)) : [];
-    this.headers =
-        Array.isArray(data['headers']) ? data['headers'].map(header => new HARImporter.HARHeader(header)) : [];
-    this.queryString =
-        Array.isArray(data['queryString']) ? data['queryString'].map(qs => new HARImporter.HARQueryString(qs)) : [];
-    this.postData = data['postData'] ? new HARImporter.HARPostData(data['postData']) : undefined;
-    this.headersSize = HARImporter.HARBase._safeNumber(data['headersSize']);
-    this.bodySize = HARImporter.HARBase._safeNumber(data['bodySize']);
-    this.comment = HARImporter.HARBase._optionalString(data['comment']);
+    this.cookies = Array.isArray(data['cookies']) ? data['cookies'].map(cookie => new HARCookie(cookie)) : [];
+    this.headers = Array.isArray(data['headers']) ? data['headers'].map(header => new HARHeader(header)) : [];
+    this.queryString = Array.isArray(data['queryString']) ? data['queryString'].map(qs => new HARQueryString(qs)) : [];
+    this.postData = data['postData'] ? new HARPostData(data['postData']) : undefined;
+    this.headersSize = HARBase._safeNumber(data['headersSize']);
+    this.bodySize = HARBase._safeNumber(data['bodySize']);
+    this.comment = HARBase._optionalString(data['comment']);
   }
-};
+}
 
-HARImporter.HARResponse = class extends HARImporter.HARBase {
+export class HARResponse extends HARBase {
   /**
    * @param {*} data
    */
   constructor(data) {
     super(data);
-    this.status = HARImporter.HARBase._safeNumber(data['status']);
+    this.status = HARBase._safeNumber(data['status']);
     this.statusText = String(data['statusText']);
     this.httpVersion = String(data['httpVersion']);
-    this.cookies =
-        Array.isArray(data['cookies']) ? data['cookies'].map(cookie => new HARImporter.HARCookie(cookie)) : [];
-    this.headers =
-        Array.isArray(data['headers']) ? data['headers'].map(header => new HARImporter.HARHeader(header)) : [];
-    this.content = new HARImporter.HARContent(data['content']);
+    this.cookies = Array.isArray(data['cookies']) ? data['cookies'].map(cookie => new HARCookie(cookie)) : [];
+    this.headers = Array.isArray(data['headers']) ? data['headers'].map(header => new HARHeader(header)) : [];
+    this.content = new HARContent(data['content']);
     this.redirectURL = String(data['redirectURL']);
-    this.headersSize = HARImporter.HARBase._safeNumber(data['headersSize']);
-    this.bodySize = HARImporter.HARBase._safeNumber(data['bodySize']);
-    this.comment = HARImporter.HARBase._optionalString(data['comment']);
+    this.headersSize = HARBase._safeNumber(data['headersSize']);
+    this.bodySize = HARBase._safeNumber(data['bodySize']);
+    this.comment = HARBase._optionalString(data['comment']);
 
     // Chrome specific.
-    this._transferSize = HARImporter.HARBase._optionalNumber(data['_transferSize']);
-    this._error = HARImporter.HARBase._optionalString(data['_error']);
+    this._transferSize = HARBase._optionalNumber(data['_transferSize']);
+    this._error = HARBase._optionalString(data['_error']);
   }
-};
+}
 
-HARImporter.HARCookie = class extends HARImporter.HARBase {
+export class HARCookie extends HARBase {
   /**
    * @param {*} data
    */
@@ -268,16 +262,16 @@ HARImporter.HARCookie = class extends HARImporter.HARBase {
     super(data);
     this.name = String(data['name']);
     this.value = String(data['value']);
-    this.path = HARImporter.HARBase._optionalString(data['path']);
-    this.domain = HARImporter.HARBase._optionalString(data['domain']);
-    this.expires = data['expires'] ? HARImporter.HARBase._safeDate(data['expires']) : undefined;
+    this.path = HARBase._optionalString(data['path']);
+    this.domain = HARBase._optionalString(data['domain']);
+    this.expires = data['expires'] ? HARBase._safeDate(data['expires']) : undefined;
     this.httpOnly = data['httpOnly'] !== undefined ? !!data['httpOnly'] : undefined;
     this.secure = data['secure'] !== undefined ? !!data['secure'] : undefined;
-    this.comment = HARImporter.HARBase._optionalString(data['comment']);
+    this.comment = HARBase._optionalString(data['comment']);
   }
-};
+}
 
-HARImporter.HARHeader = class extends HARImporter.HARBase {
+export class HARHeader extends HARBase {
   /**
    * @param {*} data
    */
@@ -285,11 +279,11 @@ HARImporter.HARHeader = class extends HARImporter.HARBase {
     super(data);
     this.name = String(data['name']);
     this.value = String(data['value']);
-    this.comment = HARImporter.HARBase._optionalString(data['comment']);
+    this.comment = HARBase._optionalString(data['comment']);
   }
-};
+}
 
-HARImporter.HARQueryString = class extends HARImporter.HARBase {
+export class HARQueryString extends HARBase {
   /**
    * @param {*} data
    */
@@ -297,11 +291,11 @@ HARImporter.HARQueryString = class extends HARImporter.HARBase {
     super(data);
     this.name = String(data['name']);
     this.value = String(data['value']);
-    this.comment = HARImporter.HARBase._optionalString(data['comment']);
+    this.comment = HARBase._optionalString(data['comment']);
   }
-};
+}
 
-HARImporter.HARPostData = class extends HARImporter.HARBase {
+export class HARPostData extends HARBase {
   /**
    * @param {*} data
    */
@@ -310,61 +304,61 @@ HARImporter.HARPostData = class extends HARImporter.HARBase {
     this.mimeType = String(data['mimeType']);
     this.params = Array.isArray(data['params']) ? data['params'].map(param => new HARImporter.HARParam(param)) : [];
     this.text = String(data['text']);
-    this.comment = HARImporter.HARBase._optionalString(data['comment']);
+    this.comment = HARBase._optionalString(data['comment']);
   }
-};
+}
 
-HARImporter.HARParam = class extends HARImporter.HARBase {
+export class HARParam extends HARBase {
   /**
    * @param {*} data
    */
   constructor(data) {
     super(data);
     this.name = String(data['name']);
-    this.value = HARImporter.HARBase._optionalString(data['value']);
-    this.fileName = HARImporter.HARBase._optionalString(data['fileName']);
-    this.contentType = HARImporter.HARBase._optionalString(data['contentType']);
-    this.comment = HARImporter.HARBase._optionalString(data['comment']);
+    this.value = HARBase._optionalString(data['value']);
+    this.fileName = HARBase._optionalString(data['fileName']);
+    this.contentType = HARBase._optionalString(data['contentType']);
+    this.comment = HARBase._optionalString(data['comment']);
   }
-};
+}
 
-HARImporter.HARContent = class extends HARImporter.HARBase {
+export class HARContent extends HARBase {
   /**
    * @param {*} data
    */
   constructor(data) {
     super(data);
-    this.size = HARImporter.HARBase._safeNumber(data['size']);
-    this.compression = HARImporter.HARBase._optionalNumber(data['compression']);
+    this.size = HARBase._safeNumber(data['size']);
+    this.compression = HARBase._optionalNumber(data['compression']);
     this.mimeType = String(data['mimeType']);
-    this.text = HARImporter.HARBase._optionalString(data['text']);
-    this.encoding = HARImporter.HARBase._optionalString(data['encoding']);
-    this.comment = HARImporter.HARBase._optionalString(data['comment']);
+    this.text = HARBase._optionalString(data['text']);
+    this.encoding = HARBase._optionalString(data['encoding']);
+    this.comment = HARBase._optionalString(data['comment']);
   }
-};
+}
 
-HARImporter.HARTimings = class extends HARImporter.HARBase {
+export class HARTimings extends HARBase {
   /**
    * @param {*} data
    */
   constructor(data) {
     super(data);
-    this.blocked = HARImporter.HARBase._optionalNumber(data['blocked']);
-    this.dns = HARImporter.HARBase._optionalNumber(data['dns']);
-    this.connect = HARImporter.HARBase._optionalNumber(data['connect']);
-    this.send = HARImporter.HARBase._safeNumber(data['send']);
-    this.wait = HARImporter.HARBase._safeNumber(data['wait']);
-    this.receive = HARImporter.HARBase._safeNumber(data['receive']);
-    this.ssl = HARImporter.HARBase._optionalNumber(data['ssl']);
-    this.comment = HARImporter.HARBase._optionalString(data['comment']);
+    this.blocked = HARBase._optionalNumber(data['blocked']);
+    this.dns = HARBase._optionalNumber(data['dns']);
+    this.connect = HARBase._optionalNumber(data['connect']);
+    this.send = HARBase._safeNumber(data['send']);
+    this.wait = HARBase._safeNumber(data['wait']);
+    this.receive = HARBase._safeNumber(data['receive']);
+    this.ssl = HARBase._optionalNumber(data['ssl']);
+    this.comment = HARBase._optionalString(data['comment']);
 
     // Chrome specific.
-    this._blocked_queueing = HARImporter.HARBase._optionalNumber(data['_blocked_queueing']);
-    this._blocked_proxy = HARImporter.HARBase._optionalNumber(data['_blocked_proxy']);
+    this._blocked_queueing = HARBase._optionalNumber(data['_blocked_queueing']);
+    this._blocked_proxy = HARBase._optionalNumber(data['_blocked_proxy']);
   }
-};
+}
 
-HARImporter.HARInitiator = class extends HARImporter.HARBase {
+export class HARInitiator extends HARBase {
   /**
    * Based on Initiator defined in browser_protocol.pdl
    *
@@ -372,21 +366,117 @@ HARImporter.HARInitiator = class extends HARImporter.HARBase {
    */
   constructor(data) {
     super(data);
-    this.type = HARImporter.HARBase._optionalString(data['type']);
-    this.url = HARImporter.HARBase._optionalString(data['url']);
-    this.lineNumber = HARImporter.HARBase._optionalNumber(data['lineNumber']);
+    this.type = HARBase._optionalString(data['type']);
+    this.url = HARBase._optionalString(data['url']);
+    this.lineNumber = HARBase._optionalNumber(data['lineNumber']);
   }
-};
+}
 
-HARImporter.HARWebSocketMessage = class extends HARImporter.HARBase {
+export class HARWebSocketMessage extends HARBase {
   /**
    * @param {*} data
    */
   constructor(data) {
     super(data);
-    this.time = HARImporter.HARBase._optionalNumber(data['time']);
-    this.opcode = HARImporter.HARBase._optionalNumber(data['opcode']);
-    this.data = HARImporter.HARBase._optionalString(data['data']);
-    this.type = HARImporter.HARBase._optionalString(data['type']);
+    this.time = HARBase._optionalNumber(data['time']);
+    this.opcode = HARBase._optionalNumber(data['opcode']);
+    this.data = HARBase._optionalString(data['data']);
+    this.type = HARBase._optionalString(data['type']);
   }
-};
+}
+
+/* Legacy exported object */
+self.HARImporter = self.HARImporter || {};
+
+/* Legacy exported object */
+HARImporter = HARImporter || {};
+
+/**
+ * @constructor
+ */
+HARImporter.HARBase = HARBase;
+
+/**
+ * @constructor
+ */
+HARImporter.HARRoot = HARRoot;
+
+/**
+ * @constructor
+ */
+HARImporter.HARLog = HARLog;
+
+/**
+ * @constructor
+ */
+HARImporter.HARCreator = HARCreator;
+
+/**
+ * @constructor
+ */
+HARImporter.HARPage = HARPage;
+
+/**
+ * @constructor
+ */
+HARImporter.HARPageTimings = HARPageTimings;
+
+/**
+ * @constructor
+ */
+HARImporter.HAREntry = HAREntry;
+
+/**
+ * @constructor
+ */
+HARImporter.HARRequest = HARRequest;
+
+/**
+ * @constructor
+ */
+HARImporter.HARResponse = HARResponse;
+
+/**
+ * @constructor
+ */
+HARImporter.HARCookie = HARCookie;
+
+/**
+ * @constructor
+ */
+HARImporter.HARHeader = HARHeader;
+
+/**
+ * @constructor
+ */
+HARImporter.HARQueryString = HARQueryString;
+
+/**
+ * @constructor
+ */
+HARImporter.HARPostData = HARPostData;
+
+/**
+ * @constructor
+ */
+HARImporter.HARParam = HARParam;
+
+/**
+ * @constructor
+ */
+HARImporter.HARContent = HARContent;
+
+/**
+ * @constructor
+ */
+HARImporter.HARTimings = HARTimings;
+
+/**
+ * @constructor
+ */
+HARImporter.HARInitiator = HARInitiator;
+
+/**
+ * @constructor
+ */
+HARImporter.HARWebSocketMessage = HARWebSocketMessage;

@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-HARImporter.Importer = class {
+export class Importer {
   /**
    * @param {!HARImporter.HARLog} log
    * @return {!Array<!SDK.NetworkRequest>}
@@ -244,4 +244,15 @@ HARImporter.Importer = class {
     request.timing = timing;
     request.endTime = issueTime + Math.max(entryTotalDuration, lastEntry) / 1000;
   }
-};
+}
+
+/* Legacy exported object */
+self.HARImporter = self.HARImporter || {};
+
+/* Legacy exported object */
+HARImporter = HARImporter || {};
+
+/**
+ * @constructor
+ */
+HARImporter.Importer = Importer;

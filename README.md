@@ -27,8 +27,7 @@ To check out the source for DevTools frontend only, follow these steps:
 ```bash
 mkdir devtools
 cd devtools
-git clone https://chromium.googlesource.com/devtools/devtools-frontend
-gclient config https://chromium.googlesource.com/devtools/devtools-frontend --unmanaged
+fetch devtools-frontend
 ```
 
 ##### Build
@@ -36,11 +35,19 @@ gclient config https://chromium.googlesource.com/devtools/devtools-frontend --un
 To build, follow these steps:
 ```bash
 cd devtools-frontend
-gclient sync
 gn gen out/Default
 autoninja -C out/Default
 ```
 The resulting build artifacts can be found in `out/Default/resources/inspector`.
+
+##### Update to latest
+
+To update to latest tip of tree version:
+```bash
+git fetch origin
+git checkout origin/master
+gclient sync
+```
 
 ##### Run in Chromium
 

@@ -78,16 +78,6 @@ export class Spectrum extends UI.VBox {
     this._alphaElementBackground = this._alphaElement.createChild('div', 'spectrum-alpha-background');
     this._alphaSlider = this._alphaElement.createChild('div', 'spectrum-slider');
 
-    const displaySwitcher = toolsContainer.createChild('div', 'spectrum-display-switcher spectrum-switcher');
-    appendSwitcherIcon(displaySwitcher);
-    displaySwitcher.tabIndex = 0;
-    self.onInvokeElement(displaySwitcher, event => {
-      this._formatViewSwitch();
-      event.consume(true);
-    });
-    UI.ARIAUtils.setAccessibleName(displaySwitcher, ls`Change color format`);
-    UI.ARIAUtils.markAsButton(displaySwitcher);
-
     // RGBA/HSLA display.
     this._displayContainer = toolsContainer.createChild('div', 'spectrum-text source-code');
     this._textValues = [];
@@ -115,6 +105,16 @@ export class Spectrum extends UI.VBox {
     const label = this._hexContainer.createChild('div', 'spectrum-text-label');
     label.textContent = ls`HEX`;
     UI.ARIAUtils.setAccessibleName(this._hexValue, label.textContent);
+
+    const displaySwitcher = toolsContainer.createChild('div', 'spectrum-display-switcher spectrum-switcher');
+    appendSwitcherIcon(displaySwitcher);
+    displaySwitcher.tabIndex = 0;
+    self.onInvokeElement(displaySwitcher, event => {
+      this._formatViewSwitch();
+      event.consume(true);
+    });
+    UI.ARIAUtils.setAccessibleName(displaySwitcher, ls`Change color format`);
+    UI.ARIAUtils.markAsButton(displaySwitcher);
 
     UI.installDragHandle(
         this._hueElement, dragStart.bind(this, positionHue.bind(this)), positionHue.bind(this), null, 'pointer',

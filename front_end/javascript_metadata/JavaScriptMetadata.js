@@ -5,7 +5,7 @@
 /**
  * @implements {Common.JavaScriptMetadata}
  */
-JavaScriptMetadata.JavaScriptMetadata = class {
+export default class JavaScriptMetadataImpl {
   constructor() {
     /** @type {!Map<string, !Array<!Array<string>>>} */
     this._uniqueFunctions = new Map();
@@ -65,7 +65,18 @@ JavaScriptMetadata.JavaScriptMetadata = class {
     }
     return this._staticMethods.get(receiverConstructorName).get(name) || null;
   }
-};
+}
+
+/* Legacy exported object */
+self.JavaScriptMetadata = self.JavaScriptMetadata || {};
+
+/* Legacy exported object */
+JavaScriptMetadata = JavaScriptMetadata || {};
+
+/**
+ * @constructor
+ */
+JavaScriptMetadata.JavaScriptMetadata = JavaScriptMetadataImpl;
 
 /**
  * @type {!Array<{

@@ -218,8 +218,6 @@ if (external_devtools_frontend) {
     "front_end/integration_test_runner.js",
     "front_end/integration_test_runner.json",
     "front_end/javascript_metadata/module.json",
-    "front_end/javascript_metadata/NativeFunctions.js",
-    "front_end/javascript_metadata/JavaScriptMetadata.js",
     "front_end/js_main/JsMain.js",
     "front_end/js_main/module.json",
     "front_end/js_profiler/module.json",
@@ -657,6 +655,9 @@ if (external_devtools_frontend) {
   all_devtools_files += lighthouse_locale_files
 
   all_devtools_modules = [
+    "front_end/javascript_metadata/javascript_metadata.js",
+    "front_end/javascript_metadata/NativeFunctions.js",
+    "front_end/javascript_metadata/JavaScriptMetadata.js",
     "front_end/har_importer/har_importer.js",
     "front_end/har_importer/HARImporter.js",
     "front_end/har_importer/HARFormat.js",
@@ -1231,6 +1232,9 @@ if (external_devtools_frontend) {
   ]
 
   copied_devtools_modules = [
+    "$resources_out_dir/javascript_metadata/javascript_metadata.js",
+    "$resources_out_dir/javascript_metadata/NativeFunctions.js",
+    "$resources_out_dir/javascript_metadata/JavaScriptMetadata.js",
     "$resources_out_dir/har_importer/har_importer.js",
     "$resources_out_dir/har_importer/HARImporter.js",
     "$resources_out_dir/har_importer/HARFormat.js",

@@ -76,7 +76,7 @@ def to_platform_path_exact(filepath):
 DEVTOOLS_PATH = devtools_paths.devtools_root_path()
 SCRIPTS_PATH = path.join(DEVTOOLS_PATH, 'scripts')
 ROOT_PATH = devtools_paths.root_path()
-BROWSER_PROTOCOL_PATH = path.join(ROOT_PATH, 'third_party', 'blink', 'renderer', 'core', 'inspector', 'browser_protocol.pdl')
+BROWSER_PROTOCOL_PATH = devtools_paths.browser_protocol_path()
 # TODO(dgozman): move these checks to v8.
 JS_PROTOCOL_PATH = path.join(ROOT_PATH, 'v8', 'include', 'js_protocol.pdl')
 DEVTOOLS_FRONTEND_PATH = path.join(DEVTOOLS_PATH, 'front_end')

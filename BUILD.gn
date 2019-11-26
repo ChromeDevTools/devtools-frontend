@@ -3,7 +3,6 @@
 # found in the LICENSE file.
 
 import("//third_party/blink/public/public_features.gni")
-import("//third_party/blink/renderer/core/core.gni")
 
 if (external_devtools_frontend) {
   all_devtools_files = [
@@ -1907,10 +1906,10 @@ if (external_devtools_frontend) {
   action("frontend_protocol_sources") {
     script = "scripts/build/code_generator_frontend.py"
     deps = [
-      "//third_party/blink/renderer/core/inspector:protocol_version",
+      "//third_party/blink/public/devtools_protocol:protocol_version",
     ]
     inputs = [
-      "$blink_core_output_dir/inspector/protocol.json",
+      "$root_gen_dir/third_party/blink/public/devtools_protocol/protocol.json",
     ]
     outputs = [
       "$resources_out_dir/InspectorBackendCommands.js",
@@ -2035,7 +2034,7 @@ if (external_devtools_frontend) {
       "//testing/scripts/common.py",
       "//testing/scripts/run_devtools_check.py",
       "//testing/xvfb.py",
-      "//third_party/blink/renderer/core/inspector/browser_protocol.pdl",
+      "//third_party/blink/public/devtools_protocol/browser_protocol.pdl",
       "//third_party/inspector_protocol/pdl.py",
       "//v8/include/js_protocol.pdl",
     ]
@@ -2096,7 +2095,7 @@ if (external_devtools_frontend) {
       "//testing/scripts/common.py",
       "//testing/scripts/run_devtools_check.py",
       "//testing/xvfb.py",
-      "//third_party/blink/renderer/core/inspector/browser_protocol.pdl",
+      "//third_party/blink/public/devtools_protocol/browser_protocol.pdl",
       "//third_party/inspector_protocol/pdl.py",
       "//v8/include/js_protocol.pdl",
     ]

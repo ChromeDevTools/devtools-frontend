@@ -31,7 +31,7 @@
 /**
  * @implements {UI.ContextFlavorListener}
  */
-BrowserDebugger.DOMBreakpointsSidebarPane = class extends UI.VBox {
+export class DOMBreakpointsSidebarPane extends UI.VBox {
   constructor() {
     super(true);
     this.registerRequiredCSS('browser_debugger/domBreakpointsSidebarPane.css');
@@ -112,7 +112,7 @@ BrowserDebugger.DOMBreakpointsSidebarPane = class extends UI.VBox {
     element.appendChild(labelElement);
 
     const description = createElement('div');
-    const breakpointTypeLabel = BrowserDebugger.DOMBreakpointsSidebarPane.BreakpointTypeLabels.get(breakpoint.type);
+    const breakpointTypeLabel = BreakpointTypeLabels.get(breakpoint.type);
     description.textContent = breakpointTypeLabel;
     const linkifiedNode = createElementWithClass('monospace');
     linkifiedNode.style.display = 'block';
@@ -204,12 +204,9 @@ BrowserDebugger.DOMBreakpointsSidebarPane = class extends UI.VBox {
     element.classList.add('breakpoint-hit');
     this._highlightedElement = element;
   }
-};
+}
 
-/** @typedef {!{element: !Element, checkbox: !Element, breakpoint: !SDK.DOMDebuggerModel.DOMBreakpoint}} */
-BrowserDebugger.DOMBreakpointsSidebarPane.Item;
-
-BrowserDebugger.DOMBreakpointsSidebarPane.BreakpointTypeLabels = new Map([
+export const BreakpointTypeLabels = new Map([
   [SDK.DOMDebuggerModel.DOMBreakpoint.Type.SubtreeModified, Common.UIString('Subtree modified')],
   [SDK.DOMDebuggerModel.DOMBreakpoint.Type.AttributeModified, Common.UIString('Attribute modified')],
   [SDK.DOMDebuggerModel.DOMBreakpoint.Type.NodeRemoved, Common.UIString('Node removed')],
@@ -218,7 +215,7 @@ BrowserDebugger.DOMBreakpointsSidebarPane.BreakpointTypeLabels = new Map([
 /**
  * @implements {UI.ContextMenu.Provider}
  */
-BrowserDebugger.DOMBreakpointsSidebarPane.ContextMenuProvider = class {
+export class ContextMenuProvider {
   /**
    * @override
    * @param {!Event} event
@@ -254,4 +251,22 @@ BrowserDebugger.DOMBreakpointsSidebarPane.ContextMenuProvider = class {
           label, toggleBreakpoint.bind(null, type), domDebuggerModel.hasDOMBreakpoint(node, type));
     }
   }
-};
+}
+
+/* Legacy exported object */
+self.BrowserDebugger = self.BrowserDebugger || {};
+
+/* Legacy exported object */
+BrowserDebugger = BrowserDebugger || {};
+
+/**
+ * @constructor
+ */
+BrowserDebugger.DOMBreakpointsSidebarPane = DOMBreakpointsSidebarPane;
+
+BrowserDebugger.DOMBreakpointsSidebarPane.BreakpointTypeLabels = BreakpointTypeLabels;
+
+/** @typedef {!{element: !Element, checkbox: !Element, breakpoint: !SDK.DOMDebuggerModel.DOMBreakpoint}} */
+BrowserDebugger.DOMBreakpointsSidebarPane.Item;
+
+BrowserDebugger.DOMBreakpointsSidebarPane.ContextMenuProvider = ContextMenuProvider;

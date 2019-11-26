@@ -6,7 +6,7 @@
  * @implements {UI.ToolbarItem.ItemsProvider}
  * @unrestricted
  */
-BrowserDebugger.XHRBreakpointsSidebarPane = class extends UI.VBox {
+export class XHRBreakpointsSidebarPane extends UI.VBox {
   constructor() {
     super(true);
     this.registerRequiredCSS('browser_debugger/xhrBreakpointsSidebarPane.css');
@@ -230,4 +230,15 @@ BrowserDebugger.XHRBreakpointsSidebarPane = class extends UI.VBox {
       this._setBreakpoint(url, breakpoints.get(url));
     }
   }
-};
+}
+
+/* Legacy exported object */
+self.BrowserDebugger = self.BrowserDebugger || {};
+
+/* Legacy exported object */
+BrowserDebugger = BrowserDebugger || {};
+
+/**
+ * @constructor
+ */
+BrowserDebugger.XHRBreakpointsSidebarPane = XHRBreakpointsSidebarPane;

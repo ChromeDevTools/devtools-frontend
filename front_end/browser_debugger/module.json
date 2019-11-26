@@ -118,7 +118,8 @@
         "sources",
         "console"
     ],
-    "scripts": [
+    "modules": [
+        "browser_debugger.js",
         "DOMBreakpointsSidebarPane.js",
         "EventListenerBreakpointsSidebarPane.js",
         "ObjectEventListenersSidebarPane.js",

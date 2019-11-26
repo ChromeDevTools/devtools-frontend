@@ -4,7 +4,7 @@
 /**
  * @unrestricted
  */
-BrowserDebugger.EventListenerBreakpointsSidebarPane = class extends UI.VBox {
+export class EventListenerBreakpointsSidebarPane extends UI.VBox {
   constructor() {
     super(true);
     this._categoriesTreeOutline = new UI.TreeOutlineInShadow();
@@ -159,7 +159,18 @@ BrowserDebugger.EventListenerBreakpointsSidebarPane = class extends UI.VBox {
       UI.ARIAUtils.setChecked(category.element.listItemElement, hasEnabled);
     }
   }
-};
+}
+
+/* Legacy exported object */
+self.BrowserDebugger = self.BrowserDebugger || {};
+
+/* Legacy exported object */
+BrowserDebugger = BrowserDebugger || {};
+
+/**
+ * @constructor
+ */
+BrowserDebugger.EventListenerBreakpointsSidebarPane = EventListenerBreakpointsSidebarPane;
 
 /** @typedef {!{element: !UI.TreeElement, checkbox: !Element}} */
 BrowserDebugger.EventListenerBreakpointsSidebarPane.Item;

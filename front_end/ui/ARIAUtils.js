@@ -399,6 +399,19 @@ export function setProgressBarCurrentPercentage(element, value) {
 
 /**
  * @param {!Element} element
+ * @param {number} valueNow
+ * @param {string=} valueText
+ */
+export function setProgressBarValue(element, valueNow, valueText) {
+  element.setAttribute('aria-valuenow', valueNow);
+
+  if (valueText) {
+    element.setAttribute('aria-valuetext', valueText);
+  }
+}
+
+/**
+ * @param {!Element} element
  * @param {string} name
  */
 export function setAccessibleName(element, name) {
@@ -593,6 +606,7 @@ self.UI.ARIAUtils = {
   setInvalid,
   setPressed,
   setProgressBarCurrentPercentage,
+  setProgressBarValue,
   setAccessibleName,
   setDescription,
   setActiveDescendant,

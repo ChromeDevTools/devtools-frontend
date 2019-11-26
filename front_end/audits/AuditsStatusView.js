@@ -55,6 +55,8 @@ export default class StatusView {
     this._progressWrapper = fragment.$('progress-wrapper');
     this._progressBar = fragment.$('progress-bar');
     this._statusText = fragment.$('status-text');
+    // Use StatusPhases array index as progress bar value
+    UI.ARIAUtils.markAsProgressBar(this._progressBar, 0, Audits.StatusView.StatusPhases.length - 1);
     this._cancelButton = cancelButton;
     UI.ARIAUtils.markAsStatus(this._statusText);
 
@@ -123,15 +125,19 @@ export default class StatusView {
     }
 
     const nextPhase = this._getPhaseForMessage(message);
+    const nextPhaseIndex = Audits.StatusView.StatusPhases.indexOf(nextPhase);
+    const currentPhaseIndex = Audits.StatusView.StatusPhases.indexOf(this._currentPhase);
     if (!nextPhase && !this._currentPhase) {
       this._commitTextChange(Common.UIString('Lighthouse is warming up\u2026'));
       clearTimeout(this._scheduledFastFactTimeout);
-    } else if (nextPhase && (!this._currentPhase || this._currentPhase.order < nextPhase.order)) {
+    } else if (nextPhase && (!this._currentPhase || currentPhaseIndex < nextPhaseIndex)) {
       this._currentPhase = nextPhase;
-      this._scheduleTextChange(this._getMessageForPhase(nextPhase));
+      const text = this._getMessageForPhase(nextPhase);
+      this._scheduleTextChange(text);
       this._scheduleFastFactCheck();
       this._resetProgressBarClasses();
       this._progressBar.classList.add(nextPhase.progressBarClass);
+      UI.ARIAUtils.setProgressBarValue(this._progressBar, nextPhaseIndex, text);
     }
   }
 
@@ -300,27 +306,24 @@ export const KnownBugPatterns = [
   /^You probably have multiple tabs open/,
 ];
 
-/** @typedef {{message: string, progressBarClass: string, order: number}} */
+/** @typedef {{message: string, progressBarClass: string}} */
 export const StatusPhases = [
   {
     id: 'loading',
     progressBarClass: 'loading',
     statusMessagePrefix: 'Loading page',
-    order: 10,
   },
   {
     id: 'gathering',
     progressBarClass: 'gathering',
     message: ls`Lighthouse is gathering information about the page to compute your score.`,
     statusMessagePrefix: 'Gathering',
-    order: 20,
   },
   {
     id: 'auditing',
     progressBarClass: 'auditing',
     message: ls`Almost there! Lighthouse is now generating your report.`,
     statusMessagePrefix: 'Auditing',
-    order: 30,
   }
 ];
 

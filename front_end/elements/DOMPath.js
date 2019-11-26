@@ -2,16 +2,18 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+Elements.DOMPath = {};
+
 /**
  * @param {!SDK.DOMNode} node
  * @param {boolean=} justSelector
  * @return {string}
  */
-export const fullQualifiedSelector = function(node, justSelector) {
+Elements.DOMPath.fullQualifiedSelector = function(node, justSelector) {
   if (node.nodeType() !== Node.ELEMENT_NODE) {
     return node.localName() || node.nodeName().toLowerCase();
   }
-  return cssPath(node, justSelector);
+  return Elements.DOMPath.cssPath(node, justSelector);
 };
 
 /**
@@ -19,7 +21,7 @@ export const fullQualifiedSelector = function(node, justSelector) {
  * @param {boolean=} optimized
  * @return {string}
  */
-export const cssPath = function(node, optimized) {
+Elements.DOMPath.cssPath = function(node, optimized) {
   if (node.nodeType() !== Node.ELEMENT_NODE) {
     return '';
   }
@@ -27,7 +29,7 @@ export const cssPath = function(node, optimized) {
   const steps = [];
   let contextNode = node;
   while (contextNode) {
-    const step = _cssPathStep(contextNode, !!optimized, contextNode === node);
+    const step = Elements.DOMPath._cssPathStep(contextNode, !!optimized, contextNode === node);
     if (!step) {
       break;
     }  // Error - bail out early.
@@ -46,7 +48,7 @@ export const cssPath = function(node, optimized) {
  * @param {!SDK.DOMNode} node
  * @return {boolean}
  */
-export const canGetJSPath = function(node) {
+Elements.DOMPath.canGetJSPath = function(node) {
   let wp = node;
   while (wp) {
     if (wp.ancestorShadowRoot() && wp.ancestorShadowRoot().shadowRootType() !== SDK.DOMNode.ShadowRootTypes.Open) {
@@ -62,7 +64,7 @@ export const canGetJSPath = function(node) {
  * @param {boolean=} optimized
  * @return {string}
  */
-export const jsPath = function(node, optimized) {
+Elements.DOMPath.jsPath = function(node, optimized) {
   if (node.nodeType() !== Node.ELEMENT_NODE) {
     return '';
   }
@@ -70,7 +72,7 @@ export const jsPath = function(node, optimized) {
   const path = [];
   let wp = node;
   while (wp) {
-    path.push(cssPath(wp, optimized));
+    path.push(Elements.DOMPath.cssPath(wp, optimized));
     wp = wp.ancestorShadowHost();
   }
   path.reverse();
@@ -90,9 +92,9 @@ export const jsPath = function(node, optimized) {
  * @param {!SDK.DOMNode} node
  * @param {boolean} optimized
  * @param {boolean} isTargetNode
- * @return {?Step}
+ * @return {?Elements.DOMPath.Step}
  */
-export const _cssPathStep = function(node, optimized, isTargetNode) {
+Elements.DOMPath._cssPathStep = function(node, optimized, isTargetNode) {
   if (node.nodeType() !== Node.ELEMENT_NODE) {
     return null;
   }
@@ -100,21 +102,21 @@ export const _cssPathStep = function(node, optimized, isTargetNode) {
   const id = node.getAttribute('id');
   if (optimized) {
     if (id) {
-      return new Step(idSelector(id), true);
+      return new Elements.DOMPath.Step(idSelector(id), true);
     }
     const nodeNameLower = node.nodeName().toLowerCase();
     if (nodeNameLower === 'body' || nodeNameLower === 'head' || nodeNameLower === 'html') {
-      return new Step(node.nodeNameInCorrectCase(), true);
+      return new Elements.DOMPath.Step(node.nodeNameInCorrectCase(), true);
     }
   }
   const nodeName = node.nodeNameInCorrectCase();
 
   if (id) {
-    return new Step(nodeName + idSelector(id), true);
+    return new Elements.DOMPath.Step(nodeName + idSelector(id), true);
   }
   const parent = node.parentNode;
   if (!parent || parent.nodeType() === Node.DOCUMENT_NODE) {
-    return new Step(nodeName, true);
+    return new Elements.DOMPath.Step(nodeName, true);
   }
 
   /**
@@ -197,7 +199,7 @@ export const _cssPathStep = function(node, optimized, isTargetNode) {
     }
   }
 
-  return new Step(result, false);
+  return new Elements.DOMPath.Step(result, false);
 };
 
 /**
@@ -205,7 +207,7 @@ export const _cssPathStep = function(node, optimized, isTargetNode) {
  * @param {boolean=} optimized
  * @return {string}
  */
-export const xPath = function(node, optimized) {
+Elements.DOMPath.xPath = function(node, optimized) {
   if (node.nodeType() === Node.DOCUMENT_NODE) {
     return '/';
   }
@@ -213,7 +215,7 @@ export const xPath = function(node, optimized) {
   const steps = [];
   let contextNode = node;
   while (contextNode) {
-    const step = _xPathValue(contextNode, optimized);
+    const step = Elements.DOMPath._xPathValue(contextNode, optimized);
     if (!step) {
       break;
     }  // Error - bail out early.
@@ -231,11 +233,11 @@ export const xPath = function(node, optimized) {
 /**
  * @param {!SDK.DOMNode} node
  * @param {boolean=} optimized
- * @return {?Step}
+ * @return {?Elements.DOMPath.Step}
  */
-export const _xPathValue = function(node, optimized) {
+Elements.DOMPath._xPathValue = function(node, optimized) {
   let ownValue;
-  const ownIndex = _xPathIndex(node);
+  const ownIndex = Elements.DOMPath._xPathIndex(node);
   if (ownIndex === -1) {
     return null;
   }  // Error.
@@ -243,7 +245,7 @@ export const _xPathValue = function(node, optimized) {
   switch (node.nodeType()) {
     case Node.ELEMENT_NODE:
       if (optimized && node.getAttribute('id')) {
-        return new Step('//*[@id="' + node.getAttribute('id') + '"]', true);
+        return new Elements.DOMPath.Step('//*[@id="' + node.getAttribute('id') + '"]', true);
       }
       ownValue = node.localName();
       break;
@@ -272,14 +274,14 @@ export const _xPathValue = function(node, optimized) {
     ownValue += '[' + ownIndex + ']';
   }
 
-  return new Step(ownValue, node.nodeType() === Node.DOCUMENT_NODE);
+  return new Elements.DOMPath.Step(ownValue, node.nodeType() === Node.DOCUMENT_NODE);
 };
 
 /**
  * @param {!SDK.DOMNode} node
  * @return {number}
  */
-export const _xPathIndex = function(node) {
+Elements.DOMPath._xPathIndex = function(node) {
   // Returns -1 in case of error, 0 if no siblings matching the same expression, <XPath index among the same expression-matching sibling nodes> otherwise.
   function areNodesSimilar(left, right) {
     if (left === right) {
@@ -329,7 +331,7 @@ export const _xPathIndex = function(node) {
 /**
  * @unrestricted
  */
-export class Step {
+Elements.DOMPath.Step = class {
   /**
    * @param {string} value
    * @param {boolean} optimized
@@ -346,24 +348,4 @@ export class Step {
   toString() {
     return this.value;
   }
-}
-
-/* Legacy exported object */
-self.Elements = self.Elements || {};
-
-/* Legacy exported object */
-Elements = Elements || {};
-
-Elements.DOMPath = {};
-
-Elements.DOMPath.fullQualifiedSelector = fullQualifiedSelector;
-Elements.DOMPath.cssPath = cssPath;
-Elements.DOMPath.canGetJSPath = canGetJSPath;
-Elements.DOMPath.jsPath = jsPath;
-Elements.DOMPath._cssPathStep = _cssPathStep;
-Elements.DOMPath.xPath = xPath;
-Elements.DOMPath._xPathValue = _xPathValue;
-Elements.DOMPath._xPathIndex = _xPathIndex;
-
-/** @constructor */
-Elements.DOMPath.Step = Step;
+};

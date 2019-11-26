@@ -25,12 +25,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 /**
  * @implements {SDK.SDKModelObserver<!SDK.OverlayModel>}
  * @unrestricted
  */
-export default class InspectElementModeController {
+Elements.InspectElementModeController = class {
   /**
    * @suppressGlobalPropertiesCheck
    */
@@ -134,13 +133,13 @@ export default class InspectElementModeController {
   _showDetailedInspectTooltipChanged() {
     this._setMode(this._mode);
   }
-}
+};
 
 /**
  * @implements {UI.ActionDelegate}
  * @unrestricted
  */
-export class ToggleSearchActionDelegate {
+Elements.InspectElementModeController.ToggleSearchActionDelegate = class {
   /**
    * @override
    * @param {!UI.Context} context
@@ -148,32 +147,18 @@ export class ToggleSearchActionDelegate {
    * @return {boolean}
    */
   handleAction(context, actionId) {
-    if (!inspectElementModeController) {
+    if (!Elements.inspectElementModeController) {
       return false;
     }
     if (actionId === 'elements.toggle-element-search') {
-      inspectElementModeController._toggleInspectMode();
+      Elements.inspectElementModeController._toggleInspectMode();
     } else if (actionId === 'elements.capture-area-screenshot') {
-      inspectElementModeController._captureScreenshotMode();
+      Elements.inspectElementModeController._captureScreenshotMode();
     }
     return true;
   }
-}
+};
 
-/** @type {?InspectElementModeController} */
-export const inspectElementModeController =
-    Root.Runtime.queryParam('isSharedWorker') ? null : new InspectElementModeController();
-
-/* Legacy exported object */
-self.Elements = self.Elements || {};
-
-/* Legacy exported object */
-Elements = Elements || {};
-
-/** @constructor */
-Elements.InspectElementModeController = InspectElementModeController;
-
-/** @constructor */
-Elements.InspectElementModeController.ToggleSearchActionDelegate = ToggleSearchActionDelegate;
-
-Elements.inspectElementModeController = inspectElementModeController;
+/** @type {?Elements.InspectElementModeController} */
+Elements.inspectElementModeController =
+    Root.Runtime.queryParam('isSharedWorker') ? null : new Elements.InspectElementModeController();

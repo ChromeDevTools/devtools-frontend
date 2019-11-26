@@ -26,12 +26,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 /**
  * @implements {UI.ToolbarItem.ItemsProvider}
  * @unrestricted
  */
-export default class EventListenersWidget extends UI.ThrottledWidget {
+Elements.EventListenersWidget = class extends UI.ThrottledWidget {
   constructor() {
     super();
     this._toolbarItems = [];
@@ -39,8 +38,8 @@ export default class EventListenersWidget extends UI.ThrottledWidget {
     this._showForAncestorsSetting = Common.settings.moduleSetting('showEventListenersForAncestors');
     this._showForAncestorsSetting.addChangeListener(this.update.bind(this));
 
-    this._dispatchFilterBySetting =
-        Common.settings.createSetting('eventListenerDispatchFilterType', DispatchFilterBy.All);
+    this._dispatchFilterBySetting = Common.settings.createSetting(
+        'eventListenerDispatchFilterType', Elements.EventListenersWidget.DispatchFilterBy.All);
     this._dispatchFilterBySetting.addChangeListener(this.update.bind(this));
 
     this._showFrameworkListenersSetting = Common.settings.createSetting('showFrameowkrListeners', true);
@@ -61,7 +60,7 @@ export default class EventListenersWidget extends UI.ThrottledWidget {
     /**
      * @param {string} name
      * @param {string} value
-     * @this {EventListenersWidget}
+     * @this {Elements.EventListenersWidget}
      */
     function addDispatchFilterOption(name, value) {
       const option = dispatchFilter.createOption(name, value);
@@ -69,9 +68,11 @@ export default class EventListenersWidget extends UI.ThrottledWidget {
         dispatchFilter.select(option);
       }
     }
-    addDispatchFilterOption.call(this, Common.UIString('All'), DispatchFilterBy.All);
-    addDispatchFilterOption.call(this, Common.UIString('Passive'), DispatchFilterBy.Passive);
-    addDispatchFilterOption.call(this, Common.UIString('Blocking'), DispatchFilterBy.Blocking);
+    addDispatchFilterOption.call(this, Common.UIString('All'), Elements.EventListenersWidget.DispatchFilterBy.All);
+    addDispatchFilterOption.call(
+        this, Common.UIString('Passive'), Elements.EventListenersWidget.DispatchFilterBy.Passive);
+    addDispatchFilterOption.call(
+        this, Common.UIString('Blocking'), Elements.EventListenersWidget.DispatchFilterBy.Blocking);
     dispatchFilter.setMaxWidth(200);
     this._toolbarItems.push(dispatchFilter);
     this._toolbarItems.push(new UI.ToolbarSettingCheckbox(
@@ -88,7 +89,8 @@ export default class EventListenersWidget extends UI.ThrottledWidget {
    */
   doUpdate() {
     if (this._lastRequestedNode) {
-      this._lastRequestedNode.domModel().runtimeModel().releaseObjectGroup(_objectGroupName);
+      this._lastRequestedNode.domModel().runtimeModel().releaseObjectGroup(
+          Elements.EventListenersWidget._objectGroupName);
       delete this._lastRequestedNode;
     }
     const node = UI.context.flavor(SDK.DOMNode);
@@ -100,11 +102,11 @@ export default class EventListenersWidget extends UI.ThrottledWidget {
     this._lastRequestedNode = node;
     const selectedNodeOnly = !this._showForAncestorsSetting.get();
     const promises = [];
-    promises.push(node.resolveToObject(_objectGroupName));
+    promises.push(node.resolveToObject(Elements.EventListenersWidget._objectGroupName));
     if (!selectedNodeOnly) {
       let currentNode = node.parentNode;
       while (currentNode) {
-        promises.push(currentNode.resolveToObject(_objectGroupName));
+        promises.push(currentNode.resolveToObject(Elements.EventListenersWidget._objectGroupName));
         currentNode = currentNode.parentNode;
       }
       promises.push(this._windowObjectInNodeContext(node));
@@ -131,8 +133,10 @@ export default class EventListenersWidget extends UI.ThrottledWidget {
 
   _showFrameworkListenersChanged() {
     const dispatchFilter = this._dispatchFilterBySetting.get();
-    const showPassive = dispatchFilter === DispatchFilterBy.All || dispatchFilter === DispatchFilterBy.Passive;
-    const showBlocking = dispatchFilter === DispatchFilterBy.All || dispatchFilter === DispatchFilterBy.Blocking;
+    const showPassive = dispatchFilter === Elements.EventListenersWidget.DispatchFilterBy.All ||
+        dispatchFilter === Elements.EventListenersWidget.DispatchFilterBy.Passive;
+    const showBlocking = dispatchFilter === Elements.EventListenersWidget.DispatchFilterBy.All ||
+        dispatchFilter === Elements.EventListenersWidget.DispatchFilterBy.Blocking;
     this._eventListenersView.showFrameworkListeners(
         this._showFrameworkListenersSetting.get(), showPassive, showBlocking);
   }
@@ -158,7 +162,7 @@ export default class EventListenersWidget extends UI.ThrottledWidget {
         .evaluate(
             {
               expression: 'self',
-              objectGroup: _objectGroupName,
+              objectGroup: Elements.EventListenersWidget._objectGroupName,
               includeCommandLineAPI: false,
               silent: true,
               returnByValue: false,
@@ -171,24 +175,12 @@ export default class EventListenersWidget extends UI.ThrottledWidget {
 
   _eventListenersArrivedForTest() {
   }
-}
+};
 
-export const DispatchFilterBy = {
+Elements.EventListenersWidget.DispatchFilterBy = {
   All: 'All',
   Blocking: 'Blocking',
   Passive: 'Passive'
 };
 
-export const _objectGroupName = 'event-listeners-panel';
-
-/* Legacy exported object */
-self.Elements = self.Elements || {};
-
-/* Legacy exported object */
-Elements = Elements || {};
-
-/** @constructor */
-Elements.EventListenersWidget = EventListenersWidget;
-
-Elements.EventListenersWidget.DispatchFilterBy = DispatchFilterBy;
-Elements.EventListenersWidget._objectGroupName = _objectGroupName;
+Elements.EventListenersWidget._objectGroupName = 'event-listeners-panel';

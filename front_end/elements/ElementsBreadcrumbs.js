@@ -1,11 +1,10 @@
 // Copyright 2014 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-
 /**
  * @unrestricted
  */
-export default class ElementsBreadcrumbs extends UI.HBox {
+Elements.ElementsBreadcrumbs = class extends UI.HBox {
   constructor() {
     super(true);
     this.registerRequiredCSS('elements/breadcrumbs.css');
@@ -68,13 +67,13 @@ export default class ElementsBreadcrumbs extends UI.HBox {
 
   /**
    * @param {!Event} event
-   * @this {ElementsBreadcrumbs}
+   * @this {Elements.ElementsBreadcrumbs}
    */
   _onClickCrumb(event) {
     event.preventDefault();
     let crumb = /** @type {!Element} */ (event.currentTarget);
     if (!crumb.classList.contains('collapsed')) {
-      this.dispatchEventToListeners(Events.NodeSelected, crumb[this._nodeSymbol]);
+      this.dispatchEventToListeners(Elements.ElementsBreadcrumbs.Events.NodeSelected, crumb[this._nodeSymbol]);
       return;
     }
 
@@ -466,21 +465,9 @@ export default class ElementsBreadcrumbs extends UI.HBox {
     // Collapse the selected crumb as a last resort. Pass true to prevent coalescing.
     collapse(selectedCrumb, true);
   }
-}
-
-/** @enum {symbol} */
-export const Events = {
-  NodeSelected: Symbol('NodeSelected')
 };
 
-/* Legacy exported object */
-self.Elements = self.Elements || {};
-
-/* Legacy exported object */
-Elements = Elements || {};
-
-/** @constructor */
-Elements.ElementsBreadcrumbs = ElementsBreadcrumbs;
-
 /** @enum {symbol} */
-Elements.ElementsBreadcrumbs.Events = Events;
+Elements.ElementsBreadcrumbs.Events = {
+  NodeSelected: Symbol('NodeSelected')
+};

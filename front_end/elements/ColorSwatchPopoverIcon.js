@@ -1,11 +1,10 @@
 // Copyright (c) 2015 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-
 /**
  * @unrestricted
  */
-export class BezierPopoverIcon {
+Elements.BezierPopoverIcon = class {
   /**
    * @param {!Elements.StylePropertyTreeElement} treeElement
    * @param {!InlineEditor.SwatchPopoverHelper} swatchPopoverHelper
@@ -87,12 +86,12 @@ export class BezierPopoverIcon {
     this._treeElement.parentPane().setEditingStyle(false);
     delete this._originalPropertyText;
   }
-}
+};
 
 /**
  * @unrestricted
  */
-export default class ColorSwatchPopoverIcon {
+Elements.ColorSwatchPopoverIcon = class {
   /**
    * @param {!Elements.StylePropertyTreeElement} treeElement
    * @param {!InlineEditor.SwatchPopoverHelper} swatchPopoverHelper
@@ -100,7 +99,7 @@ export default class ColorSwatchPopoverIcon {
    */
   constructor(treeElement, swatchPopoverHelper, swatch) {
     this._treeElement = treeElement;
-    this._treeElement[ColorSwatchPopoverIcon._treeElementSymbol] = this;
+    this._treeElement[Elements.ColorSwatchPopoverIcon._treeElementSymbol] = this;
     this._swatchPopoverHelper = swatchPopoverHelper;
     this._swatch = swatch;
 
@@ -143,10 +142,10 @@ export default class ColorSwatchPopoverIcon {
 
   /**
    * @param {!Elements.StylePropertyTreeElement} treeElement
-   * @return {?ColorSwatchPopoverIcon}
+   * @return {?Elements.ColorSwatchPopoverIcon}
    */
   static forTreeElement(treeElement) {
-    return treeElement[ColorSwatchPopoverIcon._treeElementSymbol] || null;
+    return treeElement[Elements.ColorSwatchPopoverIcon._treeElementSymbol] || null;
   }
 
   /**
@@ -242,14 +241,15 @@ export default class ColorSwatchPopoverIcon {
     this._treeElement.parentPane().setEditingStyle(false);
     delete this._originalPropertyText;
   }
-}
+};
 
-ColorSwatchPopoverIcon._treeElementSymbol = Symbol('ColorSwatchPopoverIcon._treeElementSymbol');
+Elements.ColorSwatchPopoverIcon._treeElementSymbol = Symbol('Elements.ColorSwatchPopoverIcon._treeElementSymbol');
+
 
 /**
  * @unrestricted
  */
-export class ShadowSwatchPopoverHelper {
+Elements.ShadowSwatchPopoverHelper = class {
   /**
    * @param {!Elements.StylePropertyTreeElement} treeElement
    * @param {!InlineEditor.SwatchPopoverHelper} swatchPopoverHelper
@@ -257,7 +257,7 @@ export class ShadowSwatchPopoverHelper {
    */
   constructor(treeElement, swatchPopoverHelper, shadowSwatch) {
     this._treeElement = treeElement;
-    this._treeElement[ShadowSwatchPopoverHelper._treeElementSymbol] = this;
+    this._treeElement[Elements.ShadowSwatchPopoverHelper._treeElementSymbol] = this;
     this._swatchPopoverHelper = swatchPopoverHelper;
     this._shadowSwatch = shadowSwatch;
     this._iconElement = shadowSwatch.iconElement();
@@ -272,10 +272,10 @@ export class ShadowSwatchPopoverHelper {
 
   /**
    * @param {!Elements.StylePropertyTreeElement} treeElement
-   * @return {?ShadowSwatchPopoverHelper}
+   * @return {?Elements.ShadowSwatchPopoverHelper}
    */
   static forTreeElement(treeElement) {
-    return treeElement[ShadowSwatchPopoverHelper._treeElementSymbol] || null;
+    return treeElement[Elements.ShadowSwatchPopoverHelper._treeElementSymbol] || null;
   }
 
   /**
@@ -341,21 +341,6 @@ export class ShadowSwatchPopoverHelper {
     this._treeElement.parentPane().setEditingStyle(false);
     delete this._originalPropertyText;
   }
-}
+};
 
-ShadowSwatchPopoverHelper._treeElementSymbol = Symbol('ShadowSwatchPopoverHelper._treeElementSymbol');
-
-/* Legacy exported object */
-self.Elements = self.Elements || {};
-
-/* Legacy exported object */
-Elements = Elements || {};
-
-/** @constructor */
-Elements.ColorSwatchPopoverIcon = ColorSwatchPopoverIcon;
-
-/** @constructor */
-Elements.BezierPopoverIcon = BezierPopoverIcon;
-
-/** @constructor */
-Elements.ShadowSwatchPopoverHelper = ShadowSwatchPopoverHelper;
+Elements.ShadowSwatchPopoverHelper._treeElementSymbol = Symbol('Elements.ShadowSwatchPopoverHelper._treeElementSymbol');

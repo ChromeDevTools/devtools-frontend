@@ -30,7 +30,7 @@
 /**
  * @unrestricted
  */
-export default class PropertiesWidget extends UI.ThrottledWidget {
+Elements.PropertiesWidget = class extends UI.ThrottledWidget {
   constructor() {
     super(true /* isWebComponent */);
     this.registerRequiredCSS('elements/propertiesWidget.css');
@@ -71,7 +71,7 @@ export default class PropertiesWidget extends UI.ThrottledWidget {
    */
   async doUpdate() {
     if (this._lastRequestedNode) {
-      this._lastRequestedNode.domModel().runtimeModel().releaseObjectGroup(_objectGroupName);
+      this._lastRequestedNode.domModel().runtimeModel().releaseObjectGroup(Elements.PropertiesWidget._objectGroupName);
       delete this._lastRequestedNode;
     }
 
@@ -81,7 +81,7 @@ export default class PropertiesWidget extends UI.ThrottledWidget {
     }
 
     this._lastRequestedNode = this._node;
-    const object = await this._node.resolveToObject(_objectGroupName);
+    const object = await this._node.resolveToObject(Elements.PropertiesWidget._objectGroupName);
     if (!object) {
       return;
     }
@@ -167,17 +167,6 @@ export default class PropertiesWidget extends UI.ThrottledWidget {
     }
     this.update();
   }
-}
+};
 
-export const _objectGroupName = 'properties-sidebar-pane';
-
-/* Legacy exported object */
-self.Elements = self.Elements || {};
-
-/* Legacy exported object */
-Elements = Elements || {};
-
-/** @constructor */
-Elements.PropertiesWidget = PropertiesWidget;
-
-Elements.PropertiesWidget._objectGroupName = _objectGroupName;
+Elements.PropertiesWidget._objectGroupName = 'properties-sidebar-pane';

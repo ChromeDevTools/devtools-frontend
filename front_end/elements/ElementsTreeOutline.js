@@ -31,7 +31,7 @@
 /**
  * @unrestricted
  */
-export default class ElementsTreeOutline extends UI.TreeOutline {
+Elements.ElementsTreeOutline = class extends UI.TreeOutline {
   /**
    * @param {boolean=} omitRootDOMNode
    * @param {boolean=} selectEnabled
@@ -83,7 +83,7 @@ export default class ElementsTreeOutline extends UI.TreeOutline {
     this._popoverHelper.setHasPadding(true);
     this._popoverHelper.setTimeout(0, 100);
 
-    /** @type {!Map<!SDK.DOMNode, !UpdateRecord>} */
+    /** @type {!Map<!SDK.DOMNode, !Elements.ElementsTreeOutline.UpdateRecord>} */
     this._updateRecords = new Map();
     /** @type {!Set<!Elements.ElementsTreeElement>} */
     this._treeElementsBeingUpdated = new Set();
@@ -95,10 +95,10 @@ export default class ElementsTreeOutline extends UI.TreeOutline {
 
   /**
    * @param {!SDK.DOMModel} domModel
-   * @return {?ElementsTreeOutline}
+   * @return {?Elements.ElementsTreeOutline}
    */
   static forDOMModel(domModel) {
-    return domModel[ElementsTreeOutline._treeOutlineSymbol] || null;
+    return domModel[Elements.ElementsTreeOutline._treeOutlineSymbol] || null;
   }
 
   _onShowHTMLCommentsChange() {
@@ -292,7 +292,7 @@ export default class ElementsTreeOutline extends UI.TreeOutline {
     /**
      * @param {?Protocol.Error} error
      * @param {!Protocol.DOM.NodeId} nodeId
-     * @this {ElementsTreeOutline}
+     * @this {Elements.ElementsTreeOutline}
      */
     function expandCallback(error, nodeId) {
       if (error) {
@@ -421,14 +421,14 @@ export default class ElementsTreeOutline extends UI.TreeOutline {
    */
   _selectedNodeChanged(focus) {
     this.dispatchEventToListeners(
-        ElementsTreeOutline.Events.SelectedNodeChanged, {node: this._selectedDOMNode, focus: focus});
+        Elements.ElementsTreeOutline.Events.SelectedNodeChanged, {node: this._selectedDOMNode, focus: focus});
   }
 
   /**
    * @param {!Array.<!SDK.DOMNode>} nodes
    */
   _fireElementsTreeUpdated(nodes) {
-    this.dispatchEventToListeners(ElementsTreeOutline.Events.ElementsTreeUpdated, nodes);
+    this.dispatchEventToListeners(Elements.ElementsTreeOutline.Events.ElementsTreeUpdated, nodes);
   }
 
   /**
@@ -654,7 +654,7 @@ export default class ElementsTreeOutline extends UI.TreeOutline {
       return;
     }
 
-    if (element instanceof ShortcutTreeElement) {
+    if (element instanceof Elements.ElementsTreeOutline.ShortcutTreeElement) {
       element.domModel().overlayModel().highlightInOverlay({deferredNode: element.deferredNode()}, 'all', showInfo);
     }
   }
@@ -897,7 +897,7 @@ export default class ElementsTreeOutline extends UI.TreeOutline {
     treeElement.toggleEditAsHTML(editingFinished.bind(this), startEditing);
 
     /**
-     * @this {ElementsTreeOutline}
+     * @this {Elements.ElementsTreeOutline}
      * @param {boolean} success
      */
     function editingFinished(success) {
@@ -1046,7 +1046,7 @@ export default class ElementsTreeOutline extends UI.TreeOutline {
    * @param {!SDK.DOMModel} domModel
    */
   wireToDOMModel(domModel) {
-    domModel[ElementsTreeOutline._treeOutlineSymbol] = this;
+    domModel[Elements.ElementsTreeOutline._treeOutlineSymbol] = this;
     domModel.addEventListener(SDK.DOMModel.Events.MarkersChanged, this._markersChanged, this);
     domModel.addEventListener(SDK.DOMModel.Events.NodeInserted, this._nodeInserted, this);
     domModel.addEventListener(SDK.DOMModel.Events.NodeRemoved, this._nodeRemoved, this);
@@ -1071,17 +1071,17 @@ export default class ElementsTreeOutline extends UI.TreeOutline {
     domModel.removeEventListener(SDK.DOMModel.Events.DocumentUpdated, this._documentUpdated, this);
     domModel.removeEventListener(SDK.DOMModel.Events.ChildNodeCountUpdated, this._childNodeCountUpdated, this);
     domModel.removeEventListener(SDK.DOMModel.Events.DistributedNodesChanged, this._distributedNodesChanged, this);
-    delete domModel[ElementsTreeOutline._treeOutlineSymbol];
+    delete domModel[Elements.ElementsTreeOutline._treeOutlineSymbol];
   }
 
   /**
    * @param {!SDK.DOMNode} node
-   * @return {!UpdateRecord}
+   * @return {!Elements.ElementsTreeOutline.UpdateRecord}
    */
   _addUpdateRecord(node) {
     let record = this._updateRecords.get(node);
     if (!record) {
-      record = new UpdateRecord();
+      record = new Elements.ElementsTreeOutline.UpdateRecord();
       this._updateRecords.set(node, record);
     }
     return record;
@@ -1089,7 +1089,7 @@ export default class ElementsTreeOutline extends UI.TreeOutline {
 
   /**
    * @param {!SDK.DOMNode} node
-   * @return {?UpdateRecord}
+   * @return {?Elements.ElementsTreeOutline.UpdateRecord}
    */
   _updateRecordForHighlight(node) {
     if (!this._visible) {
@@ -1391,7 +1391,7 @@ export default class ElementsTreeOutline extends UI.TreeOutline {
     return expandAllButtonElement;
 
     /**
-     * @this {ElementsTreeOutline}
+     * @this {Elements.ElementsTreeOutline}
      * @param {!Event} event
      */
     function handleLoadAllChildren(event) {
@@ -1540,7 +1540,7 @@ export default class ElementsTreeOutline extends UI.TreeOutline {
     // Insert shortcuts to distrubuted children.
     if (node.isInsertionPoint()) {
       for (const distributedNode of node.distributedNodes()) {
-        treeElement.appendChild(new ShortcutTreeElement(distributedNode));
+        treeElement.appendChild(new Elements.ElementsTreeOutline.ShortcutTreeElement(distributedNode));
       }
     }
 
@@ -1562,12 +1562,16 @@ export default class ElementsTreeOutline extends UI.TreeOutline {
       treeElement.updateDecorations();
     }
   }
-}
+};
 
-ElementsTreeOutline._treeOutlineSymbol = Symbol('treeOutline');
+Elements.ElementsTreeOutline._treeOutlineSymbol = Symbol('treeOutline');
+
+
+/** @typedef {{node: !SDK.DOMNode, isCut: boolean}} */
+Elements.ElementsTreeOutline.ClipboardData;
 
 /** @override @suppress {checkPrototypalTypes} @enum {symbol} */
-ElementsTreeOutline.Events = {
+Elements.ElementsTreeOutline.Events = {
   SelectedNodeChanged: Symbol('SelectedNodeChanged'),
   ElementsTreeUpdated: Symbol('ElementsTreeUpdated')
 };
@@ -1576,7 +1580,7 @@ ElementsTreeOutline.Events = {
  * @const
  * @type {!Object.<string, string>}
  */
-export const MappedCharToEntity = {
+Elements.ElementsTreeOutline.MappedCharToEntity = {
   '\xA0': 'nbsp',
   '\x93': '#147',  // <control>
   '\xAD': 'shy',
@@ -1600,7 +1604,7 @@ export const MappedCharToEntity = {
 /**
  * @unrestricted
  */
-export class UpdateRecord {
+Elements.ElementsTreeOutline.UpdateRecord = class {
   /**
    * @param {string} attrName
    */
@@ -1682,12 +1686,12 @@ export class UpdateRecord {
   hasRemovedChildren() {
     return !!this._hasRemovedChildren;
   }
-}
+};
 
 /**
  * @implements {UI.Renderer}
  */
-export class Renderer {
+Elements.ElementsTreeOutline.Renderer = class {
   /**
    * @override
    * @param {!Object} object
@@ -1708,7 +1712,7 @@ export class Renderer {
       return null;
     }
 
-    const treeOutline = new ElementsTreeOutline(
+    const treeOutline = new Elements.ElementsTreeOutline(
         /* omitRootDOMNode: */ false, /* selectEnabled: */ true, /* hideGutter: */ true);
     treeOutline.rootDOMNode = node;
     if (!treeOutline.firstChild().isExpandable()) {
@@ -1719,12 +1723,12 @@ export class Renderer {
     treeOutline.setShowSelectionOnKeyboardFocus(/* show: */ true, /* preventTabOrder: */ true);
     return {node: treeOutline.element, tree: treeOutline};
   }
-}
+};
 
 /**
  * @unrestricted
  */
-export class ShortcutTreeElement extends UI.TreeElement {
+Elements.ElementsTreeOutline.ShortcutTreeElement = class extends UI.TreeElement {
   /**
    * @param {!SDK.DOMNodeShortcut} nodeShortcut
    */
@@ -1791,7 +1795,7 @@ export class ShortcutTreeElement extends UI.TreeElement {
     this._nodeShortcut.deferredNode.resolve(resolved.bind(this));
     /**
      * @param {?SDK.DOMNode} node
-     * @this {ShortcutTreeElement}
+     * @this {Elements.ElementsTreeOutline.ShortcutTreeElement}
      */
     function resolved(node) {
       if (node) {
@@ -1801,27 +1805,4 @@ export class ShortcutTreeElement extends UI.TreeElement {
     }
     return true;
   }
-}
-
-/* Legacy exported object */
-self.Elements = self.Elements || {};
-
-/* Legacy exported object */
-Elements = Elements || {};
-
-/** @constructor */
-Elements.ElementsTreeOutline = ElementsTreeOutline;
-
-Elements.ElementsTreeOutline.MappedCharToEntity = MappedCharToEntity;
-
-/** @constructor */
-Elements.ElementsTreeOutline.UpdateRecord = UpdateRecord;
-
-/** @constructor */
-Elements.ElementsTreeOutline.Renderer = Renderer;
-
-/** @constructor */
-Elements.ElementsTreeOutline.ShortcutTreeElement = ShortcutTreeElement;
-
-/** @typedef {{node: !SDK.DOMNode, isCut: boolean}} */
-Elements.ElementsTreeOutline.ClipboardData;
+};

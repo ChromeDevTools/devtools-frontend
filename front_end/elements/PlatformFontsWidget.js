@@ -31,7 +31,7 @@
 /**
  * @unrestricted
  */
-export default class PlatformFontsWidget extends UI.ThrottledWidget {
+Elements.PlatformFontsWidget = class extends UI.ThrottledWidget {
   /**
    * @param {!Elements.ComputedStyleModel} sharedModel
    */
@@ -103,13 +103,4 @@ export default class PlatformFontsWidget extends UI.ThrottledWidget {
           usage === 1 ? Common.UIString('(%d glyph)', usage) : Common.UIString('(%d glyphs)', usage);
     }
   }
-}
-
-/* Legacy exported object */
-self.Elements = self.Elements || {};
-
-/* Legacy exported object */
-Elements = Elements || {};
-
-/** @constructor */
-Elements.PlatformFontsWidget = PlatformFontsWidget;
+};

@@ -34,7 +34,7 @@
  * @implements {UI.ViewLocationResolver}
  * @unrestricted
  */
-export default class ElementsPanel extends UI.Panel {
+Elements.ElementsPanel = class extends UI.Panel {
   constructor() {
     super('elements');
     this.registerRequiredCSS('elements/elementsPanel.css');
@@ -55,7 +55,7 @@ export default class ElementsPanel extends UI.Panel {
     stackElement.appendChild(crumbsContainer);
 
     this._splitWidget.setMainWidget(this._searchableView);
-    /** @type {?_splitMode} */
+    /** @type {?Elements.ElementsPanel._splitMode} */
     this._splitMode = null;
 
     this._contentElement.id = 'elements-content';
@@ -98,10 +98,10 @@ export default class ElementsPanel extends UI.Panel {
   }
 
   /**
-   * @return {!ElementsPanel}
+   * @return {!Elements.ElementsPanel}
    */
   static instance() {
-    return /** @type {!ElementsPanel} */ (self.runtime.sharedInstance(ElementsPanel));
+    return /** @type {!Elements.ElementsPanel} */ (self.runtime.sharedInstance(Elements.ElementsPanel));
   }
 
   /**
@@ -237,7 +237,7 @@ export default class ElementsPanel extends UI.Panel {
    * @override
    */
   wasShown() {
-    UI.context.setFlavor(ElementsPanel, this);
+    UI.context.setFlavor(Elements.ElementsPanel, this);
 
     for (let i = 0; i < this._treeOutlines.length; ++i) {
       const treeOutline = this._treeOutlines[i];
@@ -291,7 +291,7 @@ export default class ElementsPanel extends UI.Panel {
       this._popoverHelper.hidePopover();
     }
     super.willHide();
-    UI.context.setFlavor(ElementsPanel, null);
+    UI.context.setFlavor(Elements.ElementsPanel, null);
   }
 
   /**
@@ -370,7 +370,7 @@ export default class ElementsPanel extends UI.Panel {
     /**
      * @param {!SDK.DOMModel} domModel
      * @param {?SDK.DOMNode} staleNode
-     * @this {ElementsPanel}
+     * @this {Elements.ElementsPanel}
      */
     async function restoreNode(domModel, staleNode) {
       const nodePath = staleNode ? staleNode.path() : null;
@@ -454,7 +454,7 @@ export default class ElementsPanel extends UI.Panel {
 
     /**
      * @param {!Array.<number>} resultCounts
-     * @this {ElementsPanel}
+     * @this {Elements.ElementsPanel}
      */
     function resultCountCallback(resultCounts) {
       this._searchResults = [];
@@ -718,8 +718,8 @@ export default class ElementsPanel extends UI.Panel {
       delete this._omitDefaultSelection;
 
       if (!this._notFirstInspectElement) {
-        ElementsPanel._firstInspectElementNodeNameForTest = node.nodeName();
-        _firstInspectElementCompletedForTest();
+        Elements.ElementsPanel._firstInspectElementNodeNameForTest = node.nodeName();
+        Elements.ElementsPanel._firstInspectElementCompletedForTest();
         Host.InspectorFrontendHost.inspectElementCompleted();
       }
       this._notFirstInspectElement = true;
@@ -768,7 +768,7 @@ export default class ElementsPanel extends UI.Panel {
     }, true);
 
     /**
-     * @this {!ElementsPanel}
+     * @this {!Elements.ElementsPanel}
      */
     function uninstallHack() {
       this._splitWidget.element.classList.remove('disable-resizer-for-elements-hack');
@@ -794,11 +794,11 @@ export default class ElementsPanel extends UI.Panel {
     let splitMode;
     const position = Common.moduleSetting('sidebarPosition').get();
     if (position === 'right' || (position === 'auto' && UI.inspectorView.element.offsetWidth > 680)) {
-      splitMode = _splitMode.Vertical;
+      splitMode = Elements.ElementsPanel._splitMode.Vertical;
     } else if (UI.inspectorView.element.offsetWidth > 415) {
-      splitMode = _splitMode.Horizontal;
+      splitMode = Elements.ElementsPanel._splitMode.Horizontal;
     } else {
-      splitMode = _splitMode.Slim;
+      splitMode = Elements.ElementsPanel._splitMode.Slim;
     }
 
     if (this.sidebarPaneView && splitMode === this._splitMode) {
@@ -814,7 +814,7 @@ export default class ElementsPanel extends UI.Panel {
       this._splitWidget.uninstallResizer(this.sidebarPaneView.tabbedPane().headerElement());
     }
 
-    this._splitWidget.setVertical(this._splitMode === _splitMode.Vertical);
+    this._splitWidget.setVertical(this._splitMode === Elements.ElementsPanel._splitMode.Vertical);
     this.showToolbarPane(null /* widget */, null /* toggle */);
 
     const matchedStylePanesWrapper = new UI.VBox();
@@ -828,7 +828,7 @@ export default class ElementsPanel extends UI.Panel {
 
     /**
      * @param {boolean} inComputedStyle
-     * @this {ElementsPanel}
+     * @this {Elements.ElementsPanel}
      */
     function showMetrics(inComputedStyle) {
       if (inComputedStyle) {
@@ -840,7 +840,7 @@ export default class ElementsPanel extends UI.Panel {
 
     /**
      * @param {!Common.Event} event
-     * @this {ElementsPanel}
+     * @this {Elements.ElementsPanel}
      */
     function tabSelected(event) {
       const tabId = /** @type {string} */ (event.data.tabId);
@@ -860,13 +860,13 @@ export default class ElementsPanel extends UI.Panel {
     this._popoverHelper.setHasPadding(true);
     this._popoverHelper.setTimeout(0);
 
-    if (this._splitMode !== _splitMode.Vertical) {
+    if (this._splitMode !== Elements.ElementsPanel._splitMode.Vertical) {
       this._splitWidget.installResizer(tabbedPane.headerElement());
     }
 
     const stylesView = new UI.SimpleView(Common.UIString('Styles'));
     this.sidebarPaneView.appendView(stylesView);
-    if (splitMode === _splitMode.Horizontal) {
+    if (splitMode === Elements.ElementsPanel._splitMode.Horizontal) {
       // Styles and computed are merged into a single tab.
       stylesView.element.classList.add('flex-auto');
 
@@ -888,7 +888,7 @@ export default class ElementsPanel extends UI.Panel {
     }
     this._stylesViewToReveal = stylesView;
 
-    showMetrics.call(this, this._splitMode === _splitMode.Horizontal);
+    showMetrics.call(this, this._splitMode === Elements.ElementsPanel._splitMode.Horizontal);
 
     this.sidebarPaneView.appendApplicableItems('elements-sidebar');
     for (let i = 0; i < extensionSidebarPanes.length; ++i) {
@@ -918,25 +918,25 @@ export default class ElementsPanel extends UI.Panel {
       this.sidebarPaneView.appendView(pane);
     }
   }
-}
+};
 
-export const _elementsSidebarViewTitleSymbol = Symbol('title');
+Elements.ElementsPanel._elementsSidebarViewTitleSymbol = Symbol('title');
 
 /** @enum {symbol} */
-export const _splitMode = {
+Elements.ElementsPanel._splitMode = {
   Vertical: Symbol('Vertical'),
   Horizontal: Symbol('Horizontal'),
   Slim: Symbol('Slim'),
 };
 
 // Sniffed in tests.
-export const _firstInspectElementCompletedForTest = function() {};
+Elements.ElementsPanel._firstInspectElementCompletedForTest = function() {};
 
 /**
  * @implements {UI.ContextMenu.Provider}
  * @unrestricted
  */
-export class ContextMenuProvider {
+Elements.ElementsPanel.ContextMenuProvider = class {
   /**
    * @override
    * @param {!Event} event
@@ -950,19 +950,19 @@ export class ContextMenuProvider {
     }
 
     // Skip adding "Reveal..." menu item for our own tree outline.
-    if (ElementsPanel.instance().element.isAncestor(/** @type {!Node} */ (event.target))) {
+    if (Elements.ElementsPanel.instance().element.isAncestor(/** @type {!Node} */ (event.target))) {
       return;
     }
     const commandCallback = Common.Revealer.reveal.bind(Common.Revealer, object);
     contextMenu.revealSection().appendItem(Common.UIString('Reveal in Elements panel'), commandCallback);
   }
-}
+};
 
 /**
  * @implements {Common.Revealer}
  * @unrestricted
  */
-export class DOMNodeRevealer {
+Elements.ElementsPanel.DOMNodeRevealer = class {
   /**
    * @override
    * @param {!Object} node
@@ -970,7 +970,7 @@ export class DOMNodeRevealer {
    * @return {!Promise}
    */
   reveal(node, omitFocus) {
-    const panel = ElementsPanel.instance();
+    const panel = Elements.ElementsPanel.instance();
     panel._pendingNodeReveal = true;
 
     return new Promise(revealPromise);
@@ -1028,30 +1028,30 @@ export class DOMNodeRevealer {
       }
     }
   }
-}
+};
 
 /**
  * @implements {Common.Revealer}
  * @unrestricted
  */
-export class CSSPropertyRevealer {
+Elements.ElementsPanel.CSSPropertyRevealer = class {
   /**
    * @override
    * @param {!Object} property
    * @return {!Promise}
    */
   reveal(property) {
-    const panel = ElementsPanel.instance();
+    const panel = Elements.ElementsPanel.instance();
     return panel._revealProperty(/** @type {!SDK.CSSProperty} */ (property));
   }
-}
+};
 
 
 /**
  * @implements {UI.ActionDelegate}
  * @unrestricted
  */
-export class ElementsActionDelegate {
+Elements.ElementsActionDelegate = class {
   /**
    * @override
    * @param {!UI.Context} context
@@ -1077,22 +1077,22 @@ export class ElementsActionDelegate {
         return true;
       case 'elements.undo':
         SDK.domModelUndoStack.undo();
-        ElementsPanel.instance()._stylesWidget.forceUpdate();
+        Elements.ElementsPanel.instance()._stylesWidget.forceUpdate();
         return true;
       case 'elements.redo':
         SDK.domModelUndoStack.redo();
-        ElementsPanel.instance()._stylesWidget.forceUpdate();
+        Elements.ElementsPanel.instance()._stylesWidget.forceUpdate();
         return true;
     }
     return false;
   }
-}
+};
 
 /**
  * @implements {Elements.MarkerDecorator}
  * @unrestricted
  */
-export class PseudoStateMarkerDecorator {
+Elements.ElementsPanel.PseudoStateMarkerDecorator = class {
   /**
    * @override
    * @param {!SDK.DOMNode} node
@@ -1104,36 +1104,4 @@ export class PseudoStateMarkerDecorator {
       title: Common.UIString('Element state: %s', ':' + node.domModel().cssModel().pseudoState(node).join(', :'))
     };
   }
-}
-
-/* Legacy exported object */
-self.Elements = self.Elements || {};
-
-/* Legacy exported object */
-Elements = Elements || {};
-
-/** @constructor */
-Elements.ElementsPanel = ElementsPanel;
-
-Elements.ElementsPanel._elementsSidebarViewTitleSymbol = _elementsSidebarViewTitleSymbol;
-
-/** @enum {symbol} */
-Elements.ElementsPanel._splitMode = _splitMode;
-
-// Sniffed in tests.
-Elements.ElementsPanel._firstInspectElementCompletedForTest = _firstInspectElementCompletedForTest;
-
-/** @constructor */
-Elements.ElementsPanel.ContextMenuProvider = ContextMenuProvider;
-
-/** @constructor */
-Elements.ElementsPanel.DOMNodeRevealer = DOMNodeRevealer;
-
-/** @constructor */
-Elements.ElementsPanel.CSSPropertyRevealer = CSSPropertyRevealer;
-
-/** @constructor */
-Elements.ElementsActionDelegate = ElementsActionDelegate;
-
-/** @constructor */
-Elements.ElementsPanel.PseudoStateMarkerDecorator = PseudoStateMarkerDecorator;
+};

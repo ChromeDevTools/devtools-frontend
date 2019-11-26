@@ -4,7 +4,7 @@
 /**
  * @unrestricted
  */
-export default class ClassesPaneWidget extends UI.Widget {
+Elements.ClassesPaneWidget = class extends UI.Widget {
   constructor() {
     super(true);
     this.registerRequiredCSS('elements/classesPaneWidget.css');
@@ -14,7 +14,7 @@ export default class ClassesPaneWidget extends UI.Widget {
     this.setDefaultFocusedElement(this._input);
     this._classesContainer = this.contentElement.createChild('div', 'source-code');
     this._classesContainer.classList.add('styles-element-classes-container');
-    this._prompt = new ClassNamePrompt(this._nodeClasses.bind(this));
+    this._prompt = new Elements.ClassesPaneWidget.ClassNamePrompt(this._nodeClasses.bind(this));
     this._prompt.setAutocompletionTimeout(0);
     this._prompt.renderAsBlock();
 
@@ -99,7 +99,7 @@ export default class ClassesPaneWidget extends UI.Widget {
     if (this._mutatingNodes.has(node)) {
       return;
     }
-    delete node[ClassesPaneWidget._classesSymbol];
+    delete node[Elements.ClassesPaneWidget._classesSymbol];
     this._update();
   }
 
@@ -170,7 +170,7 @@ export default class ClassesPaneWidget extends UI.Widget {
    * @return {!Map<string, boolean>}
    */
   _nodeClasses(node) {
-    let result = node[ClassesPaneWidget._classesSymbol];
+    let result = node[Elements.ClassesPaneWidget._classesSymbol];
     if (!result) {
       const classAttribute = node.getAttribute('class') || '';
       const classes = classAttribute.split(/\s/);
@@ -182,7 +182,7 @@ export default class ClassesPaneWidget extends UI.Widget {
         }
         result.set(className, true);
       }
-      node[ClassesPaneWidget._classesSymbol] = result;
+      node[Elements.ClassesPaneWidget._classesSymbol] = result;
     }
     return result;
   }
@@ -237,27 +237,27 @@ export default class ClassesPaneWidget extends UI.Widget {
 
     /**
      * @param {!SDK.DOMNode} node
-     * @this {ClassesPaneWidget}
+     * @this {Elements.ClassesPaneWidget}
      */
     function onClassValueUpdated(node) {
       this._mutatingNodes.delete(node);
     }
   }
-}
+};
 
-ClassesPaneWidget._classesSymbol = Symbol('ClassesPaneWidget._classesSymbol');
+Elements.ClassesPaneWidget._classesSymbol = Symbol('Elements.ClassesPaneWidget._classesSymbol');
 
 /**
  * @implements {UI.ToolbarItem.Provider}
  * @unrestricted
  */
-export class ButtonProvider {
+Elements.ClassesPaneWidget.ButtonProvider = class {
   constructor() {
     this._button = new UI.ToolbarToggle(Common.UIString('Element Classes'), '');
     this._button.setText('.cls');
     this._button.element.classList.add('monospace');
     this._button.addEventListener(UI.ToolbarButton.Events.Click, this._clicked, this);
-    this._view = new ClassesPaneWidget();
+    this._view = new Elements.ClassesPaneWidget();
   }
 
   _clicked() {
@@ -271,12 +271,12 @@ export class ButtonProvider {
   item() {
     return this._button;
   }
-}
+};
 
 /**
  * @unrestricted
  */
-export class ClassNamePrompt extends UI.TextPrompt {
+Elements.ClassesPaneWidget.ClassNamePrompt = class extends UI.TextPrompt {
   /**
    * @param {function(!SDK.DOMNode):!Map<string, boolean>} nodeClasses
    */
@@ -345,19 +345,4 @@ export class ClassNamePrompt extends UI.TextPrompt {
       return completions.filter(value => value.startsWith(prefix)).sort().map(completion => ({text: completion}));
     });
   }
-}
-
-/* Legacy exported object */
-self.Elements = self.Elements || {};
-
-/* Legacy exported object */
-Elements = Elements || {};
-
-/** @constructor */
-Elements.ClassesPaneWidget = ClassesPaneWidget;
-
-/** @constructor */
-Elements.ClassesPaneWidget.ButtonProvider = ButtonProvider;
-
-/** @constructor */
-Elements.ClassesPaneWidget.ClassNamePrompt = ClassNamePrompt;
+};

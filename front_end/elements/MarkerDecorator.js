@@ -5,19 +5,21 @@
 /**
  * @interface
  */
-export default class MarkerDecorator {
+Elements.MarkerDecorator = function() {};
+
+Elements.MarkerDecorator.prototype = {
   /**
    * @param {!SDK.DOMNode} node
    * @return {?{title: string, color: string}}
    */
   decorate(node) {}
-}
+};
 
 /**
- * @implements {MarkerDecorator}
+ * @implements {Elements.MarkerDecorator}
  * @unrestricted
  */
-export class GenericDecorator {
+Elements.GenericDecorator = class {
   /**
    * @param {!Root.Runtime.Extension} extension
    */
@@ -34,15 +36,4 @@ export class GenericDecorator {
   decorate(node) {
     return {title: this._title, color: this._color};
   }
-}
-
-/* Legacy exported object */
-self.Elements = self.Elements || {};
-
-/* Legacy exported object */
-Elements = Elements || {};
-
-/** @interface */
-Elements.MarkerDecorator = MarkerDecorator;
-
-Elements.GenericDecorator = GenericDecorator;
+};

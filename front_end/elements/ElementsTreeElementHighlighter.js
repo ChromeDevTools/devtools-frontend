@@ -1,11 +1,10 @@
 // Copyright (c) 2015 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-
 /**
  * @unrestricted
  */
-export default class ElementsTreeElementHighlighter {
+Elements.ElementsTreeElementHighlighter = class {
   /**
    * @param {!Elements.ElementsTreeOutline} treeOutline
    */
@@ -36,7 +35,7 @@ export default class ElementsTreeElementHighlighter {
         this._treeOutline === Elements.ElementsTreeOutline.forDOMModel(domNode.domModel()) ? domNode : null;
 
     /**
-     * @this {ElementsTreeElementHighlighter}
+     * @this {Elements.ElementsTreeElementHighlighter}
      */
     function callback() {
       this._highlightNodeInternal(this._pendingHighlightNode);
@@ -96,13 +95,4 @@ export default class ElementsTreeElementHighlighter {
     delete this._alreadyExpandedParentElement;
     delete this._pendingHighlightNode;
   }
-}
-
-/* Legacy exported object */
-self.Elements = self.Elements || {};
-
-/* Legacy exported object */
-Elements = Elements || {};
-
-/** @constructor */
-Elements.ElementsTreeElementHighlighter = ElementsTreeElementHighlighter;
+};

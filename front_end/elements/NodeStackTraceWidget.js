@@ -5,7 +5,7 @@
 /**
  * @unrestricted
  */
-export default class NodeStackTraceWidget extends UI.ThrottledWidget {
+Elements.NodeStackTraceWidget = class extends UI.ThrottledWidget {
   constructor() {
     super(true /* isWebComponent */);
     this.registerRequiredCSS('elements/nodeStackTraceWidget.css');
@@ -14,7 +14,7 @@ export default class NodeStackTraceWidget extends UI.ThrottledWidget {
     this._noStackTraceElement.textContent = ls`No stack trace available`;
     this._creationStackTraceElement = this.contentElement.createChild('div', 'stack-trace');
 
-    this._linkifier = new Components.Linkifier(MaxLengthForLinks);
+    this._linkifier = new Components.Linkifier(Elements.NodeStackTraceWidget.MaxLengthForLinks);
   }
 
   /**
@@ -60,21 +60,10 @@ export default class NodeStackTraceWidget extends UI.ThrottledWidget {
       this._creationStackTraceElement.classList.add('hidden');
     }
   }
-}
+};
 
 /**
  * @const
  * @type {number}
  */
-export const MaxLengthForLinks = 40;
-
-/* Legacy exported object */
-self.Elements = self.Elements || {};
-
-/* Legacy exported object */
-Elements = Elements || {};
-
-/** @constructor */
-Elements.NodeStackTraceWidget = NodeStackTraceWidget;
-
-Elements.NodeStackTraceWidget.MaxLengthForLinks = MaxLengthForLinks;
+Elements.NodeStackTraceWidget.MaxLengthForLinks = 40;

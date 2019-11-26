@@ -2,12 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+Elements.DOMLinkifier = {};
+
 /**
  * @param {!SDK.DOMNode} node
  * @param {!Element} parentElement
  * @param {string=} tooltipContent
  */
-export const decorateNodeLabel = function(node, parentElement, tooltipContent) {
+Elements.DOMLinkifier.decorateNodeLabel = function(node, parentElement, tooltipContent) {
   const originalNode = node;
   const isPseudo = node.nodeType() === Node.ELEMENT_NODE && node.pseudoType();
   if (isPseudo && node.parentNode) {
@@ -63,7 +65,7 @@ export const decorateNodeLabel = function(node, parentElement, tooltipContent) {
  * @param {!Common.Linkifier.Options=} options
  * @return {!Node}
  */
-export const linkifyNodeReference = function(node, options = {}) {
+Elements.DOMLinkifier.linkifyNodeReference = function(node, options = {}) {
   if (!node) {
     return createTextNode(Common.UIString('<node>'));
   }
@@ -72,7 +74,7 @@ export const linkifyNodeReference = function(node, options = {}) {
   const shadowRoot = UI.createShadowRootWithCoreStyles(root, 'elements/domLinkifier.css');
   const link = shadowRoot.createChild('div', 'node-link');
 
-  decorateNodeLabel(node, link, options.tooltip);
+  Elements.DOMLinkifier.decorateNodeLabel(node, link, options.tooltip);
 
   link.addEventListener('click', () => Common.Revealer.reveal(node, false) && false, false);
   link.addEventListener('mouseover', node.highlight.bind(node, undefined), false);
@@ -92,7 +94,7 @@ export const linkifyNodeReference = function(node, options = {}) {
  * @param {!Common.Linkifier.Options=} options
  * @return {!Node}
  */
-export const linkifyDeferredNodeReference = function(deferredNode, options = {}) {
+Elements.DOMLinkifier.linkifyDeferredNodeReference = function(deferredNode, options = {}) {
   const root = createElement('div');
   const shadowRoot = UI.createShadowRootWithCoreStyles(root, 'elements/domLinkifier.css');
   const link = shadowRoot.createChild('div', 'node-link');
@@ -119,7 +121,7 @@ export const linkifyDeferredNodeReference = function(deferredNode, options = {})
 /**
  * @implements {Common.Linkifier}
  */
-export class Linkifier {
+Elements.DOMLinkifier.Linkifier = class {
   /**
    * @override
    * @param {!Object} object
@@ -128,26 +130,11 @@ export class Linkifier {
    */
   linkify(object, options) {
     if (object instanceof SDK.DOMNode) {
-      return linkifyNodeReference(object, options);
+      return Elements.DOMLinkifier.linkifyNodeReference(object, options);
     }
     if (object instanceof SDK.DeferredDOMNode) {
-      return linkifyDeferredNodeReference(object, options);
+      return Elements.DOMLinkifier.linkifyDeferredNodeReference(object, options);
     }
     throw new Error('Can\'t linkify non-node');
   }
-}
-
-/* Legacy exported object */
-self.Elements = self.Elements || {};
-
-/* Legacy exported object */
-Elements = Elements || {};
-
-Elements.DOMLinkifier = {};
-
-Elements.DOMLinkifier.decorateNodeLabel = decorateNodeLabel;
-Elements.DOMLinkifier.linkifyNodeReference = linkifyNodeReference;
-Elements.DOMLinkifier.linkifyDeferredNodeReference = linkifyDeferredNodeReference;
-
-/** @constructor */
-Elements.DOMLinkifier.Linkifier = Linkifier;
+};

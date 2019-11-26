@@ -27,7 +27,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-export default class StylesSidebarPane extends Elements.ElementsSidebarPane {
+Elements.StylesSidebarPane = class extends Elements.ElementsSidebarPane {
   constructor() {
     super(true /* delegatesFocus */);
     this.setMinimumSize(96, 26);
@@ -56,7 +56,7 @@ export default class StylesSidebarPane extends Elements.ElementsSidebarPane {
     this._sectionsContainer.addEventListener('focusout', this._sectionsContainerFocusChanged.bind(this), false);
 
     this._swatchPopoverHelper = new InlineEditor.SwatchPopoverHelper();
-    this._linkifier = new Components.Linkifier(_maxLinkLength, /* useLinkDecorator */ true);
+    this._linkifier = new Components.Linkifier(Elements.StylesSidebarPane._maxLinkLength, /* useLinkDecorator */ true);
     /** @type {?Elements.StylePropertyHighlighter} */
     this._decorator = null;
     this._userOperation = false;
@@ -67,10 +67,10 @@ export default class StylesSidebarPane extends Elements.ElementsSidebarPane {
 
     this.contentElement.classList.add('styles-pane');
 
-    /** @type {!Array<!SectionBlock>} */
+    /** @type {!Array<!Elements.SectionBlock>} */
     this._sectionBlocks = [];
     this._needsForceUpdate = false;
-    StylesSidebarPane._instance = this;
+    Elements.StylesSidebarPane._instance = this;
     UI.context.addFlavorChangeListener(SDK.DOMNode, this.forceUpdate, this);
     this.contentElement.addEventListener('copy', this._clipboardCopy.bind(this));
     this._resizeThrottler = new Common.Throttler(100);
@@ -97,7 +97,7 @@ export default class StylesSidebarPane extends Elements.ElementsSidebarPane {
   static createExclamationMark(property) {
     const exclamationElement = createElement('span', 'dt-icon-label');
     exclamationElement.className = 'exclamation-mark';
-    if (!StylesSidebarPane.ignoreErrorsForProperty(property)) {
+    if (!Elements.StylesSidebarPane.ignoreErrorsForProperty(property)) {
       exclamationElement.type = 'smallicon-warning';
     }
     exclamationElement.title = SDK.cssMetadata().isCSSPropertyName(property.name) ?
@@ -316,7 +316,7 @@ export default class StylesSidebarPane extends Elements.ElementsSidebarPane {
   }
 
   /**
-   * @param {!StylePropertiesSection} editedSection
+   * @param {!Elements.StylePropertiesSection} editedSection
    * @param {!Elements.StylePropertyTreeElement=} editedTreeElement
    */
   _refreshUpdate(editedSection, editedTreeElement) {
@@ -394,7 +394,7 @@ export default class StylesSidebarPane extends Elements.ElementsSidebarPane {
     /**
      * @param {?SDK.CSSMatchedStyles} matchedStyles
      * @return {?SDK.CSSMatchedStyles}
-     * @this {StylesSidebarPane}
+     * @this {Elements.StylesSidebarPane}
      */
     function validateStyles(matchedStyles) {
       return matchedStyles && matchedStyles.node() === this.node() ? matchedStyles : null;
@@ -526,18 +526,18 @@ export default class StylesSidebarPane extends Elements.ElementsSidebarPane {
     }
     pseudoTypes = pseudoTypes.concat(keys.valuesArray().sort());
     for (const pseudoType of pseudoTypes) {
-      const block = SectionBlock.createPseudoTypeBlock(pseudoType);
+      const block = Elements.SectionBlock.createPseudoTypeBlock(pseudoType);
       for (const style of matchedStyles.pseudoStyles(pseudoType)) {
-        const section = new StylePropertiesSection(this, matchedStyles, style);
+        const section = new Elements.StylePropertiesSection(this, matchedStyles, style);
         block.sections.push(section);
       }
       this._sectionBlocks.push(block);
     }
 
     for (const keyframesRule of matchedStyles.keyframes()) {
-      const block = SectionBlock.createKeyframesBlock(keyframesRule.name().text);
+      const block = Elements.SectionBlock.createKeyframesBlock(keyframesRule.name().text);
       for (const keyframe of keyframesRule.keyframes()) {
-        block.sections.push(new KeyframePropertiesSection(this, matchedStyles, keyframe.style));
+        block.sections.push(new Elements.KeyframePropertiesSection(this, matchedStyles, keyframe.style));
       }
       this._sectionBlocks.push(block);
     }
@@ -584,19 +584,19 @@ export default class StylesSidebarPane extends Elements.ElementsSidebarPane {
 
   /**
    * @param {!SDK.CSSMatchedStyles} matchedStyles
-   * @return {!Promise<!Array.<!SectionBlock>>}
+   * @return {!Promise<!Array.<!Elements.SectionBlock>>}
    */
   async _rebuildSectionsForMatchedStyleRules(matchedStyles) {
-    const blocks = [new SectionBlock(null)];
+    const blocks = [new Elements.SectionBlock(null)];
     let lastParentNode = null;
     for (const style of matchedStyles.nodeStyles()) {
       const parentNode = matchedStyles.isInherited(style) ? matchedStyles.nodeForStyle(style) : null;
       if (parentNode && parentNode !== lastParentNode) {
         lastParentNode = parentNode;
-        const block = await SectionBlock._createInheritedNodeBlock(lastParentNode);
+        const block = await Elements.SectionBlock._createInheritedNodeBlock(lastParentNode);
         blocks.push(block);
       }
-      const section = new StylePropertiesSection(this, matchedStyles, style);
+      const section = new Elements.StylePropertiesSection(this, matchedStyles, style);
       blocks.peekLast().sections.push(section);
     }
     return blocks;
@@ -631,13 +631,13 @@ export default class StylesSidebarPane extends Elements.ElementsSidebarPane {
   }
 
   /**
-   * @param {!StylePropertiesSection} insertAfterSection
+   * @param {!Elements.StylePropertiesSection} insertAfterSection
    * @param {string} styleSheetId
    * @param {!TextUtils.TextRange} ruleLocation
    */
   _addBlankSection(insertAfterSection, styleSheetId, ruleLocation) {
     const node = this.node();
-    const blankSection = new BlankStylePropertiesSection(
+    const blankSection = new Elements.BlankStylePropertiesSection(
         this, insertAfterSection._matchedStyles, node ? node.simpleSelector() : '', styleSheetId, ruleLocation,
         insertAfterSection._style);
 
@@ -654,7 +654,7 @@ export default class StylesSidebarPane extends Elements.ElementsSidebarPane {
   }
 
   /**
-   * @param {!StylePropertiesSection} section
+   * @param {!Elements.StylePropertiesSection} section
    */
   removeSection(section) {
     for (const block of this._sectionBlocks) {
@@ -691,7 +691,7 @@ export default class StylesSidebarPane extends Elements.ElementsSidebarPane {
   }
 
   /**
-   * @return {!Array<!StylePropertiesSection>}
+   * @return {!Array<!Elements.StylePropertiesSection>}
    */
   allSections() {
     let sections = [];
@@ -716,7 +716,7 @@ export default class StylesSidebarPane extends Elements.ElementsSidebarPane {
     const hbox = container.createChild('div', 'hbox styles-sidebar-pane-toolbar');
     const filterContainerElement = hbox.createChild('div', 'styles-sidebar-pane-filter-box');
     const filterInput =
-        StylesSidebarPane.createPropertyFilterElement(ls`Filter`, hbox, this._onFilterChanged.bind(this));
+        Elements.StylesSidebarPane.createPropertyFilterElement(ls`Filter`, hbox, this._onFilterChanged.bind(this));
     UI.ARIAUtils.setAccessibleName(filterInput, Common.UIString('Filter Styles'));
     filterContainerElement.appendChild(filterInput);
     const toolbar = new UI.Toolbar('styles-pane-toolbar', hbox);
@@ -781,7 +781,7 @@ export default class StylesSidebarPane extends Elements.ElementsSidebarPane {
     this._toolbarPaneElement.addEventListener('animationend', listener, false);
 
     /**
-     * @this {!StylesSidebarPane}
+     * @this {!Elements.StylesSidebarPane}
      */
     function onAnimationEnd() {
       this._toolbarPaneElement.style.removeProperty('animation-name');
@@ -803,11 +803,11 @@ export default class StylesSidebarPane extends Elements.ElementsSidebarPane {
       }
     }
   }
-}
+};
 
-export const _maxLinkLength = 23;
+Elements.StylesSidebarPane._maxLinkLength = 23;
 
-export class SectionBlock {
+Elements.SectionBlock = class {
   /**
    * @param {?Element} titleElement
    */
@@ -818,29 +818,29 @@ export class SectionBlock {
 
   /**
    * @param {!Protocol.DOM.PseudoType} pseudoType
-   * @return {!SectionBlock}
+   * @return {!Elements.SectionBlock}
    */
   static createPseudoTypeBlock(pseudoType) {
     const separatorElement = createElement('div');
     separatorElement.className = 'sidebar-separator';
     separatorElement.textContent = Common.UIString('Pseudo ::%s element', pseudoType);
-    return new SectionBlock(separatorElement);
+    return new Elements.SectionBlock(separatorElement);
   }
 
   /**
    * @param {string} keyframesName
-   * @return {!SectionBlock}
+   * @return {!Elements.SectionBlock}
    */
   static createKeyframesBlock(keyframesName) {
     const separatorElement = createElement('div');
     separatorElement.className = 'sidebar-separator';
     separatorElement.textContent = `@keyframes ${keyframesName}`;
-    return new SectionBlock(separatorElement);
+    return new Elements.SectionBlock(separatorElement);
   }
 
   /**
    * @param {!SDK.DOMNode} node
-   * @return {!Promise<!SectionBlock>}
+   * @return {!Promise<!Elements.SectionBlock>}
    */
   static async _createInheritedNodeBlock(node) {
     const separatorElement = createElement('div');
@@ -848,7 +848,7 @@ export class SectionBlock {
     separatorElement.createTextChild(ls`Inherited from${' '}`);
     const link = await Common.Linkifier.linkify(node, {preventKeyboardFocus: true});
     separatorElement.appendChild(link);
-    return new SectionBlock(separatorElement);
+    return new Elements.SectionBlock(separatorElement);
   }
 
   /**
@@ -871,11 +871,11 @@ export class SectionBlock {
   titleElement() {
     return this._titleElement;
   }
-}
+};
 
-export class StylePropertiesSection {
+Elements.StylePropertiesSection = class {
   /**
-   * @param {!StylesSidebarPane} parentPane
+   * @param {!Elements.StylesSidebarPane} parentPane
    * @param {!SDK.CSSMatchedStyles} matchedStyles
    * @param {!SDK.CSSStyleDeclaration} style
    */
@@ -940,7 +940,7 @@ export class StylePropertiesSection {
       if (rule.isUserAgent() || rule.isInjected()) {
         this.editable = false;
       } else {
-        // Check this is a real CSSRule, not a bogus object coming from BlankStylePropertiesSection.
+        // Check this is a real CSSRule, not a bogus object coming from Elements.BlankStylePropertiesSection.
         if (rule.styleSheetId) {
           const header = rule.cssModel().styleSheetHeaderForId(rule.styleSheetId);
           this.navigable = !header.isAnonymousInlineStyleSheet();
@@ -984,7 +984,7 @@ export class StylePropertiesSection {
 
     const header = rule.styleSheetId ? matchedStyles.cssModel().styleSheetHeaderForId(rule.styleSheetId) : null;
     if (ruleLocation && rule.styleSheetId && header && !header.isAnonymousInlineStyleSheet()) {
-      return StylePropertiesSection._linkifyRuleLocation(
+      return Elements.StylePropertiesSection._linkifyRuleLocation(
           matchedStyles.cssModel(), linkifier, rule.styleSheetId, ruleLocation);
     }
 
@@ -1239,7 +1239,7 @@ export class StylePropertiesSection {
   }
 
   /**
-   * @return {?StylePropertiesSection}
+   * @return {?Elements.StylePropertiesSection}
    */
   firstSibling() {
     const parent = this.element.parentElement;
@@ -1259,7 +1259,7 @@ export class StylePropertiesSection {
   }
 
   /**
-   * @return {?StylePropertiesSection}
+   * @return {?Elements.StylePropertiesSection}
    */
   lastSibling() {
     const parent = this.element.parentElement;
@@ -1279,7 +1279,7 @@ export class StylePropertiesSection {
   }
 
   /**
-   * @return {?StylePropertiesSection}
+   * @return {?Elements.StylePropertiesSection}
    */
   nextSibling() {
     let curElement = this.element;
@@ -1291,7 +1291,7 @@ export class StylePropertiesSection {
   }
 
   /**
-   * @return {?StylePropertiesSection}
+   * @return {?Elements.StylePropertiesSection}
    */
   previousSibling() {
     let curElement = this.element;
@@ -1430,7 +1430,7 @@ export class StylePropertiesSection {
   }
 
   /**
-   * @return {?StylePropertiesSection}
+   * @return {?Elements.StylePropertiesSection}
    */
   nextEditableSibling() {
     let curSection = this;
@@ -1449,7 +1449,7 @@ export class StylePropertiesSection {
   }
 
   /**
-   * @return {?StylePropertiesSection}
+   * @return {?Elements.StylePropertiesSection}
    */
   previousEditableSibling() {
     let curSection = this;
@@ -1525,7 +1525,8 @@ export class StylePropertiesSection {
     const style = this._style;
     let count = 0;
     const properties = style.leadingProperties();
-    const maxProperties = StylePropertiesSection.MaxProperties + properties.length - this._originalPropertiesCount;
+    const maxProperties =
+        Elements.StylePropertiesSection.MaxProperties + properties.length - this._originalPropertiesCount;
 
     for (const property of properties) {
       if (!this._forceShowAll && count >= maxProperties) {
@@ -1818,7 +1819,7 @@ export class StylePropertiesSection {
 
     /**
      * @param {boolean} success
-     * @this {StylePropertiesSection}
+     * @this {Elements.StylePropertiesSection}
      */
     function userCallback(success) {
       if (success) {
@@ -1866,7 +1867,7 @@ export class StylePropertiesSection {
       return;
     }
     const rawLocation = new SDK.CSSLocation(header, rule.lineNumberInSource(index), rule.columnNumberInSource(index));
-    StylePropertiesSection._revealSelectorSource(rawLocation, focus);
+    Elements.StylePropertiesSection._revealSelectorSource(rawLocation, focus);
   }
 
   /**
@@ -1968,7 +1969,7 @@ export class StylePropertiesSection {
     }
 
     /**
-     * @this {StylePropertiesSection}
+     * @this {Elements.StylePropertiesSection}
      */
     function headerTextCommitted() {
       this._parentPane.setUserOperation(false);
@@ -1991,7 +1992,7 @@ export class StylePropertiesSection {
      * @param {!SDK.CSSStyleRule} rule
      * @param {boolean} success
      * @return {!Promise}
-     * @this {StylePropertiesSection}
+     * @this {Elements.StylePropertiesSection}
      */
     function onSelectorsUpdated(rule, success) {
       if (!success) {
@@ -2002,7 +2003,7 @@ export class StylePropertiesSection {
 
     /**
      * @param {!SDK.CSSStyleRule} rule
-     * @this {StylePropertiesSection}
+     * @this {Elements.StylePropertiesSection}
      */
     function updateSourceRanges(rule) {
       const doesAffectSelectedNode = this._matchedStyles.matchingSelectors(rule).length > 0;
@@ -2025,7 +2026,7 @@ export class StylePropertiesSection {
 
   _updateRuleOrigin() {
     this._selectorRefElement.removeChildren();
-    this._selectorRefElement.appendChild(StylePropertiesSection.createRuleOriginNode(
+    this._selectorRefElement.appendChild(Elements.StylePropertiesSection.createRuleOriginNode(
         this._matchedStyles, this._parentPane._linkifier, this._style.parentRule));
   }
 
@@ -2040,13 +2041,11 @@ export class StylePropertiesSection {
     // This is overridden by BlankStylePropertiesSection.
     this._markSelectorMatches();
   }
-}
+};
 
-StylePropertiesSection.MaxProperties = 50;
-
-export class BlankStylePropertiesSection extends StylePropertiesSection {
+Elements.BlankStylePropertiesSection = class extends Elements.StylePropertiesSection {
   /**
-   * @param {!StylesSidebarPane} stylesPane
+   * @param {!Elements.StylesSidebarPane} stylesPane
    * @param {!SDK.CSSMatchedStyles} matchedStyles
    * @param {string} defaultSelectorText
    * @param {string} styleSheetId
@@ -2061,7 +2060,7 @@ export class BlankStylePropertiesSection extends StylePropertiesSection {
     this._ruleLocation = ruleLocation;
     this._styleSheetId = styleSheetId;
     this._selectorRefElement.removeChildren();
-    this._selectorRefElement.appendChild(StylePropertiesSection._linkifyRuleLocation(
+    this._selectorRefElement.appendChild(Elements.StylePropertiesSection._linkifyRuleLocation(
         cssModel, this._parentPane._linkifier, styleSheetId, this._actualRuleLocation()));
     if (insertAfterStyle && insertAfterStyle.parentRule) {
       this._createMediaList(insertAfterStyle.parentRule.media);
@@ -2110,7 +2109,7 @@ export class BlankStylePropertiesSection extends StylePropertiesSection {
     /**
      * @param {?SDK.CSSStyleRule} newRule
      * @return {!Promise}
-     * @this {BlankStylePropertiesSection}
+     * @this {Elements.BlankStylePropertiesSection}
      */
     function onRuleAdded(newRule) {
       if (!newRule) {
@@ -2124,7 +2123,7 @@ export class BlankStylePropertiesSection extends StylePropertiesSection {
 
     /**
      * @param {!SDK.CSSStyleRule} newRule
-     * @this {BlankStylePropertiesSection}
+     * @this {Elements.BlankStylePropertiesSection}
      */
     function onAddedToCascade(newRule) {
       const doesSelectorAffectSelectedNode = this._matchedStyles.matchingSelectors(newRule).length > 0;
@@ -2177,14 +2176,15 @@ export class BlankStylePropertiesSection extends StylePropertiesSection {
   _makeNormal(newRule) {
     this.element.classList.remove('blank-section');
     this._style = newRule.style;
-    // FIXME: replace this instance by a normal StylePropertiesSection.
+    // FIXME: replace this instance by a normal Elements.StylePropertiesSection.
     this._normal = true;
   }
-}
+};
+Elements.StylePropertiesSection.MaxProperties = 50;
 
-export class KeyframePropertiesSection extends StylePropertiesSection {
+Elements.KeyframePropertiesSection = class extends Elements.StylePropertiesSection {
   /**
-   * @param {!StylesSidebarPane} stylesPane
+   * @param {!Elements.StylesSidebarPane} stylesPane
    * @param {!SDK.CSSMatchedStyles} matchedStyles
    * @param {!SDK.CSSStyleDeclaration} style
    */
@@ -2210,7 +2210,7 @@ export class KeyframePropertiesSection extends StylePropertiesSection {
   _setHeaderText(rule, newContent) {
     /**
      * @param {boolean} success
-     * @this {KeyframePropertiesSection}
+     * @this {Elements.KeyframePropertiesSection}
      */
     function updateSourceRanges(success) {
       if (!success) {
@@ -2263,9 +2263,9 @@ export class KeyframePropertiesSection extends StylePropertiesSection {
    */
   _highlight() {
   }
-}
+};
 
-export class CSSPropertyPrompt extends UI.TextPrompt {
+Elements.StylesSidebarPane.CSSPropertyPrompt = class extends UI.TextPrompt {
   /**
    * @param {!Elements.StylePropertyTreeElement} treeElement
    * @param {boolean} isEditingName
@@ -2372,7 +2372,7 @@ export class CSSPropertyPrompt extends UI.TextPrompt {
     /**
      * @param {string} originalValue
      * @param {string} replacementString
-     * @this {CSSPropertyPrompt}
+     * @this {Elements.StylesSidebarPane.CSSPropertyPrompt}
      */
     function finishHandler(originalValue, replacementString) {
       // Synthesize property text disregarding any comments, custom whitespace etc.
@@ -2385,7 +2385,7 @@ export class CSSPropertyPrompt extends UI.TextPrompt {
      * @param {number} number
      * @param {string} suffix
      * @return {string}
-     * @this {CSSPropertyPrompt}
+     * @this {Elements.StylesSidebarPane.CSSPropertyPrompt}
      */
     function customNumberHandler(prefix, number, suffix) {
       if (number !== 0 && !suffix.length && SDK.cssMetadata().isLengthProperty(this._treeElement.property.name)) {
@@ -2483,7 +2483,7 @@ export class CSSPropertyPrompt extends UI.TextPrompt {
      * @param {string} completion
      * @param {boolean} variable
      * @param {boolean=} nameValue
-     * @this {CSSPropertyPrompt}
+     * @this {Elements.StylesSidebarPane.CSSPropertyPrompt}
      */
     function filterCompletions(completion, variable, nameValue) {
       const index = completion.toLowerCase().indexOf(lowerQuery);
@@ -2521,9 +2521,9 @@ export class CSSPropertyPrompt extends UI.TextPrompt {
       return swatch;
     }
   }
-}
+};
 
-export class StylesSidebarPropertyRenderer {
+Elements.StylesSidebarPropertyRenderer = class {
   /**
    * @param {?SDK.CSSRule} rule
    * @param {?SDK.DOMNode} node
@@ -2660,12 +2660,12 @@ export class StylesSidebarPropertyRenderer {
     container.createTextChild(')');
     return container;
   }
-}
+};
 
 /**
  * @implements {UI.ToolbarItem.Provider}
  */
-export class ButtonProvider {
+Elements.StylesSidebarPane.ButtonProvider = class {
   constructor() {
     this._button = new UI.ToolbarButton(Common.UIString('New Style Rule'), 'largeicon-add');
     this._button.addEventListener(UI.ToolbarButton.Events.Click, this._clicked, this);
@@ -2677,7 +2677,7 @@ export class ButtonProvider {
     onNodeChanged.call(this);
 
     /**
-     * @this {ButtonProvider}
+     * @this {Elements.StylesSidebarPane.ButtonProvider}
      */
     function onNodeChanged() {
       let node = UI.context.flavor(SDK.DOMNode);
@@ -2690,14 +2690,14 @@ export class ButtonProvider {
    * @param {!Common.Event} event
    */
   _clicked(event) {
-    StylesSidebarPane._instance._createNewRuleInViaInspectorStyleSheet();
+    Elements.StylesSidebarPane._instance._createNewRuleInViaInspectorStyleSheet();
   }
 
   /**
    * @param {!Event} e
    */
   _longClicked(e) {
-    StylesSidebarPane._instance._onAddButtonLongClick(e);
+    Elements.StylesSidebarPane._instance._onAddButtonLongClick(e);
   }
 
   /**
@@ -2707,36 +2707,4 @@ export class ButtonProvider {
   item() {
     return this._button;
   }
-}
-
-/* Legacy exported object */
-self.Elements = self.Elements || {};
-
-/* Legacy exported object */
-Elements = Elements || {};
-
-/** @constructor */
-Elements.StylesSidebarPane = StylesSidebarPane;
-
-Elements.StylesSidebarPane._maxLinkLength = _maxLinkLength;
-
-/** @constructor */
-Elements.StylesSidebarPane.CSSPropertyPrompt = CSSPropertyPrompt;
-
-/** @constructor */
-Elements.StylesSidebarPane.ButtonProvider = ButtonProvider;
-
-/** @constructor */
-Elements.SectionBlock = SectionBlock;
-
-/** @constructor */
-Elements.StylePropertiesSection = StylePropertiesSection;
-
-/** @constructor */
-Elements.BlankStylePropertiesSection = BlankStylePropertiesSection;
-
-/** @constructor */
-Elements.KeyframePropertiesSection = KeyframePropertiesSection;
-
-/** @constructor */
-Elements.StylesSidebarPropertyRenderer = StylesSidebarPropertyRenderer;
+};

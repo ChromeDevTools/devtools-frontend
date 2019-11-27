@@ -88,23 +88,14 @@
                 "text/jsx",
                 "text/typescript-jsx"
             ]
-        },
-        {
-            "type": "@TextEditor.CodeMirrorMimeMode",
-            "className": "CmModes.DefaultCodeMirrorMimeMode",
-            "fileName": "stylus.js",
-            "mimeTypes": [
-                "text/x-styl"
-            ]
         }
     ],
     "dependencies": [
         "text_editor"
     ],
-    "scripts": [
-        "DefaultCodeMirrorMimeMode.js"
-    ],
-    "resources": [
+    "modules": [
+        "cm_modes.js",
+        "DefaultCodeMirrorMimeMode.js",
         "clike.js",
         "coffeescript.js",
         "php.js",
@@ -113,7 +104,17 @@
         "livescript.js",
         "markdown.js",
         "clojure.js",
-        "stylus.js",
+        "jsx.js"
+    ],
+    "skip_compilation": [
+        "clike.js",
+        "coffeescript.js",
+        "php.js",
+        "python.js",
+        "shell.js",
+        "livescript.js",
+        "markdown.js",
+        "clojure.js",
         "jsx.js"
     ]
 }

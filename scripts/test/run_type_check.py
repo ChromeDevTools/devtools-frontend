@@ -284,7 +284,16 @@ GENERATED_SKIP_COMPILATION_FILES = [
     'cm/brace-fold.js',
     'audits/lighthouse/report.js',
     'audits/lighthouse/report-generator.js',
-    'javascript_metadata/NativeFunction.js'
+    'javascript_metadata/NativeFunction.js',
+    'cm_modes/clike.js',
+    'cm_modes/coffeescript.js',
+    'cm_modes/php.js',
+    'cm_modes/python.js',
+    'cm_modes/shell.js',
+    'cm_modes/livescript.js',
+    'cm_modes/markdown.js',
+    'cm_modes/clojure.js',
+    'cm_modes/jsx.js',
 ]
 
 

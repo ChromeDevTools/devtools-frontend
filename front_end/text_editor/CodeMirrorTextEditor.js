@@ -1765,7 +1765,8 @@ export class CodeMirrorMimeMode {
   /**
    * @param {!Root.Runtime.Extension} extension
    */
-  install(extension) {}
+  async install(extension) {
+  }
 }
 
 /**

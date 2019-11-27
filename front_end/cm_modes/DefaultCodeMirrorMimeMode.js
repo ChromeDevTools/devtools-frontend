@@ -3,19 +3,19 @@
 // found in the LICENSE file.
 
 /**
- * @constructor
  * @implements {TextEditor.CodeMirrorMimeMode}
  */
-CmModes.DefaultCodeMirrorMimeMode = function() {};
-
-CmModes.DefaultCodeMirrorMimeMode.prototype = {
+export class DefaultCodeMirrorMimeMode {
   /**
-     * @param {!Root.Runtime.Extension} extension
-     * @override
-     */
-  install: function(extension) {
-    var modeFileName = extension.descriptor()['fileName'];
-    var modeContent = extension.module().resource(modeFileName);
-    self.eval(modeContent + '\n//# sourceURL=' + modeFileName);
+   * @param {!Root.Runtime.Extension} extension
+   * @return {!Promise}
+   * @override
+   */
+  async install(extension) {
+    const modeFileName = extension.descriptor()['fileName'];
+
+    return /** @type {!Promise} */ (eval(`import('./${modeFileName}')`));
   }
 }
+
+CmModes.DefaultCodeMirrorMimeMode = DefaultCodeMirrorMimeMode;

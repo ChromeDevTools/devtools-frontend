@@ -95,13 +95,6 @@ export function markAsProgressBar(element, min = 0, max = 100) {
 /**
  * @param {!Element} element
  */
-export function markAsSlider(element) {
-  element.setAttribute('role', 'slider');
-}
-
-/**
- * @param {!Element} element
- */
 export function markAsTab(element) {
   element.setAttribute('role', 'tab');
 }
@@ -205,6 +198,17 @@ export function markAsRadioGroup(element) {
  */
 export function markAsHidden(element) {
   element.setAttribute('aria-hidden', 'true');
+}
+
+/**
+ * @param {!Element} element
+ * @param {number=} min
+ * @param {number=} max
+ */
+export function markAsSlider(element, min = 0, max = 100) {
+  element.setAttribute('role', 'slider');
+  element.setAttribute('aria-valuemin', String(min));
+  element.setAttribute('aria-valuemax', String(max));
 }
 
 /**
@@ -393,8 +397,12 @@ export function setPressed(element, value) {
  * @param {!Element} element
  * @param {number} value
  */
-export function setProgressBarCurrentPercentage(element, value) {
+export function setValueNow(element, value) {
   element.setAttribute('aria-valuenow', value);
+}
+
+export function setValueText(element, value) {
+  element.setAttribute('aria-valuetext', value);
 }
 
 /**
@@ -569,7 +577,6 @@ self.UI.ARIAUtils = {
   markAsLink,
   markAsMenuButton,
   markAsProgressBar,
-  markAsSlider,
   markAsTab,
   markAsTabpanel,
   markAsTree,
@@ -585,6 +592,7 @@ self.UI.ARIAUtils = {
   markAsOption,
   markAsRadioGroup,
   markAsHidden,
+  markAsSlider,
   markAsHeading,
   markAsPoliteLiveRegion,
   setPlaceholder,
@@ -605,8 +613,9 @@ self.UI.ARIAUtils = {
   setSelected,
   setInvalid,
   setPressed,
-  setProgressBarCurrentPercentage,
   setProgressBarValue,
+  setValueNow,
+  setValueText,
   setAccessibleName,
   setDescription,
   setActiveDescendant,

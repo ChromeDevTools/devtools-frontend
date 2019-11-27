@@ -1203,7 +1203,7 @@ Timeline.TimelinePanel.StatusPane = class extends UI.VBox {
   updateProgressBar(activity, percent) {
     this._progressLabel.textContent = activity;
     this._progressBar.style.width = percent.toFixed(1) + '%';
-    UI.ARIAUtils.setProgressBarCurrentPercentage(this._progressBar, percent);
+    UI.ARIAUtils.setValueNow(this._progressBar, percent);
     this._updateTimer();
   }
 

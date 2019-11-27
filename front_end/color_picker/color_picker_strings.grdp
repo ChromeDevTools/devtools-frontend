@@ -24,6 +24,9 @@
   <message name="IDS_DEVTOOLS_58c9566f3c750ce7147b045fdd14202b" desc="Aria label for HEX color format input">
     HEX
   </message>
+  <message name="IDS_DEVTOOLS_704c5365ab9b8fb8d8be5f08b8c0f19c" desc="Aria label for alpha slider in Color Picker">
+    Change alpha
+  </message>
   <message name="IDS_DEVTOOLS_74421a69b1bc40c166be4de5caf0b036" desc="Text of a DOM element in Contrast Details of the Color Picker">
     Contrast ratio
   </message>
@@ -35,6 +38,9 @@
   </message>
   <message name="IDS_DEVTOOLS_aba9beb2d259a7cff58a65229dcbbaf4" desc="Aria label which declares hex value of a swatch in the Color Picker">
     Color <ph name="PALETTE_COLORS_I_">$1s<ex>#969696</ex></ph>
+  </message>
+  <message name="IDS_DEVTOOLS_78c7d6050bd871663f565433ecce80ff" desc="Aria label for hue slider in Color Picker">
+    Change hue
   </message>
   <message name="IDS_DEVTOOLS_b201b2e7e7a20df48b625f20c2f0933e" desc="Title text content in Spectrum of the Color Picker">
     Color Palettes

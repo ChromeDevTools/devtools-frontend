@@ -82,6 +82,15 @@ class Descriptors:
                     files[path.normpath(path.join(self.application_dir, name, script))] = True
         return files.keys()
 
+    def all_skipped_compilation_files(self):
+        files = collections.OrderedDict()
+        for name in self.sorted_modules():
+            module = self.modules[name]
+            skipped_files = set(module.get('skip_compilation', []))
+            for script in skipped_files:
+                files[path.join(name, script)] = True
+        return files.keys()
+
     def module_compiled_files(self, name):
         files = []
         module = self.modules.get(name)

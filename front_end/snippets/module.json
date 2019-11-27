@@ -8,7 +8,9 @@
         }
     ],
     "dependencies": ["bindings", "quick_open", "persistence"],
-    "scripts": [
+    "scripts": [],
+    "modules": [
+        "snippets.js",
         "ScriptSnippetFileSystem.js",
         "SnippetsQuickOpen.js"
     ]

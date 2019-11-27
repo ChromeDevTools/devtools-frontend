@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-Snippets.SnippetsQuickOpen = class extends QuickOpen.FilteredListWidget.Provider {
+export default class SnippetsQuickOpen extends QuickOpen.FilteredListWidget.Provider {
   constructor() {
     super();
     /** @type {!Array<!Workspace.UISourceCode>} */
@@ -73,4 +73,15 @@ Snippets.SnippetsQuickOpen = class extends QuickOpen.FilteredListWidget.Provider
     titleElement.classList.add('monospace');
     QuickOpen.FilteredListWidget.highlightRanges(titleElement, query, true);
   }
-};
+}
+
+/* Legacy exported object */
+self.Snippets = self.Snippets || {};
+
+/* Legacy exported object */
+Snippets = Snippets || {};
+
+/**
+ * @constructor
+ */
+Snippets.SnippetsQuickOpen = SnippetsQuickOpen;

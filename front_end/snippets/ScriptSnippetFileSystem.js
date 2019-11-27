@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-Snippets.SnippetFileSystem = class extends Persistence.PlatformFileSystem {
+export class SnippetFileSystem extends Persistence.PlatformFileSystem {
   constructor() {
     super('snippet://', 'snippets');
     this._lastSnippetIdentifierSetting = Common.settings.createSetting('scriptSnippets_lastIdentifier', 0);
@@ -147,12 +147,12 @@ Snippets.SnippetFileSystem = class extends Persistence.PlatformFileSystem {
   supportsAutomapping() {
     return true;
   }
-};
+}
 
 /**
  * @param {!Workspace.UISourceCode} uiSourceCode
  */
-Snippets.evaluateScriptSnippet = async function(uiSourceCode) {
+export async function evaluateScriptSnippet(uiSourceCode) {
   if (!uiSourceCode.url().startsWith('snippet://')) {
     return;
   }
@@ -198,26 +198,42 @@ Snippets.evaluateScriptSnippet = async function(uiSourceCode) {
       runtimeModel, SDK.ConsoleMessage.MessageSource.JS, SDK.ConsoleMessage.MessageLevel.Info, '',
       SDK.ConsoleMessage.MessageType.Result, url, undefined, undefined, [result.object], undefined, undefined,
       executionContext.id, scriptId));
-};
+}
 
 /**
  * @param {!Workspace.UISourceCode} uiSourceCode
  * @return {boolean}
  */
-Snippets.isSnippetsUISourceCode = function(uiSourceCode) {
+export function isSnippetsUISourceCode(uiSourceCode) {
   return uiSourceCode.url().startsWith('snippet://');
-};
+}
 
 /**
  * @param {!Workspace.Project} project
  * @return {boolean}
  */
-Snippets.isSnippetsProject = function(project) {
+export function isSnippetsProject(project) {
   return project.type() === Workspace.projectTypes.FileSystem &&
       Persistence.FileSystemWorkspaceBinding.fileSystemType(project) === 'snippets';
-};
+}
 
-Persistence.isolatedFileSystemManager.addPlatformFileSystem('snippet://', new Snippets.SnippetFileSystem());
+/* Legacy exported object */
+self.Snippets = self.Snippets || {};
+
+/* Legacy exported object */
+Snippets = Snippets || {};
+
+/**
+ * @constructor
+ */
+Snippets.SnippetFileSystem = SnippetFileSystem;
+
+Snippets.evaluateScriptSnippet = evaluateScriptSnippet;
+Snippets.isSnippetsUISourceCode = isSnippetsUISourceCode;
+Snippets.isSnippetsProject = isSnippetsProject;
+
+Persistence.isolatedFileSystemManager.addPlatformFileSystem('snippet://', new SnippetFileSystem());
+
 Snippets.project = /** @type {!Workspace.Project} */ (
     Workspace.workspace.projectsForType(Workspace.projectTypes.FileSystem)
         .find(project => Persistence.FileSystemWorkspaceBinding.fileSystemType(project) === 'snippets'));

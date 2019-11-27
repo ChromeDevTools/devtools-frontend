@@ -27,11 +27,14 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+const _symbol = Symbol('layer');
+
 /**
  * @implements {LayerViewer.LayerView}
  * @unrestricted
  */
-LayerViewer.LayerTreeOutline = class extends Common.Object {
+export class LayerTreeOutline extends Common.Object {
   /**
    * @param {!LayerViewer.LayerViewHost} layerViewHost
    */
@@ -63,7 +66,7 @@ LayerViewer.LayerTreeOutline = class extends Common.Object {
   selectObject(selection) {
     this.hoverObject(null);
     const layer = selection && selection.layer();
-    const node = layer && layer[LayerViewer.LayerTreeElement._symbol];
+    const node = layer && layer[_symbol];
     if (node) {
       node.revealAndSelect(true);
     } else if (this._treeOutline.selectedTreeElement) {
@@ -77,7 +80,7 @@ LayerViewer.LayerTreeOutline = class extends Common.Object {
    */
   hoverObject(selection) {
     const layer = selection && selection.layer();
-    const node = layer && layer[LayerViewer.LayerTreeElement._symbol];
+    const node = layer && layer[_symbol];
     if (node === this._lastHoveredNode) {
       return;
     }
@@ -124,20 +127,19 @@ LayerViewer.LayerTreeOutline = class extends Common.Object {
         console.assert(false, 'Duplicate layer: ' + layer.id());
       }
       seenLayers.set(layer, true);
-      let node = layer[LayerViewer.LayerTreeElement._symbol];
+      let node = layer[_symbol];
       let parentLayer = layer.parent();
       // Skip till nearest visible ancestor.
       while (parentLayer && parentLayer !== root && !parentLayer.drawsContent() && !showInternalLayers) {
         parentLayer = parentLayer.parent();
       }
-      const parent =
-          layer === root ? this._treeOutline.rootElement() : parentLayer[LayerViewer.LayerTreeElement._symbol];
+      const parent = layer === root ? this._treeOutline.rootElement() : parentLayer[_symbol];
       if (!parent) {
         console.assert(false, 'Parent is not in the tree');
         return;
       }
       if (!node) {
-        node = new LayerViewer.LayerTreeElement(this, layer);
+        node = new LayerTreeElement(this, layer);
         parent.appendChild(node);
         // Expand all new non-content layers to expose content layers better.
         if (!layer.drawsContent()) {
@@ -177,7 +179,7 @@ LayerViewer.LayerTreeOutline = class extends Common.Object {
     if (!this._treeOutline.selectedTreeElement) {
       const elementToSelect = this._layerTree.contentRoot() || this._layerTree.root();
       if (elementToSelect) {
-        elementToSelect[LayerViewer.LayerTreeElement._symbol].revealAndSelect(true);
+        elementToSelect[_symbol].revealAndSelect(true);
       }
     }
   }
@@ -211,9 +213,7 @@ LayerViewer.LayerTreeOutline = class extends Common.Object {
       this._layerSnapshotMap = this._layerViewHost.getLayerSnapshotMap();
       if (this._layerSnapshotMap.has(layer)) {
         contextMenu.defaultSection().appendItem(
-            ls`Show Paint Profiler`,
-            this.dispatchEventToListeners.bind(
-                this, LayerViewer.LayerTreeOutline.Events.PaintProfilerRequested, selection),
+            ls`Show Paint Profiler`, this.dispatchEventToListeners.bind(this, Events.PaintProfilerRequested, selection),
             false);
       }
     }
@@ -227,19 +227,19 @@ LayerViewer.LayerTreeOutline = class extends Common.Object {
   _selectionForNode(node) {
     return node && node._layer ? new LayerViewer.LayerView.LayerSelection(node._layer) : null;
   }
-};
+}
 
 /**
  * @enum {symbol}
  */
-LayerViewer.LayerTreeOutline.Events = {
+export const Events = {
   PaintProfilerRequested: Symbol('PaintProfilerRequested')
 };
 
 /**
  * @unrestricted
  */
-LayerViewer.LayerTreeElement = class extends UI.TreeElement {
+export class LayerTreeElement extends UI.TreeElement {
   /**
    * @param {!LayerViewer.LayerTreeOutline} tree
    * @param {!SDK.Layer} layer
@@ -248,7 +248,7 @@ LayerViewer.LayerTreeElement = class extends UI.TreeElement {
     super();
     this._treeOutline = tree;
     this._layer = layer;
-    this._layer[LayerViewer.LayerTreeElement._symbol] = this;
+    this._layer[_symbol] = this;
     this._update();
   }
 
@@ -276,6 +276,27 @@ LayerViewer.LayerTreeElement = class extends UI.TreeElement {
   setHovered(hovered) {
     this.listItemElement.classList.toggle('hovered', hovered);
   }
-};
+}
 
-LayerViewer.LayerTreeElement._symbol = Symbol('layer');
+/* Legacy exported object */
+self.LayerViewer = self.LayerViewer || {};
+
+/* Legacy exported object */
+LayerViewer = LayerViewer || {};
+
+/**
+ * @constructor
+ */
+LayerViewer.LayerTreeOutline = LayerTreeOutline;
+
+/**
+ * @enum {symbol}
+ */
+LayerViewer.LayerTreeOutline.Events = Events;
+
+/**
+ * @constructor
+ */
+LayerViewer.LayerTreeElement = LayerTreeElement;
+
+LayerViewer.LayerTreeElement._symbol = _symbol;

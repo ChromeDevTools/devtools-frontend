@@ -31,7 +31,7 @@
 /**
  * @unrestricted
  */
-LayerViewer.PaintProfilerView = class extends UI.HBox {
+export class PaintProfilerView extends UI.HBox {
   /**
    * @param {function(string=)} showImageCallback
    */
@@ -68,27 +68,27 @@ LayerViewer.PaintProfilerView = class extends UI.HBox {
    * @return {!Object.<string, !LayerViewer.PaintProfilerCategory>}
    */
   static categories() {
-    if (LayerViewer.PaintProfilerView._categories) {
-      return LayerViewer.PaintProfilerView._categories;
+    if (PaintProfilerView._categories) {
+      return PaintProfilerView._categories;
     }
-    LayerViewer.PaintProfilerView._categories = {
-      shapes: new LayerViewer.PaintProfilerCategory('shapes', Common.UIString('Shapes'), 'rgb(255, 161, 129)'),
-      bitmap: new LayerViewer.PaintProfilerCategory('bitmap', Common.UIString('Bitmap'), 'rgb(136, 196, 255)'),
-      text: new LayerViewer.PaintProfilerCategory('text', Common.UIString('Text'), 'rgb(180, 255, 137)'),
-      misc: new LayerViewer.PaintProfilerCategory('misc', Common.UIString('Misc'), 'rgb(206, 160, 255)')
+    PaintProfilerView._categories = {
+      shapes: new PaintProfilerCategory('shapes', Common.UIString('Shapes'), 'rgb(255, 161, 129)'),
+      bitmap: new PaintProfilerCategory('bitmap', Common.UIString('Bitmap'), 'rgb(136, 196, 255)'),
+      text: new PaintProfilerCategory('text', Common.UIString('Text'), 'rgb(180, 255, 137)'),
+      misc: new PaintProfilerCategory('misc', Common.UIString('Misc'), 'rgb(206, 160, 255)')
     };
-    return LayerViewer.PaintProfilerView._categories;
+    return PaintProfilerView._categories;
   }
 
   /**
    * @return {!Object.<string, !LayerViewer.PaintProfilerCategory>}
    */
   static _initLogItemCategories() {
-    if (LayerViewer.PaintProfilerView._logItemCategoriesMap) {
-      return LayerViewer.PaintProfilerView._logItemCategoriesMap;
+    if (PaintProfilerView._logItemCategoriesMap) {
+      return PaintProfilerView._logItemCategoriesMap;
     }
 
-    const categories = LayerViewer.PaintProfilerView.categories();
+    const categories = PaintProfilerView.categories();
 
     const logItemCategories = {};
     logItemCategories['Clear'] = categories['misc'];
@@ -128,7 +128,7 @@ LayerViewer.PaintProfilerView = class extends UI.HBox {
     logItemCategories['DrawPosTextH'] = categories['text'];
     logItemCategories['DrawTextOnPath'] = categories['text'];
 
-    LayerViewer.PaintProfilerView._logItemCategoriesMap = logItemCategories;
+    PaintProfilerView._logItemCategoriesMap = logItemCategories;
     return logItemCategories;
   }
 
@@ -139,10 +139,10 @@ LayerViewer.PaintProfilerView = class extends UI.HBox {
   static _categoryForLogItem(logItem) {
     const method = logItem.method.toTitleCase();
 
-    const logItemCategories = LayerViewer.PaintProfilerView._initLogItemCategories();
+    const logItemCategories = PaintProfilerView._initLogItemCategories();
     let result = logItemCategories[method];
     if (!result) {
-      result = LayerViewer.PaintProfilerView.categories()['misc'];
+      result = PaintProfilerView.categories()['misc'];
       logItemCategories[method] = result;
     }
     return result;
@@ -167,7 +167,7 @@ LayerViewer.PaintProfilerView = class extends UI.HBox {
       this._snapshot.addReference();
     }
     this._log = log;
-    this._logCategories = this._log.map(LayerViewer.PaintProfilerView._categoryForLogItem);
+    this._logCategories = this._log.map(PaintProfilerView._categoryForLogItem);
 
     if (!this._snapshot) {
       this._update();
@@ -259,7 +259,7 @@ LayerViewer.PaintProfilerView = class extends UI.HBox {
    * @param {!Object.<string, number>} heightByCategory
    */
   _renderBar(index, heightByCategory) {
-    const categories = LayerViewer.PaintProfilerView.categories();
+    const categories = PaintProfilerView.categories();
     let currentHeight = 0;
     const x = this._barPaddingWidth + index * this._outerBarWidth;
     for (const categoryName in categories) {
@@ -274,7 +274,7 @@ LayerViewer.PaintProfilerView = class extends UI.HBox {
   }
 
   _onWindowChanged() {
-    this.dispatchEventToListeners(LayerViewer.PaintProfilerView.Events.WindowChanged);
+    this.dispatchEventToListeners(Events.WindowChanged);
     this._updatePieChart();
     if (this._updateImageTimer) {
       return;
@@ -291,7 +291,7 @@ LayerViewer.PaintProfilerView = class extends UI.HBox {
     const timeByCategory = {};
     for (let i = window.left; i < window.right; ++i) {
       const logEntry = this._log[i];
-      const category = LayerViewer.PaintProfilerView._categoryForLogItem(logEntry);
+      const category = PaintProfilerView._categoryForLogItem(logEntry);
       timeByCategory[category.color] = timeByCategory[category.color] || 0;
       for (let j = 0; j < this._profiles.length; ++j) {
         const time = this._profiles[j][logEntry.commandIndex];
@@ -359,17 +359,17 @@ LayerViewer.PaintProfilerView = class extends UI.HBox {
     this._selectionWindow.reset();
     this._selectionWindow.setEnabled(false);
   }
-};
+}
 
 /** @enum {symbol} */
-LayerViewer.PaintProfilerView.Events = {
+export const Events = {
   WindowChanged: Symbol('WindowChanged')
 };
 
 /**
  * @unrestricted
  */
-LayerViewer.PaintProfilerCommandLogView = class extends UI.ThrottledWidget {
+export class PaintProfilerCommandLogView extends UI.ThrottledWidget {
   constructor() {
     super();
     this.setMinimumSize(100, 25);
@@ -397,7 +397,7 @@ LayerViewer.PaintProfilerCommandLogView = class extends UI.ThrottledWidget {
   _appendLogItem(logItem) {
     let treeElement = this._treeItemCache.get(logItem);
     if (!treeElement) {
-      treeElement = new LayerViewer.LogTreeElement(this, logItem);
+      treeElement = new LogTreeElement(this, logItem);
       this._treeItemCache.set(logItem, treeElement);
     } else if (treeElement.parent) {
       return;
@@ -442,12 +442,12 @@ LayerViewer.PaintProfilerCommandLogView = class extends UI.ThrottledWidget {
     }
     return Promise.resolve();
   }
-};
+}
 
 /**
  * @unrestricted
  */
-LayerViewer.LogTreeElement = class extends UI.TreeElement {
+export class LogTreeElement extends UI.TreeElement {
   /**
    * @param {!LayerViewer.PaintProfilerCommandLogView} ownerView
    * @param {!SDK.PaintProfilerLogItem} logItem
@@ -472,7 +472,7 @@ LayerViewer.LogTreeElement = class extends UI.TreeElement {
    */
   async onpopulate() {
     for (const param in this._logItem.params) {
-      LayerViewer.LogPropertyTreeElement._appendLogPropertyItem(this, param, this._logItem.params[param]);
+      LogPropertyTreeElement._appendLogPropertyItem(this, param, this._logItem.params[param]);
     }
   }
 
@@ -520,12 +520,12 @@ LayerViewer.LogTreeElement = class extends UI.TreeElement {
     title.createTextChild(this._logItem.method + '(' + this._paramsToString(this._logItem.params) + ')');
     this.title = title;
   }
-};
+}
 
 /**
  * @unrestricted
  */
-LayerViewer.LogPropertyTreeElement = class extends UI.TreeElement {
+export class LogPropertyTreeElement extends UI.TreeElement {
   /**
    * @param {!{name: string, value}} property
    */
@@ -540,11 +540,11 @@ LayerViewer.LogPropertyTreeElement = class extends UI.TreeElement {
    * @param {*} value
    */
   static _appendLogPropertyItem(element, name, value) {
-    const treeElement = new LayerViewer.LogPropertyTreeElement({name: name, value: value});
+    const treeElement = new LogPropertyTreeElement({name: name, value: value});
     element.appendChild(treeElement);
     if (value && typeof value === 'object') {
       for (const property in value) {
-        LayerViewer.LogPropertyTreeElement._appendLogPropertyItem(treeElement, property, value[property]);
+        LogPropertyTreeElement._appendLogPropertyItem(treeElement, property, value[property]);
       }
     }
   }
@@ -565,13 +565,12 @@ LayerViewer.LogPropertyTreeElement = class extends UI.TreeElement {
     }
     this.title = title;
   }
-};
-
+}
 
 /**
  * @unrestricted
  */
-LayerViewer.PaintProfilerCategory = class {
+export class PaintProfilerCategory {
   /**
    * @param {string} name
    * @param {string} title
@@ -582,4 +581,37 @@ LayerViewer.PaintProfilerCategory = class {
     this.title = title;
     this.color = color;
   }
-};
+}
+
+/* Legacy exported object */
+self.LayerViewer = self.LayerViewer || {};
+
+/* Legacy exported object */
+LayerViewer = LayerViewer || {};
+
+/**
+ * @constructor
+ */
+LayerViewer.PaintProfilerView = PaintProfilerView;
+
+LayerViewer.PaintProfilerView.Events = Events;
+
+/**
+ * @constructor
+ */
+LayerViewer.PaintProfilerCommandLogView = PaintProfilerCommandLogView;
+
+/**
+ * @constructor
+ */
+LayerViewer.LogTreeElement = LogTreeElement;
+
+/**
+ * @constructor
+ */
+LayerViewer.LogPropertyTreeElement = LogPropertyTreeElement;
+
+/**
+ * @constructor
+ */
+LayerViewer.PaintProfilerCategory = PaintProfilerCategory;

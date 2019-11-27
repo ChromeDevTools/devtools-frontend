@@ -6,29 +6,29 @@
 /**
  * @interface
  */
-LayerViewer.LayerView = function() {};
-
-LayerViewer.LayerView.prototype = {
+export class LayerView {
   /**
    * @param {?LayerViewer.LayerView.Selection} selection
    */
-  hoverObject(selection) {},
+  hoverObject(selection) {
+  }
 
   /**
    * @param {?LayerViewer.LayerView.Selection} selection
    */
-  selectObject(selection) {},
+  selectObject(selection) {
+  }
 
   /**
    * @param {?SDK.LayerTreeBase} layerTree
    */
   setLayerTree(layerTree) {}
-};
+}
 
 /**
  * @unrestricted
  */
-LayerViewer.LayerView.Selection = class {
+export class Selection {
   /**
    * @param {!LayerViewer.LayerView.Selection.Type} type
    * @param {!SDK.Layer} layer
@@ -68,28 +68,27 @@ LayerViewer.LayerView.Selection = class {
   _isEqual(other) {
     return false;
   }
-};
+}
 
 /**
  * @enum {symbol}
  */
-LayerViewer.LayerView.Selection.Type = {
+export const Type = {
   Layer: Symbol('Layer'),
   ScrollRect: Symbol('ScrollRect'),
   Snapshot: Symbol('Snapshot')
 };
 
-
 /**
  * @unrestricted
  */
-LayerViewer.LayerView.LayerSelection = class extends LayerViewer.LayerView.Selection {
+export class LayerSelection extends Selection {
   /**
    * @param {!SDK.Layer} layer
    */
   constructor(layer) {
     console.assert(layer, 'LayerSelection with empty layer');
-    super(LayerViewer.LayerView.Selection.Type.Layer, layer);
+    super(Type.Layer, layer);
   }
 
   /**
@@ -98,20 +97,20 @@ LayerViewer.LayerView.LayerSelection = class extends LayerViewer.LayerView.Selec
    * @return {boolean}
    */
   _isEqual(other) {
-    return other._type === LayerViewer.LayerView.Selection.Type.Layer && other.layer().id() === this.layer().id();
+    return other._type === Type.Layer && other.layer().id() === this.layer().id();
   }
-};
+}
 
 /**
  * @unrestricted
  */
-LayerViewer.LayerView.ScrollRectSelection = class extends LayerViewer.LayerView.Selection {
+export class ScrollRectSelection extends Selection {
   /**
    * @param {!SDK.Layer} layer
    * @param {number} scrollRectIndex
    */
   constructor(layer, scrollRectIndex) {
-    super(LayerViewer.LayerView.Selection.Type.ScrollRect, layer);
+    super(Type.ScrollRect, layer);
     this.scrollRectIndex = scrollRectIndex;
   }
 
@@ -121,21 +120,21 @@ LayerViewer.LayerView.ScrollRectSelection = class extends LayerViewer.LayerView.
    * @return {boolean}
    */
   _isEqual(other) {
-    return other._type === LayerViewer.LayerView.Selection.Type.ScrollRect &&
-        this.layer().id() === other.layer().id() && this.scrollRectIndex === other.scrollRectIndex;
+    return other._type === Type.ScrollRect && this.layer().id() === other.layer().id() &&
+        this.scrollRectIndex === other.scrollRectIndex;
   }
-};
+}
 
 /**
  * @unrestricted
  */
-LayerViewer.LayerView.SnapshotSelection = class extends LayerViewer.LayerView.Selection {
+export class SnapshotSelection extends Selection {
   /**
    * @param {!SDK.Layer} layer
    * @param {!SDK.SnapshotWithRect} snapshot
    */
   constructor(layer, snapshot) {
-    super(LayerViewer.LayerView.Selection.Type.Snapshot, layer);
+    super(Type.Snapshot, layer);
     this._snapshot = snapshot;
   }
 
@@ -145,7 +144,7 @@ LayerViewer.LayerView.SnapshotSelection = class extends LayerViewer.LayerView.Se
    * @return {boolean}
    */
   _isEqual(other) {
-    return other._type === LayerViewer.LayerView.Selection.Type.Snapshot && this.layer().id() === other.layer().id() &&
+    return other._type === Type.Snapshot && this.layer().id() === other.layer().id() &&
         this._snapshot === other._snapshot;
   }
 
@@ -155,12 +154,12 @@ LayerViewer.LayerView.SnapshotSelection = class extends LayerViewer.LayerView.Se
   snapshot() {
     return this._snapshot;
   }
-};
+}
 
 /**
  * @unrestricted
  */
-LayerViewer.LayerViewHost = class {
+export class LayerViewHost {
   constructor() {
     /** @type {!Array.<!LayerViewer.LayerView>} */
     this._views = [];
@@ -212,7 +211,7 @@ LayerViewer.LayerViewHost = class {
    * @param {?LayerViewer.LayerView.Selection} selection
    */
   hoverObject(selection) {
-    if (LayerViewer.LayerView.Selection.isEqual(this._hoveredObject, selection)) {
+    if (Selection.isEqual(this._hoveredObject, selection)) {
       return;
     }
     this._hoveredObject = selection;
@@ -227,7 +226,7 @@ LayerViewer.LayerViewHost = class {
    * @param {?LayerViewer.LayerView.Selection} selection
    */
   selectObject(selection) {
-    if (LayerViewer.LayerView.Selection.isEqual(this._selectedObject, selection)) {
+    if (Selection.isEqual(this._selectedObject, selection)) {
       return;
     }
     this._selectedObject = selection;
@@ -279,4 +278,45 @@ LayerViewer.LayerViewHost = class {
     }
     SDK.OverlayModel.hideDOMNodeHighlight();
   }
-};
+}
+
+/* Legacy exported object */
+self.LayerViewer = self.LayerViewer || {};
+
+/* Legacy exported object */
+LayerViewer = LayerViewer || {};
+
+/**
+ * @interface
+ */
+LayerViewer.LayerView = LayerView;
+
+/**
+ * @constructor
+ */
+LayerViewer.LayerView.Selection = Selection;
+
+/**
+ * @enum {symbol}
+ */
+LayerViewer.LayerView.Selection.Type = Type;
+
+/**
+ * @constructor
+ */
+LayerViewer.LayerView.LayerSelection = LayerSelection;
+
+/**
+ * @constructor
+ */
+LayerViewer.LayerView.ScrollRectSelection = ScrollRectSelection;
+
+/**
+ * @constructor
+ */
+LayerViewer.LayerView.SnapshotSelection = SnapshotSelection;
+
+/**
+ * @constructor
+ */
+LayerViewer.LayerViewHost = LayerViewHost;

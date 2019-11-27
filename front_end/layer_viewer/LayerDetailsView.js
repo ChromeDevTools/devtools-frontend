@@ -31,7 +31,7 @@
  * @implements {LayerViewer.LayerView}
  * @unrestricted
  */
-LayerViewer.LayerDetailsView = class extends UI.Widget {
+export class LayerDetailsView extends UI.Widget {
   /**
    * @param {!LayerViewer.LayerViewHost} layerViewHost
    */
@@ -94,7 +94,7 @@ LayerViewer.LayerDetailsView = class extends UI.Widget {
         this._selection :
         this._layerSnapshotMap.get(this._selection.layer());
     if (snapshotSelection) {
-      this.dispatchEventToListeners(LayerViewer.LayerDetailsView.Events.PaintProfilerRequested, snapshotSelection);
+      this.dispatchEventToListeners(Events.PaintProfilerRequested, snapshotSelection);
     }
   }
 
@@ -111,8 +111,8 @@ LayerViewer.LayerDetailsView = class extends UI.Widget {
       element.classList.add('active');
     }
     element.textContent = Common.UIString(
-        '%s %d × %d (at %d, %d)', LayerViewer.LayerDetailsView._slowScrollRectNames.get(scrollRect.type),
-        scrollRect.rect.width, scrollRect.rect.height, scrollRect.rect.x, scrollRect.rect.y);
+        '%s %d × %d (at %d, %d)', _slowScrollRectNames.get(scrollRect.type), scrollRect.rect.width,
+        scrollRect.rect.height, scrollRect.rect.x, scrollRect.rect.y);
     element.addEventListener('click', this._onScrollRectClicked.bind(this, index), false);
   }
 
@@ -255,20 +255,33 @@ LayerViewer.LayerDetailsView = class extends UI.Widget {
       list.createChild('li').textContent = text;
     }
   }
-};
+}
 
-/**
- * @enum {string}
- */
 /** @enum {symbol} */
-LayerViewer.LayerDetailsView.Events = {
+export const Events = {
   PaintProfilerRequested: Symbol('PaintProfilerRequested')
 };
 
-LayerViewer.LayerDetailsView._slowScrollRectNames = new Map([
+export const _slowScrollRectNames = new Map([
   [SDK.Layer.ScrollRectType.NonFastScrollable, Common.UIString('Non fast scrollable')],
   [SDK.Layer.ScrollRectType.TouchEventHandler, Common.UIString('Touch event handler')],
   [SDK.Layer.ScrollRectType.WheelEventHandler, Common.UIString('Wheel event handler')],
   [SDK.Layer.ScrollRectType.RepaintsOnScroll, Common.UIString('Repaints on scroll')],
   [SDK.Layer.ScrollRectType.MainThreadScrollingReason, Common.UIString('Main thread scrolling reason')]
 ]);
+
+/* Legacy exported object */
+self.LayerViewer = self.LayerViewer || {};
+
+/* Legacy exported object */
+LayerViewer = LayerViewer || {};
+
+/**
+ * @constructor
+ */
+LayerViewer.LayerDetailsView = LayerDetailsView;
+
+/** @enum {symbol} */
+LayerViewer.LayerDetailsView.Events = Events;
+
+LayerViewer.LayerDetailsView._slowScrollRectNames = _slowScrollRectNames;

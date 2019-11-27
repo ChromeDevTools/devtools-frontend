@@ -7,7 +7,7 @@
  * @implements {UI.ListWidget.Delegate}
  * @unrestricted
  */
-Settings.FrameworkBlackboxSettingsTab = class extends UI.VBox {
+export default class FrameworkBlackboxSettingsTab extends UI.VBox {
   constructor() {
     super(true);
     this.registerRequiredCSS('settings/frameworkBlackboxSettingsTab.css');
@@ -195,4 +195,15 @@ Settings.FrameworkBlackboxSettingsTab = class extends UI.VBox {
       return {valid: true};
     }
   }
-};
+}
+
+/* Legacy exported object */
+self.Settings = self.Settings || {};
+
+/* Legacy exported object */
+Settings = Settings || {};
+
+/**
+ * @constructor
+ */
+Settings.FrameworkBlackboxSettingsTab = FrameworkBlackboxSettingsTab;

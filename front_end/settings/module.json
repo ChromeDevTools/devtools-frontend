@@ -83,7 +83,9 @@
     "dependencies": [
         "components"
     ],
-    "scripts": [
+    "scripts": [],
+    "modules": [
+        "settings.js",
         "SettingsScreen.js",
         "FrameworkBlackboxSettingsTab.js"
     ],

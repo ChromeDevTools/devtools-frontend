@@ -31,7 +31,7 @@
  * @implements {UI.ViewLocationResolver}
  * @unrestricted
  */
-Settings.SettingsScreen = class extends UI.VBox {
+export default class SettingsScreen extends UI.VBox {
   constructor() {
     super(true);
     this.registerRequiredCSS('settings/settingsScreen.css');
@@ -47,7 +47,7 @@ Settings.SettingsScreen = class extends UI.VBox {
     settingsTitleElement.textContent = ls`Settings`;
 
     this._tabbedLocation =
-        UI.viewManager.createTabbedLocation(() => Settings.SettingsScreen._showSettingsScreen(), 'settings-view');
+        UI.viewManager.createTabbedLocation(() => SettingsScreen._showSettingsScreen(), 'settings-view');
     const tabbedPane = this._tabbedLocation.tabbedPane();
     tabbedPane.leftToolbar().appendToolbarItem(new UI.ToolbarItem(settingsLabelElement));
     tabbedPane.setShrinkableTabs(false);
@@ -67,7 +67,7 @@ Settings.SettingsScreen = class extends UI.VBox {
    */
   static _showSettingsScreen(name) {
     const settingsScreen =
-        /** @type {!Settings.SettingsScreen} */ (self.runtime.sharedInstance(Settings.SettingsScreen));
+        /** @type {!Settings.SettingsScreen} */ (self.runtime.sharedInstance(SettingsScreen));
     if (settingsScreen.isShowing()) {
       return;
     }
@@ -104,13 +104,12 @@ Settings.SettingsScreen = class extends UI.VBox {
       this.contentElement.classList.add('settings-developer-mode');
     }
   }
-};
-
+}
 
 /**
  * @unrestricted
  */
-Settings.SettingsTab = class extends UI.VBox {
+export class SettingsTab extends UI.VBox {
   /**
    * @param {string} name
    * @param {string=} id
@@ -142,12 +141,12 @@ Settings.SettingsTab = class extends UI.VBox {
     }
     return block;
   }
-};
+}
 
 /**
  * @unrestricted
  */
-Settings.GenericSettingsTab = class extends Settings.SettingsTab {
+export class GenericSettingsTab extends SettingsTab {
   constructor() {
     super(Common.UIString('Preferences'), 'preferences-tab-content');
 
@@ -190,7 +189,7 @@ Settings.GenericSettingsTab = class extends Settings.SettingsTab {
    * @param {!Root.Runtime.Extension} extension
    */
   _addSetting(extension) {
-    if (!Settings.GenericSettingsTab.isSettingVisible(extension)) {
+    if (!GenericSettingsTab.isSettingVisible(extension)) {
       return;
     }
     const sectionElement = this._sectionElement(extension.descriptor()['category']);
@@ -235,12 +234,12 @@ Settings.GenericSettingsTab = class extends Settings.SettingsTab {
     }
     return sectionElement;
   }
-};
+}
 
 /**
  * @unrestricted
  */
-Settings.ExperimentsSettingsTab = class extends Settings.SettingsTab {
+export class ExperimentsSettingsTab extends SettingsTab {
   constructor() {
     super(Common.UIString('Experiments'), 'experiments-tab-content');
 
@@ -281,13 +280,13 @@ Settings.ExperimentsSettingsTab = class extends Settings.SettingsTab {
     p.appendChild(label);
     return p;
   }
-};
+}
 
 /**
  * @implements {UI.ActionDelegate}
  * @unrestricted
  */
-Settings.SettingsScreen.ActionDelegate = class {
+export class ActionDelegate {
   /**
    * @override
    * @param {!UI.Context} context
@@ -297,24 +296,24 @@ Settings.SettingsScreen.ActionDelegate = class {
   handleAction(context, actionId) {
     switch (actionId) {
       case 'settings.show':
-        Settings.SettingsScreen._showSettingsScreen();
+        SettingsScreen._showSettingsScreen();
         return true;
       case 'settings.documentation':
         Host.InspectorFrontendHost.openInNewTab('https://developers.google.com/web/tools/chrome-devtools/');
         return true;
       case 'settings.shortcuts':
-        Settings.SettingsScreen._showSettingsScreen(Common.UIString('Shortcuts'));
+        SettingsScreen._showSettingsScreen(Common.UIString('Shortcuts'));
         return true;
     }
     return false;
   }
-};
+}
 
 /**
  * @implements {Common.Revealer}
  * @unrestricted
  */
-Settings.SettingsScreen.Revealer = class {
+export class Revealer {
   /**
    * @override
    * @param {!Object} object
@@ -335,12 +334,12 @@ Settings.SettingsScreen.Revealer = class {
      * @param {!Root.Runtime.Extension} extension
      */
     function revealModuleSetting(extension) {
-      if (!Settings.GenericSettingsTab.isSettingVisible(extension)) {
+      if (!GenericSettingsTab.isSettingVisible(extension)) {
         return;
       }
       if (extension.descriptor()['settingName'] === setting.name) {
         Host.InspectorFrontendHost.bringToFront();
-        Settings.SettingsScreen._showSettingsScreen();
+        SettingsScreen._showSettingsScreen();
         success = true;
       }
     }
@@ -352,7 +351,7 @@ Settings.SettingsScreen.Revealer = class {
       const settings = extension.descriptor()['settings'];
       if (settings && settings.indexOf(setting.name) !== -1) {
         Host.InspectorFrontendHost.bringToFront();
-        Settings.SettingsScreen._showSettingsScreen();
+        SettingsScreen._showSettingsScreen();
         success = true;
       }
     }
@@ -368,9 +367,49 @@ Settings.SettingsScreen.Revealer = class {
       const settings = extension.descriptor()['settings'];
       if (settings && settings.indexOf(setting.name) !== -1) {
         Host.InspectorFrontendHost.bringToFront();
-        Settings.SettingsScreen._showSettingsScreen(extension.descriptor()['id']);
+        SettingsScreen._showSettingsScreen(extension.descriptor()['id']);
         success = true;
       }
     }
   }
-};
+}
+
+/* Legacy exported object */
+self.Settings = self.Settings || {};
+
+/* Legacy exported object */
+Settings = Settings || {};
+
+/**
+ * @constructor
+ */
+Settings.SettingsScreen = SettingsScreen;
+
+/**
+ * @implements {UI.ActionDelegate}
+ * @unrestricted
+ * @constructor
+ */
+Settings.SettingsScreen.ActionDelegate = ActionDelegate;
+
+/**
+ * @implements {Common.Revealer}
+ * @unrestricted
+ * @constructor
+ */
+Settings.SettingsScreen.Revealer = Revealer;
+
+/**
+ * @constructor
+ */
+Settings.SettingsTab = SettingsTab;
+
+/**
+ * @constructor
+ */
+Settings.GenericSettingsTab = GenericSettingsTab;
+
+/**
+ * @constructor
+ */
+Settings.ExperimentsSettingsTab = ExperimentsSettingsTab;

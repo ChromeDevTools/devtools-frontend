@@ -400,10 +400,8 @@ if (external_devtools_frontend) {
     "front_end/security_test_runner/SecurityTestRunner.js",
     "front_end/services/module.json",
     "front_end/settings/frameworkBlackboxSettingsTab.css",
-    "front_end/settings/FrameworkBlackboxSettingsTab.js",
     "front_end/settings/module.json",
     "front_end/settings/settingsScreen.css",
-    "front_end/settings/SettingsScreen.js",
     "front_end/snippets/module.json",
     "front_end/snippets/ScriptSnippetFileSystem.js",
     "front_end/snippets/SnippetsQuickOpen.js",
@@ -630,6 +628,9 @@ if (external_devtools_frontend) {
   all_devtools_files += lighthouse_locale_files
 
   all_devtools_modules = [
+    "front_end/settings/settings.js",
+    "front_end/settings/SettingsScreen.js",
+    "front_end/settings/FrameworkBlackboxSettingsTab.js",
     "front_end/javascript_metadata/javascript_metadata.js",
     "front_end/javascript_metadata/NativeFunctions.js",
     "front_end/javascript_metadata/JavaScriptMetadata.js",
@@ -1237,6 +1238,9 @@ if (external_devtools_frontend) {
   ]
 
   copied_devtools_modules = [
+    "$resources_out_dir/settings/settings.js",
+    "$resources_out_dir/settings/SettingsScreen.js",
+    "$resources_out_dir/settings/FrameworkBlackboxSettingsTab.js",
     "$resources_out_dir/javascript_metadata/javascript_metadata.js",
     "$resources_out_dir/javascript_metadata/NativeFunctions.js",
     "$resources_out_dir/javascript_metadata/JavaScriptMetadata.js",

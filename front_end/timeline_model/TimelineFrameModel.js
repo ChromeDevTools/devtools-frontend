@@ -31,7 +31,7 @@
 /**
  * @unrestricted
  */
-TimelineModel.TimelineFrameModel = class {
+export class TimelineFrameModel {
   /**
    * @param {function(!SDK.TracingModel.Event):string} categoryMapper
    */
@@ -43,7 +43,7 @@ TimelineModel.TimelineFrameModel = class {
   /**
    * @param {number=} startTime
    * @param {number=} endTime
-   * @return {!Array<!TimelineModel.TimelineFrame>}
+   * @return {!Array<!TimelineFrame>}
    */
   frames(startTime, endTime) {
     if (!startTime && !endTime) {
@@ -175,7 +175,7 @@ TimelineModel.TimelineFrameModel = class {
   }
 
   /**
-   * @param {!TimelineModel.TracingFrameLayerTree} layerTree
+   * @param {!TracingFrameLayerTree} layerTree
    */
   handleLayerTreeSnapshot(layerTree) {
     this._lastLayerTree = layerTree;
@@ -198,11 +198,11 @@ TimelineModel.TimelineFrameModel = class {
     if (this._lastFrame) {
       this._flushFrame(this._lastFrame, startTime);
     }
-    this._lastFrame = new TimelineModel.TimelineFrame(startTime, startTime - this._minimumRecordTime);
+    this._lastFrame = new TimelineFrame(startTime, startTime - this._minimumRecordTime);
   }
 
   /**
-   * @param {!TimelineModel.TimelineFrame} frame
+   * @param {!TimelineFrame} frame
    * @param {number} endTime
    */
   _flushFrame(frame, endTime) {
@@ -262,7 +262,7 @@ TimelineModel.TimelineFrameModel = class {
         event.phase === SDK.TracingModel.Phase.SnapshotObject && event.name === eventNames.LayerTreeHostImplSnapshot &&
         parseInt(event.id, 0) === this._layerTreeId) {
       const snapshot = /** @type {!SDK.TracingModel.ObjectSnapshot} */ (event);
-      this.handleLayerTreeSnapshot(new TimelineModel.TracingFrameLayerTree(this._target, snapshot));
+      this.handleLayerTreeSnapshot(new TracingFrameLayerTree(this._target, snapshot));
     } else {
       this._processCompositorEvents(event);
       if (event.thread === this._currentProcessMainThread) {
@@ -307,7 +307,7 @@ TimelineModel.TimelineFrameModel = class {
       this._currentTaskTimeByCategory = {};
       this._lastTaskBeginTime = event.startTime;
     }
-    if (!this._framePendingCommit && TimelineModel.TimelineFrameModel._mainFrameMarkers.indexOf(event.name) >= 0) {
+    if (!this._framePendingCommit && TimelineFrameModel._mainFrameMarkers.indexOf(event.name) >= 0) {
       this._framePendingCommit =
           new TimelineModel.PendingFrame(this._lastTaskBeginTime || event.startTime, this._currentTaskTimeByCategory);
     }
@@ -322,7 +322,7 @@ TimelineModel.TimelineFrameModel = class {
     }
     if (event.name === eventNames.Paint && event.args['data']['layerId'] &&
         TimelineModel.TimelineData.forEvent(event).picture && this._target) {
-      this._framePendingCommit.paints.push(new TimelineModel.LayerPaintEvent(event, this._target));
+      this._framePendingCommit.paints.push(new LayerPaintEvent(event, this._target));
     }
     if (event.name === eventNames.CompositeLayers && event.args['layerTreeId'] === this._layerTreeId) {
       this.handleCompositeLayers();
@@ -340,9 +340,9 @@ TimelineModel.TimelineFrameModel = class {
     const categoryName = this._categoryMapper(event);
     timeByCategory[categoryName] = (timeByCategory[categoryName] || 0) + event.selfTime;
   }
-};
+}
 
-TimelineModel.TimelineFrameModel._mainFrameMarkers = [
+TimelineFrameModel._mainFrameMarkers = [
   TimelineModel.TimelineModel.RecordType.ScheduleStyleRecalculation,
   TimelineModel.TimelineModel.RecordType.InvalidateLayout, TimelineModel.TimelineModel.RecordType.BeginMainThreadFrame,
   TimelineModel.TimelineModel.RecordType.ScrollLayer
@@ -351,7 +351,7 @@ TimelineModel.TimelineFrameModel._mainFrameMarkers = [
 /**
  * @unrestricted
  */
-TimelineModel.TracingFrameLayerTree = class {
+export class TracingFrameLayerTree {
   /**
    * @param {!SDK.Target} target
    * @param {!SDK.TracingModel.ObjectSnapshot} snapshot
@@ -359,7 +359,7 @@ TimelineModel.TracingFrameLayerTree = class {
   constructor(target, snapshot) {
     this._target = target;
     this._snapshot = snapshot;
-    /** @type {!Array<!TimelineModel.LayerPaintEvent>|undefined} */
+    /** @type {!Array<!LayerPaintEvent>|undefined} */
     this._paints;
   }
 
@@ -384,24 +384,24 @@ TimelineModel.TracingFrameLayerTree = class {
   }
 
   /**
-   * @return {!Array<!TimelineModel.LayerPaintEvent>}
+   * @return {!Array<!LayerPaintEvent>}
    */
   paints() {
     return this._paints || [];
   }
 
   /**
-   * @param {!Array<!TimelineModel.LayerPaintEvent>} paints
+   * @param {!Array<!LayerPaintEvent>} paints
    */
   _setPaints(paints) {
     this._paints = paints;
   }
-};
+}
 
 /**
  * @unrestricted
  */
-TimelineModel.TimelineFrame = class {
+export class TimelineFrame {
   /**
    * @param {number} startTime
    * @param {number} startTimeOffset
@@ -414,9 +414,9 @@ TimelineModel.TimelineFrame = class {
     this.timeByCategory = {};
     this.cpuTime = 0;
     this.idle = false;
-    /** @type {?TimelineModel.TracingFrameLayerTree} */
+    /** @type {?TracingFrameLayerTree} */
     this.layerTree = null;
-    /** @type {!Array.<!TimelineModel.LayerPaintEvent>} */
+    /** @type {!Array.<!LayerPaintEvent>} */
     this._paints = [];
     /** @type {number|undefined} */
     this._mainFrameId = undefined;
@@ -438,7 +438,7 @@ TimelineModel.TimelineFrame = class {
   }
 
   /**
-   * @param {?TimelineModel.TracingFrameLayerTree} layerTree
+   * @param {?TracingFrameLayerTree} layerTree
    */
   _setLayerTree(layerTree) {
     this.layerTree = layerTree;
@@ -461,12 +461,12 @@ TimelineModel.TimelineFrame = class {
     this.timeByCategory[category] = (this.timeByCategory[category] || 0) + time;
     this.cpuTime += time;
   }
-};
+}
 
 /**
  * @unrestricted
  */
-TimelineModel.LayerPaintEvent = class {
+export class LayerPaintEvent {
   /**
    * @param {!SDK.TracingModel.Event} event
    * @param {?SDK.Target} target
@@ -518,12 +518,12 @@ TimelineModel.LayerPaintEvent = class {
           .then(snapshot => snapshot ? {rect: picture.rect, snapshot: snapshot} : null);
     });
   }
-};
+}
 
 /**
  * @unrestricted
  */
-TimelineModel.PendingFrame = class {
+export class PendingFrame {
   /**
    * @param {number} triggerTime
    * @param {!Object.<string, number>} timeByCategory
@@ -531,10 +531,31 @@ TimelineModel.PendingFrame = class {
   constructor(triggerTime, timeByCategory) {
     /** @type {!Object.<string, number>} */
     this.timeByCategory = timeByCategory;
-    /** @type {!Array.<!TimelineModel.LayerPaintEvent>} */
+    /** @type {!Array.<!LayerPaintEvent>} */
     this.paints = [];
     /** @type {number|undefined} */
     this.mainFrameId = undefined;
     this.triggerTime = triggerTime;
   }
-};
+}
+
+/* Legacy exported object */
+self.TimelineModel = self.TimelineModel || {};
+
+/* Legacy exported object */
+TimelineModel = TimelineModel || {};
+
+/** @constructor */
+TimelineModel.TimelineFrameModel = TimelineFrameModel;
+
+/** @constructor */
+TimelineModel.TracingFrameLayerTree = TracingFrameLayerTree;
+
+/** @constructor */
+TimelineModel.TimelineFrame = TimelineFrame;
+
+/** @constructor */
+TimelineModel.LayerPaintEvent = LayerPaintEvent;
+
+/** @constructor */
+TimelineModel.PendingFrame = PendingFrame;

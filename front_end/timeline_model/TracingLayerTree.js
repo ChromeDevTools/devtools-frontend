@@ -1,35 +1,11 @@
 // Copyright 2016 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/** @typedef {!{
-        bounds: {height: number, width: number},
-        children: Array.<!TimelineModel.TracingLayerPayload>,
-        layer_id: number,
-        position: Array.<number>,
-        scroll_offset: Array.<number>,
-        layer_quad: Array.<number>,
-        draws_content: number,
-        gpu_memory_usage: number,
-        transform: Array.<number>,
-        owner_node: number,
-        compositing_reasons: Array.<string>
-    }}
-*/
-TimelineModel.TracingLayerPayload;
-
-/** @typedef {!{
-        id: string,
-        layer_id: string,
-        gpu_memory_usage: number,
-        content_rect: !Array.<number>
-    }}
-*/
-TimelineModel.TracingLayerTile;
 
 /**
  * @unrestricted
  */
-TimelineModel.TracingLayerTree = class extends SDK.LayerTreeBase {
+export class TracingLayerTree extends SDK.LayerTreeBase {
   /**
    * @param {?SDK.Target} target
    */
@@ -99,7 +75,7 @@ TimelineModel.TracingLayerTree = class extends SDK.LayerTreeBase {
       Common.console.error(`Tile ${tileId} is missing`);
       return /** @type {!Promise<?SDK.SnapshotWithRect>} */ (Promise.resolve(null));
     }
-    const layer = /** @type {?TimelineModel.TracingLayer} */ (this.layerById(tile.layer_id));
+    const layer = /** @type {?TracingLayer} */ (this.layerById(tile.layer_id));
     if (!layer) {
       Common.console.error(`Layer ${tile.layer_id} for tile ${tileId} is not found`);
       return /** @type {!Promise<?SDK.SnapshotWithRect>} */ (Promise.resolve(null));
@@ -122,14 +98,14 @@ TimelineModel.TracingLayerTree = class extends SDK.LayerTreeBase {
   /**
    * @param {!Object<(string|number), !SDK.Layer>} oldLayersById
    * @param {!TimelineModel.TracingLayerPayload} payload
-   * @return {!TimelineModel.TracingLayer}
+   * @return {!TracingLayer}
    */
   _innerSetLayers(oldLayersById, payload) {
-    let layer = /** @type {?TimelineModel.TracingLayer} */ (oldLayersById[payload.layer_id]);
+    let layer = /** @type {?TracingLayer} */ (oldLayersById[payload.layer_id]);
     if (layer) {
       layer._reset(payload);
     } else {
-      layer = new TimelineModel.TracingLayer(this._paintProfilerModel, payload);
+      layer = new TracingLayer(this._paintProfilerModel, payload);
     }
     this._layersById[payload.layer_id] = layer;
     if (payload.owner_node) {
@@ -158,13 +134,13 @@ TimelineModel.TracingLayerTree = class extends SDK.LayerTreeBase {
       this._extractNodeIdsToResolve(nodeIdsToResolve, seenNodeIds, payload.children[i]);
     }
   }
-};
+}
 
 /**
  * @implements {SDK.Layer}
  * @unrestricted
  */
-TimelineModel.TracingLayer = class {
+export class TracingLayer {
   /**
    * @param {?SDK.PaintProfilerModel} paintProfilerModel
    * @param {!TimelineModel.TracingLayerPayload} payload
@@ -246,7 +222,7 @@ TimelineModel.TracingLayer = class {
    * @param {!SDK.Layer} childParam
    */
   addChild(childParam) {
-    const child = /** @type {!TimelineModel.TracingLayer} */ (childParam);
+    const child = /** @type {!TracingLayer} */ (childParam);
     if (child._parent) {
       console.assert(false, 'Child already has a parent');
     }
@@ -499,4 +475,41 @@ TimelineModel.TracingLayer = class {
   drawsContent() {
     return this._drawsContent;
   }
-};
+}
+
+/* Legacy exported object */
+self.TimelineModel = self.TimelineModel || {};
+
+/* Legacy exported object */
+TimelineModel = TimelineModel || {};
+
+/** @constructor */
+TimelineModel.TracingLayerTree = TracingLayerTree;
+
+/** @constructor */
+TimelineModel.TracingLayer = TracingLayer;
+
+/** @typedef {!{
+        bounds: {height: number, width: number},
+        children: Array.<!TimelineModel.TracingLayerPayload>,
+        layer_id: number,
+        position: Array.<number>,
+        scroll_offset: Array.<number>,
+        layer_quad: Array.<number>,
+        draws_content: number,
+        gpu_memory_usage: number,
+        transform: Array.<number>,
+        owner_node: number,
+        compositing_reasons: Array.<string>
+    }}
+*/
+TimelineModel.TracingLayerPayload;
+
+/** @typedef {!{
+        id: string,
+        layer_id: string,
+        gpu_memory_usage: number,
+        content_rect: !Array.<number>
+    }}
+*/
+TimelineModel.TracingLayerTile;

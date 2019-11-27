@@ -2,17 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-TimelineModel.TimelineProfileTree = {};
-
-/**
- * @typedef {Map<string|symbol, !TimelineModel.TimelineProfileTree.Node>}
- */
-TimelineModel.TimelineProfileTree.ChildrenCache;
-
 /**
  * @unrestricted
  */
-TimelineModel.TimelineProfileTree.Node = class {
+export class Node {
   /**
    * @param {string|symbol} id
    * @param {?SDK.TracingModel.Event} event
@@ -26,7 +19,7 @@ TimelineModel.TimelineProfileTree.Node = class {
     this.id = id;
     /** @type {?SDK.TracingModel.Event} */
     this.event = event;
-    /** @type {?TimelineModel.TimelineProfileTree.Node} */
+    /** @type {?Node} */
     this.parent;
 
     /** @type {string} */
@@ -57,8 +50,8 @@ TimelineModel.TimelineProfileTree.Node = class {
 
   /**
    * @param {function(!SDK.TracingModel.Event):boolean} matchFunction
-   * @param {!Array<!TimelineModel.TimelineProfileTree.Node>=} results
-   * @return {!Array<!TimelineModel.TimelineProfileTree.Node>}
+   * @param {!Array<!Node>=} results
+   * @return {!Array<!Node>}
    */
   searchTree(matchFunction, results) {
     results = results || [];
@@ -70,17 +63,17 @@ TimelineModel.TimelineProfileTree.Node = class {
     }
     return results;
   }
-};
+}
 
-TimelineModel.TimelineProfileTree.TopDownNode = class extends TimelineModel.TimelineProfileTree.Node {
+export class TopDownNode extends Node {
   /**
    * @param {string|symbol} id
    * @param {?SDK.TracingModel.Event} event
-   * @param {?TimelineModel.TimelineProfileTree.TopDownNode} parent
+   * @param {?TopDownNode} parent
    */
   constructor(id, event, parent) {
     super(id, event);
-    /** @type {?TimelineModel.TimelineProfileTree.TopDownRootNode} */
+    /** @type {?TopDownRootNode} */
     this._root = parent && parent._root;
     this._hasChildren = false;
     this._children = null;
@@ -107,10 +100,10 @@ TimelineModel.TimelineProfileTree.TopDownNode = class extends TimelineModel.Time
    * @return {!TimelineModel.TimelineProfileTree.ChildrenCache}
    */
   _buildChildren() {
-    /** @type {!Array<!TimelineModel.TimelineProfileTree.TopDownNode>} */
+    /** @type {!Array<!TopDownNode>} */
     const path = [];
     for (let node = this; node.parent && !node._isGroupNode; node = node.parent) {
-      path.push(/** @type {!TimelineModel.TimelineProfileTree.TopDownNode} */ (node));
+      path.push(/** @type {!TopDownNode} */ (node));
     }
     path.reverse();
     /** @type {!TimelineModel.TimelineProfileTree.ChildrenCache} */
@@ -120,7 +113,7 @@ TimelineModel.TimelineProfileTree.TopDownNode = class extends TimelineModel.Time
     const startTime = root._startTime;
     const endTime = root._endTime;
     const instantEventCallback = root._doNotAggregate ? onInstantEvent : undefined;
-    const eventIdCallback = root._doNotAggregate ? undefined : TimelineModel.TimelineProfileTree._eventId;
+    const eventIdCallback = root._doNotAggregate ? undefined : _eventId;
     const eventGroupIdCallback = root._eventGroupIdCallback;
     let depth = 0;
     let matchedDepth = 0;
@@ -180,7 +173,7 @@ TimelineModel.TimelineProfileTree.TopDownNode = class extends TimelineModel.Time
       }
       let node = children.get(id);
       if (!node) {
-        node = new TimelineModel.TimelineProfileTree.TopDownNode(id, e, self);
+        node = new TopDownNode(id, e, self);
         node._groupId = groupId;
         children.set(id, node);
       }
@@ -233,9 +226,9 @@ TimelineModel.TimelineProfileTree.TopDownNode = class extends TimelineModel.Time
     this._children = children;
     return children;
   }
-};
+}
 
-TimelineModel.TimelineProfileTree.TopDownRootNode = class extends TimelineModel.TimelineProfileTree.TopDownNode {
+export class TopDownRootNode extends TopDownNode {
   /**
    * @param {!Array<!SDK.TracingModel.Event>} events
    * @param {!Array<!TimelineModel.TimelineModelFilter>} filters
@@ -281,8 +274,7 @@ TimelineModel.TimelineProfileTree.TopDownRootNode = class extends TimelineModel.
       const groupId = this._eventGroupIdCallback(/** @type {!SDK.TracingModel.Event} */ (node.event));
       let groupNode = groupNodes.get(groupId);
       if (!groupNode) {
-        groupNode = new TimelineModel.TimelineProfileTree.GroupNode(
-            groupId, this, /** @type {!SDK.TracingModel.Event} */ (node.event));
+        groupNode = new GroupNode(groupId, this, /** @type {!SDK.TracingModel.Event} */ (node.event));
         groupNodes.set(groupId, groupNode);
       }
       groupNode.addChild(node, node.selfTime, node.totalTime);
@@ -290,9 +282,9 @@ TimelineModel.TimelineProfileTree.TopDownRootNode = class extends TimelineModel.
     this._children = groupNodes;
     return groupNodes;
   }
-};
+}
 
-TimelineModel.TimelineProfileTree.BottomUpRootNode = class extends TimelineModel.TimelineProfileTree.Node {
+export class BottomUpRootNode extends Node {
   /**
    * @param {!Array<!SDK.TracingModel.Event>} events
    * @param {!TimelineModel.TimelineModelFilter} textFilter
@@ -371,7 +363,7 @@ TimelineModel.TimelineProfileTree.BottomUpRootNode = class extends TimelineModel
       const duration = Math.min(e.endTime, endTime) - Math.max(e.startTime, startTime);
       selfTimeStack[selfTimeStack.length - 1] -= duration;
       selfTimeStack.push(duration);
-      const id = TimelineModel.TimelineProfileTree._eventId(e);
+      const id = _eventId(e);
       const noNodeOnStack = !totalTimeById.has(id);
       if (noNodeOnStack) {
         totalTimeById.set(id, duration);
@@ -383,10 +375,10 @@ TimelineModel.TimelineProfileTree.BottomUpRootNode = class extends TimelineModel
      * @param {!SDK.TracingModel.Event} e
      */
     function onEndEvent(e) {
-      const id = TimelineModel.TimelineProfileTree._eventId(e);
+      const id = _eventId(e);
       let node = nodeById.get(id);
       if (!node) {
-        node = new TimelineModel.TimelineProfileTree.BottomUpNode(root, id, e, false, root);
+        node = new BottomUpNode(root, id, e, false, root);
         nodeById.set(id, node);
       }
       node.selfTime += selfTimeStack.pop();
@@ -421,20 +413,19 @@ TimelineModel.TimelineProfileTree.BottomUpRootNode = class extends TimelineModel
       const groupId = this._eventGroupIdCallback(/** @type {!SDK.TracingModel.Event} */ (node.event));
       let groupNode = groupNodes.get(groupId);
       if (!groupNode) {
-        groupNode = new TimelineModel.TimelineProfileTree.GroupNode(
-            groupId, this, /** @type {!SDK.TracingModel.Event} */ (node.event));
+        groupNode = new GroupNode(groupId, this, /** @type {!SDK.TracingModel.Event} */ (node.event));
         groupNodes.set(groupId, groupNode);
       }
       groupNode.addChild(node, node.selfTime, node.selfTime);
     }
     return groupNodes;
   }
-};
+}
 
-TimelineModel.TimelineProfileTree.GroupNode = class extends TimelineModel.TimelineProfileTree.Node {
+export class GroupNode extends Node {
   /**
    * @param {string} id
-   * @param {!TimelineModel.TimelineProfileTree.BottomUpRootNode|!TimelineModel.TimelineProfileTree.TopDownRootNode} parent
+   * @param {!BottomUpRootNode|!TopDownRootNode} parent
    * @param {!SDK.TracingModel.Event} event
    */
   constructor(id, parent, event) {
@@ -445,7 +436,7 @@ TimelineModel.TimelineProfileTree.GroupNode = class extends TimelineModel.Timeli
   }
 
   /**
-   * @param {!TimelineModel.TimelineProfileTree.BottomUpNode} child
+   * @param {!BottomUpNode} child
    * @param {number} selfTime
    * @param {number} totalTime
    */
@@ -471,15 +462,15 @@ TimelineModel.TimelineProfileTree.GroupNode = class extends TimelineModel.Timeli
   children() {
     return this._children;
   }
-};
+}
 
-TimelineModel.TimelineProfileTree.BottomUpNode = class extends TimelineModel.TimelineProfileTree.Node {
+export class BottomUpNode extends Node {
   /**
-   * @param {!TimelineModel.TimelineProfileTree.BottomUpRootNode} root
+   * @param {!BottomUpRootNode} root
    * @param {string} id
    * @param {!SDK.TracingModel.Event} event
    * @param {boolean} hasChildren
-   * @param {!TimelineModel.TimelineProfileTree.Node} parent
+   * @param {!Node} parent
    */
   constructor(root, id, event, hasChildren, parent) {
     super(id, event);
@@ -536,7 +527,7 @@ TimelineModel.TimelineProfileTree.BottomUpNode = class extends TimelineModel.Tim
       }
       selfTimeStack[selfTimeStack.length - 1] -= duration;
       selfTimeStack.push(duration);
-      const id = TimelineModel.TimelineProfileTree._eventId(e);
+      const id = _eventId(e);
       eventIdStack.push(id);
       eventStack.push(e);
     }
@@ -562,7 +553,7 @@ TimelineModel.TimelineProfileTree.BottomUpNode = class extends TimelineModel.Tim
       if (!node) {
         const event = eventStack[eventStack.length - self._depth];
         const hasChildren = eventStack.length > self._depth;
-        node = new TimelineModel.TimelineProfileTree.BottomUpNode(self._root, childId, event, hasChildren, self);
+        node = new BottomUpNode(self._root, childId, event, hasChildren, self);
         nodeById.set(childId, node);
       }
       const totalTime = Math.min(e.endTime, endTime) - Math.max(e.startTime, lastTimeMarker);
@@ -578,8 +569,8 @@ TimelineModel.TimelineProfileTree.BottomUpNode = class extends TimelineModel.Tim
   /**
    * @override
    * @param {function(!SDK.TracingModel.Event):boolean} matchFunction
-   * @param {!Array<!TimelineModel.TimelineProfileTree.Node>=} results
-   * @return {!Array<!TimelineModel.TimelineProfileTree.Node>}
+   * @param {!Array<!Node>=} results
+   * @return {!Array<!Node>}
    */
   searchTree(matchFunction, results) {
     results = results || [];
@@ -588,18 +579,18 @@ TimelineModel.TimelineProfileTree.BottomUpNode = class extends TimelineModel.Tim
     }
     return results;
   }
-};
+}
 
 /**
  * @param {!SDK.TracingModel.Event} event
  * @return {?string}
  */
-TimelineModel.TimelineProfileTree.eventURL = function(event) {
+export function eventURL(event) {
   const data = event.args['data'] || event.args['beginData'];
   if (data && data['url']) {
     return data['url'];
   }
-  let frame = TimelineModel.TimelineProfileTree.eventStackFrame(event);
+  let frame = eventStackFrame(event);
   while (frame) {
     const url = frame['url'];
     if (url) {
@@ -608,24 +599,24 @@ TimelineModel.TimelineProfileTree.eventURL = function(event) {
     frame = frame.parent;
   }
   return null;
-};
+}
 
 /**
  * @param {!SDK.TracingModel.Event} event
  * @return {?Protocol.Runtime.CallFrame}
  */
-TimelineModel.TimelineProfileTree.eventStackFrame = function(event) {
+export function eventStackFrame(event) {
   if (event.name === TimelineModel.TimelineModel.RecordType.JSFrame) {
     return /** @type {?Protocol.Runtime.CallFrame} */ (event.args['data'] || null);
   }
   return TimelineModel.TimelineData.forEvent(event).topFrame();
-};
+}
 
 /**
  * @param {!SDK.TracingModel.Event} event
  * @return {string}
  */
-TimelineModel.TimelineProfileTree._eventId = function(event) {
+export function _eventId(event) {
   if (event.name === TimelineModel.TimelineModel.RecordType.TimeStamp) {
     return `${event.name}:${event.args.data.message}`;
   }
@@ -639,4 +630,39 @@ TimelineModel.TimelineProfileTree._eventId = function(event) {
       TimelineModel.TimelineJSProfileProcessor.nativeGroup(functionName) || functionName :
       `${functionName}:${frame['lineNumber']}:${frame['columnNumber']}`;
   return `f:${name}@${location}`;
-};
+}
+
+/* Legacy exported object */
+self.TimelineModel = self.TimelineModel || {};
+
+/* Legacy exported object */
+TimelineModel = TimelineModel || {};
+
+TimelineModel.TimelineProfileTree = {};
+
+/** @constructor */
+TimelineModel.TimelineProfileTree.Node = Node;
+
+/** @constructor */
+TimelineModel.TimelineProfileTree.TopDownNode = TopDownNode;
+
+/** @constructor */
+TimelineModel.TimelineProfileTree.TopDownRootNode = TopDownRootNode;
+
+/** @constructor */
+TimelineModel.TimelineProfileTree.BottomUpRootNode = BottomUpRootNode;
+
+/** @constructor */
+TimelineModel.TimelineProfileTree.GroupNode = GroupNode;
+
+/** @constructor */
+TimelineModel.TimelineProfileTree.BottomUpNode = BottomUpNode;
+
+TimelineModel.TimelineProfileTree.eventURL = eventURL;
+TimelineModel.TimelineProfileTree.eventStackFrame = eventStackFrame;
+TimelineModel.TimelineProfileTree._eventId = _eventId;
+
+/**
+ * @typedef {Map<string|symbol, !Node>}
+ */
+TimelineModel.TimelineProfileTree.ChildrenCache;

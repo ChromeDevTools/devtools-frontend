@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-TimelineModel.TimelineModelFilter = class {
+export class TimelineModelFilter {
   /**
    * @param {!SDK.TracingModel.Event} event
    * @return {boolean}
@@ -10,9 +10,9 @@ TimelineModel.TimelineModelFilter = class {
   accept(event) {
     return true;
   }
-};
+}
 
-TimelineModel.TimelineVisibleEventsFilter = class extends TimelineModel.TimelineModelFilter {
+export class TimelineVisibleEventsFilter extends TimelineModelFilter {
   /**
    * @param {!Array<string>} visibleTypes
    */
@@ -27,7 +27,7 @@ TimelineModel.TimelineVisibleEventsFilter = class extends TimelineModel.Timeline
    * @return {boolean}
    */
   accept(event) {
-    return this._visibleTypes.has(TimelineModel.TimelineVisibleEventsFilter._eventType(event));
+    return this._visibleTypes.has(TimelineVisibleEventsFilter._eventType(event));
   }
 
   /**
@@ -45,9 +45,9 @@ TimelineModel.TimelineVisibleEventsFilter = class extends TimelineModel.Timeline
     }
     return /** @type !TimelineModel.TimelineModel.RecordType */ (event.name);
   }
-};
+}
 
-TimelineModel.TimelineInvisibleEventsFilter = class extends TimelineModel.TimelineModelFilter {
+export class TimelineInvisibleEventsFilter extends TimelineModelFilter {
   /**
    * @param {!Array<string>} invisibleTypes
    */
@@ -62,11 +62,11 @@ TimelineModel.TimelineInvisibleEventsFilter = class extends TimelineModel.Timeli
    * @return {boolean}
    */
   accept(event) {
-    return !this._invisibleTypes.has(TimelineModel.TimelineVisibleEventsFilter._eventType(event));
+    return !this._invisibleTypes.has(TimelineVisibleEventsFilter._eventType(event));
   }
-};
+}
 
-TimelineModel.ExclusiveNameFilter = class extends TimelineModel.TimelineModelFilter {
+export class ExclusiveNameFilter extends TimelineModelFilter {
   /**
    * @param {!Array<string>} excludeNames
    */
@@ -83,4 +83,22 @@ TimelineModel.ExclusiveNameFilter = class extends TimelineModel.TimelineModelFil
   accept(event) {
     return !this._excludeNames.has(event.name);
   }
-};
+}
+
+/* Legacy exported object */
+self.TimelineModel = self.TimelineModel || {};
+
+/* Legacy exported object */
+TimelineModel = TimelineModel || {};
+
+/** @constructor */
+TimelineModel.TimelineModelFilter = TimelineModelFilter;
+
+/** @constructor */
+TimelineModel.TimelineVisibleEventsFilter = TimelineVisibleEventsFilter;
+
+/** @constructor */
+TimelineModel.TimelineInvisibleEventsFilter = TimelineInvisibleEventsFilter;
+
+/** @constructor */
+TimelineModel.ExclusiveNameFilter = ExclusiveNameFilter;

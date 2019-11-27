@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-TimelineModel.TimelineJSProfileProcessor = class {
+export class TimelineJSProfileProcessor {
   /**
    * @param {!SDK.CPUProfileDataModel} jsProfileModel
    * @param {!SDK.TracingModel.Thread} thread
@@ -140,7 +140,7 @@ TimelineModel.TimelineJSProfileProcessor = class {
      * @return {boolean}
      */
     function showNativeName(name) {
-      return showRuntimeCallStats && !!TimelineModel.TimelineJSProfileProcessor.nativeGroup(name);
+      return showRuntimeCallStats && !!TimelineJSProfileProcessor.nativeGroup(name);
     }
 
     /**
@@ -159,12 +159,12 @@ TimelineModel.TimelineJSProfileProcessor = class {
         if (!showNativeFunctions && isNativeFrame) {
           continue;
         }
-        const isNativeRuntimeFrame = TimelineModel.TimelineJSProfileProcessor.isNativeRuntimeFrame(frame);
+        const isNativeRuntimeFrame = TimelineJSProfileProcessor.isNativeRuntimeFrame(frame);
         if (isNativeRuntimeFrame && !showNativeName(frame.functionName)) {
           continue;
         }
         const nativeFrameName =
-            isNativeRuntimeFrame ? TimelineModel.TimelineJSProfileProcessor.nativeGroup(frame.functionName) : null;
+            isNativeRuntimeFrame ? TimelineJSProfileProcessor.nativeGroup(frame.functionName) : null;
         if (previousNativeFrameName && previousNativeFrameName === nativeFrameName) {
           continue;
         }
@@ -224,14 +224,14 @@ TimelineModel.TimelineJSProfileProcessor = class {
 
   /**
    * @param {string} nativeName
-   * @return {?TimelineModel.TimelineJSProfileProcessor.NativeGroups}
+   * @return {?TimelineJSProfileProcessor.NativeGroups}
    */
   static nativeGroup(nativeName) {
     if (nativeName.startsWith('Parse')) {
-      return TimelineModel.TimelineJSProfileProcessor.NativeGroups.Parse;
+      return TimelineJSProfileProcessor.NativeGroups.Parse;
     }
     if (nativeName.startsWith('Compile') || nativeName.startsWith('Recompile')) {
-      return TimelineModel.TimelineJSProfileProcessor.NativeGroups.Compile;
+      return TimelineJSProfileProcessor.NativeGroups.Compile;
     }
     return null;
   }
@@ -324,10 +324,19 @@ TimelineModel.TimelineJSProfileProcessor = class {
       return event;
     }
   }
-};
+}
 
 /** @enum {string} */
-TimelineModel.TimelineJSProfileProcessor.NativeGroups = {
+TimelineJSProfileProcessor.NativeGroups = {
   'Compile': 'Compile',
   'Parse': 'Parse'
 };
+
+/* Legacy exported object */
+self.TimelineModel = self.TimelineModel || {};
+
+/* Legacy exported object */
+TimelineModel = TimelineModel || {};
+
+/** @constructor */
+TimelineModel.TimelineJSProfileProcessor = TimelineJSProfileProcessor;

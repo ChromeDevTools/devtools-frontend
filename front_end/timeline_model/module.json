@@ -2,7 +2,9 @@
     "dependencies": [
         "sdk"
     ],
-    "scripts": [
+    "scripts": [],
+    "modules": [
+        "timeline_model.js",
         "TimelineModelFilter.js",
         "TracingLayerTree.js",
         "TimelineModel.js",

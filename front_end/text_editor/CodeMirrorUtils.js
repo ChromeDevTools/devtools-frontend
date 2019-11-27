@@ -28,33 +28,32 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-TextEditor.CodeMirrorUtils = {};
 /**
  * @param {!TextUtils.TextRange} range
  * @return {!{start: !CodeMirror.Pos, end: !CodeMirror.Pos}}
  */
-TextEditor.CodeMirrorUtils.toPos = function(range) {
+export function toPos(range) {
   return {
     start: new CodeMirror.Pos(range.startLine, range.startColumn),
     end: new CodeMirror.Pos(range.endLine, range.endColumn)
   };
-};
+}
 
 /**
  * @param {!CodeMirror.Pos} start
  * @param {!CodeMirror.Pos} end
  * @return {!TextUtils.TextRange}
  */
-TextEditor.CodeMirrorUtils.toRange = function(start, end) {
+export function toRange(start, end) {
   return new TextUtils.TextRange(start.line, start.ch, end.line, end.ch);
-};
+}
 
 /**
  * @param {!CodeMirror.ChangeObject} changeObject
  * @return {{oldRange: !TextUtils.TextRange, newRange: !TextUtils.TextRange}}
  */
-TextEditor.CodeMirrorUtils.changeObjectToEditOperation = function(changeObject) {
-  const oldRange = TextEditor.CodeMirrorUtils.toRange(changeObject.from, changeObject.to);
+export function changeObjectToEditOperation(changeObject) {
+  const oldRange = toRange(changeObject.from, changeObject.to);
   const newRange = oldRange.clone();
   const linesAdded = changeObject.text.length;
   if (linesAdded === 0) {
@@ -68,14 +67,14 @@ TextEditor.CodeMirrorUtils.changeObjectToEditOperation = function(changeObject) 
     newRange.endColumn = changeObject.text[linesAdded - 1].length;
   }
   return {oldRange: oldRange, newRange: newRange};
-};
+}
 
 /**
  * @param {!CodeMirror} codeMirror
  * @param {number} linesCount
  * @return {!Array.<string>}
  */
-TextEditor.CodeMirrorUtils.pullLines = function(codeMirror, linesCount) {
+export function pullLines(codeMirror, linesCount) {
   const lines = [];
   codeMirror.eachLine(0, linesCount, onLineHandle);
   return lines;
@@ -86,13 +85,13 @@ TextEditor.CodeMirrorUtils.pullLines = function(codeMirror, linesCount) {
   function onLineHandle(lineHandle) {
     lines.push(lineHandle.text);
   }
-};
+}
 
 /**
  * @implements {TextUtils.TokenizerFactory}
  * @unrestricted
  */
-TextEditor.CodeMirrorUtils.TokenizerFactory = class {
+export class TokenizerFactory {
   /**
    * @override
    * @param {string} mimeType
@@ -112,4 +111,20 @@ TextEditor.CodeMirrorUtils.TokenizerFactory = class {
     }
     return tokenize;
   }
-};
+}
+
+/* Legacy exported object */
+self.TextEditor = self.TextEditor || {};
+
+/* Legacy exported object */
+TextEditor = TextEditor || {};
+
+TextEditor.CodeMirrorUtils = {};
+
+TextEditor.CodeMirrorUtils.toPos = toPos;
+TextEditor.CodeMirrorUtils.toRange = toRange;
+TextEditor.CodeMirrorUtils.changeObjectToEditOperation = changeObjectToEditOperation;
+TextEditor.CodeMirrorUtils.pullLines = pullLines;
+
+/** @constructor */
+TextEditor.CodeMirrorUtils.TokenizerFactory = TokenizerFactory;

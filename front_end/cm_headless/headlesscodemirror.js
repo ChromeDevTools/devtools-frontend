@@ -159,4 +159,4 @@ CodeMirror.runMode = function (string, modespec, callback, options) {
   }
 };
 })();
-}(this))
+}(self))

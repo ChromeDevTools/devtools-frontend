@@ -13,14 +13,12 @@
         "ui",
         "platform",
         "common",
-        "cm"
+        "cm",
+        "cm_web_modes"
     ],
-    "scripts": [
-        "../cm_web_modes/css.js",
-        "../cm_web_modes/javascript.js",
-        "../cm_web_modes/xml.js",
-        "../cm_web_modes/htmlmixed.js",
-        "../cm_web_modes/htmlembedded.js",
+    "scripts": [],
+    "modules": [
+        "text_editor.js",
         "CodeMirrorUtils.js",
         "TextEditorAutocompleteController.js",
         "CodeMirrorTextEditor.js"
@@ -28,13 +26,5 @@
     "resources": [
         "autocompleteTooltip.css",
         "cmdevtools.css"
-    ],
-    "skip_compilation": [
-        "acorn/acorn.js",
-        "../cm_web_modes/css.js",
-        "../cm_web_modes/javascript.js",
-        "../cm_web_modes/xml.js",
-        "../cm_web_modes/htmlmixed.js",
-        "../cm_web_modes/htmlembedded.js"
     ]
 }

@@ -1,0 +1,21 @@
+{
+  "dependencies": [],
+  "scripts": [],
+  "modules": [
+    "cm_web_modes.js",
+    "cm_web_modes_cm.js",
+    "cm_web_modes_headless.js",
+    "css.js",
+    "javascript.js",
+    "xml.js",
+    "htmlmixed.js",
+    "htmlembedded.js"
+  ],
+  "skip_compilation": [
+    "css.js",
+    "javascript.js",
+    "xml.js",
+    "htmlmixed.js",
+    "htmlembedded.js"
+  ]
+}

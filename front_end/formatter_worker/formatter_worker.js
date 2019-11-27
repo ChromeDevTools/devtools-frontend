@@ -4,8 +4,7 @@
 
 import './acorn/acorn.js';
 import './acorn/acorn_loose.js';
-import '../cm_web_modes/css.js';
-import '../cm_web_modes/xml.js';
+import '../cm_web_modes/cm_web_modes_headless.js';
 
 import * as AcornTokenizer from './AcornTokenizer.js';
 import * as CSSFormatter from './CSSFormatter.js';

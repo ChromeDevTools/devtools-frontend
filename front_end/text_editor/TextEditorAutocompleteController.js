@@ -1,11 +1,12 @@
 // Copyright (c) 2014 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
 /**
  * @implements {UI.SuggestBoxDelegate}
  * @unrestricted
  */
-TextEditor.TextEditorAutocompleteController = class {
+export class TextEditorAutocompleteController {
   /**
    * @param {!TextEditor.CodeMirrorTextEditor} textEditor
    * @param {!CodeMirror} codeMirror
@@ -95,7 +96,7 @@ TextEditor.TextEditorAutocompleteController = class {
 
     /**
      * @param {string} word
-     * @this {TextEditor.TextEditorAutocompleteController}
+     * @this {TextEditorAutocompleteController}
      */
     function addWord(word) {
       if (word.length && (word[0] < '0' || word[0] > '9')) {
@@ -272,7 +273,7 @@ TextEditor.TextEditorAutocompleteController = class {
 
     /**
      * @param {!UI.SuggestBox.Suggestions} wordsWithQuery
-     * @this {TextEditor.TextEditorAutocompleteController}
+     * @this {TextEditorAutocompleteController}
      */
     function wordsAcquired(wordsWithQuery) {
       if (!wordsWithQuery.length || (wordsWithQuery.length === 1 && query === wordsWithQuery[0].text) ||
@@ -324,7 +325,7 @@ TextEditor.TextEditorAutocompleteController = class {
 
     if (!this._hintMarker) {
       this._hintMarker = this._textEditor.addBookmark(
-          cursor.line, cursor.ch, this._hintElement, TextEditor.TextEditorAutocompleteController.HintBookmark, true);
+          cursor.line, cursor.ch, this._hintElement, TextEditorAutocompleteController.HintBookmark, true);
     } else if (this._lastHintText !== hint) {
       this._hintMarker.refresh();
     }
@@ -544,6 +545,15 @@ TextEditor.TextEditorAutocompleteController = class {
     const metrics = this._textEditor.cursorPositionToCoordinates(line, column);
     this._anchorBox = metrics ? new AnchorBox(metrics.x, metrics.y, 0, metrics.height) : null;
   }
-};
+}
 
-TextEditor.TextEditorAutocompleteController.HintBookmark = Symbol('hint');
+TextEditorAutocompleteController.HintBookmark = Symbol('hint');
+
+/* Legacy exported object */
+self.TextEditor = self.TextEditor || {};
+
+/* Legacy exported object */
+TextEditor = TextEditor || {};
+
+/** @constructor */
+TextEditor.TextEditorAutocompleteController = TextEditorAutocompleteController;

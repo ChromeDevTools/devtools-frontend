@@ -29,11 +29,12 @@ DEPS = {
     "karma": "4.2.0",
     "karma-chai": "0.1.0",
     "karma-chrome-launcher": "3.1.0",
-    "karma-coverage-istanbul-instrumenter": "^1.0.1",
-    "karma-coverage-istanbul-reporter": "^2.1.0",
+    "karma-coverage-istanbul-instrumenter": "1.0.1",
+    "karma-coverage-istanbul-reporter": "2.1.0",
     "karma-mocha": "1.3.0",
     "karma-typescript": "4.1.1",
     "mocha": "6.2.0",
+    "puppeteer": "2.0.0",
     "rollup": "^1.23.1",
     "typescript": "3.5.3"
 }
@@ -84,6 +85,24 @@ def strip_private_fields():
     return False
 
 
+def append_package_json_entries():
+    with open(devtools_paths.package_json_path(), 'r+') as pkg_file:
+        try:
+            pkg_data = json.load(pkg_file)
+
+            # Replace the dev deps.
+            pkg_data[u'devDependencies'] = DEPS
+
+            pkg_file.truncate(0)
+            pkg_file.seek(0)
+            json.dump(pkg_data, pkg_file, indent=2, sort_keys=True)
+
+        except:
+            print('Unable to fix: %s' % sys.exc_info()[0])
+            return True
+    return False
+
+
 def remove_package_json_entries():
     with open(devtools_paths.package_json_path(), 'r+') as pkg_file:
         try:
@@ -107,14 +126,12 @@ def remove_package_json_entries():
 def install_deps():
     clean_node_modules()
 
-    exec_command = ['npm', 'install', '--save-dev']
-    for pkg, version in DEPS.items():
-        # For git URLs we append the url rather than package@version, since the package@version
-        # formulation doesn't work.
-        if version.find(u'git+') == 0:
-            exec_command.append('%s' % version)
-        else:
-            exec_command.append('%s@%s' % (pkg, version))
+    errors_found = append_package_json_entries()
+    if errors_found:
+        return True
+
+    # Run the CI version of npm, which prevents updates to the versions of modules.
+    exec_command = ['npm', 'ci']
 
     errors_found = False
     npm_proc_result = subprocess.check_call(exec_command, cwd=devtools_paths.root_path())

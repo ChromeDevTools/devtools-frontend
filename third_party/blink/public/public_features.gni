@@ -8,8 +8,4 @@ declare_args() {
   # resources.pak. It is still possible to load JS files from disk by passing
   # --debug-devtools cmdline switch.
   debug_devtools = false
-
-  # This flag is used to distinguish between using this repository and using the
-  # legacy version of DevTools front-end.
-  external_devtools_frontend = true
 }

@@ -41,6 +41,9 @@ EXCLUSIVE_CHANGE_DIRECTORIES = [
 ]
 
 def _CheckChangesAreExclusiveToDirectory(input_api, output_api):
+    if input_api.change.DISABLE_THIRD_PARTY_CHECK != None:
+        return []
+
     def IsParentDir(file, dir):
         while file != '':
             if file == dir:
@@ -65,8 +68,10 @@ def _CheckChangesAreExclusiveToDirectory(input_api, output_api):
             num_in_dir = num_in_dir + 1
         if num_in_dir < num_affected:
             return [
-                output_api.PresubmitError(
-                    'CLs that affect files in "%s" should be limited to these files/directories.' % ', '.join(dirs))
+                output_api
+                .PresubmitError('CLs that affect files in "%s" should be limited to these files/directories.' +
+                                ' You can disable this check by adding DISABLE_THIRD_PARTY_CHECK=<reason> to your commit message' %
+                                ', '.join(dirs))
             ]
     return []
 

@@ -5,7 +5,7 @@
  * @implements {SDK.SDKModelObserver<!Security.SecurityModel>}
  * @unrestricted
  */
-Security.SecurityPanel = class extends UI.PanelWithSidebar {
+export default class SecurityPanel extends UI.PanelWithSidebar {
   constructor() {
     super('security');
 
@@ -388,25 +388,12 @@ Security.SecurityPanel = class extends UI.PanelWithSidebar {
   _onInterstitialHidden() {
     this._sidebarTree.toggleOriginsList(false /* hidden */);
   }
-};
-
-/** @typedef {string} */
-Security.SecurityPanel.Origin;
-
-/**
- * @typedef {Object}
- * @property {!Protocol.Security.SecurityState} securityState
- * @property {?Protocol.Network.SecurityDetails} securityDetails
- * @property {?bool} loadedFromCache
- * @property {?Security.SecurityOriginView} originView
- */
-Security.SecurityPanel.OriginState;
-
+}
 
 /**
  * @unrestricted
  */
-Security.SecurityPanelSidebarTree = class extends UI.TreeOutlineInShadow {
+export class SecurityPanelSidebarTree extends UI.TreeOutlineInShadow {
   /**
    * @param {!Security.SecurityPanelSidebarTreeElement} mainViewElement
    * @param {function(!Security.SecurityPanel.Origin)} showOriginInPanel
@@ -550,10 +537,10 @@ Security.SecurityPanelSidebarTree = class extends UI.TreeOutlineInShadow {
     this._clearOriginGroups();
     this._elementsByOrigin.clear();
   }
-};
+}
 
 /** @enum {symbol} */
-Security.SecurityPanelSidebarTree.OriginGroup = {
+export const OriginGroup = {
   MainOrigin: Symbol('MainOrigin'),
   NonSecure: Symbol('NonSecure'),
   Secure: Symbol('Secure'),
@@ -563,7 +550,7 @@ Security.SecurityPanelSidebarTree.OriginGroup = {
 /**
  * @unrestricted
  */
-Security.SecurityPanelSidebarTreeElement = class extends UI.TreeElement {
+export class SecurityPanelSidebarTreeElement extends UI.TreeElement {
   /**
    * @param {!Element} textElement
    * @param {function()} selectCallback
@@ -617,13 +604,12 @@ Security.SecurityPanelSidebarTreeElement = class extends UI.TreeElement {
     this._selectCallback();
     return true;
   }
-};
-
+}
 
 /**
  * @unrestricted
  */
-Security.SecurityMainView = class extends UI.VBox {
+export class SecurityMainView extends UI.VBox {
   /**
    * @param {!Security.SecurityPanel} panel
    */
@@ -1126,12 +1112,12 @@ Security.SecurityMainView = class extends UI.VBox {
     Network.NetworkPanel.revealAndFilter(
         [{filterType: Network.NetworkLogView.FilterType.MixedContent, filterValue: filterKey}]);
   }
-};
+}
 
 /**
  * @unrestricted
  */
-Security.SecurityOriginView = class extends UI.VBox {
+export class SecurityOriginView extends UI.VBox {
   /**
    * @param {!Security.SecurityPanel} panel
    * @param {!Security.SecurityPanel.Origin} origin
@@ -1376,12 +1362,12 @@ Security.SecurityOriginView = class extends UI.VBox {
 
     this._originLockIcon.classList.add('security-property-' + newSecurityState);
   }
-};
+}
 
 /**
  * @unrestricted
  */
-Security.SecurityDetailsTable = class {
+export class SecurityDetailsTable {
   constructor() {
     this._element = createElement('table');
     this._element.classList.add('details-table');
@@ -1409,4 +1395,55 @@ Security.SecurityDetailsTable = class {
       valueDiv.appendChild(value);
     }
   }
-};
+}
+
+/* Legacy exported object */
+self.Security = self.Security || {};
+
+/* Legacy exported object */
+Security = Security || {};
+
+/**
+ * @constructor
+ */
+Security.SecurityPanel = SecurityPanel;
+
+/** @typedef {string} */
+Security.SecurityPanel.Origin;
+
+/**
+ * @typedef {Object}
+ * @property {!Protocol.Security.SecurityState} securityState
+ * @property {?Protocol.Network.SecurityDetails} securityDetails
+ * @property {?bool} loadedFromCache
+ * @property {?Security.SecurityOriginView} originView
+ */
+Security.SecurityPanel.OriginState;
+
+/**
+ * @constructor
+ */
+Security.SecurityPanelSidebarTree = SecurityPanelSidebarTree;
+
+/** @enum {symbol} */
+Security.SecurityPanelSidebarTree.OriginGroup = OriginGroup;
+
+/**
+ * @constructor
+ */
+Security.SecurityPanelSidebarTreeElement = SecurityPanelSidebarTreeElement;
+
+/**
+ * @constructor
+ */
+Security.SecurityMainView = SecurityMainView;
+
+/**
+ * @constructor
+ */
+Security.SecurityOriginView = SecurityOriginView;
+
+/**
+ * @constructor
+ */
+Security.SecurityDetailsTable = SecurityDetailsTable;

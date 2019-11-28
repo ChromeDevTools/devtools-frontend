@@ -4,13 +4,13 @@
 /**
  * @unrestricted
  */
-Security.SecurityModel = class extends SDK.SDKModel {
+export default class SecurityModel extends SDK.SDKModel {
   /**
    * @param {!SDK.Target} target
    */
   constructor(target) {
     super(target);
-    this._dispatcher = new Security.SecurityDispatcher(this);
+    this._dispatcher = new SecurityDispatcher(this);
     this._securityAgent = target.securityAgent();
     target.registerSecurityDispatcher(this._dispatcher);
     this._securityAgent.enable();
@@ -37,8 +37,8 @@ Security.SecurityModel = class extends SDK.SDKModel {
    */
   static SecurityStateComparator(a, b) {
     let securityStateMap;
-    if (Security.SecurityModel._symbolicToNumericSecurityState) {
-      securityStateMap = Security.SecurityModel._symbolicToNumericSecurityState;
+    if (SecurityModel._symbolicToNumericSecurityState) {
+      securityStateMap = SecurityModel._symbolicToNumericSecurityState;
     } else {
       securityStateMap = new Map();
       const ordering = [
@@ -52,25 +52,25 @@ Security.SecurityModel = class extends SDK.SDKModel {
       for (let i = 0; i < ordering.length; i++) {
         securityStateMap.set(ordering[i], i + 1);
       }
-      Security.SecurityModel._symbolicToNumericSecurityState = securityStateMap;
+      SecurityModel._symbolicToNumericSecurityState = securityStateMap;
     }
     const aScore = securityStateMap.get(a) || 0;
     const bScore = securityStateMap.get(b) || 0;
 
     return aScore - bScore;
   }
-};
+}
 
-SDK.SDKModel.register(Security.SecurityModel, SDK.Target.Capability.Security, false);
+SDK.SDKModel.register(SecurityModel, SDK.Target.Capability.Security, false);
 
 /** @enum {symbol} */
-Security.SecurityModel.Events = {
+export const Events = {
   SecurityStateChanged: Symbol('SecurityStateChanged'),
   VisibleSecurityStateChanged: Symbol('VisibleSecurityStateChanged')
 };
 
 /** @type {!Object<string, string>} */
-Security.SummaryMessages = {
+export const SummaryMessages = {
   [Protocol.Security.SecurityState.Unknown]: ls`The security of this page is unknown.`,
   [Protocol.Security.SecurityState.Insecure]: ls`This page is not secure.`,
   [Protocol.Security.SecurityState.Neutral]: ls`This page is not secure.`,
@@ -81,7 +81,7 @@ Security.SummaryMessages = {
 /**
  * @unrestricted
  */
-Security.PageSecurityState = class {
+export class PageSecurityState {
   /**
    * @param {!Protocol.Security.SecurityState} securityState
    * @param {!Array<!Protocol.Security.SecurityStateExplanation>} explanations
@@ -92,22 +92,22 @@ Security.PageSecurityState = class {
     this.explanations = explanations;
     this.summary = summary;
   }
-};
+}
 
 /**
  * @unrestricted
  */
-Security.PageVisibleSecurityState = class {
+export class PageVisibleSecurityState {
   constructor(securityState, certificateSecurityState, safetyTipInfo, securityStateIssueIds) {
     this.securityState = securityState;
     this.certificateSecurityState =
-        certificateSecurityState ? new Security.CertificateSecurityState(certificateSecurityState) : null;
-    this.safetyTipInfo = safetyTipInfo ? new Security.SafetyTipInfo(safetyTipInfo) : null;
+        certificateSecurityState ? new CertificateSecurityState(certificateSecurityState) : null;
+    this.safetyTipInfo = safetyTipInfo ? new SafetyTipInfo(safetyTipInfo) : null;
     this.securityStateIssueIds = securityStateIssueIds;
   }
-};
+}
 
-Security.CertificateSecurityState = class {
+export class CertificateSecurityState {
   /**
    * @param {!Protocol.Security.CertificateSecurityState} certificateSecurityState
    */
@@ -174,18 +174,18 @@ Security.CertificateSecurityState = class {
   getCipherFullName() {
     return this.mac ? ls`${this.cipher} with ${this.mac}` : this.cipher;
   }
-};
+}
 
-Security.SafetyTipInfo = class {
+export class SafetyTipInfo {
   constructor(safetyTipInfo) {
     /** @type {string} */
     this.safetyTipStatus = safetyTipInfo.safetyTipStatus;
     /** @type {?string} */
     this.safeUrl = safetyTipInfo.safeUrl || null;
   }
-};
+}
 
-Security.SecurityStyleExplanation = class {
+export class SecurityStyleExplanation {
   /**
    * @param {!Protocol.Security.SecurityState} securityState
    * @param {string|undefined} title
@@ -206,13 +206,13 @@ Security.SecurityStyleExplanation = class {
     this.mixedContentType = mixedContentType;
     this.recommendations = recommendations;
   }
-};
+}
 
 /**
  * @implements {Protocol.SecurityDispatcher}
  * @unrestricted
  */
-Security.SecurityDispatcher = class {
+export class SecurityDispatcher {
   constructor(model) {
     this._model = model;
   }
@@ -226,8 +226,8 @@ Security.SecurityDispatcher = class {
    * @param {?string=} summary
    */
   securityStateChanged(securityState, schemeIsCryptographic, explanations, insecureContentStatus, summary) {
-    const pageSecurityState = new Security.PageSecurityState(securityState, explanations, summary || null);
-    this._model.dispatchEventToListeners(Security.SecurityModel.Events.SecurityStateChanged, pageSecurityState);
+    const pageSecurityState = new PageSecurityState(securityState, explanations, summary || null);
+    this._model.dispatchEventToListeners(Events.SecurityStateChanged, pageSecurityState);
   }
 
   /**
@@ -235,11 +235,10 @@ Security.SecurityDispatcher = class {
    * @param {!Protocol.Security.VisibleSecurityState} visibleSecurityState
    */
   visibleSecurityStateChanged(visibleSecurityState) {
-    const pageVisibleSecurityState = new Security.PageVisibleSecurityState(
+    const pageVisibleSecurityState = new PageVisibleSecurityState(
         visibleSecurityState.securityState, visibleSecurityState.certificateSecurityState || null,
         visibleSecurityState.safetyTipInfo || null, visibleSecurityState.securityStateIssueIds);
-    this._model.dispatchEventToListeners(
-        Security.SecurityModel.Events.VisibleSecurityStateChanged, pageVisibleSecurityState);
+    this._model.dispatchEventToListeners(Events.VisibleSecurityStateChanged, pageVisibleSecurityState);
   }
 
   /**
@@ -250,4 +249,51 @@ Security.SecurityDispatcher = class {
    */
   certificateError(eventId, errorType, requestURL) {
   }
-};
+}
+
+/* Legacy exported object */
+self.Security = self.Security || {};
+
+/* Legacy exported object */
+Security = Security || {};
+
+/**
+ * @constructor
+ */
+Security.SecurityModel = SecurityModel;
+
+/** @enum {symbol} */
+Security.SecurityModel.Events = Events;
+
+/** @type {!Object<string, string>} */
+Security.SummaryMessages = SummaryMessages;
+
+/**
+ * @constructor
+ */
+Security.PageSecurityState = PageSecurityState;
+
+/**
+ * @constructor
+ */
+Security.PageVisibleSecurityState = PageVisibleSecurityState;
+
+/**
+ * @constructor
+ */
+Security.CertificateSecurityState = CertificateSecurityState;
+
+/**
+ * @constructor
+ */
+Security.SafetyTipInfo = SafetyTipInfo;
+
+/**
+ * @constructor
+ */
+Security.SecurityStyleExplanation = SecurityStyleExplanation;
+
+/**
+ * @constructor
+ */
+Security.SecurityDispatcher = SecurityDispatcher;

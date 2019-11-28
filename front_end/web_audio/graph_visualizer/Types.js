@@ -2,7 +2,24 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-WebAudio.GraphVisualizer = {};
+/**
+ * Supported port types.
+ * @enum {symbol}
+ */
+export const PortTypes = {
+  In: Symbol('In'),
+  Out: Symbol('Out'),
+  Param: Symbol('Param'),
+};
+
+/* Legacy exported object */
+self.WebAudio = self.WebAudio || {};
+
+/* Legacy exported object */
+WebAudio = WebAudio || {};
+
+/* Legacy exported object */
+WebAudio.GraphVisualizer = WebAudio.GraphVisualizer || {};
 
 /**
  * @typedef {{width: number, height: number}}
@@ -28,11 +45,7 @@ WebAudio.GraphVisualizer.NodeLayout;
  * Supported port types.
  * @enum {symbol}
  */
-WebAudio.GraphVisualizer.PortTypes = {
-  In: Symbol('In'),
-  Out: Symbol('Out'),
-  Param: Symbol('Param'),
-};
+WebAudio.GraphVisualizer.PortTypes = PortTypes;
 
 /**
  * y: The Y value relative to the top of node.

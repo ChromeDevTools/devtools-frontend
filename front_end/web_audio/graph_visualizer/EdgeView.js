@@ -4,13 +4,13 @@
 
 // A class that represents an edge of a graph, including node-to-node connection,
 // and node-to-param connection.
-WebAudio.GraphVisualizer.EdgeView = class {
+export class EdgeView {
   /**
    * @param {!WebAudio.GraphVisualizer.NodesConnectionData | !WebAudio.GraphVisualizer.NodeParamConnectionData} data
    * @param {!WebAudio.GraphVisualizer.EdgeTypes} type
    */
   constructor(data, type) {
-    const {edgeId, sourcePortId, destinationPortId} = WebAudio.GraphVisualizer.generateEdgePortIdsByData(data, type);
+    const {edgeId, sourcePortId, destinationPortId} = generateEdgePortIdsByData(data, type);
 
     this.id = edgeId;
     this.type = type;
@@ -19,7 +19,7 @@ WebAudio.GraphVisualizer.EdgeView = class {
     this.sourcePortId = sourcePortId;
     this.destinationPortId = destinationPortId;
   }
-};
+}
 
 /**
  * Generates the edge id and source/destination portId using edge data and type.
@@ -27,7 +27,7 @@ WebAudio.GraphVisualizer.EdgeView = class {
  * @param {!WebAudio.GraphVisualizer.EdgeTypes} type
  * @return {?{edgeId: string, sourcePortId: string, destinationPortId: string}}
  */
-WebAudio.GraphVisualizer.generateEdgePortIdsByData = (data, type) => {
+export const generateEdgePortIdsByData = (data, type) => {
   if (!data.sourceId || !data.destinationId) {
     console.error(`Undefined node message: ${JSON.stringify(data)}`);
     return null;
@@ -49,9 +49,9 @@ WebAudio.GraphVisualizer.generateEdgePortIdsByData = (data, type) => {
    * @return {string}
    */
   function getDestinationPortId(data, type) {
-    if (type === WebAudio.GraphVisualizer.EdgeTypes.NodeToNode) {
+    if (type === EdgeTypes.NodeToNode) {
       return WebAudio.GraphVisualizer.generateInputPortId(data.destinationId, data.destinationInputIndex);
-    } else if (type === WebAudio.GraphVisualizer.EdgeTypes.NodeToParam) {
+    } else if (type === EdgeTypes.NodeToParam) {
       return WebAudio.GraphVisualizer.generateParamPortId(data.destinationId, data.destinationParamId);
     } else {
       console.error(`Unknown edge type: ${type}`);
@@ -64,7 +64,29 @@ WebAudio.GraphVisualizer.generateEdgePortIdsByData = (data, type) => {
  * Supported edge types.
  * @enum {symbol}
  */
-WebAudio.GraphVisualizer.EdgeTypes = {
+export const EdgeTypes = {
   NodeToNode: Symbol('NodeToNode'),
   NodeToParam: Symbol('NodeToParam'),
 };
+
+/* Legacy exported object */
+self.WebAudio = self.WebAudio || {};
+
+/* Legacy exported object */
+WebAudio = WebAudio || {};
+
+/* Legacy exported object */
+WebAudio.GraphVisualizer = WebAudio.GraphVisualizer || {};
+
+/**
+ * @constructor
+ */
+WebAudio.GraphVisualizer.EdgeView = EdgeView;
+
+WebAudio.GraphVisualizer.generateEdgePortIdsByData = generateEdgePortIdsByData;
+
+/**
+ * Supported edge types.
+ * @enum {symbol}
+ */
+WebAudio.GraphVisualizer.EdgeTypes = EdgeTypes;

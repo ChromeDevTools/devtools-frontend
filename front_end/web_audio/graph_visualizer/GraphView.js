@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 // A class that tracks all the nodes and edges of an audio graph.
-WebAudio.GraphVisualizer.GraphView = class extends Common.Object {
+export class GraphView extends Common.Object {
   /**
    * @param {!Protocol.WebAudio.GraphObjectId} contextId
    */
@@ -196,11 +196,28 @@ WebAudio.GraphVisualizer.GraphView = class extends Common.Object {
   }
 
   _notifyShouldRedraw() {
-    this.dispatchEventToListeners(WebAudio.GraphVisualizer.GraphView.Events.ShouldRedraw, this);
+    this.dispatchEventToListeners(Events.ShouldRedraw, this);
   }
-};
+}
 
 /** @enum {symbol} */
-WebAudio.GraphVisualizer.GraphView.Events = {
+export const Events = {
   ShouldRedraw: Symbol('ShouldRedraw')
 };
+
+/* Legacy exported object */
+self.WebAudio = self.WebAudio || {};
+
+/* Legacy exported object */
+WebAudio = WebAudio || {};
+
+/* Legacy exported object */
+WebAudio.GraphVisualizer = WebAudio.GraphVisualizer || {};
+
+/**
+ * @constructor
+ */
+WebAudio.GraphVisualizer.GraphView = GraphView;
+
+/** @enum {symbol} */
+WebAudio.GraphVisualizer.GraphView.Events = Events;

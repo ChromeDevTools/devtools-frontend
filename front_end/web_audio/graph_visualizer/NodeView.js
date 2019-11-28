@@ -4,7 +4,7 @@
 
 // A class that represents a node of a graph, consisting of the information needed to layout the
 // node and display the node. Each node has zero or more ports, including input, output, and param ports.
-WebAudio.GraphVisualizer.NodeView = class {
+export class NodeView {
   /**
    * @param {!WebAudio.GraphVisualizer.NodeCreationData} data
    * @param {string} label
@@ -58,7 +58,7 @@ WebAudio.GraphVisualizer.NodeView = class {
     const {x, y} = WebAudio.GraphVisualizer.NodeRendererUtility.calculateParamPortXY(
         numberOfParams, this._layout.inputPortSectionHeight);
     this._addPort({
-      id: WebAudio.GraphVisualizer.generateParamPortId(this.id, paramId),
+      id: generateParamPortId(this.id, paramId),
       type: WebAudio.GraphVisualizer.PortTypes.Param,
       label: paramType,
       x,
@@ -112,7 +112,7 @@ WebAudio.GraphVisualizer.NodeView = class {
         Math.max(inputPortSectionHeight + BottomPaddingWithoutParam, this._layout.outputPortSectionHeight);
 
     // Update max length with node label.
-    const nodeLabelLength = WebAudio.GraphVisualizer.measureTextWidth(this.label, NodeLabelFontStyle);
+    const nodeLabelLength = measureTextWidth(this.label, NodeLabelFontStyle);
     this._layout.maxTextLength = Math.max(this._layout.maxTextLength, nodeLabelLength);
 
     this._updateNodeSize();
@@ -135,8 +135,7 @@ WebAudio.GraphVisualizer.NodeView = class {
     this._layout.totalHeight = Math.max(leftSideMaxHeight, this._layout.outputPortSectionHeight);
 
     // Update max length with param label.
-    const paramLabelLength =
-        WebAudio.GraphVisualizer.measureTextWidth(paramType, WebAudio.GraphVisualizer.GraphStyles.ParamLabelFontStyle);
+    const paramLabelLength = measureTextWidth(paramType, WebAudio.GraphVisualizer.GraphStyles.ParamLabelFontStyle);
     this._layout.maxTextLength = Math.max(this._layout.maxTextLength, paramLabelLength);
 
     this._updateNodeSize();
@@ -156,7 +155,7 @@ WebAudio.GraphVisualizer.NodeView = class {
     for (let i = 0; i < this.numberOfInputs; i++) {
       const {x, y} = WebAudio.GraphVisualizer.NodeRendererUtility.calculateInputPortXY(i);
       this._addPort({
-        id: WebAudio.GraphVisualizer.generateInputPortId(this.id, i),
+        id: generateInputPortId(this.id, i),
         type: WebAudio.GraphVisualizer.PortTypes.In,
         x,
         y,
@@ -167,7 +166,7 @@ WebAudio.GraphVisualizer.NodeView = class {
   // Setup the properties of each output port.
   _setupOutputPorts() {
     for (let i = 0; i < this.numberOfOutputs; i++) {
-      const portId = WebAudio.GraphVisualizer.generateOutputPortId(this.id, i);
+      const portId = generateOutputPortId(this.id, i);
       const {x, y} =
           WebAudio.GraphVisualizer.NodeRendererUtility.calculateOutputPortXY(i, this.size, this.numberOfOutputs);
       if (this.ports.has(portId)) {
@@ -190,7 +189,7 @@ WebAudio.GraphVisualizer.NodeView = class {
   _addPort(port) {
     this.ports.set(port.id, port);
   }
-};
+}
 
 /**
  * Generates the port id for the input of node.
@@ -198,7 +197,7 @@ WebAudio.GraphVisualizer.NodeView = class {
  * @param {number | undefined} inputIndex
  * @return {string}
  */
-WebAudio.GraphVisualizer.generateInputPortId = (nodeId, inputIndex) => {
+export const generateInputPortId = (nodeId, inputIndex) => {
   return `${nodeId}-input-${inputIndex || 0}`;
 };
 
@@ -208,7 +207,7 @@ WebAudio.GraphVisualizer.generateInputPortId = (nodeId, inputIndex) => {
  * @param {number | undefined} outputIndex
  * @return {string}
  */
-WebAudio.GraphVisualizer.generateOutputPortId = (nodeId, outputIndex) => {
+export const generateOutputPortId = (nodeId, outputIndex) => {
   return `${nodeId}-output-${outputIndex || 0}`;
 };
 
@@ -218,13 +217,13 @@ WebAudio.GraphVisualizer.generateOutputPortId = (nodeId, outputIndex) => {
  * @param {string} paramId
  * @return {string}
  */
-WebAudio.GraphVisualizer.generateParamPortId = (nodeId, paramId) => {
+export const generateParamPortId = (nodeId, paramId) => {
   return `${nodeId}-param-${paramId}`;
 };
 
 // A label generator to convert UUID of node to shorter label to display.
 // Each graph should have its own generator since the node count starts from 0.
-WebAudio.GraphVisualizer.NodeLabelGenerator = class {
+export class NodeLabelGenerator {
   constructor() {
     this._totalNumberOfNodes = 0;
   }
@@ -245,7 +244,7 @@ WebAudio.GraphVisualizer.NodeLabelGenerator = class {
     const label = `${nodeType} ${this._totalNumberOfNodes}`;
     return label;
   }
-};
+}
 
 /**
  * Get the text width using given font style.
@@ -253,7 +252,7 @@ WebAudio.GraphVisualizer.NodeLabelGenerator = class {
  * @param {?string} fontStyle
  * @return {number}
  */
-WebAudio.GraphVisualizer.measureTextWidth = (text, fontStyle) => {
+export const measureTextWidth = (text, fontStyle) => {
   if (!WebAudio.GraphVisualizer._contextForFontTextMeasuring) {
     WebAudio.GraphVisualizer._contextForFontTextMeasuring = createElement('canvas').getContext('2d');
   }
@@ -265,3 +264,28 @@ WebAudio.GraphVisualizer.measureTextWidth = (text, fontStyle) => {
   context.restore();
   return width;
 };
+
+
+/* Legacy exported object */
+self.WebAudio = self.WebAudio || {};
+
+/* Legacy exported object */
+WebAudio = WebAudio || {};
+
+/* Legacy exported object */
+WebAudio.GraphVisualizer = WebAudio.GraphVisualizer || {};
+
+/**
+ * @constructor
+ */
+WebAudio.GraphVisualizer.NodeView = NodeView;
+
+/**
+ * @constructor
+ */
+WebAudio.GraphVisualizer.NodeLabelGenerator = NodeLabelGenerator;
+
+WebAudio.GraphVisualizer.generateInputPortId = generateInputPortId;
+WebAudio.GraphVisualizer.generateOutputPortId = generateOutputPortId;
+WebAudio.GraphVisualizer.generateParamPortId = generateParamPortId;
+WebAudio.GraphVisualizer.measureTextWidth = measureTextWidth;

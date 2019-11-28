@@ -2,29 +2,56 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// Some settings that control the shape of the graph (in pixels).
-WebAudio.GraphVisualizer.GraphStyles = {
-  PortPadding: 4,
-  InputPortRadius: 10,
-  AudioParamRadius: 5,
-  LeftMarginOfText: 12,
-  RightMarginOfText: 30,
-  LeftSideTopPadding: 5,
-  BottomPaddingWithoutParam: 6,
-  BottomPaddingWithParam: 8,
-  ArrowHeadSize: 12,
+export const PortPadding = 4;
+export const InputPortRadius = 10;
+export const AudioParamRadius = 5;
+export const LeftMarginOfText = 12;
+export const RightMarginOfText = 30;
+export const LeftSideTopPadding = 5;
+export const BottomPaddingWithoutParam = 6;
+export const BottomPaddingWithParam = 8;
+export const ArrowHeadSize = 12;
+
+export const GraphPadding = 20;
+export const GraphMargin = 20;
+
+export const TotalInputPortHeight = InputPortRadius * 2 + PortPadding;
+export const TotalOutputPortHeight = TotalInputPortHeight;
+export const TotalParamPortHeight = AudioParamRadius * 2 + PortPadding;
+
+export const NodeLabelFontStyle = '14px Segoe UI, Arial';
+export const ParamLabelFontStyle = '12px Segoe UI, Arial';
+
+export const GraphStyles = {
+  PortPadding,
+  InputPortRadius,
+  AudioParamRadius,
+  LeftMarginOfText,
+  RightMarginOfText,
+  LeftSideTopPadding,
+  BottomPaddingWithoutParam,
+  BottomPaddingWithParam,
+  ArrowHeadSize,
+
   // GraphPadding is used to add extra space for the layouted graph.
-  GraphPadding: 20,
-  GraphMargin: 20,
+  GraphPadding,
+  GraphMargin,
+
+  TotalInputPortHeight,
+  TotalOutputPortHeight,
+  TotalParamPortHeight,
+
+  NodeLabelFontStyle,
+  ParamLabelFontStyle
 };
 
-WebAudio.GraphVisualizer.GraphStyles.TotalInputPortHeight =
-    WebAudio.GraphVisualizer.GraphStyles.InputPortRadius * 2 + WebAudio.GraphVisualizer.GraphStyles.PortPadding;
+/* Legacy exported object */
+self.WebAudio = self.WebAudio || {};
 
-WebAudio.GraphVisualizer.GraphStyles.TotalOutputPortHeight = WebAudio.GraphVisualizer.GraphStyles.TotalInputPortHeight;
+/* Legacy exported object */
+WebAudio = WebAudio || {};
 
-WebAudio.GraphVisualizer.GraphStyles.TotalParamPortHeight =
-    WebAudio.GraphVisualizer.GraphStyles.AudioParamRadius * 2 + WebAudio.GraphVisualizer.GraphStyles.PortPadding;
+/* Legacy exported object */
+WebAudio.GraphVisualizer = WebAudio.GraphVisualizer || {};
 
-WebAudio.GraphVisualizer.GraphStyles.NodeLabelFontStyle = '14px Segoe UI, Arial';
-WebAudio.GraphVisualizer.GraphStyles.ParamLabelFontStyle = '12px Segoe UI, Arial';
+WebAudio.GraphVisualizer.GraphStyles = GraphStyles;

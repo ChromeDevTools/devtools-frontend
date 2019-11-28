@@ -5,7 +5,7 @@
 /**
  * @implements {UI.SoftDropDown.Delegate<!Protocol.WebAudio.BaseAudioContext>}
  */
-WebAudio.AudioContextSelector = class extends Common.Object {
+export class AudioContextSelector extends Common.Object {
   constructor() {
     super();
 
@@ -164,9 +164,23 @@ WebAudio.AudioContextSelector = class extends Common.Object {
   toolbarItem() {
     return this._toolbarItem;
   }
-};
+}
 
 /** @enum {symbol} */
-WebAudio.AudioContextSelector.Events = {
+export const Events = {
   ContextSelected: Symbol('ContextSelected')
 };
+
+/* Legacy exported object */
+self.WebAudio = self.WebAudio || {};
+
+/* Legacy exported object */
+WebAudio = WebAudio || {};
+
+/**
+ * @constructor
+ */
+WebAudio.AudioContextSelector = AudioContextSelector;
+
+/** @enum {symbol} */
+WebAudio.AudioContextSelector.Events = Events;

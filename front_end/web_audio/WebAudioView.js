@@ -5,7 +5,7 @@
 /**
  * @implements {SDK.SDKModelObserver<!WebAudio.WebAudioModel>}
  */
-WebAudio.WebAudioView = class extends UI.ThrottledWidget {
+export class WebAudioView extends UI.ThrottledWidget {
   constructor() {
     super(true, 1000);
     this.element.classList.add('web-audio-drawer');
@@ -406,4 +406,15 @@ WebAudio.WebAudioView = class extends UI.ThrottledWidget {
       }
     }
   }
-};
+}
+
+/* Legacy exported object */
+self.WebAudio = self.WebAudio || {};
+
+/* Legacy exported object */
+WebAudio = WebAudio || {};
+
+/**
+ * @constructor
+ */
+WebAudio.WebAudioView = WebAudioView;

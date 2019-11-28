@@ -4,7 +4,7 @@
 
 // A class that maps each context to its corresponding graph.
 // It controls which graph to render when the context is switched or updated.
-WebAudio.GraphVisualizer.GraphManager = class extends Common.Object {
+export class GraphManager extends Common.Object {
   constructor() {
     super();
 
@@ -61,4 +61,18 @@ WebAudio.GraphVisualizer.GraphManager = class extends Common.Object {
     const graph = /** @type {!WebAudio.GraphVisualizer.GraphView} */ (event.data);
     this.dispatchEventToListeners(WebAudio.GraphVisualizer.GraphView.Events.ShouldRedraw, graph);
   }
-};
+}
+
+/* Legacy exported object */
+self.WebAudio = self.WebAudio || {};
+
+/* Legacy exported object */
+WebAudio = WebAudio || {};
+
+/* Legacy exported object */
+WebAudio.GraphVisualizer = WebAudio.GraphVisualizer || {};
+
+/**
+ * @constructor
+ */
+WebAudio.GraphVisualizer.GraphManager = GraphManager;

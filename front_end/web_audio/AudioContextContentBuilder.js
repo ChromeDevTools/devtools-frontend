@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-WebAudio.ContextDetailBuilder = class {
+export class ContextDetailBuilder {
   /**
    * @param {!Protocol.WebAudio.BaseAudioContext} context
    */
@@ -61,9 +61,9 @@ WebAudio.ContextDetailBuilder = class {
   getFragment() {
     return this._fragment;
   }
-};
+}
 
-WebAudio.AudioContextSummaryBuilder = class {
+export class AudioContextSummaryBuilder {
   /**
    * @param {!Protocol.WebAudio.GraphObjectId} contextId
    * @param {!Protocol.WebAudio.ContextRealtimeData} contextRealtimeData
@@ -91,4 +91,20 @@ WebAudio.AudioContextSummaryBuilder = class {
   getFragment() {
     return this._fragment;
   }
-};
+}
+
+/* Legacy exported object */
+self.WebAudio = self.WebAudio || {};
+
+/* Legacy exported object */
+WebAudio = WebAudio || {};
+
+/**
+ * @constructor
+ */
+WebAudio.ContextDetailBuilder = ContextDetailBuilder;
+
+/**
+ * @constructor
+ */
+WebAudio.AudioContextSummaryBuilder = AudioContextSummaryBuilder;

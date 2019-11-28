@@ -105,6 +105,9 @@
   <message name="IDS_DEVTOOLS_45f80006d304f294d6c1de50c244856e" desc="Text of add geolocations button in Geolocations Settings Tab of the Device Toolbar">
     Add location...
   </message>
+  <message name="IDS_DEVTOOLS_505529fbaaa0767b9f5e8873f22b9176" desc="Error message in the Geolocations settings pane that declares timezone ID input invalid">
+    Timezone ID must contain alphabet letters
+  </message>
   <message name="IDS_DEVTOOLS_526d688f37a86d3c3f27d0c5016eb71d" desc="Text of orientation reset button in Sensors View of the Device Toolbar">
     Reset
   </message>
@@ -320,9 +323,6 @@
   </message>
   <message name="IDS_DEVTOOLS_d15305d7a4e34e02489c74a5ef542f36" desc="Text in Sensors View of the Device Toolbar">
     Off
-  </message>
-  <message name="IDS_DEVTOOLS_d9e39d238ea8f70b277a68d9c07b5046" desc="Error message in the Geolocations settings pane that declares timezone ID input invalid">
-    Timezone ID must contain &quot;/&quot;
   </message>
   <message name="IDS_DEVTOOLS_da31f3ff326e70f6b08748520c553920" desc="Text in Sensors View of the Device Toolbar">
     γ (gamma)

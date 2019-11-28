@@ -64,6 +64,11 @@
   width: 70px;
 }
 
+.timezone-error {
+  margin-left: 10px;
+  color: var(--input-validation-error);
+}
+
 /* Device Orientation */
 
 .orientation-content {

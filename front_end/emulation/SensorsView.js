@@ -130,10 +130,12 @@ Emulation.SensorsView = class extends UI.VBox {
         SDK.EmulationModel.Geolocation.timezoneIdValidator, false);
     this._timezoneSetter(String(geolocation.timezoneId));
     timezoneGroup.appendChild(UI.createLabel(ls`Timezone ID`, 'timezone-title', this._timezoneInput));
+    this._timezoneError = timezoneGroup.createChild('div', 'timezone-error');
   }
 
   _geolocationSelectChanged() {
     this._fieldsetElement.disabled = false;
+    this._timezoneError.textContent = '';
     const value = this._locationSelectElement.options[this._locationSelectElement.selectedIndex].value;
     if (value === Emulation.SensorsView.NonPresetOptions.NoOverride) {
       this._geolocationOverrideEnabled = false;
@@ -172,6 +174,8 @@ Emulation.SensorsView = class extends UI.VBox {
       return;
     }
 
+    this._timezoneError.textContent = '';
+
     this._setSelectElementLabel(this._locationSelectElement, Emulation.SensorsView.NonPresetOptions.Custom);
     this._geolocation = geolocation;
     this._applyGeolocation();
@@ -182,7 +186,13 @@ Emulation.SensorsView = class extends UI.VBox {
       this._geolocationSetting.set(this._geolocation.toSetting());
     }
     for (const emulationModel of SDK.targetManager.models(SDK.EmulationModel)) {
-      emulationModel.emulateGeolocation(this._geolocationOverrideEnabled ? this._geolocation : null);
+      emulationModel.emulateGeolocation(this._geolocationOverrideEnabled ? this._geolocation : null).catch(err => {
+        switch (err.type) {
+          case 'emulation-set-timezone':
+            this._timezoneError.textContent = err.message;
+            break;
+        }
+      });
     }
   }
 

@@ -258,11 +258,12 @@ Emulation.GeolocationsSettingsTab = class extends UI.VBox {
       // liberal in what it accepts. ICU does not simply use an allowlist
       // but instead tries to make sense of the input, even for
       // weird-looking timezone IDs. There's not much point in validating
-      // the input other than checking if it contains at least one slash.
-      if (value === '' || value.includes('/')) {
+      // the input other than checking if it contains at least one alphabet.
+      // The empty string resets the override, and is accepted as well.
+      if (value === '' || /[a-zA-Z]/.test(value)) {
         return {valid: true};
       }
-      const errorMessage = ls`Timezone ID must contain "/"`;
+      const errorMessage = ls`Timezone ID must contain alphabet letters`;
       return {valid: false, errorMessage};
     }
   }

@@ -92,20 +92,23 @@ export default class EmulationModel extends SDK.SDKModel {
   /**
    * @param {?Geolocation} geolocation
    */
-  emulateGeolocation(geolocation) {
+  async emulateGeolocation(geolocation) {
     if (!geolocation) {
       this._emulationAgent.clearGeolocationOverride();
       this._emulationAgent.setTimezoneOverride('');
-      return;
     }
 
     if (geolocation.error) {
       this._emulationAgent.setGeolocationOverride();
       this._emulationAgent.setTimezoneOverride('');
     } else {
-      this._emulationAgent.setGeolocationOverride(
-          geolocation.latitude, geolocation.longitude, Geolocation.DefaultMockAccuracy);
-      this._emulationAgent.setTimezoneOverride(geolocation.timezoneId);
+      return Promise.all([
+        this._emulationAgent
+            .setGeolocationOverride(geolocation.latitude, geolocation.longitude, Geolocation.DefaultMockAccuracy)
+            .catch(err => Promise.reject({type: 'emulation-set-geolocation', message: err.message})),
+        this._emulationAgent.setTimezoneOverride(geolocation.timezoneId)
+            .catch(err => Promise.reject({type: 'emulation-set-timezone', message: err.message}))
+      ]);
     }
   }
 
@@ -278,9 +281,9 @@ export class Geolocation {
     // liberal in what it accepts. ICU does not simply use an allowlist
     // but instead tries to make sense of the input, even for
     // weird-looking timezone IDs. There's not much point in validating
-    // the input other than checking if it contains at least one slash.
+    // the input other than checking if it contains at least one alphabet.
     // The empty string resets the override, and is accepted as well.
-    const valid = value === '' || value.includes('/');
+    const valid = value === '' || /[a-zA-Z]/.test(value);
     return {valid};
   }
 

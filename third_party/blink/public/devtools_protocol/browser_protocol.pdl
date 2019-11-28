@@ -5794,20 +5794,9 @@ domain Page
   # Intercept file chooser requests and transfer control to protocol clients.
   # When file chooser interception is enabled, native file chooser dialog is not shown.
   # Instead, a protocol event `Page.fileChooserOpened` is emitted.
-  # File chooser can be handled with `page.handleFileChooser` command.
   experimental command setInterceptFileChooserDialog
     parameters
       boolean enabled
-
-  # Accepts or cancels an intercepted file chooser dialog.
-  experimental command handleFileChooser
-    parameters
-      enum action
-        accept
-        cancel
-        fallback
-      # Array of absolute file paths to set, only respected with `accept` action.
-      optional array of string files
 
   event domContentEventFired
     parameters
@@ -5816,6 +5805,11 @@ domain Page
   # Emitted only when `page.interceptFileChooser` is enabled.
   event fileChooserOpened
     parameters
+      # Id of the frame containing input node.
+      experimental FrameId frameId
+      # Input node id.
+      experimental DOM.BackendNodeId backendNodeId
+      # Input mode.
       enum mode
         selectSingle
         selectMultiple

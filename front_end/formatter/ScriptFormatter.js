@@ -56,7 +56,6 @@ FormatterInterface.locationToPosition = function(lineEndings, lineNumber, column
   const position = lineNumber ? lineEndings[lineNumber - 1] + 1 : 0;
   return position + columnNumber;
 };
-
 /**
  * @param {!Array<number>} lineEndings
  * @param {number} position
@@ -107,7 +106,7 @@ export class ScriptFormatter {
  * @implements {FormatterInterface}
  * @unrestricted
  */
-export class ScriptIdentityFormatter {
+class ScriptIdentityFormatter {
   /**
    * @param {string} mimeType
    * @param {string} content
@@ -142,7 +141,7 @@ export class FormatterSourceMapping {
  * @implements {FormatterSourceMapping}
  * @unrestricted
  */
-export class IdentityFormatterSourceMapping {
+class IdentityFormatterSourceMapping {
   /**
    * @override
    * @param {number} lineNumber
@@ -168,7 +167,7 @@ export class IdentityFormatterSourceMapping {
  * @implements {FormatterSourceMapping}
  * @unrestricted
  */
-export class FormatterSourceMappingImpl {
+class FormatterSourceMappingImpl {
   /**
    * @param {!Array.<number>} originalLineEndings
    * @param {!Array.<number>} formattedLineEndings
@@ -235,14 +234,5 @@ Formatter.Formatter = FormatterInterface;
 /** @constructor */
 Formatter.ScriptFormatter = ScriptFormatter;
 
-/** @constructor */
-Formatter.ScriptIdentityFormatter = ScriptIdentityFormatter;
-
 /** @interface */
 Formatter.FormatterSourceMapping = FormatterSourceMapping;
-
-/** @constructor */
-Formatter.IdentityFormatterSourceMapping = IdentityFormatterSourceMapping;
-
-/** @constructor */
-Formatter.FormatterSourceMappingImpl = FormatterSourceMappingImpl;

@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/** @type {!Common.Setting} */
-const _releaseNoteVersionSetting = Common.settings.createSetting('releaseNoteVersionSeen', 0);
-
 /**
  * @const
  * @type {string}
@@ -22,9 +19,9 @@ export function latestReleaseNote() {
   return Help._latestReleaseNote;
 }
 
-export function _showReleaseNoteIfNeeded() {
+function _showReleaseNoteIfNeeded() {
   _innerShowReleaseNoteIfNeeded(
-      _releaseNoteVersionSetting.get(), latestReleaseNote().version,
+      Help._releaseNoteVersionSetting.get(), latestReleaseNote().version,
       Common.settings.moduleSetting('help.show-release-note').get());
 }
 
@@ -33,9 +30,9 @@ export function _showReleaseNoteIfNeeded() {
  * @param {number} latestVersion
  * @param {boolean} showReleaseNote
  */
-export function _innerShowReleaseNoteIfNeeded(lastSeenVersion, latestVersion, showReleaseNote) {
+function _innerShowReleaseNoteIfNeeded(lastSeenVersion, latestVersion, showReleaseNote) {
   if (!lastSeenVersion) {
-    _releaseNoteVersionSetting.set(latestVersion);
+    Help._releaseNoteVersionSetting.set(latestVersion);
     return;
   }
   if (!showReleaseNote) {
@@ -44,7 +41,7 @@ export function _innerShowReleaseNoteIfNeeded(lastSeenVersion, latestVersion, sh
   if (lastSeenVersion >= latestVersion) {
     return;
   }
-  _releaseNoteVersionSetting.set(latestVersion);
+  Help._releaseNoteVersionSetting.set(latestVersion);
   UI.viewManager.showView(releaseNoteViewId, true);
 }
 
@@ -103,9 +100,11 @@ Help = Help || {};
 
 Help.releaseNoteViewId = releaseNoteViewId;
 Help.latestReleaseNote = latestReleaseNote;
-Help._showReleaseNoteIfNeeded = _showReleaseNoteIfNeeded;
 Help._innerShowReleaseNoteIfNeeded = _innerShowReleaseNoteIfNeeded;
-Help._releaseNoteVersionSetting = _releaseNoteVersionSetting;
+Help._showReleaseNoteIfNeeded = _showReleaseNoteIfNeeded;
+
+/** @type {!Common.Setting} */
+Help._releaseNoteVersionSetting = Common.settings.createSetting('releaseNoteVersionSeen', 0);
 
 /** @typedef {!{title: string, subtitle: string, link: string}} */
 Help.ReleaseNoteHighlight;

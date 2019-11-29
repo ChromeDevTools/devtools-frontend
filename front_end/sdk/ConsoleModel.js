@@ -28,7 +28,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-export const _events = Symbol('SDK.ConsoleModel.events');
+const _events = Symbol('SDK.ConsoleModel.events');
 
 /**
  * @implements {SDK.TargetManager.Observer}
@@ -769,7 +769,6 @@ SDK.ConsoleMessage.MessageType = MessageType;
 SDK.ConsoleMessage.MessageLevel = MessageLevel;
 
 SDK.ConsoleMessage.MessageSourceDisplayName = MessageSourceDisplayName;
-SDK.ConsoleModel._events = _events;
 
 /**
  * @type {!SDK.ConsoleModel}

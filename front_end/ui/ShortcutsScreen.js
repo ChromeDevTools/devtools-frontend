@@ -258,7 +258,7 @@ UI.shortcutsScreen;
 /**
  * @unrestricted
  */
-export class ShortcutsSection {
+class ShortcutsSection {
   /**
    * @param {string} name
    */
@@ -372,7 +372,7 @@ export class ShortcutsSection {
 ShortcutsSection._sequenceNumber = 0;
 
 
-export const ElementsPanelShortcuts = {
+const ElementsPanelShortcuts = {
   NavigateUp: [UI.KeyboardShortcut.makeDescriptor(UI.KeyboardShortcut.Keys.Up)],
 
   NavigateDown: [UI.KeyboardShortcut.makeDescriptor(UI.KeyboardShortcut.Keys.Down)],
@@ -413,7 +413,7 @@ export const ElementsPanelShortcuts = {
   DecrementBy01: [UI.KeyboardShortcut.makeDescriptor(UI.KeyboardShortcut.Keys.Down, UI.KeyboardShortcut.Modifiers.Alt)]
 };
 
-export const ConsolePanelShortcuts = {
+const ConsolePanelShortcuts = {
   AcceptSuggestion: [
     UI.KeyboardShortcut.makeDescriptor(UI.KeyboardShortcut.Keys.Tab),
     UI.KeyboardShortcut.makeDescriptor(UI.KeyboardShortcut.Keys.Right)
@@ -502,10 +502,5 @@ UI = UI || {};
 /** @constructor */
 UI.ShortcutsScreen = ShortcutsScreen;
 
-/** @constructor */
-UI.ShortcutsSection = ShortcutsSection;
-
-UI.ShortcutsScreen.ElementsPanelShortcuts = ElementsPanelShortcuts;
-UI.ShortcutsScreen.ConsolePanelShortcuts = ConsolePanelShortcuts;
 UI.ShortcutsScreen.SourcesPanelShortcuts = SourcesPanelShortcuts;
 UI.ShortcutsScreen.LayersPanelShortcuts = LayersPanelShortcuts;

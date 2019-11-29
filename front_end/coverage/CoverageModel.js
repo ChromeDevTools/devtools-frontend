@@ -30,7 +30,7 @@ export const Events = {
 };
 
 /** @type {number} */
-export const _coveragePollingPeriodMs = 200;
+const _coveragePollingPeriodMs = 200;
 
 export default class CoverageModel extends SDK.SDKModel {
   /**
@@ -840,9 +840,6 @@ Coverage.CoverageModel = CoverageModel;
 
 /** @enum {symbol} */
 Coverage.CoverageModel.Events = Events;
-
-/** @type {number} */
-Coverage.CoverageModel._coveragePollingPeriodMs = _coveragePollingPeriodMs;
 
 /**
  * @enum {number}

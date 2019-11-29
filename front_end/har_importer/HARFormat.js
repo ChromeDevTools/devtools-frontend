@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-export class HARBase {
+class HARBase {
   /**
    * @param {*} data
    */
@@ -117,7 +117,7 @@ export class HARLog extends HARBase {
   }
 }
 
-export class HARCreator extends HARBase {
+class HARCreator extends HARBase {
   /**
    * @param {*} data
    */
@@ -143,7 +143,7 @@ export class HARPage extends HARBase {
   }
 }
 
-export class HARPageTimings extends HARBase {
+class HARPageTimings extends HARBase {
   /**
    * @param {*} data
    */
@@ -212,7 +212,7 @@ export class HAREntry extends HARBase {
   }
 }
 
-export class HARRequest extends HARBase {
+class HARRequest extends HARBase {
   /**
    * @param {*} data
    */
@@ -231,7 +231,7 @@ export class HARRequest extends HARBase {
   }
 }
 
-export class HARResponse extends HARBase {
+class HARResponse extends HARBase {
   /**
    * @param {*} data
    */
@@ -254,7 +254,7 @@ export class HARResponse extends HARBase {
   }
 }
 
-export class HARCookie extends HARBase {
+class HARCookie extends HARBase {
   /**
    * @param {*} data
    */
@@ -271,7 +271,7 @@ export class HARCookie extends HARBase {
   }
 }
 
-export class HARHeader extends HARBase {
+class HARHeader extends HARBase {
   /**
    * @param {*} data
    */
@@ -283,7 +283,7 @@ export class HARHeader extends HARBase {
   }
 }
 
-export class HARQueryString extends HARBase {
+class HARQueryString extends HARBase {
   /**
    * @param {*} data
    */
@@ -295,7 +295,7 @@ export class HARQueryString extends HARBase {
   }
 }
 
-export class HARPostData extends HARBase {
+class HARPostData extends HARBase {
   /**
    * @param {*} data
    */
@@ -322,7 +322,7 @@ export class HARParam extends HARBase {
   }
 }
 
-export class HARContent extends HARBase {
+class HARContent extends HARBase {
   /**
    * @param {*} data
    */
@@ -372,7 +372,7 @@ export class HARInitiator extends HARBase {
   }
 }
 
-export class HARWebSocketMessage extends HARBase {
+class HARWebSocketMessage extends HARBase {
   /**
    * @param {*} data
    */
@@ -394,11 +394,6 @@ HARImporter = HARImporter || {};
 /**
  * @constructor
  */
-HARImporter.HARBase = HARBase;
-
-/**
- * @constructor
- */
 HARImporter.HARRoot = HARRoot;
 
 /**
@@ -409,17 +404,7 @@ HARImporter.HARLog = HARLog;
 /**
  * @constructor
  */
-HARImporter.HARCreator = HARCreator;
-
-/**
- * @constructor
- */
 HARImporter.HARPage = HARPage;
-
-/**
- * @constructor
- */
-HARImporter.HARPageTimings = HARPageTimings;
 
 /**
  * @constructor
@@ -429,42 +414,7 @@ HARImporter.HAREntry = HAREntry;
 /**
  * @constructor
  */
-HARImporter.HARRequest = HARRequest;
-
-/**
- * @constructor
- */
-HARImporter.HARResponse = HARResponse;
-
-/**
- * @constructor
- */
-HARImporter.HARCookie = HARCookie;
-
-/**
- * @constructor
- */
-HARImporter.HARHeader = HARHeader;
-
-/**
- * @constructor
- */
-HARImporter.HARQueryString = HARQueryString;
-
-/**
- * @constructor
- */
-HARImporter.HARPostData = HARPostData;
-
-/**
- * @constructor
- */
 HARImporter.HARParam = HARParam;
-
-/**
- * @constructor
- */
-HARImporter.HARContent = HARContent;
 
 /**
  * @constructor
@@ -475,8 +425,3 @@ HARImporter.HARTimings = HARTimings;
  * @constructor
  */
 HARImporter.HARInitiator = HARInitiator;
-
-/**
- * @constructor
- */
-HARImporter.HARWebSocketMessage = HARWebSocketMessage;

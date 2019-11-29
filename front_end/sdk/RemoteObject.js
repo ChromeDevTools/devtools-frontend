@@ -1326,19 +1326,19 @@ export class RemoteFunction {
  * @const
  * @type {!RegExp}
  */
-export const _descriptionLengthParenRegex = /\(([0-9]+)\)/;
+const _descriptionLengthParenRegex = /\(([0-9]+)\)/;
 
 /**
  * @const
  * @type {!RegExp}
  */
-export const _descriptionLengthSquareRegex = /\[([0-9]+)\]/;
+const _descriptionLengthSquareRegex = /\[([0-9]+)\]/;
 
 /**
  * @const
  * @enum {!Protocol.Runtime.UnserializableValue}
  */
-export const UnserializableNumber = {
+const UnserializableNumber = {
   Negative0: /** @type {!Protocol.Runtime.UnserializableValue} */ ('-0'),
   NaN: /** @type {!Protocol.Runtime.UnserializableValue} */ ('NaN'),
   Infinity: /** @type {!Protocol.Runtime.UnserializableValue} */ ('Infinity'),
@@ -1353,10 +1353,6 @@ SDK = SDK || {};
 
 /** @constructor */
 SDK.RemoteObject = RemoteObject;
-
-SDK.RemoteObject._descriptionLengthParenRegex = _descriptionLengthParenRegex;
-SDK.RemoteObject._descriptionLengthSquareRegex = _descriptionLengthSquareRegex;
-SDK.RemoteObject.UnserializableNumber = UnserializableNumber;
 
 /** @constructor */
 SDK.RemoteObjectImpl = RemoteObjectImpl;

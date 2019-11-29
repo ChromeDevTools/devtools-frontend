@@ -317,8 +317,8 @@ export default class ContentProviderBasedProject extends Workspace.ProjectStore 
   }
 }
 
-export const _metadata = Symbol('ContentProviderBasedProject.Metadata');
-export const _mimeType = Symbol('ContentProviderBasedProject.MimeType');
+const _metadata = Symbol('ContentProviderBasedProject.Metadata');
+const _mimeType = Symbol('ContentProviderBasedProject.MimeType');
 
 /* Legacy exported object */
 self.Bindings = self.Bindings || {};
@@ -328,6 +328,3 @@ Bindings = Bindings || {};
 
 /** @constructor */
 Bindings.ContentProviderBasedProject = ContentProviderBasedProject;
-
-Bindings.ContentProviderBasedProject._metadata = _metadata;
-Bindings.ContentProviderBasedProject._mimeType = _mimeType;

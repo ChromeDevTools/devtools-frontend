@@ -76,7 +76,7 @@ export default class PerformanceMetricsModel extends SDK.SDKModel {
 }
 
 /** @enum {symbol} */
-export const MetricMode = {
+const MetricMode = {
   CumulativeTime: Symbol('CumulativeTime'),
   CumulativeCount: Symbol('CumulativeCount'),
 };
@@ -89,8 +89,5 @@ SDK = SDK || {};
 
 /** @constructor */
 SDK.PerformanceMetricsModel = PerformanceMetricsModel;
-
-/** @enum {symbol} */
-SDK.PerformanceMetricsModel.MetricMode = MetricMode;
 
 SDK.SDKModel.register(SDK.PerformanceMetricsModel, SDK.Target.Capability.DOM, false);

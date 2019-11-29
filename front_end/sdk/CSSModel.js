@@ -741,9 +741,7 @@ export const Events = {
   StyleSheetRemoved: Symbol('StyleSheetRemoved')
 };
 
-export const MediaTypes =
-    ['all', 'braille', 'embossed', 'handheld', 'print', 'projection', 'screen', 'speech', 'tty', 'tv'];
-export const PseudoStateMarker = 'pseudo-state-marker';
+const PseudoStateMarker = 'pseudo-state-marker';
 
 /**
  * @unrestricted
@@ -797,7 +795,7 @@ export class CSSLocation {
  * @implements {Protocol.CSSDispatcher}
  * @unrestricted
  */
-export class CSSDispatcher {
+class CSSDispatcher {
   /**
    * @param {!CSSModel} cssModel
    */
@@ -847,7 +845,7 @@ export class CSSDispatcher {
 /**
  * @unrestricted
  */
-export class ComputedStyleLoader {
+class ComputedStyleLoader {
   /**
    * @param {!CSSModel} cssModel
    */
@@ -915,23 +913,14 @@ SDK.CSSModel = CSSModel;
 /** @enum {symbol} */
 SDK.CSSModel.Events = Events;
 
-SDK.CSSModel.MediaTypes = MediaTypes;
-SDK.CSSModel.PseudoStateMarker = PseudoStateMarker;
-
 /** @constructor */
 SDK.CSSModel.Edit = Edit;
-
-/** @constructor */
-SDK.CSSModel.ComputedStyleLoader = ComputedStyleLoader;
 
 /** @constructor */
 SDK.CSSModel.InlineStyleResult = InlineStyleResult;
 
 /** @constructor */
 SDK.CSSLocation = CSSLocation;
-
-/** @constructor */
-SDK.CSSDispatcher = CSSDispatcher;
 
 SDK.SDKModel.register(SDK.CSSModel, SDK.Target.Capability.DOM, true);
 

@@ -53,7 +53,7 @@ export default class ExtensionTraceProvider {
   }
 }
 
-export let _lastSessionId = 0;
+let _lastSessionId = 0;
 
 /**
  * @interface
@@ -75,8 +75,6 @@ Extensions = Extensions || {};
 
 /** @constructor */
 Extensions.ExtensionTraceProvider = ExtensionTraceProvider;
-
-Extensions.ExtensionTraceProvider._lastSessionId = _lastSessionId;
 
 /** @interface */
 Extensions.TracingSession = TracingSession;

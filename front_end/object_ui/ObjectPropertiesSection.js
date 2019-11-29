@@ -478,7 +478,7 @@ export default class ObjectPropertiesSection extends UI.TreeOutlineInShadow {
 }
 
 /** @const */
-export const _arrayLoadThreshold = 100;
+const _arrayLoadThreshold = 100;
 
 /** @const */
 export const _maxRenderableStringLength = 10000;
@@ -1138,7 +1138,7 @@ export class ObjectPropertyTreeElement extends UI.TreeElement {
 /**
  * @unrestricted
  */
-export class ArrayGroupingTreeElement extends UI.TreeElement {
+class ArrayGroupingTreeElement extends UI.TreeElement {
   /**
    * @param {!SDK.RemoteObject} object
    * @param {number} fromIndex
@@ -1585,10 +1585,11 @@ self.ObjectUI = self.ObjectUI || {};
 /* Legacy exported object */
 ObjectUI = ObjectUI || {};
 
+ObjectUI.ArrayGroupingTreeElement = ArrayGroupingTreeElement;
+
 /** @constructor */
 ObjectUI.ObjectPropertiesSection = ObjectPropertiesSection;
 
-ObjectUI.ObjectPropertiesSection._arrayLoadThreshold = _arrayLoadThreshold;
 ObjectUI.ObjectPropertiesSection._maxRenderableStringLength = _maxRenderableStringLength;
 
 /** @constructor */
@@ -1606,9 +1607,6 @@ ObjectUI.ObjectPropertiesSection.Renderer = Renderer;
 
 /** @constructor */
 ObjectUI.ObjectPropertyTreeElement = ObjectPropertyTreeElement;
-
-/** @constructor */
-ObjectUI.ArrayGroupingTreeElement = ArrayGroupingTreeElement;
 
 /** @constructor */
 ObjectUI.ObjectPropertyPrompt = ObjectPropertyPrompt;

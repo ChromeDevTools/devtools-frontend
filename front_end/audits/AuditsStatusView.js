@@ -297,7 +297,7 @@ export const fastFactRotationInterval = 6000;
 export const minimumTextVisibilityDuration = 3000;
 
 /** @type {!Array.<!RegExp>} */
-export const KnownBugPatterns = [
+const KnownBugPatterns = [
   /PARSING_PROBLEM/,
   /DOCUMENT_REQUEST/,
   /READ_FAILED/,
@@ -328,7 +328,7 @@ export const StatusPhases = [
 ];
 
 /** @typedef {{message: string, deviceType: string, throttling: string}} */
-export const LoadingMessages = [
+const LoadingMessages = [
   {
     deviceType: 'mobile',
     throttling: 'on',
@@ -351,7 +351,7 @@ export const LoadingMessages = [
   },
 ];
 
-export const FastFacts = [
+const FastFacts = [
   ls
 `1MB takes a minimum of 5 seconds to download on a typical 3G connection [Source: WebPageTest and DevTools 3G definition].`,
     ls`Rebuilding Pinterest pages for performance increased conversion rates by 15% [Source: WPO Stats]`,
@@ -383,17 +383,9 @@ export const FastFacts = [
   Audits = Audits || {};
 
   /**
- * @constructor
- */
+* @constructor
+*/
   Audits.StatusView = StatusView;
-
-  Audits.StatusView.FastFacts = FastFacts;
-
-  /** @type {!Array.<!RegExp>} */
-  Audits.StatusView.KnownBugPatterns = KnownBugPatterns;
 
   /** @typedef {{message: string, progressBarClass: string, order: number}} */
   Audits.StatusView.StatusPhases = StatusPhases;
-
-  /** @typedef {{message: string, deviceType: string, throttling: string}} */
-  Audits.StatusView.LoadingMessages = LoadingMessages;

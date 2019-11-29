@@ -964,7 +964,7 @@ export const Events = {
 /**
  * @unrestricted
  */
-export class ExtensionServerPanelView extends UI.SimpleView {
+class ExtensionServerPanelView extends UI.SimpleView {
   /**
    * @param {string} name
    * @param {string} title
@@ -1035,9 +1035,6 @@ Extensions.ExtensionServer = ExtensionServer;
 
 /** @enum {symbol} */
 Extensions.ExtensionServer.Events = Events;
-
-/** @constructor */
-Extensions.ExtensionServerPanelView = ExtensionServerPanelView;
 
 /** @constructor */
 Extensions.ExtensionStatus = ExtensionStatus;

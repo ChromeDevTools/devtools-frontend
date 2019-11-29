@@ -333,7 +333,7 @@ _ExpandableContainerWidget._symbol = Symbol('container');
 /**
  * @unrestricted
  */
-export class _Location {
+class _Location {
   /**
    * @param {!UI.ViewManager} manager
    * @param {!UI.Widget} widget
@@ -619,7 +619,7 @@ _TabbedLocation.orderStep = 10;  // Keep in sync with descriptors.
  * @implements {UI.ViewLocation}
  * @unrestricted
  */
-export class _StackLocation extends _Location {
+class _StackLocation extends _Location {
   /**
    * @param {!UI.ViewManager} manager
    * @param {function()=} revealCallback
@@ -724,10 +724,4 @@ UI.ViewManager._ContainerWidget = _ContainerWidget;
 UI.ViewManager._ExpandableContainerWidget = _ExpandableContainerWidget;
 
 /** @constructor */
-UI.ViewManager._Location = _Location;
-
-/** @constructor */
 UI.ViewManager._TabbedLocation = _TabbedLocation;
-
-/** @constructor */
-UI.ViewManager._StackLocation = _StackLocation;

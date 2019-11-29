@@ -43,10 +43,10 @@ export default class Fragment {
    * @return {!Fragment}
    */
   static cached(strings, ...values) {
-    let template = Fragment._templateCache.get(strings);
+    let template = _templateCache.get(strings);
     if (!template) {
       template = Fragment._template(strings);
-      Fragment._templateCache.set(strings, template);
+      _templateCache.set(strings, template);
     }
     return Fragment._render(template, values);
   }
@@ -93,17 +93,16 @@ export default class Fragment {
         for (let i = 0; i < node.attributes.length; i++) {
           const name = node.attributes[i].name;
 
-          if (!Fragment._attributeMarkerRegex.test(name) &&
-              !Fragment._attributeMarkerRegex.test(node.attributes[i].value)) {
+          if (!_attributeMarkerRegex.test(name) && !_attributeMarkerRegex.test(node.attributes[i].value)) {
             continue;
           }
 
           attributesToRemove.push(name);
           nodesToMark.push(node);
           const bind = {attr: {index: valueIndex}};
-          bind.attr.names = name.split(Fragment._attributeMarkerRegex);
+          bind.attr.names = name.split(_attributeMarkerRegex);
           valueIndex += bind.attr.names.length - 1;
-          bind.attr.values = node.attributes[i].value.split(Fragment._attributeMarkerRegex);
+          bind.attr.values = node.attributes[i].value.split(_attributeMarkerRegex);
           valueIndex += bind.attr.values.length - 1;
           binds.push(bind);
         }
@@ -113,7 +112,7 @@ export default class Fragment {
       }
 
       if (node.nodeType === Node.TEXT_NODE && node.data.indexOf(Fragment._textMarker) !== -1) {
-        const texts = node.data.split(Fragment._textMarkerRegex);
+        const texts = node.data.split(_textMarkerRegex);
         node.data = texts[texts.length - 1];
         for (let i = 0; i < texts.length - 1; i++) {
           if (texts[i]) {
@@ -134,7 +133,7 @@ export default class Fragment {
     }
 
     for (let i = 0; i < nodesToMark.length; i++) {
-      nodesToMark[i].classList.add(Fragment._class(i));
+      nodesToMark[i].classList.add(_class(i));
     }
 
     for (const emptyTextNode of emptyTextNodes) {
@@ -156,7 +155,7 @@ export default class Fragment {
 
     const boundElements = [];
     for (let i = 0; i < template.binds.length; i++) {
-      const className = Fragment._class(i);
+      const className = _class(i);
       const element = /** @type {!Element} */ (content.querySelector('.' + className));
       element.classList.remove(className);
       boundElements.push(element);
@@ -219,11 +218,11 @@ export default class Fragment {
 }
 
 export const _textMarker = '{{template-text}}';
-export const _textMarkerRegex = /{{template-text}}/;
+const _textMarkerRegex = /{{template-text}}/;
 export const _attributeMarker = index => 'template-attribute' + index;
-export const _attributeMarkerRegex = /template-attribute\d+/;
-export const _class = index => 'template-class-' + index;
-export const _templateCache = new Map();
+const _attributeMarkerRegex = /template-attribute\d+/;
+const _class = index => 'template-class-' + index;
+const _templateCache = new Map();
 
 /**
  * @param {!Array<string>} strings
@@ -244,11 +243,7 @@ UI = UI || {};
 UI.Fragment = Fragment;
 
 UI.Fragment._textMarker = _textMarker;
-UI.Fragment._textMarkerRegex = _textMarkerRegex;
 UI.Fragment._attributeMarker = _attributeMarker;
-UI.Fragment._attributeMarkerRegex = _attributeMarkerRegex;
-UI.Fragment._class = _class;
-UI.Fragment._templateCache = _templateCache;
 
 UI.html = html;
 

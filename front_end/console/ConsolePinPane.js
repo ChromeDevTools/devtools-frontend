@@ -305,5 +305,3 @@ Console.ConsolePinPane = ConsolePinPane;
  * @constructor
  */
 Console.ConsolePin = ConsolePin;
-
-Console.ConsolePin._PinSymbol = _PinSymbol;

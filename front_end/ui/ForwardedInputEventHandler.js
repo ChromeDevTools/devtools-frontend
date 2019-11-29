@@ -38,6 +38,3 @@ UI = UI || {};
 
 /** @constructor */
 UI.ForwardedInputEventHandler = ForwardedInputEventHandler;
-
-/** @type {!ForwardedInputEventHandler} */
-UI.forwardedEventHandler = new UI.ForwardedInputEventHandler();

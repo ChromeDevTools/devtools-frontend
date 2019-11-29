@@ -219,7 +219,7 @@ export class FilterTreeElement extends UI.TreeElement {
 }
 
 /** @enum {string} */
-export const _groupName = {
+const _groupName = {
   ConsoleAPI: 'user message',
   All: 'message',
   Error: 'error',
@@ -229,19 +229,19 @@ export const _groupName = {
 };
 
 /** @const {!Map<string, string>} */
-export const _groupSingularTitleMap = new Map([
+const _groupSingularTitleMap = new Map([
   [_groupName.ConsoleAPI, ls`1 user message`], [_groupName.All, ls`1 message`], [_groupName.Error, ls`1 error`],
   [_groupName.Warning, ls`1 warning`], [_groupName.Info, ls`1 info`], [_groupName.Verbose, ls`1 verbose`]
 ]);
 
 /** @const {!Map<string, string>} */
-export const _groupPluralTitleMap = new Map([
+const _groupPluralTitleMap = new Map([
   [_groupName.ConsoleAPI, ls`%d user messages`], [_groupName.All, ls`%d messages`], [_groupName.Error, ls`%d errors`],
   [_groupName.Warning, ls`%d warnings`], [_groupName.Info, ls`%d info`], [_groupName.Verbose, ls`%d verbose`]
 ]);
 
 /** @const {!Map<string, string>} */
-export const _groupNoMessageTitleMap = new Map([
+const _groupNoMessageTitleMap = new Map([
   [_groupName.ConsoleAPI, ls`No user messages`], [_groupName.All, ls`No messages`], [_groupName.Error, ls`No errors`],
   [_groupName.Warning, ls`No warnings`], [_groupName.Info, ls`No info`], [_groupName.Verbose, ls`No verbose`]
 ]);
@@ -269,15 +269,3 @@ Console.ConsoleSidebar.URLGroupTreeElement = URLGroupTreeElement;
  * @constructor
  */
 Console.ConsoleSidebar.FilterTreeElement = FilterTreeElement;
-
-/** @enum {string} */
-Console.ConsoleSidebar._groupName = _groupName;
-
-/** @const {!Map<string, string>} */
-Console.ConsoleSidebar._groupSingularTitleMap = _groupSingularTitleMap;
-
-/** @const {!Map<string, string>} */
-Console.ConsoleSidebar._groupPluralTitleMap = _groupPluralTitleMap;
-
-/** @const {!Map<string, string>} */
-Console.ConsoleSidebar._groupNoMessageTitleMap = _groupNoMessageTitleMap;

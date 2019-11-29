@@ -148,8 +148,8 @@ export default class DefaultScriptMapping {
   }
 }
 
-export const _scriptsSymbol = Symbol('symbol');
-export const _uiSourceCodeSymbol = Symbol('uiSourceCodeSymbol');
+const _scriptsSymbol = Symbol('symbol');
+const _uiSourceCodeSymbol = Symbol('uiSourceCodeSymbol');
 
 /* Legacy exported object */
 self.Bindings = self.Bindings || {};
@@ -159,6 +159,3 @@ Bindings = Bindings || {};
 
 /** @constructor */
 Bindings.DefaultScriptMapping = DefaultScriptMapping;
-
-Bindings.DefaultScriptMapping._scriptsSymbol = _scriptsSymbol;
-Bindings.DefaultScriptMapping._uiSourceCodeSymbol = _uiSourceCodeSymbol;

@@ -199,12 +199,6 @@ Audits = Audits || {};
 Audits.ReportRenderer = AuditsReportRenderer;
 
 /**
- * @const
- * @type {number}
- */
-Audits.ReportRenderer.MaxLengthForLinks = MaxLengthForLinks;
-
-/**
  * @constructor
  */
 Audits.ReportUIFeatures = AuditsReportUIFeatures;

@@ -245,7 +245,7 @@ export default class DebuggerWorkspaceBinding {
 /**
  * @unrestricted
  */
-export class ModelData {
+class ModelData {
   /**
    * @param {!SDK.DebuggerModel} debuggerModel
    * @param {!DebuggerWorkspaceBinding} debuggerWorkspaceBinding
@@ -357,7 +357,7 @@ export class ModelData {
 /**
  * @unrestricted
  */
-export class Location extends Bindings.LiveLocationWithPool {
+class Location extends Bindings.LiveLocationWithPool {
   /**
    * @param {!SDK.Script} script
    * @param {!SDK.DebuggerModel.Location} rawLocation
@@ -399,7 +399,7 @@ export class Location extends Bindings.LiveLocationWithPool {
   }
 }
 
-export class StackTraceTopFrameLocation extends Bindings.LiveLocationWithPool {
+class StackTraceTopFrameLocation extends Bindings.LiveLocationWithPool {
   /**
    * @param {!Array<!SDK.DebuggerModel.Location>} rawLocations
    * @param {!DebuggerWorkspaceBinding} binding
@@ -490,15 +490,6 @@ Bindings = Bindings || {};
 
 /** @constructor */
 Bindings.DebuggerWorkspaceBinding = DebuggerWorkspaceBinding;
-
-/** @constructor */
-Bindings.DebuggerWorkspaceBinding.ModelData = ModelData;
-
-/** @constructor */
-Bindings.DebuggerWorkspaceBinding.Location = Location;
-
-/** @constructor */
-Bindings.DebuggerWorkspaceBinding.StackTraceTopFrameLocation = StackTraceTopFrameLocation;
 
 /** @interface */
 Bindings.DebuggerSourceMapping = DebuggerSourceMapping;

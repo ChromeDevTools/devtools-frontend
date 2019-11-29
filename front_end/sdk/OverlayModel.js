@@ -361,7 +361,7 @@ export class Highlighter {
 /**
  * @implements {Highlighter}
  */
-export class DefaultHighlighter {
+class DefaultHighlighter {
   /**
    * @param {!OverlayModel} model
    */
@@ -423,11 +423,6 @@ SDK.OverlayModel.Events = Events;
  * @interface
  */
 SDK.OverlayModel.Highlighter = Highlighter;
-
-/**
- * @implements {Highlighter}
- */
-SDK.OverlayModel.DefaultHighlighter = DefaultHighlighter;
 
 SDK.SDKModel.register(SDK.OverlayModel, SDK.Target.Capability.DOM, true);
 

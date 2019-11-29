@@ -156,7 +156,7 @@ export default class ResourceMapping {
   }
 }
 
-export class ModelInfo {
+class ModelInfo {
   /**
    * @param {!Workspace.Workspace} workspace
    * @param {!SDK.ResourceTreeModel} resourceTreeModel
@@ -292,7 +292,7 @@ export class ModelInfo {
 /**
  * @implements {Common.ContentProvider}
  */
-export class Binding {
+class Binding {
   /**
    * @param {!Bindings.ContentProviderBasedProject} project
    * @param {!SDK.Resource} resource
@@ -469,12 +469,6 @@ Bindings = Bindings || {};
 
 /** @constructor */
 Bindings.ResourceMapping = ResourceMapping;
-
-/** @constructor */
-Bindings.ResourceMapping.ModelInfo = ModelInfo;
-
-/** @constructor */
-Bindings.ResourceMapping.Binding = Binding;
 
 Bindings.ResourceMapping._symbol = _symbol;
 Bindings.ResourceMapping._offsetSymbol = _offsetSymbol;

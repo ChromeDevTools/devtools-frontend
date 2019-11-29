@@ -135,10 +135,10 @@ export default class GlassPane {
     }
     // TODO(crbug.com/1006759): Extract the magic number
     // Deliberately starts with 3000 to hide other z-indexed elements below.
-    this.element.style.zIndex = 3000 + 1000 * GlassPane._panes.size;
+    this.element.style.zIndex = 3000 + 1000 * _panes.size;
     document.body.addEventListener('mousedown', this._onMouseDownBound, true);
     this._widget.show(document.body);
-    GlassPane._panes.add(this);
+    _panes.add(this);
     this._positionContent();
   }
 
@@ -146,7 +146,7 @@ export default class GlassPane {
     if (!this.isShowing()) {
       return;
     }
-    GlassPane._panes.delete(this);
+    _panes.delete(this);
     this.element.ownerDocument.body.removeEventListener('mousedown', this._onMouseDownBound, true);
     this._widget.detach();
   }
@@ -175,7 +175,7 @@ export default class GlassPane {
     const scrollbarSize = UI.measuredScrollbarWidth(this.element.ownerDocument);
     const arrowSize = 10;
 
-    const container = GlassPane._containers.get(/** @type {!Document} */ (this.element.ownerDocument));
+    const container = _containers.get(/** @type {!Document} */ (this.element.ownerDocument));
     if (this._sizeBehavior === GlassPane.SizeBehavior.MeasureContent) {
       this.contentElement.positionAt(0, 0);
       this.contentElement.style.width = '';
@@ -356,7 +356,7 @@ export default class GlassPane {
    * @param {!Element} element
    */
   static setContainer(element) {
-    GlassPane._containers.set(/** @type {!Document} */ (element.ownerDocument), element);
+    _containers.set(/** @type {!Document} */ (element.ownerDocument), element);
     GlassPane.containerMoved(element);
   }
 
@@ -365,14 +365,14 @@ export default class GlassPane {
    * @return {!Element}
    */
   static container(document) {
-    return GlassPane._containers.get(document);
+    return _containers.get(document);
   }
 
   /**
    * @param {!Element} element
    */
   static containerMoved(element) {
-    for (const pane of GlassPane._panes) {
+    for (const pane of _panes) {
       if (pane.isShowing() && pane.element.ownerDocument === element.ownerDocument) {
         pane._positionContent();
       }
@@ -410,10 +410,10 @@ export const MarginBehavior = {
 };
 
 /** @type {!Map<!Document, !Element>} */
-export const _containers = new Map();
+const _containers = new Map();
 
 /** @type {!Set<!GlassPane>} */
-export const _panes = new Set();
+const _panes = new Set();
 
 /* Legacy exported object*/
 self.UI = self.UI || {};
@@ -435,9 +435,6 @@ UI.GlassPane.SizeBehavior = SizeBehavior;
 
 /** @enum {symbol} */
 UI.GlassPane.MarginBehavior = MarginBehavior;
-
-/** @type {!Map<!Document, !Element>} */
-UI.GlassPane._containers = _containers;
 
 /** @type {!Set<!GlassPane>} */
 UI.GlassPane._panes = _panes;

@@ -241,7 +241,7 @@ export const Events = {
  * @implements {Protocol.Profiler.Profile}
  * @extends {Protocol.HeapProfiler.SamplingHeapProfile}
  */
-export class NativeHeapProfile {
+class NativeHeapProfile {
   /**
    * @param {!Protocol.HeapProfiler.SamplingHeapProfileNode} head
    * @param {!Array<!Protocol.Memory.Module>} modules
@@ -256,7 +256,7 @@ export class NativeHeapProfile {
  * @extends {Protocol.HeapProfilerDispatcher}
  * @unrestricted
  */
-export class HeapProfilerDispatcher {
+class HeapProfilerDispatcher {
   constructor(model) {
     this._heapProfilerModel = model;
   }
@@ -315,14 +315,5 @@ SDK.HeapProfilerModel = HeapProfilerModel;
 
 /** @enum {symbol} */
 SDK.HeapProfilerModel.Events = Events;
-
-/**
- * @implements {Protocol.Profiler.Profile}
- * @extends {Protocol.HeapProfiler.SamplingHeapProfile}
- */
-SDK.HeapProfilerModel.NativeHeapProfile = NativeHeapProfile;
-
-/** @constructor */
-SDK.HeapProfilerDispatcher = HeapProfilerDispatcher;
 
 SDK.SDKModel.register(SDK.HeapProfilerModel, SDK.Target.Capability.JS, false);

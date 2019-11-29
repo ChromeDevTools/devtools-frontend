@@ -124,7 +124,7 @@ export default class CSSWorkspaceBinding {
 /**
  * @interface
  */
-export class SourceMapping {
+class SourceMapping {
   /**
    * @param {!SDK.CSSLocation} rawLocation
    * @return {?Workspace.UILocation}
@@ -140,7 +140,7 @@ export class SourceMapping {
   }
 }
 
-export class ModelInfo {
+class ModelInfo {
   /**
    * @param {!SDK.CSSModel} cssModel
    * @param {!Workspace.Workspace} workspace
@@ -268,7 +268,7 @@ export class ModelInfo {
 /**
  * @unrestricted
  */
-export class LiveLocation extends Bindings.LiveLocationWithPool {
+class LiveLocation extends Bindings.LiveLocationWithPool {
   /**
    * @param {!SDK.CSSLocation} rawLocation
    * @param {!ModelInfo} info
@@ -325,14 +325,8 @@ Bindings.CSSWorkspaceBinding = CSSWorkspaceBinding;
 /** @interface */
 Bindings.CSSWorkspaceBinding.SourceMapping = SourceMapping;
 
-/** @interface */
-Bindings.SourceMapping = SourceMapping;
-
 /** @constructor */
 Bindings.CSSWorkspaceBinding.ModelInfo = ModelInfo;
-
-/** @constructor */
-Bindings.CSSWorkspaceBinding.LiveLocation = LiveLocation;
 
 /**
  * @type {!CSSWorkspaceBinding}

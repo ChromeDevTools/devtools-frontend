@@ -1776,7 +1776,7 @@ export const Events = {
  * @implements {Protocol.DOMDispatcher}
  * @unrestricted
  */
-export class DOMDispatcher {
+class DOMDispatcher {
   /**
    * @param {!DOMModel} domModel
    */
@@ -1910,7 +1910,7 @@ export class DOMDispatcher {
   }
 }
 
-export class DOMModelUndoStack {
+class DOMModelUndoStack {
   constructor() {
     /** @type {!Array<!DOMModel>} */
     this._stack = [];
@@ -2012,12 +2012,6 @@ SDK.DOMNodeShortcut = DOMNodeShortcut;
 
 /** @constructor */
 SDK.DOMDocument = DOMDocument;
-
-/** @constructor */
-SDK.DOMDispatcher = DOMDispatcher;
-
-/** @constructor */
-SDK.DOMModelUndoStack = DOMModelUndoStack;
 
 /** @constructor */
 SDK.DOMNode = DOMNode;

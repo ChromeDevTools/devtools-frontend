@@ -176,7 +176,7 @@ export class CertificateSecurityState {
   }
 }
 
-export class SafetyTipInfo {
+class SafetyTipInfo {
   constructor(safetyTipInfo) {
     /** @type {string} */
     this.safetyTipStatus = safetyTipInfo.safetyTipStatus;
@@ -212,7 +212,7 @@ export class SecurityStyleExplanation {
  * @implements {Protocol.SecurityDispatcher}
  * @unrestricted
  */
-export class SecurityDispatcher {
+class SecurityDispatcher {
   constructor(model) {
     this._model = model;
   }
@@ -286,14 +286,4 @@ Security.CertificateSecurityState = CertificateSecurityState;
 /**
  * @constructor
  */
-Security.SafetyTipInfo = SafetyTipInfo;
-
-/**
- * @constructor
- */
 Security.SecurityStyleExplanation = SecurityStyleExplanation;
-
-/**
- * @constructor
- */
-Security.SecurityDispatcher = SecurityDispatcher;

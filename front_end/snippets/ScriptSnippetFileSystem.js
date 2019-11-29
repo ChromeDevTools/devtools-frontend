@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-export class SnippetFileSystem extends Persistence.PlatformFileSystem {
+class SnippetFileSystem extends Persistence.PlatformFileSystem {
   constructor() {
     super('snippet://', 'snippets');
     this._lastSnippetIdentifierSetting = Common.settings.createSetting('scriptSnippets_lastIdentifier', 0);
@@ -222,11 +222,6 @@ self.Snippets = self.Snippets || {};
 
 /* Legacy exported object */
 Snippets = Snippets || {};
-
-/**
- * @constructor
- */
-Snippets.SnippetFileSystem = SnippetFileSystem;
 
 Snippets.evaluateScriptSnippet = evaluateScriptSnippet;
 Snippets.isSnippetsUISourceCode = isSnippetsUISourceCode;

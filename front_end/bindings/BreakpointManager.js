@@ -499,7 +499,7 @@ export class Breakpoint {
 /**
  * @unrestricted
  */
-export class ModelBreakpoint {
+class ModelBreakpoint {
   /**
    * @param {!SDK.DebuggerModel} debuggerModel
    * @param {!Breakpoint} breakpoint
@@ -797,7 +797,7 @@ Breakpoint.State = class {
 };
 
 
-export class Storage {
+class Storage {
   constructor() {
     this._setting = Common.settings.createLocalSetting('breakpoints', []);
     /** @type {!Map<string, !Storage.Item>} */
@@ -884,11 +884,7 @@ Bindings.BreakpointManager.Events = Events;
 /** @constructor */
 Bindings.BreakpointManager.Breakpoint = Breakpoint;
 
-/** @constructor */
 Bindings.BreakpointManager.ModelBreakpoint = ModelBreakpoint;
-
-/** @constructor */
-Bindings.BreakpointManager.Storage = Storage;
 
 /** @typedef {{
  *    breakpoint: !Breakpoint,

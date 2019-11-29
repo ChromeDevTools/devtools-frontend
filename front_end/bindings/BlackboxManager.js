@@ -346,7 +346,7 @@ export default class BlackboxManager {
   }
 }
 
-export const _blackboxedRanges = Symbol('blackboxedRanged');
+const _blackboxedRanges = Symbol('blackboxedRanged');
 
 /* Legacy exported object */
 self.Bindings = self.Bindings || {};
@@ -356,8 +356,6 @@ Bindings = Bindings || {};
 
 /** @constructor */
 Bindings.BlackboxManager = BlackboxManager;
-
-Bindings.BlackboxManager._blackboxedRanges = _blackboxedRanges;
 
 /** @type {!BlackboxManager} */
 Bindings.blackboxManager;

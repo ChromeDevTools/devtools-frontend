@@ -646,24 +646,17 @@ export default class Linkifier {
 }
 
 /** @type {!Set<!Components.Linkifier>} */
-export const _instances = new Set();
+const _instances = new Set();
 
 /** @type {?LinkDecorator} */
-export let _decorator = null;
+let _decorator = null;
 
-export const _sourceCodeAnchors = Symbol('Linkifier.anchors');
-export const _infoSymbol = Symbol('Linkifier.info');
-export const _untruncatedNodeTextSymbol = Symbol('Linkifier.untruncatedNodeText');
-
-/**
- * The maximum length before strings are considered too long for finding URLs.
- * @const
- * @type {number}
- */
-export const MaxLengthToIgnoreLinkifier = 10000;
+const _sourceCodeAnchors = Symbol('Linkifier.anchors');
+const _infoSymbol = Symbol('Linkifier.info');
+const _untruncatedNodeTextSymbol = Symbol('Linkifier.untruncatedNodeText');
 
 /** @type {!Map<string, !Linkifier.LinkHandler>} */
-export const _linkHandlers = new Map();
+const _linkHandlers = new Map();
 
 /**
  * @extends {Common.EventTarget}
@@ -787,14 +780,6 @@ Components = Components || {};
 
 /** @constructor */
 Components.Linkifier = Linkifier;
-
-Components.Linkifier._instances = _instances;
-Components.Linkifier._decorator = _decorator;
-Components.Linkifier._sourceCodeAnchors = _sourceCodeAnchors;
-Components.Linkifier._infoSymbol = _infoSymbol;
-Components.Linkifier._untruncatedNodeTextSymbol = _untruncatedNodeTextSymbol;
-Components.Linkifier.MaxLengthToIgnoreLinkifier = MaxLengthToIgnoreLinkifier;
-Components.Linkifier._linkHandlers = _linkHandlers;
 
 /** @constructor */
 Components.Linkifier.LinkContextMenuProvider = LinkContextMenuProvider;

@@ -396,12 +396,12 @@ export default class PersistenceImpl extends Common.Object {
   }
 }
 
-export const _binding = Symbol('Persistence.Binding');
-export const _muteCommit = Symbol('Persistence.MuteCommit');
-export const _muteWorkingCopy = Symbol('Persistence.MuteWorkingCopy');
-export const _NodePrefix = '(function (exports, require, module, __filename, __dirname) { ';
-export const _NodeSuffix = '\n});';
-export const _NodeShebang = '#!/usr/bin/env node';
+const _binding = Symbol('Persistence.Binding');
+const _muteCommit = Symbol('Persistence.MuteCommit');
+const _muteWorkingCopy = Symbol('Persistence.MuteWorkingCopy');
+const _NodePrefix = '(function (exports, require, module, __filename, __dirname) { ';
+const _NodeSuffix = '\n});';
+const _NodeShebang = '#!/usr/bin/env node';
 
 export const Events = {
   BindingCreated: Symbol('BindingCreated'),
@@ -457,13 +457,10 @@ Persistence = Persistence || {};
 /** @constructor */
 Persistence.Persistence = PersistenceImpl;
 
-Persistence.Persistence._binding = _binding;
-Persistence.Persistence._muteCommit = _muteCommit;
-Persistence.Persistence._muteWorkingCopy = _muteWorkingCopy;
+Persistence.Persistence.Events = Events;
+Persistence.Persistence._NodeShebang = _NodeShebang;
 Persistence.Persistence._NodePrefix = _NodePrefix;
 Persistence.Persistence._NodeSuffix = _NodeSuffix;
-Persistence.Persistence._NodeShebang = _NodeShebang;
-Persistence.Persistence.Events = Events;
 
 /** @constructor */
 Persistence.PathEncoder = PathEncoder;

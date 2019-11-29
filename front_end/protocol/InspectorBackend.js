@@ -277,7 +277,7 @@ const test = {
   onMessageReceived: null,
 };
 
-export class SessionRouter {
+class SessionRouter {
   /**
    * @param {!Connection} connection
    */
@@ -616,7 +616,7 @@ export class TargetBase {
 /**
  * @unrestricted
  */
-export class _AgentPrototype {
+class _AgentPrototype {
   /**
    * @param {string} domain
    */
@@ -790,7 +790,7 @@ export class _AgentPrototype {
 /**
  * @unrestricted
  */
-export class _DispatcherPrototype {
+class _DispatcherPrototype {
   constructor() {
     this._eventArgs = {};
   }
@@ -849,21 +849,11 @@ self.Protocol = self.Protocol || {};
 Protocol = Protocol || {};
 
 Protocol.DevToolsStubErrorCode = DevToolsStubErrorCode;
-/** @typedef {string} */
-Protocol.Error = ProtocolError;
+
+Protocol.SessionRouter = SessionRouter;
 
 /** @constructor */
 Protocol.InspectorBackend = InspectorBackend;
-
-/**
- * @unrestricted
- */
-Protocol.InspectorBackend._AgentPrototype = _AgentPrototype;
-
-/**
- * @unrestricted
- */
-Protocol.InspectorBackend._DispatcherPrototype = _DispatcherPrototype;
 
 /** @interface */
 Protocol.Connection = Connection;
@@ -874,9 +864,6 @@ Protocol.inspectorBackend = new InspectorBackend();
 Protocol.test = test;
 
 /** @constructor */
-Protocol.SessionRouter = SessionRouter;
-
-/** @constructor */
 Protocol.TargetBase = TargetBase;
 
 /**
@@ -884,3 +871,6 @@ Protocol.TargetBase = TargetBase;
  * @typedef {function(?Object, ?Object)}
  */
 Protocol._Callback;
+
+/** @typedef {string} */
+Protocol.Error = ProtocolError;

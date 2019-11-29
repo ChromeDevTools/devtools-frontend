@@ -307,10 +307,10 @@ export default class CompilerScriptMapping {
   }
 }
 
-export const _frameIdSymbol = Symbol('_frameIdSymbol');
-export const _sourceMapSymbol = Symbol('_sourceMapSymbol');
+const _frameIdSymbol = Symbol('_frameIdSymbol');
+const _sourceMapSymbol = Symbol('_sourceMapSymbol');
 
-export class Binding {
+class Binding {
   /**
    * @param {!Bindings.ContentProviderBasedProject} project
    * @param {string} url
@@ -393,9 +393,3 @@ Bindings = Bindings || {};
 
 /** @constructor */
 Bindings.CompilerScriptMapping = CompilerScriptMapping;
-
-Bindings.CompilerScriptMapping._frameIdSymbol = _frameIdSymbol;
-Bindings.CompilerScriptMapping._sourceMapSymbol = _sourceMapSymbol;
-
-/** @constructor */
-Bindings.CompilerScriptMapping.Binding = Binding;

@@ -4,16 +4,16 @@
 const ResourceLoader = {};
 export default ResourceLoader;
 
-export let _lastStreamId = 0;
+let _lastStreamId = 0;
 
 /** @type {!Object.<number, !Common.OutputStream>} */
-export const _boundStreams = {};
+const _boundStreams = {};
 
 /**
  * @param {!Common.OutputStream} stream
  * @return {number}
  */
-export const _bindOutputStream = function(stream) {
+const _bindOutputStream = function(stream) {
   _boundStreams[++_lastStreamId] = stream;
   return _lastStreamId;
 };
@@ -21,7 +21,7 @@ export const _bindOutputStream = function(stream) {
 /**
  * @param {number} id
  */
-export const _discardOutputStream = function(id) {
+const _discardOutputStream = function(id) {
   _boundStreams[id].close();
   delete _boundStreams[id];
 };
@@ -104,22 +104,6 @@ self.Host = self.Host || {};
 Host = Host || {};
 
 Host.ResourceLoader = ResourceLoader;
-
-Host.ResourceLoader._lastStreamId = _lastStreamId;
-
-/** @type {!Object.<number, !Common.OutputStream>} */
-Host.ResourceLoader._boundStreams = _boundStreams;
-
-/**
- * @param {!Common.OutputStream} stream
- * @return {number}
- */
-Host.ResourceLoader._bindOutputStream = _bindOutputStream;
-
-/**
- * @param {number} id
- */
-Host.ResourceLoader._discardOutputStream = _discardOutputStream;
 
 /**
  * @param {number} id

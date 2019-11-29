@@ -109,7 +109,7 @@ export default class SettingsScreen extends UI.VBox {
 /**
  * @unrestricted
  */
-export class SettingsTab extends UI.VBox {
+class SettingsTab extends UI.VBox {
   /**
    * @param {string} name
    * @param {string=} id
@@ -398,11 +398,6 @@ Settings.SettingsScreen.ActionDelegate = ActionDelegate;
  * @constructor
  */
 Settings.SettingsScreen.Revealer = Revealer;
-
-/**
- * @constructor
- */
-Settings.SettingsTab = SettingsTab;
 
 /**
  * @constructor

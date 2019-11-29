@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-export const MaxWorkers = 2;
+const MaxWorkers = 2;
 
 /**
  * @unrestricted
@@ -267,7 +267,7 @@ export class FormatterWorkerPool {
 /**
  * @unrestricted
  */
-export class Task {
+class Task {
   /**
    * @param {string} method
    * @param {!Object<string, string>} params
@@ -291,7 +291,8 @@ export class FormatResult {
   }
 }
 
-export class JSOutlineItem {
+// eslint-disable-next-line no-unused-vars
+class JSOutlineItem {
   constructor() {
     /** @type {string} */
     this.name;
@@ -304,7 +305,8 @@ export class JSOutlineItem {
   }
 }
 
-export class CSSProperty {
+// eslint-disable-next-line no-unused-vars
+class CSSProperty {
   constructor() {
     /** @type {string} */
     this.name;
@@ -321,7 +323,8 @@ export class CSSProperty {
   }
 }
 
-export class CSSStyleRule {
+// eslint-disable-next-line no-unused-vars
+class CSSStyleRule {
   constructor() {
     /** @type {string} */
     this.selectorText;
@@ -336,7 +339,8 @@ export class CSSStyleRule {
   }
 }
 
-export class SCSSProperty {
+// eslint-disable-next-line no-unused-vars
+class SCSSProperty {
   constructor() {
     /** @type {!Formatter.FormatterWorkerPool.TextRange} */
     this.range;
@@ -349,7 +353,8 @@ export class SCSSProperty {
   }
 }
 
-export class SCSSRule {
+// eslint-disable-next-line no-unused-vars
+class SCSSRule {
   constructor() {
     /** @type {!Array<!Formatter.FormatterWorkerPool.TextRange>} */
     this.selectors;
@@ -379,29 +384,10 @@ Formatter = Formatter || {};
 /** @constructor */
 Formatter.FormatterWorkerPool = FormatterWorkerPool;
 
-Formatter.FormatterWorkerPool.MaxWorkers = MaxWorkers;
 Formatter.formatterWorkerPool = formatterWorkerPool;
 
 /** @constructor */
-Formatter.FormatterWorkerPool.Task = Task;
-
-/** @constructor */
 Formatter.FormatterWorkerPool.FormatResult = FormatResult;
-
-/** @constructor */
-Formatter.FormatterWorkerPool.JSOutlineItem = JSOutlineItem;
-
-/** @constructor */
-Formatter.FormatterWorkerPool.CSSProperty = CSSProperty;
-
-/** @constructor */
-Formatter.FormatterWorkerPool.CSSStyleRule = CSSStyleRule;
-
-/** @constructor */
-Formatter.FormatterWorkerPool.SCSSProperty = SCSSProperty;
-
-/** @constructor */
-Formatter.FormatterWorkerPool.SCSSRule = SCSSRule;
 
 /** @typedef {{original: !Array<number>, formatted: !Array<number>}} */
 Formatter.FormatterWorkerPool.FormatMapping;

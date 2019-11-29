@@ -95,7 +95,7 @@ export default class SourceMap {
 /**
  * @unrestricted
  */
-export class SourceMapV3 {
+class SourceMapV3 {
   constructor() {
     /** @type {number} */ this.version;
     /** @type {string|undefined} */ this.file;
@@ -752,9 +752,6 @@ SDK = SDK || {};
 
 /** @interface */
 SDK.SourceMap = SourceMap;
-
-/** @constructor */
-SDK.SourceMapV3 = SourceMapV3;
 
 /** @constructor */
 SDK.SourceMapEntry = SourceMapEntry;

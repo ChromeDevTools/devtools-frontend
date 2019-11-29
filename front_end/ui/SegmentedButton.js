@@ -53,6 +53,3 @@ self.UI = self.UI || {};
 
 /* Legacy exported object*/
 UI = UI || {};
-
-/** @constructor */
-UI.SegmentedButton = SegmentedButton;

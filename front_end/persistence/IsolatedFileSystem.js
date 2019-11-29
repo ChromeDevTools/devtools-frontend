@@ -714,15 +714,15 @@ export default class IsolatedFileSystem extends Persistence.PlatformFileSystem {
   }
 }
 
-export const _styleSheetExtensions = new Set(['css', 'scss', 'sass', 'less']);
-export const _documentExtensions = new Set(['htm', 'html', 'asp', 'aspx', 'phtml', 'jsp']);
+const _styleSheetExtensions = new Set(['css', 'scss', 'sass', 'less']);
+const _documentExtensions = new Set(['htm', 'html', 'asp', 'aspx', 'phtml', 'jsp']);
 
-export const _scriptExtensions = new Set([
+const _scriptExtensions = new Set([
   'asp', 'aspx', 'c', 'cc', 'cljs', 'coffee', 'cpp', 'cs', 'dart', 'java', 'js',
   'jsp', 'jsx',  'h', 'm',  'mjs',  'mm',     'py',  'sh', 'ts',   'tsx',  'ls'
 ]);
 
-export const ImageExtensions = new Set(['jpeg', 'jpg', 'svg', 'gif', 'webp', 'png', 'ico', 'tiff', 'tif', 'bmp']);
+const ImageExtensions = new Set(['jpeg', 'jpg', 'svg', 'gif', 'webp', 'png', 'ico', 'tiff', 'tif', 'bmp']);
 
 export const BinaryExtensions = new Set([
   // Executable extensions, roughly taken from https://en.wikipedia.org/wiki/Comparison_of_executable_file_formats
@@ -746,8 +746,4 @@ Persistence = Persistence || {};
 /** @constructor */
 Persistence.IsolatedFileSystem = IsolatedFileSystem;
 
-Persistence.IsolatedFileSystem._styleSheetExtensions = _styleSheetExtensions;
-Persistence.IsolatedFileSystem._documentExtensions = _documentExtensions;
-Persistence.IsolatedFileSystem._scriptExtensions = _scriptExtensions;
-Persistence.IsolatedFileSystem.ImageExtensions = ImageExtensions;
 Persistence.IsolatedFileSystem.BinaryExtensions = BinaryExtensions;

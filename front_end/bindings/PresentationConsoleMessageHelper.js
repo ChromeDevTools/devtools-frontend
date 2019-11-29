@@ -244,9 +244,6 @@ self.Bindings = self.Bindings || {};
 Bindings = Bindings || {};
 
 /** @constructor */
-Bindings.PresentationConsoleMessageHelper = PresentationConsoleMessageHelper;
-
-/** @constructor */
 Bindings.PresentationConsoleMessageManager = PresentationConsoleMessageManager;
 
 /** @constructor */

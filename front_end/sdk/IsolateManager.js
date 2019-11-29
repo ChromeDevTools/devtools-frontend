@@ -162,7 +162,7 @@ export const Events = {
 };
 
 export const MemoryTrendWindowMs = 120e3;
-export const PollIntervalMs = 2e3;
+const PollIntervalMs = 2e3;
 
 export class Isolate {
   /**
@@ -322,7 +322,6 @@ SDK.IsolateManager.Observer = Observer;
 SDK.IsolateManager.Events = Events;
 
 SDK.IsolateManager.MemoryTrendWindowMs = MemoryTrendWindowMs;
-SDK.IsolateManager.PollIntervalMs = PollIntervalMs;
 
 /** @constructor */
 SDK.IsolateManager.Isolate = Isolate;

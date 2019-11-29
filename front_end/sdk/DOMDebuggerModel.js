@@ -265,7 +265,7 @@ export const Events = {
   DOMBreakpointsRemoved: Symbol('DOMBreakpointsRemoved'),
 };
 
-export const Marker = 'breakpoint-marker';
+const Marker = 'breakpoint-marker';
 
 export class DOMBreakpoint {
   /**
@@ -895,8 +895,6 @@ SDK.DOMDebuggerModel.Events = Events;
 
 /** @constructor */
 SDK.DOMDebuggerModel.DOMBreakpoint = DOMBreakpoint;
-
-SDK.DOMDebuggerModel.DOMBreakpoint.Marker = Marker;
 
 /** @constructor */
 SDK.DOMDebuggerModel.EventListenerBreakpoint = EventListenerBreakpoint;

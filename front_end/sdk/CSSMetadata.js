@@ -331,7 +331,7 @@ export function cssMetadata() {
 /**
  * The pipe character '|' indicates where text selection should be set.
  */
-export const _imageValuePresetMap = new Map([
+const _imageValuePresetMap = new Map([
   ['linear-gradient', 'linear-gradient(|45deg, black, transparent|)'],
   ['radial-gradient', 'radial-gradient(|black, transparent|)'],
   ['repeating-linear-gradient', 'repeating-linear-gradient(|45deg, black, transparent 100px|)'],
@@ -339,7 +339,7 @@ export const _imageValuePresetMap = new Map([
   ['url', 'url(||)'],
 ]);
 
-export const _valuePresets = new Map([
+const _valuePresets = new Map([
   [
     'filter', new Map([
       ['blur', 'blur(|1px|)'],
@@ -383,18 +383,18 @@ export const _valuePresets = new Map([
   ]
 ]);
 
-export const _distanceProperties = new Set([
+const _distanceProperties = new Set([
   'background-position', 'border-spacing', 'bottom', 'font-size', 'height', 'left', 'letter-spacing', 'max-height',
   'max-width', 'min-height', 'min-width', 'right', 'text-indent', 'top', 'width', 'word-spacing', 'grid-row-gap',
   'grid-column-gap', 'row-gap'
 ]);
 
-export const _bezierAwareProperties = new Set([
+const _bezierAwareProperties = new Set([
   'animation', 'animation-timing-function', 'transition', 'transition-timing-function', '-webkit-animation',
   '-webkit-animation-timing-function', '-webkit-transition', '-webkit-transition-timing-function'
 ]);
 
-export const _colorAwareProperties = new Set([
+const _colorAwareProperties = new Set([
   'backdrop-filter',
   'background',
   'background-color',
@@ -448,7 +448,7 @@ export const _colorAwareProperties = new Set([
   '-webkit-text-stroke-color'
 ]);
 
-export const _propertyDataMap = {
+const _propertyDataMap = {
   'table-layout': {values: ['fixed']},
   'visibility': {values: ['hidden', 'visible', 'collapse']},
   'background-repeat': {values: ['repeat', 'repeat-x', 'repeat-y', 'no-repeat', 'space', 'round']},
@@ -1241,7 +1241,7 @@ export const _propertyDataMap = {
 };
 
 // Weight of CSS properties based on their usage from https://www.chromestatus.com/metrics/css/popularity
-export const Weight = {
+const Weight = {
   'align-content': 57,
   'align-items': 129,
   'align-self': 55,
@@ -1509,12 +1509,5 @@ SDK.CSSMetadata = CSSMetadata;
 SDK.CSSMetadata.VariableRegex = VariableRegex;
 SDK.CSSMetadata.URLRegex = URLRegex;
 SDK.CSSMetadata.GridAreaRowRegex = GridAreaRowRegex;
-SDK.CSSMetadata._imageValuePresetMap = _imageValuePresetMap;
-SDK.CSSMetadata._valuePresets = _valuePresets;
-SDK.CSSMetadata._distanceProperties = _distanceProperties;
-SDK.CSSMetadata._bezierAwareProperties = _bezierAwareProperties;
-SDK.CSSMetadata._colorAwareProperties = _colorAwareProperties;
-SDK.CSSMetadata._propertyDataMap = _propertyDataMap;
-SDK.CSSMetadata.Weight = Weight;
 
 SDK.cssMetadata = cssMetadata;

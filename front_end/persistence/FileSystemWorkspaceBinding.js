@@ -581,7 +581,7 @@ export class FileSystem extends Workspace.ProjectStore {
   }
 }
 
-export const _metadata = Symbol('FileSystemWorkspaceBinding.Metadata');
+const _metadata = Symbol('FileSystemWorkspaceBinding.Metadata');
 
 /* Legacy exported object */
 self.Persistence = self.Persistence || {};
@@ -594,5 +594,3 @@ Persistence.FileSystemWorkspaceBinding = FileSystemWorkspaceBinding;
 
 /** @constructor */
 Persistence.FileSystemWorkspaceBinding.FileSystem = FileSystem;
-
-Persistence.FileSystemWorkspaceBinding._metadata = _metadata;

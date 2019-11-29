@@ -368,7 +368,7 @@ export const Events = {
   ExcludedFolderRemoved: Symbol('ExcludedFolderRemoved')
 };
 
-export let _lastRequestId = 0;
+let _lastRequestId = 0;
 
 /* Legacy exported object */
 self.Persistence = self.Persistence || {};
@@ -381,7 +381,6 @@ Persistence.IsolatedFileSystemManager = IsolatedFileSystemManager;
 
 /** @enum {symbol} */
 Persistence.IsolatedFileSystemManager.Events = Events;
-Persistence.IsolatedFileSystemManager._lastRequestId = _lastRequestId;
 
 /** @typedef {!{type: string, fileSystemName: string, rootURL: string, fileSystemPath: string}} */
 Persistence.IsolatedFileSystemManager.FileSystem;

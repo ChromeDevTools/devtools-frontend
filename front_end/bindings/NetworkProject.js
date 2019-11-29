@@ -154,8 +154,8 @@ export default class NetworkProject {
   }
 }
 
-export const _targetSymbol = Symbol('target');
-export const _frameAttributionSymbol = Symbol('_frameAttributionSymbol');
+const _targetSymbol = Symbol('target');
+const _frameAttributionSymbol = Symbol('_frameAttributionSymbol');
 
 /* Legacy exported object */
 self.Bindings = self.Bindings || {};
@@ -170,6 +170,3 @@ Bindings.NetworkProjectManager.Events = Events;
 
 /** @constructor */
 Bindings.NetworkProject = NetworkProject;
-
-Bindings.NetworkProject._targetSymbol = _targetSymbol;
-Bindings.NetworkProject._frameAttributionSymbol = _frameAttributionSymbol;

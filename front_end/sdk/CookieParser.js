@@ -191,7 +191,7 @@ export default class CookieParser {
 /**
  * @unrestricted
  */
-export class KeyValue {
+class KeyValue {
   /**
    * @param {string} key
    * @param {string|undefined} value
@@ -435,9 +435,6 @@ SDK = SDK || {};
 
 /** @constructor */
 SDK.CookieParser = CookieParser;
-
-/** @constructor */
-SDK.CookieParser.KeyValue = KeyValue;
 
 /** @constructor */
 SDK.Cookie = Cookie;

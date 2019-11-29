@@ -301,7 +301,7 @@ export default class RemoteObjectPreviewFormatter {
 }
 
 /** @enum {string} */
-export const _internalName = {
+const _internalName = {
   GeneratorStatus: '[[GeneratorStatus]]',
   PrimitiveValue: '[[PrimitiveValue]]',
   PromiseStatus: '[[PromiseStatus]]',
@@ -331,8 +331,6 @@ ObjectUI = ObjectUI || {};
 
 /** @constructor */
 ObjectUI.RemoteObjectPreviewFormatter = RemoteObjectPreviewFormatter;
-
-ObjectUI.RemoteObjectPreviewFormatter._internalName = _internalName;
 
 /**
  * @param {!Element} container

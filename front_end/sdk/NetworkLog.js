@@ -563,7 +563,7 @@ PageLoad._lastIdentifier = 0;
 PageLoad._pageLoadForRequestSymbol = Symbol('PageLoadForRequest');
 PageLoad._dataSaverMessageWasShown = false;
 
-export const _requestSymbol = Symbol('_request');
+const _requestSymbol = Symbol('_request');
 
 export const Events = {
   Reset: Symbol('Reset'),
@@ -571,8 +571,8 @@ export const Events = {
   RequestUpdated: Symbol('RequestUpdated')
 };
 
-export const _initiatorDataSymbol = Symbol('InitiatorData');
-export const _events = Symbol('SDK.NetworkLog.events');
+const _initiatorDataSymbol = Symbol('InitiatorData');
+const _events = Symbol('SDK.NetworkLog.events');
 
 /* Legacy exported object */
 self.SDK = self.SDK || {};
@@ -586,10 +586,7 @@ SDK.NetworkLog = NetworkLog;
 /** @constructor */
 SDK.NetworkLog.PageLoad = PageLoad;
 
-SDK.NetworkLog._requestSymbol = _requestSymbol;
 SDK.NetworkLog.Events = Events;
-SDK.NetworkLog._initiatorDataSymbol = _initiatorDataSymbol;
-SDK.NetworkLog._events = _events;
 
 /** @type {!NetworkLog} */
 SDK.networkLog = new NetworkLog();

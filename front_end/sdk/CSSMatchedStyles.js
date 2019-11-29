@@ -507,7 +507,7 @@ export default class CSSMatchedStyles {
   }
 }
 
-export class NodeCascade {
+class NodeCascade {
   /**
    * @param {!CSSMatchedStyles} matchedStyles
    * @param {!Array<!SDK.CSSStyleDeclaration>} styles
@@ -565,7 +565,7 @@ export class NodeCascade {
   }
 }
 
-export class DOMInheritanceCascade {
+class DOMInheritanceCascade {
   /**
    * @param {!Array<!NodeCascade>} nodeCascades
    */
@@ -794,12 +794,6 @@ SDK = SDK || {};
 
 /** @constructor */
 SDK.CSSMatchedStyles = CSSMatchedStyles;
-
-/** @constructor */
-SDK.CSSMatchedStyles.NodeCascade = NodeCascade;
-
-/** @constructor */
-SDK.CSSMatchedStyles.DOMInheritanceCascade = DOMInheritanceCascade;
 
 /** @enum {string} */
 SDK.CSSMatchedStyles.PropertyState = PropertyState;

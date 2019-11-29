@@ -557,7 +557,7 @@ export class AgentLayer {
  * @implements {Protocol.LayerTreeDispatcher}
  * @unrestricted
  */
-export class LayerTreeDispatcher {
+class LayerTreeDispatcher {
   /**
    * @param {!Layers.LayerTreeModel} layerTreeModel
    */
@@ -606,8 +606,3 @@ Layers.AgentLayerTree = AgentLayerTree;
  * @constructor
  */
 Layers.AgentLayer = AgentLayer;
-
-/**
- * @constructor
- */
-Layers.LayerTreeDispatcher = LayerTreeDispatcher;

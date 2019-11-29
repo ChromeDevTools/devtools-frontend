@@ -416,7 +416,7 @@ export default class Automapping {
 /**
  * @unrestricted
  */
-export class FilePathIndex {
+class FilePathIndex {
   /**
    * @param {!Persistence.PathEncoder} encoder
    */
@@ -459,7 +459,7 @@ export class FilePathIndex {
 /**
  * @unrestricted
  */
-export class FolderIndex {
+class FolderIndex {
   /**
    * @param {!Persistence.PathEncoder} encoder
    */
@@ -542,12 +542,6 @@ Persistence = Persistence || {};
 
 /** @constructor */
 Persistence.Automapping = Automapping;
-
-/** @constructor */
-Persistence.Automapping.FilePathIndex = FilePathIndex;
-
-/** @constructor */
-Persistence.Automapping.FolderIndex = FolderIndex;
 
 /** @constructor */
 Persistence.AutomappingStatus = AutomappingStatus;

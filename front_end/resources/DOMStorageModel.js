@@ -347,5 +347,3 @@ Resources.DOMStorageDispatcher = class {
     this._model._domStorageItemUpdated(storageId, key, oldValue, value);
   }
 };
-
-Resources.DOMStorageModel._symbol = Symbol('DomStorage');

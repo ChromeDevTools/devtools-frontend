@@ -131,7 +131,7 @@ export default class KeyboardShortcut {
       return null;
     }
 
-    const key = KeyboardShortcut.Keys[keyString] || KeyboardShortcut.KeyBindings[keyString];
+    const key = Keys[keyString] || KeyBindings[keyString];
     if (key && key.shiftKey) {
       modifiers |= Modifiers.Shift;
     }
@@ -307,8 +307,6 @@ UI.KeyboardShortcut.Modifiers = Modifiers;
 
 /** @type {!Object.<string, !UI.KeyboardShortcut.Key>} */
 UI.KeyboardShortcut.Keys = Keys;
-
-UI.KeyboardShortcut.KeyBindings = KeyBindings;
 
 /** @typedef {!{code: number, name: (string|!Object.<string, string>)}} */
 UI.KeyboardShortcut.Key;

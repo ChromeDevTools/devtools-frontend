@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-export let _lastAnonymousTargetId = 0;
+let _lastAnonymousTargetId = 0;
 
 /**
  * @implements {Protocol.TargetDispatcher}
@@ -232,8 +232,6 @@ SDK = SDK || {};
 
 /** @constructor */
 SDK.ChildTargetManager = ChildTargetManager;
-
-SDK.ChildTargetManager._lastAnonymousTargetId = _lastAnonymousTargetId;
 
 /** @type {function({target: !SDK.Target, waitingForDebugger: boolean})|undefined} */
 SDK.ChildTargetManager._attachCallback;

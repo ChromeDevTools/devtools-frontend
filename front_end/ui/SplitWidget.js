@@ -979,7 +979,7 @@ export const Events = {
   ShowModeChanged: Symbol('ShowModeChanged')
 };
 
-export const MinPadding = 20;
+const MinPadding = 20;
 
 /* Legacy exported object*/
 self.UI = self.UI || {};
@@ -991,7 +991,6 @@ UI = UI || {};
 UI.SplitWidget = SplitWidget;
 
 UI.SplitWidget.ShowMode = ShowMode;
-UI.SplitWidget.MinPadding = MinPadding;
 
 /** @enum {symbol} */
 UI.SplitWidget.Events = Events;

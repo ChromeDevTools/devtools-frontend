@@ -50,7 +50,7 @@ export default class Icon extends HTMLSpanElement {
     if (descriptor) {
       this._iconType = iconType;
       this._descriptor = descriptor;
-      this._spriteSheet = Icon.SpriteSheets[this._descriptor.spritesheet];
+      this._spriteSheet = SpriteSheets[this._descriptor.spritesheet];
       console.assert(
           this._spriteSheet, `ERROR: icon ${this._iconType} has unknown spritesheet: ${this._descriptor.spritesheet}`);
 
@@ -78,7 +78,7 @@ export default class Icon extends HTMLSpanElement {
    */
   _propertyValue() {
     if (!this._descriptor.coordinates) {
-      if (!this._descriptor.position || !Icon._positionRegex.test(this._descriptor.position)) {
+      if (!this._descriptor.position || !_positionRegex.test(this._descriptor.position)) {
         throw new Error(`ERROR: icon '${this._iconType}' has malformed position: '${this._descriptor.position}'`);
       }
       const column = this._descriptor.position[0].toLowerCase().charCodeAt(0) - 97;
@@ -92,10 +92,10 @@ export default class Icon extends HTMLSpanElement {
   }
 }
 
-export const _positionRegex = /^[a-z][1-9][0-9]*$/;
+const _positionRegex = /^[a-z][1-9][0-9]*$/;
 
 /** @enum {!Icon.SpriteSheet} */
-export const SpriteSheets = {
+const SpriteSheets = {
   'smallicons': {cellWidth: 10, cellHeight: 10, padding: 10},
   'mediumicons': {cellWidth: 16, cellHeight: 16, padding: 0},
   'largeicons': {cellWidth: 28, cellHeight: 24, padding: 0},
@@ -259,11 +259,6 @@ UI = UI || {};
 
 /** @constructor */
 UI.Icon = Icon;
-
-UI.Icon._positionRegex = _positionRegex;
-
-/** @enum {!Icon.SpriteSheet} */
-UI.Icon.SpriteSheets = SpriteSheets;
 
 /** @enum {!Icon.Descriptor} */
 UI.Icon.Descriptors = Descriptors;

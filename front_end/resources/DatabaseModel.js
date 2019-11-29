@@ -199,5 +199,3 @@ Resources.DatabaseDispatcher = class {
         new Resources.Database(this._model, payload.id, payload.domain, payload.name, payload.version));
   }
 };
-
-Resources.DatabaseModel._symbol = Symbol('DatabaseModel');

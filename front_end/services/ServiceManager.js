@@ -56,7 +56,7 @@ export default class ServiceManager {
 /**
  * @unrestricted
  */
-export class Connection {
+class Connection {
   /**
    * @param {!ServicePort} port
    */
@@ -221,7 +221,7 @@ export class Service {
  * @implements {ServicePort}
  * @unrestricted
  */
-export class RemoteServicePort {
+class RemoteServicePort {
   /**
    * @param {string} url
    */
@@ -336,7 +336,7 @@ export class RemoteServicePort {
  * @implements {ServicePort}
  * @unrestricted
  */
-export class WorkerServicePort {
+class WorkerServicePort {
   /**
    * @param {!Worker} worker
    */
@@ -412,15 +412,6 @@ Services = Services || {};
 Services.ServiceManager = ServiceManager;
 
 /** @constructor */
-Services.ServiceManager.Connection = Connection;
-
-/** @constructor */
 Services.ServiceManager.Service = Service;
-
-/** @constructor */
-Services.ServiceManager.RemoteServicePort = RemoteServicePort;
-
-/** @constructor */
-Services.ServiceManager.WorkerServicePort = WorkerServicePort;
 
 Services.serviceManager = new ServiceManager();

@@ -1011,20 +1011,7 @@ export const BreakReason = {
   Other: 'other'
 };
 
-/** @enum {string} */
-export const BreakLocationType = {
-  Return: 'return',
-  Call: 'call',
-  DebuggerStatement: 'debuggerStatement'
-};
-
-export const DebuggerEventTypes = {
-  JavaScriptPause: 0,
-  JavaScriptBreakpoint: 1,
-  NativeBreakpoint: 2
-};
-
-export const ContinueToLocationTargetCallFrames = {
+const ContinueToLocationTargetCallFrames = {
   Any: 'any',
   Current: 'current'
 };
@@ -1033,7 +1020,7 @@ export const ContinueToLocationTargetCallFrames = {
  * @extends {Protocol.DebuggerDispatcher}
  * @unrestricted
  */
-export class DebuggerDispatcher {
+class DebuggerDispatcher {
   /**
    * @param {!DebuggerModel} debuggerModel
    */
@@ -1587,11 +1574,6 @@ SDK.DebuggerModel.Events = Events;
 /** @enum {string} */
 SDK.DebuggerModel.BreakReason = BreakReason;
 
-/** @enum {string} */
-SDK.DebuggerModel.BreakLocationType = BreakLocationType;
-
-SDK.DebuggerModel.ContinueToLocationTargetCallFrames = ContinueToLocationTargetCallFrames;
-
 /** @constructor */
 SDK.DebuggerModel.Location = Location;
 
@@ -1606,11 +1588,6 @@ SDK.DebuggerModel.Scope = Scope;
 
 /** @constructor */
 SDK.DebuggerPausedDetails = DebuggerPausedDetails;
-
-/** @constructor */
-SDK.DebuggerDispatcher = DebuggerDispatcher;
-
-SDK.DebuggerEventTypes = DebuggerEventTypes;
 
 SDK.SDKModel.register(SDK.DebuggerModel, SDK.Target.Capability.JS, true);
 

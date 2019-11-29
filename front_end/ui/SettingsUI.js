@@ -64,7 +64,7 @@ export const createSettingCheckbox = function(name, setting, omitParagraphElemen
  * @param {string=} subtitle
  * @return {!Element}
  */
-export const createSettingSelect = function(name, options, setting, subtitle) {
+const createSettingSelect = function(name, options, setting, subtitle) {
   const settingSelectElement = createElement('p');
   const label = settingSelectElement.createChild('label');
   const select = settingSelectElement.createChild('select', 'chrome-select');
@@ -195,15 +195,6 @@ UI.SettingUI = SettingUI;
  * @return {!Element}
  */
 UI.SettingsUI.createSettingCheckbox = createSettingCheckbox;
-
-/**
- * @param {string} name
- * @param {!Array<!{text: string, value: *, raw: (boolean|undefined)}>} options
- * @param {!Common.Setting} setting
- * @param {string=} subtitle
- * @return {!Element}
- */
-UI.SettingsUI.createSettingSelect = createSettingSelect;
 
 /**
  * @param {!Element} input

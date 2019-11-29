@@ -82,7 +82,7 @@ export default class CSSRule {
 /**
  * @unrestricted
  */
-export class CSSValue {
+class CSSValue {
   /**
    * @param {!Protocol.CSS.Value} payload
    */
@@ -332,9 +332,6 @@ SDK = SDK || {};
 
 /** @constructor */
 SDK.CSSRule = CSSRule;
-
-/** @constructor */
-SDK.CSSValue = CSSValue;
 
 /** @constructor */
 SDK.CSSStyleRule = CSSStyleRule;

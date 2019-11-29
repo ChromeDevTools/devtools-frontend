@@ -356,8 +356,6 @@ Resources.ServiceWorkerCacheView = class extends UI.SimpleView {
 
 Resources.ServiceWorkerCacheView._previewSymbol = Symbol('preview');
 
-Resources.ServiceWorkerCacheView._RESPONSE_CACHE_SIZE = 10;
-
 Resources.ServiceWorkerCacheView.DataGridNode = class extends DataGrid.DataGridNode {
   /**
    * @param {number} number

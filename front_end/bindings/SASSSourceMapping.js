@@ -176,7 +176,7 @@ export default class SASSSourceMapping {
   }
 }
 
-export const _sourceMapSymbol = Symbol('sourceMap');
+const _sourceMapSymbol = Symbol('sourceMap');
 
 /* Legacy exported object */
 self.Bindings = self.Bindings || {};
@@ -186,5 +186,3 @@ Bindings = Bindings || {};
 
 /** @constructor */
 Bindings.SASSSourceMapping = SASSSourceMapping;
-
-Bindings.SASSSourceMapping._sourceMapSymbol = _sourceMapSymbol;

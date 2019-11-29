@@ -500,7 +500,6 @@ export const LegacyTopLevelEventCategory = 'toplevel';
 
 export const DevToolsMetadataEventCategory = 'disabled-by-default-devtools.timeline';
 export const DevToolsTimelineEventCategory = 'disabled-by-default-devtools.timeline';
-export const FrameLifecycleEventCategory = 'cc,devtools';
 
 /**
  * @interface
@@ -775,7 +774,7 @@ export class AsyncEvent extends Event {
 /**
  * @unrestricted
  */
-export class ProfileEventsGroup {
+class ProfileEventsGroup {
   /**
    * @param {!Event} event
    */
@@ -792,7 +791,7 @@ export class ProfileEventsGroup {
   }
 }
 
-export class NamedObject {
+class NamedObject {
   /**
    * @param {!TracingModel} model
    * @param {number} id
@@ -1029,7 +1028,6 @@ SDK.TracingModel.MetadataEvent = MetadataEvent;
 SDK.TracingModel.LegacyTopLevelEventCategory = LegacyTopLevelEventCategory;
 SDK.TracingModel.DevToolsMetadataEventCategory = DevToolsMetadataEventCategory;
 SDK.TracingModel.DevToolsTimelineEventCategory = DevToolsTimelineEventCategory;
-SDK.TracingModel.FrameLifecycleEventCategory = FrameLifecycleEventCategory;
 
 /** @constructor */
 SDK.TracingModel.Event = Event;
@@ -1039,12 +1037,6 @@ SDK.TracingModel.ObjectSnapshot = ObjectSnapshot;
 
 /** @constructor */
 SDK.TracingModel.AsyncEvent = AsyncEvent;
-
-/** @constructor */
-SDK.TracingModel.ProfileEventsGroup = ProfileEventsGroup;
-
-/** @constructor */
-SDK.TracingModel.NamedObject = NamedObject;
 
 /** @constructor */
 SDK.TracingModel.Process = Process;

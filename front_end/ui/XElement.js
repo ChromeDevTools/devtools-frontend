@@ -52,7 +52,7 @@ export default class XElement extends HTMLElement {
 /**
  * @extends {XElement}
  */
-export class _XBox extends XElement {
+class _XBox extends XElement {
   /**
    * @param {string} direction
    */
@@ -92,7 +92,7 @@ export class _XBox extends XElement {
 /**
  * @extends {_XBox}
  */
-export class XVBox extends _XBox {
+class XVBox extends _XBox {
   constructor() {
     super('column');
   }
@@ -101,7 +101,7 @@ export class XVBox extends _XBox {
 /**
  * @extends {_XBox}
  */
-export class XHBox extends _XBox {
+class XHBox extends _XBox {
   constructor() {
     super('row');
   }
@@ -110,7 +110,7 @@ export class XHBox extends _XBox {
 /**
  * @extends {XElement}
  */
-export class XCBox extends XElement {
+class XCBox extends XElement {
   constructor() {
     super();
     this.style.setProperty('display', 'flex');
@@ -123,7 +123,7 @@ export class XCBox extends XElement {
 /**
  * @extends {XElement}
  */
-export class XDiv extends XElement {
+class XDiv extends XElement {
   constructor() {
     super();
     this.style.setProperty('display', 'block');
@@ -133,7 +133,7 @@ export class XDiv extends XElement {
 /**
  * @extends {XElement}
  */
-export class XSpan extends XElement {
+class XSpan extends XElement {
   constructor() {
     super();
     this.style.setProperty('display', 'inline');
@@ -143,7 +143,7 @@ export class XSpan extends XElement {
 /**
  * @extends {XElement}
  */
-export class XText extends XElement {
+class XText extends XElement {
   constructor() {
     super();
     this.style.setProperty('display', 'inline');
@@ -166,24 +166,3 @@ UI = UI || {};
 
 /** @constructor */
 UI.XElement = XElement;
-
-/** @constructor */
-UI._XBox = _XBox;
-
-/** @constructor */
-UI.XVBox = XVBox;
-
-/** @constructor */
-UI.XHBox = XHBox;
-
-/** @constructor */
-UI.XCBox = XCBox;
-
-/** @constructor */
-UI.XDiv = XDiv;
-
-/** @constructor */
-UI.XSpan = XSpan;
-
-/** @constructor */
-UI.XText = XText;

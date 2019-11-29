@@ -531,7 +531,7 @@ export default class RuntimeModel extends SDK.SDKModel {
  * @const
  * @type {string}
  */
-export const _sideEffectTestExpression = '(async function(){ await 1; })()';
+const _sideEffectTestExpression = '(async function(){ await 1; })()';
 
 /** @enum {symbol} */
 export const Events = {
@@ -549,7 +549,7 @@ export const Events = {
  * @extends {Protocol.RuntimeDispatcher}
  * @unrestricted
  */
-export class RuntimeDispatcher {
+class RuntimeDispatcher {
   /**
    * @param {!RuntimeModel} runtimeModel
    */
@@ -862,13 +862,8 @@ SDK = SDK || {};
 /** @constructor */
 SDK.RuntimeModel = RuntimeModel;
 
-SDK.RuntimeModel._sideEffectTestExpression = _sideEffectTestExpression;
-
 /** @enum {symbol} */
 SDK.RuntimeModel.Events = Events;
-
-/** @constructor */
-SDK.RuntimeDispatcher = RuntimeDispatcher;
 
 /** @constructor */
 SDK.ExecutionContext = ExecutionContext;

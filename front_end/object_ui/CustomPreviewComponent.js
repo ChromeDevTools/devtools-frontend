@@ -4,7 +4,7 @@
 /**
  * @unrestricted
  */
-export class CustomPreviewSection {
+class CustomPreviewSection {
   /**
    * @param {!SDK.RemoteObject} object
    */
@@ -271,6 +271,3 @@ ObjectUI = ObjectUI || {};
 
 /** @constructor */
 ObjectUI.CustomPreviewComponent = CustomPreviewComponent;
-
-/** @constructor */
-ObjectUI.CustomPreviewSection = CustomPreviewSection;

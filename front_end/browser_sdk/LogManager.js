@@ -64,7 +64,7 @@ export default class LogManager {
   }
 }
 
-export const _eventSymbol = Symbol('_events');
+const _eventSymbol = Symbol('_events');
 
 /* Legacy exported object */
 self.BrowserSDK = self.BrowserSDK || {};
@@ -74,8 +74,6 @@ BrowserSDK = BrowserSDK || {};
 
 /** @constructor */
 BrowserSDK.LogManager = LogManager;
-
-BrowserSDK.LogManager._eventSymbol = _eventSymbol;
 
 // TODO(crbug.com/1006759): Move out of this module
 new LogManager();

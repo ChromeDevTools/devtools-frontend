@@ -45,7 +45,7 @@ export default class Context {
     if (!dispatcher) {
       return;
     }
-    dispatcher.dispatchEventToListeners(Context.Events.FlavorChanged, flavorValue);
+    dispatcher.dispatchEventToListeners(Events.FlavorChanged, flavorValue);
   }
 
   /**
@@ -59,7 +59,7 @@ export default class Context {
       dispatcher = new Common.Object();
       this._eventDispatchers.set(flavorType, dispatcher);
     }
-    dispatcher.addEventListener(Context.Events.FlavorChanged, listener, thisObject);
+    dispatcher.addEventListener(Events.FlavorChanged, listener, thisObject);
   }
 
   /**
@@ -72,8 +72,8 @@ export default class Context {
     if (!dispatcher) {
       return;
     }
-    dispatcher.removeEventListener(Context.Events.FlavorChanged, listener, thisObject);
-    if (!dispatcher.hasEventListeners(Context.Events.FlavorChanged)) {
+    dispatcher.removeEventListener(Events.FlavorChanged, listener, thisObject);
+    if (!dispatcher.hasEventListeners(Events.FlavorChanged)) {
       this._eventDispatchers.remove(flavorType);
     }
   }
@@ -113,7 +113,7 @@ export default class Context {
 }
 
 /** @enum {symbol} */
-export const Events = {
+const Events = {
   FlavorChanged: Symbol('FlavorChanged')
 };
 
@@ -125,9 +125,6 @@ UI = UI || {};
 
 /** @constructor */
 UI.Context = Context;
-
-/** @enum {symbol} */
-UI.Context.Events = Events;
 
 /** @type {!Context} */
 UI.context = new Context();

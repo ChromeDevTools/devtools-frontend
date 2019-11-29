@@ -83,9 +83,9 @@ export default class FilmStripModel {
   }
 }
 
-export const _category = 'disabled-by-default-devtools.screenshot';
+const _category = 'disabled-by-default-devtools.screenshot';
 
-export const TraceEvents = {
+const TraceEvents = {
   CaptureFrame: 'CaptureFrame',
   Screenshot: 'Screenshot'
 };
@@ -160,9 +160,6 @@ SDK = SDK || {};
 
 /** @constructor */
 SDK.FilmStripModel = FilmStripModel;
-
-SDK.FilmStripModel._category = _category;
-SDK.FilmStripModel.TraceEvents = TraceEvents;
 
 /** @constructor */
 SDK.FilmStripModel.Frame = Frame;

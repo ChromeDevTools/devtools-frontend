@@ -128,7 +128,7 @@ export default class ObjectPopoverHelper {
   }
 }
 
-export const MaxPopoverTextLength = 10000;
+const MaxPopoverTextLength = 10000;
 
 /* Legacy exported object */
 self.ObjectUI = self.ObjectUI || {};
@@ -138,5 +138,3 @@ ObjectUI = ObjectUI || {};
 
 /** @constructor */
 ObjectUI.ObjectPopoverHelper = ObjectPopoverHelper;
-
-ObjectUI.ObjectPopoverHelper.MaxPopoverTextLength = MaxPopoverTextLength;

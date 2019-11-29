@@ -94,7 +94,7 @@ export default class TracingManager extends SDK.SDKModel {
   }
 }
 
-export const TransferMode = {
+const TransferMode = {
   ReportEvents: 'ReportEvents',
   ReturnAsStream: 'ReturnAsStream'
 };
@@ -127,7 +127,7 @@ export class TracingManagerClient {
  * @implements {Protocol.TracingDispatcher}
  * @unrestricted
  */
-export class TracingDispatcher {
+class TracingDispatcher {
   /**
    * @param {!TracingManager} tracingManager
    */
@@ -170,13 +170,8 @@ SDK = SDK || {};
 /** @constructor */
 SDK.TracingManager = TracingManager;
 
-SDK.TracingManager.TransferMode = TransferMode;
-
 /** @interface */
 SDK.TracingManagerClient = TracingManagerClient;
-
-/** @constructor */
-SDK.TracingDispatcher = TracingDispatcher;
 
 /** @typedef {!{
         cat: (string|undefined),

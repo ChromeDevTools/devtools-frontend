@@ -132,7 +132,7 @@
             "persistence": "closeable",
             "order": 40,
             "className": "Network.NetworkConfigView",
-            "tags": "disk cache, network throttling, useragent, user agent"
+            "tags": "disk cache, network throttling, useragent, user agent, user-agent"
         },
         {
             "type": "@UI.ViewLocationResolver",

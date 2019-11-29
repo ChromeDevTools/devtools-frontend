@@ -481,6 +481,9 @@
   <message name="IDS_DEVTOOLS_be8545ae7ab0276e15898aae7acfbd7a" desc="Text that refers to the resources of the web page">
     Resource
   </message>
+  <message name="IDS_DEVTOOLS_c03ca67dda321195d74c951097f240c6" desc="Title of the Devices tab">
+    Devices
+  </message>
   <message name="IDS_DEVTOOLS_c2cc7082a89c1ad6631a2f66af5f00c0" desc="Text that refers to the network connection">
     Connection
   </message>
@@ -544,6 +547,9 @@
   <message name="IDS_DEVTOOLS_e0e4fc6213e8b3593495a7260c3a4c2e" desc="Text for accessibility of the web page">
     Accessibility
   </message>
+  <message name="IDS_DEVTOOLS_e24ee2487879116dcab772c0ac4fe341" desc="Text to focus on something">
+    Focus
+  </message>
   <message name="IDS_DEVTOOLS_e402c138065e7eece783dc30c6079192" desc="Text that appears on a button for the xhr resource type filter.">
     XHR
   </message>
@@ -606,6 +612,9 @@
   </message>
   <message name="IDS_DEVTOOLS_f31bbdd1b3e85bccd652680e16935819" desc="Text for the source of something">
     Source
+  </message>
+  <message name="IDS_DEVTOOLS_f4f70727dc34561dfde1a3c529b6205c" desc="Title for a setting">
+    Settings
   </message>
   <message name="IDS_DEVTOOLS_f53944c3a55bdb5ad65c6226e358a626" desc="Text to undock the DevTools">
     Undock into separate window

@@ -96,6 +96,7 @@ all_devtools_files = [
   "front_end/device_mode_test_runner/DeviceModeTestRunner.js",
   "front_end/device_mode_test_runner/module.json",
   "front_end/devices/DevicesView.js",
+  "front_end/devices/devicesView.css",
   "front_end/devices/module.json",
   "front_end/diff/module.json",
   "front_end/dom_extension/module.json",

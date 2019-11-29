@@ -245,11 +245,11 @@ Network.NetworkConfigView._userAgentGroups = [
     values: [
       {
         title: ls`Firefox \u2014 Android Mobile`,
-        value: 'Mozilla/5.0 (Android 4.4; Mobile; rv:46.0) Gecko/46.0 Firefox/46.0'
+        value: 'Mozilla/5.0 (Android 4.4; Mobile; rv:70.0) Gecko/70.0 Firefox/70.0'
       },
       {
         title: ls`Firefox \u2014 Android Tablet`,
-        value: 'Mozilla/5.0 (Android 4.4; Tablet; rv:46.0) Gecko/46.0 Firefox/46.0'
+        value: 'Mozilla/5.0 (Android 4.4; Tablet; rv:70.0) Gecko/70.0 Firefox/70.0'
       },
       {
         title: ls`Firefox \u2014 iPhone`,
@@ -263,11 +263,11 @@ Network.NetworkConfigView._userAgentGroups = [
       },
       {
         title: ls`Firefox \u2014 Mac`,
-        value: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:46.0) Gecko/20100101 Firefox/46.0'
+        value: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:70.0) Gecko/20100101 Firefox/70.0'
       },
       {
         title: ls`Firefox \u2014 Windows`,
-        value: 'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:46.0) Gecko/20100101 Firefox/46.0'
+        value: 'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:70.0) Gecko/20100101 Firefox/70.0'
       }
     ]
   },

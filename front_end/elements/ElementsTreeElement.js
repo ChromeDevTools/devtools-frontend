@@ -1400,6 +1400,8 @@ export default class ElementsTreeElement extends UI.TreeElement {
       attrValueElement.appendChild(linkifyValue.call(this, value));
     } else if ((nodeName === 'img' || nodeName === 'source') && name === 'srcset') {
       attrValueElement.appendChild(linkifySrcset.call(this, value));
+    } else if (nodeName === 'image' && (name === 'xlink:href' || name === 'href')) {
+      attrValueElement.appendChild(linkifySrcset.call(this, value));
     } else {
       setValueWithEntities.call(this, attrValueElement, value);
     }

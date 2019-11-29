@@ -51,6 +51,9 @@
   <message name="IDS_DEVTOOLS_e3b2f7d0af9c89f5ea504968ffcd2ef0" desc="Message text content in Settings Screen of the Settings">
     These experiments could be dangerous and may require restart.
   </message>
+  <message name="IDS_DEVTOOLS_f4f70727dc34561dfde1a3c529b6205c" desc="Title for a setting">
+    Settings
+  </message>
   <message name="IDS_DEVTOOLS_ffebb5ad32e2b253aa418b8d7a70028e" desc="Text in Framework Blackbox Settings Tab of the Settings">
     Blackbox content scripts
   </message>

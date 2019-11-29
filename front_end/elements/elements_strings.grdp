@@ -258,6 +258,9 @@
   <message name="IDS_DEVTOOLS_d42f4851e770aa0f758b01388874f67b" desc="Text in Metrics Sidebar Pane of the Elements panel">
     margin
   </message>
+  <message name="IDS_DEVTOOLS_e24ee2487879116dcab772c0ac4fe341" desc="Text to focus on something">
+    Focus
+  </message>
   <message name="IDS_DEVTOOLS_eb92025cb8c66f1850c13a9b602a1856" desc="Text in Computed Style Widget of the Elements panel">
     Show all
   </message>

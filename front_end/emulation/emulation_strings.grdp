@@ -285,6 +285,9 @@
   <message name="IDS_DEVTOOLS_bb3680a6300bf660b59ba8783b18689b" desc="Text in Device Mode Toolbar of the Device Toolbar">
     Hide rulers
   </message>
+  <message name="IDS_DEVTOOLS_c03ca67dda321195d74c951097f240c6" desc="Title of the Devices tab">
+    Devices
+  </message>
   <message name="IDS_DEVTOOLS_c107e6e26d3b1b5eadbf9e842f6c0e05" desc="Text in Device Mode Toolbar of the Device Toolbar">
     Add device type
   </message>

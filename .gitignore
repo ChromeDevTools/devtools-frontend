@@ -1,3 +1,6 @@
+.DS_Store
+.git_cl_description_backup
+.vscode
 *.Makefile
 *.mk
 *.pyc
@@ -8,16 +11,15 @@
 *.vcproj*
 *.vcxproj*
 *.xcodeproj*
-config.gypi
-npm-debug.log
 /.dev_profile
 /.test_cache
+/front_end/*/jsconfig.json
+/front_end/protocol_externs.js
 /release
 /scripts/visualize_deps/out
-/front_end/protocol_externs.js
-.vscode
-/front_end/*/jsconfig.json
+config.gypi
 karma-coverage
+npm-debug.log
 
 # These are generated for build and would be put in the symlinked folder (thus this folder)
 /front_end/InspectorBackendCommands.js
@@ -34,4 +36,3 @@ karma-coverage
 !/third_party/blink
 !/third_party/pyjson5
 !/third_party/typescript
-.DS_Store

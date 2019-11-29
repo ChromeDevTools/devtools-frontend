@@ -1,10 +1,11 @@
 // Copyright (c) 2014 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
 /**
  * @unrestricted
  */
-Elements.ElementsSidebarPane = class extends UI.VBox {
+export default class ElementsSidebarPane extends UI.VBox {
   /**
    * @param {boolean=} delegatesFocus
    */
@@ -50,7 +51,7 @@ Elements.ElementsSidebarPane = class extends UI.VBox {
 
     /**
      * @return {!Promise.<?>}
-     * @this {Elements.ElementsSidebarPane}
+     * @this {ElementsSidebarPane}
      */
     function innerUpdate() {
       return this.isShowing() ? this.doUpdate() : Promise.resolve();
@@ -72,4 +73,13 @@ Elements.ElementsSidebarPane = class extends UI.VBox {
    */
   onCSSModelChanged(event) {
   }
-};
+}
+
+/* Legacy exported object */
+self.Elements = self.Elements || {};
+
+/* Legacy exported object */
+Elements = Elements || {};
+
+/** @constructor */
+Elements.ElementsSidebarPane = ElementsSidebarPane;

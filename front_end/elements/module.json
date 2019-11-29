@@ -288,7 +288,9 @@
         "color_picker",
         "event_listeners"
     ],
-    "scripts": [
+    "scripts": [],
+    "modules": [
+        "elements.js",
         "InspectElementModeController.js",
         "ColorSwatchPopoverIcon.js",
         "ComputedStyleModel.js",

@@ -25,11 +25,12 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 /**
  * @implements {SDK.SDKModelObserver<!SDK.OverlayModel>}
  * @unrestricted
  */
-Elements.InspectElementModeController = class {
+export default class InspectElementModeController {
   /**
    * @suppressGlobalPropertiesCheck
    */
@@ -133,13 +134,13 @@ Elements.InspectElementModeController = class {
   _showDetailedInspectTooltipChanged() {
     this._setMode(this._mode);
   }
-};
+}
 
 /**
  * @implements {UI.ActionDelegate}
  * @unrestricted
  */
-Elements.InspectElementModeController.ToggleSearchActionDelegate = class {
+export class ToggleSearchActionDelegate {
   /**
    * @override
    * @param {!UI.Context} context
@@ -147,18 +148,32 @@ Elements.InspectElementModeController.ToggleSearchActionDelegate = class {
    * @return {boolean}
    */
   handleAction(context, actionId) {
-    if (!Elements.inspectElementModeController) {
+    if (!inspectElementModeController) {
       return false;
     }
     if (actionId === 'elements.toggle-element-search') {
-      Elements.inspectElementModeController._toggleInspectMode();
+      inspectElementModeController._toggleInspectMode();
     } else if (actionId === 'elements.capture-area-screenshot') {
-      Elements.inspectElementModeController._captureScreenshotMode();
+      inspectElementModeController._captureScreenshotMode();
     }
     return true;
   }
-};
+}
 
-/** @type {?Elements.InspectElementModeController} */
-Elements.inspectElementModeController =
-    Root.Runtime.queryParam('isSharedWorker') ? null : new Elements.InspectElementModeController();
+/** @type {?InspectElementModeController} */
+export const inspectElementModeController =
+    Root.Runtime.queryParam('isSharedWorker') ? null : new InspectElementModeController();
+
+/* Legacy exported object */
+self.Elements = self.Elements || {};
+
+/* Legacy exported object */
+Elements = Elements || {};
+
+/** @constructor */
+Elements.InspectElementModeController = InspectElementModeController;
+
+/** @constructor */
+Elements.InspectElementModeController.ToggleSearchActionDelegate = ToggleSearchActionDelegate;
+
+Elements.inspectElementModeController = inspectElementModeController;

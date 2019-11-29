@@ -2,18 +2,16 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-Elements.DOMPath = {};
-
 /**
  * @param {!SDK.DOMNode} node
  * @param {boolean=} justSelector
  * @return {string}
  */
-Elements.DOMPath.fullQualifiedSelector = function(node, justSelector) {
+export const fullQualifiedSelector = function(node, justSelector) {
   if (node.nodeType() !== Node.ELEMENT_NODE) {
     return node.localName() || node.nodeName().toLowerCase();
   }
-  return Elements.DOMPath.cssPath(node, justSelector);
+  return cssPath(node, justSelector);
 };
 
 /**
@@ -21,7 +19,7 @@ Elements.DOMPath.fullQualifiedSelector = function(node, justSelector) {
  * @param {boolean=} optimized
  * @return {string}
  */
-Elements.DOMPath.cssPath = function(node, optimized) {
+export const cssPath = function(node, optimized) {
   if (node.nodeType() !== Node.ELEMENT_NODE) {
     return '';
   }
@@ -29,7 +27,7 @@ Elements.DOMPath.cssPath = function(node, optimized) {
   const steps = [];
   let contextNode = node;
   while (contextNode) {
-    const step = Elements.DOMPath._cssPathStep(contextNode, !!optimized, contextNode === node);
+    const step = _cssPathStep(contextNode, !!optimized, contextNode === node);
     if (!step) {
       break;
     }  // Error - bail out early.
@@ -48,7 +46,7 @@ Elements.DOMPath.cssPath = function(node, optimized) {
  * @param {!SDK.DOMNode} node
  * @return {boolean}
  */
-Elements.DOMPath.canGetJSPath = function(node) {
+export const canGetJSPath = function(node) {
   let wp = node;
   while (wp) {
     if (wp.ancestorShadowRoot() && wp.ancestorShadowRoot().shadowRootType() !== SDK.DOMNode.ShadowRootTypes.Open) {
@@ -64,7 +62,7 @@ Elements.DOMPath.canGetJSPath = function(node) {
  * @param {boolean=} optimized
  * @return {string}
  */
-Elements.DOMPath.jsPath = function(node, optimized) {
+export const jsPath = function(node, optimized) {
   if (node.nodeType() !== Node.ELEMENT_NODE) {
     return '';
   }
@@ -72,7 +70,7 @@ Elements.DOMPath.jsPath = function(node, optimized) {
   const path = [];
   let wp = node;
   while (wp) {
-    path.push(Elements.DOMPath.cssPath(wp, optimized));
+    path.push(cssPath(wp, optimized));
     wp = wp.ancestorShadowHost();
   }
   path.reverse();
@@ -92,9 +90,9 @@ Elements.DOMPath.jsPath = function(node, optimized) {
  * @param {!SDK.DOMNode} node
  * @param {boolean} optimized
  * @param {boolean} isTargetNode
- * @return {?Elements.DOMPath.Step}
+ * @return {?Step}
  */
-Elements.DOMPath._cssPathStep = function(node, optimized, isTargetNode) {
+export const _cssPathStep = function(node, optimized, isTargetNode) {
   if (node.nodeType() !== Node.ELEMENT_NODE) {
     return null;
   }
@@ -102,21 +100,21 @@ Elements.DOMPath._cssPathStep = function(node, optimized, isTargetNode) {
   const id = node.getAttribute('id');
   if (optimized) {
     if (id) {
-      return new Elements.DOMPath.Step(idSelector(id), true);
+      return new Step(idSelector(id), true);
     }
     const nodeNameLower = node.nodeName().toLowerCase();
     if (nodeNameLower === 'body' || nodeNameLower === 'head' || nodeNameLower === 'html') {
-      return new Elements.DOMPath.Step(node.nodeNameInCorrectCase(), true);
+      return new Step(node.nodeNameInCorrectCase(), true);
     }
   }
   const nodeName = node.nodeNameInCorrectCase();
 
   if (id) {
-    return new Elements.DOMPath.Step(nodeName + idSelector(id), true);
+    return new Step(nodeName + idSelector(id), true);
   }
   const parent = node.parentNode;
   if (!parent || parent.nodeType() === Node.DOCUMENT_NODE) {
-    return new Elements.DOMPath.Step(nodeName, true);
+    return new Step(nodeName, true);
   }
 
   /**
@@ -199,7 +197,7 @@ Elements.DOMPath._cssPathStep = function(node, optimized, isTargetNode) {
     }
   }
 
-  return new Elements.DOMPath.Step(result, false);
+  return new Step(result, false);
 };
 
 /**
@@ -207,7 +205,7 @@ Elements.DOMPath._cssPathStep = function(node, optimized, isTargetNode) {
  * @param {boolean=} optimized
  * @return {string}
  */
-Elements.DOMPath.xPath = function(node, optimized) {
+export const xPath = function(node, optimized) {
   if (node.nodeType() === Node.DOCUMENT_NODE) {
     return '/';
   }
@@ -215,7 +213,7 @@ Elements.DOMPath.xPath = function(node, optimized) {
   const steps = [];
   let contextNode = node;
   while (contextNode) {
-    const step = Elements.DOMPath._xPathValue(contextNode, optimized);
+    const step = _xPathValue(contextNode, optimized);
     if (!step) {
       break;
     }  // Error - bail out early.
@@ -233,11 +231,11 @@ Elements.DOMPath.xPath = function(node, optimized) {
 /**
  * @param {!SDK.DOMNode} node
  * @param {boolean=} optimized
- * @return {?Elements.DOMPath.Step}
+ * @return {?Step}
  */
-Elements.DOMPath._xPathValue = function(node, optimized) {
+export const _xPathValue = function(node, optimized) {
   let ownValue;
-  const ownIndex = Elements.DOMPath._xPathIndex(node);
+  const ownIndex = _xPathIndex(node);
   if (ownIndex === -1) {
     return null;
   }  // Error.
@@ -245,7 +243,7 @@ Elements.DOMPath._xPathValue = function(node, optimized) {
   switch (node.nodeType()) {
     case Node.ELEMENT_NODE:
       if (optimized && node.getAttribute('id')) {
-        return new Elements.DOMPath.Step('//*[@id="' + node.getAttribute('id') + '"]', true);
+        return new Step('//*[@id="' + node.getAttribute('id') + '"]', true);
       }
       ownValue = node.localName();
       break;
@@ -274,14 +272,14 @@ Elements.DOMPath._xPathValue = function(node, optimized) {
     ownValue += '[' + ownIndex + ']';
   }
 
-  return new Elements.DOMPath.Step(ownValue, node.nodeType() === Node.DOCUMENT_NODE);
+  return new Step(ownValue, node.nodeType() === Node.DOCUMENT_NODE);
 };
 
 /**
  * @param {!SDK.DOMNode} node
  * @return {number}
  */
-Elements.DOMPath._xPathIndex = function(node) {
+export const _xPathIndex = function(node) {
   // Returns -1 in case of error, 0 if no siblings matching the same expression, <XPath index among the same expression-matching sibling nodes> otherwise.
   function areNodesSimilar(left, right) {
     if (left === right) {
@@ -331,7 +329,7 @@ Elements.DOMPath._xPathIndex = function(node) {
 /**
  * @unrestricted
  */
-Elements.DOMPath.Step = class {
+export class Step {
   /**
    * @param {string} value
    * @param {boolean} optimized
@@ -348,4 +346,24 @@ Elements.DOMPath.Step = class {
   toString() {
     return this.value;
   }
-};
+}
+
+/* Legacy exported object */
+self.Elements = self.Elements || {};
+
+/* Legacy exported object */
+Elements = Elements || {};
+
+Elements.DOMPath = {};
+
+Elements.DOMPath.fullQualifiedSelector = fullQualifiedSelector;
+Elements.DOMPath.cssPath = cssPath;
+Elements.DOMPath.canGetJSPath = canGetJSPath;
+Elements.DOMPath.jsPath = jsPath;
+Elements.DOMPath._cssPathStep = _cssPathStep;
+Elements.DOMPath.xPath = xPath;
+Elements.DOMPath._xPathValue = _xPathValue;
+Elements.DOMPath._xPathIndex = _xPathIndex;
+
+/** @constructor */
+Elements.DOMPath.Step = Step;

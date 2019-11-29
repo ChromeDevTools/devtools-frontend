@@ -5,7 +5,7 @@
 /**
  * @unrestricted
  */
-Elements.StylePropertyHighlighter = class {
+export default class StylePropertyHighlighter {
   /**
    * @param {!Elements.StylesSidebarPane} ssp
    * @param {!SDK.CSSProperty} cssProperty
@@ -51,4 +51,13 @@ Elements.StylePropertyHighlighter = class {
         ],
         {duration: 2000, easing: 'cubic-bezier(0, 0, 0.2, 1)'});
   }
-};
+}
+
+/* Legacy exported object */
+self.Elements = self.Elements || {};
+
+/* Legacy exported object */
+Elements = Elements || {};
+
+/** @constructor */
+Elements.StylePropertyHighlighter = StylePropertyHighlighter;

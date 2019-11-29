@@ -29,7 +29,7 @@
 /**
  * @unrestricted
  */
-Elements.MetricsSidebarPane = class extends Elements.ElementsSidebarPane {
+export default class MetricsSidebarPane extends Elements.ElementsSidebarPane {
   constructor() {
     super();
     this.registerRequiredCSS('elements/metricsSidebarPane.css');
@@ -60,7 +60,7 @@ Elements.MetricsSidebarPane = class extends Elements.ElementsSidebarPane {
 
     /**
      * @param {?Map.<string, string>} style
-     * @this {Elements.MetricsSidebarPane}
+     * @this {MetricsSidebarPane}
      */
     function callback(style) {
       if (!style || this.node() !== node) {
@@ -70,7 +70,7 @@ Elements.MetricsSidebarPane = class extends Elements.ElementsSidebarPane {
     }
     /**
      * @param {?SDK.CSSModel.InlineStyleResult} inlineStyleResult
-     * @this {Elements.MetricsSidebarPane}
+     * @this {MetricsSidebarPane}
      */
     function inlineStyleCallback(inlineStyleResult) {
       if (inlineStyleResult && this.node() === node) {
@@ -156,7 +156,7 @@ Elements.MetricsSidebarPane = class extends Elements.ElementsSidebarPane {
      * @param {string} name
      * @param {string} side
      * @param {string} suffix
-     * @this {Elements.MetricsSidebarPane}
+     * @this {MetricsSidebarPane}
      */
     function createBoxPartElement(style, name, side, suffix) {
       const propertyName = (name !== 'position' ? name + '-' : '') + side + suffix;
@@ -343,7 +343,7 @@ Elements.MetricsSidebarPane = class extends Elements.ElementsSidebarPane {
     /**
      * @param {string} originalValue
      * @param {string} replacementString
-     * @this {Elements.MetricsSidebarPane}
+     * @this {MetricsSidebarPane}
      */
     function finishHandler(originalValue, replacementString) {
       this._applyUserInput(element, replacementString, originalValue, context, false);
@@ -454,7 +454,7 @@ Elements.MetricsSidebarPane = class extends Elements.ElementsSidebarPane {
 
     /**
      * @param {boolean} success
-     * @this {Elements.MetricsSidebarPane}
+     * @this {MetricsSidebarPane}
      */
     function callback(success) {
       if (!success) {
@@ -478,4 +478,13 @@ Elements.MetricsSidebarPane = class extends Elements.ElementsSidebarPane {
     this.editingEnded(element, context);
     this._applyUserInput(element, userInput, previousContent, context, true);
   }
-};
+}
+
+/* Legacy exported object */
+self.Elements = self.Elements || {};
+
+/* Legacy exported object */
+Elements = Elements || {};
+
+/** @constructor */
+Elements.MetricsSidebarPane = MetricsSidebarPane;

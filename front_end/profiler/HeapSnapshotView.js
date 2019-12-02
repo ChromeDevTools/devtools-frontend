@@ -62,37 +62,38 @@ Profiler.HeapSnapshotView = class extends UI.SimpleView {
     this._splitWidget = new UI.SplitWidget(false, true, 'heapSnapshotSplitViewState', 200, 200);
     this._splitWidget.show(this._searchableView.element);
 
-    this._containmentDataGrid = new Profiler.HeapSnapshotContainmentDataGrid(this);
+    const heapProfilerModel = profile.heapProfilerModel();
+    this._containmentDataGrid = new Profiler.HeapSnapshotContainmentDataGrid(heapProfilerModel, this);
     this._containmentDataGrid.addEventListener(DataGrid.DataGrid.Events.SelectedNode, this._selectionChanged, this);
     this._containmentWidget = this._containmentDataGrid.asWidget();
     this._containmentWidget.setMinimumSize(50, 25);
 
     this._statisticsView = new Profiler.HeapSnapshotStatisticsView();
 
-    this._constructorsDataGrid = new Profiler.HeapSnapshotConstructorsDataGrid(this);
+    this._constructorsDataGrid = new Profiler.HeapSnapshotConstructorsDataGrid(heapProfilerModel, this);
     this._constructorsDataGrid.addEventListener(DataGrid.DataGrid.Events.SelectedNode, this._selectionChanged, this);
     this._constructorsWidget = this._constructorsDataGrid.asWidget();
     this._constructorsWidget.setMinimumSize(50, 25);
 
-    this._diffDataGrid = new Profiler.HeapSnapshotDiffDataGrid(this);
+    this._diffDataGrid = new Profiler.HeapSnapshotDiffDataGrid(heapProfilerModel, this);
     this._diffDataGrid.addEventListener(DataGrid.DataGrid.Events.SelectedNode, this._selectionChanged, this);
     this._diffWidget = this._diffDataGrid.asWidget();
     this._diffWidget.setMinimumSize(50, 25);
 
     if (isHeapTimeline) {
-      this._allocationDataGrid = new Profiler.AllocationDataGrid(profile.heapProfilerModel(), this);
+      this._allocationDataGrid = new Profiler.AllocationDataGrid(heapProfilerModel, this);
       this._allocationDataGrid.addEventListener(
           DataGrid.DataGrid.Events.SelectedNode, this._onSelectAllocationNode, this);
       this._allocationWidget = this._allocationDataGrid.asWidget();
       this._allocationWidget.setMinimumSize(50, 25);
 
-      this._allocationStackView = new Profiler.HeapAllocationStackView(profile.heapProfilerModel());
+      this._allocationStackView = new Profiler.HeapAllocationStackView(heapProfilerModel);
       this._allocationStackView.setMinimumSize(50, 25);
 
       this._tabbedPane = new UI.TabbedPane();
     }
 
-    this._retainmentDataGrid = new Profiler.HeapSnapshotRetainmentDataGrid(this);
+    this._retainmentDataGrid = new Profiler.HeapSnapshotRetainmentDataGrid(heapProfilerModel, this);
     this._retainmentWidget = this._retainmentDataGrid.asWidget();
     this._retainmentWidget.setMinimumSize(50, 21);
     this._retainmentWidget.element.classList.add('retaining-paths-view');

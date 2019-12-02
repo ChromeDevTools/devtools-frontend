@@ -144,6 +144,22 @@ Profiler.HeapSnapshotGridNode = class extends DataGrid.DataGridNode {
   }
 
   /**
+   * @param {!SDK.HeapProfilerModel} heapProfilerModel
+   * @param {string} objectGroupName
+   * @return {!Promise<?SDK.RemoteObject>}
+   */
+  tryQueryObjectContent(heapProfilerModel, objectGroupName) {
+  }
+
+  /**
+   * @param {!UI.ContextMenu} contextMenu
+   * @param {!Profiler.ProfileType.DataDisplayDelegate} dataDisplayDelegate
+   * @param {?SDK.HeapProfilerModel} heapProfilerModel
+   */
+  populateContextMenu(contextMenu, dataDisplayDelegate, heapProfilerModel) {
+  }
+
+  /**
    * @param {number} num
    * @return {string}
    */
@@ -629,14 +645,22 @@ Profiler.HeapSnapshotGenericObjectNode = class extends Profiler.HeapSnapshotGrid
    * @return {!Promise<!SDK.RemoteObject>}
    */
   async queryObjectContent(heapProfilerModel, objectGroupName) {
-    const runtimeModel = heapProfilerModel.runtimeModel();
-    let result;
+    const remoteObject = await this.tryQueryObjectContent(heapProfilerModel, objectGroupName);
+    return remoteObject ||
+        heapProfilerModel.runtimeModel().createRemoteObjectFromPrimitiveValue(ls`Preview is not available`);
+  }
+
+  /**
+   * @override
+   * @param {!SDK.HeapProfilerModel} heapProfilerModel
+   * @param {string} objectGroupName
+   * @return {!Promise<?SDK.RemoteObject>}
+   */
+  async tryQueryObjectContent(heapProfilerModel, objectGroupName) {
     if (this._type === 'string') {
-      result = runtimeModel.createRemoteObjectFromPrimitiveValue(this._name);
-    } else {
-      result = await heapProfilerModel.objectForSnapshotObjectId(String(this.snapshotNodeId), objectGroupName);
+      return heapProfilerModel.runtimeModel().createRemoteObjectFromPrimitiveValue(this._name);
     }
-    return result || runtimeModel.createRemoteObjectFromPrimitiveValue(ls`Preview is not available`);
+    return await heapProfilerModel.objectForSnapshotObjectId(String(this.snapshotNodeId), objectGroupName);
   }
 
   async updateHasChildren() {
@@ -661,6 +685,40 @@ Profiler.HeapSnapshotGenericObjectNode = class extends Profiler.HeapSnapshotGrid
       url = url.trimMiddle(40);
     }
     return fullName.substr(0, startPos + 2) + url + fullName.substr(endPos);
+  }
+
+  /**
+   * @override
+   * @param {!UI.ContextMenu} contextMenu
+   * @param {!Profiler.ProfileType.DataDisplayDelegate} dataDisplayDelegate
+   * @param {?SDK.HeapProfilerModel} heapProfilerModel
+   */
+  populateContextMenu(contextMenu, dataDisplayDelegate, heapProfilerModel) {
+    contextMenu.revealSection().appendItem(ls`Reveal in Summary view`, () => {
+      dataDisplayDelegate.showObject(String(this.snapshotNodeId), ls`Summary`);
+    });
+
+    if (this._referenceName) {
+      for (const match of this._referenceName.matchAll(/\((?<objectName>[^@)]*) @(?<snapshotNodeId>\d+)\)/g)) {
+        const {objectName, snapshotNodeId} = /** @type {!{objectName:string, snapshotNodeId:string}} */ (match.groups);
+        contextMenu.revealSection().appendItem(
+            ls`Reveal object '${objectName}' with id @${snapshotNodeId} in Summary view`, () => {
+              dataDisplayDelegate.showObject(snapshotNodeId, ls`Summary`);
+            });
+      }
+    }
+
+    if (heapProfilerModel) {
+      contextMenu.revealSection().appendItem(ls`Store as global variable`, async () => {
+        const remoteObject =
+            await this.tryQueryObjectContent(/** @type {!SDK.HeapProfilerModel} */ (heapProfilerModel), '');
+        if (!remoteObject) {
+          Common.console.error(ls`Preview is not available`);
+        } else {
+          await SDK.consoleModel.saveToTempVariable(UI.context.flavor(SDK.ExecutionContext), remoteObject);
+        }
+      });
+    }
   }
 };
 

@@ -1,5 +1,14 @@
 file://ENG_REVIEW_OWNERS
 
+per-file .clang-format=file:INFRA_OWNERS
+per-file .gitattributes=file:INFRA_OWNERS
+per-file .gitignore=file:INFRA_OWNERS
+per-file .gn=file:INFRA_OWNERS
+per-file DEPS=file:INFRA_OWNERS
+per-file PRESUBMIT.py=file:INFRA_OWNERS
+per-file build_overrides=file:INFRA_OWNERS
+per-file codereview.settings=file:INFRA_OWNERS
+
 aerotwist@chromium.org
 bmeurer@chromium.org
 dgozman@chromium.org

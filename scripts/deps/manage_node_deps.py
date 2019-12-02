@@ -25,7 +25,7 @@ DEPS = {
     "escodegen": "1.12.0",
     "eslint": "6.0.1",
     "esprima": "git+https://git@github.com/ChromeDevTools/esprima.git#4d0f0e18bd8d3731e5f931bf573af3394cbf7cbe",
-    "handlebars": "^4.3.1",
+    "handlebars": "4.3.1",
     "karma": "4.2.0",
     "karma-chai": "0.1.0",
     "karma-chrome-launcher": "3.1.0",
@@ -35,22 +35,19 @@ DEPS = {
     "karma-typescript": "4.1.1",
     "mocha": "6.2.0",
     "puppeteer": "2.0.0",
-    "rollup": "^1.23.1",
-    "typescript": "3.5.3"
+    "rollup": "1.23.1",
+    "typescript": "3.5.3",
+    "yargs": "15.0.2"
 }
 
-
-def popen(arguments, cwd=None):
-    return subprocess.Popen(arguments, cwd=cwd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-
-
-def clean_node_modules():
-    # Clean the node_modules folder first. That way only the packages listed above
-    # (and their deps) are installed.
+def exec_command(cmd):
     try:
-        shutil.rmtree(path.realpath(devtools_paths.node_modules_path()))
-    except OSError as err:
-        print('Error removing node_modules: %s, %s' % (err.filename, err.strerror))
+        cmd_proc_result = subprocess.check_call(cmd, cwd=devtools_paths.root_path())
+    except CalledProcessError as error:
+        print(error.output)
+        return True
+
+    return False
 
 
 def strip_private_fields():
@@ -81,6 +78,31 @@ def strip_private_fields():
             except:
                 print('Unable to fix: %s' % pkg)
                 return True
+
+    return False
+
+
+def install_missing_deps():
+    with open(devtools_paths.package_lock_json_path(), 'r+') as pkg_lock_file:
+        try:
+            pkg_lock_data = json.load(pkg_lock_file)
+            existing_deps = pkg_lock_data[u'dependencies']
+            new_deps = []
+
+            # Find any new DEPS and add them in.
+            for dep, version in DEPS.items():
+                if not (existing_deps[dep] and existing_deps[dep]['version'] == version):
+                    new_deps.append("%s@%s" % (dep, version))
+
+            # Now install.
+            if len(new_deps) > 0:
+                cmd = ['npm', 'install', '--save-dev']
+                cmd.extend(new_deps)
+                return exec_command(cmd)
+
+        except Exception as exception:
+            print('Unable to fix: %s' % exception)
+            return True
 
     return False
 
@@ -124,30 +146,25 @@ def remove_package_json_entries():
 
 
 def install_deps():
-    clean_node_modules()
+    for (name, version) in DEPS.items():
+        if (version.find(u'^') == 0):
+            print('Versions must be locked to a specific version; remove ^ from the start of the version.')
+            return True
 
-    errors_found = append_package_json_entries()
-    if errors_found:
+    if append_package_json_entries():
+        return True
+
+    if install_missing_deps():
         return True
 
     # Run the CI version of npm, which prevents updates to the versions of modules.
-    exec_command = ['npm', 'ci']
-
-    errors_found = False
-    npm_proc_result = subprocess.check_call(exec_command, cwd=devtools_paths.root_path())
-    if npm_proc_result != 0:
-        errors_found = True
-
-    # If npm fails, bail here, otherwise attempt to strip private fields.
-    if errors_found:
+    if exec_command(['npm', 'ci']):
         return True
 
-    errors_found = strip_private_fields()
-    if errors_found:
+    if strip_private_fields():
         return True
 
-    errors_found = remove_package_json_entries()
-    return errors_found
+    return remove_package_json_entries()
 
 
 npm_errors_found = install_deps()

@@ -79,8 +79,13 @@ def rollup_path():
     )
 
 
+def package_lock_json_path():
+    return path.join(devtools_root_path(), 'package-lock.json')
+
+
 def package_json_path():
     return path.join(devtools_root_path(), 'package.json')
+
 
 def browser_protocol_path():
     return path.join(third_party_path(), 'blink', 'public', 'devtools_protocol', 'browser_protocol.pdl')

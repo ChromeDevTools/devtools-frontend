@@ -59,6 +59,7 @@ def _CheckChangesAreExclusiveToDirectory(input_api, output_api):
     affected_files = input_api.LocalPaths()
     num_affected = len(affected_files)
     for dirs in EXCLUSIVE_CHANGE_DIRECTORIES:
+        dir_list = ', '.join(dirs)
         affected_in_dir = filter(lambda f: FileIsInDir(f, dirs), affected_files)
         num_in_dir = len(affected_in_dir)
         if num_in_dir == 0:
@@ -69,9 +70,8 @@ def _CheckChangesAreExclusiveToDirectory(input_api, output_api):
         if num_in_dir < num_affected:
             return [
                 output_api
-                .PresubmitError('CLs that affect files in "%s" should be limited to these files/directories.' +
-                                ' You can disable this check by adding DISABLE_THIRD_PARTY_CHECK=<reason> to your commit message' %
-                                ', '.join(dirs))
+                .PresubmitError(('CLs that affect files in "%s" should be limited to these files/directories.' % dir_list) +
+                                ' You can disable this check by adding DISABLE_THIRD_PARTY_CHECK=<reason> to your commit message')
             ]
     return []
 

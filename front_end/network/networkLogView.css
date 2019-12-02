@@ -54,6 +54,7 @@
     --network-grid-initiated-path-color: rgba(217, 58, 58, 0.4);
     --network-grid-selected-color: rgba(219, 219, 219, .6);
     --network-grid-focus-selected-color: var(--selection-bg-color);
+    --network-grid-focus-selected-color-has-error: rgb(255, 240, 240, 1.0);
     --network-grid-from-frame-color: rgba(224, 247, 250, .4);
     --network-grid-is-product-color: rgba(255, 252, 225, .6);
 }
@@ -67,6 +68,7 @@
     --network-grid-initiated-path-color: rgba(217, 58, 58, 0.4);
     --network-grid-selected-color: rgba(57, 57, 57, .6);
     --network-grid-focus-selected-color: var(--selection-bg-color);
+    --network-grid-focus-selected-color-has-error: rgba(217, 58, 58, 0.15);
     --network-grid-from-frame-color: rgba(224, 247, 250, .4);
     --network-grid-is-product-color: rgba(255, 252, 225, .6);
 }
@@ -183,7 +185,6 @@
 .network-log-grid.data-grid:focus tr.selected.network-error-row,
 .network-log-grid.data-grid:focus tr.selected.network-error-row .network-cell-subtitle,
 .network-log-grid.data-grid:focus tr.selected.network-error-row .network-dim-cell {
-    background: hsl(0, 100%, 97%) !important;
     color: rgb(230, 0, 0) !important;
 }
 .initiator-column .devtools-link {

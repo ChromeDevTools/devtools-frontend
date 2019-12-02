@@ -69,6 +69,10 @@ def karma_path():
     return path.join(node_modules_path(), 'karma', 'bin', 'karma')
 
 
+def license_checker_path():
+    return path.join(node_modules_path(), 'license-checker', 'bin', 'license-checker')
+
+
 def rollup_path():
     return path.join(
         node_modules_path(),

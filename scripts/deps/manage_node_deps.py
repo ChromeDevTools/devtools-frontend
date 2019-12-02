@@ -17,6 +17,17 @@ sys.path.append(scripts_path)
 
 import devtools_paths
 
+LICENSES = [
+    "MIT",
+    "Apache-2.0",
+    "BSD",
+    "BSD-2-Clause",
+    "BSD-3-Clause",
+    "CC0-1.0",
+    "CC-BY-3.0",
+    "ISC",
+]
+
 # List all DEPS here.
 DEPS = {
     "@types/chai": "4.2.0",
@@ -33,6 +44,7 @@ DEPS = {
     "karma-coverage-istanbul-reporter": "2.1.0",
     "karma-mocha": "1.3.0",
     "karma-typescript": "4.1.1",
+    "license-checker": "25.0.1",
     "mocha": "6.2.0",
     "puppeteer": "2.0.0",
     "rollup": "1.23.1",
@@ -48,6 +60,17 @@ def exec_command(cmd):
         return True
 
     return False
+
+
+def ensure_licenses():
+    cmd = [
+        devtools_paths.node_path(),
+        devtools_paths.license_checker_path(),
+        '--onlyAllow',
+        ('%s' % (';'.join(LICENSES)))
+    ]
+
+    return exec_command(cmd)
 
 
 def strip_private_fields():
@@ -91,7 +114,7 @@ def install_missing_deps():
 
             # Find any new DEPS and add them in.
             for dep, version in DEPS.items():
-                if not (existing_deps[dep] and existing_deps[dep]['version'] == version):
+                if not dep in existing_deps or not existing_deps[dep]['version'] == version:
                     new_deps.append("%s@%s" % (dep, version))
 
             # Now install.
@@ -101,7 +124,7 @@ def install_missing_deps():
                 return exec_command(cmd)
 
         except Exception as exception:
-            print('Unable to fix: %s' % exception)
+            print('Unable to install: %s' % exception)
             return True
 
     return False
@@ -164,7 +187,10 @@ def install_deps():
     if strip_private_fields():
         return True
 
-    return remove_package_json_entries()
+    if remove_package_json_entries():
+        return True
+
+    return ensure_licenses()
 
 
 npm_errors_found = install_deps()

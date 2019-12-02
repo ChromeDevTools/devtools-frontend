@@ -87,6 +87,10 @@
     white-space: pre;
 }
 
+.report-field-value-is-flexed {
+    display: flex;
+}
+
 .report-field-value-subtitle {
     color: #888;
     line-height: 14px;

@@ -163,19 +163,46 @@ Resources.AppManifestView = class extends UI.VBox {
     const icons = parsedManifest['icons'] || [];
     this._iconsSection.clearContent();
 
+    const imageErrors = [];
     for (const icon of icons) {
-      const title = (icon['sizes'] || '') + '\n' + (icon['type'] || '');
-      const field = this._iconsSection.appendField(title);
-      const image = await this._loadImage(Common.ParsedURL.completeURL(url, icon['src']));
-      if (image) {
-        field.appendChild(image);
+      const iconUrl = Common.ParsedURL.completeURL(url, icon['src']);
+      const image = await this._loadImage(iconUrl);
+      if (!image) {
+        imageErrors.push(ls`Icon ${iconUrl} failed to load`);
+        continue;
       }
+      const title = (icon['sizes'] || '') + '\n' + (icon['type'] || '');
+      const field = this._iconsSection.appendFlexedField(title);
+      if (!icon.sizes) {
+        imageErrors.push(ls`Icon ${iconUrl} does not specify it's size in the manifest`);
+      } else if (!icon.sizes.match(/^\d+x\d+$/)) {
+        imageErrors.push(ls`Icon ${iconUrl} should specify it's size as {width}x{height}`);
+      } else {
+        const [width, height] = icon.sizes.split('x').map(x => parseInt(x, 10));
+        if (image.naturalWidth !== width && image.naturalHeight !== height) {
+          imageErrors.push(ls`Actual size (${image.naturalWidth}x${image.naturalHeight}) of icon ${
+              iconUrl} does not match specified size (${width}x${height})`);
+        } else if (image.naturalWidth !== width) {
+          imageErrors.push(
+              ls
+              `Actual width (${image.naturalWidth}px) of icon ${iconUrl} does not match specified width (${width}px)`);
+        } else if (image.naturalHeight !== height) {
+          imageErrors.push(ls`Actual height (${image.naturalHeight}px) of icon ${
+              iconUrl} does not match specified height (${height}px)`);
+        }
+      }
+      field.appendChild(image);
     }
 
     this._installabilitySection.clearContent();
     this._installabilitySection.element.classList.toggle('hidden', !installabilityErrors.length);
     for (const error of installabilityErrors) {
       this._installabilitySection.appendRow().appendChild(UI.createIconLabel(error, 'smallicon-warning'));
+    }
+
+    this._errorsSection.element.classList.toggle('hidden', !errors.length && !imageErrors.length);
+    for (const error of imageErrors) {
+      this._errorsSection.appendRow().appendChild(UI.createIconLabel(error, 'smallicon-warning'));
     }
 
     /**

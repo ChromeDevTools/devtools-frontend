@@ -188,6 +188,17 @@ export class Section extends UI.VBox {
   }
 
   /**
+  * @param {string} title
+  * @param {string=} textValue
+  * @return {!Element}
+  */
+  appendFlexedField(title, textValue) {
+    const field = this.appendField(title, textValue);
+    field.classList.add('report-field-value-is-flexed');
+    return field;
+  }
+
+  /**
    * @param {string} title
    */
   removeField(title) {

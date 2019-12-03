@@ -127,7 +127,6 @@ Main.Main = class {
     Root.Runtime.experiments.register('blackboxJSFramesOnTimeline', 'Blackbox JavaScript frames on Timeline', true);
     Root.Runtime.experiments.register('cssOverview', 'CSS Overview');
     Root.Runtime.experiments.register('emptySourceMapAutoStepping', 'Empty sourcemap auto-stepping');
-    Root.Runtime.experiments.register('handleVisibleSecurityStateChanged', 'Handle visibleSecurityStateChanged');
     Root.Runtime.experiments.register('inputEventsOnTimelineOverview', 'Input events on Timeline overview', true);
     Root.Runtime.experiments.register('liveHeapProfile', 'Live heap profile', true);
     Root.Runtime.experiments.register('mediaInspector', 'Media Element Inspection');

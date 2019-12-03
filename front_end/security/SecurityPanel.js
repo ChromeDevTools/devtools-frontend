@@ -315,6 +315,8 @@ export default class SecurityPanel extends UI.PanelWithSidebar {
     const resourceTreeModel = securityModel.resourceTreeModel();
     const networkManager = securityModel.networkManager();
     this._eventListeners = [
+      securityModel.addEventListener(
+          Security.SecurityModel.Events.VisibleSecurityStateChanged, this._onVisibleSecurityStateChanged, this),
       resourceTreeModel.addEventListener(
           SDK.ResourceTreeModel.Events.MainFrameNavigated, this._onMainFrameNavigated, this),
       resourceTreeModel.addEventListener(
@@ -324,13 +326,6 @@ export default class SecurityPanel extends UI.PanelWithSidebar {
       networkManager.addEventListener(SDK.NetworkManager.Events.ResponseReceived, this._onResponseReceived, this),
       networkManager.addEventListener(SDK.NetworkManager.Events.RequestFinished, this._onRequestFinished, this),
     ];
-    if (Root.Runtime.experiments.isEnabled('handleVisibleSecurityStateChanged')) {
-      this._eventListeners.push(securityModel.addEventListener(
-          Security.SecurityModel.Events.VisibleSecurityStateChanged, this._onVisibleSecurityStateChanged, this));
-    } else {
-      this._eventListeners.push(securityModel.addEventListener(
-          Security.SecurityModel.Events.SecurityStateChanged, this._onSecurityStateChanged, this));
-    }
 
     if (resourceTreeModel.isInterstitialShowing()) {
       this._onInterstitialShown();

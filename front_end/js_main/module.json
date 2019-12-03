@@ -8,7 +8,9 @@
     "dependencies": [
         "components"
     ],
-    "scripts": [
+    "scripts": [],
+    "modules": [
+        "js_main.js",
         "JsMain.js"
     ]
 }

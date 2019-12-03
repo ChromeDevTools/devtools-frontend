@@ -6,16 +6,13 @@
   <message name="IDS_DEVTOOLS_532c28d5412dd75bf975fb951c740a30" desc="A tag of Remote Devices tool that can be searched in the command menu">
     mobile
   </message>
-  <message name="IDS_DEVTOOLS_5e481c778e24d35f490d1e90cf829965" desc="Start of deprecation notice for the Remote Devices tool">
-    This panel has been deprecated in favor of the '''
-  </message>
   <message name="IDS_DEVTOOLS_62ed973d963913bb55111a7b8116ace1" desc="A tag of Remote Devices tool that can be searched in the command menu">
     usb
   </message>
-  <message name="IDS_DEVTOOLS_9c049e70323d93c878cf0c17cd8ce56f" desc="End of deprecation notice for the Remote Devices tool">
-    ''' interface, which has equivalent functionality.
-  </message>
   <message name="IDS_DEVTOOLS_c31b32364ce19ca8fcd150a417ecce58" desc="A tag of Remote Devices tool that can be searched in the command menu">
     <ph name="LOCKED_1">android</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_d67c786d1afe183425bcd8d61bb3d7e6" desc="Deprecation notice for the Remote Devices tool">
+    This panel has been deprecated in favor of the <ph name="DOCUMENTATIONLINK">$1s<ex>chrome://inspect/#devices</ex></ph> interface, which has equivalent functionality.
   </message>
 </grit-part>

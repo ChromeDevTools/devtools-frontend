@@ -6,20 +6,20 @@ Devices.DevicesView = class extends UI.VBox {
   constructor() {
     super(true);
 
-    const startDeprecationMessage = ls`This panel has been deprecated in favor of the `;
-    const button = UI.Fragment.build`<a href="#">chrome://inspect/#devices</a>`;
-    const endDeprecationmessage = ls` interface, which has equivalent functionality.`;
+    const deprecationMessage = this.contentElement.createChild('span');
+    const documentationLink = UI.html
+    `<a class="devtools-link" role="link" tabindex="0" href="#" style="display: inline; cursor: pointer;">chrome://inspect/#devices</a>`;
 
-    const deprecationNotice = UI.Fragment.build`
-      <div style="user-select: text; padding: 5px;">
-        ${startDeprecationMessage}${button}${endDeprecationmessage}
-      </div>
-    `;
-
-    this.contentElement.appendChild(deprecationNotice.element());
-
-    this.contentElement.querySelector('a').addEventListener('click', () => {
+    self.onInvokeElement(documentationLink, event => {
       SDK.targetManager.mainTarget().pageAgent().navigate('chrome://inspect/#devices');
+      event.consume(true);
     });
+
+    deprecationMessage.style.padding = '5px';
+    deprecationMessage.appendChild(UI.formatLocalized(
+        'This panel has been deprecated in favor of the %s interface, which has equivalent functionality.',
+        [documentationLink]));
+
+    this.setDefaultFocusedElement(documentationLink);
   }
 };

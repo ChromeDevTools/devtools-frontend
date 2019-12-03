@@ -16,8 +16,8 @@ const fs = require('fs');
 const {promisify} = require('util');
 const writeFileAsync = promisify(fs.writeFile);
 const appendFileAsync = promisify(fs.appendFile);
-const checkLocalizedStrings = require('./localization_utils/check_localized_strings');
-const localizationUtils = require('./localization_utils/localization_utils');
+const checkLocalizedStrings = require('./utils/check_localized_strings');
+const localizationUtils = require('./utils/localization_utils');
 
 const grdpFileStart = '<?xml version="1.0" encoding="utf-8"?>\n<grit-part>\n';
 const grdpFileEnd = '</grit-part>';

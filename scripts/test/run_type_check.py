@@ -29,7 +29,7 @@
 
 import argparse
 import os
-import os.path as path
+from os import path
 import re
 import shutil
 import subprocess
@@ -101,7 +101,6 @@ ERROR_WARNING_REGEX = re.compile(r'WARNING|ERROR')
 LOADED_CSS_REGEX = re.compile(r'(?:registerRequiredCSS|WebInspector\.View\.createStyleElement)\s*\(\s*"(.+)"\s*\)')
 
 JAVA_BUILD_REGEX = re.compile(r'\w+ version "(\d+)\.(\d+)')
-
 
 def log_error(message):
     print 'ERROR: ' + message
@@ -206,11 +205,44 @@ class JSDocChecker:
 
 
 def find_java():
+    # Based on http://stackoverflow.com/questions/377017/test-if-executable-exists-in-python.
+    def which(program):
+        def is_executable(fpath):
+            return path.isfile(fpath) and os.access(fpath, os.X_OK)
+
+        fpath, fname = path.split(program)
+        if fpath:
+            if is_executable(program):
+                return program
+            return None
+        env_paths = os.environ["PATH"].split(os.pathsep)
+        if sys.platform == "win32":
+            env_paths = get_windows_path(env_paths)
+        for part in env_paths:
+            part = part.strip('\"')
+            file = path.join(part, program)
+            if is_executable(file):
+                return file
+            if sys.platform == "win32" and not file.endswith(".exe"):
+                file_exe = file + ".exe"
+                if is_executable(file_exe):
+                    return file_exe
+        return None
+
+    # Use to find 64-bit programs (e.g. Java) when using 32-bit python in Windows
+    def get_windows_path(env_paths):
+        new_env_paths = env_paths[:]
+        for env_path in env_paths:
+            env_path = env_path.lower()
+            if "system32" in env_path:
+                new_env_paths.append(env_path.replace("system32", "sysnative"))
+        return new_env_paths
+
     required_major = 1
     required_minor = 7
     exec_command = None
     has_server_jvm = True
-    java_path = utils.which('java')
+    java_path = which('java')
 
     if not java_path:
         print 'NOTE: No Java executable found in $PATH.'

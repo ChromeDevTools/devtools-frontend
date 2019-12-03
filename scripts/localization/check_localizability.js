@@ -12,7 +12,7 @@
 // In this case, add it to the excluded errors at the top of the script.
 
 const path = require('path');
-const localizationUtils = require('./localization_utils/localization_utils');
+const localizationUtils = require('./utils/localization_utils');
 const esprimaTypes = localizationUtils.esprimaTypes;
 const escodegen = localizationUtils.escodegen;
 const esprima = localizationUtils.esprima;
@@ -41,7 +41,7 @@ async function main() {
 
   try {
     let filePaths = [];
-    const frontendPath = path.resolve(__dirname, '..', 'front_end');
+    const frontendPath = path.resolve(__dirname, '..', '..', 'front_end');
     let filePathPromises = [localizationUtils.getFilesFromDirectory(frontendPath, filePaths, ['.grdp'])];
     if (process.argv[2] === '-a') {
       filePathPromises.push(localizationUtils.getFilesFromDirectory(frontendPath, filePaths, ['.js']));

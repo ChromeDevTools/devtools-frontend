@@ -32,9 +32,9 @@ const cppSpecialCharactersMap = {
 };
 const IDSPrefix = 'IDS_DEVTOOLS_';
 
-const SRC_PATH = path.resolve(__dirname, '..', '..');
+const SRC_PATH = path.resolve(__dirname, '..', '..', '..');
 const GRD_PATH = path.resolve(SRC_PATH, 'front_end', 'langpacks', 'devtools_ui_strings.grd');
-const SHARED_STRINGS_PATH = path.resolve(__dirname, '..', '..', 'front_end', 'langpacks', 'shared_strings.grdp');
+const SHARED_STRINGS_PATH = path.resolve(SRC_PATH, 'front_end', 'langpacks', 'shared_strings.grdp');
 const NODE_MODULES_PATH = path.resolve(SRC_PATH, 'node_modules');
 const escodegen = require(path.resolve(NODE_MODULES_PATH, 'escodegen'));
 const esprima = require(path.resolve(NODE_MODULES_PATH, 'esprima'));

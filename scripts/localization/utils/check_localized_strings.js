@@ -60,7 +60,7 @@ const frontendStrings = new Map();
 const IDSkeys = new Map();
 const fileToGRDPMap = new Map();
 
-const devtoolsFrontendPath = path.resolve(__dirname, '..', '..', 'front_end');
+const devtoolsFrontendPath = path.resolve(__dirname, '..', '..', '..', 'front_end');
 let devtoolsFrontendDirs;
 
 /**

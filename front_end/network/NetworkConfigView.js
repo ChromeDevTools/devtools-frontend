@@ -211,6 +211,11 @@ Network.NetworkConfigView._userAgentGroups = [
             'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36'
       },
       {
+        title: ls`Chrome \u2014 Android Mobile (high-end)`,
+        value:
+            'Mozilla/5.0 (Linux; Android 10; Pixel 4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36'
+      },
+      {
         title: ls`Chrome \u2014 Android Tablet`,
         value:
             'Mozilla/5.0 (Linux; Android 4.3; Nexus 7 Build/JSS15Q) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Safari/537.36'
@@ -218,12 +223,12 @@ Network.NetworkConfigView._userAgentGroups = [
       {
         title: ls`Chrome \u2014 iPhone`,
         value:
-            'Mozilla/5.0 (iPhone; CPU iPhone OS 9_1 like Mac OS X) AppleWebKit/601.1 (KHTML, like Gecko) CriOS/%s Mobile/13B143 Safari/601.1.46'
+            'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/%s Mobile/15E148 Safari/604.1'
       },
       {
         title: ls`Chrome \u2014 iPad`,
         value:
-            'Mozilla/5.0 (iPad; CPU OS 9_1 like Mac OS X) AppleWebKit/601.1 (KHTML, like Gecko) CriOS/%s Mobile/13B143 Safari/601.1.46'
+            'Mozilla/5.0 (iPad; CPU OS 13_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/%s Mobile/15E148 Safari/604.1'
       },
       {
         title: ls`Chrome \u2014 Chrome OS`,
@@ -232,7 +237,7 @@ Network.NetworkConfigView._userAgentGroups = [
       {
         title: ls`Chrome \u2014 Mac`,
         value:
-            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Safari/537.36'
+            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Safari/537.36'
       },
       {
         title: ls`Chrome \u2014 Windows`,
@@ -263,7 +268,7 @@ Network.NetworkConfigView._userAgentGroups = [
       },
       {
         title: ls`Firefox \u2014 Mac`,
-        value: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:70.0) Gecko/20100101 Firefox/70.0'
+        value: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:70.0) Gecko/20100101 Firefox/70.0'
       },
       {
         title: ls`Firefox \u2014 Windows`,
@@ -310,7 +315,7 @@ Network.NetworkConfigView._userAgentGroups = [
       {
         title: ls`Microsoft Edge (Chromium) \u2014 Mac`,
         value:
-            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Safari/537.36 Edg/%s'
+            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Chrome/%s Safari/604.1 Edg/%s'
       },
       {
         title: ls`Microsoft Edge \u2014 iPhone`,
@@ -350,12 +355,12 @@ Network.NetworkConfigView._userAgentGroups = [
       {
         title: ls`Opera \u2014 Mac`,
         value:
-            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.87 Safari/537.36 OPR/37.0.2178.31'
+            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.97 Safari/537.36 OPR/65.0.3467.48'
       },
       {
         title: ls`Opera \u2014 Windows`,
         value:
-            'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.87 Safari/537.36 OPR/37.0.2178.31'
+            'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.97 Safari/537.36 OPR/65.0.3467.48'
       },
       {
         title: ls`Opera (Presto) \u2014 Mac`,

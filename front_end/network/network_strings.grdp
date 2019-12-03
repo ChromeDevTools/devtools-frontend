@@ -279,6 +279,9 @@
   <message name="IDS_DEVTOOLS_56ecb97c626815b7f982c04e736f624b" desc="Text in Signed Exchange Info View of the Network panel">
     Response headers
   </message>
+  <message name="IDS_DEVTOOLS_56fcdaa2665c58cf4f68e6ef43ca21f8" desc="An option in the user agent dropdown menu in the Network conditions tool">
+    <ph name="LOCKED_1">Chrome — Android Mobile (high-end)</ph>
+  </message>
   <message name="IDS_DEVTOOLS_57db0f3677bfe1e5af2f568c71369e9e" desc="A context menu item in the Network Log View of the Network panel">
     Save all as HAR with content
   </message>

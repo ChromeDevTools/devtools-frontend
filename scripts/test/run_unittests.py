@@ -36,15 +36,16 @@ def to_platform_path_exact(filepath):
 
 
 def run_tests():
+    cwd = devtools_paths.devtools_root_path()
     karma_errors_found = False
-    karmaconfig_path = os.path.join(devtools_path, 'karma.conf.js')
+    karmaconfig_path = os.path.join(cwd, 'karma.conf.js')
     exec_command = [devtools_paths.node_path(), devtools_paths.karma_path(), 'start', to_platform_path_exact(karmaconfig_path)]
     env = os.environ.copy()
     env['NODE_PATH'] = devtools_paths.node_path()
     if (chrome_binary is not None):
         env['CHROME_BIN'] = chrome_binary
 
-    karma_proc = popen(exec_command, cwd=devtools_path, env=env)
+    karma_proc = popen(exec_command, cwd=cwd, env=env)
 
     (karma_proc_out, _) = karma_proc.communicate()
     if karma_proc.returncode != 0:
@@ -56,15 +57,9 @@ def run_tests():
     return karma_errors_found
 
 
-devtools_path = devtools_paths.devtools_root_path()
 is_cygwin = sys.platform == 'cygwin'
 chrome_binary = None
-downloaded_chrome_binary = os.path.abspath(os.path.join(
-    *{
-        'Linux': (devtools_path, 'third_party', 'chrome', 'chrome-linux', 'chrome'),
-        'Darwin': (devtools_path, 'third_party', 'chrome', 'chrome-mac', 'Chromium.app', 'Contents', 'MacOS', 'Chromium'),
-        'Windows': (devtools_path, 'third_party', 'chrome', 'chrome-win', 'chrome.exe'),
-    }[platform.system()]))
+downloaded_chrome_binary = devtools_paths.downloaded_chrome_binary_path()
 
 if check_chrome_binary(downloaded_chrome_binary):
     chrome_binary = downloaded_chrome_binary

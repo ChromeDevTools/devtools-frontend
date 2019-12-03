@@ -1324,6 +1324,11 @@ export default class ElementsTreeOutline extends UI.TreeOutline {
       visibleChildren.push(templateContent);
     }
 
+    const markerPseudoElement = node.markerPseudoElement();
+    if (markerPseudoElement) {
+      visibleChildren.push(markerPseudoElement);
+    }
+
     const beforePseudoElement = node.beforePseudoElement();
     if (beforePseudoElement) {
       visibleChildren.push(beforePseudoElement);

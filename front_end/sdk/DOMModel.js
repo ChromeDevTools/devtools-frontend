@@ -320,6 +320,16 @@ export class DOMNode {
   }
 
   /**
+   * @return {?SDK.DOMNode}
+   */
+  markerPseudoElement() {
+    if (!this._pseudoElements) {
+      return null;
+    }
+    return this._pseudoElements.get(SDK.DOMNode.PseudoElementNames.Marker);
+  }
+
+  /**
    * @return {boolean}
    */
   isInsertionPoint() {
@@ -1070,7 +1080,8 @@ export class DOMNode {
  */
 DOMNode.PseudoElementNames = {
   Before: 'before',
-  After: 'after'
+  After: 'after',
+  Marker: 'marker'
 };
 
 /**

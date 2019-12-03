@@ -249,6 +249,9 @@
   <message name="IDS_DEVTOOLS_4dec8df20c6bc162fd77420b6f17edc5" desc="Aria accessible name in Network Log View of the Network panel">
     Resource types to include
   </message>
+  <message name="IDS_DEVTOOLS_4e5684a9fc5a7bde112a0519e77f4b37" desc="Label for a filter in the Network panel">
+    Only show requests with SameSite issues
+  </message>
   <message name="IDS_DEVTOOLS_4e88c13fb97f356a81c48bf2644bef51" desc="Text in Request Timing View of the Network panel">
     Connection Start
   </message>

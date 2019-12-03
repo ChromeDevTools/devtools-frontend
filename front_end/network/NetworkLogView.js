@@ -46,6 +46,7 @@ Network.NetworkLogView = class extends UI.VBox {
     this.element.classList.add('no-node-selected');
 
     this._networkHideDataURLSetting = Common.settings.createSetting('networkHideDataURL', false);
+    this._networkShowIssuesOnlySetting = Common.settings.createSetting('networkShowIssuesOnly', false);
     this._networkResourceTypeFiltersSetting = Common.settings.createSetting('networkResourceTypeFilters', {});
 
     this._rawRowHeight = 0;
@@ -127,6 +128,13 @@ Network.NetworkLogView = class extends UI.VBox {
     this._resourceCategoryFilterUI.addEventListener(
         UI.FilterUI.Events.FilterChanged, this._filterChanged.bind(this), this);
     filterBar.addFilter(this._resourceCategoryFilterUI);
+
+    this._onlyIssuesFilterUI = new UI.CheckboxFilterUI(
+        'only-show-issues', ls`Only show requests with SameSite issues`, true, this._networkShowIssuesOnlySetting);
+    this._onlyIssuesFilterUI.addEventListener(UI.FilterUI.Events.FilterChanged, this._filterChanged.bind(this), this);
+    this._onlyIssuesFilterUI.element().title = ls`Only show requests with SameSite issues`;
+    filterBar.addFilter(this._onlyIssuesFilterUI);
+
 
     this._filterParser = new TextUtils.FilterParser(Network.NetworkLogView._searchKeys);
     this._suggestionBuilder =
@@ -1149,6 +1157,7 @@ Network.NetworkLogView = class extends UI.VBox {
   setTextFilterValue(filterString) {
     this._textFilterUI.setValue(filterString);
     this._dataURLFilterUI.setChecked(false);
+    this._onlyIssuesFilterUI.setChecked(false);
     this._resourceCategoryFilterUI.reset();
   }
 
@@ -1457,6 +1466,9 @@ Network.NetworkLogView = class extends UI.VBox {
       return false;
     }
     if (this._dataURLFilterUI.checked() && (request.parsedURL.isDataURL() || request.parsedURL.isBlobURL())) {
+      return false;
+    }
+    if (this._onlyIssuesFilterUI.checked() && !SDK.IssuesModel.hasIssues(request)) {
       return false;
     }
     if (request.statusText === 'Service Worker Fallback Required') {

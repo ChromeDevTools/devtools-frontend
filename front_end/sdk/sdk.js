@@ -37,6 +37,7 @@ import * as FilmStripModel from './FilmStripModel.js';
 import * as HARLog from './HARLog.js';
 import * as HeapProfilerModel from './HeapProfilerModel.js';
 import * as IsolateManager from './IsolateManager.js';
+import * as IssuesModel from './IssuesModel.js';
 import * as LayerTreeBase from './LayerTreeBase.js';
 import * as LogModel from './LogModel.js';
 import * as NetworkLog from './NetworkLog.js';
@@ -88,6 +89,7 @@ export {
   HARLog,
   HeapProfilerModel,
   IsolateManager,
+  IssuesModel,
   LayerTreeBase,
   LogModel,
   NetworkLog,

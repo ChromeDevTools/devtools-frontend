@@ -1,1 +1,71 @@
-[]
+[
+    {
+        "prefix": "threaded",
+        "bases": [
+            "http/tests/devtools/tracing"
+        ],
+        "args": [
+            "--enable-threaded-compositing"
+        ]
+    },
+    {
+        "prefix": "sxg-with-network-service",
+        "bases": [
+            "http/tests/devtools/sxg"
+        ],
+        "args": [
+            "--enable-features=NetworkService"
+        ]
+    },
+    {
+        "prefix": "site-isolated-code-cache",
+        "bases": [
+            "http/tests/devtools/isolated-code-cache"
+        ],
+        "args": [
+            "--enable-features=IsolatedCodeCache",
+            "--site-per-process"
+        ]
+    },
+    {
+        "prefix": "wasm-site-isolated-code-cache",
+        "bases": [
+            "http/tests/devtools/wasm-isolated-code-cache"
+        ],
+        "args": [
+            "--enable-features=IsolatedCodeCache,WasmCodeCache",
+            "--disable-features=WebAssemblyBaseline",
+            "--site-per-process"
+        ]
+    },
+    {
+        "prefix": "split-http-cache-not-site-per-process",
+        "bases": [
+            "http/tests/devtools/isolated-code-cache"
+        ],
+        "args": [
+            "--enable-features=SplitCacheByNetworkIsolationKey",
+            "--disable-site-isolation-trials"
+        ]
+    },
+    {
+        "prefix": "not-split-http-cache-not-site-per-process",
+        "bases": [
+            "http/tests/devtools/isolated-code-cache"
+        ],
+        "args": [
+            "--disable-features=SplitCacheByNetworkIsolationKey",
+            "--disable-site-isolation-trials"
+        ]
+    },
+    {
+        "prefix": "not-site-per-process",
+        "bases": [
+            "http/tests/devtools/debugger/fetch-breakpoints.js",
+            "http/tests/devtools/oopif/oopif-storage.js"
+        ],
+        "args": [
+            "--disable-site-isolation-trials"
+        ]
+    }
+]

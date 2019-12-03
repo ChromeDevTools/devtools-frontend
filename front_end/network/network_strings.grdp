@@ -372,6 +372,9 @@
   <message name="IDS_DEVTOOLS_d55df13c735b6066e930b3e66c4588ab" desc="Text for toggling header data (e.g. query string parameters) from decoded to encoded in the headers tab">
     View URL encoded
   </message>
+  <message name="IDS_DEVTOOLS_da3211be40e2b7282b37431dc1e6ceb6" desc="An option in the user agent dropdown menu in the Network conditions tool">
+    <ph name="LOCKED_1">Googlebot Desktop</ph>
+  </message>
   <message name="IDS_DEVTOOLS_e4217cfa8bdee0baaa2249db59b8671b" desc="Text for toggling the view of header data (e.g. query string parameters) from source to parsed in the headers tab">
     View parsed
   </message>

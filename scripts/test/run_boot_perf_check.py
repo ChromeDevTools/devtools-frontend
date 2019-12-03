@@ -98,7 +98,7 @@ def main():
         print('Unable to run, no Chrome binary provided')
         sys.exit(1)
 
-    runs = 35
+    runs = 37
     if OPTIONS.runs:
         runs = int(OPTIONS.runs)
 

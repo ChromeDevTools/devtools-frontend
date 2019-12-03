@@ -33,7 +33,7 @@ export default class CoverageListView extends UI.VBox {
         align: DataGrid.DataGrid.Align.Right,
         sort: DataGrid.DataGrid.Order.Descending
       },
-      {id: 'bars', title: '', width: '250px', fixedWidth: false, sortable: true}
+      {id: 'bars', title: ls`Usage Visualization`, width: '250px', fixedWidth: false, sortable: true}
     ];
     this._dataGrid = new DataGrid.SortableDataGrid(columns);
     this._dataGrid.setResizeMethod(DataGrid.DataGrid.ResizeMethod.Last);

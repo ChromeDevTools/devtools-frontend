@@ -67,6 +67,10 @@ function requestHandler(request, response) {
   }
 
   function sendResponse(statusCode, data) {
+    if (request.url.endsWith('.js')) {
+      response.setHeader('Content-Type', 'text/javascript');
+    }
+
     response.writeHead(statusCode);
     response.write(data, 'binary');
     response.end();

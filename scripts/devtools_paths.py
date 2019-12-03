@@ -7,6 +7,7 @@ Helper to find the path to the correct third_party directory
 
 from os import path
 import sys
+import platform
 
 
 # Find the root path of the checkout.
@@ -67,6 +68,23 @@ def check_localized_strings_path():
 
 def karma_path():
     return path.join(node_modules_path(), 'karma', 'bin', 'karma')
+
+
+def boot_perf_test_path():
+    return path.join(devtools_root_path(), 'test', 'perf', 'bootperf.js')
+
+
+def hosted_mode_script_path():
+    return path.join(devtools_root_path(), 'scripts', 'hosted_mode', 'server.js')
+
+
+def downloaded_chrome_binary_path():
+    return path.abspath(path.join(
+    *{
+        'Linux': (devtools_root_path(), 'third_party', 'chrome', 'chrome-linux', 'chrome'),
+        'Darwin': (devtools_root_path(), 'third_party', 'chrome', 'chrome-mac', 'Chromium.app', 'Contents', 'MacOS', 'Chromium'),
+        'Windows': (devtools_root_path(), 'third_party', 'chrome', 'chrome-win', 'chrome.exe'),
+    }[platform.system()]))
 
 
 def license_checker_path():

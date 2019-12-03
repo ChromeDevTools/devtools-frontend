@@ -5,7 +5,7 @@
 /**
  * @implements {Common.Runnable}
  */
-InspectorMain.InspectorMain = class extends Common.Object {
+export class InspectorMainImpl extends Common.Object {
   /**
    * @override
    */
@@ -36,7 +36,7 @@ InspectorMain.InspectorMain = class extends Common.Object {
       target.runtimeAgent().runIfWaitingForDebugger();
     }, Components.TargetDetachedDialog.webSocketConnectionLost);
 
-    new InspectorMain.SourcesPanelIndicator();
+    new SourcesPanelIndicator();
     new InspectorMain.BackendSettingsSync();
     new MobileThrottling.NetworkPanelIndicator();
 
@@ -46,13 +46,13 @@ InspectorMain.InspectorMain = class extends Common.Object {
           SDK.ResourceTreeModel.reloadAllPages(hard);
         });
   }
-};
+}
 
 /**
  * @implements {UI.ActionDelegate}
  * @unrestricted
  */
-InspectorMain.ReloadActionDelegate = class {
+export class ReloadActionDelegate {
   /**
    * @override
    * @param {!UI.Context} context
@@ -70,13 +70,13 @@ InspectorMain.ReloadActionDelegate = class {
     }
     return false;
   }
-};
+}
 
 /**
  * @implements {UI.ActionDelegate}
  * @unrestricted
  */
-InspectorMain.FocusDebuggeeActionDelegate = class {
+export class FocusDebuggeeActionDelegate {
   /**
    * @override
    * @param {!UI.Context} context
@@ -87,12 +87,12 @@ InspectorMain.FocusDebuggeeActionDelegate = class {
     SDK.targetManager.mainTarget().pageAgent().bringToFront();
     return true;
   }
-};
+}
 
 /**
  * @implements {UI.ToolbarItem.Provider}
  */
-InspectorMain.NodeIndicator = class {
+export class NodeIndicator {
   constructor() {
     const element = createElement('div');
     const shadowRoot = UI.createShadowRootWithCoreStyles(element, 'inspector_main/nodeIcon.css');
@@ -125,12 +125,12 @@ InspectorMain.NodeIndicator = class {
   item() {
     return this._button;
   }
-};
+}
 
 /**
  * @unrestricted
  */
-InspectorMain.SourcesPanelIndicator = class {
+export class SourcesPanelIndicator {
   constructor() {
     Common.moduleSetting('javaScriptDisabled').addChangeListener(javaScriptDisabledChanged);
     javaScriptDisabledChanged();
@@ -145,13 +145,13 @@ InspectorMain.SourcesPanelIndicator = class {
       UI.inspectorView.setPanelIcon('sources', icon);
     }
   }
-};
+}
 
 /**
  * @implements {SDK.TargetManager.Observer}
  * @unrestricted
  */
-InspectorMain.BackendSettingsSync = class {
+export class BackendSettingsSync {
   constructor() {
     this._autoAttachSetting = Common.settings.moduleSetting('autoAttachToCreatedPages');
     this._autoAttachSetting.addChangeListener(this._updateAutoAttach, this);
@@ -201,6 +201,42 @@ InspectorMain.BackendSettingsSync = class {
    */
   targetRemoved(target) {
   }
-};
+}
 
 SDK.ChildTargetManager.install();
+
+/* Legacy exported object */
+self.InspectorMain = self.InspectorMain || {};
+
+/* Legacy exported object */
+InspectorMain = InspectorMain || {};
+
+/**
+ * @constructor
+ */
+InspectorMain.InspectorMain = InspectorMainImpl;
+
+/**
+ * @constructor
+ */
+InspectorMain.ReloadActionDelegate = ReloadActionDelegate;
+
+/**
+ * @constructor
+ */
+InspectorMain.FocusDebuggeeActionDelegate = FocusDebuggeeActionDelegate;
+
+/**
+ * @constructor
+ */
+InspectorMain.NodeIndicator = NodeIndicator;
+
+/**
+ * @constructor
+ */
+InspectorMain.SourcesPanelIndicator = SourcesPanelIndicator;
+
+/**
+ * @constructor
+ */
+InspectorMain.BackendSettingsSync = BackendSettingsSync;

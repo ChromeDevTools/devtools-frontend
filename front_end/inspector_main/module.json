@@ -133,7 +133,9 @@
         "components",
         "mobile_throttling"
     ],
-    "scripts": [
+    "scripts": [],
+    "modules": [
+        "inspector_main.js",
         "RenderingOptions.js",
         "InspectorMain.js"
     ],

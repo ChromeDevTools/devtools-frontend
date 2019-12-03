@@ -28,7 +28,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-InspectorMain.RenderingOptionsView = class extends UI.VBox {
+export class RenderingOptionsView extends UI.VBox {
   constructor() {
     super(true);
     this.registerRequiredCSS('inspector_main/renderingOptions.css');
@@ -93,4 +93,15 @@ InspectorMain.RenderingOptionsView = class extends UI.VBox {
       this.contentElement.appendChild(control);
     }
   }
-};
+}
+
+/* Legacy exported object */
+self.InspectorMain = self.InspectorMain || {};
+
+/* Legacy exported object */
+InspectorMain = InspectorMain || {};
+
+/**
+ * @constructor
+ */
+InspectorMain.RenderingOptionsView = RenderingOptionsView;

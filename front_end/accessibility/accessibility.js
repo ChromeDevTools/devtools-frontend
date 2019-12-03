@@ -8,7 +8,6 @@ import './AccessibilityNodeView.js';
 import './AccessibilityStrings.js';
 import './ARIAAttributesView.js';
 import './ARIAMetadata.js';
-import './ARIAProperties.js';
 import './AXBreadcrumbsPane.js';
 
 import * as AccessibilityModel from './AccessibilityModel.js';

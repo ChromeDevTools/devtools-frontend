@@ -59,6 +59,7 @@ export class Layers3DView extends UI.VBox {
     this._canvasElement.addEventListener('mouseleave', this._onMouseMove.bind(this), false);
     this._canvasElement.addEventListener('mousemove', this._onMouseMove.bind(this), false);
     this._canvasElement.addEventListener('contextmenu', this._onContextMenu.bind(this), false);
+    UI.ARIAUtils.setAccessibleName(this._canvasElement, ls`3D Layers View`);
 
     this._lastSelection = {};
     this._layerTree = null;

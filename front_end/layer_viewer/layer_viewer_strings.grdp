@@ -36,6 +36,9 @@
   <message name="IDS_DEVTOOLS_5639e2813d9549835010567a48349127" desc="Details text content in Layer Tree Outline of the Layers panel">
     ''' (<ph name="THIS__LAYER_WIDTH__">$1d<ex>10</ex></ph> × <ph name="THIS__LAYER_HEIGHT__">$2d<ex>10</ex></ph>)
   </message>
+  <message name="IDS_DEVTOOLS_58006164ad611dc7bf377b37c29e2646" desc="Accessibility label for canvas view in Layers tool">
+    3D Layers View
+  </message>
   <message name="IDS_DEVTOOLS_602f4c0713480f019b24f09218dcc7e0" desc="A context menu item in the DView of the Layers panel">
     Reset View
   </message>
@@ -101,6 +104,9 @@
   </message>
   <message name="IDS_DEVTOOLS_ce1efcf7f040106cc8cb2f24c9efee35" desc="A context menu item in the DView of the Layers panel">
     Show Paint Profiler
+  </message>
+  <message name="IDS_DEVTOOLS_e61ad2e468b7f58009896fd734c6764f" desc="Label for command log tree in the Profiler tab">
+    Command Log
   </message>
   <message name="IDS_DEVTOOLS_e763043c4af617c6f33da361d990a77b" desc="Tooltip text that appears when hovering over the largeicon center button in the Transform Controller of the Layers panel">
     Reset transform (0)

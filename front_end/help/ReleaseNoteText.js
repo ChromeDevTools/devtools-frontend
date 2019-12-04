@@ -12,7 +12,40 @@ const commandMenuShortcut = Host.isMac() ? 'Command+Shift+P' : 'Control+Shift+P'
 
 /** @type {!Array<!Help.ReleaseNote>} */
 export const releaseNoteText = [
-
+  {
+    version: 22,
+    header: 'Highlights from the Chrome 80 update',
+    highlights: [
+      {
+        title: 'Support for let and class redeclarations',
+        subtitle:
+            'When experimenting with new code in the Console, repeating let or class declarations no longer causes errors.',
+        link: 'https://developers.google.com/web/updates/2019/12/devtools#redeclarations',
+      },
+      {
+        title: 'Improved WebAssembly debugging',
+        subtitle:
+            'The Sources panel has increased support for stepping over code, setting breakpoints, and resolving stack traces in source languages.',
+        link: 'https://developers.google.com/web/updates/2019/12/devtools#webassembly',
+      },
+      {
+        title: 'Network panel updates',
+        subtitle: 'View request initiator chains, highlight requests in the Overview, and more.',
+        link: 'https://developers.google.com/web/updates/2019/12/devtools#network',
+      },
+      {
+        title: 'Audits panel updates',
+        subtitle: 'The redesigned configuration UI has simplified throttling options.',
+        link: 'https://developers.google.com/web/updates/2019/12/devtools#audits',
+      },
+      {
+        title: 'Coverage tab updates',
+        subtitle: 'Choose per-function or per-block coverage, and more.',
+        link: 'https://developers.google.com/web/updates/2019/12/devtools#coverage',
+      },
+    ],
+    link: 'https://developers.google.com/web/updates/2019/12/devtools',
+  },
   {
     version: 21,
     header: 'Highlights from the Chrome 79 update',

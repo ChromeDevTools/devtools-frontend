@@ -7,8 +7,16 @@
   await TestRunner.loadModule('axe_core_test_runner');
   await ApplicationTestRunner.resetState();
   await TestRunner.showPanel('resources');
+  await UI.viewManager.showView('resources');
+
+  const parent = UI.panels.resources._sidebar._applicationTreeElement;
+  const clearStorageElement = parent.children().find(child => child.title === ls`Clear storage`);
+  clearStorageElement.select();
+  const clearStorageView = UI.panels.resources.visibleView;
+  TestRunner.addResult('Clear storage view is visible: ' + (clearStorageView instanceof Resources.ClearStorageView));
+
   async function writeArray() {
-    const array = Array(20000).fill(0);
+    const array = Array(1).fill(0);
     const mainFrameId = TestRunner.resourceTreeModel.mainFrame.id;
     await new Promise(resolve => ApplicationTestRunner.createDatabase(mainFrameId, 'Database1', resolve));
     await new Promise(
@@ -17,22 +25,8 @@
         resolve =>
             ApplicationTestRunner.addIDBValue(mainFrameId, 'Database1', 'Store1', {key: 1, value: array}, '', resolve));
   }
-  async function runAxe(element) {
-    try {
-      const results = await axe.run(element);
-      const violations = AxeCoreTestRunner.processAxeResult(results.violations);
-      TestRunner.addResult(`aXe violations: ${violations}`);
-    } catch (e) {
-      TestRunner.addResult(`aXe threw an error: '${e}'`);
-    }
-  }
-  await UI.viewManager.showView('resources');
-  const parent = UI.panels.resources._sidebar._applicationTreeElement;
-  const clearStorageElement = parent.children().find(child => child.title === ls`Clear storage`);
-  clearStorageElement.select();
-  const clearStorageView = UI.panels.resources.visibleView;
-  TestRunner.addResult('Clear storage view is visible: ' + (clearStorageView instanceof Resources.ClearStorageView));
+
   await writeArray();
-  await runAxe(clearStorageView.contentElement);
+  await AxeCoreTestRunner.runValidation(clearStorageView.contentElement);
   TestRunner.completeTest();
 })();

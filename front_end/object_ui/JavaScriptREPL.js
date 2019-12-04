@@ -30,10 +30,17 @@ export default class JavaScriptREPL {
 
   /**
    * @param {string} text
-   * @return {string}
+   * @return {!Promise<!{text: string, preprocessed: boolean}>}
    */
-  static preprocessExpression(text) {
-    return JavaScriptREPL.wrapObjectLiteral(text);
+  static async preprocessExpression(text) {
+    text = JavaScriptREPL.wrapObjectLiteral(text);
+    let preprocessed = false;
+    if (text.indexOf('await') !== -1) {
+      const preprocessedText = await Formatter.formatterWorkerPool().preprocessTopLevelAwaitExpressions(text);
+      preprocessed = !!preprocessedText;
+      text = preprocessedText || text;
+    }
+    return {text, preprocessed};
   }
 
   /**
@@ -51,9 +58,9 @@ export default class JavaScriptREPL {
       return {preview: createDocumentFragment(), result: null};
     }
 
-    const expression = JavaScriptREPL.preprocessExpression(text);
+    const wrappedResult = await JavaScriptREPL.preprocessExpression(text);
     const options = {
-      expression: expression,
+      expression: wrappedResult.text,
       generatePreview: true,
       includeCommandLineAPI: true,
       throwOnSideEffect: throwOnSideEffect,
@@ -61,7 +68,8 @@ export default class JavaScriptREPL {
       objectGroup: objectGroup,
       disableBreaks: true
     };
-    const result = await executionContext.evaluate(options, false /* userGesture */, false /* awaitPromise */);
+    const result = await executionContext.evaluate(
+        options, false /* userGesture */, wrappedResult.preprocessed /* awaitPromise */);
     const preview = JavaScriptREPL._buildEvaluationPreview(result, allowErrors);
     return {preview, result};
   }

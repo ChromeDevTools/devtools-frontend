@@ -126,7 +126,6 @@ export default class ConsoleModel extends Common.Object {
    * @param {boolean} awaitPromise
    */
   async evaluateCommandInConsole(executionContext, originatingMessage, expression, useCommandLineAPI, awaitPromise) {
-    // TODO(crbug/1021921): Remove {awaitPromise} argument. {awaitPromise} is hard-coded to false by all call-sites.
     const result = await executionContext.evaluate(
         {
           expression: expression,

@@ -22,7 +22,9 @@
         "components",
         "emulation"
     ],
-    "scripts": [
+    "scripts": [],
+    "modules": [
+        "screencast.js",
         "InputModel.js",
         "ScreencastApp.js",
         "ScreencastView.js"

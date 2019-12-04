@@ -31,7 +31,7 @@
  * @implements {SDK.OverlayModel.Highlighter}
  * @unrestricted
  */
-Screencast.ScreencastView = class extends UI.VBox {
+export default class ScreencastView extends UI.VBox {
   /**
    * @param {!SDK.ScreenCaptureModel} screenCaptureModel
    */
@@ -172,7 +172,7 @@ Screencast.ScreencastView = class extends UI.VBox {
           dimensionsCSS.width / this._imageElement.naturalWidth,
           dimensionsCSS.height / (this._imageElement.naturalWidth * deviceSizeRatio));
       this._viewportElement.classList.remove('hidden');
-      const bordersSize = Screencast.ScreencastView._bordersSize;
+      const bordersSize = _bordersSize;
       if (this._imageZoom < 1.01 / window.devicePixelRatio) {
         this._imageZoom = 1 / window.devicePixelRatio;
       }
@@ -596,9 +596,9 @@ Screencast.ScreencastView = class extends UI.VBox {
    */
   _viewportDimensions() {
     const gutterSize = 30;
-    const bordersSize = Screencast.ScreencastView._bordersSize;
+    const bordersSize = _bordersSize;
     const width = this.element.offsetWidth - bordersSize - gutterSize;
-    const height = this.element.offsetHeight - bordersSize - gutterSize - Screencast.ScreencastView._navBarHeight;
+    const height = this.element.offsetHeight - bordersSize - gutterSize - _navBarHeight;
     return {width: width, height: height};
   }
 
@@ -692,7 +692,7 @@ Screencast.ScreencastView = class extends UI.VBox {
     if (!url) {
       return;
     }
-    if (!url.match(Screencast.ScreencastView._SchemeRegex)) {
+    if (!url.match(_SchemeRegex)) {
       url = 'http://' + url;
     }
     this._resourceTreeModel.navigate(url);
@@ -712,7 +712,7 @@ Screencast.ScreencastView = class extends UI.VBox {
     this._navigationForward.disabled = this._historyIndex === (this._historyEntries.length - 1);
 
     let url = this._historyEntries[this._historyIndex].url;
-    const match = url.match(Screencast.ScreencastView._HttpRegex);
+    const match = url.match(_HttpRegex);
     if (match) {
       url = match[1];
     }
@@ -725,20 +725,17 @@ Screencast.ScreencastView = class extends UI.VBox {
     this._navigationUrl.select();
     return true;
   }
-};
+}
 
-Screencast.ScreencastView._bordersSize = 44;
-
-Screencast.ScreencastView._navBarHeight = 29;
-
-Screencast.ScreencastView._HttpRegex = /^http:\/\/(.+)/;
-
-Screencast.ScreencastView._SchemeRegex = /^(https?|about|chrome):/;
+export const _bordersSize = 44;
+export const _navBarHeight = 29;
+export const _HttpRegex = /^http:\/\/(.+)/;
+export const _SchemeRegex = /^(https?|about|chrome):/;
 
 /**
  * @unrestricted
  */
-Screencast.ScreencastView.ProgressTracker = class {
+export class ProgressTracker {
   /**
    * @param {?SDK.ResourceTreeModel} resourceTreeModel
    * @param {?SDK.NetworkManager} networkManager
@@ -821,4 +818,25 @@ Screencast.ScreencastView.ProgressTracker = class {
   _displayProgress(progress) {
     this._element.style.width = (100 * progress) + '%';
   }
-};
+}
+
+/* Legacy exported object */
+self.Screencast = self.Screencast || {};
+
+/* Legacy exported object */
+Screencast = Screencast || {};
+
+/**
+ * @constructor
+ */
+Screencast.ScreencastView = ScreencastView;
+
+Screencast.ScreencastView._bordersSize = _bordersSize;
+Screencast.ScreencastView._navBarHeight = _navBarHeight;
+Screencast.ScreencastView._HttpRegex = _HttpRegex;
+Screencast.ScreencastView._SchemeRegex = _SchemeRegex;
+
+/**
+ * @constructor
+ */
+Screencast.ScreencastView.ProgressTracker = ProgressTracker;

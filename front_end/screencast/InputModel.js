@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-Screencast.InputModel = class extends SDK.SDKModel {
+export class InputModel extends SDK.SDKModel {
   /**
    * @param {!SDK.Target} target
    */
@@ -113,6 +113,17 @@ Screencast.InputModel = class extends SDK.SDKModel {
   _modifiersForEvent(event) {
     return (event.altKey ? 1 : 0) | (event.ctrlKey ? 2 : 0) | (event.metaKey ? 4 : 0) | (event.shiftKey ? 8 : 0);
   }
-};
+}
 
-SDK.SDKModel.register(Screencast.InputModel, SDK.Target.Capability.Input, false);
+SDK.SDKModel.register(InputModel, SDK.Target.Capability.Input, false);
+
+/* Legacy exported object */
+self.Screencast = self.Screencast || {};
+
+/* Legacy exported object */
+Screencast = Screencast || {};
+
+/**
+ * @constructor
+ */
+Screencast.InputModel = InputModel;

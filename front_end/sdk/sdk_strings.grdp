@@ -360,7 +360,7 @@
   <message name="IDS_DEVTOOLS_dfc84699a635ac79c7512494a2ebec91" desc="Tooltip to explain why a cookie was blocked">
     This set-cookie had the &quot;Secure&quot; attribute but was not received over a secure connection.
   </message>
-  <message name="IDS_DEVTOOLS_e1e4c8c9ccd9fc39c391da4bcd093fb2" desc="Text in Debugger Model">
+  <message name="IDS_DEVTOOLS_e1e4c8c9ccd9fc39c391da4bcd093fb2" desc="Noun that represents a section or block of code in the Debugger Model. Shown in the Sources tab, while paused on a breakpoint.">
     Block
   </message>
   <message name="IDS_DEVTOOLS_e2b60c37530e144372a7943df0f6017d" desc="Text in Resource Tree Model">

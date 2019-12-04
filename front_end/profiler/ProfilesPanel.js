@@ -731,6 +731,8 @@ Profiler.ProfileSidebarTreeElement = class extends UI.TreeElement {
     }
     this.listItemElement.appendChildren(this._iconElement, this._titlesElement);
     this.listItemElement.addEventListener('contextmenu', this._handleContextMenuEvent.bind(this), true);
+
+    UI.ARIAUtils.setDescription(this.listItemElement, ls`${this.profile.profileType().name}`);
   }
 
   /**

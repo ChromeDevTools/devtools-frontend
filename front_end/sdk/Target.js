@@ -24,6 +24,7 @@ export default class Target extends Protocol.TargetBase {
     this._targetManager = targetManager;
     this._name = name;
     this._inspectedURL = '';
+    this._inspectedURLName = '';
     this._capabilitiesMask = 0;
     switch (type) {
       case Type.Frame:

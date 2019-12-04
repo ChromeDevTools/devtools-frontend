@@ -4,7 +4,7 @@
 /**
  * @implements {Workspace.ProjectSearchConfig}
  */
-Search.SearchConfig = class {
+export class SearchConfig {
   /**
    * @param {string} query
    * @param {boolean} ignoreCase
@@ -22,7 +22,7 @@ Search.SearchConfig = class {
    * @return {!Search.SearchConfig}
    */
   static fromPlainObject(object) {
-    return new Search.SearchConfig(object.query, object.ignoreCase, object.isRegex);
+    return new SearchConfig(object.query, object.ignoreCase, object.isRegex);
   }
 
   /**
@@ -65,7 +65,7 @@ Search.SearchConfig = class {
 
 
     const pattern = [
-      '(\\s*' + Search.SearchConfig.FilePatternRegex.source + '\\s*)',
+      '(\\s*' + FilePatternRegex.source + '\\s*)',
       '(' + quotedPattern.source + ')',
       '(' + unquotedPattern + ')',
     ].join('|');
@@ -148,7 +148,7 @@ Search.SearchConfig = class {
    * @return {?Search.SearchConfig.QueryTerm}
    */
   _parseFileQuery(query) {
-    const match = query.match(Search.SearchConfig.FilePatternRegex);
+    const match = query.match(FilePatternRegex);
     if (!match) {
       return null;
     }
@@ -172,17 +172,14 @@ Search.SearchConfig = class {
         result += query.charAt(i);
       }
     }
-    return new Search.SearchConfig.QueryTerm(result, isNegative);
+    return new QueryTerm(result, isNegative);
   }
-};
+}
 
 // After file: prefix: any symbol except space and backslash or any symbol escaped with a backslash.
-Search.SearchConfig.FilePatternRegex = /(-)?f(ile)?:((?:[^\\ ]|\\.)+)/;
+export const FilePatternRegex = /(-)?f(ile)?:((?:[^\\ ]|\\.)+)/;
 
-/** @typedef {!{regex: !RegExp, isNegative: boolean}} */
-Search.SearchConfig.RegexQuery;
-
-Search.SearchConfig.QueryTerm = class {
+export class QueryTerm {
   /**
    * @param {string} text
    * @param {boolean} isNegative
@@ -191,66 +188,99 @@ Search.SearchConfig.QueryTerm = class {
     this.text = text;
     this.isNegative = isNegative;
   }
-};
+}
 
 /**
  * @interface
  */
-Search.SearchResult = function() {};
-
-Search.SearchResult.prototype = {
+export class SearchResult {
   /**
    * @return {string}
    */
-  label() {},
+  label() {
+  }
 
   /**
    * @return {string}
    */
-  description() {},
+  description() {
+  }
 
   /**
    * @return {number}
    */
-  matchesCount() {},
+  matchesCount() {
+  }
 
   /**
    * @param {number} index
    * @return {string}
    */
-  matchLabel(index) {},
+  matchLabel(index) {
+  }
 
   /**
    * @param {number} index
    * @return {string}
    */
-  matchLineContent(index) {},
+  matchLineContent(index) {
+  }
 
   /**
    * @param {number} index
    * @return {!Object}
    */
   matchRevealable(index) {}
-};
+}
 
 /**
  * @interface
  */
-Search.SearchScope = function() {};
-
-Search.SearchScope.prototype = {
+export class SearchScope {
   /**
    * @param {!Search.SearchConfig} searchConfig
    * @param {!Common.Progress} progress
    * @param {function(!Search.SearchResult)} searchResultCallback
    * @param {function(boolean)} searchFinishedCallback
    */
-  performSearch(searchConfig, progress, searchResultCallback, searchFinishedCallback) {},
+  performSearch(searchConfig, progress, searchResultCallback, searchFinishedCallback) {
+  }
 
   /**
    * @param {!Common.Progress} progress
    */
-  performIndexing(progress) {},
+  performIndexing(progress) {
+  }
 
   stopSearch() {}
-};
+}
+
+/* Legacy exported object */
+self.Search = self.Search || {};
+
+/* Legacy exported object */
+Search = Search || {};
+
+/**
+ * @constructor
+ */
+Search.SearchConfig = SearchConfig;
+
+/** @typedef {!{regex: !RegExp, isNegative: boolean}} */
+Search.SearchConfig.RegexQuery;
+Search.SearchConfig.FilePatternRegex = FilePatternRegex;
+
+/**
+ * @constructor
+ */
+Search.SearchConfig.QueryTerm = QueryTerm;
+
+/**
+ * @interface
+ */
+Search.SearchResult = SearchResult;
+
+/**
+ * @interface
+ */
+Search.SearchScope = SearchScope;

@@ -1,7 +1,7 @@
 // Copyright 2014 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-Search.SearchResultsPane = class extends UI.VBox {
+export default class SearchResultsPane extends UI.VBox {
   /**
    * @param {!Search.SearchConfig} searchConfig
    */
@@ -42,12 +42,12 @@ Search.SearchResultsPane = class extends UI.VBox {
     }
     this._matchesExpandedCount += searchResult.matchesCount();
   }
-};
+}
 
-Search.SearchResultsPane._matchesExpandedByDefault = 20;
-Search.SearchResultsPane._matchesShownAtOnce = 20;
+export const _matchesExpandedByDefault = 20;
+export const _matchesShownAtOnce = 20;
 
-Search.SearchResultsPane.SearchResultsTreeElement = class extends UI.TreeElement {
+export class SearchResultsTreeElement extends UI.TreeElement {
   /**
    * @param {!Search.SearchConfig} searchConfig
    * @param {!Search.SearchResult} searchResult
@@ -235,4 +235,22 @@ Search.SearchResultsPane.SearchResultsTreeElement = class extends UI.TreeElement
     this._appendSearchMatches(startMatchIndex, this._searchResult.matchesCount());
     return false;
   }
-};
+}
+
+/* Legacy exported object */
+self.Search = self.Search || {};
+
+/* Legacy exported object */
+Search = Search || {};
+
+/**
+ * @constructor
+ */
+Search.SearchResultsPane = SearchResultsPane;
+Search.SearchResultsPane._matchesExpandedByDefault = _matchesExpandedByDefault;
+Search.SearchResultsPane._matchesShownAtOnce = _matchesShownAtOnce;
+
+/**
+ * @constructor
+ */
+Search.SearchResultsPane.SearchResultsTreeElement = SearchResultsTreeElement;

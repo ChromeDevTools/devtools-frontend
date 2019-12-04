@@ -24,7 +24,6 @@
     "check-grdp": "node scripts/localization/check_localizable_resources.js",
     "chrome": "node scripts/hosted_mode/launch_chrome.js",
     "debug-test": "node scripts/npm_test.js --debug-devtools",
-    "extract": "node scripts/extract_module/extract_module.js",
     "format-py": "yapf --exclude scripts/build/rjsmin.py -i --recursive scripts PRESUBMIT.py",
     "generate-jsconfig": "node scripts/generate_jsconfig.js",
     "optimize-svg-images": "python scripts/optimize_svg_images.py",

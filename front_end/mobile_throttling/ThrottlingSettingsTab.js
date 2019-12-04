@@ -195,8 +195,13 @@ export class ThrottlingSettingsTab extends UI.VBox {
      * @return {!UI.ListWidget.ValidatorResult}
      */
     function titleValidator(item, index, input) {
+      const maxLength = 49;
       const value = input.value.trim();
-      const valid = value.length > 0 && value.length < 50;
+      const valid = value.length > 0 && value.length <= maxLength;
+      if (!valid) {
+        const errorMessage = ls`Profile Name characters length must be between 1 to ${maxLength} inclusive`;
+        return {valid, errorMessage};
+      }
       return {valid};
     }
 
@@ -207,8 +212,17 @@ export class ThrottlingSettingsTab extends UI.VBox {
      * @return {!UI.ListWidget.ValidatorResult}
      */
     function throughputValidator(item, index, input) {
+      const minThroughput = 0;
+      const maxThroughput = 10000000;
       const value = input.value.trim();
-      const valid = !value || (/^[\d]+(\.\d+)?|\.\d+$/.test(value) && value >= 0 && value <= 10000000);
+      const parsedValue = Number(value);
+      const throughput = input.getAttribute('aria-label');
+      const valid = !Number.isNaN(parsedValue) && parsedValue >= minThroughput && parsedValue <= maxThroughput;
+      if (!valid) {
+        const errorMessage =
+            ls`${throughput} must be a number between ${minThroughput}kb/s to ${maxThroughput}kb/s inclusive`;
+        return {valid, errorMessage};
+      }
       return {valid};
     }
 
@@ -219,8 +233,15 @@ export class ThrottlingSettingsTab extends UI.VBox {
      * @return {!UI.ListWidget.ValidatorResult}
      */
     function latencyValidator(item, index, input) {
+      const minLatency = 0;
+      const maxLatency = 1000000;
       const value = input.value.trim();
-      const valid = !value || (/^[\d]+$/.test(value) && value >= 0 && value <= 1000000);
+      const parsedValue = Number(value);
+      const valid = Number.isInteger(parsedValue) && parsedValue >= minLatency && parsedValue <= maxLatency;
+      if (!valid) {
+        const errorMessage = ls`Latency must be an integer between ${minLatency}ms to ${maxLatency}ms inclusive`;
+        return {valid, errorMessage};
+      }
       return {valid};
     }
   }

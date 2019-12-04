@@ -6,6 +6,12 @@
   <message name="IDS_DEVTOOLS_0936559ca32dc012bcc81444bec17ea4" desc="Text in Throttling Manager of the Network panel">
     Force disconnected from network
   </message>
+  <message name="IDS_DEVTOOLS_011c9e91a54874c932658db6990f2f6f" desc="Error message for Profile Name input in Throtting pane of the Settings">
+    Profile Name characters length must be between 1 to <ph name="MAXLENGTH">$1s<ex>49</ex></ph> inclusive
+  </message>
+  <message name="IDS_DEVTOOLS_0c62d625ff47b0cfe6eeacd7dbad2a3d" desc="Error message for Download and Upload inputs in Throttling pane of the Settings">
+    <ph name="THROUGHPUT">$1s<ex>Download</ex></ph> must be a number between <ph name="MINTHROUGHPUT">$2s<ex>0</ex></ph>kb/s to <ph name="MAXTHROUGHPUT">$3s<ex>10000000</ex></ph>kb/s inclusive
+  </message>
   <message name="IDS_DEVTOOLS_1363b7d2b4c0a3ac3a89b3ba69d59be7" desc="Icon title in Network Panel Indicator of the Network panel">
     Network throttling is enabled
   </message>
@@ -35,6 +41,9 @@
   </message>
   <message name="IDS_DEVTOOLS_56d7a17ecb7d30faf8daf8a6eb57e3bb" desc="Title of an action in the network conditions tool to network offline">
     Go offline
+  </message>
+  <message name="IDS_DEVTOOLS_66f359f361974efb1b18d69784d45b95" desc="Error message for Latency input in Throttling pane of the Settings">
+    Latency must be an integer between <ph name="MINLATENCY">$1s<ex>0</ex></ph>ms to <ph name="MAXLATENCY">$2s<ex>1000000</ex></ph>ms inclusive
   </message>
   <message name="IDS_DEVTOOLS_6ba7dc45786c25d1e5879b2166894fc5" desc="Title of an action in the network conditions tool to network online">
     Go online

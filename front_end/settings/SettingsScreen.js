@@ -74,6 +74,9 @@ export default class SettingsScreen extends UI.VBox {
     const dialog = new UI.Dialog();
     dialog.contentElement.tabIndex = -1;
     dialog.addCloseButton();
+    dialog.setOutsideClickCallback(() => {});
+    dialog.setPointerEventsBehavior(UI.GlassPane.PointerEventsBehavior.PierceGlassPane);
+    dialog.setOutsideTabIndexBehavior(UI.Dialog.OutsideTabIndexBehavior.PreserveMainViewTabIndex);
     settingsScreen.show(dialog.contentElement);
     dialog.show();
     settingsScreen._selectTab(name || 'preferences');

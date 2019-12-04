@@ -6,7 +6,7 @@
  * @implements {SDK.SDKModelObserver}
  * @unrestricted
  */
-PerformanceMonitor.PerformanceMonitor = class extends UI.HBox {
+export class PerformanceMonitorImpl extends UI.HBox {
   constructor() {
     super(true);
     this.registerRequiredCSS('performance_monitor/performanceMonitor.css');
@@ -385,35 +385,15 @@ PerformanceMonitor.PerformanceMonitor = class extends UI.HBox {
     this._canvas.height = this._height;
     this._canvas.style.height = `${this._height / window.devicePixelRatio}px`;
   }
-};
+}
 
 /** @enum {symbol} */
-PerformanceMonitor.PerformanceMonitor.Format = {
+export const Format = {
   Percent: Symbol('Percent'),
   Bytes: Symbol('Bytes'),
 };
 
-/**
- * @typedef {!{
- *   title: string,
- *   metrics: !Array<!PerformanceMonitor.PerformanceMonitor.MetricInfo>,
- *   max: (number|undefined),
- *   currentMax: (number|undefined),
- *   format: (!PerformanceMonitor.PerformanceMonitor.Format|undefined),
- *   smooth: (boolean|undefined)
- * }}
- */
-PerformanceMonitor.PerformanceMonitor.ChartInfo;
-
-/**
- * @typedef {!{
- *   name: string,
- *   color: string
- * }}
- */
-PerformanceMonitor.PerformanceMonitor.MetricInfo;
-
-PerformanceMonitor.PerformanceMonitor.ControlPane = class extends Common.Object {
+export class ControlPane extends Common.Object {
   /**
    * @param {!Element} parent
    */
@@ -510,14 +490,14 @@ PerformanceMonitor.PerformanceMonitor.ControlPane = class extends Common.Object 
       }
     }
   }
-};
+}
 
 /** @enum {symbol} */
-PerformanceMonitor.PerformanceMonitor.ControlPane.Events = {
+export const Events = {
   MetricChanged: Symbol('MetricChanged')
 };
 
-PerformanceMonitor.PerformanceMonitor.MetricIndicator = class {
+export class MetricIndicator {
   /**
    * @param {!Element} parent
    * @param {!PerformanceMonitor.PerformanceMonitor.ChartInfo} info
@@ -590,7 +570,53 @@ PerformanceMonitor.PerformanceMonitor.MetricIndicator = class {
       this._toggleIndicator();
     }
   }
-};
+}
 
-PerformanceMonitor.PerformanceMonitor.MetricIndicator._format =
-    new Intl.NumberFormat('en-US', {maximumFractionDigits: 1});
+export const _format = new Intl.NumberFormat('en-US', {maximumFractionDigits: 1});
+
+/* Legacy exported object */
+self.PerformanceMonitor = self.PerformanceMonitor || {};
+
+/* Legacy exported object */
+PerformanceMonitor = PerformanceMonitor || {};
+
+/**
+ * @constructor
+ */
+PerformanceMonitor.PerformanceMonitor = PerformanceMonitorImpl;
+
+/**
+ * @typedef {!{
+ *   name: string,
+ *   color: string
+ * }}
+ */
+PerformanceMonitor.PerformanceMonitor.MetricInfo;
+
+PerformanceMonitor.PerformanceMonitor.Format = Format;
+
+/**
+ * @typedef {!{
+  *   title: string,
+  *   metrics: !Array<!PerformanceMonitor.PerformanceMonitor.MetricInfo>,
+  *   max: (number|undefined),
+  *   currentMax: (number|undefined),
+  *   format: (!Format|undefined),
+  *   smooth: (boolean|undefined)
+  * }}
+  */
+PerformanceMonitor.PerformanceMonitor.ChartInfo;
+
+/**
+ * @constructor
+ */
+PerformanceMonitor.PerformanceMonitor.ControlPane = ControlPane;
+
+/** @enum {symbol} */
+PerformanceMonitor.PerformanceMonitor.ControlPane.Events = Events;
+
+/**
+ * @constructor
+ */
+PerformanceMonitor.PerformanceMonitor.MetricIndicator = MetricIndicator;
+PerformanceMonitor.PerformanceMonitor.MetricIndicator._format = _format;

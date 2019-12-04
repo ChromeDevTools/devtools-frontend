@@ -15,7 +15,9 @@
         "sdk",
         "ui"
     ],
-    "scripts": [
+    "scripts": [],
+    "modules": [
+        "performance_monitor.js",
         "PerformanceMonitor.js"
     ],
     "resources": [

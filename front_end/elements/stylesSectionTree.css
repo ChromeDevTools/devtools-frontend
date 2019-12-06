@@ -36,7 +36,7 @@
     margin: 0 7px 0 0;
     top: 1px;
     left: -36px; /* outdent to compensate for the top-level property indent */
-    -webkit-user-select: none;
+    user-select: none;
     cursor: default;
     z-index: 1;
 }
@@ -191,7 +191,7 @@ ol.expanded {
 }
 
 .expand-icon {
-    -webkit-user-select: none;
+    user-select: none;
     margin-left: -6px;
     margin-right: 2px;
     margin-bottom: -2px;

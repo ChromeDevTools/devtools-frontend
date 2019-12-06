@@ -96,7 +96,7 @@
     left: 7px;
     top: 9px;
     margin-top: -7px;
-    -webkit-user-select: none;
+    user-select: none;
 }
 
 .database-query-prompt-container .prompt-icon {
@@ -113,7 +113,7 @@
 
 .database-query-text {
     color: rgb(0, 128, 255);
-    -webkit-user-select: text;
+    user-select: text;
 }
 
 .database-query-result {
@@ -126,7 +126,7 @@
 
 .database-query-result.error {
     color: red;
-    -webkit-user-select: text;
+    user-select: text;
 }
 
 .resources-sidebar {

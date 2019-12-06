@@ -5,7 +5,7 @@
  */
 
 .websocket-frame-view {
-    -webkit-user-select: text;
+    user-select: text;
 }
 
 .websocket-frame-view .data-grid {

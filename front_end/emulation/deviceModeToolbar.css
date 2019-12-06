@@ -17,7 +17,7 @@
 
 .device-mode-size-input:disabled {
     background: transparent;
-    -webkit-user-select: none;
+    user-select: none;
     opacity: 0.6;
 }
 

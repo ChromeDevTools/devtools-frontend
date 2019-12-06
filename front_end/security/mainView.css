@@ -8,7 +8,7 @@
 }
 
 .security-main-view {
-    -webkit-user-select: text;
+    user-select: text;
     overflow-x: hidden;
     overflow-y: auto;
     background-color: var(--toolbar-bg-color);

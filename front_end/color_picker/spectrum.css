@@ -2,7 +2,7 @@
 :host {
     width: 232px;
     height: 319px;
-    -webkit-user-select: none;
+    user-select: none;
     overflow: hidden;
 }
 
@@ -60,7 +60,7 @@
 
 .spectrum-dragger,
 .spectrum-slider {
-    -webkit-user-select: none;
+    user-select: none;
 }
 
 .spectrum-sat,

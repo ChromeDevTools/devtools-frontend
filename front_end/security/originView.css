@@ -18,7 +18,7 @@
     overflow-x: hidden;
     overflow-y: scroll;
     display: block;
-    -webkit-user-select: text;
+    user-select: text;
 }
 
 .security-origin-view .origin-view-section {

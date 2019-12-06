@@ -94,7 +94,7 @@ body {
     font-family: '.SFNSDisplay-Regular', 'Helvetica Neue', 'Lucida Grande', sans-serif;
     font-size: 12px;
     tab-size: 4;
-    -webkit-user-select: none;
+    user-select: none;
     color: #222;
     background: white;
 }

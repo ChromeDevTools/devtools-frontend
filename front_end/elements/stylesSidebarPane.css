@@ -7,7 +7,7 @@
 .styles-section {
     min-height: 18px;
     white-space: nowrap;
-    -webkit-user-select: text;
+    user-select: text;
     border-bottom: 1px solid var(--divider-color);
     position: relative;
     overflow: hidden;

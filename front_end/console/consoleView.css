@@ -80,7 +80,7 @@
     flex: 1 1;
     overflow-y: auto;
     word-wrap: break-word;
-    -webkit-user-select: text;
+    user-select: text;
     transform: translateZ(0);
     overflow-anchor: none;  /* Chrome-specific scroll-anchoring opt-out */
 }
@@ -112,7 +112,7 @@
 
 .console-timestamp {
     color: gray;
-    -webkit-user-select: none;
+    user-select: none;
     flex: none;
     margin-right: 5px;
 }
@@ -121,7 +121,7 @@
     position: absolute;
     left: -17px;
     top: 4px;
-    -webkit-user-select: none;
+    user-select: none;
 }
 
 .console-message-repeat-count {
@@ -168,7 +168,7 @@
 }
 
 .expand-group-icon {
-    -webkit-user-select: none;
+    user-select: none;
     flex: none;
     background-color: rgb(110, 110, 110);
     position: relative;

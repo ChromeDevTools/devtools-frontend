@@ -45,7 +45,7 @@
 .list-item .file-system-value {
     white-space: nowrap;
     text-overflow: ellipsis;
-    -webkit-user-select: none;
+    user-select: none;
     overflow: hidden;
 }
 

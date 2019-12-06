@@ -42,7 +42,7 @@
     white-space: nowrap;
     text-overflow: ellipsis;
     flex: 0 0 70px;
-    -webkit-user-select: none;
+    user-select: none;
     color: #222;
     text-align: end;
     position: relative;

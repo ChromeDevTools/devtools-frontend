@@ -67,7 +67,7 @@
 }
 
 .blocked-url-edit-value {
-    -webkit-user-select: none;
+    user-select: none;
     flex: 1 1 0px;
 }
 

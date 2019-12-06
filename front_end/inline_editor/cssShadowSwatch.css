@@ -13,7 +13,7 @@
     margin-left: 1px;
     margin-right: 2px;
     top: 1px;
-    -webkit-user-select: none;
+    user-select: none;
     line-height: 10px;
     background-color: #9C27B0;
 }

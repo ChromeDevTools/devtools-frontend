@@ -140,7 +140,7 @@
 }
 
 .service-worker-filter-label::before {
-    -webkit-user-select: none;
+    user-select: none;
     -webkit-mask-image: url(Images/treeoutlineTriangles.svg);
     -webkit-mask-size: 32px 24px;
     content: '';

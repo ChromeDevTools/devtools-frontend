@@ -5,7 +5,7 @@
  */
 
 .shadow-xml-view {
-    -webkit-user-select: text;
+    user-select: text;
     overflow: auto;
     padding: 2px 4px;
 }

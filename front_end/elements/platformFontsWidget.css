@@ -5,7 +5,7 @@
  */
 
 :host {
-    -webkit-user-select: text;
+    user-select: text;
 }
 
 .platform-fonts {
@@ -46,4 +46,3 @@
 .font-stats-item .font-delimeter {
     margin: 0 1ex 0 1ex;
 }
-

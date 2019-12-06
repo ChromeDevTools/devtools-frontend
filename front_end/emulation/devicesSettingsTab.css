@@ -54,7 +54,7 @@
     white-space: nowrap;
     text-overflow: ellipsis;
     flex: auto;
-    -webkit-user-select: none;
+    user-select: none;
     color: #222;
 }
 

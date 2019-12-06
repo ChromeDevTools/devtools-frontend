@@ -7,7 +7,7 @@
 :host {
     width: 270px;
     height: 350px;
-    -webkit-user-select: none;
+    user-select: none;
     padding: 16px;
     overflow: hidden;
 }
@@ -149,7 +149,7 @@ svg.bezier-preset-modify:hover, .bezier-preset:hover {
 
 span.bezier-display-value {
     width: 100%;
-    -webkit-user-select: text;
+    user-select: text;
     display: block;
     text-align: center;
     line-height: 20px;

@@ -108,7 +108,7 @@ select.toolbar-item:disabled + .toolbar-dropdown-arrow {
     margin-left: -4px;
 }
 
-.toolbar-button:not(.toolbar-has-glyph):not(.toolbar-has-dropdown):not(.largeicon-menu) {
+.toolbar-button:not(.toolbar-has-glyph):not(.toolbar-has-dropdown):not(.largeicon-menu):not(.toolbar-button-secondary) {
     font-weight: bold;
 }
 

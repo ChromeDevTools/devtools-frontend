@@ -360,6 +360,9 @@ Sources.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
         Sources.GutterDiffPlugin.accepts(pluginUISourceCode)) {
       this._plugins.push(new Sources.GutterDiffPlugin(this.textEditor, pluginUISourceCode));
     }
+    if (Sources.CoveragePlugin.accepts(pluginUISourceCode)) {
+      this._plugins.push(new Sources.CoveragePlugin(this.textEditor, pluginUISourceCode));
+    }
 
     this.dispatchEventToListeners(Sources.UISourceCodeFrame.Events.ToolbarItemsChanged);
     for (const plugin of this._plugins) {

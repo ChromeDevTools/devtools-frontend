@@ -18,6 +18,9 @@
   <message name="IDS_DEVTOOLS_06a75795f2a3be3930c707d64fd488c0" desc="Title of a setting under the Sources category that can be invoked through the Command Menu">
     Show trailing whitespace characters
   </message>
+  <message name="IDS_DEVTOOLS_06c883a79771ecda24de1687ed7915ba" desc="Text for Coverage Status Bar Item in Sources Panel">
+    Show Details
+  </message>
   <message name="IDS_DEVTOOLS_08355a3ae65d425a4a6bac94ce97dcb4" desc="A context menu item in the Debugger Plugin of the Sources panel">
     Edit breakpoint…
   </message>
@@ -180,6 +183,9 @@
   <message name="IDS_DEVTOOLS_5d113f2038d289f391614c39043629e8" desc="Title of the sources scopeChain">
     Scope
   </message>
+  <message name="IDS_DEVTOOLS_5e4d28f3a2277fcc37e95ce3fcd08418" desc="Text to be shown in the status bar if no coverage data is available">
+    Coverage: n/a
+  </message>
   <message name="IDS_DEVTOOLS_5e7d63192de1cf31345f98b0252bc523" desc="Value element text content in Watch Expressions Sidebar Pane of the Sources panel">
     &lt;not available&gt;
   </message>
@@ -225,6 +231,9 @@
   <message name="IDS_DEVTOOLS_6e0fdbff6068d8b45cac1f4ae39d6798" desc="Title of a setting under the Sources category that can be invoked through the Command Menu">
     Enable autocompletion
   </message>
+  <message name="IDS_DEVTOOLS_6f2e289125c53c936aacab8904f38cb5" desc="Text to show in the status bar if coverage data is available">
+    Coverage: <ph name="THIS__COVERAGE_USEDPERCENTAGE___TOFIXED___">$1s<ex>12.3</ex></ph> %
+  </message>
   <message name="IDS_DEVTOOLS_6f92b50cf0c9932b9359e4cfa2a6473b" desc="A context menu item in the Call Stack Sidebar Pane of the Sources panel">
     Restart frame
   </message>
@@ -269,6 +278,9 @@
   </message>
   <message name="IDS_DEVTOOLS_8317db413bca5e9ed3305fdac525ddd2" desc="Empty placeholder in Scope Chain Sidebar Pane of the Sources panel">
     No variables
+  </message>
+  <message name="IDS_DEVTOOLS_83e2ef9071f03b9f43e568204aaad9a4" desc="Text for Coverage Status Bar Item in Sources Panel">
+    Click to show Coverage Panel
   </message>
   <message name="IDS_DEVTOOLS_8560d166d251804230566118358414e5" desc="A context menu item in the Watch Expressions Sidebar Pane of the Sources panel">
     Add watch expression

@@ -357,6 +357,7 @@ all_devtools_files = [
   "front_end/sources/CallStackSidebarPane.js",
   "front_end/sources/CSSPlugin.js",
   "front_end/sources/DebuggerPlugin.js",
+  "front_end/sources/CoveragePlugin.js",
   "front_end/sources/dialog.css",
   "front_end/sources/debuggerPausedMessage.css",
   "front_end/sources/DebuggerPausedMessage.js",

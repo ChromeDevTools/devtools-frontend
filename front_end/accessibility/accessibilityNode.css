@@ -5,68 +5,67 @@
  */
 
 .widget.ax-subpane {
-    overflow-x: hidden;
-    -webkit-user-select: text;
+  overflow-x: hidden;
+  user-select: text;
 }
 
 .ax-ignored-info {
-    padding: 6px;
+  padding: 6px;
 }
 
 .ax-ignored-node-pane {
-    flex: none;
+  flex: none;
 }
 
 .invalid {
-    text-decoration: line-through;
+  text-decoration: line-through;
 }
 
 span.ax-value-undefined {
-    font-style: italic;
+  font-style: italic;
 }
 
 .ax-value-source-unused {
-    opacity: 0.7;
+  opacity: 0.7;
 }
 
 .ax-value-source-superseded,
 .ax-value-source-invalid {
-    text-decoration: line-through;
+  text-decoration: line-through;
 }
 
 .tree-outline span[is=dt-icon-label] {
-    position: relative;
-    left: -11px;
+  position: relative;
+  left: -11px;
 }
 
 .tree-outline li {
-    display: block;
-    overflow-x: hidden;
-    padding-left: 1px;
-    align-items: baseline;
+  display: block;
+  overflow-x: hidden;
+  align-items: baseline;
 }
 
 .tree-outline li::before {
-    content: "";
-    width: 14px;
-    display: inline-block;
+  content: "";
+  width: 14px;
+  display: inline-block;
 }
 
 .tree-outline li.property {
-    color: rgb(33, 33, 33);
+  color: rgb(33, 33, 33);
 }
 
 .tree-outline li.invalid {
-    position: relative;
-    left: -2px;
+  position: relative;
+  left: -2px;
 }
 
 .tree-outline span[is=dt-icon-label] + .ax-name {
-    margin-left: -11px;
+  margin-left: -11px;
 }
 
 .tree-outline li span {
-    flex-shrink: 0;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+  flex-shrink: 0;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }

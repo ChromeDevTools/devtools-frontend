@@ -28,7 +28,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-Network.HARWriter = class {
+export default class HARWriter {
   /**
    * @param {!Common.OutputStream} stream
    * @param {!Array.<!SDK.NetworkRequest>} requests
@@ -68,7 +68,7 @@ Network.HARWriter = class {
     if (progress.isCanceled()) {
       return '';
     }
-    return JSON.stringify({log: harLog}, null, Network.HARWriter._jsonIndent);
+    return JSON.stringify({log: harLog}, null, _jsonIndent);
 
     function isValidCharacter(code_point) {
       // Excludes non-characters (U+FDD0..U+FDEF, and all codepoints ending in
@@ -117,17 +117,34 @@ Network.HARWriter = class {
     const progress = compositeProgress.createSubProgress();
     progress.setTitle(Common.UIString('Writing file\u2026'));
     progress.setTotalWork(fileContent.length);
-    for (let i = 0; i < fileContent.length && !progress.isCanceled(); i += Network.HARWriter._chunkSize) {
-      const chunk = fileContent.substr(i, Network.HARWriter._chunkSize);
+    for (let i = 0; i < fileContent.length && !progress.isCanceled(); i += _chunkSize) {
+      const chunk = fileContent.substr(i, _chunkSize);
       await stream.write(chunk);
       progress.worked(chunk.length);
     }
     progress.done();
   }
-};
+}
 
 /** @const */
-Network.HARWriter._jsonIndent = 2;
+export const _jsonIndent = 2;
 
 /** @const */
-Network.HARWriter._chunkSize = 100000;
+export const _chunkSize = 100000;
+
+/* Legacy exported object */
+self.Network = self.Network || {};
+
+/* Legacy exported object */
+Network = Network || {};
+
+/**
+ * @constructor
+ */
+Network.HARWriter = HARWriter;
+
+/** @const */
+Network.HARWriter._jsonIndent = _jsonIndent;
+
+/** @const */
+Network.HARWriter._chunkSize = _chunkSize;

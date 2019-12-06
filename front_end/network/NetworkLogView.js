@@ -31,7 +31,7 @@
 /**
  * @implements {SDK.SDKModelObserver<!SDK.NetworkManager>}
  */
-Network.NetworkLogView = class extends UI.VBox {
+export default class NetworkLogView extends UI.VBox {
   /**
    * @param {!UI.FilterBar} filterBar
    * @param {!Element} progressBarContainer
@@ -55,7 +55,7 @@ Network.NetworkLogView = class extends UI.VBox {
     this._networkLogLargeRowsSetting.addChangeListener(updateRowHeight.bind(this), this);
 
     /**
-     * @this {Network.NetworkLogView}
+     * @this {NetworkLogView}
      */
     function updateRowHeight() {
       this._rawRowHeight = !!this._networkLogLargeRowsSetting.get() ? 41 : 21;
@@ -103,11 +103,11 @@ Network.NetworkLogView = class extends UI.VBox {
 
     this._headerHeight = 0;
 
-    /** @type {!Map<string, !Network.GroupLookupInterface>} */
+    /** @type {!Map<string, !GroupLookupInterface>} */
     this._groupLookups = new Map();
     this._groupLookups.set('Frame', new Network.NetworkFrameGrouper(this));
 
-    /** @type {?Network.GroupLookupInterface} */
+    /** @type {?GroupLookupInterface} */
     this._activeGroupLookup = null;
 
     this._textFilterUI = new UI.TextFilterUI();
@@ -136,9 +136,8 @@ Network.NetworkLogView = class extends UI.VBox {
     filterBar.addFilter(this._onlyIssuesFilterUI);
 
 
-    this._filterParser = new TextUtils.FilterParser(Network.NetworkLogView._searchKeys);
-    this._suggestionBuilder =
-        new UI.FilterSuggestionBuilder(Network.NetworkLogView._searchKeys, Network.NetworkLogView._sortSearchValues);
+    this._filterParser = new TextUtils.FilterParser(_searchKeys);
+    this._suggestionBuilder = new UI.FilterSuggestionBuilder(_searchKeys, NetworkLogView._sortSearchValues);
     this._resetSuggestionBuilder();
 
     this._dataGrid = this._columns.dataGrid();
@@ -176,7 +175,7 @@ Network.NetworkLogView = class extends UI.VBox {
    * @param {!Array<string>} values
    */
   static _sortSearchValues(key, values) {
-    if (key === Network.NetworkLogView.FilterType.Priority) {
+    if (key === FilterType.Priority) {
       values.sort((a, b) => {
         const aPriority = /** @type {!Protocol.Network.ResourcePriority} */ (PerfUI.uiLabelToNetworkPriority(a));
         const bPriority = /** @type {!Protocol.Network.ResourcePriority} */ (PerfUI.uiLabelToNetworkPriority(b));
@@ -236,7 +235,7 @@ Network.NetworkLogView = class extends UI.VBox {
       return string.escapeForRegExp();
     }
     const escapedPattern = value.split('*').map(escapeForRegExp).join('.*');
-    return Network.NetworkLogView._requestDomainFilter.bind(null, new RegExp('^' + escapedPattern + '$', 'i'));
+    return NetworkLogView._requestDomainFilter.bind(null, new RegExp('^' + escapedPattern + '$', 'i'));
   }
 
   /**
@@ -317,18 +316,18 @@ Network.NetworkLogView = class extends UI.VBox {
   }
 
   /**
-   * @param {!Network.NetworkLogView.MixedContentFilterValues} value
+   * @param {!MixedContentFilterValues} value
    * @param {!SDK.NetworkRequest} request
    * @return {boolean}
    */
   static _requestMixedContentFilter(value, request) {
-    if (value === Network.NetworkLogView.MixedContentFilterValues.Displayed) {
+    if (value === MixedContentFilterValues.Displayed) {
       return request.mixedContentType === Protocol.Security.MixedContentType.OptionallyBlockable;
-    } else if (value === Network.NetworkLogView.MixedContentFilterValues.Blocked) {
+    } else if (value === MixedContentFilterValues.Blocked) {
       return request.mixedContentType === Protocol.Security.MixedContentType.Blockable && request.wasBlocked();
-    } else if (value === Network.NetworkLogView.MixedContentFilterValues.BlockOverridden) {
+    } else if (value === MixedContentFilterValues.BlockOverridden) {
       return request.mixedContentType === Protocol.Security.MixedContentType.Blockable && !request.wasBlocked();
-    } else if (value === Network.NetworkLogView.MixedContentFilterValues.All) {
+    } else if (value === MixedContentFilterValues.All) {
       return request.mixedContentType !== Protocol.Security.MixedContentType.None;
     }
 
@@ -412,7 +411,7 @@ Network.NetworkLogView = class extends UI.VBox {
    * @return {boolean}
    */
   static HTTPRequestsFilter(request) {
-    return request.parsedURL.isValid && (request.scheme in Network.NetworkLogView.HTTPSchemas);
+    return request.parsedURL.isValid && (request.scheme in HTTPSchemas);
   }
 
   /**
@@ -528,7 +527,7 @@ Network.NetworkLogView = class extends UI.VBox {
    * @return {?Network.NetworkRequestNode}
    */
   nodeForRequest(request) {
-    return request[Network.NetworkLogView._networkNodeSymbol] || null;
+    return request[_networkNodeSymbol] || null;
   }
 
   /**
@@ -587,7 +586,7 @@ Network.NetworkLogView = class extends UI.VBox {
       this._timeFilter = null;
       this._timeCalculator.setWindow(null);
     } else {
-      this._timeFilter = Network.NetworkLogView._requestTimeFilter.bind(null, start, end);
+      this._timeFilter = NetworkLogView._requestTimeFilter.bind(null, start, end);
       this._timeCalculator.setWindow(new Network.NetworkTimeBoundary(start, end));
     }
     this._filterRequests();
@@ -599,16 +598,13 @@ Network.NetworkLogView = class extends UI.VBox {
 
   _resetSuggestionBuilder() {
     this._suggestionBuilder.clear();
-    this._suggestionBuilder.addItem(Network.NetworkLogView.FilterType.Is, Network.NetworkLogView.IsFilterType.Running);
-    this._suggestionBuilder.addItem(
-        Network.NetworkLogView.FilterType.Is, Network.NetworkLogView.IsFilterType.FromCache);
-    this._suggestionBuilder.addItem(
-        Network.NetworkLogView.FilterType.Is, Network.NetworkLogView.IsFilterType.ServiceWorkerIntercepted);
-    this._suggestionBuilder.addItem(
-        Network.NetworkLogView.FilterType.Is, Network.NetworkLogView.IsFilterType.ServiceWorkerInitiated);
-    this._suggestionBuilder.addItem(Network.NetworkLogView.FilterType.LargerThan, '100');
-    this._suggestionBuilder.addItem(Network.NetworkLogView.FilterType.LargerThan, '10k');
-    this._suggestionBuilder.addItem(Network.NetworkLogView.FilterType.LargerThan, '1M');
+    this._suggestionBuilder.addItem(FilterType.Is, IsFilterType.Running);
+    this._suggestionBuilder.addItem(FilterType.Is, IsFilterType.FromCache);
+    this._suggestionBuilder.addItem(FilterType.Is, IsFilterType.ServiceWorkerIntercepted);
+    this._suggestionBuilder.addItem(FilterType.Is, IsFilterType.ServiceWorkerInitiated);
+    this._suggestionBuilder.addItem(FilterType.LargerThan, '100');
+    this._suggestionBuilder.addItem(FilterType.LargerThan, '10k');
+    this._suggestionBuilder.addItem(FilterType.LargerThan, '1M');
     this._textFilterUI.setSuggestionProvider(this._suggestionBuilder.completions.bind(this._suggestionBuilder));
   }
 
@@ -707,7 +703,7 @@ Network.NetworkLogView = class extends UI.VBox {
     this._dataGrid.element.addEventListener('mouseleave', () => this._setHoveredNode(null), true);
     this._dataGrid.element.addEventListener('keydown', event => {
       if (isEnterOrSpaceKey(event)) {
-        this.dispatchEventToListeners(Network.NetworkLogView.Events.RequestActivated, /* showPanel */ true);
+        this.dispatchEventToListeners(Events.RequestActivated, /* showPanel */ true);
         event.consume(true);
       }
     });
@@ -768,7 +764,7 @@ Network.NetworkLogView = class extends UI.VBox {
 
     let nodeCount = 0;
     for (const request of SDK.networkLog.requests()) {
-      const node = request[Network.NetworkLogView._networkNodeSymbol];
+      const node = request[_networkNodeSymbol];
       if (!node) {
         continue;
       }
@@ -777,7 +773,7 @@ Network.NetworkLogView = class extends UI.VBox {
       transferSize += requestTransferSize;
       const requestResourceSize = request.resourceSize;
       resourceSize += requestResourceSize;
-      if (!node[Network.NetworkLogView._isFilteredOutSymbol]) {
+      if (!node[_isFilteredOutSymbol]) {
         selectedNodeNumber++;
         selectedTransferSize += requestTransferSize;
         selectedResourceSize += requestResourceSize;
@@ -839,12 +835,12 @@ Network.NetworkLogView = class extends UI.VBox {
         this._summaryToolbar.appendSeparator();
         const domContentLoadedText =
             ls`DOMContentLoaded: ${Number.secondsToString(this._mainRequestDOMContentLoadedTime - baseTime)}`;
-        appendChunk(domContentLoadedText).style.color = Network.NetworkLogView.getDCLEventColor();
+        appendChunk(domContentLoadedText).style.color = NetworkLogView.getDCLEventColor();
       }
       if (this._mainRequestLoadTime !== -1) {
         this._summaryToolbar.appendSeparator();
         const loadText = ls`Load: ${Number.secondsToString(this._mainRequestLoadTime - baseTime)}`;
-        appendChunk(loadText).style.color = Network.NetworkLogView.getLoadEventColor();
+        appendChunk(loadText).style.color = NetworkLogView.getLoadEventColor();
       }
     }
   }
@@ -1041,7 +1037,7 @@ Network.NetworkLogView = class extends UI.VBox {
     while (this._staleRequests.size) {
       const request = this._staleRequests.firstValue();
       this._staleRequests.delete(request);
-      let node = request[Network.NetworkLogView._networkNodeSymbol];
+      let node = request[_networkNodeSymbol];
       if (!node) {
         node = this._createNodeForRequest(request);
       }
@@ -1061,10 +1057,10 @@ Network.NetworkLogView = class extends UI.VBox {
       this._timeCalculator.updateBoundaries(request);
       this._durationCalculator.updateBoundaries(request);
       const newParent = this._parentNodeForInsert(node);
-      if (node[Network.NetworkLogView._isFilteredOutSymbol] === isFilteredOut && node.parent === newParent) {
+      if (node[_isFilteredOutSymbol] === isFilteredOut && node.parent === newParent) {
         continue;
       }
-      node[Network.NetworkLogView._isFilteredOutSymbol] = isFilteredOut;
+      node[_isFilteredOutSymbol] = isFilteredOut;
       const removeFromParent = node.parent && (isFilteredOut || node.parent !== newParent);
       if (removeFromParent) {
         let parent = node.parent;
@@ -1125,7 +1121,7 @@ Network.NetworkLogView = class extends UI.VBox {
   }
 
   _reset() {
-    this.dispatchEventToListeners(Network.NetworkLogView.Events.RequestActivated, /* showPanel */ false);
+    this.dispatchEventToListeners(Events.RequestActivated, /* showPanel */ false);
 
     this._setHoveredNode(null);
     this._columns.reset();
@@ -1166,8 +1162,8 @@ Network.NetworkLogView = class extends UI.VBox {
    */
   _createNodeForRequest(request) {
     const node = new Network.NetworkRequestNode(this, request);
-    request[Network.NetworkLogView._networkNodeSymbol] = node;
-    node[Network.NetworkLogView._isFilteredOutSymbol] = true;
+    request[_networkNodeSymbol] = node;
+    node[_isFilteredOutSymbol] = true;
 
     for (let redirect = request.redirectSource(); redirect; redirect = redirect.redirectSource()) {
       this._refreshRequest(redirect);
@@ -1187,46 +1183,42 @@ Network.NetworkLogView = class extends UI.VBox {
    * @param {!SDK.NetworkRequest} request
    */
   _refreshRequest(request) {
-    Network.NetworkLogView._subdomains(request.domain)
-        .forEach(
-            this._suggestionBuilder.addItem.bind(this._suggestionBuilder, Network.NetworkLogView.FilterType.Domain));
-    this._suggestionBuilder.addItem(Network.NetworkLogView.FilterType.Method, request.requestMethod);
-    this._suggestionBuilder.addItem(Network.NetworkLogView.FilterType.MimeType, request.mimeType);
-    this._suggestionBuilder.addItem(Network.NetworkLogView.FilterType.Scheme, '' + request.scheme);
-    this._suggestionBuilder.addItem(Network.NetworkLogView.FilterType.StatusCode, '' + request.statusCode);
+    NetworkLogView._subdomains(request.domain)
+        .forEach(this._suggestionBuilder.addItem.bind(this._suggestionBuilder, FilterType.Domain));
+    this._suggestionBuilder.addItem(FilterType.Method, request.requestMethod);
+    this._suggestionBuilder.addItem(FilterType.MimeType, request.mimeType);
+    this._suggestionBuilder.addItem(FilterType.Scheme, '' + request.scheme);
+    this._suggestionBuilder.addItem(FilterType.StatusCode, '' + request.statusCode);
 
     const priority = request.priority();
     if (priority) {
-      this._suggestionBuilder.addItem(
-          Network.NetworkLogView.FilterType.Priority, PerfUI.uiLabelForNetworkPriority(priority));
+      this._suggestionBuilder.addItem(FilterType.Priority, PerfUI.uiLabelForNetworkPriority(priority));
     }
 
     if (request.mixedContentType !== Protocol.Security.MixedContentType.None) {
-      this._suggestionBuilder.addItem(
-          Network.NetworkLogView.FilterType.MixedContent, Network.NetworkLogView.MixedContentFilterValues.All);
+      this._suggestionBuilder.addItem(FilterType.MixedContent, MixedContentFilterValues.All);
     }
 
     if (request.mixedContentType === Protocol.Security.MixedContentType.OptionallyBlockable) {
-      this._suggestionBuilder.addItem(
-          Network.NetworkLogView.FilterType.MixedContent, Network.NetworkLogView.MixedContentFilterValues.Displayed);
+      this._suggestionBuilder.addItem(FilterType.MixedContent, MixedContentFilterValues.Displayed);
     }
 
     if (request.mixedContentType === Protocol.Security.MixedContentType.Blockable) {
-      const suggestion = request.wasBlocked() ? Network.NetworkLogView.MixedContentFilterValues.Blocked :
-                                                Network.NetworkLogView.MixedContentFilterValues.BlockOverridden;
-      this._suggestionBuilder.addItem(Network.NetworkLogView.FilterType.MixedContent, suggestion);
+      const suggestion =
+          request.wasBlocked() ? MixedContentFilterValues.Blocked : MixedContentFilterValues.BlockOverridden;
+      this._suggestionBuilder.addItem(FilterType.MixedContent, suggestion);
     }
 
     const responseHeaders = request.responseHeaders;
     for (let i = 0, l = responseHeaders.length; i < l; ++i) {
-      this._suggestionBuilder.addItem(Network.NetworkLogView.FilterType.HasResponseHeader, responseHeaders[i].name);
+      this._suggestionBuilder.addItem(FilterType.HasResponseHeader, responseHeaders[i].name);
     }
     const cookies = request.responseCookies;
     for (let i = 0, l = cookies ? cookies.length : 0; i < l; ++i) {
       const cookie = cookies[i];
-      this._suggestionBuilder.addItem(Network.NetworkLogView.FilterType.SetCookieDomain, cookie.domain());
-      this._suggestionBuilder.addItem(Network.NetworkLogView.FilterType.SetCookieName, cookie.name());
-      this._suggestionBuilder.addItem(Network.NetworkLogView.FilterType.SetCookieValue, cookie.value());
+      this._suggestionBuilder.addItem(FilterType.SetCookieDomain, cookie.domain());
+      this._suggestionBuilder.addItem(FilterType.SetCookieName, cookie.name());
+      this._suggestionBuilder.addItem(FilterType.SetCookieValue, cookie.value());
     }
 
     this._staleRequests.add(request);
@@ -1261,17 +1253,17 @@ Network.NetworkLogView = class extends UI.VBox {
           Host.InspectorFrontendHost.copyText.bind(Host.InspectorFrontendHost, request.contentURL()));
       if (request.requestHeadersText()) {
         copyMenu.defaultSection().appendItem(
-            Common.UIString('Copy request headers'), Network.NetworkLogView._copyRequestHeaders.bind(null, request));
+            Common.UIString('Copy request headers'), NetworkLogView._copyRequestHeaders.bind(null, request));
       }
 
       if (request.responseHeadersText) {
         copyMenu.defaultSection().appendItem(
-            Common.UIString('Copy response headers'), Network.NetworkLogView._copyResponseHeaders.bind(null, request));
+            Common.UIString('Copy response headers'), NetworkLogView._copyResponseHeaders.bind(null, request));
       }
 
       if (request.finished) {
         copyMenu.defaultSection().appendItem(
-            Common.UIString('Copy response'), Network.NetworkLogView._copyResponse.bind(null, request));
+            Common.UIString('Copy response'), NetworkLogView._copyResponse.bind(null, request));
       }
 
       const disableIfBlob = request.isBlobRequest();
@@ -1360,7 +1352,7 @@ Network.NetworkLogView = class extends UI.VBox {
   }
 
   _harRequests() {
-    return SDK.networkLog.requests().filter(Network.NetworkLogView.HTTPRequestsFilter).filter(request => {
+    return SDK.networkLog.requests().filter(NetworkLogView.HTTPRequestsFilter).filter(request => {
       return request.finished ||
           (request.resourceType() === Common.resourceTypes.WebSocket && request.responseReceivedTime);
     });
@@ -1494,75 +1486,74 @@ Network.NetworkLogView = class extends UI.VBox {
       let filter;
       if (key) {
         const defaultText = (key + ':' + text).escapeForRegExp();
-        filter = this._createSpecialFilter(/** @type {!Network.NetworkLogView.FilterType} */ (key), text) ||
-            Network.NetworkLogView._requestPathFilter.bind(null, new RegExp(defaultText, 'i'));
+        filter = this._createSpecialFilter(/** @type {!FilterType} */ (key), text) ||
+            NetworkLogView._requestPathFilter.bind(null, new RegExp(defaultText, 'i'));
       } else if (descriptor.regex) {
-        filter = Network.NetworkLogView._requestPathFilter.bind(null, /** @type {!RegExp} */ (regex));
+        filter = NetworkLogView._requestPathFilter.bind(null, /** @type {!RegExp} */ (regex));
       } else {
-        filter = Network.NetworkLogView._requestPathFilter.bind(null, new RegExp(text.escapeForRegExp(), 'i'));
+        filter = NetworkLogView._requestPathFilter.bind(null, new RegExp(text.escapeForRegExp(), 'i'));
       }
-      return descriptor.negative ? Network.NetworkLogView._negativeFilter.bind(null, filter) : filter;
+      return descriptor.negative ? NetworkLogView._negativeFilter.bind(null, filter) : filter;
     });
   }
 
   /**
-   * @param {!Network.NetworkLogView.FilterType} type
+   * @param {!FilterType} type
    * @param {string} value
    * @return {?Network.NetworkLogView.Filter}
    */
   _createSpecialFilter(type, value) {
     switch (type) {
-      case Network.NetworkLogView.FilterType.Domain:
-        return Network.NetworkLogView._createRequestDomainFilter(value);
+      case FilterType.Domain:
+        return NetworkLogView._createRequestDomainFilter(value);
 
-      case Network.NetworkLogView.FilterType.HasResponseHeader:
-        return Network.NetworkLogView._requestResponseHeaderFilter.bind(null, value);
+      case FilterType.HasResponseHeader:
+        return NetworkLogView._requestResponseHeaderFilter.bind(null, value);
 
-      case Network.NetworkLogView.FilterType.Is:
-        if (value.toLowerCase() === Network.NetworkLogView.IsFilterType.Running) {
-          return Network.NetworkLogView._runningRequestFilter;
+      case FilterType.Is:
+        if (value.toLowerCase() === IsFilterType.Running) {
+          return NetworkLogView._runningRequestFilter;
         }
-        if (value.toLowerCase() === Network.NetworkLogView.IsFilterType.FromCache) {
-          return Network.NetworkLogView._fromCacheRequestFilter;
+        if (value.toLowerCase() === IsFilterType.FromCache) {
+          return NetworkLogView._fromCacheRequestFilter;
         }
-        if (value.toLowerCase() === Network.NetworkLogView.IsFilterType.ServiceWorkerIntercepted) {
-          return Network.NetworkLogView._interceptedByServiceWorkerFilter;
+        if (value.toLowerCase() === IsFilterType.ServiceWorkerIntercepted) {
+          return NetworkLogView._interceptedByServiceWorkerFilter;
         }
-        if (value.toLowerCase() === Network.NetworkLogView.IsFilterType.ServiceWorkerInitiated) {
-          return Network.NetworkLogView._initiatedByServiceWorkerFilter;
+        if (value.toLowerCase() === IsFilterType.ServiceWorkerInitiated) {
+          return NetworkLogView._initiatedByServiceWorkerFilter;
         }
         break;
 
-      case Network.NetworkLogView.FilterType.LargerThan:
+      case FilterType.LargerThan:
         return this._createSizeFilter(value.toLowerCase());
 
-      case Network.NetworkLogView.FilterType.Method:
-        return Network.NetworkLogView._requestMethodFilter.bind(null, value);
+      case FilterType.Method:
+        return NetworkLogView._requestMethodFilter.bind(null, value);
 
-      case Network.NetworkLogView.FilterType.MimeType:
-        return Network.NetworkLogView._requestMimeTypeFilter.bind(null, value);
+      case FilterType.MimeType:
+        return NetworkLogView._requestMimeTypeFilter.bind(null, value);
 
-      case Network.NetworkLogView.FilterType.MixedContent:
-        return Network.NetworkLogView._requestMixedContentFilter.bind(
-            null, /** @type {!Network.NetworkLogView.MixedContentFilterValues} */ (value));
+      case FilterType.MixedContent:
+        return NetworkLogView._requestMixedContentFilter.bind(null, /** @type {!MixedContentFilterValues} */ (value));
 
-      case Network.NetworkLogView.FilterType.Scheme:
-        return Network.NetworkLogView._requestSchemeFilter.bind(null, value);
+      case FilterType.Scheme:
+        return NetworkLogView._requestSchemeFilter.bind(null, value);
 
-      case Network.NetworkLogView.FilterType.SetCookieDomain:
-        return Network.NetworkLogView._requestSetCookieDomainFilter.bind(null, value);
+      case FilterType.SetCookieDomain:
+        return NetworkLogView._requestSetCookieDomainFilter.bind(null, value);
 
-      case Network.NetworkLogView.FilterType.SetCookieName:
-        return Network.NetworkLogView._requestSetCookieNameFilter.bind(null, value);
+      case FilterType.SetCookieName:
+        return NetworkLogView._requestSetCookieNameFilter.bind(null, value);
 
-      case Network.NetworkLogView.FilterType.SetCookieValue:
-        return Network.NetworkLogView._requestSetCookieValueFilter.bind(null, value);
+      case FilterType.SetCookieValue:
+        return NetworkLogView._requestSetCookieValueFilter.bind(null, value);
 
-      case Network.NetworkLogView.FilterType.Priority:
-        return Network.NetworkLogView._requestPriorityFilter.bind(null, PerfUI.uiLabelToNetworkPriority(value));
+      case FilterType.Priority:
+        return NetworkLogView._requestPriorityFilter.bind(null, PerfUI.uiLabelToNetworkPriority(value));
 
-      case Network.NetworkLogView.FilterType.StatusCode:
-        return Network.NetworkLogView._statusCodeFilter.bind(null, value);
+      case FilterType.StatusCode:
+        return NetworkLogView._statusCodeFilter.bind(null, value);
     }
     return null;
   }
@@ -1584,7 +1575,7 @@ Network.NetworkLogView = class extends UI.VBox {
     if (isNaN(quantity)) {
       return null;
     }
-    return Network.NetworkLogView._requestSizeLargerThanFilter.bind(null, quantity * multiplier);
+    return NetworkLogView._requestSizeLargerThanFilter.bind(null, quantity * multiplier);
   }
 
   _filterRequests() {
@@ -1598,7 +1589,7 @@ Network.NetworkLogView = class extends UI.VBox {
    */
   _reveal(request) {
     this.removeAllNodeHighlights();
-    const node = request[Network.NetworkLogView._networkNodeSymbol];
+    const node = request[_networkNodeSymbol];
     if (!node || !node.dataGrid) {
       return null;
     }
@@ -1976,12 +1967,12 @@ Network.NetworkLogView = class extends UI.VBox {
   static getLoadEventColor() {
     return UI.themeSupport.patchColorText('#B31412', UI.ThemeSupport.ColorUsage.Foreground);
   }
-};
+}
 
-Network.NetworkLogView._isFilteredOutSymbol = Symbol('isFilteredOut');
-Network.NetworkLogView._networkNodeSymbol = Symbol('NetworkNode');
+export const _isFilteredOutSymbol = Symbol('isFilteredOut');
+export const _networkNodeSymbol = Symbol('NetworkNode');
 
-Network.NetworkLogView.HTTPSchemas = {
+export const HTTPSchemas = {
   'http': true,
   'https': true,
   'ws': true,
@@ -1989,13 +1980,13 @@ Network.NetworkLogView.HTTPSchemas = {
 };
 
 /** @enum {symbol} */
-Network.NetworkLogView.Events = {
+export const Events = {
   RequestSelected: Symbol('RequestSelected'),
   RequestActivated: Symbol('RequestActivated')
 };
 
 /** @enum {string} */
-Network.NetworkLogView.FilterType = {
+export const FilterType = {
   Domain: 'domain',
   HasResponseHeader: 'has-response-header',
   Is: 'is',
@@ -2012,7 +2003,7 @@ Network.NetworkLogView.FilterType = {
 };
 
 /** @enum {string} */
-Network.NetworkLogView.MixedContentFilterValues = {
+export const MixedContentFilterValues = {
   All: 'all',
   Displayed: 'displayed',
   Blocked: 'blocked',
@@ -2020,7 +2011,7 @@ Network.NetworkLogView.MixedContentFilterValues = {
 };
 
 /** @enum {string} */
-Network.NetworkLogView.IsFilterType = {
+export const IsFilterType = {
   Running: 'running',
   FromCache: 'from-cache',
   ServiceWorkerIntercepted: 'service-worker-intercepted',
@@ -2028,23 +2019,57 @@ Network.NetworkLogView.IsFilterType = {
 };
 
 /** @type {!Array<string>} */
-Network.NetworkLogView._searchKeys =
-    Object.keys(Network.NetworkLogView.FilterType).map(key => Network.NetworkLogView.FilterType[key]);
-
-/** @typedef {function(!SDK.NetworkRequest): boolean} */
-Network.NetworkLogView.Filter;
+export const _searchKeys = Object.keys(FilterType).map(key => FilterType[key]);
 
 /**
  * @interface
  */
-Network.GroupLookupInterface = function() {};
-
-Network.GroupLookupInterface.prototype = {
+export class GroupLookupInterface {
   /**
    * @param {!SDK.NetworkRequest} request
    * @return {?Network.NetworkGroupNode}
    */
-  groupNodeForRequest: function(request) {},
+  groupNodeForRequest(request) {
+  }
 
-  reset: function() {}
-};
+  reset() {
+  }
+}
+
+/* Legacy exported object */
+self.Network = self.Network || {};
+
+/* Legacy exported object */
+Network = Network || {};
+
+/**
+ * @constructor
+ */
+Network.NetworkLogView = NetworkLogView;
+
+/** @typedef {function(!SDK.NetworkRequest): boolean} */
+Network.NetworkLogView.Filter;
+
+Network.NetworkLogView._isFilteredOutSymbol = _isFilteredOutSymbol;
+Network.NetworkLogView._networkNodeSymbol = _networkNodeSymbol;
+Network.NetworkLogView.HTTPSchemas = HTTPSchemas;
+
+/** @enum {symbol} */
+Network.NetworkLogView.Events = Events;
+
+/** @enum {string} */
+Network.NetworkLogView.FilterType = FilterType;
+
+/** @enum {string} */
+Network.NetworkLogView.MixedContentFilterValues = MixedContentFilterValues;
+
+/** @enum {string} */
+Network.NetworkLogView.IsFilterType = IsFilterType;
+
+/** @type {!Array<string>} */
+Network.NetworkLogView._searchKeys = _searchKeys;
+
+/**
+ * @interface
+ */
+Network.GroupLookupInterface = GroupLookupInterface;

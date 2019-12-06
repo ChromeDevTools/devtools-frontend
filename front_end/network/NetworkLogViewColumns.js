@@ -4,7 +4,7 @@
 /**
  * @unrestricted
  */
-Network.NetworkLogViewColumns = class {
+export default class NetworkLogViewColumns {
   /**
    * @param {!Network.NetworkLogView} networkLogView
    * @param {!Network.NetworkTransferTimeCalculator} timeCalculator
@@ -37,8 +37,8 @@ Network.NetworkLogViewColumns = class {
 
     /** @type {!Map<string, !Network.NetworkTimeCalculator>} */
     this._calculatorsMap = new Map();
-    this._calculatorsMap.set(Network.NetworkLogViewColumns._calculatorTypes.Time, timeCalculator);
-    this._calculatorsMap.set(Network.NetworkLogViewColumns._calculatorTypes.Duration, durationCalculator);
+    this._calculatorsMap.set(_calculatorTypes.Time, timeCalculator);
+    this._calculatorsMap.set(_calculatorTypes.Duration, durationCalculator);
 
     this._lastWheelTime = 0;
 
@@ -78,9 +78,8 @@ Network.NetworkLogViewColumns = class {
   }
 
   _setupDataGrid() {
-    const defaultColumns = Network.NetworkLogViewColumns._defaultColumns;
-
-    const defaultColumnConfig = Network.NetworkLogViewColumns._defaultColumnConfig;
+    const defaultColumns = _defaultColumns;
+    const defaultColumnConfig = _defaultColumnConfig;
 
     this._columns = /** @type {!Array<!Network.NetworkLogViewColumns.Descriptor>} */ ([]);
     for (const currentConfigColumn of defaultColumns) {
@@ -100,7 +99,7 @@ Network.NetworkLogViewColumns = class {
 
     /** @type {!DataGrid.SortableDataGrid<!Network.NetworkNode>} */
     this._dataGrid =
-        new DataGrid.SortableDataGrid(this._columns.map(Network.NetworkLogViewColumns._convertToDataGridDescriptor));
+        new DataGrid.SortableDataGrid(this._columns.map(NetworkLogViewColumns._convertToDataGridDescriptor));
     this._dataGrid.element.addEventListener('mousedown', event => {
       if (!this._dataGrid.selectedNode && event.button) {
         event.consume();
@@ -113,9 +112,8 @@ Network.NetworkLogViewColumns = class {
     this._dataGrid.addEventListener(DataGrid.DataGrid.Events.SortingChanged, this._sortHandler, this);
     this._dataGrid.setHeaderContextMenuCallback(this._innerHeaderContextMenu.bind(this));
 
-    this._activeWaterfallSortId = Network.NetworkLogViewColumns.WaterfallSortIds.StartTime;
-    this._dataGrid.markColumnAsSortedBy(
-        Network.NetworkLogViewColumns._initialSortColumn, DataGrid.DataGrid.Order.Ascending);
+    this._activeWaterfallSortId = WaterfallSortIds.StartTime;
+    this._dataGrid.markColumnAsSortedBy(_initialSortColumn, DataGrid.DataGrid.Order.Ascending);
 
     this._splitWidget = new UI.SplitWidget(true, true, 'networkPanelSplitViewWaterfall', 200);
     const widget = this._dataGrid.asWidget();
@@ -150,7 +148,7 @@ Network.NetworkLogViewColumns = class {
 
     /**
      * @param {!Event} event
-     * @this {Network.NetworkLogViewColumns}
+     * @this {NetworkLogViewColumns}
      */
     function handleContextMenu(event) {
       const node = this._waterfallColumn.getNodeFromPoint(event.offsetX, event.offsetY);
@@ -222,7 +220,7 @@ Network.NetworkLogViewColumns = class {
         .appendChild(this._waterfallColumnSortIcon);
 
     /**
-     * @this {Network.NetworkLogViewColumns}
+     * @this {NetworkLogViewColumns}
      */
     function waterfallHeaderClicked() {
       const sortOrders = DataGrid.DataGrid.Order;
@@ -470,7 +468,7 @@ Network.NetworkLogViewColumns = class {
     responseSubMenu.footerSection().appendItem(
         Common.UIString('Manage Header Columns\u2026'), this._manageCustomHeaderDialog.bind(this));
 
-    const waterfallSortIds = Network.NetworkLogViewColumns.WaterfallSortIds;
+    const waterfallSortIds = WaterfallSortIds;
     const waterfallSubMenu = contextMenu.footerSection().appendSubMenuItem(Common.UIString('Waterfall'));
     waterfallSubMenu.defaultSection().appendCheckboxItem(
         Common.UIString('Start Time'), setWaterfallMode.bind(this, waterfallSortIds.StartTime),
@@ -491,14 +489,14 @@ Network.NetworkLogViewColumns = class {
     contextMenu.show();
 
     /**
-     * @param {!Network.NetworkLogViewColumns.WaterfallSortIds} sortId
-     * @this {Network.NetworkLogViewColumns}
+     * @param {!WaterfallSortIds} sortId
+     * @this {NetworkLogViewColumns}
      */
     function setWaterfallMode(sortId) {
-      let calculator = this._calculatorsMap.get(Network.NetworkLogViewColumns._calculatorTypes.Time);
-      const waterfallSortIds = Network.NetworkLogViewColumns.WaterfallSortIds;
+      let calculator = this._calculatorsMap.get(_calculatorTypes.Time);
+      const waterfallSortIds = WaterfallSortIds;
       if (sortId === waterfallSortIds.Duration || sortId === waterfallSortIds.Latency) {
-        calculator = this._calculatorsMap.get(Network.NetworkLogViewColumns._calculatorTypes.Duration);
+        calculator = this._calculatorsMap.get(_calculatorTypes.Duration);
       }
       this._networkLogView.setCalculator(calculator);
 
@@ -560,18 +558,22 @@ Network.NetworkLogViewColumns = class {
       return null;
     }
 
-    const columnConfig = /** @type {!Network.NetworkLogViewColumns.Descriptor} */ (
-        Object.assign({}, Network.NetworkLogViewColumns._defaultColumnConfig, {
-          id: headerId,
-          title: headerTitle,
-          isResponseHeader: true,
-          isCustomHeader: true,
-          visible: true,
-          sortingFunction: Network.NetworkRequestNode.ResponseHeaderStringComparator.bind(null, headerId)
-        }));
+    const columnConfigBase = Object.assign({}, _defaultColumnConfig, {
+      id: headerId,
+      title: headerTitle,
+      isResponseHeader: true,
+      isCustomHeader: true,
+      visible: true,
+      sortingFunction: Network.NetworkRequestNode.ResponseHeaderStringComparator.bind(null, headerId)
+    });
+
+    // Split out the column config from the typed version, as doing it in a single assignment causes
+    // issues with Closure compiler.
+    const columnConfig = /** @type {!Network.NetworkLogViewColumns.Descriptor} */ (columnConfigBase);
+
     this._columns.splice(index, 0, columnConfig);
     if (this._dataGrid) {
-      this._dataGrid.addColumn(Network.NetworkLogViewColumns._convertToDataGridDescriptor(columnConfig), index);
+      this._dataGrid.addColumn(NetworkLogViewColumns._convertToDataGridDescriptor(columnConfig), index);
     }
     this._saveColumnsSettings();
     this._updateColumns();
@@ -672,41 +674,21 @@ Network.NetworkLogViewColumns = class {
    * @param {number} time
    */
   selectFilmStripFrame(time) {
-    this._eventDividers.set(Network.NetworkLogViewColumns._filmStripDividerColor, [time]);
+    this._eventDividers.set(_filmStripDividerColor, [time]);
     this._redrawWaterfallColumn();
   }
 
   clearFilmStripFrame() {
-    this._eventDividers.delete(Network.NetworkLogViewColumns._filmStripDividerColor);
+    this._eventDividers.delete(_filmStripDividerColor);
     this._redrawWaterfallColumn();
   }
-};
+}
 
-Network.NetworkLogViewColumns._initialSortColumn = 'waterfall';
+export const _initialSortColumn = 'waterfall';
 
-/**
- * @typedef {{
- *     id: string,
- *     title: string,
- *     titleDOMFragment: (!DocumentFragment|undefined),
- *     subtitle: (string|null),
- *     visible: boolean,
- *     weight: number,
- *     hideable: boolean,
- *     hideableGroup: ?string,
- *     nonSelectable: boolean,
- *     sortable: boolean,
- *     align: (?DataGrid.DataGrid.Align|undefined),
- *     isResponseHeader: boolean,
- *     sortingFunction: (!function(!Network.NetworkNode, !Network.NetworkNode):number|undefined),
- *     isCustomHeader: boolean,
- *     allowInSortByEvenWhenHidden: boolean
- * }}
- */
-Network.NetworkLogViewColumns.Descriptor;
 
 /** @enum {string} */
-Network.NetworkLogViewColumns._calculatorTypes = {
+export const _calculatorTypes = {
   Duration: 'Duration',
   Time: 'Time'
 };
@@ -714,7 +696,7 @@ Network.NetworkLogViewColumns._calculatorTypes = {
 /**
  * @type {!Object} column
  */
-Network.NetworkLogViewColumns._defaultColumnConfig = {
+export const _defaultColumnConfig = {
   subtitle: null,
   visible: false,
   weight: 6,
@@ -730,7 +712,7 @@ Network.NetworkLogViewColumns._defaultColumnConfig = {
 /**
  * @type {!Array.<!Network.NetworkLogViewColumns.Descriptor>} column
  */
-Network.NetworkLogViewColumns._defaultColumns = [
+export const _defaultColumns = [
   {
     id: 'name',
     title: Common.UIString('Name'),
@@ -897,15 +879,67 @@ Network.NetworkLogViewColumns._defaultColumns = [
   {id: 'waterfall', title: ls`Waterfall`, visible: false, hideable: false, allowInSortByEvenWhenHidden: true}
 ];
 
-Network.NetworkLogViewColumns._filmStripDividerColor = '#fccc49';
+export const _filmStripDividerColor = '#fccc49';
 
 /**
  * @enum {string}
  */
-Network.NetworkLogViewColumns.WaterfallSortIds = {
+export const WaterfallSortIds = {
   StartTime: 'startTime',
   ResponseTime: 'responseReceivedTime',
   EndTime: 'endTime',
   Duration: 'duration',
   Latency: 'latency'
 };
+
+/* Legacy exported object */
+self.Network = self.Network || {};
+
+/* Legacy exported object */
+Network = Network || {};
+
+/**
+ * @constructor
+ */
+Network.NetworkLogViewColumns = NetworkLogViewColumns;
+Network.NetworkLogViewColumns._initialSortColumn = _initialSortColumn;
+
+/**
+ * @typedef {{
+ *     id: string,
+ *     title: string,
+ *     titleDOMFragment: (!DocumentFragment|undefined),
+ *     subtitle: (string|null),
+ *     visible: boolean,
+ *     weight: number,
+ *     hideable: boolean,
+ *     hideableGroup: ?string,
+ *     nonSelectable: boolean,
+ *     sortable: boolean,
+ *     align: (?DataGrid.DataGrid.Align|undefined),
+ *     isResponseHeader: boolean,
+ *     sortingFunction: (!function(!Network.NetworkNode, !Network.NetworkNode):number|undefined),
+ *     isCustomHeader: boolean,
+ *     allowInSortByEvenWhenHidden: boolean
+ * }}
+ */
+Network.NetworkLogViewColumns.Descriptor;
+
+/** @enum {string} */
+Network.NetworkLogViewColumns._calculatorTypes = _calculatorTypes;
+
+/**
+ * @type {!Object} column
+ */
+Network.NetworkLogViewColumns._defaultColumnConfig = _defaultColumnConfig;
+
+/**
+ * @type {!Array.<!Network.NetworkLogViewColumns.Descriptor>} column
+ */
+Network.NetworkLogViewColumns._defaultColumns = _defaultColumns;
+Network.NetworkLogViewColumns._filmStripDividerColor = _filmStripDividerColor;
+
+/**
+ * @enum {string}
+ */
+Network.NetworkLogViewColumns.WaterfallSortIds = WaterfallSortIds;

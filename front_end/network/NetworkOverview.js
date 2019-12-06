@@ -4,7 +4,7 @@
 /**
  * @unrestricted
  */
-Network.NetworkOverview = class extends PerfUI.TimelineOverviewBase {
+export default class NetworkOverview extends PerfUI.TimelineOverviewBase {
   constructor() {
     super();
     this._selectedFilmStripTime = -1;
@@ -114,7 +114,7 @@ Network.NetworkOverview = class extends PerfUI.TimelineOverviewBase {
     const height = this.element.offsetHeight;
     this.calculator().setDisplayWidth(width);
     this.resetCanvas();
-    const numBands = (((height - Network.NetworkOverview._padding - 1) / Network.NetworkOverview._bandHeight) - 1) | 0;
+    const numBands = (((height - _padding - 1) / _bandHeight) - 1) | 0;
     this._numBands = (numBands > 0) ? numBands : 1;
     this.scheduleUpdate();
   }
@@ -179,7 +179,7 @@ Network.NetworkOverview = class extends PerfUI.TimelineOverviewBase {
 
     const context = this.context();
     const linesByType = {};
-    const paddingTop = Network.NetworkOverview._padding;
+    const paddingTop = _padding;
 
     /**
      * @param {string} type
@@ -191,9 +191,9 @@ Network.NetworkOverview = class extends PerfUI.TimelineOverviewBase {
       }
       const n = lines.length;
       context.beginPath();
-      context.strokeStyle = Network.NetworkOverview.RequestTimeRangeNameToColor[type];
+      context.strokeStyle = RequestTimeRangeNameToColor[type];
       for (let i = 0; i < n;) {
-        const y = lines[i++] * Network.NetworkOverview._bandHeight + paddingTop;
+        const y = lines[i++] * _bandHeight + paddingTop;
         const startTime = lines[i++];
         let endTime = lines[i++];
         if (endTime === Number.MAX_VALUE) {
@@ -259,7 +259,7 @@ Network.NetworkOverview = class extends PerfUI.TimelineOverviewBase {
 
       const request = this._highlightedRequest;
       const band = this._bandId(request.connectionId);
-      const y = ((band === -1) ? 0 : (band % this._numBands + 1)) * Network.NetworkOverview._bandHeight + paddingTop;
+      const y = ((band === -1) ? 0 : (band % this._numBands + 1)) * _bandHeight + paddingTop;
       const timeRanges =
           Network.RequestTimingView.calculateRequestTimeRanges(request, this.calculator().minimumBoundary());
 
@@ -277,7 +277,7 @@ Network.NetworkOverview = class extends PerfUI.TimelineOverviewBase {
         const type = timeRanges[j].name;
         if (band !== -1 || type === Network.RequestTimeRangeNames.Total) {
           context.beginPath();
-          context.strokeStyle = Network.NetworkOverview.RequestTimeRangeNameToColor[type];
+          context.strokeStyle = RequestTimeRangeNameToColor[type];
           context.lineWidth = size;
 
           const start = timeRanges[j].start * 1000;
@@ -320,9 +320,9 @@ Network.NetworkOverview = class extends PerfUI.TimelineOverviewBase {
     }
     context.restore();
   }
-};
+}
 
-Network.NetworkOverview.RequestTimeRangeNameToColor = {
+export const RequestTimeRangeNameToColor = {
   [Network.RequestTimeRangeNames.Total]: '#CCCCCC',
   [Network.RequestTimeRangeNames.Blocking]: '#AAAAAA',
   [Network.RequestTimeRangeNames.Connecting]: '#FF9800',
@@ -338,8 +338,29 @@ Network.NetworkOverview.RequestTimeRangeNameToColor = {
 };
 
 /** @type {number} */
-Network.NetworkOverview._bandHeight = 3;
-Network.NetworkOverview._padding = 5;
+export const _bandHeight = 3;
+
+/** @type {number} */
+export const _padding = 5;
+
+/* Legacy exported object */
+self.Network = self.Network || {};
+
+/* Legacy exported object */
+Network = Network || {};
+
+/**
+ * @constructor
+ */
+Network.NetworkOverview = NetworkOverview;
 
 /** @typedef {{start: number, end: number}} */
 Network.NetworkOverview.Window;
+
+Network.NetworkOverview.RequestTimeRangeNameToColor = RequestTimeRangeNameToColor;
+
+/** @type {number} */
+Network.NetworkOverview._bandHeight = _bandHeight;
+
+/** @type {number} */
+Network.NetworkOverview._padding = _padding;

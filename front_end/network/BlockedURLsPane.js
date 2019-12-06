@@ -4,7 +4,7 @@
 /**
  * @implements {UI.ListWidget.Delegate<SDK.NetworkManager.BlockedPattern>}
  */
-Network.BlockedURLsPane = class extends UI.VBox {
+export default class BlockedURLsPane extends UI.VBox {
   constructor() {
     super(true);
     this.registerRequiredCSS('network/blockedURLsPane.css');
@@ -240,7 +240,21 @@ Network.BlockedURLsPane = class extends UI.VBox {
       this._updateThrottler.schedule(this._update.bind(this));
     }
   }
-};
+}
+
+/** @type {?BlockedURLsPane} */
+export const _instance = null;
+
+/* Legacy exported object */
+self.Network = self.Network || {};
+
+/* Legacy exported object */
+Network = Network || {};
+
+/**
+ * @constructor
+ */
+Network.BlockedURLsPane = BlockedURLsPane;
 
 /** @type {?Network.BlockedURLsPane} */
-Network.BlockedURLsPane._instance = null;
+Network.BlockedURLsPane._instance = _instance;

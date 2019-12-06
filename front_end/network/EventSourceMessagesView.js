@@ -4,7 +4,7 @@
 /**
  * @unrestricted
  */
-Network.EventSourceMessagesView = class extends UI.VBox {
+export default class EventSourceMessagesView extends UI.VBox {
   /**
    * @param {!SDK.NetworkRequest} request
    */
@@ -39,7 +39,7 @@ Network.EventSourceMessagesView = class extends UI.VBox {
     this._dataGrid.rootNode().removeChildren();
     const messages = this._request.eventSourceMessages();
     for (let i = 0; i < messages.length; ++i) {
-      this._dataGrid.insertChild(new Network.EventSourceMessageNode(messages[i]));
+      this._dataGrid.insertChild(new EventSourceMessageNode(messages[i]));
     }
 
     this._request.addEventListener(SDK.NetworkRequest.Events.EventSourceMessageAdded, this._messageAdded, this);
@@ -57,7 +57,7 @@ Network.EventSourceMessagesView = class extends UI.VBox {
    */
   _messageAdded(event) {
     const message = /** @type {!SDK.NetworkRequest.EventSourceMessage} */ (event.data);
-    this._dataGrid.insertChild(new Network.EventSourceMessageNode(message));
+    this._dataGrid.insertChild(new EventSourceMessageNode(message));
   }
 
   _sortItems() {
@@ -65,18 +65,18 @@ Network.EventSourceMessagesView = class extends UI.VBox {
     if (!sortColumnId) {
       return;
     }
-    const comparator = Network.EventSourceMessageNode.Comparators[sortColumnId];
+    const comparator = Comparators[sortColumnId];
     if (!comparator) {
       return;
     }
     this._dataGrid.sortNodes(comparator, !this._dataGrid.isSortOrderAscending());
   }
-};
+}
 
 /**
  * @unrestricted
  */
-Network.EventSourceMessageNode = class extends DataGrid.SortableDataGridNode {
+export class EventSourceMessageNode extends DataGrid.SortableDataGridNode {
   /**
    * @param {!SDK.NetworkRequest.EventSourceMessage} message
    */
@@ -90,23 +90,44 @@ Network.EventSourceMessageNode = class extends DataGrid.SortableDataGridNode {
     super({id: message.eventId, type: message.eventName, data: message.data, time: timeNode});
     this._message = message;
   }
-};
+}
 
 /**
  * @param {string} field
- * @param {!Network.EventSourceMessageNode} a
- * @param {!Network.EventSourceMessageNode} b
+ * @param {!EventSourceMessageNode} a
+ * @param {!EventSourceMessageNode} b
  * @return {number}
  */
-Network.EventSourceMessageNodeComparator = function(field, a, b) {
+export function EventSourceMessageNodeComparator(field, a, b) {
   const aValue = a._message[field];
   const bValue = b._message[field];
   return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
+}
+
+/** @type {!Object.<string, function(!EventSourceMessageNode, !EventSourceMessageNode):number>} */
+export const Comparators = {
+  'id': EventSourceMessageNodeComparator.bind(null, 'eventId'),
+  'type': EventSourceMessageNodeComparator.bind(null, 'eventName'),
+  'time': EventSourceMessageNodeComparator.bind(null, 'time')
 };
 
-/** @type {!Object.<string, function(!Network.EventSourceMessageNode, !Network.EventSourceMessageNode):number>} */
-Network.EventSourceMessageNode.Comparators = {
-  'id': Network.EventSourceMessageNodeComparator.bind(null, 'eventId'),
-  'type': Network.EventSourceMessageNodeComparator.bind(null, 'eventName'),
-  'time': Network.EventSourceMessageNodeComparator.bind(null, 'time')
-};
+/* Legacy exported object */
+self.Network = self.Network || {};
+
+/* Legacy exported object */
+Network = Network || {};
+
+/**
+ * @constructor
+ */
+Network.EventSourceMessagesView = EventSourceMessagesView;
+
+Network.EventSourceMessageNodeComparator = EventSourceMessageNodeComparator;
+
+/**
+ * @constructor
+ */
+Network.EventSourceMessageNode = EventSourceMessageNode;
+
+/** @type {!Object.<string, function(!EventSourceMessageNode, !EventSourceMessageNode):number>} */
+Network.EventSourceMessageNode.Comparators = Comparators;

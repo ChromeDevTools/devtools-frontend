@@ -181,7 +181,9 @@
         "har_importer",
         "persistence"
     ],
-    "scripts": [
+    "scripts": [],
+    "modules": [
+        "network.js",
         "BinaryResourceView.js",
         "BlockedURLsPane.js",
         "EventSourceMessagesView.js",

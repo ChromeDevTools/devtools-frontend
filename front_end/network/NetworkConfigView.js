@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-Network.NetworkConfigView = class extends UI.VBox {
+export default class NetworkConfigView extends UI.VBox {
   constructor() {
     super(true);
     this.registerRequiredCSS('network/networkConfigView.css');
@@ -27,7 +27,7 @@ Network.NetworkConfigView = class extends UI.VBox {
     const customOverride = {title: Common.UIString('Custom...'), value: 'custom'};
     userAgentSelectElement.appendChild(new Option(customOverride.title, customOverride.value));
 
-    const groups = Network.NetworkConfigView._userAgentGroups;
+    const groups = _userAgentGroups;
     for (const userAgentDescriptor of groups) {
       const groupElement = userAgentSelectElement.createChild('optgroup');
       groupElement.label = userAgentDescriptor.title;
@@ -163,10 +163,10 @@ Network.NetworkConfigView = class extends UI.VBox {
       SDK.multitargetNetworkManager.setCustomUserAgentOverride(customUA);
     }
   }
-};
+}
 
 /** @type {!Array.<{title: string, values: !Array.<{title: string, value: string}>}>} */
-Network.NetworkConfigView._userAgentGroups = [
+export const _userAgentGroups = [
   {
     title: ls`Android`,
     values: [
@@ -417,3 +417,17 @@ Network.NetworkConfigView._userAgentGroups = [
     ]
   }
 ];
+
+/* Legacy exported object */
+self.Network = self.Network || {};
+
+/* Legacy exported object */
+Network = Network || {};
+
+/**
+ * @constructor
+ */
+Network.NetworkConfigView = NetworkConfigView;
+
+/** @type {!Array.<{title: string, values: !Array.<{title: string, value: string}>}>} */
+Network.NetworkConfigView._userAgentGroups = _userAgentGroups;

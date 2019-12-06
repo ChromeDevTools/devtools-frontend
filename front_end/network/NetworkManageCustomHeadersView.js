@@ -7,7 +7,7 @@
  * @implements {UI.ListWidget.Delegate}
  * @unrestricted
  */
-Network.NetworkManageCustomHeadersView = class extends UI.VBox {
+export default class NetworkManageCustomHeadersView extends UI.VBox {
   /**
    * @param {!Array.<!{title: string, editable: boolean}>} columnData
    * @param {function(string) : boolean} addHeaderColumnCallback
@@ -157,4 +157,15 @@ Network.NetworkManageCustomHeadersView = class extends UI.VBox {
       return {valid};
     }
   }
-};
+}
+
+/* Legacy exported object */
+self.Network = self.Network || {};
+
+/* Legacy exported object */
+Network = Network || {};
+
+/**
+ * @constructor
+ */
+Network.NetworkManageCustomHeadersView = NetworkManageCustomHeadersView;

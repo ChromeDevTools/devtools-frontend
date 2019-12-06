@@ -1,7 +1,7 @@
 // Copyright 2019 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-Network.RequestInitiatorView = class extends UI.VBox {
+export default class RequestInitiatorView extends UI.VBox {
   /**
    * @param {!SDK.NetworkRequest} request
    */
@@ -144,4 +144,15 @@ Network.RequestInitiatorView = class extends UI.VBox {
     }
     this._hasShown = true;
   }
-};
+}
+
+/* Legacy exported object */
+self.Network = self.Network || {};
+
+/* Legacy exported object */
+Network = Network || {};
+
+/**
+ * @constructor
+ */
+Network.RequestInitiatorView = RequestInitiatorView;

@@ -28,7 +28,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-Network.RequestPreviewView = class extends Network.RequestResponseView {
+export default class RequestPreviewView extends Network.RequestResponseView {
   /**
    * @param {!SDK.NetworkRequest} request
    */
@@ -103,4 +103,15 @@ Network.RequestPreviewView = class extends Network.RequestResponseView {
 
     return new UI.EmptyWidget(Common.UIString('Preview not available'));
   }
-};
+}
+
+/* Legacy exported object */
+self.Network = self.Network || {};
+
+/* Legacy exported object */
+Network = Network || {};
+
+/**
+ * @constructor
+ */
+Network.RequestPreviewView = RequestPreviewView;

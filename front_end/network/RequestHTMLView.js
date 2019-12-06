@@ -31,7 +31,7 @@
 /**
  * @unrestricted
  */
-Network.RequestHTMLView = class extends UI.VBox {
+export default class RequestHTMLView extends UI.VBox {
   /**
    * @param {string} dataURL
    */
@@ -68,4 +68,15 @@ Network.RequestHTMLView = class extends UI.VBox {
     UI.ARIAUtils.markAsPresentation(iframe);
     this.contentElement.appendChild(iframe);
   }
-};
+}
+
+/* Legacy exported object */
+self.Network = self.Network || {};
+
+/* Legacy exported object */
+Network = Network || {};
+
+/**
+ * @constructor
+ */
+Network.RequestHTMLView = RequestHTMLView;

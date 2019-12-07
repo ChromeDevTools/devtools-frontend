@@ -302,6 +302,16 @@ export default class SoftDropDown {
         from, to, fromElement && fromElement.firstElementChild, toElement && toElement.firstElementChild);
   }
 
+  /**
+   * @override
+   * @param {?Element} fromElement
+   * @param {?Element} toElement
+   * @return {boolean}
+   */
+  updateSelectedItemARIA(fromElement, toElement) {
+    return false;
+  }
+
   _selectHighlightedItem() {
     this.selectItem(this._list.selectedItem());
   }

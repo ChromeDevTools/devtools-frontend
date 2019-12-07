@@ -445,6 +445,16 @@ Timeline.TimelineHistoryManager.DropDown = class {
       toElement.classList.add('selected');
     }
   }
+
+  /**
+   * @override
+   * @param {?Element} fromElement
+   * @param {?Element} toElement
+   * @return {boolean}
+   */
+  updateSelectedItemARIA(fromElement, toElement) {
+    return false;
+  }
 };
 
 /**

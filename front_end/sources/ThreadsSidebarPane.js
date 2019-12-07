@@ -108,6 +108,16 @@ Sources.ThreadsSidebarPane = class extends UI.VBox {
 
   /**
    * @override
+   * @param {?Element} fromElement
+   * @param {?Element} toElement
+   * @return {boolean}
+   */
+  updateSelectedItemARIA(fromElement, toElement) {
+    return false;
+  }
+
+  /**
+   * @override
    * @param {!SDK.DebuggerModel} debuggerModel
    */
   modelAdded(debuggerModel) {

@@ -486,6 +486,16 @@ export class FilteredListWidget extends UI.VBox {
   }
 
   /**
+   * @override
+   * @param {?Element} fromElement
+   * @param {?Element} toElement
+   * @return {boolean}
+   */
+  updateSelectedItemARIA(fromElement, toElement) {
+    return false;
+  }
+
+  /**
    * @param {!Event} event
    */
   _onKeyDown(event) {

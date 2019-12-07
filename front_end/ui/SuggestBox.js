@@ -265,6 +265,16 @@ export default class SuggestBox {
   }
 
   /**
+   * @override
+   * @param {?Element} fromElement
+   * @param {?Element} toElement
+   * @return {boolean}
+   */
+  updateSelectedItemARIA(fromElement, toElement) {
+    return false;
+  }
+
+  /**
    * @param {!Event} event
    */
   _onClick(event) {

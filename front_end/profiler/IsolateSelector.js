@@ -14,7 +14,6 @@ Profiler.IsolateSelector = class extends UI.VBox {
     this._items = new UI.ListModel();
     /** @type {!UI.ListControl<!Profiler.IsolateSelector.ListItem>} */
     this._list = new UI.ListControl(this._items, this, UI.ListMode.NonViewport);
-    UI.ARIAUtils.markAsListBox(this._list.element);
     this._list.element.tabIndex = 0;
     this._list.element.classList.add('javascript-vm-instances-list');
     UI.ARIAUtils.setAccessibleName(this._list.element, ls`JavaScript VM instances`);
@@ -163,6 +162,16 @@ Profiler.IsolateSelector = class extends UI.VBox {
    * @return {number}
    */
   heightForItem(item) {
+  }
+
+  /**
+   * @override
+   * @param {?Element} fromElement
+   * @param {?Element} toElement
+   * @return {boolean}
+   */
+  updateSelectedItemARIA(fromElement, toElement) {
+    return false;
   }
 
   /**

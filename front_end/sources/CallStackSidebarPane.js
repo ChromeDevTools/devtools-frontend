@@ -249,6 +249,16 @@ Sources.CallStackSidebarPane = class extends UI.SimpleView {
   }
 
   /**
+   * @override
+   * @param {?Element} fromElement
+   * @param {?Element} toElement
+   * @return {boolean}
+   */
+  updateSelectedItemARIA(fromElement, toElement) {
+    return false;
+  }
+
+  /**
    * @return {!Element}
    */
   _createBlackboxedMessageElement() {

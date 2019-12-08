@@ -446,7 +446,7 @@ export function setDescription(element, description) {
   // triplet of "name", "value", "description"
   // The "description" field is taken from either
   // 1. The title html attribute
-  // 2. The value of the aria-help attribute
+  // 2. The value of the aria-description attribute.
   // 3. The textContent of an element specified by aria-describedby
   //
   // The title attribute has the side effect of causing tooltips
@@ -454,12 +454,8 @@ export function setDescription(element, description) {
   // This is usually fine, except that DevTools has its own styled
   // tooltips which would interfere with the browser tooltips.
   //
-  // aria-help does what we want with no side effects, but it
-  // is deprecated and may be removed in a future version of Blink.
-  // Current DevTools needs to be able to work in future browsers,
-  // to support debugging old mobile devices. So we can't rely on
-  // any APIs that might be removed. There is also no way to feature
-  // detect this API.
+  // In future, the aria-description attribute may be used once it
+  // is unflagged.
   //
   // aria-describedby requires that an extra element exist in DOM
   // that this element can point to. Both elements also have to

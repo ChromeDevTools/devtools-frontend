@@ -5,97 +5,114 @@
  */
 
 :host {
-    background-color: #f9f9f9;
+  background-color: #f9f9f9;
 }
 
 .report-content-box {
-    background-color: white;
-    white-space: nowrap;
-    overflow: auto;
+  background-color: white;
+  white-space: nowrap;
+  overflow: auto;
 }
 
 .report-content-box.no-scroll {
-    overflow: visible;
+  overflow: visible;
 }
 
 .report-header {
-    border-bottom: 1px solid rgb(230, 230, 230);
-    padding: 12px 24px;
+  border-bottom: 1px solid rgb(230, 230, 230);
+  padding: 12px 24px;
 }
 
 .report-header .toolbar {
-    margin-bottom: -8px;
+  margin-bottom: -8px;
 }
 
 .report-header .toolbar {
-    margin-top: 5px;
-    margin-left: -8px;
+  margin-top: 5px;
+  margin-left: -8px;
 }
 
 .report-title {
-    font-size: 15px;
+  font-size: 15px;
 }
 
 .report-url, .report-subtitle {
-    font-size: 12px;
-    margin-top: 10px;
+  font-size: 12px;
+  margin-top: 10px;
 }
 
 .report-section {
-    display: flex;
-    padding: 12px;
-    border-bottom: 1px solid rgb(230, 230, 230);
-    flex-direction: column;
+  display: flex;
+  padding: 12px;
+  border-bottom: 1px solid rgb(230, 230, 230);
+  flex-direction: column;
 }
 
 .report-section-header {
-    margin-left: 18px;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
+  margin-left: 18px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 
 .report-section-title {
-    flex: auto;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    font-weight: bold;
-    color: #555;
+  flex: auto;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  font-weight: bold;
+  color: #555;
 }
 
 .report-field {
-    margin-top: 8px;
-    display: flex;
-    line-height: 28px;
+  margin-top: 8px;
+  display: flex;
+  line-height: 28px;
 }
 
 .report-row {
-    margin: 10px 0 2px 18px;
+  margin: 10px 0 2px 18px;
 }
 
 .report-field-name {
-    color: #888;
-    flex: 0 0 128px;
-    text-align: right;
-    padding: 0 6px;
-    white-space: pre;
+  color: #888;
+  flex: 0 0 128px;
+  text-align: right;
+  padding: 0 6px;
+  white-space: pre;
 }
 
 .report-field-value {
-    flex: auto;
-    padding: 0 6px;
-    white-space: pre;
+  flex: auto;
+  padding: 0 6px;
+  white-space: pre;
 }
 
 .report-field-value-is-flexed {
-    display: flex;
+  display: flex;
 }
 
 .report-field-value-subtitle {
-    color: #888;
-    line-height: 14px;
+  color: #888;
+  line-height: 14px;
 }
 
 .report-row-selectable {
-    user-select: text;
+  user-select: text;
+}
+
+.image-wrapper, .image-wrapper img {
+  max-width: 200px;
+  max-height: 200px;
+  display: block;
+}
+
+.show-mask img {
+  /* The safe zone is a centrally positioned circle, with radius 2/5
+  * (40%) of the minimum of the icon's width and height.
+  * https://w3c.github.io/manifest/#icon-masks */
+  clip-path: circle(40% at 50% 50%);
+}
+
+.show-mask .image-wrapper {
+  background: url(Images/checker.png);
 }

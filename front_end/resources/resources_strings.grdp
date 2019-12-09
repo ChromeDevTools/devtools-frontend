@@ -64,9 +64,6 @@ table is empty.
   <message name="IDS_DEVTOOLS_301addf2037879acf2a972b157d2f4a7" desc="Text in Application Panel Sidebar of the Application panel">
     Local Files
   </message>
-  <message name="IDS_DEVTOOLS_32983d2a877161482fe6812b305202d9" desc="Warning message for icons from the manifest">
-    Actual size (<ph name="IMAGE_NATURALWIDTH">$1s<ex>100</ex></ph>x<ph name="IMAGE_NATURALHEIGHT">$2s<ex>100</ex></ph>) of icon <ph name="ICONURL">$3s<ex>https://example.com/icon.png</ex></ph> does not match specified size (<ph name="WIDTH">$4s<ex>100</ex></ph>x<ph name="HEIGHT">$5s<ex>100</ex></ph>)
-  </message>
   <message name="IDS_DEVTOOLS_3472423ee4037c94e20d64b3aea8aa49" desc="Text in Service Workers View of the Application panel">
     <ph name="SCOPEURL">$1s<ex>example.com</ex></ph> - deleted
   </message>
@@ -75,6 +72,9 @@ table is empty.
   </message>
   <message name="IDS_DEVTOOLS_368d9ac76af05f714092bc808a426bfc" desc="Text in App Manifest View of the Application panel">
     Background color
+  </message>
+  <message name="IDS_DEVTOOLS_36ade12d9ad04b9411343828de870437" desc="Warning message for icons from the manifest">
+    Icon <ph name="ICONURL">$1s<ex>https://example.com/icon.png</ex></ph> does not specify its size in the manifest
   </message>
   <message name="IDS_DEVTOOLS_36e256f915286539621b57d8c80f0105" desc="Text in Context menu for expanding objects in IndexedDB tables">
     Expand Recursively
@@ -99,9 +99,6 @@ table is empty.
   </message>
   <message name="IDS_DEVTOOLS_45e035baf33a8e403766a606457f8b10" desc="Text in App Manifest View of the Application panel">
     Theme color
-  </message>
-  <message name="IDS_DEVTOOLS_4c8c1b0aad8ad75018d3e3f9c3b41d20" desc="Warning message for icons from the manifest">
-    Icon <ph name="ICONURL">$1s<ex>https://example.com/icon.png</ex></ph> does not specify it&apos;s size in the manifest
   </message>
   <message name="IDS_DEVTOOLS_4f36f645368158bc46346b8902fc2566" desc="Text in Service Workers View of the Application panel">
     #<ph name="ACTIVE_ID">$1s<ex>1</ex></ph> activated and is <ph name="ACTIVE_RUNNINGSTATUS">$2s<ex>stopped</ex></ph>
@@ -245,6 +242,9 @@ read the &quot;<ph name="THIS_TABLENAME">$1s<ex>database</ex></ph>&quot; table.
   <message name="IDS_DEVTOOLS_a7d5ee58baead2f3bc229d3d9c047875" desc="Text in Service Workers View of the Application panel">
     Unregister service worker
   </message>
+  <message name="IDS_DEVTOOLS_a8656f0069a025f05357939b80da2612" desc="Text in App Manifest View of the Application panel">
+    Show only the minimum safe area for maskable icons
+  </message>
   <message name="IDS_DEVTOOLS_a89edb1e05005c844b684d1eb0de111a" desc="Text in Application Panel Sidebar of the Application panel">
     Cache Storage
   </message>
@@ -347,6 +347,9 @@ read the &quot;<ph name="THIS_TABLENAME">$1s<ex>database</ex></ph>&quot; table.
   <message name="IDS_DEVTOOLS_d4f61ad886e0b169b0394d97bb1a649a" desc="Text in Background Service View of the Application panel">
     Recording <ph name="RESOURCES_BACKGROUNDSERVICEVIEW_GETUISTRING_THIS__SERVICENAME_">$1s<ex>Background Fetch</ex></ph> activity...
   </message>
+  <message name="IDS_DEVTOOLS_d4fb95445aa92443f4d7df47107c83f6" desc="Warning message for icons from the manifest">
+    Actual size (<ph name="IMAGE_NATURALWIDTH">$1s<ex>100</ex></ph>×<ph name="IMAGE_NATURALHEIGHT">$2s<ex>100</ex></ph>)px of icon <ph name="ICONURL">$3s<ex>https://example.com/icon.png</ex></ph> does not match specified size (<ph name="WIDTH">$4s<ex>100</ex></ph>×<ph name="HEIGHT">$5s<ex>100</ex></ph>px)
+  </message>
   <message name="IDS_DEVTOOLS_d6f875d9f87efbee1a96b8c4f5784d47" desc="Text in Indexed DBViews of the Application panel">
     Primary key
   </message>
@@ -413,13 +416,13 @@ read the &quot;<ph name="THIS_TABLENAME">$1s<ex>database</ex></ph>&quot; table.
   <message name="IDS_DEVTOOLS_ef399b2d446bb37b7c32ad2cc1b6045b" desc="Text in Service Workers View of the Application panel">
     stop
   </message>
-  <message name="IDS_DEVTOOLS_f5821f2445fe0ec3706a3fd08664365f" desc="Warning message for icons from the manifest">
-    Icon <ph name="ICONURL">$1s<ex>https://example.com/icon.png</ex></ph> should specify it&apos;s size as {width}x{height}
-  </message>
   <message name="IDS_DEVTOOLS_f75623bb4626a57e8a7a3c0e1c092463" desc="Text in Cookie Items View of the Application panel">
     Select a cookie to preview its value
   </message>
   <message name="IDS_DEVTOOLS_fb1508747fe448fd8b006e923ba1c3ef" desc="Text in Background Service View of the Application panel">
     Payment Handler
+  </message>
+  <message name="IDS_DEVTOOLS_fe1c53e07b8cdf5e766595be09672b29" desc="Warning message for icons from the manifest">
+    Icon <ph name="ICONURL">$1s<ex>https://example.com/icon.png</ex></ph> should specify its size as `{width}x{height}`
   </message>
 </grit-part>

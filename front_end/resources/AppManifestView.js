@@ -28,7 +28,7 @@ Resources.AppManifestView = class extends UI.VBox {
     this._identitySection = this._reportView.appendSection(Common.UIString('Identity'));
 
     this._presentationSection = this._reportView.appendSection(Common.UIString('Presentation'));
-    this._iconsSection = this._reportView.appendSection(Common.UIString('Icons'));
+    this._iconsSection = this._reportView.appendSection(Common.UIString('Icons'), 'report-section-icons');
 
     this._nameField = this._identitySection.appendField(Common.UIString('Name'));
     this._shortNameField = this._identitySection.appendField(Common.UIString('Short name'));
@@ -164,24 +164,40 @@ Resources.AppManifestView = class extends UI.VBox {
     this._iconsSection.clearContent();
 
     const imageErrors = [];
+
+    const setIconMaskedCheckbox =
+        UI.CheckboxLabel.create(Common.UIString('Show only the minimum safe area for maskable icons'));
+    setIconMaskedCheckbox.classList.add('mask-checkbox');
+    setIconMaskedCheckbox.addEventListener('click', () => {
+      this._iconsSection.setIconMasked(setIconMaskedCheckbox.checkboxElement.checked);
+    });
+    this._iconsSection.appendRow().appendChild(setIconMaskedCheckbox);
+    // TODO(mathias): Uncomment this once we have official docs.
+    // const documentationLink = UI.XLink.create(
+    //   'https://web.dev/#TODO',  // TODO(mathias): Update once we have official docs.
+    //   ls`documentation on maskable icons`);
+    // this._iconsSection.appendRow().appendChild(UI.formatLocalized('Need help? Read our %s.', [documentationLink]));
+
     for (const icon of icons) {
       const iconUrl = Common.ParsedURL.completeURL(url, icon['src']);
-      const image = await this._loadImage(iconUrl);
-      if (!image) {
+      const result = await this._loadImage(iconUrl);
+      if (!result) {
         imageErrors.push(ls`Icon ${iconUrl} failed to load`);
         continue;
       }
-      const title = (icon['sizes'] || '') + '\n' + (icon['type'] || '');
+      const {wrapper, image} = result;
+      const sizes = icon['sizes'] ? icon['sizes'].replace('x', '\xD7') + 'px' : '';
+      const title = sizes + '\n' + (icon['type'] || '');
       const field = this._iconsSection.appendFlexedField(title);
       if (!icon.sizes) {
-        imageErrors.push(ls`Icon ${iconUrl} does not specify it's size in the manifest`);
-      } else if (!icon.sizes.match(/^\d+x\d+$/)) {
-        imageErrors.push(ls`Icon ${iconUrl} should specify it's size as {width}x{height}`);
+        imageErrors.push(ls`Icon ${iconUrl} does not specify its size in the manifest`);
+      } else if (!/^\d+x\d+$/.test(icon.sizes)) {
+        imageErrors.push(ls`Icon ${iconUrl} should specify its size as \`{width}x{height}\``);
       } else {
         const [width, height] = icon.sizes.split('x').map(x => parseInt(x, 10));
         if (image.naturalWidth !== width && image.naturalHeight !== height) {
-          imageErrors.push(ls`Actual size (${image.naturalWidth}x${image.naturalHeight}) of icon ${
-              iconUrl} does not match specified size (${width}x${height})`);
+          imageErrors.push(ls`Actual size (${image.naturalWidth}\xD7${image.naturalHeight})px of icon ${
+              iconUrl} does not match specified size (${width}\xD7${height}px)`);
         } else if (image.naturalWidth !== width) {
           imageErrors.push(
               ls
@@ -191,7 +207,7 @@ Resources.AppManifestView = class extends UI.VBox {
               iconUrl} does not match specified height (${height}px)`);
         }
       }
-      field.appendChild(image);
+      field.appendChild(wrapper);
     }
 
     this._installabilitySection.clearContent();
@@ -220,21 +236,22 @@ Resources.AppManifestView = class extends UI.VBox {
 
   /**
    * @param {?string} url
-   * @return {!Promise<?Element>}
+   * @return {!Promise<?{image: !Element, wrapper: !Element}>}
    */
   async _loadImage(url) {
+    const wrapper = createElement('div');
+    wrapper.classList.add('image-wrapper');
     const image = createElement('img');
-    image.style.maxWidth = '200px';
-    image.style.maxHeight = '200px';
-    const result = new Promise((f, r) => {
-      image.onload = f;
-      image.onerror = r;
+    const result = new Promise((resolve, reject) => {
+      image.onload = resolve;
+      image.onerror = reject;
     });
     image.src = url;
     image.alt = ls`Image from ${url}`;
+    wrapper.appendChild(image);
     try {
       await result;
-      return image;
+      return {wrapper, image};
     } catch (e) {
     }
     return null;

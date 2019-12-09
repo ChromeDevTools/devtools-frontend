@@ -14,6 +14,8 @@ Sources.ThreadsSidebarPane = class extends UI.VBox {
     this._items = new UI.ListModel();
     /** @type {!UI.ListControl<!SDK.DebuggerModel>} */
     this._list = new UI.ListControl(this._items, this, UI.ListMode.NonViewport);
+    const currentTarget = UI.context.flavor(SDK.Target);
+    this._selectedModel = !!currentTarget ? currentTarget.model(SDK.DebuggerModel) : null;
     this.contentElement.appendChild(this._list.element);
 
     UI.context.addFlavorChangeListener(SDK.Target, this._targetFlavorChanged, this);
@@ -37,6 +39,14 @@ Sources.ThreadsSidebarPane = class extends UI.VBox {
     const title = element.createChild('div', 'thread-item-title');
     const pausedState = element.createChild('div', 'thread-item-paused-state');
     element.appendChild(UI.Icon.create('smallicon-thick-right-arrow', 'selected-thread-icon'));
+    element.tabIndex = -1;
+    self.onInvokeElement(element, event => {
+      UI.context.setFlavor(SDK.Target, debuggerModel.target());
+      event.consume(true);
+    });
+    const isSelected = UI.context.flavor(SDK.Target) === debuggerModel.target();
+    element.classList.toggle('selected', isSelected);
+    UI.ARIAUtils.setSelected(element, isSelected);
 
     function updateTitle() {
       const executionContext = debuggerModel.runtimeModel().defaultExecutionContext();
@@ -96,13 +106,14 @@ Sources.ThreadsSidebarPane = class extends UI.VBox {
    */
   selectedItemChanged(from, to, fromElement, toElement) {
     if (fromElement) {
-      fromElement.classList.remove('selected');
+      fromElement.tabIndex = -1;
     }
     if (toElement) {
-      toElement.classList.add('selected');
-    }
-    if (to) {
-      UI.context.setFlavor(SDK.Target, to.target());
+      this.setDefaultFocusedElement(toElement);
+      toElement.tabIndex = 0;
+      if (this.hasFocus()) {
+        toElement.focus();
+      }
     }
   }
 
@@ -140,10 +151,18 @@ Sources.ThreadsSidebarPane = class extends UI.VBox {
    * @param {!Common.Event} event
    */
   _targetFlavorChanged(event) {
+    const hadFocus = this.hasFocus();
     const target = /** @type {!SDK.Target} */ (event.data);
     const debuggerModel = target.model(SDK.DebuggerModel);
     if (debuggerModel) {
-      this._list.selectItem(debuggerModel);
+      this._list.refreshItem(debuggerModel);
+    }
+    if (!!this._selectedModel) {
+      this._list.refreshItem(this._selectedModel);
+    }
+    this._selectedModel = debuggerModel;
+    if (hadFocus) {
+      this.focus();
     }
   }
 };

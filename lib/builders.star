@@ -58,30 +58,53 @@ def builder(
     **kvargs
   )
 
-def generate_ci_configs(configurations, builders, exceptions = {}):
+
+def config_section(name, branch, view, name_suffix):
+  return struct(
+    name=name,
+    branch=branch,
+    view=view,
+    name_suffix=name_suffix
+  )
+
+def builder_descriptor(name, recipe_name, is_master_only=False):
+  return struct(
+    name=name,
+    recipe_name=recipe_name,
+    is_master_only=is_master_only
+  )
+
+def generate_ci_configs(configurations, builders):
   # Generate full configuration for ci builders:
   #   bucket, builders, console, scheduler.
   # Arguments:
-  #   - configurations: list of struct with following propeties:
-  #     - bucket_name: name of the bucket
-  #     - branch: branch reference
-  #     - view: name for the corresponding console view
-  #     - name_suffix: suffix to be added to all builders under this bucket
-  #   - builders: list of struct with following propeties:
-  #     - name: name of the builder='DevTools Linux'
-  #     - recipe_name: recipe to be run by the builder
-  #   - exceptions: dict(bucket_name, [builder_name]) with builders to be excluded
-  #     from the specified bucket
+  #   - configurations: [] of config_section
+  #   - builders: [] of builder_descriptor
 
   SERVICE_ACCOUNT='devtools-frontend-ci-builder@chops-service-accounts.iam.gserviceaccount.com'
 
+  luci.bucket(
+      name="ci",
+      acls=[
+        acls.readers,
+        acl.entry(
+            roles=acl.BUILDBUCKET_TRIGGERER,
+            users=[
+              SERVICE_ACCOUNT,
+              'luci-scheduler@appspot.gserviceaccount.com',
+            ]
+        ),
+      ],
+  )
+
+  all_builder_refs = []
   for c in configurations:
     builders_refs=[]
 
     def ci_builder(**kvargs):
       category=kvargs.pop('console_category')
       builder(
-          bucket=c.bucket_name,
+          bucket="ci",
           mastername="client.devtools-frontend.integration",
           service_account=SERVICE_ACCOUNT,
           schedule="triggered",
@@ -89,22 +112,8 @@ def generate_ci_configs(configurations, builders, exceptions = {}):
       )
       builders_refs.append((kvargs['name'], category))
 
-    luci.bucket(
-        name=c.bucket_name,
-        acls=[
-          acls.readers,
-          acl.entry(
-              roles=acl.BUILDBUCKET_TRIGGERER,
-              users=[
-                SERVICE_ACCOUNT,
-                'luci-scheduler@appspot.gserviceaccount.com',
-              ]
-          ),
-        ],
-    )
-
     for b in builders:
-      if b.name not in exceptions.get(c.bucket_name, []):
+      if c.branch.endswith('master') or not b.is_master_only:
         ci_builder(
           name=b.name + c.name_suffix,
           recipe_name=b.recipe_name,
@@ -129,8 +138,8 @@ def generate_ci_configs(configurations, builders, exceptions = {}):
     )
 
     luci.gitiles_poller(
-      name='devtools-frontend-trigger-' + c.view.lower(),
-      bucket=c.bucket_name,
+      name='devtools-frontend-trigger-' + c.name,
+      bucket="ci",
       repo=defaults.repo,
       refs=[c.branch],
       triggers=[name for name, _ in builders_refs]

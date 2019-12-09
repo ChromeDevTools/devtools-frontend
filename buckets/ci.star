@@ -3,37 +3,37 @@ load(
   'builder',
   'defaults',
   'dimensions',
+  'config_section',
+  'builder_descriptor',
   'generate_ci_configs',
 )
 
 generate_ci_configs(
     configurations = [
-      struct(
-        bucket_name="ci",
+      config_section(
+        name="ci",
         branch='refs/heads/master',
         view='Main',
         name_suffix = ''
       ),
-      struct(
-        bucket_name="beta",
+      config_section(
+        name="beta",
         branch='refs/heads/chromium/3987',
         view='Beta',
         name_suffix = ' beta'
       ),
     ],
     builders = [
-      struct(
+      builder_descriptor(
         name='DevTools Linux',
         recipe_name='chromium_integration',
+        is_master_only=True
       ),
-      struct(
+      builder_descriptor(
         name="Stand-alone Linux",
         recipe_name="devtools/devtools-frontend",
       ),
-    ],
-    exceptions = {
-      'beta' : ['DevTools Linux']
-    }
+    ]
 )
 
 builder(

@@ -948,7 +948,7 @@ export class ObjectPropertyTreeElement extends UI.TreeElement {
 
     // TODO(mathias): support all valid JavaScript identifiers.
     const useDotNotation = /^(_|\$|[A-Z])(_|\$|[A-Z]|\d)*$/i;
-    const isInteger = /^[1-9]\d*$/;
+    const isInteger = /^(?:0|[1-9]\d*)$/;
 
     const parentPath =
         (this.parent.nameElement && !this.parent.property.synthetic) ? this.parent.nameElement.title : '';

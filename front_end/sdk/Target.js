@@ -191,7 +191,7 @@ export default class Target extends Protocol.TargetBase {
    */
   setInspectedURL(inspectedURL) {
     this._inspectedURL = inspectedURL;
-    const parsedURL = inspectedURL.asParsedURL();
+    const parsedURL = Common.ParsedURL.fromString(inspectedURL);
     this._inspectedURLName = parsedURL ? parsedURL.lastPathComponentWithFragment() : '#' + this._id;
     if (!this.parentTarget()) {
       Host.InspectorFrontendHost.inspectedURLChanged(inspectedURL || '');

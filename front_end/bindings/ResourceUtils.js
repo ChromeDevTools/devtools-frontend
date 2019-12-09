@@ -66,7 +66,7 @@ export function displayNameForURL(url) {
     return url.trimURL('');
   }
 
-  const parsedURL = inspectedURL.asParsedURL();
+  const parsedURL = Common.ParsedURL.fromString(inspectedURL);
   const lastPathComponent = parsedURL ? parsedURL.lastPathComponent : parsedURL;
   const index = inspectedURL.indexOf(lastPathComponent);
   if (index !== -1 && index + lastPathComponent.length === inspectedURL.length) {

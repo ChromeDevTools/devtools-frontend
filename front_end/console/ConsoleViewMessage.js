@@ -1555,7 +1555,7 @@ export default class ConsoleViewMessage {
       if (!url) {
         return null;
       }
-      const parsedURL = url.asParsedURL();
+      const parsedURL = Common.ParsedURL.fromString(url);
       if (parsedURL) {
         return parsedURL.url;
       }

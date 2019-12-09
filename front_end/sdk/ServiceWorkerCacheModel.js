@@ -167,7 +167,7 @@ export default class ServiceWorkerCacheModel extends SDK.SDKModel {
    * @return {boolean}
    */
   _isValidSecurityOrigin(securityOrigin) {
-    const parsedURL = securityOrigin.asParsedURL();
+    const parsedURL = Common.ParsedURL.fromString(securityOrigin);
     return !!parsedURL && parsedURL.scheme.startsWith('http');
   }
 

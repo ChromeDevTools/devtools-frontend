@@ -177,7 +177,7 @@ Timeline.TimelineHistoryManager = class {
    * @param {!Timeline.PerformanceModel} performanceModel
    */
   _buildPreview(performanceModel) {
-    const parsedURL = performanceModel.timelineModel().pageURL().asParsedURL();
+    const parsedURL = Common.ParsedURL.fromString(performanceModel.timelineModel().pageURL());
     const domain = parsedURL ? parsedURL.host : '';
     const sequenceNumber = this._nextNumberByDomain.get(domain) || 1;
     const title = Common.UIString('%s #%d', domain, sequenceNumber);

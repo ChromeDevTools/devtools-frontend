@@ -250,7 +250,7 @@ export default class ConsoleContextSelector {
       return Common.UIString('Extension');
     }
     if (!frame || !frame.parentFrame || frame.parentFrame.securityOrigin !== executionContext.origin) {
-      const url = executionContext.origin.asParsedURL();
+      const url = Common.ParsedURL.fromString(executionContext.origin);
       if (url) {
         return url.domain();
       }

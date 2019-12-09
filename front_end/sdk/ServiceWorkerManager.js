@@ -667,7 +667,7 @@ class ServiceWorkerContextNamer {
       context.setLabel('');
       return;
     }
-    const parsedUrl = context.origin.asParsedURL();
+    const parsedUrl = Common.ParsedURL.fromString(context.origin);
     const label = parsedUrl ? parsedUrl.lastPathComponentWithFragment() : context.name;
     const localizedStatus = ServiceWorkerVersion.Status[version.status];
     context.setLabel(ls`${label} #${version.id} (${localizedStatus})`);

@@ -83,7 +83,7 @@ export default class StatusView {
     this._reset();
     this.updateStatus(ls`Loading\u2026`);
 
-    const parsedURL = this._inspectedURL.asParsedURL();
+    const parsedURL = Common.ParsedURL.fromString(this._inspectedURL);
     const pageHost = parsedURL && parsedURL.host;
     const statusHeader = pageHost ? ls`Auditing ${pageHost}` : ls`Auditing your web page`;
     this._renderStatusHeader(statusHeader);

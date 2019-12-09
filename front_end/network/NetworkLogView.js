@@ -1409,7 +1409,7 @@ export default class NetworkLogView extends UI.VBox {
 
   async exportAll() {
     const url = SDK.targetManager.mainTarget().inspectedURL();
-    const parsedURL = url.asParsedURL();
+    const parsedURL = Common.ParsedURL.fromString(url);
     const filename = parsedURL ? parsedURL.host : 'network-log';
     const stream = new Bindings.FileOutputStream();
 

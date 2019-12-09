@@ -42,7 +42,7 @@ export default class UISourceCode extends Common.Object {
     this._project = project;
     this._url = url;
 
-    const parsedURL = url.asParsedURL();
+    const parsedURL = Common.ParsedURL.fromString(url);
     if (parsedURL) {
       this._origin = parsedURL.securityOrigin();
       this._parentURL = this._origin + parsedURL.folderPathComponents;

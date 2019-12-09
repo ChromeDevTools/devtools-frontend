@@ -612,7 +612,7 @@ export default class NetworkRequest extends Common.Object {
       this._path = this._parsedURL.host + this._parsedURL.folderPathComponents;
 
       const networkManager = SDK.NetworkManager.forRequest(this);
-      const inspectedURL = networkManager ? networkManager.target().inspectedURL().asParsedURL() : null;
+      const inspectedURL = networkManager ? Common.ParsedURL.fromString(networkManager.target().inspectedURL()) : null;
       this._path = this._path.trimURL(inspectedURL ? inspectedURL.host : '');
       if (this._parsedURL.lastPathComponent || this._parsedURL.queryParams) {
         this._name =

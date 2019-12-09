@@ -708,7 +708,7 @@ export default class ElementsTreeElement extends UI.TreeElement {
       return '';
     }
 
-    if (!attributeValueElement.textContent.asParsedURL()) {
+    if (!Common.ParsedURL.fromString(attributeValueElement.textContent)) {
       config.setPostKeydownFinishHandler(postKeyDownFinishHandler);
     }
 

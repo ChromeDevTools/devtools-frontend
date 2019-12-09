@@ -338,7 +338,7 @@ Timeline.TimelineUIUtils = class {
       return color;
     }
     const defaultColor = '#f2ecdc';
-    const parsedURL = url.asParsedURL();
+    const parsedURL = Common.ParsedURL.fromString(url);
     if (!parsedURL) {
       return defaultColor;
     }

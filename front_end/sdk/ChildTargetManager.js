@@ -136,7 +136,7 @@ export default class ChildTargetManager extends SDK.SDKModel {
     if (targetInfo.type === 'worker' && targetInfo.title && targetInfo.title !== targetInfo.url) {
       targetName = targetInfo.title;
     } else if (targetInfo.type !== 'iframe') {
-      const parsedURL = targetInfo.url.asParsedURL();
+      const parsedURL = Common.ParsedURL.fromString(targetInfo.url);
       targetName = parsedURL ? parsedURL.lastPathComponentWithFragment() : '#' + (++_lastAnonymousTargetId);
     }
 

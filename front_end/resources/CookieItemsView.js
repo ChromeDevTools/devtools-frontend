@@ -173,7 +173,7 @@ Resources.CookieItemsView = class extends Resources.StorageItemsView {
   _updateWithCookies(allCookies) {
     this._totalSize = allCookies.reduce((size, cookie) => size + cookie.size(), 0);
 
-    const parsedURL = this._cookieDomain.asParsedURL();
+    const parsedURL = Common.ParsedURL.fromString(this._cookieDomain);
     const host = parsedURL ? parsedURL.host : '';
     this._cookiesTable.setCookieDomain(host);
 

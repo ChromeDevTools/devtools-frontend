@@ -848,7 +848,7 @@ export class ExecutionContext {
       this._label = this.name;
       return;
     }
-    const parsedUrl = this.origin.asParsedURL();
+    const parsedUrl = Common.ParsedURL.fromString(this.origin);
     this._label = parsedUrl ? parsedUrl.lastPathComponentWithFragment() : '';
   }
 }

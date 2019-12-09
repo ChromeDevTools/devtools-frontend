@@ -201,7 +201,7 @@ export class FilterTreeElement extends UI.TreeElement {
     }
 
     const filter = this._filter.clone();
-    const parsedURL = urlValue ? urlValue.asParsedURL() : null;
+    const parsedURL = urlValue ? Common.ParsedURL.fromString(urlValue) : null;
     if (urlValue) {
       filter.name = parsedURL ? parsedURL.displayName : urlValue;
     } else {

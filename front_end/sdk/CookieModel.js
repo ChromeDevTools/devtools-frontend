@@ -16,7 +16,7 @@ export default class CookieModel extends SDK.SDKModel {
    * @return {boolean}
    */
   static cookieMatchesResourceURL(cookie, resourceURL) {
-    const url = resourceURL.asParsedURL();
+    const url = Common.ParsedURL.fromString(resourceURL);
     if (!url || !CookieModel.cookieDomainMatchesResourceDomain(cookie.domain(), url.host)) {
       return false;
     }
@@ -95,7 +95,7 @@ export default class CookieModel extends SDK.SDKModel {
      * @param {!SDK.Resource} resource
      */
     function populateResourceURLs(resource) {
-      const documentURL = resource.documentURL.asParsedURL();
+      const documentURL = Common.ParsedURL.fromString(resource.documentURL);
       if (documentURL && (!domain || documentURL.securityOrigin() === domain)) {
         resourceURLs.push(resource.url);
       }

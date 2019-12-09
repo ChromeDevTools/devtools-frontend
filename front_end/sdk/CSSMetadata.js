@@ -35,7 +35,7 @@
  */
 export default class CSSMetadata {
   /**
-   * @param {!Array.<!{name: string, longhands: !Array.<string>, inherited: boolean, svg: boolean}>} properties
+   * @param {!Array.<!SDK.CSSMetadata.CSSPropertyDefinition>} properties
    */
   constructor(properties) {
     this._values = /** !Array.<string> */ ([]);
@@ -323,7 +323,7 @@ export const GridAreaRowRegex = /((?:\[[\w\- ]+\]\s*)*(?:"[^"]+"|'[^']+'))[^'"\[
  */
 export function cssMetadata() {
   if (!CSSMetadata._instance) {
-    CSSMetadata._instance = new CSSMetadata(CSSMetadata._generatedProperties || []);
+    CSSMetadata._instance = new CSSMetadata(CSSMetadata._generatedProperties);
   }
   return CSSMetadata._instance;
 }
@@ -1511,3 +1511,13 @@ SDK.CSSMetadata.URLRegex = URLRegex;
 SDK.CSSMetadata.GridAreaRowRegex = GridAreaRowRegex;
 
 SDK.cssMetadata = cssMetadata;
+
+/**
+ * @typedef {{name: string, longhands: !Array.<string>, inherited: boolean, svg: boolean}}
+ */
+SDK.CSSMetadata.CSSPropertyDefinition;
+
+/**
+ * @type {!Array<!SDK.CSSMetadata.CSSPropertyDefinition>}
+ */
+CSSMetadata._generatedProperties;

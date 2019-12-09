@@ -14,8 +14,8 @@
  *   --output_cc         Absolute path of the output .cc file for the id mappings
  */
 
-const checkLocalizedStrings = require('../localization_utils/check_localized_strings');
-const localizationUtils = require('../localization_utils/localization_utils');
+const checkLocalizedStrings = require('../localization/utils/check_localized_strings');
+const localizationUtils = require('../localization/utils/localization_utils');
 
 const fs = require('fs');
 const path = require('path');

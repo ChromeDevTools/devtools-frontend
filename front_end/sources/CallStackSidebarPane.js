@@ -38,6 +38,7 @@ Sources.CallStackSidebarPane = class extends UI.SimpleView {
 
     this._notPausedMessageElement = this.contentElement.createChild('div', 'gray-info-message');
     this._notPausedMessageElement.textContent = Common.UIString('Not paused');
+    this._notPausedMessageElement.tabIndex = -1;
 
     /** @type {!UI.ListModel<!Sources.CallStackSidebarPane.Item>} */
     this._items = new UI.ListModel();
@@ -45,7 +46,13 @@ Sources.CallStackSidebarPane = class extends UI.SimpleView {
     this._list = new UI.ListControl(this._items, this, UI.ListMode.NonViewport);
     this.contentElement.appendChild(this._list.element);
     this._list.element.addEventListener('contextmenu', this._onContextMenu.bind(this), false);
-    this._list.element.addEventListener('click', this._onClick.bind(this), false);
+    self.onInvokeElement(this._list.element, event => {
+      const item = this._list.itemForNode(/** @type {?Node} */ (event.target));
+      if (item) {
+        this._activateItem(item);
+        event.consume(true);
+      }
+    });
 
     this._showMoreMessageElement = this._createShowMoreMessageElement();
     this._showMoreMessageElement.classList.add('hidden');
@@ -84,6 +91,7 @@ Sources.CallStackSidebarPane = class extends UI.SimpleView {
 
     const details = UI.context.flavor(SDK.DebuggerPausedDetails);
     if (!details) {
+      this.setDefaultFocusedElement(this._notPausedMessageElement);
       this._notPausedMessageElement.classList.remove('hidden');
       this._blackboxedMessageElement.classList.add('hidden');
       this._showMoreMessageElement.classList.add('hidden');
@@ -142,6 +150,10 @@ Sources.CallStackSidebarPane = class extends UI.SimpleView {
     this._items.replaceAll(items);
     if (this._maxAsyncStackChainDepth === Sources.CallStackSidebarPane._defaultMaxAsyncStackChainDepth) {
       this._list.selectNextItem(true /* canWrap */, false /* center */);
+      const selectedItem = this._list.selectedItem();
+      if (selectedItem) {
+        this._activateItem(selectedItem);
+      }
     }
     this._updatedForTest();
   }
@@ -204,9 +216,20 @@ Sources.CallStackSidebarPane = class extends UI.SimpleView {
       linkElement.textContent = item.linkText.trimMiddle(30);
       linkElement.title = item.linkText;
       element.classList.toggle('blackboxed-call-frame', item.isBlackboxed);
+      if (item.isBlackboxed) {
+        UI.ARIAUtils.setDescription(element, ls`blackboxed`);
+      }
+      if (!item[Sources.CallStackSidebarPane._debuggerCallFrameSymbol]) {
+        UI.ARIAUtils.setDisabled(element, true);
+      }
     }
+    const isSelected =
+        item[Sources.CallStackSidebarPane._debuggerCallFrameSymbol] === UI.context.flavor(SDK.DebuggerModel.CallFrame);
+    element.classList.toggle('selected', isSelected);
+    UI.ARIAUtils.setSelected(element, isSelected);
     element.classList.toggle('hidden', !this._showBlackboxed && item.isBlackboxed);
     element.appendChild(UI.Icon.create('smallicon-thick-right-arrow', 'selected-call-frame-icon'));
+    element.tabIndex = item === this._list.selectedItem() ? 0 : -1;
     return element;
   }
 
@@ -226,7 +249,7 @@ Sources.CallStackSidebarPane = class extends UI.SimpleView {
    * @return {boolean}
    */
   isItemSelectable(item) {
-    return !!item[Sources.CallStackSidebarPane._debuggerCallFrameSymbol];
+    return true;
   }
 
   /**
@@ -238,13 +261,14 @@ Sources.CallStackSidebarPane = class extends UI.SimpleView {
    */
   selectedItemChanged(from, to, fromElement, toElement) {
     if (fromElement) {
-      fromElement.classList.remove('selected');
+      fromElement.tabIndex = -1;
     }
     if (toElement) {
-      toElement.classList.add('selected');
-    }
-    if (to) {
-      this._activateItem(to);
+      this.setDefaultFocusedElement(toElement);
+      toElement.tabIndex = 0;
+      if (this.hasFocus()) {
+        toElement.focus();
+      }
     }
   }
 
@@ -255,7 +279,7 @@ Sources.CallStackSidebarPane = class extends UI.SimpleView {
    * @return {boolean}
    */
   updateSelectedItemARIA(fromElement, toElement) {
-    return false;
+    return true;
   }
 
   /**
@@ -266,13 +290,17 @@ Sources.CallStackSidebarPane = class extends UI.SimpleView {
     element.createChild('span');
     const showAllLink = element.createChild('span', 'link');
     showAllLink.textContent = Common.UIString('Show blackboxed frames');
-    showAllLink.addEventListener('click', () => {
+    UI.ARIAUtils.markAsLink(showAllLink);
+    showAllLink.tabIndex = 0;
+    const showAll = () => {
       this._showBlackboxed = true;
       for (const item of this._items) {
         this._refreshItem(item);
       }
       this._blackboxedMessageElement.classList.toggle('hidden', true);
-    });
+    };
+    showAllLink.addEventListener('click', showAll);
+    showAllLink.addEventListener('keydown', event => isEnterKey(event) && showAll());
     return element;
   }
 
@@ -329,13 +357,32 @@ Sources.CallStackSidebarPane = class extends UI.SimpleView {
     if (this._muteActivateItem || !uiLocation) {
       return;
     }
+    this._list.selectItem(item);
     const debuggerCallFrame = item[Sources.CallStackSidebarPane._debuggerCallFrameSymbol];
-    if (debuggerCallFrame && UI.context.flavor(SDK.DebuggerModel.CallFrame) !== debuggerCallFrame) {
+    const oldItem = this.activeCallFrameItem();
+    if (debuggerCallFrame && oldItem !== item) {
       debuggerCallFrame.debuggerModel.setSelectedCallFrame(debuggerCallFrame);
       UI.context.setFlavor(SDK.DebuggerModel.CallFrame, debuggerCallFrame);
+      if (oldItem) {
+        this._list.refreshItem(oldItem);
+      }
+      this._list.refreshItem(item);
     } else {
       Common.Revealer.reveal(uiLocation);
     }
+  }
+
+  /**
+   * @return {?Sources.CallStackSidebarPane.Item}
+   */
+  activeCallFrameItem() {
+    const callFrame = UI.context.flavor(SDK.DebuggerModel.CallFrame);
+    if (callFrame) {
+      return this._items.find(
+                 callFrameItem => callFrameItem[Sources.CallStackSidebarPane._debuggerCallFrameSymbol] === callFrame) ||
+          null;
+    }
+    return null;
   }
 
   /**
@@ -375,18 +422,28 @@ Sources.CallStackSidebarPane = class extends UI.SimpleView {
     }
   }
 
-  /**
-   * @return {boolean}
-   */
   _selectNextCallFrameOnStack() {
-    return this._list.selectNextItem(false /* canWrap */, false /* center */);
+    const oldItem = this.activeCallFrameItem();
+    const startIndex = oldItem ? this._items.indexOf(oldItem) + 1 : 0;
+    for (let i = startIndex; i < this._items.length; i++) {
+      const newItem = this._items.at(i);
+      if (newItem[Sources.CallStackSidebarPane._debuggerCallFrameSymbol]) {
+        this._activateItem(newItem);
+        break;
+      }
+    }
   }
 
-  /**
-   * @return {boolean}
-   */
   _selectPreviousCallFrameOnStack() {
-    return this._list.selectPreviousItem(false /* canWrap */, false /* center */);
+    const oldItem = this.activeCallFrameItem();
+    const startIndex = oldItem ? this._items.indexOf(oldItem) - 1 : this._items.length - 1;
+    for (let i = startIndex; i >= 0; i--) {
+      const newItem = this._items.at(i);
+      if (newItem[Sources.CallStackSidebarPane._debuggerCallFrameSymbol]) {
+        this._activateItem(newItem);
+        break;
+      }
+    }
   }
 
   _copyStackTrace() {

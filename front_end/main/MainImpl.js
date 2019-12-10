@@ -516,10 +516,15 @@ export class SearchActionDelegate {
    * @suppressGlobalPropertiesCheck
    */
   handleAction(context, actionId) {
-    const searchableView = UI.SearchableView.fromElement(document.deepActiveElement()) ||
-        UI.inspectorView.currentPanelDeprecated().searchableView();
+    let searchableView = UI.SearchableView.fromElement(document.deepActiveElement());
     if (!searchableView) {
-      return false;
+      const currentPanel = UI.inspectorView.currentPanelDeprecated();
+      if (currentPanel) {
+        searchableView = currentPanel.searchableView();
+      }
+      if (!searchableView) {
+        return false;
+      }
     }
     switch (actionId) {
       case 'main.search-in-panel.find':

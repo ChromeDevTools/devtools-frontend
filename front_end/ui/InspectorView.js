@@ -190,10 +190,10 @@ export default class InspectorView extends UI.VBox {
   }
 
   /**
-   * @return {!UI.Panel}
+   * @return {?UI.Panel}
    */
   currentPanelDeprecated() {
-    return /** @type {!UI.Panel} */ (UI.viewManager.materializedWidget(this._tabbedPane.selectedTabId || ''));
+    return /** @type {?UI.Panel} */ (UI.viewManager.materializedWidget(this._tabbedPane.selectedTabId || ''));
   }
 
   /**

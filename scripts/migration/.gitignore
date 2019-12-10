@@ -1,4 +1,6 @@
 refactor-to-es-module.js
 remove-unused-global-exports.js
 move-side-effects-to-legacy.js
+get-mappings.js
+replace-internal-references.js
 node_modules

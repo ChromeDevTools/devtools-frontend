@@ -12,12 +12,3 @@ export class Runnable {
   run() {
   }
 }
-
-/* Legacy exported object */
-self.Common = self.Common || {};
-Common = Common || {};
-
-/**
- * @interface
- */
-Common.Runnable = Runnable;

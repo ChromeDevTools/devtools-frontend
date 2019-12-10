@@ -14,12 +14,3 @@ export class AppProvider {
   createApp() {
   }
 }
-
-/* Legacy exported object */
-self.Common = self.Common || {};
-Common = Common || {};
-
-/**
- * @interface
- */
-Common.AppProvider = AppProvider;

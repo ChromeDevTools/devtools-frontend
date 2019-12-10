@@ -35,7 +35,7 @@
  * @return {string}
  */
 export function UIString(string, vararg) {
-  return String.vsprintf(Common.localize(string), Array.prototype.slice.call(arguments, 1));
+  return String.vsprintf(localize(string), Array.prototype.slice.call(arguments, 1));
 }
 
 /**
@@ -123,24 +123,3 @@ export function ls(strings, vararg) {
   }
   return UIString(substitutionString, ...Array.prototype.slice.call(arguments, 1));
 }
-
-/**
- * @param {!Array<string>|string} strings
- * @param {...*} vararg
- * @return {string}
- */
-self.ls = ls;
-
-/* Legacy exported object */
-self.Common = self.Common || {};
-Common = Common || {};
-
-/**
- * @constructor
- */
-Common.UIStringFormat = UIStringFormat;
-
-Common.UIString = UIString;
-Common.serializeUIString = serializeUIString;
-Common.deserializeUIString = deserializeUIString;
-Common.localize = localize;

@@ -405,6 +405,7 @@ all_devtools_files = [
   "front_end/sources_test_runner/SourcesTestRunner.js",
   "front_end/sources_test_runner/module.json",
   "front_end/test_runner/module.json",
+  "front_end/test_runner/TestRunner.js",
   "front_end/text_editor/autocompleteTooltip.css",
   "front_end/text_editor/cmdevtools.css",
   "front_end/text_editor/module.json",
@@ -573,8 +574,6 @@ all_devtools_modules = [
   "front_end/network/EventSourceMessagesView.js",
   "front_end/network/BlockedURLsPane.js",
   "front_end/network/BinaryResourceView.js",
-  "front_end/test_runner/test_runner.js",
-  "front_end/test_runner/TestRunner.js",
   "front_end/inspector_main/inspector_main.js",
   "front_end/inspector_main/RenderingOptions.js",
   "front_end/inspector_main/InspectorMain.js",
@@ -1123,6 +1122,7 @@ devtools_test_files = [
   "front_end/sources_test_runner/SearchTestRunner.js",
   "front_end/sources_test_runner/SourcesTestRunner.js",
   "front_end/test_runner/module.json",
+  "front_end/test_runner/TestRunner.js",
 ]
 
 devtools_embedder_scripts = [
@@ -1276,8 +1276,6 @@ copied_devtools_modules = [
   "$resources_out_dir/network/EventSourceMessagesView.js",
   "$resources_out_dir/network/BlockedURLsPane.js",
   "$resources_out_dir/network/BinaryResourceView.js",
-  "$resources_out_dir/test_runner/test_runner.js",
-  "$resources_out_dir/test_runner/TestRunner.js",
   "$resources_out_dir/inspector_main/inspector_main.js",
   "$resources_out_dir/inspector_main/RenderingOptions.js",
   "$resources_out_dir/inspector_main/InspectorMain.js",

@@ -6,9 +6,7 @@
         "host",
         "main"
     ],
-    "scripts": [],
-    "modules": [
-        "test_runner.js",
+    "scripts": [
         "TestRunner.js"
     ]
 }

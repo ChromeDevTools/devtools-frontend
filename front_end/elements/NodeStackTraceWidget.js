@@ -5,7 +5,7 @@
 /**
  * @unrestricted
  */
-export default class NodeStackTraceWidget extends UI.ThrottledWidget {
+export class NodeStackTraceWidget extends UI.ThrottledWidget {
   constructor() {
     super(true /* isWebComponent */);
     this.registerRequiredCSS('elements/nodeStackTraceWidget.css');
@@ -67,14 +67,3 @@ export default class NodeStackTraceWidget extends UI.ThrottledWidget {
  * @type {number}
  */
 export const MaxLengthForLinks = 40;
-
-/* Legacy exported object */
-self.Elements = self.Elements || {};
-
-/* Legacy exported object */
-Elements = Elements || {};
-
-/** @constructor */
-Elements.NodeStackTraceWidget = NodeStackTraceWidget;
-
-Elements.NodeStackTraceWidget.MaxLengthForLinks = MaxLengthForLinks;

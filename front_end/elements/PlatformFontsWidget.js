@@ -27,20 +27,21 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+import {ComputedStyleModel, Events} from './ComputedStyleModel.js';  // eslint-disable-line no-unused-vars
 
 /**
  * @unrestricted
  */
-export default class PlatformFontsWidget extends UI.ThrottledWidget {
+export class PlatformFontsWidget extends UI.ThrottledWidget {
   /**
-   * @param {!Elements.ComputedStyleModel} sharedModel
+   * @param {!ComputedStyleModel} sharedModel
    */
   constructor(sharedModel) {
     super(true);
     this.registerRequiredCSS('elements/platformFontsWidget.css');
 
     this._sharedModel = sharedModel;
-    this._sharedModel.addEventListener(Elements.ComputedStyleModel.Events.ComputedStyleChanged, this.update, this);
+    this._sharedModel.addEventListener(Events.ComputedStyleChanged, this.update, this);
 
     this._sectionTitle = createElementWithClass('div', 'title');
     this.contentElement.classList.add('platform-fonts');
@@ -104,12 +105,3 @@ export default class PlatformFontsWidget extends UI.ThrottledWidget {
     }
   }
 }
-
-/* Legacy exported object */
-self.Elements = self.Elements || {};
-
-/* Legacy exported object */
-Elements = Elements || {};
-
-/** @constructor */
-Elements.PlatformFontsWidget = PlatformFontsWidget;

@@ -1,13 +1,14 @@
 // Copyright (c) 2015 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import {StylesSidebarPane} from './StylesSidebarPane.js';  // eslint-disable-line no-unused-vars
 
 /**
  * @unrestricted
  */
-export default class StylePropertyHighlighter {
+export class StylePropertyHighlighter {
   /**
-   * @param {!Elements.StylesSidebarPane} ssp
+   * @param {!StylesSidebarPane} ssp
    * @param {!SDK.CSSProperty} cssProperty
    */
   constructor(ssp, cssProperty) {
@@ -52,12 +53,3 @@ export default class StylePropertyHighlighter {
         {duration: 2000, easing: 'cubic-bezier(0, 0, 0.2, 1)'});
   }
 }
-
-/* Legacy exported object */
-self.Elements = self.Elements || {};
-
-/* Legacy exported object */
-Elements = Elements || {};
-
-/** @constructor */
-Elements.StylePropertyHighlighter = StylePropertyHighlighter;

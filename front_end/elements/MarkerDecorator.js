@@ -5,7 +5,7 @@
 /**
  * @interface
  */
-export default class MarkerDecorator {
+export class MarkerDecorator {
   /**
    * @param {!SDK.DOMNode} node
    * @return {?{title: string, color: string}}
@@ -35,14 +35,3 @@ export class GenericDecorator {
     return {title: this._title, color: this._color};
   }
 }
-
-/* Legacy exported object */
-self.Elements = self.Elements || {};
-
-/* Legacy exported object */
-Elements = Elements || {};
-
-/** @interface */
-Elements.MarkerDecorator = MarkerDecorator;
-
-Elements.GenericDecorator = GenericDecorator;

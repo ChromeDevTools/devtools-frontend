@@ -291,6 +291,7 @@
     "scripts": [],
     "modules": [
         "elements.js",
+        "elements-legacy.js",
         "InspectElementModeController.js",
         "ColorSwatchPopoverIcon.js",
         "ComputedStyleModel.js",

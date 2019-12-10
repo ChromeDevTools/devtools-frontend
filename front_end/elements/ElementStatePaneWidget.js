@@ -1,11 +1,12 @@
 // Copyright (c) 2015 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import {ElementsPanel} from './ElementsPanel.js';
 
 /**
  * @unrestricted
  */
-export default class ElementStatePaneWidget extends UI.Widget {
+export class ElementStatePaneWidget extends UI.Widget {
   constructor() {
     super(true);
     this.registerRequiredCSS('elements/elementStatePaneWidget.css');
@@ -125,7 +126,7 @@ export class ButtonProvider {
   }
 
   _clicked() {
-    Elements.ElementsPanel.instance().showToolbarPane(!this._view.isShowing() ? this._view : null, this._button);
+    ElementsPanel.instance().showToolbarPane(!this._view.isShowing() ? this._view : null, this._button);
   }
 
   /**
@@ -136,15 +137,3 @@ export class ButtonProvider {
     return this._button;
   }
 }
-
-/* Legacy exported object */
-self.Elements = self.Elements || {};
-
-/* Legacy exported object */
-Elements = Elements || {};
-
-/** @constructor */
-Elements.ElementStatePaneWidget = ElementStatePaneWidget;
-
-/** @constructor */
-Elements.ElementStatePaneWidget.ButtonProvider = ButtonProvider;

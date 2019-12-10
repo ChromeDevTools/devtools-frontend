@@ -1,11 +1,12 @@
 // Copyright 2014 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import {decorateNodeLabel} from './DOMLinkifier.js';
 
 /**
  * @unrestricted
  */
-export default class ElementsBreadcrumbs extends UI.HBox {
+export class ElementsBreadcrumbs extends UI.HBox {
   constructor() {
     super(true);
     this.registerRequiredCSS('elements/breadcrumbs.css');
@@ -170,7 +171,7 @@ export default class ElementsBreadcrumbs extends UI.HBox {
         crumb.appendChild(nameElement);
         crumb.title = crumbTitle;
       } else {
-        Elements.DOMLinkifier.decorateNodeLabel(current, crumb);
+        decorateNodeLabel(current, crumb);
       }
 
       if (current === currentDOMNode) {
@@ -472,15 +473,3 @@ export default class ElementsBreadcrumbs extends UI.HBox {
 export const Events = {
   NodeSelected: Symbol('NodeSelected')
 };
-
-/* Legacy exported object */
-self.Elements = self.Elements || {};
-
-/* Legacy exported object */
-Elements = Elements || {};
-
-/** @constructor */
-Elements.ElementsBreadcrumbs = ElementsBreadcrumbs;
-
-/** @enum {symbol} */
-Elements.ElementsBreadcrumbs.Events = Events;

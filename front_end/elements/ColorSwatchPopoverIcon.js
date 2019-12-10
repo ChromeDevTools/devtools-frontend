@@ -1,13 +1,14 @@
 // Copyright (c) 2015 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import {StylePropertyTreeElement} from './StylePropertyTreeElement.js';  // eslint-disable-line no-unused-vars
 
 /**
  * @unrestricted
  */
 export class BezierPopoverIcon {
   /**
-   * @param {!Elements.StylePropertyTreeElement} treeElement
+   * @param {!StylePropertyTreeElement} treeElement
    * @param {!InlineEditor.SwatchPopoverHelper} swatchPopoverHelper
    * @param {!InlineEditor.BezierSwatch} swatch
    */
@@ -92,9 +93,9 @@ export class BezierPopoverIcon {
 /**
  * @unrestricted
  */
-export default class ColorSwatchPopoverIcon {
+export class ColorSwatchPopoverIcon {
   /**
-   * @param {!Elements.StylePropertyTreeElement} treeElement
+   * @param {!StylePropertyTreeElement} treeElement
    * @param {!InlineEditor.SwatchPopoverHelper} swatchPopoverHelper
    * @param {!InlineEditor.ColorSwatch} swatch
    */
@@ -142,7 +143,7 @@ export default class ColorSwatchPopoverIcon {
   }
 
   /**
-   * @param {!Elements.StylePropertyTreeElement} treeElement
+   * @param {!StylePropertyTreeElement} treeElement
    * @return {?ColorSwatchPopoverIcon}
    */
   static forTreeElement(treeElement) {
@@ -251,7 +252,7 @@ ColorSwatchPopoverIcon._treeElementSymbol = Symbol('ColorSwatchPopoverIcon._tree
  */
 export class ShadowSwatchPopoverHelper {
   /**
-   * @param {!Elements.StylePropertyTreeElement} treeElement
+   * @param {!StylePropertyTreeElement} treeElement
    * @param {!InlineEditor.SwatchPopoverHelper} swatchPopoverHelper
    * @param {!InlineEditor.CSSShadowSwatch} shadowSwatch
    */
@@ -271,7 +272,7 @@ export class ShadowSwatchPopoverHelper {
   }
 
   /**
-   * @param {!Elements.StylePropertyTreeElement} treeElement
+   * @param {!StylePropertyTreeElement} treeElement
    * @return {?ShadowSwatchPopoverHelper}
    */
   static forTreeElement(treeElement) {
@@ -344,18 +345,3 @@ export class ShadowSwatchPopoverHelper {
 }
 
 ShadowSwatchPopoverHelper._treeElementSymbol = Symbol('ShadowSwatchPopoverHelper._treeElementSymbol');
-
-/* Legacy exported object */
-self.Elements = self.Elements || {};
-
-/* Legacy exported object */
-Elements = Elements || {};
-
-/** @constructor */
-Elements.ColorSwatchPopoverIcon = ColorSwatchPopoverIcon;
-
-/** @constructor */
-Elements.BezierPopoverIcon = BezierPopoverIcon;
-
-/** @constructor */
-Elements.ShadowSwatchPopoverHelper = ShadowSwatchPopoverHelper;

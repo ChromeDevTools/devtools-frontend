@@ -1,20 +1,20 @@
 // Copyright (c) 2014 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import {ComputedStyleModel, Events} from './ComputedStyleModel.js';
 
 /**
  * @unrestricted
  */
-export default class ElementsSidebarPane extends UI.VBox {
+export class ElementsSidebarPane extends UI.VBox {
   /**
    * @param {boolean=} delegatesFocus
    */
   constructor(delegatesFocus) {
     super(true, delegatesFocus);
     this.element.classList.add('flex-none');
-    this._computedStyleModel = new Elements.ComputedStyleModel();
-    this._computedStyleModel.addEventListener(
-        Elements.ComputedStyleModel.Events.ComputedStyleChanged, this.onCSSModelChanged, this);
+    this._computedStyleModel = new ComputedStyleModel();
+    this._computedStyleModel.addEventListener(Events.ComputedStyleChanged, this.onCSSModelChanged, this);
 
     this._updateThrottler = new Common.Throttler(100);
     this._updateWhenVisible = false;
@@ -74,12 +74,3 @@ export default class ElementsSidebarPane extends UI.VBox {
   onCSSModelChanged(event) {
   }
 }
-
-/* Legacy exported object */
-self.Elements = self.Elements || {};
-
-/* Legacy exported object */
-Elements = Elements || {};
-
-/** @constructor */
-Elements.ElementsSidebarPane = ElementsSidebarPane;

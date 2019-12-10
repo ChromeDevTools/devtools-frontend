@@ -26,19 +26,21 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+import {ComputedStyle, ComputedStyleModel, Events} from './ComputedStyleModel.js';  // eslint-disable-line no-unused-vars
+import {PlatformFontsWidget} from './PlatformFontsWidget.js';
+import {StylePropertiesSection, StylesSidebarPane, StylesSidebarPropertyRenderer} from './StylesSidebarPane.js';
 
 /**
  * @unrestricted
  */
-export default class ComputedStyleWidget extends UI.ThrottledWidget {
+export class ComputedStyleWidget extends UI.ThrottledWidget {
   constructor() {
     super(true);
     this.registerRequiredCSS('elements/computedStyleSidebarPane.css');
     this._alwaysShowComputedProperties = {'display': true, 'height': true, 'width': true};
 
-    this._computedStyleModel = new Elements.ComputedStyleModel();
-    this._computedStyleModel.addEventListener(
-        Elements.ComputedStyleModel.Events.ComputedStyleChanged, this.update, this);
+    this._computedStyleModel = new ComputedStyleModel();
+    this._computedStyleModel.addEventListener(Events.ComputedStyleChanged, this.update, this);
 
     this._showInheritedComputedStylePropertiesSetting =
         Common.settings.createSetting('showInheritedComputedStyleProperties', false);
@@ -47,8 +49,7 @@ export default class ComputedStyleWidget extends UI.ThrottledWidget {
 
     const hbox = this.contentElement.createChild('div', 'hbox styles-sidebar-pane-toolbar');
     const filterContainerElement = hbox.createChild('div', 'styles-sidebar-pane-filter-box');
-    const filterInput =
-        Elements.StylesSidebarPane.createPropertyFilterElement(ls`Filter`, hbox, filterCallback.bind(this));
+    const filterInput = StylesSidebarPane.createPropertyFilterElement(ls`Filter`, hbox, filterCallback.bind(this));
     UI.ARIAUtils.setAccessibleName(filterInput, Common.UIString('Filter Computed Styles'));
     filterContainerElement.appendChild(filterInput);
     this.setDefaultFocusedElement(filterInput);
@@ -79,7 +80,7 @@ export default class ComputedStyleWidget extends UI.ThrottledWidget {
       this._updateFilter(regex);
     }
 
-    const fontsWidget = new Elements.PlatformFontsWidget(this._computedStyleModel);
+    const fontsWidget = new PlatformFontsWidget(this._computedStyleModel);
     fontsWidget.show(this.contentElement);
   }
 
@@ -141,7 +142,7 @@ export default class ComputedStyleWidget extends UI.ThrottledWidget {
   }
 
   /**
-   * @param {?Elements.ComputedStyleModel.ComputedStyle} nodeStyle
+   * @param {?ComputedStyle} nodeStyle
    * @param {?SDK.CSSMatchedStyles} matchedStyles
    */
   _innerRebuildUpdate(nodeStyle, matchedStyles) {
@@ -187,8 +188,8 @@ export default class ComputedStyleWidget extends UI.ThrottledWidget {
       const propertyElement = createElement('div');
       propertyElement.classList.add('computed-style-property');
       propertyElement.classList.toggle('computed-style-property-inherited', inherited);
-      const renderer = new Elements.StylesSidebarPropertyRenderer(
-          null, nodeStyle.node, propertyName, /** @type {string} */ (propertyValue));
+      const renderer =
+          new StylesSidebarPropertyRenderer(null, nodeStyle.node, propertyName, /** @type {string} */ (propertyValue));
       renderer.setColorHandler(this._processColor.bind(this));
       const propertyNameElement = renderer.renderName();
       propertyNameElement.classList.add('property-name');
@@ -297,7 +298,7 @@ export default class ComputedStyleWidget extends UI.ThrottledWidget {
       }
 
       const renderer =
-          new Elements.StylesSidebarPropertyRenderer(null, node, property.name, /** @type {string} */ (property.value));
+          new StylesSidebarPropertyRenderer(null, node, property.name, /** @type {string} */ (property.value));
       renderer.setColorHandler(this._processColor.bind(this));
       const valueElement = renderer.renderValue();
       valueElement.classList.add('property-trace-value');
@@ -315,8 +316,7 @@ export default class ComputedStyleWidget extends UI.ThrottledWidget {
 
       if (rule) {
         const linkSpan = trace.createChild('span', 'trace-link');
-        linkSpan.appendChild(
-            Elements.StylePropertiesSection.createRuleOriginNode(matchedStyles, this._linkifier, rule));
+        linkSpan.appendChild(StylePropertiesSection.createRuleOriginNode(matchedStyles, this._linkifier, rule));
       }
 
       const traceTreeElement = new UI.TreeElement();
@@ -342,7 +342,7 @@ export default class ComputedStyleWidget extends UI.ThrottledWidget {
       const header = rule.styleSheetId ? matchedStyles.cssModel().styleSheetHeaderForId(rule.styleSheetId) : null;
       if (header && !header.isAnonymousInlineStyleSheet()) {
         contextMenu.defaultSection().appendItem(ls`Navigate to selector source`, () => {
-          Elements.StylePropertiesSection.tryNavigateToRuleLocation(matchedStyles, rule);
+          StylePropertiesSection.tryNavigateToRuleLocation(matchedStyles, rule);
         });
       }
     }
@@ -405,17 +405,6 @@ export default class ComputedStyleWidget extends UI.ThrottledWidget {
   }
 }
 
-export const _maxLinkLength = 30;
-export const _propertySymbol = Symbol('property');
-
-/* Legacy exported object */
-self.Elements = self.Elements || {};
-
-/* Legacy exported object */
-Elements = Elements || {};
-
-/** @constructor */
-Elements.ComputedStyleWidget = ComputedStyleWidget;
-
-Elements.ComputedStyleWidget._maxLinkLength = _maxLinkLength;
-Elements.ComputedStyleWidget._propertySymbol = _propertySymbol;
+const _maxLinkLength = 30;
+const _propertySymbol = Symbol('property');
+ComputedStyleWidget._propertySymbol = _propertySymbol;

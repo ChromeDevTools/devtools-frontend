@@ -136,18 +136,3 @@ export class Linkifier {
     throw new Error('Can\'t linkify non-node');
   }
 }
-
-/* Legacy exported object */
-self.Elements = self.Elements || {};
-
-/* Legacy exported object */
-Elements = Elements || {};
-
-Elements.DOMLinkifier = {};
-
-Elements.DOMLinkifier.decorateNodeLabel = decorateNodeLabel;
-Elements.DOMLinkifier.linkifyNodeReference = linkifyNodeReference;
-Elements.DOMLinkifier.linkifyDeferredNodeReference = linkifyDeferredNodeReference;
-
-/** @constructor */
-Elements.DOMLinkifier.Linkifier = Linkifier;

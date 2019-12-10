@@ -25,11 +25,12 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+import {ElementsSidebarPane} from './ElementsSidebarPane.js';
 
 /**
  * @unrestricted
  */
-export default class MetricsSidebarPane extends Elements.ElementsSidebarPane {
+export class MetricsSidebarPane extends ElementsSidebarPane {
   constructor() {
     super();
     this.registerRequiredCSS('elements/metricsSidebarPane.css');
@@ -479,12 +480,3 @@ export default class MetricsSidebarPane extends Elements.ElementsSidebarPane {
     this._applyUserInput(element, userInput, previousContent, context, true);
   }
 }
-
-/* Legacy exported object */
-self.Elements = self.Elements || {};
-
-/* Legacy exported object */
-Elements = Elements || {};
-
-/** @constructor */
-Elements.MetricsSidebarPane = MetricsSidebarPane;

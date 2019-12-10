@@ -27,6 +27,14 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+import {ComputedStyleWidget} from './ComputedStyleWidget.js';
+import {ElementsBreadcrumbs, Events} from './ElementsBreadcrumbs.js';
+import {ElementsTreeElement, HrefSymbol} from './ElementsTreeElement.js';  // eslint-disable-line no-unused-vars
+import {ElementsTreeElementHighlighter} from './ElementsTreeElementHighlighter.js';
+import {ElementsTreeOutline} from './ElementsTreeOutline.js';
+import {MarkerDecorator} from './MarkerDecorator.js';  // eslint-disable-line no-unused-vars
+import {MetricsSidebarPane} from './MetricsSidebarPane.js';
+import {StylesSidebarPane} from './StylesSidebarPane.js';
 
 /**
  * @implements {UI.Searchable}
@@ -34,7 +42,7 @@
  * @implements {UI.ViewLocationResolver}
  * @unrestricted
  */
-export default class ElementsPanel extends UI.Panel {
+export class ElementsPanel extends UI.Panel {
   constructor() {
     super('elements');
     this.registerRequiredCSS('elements/elementsPanel.css');
@@ -66,20 +74,20 @@ export default class ElementsPanel extends UI.Panel {
     Common.moduleSetting('domWordWrap').addChangeListener(this._domWordWrapSettingChanged.bind(this));
 
     crumbsContainer.id = 'elements-crumbs';
-    this._breadcrumbs = new Elements.ElementsBreadcrumbs();
+    this._breadcrumbs = new ElementsBreadcrumbs();
     this._breadcrumbs.show(crumbsContainer);
-    this._breadcrumbs.addEventListener(Elements.ElementsBreadcrumbs.Events.NodeSelected, this._crumbNodeSelected, this);
+    this._breadcrumbs.addEventListener(Events.NodeSelected, this._crumbNodeSelected, this);
 
-    this._stylesWidget = new Elements.StylesSidebarPane();
-    this._computedStyleWidget = new Elements.ComputedStyleWidget();
-    this._metricsWidget = new Elements.MetricsSidebarPane();
+    this._stylesWidget = new StylesSidebarPane();
+    this._computedStyleWidget = new ComputedStyleWidget();
+    this._metricsWidget = new MetricsSidebarPane();
 
     Common.moduleSetting('sidebarPosition').addChangeListener(this._updateSidebarPosition.bind(this));
     this._updateSidebarPosition();
 
-    /** @type {!Array.<!Elements.ElementsTreeOutline>} */
+    /** @type {!Array.<!ElementsTreeOutline>} */
     this._treeOutlines = [];
-    /** @type {!Map<!Elements.ElementsTreeOutline, !Element>} */
+    /** @type {!Map<!ElementsTreeOutline, !Element>} */
     this._treeOutlineHeaders = new Map();
     SDK.targetManager.observeModels(SDK.DOMModel, this);
     SDK.targetManager.addEventListener(
@@ -137,15 +145,14 @@ export default class ElementsPanel extends UI.Panel {
    */
   modelAdded(domModel) {
     const parentModel = domModel.parentModel();
-    let treeOutline = parentModel ? Elements.ElementsTreeOutline.forDOMModel(parentModel) : null;
+    let treeOutline = parentModel ? ElementsTreeOutline.forDOMModel(parentModel) : null;
     if (!treeOutline) {
-      treeOutline = new Elements.ElementsTreeOutline(true, true);
+      treeOutline = new ElementsTreeOutline(true, true);
       treeOutline.setWordWrap(Common.moduleSetting('domWordWrap').get());
+      treeOutline.addEventListener(ElementsTreeOutline.Events.SelectedNodeChanged, this._selectedNodeChanged, this);
       treeOutline.addEventListener(
-          Elements.ElementsTreeOutline.Events.SelectedNodeChanged, this._selectedNodeChanged, this);
-      treeOutline.addEventListener(
-          Elements.ElementsTreeOutline.Events.ElementsTreeUpdated, this._updateBreadcrumbIfNeeded, this);
-      new Elements.ElementsTreeElementHighlighter(treeOutline);
+          ElementsTreeOutline.Events.ElementsTreeUpdated, this._updateBreadcrumbIfNeeded, this);
+      new ElementsTreeElementHighlighter(treeOutline);
       this._treeOutlines.push(treeOutline);
       if (domModel.target().parentTarget()) {
         this._treeOutlineHeaders.set(treeOutline, createElementWithClass('div', 'elements-tree-header'));
@@ -165,7 +172,7 @@ export default class ElementsPanel extends UI.Panel {
    * @param {!SDK.DOMModel} domModel
    */
   modelRemoved(domModel) {
-    const treeOutline = Elements.ElementsTreeOutline.forDOMModel(domModel);
+    const treeOutline = ElementsTreeOutline.forDOMModel(domModel);
     treeOutline.unwireFromDOMModel(domModel);
     if (domModel.parentModel()) {
       return;
@@ -187,7 +194,7 @@ export default class ElementsPanel extends UI.Panel {
     if (!domModel) {
       return;
     }
-    const treeOutline = Elements.ElementsTreeOutline.forDOMModel(domModel);
+    const treeOutline = ElementsTreeOutline.forDOMModel(domModel);
     if (!treeOutline) {
       return;
     }
@@ -258,7 +265,7 @@ export default class ElementsPanel extends UI.Panel {
       if (domModel.parentModel()) {
         continue;
       }
-      const treeOutline = Elements.ElementsTreeOutline.forDOMModel(domModel);
+      const treeOutline = ElementsTreeOutline.forDOMModel(domModel);
       treeOutline.setVisible(true);
 
       if (!treeOutline.rootDOMNode) {
@@ -309,7 +316,7 @@ export default class ElementsPanel extends UI.Panel {
     const selectedNode = /** @type {?SDK.DOMNode} */ (event.data.node);
     const focus = /** @type {boolean} */ (event.data.focus);
     for (const treeOutline of this._treeOutlines) {
-      if (!selectedNode || Elements.ElementsTreeOutline.forDOMModel(selectedNode.domModel()) !== treeOutline) {
+      if (!selectedNode || ElementsTreeOutline.forDOMModel(selectedNode.domModel()) !== treeOutline) {
         treeOutline.selectDOMNode(null);
       }
     }
@@ -400,7 +407,7 @@ export default class ElementsPanel extends UI.Panel {
     if (!node || this._hasNonDefaultSelectedNode || this._pendingNodeReveal) {
       return;
     }
-    const treeOutline = Elements.ElementsTreeOutline.forDOMModel(node.domModel());
+    const treeOutline = ElementsTreeOutline.forDOMModel(node.domModel());
     if (!treeOutline) {
       return;
     }
@@ -505,7 +512,7 @@ export default class ElementsPanel extends UI.Panel {
    */
   _getPopoverRequest(event) {
     let link = event.target;
-    while (link && !link[Elements.ElementsTreeElement.HrefSymbol]) {
+    while (link && !link[HrefSymbol]) {
       link = link.parentElementOrShadowHost();
     }
     if (!link) {
@@ -519,8 +526,7 @@ export default class ElementsPanel extends UI.Panel {
         if (!node) {
           return false;
         }
-        const preview = await Components.ImagePreview.build(
-            node.domModel().target(), link[Elements.ElementsTreeElement.HrefSymbol], true);
+        const preview = await Components.ImagePreview.build(node.domModel().target(), link[HrefSymbol], true);
         if (preview) {
           popover.contentElement.appendChild(preview);
         }
@@ -616,7 +622,7 @@ export default class ElementsPanel extends UI.Panel {
     if (!searchResult.node) {
       return;
     }
-    const treeOutline = Elements.ElementsTreeOutline.forDOMModel(searchResult.node.domModel());
+    const treeOutline = ElementsTreeOutline.forDOMModel(searchResult.node.domModel());
     const treeElement = treeOutline.findTreeElement(searchResult.node);
     if (treeElement) {
       treeElement.hideSearchHighlights();
@@ -642,7 +648,7 @@ export default class ElementsPanel extends UI.Panel {
    */
   selectDOMNode(node, focus) {
     for (const treeOutline of this._treeOutlines) {
-      const outline = Elements.ElementsTreeOutline.forDOMModel(node.domModel());
+      const outline = ElementsTreeOutline.forDOMModel(node.domModel());
       if (outline === treeOutline) {
         treeOutline.selectDOMNode(node, focus);
       } else {
@@ -669,22 +675,22 @@ export default class ElementsPanel extends UI.Panel {
 
   /**
    * @param {?SDK.DOMNode} node
-   * @return {?Elements.ElementsTreeOutline}
+   * @return {?ElementsTreeOutline}
    */
   _treeOutlineForNode(node) {
     if (!node) {
       return null;
     }
-    return Elements.ElementsTreeOutline.forDOMModel(node.domModel());
+    return ElementsTreeOutline.forDOMModel(node.domModel());
   }
 
   /**
    * @param {!SDK.DOMNode} node
-   * @return {?Elements.ElementsTreeElement}
+   * @return {?ElementsTreeElement}
    */
   _treeElementForNode(node) {
     const treeOutline = this._treeOutlineForNode(node);
-    return /** @type {?Elements.ElementsTreeElement} */ (treeOutline.findTreeElement(node));
+    return /** @type {?ElementsTreeElement} */ (treeOutline.findTreeElement(node));
   }
 
   /**
@@ -700,6 +706,7 @@ export default class ElementsPanel extends UI.Panel {
   }
 
   /**
+   * @suppress {accessControls}
    * @param {!SDK.DOMNode} node
    * @param {boolean} focus
    * @param {boolean=} omitHighlight
@@ -718,8 +725,8 @@ export default class ElementsPanel extends UI.Panel {
       delete this._omitDefaultSelection;
 
       if (!this._notFirstInspectElement) {
-        Elements.ElementsPanel._firstInspectElementNodeNameForTest = node.nodeName();
-        Elements.ElementsPanel._firstInspectElementCompletedForTest();
+        ElementsPanel._firstInspectElementNodeNameForTest = node.nodeName();
+        ElementsPanel._firstInspectElementCompletedForTest();
         Host.InspectorFrontendHost.inspectElementCompleted();
       }
       this._notFirstInspectElement = true;
@@ -1058,7 +1065,7 @@ export class ElementsActionDelegate {
     if (!node) {
       return true;
     }
-    const treeOutline = Elements.ElementsTreeOutline.forDOMModel(node.domModel());
+    const treeOutline = ElementsTreeOutline.forDOMModel(node.domModel());
     if (!treeOutline) {
       return true;
     }
@@ -1084,7 +1091,7 @@ export class ElementsActionDelegate {
 }
 
 /**
- * @implements {Elements.MarkerDecorator}
+ * @implements {MarkerDecorator}
  * @unrestricted
  */
 export class PseudoStateMarkerDecorator {
@@ -1100,33 +1107,3 @@ export class PseudoStateMarkerDecorator {
     };
   }
 }
-
-/* Legacy exported object */
-self.Elements = self.Elements || {};
-
-/* Legacy exported object */
-Elements = Elements || {};
-
-/** @constructor */
-Elements.ElementsPanel = ElementsPanel;
-
-// Sniffed in tests.
-Elements.ElementsPanel._firstInspectElementCompletedForTest = function() {};
-
-/** @enum {symbol} */
-Elements.ElementsPanel._splitMode = _splitMode;
-
-/** @constructor */
-Elements.ElementsPanel.ContextMenuProvider = ContextMenuProvider;
-
-/** @constructor */
-Elements.ElementsPanel.DOMNodeRevealer = DOMNodeRevealer;
-
-/** @constructor */
-Elements.ElementsPanel.CSSPropertyRevealer = CSSPropertyRevealer;
-
-/** @constructor */
-Elements.ElementsActionDelegate = ElementsActionDelegate;
-
-/** @constructor */
-Elements.ElementsPanel.PseudoStateMarkerDecorator = PseudoStateMarkerDecorator;

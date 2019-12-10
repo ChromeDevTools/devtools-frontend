@@ -30,7 +30,7 @@
 /**
  * @unrestricted
  */
-export default class PropertiesWidget extends UI.ThrottledWidget {
+export class PropertiesWidget extends UI.ThrottledWidget {
   constructor() {
     super(true /* isWebComponent */);
     this.registerRequiredCSS('elements/propertiesWidget.css');
@@ -170,14 +170,3 @@ export default class PropertiesWidget extends UI.ThrottledWidget {
 }
 
 export const _objectGroupName = 'properties-sidebar-pane';
-
-/* Legacy exported object */
-self.Elements = self.Elements || {};
-
-/* Legacy exported object */
-Elements = Elements || {};
-
-/** @constructor */
-Elements.PropertiesWidget = PropertiesWidget;
-
-Elements.PropertiesWidget._objectGroupName = _objectGroupName;

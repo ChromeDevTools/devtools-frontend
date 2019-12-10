@@ -5,7 +5,7 @@
 /**
  * @unrestricted
  */
-export default class ComputedStyleModel extends Common.Object {
+export class ComputedStyleModel extends Common.Object {
   constructor() {
     super();
     this._node = UI.context.flavor(SDK.DOMNode);
@@ -158,18 +158,3 @@ export class ComputedStyle {
     this.computedStyle = computedStyle;
   }
 }
-
-/* Legacy exported object */
-self.Elements = self.Elements || {};
-
-/* Legacy exported object */
-Elements = Elements || {};
-
-/** @constructor */
-Elements.ComputedStyleModel = ComputedStyleModel;
-
-/** @enum {symbol} */
-Elements.ComputedStyleModel.Events = Events;
-
-/** @constructor */
-Elements.ComputedStyleModel.ComputedStyle = ComputedStyle;

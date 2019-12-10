@@ -5,7 +5,7 @@
  * @implements {Common.App}
  * @unrestricted
  */
-Main.SimpleApp = class {
+export default class SimpleApp {
   /**
    * @override
    * @param {!Document} document
@@ -16,13 +16,13 @@ Main.SimpleApp = class {
     rootView.attachToDocument(document);
     rootView.focus();
   }
-};
+}
 
 /**
  * @implements {Common.AppProvider}
  * @unrestricted
  */
-Main.SimpleAppProvider = class {
+export class SimpleAppProvider {
   /**
    * @override
    * @return {!Common.App}
@@ -30,4 +30,20 @@ Main.SimpleAppProvider = class {
   createApp() {
     return new Main.SimpleApp();
   }
-};
+}
+
+/* Legacy exported object */
+self.Main = self.Main || {};
+
+/* Legacy exported object */
+Main = Main || {};
+
+/**
+ * @constructor
+ */
+Main.SimpleApp = SimpleApp;
+
+/**
+ * @constructor
+ */
+Main.SimpleAppProvider = SimpleAppProvider;

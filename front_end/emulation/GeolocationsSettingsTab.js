@@ -6,7 +6,7 @@
  * @implements {UI.ListWidget.Delegate}
  * @unrestricted
  */
-Emulation.GeolocationsSettingsTab = class extends UI.VBox {
+export default class GeolocationsSettingsTab extends UI.VBox {
   constructor() {
     super(true);
     this.registerRequiredCSS('emulation/geolocationsSettingsTab.css');
@@ -267,7 +267,18 @@ Emulation.GeolocationsSettingsTab = class extends UI.VBox {
       return {valid: false, errorMessage};
     }
   }
-};
+}
+
+/* Legacy exported object */
+self.Emulation = self.Emulation || {};
+
+/* Legacy exported object */
+Emulation = Emulation || {};
+
+/**
+ * @constructor
+ */
+Emulation.GeolocationsSettingsTab = GeolocationsSettingsTab;
 
 /** @typedef {{title: string, lat: number, long: number}} */
 Emulation.GeolocationsSettingsTab.Item;

@@ -5,7 +5,7 @@
  * @implements {SDK.SDKModelObserver<!SDK.CSSModel>}
  * @unrestricted
  */
-Emulation.MediaQueryInspector = class extends UI.Widget {
+export default class MediaQueryInspector extends UI.Widget {
   /**
    * @param {function():number} getWidthCallback
    * @param {function(number)} setWidthCallback
@@ -80,11 +80,11 @@ Emulation.MediaQueryInspector = class extends UI.Widget {
     }
 
     const model = mediaQueryMarker._model;
-    if (model.section() === Emulation.MediaQueryInspector.Section.Max) {
+    if (model.section() === Section.Max) {
       this._setWidthCallback(model.maxWidthExpression().computedLength());
       return;
     }
-    if (model.section() === Emulation.MediaQueryInspector.Section.Min) {
+    if (model.section() === Section.Min) {
       this._setWidthCallback(model.minWidthExpression().computedLength());
       return;
     }
@@ -155,8 +155,8 @@ Emulation.MediaQueryInspector = class extends UI.Widget {
   }
 
   /**
-   * @param {!Array.<!Emulation.MediaQueryInspector.MediaQueryUIModel>} models
-   * @return {!Array.<!Emulation.MediaQueryInspector.MediaQueryUIModel>}
+   * @param {!Array.<!MediaQueryUIModel>} models
+   * @return {!Array.<!MediaQueryUIModel>}
    */
   _squashAdjacentEqual(models) {
     const filtered = [];
@@ -181,7 +181,7 @@ Emulation.MediaQueryInspector = class extends UI.Widget {
       }
       for (let j = 0; j < cssMedia.mediaList.length; ++j) {
         const mediaQuery = cssMedia.mediaList[j];
-        const queryModel = Emulation.MediaQueryInspector.MediaQueryUIModel.createFromMediaQuery(cssMedia, mediaQuery);
+        const queryModel = MediaQueryUIModel.createFromMediaQuery(cssMedia, mediaQuery);
         if (queryModel && queryModel.rawLocation()) {
           queryModels.push(queryModel);
         }
@@ -201,8 +201,8 @@ Emulation.MediaQueryInspector = class extends UI.Widget {
     this._renderMediaQueries();
 
     /**
-     * @param {!Emulation.MediaQueryInspector.MediaQueryUIModel} model1
-     * @param {!Emulation.MediaQueryInspector.MediaQueryUIModel} model2
+     * @param {!MediaQueryUIModel} model1
+     * @param {!MediaQueryUIModel} model2
      * @return {number}
      */
     function compareModels(model1, model2) {
@@ -259,7 +259,7 @@ Emulation.MediaQueryInspector = class extends UI.Widget {
   }
 
   /**
-   * @param {!Emulation.MediaQueryInspector.MediaQueryUIModel} model
+   * @param {!MediaQueryUIModel} model
    * @return {!Element}
    */
   _createElementFromMediaQueryModel(model) {
@@ -268,7 +268,7 @@ Emulation.MediaQueryInspector = class extends UI.Widget {
     const maxWidthValue = model.maxWidthExpression() ? model.maxWidthExpression().computedLength() / zoomFactor : 0;
     const result = createElementWithClass('div', 'media-inspector-bar');
 
-    if (model.section() === Emulation.MediaQueryInspector.Section.Max) {
+    if (model.section() === Section.Max) {
       result.createChild('div', 'media-inspector-marker-spacer');
       const markerElement = result.createChild('div', 'media-inspector-marker media-inspector-marker-max-width');
       markerElement.style.width = maxWidthValue + 'px';
@@ -278,7 +278,7 @@ Emulation.MediaQueryInspector = class extends UI.Widget {
       result.createChild('div', 'media-inspector-marker-spacer');
     }
 
-    if (model.section() === Emulation.MediaQueryInspector.Section.MinMax) {
+    if (model.section() === Section.MinMax) {
       result.createChild('div', 'media-inspector-marker-spacer');
       const leftElement = result.createChild('div', 'media-inspector-marker media-inspector-marker-min-max-width');
       leftElement.style.width = (maxWidthValue - minWidthValue) * 0.5 + 'px';
@@ -294,7 +294,7 @@ Emulation.MediaQueryInspector = class extends UI.Widget {
       result.createChild('div', 'media-inspector-marker-spacer');
     }
 
-    if (model.section() === Emulation.MediaQueryInspector.Section.Min) {
+    if (model.section() === Section.Min) {
       const leftElement = result.createChild(
           'div', 'media-inspector-marker media-inspector-marker-min-width media-inspector-marker-min-width-left');
       leftElement.title = model.mediaText();
@@ -320,12 +320,12 @@ Emulation.MediaQueryInspector = class extends UI.Widget {
 
     return result;
   }
-};
+}
 
 /**
  * @enum {number}
  */
-Emulation.MediaQueryInspector.Section = {
+export const Section = {
   Max: 0,
   MinMax: 1,
   Min: 2
@@ -334,7 +334,7 @@ Emulation.MediaQueryInspector.Section = {
 /**
  * @unrestricted
  */
-Emulation.MediaQueryInspector.MediaQueryUIModel = class {
+export class MediaQueryUIModel {
   /**
    * @param {!SDK.CSSMedia} cssMedia
    * @param {?SDK.CSSMediaQueryExpression} minWidthExpression
@@ -347,18 +347,18 @@ Emulation.MediaQueryInspector.MediaQueryUIModel = class {
     this._maxWidthExpression = maxWidthExpression;
     this._active = active;
     if (maxWidthExpression && !minWidthExpression) {
-      this._section = Emulation.MediaQueryInspector.Section.Max;
+      this._section = Section.Max;
     } else if (minWidthExpression && maxWidthExpression) {
-      this._section = Emulation.MediaQueryInspector.Section.MinMax;
+      this._section = Section.MinMax;
     } else {
-      this._section = Emulation.MediaQueryInspector.Section.Min;
+      this._section = Section.Min;
     }
   }
 
   /**
    * @param {!SDK.CSSMedia} cssMedia
    * @param {!SDK.CSSMediaQuery} mediaQuery
-   * @return {?Emulation.MediaQueryInspector.MediaQueryUIModel}
+   * @return {?MediaQueryUIModel}
    */
   static createFromMediaQuery(cssMedia, mediaQuery) {
     let maxWidthExpression = null;
@@ -385,12 +385,11 @@ Emulation.MediaQueryInspector.MediaQueryUIModel = class {
       return null;
     }
 
-    return new Emulation.MediaQueryInspector.MediaQueryUIModel(
-        cssMedia, minWidthExpression, maxWidthExpression, mediaQuery.active());
+    return new MediaQueryUIModel(cssMedia, minWidthExpression, maxWidthExpression, mediaQuery.active());
   }
 
   /**
-   * @param {!Emulation.MediaQueryInspector.MediaQueryUIModel} other
+   * @param {!MediaQueryUIModel} other
    * @return {boolean}
    */
   equals(other) {
@@ -398,7 +397,7 @@ Emulation.MediaQueryInspector.MediaQueryUIModel = class {
   }
 
   /**
-   * @param {!Emulation.MediaQueryInspector.MediaQueryUIModel} other
+   * @param {!MediaQueryUIModel} other
    * @return {boolean}
    */
   dimensionsEqual(other) {
@@ -410,7 +409,7 @@ Emulation.MediaQueryInspector.MediaQueryUIModel = class {
   }
 
   /**
-   * @param {!Emulation.MediaQueryInspector.MediaQueryUIModel} other
+   * @param {!MediaQueryUIModel} other
    * @return {number}
    */
   compareTo(other) {
@@ -435,10 +434,10 @@ Emulation.MediaQueryInspector.MediaQueryUIModel = class {
       return myLocation.url.compareTo(otherLocation.url) || myLocation.lineNumber - otherLocation.lineNumber ||
           myLocation.columnNumber - otherLocation.columnNumber;
     }
-    if (this.section() === Emulation.MediaQueryInspector.Section.Max) {
+    if (this.section() === Section.Max) {
       return other.maxWidthExpression().computedLength() - this.maxWidthExpression().computedLength();
     }
-    if (this.section() === Emulation.MediaQueryInspector.Section.Min) {
+    if (this.section() === Section.Min) {
       return this.minWidthExpression().computedLength() - other.minWidthExpression().computedLength();
     }
     return this.minWidthExpression().computedLength() - other.minWidthExpression().computedLength() ||
@@ -446,7 +445,7 @@ Emulation.MediaQueryInspector.MediaQueryUIModel = class {
   }
 
   /**
-   * @return {!Emulation.MediaQueryInspector.Section}
+   * @return {!Section}
    */
   section() {
     return this._section;
@@ -489,4 +488,25 @@ Emulation.MediaQueryInspector.MediaQueryUIModel = class {
   active() {
     return this._active;
   }
-};
+}
+
+/* Legacy exported object */
+self.Emulation = self.Emulation || {};
+
+/* Legacy exported object */
+Emulation = Emulation || {};
+
+/**
+ * @constructor
+ */
+Emulation.MediaQueryInspector = MediaQueryInspector;
+
+/**
+ * @enum {number}
+ */
+Emulation.MediaQueryInspector.Section = Section;
+
+/**
+ * @constructor
+ */
+Emulation.MediaQueryInspector.MediaQueryUIModel = MediaQueryUIModel;

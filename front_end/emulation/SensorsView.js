@@ -4,7 +4,7 @@
 /**
  * @unrestricted
  */
-Emulation.SensorsView = class extends UI.VBox {
+export default class SensorsView extends UI.VBox {
   constructor() {
     super(true);
     this.registerRequiredCSS('emulation/sensors.css');
@@ -28,13 +28,13 @@ Emulation.SensorsView = class extends UI.VBox {
   }
 
   /**
-   * @return {!Emulation.SensorsView}
+   * @return {!SensorsView}
    */
   static instance() {
-    if (!Emulation.SensorsView._instanceObject) {
-      Emulation.SensorsView._instanceObject = new Emulation.SensorsView();
+    if (!SensorsView._instanceObject) {
+      SensorsView._instanceObject = new SensorsView();
     }
-    return Emulation.SensorsView._instanceObject;
+    return SensorsView._instanceObject;
   }
 
   /**
@@ -46,10 +46,7 @@ Emulation.SensorsView = class extends UI.VBox {
     geogroup.appendChild(geogroupTitle);
     const fields = geogroup.createChild('div', 'geo-fields');
 
-    const noOverrideOption = {
-      title: Common.UIString('No override'),
-      location: Emulation.SensorsView.NonPresetOptions.NoOverride
-    };
+    const noOverrideOption = {title: Common.UIString('No override'), location: NonPresetOptions.NoOverride};
 
     this._locationSelectElement = fields.createChild('select', 'chrome-select');
     UI.ARIAUtils.bindLabelToControl(geogroupTitle, this._locationSelectElement);
@@ -74,16 +71,13 @@ Emulation.SensorsView = class extends UI.VBox {
     fillCustomSettings();
 
     // Other location
-    const customLocationOption = {
-      title: Common.UIString('Other\u2026'),
-      location: Emulation.SensorsView.NonPresetOptions.Custom
-    };
+    const customLocationOption = {title: Common.UIString('Other\u2026'), location: NonPresetOptions.Custom};
     this._locationSelectElement.appendChild(new Option(customLocationOption.title, customLocationOption.location));
 
     // Error location.
     const group = this._locationSelectElement.createChild('optgroup');
     group.label = ls`Error`;
-    group.appendChild(new Option(ls`Location unavailable`, Emulation.SensorsView.NonPresetOptions.Unavailable));
+    group.appendChild(new Option(ls`Location unavailable`, NonPresetOptions.Unavailable));
 
     this._locationSelectElement.selectedIndex = 0;
     this._locationSelectElement.addEventListener('change', this._geolocationSelectChanged.bind(this));
@@ -137,10 +131,10 @@ Emulation.SensorsView = class extends UI.VBox {
     this._fieldsetElement.disabled = false;
     this._timezoneError.textContent = '';
     const value = this._locationSelectElement.options[this._locationSelectElement.selectedIndex].value;
-    if (value === Emulation.SensorsView.NonPresetOptions.NoOverride) {
+    if (value === NonPresetOptions.NoOverride) {
       this._geolocationOverrideEnabled = false;
       this._fieldsetElement.disabled = true;
-    } else if (value === Emulation.SensorsView.NonPresetOptions.Custom) {
+    } else if (value === NonPresetOptions.Custom) {
       this._geolocationOverrideEnabled = true;
       const geolocation = SDK.EmulationModel.Geolocation.parseUserInput(
           this._latitudeInput.value.trim(), this._longitudeInput.value.trim(), this._timezoneInput.value.trim());
@@ -148,7 +142,7 @@ Emulation.SensorsView = class extends UI.VBox {
         return;
       }
       this._geolocation = geolocation;
-    } else if (value === Emulation.SensorsView.NonPresetOptions.Unavailable) {
+    } else if (value === NonPresetOptions.Unavailable) {
       this._geolocationOverrideEnabled = true;
       this._geolocation = new SDK.EmulationModel.Geolocation(0, 0, '', true);
     } else {
@@ -162,7 +156,7 @@ Emulation.SensorsView = class extends UI.VBox {
     }
 
     this._applyGeolocation();
-    if (value === Emulation.SensorsView.NonPresetOptions.Custom) {
+    if (value === NonPresetOptions.Custom) {
       this._latitudeInput.focus();
     }
   }
@@ -176,7 +170,7 @@ Emulation.SensorsView = class extends UI.VBox {
 
     this._timezoneError.textContent = '';
 
-    this._setSelectElementLabel(this._locationSelectElement, Emulation.SensorsView.NonPresetOptions.Custom);
+    this._setSelectElementLabel(this._locationSelectElement, NonPresetOptions.Custom);
     this._geolocation = geolocation;
     this._applyGeolocation();
   }
@@ -203,13 +197,10 @@ Emulation.SensorsView = class extends UI.VBox {
     const orientationContent = orientationGroup.createChild('div', 'orientation-content');
     const fields = orientationContent.createChild('div', 'orientation-fields');
 
-    const orientationOffOption = {
-      title: Common.UIString('Off'),
-      orientation: Emulation.SensorsView.NonPresetOptions.NoOverride
-    };
+    const orientationOffOption = {title: Common.UIString('Off'), orientation: NonPresetOptions.NoOverride};
     const customOrientationOption = {
       title: Common.UIString('Custom orientation...'),
-      orientation: Emulation.SensorsView.NonPresetOptions.Custom
+      orientation: NonPresetOptions.Custom
     };
     this._orientationSelectElement = this.contentElement.createChild('select', 'chrome-select');
     UI.ARIAUtils.bindLabelToControl(orientationTitle, this._orientationSelectElement);
@@ -218,7 +209,7 @@ Emulation.SensorsView = class extends UI.VBox {
     this._orientationSelectElement.appendChild(
         new Option(customOrientationOption.title, customOrientationOption.orientation));
 
-    const orientationGroups = Emulation.SensorsView.PresetOrientations;
+    const orientationGroups = PresetOrientations;
     for (let i = 0; i < orientationGroups.length; ++i) {
       const groupElement = this._orientationSelectElement.createChild('optgroup');
       groupElement.label = orientationGroups[i].title;
@@ -272,10 +263,10 @@ Emulation.SensorsView = class extends UI.VBox {
     const value = this._orientationSelectElement.options[this._orientationSelectElement.selectedIndex].value;
     this._enableOrientationFields(false);
 
-    if (value === Emulation.SensorsView.NonPresetOptions.NoOverride) {
+    if (value === NonPresetOptions.NoOverride) {
       this._deviceOrientationOverrideEnabled = false;
       this._enableOrientationFields(true);
-    } else if (value === Emulation.SensorsView.NonPresetOptions.Custom) {
+    } else if (value === NonPresetOptions.Custom) {
       this._deviceOrientationOverrideEnabled = true;
       this._alphaElement.focus();
     } else {
@@ -283,8 +274,7 @@ Emulation.SensorsView = class extends UI.VBox {
       this._deviceOrientationOverrideEnabled = true;
       this._deviceOrientation =
           new SDK.EmulationModel.DeviceOrientation(parsedValue[0], parsedValue[1], parsedValue[2]);
-      this._setDeviceOrientation(
-          this._deviceOrientation, Emulation.SensorsView.DeviceOrientationModificationSource.SelectPreset);
+      this._setDeviceOrientation(this._deviceOrientation, DeviceOrientationModificationSource.SelectPreset);
     }
   }
 
@@ -310,20 +300,19 @@ Emulation.SensorsView = class extends UI.VBox {
     this._setDeviceOrientation(
         SDK.EmulationModel.DeviceOrientation.parseUserInput(
             this._alphaElement.value.trim(), this._betaElement.value.trim(), this._gammaElement.value.trim()),
-        Emulation.SensorsView.DeviceOrientationModificationSource.UserInput);
-    this._setSelectElementLabel(this._orientationSelectElement, Emulation.SensorsView.NonPresetOptions.Custom);
+        DeviceOrientationModificationSource.UserInput);
+    this._setSelectElementLabel(this._orientationSelectElement, NonPresetOptions.Custom);
   }
 
   _resetDeviceOrientation() {
     this._setDeviceOrientation(
-        new SDK.EmulationModel.DeviceOrientation(0, 90, 0),
-        Emulation.SensorsView.DeviceOrientationModificationSource.ResetButton);
+        new SDK.EmulationModel.DeviceOrientation(0, 90, 0), DeviceOrientationModificationSource.ResetButton);
     this._setSelectElementLabel(this._orientationSelectElement, '[0, 90, 0]');
   }
 
   /**
    * @param {?SDK.EmulationModel.DeviceOrientation} deviceOrientation
-   * @param {!Emulation.SensorsView.DeviceOrientationModificationSource} modificationSource
+   * @param {!DeviceOrientationModificationSource} modificationSource
    */
   _setDeviceOrientation(deviceOrientation, modificationSource) {
     if (!deviceOrientation) {
@@ -338,13 +327,13 @@ Emulation.SensorsView = class extends UI.VBox {
       return Math.round(angle * 10000) / 10000;
     }
 
-    if (modificationSource !== Emulation.SensorsView.DeviceOrientationModificationSource.UserInput) {
+    if (modificationSource !== DeviceOrientationModificationSource.UserInput) {
       this._alphaSetter(roundAngle(deviceOrientation.alpha));
       this._betaSetter(roundAngle(deviceOrientation.beta));
       this._gammaSetter(roundAngle(deviceOrientation.gamma));
     }
 
-    const animate = modificationSource !== Emulation.SensorsView.DeviceOrientationModificationSource.UserDrag;
+    const animate = modificationSource !== DeviceOrientationModificationSource.UserDrag;
     this._setBoxOrientation(deviceOrientation, animate);
 
     this._deviceOrientation = deviceOrientation;
@@ -436,7 +425,7 @@ Emulation.SensorsView = class extends UI.VBox {
     let axis, angle;
     if (event.shiftKey) {
       axis = new UI.Geometry.Vector(0, 0, -1);
-      angle = (this._mouseDownVector.x - mouseMoveVector.x) * Emulation.SensorsView.ShiftDragOrientationSpeed;
+      angle = (this._mouseDownVector.x - mouseMoveVector.x) * ShiftDragOrientationSpeed;
     } else {
       axis = UI.Geometry.crossProduct(this._mouseDownVector, mouseMoveVector);
       angle = UI.Geometry.calculateAngle(this._mouseDownVector, mouseMoveVector);
@@ -453,8 +442,8 @@ Emulation.SensorsView = class extends UI.VBox {
     const eulerAngles = UI.Geometry.EulerAngles.fromRotationMatrix(currentMatrix);
     const newOrientation =
         new SDK.EmulationModel.DeviceOrientation(-eulerAngles.alpha, -eulerAngles.beta, eulerAngles.gamma);
-    this._setDeviceOrientation(newOrientation, Emulation.SensorsView.DeviceOrientationModificationSource.UserDrag);
-    this._setSelectElementLabel(this._orientationSelectElement, Emulation.SensorsView.NonPresetOptions.Custom);
+    this._setDeviceOrientation(newOrientation, DeviceOrientationModificationSource.UserDrag);
+    this._setSelectElementLabel(this._orientationSelectElement, NonPresetOptions.Custom);
     return false;
   }
 
@@ -524,10 +513,10 @@ Emulation.SensorsView = class extends UI.VBox {
       }
     }
   }
-};
+}
 
 /** @enum {string} */
-Emulation.SensorsView.DeviceOrientationModificationSource = {
+export const DeviceOrientationModificationSource = {
   UserInput: 'userInput',
   UserDrag: 'userDrag',
   ResetButton: 'resetButton',
@@ -535,14 +524,14 @@ Emulation.SensorsView.DeviceOrientationModificationSource = {
 };
 
 /** {string} */
-Emulation.SensorsView.NonPresetOptions = {
+export const NonPresetOptions = {
   NoOverride: 'noOverride',
   Custom: 'custom',
   Unavailable: 'unavailable'
 };
 
 /** @type {!Array.<{title: string, value: !Array.<{title: string, orientation: string}>}>} */
-Emulation.SensorsView.PresetOrientations = [{
+export const PresetOrientations = [{
   title: ls`Presets`,
   value: [
     {title: Common.UIString('Portrait'), orientation: '[0, 90, 0]'},
@@ -554,12 +543,11 @@ Emulation.SensorsView.PresetOrientations = [{
   ]
 }];
 
-
 /**
  * @implements {UI.ActionDelegate}
  * @unrestricted
  */
-Emulation.SensorsView.ShowActionDelegate = class {
+export class ShowActionDelegate {
   /**
    * @override
    * @param {!UI.Context} context
@@ -570,6 +558,32 @@ Emulation.SensorsView.ShowActionDelegate = class {
     UI.viewManager.showView('sensors');
     return true;
   }
-};
+}
 
-Emulation.SensorsView.ShiftDragOrientationSpeed = 16;
+export const ShiftDragOrientationSpeed = 16;
+
+/* Legacy exported object */
+self.Emulation = self.Emulation || {};
+
+/* Legacy exported object */
+Emulation = Emulation || {};
+
+/**
+ * @constructor
+ */
+Emulation.SensorsView = SensorsView;
+
+/** @enum {string} */
+Emulation.SensorsView.DeviceOrientationModificationSource = DeviceOrientationModificationSource;
+
+/** {string} */
+Emulation.SensorsView.NonPresetOptions = NonPresetOptions;
+
+/** @type {!Array.<{title: string, value: !Array.<{title: string, orientation: string}>}>} */
+Emulation.SensorsView.PresetOrientations = PresetOrientations;
+
+/**
+ * @constructor
+ */
+Emulation.SensorsView.ShowActionDelegate = ShowActionDelegate;
+Emulation.SensorsView.ShiftDragOrientationSpeed = ShiftDragOrientationSpeed;

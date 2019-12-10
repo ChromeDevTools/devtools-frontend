@@ -5,7 +5,7 @@
  * @implements {UI.ListWidget.Delegate}
  * @unrestricted
  */
-Emulation.DevicesSettingsTab = class extends UI.VBox {
+export default class DevicesSettingsTab extends UI.VBox {
   constructor() {
     super();
     this.element.classList.add('settings-tab-container');
@@ -284,4 +284,15 @@ Emulation.DevicesSettingsTab = class extends UI.VBox {
       return Emulation.DeviceModeModel.scaleValidator(input.value);
     }
   }
-};
+}
+
+/* Legacy exported object */
+self.Emulation = self.Emulation || {};
+
+/* Legacy exported object */
+Emulation = Emulation || {};
+
+/**
+ * @constructor
+ */
+Emulation.DevicesSettingsTab = DevicesSettingsTab;

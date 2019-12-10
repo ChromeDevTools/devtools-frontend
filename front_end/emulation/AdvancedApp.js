@@ -5,7 +5,7 @@
  * @implements {Common.App}
  * @unrestricted
  */
-Emulation.AdvancedApp = class {
+export default class AdvancedApp {
   constructor() {
     Components.dockController.addEventListener(
         Components.DockController.Events.BeforeDockSideChanged, this._openToolboxWindow, this);
@@ -188,17 +188,14 @@ Emulation.AdvancedApp = class {
     console.timeStamp('AdvancedApp.setInspectedPageBounds');
     Host.InspectorFrontendHost.setInspectedPageBounds(bounds);
   }
-};
-
-/** @type {!Emulation.AdvancedApp} */
-Emulation.AdvancedApp._appInstance;
+}
 
 
 /**
  * @implements {Common.AppProvider}
  * @unrestricted
  */
-Emulation.AdvancedAppProvider = class {
+export class AdvancedAppProvider {
   /**
    * @override
    * @return {!Common.App}
@@ -206,4 +203,23 @@ Emulation.AdvancedAppProvider = class {
   createApp() {
     return Emulation.AdvancedApp._instance();
   }
-};
+}
+
+/* Legacy exported object */
+self.Emulation = self.Emulation || {};
+
+/* Legacy exported object */
+Emulation = Emulation || {};
+
+/**
+ * @constructor
+ */
+Emulation.AdvancedApp = AdvancedApp;
+
+/** @type {!Emulation.AdvancedApp} */
+Emulation.AdvancedApp._appInstance;
+
+/**
+ * @constructor
+ */
+Emulation.AdvancedAppProvider = AdvancedAppProvider;

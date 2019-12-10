@@ -145,11 +145,6 @@
     max-width: 400px;
 }
 
-.security-certificate-button {
-    margin-top: 8px;
-    margin-left: 0;
-}
-
 .security-explanation .security-property {
     flex: none;
     width: 16px;

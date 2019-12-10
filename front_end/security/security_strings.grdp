@@ -171,7 +171,7 @@ If you believe this is shown in error please visit https://bugs.chromium.org/p/c
     No security information
   </message>
   <message name="IDS_DEVTOOLS_a7ec70e97f31322dc2e9aaa805b102ab" desc="Requests anchor text content in Security Panel of the Security panel">
-    View <ph name="FILTERREQUESTCOUNT">$1d<ex>2</ex></ph> request in Network Panel
+    View <ph name="FILTERREQUESTCOUNT">$1d<ex>1</ex></ph> request in Network Panel
   </message>
   <message name="IDS_DEVTOOLS_aa043eca48e5c05602ee440521a2d8fc" desc="Truncated santoggle text content in Security Panel of the Security panel">
     Show more (<ph name="SANLIST_LENGTH">$1s<ex>2</ex></ph> total)

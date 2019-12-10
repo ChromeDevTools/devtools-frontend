@@ -51,7 +51,7 @@ export default class SecurityPanel extends UI.PanelWithSidebar {
         Host.InspectorFrontendHost.showCertificateViewer(names);
       }
     }, 'origin-button');
-    UI.ARIAUtils.markAsMenuButton(certificateButton);
+    UI.ARIAUtils.markAsButton(certificateButton);
     return certificateButton;
   }
 
@@ -64,8 +64,8 @@ export default class SecurityPanel extends UI.PanelWithSidebar {
     const certificateButton = UI.createTextButton(text, e => {
       e.consume();
       Host.InspectorFrontendHost.showCertificateViewer(names);
-    }, 'security-certificate-button');
-    UI.ARIAUtils.markAsMenuButton(certificateButton);
+    }, 'origin-button');
+    UI.ARIAUtils.markAsButton(certificateButton);
     return certificateButton;
   }
 

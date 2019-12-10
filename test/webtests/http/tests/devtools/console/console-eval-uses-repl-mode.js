@@ -8,9 +8,9 @@
   await TestRunner.loadModule('console_test_runner');
   await TestRunner.showPanel('console');
 
-  TestRunner.addSniffer(TestRunner.RuntimeAgent, "invoke_evaluate", function(arguments) {
+  TestRunner.addSniffer(TestRunner.RuntimeAgent, "invoke_evaluate", function(args) {
     TestRunner.addResult("Called RuntimeAgent.invoke_evaluate");
-    TestRunner.addResult("Value of 'replMode': " + arguments.replMode);
+    TestRunner.addResult("Value of 'replMode': " + args.replMode);
   });
 
   ConsoleTestRunner.evaluateInConsole('let a = 1; let a = 2;', step2);

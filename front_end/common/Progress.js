@@ -260,3 +260,27 @@ export class ProgressProxy {
     }
   }
 }
+
+/* Legacy exported object */
+self.Common = self.Common || {};
+Common = Common || {};
+
+/**
+ * @interface
+ */
+Common.Progress = Progress;
+
+/**
+ * @constructor
+ */
+Common.CompositeProgress = CompositeProgress;
+
+/**
+ * @constructor
+ */
+Common.SubProgress = SubProgress;
+
+/**
+ * @constructor
+ */
+Common.ProgressProxy = ProgressProxy;

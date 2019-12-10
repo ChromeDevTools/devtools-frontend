@@ -114,3 +114,12 @@ export class Throttler {
     return window.performance.now();
   }
 }
+
+/* Legacy exported object */
+self.Common = self.Common || {};
+Common = Common || {};
+
+Common.Throttler = Throttler;
+
+/** @typedef {function(!Error=)} */
+Common.Throttler.FinishCallback;

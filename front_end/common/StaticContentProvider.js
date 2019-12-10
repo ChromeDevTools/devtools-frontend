@@ -76,3 +76,12 @@ export class StaticContentProvider {
     return content ? ContentProvider.performSearchInContent(content, query, caseSensitive, isRegex) : [];
   }
 }
+
+/* Legacy exported object */
+self.Common = self.Common || {};
+Common = Common || {};
+
+/**
+ * @constructor
+ */
+Common.StaticContentProvider = StaticContentProvider;

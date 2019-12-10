@@ -30,8 +30,6 @@
 /**
  * @unrestricted
  */
-import {moduleSetting} from './Settings.js';
-
 export class Color {
   /**
    * @param {!Array.<number>} rgba
@@ -39,7 +37,6 @@ export class Color {
    * @param {string=} originalText
    */
   constructor(rgba, format, originalText) {
-    this._hsla = undefined;
     this._rgba = rgba;
     this._originalText = originalText || null;
     this._originalTextIsValid = !!this._originalText;
@@ -431,7 +428,7 @@ export class Color {
   static detectColorFormat(color) {
     const cf = Format;
     let format;
-    const formatSetting = moduleSetting('colorFormat').get();
+    const formatSetting = Common.moduleSetting('colorFormat').get();
     if (formatSetting === cf.Original) {
       format = cf.Original;
     } else if (formatSetting === cf.RGB) {
@@ -493,7 +490,7 @@ export class Color {
       s = diff / (2 - add);
     }
 
-    this._hsla = /** @type {!Array.<number>} */ ([h, s, l, this._rgba[3]]);
+    this._hsla = [h, s, l, this._rgba[3]];
     return this._hsla;
   }
 
@@ -988,3 +985,26 @@ export class Generator {
 Color.hsva2rgba._tmpHSLA = [0, 0, 0, 0];
 
 Color.calculateContrastRatio._blendedFg = [0, 0, 0, 0];
+
+/* Legacy exported object */
+self.Common = self.Common || {};
+Common = Common || {};
+
+/**
+ * @constructor
+ */
+Common.Color = Color;
+
+Common.Color.Regex = Regex;
+
+/**
+ * @enum {string}
+ */
+Common.Color.Format = Format;
+Common.Color.Nicknames = Nicknames;
+Common.Color.PageHighlight = PageHighlight;
+
+/**
+ * @constructor
+ */
+Common.Color.Generator = Generator;

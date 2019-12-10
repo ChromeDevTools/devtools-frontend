@@ -112,3 +112,17 @@ export class SegmentedRange {
     return merged;
   }
 }
+
+/* Legacy exported object */
+self.Common = self.Common || {};
+Common = Common || {};
+
+/**
+ * @constructor
+ */
+Common.Segment = Segment;
+
+/**
+ * @constructor
+ */
+Common.SegmentedRange = SegmentedRange;

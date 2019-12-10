@@ -44,3 +44,12 @@ export class CharacterIdMap {
     return object;
   }
 }
+
+/* Legacy exported object */
+self.Common = self.Common || {};
+Common = Common || {};
+
+/**
+ * @constructor
+ */
+Common.CharacterIdMap = CharacterIdMap;

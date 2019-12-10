@@ -93,3 +93,12 @@ export class WorkerWrapper {
     this._workerPromise.then(worker => worker.onerror = listener);
   }
 }
+
+/* Legacy exported object */
+self.Common = self.Common || {};
+Common = Common || {};
+
+/**
+ * @constructor
+ */
+Common.Worker = WorkerWrapper;

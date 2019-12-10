@@ -26,15 +26,24 @@ export default class ARIAAttributesPane extends Accessibility.AccessibilitySubPa
     const attributes = node.attributes();
     for (let i = 0; i < attributes.length; ++i) {
       const attribute = attributes[i];
-      if (Accessibility.ARIAAttributesPane._attributes.indexOf(attribute.name) < 0) {
+      if (!this._isARIAAttribute(attribute)) {
         continue;
       }
+
       this._treeOutline.appendChild(new Accessibility.ARIAAttributesTreeElement(this, attribute, target));
     }
 
     const foundAttributes = (this._treeOutline.rootElement().childCount() !== 0);
     this._noPropertiesInfo.classList.toggle('hidden', foundAttributes);
     this._treeOutline.element.classList.toggle('hidden', !foundAttributes);
+  }
+
+  /**
+   * @param {!SDK.DOMNode.Attribute} attribute
+   * @return {boolean}
+   */
+  _isARIAAttribute(attribute) {
+    return _attributes.includes(attribute.name);
   }
 }
 
@@ -192,7 +201,6 @@ export class ARIAAttributesTreeElement extends UI.TreeElement {
   }
 }
 
-
 /**
  * @unrestricted
  */
@@ -224,37 +232,54 @@ export class ARIAAttributePrompt extends UI.TextPrompt {
   }
 }
 
+// Keep this list in sync with https://w3c.github.io/aria/#state_prop_def
 const _attributes = [
   'role',
-  'aria-busy',
-  'aria-checked',
-  'aria-disabled',
-  'aria-expanded',
-  'aria-grabbed',
-  'aria-hidden',
-  'aria-invalid',
-  'aria-pressed',
-  'aria-selected',
   'aria-activedescendant',
   'aria-atomic',
   'aria-autocomplete',
+  'aria-brailleroledescription',
+  'aria-busy',
+  'aria-checked',
+  'aria-colcount',
+  'aria-colindex',
+  'aria-colindextext',
+  'aria-colspan',
   'aria-controls',
+  'aria-current',
   'aria-describedby',
+  'aria-details',
+  'aria-disabled',
   'aria-dropeffect',
+  'aria-errormessage',
+  'aria-expanded',
   'aria-flowto',
+  'aria-grabbed',
   'aria-haspopup',
+  'aria-hidden',
+  'aria-invalid',
+  'aria-keyshortcuts',
   'aria-label',
   'aria-labelledby',
   'aria-level',
   'aria-live',
+  'aria-modal',
   'aria-multiline',
   'aria-multiselectable',
   'aria-orientation',
   'aria-owns',
+  'aria-placeholder',
   'aria-posinset',
+  'aria-pressed',
   'aria-readonly',
   'aria-relevant',
   'aria-required',
+  'aria-roledescription',
+  'aria-rowcount',
+  'aria-rowindex',
+  'aria-rowindextext',
+  'aria-rowspan',
+  'aria-selected',
   'aria-setsize',
   'aria-sort',
   'aria-valuemax',
@@ -283,6 +308,3 @@ Accessibility.ARIAAttributesTreeElement = ARIAAttributesTreeElement;
  * @constructor
  */
 Accessibility.ARIAAttributesPane.ARIAAttributePrompt = ARIAAttributePrompt;
-
-/** @type {!Array<string>} */
-Accessibility.ARIAAttributesPane._attributes = _attributes;

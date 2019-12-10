@@ -573,8 +573,8 @@ domain Browser
       audioCapture
       backgroundSync
       backgroundFetch
-      clipboardRead
-      clipboardWrite
+      clipboardReadWrite
+      clipboardSanitizedWrite
       durableStorage
       flash
       geolocation
@@ -611,6 +611,8 @@ domain Browser
       optional boolean userVisibleOnly
       # For "wake-lock" permission, must specify type as either "screen" or "system".
       optional string type
+      # For "clipboard" permission, may specify allowWithoutSanitization.
+      optional boolean allowWithoutSanitization
 
   # Set permission settings for given origin.
   experimental command setPermission

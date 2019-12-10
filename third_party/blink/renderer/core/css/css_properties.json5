@@ -3822,36 +3822,6 @@
       type_name: "int",
     },
     {
-      name: "-webkit-margin-after-collapse",
-      property_methods: ["CSSValueFromComputedStyleInternal"],
-      field_group: "*",
-      field_template: "keyword",
-      keywords: ["collapse", "separate", "discard"],
-      default_value: "collapse",
-      type_name: "EMarginCollapse",
-    },
-    {
-      name: "-webkit-margin-before-collapse",
-      property_methods: ["CSSValueFromComputedStyleInternal"],
-      field_group: "*",
-      field_template: "keyword",
-      keywords: ["collapse", "separate", "discard"],
-      default_value: "collapse",
-      type_name: "EMarginCollapse",
-    },
-    {
-      name: "-webkit-margin-bottom-collapse",
-      property_methods: ["CSSValueFromComputedStyleInternal"],
-      name_for_methods: "MarginAfterCollapse",
-      type_name: "EMarginCollapse",
-    },
-    {
-      name: "-webkit-margin-top-collapse",
-      property_methods: ["CSSValueFromComputedStyleInternal"],
-      name_for_methods: "MarginBeforeCollapse",
-      type_name: "EMarginCollapse",
-    },
-    {
       name: "-webkit-mask-box-image-outset",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
       interpolable: true,
@@ -5213,13 +5183,6 @@
       name: "columns",
       longhands: ["column-width", "column-count"],
       property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
-    },
-    {
-      name: "-webkit-margin-collapse",
-      longhands: [
-        "-webkit-margin-before-collapse", "-webkit-margin-after-collapse"
-      ],
-      property_methods: ["ParseShorthand"],
     },
     {
       name: "-webkit-mask",

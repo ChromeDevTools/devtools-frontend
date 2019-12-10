@@ -62,8 +62,6 @@
       enum: ["false", "true", "menu", "listbox", "tree", "grid", "dialog"],
       type: "token"
     },
-    // aria-help is not specced but we have historically supported it.
-    {name: "aria-help", type: "string"},
     {
       name: "aria-hidden",
       default: "undefined",

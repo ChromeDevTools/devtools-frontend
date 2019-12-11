@@ -38,6 +38,13 @@ AuditsTestRunner.getDialogElement = function() {
 /**
  * @return {?Element}
  */
+AuditsTestRunner.getSettingsElement = function() {
+  return AuditsTestRunner._panel()._settingsPane.element;
+};
+
+/**
+ * @return {?Element}
+ */
 AuditsTestRunner.getRunButton = function() {
   const dialog = AuditsTestRunner.getContainerElement();
   return dialog && dialog.querySelectorAll('button')[0];
@@ -109,6 +116,12 @@ AuditsTestRunner.dumpStartAuditState = function() {
 
   const containerElement = AuditsTestRunner.getContainerElement();
   const checkboxes = [...containerElement.querySelectorAll('.checkbox')];
+
+  const toolbarShadowRoot =
+    AuditsTestRunner.getSettingsElement().querySelector('.audits-settings-pane > div').shadowRoot;
+  for (const checkbox of toolbarShadowRoot.querySelectorAll('.checkbox')) {
+    checkboxes.push(checkbox);
+  }
 
   checkboxes.forEach(element => {
     TestRunner.addResult(AuditsTestRunner._checkboxStateLabel(element));

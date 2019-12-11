@@ -8,6 +8,8 @@ Tests that audits panel passes flags.
 [x] Accessibility
 [x] SEO
 [ ] Publisher Ads
+[x] Clear storage
+[ ] Simulated throttling
 Generate report: enabled visible
 
 =============== Lighthouse Results ===============

@@ -8,6 +8,8 @@ Tests that audits panel works.
 [x] Accessibility
 [x] SEO
 [ ] Publisher Ads
+[x] Clear storage
+[x] Simulated throttling
 Generate report: enabled visible
 
 =============== Lighthouse Status Updates ===============

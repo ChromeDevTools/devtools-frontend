@@ -11,6 +11,8 @@ Tests that audits panel prevents run of unauditable pages.
 [ ] Accessibility
 [ ] SEO
 [ ] Publisher Ads
+[x] Clear storage
+[x] Simulated throttling
 Help text: At least one category must be selected.
 Generate report: disabled visible
 
@@ -24,6 +26,8 @@ Generate report: disabled visible
 [ ] Accessibility
 [ ] SEO
 [ ] Publisher Ads
+[x] Clear storage
+[x] Simulated throttling
 Generate report: enabled visible
 
 
@@ -36,6 +40,8 @@ Generate report: enabled visible
 [ ] Accessibility
 [ ] SEO
 [ ] Publisher Ads
+[x] Clear storage
+[x] Simulated throttling
 Generate report: enabled visible
 
 
@@ -49,6 +55,8 @@ URL: about:blank
 [ ] Accessibility
 [ ] SEO
 [ ] Publisher Ads
+[x] Clear storage
+[x] Simulated throttling
 Help text: Can only audit HTTP/HTTPS pages and Chrome extensions. Navigate to a different page to start an audit.
 Generate report: disabled visible
 

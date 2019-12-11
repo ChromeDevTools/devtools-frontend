@@ -8,6 +8,8 @@ Tests that audits panel works when only the pwa category is selected.
 [ ] Accessibility
 [ ] SEO
 [ ] Publisher Ads
+[x] Clear storage
+[x] Simulated throttling
 Generate report: enabled visible
 
 =============== Audits run ===============

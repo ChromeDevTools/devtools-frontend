@@ -8,6 +8,8 @@ Tests that mobile emulation works.
 [x] Accessibility
 [x] SEO
 [ ] Publisher Ads
+[x] Clear storage
+[x] Simulated throttling
 Generate report: enabled visible
 
 =============== Lighthouse Results ===============

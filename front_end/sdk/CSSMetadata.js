@@ -79,6 +79,26 @@ export default class CSSMetadata {
     this._values.sort(CSSMetadata._sortPrefixesToEnd);
     this._valuesSet = new Set(this._values);
 
+    // Reads in auto-generated property names and values from blink/public/renderer/core/css/css_properties.json5
+    // treats _generatedPropertyValues as basis
+    for (const [prop, basisValueObj] of Object.entries(CSSMetadata._generatedPropertyValues)) {
+      _finalPropertyValues[prop] = basisValueObj;
+    }
+    // and add manually maintained map of extra prop-value pairs
+    for (const [prop, extraValueObj] of Object.entries(_extraPropertyValues)) {
+      if (_finalPropertyValues[prop]) {
+        const baseValues = _finalPropertyValues[prop].values;
+        const baseValueSet = new Set(baseValues);
+        extraValueObj.values.forEach(extraVal => {
+          if (!baseValueSet.has(extraVal)) {
+            baseValues.push(extraVal);
+          }
+        });
+      } else {
+        _finalPropertyValues[prop] = extraValueObj;
+      }
+    }
+
     /** @type {!Array<string>} */
     this._nameValuePresets = [];
     /** @type {!Array<string>} */
@@ -247,10 +267,10 @@ export default class CSSMetadata {
    */
   _specificPropertyValues(propertyName) {
     const unprefixedName = propertyName.replace(/^-webkit-/, '');
-    const entry = _propertyDataMap[propertyName] || _propertyDataMap[unprefixedName];
+    const entry = _finalPropertyValues[propertyName] || _finalPropertyValues[unprefixedName];
     const keywords = entry && entry.values ? entry.values.slice() : [];
     for (const commonKeyword of ['auto', 'none']) {
-      if (CSS.supports(propertyName, commonKeyword)) {
+      if (!keywords.includes(commonKeyword) && CSS.supports(propertyName, commonKeyword)) {
         keywords.push(commonKeyword);
       }
     }
@@ -448,307 +468,55 @@ const _colorAwareProperties = new Set([
   '-webkit-text-stroke-color'
 ]);
 
-const _propertyDataMap = {
-  'table-layout': {values: ['fixed']},
-  'visibility': {values: ['hidden', 'visible', 'collapse']},
+// manually maintained list of property values to add into autocomplete list
+const _extraPropertyValues = {
   'background-repeat': {values: ['repeat', 'repeat-x', 'repeat-y', 'no-repeat', 'space', 'round']},
   'content': {values: ['normal', 'close-quote', 'no-close-quote', 'no-open-quote', 'open-quote']},
-  'clear': {values: ['left', 'right', 'both']},
-  'overflow-x': {values: ['hidden', 'visible', 'overlay', 'scroll']},
-  'stroke-linejoin': {values: ['round', 'miter', 'bevel']},
-  'baseline-shift': {values: ['baseline', 'sub', 'super']},
-  'border-bottom-width': {values: ['medium', 'thick', 'thin']},
-  'margin-top-collapse': {values: ['collapse', 'separate', 'discard']},
+  'baseline-shift': {values: ['baseline']},
   'max-height': {values: ['min-content', 'max-content', '-webkit-fill-available', 'fit-content']},
-  'box-orient': {
-    values: ['horizontal', 'vertical', 'inline-axis', 'block-axis'],
-  },
-  'font-stretch': {
-    values: [
-      'normal', 'ultra-condensed', 'extra-condensed', 'condensed', 'semi-condensed', 'semi-expanded', 'expanded',
-      'extra-expanded', 'ultra-expanded'
-    ]
-  },
-  'border-left-width': {values: ['medium', 'thick', 'thin']},
   'box-shadow': {values: ['inset']},
   '-webkit-writing-mode': {values: ['horizontal-tb', 'vertical-rl', 'vertical-lr']},
-  'writing-mode':
-      {values: ['lr', 'rl', 'tb', 'lr-tb', 'rl-tb', 'tb-rl', 'horizontal-tb', 'vertical-rl', 'vertical-lr']},
-  'border-collapse': {values: ['collapse', 'separate']},
+  'writing-mode': {values: ['lr', 'rl', 'tb', 'lr-tb', 'rl-tb', 'tb-rl']},
   'page-break-inside': {values: ['avoid']},
-  'border-top-width': {values: ['medium', 'thick', 'thin']},
-  'outline-style': {values: ['inset', 'groove', 'ridge', 'outset', 'dotted', 'dashed', 'solid', 'double', 'hidden']},
-  'cursor': {
-    values: [
-      'copy',
-      'crosshair',
-      'default',
-      'grab',
-      'grabbing',
-      'pointer',
-      'move',
-      'vertical-text',
-      'cell',
-      'context-menu',
-      'alias',
-      'progress',
-      'no-drop',
-      'not-allowed',
-      '-webkit-zoom-in',
-      '-webkit-zoom-out',
-      'e-resize',
-      'ne-resize',
-      'nw-resize',
-      'n-resize',
-      'se-resize',
-      'sw-resize',
-      's-resize',
-      'w-resize',
-      'ew-resize',
-      'ns-resize',
-      'nesw-resize',
-      'nwse-resize',
-      'col-resize',
-      'row-resize',
-      'text',
-      'wait',
-      'help',
-      'all-scroll',
-      'zoom-in',
-      'zoom-out',
-      '-webkit-grab',
-      '-webkit-grabbing'
-    ]
-  },
+  'cursor': {values: ['-webkit-zoom-in', '-webkit-zoom-out', '-webkit-grab', '-webkit-grabbing']},
   'border-width': {values: ['medium', 'thick', 'thin']},
   'border-style': {values: ['hidden', 'inset', 'groove', 'ridge', 'outset', 'dotted', 'dashed', 'solid', 'double']},
   'size': {values: ['a3', 'a4', 'a5', 'b4', 'b5', 'landscape', 'ledger', 'legal', 'letter', 'portrait']},
-  'background-size': {values: ['contain', 'cover']},
-  'direction': {values: ['ltr', 'rtl']},
-  'enable-background': {values: ['accumulate', 'new']},
-  'float': {values: ['left', 'right']},
-  'overflow-y': {values: ['hidden', 'visible', 'overlay', 'scroll']},
-  'margin-bottom-collapse': {values: ['collapse', 'separate', 'discard']},
-  'box-reflect': {values: ['left', 'right', 'above', 'below']},
   'overflow': {values: ['hidden', 'visible', 'overlay', 'scroll']},
   'overscroll-behavior': {values: ['contain']},
-  'overscroll-behavior-x': {values: ['contain']},
-  'overscroll-behavior-y': {values: ['contain']},
-  'contain': {values: ['strict', 'content', 'size', 'layout', 'style', 'paint']},
   'text-rendering': {values: ['optimizeSpeed', 'optimizeLegibility', 'geometricPrecision']},
-  'text-align': {
-    values: [
-      '-webkit-auto', 'start', 'end', 'left', 'right', 'center', 'justify', '-webkit-left', '-webkit-right',
-      '-webkit-center', '-webkit-match-parent'
-    ]
-  },
-  'list-style-position': {values: ['outside', 'inside']},
+  'text-align': {values: ['-webkit-auto', '-webkit-match-parent']},
   'color-interpolation': {values: ['sRGB', 'linearRGB']},
-  'background-origin': {values: ['border-box', 'content-box', 'padding-box']},
   'word-wrap': {values: ['normal', 'break-word']},
-  'font-weight':
-      {values: ['normal', 'bold', 'bolder', 'lighter', '100', '200', '300', '400', '500', '600', '700', '800', '900']},
-  'margin-before-collapse': {values: ['collapse', 'separate', 'discard']},
-  'text-transform': {values: ['capitalize', 'uppercase', 'lowercase']},
-  'border-right-style':
-      {values: ['hidden', 'inset', 'groove', 'ridge', 'outset', 'dotted', 'dashed', 'solid', 'double']},
-  'border-left-style':
-      {values: ['hidden', 'inset', 'groove', 'ridge', 'outset', 'dotted', 'dashed', 'solid', 'double']},
+  'font-weight': {values: ['100', '200', '300', '400', '500', '600', '700', '800', '900']},
   '-webkit-text-emphasis': {values: ['circle', 'filled', 'open', 'dot', 'double-circle', 'triangle', 'sesame']},
-  'font-style': {values: ['italic', 'oblique', 'normal']},
-  'speak': {values: ['normal', 'spell-out', 'digits', 'literal-punctuation', 'no-punctuation']},
   'color-rendering': {values: ['optimizeSpeed', 'optimizeQuality']},
-  'list-style-type': {
-    values: [
-      'disc',
-      'circle',
-      'square',
-      'decimal',
-      'decimal-leading-zero',
-      'arabic-indic',
-      'bengali',
-      'cambodian',
-      'khmer',
-      'devanagari',
-      'gujarati',
-      'gurmukhi',
-      'kannada',
-      'lao',
-      'malayalam',
-      'mongolian',
-      'myanmar',
-      'oriya',
-      'persian',
-      'urdu',
-      'telugu',
-      'tibetan',
-      'thai',
-      'lower-roman',
-      'upper-roman',
-      'lower-greek',
-      'lower-alpha',
-      'lower-latin',
-      'upper-alpha',
-      'upper-latin',
-      'ethiopic-halehame',
-      'ethiopic-halehame-am',
-      'ethiopic-halehame-ti-er',
-      'ethiopic-halehame-ti-et',
-      'cjk-earthly-branch',
-      'cjk-heavenly-stem',
-      'hangul-consonant',
-      'hangul',
-      'korean-hangul-formal',
-      'korean-hanja-formal',
-      'korean-hanja-informal',
-      'simp-chinese-formal',
-      'simp-chinese-informal',
-      'trad-chinese-formal',
-      'trad-chinese-informal',
-      'hebrew',
-      'armenian',
-      'lower-armenian',
-      'upper-armenian',
-      'georgian',
-      'cjk-ideographic',
-      'hiragana',
-      'katakana',
-      'hiragana-iroha',
-      'katakana-iroha'
-    ]
-  },
-  'text-combine-upright': {values: ['all']},
   '-webkit-text-combine': {values: ['horizontal']},
-  'text-orientation': {values: ['mixed', 'upright', 'sideways', 'sideways-right']},
+  'text-orientation': {values: ['sideways-right']},
   'outline': {
     values: ['inset', 'groove', 'ridge', 'outset', 'dotted', 'dashed', 'solid', 'double', 'medium', 'thick', 'thin']
   },
   'font': {
     values: [
-      'caption',
-      'icon',
-      'menu',
-      'message-box',
-      'small-caption',
-      '-webkit-mini-control',
-      '-webkit-small-control',
-      '-webkit-control',
-      'status-bar',
-      'italic',
-      'oblique',
-      'small-caps',
-      'normal',
-      'bold',
-      'bolder',
-      'lighter',
-      '100',
-      '200',
-      '300',
-      '400',
-      '500',
-      '600',
-      '700',
-      '800',
-      '900',
-      'xx-small',
-      'x-small',
-      'small',
-      'medium',
-      'large',
-      'x-large',
-      'xx-large',
-      '-webkit-xxx-large',
-      'smaller',
-      'larger',
-      'serif',
-      'sans-serif',
-      'cursive',
-      'fantasy',
-      'monospace',
-      '-webkit-body',
-      '-webkit-pictograph'
+      'caption', 'icon', 'menu', 'message-box', 'small-caption', '-webkit-mini-control', '-webkit-small-control',
+      '-webkit-control', 'status-bar'
     ]
   },
-  'dominant-baseline': {
-    values: [
-      'middle', 'central', 'text-before-edge', 'text-after-edge', 'ideographic', 'alphabetic', 'hanging',
-      'mathematical', 'use-script', 'no-change', 'reset-size'
-    ]
-  },
-  'display': {
-    values: [
-      'inline',
-      'block',
-      'flow-root',
-      'list-item',
-      'inline-block',
-      'table',
-      'inline-table',
-      'table-row-group',
-      'table-header-group',
-      'table-footer-group',
-      'table-row',
-      'table-column-group',
-      'table-column',
-      'table-cell',
-      'table-caption',
-      '-webkit-box',
-      '-webkit-inline-box',
-      'flex',
-      'inline-flex',
-      'grid',
-      'inline-grid',
-      'contents'
-    ]
-  },
+  'dominant-baseline': {values: ['text-before-edge', 'text-after-edge', 'use-script', 'no-change', 'reset-size']},
   '-webkit-text-emphasis-position': {values: ['over', 'under']},
-  'image-rendering': {values: ['pixelated', '-webkit-optimize-contrast', 'optimizeSpeed', 'optimizeQuality']},
-  'alignment-baseline': {
-    values: [
-      'baseline', 'middle', 'before-edge', 'after-edge', 'central', 'text-before-edge', 'text-after-edge',
-      'ideographic', 'alphabetic', 'hanging', 'mathematical'
-    ]
-  },
-  'outline-width': {values: ['medium', 'thick', 'thin']},
-  'box-align': {values: ['baseline', 'center', 'stretch', 'start', 'end']},
-  'border-right-width': {values: ['medium', 'thick', 'thin']},
-  'border-top-style': {values: ['hidden', 'inset', 'groove', 'ridge', 'outset', 'dotted', 'dashed', 'solid', 'double']},
-  'line-height': {values: ['normal']},
-  'text-overflow': {values: ['clip', 'ellipsis']},
-  'overflow-wrap': {values: ['normal', 'break-word']},
-  'box-direction': {values: ['normal', 'reverse']},
-  'margin-after-collapse': {values: ['collapse', 'separate', 'discard']},
+  'alignment-baseline': {values: ['before-edge', 'after-edge', 'text-before-edge', 'text-after-edge', 'hanging']},
   'page-break-before': {values: ['left', 'right', 'always', 'avoid']},
   'border-image': {values: ['repeat', 'stretch', 'space', 'round']},
   'text-decoration':
       {values: ['blink', 'line-through', 'overline', 'underline', 'wavy', 'double', 'solid', 'dashed', 'dotted']},
-  'position': {values: ['absolute', 'fixed', 'relative', 'static', 'sticky']},
   'font-family':
       {values: ['serif', 'sans-serif', 'cursive', 'fantasy', 'monospace', '-webkit-body', '-webkit-pictograph']},
-  'border-bottom-style':
-      {values: ['hidden', 'inset', 'groove', 'ridge', 'outset', 'dotted', 'dashed', 'solid', 'double']},
-  'unicode-bidi': {values: ['normal', 'bidi-override', 'embed', 'isolate', 'isolate-override', 'plaintext']},
-  'clip-rule': {values: ['nonzero', 'evenodd']},
   'zoom': {values: ['normal']},
   'max-width': {values: ['min-content', 'max-content', '-webkit-fill-available', 'fit-content']},
-  'caption-side': {values: ['top', 'bottom']},
-  'empty-cells': {values: ['hide', 'show']},
-  'pointer-events': {
-    values: [
-      'all', 'visible', 'visiblepainted', 'visiblefill', 'visiblestroke', 'painted', 'fill', 'stroke', 'bounding-box'
-    ]
-  },
-  'letter-spacing': {values: ['normal']},
-  'background-clip': {values: ['border-box', 'content-box', 'padding-box']},
   '-webkit-font-smoothing': {values: ['antialiased', 'subpixel-antialiased']},
   'border': {
     values: [
       'hidden', 'inset', 'groove', 'ridge', 'outset', 'dotted', 'dashed', 'solid', 'double', 'medium', 'thick', 'thin'
-    ]
-  },
-  'font-size': {
-    values: [
-      'xx-small', 'x-small', 'small', 'medium', 'large', 'x-large', 'xx-large', '-webkit-xxx-large', 'smaller', 'larger'
     ]
   },
   'font-variant': {
@@ -787,14 +555,8 @@ const _propertyDataMap = {
       'ruby'
     ]
   },
-  'vertical-align': {
-    values:
-        ['baseline', 'middle', 'sub', 'super', 'text-top', 'text-bottom', 'top', 'bottom', '-webkit-baseline-middle']
-  },
-  'white-space': {values: ['normal', 'nowrap', 'pre', 'pre-line', 'pre-wrap']},
+  'vertical-align': {values: ['top', 'bottom', '-webkit-baseline-middle']},
   'page-break-after': {values: ['left', 'right', 'always', 'avoid']},
-  'word-break': {values: ['normal', 'break-all', 'break-word', 'keep-all']},
-  'word-spacing': {values: ['normal']},
   '-webkit-text-emphasis-style': {values: ['circle', 'filled', 'open', 'dot', 'double-circle', 'triangle', 'sesame']},
   'transform': {
     values: [
@@ -803,89 +565,60 @@ const _propertyDataMap = {
       'translateY', 'translateZ', 'translate3d', 'matrix',  'matrix3d', 'perspective'
     ]
   },
-  'box-sizing': {values: ['content-box', 'border-box']},
-  'resize': {values: ['both', 'horizontal', 'vertical']},
   'align-content': {
     values: [
-      'normal', 'baseline', 'space-between', 'space-around', 'space-evenly', 'stretch', 'unsafe', 'safe', 'center',
-      'start', 'end', 'flex-start', 'flex-end', 'left', 'right'
+      'normal', 'baseline', 'space-between', 'space-around', 'space-evenly', 'stretch', 'center', 'start', 'end',
+      'flex-start', 'flex-end'
     ]
   },
   'justify-content': {
     values: [
-      'normal', 'space-between', 'space-around', 'space-evenly', 'stretch', 'unsafe', 'safe', 'center', 'start', 'end',
-      'flex-start', 'flex-end', 'left', 'right', 'baseline'
+      'normal', 'space-between', 'space-around', 'space-evenly', 'stretch', 'center', 'start', 'end', 'flex-start',
+      'flex-end', 'left', 'right'
     ]
   },
   'place-content': {
     values: [
-      'normal', 'space-between', 'space-around', 'space-evenly', 'stretch', 'unsafe', 'safe', 'center', 'start', 'end',
-      'flex-start', 'flex-end', 'left', 'right', 'baseline'
+      'normal', 'space-between', 'space-around', 'space-evenly', 'stretch', 'center', 'start', 'end', 'flex-start',
+      'flex-end', 'baseline'
     ]
   },
   'align-items': {
-    values: [
-      'normal', 'stretch', 'baseline', 'unsafe', 'safe', 'center', 'start', 'end', 'self-start', 'self-end',
-      'flex-start', 'flex-end', 'left', 'right'
-    ]
+    values:
+        ['normal', 'stretch', 'baseline', 'center', 'start', 'end', 'self-start', 'self-end', 'flex-start', 'flex-end']
   },
   'justify-items': {
     values: [
-      'normal', 'stretch', 'baseline', 'unsafe', 'safe', 'center', 'start', 'end', 'self-start', 'self-end',
-      'flex-start', 'flex-end', 'left', 'right', 'legacy'
+      'normal', 'stretch', 'baseline', 'center', 'start', 'end', 'self-start', 'self-end', 'flex-start', 'flex-end',
+      'left', 'right', 'legacy'
     ]
   },
   'place-items': {
-    values: [
-      'normal', 'stretch', 'baseline', 'unsafe', 'safe', 'center', 'start', 'end', 'self-start', 'self-end',
-      'flex-start', 'flex-end', 'left', 'right'
-    ]
+    values:
+        ['normal', 'stretch', 'baseline', 'center', 'start', 'end', 'self-start', 'self-end', 'flex-start', 'flex-end']
   },
   'align-self': {
-    values: [
-      'normal', 'stretch', 'baseline', 'unsafe', 'safe', 'center', 'start', 'end', 'self-start', 'self-end',
-      'flex-start', 'flex-end', 'left', 'right'
-    ]
+    values:
+        ['normal', 'stretch', 'baseline', 'center', 'start', 'end', 'self-start', 'self-end', 'flex-start', 'flex-end']
   },
   'justify-self': {
     values: [
-      'normal', 'stretch', 'baseline', 'unsafe', 'safe', 'center', 'start', 'end', 'self-start', 'self-end',
-      'flex-start', 'flex-end', 'left', 'right'
+      'normal', 'stretch', 'baseline', 'center', 'start', 'end', 'self-start', 'self-end', 'flex-start', 'flex-end',
+      'left', 'right'
     ]
   },
   'place-self': {
-    values: [
-      'normal', 'stretch', 'baseline', 'unsafe', 'safe', 'center', 'start', 'end', 'self-start', 'self-end',
-      'flex-start', 'flex-end', 'left', 'right'
-    ]
+    values:
+        ['normal', 'stretch', 'baseline', 'center', 'start', 'end', 'self-start', 'self-end', 'flex-start', 'flex-end']
   },
-  'flex-direction': {values: ['row', 'row-reverse', 'column', 'column-reverse']},
-  'flex-wrap': {values: ['nowrap', 'wrap', 'wrap-reverse']},
   'perspective-origin': {values: ['left', 'center', 'right', 'top', 'bottom']},
   'transform-origin': {values: ['left', 'center', 'right', 'top', 'bottom']},
-  'transform-style': {values: ['flat', 'preserve-3d']},
-  'transition-timing-function': {
-    values: [
-      'ease', 'linear', 'ease-in', 'ease-out', 'ease-in-out', 'step-start', 'step-end', 'steps', 'frames',
-      'cubic-bezier', 'step-middle'
-    ]
-  },
-  'animation-timing-function': {
-    values: [
-      'ease', 'linear', 'ease-in', 'ease-out', 'ease-in-out', 'step-start', 'step-end', 'steps', 'frames',
-      'cubic-bezier', 'step-middle'
-    ]
-  },
-  'animation-direction': {values: ['normal', 'reverse', 'alternate', 'alternate-reverse']},
-  'animation-play-state': {values: ['running', 'paused']},
-  'animation-fill-mode': {values: ['forwards', 'backwards', 'both']},
+  'transition-timing-function': {values: ['cubic-bezier', 'steps']},
+  'animation-timing-function': {values: ['cubic-bezier', 'steps']},
   '-webkit-backface-visibility': {values: ['visible', 'hidden']},
-  '-webkit-box-decoration-break': {values: ['slice', 'clone']},
-  '-webkit-column-break-after':
-      {values: ['always', 'avoid', 'left', 'right', 'page', 'column', 'avoid-page', 'avoid-column']},
-  '-webkit-column-break-before':
-      {values: ['always', 'avoid', 'left', 'right', 'page', 'column', 'avoid-page', 'avoid-column']},
-  '-webkit-column-break-inside': {values: ['avoid', 'avoid-page', 'avoid-column']},
+  '-webkit-column-break-after': {values: ['always', 'avoid']},
+  '-webkit-column-break-before': {values: ['always', 'avoid']},
+  '-webkit-column-break-inside': {values: ['avoid']},
   '-webkit-column-span': {values: ['all']},
   '-webkit-column-gap': {values: ['normal']},
   'filter': {
@@ -894,55 +627,11 @@ const _propertyDataMap = {
       'saturate', 'sepia'
     ]
   },
-  'line-break': {values: ['loose', 'normal', 'strict', 'after-white-space']},
-  'user-select': {values: ['text', 'all']},
-  '-webkit-user-modify': {values: ['read-only', 'read-write', 'read-write-plaintext-only']},
-  'text-align-last': {values: ['start', 'end', 'left', 'right', 'center', 'justify']},
-  '-webkit-text-decoration-line': {values: ['underline', 'overline', 'line-through', 'blink']},
-  '-webkit-text-decoration-style': {values: ['solid', 'double', 'dotted', 'dashed', 'wavy']},
-  'mix-blend-mode': {
-    values: [
-      'normal', 'multiply', 'screen', 'overlay', 'darken', 'lighten', 'color-dodge', 'color-burn', 'hard-light',
-      'soft-light', 'difference', 'exclusion', 'hue', 'saturation', 'color', 'luminosity', 'unset'
-    ]
-  },
-  'background-blend-mode': {
-    values: [
-      'normal', 'multiply', 'screen', 'overlay', 'darken', 'lighten', 'color-dodge', 'color-burn', 'hard-light',
-      'soft-light', 'difference', 'exclusion', 'hue', 'saturation', 'color', 'luminosity', 'unset'
-    ]
-  },
+  'mix-blend-mode': {values: ['unset']},
+  'background-blend-mode': {values: ['unset']},
   'grid-template-columns': {values: ['min-content', 'max-content']},
   'grid-template-rows': {values: ['min-content', 'max-content']},
-  'grid-auto-columns': {values: ['min-content', 'max-content']},
-  'grid-auto-rows': {values: ['min-content', 'max-content']},
-  'grid-auto-flow': {values: ['row', 'column', 'dense']},
-  'row-gap': {values: ['normal']},
-  'animation-iteration-count': {values: ['infinite']},
-  'font-feature-settings': {values: ['normal']},
-  'font-kerning': {values: ['normal']},
-  'font-variant-caps':
-      {values: ['small-caps', 'all-small-caps', 'petite-caps', 'all-petite-caps', 'unicase', 'titling-caps', 'normal']},
-  'font-variant-east-asian': {
-    values: [
-      'jis78', 'jis83', 'jis90', 'jis04', 'simplified', 'traditional', 'full-width', 'proportional-width', 'ruby',
-      'normal'
-    ]
-  },
-  'font-variant-ligatures': {
-    values: [
-      'common-ligatures', 'no-common-ligatures', 'discretionary-ligatures', 'no-discretionary-ligatures',
-      'historical-ligatures', 'no-historical-ligatures', 'contextual', 'no-contextual', 'normal'
-    ]
-  },
-  'font-variant-numeric': {
-    values: [
-      'lining-nums', 'oldstyle-nums', 'proportional-nums', 'tabular-nums', 'diagonal-fractions', 'stacked-fractions',
-      'ordinal', 'slashed-zero', 'normal'
-    ]
-  },
-  'font-variation-settings': {values: ['normal']},
-  'backface-visibility': {values: ['hidden', 'visible']},
+  'grid-auto-flow': {values: ['dense']},
   'background': {
     values: [
       'repeat',
@@ -969,7 +658,6 @@ const _propertyDataMap = {
       'url'
     ]
   },
-  'background-attachment': {values: ['fixed', 'local', 'scroll']},
   'background-image':
       {values: ['linear-gradient', 'radial-gradient', 'repeating-linear-gradient', 'repeating-radial-gradient', 'url']},
   'background-position': {values: ['top', 'bottom', 'left', 'right', 'center']},
@@ -982,7 +670,6 @@ const _propertyDataMap = {
       'hidden', 'inset', 'groove', 'outset', 'ridge', 'dotted', 'dashed', 'solid', 'double', 'medium', 'thick', 'thin'
     ]
   },
-  'border-image-repeat': {values: ['repeat', 'stretch', 'space', 'round']},
   'border-left': {
     values: [
       'hidden', 'inset', 'groove', 'outset', 'ridge', 'dotted', 'dashed', 'solid', 'double', 'medium', 'thick', 'thin'
@@ -998,29 +685,16 @@ const _propertyDataMap = {
       'hidden', 'inset', 'groove', 'outset', 'ridge', 'dotted', 'dashed', 'solid', 'double', 'medium', 'thick', 'thin'
     ]
   },
-  'break-after': {values: ['left', 'right', 'avoid', 'column', 'avoid-page', 'page', 'recto', 'verso', 'avoid-column']},
-  'break-before':
-      {values: ['left', 'right', 'avoid', 'column', 'avoid-page', 'page', 'recto', 'verso', 'avoid-column']},
-  'break-inside': {values: ['avoid', 'avoid-page', 'avoid-column']},
   'buffered-rendering': {values: ['static', 'dynamic']},
   'color-interpolation-filters': {values: ['srgb', 'linearrgb']},
-  'column-fill': {values: ['balance']},
-  'column-gap': {values: ['normal']},
   'column-rule': {
     values: [
       'hidden', 'inset', 'groove', 'outset', 'ridge', 'dotted', 'dashed', 'solid', 'double', 'medium', 'thick', 'thin'
     ]
   },
-  'column-rule-style':
-      {values: ['hidden', 'inset', 'groove', 'outset', 'ridge', 'dotted', 'dashed', 'solid', 'double']},
-  'column-rule-width': {values: ['medium', 'thick', 'thin']},
-  'column-span': {values: ['all']},
-  'fill-rule': {values: ['nonzero', 'evenodd']},
   'flex-flow': {values: ['nowrap', 'row', 'row-reverse', 'column', 'column-reverse', 'wrap', 'wrap-reverse']},
-  'height': {values: ['-webkit-fill-available', 'min-content', 'max-content', 'fit-content']},
-  'hyphens': {values: ['manual']},
+  'height': {values: ['-webkit-fill-available']},
   'inline-size': {values: ['-webkit-fill-available', 'min-content', 'max-content', 'fit-content']},
-  'isolation': {values: ['isolate']},
   'list-style': {
     values: [
       'outside',
@@ -1082,48 +756,14 @@ const _propertyDataMap = {
       'katakana-iroha'
     ]
   },
-  'mask-source-type': {values: ['alpha', 'luminance']},
-  'mask-type': {values: ['alpha', 'luminance']},
   'max-block-size': {values: ['-webkit-fill-available', 'min-content', 'max-content', 'fit-content']},
   'max-inline-size': {values: ['-webkit-fill-available', 'min-content', 'max-content', 'fit-content']},
   'min-block-size': {values: ['-webkit-fill-available', 'min-content', 'max-content', 'fit-content']},
   'min-height': {values: ['-webkit-fill-available', 'min-content', 'max-content', 'fit-content']},
   'min-inline-size': {values: ['-webkit-fill-available', 'min-content', 'max-content', 'fit-content']},
   'min-width': {values: ['-webkit-fill-available', 'min-content', 'max-content', 'fit-content']},
-  'object-fit': {values: ['contain', 'cover', 'fill', 'scale-down']},
   'object-position': {values: ['top', 'bottom', 'left', 'right', 'center']},
-  'offset-anchor': {values: ['top', 'bottom', 'left', 'right', 'center']},
-  'offset-position': {values: ['top', 'bottom', 'left', 'right', 'center']},
-  'offset-rotate': {values: ['reverse']},
-  'overflow-anchor': {values: ['visible']},
-  'paint-order': {values: ['normal', 'fill', 'stroke', 'markers']},
-  'scroll-behavior': {values: ['smooth']},
-  'scroll-customization': {
-    values: [
-      'pan-x',
-      'pan-y',
-      'pan-left',
-      'pan-right',
-      'pan-up',
-      'pan-down',
-    ]
-  },
-  'scroll-snap-align': {values: ['start', 'end', 'center']},
-  'scroll-snap-stop': {values: ['normal', 'always']},
-  'scroll-snap-type': {values: ['x', 'y', 'block', 'inline', 'both', 'mandatory', 'proximity']},
   'shape-outside': {values: ['border-box', 'content-box', 'padding-box', 'margin-box']},
-  'shape-rendering': {values: ['optimizespeed', 'geometricprecision', 'crispedges']},
-  'stroke-linecap': {values: ['square', 'round', 'butt']},
-  'text-anchor': {values: ['middle', 'start', 'end']},
-  'text-decoration-line': {values: ['blink', 'line-through', 'overline', 'underline']},
-  'text-decoration-style': {values: ['dotted', 'dashed', 'solid', 'double', 'wavy']},
-  'text-justify': {values: ['inter-word', 'distribute']},
-  'text-underline-position': {values: ['under']},
-  'touch-action':
-      {values: ['pan-x', 'pan-y', 'pan-left', 'pan-right', 'pan-up', 'pan-down', 'manipulation', 'pinch-zoom']},
-  'transform-box': {values: ['border-box', 'fill-box', 'view-box']},
-  'vector-effect': {values: ['non-scaling-stroke']},
-  '-webkit-app-region': {values: ['drag', 'no-drag']},
   '-webkit-appearance': {
     values: [
       'checkbox',
@@ -1131,37 +771,20 @@ const _propertyDataMap = {
       'push-button',
       'square-button',
       'button',
-      'button-bevel',
       'inner-spin-button',
       'listbox',
-      'listitem',
-      'media-enter-fullscreen-button',
-      'media-exit-fullscreen-button',
-      'media-mute-button',
-      'media-play-button',
-      'media-overlay-play-button',
-      'media-toggle-closed-captions-button',
       'media-slider',
       'media-sliderthumb',
-      'media-volume-slider-container',
       'media-volume-slider',
       'media-volume-sliderthumb',
-      'media-controls-background',
-      'media-controls-fullscreen-background',
-      'media-current-time-display',
-      'media-time-remaining-display',
       'menulist',
       'menulist-button',
-      'menulist-text',
-      'menulist-textfield',
       'meter',
       'progress-bar',
-      'progress-bar-value',
       'slider-horizontal',
       'slider-vertical',
       'sliderthumb-horizontal',
       'sliderthumb-vertical',
-      'caret',
       'searchfield',
       'searchfield-cancel-button',
       'textfield',
@@ -1200,7 +823,6 @@ const _propertyDataMap = {
   '-webkit-border-start-style':
       {values: ['hidden', 'inset', 'groove', 'outset', 'ridge', 'dotted', 'dashed', 'solid', 'double']},
   '-webkit-border-start-width': {values: ['medium', 'thick', 'thin']},
-  '-webkit-box-pack': {values: ['center', 'justify', 'start', 'end']},
   '-webkit-logical-height': {values: ['-webkit-fill-available', 'min-content', 'max-content', 'fit-content']},
   '-webkit-logical-width': {values: ['-webkit-fill-available', 'min-content', 'max-content', 'fit-content']},
   '-webkit-margin-collapse': {values: ['collapse', 'separate', 'discard']},
@@ -1227,18 +849,17 @@ const _propertyDataMap = {
   '-webkit-min-logical-width': {values: ['-webkit-fill-available', 'min-content', 'max-content', 'fit-content']},
   '-webkit-perspective-origin-x': {values: ['left', 'right', 'center']},
   '-webkit-perspective-origin-y': {values: ['top', 'bottom', 'center']},
-  '-webkit-print-color-adjust': {values: ['economy', 'exact']},
-  '-webkit-rtl-ordering': {values: ['logical', 'visual']},
-  '-webkit-ruby-position': {values: ['after', 'before']},
   '-webkit-text-decorations-in-effect': {values: ['blink', 'line-through', 'overline', 'underline']},
-  '-webkit-text-security': {values: ['disc', 'circle', 'square']},
   '-webkit-text-stroke': {values: ['medium', 'thick', 'thin']},
   '-webkit-text-stroke-width': {values: ['medium', 'thick', 'thin']},
   '-webkit-transform-origin-x': {values: ['left', 'right', 'center']},
   '-webkit-transform-origin-y': {values: ['top', 'bottom', 'center']},
-  '-webkit-user-drag': {values: ['element']},
-  'width': {values: ['-webkit-fill-available', 'min-content', 'max-content', 'fit-content']},
+  'width': {values: ['-webkit-fill-available']}
 };
+
+// final CSS property values for CSSMetadata to use as autocomplete list
+// this object gets populated during initialization of cssMetadata instance
+const _finalPropertyValues = {};
 
 // Weight of CSS properties based on their usage from https://www.chromestatus.com/metrics/css/popularity
 const Weight = {
@@ -1521,3 +1142,8 @@ SDK.CSSMetadata.CSSPropertyDefinition;
  * @type {!Array<!SDK.CSSMetadata.CSSPropertyDefinition>}
  */
 CSSMetadata._generatedProperties;
+
+/**
+ * @type {!Object.<string, {values: !Array.<string>}>}
+ */
+CSSMetadata._generatedPropertyValues;

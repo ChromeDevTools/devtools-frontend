@@ -39,7 +39,7 @@ import json5  # pylint: disable=import-error
 
 def _keep_only_required_keys(entry):
     for key in entry.keys():
-        if key not in ("name", "longhands", "svg", "inherited"):
+        if key not in ("name", "longhands", "svg", "inherited", "keywords"):
             del entry[key]
     return entry
 
@@ -50,6 +50,7 @@ def properties_from_file(file_name):
 
     properties = []
     property_names = {}
+    property_values = {}
     for entry in doc["data"]:
         if type(entry) is str:
             entry = {"name": entry}
@@ -57,6 +58,8 @@ def properties_from_file(file_name):
             continue
         properties.append(_keep_only_required_keys(entry))
         property_names[entry["name"]] = entry
+        if "keywords" in entry:
+            property_values[entry["name"]] = {"values": entry["keywords"]}
 
     properties.sort(key=lambda entry: entry["name"])
 
@@ -79,9 +82,10 @@ def properties_from_file(file_name):
         if all_inherited:
             property["inherited"] = True
 
-    return properties
+    return properties, property_values
 
 
-properties = properties_from_file(sys.argv[1])
+properties, property_values = properties_from_file(sys.argv[1])
 with open(sys.argv[2], "w") as f:
-    f.write("SDK.CSSMetadata._generatedProperties = %s;" % json.dumps(properties))
+    f.write("SDK.CSSMetadata._generatedProperties = %s;\n" % json.dumps(properties))
+    f.write("SDK.CSSMetadata._generatedPropertyValues = %s;" % json.dumps(property_values))

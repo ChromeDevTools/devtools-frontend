@@ -1333,7 +1333,7 @@ export class MultitargetNetworkManager extends Common.Object {
 
   /**
    * @param {string} url
-   * @param {function(number, !Object.<string, string>, string)} callback
+   * @param {function(number, !Object.<string, string>, string, number)} callback
    */
   loadResource(url, callback) {
     const headers = {};

@@ -79,9 +79,10 @@ export class CompilerSourceMappingContentProvider {
          * @param {string} content
          * @this {SDK.CompilerSourceMappingContentProvider}
          */
-          (statusCode, _headers, content) => {
+          (statusCode, _headers, content, netError) => {
             if (statusCode >= 400) {
-              const error = ls`Could not load content for ${this._sourceURL} : HTTP status code: ${statusCode}`;
+              const error = ls`Could not load content for ${this._sourceURL} (HTTP status code: ${
+                  statusCode}, net error code ${netError})`;
               console.error(error);
               resolve({error, isEncoded: false});
             } else {

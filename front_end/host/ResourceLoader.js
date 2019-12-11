@@ -37,7 +37,7 @@ export const streamWrite = function(id, chunk) {
 /**
  * @param {string} url
  * @param {?Object.<string, string>} headers
- * @param {function(number, !Object.<string, string>, string)} callback
+ * @param {function(number, !Object.<string, string>, string, number)} callback
  */
 export function load(url, headers, callback) {
   const stream = new Common.StringOutputStream();
@@ -46,9 +46,10 @@ export function load(url, headers, callback) {
   /**
    * @param {number} statusCode
    * @param {!Object.<string, string>} headers
+   * @param {number} netError
    */
-  function mycallback(statusCode, headers) {
-    callback(statusCode, headers, stream.data());
+  function mycallback(statusCode, headers, netError) {
+    callback(statusCode, headers, stream.data(), netError);
   }
 }
 
@@ -56,7 +57,7 @@ export function load(url, headers, callback) {
  * @param {string} url
  * @param {?Object.<string, string>} headers
  * @param {!Common.OutputStream} stream
- * @param {function(number, !Object.<string, string>)=} callback
+ * @param {function(number, !Object.<string, string>, number)=} callback
  */
 export const loadAsStream = function(url, headers, stream, callback) {
   const streamId = _bindOutputStream(stream);
@@ -79,7 +80,7 @@ export const loadAsStream = function(url, headers, stream, callback) {
    */
   function finishedCallback(response) {
     if (callback) {
-      callback(response.statusCode, response.headers || {});
+      callback(response.statusCode, response.headers || {}, response.netError || 0);
     }
     _discardOutputStream(streamId);
   }
@@ -114,7 +115,7 @@ Host.ResourceLoader.streamWrite = streamWrite;
 /**
  * @param {string} url
  * @param {?Object.<string, string>} headers
- * @param {function(number, !Object.<string, string>, string)} callback
+ * @param {function(number, !Object.<string, string>, string, number)} callback
  */
 Host.ResourceLoader.load = load;
 
@@ -122,6 +123,6 @@ Host.ResourceLoader.load = load;
  * @param {string} url
  * @param {?Object.<string, string>} headers
  * @param {!Common.OutputStream} stream
- * @param {function(number, !Object.<string, string>)=} callback
+ * @param {function(number, !Object.<string, string>, number)=} callback
  */
 Host.ResourceLoader.loadAsStream = loadAsStream;

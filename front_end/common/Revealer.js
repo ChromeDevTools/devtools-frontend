@@ -50,14 +50,3 @@ export const revealDestination = function(revealable) {
   }
   return extension.descriptor()['destination'];
 };
-
-/* Legacy exported object */
-self.Common = self.Common || {};
-Common = Common || {};
-
-/**
- * @interface
- */
-Common.Revealer = Revealer;
-Common.Revealer.reveal = reveal;
-Common.Revealer.revealDestination = revealDestination;

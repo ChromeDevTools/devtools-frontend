@@ -16,6 +16,12 @@ module.exports = function(config) {
       {pattern: 'front_end/**/*.js', included: false, served: true}, {pattern: 'test/unittests/**/*.ts', type: 'module'}
     ],
 
+    // FIXME(https://crbug.com/1006759): Re-enable these tests when ESM work is completed.
+    exclude: [
+      'test/unittests/**/WorkspaceImpl.ts',
+      'test/unittests/**/TempFile.ts',
+    ],
+
     reporters: ['dots', 'coverage-istanbul'],
 
     preprocessors: {

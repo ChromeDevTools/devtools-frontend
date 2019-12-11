@@ -26,15 +26,3 @@ export class Linkifier {
     return self.runtime.extension(Linkifier, object).instance().then(linkifier => linkifier.linkify(object, options));
   }
 }
-
-/* Legacy exported object */
-self.Common = self.Common || {};
-Common = Common || {};
-
-/**
- * @interface
- */
-Common.Linkifier = Linkifier;
-
-/** @typedef {{tooltip: (string|undefined), preventKeyboardFocus: (boolean|undefined)}} */
-Common.Linkifier.Options;

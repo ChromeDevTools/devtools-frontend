@@ -12,12 +12,3 @@ export class QueryParamHandler {
   handleQueryParam(value) {
   }
 }
-
-/* Legacy exported object */
-self.Common = self.Common || {};
-Common = Common || {};
-
-/**
- * @interface
- */
-Common.QueryParamHandler = QueryParamHandler;

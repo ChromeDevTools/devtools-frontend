@@ -29,12 +29,3 @@ export class JavaScriptMetaData {
   signaturesForStaticMethod(name, receiverConstructorName) {
   }
 }
-
-/* Legacy exported object */
-self.Common = self.Common || {};
-Common = Common || {};
-
-/**
- * @interface
- */
-Common.JavaScriptMetadata = JavaScriptMetaData;

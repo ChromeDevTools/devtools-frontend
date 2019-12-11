@@ -906,6 +906,9 @@ export class ElementsTreeElement extends UI.TreeElement {
      * @this {ElementsTreeElement}
      */
     function dispose() {
+      if (!this._editing || !this._editing.editor) {
+        return;
+      }
       this._editing.editor.widget().element.removeEventListener('blur', this._editing.commit, true);
       this._editing.editor.widget().detach();
       delete this._editing;

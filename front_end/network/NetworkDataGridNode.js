@@ -75,14 +75,8 @@ export class NetworkNode extends DataGrid.SortableDataGridNode {
    * @suppressGlobalPropertiesCheck
    */
   backgroundColor() {
-    const bgColors = _backgroundColors;
-    const hasFocus = document.hasFocus();
-    const isSelected = this.dataGrid.element === document.activeElement;
-    const isFailed = this._isFailed();
-
-    if (this.selected && hasFocus && isSelected && isFailed) {
-      return bgColors.FocusSelectedHasError;
-    } else if (this.selected && hasFocus && isSelected) {
+    const bgColors = Network.NetworkNode._backgroundColors;
+    if (this.selected && (this.dataGrid.element === document.activeElement) && document.hasFocus()) {
       return bgColors.FocusSelected;
     } else if (this.selected) {
       return bgColors.Selected;
@@ -267,7 +261,6 @@ export const _backgroundColors = {
   InitiatedPath: '--network-grid-initiated-path-color',
   Selected: '--network-grid-selected-color',
   FocusSelected: '--network-grid-focus-selected-color',
-  FocusSelectedHasError: '--network-grid-focus-selected-color-has-error',
   FromFrame: '--network-grid-from-frame-color',
 };
 

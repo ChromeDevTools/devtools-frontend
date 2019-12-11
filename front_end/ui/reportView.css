@@ -106,6 +106,11 @@
   display: block;
 }
 
+.image-wrapper {
+  height: fit-content;
+  margin-right: 8px;
+}
+
 .show-mask img {
   /* The safe zone is a centrally positioned circle, with radius 2/5
   * (40%) of the minimum of the icon's width and height.

@@ -141,3 +141,9 @@ export class Trie {
     this._freeNodes = [];
   }
 }
+
+/* Legacy exported object */
+self.Common = self.Common || {};
+Common = Common || {};
+
+Common.Trie = Trie;

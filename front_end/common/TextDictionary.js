@@ -96,3 +96,9 @@ export class TextDictionary {
     this._index.clear();
   }
 }
+
+/* Legacy exported object */
+self.Common = self.Common || {};
+Common = Common || {};
+
+Common.TextDictionary = TextDictionary;

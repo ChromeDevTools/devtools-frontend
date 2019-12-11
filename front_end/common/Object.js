@@ -125,3 +125,17 @@ export class ObjectWrapper {
     }
   }
 }
+
+/* Legacy exported object */
+self.Common = self.Common || {};
+Common = Common || {};
+
+/**
+ * @constructor
+ */
+Common.Object = ObjectWrapper;
+
+/**
+ * @typedef {!{thisObject: (!Object|undefined), listener: function(!Common.Event), disposed: (boolean|undefined)}}
+ */
+Common.Object._listenerCallbackTuple;

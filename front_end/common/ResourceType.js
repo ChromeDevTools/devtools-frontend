@@ -89,7 +89,7 @@ export class ResourceType {
    * @return {?ResourceType}
    */
   static fromURL(url) {
-    return _resourceTypeByExtension.get(ParsedURL.extractExtension(url)) || null;
+    return ResourceType._resourceTypeByExtension.get(ParsedURL.extractExtension(url)) || null;
   }
 
   /**
@@ -112,12 +112,12 @@ export class ResourceType {
    */
   static mimeFromURL(url) {
     const name = ParsedURL.extractName(url);
-    if (_mimeTypeByName.has(name)) {
-      return _mimeTypeByName.get(name);
+    if (ResourceType._mimeTypeByName.has(name)) {
+      return ResourceType._mimeTypeByName.get(name);
     }
 
     const ext = ParsedURL.extractExtension(url).toLowerCase();
-    return _mimeTypeByExtension.get(ext);
+    return ResourceType._mimeTypeByExtension.get(ext);
   }
 
   /**
@@ -125,7 +125,7 @@ export class ResourceType {
    * @return {string|undefined}
    */
   static mimeFromExtension(ext) {
-    return _mimeTypeByExtension.get(ext);
+    return ResourceType._mimeTypeByExtension.get(ext);
   }
 
   /**
@@ -366,3 +366,31 @@ export const _mimeTypeByExtension = new Map([
   // Font
   ['ttf', 'font/opentype'], ['otf', 'font/opentype'], ['ttc', 'font/opentype'], ['woff', 'application/font-woff']
 ]);
+
+/* Legacy exported object */
+self.Common = self.Common || {};
+Common = Common || {};
+
+/**
+ * @enum {!ResourceType}
+ */
+Common.resourceTypes = resourceTypes;
+
+/**
+ * @enum {!ResourceCategory}
+ */
+Common.resourceCategories = resourceCategories;
+
+/**
+ * @constructor
+ */
+Common.ResourceCategory = ResourceCategory;
+
+/**
+ * @constructor
+ */
+Common.ResourceType = ResourceType;
+
+Common.ResourceType._mimeTypeByName = _mimeTypeByName;
+Common.ResourceType._resourceTypeByExtension = _resourceTypeByExtension;
+Common.ResourceType._mimeTypeByExtension = _mimeTypeByExtension;

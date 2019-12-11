@@ -427,3 +427,12 @@ export class ParsedURL {
     return this.url;
   }
 }
+
+/* Legacy exported object */
+self.Common = self.Common || {};
+Common = Common || {};
+
+/**
+ * @constructor
+ */
+Common.ParsedURL = ParsedURL;

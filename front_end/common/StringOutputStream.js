@@ -50,3 +50,13 @@ export class StringOutputStream {
     return this._data;
   }
 }
+
+/* Legacy exported object */
+self.Common = self.Common || {};
+Common = Common || {};
+
+/**
+ * @interface
+ */
+Common.OutputStream = OutputStream;
+Common.StringOutputStream = StringOutputStream;

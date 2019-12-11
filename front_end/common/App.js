@@ -12,12 +12,3 @@ export class App {
   presentUI(document) {
   }
 }
-
-/* Legacy exported object */
-self.Common = self.Common || {};
-Common = Common || {};
-
-/**
- * @interface
- */
-Common.App = App;

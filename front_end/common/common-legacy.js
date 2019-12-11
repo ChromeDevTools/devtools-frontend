@@ -2,85 +2,273 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import '../platform/platform.js';
+import * as CommonModule from './common.js';
 
-import * as AppModule from './App.js';
-import * as AppProviderModule from './AppProvider.js';
-import * as CharacterIdMapModule from './CharacterIdMap.js';
-import * as ColorModule from './Color.js';
-import * as ConsoleModule from './Console.js';
-import * as ContentProviderModule from './ContentProvider.js';
-import * as EventTargetModule from './EventTarget.js';
-import * as JavaScriptMetaDataModule from './JavaScriptMetaData.js';
-import * as LinkifierModule from './Linkifier.js';
-import * as ObjectModule from './Object.js';
-import * as ParsedURLModule from './ParsedURL.js';
-import * as ProgressModule from './Progress.js';
-import * as QueryParamHandlerModule from './QueryParamHandler.js';
-import * as ResourceTypeModule from './ResourceType.js';
-import * as RevealerModule from './Revealer.js';
-import * as RunnableModule from './Runnable.js';
-import * as SegmentedRangeModule from './SegmentedRange.js';
-import * as SettingsModule from './Settings.js';
-import * as StaticContentProviderModule from './StaticContentProvider.js';
-import * as StringOutputStreamModule from './StringOutputStream.js';
-import * as TextDictionaryModule from './TextDictionary.js';
-import * as ThrottlerModule from './Throttler.js';
-import * as TrieModule from './Trie.js';
-import * as UIStringModule from './UIString.js';
-import * as WorkerModule from './Worker.js';
+self.Common = self.Common || {};
+Common = Common || {};
 
-const App = Object.assign(AppModule.App, AppModule);
-const AppProvider = Object.assign(AppProviderModule.AppProvider, AppProviderModule);
-const CharacterIdMap = Object.assign(CharacterIdMapModule.CharacterIdMap, CharacterIdMapModule);
-const Color = Object.assign(ColorModule.Color, ColorModule);
-const Console = Object.assign(ConsoleModule.Console, ConsoleModule);
-const ContentProvider = Object.assign(ContentProviderModule.ContentProvider, ContentProviderModule);
-const EventTarget = Object.assign(EventTargetModule.EventTarget, EventTargetModule);
-const JavaScriptMetaData = Object.assign(JavaScriptMetaDataModule.JavaScriptMetaData, JavaScriptMetaDataModule);
-const Linkifier = Object.assign(LinkifierModule.Linkifier, LinkifierModule);
-const ObjectWrapper = Object.assign(ObjectModule.ObjectWrapper, ObjectModule);
-const ParsedURL = Object.assign(ParsedURLModule.ParsedURL, ParsedURLModule);
-const Progress = Object.assign(ProgressModule.Progress, ProgressModule);
-const QueryParamHandler = Object.assign(QueryParamHandlerModule.QueryParamHandler, QueryParamHandlerModule);
-const ResourceType = Object.assign(ResourceTypeModule.ResourceType, ResourceTypeModule);
-const Revealer = Object.assign(RevealerModule.Revealer, RevealerModule);
-const Runnable = Object.assign(RunnableModule.Runnable, RunnableModule);
-const SegmentedRange = Object.assign(SegmentedRangeModule.SegmentedRange, SegmentedRangeModule);
-const Settings = Object.assign(SettingsModule.Settings, SettingsModule);
-const StaticContentProvider =
-    Object.assign(StaticContentProviderModule.StaticContentProvider, StaticContentProviderModule);
-const StringOutputStream = Object.assign(StringOutputStreamModule.StringOutputStream, StringOutputStreamModule);
-const TextDictionary = Object.assign(TextDictionaryModule.TextDictionary, TextDictionaryModule);
-const Throttler = Object.assign(ThrottlerModule.Throttler, ThrottlerModule);
-const Trie = Object.assign(TrieModule.Trie, TrieModule);
-const UIString = Object.assign(UIStringModule.UIString, UIStringModule);
-const Worker = Object.assign(WorkerModule.WorkerWrapper, WorkerModule);
+/**
+ * @interface
+ */
+Common.App = CommonModule.App.App;
 
-export {
-  App,
-  AppProvider,
-  CharacterIdMap,
-  Color,
-  Console,
-  ContentProvider,
-  EventTarget,
-  JavaScriptMetaData,
-  Linkifier,
-  ObjectWrapper,
-  ParsedURL,
-  Progress,
-  QueryParamHandler,
-  ResourceType,
-  Revealer,
-  Runnable,
-  SegmentedRange,
-  Settings,
-  StaticContentProvider,
-  StringOutputStream,
-  TextDictionary,
-  Throttler,
-  Trie,
-  UIString,
-  Worker,
-};
+/**
+ * @interface
+ */
+Common.AppProvider = CommonModule.AppProvider.AppProvider;
+
+/**
+ * @constructor
+ */
+Common.CharacterIdMap = CommonModule.CharacterIdMap.CharacterIdMap;
+
+/**
+ * @constructor
+ */
+Common.Color = CommonModule.Color.Color;
+
+Common.Color.Regex = CommonModule.Color.Regex;
+
+/**
+ * @enum {string}
+ */
+Common.Color.Format = CommonModule.Color.Format;
+Common.Color.Nicknames = CommonModule.Color.Nicknames;
+Common.Color.PageHighlight = CommonModule.Color.PageHighlight;
+
+/**
+ * @constructor
+ */
+Common.Color.Generator = CommonModule.Color.Generator;
+
+Common.console = new CommonModule.Console.Console();
+
+/**
+ * @constructor
+ */
+Common.Console = CommonModule.Console.Console;
+
+/** @enum {symbol} */
+Common.Console.Events = CommonModule.Console.Events;
+
+/**
+ * @enum {string}
+ */
+Common.Console.MessageLevel = CommonModule.Console.MessageLevel;
+
+/**
+ * @constructor
+ */
+Common.Console.Message = CommonModule.Console.Message;
+
+/**
+ * @interface
+ */
+Common.ContentProvider = CommonModule.ContentProvider.ContentProvider;
+
+/**
+ * @constructor
+ */
+Common.ContentProvider.SearchMatch = CommonModule.ContentProvider.SearchMatch;
+Common.ContentProvider.performSearchInContent = CommonModule.ContentProvider.performSearchInContent;
+Common.ContentProvider.contentAsDataURL = CommonModule.ContentProvider.contentAsDataURL;
+
+/**
+ * @interface
+ */
+Common.EventTarget = CommonModule.EventTarget.EventTarget;
+
+/**
+ * @interface
+ */
+Common.JavaScriptMetadata = CommonModule.JavaScriptMetaData.JavaScriptMetaData;
+
+/**
+ * @interface
+ */
+Common.Linkifier = CommonModule.Linkifier.Linkifier;
+
+/**
+ * @constructor
+ */
+Common.Object = CommonModule.ObjectWrapper.ObjectWrapper;
+
+/**
+ * @constructor
+ */
+Common.ParsedURL = CommonModule.ParsedURL.ParsedURL;
+
+/**
+ * @interface
+ */
+Common.Progress = CommonModule.Progress.Progress;
+
+/**
+ * @constructor
+ */
+Common.CompositeProgress = CommonModule.Progress.CompositeProgress;
+
+/**
+ * @constructor
+ */
+Common.SubProgress = CommonModule.Progress.SubProgress;
+
+/**
+ * @constructor
+ */
+Common.ProgressProxy = CommonModule.Progress.ProgressProxy;
+
+/**
+ * @interface
+ */
+Common.QueryParamHandler = CommonModule.QueryParamHandler.QueryParamHandler;
+
+/**
+ * @enum {!ResourceType}
+ */
+Common.resourceTypes = CommonModule.ResourceType.resourceTypes;
+
+/**
+ * @enum {!ResourceCategory}
+ */
+Common.resourceCategories = CommonModule.ResourceType.resourceCategories;
+
+/**
+ * @constructor
+ */
+Common.ResourceCategory = CommonModule.ResourceType.ResourceCategory;
+
+/**
+ * @constructor
+ */
+Common.ResourceType = CommonModule.ResourceType.ResourceType;
+
+/**
+ * @interface
+ */
+Common.Revealer = CommonModule.Revealer.Revealer;
+Common.Revealer.reveal = CommonModule.Revealer.reveal;
+Common.Revealer.revealDestination = CommonModule.Revealer.revealDestination;
+
+/**
+ * @interface
+ */
+Common.Runnable = CommonModule.Runnable.Runnable;
+
+/**
+ * @constructor
+ */
+Common.Segment = CommonModule.SegmentedRange.Segment;
+
+/**
+ * @constructor
+ */
+Common.SegmentedRange = CommonModule.SegmentedRange.SegmentedRange;
+
+/**
+ * @constructor
+ */
+Common.Settings = CommonModule.Settings.Settings;
+
+/**
+ * @constructor
+ */
+Common.SettingsStorage = CommonModule.Settings.SettingsStorage;
+
+/**
+ * @constructor
+ */
+Common.Setting = CommonModule.Settings.Setting;
+
+/**
+ * @constructor
+ */
+Common.RegExpSetting = CommonModule.Settings.RegExpSetting;
+Common.settingForTest = CommonModule.Settings.settingForTest;
+
+/**
+ * @constructor
+ */
+Common.VersionController = CommonModule.Settings.VersionController;
+Common.moduleSetting = CommonModule.Settings.moduleSetting;
+
+/**
+ * @enum {symbol}
+ */
+Common.SettingStorageType = CommonModule.Settings.SettingStorageType;
+
+/**
+ * @constructor
+ */
+Common.StaticContentProvider = CommonModule.StaticContentProvider.StaticContentProvider;
+
+/**
+ * @interface
+ */
+Common.OutputStream = CommonModule.StringOutputStream.OutputStream;
+Common.StringOutputStream = CommonModule.StringOutputStream.StringOutputStream;
+
+Common.TextDictionary = CommonModule.TextDictionary.TextDictionary;
+
+Common.Throttler = CommonModule.Throttler.Throttler;
+
+Common.Trie = CommonModule.Trie.Trie;
+
+/**
+ * @constructor
+ */
+Common.UIStringFormat = CommonModule.UIString.UIStringFormat;
+
+Common.UIString = CommonModule.UIString.UIString;
+Common.serializeUIString = CommonModule.UIString.serializeUIString;
+Common.deserializeUIString = CommonModule.UIString.deserializeUIString;
+Common.localize = CommonModule.UIString.localize;
+
+/**
+ * @constructor
+ */
+Common.Worker = CommonModule.Worker.WorkerWrapper;
+
+/**
+ * @typedef {{
+  *    content: string,
+  *    isEncoded: boolean,
+  * }|{
+  *    error: string,
+  *    isEncoded: boolean,
+  * }}
+  */
+Common.DeferredContent;
+
+/**
+ * @typedef {!{eventTarget: !Common.EventTarget, eventType: (string|symbol), thisObject: (!Object|undefined), listener: function(!Common.Event)}}
+ */
+Common.EventTarget.EventDescriptor;
+
+/**
+ * @typedef {!{data: *}}
+ */
+Common.Event;
+
+/** @typedef {{tooltip: (string|undefined), preventKeyboardFocus: (boolean|undefined)}} */
+Common.Linkifier.Options;
+
+/**
+ * @typedef {!{thisObject: (!Object|undefined), listener: function(!Common.Event), disposed: (boolean|undefined)}}
+ */
+Common.Object._listenerCallbackTuple;
+
+/**
+ * @type {!Common.Settings}
+ */
+Common.settings;
+
+/** @typedef {function(!Error=)} */
+Common.Throttler.FinishCallback;
+
+/**
+ * @param {!Array<string>|string} strings
+ * @param {...*} vararg
+ * @return {string}
+ */
+self.ls = CommonModule.UIString.ls;

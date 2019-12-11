@@ -56,23 +56,4 @@ export class EventTarget {
   }
 }
 
-/* Legacy exported object */
-self.Common = self.Common || {};
-Common = Common || {};
-
-/**
- * @interface
- */
-Common.EventTarget = EventTarget;
-
 EventTarget.removeEventListeners = removeEventListeners;
-
-/**
- * @typedef {!{eventTarget: !Common.EventTarget, eventType: (string|symbol), thisObject: (!Object|undefined), listener: function(!Common.Event)}}
- */
-Common.EventTarget.EventDescriptor;
-
-/**
- * @typedef {!{data: *}}
- */
-Common.Event;

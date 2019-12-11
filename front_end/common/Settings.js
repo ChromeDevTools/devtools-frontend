@@ -520,7 +520,7 @@ export class VersionController {
 
   _updateVersionFrom3To4() {
     const advancedMode = Common.settings.createSetting('showHeaSnapshotObjectsHiddenProperties', false);
-    Common.moduleSetting('showAdvancedHeapSnapshotProperties').set(advancedMode.get());
+    moduleSetting('showAdvancedHeapSnapshotProperties').set(advancedMode.get());
     advancedMode.remove();
   }
 
@@ -948,44 +948,3 @@ export function moduleSetting(settingName) {
 export function settingForTest(settingName) {
   return Common.settings.settingForTest(settingName);
 }
-
-/* Legacy exported object */
-self.Common = self.Common || {};
-Common = Common || {};
-
-/**
- * @constructor
- */
-Common.Settings = Settings;
-
-/**
- * @constructor
- */
-Common.SettingsStorage = SettingsStorage;
-
-/**
- * @constructor
- */
-Common.Setting = Setting;
-
-/**
- * @constructor
- */
-Common.RegExpSetting = RegExpSetting;
-Common.settingForTest = settingForTest;
-
-/**
- * @constructor
- */
-Common.VersionController = VersionController;
-Common.moduleSetting = moduleSetting;
-
-/**
- * @enum {symbol}
- */
-Common.SettingStorageType = SettingStorageType;
-
-/**
- * @type {!Common.Settings}
- */
-Common.settings;

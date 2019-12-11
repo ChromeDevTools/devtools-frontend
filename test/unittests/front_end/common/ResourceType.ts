@@ -4,19 +4,9 @@
 
 const {assert} = chai;
 
-import '../../../../front_end/platform/utilities.js';
-import '../../../../front_end/host/Platform.js';
-import '../../../../front_end/common/common.js';
 import {ResourceType, ResourceCategory} from '../../../../front_end/common/ResourceType.js';
 
 describe('ResourceCategory class', () => {
-  after(() => {
-    // Clean up polluted globals.
-    // TODO(https://crbug.com/1006759): These need removing once the ESM migration is complete.
-    const globalObj = (self as any);
-    delete globalObj.Host;
-  });
-
   it('is able to be instantiated successfully', () => {
     const resourceCategory = new ResourceCategory('Test Title', 'Test Short Title');
     assert.equal(resourceCategory.title, 'Test Title', 'title is not correct');
@@ -25,13 +15,6 @@ describe('ResourceCategory class', () => {
 });
 
 describe('ResourceType class', () => {
-  after(() => {
-    // Clean up polluted globals.
-    // TODO(https://crbug.com/1006759): These need removing once the ESM migration is complete.
-    const globalObj = (self as any);
-    delete globalObj.Host;
-  });
-
   it('is able to be instantiated successfully', () => {
     const testResourceCategory = new ResourceCategory('Category Test Title', 'Category Test Short Title');
     const resourceType = new ResourceType('Type Test Name', 'Type Test Title', testResourceCategory, true);

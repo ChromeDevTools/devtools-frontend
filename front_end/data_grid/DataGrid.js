@@ -122,7 +122,7 @@ export default class DataGridImpl extends Common.Object {
     /** @type {!ResizeMethod} */
     this._resizeMethod = ResizeMethod.Nearest;
 
-    /** @type {?function(!UI.ContextMenu)} */
+    /** @type {?function(!UI.ContextSubMenu)} */
     this._headerContextMenuCallback = null;
     /** @type {?function(!UI.ContextMenu, !NODE_TYPE)} */
     this._rowContextMenuCallback = null;
@@ -1145,7 +1145,7 @@ export default class DataGridImpl extends Common.Object {
   }
 
   /**
-   * @param {?function(!UI.ContextMenu)} callback
+   * @param {?function(!UI.ContextSubMenu)} callback
    */
   setHeaderContextMenuCallback(callback) {
     this._headerContextMenuCallback = callback;
@@ -1182,16 +1182,19 @@ export default class DataGridImpl extends Common.Object {
       }
     }
 
-    const isContextMenuKey = (event.button === 0);
-    if (!isContextMenuKey && target.isSelfOrDescendant(this._headerTableBody)) {
-      if (this._headerContextMenuCallback) {
+    if (this._headerContextMenuCallback) {
+      if (target.isSelfOrDescendant(this._headerTableBody)) {
         this._headerContextMenuCallback(contextMenu);
-      } else {
         contextMenu.show();
+        return;
+      } else {
+        // Add header context menu to a subsection available from the body
+        const headerSubMenu = contextMenu.defaultSection().appendSubMenuItem(ls`Header Options`);
+        this._headerContextMenuCallback(headerSubMenu);
       }
-      return;
     }
 
+    const isContextMenuKey = (event.button === 0);
     const gridNode = isContextMenuKey ? this.selectedNode : this.dataGridNodeFromNode(target);
     if (isContextMenuKey && this.selectedNode) {
       const boundingRowRect = this.selectedNode.existingElement().getBoundingClientRect();

@@ -3,6 +3,9 @@
   <message name="IDS_DEVTOOLS_059a1aa256b770eca2d69c096f759ad0" desc="A context menu item in the Data Grid of a data grid">
     Sort By
   </message>
+  <message name="IDS_DEVTOOLS_17022809d53876ba5d6b97c67c364614" desc="A context menu item in data grids to list header options.">
+    Header Options
+  </message>
   <message name="IDS_DEVTOOLS_28de94c6a82d4419a4014addb8aba93c" desc="Show last text content in Show More Data Grid Node of a data grid">
     Show <ph name="THIS__CHUNKSIZE">$1d<ex>5</ex></ph> after
   </message>

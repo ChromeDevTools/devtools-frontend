@@ -207,7 +207,7 @@ export class Section {
 /**
  * @unrestricted
  */
-class SubMenu extends Item {
+export class SubMenu extends Item {
   /**
    * @param {?ContextMenu} contextMenu
    * @param {string=} label
@@ -588,6 +588,9 @@ UI.ContextMenuItem = Item;
  * @constructor
  */
 UI.ContextMenuSection = Section;
+
+/** @constructor */
+UI.ContextSubMenu = SubMenu;
 
 /**
  * @interface

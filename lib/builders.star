@@ -132,7 +132,7 @@ def generate_ci_configs(configurations, builders):
         'tree_status_host': 'devtools-status.appspot.com'
       },
       entries=[
-        luci.console_view_entry(builder=name, category=category)
+        luci.console_view_entry(builder="ci/"+name, category=category)
         for name, category in builders_refs
       ]
     )
@@ -142,5 +142,5 @@ def generate_ci_configs(configurations, builders):
       bucket="ci",
       repo=defaults.repo,
       refs=[c.branch],
-      triggers=[name for name, _ in builders_refs]
+      triggers=["ci/"+name for name, _ in builders_refs]
     )

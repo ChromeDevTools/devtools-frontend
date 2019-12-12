@@ -21,6 +21,10 @@
     padding: 2px 0;
 }
 
+.breakpoint-entry[data-keyboard-focus="true"] {
+    background-color: var(--focus-bg-color);
+}
+
 .breakpoint-list .breakpoint-entry:hover {
     background-color: #eee;
 }

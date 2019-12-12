@@ -63,9 +63,6 @@
   <message name="IDS_DEVTOOLS_2ea54663ae9e3a586132a34a98d85ccf" desc="Text for the title of asynchronous function calls group in Call Stack">
     Async Call
   </message>
-  <message name="IDS_DEVTOOLS_3793ea52a7be2d7deafd858fda50775c" desc="Accessibility label for checked items in the SoftContextMenu">
-    checked
-  </message>
   <message name="IDS_DEVTOOLS_3a39eb38e879f66d1c57dedd478272da" desc="label to open link externally">
     Open in new tab
   </message>
@@ -239,9 +236,6 @@
   </message>
   <message name="IDS_DEVTOOLS_a950da8e902568f9a6879abe4313efe7" desc="Text content of content element">
     Once page is reloaded, <ph name="LOCKED_1">DevTools</ph> will automatically reconnect.
-  </message>
-  <message name="IDS_DEVTOOLS_ad91a1da588ce256d30b1af38f78f84e" desc="Accessibility label for unchecked items in the SoftContextMenu">
-    unchecked
   </message>
   <message name="IDS_DEVTOOLS_addec426932e71323700afa1911f8f1c" desc="Text on a button to show more info in the infobar">
     more

@@ -489,7 +489,6 @@ export default class ListControl {
     const newItem = this._selectedItem;
     const newElement = this._selectedIndex !== -1 ? this._elementAtIndex(index) : null;
 
-    UI.ARIAUtils.setActiveDescendant(this.element, newElement);
     this._delegate.selectedItemChanged(oldItem, newItem, /** @type {?Element} */ (oldElement), newElement);
     if (!this._delegate.updateSelectedItemARIA(/** @type {?Element} */ (oldElement), newElement)) {
       if (oldElement) {

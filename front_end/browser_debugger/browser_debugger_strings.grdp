@@ -15,6 +15,9 @@
   <message name="IDS_DEVTOOLS_3ea566249a507705d9a7ff4d3bd31440" desc="Screen reader description of a hit breakpoint in the Sources panel">
     breakpoint hit
   </message>
+  <message name="IDS_DEVTOOLS_57aab6f08efb5f158365bef707ea951d" desc="A context menu item in the DOM Breakpoints sidebar that reveals the node on which the current breakpoint is set.">
+    Reveal DOM node in Elements panel
+  </message>
   <message name="IDS_DEVTOOLS_59eaf6955f44a94237b6d26911c1d983" desc="A context menu item in the DOMBreakpoints Sidebar Pane of the JavaScript Debugging pane in the Sources panel or the DOM Breakpoints pane in the Elements panel">
     Break on
   </message>
@@ -27,6 +30,9 @@
   <message name="IDS_DEVTOOLS_9f76c421048cb58ab03988d2ce1c813e" desc="Label for a button in the sources panel that refreshes the list of global event listeners.">
     Refresh global listeners
   </message>
+  <message name="IDS_DEVTOOLS_8fc1dde0c79d8adcaf674b3d679d3596" desc="Accessibility label for hit breakpoints in the Sources panel.">
+    <ph name="CHECKEDSTATETEXT">$1s<ex>checked</ex></ph> breakpoint hit
+  </message>
   <message name="IDS_DEVTOOLS_b839f802a330e4d4145cb182e6767f45" desc="Text in XHRBreakpoints Sidebar Pane of the JavaScript Debugging pane in the Sources panel or the DOM Breakpoints pane in the Elements panel">
     Any XHR or fetch
   </message>
@@ -38,6 +44,9 @@
   </message>
   <message name="IDS_DEVTOOLS_e30c4292775f68b2bc9eb3957a69f899" desc="Title of the 'Global Listeners' tool in the bottom sidebar of the Sources tool">
     Global Listeners
+  </message>
+  <message name="IDS_DEVTOOLS_e4fc5497303105b60ef0b8c90be3fbd2" desc="Accessibility label for the DOM breakpoints list in the Sources panel">
+    DOM Breakpoints list
   </message>
   <message name="IDS_DEVTOOLS_ebdb33cde9015fa4b294220ee89cff00" desc="Title of the 'Event Listener Breakpoints' tool in the bottom sidebar of the Sources tool">
     Event Listener Breakpoints

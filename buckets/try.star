@@ -83,7 +83,7 @@ luci.list_view(
   name="tryserver",
   title="Tryserver",
   favicon=defaults.favicon,
-  entries =[luci.list_view_entry(builder="try/"+b) for b in try_builders],
+  entries =[luci.list_view_entry(builder=b) for b in try_builders],
 )
 
 cq_acls=[
@@ -123,7 +123,7 @@ luci.cq_group(
   retry_config=cq_retry_config,
   verifiers=[
     luci.cq_tryjob_verifier(
-        builder="try/"+builder,
+        builder=builder,
         disable_reuse=("presubmit" in builder)
     ) for builder in cq_master_builders
   ],

@@ -30,11 +30,6 @@ generate_ci_configs(
         is_master_only=True
       ),
       builder_descriptor(
-        name='devtools_frontend_linux_blink_light_rel',
-        recipe_name='chromium_trybot',
-        is_master_only=True
-      ),
-      builder_descriptor(
         name="Stand-alone Linux",
         recipe_name="devtools/devtools-frontend",
       ),

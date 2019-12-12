@@ -8,5 +8,8 @@
     "modules": [
         "cookie_table.js",
         "CookiesTable.js"
+    ],
+    "resources": [
+        "cookiesTable.css"
     ]
 }

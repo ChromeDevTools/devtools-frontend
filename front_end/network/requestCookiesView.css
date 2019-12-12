@@ -27,23 +27,3 @@
     margin-bottom: 16px;
     flex: none;
 }
-
-.request-cookies-view .cookie-table .flagged-cookie-row {
-    background-color: yellow;
-}
-
-.cookie-warning-icon {
-    margin-right: 4px;
-}
-
-td.flagged-cookie-attribute-cell .cookie-warning-icon {
-    filter: grayscale();
-}
-
-.request-cookies-view tr.revealed.data-grid-data-grid-node.flagged-cookie-attribute-row:not(.selected):nth-child(odd) {
-    background-color: hsl(51, 85%, 80%);
-}
-
-.request-cookies-view tr.revealed.data-grid-data-grid-node.flagged-cookie-attribute-row:not(.selected):nth-child(even) {
-    background-color: rgb(255, 240, 155);
-}

@@ -60,6 +60,7 @@ export default class NetworkPanel extends UI.Panel {
 
     this._filterBar = new UI.FilterBar('networkPanel', true);
     this._filterBar.show(panel.contentElement);
+    this._filterBar.addEventListener(UI.FilterBar.Events.Changed, this._handleFilterChanged.bind(this));
 
     this._settingsPane = new UI.HBox();
     this._settingsPane.element.classList.add('network-settings-pane');
@@ -449,6 +450,13 @@ export default class NetworkPanel extends UI.Panel {
     await UI.viewManager.showView('network');
     this._networkLogView.selectRequest(request);
     return this._networkItemView;
+  }
+
+  /**
+   * @param {!Common.Event} event
+   */
+  _handleFilterChanged(event) {
+    this._hideRequestPanel();
   }
 
   /**

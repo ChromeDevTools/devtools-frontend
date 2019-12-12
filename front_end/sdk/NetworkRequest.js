@@ -751,11 +751,11 @@ export default class NetworkRequest extends Common.Object {
   }
 
   /**
-   * @return {?Array.<!SDK.Cookie>}
+   * @return {!Array.<!SDK.Cookie>}
    */
   get requestCookies() {
     if (!this._requestCookies) {
-      this._requestCookies = SDK.CookieParser.parseCookie(this.requestHeaderValue('Cookie'));
+      this._requestCookies = SDK.CookieParser.parseCookie(this.requestHeaderValue('Cookie')) || [];
     }
     return this._requestCookies;
   }
@@ -875,7 +875,8 @@ export default class NetworkRequest extends Common.Object {
    */
   get responseCookies() {
     if (!this._responseCookies) {
-      this._responseCookies = SDK.CookieParser.parseSetCookie(this.responseHeaderValue('Set-Cookie'));
+      this._responseCookies =
+          SDK.CookieParser.parseSetCookie(this.responseHeaderValue('Set-Cookie'), this.domain) || [];
     }
     return this._responseCookies;
   }
@@ -885,6 +886,18 @@ export default class NetworkRequest extends Common.Object {
    */
   responseLastModified() {
     return this.responseHeaderValue('last-modified');
+  }
+
+  /**
+   * @return {!Array.<!SDK.Cookie>}
+   */
+  allCookiesIncludingBlockedOnes() {
+    return [
+      ...this.requestCookies, ...this.responseCookies,
+      ...this.blockedRequestCookies().map(blockedRequestCookie => blockedRequestCookie.cookie),
+      ...this.blockedResponseCookies().map(blockedResponseCookie => blockedResponseCookie.cookie),
+      // blockedRequestCookie or blockedResponseCookie might not contain a cookie in case of SyntaxErrors:
+    ].filter(v => !!v);
   }
 
   /**

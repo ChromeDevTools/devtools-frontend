@@ -246,9 +246,6 @@
   <message name="IDS_DEVTOOLS_4dec8df20c6bc162fd77420b6f17edc5" desc="Aria accessible name in Network Log View of the Network panel">
     Resource types to include
   </message>
-  <message name="IDS_DEVTOOLS_4e5684a9fc5a7bde112a0519e77f4b37" desc="Label for a filter in the Network panel">
-    Only show requests with SameSite issues
-  </message>
   <message name="IDS_DEVTOOLS_4e88c13fb97f356a81c48bf2644bef51" desc="Text in Request Timing View of the Network panel">
     Connection Start
   </message>
@@ -293,6 +290,9 @@
   </message>
   <message name="IDS_DEVTOOLS_59f2df528ff5c941c8d6308288a83141" desc="An option in the user agent dropdown menu in the Network conditions tool">
     <ph name="LOCKED_1">Chrome — iPad</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_5c60f46c60a82151a2f1a9f7145ed8eb" desc="Tooltip for a filter in the Network panel">
+    Only show requests with blocked response cookies
   </message>
   <message name="IDS_DEVTOOLS_5cb98890f19c13e5fce52287187d9803" desc="Text in Network Log View of the Network panel">
     <ph name="SELECTEDNODENUMBER">$1s<ex>3</ex></ph> / <ph name="NODECOUNT">$2s<ex>5</ex></ph> requests
@@ -359,6 +359,9 @@
   </message>
   <message name="IDS_DEVTOOLS_722e6ea747a62b7f93bb017d3dd04cbd" desc="Op codes continuation frame of map in Resource Web Socket Frame View of the Network panel">
     Continuation Frame
+  </message>
+  <message name="IDS_DEVTOOLS_b67f775562210192587e38f66a6ae380" desc="Label for a filter in the Network panel">
+    Has blocked cookies
   </message>
   <message name="IDS_DEVTOOLS_b85f4d2fed0fc1c5f95fd4a49ff6f2e7" desc="A tag of Network Conditions tool that can be searched in the command menu">
     user-agent

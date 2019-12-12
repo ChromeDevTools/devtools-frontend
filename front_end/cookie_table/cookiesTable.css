@@ -1,0 +1,25 @@
+/*
+ * Copyright (c) 2019 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+.cookies-table .flagged-cookie-row {
+    background-color: yellow;
+}
+
+.cookies-table .cookie-warning-icon {
+    margin-right: 4px;
+}
+
+.cookies-table td.flagged-cookie-attribute-cell .cookie-warning-icon {
+    filter: grayscale();
+}
+
+.cookies-table  tr.revealed.data-grid-data-grid-node.flagged-cookie-attribute-row:not(.selected):nth-child(odd) {
+    background-color: hsl(51, 85%, 80%);
+}
+
+.cookies-table  tr.revealed.data-grid-data-grid-node.flagged-cookie-attribute-row:not(.selected):nth-child(even) {
+    background-color: rgb(255, 240, 155);
+}

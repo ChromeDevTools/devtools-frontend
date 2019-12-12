@@ -88,6 +88,7 @@ export default class FilterBar extends UI.HBox {
    */
   _filterChanged(event) {
     this._updateFilterButton();
+    this.dispatchEventToListeners(FilterBar.Events.Changed);
   }
 
   /**
@@ -147,6 +148,10 @@ export default class FilterBar extends UI.HBox {
     return this._alwaysShowFilters || (this._stateSetting.get() && this._enabled);
   }
 }
+
+FilterBar.Events = {
+  Changed: Symbol('Changed'),
+};
 
 /**
  * @interface

@@ -32,6 +32,8 @@ export default class IssuesModel extends SDK.SDKModel {
       networkManager.addEventListener(SDK.NetworkManager.Events.RequestFinished, this._handleRequestFinished, this);
     }
 
+    this._cookiesModel = target.model(SDK.CookieModel);
+
     this._issues = [];
   }
 
@@ -70,12 +72,24 @@ export default class IssuesModel extends SDK.SDKModel {
 
     const blockedResponseCookies = request.blockedResponseCookies();
     for (const blockedCookie of blockedResponseCookies) {
-      const reason = blockedCookie.blockedReasons[0];
       const cookie = blockedCookie.cookie;
+      if (!cookie) {
+        continue;
+      }
+
+      const reason = blockedCookie.blockedReasons[0];
       const issue = new Issue(Issue.Categories.SameSite, reason, {request, cookie});
 
       IssuesModel.connectWithIssue(request, issue);
       IssuesModel.connectWithIssue(cookie, issue);
+
+      this._cookiesModel.addBlockedCookie(
+          cookie,
+          blockedCookie.blockedReasons.map(
+              blockedReason => ({
+                attribute: SDK.NetworkRequest.setCookieBlockedReasonToAttribute(blockedReason),
+                uiString: SDK.NetworkRequest.setCookieBlockedReasonToUiString(blockedReason)
+              })));
     }
   }
 }

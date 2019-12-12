@@ -129,10 +129,10 @@ export default class NetworkLogView extends UI.VBox {
         UI.FilterUI.Events.FilterChanged, this._filterChanged.bind(this), this);
     filterBar.addFilter(this._resourceCategoryFilterUI);
 
-    this._onlyIssuesFilterUI = new UI.CheckboxFilterUI(
-        'only-show-issues', ls`Only show requests with SameSite issues`, true, this._networkShowIssuesOnlySetting);
+    this._onlyIssuesFilterUI =
+        new UI.CheckboxFilterUI('only-show-issues', ls`Has blocked cookies`, true, this._networkShowIssuesOnlySetting);
     this._onlyIssuesFilterUI.addEventListener(UI.FilterUI.Events.FilterChanged, this._filterChanged.bind(this), this);
-    this._onlyIssuesFilterUI.element().title = ls`Only show requests with SameSite issues`;
+    this._onlyIssuesFilterUI.element().title = ls`Only show requests with blocked response cookies`;
     filterBar.addFilter(this._onlyIssuesFilterUI);
 
 
@@ -348,14 +348,35 @@ export default class NetworkLogView extends UI.VBox {
    * @param {!SDK.NetworkRequest} request
    * @return {boolean}
    */
+  static _requestCookieDomainFilter(value, request) {
+    return request.allCookiesIncludingBlockedOnes().some(cookie => cookie.domain() === value);
+  }
+
+  /**
+   * @param {string} value
+   * @param {!SDK.NetworkRequest} request
+   * @return {boolean}
+   */
+  static _requestCookieNameFilter(value, request) {
+    return request.allCookiesIncludingBlockedOnes().some(cookie => cookie.name() === value);
+  }
+
+  /**
+   * @param {string} value
+   * @param {!SDK.NetworkRequest} request
+   * @return {boolean}
+   */
+  static _requestCookieValueFilter(value, request) {
+    return request.allCookiesIncludingBlockedOnes().some(cookie => cookie.value() === value);
+  }
+
+  /**
+   * @param {string} value
+   * @param {!SDK.NetworkRequest} request
+   * @return {boolean}
+   */
   static _requestSetCookieDomainFilter(value, request) {
-    const cookies = request.responseCookies;
-    for (let i = 0, l = cookies ? cookies.length : 0; i < l; ++i) {
-      if (cookies[i].domain() === value) {
-        return true;
-      }
-    }
-    return false;
+    return request.responseCookies.some(cookie => cookie.domain() === value);
   }
 
   /**
@@ -364,13 +385,7 @@ export default class NetworkLogView extends UI.VBox {
    * @return {boolean}
    */
   static _requestSetCookieNameFilter(value, request) {
-    const cookies = request.responseCookies;
-    for (let i = 0, l = cookies ? cookies.length : 0; i < l; ++i) {
-      if (cookies[i].name() === value) {
-        return true;
-      }
-    }
-    return false;
+    return request.responseCookies.some(cookie => cookie.name() === value);
   }
 
   /**
@@ -379,13 +394,7 @@ export default class NetworkLogView extends UI.VBox {
    * @return {boolean}
    */
   static _requestSetCookieValueFilter(value, request) {
-    const cookies = request.responseCookies;
-    for (let i = 0, l = cookies ? cookies.length : 0; i < l; ++i) {
-      if (cookies[i].value() === value) {
-        return true;
-      }
-    }
-    return false;
+    return request.responseCookies.some(cookie => cookie.value() === value);
   }
 
   /**
@@ -1213,12 +1222,17 @@ export default class NetworkLogView extends UI.VBox {
     for (let i = 0, l = responseHeaders.length; i < l; ++i) {
       this._suggestionBuilder.addItem(FilterType.HasResponseHeader, responseHeaders[i].name);
     }
-    const cookies = request.responseCookies;
-    for (let i = 0, l = cookies ? cookies.length : 0; i < l; ++i) {
-      const cookie = cookies[i];
+
+    for (const cookie of request.responseCookies) {
       this._suggestionBuilder.addItem(FilterType.SetCookieDomain, cookie.domain());
       this._suggestionBuilder.addItem(FilterType.SetCookieName, cookie.name());
       this._suggestionBuilder.addItem(FilterType.SetCookieValue, cookie.value());
+    }
+
+    for (const cookie of request.allCookiesIncludingBlockedOnes()) {
+      this._suggestionBuilder.addItem(FilterType.CookieDomain, cookie.domain());
+      this._suggestionBuilder.addItem(FilterType.CookieName, cookie.name());
+      this._suggestionBuilder.addItem(FilterType.CookieValue, cookie.value());
     }
 
     this._staleRequests.add(request);
@@ -1549,6 +1563,15 @@ export default class NetworkLogView extends UI.VBox {
       case FilterType.SetCookieValue:
         return NetworkLogView._requestSetCookieValueFilter.bind(null, value);
 
+      case FilterType.CookieDomain:
+        return NetworkLogView._requestCookieDomainFilter.bind(null, value);
+
+      case FilterType.CookieName:
+        return NetworkLogView._requestCookieNameFilter.bind(null, value);
+
+      case FilterType.CookieValue:
+        return NetworkLogView._requestCookieValueFilter.bind(null, value);
+
       case FilterType.Priority:
         return NetworkLogView._requestPriorityFilter.bind(null, PerfUI.uiLabelToNetworkPriority(value));
 
@@ -1700,8 +1723,9 @@ export default class NetworkLogView extends UI.VBox {
     }
 
     const credentials =
-        request.requestCookies || requestHeaders.some(({name}) => credentialHeaders[name.toLowerCase()]) ? 'include' :
-                                                                                                           'omit';
+        request.requestCookies.length || requestHeaders.some(({name}) => credentialHeaders[name.toLowerCase()]) ?
+        'include' :
+        'omit';
 
     const referrerHeader = requestHeaders.find(({name}) => name.toLowerCase() === 'referer');
 
@@ -1999,6 +2023,9 @@ export const FilterType = {
   SetCookieDomain: 'set-cookie-domain',
   SetCookieName: 'set-cookie-name',
   SetCookieValue: 'set-cookie-value',
+  CookieDomain: 'cookie-domain',
+  CookieName: 'cookie-name',
+  CookieValue: 'cookie-value',
   StatusCode: 'status-code'
 };
 

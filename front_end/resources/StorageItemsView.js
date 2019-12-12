@@ -31,6 +31,14 @@ Resources.StorageItemsView = class extends UI.VBox {
     }
   }
 
+
+  /**
+   * @param {!UI.ToolbarItem} item
+   */
+  appendToolbarItem(item) {
+    this._mainToolbar.appendToolbarItem(item);
+  }
+
   /**
    * @param {string} label
    * @param {string} glyph

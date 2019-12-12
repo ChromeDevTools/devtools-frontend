@@ -60,6 +60,10 @@ Resources.CookieItemsView = class extends Resources.StorageItemsView {
     this._splitWidget.setSidebarWidget(this._previewPanel);
     this._splitWidget.installResizer(resizer);
 
+    this._onlyIssuesFilterUI = new UI.ToolbarCheckbox(ls`Only blocked`, ls`Only show blocked Cookies`, () => {
+      this._updateWithCookies(this._allCookies);
+    });
+    this.appendToolbarItem(this._onlyIssuesFilterUI);
 
     this._refreshThrottler = new Common.Throttler(300);
     /** @type {!Array<!Common.EventTarget.EventDescriptor>} */
@@ -70,6 +74,9 @@ Resources.CookieItemsView = class extends Resources.StorageItemsView {
     this._preview = null;
     /** @type {?SDK.Cookie} */
     this._previewValue = null;
+
+    /** @type {!Array<!SDK.Cookie>} */
+    this._allCookies = [];
 
     this.setCookiesDomain(model, cookieDomain);
   }
@@ -171,6 +178,7 @@ Resources.CookieItemsView = class extends Resources.StorageItemsView {
    * @param {!Array<!SDK.Cookie>} allCookies
    */
   _updateWithCookies(allCookies) {
+    this._allCookies = allCookies;
     this._totalSize = allCookies.reduce((size, cookie) => size + cookie.size(), 0);
 
     const parsedURL = Common.ParsedURL.fromString(this._cookieDomain);
@@ -178,10 +186,22 @@ Resources.CookieItemsView = class extends Resources.StorageItemsView {
     this._cookiesTable.setCookieDomain(host);
 
     const shownCookies = this.filter(allCookies, cookie => `${cookie.name()} ${cookie.value()} ${cookie.domain()}`);
-    this._cookiesTable.setCookies(shownCookies);
+    this._cookiesTable.setCookies(shownCookies, this._model.getCookieToBlockedReasonsMap());
     this.setCanFilter(true);
     this.setCanDeleteAll(true);
     this.setCanDeleteSelected(!!this._cookiesTable.selectedCookie());
+  }
+
+  /**
+   * @override
+   * @param {!Array<?Object>} items
+   * @param {function(?Object): string} keyFunction
+   * @return {!Array<?Object>}
+   * @protected
+   */
+  filter(items, keyFunction) {
+    return super.filter(items, keyFunction)
+        .filter(cookie => !this._onlyIssuesFilterUI.checked() || SDK.IssuesModel.hasIssues(cookie));
   }
 
   /**

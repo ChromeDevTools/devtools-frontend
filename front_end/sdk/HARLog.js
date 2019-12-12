@@ -218,7 +218,7 @@ export class Entry {
       httpVersion: this._request.requestHttpVersion(),
       headers: this._request.requestHeaders(),
       queryString: this._buildParameters(this._request.queryParameters || []),
-      cookies: this._buildCookies(this._request.requestCookies || []),
+      cookies: this._buildCookies(this._request.requestCookies),
       headersSize: headersText ? headersText.length : -1,
       bodySize: await this._requestBodySize()
     };
@@ -240,7 +240,7 @@ export class Entry {
       statusText: this._request.statusText,
       httpVersion: this._request.responseHttpVersion(),
       headers: this._request.responseHeaders,
-      cookies: this._buildCookies(this._request.responseCookies || []),
+      cookies: this._buildCookies(this._request.responseCookies),
       content: this._buildContent(),
       redirectURL: this._request.responseHeaderValue('Location') || '',
       headersSize: headersText ? headersText.length : -1,

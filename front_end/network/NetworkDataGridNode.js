@@ -420,8 +420,8 @@ export class NetworkRequestNode extends NetworkNode {
     if (!aRequest || !bRequest) {
       return !aRequest ? -1 : 1;
     }
-    const aScore = aRequest.requestCookies ? aRequest.requestCookies.length : 0;
-    const bScore = bRequest.requestCookies ? bRequest.requestCookies.length : 0;
+    const aScore = aRequest.requestCookies.length;
+    const bScore = bRequest.requestCookies.length;
     return (aScore - bScore) || aRequest.indentityCompare(bRequest);
   }
 

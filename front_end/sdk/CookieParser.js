@@ -38,7 +38,15 @@
  * @unrestricted
  */
 export default class CookieParser {
-  constructor() {
+  /**
+   * @param {string=} domain
+   */
+  constructor(domain) {
+    if (domain) {
+      // Handle domain according to
+      // https://tools.ietf.org/html/draft-ietf-httpbis-rfc6265bis-03#section-5.3.3
+      this._domain = domain.toLowerCase().replace(/^\./, '');
+    }
   }
 
   /**
@@ -51,10 +59,11 @@ export default class CookieParser {
 
   /**
    * @param {string|undefined} header
+   * @param {string=} domain
    * @return {?Array<!SDK.Cookie>}
    */
-  static parseSetCookie(header) {
-    return (new CookieParser()).parseSetCookie(header);
+  static parseSetCookie(header, domain) {
+    return (new CookieParser(domain)).parseSetCookie(header);
   }
 
   /**
@@ -183,6 +192,9 @@ export default class CookieParser {
     // specifying a value for a cookie with empty name.
     this._lastCookie = typeof keyValue.value === 'string' ? new SDK.Cookie(keyValue.key, keyValue.value, type) :
                                                             new SDK.Cookie('', keyValue.key, type);
+    if (this._domain) {
+      this._lastCookie.addAttribute('domain', this._domain);
+    }
     this._lastCookiePosition = keyValue.position;
     this._cookies.push(this._lastCookie);
   }
@@ -247,6 +259,13 @@ export class Cookie {
     }
     cookie.setSize(protocolCookie['size']);
     return cookie;
+  }
+
+  /**
+   * @returns {string}
+   */
+  key() {
+    return this.domain() + ' ' + this.name() + ' ' + this.path();
   }
 
   /**

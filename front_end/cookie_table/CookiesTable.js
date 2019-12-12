@@ -42,6 +42,10 @@ export class CookiesTable extends UI.VBox {
   constructor(renderInline, saveCallback, refreshCallback, selectedCallback, deleteCallback) {
     super();
 
+    this.registerRequiredCSS('cookie_table/cookiesTable.css');
+    this.element.classList.add('cookies-table');
+
+
     this._saveCallback = saveCallback;
     this._refreshCallback = refreshCallback;
     this._deleteCallback = deleteCallback;
@@ -103,6 +107,7 @@ export class CookiesTable extends UI.VBox {
     this._dataGrid.setStriped(true);
     this._dataGrid.setName('cookiesTable');
     this._dataGrid.addEventListener(DataGrid.DataGrid.Events.SortingChanged, this._rebuildTable, this);
+    this._dataGrid.setRowContextMenuCallback(this._populateContextMenu.bind(this));
     if (renderInline) {
       this._dataGrid.renderInline();
     }
@@ -538,6 +543,27 @@ export class CookiesTable extends UI.VBox {
     if (this._refreshCallback) {
       this._refreshCallback();
     }
+  }
+
+  /**
+   * @param {!UI.ContextMenu} contextMenu
+   * @param {!DataGrid.DataGridNode} gridNode
+   */
+  _populateContextMenu(contextMenu, gridNode) {
+    const cookie = /** @type {!SDK.Cookie} */ (gridNode.cookie);
+
+    contextMenu.revealSection().appendItem(ls`Show Requests With This Cookie`, () => {
+      Network.NetworkPanel.revealAndFilter([
+        {
+          filterType: 'cookie-domain',
+          filterValue: cookie.domain(),
+        },
+        {
+          filterType: 'cookie-name',
+          filterValue: cookie.name(),
+        }
+      ]);
+    });
   }
 }
 

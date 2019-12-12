@@ -30,6 +30,7 @@
     "setup-dtrun": "cd scripts/devtools_run && npm link",
     "start": "node scripts/hosted_mode/start_chrome_and_server.js",
     "test": "node scripts/npm_test.js",
+    "test-local": "node scripts/npm_test.js --layout-tests-directory=test/webtests/",
 
     "check": "npm run check-json && npm run check-lint && npm run check-loc && npm run check-type",
     "check-json": "node scripts/json_validator/validate_module_json.js",

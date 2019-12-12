@@ -40,7 +40,7 @@ export default class ProtocolMonitorImpl extends UI.VBox {
 
     const split = new UI.SplitWidget(true, true, 'protocol-monitor-panel-split', 250);
     split.show(this.contentElement);
-    this._dataGrid = new DataGrid.SortableDataGrid(this._columns);
+    this._dataGrid = new DataGrid.SortableDataGrid({displayName: ls`Protocol Monitor`, columns: this._columns});
     this._dataGrid.element.style.flex = '1';
     this._infoWidget = new ProtocolMonitor.ProtocolMonitor.InfoWidget();
     split.setMainWidget(this._dataGrid.asWidget());

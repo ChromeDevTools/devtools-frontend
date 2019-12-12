@@ -28,7 +28,7 @@ Profiler.ProfileView = class extends UI.SimpleView {
     columns.push({id: 'total', title: this.columnHeader('total'), width: '120px', fixedWidth: true, sortable: true});
     columns.push({id: 'function', title: Common.UIString('Function'), disclosure: true, sortable: true});
 
-    this.dataGrid = new DataGrid.DataGrid(columns);
+    this.dataGrid = new DataGrid.DataGrid({displayName: ls`Profiler`, columns});
     this.dataGrid.addEventListener(DataGrid.DataGrid.Events.SortingChanged, this._sortProfile, this);
     this.dataGrid.addEventListener(DataGrid.DataGrid.Events.SelectedNode, this._nodeSelected.bind(this, true));
     this.dataGrid.addEventListener(DataGrid.DataGrid.Events.DeselectedNode, this._nodeSelected.bind(this, false));

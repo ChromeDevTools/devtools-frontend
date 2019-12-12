@@ -135,6 +135,9 @@
   <message name="IDS_DEVTOOLS_30ad3ea5e350075c1c0a1171c5006ed7" desc="Text in Network Panel of the Network panel">
     Fetching frames...
   </message>
+  <message name="IDS_DEVTOOLS_311103989003f5bc6a01fca15ccb4fa4" desc="Data grid name for Web Socket Frame data grids">
+    Web Socket Frame
+  </message>
   <message name="IDS_DEVTOOLS_31977081ea2c828cc70e6151ab5d7da8" desc="Text in Request Headers View of the Network panel">
     view decoded
   </message>
@@ -348,6 +351,9 @@
   <message name="IDS_DEVTOOLS_6dec00f9ae08edb5af58e6efb699dba0" desc="Label for showing request cookies that were not actually sent">
     show filtered out request cookies
   </message>
+  <message name="IDS_DEVTOOLS_6e458346abf37cc727a811ea1d71034a" desc="Data grid name for Event Source data grids">
+    Event Source
+  </message>
   <message name="IDS_DEVTOOLS_6e68a529a38966508d348e9f65d7ea31" desc="Title of an action in the network tool to toggle recording">
     Record network log
   </message>
@@ -362,6 +368,9 @@
   </message>
   <message name="IDS_DEVTOOLS_b67f775562210192587e38f66a6ae380" desc="Label for a filter in the Network panel">
     Has blocked cookies
+  </message>
+  <message name="IDS_DEVTOOLS_7734a3eb999c4910e2ae5dcd906bdefc" desc="Data grid name for Network Log data grids">
+    Network Log
   </message>
   <message name="IDS_DEVTOOLS_b85f4d2fed0fc1c5f95fd4a49ff6f2e7" desc="A tag of Network Conditions tool that can be searched in the command menu">
     user-agent

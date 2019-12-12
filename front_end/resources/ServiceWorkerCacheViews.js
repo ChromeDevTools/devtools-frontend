@@ -127,8 +127,12 @@ Resources.ServiceWorkerCacheView = class extends UI.SimpleView {
         sortable: true
       }
     ]);
-    const dataGrid = new DataGrid.DataGrid(
-        columns, undefined, this._deleteButtonClicked.bind(this), this._updateData.bind(this, true));
+    const dataGrid = new DataGrid.DataGrid({
+      displayName: ls`Service Worker Cache`,
+      columns,
+      deleteCallback: this._deleteButtonClicked.bind(this),
+      refreshCallback: this._updateData.bind(this, true)
+    });
 
     dataGrid.addEventListener(DataGrid.DataGrid.Events.SortingChanged, this._sortingChanged, this);
 

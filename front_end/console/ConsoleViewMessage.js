@@ -190,7 +190,7 @@ export default class ConsoleViewMessage {
     const columnDisplayNames = columnNames.map(name => name === rawValueColumnSymbol ? Common.UIString('Value') : name);
 
     if (flatValues.length) {
-      this._dataGrid = DataGrid.SortableDataGrid.create(columnDisplayNames, flatValues);
+      this._dataGrid = DataGrid.SortableDataGrid.create(columnDisplayNames, flatValues, ls`Console`);
       this._dataGrid.setStriped(true);
       this._dataGrid.setFocusable(false);
 

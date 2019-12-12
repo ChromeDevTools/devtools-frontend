@@ -82,7 +82,7 @@ Timeline.TimelineTreeView = class extends UI.VBox {
     const toolbar = new UI.Toolbar('', mainView.element);
     this.populateToolbar(toolbar);
 
-    this._dataGrid = new DataGrid.SortableDataGrid(columns);
+    this._dataGrid = new DataGrid.SortableDataGrid({displayName: ls`Performance`, columns});
     this._dataGrid.addEventListener(DataGrid.DataGrid.Events.SortingChanged, this._sortingChanged, this);
     this._dataGrid.element.addEventListener('mousemove', this._onMouseMove.bind(this), true);
     this._dataGrid.setResizeMethod(DataGrid.DataGrid.ResizeMethod.Last);
@@ -1026,7 +1026,7 @@ Timeline.TimelineStackView = class extends UI.VBox {
       {id: 'total', title: Common.UIString('Total Time'), fixedWidth: true, width: '110px'},
       {id: 'activity', title: Common.UIString('Activity')}
     ]);
-    this._dataGrid = new DataGrid.ViewportDataGrid(columns);
+    this._dataGrid = new DataGrid.ViewportDataGrid({displayName: ls`Timeline Stack`, columns});
     this._dataGrid.setResizeMethod(DataGrid.DataGrid.ResizeMethod.Last);
     this._dataGrid.addEventListener(DataGrid.DataGrid.Events.SelectedNode, this._onSelectionChanged, this);
     this._dataGrid.asWidget().show(this.element);

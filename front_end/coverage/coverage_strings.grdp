@@ -30,6 +30,9 @@
   <message name="IDS_DEVTOOLS_53c3b09fb38ec3b15073efb31d399e21" desc="Accessible text for the visualization column of coverage tool. Contains percentage of unused bytes to used bytes.">
     <ph name="UNUSEDPERCENT">$1s<ex>12.3</ex></ph> % of file unused, <ph name="USEDPERCENT">$2s<ex>12.3</ex></ph> % of file used
   </message>
+  <message name="IDS_DEVTOOLS_54dcfb0e6fe0cef16c8db764aaa3e015" desc="Data grid name for Coverage List data grids">
+    Coverage List
+  </message>
   <message name="IDS_DEVTOOLS_59bdd6e83a19520c44717bfc6f16efa5" desc="Text in Coverage List View of the Coverage tab">
     JS (per block)
   </message>

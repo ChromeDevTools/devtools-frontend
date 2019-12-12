@@ -8,13 +8,10 @@
  */
 export default class ViewportDataGrid extends DataGrid.DataGrid {
   /**
-   * @param {!Array.<!DataGrid.DataGrid.ColumnDescriptor>} columnsArray
-   * @param {function(!NODE_TYPE, string, string, string)=} editCallback
-   * @param {function(!NODE_TYPE)=} deleteCallback
-   * @param {function()=} refreshCallback
+   * @param {!DataGrid.DataGrid.Parameters} dataGridParameters
    */
-  constructor(columnsArray, editCallback, deleteCallback, refreshCallback) {
-    super(columnsArray, editCallback, deleteCallback, refreshCallback);
+  constructor(dataGridParameters) {
+    super(dataGridParameters);
 
     this._onScrollBound = this._onScroll.bind(this);
     this.scrollContainer.addEventListener('scroll', this._onScrollBound, true);

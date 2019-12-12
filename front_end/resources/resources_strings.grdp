@@ -21,6 +21,9 @@
   <message name="IDS_DEVTOOLS_0f558243fbf45f1cd840fff01957f57b" desc="Text in Service Workers View of the Application panel">
     Clients
   </message>
+  <message name="IDS_DEVTOOLS_107417a6f25859ac157fae05c1386910" desc="Data grid name for Indexed DB data grids">
+    Indexed DB
+  </message>
   <message name="IDS_DEVTOOLS_10a77618ffc0466753fde85f9bec01fd" desc="Text for button in Service Workers View of the Application panel that dispatches a periodicsync event">
     Periodic Sync
   </message>
@@ -102,6 +105,9 @@ table is empty.
   </message>
   <message name="IDS_DEVTOOLS_3eab5d12656f2f4462f6594019e77355" desc="Text in Database Table View of the Application panel">
     Visible columns
+  </message>
+  <message name="IDS_DEVTOOLS_44323440df1f92dfd551c7efc0aece80" desc="Data grid name for DOM Storage Items data grids">
+    DOM Storage Items
   </message>
   <message name="IDS_DEVTOOLS_458efe6e41ed41835b8d84b28db3f394" desc="Filter label text content in Service Workers View of the Application panel">
     Service workers from other origins
@@ -422,8 +428,14 @@ read the &quot;<ph name="THIS_TABLENAME">$1s<ex>database</ex></ph>&quot; table.
   <message name="IDS_DEVTOOLS_ef399b2d446bb37b7c32ad2cc1b6045b" desc="Text in Service Workers View of the Application panel">
     stop
   </message>
+  <message name="IDS_DEVTOOLS_f18cd4b9f925d85b3a669adc015a9797" desc="Data grid name for Service Worker Cache data grids">
+    Service Worker Cache
+  </message>
   <message name="IDS_DEVTOOLS_f75623bb4626a57e8a7a3c0e1c092463" desc="Text in Cookie Items View of the Application panel">
     Select a cookie to preview its value
+  </message>
+  <message name="IDS_DEVTOOLS_f81c0b53d55a586f8d69bfc0f482a530" desc="Data grid name for Database Query data grids">
+    Database Query
   </message>
   <message name="IDS_DEVTOOLS_fb1508747fe448fd8b006e923ba1c3ef" desc="Text in Background Service View of the Application panel">
     Payment Handler

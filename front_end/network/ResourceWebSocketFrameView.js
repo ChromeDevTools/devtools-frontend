@@ -43,7 +43,7 @@ export class ResourceWebSocketFrameView extends UI.VBox {
       {id: 'time', title: Common.UIString('Time'), sortable: true, weight: 7}
     ]);
 
-    this._dataGrid = new DataGrid.SortableDataGrid(columns);
+    this._dataGrid = new DataGrid.SortableDataGrid({displayName: ls`Web Socket Frame`, columns});
     this._dataGrid.setRowContextMenuCallback(onRowContextMenu.bind(this));
     this._dataGrid.setStickToBottom(true);
     this._dataGrid.setCellClass('websocket-frame-view-td');

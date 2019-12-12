@@ -21,7 +21,7 @@ export default class EventSourceMessagesView extends UI.VBox {
       {id: 'time', title: Common.UIString('Time'), sortable: true, weight: 8}
     ]);
 
-    this._dataGrid = new DataGrid.SortableDataGrid(columns);
+    this._dataGrid = new DataGrid.SortableDataGrid({displayName: ls`Event Source`, columns});
     this._dataGrid.setStriped(true);
     this._dataGrid.setStickToBottom(true);
     this._dataGrid.markColumnAsSortedBy('time', DataGrid.DataGrid.Order.Ascending);

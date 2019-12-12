@@ -3,6 +3,9 @@
   <message name="IDS_DEVTOOLS_2e7501c512976a9d9a9dca45bce9f128" desc="Text in Cookies Table of the Cookies table in the Application panel">
     Expires / Max-Age
   </message>
+  <message name="IDS_DEVTOOLS_51bff51f548e3886840b725ce4383311" desc="Data grid name for Editable Cookies data grid">
+    Editable Cookies
+  </message>
   <message name="IDS_DEVTOOLS_6c8f0cef6081f0f97ec0f01a5a3ce2a7" desc="Text in Cookies Table of the Cookies table in the Application panel">
     HttpOnly
   </message>

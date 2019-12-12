@@ -24,4 +24,7 @@
   <message name="IDS_DEVTOOLS_d9f6db9c0f0579391eccedbac66aef9b" desc="Side-panel entry title text for the video capture devices section.">
     Video Capture Devices
   </message>
+  <message name="IDS_DEVTOOLS_f9d75af4b2cfafd31404df971213ef3c" desc="Data grid name for Event Display data grids">
+    Event Display
+  </message>
 </grit-part>

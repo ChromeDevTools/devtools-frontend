@@ -51,6 +51,9 @@
   <message name="IDS_DEVTOOLS_1816452291df3cd48db5667463361f25" desc="Tooltip text that appears when hovering over the largeicon visibility button in the Profile View of a profiler tool">
     Focus selected function
   </message>
+  <message name="IDS_DEVTOOLS_1c793c126ee9b80cc0b6f29ab67220bc" desc="Data grid name for Heap Snapshot Retainment data grids">
+    Heap Snapshot Retainment
+  </message>
   <message name="IDS_DEVTOOLS_1d36783e12317ed400ebeddeb072a27b" desc="Text in Profile View of a profiler tool">
     Chart
   </message>
@@ -125,6 +128,9 @@
   </message>
   <message name="IDS_DEVTOOLS_4715ae2a2790290ba123375faa3a53f2" desc="Title of a setting under the Performance category in Settings">
     High resolution CPU profiling
+  </message>
+  <message name="IDS_DEVTOOLS_491af3e52ebf8affd3f23d48b6767fe0" desc="Data grid name for Heap Profile data grids">
+    Heap Profile
   </message>
   <message name="IDS_DEVTOOLS_497031794414a552435f90151ac3b54b" desc="Text in Heap Snapshot Data Grids of a profiler tool">
     Object
@@ -211,6 +217,9 @@
   <message name="IDS_DEVTOOLS_7602c7108888133a3e00de63256ae444" desc="Text in Heap Snapshot Data Grids of a profiler tool">
     Shallow Size
   </message>
+  <message name="IDS_DEVTOOLS_76eaf94c0f9441b72e66efc162487aee" desc="Data grid name for Heap Snapshot Diff data grids">
+    Heap Snapshot Diff
+  </message>
   <message name="IDS_DEVTOOLS_7806c2199c12b018327832bcb3ae20ce" desc="Text in Heap Snapshot Grid Nodes of a profiler tool">
     Detached from DOM tree
   </message>
@@ -275,6 +284,9 @@
   </message>
   <message name="IDS_DEVTOOLS_9794a8cf80d4f6b67dca3c7381847486" desc="Text in Heap Profile View of a profiler tool">
     Self Size (bytes)
+  </message>
+  <message name="IDS_DEVTOOLS_9ccdcfe3ec0fcd5347317f78efd9af9b" desc="Data grid name for Heap Snapshot Constructors data grids">
+    Heap Snapshot Constructors
   </message>
   <message name="IDS_DEVTOOLS_9d247d9b5e90f2c983240d32113d06d2" desc="A context menu item in the Profiles Panel of a profiler tool">
     Load…

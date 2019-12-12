@@ -975,6 +975,9 @@ Then, zoom and pan the timeline with the mousewheel or <ph name="NAVIGATENODE">$
   <message name="IDS_DEVTOOLS_f17085a56d199cb15adf7c101d611bcc" desc="Text of a DOM element in Timeline UIUtils of the Performance panel">
     (changed class to &quot;<ph name="INVALIDATION_CHANGEDCLASS">$1s<ex>class-name2</ex></ph>&quot;<ph name="EXTRADATA">$2s<ex>a, b</ex></ph>)
   </message>
+  <message name="IDS_DEVTOOLS_f1fef3f490158560a580633887faf5d3" desc="Data grid name for Timeline Stack data grids">
+    Timeline Stack
+  </message>
   <message name="IDS_DEVTOOLS_f34ebd9ed4156c54fbd77bb3a5b3107a" desc="Title of an action in the timeline tool to save to file">
     Save profile…
   </message>

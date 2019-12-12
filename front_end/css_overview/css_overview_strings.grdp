@@ -45,6 +45,9 @@
   <message name="IDS_DEVTOOLS_48ff6100d65c02617c2df22ff9e1f101" desc="Label to denote unused declarations in the target page">
     Unused declarations
   </message>
+  <message name="IDS_DEVTOOLS_4e054edb40e4207e66b58d56e08d0b93" desc="Data grid name for CSS Overview Elements Data Grids">
+    CSS Overview Elements
+  </message>
   <message name="IDS_DEVTOOLS_5d2965ea27f3600d2c9bf9206d2ebb17" desc="Label for unique fill colors in the CSS Overview Panel">
     Fill colors: <ph name="SORTEDFILLCOLORS_LENGTH">$1s<ex>32</ex></ph>
   </message>

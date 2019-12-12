@@ -63,7 +63,8 @@ Profiler.HeapSnapshotView = class extends UI.SimpleView {
     this._splitWidget.show(this._searchableView.element);
 
     const heapProfilerModel = profile.heapProfilerModel();
-    this._containmentDataGrid = new Profiler.HeapSnapshotContainmentDataGrid(heapProfilerModel, this);
+    this._containmentDataGrid =
+        new Profiler.HeapSnapshotContainmentDataGrid(heapProfilerModel, this, /* displayName */ ls`Containment`);
     this._containmentDataGrid.addEventListener(DataGrid.DataGrid.Events.SelectedNode, this._selectionChanged, this);
     this._containmentWidget = this._containmentDataGrid.asWidget();
     this._containmentWidget.setMinimumSize(50, 25);

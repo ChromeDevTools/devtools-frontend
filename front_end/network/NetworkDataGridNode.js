@@ -809,6 +809,7 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
   }
 
   /**
+   * @override
    * @return {boolean}
    */
   _isFailed() {

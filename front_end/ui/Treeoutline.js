@@ -1218,6 +1218,7 @@ export class TreeElement {
     }
 
     this._listItemNode.classList.add('selected');
+    UI.ARIAUtils.setSelected(this._listItemNode, true);
     this.treeOutline.dispatchEventToListeners(Events.ElementSelected, this);
     if (lastSelected) {
       lastSelected.deselect();
@@ -1270,6 +1271,7 @@ export class TreeElement {
     const hadFocus = this._listItemNode.hasFocus();
     this.selected = false;
     this._listItemNode.classList.remove('selected');
+    UI.ARIAUtils.clearSelected(this._listItemNode);
     this._setFocusable(false);
 
     if (this.treeOutline && this.treeOutline.selectedTreeElement === this) {

@@ -99,7 +99,7 @@ def add_file_to_grd(grd_doc, relative_filename):
     new_include_node.setAttribute('type', 'BINDATA')
     ext = os.path.splitext(relative_filename)[1]
     if ext in ['.css', '.html', '.js', '.svg']:
-        new_include_node.setAttribute('compress', 'gzip')
+        new_include_node.setAttribute('compress', 'brotli')
     includes_node.appendChild(new_include_node)
 
 

@@ -48,6 +48,8 @@ export default class DataGridImpl extends Common.Object {
     const headerContainer = this.element.createChild('div', 'header-container');
     /** @type {!Element} */
     this._headerTable = headerContainer.createChild('table', 'header');
+    // Hide the header table from screen readers since titles are also added to data table.
+    UI.ARIAUtils.markAsHidden(this._headerTable);
     /** @type {!Object.<string, !Element>} */
     this._headerTableHeaders = {};
     /** @type {!Element} */

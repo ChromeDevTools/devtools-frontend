@@ -352,7 +352,8 @@ export default class CoverageModel extends SDK.SDKModel {
    * @return {!Promise<!Array<!Coverage.CoverageInfo>>}
    */
   async _takeCSSCoverage() {
-    if (!this._cssModel) {
+    // Don't poll if we have no model, or are suspended.
+    if (!this._cssModel || this._suspensionState !== SuspensionState.Active) {
       return [];
     }
     const now = Date.now();

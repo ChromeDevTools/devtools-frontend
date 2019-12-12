@@ -797,6 +797,7 @@ export class NetworkRequestNode extends NetworkNode {
   }
 
   /**
+   * @override
    * @return {boolean}
    */
   _isFailed() {

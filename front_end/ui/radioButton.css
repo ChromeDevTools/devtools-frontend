@@ -5,27 +5,39 @@
  */
 
 ::slotted(input.dt-radio-button) {
-    height: 17px;
-    width: 17px;
-    min-width: 17px;
-    border: 1px solid rgb(165, 165, 165);
-    background-image: linear-gradient(to bottom, rgb(252, 252, 252), rgb(223, 223, 223));
-    border-radius: 8px;
-    -webkit-appearance: none;
-    vertical-align: middle;
-    margin: 0 5px 5px 0;
-}
-
-::slotted(input.dt-radio-button:active:not(:disabled)) {
-    background-image: linear-gradient(to bottom, rgb(194, 194, 194), rgb(239, 239, 239));
+  --gradient-start: #FCFCFC;
+  --gradient-end: #DFDFDF;
+  --radio-dot: url(Images/radioDot.png);
+  height: 17px;
+  width: 17px;
+  min-width: 17px;
+  border: 1px solid #A5A5A5;
+  background-image: linear-gradient(to bottom, var(--gradient-start), var(--gradient-end));
+  border-radius: 8px;
+  -webkit-appearance: none;
+  vertical-align: middle;
+  margin: 0 5px 5px 0;
 }
 
 ::slotted(input.dt-radio-button:checked) {
-    background: url(Images/radioDot.png) center no-repeat,
-                linear-gradient(to bottom, rgb(252, 252, 252), rgb(223, 223, 223));
+  background: var(--radio-dot) center no-repeat,
+              linear-gradient(to bottom, var(--gradient-start), var(--gradient-end));
 }
 
-::slotted(input.dt-radio-button:checked:active) {
-    background: url(Images/radioDot.png) center no-repeat,
-                linear-gradient(to bottom, rgb(194, 194, 194), rgb(239, 239, 239));
+:host-context(.-theme-with-dark-background) ::slotted(input.dt-radio-button) {
+  --gradient-start: #030303;
+  --gradient-end: #202020;
+  --radio-dot: url(Images/radioDot-dark-theme.png);
+}
+
+::slotted(input.dt-radio-button:checked:active),
+::slotted(input.dt-radio-button:active:not(:disabled)) {
+  --gradient-start: #C2C2C2;
+  --gradient-end: #EFEFEF;
+}
+
+:host-context(.-theme-with-dark-background) ::slotted(input.dt-radio-button:checked:active),
+:host-context(.-theme-with-dark-background) ::slotted(input.dt-radio-button:active:not(:disabled)) {
+  --gradient-start: #3D3D3D;
+  --gradient-end: #101010;
 }

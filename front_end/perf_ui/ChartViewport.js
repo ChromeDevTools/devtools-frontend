@@ -152,6 +152,7 @@ PerfUI.ChartViewport = class extends UI.VBox {
     this._totalHeight = totalHeight;
     this._vScrollContent.style.height = totalHeight + 'px';
     this._updateScrollBar();
+    this._updateContentElementSize();
     if (this._scrollTop + this._offsetHeight <= totalHeight) {
       return;
     }
@@ -177,6 +178,13 @@ PerfUI.ChartViewport = class extends UI.VBox {
    */
   scrollOffset() {
     return this._vScrollElement.scrollTop;
+  }
+
+  /**
+   * @return {number}
+   */
+  chartHeight() {
+    return this._offsetHeight;
   }
 
   /**

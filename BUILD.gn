@@ -425,6 +425,8 @@ all_devtools_files = [
   "front_end/timeline/TimelineUIUtils.js",
   "front_end/timeline/UIDevtoolsController.js",
   "front_end/timeline/UIDevtoolsUtils.js",
+  "front_end/third_party/fabricjs/fabric.js",
+  "front_end/third_party/fabricjs/module.json",
   "front_end/toolbox_bootstrap/module.json",
   "front_end/toolbox_bootstrap/Toolbox.js",
   "front_end/toolbox.js",

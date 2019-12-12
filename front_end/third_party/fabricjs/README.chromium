@@ -1,0 +1,50 @@
+Name: Fabric.js Javascript HTML5 canvas library
+Short Name: fabricjs
+URL: https://github.com/fabricjs/fabric.js
+Version: 3.4.0
+License: MIT
+License File: LICENSE
+Security Critical: no
+
+Description:
+Fabric.js is a framework that makes it easy to work with HTML5 canvas element.
+The WebAudio panel (front_end/web_audio) has an interactive audio graph
+visualization and it requires a fast 2D raster graphics library.
+
+Local Modifications:
+
+1. Clone the project repository.
+
+```bash
+git clone git@github.com:fabricjs/fabric.js.git
+cd fabric
+npm install
+npm install uglify-js -g
+```
+
+2. Perform a custom build.
+
+Run the following command in the project root directory.
+
+```bash
+node build.js requirejs modules=ALL exclude=gestures,accessors,parser,node,image_filters,easing,freedrawing,object_straightening,serialization no-svg-export
+npm run lint && npm run lint_tests
+```
+
+This will produce `fabric.js` file under `dist/` directory.
+
+3. Modify and clean up
+
+Add the following lines at the top of `fabric.js`.
+
+```js
+// clang-format off
+/* eslint-disable */
+```
+
+Remove all trailing spaces and 1 redundant empty line at the end. (Otherwise
+the presubmit linter will complain.)
+
+4. Overwrite `fabric.js` in this directory with the newly built version.
+
+5. Update the version number in this README.chromium document.

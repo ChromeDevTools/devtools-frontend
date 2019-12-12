@@ -1,0 +1,8 @@
+{
+  "scripts": [
+    "fabric.js"
+  ],
+  "skip_compilation": [
+    "fabric.js"
+  ]
+}

@@ -39,7 +39,8 @@
         "auditsStartView.css",
         "lighthouse/template.html",
         "lighthouse/templates.html",
-        "lighthouse/report.css"
+        "lighthouse/report.css",
+        "lighthouse/report.js"
     ],
     "skip_compilation": [
       "lighthouse/report.js",

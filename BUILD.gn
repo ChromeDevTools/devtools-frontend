@@ -30,6 +30,7 @@ all_devtools_files = [
   "front_end/audits/auditsStartView.css",
   "front_end/audits/auditsPanel.css",
   "front_end/audits/lighthouse/report.css",
+  "front_end/audits/lighthouse/report.js",
   "front_end/audits/lighthouse/template.html",
   "front_end/audits/lighthouse/templates.html",
   "front_end/audits/module.json",

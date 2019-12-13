@@ -4,6 +4,9 @@ defaults=struct(
   swarming_tags=["vpython:native-python-wrapper"],
   repo="https://chromium.googlesource.com/devtools/devtools-frontend",
   favicon="https://storage.googleapis.com/chrome-infra-public/logo/devtools.png",
+
+  # Forward on luci.builder.defaults so users have a consistent interface
+  **{a: getattr(luci.builder.defaults, a) for a in dir(luci.builder.defaults)}
 )
 
 acls=struct(

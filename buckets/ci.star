@@ -8,6 +8,8 @@ load(
   'generate_ci_configs',
 )
 
+defaults.build_numbers.set(True)
+
 generate_ci_configs(
     configurations = [
       config_section(

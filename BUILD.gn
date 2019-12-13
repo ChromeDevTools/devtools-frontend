@@ -1218,6 +1218,7 @@ devtools_image_files = [
   "front_end/Images/profileIcon.png",
   "front_end/Images/profileSmallIcon.png",
   "front_end/Images/radioDot.png",
+  "front_end/Images/radioDot-dark-theme.png",
   "front_end/Images/resizeDiagonal.png",
   "front_end/Images/resizeDiagonal_2x.png",
   "front_end/Images/resizeHorizontal.png",

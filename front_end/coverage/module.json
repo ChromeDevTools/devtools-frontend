@@ -47,7 +47,8 @@
         "sdk",
         "ui",
         "source_frame",
-        "data_grid"
+        "data_grid",
+        "formatter"
     ],
     "scripts": [],
     "modules": [

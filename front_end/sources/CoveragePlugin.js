@@ -14,7 +14,7 @@ Sources.CoveragePlugin = class extends Sources.UISourceCodeFrame.Plugin {
     this._uiSourceCode = uiSourceCode;
 
     /* @type {!Workspace.UISourceCode} uiSourceCode */
-    this._originalSourceCode = Sources.sourceFormatter.getOriginalUISourceCode(this._uiSourceCode);
+    this._originalSourceCode = Formatter.sourceFormatter.getOriginalUISourceCode(this._uiSourceCode);
 
     this._text = new UI.ToolbarButton(ls`Click to show Coverage Panel`);
     this._text.setSecondary();

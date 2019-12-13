@@ -6,6 +6,7 @@
     "modules": [
         "formatter.js",
         "FormatterWorkerPool.js",
-        "ScriptFormatter.js"
+        "ScriptFormatter.js",
+        "SourceFormatter.js"
     ]
 }

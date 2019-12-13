@@ -935,7 +935,6 @@
         "ThreadsSidebarPane.js",
         "ScriptFormatterEditorAction.js",
         "InplaceFormatterEditorAction.js",
-        "SourceFormatter.js",
         "OpenFileQuickOpen.js",
         "SourcesView.js",
         "SourcesSearchScope.js",

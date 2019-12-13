@@ -140,7 +140,8 @@ export default class CoverageListView extends UI.VBox {
       return;
     }
 
-    sourceCode = await sourceCode.getFormatted();
+    const formatData = await Formatter.sourceFormatter.format(sourceCode);
+    sourceCode = formatData.formattedSourceCode;
 
     if (this._dataGrid.selectedNode !== node) {
       return;

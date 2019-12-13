@@ -47,6 +47,8 @@ export default class CSSMetadata {
     this._inherited = new Set();
     /** @type {!Set<string>} */
     this._svgProperties = new Set();
+    /** @type {!Map<string, !Array<string>>} */
+    this._propertyValues = new Map();
     for (let i = 0; i < properties.length; ++i) {
       const property = properties[i];
       const propertyName = property.name;
@@ -81,22 +83,28 @@ export default class CSSMetadata {
 
     // Reads in auto-generated property names and values from blink/public/renderer/core/css/css_properties.json5
     // treats _generatedPropertyValues as basis
-    for (const [prop, basisValueObj] of Object.entries(CSSMetadata._generatedPropertyValues)) {
-      _finalPropertyValues[prop] = basisValueObj;
+    const propertyValueSets = new Map();
+    for (const [propertyName, basisValueObj] of Object.entries(CSSMetadata._generatedPropertyValues)) {
+      propertyValueSets.set(propertyName, new Set(basisValueObj.values));
     }
     // and add manually maintained map of extra prop-value pairs
-    for (const [prop, extraValueObj] of Object.entries(_extraPropertyValues)) {
-      if (_finalPropertyValues[prop]) {
-        const baseValues = _finalPropertyValues[prop].values;
-        const baseValueSet = new Set(baseValues);
-        extraValueObj.values.forEach(extraVal => {
-          if (!baseValueSet.has(extraVal)) {
-            baseValues.push(extraVal);
-          }
-        });
+    for (const [propertyName, extraValueObj] of Object.entries(_extraPropertyValues)) {
+      if (propertyValueSets.has(propertyName)) {
+        propertyValueSets.get(propertyName).addAll(extraValueObj.values);
       } else {
-        _finalPropertyValues[prop] = extraValueObj;
+        propertyValueSets.set(propertyName, new Set(extraValueObj.values));
       }
+    }
+    // finally add common keywords to value sets and convert property values
+    // into arrays since callers expect arrays
+    for (const [propertyName, values] of propertyValueSets) {
+      for (const commonKeyword of CommonKeywords) {
+        if (!values.has(commonKeyword) && CSS.supports(propertyName, commonKeyword)) {
+          values.add(commonKeyword);
+        }
+      }
+
+      this._propertyValues.set(propertyName, values.valuesArray());
     }
 
     /** @type {!Array<string>} */
@@ -267,12 +275,17 @@ export default class CSSMetadata {
    */
   _specificPropertyValues(propertyName) {
     const unprefixedName = propertyName.replace(/^-webkit-/, '');
-    const entry = _finalPropertyValues[propertyName] || _finalPropertyValues[unprefixedName];
-    const keywords = entry && entry.values ? entry.values.slice() : [];
-    for (const commonKeyword of ['auto', 'none']) {
-      if (!keywords.includes(commonKeyword) && CSS.supports(propertyName, commonKeyword)) {
-        keywords.push(commonKeyword);
+    const propertyValues = this._propertyValues;
+    // _propertyValues acts like cache; missing properties are added with possible common keywords
+    let keywords = propertyValues.get(propertyName) || propertyValues.get(unprefixedName);
+    if (!keywords) {
+      keywords = [];
+      for (const commonKeyword of CommonKeywords) {
+        if (CSS.supports(propertyName, commonKeyword)) {
+          keywords.push(commonKeyword);
+        }
       }
+      propertyValues.set(propertyName, keywords);
     }
     return keywords;
   }
@@ -857,10 +870,6 @@ const _extraPropertyValues = {
   'width': {values: ['-webkit-fill-available']}
 };
 
-// final CSS property values for CSSMetadata to use as autocomplete list
-// this object gets populated during initialization of cssMetadata instance
-const _finalPropertyValues = {};
-
 // Weight of CSS properties based on their usage from https://www.chromestatus.com/metrics/css/popularity
 const Weight = {
   'align-content': 57,
@@ -1117,6 +1126,9 @@ const Weight = {
   'z-index': 239,
   'zoom': 200
 };
+
+// Common keywords to CSS properties
+const CommonKeywords = ['auto', 'none'];
 
 /* Legacy exported object */
 self.SDK = self.SDK || {};

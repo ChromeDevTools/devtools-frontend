@@ -43,6 +43,7 @@
     { "name": "sources" },
     { "name": "text_editor" },
     { "name": "workspace_diff" },
-    { "name": "protocol_monitor"}
+    { "name": "protocol_monitor"},
+    { "name": "input"}
   ]
 }

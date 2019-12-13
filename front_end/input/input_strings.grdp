@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<grit-part>
+  <message name="IDS_DEVTOOLS_23635de276a53741f5e733a826333d5b" desc="Title of an action in the input timeline tool to start recording input events">
+    Start recording
+  </message>
+  <message name="IDS_DEVTOOLS_54493c6124a63be68181f9d7039ee9c2" desc="Title of an action in the input timeline tool to stop recording input events">
+    Stop recording
+  </message>
+  <message name="IDS_DEVTOOLS_cd3e23168e345e464d8c4bbe985f34fe" desc="Title of an action in the input timeline tool to start replaying input events">
+    Start replaying
+  </message>
+  <message name="IDS_DEVTOOLS_ee611c8b9dfbbc792a9318c9837b2bcd" desc="itle of the 'Input' tool in the bottom drawer">
+    Inputs
+  </message>
+  <message name="IDS_DEVTOOLS_f1cefec9e2196c672a622347f1fbc325" desc="Title of an action in the input timeline tool to resume replaying input events">
+    Resume
+  </message>
+</grit-part>

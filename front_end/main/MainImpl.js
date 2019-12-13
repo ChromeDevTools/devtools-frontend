@@ -148,6 +148,7 @@ export class MainImpl {
     Root.Runtime.experiments.register(
         'timelineV8RuntimeCallStats', 'Timeline: V8 Runtime Call Stats on Timeline', true);
     Root.Runtime.experiments.register('timelineWebGL', 'Timeline: WebGL-based flamechart');
+    Root.Runtime.experiments.register('timelineReplayEvent', 'Timeline: Replay input events');
 
     Root.Runtime.experiments.cleanUpStaleExperiments();
     const enabledExperiments = Root.Runtime.queryParam('enabledExperiments');

@@ -3,9 +3,6 @@
   <message name="IDS_DEVTOOLS_043d2f0a7edca94cae1cfbf3f90b3b68" desc="Title of the 'Animations' tool in the bottom drawer">
     Animations
   </message>
-  <message name="IDS_DEVTOOLS_105b296a83f9c105355403f3332af50f" desc="Text in Animation Timeline of the Animation Inspector">
-    Pause
-  </message>
   <message name="IDS_DEVTOOLS_31fb6ba50d7a98f1650f282ecc45af77" desc="Button title in Animation Timeline of the Animation Inspector">
     Set speed to <ph name="BUTTON_TEXTCONTENT">$1s<ex>50%</ex></ph>
   </message>

@@ -95,7 +95,15 @@ export class CookiesTable extends UI.VBox {
         align: DataGrid.DataGrid.Align.Center,
         weight: 7
       },
-      {id: SDK.Cookie.Attributes.SameSite, title: ls`SameSite`, sortable: true, weight: 7}
+      {id: SDK.Cookie.Attributes.SameSite, title: ls`SameSite`, sortable: true, weight: 7},
+      {
+        id: SDK.Cookie.Attributes.Priority,
+        title: ls`Priority`,
+        sortable: true,
+        sort: DataGrid.DataGrid.Order.Descending,
+        weight: 7,
+        editable: editable,
+      },
     ]);
 
     if (editable) {
@@ -242,6 +250,7 @@ export class CookiesTable extends UI.VBox {
         groupData[SDK.Cookie.Attributes.HttpOnly] = '';
         groupData[SDK.Cookie.Attributes.Secure] = '';
         groupData[SDK.Cookie.Attributes.SameSite] = '';
+        groupData[SDK.Cookie.Attributes.Priority] = '';
 
         const groupNode = new DataGrid.DataGridNode(groupData);
         groupNode.selectable = true;
@@ -349,6 +358,23 @@ export class CookiesTable extends UI.VBox {
      * @param {!SDK.Cookie} cookie2
      * @return {number}
      */
+    function priorityCompare(cookie1, cookie2) {
+      const priorities = [
+        Protocol.Network.CookiePriority.Low,
+        Protocol.Network.CookiePriority.Medium,
+        Protocol.Network.CookiePriority.High,
+      ];
+
+      const priority1 = priorities.indexOf(cookie1.priority());
+      const priority2 = priorities.indexOf(cookie2.priority());
+      return sortDirection * (priority1 - priority2);
+    }
+
+    /**
+     * @param {!SDK.Cookie} cookie1
+     * @param {!SDK.Cookie} cookie2
+     * @return {number}
+     */
     function expiresCompare(cookie1, cookie2) {
       if (cookie1.session() !== cookie2.session()) {
         return sortDirection * (cookie1.session() ? 1 : -1);
@@ -373,6 +399,8 @@ export class CookiesTable extends UI.VBox {
       comparator = expiresCompare;
     } else if (columnId === 'size') {
       comparator = numberCompare;
+    } else if (columnId === 'priority') {
+      comparator = priorityCompare;
     } else {
       comparator = compareTo.bind(null, columnId);
     }
@@ -413,6 +441,7 @@ export class CookiesTable extends UI.VBox {
     data[SDK.Cookie.Attributes.HttpOnly] = (cookie.httpOnly() ? checkmark : '');
     data[SDK.Cookie.Attributes.Secure] = (cookie.secure() ? checkmark : '');
     data[SDK.Cookie.Attributes.SameSite] = cookie.sameSite() || '';
+    data[SDK.Cookie.Attributes.Priority] = cookie.priority() || '';
 
     const node =
         new DataGridNode(data, cookie, this._cookieToBlockedReasons ? this._cookieToBlockedReasons.get(cookie) : null);
@@ -487,7 +516,10 @@ export class CookiesTable extends UI.VBox {
    * @returns {!SDK.Cookie}
    */
   _createCookieFromData(data) {
-    const cookie = new SDK.Cookie(data[SDK.Cookie.Attributes.Name], data[SDK.Cookie.Attributes.Value], null);
+    const cookie = new SDK.Cookie(
+        data[SDK.Cookie.Attributes.Name], data[SDK.Cookie.Attributes.Value], null,
+        /** @type {!Protocol.Network.CookiePriority} */ (data[SDK.Cookie.Attributes.Priority]));
+
     cookie.addAttribute(SDK.Cookie.Attributes.Domain, data[SDK.Cookie.Attributes.Domain]);
     cookie.addAttribute(SDK.Cookie.Attributes.Path, data[SDK.Cookie.Attributes.Path]);
     if (data.expires && data.expires !== _expiresSessionValue) {

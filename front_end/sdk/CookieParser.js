@@ -225,13 +225,15 @@ export class Cookie {
    * @param {string} name
    * @param {string} value
    * @param {?Type} type
+   * @param {!Protocol.Network.CookiePriority=} priority
    */
-  constructor(name, value, type) {
+  constructor(name, value, type, priority) {
     this._name = name;
     this._value = value;
     this._type = type;
     this._attributes = {};
     this._size = 0;
+    this._priority = /** @type {!Protocol.Network.CookiePriority} */ (priority || 'medium');
     /** @type {string|null} */
     this._cookieLine = null;
   }
@@ -241,7 +243,7 @@ export class Cookie {
    * @return {!SDK.Cookie}
    */
   static fromProtocolCookie(protocolCookie) {
-    const cookie = new SDK.Cookie(protocolCookie.name, protocolCookie.value, null);
+    const cookie = new SDK.Cookie(protocolCookie.name, protocolCookie.value, null, protocolCookie.priority);
     cookie.addAttribute('domain', protocolCookie['domain']);
     cookie.addAttribute('path', protocolCookie['path']);
     cookie.addAttribute('port', protocolCookie['port']);
@@ -309,6 +311,13 @@ export class Cookie {
   sameSite() {
     // TODO(allada) This should not rely on _attributes and instead store them individually.
     return /** @type {!Protocol.Network.CookieSameSite} */ (this._attributes['samesite']);
+  }
+
+  /**
+   * @return {!Protocol.Network.CookiePriority}
+   */
+  priority() {
+    return this._priority;
   }
 
   /**
@@ -405,7 +414,14 @@ export class Cookie {
    * @param {string|number=} value
    */
   addAttribute(key, value) {
-    this._attributes[key.toLowerCase()] = value;
+    const normalizedKey = key.toLowerCase();
+    switch (normalizedKey) {
+      case 'priority':
+        this._priority = /** @type {!Protocol.Network.CookiePriority} */ (value);
+        break;
+      default:
+        this._attributes[normalizedKey] = value;
+    }
   }
 
   /**
@@ -444,6 +460,7 @@ export const Attributes = {
   HttpOnly: 'httpOnly',
   Secure: 'secure',
   SameSite: 'sameSite',
+  Priority: 'priority',
 };
 
 /* Legacy exported object */

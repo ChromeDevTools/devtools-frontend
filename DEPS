@@ -4,7 +4,7 @@
 
 vars = {
   'build_url': 'https://chromium.googlesource.com/chromium/src/build.git',
-  'build_revision': '9caeb8bbfba05d281ec05f4afa91a72aaf8cdd1b',
+  'build_revision': '03d0c36c52efaf63504c4755f0b9eaa46da87016',
 
   'buildtools_url': 'https://chromium.googlesource.com/chromium/src/buildtools.git',
   'buildtools_revision': 'fa02977a1a7caed1703277f6cbd665a31e682fc3',

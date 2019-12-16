@@ -1,10 +1,15 @@
 // Copyright 2015 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
+import {Toolbar, ToolbarButton} from './Toolbar.js';
+import {createInput, createTextButton, ElementFocusRestorer} from './UIUtils.js';
+import {VBox} from './Widget.js';
+
 /**
  * @template T
  */
-export default class ListWidget extends UI.VBox {
+export class ListWidget extends VBox {
   /**
    * @param {!Delegate<T>} delegate
    */
@@ -16,7 +21,7 @@ export default class ListWidget extends UI.VBox {
     this._list = this.contentElement.createChild('div', 'list');
 
     this._lastSeparator = false;
-    /** @type {?UI.ElementFocusRestorer} */
+    /** @type {?ElementFocusRestorer} */
     this._focusRestorer = null;
     /** @type {!Array<T>} */
     this._items = [];
@@ -131,14 +136,14 @@ export default class ListWidget extends UI.VBox {
 
     const buttons = controls.createChild('div', 'controls-buttons');
 
-    const toolbar = new UI.Toolbar('', buttons);
+    const toolbar = new Toolbar('', buttons);
 
-    const editButton = new UI.ToolbarButton(Common.UIString('Edit'), 'largeicon-edit');
-    editButton.addEventListener(UI.ToolbarButton.Events.Click, onEditClicked.bind(this));
+    const editButton = new ToolbarButton(Common.UIString('Edit'), 'largeicon-edit');
+    editButton.addEventListener(ToolbarButton.Events.Click, onEditClicked.bind(this));
     toolbar.appendToolbarItem(editButton);
 
-    const removeButton = new UI.ToolbarButton(Common.UIString('Remove'), 'largeicon-trash-bin');
-    removeButton.addEventListener(UI.ToolbarButton.Events.Click, onRemoveClicked.bind(this));
+    const removeButton = new ToolbarButton(Common.UIString('Remove'), 'largeicon-trash-bin');
+    removeButton.addEventListener(ToolbarButton.Events.Click, onRemoveClicked.bind(this));
     toolbar.appendToolbarItem(removeButton);
 
     return controls;
@@ -193,7 +198,7 @@ export default class ListWidget extends UI.VBox {
     }
 
     this._stopEditing();
-    this._focusRestorer = new UI.ElementFocusRestorer(this.element);
+    this._focusRestorer = new ElementFocusRestorer(this.element);
 
     this._list.classList.add('list-editing');
     this._editItem = item;
@@ -285,9 +290,9 @@ export class Editor {
     this._contentElement = this.element.createChild('div', 'editor-content');
 
     const buttonsRow = this.element.createChild('div', 'editor-buttons');
-    this._commitButton = UI.createTextButton('', this._commitClicked.bind(this), '', true /* primary */);
+    this._commitButton = createTextButton('', this._commitClicked.bind(this), '', true /* primary */);
     buttonsRow.appendChild(this._commitButton);
-    this._cancelButton = UI.createTextButton(Common.UIString('Cancel'), this._cancelClicked.bind(this));
+    this._cancelButton = createTextButton(Common.UIString('Cancel'), this._cancelClicked.bind(this));
     this._cancelButton.addEventListener(
         'keydown', onKeyDown.bind(null, isEnterKey, this._cancelClicked.bind(this)), false);
     buttonsRow.appendChild(this._cancelButton);
@@ -339,7 +344,7 @@ export class Editor {
    * @return {!HTMLInputElement}
    */
   createInput(name, type, title, validator) {
-    const input = /** @type {!HTMLInputElement} */ (UI.createInput('', type));
+    const input = /** @type {!HTMLInputElement} */ (createInput('', type));
     input.placeholder = title;
     input.addEventListener('input', this._validateControls.bind(this, false), false);
     input.addEventListener('blur', this._validateControls.bind(this, false), false);
@@ -453,26 +458,3 @@ export class Editor {
     cancel();
   }
 }
-
-/* Legacy exported object*/
-self.UI = self.UI || {};
-
-/* Legacy exported object*/
-UI = UI || {};
-
-/** @constructor */
-UI.ListWidget = ListWidget;
-
-/**
- * @template T
- * @interface
- */
-UI.ListWidget.Delegate = Delegate;
-
-/**
- * @constructor
- */
-UI.ListWidget.Editor = Editor;
-
-/** @typedef {{valid: boolean, errorMessage: (string|undefined)}} */
-UI.ListWidget.ValidatorResult;

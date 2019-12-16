@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-export default class FilterSuggestionBuilder {
+export class FilterSuggestionBuilder {
   /**
    * @param {!Array<string>} keys
    * @param {function(string, !Array<string>)=} valueSorter
@@ -74,12 +74,3 @@ export default class FilterSuggestionBuilder {
     this._valuesMap.clear();
   }
 }
-
-/* Legacy exported object*/
-self.UI = self.UI || {};
-
-/* Legacy exported object*/
-UI = UI || {};
-
-/** @constructor */
-UI.FilterSuggestionBuilder = FilterSuggestionBuilder;

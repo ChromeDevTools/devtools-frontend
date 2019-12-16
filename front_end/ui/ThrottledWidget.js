@@ -1,10 +1,13 @@
 // Copyright 2014 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
+import {VBox} from './Widget.js';
+
 /**
  * @unrestricted
  */
-export default class ThrottledWidget extends UI.VBox {
+export class ThrottledWidget extends VBox {
   /**
    * @param {boolean=} isWebComponent
    * @param {number=} timeout
@@ -53,12 +56,3 @@ export default class ThrottledWidget extends UI.VBox {
     }
   }
 }
-
-/* Legacy exported object*/
-self.UI = self.UI || {};
-
-/* Legacy exported object*/
-UI = UI || {};
-
-/** @constructor */
-UI.ThrottledWidget = ThrottledWidget;

@@ -30,7 +30,7 @@
 /**
  * @unrestricted
  */
-export default class KeyboardShortcut {
+export class KeyboardShortcut {
   /**
    * Creates a number encoding keyCode in the lower 8 bits and modifiers mask in the higher 8 bits.
    * It is useful for matching pressed keys.
@@ -289,27 +289,3 @@ for (const key in Keys) {
   }
 }
 })();
-
-/* Legacy exported object*/
-self.UI = self.UI || {};
-
-/* Legacy exported object*/
-UI = UI || {};
-
-/** @constructor */
-UI.KeyboardShortcut = KeyboardShortcut;
-
-/**
- * Constants for encoding modifier key set as a bit mask.
- * @see #_makeKeyFromCodeAndModifiers
- */
-UI.KeyboardShortcut.Modifiers = Modifiers;
-
-/** @type {!Object.<string, !UI.KeyboardShortcut.Key>} */
-UI.KeyboardShortcut.Keys = Keys;
-
-/** @typedef {!{code: number, name: (string|!Object.<string, string>)}} */
-UI.KeyboardShortcut.Key;
-
-/** @typedef {!{key: number, name: string}} */
-UI.KeyboardShortcut.Descriptor;

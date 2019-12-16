@@ -27,9 +27,8 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-const SettingsUI = {};
 
-export default SettingsUI;
+import {CheckboxLabel} from './UIUtils.js';
 
 /**
  * @param {string} name
@@ -39,7 +38,7 @@ export default SettingsUI;
  * @return {!Element}
  */
 export const createSettingCheckbox = function(name, setting, omitParagraphElement, tooltip) {
-  const label = UI.CheckboxLabel.create(name);
+  const label = CheckboxLabel.create(name);
   if (tooltip) {
     label.title = tooltip;
   }
@@ -173,45 +172,3 @@ export class SettingUI {
    */
   settingElement() {}
 }
-
-/* Legacy exported object*/
-self.UI = self.UI || {};
-
-/* Legacy exported object*/
-UI = UI || {};
-
-UI.SettingsUI = SettingsUI;
-
-/**
- * @interface
- */
-UI.SettingUI = SettingUI;
-
-/**
- * @param {string} name
- * @param {!Common.Setting} setting
- * @param {boolean=} omitParagraphElement
- * @param {string=} tooltip
- * @return {!Element}
- */
-UI.SettingsUI.createSettingCheckbox = createSettingCheckbox;
-
-/**
- * @param {!Element} input
- * @param {!Common.Setting} setting
- */
-UI.SettingsUI.bindCheckbox = bindCheckbox;
-
-/**
- * @param {string} name
- * @param {!Element} element
- * @return {!Element}
- */
-UI.SettingsUI.createCustomSetting = createCustomSetting;
-
-/**
- * @param {!Common.Setting} setting
- * @param {string=} subtitle
- * @return {?Element}
- */
-UI.SettingsUI.createControlForSetting = createControlForSetting;

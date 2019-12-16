@@ -28,10 +28,18 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import {ContextMenu} from './ContextMenu.js';
+import {Constraints, Size} from './Geometry.js';
+import {Icon} from './Icon.js';
+import {Toolbar} from './Toolbar.js';
+import {installDragHandle, invokeOnceAfterBatchUpdate} from './UIUtils.js';
+import {VBox, Widget} from './Widget.js';  // eslint-disable-line no-unused-vars
+import {Events as ZoomManagerEvents} from './ZoomManager.js';
+
 /**
  * @unrestricted
  */
-export default class TabbedPane extends UI.VBox {
+export class TabbedPane extends VBox {
   constructor() {
     super(true);
     this.registerRequiredCSS('ui/tabbedPane.css');
@@ -58,7 +66,7 @@ export default class TabbedPane extends UI.VBox {
 
     this._triggerDropDownTimeout = null;
     this._dropDownButton = this._createDropDownButton();
-    UI.zoomManager.addEventListener(UI.ZoomManager.Events.ZoomChanged, this._zoomChanged, this);
+    UI.zoomManager.addEventListener(ZoomManagerEvents.ZoomChanged, this._zoomChanged, this);
     this.makeTabSlider();
   }
 
@@ -85,7 +93,7 @@ export default class TabbedPane extends UI.VBox {
   }
 
   /**
-   * @return {?UI.Widget}
+   * @return {?Widget}
    */
   get visibleView() {
     return this._currentTab ? this._currentTab.view : null;
@@ -107,7 +115,7 @@ export default class TabbedPane extends UI.VBox {
   }
 
   /**
-   * @return {!Array.<!UI.Widget>}
+   * @return {!Array.<!Widget>}
    */
   tabViews() {
     return this._tabs.map(tab => tab.view);
@@ -115,7 +123,7 @@ export default class TabbedPane extends UI.VBox {
 
   /**
    * @param {string} tabId
-   * @return {?UI.Widget}
+   * @return {?Widget}
    */
   tabView(tabId) {
     return this._tabsById.has(tabId) ? this._tabsById.get(tabId).view : null;
@@ -190,7 +198,7 @@ export default class TabbedPane extends UI.VBox {
   /**
    * @param {string} id
    * @param {string} tabTitle
-   * @param {!UI.Widget} view
+   * @param {!Widget} view
    * @param {string=} tabTooltip
    * @param {boolean=} userGesture
    * @param {boolean=} isCloseable
@@ -383,7 +391,7 @@ export default class TabbedPane extends UI.VBox {
 
   /**
    * @param {string} id
-   * @param {?UI.Icon} icon
+   * @param {?Icon} icon
    */
   setTabIcon(id, icon) {
     const tab = this._tabsById.get(id);
@@ -443,7 +451,7 @@ export default class TabbedPane extends UI.VBox {
 
   /**
    * @param {string} id
-   * @param {!UI.Widget} view
+   * @param {!Widget} view
    */
   changeTabView(id, view) {
     const tab = this._tabsById.get(id);
@@ -505,22 +513,22 @@ export default class TabbedPane extends UI.VBox {
 
   /**
    * @override
-   * @return {!UI.Constraints}
+   * @return {!Constraints}
    */
   calculateConstraints() {
     let constraints = super.calculateConstraints();
-    const minContentConstraints = new UI.Constraints(new UI.Size(0, 0), new UI.Size(50, 50));
+    const minContentConstraints = new Constraints(new Size(0, 0), new Size(50, 50));
     constraints = constraints.widthToMax(minContentConstraints).heightToMax(minContentConstraints);
     if (this._verticalTabLayout) {
-      constraints = constraints.addWidth(new UI.Constraints(new UI.Size(120, 0)));
+      constraints = constraints.addWidth(new Constraints(new Size(120, 0)));
     } else {
-      constraints = constraints.addHeight(new UI.Constraints(new UI.Size(0, 30)));
+      constraints = constraints.addHeight(new Constraints(new Size(0, 30)));
     }
     return constraints;
   }
 
   _updateTabElements() {
-    UI.invokeOnceAfterBatchUpdate(this, this._innerUpdateTabElements);
+    invokeOnceAfterBatchUpdate(this, this._innerUpdateTabElements);
   }
 
   /**
@@ -591,7 +599,7 @@ export default class TabbedPane extends UI.VBox {
 
   _createDropDownButton() {
     const dropDownContainer = createElementWithClass('div', 'tabbed-pane-header-tabs-drop-down-container');
-    const chevronIcon = UI.Icon.create('largeicon-chevron', 'chevron-icon');
+    const chevronIcon = Icon.create('largeicon-chevron', 'chevron-icon');
     UI.ARIAUtils.markAsMenuButton(dropDownContainer);
     UI.ARIAUtils.setAccessibleName(dropDownContainer, ls`More tabs`);
     dropDownContainer.tabIndex = 0;
@@ -619,7 +627,7 @@ export default class TabbedPane extends UI.VBox {
       this._triggerDropDownTimeout = null;
     }
     const rect = this._dropDownButton.getBoundingClientRect();
-    const menu = new UI.ContextMenu(event, false, rect.left, rect.bottom);
+    const menu = new ContextMenu(event, false, rect.left, rect.bottom);
     for (const tab of this._tabs) {
       if (tab._shown) {
         continue;
@@ -920,22 +928,22 @@ export default class TabbedPane extends UI.VBox {
   }
 
   /**
-   * @return {!UI.Toolbar}
+   * @return {!Toolbar}
    */
   leftToolbar() {
     if (!this._leftToolbar) {
-      this._leftToolbar = new UI.Toolbar('tabbed-pane-left-toolbar');
+      this._leftToolbar = new Toolbar('tabbed-pane-left-toolbar');
       this._headerElement.insertBefore(this._leftToolbar.element, this._headerElement.firstChild);
     }
     return this._leftToolbar;
   }
 
   /**
-   * @return {!UI.Toolbar}
+   * @return {!Toolbar}
    */
   rightToolbar() {
     if (!this._rightToolbar) {
-      this._rightToolbar = new UI.Toolbar('tabbed-pane-right-toolbar');
+      this._rightToolbar = new Toolbar('tabbed-pane-right-toolbar');
       this._headerElement.appendChild(this._rightToolbar.element);
     }
     return this._rightToolbar;
@@ -1002,11 +1010,11 @@ export const Events = {
  */
 export class TabbedPaneTab {
   /**
-   * @param {!UI.TabbedPane} tabbedPane
+   * @param {!TabbedPane} tabbedPane
    * @param {string} id
    * @param {string} title
    * @param {boolean} closeable
-   * @param {!UI.Widget} view
+   * @param {!Widget} view
    * @param {string=} tooltip
    */
   constructor(tabbedPane, id, title, closeable, view, tooltip) {
@@ -1061,7 +1069,7 @@ export class TabbedPaneTab {
   }
 
   /**
-   * @param {?UI.Icon} icon
+   * @param {?Icon} icon
    */
   _setIcon(icon) {
     this._icon = icon;
@@ -1088,14 +1096,14 @@ export class TabbedPaneTab {
   }
 
   /**
-   * @return {!UI.Widget}
+   * @return {!Widget}
    */
   get view() {
     return this._view;
   }
 
   /**
-   * @param {!UI.Widget} view
+   * @param {!Widget} view
    */
   set view(view) {
     this._view = view;
@@ -1208,7 +1216,7 @@ export class TabbedPaneTab {
 
       tabElement.addEventListener('contextmenu', this._tabContextMenu.bind(this), false);
       if (this._tabbedPane._allowTabReorder) {
-        UI.installDragHandle(
+        installDragHandle(
             tabElement, this._startTabDragging.bind(this), this._tabDragging.bind(this),
             this._endTabDragging.bind(this), '-webkit-grabbing', 'pointer', 200);
       }
@@ -1292,7 +1300,7 @@ export class TabbedPaneTab {
       this._closeTabs(this._tabbedPane._tabsToTheRight(this.id));
     }
 
-    const contextMenu = new UI.ContextMenu(event);
+    const contextMenu = new ContextMenu(event);
     if (this._closeable) {
       contextMenu.defaultSection().appendItem(Common.UIString('Close'), close.bind(this));
       contextMenu.defaultSection().appendItem(Common.UIString('Close others'), closeOthers.bind(this));
@@ -1379,7 +1387,7 @@ export class TabbedPaneTab {
  */
 export class TabbedPaneTabDelegate {
   /**
-   * @param {!UI.TabbedPane} tabbedPane
+   * @param {!TabbedPane} tabbedPane
    * @param {!Array.<string>} ids
    */
   closeTabs(tabbedPane, ids) {
@@ -1387,25 +1395,7 @@ export class TabbedPaneTabDelegate {
 
   /**
    * @param {string} tabId
-   * @param {!UI.ContextMenu} contextMenu
+   * @param {!ContextMenu} contextMenu
    */
   onContextMenu(tabId, contextMenu) {}
 }
-
-/* Legacy exported object*/
-self.UI = self.UI || {};
-
-/* Legacy exported object*/
-UI = UI || {};
-
-/** @constructor */
-UI.TabbedPane = TabbedPane;
-
-/** @enum {symbol} */
-UI.TabbedPane.Events = Events;
-
-/** @constructor */
-UI.TabbedPaneTab = TabbedPaneTab;
-
-/** @interface */
-UI.TabbedPaneTabDelegate = TabbedPaneTabDelegate;

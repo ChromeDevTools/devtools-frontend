@@ -2,10 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {ActionDelegate} from './ActionDelegate.js';  // eslint-disable-line no-unused-vars
+
 /**
  * @unrestricted
  */
-export default class Action extends Common.Object {
+export class Action extends Common.Object {
   /**
    * @param {!Root.Runtime.Extension} extension
    */
@@ -39,11 +41,11 @@ export default class Action extends Common.Object {
     /**
      * @param {!Object} actionDelegate
      * @return {boolean}
-     * @this {UI.Action}
+     * @this {Action}
      */
     function handleAction(actionDelegate) {
       const actionId = this._extension.descriptor()['actionId'];
-      const delegate = /** @type {!UI.ActionDelegate} */ (actionDelegate);
+      const delegate = /** @type {!ActionDelegate} */ (actionDelegate);
       return delegate.handleAction(UI.context, actionId);
     }
   }
@@ -147,19 +149,7 @@ export default class Action extends Common.Object {
 }
 
 /** @enum {symbol} */
-const Events = {
+export const Events = {
   Enabled: Symbol('Enabled'),
   Toggled: Symbol('Toggled')
 };
-
-/* Legacy exported object*/
-self.UI = self.UI || {};
-
-/* Legacy exported object*/
-UI = UI || {};
-
-/** @constructor */
-UI.Action = Action;
-
-/** @enum {symbol} */
-UI.Action.Events = Events;

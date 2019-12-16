@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-export default class XElement extends HTMLElement {
+export class XElement extends HTMLElement {
   /**
    * @override
    */
@@ -157,12 +157,3 @@ self.customElements.define('x-cbox', XCBox);
 self.customElements.define('x-div', XDiv);
 self.customElements.define('x-span', XSpan);
 self.customElements.define('x-text', XText);
-
-/* Legacy exported object*/
-self.UI = self.UI || {};
-
-/* Legacy exported object*/
-UI = UI || {};
-
-/** @constructor */
-UI.XElement = XElement;

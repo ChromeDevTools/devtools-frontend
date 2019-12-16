@@ -28,10 +28,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import {VBox} from './Widget.js';
+import {XLink} from './XLink.js';
+
 /**
  * @unrestricted
  */
-export default class EmptyWidget extends UI.VBox {
+export class EmptyWidget extends VBox {
   /**
    * @param {string} text
    */
@@ -56,7 +59,7 @@ export default class EmptyWidget extends UI.VBox {
    * @return {!Node}
    */
   appendLink(link) {
-    return this._contentElement.appendChild(UI.XLink.create(link, 'Learn more'));
+    return this._contentElement.appendChild(XLink.create(link, 'Learn more'));
   }
 
   /**
@@ -66,12 +69,3 @@ export default class EmptyWidget extends UI.VBox {
     this._textElement.textContent = text;
   }
 }
-
-/* Legacy exported object*/
-self.UI = self.UI || {};
-
-/* Legacy exported object*/
-UI = UI || {};
-
-/** @constructor */
-UI.EmptyWidget = EmptyWidget;

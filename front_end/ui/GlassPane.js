@@ -2,22 +2,27 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-export default class GlassPane {
+import {Size} from './Geometry.js';  // eslint-disable-line no-unused-vars
+import {Icon} from './Icon.js';
+import {measuredScrollbarWidth} from './utils/measured-scrollbar-width.js';
+import {Widget} from './Widget.js';
+
+export class GlassPane {
   constructor() {
-    this._widget = new UI.Widget(true);
+    this._widget = new Widget(true);
     this._widget.markAsRoot();
     this.element = this._widget.element;
     this.contentElement = this._widget.contentElement;
-    this._arrowElement = UI.Icon.create('', 'arrow hidden');
+    this._arrowElement = Icon.create('', 'arrow hidden');
     this.element.shadowRoot.appendChild(this._arrowElement);
 
     this.registerRequiredCSS('ui/glassPane.css');
-    this.setPointerEventsBehavior(GlassPane.PointerEventsBehavior.PierceGlassPane);
+    this.setPointerEventsBehavior(PointerEventsBehavior.PierceGlassPane);
 
     this._onMouseDownBound = this._onMouseDown.bind(this);
     /** @type {?function(!Event)} */
     this._onClickOutsideCallback = null;
-    /** @type {?UI.Size} */
+    /** @type {?Size} */
     this._maxSize = null;
     /** @type {?number} */
     this._positionX = null;
@@ -25,9 +30,9 @@ export default class GlassPane {
     this._positionY = null;
     /** @type {?AnchorBox} */
     this._anchorBox = null;
-    this._anchorBehavior = GlassPane.AnchorBehavior.PreferTop;
-    this._sizeBehavior = GlassPane.SizeBehavior.SetExactSize;
-    this._marginBehavior = GlassPane.MarginBehavior.DefaultMargin;
+    this._anchorBehavior = AnchorBehavior.PreferTop;
+    this._sizeBehavior = SizeBehavior.SetExactSize;
+    this._marginBehavior = MarginBehavior.DefaultMargin;
   }
 
   /**
@@ -59,13 +64,13 @@ export default class GlassPane {
   }
 
   /**
-   * @param {!GlassPane.PointerEventsBehavior} pointerEventsBehavior
+   * @param {!PointerEventsBehavior} pointerEventsBehavior
    */
   setPointerEventsBehavior(pointerEventsBehavior) {
     this.element.classList.toggle(
-        'no-pointer-events', pointerEventsBehavior !== GlassPane.PointerEventsBehavior.BlockedByGlassPane);
+        'no-pointer-events', pointerEventsBehavior !== PointerEventsBehavior.BlockedByGlassPane);
     this.contentElement.classList.toggle(
-        'no-pointer-events', pointerEventsBehavior === GlassPane.PointerEventsBehavior.PierceContents);
+        'no-pointer-events', pointerEventsBehavior === PointerEventsBehavior.PierceContents);
   }
 
   /**
@@ -76,7 +81,7 @@ export default class GlassPane {
   }
 
   /**
-   * @param {?UI.Size} size
+   * @param {?Size} size
    */
   setMaxContentSize(size) {
     this._maxSize = size;
@@ -84,7 +89,7 @@ export default class GlassPane {
   }
 
   /**
-   * @param {!GlassPane.SizeBehavior} sizeBehavior
+   * @param {!SizeBehavior} sizeBehavior
    */
   setSizeBehavior(sizeBehavior) {
     this._sizeBehavior = sizeBehavior;
@@ -119,11 +124,11 @@ export default class GlassPane {
   }
 
   /**
-   * @param {!GlassPane.MarginBehavior} behavior
+   * @param {!MarginBehavior} behavior
    */
   setMarginBehavior(behavior) {
     this._marginBehavior = behavior;
-    this._arrowElement.classList.toggle('hidden', behavior !== GlassPane.MarginBehavior.Arrow);
+    this._arrowElement.classList.toggle('hidden', behavior !== MarginBehavior.Arrow);
   }
 
   /**
@@ -170,13 +175,13 @@ export default class GlassPane {
       return;
     }
 
-    const showArrow = this._marginBehavior === GlassPane.MarginBehavior.Arrow;
-    const gutterSize = showArrow ? 8 : (this._marginBehavior === GlassPane.MarginBehavior.NoMargin ? 0 : 3);
-    const scrollbarSize = UI.measuredScrollbarWidth(this.element.ownerDocument);
+    const showArrow = this._marginBehavior === MarginBehavior.Arrow;
+    const gutterSize = showArrow ? 8 : (this._marginBehavior === MarginBehavior.NoMargin ? 0 : 3);
+    const scrollbarSize = measuredScrollbarWidth(this.element.ownerDocument);
     const arrowSize = 10;
 
     const container = _containers.get(/** @type {!Document} */ (this.element.ownerDocument));
-    if (this._sizeBehavior === GlassPane.SizeBehavior.MeasureContent) {
+    if (this._sizeBehavior === SizeBehavior.MeasureContent) {
       this.contentElement.positionAt(0, 0);
       this.contentElement.style.width = '';
       this.contentElement.style.maxWidth = '';
@@ -197,7 +202,7 @@ export default class GlassPane {
       height = Math.min(height, this._maxSize.height);
     }
 
-    if (this._sizeBehavior === GlassPane.SizeBehavior.MeasureContent) {
+    if (this._sizeBehavior === SizeBehavior.MeasureContent) {
       const measuredRect = this.contentElement.getBoundingClientRect();
       const widthOverflow = height < measuredRect.height ? scrollbarSize : 0;
       const heightOverflow = width < measuredRect.width ? scrollbarSize : 0;
@@ -225,7 +230,7 @@ export default class GlassPane {
         if (behavior === GlassPane.AnchorBehavior.PreferTop) {
           positionY = Math.max(gutterSize, anchorBox.y - height - gutterSize);
           const spaceTop = anchorBox.y - positionY - gutterSize;
-          if (this._sizeBehavior === GlassPane.SizeBehavior.MeasureContent) {
+          if (this._sizeBehavior === SizeBehavior.MeasureContent) {
             if (height > spaceTop) {
               this._arrowElement.classList.add('arrow-none');
               enoughHeight = false;
@@ -239,7 +244,7 @@ export default class GlassPane {
         } else {
           positionY = anchorBox.y + anchorBox.height + gutterSize;
           const spaceBottom = containerHeight - positionY - gutterSize;
-          if (this._sizeBehavior === GlassPane.SizeBehavior.MeasureContent) {
+          if (this._sizeBehavior === SizeBehavior.MeasureContent) {
             if (height > spaceBottom) {
               this._arrowElement.classList.add('arrow-none');
               positionY = containerHeight - gutterSize - height;
@@ -282,7 +287,7 @@ export default class GlassPane {
         if (behavior === GlassPane.AnchorBehavior.PreferLeft) {
           positionX = Math.max(gutterSize, anchorBox.x - width - gutterSize);
           const spaceLeft = anchorBox.x - positionX - gutterSize;
-          if (this._sizeBehavior === GlassPane.SizeBehavior.MeasureContent) {
+          if (this._sizeBehavior === SizeBehavior.MeasureContent) {
             if (width > spaceLeft) {
               this._arrowElement.classList.add('arrow-none');
               enoughWidth = false;
@@ -296,7 +301,7 @@ export default class GlassPane {
         } else {
           positionX = anchorBox.x + anchorBox.width + gutterSize;
           const spaceRight = containerWidth - positionX - gutterSize;
-          if (this._sizeBehavior === GlassPane.SizeBehavior.MeasureContent) {
+          if (this._sizeBehavior === SizeBehavior.MeasureContent) {
             if (width > spaceRight) {
               this._arrowElement.classList.add('arrow-none');
               positionX = containerWidth - gutterSize - width;
@@ -334,7 +339,7 @@ export default class GlassPane {
     }
 
     this.contentElement.style.width = width + 'px';
-    if (this._sizeBehavior === GlassPane.SizeBehavior.SetExactWidthMaxHeight) {
+    if (this._sizeBehavior === SizeBehavior.SetExactWidthMaxHeight) {
       this.contentElement.style.maxHeight = height + 'px';
     } else {
       this.contentElement.style.height = height + 'px';
@@ -346,7 +351,7 @@ export default class GlassPane {
 
   /**
    * @protected
-   * @return {!UI.Widget}
+   * @return {!Widget}
    */
   widget() {
     return this._widget;
@@ -415,26 +420,5 @@ const _containers = new Map();
 /** @type {!Set<!GlassPane>} */
 const _panes = new Set();
 
-/* Legacy exported object*/
-self.UI = self.UI || {};
-
-/* Legacy exported object*/
-UI = UI || {};
-
-/** @constructor */
-UI.GlassPane = GlassPane;
-
-/** @enum {symbol} */
-UI.GlassPane.PointerEventsBehavior = PointerEventsBehavior;
-
-/** @enum {symbol} */
-UI.GlassPane.AnchorBehavior = AnchorBehavior;
-
-/** @enum {symbol} */
-UI.GlassPane.SizeBehavior = SizeBehavior;
-
-/** @enum {symbol} */
-UI.GlassPane.MarginBehavior = MarginBehavior;
-
-/** @type {!Set<!GlassPane>} */
-UI.GlassPane._panes = _panes;
+// Exported for layout tests.
+export const GlassPanePanes = _panes;

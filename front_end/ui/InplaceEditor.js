@@ -1,10 +1,14 @@
 // Copyright 2014 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
+import {Keys} from './KeyboardShortcut.js';
+import {ElementFocusRestorer, markBeingEdited} from './UIUtils.js';
+
 /**
  * @unrestricted
  */
-export default class InplaceEditor {
+export class InplaceEditor {
   /**
    * @param {!Element} element
    * @param {!InplaceEditor.Config=} config
@@ -42,7 +46,7 @@ export default class InplaceEditor {
     if (typeof oldTabIndex !== 'number' || oldTabIndex < 0) {
       element.tabIndex = 0;
     }
-    this._focusRestorer = new UI.ElementFocusRestorer(element);
+    this._focusRestorer = new ElementFocusRestorer(element);
     editingContext.oldTabIndex = oldTabIndex;
   }
 
@@ -84,7 +88,7 @@ export default class InplaceEditor {
    * @return {?InplaceEditor.Controller}
    */
   startEditing(element, config) {
-    if (!UI.markBeingEdited(element, true)) {
+    if (!markBeingEdited(element, true)) {
       return null;
     }
 
@@ -112,7 +116,7 @@ export default class InplaceEditor {
     }
 
     function cleanUpAfterEditing() {
-      UI.markBeingEdited(element, false);
+      markBeingEdited(element, false);
 
       element.removeEventListener('blur', blurEventListener, false);
       element.removeEventListener('keydown', keyDownEventListener, true);
@@ -147,7 +151,7 @@ export default class InplaceEditor {
     function defaultFinishHandler(event) {
       if (isEnterKey(event)) {
         return 'commit';
-      } else if (event.keyCode === UI.KeyboardShortcut.Keys.Esc.code || event.key === 'Escape') {
+      } else if (event.keyCode === Keys.Esc.code || event.key === 'Escape') {
         return 'cancel';
       } else if (event.key === 'Tab') {
         return 'move-' + (event.shiftKey ? 'backward' : 'forward');
@@ -242,22 +246,3 @@ export class Config {
     this.postKeydownFinishHandler = postKeydownFinishHandler;
   }
 }
-
-/* Legacy exported object*/
-self.UI = self.UI || {};
-
-/* Legacy exported object*/
-UI = UI || {};
-
-/** @constructor */
-UI.InplaceEditor = InplaceEditor;
-
-/**
- * @constructor
- */
-UI.InplaceEditor.Config = Config;
-
-/**
- * @typedef {{cancel: function(), commit: function()}}
- */
-UI.InplaceEditor.Controller;

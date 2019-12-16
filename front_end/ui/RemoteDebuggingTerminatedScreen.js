@@ -2,7 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-export default class RemoteDebuggingTerminatedScreen extends UI.VBox {
+import {Dialog} from './Dialog.js';
+import {SizeBehavior} from './GlassPane.js';
+import {createTextButton, formatLocalized} from './UIUtils.js';
+import {VBox} from './Widget.js';
+
+export class RemoteDebuggingTerminatedScreen extends VBox {
   /**
    * @param {string} reason
    */
@@ -12,10 +17,10 @@ export default class RemoteDebuggingTerminatedScreen extends UI.VBox {
     const message = this.contentElement.createChild('div', 'message');
     const reasonElement = message.createChild('span', 'reason');
     reasonElement.textContent = reason;
-    message.appendChild(UI.formatLocalized('Debugging connection was closed. Reason: %s', [reasonElement]));
+    message.appendChild(formatLocalized('Debugging connection was closed. Reason: %s', [reasonElement]));
     this.contentElement.createChild('div', 'message').textContent =
         Common.UIString('Reconnect when ready by reopening DevTools.');
-    const button = UI.createTextButton(Common.UIString('Reconnect DevTools'), () => window.location.reload());
+    const button = createTextButton(Common.UIString('Reconnect DevTools'), () => window.location.reload());
     this.contentElement.createChild('div', 'button').appendChild(button);
   }
 
@@ -23,20 +28,11 @@ export default class RemoteDebuggingTerminatedScreen extends UI.VBox {
    * @param {string} reason
    */
   static show(reason) {
-    const dialog = new UI.Dialog();
-    dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.MeasureContent);
+    const dialog = new Dialog();
+    dialog.setSizeBehavior(SizeBehavior.MeasureContent);
     dialog.addCloseButton();
     dialog.setDimmed(true);
     new RemoteDebuggingTerminatedScreen(reason).show(dialog.contentElement);
     dialog.show();
   }
 }
-
-/* Legacy exported object*/
-self.UI = self.UI || {};
-
-/* Legacy exported object*/
-UI = UI || {};
-
-/** @constructor */
-UI.RemoteDebuggingTerminatedScreen = RemoteDebuggingTerminatedScreen;

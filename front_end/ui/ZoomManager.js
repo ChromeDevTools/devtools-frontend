@@ -1,10 +1,11 @@
 // Copyright 2014 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
 /**
  * @unrestricted
  */
-export default class ZoomManager extends Common.Object {
+export class ZoomManager extends Common.Object {
   /**
    * @param {!Window} window
    * @param {!InspectorFrontendHostAPI} frontendHost
@@ -52,20 +53,3 @@ export default class ZoomManager extends Common.Object {
 export const Events = {
   ZoomChanged: Symbol('ZoomChanged')
 };
-
-/* Legacy exported object*/
-self.UI = self.UI || {};
-
-/* Legacy exported object*/
-UI = UI || {};
-
-/** @constructor */
-UI.ZoomManager = ZoomManager;
-
-/** @enum {symbol} */
-UI.ZoomManager.Events = Events;
-
-/**
- * @type {!UI.ZoomManager}
- */
-UI.zoomManager;

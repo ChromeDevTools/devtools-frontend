@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-export default class Fragment {
+export class Fragment {
   /**
    * @param {!Element} element
    */
@@ -68,7 +68,7 @@ export default class Fragment {
       } else if (open !== -1) {
         insideText = false;
       }
-      html += insideText ? Fragment._textMarker : Fragment._attributeMarker(i);
+      html += insideText ? _textMarker : _attributeMarker(i);
     }
     html += strings[strings.length - 1];
 
@@ -111,7 +111,7 @@ export default class Fragment {
         }
       }
 
-      if (node.nodeType === Node.TEXT_NODE && node.data.indexOf(Fragment._textMarker) !== -1) {
+      if (node.nodeType === Node.TEXT_NODE && node.data.indexOf(_textMarker) !== -1) {
         const texts = node.data.split(_textMarkerRegex);
         node.data = texts[texts.length - 1];
         for (let i = 0; i < texts.length - 1; i++) {
@@ -232,40 +232,3 @@ const _templateCache = new Map();
 export const html = (strings, ...vararg) => {
   return Fragment.cached(strings, ...vararg).element();
 };
-
-/* Legacy exported object*/
-self.UI = self.UI || {};
-
-/* Legacy exported object*/
-UI = UI || {};
-
-/** @constructor */
-UI.Fragment = Fragment;
-
-UI.Fragment._textMarker = _textMarker;
-UI.Fragment._attributeMarker = _attributeMarker;
-
-UI.html = html;
-
-/**
- * @typedef {!{
-  *   template: !Element,
-  *   binds: !Array<!Fragment._Bind>
-  * }}
-  */
-UI.Fragment._Template;
-
-/**
-  * @typedef {!{
-  *   elementId: (string|undefined),
-  *
-  *   attr: (!{
-  *     index: number,
-  *     names: !Array<string>,
-  *     values: !Array<string>
-  *   }|undefined),
-  *
-  *   replaceNodeIndex: (number|undefined)
-  * }}
-  */
-UI.Fragment._Bind;

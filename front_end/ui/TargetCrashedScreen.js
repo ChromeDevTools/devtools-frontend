@@ -2,7 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-export default class TargetCrashedScreen extends UI.VBox {
+import {VBox} from './Widget.js';
+
+export class TargetCrashedScreen extends VBox {
   /**
    * @param {function()} hideCallback
    */
@@ -23,12 +25,3 @@ export default class TargetCrashedScreen extends UI.VBox {
     this._hideCallback.call(null);
   }
 }
-
-/* Legacy exported object*/
-self.UI = self.UI || {};
-
-/* Legacy exported object*/
-UI = UI || {};
-
-/** @constructor */
-UI.TargetCrashedScreen = TargetCrashedScreen;

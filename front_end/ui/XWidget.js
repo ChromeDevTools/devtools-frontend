@@ -2,10 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {appendStyle} from './utils/append-style.js';
+import {XElement} from './XElement.js';
+
 /**
- * @extends {UI.XElement}
+ * @extends {XElement}
  */
-export default class XWidget extends UI.XElement {
+export class XWidget extends XElement {
   constructor() {
     super();
     this.style.setProperty('display', 'flex');
@@ -70,7 +73,7 @@ export default class XWidget extends UI.XElement {
    * @param {string} cssFile
    */
   registerRequiredCSS(cssFile) {
-    UI.appendStyle(this._shadowRoot || this, cssFile);
+    appendStyle(this._shadowRoot || this, cssFile);
   }
 
   /**
@@ -194,12 +197,3 @@ export default class XWidget extends UI.XElement {
 }
 
 self.customElements.define('x-widget', XWidget);
-
-/* Legacy exported object*/
-self.UI = self.UI || {};
-
-/* Legacy exported object*/
-UI = UI || {};
-
-/** @constructor */
-UI.XWidget = XWidget;

@@ -2,10 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {ContextMenu, Provider} from './ContextMenu.js';  // eslint-disable-line no-unused-vars
+import {html} from './Fragment.js';
+import {copyLinkAddressLabel, MaxLengthForDisplayedURLs, openLinkExternallyLabel} from './UIUtils.js';
+import {XElement} from './XElement.js';
+
 /**
- * @extends {UI.XElement}
+ * @extends {XElement}
  */
-export default class XLink extends UI.XElement {
+export class XLink extends XElement {
   /**
    * @param {string} url
    * @param {string=} linkText
@@ -20,9 +25,9 @@ export default class XLink extends UI.XElement {
     className = className || '';
     // clang-format off
     // TODO(dgozman): migrate css from 'devtools-link' to 'x-link'.
-    return UI.html`
+    return html`
         <x-link href='${url}' class='${className} devtools-link' ${preventClick ? 'no-click' : ''}
-        >${linkText.trimMiddle(UI.MaxLengthForDisplayedURLs)}</x-link>`;
+        >${linkText.trimMiddle(MaxLengthForDisplayedURLs)}</x-link>`;
     // clang-format on
   }
 
@@ -57,7 +62,7 @@ export default class XLink extends UI.XElement {
    */
   static get observedAttributes() {
     // TODO(dgozman): should be super.observedAttributes, but it does not compile.
-    return UI.XElement.observedAttributes.concat(['href', 'no-click']);
+    return XElement.observedAttributes.concat(['href', 'no-click']);
   }
 
   /**
@@ -112,13 +117,13 @@ export default class XLink extends UI.XElement {
 }
 
 /**
- * @implements {UI.ContextMenu.Provider}
+ * @implements {Provider}
  */
 export class ContextMenuProvider {
   /**
    * @override
    * @param {!Event} event
-   * @param {!UI.ContextMenu} contextMenu
+   * @param {!ContextMenu} contextMenu
    * @param {!Object} target
    */
   appendApplicableItems(event, contextMenu, target) {
@@ -130,24 +135,10 @@ export class ContextMenuProvider {
       return;
     }
     contextMenu.revealSection().appendItem(
-        UI.openLinkExternallyLabel(), () => Host.InspectorFrontendHost.openInNewTab(targetNode._href));
+        openLinkExternallyLabel(), () => Host.InspectorFrontendHost.openInNewTab(targetNode._href));
     contextMenu.revealSection().appendItem(
-        UI.copyLinkAddressLabel(), () => Host.InspectorFrontendHost.copyText(targetNode._href));
+        copyLinkAddressLabel(), () => Host.InspectorFrontendHost.copyText(targetNode._href));
   }
 }
 
 self.customElements.define('x-link', XLink);
-
-/* Legacy exported object*/
-self.UI = self.UI || {};
-
-/* Legacy exported object*/
-UI = UI || {};
-
-/** @constructor */
-UI.XLink = XLink;
-
-/**
- * @implements {UI.ContextMenu.Provider}
- */
-UI.XLink.ContextMenuProvider = ContextMenuProvider;

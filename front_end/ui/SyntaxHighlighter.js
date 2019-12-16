@@ -31,7 +31,7 @@
 /**
  * @unrestricted
  */
-export default class SyntaxHighlighter {
+export class SyntaxHighlighter {
   /**
    * @param {string} mimeType
    * @param {boolean} stripExtraWhitespace
@@ -109,12 +109,3 @@ export default class SyntaxHighlighter {
     }
   }
 }
-
-/* Legacy exported object*/
-self.UI = self.UI || {};
-
-/* Legacy exported object*/
-UI = UI || {};
-
-/** @constructor */
-UI.SyntaxHighlighter = SyntaxHighlighter;

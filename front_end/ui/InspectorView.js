@@ -27,18 +27,32 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+import {ActionDelegate as ActionDelegateInterface} from './ActionDelegate.js';  // eslint-disable-line no-unused-vars
+import {Context} from './Context.js';                                           // eslint-disable-line no-unused-vars
+import {Dialog} from './Dialog.js';
+import {GlassPane} from './GlassPane.js';
+import {Icon} from './Icon.js';  // eslint-disable-line no-unused-vars
+import {KeyboardShortcut} from './KeyboardShortcut.js';
+import {Panel} from './Panel.js';  // eslint-disable-line no-unused-vars
+import {SplitWidget} from './SplitWidget.js';
+import {Events as TabbedPaneEvents} from './TabbedPane.js';
+import {ToolbarButton} from './Toolbar.js';
+import {View, ViewLocation, ViewLocationResolver} from './View.js';  // eslint-disable-line no-unused-vars
+import {VBox, WidgetFocusRestorer} from './Widget.js';
+
 /**
- * @implements {UI.ViewLocationResolver}
+ * @implements {ViewLocationResolver}
  * @unrestricted
  */
-export default class InspectorView extends UI.VBox {
+export class InspectorView extends VBox {
   constructor() {
     super();
-    UI.GlassPane.setContainer(this.element);
+    GlassPane.setContainer(this.element);
     this.setMinimumSize(240, 72);
 
     // DevTools sidebar is a vertical split of panels tabbed pane and a drawer.
-    this._drawerSplitWidget = new UI.SplitWidget(false, true, 'Inspector.drawerSplitViewState', 200, 200);
+    this._drawerSplitWidget = new SplitWidget(false, true, 'Inspector.drawerSplitViewState', 200, 200);
     this._drawerSplitWidget.hideSidebar();
     this._drawerSplitWidget.hideDefaultResizer();
     this._drawerSplitWidget.enableShowModeSaving();
@@ -51,10 +65,10 @@ export default class InspectorView extends UI.VBox {
     moreTabsButton.setTitle(ls`More Tools`);
     this._drawerTabbedPane = this._drawerTabbedLocation.tabbedPane();
     this._drawerTabbedPane.setMinimumSize(0, 27);
-    const closeDrawerButton = new UI.ToolbarButton(Common.UIString('Close drawer'), 'largeicon-delete');
-    closeDrawerButton.addEventListener(UI.ToolbarButton.Events.Click, this._closeDrawer, this);
+    const closeDrawerButton = new ToolbarButton(Common.UIString('Close drawer'), 'largeicon-delete');
+    closeDrawerButton.addEventListener(ToolbarButton.Events.Click, this._closeDrawer, this);
     this._drawerSplitWidget.installResizer(this._drawerTabbedPane.headerElement());
-    this._drawerTabbedPane.addEventListener(UI.TabbedPane.Events.TabSelected, this._drawerTabSelected, this);
+    this._drawerTabbedPane.addEventListener(TabbedPaneEvents.TabSelected, this._drawerTabSelected, this);
 
     this._drawerSplitWidget.setSidebarWidget(this._drawerTabbedPane);
     this._drawerTabbedPane.rightToolbar().appendToolbarItem(closeDrawerButton);
@@ -66,7 +80,7 @@ export default class InspectorView extends UI.VBox {
 
     this._tabbedPane = this._tabbedLocation.tabbedPane();
     this._tabbedPane.registerRequiredCSS('ui/inspectorViewTabbedPane.css');
-    this._tabbedPane.addEventListener(UI.TabbedPane.Events.TabSelected, this._tabSelected, this);
+    this._tabbedPane.addEventListener(TabbedPaneEvents.TabSelected, this._tabSelected, this);
     this._tabbedPane.setAccessibleName(Common.UIString('Panels'));
 
     // Store the initial selected panel for use in launch histograms
@@ -115,7 +129,7 @@ export default class InspectorView extends UI.VBox {
   /**
    * @override
    * @param {string} locationName
-   * @return {?UI.ViewLocation}
+   * @return {?ViewLocation}
    */
   resolveLocation(locationName) {
     if (locationName === 'drawer-view') {
@@ -133,7 +147,7 @@ export default class InspectorView extends UI.VBox {
   }
 
   /**
-   * @param {!UI.View} view
+   * @param {!View} view
    */
   addPanel(view) {
     this._tabbedLocation.appendView(view);
@@ -149,10 +163,11 @@ export default class InspectorView extends UI.VBox {
 
   /**
    * @param {string} panelName
-   * @return {!Promise.<!UI.Panel>}
+   * @return {!Promise.<!Panel>}
    */
   panel(panelName) {
-    return /** @type {!Promise.<!UI.Panel>} */ (UI.viewManager.view(panelName).widget());
+    return (
+        /** @type {!Promise.<!Panel>} */ (UI.viewManager.view(panelName).widget()));
   }
 
   /**
@@ -175,7 +190,7 @@ export default class InspectorView extends UI.VBox {
 
   /**
    * @param {string} panelName
-   * @return {!Promise.<?UI.Panel>}
+   * @return {!Promise.<?Panel>}
    */
   showPanel(panelName) {
     return UI.viewManager.showView(panelName);
@@ -183,17 +198,18 @@ export default class InspectorView extends UI.VBox {
 
   /**
    * @param {string} panelName
-   * @param {?UI.Icon} icon
+   * @param {?Icon} icon
    */
   setPanelIcon(panelName, icon) {
     this._tabbedPane.setTabIcon(panelName, icon);
   }
 
   /**
-   * @return {?UI.Panel}
+   * @return {?Panel}
    */
   currentPanelDeprecated() {
-    return /** @type {?UI.Panel} */ (UI.viewManager.materializedWidget(this._tabbedPane.selectedTabId || ''));
+    return (
+        /** @type {?Panel} */ (UI.viewManager.materializedWidget(this._tabbedPane.selectedTabId || '')));
   }
 
   /**
@@ -205,7 +221,7 @@ export default class InspectorView extends UI.VBox {
     }
     this._drawerSplitWidget.showBoth();
     if (focus) {
-      this._focusRestorer = new UI.WidgetFocusRestorer(this._drawerTabbedPane);
+      this._focusRestorer = new WidgetFocusRestorer(this._drawerTabbedPane);
     } else {
       this._focusRestorer = null;
     }
@@ -256,7 +272,7 @@ export default class InspectorView extends UI.VBox {
    */
   _keyDown(event) {
     const keyboardEvent = /** @type {!KeyboardEvent} */ (event);
-    if (!UI.KeyboardShortcut.eventHasCtrlOrMeta(keyboardEvent) || event.altKey || event.shiftKey) {
+    if (!KeyboardShortcut.eventHasCtrlOrMeta(keyboardEvent) || event.altKey || event.shiftKey) {
       return;
     }
 
@@ -274,7 +290,7 @@ export default class InspectorView extends UI.VBox {
       if (panelIndex !== -1) {
         const panelName = this._tabbedPane.tabIds()[panelIndex];
         if (panelName) {
-          if (!UI.Dialog.hasInstance() && !this._currentPanelLocked) {
+          if (!Dialog.hasInstance() && !this._currentPanelLocked) {
             this.showPanel(panelName);
           }
           event.consume(true);
@@ -287,7 +303,7 @@ export default class InspectorView extends UI.VBox {
    * @override
    */
   onResize() {
-    UI.GlassPane.containerMoved(this.element);
+    GlassPane.containerMoved(this.element);
   }
 
   /**
@@ -318,14 +334,14 @@ export default class InspectorView extends UI.VBox {
   }
 
   /**
-   * @param {!UI.SplitWidget} splitWidget
+   * @param {!SplitWidget} splitWidget
    */
   setOwnerSplit(splitWidget) {
     this._ownerSplitWidget = splitWidget;
   }
 
   /**
-   * @return {?UI.SplitWidget}
+   * @return {?SplitWidget}
    */
   ownerSplit() {
     return this._ownerSplitWidget;
@@ -345,13 +361,13 @@ export default class InspectorView extends UI.VBox {
 }
 
 /**
- * @implements {UI.ActionDelegate}
+ * @implements {ActionDelegateInterface}
  * @unrestricted
  */
 export class ActionDelegate {
   /**
    * @override
-   * @param {!UI.Context} context
+   * @param {!Context} context
    * @param {string} actionId
    * @return {boolean}
    */
@@ -376,23 +392,3 @@ export class ActionDelegate {
     return false;
   }
 }
-
-/* Legacy exported object*/
-self.UI = self.UI || {};
-
-/* Legacy exported object*/
-UI = UI || {};
-
-/** @constructor */
-UI.InspectorView = InspectorView;
-
-/**
- * @implements {UI.ActionDelegate}
- * @unrestricted
- */
-UI.InspectorView.ActionDelegate = ActionDelegate;
-
-/**
- * @type {!InspectorView}
- */
-UI.inspectorView;

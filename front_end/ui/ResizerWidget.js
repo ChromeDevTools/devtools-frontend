@@ -1,10 +1,13 @@
 // Copyright 2014 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
+import {elementDragStart} from './UIUtils.js';
+
 /**
  * @unrestricted
  */
-export default class ResizerWidget extends Common.Object {
+export class ResizerWidget extends Common.Object {
   constructor() {
     super();
 
@@ -100,7 +103,7 @@ export default class ResizerWidget extends Common.Object {
     if (this._elements.indexOf(event.target) === -1) {
       return false;
     }
-    UI.elementDragStart(
+    elementDragStart(
         /** @type {!Element} */ (event.target), this._dragStart.bind(this), this._drag.bind(this),
         this._dragEnd.bind(this), this.cursor(), event);
   }
@@ -233,18 +236,3 @@ export class SimpleResizerWidget extends ResizerWidget {
     }
   }
 }
-
-/* Legacy exported object*/
-self.UI = self.UI || {};
-
-/* Legacy exported object*/
-UI = UI || {};
-
-/** @constructor */
-UI.ResizerWidget = ResizerWidget;
-
-/** @enum {symbol} */
-UI.ResizerWidget.Events = Events;
-
-/** @constructor */
-UI.SimpleResizerWidget = SimpleResizerWidget;

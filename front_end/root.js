@@ -9,7 +9,7 @@ import './common/common-legacy.js';
 import './host/host.js';
 import './protocol/protocol.js';
 import './sdk/sdk.js';
-import './ui/ui.js';
+import './ui/ui-legacy.js';
 
 import './services/services.js';
 import './workspace/workspace.js';

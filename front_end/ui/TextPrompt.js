@@ -26,11 +26,16 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+import {SuggestBox, SuggestBoxDelegate} from './SuggestBox.js';  // eslint-disable-line no-unused-vars
+import {ElementFocusRestorer} from './UIUtils.js';
+import {appendStyle} from './utils/append-style.js';
+
 /**
- * @implements {UI.SuggestBoxDelegate}
+ * @implements {SuggestBoxDelegate}
  * @unrestricted
  */
-export default class TextPrompt extends Common.Object {
+export class TextPrompt extends Common.Object {
   constructor() {
     super();
     /**
@@ -111,7 +116,7 @@ export default class TextPrompt extends Common.Object {
     this._boundOnMouseWheel = this.onMouseWheel.bind(this);
     this._boundClearAutocomplete = this.clearAutocomplete.bind(this);
     this._proxyElement = element.ownerDocument.createElement('span');
-    UI.appendStyle(this._proxyElement, 'ui/textPrompt.css');
+    appendStyle(this._proxyElement, 'ui/textPrompt.css');
     this._contentElement = this._proxyElement.createChild('div', 'text-prompt-root');
     this._proxyElement.style.display = this._proxyElementDisplay;
     element.parentElement.insertBefore(this._proxyElement, element);
@@ -125,7 +130,7 @@ export default class TextPrompt extends Common.Object {
     this._element.addEventListener('selectstart', this._boundClearAutocomplete, false);
     this._element.addEventListener('blur', this._boundClearAutocomplete, false);
 
-    this._suggestBox = new UI.SuggestBox(this, 20);
+    this._suggestBox = new SuggestBox(this, 20);
 
     if (this._title) {
       this._proxyElement.title = this._title;
@@ -259,7 +264,7 @@ export default class TextPrompt extends Common.Object {
     if (this._element.tabIndex < 0) {
       this._element.tabIndex = 0;
     }
-    this._focusRestorer = new UI.ElementFocusRestorer(this._element);
+    this._focusRestorer = new ElementFocusRestorer(this._element);
     if (!this.text()) {
       this.autoCompleteSoon();
     }
@@ -716,15 +721,3 @@ const DefaultAutocompletionTimeout = 250;
 export const Events = {
   TextChanged: Symbol('TextChanged')
 };
-
-/* Legacy exported object*/
-self.UI = self.UI || {};
-
-/* Legacy exported object*/
-UI = UI || {};
-
-/** @constructor */
-UI.TextPrompt = TextPrompt;
-
-/** @enum {symbol} */
-UI.TextPrompt.Events = Events;

@@ -26,10 +26,14 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import {SearchableView} from './SearchableView.js';  // eslint-disable-line no-unused-vars
+import {SplitWidget} from './SplitWidget.js';
+import {VBox} from './Widget.js';
+
 /**
  * @unrestricted
  */
-export default class Panel extends UI.VBox {
+export class Panel extends VBox {
   /**
    * @param {string} name
    */
@@ -50,7 +54,7 @@ export default class Panel extends UI.VBox {
   }
 
   /**
-   * @return {?UI.SearchableView}
+   * @return {?SearchableView}
    */
   searchableView() {
     return null;
@@ -76,14 +80,13 @@ export class PanelWithSidebar extends Panel {
   constructor(name, defaultWidth) {
     super(name);
 
-    this._panelSplitWidget =
-        new UI.SplitWidget(true, false, this._panelName + 'PanelSplitViewState', defaultWidth || 200);
+    this._panelSplitWidget = new SplitWidget(true, false, this._panelName + 'PanelSplitViewState', defaultWidth || 200);
     this._panelSplitWidget.show(this.element);
 
-    this._mainWidget = new UI.VBox();
+    this._mainWidget = new VBox();
     this._panelSplitWidget.setMainWidget(this._mainWidget);
 
-    this._sidebarWidget = new UI.VBox();
+    this._sidebarWidget = new VBox();
     this._sidebarWidget.setMinimumSize(100, 25);
     this._panelSplitWidget.setSidebarWidget(this._sidebarWidget);
 
@@ -105,24 +108,9 @@ export class PanelWithSidebar extends Panel {
   }
 
   /**
-   * @return {!UI.SplitWidget}
+   * @return {!SplitWidget}
    */
   splitWidget() {
     return this._panelSplitWidget;
   }
 }
-
-/* Legacy exported object*/
-self.UI = self.UI || {};
-
-/* Legacy exported object*/
-UI = UI || {};
-
-/** @constructor */
-UI.Panel = Panel;
-
-/** @constructor */
-UI.PanelWithSidebar = PanelWithSidebar;
-
-// For testing.
-UI.panels = {};

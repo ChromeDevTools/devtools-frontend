@@ -8,6 +8,7 @@
     "scripts": [
     ],
     "modules": [
+        "ui-legacy.js",
         "Action.js",
         "ActionDelegate.js",
         "ARIAUtils.js",
@@ -66,7 +67,14 @@
         "ShortcutsScreen.js",
         "Geometry.js",
         "XLink.js",
-        "XWidget.js"
+        "XWidget.js",
+        "utils/append-style.js",
+        "utils/create-shadow-root-with-core-styles.js",
+        "utils/focus-changed.js",
+        "utils/inject-core-styles.js",
+        "utils/measured-scrollbar-width.js",
+        "utils/register-custom-element.js",
+        "utils/utils.js"
     ],
     "resources": [
         "checkboxTextLabel.css",

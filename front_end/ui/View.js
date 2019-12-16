@@ -2,10 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {TabbedPane} from './TabbedPane.js';  // eslint-disable-line no-unused-vars
+import {ItemsProvider, Toolbar, ToolbarItem, ToolbarMenuButton} from './Toolbar.js';  // eslint-disable-line no-unused-vars
+import {VBox, Widget} from './Widget.js';
+
 /**
  * @interface
  */
-export default class View {
+export class View {
   /**
    * @return {string}
    */
@@ -31,13 +35,13 @@ export default class View {
   }
 
   /**
-   * @return {!Promise<!Array<!UI.ToolbarItem>>}
+   * @return {!Promise<!Array<!ToolbarItem>>}
    */
   toolbarItems() {
   }
 
   /**
-   * @return {!Promise<!UI.Widget>}
+   * @return {!Promise<!Widget>}
    */
   widget() {
   }
@@ -51,11 +55,15 @@ export default class View {
 export const _symbol = Symbol('view');
 export const _widgetSymbol = Symbol('widget');
 
+// Closure is unhappy with the private access of _widgetSymbol,
+// so re-export it under a public symbol.
+export const widgetSymbol = _widgetSymbol;
+
 /**
  * @implements {View}
  * @unrestricted
  */
-export class SimpleView extends UI.VBox {
+export class SimpleView extends VBox {
   /**
    * @param {string} title
    * @param {boolean=} isWebComponent
@@ -63,7 +71,7 @@ export class SimpleView extends UI.VBox {
   constructor(title, isWebComponent) {
     super(isWebComponent);
     this._title = title;
-    /** @type {!Array<!UI.ToolbarItem>} */
+    /** @type {!Array<!ToolbarItem>} */
     this._toolbarItems = [];
     this[_symbol] = this;
   }
@@ -102,14 +110,14 @@ export class SimpleView extends UI.VBox {
 
   /**
    * @override
-   * @return {!Promise<!Array<!UI.ToolbarItem>>}
+   * @return {!Promise<!Array<!ToolbarItem>>}
    */
   toolbarItems() {
     return Promise.resolve(this.syncToolbarItems());
   }
 
   /**
-   * @return {!Array<!UI.ToolbarItem>}
+   * @return {!Array<!ToolbarItem>}
    */
   syncToolbarItems() {
     return this._toolbarItems;
@@ -117,14 +125,15 @@ export class SimpleView extends UI.VBox {
 
   /**
    * @override
-   * @return {!Promise<!UI.Widget>}
+   * @return {!Promise<!Widget>}
    */
   widget() {
-    return /** @type {!Promise<!UI.Widget>} */ (Promise.resolve(this));
+    return (
+        /** @type {!Promise<!Widget>} */ (Promise.resolve(this)));
   }
 
   /**
-   * @param {!UI.ToolbarItem} item
+   * @param {!ToolbarItem} item
    */
   addToolbarItem(item) {
     this._toolbarItems.push(item);
@@ -190,33 +199,34 @@ export class ProvidedView {
 
   /**
    * @override
-   * @return {!Promise<!Array<!UI.ToolbarItem>>}
+   * @return {!Promise<!Array<!ToolbarItem>>}
    */
   toolbarItems() {
     const actionIds = this._extension.descriptor()['actionIds'];
     if (actionIds) {
-      const result = actionIds.split(',').map(id => UI.Toolbar.createActionButtonForId(id.trim()));
+      const result = actionIds.split(',').map(id => Toolbar.createActionButtonForId(id.trim()));
       return Promise.resolve(result);
     }
 
     if (this._extension.descriptor()['hasToolbar']) {
-      return this.widget().then(widget => /** @type {!UI.ToolbarItem.ItemsProvider} */ (widget).toolbarItems());
+      return this.widget().then(widget => /** @type {!ItemsProvider} */ (widget).toolbarItems());
     }
     return Promise.resolve([]);
   }
 
   /**
    * @override
-   * @return {!Promise<!UI.Widget>}
+   * @return {!Promise<!Widget>}
    */
   async widget() {
     this._widgetRequested = true;
     const widget = await this._extension.instance();
-    if (!(widget instanceof UI.Widget)) {
+    if (!(widget instanceof Widget)) {
       throw new Error('view className should point to a UI.Widget');
     }
     widget[_symbol] = this;
-    return /** @type {!UI.Widget} */ (widget);
+    return (
+        /** @type {!Widget} */ (widget));
   }
 
   /**
@@ -264,7 +274,7 @@ export class ViewLocation {
   }
 
   /**
-   * @return {!UI.Widget}
+   * @return {!Widget}
    */
   widget() {
   }
@@ -275,13 +285,13 @@ export class ViewLocation {
  */
 export class TabbedViewLocation extends ViewLocation {
   /**
-   * @return {!UI.TabbedPane}
+   * @return {!TabbedPane}
    */
   tabbedPane() {
   }
 
   /**
-   * @return {!UI.ToolbarMenuButton}
+   * @return {!ToolbarMenuButton}
    */
   enableMoreTabsButton() {
   }
@@ -298,30 +308,3 @@ export class ViewLocationResolver {
   resolveLocation(location) {
   }
 }
-
-/* Legacy exported object*/
-self.UI = self.UI || {};
-
-/* Legacy exported object*/
-UI = UI || {};
-
-/** @interface */
-UI.View = View;
-
-/** @public */
-UI.View.widgetSymbol = _widgetSymbol;
-
-/** @constructor */
-UI.SimpleView = SimpleView;
-
-/** @constructor */
-UI.ProvidedView = ProvidedView;
-
-/** @interface */
-UI.ViewLocation = ViewLocation;
-
-/** @interface */
-UI.TabbedViewLocation = TabbedViewLocation;
-
-/** @interface */
-UI.ViewLocationResolver = ViewLocationResolver;

@@ -28,6 +28,22 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+import {Dialog} from './Dialog.js';
+import {Size} from './Geometry.js';
+import {GlassPane, PointerEventsBehavior, SizeBehavior} from './GlassPane.js';
+import {Icon} from './Icon.js';
+import {KeyboardShortcut} from './KeyboardShortcut.js';
+import {Toolbar, ToolbarButton} from './Toolbar.js';  // eslint-disable-line no-unused-vars
+import {TreeOutline} from './Treeoutline.js';         // eslint-disable-line no-unused-vars
+import {appendStyle} from './utils/append-style.js';
+import {createShadowRootWithCoreStyles} from './utils/create-shadow-root-with-core-styles.js';
+import {focusChanged} from './utils/focus-changed.js';
+import {injectCoreStyles} from './utils/inject-core-styles.js';
+import {measuredScrollbarWidth} from './utils/measured-scrollbar-width.js';
+import {registerCustomElement} from './utils/register-custom-element.js';
+import {XLink} from './XLink.js';
+
 export const highlightedSearchResultClassName = 'highlighted-search-result';
 export const highlightedCurrentSearchResultClassName = 'current-search-result';
 
@@ -99,8 +115,8 @@ class DragHandler {
   _createGlassPane() {
     this._glassPaneInUse = true;
     if (!DragHandler._glassPaneUsageCount++) {
-      DragHandler._glassPane = new UI.GlassPane();
-      DragHandler._glassPane.setPointerEventsBehavior(UI.GlassPane.PointerEventsBehavior.BlockedByGlassPane);
+      DragHandler._glassPane = new GlassPane();
+      DragHandler._glassPane.setPointerEventsBehavior(PointerEventsBehavior.BlockedByGlassPane);
       DragHandler._glassPane.show(DragHandler._documentForMouseOut);
     }
   }
@@ -373,7 +389,7 @@ function _modifiedHexValue(hexString, event) {
   // If no shortcut keys are pressed then increase hex value by 1.
   // Keys can be pressed together to increase RGB channels. e.g trying different shades.
   let delta = 0;
-  if (UI.KeyboardShortcut.eventHasCtrlOrMeta(mouseEvent)) {
+  if (KeyboardShortcut.eventHasCtrlOrMeta(mouseEvent)) {
     delta += Math.pow(16, channelLen * 2);
   }
   if (mouseEvent.shiftKey) {
@@ -421,7 +437,7 @@ function _modifiedFloatNumber(number, event, modifierMultiplier) {
   // When alt is pressed, increase by 0.1.
   // Otherwise increase by 1.
   let delta = 1;
-  if (UI.KeyboardShortcut.eventHasCtrlOrMeta(mouseEvent)) {
+  if (KeyboardShortcut.eventHasCtrlOrMeta(mouseEvent)) {
     delta = 100;
   } else if (mouseEvent.shiftKey) {
     delta = 10;
@@ -735,61 +751,13 @@ export function asyncStackTraceLabel(description) {
  * @param {!Element} element
  */
 export function installComponentRootStyles(element) {
-  _injectCoreStyles(element);
+  injectCoreStyles(element);
   element.classList.add('platform-' + Host.platform());
 
   // Detect overlay scrollbar enable by checking for nonzero scrollbar width.
   if (!Host.isMac() && measuredScrollbarWidth(element.ownerDocument) === 0) {
     element.classList.add('overlay-scrollbar-enabled');
   }
-}
-
-/** @type {number} */
-let _measuredScrollbarWidth;
-
-/**
- * @param {?Document} document
- * @return {number}
- */
-export function measuredScrollbarWidth(document) {
-  if (typeof _measuredScrollbarWidth === 'number') {
-    return _measuredScrollbarWidth;
-  }
-  if (!document) {
-    return 16;
-  }
-  const scrollDiv = document.createElement('div');
-  scrollDiv.setAttribute('style', 'width: 100px; height: 100px; overflow: scroll;');
-  document.body.appendChild(scrollDiv);
-  _measuredScrollbarWidth = scrollDiv.offsetWidth - scrollDiv.clientWidth;
-  document.body.removeChild(scrollDiv);
-  return _measuredScrollbarWidth;
-}
-
-/**
- * @param {!Element} element
- * @param {string=} cssFile
- * @param {boolean=} delegatesFocus
- * @return {!DocumentFragment}
- */
-export function createShadowRootWithCoreStyles(element, cssFile, delegatesFocus) {
-  const shadowRoot = element.attachShadow({mode: 'open', delegatesFocus});
-  _injectCoreStyles(shadowRoot);
-  if (cssFile) {
-    appendStyle(shadowRoot, cssFile);
-  }
-  shadowRoot.addEventListener('focus', _focusChanged.bind(UI), true);
-  return shadowRoot;
-}
-
-/**
- * @param {!Element|!ShadowRoot} root
- */
-function _injectCoreStyles(root) {
-  appendStyle(root, 'ui/inspectorCommon.css');
-  appendStyle(root, 'ui/textButton.css');
-  UI.themeSupport.injectHighlightStyleSheets(root);
-  UI.themeSupport.injectCustomStyleSheets(root);
 }
 
 /**
@@ -825,25 +793,10 @@ function _windowBlurred(document, event) {
   }
 }
 
-/**
- * @param {!Event} event
- */
-function _focusChanged(event) {
-  const document = event.target && event.target.ownerDocument;
-  const element = document ? document.deepActiveElement() : null;
-  UI.Widget.focusWidgetForNode(element);
-  UI.XWidget.focusWidgetForNode(element);
-  if (!UI._keyboardFocus) {
-    return;
-  }
-
-  UI.markAsFocusedByKeyboard(element);
-}
-
-UI.markAsFocusedByKeyboard = function(element) {
+export function markAsFocusedByKeyboard(element) {
   element.setAttribute('data-keyboard-focus', 'true');
   element.addEventListener('blur', () => element.removeAttribute('data-keyboard-focus'), {once: true, capture: true});
-};
+}
 
 /**
  * @unrestricted
@@ -1035,7 +988,7 @@ export function revertDomChanges(domChanges) {
 /**
  * @param {!Element} element
  * @param {?Element=} containerElement
- * @return {!UI.Size}
+ * @return {!Size}
  */
 export function measurePreferredSize(element, containerElement) {
   const oldParent = element.parentElement;
@@ -1051,7 +1004,7 @@ export function measurePreferredSize(element, containerElement) {
   } else {
     element.remove();
   }
-  return new UI.Size(result.width, result.height);
+  return new Size(result.width, result.height);
 }
 
 /**
@@ -1219,7 +1172,7 @@ export class LongClickController extends Common.Object {
 
     /**
      * @param {!Event} e
-     * @this {UI.LongClickController}
+     * @this {LongClickController}
      */
     function keyUp(e) {
       if (this._editKey(e)) {
@@ -1230,7 +1183,7 @@ export class LongClickController extends Common.Object {
 
     /**
      * @param {!Event} e
-     * @this {UI.LongClickController}
+     * @this {LongClickController}
      */
     function mouseDown(e) {
       if (e.which !== 1) {
@@ -1274,7 +1227,7 @@ export function initializeUIUtils(document, themeSetting) {
   document.body.classList.toggle('inactive', !document.hasFocus());
   document.defaultView.addEventListener('focus', _windowFocused.bind(UI, document), false);
   document.defaultView.addEventListener('blur', _windowBlurred.bind(UI, document), false);
-  document.addEventListener('focus', _focusChanged.bind(UI), true);
+  document.addEventListener('focus', focusChanged.bind(UI), true);
   document.addEventListener('keydown', event => {
     UI._keyboardFocus = true;
     document.defaultView.requestAnimationFrame(() => void(UI._keyboardFocus = false));
@@ -1287,7 +1240,7 @@ export function initializeUIUtils(document, themeSetting) {
 
   const body = /** @type {!Element} */ (document.body);
   appendStyle(body, 'ui/inspectorStyle.css');
-  UI.GlassPane.setContainer(/** @type {!Element} */ (document.body));
+  GlassPane.setContainer(/** @type {!Element} */ (document.body));
 }
 
 /**
@@ -1296,24 +1249,6 @@ export function initializeUIUtils(document, themeSetting) {
  */
 export function beautifyFunctionName(name) {
   return name || Common.UIString('(anonymous)');
-}
-
-/**
- * @param {string} localName
- * @param {string} typeExtension
- * @param {function(new:HTMLElement, *)} definition
- * @return {function()}
- * @suppressGlobalPropertiesCheck
- */
-export function registerCustomElement(localName, typeExtension, definition) {
-  self.customElements.define(typeExtension, class extends definition {
-    constructor() {
-      super();
-      // TODO(einbinder) convert to classes and custom element tags
-      this.setAttribute('is', typeExtension);
-    }
-  }, {extends: localName});
-  return () => createElement(localName, typeExtension);
 }
 
 /**
@@ -1407,28 +1342,6 @@ export function createSlider(min, max, tabIndex) {
   element.sliderElement.step = 1;
   element.sliderElement.tabIndex = tabIndex;
   return element;
-}
-
-/**
- * @param {!Node} node
- * @param {string} cssFile
- * @suppressGlobalPropertiesCheck
- */
-export function appendStyle(node, cssFile) {
-  const content = Root.Runtime.cachedResources[cssFile] || '';
-  if (!content) {
-    console.error(cssFile + ' not preloaded. Check module.json');
-  }
-  let styleElement = createElement('style');
-  styleElement.textContent = content;
-  node.appendChild(styleElement);
-
-  const themeStyleSheet = UI.themeSupport.themeStyleSheet(cssFile, content);
-  if (themeStyleSheet) {
-    styleElement = createElement('style');
-    styleElement.textContent = themeStyleSheet + '\n' + Root.Runtime.resolveSourceURL(cssFile + '.theme');
-    node.appendChild(styleElement);
-  }
 }
 
 export class CheckboxLabel extends HTMLSpanElement {
@@ -1537,7 +1450,7 @@ registerCustomElement('span', 'dt-icon-label', class extends HTMLSpanElement {
   constructor() {
     super();
     const root = createShadowRootWithCoreStyles(this);
-    this._iconElement = UI.Icon.create();
+    this._iconElement = Icon.create();
     this._iconElement.style.setProperty('margin-right', '4px');
     root.appendChild(this._iconElement);
     root.createChild('slot');
@@ -1602,9 +1515,9 @@ registerCustomElement('div', 'dt-close-button', class extends HTMLDivElement {
     this._buttonElement = root.createChild('div', 'close-button');
     UI.ARIAUtils.setAccessibleName(this._buttonElement, ls`Close`);
     UI.ARIAUtils.markAsButton(this._buttonElement);
-    const regularIcon = UI.Icon.create('smallicon-cross', 'default-icon');
-    this._hoverIcon = UI.Icon.create('mediumicon-red-cross-hover', 'hover-icon');
-    this._activeIcon = UI.Icon.create('mediumicon-red-cross-active', 'active-icon');
+    const regularIcon = Icon.create('smallicon-cross', 'default-icon');
+    this._hoverIcon = Icon.create('mediumicon-red-cross-hover', 'hover-icon');
+    this._activeIcon = Icon.create('mediumicon-red-cross-active', 'active-icon');
     this._buttonElement.appendChild(regularIcon);
     this._buttonElement.appendChild(this._hoverIcon);
     this._buttonElement.appendChild(this._activeIcon);
@@ -2078,7 +1991,7 @@ ThemeSupport.ColorUsage = {
  * @return {!Element}
  */
 export function createDocumentationLink(article, title) {
-  return UI.XLink.create('https://developers.google.com/web/tools/chrome-devtools/' + article, title);
+  return XLink.create('https://developers.google.com/web/tools/chrome-devtools/' + article, title);
 }
 
 /**
@@ -2131,8 +2044,8 @@ export class MessageDialog {
    * @return {!Promise}
    */
   static async show(message, where) {
-    const dialog = new UI.Dialog();
-    dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.MeasureContent);
+    const dialog = new Dialog();
+    dialog.setSizeBehavior(SizeBehavior.MeasureContent);
     dialog.setDimmed(true);
     const shadowRoot = createShadowRootWithCoreStyles(dialog.contentElement, 'ui/confirmDialog.css');
     const content = shadowRoot.createChild('div', 'widget');
@@ -2158,8 +2071,8 @@ export class ConfirmDialog {
    * @return {!Promise<boolean>}
    */
   static async show(message, where) {
-    const dialog = new UI.Dialog();
-    dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.MeasureContent);
+    const dialog = new Dialog();
+    dialog.setSizeBehavior(SizeBehavior.MeasureContent);
     dialog.setDimmed(true);
     const shadowRoot = createShadowRootWithCoreStyles(dialog.contentElement, 'ui/confirmDialog.css');
     const content = shadowRoot.createChild('div', 'widget');
@@ -2180,14 +2093,14 @@ export class ConfirmDialog {
 }
 
 /**
- * @param {!UI.ToolbarButton} toolbarButton
+ * @param {!ToolbarButton} toolbarButton
  * @return {!Element}
  */
 export function createInlineButton(toolbarButton) {
   const element = createElement('span');
   const shadowRoot = createShadowRootWithCoreStyles(element, 'ui/inlineButton.css');
   element.classList.add('inline-button');
-  const toolbar = new UI.Toolbar('');
+  const toolbar = new Toolbar('');
   toolbar.appendToolbarItem(toolbarButton);
   shadowRoot.appendChild(toolbar.element);
   return element;
@@ -2246,7 +2159,7 @@ export class Renderer {
   /**
    * @param {!Object} object
    * @param {!UI.Renderer.Options=} options
-   * @return {!Promise<?{node: !Node, tree: ?UI.TreeOutline}>}
+   * @return {!Promise<?{node: !Node, tree: ?TreeOutline}>}
    */
   render(object, options) {
   }
@@ -2255,7 +2168,7 @@ export class Renderer {
 /**
    * @param {!Object} object
    * @param {!UI.Renderer.Options=} options
-   * @return {!Promise<?{node: !Node, tree: ?UI.TreeOutline}>}
+   * @return {!Promise<?{node: !Node, tree: ?TreeOutline}>}
    */
 Renderer.render = async function(object, options) {
   if (!object) {
@@ -2287,90 +2200,3 @@ export function formatTimestamp(timestamp, full) {
     return valueString.padStart(length, '0');
   }
 }
-
-/* Legacy exported object*/
-self.UI = self.UI || {};
-
-/* Legacy exported object*/
-UI = UI || {};
-
-/** @type {?ThemeSupport} */
-UI.themeSupport;
-
-UI.highlightedSearchResultClassName = highlightedSearchResultClassName;
-UI.highlightedCurrentSearchResultClassName = highlightedCurrentSearchResultClassName;
-UI.StyleValueDelimiters = StyleValueDelimiters;
-UI.MaxLengthForDisplayedURLs = MaxLengthForDisplayedURLs;
-
-/** @constructor */
-UI.ElementFocusRestorer = ElementFocusRestorer;
-
-/** @constructor */
-UI.LongClickController = LongClickController;
-
-/** @constructor */
-UI.ThemeSupport = ThemeSupport;
-
-/** @constructor */
-UI.MessageDialog = MessageDialog;
-
-/** @constructor */
-UI.ConfirmDialog = ConfirmDialog;
-
-/** @constructor */
-UI.CheckboxLabel = CheckboxLabel;
-
-/** @interface */
-UI.Renderer = Renderer;
-
-/** @typedef {!{title: (string|!Element|undefined), editable: (boolean|undefined) }} */
-UI.Renderer.Options;
-
-UI.installDragHandle = installDragHandle;
-UI.elementDragStart = elementDragStart;
-UI.isBeingEdited = isBeingEdited;
-UI.isEditing = isEditing;
-UI.markBeingEdited = markBeingEdited;
-UI.createReplacementString = createReplacementString;
-UI.handleElementValueModifications = handleElementValueModifications;
-UI.formatLocalized = formatLocalized;
-UI.openLinkExternallyLabel = openLinkExternallyLabel;
-UI.copyLinkAddressLabel = copyLinkAddressLabel;
-UI.anotherProfilerActiveLabel = anotherProfilerActiveLabel;
-UI.asyncStackTraceLabel = asyncStackTraceLabel;
-UI.installComponentRootStyles = installComponentRootStyles;
-UI.measuredScrollbarWidth = measuredScrollbarWidth;
-UI.createShadowRootWithCoreStyles = createShadowRootWithCoreStyles;
-UI.highlightSearchResult = highlightSearchResult;
-UI.highlightSearchResults = highlightSearchResults;
-UI.runCSSAnimationOnce = runCSSAnimationOnce;
-UI.highlightRangesWithStyleClass = highlightRangesWithStyleClass;
-UI.applyDomChanges = applyDomChanges;
-UI.revertDomChanges = revertDomChanges;
-UI.measurePreferredSize = measurePreferredSize;
-UI.startBatchUpdate = startBatchUpdate;
-UI.endBatchUpdate = endBatchUpdate;
-UI.invokeOnceAfterBatchUpdate = invokeOnceAfterBatchUpdate;
-UI.animateFunction = animateFunction;
-UI.initializeUIUtils = initializeUIUtils;
-UI.beautifyFunctionName = beautifyFunctionName;
-UI.registerCustomElement = registerCustomElement;
-UI.createTextButton = createTextButton;
-UI.createInput = createInput;
-UI.createLabel = createLabel;
-UI.createRadioLabel = createRadioLabel;
-UI.createIconLabel = createIconLabel;
-UI.createSlider = createSlider;
-UI.appendStyle = appendStyle;
-UI.bindInput = bindInput;
-UI.trimText = trimText;
-UI.trimTextMiddle = trimTextMiddle;
-UI.trimTextEnd = trimTextEnd;
-UI.measureTextWidth = measureTextWidth;
-UI.createDocumentationLink = createDocumentationLink;
-UI.loadImage = loadImage;
-UI.loadImageFromData = loadImageFromData;
-UI.createFileSelectorElement = createFileSelectorElement;
-UI.createInlineButton = createInlineButton;
-UI.createExpandableText = createExpandableText;
-UI.formatTimestamp = formatTimestamp;

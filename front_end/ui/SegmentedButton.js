@@ -2,7 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-export default class SegmentedButton extends UI.HBox {
+import {HBox} from './Widget.js';
+
+export class SegmentedButton extends HBox {
   constructor() {
     super(true);
     /** @type {!Map<string, !Element>} */
@@ -47,9 +49,3 @@ export default class SegmentedButton extends UI.HBox {
     return this._selected;
   }
 }
-
-/* Legacy exported object*/
-self.UI = self.UI || {};
-
-/* Legacy exported object*/
-UI = UI || {};

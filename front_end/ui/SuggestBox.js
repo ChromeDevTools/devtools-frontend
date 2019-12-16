@@ -27,6 +27,16 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+import {Size} from './Geometry.js';
+import {AnchorBehavior, GlassPane} from './GlassPane.js';
+import {Icon} from './Icon.js';
+import {ListControl, ListDelegate, ListMode} from './ListControl.js';  // eslint-disable-line no-unused-vars
+import {ListModel} from './ListModel.js';
+import {measurePreferredSize} from './UIUtils.js';
+import {createShadowRootWithCoreStyles} from './utils/create-shadow-root-with-core-styles.js';
+import {measuredScrollbarWidth} from './utils/measured-scrollbar-width.js';
+
 /**
  * @interface
  */
@@ -46,9 +56,9 @@ export class SuggestBoxDelegate {
 }
 
 /**
- * @implements {UI.ListDelegate}
+ * @implements {ListDelegate}
  */
-export default class SuggestBox {
+export class SuggestBox {
   /**
    * @param {!SuggestBoxDelegate} suggestBoxDelegate
    * @param {number=} maxItemsHeight
@@ -63,19 +73,19 @@ export default class SuggestBox {
     /** @type {?UI.SuggestBox.Suggestion} */
     this._onlyCompletion = null;
 
-    /** @type {!UI.ListModel<!UI.SuggestBox.Suggestion>} */
-    this._items = new UI.ListModel();
-    /** @type {!UI.ListControl<!UI.SuggestBox.Suggestion>} */
-    this._list = new UI.ListControl(this._items, this, UI.ListMode.EqualHeightItems);
+    /** @type {!ListModel<!UI.SuggestBox.Suggestion>} */
+    this._items = new ListModel();
+    /** @type {!ListControl<!UI.SuggestBox.Suggestion>} */
+    this._list = new ListControl(this._items, this, ListMode.EqualHeightItems);
     this._element = this._list.element;
     this._element.classList.add('suggest-box');
     this._element.addEventListener('mousedown', event => event.preventDefault(), true);
     this._element.addEventListener('click', this._onClick.bind(this), false);
 
-    this._glassPane = new UI.GlassPane();
-    this._glassPane.setAnchorBehavior(UI.GlassPane.AnchorBehavior.PreferBottom);
+    this._glassPane = new GlassPane();
+    this._glassPane.setAnchorBehavior(AnchorBehavior.PreferBottom);
     this._glassPane.setOutsideClickCallback(this.hide.bind(this));
-    const shadowRoot = UI.createShadowRootWithCoreStyles(this._glassPane.contentElement, 'ui/suggestBox.css');
+    const shadowRoot = createShadowRootWithCoreStyles(this._glassPane.contentElement, 'ui/suggestBox.css');
     shadowRoot.appendChild(this._element);
   }
 
@@ -94,7 +104,7 @@ export default class SuggestBox {
   }
 
   /**
-   * @param {!UI.GlassPane.AnchorBehavior} behavior
+   * @param {!AnchorBehavior} behavior
    */
   setAnchorBehavior(behavior) {
     this._glassPane.setAnchorBehavior(behavior);
@@ -107,7 +117,7 @@ export default class SuggestBox {
     const maxWidth = this._maxWidth(items);
     const length = this._maxItemsHeight ? Math.min(this._maxItemsHeight, items.length) : items.length;
     const maxHeight = length * this._rowHeight;
-    this._glassPane.setMaxContentSize(new UI.Size(maxWidth, maxHeight));
+    this._glassPane.setMaxContentSize(new Size(maxWidth, maxHeight));
   }
 
   /**
@@ -130,7 +140,7 @@ export default class SuggestBox {
     }
     const element = this.createElementForItem(/** @type {!UI.SuggestBox.Suggestion} */ (maxItem));
     const preferredWidth =
-        UI.measurePreferredSize(element, this._element).width + UI.measuredScrollbarWidth(this._element.ownerDocument);
+        measurePreferredSize(element, this._element).width + measuredScrollbarWidth(this._element.ownerDocument);
     return Math.min(kMaxWidth, preferredWidth);
   }
 
@@ -144,7 +154,7 @@ export default class SuggestBox {
     // TODO(dgozman): take document as a parameter.
     this._glassPane.show(document);
     this._rowHeight =
-        UI.measurePreferredSize(this.createElementForItem({text: '1', subtitle: '12'}), this._element).height;
+        measurePreferredSize(this.createElementForItem({text: '1', subtitle: '12'}), this._element).height;
   }
 
   hide() {
@@ -197,7 +207,7 @@ export default class SuggestBox {
     const query = this._userEnteredText;
     const element = createElementWithClass('div', 'suggest-box-content-item source-code');
     if (item.iconType) {
-      const icon = UI.Icon.create(item.iconType, 'suggestion-icon');
+      const icon = Icon.create(item.iconType, 'suggestion-icon');
       element.appendChild(icon);
     }
     if (item.isSecondary) {
@@ -379,35 +389,3 @@ export default class SuggestBox {
     return hasSelectedItem;
   }
 }
-
-/* Legacy exported object*/
-self.UI = self.UI || {};
-
-/* Legacy exported object*/
-UI = UI || {};
-
-/** @constructor */
-UI.SuggestBox = SuggestBox;
-
-/** @interface */
-UI.SuggestBoxDelegate = SuggestBoxDelegate;
-
-/**
- * @typedef {{
-  *      text: string,
-  *      title: (string|undefined),
-  *      subtitle: (string|undefined),
-  *      iconType: (string|undefined),
-  *      priority: (number|undefined),
-  *      isSecondary: (boolean|undefined),
-  *      subtitleRenderer: (function():!Element|undefined),
-  *      selectionRange: ({startColumn: number, endColumn: number}|undefined),
-  *      hideGhostText: (boolean|undefined)
-  * }}
-  */
-UI.SuggestBox.Suggestion;
-
-/**
-  * @typedef {!Array<!UI.SuggestBox.Suggestion>}
-  */
-UI.SuggestBox.Suggestions;

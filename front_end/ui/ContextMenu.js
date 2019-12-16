@@ -28,6 +28,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import {SoftContextMenu} from './SoftContextMenu.js';
+
 /**
  * @unrestricted
  */
@@ -146,10 +148,10 @@ export class Section {
   }
 
   /**
-   * @return {!UI.ContextMenuItem}
+   * @return {!Item}
    */
   appendSeparator() {
-    const item = new UI.ContextMenuItem(this._contextMenu, 'separator');
+    const item = new Item(this._contextMenu, 'separator');
     this._items.push(item);
     return item;
   }
@@ -358,7 +360,7 @@ Item._uniqueSectionName = 0;
 /**
  * @unrestricted
  */
-export default class ContextMenu extends SubMenu {
+export class ContextMenu extends SubMenu {
   /**
    * @param {!Event} event
    * @param {boolean=} useSoftMenu
@@ -460,7 +462,7 @@ export default class ContextMenu extends SubMenu {
   _innerShow() {
     const menuObject = this._buildMenuDescriptors();
     if (this._useSoftMenu || ContextMenu._useSoftMenu || Host.InspectorFrontendHost.isHostedMode()) {
-      this._softMenu = new UI.SoftContextMenu(menuObject, this._itemSelected.bind(this));
+      this._softMenu = new SoftContextMenu(menuObject, this._itemSelected.bind(this));
       this._softMenu.show(this._event.target.ownerDocument, new AnchorBox(this._x, this._y, 0, 0));
     } else {
       Host.InspectorFrontendHost.showContextMenuAtPoint(this._x, this._y, menuObject, this._event.target.ownerDocument);
@@ -568,31 +570,4 @@ export class Provider {
   appendApplicableItems(event, contextMenu, target) {}
 }
 
-/* Legacy exported object*/
-self.UI = self.UI || {};
-
-/* Legacy exported object*/
-UI = UI || {};
-
-/** @constructor */
-UI.ContextMenu = ContextMenu;
-
 ContextMenu._groupWeights = _groupWeights;
-
-/**
- * @constructor
- */
-UI.ContextMenuItem = Item;
-
-/**
- * @constructor
- */
-UI.ContextMenuSection = Section;
-
-/** @constructor */
-UI.ContextSubMenu = SubMenu;
-
-/**
- * @interface
- */
-UI.ContextMenu.Provider = Provider;

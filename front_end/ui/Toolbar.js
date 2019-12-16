@@ -28,10 +28,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import {Action, Events as ActionEvents} from './Action.js';  // eslint-disable-line no-unused-vars
+import {ContextMenu} from './ContextMenu.js';
+import {GlassPane, PointerEventsBehavior} from './GlassPane.js';
+import {Icon} from './Icon.js';
+import {bindCheckbox} from './SettingsUI.js';
+import {Events as TextPromptEvents, TextPrompt} from './TextPrompt.js';
+import {Tooltip} from './Tooltip.js';
+import {CheckboxLabel, LongClickController} from './UIUtils.js';
+import {createShadowRootWithCoreStyles} from './utils/create-shadow-root-with-core-styles.js';
+
 /**
  * @unrestricted
  */
-export default class Toolbar {
+export class Toolbar {
   /**
    * @param {string} className
    * @param {!Element=} parentElement
@@ -43,29 +53,29 @@ export default class Toolbar {
     this.element.className = className;
     this.element.classList.add('toolbar');
     this._enabled = true;
-    this._shadowRoot = UI.createShadowRootWithCoreStyles(this.element, 'ui/toolbar.css');
+    this._shadowRoot = createShadowRootWithCoreStyles(this.element, 'ui/toolbar.css');
     this._contentElement = this._shadowRoot.createChild('div', 'toolbar-shadow');
     this._insertionPoint = this._contentElement.createChild('slot');
   }
 
   /**
-   * @param {!UI.Action} action
+   * @param {!Action} action
    * @param {!Array<!ToolbarButton>} toggledOptions
    * @param {!Array<!ToolbarButton>} untoggledOptions
    * @return {!ToolbarButton}
    */
   static createLongPressActionButton(action, toggledOptions, untoggledOptions) {
-    const button = UI.Toolbar.createActionButton(action);
-    const mainButtonClone = UI.Toolbar.createActionButton(action);
+    const button = Toolbar.createActionButton(action);
+    const mainButtonClone = Toolbar.createActionButton(action);
 
-    /** @type {?UI.LongClickController} */
+    /** @type {?LongClickController} */
     let longClickController = null;
     /** @type {?Array<!ToolbarButton>} */
     let longClickButtons = null;
     /** @type {?Element} */
     let longClickGlyph = null;
 
-    action.addEventListener(UI.Action.Events.Toggled, updateOptions);
+    action.addEventListener(ActionEvents.Toggled, updateOptions);
     updateOptions();
     return button;
 
@@ -74,8 +84,8 @@ export default class Toolbar {
 
       if (buttons && buttons.length) {
         if (!longClickController) {
-          longClickController = new UI.LongClickController(button.element, showOptions);
-          longClickGlyph = UI.Icon.create('largeicon-longclick-triangle', 'long-click-glyph');
+          longClickController = new LongClickController(button.element, showOptions);
+          longClickGlyph = Icon.create('largeicon-longclick-triangle', 'long-click-glyph');
           button.element.appendChild(longClickGlyph);
           longClickButtons = buttons;
         }
@@ -97,14 +107,14 @@ export default class Toolbar {
       const document = button.element.ownerDocument;
       document.documentElement.addEventListener('mouseup', mouseUp, false);
 
-      const optionsGlassPane = new UI.GlassPane();
-      optionsGlassPane.setPointerEventsBehavior(UI.GlassPane.PointerEventsBehavior.BlockedByGlassPane);
+      const optionsGlassPane = new GlassPane();
+      optionsGlassPane.setPointerEventsBehavior(PointerEventsBehavior.BlockedByGlassPane);
       optionsGlassPane.show(document);
-      const optionsBar = new UI.Toolbar('fill', optionsGlassPane.contentElement);
+      const optionsBar = new Toolbar('fill', optionsGlassPane.contentElement);
       optionsBar._contentElement.classList.add('floating');
       const buttonHeight = 26;
 
-      const hostButtonPosition = button.element.boxInWindow().relativeToElement(UI.GlassPane.container(document));
+      const hostButtonPosition = button.element.boxInWindow().relativeToElement(GlassPane.container(document));
 
       const topNotBottom = hostButtonPosition.y + buttonHeight * buttons.length < document.documentElement.offsetHeight;
 
@@ -163,7 +173,7 @@ export default class Toolbar {
   }
 
   /**
-   * @param {!UI.Action} action
+   * @param {!Action} action
    * @param {boolean=} showLabel
    * @return {!ToolbarButton}
    */
@@ -174,7 +184,7 @@ export default class Toolbar {
       button.setText(action.title());
     }
     button.addEventListener(ToolbarButton.Events.Click, action.execute, action);
-    action.addEventListener(UI.Action.Events.Enabled, enabledChanged);
+    action.addEventListener(ActionEvents.Enabled, enabledChanged);
     button.setEnabled(action.enabled());
     return button;
 
@@ -185,7 +195,7 @@ export default class Toolbar {
     function makeButton() {
       const button = new ToolbarButton(action.title(), action.icon());
       if (action.title()) {
-        UI.Tooltip.install(button.element, action.title(), action.id());
+        Tooltip.install(button.element, action.title(), action.id());
       }
       return button;
     }
@@ -196,14 +206,14 @@ export default class Toolbar {
     function makeToggle() {
       const toggleButton = new ToolbarToggle(action.title(), action.icon(), action.toggledIcon());
       toggleButton.setToggleWithRedColor(action.toggleWithRedColor());
-      action.addEventListener(UI.Action.Events.Toggled, toggled);
+      action.addEventListener(ActionEvents.Toggled, toggled);
       toggled();
       return toggleButton;
 
       function toggled() {
         toggleButton.setToggled(action.toggled());
         if (action.title()) {
-          UI.Tooltip.install(toggleButton.element, action.title(), action.id());
+          Tooltip.install(toggleButton.element, action.title(), action.id());
         }
       }
     }
@@ -223,7 +233,7 @@ export default class Toolbar {
    */
   static createActionButtonForId(actionId, showLabel) {
     const action = UI.actionRegistry.action(actionId);
-    return UI.Toolbar.createActionButton(/** @type {!UI.Action} */ (action), showLabel);
+    return Toolbar.createActionButton(/** @type {!Action} */ (action), showLabel);
   }
 
   /**
@@ -373,7 +383,7 @@ export default class Toolbar {
         return new ToolbarSeparator();
       }
       if (descriptor['actionId']) {
-        return UI.Toolbar.createActionButtonForId(descriptor['actionId'], descriptor['showLabel']);
+        return Toolbar.createActionButtonForId(descriptor['actionId'], descriptor['showLabel']);
       }
       return extension.instance().then(p => p.item());
     }));
@@ -405,7 +415,7 @@ export class ToolbarItem extends Common.Object {
     }
     this._title = title;
     UI.ARIAUtils.setAccessibleName(this.element, title);
-    UI.Tooltip.install(this.element, title);
+    Tooltip.install(this.element, title);
   }
 
   /**
@@ -494,7 +504,7 @@ export class ToolbarButton extends ToolbarItem {
     this.element.addEventListener('click', this._clicked.bind(this), false);
     this.element.addEventListener('mousedown', this._mouseDown.bind(this), false);
 
-    this._glyphElement = UI.Icon.create('', 'toolbar-glyph hidden');
+    this._glyphElement = Icon.create('', 'toolbar-glyph hidden');
     this.element.appendChild(this._glyphElement);
     this._textElement = this.element.createChild('div', 'toolbar-text hidden');
 
@@ -551,7 +561,7 @@ export class ToolbarButton extends ToolbarItem {
    */
   turnIntoSelect(width) {
     this.element.classList.add('toolbar-has-dropdown');
-    const dropdownArrowIcon = UI.Icon.create('smallicon-triangle-down', 'toolbar-dropdown-arrow');
+    const dropdownArrowIcon = Icon.create('smallicon-triangle-down', 'toolbar-dropdown-arrow');
     this.element.appendChild(dropdownArrowIcon);
     if (width) {
       this.element.style.width = width + 'px';
@@ -601,7 +611,7 @@ export class ToolbarInput extends ToolbarItem {
     internalPromptElement.addEventListener('focus', () => this.element.classList.add('focused'));
     internalPromptElement.addEventListener('blur', () => this.element.classList.remove('focused'));
 
-    this._prompt = new UI.TextPrompt();
+    this._prompt = new TextPrompt();
     this._proxyElement = this._prompt.attach(internalPromptElement);
     this._proxyElement.classList.add('toolbar-prompt-proxy');
     this._proxyElement.addEventListener('keydown', event => this._onKeydownCallback(event));
@@ -610,7 +620,7 @@ export class ToolbarInput extends ToolbarItem {
       this._prompt.setTitle(tooltip);
     }
     this._prompt.setPlaceholder(placeholder, accessiblePlaceholder);
-    this._prompt.addEventListener(UI.TextPrompt.Events.TextChanged, this._onChangeCallback.bind(this));
+    this._prompt.addEventListener(TextPromptEvents.TextChanged, this._onChangeCallback.bind(this));
 
     if (growFactor) {
       this.element.style.flexGrow = growFactor;
@@ -620,7 +630,7 @@ export class ToolbarInput extends ToolbarItem {
     }
 
     const clearButton = this.element.createChild('div', 'toolbar-input-clear-button');
-    clearButton.appendChild(UI.Icon.create('mediumicon-gray-cross-hover', 'search-cancel-button'));
+    clearButton.appendChild(Icon.create('mediumicon-gray-cross-hover', 'search-cancel-button'));
     clearButton.addEventListener('click', () => {
       this.setValue('', true);
       this._prompt.focus();
@@ -743,7 +753,7 @@ export class ToolbarToggle extends ToolbarButton {
  */
 export class ToolbarMenuButton extends ToolbarButton {
   /**
-   * @param {function(!UI.ContextMenu)} contextMenuHandler
+   * @param {function(!ContextMenu)} contextMenuHandler
    * @param {boolean=} useSoftMenu
    */
   constructor(contextMenuHandler, useSoftMenu) {
@@ -779,7 +789,7 @@ export class ToolbarMenuButton extends ToolbarButton {
     if (this._lastTriggerTime && Date.now() - this._lastTriggerTime < 300) {
       return;
     }
-    const contextMenu = new UI.ContextMenu(
+    const contextMenu = new ContextMenu(
         event, this._useSoftMenu, this.element.totalOffsetLeft(),
         this.element.totalOffsetTop() + this.element.offsetHeight);
     this._contextMenuHandler(contextMenu);
@@ -877,7 +887,7 @@ export class ToolbarComboBox extends ToolbarItem {
     super(createElementWithClass('span', 'toolbar-select-container'));
 
     this._selectElement = this.element.createChild('select', 'toolbar-item');
-    const dropdownArrowIcon = UI.Icon.create('smallicon-triangle-down', 'toolbar-dropdown-arrow');
+    const dropdownArrowIcon = Icon.create('smallicon-triangle-down', 'toolbar-dropdown-arrow');
     this.element.appendChild(dropdownArrowIcon);
     if (changeHandler) {
       this._selectElement.addEventListener('change', changeHandler, false);
@@ -1073,7 +1083,7 @@ export class ToolbarCheckbox extends ToolbarItem {
    * @param {function()=} listener
    */
   constructor(text, tooltip, listener) {
-    super(UI.CheckboxLabel.create(text));
+    super(CheckboxLabel.create(text));
     this.element.classList.add('checkbox');
     this.inputElement = this.element.checkboxElement;
     if (tooltip) {
@@ -1116,57 +1126,6 @@ export class ToolbarSettingCheckbox extends ToolbarCheckbox {
    */
   constructor(setting, tooltip, alternateTitle) {
     super(alternateTitle || setting.title() || '', tooltip);
-    UI.SettingsUI.bindCheckbox(this.inputElement, setting);
+    bindCheckbox(this.inputElement, setting);
   }
 }
-
-/* Legacy exported object*/
-self.UI = self.UI || {};
-
-/* Legacy exported object*/
-UI = UI || {};
-
-/** @constructor */
-UI.Toolbar = Toolbar;
-
-/** @constructor */
-UI.ToolbarItem = ToolbarItem;
-
-/** @constructor */
-UI.ToolbarText = ToolbarText;
-
-/** @constructor */
-UI.ToolbarButton = ToolbarButton;
-
-/** @constructor */
-UI.ToolbarInput = ToolbarInput;
-
-/** @constructor */
-UI.ToolbarToggle = ToolbarToggle;
-
-/** @constructor */
-UI.ToolbarMenuButton = ToolbarMenuButton;
-
-/** @constructor */
-UI.ToolbarSettingToggle = ToolbarSettingToggle;
-
-/** @constructor */
-UI.ToolbarSeparator = ToolbarSeparator;
-
-/** @interface */
-UI.ToolbarItem.Provider = Provider;
-
-/** @interface */
-UI.ToolbarItem.ItemsProvider = ItemsProvider;
-
-/** @constructor */
-UI.ToolbarComboBox = ToolbarComboBox;
-
-/** @constructor */
-UI.ToolbarSettingComboBox = ToolbarSettingComboBox;
-
-/** @constructor */
-UI.ToolbarCheckbox = ToolbarCheckbox;
-
-/** @constructor */
-UI.ToolbarSettingCheckbox = ToolbarSettingCheckbox;

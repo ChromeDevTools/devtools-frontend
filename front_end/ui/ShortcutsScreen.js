@@ -28,10 +28,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import {KeyboardShortcut, Keys, Modifiers} from './KeyboardShortcut.js';
+import {createDocumentationLink} from './UIUtils.js';
+import {Widget} from './Widget.js';
+
 /**
  * @unrestricted
  */
-export default class ShortcutsScreen {
+export class ShortcutsScreen {
   constructor() {
     /** @type {!Object.<string, !ShortcutsSection>} */
     this._sections = {};
@@ -218,7 +222,7 @@ export default class ShortcutsScreen {
   }
 
   /**
-   * @return {!UI.Widget}
+   * @return {!Widget}
    */
   createShortcutsTabView() {
     const orderedSections = [];
@@ -230,7 +234,7 @@ export default class ShortcutsScreen {
     }
     orderedSections.sort(compareSections);
 
-    const widget = new UI.Widget();
+    const widget = new Widget();
 
     widget.element.className = 'settings-tab-container';  // Override
     widget.element.createChild('header').createChild('h1').createTextChild(ls`Shortcuts`);
@@ -242,18 +246,12 @@ export default class ShortcutsScreen {
     }
 
     const note = scrollPane.createChild('p', 'settings-footnote');
-    note.appendChild(UI.createDocumentationLink(
+    note.appendChild(createDocumentationLink(
         'iterate/inspect-styles/shortcuts', Common.UIString('Full list of DevTools keyboard shortcuts and gestures')));
 
     return widget;
   }
 }
-
-/**
- * We cannot initialize it here as localized strings are not loaded yet.
- * @type {!ShortcutsScreen}
- */
-UI.shortcutsScreen;
 
 /**
  * @unrestricted
@@ -373,134 +371,95 @@ ShortcutsSection._sequenceNumber = 0;
 
 
 const ElementsPanelShortcuts = {
-  NavigateUp: [UI.KeyboardShortcut.makeDescriptor(UI.KeyboardShortcut.Keys.Up)],
+  NavigateUp: [KeyboardShortcut.makeDescriptor(Keys.Up)],
 
-  NavigateDown: [UI.KeyboardShortcut.makeDescriptor(UI.KeyboardShortcut.Keys.Down)],
+  NavigateDown: [KeyboardShortcut.makeDescriptor(Keys.Down)],
 
-  Expand: [UI.KeyboardShortcut.makeDescriptor(UI.KeyboardShortcut.Keys.Right)],
+  Expand: [KeyboardShortcut.makeDescriptor(Keys.Right)],
 
-  Collapse: [UI.KeyboardShortcut.makeDescriptor(UI.KeyboardShortcut.Keys.Left)],
+  Collapse: [KeyboardShortcut.makeDescriptor(Keys.Left)],
 
-  EditAttribute: [UI.KeyboardShortcut.makeDescriptor(UI.KeyboardShortcut.Keys.Enter)],
+  EditAttribute: [KeyboardShortcut.makeDescriptor(Keys.Enter)],
 
-  NextProperty: [UI.KeyboardShortcut.makeDescriptor(UI.KeyboardShortcut.Keys.Tab)],
+  NextProperty: [KeyboardShortcut.makeDescriptor(Keys.Tab)],
 
-  PreviousProperty:
-      [UI.KeyboardShortcut.makeDescriptor(UI.KeyboardShortcut.Keys.Tab, UI.KeyboardShortcut.Modifiers.Shift)],
+  PreviousProperty: [KeyboardShortcut.makeDescriptor(Keys.Tab, Modifiers.Shift)],
 
-  IncrementValue: [UI.KeyboardShortcut.makeDescriptor(UI.KeyboardShortcut.Keys.Up)],
+  IncrementValue: [KeyboardShortcut.makeDescriptor(Keys.Up)],
 
-  DecrementValue: [UI.KeyboardShortcut.makeDescriptor(UI.KeyboardShortcut.Keys.Down)],
+  DecrementValue: [KeyboardShortcut.makeDescriptor(Keys.Down)],
 
-  IncrementBy10: [
-    UI.KeyboardShortcut.makeDescriptor(UI.KeyboardShortcut.Keys.PageUp),
-    UI.KeyboardShortcut.makeDescriptor(UI.KeyboardShortcut.Keys.Up, UI.KeyboardShortcut.Modifiers.Shift)
-  ],
+  IncrementBy10:
+      [KeyboardShortcut.makeDescriptor(Keys.PageUp), KeyboardShortcut.makeDescriptor(Keys.Up, Modifiers.Shift)],
 
-  DecrementBy10: [
-    UI.KeyboardShortcut.makeDescriptor(UI.KeyboardShortcut.Keys.PageDown),
-    UI.KeyboardShortcut.makeDescriptor(UI.KeyboardShortcut.Keys.Down, UI.KeyboardShortcut.Modifiers.Shift)
-  ],
+  DecrementBy10:
+      [KeyboardShortcut.makeDescriptor(Keys.PageDown), KeyboardShortcut.makeDescriptor(Keys.Down, Modifiers.Shift)],
 
-  IncrementBy100:
-      [UI.KeyboardShortcut.makeDescriptor(UI.KeyboardShortcut.Keys.PageUp, UI.KeyboardShortcut.Modifiers.Shift)],
+  IncrementBy100: [KeyboardShortcut.makeDescriptor(Keys.PageUp, Modifiers.Shift)],
 
-  DecrementBy100:
-      [UI.KeyboardShortcut.makeDescriptor(UI.KeyboardShortcut.Keys.PageDown, UI.KeyboardShortcut.Modifiers.Shift)],
+  DecrementBy100: [KeyboardShortcut.makeDescriptor(Keys.PageDown, Modifiers.Shift)],
 
-  IncrementBy01: [UI.KeyboardShortcut.makeDescriptor(UI.KeyboardShortcut.Keys.Up, UI.KeyboardShortcut.Modifiers.Alt)],
+  IncrementBy01: [KeyboardShortcut.makeDescriptor(Keys.Up, Modifiers.Alt)],
 
-  DecrementBy01: [UI.KeyboardShortcut.makeDescriptor(UI.KeyboardShortcut.Keys.Down, UI.KeyboardShortcut.Modifiers.Alt)]
+  DecrementBy01: [KeyboardShortcut.makeDescriptor(Keys.Down, Modifiers.Alt)]
 };
 
 const ConsolePanelShortcuts = {
-  AcceptSuggestion: [
-    UI.KeyboardShortcut.makeDescriptor(UI.KeyboardShortcut.Keys.Tab),
-    UI.KeyboardShortcut.makeDescriptor(UI.KeyboardShortcut.Keys.Right)
-  ],
+  AcceptSuggestion: [KeyboardShortcut.makeDescriptor(Keys.Tab), KeyboardShortcut.makeDescriptor(Keys.Right)],
 
-  ClearConsolePrompt: [UI.KeyboardShortcut.makeDescriptor('u', UI.KeyboardShortcut.Modifiers.Ctrl)],
+  ClearConsolePrompt: [KeyboardShortcut.makeDescriptor('u', Modifiers.Ctrl)],
 
-  ExecuteCommand: UI.KeyboardShortcut.makeDescriptor(UI.KeyboardShortcut.Keys.Enter),
+  ExecuteCommand: KeyboardShortcut.makeDescriptor(Keys.Enter),
 
-  NextPreviousLine: [
-    UI.KeyboardShortcut.makeDescriptor(UI.KeyboardShortcut.Keys.Down),
-    UI.KeyboardShortcut.makeDescriptor(UI.KeyboardShortcut.Keys.Up)
-  ],
+  NextPreviousLine: [KeyboardShortcut.makeDescriptor(Keys.Down), KeyboardShortcut.makeDescriptor(Keys.Up)],
 
-  NextPreviousCommand: [
-    UI.KeyboardShortcut.makeDescriptor('N', UI.KeyboardShortcut.Modifiers.Alt),
-    UI.KeyboardShortcut.makeDescriptor('P', UI.KeyboardShortcut.Modifiers.Alt)
-  ],
+  NextPreviousCommand:
+      [KeyboardShortcut.makeDescriptor('N', Modifiers.Alt), KeyboardShortcut.makeDescriptor('P', Modifiers.Alt)],
 };
 
 export const SourcesPanelShortcuts = {
-  SelectNextOccurrence: [UI.KeyboardShortcut.makeDescriptor('d', UI.KeyboardShortcut.Modifiers.CtrlOrMeta)],
+  SelectNextOccurrence: [KeyboardShortcut.makeDescriptor('d', Modifiers.CtrlOrMeta)],
 
-  SoftUndo: [UI.KeyboardShortcut.makeDescriptor('u', UI.KeyboardShortcut.Modifiers.CtrlOrMeta)],
+  SoftUndo: [KeyboardShortcut.makeDescriptor('u', Modifiers.CtrlOrMeta)],
 
-  GotoMatchingBracket: [UI.KeyboardShortcut.makeDescriptor('m', UI.KeyboardShortcut.Modifiers.Ctrl)],
+  GotoMatchingBracket: [KeyboardShortcut.makeDescriptor('m', Modifiers.Ctrl)],
 
-  ToggleAutocompletion:
-      [UI.KeyboardShortcut.makeDescriptor(UI.KeyboardShortcut.Keys.Space, UI.KeyboardShortcut.Modifiers.Ctrl)],
+  ToggleAutocompletion: [KeyboardShortcut.makeDescriptor(Keys.Space, Modifiers.Ctrl)],
 
-  IncreaseCSSUnitByOne:
-      [UI.KeyboardShortcut.makeDescriptor(UI.KeyboardShortcut.Keys.Up, UI.KeyboardShortcut.Modifiers.Alt)],
+  IncreaseCSSUnitByOne: [KeyboardShortcut.makeDescriptor(Keys.Up, Modifiers.Alt)],
 
-  DecreaseCSSUnitByOne:
-      [UI.KeyboardShortcut.makeDescriptor(UI.KeyboardShortcut.Keys.Down, UI.KeyboardShortcut.Modifiers.Alt)],
+  DecreaseCSSUnitByOne: [KeyboardShortcut.makeDescriptor(Keys.Down, Modifiers.Alt)],
 
-  IncreaseCSSUnitByTen:
-      [UI.KeyboardShortcut.makeDescriptor(UI.KeyboardShortcut.Keys.PageUp, UI.KeyboardShortcut.Modifiers.Alt)],
+  IncreaseCSSUnitByTen: [KeyboardShortcut.makeDescriptor(Keys.PageUp, Modifiers.Alt)],
 
-  DecreaseCSSUnitByTen:
-      [UI.KeyboardShortcut.makeDescriptor(UI.KeyboardShortcut.Keys.PageDown, UI.KeyboardShortcut.Modifiers.Alt)],
-  EvaluateSelectionInConsole: [UI.KeyboardShortcut.makeDescriptor(
-      'e', UI.KeyboardShortcut.Modifiers.Shift | UI.KeyboardShortcut.Modifiers.Ctrl)],
+  DecreaseCSSUnitByTen: [KeyboardShortcut.makeDescriptor(Keys.PageDown, Modifiers.Alt)],
+  EvaluateSelectionInConsole: [KeyboardShortcut.makeDescriptor('e', Modifiers.Shift | Modifiers.Ctrl)],
 
-  AddSelectionToWatch: [UI.KeyboardShortcut.makeDescriptor(
-      'a', UI.KeyboardShortcut.Modifiers.Shift | UI.KeyboardShortcut.Modifiers.Ctrl)],
+  AddSelectionToWatch: [KeyboardShortcut.makeDescriptor('a', Modifiers.Shift | Modifiers.Ctrl)],
 
-  ToggleComment:
-      [UI.KeyboardShortcut.makeDescriptor(UI.KeyboardShortcut.Keys.Slash, UI.KeyboardShortcut.Modifiers.CtrlOrMeta)],
+  ToggleComment: [KeyboardShortcut.makeDescriptor(Keys.Slash, Modifiers.CtrlOrMeta)],
 };
 
 export const LayersPanelShortcuts = {
-  ResetView: [UI.KeyboardShortcut.makeDescriptor('0')],
+  ResetView: [KeyboardShortcut.makeDescriptor('0')],
 
-  PanMode: [UI.KeyboardShortcut.makeDescriptor('x')],
+  PanMode: [KeyboardShortcut.makeDescriptor('x')],
 
-  RotateMode: [UI.KeyboardShortcut.makeDescriptor('v')],
+  RotateMode: [KeyboardShortcut.makeDescriptor('v')],
 
-  TogglePanRotate: [UI.KeyboardShortcut.makeDescriptor(UI.KeyboardShortcut.Keys.Shift)],
+  TogglePanRotate: [KeyboardShortcut.makeDescriptor(Keys.Shift)],
 
-  ZoomIn: [
-    UI.KeyboardShortcut.makeDescriptor(UI.KeyboardShortcut.Keys.Plus, UI.KeyboardShortcut.Modifiers.Shift),
-    UI.KeyboardShortcut.makeDescriptor(UI.KeyboardShortcut.Keys.NumpadPlus)
-  ],
+  ZoomIn:
+      [KeyboardShortcut.makeDescriptor(Keys.Plus, Modifiers.Shift), KeyboardShortcut.makeDescriptor(Keys.NumpadPlus)],
 
-  ZoomOut: [
-    UI.KeyboardShortcut.makeDescriptor(UI.KeyboardShortcut.Keys.Minus, UI.KeyboardShortcut.Modifiers.Shift),
-    UI.KeyboardShortcut.makeDescriptor(UI.KeyboardShortcut.Keys.NumpadMinus)
-  ],
+  ZoomOut:
+      [KeyboardShortcut.makeDescriptor(Keys.Minus, Modifiers.Shift), KeyboardShortcut.makeDescriptor(Keys.NumpadMinus)],
 
-  Up: [UI.KeyboardShortcut.makeDescriptor(UI.KeyboardShortcut.Keys.Up), UI.KeyboardShortcut.makeDescriptor('w')],
+  Up: [KeyboardShortcut.makeDescriptor(Keys.Up), KeyboardShortcut.makeDescriptor('w')],
 
-  Down: [UI.KeyboardShortcut.makeDescriptor(UI.KeyboardShortcut.Keys.Down), UI.KeyboardShortcut.makeDescriptor('s')],
+  Down: [KeyboardShortcut.makeDescriptor(Keys.Down), KeyboardShortcut.makeDescriptor('s')],
 
-  Left: [UI.KeyboardShortcut.makeDescriptor(UI.KeyboardShortcut.Keys.Left), UI.KeyboardShortcut.makeDescriptor('a')],
+  Left: [KeyboardShortcut.makeDescriptor(Keys.Left), KeyboardShortcut.makeDescriptor('a')],
 
-  Right: [UI.KeyboardShortcut.makeDescriptor(UI.KeyboardShortcut.Keys.Right), UI.KeyboardShortcut.makeDescriptor('d')]
+  Right: [KeyboardShortcut.makeDescriptor(Keys.Right), KeyboardShortcut.makeDescriptor('d')]
 };
-
-/* Legacy exported object*/
-self.UI = self.UI || {};
-
-/* Legacy exported object*/
-UI = UI || {};
-
-/** @constructor */
-UI.ShortcutsScreen = ShortcutsScreen;
-
-UI.ShortcutsScreen.SourcesPanelShortcuts = SourcesPanelShortcuts;
-UI.ShortcutsScreen.LayersPanelShortcuts = LayersPanelShortcuts;

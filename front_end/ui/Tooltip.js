@@ -1,23 +1,28 @@
 // Copyright (c) 2015 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
+import {GlassPane} from './GlassPane.js';
+import {createShadowRootWithCoreStyles} from './utils/create-shadow-root-with-core-styles.js';
+import {Events as ZoomManagerEvents} from './ZoomManager.js';
+
 /**
  * @unrestricted
  */
-export default class Tooltip {
+export class Tooltip {
   /**
    * @param {!Document} doc
    */
   constructor(doc) {
     this.element = doc.body.createChild('div');
-    this._shadowRoot = UI.createShadowRootWithCoreStyles(this.element, 'ui/tooltip.css');
+    this._shadowRoot = createShadowRootWithCoreStyles(this.element, 'ui/tooltip.css');
 
     this._tooltipElement = this._shadowRoot.createChild('div', 'tooltip');
     doc.addEventListener('mousemove', this._mouseMove.bind(this), true);
     doc.addEventListener('mousedown', this._hide.bind(this, true), true);
     doc.addEventListener('mouseleave', this._hide.bind(this, false), true);
     doc.addEventListener('keydown', this._hide.bind(this, true), true);
-    UI.zoomManager.addEventListener(UI.ZoomManager.Events.ZoomChanged, this._reset, this);
+    UI.zoomManager.addEventListener(ZoomManagerEvents.ZoomChanged, this._reset, this);
     doc.defaultView.addEventListener('resize', this._reset.bind(this), false);
   }
 
@@ -121,7 +126,7 @@ export default class Tooltip {
     this._tooltipLastOpened = instant ? now : now + Timing.OpeningDelay;
 
     // Get container element.
-    const container = UI.GlassPane.container(/** @type {!Document} */ (anchorElement.ownerDocument));
+    const container = GlassPane.container(/** @type {!Document} */ (anchorElement.ownerDocument));
     // Position tooltip based on the anchor element.
     const containerBox = container.boxInWindow(this.element.window());
     const anchorBox = this._anchorElement.boxInWindow(this.element.window());
@@ -182,6 +187,9 @@ const Timing = {
 
 const _symbol = Symbol('Tooltip');
 
+// Exported for layout tests.
+export const TooltipSymbol = _symbol;
+
 /** @type {!Array.<!Element>} */
 const _nativeOverrideContainer = [];
 
@@ -193,7 +201,7 @@ Object.defineProperty(HTMLElement.prototype, 'title', {
    * @this {!Element}
    */
   get: function() {
-    const tooltip = this[UI.Tooltip._symbol];
+    const tooltip = this[_symbol];
     return tooltip ? tooltip.content : '';
   },
 
@@ -205,14 +213,3 @@ Object.defineProperty(HTMLElement.prototype, 'title', {
     Tooltip.install(this, x);
   }
 });
-
-/* Legacy exported object*/
-self.UI = self.UI || {};
-
-/* Legacy exported object*/
-UI = UI || {};
-
-/** @constructor */
-UI.Tooltip = Tooltip;
-
-UI.Tooltip._symbol = _symbol;

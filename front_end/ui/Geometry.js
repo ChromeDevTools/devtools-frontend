@@ -28,10 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-const Geometry = {};
-
-export default Geometry;
-
 /**
  * @type {number}
  */
@@ -61,7 +57,7 @@ export class Vector {
 
   normalize() {
     const length = this.length();
-    if (length <= UI.Geometry._Eps) {
+    if (length <= _Eps) {
       return;
     }
 
@@ -333,7 +329,7 @@ export const boundsForTransformedPoints = function(matrix, points, aggregateBoun
   }
   for (let p = 0; p < points.length; p += 3) {
     let vector = new Vector(points[p], points[p + 1], points[p + 2]);
-    vector = UI.Geometry.multiplyVectorByMatrixAndNormalize(vector, matrix);
+    vector = multiplyVectorByMatrixAndNormalize(vector, matrix);
     aggregateBounds.minX = Math.min(aggregateBounds.minX, vector.x);
     aggregateBounds.maxX = Math.max(aggregateBounds.maxX, vector.x);
     aggregateBounds.minY = Math.min(aggregateBounds.minY, vector.y);
@@ -576,103 +572,3 @@ export class Constraints {
     return new Constraints(this.minimum.addHeight(value.minimum), this.preferred.addHeight(value.preferred));
   }
 }
-
-/* Legacy exported object*/
-self.UI = self.UI || {};
-
-/* Legacy exported object*/
-UI = UI || {};
-
-UI.Geometry = Geometry;
-
-/**
- * @type {number}
- */
-UI.Geometry._Eps = _Eps;
-
-/**
- * @constructor
- */
-UI.Geometry.Vector = Vector;
-
-/**
- * @constructor
- */
-UI.Geometry.Point = Point;
-
-/**
- * @constructor
- */
-UI.Geometry.CubicBezier = CubicBezier;
-
-/**
- * @constructor
- */
-UI.Geometry.EulerAngles = EulerAngles;
-
-/**
- * @param {!Vector} u
- * @param {!Vector} v
- * @return {number}
- */
-UI.Geometry.scalarProduct = scalarProduct;
-
-/**
- * @param {!Vector} u
- * @param {!Vector} v
- * @return {!Vector}
- */
-UI.Geometry.crossProduct = crossProduct;
-
-/**
- * @param {!Vector} u
- * @param {!Vector} v
- * @return {!Vector}
- */
-UI.Geometry.subtract = subtract;
-
-/**
- * @param {!Vector} v
- * @param {!CSSMatrix} m
- * @return {!Vector}
- */
-UI.Geometry.multiplyVectorByMatrixAndNormalize = multiplyVectorByMatrixAndNormalize;
-
-/**
- * @param {!Vector} u
- * @param {!Vector} v
- * @return {number}
- */
-UI.Geometry.calculateAngle = calculateAngle;
-
-/**
- * @param {number} deg
- * @return {number}
- */
-UI.Geometry.degreesToRadians = degreesToRadians;
-
-/**
- * @param {number} rad
- * @return {number}
- */
-UI.Geometry.radiansToDegrees = radiansToDegrees;
-
-/** @constructor */
-UI.Size = Size;
-
-/** @constructor */
-UI.Insets = Insets;
-
-/** @constructor */
-UI.Rect = Rect;
-
-/** @constructor */
-UI.Constraints = Constraints;
-
-/**
- * @param {!CSSMatrix} matrix
- * @param {!Array.<number>} points
- * @param {{minX: number, maxX: number, minY: number, maxY: number}=} aggregateBounds
- * @return {!{minX: number, maxX: number, minY: number, maxY: number}}
- */
-UI.Geometry.boundsForTransformedPoints = boundsForTransformedPoints;

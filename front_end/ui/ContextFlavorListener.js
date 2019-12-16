@@ -4,19 +4,10 @@
 /**
  * @interface
  */
-export default class ContextFlavorListener {
+export class ContextFlavorListener {
   /**
    * @param {?Object} object
    */
   flavorChanged(object) {
   }
 }
-
-/* Legacy exported object*/
-self.UI = self.UI || {};
-
-/* Legacy exported object*/
-UI = UI || {};
-
-/** @interface */
-UI.ContextFlavorListener = ContextFlavorListener;

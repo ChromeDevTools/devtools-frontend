@@ -6,7 +6,7 @@
  * @implements {Iterable<T>}
  * @template T
  */
-export default class ListModel extends Common.Object {
+export class ListModel extends Common.Object {
   /**
    * @param {!Array<T>=} items
    */
@@ -189,15 +189,3 @@ export default class ListModel extends Common.Object {
 export const Events = {
   ItemsReplaced: Symbol('ItemsReplaced'),
 };
-
-/* Legacy exported object*/
-self.UI = self.UI || {};
-
-/* Legacy exported object*/
-UI = UI || {};
-
-/** @constructor */
-UI.ListModel = ListModel;
-
-/** @enum {symbol} */
-UI.ListModel.Events = Events;

@@ -87,9 +87,6 @@
   <message name="IDS_DEVTOOLS_45b471827af8ba9628e1914afbb13980" desc="Minutes format in UIUtils">
     <ph name="PH1">$1.1f<ex>2.2</ex></ph> min
   </message>
-  <message name="IDS_DEVTOOLS_471566447bf928c469d32014791036cc" desc="Text in Remote Debugging Terminated Screen">
-    Debugging connection was closed. Reason: <ph name="REASONELEMENT">$1s<ex>connection lost</ex></ph>
-  </message>
   <message name="IDS_DEVTOOLS_47df0ee8f6dc4f553c907c49e686216c" desc="Title of a shortcuts category for Memory panel in Shortcut page ">
     Memory Panel
   </message>

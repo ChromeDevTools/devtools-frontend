@@ -1,12 +1,16 @@
 // Copyright 2014 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
+import {Action} from './Action.js';
+import {Context} from './Context.js';  // eslint-disable-line no-unused-vars
+
 /**
  * @unrestricted
  */
-export default class ActionRegistry {
+export class ActionRegistry {
   constructor() {
-    /** @type {!Map.<string, !UI.Action>} */
+    /** @type {!Map.<string, !Action>} */
     this._actionsById = new Map();
     this._registerActions();
   }
@@ -16,7 +20,7 @@ export default class ActionRegistry {
 
     /**
      * @param {!Root.Runtime.Extension} extension
-     * @this {UI.ActionRegistry}
+     * @this {ActionRegistry}
      */
     function registerExtension(extension) {
       if (!extension.canInstantiate()) {
@@ -26,7 +30,7 @@ export default class ActionRegistry {
       console.assert(actionId);
       console.assert(!this._actionsById.get(actionId));
 
-      const action = new UI.Action(extension);
+      const action = new Action(extension);
       if (!action.category() || action.title()) {
         this._actionsById.set(actionId, action);
       } else {
@@ -36,7 +40,7 @@ export default class ActionRegistry {
   }
 
   /**
-   * @return {!Array.<!UI.Action>}
+   * @return {!Array.<!Action>}
    */
   availableActions() {
     return this.applicableActions(this._actionsById.keysArray(), UI.context);
@@ -44,8 +48,8 @@ export default class ActionRegistry {
 
   /**
    * @param {!Array.<string>} actionIds
-   * @param {!UI.Context} context
-   * @return {!Array.<!UI.Action>}
+   * @param {!Context} context
+   * @return {!Array.<!Action>}
    */
   applicableActions(actionIds, context) {
     const extensions = [];
@@ -59,31 +63,20 @@ export default class ActionRegistry {
 
     /**
      * @param {!Root.Runtime.Extension} extension
-     * @return {!UI.Action}
-     * @this {UI.ActionRegistry}
+     * @return {!Action}
+     * @this {ActionRegistry}
      */
     function extensionToAction(extension) {
-      return /** @type {!UI.Action} */ (this.action(extension.descriptor()['actionId']));
+      return (
+          /** @type {!Action} */ (this.action(extension.descriptor()['actionId'])));
     }
   }
 
   /**
    * @param {string} actionId
-   * @return {?UI.Action}
+   * @return {?Action}
    */
   action(actionId) {
     return this._actionsById.get(actionId) || null;
   }
 }
-
-/* Legacy exported object*/
-self.UI = self.UI || {};
-
-/* Legacy exported object*/
-UI = UI || {};
-
-/** @constructor */
-UI.ActionRegistry = ActionRegistry;
-
-/** @type {!UI.ActionRegistry} */
-UI.actionRegistry;

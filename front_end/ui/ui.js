@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import './Widget.js';
-import './GlassPane.js';
-
 import * as Action from './Action.js';
 import * as ActionDelegate from './ActionDelegate.js';
 import * as ActionRegistry from './ActionRegistry.js';
@@ -54,8 +51,9 @@ import * as TextPrompt from './TextPrompt.js';
 import * as ThrottledWidget from './ThrottledWidget.js';
 import * as Toolbar from './Toolbar.js';
 import * as Tooltip from './Tooltip.js';
-import * as Treeoutline from './Treeoutline.js';
+import * as TreeOutline from './Treeoutline.js';
 import * as UIUtils from './UIUtils.js';
+import * as Utils from './utils/utils.js';
 import * as View from './View.js';
 import * as ViewManager from './ViewManager.js';
 import * as Widget from './Widget.js';
@@ -114,13 +112,14 @@ export {
   ThrottledWidget,
   Toolbar,
   Tooltip,
-  Treeoutline,
+  TreeOutline,
   UIUtils,
+  Utils,
   View,
   ViewManager,
   Widget,
   XElement,
   XLink,
   XWidget,
-  ZoomManager,
+  ZoomManager
 };

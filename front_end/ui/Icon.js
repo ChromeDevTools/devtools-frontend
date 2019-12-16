@@ -2,7 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-export default class Icon extends HTMLSpanElement {
+import {registerCustomElement} from './utils/register-custom-element.js';
+
+export class Icon extends HTMLSpanElement {
   constructor() {
     super();
     /** @type {?Icon.Descriptor} */
@@ -20,7 +22,7 @@ export default class Icon extends HTMLSpanElement {
    */
   static create(iconType, className) {
     if (!Icon._constructor) {
-      Icon._constructor = UI.registerCustomElement('span', 'ui-icon', Icon);
+      Icon._constructor = registerCustomElement('span', 'ui-icon', Icon);
     }
 
     const icon = /** @type {!Icon} */ (Icon._constructor());
@@ -250,21 +252,3 @@ export const Descriptors = {
   'mediumicon-arrow-left': {position: 'a2', spritesheet: 'arrowicons'},
   'mediumicon-arrow-right': {position: 'a1', spritesheet: 'arrowicons'}
 };
-
-/* Legacy exported object*/
-self.UI = self.UI || {};
-
-/* Legacy exported object*/
-UI = UI || {};
-
-/** @constructor */
-UI.Icon = Icon;
-
-/** @enum {!Icon.Descriptor} */
-UI.Icon.Descriptors = Descriptors;
-
-/** @typedef {{position: string, spritesheet: string, isMask: (boolean|undefined), coordinates: ({x: number, y: number}|undefined), invert: (boolean|undefined)}} */
-UI.Icon.Descriptor;
-
-/** @typedef {{cellWidth: number, cellHeight: number, padding: number}} */
-UI.Icon.SpriteSheet;

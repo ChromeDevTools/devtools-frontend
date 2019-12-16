@@ -946,8 +946,8 @@ export class ObjectPropertyTreeElement extends UI.TreeElement {
       return;
     }
 
-    // TODO(mathias): support all valid JavaScript identifiers.
-    const useDotNotation = /^(_|\$|[A-Z])(_|\$|[A-Z]|\d)*$/i;
+    // https://tc39.es/ecma262/#prod-IdentifierName
+    const useDotNotation = /^(?:[$_\p{ID_Start}])(?:[$_\u200C\u200D\p{ID_Continue}])*$/u;
     const isInteger = /^(?:0|[1-9]\d*)$/;
 
     const parentPath =

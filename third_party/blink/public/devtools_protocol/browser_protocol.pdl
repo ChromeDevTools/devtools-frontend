@@ -1469,6 +1469,7 @@ domain DOM
       first-letter
       before
       after
+      marker
       backdrop
       selection
       first-line-inherited
@@ -3205,6 +3206,15 @@ domain Input
       touch
       mouse
 
+  type MouseButton extends string
+    enum
+        none
+        left
+        middle
+        right
+        back
+        forward
+
   # UTC time in seconds, counted from January 1, 1970.
   type TimeSinceEpoch extends number
 
@@ -3276,13 +3286,7 @@ domain Input
       # Time at which the event occurred.
       optional TimeSinceEpoch timestamp
       # Mouse button (default: "none").
-      optional enum button
-        none
-        left
-        middle
-        right
-        back
-        forward
+      optional MouseButton button
       # A number indicating which buttons are pressed on the mouse when a mouse event is triggered.
       # Left=1, Right=2, Middle=4, Back=8, Forward=16, None=0.
       optional integer buttons
@@ -3330,12 +3334,8 @@ domain Input
       integer x
       # Y coordinate of the mouse pointer in DIP.
       integer y
-      # Mouse button.
-      enum button
-        none
-        left
-        middle
-        right
+      # Mouse button. Only "none", "left", "right" are supported.
+      MouseButton button
       # Time at which the event occurred (default: current time).
       optional TimeSinceEpoch timestamp
       # X delta in DIP for mouse wheel event (default: 0).
@@ -3865,6 +3865,14 @@ domain Network
       Lax
       None
 
+  # Represents the cookie's 'Priority' status:
+  # https://tools.ietf.org/html/draft-west-cookie-priority-00
+  experimental type CookiePriority extends string
+    enum
+      Low
+      Medium
+      High
+
   # Timing information for the request.
   type ResourceTiming extends object
     properties
@@ -4143,6 +4151,8 @@ domain Network
       boolean session
       # Cookie SameSite type.
       optional CookieSameSite sameSite
+      # Cookie Priority
+      experimental CookiePriority priority
 
   # Types of reasons why a cookie may not be stored from a response.
   experimental type SetCookieBlockedReason extends string
@@ -4249,6 +4259,8 @@ domain Network
       optional CookieSameSite sameSite
       # Cookie expiration date, session cookie if not set
       optional TimeSinceEpoch expires
+      # Cookie Priority.
+      experimental optional CookiePriority priority
 
   # Authorization challenge for HTTP status code 401 or 407.
   experimental type AuthChallenge extends object
@@ -4591,6 +4603,8 @@ domain Network
       optional CookieSameSite sameSite
       # Cookie expiration date, session cookie if not set
       optional TimeSinceEpoch expires
+      # Cookie Priority type.
+      experimental optional CookiePriority priority
     returns
       # True if successfully set cookie.
       boolean success
@@ -5233,6 +5247,12 @@ domain Page
       # Error column.
       integer column
 
+  # Parsed app manifest properties.
+  experimental type AppManifestParsedProperties extends object
+    properties
+      # Computed scope value
+      string scope
+
   # Layout viewport position and dimensions.
   type LayoutViewport extends object
     properties
@@ -5418,10 +5438,16 @@ domain Page
       array of AppManifestError errors
       # Manifest content.
       optional string data
+      # Parsed manifest properties
+      experimental optional AppManifestParsedProperties parsed
 
   experimental command getInstallabilityErrors
     returns
       array of string errors
+
+  experimental command getManifestIcons
+    returns
+      optional binary primaryIcon
 
   # Returns all browser cookies. Depending on the backend support, will return detailed cookie
   # information in the `cookies` field.

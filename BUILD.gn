@@ -712,7 +712,6 @@ all_devtools_modules = [
   "front_end/object_ui/JavaScriptAutocomplete.js",
   "front_end/object_ui/CustomPreviewComponent.js",
   "front_end/cookie_table/cookie_table.js",
-  "front_end/cookie_table/cookiesTable.css",
   "front_end/cookie_table/CookiesTable.js",
   "front_end/cm_modes/cm_modes.js",
   "front_end/cm_modes/DefaultCodeMirrorMimeMode.js",

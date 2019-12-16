@@ -946,6 +946,7 @@ export class ObjectPropertyTreeElement extends UI.TreeElement {
       return;
     }
 
+    // TODO(mathias): support all valid JavaScript identifiers.
     const useDotNotation = /^(_|\$|[A-Z])(_|\$|[A-Z]|\d)*$/i;
     const isInteger = /^[1-9]\d*$/;
 
@@ -955,9 +956,9 @@ export class ObjectPropertyTreeElement extends UI.TreeElement {
     if (this.property.private || useDotNotation.test(name)) {
       this.nameElement.title = parentPath ? `${parentPath}.${name}` : name;
     } else if (isInteger.test(name)) {
-      this.nameElement.title = parentPath + '[' + name + ']';
+      this.nameElement.title = `${parentPath}[${name}]`;
     } else {
-      this.nameElement.title = parentPath + '["' + JSON.stringify(name) + '"]';
+      this.nameElement.title = `${parentPath}[${JSON.stringify(name)}]`;
     }
   }
 
@@ -994,7 +995,7 @@ export class ObjectPropertyTreeElement extends UI.TreeElement {
 
     let text = this.property.value.description;
     if (this.property.value.type === 'string' && typeof text === 'string') {
-      text = '"' + text + '"';
+      text = `"${text}"`;
     }
 
     this._editableDiv.setTextContentTruncatedIfNeeded(text, Common.UIString('<string is too large to edit>'));

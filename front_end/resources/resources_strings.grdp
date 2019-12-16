@@ -12,6 +12,9 @@
   <message name="IDS_DEVTOOLS_09428a9282bbb3ffcf3caa7826f0bf83" desc="Message in Database Model of the Application panel">
     An unexpected error <ph name="SQLERROR_CODE">$1s<ex>-197</ex></ph> occurred.
   </message>
+  <message name="IDS_DEVTOOLS_09f11e99bc27cd6534ac6dad344ff2cf" desc="Label for the primary icon loaded from the manifest">
+    Primary manifest icon from <ph name="URL">$1s<ex>https://example.com/</ex></ph>
+  </message>
   <message name="IDS_DEVTOOLS_0ace6faf288026c1adc56a2a1e7bb6be" desc="Default tag for a periodicsync event in Service Workers View of the Application panel">
     Periodic Sync tag
   </message>
@@ -156,6 +159,10 @@ table is empty.
   </message>
   <message name="IDS_DEVTOOLS_6e72748dc2f2224dfabb374ca0cc988f" desc="Text in Service Workers View of the Application panel">
     #<ph name="REDUNDANT_ID">$1s<ex>2</ex></ph> is redundant
+  </message>
+  <message name="IDS_DEVTOOLS_70791e12152c5d8d7e0ac45ba46349e9" desc="Label for the primary icon loaded from the manifest">
+    Primary Icon
+as used by chrome
   </message>
   <message name="IDS_DEVTOOLS_76c18f2b1e4155961e10434e3d83317f" desc="Text in Indexed DBViews of the Application panel">
     Key generator value: <ph name="STRING_METADATA_KEYGENERATORVALUE_">$1s<ex>2</ex></ph>

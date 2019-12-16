@@ -97,7 +97,10 @@ Resources.AppManifestView = class extends UI.VBox {
   async _updateManifest(immediately) {
     const {url, data, errors} = await this._resourceTreeModel.fetchAppManifest();
     const installabilityErrors = await this._resourceTreeModel.getInstallabilityErrors();
-    this._throttler.schedule(() => this._renderManifest(url, data, errors, installabilityErrors), immediately);
+    const manifestIcons = await this._resourceTreeModel.getManifestIcons();
+
+    this._throttler.schedule(
+        () => this._renderManifest(url, data, errors, installabilityErrors, manifestIcons), immediately);
   }
 
   /**
@@ -106,7 +109,7 @@ Resources.AppManifestView = class extends UI.VBox {
    * @param {!Array<!Protocol.Page.AppManifestError>} errors
    * @param {!Array<string>} installabilityErrors
    */
-  async _renderManifest(url, data, errors, installabilityErrors) {
+  async _renderManifest(url, data, errors, installabilityErrors, manifestIcons) {
     if (!data && !errors.length) {
       this._emptyView.showWidget();
       this._reportView.hideWidget();
@@ -177,6 +180,20 @@ Resources.AppManifestView = class extends UI.VBox {
     //   'https://web.dev/#TODO',  // TODO(mathias): Update once we have official docs.
     //   ls`documentation on maskable icons`);
     // this._iconsSection.appendRow().appendChild(UI.formatLocalized('Need help? Read our %s.', [documentationLink]));
+
+    if (manifestIcons && manifestIcons.primaryIcon) {
+      const wrapper = createElement('div');
+      wrapper.classList.add('image-wrapper');
+      const image = createElement('img');
+      image.style.maxWidth = '200px';
+      image.style.maxHeight = '200px';
+      image.src = 'data:image/png;base64,' + manifestIcons.primaryIcon;
+      image.alt = ls`Primary manifest icon from ${url}`;
+      const title = ls`Primary Icon\nas used by chrome`;
+      const field = this._iconsSection.appendFlexedField(title);
+      wrapper.appendChild(image);
+      field.appendChild(wrapper);
+    }
 
     for (const icon of icons) {
       const iconUrl = Common.ParsedURL.completeURL(url, icon['src']);

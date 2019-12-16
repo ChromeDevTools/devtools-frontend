@@ -449,6 +449,14 @@ export default class ResourceTreeModel extends SDK.SDKModel {
   }
 
   /**
+   * @return {!Promise<{primaryIcon: ?string}>}
+   */
+  async getManifestIcons() {
+    const response = await this._agent.invoke_getManifestIcons({});
+    return {primaryIcon: response.primaryIcon || null};
+  }
+
+  /**
    * @param {!SDK.ExecutionContext} a
    * @param {!SDK.ExecutionContext} b
    * @return {number}

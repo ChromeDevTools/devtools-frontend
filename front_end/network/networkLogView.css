@@ -221,6 +221,11 @@
     display: none;
 }
 
+.network-log-grid.data-grid.small tr.selected .network-cell-subtitle-show-inline-when-selected {
+    display: inline;
+    margin-left: 4px;
+}
+
 /* Resource preview icons */
 
 .network-log-grid.data-grid .icon {

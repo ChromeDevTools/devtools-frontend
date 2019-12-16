@@ -861,7 +861,7 @@ export class NetworkRequestNode extends NetworkNode {
       const failText = Common.UIString('(failed)');
       if (this._request.localizedFailDescription) {
         cell.createTextChild(failText);
-        this._appendSubtitle(cell, this._request.localizedFailDescription);
+        this._appendSubtitle(cell, this._request.localizedFailDescription, true);
         cell.title = failText + ' ' + this._request.localizedFailDescription;
       } else {
         this._setTextAndTitle(cell, failText);
@@ -1034,10 +1034,14 @@ export class NetworkRequestNode extends NetworkNode {
   /**
    * @param {!Element} cellElement
    * @param {string} subtitleText
+   * @param {boolean=} showInlineWhenSelected
    */
-  _appendSubtitle(cellElement, subtitleText) {
+  _appendSubtitle(cellElement, subtitleText, showInlineWhenSelected = false) {
     const subtitleElement = createElement('div');
-    subtitleElement.className = 'network-cell-subtitle';
+    subtitleElement.classList.add('network-cell-subtitle');
+    if (showInlineWhenSelected) {
+      subtitleElement.classList.add('network-cell-subtitle-show-inline-when-selected');
+    }
     subtitleElement.textContent = subtitleText;
     cellElement.appendChild(subtitleElement);
   }

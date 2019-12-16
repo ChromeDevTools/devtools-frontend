@@ -12,6 +12,7 @@ export default class ChangesSidebar extends UI.Widget {
     this._treeoutline.registerRequiredCSS('changes/changesSidebar.css');
     this._treeoutline.setComparator((a, b) => a.titleAsText().compareTo(b.titleAsText()));
     this._treeoutline.addEventListener(UI.TreeOutline.Events.ElementSelected, this._selectionChanged, this);
+    UI.ARIAUtils.markAsTablist(this._treeoutline.contentElement);
 
     this.element.appendChild(this._treeoutline.element);
 
@@ -104,6 +105,7 @@ export class UISourceCodeTreeElement extends UI.TreeElement {
     super();
     this.uiSourceCode = uiSourceCode;
     this.listItemElement.classList.add('navigator-' + uiSourceCode.contentType().name() + '-tree-item');
+    UI.ARIAUtils.markAsTab(this.listItemElement);
 
     let iconType = 'largeicon-navigator-file';
     if (Snippets.isSnippetsUISourceCode(this.uiSourceCode)) {

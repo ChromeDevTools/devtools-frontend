@@ -82,6 +82,7 @@ JS_PROTOCOL_PATH = path.join(ROOT_PATH, 'v8', 'include', 'js_protocol.pdl')
 DEVTOOLS_FRONTEND_PATH = path.join(DEVTOOLS_PATH, 'front_end')
 GLOBAL_EXTERNS_FILE = to_platform_path(path.join(DEVTOOLS_FRONTEND_PATH, 'externs.js'))
 DEFAULT_PROTOCOL_EXTERNS_FILE = path.join(DEVTOOLS_FRONTEND_PATH, 'protocol_externs.js')
+WASM_SOURCE_MAP_FILE = path.join(DEVTOOLS_FRONTEND_PATH, 'sdk', 'wasm_source_map', 'types.js')
 RUNTIME_FILE = to_platform_path(path.join(DEVTOOLS_FRONTEND_PATH, 'Runtime.js'))
 ROOT_MODULE_FILE = to_platform_path(path.join(DEVTOOLS_FRONTEND_PATH, 'root.js'))
 
@@ -322,7 +323,7 @@ def prepare_closure_frontend_compile(temp_devtools_path, descriptors, namespace_
         ROOT_MODULE_FILE,
     ]
 
-    all_files = descriptors.all_compiled_files()
+    all_files = descriptors.all_compiled_files() + [WASM_SOURCE_MAP_FILE]
     args = []
     for file in all_files:
         args.extend(['--js', file])

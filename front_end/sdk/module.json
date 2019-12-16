@@ -419,8 +419,7 @@
         "../SupportedCSSProperties.js",
         "FilmStripModel.js",
         "ConsoleModel.js",
-        "wasm_source_map/pkg/wasm_source_map.js",
-        "wasm_source_map/types.js"
+        "wasm_source_map/pkg/wasm_source_map.js"
     ],
     "skip_compilation": [
         "../SupportedCSSProperties.js",

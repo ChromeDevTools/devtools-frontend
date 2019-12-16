@@ -29,6 +29,7 @@ export default class ChangesView extends UI.VBox {
     this._maxLineDigits = 1;
 
     this._editor = new TextEditor.CodeMirrorTextEditor({
+      devtoolsAccessibleName: ls`Changes diff viewer`,
       lineNumbers: true,
       lineWrapping: false,
       maxHighlightLength: Infinity  // This is to avoid CodeMirror bailing out of highlighting big diffs.
@@ -40,7 +41,7 @@ export default class ChangesView extends UI.VBox {
     this._editor.element.addEventListener('click', this._click.bind(this), false);
 
     this._toolbar = new UI.Toolbar('changes-toolbar', mainWidget.element);
-    const revertButton = new UI.ToolbarButton(Common.UIString('Revert all changes'), 'largeicon-undo');
+    const revertButton = new UI.ToolbarButton(ls`Revert all changes to current file`, 'largeicon-undo');
     revertButton.addEventListener(UI.ToolbarButton.Events.Click, this._revert.bind(this));
     this._toolbar.appendToolbarItem(revertButton);
     this._diffStats = new UI.ToolbarText('');

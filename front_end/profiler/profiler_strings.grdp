@@ -339,6 +339,9 @@
   <message name="IDS_DEVTOOLS_be1f3410c6bc2e72817218db717fa91c" desc="Text in Live Heap Profile View of a profiler tool">
     Allocated JS heap size currently in use
   </message>
+  <message name="IDS_DEVTOOLS_60e27f3b951a9d47d2f85c613b009b3a" desc="Text in Heap Snapshot View of a profiler tool">
+    Treat global objects as roots (recommended, unchecking this exposes internal nodes and introduces excessive detail, but might help debugging cycles in retaining paths)
+  </message>
   <message name="IDS_DEVTOOLS_c22d30084d8ddc9a571512ddee6a83e9" desc="Text in CPUProfile View of a profiler tool">
     Total time
   </message>

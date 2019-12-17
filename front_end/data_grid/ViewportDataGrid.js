@@ -478,6 +478,9 @@ export class ViewportDataGridNode extends DataGrid.DataGridNode {
     if (this.existingElement()) {
       this.existingElement().classList.remove('expanded');
     }
+    if (this.selected) {
+      this.dataGrid.updateGridAccessibleName(/* text */ ls`collapsed`);
+    }
     this.dataGrid.scheduleUpdateStructure();
   }
 

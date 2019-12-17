@@ -224,7 +224,7 @@ Profiler.HeapSnapshotGridNode = class extends DataGrid.DataGridNode {
         div.classList.add('profile-multiple-values');
         UI.ARIAUtils.markAsHidden(valueSpan);
         UI.ARIAUtils.markAsHidden(percentSpan);
-        UI.ARIAUtils.setAccessibleName(div, ls`${this.data[columnId]}, ${this.data[percentColumn]}`);
+        this.setCellAccessibleName(ls`${this.data[columnId]}, ${this.data[percentColumn]}`, cell, columnId);
       }
       cell.appendChild(div);
     }

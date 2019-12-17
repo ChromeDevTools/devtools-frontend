@@ -32,6 +32,12 @@
     transform: translateZ(0);
 }
 
+.data-grid .aria-live-label {
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+}
+
 .data-grid.inline .header-container,
 .data-grid.inline .data-container {
     position: static;

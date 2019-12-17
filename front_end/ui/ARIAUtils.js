@@ -33,6 +33,13 @@ export function markAsAlert(element) {
 /**
  * @param {!Element} element
  */
+export function markAsApplication(element) {
+  element.setAttribute('role', 'application');
+}
+
+/**
+ * @param {!Element} element
+ */
 export function markAsButton(element) {
   element.setAttribute('role', 'button');
 }

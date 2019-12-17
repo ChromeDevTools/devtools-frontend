@@ -24,6 +24,9 @@
   <message name="IDS_DEVTOOLS_1f1621cad66c8f661842bf9392d8559b" desc="Label for the summary in the CSS Overview report">
     Overview summary
   </message>
+  <message name="IDS_DEVTOOLS_29bf226e186bf57b52fac1b0ba1f88ff" desc="Button title denoting the number of items found">
+    <ph name="NODES_LENGTH">$1s<ex>12</ex></ph> <ph name="ITEMLABEL">$2s<ex>items</ex></ph>
+  </message>
   <message name="IDS_DEVTOOLS_34f6c3d68dc5fe7251e2b583829c5bde" desc="Plural of the term 'occurrence'">
     occurrences
   </message>
@@ -32,9 +35,6 @@
   </message>
   <message name="IDS_DEVTOOLS_23717568804f63f75e7596dcced3119e" desc="Label for the number of universal selectors in the CSS Overview report">
     Universal selectors
-  </message>
-  <message name="IDS_DEVTOOLS_29bf226e186bf57b52fac1b0ba1f88ff" desc="Button title denoting the number of items found">
-    <ph name="NODES_LENGTH">$1s<ex>12</ex></ph> <ph name="ITEMLABEL">$2s<ex>items</ex></ph>
   </message>
   <message name="IDS_DEVTOOLS_2a8d89583e80580b7c9fbdba5e249562" desc="Message to show when no media queries are found in the target page">
     There are no media queries.

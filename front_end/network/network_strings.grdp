@@ -252,6 +252,9 @@
   <message name="IDS_DEVTOOLS_4e88c13fb97f356a81c48bf2644bef51" desc="Text in Request Timing View of the Network panel">
     Connection Start
   </message>
+  <message name="IDS_DEVTOOLS_4fda1e980a77182467d3a97d8e4aecf0" desc="Text describing the depth of a top level node in the network datagrid">
+    level 1
+  </message>
   <message name="IDS_DEVTOOLS_5023e5b1d1c02cf168a9a67dda6d2d87" desc="Text in Network Panel of the Network panel">
     Show overview
   </message>

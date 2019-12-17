@@ -28,6 +28,11 @@
     flex: 0 0 150px;
 }
 
+.animation-node-description[data-keyboard-focus="true"]:focus {
+    overflow: auto;
+    box-shadow: 0px 0px 0px 2px var(--accent-color) inset;
+}
+
 .animation-node-description > * {
     flex: 0 0 auto;
 }

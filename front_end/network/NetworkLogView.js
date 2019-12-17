@@ -1285,22 +1285,28 @@ export default class NetworkLogView extends UI.VBox {
         footerSection.appendItem(
             Common.UIString('Copy as PowerShell'), this._copyPowerShellCommand.bind(this, request), disableIfBlob);
         footerSection.appendItem(
-            Common.UIString('Copy as fetch'), this._copyFetchCall.bind(this, request), disableIfBlob);
+            Common.UIString('Copy as fetch'), this._copyFetchCall.bind(this, request, false), disableIfBlob);
+        footerSection.appendItem(
+            Common.UIString('Copy as Node.js fetch'), this._copyFetchCall.bind(this, request, true), disableIfBlob);
         footerSection.appendItem(
             Common.UIString('Copy as cURL (cmd)'), this._copyCurlCommand.bind(this, request, 'win'), disableIfBlob);
         footerSection.appendItem(
             Common.UIString('Copy as cURL (bash)'), this._copyCurlCommand.bind(this, request, 'unix'), disableIfBlob);
         footerSection.appendItem(Common.UIString('Copy all as PowerShell'), this._copyAllPowerShellCommand.bind(this));
-        footerSection.appendItem(Common.UIString('Copy all as fetch'), this._copyAllFetchCall.bind(this));
+        footerSection.appendItem(Common.UIString('Copy all as fetch'), this._copyAllFetchCall.bind(this, false));
+        footerSection.appendItem(Common.UIString('Copy all as Node.js fetch'), this._copyAllFetchCall.bind(this, true));
         footerSection.appendItem(Common.UIString('Copy all as cURL (cmd)'), this._copyAllCurlCommand.bind(this, 'win'));
         footerSection.appendItem(
             Common.UIString('Copy all as cURL (bash)'), this._copyAllCurlCommand.bind(this, 'unix'));
       } else {
         footerSection.appendItem(
-            Common.UIString('Copy as fetch'), this._copyFetchCall.bind(this, request), disableIfBlob);
+            Common.UIString('Copy as fetch'), this._copyFetchCall.bind(this, request, false), disableIfBlob);
+        footerSection.appendItem(
+            Common.UIString('Copy as Node.js fetch'), this._copyFetchCall.bind(this, request, true), disableIfBlob);
         footerSection.appendItem(
             Common.UIString('Copy as cURL'), this._copyCurlCommand.bind(this, request, 'unix'), disableIfBlob);
-        footerSection.appendItem(Common.UIString('Copy all as fetch'), this._copyAllFetchCall.bind(this));
+        footerSection.appendItem(Common.UIString('Copy all as fetch'), this._copyAllFetchCall.bind(this, false));
+        footerSection.appendItem(Common.UIString('Copy all as Node.js fetch'), this._copyAllFetchCall.bind(this, true));
         footerSection.appendItem(Common.UIString('Copy all as cURL'), this._copyAllCurlCommand.bind(this, 'unix'));
       }
     } else {
@@ -1396,15 +1402,18 @@ export default class NetworkLogView extends UI.VBox {
 
   /**
    * @param {!SDK.NetworkRequest} request
-   * @param {string} platform
+   * @param {boolean} includeCookies
    */
-  async _copyFetchCall(request, platform) {
-    const command = await this._generateFetchCall(request);
+  async _copyFetchCall(request, includeCookies) {
+    const command = await this._generateFetchCall(request, includeCookies);
     Host.InspectorFrontendHost.copyText(command);
   }
 
-  async _copyAllFetchCall() {
-    const commands = await this._generateAllFetchCall(SDK.networkLog.requests());
+  /**
+   * @param {boolean} includeCookies
+   */
+  async _copyAllFetchCall(includeCookies) {
+    const commands = await this._generateAllFetchCall(SDK.networkLog.requests(), includeCookies);
     Host.InspectorFrontendHost.copyText(commands);
   }
 
@@ -1666,9 +1675,10 @@ export default class NetworkLogView extends UI.VBox {
 
   /**
    * @param {!SDK.NetworkRequest} request
+   * @param {boolean} includeCookies
    * @return {!Promise<string>}
    */
-  async _generateFetchCall(request) {
+  async _generateFetchCall(request, includeCookies) {
     const ignoredHeaders = {
       // Internal headers
       'method': 1,
@@ -1736,7 +1746,6 @@ export default class NetworkLogView extends UI.VBox {
     const requestBody = await request.requestFormData();
 
     const fetchOptions = {
-      credentials,
       headers: Object.keys(headers).length ? headers : void 0,
       referrer,
       referrerPolicy,
@@ -1745,17 +1754,31 @@ export default class NetworkLogView extends UI.VBox {
       mode: 'cors'
     };
 
+    if (includeCookies) {
+      const cookieHeader = requestHeaders.find(header => header.name.toLowerCase() === 'cookie');
+      if (cookieHeader) {
+        fetchOptions.headers = {
+          ...headers,
+          'cookie': cookieHeader.value,
+        };
+      }
+    } else {
+      fetchOptions.credentials = credentials;
+    }
+
     const options = JSON.stringify(fetchOptions);
     return `fetch(${url}, ${options});`;
   }
 
   /**
    * @param {!Array<!SDK.NetworkRequest>} requests
+   * @param {boolean} includeCookies
    * @return {!Promise<string>}
    */
-  async _generateAllFetchCall(requests) {
+  async _generateAllFetchCall(requests, includeCookies) {
     const nonBlobRequests = this._filterOutBlobRequests(requests);
-    const commands = await Promise.all(nonBlobRequests.map(request => this._generateFetchCall(request)));
+    const commands =
+        await Promise.all(nonBlobRequests.map(request => this._generateFetchCall(request, includeCookies)));
     return commands.join(' ;\n');
   }
 

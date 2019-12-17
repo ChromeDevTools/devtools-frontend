@@ -381,6 +381,9 @@
   <message name="IDS_DEVTOOLS_ca092ce554360617d7bb503ff16dcb7c" desc="Text for toggling the view of header data (e.g. query string parameters) from parsed to source in the headers tab">
     View source
   </message>
+  <message name="IDS_DEVTOOLS_ce89cbfed44c10f5dd21427be154f288" desc="Text in Network Log View of the Network panel">
+    Copy as Node.js fetch
+  </message>
   <message name="IDS_DEVTOOLS_d07d8b2f741d82961c330af95e739d27" desc="Text for toggling header data (e.g. query string parameters) from encoded to decoded in the headers tab">
     View decoded
   </message>
@@ -401,6 +404,9 @@
   </message>
   <message name="IDS_DEVTOOLS_842ad9796db643e88bd614ac51a99734" desc="Text in Request Initiator View of the Network panel">
     This request has no initiator data.
+  </message>
+  <message name="IDS_DEVTOOLS_e48c00bc05b642164b5520137b66d011" desc="Text in Network Log View of the Network panel">
+    Copy all as Node.js fetch
   </message>
   <message name="IDS_DEVTOOLS_f5a6d40aab4d260009df79b7dab7e6a0" desc="An option in the user agent dropdown menu in the Network conditions tool">
     <ph name="LOCKED_1">Microsoft Edge — iPhone</ph>

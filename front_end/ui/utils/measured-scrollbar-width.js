@@ -16,8 +16,12 @@ export function measuredScrollbarWidth(document) {
   if (!document) {
     return 16;
   }
+
   const scrollDiv = document.createElement('div');
-  scrollDiv.setAttribute('style', 'width: 100px; height: 100px; overflow: scroll;');
+  const innerDiv = document.createElement('div');
+  scrollDiv.setAttribute('style', 'display: block; width: 100px; height: 100px; overflow: scroll;');
+  innerDiv.setAttribute('style', 'height: 200px');
+  scrollDiv.appendChild(innerDiv);
   document.body.appendChild(scrollDiv);
   _measuredScrollbarWidth = scrollDiv.offsetWidth - scrollDiv.clientWidth;
   document.body.removeChild(scrollDiv);

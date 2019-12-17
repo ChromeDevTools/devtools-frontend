@@ -4,8 +4,8 @@
 
 const {assert} = chai;
 
-import * as Common from '../../../../front_end/common/common.js';
-import {default as TempFile, TempFileBackingStorage} from '../../../../front_end/bindings/TempFile.js';
+import * as Common from '/front_end/common/common.js';
+import {default as TempFile, TempFileBackingStorage} from '/front_end/bindings/TempFile.js';
 
 describe('TempFile', () => {
   it('can be initialized successfully', () => {

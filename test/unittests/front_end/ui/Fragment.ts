@@ -4,7 +4,7 @@
 
 const {assert} = chai;
 
-import { Fragment } from '../../../../front_end/ui/Fragment.js';
+import { Fragment } from '/front_end/ui/Fragment.js';
 
 describe('Fragment', () => {
   it('can be instantiated correctly', () => {

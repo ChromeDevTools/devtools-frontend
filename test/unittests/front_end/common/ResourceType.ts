@@ -4,7 +4,7 @@
 
 const {assert} = chai;
 
-import {ResourceType, ResourceCategory} from '../../../../front_end/common/ResourceType.js';
+import {ResourceType, ResourceCategory} from '/front_end/common/ResourceType.js';
 
 describe('ResourceCategory class', () => {
   it('is able to be instantiated successfully', () => {

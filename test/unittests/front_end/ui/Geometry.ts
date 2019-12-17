@@ -4,7 +4,7 @@
 
 const {assert} = chai;
 
-import { Vector, Point, CubicBezier, EulerAngles, Size, Insets, Rect, Constraints, scalarProduct, crossProduct, subtract, multiplyVectorByMatrixAndNormalize, calculateAngle, boundsForTransformedPoints } from '../../../../front_end/ui/Geometry.js';
+import { Vector, Point, CubicBezier, EulerAngles, Size, Insets, Rect, Constraints, scalarProduct, crossProduct, subtract, multiplyVectorByMatrixAndNormalize, calculateAngle, boundsForTransformedPoints } from '/front_end/ui/Geometry.js';
 
 describe('Vector', () => {
   it('can be instantiated without issues', () => {

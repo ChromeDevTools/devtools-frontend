@@ -2,5 +2,9 @@
   "compilerOptions": {
     "module": "esnext",
     "target": "esnext",
+    "baseUrl": ".",
+    "paths": {
+      "/front_end/*": ["front_end/*"]
+    }
   }
 }

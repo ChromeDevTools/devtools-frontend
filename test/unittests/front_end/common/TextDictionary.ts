@@ -4,7 +4,7 @@
 
 const {assert} = chai;
 
-import * as Common from '../../../../front_end/common/common.js';
+import * as Common from '/front_end/common/common.js';
 
 describe('Text Dictionary', () => {
   it('can be created with its basic attributes', () => {

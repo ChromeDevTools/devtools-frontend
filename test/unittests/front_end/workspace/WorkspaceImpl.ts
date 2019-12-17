@@ -4,9 +4,9 @@
 
 const {assert} = chai;
 
-import * as Common from '../../../../front_end/common/common.js';
-import {default as WorkspaceImpl, ProjectStore, projectTypes} from '../../../../front_end/workspace/WorkspaceImpl.js';
-import {default as UISourceCode} from '../../../../front_end/workspace/UISourceCode.js';
+import * as Common from '/front_end/common/common.js';
+import {default as WorkspaceImpl, ProjectStore, projectTypes} from '/front_end/workspace/WorkspaceImpl.js';
+import {default as UISourceCode} from '/front_end/workspace/UISourceCode.js';
 
 describe('ProjectStore', () => {
   it('can be instantiated correctly', () => {

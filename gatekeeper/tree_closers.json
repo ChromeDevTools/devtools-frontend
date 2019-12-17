@@ -23,7 +23,10 @@
       "excluded_steps": [
         "Failure reason",
         "steps",
-        "* (flakes)"
+        "* (flakes)",
+        "* (retry shards with patch)",
+        "* (with patch)",
+        "* (without patch)"
       ],
       "forgiving_optional": [
         "bot_update",

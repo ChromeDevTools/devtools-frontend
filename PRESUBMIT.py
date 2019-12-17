@@ -86,6 +86,11 @@ def _CheckBuildGN(input_api, output_api):
     return _checkWithNodeScript(input_api, output_api, script_path)
 
 
+def _CheckJSON(input_api, output_api):
+    script_path = input_api.os_path.join(input_api.PresubmitLocalPath(), 'scripts', 'json_validator', 'validate_module_json.js')
+    return _checkWithNodeScript(input_api, output_api, script_path)
+
+
 def _CheckFormat(input_api, output_api):
 
     def popen(args):
@@ -234,6 +239,7 @@ def CheckChangeOnUpload(input_api, output_api):
     results = []
     results.extend(_CommonChecks(input_api, output_api))
     results.extend(_CheckBuildGN(input_api, output_api))
+    results.extend(_CheckJSON(input_api, output_api))
     results.extend(_CheckFormat(input_api, output_api))
     results.extend(_CheckDevtoolsStyle(input_api, output_api))
     results.extend(_CheckOptimizeSVGHashes(input_api, output_api))

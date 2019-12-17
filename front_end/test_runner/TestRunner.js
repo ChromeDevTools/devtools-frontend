@@ -42,11 +42,6 @@ export function _printDevToolsConsole() {
   console.log = _consoleOutputHook.bind(null, 'log');
   console.error = _consoleOutputHook.bind(null, 'error');
   console.info = _consoleOutputHook.bind(null, 'info');
-  console.assert = (assertionCondition, ...args) => {
-    if (!assertionCondition) {
-      addResult(`ASSERTION FAILURE: ${args.join(' ')}`);
-    }
-  };
 }
 
 /**

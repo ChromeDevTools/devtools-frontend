@@ -55,6 +55,10 @@
     color: #039be5;
 }
 
+.release-note-container .release-note-link {
+    text-decoration: none;
+}
+
 .release-note-title,
 .release-note-subtitle {
     color: inherit;

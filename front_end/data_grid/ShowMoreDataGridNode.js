@@ -103,6 +103,7 @@ export default class ShowMoreDataGridNode extends DataGrid.DataGridNode {
    */
   createCell(columnIdentifier) {
     const cell = this.createTD(columnIdentifier);
+    cell.classList.add('show-more');
     if (!this._hasCells) {
       this._hasCells = true;
       if (this.depth) {

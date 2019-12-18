@@ -256,6 +256,14 @@
     background-color: hsl(0, 100%, 70%);
 }
 
+.data-grid td.show-more {
+    white-space: normal;
+}
+
+.data-grid td.show-more::before {
+    display: none;
+}
+
 .data-grid-resizer {
     position: absolute;
     top: 0;

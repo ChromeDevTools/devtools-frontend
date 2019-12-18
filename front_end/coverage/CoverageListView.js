@@ -293,6 +293,7 @@ export class GridNode extends DataGrid.SortableDataGridNode {
         if (this._highlightRegExp) {
           this._highlight(outer, this._url);
         }
+        this.setCellAccessibleName(this._url, cell, columnId);
         break;
       case 'type':
         cell.textContent = Coverage.CoverageListView._typeToString(this._coverageInfo.type());

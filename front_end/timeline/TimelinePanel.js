@@ -686,6 +686,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
     this._reset();
     this._setState(Timeline.TimelinePanel.State.Recording);
     this._showRecordingStarted();
+    this._statusPane.enableStopButton();
     this._statusPane.updateStatus(Common.UIString('Profiling\u2026'));
     this._statusPane.updateProgressBar(Common.UIString('Buffer usage'), 0);
     this._statusPane.startTimer();
@@ -1167,6 +1168,8 @@ Timeline.TimelinePanel.StatusPane = class extends UI.VBox {
     }
 
     this._stopButton = UI.createTextButton(Common.UIString('Stop'), stopCallback, '', true);
+    // Profiling can't be stopped during initialization.
+    this._stopButton.disabled = true;
     this.contentElement.createChild('div', 'stop-button').appendChild(this._stopButton);
   }
 
@@ -1187,6 +1190,10 @@ Timeline.TimelinePanel.StatusPane = class extends UI.VBox {
     this.show(parent);
     parent.classList.add('tinted');
     this._stopButton.focus();
+  }
+
+  enableStopButton() {
+    this._stopButton.disabled = false;
   }
 
   /**

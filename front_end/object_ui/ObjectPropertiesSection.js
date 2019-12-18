@@ -641,6 +641,7 @@ export class ObjectPropertyTreeElement extends UI.TreeElement {
       value,
       linkifier,
       emptyPlaceholder) {
+    properties.sort(ObjectUI.ObjectPropertiesSection.CompareProperties);
     internalProperties = internalProperties || [];
 
     const entriesProperty = internalProperties.find(property => property.name === '[[Entries]]');

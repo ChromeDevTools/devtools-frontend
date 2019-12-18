@@ -40,10 +40,7 @@ EXCLUSIVE_CHANGE_DIRECTORIES = [
     [ 'OWNERS' ],
 ]
 
-# Bypass the AUTHORS check for these accounts.
-_KNOWN_ROBOTS = set('%s-autoroll-builder@chops-service-accounts.iam.gserviceaccount.com' % s for s in ('devtools-ci')) | set(
-    '%s@appspot.gserviceaccount.com' % s for s in ('findit-for-me',))
-
+AUTOROLL_ACCOUNT = "devtools-ci-autoroll-builder@chops-service-accounts.iam.gserviceaccount.com"
 
 def _CheckChangesAreExclusiveToDirectory(input_api, output_api):
     if input_api.change.DISABLE_THIRD_PARTY_CHECK != None:
@@ -224,9 +221,9 @@ def _CheckCSSViolations(input_api, output_api):
 def _CommonChecks(input_api, output_api):
     """Checks common to both upload and commit."""
     results = []
-    author = input_api.change.author_email
-    if author and author not in _KNOWN_ROBOTS:
-        results.extend(input_api.canned_checks.CheckAuthorizedAuthor(input_api, output_api))
+    results.extend(input_api.canned_checks.CheckAuthorizedAuthor(input_api, output_api,
+        bot_whitelist=[AUTOROLL_ACCOUNT]
+    ))
     results.extend(input_api.canned_checks.CheckOwnersFormat(input_api, output_api))
     results.extend(input_api.canned_checks.CheckOwners(input_api, output_api))
     results.extend(input_api.canned_checks.CheckChangeHasNoCrAndHasOnlyOneEol(input_api, output_api))

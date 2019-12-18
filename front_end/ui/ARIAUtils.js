@@ -559,24 +559,45 @@ export function setActiveDescendant(element, activedescendant) {
   element.setAttribute('aria-activedescendant', activedescendant.id);
 }
 
+/**
+ * @param {!Element} element
+ */
+function hideFromLayout(element) {
+  element.style.position = 'absolute';
+  element.style.left = '-999em';
+  element.style.width = '100em';
+  element.style.overflow = 'hidden';
+}
+
 const AlertElementSymbol = Symbol('AlertElementSybmol');
+const MessageElementSymbol = Symbol('MessageElementSymbol');
 
 /**
+ * This function is used to announce a message with the screen reader.
+ * Setting the textContent would allow the SR to access the offscreen element via browse mode
+ * Due to existing NVDA bugs (https://github.com/nvaccess/nvda/issues/10140), setting the
+ * aria-label of the alert element results in the message being read twice.
+ * The current workaround is to set the aria-describedby of the alert element
+ * to a description element where the aria-label is set to the message.
  * @param {string} message
  * @param {!Element} element
  */
 export function alert(message, element) {
   const document = element.ownerDocument;
+  const messageElementId = 'ariaLiveMessageElement';
+  if (!document[MessageElementSymbol]) {
+    const messageElement = document.body.createChild('div');
+    messageElement.id = messageElementId;
+    hideFromLayout(messageElement);
+    document[MessageElementSymbol] = messageElement;
+  }
   if (!document[AlertElementSymbol]) {
     const alertElement = document.body.createChild('div');
-    alertElement.style.position = 'absolute';
-    alertElement.style.left = '-999em';
-    alertElement.style.width = '100em';
-    alertElement.style.overflow = 'hidden';
+    hideFromLayout(alertElement);
     alertElement.setAttribute('role', 'alert');
     alertElement.setAttribute('aria-atomic', 'true');
+    alertElement.setAttribute('aria-describedby', messageElementId);
     document[AlertElementSymbol] = alertElement;
   }
-
-  document[AlertElementSymbol].textContent = message.trimEndWithMaxLength(10000);
+  setAccessibleName(document[MessageElementSymbol], message.trimEndWithMaxLength(10000));
 }

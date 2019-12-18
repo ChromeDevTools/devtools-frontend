@@ -49,7 +49,7 @@ export function _printDevToolsConsole() {
 }
 
 self['onerror'] = (message, source, lineno, colno, error) => {
-  addResult('TEST ENDED IN ERROR: ' + error);
+  addResult('TEST ENDED IN ERROR: ' + error.stack);
   completeTest();
 };
 /** @suppressGlobalPropertiesCheck */

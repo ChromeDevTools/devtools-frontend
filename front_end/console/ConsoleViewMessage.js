@@ -586,7 +586,9 @@ export default class ConsoleViewMessage {
     const result = createElement('span');
     const description = obj.description || '';
     if (description.length > Console.ConsoleViewMessage._MaxTokenizableStringLength) {
-      result.appendChild(UI.createExpandableText(description, Console.ConsoleViewMessage._LongStringVisibleLength));
+      const propertyValue = new ObjectUI.ExpandableTextPropertyValue(
+          createElement('span'), description, Console.ConsoleViewMessage._LongStringVisibleLength);
+      result.appendChild(propertyValue.element);
     } else {
       result.createTextChild(description);
     }
@@ -1576,7 +1578,11 @@ export default class ConsoleViewMessage {
    */
   _linkifyWithCustomLinkifier(string, linkifier) {
     if (string.length > Console.ConsoleViewMessage._MaxTokenizableStringLength) {
-      return UI.createExpandableText(string, Console.ConsoleViewMessage._LongStringVisibleLength);
+      const propertyValue = new ObjectUI.ExpandableTextPropertyValue(
+          createElement('span'), string, Console.ConsoleViewMessage._LongStringVisibleLength);
+      const fragment = createDocumentFragment();
+      fragment.appendChild(propertyValue.element);
+      return fragment;
     }
     const container = createDocumentFragment();
     const tokens = Console.ConsoleViewMessage._tokenizeMessageText(string);

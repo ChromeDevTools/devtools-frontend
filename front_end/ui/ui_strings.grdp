@@ -30,9 +30,6 @@
   <message name="IDS_DEVTOOLS_103e6e056329361a5d169154f52771d0" desc="Text in UIUtils">
     <ph name="DESCRIPTION">$1s<ex>Promise</ex></ph> (async)
   </message>
-  <message name="IDS_DEVTOOLS_1299e7f10b9d0110e7fa5368d1307500" desc="Text of attribute value when text is too long">
-    long text was truncated (<ph name="TOTALBYTES">$1s<ex>30 MB</ex></ph>)
-  </message>
   <message name="IDS_DEVTOOLS_142329f312b9f9a97f9726342813dec2" desc="Text in the Shortcuts page in settings to explain a keyboard shortcut in the Console Section">
     Next/previous line
   </message>
@@ -287,9 +284,6 @@
   </message>
   <message name="IDS_DEVTOOLS_d9f57fb1f634a4e047fd69b574434c7f" desc="Text in the Shortcuts page to explain a keyboard shortcut (evaluate the selected expression in console)">
     Evaluate selection in console
-  </message>
-  <message name="IDS_DEVTOOLS_dd73c24f4702950125e2fcb7d26ca5fe" desc="Text of attribute value when text is too long">
-    Show more (<ph name="TOTALBYTES">$1s<ex>30 MB</ex></ph>)
   </message>
   <message name="IDS_DEVTOOLS_dd92c3884d43902407a4c2f0d8cc0eb1" desc="Text in the Shortcuts page to explain a keyboard shortcut (toggle breakpoint in debugger)">
     Toggle breakpoint

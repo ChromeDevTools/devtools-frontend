@@ -426,8 +426,9 @@ Sources.WatchExpression = class extends Common.Object {
       titleElement.classList.add('dimmed');
       this._valueElement.textContent = Common.UIString('<not available>');
     } else {
-      this._valueElement = ObjectUI.ObjectPropertiesSection.createValueElementWithCustomSupport(
+      const propertyValue = ObjectUI.ObjectPropertiesSection.createPropertyValueWithCustomSupport(
           expressionValue, !!exceptionDetails, false /* showPreview */, titleElement, this._linkifier);
+      this._valueElement = propertyValue.element;
     }
     const separatorElement = createElementWithClass('span', 'watch-expressions-separator');
     separatorElement.textContent = ': ';

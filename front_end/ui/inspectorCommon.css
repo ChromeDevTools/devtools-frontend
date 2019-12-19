@@ -420,9 +420,9 @@ span[is=dt-icon-label] {
 
 .undisplayable-text,
 .expandable-inline-button {
-    padding: 2px 4px;
+    padding: 1px 3px;
     margin: 0 2px;
-    font-size: 12px;
+    font-size: 11px;
     font-family: sans-serif;
     white-space: nowrap;
     display: inline-block;

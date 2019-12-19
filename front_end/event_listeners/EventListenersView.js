@@ -313,8 +313,9 @@ export class ObjectEventListenerBar extends UI.TreeElement {
     const linkElement = linkifier.linkifyRawLocation(this._eventListener.location(), this._eventListener.sourceURL());
     subtitle.appendChild(linkElement);
 
-    this._valueTitle =
-        ObjectUI.ObjectPropertiesSection.createValueElement(object, false /* wasThrown */, false /* showPreview */);
+    const propertyValue =
+        ObjectUI.ObjectPropertiesSection.createPropertyValue(object, /* wasThrown */ false, /* showPreview */ false);
+    this._valueTitle = propertyValue.element;
     title.appendChild(this._valueTitle);
 
     if (this._eventListener.canRemove()) {

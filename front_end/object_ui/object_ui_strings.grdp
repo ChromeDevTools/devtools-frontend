@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <grit-part>
+  <message name="IDS_DEVTOOLS_1299e7f10b9d0110e7fa5368d1307500" desc="Text of attribute value when text is too long">
+    long text was truncated (<ph name="TOTALBYTES">$1s<ex>30 MB</ex></ph>)
+  </message>
   <message name="IDS_DEVTOOLS_1381e657bdaaff914f1cf300d9ae12ba" desc="Span title in Remote Object Preview Formatter">
     The property is computed with a getter
   </message>
@@ -41,6 +44,9 @@
   </message>
   <message name="IDS_DEVTOOLS_d50bbea3c85be098dcf221e622cd7718" desc="Text in Java Script Autocomplete">
     Lexical scope variables
+  </message>
+  <message name="IDS_DEVTOOLS_dd73c24f4702950125e2fcb7d26ca5fe" desc="Text of attribute value when text is too long">
+    Show more (<ph name="TOTALBYTES">$1s<ex>30 MB</ex></ph>)
   </message>
   <message name="IDS_DEVTOOLS_ecaa3f03d3f2556acc42a409ae0e00d4" desc="Text in Object Properties Section">
     [Exception: <ph name="VALUEELEMENT">$1s<ex>function alert() { [native code] }</ex></ph>]

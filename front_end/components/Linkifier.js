@@ -360,6 +360,7 @@ export default class Linkifier {
     const columnNumber = options.columnNumber;
     const preventClick = options.preventClick;
     const maxLength = options.maxLength || UI.MaxLengthForDisplayedURLs;
+    const bypassURLTrimming = options.bypassURLTrimming;
     if (!url || url.trim().toLowerCase().startsWith('javascript:')) {
       const element = createElementWithClass('span', className);
       element.textContent = text || url || Common.UIString('(unknown)');
@@ -371,7 +372,7 @@ export default class Linkifier {
       linkText += ':' + (lineNumber + 1);
     }
     const title = linkText !== url ? url : '';
-    const link = Linkifier._createLink(linkText, className, maxLength, title, url, preventClick);
+    const link = Linkifier._createLink(linkText, className, maxLength, title, url, preventClick, bypassURLTrimming);
     const info = Linkifier._linkInfo(link);
     if (typeof lineNumber === 'number') {
       info.lineNumber = lineNumber;
@@ -401,9 +402,10 @@ export default class Linkifier {
    * @param {string=} title
    * @param {string=} href
    * @param {boolean=} preventClick
-   * @returns{!Element}
+   * @param {boolean=} bypassURLTrimming
+   * @return {!Element}
    */
-  static _createLink(text, className, maxLength, title, href, preventClick) {
+  static _createLink(text, className, maxLength, title, href, preventClick, bypassURLTrimming) {
     const link = createElementWithClass('span', className);
     link.classList.add('devtools-link');
     if (title) {
@@ -412,7 +414,15 @@ export default class Linkifier {
     if (href) {
       link.href = href;
     }
-    Linkifier._setTrimmedText(link, text, maxLength);
+
+    if (bypassURLTrimming) {
+      link.classList.add('devtools-link-styled-trim');
+      Linkifier._appendTextWithoutHashes(link, text);
+    } else {
+      Linkifier._setTrimmedText(link, text, maxLength);
+    }
+
+    // Linkifier._appendTextWithoutHashes(link, text);
     link[_infoSymbol] = {
       icon: null,
       enableDecorator: false,
@@ -451,34 +461,11 @@ export default class Linkifier {
     link.removeChildren();
     if (maxLength && text.length > maxLength) {
       const middleSplit = splitMiddle(text, maxLength);
-      appendTextWithoutHashes(middleSplit[0]);
-      appendHiddenText(middleSplit[1]);
-      appendTextWithoutHashes(middleSplit[2]);
+      Linkifier._appendTextWithoutHashes(link, middleSplit[0]);
+      Linkifier._appendHiddenText(link, middleSplit[1]);
+      Linkifier._appendTextWithoutHashes(link, middleSplit[2]);
     } else {
-      appendTextWithoutHashes(text);
-    }
-
-    /**
-     * @param {string} string
-     */
-    function appendHiddenText(string) {
-      const ellipsisNode = link.createChild('span', 'devtools-link-ellipsis').createTextChild('\u2026');
-      ellipsisNode[_untruncatedNodeTextSymbol] = string;
-    }
-
-    /**
-     * @param {string} string
-     */
-    function appendTextWithoutHashes(string) {
-      const hashSplit = TextUtils.TextUtils.splitStringByRegexes(string, [/[a-f0-9]{20,}/g]);
-      for (const match of hashSplit) {
-        if (match.regexIndex === -1) {
-          link.createTextChild(match.value);
-        } else {
-          link.createTextChild(match.value.substring(0, 7));
-          appendHiddenText(match.value.substring(7));
-        }
-      }
+      Linkifier._appendTextWithoutHashes(link, text);
     }
 
     /**
@@ -500,6 +487,31 @@ export default class Linkifier {
       }
       return [string.substring(0, leftIndex), string.substring(leftIndex, rightIndex), string.substring(rightIndex)];
     }
+  }
+
+  /**
+   * @param {!Element} link
+   * @param {string} string
+   */
+  static _appendTextWithoutHashes(link, string) {
+    const hashSplit = TextUtils.TextUtils.splitStringByRegexes(string, [/[a-f0-9]{20,}/g]);
+    for (const match of hashSplit) {
+      if (match.regexIndex === -1) {
+        link.createTextChild(match.value);
+      } else {
+        link.createTextChild(match.value.substring(0, 7));
+        Linkifier._appendHiddenText(link, match.value.substring(7));
+      }
+    }
+  }
+
+  /**
+   * @param {!Element} link
+   * @param {string} string
+   */
+  static _appendHiddenText(link, string) {
+    const ellipsisNode = link.createChild('span', 'devtools-link-ellipsis').createTextChild('\u2026');
+    ellipsisNode[_untruncatedNodeTextSymbol] = string;
   }
 
   /**

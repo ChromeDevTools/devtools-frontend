@@ -212,3 +212,12 @@ ol.expanded {
 :host-context(.matched-styles) ol.expanded {
     margin-left: 16px;
 }
+
+.devtools-link-styled-trim {
+    display: inline-block;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    max-width: 80%;
+    vertical-align: bottom;
+}

@@ -86,7 +86,7 @@ export default class CookieParser {
       if (kv.key.charAt(0) === '$' && this._lastCookie) {
         this._lastCookie.addAttribute(kv.key.slice(1), kv.value);
       } else if (kv.key.toLowerCase() !== '$version' && typeof kv.value === 'string') {
-        this._addCookie(kv, Type.Request);
+        this._addCookie(kv, SDK.Cookie.Type.Request);
       }
       this._advanceAndCheckCookieDelimiter();
     }
@@ -106,7 +106,7 @@ export default class CookieParser {
       if (this._lastCookie) {
         this._lastCookie.addAttribute(kv.key, kv.value);
       } else {
-        this._addCookie(kv, Type.Response);
+        this._addCookie(kv, SDK.Cookie.Type.Response);
       }
       if (this._advanceAndCheckCookieDelimiter()) {
         this._flushCookie();
@@ -135,7 +135,7 @@ export default class CookieParser {
   _flushCookie() {
     if (this._lastCookie) {
       this._lastCookie.setSize(this._originalInputLength - this._input.length - this._lastCookiePosition);
-      this._lastCookie._setCookieLine(this._lastCookieLine.replace('\n', ''));
+      this._lastCookie.setCookieLine(this._lastCookieLine.replace('\n', ''));
     }
     this._lastCookie = null;
     this._lastCookieLine = '';
@@ -181,7 +181,7 @@ export default class CookieParser {
 
   /**
    * @param {!KeyValue} keyValue
-   * @param {!Type} type
+   * @param {!SDK.Cookie.Type} type
    */
   _addCookie(keyValue, type) {
     if (this._lastCookie) {
@@ -216,253 +216,6 @@ class KeyValue {
   }
 }
 
-
-/**
- * @unrestricted
- */
-export class Cookie {
-  /**
-   * @param {string} name
-   * @param {string} value
-   * @param {?Type} type
-   * @param {!Protocol.Network.CookiePriority=} priority
-   */
-  constructor(name, value, type, priority) {
-    this._name = name;
-    this._value = value;
-    this._type = type;
-    this._attributes = {};
-    this._size = 0;
-    this._priority = /** @type {!Protocol.Network.CookiePriority} */ (priority || 'medium');
-    /** @type {string|null} */
-    this._cookieLine = null;
-  }
-
-  /**
-   * @param {!Protocol.Network.Cookie} protocolCookie
-   * @return {!SDK.Cookie}
-   */
-  static fromProtocolCookie(protocolCookie) {
-    const cookie = new SDK.Cookie(protocolCookie.name, protocolCookie.value, null, protocolCookie.priority);
-    cookie.addAttribute('domain', protocolCookie['domain']);
-    cookie.addAttribute('path', protocolCookie['path']);
-    cookie.addAttribute('port', protocolCookie['port']);
-    if (protocolCookie['expires']) {
-      cookie.addAttribute('expires', protocolCookie['expires'] * 1000);
-    }
-    if (protocolCookie['httpOnly']) {
-      cookie.addAttribute('httpOnly');
-    }
-    if (protocolCookie['secure']) {
-      cookie.addAttribute('secure');
-    }
-    if (protocolCookie['sameSite']) {
-      cookie.addAttribute('sameSite', protocolCookie['sameSite']);
-    }
-    cookie.setSize(protocolCookie['size']);
-    return cookie;
-  }
-
-  /**
-   * @returns {string}
-   */
-  key() {
-    return this.domain() + ' ' + this.name() + ' ' + this.path();
-  }
-
-  /**
-   * @return {string}
-   */
-  name() {
-    return this._name;
-  }
-
-  /**
-   * @return {string}
-   */
-  value() {
-    return this._value;
-  }
-
-  /**
-   * @return {?Type}
-   */
-  type() {
-    return this._type;
-  }
-
-  /**
-   * @return {boolean}
-   */
-  httpOnly() {
-    return 'httponly' in this._attributes;
-  }
-
-  /**
-   * @return {boolean}
-   */
-  secure() {
-    return 'secure' in this._attributes;
-  }
-
-  /**
-   * @return {!Protocol.Network.CookieSameSite}
-   */
-  sameSite() {
-    // TODO(allada) This should not rely on _attributes and instead store them individually.
-    return /** @type {!Protocol.Network.CookieSameSite} */ (this._attributes['samesite']);
-  }
-
-  /**
-   * @return {!Protocol.Network.CookiePriority}
-   */
-  priority() {
-    return this._priority;
-  }
-
-  /**
-   * @return {boolean}
-   */
-  session() {
-    // RFC 2965 suggests using Discard attribute to mark session cookies, but this does not seem to be widely used.
-    // Check for absence of explicitly max-age or expiry date instead.
-    return !('expires' in this._attributes || 'max-age' in this._attributes);
-  }
-
-  /**
-   * @return {string}
-   */
-  path() {
-    return this._attributes['path'];
-  }
-
-  /**
-   * @return {string}
-   */
-  port() {
-    return this._attributes['port'];
-  }
-
-  /**
-   * @return {string}
-   */
-  domain() {
-    return this._attributes['domain'];
-  }
-
-  /**
-   * @return {number}
-   */
-  expires() {
-    return this._attributes['expires'];
-  }
-
-  /**
-   * @return {string}
-   */
-  maxAge() {
-    return this._attributes['max-age'];
-  }
-
-  /**
-   * @return {number}
-   */
-  size() {
-    return this._size;
-  }
-
-  /**
-   * @return {string}
-   */
-  url() {
-    return (this.secure() ? 'https://' : 'http://') + this.domain() + this.path();
-  }
-
-  /**
-   * @param {number} size
-   */
-  setSize(size) {
-    this._size = size;
-  }
-
-  /**
-   * @return {?Date}
-   */
-  expiresDate(requestDate) {
-    // RFC 6265 indicates that the max-age attribute takes precedence over the expires attribute
-    if (this.maxAge()) {
-      const targetDate = requestDate === null ? new Date() : requestDate;
-      return new Date(targetDate.getTime() + 1000 * this.maxAge());
-    }
-
-    if (this.expires()) {
-      return new Date(this.expires());
-    }
-
-    return null;
-  }
-
-  /**
-   * @return {!Object}
-   */
-  attributes() {
-    return this._attributes;
-  }
-
-  /**
-   * @param {string} key
-   * @param {string|number=} value
-   */
-  addAttribute(key, value) {
-    const normalizedKey = key.toLowerCase();
-    switch (normalizedKey) {
-      case 'priority':
-        this._priority = /** @type {!Protocol.Network.CookiePriority} */ (value);
-        break;
-      default:
-        this._attributes[normalizedKey] = value;
-    }
-  }
-
-  /**
-   * @param {string} cookieLine
-   */
-  _setCookieLine(cookieLine) {
-    this._cookieLine = cookieLine;
-  }
-
-  /**
-   * @return {string|null}
-   */
-  getCookieLine() {
-    return this._cookieLine;
-  }
-}
-
-/**
- * @enum {number}
- */
-export const Type = {
-  Request: 0,
-  Response: 1
-};
-
-/**
- * @enum {string}
- */
-export const Attributes = {
-  Name: 'name',
-  Value: 'value',
-  Size: 'size',
-  Domain: 'domain',
-  Path: 'path',
-  Expires: 'expires',
-  HttpOnly: 'httpOnly',
-  Secure: 'secure',
-  SameSite: 'sameSite',
-  Priority: 'priority',
-};
-
 /* Legacy exported object */
 self.SDK = self.SDK || {};
 
@@ -471,16 +224,3 @@ SDK = SDK || {};
 
 /** @constructor */
 SDK.CookieParser = CookieParser;
-
-/** @constructor */
-SDK.Cookie = Cookie;
-
-/**
- * @enum {number}
- */
-SDK.Cookie.Type = Type;
-
-/**
- * @enum {string}
- */
-SDK.Cookie.Attributes = Attributes;

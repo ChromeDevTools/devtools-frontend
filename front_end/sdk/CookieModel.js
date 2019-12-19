@@ -107,8 +107,8 @@ export default class CookieModel extends SDK.SDKModel {
     return this.target()
         .networkAgent()
         .setCookie(
-            cookie.name(), cookie.value(), cookie.url(), domain, cookie.path(), cookie.secure(), cookie.httpOnly(),
-            cookie.sameSite(), expires, cookie.priority())
+            cookie.name(), cookie.value(), cookie.url() || undefined, domain, cookie.path(), cookie.secure(),
+            cookie.httpOnly(), cookie.sameSite(), expires, cookie.priority())
         .then(success => !!success);
   }
 

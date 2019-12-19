@@ -34,7 +34,8 @@ module.exports = function(config) {
       './test/unittests/**/*.ts': ['karma-typescript'],
       './front_end/common/*.js': instrumenterPreprocessors,
       './front_end/workspace/*.js': instrumenterPreprocessors,
-      './front_end/ui/**/*.js': instrumenterPreprocessors
+      './front_end/ui/**/*.js': instrumenterPreprocessors,
+      './front_end/sdk/*.js':instrumenterPreprocessors,
     },
 
     browsers,

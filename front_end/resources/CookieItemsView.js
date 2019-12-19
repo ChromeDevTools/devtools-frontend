@@ -160,7 +160,7 @@ Resources.CookieItemsView = class extends Resources.StorageItemsView {
     if (!this._model) {
       return Promise.resolve(false);
     }
-    if (oldCookie && (newCookie.name() !== oldCookie.name() || newCookie.url() !== oldCookie.url())) {
+    if (oldCookie && newCookie.key() !== oldCookie.key()) {
       this._model.deleteCookie(oldCookie);
     }
     return this._model.saveCookie(newCookie);

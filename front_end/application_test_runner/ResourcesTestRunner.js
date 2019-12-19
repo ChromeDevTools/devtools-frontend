@@ -107,6 +107,18 @@ ApplicationTestRunner.resourceMatchingURL = function(resourceURL) {
   return result;
 };
 
+ApplicationTestRunner.findTreeElement = function(parent, path) {
+  if (path.length === 0) {
+    return parent;
+  }
+  const child = parent.children().find(child => child.title === path[0]);
+  if (!child) {
+    return null;
+  }
+  child.expand();
+  return ApplicationTestRunner.findTreeElement(child, path.slice(1));
+};
+
 ApplicationTestRunner.waitForCookies = function() {
   return new Promise(resolve => {
     TestRunner.addSniffer(CookieTable.CookiesTable.prototype, '_rebuildTable', resolve);

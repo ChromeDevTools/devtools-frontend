@@ -259,7 +259,10 @@ export default class AuditsPanel extends UI.Panel {
     this._buildReportUI(/** @type {!ReportRenderer.ReportJSON} */ (data));
   }
 
-  async _startAudit() {
+  /**
+   * @param {!Common.Event} event
+   */
+  async _startAudit(event) {
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.AuditsStarted);
 
     try {
@@ -287,6 +290,12 @@ export default class AuditsPanel extends UI.Panel {
 
       await this._resetEmulationAndProtocolConnection();
       this._buildReportUI(lighthouseResponse.lhr, lighthouseResponse.artifacts);
+      // Give focus to the new audit button when completed
+      this._newButton.element.focus();
+      const keyboardInitiated = /** @type {boolean} */ (event.data);
+      if (keyboardInitiated) {
+        UI.markAsFocusedByKeyboard(this._newButton.element);
+      }
     } catch (err) {
       await this._resetEmulationAndProtocolConnection();
       if (err instanceof Error) {

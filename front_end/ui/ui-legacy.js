@@ -498,6 +498,8 @@ UI.TreeOutlineInShadow = UIModule.TreeOutline.TreeOutlineInShadow;
 
 UI.markAsFocusedByKeyboard = UIModule.UIUtils.markAsFocusedByKeyboard;
 
+UI.elementIsFocusedByKeyboard = UIModule.UIUtils.elementIsFocusedByKeyboard;
+
 UI.highlightedSearchResultClassName = UIModule.UIUtils.highlightedSearchResultClassName;
 UI.highlightedCurrentSearchResultClassName = UIModule.UIUtils.highlightedCurrentSearchResultClassName;
 UI.StyleValueDelimiters = UIModule.UIUtils.StyleValueDelimiters;

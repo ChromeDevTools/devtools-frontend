@@ -799,6 +799,14 @@ export function markAsFocusedByKeyboard(element) {
 }
 
 /**
+ * @param {!Element} element
+ * @returns {boolean}
+ */
+export function elementIsFocusedByKeyboard(element) {
+  return element.hasAttribute('data-keyboard-focus');
+}
+
+/**
  * @unrestricted
  */
 export class ElementFocusRestorer {

@@ -2608,27 +2608,32 @@ export class StylesSidebarPropertyRenderer {
       return valueElement;
     }
 
-    if (this._shadowHandler && (this._propertyName === 'box-shadow' || this._propertyName === 'text-shadow' ||
-                                this._propertyName === '-webkit-box-shadow') &&
+    const metadata = SDK.cssMetadata();
+
+    if (this._shadowHandler && metadata.isShadowProperty(this._propertyName) &&
         !SDK.CSSMetadata.VariableRegex.test(this._propertyValue)) {
       valueElement.appendChild(this._shadowHandler(this._propertyValue, this._propertyName));
       valueElement.normalize();
       return valueElement;
     }
 
-    if (this._gridHandler && SDK.cssMetadata().isGridAreaDefiningProperty(this._propertyName)) {
+    if (this._gridHandler && metadata.isGridAreaDefiningProperty(this._propertyName)) {
       valueElement.appendChild(this._gridHandler(this._propertyValue, this._propertyName));
       valueElement.normalize();
       return valueElement;
     }
 
+    if (metadata.isStringProperty(this._propertyName)) {
+      valueElement.title = unescapeCssString(this._propertyValue);
+    }
+
     const regexes = [SDK.CSSMetadata.VariableRegex, SDK.CSSMetadata.URLRegex];
     const processors = [this._varHandler, this._processURL.bind(this)];
-    if (this._bezierHandler && SDK.cssMetadata().isBezierAwareProperty(this._propertyName)) {
+    if (this._bezierHandler && metadata.isBezierAwareProperty(this._propertyName)) {
       regexes.push(UI.Geometry.CubicBezier.Regex);
       processors.push(this._bezierHandler);
     }
-    if (this._colorHandler && SDK.cssMetadata().isColorAwareProperty(this._propertyName)) {
+    if (this._colorHandler && metadata.isColorAwareProperty(this._propertyName)) {
       regexes.push(Common.Color.Regex);
       processors.push(this._colorHandler);
     }
@@ -2707,10 +2712,10 @@ export class ButtonProvider {
   }
 
   /**
-   * @param {!Event} e
+   * @param {!Event} event
    */
-  _longClicked(e) {
-    StylesSidebarPane._instance._onAddButtonLongClick(e);
+  _longClicked(event) {
+    StylesSidebarPane._instance._onAddButtonLongClick(event);
   }
 
   /**

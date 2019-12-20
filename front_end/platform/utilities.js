@@ -1445,6 +1445,27 @@ self.base64ToSize = function(content) {
   return size;
 };
 
+/**
+ * @param {?string} input
+ * @return {string}
+ */
+self.unescapeCssString = function(input) {
+  // https://drafts.csswg.org/css-syntax/#consume-escaped-code-point
+  const reCssEscapeSequence = /(?<!\\)\\(?:([a-fA-F0-9]{1,6})|(.))[\n\t\x20]?/gs;
+  return input.replace(reCssEscapeSequence, (_, $1, $2) => {
+    if ($2) {  // Handle the single-character escape sequence.
+      return $2;
+    }
+    // Otherwise, handle the code point escape sequence.
+    const codePoint = parseInt($1, 16);
+    const isSurrogate = 0xD800 <= codePoint && codePoint <= 0xDFFF;
+    if (isSurrogate || codePoint === 0x0000 || codePoint > 0x10FFFF) {
+      return '\uFFFD';
+    }
+    return String.fromCodePoint(codePoint);
+  });
+};
+
 self.Platform = self.Platform || {};
 Platform = Platform || {};
 

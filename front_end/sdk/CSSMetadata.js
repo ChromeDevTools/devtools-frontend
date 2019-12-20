@@ -228,6 +228,26 @@ export default class CSSMetadata {
   }
 
   /**
+   * @param {string} propertyName
+   * @return {boolean}
+   */
+  isShadowProperty(propertyName) {
+    propertyName = propertyName.toLowerCase();
+    return propertyName === 'box-shadow' || propertyName === 'text-shadow' || propertyName === '-webkit-box-shadow';
+  }
+
+  /**
+   * @param {string} propertyName
+   * @return {boolean}
+   */
+  isStringProperty(propertyName) {
+    propertyName = propertyName.toLowerCase();
+    // TODO(crbug.com/1033910): Generalize this to all CSS properties
+    // that accept <string> values.
+    return propertyName === 'content';
+  }
+
+  /**
    * @param {string} name
    * @return {string}
    */

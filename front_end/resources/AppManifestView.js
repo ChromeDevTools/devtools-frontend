@@ -175,11 +175,8 @@ Resources.AppManifestView = class extends UI.VBox {
       this._iconsSection.setIconMasked(setIconMaskedCheckbox.checkboxElement.checked);
     });
     this._iconsSection.appendRow().appendChild(setIconMaskedCheckbox);
-    // TODO(mathias): Uncomment this once we have official docs.
-    // const documentationLink = UI.XLink.create(
-    //   'https://web.dev/#TODO',  // TODO(mathias): Update once we have official docs.
-    //   ls`documentation on maskable icons`);
-    // this._iconsSection.appendRow().appendChild(UI.formatLocalized('Need help? Read our %s.', [documentationLink]));
+    const documentationLink = UI.XLink.create('https://web.dev/maskable-icon/', ls`documentation on maskable icons`);
+    this._iconsSection.appendRow().appendChild(UI.formatLocalized('Need help? Read our %s.', [documentationLink]));
 
     if (manifestIcons && manifestIcons.primaryIcon) {
       const wrapper = createElement('div');
@@ -189,7 +186,7 @@ Resources.AppManifestView = class extends UI.VBox {
       image.style.maxHeight = '200px';
       image.src = 'data:image/png;base64,' + manifestIcons.primaryIcon;
       image.alt = ls`Primary manifest icon from ${url}`;
-      const title = ls`Primary Icon\nas used by chrome`;
+      const title = ls`Primary icon\nas used by Chrome`;
       const field = this._iconsSection.appendFlexedField(title);
       wrapper.appendChild(image);
       field.appendChild(wrapper);

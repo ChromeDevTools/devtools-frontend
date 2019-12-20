@@ -160,10 +160,6 @@ table is empty.
   <message name="IDS_DEVTOOLS_6e72748dc2f2224dfabb374ca0cc988f" desc="Text in Service Workers View of the Application panel">
     #<ph name="REDUNDANT_ID">$1s<ex>2</ex></ph> is redundant
   </message>
-  <message name="IDS_DEVTOOLS_70791e12152c5d8d7e0ac45ba46349e9" desc="Label for the primary icon loaded from the manifest">
-    Primary Icon
-as used by chrome
-  </message>
   <message name="IDS_DEVTOOLS_76c18f2b1e4155961e10434e3d83317f" desc="Text in Indexed DBViews of the Application panel">
     Key generator value: <ph name="STRING_METADATA_KEYGENERATORVALUE_">$1s<ex>2</ex></ph>
   </message>
@@ -252,6 +248,10 @@ read the &quot;<ph name="THIS_TABLENAME">$1s<ex>database</ex></ph>&quot; table.
   <message name="IDS_DEVTOOLS_9ff9f5649294f7200b671d6389d17d9a" desc="Text in Application Panel Sidebar of the Application panel">
     multiEntry
   </message>
+  <message name="IDS_DEVTOOLS_a0394c82ef53a78ef470b18ecbf960b4" desc="Label for the primary icon loaded from the manifest">
+    Primary icon
+as used by Chrome
+  </message>
   <message name="IDS_DEVTOOLS_a049ac2b4afe0fb6e78656082858067e" desc="Text in Clear Storage View of the Application panel">
     Storage Usage
   </message>
@@ -306,6 +306,9 @@ read the &quot;<ph name="THIS_TABLENAME">$1s<ex>database</ex></ph>&quot; table.
   <message name="IDS_DEVTOOLS_bb8839cf9d324a22591ff426c28c5345" desc="Tooltip text that appears when hovering over the largeicon play button in the Indexed DBViews of the Application panel">
     Show next page
   </message>
+  <message name="IDS_DEVTOOLS_bd0c1dbb1b437cd840dbc57852fb8ec6" desc="Link text for more information on maskable icons in App Manifest view of the Application panel">
+    documentation on maskable icons
+  </message>
   <message name="IDS_DEVTOOLS_bebc9b50966d8d2bd1913a3c25b707d4" desc="Text in Indexed DBViews of the Application panel">
     Data may be stale
   </message>
@@ -338,6 +341,9 @@ read the &quot;<ph name="THIS_TABLENAME">$1s<ex>database</ex></ph>&quot; table.
   </message>
   <message name="IDS_DEVTOOLS_ca72bcf0fbdc4c621360d906f930a956" desc="Warning message for icons from the manifest">
     Actual height (<ph name="IMAGE_NATURALHEIGHT">$1s<ex>100</ex></ph>px) of icon <ph name="ICONURL">$2s<ex>https://example.com/icon.png</ex></ph> does not match specified height (<ph name="HEIGHT">$3s<ex>100</ex></ph>px)
+  </message>
+  <message name="IDS_DEVTOOLS_cbd71dc96b9c7d3a0663a5546f3798b5" desc="Text wrapping a link pointing to more information on maskable icons in App Manifest view of the Application panel">
+    Need help? Read our <ph name="DOCUMENTATIONLINK">$1s<ex>https://example.com/</ex></ph>.
   </message>
   <message name="IDS_DEVTOOLS_cc0041e1d664fd87ad1cfaae4265893f" desc="Title of bypass service worker setting in service workers view of the application panel">
     Bypass for network

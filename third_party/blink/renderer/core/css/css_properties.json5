@@ -360,6 +360,33 @@
       }
     },
 
+    // - is_slot: true
+    //
+    // "Slots" are used to resolve properties which cascade separately, but
+    // use the same storage on ComputedStyle. In other words, properties that
+    // are slots, have some other property (or properties) that map to them.
+    // For example, -webkit-writing-mode maps to writing-mode, and inline-size
+    // maps to either width or height.
+    //
+    // See StyleCascade::Resolver::SetSlot
+    is_slot: {
+      default: false,
+      valid_type: "bool",
+    },
+
+    // - slots: ["other-property1", "other-property2", ...]
+    //
+    // Lists the properties mapped to during StyleCascade::Apply. Note that
+    // for properties that use direction_aware_options, 'slots' should not be
+    // listed, as the mapping is determined at run-time (depending og e.g.
+    // 'direction').
+    //
+    // See also 'is_slot' flag, and StyleCascade::Resolver::SetSlot
+    slots: {
+      default: [],
+      valid_type: "list",
+    },
+
     // - priority: "High"
     // The priority level for computing the property. Valid values are
     // "Animation" (highest), "High" and "Low". Properties with the same
@@ -404,6 +431,18 @@
       default: false,
       valid_type: "bool",
     },
+
+    // - ua_property_for: "other-property"
+    //
+    // UA properties represent the style a given property would have had if
+    // no user/author styles had been applied. This is needed to theme form
+    // elements correctly.
+    //
+    // See also UAStyle.
+    ua_property_for: {
+      valid_type: "str",
+    },
+
   },
 
   // Members in the data objects should appear in the same order as in the
@@ -848,6 +887,7 @@
       name: "writing-mode",
       property_methods: ["CSSValueFromComputedStyleInternal"],
       inherited: true,
+      is_slot: true,
       field_template: "keyword",
       include_paths: ["third_party/blink/renderer/platform/text/writing_mode.h"],
       keywords: ["horizontal-tb", "vertical-rl", "vertical-lr"],
@@ -864,6 +904,7 @@
       type_name: "WritingMode",
       style_builder_custom_functions: ["value"],
       priority: "High",
+      slots: ["writing-mode"],
     },
     {
       name: "text-rendering",
@@ -879,6 +920,7 @@
       name: "zoom",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
       is_descriptor: true,
+      is_slot: true,
       field_group: "visual",
       field_template: "primitive",
       default_value: "1.0",
@@ -1085,6 +1127,7 @@
     {
       name: "border-bottom-color",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal", "ColorIncludingFallback"],
+      is_slot: true,
       interpolable: true,
       field_group: "surround",
       field_template: "external",
@@ -1125,6 +1168,7 @@
     {
       name: "border-bottom-style",
       property_methods: ["CSSValueFromComputedStyleInternal"],
+      is_slot: true,
       field_group: "surround",
       field_template: "keyword",
       keywords: [
@@ -1138,6 +1182,7 @@
     {
       name: "border-bottom-width",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
+      is_slot: true,
       interpolable: true,
       field_group: "surround",
       field_template: "external",
@@ -1162,6 +1207,7 @@
     {
       name: "border-image-outset",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal", "InitialValue"],
+      is_slot: true,
       interpolable: true,
       typedom_types: ["Length", "Number"],
       style_builder_template: "border_image",
@@ -1172,6 +1218,7 @@
     {
       name: "border-image-repeat",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal", "InitialValue"],
+      is_slot: true,
       keywords: ["stretch", "repeat", "round", "space"],
       typedom_types: ["Keyword"],
       style_builder_template: "border_image",
@@ -1182,6 +1229,7 @@
     {
       name: "border-image-slice",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal", "InitialValue"],
+      is_slot: true,
       interpolable: true,
       typedom_types: ["Number", "Percentage"],
       style_builder_template: "border_image",
@@ -1192,6 +1240,7 @@
     {
       name: "border-image-source",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal", "InitialValue"],
+      is_slot: true,
       interpolable: true,
       keywords: ["none"],
       typedom_types: ["Keyword", "Image"],
@@ -1200,6 +1249,7 @@
     {
       name: "border-image-width",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal", "InitialValue"],
+      is_slot: true,
       interpolable: true,
       keywords: ["auto"],
       typedom_types: ["Keyword", "Length", "Percentage", "Number"],
@@ -1211,6 +1261,7 @@
     {
       name: "border-left-color",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal", "ColorIncludingFallback"],
+      is_slot: true,
       interpolable: true,
       field_group: "surround",
       field_template: "external",
@@ -1227,6 +1278,7 @@
     {
       name: "border-left-style",
       property_methods: ["CSSValueFromComputedStyleInternal"],
+      is_slot: true,
       field_group: "surround",
       field_template: "keyword",
       keywords: [
@@ -1240,6 +1292,7 @@
     {
       name: "border-left-width",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
+      is_slot: true,
       interpolable: true,
       field_group: "surround",
       field_template: "external",
@@ -1254,6 +1307,7 @@
     {
       name: "border-right-color",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal", "ColorIncludingFallback"],
+      is_slot: true,
       interpolable: true,
       field_group: "surround",
       field_template: "external",
@@ -1270,6 +1324,7 @@
     {
       name: "border-right-style",
       property_methods: ["CSSValueFromComputedStyleInternal"],
+      is_slot: true,
       field_group: "surround",
       field_template: "keyword",
       keywords: [
@@ -1283,6 +1338,7 @@
     {
       name: "border-right-width",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
+      is_slot: true,
       interpolable: true,
       field_group: "surround",
       field_template: "external",
@@ -1297,6 +1353,7 @@
     {
       name: "border-top-color",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal", "ColorIncludingFallback"],
+      is_slot: true,
       interpolable: true,
       field_group: "surround",
       field_template: "external",
@@ -1337,6 +1394,7 @@
     {
       name: "border-top-style",
       property_methods: ["CSSValueFromComputedStyleInternal"],
+      is_slot: true,
       field_group: "surround",
       field_template: "keyword",
       keywords: [
@@ -1350,6 +1408,7 @@
     {
       name: "border-top-width",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
+      is_slot: true,
       interpolable: true,
       field_group: "surround",
       field_template: "external",
@@ -1364,6 +1423,7 @@
     {
       name: "bottom",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
+      is_slot: true,
       interpolable: true,
       layout_dependent: true,
       field_group: "surround",
@@ -1935,6 +1995,7 @@
       name: "height",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
       is_descriptor: true,
+      is_slot: true,
       interpolable: true,
       layout_dependent: true,
       field_group: "box",
@@ -1992,6 +2053,7 @@
     {
       name: "intrinsic-height",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
+      is_slot: true,
       interpolable: true,
       field_group: "box",
       field_template: "external",
@@ -2014,6 +2076,7 @@
     {
       name: "intrinsic-width",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
+      is_slot: true,
       interpolable: true,
       field_group: "box",
       field_template: "external",
@@ -2066,6 +2129,7 @@
     {
       name: "left",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
+      is_slot: true,
       interpolable: true,
       layout_dependent: true,
       field_group: "surround",
@@ -2169,6 +2233,7 @@
     {
       name: "margin-bottom",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
+      is_slot: true,
       interpolable: true,
       layout_dependent: true,
       field_group: "surround",
@@ -2182,6 +2247,7 @@
     {
       name: "margin-left",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
+      is_slot: true,
       interpolable: true,
       layout_dependent: true,
       field_group: "surround",
@@ -2195,6 +2261,7 @@
     {
       name: "margin-right",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
+      is_slot: true,
       interpolable: true,
       layout_dependent: true,
       field_group: "surround",
@@ -2208,6 +2275,7 @@
     {
       name: "margin-top",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
+      is_slot: true,
       interpolable: true,
       layout_dependent: true,
       field_group: "surround",
@@ -2274,6 +2342,7 @@
     {
       name: "max-height",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
+      is_slot: true,
       is_descriptor: true,
       interpolable: true,
       field_group: "box",
@@ -2286,6 +2355,7 @@
     {
       name: "max-width",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
+      is_slot: true,
       is_descriptor: true,
       interpolable: true,
       field_group: "box",
@@ -2298,6 +2368,7 @@
     {
       name: "min-height",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
+      is_slot: true,
       is_descriptor: true,
       interpolable: true,
       field_group: "box",
@@ -2309,6 +2380,7 @@
     {
       name: "min-width",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
+      is_slot: true,
       is_descriptor: true,
       interpolable: true,
       field_group: "box",
@@ -2551,6 +2623,7 @@
     {
       name: "overflow-x",
       property_methods: ["CSSValueFromComputedStyleInternal"],
+      is_slot: true,
       field_template: "keyword",
       keywords: [
         "visible", "hidden", "scroll", "auto", "overlay"
@@ -2562,6 +2635,7 @@
     {
       name: "overflow-y",
       property_methods: ["CSSValueFromComputedStyleInternal"],
+      is_slot: true,
       field_template: "keyword",
       keywords: [
         "visible", "hidden", "scroll", "auto", "overlay",
@@ -2587,6 +2661,7 @@
     {
       name: "overscroll-behavior-x",
       property_methods: ["CSSValueFromComputedStyleInternal"],
+      is_slot: true,
       field_template: "keyword",
       keywords: ["auto", "contain", "none"],
       default_value: "auto",
@@ -2596,6 +2671,7 @@
     {
       name: "overscroll-behavior-y",
       property_methods: ["CSSValueFromComputedStyleInternal"],
+      is_slot: true,
       field_template: "keyword",
       keywords: ["auto", "contain", "none"],
       default_value: "auto",
@@ -2605,6 +2681,7 @@
     {
       name: "padding-bottom",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
+      is_slot: true,
       interpolable: true,
       layout_dependent: true,
       field_group: "surround",
@@ -2617,6 +2694,7 @@
     {
       name: "padding-left",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
+      is_slot: true,
       interpolable: true,
       layout_dependent: true,
       field_group: "surround",
@@ -2629,6 +2707,7 @@
     {
       name: "padding-right",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
+      is_slot: true,
       interpolable: true,
       layout_dependent: true,
       field_group: "surround",
@@ -2641,6 +2720,7 @@
     {
       name: "padding-top",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
+      is_slot: true,
       interpolable: true,
       layout_dependent: true,
       field_group: "surround",
@@ -2751,6 +2831,7 @@
     {
       name: "right",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
+      is_slot: true,
       interpolable: true,
       layout_dependent: true,
       field_group: "surround",
@@ -2830,6 +2911,7 @@
     {
       name: "scroll-margin-bottom",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
+      is_slot: true,
       field_group: "*",
       field_template: "primitive",
       default_value: "0.0f",
@@ -2858,6 +2940,7 @@
     {
       name: "scroll-margin-left",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
+      is_slot: true,
       field_group: "*",
       field_template: "primitive",
       default_value: "0.0f",
@@ -2868,6 +2951,7 @@
     {
       name: "scroll-margin-right",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
+      is_slot: true,
       field_group: "*",
       field_template: "primitive",
       default_value: "0.0f",
@@ -2878,6 +2962,7 @@
     {
       name: "scroll-margin-top",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
+      is_slot: true,
       field_group: "*",
       field_template: "primitive",
       default_value: "0.0f",
@@ -2914,6 +2999,7 @@
     {
       name: "scroll-padding-bottom",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
+      is_slot: true,
       field_group: "*",
       field_template: "<length>",
       default_value: "Length()",
@@ -2950,6 +3036,7 @@
     {
       name: "scroll-padding-left",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
+      is_slot: true,
       field_group: "*",
       field_template: "<length>",
       default_value: "Length()",
@@ -2960,6 +3047,7 @@
     {
       name: "scroll-padding-right",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
+      is_slot: true,
       field_group: "*",
       field_template: "<length>",
       default_value: "Length()",
@@ -2970,6 +3058,7 @@
     {
       name: "scroll-padding-top",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
+      is_slot: true,
       field_group: "*",
       field_template: "<length>",
       default_value: "Length()",
@@ -3377,6 +3466,7 @@
     {
       name: "top",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
+      is_slot: true,
       interpolable: true,
       layout_dependent: true,
       field_group: "surround",
@@ -3580,6 +3670,8 @@
       name: "-webkit-border-image",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
       style_builder_custom_functions: ["value"],
+      slots: ["border-image-outset", "border-image-repeat", "border-image-slice",
+              "border-image-source", "border-image-width"]
     },
     {
       name: "-webkit-border-vertical-spacing",
@@ -4146,6 +4238,7 @@
       name: "width",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
       is_descriptor: true,
+      is_slot: true,
       interpolable: true,
       layout_dependent: true,
       field_group: "box",
@@ -5237,6 +5330,7 @@
       computed_style_custom_functions: ["getter", "setter"],
       style_builder_custom_functions: ["initial", "inherit", "value"],
       priority: "High",
+      affected_by_forced_colors: true,
     },
     {
       name: "-internal-visited-caret-color",
@@ -5267,6 +5361,7 @@
       computed_style_custom_functions: ["getter","setter"],
       converter: "ConvertStyleColor",
       style_builder_template: "visited_color",
+      affected_by_forced_colors: true,
     },
     {
       name: "-internal-visited-background-color",
@@ -5283,11 +5378,13 @@
       style_builder_template_args: {
         initial_color: "ComputedStyleInitialValues::InitialBackgroundColor",
       },
+      affected_by_forced_colors: true,
     },
     {
       name: "-internal-visited-border-left-color",
       visited_property_for: "border-left-color",
       property_methods: ["ParseSingleValue", "ColorIncludingFallback"],
+      is_slot: true,
       field_group: "*",
       field_template: "external",
       include_paths: ["third_party/blink/renderer/core/css/style_color.h"],
@@ -5296,11 +5393,13 @@
       computed_style_custom_functions: ["getter", "setter"],
       converter: "ConvertStyleColor",
       style_builder_template: "visited_color",
+      affected_by_forced_colors: true,
     },
     {
       name: "-internal-visited-border-right-color",
       visited_property_for: "border-right-color",
       property_methods: ["ParseSingleValue", "ColorIncludingFallback"],
+      is_slot: true,
       field_group: "*",
       field_template: "external",
       include_paths: ["third_party/blink/renderer/core/css/style_color.h"],
@@ -5309,11 +5408,13 @@
       computed_style_custom_functions: ["getter", "setter"],
       converter: "ConvertStyleColor",
       style_builder_template: "visited_color",
+      affected_by_forced_colors: true,
     },
     {
       name: "-internal-visited-border-top-color",
       visited_property_for: "border-top-color",
       property_methods: ["ParseSingleValue", "ColorIncludingFallback"],
+      is_slot: true,
       field_group: "*",
       field_template: "external",
       include_paths: ["third_party/blink/renderer/core/css/style_color.h"],
@@ -5322,11 +5423,13 @@
       computed_style_custom_functions: ["getter", "setter"],
       converter: "ConvertStyleColor",
       style_builder_template: "visited_color",
+      affected_by_forced_colors: true,
     },
     {
       name: "-internal-visited-border-bottom-color",
       visited_property_for: "border-bottom-color",
       property_methods: ["ParseSingleValue", "ColorIncludingFallback"],
+      is_slot: true,
       field_group: "*",
       field_template: "external",
       include_paths: ["third_party/blink/renderer/core/css/style_color.h"],
@@ -5335,6 +5438,7 @@
       computed_style_custom_functions: ["getter", "setter"],
       converter: "ConvertStyleColor",
       style_builder_template: "visited_color",
+      affected_by_forced_colors: true,
     },
     {
       name: "-internal-visited-border-inline-start-color",
@@ -5382,6 +5486,7 @@
       setter: "SetInternalVisitedFillPaint",
       getter: "FillPaint",
       converter: "ConvertSVGPaint",
+      affected_by_forced_colors: true,
     },
     {
       name: "-internal-visited-outline-color",
@@ -5395,6 +5500,7 @@
       computed_style_custom_functions: ["getter", "setter"],
       converter: "ConvertStyleColor",
       style_builder_template: "visited_color",
+      affected_by_forced_colors: true,
     },
     {
       name: "-internal-visited-stroke",
@@ -5406,6 +5512,7 @@
       setter: "SetInternalVisitedStrokePaint",
       getter: "StrokePaint",
       converter: "ConvertSVGPaint",
+      affected_by_forced_colors: true,
     },
     {
       name: "-internal-visited-text-decoration-color",
@@ -5419,6 +5526,7 @@
       computed_style_custom_functions: ["getter", "setter"],
       converter: "ConvertStyleColor",
       style_builder_template: "visited_color",
+      affected_by_forced_colors: true,
     },
     {
       name: "-internal-visited-text-emphasis-color",
@@ -5436,6 +5544,7 @@
       style_builder_template_args: {
         initial_color: "StyleColor::CurrentColor",
       },
+      affected_by_forced_colors: true,
     },
     {
       name: "-internal-visited-text-fill-color",
@@ -5481,6 +5590,231 @@
       field_group: "*",
       priority: "High",
       style_builder_custom_functions: ["initial", "inherit", "value"],
+      slots: ["zoom"],
+    },
+
+    // Internal UA
+
+    {
+      name: "-internal-ua-background-attachment",
+      style_builder_template: "background_layer",
+      style_builder_template_args: {
+        fill_type: "Attachment",
+      },
+      ua_property_for: "background-attachment",
+    },
+    {
+      name: "-internal-ua-background-blend-mode",
+      style_builder_template: "background_layer",
+      style_builder_template_args: {
+        fill_type: "BlendMode",
+        fill_type_getter: "GetBlendMode",
+      },
+      ua_property_for: "background-blend-mode",
+    },
+    {
+      name: "-internal-ua-background-clip",
+      style_builder_template: "background_layer",
+      style_builder_template_args: {
+        fill_type: "Clip",
+      },
+      ua_property_for: "background-clip",
+    },
+    {
+      name: "-internal-ua-background-color",
+      name_for_methods: "BackgroundColor",
+      converter: "ConvertStyleColor",
+      style_builder_template: "color",
+      style_builder_template_args: {
+        initial_color: "ComputedStyleInitialValues::InitialBackgroundColor",
+      },
+      ua_property_for: "background-color",
+      affected_by_forced_colors: true,
+    },
+    {
+      name: "-internal-ua-background-image",
+      style_builder_template: "background_layer",
+      style_builder_template_args: {
+        fill_type: "Image",
+        fill_type_getter: "GetImage",
+      },
+      ua_property_for: "background-image",
+    },
+    {
+      name: "-internal-ua-background-origin",
+      style_builder_template: "background_layer",
+      style_builder_template_args: {
+        fill_type: "Origin",
+      },
+      ua_property_for: "background-origin",
+    },
+    {
+      name: "-internal-ua-background-position-x",
+      style_builder_template: "background_layer",
+      style_builder_template_args: {
+        fill_type: "PositionX",
+      },
+      ua_property_for: "background-position-x",
+    },
+    {
+      name: "-internal-ua-background-position-y",
+      style_builder_template: "background_layer",
+      style_builder_template_args: {
+        fill_type: "PositionY",
+      },
+      ua_property_for: "background-position-y",
+    },
+    {
+      name: "-internal-ua-background-size",
+      style_builder_template: "background_layer",
+      style_builder_template_args: {
+        fill_type: "Size",
+      },
+      ua_property_for: "background-size",
+    },
+    {
+      name: "-internal-ua-border-bottom-color",
+      name_for_methods: "BorderBottomColor",
+      converter: "ConvertStyleColor",
+      style_builder_template: "color",
+      ua_property_for: "border-bottom-color",
+      affected_by_forced_colors: true,
+    },
+    {
+      name: "-internal-ua-border-left-color",
+      name_for_methods: "BorderLeftColor",
+      converter: "ConvertStyleColor",
+      style_builder_template: "color",
+      ua_property_for: "border-left-color",
+      affected_by_forced_colors: true,
+    },
+    {
+      name: "-internal-ua-border-right-color",
+      name_for_methods: "BorderRightColor",
+      converter: "ConvertStyleColor",
+      style_builder_template: "color",
+      ua_property_for: "border-right-color",
+      affected_by_forced_colors: true,
+    },
+    {
+      name: "-internal-ua-border-top-color",
+      name_for_methods: "BorderTopColor",
+      converter: "ConvertStyleColor",
+      style_builder_template: "color",
+      ua_property_for: "border-top-color",
+      affected_by_forced_colors: true,
+    },
+    {
+      name: "-internal-ua-border-bottom-style",
+      name_for_methods: "BorderBottomStyle",
+      type_name: "EBorderStyle",
+      ua_property_for: "border-bottom-style",
+    },
+    {
+      name: "-internal-ua-border-left-style",
+      name_for_methods: "BorderLeftStyle",
+      type_name: "EBorderStyle",
+      ua_property_for: "border-left-style",
+    },
+    {
+      name: "-internal-ua-border-right-style",
+      name_for_methods: "BorderRightStyle",
+      type_name: "EBorderStyle",
+      ua_property_for: "border-right-style",
+    },
+    {
+      name: "-internal-ua-border-top-style",
+      name_for_methods: "BorderTopStyle",
+      type_name: "EBorderStyle",
+      ua_property_for: "border-top-style",
+    },
+    {
+      name: "-internal-ua-border-bottom-width",
+      name_for_methods: "BorderBottomWidth",
+      converter: "ConvertBorderWidth",
+      ua_property_for: "border-bottom-width",
+    },
+    {
+      name: "-internal-ua-border-left-width",
+      name_for_methods: "BorderLeftWidth",
+      converter: "ConvertBorderWidth",
+      ua_property_for: "border-left-width",
+    },
+    {
+      name: "-internal-ua-border-right-width",
+      name_for_methods: "BorderRightWidth",
+      converter: "ConvertBorderWidth",
+      ua_property_for: "border-right-width",
+    },
+    {
+      name: "-internal-ua-border-top-width",
+      name_for_methods: "BorderTopWidth",
+      converter: "ConvertBorderWidth",
+      ua_property_for: "border-top-width",
+    },
+    {
+      name: "-internal-ua-border-top-left-radius",
+      name_for_methods: "BorderTopLeftRadius",
+      converter: "ConvertRadius",
+      ua_property_for: "border-top-left-radius",
+    },
+    {
+      name: "-internal-ua-border-top-right-radius",
+      name_for_methods: "BorderTopRightRadius",
+      converter: "ConvertRadius",
+      ua_property_for: "border-top-right-radius",
+    },
+    {
+      name: "-internal-ua-border-bottom-left-radius",
+      name_for_methods: "BorderBottomLeftRadius",
+      converter: "ConvertRadius",
+      ua_property_for: "border-bottom-left-radius",
+    },
+    {
+      name: "-internal-ua-border-bottom-right-radius",
+      name_for_methods: "BorderBottomRightRadius",
+      converter: "ConvertRadius",
+      ua_property_for: "border-bottom-right-radius",
+    },
+    {
+      name: "-internal-ua-border-image-outset",
+      style_builder_template: "border_image",
+      style_builder_template_args: {
+        modifier_type: "Outset",
+      },
+      ua_property_for: "border-image-outset",
+    },
+    {
+      name: "-internal-ua-border-image-repeat",
+      style_builder_template: "border_image",
+      style_builder_template_args: {
+        modifier_type: "Repeat",
+      },
+      ua_property_for: "border-image-repeat",
+    },
+    {
+      name: "-internal-ua-border-image-slice",
+      style_builder_template: "border_image",
+      style_builder_template_args: {
+        modifier_type: "Slice",
+      },
+      ua_property_for: "border-image-slice",
+    },
+    {
+      name: "-internal-ua-border-image-source",
+      style_builder_template: "border_image",
+      style_builder_template_args: {
+        modifier_type: "Source",
+      },
+      ua_property_for: "border-image-source",
+    },
+    {
+      name: "-internal-ua-border-image-width",
+      style_builder_template: "border_image",
+      style_builder_template_args: {
+        modifier_type: "Width",
+      },
+      ua_property_for: "border-image-width",
     },
 
     // Aliases; these map to the same CSSPropertyID

@@ -824,7 +824,8 @@ export class ObjectPropertyTreeElement extends UI.TreeElement {
   ondblclick(event) {
     const inEditableElement = event.target.isSelfOrDescendant(this.valueElement) ||
         (this.expandedValueElement && event.target.isSelfOrDescendant(this.expandedValueElement));
-    if (!this.property.value.customPreview() && inEditableElement && (this.property.writable || this.property.setter)) {
+    if (this.property.value && !this.property.value.customPreview() && inEditableElement &&
+        (this.property.writable || this.property.setter)) {
       this._startEditing();
     }
     return false;

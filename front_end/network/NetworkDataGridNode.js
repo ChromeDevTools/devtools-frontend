@@ -84,7 +84,7 @@ export class NetworkNode extends DataGrid.SortableDataGridNode {
   backgroundColor() {
     const bgColors = _backgroundColors;
     const hasFocus = document.hasFocus();
-    const isSelected = this.dataGrid.element === document.activeElement;
+    const isSelected = this.dataGrid && this.dataGrid.element === document.activeElement;
     const isFailed = this._isFailed();
 
     if (this.selected && hasFocus && isSelected && isFailed) {

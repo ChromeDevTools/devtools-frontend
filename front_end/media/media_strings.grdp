@@ -24,6 +24,42 @@
   <message name="IDS_DEVTOOLS_d9f6db9c0f0579391eccedbac66aef9b" desc="Side-panel entry title text for the video capture devices section.">
     Video Capture Devices
   </message>
+  <message name="IDS_DEVTOOLS_045b78ffe29652f98998ccf799c7ed6b" desc="Media property describing where the media is playing from.">
+    Playback Frame URL
+  </message>
+  <message name="IDS_DEVTOOLS_3fbd7503863be0666b56f6ea73eafeb9" desc="Media property describing whether the file is single or cross origin in nature">
+    Is Single Origin Playback
+  </message>
+  <message name="IDS_DEVTOOLS_52103b0dec1c2ea61de56078b8183096" desc="Media property giving the name of the decoder being used">
+    Decoder Name
+  </message>
+  <message name="IDS_DEVTOOLS_700a01983c221effeb06e8d7faa6e8dd" desc="Media property giving the media file bitrate">
+    Bitrate
+  </message>
+  <message name="IDS_DEVTOOLS_8276cedc2966d8a4334c65e1670b6c5c" desc="Media property signaling whether a hardware decoder is being used">
+    Hardware Decoder
+  </message>
+  <message name="IDS_DEVTOOLS_89cfa2eeab650a8849721c59c37b1b49" desc="Media property describing support for range http headers">
+    Range Header Support
+  </message>
+  <message name="IDS_DEVTOOLS_a00fe904aecabd4bff74d8776e6da2c5" desc="Media property giving the file size of the media">
+    File Size
+  </message>
+  <message name="IDS_DEVTOOLS_ac21d502848247aa2f578d0f718f5d1d" desc="Media property signaling whether the media is streaming">
+    Streaming
+  </message>
+  <message name="IDS_DEVTOOLS_b5a4b64b2aa505bd7c11f79b8a9f458d" desc="Media property giving the width x height of the video">
+    Resolution
+  </message>
+  <message name="IDS_DEVTOOLS_e95c013230e5d1b944fed845b44ded28" desc="Media property giving the title of the frame where the media is embedded">
+    Playback Frame Title
+  </message>
+  <message name="IDS_DEVTOOLS_fb731aa4f5e2e27d0e54fcceac99ebb0" desc="Media property signaling whether the content is encrypted">
+    Decrypting Demuxer
+  </message>
+  <message name="IDS_DEVTOOLS_4b0996f27563cdee4d394aee43e466e2" desc="There is no decoder">
+    No Decoder
+  </message>
   <message name="IDS_DEVTOOLS_f9d75af4b2cfafd31404df971213ef3c" desc="Data grid name for Event Display data grids">
     Event Display
   </message>

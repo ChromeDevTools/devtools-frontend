@@ -9,21 +9,21 @@ Media.PlayerDetailView = class extends UI.TabbedPane {
   constructor() {
     super();
 
-    const propertyTable = new Media.MediaPlayerPropertiesRenderer();
-    const eventTable = new Media.MediaPlayerEventTableRenderer();
+    const eventView = new Media.MediaPlayerEventTableRenderer();
+    const propertyView = new Media.PlayerPropertiesView();
 
     // maps handler type to a list of panels that support rendering changes.
     this._panels = new Map([
-      [Media.MediaModel.MediaChangeTypeKeys.Property, [propertyTable]],
-      [Media.MediaModel.MediaChangeTypeKeys.Event, [eventTable]]
+      [Media.MediaModel.MediaChangeTypeKeys.Property, [propertyView]],
+      [Media.MediaModel.MediaChangeTypeKeys.Event, [eventView]]
     ]);
 
     this.appendTab(
-        Media.PlayerDetailView.Tabs.Properties, Common.UIString('Properties'), propertyTable,
+        Media.PlayerDetailView.Tabs.Properties, Common.UIString('Properties'), propertyView,
         Common.UIString('Player properties'));
 
     this.appendTab(
-        Media.PlayerDetailView.Tabs.Events, Common.UIString('Events'), eventTable, Common.UIString('Player events'));
+        Media.PlayerDetailView.Tabs.Events, Common.UIString('Events'), eventView, Common.UIString('Player events'));
   }
 
   /**

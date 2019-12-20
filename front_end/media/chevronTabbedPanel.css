@@ -1,0 +1,61 @@
+/*
+ * Copyright 2019 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+.chevron-tabbed-panel-title {
+  position: relative;
+  background-color: var(--toolbar-bg-color);
+  border-bottom: 1px solid var(--divider-color);
+  height: 42px;
+  left: 0;
+  right: 0;
+}
+.chevron-tabbed-panel-content {
+  position: relative;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+.chevron-tabbed-panel-title-text {
+  font-size: 22px;
+  margin: 8px 0 0 17px;
+}
+.chevron-tabbed-panel-title-buttons {
+  flex: auto;
+  display: flex;
+  flex-direction: row;
+  margin-left: 0;
+  position: relative;
+}
+.chevron-tabbed-panel-buttons-item {
+  padding: 4px;
+  margin: 10px 4px;
+}
+.chevron-tabbed-panel-buttons-item:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
+.chevron-tabbed-panel-buttons-item::before,
+.chevron-tabbed-panel-buttons-item::after {
+  content: "";
+  top: 4px;
+  border: solid transparent;
+  height: 0;
+  width: 0;
+  position: relative;
+  pointer-events: none;
+  left: 50%;
+  border-width: 10px;
+  margin-left: -10px;
+}
+.chevron-tabbed-panel-buttons-item.selected::before {
+  border-color: transparent;
+  border-bottom-color: var(--divider-color);
+}
+.chevron-tabbed-panel-buttons-item.selected::after {
+  top: 5px;
+  border-bottom-color: #fff;
+  left: calc(-50% + 10px);
+}

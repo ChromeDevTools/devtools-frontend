@@ -1,0 +1,35 @@
+/*
+ * Copyright 2019 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+.media-attributes-view {
+  border-bottom: 1px solid var(--divider-color);
+}
+.media-property-renderer {
+  line-height: 20px;
+  height: 28px;
+  padding: 4px 10px;
+}
+.media-property-renderer-hidden {
+  display: none;
+}
+.media-property-renderer-title {
+  font-size: 14px;
+}
+.media-property-renderer-contents {
+  position: absolute;
+  left: 200px;
+}
+.media-property-renderer:nth-child(even) {
+  background: hsl(214, 70%, 97%);
+}
+.-theme-with-dark-background .media-property-renderer:nth-child(even) {
+  background: rgb(41, 41, 41);
+}
+.media-property-renderer:hover .media-property-renderer-contents {
+  text-decoration: underline;
+}
+.media-properties-frame {
+  display: block;
+}

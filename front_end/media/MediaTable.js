@@ -5,35 +5,6 @@
 /**
  * @unrestricted
  */
-Media.MediaPlayerPropertiesRenderer = class extends Media.EventDisplayTable {
-  constructor() {
-    super(
-        [
-          {
-            id: 'name',
-            title: 'Property Name',
-            sortable: true,
-            weight: 2,
-            sortingFunction: DataGrid.SortableDataGrid.StringComparator.bind(null, 'name')
-          },
-          {id: 'value', title: 'Value', sortable: false, weight: 7}
-        ],
-        'name');
-  }
-
-  /**
-   * @param {string} playerID
-   * @param {!Array.<!Media.Event>} changes
-   * @param {!Media.MediaModel.MediaChangeTypeKeys} change_type
-   */
-  renderChanges(playerID, changes, change_type) {
-    this.addEvents(changes);
-  }
-};
-
-/**
- * @unrestricted
- */
 Media.MediaPlayerEventTableRenderer = class extends Media.EventDisplayTable {
   constructor() {
     super([

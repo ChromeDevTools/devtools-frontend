@@ -44,11 +44,15 @@
     opacity: 1.0;
 }
 
-.CodeMirror .CodeMirror-linebackground.addition, -theme-preserve {
+.CodeMirror .CodeMirror-linebackground.addition,
+-theme-preserve,
+.changes-diff-gutter-marker.addition {
     background-color: hsla(144, 55%, 49%, .2);
 }
 
-.CodeMirror .CodeMirror-linebackground.deletion, -theme-preserve {
+.CodeMirror .CodeMirror-linebackground.deletion,
+-theme-preserve,
+.changes-diff-gutter-marker.deletion {
     background-color: rgba(255, 0, 0, .2);
 }
 
@@ -63,4 +67,12 @@
 .changes-toolbar {
     background-color: var(--toolbar-bg-color);
     border-top: var(--divider-border);
+}
+
+.changes-diff-gutter {
+    width: 20px;
+}
+
+.changes-diff-gutter-marker {
+    text-align: center;
 }

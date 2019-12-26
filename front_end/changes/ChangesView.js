@@ -28,7 +28,7 @@ export default class ChangesView extends UI.VBox {
 
     this._maxLineDigits = 1;
 
-    this._editor = new TextEditor.CodeMirrorTextEditor({
+    this._editor = new Changes.ChangesTextEditor({
       devtoolsAccessibleName: ls`Changes diff viewer`,
       lineNumbers: true,
       lineWrapping: false,
@@ -221,6 +221,7 @@ export default class ChangesView extends UI.VBox {
       });
       this._editor.setText(this._diffRows.map(row => row.tokens.map(t => t.text).join('')).join('\n'));
       this._editor.setLineNumberFormatter(this._lineFormatter.bind(this));
+      this._editor.updateDiffGutter(this._diffRows);
     });
 
     /**

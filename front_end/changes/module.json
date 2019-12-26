@@ -31,7 +31,8 @@
     "modules": [
       "ChangesHighlighter.js",
       "ChangesView.js",
-      "ChangesSidebar.js"
+      "ChangesSidebar.js",
+      "ChangesTextEditor.js"
     ],
     "resources": [
       "changesView.css",

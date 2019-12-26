@@ -60,7 +60,7 @@ export class CodeMirrorTextEditor extends UI.VBox {
       lineWiseCopyCut: false,
       tabIndex: 0,
       pollInterval: Math.pow(2, 31) - 1,  // ~25 days
-      inputStyle: 'devToolsAccessibleTextArea'
+      inputStyle: options.inputStyle || 'devToolsAccessibleTextArea'
     });
     this._codeMirrorElement = this.element.lastElementChild;
 
@@ -1867,10 +1867,10 @@ CodeMirror.inputStyles.devToolsAccessibleTextArea = class extends CodeMirror.inp
 
   /**
    * @override
-   * @param {boolean=} typing
+   * @param {boolean=} typing - whether the user is currently typing
    */
   reset(typing) {
-    if (typing || this.contextMenuPending || this.composing || this.cm.somethingSelected()) {
+    if (this.textAreaBusy(!!typing)) {
       super.reset(typing);
       return;
     }
@@ -1893,6 +1893,18 @@ CodeMirror.inputStyles.devToolsAccessibleTextArea = class extends CodeMirror.inp
     const caretPosition = cursor.ch - start.ch;
     this.textarea.setSelectionRange(caretPosition, caretPosition);
     this.prevInput = this.textarea.value;
+  }
+
+  /**
+   * If the user is currently typing into the textarea or otherwise
+   * modifying it, we don't want to clobber their work.
+   *
+   * @protected
+   * @param {boolean} typing - whether the user is currently typing
+   * @return {boolean}
+   */
+  textAreaBusy(typing) {
+    return typing || this.contextMenuPending || this.composing || this.cm.somethingSelected();
   }
 
   /**

@@ -593,7 +593,7 @@ class ModelBreakpoint {
     let newState;
     if (this._breakpoint._isRemoved || !this._breakpoint.enabled() || this._scriptDiverged()) {
       newState = null;
-    } else if (debuggerLocation) {
+    } else if (debuggerLocation && debuggerLocation.script()) {
       const script = debuggerLocation.script();
       if (script.sourceURL) {
         newState = new Breakpoint.State(

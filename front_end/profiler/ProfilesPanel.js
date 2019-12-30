@@ -176,6 +176,7 @@ Profiler.ProfilesPanel = class extends UI.PanelWithSidebar {
     if (!this._toggleRecordAction.enabled()) {
       return true;
     }
+    const toggleButton = this.element.ownerDocument.deepActiveElement();
     const type = this._selectedProfileType;
     const isProfiling = type.buttonClicked();
     this._updateToggleRecordAction(isProfiling);
@@ -186,6 +187,9 @@ Profiler.ProfilesPanel = class extends UI.PanelWithSidebar {
       }
     } else {
       this._launcherView.profileFinished();
+    }
+    if (toggleButton) {
+      toggleButton.focus();
     }
     return true;
   }

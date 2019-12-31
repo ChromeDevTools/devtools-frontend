@@ -215,13 +215,8 @@ export default class NetworkPanel extends UI.Panel {
     this._panelToolbar.appendToolbarItem(this._filterBar.filterButton());
     updateSidebarToggle();
     splitWidget.addEventListener(UI.SplitWidget.Events.ShowModeChanged, updateSidebarToggle);
-    searchToggle.addEventListener(UI.ToolbarButton.Events.Click, () => {
-      if (splitWidget.showMode() === UI.SplitWidget.ShowMode.OnlyMain) {
-        splitWidget.showBoth();
-      } else {
-        splitWidget.hideSidebar();
-      }
-    });
+    searchToggle.addEventListener(
+        UI.ToolbarButton.Events.Click, async () => await UI.actionRegistry.action('network.search').execute());
     this._panelToolbar.appendToolbarItem(searchToggle);
     this._panelToolbar.appendSeparator();
 

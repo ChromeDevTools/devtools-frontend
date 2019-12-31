@@ -182,12 +182,10 @@ PerfUI.OverviewGrid.Window = class extends Common.Object {
 
     UI.ARIAUtils.setAccessibleName(this._leftResizeElement, ls`Left Resizer`);
     UI.ARIAUtils.markAsSlider(this._leftResizeElement);
-    this._leftResizeElement.tabIndex = 0;
     this._leftResizeElement.addEventListener('keydown', event => this._handleKeyboardResizing(event, false));
 
     UI.ARIAUtils.setAccessibleName(this._rightResizeElement, ls`Right Resizer`);
     UI.ARIAUtils.markAsSlider(this._rightResizeElement);
-    this._rightResizeElement.tabIndex = 0;
     this._rightResizeElement.addEventListener('keydown', event => this._handleKeyboardResizing(event, true));
     this._rightResizeElement.addEventListener('focus', this._onRightResizeElementFocused.bind(this));
 
@@ -213,6 +211,8 @@ PerfUI.OverviewGrid.Window = class extends Common.Object {
    */
   setEnabled(enabled) {
     this._enabled = enabled;
+    this._rightResizeElement.tabIndex = enabled ? 0 : -1;
+    this._leftResizeElement.tabIndex = enabled ? 0 : -1;
   }
 
   /**

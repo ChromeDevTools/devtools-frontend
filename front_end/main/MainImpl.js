@@ -122,8 +122,6 @@ export class MainImpl {
         'backgroundServicesPaymentHandler', 'Background services section for Payment Handler');
     Root.Runtime.experiments.register(
         'backgroundServicesPushMessaging', 'Background services section for Push Messaging');
-    Root.Runtime.experiments.register(
-        'backgroundServicesPeriodicBackgroundSync', 'Background services section for Periodic Background Sync');
     Root.Runtime.experiments.register('blackboxJSFramesOnTimeline', 'Blackbox JavaScript frames on Timeline', true);
     Root.Runtime.experiments.register('cssOverview', 'CSS Overview');
     Root.Runtime.experiments.register('emptySourceMapAutoStepping', 'Empty sourcemap auto-stepping');

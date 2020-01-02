@@ -1766,7 +1766,7 @@ export default class NetworkLogView extends UI.VBox {
       fetchOptions.credentials = credentials;
     }
 
-    const options = JSON.stringify(fetchOptions);
+    const options = JSON.stringify(fetchOptions, null, 2);
     return `fetch(${url}, ${options});`;
   }
 
@@ -1788,7 +1788,7 @@ export default class NetworkLogView extends UI.VBox {
    * @return {!Promise<string>}
    */
   async _generateCurlCommand(request, platform) {
-    let command = ['curl'];
+    let command = [];
     // Most of these headers are derived from the URL and are automatically added by cURL.
     // The |Accept-Encoding| header is ignored to prevent decompression errors. crbug.com/1015321
     const ignoredHeaders = {'accept-encoding': 1, 'host': 1, 'method': 1, 'path': 1, 'scheme': 1, 'version': 1};
@@ -1878,20 +1878,17 @@ export default class NetworkLogView extends UI.VBox {
     const requestContentType = request.requestContentType();
     const formData = await request.requestFormData();
     if (requestContentType && requestContentType.startsWith('application/x-www-form-urlencoded') && formData) {
-      data.push('--data');
-      data.push(escapeString(formData));
+      data.push('--data ' + escapeString(formData));
       ignoredHeaders['content-length'] = true;
       inferredMethod = 'POST';
     } else if (formData) {
-      data.push('--data-binary');
-      data.push(escapeString(formData));
+      data.push('--data-binary ' + escapeString(formData));
       ignoredHeaders['content-length'] = true;
       inferredMethod = 'POST';
     }
 
     if (request.requestMethod !== inferredMethod) {
-      command.push('-X');
-      command.push(request.requestMethod);
+      command.push('-X ' + request.requestMethod);
     }
 
     const requestHeaders = request.requestHeaders();
@@ -1901,8 +1898,7 @@ export default class NetworkLogView extends UI.VBox {
       if (name.toLowerCase() in ignoredHeaders) {
         continue;
       }
-      command.push('-H');
-      command.push(escapeString(name + ': ' + header.value));
+      command.push('-H ' + escapeString(name + ': ' + header.value));
     }
     command = command.concat(data);
     command.push('--compressed');
@@ -1910,7 +1906,7 @@ export default class NetworkLogView extends UI.VBox {
     if (request.securityState() === Protocol.Security.SecurityState.Insecure) {
       command.push('--insecure');
     }
-    return command.join(' ');
+    return 'curl ' + command.join(command.length >= 3 ? (platform === 'win' ? ' ^\n  ' : ' \\\n  ') : ' ');
   }
 
   /**
@@ -1933,7 +1929,7 @@ export default class NetworkLogView extends UI.VBox {
    * @return {!Promise<string>}
    */
   async _generatePowerShellCommand(request) {
-    const command = ['Invoke-WebRequest'];
+    const command = [];
     const ignoredHeaders =
         new Set(['host', 'connection', 'proxy-connection', 'content-length', 'expect', 'range', 'content-type']);
 
@@ -1946,12 +1942,10 @@ export default class NetworkLogView extends UI.VBox {
           str.replace(/[`\$"]/g, '`$&').replace(/[^\x20-\x7E]/g, char => '$([char]' + char.charCodeAt(0) + ')') + '"';
     }
 
-    command.push('-Uri');
-    command.push(escapeString(request.url()));
+    command.push('-Uri ' + escapeString(request.url()));
 
     if (request.requestMethod !== 'GET') {
-      command.push('-Method');
-      command.push(escapeString(request.requestMethod));
+      command.push('-Method ' + escapeString(request.requestMethod));
     }
 
     const requestHeaders = request.requestHeaders();
@@ -1964,28 +1958,25 @@ export default class NetworkLogView extends UI.VBox {
       headerNameValuePairs.push(escapeString(name) + '=' + escapeString(header.value));
     }
     if (headerNameValuePairs.length) {
-      command.push('-Headers');
-      command.push('@{' + headerNameValuePairs.join('; ') + '}');
+      command.push('-Headers @{\n' + headerNameValuePairs.join('\n  ') + '\n}');
     }
 
     const contentTypeHeader = requestHeaders.find(({name}) => name.toLowerCase() === 'content-type');
     if (contentTypeHeader) {
-      command.push('-ContentType');
-      command.push(escapeString(contentTypeHeader.value));
+      command.push('-ContentType ' + escapeString(contentTypeHeader.value));
     }
 
     const formData = await request.requestFormData();
     if (formData) {
-      command.push('-Body');
       const body = escapeString(formData);
       if (/[^\x20-\x7E]/.test(formData)) {
-        command.push('([System.Text.Encoding]::UTF8.GetBytes(' + body + '))');
+        command.push('-Body ([System.Text.Encoding]::UTF8.GetBytes(' + body + '))');
       } else {
-        command.push(body);
+        command.push('-Body ' + body);
       }
     }
 
-    return command.join(' ');
+    return 'Invoke-WebRequest ' + command.join(command.length >= 3 ? ' `\n' : ' ');
   }
 
   /**

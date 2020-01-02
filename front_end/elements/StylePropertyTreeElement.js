@@ -933,7 +933,9 @@ export class StylePropertyTreeElement extends UI.TreeElement {
     this._removePrompt();
     this.editingEnded(context);
     const isEditingName = context.isEditingName;
-    const nameValueEntered = isEditingName && this.nameElement.textContent.includes(':');
+    // If the underlying property has been ripped out, always assume that the value having been entered was
+    // a name-value pair and attempt to process it via the SDK.
+    const nameValueEntered = (isEditingName && this.nameElement.textContent.includes(':')) || !this.property;
 
     // Determine where to move to before making changes
     let createNewProperty, moveToSelector;
@@ -1097,7 +1099,8 @@ export class StylePropertyTreeElement extends UI.TreeElement {
    * @return {!Promise}
    */
   async _innerApplyStyleText(styleText, majorChange, property) {
-    if (!this.treeOutline) {
+    // this.property might have been nulled at the end of the last _innerApplyStyleText
+    if (!this.treeOutline || !this.property) {
       return;
     }
 
@@ -1131,7 +1134,8 @@ export class StylePropertyTreeElement extends UI.TreeElement {
     }
     this._parentPane.setUserOperation(false);
 
-    if (!success) {
+    const updatedProperty = property || this._style.propertyAt(this.property.index);
+    if (!success || !updatedProperty) {
       if (majorChange) {
         // It did not apply, cancel editing.
         if (this._newProperty) {
@@ -1146,7 +1150,7 @@ export class StylePropertyTreeElement extends UI.TreeElement {
 
     this._matchedStyles.resetActiveProperties();
     this._hasBeenEditedIncrementally = true;
-    this.property = property || this._style.propertyAt(this.property.index);
+    this.property = updatedProperty;
 
     if (currentNode === this.node()) {
       this._updatePane();

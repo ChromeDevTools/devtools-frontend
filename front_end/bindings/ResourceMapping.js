@@ -305,7 +305,7 @@ class Binding {
     Bindings.NetworkProject.setInitialFrameAttribution(this._uiSourceCode, resource.frameId);
     this._project.addUISourceCodeWithProvider(
         this._uiSourceCode, this, Bindings.resourceMetadata(resource), resource.mimeType);
-    /** @type {!Array<{stylesheet: !SDK.CSSStyleSheetHeader, edit: !SDK.CSSModel.Edit}>} */
+    /** @type {!Array<{stylesheet: !SDK.CSSStyleSheetHeader, edit: ?SDK.CSSModel.Edit}>} */
     this._edits = [];
   }
 
@@ -341,7 +341,7 @@ class Binding {
 
   /**
    * @param {!SDK.CSSStyleSheetHeader} stylesheet
-   * @param {!SDK.CSSModel.Edit} edit
+   * @param {?SDK.CSSModel.Edit} edit
    */
   async _styleSheetChanged(stylesheet, edit) {
     this._edits.push({stylesheet, edit});
@@ -365,6 +365,9 @@ class Binding {
     let text = new TextUtils.Text(content);
     for (const data of this._edits) {
       const edit = data.edit;
+      if (!edit) {
+        continue;
+      }
       const stylesheet = data.stylesheet;
       const startLocation = stylesheet[_offsetSymbol] ||
           TextUtils.TextRange.createFromLocation(stylesheet.startLine, stylesheet.startColumn);

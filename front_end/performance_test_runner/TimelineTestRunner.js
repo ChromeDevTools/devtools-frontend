@@ -152,6 +152,26 @@ PerformanceTestRunner.stopTimeline = function() {
   });
 };
 
+PerformanceTestRunner.runPerfTraceWithReload = async function() {
+  await PerformanceTestRunner.startTimeline();
+  await TestRunner.reloadPagePromise();
+  await PerformanceTestRunner.stopTimeline();
+};
+
+PerformanceTestRunner.getTimelineWidget = async function() {
+  return await UI.viewManager.view('timeline').widget();
+};
+
+PerformanceTestRunner.getNetworkFlameChartElement = async function() {
+  const widget = await PerformanceTestRunner.getTimelineWidget();
+  return widget._flameChart._networkFlameChart.contentElement;
+};
+
+PerformanceTestRunner.getMainFlameChartElement = async function() {
+  const widget = await PerformanceTestRunner.getTimelineWidget();
+  return widget._flameChart._mainFlameChart.contentElement;
+};
+
 PerformanceTestRunner.evaluateWithTimeline = async function(actions) {
   await PerformanceTestRunner.startTimeline();
   await TestRunner.evaluateInPageAnonymously(actions);

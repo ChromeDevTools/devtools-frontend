@@ -27,6 +27,9 @@
   <message name="IDS_DEVTOOLS_529a032eab49b8ddc6f49f8bcc086607" desc="Prev button title in Film Strip View of the Performance panel">
     Previous frame
   </message>
+  <message name="IDS_DEVTOOLS_5335fb2e66825def53ea1d975f942194" desc="Text for the screen reader to announce a hovered group">
+    <ph name="GROUPNAME">$1s<ex>Network</ex></ph> hovered
+  </message>
   <message name="IDS_DEVTOOLS_582996407922dab08d5cf2b3d2a7c1c9" desc="Text in Network Priorities of the Performance panel">
     Highest
   </message>

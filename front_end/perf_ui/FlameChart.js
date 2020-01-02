@@ -468,15 +468,15 @@ PerfUI.FlameChart = class extends UI.VBox {
     const groups = this._rawTimelineData.groups;
     this._keyboardFocusedGroup = groupIndex;
     this._scrollGroupIntoView(groupIndex);
+    const groupName = groups[groupIndex].name;
     if (!groups[groupIndex].selectable) {
       this._deselectAllGroups();
+      UI.ARIAUtils.alert(ls`${groupName} hovered`, this._canvas);
     } else {
       this._selectedGroup = groupIndex;
       this._flameChartDelegate.updateSelectedGroup(this, groups[groupIndex]);
       this._resetCanvas();
       this._draw();
-
-      const groupName = groups[groupIndex].name;
       UI.ARIAUtils.alert(ls`${groupName} selected`, this._canvas);
     }
   }

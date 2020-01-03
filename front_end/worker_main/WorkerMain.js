@@ -5,7 +5,7 @@
 /**
  * @implements {Common.Runnable}
  */
-WorkerMain.WorkerMain = class extends Common.Object {
+export class WorkerMainImpl extends Common.Object {
   /**
    * @override
    */
@@ -15,7 +15,7 @@ WorkerMain.WorkerMain = class extends Common.Object {
     }, Components.TargetDetachedDialog.webSocketConnectionLost);
     new MobileThrottling.NetworkPanelIndicator();
   }
-};
+}
 
 SDK.ChildTargetManager.install(async ({target, waitingForDebugger}) => {
   // Only pause the new worker if debugging SW - we are going through the pause on start checkbox.
@@ -31,3 +31,12 @@ SDK.ChildTargetManager.install(async ({target, waitingForDebugger}) => {
   }
   debuggerModel.pause();
 });
+
+/* Legacy exported object */
+self.WorkerMain = self.WorkerMain || {};
+
+/* Legacy exported object */
+WorkerMain = WorkerMain || {};
+
+/** @constructor */
+WorkerMain.WorkerMain = WorkerMainImpl;

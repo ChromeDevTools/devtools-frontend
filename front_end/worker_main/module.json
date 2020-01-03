@@ -9,7 +9,9 @@
         "components",
         "mobile_throttling"
     ],
-    "scripts": [
+    "scripts": [],
+    "modules": [
+        "worker_main.js",
         "WorkerMain.js"
     ]
 }

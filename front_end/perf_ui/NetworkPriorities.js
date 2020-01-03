@@ -6,29 +6,32 @@
  * @param {!Protocol.Network.ResourcePriority} priority
  * @return {string}
  */
-PerfUI.uiLabelForNetworkPriority = function(priority) {
-  return PerfUI._priorityUILabelMap().get(priority) || '';
-};
+export function uiLabelForNetworkPriority(priority) {
+  return _priorityUILabelMap().get(priority) || '';
+}
 
 /**
  * @param {string} priorityLabel
  * @return {string}
  */
-PerfUI.uiLabelToNetworkPriority = function(priorityLabel) {
+export function uiLabelToNetworkPriority(priorityLabel) {
   if (!PerfUI._uiLabelToPriorityMapInstance) {
     /** @type {!Map<string, !Protocol.Network.ResourcePriority>} */
     PerfUI._uiLabelToPriorityMapInstance = new Map();
-    PerfUI._priorityUILabelMap().forEach((value, key) => PerfUI._uiLabelToPriorityMapInstance.set(value, key));
+    _priorityUILabelMap().forEach((value, key) => PerfUI._uiLabelToPriorityMapInstance.set(value, key));
   }
   return PerfUI._uiLabelToPriorityMapInstance.get(priorityLabel) || '';
-};
+}
+
+/** @type {?Map<!Protocol.Network.ResourcePriority, string>} */
+let _priorityUILabelMapInstance = null;
 
 /**
  * @return {!Map<!Protocol.Network.ResourcePriority, string>}
  */
-PerfUI._priorityUILabelMap = function() {
-  if (PerfUI._priorityUILabelMapInstance) {
-    return PerfUI._priorityUILabelMapInstance;
+export function _priorityUILabelMap() {
+  if (_priorityUILabelMapInstance) {
+    return _priorityUILabelMapInstance;
   }
 
   /** @type {!Map<!Protocol.Network.ResourcePriority, string>} */
@@ -38,15 +41,15 @@ PerfUI._priorityUILabelMap = function() {
   map.set(Protocol.Network.ResourcePriority.Medium, Common.UIString('Medium'));
   map.set(Protocol.Network.ResourcePriority.High, Common.UIString('High'));
   map.set(Protocol.Network.ResourcePriority.VeryHigh, Common.UIString('Highest'));
-  PerfUI._priorityUILabelMapInstance = map;
+  _priorityUILabelMapInstance = map;
   return map;
-};
+}
 
 /**
  * @param {!Protocol.Network.ResourcePriority} priority
  * @return {number}
  */
-PerfUI.networkPriorityWeight = function(priority) {
+export function networkPriorityWeight(priority) {
   if (!PerfUI._networkPriorityWeights) {
     /** @type {!Map<!Protocol.Network.ResourcePriority, number>} */
     const priorityMap = new Map();
@@ -58,4 +61,15 @@ PerfUI.networkPriorityWeight = function(priority) {
     PerfUI._networkPriorityWeights = priorityMap;
   }
   return PerfUI._networkPriorityWeights.get(priority) || 0;
-};
+}
+
+/* Legacy exported object */
+self.PerfUI = self.PerfUI || {};
+
+/* Legacy exported object */
+PerfUI = PerfUI || {};
+
+PerfUI.uiLabelForNetworkPriority = uiLabelForNetworkPriority;
+PerfUI.uiLabelToNetworkPriority = uiLabelToNetworkPriority;
+PerfUI._priorityUILabelMap = _priorityUILabelMap;
+PerfUI.networkPriorityWeight = networkPriorityWeight;

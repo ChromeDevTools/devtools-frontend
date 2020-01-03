@@ -70,7 +70,9 @@
         "source_frame",
         "text_editor"
     ],
-    "scripts": [
+    "scripts": [],
+    "modules": [
+        "perf_ui.js",
         "ChartViewport.js",
         "FilmStripView.js",
         "FlameChart.js",

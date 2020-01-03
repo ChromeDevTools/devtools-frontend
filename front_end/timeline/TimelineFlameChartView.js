@@ -296,7 +296,8 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
         this._mainFlameChart.scheduleUpdate();
       }
     }
-    this._delegate.select(dataProvider.createSelection(entryIndex));
+    this._delegate.select(
+        /** @type {!Timeline.TimelineFlameChartNetworkDataProvider} */ (dataProvider).createSelection(entryIndex));
   }
 
   resizeToPreferredHeights() {

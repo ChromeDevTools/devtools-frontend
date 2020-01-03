@@ -68,7 +68,7 @@ Profiler.CPUProfileView = class extends Profiler.ProfileView {
 
   /**
    * @override
-   * @return {!PerfUI.FlameChartDataProvider}
+   * @return {!Profiler.ProfileFlameChartDataProvider}
    */
   createFlameChartDataProvider() {
     return new Profiler.CPUFlameChartDataProvider(

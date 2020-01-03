@@ -28,13 +28,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/** @typedef {{size: number, formatter: function(number):string, showLegend: (boolean|undefined), chartName: string}} */
-PerfUI.PieChartOptions;
-
 /**
  * @unrestricted
  */
-PerfUI.PieChart = class {
+export default class PieChart {
   /**
    * @param {!PerfUI.PieChartOptions} options
    */
@@ -177,4 +174,16 @@ PerfUI.PieChart = class {
     UI.ARIAUtils.setAccessibleName(figureElement, name + ' ' + size);
     return node;
   }
-};
+}
+
+/* Legacy exported object */
+self.PerfUI = self.PerfUI || {};
+
+/* Legacy exported object */
+PerfUI = PerfUI || {};
+
+/** @constructor */
+PerfUI.PieChart = PieChart;
+
+/** @typedef {{size: number, formatter: function(number):string, showLegend: (boolean|undefined), chartName: string}} */
+PerfUI.PieChartOptions;

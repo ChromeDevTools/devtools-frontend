@@ -298,7 +298,7 @@ Profiler.ProfileView = class extends UI.SimpleView {
   }
 
   /**
-   * @return {!PerfUI.FlameChartDataProvider}
+   * @return {!Profiler.ProfileFlameChartDataProvider}
    */
   createFlameChartDataProvider() {
     throw 'Not implemented';

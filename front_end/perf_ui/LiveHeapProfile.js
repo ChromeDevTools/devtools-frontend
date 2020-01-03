@@ -6,7 +6,7 @@
  * @implements {Common.Runnable}
  * @implements {SDK.SDKModelObserver<!SDK.HeapProfilerModel>}
  */
-PerfUI.LiveHeapProfile = class {
+export default class LiveHeapProfile {
   constructor() {
     this._running = false;
     this._sessionId = 0;
@@ -88,4 +88,13 @@ PerfUI.LiveHeapProfile = class {
   _loadEventFired() {
     this._loadEventCallback();
   }
-};
+}
+
+/* Legacy exported object */
+self.PerfUI = self.PerfUI || {};
+
+/* Legacy exported object */
+PerfUI = PerfUI || {};
+
+/** @constructor */
+PerfUI.LiveHeapProfile = LiveHeapProfile;

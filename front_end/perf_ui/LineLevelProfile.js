@@ -2,11 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-PerfUI.LineLevelProfile = {};
-
-PerfUI.LineLevelProfile.Performance = class {
+export class Performance {
   constructor() {
-    this._helper = new PerfUI.LineLevelProfile._Helper('performance');
+    this._helper = new _Helper('performance');
   }
 
   reset() {
@@ -63,11 +61,11 @@ PerfUI.LineLevelProfile.Performance = class {
     }
     this._helper.scheduleUpdate();
   }
-};
+}
 
-PerfUI.LineLevelProfile.Memory = class {
+export class Memory {
   constructor() {
-    this._helper = new PerfUI.LineLevelProfile._Helper('memory');
+    this._helper = new _Helper('memory');
   }
 
   reset() {
@@ -99,9 +97,9 @@ PerfUI.LineLevelProfile.Memory = class {
       helper.addLineData(target, script, line, node.selfSize);
     }
   }
-};
+}
 
-PerfUI.LineLevelProfile._Helper = class {
+export class _Helper {
   /**
    * @param {string} type
    */
@@ -178,15 +176,15 @@ PerfUI.LineLevelProfile._Helper = class {
               debuggerModel.createRawLocationByURL(scriptIdOrUrl, line, 0) :
               debuggerModel.createRawLocationByScriptId(String(scriptIdOrUrl), line, 0);
           if (rawLocation) {
-            new PerfUI.LineLevelProfile.Presentation(rawLocation, this._type, data, this._locationPool);
+            new Presentation(rawLocation, this._type, data, this._locationPool);
           }
         }
       }
     }
   }
-};
+}
 
-PerfUI.LineLevelProfile.Presentation = class {
+export class Presentation {
   /**
    * @param {!SDK.DebuggerModel.Location} rawLocation
    * @param {string} type
@@ -212,12 +210,12 @@ PerfUI.LineLevelProfile.Presentation = class {
       this._uiLocation.uiSourceCode.addLineDecoration(this._uiLocation.lineNumber, this._type, this._time);
     }
   }
-};
+}
 
 /**
  * @implements {SourceFrame.LineDecorator}
  */
-PerfUI.LineLevelProfile.LineDecorator = class {
+export class LineDecorator {
   /**
    * @override
    * @param {!Workspace.UISourceCode} uiSourceCode
@@ -270,4 +268,27 @@ PerfUI.LineLevelProfile.LineDecorator = class {
     }
     return element;
   }
-};
+}
+
+/* Legacy exported object */
+self.PerfUI = self.PerfUI || {};
+
+/* Legacy exported object */
+PerfUI = PerfUI || {};
+
+PerfUI.LineLevelProfile = {};
+
+/** @constructor */
+PerfUI.LineLevelProfile.Performance = Performance;
+
+/** @constructor */
+PerfUI.LineLevelProfile.Memory = Memory;
+
+/** @constructor */
+PerfUI.LineLevelProfile._Helper = _Helper;
+
+/** @constructor */
+PerfUI.LineLevelProfile.Presentation = Presentation;
+
+/** @constructor */
+PerfUI.LineLevelProfile.LineDecorator = LineDecorator;

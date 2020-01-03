@@ -31,7 +31,7 @@
 /**
  * @unrestricted
  */
-PerfUI.TimelineGrid = class {
+export default class TimelineGrid {
   constructor() {
     this.element = createElement('div');
     UI.appendStyle(this.element, 'perf_ui/timelineGrid.css');
@@ -46,7 +46,7 @@ PerfUI.TimelineGrid = class {
   }
 
   /**
-   * @param {!PerfUI.TimelineGrid.Calculator} calculator
+   * @param {!Calculator} calculator
    * @param {number=} freeZoneAtLeft
    * @return {!PerfUI.TimelineGrid.DividersData}
    */
@@ -166,12 +166,12 @@ PerfUI.TimelineGrid = class {
   }
 
   /**
-   * @param {!PerfUI.TimelineGrid.Calculator} calculator
+   * @param {!Calculator} calculator
    * @param {number=} freeZoneAtLeft
    * @return {boolean}
    */
   updateDividers(calculator, freeZoneAtLeft) {
-    const dividersData = PerfUI.TimelineGrid.calculateGridOffsets(calculator, freeZoneAtLeft);
+    const dividersData = TimelineGrid.calculateGridOffsets(calculator, freeZoneAtLeft);
     const dividerOffsets = dividersData.offsets;
     const precision = dividersData.precision;
 
@@ -267,39 +267,54 @@ PerfUI.TimelineGrid = class {
     this._dividersLabelBarElement.style.top = scrollTop + 'px';
     this._eventDividersElement.style.top = scrollTop + 'px';
   }
-};
-
-/** @typedef {!{offsets: !Array<!{position: number, time: number}>, precision: number}} */
-PerfUI.TimelineGrid.DividersData;
+}
 
 /**
  * @interface
  */
-PerfUI.TimelineGrid.Calculator = function() {};
-
-PerfUI.TimelineGrid.Calculator.prototype = {
+export class Calculator {
   /**
    * @param {number} time
    * @return {number}
    */
-  computePosition(time) {},
+  computePosition(time) {
+  }
 
   /**
    * @param {number} time
    * @param {number=} precision
    * @return {string}
    */
-  formatValue(time, precision) {},
+  formatValue(time, precision) {
+  }
 
   /** @return {number} */
-  minimumBoundary() {},
+  minimumBoundary() {
+  }
 
   /** @return {number} */
-  zeroTime() {},
+  zeroTime() {
+  }
 
   /** @return {number} */
-  maximumBoundary() {},
+  maximumBoundary() {
+  }
 
   /** @return {number} */
   boundarySpan() {}
-};
+}
+
+/* Legacy exported object */
+self.PerfUI = self.PerfUI || {};
+
+/* Legacy exported object */
+PerfUI = PerfUI || {};
+
+/** @constructor */
+PerfUI.TimelineGrid = TimelineGrid;
+
+/** @interface */
+PerfUI.TimelineGrid.Calculator = Calculator;
+
+/** @typedef {!{offsets: !Array<!{position: number, time: number}>, precision: number}} */
+PerfUI.TimelineGrid.DividersData;

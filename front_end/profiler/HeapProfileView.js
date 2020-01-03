@@ -137,7 +137,7 @@ Profiler.HeapProfileView = class extends Profiler.ProfileView {
 
   /**
    * @override
-   * @return {!PerfUI.FlameChartDataProvider}
+   * @return {!Profiler.ProfileFlameChartDataProvider}
    */
   createFlameChartDataProvider() {
     return new Profiler.HeapFlameChartDataProvider(

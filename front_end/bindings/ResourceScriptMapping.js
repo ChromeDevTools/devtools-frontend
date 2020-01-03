@@ -104,10 +104,13 @@ export default class ResourceScriptMapping {
     if (!scriptFile._hasScripts([script])) {
       return null;
     }
-    const lineNumber = rawLocation.lineNumber - (script.isInlineScriptWithSourceURL() ? script.lineOffset : 0);
+    let lineNumber = rawLocation.lineNumber - (script.isInlineScriptWithSourceURL() ? script.lineOffset : 0);
     let columnNumber = rawLocation.columnNumber || 0;
     if (script.isInlineScriptWithSourceURL() && !lineNumber && columnNumber) {
       columnNumber -= script.columnOffset;
+    } else if (script.isWasmDisassembly()) {
+      lineNumber = script.wasmDisassemblyLine(columnNumber);
+      columnNumber = 0;
     }
     return uiSourceCode.uiLocation(lineNumber, columnNumber);
   }
@@ -128,6 +131,8 @@ export default class ResourceScriptMapping {
     if (script.isInlineScriptWithSourceURL()) {
       return [this._debuggerModel.createRawLocation(
           script, lineNumber + script.lineOffset, lineNumber ? columnNumber : columnNumber + script.columnOffset)];
+    } else if (script.isWasmDisassembly()) {
+      return [script.wasmByteLocation(lineNumber)];
     }
     return [this._debuggerModel.createRawLocation(script, lineNumber, columnNumber)];
   }

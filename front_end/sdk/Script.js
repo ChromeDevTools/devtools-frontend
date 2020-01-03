@@ -66,6 +66,7 @@ export default class Script {
     this._originalContentProvider = null;
     this._originalSource = null;
     this.originStackTrace = originStackTrace;
+    this._lineMap = null;
   }
 
   /**
@@ -96,6 +97,13 @@ export default class Script {
    */
   isContentScript() {
     return this._isContentScript;
+  }
+
+  /**
+   * @return {boolean}
+   */
+  isWasmDisassembly() {
+    return !!this._lineMap && !this.sourceMapURL;
   }
 
   /**
@@ -149,11 +157,30 @@ export default class Script {
     }
 
     try {
-      const source = await this.debuggerModel.target().debuggerAgent().getScriptSource(this.scriptId);
-      if (source && this.hasSourceURL) {
-        this._source = SDK.Script._trimSourceURLComment(source);
+      const sourceOrBytecode =
+          await this.debuggerModel.target().debuggerAgent().invoke_getScriptSource({scriptId: this.scriptId});
+      const source = sourceOrBytecode.scriptSource;
+      if (source) {
+        if (this.hasSourceURL) {
+          this._source = SDK.Script._trimSourceURLComment(source);
+        } else {
+          this._source = source;
+        }
       } else {
-        this._source = source || '';
+        this._source = '';
+        if (sourceOrBytecode.bytecode) {
+          const worker = new Common.Worker('wasmparser_worker');
+          const promise = new Promise(function(resolve, reject) {
+            worker.onmessage = resolve;
+            worker.onerror = reject;
+          });
+          worker.postMessage({method: 'disassemble', params: {content: sourceOrBytecode.bytecode}});
+
+          const result = await promise;
+          this._source = result.data.source;
+          this._lineMap = result.data.offsets;
+          this.endLine = this._lineMap.length;
+        }
       }
 
       if (this._originalSource === null) {
@@ -261,6 +288,30 @@ export default class Script {
       return new SDK.DebuggerModel.Location(this.debuggerModel, this.scriptId, lineNumber, columnNumber);
     }
     return null;
+  }
+
+  /**
+   * @param {number} lineNumber
+   * @return {?SDK.DebuggerModel.Location}
+   */
+  wasmByteLocation(lineNumber) {
+    if (lineNumber < this._lineMap.length) {
+      return new SDK.DebuggerModel.Location(this.debuggerModel, this.scriptId, 0, this._lineMap[lineNumber]);
+    }
+    return null;
+  }
+
+  /**
+   * @param {number} byteOffset
+   * @return {number}
+   */
+  wasmDisassemblyLine(byteOffset) {
+    let line = 0;
+    // TODO: Implement binary search if necessary for large wasm modules
+    while (line < this._lineMap.length && byteOffset > this._lineMap[line]) {
+      line++;
+    }
+    return line;
   }
 
   /**

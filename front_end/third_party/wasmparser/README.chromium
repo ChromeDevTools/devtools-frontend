@@ -1,7 +1,7 @@
 Name: wasdk/wasmparser
 Short Name: wasmparser
 URL: https://github.com/wasdk/wasmparser
-Version: 0.8.1
+Version: 0.9.4
 License: Apache
 License File: LICENSE
 Security Critical: no
@@ -11,4 +11,4 @@ Simple streamable WebAssembly binary parser.
 
 To update, modify the original typescript source code in a separate repository,
 then build with `npm run build`, then replace WasmDis.js and WasmParser.js with
-the newly built versions in the dist folder.
+the newly built versions in the esm folder.

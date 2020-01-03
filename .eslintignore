@@ -18,4 +18,5 @@ front_end/protocol_externs.js
 front_end/javascript_metadata/NativeFunctions.js
 front_end/sdk/wasm_source_map/pkg/wasm_source_map.js
 front_end/third_party/
+front_end/wasmparser_worker.js
 scripts/

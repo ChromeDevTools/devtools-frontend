@@ -27,6 +27,7 @@ npm-debug.log
 /front_end/accessibility/ARIAProperties.js
 /front_end/formatter_worker.js
 /front_end/heap_snapshot_worker.js
+/front_end/wasmparser_worker.js
 
 /build
 /buildtools

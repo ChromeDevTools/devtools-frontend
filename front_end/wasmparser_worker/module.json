@@ -1,0 +1,12 @@
+{
+    "dependencies": [
+      "third_party/wasmparser"
+    ],
+    "scripts": [],
+    "modules": [
+      "wasmparser_worker.js",
+      "WasmParserWorker.js"
+    ],
+    "skip_compilation": [
+    ]
+}

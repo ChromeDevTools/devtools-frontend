@@ -339,6 +339,9 @@ all_devtools_files = [
   "front_end/text_utils/module.json",
   "front_end/third_party/fabricjs/fabric.js",
   "front_end/third_party/fabricjs/module.json",
+  "front_end/third_party/wasmparser/module.json",
+  "front_end/third_party/wasmparser/WasmDis.js",
+  "front_end/third_party/wasmparser/WasmParser.js",
   "front_end/timeline_model/module.json",
   "front_end/timeline/CountersGraph.js",
   "front_end/timeline/EventsTimelineTreeView.js",
@@ -411,6 +414,8 @@ all_devtools_files = [
   "front_end/ui/tooltip.css",
   "front_end/ui/treeoutline.css",
   "front_end/ui/viewContainers.css",
+  "front_end/wasmparser_worker.json",
+  "front_end/wasmparser_worker/module.json",
   "front_end/web_audio/audioContextSelector.css",
   "front_end/web_audio/module.json",
   "front_end/web_audio/webAudio.css",
@@ -1066,6 +1071,9 @@ all_devtools_modules = [
   "front_end/ui/XLink.js",
   "front_end/ui/XWidget.js",
   "front_end/ui/ZoomManager.js",
+  "front_end/wasmparser_worker.unbundled.js",
+  "front_end/wasmparser_worker/wasmparser_worker.js",
+  "front_end/wasmparser_worker/WasmParserWorker.js",
   "front_end/web_audio/AudioContextContentBuilder.js",
   "front_end/web_audio/AudioContextSelector.js",
   "front_end/web_audio/graph_visualizer/EdgeView.js",
@@ -1854,6 +1862,8 @@ copied_devtools_modules = [
   "$resources_out_dir/ui/XLink.js",
   "$resources_out_dir/ui/XWidget.js",
   "$resources_out_dir/ui/ZoomManager.js",
+  "$resources_out_dir/wasmparser_worker/wasmparser_worker.js",
+  "$resources_out_dir/wasmparser_worker/WasmParserWorker.js",
   "$resources_out_dir/web_audio/AudioContextContentBuilder.js",
   "$resources_out_dir/web_audio/AudioContextSelector.js",
   "$resources_out_dir/web_audio/graph_visualizer/EdgeView.js",
@@ -1979,6 +1989,7 @@ generated_test_modules = [
 generated_worker_bundles = [
   "$resources_out_dir/formatter_worker.js",
   "$resources_out_dir/heap_snapshot_worker.js",
+  "$resources_out_dir/wasmparser_worker.js",
 ]
 
 devtools_applications = [
@@ -1993,6 +2004,7 @@ devtools_applications = [
   "node_app",
   "shell",
   "toolbox",
+  "wasmparser_worker",
   "worker_app",
 ]
 

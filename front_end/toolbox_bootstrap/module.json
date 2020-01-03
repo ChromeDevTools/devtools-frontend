@@ -3,7 +3,8 @@
         "platform",
         "dom_extension"
     ],
-    "scripts": [
-        "Toolbox.js"
+    "scripts": [],
+    "modules": [
+        "toolbox_bootstrap.js"
     ]
 }

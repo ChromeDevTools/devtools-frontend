@@ -4,7 +4,7 @@
  * found in the LICENSE file.
  */
 
-Sources.OpenFileQuickOpen = class extends Sources.FilteredUISourceCodeListProvider {
+export default class OpenFileQuickOpen extends Sources.FilteredUISourceCodeListProvider {
   /**
    * @override
    */
@@ -48,4 +48,13 @@ Sources.OpenFileQuickOpen = class extends Sources.FilteredUISourceCodeListProvid
   renderAsTwoRows() {
     return true;
   }
-};
+}
+
+/* Legacy exported object */
+self.Sources = self.Sources || {};
+
+/* Legacy exported object */
+Sources = Sources || {};
+
+/** @constructor */
+Sources.OpenFileQuickOpen = OpenFileQuickOpen;

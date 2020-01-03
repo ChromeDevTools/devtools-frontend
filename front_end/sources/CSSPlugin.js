@@ -28,7 +28,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-Sources.CSSPlugin = class extends Sources.UISourceCodeFrame.Plugin {
+export default class CSSPlugin extends Sources.UISourceCodeFrame.Plugin {
   /**
    * @param {!SourceFrame.SourcesTextEditor} textEditor
    */
@@ -163,7 +163,7 @@ Sources.CSSPlugin = class extends Sources.UISourceCodeFrame.Plugin {
     handlers.set(UI.Geometry.CubicBezier.Regex, this._createBezierSwatch.bind(this));
 
     for (let lineNumber = startLine; lineNumber <= endLine; lineNumber++) {
-      const line = this._textEditor.line(lineNumber).substring(0, Sources.CSSPlugin.maxSwatchProcessingLength);
+      const line = this._textEditor.line(lineNumber).substring(0, maxSwatchProcessingLength);
       const results = TextUtils.TextUtils.splitStringByRegexes(line, regexes);
       for (let i = 0; i < results.length; i++) {
         const result = results[i];
@@ -188,18 +188,18 @@ Sources.CSSPlugin = class extends Sources.UISourceCodeFrame.Plugin {
     this._textEditor.operation(putSwatchesInline.bind(this));
 
     /**
-     * @this {Sources.CSSPlugin}
+     * @this {CSSPlugin}
      */
     function putSwatchesInline() {
       const clearRange = new TextUtils.TextRange(startLine, 0, endLine, this._textEditor.line(endLine).length);
-      this._textEditor.bookmarks(clearRange, Sources.CSSPlugin.SwatchBookmark).forEach(marker => marker.clear());
+      this._textEditor.bookmarks(clearRange, SwatchBookmark).forEach(marker => marker.clear());
 
       for (let i = 0; i < swatches.length; i++) {
         const swatch = swatches[i];
         const swatchPosition = swatchPositions[i];
-        const bookmark = this._textEditor.addBookmark(
-            swatchPosition.startLine, swatchPosition.startColumn, swatch, Sources.CSSPlugin.SwatchBookmark);
-        swatch[Sources.CSSPlugin.SwatchBookmark] = bookmark;
+        const bookmark =
+            this._textEditor.addBookmark(swatchPosition.startLine, swatchPosition.startColumn, swatch, SwatchBookmark);
+        swatch[SwatchBookmark] = bookmark;
       }
     }
   }
@@ -245,7 +245,7 @@ Sources.CSSPlugin = class extends Sources.UISourceCodeFrame.Plugin {
     event.consume(true);
     this._hadSwatchChange = false;
     this._muteSwatchProcessing = true;
-    const swatchPosition = swatch[Sources.CSSPlugin.SwatchBookmark].position();
+    const swatchPosition = swatch[SwatchBookmark].position();
     this._textEditor.setSelection(swatchPosition);
     this._editedSwatchTextRange = swatchPosition.clone();
     this._editedSwatchTextRange.endColumn += swatch.textContent.length;
@@ -421,13 +421,25 @@ Sources.CSSPlugin = class extends Sources.UISourceCodeFrame.Plugin {
     this._textEditor.removeEventListener(
         SourceFrame.SourcesTextEditor.Events.ScrollChanged, this._textEditorScrolled, this);
     this._textEditor.removeEventListener(UI.TextEditor.Events.TextChanged, this._onTextChanged, this);
-    this._textEditor.bookmarks(this._textEditor.fullRange(), Sources.CSSPlugin.SwatchBookmark)
-        .forEach(marker => marker.clear());
+    this._textEditor.bookmarks(this._textEditor.fullRange(), SwatchBookmark).forEach(marker => marker.clear());
     this._textEditor.element.removeEventListener('keydown', this._boundHandleKeyDown, false);
   }
-};
+}
 
 /** @type {number} */
-Sources.CSSPlugin.maxSwatchProcessingLength = 300;
+export const maxSwatchProcessingLength = 300;
+
 /** @type {symbol} */
-Sources.CSSPlugin.SwatchBookmark = Symbol('swatch');
+export const SwatchBookmark = Symbol('swatch');
+
+/* Legacy exported object */
+self.Sources = self.Sources || {};
+
+/* Legacy exported object */
+Sources = Sources || {};
+
+/** @constructor */
+Sources.CSSPlugin = CSSPlugin;
+
+Sources.CSSPlugin.maxSwatchProcessingLength = maxSwatchProcessingLength;
+Sources.CSSPlugin.SwatchBookmark = SwatchBookmark;

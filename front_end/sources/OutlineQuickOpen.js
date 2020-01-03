@@ -5,7 +5,7 @@
 /**
  * @unrestricted
  */
-Sources.OutlineQuickOpen = class extends QuickOpen.FilteredListWidget.Provider {
+export default class OutlineQuickOpen extends QuickOpen.FilteredListWidget.Provider {
   constructor() {
     super();
     this._items = [];
@@ -127,4 +127,13 @@ Sources.OutlineQuickOpen = class extends QuickOpen.FilteredListWidget.Provider {
     }
     return Common.UIString('No results found');
   }
-};
+}
+
+/* Legacy exported object */
+self.Sources = self.Sources || {};
+
+/* Legacy exported object */
+Sources = Sources || {};
+
+/** @constructor */
+Sources.OutlineQuickOpen = OutlineQuickOpen;

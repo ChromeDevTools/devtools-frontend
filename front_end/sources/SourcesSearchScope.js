@@ -25,10 +25,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 /**
  * @implements {Search.SearchScope}
  */
-Sources.SourcesSearchScope = class {
+export default class SourcesSearchScope {
   constructor() {
     // FIXME: Add title once it is used by search controller.
     this._searchId = 0;
@@ -201,9 +202,9 @@ Sources.SourcesSearchScope = class {
       }
       uiSourceCodes.push(uiSourceCode);
     }
-    uiSourceCodes.sort(Sources.SourcesSearchScope._filesComparator);
+    uiSourceCodes.sort(SourcesSearchScope._filesComparator);
     this._searchResultCandidates =
-        this._searchResultCandidates.mergeOrdered(uiSourceCodes, Sources.SourcesSearchScope._filesComparator);
+        this._searchResultCandidates.mergeOrdered(uiSourceCodes, SourcesSearchScope._filesComparator);
   }
 
   /**
@@ -236,7 +237,7 @@ Sources.SourcesSearchScope = class {
 
     /**
      * @param {!Workspace.UISourceCode} uiSourceCode
-     * @this {Sources.SourcesSearchScope}
+     * @this {SourcesSearchScope}
      */
     function searchInNextFile(uiSourceCode) {
       if (uiSourceCode.isDirty()) {
@@ -249,7 +250,7 @@ Sources.SourcesSearchScope = class {
     }
 
     /**
-     * @this {Sources.SourcesSearchScope}
+     * @this {SourcesSearchScope}
      */
     function scheduleSearchInNextFileOrFinish() {
       if (fileIndex >= files.length) {
@@ -269,7 +270,7 @@ Sources.SourcesSearchScope = class {
     /**
      * @param {!Workspace.UISourceCode} uiSourceCode
      * @param {string} content
-     * @this {Sources.SourcesSearchScope}
+     * @this {SourcesSearchScope}
      */
     function contentLoaded(uiSourceCode, content) {
       /**
@@ -291,7 +292,7 @@ Sources.SourcesSearchScope = class {
         }
       }
       if (matches) {
-        const searchResult = new Sources.FileBasedSearchResult(uiSourceCode, matches);
+        const searchResult = new FileBasedSearchResult(uiSourceCode, matches);
         this._searchResultCallback(searchResult);
       }
 
@@ -306,13 +307,12 @@ Sources.SourcesSearchScope = class {
   stopSearch() {
     ++this._searchId;
   }
-};
-
+}
 
 /**
  * @implements {Search.SearchResult}
  */
-Sources.FileBasedSearchResult = class {
+export class FileBasedSearchResult {
   /**
    * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {!Array.<!Common.ContentProvider.SearchMatch>} searchMatches
@@ -373,4 +373,16 @@ Sources.FileBasedSearchResult = class {
   matchLabel(index) {
     return this._searchMatches[index].lineNumber + 1;
   }
-};
+}
+
+/* Legacy exported object */
+self.Sources = self.Sources || {};
+
+/* Legacy exported object */
+Sources = Sources || {};
+
+/** @constructor */
+Sources.SourcesSearchScope = SourcesSearchScope;
+
+/** @constructor */
+Sources.FileBasedSearchResult = FileBasedSearchResult;

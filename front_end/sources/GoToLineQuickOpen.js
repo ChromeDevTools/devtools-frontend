@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-Sources.GoToLineQuickOpen = class extends QuickOpen.FilteredListWidget.Provider {
+export default class GoToLineQuickOpen extends QuickOpen.FilteredListWidget.Provider {
   /**
    * @override
    * @param {?number} itemIndex
@@ -83,4 +83,13 @@ Sources.GoToLineQuickOpen = class extends QuickOpen.FilteredListWidget.Provider 
     }
     return sourcesView.currentSourceFrame();
   }
-};
+}
+
+/* Legacy exported object */
+self.Sources = self.Sources || {};
+
+/* Legacy exported object */
+Sources = Sources || {};
+
+/** @constructor */
+Sources.GoToLineQuickOpen = GoToLineQuickOpen;

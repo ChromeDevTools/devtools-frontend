@@ -1,7 +1,8 @@
 // Copyright 2014 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-Sources.JavaScriptCompilerPlugin = class extends Sources.UISourceCodeFrame.Plugin {
+
+export default class JavaScriptCompilerPlugin extends Sources.UISourceCodeFrame.Plugin {
   /**
    * @param {!SourceFrame.SourcesTextEditor} textEditor
    * @param {!Workspace.UISourceCode} uiSourceCode
@@ -52,7 +53,7 @@ Sources.JavaScriptCompilerPlugin = class extends Sources.UISourceCodeFrame.Plugi
     if (this._timeout) {
       clearTimeout(this._timeout);
     }
-    this._timeout = setTimeout(this._compile.bind(this), Sources.JavaScriptCompilerPlugin.CompileDelay);
+    this._timeout = setTimeout(this._compile.bind(this), CompileDelay);
   }
 
   /**
@@ -123,6 +124,17 @@ Sources.JavaScriptCompilerPlugin = class extends Sources.UISourceCodeFrame.Plugi
       clearTimeout(this._timeout);
     }
   }
-};
+}
 
-Sources.JavaScriptCompilerPlugin.CompileDelay = 1000;
+export const CompileDelay = 1000;
+
+/* Legacy exported object */
+self.Sources = self.Sources || {};
+
+/* Legacy exported object */
+Sources = Sources || {};
+
+/** @constructor */
+Sources.JavaScriptCompilerPlugin = JavaScriptCompilerPlugin;
+
+Sources.JavaScriptCompilerPlugin.CompileDelay = CompileDelay;

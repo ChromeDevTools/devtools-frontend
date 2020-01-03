@@ -908,7 +908,9 @@
         "formatter",
         "coverage"
     ],
-    "scripts": [
+    "scripts": [],
+    "modules": [
+        "sources.js",
         "AddSourceMapURLDialog.js",
         "BreakpointEditDialog.js",
         "CallStackSidebarPane.js",

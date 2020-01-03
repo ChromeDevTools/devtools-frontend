@@ -23,11 +23,12 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 /**
  * @implements {UI.ContextFlavorListener}
  * @unrestricted
  */
-Sources.ScopeChainSidebarPane = class extends UI.VBox {
+export default class ScopeChainSidebarPane extends UI.VBox {
   constructor() {
     super(true);
     this.registerRequiredCSS('sources/scopeChainSidebarPane.css');
@@ -187,6 +188,17 @@ Sources.ScopeChainSidebarPane = class extends UI.VBox {
 
   _sidebarPaneUpdatedForTest() {
   }
-};
+}
 
-Sources.ScopeChainSidebarPane._pathSymbol = Symbol('path');
+export const _pathSymbol = Symbol('path');
+
+/* Legacy exported object */
+self.Sources = self.Sources || {};
+
+/* Legacy exported object */
+Sources = Sources || {};
+
+/** @constructor */
+Sources.ScopeChainSidebarPane = ScopeChainSidebarPane;
+
+Sources.ScopeChainSidebarPane._pathSymbol = _pathSymbol;

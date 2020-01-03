@@ -27,24 +27,24 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 /**
  * @interface
  */
-Sources.HistoryEntry = function() {};
-
-Sources.HistoryEntry.prototype = {
+export class HistoryEntry {
   /**
    * @return {boolean}
    */
-  valid() {},
+  valid() {
+  }
 
   reveal() {}
-};
+}
 
 /**
  * @unrestricted
  */
-Sources.SimpleHistoryManager = class {
+export default class SimpleHistoryManager {
   /**
    * @param {number} historyDepth
    */
@@ -71,7 +71,7 @@ Sources.SimpleHistoryManager = class {
   }
 
   /**
-   * @param {function(!Sources.HistoryEntry):boolean} filterOutCallback
+   * @param {function(!HistoryEntry):boolean} filterOutCallback
    */
   filterOut(filterOutCallback) {
     if (this.readOnly()) {
@@ -98,14 +98,14 @@ Sources.SimpleHistoryManager = class {
   }
 
   /**
-   * @return {?Sources.HistoryEntry}
+   * @return {?HistoryEntry}
    */
   active() {
     return this.empty() ? null : this._entries[this._activeEntryIndex];
   }
 
   /**
-   * @param {!Sources.HistoryEntry} entry
+   * @param {!HistoryEntry} entry
    */
   push(entry) {
     if (this.readOnly()) {
@@ -165,4 +165,16 @@ Sources.SimpleHistoryManager = class {
     this._activeEntryIndex = revealIndex;
     return true;
   }
-};
+}
+
+/* Legacy exported object */
+self.Sources = self.Sources || {};
+
+/* Legacy exported object */
+Sources = Sources || {};
+
+/** @constructor */
+Sources.SimpleHistoryManager = SimpleHistoryManager;
+
+/** @interface */
+Sources.HistoryEntry = HistoryEntry;

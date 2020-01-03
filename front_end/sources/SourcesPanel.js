@@ -23,16 +23,17 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 /**
  * @implements {UI.ContextMenu.Provider}
  * @implements {SDK.TargetManager.Observer}
  * @implements {UI.ViewLocationResolver}
  * @unrestricted
  */
-Sources.SourcesPanel = class extends UI.Panel {
+export default class SourcesPanel extends UI.Panel {
   constructor() {
     super('sources');
-    Sources.SourcesPanel._instance = this;
+    SourcesPanel._instance = this;
     this.registerRequiredCSS('sources/sourcesPanel.css');
     new UI.DropTarget(
         this.element, [UI.DropTarget.Type.Folder], Common.UIString('Drop workspace folder here'),
@@ -129,23 +130,23 @@ Sources.SourcesPanel = class extends UI.Panel {
   }
 
   /**
-   * @return {!Sources.SourcesPanel}
+   * @return {!SourcesPanel}
    */
   static instance() {
-    if (Sources.SourcesPanel._instance) {
-      return Sources.SourcesPanel._instance;
+    if (SourcesPanel._instance) {
+      return SourcesPanel._instance;
     }
-    return /** @type {!Sources.SourcesPanel} */ (self.runtime.sharedInstance(Sources.SourcesPanel));
+    return /** @type {!SourcesPanel} */ (self.runtime.sharedInstance(SourcesPanel));
   }
 
   /**
-   * @param {!Sources.SourcesPanel} panel
+   * @param {!SourcesPanel} panel
    */
   static updateResizerAndSidebarButtons(panel) {
     panel._sourcesView.leftToolbar().removeToolbarItems();
     panel._sourcesView.rightToolbar().removeToolbarItems();
     panel._sourcesView.bottomToolbar().removeToolbarItems();
-    const isInWrapper = Sources.SourcesPanel.WrapperView.isShowing() && !UI.inspectorView.isDrawerMinimized();
+    const isInWrapper = WrapperView.isShowing() && !UI.inspectorView.isDrawerMinimized();
     if (panel._splitWidget.isVertical() || isInWrapper) {
       panel._splitWidget.uninstallResizer(panel._sourcesView.toolbarContainerElement());
     } else {
@@ -226,12 +227,12 @@ Sources.SourcesPanel = class extends UI.Panel {
    * @override
    */
   wasShown() {
-    UI.context.setFlavor(Sources.SourcesPanel, this);
+    UI.context.setFlavor(SourcesPanel, this);
     super.wasShown();
-    const wrapper = Sources.SourcesPanel.WrapperView._instance;
+    const wrapper = WrapperView._instance;
     if (wrapper && wrapper.isShowing()) {
       UI.inspectorView.setDrawerMinimized(true);
-      Sources.SourcesPanel.updateResizerAndSidebarButtons(this);
+      SourcesPanel.updateResizerAndSidebarButtons(this);
     }
     this.editorView.setMainWidget(this._sourcesView);
   }
@@ -241,11 +242,11 @@ Sources.SourcesPanel = class extends UI.Panel {
    */
   willHide() {
     super.willHide();
-    UI.context.setFlavor(Sources.SourcesPanel, null);
-    if (Sources.SourcesPanel.WrapperView.isShowing()) {
-      Sources.SourcesPanel.WrapperView._instance._showViewInWrapper();
+    UI.context.setFlavor(SourcesPanel, null);
+    if (WrapperView.isShowing()) {
+      WrapperView._instance._showViewInWrapper();
       UI.inspectorView.setDrawerMinimized(false);
-      Sources.SourcesPanel.updateResizerAndSidebarButtons(this);
+      SourcesPanel.updateResizerAndSidebarButtons(this);
     }
   }
 
@@ -267,7 +268,7 @@ Sources.SourcesPanel = class extends UI.Panel {
    * @return {boolean}
    */
   _ensureSourcesViewVisible() {
-    if (Sources.SourcesPanel.WrapperView.isShowing()) {
+    if (WrapperView.isShowing()) {
       return true;
     }
     if (!UI.inspectorView.canSelectPanel('sources')) {
@@ -365,8 +366,7 @@ Sources.SourcesPanel = class extends UI.Panel {
    */
   showUISourceCode(uiSourceCode, lineNumber, columnNumber, omitFocus) {
     if (omitFocus) {
-      const wrapperShowing =
-          Sources.SourcesPanel.WrapperView._instance && Sources.SourcesPanel.WrapperView._instance.isShowing();
+      const wrapperShowing = WrapperView._instance && WrapperView._instance.isShowing();
       if (!this.isShowing() && !wrapperShowing) {
         return;
       }
@@ -377,7 +377,7 @@ Sources.SourcesPanel = class extends UI.Panel {
   }
 
   _showEditor() {
-    if (Sources.SourcesPanel.WrapperView._instance && Sources.SourcesPanel.WrapperView._instance.isShowing()) {
+    if (WrapperView._instance && WrapperView._instance.isShowing()) {
       return;
     }
     this._setAsCurrentPanel();
@@ -400,7 +400,7 @@ Sources.SourcesPanel = class extends UI.Panel {
     Promise.all(extensions.map(extension => extension.instance())).then(filterNavigators.bind(this));
 
     /**
-     * @this {Sources.SourcesPanel}
+     * @this {SourcesPanel}
      * @param {!Array.<!Object>} objects
      */
     function filterNavigators(objects) {
@@ -449,7 +449,7 @@ Sources.SourcesPanel = class extends UI.Panel {
     if (!uiLocation) {
       return;
     }
-    if (window.performance.now() - this._lastModificationTime < Sources.SourcesPanel._lastModificationTimeout) {
+    if (window.performance.now() - this._lastModificationTime < _lastModificationTimeout) {
       return;
     }
     this._sourcesView.showSourceLocation(
@@ -457,11 +457,11 @@ Sources.SourcesPanel = class extends UI.Panel {
   }
 
   _lastModificationTimeoutPassedForTest() {
-    Sources.SourcesPanel._lastModificationTimeout = Number.MIN_VALUE;
+    _lastModificationTimeout = Number.MIN_VALUE;
   }
 
   _updateLastModificationTimeForTest() {
-    Sources.SourcesPanel._lastModificationTimeout = Number.MAX_VALUE;
+    _lastModificationTimeout = Number.MAX_VALUE;
   }
 
   _callFrameChanged() {
@@ -934,15 +934,14 @@ Sources.SourcesPanel = class extends UI.Panel {
     this._splitWidget.setVertical(!vertically);
     this._splitWidget.element.classList.toggle('sources-split-view-vertical', vertically);
 
-    Sources.SourcesPanel.updateResizerAndSidebarButtons(this);
+    SourcesPanel.updateResizerAndSidebarButtons(this);
 
     // Create vertical box with stack.
     const vbox = new UI.VBox();
     vbox.element.appendChild(this._debugToolbar.element);
     vbox.element.appendChild(this._debugToolbarDrawer);
 
-    vbox.setMinimumAndPreferredSizes(
-        Sources.SourcesPanel.minToolbarWidth, 25, Sources.SourcesPanel.minToolbarWidth, 100);
+    vbox.setMinimumAndPreferredSizes(minToolbarWidth, 25, minToolbarWidth, 100);
     this._sidebarPaneStack = UI.viewManager.createStackLocation(this._revealDebuggerSidebar.bind(this));
     this._sidebarPaneStack.widget().element.classList.add('overflow-auto');
     this._sidebarPaneStack.widget().show(vbox.element);
@@ -1046,17 +1045,16 @@ Sources.SourcesPanel = class extends UI.Panel {
     }
     Host.InspectorFrontendHost.upgradeDraggedFileSystemPermissions(entry.filesystem);
   }
-};
+}
 
-Sources.SourcesPanel._lastModificationTimeout = 200;
-
-Sources.SourcesPanel.minToolbarWidth = 215;
+export let _lastModificationTimeout = 200;
+export const minToolbarWidth = 215;
 
 /**
  * @implements {Common.Revealer}
  * @unrestricted
  */
-Sources.SourcesPanel.UILocationRevealer = class {
+export class UILocationRevealer {
   /**
    * @override
    * @param {!Object} uiLocation
@@ -1067,16 +1065,16 @@ Sources.SourcesPanel.UILocationRevealer = class {
     if (!(uiLocation instanceof Workspace.UILocation)) {
       return Promise.reject(new Error('Internal error: not a ui location'));
     }
-    Sources.SourcesPanel.instance().showUILocation(uiLocation, omitFocus);
+    SourcesPanel.instance().showUILocation(uiLocation, omitFocus);
     return Promise.resolve();
   }
-};
+}
 
 /**
  * @implements {Common.Revealer}
  * @unrestricted
  */
-Sources.SourcesPanel.DebuggerLocationRevealer = class {
+export class DebuggerLocationRevealer {
   /**
    * @override
    * @param {!Object} rawLocation
@@ -1091,16 +1089,16 @@ Sources.SourcesPanel.DebuggerLocationRevealer = class {
     if (!uiLocation) {
       return Promise.resolve();
     }
-    Sources.SourcesPanel.instance().showUILocation(uiLocation, omitFocus);
+    SourcesPanel.instance().showUILocation(uiLocation, omitFocus);
     return Promise.resolve();
   }
-};
+}
 
 /**
  * @implements {Common.Revealer}
  * @unrestricted
  */
-Sources.SourcesPanel.UISourceCodeRevealer = class {
+export class UISourceCodeRevealer {
   /**
    * @override
    * @param {!Object} uiSourceCode
@@ -1111,31 +1109,31 @@ Sources.SourcesPanel.UISourceCodeRevealer = class {
     if (!(uiSourceCode instanceof Workspace.UISourceCode)) {
       return Promise.reject(new Error('Internal error: not a ui source code'));
     }
-    Sources.SourcesPanel.instance().showUISourceCode(uiSourceCode, undefined, undefined, omitFocus);
+    SourcesPanel.instance().showUISourceCode(uiSourceCode, undefined, undefined, omitFocus);
     return Promise.resolve();
   }
-};
+}
 
 /**
  * @implements {Common.Revealer}
  * @unrestricted
  */
-Sources.SourcesPanel.DebuggerPausedDetailsRevealer = class {
+export class DebuggerPausedDetailsRevealer {
   /**
    * @override
    * @param {!Object} object
    * @return {!Promise}
    */
   reveal(object) {
-    return Sources.SourcesPanel.instance()._setAsCurrentPanel();
+    return SourcesPanel.instance()._setAsCurrentPanel();
   }
-};
+}
 
 /**
  * @implements {UI.ActionDelegate}
  * @unrestricted
  */
-Sources.SourcesPanel.RevealingActionDelegate = class {
+export class RevealingActionDelegate {
   /**
    * @override
    * @param {!UI.Context} context
@@ -1143,7 +1141,7 @@ Sources.SourcesPanel.RevealingActionDelegate = class {
    * @return {boolean}
    */
   handleAction(context, actionId) {
-    const panel = Sources.SourcesPanel.instance();
+    const panel = SourcesPanel.instance();
     if (!panel._ensureSourcesViewVisible()) {
       return false;
     }
@@ -1154,13 +1152,13 @@ Sources.SourcesPanel.RevealingActionDelegate = class {
     }
     return false;
   }
-};
+}
 
 /**
  * @implements {UI.ActionDelegate}
  * @unrestricted
  */
-Sources.SourcesPanel.DebuggingActionDelegate = class {
+export class DebuggingActionDelegate {
   /**
    * @override
    * @param {!UI.Context} context
@@ -1168,7 +1166,7 @@ Sources.SourcesPanel.DebuggingActionDelegate = class {
    * @return {boolean}
    */
   handleAction(context, actionId) {
-    const panel = Sources.SourcesPanel.instance();
+    const panel = SourcesPanel.instance();
     switch (actionId) {
       case 'debugger.step-over':
         panel._stepOver();
@@ -1204,37 +1202,36 @@ Sources.SourcesPanel.DebuggingActionDelegate = class {
     }
     return false;
   }
-};
-
+}
 
 /**
  * @unrestricted
  */
-Sources.SourcesPanel.WrapperView = class extends UI.VBox {
+export class WrapperView extends UI.VBox {
   constructor() {
     super();
     this.element.classList.add('sources-view-wrapper');
-    Sources.SourcesPanel.WrapperView._instance = this;
-    this._view = Sources.SourcesPanel.instance()._sourcesView;
+    WrapperView._instance = this;
+    this._view = SourcesPanel.instance()._sourcesView;
   }
 
   /**
    * @return {boolean}
    */
   static isShowing() {
-    return !!Sources.SourcesPanel.WrapperView._instance && Sources.SourcesPanel.WrapperView._instance.isShowing();
+    return !!WrapperView._instance && WrapperView._instance.isShowing();
   }
 
   /**
    * @override
    */
   wasShown() {
-    if (!Sources.SourcesPanel.instance().isShowing()) {
+    if (!SourcesPanel.instance().isShowing()) {
       this._showViewInWrapper();
     } else {
       UI.inspectorView.setDrawerMinimized(true);
     }
-    Sources.SourcesPanel.updateResizerAndSidebarButtons(Sources.SourcesPanel.instance());
+    SourcesPanel.updateResizerAndSidebarButtons(SourcesPanel.instance());
   }
 
   /**
@@ -1242,10 +1239,43 @@ Sources.SourcesPanel.WrapperView = class extends UI.VBox {
    */
   willHide() {
     UI.inspectorView.setDrawerMinimized(false);
-    setImmediate(() => Sources.SourcesPanel.updateResizerAndSidebarButtons(Sources.SourcesPanel.instance()));
+    setImmediate(() => SourcesPanel.updateResizerAndSidebarButtons(SourcesPanel.instance()));
   }
 
   _showViewInWrapper() {
     this._view.show(this.element);
   }
-};
+}
+
+/* Legacy exported object */
+self.Sources = self.Sources || {};
+
+/* Legacy exported object */
+Sources = Sources || {};
+
+/** @constructor */
+Sources.SourcesPanel = SourcesPanel;
+
+Sources.SourcesPanel._lastModificationTimeout = _lastModificationTimeout;
+Sources.SourcesPanel.minToolbarWidth = minToolbarWidth;
+
+/** @constructor */
+Sources.SourcesPanel.UILocationRevealer = UILocationRevealer;
+
+/** @constructor */
+Sources.SourcesPanel.DebuggerLocationRevealer = DebuggerLocationRevealer;
+
+/** @constructor */
+Sources.SourcesPanel.UISourceCodeRevealer = UISourceCodeRevealer;
+
+/** @constructor */
+Sources.SourcesPanel.DebuggerPausedDetailsRevealer = DebuggerPausedDetailsRevealer;
+
+/** @constructor */
+Sources.SourcesPanel.RevealingActionDelegate = RevealingActionDelegate;
+
+/** @constructor */
+Sources.SourcesPanel.DebuggingActionDelegate = DebuggingActionDelegate;
+
+/** @constructor */
+Sources.SourcesPanel.WrapperView = WrapperView;

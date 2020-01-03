@@ -1,11 +1,12 @@
 // Copyright (c) 2015 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
 /**
  * @implements {UI.ContextFlavorListener}
  * @unrestricted
  */
-Sources.JavaScriptBreakpointsSidebarPane = class extends UI.ThrottledWidget {
+export default class JavaScriptBreakpointsSidebarPane extends UI.ThrottledWidget {
   constructor() {
     super(true);
     this.registerRequiredCSS('sources/javaScriptBreakpointsSidebarPane.css');
@@ -75,9 +76,9 @@ Sources.JavaScriptBreakpointsSidebarPane = class extends UI.ThrottledWidget {
         const checkboxLabel = UI.CheckboxLabel.create('');
         checkboxLabel.addEventListener('click', this._breakpointCheckboxClicked.bind(this), false);
         entry.appendChild(checkboxLabel);
-        entry[Sources.JavaScriptBreakpointsSidebarPane._checkboxLabelSymbol] = checkboxLabel;
+        entry[_checkboxLabelSymbol] = checkboxLabel;
         const snippetElement = entry.createChild('div', 'source-text monospace');
-        entry[Sources.JavaScriptBreakpointsSidebarPane._snippetElementSymbol] = snippetElement;
+        entry[_snippetElementSymbol] = snippetElement;
       }
 
       const locations = Array.from(locationForEntry.get(descriptor));
@@ -90,7 +91,7 @@ Sources.JavaScriptBreakpointsSidebarPane = class extends UI.ThrottledWidget {
           breakpointEntriesForLine.get(`${uiLocation.uiSourceCode.url()}:${uiLocation.lineNumber}`).size > 1;
       promises.push(
           this._resetEntry(/** @type {!Element}*/ (entry), uiLocation, isSelected, hasEnabled, hasDisabled, showCoumn));
-      entry[Sources.JavaScriptBreakpointsSidebarPane._breakpointLocationsSymbol] = locations;
+      entry[_breakpointLocationsSymbol] = locations;
       if (isSelected) {
         shouldShowView = true;
       }
@@ -119,16 +120,16 @@ Sources.JavaScriptBreakpointsSidebarPane = class extends UI.ThrottledWidget {
    * @return {!Promise}
    */
   async _resetEntry(element, uiLocation, isSelected, hasEnabled, hasDisabled, showColumn) {
-    element[Sources.JavaScriptBreakpointsSidebarPane._locationSymbol] = uiLocation;
+    element[_locationSymbol] = uiLocation;
     element.classList.toggle('breakpoint-hit', isSelected);
 
-    const checkboxLabel = element[Sources.JavaScriptBreakpointsSidebarPane._checkboxLabelSymbol];
+    const checkboxLabel = element[_checkboxLabelSymbol];
     checkboxLabel.textElement.textContent =
         uiLocation.linkText() + (showColumn ? ':' + (uiLocation.columnNumber + 1) : '');
     checkboxLabel.checkboxElement.checked = hasEnabled;
     checkboxLabel.checkboxElement.indeterminate = hasEnabled && hasDisabled;
 
-    const snippetElement = element[Sources.JavaScriptBreakpointsSidebarPane._snippetElementSymbol];
+    const snippetElement = element[_snippetElementSymbol];
     const {content} = await uiLocation.uiSourceCode.requestContent();
     const lineNumber = uiLocation.lineNumber;
     const text = new TextUtils.Text(content || '');
@@ -149,7 +150,7 @@ Sources.JavaScriptBreakpointsSidebarPane = class extends UI.ThrottledWidget {
     if (!node) {
       return [];
     }
-    return node[Sources.JavaScriptBreakpointsSidebarPane._breakpointLocationsSymbol] || [];
+    return node[_breakpointLocationsSymbol] || [];
   }
 
   /**
@@ -250,9 +251,23 @@ Sources.JavaScriptBreakpointsSidebarPane = class extends UI.ThrottledWidget {
 
   _didUpdateForTest() {
   }
-};
+}
 
-Sources.JavaScriptBreakpointsSidebarPane._locationSymbol = Symbol('location');
-Sources.JavaScriptBreakpointsSidebarPane._checkboxLabelSymbol = Symbol('checkbox-label');
-Sources.JavaScriptBreakpointsSidebarPane._snippetElementSymbol = Symbol('snippet-element');
-Sources.JavaScriptBreakpointsSidebarPane._breakpointLocationsSymbol = Symbol('locations');
+export const _locationSymbol = Symbol('location');
+export const _checkboxLabelSymbol = Symbol('checkbox-label');
+export const _snippetElementSymbol = Symbol('snippet-element');
+export const _breakpointLocationsSymbol = Symbol('locations');
+
+/* Legacy exported object */
+self.Sources = self.Sources || {};
+
+/* Legacy exported object */
+Sources = Sources || {};
+
+/** @constructor */
+Sources.JavaScriptBreakpointsSidebarPane = JavaScriptBreakpointsSidebarPane;
+
+Sources.JavaScriptBreakpointsSidebarPane._locationSymbol = _locationSymbol;
+Sources.JavaScriptBreakpointsSidebarPane._checkboxLabelSymbol = _checkboxLabelSymbol;
+Sources.JavaScriptBreakpointsSidebarPane._snippetElementSymbol = _snippetElementSymbol;
+Sources.JavaScriptBreakpointsSidebarPane._breakpointLocationsSymbol = _breakpointLocationsSymbol;

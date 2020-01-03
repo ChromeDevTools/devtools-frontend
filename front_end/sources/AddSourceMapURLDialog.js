@@ -1,10 +1,11 @@
 // Copyright 2014 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
 /**
  * @unrestricted
  */
-Sources.AddSourceMapURLDialog = class extends UI.HBox {
+export default class AddSourceMapURLDialog extends UI.HBox {
   /**
    * @param {function(string)} callback
    */
@@ -25,7 +26,7 @@ Sources.AddSourceMapURLDialog = class extends UI.HBox {
     this._dialog.setDefaultFocusedElement(this._input);
 
     /**
-     * @this {Sources.AddSourceMapURLDialog}
+     * @this {AddSourceMapURLDialog}
      */
     this._done = function(value) {
       this._dialog.hide();
@@ -54,4 +55,13 @@ Sources.AddSourceMapURLDialog = class extends UI.HBox {
       this._apply();
     }
   }
-};
+}
+
+/* Legacy exported object */
+self.Sources = self.Sources || {};
+
+/* Legacy exported object */
+Sources = Sources || {};
+
+/** @constructor */
+Sources.AddSourceMapURLDialog = AddSourceMapURLDialog;

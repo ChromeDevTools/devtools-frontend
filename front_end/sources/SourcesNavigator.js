@@ -29,7 +29,7 @@
 /**
  * @unrestricted
  */
-Sources.NetworkNavigatorView = class extends Sources.NavigatorView {
+export class NetworkNavigatorView extends Sources.NavigatorView {
   constructor() {
     super();
     SDK.targetManager.addEventListener(SDK.TargetManager.Events.InspectedURLChanged, this._inspectedURLChanged, this);
@@ -80,12 +80,12 @@ Sources.NetworkNavigatorView = class extends Sources.NavigatorView {
       this.revealUISourceCode(uiSourceCode, true);
     }
   }
-};
+}
 
 /**
  * @unrestricted
  */
-Sources.FilesNavigatorView = class extends Sources.NavigatorView {
+export class FilesNavigatorView extends Sources.NavigatorView {
   constructor() {
     super();
     const placeholder = new UI.EmptyWidget('');
@@ -123,9 +123,9 @@ Sources.FilesNavigatorView = class extends Sources.NavigatorView {
     contextMenu.defaultSection().appendAction('sources.add-folder-to-workspace', undefined, true);
     contextMenu.show();
   }
-};
+}
 
-Sources.OverridesNavigatorView = class extends Sources.NavigatorView {
+export class OverridesNavigatorView extends Sources.NavigatorView {
   constructor() {
     super();
     const placeholder = new UI.EmptyWidget('');
@@ -205,12 +205,12 @@ Sources.OverridesNavigatorView = class extends Sources.NavigatorView {
   acceptProject(project) {
     return project === Persistence.networkPersistenceManager.project();
   }
-};
+}
 
 /**
  * @unrestricted
  */
-Sources.ContentScriptsNavigatorView = class extends Sources.NavigatorView {
+export class ContentScriptsNavigatorView extends Sources.NavigatorView {
   constructor() {
     super();
     const placeholder = new UI.EmptyWidget('');
@@ -229,12 +229,12 @@ Sources.ContentScriptsNavigatorView = class extends Sources.NavigatorView {
   acceptProject(project) {
     return project.type() === Workspace.projectTypes.ContentScripts;
   }
-};
+}
 
 /**
  * @unrestricted
  */
-Sources.SnippetsNavigatorView = class extends Sources.NavigatorView {
+export class SnippetsNavigatorView extends Sources.NavigatorView {
   constructor() {
     super();
     const placeholder = new UI.EmptyWidget('');
@@ -295,12 +295,12 @@ Sources.SnippetsNavigatorView = class extends Sources.NavigatorView {
     Workspace.fileManager.save(uiSourceCode.url(), content || '', true);
     Workspace.fileManager.close(uiSourceCode.url());
   }
-};
+}
 
 /**
  * @implements {UI.ActionDelegate}
  */
-Sources.ActionDelegate = class {
+export class ActionDelegate {
   /**
    * @override
    * @param {!UI.Context} context
@@ -318,4 +318,28 @@ Sources.ActionDelegate = class {
     }
     return false;
   }
-};
+}
+
+/* Legacy exported object */
+self.Sources = self.Sources || {};
+
+/* Legacy exported object */
+Sources = Sources || {};
+
+/** @constructor */
+Sources.NetworkNavigatorView = NetworkNavigatorView;
+
+/** @constructor */
+Sources.FilesNavigatorView = FilesNavigatorView;
+
+/** @constructor */
+Sources.OverridesNavigatorView = OverridesNavigatorView;
+
+/** @constructor */
+Sources.ContentScriptsNavigatorView = ContentScriptsNavigatorView;
+
+/** @constructor */
+Sources.SnippetsNavigatorView = SnippetsNavigatorView;
+
+/** @constructor */
+Sources.ActionDelegate = ActionDelegate;

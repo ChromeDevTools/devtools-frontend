@@ -31,14 +31,14 @@
 /**
  * @unrestricted
  */
-Sources.EditingLocationHistoryManager = class {
+export default class EditingLocationHistoryManager {
   /**
    * @param {!Sources.SourcesView} sourcesView
    * @param {function():?Sources.UISourceCodeFrame} currentSourceFrameCallback
    */
   constructor(sourcesView, currentSourceFrameCallback) {
     this._sourcesView = sourcesView;
-    this._historyManager = new Sources.SimpleHistoryManager(Sources.EditingLocationHistoryManager.HistoryDepth);
+    this._historyManager = new Sources.SimpleHistoryManager(HistoryDepth);
     this._currentSourceFrameCallback = currentSourceFrameCallback;
   }
 
@@ -90,7 +90,7 @@ Sources.EditingLocationHistoryManager = class {
    * @param {!TextUtils.TextRange} selection
    */
   _updateActiveState(selection) {
-    const active = this._historyManager.active();
+    const active = /** @type {?EditingLocationHistoryEntry} */ (this._historyManager.active());
     if (!active) {
       return;
     }
@@ -98,7 +98,7 @@ Sources.EditingLocationHistoryManager = class {
     if (!sourceFrame) {
       return;
     }
-    const entry = new Sources.EditingLocationHistoryEntry(this._sourcesView, this, sourceFrame, selection);
+    const entry = new EditingLocationHistoryEntry(this._sourcesView, this, sourceFrame, selection);
     active.merge(entry);
   }
 
@@ -110,7 +110,7 @@ Sources.EditingLocationHistoryManager = class {
     if (!sourceFrame) {
       return;
     }
-    const entry = new Sources.EditingLocationHistoryEntry(this._sourcesView, this, sourceFrame, selection);
+    const entry = new EditingLocationHistoryEntry(this._sourcesView, this, sourceFrame, selection);
     this._historyManager.push(entry);
   }
 
@@ -124,18 +124,18 @@ Sources.EditingLocationHistoryManager = class {
 
     this._historyManager.filterOut(filterOut);
   }
-};
+}
 
-Sources.EditingLocationHistoryManager.HistoryDepth = 20;
+export const HistoryDepth = 20;
 
 /**
  * @implements {Sources.HistoryEntry}
  * @unrestricted
  */
-Sources.EditingLocationHistoryEntry = class {
+export class EditingLocationHistoryEntry {
   /**
    * @param {!Sources.SourcesView} sourcesView
-   * @param {!Sources.EditingLocationHistoryManager} editingLocationManager
+   * @param {!EditingLocationHistoryManager} editingLocationManager
    * @param {!Sources.UISourceCodeFrame} sourceFrame
    * @param {!TextUtils.TextRange} selection
    */
@@ -151,7 +151,7 @@ Sources.EditingLocationHistoryEntry = class {
   }
 
   /**
-   * @param {!Sources.HistoryEntry} entry
+   * @param {!EditingLocationHistoryEntry} entry
    */
   merge(entry) {
     if (this._projectId !== entry._projectId || this._url !== entry._url) {
@@ -191,4 +191,18 @@ Sources.EditingLocationHistoryEntry = class {
     this._editingLocationManager.updateCurrentState();
     this._sourcesView.showSourceLocation(uiSourceCode, position.lineNumber, position.columnNumber);
   }
-};
+}
+
+/* Legacy exported object */
+self.Sources = self.Sources || {};
+
+/* Legacy exported object */
+Sources = Sources || {};
+
+/** @constructor */
+Sources.EditingLocationHistoryManager = EditingLocationHistoryManager;
+
+Sources.EditingLocationHistoryManager.HistoryDepth = HistoryDepth;
+
+/** @constructor */
+Sources.EditingLocationHistoryEntry = EditingLocationHistoryEntry;

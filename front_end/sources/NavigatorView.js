@@ -25,11 +25,12 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 /**
  * @implements {SDK.TargetManager.Observer}
  * @unrestricted
  */
-Sources.NavigatorView = class extends UI.VBox {
+export default class NavigatorView extends UI.VBox {
   constructor() {
     super(true);
     this.registerRequiredCSS('sources/navigatorView.css');
@@ -38,19 +39,19 @@ Sources.NavigatorView = class extends UI.VBox {
     this._placeholder = null;
     this._scriptsTree = new UI.TreeOutlineInShadow();
     this._scriptsTree.registerRequiredCSS('sources/navigatorTree.css');
-    this._scriptsTree.setComparator(Sources.NavigatorView._treeElementsCompare);
+    this._scriptsTree.setComparator(NavigatorView._treeElementsCompare);
     this.contentElement.appendChild(this._scriptsTree.element);
     this.setDefaultFocusedElement(this._scriptsTree.element);
 
-    /** @type {!Platform.Multimap<!Workspace.UISourceCode, !Sources.NavigatorUISourceCodeTreeNode>} */
+    /** @type {!Platform.Multimap<!Workspace.UISourceCode, !NavigatorUISourceCodeTreeNode>} */
     this._uiSourceCodeNodes = new Platform.Multimap();
-    /** @type {!Map.<string, !Sources.NavigatorFolderTreeNode>} */
+    /** @type {!Map.<string, !NavigatorFolderTreeNode>} */
     this._subfolderNodes = new Map();
 
-    this._rootNode = new Sources.NavigatorRootTreeNode(this);
+    this._rootNode = new NavigatorRootTreeNode(this);
     this._rootNode.populate();
 
-    /** @type {!Map.<!SDK.ResourceTreeFrame, !Sources.NavigatorGroupTreeNode>} */
+    /** @type {!Map.<!SDK.ResourceTreeFrame, !NavigatorGroupTreeNode>} */
     this._frameNodes = new Map();
 
     this.contentElement.addEventListener('contextmenu', this.handleContextMenu.bind(this), false);
@@ -85,9 +86,9 @@ Sources.NavigatorView = class extends UI.VBox {
       return 0;
     }
 
-    if (!Sources.NavigatorView._typeOrders) {
+    if (!NavigatorView._typeOrders) {
       const weights = {};
-      const types = Sources.NavigatorView.Types;
+      const types = Types;
       weights[types.Root] = 1;
       weights[types.Domain] = 10;
       weights[types.FileSystemFolder] = 1;
@@ -97,10 +98,10 @@ Sources.NavigatorView = class extends UI.VBox {
       weights[types.Frame] = 70;
       weights[types.Worker] = 90;
       weights[types.FileSystem] = 100;
-      Sources.NavigatorView._typeOrders = weights;
+      NavigatorView._typeOrders = weights;
     }
 
-    let order = Sources.NavigatorView._typeOrders[treeElement._nodeType];
+    let order = NavigatorView._typeOrders[treeElement._nodeType];
     if (treeElement._uiSourceCode) {
       const contentType = treeElement._uiSourceCode.contentType();
       if (contentType.isDocument()) {
@@ -140,8 +141,8 @@ Sources.NavigatorView = class extends UI.VBox {
    * @return {number}
    */
   static _treeElementsCompare(treeElement1, treeElement2) {
-    const typeWeight1 = Sources.NavigatorView._treeElementOrder(treeElement1);
-    const typeWeight2 = Sources.NavigatorView._treeElementOrder(treeElement2);
+    const typeWeight1 = NavigatorView._treeElementOrder(treeElement1);
+    const typeWeight2 = NavigatorView._treeElementOrder(treeElement2);
 
     if (typeWeight1 > typeWeight2) {
       return 1;
@@ -164,7 +165,7 @@ Sources.NavigatorView = class extends UI.VBox {
     this._scriptsTree.addEventListener(UI.TreeOutline.Events.ElementsDetached, updateVisibility.bind(this));
 
     /**
-     * @this {!Sources.NavigatorView}
+     * @this {!NavigatorView}
      */
     function updateVisibility() {
       const showTree = this._scriptsTree.firstChild();
@@ -334,7 +335,7 @@ Sources.NavigatorView = class extends UI.VBox {
     const target = Bindings.NetworkProject.targetForUISourceCode(uiSourceCode);
     const folderNode =
         this._folderNode(uiSourceCode, project, target, frame, uiSourceCode.origin(), path, isFromSourceMap);
-    const uiSourceCodeNode = new Sources.NavigatorUISourceCodeTreeNode(this, uiSourceCode, frame);
+    const uiSourceCodeNode = new NavigatorUISourceCodeTreeNode(this, uiSourceCode, frame);
     folderNode.appendChild(uiSourceCodeNode);
     this._uiSourceCodeNodes.set(uiSourceCode, uiSourceCodeNode);
     this._selectDefaultTreeNode();
@@ -379,8 +380,8 @@ Sources.NavigatorView = class extends UI.VBox {
         Snippets.isSnippetsProject(project) || this._rootNode.child(project.id())) {
       return;
     }
-    this._rootNode.appendChild(new Sources.NavigatorGroupTreeNode(
-        this, project, project.id(), Sources.NavigatorView.Types.FileSystem, project.displayName()));
+    this._rootNode.appendChild(
+        new NavigatorGroupTreeNode(this, project, project.id(), Types.FileSystem, project.displayName()));
     this._selectDefaultTreeNode();
   }
 
@@ -462,7 +463,7 @@ Sources.NavigatorView = class extends UI.VBox {
    * @param {string} projectOrigin
    * @param {!Array<string>} path
    * @param {boolean} fromSourceMap
-   * @return {!Sources.NavigatorTreeNode}
+   * @return {!NavigatorTreeNode}
    */
   _folderNode(uiSourceCode, project, target, frame, projectOrigin, path, fromSourceMap) {
     if (Snippets.isSnippetsUISourceCode(uiSourceCode)) {
@@ -484,18 +485,18 @@ Sources.NavigatorView = class extends UI.VBox {
       if (target) {
         return this._domainNode(uiSourceCode, project, target, frame, projectOrigin);
       }
-      return /** @type {!Sources.NavigatorTreeNode} */ (this._rootNode.child(project.id()));
+      return /** @type {!NavigatorTreeNode} */ (this._rootNode.child(project.id()));
     }
 
     const parentNode =
         this._folderNode(uiSourceCode, project, target, frame, projectOrigin, path.slice(0, -1), fromSourceMap);
-    let type = fromSourceMap ? Sources.NavigatorView.Types.SourceMapFolder : Sources.NavigatorView.Types.NetworkFolder;
+    let type = fromSourceMap ? Types.SourceMapFolder : Types.NetworkFolder;
     if (project.type() === Workspace.projectTypes.FileSystem) {
-      type = Sources.NavigatorView.Types.FileSystemFolder;
+      type = Types.FileSystemFolder;
     }
     const name = path[path.length - 1];
 
-    folderNode = new Sources.NavigatorFolderTreeNode(this, project, folderId, type, folderPath, name);
+    folderNode = new NavigatorFolderTreeNode(this, project, folderId, type, folderPath, name);
     this._subfolderNodes.set(folderId, folderNode);
     parentNode.appendChild(folderNode);
     return folderNode;
@@ -507,7 +508,7 @@ Sources.NavigatorView = class extends UI.VBox {
    * @param {!SDK.Target} target
    * @param {?SDK.ResourceTreeFrame} frame
    * @param {string} projectOrigin
-   * @return {!Sources.NavigatorTreeNode}
+   * @return {!NavigatorTreeNode}
    */
   _domainNode(uiSourceCode, project, target, frame, projectOrigin) {
     const frameNode = this._frameNode(project, target, frame);
@@ -519,9 +520,8 @@ Sources.NavigatorView = class extends UI.VBox {
       return domainNode;
     }
 
-    domainNode = new Sources.NavigatorGroupTreeNode(
-        this, project, projectOrigin, Sources.NavigatorView.Types.Domain,
-        this._computeProjectDisplayName(target, projectOrigin));
+    domainNode = new NavigatorGroupTreeNode(
+        this, project, projectOrigin, Types.Domain, this._computeProjectDisplayName(target, projectOrigin));
     if (frame && projectOrigin === Common.ParsedURL.extractOrigin(frame.url)) {
       domainNode.treeNode()._boostOrder = true;
     }
@@ -533,7 +533,7 @@ Sources.NavigatorView = class extends UI.VBox {
    * @param {!Workspace.Project} project
    * @param {!SDK.Target} target
    * @param {?SDK.ResourceTreeFrame} frame
-   * @return {!Sources.NavigatorTreeNode}
+   * @return {!NavigatorTreeNode}
    */
   _frameNode(project, target, frame) {
     if (!this._groupByFrame || !frame) {
@@ -545,8 +545,8 @@ Sources.NavigatorView = class extends UI.VBox {
       return frameNode;
     }
 
-    frameNode = new Sources.NavigatorGroupTreeNode(
-        this, project, target.id() + ':' + frame.id, Sources.NavigatorView.Types.Frame, frame.displayName());
+    frameNode =
+        new NavigatorGroupTreeNode(this, project, target.id() + ':' + frame.id, Types.Frame, frame.displayName());
     frameNode.setHoverCallback(hoverCallback);
     this._frameNodes.set(frame, frameNode);
 
@@ -577,7 +577,7 @@ Sources.NavigatorView = class extends UI.VBox {
   /**
    * @param {!Workspace.Project} project
    * @param {!SDK.Target} target
-   * @return {!Sources.NavigatorTreeNode}
+   * @return {!NavigatorTreeNode}
    */
   _targetNode(project, target) {
     if (target === SDK.targetManager.mainTarget()) {
@@ -586,10 +586,8 @@ Sources.NavigatorView = class extends UI.VBox {
 
     let targetNode = this._rootNode.child('target:' + target.id());
     if (!targetNode) {
-      targetNode = new Sources.NavigatorGroupTreeNode(
-          this, project, 'target:' + target.id(),
-          target.type() === SDK.Target.Type.Frame ? Sources.NavigatorView.Types.Frame :
-                                                    Sources.NavigatorView.Types.Worker,
+      targetNode = new NavigatorGroupTreeNode(
+          this, project, 'target:' + target.id(), target.type() === SDK.Target.Type.Frame ? Types.Frame : Types.Worker,
           target.name());
       this._rootNode.appendChild(targetNode);
     }
@@ -623,7 +621,7 @@ Sources.NavigatorView = class extends UI.VBox {
   /**
    * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {boolean=} select
-   * @return {?Sources.NavigatorUISourceCodeTreeNode}
+   * @return {?NavigatorUISourceCodeTreeNode}
    */
   revealUISourceCode(uiSourceCode, select) {
     const nodes = this._uiSourceCodeNodes.get(uiSourceCode);
@@ -660,7 +658,7 @@ Sources.NavigatorView = class extends UI.VBox {
   }
 
   /**
-   * @param {!Sources.NavigatorUISourceCodeTreeNode} node
+   * @param {!NavigatorUISourceCodeTreeNode} node
    */
   _removeUISourceCodeNode(node) {
     const uiSourceCode = node.uiSourceCode();
@@ -681,10 +679,10 @@ Sources.NavigatorView = class extends UI.VBox {
       if (parentNode === this._rootNode && project.type() === Workspace.projectTypes.FileSystem) {
         break;
       }
-      if (!(node instanceof Sources.NavigatorGroupTreeNode || node instanceof Sources.NavigatorFolderTreeNode)) {
+      if (!(node instanceof NavigatorGroupTreeNode || node instanceof NavigatorFolderTreeNode)) {
         break;
       }
-      if (node._type === Sources.NavigatorView.Types.Frame) {
+      if (node._type === Types.Frame) {
         this._discardFrame(/** @type {!SDK.ResourceTreeFrame} */ (frame));
         break;
       }
@@ -741,7 +739,7 @@ Sources.NavigatorView = class extends UI.VBox {
   }
 
   /**
-   * @param {!Sources.NavigatorUISourceCodeTreeNode} node
+   * @param {!NavigatorUISourceCodeTreeNode} node
    */
   _handleContextMenuRename(node) {
     this.rename(node, false);
@@ -772,7 +770,7 @@ Sources.NavigatorView = class extends UI.VBox {
 
   /**
    * @param {!Event} event
-   * @param {!Sources.NavigatorUISourceCodeTreeNode} node
+   * @param {!NavigatorUISourceCodeTreeNode} node
    */
   handleFileContextMenu(event, node) {
     const uiSourceCode = node.uiSourceCode();
@@ -794,7 +792,7 @@ Sources.NavigatorView = class extends UI.VBox {
 
   /**
    * @param {!Event} event
-   * @param {!Sources.NavigatorTreeNode} node
+   * @param {!NavigatorTreeNode} node
    */
   handleFolderContextMenu(event, node) {
     const path = node._folderPath || '';
@@ -803,7 +801,7 @@ Sources.NavigatorView = class extends UI.VBox {
     const contextMenu = new UI.ContextMenu(event);
 
     if (project.type() === Workspace.projectTypes.FileSystem) {
-      Sources.NavigatorView.appendSearchItem(contextMenu, path);
+      NavigatorView.appendSearchItem(contextMenu, path);
 
       const folderPath = Common.ParsedURL.urlToPlatformPath(
           Persistence.FileSystemWorkspaceBinding.completeURL(project, path), Host.isWin());
@@ -829,7 +827,7 @@ Sources.NavigatorView = class extends UI.VBox {
 
     if (project.type() === Workspace.projectTypes.FileSystem) {
       contextMenu.defaultSection().appendAction('sources.add-folder-to-workspace', undefined, true);
-      if (node instanceof Sources.NavigatorGroupTreeNode) {
+      if (node instanceof NavigatorGroupTreeNode) {
         contextMenu.defaultSection().appendItem(Common.UIString('Remove folder from workspace'), removeFolder);
       }
     }
@@ -838,7 +836,7 @@ Sources.NavigatorView = class extends UI.VBox {
   }
 
   /**
-   * @param {!Sources.NavigatorUISourceCodeTreeNode} node
+   * @param {!NavigatorUISourceCodeTreeNode} node
    * @param {boolean} creatingNewUISourceCode
    * @protected
    */
@@ -847,7 +845,7 @@ Sources.NavigatorView = class extends UI.VBox {
     node.rename(callback.bind(this));
 
     /**
-     * @this {Sources.NavigatorView}
+     * @this {NavigatorView}
      * @param {boolean} committed
      */
     function callback(committed) {
@@ -946,9 +944,9 @@ Sources.NavigatorView = class extends UI.VBox {
       targetNode.setTitle(target.name());
     }
   }
-};
+}
 
-Sources.NavigatorView.Types = {
+export const Types = {
   Domain: 'domain',
   File: 'file',
   FileSystem: 'fs',
@@ -963,9 +961,9 @@ Sources.NavigatorView.Types = {
 /**
  * @unrestricted
  */
-Sources.NavigatorFolderTreeElement = class extends UI.TreeElement {
+export class NavigatorFolderTreeElement extends UI.TreeElement {
   /**
-   * @param {!Sources.NavigatorView} navigatorView
+   * @param {!NavigatorView} navigatorView
    * @param {string} type
    * @param {string} title
    * @param {function(boolean)=} hoverCallback
@@ -979,11 +977,11 @@ Sources.NavigatorFolderTreeElement = class extends UI.TreeElement {
     this._navigatorView = navigatorView;
     this._hoverCallback = hoverCallback;
     let iconType = 'largeicon-navigator-folder';
-    if (type === Sources.NavigatorView.Types.Domain) {
+    if (type === Types.Domain) {
       iconType = 'largeicon-navigator-domain';
-    } else if (type === Sources.NavigatorView.Types.Frame) {
+    } else if (type === Types.Frame) {
       iconType = 'largeicon-navigator-frame';
-    } else if (type === Sources.NavigatorView.Types.Worker) {
+    } else if (type === Types.Worker) {
       iconType = 'largeicon-navigator-worker';
     }
     this.setLeadingIcons([UI.Icon.create(iconType, 'icon')]);
@@ -1009,7 +1007,7 @@ Sources.NavigatorFolderTreeElement = class extends UI.TreeElement {
   }
 
   /**
-   * @param {!Sources.NavigatorTreeNode} node
+   * @param {!NavigatorTreeNode} node
    */
   setNode(node) {
     this._node = node;
@@ -1054,21 +1052,21 @@ Sources.NavigatorFolderTreeElement = class extends UI.TreeElement {
     this._hovered = false;
     this._hoverCallback(false);
   }
-};
+}
 
 /**
  * @unrestricted
  */
-Sources.NavigatorSourceTreeElement = class extends UI.TreeElement {
+export class NavigatorSourceTreeElement extends UI.TreeElement {
   /**
-   * @param {!Sources.NavigatorView} navigatorView
+   * @param {!NavigatorView} navigatorView
    * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {string} title
-   * @param {!Sources.NavigatorUISourceCodeTreeNode} node
+   * @param {!NavigatorUISourceCodeTreeNode} node
    */
   constructor(navigatorView, uiSourceCode, title, node) {
     super('', false);
-    this._nodeType = Sources.NavigatorView.Types.File;
+    this._nodeType = Types.File;
     this._node = node;
     this.title = title;
     this.listItemElement.classList.add(
@@ -1143,7 +1141,7 @@ Sources.NavigatorSourceTreeElement = class extends UI.TreeElement {
     setTimeout(rename.bind(this), 300);
 
     /**
-     * @this {Sources.NavigatorSourceTreeElement}
+     * @this {NavigatorSourceTreeElement}
      */
     function rename() {
       if (this._shouldRenameOnMouseDown()) {
@@ -1210,12 +1208,12 @@ Sources.NavigatorSourceTreeElement = class extends UI.TreeElement {
     this.select();
     this._navigatorView.handleFileContextMenu(event, this._node);
   }
-};
+}
 
 /**
  * @unrestricted
  */
-Sources.NavigatorTreeNode = class {
+export class NavigatorTreeNode {
   /**
    * @param {string} id
    * @param {string} type
@@ -1223,7 +1221,7 @@ Sources.NavigatorTreeNode = class {
   constructor(id, type) {
     this.id = id;
     this._type = type;
-    /** @type {!Map.<string, !Sources.NavigatorTreeNode>} */
+    /** @type {!Map.<string, !NavigatorTreeNode>} */
     this._children = new Map();
   }
 
@@ -1280,7 +1278,7 @@ Sources.NavigatorTreeNode = class {
   }
 
   /**
-   * @param {!Sources.NavigatorTreeNode} node
+   * @param {!NavigatorTreeNode} node
    */
   didAddChild(node) {
     if (this.isPopulated()) {
@@ -1289,7 +1287,7 @@ Sources.NavigatorTreeNode = class {
   }
 
   /**
-   * @param {!Sources.NavigatorTreeNode} node
+   * @param {!NavigatorTreeNode} node
    */
   willRemoveChild(node) {
     if (this.isPopulated()) {
@@ -1312,7 +1310,7 @@ Sources.NavigatorTreeNode = class {
   }
 
   /**
-   * @return {!Array.<!Sources.NavigatorTreeNode>}
+   * @return {!Array.<!NavigatorTreeNode>}
    */
   children() {
     return this._children.valuesArray();
@@ -1320,14 +1318,14 @@ Sources.NavigatorTreeNode = class {
 
   /**
    * @param {string} id
-   * @return {?Sources.NavigatorTreeNode}
+   * @return {?NavigatorTreeNode}
    */
   child(id) {
     return this._children.get(id) || null;
   }
 
   /**
-   * @param {!Sources.NavigatorTreeNode} node
+   * @param {!NavigatorTreeNode} node
    */
   appendChild(node) {
     this._children.set(node.id, node);
@@ -1336,7 +1334,7 @@ Sources.NavigatorTreeNode = class {
   }
 
   /**
-   * @param {!Sources.NavigatorTreeNode} node
+   * @param {!NavigatorTreeNode} node
    */
   removeChild(node) {
     this.willRemoveChild(node);
@@ -1348,17 +1346,17 @@ Sources.NavigatorTreeNode = class {
   reset() {
     this._children.clear();
   }
-};
+}
 
 /**
  * @unrestricted
  */
-Sources.NavigatorRootTreeNode = class extends Sources.NavigatorTreeNode {
+export class NavigatorRootTreeNode extends NavigatorTreeNode {
   /**
-   * @param {!Sources.NavigatorView} navigatorView
+   * @param {!NavigatorView} navigatorView
    */
   constructor(navigatorView) {
-    super('', Sources.NavigatorView.Types.Root);
+    super('', Types.Root);
     this._navigatorView = navigatorView;
   }
 
@@ -1377,19 +1375,19 @@ Sources.NavigatorRootTreeNode = class extends Sources.NavigatorTreeNode {
   treeNode() {
     return this._navigatorView._scriptsTree.rootElement();
   }
-};
+}
 
 /**
  * @unrestricted
  */
-Sources.NavigatorUISourceCodeTreeNode = class extends Sources.NavigatorTreeNode {
+export class NavigatorUISourceCodeTreeNode extends NavigatorTreeNode {
   /**
-   * @param {!Sources.NavigatorView} navigatorView
+   * @param {!NavigatorView} navigatorView
    * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {?SDK.ResourceTreeFrame} frame
    */
   constructor(navigatorView, uiSourceCode, frame) {
-    super(uiSourceCode.project().id() + ':' + uiSourceCode.url(), Sources.NavigatorView.Types.File);
+    super(uiSourceCode.project().id() + ':' + uiSourceCode.url(), Types.File);
     this._navigatorView = navigatorView;
     this._uiSourceCode = uiSourceCode;
     this._treeElement = null;
@@ -1420,7 +1418,7 @@ Sources.NavigatorUISourceCodeTreeNode = class extends Sources.NavigatorTreeNode 
       return this._treeElement;
     }
 
-    this._treeElement = new Sources.NavigatorSourceTreeElement(this._navigatorView, this._uiSourceCode, '', this);
+    this._treeElement = new NavigatorSourceTreeElement(this._navigatorView, this._uiSourceCode, '', this);
     this.updateTitle();
 
     const updateTitleBound = this.updateTitle.bind(this, undefined);
@@ -1500,7 +1498,7 @@ Sources.NavigatorUISourceCodeTreeNode = class extends Sources.NavigatorTreeNode 
      * @param {!Element} element
      * @param {string} newTitle
      * @param {string} oldTitle
-     * @this {Sources.NavigatorUISourceCodeTreeNode}
+     * @this {NavigatorUISourceCodeTreeNode}
      */
     function commitHandler(element, newTitle, oldTitle) {
       if (newTitle !== oldTitle) {
@@ -1513,7 +1511,7 @@ Sources.NavigatorUISourceCodeTreeNode = class extends Sources.NavigatorTreeNode 
 
     /**
      * @param {boolean} success
-     * @this {Sources.NavigatorUISourceCodeTreeNode}
+     * @this {NavigatorUISourceCodeTreeNode}
      */
     function renameCallback(success) {
       if (!success) {
@@ -1527,7 +1525,7 @@ Sources.NavigatorUISourceCodeTreeNode = class extends Sources.NavigatorTreeNode 
 
     /**
      * @param {boolean} committed
-     * @this {Sources.NavigatorUISourceCodeTreeNode}
+     * @this {NavigatorUISourceCodeTreeNode}
      */
     function afterEditing(committed) {
       UI.markBeingEdited(treeOutlineElement, false);
@@ -1541,14 +1539,14 @@ Sources.NavigatorUISourceCodeTreeNode = class extends Sources.NavigatorTreeNode 
     this._treeElement.startEditingTitle(
         new UI.InplaceEditor.Config(commitHandler.bind(this), afterEditing.bind(this, false)));
   }
-};
+}
 
 /**
  * @unrestricted
  */
-Sources.NavigatorFolderTreeNode = class extends Sources.NavigatorTreeNode {
+export class NavigatorFolderTreeNode extends NavigatorTreeNode {
   /**
-   * @param {!Sources.NavigatorView} navigatorView
+   * @param {!NavigatorView} navigatorView
    * @param {?Workspace.Project} project
    * @param {string} id
    * @param {string} type
@@ -1596,7 +1594,7 @@ Sources.NavigatorFolderTreeNode = class extends Sources.NavigatorTreeNode {
       } catch (e) {
       }
     }
-    const treeElement = new Sources.NavigatorFolderTreeElement(this._navigatorView, this._type, title);
+    const treeElement = new NavigatorFolderTreeElement(this._navigatorView, this._type, title);
     treeElement.setNode(node);
     return treeElement;
   }
@@ -1616,18 +1614,18 @@ Sources.NavigatorFolderTreeNode = class extends Sources.NavigatorTreeNode {
     for (let i = 0; i < children.length; ++i) {
       const child = children[i];
       this.didAddChild(child);
-      if (child instanceof Sources.NavigatorFolderTreeNode) {
+      if (child instanceof NavigatorFolderTreeNode) {
         child._addChildrenRecursive();
       }
     }
   }
 
   _shouldMerge(node) {
-    return this._type !== Sources.NavigatorView.Types.Domain && node instanceof Sources.NavigatorFolderTreeNode;
+    return this._type !== Types.Domain && node instanceof NavigatorFolderTreeNode;
   }
 
   /**
-   * @param {!Sources.NavigatorTreeNode} node
+   * @param {!NavigatorTreeNode} node
    * @override
    */
   didAddChild(node) {
@@ -1704,7 +1702,7 @@ Sources.NavigatorFolderTreeNode = class extends Sources.NavigatorTreeNode {
 
   /**
    * @override
-   * @param {!Sources.NavigatorTreeNode} node
+   * @param {!NavigatorTreeNode} node
    */
   willRemoveChild(node) {
     if (node._isMerged || !this.isPopulated()) {
@@ -1712,14 +1710,14 @@ Sources.NavigatorFolderTreeNode = class extends Sources.NavigatorTreeNode {
     }
     this._treeElement.removeChild(node._treeElement);
   }
-};
+}
 
 /**
  * @unrestricted
  */
-Sources.NavigatorGroupTreeNode = class extends Sources.NavigatorTreeNode {
+export class NavigatorGroupTreeNode extends NavigatorTreeNode {
   /**
-   * @param {!Sources.NavigatorView} navigatorView
+   * @param {!NavigatorView} navigatorView
    * @param {!Workspace.Project} project
    * @param {string} id
    * @param {string} type
@@ -1749,7 +1747,7 @@ Sources.NavigatorGroupTreeNode = class extends Sources.NavigatorTreeNode {
       return this._treeElement;
     }
     this._treeElement =
-        new Sources.NavigatorFolderTreeElement(this._navigatorView, this._type, this._title, this._hoverCallback);
+        new NavigatorFolderTreeElement(this._navigatorView, this._type, this._title, this._hoverCallback);
     this._treeElement.setNode(this);
     return this._treeElement;
   }
@@ -1792,4 +1790,36 @@ Sources.NavigatorGroupTreeNode = class extends Sources.NavigatorTreeNode {
       this._treeElement.title = this._title;
     }
   }
-};
+}
+
+/* Legacy exported object */
+self.Sources = self.Sources || {};
+
+/* Legacy exported object */
+Sources = Sources || {};
+
+/** @constructor */
+Sources.NavigatorView = NavigatorView;
+
+Sources.NavigatorView.Types = Types;
+
+/** @constructor */
+Sources.NavigatorFolderTreeElement = NavigatorFolderTreeElement;
+
+/** @constructor */
+Sources.NavigatorSourceTreeElement = NavigatorSourceTreeElement;
+
+/** @constructor */
+Sources.NavigatorTreeNode = NavigatorTreeNode;
+
+/** @constructor */
+Sources.NavigatorRootTreeNode = NavigatorRootTreeNode;
+
+/** @constructor */
+Sources.NavigatorUISourceCodeTreeNode = NavigatorUISourceCodeTreeNode;
+
+/** @constructor */
+Sources.NavigatorFolderTreeNode = NavigatorFolderTreeNode;
+
+/** @constructor */
+Sources.NavigatorGroupTreeNode = NavigatorGroupTreeNode;

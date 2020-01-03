@@ -1,13 +1,14 @@
 // Copyright 2014 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
 /**
  * @implements {Sources.TabbedEditorContainerDelegate}
  * @implements {UI.Searchable}
  * @implements {UI.Replaceable}
  * @unrestricted
  */
-Sources.SourcesView = class extends UI.VBox {
+export default class SourcesView extends UI.VBox {
   /**
    * @suppressGlobalPropertiesCheck
    */
@@ -39,11 +40,11 @@ Sources.SourcesView = class extends UI.VBox {
     this._toolbarContainerElement = this.element.createChild('div', 'sources-toolbar');
     if (!Root.Runtime.experiments.isEnabled('sourcesPrettyPrint')) {
       this._toolbarEditorActions = new UI.Toolbar('', this._toolbarContainerElement);
-      self.runtime.allInstances(Sources.SourcesView.EditorAction).then(appendButtonsForExtensions.bind(this));
+      self.runtime.allInstances(EditorAction).then(appendButtonsForExtensions.bind(this));
     }
     /**
-     * @param {!Array.<!Sources.SourcesView.EditorAction>} actions
-     * @this {Sources.SourcesView}
+     * @param {!Array.<!EditorAction>} actions
+     * @this {SourcesView}
      */
     function appendButtonsForExtensions(actions) {
       for (let i = 0; i < actions.length; ++i) {
@@ -190,7 +191,7 @@ Sources.SourcesView = class extends UI.VBox {
   static defaultUISourceCodeScores() {
     /** @type {!Map.<!Workspace.UISourceCode, number>} */
     const defaultScores = new Map();
-    const sourcesView = UI.context.flavor(Sources.SourcesView);
+    const sourcesView = UI.context.flavor(SourcesView);
     if (sourcesView) {
       const uiSourceCodes = sourcesView._editorContainer.historyUISourceCodes();
       for (let i = 1; i < uiSourceCodes.length; ++i)  // Skip current element
@@ -245,14 +246,14 @@ Sources.SourcesView = class extends UI.VBox {
    */
   wasShown() {
     super.wasShown();
-    UI.context.setFlavor(Sources.SourcesView, this);
+    UI.context.setFlavor(SourcesView, this);
   }
 
   /**
    * @override
    */
   willHide() {
-    UI.context.setFlavor(Sources.SourcesView, null);
+    UI.context.setFlavor(SourcesView, null);
     this._resetPlaceholderState();
     super.willHide();
   }
@@ -475,7 +476,7 @@ Sources.SourcesView = class extends UI.VBox {
     const data = {};
     data.uiSourceCode = uiSourceCode;
     data.wasSelected = wasSelected;
-    this.dispatchEventToListeners(Sources.SourcesView.Events.EditorClosed, data);
+    this.dispatchEventToListeners(Events.EditorClosed, data);
   }
 
   /**
@@ -498,7 +499,7 @@ Sources.SourcesView = class extends UI.VBox {
     this._updateToolbarChangedListener();
     this._updateScriptViewToolbarItems();
 
-    this.dispatchEventToListeners(Sources.SourcesView.Events.EditorSelected, this._editorContainer.currentFile());
+    this.dispatchEventToListeners(Events.EditorSelected, this._editorContainer.currentFile());
   }
 
   _removeToolbarChangedListener() {
@@ -663,10 +664,10 @@ Sources.SourcesView = class extends UI.VBox {
   toggleBreakpointsActiveState(active) {
     this._editorContainer.view.element.classList.toggle('breakpoints-deactivated', !active);
   }
-};
+}
 
 /** @enum {symbol} */
-Sources.SourcesView.Events = {
+export const Events = {
   EditorClosed: Symbol('EditorClosed'),
   EditorSelected: Symbol('EditorSelected'),
 };
@@ -674,21 +675,19 @@ Sources.SourcesView.Events = {
 /**
  * @interface
  */
-Sources.SourcesView.EditorAction = function() {};
-
-Sources.SourcesView.EditorAction.prototype = {
+export class EditorAction {
   /**
-   * @param {!Sources.SourcesView} sourcesView
+   * @param {!SourcesView} sourcesView
    * @return {!UI.ToolbarButton}
    */
   button(sourcesView) {}
-};
+}
 
 /**
  * @implements {UI.ActionDelegate}
  * @unrestricted
  */
-Sources.SourcesView.SwitchFileActionDelegate = class {
+export class SwitchFileActionDelegate {
   /**
    * @param {!Workspace.UISourceCode} currentUISourceCode
    * @return {?Workspace.UISourceCode}
@@ -732,26 +731,25 @@ Sources.SourcesView.SwitchFileActionDelegate = class {
    * @return {boolean}
    */
   handleAction(context, actionId) {
-    const sourcesView = UI.context.flavor(Sources.SourcesView);
+    const sourcesView = UI.context.flavor(SourcesView);
     const currentUISourceCode = sourcesView.currentUISourceCode();
     if (!currentUISourceCode) {
       return false;
     }
-    const nextUISourceCode = Sources.SourcesView.SwitchFileActionDelegate._nextFile(currentUISourceCode);
+    const nextUISourceCode = SwitchFileActionDelegate._nextFile(currentUISourceCode);
     if (!nextUISourceCode) {
       return false;
     }
     sourcesView.showSourceLocation(nextUISourceCode);
     return true;
   }
-};
-
+}
 
 /**
  * @implements {UI.ActionDelegate}
  * @unrestricted
  */
-Sources.SourcesView.ActionDelegate = class {
+export class ActionDelegate {
   /**
    * @override
    * @param {!UI.Context} context
@@ -759,7 +757,7 @@ Sources.SourcesView.ActionDelegate = class {
    * @return {boolean}
    */
   handleAction(context, actionId) {
-    const sourcesView = UI.context.flavor(Sources.SourcesView);
+    const sourcesView = UI.context.flavor(SourcesView);
     if (!sourcesView) {
       return false;
     }
@@ -792,4 +790,25 @@ Sources.SourcesView.ActionDelegate = class {
 
     return false;
   }
-};
+}
+
+/* Legacy exported object */
+self.Sources = self.Sources || {};
+
+/* Legacy exported object */
+Sources = Sources || {};
+
+/** @constructor */
+Sources.SourcesView = SourcesView;
+
+/** @enum {symbol} */
+Sources.SourcesView.Events = Events;
+
+/** @interface */
+Sources.SourcesView.EditorAction = EditorAction;
+
+/** @constructor */
+Sources.SourcesView.SwitchFileActionDelegate = SwitchFileActionDelegate;
+
+/** @constructor */
+Sources.SourcesView.ActionDelegate = ActionDelegate;

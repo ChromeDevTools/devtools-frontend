@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-Sources.SearchSourcesView = class extends Search.SearchView {
+export default class SearchSourcesView extends Search.SearchView {
   constructor() {
     super('sources');
   }
@@ -31,12 +31,12 @@ Sources.SearchSourcesView = class extends Search.SearchView {
   createScope() {
     return new Sources.SourcesSearchScope();
   }
-};
+}
 
 /**
  * @implements {UI.ActionDelegate}
  */
-Sources.SearchSourcesView.ActionDelegate = class {
+export class ActionDelegate {
   /**
    * @override
    * @param {!UI.Context} context
@@ -58,6 +58,18 @@ Sources.SearchSourcesView.ActionDelegate = class {
       queryCandidate = selection.toString().replace(/\r?\n.*/, '');
     }
 
-    return Sources.SearchSourcesView.openSearch(queryCandidate);
+    return SearchSourcesView.openSearch(queryCandidate);
   }
-};
+}
+
+/* Legacy exported object */
+self.Sources = self.Sources || {};
+
+/* Legacy exported object */
+Sources = Sources || {};
+
+/** @constructor */
+Sources.SearchSourcesView = SearchSourcesView;
+
+/** @constructor */
+Sources.SearchSourcesView.ActionDelegate = ActionDelegate;

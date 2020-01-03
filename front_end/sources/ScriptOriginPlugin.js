@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-Sources.ScriptOriginPlugin = class extends Sources.UISourceCodeFrame.Plugin {
+export default class ScriptOriginPlugin extends Sources.UISourceCodeFrame.Plugin {
   /**
    * @param {!SourceFrame.SourcesTextEditor} textEditor
    * @param {!Workspace.UISourceCode} uiSourceCode
@@ -19,7 +19,7 @@ Sources.ScriptOriginPlugin = class extends Sources.UISourceCodeFrame.Plugin {
    * @return {boolean}
    */
   static accepts(uiSourceCode) {
-    return uiSourceCode.contentType().hasScripts() || !!Sources.ScriptOriginPlugin._script(uiSourceCode);
+    return uiSourceCode.contentType().hasScripts() || !!ScriptOriginPlugin._script(uiSourceCode);
   }
 
   /**
@@ -34,12 +34,11 @@ Sources.ScriptOriginPlugin = class extends Sources.UISourceCodeFrame.Plugin {
     }
 
     // Handle anonymous scripts with an originStackTrace.
-    const script = Sources.ScriptOriginPlugin._script(this._uiSourceCode);
+    const script = ScriptOriginPlugin._script(this._uiSourceCode);
     if (!script || !script.originStackTrace) {
       return [];
     }
-    const link = Sources.ScriptOriginPlugin._linkifier.linkifyStackTraceTopFrame(
-        script.debuggerModel.target(), script.originStackTrace);
+    const link = _linkifier.linkifyStackTraceTopFrame(script.debuggerModel.target(), script.originStackTrace);
     return [new UI.ToolbarItem(link)];
   }
 
@@ -57,6 +56,17 @@ Sources.ScriptOriginPlugin = class extends Sources.UISourceCodeFrame.Plugin {
     }
     return null;
   }
-};
+}
 
-Sources.ScriptOriginPlugin._linkifier = new Components.Linkifier();
+export const _linkifier = new Components.Linkifier();
+
+/* Legacy exported object */
+self.Sources = self.Sources || {};
+
+/* Legacy exported object */
+Sources = Sources || {};
+
+/** @constructor */
+Sources.ScriptOriginPlugin = ScriptOriginPlugin;
+
+Sources.ScriptOriginPlugin._linkifier = _linkifier;

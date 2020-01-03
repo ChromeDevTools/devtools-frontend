@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-Sources.CoveragePlugin = class extends Sources.UISourceCodeFrame.Plugin {
+export default class CoveragePlugin extends Sources.UISourceCodeFrame.Plugin {
   /**
    * @param {!SourceFrame.SourcesTextEditor} textEditor
    * @param {!Workspace.UISourceCode} uiSourceCode
@@ -85,4 +85,13 @@ Sources.CoveragePlugin = class extends Sources.UISourceCodeFrame.Plugin {
   rightToolbarItems() {
     return [this._text];
   }
-};
+}
+
+/* Legacy exported object */
+self.Sources = self.Sources || {};
+
+/* Legacy exported object */
+Sources = Sources || {};
+
+/** @constructor */
+Sources.CoveragePlugin = CoveragePlugin;

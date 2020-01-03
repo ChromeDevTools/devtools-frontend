@@ -7,7 +7,7 @@
 /**
  * @unrestricted
  */
-Sources.FilteredUISourceCodeListProvider = class extends QuickOpen.FilteredListWidget.Provider {
+export default class FilteredUISourceCodeListProvider extends QuickOpen.FilteredListWidget.Provider {
   constructor() {
     super();
 
@@ -250,4 +250,13 @@ Sources.FilteredUISourceCodeListProvider = class extends QuickOpen.FilteredListW
     this._queryLineNumberAndColumnNumber = '';
     this._defaultScores = null;
   }
-};
+}
+
+/* Legacy exported object */
+self.Sources = self.Sources || {};
+
+/* Legacy exported object */
+Sources = Sources || {};
+
+/** @constructor */
+Sources.FilteredUISourceCodeListProvider = FilteredUISourceCodeListProvider;

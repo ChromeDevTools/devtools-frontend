@@ -1,11 +1,12 @@
 // Copyright 2014 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
 /**
  * @implements {Sources.SourcesView.EditorAction}
  * @unrestricted
  */
-Sources.InplaceFormatterEditorAction = class {
+export default class InplaceFormatterEditorAction {
   /**
    * @param {!Common.Event} event
    */
@@ -119,4 +120,13 @@ Sources.InplaceFormatterEditorAction = class {
 
     this._sourcesView.showSourceLocation(uiSourceCode, start[0], start[1]);
   }
-};
+}
+
+/* Legacy exported object */
+self.Sources = self.Sources || {};
+
+/* Legacy exported object */
+Sources = Sources || {};
+
+/** @constructor */
+Sources.InplaceFormatterEditorAction = InplaceFormatterEditorAction;

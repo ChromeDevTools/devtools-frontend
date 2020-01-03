@@ -6,7 +6,7 @@
  * @implements {Sources.SourcesView.EditorAction}
  * @unrestricted
  */
-Sources.ScriptFormatterEditorAction = class {
+export default class ScriptFormatterEditorAction {
   constructor() {
     /** @type {!Set<string>} */
     this._pathsToFormatOnLoad = new Set();
@@ -117,4 +117,13 @@ Sources.ScriptFormatterEditorAction = class {
     }
     this._sourcesView.showSourceLocation(formatData.formattedSourceCode, start[0], start[1]);
   }
-};
+}
+
+/* Legacy exported object */
+self.Sources = self.Sources || {};
+
+/* Legacy exported object */
+Sources = Sources || {};
+
+/** @constructor */
+Sources.ScriptFormatterEditorAction = ScriptFormatterEditorAction;

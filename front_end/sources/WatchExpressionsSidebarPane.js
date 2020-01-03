@@ -27,19 +27,20 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 /**
  * @implements {UI.ActionDelegate}
  * @implements {UI.ToolbarItem.ItemsProvider}
  * @implements {UI.ContextMenu.Provider}
  * @unrestricted
  */
-Sources.WatchExpressionsSidebarPane = class extends UI.ThrottledWidget {
+export default class WatchExpressionsSidebarPane extends UI.ThrottledWidget {
   constructor() {
     super(true);
     this.registerRequiredCSS('object_ui/objectValue.css');
     this.registerRequiredCSS('sources/watchExpressionsSidebarPane.css');
 
-    /** @type {!Array.<!Sources.WatchExpression>} */
+    /** @type {!Array.<!WatchExpression>} */
     this._watchExpressions = [];
     this._watchExpressionsSetting = Common.settings.createLocalSetting('watchExpressions', []);
 
@@ -130,14 +131,13 @@ Sources.WatchExpressionsSidebarPane = class extends UI.ThrottledWidget {
 
   /**
    * @param {?string} expression
-   * @return {!Sources.WatchExpression}
+   * @return {!WatchExpression}
    */
   _createWatchExpression(expression) {
     this._emptyElement.classList.add('hidden');
     this.contentElement.appendChild(this._treeOutline.element);
-    const watchExpression = new Sources.WatchExpression(expression, this._expandController, this._linkifier);
-    watchExpression.addEventListener(
-        Sources.WatchExpression.Events.ExpressionUpdated, this._watchExpressionUpdated, this);
+    const watchExpression = new WatchExpression(expression, this._expandController, this._linkifier);
+    watchExpression.addEventListener(WatchExpression.Events.ExpressionUpdated, this._watchExpressionUpdated, this);
     this._treeOutline.appendChild(watchExpression.treeElement());
     this._watchExpressions.push(watchExpression);
     return watchExpression;
@@ -147,7 +147,7 @@ Sources.WatchExpressionsSidebarPane = class extends UI.ThrottledWidget {
    * @param {!Common.Event} event
    */
   _watchExpressionUpdated(event) {
-    const watchExpression = /** @type {!Sources.WatchExpression} */ (event.data);
+    const watchExpression = /** @type {!WatchExpression} */ (event.data);
     if (!watchExpression.expression()) {
       this._watchExpressions.remove(watchExpression);
       this._treeOutline.removeChild(watchExpression.treeElement());
@@ -263,12 +263,12 @@ Sources.WatchExpressionsSidebarPane = class extends UI.ThrottledWidget {
 
     contextMenu.debugSection().appendAction('sources.add-to-watch');
   }
-};
+}
 
 /**
  * @unrestricted
  */
-Sources.WatchExpression = class extends Common.Object {
+export class WatchExpression extends Common.Object {
   /**
    * @param {?string} expression
    * @param {!ObjectUI.ObjectPropertiesSectionsTreeExpandController} expandController
@@ -307,7 +307,7 @@ Sources.WatchExpression = class extends Common.Object {
           .evaluate(
               {
                 expression: this._expression,
-                objectGroup: Sources.WatchExpression._watchObjectGroupId,
+                objectGroup: WatchExpression._watchObjectGroupId,
                 includeCommandLineAPI: false,
                 silent: true,
                 returnByValue: false,
@@ -377,7 +377,7 @@ Sources.WatchExpression = class extends Common.Object {
     }
     this._expression = newExpression;
     this.update();
-    this.dispatchEventToListeners(Sources.WatchExpression.Events.ExpressionUpdated, this);
+    this.dispatchEventToListeners(WatchExpression.Events.ExpressionUpdated, this);
   }
 
   /**
@@ -478,7 +478,7 @@ Sources.WatchExpression = class extends Common.Object {
     }
 
     /**
-     * @this {Sources.WatchExpression}
+     * @this {WatchExpression}
      */
     function handleClick() {
       if (!this._treeElement) {
@@ -526,11 +526,23 @@ Sources.WatchExpression = class extends Common.Object {
   _copyValueButtonClicked() {
     Host.InspectorFrontendHost.copyText(this._valueElement.textContent);
   }
-};
+}
 
-Sources.WatchExpression._watchObjectGroupId = 'watch-group';
+WatchExpression._watchObjectGroupId = 'watch-group';
 
 /** @enum {symbol} */
-Sources.WatchExpression.Events = {
+WatchExpression.Events = {
   ExpressionUpdated: Symbol('ExpressionUpdated')
 };
+
+/* Legacy exported object */
+self.Sources = self.Sources || {};
+
+/* Legacy exported object */
+Sources = Sources || {};
+
+/** @constructor */
+Sources.WatchExpressionsSidebarPane = WatchExpressionsSidebarPane;
+
+/** @constructor */
+Sources.WatchExpression = WatchExpression;

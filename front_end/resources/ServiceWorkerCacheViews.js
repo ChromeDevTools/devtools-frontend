@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-Resources.ServiceWorkerCacheView = class extends UI.SimpleView {
+export class ServiceWorkerCacheView extends UI.SimpleView {
   /**
    * @param {!SDK.ServiceWorkerCacheModel} model
    * @param {!SDK.ServiceWorkerCacheModel.Cache} cache
@@ -212,7 +212,7 @@ Resources.ServiceWorkerCacheView = class extends UI.SimpleView {
    * @param {number} skipCount
    * @param {!Array<!Protocol.CacheStorage.DataEntry>} entries
    * @param {number} returnCount
-   * @this {Resources.ServiceWorkerCacheView}
+   * @this {ServiceWorkerCacheView}
    */
   _updateDataCallback(skipCount, entries, returnCount) {
     const selected = this._dataGrid.selectedNode && this._dataGrid.selectedNode.data.url();
@@ -233,7 +233,7 @@ Resources.ServiceWorkerCacheView = class extends UI.SimpleView {
       const entry = entries[i];
       let node = oldEntries.get(entry.requestURL);
       if (!node || node.data.responseTime !== entry.responseTime) {
-        node = new Resources.ServiceWorkerCacheView.DataGridNode(i, this._createRequest(entry), entry.responseType);
+        node = new DataGridNode(i, this._createRequest(entry), entry.responseType);
         node.selectable = true;
       } else {
         node.data.number = i;
@@ -297,10 +297,10 @@ Resources.ServiceWorkerCacheView = class extends UI.SimpleView {
    * @param {!SDK.NetworkRequest} request
    */
   async _previewCachedResponse(request) {
-    let preview = request[Resources.ServiceWorkerCacheView._previewSymbol];
+    let preview = request[ServiceWorkerCacheView._previewSymbol];
     if (!preview) {
-      preview = new Resources.ServiceWorkerCacheView.RequestView(request);
-      request[Resources.ServiceWorkerCacheView._previewSymbol] = preview;
+      preview = new RequestView(request);
+      request[ServiceWorkerCacheView._previewSymbol] = preview;
     }
 
     // It is possible that table selection changes before the preview opens.
@@ -356,11 +356,11 @@ Resources.ServiceWorkerCacheView = class extends UI.SimpleView {
 
   _updatedForTest() {
   }
-};
+}
 
-Resources.ServiceWorkerCacheView._previewSymbol = Symbol('preview');
+ServiceWorkerCacheView._previewSymbol = Symbol('preview');
 
-Resources.ServiceWorkerCacheView.DataGridNode = class extends DataGrid.DataGridNode {
+export class DataGridNode extends DataGrid.DataGridNode {
   /**
    * @param {number} number
    * @param {!SDK.NetworkRequest} request
@@ -410,9 +410,9 @@ Resources.ServiceWorkerCacheView.DataGridNode = class extends DataGrid.DataGridN
     cell.title = this._request.url();
     return cell;
   }
-};
+}
 
-Resources.ServiceWorkerCacheView.RequestView = class extends UI.VBox {
+export class RequestView extends UI.VBox {
   /**
    * @param {!SDK.NetworkRequest} request
    */
@@ -454,4 +454,19 @@ Resources.ServiceWorkerCacheView.RequestView = class extends UI.VBox {
     }
     this._resourceViewTabSetting.set(event.data.tabId);
   }
-};
+}
+
+/* Legacy exported object */
+self.Resources = self.Resources || {};
+
+/* Legacy exported object */
+Resources = Resources || {};
+
+/** @constructor */
+Resources.ServiceWorkerCacheView = ServiceWorkerCacheView;
+
+/** @constructor */
+Resources.ServiceWorkerCacheView.DataGridNode = DataGridNode;
+
+/** @constructor */
+Resources.ServiceWorkerCacheView.RequestView = RequestView;

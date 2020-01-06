@@ -27,7 +27,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-Resources.CookieItemsView = class extends Resources.StorageItemsView {
+export default class CookieItemsView extends Resources.StorageItemsView {
   /**
    * @param {!SDK.CookieModel} model
    * @param {string} cookieDomain
@@ -239,4 +239,13 @@ Resources.CookieItemsView = class extends Resources.StorageItemsView {
   _onLoadingFinished() {
     this.refreshItemsThrottled();
   }
-};
+}
+
+/* Legacy exported object */
+self.Resources = self.Resources || {};
+
+/* Legacy exported object */
+Resources = Resources || {};
+
+/** @constructor */
+Resources.CookieItemsView = CookieItemsView;

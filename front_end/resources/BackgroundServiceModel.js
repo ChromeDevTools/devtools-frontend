@@ -1,11 +1,12 @@
 // Copyright 2019 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
 /**
  * @implements {Protocol.BackgroundServiceDispatcher}
  * @unrestricted
  */
-Resources.BackgroundServiceModel = class extends SDK.SDKModel {
+export default class BackgroundServiceModel extends SDK.SDKModel {
   /**
    * @param {!SDK.Target} target
    */
@@ -56,8 +57,7 @@ Resources.BackgroundServiceModel = class extends SDK.SDKModel {
    * @param {!Protocol.BackgroundService.ServiceName} serviceName
    */
   recordingStateChanged(isRecording, serviceName) {
-    this.dispatchEventToListeners(
-        Resources.BackgroundServiceModel.Events.RecordingStateChanged, {isRecording, serviceName});
+    this.dispatchEventToListeners(Events.RecordingStateChanged, {isRecording, serviceName});
   }
 
   /**
@@ -66,18 +66,29 @@ Resources.BackgroundServiceModel = class extends SDK.SDKModel {
    */
   backgroundServiceEventReceived(backgroundServiceEvent) {
     this._events.get(backgroundServiceEvent.service).push(backgroundServiceEvent);
-    this.dispatchEventToListeners(
-        Resources.BackgroundServiceModel.Events.BackgroundServiceEventReceived, backgroundServiceEvent);
+    this.dispatchEventToListeners(Events.BackgroundServiceEventReceived, backgroundServiceEvent);
   }
-};
+}
 
-SDK.SDKModel.register(Resources.BackgroundServiceModel, SDK.Target.Capability.Browser, false);
+SDK.SDKModel.register(BackgroundServiceModel, SDK.Target.Capability.Browser, false);
 
 /** @enum {symbol} */
-Resources.BackgroundServiceModel.Events = {
+export const Events = {
   RecordingStateChanged: Symbol('RecordingStateChanged'),
   BackgroundServiceEventReceived: Symbol('BackgroundServiceEventReceived'),
 };
+
+/* Legacy exported object */
+self.Resources = self.Resources || {};
+
+/* Legacy exported object */
+Resources = Resources || {};
+
+/** @constructor */
+Resources.BackgroundServiceModel = BackgroundServiceModel;
+
+/** @enum {symbol} */
+Resources.BackgroundServiceModel.Events = Events;
 
 /**
  * @typedef {!{isRecording: boolean, serviceName: !Protocol.BackgroundService.ServiceName}}

@@ -29,9 +29,9 @@
 /**
  * @unrestricted
  */
-Resources.Database = class {
+export class Database {
   /**
-   * @param {!Resources.DatabaseModel} model
+   * @param {!DatabaseModel} model
    * @param {string} id
    * @param {string} domain
    * @param {string} name
@@ -115,12 +115,12 @@ Resources.Database = class {
     }
     onError(message);
   }
-};
+}
 
 /**
  * @unrestricted
  */
-Resources.DatabaseModel = class extends SDK.SDKModel {
+export default class DatabaseModel extends SDK.SDKModel {
   /**
    * @param {!SDK.Target} target
    */
@@ -129,7 +129,7 @@ Resources.DatabaseModel = class extends SDK.SDKModel {
 
     this._databases = [];
     this._agent = target.databaseAgent();
-    this.target().registerDatabaseDispatcher(new Resources.DatabaseDispatcher(this));
+    this.target().registerDatabaseDispatcher(new DatabaseDispatcher(this));
   }
 
   enable() {
@@ -147,11 +147,11 @@ Resources.DatabaseModel = class extends SDK.SDKModel {
     this._enabled = false;
     this._databases = [];
     this._agent.disable();
-    this.dispatchEventToListeners(Resources.DatabaseModel.Events.DatabasesRemoved);
+    this.dispatchEventToListeners(Events.DatabasesRemoved);
   }
 
   /**
-   * @return {!Array.<!Resources.Database>}
+   * @return {!Array.<!Database>}
    */
   databases() {
     const result = [];
@@ -162,18 +162,18 @@ Resources.DatabaseModel = class extends SDK.SDKModel {
   }
 
   /**
-   * @param {!Resources.Database} database
+   * @param {!Database} database
    */
   _addDatabase(database) {
     this._databases.push(database);
-    this.dispatchEventToListeners(Resources.DatabaseModel.Events.DatabaseAdded, database);
+    this.dispatchEventToListeners(Events.DatabaseAdded, database);
   }
-};
+}
 
-SDK.SDKModel.register(Resources.DatabaseModel, SDK.Target.Capability.DOM, false);
+SDK.SDKModel.register(DatabaseModel, SDK.Target.Capability.DOM, false);
 
 /** @enum {symbol} */
-Resources.DatabaseModel.Events = {
+export const Events = {
   DatabaseAdded: Symbol('DatabaseAdded'),
   DatabasesRemoved: Symbol('DatabasesRemoved'),
 };
@@ -182,9 +182,9 @@ Resources.DatabaseModel.Events = {
  * @implements {Protocol.DatabaseDispatcher}
  * @unrestricted
  */
-Resources.DatabaseDispatcher = class {
+export class DatabaseDispatcher {
   /**
-   * @param {!Resources.DatabaseModel} model
+   * @param {!DatabaseModel} model
    */
   constructor(model) {
     this._model = model;
@@ -195,7 +195,24 @@ Resources.DatabaseDispatcher = class {
    * @param {!Protocol.Database.Database} payload
    */
   addDatabase(payload) {
-    this._model._addDatabase(
-        new Resources.Database(this._model, payload.id, payload.domain, payload.name, payload.version));
+    this._model._addDatabase(new Database(this._model, payload.id, payload.domain, payload.name, payload.version));
   }
-};
+}
+
+/* Legacy exported object */
+self.Resources = self.Resources || {};
+
+/* Legacy exported object */
+Resources = Resources || {};
+
+/** @constructor */
+Resources.DatabaseModel = DatabaseModel;
+
+/** @enum {symbol} */
+Resources.DatabaseModel.Events = Events;
+
+/** @constructor */
+Resources.Database = Database;
+
+/** @constructor */
+Resources.DatabaseDispatcher = DatabaseDispatcher;

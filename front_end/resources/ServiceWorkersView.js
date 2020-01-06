@@ -1,10 +1,11 @@
 // Copyright (c) 2015 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
 /**
  * @implements {SDK.SDKModelObserver<!SDK.ServiceWorkerManager>}
  */
-Resources.ServiceWorkersView = class extends UI.VBox {
+export default class ServiceWorkersView extends UI.VBox {
   constructor() {
     super(true);
     this.registerRequiredCSS('resources/serviceWorkersView.css');
@@ -18,7 +19,7 @@ Resources.ServiceWorkersView = class extends UI.VBox {
     this._toolbar = this._currentWorkersView.createToolbar();
     this._toolbar.makeWrappable(true /* growVertically */);
 
-    /** @type {!Map<!SDK.ServiceWorkerRegistration, !Resources.ServiceWorkersView.Section>} */
+    /** @type {!Map<!SDK.ServiceWorkerRegistration, !Section>} */
     this._sections = new Map();
     /** @type {symbol} */
     this._registrationSymbol = Symbol('Resources.ServiceWorkersView');
@@ -245,7 +246,7 @@ Resources.ServiceWorkersView = class extends UI.VBox {
       const uiSection = this._getReportViewForOrigin(registration.securityOrigin).appendSection(title);
       uiSection.setUiGroupTitle(ls`Service worker for ${title}`);
       uiSection[this._registrationSymbol] = registration;
-      section = new Resources.ServiceWorkersView.Section(
+      section = new Section(
           /** @type {!SDK.ServiceWorkerManager} */ (this._manager), uiSection, registration);
       this._sections.set(registration, section);
     }
@@ -315,9 +316,9 @@ Resources.ServiceWorkersView = class extends UI.VBox {
     this._otherSWFilter.setAttribute('aria-checked', !expanded);
     this._filterChanged();
   }
-};
+}
 
-Resources.ServiceWorkersView.Section = class {
+export class Section {
   /**
    * @param {!SDK.ServiceWorkerManager} manager
    * @param {!UI.ReportView.Section} section
@@ -389,7 +390,7 @@ Resources.ServiceWorkersView.Section = class {
   }
 
   _scheduleUpdate() {
-    if (Resources.ServiceWorkersView._noThrottle) {
+    if (ServiceWorkersView._noThrottle) {
       this._update();
       return;
     }
@@ -654,4 +655,16 @@ Resources.ServiceWorkersView.Section = class {
     shadowRoot.appendChild(contentElement);
     return contentElement;
   }
-};
+}
+
+/* Legacy exported object */
+self.Resources = self.Resources || {};
+
+/* Legacy exported object */
+Resources = Resources || {};
+
+/** @constructor */
+Resources.ServiceWorkersView = ServiceWorkersView;
+
+/** @constructor */
+Resources.ServiceWorkersView.Section = Section;

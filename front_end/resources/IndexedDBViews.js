@@ -31,7 +31,7 @@
 /**
  * @unrestricted
  */
-Resources.IDBDatabaseView = class extends UI.VBox {
+export class IDBDatabaseView extends UI.VBox {
   /**
    * @param {!Resources.IndexedDBModel} model
    * @param {?Resources.IndexedDBModel.Database} database
@@ -94,12 +94,12 @@ Resources.IDBDatabaseView = class extends UI.VBox {
       this._model.deleteDatabase(this._database.databaseId);
     }
   }
-};
+}
 
 /**
  * @unrestricted
  */
-Resources.IDBDataView = class extends UI.SimpleView {
+export class IDBDataView extends UI.SimpleView {
   /**
    * @param {!Resources.IndexedDBModel} model
    * @param {!Resources.IndexedDBModel.DatabaseId} databaseId
@@ -261,7 +261,7 @@ Resources.IDBDataView = class extends UI.SimpleView {
    * @param {!DataGrid.DataGridNode} gridNode
    */
   _populateContextMenu(contextMenu, gridNode) {
-    const node = /** @type {!Resources.IDBDataGridNode} */ (gridNode);
+    const node = /** @type {!IDBDataGridNode} */ (gridNode);
     if (node.valueObjectPresentation) {
       contextMenu.revealSection().appendItem(ls`Expand Recursively`, () => {
         node.valueObjectPresentation.objectTreeElement().expandRecursively();
@@ -335,7 +335,7 @@ Resources.IDBDataView = class extends UI.SimpleView {
     /**
      * @param {!Array.<!Resources.IndexedDBModel.Entry>} entries
      * @param {boolean} hasMore
-     * @this {Resources.IDBDataView}
+     * @this {IDBDataView}
      */
     function callback(entries, hasMore) {
       this._refreshButton.setEnabled(true);
@@ -349,7 +349,7 @@ Resources.IDBDataView = class extends UI.SimpleView {
         data['primaryKey'] = entries[i].primaryKey;
         data['value'] = entries[i].value;
 
-        const node = new Resources.IDBDataGridNode(data);
+        const node = new IDBDataGridNode(data);
         this._dataGrid.rootNode().appendChild(node);
         if (data['number'] <= selected) {
           selectedNode = node;
@@ -452,12 +452,12 @@ Resources.IDBDataView = class extends UI.SimpleView {
     this._clearButton.setEnabled(!empty);
     this._deleteSelectedButton.setEnabled(!empty && this._dataGrid.selectedNode !== null);
   }
-};
+}
 
 /**
  * @unrestricted
  */
-Resources.IDBDataGridNode = class extends DataGrid.DataGridNode {
+export class IDBDataGridNode extends DataGrid.DataGridNode {
   /**
    * @param {!Object.<string, *>} data
    */
@@ -496,4 +496,19 @@ Resources.IDBDataGridNode = class extends DataGrid.DataGridNode {
 
     return cell;
   }
-};
+}
+
+/* Legacy exported object */
+self.Resources = self.Resources || {};
+
+/* Legacy exported object */
+Resources = Resources || {};
+
+/** @constructor */
+Resources.IDBDatabaseView = IDBDatabaseView;
+
+/** @constructor */
+Resources.IDBDataView = IDBDataView;
+
+/** @constructor */
+Resources.IDBDataGridNode = IDBDataGridNode;

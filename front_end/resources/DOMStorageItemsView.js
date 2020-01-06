@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-Resources.DOMStorageItemsView = class extends Resources.StorageItemsView {
+export default class DOMStorageItemsView extends Resources.StorageItemsView {
   /**
    * @param {!Resources.DOMStorage} domStorage
    */
@@ -309,4 +309,13 @@ Resources.DOMStorageItemsView = class extends Resources.StorageItemsView {
     }
     this._showPreview(preview, value);
   }
-};
+}
+
+/* Legacy exported object */
+self.Resources = self.Resources || {};
+
+/* Legacy exported object */
+Resources = Resources || {};
+
+/** @constructor */
+Resources.DOMStorageItemsView = DOMStorageItemsView;

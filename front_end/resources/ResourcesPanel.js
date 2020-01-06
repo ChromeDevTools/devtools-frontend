@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-Resources.ResourcesPanel = class extends UI.PanelWithSidebar {
+export default class ResourcesPanel extends UI.PanelWithSidebar {
   constructor() {
     super('resources');
     this.registerRequiredCSS('resources/resourcesPanel.css');
@@ -37,10 +37,10 @@ Resources.ResourcesPanel = class extends UI.PanelWithSidebar {
   }
 
   /**
-   * @return {!Resources.ResourcesPanel}
+   * @return {!ResourcesPanel}
    */
   static _instance() {
-    return /** @type {!Resources.ResourcesPanel} */ (self.runtime.sharedInstance(Resources.ResourcesPanel));
+    return /** @type {!ResourcesPanel} */ (self.runtime.sharedInstance(ResourcesPanel));
   }
 
   /**
@@ -77,7 +77,7 @@ Resources.ResourcesPanel = class extends UI.PanelWithSidebar {
   }
 
   resetView() {
-    if (this.visibleView && Resources.ResourcesPanel._shouldCloseOnReset(this.visibleView)) {
+    if (this.visibleView && ResourcesPanel._shouldCloseOnReset(this.visibleView)) {
       this.showView(null);
     }
   }
@@ -183,12 +183,12 @@ Resources.ResourcesPanel = class extends UI.PanelWithSidebar {
       }
     });
   }
-};
+}
 
 /**
  * @implements {Common.Revealer}
  */
-Resources.ResourcesPanel.ResourceRevealer = class {
+export class ResourceRevealer {
   /**
    * @override
    * @param {!Object} resource
@@ -198,8 +198,20 @@ Resources.ResourcesPanel.ResourceRevealer = class {
     if (!(resource instanceof SDK.Resource)) {
       return Promise.reject(new Error('Internal error: not a resource'));
     }
-    const sidebar = Resources.ResourcesPanel._instance()._sidebar;
+    const sidebar = ResourcesPanel._instance()._sidebar;
     await UI.viewManager.showView('resources');
     await sidebar.showResource(resource);
   }
-};
+}
+
+/* Legacy exported object */
+self.Resources = self.Resources || {};
+
+/* Legacy exported object */
+Resources = Resources || {};
+
+/** @constructor */
+Resources.ResourcesPanel = ResourcesPanel;
+
+/** @constructor */
+Resources.ResourcesPanel.ResourceRevealer = ResourceRevealer;

@@ -70,7 +70,9 @@
         "network",
         "sources"
     ],
-    "scripts": [
+    "scripts": [],
+    "modules": [
+        "resources.js",
         "ApplicationCacheModel.js",
         "AppManifestView.js",
         "ApplicationCacheItemsView.js",

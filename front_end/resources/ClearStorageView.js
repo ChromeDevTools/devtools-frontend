@@ -5,7 +5,7 @@
 /**
  * @implements {SDK.TargetManager.Observer}
  */
-Resources.ClearStorageView = class extends UI.ThrottledWidget {
+export default class ClearStorageView extends UI.ThrottledWidget {
   constructor() {
     super(true, 1000);
     const types = Protocol.Storage.StorageType;
@@ -29,7 +29,7 @@ Resources.ClearStorageView = class extends UI.ThrottledWidget {
     this._securityOrigin = null;
 
     this._settings = new Map();
-    for (const type of Resources.ClearStorageView.AllStorageTypes) {
+    for (const type of AllStorageTypes) {
       this._settings.set(type, Common.settings.createSetting('clear-storage-' + type, true));
     }
 
@@ -146,7 +146,7 @@ Resources.ClearStorageView = class extends UI.ThrottledWidget {
     }
 
     if (this._target) {
-      Resources.ClearStorageView.clear(this._target, this._securityOrigin, selectedStorageTypes);
+      ClearStorageView.clear(this._target, this._securityOrigin, selectedStorageTypes);
     }
 
     this._clearButton.disabled = true;
@@ -294,9 +294,9 @@ Resources.ClearStorageView = class extends UI.ThrottledWidget {
    */
   _usageUpdatedForTest(usage, quota, usageBreakdown) {
   }
-};
+}
 
-Resources.ClearStorageView.AllStorageTypes = [
+export const AllStorageTypes = [
   Protocol.Storage.StorageType.Appcache, Protocol.Storage.StorageType.Cache_storage,
   Protocol.Storage.StorageType.Cookies, Protocol.Storage.StorageType.Indexeddb,
   Protocol.Storage.StorageType.Local_storage, Protocol.Storage.StorageType.Service_workers,
@@ -306,7 +306,7 @@ Resources.ClearStorageView.AllStorageTypes = [
 /**
  * @implements {UI.ActionDelegate}
  */
-Resources.ClearStorageView.ActionDelegate = class {
+export class ActionDelegate {
   /**
    * @override
    * @param {!UI.Context} context
@@ -338,7 +338,21 @@ Resources.ClearStorageView.ActionDelegate = class {
       return false;
     }
 
-    Resources.ClearStorageView.clear(target, securityOrigin, Resources.ClearStorageView.AllStorageTypes);
+    ClearStorageView.clear(target, securityOrigin, AllStorageTypes);
     return true;
   }
-};
+}
+
+/* Legacy exported object */
+self.Resources = self.Resources || {};
+
+/* Legacy exported object */
+Resources = Resources || {};
+
+/** @constructor */
+Resources.ClearStorageView = ClearStorageView;
+
+Resources.ClearStorageView.AllStorageTypes = AllStorageTypes;
+
+/** @constructor */
+Resources.ClearStorageView.ActionDelegate = ActionDelegate;

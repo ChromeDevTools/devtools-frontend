@@ -30,9 +30,9 @@
 /**
  * @unrestricted
  */
-Resources.DOMStorage = class extends Common.Object {
+export class DOMStorage extends Common.Object {
   /**
-   * @param {!Resources.DOMStorageModel} model
+   * @param {!DOMStorageModel} model
    * @param {string} securityOrigin
    * @param {boolean} isLocalStorage
    */
@@ -54,7 +54,7 @@ Resources.DOMStorage = class extends Common.Object {
 
   /** @return {!Protocol.DOMStorage.StorageId} */
   get id() {
-    return Resources.DOMStorage.storageId(this._securityOrigin, this._isLocalStorage);
+    return DOMStorage.storageId(this._securityOrigin, this._isLocalStorage);
   }
 
   /** @return {string} */
@@ -92,11 +92,11 @@ Resources.DOMStorage = class extends Common.Object {
   clear() {
     this._model._agent.clear(this.id);
   }
-};
+}
 
 
 /** @enum {symbol} */
-Resources.DOMStorage.Events = {
+DOMStorage.Events = {
   DOMStorageItemsCleared: Symbol('DOMStorageItemsCleared'),
   DOMStorageItemRemoved: Symbol('DOMStorageItemRemoved'),
   DOMStorageItemAdded: Symbol('DOMStorageItemAdded'),
@@ -106,7 +106,7 @@ Resources.DOMStorage.Events = {
 /**
  * @unrestricted
  */
-Resources.DOMStorageModel = class extends SDK.SDKModel {
+export default class DOMStorageModel extends SDK.SDKModel {
   /**
    * @param {!SDK.Target} target
    */
@@ -114,7 +114,7 @@ Resources.DOMStorageModel = class extends SDK.SDKModel {
     super(target);
 
     this._securityOriginManager = target.model(SDK.SecurityOriginManager);
-    /** @type {!Object.<string, !Resources.DOMStorage>} */
+    /** @type {!Object.<string, !DOMStorage>} */
     this._storages = {};
     this._agent = target.domstorageAgent();
   }
@@ -124,7 +124,7 @@ Resources.DOMStorageModel = class extends SDK.SDKModel {
       return;
     }
 
-    this.target().registerDOMStorageDispatcher(new Resources.DOMStorageDispatcher(this));
+    this.target().registerDOMStorageDispatcher(new DOMStorageDispatcher(this));
     this._securityOriginManager.addEventListener(
         SDK.SecurityOriginManager.Events.SecurityOriginAdded, this._securityOriginAdded, this);
     this._securityOriginManager.addEventListener(
@@ -174,9 +174,9 @@ Resources.DOMStorageModel = class extends SDK.SDKModel {
     for (const isLocal of [true, false]) {
       const key = this._storageKey(securityOrigin, isLocal);
       console.assert(!this._storages[key]);
-      const storage = new Resources.DOMStorage(this, securityOrigin, isLocal);
+      const storage = new DOMStorage(this, securityOrigin, isLocal);
       this._storages[key] = storage;
-      this.dispatchEventToListeners(Resources.DOMStorageModel.Events.DOMStorageAdded, storage);
+      this.dispatchEventToListeners(Events.DOMStorageAdded, storage);
     }
   }
 
@@ -198,7 +198,7 @@ Resources.DOMStorageModel = class extends SDK.SDKModel {
         continue;
       }
       delete this._storages[key];
-      this.dispatchEventToListeners(Resources.DOMStorageModel.Events.DOMStorageRemoved, storage);
+      this.dispatchEventToListeners(Events.DOMStorageRemoved, storage);
     }
   }
 
@@ -208,7 +208,7 @@ Resources.DOMStorageModel = class extends SDK.SDKModel {
    * @return {string}
    */
   _storageKey(securityOrigin, isLocalStorage) {
-    return JSON.stringify(Resources.DOMStorage.storageId(securityOrigin, isLocalStorage));
+    return JSON.stringify(DOMStorage.storageId(securityOrigin, isLocalStorage));
   }
 
   /**
@@ -221,7 +221,7 @@ Resources.DOMStorageModel = class extends SDK.SDKModel {
     }
 
     const eventData = {};
-    domStorage.dispatchEventToListeners(Resources.DOMStorage.Events.DOMStorageItemsCleared, eventData);
+    domStorage.dispatchEventToListeners(DOMStorage.Events.DOMStorageItemsCleared, eventData);
   }
 
   /**
@@ -235,7 +235,7 @@ Resources.DOMStorageModel = class extends SDK.SDKModel {
     }
 
     const eventData = {key: key};
-    domStorage.dispatchEventToListeners(Resources.DOMStorage.Events.DOMStorageItemRemoved, eventData);
+    domStorage.dispatchEventToListeners(DOMStorage.Events.DOMStorageItemRemoved, eventData);
   }
 
   /**
@@ -250,7 +250,7 @@ Resources.DOMStorageModel = class extends SDK.SDKModel {
     }
 
     const eventData = {key: key, value: value};
-    domStorage.dispatchEventToListeners(Resources.DOMStorage.Events.DOMStorageItemAdded, eventData);
+    domStorage.dispatchEventToListeners(DOMStorage.Events.DOMStorageItemAdded, eventData);
   }
 
   /**
@@ -266,19 +266,19 @@ Resources.DOMStorageModel = class extends SDK.SDKModel {
     }
 
     const eventData = {key: key, oldValue: oldValue, value: value};
-    domStorage.dispatchEventToListeners(Resources.DOMStorage.Events.DOMStorageItemUpdated, eventData);
+    domStorage.dispatchEventToListeners(DOMStorage.Events.DOMStorageItemUpdated, eventData);
   }
 
   /**
    * @param {!Protocol.DOMStorage.StorageId} storageId
-   * @return {!Resources.DOMStorage}
+   * @return {!DOMStorage}
    */
   storageForId(storageId) {
     return this._storages[JSON.stringify(storageId)];
   }
 
   /**
-   * @return {!Array.<!Resources.DOMStorage>}
+   * @return {!Array.<!DOMStorage>}
    */
   storages() {
     const result = [];
@@ -287,12 +287,12 @@ Resources.DOMStorageModel = class extends SDK.SDKModel {
     }
     return result;
   }
-};
+}
 
-SDK.SDKModel.register(Resources.DOMStorageModel, SDK.Target.Capability.DOM, false);
+SDK.SDKModel.register(DOMStorageModel, SDK.Target.Capability.DOM, false);
 
 /** @enum {symbol} */
-Resources.DOMStorageModel.Events = {
+export const Events = {
   DOMStorageAdded: Symbol('DOMStorageAdded'),
   DOMStorageRemoved: Symbol('DOMStorageRemoved')
 };
@@ -301,9 +301,9 @@ Resources.DOMStorageModel.Events = {
  * @implements {Protocol.DOMStorageDispatcher}
  * @unrestricted
  */
-Resources.DOMStorageDispatcher = class {
+export class DOMStorageDispatcher {
   /**
-   * @param {!Resources.DOMStorageModel} model
+   * @param {!DOMStorageModel} model
    */
   constructor(model) {
     this._model = model;
@@ -346,4 +346,22 @@ Resources.DOMStorageDispatcher = class {
   domStorageItemUpdated(storageId, key, oldValue, value) {
     this._model._domStorageItemUpdated(storageId, key, oldValue, value);
   }
-};
+}
+
+/* Legacy exported object */
+self.Resources = self.Resources || {};
+
+/* Legacy exported object */
+Resources = Resources || {};
+
+/** @constructor */
+Resources.DOMStorageModel = DOMStorageModel;
+
+/** @enum {symbol} */
+Resources.DOMStorageModel.Events = Events;
+
+/** @constructor */
+Resources.DOMStorage = DOMStorage;
+
+/** @constructor */
+Resources.DOMStorageDispatcher = DOMStorageDispatcher;

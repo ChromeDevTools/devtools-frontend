@@ -29,14 +29,14 @@
 /**
  * @unrestricted
  */
-Resources.ApplicationCacheModel = class extends SDK.SDKModel {
+export default class ApplicationCacheModel extends SDK.SDKModel {
   /**
    * @param {!SDK.Target} target
    */
   constructor(target) {
     super(target);
 
-    target.registerApplicationCacheDispatcher(new Resources.ApplicationCacheDispatcher(this));
+    target.registerApplicationCacheDispatcher(new ApplicationCacheDispatcher(this));
     this._agent = target.applicationCacheAgent();
     this._agent.enable();
 
@@ -79,7 +79,7 @@ Resources.ApplicationCacheModel = class extends SDK.SDKModel {
   reset() {
     this._statuses = {};
     this._manifestURLsByFrame = {};
-    this.dispatchEventToListeners(Resources.ApplicationCacheModel.Events.FrameManifestsReset);
+    this.dispatchEventToListeners(Events.FrameManifestsReset);
   }
 
   async _mainFrameNavigated() {
@@ -95,7 +95,7 @@ Resources.ApplicationCacheModel = class extends SDK.SDKModel {
    * @param {number} status
    */
   _frameManifestUpdated(frameId, manifestURL, status) {
-    if (status === Resources.ApplicationCacheModel.UNCACHED) {
+    if (status === UNCACHED) {
       this._frameManifestRemoved(frameId);
       return;
     }
@@ -113,11 +113,11 @@ Resources.ApplicationCacheModel = class extends SDK.SDKModel {
 
     if (!this._manifestURLsByFrame[frameId]) {
       this._manifestURLsByFrame[frameId] = manifestURL;
-      this.dispatchEventToListeners(Resources.ApplicationCacheModel.Events.FrameManifestAdded, frameId);
+      this.dispatchEventToListeners(Events.FrameManifestAdded, frameId);
     }
 
     if (statusChanged) {
-      this.dispatchEventToListeners(Resources.ApplicationCacheModel.Events.FrameManifestStatusUpdated, frameId);
+      this.dispatchEventToListeners(Events.FrameManifestStatusUpdated, frameId);
     }
   }
 
@@ -132,7 +132,7 @@ Resources.ApplicationCacheModel = class extends SDK.SDKModel {
     delete this._manifestURLsByFrame[frameId];
     delete this._statuses[frameId];
 
-    this.dispatchEventToListeners(Resources.ApplicationCacheModel.Events.FrameManifestRemoved, frameId);
+    this.dispatchEventToListeners(Events.FrameManifestRemoved, frameId);
   }
 
   /**
@@ -148,7 +148,7 @@ Resources.ApplicationCacheModel = class extends SDK.SDKModel {
    * @return {number}
    */
   frameManifestStatus(frameId) {
-    return this._statuses[frameId] || Resources.ApplicationCacheModel.UNCACHED;
+    return this._statuses[frameId] || UNCACHED;
   }
 
   /**
@@ -180,14 +180,14 @@ Resources.ApplicationCacheModel = class extends SDK.SDKModel {
    */
   _networkStateUpdated(isNowOnline) {
     this._onLine = isNowOnline;
-    this.dispatchEventToListeners(Resources.ApplicationCacheModel.Events.NetworkStateChanged, isNowOnline);
+    this.dispatchEventToListeners(Events.NetworkStateChanged, isNowOnline);
   }
-};
+}
 
-SDK.SDKModel.register(Resources.ApplicationCacheModel, SDK.Target.Capability.DOM, false);
+SDK.SDKModel.register(ApplicationCacheModel, SDK.Target.Capability.DOM, false);
 
 /** @enum {symbol} */
-Resources.ApplicationCacheModel.Events = {
+export const Events = {
   FrameManifestStatusUpdated: Symbol('FrameManifestStatusUpdated'),
   FrameManifestAdded: Symbol('FrameManifestAdded'),
   FrameManifestRemoved: Symbol('FrameManifestRemoved'),
@@ -199,7 +199,7 @@ Resources.ApplicationCacheModel.Events = {
  * @implements {Protocol.ApplicationCacheDispatcher}
  * @unrestricted
  */
-Resources.ApplicationCacheDispatcher = class {
+export class ApplicationCacheDispatcher {
   constructor(applicationCacheModel) {
     this._applicationCacheModel = applicationCacheModel;
   }
@@ -221,11 +221,33 @@ Resources.ApplicationCacheDispatcher = class {
   networkStateUpdated(isNowOnline) {
     this._applicationCacheModel._networkStateUpdated(isNowOnline);
   }
-};
+}
 
-Resources.ApplicationCacheModel.UNCACHED = 0;
-Resources.ApplicationCacheModel.IDLE = 1;
-Resources.ApplicationCacheModel.CHECKING = 2;
-Resources.ApplicationCacheModel.DOWNLOADING = 3;
-Resources.ApplicationCacheModel.UPDATEREADY = 4;
-Resources.ApplicationCacheModel.OBSOLETE = 5;
+export const UNCACHED = 0;
+export const IDLE = 1;
+export const CHECKING = 2;
+export const DOWNLOADING = 3;
+export const UPDATEREADY = 4;
+export const OBSOLETE = 5;
+
+/* Legacy exported object */
+self.Resources = self.Resources || {};
+
+/* Legacy exported object */
+Resources = Resources || {};
+
+/** @constructor */
+Resources.ApplicationCacheModel = ApplicationCacheModel;
+
+/** @enum {symbol} */
+Resources.ApplicationCacheModel.Events = Events;
+
+Resources.ApplicationCacheModel.UNCACHED = UNCACHED;
+Resources.ApplicationCacheModel.IDLE = IDLE;
+Resources.ApplicationCacheModel.CHECKING = CHECKING;
+Resources.ApplicationCacheModel.DOWNLOADING = DOWNLOADING;
+Resources.ApplicationCacheModel.UPDATEREADY = UPDATEREADY;
+Resources.ApplicationCacheModel.OBSOLETE = OBSOLETE;
+
+/** @constructor */
+Resources.ApplicationCacheDispatcher = ApplicationCacheDispatcher;

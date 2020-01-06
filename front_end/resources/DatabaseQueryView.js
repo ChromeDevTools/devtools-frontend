@@ -26,7 +26,7 @@
 /**
  * @unrestricted
  */
-Resources.DatabaseQueryView = class extends UI.VBox {
+export default class DatabaseQueryView extends UI.VBox {
   constructor(database) {
     super();
 
@@ -70,7 +70,7 @@ Resources.DatabaseQueryView = class extends UI.VBox {
     prefix = prefix.toLowerCase();
     const tableNames = await this.database.tableNames();
     return tableNames.map(name => name + ' ')
-        .concat(Resources.DatabaseQueryView._SQL_BUILT_INS)
+        .concat(_SQL_BUILT_INS)
         .filter(proposal => proposal.toLowerCase().startsWith(prefix))
         .map(completion => ({text: completion}));
   }
@@ -83,7 +83,7 @@ Resources.DatabaseQueryView = class extends UI.VBox {
     this._prompt.clearAutocomplete();
 
     /**
-     * @this {Resources.DatabaseQueryView}
+     * @this {DatabaseQueryView}
      */
     function moveBackIfOutside() {
       delete this._selectionTimeout;
@@ -142,7 +142,7 @@ Resources.DatabaseQueryView = class extends UI.VBox {
     this._appendViewQueryResult(trimmedQuery, view);
 
     if (trimmedQuery.match(/^create /i) || trimmedQuery.match(/^drop table /i)) {
-      this.dispatchEventToListeners(Resources.DatabaseQueryView.Events.SchemaUpdated, this.database);
+      this.dispatchEventToListeners(Events.SchemaUpdated, this.database);
     }
   }
 
@@ -192,14 +192,28 @@ Resources.DatabaseQueryView = class extends UI.VBox {
     element.appendChild(resultElement);
     return resultElement;
   }
-};
+}
 
 /** @enum {symbol} */
-Resources.DatabaseQueryView.Events = {
+export const Events = {
   SchemaUpdated: Symbol('SchemaUpdated')
 };
 
-Resources.DatabaseQueryView._SQL_BUILT_INS = [
+export const _SQL_BUILT_INS = [
   'SELECT ', 'FROM ', 'WHERE ', 'LIMIT ', 'DELETE FROM ', 'CREATE ', 'DROP ', 'TABLE ', 'INDEX ', 'UPDATE ',
   'INSERT INTO ', 'VALUES ('
 ];
+
+/* Legacy exported object */
+self.Resources = self.Resources || {};
+
+/* Legacy exported object */
+Resources = Resources || {};
+
+/** @constructor */
+Resources.DatabaseQueryView = DatabaseQueryView;
+
+/** @enum {symbol} */
+Resources.DatabaseQueryView.Events = Events;
+
+Resources.DatabaseQueryView._SQL_BUILT_INS = _SQL_BUILT_INS;

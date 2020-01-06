@@ -32,7 +32,7 @@
  * @implements {Protocol.StorageDispatcher}
  * @unrestricted
  */
-Resources.IndexedDBModel = class extends SDK.SDKModel {
+export default class IndexedDBModel extends SDK.SDKModel {
   /**
    * @param {!SDK.Target} target
    */
@@ -43,7 +43,7 @@ Resources.IndexedDBModel = class extends SDK.SDKModel {
     this._indexedDBAgent = target.indexedDBAgent();
     this._storageAgent = target.storageAgent();
 
-    /** @type {!Map.<!Resources.IndexedDBModel.DatabaseId, !Resources.IndexedDBModel.Database>} */
+    /** @type {!Map.<!DatabaseId, !Database>} */
     this._databases = new Map();
     /** @type {!Object.<string, !Array.<string>>} */
     this._databaseNamesBySecurityOrigin = {};
@@ -72,22 +72,22 @@ Resources.IndexedDBModel = class extends SDK.SDKModel {
     switch (typeof(idbKey)) {
       case 'number':
         key.number = idbKey;
-        type = Resources.IndexedDBModel.KeyTypes.NumberType;
+        type = KeyTypes.NumberType;
         break;
       case 'string':
         key.string = idbKey;
-        type = Resources.IndexedDBModel.KeyTypes.StringType;
+        type = KeyTypes.StringType;
         break;
       case 'object':
         if (idbKey instanceof Date) {
           key.date = idbKey.getTime();
-          type = Resources.IndexedDBModel.KeyTypes.DateType;
+          type = KeyTypes.DateType;
         } else if (Array.isArray(idbKey)) {
           key.array = [];
           for (let i = 0; i < idbKey.length; ++i) {
-            key.array.push(Resources.IndexedDBModel.keyFromIDBKey(idbKey[i]));
+            key.array.push(IndexedDBModel.keyFromIDBKey(idbKey[i]));
           }
-          type = Resources.IndexedDBModel.KeyTypes.ArrayType;
+          type = KeyTypes.ArrayType;
         }
         break;
       default:
@@ -103,8 +103,8 @@ Resources.IndexedDBModel = class extends SDK.SDKModel {
    */
   static _keyRangeFromIDBKeyRange(idbKeyRange) {
     const keyRange = {};
-    keyRange.lower = Resources.IndexedDBModel.keyFromIDBKey(idbKeyRange.lower);
-    keyRange.upper = Resources.IndexedDBModel.keyFromIDBKey(idbKeyRange.upper);
+    keyRange.lower = IndexedDBModel.keyFromIDBKey(idbKeyRange.lower);
+    keyRange.upper = IndexedDBModel.keyFromIDBKey(idbKeyRange.upper);
     keyRange.lowerOpen = !!idbKeyRange.lowerOpen;
     keyRange.upperOpen = !!idbKeyRange.upperOpen;
     return keyRange;
@@ -117,13 +117,13 @@ Resources.IndexedDBModel = class extends SDK.SDKModel {
   static idbKeyPathFromKeyPath(keyPath) {
     let idbKeyPath;
     switch (keyPath.type) {
-      case Resources.IndexedDBModel.KeyPathTypes.NullType:
+      case KeyPathTypes.NullType:
         idbKeyPath = null;
         break;
-      case Resources.IndexedDBModel.KeyPathTypes.StringType:
+      case KeyPathTypes.StringType:
         idbKeyPath = keyPath.string;
         break;
-      case Resources.IndexedDBModel.KeyPathTypes.ArrayType:
+      case KeyPathTypes.ArrayType:
         idbKeyPath = keyPath.array;
         break;
     }
@@ -175,7 +175,7 @@ Resources.IndexedDBModel = class extends SDK.SDKModel {
   }
 
   /**
-   * @param {!Resources.IndexedDBModel.DatabaseId} databaseId
+   * @param {!DatabaseId} databaseId
    */
   async deleteDatabase(databaseId) {
     if (!this._enabled) {
@@ -189,18 +189,18 @@ Resources.IndexedDBModel = class extends SDK.SDKModel {
     for (const securityOrigin in this._databaseNamesBySecurityOrigin) {
       await this._loadDatabaseNames(securityOrigin);
     }
-    this.dispatchEventToListeners(Resources.IndexedDBModel.Events.DatabaseNamesRefreshed);
+    this.dispatchEventToListeners(Events.DatabaseNamesRefreshed);
   }
 
   /**
-   * @param {!Resources.IndexedDBModel.DatabaseId} databaseId
+   * @param {!DatabaseId} databaseId
    */
   refreshDatabase(databaseId) {
     this._loadDatabase(databaseId, true);
   }
 
   /**
-   * @param {!Resources.IndexedDBModel.DatabaseId} databaseId
+   * @param {!DatabaseId} databaseId
    * @param {string} objectStoreName
    * @return {!Promise}
    */
@@ -209,13 +209,13 @@ Resources.IndexedDBModel = class extends SDK.SDKModel {
   }
 
   /**
-   * @param {!Resources.IndexedDBModel.DatabaseId} databaseId
+   * @param {!DatabaseId} databaseId
    * @param {string} objectStoreName
    * @param {!IDBKeyRange} idbKeyRange
    * @return {!Promise}
    */
   deleteEntries(databaseId, objectStoreName, idbKeyRange) {
-    const keyRange = Resources.IndexedDBModel._keyRangeFromIDBKeyRange(idbKeyRange);
+    const keyRange = IndexedDBModel._keyRangeFromIDBKeyRange(idbKeyRange);
     return this._indexedDBAgent.deleteObjectStoreEntries(
         databaseId.securityOrigin, databaseId.name, objectStoreName, keyRange);
   }
@@ -294,14 +294,14 @@ Resources.IndexedDBModel = class extends SDK.SDKModel {
   }
 
   /**
-   * @return {!Array.<!Resources.IndexedDBModel.DatabaseId>}
+   * @return {!Array.<!DatabaseId>}
    */
   databases() {
     const result = [];
     for (const securityOrigin in this._databaseNamesBySecurityOrigin) {
       const databaseNames = this._databaseNamesBySecurityOrigin[securityOrigin];
       for (let i = 0; i < databaseNames.length; ++i) {
-        result.push(new Resources.IndexedDBModel.DatabaseId(securityOrigin, databaseNames[i]));
+        result.push(new DatabaseId(securityOrigin, databaseNames[i]));
       }
     }
     return result;
@@ -312,8 +312,8 @@ Resources.IndexedDBModel = class extends SDK.SDKModel {
    * @param {string} databaseName
    */
   _databaseAdded(securityOrigin, databaseName) {
-    const databaseId = new Resources.IndexedDBModel.DatabaseId(securityOrigin, databaseName);
-    this.dispatchEventToListeners(Resources.IndexedDBModel.Events.DatabaseAdded, {model: this, databaseId: databaseId});
+    const databaseId = new DatabaseId(securityOrigin, databaseName);
+    this.dispatchEventToListeners(Events.DatabaseAdded, {model: this, databaseId: databaseId});
   }
 
   /**
@@ -321,9 +321,8 @@ Resources.IndexedDBModel = class extends SDK.SDKModel {
    * @param {string} databaseName
    */
   _databaseRemoved(securityOrigin, databaseName) {
-    const databaseId = new Resources.IndexedDBModel.DatabaseId(securityOrigin, databaseName);
-    this.dispatchEventToListeners(
-        Resources.IndexedDBModel.Events.DatabaseRemoved, {model: this, databaseId: databaseId});
+    const databaseId = new DatabaseId(securityOrigin, databaseName);
+    this.dispatchEventToListeners(Events.DatabaseRemoved, {model: this, databaseId: databaseId});
   }
 
   /**
@@ -343,7 +342,7 @@ Resources.IndexedDBModel = class extends SDK.SDKModel {
   }
 
   /**
-   * @param {!Resources.IndexedDBModel.DatabaseId} databaseId
+   * @param {!DatabaseId} databaseId
    * @param {boolean} entriesUpdated
    */
   async _loadDatabase(databaseId, entriesUpdated) {
@@ -357,47 +356,44 @@ Resources.IndexedDBModel = class extends SDK.SDKModel {
       return;
     }
 
-    const databaseModel = new Resources.IndexedDBModel.Database(databaseId, databaseWithObjectStores.version);
+    const databaseModel = new Database(databaseId, databaseWithObjectStores.version);
     this._databases.set(databaseId, databaseModel);
     for (const objectStore of databaseWithObjectStores.objectStores) {
-      const objectStoreIDBKeyPath = Resources.IndexedDBModel.idbKeyPathFromKeyPath(objectStore.keyPath);
-      const objectStoreModel =
-          new Resources.IndexedDBModel.ObjectStore(objectStore.name, objectStoreIDBKeyPath, objectStore.autoIncrement);
+      const objectStoreIDBKeyPath = IndexedDBModel.idbKeyPathFromKeyPath(objectStore.keyPath);
+      const objectStoreModel = new ObjectStore(objectStore.name, objectStoreIDBKeyPath, objectStore.autoIncrement);
       for (let j = 0; j < objectStore.indexes.length; ++j) {
         const index = objectStore.indexes[j];
-        const indexIDBKeyPath = Resources.IndexedDBModel.idbKeyPathFromKeyPath(index.keyPath);
-        const indexModel =
-            new Resources.IndexedDBModel.Index(index.name, indexIDBKeyPath, index.unique, index.multiEntry);
+        const indexIDBKeyPath = IndexedDBModel.idbKeyPathFromKeyPath(index.keyPath);
+        const indexModel = new Index(index.name, indexIDBKeyPath, index.unique, index.multiEntry);
         objectStoreModel.indexes[indexModel.name] = indexModel;
       }
       databaseModel.objectStores[objectStoreModel.name] = objectStoreModel;
     }
 
     this.dispatchEventToListeners(
-        Resources.IndexedDBModel.Events.DatabaseLoaded,
-        {model: this, database: databaseModel, entriesUpdated: entriesUpdated});
+        Events.DatabaseLoaded, {model: this, database: databaseModel, entriesUpdated: entriesUpdated});
   }
 
   /**
-   * @param {!Resources.IndexedDBModel.DatabaseId} databaseId
+   * @param {!DatabaseId} databaseId
    * @param {string} objectStoreName
    * @param {?IDBKeyRange} idbKeyRange
    * @param {number} skipCount
    * @param {number} pageSize
-   * @param {function(!Array.<!Resources.IndexedDBModel.Entry>, boolean)} callback
+   * @param {function(!Array.<!Entry>, boolean)} callback
    */
   loadObjectStoreData(databaseId, objectStoreName, idbKeyRange, skipCount, pageSize, callback) {
     this._requestData(databaseId, databaseId.name, objectStoreName, '', idbKeyRange, skipCount, pageSize, callback);
   }
 
   /**
-   * @param {!Resources.IndexedDBModel.DatabaseId} databaseId
+   * @param {!DatabaseId} databaseId
    * @param {string} objectStoreName
    * @param {string} indexName
    * @param {?IDBKeyRange} idbKeyRange
    * @param {number} skipCount
    * @param {number} pageSize
-   * @param {function(!Array.<!Resources.IndexedDBModel.Entry>, boolean)} callback
+   * @param {function(!Array.<!Entry>, boolean)} callback
    */
   loadIndexData(databaseId, objectStoreName, indexName, idbKeyRange, skipCount, pageSize, callback) {
     this._requestData(
@@ -405,17 +401,17 @@ Resources.IndexedDBModel = class extends SDK.SDKModel {
   }
 
   /**
-   * @param {!Resources.IndexedDBModel.DatabaseId} databaseId
+   * @param {!DatabaseId} databaseId
    * @param {string} databaseName
    * @param {string} objectStoreName
    * @param {string} indexName
    * @param {?IDBKeyRange} idbKeyRange
    * @param {number} skipCount
    * @param {number} pageSize
-   * @param {function(!Array.<!Resources.IndexedDBModel.Entry>, boolean)} callback
+   * @param {function(!Array.<!Entry>, boolean)} callback
    */
   async _requestData(databaseId, databaseName, objectStoreName, indexName, idbKeyRange, skipCount, pageSize, callback) {
-    const keyRange = idbKeyRange ? Resources.IndexedDBModel._keyRangeFromIDBKeyRange(idbKeyRange) : undefined;
+    const keyRange = idbKeyRange ? IndexedDBModel._keyRangeFromIDBKeyRange(idbKeyRange) : undefined;
 
     const response = await this._indexedDBAgent.invoke_requestData({
       securityOrigin: databaseId.securityOrigin,
@@ -442,14 +438,14 @@ Resources.IndexedDBModel = class extends SDK.SDKModel {
       const key = runtimeModel.createRemoteObject(dataEntry.key);
       const primaryKey = runtimeModel.createRemoteObject(dataEntry.primaryKey);
       const value = runtimeModel.createRemoteObject(dataEntry.value);
-      entries.push(new Resources.IndexedDBModel.Entry(key, primaryKey, value));
+      entries.push(new Entry(key, primaryKey, value));
     }
     callback(entries, response.hasMore);
   }
 
   /**
-   * @param {!Resources.IndexedDBModel.DatabaseId} databaseId
-   * @param {!Resources.IndexedDBModel.ObjectStore} objectStore
+   * @param {!DatabaseId} databaseId
+   * @param {!ObjectStore} objectStore
    * @return {!Promise<?Resources.IndexedDBModel.ObjectStoreMetadata>}
    */
   async getMetadata(databaseId, objectStore) {
@@ -472,7 +468,7 @@ Resources.IndexedDBModel = class extends SDK.SDKModel {
   async _refreshDatabaseList(securityOrigin) {
     const databaseNames = await this._loadDatabaseNames(securityOrigin);
     for (const databaseName of databaseNames) {
-      this._loadDatabase(new Resources.IndexedDBModel.DatabaseId(securityOrigin, databaseName), false);
+      this._loadDatabase(new DatabaseId(securityOrigin, databaseName), false);
     }
   }
 
@@ -499,10 +495,9 @@ Resources.IndexedDBModel = class extends SDK.SDKModel {
    * @override
    */
   indexedDBContentUpdated(securityOrigin, databaseName, objectStoreName) {
-    const databaseId = new Resources.IndexedDBModel.DatabaseId(securityOrigin, databaseName);
+    const databaseId = new DatabaseId(securityOrigin, databaseName);
     this.dispatchEventToListeners(
-        Resources.IndexedDBModel.Events.IndexedDBContentUpdated,
-        {databaseId: databaseId, objectStoreName: objectStoreName, model: this});
+        Events.IndexedDBContentUpdated, {databaseId: databaseId, objectStoreName: objectStoreName, model: this});
   }
 
   /**
@@ -518,25 +513,25 @@ Resources.IndexedDBModel = class extends SDK.SDKModel {
    */
   cacheStorageContentUpdated(securityOrigin) {
   }
-};
+}
 
-SDK.SDKModel.register(Resources.IndexedDBModel, SDK.Target.Capability.Storage, false);
+SDK.SDKModel.register(IndexedDBModel, SDK.Target.Capability.Storage, false);
 
-Resources.IndexedDBModel.KeyTypes = {
+export const KeyTypes = {
   NumberType: 'number',
   StringType: 'string',
   DateType: 'date',
   ArrayType: 'array'
 };
 
-Resources.IndexedDBModel.KeyPathTypes = {
+export const KeyPathTypes = {
   NullType: 'null',
   StringType: 'string',
   ArrayType: 'array'
 };
 
 /** @enum {symbol} */
-Resources.IndexedDBModel.Events = {
+export const Events = {
   DatabaseAdded: Symbol('DatabaseAdded'),
   DatabaseRemoved: Symbol('DatabaseRemoved'),
   DatabaseLoaded: Symbol('DatabaseLoaded'),
@@ -547,7 +542,7 @@ Resources.IndexedDBModel.Events = {
 /**
  * @unrestricted
  */
-Resources.IndexedDBModel.Entry = class {
+export class Entry {
   /**
    * @param {!SDK.RemoteObject} key
    * @param {!SDK.RemoteObject} primaryKey
@@ -558,12 +553,12 @@ Resources.IndexedDBModel.Entry = class {
     this.primaryKey = primaryKey;
     this.value = value;
   }
-};
+}
 
 /**
  * @unrestricted
  */
-Resources.IndexedDBModel.DatabaseId = class {
+export class DatabaseId {
   /**
    * @param {string} securityOrigin
    * @param {string} name
@@ -574,20 +569,20 @@ Resources.IndexedDBModel.DatabaseId = class {
   }
 
   /**
-   * @param {!Resources.IndexedDBModel.DatabaseId} databaseId
+   * @param {!DatabaseId} databaseId
    * @return {boolean}
    */
   equals(databaseId) {
     return this.name === databaseId.name && this.securityOrigin === databaseId.securityOrigin;
   }
-};
+}
 
 /**
  * @unrestricted
  */
-Resources.IndexedDBModel.Database = class {
+export class Database {
   /**
-   * @param {!Resources.IndexedDBModel.DatabaseId} databaseId
+   * @param {!DatabaseId} databaseId
    * @param {number} version
    */
   constructor(databaseId, version) {
@@ -595,12 +590,12 @@ Resources.IndexedDBModel.Database = class {
     this.version = version;
     this.objectStores = {};
   }
-};
+}
 
 /**
  * @unrestricted
  */
-Resources.IndexedDBModel.ObjectStore = class {
+export class ObjectStore {
   /**
    * @param {string} name
    * @param {*} keyPath
@@ -617,23 +612,14 @@ Resources.IndexedDBModel.ObjectStore = class {
    * @return {string}
    */
   get keyPathString() {
-    return /** @type {string}*/ (
-        Resources.IndexedDBModel.keyPathStringFromIDBKeyPath(/** @type {string}*/ (this.keyPath)));
+    return /** @type {string}*/ (IndexedDBModel.keyPathStringFromIDBKeyPath(/** @type {string}*/ (this.keyPath)));
   }
-};
-
-/**
- * @typedef {{
- *      entriesCount: number,
- *      keyGeneratorValue: number
- * }}
- */
-Resources.IndexedDBModel.ObjectStoreMetadata;
+}
 
 /**
  * @unrestricted
  */
-Resources.IndexedDBModel.Index = class {
+export class Index {
   /**
    * @param {string} name
    * @param {*} keyPath
@@ -651,7 +637,44 @@ Resources.IndexedDBModel.Index = class {
    * @return {string}
    */
   get keyPathString() {
-    return /** @type {string}*/ (
-        Resources.IndexedDBModel.keyPathStringFromIDBKeyPath(/** @type {string}*/ (this.keyPath)));
+    return /** @type {string}*/ (IndexedDBModel.keyPathStringFromIDBKeyPath(/** @type {string}*/ (this.keyPath)));
   }
-};
+}
+
+/* Legacy exported object */
+self.Resources = self.Resources || {};
+
+/* Legacy exported object */
+Resources = Resources || {};
+
+/** @constructor */
+Resources.IndexedDBModel = IndexedDBModel;
+
+Resources.IndexedDBModel.KeyTypes = KeyTypes;
+Resources.IndexedDBModel.KeyPathTypes = KeyPathTypes;
+
+/** @enum {symbol} */
+Resources.IndexedDBModel.Events = Events;
+
+/** @constructor */
+Resources.IndexedDBModel.Entry = Entry;
+
+/** @constructor */
+Resources.IndexedDBModel.DatabaseId = DatabaseId;
+
+/** @constructor */
+Resources.IndexedDBModel.Database = Database;
+
+/** @constructor */
+Resources.IndexedDBModel.ObjectStore = ObjectStore;
+
+/** @constructor */
+Resources.IndexedDBModel.Index = Index;
+
+/**
+ * @typedef {{
+  *      entriesCount: number,
+  *      keyGeneratorValue: number
+  * }}
+  */
+Resources.IndexedDBModel.ObjectStoreMetadata;

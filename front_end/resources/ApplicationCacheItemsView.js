@@ -26,7 +26,7 @@
 /**
  * @unrestricted
  */
-Resources.ApplicationCacheItemsView = class extends UI.SimpleView {
+export default class ApplicationCacheItemsView extends UI.SimpleView {
   constructor(model, frameId) {
     super(Common.UIString('AppCache'));
 
@@ -263,4 +263,13 @@ Resources.ApplicationCacheItemsView = class extends UI.SimpleView {
     // Protocol.inspectorBackend.deleteCachedResource(...)
     // this._update();
   }
-};
+}
+
+/* Legacy exported object */
+self.Resources = self.Resources || {};
+
+/* Legacy exported object */
+Resources = Resources || {};
+
+/** @constructor */
+Resources.ApplicationCacheItemsView = ApplicationCacheItemsView;

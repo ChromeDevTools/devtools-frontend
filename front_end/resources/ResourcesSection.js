@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-Resources.ResourcesSection = class {
+export default class ResourcesSection {
   /**
    * @param {!Resources.ResourcesPanel} storagePanel
    * @param {!UI.TreeElement} treeElement
@@ -10,7 +10,7 @@ Resources.ResourcesSection = class {
   constructor(storagePanel, treeElement) {
     this._panel = storagePanel;
     this._treeElement = treeElement;
-    /** @type {!Map<string, !Resources.FrameTreeElement>} */
+    /** @type {!Map<string, !FrameTreeElement>} */
     this._treeElementForFrameId = new Map();
 
     function addListener(eventType, handler, target) {
@@ -54,7 +54,7 @@ Resources.ResourcesSection = class {
       return false;
     }
     let treeElement = this._treeElementForFrameId.get(frame.id);
-    if (!treeElement && !this._expandFrame(Resources.ResourcesSection._getParentFrame(frame))) {
+    if (!treeElement && !this._expandFrame(ResourcesSection._getParentFrame(frame))) {
       return false;
     }
     treeElement = this._treeElementForFrameId.get(frame.id);
@@ -75,7 +75,7 @@ Resources.ResourcesSection = class {
     if (!this._expandFrame(resource.frame())) {
       return;
     }
-    const resourceTreeElement = Resources.FrameResourceTreeElement.forResource(resource);
+    const resourceTreeElement = FrameResourceTreeElement.forResource(resource);
     if (resourceTreeElement) {
       await resourceTreeElement.revealResource(line, column);
     }
@@ -85,12 +85,12 @@ Resources.ResourcesSection = class {
    * @param {!SDK.ResourceTreeFrame} frame
    */
   _frameAdded(frame) {
-    const parentFrame = Resources.ResourcesSection._getParentFrame(frame);
+    const parentFrame = ResourcesSection._getParentFrame(frame);
     const parentTreeElement = parentFrame ? this._treeElementForFrameId.get(parentFrame.id) : this._treeElement;
     if (!parentTreeElement) {
       return;
     }
-    const frameTreeElement = new Resources.FrameTreeElement(this, frame);
+    const frameTreeElement = new FrameTreeElement(this, frame);
     this._treeElementForFrameId.set(frame.id, frameTreeElement);
     parentTreeElement.appendChild(frameTreeElement);
   }
@@ -137,11 +137,11 @@ Resources.ResourcesSection = class {
     this._treeElement.removeChildren();
     this._treeElementForFrameId.clear();
   }
-};
+}
 
-Resources.FrameTreeElement = class extends Resources.BaseStorageTreeElement {
+export class FrameTreeElement extends Resources.BaseStorageTreeElement {
   /**
-   * @param {!Resources.ResourcesSection} section
+   * @param {!ResourcesSection} section
    * @param {!SDK.ResourceTreeFrame} frame
    */
   constructor(section, frame) {
@@ -219,7 +219,7 @@ Resources.FrameTreeElement = class extends Resources.BaseStorageTreeElement {
       this._categoryElements[resourceType.name()] = categoryElement;
       this._insertInPresentationOrder(this, categoryElement);
     }
-    const resourceTreeElement = new Resources.FrameResourceTreeElement(this._section._panel, resource);
+    const resourceTreeElement = new FrameResourceTreeElement(this._section._panel, resource);
     this._insertInPresentationOrder(categoryElement, resourceTreeElement);
     this._treeElementForResource[resource.url] = resourceTreeElement;
   }
@@ -250,7 +250,7 @@ Resources.FrameTreeElement = class extends Resources.BaseStorageTreeElement {
       if (treeElement instanceof Resources.StorageCategoryTreeElement) {
         return 2;
       }
-      if (treeElement instanceof Resources.FrameTreeElement) {
+      if (treeElement instanceof FrameTreeElement) {
         return 1;
       }
       return 3;
@@ -294,9 +294,9 @@ Resources.FrameTreeElement = class extends Resources.BaseStorageTreeElement {
       this.appendResource(resource);
     }
   }
-};
+}
 
-Resources.FrameResourceTreeElement = class extends Resources.BaseStorageTreeElement {
+export class FrameResourceTreeElement extends Resources.BaseStorageTreeElement {
   /**
    * @param {!Resources.ResourcesPanel} storagePanel
    * @param {!SDK.Resource} resource
@@ -309,7 +309,7 @@ Resources.FrameResourceTreeElement = class extends Resources.BaseStorageTreeElem
     /** @type {?Promise<!UI.Widget>} */
     this._previewPromise = null;
     this.tooltip = resource.url;
-    this._resource[Resources.FrameResourceTreeElement._symbol] = this;
+    this._resource[FrameResourceTreeElement._symbol] = this;
 
     const icon = UI.Icon.create('largeicon-navigator-file', 'navigator-tree-item');
     icon.classList.add('navigator-file-tree-item');
@@ -321,7 +321,7 @@ Resources.FrameResourceTreeElement = class extends Resources.BaseStorageTreeElem
    * @param {!SDK.Resource} resource
    */
   static forResource(resource) {
-    return resource[Resources.FrameResourceTreeElement._symbol];
+    return resource[FrameResourceTreeElement._symbol];
   }
 
   get itemURL() {
@@ -402,6 +402,21 @@ Resources.FrameResourceTreeElement = class extends Resources.BaseStorageTreeElem
     }
     view.revealPosition(line, column, true);
   }
-};
+}
 
-Resources.FrameResourceTreeElement._symbol = Symbol('treeElement');
+FrameResourceTreeElement._symbol = Symbol('treeElement');
+
+/* Legacy exported object */
+self.Resources = self.Resources || {};
+
+/* Legacy exported object */
+Resources = Resources || {};
+
+/** @constructor */
+Resources.ResourcesSection = ResourcesSection;
+
+/** @constructor */
+Resources.FrameTreeElement = FrameTreeElement;
+
+/** @constructor */
+Resources.FrameResourceTreeElement = FrameResourceTreeElement;

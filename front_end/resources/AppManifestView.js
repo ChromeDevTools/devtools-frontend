@@ -1,11 +1,12 @@
 // Copyright (c) 2016 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
 /**
  * @implements {SDK.TargetManager.Observer}
  * @unrestricted
  */
-Resources.AppManifestView = class extends UI.VBox {
+export default class AppManifestView extends UI.VBox {
   constructor() {
     super(true);
     this.registerRequiredCSS('resources/appManifestView.css');
@@ -270,4 +271,13 @@ Resources.AppManifestView = class extends UI.VBox {
     }
     return null;
   }
-};
+}
+
+/* Legacy exported object */
+self.Resources = self.Resources || {};
+
+/* Legacy exported object */
+Resources = Resources || {};
+
+/** @constructor */
+Resources.AppManifestView = AppManifestView;

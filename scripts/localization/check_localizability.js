@@ -19,6 +19,12 @@ const esprima = localizationUtils.esprima;
 
 // Exclude known errors
 const excludeErrors = [
+  'Common.UIString.UIString(view.title())', 'Common.UIString.UIString(setting.title() || \'\')',
+  'Common.UIString.UIString(option.text)', 'Common.UIString.UIString(experiment.title)',
+  'Common.UIString.UIString(phase.message)', 'Common.UIString.UIString(Help.latestReleaseNote().header)',
+  'Common.UIString.UIString(conditions.title)', 'Common.UIString.UIString(extension.title())',
+  'Common.UIString.UIString(this._currentValueLabel, value)',
+
   'Common.UIString(view.title())', 'Common.UIString(setting.title() || \'\')', 'Common.UIString(option.text)',
   'Common.UIString(experiment.title)', 'Common.UIString(phase.message)',
   'Common.UIString(Help.latestReleaseNote().header)', 'Common.UIString(conditions.title)',

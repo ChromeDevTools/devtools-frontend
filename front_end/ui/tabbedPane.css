@@ -59,10 +59,11 @@
     display: flex;
     white-space: nowrap;
     padding: 0 5px;
+    margin: 2px;
 }
 
 .tabbed-pane-placeholder-row[data-keyboard-focus="true"]:focus {
-  outline-width: unset;
+    outline-width: unset;
 }
 
 .tabbed-pane-placeholder-key {
@@ -74,8 +75,8 @@
 }
 
 .tabbed-pane-no-shortcut {
-  flex: 1;
-  text-align: center;
+    flex: 1;
+    text-align: center;
 }
 
 .tabbed-pane-placeholder-value {

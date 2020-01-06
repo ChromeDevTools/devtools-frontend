@@ -67,13 +67,18 @@ function isNodeCallOnObject(node, objectName, propertyName) {
       verifyCallExpressionCallee(node.callee, objectName, propertyName);
 }
 
+function isNodeCallOnNestedObject(node, outerObjectName, innerObjectName, property) {
+  return node !== undefined && node.type === esprimaTypes.CALL_EXPR &&
+      verifyNestedCallExpressionCallee(node.callee, outerObjectName, innerObjectName, property);
+}
+
 function isNodeCommonUIStringCall(node) {
-  return isNodeCallOnObject(node, 'Common', 'UIString');
+  return isNodeCallOnObject(node, 'Common', 'UIString') || isNodeCallOnNestedObject(node, 'Common', 'UIString', 'UIString');
 }
 
 function isNodeCommonUIStringFormat(node) {
   return node && node.type === esprimaTypes.NEW_EXPR &&
-      verifyCallExpressionCallee(node.callee, 'Common', 'UIStringFormat');
+      (verifyCallExpressionCallee(node.callee, 'Common', 'UIStringFormat') || verifyNestedCallExpressionCallee(node.callee, 'Common', 'UIString', 'UIStringFormat'));
 }
 
 function isNodeUIformatLocalized(node) {
@@ -91,6 +96,15 @@ function isNodelsTaggedTemplateExpression(node) {
 function verifyCallExpressionCallee(callee, objectName, propertyName) {
   return callee !== undefined && callee.type === esprimaTypes.MEMBER_EXPR && callee.computed === false &&
       verifyIdentifier(callee.object, objectName) && verifyIdentifier(callee.property, propertyName);
+}
+
+/**
+ * Verify nested callee of outerObjectName.innerObjectName.propertyName(), e.g. Common.UIString.UIString().
+ */
+function verifyNestedCallExpressionCallee(callee, outerObjectName, innerObjectName, propertyName) {
+  return callee !== undefined && callee.type === esprimaTypes.MEMBER_EXPR && callee.computed === false &&
+      callee.object.type === esprimaTypes.MEMBER_EXPR && verifyIdentifier(callee.object.object, outerObjectName) &&
+      verifyIdentifier(callee.object.property, innerObjectName) && verifyIdentifier(callee.property, propertyName);
 }
 
 function verifyIdentifier(node, name) {

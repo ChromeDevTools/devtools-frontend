@@ -26,12 +26,17 @@
 import {EventTarget} from './EventTarget.js';  // eslint-disable-line no-unused-vars
 
 /**
+ * @typedef {!{thisObject: (!Object|undefined), listener: function(!Common.Event), disposed: (boolean|undefined)}}
+ */
+let _listenerCallbackTuple;  // eslint-disable-line no-unused-vars
+
+/**
  * @implements {EventTarget}
  * @unrestricted
  */
 export class ObjectWrapper {
   constructor() {
-    /** @type {(!Map<string|symbol, !Array<!Common.Object._listenerCallbackTuple>>|undefined)} */
+    /** @type {(!Map<string|symbol, !Array<!_listenerCallbackTuple>>|undefined)} */
     this._listeners;
   }
 

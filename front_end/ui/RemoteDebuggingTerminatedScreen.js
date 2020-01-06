@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
 import {Dialog} from './Dialog.js';
 import {SizeBehavior} from './GlassPane.js';
 import {createTextButton, formatLocalized} from './UIUtils.js';
@@ -19,8 +20,8 @@ export class RemoteDebuggingTerminatedScreen extends VBox {
     reasonElement.textContent = reason;
     message.appendChild(formatLocalized('Debugging connection was closed. Reason: %s', [reasonElement]));
     this.contentElement.createChild('div', 'message').textContent =
-        Common.UIString('Reconnect when ready by reopening DevTools.');
-    const button = createTextButton(Common.UIString('Reconnect DevTools'), () => window.location.reload());
+        Common.UIString.UIString('Reconnect when ready by reopening DevTools.');
+    const button = createTextButton(Common.UIString.UIString('Reconnect DevTools'), () => window.location.reload());
     this.contentElement.createChild('div', 'button').appendChild(button);
   }
 

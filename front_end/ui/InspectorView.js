@@ -28,6 +28,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as Common from '../common/common.js';
 import {ActionDelegate as ActionDelegateInterface} from './ActionDelegate.js';  // eslint-disable-line no-unused-vars
 import {Context} from './Context.js';                                           // eslint-disable-line no-unused-vars
 import {Dialog} from './Dialog.js';
@@ -65,7 +66,7 @@ export class InspectorView extends VBox {
     moreTabsButton.setTitle(ls`More Tools`);
     this._drawerTabbedPane = this._drawerTabbedLocation.tabbedPane();
     this._drawerTabbedPane.setMinimumSize(0, 27);
-    const closeDrawerButton = new ToolbarButton(Common.UIString('Close drawer'), 'largeicon-delete');
+    const closeDrawerButton = new ToolbarButton(Common.UIString.UIString('Close drawer'), 'largeicon-delete');
     closeDrawerButton.addEventListener(ToolbarButton.Events.Click, this._closeDrawer, this);
     this._drawerSplitWidget.installResizer(this._drawerTabbedPane.headerElement());
     this._drawerTabbedPane.addEventListener(TabbedPaneEvents.TabSelected, this._drawerTabSelected, this);
@@ -81,7 +82,7 @@ export class InspectorView extends VBox {
     this._tabbedPane = this._tabbedLocation.tabbedPane();
     this._tabbedPane.registerRequiredCSS('ui/inspectorViewTabbedPane.css');
     this._tabbedPane.addEventListener(TabbedPaneEvents.TabSelected, this._tabSelected, this);
-    this._tabbedPane.setAccessibleName(Common.UIString('Panels'));
+    this._tabbedPane.setAccessibleName(Common.UIString.UIString('Panels'));
 
     // Store the initial selected panel for use in launch histograms
     Host.userMetrics.setLaunchPanel(this._tabbedPane.selectedTabId);
@@ -277,7 +278,7 @@ export class InspectorView extends VBox {
     }
 
     // Ctrl/Cmd + 1-9 should show corresponding panel.
-    const panelShortcutEnabled = Common.moduleSetting('shortcutPanelSwitch').get();
+    const panelShortcutEnabled = Common.Settings.moduleSetting('shortcutPanelSwitch').get();
     if (panelShortcutEnabled) {
       let panelIndex = -1;
       if (event.keyCode > 0x30 && event.keyCode < 0x3A) {

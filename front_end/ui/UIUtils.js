@@ -29,6 +29,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as Common from '../common/common.js';
 import {Dialog} from './Dialog.js';
 import {Size} from './Geometry.js';
 import {GlassPane, PointerEventsBehavior, SizeBehavior} from './GlassPane.js';
@@ -573,29 +574,29 @@ export function handleElementValueModifications(event, element, finishHandler, s
 Number.preciseMillisToString = function(ms, precision) {
   precision = precision || 0;
   const format = '%.' + precision + 'f\xa0ms';
-  return Common.UIString(format, ms);
+  return Common.UIString.UIString(format, ms);
 };
 
-/** @type {!Common.UIStringFormat} */
-export const _microsFormat = new Common.UIStringFormat('%.0f\xa0\u03bcs');
+/** @type {!Common.UIString.UIStringFormat} */
+export const _microsFormat = new Common.UIString.UIStringFormat('%.0f\xa0\u03bcs');
 
-/** @type {!Common.UIStringFormat} */
-export const _subMillisFormat = new Common.UIStringFormat('%.2f\xa0ms');
+/** @type {!Common.UIString.UIStringFormat} */
+export const _subMillisFormat = new Common.UIString.UIStringFormat('%.2f\xa0ms');
 
-/** @type {!Common.UIStringFormat} */
-export const _millisFormat = new Common.UIStringFormat('%.0f\xa0ms');
+/** @type {!Common.UIString.UIStringFormat} */
+export const _millisFormat = new Common.UIString.UIStringFormat('%.0f\xa0ms');
 
-/** @type {!Common.UIStringFormat} */
-export const _secondsFormat = new Common.UIStringFormat('%.2f\xa0s');
+/** @type {!Common.UIString.UIStringFormat} */
+export const _secondsFormat = new Common.UIString.UIStringFormat('%.2f\xa0s');
 
-/** @type {!Common.UIStringFormat} */
-export const _minutesFormat = new Common.UIStringFormat('%.1f\xa0min');
+/** @type {!Common.UIString.UIStringFormat} */
+export const _minutesFormat = new Common.UIString.UIStringFormat('%.1f\xa0min');
 
-/** @type {!Common.UIStringFormat} */
-export const _hoursFormat = new Common.UIStringFormat('%.1f\xa0hrs');
+/** @type {!Common.UIString.UIStringFormat} */
+export const _hoursFormat = new Common.UIString.UIStringFormat('%.1f\xa0hrs');
 
-/** @type {!Common.UIStringFormat} */
-export const _daysFormat = new Common.UIStringFormat('%.1f\xa0days');
+/** @type {!Common.UIString.UIStringFormat} */
+export const _daysFormat = new Common.UIString.UIStringFormat('%.1f\xa0days');
 
 /**
  * @param {number} ms
@@ -658,22 +659,22 @@ Number.secondsToString = function(seconds, higherResolution) {
  */
 Number.bytesToString = function(bytes) {
   if (bytes < 1024) {
-    return Common.UIString('%.0f\xa0B', bytes);
+    return Common.UIString.UIString('%.0f\xa0B', bytes);
   }
 
   const kilobytes = bytes / 1024;
   if (kilobytes < 100) {
-    return Common.UIString('%.1f\xa0KB', kilobytes);
+    return Common.UIString.UIString('%.1f\xa0KB', kilobytes);
   }
   if (kilobytes < 1024) {
-    return Common.UIString('%.0f\xa0KB', kilobytes);
+    return Common.UIString.UIString('%.0f\xa0KB', kilobytes);
   }
 
   const megabytes = kilobytes / 1024;
   if (megabytes < 100) {
-    return Common.UIString('%.1f\xa0MB', megabytes);
+    return Common.UIString.UIString('%.1f\xa0MB', megabytes);
   } else {
-    return Common.UIString('%.0f\xa0MB', megabytes);
+    return Common.UIString.UIString('%.0f\xa0MB', megabytes);
   }
 };
 
@@ -706,7 +707,7 @@ export function formatLocalized(format, substitutions) {
     a.appendChild(typeof b === 'string' ? createTextNode(b) : b);
     return a;
   }
-  return String.format(Common.UIString(format), substitutions, formatters, createElement('span'), append)
+  return String.format(Common.UIString.UIString(format), substitutions, formatters, createElement('span'), append)
       .formattedResult;
 }
 
@@ -714,21 +715,21 @@ export function formatLocalized(format, substitutions) {
  * @return {string}
  */
 export function openLinkExternallyLabel() {
-  return Common.UIString('Open in new tab');
+  return Common.UIString.UIString('Open in new tab');
 }
 
 /**
  * @return {string}
  */
 export function copyLinkAddressLabel() {
-  return Common.UIString('Copy link address');
+  return Common.UIString.UIString('Copy link address');
 }
 
 /**
  * @return {string}
  */
 export function anotherProfilerActiveLabel() {
-  return Common.UIString('Another profiler is already active');
+  return Common.UIString.UIString('Another profiler is already active');
 }
 
 /**
@@ -744,7 +745,7 @@ export function asyncStackTraceLabel(description) {
     }
     return ls`${description} (async)`;
   }
-  return Common.UIString('Async Call');
+  return Common.UIString.UIString('Async Call');
 }
 
 /**
@@ -1125,7 +1126,7 @@ export function animateFunction(window, func, params, duration, animationComplet
 /**
  * @unrestricted
  */
-export class LongClickController extends Common.Object {
+export class LongClickController extends Common.ObjectWrapper.ObjectWrapper {
   /**
    * @param {!Element} element
    * @param {function(!Event)} callback
@@ -1229,7 +1230,7 @@ LongClickController.TIME_MS = 200;
 
 /**
  * @param {!Document} document
- * @param {!Common.Setting} themeSetting
+ * @param {!Common.Settings.Setting} themeSetting
  */
 export function initializeUIUtils(document, themeSetting) {
   document.body.classList.toggle('inactive', !document.hasFocus());
@@ -1256,7 +1257,7 @@ export function initializeUIUtils(document, themeSetting) {
  * @return {string}
  */
 export function beautifyFunctionName(name) {
-  return name || Common.UIString('(anonymous)');
+  return name || Common.UIString.UIString('(anonymous)');
 }
 
 /**
@@ -1731,7 +1732,7 @@ export function measureTextWidth(context, text) {
  */
 export class ThemeSupport {
   /**
-   * @param {!Common.Setting} setting
+   * @param {!Common.Settings.Setting} setting
    */
   constructor(setting) {
     const systemPreferredTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'default';
@@ -1929,7 +1930,7 @@ export class ThemeSupport {
    * @return {string}
    */
   patchColorText(text, colorUsage) {
-    const color = Common.Color.parse(text);
+    const color = Common.Color.Color.parse(text);
     if (!color) {
       return text;
     }
@@ -1942,16 +1943,16 @@ export class ThemeSupport {
   }
 
   /**
-   * @param {!Common.Color} color
+   * @param {!Common.Color.Color} color
    * @param {!ThemeSupport.ColorUsage} colorUsage
-   * @return {!Common.Color}
+   * @return {!Common.Color.Color}
    */
   patchColor(color, colorUsage) {
     const hsla = color.hsla();
     this._patchHSLA(hsla, colorUsage);
     const rgba = [];
-    Common.Color.hsl2rgb(hsla, rgba);
-    return new Common.Color(rgba, color.format());
+    Common.Color.Color.hsl2rgb(hsla, rgba);
+    return new Common.Color.Color(rgba, color.format());
   }
 
   /**
@@ -2058,7 +2059,7 @@ export class MessageDialog {
     const shadowRoot = createShadowRootWithCoreStyles(dialog.contentElement, 'ui/confirmDialog.css');
     const content = shadowRoot.createChild('div', 'widget');
     await new Promise(resolve => {
-      const okButton = createTextButton(Common.UIString('OK'), resolve, '', true);
+      const okButton = createTextButton(Common.UIString.UIString('OK'), resolve, '', true);
       content.createChild('div', 'message').createChild('span').textContent = message;
       content.createChild('div', 'button').appendChild(okButton);
       dialog.setOutsideClickCallback(event => {
@@ -2087,8 +2088,8 @@ export class ConfirmDialog {
     content.createChild('div', 'message').createChild('span').textContent = message;
     const buttonsBar = content.createChild('div', 'button');
     const result = await new Promise(resolve => {
-      buttonsBar.appendChild(createTextButton(Common.UIString('OK'), () => resolve(true), '', true));
-      buttonsBar.appendChild(createTextButton(Common.UIString('Cancel'), () => resolve(false)));
+      buttonsBar.appendChild(createTextButton(Common.UIString.UIString('OK'), () => resolve(true), '', true));
+      buttonsBar.appendChild(createTextButton(Common.UIString.UIString('Cancel'), () => resolve(false)));
       dialog.setOutsideClickCallback(event => {
         event.consume();
         resolve(false);

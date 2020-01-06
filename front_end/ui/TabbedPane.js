@@ -28,6 +28,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as Common from '../common/common.js';
 import {ContextMenu} from './ContextMenu.js';
 import {Constraints, Size} from './Geometry.js';
 import {Icon} from './Icon.js';
@@ -1302,10 +1303,11 @@ export class TabbedPaneTab {
 
     const contextMenu = new ContextMenu(event);
     if (this._closeable) {
-      contextMenu.defaultSection().appendItem(Common.UIString('Close'), close.bind(this));
-      contextMenu.defaultSection().appendItem(Common.UIString('Close others'), closeOthers.bind(this));
-      contextMenu.defaultSection().appendItem(Common.UIString('Close tabs to the right'), closeToTheRight.bind(this));
-      contextMenu.defaultSection().appendItem(Common.UIString('Close all'), closeAll.bind(this));
+      contextMenu.defaultSection().appendItem(Common.UIString.UIString('Close'), close.bind(this));
+      contextMenu.defaultSection().appendItem(Common.UIString.UIString('Close others'), closeOthers.bind(this));
+      contextMenu.defaultSection().appendItem(
+          Common.UIString.UIString('Close tabs to the right'), closeToTheRight.bind(this));
+      contextMenu.defaultSection().appendItem(Common.UIString.UIString('Close all'), closeAll.bind(this));
     }
     if (this._delegate) {
       this._delegate.onContextMenu(this.id, contextMenu);

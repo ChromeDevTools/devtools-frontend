@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
 import {createTextButton} from './UIUtils.js';
 import {createShadowRootWithCoreStyles} from './utils/create-shadow-root-with-core-styles.js';
 import {Widget} from './Widget.js';  // eslint-disable-line no-unused-vars
@@ -13,7 +14,7 @@ export class Infobar {
   /**
    * @param {!Type} type
    * @param {string} text
-   * @param {!Common.Setting=} disableSetting
+   * @param {!Common.Settings.Setting=} disableSetting
    */
   constructor(type, text, disableSetting) {
     this.element = createElementWithClass('div', 'flex-none');
@@ -30,7 +31,7 @@ export class Infobar {
         createTextButton(ls`more`, this._onToggleDetails.bind(this), 'infobar-toggle link-style hidden');
     this._mainRow.appendChild(this._toggleElement);
 
-    /** @type {?Common.Setting} */
+    /** @type {?Common.Settings.Setting} */
     this._disableSetting = disableSetting || null;
     if (disableSetting) {
       const disableButton = createTextButton(ls`never show`, this._onDisable.bind(this), 'infobar-toggle link-style');
@@ -48,7 +49,7 @@ export class Infobar {
   /**
    * @param {!Type} type
    * @param {string} text
-   * @param {!Common.Setting=} disableSetting
+   * @param {!Common.Settings.Setting=} disableSetting
    * @return {?Infobar}
    */
   static create(type, text, disableSetting) {

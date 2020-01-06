@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
 import {ContextMenu} from './ContextMenu.js';  // eslint-disable-line no-unused-vars
 import {Icon} from './Icon.js';
 import {Events as TabbedPaneEvents, TabbedPane} from './TabbedPane.js';
@@ -393,11 +394,14 @@ export class _TabbedLocation extends _Location {
 
     this._tabbedPane.addEventListener(TabbedPaneEvents.TabSelected, this._tabSelected, this);
     this._tabbedPane.addEventListener(TabbedPaneEvents.TabClosed, this._tabClosed, this);
-    this._closeableTabSetting = Common.settings.createSetting(location + '-closeableTabs', {});
-    this._tabOrderSetting = Common.settings.createSetting(location + '-tabOrder', {});
+    // Note: go via self.Common for globally-namespaced singletons.
+    this._closeableTabSetting = self.Common.settings.createSetting(location + '-closeableTabs', {});
+    // Note: go via self.Common for globally-namespaced singletons.
+    this._tabOrderSetting = self.Common.settings.createSetting(location + '-tabOrder', {});
     this._tabbedPane.addEventListener(TabbedPaneEvents.TabOrderChanged, this._persistTabOrder, this);
     if (restoreSelection) {
-      this._lastSelectedTabSetting = Common.settings.createSetting(location + '-selectedTab', '');
+      // Note: go via self.Common for globally-namespaced singletons.
+      this._lastSelectedTabSetting = self.Common.settings.createSetting(location + '-selectedTab', '');
     }
     this._defaultTab = defaultTab;
 
@@ -479,7 +483,7 @@ export class _TabbedLocation extends _Location {
     const views = Array.from(this._views.values());
     views.sort((viewa, viewb) => viewa.title().localeCompare(viewb.title()));
     for (const view of views) {
-      const title = Common.UIString(view.title());
+      const title = Common.UIString.UIString(view.title());
       contextMenu.defaultSection().appendItem(title, this.showView.bind(this, view, undefined, true));
     }
   }

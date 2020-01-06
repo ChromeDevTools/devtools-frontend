@@ -26,6 +26,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as Common from '../common/common.js';
 import {Icon} from './Icon.js';                            // eslint-disable-line no-unused-vars
 import {Config, InplaceEditor} from './InplaceEditor.js';  // eslint-disable-line no-unused-vars
 import {Keys} from './KeyboardShortcut.js';
@@ -36,7 +37,7 @@ import {createShadowRootWithCoreStyles} from './utils/create-shadow-root-with-co
 /**
  * @unrestricted
  */
-export class TreeOutline extends Common.Object {
+export class TreeOutline extends Common.ObjectWrapper.ObjectWrapper {
   constructor() {
     super();
     this._createRootElement();

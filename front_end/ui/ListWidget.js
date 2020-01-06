@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
 import {Toolbar, ToolbarButton} from './Toolbar.js';
 import {createInput, createTextButton, ElementFocusRestorer} from './UIUtils.js';
 import {VBox} from './Widget.js';
@@ -138,11 +139,11 @@ export class ListWidget extends VBox {
 
     const toolbar = new Toolbar('', buttons);
 
-    const editButton = new ToolbarButton(Common.UIString('Edit'), 'largeicon-edit');
+    const editButton = new ToolbarButton(Common.UIString.UIString('Edit'), 'largeicon-edit');
     editButton.addEventListener(ToolbarButton.Events.Click, onEditClicked.bind(this));
     toolbar.appendToolbarItem(editButton);
 
-    const removeButton = new ToolbarButton(Common.UIString('Remove'), 'largeicon-trash-bin');
+    const removeButton = new ToolbarButton(Common.UIString.UIString('Remove'), 'largeicon-trash-bin');
     removeButton.addEventListener(ToolbarButton.Events.Click, onRemoveClicked.bind(this));
     toolbar.appendToolbarItem(removeButton);
 
@@ -212,8 +213,8 @@ export class ListWidget extends VBox {
     this._updatePlaceholder();
     this._list.insertBefore(this._editor.element, insertionPoint);
     this._editor.beginEdit(
-        item, index, element ? Common.UIString('Save') : Common.UIString('Add'), this._commitEditing.bind(this),
-        this._stopEditing.bind(this));
+        item, index, element ? Common.UIString.UIString('Save') : Common.UIString.UIString('Add'),
+        this._commitEditing.bind(this), this._stopEditing.bind(this));
   }
 
   _commitEditing() {
@@ -292,7 +293,7 @@ export class Editor {
     const buttonsRow = this.element.createChild('div', 'editor-buttons');
     this._commitButton = createTextButton('', this._commitClicked.bind(this), '', true /* primary */);
     buttonsRow.appendChild(this._commitButton);
-    this._cancelButton = createTextButton(Common.UIString('Cancel'), this._cancelClicked.bind(this));
+    this._cancelButton = createTextButton(Common.UIString.UIString('Cancel'), this._cancelClicked.bind(this));
     this._cancelButton.addEventListener(
         'keydown', onKeyDown.bind(null, isEnterKey, this._cancelClicked.bind(this)), false);
     buttonsRow.appendChild(this._cancelButton);

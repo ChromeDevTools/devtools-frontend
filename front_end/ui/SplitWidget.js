@@ -26,6 +26,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as Common from '../common/common.js';
 import {Constraints} from './Geometry.js';
 import {Events as ResizerWidgetEvents, SimpleResizerWidget} from './ResizerWidget.js';
 import {ToolbarButton} from './Toolbar.js';
@@ -69,7 +70,8 @@ export class SplitWidget extends Widget {
     this._defaultSidebarHeight = defaultSidebarHeight || this._defaultSidebarWidth;
     this._constraintsInDip = !!constraintsInDip;
     this._resizeStartSizeDIP = 0;
-    this._setting = settingName ? Common.settings.createSetting(settingName, {}) : null;
+    // Note: go via self.Common for globally-namespaced singletons.
+    this._setting = settingName ? self.Common.settings.createSetting(settingName, {}) : null;
 
     this._totalSizeCSS = 0;
     this._totalSizeOtherDimensionCSS = 0;
@@ -968,8 +970,8 @@ export class SplitWidget extends Widget {
     }
     this._showHideSidebarButton.setGlyph(glyph);
     this._showHideSidebarButton.setTitle(
-        sidebarHidden ? Common.UIString('Show %s', this._showHideSidebarButtonTitle) :
-                        Common.UIString('Hide %s', this._showHideSidebarButtonTitle));
+        sidebarHidden ? Common.UIString.UIString('Show %s', this._showHideSidebarButtonTitle) :
+                        Common.UIString.UIString('Hide %s', this._showHideSidebarButtonTitle));
   }
 }
 

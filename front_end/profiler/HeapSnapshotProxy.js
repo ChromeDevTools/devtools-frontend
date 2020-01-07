@@ -31,7 +31,7 @@
 /**
  * @unrestricted
  */
-Profiler.HeapSnapshotWorkerProxy = class extends Common.Object {
+export class HeapSnapshotWorkerProxy extends Common.Object {
   /**
    * @param {function(string, *)} eventHandler
    */
@@ -50,12 +50,12 @@ Profiler.HeapSnapshotWorkerProxy = class extends Common.Object {
 
   /**
    * @param {number} profileUid
-   * @param {function(!Profiler.HeapSnapshotProxy)} snapshotReceivedCallback
-   * @return {!Profiler.HeapSnapshotLoaderProxy}
+   * @param {function(!HeapSnapshotProxy)} snapshotReceivedCallback
+   * @return {!HeapSnapshotLoaderProxy}
    */
   createLoader(profileUid, snapshotReceivedCallback) {
     const objectId = this._nextObjectId++;
-    const proxy = new Profiler.HeapSnapshotLoaderProxy(this, objectId, profileUid, snapshotReceivedCallback);
+    const proxy = new HeapSnapshotLoaderProxy(this, objectId, profileUid, snapshotReceivedCallback);
     this._postMessage({
       callId: this._nextCallId++,
       disposition: 'create',
@@ -96,7 +96,7 @@ Profiler.HeapSnapshotWorkerProxy = class extends Common.Object {
     const newObjectId = this._nextObjectId++;
 
     /**
-     * @this {Profiler.HeapSnapshotWorkerProxy}
+     * @this {HeapSnapshotWorkerProxy}
      */
     function wrapCallback(remoteResult) {
       callback(remoteResult ? new proxyConstructor(this, newObjectId) : null);
@@ -161,7 +161,7 @@ Profiler.HeapSnapshotWorkerProxy = class extends Common.Object {
       }
     }
     const hasLongRunningCalls = !!this._previousCallbacks.size;
-    this.dispatchEventToListeners(Profiler.HeapSnapshotWorkerProxy.Events.Wait, hasLongRunningCalls);
+    this.dispatchEventToListeners(HeapSnapshotWorkerProxy.Events.Wait, hasLongRunningCalls);
     for (const callId of this._callbacks.keysArray()) {
       this._previousCallbacks.add(callId);
     }
@@ -198,18 +198,18 @@ Profiler.HeapSnapshotWorkerProxy = class extends Common.Object {
   _postMessage(message) {
     this._worker.postMessage(message);
   }
-};
+}
 
-Profiler.HeapSnapshotWorkerProxy.Events = {
+HeapSnapshotWorkerProxy.Events = {
   Wait: Symbol('Wait')
 };
 
 /**
  * @unrestricted
  */
-Profiler.HeapSnapshotProxyObject = class {
+export class HeapSnapshotProxyObject {
   /**
-   * @param {!Profiler.HeapSnapshotWorkerProxy} worker
+   * @param {!HeapSnapshotWorkerProxy} worker
    * @param {number} objectId
    */
   constructor(worker, objectId) {
@@ -256,18 +256,18 @@ Profiler.HeapSnapshotProxyObject = class {
     const args = Array.prototype.slice.call(arguments);
     return new Promise(resolve => this._callWorker('callMethod', [resolve, ...args]));
   }
-};
+}
 
 /**
  * @implements {Common.OutputStream}
  * @unrestricted
  */
-Profiler.HeapSnapshotLoaderProxy = class extends Profiler.HeapSnapshotProxyObject {
+export class HeapSnapshotLoaderProxy extends HeapSnapshotProxyObject {
   /**
-   * @param {!Profiler.HeapSnapshotWorkerProxy} worker
+   * @param {!HeapSnapshotWorkerProxy} worker
    * @param {number} objectId
    * @param {number} profileUid
-   * @param {function(!Profiler.HeapSnapshotProxy)} snapshotReceivedCallback
+   * @param {function(!HeapSnapshotProxy)} snapshotReceivedCallback
    */
   constructor(worker, objectId, profileUid, snapshotReceivedCallback) {
     super(worker, objectId);
@@ -290,20 +290,20 @@ Profiler.HeapSnapshotLoaderProxy = class extends Profiler.HeapSnapshotProxyObjec
   async close() {
     await this._callMethodPromise('close');
     const snapshotProxy =
-        await new Promise(resolve => this.callFactoryMethod(resolve, 'buildSnapshot', Profiler.HeapSnapshotProxy));
+        await new Promise(resolve => this.callFactoryMethod(resolve, 'buildSnapshot', HeapSnapshotProxy));
     this.dispose();
     snapshotProxy.setProfileUid(this._profileUid);
     await snapshotProxy.updateStaticData();
     this._snapshotReceivedCallback(snapshotProxy);
   }
-};
+}
 
 /**
  * @unrestricted
  */
-Profiler.HeapSnapshotProxy = class extends Profiler.HeapSnapshotProxyObject {
+export default class HeapSnapshotProxy extends HeapSnapshotProxyObject {
   /**
-   * @param {!Profiler.HeapSnapshotWorkerProxy} worker
+   * @param {!HeapSnapshotWorkerProxy} worker
    * @param {number} objectId
    */
   constructor(worker, objectId) {
@@ -355,54 +355,54 @@ Profiler.HeapSnapshotProxy = class extends Profiler.HeapSnapshotProxyObject {
 
   /**
    * @param {number} nodeIndex
-   * @return {!Profiler.HeapSnapshotProviderProxy}
+   * @return {!HeapSnapshotProviderProxy}
    */
   createEdgesProvider(nodeIndex) {
-    return this.callFactoryMethod(null, 'createEdgesProvider', Profiler.HeapSnapshotProviderProxy, nodeIndex);
+    return this.callFactoryMethod(null, 'createEdgesProvider', HeapSnapshotProviderProxy, nodeIndex);
   }
 
   /**
    * @param {number} nodeIndex
-   * @return {!Profiler.HeapSnapshotProviderProxy}
+   * @return {!HeapSnapshotProviderProxy}
    */
   createRetainingEdgesProvider(nodeIndex) {
-    return this.callFactoryMethod(null, 'createRetainingEdgesProvider', Profiler.HeapSnapshotProviderProxy, nodeIndex);
+    return this.callFactoryMethod(null, 'createRetainingEdgesProvider', HeapSnapshotProviderProxy, nodeIndex);
   }
 
   /**
    * @param {string} baseSnapshotId
    * @param {string} className
-   * @return {?Profiler.HeapSnapshotProviderProxy}
+   * @return {?HeapSnapshotProviderProxy}
    */
   createAddedNodesProvider(baseSnapshotId, className) {
     return this.callFactoryMethod(
-        null, 'createAddedNodesProvider', Profiler.HeapSnapshotProviderProxy, baseSnapshotId, className);
+        null, 'createAddedNodesProvider', HeapSnapshotProviderProxy, baseSnapshotId, className);
   }
 
   /**
    * @param {!Array.<number>} nodeIndexes
-   * @return {?Profiler.HeapSnapshotProviderProxy}
+   * @return {?HeapSnapshotProviderProxy}
    */
   createDeletedNodesProvider(nodeIndexes) {
-    return this.callFactoryMethod(null, 'createDeletedNodesProvider', Profiler.HeapSnapshotProviderProxy, nodeIndexes);
+    return this.callFactoryMethod(null, 'createDeletedNodesProvider', HeapSnapshotProviderProxy, nodeIndexes);
   }
 
   /**
    * @param {function(*):boolean} filter
-   * @return {?Profiler.HeapSnapshotProviderProxy}
+   * @return {?HeapSnapshotProviderProxy}
    */
   createNodesProvider(filter) {
-    return this.callFactoryMethod(null, 'createNodesProvider', Profiler.HeapSnapshotProviderProxy, filter);
+    return this.callFactoryMethod(null, 'createNodesProvider', HeapSnapshotProviderProxy, filter);
   }
 
   /**
    * @param {string} className
    * @param {!HeapSnapshotModel.NodeFilter} nodeFilter
-   * @return {?Profiler.HeapSnapshotProviderProxy}
+   * @return {?HeapSnapshotProviderProxy}
    */
   createNodesProviderForClass(className, nodeFilter) {
     return this.callFactoryMethod(
-        null, 'createNodesProviderForClass', Profiler.HeapSnapshotProviderProxy, className, nodeFilter);
+        null, 'createNodesProviderForClass', HeapSnapshotProviderProxy, className, nodeFilter);
   }
 
   /**
@@ -490,15 +490,15 @@ Profiler.HeapSnapshotProxy = class extends Profiler.HeapSnapshotProxyObject {
   maxJSObjectId() {
     return this._staticData.maxJSObjectId;
   }
-};
+}
 
 /**
  * @implements {Profiler.HeapSnapshotGridNode.ChildrenProvider}
  * @unrestricted
  */
-Profiler.HeapSnapshotProviderProxy = class extends Profiler.HeapSnapshotProxyObject {
+export class HeapSnapshotProviderProxy extends HeapSnapshotProxyObject {
   /**
-   * @param {!Profiler.HeapSnapshotWorkerProxy} worker
+   * @param {!HeapSnapshotWorkerProxy} worker
    * @param {number} objectId
    */
   constructor(worker, objectId) {
@@ -540,4 +540,25 @@ Profiler.HeapSnapshotProviderProxy = class extends Profiler.HeapSnapshotProxyObj
   sortAndRewind(comparator) {
     return this._callMethodPromise('sortAndRewind', comparator);
   }
-};
+}
+
+/* Legacy exported object */
+self.Profiler = self.Profiler || {};
+
+/* Legacy exported object */
+Profiler = Profiler || {};
+
+/** @constructor */
+Profiler.HeapSnapshotProxy = HeapSnapshotProxy;
+
+/** @constructor */
+Profiler.HeapSnapshotWorkerProxy = HeapSnapshotWorkerProxy;
+
+/** @constructor */
+Profiler.HeapSnapshotProxyObject = HeapSnapshotProxyObject;
+
+/** @constructor */
+Profiler.HeapSnapshotLoaderProxy = HeapSnapshotLoaderProxy;
+
+/** @constructor */
+Profiler.HeapSnapshotProviderProxy = HeapSnapshotProviderProxy;

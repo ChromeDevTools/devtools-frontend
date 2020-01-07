@@ -6,9 +6,9 @@
  * @implements {UI.Searchable}
  * @unrestricted
  */
-Profiler.HeapProfileView = class extends Profiler.ProfileView {
+export default class HeapProfileView extends Profiler.ProfileView {
   /**
-   * @param {!Profiler.SamplingHeapProfileHeader} profileHeader
+   * @param {!SamplingHeapProfileHeader} profileHeader
    */
   constructor(profileHeader) {
     super();
@@ -19,14 +19,14 @@ Profiler.HeapProfileView = class extends Profiler.ProfileView {
       Profiler.ProfileView.ViewTypes.Flame, Profiler.ProfileView.ViewTypes.Heavy, Profiler.ProfileView.ViewTypes.Tree
     ];
 
-    const isNativeProfile = this._profileType.id === Profiler.SamplingNativeHeapProfileType.TypeId ||
-        this._profileType.id === Profiler.SamplingNativeHeapSnapshotType.TypeId;
+    const isNativeProfile = this._profileType.id === SamplingNativeHeapProfileType.TypeId ||
+        this._profileType.id === SamplingNativeHeapSnapshotType.TypeId;
     if (isNativeProfile) {
       views.push(Profiler.ProfileView.ViewTypes.Text);
     }
 
-    this.initialize(new Profiler.HeapProfileView.NodeFormatter(this), views);
-    const profile = new Profiler.SamplingHeapProfileModel(profileHeader._profile || profileHeader.protocolProfile());
+    this.initialize(new NodeFormatter(this), views);
+    const profile = new SamplingHeapProfileModel(profileHeader._profile || profileHeader.protocolProfile());
     this.adjustedTotal = profile.total;
     this.setProfile(profile);
 
@@ -39,11 +39,9 @@ Profiler.HeapProfileView = class extends Profiler.ProfileView {
       this._timelineOverview.show(this.element, this.element.firstChild);
       this._timelineOverview.start();
 
-      this._profileType.addEventListener(
-          Profiler.SamplingHeapProfileType.Events.StatsUpdate, this._onStatsUpdate, this);
+      this._profileType.addEventListener(SamplingHeapProfileType.Events.StatsUpdate, this._onStatsUpdate, this);
       this._profileType.once(Profiler.ProfileType.Events.ProfileComplete).then(() => {
-        this._profileType.removeEventListener(
-            Profiler.SamplingHeapProfileType.Events.StatsUpdate, this._onStatsUpdate, this);
+        this._profileType.removeEventListener(SamplingHeapProfileType.Events.StatsUpdate, this._onStatsUpdate, this);
         this._timelineOverview.stop();
         this._timelineOverview.updateGrid();
       });
@@ -73,7 +71,7 @@ Profiler.HeapProfileView = class extends Profiler.ProfileView {
    * @param {number} maxId
    */
   _setSelectionRange(minId, maxId) {
-    const profile = new Profiler.SamplingHeapProfileModel(
+    const profile = new SamplingHeapProfileModel(
         this._profileHeader._profile || this._profileHeader.protocolProfile(), minId, maxId);
     this.adjustedTotal = profile.total;
     this.setProfile(profile);
@@ -140,8 +138,8 @@ Profiler.HeapProfileView = class extends Profiler.ProfileView {
    * @return {!Profiler.ProfileFlameChartDataProvider}
    */
   createFlameChartDataProvider() {
-    return new Profiler.HeapFlameChartDataProvider(
-        /** @type {!Profiler.SamplingHeapProfileModel} */ (this.profile()), this._profileHeader.heapProfilerModel());
+    return new HeapFlameChartDataProvider(
+        /** @type {!SamplingHeapProfileModel} */ (this.profile()), this._profileHeader.heapProfilerModel());
   }
 
   /**
@@ -216,12 +214,12 @@ Profiler.HeapProfileView = class extends Profiler.ProfileView {
       }
     }
   }
-};
+}
 
 /**
  * @unrestricted
  */
-Profiler.SamplingHeapProfileTypeBase = class extends Profiler.ProfileType {
+export class SamplingHeapProfileTypeBase extends Profiler.ProfileType {
   /**
    * @param {string} typeId
    * @param {string} description
@@ -233,10 +231,10 @@ Profiler.SamplingHeapProfileTypeBase = class extends Profiler.ProfileType {
 
   /**
    * @override
-   * @return {?Profiler.SamplingHeapProfileHeader}
+   * @return {?SamplingHeapProfileHeader}
    */
   profileBeingRecorded() {
-    return /** @type {?Profiler.SamplingHeapProfileHeader} */ (super.profileBeingRecorded());
+    return /** @type {?SamplingHeapProfileHeader} */ (super.profileBeingRecorded());
   }
 
   /**
@@ -280,7 +278,7 @@ Profiler.SamplingHeapProfileTypeBase = class extends Profiler.ProfileType {
     if (this.profileBeingRecorded() || !heapProfilerModel) {
       return;
     }
-    const profileHeader = new Profiler.SamplingHeapProfileHeader(heapProfilerModel, this);
+    const profileHeader = new SamplingHeapProfileHeader(heapProfilerModel, this);
     this.setProfileBeingRecorded(profileHeader);
     this.addProfile(profileHeader);
     profileHeader.updateStatus(ls`Recording\u2026`);
@@ -318,7 +316,7 @@ Profiler.SamplingHeapProfileTypeBase = class extends Profiler.ProfileType {
    * @return {!Profiler.ProfileHeader}
    */
   createProfileLoadedFromFile(title) {
-    return new Profiler.SamplingHeapProfileHeader(null, this, title);
+    return new SamplingHeapProfileHeader(null, this, title);
   }
 
   /**
@@ -338,15 +336,15 @@ Profiler.SamplingHeapProfileTypeBase = class extends Profiler.ProfileType {
   _stopSampling() {
     throw 'Not implemented';
   }
-};
+}
 
 /**
  * @unrestricted
  */
-Profiler.SamplingHeapProfileType = class extends Profiler.SamplingHeapProfileTypeBase {
+export class SamplingHeapProfileType extends SamplingHeapProfileTypeBase {
   constructor() {
-    super(Profiler.SamplingHeapProfileType.TypeId, ls`Allocation sampling`);
-    Profiler.SamplingHeapProfileType.instance = this;
+    super(SamplingHeapProfileType.TypeId, ls`Allocation sampling`);
+    SamplingHeapProfileType.instance = this;
     this._updateTimer = null;
     this._updateIntervalMs = 200;
   }
@@ -392,7 +390,7 @@ Profiler.SamplingHeapProfileType = class extends Profiler.SamplingHeapProfileTyp
   _stopSampling() {
     clearTimeout(this._updateTimer);
     this._updateTimer = null;
-    this.dispatchEventToListeners(Profiler.SamplingHeapProfileType.Events.RecordingStopped);
+    this.dispatchEventToListeners(SamplingHeapProfileType.Events.RecordingStopped);
     return this.profileBeingRecorded().heapProfilerModel().stopSampling();
   }
 
@@ -401,15 +399,15 @@ Profiler.SamplingHeapProfileType = class extends Profiler.SamplingHeapProfileTyp
     if (!this._updateTimer) {
       return;
     }
-    this.dispatchEventToListeners(Profiler.SamplingHeapProfileType.Events.StatsUpdate, profile);
+    this.dispatchEventToListeners(SamplingHeapProfileType.Events.StatsUpdate, profile);
     this._updateTimer = setTimeout(this._updateStats.bind(this), this._updateIntervalMs);
   }
-};
+}
 
-Profiler.SamplingHeapProfileType.TypeId = 'SamplingHeap';
+SamplingHeapProfileType.TypeId = 'SamplingHeap';
 
 /** @override @suppress {checkPrototypalTypes} @enum {symbol} */
-Profiler.SamplingHeapProfileType.Events = {
+SamplingHeapProfileType.Events = {
   RecordingStopped: Symbol('RecordingStopped'),
   StatsUpdate: Symbol('StatsUpdate')
 };
@@ -417,10 +415,10 @@ Profiler.SamplingHeapProfileType.Events = {
 /**
  * @unrestricted
  */
-Profiler.SamplingNativeHeapProfileType = class extends Profiler.SamplingHeapProfileTypeBase {
+export class SamplingNativeHeapProfileType extends SamplingHeapProfileTypeBase {
   constructor() {
-    super(Profiler.SamplingNativeHeapProfileType.TypeId, ls`Native memory allocation sampling`);
-    Profiler.SamplingNativeHeapProfileType.instance = this;
+    super(SamplingNativeHeapProfileType.TypeId, ls`Native memory allocation sampling`);
+    SamplingNativeHeapProfileType.instance = this;
   }
 
   /**
@@ -451,19 +449,19 @@ Profiler.SamplingNativeHeapProfileType = class extends Profiler.SamplingHeapProf
   _stopSampling() {
     return this.profileBeingRecorded().heapProfilerModel().stopNativeSampling();
   }
-};
+}
 
-Profiler.SamplingNativeHeapProfileType.TypeId = 'SamplingNativeHeapRecording';
+SamplingNativeHeapProfileType.TypeId = 'SamplingNativeHeapRecording';
 
 /**
  * @unrestricted
  */
-Profiler.SamplingNativeHeapSnapshotType = class extends Profiler.SamplingHeapProfileTypeBase {
+export class SamplingNativeHeapSnapshotType extends SamplingHeapProfileTypeBase {
   /**
    * @param {string} processType
    */
   constructor(processType) {
-    super(Profiler.SamplingNativeHeapSnapshotType.TypeId, ls`Native memory allocation snapshot (${processType})`);
+    super(SamplingNativeHeapSnapshotType.TypeId, ls`Native memory allocation snapshot (${processType})`);
   }
 
   /**
@@ -510,8 +508,7 @@ Profiler.SamplingNativeHeapSnapshotType = class extends Profiler.SamplingHeapPro
       return;
     }
 
-    const profile =
-        new Profiler.SamplingHeapProfileHeader(heapProfilerModel, this, ls`Snapshot ${this.nextProfileUid()}`);
+    const profile = new SamplingHeapProfileHeader(heapProfilerModel, this, ls`Snapshot ${this.nextProfileUid()}`);
     this.setProfileBeingRecorded(profile);
     this.addProfile(profile);
     profile.updateStatus(ls`Snapshotting\u2026`);
@@ -535,14 +532,14 @@ Profiler.SamplingNativeHeapSnapshotType = class extends Profiler.SamplingHeapPro
   _takeNativeSnapshot(heapProfilerModel) {
     throw 'Not implemented';
   }
-};
+}
 
-Profiler.SamplingNativeHeapSnapshotType.TypeId = 'SamplingNativeHeapSnapshot';
+SamplingNativeHeapSnapshotType.TypeId = 'SamplingNativeHeapSnapshot';
 
-Profiler.SamplingNativeHeapSnapshotBrowserType = class extends Profiler.SamplingNativeHeapSnapshotType {
+export class SamplingNativeHeapSnapshotBrowserType extends SamplingNativeHeapSnapshotType {
   constructor() {
     super(ls`Browser`);
-    Profiler.SamplingNativeHeapSnapshotBrowserType.instance = this;
+    SamplingNativeHeapSnapshotBrowserType.instance = this;
   }
 
   /**
@@ -553,12 +550,12 @@ Profiler.SamplingNativeHeapSnapshotBrowserType = class extends Profiler.Sampling
   async _takeNativeSnapshot(heapProfilerModel) {
     return await heapProfilerModel.takeNativeBrowserSnapshot();
   }
-};
+}
 
-Profiler.SamplingNativeHeapSnapshotRendererType = class extends Profiler.SamplingNativeHeapSnapshotType {
+export class SamplingNativeHeapSnapshotRendererType extends SamplingNativeHeapSnapshotType {
   constructor() {
     super(ls`Renderer`);
-    Profiler.SamplingNativeHeapSnapshotRendererType.instance = this;
+    SamplingNativeHeapSnapshotRendererType.instance = this;
   }
 
   /**
@@ -569,15 +566,15 @@ Profiler.SamplingNativeHeapSnapshotRendererType = class extends Profiler.Samplin
   async _takeNativeSnapshot(heapProfilerModel) {
     return await heapProfilerModel.takeNativeSnapshot();
   }
-};
+}
 
 /**
  * @unrestricted
  */
-Profiler.SamplingHeapProfileHeader = class extends Profiler.WritableProfileHeader {
+export class SamplingHeapProfileHeader extends Profiler.WritableProfileHeader {
   /**
    * @param {?SDK.HeapProfilerModel} heapProfilerModel
-   * @param {!Profiler.SamplingHeapProfileTypeBase} type
+   * @param {!SamplingHeapProfileTypeBase} type
    * @param {string=} title
    */
   constructor(heapProfilerModel, type, title) {
@@ -610,12 +607,12 @@ Profiler.SamplingHeapProfileHeader = class extends Profiler.WritableProfileHeade
   heapProfilerModel() {
     return this._heapProfilerModel;
   }
-};
+}
 
 /**
  * @unrestricted
  */
-Profiler.SamplingHeapProfileNode = class extends SDK.ProfileNode {
+export class SamplingHeapProfileNode extends SDK.ProfileNode {
   /**
    * @param {!Protocol.HeapProfiler.SamplingHeapProfileNode} node
    */
@@ -631,12 +628,12 @@ Profiler.SamplingHeapProfileNode = class extends SDK.ProfileNode {
     super(callFrame);
     this.self = node.selfSize;
   }
-};
+}
 
 /**
  * @unrestricted
  */
-Profiler.SamplingHeapProfileModel = class extends SDK.ProfileTreeModel {
+export class SamplingHeapProfileModel extends SDK.ProfileTreeModel {
   /**
    * @param {!Protocol.HeapProfiler.SamplingHeapProfile} profile
    * @param {number=} minOrdinal
@@ -665,17 +662,17 @@ Profiler.SamplingHeapProfileModel = class extends SDK.ProfileTreeModel {
 
     /**
      * @param {!Protocol.HeapProfiler.SamplingHeapProfileNode} root
-     * @return {!Profiler.SamplingHeapProfileNode}
+     * @return {!SamplingHeapProfileNode}
      */
     function translateProfileTree(root) {
-      const resultRoot = new Profiler.SamplingHeapProfileNode(root);
+      const resultRoot = new SamplingHeapProfileNode(root);
       const sourceNodeStack = [root];
       const targetNodeStack = [resultRoot];
       while (sourceNodeStack.length) {
         const sourceNode = sourceNodeStack.pop();
         const targetNode = targetNodeStack.pop();
         targetNode.children = sourceNode.children.map(child => {
-          const targetChild = new Profiler.SamplingHeapProfileNode(child);
+          const targetChild = new SamplingHeapProfileNode(child);
           if (nodeIdToSizeMap) {
             targetChild.self = nodeIdToSizeMap.get(child.id) || 0;
           }
@@ -697,13 +694,13 @@ Profiler.SamplingHeapProfileModel = class extends SDK.ProfileTreeModel {
       return !!(node.children.length || node.self);
     }
   }
-};
+}
 
 /**
  * @implements {Profiler.ProfileDataGridNode.Formatter}
  * @unrestricted
  */
-Profiler.HeapProfileView.NodeFormatter = class {
+export class NodeFormatter {
   /**
    * @param {!Profiler.HeapProfileView} profileView
    */
@@ -750,12 +747,12 @@ Profiler.HeapProfileView.NodeFormatter = class {
     const options = {className: 'profile-node-file'};
     return this._profileView.linkifier().maybeLinkifyConsoleCallFrame(target, node.profileNode.callFrame, options);
   }
-};
+}
 
 /**
  * @unrestricted
  */
-Profiler.HeapFlameChartDataProvider = class extends Profiler.ProfileFlameChartDataProvider {
+export class HeapFlameChartDataProvider extends Profiler.ProfileFlameChartDataProvider {
   /**
    * @param {!SDK.ProfileTreeModel} profile
    * @param {?SDK.HeapProfilerModel} heapProfilerModel
@@ -870,4 +867,46 @@ Profiler.HeapFlameChartDataProvider = class extends Profiler.ProfileFlameChartDa
     linkifier.dispose();
     return Profiler.ProfileView.buildPopoverTable(entryInfo);
   }
-};
+}
+
+/* Legacy exported object */
+self.Profiler = self.Profiler || {};
+
+/* Legacy exported object */
+Profiler = Profiler || {};
+
+/** @constructor */
+Profiler.HeapProfileView = HeapProfileView;
+
+/** @constructor */
+Profiler.HeapProfileView.NodeFormatter = NodeFormatter;
+
+/** @constructor */
+Profiler.SamplingHeapProfileTypeBase = SamplingHeapProfileTypeBase;
+
+/** @constructor */
+Profiler.SamplingHeapProfileType = SamplingHeapProfileType;
+
+/** @constructor */
+Profiler.SamplingNativeHeapProfileType = SamplingNativeHeapProfileType;
+
+/** @constructor */
+Profiler.SamplingNativeHeapSnapshotType = SamplingNativeHeapSnapshotType;
+
+/** @constructor */
+Profiler.SamplingNativeHeapSnapshotBrowserType = SamplingNativeHeapSnapshotBrowserType;
+
+/** @constructor */
+Profiler.SamplingNativeHeapSnapshotRendererType = SamplingNativeHeapSnapshotRendererType;
+
+/** @constructor */
+Profiler.SamplingHeapProfileHeader = SamplingHeapProfileHeader;
+
+/** @constructor */
+Profiler.SamplingHeapProfileNode = SamplingHeapProfileNode;
+
+/** @constructor */
+Profiler.SamplingHeapProfileModel = SamplingHeapProfileModel;
+
+/** @constructor */
+Profiler.HeapFlameChartDataProvider = HeapFlameChartDataProvider;

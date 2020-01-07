@@ -6,7 +6,7 @@
  * @implements {UI.Searchable}
  * @unrestricted
  */
-Profiler.ProfileView = class extends UI.SimpleView {
+export default class ProfileView extends UI.SimpleView {
   constructor() {
     super(Common.UIString('Profile'));
 
@@ -48,7 +48,7 @@ Profiler.ProfileView = class extends UI.SimpleView {
     this.resetButton.setEnabled(false);
     this.resetButton.addEventListener(UI.ToolbarButton.Events.Click, this._resetClicked, this);
 
-    this._linkifier = new Components.Linkifier(Profiler.ProfileView._maxLinkLength);
+    this._linkifier = new Components.Linkifier(_maxLinkLength);
   }
 
   /**
@@ -91,16 +91,14 @@ Profiler.ProfileView = class extends UI.SimpleView {
   initialize(nodeFormatter, viewTypes) {
     this._nodeFormatter = nodeFormatter;
 
-    this._viewType = Common.settings.createSetting('profileView', Profiler.ProfileView.ViewTypes.Heavy);
-    viewTypes = viewTypes || [
-      Profiler.ProfileView.ViewTypes.Flame, Profiler.ProfileView.ViewTypes.Heavy, Profiler.ProfileView.ViewTypes.Tree
-    ];
+    this._viewType = Common.settings.createSetting('profileView', ViewTypes.Heavy);
+    viewTypes = viewTypes || [ViewTypes.Flame, ViewTypes.Heavy, ViewTypes.Tree];
 
     const optionNames = new Map([
-      [Profiler.ProfileView.ViewTypes.Flame, ls`Chart`],
-      [Profiler.ProfileView.ViewTypes.Heavy, ls`Heavy (Bottom Up)`],
-      [Profiler.ProfileView.ViewTypes.Tree, ls`Tree (Top Down)`],
-      [Profiler.ProfileView.ViewTypes.Text, ls`Text (Top Down)`],
+      [ViewTypes.Flame, ls`Chart`],
+      [ViewTypes.Heavy, ls`Heavy (Bottom Up)`],
+      [ViewTypes.Tree, ls`Tree (Top Down)`],
+      [ViewTypes.Text, ls`Text (Top Down)`],
     ]);
 
     const options =
@@ -345,31 +343,31 @@ Profiler.ProfileView = class extends UI.SimpleView {
 
     this._viewType.set(this.viewSelectComboBox.selectedOption().value);
     switch (this._viewType.get()) {
-      case Profiler.ProfileView.ViewTypes.Flame:
+      case ViewTypes.Flame:
         this._ensureFlameChartCreated();
         this._visibleView = this._flameChart;
         this._searchableElement = this._flameChart;
         break;
-      case Profiler.ProfileView.ViewTypes.Tree:
+      case ViewTypes.Tree:
         this.profileDataGridTree = this._getTopDownProfileDataGridTree();
         this._sortProfile();
         this._visibleView = this.dataGrid.asWidget();
         this._searchableElement = this.profileDataGridTree;
         break;
-      case Profiler.ProfileView.ViewTypes.Heavy:
+      case ViewTypes.Heavy:
         this.profileDataGridTree = this._getBottomUpProfileDataGridTree();
         this._sortProfile();
         this._visibleView = this.dataGrid.asWidget();
         this._searchableElement = this.profileDataGridTree;
         break;
-      case Profiler.ProfileView.ViewTypes.Text:
+      case ViewTypes.Text:
         this._ensureTextViewCreated();
         this._visibleView = this._textView;
         this._searchableElement = this._textView;
         break;
     }
 
-    const isFlame = this._viewType.get() === Profiler.ProfileView.ViewTypes.Flame;
+    const isFlame = this._viewType.get() === ViewTypes.Flame;
     this.focusButton.setVisible(!isFlame);
     this.excludeButton.setVisible(!isFlame);
     this.resetButton.setVisible(!isFlame);
@@ -438,24 +436,23 @@ Profiler.ProfileView = class extends UI.SimpleView {
 
     this.refresh();
   }
-};
+}
 
-Profiler.ProfileView._maxLinkLength = 30;
+export const _maxLinkLength = 30;
 
 /** @enum {string} */
-Profiler.ProfileView.ViewTypes = {
+export const ViewTypes = {
   Flame: 'Flame',
   Tree: 'Tree',
   Heavy: 'Heavy',
   Text: 'Text'
 };
 
-
 /**
  * @implements {Common.OutputStream}
  * @unrestricted
  */
-Profiler.WritableProfileHeader = class extends Profiler.ProfileHeader {
+export class WritableProfileHeader extends Profiler.ProfileHeader {
   /**
    * @param {?SDK.DebuggerModel} debuggerModel
    * @param {!Profiler.ProfileType} type
@@ -584,4 +581,21 @@ Profiler.WritableProfileHeader = class extends Profiler.ProfileHeader {
       this.dispatchEventToListeners(Profiler.ProfileHeader.Events.ProfileReceived);
     }
   }
-};
+}
+
+/* Legacy exported object */
+self.Profiler = self.Profiler || {};
+
+/* Legacy exported object */
+Profiler = Profiler || {};
+
+/** @constructor */
+Profiler.ProfileView = ProfileView;
+
+Profiler.ProfileView._maxLinkLength = _maxLinkLength;
+
+/** @enum {string} */
+Profiler.ProfileView.ViewTypes = ViewTypes;
+
+/** @constructor */
+Profiler.WritableProfileHeader = WritableProfileHeader;

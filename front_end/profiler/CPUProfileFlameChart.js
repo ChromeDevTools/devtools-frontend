@@ -32,25 +32,25 @@
  * @implements {PerfUI.FlameChartDataProvider}
  * @unrestricted
  */
-Profiler.ProfileFlameChartDataProvider = class {
+export class ProfileFlameChartDataProvider {
   constructor() {
-    this._colorGenerator = Profiler.ProfileFlameChartDataProvider.colorGenerator();
+    this._colorGenerator = ProfileFlameChartDataProvider.colorGenerator();
   }
 
   /**
    * @return {!Common.Color.Generator}
    */
   static colorGenerator() {
-    if (!Profiler.ProfileFlameChartDataProvider._colorGenerator) {
+    if (!ProfileFlameChartDataProvider._colorGenerator) {
       const colorGenerator =
           new Common.Color.Generator({min: 30, max: 330}, {min: 50, max: 80, count: 5}, {min: 80, max: 90, count: 3});
 
       colorGenerator.setColorForID('(idle)', 'hsl(0, 0%, 94%)');
       colorGenerator.setColorForID('(program)', 'hsl(0, 0%, 80%)');
       colorGenerator.setColorForID('(garbage collector)', 'hsl(0, 0%, 80%)');
-      Profiler.ProfileFlameChartDataProvider._colorGenerator = colorGenerator;
+      ProfileFlameChartDataProvider._colorGenerator = colorGenerator;
     }
-    return Profiler.ProfileFlameChartDataProvider._colorGenerator;
+    return ProfileFlameChartDataProvider._colorGenerator;
   }
 
   /**
@@ -188,24 +188,24 @@ Profiler.ProfileFlameChartDataProvider = class {
   textColor(entryIndex) {
     return '#333';
   }
-};
+}
 
 
 /**
  * @implements {UI.Searchable}
  * @unrestricted
  */
-Profiler.CPUProfileFlameChart = class extends UI.VBox {
+export default class CPUProfileFlameChart extends UI.VBox {
   /**
    * @param {!UI.SearchableView} searchableView
-   * @param {!Profiler.ProfileFlameChartDataProvider} dataProvider
+   * @param {!ProfileFlameChartDataProvider} dataProvider
    */
   constructor(searchableView, dataProvider) {
     super();
     this.element.id = 'cpu-flame-chart';
 
     this._searchableView = searchableView;
-    this._overviewPane = new Profiler.CPUProfileFlameChart.OverviewPane(dataProvider);
+    this._overviewPane = new OverviewPane(dataProvider);
     this._overviewPane.show(this.element);
 
     this._mainPane = new PerfUI.FlameChart(dataProvider, this._overviewPane);
@@ -350,19 +350,19 @@ Profiler.CPUProfileFlameChart = class extends UI.VBox {
   supportsRegexSearch() {
     return false;
   }
-};
+}
 
 /**
  * @implements {PerfUI.TimelineGrid.Calculator}
  * @unrestricted
  */
-Profiler.CPUProfileFlameChart.OverviewCalculator = class {
+export class OverviewCalculator {
   constructor(dataProvider) {
     this._dataProvider = dataProvider;
   }
 
   /**
-   * @param {!Profiler.CPUProfileFlameChart.OverviewPane} overviewPane
+   * @param {!OverviewPane} overviewPane
    */
   _updateBoundaries(overviewPane) {
     this._minimumBoundaries = overviewPane._dataProvider.minimumBoundary();
@@ -421,13 +421,13 @@ Profiler.CPUProfileFlameChart.OverviewCalculator = class {
   boundarySpan() {
     return this._maximumBoundaries - this._minimumBoundaries;
   }
-};
+}
 
 /**
  * @implements {PerfUI.FlameChartDelegate}
  * @unrestricted
  */
-Profiler.CPUProfileFlameChart.OverviewPane = class extends UI.VBox {
+export class OverviewPane extends UI.VBox {
   /**
    * @param {!PerfUI.FlameChartDataProvider} dataProvider
    */
@@ -435,7 +435,7 @@ Profiler.CPUProfileFlameChart.OverviewPane = class extends UI.VBox {
     super();
     this.element.classList.add('cpu-profile-flame-chart-overview-pane');
     this._overviewContainer = this.element.createChild('div', 'cpu-profile-flame-chart-overview-container');
-    this._overviewCalculator = new Profiler.CPUProfileFlameChart.OverviewCalculator(dataProvider);
+    this._overviewCalculator = new OverviewCalculator(dataProvider);
     this._overviewGrid = new PerfUI.OverviewGrid('cpu-profile-flame-chart', this._overviewCalculator);
     this._overviewGrid.element.classList.add('fill');
     this._overviewCanvas = this._overviewContainer.createChild('canvas', 'cpu-profile-flame-chart-overview-canvas');
@@ -589,4 +589,22 @@ Profiler.CPUProfileFlameChart.OverviewPane = class extends UI.VBox {
     this._overviewCanvas.style.width = width + 'px';
     this._overviewCanvas.style.height = height + 'px';
   }
-};
+}
+
+/* Legacy exported object */
+self.Profiler = self.Profiler || {};
+
+/* Legacy exported object */
+Profiler = Profiler || {};
+
+/** @constructor */
+Profiler.CPUProfileFlameChart = CPUProfileFlameChart;
+
+/** @constructor */
+Profiler.CPUProfileFlameChart.OverviewCalculator = OverviewCalculator;
+
+/** @constructor */
+Profiler.CPUProfileFlameChart.OverviewPane = OverviewPane;
+
+/** @constructor */
+Profiler.ProfileFlameChartDataProvider = ProfileFlameChartDataProvider;

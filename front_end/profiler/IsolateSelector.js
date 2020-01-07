@@ -3,23 +3,23 @@
 // found in the LICENSE file.
 
 /**
- * @implements {UI.ListDelegate<!Profiler.IsolateSelector.ListItem>}
+ * @implements {UI.ListDelegate<!ListItem>}
  * @implements {SDK.IsolateManager.Observer}
  */
-Profiler.IsolateSelector = class extends UI.VBox {
+export default class IsolateSelector extends UI.VBox {
   constructor() {
     super(false);
 
-    /** @type {!UI.ListModel<!Profiler.IsolateSelector.ListItem>} */
+    /** @type {!UI.ListModel<!ListItem>} */
     this._items = new UI.ListModel();
-    /** @type {!UI.ListControl<!Profiler.IsolateSelector.ListItem>} */
+    /** @type {!UI.ListControl<!ListItem>} */
     this._list = new UI.ListControl(this._items, this, UI.ListMode.NonViewport);
     this._list.element.tabIndex = 0;
     this._list.element.classList.add('javascript-vm-instances-list');
     UI.ARIAUtils.setAccessibleName(this._list.element, ls`JavaScript VM instances`);
     this.contentElement.appendChild(this._list.element);
 
-    /** @type {!Map<!SDK.IsolateManager.Isolate, !Profiler.IsolateSelector.ListItem>} */
+    /** @type {!Map<!SDK.IsolateManager.Isolate, !ListItem>} */
     this._itemByIsolate = new Map();
 
     this._totalElement = createElementWithClass('div', 'profile-memory-usage-item hbox');
@@ -54,7 +54,7 @@ Profiler.IsolateSelector = class extends UI.VBox {
    * @param {!SDK.IsolateManager.Isolate} isolate
    */
   isolateAdded(isolate) {
-    const item = new Profiler.IsolateSelector.ListItem(isolate);
+    const item = new ListItem(isolate);
     const index = item.model().target() === SDK.targetManager.mainTarget() ? 0 : this._items.length;
     this._items.insert(index, item);
     this._itemByIsolate.set(isolate, item);
@@ -121,7 +121,7 @@ Profiler.IsolateSelector = class extends UI.VBox {
       trend += isolate.usedHeapSizeGrowRate();
     }
     this._totalValueDiv.textContent = Number.bytesToString(total);
-    Profiler.IsolateSelector._formatTrendElement(trend, this._totalTrendDiv);
+    IsolateSelector._formatTrendElement(trend, this._totalTrendDiv);
   }
 
   /**
@@ -149,7 +149,7 @@ Profiler.IsolateSelector = class extends UI.VBox {
 
   /**
    * @override
-   * @param {!Profiler.IsolateSelector.ListItem} item
+   * @param {!ListItem} item
    * @return {!Element}
    */
   createElementForItem(item) {
@@ -158,7 +158,7 @@ Profiler.IsolateSelector = class extends UI.VBox {
 
   /**
    * @override
-   * @param {!Profiler.IsolateSelector.ListItem} item
+   * @param {!ListItem} item
    * @return {number}
    */
   heightForItem(item) {
@@ -176,7 +176,7 @@ Profiler.IsolateSelector = class extends UI.VBox {
 
   /**
    * @override
-   * @param {!Profiler.IsolateSelector.ListItem} item
+   * @param {!ListItem} item
    * @return {boolean}
    */
   isItemSelectable(item) {
@@ -185,8 +185,8 @@ Profiler.IsolateSelector = class extends UI.VBox {
 
   /**
    * @override
-   * @param {?Profiler.IsolateSelector.ListItem} from
-   * @param {?Profiler.IsolateSelector.ListItem} to
+   * @param {?ListItem} from
+   * @param {?ListItem} to
    * @param {?Element} fromElement
    * @param {?Element} toElement
    */
@@ -206,9 +206,9 @@ Profiler.IsolateSelector = class extends UI.VBox {
     this._updateTotal();
     this._list.invalidateRange(0, this._items.length);
   }
-};
+}
 
-Profiler.IsolateSelector.ListItem = class {
+export class ListItem {
   /**
    * @param {!SDK.IsolateManager.Isolate} isolate
    */
@@ -234,7 +234,7 @@ Profiler.IsolateSelector.ListItem = class {
 
   updateStats() {
     this._heapDiv.textContent = Number.bytesToString(this._isolate.usedHeapSize());
-    Profiler.IsolateSelector._formatTrendElement(this._isolate.usedHeapSizeGrowRate(), this._trendDiv);
+    IsolateSelector._formatTrendElement(this._isolate.usedHeapSizeGrowRate(), this._trendDiv);
   }
 
   updateTitle() {
@@ -259,4 +259,16 @@ Profiler.IsolateSelector.ListItem = class {
     }
     UI.ARIAUtils.setAccessibleName(this.element, titles.join(' '));
   }
-};
+}
+
+/* Legacy exported object */
+self.Profiler = self.Profiler || {};
+
+/* Legacy exported object */
+Profiler = Profiler || {};
+
+/** @constructor */
+Profiler.IsolateSelector = IsolateSelector;
+
+/** @constructor */
+Profiler.IsolateSelector.ListItem = ListItem;

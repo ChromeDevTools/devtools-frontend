@@ -31,7 +31,7 @@
 /**
  * @unrestricted
  */
-Profiler.BottomUpProfileDataGridNode = class extends Profiler.ProfileDataGridNode {
+export class BottomUpProfileDataGridNode extends Profiler.ProfileDataGridNode {
   /**
    * @param {!SDK.ProfileNode} profileNode
    * @param {!Profiler.TopDownProfileDataGridTree} owningTree
@@ -42,7 +42,7 @@ Profiler.BottomUpProfileDataGridNode = class extends Profiler.ProfileDataGridNod
   }
 
   /**
-   * @param {!Profiler.BottomUpProfileDataGridNode|!Profiler.BottomUpProfileDataGridTree} container
+   * @param {!BottomUpProfileDataGridNode|!BottomUpProfileDataGridTree} container
    */
   static _sharedPopulate(container) {
     const remainingNodeInfos = container._remainingNodeInfos;
@@ -66,7 +66,7 @@ Profiler.BottomUpProfileDataGridNode = class extends Profiler.ProfileDataGridNod
       } else {
         // If not, add it as a true ancestor.
         // In heavy mode, we take our visual identity from ancestor node...
-        child = new Profiler.BottomUpProfileDataGridNode(
+        child = new BottomUpProfileDataGridNode(
             ancestor, /** @type {!Profiler.TopDownProfileDataGridTree} */ (container.tree));
 
         if (ancestor !== focusNode) {
@@ -157,7 +157,7 @@ Profiler.BottomUpProfileDataGridNode = class extends Profiler.ProfileDataGridNod
    * @override
    */
   populateChildren() {
-    Profiler.BottomUpProfileDataGridNode._sharedPopulate(this);
+    BottomUpProfileDataGridNode._sharedPopulate(this);
   }
 
   _willHaveChildren(profileNode) {
@@ -165,13 +165,12 @@ Profiler.BottomUpProfileDataGridNode = class extends Profiler.ProfileDataGridNod
     // However, we don't want to show the very top parent since it is redundant.
     return !!(profileNode.parent && profileNode.parent.parent);
   }
-};
-
+}
 
 /**
  * @unrestricted
  */
-Profiler.BottomUpProfileDataGridTree = class extends Profiler.ProfileDataGridTree {
+export class BottomUpProfileDataGridTree extends Profiler.ProfileDataGridTree {
   /**
    * @param {!Profiler.ProfileDataGridNode.Formatter} formatter
    * @param {!UI.SearchableView} searchableView
@@ -306,6 +305,18 @@ Profiler.BottomUpProfileDataGridTree = class extends Profiler.ProfileDataGridTre
    * @override
    */
   populateChildren() {
-    Profiler.BottomUpProfileDataGridNode._sharedPopulate(this);
+    BottomUpProfileDataGridNode._sharedPopulate(this);
   }
-};
+}
+
+/* Legacy exported object */
+self.Profiler = self.Profiler || {};
+
+/* Legacy exported object */
+Profiler = Profiler || {};
+
+/** @constructor */
+Profiler.BottomUpProfileDataGridNode = BottomUpProfileDataGridNode;
+
+/** @constructor */
+Profiler.BottomUpProfileDataGridTree = BottomUpProfileDataGridTree;

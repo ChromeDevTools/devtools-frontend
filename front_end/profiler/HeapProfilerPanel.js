@@ -6,7 +6,7 @@
  * @implements {UI.ContextMenu.Provider}
  * @implements {UI.ActionDelegate}
  */
-Profiler.HeapProfilerPanel = class extends Profiler.ProfilesPanel {
+export default class HeapProfilerPanel extends Profiler.ProfilesPanel {
   constructor() {
     const registry = Profiler.ProfileTypeRegistry.instance;
     const profileTypes =
@@ -73,8 +73,8 @@ Profiler.HeapProfilerPanel = class extends Profiler.ProfilesPanel {
    * @return {boolean}
    */
   handleAction(context, actionId) {
-    const panel = UI.context.flavor(Profiler.HeapProfilerPanel);
-    console.assert(panel && panel instanceof Profiler.HeapProfilerPanel);
+    const panel = UI.context.flavor(HeapProfilerPanel);
+    console.assert(panel && panel instanceof HeapProfilerPanel);
     panel.toggleRecord();
     return true;
   }
@@ -83,14 +83,14 @@ Profiler.HeapProfilerPanel = class extends Profiler.ProfilesPanel {
    * @override
    */
   wasShown() {
-    UI.context.setFlavor(Profiler.HeapProfilerPanel, this);
+    UI.context.setFlavor(HeapProfilerPanel, this);
   }
 
   /**
    * @override
    */
   willHide() {
-    UI.context.setFlavor(Profiler.HeapProfilerPanel, null);
+    UI.context.setFlavor(HeapProfilerPanel, null);
   }
 
   /**
@@ -112,4 +112,13 @@ Profiler.HeapProfilerPanel = class extends Profiler.ProfilesPanel {
       }
     }
   }
-};
+}
+
+/* Legacy exported object */
+self.Profiler = self.Profiler || {};
+
+/* Legacy exported object */
+Profiler = Profiler || {};
+
+/** @constructor */
+Profiler.HeapProfilerPanel = HeapProfilerPanel;

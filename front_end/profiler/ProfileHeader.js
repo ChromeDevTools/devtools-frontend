@@ -5,7 +5,7 @@
 /**
  * @unrestricted
  */
-Profiler.ProfileHeader = class extends Common.Object {
+export default class ProfileHeader extends Common.Object {
   /**
    * @param {!Profiler.ProfileType} profileType
    * @param {string} title
@@ -23,7 +23,7 @@ Profiler.ProfileHeader = class extends Common.Object {
    */
   setTitle(title) {
     this.title = title;
-    this.dispatchEventToListeners(Profiler.ProfileHeader.Events.ProfileTitleChanged, this);
+    this.dispatchEventToListeners(Events.ProfileTitleChanged, this);
   }
 
   /**
@@ -38,8 +38,7 @@ Profiler.ProfileHeader = class extends Common.Object {
    * @param {boolean=} wait
    */
   updateStatus(subtitle, wait) {
-    this.dispatchEventToListeners(
-        Profiler.ProfileHeader.Events.UpdateStatus, new Profiler.ProfileHeader.StatusUpdate(subtitle, wait));
+    this.dispatchEventToListeners(Events.UpdateStatus, new StatusUpdate(subtitle, wait));
   }
 
   /**
@@ -103,12 +102,12 @@ Profiler.ProfileHeader = class extends Common.Object {
    */
   setProfile(profile) {
   }
-};
+}
 
 /**
  * @unrestricted
  */
-Profiler.ProfileHeader.StatusUpdate = class {
+export class StatusUpdate {
   /**
    * @param {?string} subtitle
    * @param {boolean|undefined} wait
@@ -119,11 +118,26 @@ Profiler.ProfileHeader.StatusUpdate = class {
     /** @type {boolean|undefined} */
     this.wait = wait;
   }
-};
+}
 
 /** @enum {symbol} */
-Profiler.ProfileHeader.Events = {
+export const Events = {
   UpdateStatus: Symbol('UpdateStatus'),
   ProfileReceived: Symbol('ProfileReceived'),
   ProfileTitleChanged: Symbol('ProfileTitleChanged')
 };
+
+/* Legacy exported object */
+self.Profiler = self.Profiler || {};
+
+/* Legacy exported object */
+Profiler = Profiler || {};
+
+/** @constructor */
+Profiler.ProfileHeader = ProfileHeader;
+
+/** @constructor */
+Profiler.ProfileHeader.StatusUpdate = StatusUpdate;
+
+/** @enum {symbol} */
+Profiler.ProfileHeader.Events = Events;

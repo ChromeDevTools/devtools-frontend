@@ -5,10 +5,10 @@
 /**
  * @extends {UI.VBox}
  */
-Profiler.LiveHeapProfileView = class extends UI.VBox {
+export default class LiveHeapProfileView extends UI.VBox {
   constructor() {
     super(true);
-    /** @type {!Map<string, !Profiler.LiveHeapProfileView.GridNode>} */
+    /** @type {!Map<string, !GridNode>} */
     this._gridNodeByUrl = new Map();
     this.registerRequiredCSS('profiler/liveHeapProfile.css');
 
@@ -139,7 +139,7 @@ Profiler.LiveHeapProfileView = class extends UI.VBox {
       if (node) {
         node.updateNode(size, isolateCount);
       } else {
-        node = new Profiler.LiveHeapProfileView.GridNode(url, size, isolateCount);
+        node = new GridNode(url, size, isolateCount);
         this._gridNodeByUrl.set(url, node);
         rootNode.appendChild(node);
       }
@@ -256,9 +256,9 @@ Profiler.LiveHeapProfileView = class extends UI.VBox {
   async _stopRecording() {
     this._setting.set(false);
   }
-};
+}
 
-Profiler.LiveHeapProfileView.GridNode = class extends DataGrid.SortableDataGridNode {
+export class GridNode extends DataGrid.SortableDataGridNode {
   /**
    * @param {string} url
    * @param {number} size
@@ -305,12 +305,12 @@ Profiler.LiveHeapProfileView.GridNode = class extends DataGrid.SortableDataGridN
     }
     return cell;
   }
-};
+}
 
 /**
  * @implements {UI.ActionDelegate}
  */
-Profiler.LiveHeapProfileView.ActionDelegate = class {
+export class ActionDelegate {
   /**
    * @override
    * @param {!UI.Context} context
@@ -322,13 +322,13 @@ Profiler.LiveHeapProfileView.ActionDelegate = class {
       const profileViewId = 'live_heap_profile';
       await UI.viewManager.showView(profileViewId);
       const widget = await UI.viewManager.view(profileViewId).widget();
-      this._innerHandleAction(/** @type {!Profiler.LiveHeapProfileView} */ (widget), actionId);
+      this._innerHandleAction(/** @type {!LiveHeapProfileView} */ (widget), actionId);
     })();
     return true;
   }
 
   /**
-   * @param {!Profiler.LiveHeapProfileView} profilerView
+   * @param {!LiveHeapProfileView} profilerView
    * @param {string} actionId
    */
   _innerHandleAction(profilerView, actionId) {
@@ -343,4 +343,19 @@ Profiler.LiveHeapProfileView.ActionDelegate = class {
         console.assert(false, `Unknown action: ${actionId}`);
     }
   }
-};
+}
+
+/* Legacy exported object */
+self.Profiler = self.Profiler || {};
+
+/* Legacy exported object */
+Profiler = Profiler || {};
+
+/** @constructor */
+Profiler.LiveHeapProfileView = LiveHeapProfileView;
+
+/** @constructor */
+Profiler.LiveHeapProfileView.GridNode = GridNode;
+
+/** @constructor */
+Profiler.LiveHeapProfileView.ActionDelegate = ActionDelegate;

@@ -121,7 +121,9 @@
         "heap_snapshot_model",
         "object_ui"
     ],
-    "scripts": [
+    "scripts": [],
+    "modules": [
+        "profiler.js",
         "ProfileType.js",
         "ProfileHeader.js",
         "ProfilesPanel.js",

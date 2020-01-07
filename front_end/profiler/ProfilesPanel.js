@@ -27,7 +27,7 @@
  * @implements {Profiler.ProfileType.DataDisplayDelegate}
  * @unrestricted
  */
-Profiler.ProfilesPanel = class extends UI.PanelWithSidebar {
+export default class ProfilesPanel extends UI.PanelWithSidebar {
   /**
    * @param {string} name
    * @param {!Array.<!Profiler.ProfileType>} profileTypes
@@ -43,7 +43,7 @@ Profiler.ProfilesPanel = class extends UI.PanelWithSidebar {
     const mainContainer = new UI.VBox();
     this.splitWidget().setMainWidget(mainContainer);
 
-    this.profilesItemTreeElement = new Profiler.ProfilesSidebarTreeElement(this);
+    this.profilesItemTreeElement = new ProfilesSidebarTreeElement(this);
 
     this._sidebarTree = new UI.TreeOutlineInShadow();
     this._sidebarTree.registerRequiredCSS('profiler/profilesSidebarTree.css');
@@ -131,7 +131,7 @@ Profiler.ProfilesPanel = class extends UI.PanelWithSidebar {
       this.element.removeChild(this._fileSelectorElement);
     }
     this._fileSelectorElement = UI.createFileSelectorElement(this._loadFromFile.bind(this));
-    Profiler.ProfilesPanel._fileSelectorElement = this._fileSelectorElement;
+    ProfilesPanel._fileSelectorElement = this._fileSelectorElement;
     this.element.appendChild(this._fileSelectorElement);
   }
 
@@ -266,7 +266,7 @@ Profiler.ProfilesPanel = class extends UI.PanelWithSidebar {
    */
   _registerProfileType(profileType) {
     this._launcherView.addProfileType(profileType);
-    const profileTypeSection = new Profiler.ProfileTypeSidebarSection(this, profileType);
+    const profileTypeSection = new ProfileTypeSidebarSection(this, profileType);
     this._typeIdToSidebarSection[profileType.id] = profileTypeSection;
     this._sidebarTree.appendChild(profileTypeSection);
     profileTypeSection.childrenListElement.addEventListener(
@@ -274,7 +274,7 @@ Profiler.ProfilesPanel = class extends UI.PanelWithSidebar {
 
     /**
      * @param {!Common.Event} event
-     * @this {Profiler.ProfilesPanel}
+     * @this {ProfilesPanel}
      */
     function onAddProfileHeader(event) {
       this._addProfileHeader(/** @type {!Profiler.ProfileHeader} */ (event.data));
@@ -282,7 +282,7 @@ Profiler.ProfilesPanel = class extends UI.PanelWithSidebar {
 
     /**
      * @param {!Common.Event} event
-     * @this {Profiler.ProfilesPanel}
+     * @this {ProfilesPanel}
      */
     function onRemoveProfileHeader(event) {
       this._removeProfileHeader(/** @type {!Profiler.ProfileHeader} */ (event.data));
@@ -290,7 +290,7 @@ Profiler.ProfilesPanel = class extends UI.PanelWithSidebar {
 
     /**
      * @param {!Common.Event} event
-     * @this {Profiler.ProfilesPanel}
+     * @this {ProfilesPanel}
      */
     function profileComplete(event) {
       this.showProfile(/** @type {!Profiler.ProfileHeader} */ (event.data));
@@ -448,12 +448,12 @@ Profiler.ProfilesPanel = class extends UI.PanelWithSidebar {
   focus() {
     this._sidebarTree.focus();
   }
-};
+}
 
 /**
  * @unrestricted
  */
-Profiler.ProfileTypeSidebarSection = class extends UI.TreeElement {
+export class ProfileTypeSidebarSection extends UI.TreeElement {
   /**
    * @param {!Profiler.ProfileType.DataDisplayDelegate} dataDisplayDelegate
    * @param {!Profiler.ProfileType} profileType
@@ -462,9 +462,9 @@ Profiler.ProfileTypeSidebarSection = class extends UI.TreeElement {
     super(profileType.treeItemTitle.escapeHTML(), true);
     this.selectable = false;
     this._dataDisplayDelegate = dataDisplayDelegate;
-    /** @type {!Array<!Profiler.ProfileSidebarTreeElement>} */
+    /** @type {!Array<!ProfileSidebarTreeElement>} */
     this._profileTreeElements = [];
-    /** @type {!Object<string, !Profiler.ProfileTypeSidebarSection.ProfileGroup>} */
+    /** @type {!Object<string, !ProfileTypeSidebarSection.ProfileGroup>} */
     this._profileGroups = {};
     this.expand();
     this.hidden = true;
@@ -485,7 +485,7 @@ Profiler.ProfileTypeSidebarSection = class extends UI.TreeElement {
       const profileTitle = profile.title;
       let group = this._profileGroups[profileTitle];
       if (!group) {
-        group = new Profiler.ProfileTypeSidebarSection.ProfileGroup();
+        group = new ProfileTypeSidebarSection.ProfileGroup();
         this._profileGroups[profileTitle] = group;
       }
       group.profileSidebarTreeElements.push(profileTreeElement);
@@ -493,8 +493,7 @@ Profiler.ProfileTypeSidebarSection = class extends UI.TreeElement {
       const groupSize = group.profileSidebarTreeElements.length;
       if (groupSize === 2) {
         // Make a group UI.TreeElement now that there are 2 profiles.
-        group.sidebarTreeElement =
-            new Profiler.ProfileGroupSidebarTreeElement(this._dataDisplayDelegate, profile.title);
+        group.sidebarTreeElement = new ProfileGroupSidebarTreeElement(this._dataDisplayDelegate, profile.title);
 
         const firstProfileTreeElement = group.profileSidebarTreeElements[0];
         // Insert at the same index for the first profile of the group.
@@ -545,7 +544,7 @@ Profiler.ProfileTypeSidebarSection = class extends UI.TreeElement {
       if (groupElements.length === 1) {
         // Move the last profile out of its group and remove the group.
         const pos = sidebarParent.children().indexOf(
-            /** @type {!Profiler.ProfileGroupSidebarTreeElement} */ (group.sidebarTreeElement));
+            /** @type {!ProfileGroupSidebarTreeElement} */ (group.sidebarTreeElement));
         group.sidebarTreeElement.removeChild(groupElements[0]);
         this.insertChild(groupElements[0], pos);
         groupElements[0].setSmall(false);
@@ -568,7 +567,7 @@ Profiler.ProfileTypeSidebarSection = class extends UI.TreeElement {
 
   /**
    * @param {!Profiler.ProfileHeader} profile
-   * @return {?Profiler.ProfileSidebarTreeElement}
+   * @return {?ProfileSidebarTreeElement}
    */
   sidebarElementForProfile(profile) {
     const index = this._sidebarElementIndex(profile);
@@ -595,24 +594,24 @@ Profiler.ProfileTypeSidebarSection = class extends UI.TreeElement {
   onattach() {
     this.listItemElement.classList.add('profiles-tree-section');
   }
-};
+}
 
 /**
  * @unrestricted
  */
-Profiler.ProfileTypeSidebarSection.ProfileGroup = class {
+export class ProfileGroup {
   constructor() {
-    /** @type {!Array<!Profiler.ProfileSidebarTreeElement>} */
+    /** @type {!Array<!ProfileSidebarTreeElement>} */
     this.profileSidebarTreeElements = [];
-    /** @type {?Profiler.ProfileGroupSidebarTreeElement} */
+    /** @type {?ProfileGroupSidebarTreeElement} */
     this.sidebarTreeElement = null;
   }
-};
+}
 
 /**
  * @unrestricted
  */
-Profiler.ProfileSidebarTreeElement = class extends UI.TreeElement {
+export class ProfileSidebarTreeElement extends UI.TreeElement {
   /**
    * @param {!Profiler.ProfileType.DataDisplayDelegate} dataDisplayDelegate
    * @param {!Profiler.ProfileHeader} profile
@@ -748,7 +747,7 @@ Profiler.ProfileSidebarTreeElement = class extends UI.TreeElement {
     // FIXME: use context menu provider
     contextMenu.headerSection().appendItem(
         Common.UIString('Load\u2026'),
-        Profiler.ProfilesPanel._fileSelectorElement.click.bind(Profiler.ProfilesPanel._fileSelectorElement));
+        ProfilesPanel._fileSelectorElement.click.bind(ProfilesPanel._fileSelectorElement));
     if (profile.canSaveToFile()) {
       contextMenu.saveSection().appendItem(Common.UIString('Save\u2026'), profile.saveToFile.bind(profile));
     }
@@ -776,12 +775,12 @@ Profiler.ProfileSidebarTreeElement = class extends UI.TreeElement {
   setMainTitle(title) {
     this.titleElement.textContent = title;
   }
-};
+}
 
 /**
  * @unrestricted
  */
-Profiler.ProfileGroupSidebarTreeElement = class extends UI.TreeElement {
+export class ProfileGroupSidebarTreeElement extends UI.TreeElement {
   /**
    * @param {!Profiler.ProfileType.DataDisplayDelegate} dataDisplayDelegate
    * @param {string} title
@@ -818,11 +817,11 @@ Profiler.ProfileGroupSidebarTreeElement = class extends UI.TreeElement {
         .createChild('span', 'title')
         .textContent = this._title;
   }
-};
+}
 
-Profiler.ProfilesSidebarTreeElement = class extends UI.TreeElement {
+export class ProfilesSidebarTreeElement extends UI.TreeElement {
   /**
-   * @param {!Profiler.ProfilesPanel} panel
+   * @param {!ProfilesPanel} panel
    */
   constructor(panel) {
     super('', false);
@@ -850,12 +849,12 @@ Profiler.ProfilesSidebarTreeElement = class extends UI.TreeElement {
         .createChild('span', 'title')
         .textContent = Common.UIString('Profiles');
   }
-};
+}
 
 /**
  * @implements {UI.ActionDelegate}
  */
-Profiler.JSProfilerPanel = class extends Profiler.ProfilesPanel {
+export class JSProfilerPanel extends ProfilesPanel {
   constructor() {
     const registry = Profiler.ProfileTypeRegistry.instance;
     super('js_profiler', [registry.cpuProfileType], 'profiler.js-toggle-recording');
@@ -865,14 +864,14 @@ Profiler.JSProfilerPanel = class extends Profiler.ProfilesPanel {
    * @override
    */
   wasShown() {
-    UI.context.setFlavor(Profiler.JSProfilerPanel, this);
+    UI.context.setFlavor(JSProfilerPanel, this);
   }
 
   /**
    * @override
    */
   willHide() {
-    UI.context.setFlavor(Profiler.JSProfilerPanel, null);
+    UI.context.setFlavor(JSProfilerPanel, null);
   }
 
   /**
@@ -882,9 +881,36 @@ Profiler.JSProfilerPanel = class extends Profiler.ProfilesPanel {
    * @return {boolean}
    */
   handleAction(context, actionId) {
-    const panel = UI.context.flavor(Profiler.JSProfilerPanel);
-    console.assert(panel && panel instanceof Profiler.JSProfilerPanel);
+    const panel = UI.context.flavor(JSProfilerPanel);
+    console.assert(panel && panel instanceof JSProfilerPanel);
     panel.toggleRecord();
     return true;
   }
-};
+}
+
+/* Legacy exported object */
+self.Profiler = self.Profiler || {};
+
+/* Legacy exported object */
+Profiler = Profiler || {};
+
+/** @constructor */
+Profiler.ProfilesPanel = ProfilesPanel;
+
+/** @constructor */
+Profiler.ProfileTypeSidebarSection = ProfileTypeSidebarSection;
+
+/** @constructor */
+Profiler.ProfileTypeSidebarSection.ProfileGroup = ProfileGroup;
+
+/** @constructor */
+Profiler.ProfileSidebarTreeElement = ProfileSidebarTreeElement;
+
+/** @constructor */
+Profiler.ProfileGroupSidebarTreeElement = ProfileGroupSidebarTreeElement;
+
+/** @constructor */
+Profiler.ProfilesSidebarTreeElement = ProfilesSidebarTreeElement;
+
+/** @constructor */
+Profiler.JSProfilerPanel = JSProfilerPanel;

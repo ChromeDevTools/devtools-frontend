@@ -5,7 +5,7 @@
 /**
  * @unrestricted
  */
-Profiler.ProfileType = class extends Common.Object {
+export default class ProfileType extends Common.Object {
   /**
    * @param {string} id
    * @param {string} name
@@ -109,7 +109,7 @@ Profiler.ProfileType = class extends Common.Object {
     /**
      * @param {!Profiler.ProfileHeader} profile
      * @return {boolean}
-     * @this {Profiler.ProfileType}
+     * @this {ProfileType}
      */
     function isFinished(profile) {
       return this._profileBeingRecorded !== profile;
@@ -173,7 +173,7 @@ Profiler.ProfileType = class extends Common.Object {
    */
   addProfile(profile) {
     this._profiles.push(profile);
-    this.dispatchEventToListeners(Profiler.ProfileType.Events.AddProfileHeader, profile);
+    this.dispatchEventToListeners(Events.AddProfileHeader, profile);
   }
 
   /**
@@ -223,17 +223,17 @@ Profiler.ProfileType = class extends Common.Object {
    * @param {!Profiler.ProfileHeader} profile
    */
   _disposeProfile(profile) {
-    this.dispatchEventToListeners(Profiler.ProfileType.Events.RemoveProfileHeader, profile);
+    this.dispatchEventToListeners(Events.RemoveProfileHeader, profile);
     profile.dispose();
     if (this._profileBeingRecorded === profile) {
       this.profileBeingRecordedRemoved();
       this.setProfileBeingRecorded(null);
     }
   }
-};
+}
 
 /** @enum {symbol} */
-Profiler.ProfileType.Events = {
+export const Events = {
   AddProfileHeader: Symbol('add-profile-header'),
   ProfileComplete: Symbol('profile-complete'),
   RemoveProfileHeader: Symbol('remove-profile-header'),
@@ -243,24 +243,39 @@ Profiler.ProfileType.Events = {
 /**
  * @interface
  */
-Profiler.ProfileType.DataDisplayDelegate = function() {};
-
-Profiler.ProfileType.DataDisplayDelegate.prototype = {
+export class DataDisplayDelegate {
   /**
    * @param {?Profiler.ProfileHeader} profile
    * @return {?UI.Widget}
    */
-  showProfile(profile) {},
+  showProfile(profile) {
+  }
 
   /**
    * @param {!Protocol.HeapProfiler.HeapSnapshotObjectId} snapshotObjectId
    * @param {string} perspectiveName
    */
-  showObject(snapshotObjectId, perspectiveName) {},
+  showObject(snapshotObjectId, perspectiveName) {
+  }
 
   /**
    * @param {number} nodeIndex
    * @return {!Promise<?Element>}
    */
   async linkifyObject(nodeIndex) {}
-};
+}
+
+/* Legacy exported object */
+self.Profiler = self.Profiler || {};
+
+/* Legacy exported object */
+Profiler = Profiler || {};
+
+/** @constructor */
+Profiler.ProfileType = ProfileType;
+
+/** @enum {symbol} */
+Profiler.ProfileType.Events = Events;
+
+/** @interface */
+Profiler.ProfileType.DataDisplayDelegate = DataDisplayDelegate;

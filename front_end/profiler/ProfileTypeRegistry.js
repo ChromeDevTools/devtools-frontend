@@ -4,7 +4,7 @@
 /**
  * @unrestricted
  */
-Profiler.ProfileTypeRegistry = class {
+export default class ProfileTypeRegistry {
   constructor() {
     this.cpuProfileType = new Profiler.CPUProfileType();
     this.heapSnapshotProfileType = new Profiler.HeapSnapshotProfileType();
@@ -14,6 +14,17 @@ Profiler.ProfileTypeRegistry = class {
     this.samplingNativeHeapSnapshotRendererType = new Profiler.SamplingNativeHeapSnapshotRendererType();
     this.trackingHeapSnapshotProfileType = new Profiler.TrackingHeapSnapshotProfileType();
   }
-};
+}
 
-Profiler.ProfileTypeRegistry.instance = new Profiler.ProfileTypeRegistry();
+export const instance = new ProfileTypeRegistry();
+
+/* Legacy exported object */
+self.Profiler = self.Profiler || {};
+
+/* Legacy exported object */
+Profiler = Profiler || {};
+
+/** @constructor */
+Profiler.ProfileTypeRegistry = ProfileTypeRegistry;
+
+Profiler.ProfileTypeRegistry.instance = instance;

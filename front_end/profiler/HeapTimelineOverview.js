@@ -5,13 +5,13 @@
 /**
  * @unrestricted
  */
-Profiler.HeapTimelineOverview = class extends UI.VBox {
+export default class HeapTimelineOverview extends UI.VBox {
   constructor() {
     super();
     this.element.id = 'heap-recording-view';
     this.element.classList.add('heap-tracking-overview');
 
-    this._overviewCalculator = new Profiler.HeapTimelineOverview.OverviewCalculator();
+    this._overviewCalculator = new OverviewCalculator();
     this._overviewContainer = this.element.createChild('div', 'heap-overview-container');
     this._overviewGrid = new PerfUI.OverviewGrid('heap-recording', this._overviewCalculator);
     this._overviewGrid.element.classList.add('fill');
@@ -23,10 +23,10 @@ Profiler.HeapTimelineOverview = class extends UI.VBox {
     this._windowLeft = 0.0;
     this._windowRight = 1.0;
     this._overviewGrid.setWindow(this._windowLeft, this._windowRight);
-    this._yScale = new Profiler.HeapTimelineOverview.SmoothScale();
-    this._xScale = new Profiler.HeapTimelineOverview.SmoothScale();
+    this._yScale = new SmoothScale();
+    this._xScale = new SmoothScale();
 
-    this._profileSamples = new Profiler.HeapTimelineOverview.Samples();
+    this._profileSamples = new Samples();
   }
 
   start() {
@@ -45,7 +45,7 @@ Profiler.HeapTimelineOverview = class extends UI.VBox {
   }
 
   /**
-   * @param {!Profiler.HeapTimelineOverview.Samples} samples
+   * @param {!Samples} samples
    */
   setSamples(samples) {
     this._profileSamples = samples;
@@ -246,13 +246,13 @@ Profiler.HeapTimelineOverview = class extends UI.VBox {
     const minId = minIndex > 0 ? ids[minIndex - 1] : 0;
     const maxId = maxIndex < ids.length ? ids[maxIndex] : Infinity;
 
-    this.dispatchEventToListeners(Profiler.HeapTimelineOverview.IdsRangeChanged, {minId, maxId, size});
+    this.dispatchEventToListeners(IdsRangeChanged, {minId, maxId, size});
   }
-};
+}
 
-Profiler.HeapTimelineOverview.IdsRangeChanged = Symbol('IdsRangeChanged');
+export const IdsRangeChanged = Symbol('IdsRangeChanged');
 
-Profiler.HeapTimelineOverview.SmoothScale = class {
+export class SmoothScale {
   constructor() {
     this._lastUpdate = 0;
     this._currentScale = 0.0;
@@ -277,12 +277,12 @@ Profiler.HeapTimelineOverview.SmoothScale = class {
     }
     return this._currentScale;
   }
-};
+}
 
 /**
  * @unrestricted
  */
-Profiler.HeapTimelineOverview.Samples = class {
+export class Samples {
   constructor() {
     /** @type {!Array<number>} */
     this.sizes = [];
@@ -295,15 +295,15 @@ Profiler.HeapTimelineOverview.Samples = class {
     /** @type {number} */
     this.totalTime = 30000;
   }
-};
+}
 
 /**
  * @implements {PerfUI.TimelineGrid.Calculator}
  * @unrestricted
  */
-Profiler.HeapTimelineOverview.OverviewCalculator = class {
+export class OverviewCalculator {
   /**
-   * @param {!Profiler.HeapTimelineOverview} chart
+   * @param {!HeapTimelineOverview} chart
    */
   _updateBoundaries(chart) {
     this._minimumBoundaries = 0;
@@ -361,4 +361,24 @@ Profiler.HeapTimelineOverview.OverviewCalculator = class {
   boundarySpan() {
     return this._maximumBoundaries - this._minimumBoundaries;
   }
-};
+}
+
+/* Legacy exported object */
+self.Profiler = self.Profiler || {};
+
+/* Legacy exported object */
+Profiler = Profiler || {};
+
+/** @constructor */
+Profiler.HeapTimelineOverview = HeapTimelineOverview;
+
+Profiler.HeapTimelineOverview.IdsRangeChanged = IdsRangeChanged;
+
+/** @constructor */
+Profiler.HeapTimelineOverview.SmoothScale = SmoothScale;
+
+/** @constructor */
+Profiler.HeapTimelineOverview.Samples = Samples;
+
+/** @constructor */
+Profiler.HeapTimelineOverview.OverviewCalculator = OverviewCalculator;

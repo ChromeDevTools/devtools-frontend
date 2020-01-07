@@ -31,7 +31,7 @@
 /**
  * @unrestricted
  */
-Profiler.ProfileLauncherView = class extends UI.VBox {
+export default class ProfileLauncherView extends UI.VBox {
   /**
    * @param {!Profiler.ProfilesPanel} profilesPanel
    */
@@ -152,7 +152,7 @@ Profiler.ProfileLauncherView = class extends UI.VBox {
       const enabled = (id === typeId);
       element._profileType.setCustomContentEnabled(enabled);
     }
-    this.dispatchEventToListeners(Profiler.ProfileLauncherView.Events.ProfileTypeSelected, type);
+    this.dispatchEventToListeners(Events.ProfileTypeSelected, type);
   }
 
   _controlButtonClicked() {
@@ -167,15 +167,27 @@ Profiler.ProfileLauncherView = class extends UI.VBox {
     const type = this._typeIdToOptionElement.get(typeId)._profileType;
     type.setCustomContentEnabled(false);
     profileType.setCustomContentEnabled(true);
-    this.dispatchEventToListeners(Profiler.ProfileLauncherView.Events.ProfileTypeSelected, profileType);
+    this.dispatchEventToListeners(Events.ProfileTypeSelected, profileType);
     this._isInstantProfile = profileType.isInstantProfile();
     this._isEnabled = profileType.isEnabled();
     this._updateControls();
     this._selectedProfileTypeSetting.set(profileType.id);
   }
-};
+}
 
 /** @enum {symbol} */
-Profiler.ProfileLauncherView.Events = {
+export const Events = {
   ProfileTypeSelected: Symbol('ProfileTypeSelected')
 };
+
+/* Legacy exported object */
+self.Profiler = self.Profiler || {};
+
+/* Legacy exported object */
+Profiler = Profiler || {};
+
+/** @constructor */
+Profiler.ProfileLauncherView = ProfileLauncherView;
+
+/** @enum {symbol} */
+Profiler.ProfileLauncherView.Events = Events;

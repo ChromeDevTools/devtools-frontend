@@ -28,12 +28,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import * as Common from '../common/common.js';
 import {CheckboxLabel} from './UIUtils.js';
 
 /**
  * @param {string} name
- * @param {!Common.Settings.Setting} setting
+ * @param {!Common.Setting} setting
  * @param {boolean=} omitParagraphElement
  * @param {string=} tooltip
  * @return {!Element}
@@ -60,7 +59,7 @@ export const createSettingCheckbox = function(name, setting, omitParagraphElemen
 /**
  * @param {string} name
  * @param {!Array<!{text: string, value: *, raw: (boolean|undefined)}>} options
- * @param {!Common.Settings.Setting} setting
+ * @param {!Common.Setting} setting
  * @param {string=} subtitle
  * @return {!Element}
  */
@@ -78,7 +77,7 @@ const createSettingSelect = function(name, options, setting, subtitle) {
   for (let i = 0; i < options.length; ++i) {
     // The "raw" flag indicates text is non-i18n-izable.
     const option = options[i];
-    const optionName = option.raw ? option.text : Common.UIString.UIString(option.text);
+    const optionName = option.raw ? option.text : Common.UIString(option.text);
     select.add(new Option(optionName, option.value));
   }
 
@@ -104,7 +103,7 @@ const createSettingSelect = function(name, options, setting, subtitle) {
 
 /**
  * @param {!Element} input
- * @param {!Common.Settings.Setting} setting
+ * @param {!Common.Setting} setting
  */
 export const bindCheckbox = function(input, setting) {
   function settingChanged() {
@@ -139,7 +138,7 @@ export const createCustomSetting = function(name, element) {
 };
 
 /**
- * @param {!Common.Settings.Setting} setting
+ * @param {!Common.Setting} setting
  * @param {string=} subtitle
  * @return {?Element}
  */
@@ -148,7 +147,7 @@ export const createControlForSetting = function(setting, subtitle) {
     return null;
   }
   const descriptor = setting.extension().descriptor();
-  const uiTitle = Common.UIString.UIString(setting.title() || '');
+  const uiTitle = Common.UIString(setting.title() || '');
   switch (descriptor['settingType']) {
     case 'boolean':
       return createSettingCheckbox(uiTitle, setting);

@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../common/common.js';
 import {VBox} from './Widget.js';
 
 /**
@@ -15,7 +14,7 @@ export class ThrottledWidget extends VBox {
    */
   constructor(isWebComponent, timeout) {
     super(isWebComponent);
-    this._updateThrottler = new Common.Throttler.Throttler(timeout === undefined ? 100 : timeout);
+    this._updateThrottler = new Common.Throttler(timeout === undefined ? 100 : timeout);
     this._updateWhenVisible = false;
   }
 

@@ -24,7 +24,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import * as Common from '../common/common.js';
 import {Constraints, Size} from './Geometry.js';
 import {appendStyle} from './utils/append-style.js';
 import {createShadowRootWithCoreStyles} from './utils/create-shadow-root-with-core-styles.js';
@@ -33,7 +32,7 @@ import {XWidget} from './XWidget.js';
 /**
  * @unrestricted
  */
-export class Widget extends Common.ObjectWrapper.ObjectWrapper {
+export class Widget extends Common.Object {
   /**
    * @param {boolean=} isWebComponent
    * @param {boolean=} delegatesFocus

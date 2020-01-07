@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../common/common.js';
 import {ContextFlavorListener} from './ContextFlavorListener.js';
 
 /**
@@ -60,7 +59,7 @@ export class Context {
   addFlavorChangeListener(flavorType, listener, thisObject) {
     let dispatcher = this._eventDispatchers.get(flavorType);
     if (!dispatcher) {
-      dispatcher = new Common.ObjectWrapper.ObjectWrapper();
+      dispatcher = new Common.Object();
       this._eventDispatchers.set(flavorType, dispatcher);
     }
     dispatcher.addEventListener(Events.FlavorChanged, listener, thisObject);

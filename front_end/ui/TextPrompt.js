@@ -27,7 +27,6 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import * as Common from '../common/common.js';
 import {SuggestBox, SuggestBoxDelegate} from './SuggestBox.js';  // eslint-disable-line no-unused-vars
 import {ElementFocusRestorer} from './UIUtils.js';
 import {appendStyle} from './utils/append-style.js';
@@ -36,7 +35,7 @@ import {appendStyle} from './utils/append-style.js';
  * @implements {SuggestBoxDelegate}
  * @unrestricted
  */
-export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper {
+export class TextPrompt extends Common.Object {
   constructor() {
     super();
     /**

@@ -2,13 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../common/common.js';
 import {elementDragStart} from './UIUtils.js';
 
 /**
  * @unrestricted
  */
-export class ResizerWidget extends Common.ObjectWrapper.ObjectWrapper {
+export class ResizerWidget extends Common.Object {
   constructor() {
     super();
 

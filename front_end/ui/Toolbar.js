@@ -28,7 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import * as Common from '../common/common.js';
 import {Action, Events as ActionEvents} from './Action.js';  // eslint-disable-line no-unused-vars
 import {ContextMenu} from './ContextMenu.js';
 import {GlassPane, PointerEventsBehavior} from './GlassPane.js';
@@ -395,7 +394,7 @@ export class Toolbar {
 /**
  * @unrestricted
  */
-export class ToolbarItem extends Common.ObjectWrapper.ObjectWrapper {
+export class ToolbarItem extends Common.Object {
   /**
    * @param {!Element} element
    */
@@ -815,7 +814,7 @@ export class ToolbarMenuButton extends ToolbarButton {
  */
 export class ToolbarSettingToggle extends ToolbarToggle {
   /**
-   * @param {!Common.Settings.Setting} setting
+   * @param {!Common.Setting} setting
    * @param {string} glyph
    * @param {string} title
    */
@@ -1014,7 +1013,7 @@ export class ToolbarComboBox extends ToolbarItem {
 export class ToolbarSettingComboBox extends ToolbarComboBox {
   /**
    * @param {!Array<!{value: string, label: string}>} options
-   * @param {!Common.Settings.Setting} setting
+   * @param {!Common.Setting} setting
    * @param {string} accessibleName
    */
   constructor(options, setting, accessibleName) {
@@ -1121,7 +1120,7 @@ export class ToolbarCheckbox extends ToolbarItem {
 
 export class ToolbarSettingCheckbox extends ToolbarCheckbox {
   /**
-   * @param {!Common.Settings.Setting} setting
+   * @param {!Common.Setting} setting
    * @param {string=} tooltip
    * @param {string=} alternateTitle
    */

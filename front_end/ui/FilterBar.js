@@ -28,7 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import * as Common from '../common/common.js';
 import {KeyboardShortcut, Modifiers} from './KeyboardShortcut.js';
 import {bindCheckbox} from './SettingsUI.js';
 import {Events, TextPrompt} from './TextPrompt.js';
@@ -50,10 +49,8 @@ export class FilterBar extends HBox {
     this._enabled = true;
     this.element.classList.add('filter-bar');
 
-    // Note: go via self.Common for globally-namespaced singletons.
-    this._stateSetting = self.Common.settings.createSetting('filterBar-' + name + '-toggled', !!visibleByDefault);
-    this._filterButton =
-        new ToolbarSettingToggle(this._stateSetting, 'largeicon-filter', Common.UIString.UIString('Filter'));
+    this._stateSetting = Common.settings.createSetting('filterBar-' + name + '-toggled', !!visibleByDefault);
+    this._filterButton = new ToolbarSettingToggle(this._stateSetting, 'largeicon-filter', Common.UIString('Filter'));
 
     this._filters = [];
 
@@ -166,7 +163,7 @@ FilterBar.Events = {
 /**
  * @interface
  */
-export class FilterUI extends Common.EventTarget.EventTarget {
+export class FilterUI extends Common.EventTarget {
   /**
    * @return {boolean}
    */
@@ -188,7 +185,7 @@ FilterUI.Events = {
  * @implements {FilterUI}
  * @unrestricted
  */
-export class TextFilterUI extends Common.ObjectWrapper.ObjectWrapper {
+export class TextFilterUI extends Common.Object {
   constructor() {
     super();
     this._filterElement = createElement('div');
@@ -199,8 +196,8 @@ export class TextFilterUI extends Common.ObjectWrapper.ObjectWrapper {
     this._prompt = new TextPrompt();
     this._prompt.initialize(this._completions.bind(this), ' ');
     this._proxyElement = this._prompt.attach(this._filterInputElement);
-    this._proxyElement.title = Common.UIString.UIString('e.g. /small[\\d]+/ url:a.com/b');
-    this._prompt.setPlaceholder(Common.UIString.UIString('Filter'));
+    this._proxyElement.title = Common.UIString('e.g. /small[\\d]+/ url:a.com/b');
+    this._prompt.setPlaceholder(Common.UIString('Filter'));
     this._prompt.addEventListener(Events.TextChanged, this._valueChanged.bind(this));
 
     /** @type {?function(string, string, boolean=):!Promise<!UI.SuggestBox.Suggestions>} */
@@ -271,23 +268,23 @@ export class TextFilterUI extends Common.ObjectWrapper.ObjectWrapper {
  * @implements {FilterUI}
  * @unrestricted
  */
-export class NamedBitSetFilterUI extends Common.ObjectWrapper.ObjectWrapper {
+export class NamedBitSetFilterUI extends Common.Object {
   /**
    * @param {!Array.<!UI.NamedBitSetFilterUI.Item>} items
-   * @param {!Common.Settings.Setting=} setting
+   * @param {!Common.Setting=} setting
    */
   constructor(items, setting) {
     super();
     this._filtersElement = createElementWithClass('div', 'filter-bitset-filter');
     UI.ARIAUtils.markAsListBox(this._filtersElement);
     UI.ARIAUtils.markAsMultiSelectable(this._filtersElement);
-    this._filtersElement.title = Common.UIString.UIString(
+    this._filtersElement.title = Common.UIString(
         '%sClick to select multiple types', KeyboardShortcut.shortcutToString('', Modifiers.CtrlOrMeta));
 
     this._allowedTypes = {};
     /** @type {!Array.<!Element>} */
     this._typeFilterElements = [];
-    this._addBit(NamedBitSetFilterUI.ALL_TYPES, Common.UIString.UIString('All'));
+    this._addBit(NamedBitSetFilterUI.ALL_TYPES, Common.UIString('All'));
     this._typeFilterElements[0].tabIndex = 0;
     this._filtersElement.createChild('div', 'filter-bitset-filter-divider');
 
@@ -460,12 +457,12 @@ NamedBitSetFilterUI.ALL_TYPES = 'all';
  * @implements {FilterUI}
  * @unrestricted
  */
-export class CheckboxFilterUI extends Common.ObjectWrapper.ObjectWrapper {
+export class CheckboxFilterUI extends Common.Object {
   /**
    * @param {string} className
    * @param {string} title
    * @param {boolean=} activeWhenChecked
-   * @param {!Common.Settings.Setting=} setting
+   * @param {!Common.Setting=} setting
    */
   constructor(className, title, activeWhenChecked, setting) {
     super();

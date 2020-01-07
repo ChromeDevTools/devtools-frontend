@@ -15,7 +15,9 @@
         }
     ],
     "dependencies": ["platform", "ui", "host", "components"],
-    "scripts": [
+    "scripts": [],
+    "modules": [
+        "node_main.js",
         "NodeConnectionsPanel.js",
         "NodeMain.js"
     ],

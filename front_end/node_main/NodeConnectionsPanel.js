@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-NodeMain.NodeConnectionsPanel = class extends UI.Panel {
+export class NodeConnectionsPanel extends UI.Panel {
   constructor() {
     super('node-connection');
     this.registerRequiredCSS('node_main/nodeConnectionsPanel.css');
@@ -40,12 +40,12 @@ NodeMain.NodeConnectionsPanel = class extends UI.Panel {
     this._config = /** @type {!Adb.Config} */ (event.data);
     this._networkDiscoveryView.discoveryConfigChanged(this._config.networkDiscoveryConfig);
   }
-};
+}
 
 /**
  * @implements {UI.ListWidget.Delegate<Adb.PortForwardingRule>}
  */
-NodeMain.NodeConnectionsView = class extends UI.VBox {
+export class NodeConnectionsView extends UI.VBox {
   /**
    * @param {function(!Adb.NetworkDiscoveryConfig)} callback
    */
@@ -183,4 +183,15 @@ NodeMain.NodeConnectionsView = class extends UI.VBox {
       return {valid: port <= 65535};
     }
   }
-};
+}
+
+/* Legacy exported object */
+self.NodeMain = self.NodeMain || {};
+
+/* Legacy exported object */
+NodeMain = NodeMain || {};
+
+/**
+ * @constructor
+ */
+NodeMain.NodeConnectionsPanel = NodeConnectionsPanel;

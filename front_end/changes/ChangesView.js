@@ -40,7 +40,7 @@ export default class ChangesView extends UI.VBox {
     this._editor.show(editorContainer);
     this._editor.hideWidget();
 
-    this._editor.element.addEventListener('click', this._click.bind(this), false);
+    self.onInvokeElement(this._editor.element, this._click.bind(this));
 
     this._toolbar = new UI.Toolbar('changes-toolbar', mainWidget.element);
     const revertButton = new UI.ToolbarButton(ls`Revert all changes to current file`, 'largeicon-undo');

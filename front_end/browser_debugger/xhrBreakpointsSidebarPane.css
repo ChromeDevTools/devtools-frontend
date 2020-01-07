@@ -38,6 +38,10 @@
     background-color: #eee;
 }
 
+.breakpoint-list .breakpoint-entry[data-keyboard-focus="true"] {
+    background-color: var(--focus-bg-color);
+}
+
 .breakpoint-entry [is=dt-checkbox] {
     max-width: 100%;
 }

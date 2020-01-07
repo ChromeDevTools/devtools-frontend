@@ -48,6 +48,9 @@
   <message name="IDS_DEVTOOLS_ebdb33cde9015fa4b294220ee89cff00" desc="Title of the 'Event Listener Breakpoints' tool in the bottom sidebar of the Sources tool">
     Event Listener Breakpoints
   </message>
+  <message name="IDS_DEVTOOLS_f7b864eedd9a968c73e7b0f08fe1f62d" desc="Label for a button in the Sources panel that opens the input field to create a new XHR/fetch breakpoint.">
+    Add XHR/fetch breakpoint
+  </message>
   <message name="IDS_DEVTOOLS_f80938ab8ce27f3427af09c97a718fff" desc="Text in DOMBreakpoints Sidebar Pane of the JavaScript Debugging pane in the Sources panel or the DOM Breakpoints pane in the Elements panel">
     Node removed
   </message>

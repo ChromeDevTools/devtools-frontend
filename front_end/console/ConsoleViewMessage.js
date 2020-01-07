@@ -417,7 +417,7 @@ export default class ConsoleViewMessage {
       return null;
     }
     return this._linkifier.linkifyScriptLocation(
-        this._message.runtimeModel().target(), null, url, lineNumber, columnNumber);
+        this._message.runtimeModel().target(), /* scriptId */ null, url, lineNumber, {columnNumber});
   }
 
   /**
@@ -443,7 +443,7 @@ export default class ConsoleViewMessage {
       return null;
     }
     return this._linkifier.linkifyScriptLocation(
-        this._message.runtimeModel().target(), scriptId, url, lineNumber, columnNumber);
+        this._message.runtimeModel().target(), scriptId, url, lineNumber, {columnNumber});
   }
 
   /**
@@ -1539,7 +1539,7 @@ export default class ConsoleViewMessage {
     for (let i = 0; i < links.length; ++i) {
       formattedResult.appendChild(this._linkifyStringAsFragment(string.substring(start, links[i].positionLeft)));
       const scriptLocationLink = this._linkifier.linkifyScriptLocation(
-          debuggerModel.target(), null, links[i].url, links[i].lineNumber, links[i].columnNumber);
+          debuggerModel.target(), null, links[i].url, links[i].lineNumber, {columnNumber: links[i].columnNumber});
       scriptLocationLink.tabIndex = -1;
       this._selectableChildren.push({element: scriptLocationLink, forceSelect: () => scriptLocationLink.focus()});
       formattedResult.appendChild(scriptLocationLink);

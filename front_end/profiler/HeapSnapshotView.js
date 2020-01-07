@@ -1870,9 +1870,10 @@ Profiler.HeapAllocationStackView = class extends UI.Widget {
       if (!frame.scriptId) {
         continue;
       }
+      const target = this._heapProfilerModel ? this._heapProfilerModel.target() : null;
+      const options = {columnNumber: frame.column - 1};
       const urlElement = this._linkifier.linkifyScriptLocation(
-          this._heapProfilerModel ? this._heapProfilerModel.target() : null, String(frame.scriptId), frame.scriptName,
-          frame.line - 1, frame.column - 1);
+          target, String(frame.scriptId), frame.scriptName, frame.line - 1, options);
       frameDiv.appendChild(urlElement);
       frameDiv._linkElement = urlElement;
       frameDiv.addEventListener('contextmenu', this._onContextMenu.bind(this, urlElement));

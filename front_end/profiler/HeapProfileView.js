@@ -746,8 +746,9 @@ Profiler.HeapProfileView.NodeFormatter = class {
    */
   linkifyNode(node) {
     const heapProfilerModel = this._profileView._profileHeader.heapProfilerModel();
-    return this._profileView.linkifier().maybeLinkifyConsoleCallFrame(
-        heapProfilerModel ? heapProfilerModel.target() : null, node.profileNode.callFrame, 'profile-node-file');
+    const target = heapProfilerModel ? heapProfilerModel.target() : null;
+    const options = {className: 'profile-node-file'};
+    return this._profileView.linkifier().maybeLinkifyConsoleCallFrame(target, node.profileNode.callFrame, options);
   }
 };
 

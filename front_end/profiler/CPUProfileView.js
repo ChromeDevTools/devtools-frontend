@@ -305,8 +305,9 @@ Profiler.CPUProfileView.NodeFormatter = class {
    */
   linkifyNode(node) {
     const cpuProfilerModel = this._profileView._profileHeader._cpuProfilerModel;
-    return this._profileView.linkifier().maybeLinkifyConsoleCallFrame(
-        cpuProfilerModel ? cpuProfilerModel.target() : null, node.profileNode.callFrame, 'profile-node-file');
+    const target = cpuProfilerModel ? cpuProfilerModel.target() : null;
+    const options = {className: 'profile-node-file'};
+    return this._profileView.linkifier().maybeLinkifyConsoleCallFrame(target, node.profileNode.callFrame, options);
   }
 };
 

@@ -24,7 +24,6 @@ export default class TimelineDetailsView extends UI.VBox {
     this._defaultDetailsWidget.element.classList.add('timeline-details-view');
     this._defaultDetailsContentElement =
         this._defaultDetailsWidget.element.createChild('div', 'timeline-details-view-body vbox');
-    this._defaultDetailsContentElement.tabIndex = 0;
     this._appendTab(tabIds.Details, Common.UIString('Summary'), this._defaultDetailsWidget);
     this.setPreferredTab(tabIds.Details);
 

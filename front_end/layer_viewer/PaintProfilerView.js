@@ -378,6 +378,7 @@ export class PaintProfilerCommandLogView extends UI.ThrottledWidget {
     this._treeOutline = new UI.TreeOutlineInShadow();
     UI.ARIAUtils.setAccessibleName(this._treeOutline.contentElement, ls`Command Log`);
     this.element.appendChild(this._treeOutline.element);
+    this.setDefaultFocusedElement(this._treeOutline.contentElement);
 
     this._log = [];
   }

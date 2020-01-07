@@ -16,6 +16,8 @@ export default class LayerPaintProfilerView extends UI.SplitWidget {
 
     this._paintProfilerView.addEventListener(
         LayerViewer.PaintProfilerView.Events.WindowChanged, this._onWindowChanged, this);
+
+    this._logTreeView.focus();
   }
 
   reset() {

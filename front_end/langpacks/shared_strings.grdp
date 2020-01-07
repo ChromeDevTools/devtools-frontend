@@ -334,6 +334,9 @@
   <message name="IDS_DEVTOOLS_8d9da4bc0e49a50e09ac9f7e56789d39" desc="Text to indicate the network connectivity is offline">
     Offline
   </message>
+  <message name="IDS_DEVTOOLS_8fc1dde0c79d8adcaf674b3d679d3596" desc="Accessibility label for hit breakpoints in the Sources panel.">
+    <ph name="CHECKEDSTATETEXT">$1s<ex>checked</ex></ph> breakpoint hit
+  </message>
   <message name="IDS_DEVTOOLS_902b0d55fddef6f8d651fe1035b7d4bd" desc="Text for errors">
     Error
   </message>

@@ -11,6 +11,10 @@
     border-top: 1px solid #efefef;
 }
 
+.breakpoint-entry:focus {
+    background-color: var(--focus-bg-color);
+}
+
 .breakpoint-entry [is=dt-checkbox] {
     max-width: 100%;
     white-space: nowrap;

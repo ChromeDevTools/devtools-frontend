@@ -60,6 +60,9 @@
   <message name="IDS_DEVTOOLS_1d76fdc8e9a79fa435ee5a2afa4c9bb8" desc="Text in Debugger Paused Message of the Sources panel">
     Paused before potential out-of-memory crash
   </message>
+  <message name="IDS_DEVTOOLS_1d770934d44de09b0d24f04fd01708ba" desc="Accessible text for a breakpoint collection with a combination of checked states.">
+    mixed
+  </message>
   <message name="IDS_DEVTOOLS_1f15646f60fc3c1dea747963f02d51ac" desc="Text in Sources Panel of the Sources panel">
     Group by folder
   </message>
@@ -251,6 +254,9 @@
   </message>
   <message name="IDS_DEVTOOLS_74662a9a81d3f50d9d1f3dddf044b550" desc="A context menu item in the Navigator View of the Sources panel">
     Exclude folder
+  </message>
+  <message name="IDS_DEVTOOLS_74a80c311113cbbeedaed227123280ab" desc="Context menu item that reveals the source code location of a breakpoint in the Sources panel.">
+    Reveal location
   </message>
   <message name="IDS_DEVTOOLS_74ff4bad28abee3489bd8ca138b80bb6" desc="Text in Filtered UISource Code List Provider of the Sources panel">
     No files found

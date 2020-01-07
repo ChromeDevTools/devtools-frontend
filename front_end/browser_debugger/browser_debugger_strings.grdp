@@ -30,9 +30,6 @@
   <message name="IDS_DEVTOOLS_9f76c421048cb58ab03988d2ce1c813e" desc="Label for a button in the sources panel that refreshes the list of global event listeners.">
     Refresh global listeners
   </message>
-  <message name="IDS_DEVTOOLS_8fc1dde0c79d8adcaf674b3d679d3596" desc="Accessibility label for hit breakpoints in the Sources panel.">
-    <ph name="CHECKEDSTATETEXT">$1s<ex>checked</ex></ph> breakpoint hit
-  </message>
   <message name="IDS_DEVTOOLS_b839f802a330e4d4145cb182e6767f45" desc="Text in XHRBreakpoints Sidebar Pane of the JavaScript Debugging pane in the Sources panel or the DOM Breakpoints pane in the Elements panel">
     Any XHR or fetch
   </message>

@@ -522,14 +522,14 @@ SourcesTestRunner.waitBreakpointSidebarPane = function(waitUntilResolved) {
 };
 
 SourcesTestRunner.breakpointsSidebarPaneContent = function() {
-  const paneElement = self.runtime.sharedInstance(Sources.JavaScriptBreakpointsSidebarPane).contentElement;
-  const empty = paneElement.querySelector('.gray-info-message');
+  const pane = self.runtime.sharedInstance(Sources.JavaScriptBreakpointsSidebarPane);
+  const empty = pane._emptyElement;
 
-  if (empty) {
+  if (!empty.classList.contains('hidden')) {
     return TestRunner.textContentWithLineBreaks(empty);
   }
 
-  const entries = Array.from(paneElement.querySelectorAll('.breakpoint-entry'));
+  const entries = Array.from(pane.contentElement.querySelectorAll('.breakpoint-entry'));
   return entries.map(TestRunner.textContentWithLineBreaks).join('\n');
 };
 

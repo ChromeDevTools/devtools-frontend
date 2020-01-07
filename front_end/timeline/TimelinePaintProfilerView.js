@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-Timeline.TimelinePaintProfilerView = class extends UI.SplitWidget {
+export default class TimelinePaintProfilerView extends UI.SplitWidget {
   /**
    * @param {!TimelineModel.TimelineFrameModel} frameModel
    */
@@ -16,7 +16,7 @@ Timeline.TimelinePaintProfilerView = class extends UI.SplitWidget {
     this._logAndImageSplitWidget = new UI.SplitWidget(true, false);
     this._logAndImageSplitWidget.element.classList.add('timeline-paint-profiler-log-split');
     this.setMainWidget(this._logAndImageSplitWidget);
-    this._imageView = new Timeline.TimelinePaintImageView();
+    this._imageView = new TimelinePaintImageView();
     this._logAndImageSplitWidget.setMainWidget(this._imageView);
 
     this._paintProfilerView = new LayerViewer.PaintProfilerView(this._imageView.showImage.bind(this._imageView));
@@ -121,7 +121,7 @@ Timeline.TimelinePaintProfilerView = class extends UI.SplitWidget {
      * @param {!SDK.PaintProfilerSnapshot} snapshot
      * @param {?Protocol.DOM.Rect} clipRect
      * @param {!Array.<!SDK.PaintProfilerLogItem>=} log
-     * @this {Timeline.TimelinePaintProfilerView}
+     * @this {TimelinePaintProfilerView}
      */
     function onCommandLogDone(snapshot, clipRect, log) {
       this._logTreeView.setCommandLog(log || []);
@@ -140,12 +140,12 @@ Timeline.TimelinePaintProfilerView = class extends UI.SplitWidget {
   _onWindowChanged() {
     this._logTreeView.updateWindow(this._paintProfilerView.selectionWindow());
   }
-};
+}
 
 /**
  * @unrestricted
  */
-Timeline.TimelinePaintImageView = class extends UI.Widget {
+export class TimelinePaintImageView extends UI.Widget {
   constructor() {
     super(true);
     this.registerRequiredCSS('timeline/timelinePaintProfiler.css');
@@ -224,4 +224,16 @@ Timeline.TimelinePaintImageView = class extends UI.Widget {
     this._maskRectangle = maskRectangle;
     this._maskElement.classList.toggle('hidden', !maskRectangle);
   }
-};
+}
+
+/* Legacy exported object */
+self.Timeline = self.Timeline || {};
+
+/* Legacy exported object */
+Timeline = Timeline || {};
+
+/** @constructor */
+Timeline.TimelinePaintProfilerView = TimelinePaintProfilerView;
+
+/** @constructor */
+Timeline.TimelinePaintImageView = TimelinePaintImageView;

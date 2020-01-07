@@ -7,7 +7,7 @@
  * @implements {UI.Searchable}
  * @unrestricted
  */
-Timeline.TimelineFlameChartView = class extends UI.VBox {
+export default class TimelineFlameChartView extends UI.VBox {
   /**
    * @param {!Timeline.TimelineModeViewDelegate} delegate
    */
@@ -419,12 +419,12 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
     this._searchRegex = searchConfig.toSearchRegex();
     this._updateSearchResults(shouldJump, jumpBackwards);
   }
-};
+}
 
 /**
  * @unrestricted
  */
-Timeline.TimelineFlameChartView.Selection = class {
+export class Selection {
   /**
    * @param {!Timeline.TimelineSelection} selection
    * @param {number} entryIndex
@@ -433,9 +433,9 @@ Timeline.TimelineFlameChartView.Selection = class {
     this.timelineSelection = selection;
     this.entryIndex = entryIndex;
   }
-};
+}
 
-Timeline.FlameChartStyle = {
+export const FlameChartStyle = {
   textColor: '#333'
 };
 
@@ -443,7 +443,7 @@ Timeline.FlameChartStyle = {
  * @implements {PerfUI.FlameChartMarker}
  * @unrestricted
  */
-Timeline.TimelineFlameChartMarker = class {
+export class TimelineFlameChartMarker {
   /**
    * @param {number} startTime
    * @param {number} startOffset
@@ -510,9 +510,29 @@ Timeline.TimelineFlameChartMarker = class {
     }
     context.restore();
   }
-};
+}
 
 /** @enum {string} */
-Timeline.TimelineFlameChartView._ColorBy = {
+export const _ColorBy = {
   URL: 'URL',
 };
+
+/* Legacy exported object */
+self.Timeline = self.Timeline || {};
+
+/* Legacy exported object */
+Timeline = Timeline || {};
+
+/** @constructor */
+Timeline.TimelineFlameChartView = TimelineFlameChartView;
+
+/** @constructor */
+Timeline.TimelineFlameChartView.Selection = Selection;
+
+/** @enum {string} */
+Timeline.TimelineFlameChartView._ColorBy = _ColorBy;
+
+Timeline.FlameChartStyle = FlameChartStyle;
+
+/** @constructor */
+Timeline.TimelineFlameChartMarker = TimelineFlameChartMarker;

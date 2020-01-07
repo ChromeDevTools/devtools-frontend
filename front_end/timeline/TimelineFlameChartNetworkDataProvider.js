@@ -6,7 +6,7 @@
  * @implements {PerfUI.FlameChartDataProvider}
  * @unrestricted
  */
-Timeline.TimelineFlameChartNetworkDataProvider = class {
+export default class TimelineFlameChartNetworkDataProvider {
   constructor() {
     this._font = '11px ' + Host.fontFamily();
     this.setModel(null);
@@ -439,4 +439,13 @@ Timeline.TimelineFlameChartNetworkDataProvider = class {
   canJumpToEntry(entryIndex) {
     return false;
   }
-};
+}
+
+/* Legacy exported object */
+self.Timeline = self.Timeline || {};
+
+/* Legacy exported object */
+Timeline = Timeline || {};
+
+/** @constructor */
+Timeline.TimelineFlameChartNetworkDataProvider = TimelineFlameChartNetworkDataProvider;

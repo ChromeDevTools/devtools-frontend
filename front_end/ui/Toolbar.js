@@ -610,6 +610,7 @@ export class ToolbarInput extends ToolbarItem {
     const internalPromptElement = this.element.createChild('div', 'toolbar-input-prompt');
     internalPromptElement.addEventListener('focus', () => this.element.classList.add('focused'));
     internalPromptElement.addEventListener('blur', () => this.element.classList.remove('focused'));
+    UI.ARIAUtils.markAsHidden(internalPromptElement);
 
     this._prompt = new TextPrompt();
     this._proxyElement = this._prompt.attach(internalPromptElement);

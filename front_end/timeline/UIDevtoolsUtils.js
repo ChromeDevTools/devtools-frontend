@@ -31,7 +31,7 @@
 /**
  * @unrestricted
  */
-export default class UIDevtoolsUtils {
+Timeline.UIDevtoolsUtils = class {
   /**
    * @return {boolean}
    */
@@ -43,12 +43,12 @@ export default class UIDevtoolsUtils {
    * @return {!Object.<string, !Timeline.TimelineRecordStyle>}
    */
   static categorizeEvents() {
-    if (UIDevtoolsUtils._eventStylesMap) {
-      return UIDevtoolsUtils._eventStylesMap;
+    if (Timeline.UIDevtoolsUtils._eventStylesMap) {
+      return Timeline.UIDevtoolsUtils._eventStylesMap;
     }
 
-    const type = RecordType;
-    const categories = UIDevtoolsUtils.categories();
+    const type = Timeline.UIDevtoolsUtils.RecordType;
+    const categories = Timeline.UIDevtoolsUtils.categories();
     const drawing = categories['drawing'];
     const rasterizing = categories['rasterizing'];
     const layout = categories['layout'];
@@ -88,7 +88,7 @@ export default class UIDevtoolsUtils {
     eventStyles[type.ThreadControllerImplRunTask] =
         new Timeline.TimelineRecordStyle(ls`ThreadControllerImpl::RunTask`, other);
 
-    UIDevtoolsUtils._eventStylesMap = eventStyles;
+    Timeline.UIDevtoolsUtils._eventStylesMap = eventStyles;
     return eventStyles;
   }
 
@@ -96,10 +96,10 @@ export default class UIDevtoolsUtils {
    * @return {!Object.<string, !Timeline.TimelineCategory>}
    */
   static categories() {
-    if (UIDevtoolsUtils._categories) {
-      return UIDevtoolsUtils._categories;
+    if (Timeline.UIDevtoolsUtils._categories) {
+      return Timeline.UIDevtoolsUtils._categories;
     }
-    UIDevtoolsUtils._categories = {
+    Timeline.UIDevtoolsUtils._categories = {
       layout: new Timeline.TimelineCategory('layout', ls`Layout`, true, 'hsl(214, 67%, 74%)', 'hsl(214, 67%, 66%)'),
       rasterizing: new Timeline.TimelineCategory(
           'rasterizing', ls`Rasterizing`, true, 'hsl(43, 83%, 72%)', 'hsl(43, 83%, 64%) '),
@@ -109,7 +109,7 @@ export default class UIDevtoolsUtils {
       other: new Timeline.TimelineCategory('other', ls`System`, false, 'hsl(0, 0%, 87%)', 'hsl(0, 0%, 79%)'),
       idle: new Timeline.TimelineCategory('idle', ls`Idle`, false, 'hsl(0, 0%, 98%)', 'hsl(0, 0%, 98%)')
     };
-    return UIDevtoolsUtils._categories;
+    return Timeline.UIDevtoolsUtils._categories;
   }
 
   /**
@@ -118,12 +118,13 @@ export default class UIDevtoolsUtils {
   static getMainCategoriesList() {
     return ['idle', 'drawing', 'painting', 'rasterizing', 'layout', 'other'];
   }
-}
+};
+
 
 /**
  * @enum {string}
  */
-export const RecordType = {
+Timeline.UIDevtoolsUtils.RecordType = {
   ViewPaint: 'View::Paint',
   ViewOnPaint: 'View::OnPaint',
   ViewPaintChildren: 'View::PaintChildren',
@@ -140,15 +141,3 @@ export const RecordType = {
   NeedsBeginFrameChanged: 'NeedsBeginFrameChanged',
   ThreadControllerImplRunTask: 'ThreadControllerImpl::RunTask',
 };
-
-/* Legacy exported object */
-self.Timeline = self.Timeline || {};
-
-/* Legacy exported object */
-Timeline = Timeline || {};
-
-/** @constructor */
-Timeline.UIDevtoolsUtils = UIDevtoolsUtils;
-
-/** @enum {string} */
-Timeline.UIDevtoolsUtils.RecordType = RecordType;

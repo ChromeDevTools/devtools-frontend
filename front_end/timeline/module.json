@@ -229,9 +229,7 @@
         "profiler",
         "mobile_throttling"
     ],
-    "scripts": [],
-    "modules": [
-        "timeline.js",
+    "scripts": [
         "CountersGraph.js",
         "ExtensionTracingSession.js",
         "PerformanceModel.js",

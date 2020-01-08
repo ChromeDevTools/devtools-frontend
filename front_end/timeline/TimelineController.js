@@ -7,10 +7,10 @@
  * @implements {SDK.TracingManagerClient}
  * @unrestricted
  */
-export default class TimelineController {
+Timeline.TimelineController = class {
   /**
    * @param {!SDK.Target} target
-   * @param {!Client} client
+   * @param {!Timeline.TimelineController.Client} client
    */
   constructor(target, client) {
     this._target = target;
@@ -375,38 +375,27 @@ export default class TimelineController {
   eventsRetrievalProgress(progress) {
     this._client.loadingProgress(progress);
   }
-}
+};
 
 /**
  * @interface
  * @extends {Timeline.TimelineLoader.Client}
  */
-export class Client {
+Timeline.TimelineController.Client = function() {};
+
+Timeline.TimelineController.Client.prototype = {
   /**
    * @param {number} usage
    */
-  recordingProgress(usage) {
-  }
-}
-
-/* Legacy exported object */
-self.Timeline = self.Timeline || {};
-
-/* Legacy exported object */
-Timeline = Timeline || {};
-
-/** @constructor */
-Timeline.TimelineController = TimelineController;
-
-/** @interface */
-Timeline.TimelineController.Client = Client;
+  recordingProgress(usage) {},
+};
 
 /**
  * @typedef {!{
-  *   enableJSSampling: (boolean|undefined),
-  *   capturePictures: (boolean|undefined),
-  *   captureFilmStrip: (boolean|undefined),
-  *   startCoverage: (boolean|undefined)
-  * }}
-  */
+ *   enableJSSampling: (boolean|undefined),
+ *   capturePictures: (boolean|undefined),
+ *   captureFilmStrip: (boolean|undefined),
+ *   startCoverage: (boolean|undefined)
+ * }}
+ */
 Timeline.TimelineController.RecordingOptions;

@@ -31,7 +31,7 @@
 /**
  * @unrestricted
  */
-export default class TimelineEventOverview extends PerfUI.TimelineOverviewBase {
+Timeline.TimelineEventOverview = class extends PerfUI.TimelineOverviewBase {
   /**
    * @param {string} id
    * @param {?string} title
@@ -68,12 +68,12 @@ export default class TimelineEventOverview extends PerfUI.TimelineOverviewBase {
     ctx.fillStyle = color;
     ctx.fillRect(x, position, width, height);
   }
-}
+};
 
 /**
  * @unrestricted
  */
-export class TimelineEventOverviewInput extends TimelineEventOverview {
+Timeline.TimelineEventOverviewInput = class extends Timeline.TimelineEventOverview {
   constructor() {
     super('input', null);
   }
@@ -123,12 +123,12 @@ export class TimelineEventOverviewInput extends TimelineEventOverview {
       }
     }
   }
-}
+};
 
 /**
  * @unrestricted
  */
-export class TimelineEventOverviewNetwork extends TimelineEventOverview {
+Timeline.TimelineEventOverviewNetwork = class extends Timeline.TimelineEventOverview {
   constructor() {
     super('network', Common.UIString('NET'));
   }
@@ -166,12 +166,12 @@ export class TimelineEventOverviewNetwork extends TimelineEventOverview {
     ctx.fill(/** @type {?} */ (lowPath));
     ctx.restore();
   }
-}
+};
 
 /**
  * @unrestricted
  */
-export class TimelineEventOverviewCPUActivity extends TimelineEventOverview {
+Timeline.TimelineEventOverviewCPUActivity = class extends Timeline.TimelineEventOverview {
   constructor() {
     super('cpu-activity', Common.UIString('CPU'));
     this._backgroundCanvas = this.element.createChild('canvas', 'fill background');
@@ -227,7 +227,7 @@ export class TimelineEventOverviewCPUActivity extends TimelineEventOverview {
      * @param {!Array<!SDK.TracingModel.Event>} events
      */
     function drawThreadEvents(ctx, events) {
-      const quantizer = new Quantizer(timeOffset, quantTime, drawSample);
+      const quantizer = new Timeline.Quantizer(timeOffset, quantTime, drawSample);
       let x = 0;
       const categoryIndexStack = [];
       const paths = [];
@@ -293,12 +293,12 @@ export class TimelineEventOverviewCPUActivity extends TimelineEventOverview {
       ctx.restore();
     }
   }
-}
+};
 
 /**
  * @unrestricted
  */
-export class TimelineEventOverviewResponsiveness extends TimelineEventOverview {
+Timeline.TimelineEventOverviewResponsiveness = class extends Timeline.TimelineEventOverview {
   constructor() {
     super('responsiveness', null);
   }
@@ -357,12 +357,12 @@ export class TimelineEventOverviewResponsiveness extends TimelineEventOverview {
       markersPath.lineTo(x + w, height);
     }
   }
-}
+};
 
 /**
  * @unrestricted
  */
-export class TimelineFilmStripOverview extends TimelineEventOverview {
+Timeline.TimelineFilmStripOverview = class extends Timeline.TimelineEventOverview {
   constructor() {
     super('filmstrip', null);
     this.reset();
@@ -387,7 +387,7 @@ export class TimelineFilmStripOverview extends TimelineEventOverview {
       if (!image || !image.naturalWidth || !image.naturalHeight) {
         return;
       }
-      const imageHeight = this.height() - 2 * TimelineFilmStripOverview.Padding;
+      const imageHeight = this.height() - 2 * Timeline.TimelineFilmStripOverview.Padding;
       const imageWidth = Math.ceil(imageHeight * image.naturalWidth / image.naturalHeight);
       const popoverScale = Math.min(200 / image.naturalWidth, 1);
       this._emptyImage = new Image(image.naturalWidth * popoverScale, image.naturalHeight * popoverScale);
@@ -420,7 +420,7 @@ export class TimelineFilmStripOverview extends TimelineEventOverview {
     if (!filmStripModel.frames().length) {
       return;
     }
-    const padding = TimelineFilmStripOverview.Padding;
+    const padding = Timeline.TimelineFilmStripOverview.Padding;
     const width = this.width();
     const zeroTime = filmStripModel.zeroTime();
     const spanTime = filmStripModel.spanTime();
@@ -444,7 +444,7 @@ export class TimelineFilmStripOverview extends TimelineEventOverview {
     /**
      * @param {number} x
      * @param {?HTMLImageElement} image
-     * @this {TimelineFilmStripOverview}
+     * @this {Timeline.TimelineFilmStripOverview}
      */
     function drawFrameImage(x, image) {
       // Ignore draws deferred from a previous update call.
@@ -474,7 +474,7 @@ export class TimelineFilmStripOverview extends TimelineEventOverview {
     return imagePromise.then(createFrameElement.bind(this));
 
     /**
-     * @this {TimelineFilmStripOverview}
+     * @this {Timeline.TimelineFilmStripOverview}
      * @param {?HTMLImageElement} image
      * @return {?Element}
      */
@@ -499,14 +499,14 @@ export class TimelineFilmStripOverview extends TimelineEventOverview {
     this._frameToImagePromise = new Map();
     this._imageWidth = 0;
   }
-}
+};
 
-TimelineFilmStripOverview.Padding = 2;
+Timeline.TimelineFilmStripOverview.Padding = 2;
 
 /**
  * @unrestricted
  */
-export class TimelineEventOverviewFrames extends TimelineEventOverview {
+Timeline.TimelineEventOverviewFrames = class extends Timeline.TimelineEventOverview {
   constructor() {
     super('framerate', Common.UIString('FPS'));
   }
@@ -561,12 +561,12 @@ export class TimelineEventOverviewFrames extends TimelineEventOverview {
     ctx.fill();
     ctx.stroke();
   }
-}
+};
 
 /**
  * @unrestricted
  */
-export class TimelineEventOverviewMemory extends TimelineEventOverview {
+Timeline.TimelineEventOverviewMemory = class extends Timeline.TimelineEventOverview {
   constructor() {
     super('memory', Common.UIString('HEAP'));
     this._heapSizeLabel = this.element.createChild('div', 'memory-graph-label');
@@ -689,12 +689,12 @@ export class TimelineEventOverviewMemory extends TimelineEventOverview {
     this._heapSizeLabel.textContent =
         Common.UIString('%s \u2013 %s', Number.bytesToString(minUsedHeapSize), Number.bytesToString(maxUsedHeapSize));
   }
-}
+};
 
 /**
  * @unrestricted
  */
-export class Quantizer {
+Timeline.Quantizer = class {
   /**
    * @param {number} startTime
    * @param {number} quantDuration
@@ -734,12 +734,12 @@ export class Quantizer {
     this._lastTime = time;
     this._remainder = this._quantDuration - interval;
   }
-}
+};
 
 /**
  * @unrestricted
  */
-export class TimelineEventOverviewCoverage extends TimelineEventOverview {
+Timeline.TimelineEventOverviewCoverage = class extends Timeline.TimelineEventOverview {
   constructor() {
     super('coverage', Common.UIString('COVERAGE'));
     this._heapSizeLabel = this.element.createChild('div', 'timeline-overview-coverage-label');
@@ -873,40 +873,4 @@ export class TimelineEventOverviewCoverage extends TimelineEventOverview {
 
     this._heapSizeLabel.textContent = `${percentUsed}% used`;
   }
-}
-
-/* Legacy exported object */
-self.Timeline = self.Timeline || {};
-
-/* Legacy exported object */
-Timeline = Timeline || {};
-
-/** @constructor */
-Timeline.TimelineEventOverview = TimelineEventOverview;
-
-/** @constructor */
-Timeline.TimelineEventOverviewInput = TimelineEventOverviewInput;
-
-/** @constructor */
-Timeline.TimelineEventOverviewNetwork = TimelineEventOverviewNetwork;
-
-/** @constructor */
-Timeline.TimelineEventOverviewCPUActivity = TimelineEventOverviewCPUActivity;
-
-/** @constructor */
-Timeline.TimelineEventOverviewResponsiveness = TimelineEventOverviewResponsiveness;
-
-/** @constructor */
-Timeline.TimelineFilmStripOverview = TimelineFilmStripOverview;
-
-/** @constructor */
-Timeline.TimelineEventOverviewFrames = TimelineEventOverviewFrames;
-
-/** @constructor */
-Timeline.TimelineEventOverviewMemory = TimelineEventOverviewMemory;
-
-/** @constructor */
-Timeline.Quantizer = Quantizer;
-
-/** @constructor */
-Timeline.TimelineEventOverviewCoverage = TimelineEventOverviewCoverage;
+};

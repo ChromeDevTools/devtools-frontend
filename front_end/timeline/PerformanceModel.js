@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-export default class PerformanceModel extends Common.Object {
+Timeline.PerformanceModel = class extends Common.Object {
   constructor() {
     super();
     /** @type {?SDK.Target} */
@@ -127,7 +127,7 @@ export default class PerformanceModel extends Common.Object {
       return;
     }
     model.adjustTime(this._tracingModel.minimumRecordTime() + (timeOffset / 1000) - this._recordStartTime);
-    this.dispatchEventToListeners(Events.ExtensionDataAdded);
+    this.dispatchEventToListeners(Timeline.PerformanceModel.Events.ExtensionDataAdded);
   }
 
   /**
@@ -224,7 +224,7 @@ export default class PerformanceModel extends Common.Object {
    */
   setWindow(window, animate) {
     this._window = window;
-    this.dispatchEventToListeners(Events.WindowChanged, {window, animate});
+    this.dispatchEventToListeners(Timeline.PerformanceModel.Events.WindowChanged, {window, animate});
   }
 
   /**
@@ -287,27 +287,15 @@ export default class PerformanceModel extends Common.Object {
     }
     this.setWindow({left: leftTime, right: rightTime});
   }
-}
+};
 
 /**
  * @enum {symbol}
  */
-export const Events = {
+Timeline.PerformanceModel.Events = {
   ExtensionDataAdded: Symbol('ExtensionDataAdded'),
   WindowChanged: Symbol('WindowChanged')
 };
-
-/* Legacy exported object */
-self.Timeline = self.Timeline || {};
-
-/* Legacy exported object */
-Timeline = Timeline || {};
-
-/** @constructor */
-Timeline.PerformanceModel = PerformanceModel;
-
-/** @enum {symbol} */
-Timeline.PerformanceModel.Events = Events;
 
 /** @typedef {!{left: number, right: number}} */
 Timeline.PerformanceModel.Window;

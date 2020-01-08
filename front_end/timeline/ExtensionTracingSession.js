@@ -6,7 +6,7 @@
  * @implements {Extensions.TracingSession}
  * @implements {Timeline.TimelineLoader.Client}
  */
-export default class ExtensionTracingSession {
+Timeline.ExtensionTracingSession = class {
   /**
    * @param {!Extensions.ExtensionTraceProvider} provider
    * @param {!Timeline.PerformanceModel} performanceModel
@@ -72,13 +72,4 @@ export default class ExtensionTracingSession {
     this._provider.stop();
     return this._completionPromise;
   }
-}
-
-/* Legacy exported object */
-self.Timeline = self.Timeline || {};
-
-/* Legacy exported object */
-Timeline = Timeline || {};
-
-/** @constructor */
-Timeline.ExtensionTracingSession = ExtensionTracingSession;
+};

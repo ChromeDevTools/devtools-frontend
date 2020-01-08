@@ -32,20 +32,11 @@
  * @extends {Timeline.TimelineController}
  * @unrestricted
  */
-export default class UIDevtoolsController extends Timeline.TimelineController {
+Timeline.UIDevtoolsController = class extends Timeline.TimelineController {
   constructor(target, client) {
     super(target, client);
     Timeline.TimelineUIUtils.setEventStylesMap(Timeline.UIDevtoolsUtils.categorizeEvents());
     Timeline.TimelineUIUtils.setCategories(Timeline.UIDevtoolsUtils.categories());
     Timeline.TimelineUIUtils.setTimelineMainEventCategories(Timeline.UIDevtoolsUtils.getMainCategoriesList());
   }
-}
-
-/* Legacy exported object */
-self.Timeline = self.Timeline || {};
-
-/* Legacy exported object */
-Timeline = Timeline || {};
-
-/** @constructor */
-Timeline.UIDevtoolsController = UIDevtoolsController;
+};

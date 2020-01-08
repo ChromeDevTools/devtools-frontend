@@ -5,14 +5,15 @@
 /**
  * @unrestricted
  */
-export default class EventsTimelineTreeView extends Timeline.TimelineTreeView {
+Timeline.EventsTimelineTreeView = class extends Timeline.TimelineTreeView {
   /**
    * @param {!Timeline.TimelineModeViewDelegate} delegate
    */
   constructor(delegate) {
     super();
-    this._filtersControl = new Filters();
-    this._filtersControl.addEventListener(Filters.Events.FilterChanged, this._onFilterChanged, this);
+    this._filtersControl = new Timeline.EventsTimelineTreeView.Filters();
+    this._filtersControl.addEventListener(
+        Timeline.EventsTimelineTreeView.Filters.Events.FilterChanged, this._onFilterChanged, this);
     this.init();
     this._delegate = delegate;
     this._dataGrid.markColumnAsSortedBy('startTime', DataGrid.DataGrid.Order.Ascending);
@@ -144,12 +145,12 @@ export default class EventsTimelineTreeView extends Timeline.TimelineTreeView {
   _onHover(node) {
     this._delegate.highlightEvent(node && node.event);
   }
-}
+};
 
 /**
  * @unrestricted
  */
-export class Filters extends Common.Object {
+Timeline.EventsTimelineTreeView.Filters = class extends Common.Object {
   constructor() {
     super();
     this._categoryFilter = new Timeline.TimelineFilters.Category();
@@ -169,7 +170,7 @@ export class Filters extends Common.Object {
    */
   populateToolbar(toolbar) {
     const durationFilterUI = new UI.ToolbarComboBox(durationFilterChanged.bind(this), ls`Duration filter`);
-    for (const durationMs of Filters._durationFilterPresetsMs) {
+    for (const durationMs of Timeline.EventsTimelineTreeView.Filters._durationFilterPresetsMs) {
       durationFilterUI.addOption(durationFilterUI.createOption(
           durationMs ? Common.UIString('\u2265 %d\xa0ms', durationMs) : Common.UIString('All'),
           String(durationMs)));
@@ -192,7 +193,7 @@ export class Filters extends Common.Object {
     }
 
     /**
-     * @this {Filters}
+     * @this {Timeline.EventsTimelineTreeView.Filters}
      */
     function durationFilterChanged() {
       const duration = durationFilterUI.selectedOption().value;
@@ -203,7 +204,7 @@ export class Filters extends Common.Object {
 
     /**
      * @param {string} name
-     * @this {Filters}
+     * @this {Timeline.EventsTimelineTreeView.Filters}
      */
     function categoriesFilterChanged(name) {
       const categories = Timeline.TimelineUIUtils.categories();
@@ -213,25 +214,13 @@ export class Filters extends Common.Object {
   }
 
   _notifyFiltersChanged() {
-    this.dispatchEventToListeners(Filters.Events.FilterChanged);
+    this.dispatchEventToListeners(Timeline.EventsTimelineTreeView.Filters.Events.FilterChanged);
   }
-}
-
-Filters._durationFilterPresetsMs = [0, 1, 15];
-
-/** @enum {symbol} */
-Filters.Events = {
-  FilterChanged: Symbol('FilterChanged')
 };
 
-/* Legacy exported object */
-self.Timeline = self.Timeline || {};
+Timeline.EventsTimelineTreeView.Filters._durationFilterPresetsMs = [0, 1, 15];
 
-/* Legacy exported object */
-Timeline = Timeline || {};
-
-/** @constructor */
-Timeline.EventsTimelineTreeView = EventsTimelineTreeView;
-
-/** @constructor */
-Timeline.EventsTimelineTreeView.Filters = Filters;
+/** @enum {symbol} */
+Timeline.EventsTimelineTreeView.Filters.Events = {
+  FilterChanged: Symbol('FilterChanged')
+};

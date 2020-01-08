@@ -3,7 +3,9 @@
 // found in the LICENSE file.
 
 
-export class IsLong extends TimelineModel.TimelineModelFilter {
+Timeline.TimelineFilters = {};
+
+Timeline.TimelineFilters.IsLong = class extends TimelineModel.TimelineModelFilter {
   constructor() {
     super();
     this._minimumRecordDuration = 0;
@@ -25,9 +27,10 @@ export class IsLong extends TimelineModel.TimelineModelFilter {
     const duration = event.endTime ? event.endTime - event.startTime : 0;
     return duration >= this._minimumRecordDuration;
   }
-}
+};
 
-export class Category extends TimelineModel.TimelineModelFilter {
+
+Timeline.TimelineFilters.Category = class extends TimelineModel.TimelineModelFilter {
   constructor() {
     super();
   }
@@ -40,9 +43,9 @@ export class Category extends TimelineModel.TimelineModelFilter {
   accept(event) {
     return !Timeline.TimelineUIUtils.eventStyle(event).category.hidden;
   }
-}
+};
 
-export class TimelineRegExp extends TimelineModel.TimelineModelFilter {
+Timeline.TimelineFilters.RegExp = class extends TimelineModel.TimelineModelFilter {
   /**
    * @param {!RegExp=} regExp
    */
@@ -75,21 +78,4 @@ export class TimelineRegExp extends TimelineModel.TimelineModelFilter {
   accept(event) {
     return !this._regExp || Timeline.TimelineUIUtils.testContentMatching(event, this._regExp);
   }
-}
-
-/* Legacy exported object */
-self.Timeline = self.Timeline || {};
-
-/* Legacy exported object */
-Timeline = Timeline || {};
-
-Timeline.TimelineFilters = {};
-
-/** @constructor */
-Timeline.TimelineFilters.IsLong = IsLong;
-
-/** @constructor */
-Timeline.TimelineFilters.Category = Category;
-
-/** @constructor */
-Timeline.TimelineFilters.RegExp = TimelineRegExp;
+};

@@ -31,7 +31,7 @@
 /**
  * @unrestricted
  */
-export default class CountersGraph extends UI.VBox {
+Timeline.CountersGraph = class extends UI.VBox {
   /**
    * @param {!Timeline.TimelineModeViewDelegate} delegate
    */
@@ -40,7 +40,7 @@ export default class CountersGraph extends UI.VBox {
     this.element.id = 'memory-graphs-container';
 
     this._delegate = delegate;
-    this._calculator = new Calculator();
+    this._calculator = new Timeline.CountersGraph.Calculator();
 
     // Create selectors
     this._header = new UI.HBox();
@@ -144,12 +144,13 @@ export default class CountersGraph extends UI.VBox {
    * @param {string} uiValueTemplate
    * @param {string} color
    * @param {function(number):string=} formatter
-   * @return {!Counter}
+   * @return {!Timeline.CountersGraph.Counter}
    */
   _createCounter(uiName, uiValueTemplate, color, formatter) {
-    const counter = new Counter();
+    const counter = new Timeline.CountersGraph.Counter();
     this._counters.push(counter);
-    this._counterUI.push(new CounterUI(this, uiName, uiValueTemplate, color, counter, formatter));
+    this._counterUI.push(
+        new Timeline.CountersGraph.CounterUI(this, uiName, uiValueTemplate, color, counter, formatter));
     return counter;
   }
 
@@ -258,12 +259,12 @@ export default class CountersGraph extends UI.VBox {
     const ctx = this._canvas.getContext('2d');
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
   }
-}
+};
 
 /**
  * @unrestricted
  */
-export class Counter {
+Timeline.CountersGraph.Counter = class {
   constructor() {
     this.times = [];
     this.values = [];
@@ -320,7 +321,7 @@ export class Counter {
   }
 
   /**
-   * @param {!Calculator} calculator
+   * @param {!Timeline.CountersGraph.Calculator} calculator
    */
   _calculateVisibleIndexes(calculator) {
     const start = calculator.minimumBoundary();
@@ -352,18 +353,18 @@ export class Counter {
       this.x[i] = xFactor * (this.times[i] - this._minTime);
     }
   }
-}
+};
 
 /**
  * @unrestricted
  */
-export class CounterUI {
+Timeline.CountersGraph.CounterUI = class {
   /**
-   * @param {!CountersGraph} countersPane
+   * @param {!Timeline.CountersGraph} countersPane
    * @param {string} title
    * @param {string} currentValueLabel
    * @param {string} graphColor
-   * @param {!Counter} counter
+   * @param {!Timeline.CountersGraph.Counter} counter
    * @param {(function(number): string)|undefined} formatter
    */
   constructor(countersPane, title, currentValueLabel, graphColor, counter, formatter) {
@@ -524,13 +525,13 @@ export class CounterUI {
   visible() {
     return this._filter.checked();
   }
-}
+};
 
 /**
  * @implements {PerfUI.TimelineGrid.Calculator}
  * @unrestricted
  */
-export class Calculator {
+Timeline.CountersGraph.Calculator = class {
   /**
    * @param {number} time
    */
@@ -600,22 +601,4 @@ export class Calculator {
   boundarySpan() {
     return this._maximumBoundary - this._minimumBoundary;
   }
-}
-
-/* Legacy exported object */
-self.Timeline = self.Timeline || {};
-
-/* Legacy exported object */
-Timeline = Timeline || {};
-
-/** @constructor */
-Timeline.CountersGraph = CountersGraph;
-
-/** @constructor */
-Timeline.CountersGraph.Counter = Counter;
-
-/** @constructor */
-Timeline.CountersGraph.CounterUI = CounterUI;
-
-/** @constructor */
-Timeline.CountersGraph.Calculator = Calculator;
+};

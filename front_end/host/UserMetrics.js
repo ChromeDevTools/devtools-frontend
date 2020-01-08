@@ -31,14 +31,22 @@
 /**
  * @unrestricted
  */
-export default class UserMetrics {
+import {InspectorFrontendHostInstance} from './InspectorFrontendHost.js';
+
+export class UserMetrics {
+  constructor() {
+    this._panelChangedSinceLaunch = false;
+    this._firedLaunchHistogram = false;
+    this._launchPanelName = '';
+  }
+
   /**
    * @param {string} panelName
    */
   panelShown(panelName) {
-    const code = _PanelCodes[panelName] || 0;
-    const size = Object.keys(_PanelCodes).length + 1;
-    Host.InspectorFrontendHost.recordEnumeratedHistogram('DevTools.PanelShown', code, size);
+    const code = PanelCodes[panelName] || 0;
+    const size = Object.keys(PanelCodes).length + 1;
+    InspectorFrontendHostInstance.recordEnumeratedHistogram('DevTools.PanelShown', code, size);
     // Store that the user has changed the panel so we know launch histograms should not be fired.
     this._panelChangedSinceLaunch = true;
   }
@@ -55,7 +63,7 @@ export default class UserMetrics {
    */
   actionTaken(action) {
     const size = Object.keys(Action).length + 1;
-    Host.InspectorFrontendHost.recordEnumeratedHistogram('DevTools.ActionTaken', action, size);
+    InspectorFrontendHostInstance.recordEnumeratedHistogram('DevTools.ActionTaken', action, size);
   }
 
   /**
@@ -82,7 +90,7 @@ export default class UserMetrics {
         }
         // This fires the event for the appropriate launch histogram.
         // The duration is measured as the time elapsed since the time origin of the document.
-        Host.InspectorFrontendHost.recordPerformanceHistogram(histogramName, performance.now());
+        InspectorFrontendHostInstance.recordPerformanceHistogram(histogramName, performance.now());
       }, 0);
     });
   }
@@ -141,7 +149,7 @@ export const Action = {
   CoverageStartedPerBlock: 35,
 };
 
-export const _PanelCodes = {
+export const PanelCodes = {
   elements: 1,
   resources: 2,
   network: 3,
@@ -172,20 +180,3 @@ export const _PanelCodes = {
   'drawer-sources.quick': 27,
   'drawer-network.blocked-urls': 28,
 };
-
-/* Legacy exported object */
-self.Host = self.Host || {};
-
-/* Legacy exported object */
-Host = Host || {};
-
-/** @constructor */
-Host.UserMetrics = UserMetrics;
-
-/** @enum {number} */
-Host.UserMetrics.Action = Action;
-
-Host.UserMetrics._PanelCodes = _PanelCodes;
-
-/** @type {!Host.UserMetrics} */
-Host.userMetrics = new UserMetrics();

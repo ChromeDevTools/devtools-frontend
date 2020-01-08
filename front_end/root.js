@@ -6,7 +6,7 @@ import './Runtime.js';
 import './platform/platform.js';
 import './dom_extension/dom_extension.js';
 import './common/common-legacy.js';
-import './host/host.js';
+import './host/host-legacy.js';
 import './protocol/protocol.js';
 import './sdk/sdk.js';
 import './ui/ui-legacy.js';

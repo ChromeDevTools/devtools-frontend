@@ -64,14 +64,3 @@ export const EventDescriptors = [
   [Events.SetUseSoftMenu, 'setUseSoftMenu', ['useSoftMenu']],
   [Events.ShowPanel, 'showPanel', ['panelName']]
 ];
-
-/* Legacy exported object */
-self.Host = self.Host || {};
-
-/* Legacy exported object */
-Host = Host || {};
-
-Host.InspectorFrontendHostAPI = {};
-
-Host.InspectorFrontendHostAPI.Events = Events;
-Host.InspectorFrontendHostAPI.EventDescriptors = EventDescriptors;

@@ -1,8 +1,10 @@
 // Copyright (c) 2015 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-const ResourceLoader = {};
-export default ResourceLoader;
+
+import {InspectorFrontendHostInstance} from './InspectorFrontendHost.js';
+
+export const ResourceLoader = {};
 
 let _lastStreamId = 0;
 
@@ -73,7 +75,7 @@ export const loadAsStream = function(url, headers, stream, callback) {
       rawHeaders.push(key + ': ' + headers[key]);
     }
   }
-  Host.InspectorFrontendHost.loadNetworkResource(url, rawHeaders.join('\r\n'), streamId, finishedCallback);
+  InspectorFrontendHostInstance.loadNetworkResource(url, rawHeaders.join('\r\n'), streamId, finishedCallback);
 
   /**
    * @param {!InspectorFrontendHostAPI.LoadNetworkResourceResult} response
@@ -97,32 +99,3 @@ export const loadAsStream = function(url, headers, stream, callback) {
     finishedCallback(/** @type {!InspectorFrontendHostAPI.LoadNetworkResourceResult} */ ({statusCode: 404}));
   }
 };
-
-/* Legacy exported object */
-self.Host = self.Host || {};
-
-/* Legacy exported object */
-Host = Host || {};
-
-Host.ResourceLoader = ResourceLoader;
-
-/**
- * @param {number} id
- * @param {string} chunk
- */
-Host.ResourceLoader.streamWrite = streamWrite;
-
-/**
- * @param {string} url
- * @param {?Object.<string, string>} headers
- * @param {function(number, !Object.<string, string>, string, number)} callback
- */
-Host.ResourceLoader.load = load;
-
-/**
- * @param {string} url
- * @param {?Object.<string, string>} headers
- * @param {!Common.OutputStream} stream
- * @param {function(number, !Object.<string, string>, number)=} callback
- */
-Host.ResourceLoader.loadAsStream = loadAsStream;

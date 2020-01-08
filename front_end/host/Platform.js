@@ -26,6 +26,8 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import {InspectorFrontendHostInstance} from './InspectorFrontendHost.js';
+
 let _platform;
 
 /**
@@ -33,7 +35,7 @@ let _platform;
  */
 export function platform() {
   if (!_platform) {
-    _platform = Host.InspectorFrontendHost.platform();
+    _platform = InspectorFrontendHostInstance.platform();
   }
   return _platform;
 }
@@ -98,15 +100,3 @@ export function fontFamily() {
   }
   return _fontFamily;
 }
-
-/* Legacy exported object */
-self.Host = self.Host || {};
-
-/* Legacy exported object */
-Host = Host || {};
-
-Host.platform = platform;
-Host.isWin = isWin;
-Host.isMac = isMac;
-Host.isCustomDevtoolsFrontend = isCustomDevtoolsFrontend;
-Host.fontFamily = fontFamily;

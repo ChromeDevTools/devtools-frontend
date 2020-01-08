@@ -2155,6 +2155,7 @@ action("generate_devtools_grd") {
       ]
 
   inputs = grd_files + devtools_image_files
+  response_file_contents = rebase_path(grd_files, root_build_dir)
   outfile = "$root_gen_dir/devtools/devtools_resources.grd"
   outputs = [
     outfile,
@@ -2165,7 +2166,7 @@ action("generate_devtools_grd") {
     "front_end",
   ]
 
-  args = rebase_path(grd_files, root_build_dir) + [ "--relative_path_dirs" ] +
+  args = ["--file-list", "{{response_file_name}}", "--relative_path_dirs" ] +
          rebase_path(relative_path_dirs, root_build_dir) +
          [
            "--images",

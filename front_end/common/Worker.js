@@ -41,7 +41,7 @@ export class WorkerWrapper {
 
     /** @type {!Promise<!Worker>} */
     this._workerPromise = new Promise(fulfill => {
-      this._worker = new Worker(url);
+      this._worker = new Worker(url, {type: 'module'});
       this._worker.onmessage = onMessage.bind(this);
 
       /**

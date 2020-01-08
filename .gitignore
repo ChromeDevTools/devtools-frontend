@@ -25,9 +25,6 @@ npm-debug.log
 /front_end/InspectorBackendCommands.js
 /front_end/SupportedCSSProperties.js
 /front_end/accessibility/ARIAProperties.js
-/front_end/formatter_worker.js
-/front_end/heap_snapshot_worker.js
-/front_end/wasmparser_worker.js
 
 /build
 /buildtools

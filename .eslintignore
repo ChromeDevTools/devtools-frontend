@@ -4,8 +4,6 @@ front_end/.eslintrc.js
 front_end/InspectorBackendCommands.js
 front_end/SupportedCSSProperties.js
 front_end/accessibility/ARIAProperties.js
-front_end/formatter_worker.js
-front_end/heap_snapshot_worker.js
 front_end/audits_worker/lighthouse/
 front_end/audits/lighthouse/
 front_end/cm/
@@ -18,5 +16,4 @@ front_end/protocol_externs.js
 front_end/javascript_metadata/NativeFunctions.js
 front_end/sdk/wasm_source_map/pkg/wasm_source_map.js
 front_end/third_party/
-front_end/wasmparser_worker.js
 scripts/

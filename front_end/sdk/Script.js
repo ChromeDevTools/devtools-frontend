@@ -169,7 +169,7 @@ export default class Script {
       } else {
         this._source = '';
         if (sourceOrBytecode.bytecode) {
-          const worker = new Common.Worker('wasmparser_worker');
+          const worker = new Common.Worker('wasmparser_worker_entrypoint');
           const promise = new Promise(function(resolve, reject) {
             worker.onmessage = resolve;
             worker.onerror = reject;

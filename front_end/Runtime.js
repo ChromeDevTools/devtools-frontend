@@ -1247,9 +1247,9 @@ self.Root = self.Root || {};
 Root = Root || {};
 
 // This gets all concatenated module descriptors in the release mode.
-Root.allDescriptors = [];
+Root.allDescriptors = Root.allDescriptors || [];
 
-Root.applicationDescriptor = undefined;
+Root.applicationDescriptor = Root.applicationDescriptor || undefined;
 
 /** @constructor */
 Root.Runtime = Runtime;

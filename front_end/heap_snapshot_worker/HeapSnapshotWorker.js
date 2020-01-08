@@ -31,7 +31,7 @@ function postMessageWrapper(message) {
   postMessage(message);
 }
 
-const dispatcher = new HeapSnapshotWorker.HeapSnapshotWorkerDispatcher(this, postMessageWrapper);
+const dispatcher = new HeapSnapshotWorker.HeapSnapshotWorkerDispatcher(self, postMessageWrapper);
 
 /**
  * @param {function(!Event)} listener

@@ -44,7 +44,7 @@ Profiler.HeapSnapshotWorkerProxy = class extends Common.Object {
     this._callbacks = new Map();
     /** @type {!Set<number>} */
     this._previousCallbacks = new Set();
-    this._worker = new Common.Worker('heap_snapshot_worker');
+    this._worker = new Common.Worker('heap_snapshot_worker_entrypoint');
     this._worker.onmessage = this._messageReceived.bind(this);
   }
 

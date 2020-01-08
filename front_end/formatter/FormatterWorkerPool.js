@@ -18,7 +18,7 @@ export class FormatterWorkerPool {
    * @return {!Common.Worker}
    */
   _createWorker() {
-    const worker = new Common.Worker('formatter_worker');
+    const worker = new Common.Worker('formatter_worker_entrypoint');
     worker.onmessage = this._onWorkerMessage.bind(this, worker);
     worker.onerror = this._onWorkerError.bind(this, worker);
     return worker;

@@ -38,9 +38,6 @@ try:
 finally:
     sys.path = original_sys_path
 
-ROLLUP_ARGS = ['--no-treeshake', '--format', 'iife', '--context', 'self']
-
-
 def main(argv):
     try:
         input_path_flag_index = argv.index('--input_path')
@@ -226,9 +223,11 @@ class ReleaseBuilder(object):
 
     def _concatenate_application_script(self, output):
         if not self.descriptors.extends:
-            runtime_contents = read_file(join(self.application_dir, 'Runtime.js'))
-            output.write('/* Runtime.js */\n')
-            output.write(runtime_contents)
+            if (not self.descriptors.worker):
+                runtime_contents = read_file(join(self.application_dir, 'Runtime.js'))
+                output.write('/* Runtime.js */\n')
+                output.write(runtime_contents)
+
             output.write('Root.allDescriptors.push(...%s);' % self._release_module_descriptors())
             output.write('/* Application descriptor %s */\n' % self.app_file('json'))
             output.write('Root.applicationDescriptor = %s;' % self.descriptors.application_json())
@@ -240,7 +239,7 @@ class ReleaseBuilder(object):
 
         output.write('\n/* Autostart modules */\n')
         if (self.descriptors.worker):
-            self._rollup_worker(output)
+            output.write(minify_js(read_file(join(self.application_dir, self.app_file('js')))))
         else:
             self._concatenate_autostart_modules(output)
         output.write(';\n/* Autostart resources */\n')
@@ -250,21 +249,6 @@ class ReleaseBuilder(object):
             if path.exists(js_file):
                 output.write(';\n/* Autostart script for worker */\n')
                 output.write(read_file(js_file))
-
-    def _rollup_worker(self, output):
-        js_entrypoint = join(self.application_dir, self.app_file('unbundled.js'))
-        rollup_process = subprocess.Popen(
-            [devtools_paths.node_path(), devtools_paths.rollup_path()] + ROLLUP_ARGS + ['--input', js_entrypoint],
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE)
-        out, error = rollup_process.communicate()
-
-        if rollup_process.returncode != 0:
-            print('Error while running rollup:')
-            print(error)
-            sys.exit(1)
-
-        output.write(minify_js(out))
 
     def _concatenate_dynamic_module(self, module_name):
         module = self.descriptors.modules[module_name]

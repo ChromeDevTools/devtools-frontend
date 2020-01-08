@@ -29,6 +29,8 @@
  */
 
 import * as Common from '../common/common.js';
+import * as Host from '../host/host.js';
+
 import {KeyboardShortcut, Keys, Modifiers} from './KeyboardShortcut.js';
 import {createDocumentationLink} from './UIUtils.js';
 import {Widget} from './Widget.js';
@@ -98,7 +100,7 @@ export class ShortcutsScreen {
     consoleSection.addRelatedKeys(
         ConsolePanelShortcuts.NextPreviousLine, Common.UIString.UIString('Next/previous line'));
 
-    if (Host.isMac()) {
+    if (Host.Platform.isMac()) {
       consoleSection.addRelatedKeys(
           ConsolePanelShortcuts.NextPreviousCommand, Common.UIString.UIString('Next/previous command'));
     }

@@ -28,6 +28,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as Host from '../host/host.js';
 import {SoftContextMenu} from './SoftContextMenu.js';
 
 /**
@@ -390,7 +391,7 @@ export class ContextMenu extends SubMenu {
   }
 
   static initialize() {
-    Host.InspectorFrontendHost.events.addEventListener(
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
         Host.InspectorFrontendHostAPI.Events.SetUseSoftMenu, setUseSoftMenu);
     /**
      * @param {!Common.Event} event
@@ -461,19 +462,21 @@ export class ContextMenu extends SubMenu {
 
   _innerShow() {
     const menuObject = this._buildMenuDescriptors();
-    if (this._useSoftMenu || ContextMenu._useSoftMenu || Host.InspectorFrontendHost.isHostedMode()) {
+    if (this._useSoftMenu || ContextMenu._useSoftMenu ||
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance.isHostedMode()) {
       this._softMenu = new SoftContextMenu(menuObject, this._itemSelected.bind(this));
       this._softMenu.show(this._event.target.ownerDocument, new AnchorBox(this._x, this._y, 0, 0));
     } else {
-      Host.InspectorFrontendHost.showContextMenuAtPoint(this._x, this._y, menuObject, this._event.target.ownerDocument);
+      Host.InspectorFrontendHost.InspectorFrontendHostInstance.showContextMenuAtPoint(
+          this._x, this._y, menuObject, this._event.target.ownerDocument);
 
       /**
        * @this {ContextMenu}
        */
       function listenToEvents() {
-        Host.InspectorFrontendHost.events.addEventListener(
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
             Host.InspectorFrontendHostAPI.Events.ContextMenuCleared, this._menuCleared, this);
-        Host.InspectorFrontendHost.events.addEventListener(
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
             Host.InspectorFrontendHostAPI.Events.ContextMenuItemSelected, this._onItemSelected, this);
       }
 
@@ -532,9 +535,9 @@ export class ContextMenu extends SubMenu {
   }
 
   _menuCleared() {
-    Host.InspectorFrontendHost.events.removeEventListener(
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.removeEventListener(
         Host.InspectorFrontendHostAPI.Events.ContextMenuCleared, this._menuCleared, this);
-    Host.InspectorFrontendHost.events.removeEventListener(
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.removeEventListener(
         Host.InspectorFrontendHostAPI.Events.ContextMenuItemSelected, this._onItemSelected, this);
   }
 

@@ -15,3 +15,5 @@ export {
   ResourceLoader,
   UserMetrics,
 };
+
+export const userMetrics = new UserMetrics.UserMetrics();

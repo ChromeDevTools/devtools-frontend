@@ -27,6 +27,8 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as Host from '../host/host.js';
+
 /**
  * @unrestricted
  */
@@ -85,7 +87,7 @@ export class KeyboardShortcut {
    * @return {boolean}
    */
   static eventHasCtrlOrMeta(event) {
-    return Host.isMac() ? event.metaKey && !event.ctrlKey : event.ctrlKey && !event.metaKey;
+    return Host.Platform.isMac() ? event.metaKey && !event.ctrlKey : event.ctrlKey && !event.metaKey;
   }
 
   /**
@@ -158,7 +160,7 @@ export class KeyboardShortcut {
     if (typeof key.name === 'string') {
       return key.name;
     }
-    return key.name[Host.platform()] || key.name.other || '';
+    return key.name[Host.Platform.platform()] || key.name.other || '';
   }
 
   /**
@@ -183,7 +185,7 @@ export class KeyboardShortcut {
    * @return {string}
    */
   static _modifiersToString(modifiers) {
-    const isMac = Host.isMac();
+    const isMac = Host.Platform.isMac();
     const m = Modifiers;
     const modifierNames = new Map([
       [m.Ctrl, isMac ? 'Ctrl\u2004' : 'Ctrl\u200A+\u200A'], [m.Alt, isMac ? '\u2325\u2004' : 'Alt\u200A+\u200A'],
@@ -213,11 +215,11 @@ export const Modifiers = {
   Meta: 8,  // Command key on Mac, Win key on other platforms.
   get CtrlOrMeta() {
     // "default" command/ctrl key for platform, Command on Mac, Ctrl on other platforms
-    return Host.isMac() ? this.Meta : this.Ctrl;
+    return Host.Platform.isMac() ? this.Meta : this.Ctrl;
   },
   get ShiftOrOption() {
     // Option on Mac, Shift on other platforms
-    return Host.isMac() ? this.Alt : this.Shift;
+    return Host.Platform.isMac() ? this.Alt : this.Shift;
   }
 };
 
@@ -274,7 +276,7 @@ export const Keys = {
   SingleQuote: {code: 222, name: '\''},
   get CtrlOrMeta() {
     // "default" command/ctrl key for platform, Command on Mac, Ctrl on other platforms
-    return Host.isMac() ? this.Meta : this.Ctrl;
+    return Host.Platform.isMac() ? this.Meta : this.Ctrl;
   },
 };
 

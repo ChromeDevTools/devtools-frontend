@@ -29,6 +29,8 @@
  */
 
 import * as Common from '../common/common.js';
+import * as Host from '../host/host.js';
+
 import {ActionDelegate as ActionDelegateInterface} from './ActionDelegate.js';  // eslint-disable-line no-unused-vars
 import {Context} from './Context.js';                                           // eslint-disable-line no-unused-vars
 import {Dialog} from './Dialog.js';
@@ -76,8 +78,9 @@ export class InspectorView extends VBox {
 
     // Create main area tabbed pane.
     this._tabbedLocation = UI.viewManager.createTabbedLocation(
-        Host.InspectorFrontendHost.bringToFront.bind(Host.InspectorFrontendHost), 'panel', true, true,
-        Root.Runtime.queryParam('panel'));
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance.bringToFront.bind(
+            Host.InspectorFrontendHost.InspectorFrontendHostInstance),
+        'panel', true, true, Root.Runtime.queryParam('panel'));
 
     this._tabbedPane = this._tabbedLocation.tabbedPane();
     this._tabbedPane.registerRequiredCSS('ui/inspectorViewTabbedPane.css');
@@ -87,13 +90,13 @@ export class InspectorView extends VBox {
     // Store the initial selected panel for use in launch histograms
     Host.userMetrics.setLaunchPanel(this._tabbedPane.selectedTabId);
 
-    if (Host.isUnderTest()) {
+    if (Host.InspectorFrontendHost.isUnderTest()) {
       this._tabbedPane.setAutoSelectFirstItemOnShow(false);
     }
     this._drawerSplitWidget.setMainWidget(this._tabbedPane);
 
     this._keyDownBound = this._keyDown.bind(this);
-    Host.InspectorFrontendHost.events.addEventListener(
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
         Host.InspectorFrontendHostAPI.Events.ShowPanel, showPanel.bind(this));
 
     /**

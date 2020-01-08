@@ -29,6 +29,8 @@
  */
 
 import * as Common from '../common/common.js';
+import * as Host from '../host/host.js';
+
 import {KeyboardShortcut, Modifiers} from './KeyboardShortcut.js';
 import {bindCheckbox} from './SettingsUI.js';
 import {Events, TextPrompt} from './TextPrompt.js';
@@ -381,7 +383,7 @@ export class NamedBitSetFilterUI extends Common.ObjectWrapper.ObjectWrapper {
    */
   _onTypeFilterClicked(e) {
     let toggle;
-    if (Host.isMac()) {
+    if (Host.Platform.isMac()) {
       toggle = e.metaKey && !e.ctrlKey && !e.altKey && !e.shiftKey;
     } else {
       toggle = e.ctrlKey && !e.metaKey && !e.altKey && !e.shiftKey;

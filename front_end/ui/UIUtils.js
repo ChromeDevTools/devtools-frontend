@@ -30,6 +30,8 @@
  */
 
 import * as Common from '../common/common.js';
+import * as Host from '../host/host.js';
+
 import {Dialog} from './Dialog.js';
 import {Size} from './Geometry.js';
 import {GlassPane, PointerEventsBehavior, SizeBehavior} from './GlassPane.js';
@@ -145,7 +147,7 @@ class DragHandler {
    */
   elementDragStart(targetElement, elementDragStart, elementDrag, elementDragEnd, cursor, event) {
     // Only drag upon left button. Right will likely cause a context menu. So will ctrl-click on mac.
-    if (event.button || (Host.isMac() && event.ctrlKey)) {
+    if (event.button || (Host.Platform.isMac() && event.ctrlKey)) {
       return;
     }
 
@@ -753,10 +755,10 @@ export function asyncStackTraceLabel(description) {
  */
 export function installComponentRootStyles(element) {
   injectCoreStyles(element);
-  element.classList.add('platform-' + Host.platform());
+  element.classList.add('platform-' + Host.Platform.platform());
 
   // Detect overlay scrollbar enable by checking for nonzero scrollbar width.
-  if (!Host.isMac() && measuredScrollbarWidth(element.ownerDocument) === 0) {
+  if (!Host.Platform.isMac() && measuredScrollbarWidth(element.ownerDocument) === 0) {
     element.classList.add('overlay-scrollbar-enabled');
   }
 }

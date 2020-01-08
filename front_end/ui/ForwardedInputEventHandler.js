@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Host from '../host/host.js';
 import {KeyboardShortcut} from './KeyboardShortcut.js';
 import {ForwardedShortcut} from './ShortcutRegistry.js';
 
@@ -10,7 +11,7 @@ import {ForwardedShortcut} from './ShortcutRegistry.js';
  */
 export class ForwardedInputEventHandler {
   constructor() {
-    Host.InspectorFrontendHost.events.addEventListener(
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
         Host.InspectorFrontendHostAPI.Events.KeyEventUnhandled, this._onKeyEventUnhandled, this);
   }
 

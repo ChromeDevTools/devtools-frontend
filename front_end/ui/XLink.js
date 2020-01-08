@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Host from '../host/host.js';
 import {ContextMenu, Provider} from './ContextMenu.js';  // eslint-disable-line no-unused-vars
 import {html} from './Fragment.js';
 import {copyLinkAddressLabel, MaxLengthForDisplayedURLs, openLinkExternallyLabel} from './UIUtils.js';
@@ -46,12 +47,12 @@ export class XLink extends XElement {
 
     this._onClick = event => {
       event.consume(true);
-      Host.InspectorFrontendHost.openInNewTab(/** @type {string} */ (this._href));
+      Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(/** @type {string} */ (this._href));
     };
     this._onKeyDown = event => {
       if (isEnterOrSpaceKey(event)) {
         event.consume(true);
-        Host.InspectorFrontendHost.openInNewTab(/** @type {string} */ (this._href));
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(/** @type {string} */ (this._href));
       }
     };
   }
@@ -135,9 +136,11 @@ export class ContextMenuProvider {
       return;
     }
     contextMenu.revealSection().appendItem(
-        openLinkExternallyLabel(), () => Host.InspectorFrontendHost.openInNewTab(targetNode._href));
+        openLinkExternallyLabel(),
+        () => Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(targetNode._href));
     contextMenu.revealSection().appendItem(
-        copyLinkAddressLabel(), () => Host.InspectorFrontendHost.copyText(targetNode._href));
+        copyLinkAddressLabel(),
+        () => Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(targetNode._href));
   }
 }
 

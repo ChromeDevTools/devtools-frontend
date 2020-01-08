@@ -55,4 +55,4 @@ Host.UserMetrics._PanelCodes = HostModule.UserMetrics.PanelCodes;
 Host.UserMetrics.Action = HostModule.UserMetrics.Action;
 
 /** @type {!Host.UserMetrics} */
-Host.userMetrics = new HostModule.UserMetrics.UserMetrics();
+Host.userMetrics = HostModule.userMetrics;

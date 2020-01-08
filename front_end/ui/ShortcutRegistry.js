@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Host from '../host/host.js';
 import {Action} from './Action.js';                  // eslint-disable-line no-unused-vars
 import {ActionRegistry} from './ActionRegistry.js';  // eslint-disable-line no-unused-vars
 import {Context} from './Context.js';
@@ -168,7 +169,7 @@ export class ShortcutRegistry {
 
       const modifiers = Modifiers;
       // Undo/Redo will also cause input, so textual undo should take precedence over DevTools undo when editing.
-      if (Host.isMac()) {
+      if (Host.Platform.isMac()) {
         if (KeyboardShortcut.makeKey('z', modifiers.Meta) === key) {
           return true;
         }
@@ -182,13 +183,13 @@ export class ShortcutRegistry {
         if (KeyboardShortcut.makeKey('y', modifiers.Ctrl) === key) {
           return true;
         }
-        if (!Host.isWin() && KeyboardShortcut.makeKey('z', modifiers.Ctrl | modifiers.Shift) === key) {
+        if (!Host.Platform.isWin() && KeyboardShortcut.makeKey('z', modifiers.Ctrl | modifiers.Shift) === key) {
           return true;
         }
       }
 
       if ((keyModifiers & (modifiers.Ctrl | modifiers.Alt)) === (modifiers.Ctrl | modifiers.Alt)) {
-        return Host.isWin();
+        return Host.Platform.isWin();
       }
 
       return !hasModifier(modifiers.Ctrl) && !hasModifier(modifiers.Alt) && !hasModifier(modifiers.Meta);
@@ -249,7 +250,7 @@ export class ShortcutRegistry {
       }
       const platforms = platformsString.split(',');
       let isMatch = false;
-      const currentPlatform = Host.platform();
+      const currentPlatform = Host.Platform.platform();
       for (let i = 0; !isMatch && i < platforms.length; ++i) {
         isMatch = platforms[i] === currentPlatform;
       }

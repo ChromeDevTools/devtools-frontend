@@ -38,12 +38,12 @@ def presubmit_builder(name, dimensions):
     name=name,
     recipe_name="run_presubmit",
     dimensions=dimensions,
-      properties={
-        "runhooks":True,
-        "solution_name":"devtools-frontend"
-      },
-      priority=25,
-      execution_timeout=5 * time.minute,
+    properties={
+      "runhooks":True,
+      "solution_name":"devtools-frontend"
+    },
+    priority=25,
+    execution_timeout=5 * time.minute,
   )
 
 presubmit_builder(

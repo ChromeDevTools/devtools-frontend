@@ -1046,22 +1046,35 @@ export class CodeMirrorTextEditor extends UI.VBox {
    * @param {number} height
    */
   _updatePaddingBottom(width, height) {
-    if (!this._options.padBottom) {
+    let newPaddingBottom = 0;
+    const linesElement = this._codeMirrorElement.getElementsByClassName('CodeMirror-lines')[0];
+
+    if (this._options.padBottom) {
+      const scrollInfo = this._codeMirror.getScrollInfo();
+      const lineCount = this._codeMirror.lineCount();
+      if (lineCount > 1) {
+        newPaddingBottom =
+            Math.max(scrollInfo.clientHeight - this._codeMirror.getLineHandle(this._codeMirror.lastLine()).height, 0);
+      }
+    }
+
+    newPaddingBottom += 'px';
+    if (linesElement.style.paddingBottom !== newPaddingBottom) {
+      linesElement.style.paddingBottom = newPaddingBottom;
+      this._codeMirror.setSize(width, height);
+    }
+  }
+
+  /**
+   * @param {boolean} enableScrolling
+   */
+  toggleScrollPastEof(enableScrolling) {
+    if (this._options.padBottom === enableScrolling) {
       return;
     }
-    const scrollInfo = this._codeMirror.getScrollInfo();
-    let newPaddingBottom;
-    const linesElement = this._codeMirrorElement.querySelector('.CodeMirror-lines');
-    const lineCount = this._codeMirror.lineCount();
-    if (lineCount <= 1) {
-      newPaddingBottom = 0;
-    } else {
-      newPaddingBottom =
-          Math.max(scrollInfo.clientHeight - this._codeMirror.getLineHandle(this._codeMirror.lastLine()).height, 0);
-    }
-    newPaddingBottom += 'px';
-    linesElement.style.paddingBottom = newPaddingBottom;
-    this._codeMirror.setSize(width, height);
+
+    this._options.padBottom = enableScrolling;
+    this._resizeEditor();
   }
 
   _resizeEditor() {

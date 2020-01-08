@@ -578,6 +578,24 @@
             ]
         },
         {
+            "type": "setting",
+            "category": "Sources",
+            "title": "Allow scrolling past end of file",
+            "settingName": "allowScrollPastEof",
+            "settingType": "boolean",
+            "defaultValue": true,
+            "options": [
+                {
+                    "value": true,
+                    "title": "Allow scrolling past end of file"
+                },
+                {
+                    "value": false,
+                    "title": "Disallow scrolling past end of file"
+                }
+            ]
+        },
+        {
             "type": "view",
             "location": "drawer-view",
             "id": "sources.quick",

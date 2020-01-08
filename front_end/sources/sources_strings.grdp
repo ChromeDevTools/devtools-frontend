@@ -69,6 +69,9 @@
   <message name="IDS_DEVTOOLS_1fbbb6684f67ee895ff5dc2e429697ce" desc="Screen reader label for a select box that chooses the breakpoint type in the Sources panel when editing a breakpoint">
     Breakpoint type
   </message>
+  <message name="IDS_DEVTOOLS_212ddcf3f12042e2ad7f557788e92bf6" desc="Title of a setting under the Sources category in Settings">
+    Allow scrolling past end of file
+  </message>
   <message name="IDS_DEVTOOLS_216a9080bf22a993b2d7f9331d34cc68" desc="Text in Sources Panel of the Sources panel">
     Don&apos;t pause on exceptions
   </message>
@@ -305,6 +308,9 @@
   </message>
   <message name="IDS_DEVTOOLS_945efe35b9e3950bd1a796a9310736a6" desc="Text in Go To Line Quick Open of the Sources panel">
     Go to line <ph name="POSITION_LINE">$1s<ex>2</ex></ph> and column <ph name="POSITION_COLUMN">$2s<ex>2</ex></ph>.
+  </message>
+  <message name="IDS_DEVTOOLS_965736c9a9576d4fe2e03e9c0df0fcf1" desc="Title of a setting under the Sources category in Settings">
+    Disallow scrolling past end of file
   </message>
   <message name="IDS_DEVTOOLS_9757132fffae1fe86f7c3329dc189e8d" desc="Text in Debugger Paused Message of the Sources panel">
     Paused on exception

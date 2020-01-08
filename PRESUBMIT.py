@@ -229,20 +229,20 @@ def _CommonChecks(input_api, output_api):
     results.extend(input_api.canned_checks.CheckChangeHasNoCrAndHasOnlyOneEol(input_api, output_api))
     results.extend(input_api.canned_checks.CheckChangeHasNoStrayWhitespace(input_api, output_api))
     results.extend(input_api.canned_checks.CheckGenderNeutral(input_api, output_api))
-    return results
-
-
-def CheckChangeOnUpload(input_api, output_api):
-    results = []
-    results.extend(_CommonChecks(input_api, output_api))
     results.extend(_CheckBuildGN(input_api, output_api))
     results.extend(_CheckJSON(input_api, output_api))
     results.extend(_CheckFormat(input_api, output_api))
     results.extend(_CheckDevtoolsStyle(input_api, output_api))
     results.extend(_CheckOptimizeSVGHashes(input_api, output_api))
     results.extend(_CheckCSSViolations(input_api, output_api))
-    results.extend(_CheckDevtoolsLocalization(input_api, output_api))
     results.extend(_CheckChangesAreExclusiveToDirectory(input_api, output_api))
+    return results
+
+
+def CheckChangeOnUpload(input_api, output_api):
+    results = []
+    results.extend(_CommonChecks(input_api, output_api))
+    results.extend(_CheckDevtoolsLocalization(input_api, output_api))
     return results
 
 
@@ -250,7 +250,6 @@ def CheckChangeOnCommit(input_api, output_api):
     results = []
     results.extend(_CommonChecks(input_api, output_api))
     results.extend(_CheckDevtoolsLocalization(input_api, output_api, True))
-    results.extend(_CheckChangesAreExclusiveToDirectory(input_api, output_api))
     results.extend(input_api.canned_checks.CheckChangeHasDescription(input_api, output_api))
     return results
 

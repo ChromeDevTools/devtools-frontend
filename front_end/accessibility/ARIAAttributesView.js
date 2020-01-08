@@ -43,7 +43,7 @@ export default class ARIAAttributesPane extends Accessibility.AccessibilitySubPa
    * @return {boolean}
    */
   _isARIAAttribute(attribute) {
-    return _attributes.includes(attribute.name);
+    return _attributes.has(attribute.name);
   }
 }
 
@@ -233,7 +233,7 @@ export class ARIAAttributePrompt extends UI.TextPrompt {
 }
 
 // Keep this list in sync with https://w3c.github.io/aria/#state_prop_def
-const _attributes = [
+const _attributes = new Set([
   'role',
   'aria-activedescendant',
   'aria-atomic',
@@ -286,7 +286,7 @@ const _attributes = [
   'aria-valuemin',
   'aria-valuenow',
   'aria-valuetext',
-];
+]);
 
 /* Legacy exported object */
 self.Accessibility = self.Accessibility || {};

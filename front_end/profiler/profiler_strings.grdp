@@ -102,6 +102,9 @@
   <message name="IDS_DEVTOOLS_3e6defd685231cdd12065add41996c89" desc="Text in Heap Snapshot View of a profiler tool">
     All objects
   </message>
+  <message name="IDS_DEVTOOLS_3ecdbe8988cc7277811f43fd80a95805" desc="Text for isolate selector list items with negative change rate">
+    decreasing by <ph name="CHANGERATETEXT">$1s<ex>1.0 KB</ex></ph> per second
+  </message>
   <message name="IDS_DEVTOOLS_3eea5ef5cf936633884b33c458451013" desc="Title of a setting under the Performance category in Settings">
     Show native functions in JS Profile
   </message>
@@ -314,6 +317,9 @@
   </message>
   <message name="IDS_DEVTOOLS_a97cce5b0a66cd7d7b7b7d2e06b7605c" desc="Text in Profiles Panel of a profiler tool">
     Can&apos;t load file. Supported file extensions: &apos;<ph name="ARRAY_FROM_EXTENSIONS__JOIN________">$1s<ex>'.js', '.json'</ex></ph>&apos;.
+  </message>
+  <message name="IDS_DEVTOOLS_a9a9788dfe8befa8f84236f4f599d0bc" desc="Text for isolate selector list items with positive change rate">
+    increasing by <ph name="CHANGERATETEXT">$1s<ex>1.0 KB</ex></ph> per second
   </message>
   <message name="IDS_DEVTOOLS_ad49e602302b1ca117245c4f19ef4450" desc="Retaining paths title text content in Heap Snapshot View of a profiler tool">
     Retainers

@@ -28,10 +28,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
 import {createShadowRootWithCoreStyles} from './utils/create-shadow-root-with-core-styles.js';
 
 /**
- * @implements {Common.Progress}
+ * @implements {Common.Progress.Progress}
  * @unrestricted
  */
 export class ProgressIndicator {

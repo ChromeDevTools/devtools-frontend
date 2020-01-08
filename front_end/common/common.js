@@ -30,6 +30,28 @@ import * as Trie from './Trie.js';
 import * as UIString from './UIString.js';
 import * as Worker from './Worker.js';
 
+
+/**
+ * @typedef {{
+  *    content: string,
+  *    isEncoded: boolean,
+  * }|{
+  *    error: string,
+  *    isEncoded: boolean,
+  * }}
+  */
+export let DeferredContent;
+
+/**
+ * @typedef {!{data: *}}
+ */
+export let Event;
+
+/**
+ * @type {!Settings.Settings}
+ */
+export let settings;
+
 export {
   App,
   AppProvider,

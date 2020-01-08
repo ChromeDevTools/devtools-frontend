@@ -3,6 +3,11 @@
 // found in the LICENSE file.
 
 /**
+ * @typedef {!{eventTarget: !Common.EventTarget, eventType: (string|symbol), thisObject: (!Object|undefined), listener: function(!Common.Event)}}
+ */
+export let EventDescriptor;
+
+/**
  * @param {!Array<!Common.EventTarget.EventDescriptor>} eventList
  */
 export function removeEventListeners(eventList) {

@@ -2,11 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+
 /**
  * @implements {Iterable<T>}
  * @template T
  */
-export class ListModel extends Common.Object {
+export class ListModel extends Common.ObjectWrapper.ObjectWrapper {
   /**
    * @param {!Array<T>=} items
    */

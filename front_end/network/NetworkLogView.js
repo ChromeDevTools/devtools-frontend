@@ -662,6 +662,7 @@ export default class NetworkLogView extends UI.VBox {
         'Learn more'));
 
     this._setHidden(true);
+    this._dataGrid.updateGridAccessibleName('');
   }
 
   _hideRecordingHint() {
@@ -669,6 +670,7 @@ export default class NetworkLogView extends UI.VBox {
     if (this._recordingHint) {
       this._recordingHint.remove();
     }
+    this._dataGrid.updateGridAccessibleName(ls`Network Data Available`);
     this._recordingHint = null;
   }
 

@@ -369,6 +369,9 @@
   <message name="IDS_DEVTOOLS_722e6ea747a62b7f93bb017d3dd04cbd" desc="Op codes continuation frame of map in Resource Web Socket Frame View of the Network panel">
     Continuation Frame
   </message>
+  <message name="IDS_DEVTOOLS_82764787c77b4c9e53993b15d31a11c5" desc="Text to announce to screen readers that network data is available.">
+    Network Data Available
+  </message>
   <message name="IDS_DEVTOOLS_b67f775562210192587e38f66a6ae380" desc="Label for a filter in the Network panel">
     Has blocked cookies
   </message>

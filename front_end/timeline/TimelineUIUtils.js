@@ -32,17 +32,17 @@
 /**
  * @unrestricted
  */
-Timeline.TimelineUIUtils = class {
+export default class TimelineUIUtils {
   /**
-   * @return {!Object.<string, !Timeline.TimelineRecordStyle>}
+   * @return {!Object.<string, !TimelineRecordStyle>}
    */
   static _initEventStyles() {
-    if (Timeline.TimelineUIUtils._eventStylesMap) {
-      return Timeline.TimelineUIUtils._eventStylesMap;
+    if (TimelineUIUtils._eventStylesMap) {
+      return TimelineUIUtils._eventStylesMap;
     }
 
     const type = TimelineModel.TimelineModel.RecordType;
-    const categories = Timeline.TimelineUIUtils.categories();
+    const categories = TimelineUIUtils.categories();
     const rendering = categories['rendering'];
     const scripting = categories['scripting'];
     const loading = categories['loading'];
@@ -51,114 +51,106 @@ Timeline.TimelineUIUtils = class {
     const idle = categories['idle'];
 
     const eventStyles = {};
-    eventStyles[type.Task] = new Timeline.TimelineRecordStyle(ls`Task`, other);
-    eventStyles[type.Program] = new Timeline.TimelineRecordStyle(ls`Other`, other);
-    eventStyles[type.Animation] = new Timeline.TimelineRecordStyle(ls`Animation`, rendering);
-    eventStyles[type.EventDispatch] = new Timeline.TimelineRecordStyle(ls`Event`, scripting);
-    eventStyles[type.RequestMainThreadFrame] =
-        new Timeline.TimelineRecordStyle(ls`Request Main Thread Frame`, rendering, true);
-    eventStyles[type.BeginFrame] = new Timeline.TimelineRecordStyle(ls`Frame Start`, rendering, true);
-    eventStyles[type.BeginMainThreadFrame] =
-        new Timeline.TimelineRecordStyle(ls`Frame Start (main thread)`, rendering, true);
-    eventStyles[type.DrawFrame] = new Timeline.TimelineRecordStyle(ls`Draw Frame`, rendering, true);
-    eventStyles[type.HitTest] = new Timeline.TimelineRecordStyle(ls`Hit Test`, rendering);
-    eventStyles[type.ScheduleStyleRecalculation] =
-        new Timeline.TimelineRecordStyle(ls`Schedule Style Recalculation`, rendering);
-    eventStyles[type.RecalculateStyles] = new Timeline.TimelineRecordStyle(ls`Recalculate Style`, rendering);
-    eventStyles[type.UpdateLayoutTree] = new Timeline.TimelineRecordStyle(ls`Recalculate Style`, rendering);
-    eventStyles[type.InvalidateLayout] = new Timeline.TimelineRecordStyle(ls`Invalidate Layout`, rendering, true);
-    eventStyles[type.Layout] = new Timeline.TimelineRecordStyle(ls`Layout`, rendering);
-    eventStyles[type.PaintSetup] = new Timeline.TimelineRecordStyle(ls`Paint Setup`, painting);
-    eventStyles[type.PaintImage] = new Timeline.TimelineRecordStyle(ls`Paint Image`, painting, true);
-    eventStyles[type.UpdateLayer] = new Timeline.TimelineRecordStyle(ls`Update Layer`, painting, true);
-    eventStyles[type.UpdateLayerTree] = new Timeline.TimelineRecordStyle(ls`Update Layer Tree`, rendering);
-    eventStyles[type.Paint] = new Timeline.TimelineRecordStyle(ls`Paint`, painting);
-    eventStyles[type.RasterTask] = new Timeline.TimelineRecordStyle(ls`Rasterize Paint`, painting);
-    eventStyles[type.ScrollLayer] = new Timeline.TimelineRecordStyle(ls`Scroll`, rendering);
-    eventStyles[type.CompositeLayers] = new Timeline.TimelineRecordStyle(ls`Composite Layers`, painting);
-    eventStyles[type.ParseHTML] = new Timeline.TimelineRecordStyle(ls`Parse HTML`, loading);
-    eventStyles[type.ParseAuthorStyleSheet] = new Timeline.TimelineRecordStyle(ls`Parse Stylesheet`, loading);
-    eventStyles[type.TimerInstall] = new Timeline.TimelineRecordStyle(ls`Install Timer`, scripting);
-    eventStyles[type.TimerRemove] = new Timeline.TimelineRecordStyle(ls`Remove Timer`, scripting);
-    eventStyles[type.TimerFire] = new Timeline.TimelineRecordStyle(ls`Timer Fired`, scripting);
-    eventStyles[type.XHRReadyStateChange] = new Timeline.TimelineRecordStyle(ls`XHR Ready State Change`, scripting);
-    eventStyles[type.XHRLoad] = new Timeline.TimelineRecordStyle(ls`XHR Load`, scripting);
-    eventStyles[type.CompileScript] = new Timeline.TimelineRecordStyle(ls`Compile Script`, scripting);
-    eventStyles[type.EvaluateScript] = new Timeline.TimelineRecordStyle(ls`Evaluate Script`, scripting);
-    eventStyles[type.CompileModule] = new Timeline.TimelineRecordStyle(ls`Compile Module`, scripting);
-    eventStyles[type.EvaluateModule] = new Timeline.TimelineRecordStyle(ls`Evaluate Module`, scripting);
-    eventStyles[type.StreamingCompileScript] = new Timeline.TimelineRecordStyle(ls`Streaming Compile Task`, other);
-    eventStyles[type.StreamingCompileScriptWaiting] = new Timeline.TimelineRecordStyle(ls`Waiting for Network`, idle);
-    eventStyles[type.StreamingCompileScriptParsing] =
-        new Timeline.TimelineRecordStyle(ls`Parse and Compile`, scripting);
-    eventStyles[type.WasmStreamFromResponseCallback] =
-        new Timeline.TimelineRecordStyle(ls`Streaming Wasm Response`, scripting);
-    eventStyles[type.WasmCompiledModule] = new Timeline.TimelineRecordStyle(ls`Compiled Wasm Module`, scripting);
-    eventStyles[type.WasmCachedModule] = new Timeline.TimelineRecordStyle(ls`Cached Wasm Module`, scripting);
-    eventStyles[type.WasmModuleCacheHit] = new Timeline.TimelineRecordStyle(ls`Wasm Module Cache Hit`, scripting);
-    eventStyles[type.WasmModuleCacheInvalid] =
-        new Timeline.TimelineRecordStyle(ls`Wasm Module Cache Invalid`, scripting);
-    eventStyles[type.FrameStartedLoading] = new Timeline.TimelineRecordStyle(ls`Frame Started Loading`, loading, true);
-    eventStyles[type.MarkLoad] = new Timeline.TimelineRecordStyle(ls`Onload Event`, scripting, true);
-    eventStyles[type.MarkDOMContent] = new Timeline.TimelineRecordStyle(ls`DOMContentLoaded Event`, scripting, true);
-    eventStyles[type.MarkFirstPaint] = new Timeline.TimelineRecordStyle(ls`First Paint`, painting, true);
-    eventStyles[type.MarkFCP] = new Timeline.TimelineRecordStyle(ls`First Contentful Paint`, rendering, true);
-    eventStyles[type.MarkFMP] = new Timeline.TimelineRecordStyle(ls`First Meaningful Paint`, rendering, true);
-    eventStyles[type.MarkLCPCandidate] =
-        new Timeline.TimelineRecordStyle(ls`Largest Contentful Paint`, rendering, true);
-    eventStyles[type.TimeStamp] = new Timeline.TimelineRecordStyle(ls`Timestamp`, scripting);
-    eventStyles[type.ConsoleTime] = new Timeline.TimelineRecordStyle(ls`Console Time`, scripting);
-    eventStyles[type.UserTiming] = new Timeline.TimelineRecordStyle(ls`User Timing`, scripting);
-    eventStyles[type.ResourceWillSendRequest] = new Timeline.TimelineRecordStyle(ls`Will Send Request`, loading);
-    eventStyles[type.ResourceSendRequest] = new Timeline.TimelineRecordStyle(ls`Send Request`, loading);
-    eventStyles[type.ResourceReceiveResponse] = new Timeline.TimelineRecordStyle(ls`Receive Response`, loading);
-    eventStyles[type.ResourceFinish] = new Timeline.TimelineRecordStyle(ls`Finish Loading`, loading);
-    eventStyles[type.ResourceReceivedData] = new Timeline.TimelineRecordStyle(ls`Receive Data`, loading);
-    eventStyles[type.RunMicrotasks] = new Timeline.TimelineRecordStyle(ls`Run Microtasks`, scripting);
-    eventStyles[type.FunctionCall] = new Timeline.TimelineRecordStyle(ls`Function Call`, scripting);
-    eventStyles[type.GCEvent] = new Timeline.TimelineRecordStyle(ls`GC Event`, scripting);
-    eventStyles[type.MajorGC] = new Timeline.TimelineRecordStyle(ls`Major GC`, scripting);
-    eventStyles[type.MinorGC] = new Timeline.TimelineRecordStyle(ls`Minor GC`, scripting);
-    eventStyles[type.JSFrame] = new Timeline.TimelineRecordStyle(ls`JS Frame`, scripting);
-    eventStyles[type.RequestAnimationFrame] = new Timeline.TimelineRecordStyle(ls`Request Animation Frame`, scripting);
-    eventStyles[type.CancelAnimationFrame] = new Timeline.TimelineRecordStyle(ls`Cancel Animation Frame`, scripting);
-    eventStyles[type.FireAnimationFrame] = new Timeline.TimelineRecordStyle(ls`Animation Frame Fired`, scripting);
-    eventStyles[type.RequestIdleCallback] = new Timeline.TimelineRecordStyle(ls`Request Idle Callback`, scripting);
-    eventStyles[type.CancelIdleCallback] = new Timeline.TimelineRecordStyle(ls`Cancel Idle Callback`, scripting);
-    eventStyles[type.FireIdleCallback] = new Timeline.TimelineRecordStyle(ls`Fire Idle Callback`, scripting);
-    eventStyles[type.WebSocketCreate] = new Timeline.TimelineRecordStyle(ls`Create WebSocket`, scripting);
-    eventStyles[type.WebSocketSendHandshakeRequest] =
-        new Timeline.TimelineRecordStyle(ls`Send WebSocket Handshake`, scripting);
+    eventStyles[type.Task] = new TimelineRecordStyle(ls`Task`, other);
+    eventStyles[type.Program] = new TimelineRecordStyle(ls`Other`, other);
+    eventStyles[type.Animation] = new TimelineRecordStyle(ls`Animation`, rendering);
+    eventStyles[type.EventDispatch] = new TimelineRecordStyle(ls`Event`, scripting);
+    eventStyles[type.RequestMainThreadFrame] = new TimelineRecordStyle(ls`Request Main Thread Frame`, rendering, true);
+    eventStyles[type.BeginFrame] = new TimelineRecordStyle(ls`Frame Start`, rendering, true);
+    eventStyles[type.BeginMainThreadFrame] = new TimelineRecordStyle(ls`Frame Start (main thread)`, rendering, true);
+    eventStyles[type.DrawFrame] = new TimelineRecordStyle(ls`Draw Frame`, rendering, true);
+    eventStyles[type.HitTest] = new TimelineRecordStyle(ls`Hit Test`, rendering);
+    eventStyles[type.ScheduleStyleRecalculation] = new TimelineRecordStyle(ls`Schedule Style Recalculation`, rendering);
+    eventStyles[type.RecalculateStyles] = new TimelineRecordStyle(ls`Recalculate Style`, rendering);
+    eventStyles[type.UpdateLayoutTree] = new TimelineRecordStyle(ls`Recalculate Style`, rendering);
+    eventStyles[type.InvalidateLayout] = new TimelineRecordStyle(ls`Invalidate Layout`, rendering, true);
+    eventStyles[type.Layout] = new TimelineRecordStyle(ls`Layout`, rendering);
+    eventStyles[type.PaintSetup] = new TimelineRecordStyle(ls`Paint Setup`, painting);
+    eventStyles[type.PaintImage] = new TimelineRecordStyle(ls`Paint Image`, painting, true);
+    eventStyles[type.UpdateLayer] = new TimelineRecordStyle(ls`Update Layer`, painting, true);
+    eventStyles[type.UpdateLayerTree] = new TimelineRecordStyle(ls`Update Layer Tree`, rendering);
+    eventStyles[type.Paint] = new TimelineRecordStyle(ls`Paint`, painting);
+    eventStyles[type.RasterTask] = new TimelineRecordStyle(ls`Rasterize Paint`, painting);
+    eventStyles[type.ScrollLayer] = new TimelineRecordStyle(ls`Scroll`, rendering);
+    eventStyles[type.CompositeLayers] = new TimelineRecordStyle(ls`Composite Layers`, painting);
+    eventStyles[type.ParseHTML] = new TimelineRecordStyle(ls`Parse HTML`, loading);
+    eventStyles[type.ParseAuthorStyleSheet] = new TimelineRecordStyle(ls`Parse Stylesheet`, loading);
+    eventStyles[type.TimerInstall] = new TimelineRecordStyle(ls`Install Timer`, scripting);
+    eventStyles[type.TimerRemove] = new TimelineRecordStyle(ls`Remove Timer`, scripting);
+    eventStyles[type.TimerFire] = new TimelineRecordStyle(ls`Timer Fired`, scripting);
+    eventStyles[type.XHRReadyStateChange] = new TimelineRecordStyle(ls`XHR Ready State Change`, scripting);
+    eventStyles[type.XHRLoad] = new TimelineRecordStyle(ls`XHR Load`, scripting);
+    eventStyles[type.CompileScript] = new TimelineRecordStyle(ls`Compile Script`, scripting);
+    eventStyles[type.EvaluateScript] = new TimelineRecordStyle(ls`Evaluate Script`, scripting);
+    eventStyles[type.CompileModule] = new TimelineRecordStyle(ls`Compile Module`, scripting);
+    eventStyles[type.EvaluateModule] = new TimelineRecordStyle(ls`Evaluate Module`, scripting);
+    eventStyles[type.StreamingCompileScript] = new TimelineRecordStyle(ls`Streaming Compile Task`, other);
+    eventStyles[type.StreamingCompileScriptWaiting] = new TimelineRecordStyle(ls`Waiting for Network`, idle);
+    eventStyles[type.StreamingCompileScriptParsing] = new TimelineRecordStyle(ls`Parse and Compile`, scripting);
+    eventStyles[type.WasmStreamFromResponseCallback] = new TimelineRecordStyle(ls`Streaming Wasm Response`, scripting);
+    eventStyles[type.WasmCompiledModule] = new TimelineRecordStyle(ls`Compiled Wasm Module`, scripting);
+    eventStyles[type.WasmCachedModule] = new TimelineRecordStyle(ls`Cached Wasm Module`, scripting);
+    eventStyles[type.WasmModuleCacheHit] = new TimelineRecordStyle(ls`Wasm Module Cache Hit`, scripting);
+    eventStyles[type.WasmModuleCacheInvalid] = new TimelineRecordStyle(ls`Wasm Module Cache Invalid`, scripting);
+    eventStyles[type.FrameStartedLoading] = new TimelineRecordStyle(ls`Frame Started Loading`, loading, true);
+    eventStyles[type.MarkLoad] = new TimelineRecordStyle(ls`Onload Event`, scripting, true);
+    eventStyles[type.MarkDOMContent] = new TimelineRecordStyle(ls`DOMContentLoaded Event`, scripting, true);
+    eventStyles[type.MarkFirstPaint] = new TimelineRecordStyle(ls`First Paint`, painting, true);
+    eventStyles[type.MarkFCP] = new TimelineRecordStyle(ls`First Contentful Paint`, rendering, true);
+    eventStyles[type.MarkFMP] = new TimelineRecordStyle(ls`First Meaningful Paint`, rendering, true);
+    eventStyles[type.MarkLCPCandidate] = new TimelineRecordStyle(ls`Largest Contentful Paint`, rendering, true);
+    eventStyles[type.TimeStamp] = new TimelineRecordStyle(ls`Timestamp`, scripting);
+    eventStyles[type.ConsoleTime] = new TimelineRecordStyle(ls`Console Time`, scripting);
+    eventStyles[type.UserTiming] = new TimelineRecordStyle(ls`User Timing`, scripting);
+    eventStyles[type.ResourceWillSendRequest] = new TimelineRecordStyle(ls`Will Send Request`, loading);
+    eventStyles[type.ResourceSendRequest] = new TimelineRecordStyle(ls`Send Request`, loading);
+    eventStyles[type.ResourceReceiveResponse] = new TimelineRecordStyle(ls`Receive Response`, loading);
+    eventStyles[type.ResourceFinish] = new TimelineRecordStyle(ls`Finish Loading`, loading);
+    eventStyles[type.ResourceReceivedData] = new TimelineRecordStyle(ls`Receive Data`, loading);
+    eventStyles[type.RunMicrotasks] = new TimelineRecordStyle(ls`Run Microtasks`, scripting);
+    eventStyles[type.FunctionCall] = new TimelineRecordStyle(ls`Function Call`, scripting);
+    eventStyles[type.GCEvent] = new TimelineRecordStyle(ls`GC Event`, scripting);
+    eventStyles[type.MajorGC] = new TimelineRecordStyle(ls`Major GC`, scripting);
+    eventStyles[type.MinorGC] = new TimelineRecordStyle(ls`Minor GC`, scripting);
+    eventStyles[type.JSFrame] = new TimelineRecordStyle(ls`JS Frame`, scripting);
+    eventStyles[type.RequestAnimationFrame] = new TimelineRecordStyle(ls`Request Animation Frame`, scripting);
+    eventStyles[type.CancelAnimationFrame] = new TimelineRecordStyle(ls`Cancel Animation Frame`, scripting);
+    eventStyles[type.FireAnimationFrame] = new TimelineRecordStyle(ls`Animation Frame Fired`, scripting);
+    eventStyles[type.RequestIdleCallback] = new TimelineRecordStyle(ls`Request Idle Callback`, scripting);
+    eventStyles[type.CancelIdleCallback] = new TimelineRecordStyle(ls`Cancel Idle Callback`, scripting);
+    eventStyles[type.FireIdleCallback] = new TimelineRecordStyle(ls`Fire Idle Callback`, scripting);
+    eventStyles[type.WebSocketCreate] = new TimelineRecordStyle(ls`Create WebSocket`, scripting);
+    eventStyles[type.WebSocketSendHandshakeRequest] = new TimelineRecordStyle(ls`Send WebSocket Handshake`, scripting);
     eventStyles[type.WebSocketReceiveHandshakeResponse] =
-        new Timeline.TimelineRecordStyle(ls`Receive WebSocket Handshake`, scripting);
-    eventStyles[type.WebSocketDestroy] = new Timeline.TimelineRecordStyle(ls`Destroy WebSocket`, scripting);
-    eventStyles[type.EmbedderCallback] = new Timeline.TimelineRecordStyle(ls`Embedder Callback`, scripting);
-    eventStyles[type.DecodeImage] = new Timeline.TimelineRecordStyle(ls`Image Decode`, painting);
-    eventStyles[type.ResizeImage] = new Timeline.TimelineRecordStyle(ls`Image Resize`, painting);
-    eventStyles[type.GPUTask] = new Timeline.TimelineRecordStyle(ls`GPU`, categories['gpu']);
-    eventStyles[type.LatencyInfo] = new Timeline.TimelineRecordStyle(ls`Input Latency`, scripting);
+        new TimelineRecordStyle(ls`Receive WebSocket Handshake`, scripting);
+    eventStyles[type.WebSocketDestroy] = new TimelineRecordStyle(ls`Destroy WebSocket`, scripting);
+    eventStyles[type.EmbedderCallback] = new TimelineRecordStyle(ls`Embedder Callback`, scripting);
+    eventStyles[type.DecodeImage] = new TimelineRecordStyle(ls`Image Decode`, painting);
+    eventStyles[type.ResizeImage] = new TimelineRecordStyle(ls`Image Resize`, painting);
+    eventStyles[type.GPUTask] = new TimelineRecordStyle(ls`GPU`, categories['gpu']);
+    eventStyles[type.LatencyInfo] = new TimelineRecordStyle(ls`Input Latency`, scripting);
 
-    eventStyles[type.GCCollectGarbage] = new Timeline.TimelineRecordStyle(ls`DOM GC`, scripting);
+    eventStyles[type.GCCollectGarbage] = new TimelineRecordStyle(ls`DOM GC`, scripting);
 
-    eventStyles[type.CryptoDoEncrypt] = new Timeline.TimelineRecordStyle(ls`Encrypt`, scripting);
-    eventStyles[type.CryptoDoEncryptReply] = new Timeline.TimelineRecordStyle(ls`Encrypt Reply`, scripting);
-    eventStyles[type.CryptoDoDecrypt] = new Timeline.TimelineRecordStyle(ls`Decrypt`, scripting);
-    eventStyles[type.CryptoDoDecryptReply] = new Timeline.TimelineRecordStyle(ls`Decrypt Reply`, scripting);
-    eventStyles[type.CryptoDoDigest] = new Timeline.TimelineRecordStyle(ls`Digest`, scripting);
-    eventStyles[type.CryptoDoDigestReply] = new Timeline.TimelineRecordStyle(ls`Digest Reply`, scripting);
-    eventStyles[type.CryptoDoSign] = new Timeline.TimelineRecordStyle(ls`Sign`, scripting);
-    eventStyles[type.CryptoDoSignReply] = new Timeline.TimelineRecordStyle(ls`Sign Reply`, scripting);
-    eventStyles[type.CryptoDoVerify] = new Timeline.TimelineRecordStyle(ls`Verify`, scripting);
-    eventStyles[type.CryptoDoVerifyReply] = new Timeline.TimelineRecordStyle(ls`Verify Reply`, scripting);
+    eventStyles[type.CryptoDoEncrypt] = new TimelineRecordStyle(ls`Encrypt`, scripting);
+    eventStyles[type.CryptoDoEncryptReply] = new TimelineRecordStyle(ls`Encrypt Reply`, scripting);
+    eventStyles[type.CryptoDoDecrypt] = new TimelineRecordStyle(ls`Decrypt`, scripting);
+    eventStyles[type.CryptoDoDecryptReply] = new TimelineRecordStyle(ls`Decrypt Reply`, scripting);
+    eventStyles[type.CryptoDoDigest] = new TimelineRecordStyle(ls`Digest`, scripting);
+    eventStyles[type.CryptoDoDigestReply] = new TimelineRecordStyle(ls`Digest Reply`, scripting);
+    eventStyles[type.CryptoDoSign] = new TimelineRecordStyle(ls`Sign`, scripting);
+    eventStyles[type.CryptoDoSignReply] = new TimelineRecordStyle(ls`Sign Reply`, scripting);
+    eventStyles[type.CryptoDoVerify] = new TimelineRecordStyle(ls`Verify`, scripting);
+    eventStyles[type.CryptoDoVerifyReply] = new TimelineRecordStyle(ls`Verify Reply`, scripting);
 
-    eventStyles[type.AsyncTask] = new Timeline.TimelineRecordStyle(ls`Async Task`, categories['async']);
+    eventStyles[type.AsyncTask] = new TimelineRecordStyle(ls`Async Task`, categories['async']);
 
-    Timeline.TimelineUIUtils._eventStylesMap = eventStyles;
+    TimelineUIUtils._eventStylesMap = eventStyles;
     return eventStyles;
   }
 
   static setEventStylesMap(eventStyles) {
-    Timeline.TimelineUIUtils._eventStylesMap = eventStyles;
+    TimelineUIUtils._eventStylesMap = eventStyles;
   }
 
   /**
@@ -166,11 +158,11 @@ Timeline.TimelineUIUtils = class {
    * @return {?string}
    */
   static inputEventDisplayName(inputEventType) {
-    if (!Timeline.TimelineUIUtils._inputEventToDisplayName) {
+    if (!TimelineUIUtils._inputEventToDisplayName) {
       const inputEvent = TimelineModel.TimelineIRModel.InputEvents;
 
       /** @type {!Map<!TimelineModel.TimelineIRModel.InputEvents, string>} */
-      Timeline.TimelineUIUtils._inputEventToDisplayName = new Map([
+      TimelineUIUtils._inputEventToDisplayName = new Map([
         [inputEvent.Char, ls`Key Character`],
         [inputEvent.KeyDown, ls`Key Down`],
         [inputEvent.KeyDownRaw, ls`Key Down`],
@@ -199,7 +191,7 @@ Timeline.TimelineUIUtils = class {
         [inputEvent.PinchUpdate, ls`Pinch Update`]
       ]);
     }
-    return Timeline.TimelineUIUtils._inputEventToDisplayName.get(inputEventType) || null;
+    return TimelineUIUtils._inputEventToDisplayName.get(inputEventType) || null;
   }
 
   /**
@@ -227,7 +219,7 @@ Timeline.TimelineUIUtils = class {
    * @return {boolean}
    */
   static testContentMatching(traceEvent, regExp) {
-    const title = Timeline.TimelineUIUtils.eventStyle(traceEvent).title;
+    const title = TimelineUIUtils.eventStyle(traceEvent).title;
     const tokens = [title];
     const url = TimelineModel.TimelineData.forEvent(traceEvent).url;
     if (url) {
@@ -276,27 +268,26 @@ Timeline.TimelineUIUtils = class {
 
   /**
    * @param {!SDK.TracingModel.Event} event
-   * @return {!Timeline.TimelineRecordStyle}
+   * @return {!TimelineRecordStyle}
    */
   static eventStyle(event) {
-    const eventStyles = Timeline.TimelineUIUtils._initEventStyles();
+    const eventStyles = TimelineUIUtils._initEventStyles();
     if (event.hasCategory(TimelineModel.TimelineModel.Category.Console) ||
         event.hasCategory(TimelineModel.TimelineModel.Category.UserTiming)) {
-      return new Timeline.TimelineRecordStyle(event.name, Timeline.TimelineUIUtils.categories()['scripting']);
+      return new TimelineRecordStyle(event.name, TimelineUIUtils.categories()['scripting']);
     }
 
     if (event.hasCategory(TimelineModel.TimelineModel.Category.LatencyInfo)) {
       /** @const */
       const prefix = 'InputLatency::';
       const inputEventType = event.name.startsWith(prefix) ? event.name.substr(prefix.length) : event.name;
-      const displayName = Timeline.TimelineUIUtils.inputEventDisplayName(
+      const displayName = TimelineUIUtils.inputEventDisplayName(
           /** @type {!TimelineModel.TimelineIRModel.InputEvents} */ (inputEventType));
-      return new Timeline.TimelineRecordStyle(
-          displayName || inputEventType, Timeline.TimelineUIUtils.categories()['scripting']);
+      return new TimelineRecordStyle(displayName || inputEventType, TimelineUIUtils.categories()['scripting']);
     }
     let result = eventStyles[event.name];
     if (!result) {
-      result = new Timeline.TimelineRecordStyle(event.name, Timeline.TimelineUIUtils.categories()['other'], true);
+      result = new TimelineRecordStyle(event.name, TimelineUIUtils.categories()['other'], true);
       eventStyles[event.name] = result;
     }
     return result;
@@ -309,17 +300,17 @@ Timeline.TimelineUIUtils = class {
   static eventColor(event) {
     if (event.name === TimelineModel.TimelineModel.RecordType.JSFrame) {
       const frame = event.args['data'];
-      if (Timeline.TimelineUIUtils.isUserFrame(frame)) {
-        return Timeline.TimelineUIUtils.colorForId(frame.url);
+      if (TimelineUIUtils.isUserFrame(frame)) {
+        return TimelineUIUtils.colorForId(frame.url);
       }
     }
-    const color = Timeline.TimelineUIUtils.eventStyle(event).category.color;
+    const color = TimelineUIUtils.eventStyle(event).category.color;
 
     // This event is considered idle time but still rendered as a scripting event here
     // to connect the StreamingCompileScriptParsing events it belongs to.
     if (event.name === TimelineModel.TimelineModel.RecordType.StreamingCompileScriptWaiting) {
       return /** @type string */ (
-          Common.Color.parse(Timeline.TimelineUIUtils.categories().scripting.color).setAlpha(0.3).asString(null));
+          Common.Color.parse(TimelineUIUtils.categories().scripting.color).setAlpha(0.3).asString(null));
     }
 
     return color;
@@ -332,7 +323,7 @@ Timeline.TimelineUIUtils = class {
    * @return {string}
    */
   static eventColorByProduct(model, urlToColorCache, event) {
-    const url = Timeline.TimelineUIUtils.eventURL(event) || '';
+    const url = TimelineUIUtils.eventURL(event) || '';
     let color = urlToColorCache.get(url);
     if (color) {
       return color;
@@ -362,9 +353,9 @@ Timeline.TimelineUIUtils = class {
     const recordType = TimelineModel.TimelineModel.RecordType;
     const eventData = event.args['data'];
     if (event.name === recordType.JSFrame) {
-      return Timeline.TimelineUIUtils.frameDisplayName(eventData);
+      return TimelineUIUtils.frameDisplayName(eventData);
     }
-    const title = Timeline.TimelineUIUtils.eventStyle(event).title;
+    const title = TimelineUIUtils.eventStyle(event).title;
     if (event.hasCategory(TimelineModel.TimelineModel.Category.Console)) {
       return title;
     }
@@ -384,7 +375,7 @@ Timeline.TimelineUIUtils = class {
    * !Map<!TimelineModel.TimelineIRModel.Phases, !{color: string, label: string}>
    */
   static _interactionPhaseStyles() {
-    let map = Timeline.TimelineUIUtils._interactionPhaseStylesMap;
+    let map = TimelineUIUtils._interactionPhaseStylesMap;
     if (!map) {
       map = new Map([
         [TimelineModel.TimelineIRModel.Phases.Idle, {color: 'white', label: 'Idle'}],
@@ -395,7 +386,7 @@ Timeline.TimelineUIUtils = class {
         [TimelineModel.TimelineIRModel.Phases.Animation, {color: 'hsl(256, 67%, 70%)', label: ls`Animation`}],
         [TimelineModel.TimelineIRModel.Phases.Uncategorized, {color: 'hsl(0, 0%, 87%)', label: ls`Uncategorized`}]
       ]);
-      Timeline.TimelineUIUtils._interactionPhaseStylesMap = map;
+      TimelineUIUtils._interactionPhaseStylesMap = map;
     }
     return map;
   }
@@ -405,7 +396,7 @@ Timeline.TimelineUIUtils = class {
    * @return {string}
    */
   static interactionPhaseColor(phase) {
-    return Timeline.TimelineUIUtils._interactionPhaseStyles().get(phase).color;
+    return TimelineUIUtils._interactionPhaseStyles().get(phase).color;
   }
 
   /**
@@ -413,7 +404,7 @@ Timeline.TimelineUIUtils = class {
    * @return {string}
    */
   static interactionPhaseLabel(phase) {
-    return Timeline.TimelineUIUtils._interactionPhaseStyles().get(phase).label;
+    return TimelineUIUtils._interactionPhaseStyles().get(phase).label;
   }
 
   /**
@@ -426,10 +417,10 @@ Timeline.TimelineUIUtils = class {
 
   /**
    * @param {!TimelineModel.TimelineModel.NetworkRequest} request
-   * @return {!Timeline.TimelineUIUtils.NetworkCategory}
+   * @return {!NetworkCategory}
    */
   static networkRequestCategory(request) {
-    const categories = Timeline.TimelineUIUtils.NetworkCategory;
+    const categories = NetworkCategory;
     switch (request.mimeType) {
       case 'text/html':
         return categories.HTML;
@@ -456,11 +447,11 @@ Timeline.TimelineUIUtils = class {
   }
 
   /**
-   * @param {!Timeline.TimelineUIUtils.NetworkCategory} category
+   * @param {!NetworkCategory} category
    * @return {string}
    */
   static networkCategoryColor(category) {
-    const categories = Timeline.TimelineUIUtils.NetworkCategory;
+    const categories = NetworkCategory;
     switch (category) {
       case categories.HTML:
         return 'hsl(214, 67%, 66%)';
@@ -499,14 +490,14 @@ Timeline.TimelineUIUtils = class {
         }
         break;
       case recordType.JSFrame:
-        detailsText = Timeline.TimelineUIUtils.frameDisplayName(eventData);
+        detailsText = TimelineUIUtils.frameDisplayName(eventData);
         break;
       case recordType.EventDispatch:
         detailsText = eventData ? eventData['type'] : null;
         break;
       case recordType.Paint: {
-        const width = Timeline.TimelineUIUtils.quadWidth(eventData.clip);
-        const height = Timeline.TimelineUIUtils.quadHeight(eventData.clip);
+        const width = TimelineUIUtils.quadWidth(eventData.clip);
+        const height = TimelineUIUtils.quadHeight(eventData.clip);
         if (width && height) {
           detailsText = Common.UIString('%d\xa0\u00d7\xa0%d', width, height);
         }
@@ -666,7 +657,7 @@ Timeline.TimelineUIUtils = class {
       case recordType.WebSocketSendHandshakeRequest:
       case recordType.WebSocketReceiveHandshakeResponse:
       case recordType.WebSocketDestroy:
-        detailsText = Timeline.TimelineUIUtils.buildDetailsTextForTraceEvent(event, target);
+        detailsText = TimelineUIUtils.buildDetailsTextForTraceEvent(event, target);
         break;
       case recordType.PaintImage:
       case recordType.DecodeImage:
@@ -688,7 +679,7 @@ Timeline.TimelineUIUtils = class {
       case recordType.FunctionCall:
       case recordType.JSFrame:
         details = createElement('span');
-        details.createTextChild(Timeline.TimelineUIUtils.frameDisplayName(eventData));
+        details.createTextChild(TimelineUIUtils.frameDisplayName(eventData));
         const location = linkifyLocation(
             eventData['scriptId'], eventData['url'], eventData['lineNumber'], eventData['columnNumber']);
         if (location) {
@@ -792,16 +783,16 @@ Timeline.TimelineUIUtils = class {
     let relatedNodesMap = null;
     if (maybeTarget) {
       const target = /** @type {!SDK.Target} */ (maybeTarget);
-      if (typeof event[Timeline.TimelineUIUtils._previewElementSymbol] === 'undefined') {
+      if (typeof event[_previewElementSymbol] === 'undefined') {
         let previewElement = null;
         const url = TimelineModel.TimelineData.forEvent(event).url;
         if (url) {
           previewElement = await Components.ImagePreview.build(
               target, url, false, {imageAltText: Components.ImagePreview.defaultAltTextForImageURL(url)});
         } else if (TimelineModel.TimelineData.forEvent(event).picture) {
-          previewElement = await Timeline.TimelineUIUtils.buildPicturePreviewContent(event, target);
+          previewElement = await TimelineUIUtils.buildPicturePreviewContent(event, target);
         }
-        event[Timeline.TimelineUIUtils._previewElementSymbol] = previewElement;
+        event[_previewElementSymbol] = previewElement;
       }
 
       /** @type {!Set<number>} */
@@ -812,7 +803,7 @@ Timeline.TimelineUIUtils = class {
       }
       const invalidationTrackingEvents = TimelineModel.InvalidationTracker.invalidationEventsFor(event);
       if (invalidationTrackingEvents) {
-        Timeline.TimelineUIUtils._collectInvalidationNodeIds(nodeIdsToResolve, invalidationTrackingEvents);
+        TimelineUIUtils._collectInvalidationNodeIds(nodeIdsToResolve, invalidationTrackingEvents);
       }
       if (nodeIdsToResolve.size) {
         const domModel = target.model(SDK.DOMModel);
@@ -826,10 +817,10 @@ Timeline.TimelineUIUtils = class {
     // This message may vary per event.name;
     let relatedNodeLabel;
 
-    const contentHelper = new Timeline.TimelineDetailsContentHelper(model.targetByEvent(event), linkifier);
-    const color = model.isMarkerEvent(event) ? Timeline.TimelineUIUtils.markerStyleForEvent(event).color :
-                                               Timeline.TimelineUIUtils.eventStyle(event).category.color;
-    contentHelper.addSection(Timeline.TimelineUIUtils.eventTitle(event), color);
+    const contentHelper = new TimelineDetailsContentHelper(model.targetByEvent(event), linkifier);
+    const color = model.isMarkerEvent(event) ? TimelineUIUtils.markerStyleForEvent(event).color :
+                                               TimelineUIUtils.eventStyle(event).category.color;
+    contentHelper.addSection(TimelineUIUtils.eventTitle(event), color);
 
     const eventData = event.args['data'];
     const timelineData = TimelineModel.TimelineData.forEvent(event);
@@ -868,8 +859,7 @@ Timeline.TimelineUIUtils = class {
         break;
       case recordTypes.JSFrame:
       case recordTypes.FunctionCall:
-        const detailsNode =
-            Timeline.TimelineUIUtils.buildDetailsNodeForTraceEvent(event, model.targetByEvent(event), linkifier);
+        const detailsNode = TimelineUIUtils.buildDetailsNodeForTraceEvent(event, model.targetByEvent(event), linkifier);
         if (detailsNode) {
           contentHelper.appendElementRow(ls`Function`, detailsNode);
         }
@@ -964,8 +954,8 @@ Timeline.TimelineUIUtils = class {
       case recordTypes.Paint:
         const clip = eventData['clip'];
         contentHelper.appendTextRow(ls`Location`, ls`(${clip[0]}, ${clip[1]})`);
-        const clipWidth = Timeline.TimelineUIUtils.quadWidth(clip);
-        const clipHeight = Timeline.TimelineUIUtils.quadHeight(clip);
+        const clipWidth = TimelineUIUtils.quadWidth(clip);
+        const clipHeight = TimelineUIUtils.quadHeight(clip);
         contentHelper.appendTextRow(ls`Dimensions`, ls`${clipWidth} × ${clipHeight}`);
         // Fall-through intended.
 
@@ -1062,13 +1052,11 @@ Timeline.TimelineUIUtils = class {
       case recordTypes.MarkDOMContent:
         contentHelper.appendTextRow(
             ls`Timestamp`, Number.preciseMillisToString(event.startTime - model.minimumRecordTime(), 1));
-        contentHelper.appendElementRow(
-            ls`Details`, Timeline.TimelineUIUtils.buildDetailsNodeForPerformanceEvent(event));
+        contentHelper.appendElementRow(ls`Details`, TimelineUIUtils.buildDetailsNodeForPerformanceEvent(event));
         break;
 
       default: {
-        const detailsNode =
-            Timeline.TimelineUIUtils.buildDetailsNodeForTraceEvent(event, model.targetByEvent(event), linkifier);
+        const detailsNode = TimelineUIUtils.buildDetailsNodeForTraceEvent(event, model.targetByEvent(event), linkifier);
         if (detailsNode) {
           contentHelper.appendElementRow(ls`Details`, detailsNode);
         }
@@ -1087,22 +1075,22 @@ Timeline.TimelineUIUtils = class {
       contentHelper.appendElementRow(relatedNodeLabel || ls`Related Node`, nodeSpan);
     }
 
-    if (event[Timeline.TimelineUIUtils._previewElementSymbol]) {
+    if (event[_previewElementSymbol]) {
       contentHelper.addSection(ls`Preview`);
-      contentHelper.appendElementRow('', event[Timeline.TimelineUIUtils._previewElementSymbol]);
+      contentHelper.appendElementRow('', event[_previewElementSymbol]);
     }
 
     if (initiator || timelineData.stackTraceForSelfOrInitiator() ||
         TimelineModel.InvalidationTracker.invalidationEventsFor(event)) {
-      Timeline.TimelineUIUtils._generateCauses(event, model.targetByEvent(event), relatedNodesMap, contentHelper);
+      TimelineUIUtils._generateCauses(event, model.targetByEvent(event), relatedNodesMap, contentHelper);
     }
 
     const stats = {};
-    const showPieChart = detailed && Timeline.TimelineUIUtils._aggregatedStatsForTraceEvent(stats, model, event);
+    const showPieChart = detailed && TimelineUIUtils._aggregatedStatsForTraceEvent(stats, model, event);
     if (showPieChart) {
       contentHelper.addSection(ls`Aggregated Time`);
-      const pieChart = Timeline.TimelineUIUtils.generatePieChart(
-          stats, Timeline.TimelineUIUtils.eventStyle(event).category, event.selfTime);
+      const pieChart =
+          TimelineUIUtils.generatePieChart(stats, TimelineUIUtils.eventStyle(event).category, event.selfTime);
       contentHelper.appendElementRow('', pieChart);
     }
 
@@ -1132,7 +1120,7 @@ Timeline.TimelineUIUtils = class {
      */
     function aggregatedStatsAtTime(time) {
       const stats = {};
-      const cache = events[Timeline.TimelineUIUtils._categoryBreakdownCacheSymbol];
+      const cache = events[_categoryBreakdownCacheSymbol];
       for (const category in cache) {
         const categoryCache = cache[category];
         const index = categoryCache.time.upperBound(time);
@@ -1170,7 +1158,7 @@ Timeline.TimelineUIUtils = class {
      * @param {!Array<!SDK.TracingModel.Event>} events
      */
     function buildRangeStatsCacheIfNeeded(events) {
-      if (events[Timeline.TimelineUIUtils._categoryBreakdownCacheSymbol]) {
+      if (events[_categoryBreakdownCacheSymbol]) {
         return;
       }
 
@@ -1186,7 +1174,7 @@ Timeline.TimelineUIUtils = class {
        * @return {function(!SDK.TracingModel.Event):boolean}
        */
       function filterForStats() {
-        const visibleEventsFilter = Timeline.TimelineUIUtils.visibleEventsFilter();
+        const visibleEventsFilter = TimelineUIUtils.visibleEventsFilter();
         return event => visibleEventsFilter.accept(event) || SDK.TracingModel.isTopLevelEvent(event);
       }
 
@@ -1227,7 +1215,7 @@ Timeline.TimelineUIUtils = class {
        * @param {!SDK.TracingModel.Event} e
        */
       function onStartEvent(e) {
-        const category = Timeline.TimelineUIUtils.eventStyle(e).category.name;
+        const category = TimelineUIUtils.eventStyle(e).category.name;
         const parentCategory = categoryStack.length ? categoryStack.peekLast() : null;
         if (category !== parentCategory) {
           categoryChange(parentCategory, category, e.startTime);
@@ -1247,7 +1235,7 @@ Timeline.TimelineUIUtils = class {
       }
 
       const obj = /** @type {!Object} */ (events);
-      obj[Timeline.TimelineUIUtils._categoryBreakdownCacheSymbol] = aggregatedStats;
+      obj[_categoryBreakdownCacheSymbol] = aggregatedStats;
     }
   }
 
@@ -1259,9 +1247,9 @@ Timeline.TimelineUIUtils = class {
    */
   static async buildNetworkRequestDetails(request, model, linkifier) {
     const target = model.targetByEvent(request.children[0]);
-    const contentHelper = new Timeline.TimelineDetailsContentHelper(target, linkifier);
-    const category = Timeline.TimelineUIUtils.networkRequestCategory(request);
-    const color = Timeline.TimelineUIUtils.networkCategoryColor(category);
+    const contentHelper = new TimelineDetailsContentHelper(target, linkifier);
+    const category = TimelineUIUtils.networkRequestCategory(request);
+    const color = TimelineUIUtils.networkCategoryColor(category);
     contentHelper.addSection(ls`Network request`, color);
 
     if (request.url) {
@@ -1358,7 +1346,7 @@ Timeline.TimelineUIUtils = class {
    * @param {!SDK.TracingModel.Event} event
    * @param {?SDK.Target} target
    * @param {?Map<number, ?SDK.DOMNode>} relatedNodesMap
-   * @param {!Timeline.TimelineDetailsContentHelper} contentHelper
+   * @param {!TimelineDetailsContentHelper} contentHelper
    */
   static _generateCauses(event, target, relatedNodesMap, contentHelper) {
     const recordTypes = TimelineModel.TimelineModel.RecordType;
@@ -1391,7 +1379,7 @@ Timeline.TimelineUIUtils = class {
     if (timelineData.stackTrace && timelineData.stackTrace.length) {
       contentHelper.addSection(ls`Call Stacks`);
       contentHelper.appendStackTrace(
-          stackLabel || ls`Stack Trace`, Timeline.TimelineUIUtils._stackTraceFromCallFrames(timelineData.stackTrace));
+          stackLabel || ls`Stack Trace`, TimelineUIUtils._stackTraceFromCallFrames(timelineData.stackTrace));
     }
 
     const initiator = TimelineModel.TimelineData.forEvent(event).initiator();
@@ -1399,7 +1387,7 @@ Timeline.TimelineUIUtils = class {
     if (TimelineModel.InvalidationTracker.invalidationEventsFor(event) && target) {
       // Full invalidation tracking (experimental).
       contentHelper.addSection(ls`Invalidations`);
-      Timeline.TimelineUIUtils._generateInvalidations(event, target, relatedNodesMap, contentHelper);
+      TimelineUIUtils._generateInvalidations(event, target, relatedNodesMap, contentHelper);
     } else if (initiator) {  // Partial invalidation tracking.
       const delay = event.startTime - initiator.startTime;
       contentHelper.appendTextRow(ls`Pending for`, Number.preciseMillisToString(delay, 1));
@@ -1416,7 +1404,7 @@ Timeline.TimelineUIUtils = class {
       if (initiatorStackTrace) {
         contentHelper.appendStackTrace(
             callSiteStackLabel || ls`First Invalidated`,
-            Timeline.TimelineUIUtils._stackTraceFromCallFrames(initiatorStackTrace));
+            TimelineUIUtils._stackTraceFromCallFrames(initiatorStackTrace));
       }
     }
   }
@@ -1425,7 +1413,7 @@ Timeline.TimelineUIUtils = class {
    * @param {!SDK.TracingModel.Event} event
    * @param {!SDK.Target} target
    * @param {?Map<number, ?SDK.DOMNode>} relatedNodesMap
-   * @param {!Timeline.TimelineDetailsContentHelper} contentHelper
+   * @param {!TimelineDetailsContentHelper} contentHelper
    */
   static _generateInvalidations(event, target, relatedNodesMap, contentHelper) {
     const invalidationTrackingEvents = TimelineModel.InvalidationTracker.invalidationEventsFor(event);
@@ -1439,8 +1427,7 @@ Timeline.TimelineUIUtils = class {
     });
 
     Object.keys(invalidations).forEach(function(type) {
-      Timeline.TimelineUIUtils._generateInvalidationsForType(
-          type, target, invalidations[type], relatedNodesMap, contentHelper);
+      TimelineUIUtils._generateInvalidationsForType(type, target, invalidations[type], relatedNodesMap, contentHelper);
     });
   }
 
@@ -1449,7 +1436,7 @@ Timeline.TimelineUIUtils = class {
    * @param {!SDK.Target} target
    * @param {!Array.<!TimelineModel.InvalidationTrackingEvent>} invalidations
    * @param {?Map<number, ?SDK.DOMNode>} relatedNodesMap
-   * @param {!Timeline.TimelineDetailsContentHelper} contentHelper
+   * @param {!TimelineDetailsContentHelper} contentHelper
    */
   static _generateInvalidationsForType(type, target, invalidations, relatedNodesMap, contentHelper) {
     let title;
@@ -1471,8 +1458,7 @@ Timeline.TimelineUIUtils = class {
 
     const invalidationGroups = groupInvalidationsByCause(invalidations);
     invalidationGroups.forEach(function(group) {
-      const groupElement =
-          new Timeline.TimelineUIUtils.InvalidationsGroupElement(target, relatedNodesMap, contentHelper, group);
+      const groupElement = new InvalidationsGroupElement(target, relatedNodesMap, contentHelper, group);
       invalidationsTreeOutline.appendChild(groupElement);
     });
     contentHelper.appendElementRow(title, invalidationsTreeOutline.element, false, true);
@@ -1556,7 +1542,7 @@ Timeline.TimelineUIUtils = class {
         if (i > index) {
           hasChildren = true;
         }
-        const categoryName = Timeline.TimelineUIUtils.eventStyle(nextEvent).category.name;
+        const categoryName = TimelineUIUtils.eventStyle(nextEvent).category.name;
         total[categoryName] = (total[categoryName] || 0) + nextEvent.selfTime;
       }
     }
@@ -1611,8 +1597,8 @@ Timeline.TimelineUIUtils = class {
   static createEventDivider(event, zeroTime) {
     const eventDivider = createElementWithClass('div', 'resources-event-divider');
     const startTime = Number.millisToString(event.startTime - zeroTime);
-    eventDivider.title = Common.UIString('%s at %s', Timeline.TimelineUIUtils.eventTitle(event), startTime);
-    const style = Timeline.TimelineUIUtils.markerStyleForEvent(event);
+    eventDivider.title = Common.UIString('%s at %s', TimelineUIUtils.eventTitle(event), startTime);
+    const style = TimelineUIUtils.markerStyleForEvent(event);
     if (style.tall) {
       eventDivider.style.backgroundColor = style.color;
     }
@@ -1623,7 +1609,7 @@ Timeline.TimelineUIUtils = class {
    * @return {!Array.<string>}
    */
   static _visibleTypes() {
-    const eventStyles = Timeline.TimelineUIUtils._initEventStyles();
+    const eventStyles = TimelineUIUtils._initEventStyles();
     const result = [];
     for (const name in eventStyles) {
       if (!eventStyles[name].hidden) {
@@ -1637,60 +1623,57 @@ Timeline.TimelineUIUtils = class {
    * @return {!TimelineModel.TimelineModelFilter}
    */
   static visibleEventsFilter() {
-    return new TimelineModel.TimelineVisibleEventsFilter(Timeline.TimelineUIUtils._visibleTypes());
+    return new TimelineModel.TimelineVisibleEventsFilter(TimelineUIUtils._visibleTypes());
   }
 
   /**
-   * @return {!Object.<string, !Timeline.TimelineCategory>}
+   * @return {!Object.<string, !TimelineCategory>}
    */
   static categories() {
-    if (Timeline.TimelineUIUtils._categories) {
-      return Timeline.TimelineUIUtils._categories;
+    if (TimelineUIUtils._categories) {
+      return TimelineUIUtils._categories;
     }
-    Timeline.TimelineUIUtils._categories = {
-      loading: new Timeline.TimelineCategory('loading', ls`Loading`, true, 'hsl(214, 67%, 74%)', 'hsl(214, 67%, 66%)'),
-      scripting:
-          new Timeline.TimelineCategory('scripting', ls`Scripting`, true, 'hsl(43, 83%, 72%)', 'hsl(43, 83%, 64%) '),
-      rendering:
-          new Timeline.TimelineCategory('rendering', ls`Rendering`, true, 'hsl(256, 67%, 76%)', 'hsl(256, 67%, 70%)'),
-      painting:
-          new Timeline.TimelineCategory('painting', ls`Painting`, true, 'hsl(109, 33%, 64%)', 'hsl(109, 33%, 55%)'),
-      gpu: new Timeline.TimelineCategory('gpu', ls`GPU`, false, 'hsl(109, 33%, 64%)', 'hsl(109, 33%, 55%)'),
-      async: new Timeline.TimelineCategory('async', ls`Async`, false, 'hsl(0, 100%, 50%)', 'hsl(0, 100%, 40%)'),
-      other: new Timeline.TimelineCategory('other', ls`System`, false, 'hsl(0, 0%, 87%)', 'hsl(0, 0%, 79%)'),
-      idle: new Timeline.TimelineCategory('idle', ls`Idle`, false, 'hsl(0, 0%, 98%)', 'hsl(0, 0%, 98%)')
+    TimelineUIUtils._categories = {
+      loading: new TimelineCategory('loading', ls`Loading`, true, 'hsl(214, 67%, 74%)', 'hsl(214, 67%, 66%)'),
+      scripting: new TimelineCategory('scripting', ls`Scripting`, true, 'hsl(43, 83%, 72%)', 'hsl(43, 83%, 64%) '),
+      rendering: new TimelineCategory('rendering', ls`Rendering`, true, 'hsl(256, 67%, 76%)', 'hsl(256, 67%, 70%)'),
+      painting: new TimelineCategory('painting', ls`Painting`, true, 'hsl(109, 33%, 64%)', 'hsl(109, 33%, 55%)'),
+      gpu: new TimelineCategory('gpu', ls`GPU`, false, 'hsl(109, 33%, 64%)', 'hsl(109, 33%, 55%)'),
+      async: new TimelineCategory('async', ls`Async`, false, 'hsl(0, 100%, 50%)', 'hsl(0, 100%, 40%)'),
+      other: new TimelineCategory('other', ls`System`, false, 'hsl(0, 0%, 87%)', 'hsl(0, 0%, 79%)'),
+      idle: new TimelineCategory('idle', ls`Idle`, false, 'hsl(0, 0%, 98%)', 'hsl(0, 0%, 98%)')
     };
-    return Timeline.TimelineUIUtils._categories;
+    return TimelineUIUtils._categories;
   }
 
   /**
-   * @param {!Object.<string, !Timeline.TimelineCategory>} categories
+   * @param {!Object.<string, !TimelineCategory>} categories
    */
   static setCategories(categories) {
-    Timeline.TimelineUIUtils._categories = categories;
+    TimelineUIUtils._categories = categories;
   }
 
   /**
    * @return {!Array}
    */
   static getTimelineMainEventCategories() {
-    if (Timeline.TimelineUIUtils._eventCategories) {
-      return Timeline.TimelineUIUtils._eventCategories;
+    if (TimelineUIUtils._eventCategories) {
+      return TimelineUIUtils._eventCategories;
     }
-    Timeline.TimelineUIUtils._eventCategories = ['idle', 'loading', 'painting', 'rendering', 'scripting', 'other'];
-    return Timeline.TimelineUIUtils._eventCategories;
+    TimelineUIUtils._eventCategories = ['idle', 'loading', 'painting', 'rendering', 'scripting', 'other'];
+    return TimelineUIUtils._eventCategories;
   }
 
   /**
    * @param {!Array} categories
    */
   static setTimelineMainEventCategories(categories) {
-    Timeline.TimelineUIUtils._eventCategories = categories;
+    TimelineUIUtils._eventCategories = categories;
   }
 
   /**
    * @param {!Object} aggregatedStats
-   * @param {!Timeline.TimelineCategory=} selfCategory
+   * @param {!TimelineCategory=} selfCategory
    * @param {number=} selfTime
    * @return {!Element}
    */
@@ -1741,8 +1724,8 @@ Timeline.TimelineUIUtils = class {
     }
 
     // Add other categories.
-    for (const categoryName in Timeline.TimelineUIUtils.categories()) {
-      const category = Timeline.TimelineUIUtils.categories()[categoryName];
+    for (const categoryName in TimelineUIUtils.categories()) {
+      const category = TimelineUIUtils.categories()[categoryName];
       if (category === selfCategory) {
         continue;
       }
@@ -1757,10 +1740,10 @@ Timeline.TimelineUIUtils = class {
    * @return {!Element}
    */
   static generateDetailsContentForFrame(frame, filmStripFrame) {
-    const contentHelper = new Timeline.TimelineDetailsContentHelper(null, null);
+    const contentHelper = new TimelineDetailsContentHelper(null, null);
     contentHelper.addSection(ls`Frame`);
 
-    const duration = Timeline.TimelineUIUtils.frameDuration(frame);
+    const duration = TimelineUIUtils.frameDuration(frame);
     contentHelper.appendElementRow(ls`Duration`, duration, frame.hasWarnings());
     const durationInMillis = frame.endTime - frame.startTime;
     contentHelper.appendTextRow(ls`FPS`, Math.floor(1000 / durationInMillis));
@@ -1839,30 +1822,29 @@ Timeline.TimelineUIUtils = class {
   }
 
   /**
-   * @return {!Array.<!Timeline.TimelineUIUtils.EventDispatchTypeDescriptor>}
+   * @return {!Array.<!EventDispatchTypeDescriptor>}
    */
   static eventDispatchDesciptors() {
-    if (Timeline.TimelineUIUtils._eventDispatchDesciptors) {
-      return Timeline.TimelineUIUtils._eventDispatchDesciptors;
+    if (TimelineUIUtils._eventDispatchDesciptors) {
+      return TimelineUIUtils._eventDispatchDesciptors;
     }
     const lightOrange = 'hsl(40,100%,80%)';
     const orange = 'hsl(40,100%,50%)';
     const green = 'hsl(90,100%,40%)';
     const purple = 'hsl(256,100%,75%)';
-    Timeline.TimelineUIUtils._eventDispatchDesciptors = [
-      new Timeline.TimelineUIUtils.EventDispatchTypeDescriptor(
+    TimelineUIUtils._eventDispatchDesciptors = [
+      new EventDispatchTypeDescriptor(
           1, lightOrange, ['mousemove', 'mouseenter', 'mouseleave', 'mouseout', 'mouseover']),
-      new Timeline.TimelineUIUtils.EventDispatchTypeDescriptor(
+      new EventDispatchTypeDescriptor(
           1, lightOrange, ['pointerover', 'pointerout', 'pointerenter', 'pointerleave', 'pointermove']),
-      new Timeline.TimelineUIUtils.EventDispatchTypeDescriptor(2, green, ['wheel']),
-      new Timeline.TimelineUIUtils.EventDispatchTypeDescriptor(3, orange, ['click', 'mousedown', 'mouseup']),
-      new Timeline.TimelineUIUtils.EventDispatchTypeDescriptor(
-          3, orange, ['touchstart', 'touchend', 'touchmove', 'touchcancel']),
-      new Timeline.TimelineUIUtils.EventDispatchTypeDescriptor(
+      new EventDispatchTypeDescriptor(2, green, ['wheel']),
+      new EventDispatchTypeDescriptor(3, orange, ['click', 'mousedown', 'mouseup']),
+      new EventDispatchTypeDescriptor(3, orange, ['touchstart', 'touchend', 'touchmove', 'touchcancel']),
+      new EventDispatchTypeDescriptor(
           3, orange, ['pointerdown', 'pointerup', 'pointercancel', 'gotpointercapture', 'lostpointercapture']),
-      new Timeline.TimelineUIUtils.EventDispatchTypeDescriptor(3, purple, ['keydown', 'keyup', 'keypress'])
+      new EventDispatchTypeDescriptor(3, purple, ['keydown', 'keyup', 'keypress'])
     ];
-    return Timeline.TimelineUIUtils._eventDispatchDesciptors;
+    return TimelineUIUtils._eventDispatchDesciptors;
   }
 
   /**
@@ -1894,7 +1876,7 @@ Timeline.TimelineUIUtils = class {
    */
   static markerStyleForEvent(event) {
     const tallMarkerDashStyle = [6, 4];
-    const title = Timeline.TimelineUIUtils.eventTitle(event);
+    const title = TimelineUIUtils.eventTitle(event);
 
     if (event.hasCategory(TimelineModel.TimelineModel.Category.Console) ||
         event.hasCategory(TimelineModel.TimelineModel.Category.UserTiming)) {
@@ -1972,12 +1954,12 @@ Timeline.TimelineUIUtils = class {
    * @return {string}
    */
   static colorForId(id) {
-    if (!Timeline.TimelineUIUtils.colorForId._colorGenerator) {
-      Timeline.TimelineUIUtils.colorForId._colorGenerator =
+    if (!TimelineUIUtils.colorForId._colorGenerator) {
+      TimelineUIUtils.colorForId._colorGenerator =
           new Common.Color.Generator({min: 30, max: 330}, {min: 50, max: 80, count: 3}, 85);
-      Timeline.TimelineUIUtils.colorForId._colorGenerator.setColorForID('', '#f2ecdc');
+      TimelineUIUtils.colorForId._colorGenerator.setColorForID('', '#f2ecdc');
     }
-    return Timeline.TimelineUIUtils.colorForId._colorGenerator.colorForID(id);
+    return TimelineUIUtils.colorForId._colorGenerator.colorForID(id);
   }
 
   /**
@@ -2041,12 +2023,12 @@ Timeline.TimelineUIUtils = class {
     }
     return url.startsWith('about:') ? `"${frame.name.trimMiddle(trimAt)}"` : frame.url.trimEnd(trimAt);
   }
-};
+}
 
-Timeline.TimelineRecordStyle = class {
+export class TimelineRecordStyle {
   /**
    * @param {string} title
-   * @param {!Timeline.TimelineCategory} category
+   * @param {!TimelineCategory} category
    * @param {boolean=} hidden
    */
   constructor(title, category, hidden = false) {
@@ -2054,13 +2036,12 @@ Timeline.TimelineRecordStyle = class {
     this.category = category;
     this.hidden = hidden;
   }
-};
-
+}
 
 /**
  * @enum {symbol}
  */
-Timeline.TimelineUIUtils.NetworkCategory = {
+export const NetworkCategory = {
   HTML: Symbol('HTML'),
   Script: Symbol('Script'),
   Style: Symbol('Style'),
@@ -2068,18 +2049,16 @@ Timeline.TimelineUIUtils.NetworkCategory = {
   Other: Symbol('Other')
 };
 
-
-Timeline.TimelineUIUtils._aggregatedStatsKey = Symbol('aggregatedStats');
-
+export const _aggregatedStatsKey = Symbol('aggregatedStats');
 
 /**
  * @unrestricted
  */
-Timeline.TimelineUIUtils.InvalidationsGroupElement = class extends UI.TreeElement {
+export class InvalidationsGroupElement extends UI.TreeElement {
   /**
    * @param {!SDK.Target} target
    * @param {?Map<number, ?SDK.DOMNode>} relatedNodesMap
-   * @param {!Timeline.TimelineDetailsContentHelper} contentHelper
+   * @param {!TimelineDetailsContentHelper} contentHelper
    * @param {!Array.<!TimelineModel.InvalidationTrackingEvent>} invalidations
    */
   constructor(target, relatedNodesMap, contentHelper, invalidations) {
@@ -2114,7 +2093,7 @@ Timeline.TimelineUIUtils.InvalidationsGroupElement = class extends UI.TreeElemen
     if (topFrame && this._contentHelper.linkifier()) {
       const stack = createElementWithClass('span', 'monospace');
       const completeTitle = UI.formatLocalized('%s. %s', [title, stack]);
-      stack.createChild('span').textContent = Timeline.TimelineUIUtils.frameDisplayName(topFrame);
+      stack.createChild('span').textContent = TimelineUIUtils.frameDisplayName(topFrame);
       const link = this._contentHelper.linkifier().maybeLinkifyConsoleCallFrame(target, topFrame);
       if (link) {
         stack.createChild('span').textContent = ' @ ';
@@ -2138,7 +2117,7 @@ Timeline.TimelineUIUtils.InvalidationsGroupElement = class extends UI.TreeElemen
       const stack = content.createChild('div');
       stack.createTextChild(ls`Stack trace:`);
       this._contentHelper.createChildStackTraceElement(
-          stack, Timeline.TimelineUIUtils._stackTraceFromCallFrames(first.cause.stackTrace));
+          stack, TimelineUIUtils._stackTraceFromCallFrames(first.cause.stackTrace));
     }
 
     content.createTextChild(this._invalidations.length !== 1 ? ls`Nodes:` : ls`Node:`);
@@ -2228,14 +2207,14 @@ Timeline.TimelineUIUtils.InvalidationsGroupElement = class extends UI.TreeElemen
       return nodeSpan.createTextChild(Common.UIString('[ unknown node ]'));
     }
   }
-};
+}
 
-Timeline.TimelineUIUtils._previewElementSymbol = Symbol('previewElement');
+export const _previewElementSymbol = Symbol('previewElement');
 
 /**
  * @unrestricted
  */
-Timeline.TimelineUIUtils.EventDispatchTypeDescriptor = class {
+export class EventDispatchTypeDescriptor {
   /**
    * @param {number} priority
    * @param {string} color
@@ -2246,13 +2225,12 @@ Timeline.TimelineUIUtils.EventDispatchTypeDescriptor = class {
     this.color = color;
     this.eventTypes = eventTypes;
   }
-};
-
+}
 
 /**
  * @unrestricted
  */
-Timeline.TimelineCategory = class extends Common.Object {
+export class TimelineCategory extends Common.Object {
   /**
    * @param {string} name
    * @param {string} title
@@ -2282,32 +2260,19 @@ Timeline.TimelineCategory = class extends Common.Object {
    */
   set hidden(hidden) {
     this._hidden = hidden;
-    this.dispatchEventToListeners(Timeline.TimelineCategory.Events.VisibilityChanged, this);
+    this.dispatchEventToListeners(TimelineCategory.Events.VisibilityChanged, this);
   }
-};
+}
 
 /** @enum {symbol} */
-Timeline.TimelineCategory.Events = {
+TimelineCategory.Events = {
   VisibilityChanged: Symbol('VisibilityChanged')
 };
 
 /**
- * @typedef {!{
- *     title: string,
- *     color: string,
- *     lineWidth: number,
- *     dashStyle: !Array.<number>,
- *     tall: boolean,
- *     lowPriority: boolean
- * }}
- */
-Timeline.TimelineMarkerStyle;
-
-
-/**
  * @unrestricted
  */
-Timeline.TimelinePopupContentHelper = class {
+export class TimelinePopupContentHelper {
   /**
    * @param {string} title
    */
@@ -2372,12 +2337,12 @@ Timeline.TimelinePopupContentHelper = class {
     row.appendChild(cell);
     this._contentTable.appendChild(row);
   }
-};
+}
 
 /**
  * @unrestricted
  */
-Timeline.TimelineDetailsContentHelper = class {
+export class TimelineDetailsContentHelper {
   /**
    * @param {?SDK.Target} target
    * @param {?Components.Linkifier} linkifier
@@ -2531,11 +2496,59 @@ Timeline.TimelineDetailsContentHelper = class {
    * @param {string=} warningType
    */
   appendWarningRow(event, warningType) {
-    const warning = Timeline.TimelineUIUtils.eventWarning(event, warningType);
+    const warning = TimelineUIUtils.eventWarning(event, warningType);
     if (warning) {
       this.appendElementRow(ls`Warning`, warning, true);
     }
   }
-};
+}
 
-Timeline.TimelineUIUtils._categoryBreakdownCacheSymbol = Symbol('categoryBreakdownCache');
+export const _categoryBreakdownCacheSymbol = Symbol('categoryBreakdownCache');
+
+/* Legacy exported object */
+self.Timeline = self.Timeline || {};
+
+/* Legacy exported object */
+Timeline = Timeline || {};
+
+/** @constructor */
+Timeline.TimelineUIUtils = TimelineUIUtils;
+
+/** @enum {symbol} */
+Timeline.TimelineUIUtils.NetworkCategory = NetworkCategory;
+
+Timeline.TimelineUIUtils._aggregatedStatsKey = _aggregatedStatsKey;
+
+/** @constructor */
+Timeline.TimelineUIUtils.InvalidationsGroupElement = InvalidationsGroupElement;
+
+Timeline.TimelineUIUtils._previewElementSymbol = _previewElementSymbol;
+
+/** @constructor */
+Timeline.TimelineUIUtils.EventDispatchTypeDescriptor = EventDispatchTypeDescriptor;
+
+Timeline.TimelineUIUtils._categoryBreakdownCacheSymbol = _categoryBreakdownCacheSymbol;
+
+/** @constructor */
+Timeline.TimelineRecordStyle = TimelineRecordStyle;
+
+/** @constructor */
+Timeline.TimelineCategory = TimelineCategory;
+
+/** @constructor */
+Timeline.TimelinePopupContentHelper = TimelinePopupContentHelper;
+
+/** @constructor */
+Timeline.TimelineDetailsContentHelper = TimelineDetailsContentHelper;
+
+/**
+ * @typedef {!{
+  *     title: string,
+  *     color: string,
+  *     lineWidth: number,
+  *     dashStyle: !Array.<number>,
+  *     tall: boolean,
+  *     lowPriority: boolean
+  * }}
+  */
+Timeline.TimelineMarkerStyle;

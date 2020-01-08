@@ -5,7 +5,7 @@
 /**
  * @unrestricted
  */
-Timeline.TimelineDetailsView = class extends UI.VBox {
+export default class TimelineDetailsView extends UI.VBox {
   /**
    * @param {!Timeline.TimelineModeViewDelegate} delegate
    */
@@ -18,7 +18,7 @@ Timeline.TimelineDetailsView = class extends UI.VBox {
     this._tabbedPane = new UI.TabbedPane();
     this._tabbedPane.show(this.element);
 
-    const tabIds = Timeline.TimelineDetailsView.Tab;
+    const tabIds = Tab;
 
     this._defaultDetailsWidget = new UI.VBox();
     this._defaultDetailsWidget.element.classList.add('timeline-details-view');
@@ -60,8 +60,7 @@ Timeline.TimelineDetailsView = class extends UI.VBox {
       }
     }
     this._track = track;
-    this._tabbedPane.closeTabs(
-        [Timeline.TimelineDetailsView.Tab.PaintProfiler, Timeline.TimelineDetailsView.Tab.LayerViewer], false);
+    this._tabbedPane.closeTabs([Tab.PaintProfiler, Tab.LayerViewer], false);
     for (const view of this._rangeDetailViews.values()) {
       view.setModel(model, track);
     }
@@ -74,7 +73,7 @@ Timeline.TimelineDetailsView = class extends UI.VBox {
    * @param {!Node} node
    */
   _setContent(node) {
-    const allTabs = this._tabbedPane.otherTabs(Timeline.TimelineDetailsView.Tab.Details);
+    const allTabs = this._tabbedPane.otherTabs(Tab.Details);
     for (let i = 0; i < allTabs.length; ++i) {
       if (!this._rangeDetailViews.has(allTabs[i])) {
         this._tabbedPane.closeTab(allTabs[i]);
@@ -162,8 +161,8 @@ Timeline.TimelineDetailsView = class extends UI.VBox {
         if (frame.layerTree) {
           const layersView = this._layersView();
           layersView.showLayerTree(frame.layerTree);
-          if (!this._tabbedPane.hasTab(Timeline.TimelineDetailsView.Tab.LayerViewer)) {
-            this._appendTab(Timeline.TimelineDetailsView.Tab.LayerViewer, Common.UIString('Layers'), layersView);
+          if (!this._tabbedPane.hasTab(Tab.LayerViewer)) {
+            this._appendTab(Tab.LayerViewer, Common.UIString('Layers'), layersView);
           }
         }
         break;
@@ -221,11 +220,10 @@ Timeline.TimelineDetailsView = class extends UI.VBox {
   _showSnapshotInPaintProfiler(snapshot) {
     const paintProfilerView = this._paintProfilerView();
     paintProfilerView.setSnapshot(snapshot);
-    if (!this._tabbedPane.hasTab(Timeline.TimelineDetailsView.Tab.PaintProfiler)) {
-      this._appendTab(
-          Timeline.TimelineDetailsView.Tab.PaintProfiler, Common.UIString('Paint Profiler'), paintProfilerView, true);
+    if (!this._tabbedPane.hasTab(Tab.PaintProfiler)) {
+      this._appendTab(Tab.PaintProfiler, Common.UIString('Paint Profiler'), paintProfilerView, true);
     }
-    this._tabbedPane.selectTab(Timeline.TimelineDetailsView.Tab.PaintProfiler, true);
+    this._tabbedPane.selectTab(Tab.PaintProfiler, true);
   }
 
   /**
@@ -253,11 +251,10 @@ Timeline.TimelineDetailsView = class extends UI.VBox {
     if (!hasProfileData) {
       return;
     }
-    if (this._tabbedPane.hasTab(Timeline.TimelineDetailsView.Tab.PaintProfiler)) {
+    if (this._tabbedPane.hasTab(Tab.PaintProfiler)) {
       return;
     }
-    this._appendTab(
-        Timeline.TimelineDetailsView.Tab.PaintProfiler, Common.UIString('Paint Profiler'), paintProfilerView);
+    this._appendTab(Tab.PaintProfiler, Common.UIString('Paint Profiler'), paintProfilerView);
   }
 
   /**
@@ -279,12 +276,12 @@ Timeline.TimelineDetailsView = class extends UI.VBox {
     contentHelper.appendElementRow('', pieChart);
     this._setContent(contentHelper.fragment);
   }
-};
+}
 
 /**
  * @enum {string}
  */
-Timeline.TimelineDetailsView.Tab = {
+export const Tab = {
   Details: 'Details',
   EventLog: 'EventLog',
   CallTree: 'CallTree',
@@ -292,3 +289,15 @@ Timeline.TimelineDetailsView.Tab = {
   PaintProfiler: 'PaintProfiler',
   LayerViewer: 'LayerViewer'
 };
+
+/* Legacy exported object */
+self.Timeline = self.Timeline || {};
+
+/* Legacy exported object */
+Timeline = Timeline || {};
+
+/** @constructor */
+Timeline.TimelineDetailsView = TimelineDetailsView;
+
+/** @enum {string} */
+Timeline.TimelineDetailsView.Tab = Tab;

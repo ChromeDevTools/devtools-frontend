@@ -7,7 +7,7 @@
 /**
  * @unrestricted
  */
-Timeline.TimelineLayersView = class extends UI.SplitWidget {
+export default class TimelineLayersView extends UI.SplitWidget {
   /**
    * @param {!TimelineModel.TimelineModel} model
    * @param {function(!SDK.PaintProfilerSnapshot)} showPaintProfilerCallback
@@ -78,4 +78,13 @@ Timeline.TimelineLayersView = class extends UI.SplitWidget {
   _update() {
     this._frameLayerTree.layerTreePromise().then(layerTree => this._layerViewHost.setLayerTree(layerTree));
   }
-};
+}
+
+/* Legacy exported object */
+self.Timeline = self.Timeline || {};
+
+/* Legacy exported object */
+Timeline = Timeline || {};
+
+/** @constructor */
+Timeline.TimelineLayersView = TimelineLayersView;

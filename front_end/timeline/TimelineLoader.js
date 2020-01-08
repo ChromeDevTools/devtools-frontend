@@ -6,9 +6,9 @@
  * @implements {Common.OutputStream}
  * @unrestricted
  */
-Timeline.TimelineLoader = class {
+export default class TimelineLoader {
   /**
-   * @param {!Timeline.TimelineLoader.Client} client
+   * @param {!Client} client
    */
   constructor(client) {
     this._client = client;
@@ -18,7 +18,7 @@ Timeline.TimelineLoader = class {
 
     /** @type {?function()} */
     this._canceledCallback = null;
-    this._state = Timeline.TimelineLoader.State.Initial;
+    this._state = State.Initial;
     this._buffer = '';
     this._firstRawChunk = true;
     this._firstChunk = true;
@@ -30,12 +30,12 @@ Timeline.TimelineLoader = class {
 
   /**
    * @param {!File} file
-   * @param {!Timeline.TimelineLoader.Client} client
-   * @return {!Timeline.TimelineLoader}
+   * @param {!Client} client
+   * @return {!TimelineLoader}
    */
   static loadFromFile(file, client) {
-    const loader = new Timeline.TimelineLoader(client);
-    const fileReader = new Bindings.ChunkedFileReader(file, Timeline.TimelineLoader.TransferChunkLengthBytes);
+    const loader = new TimelineLoader(client);
+    const fileReader = new Bindings.ChunkedFileReader(file, TransferChunkLengthBytes);
     loader._canceledCallback = fileReader.cancel.bind(fileReader);
     loader._totalSize = file.size;
     fileReader.read(loader).then(success => {
@@ -48,11 +48,11 @@ Timeline.TimelineLoader = class {
 
   /**
    * @param {!Array.<!SDK.TracingManager.EventPayload>} events
-   * @param {!Timeline.TimelineLoader.Client} client
-   * @return {!Timeline.TimelineLoader}
+   * @param {!Client} client
+   * @return {!TimelineLoader}
    */
   static loadFromEvents(events, client) {
-    const loader = new Timeline.TimelineLoader(client);
+    const loader = new TimelineLoader(client);
 
     setTimeout(async () => {
       const eventsPerChunk = 5000;
@@ -71,11 +71,11 @@ Timeline.TimelineLoader = class {
 
   /**
    * @param {string} url
-   * @param {!Timeline.TimelineLoader.Client} client
-   * @return {!Timeline.TimelineLoader}
+   * @param {!Client} client
+   * @return {!TimelineLoader}
    */
   static loadFromURL(url, client) {
-    const loader = new Timeline.TimelineLoader(client);
+    const loader = new TimelineLoader(client);
     Host.ResourceLoader.loadAsStream(url, null, loader);
     return loader;
   }
@@ -107,25 +107,25 @@ Timeline.TimelineLoader = class {
     }
     this._firstRawChunk = false;
 
-    if (this._state === Timeline.TimelineLoader.State.Initial) {
+    if (this._state === State.Initial) {
       if (chunk.startsWith('{"nodes":[')) {
-        this._state = Timeline.TimelineLoader.State.LoadingCPUProfileFormat;
+        this._state = State.LoadingCPUProfileFormat;
       } else if (chunk[0] === '{') {
-        this._state = Timeline.TimelineLoader.State.LookingForEvents;
+        this._state = State.LookingForEvents;
       } else if (chunk[0] === '[') {
-        this._state = Timeline.TimelineLoader.State.ReadingEvents;
+        this._state = State.ReadingEvents;
       } else {
         this._reportErrorAndCancelLoading(Common.UIString('Malformed timeline data: Unknown JSON format'));
         return Promise.resolve();
       }
     }
 
-    if (this._state === Timeline.TimelineLoader.State.LoadingCPUProfileFormat) {
+    if (this._state === State.LoadingCPUProfileFormat) {
       this._buffer += chunk;
       return Promise.resolve();
     }
 
-    if (this._state === Timeline.TimelineLoader.State.LookingForEvents) {
+    if (this._state === State.LookingForEvents) {
       const objectName = '"traceEvents":';
       const startPos = this._buffer.length - objectName.length;
       this._buffer += chunk;
@@ -134,16 +134,16 @@ Timeline.TimelineLoader = class {
         return Promise.resolve();
       }
       chunk = this._buffer.slice(pos + objectName.length);
-      this._state = Timeline.TimelineLoader.State.ReadingEvents;
+      this._state = State.ReadingEvents;
     }
 
-    if (this._state !== Timeline.TimelineLoader.State.ReadingEvents) {
+    if (this._state !== State.ReadingEvents) {
       return Promise.resolve();
     }
     if (this._jsonTokenizer.write(chunk)) {
       return Promise.resolve();
     }
-    this._state = Timeline.TimelineLoader.State.SkippingTail;
+    this._state = State.SkippingTail;
     if (this._firstChunk) {
       this._reportErrorAndCancelLoading(Common.UIString('Malformed timeline input, wrong JSON brackets balance'));
     }
@@ -217,7 +217,7 @@ Timeline.TimelineLoader = class {
   }
 
   _finalizeTrace() {
-    if (this._state === Timeline.TimelineLoader.State.LoadingCPUProfileFormat) {
+    if (this._state === State.LoadingCPUProfileFormat) {
       this._parseCPUProfileFormat(this._buffer);
       this._buffer = '';
     }
@@ -240,39 +240,57 @@ Timeline.TimelineLoader = class {
     }
     this._tracingModel.addEvents(traceEvents);
   }
-};
+}
 
-
-Timeline.TimelineLoader.TransferChunkLengthBytes = 5000000;
+export const TransferChunkLengthBytes = 5000000;
 
 /**
  * @interface
  */
-Timeline.TimelineLoader.Client = function() {};
-
-Timeline.TimelineLoader.Client.prototype = {
-  loadingStarted() {},
+export class Client {
+  loadingStarted() {
+  }
 
   /**
    * @param {number=} progress
    */
-  loadingProgress(progress) {},
+  loadingProgress(progress) {
+  }
 
-  processingStarted() {},
+  processingStarted() {
+  }
 
   /**
    * @param {?SDK.TracingModel} tracingModel
    */
-  loadingComplete(tracingModel) {},
-};
+  loadingComplete(tracingModel) {
+  }
+}
 
 /**
  * @enum {symbol}
  */
-Timeline.TimelineLoader.State = {
+export const State = {
   Initial: Symbol('Initial'),
   LookingForEvents: Symbol('LookingForEvents'),
   ReadingEvents: Symbol('ReadingEvents'),
   SkippingTail: Symbol('SkippingTail'),
   LoadingCPUProfileFormat: Symbol('LoadingCPUProfileFormat')
 };
+
+/* Legacy exported object */
+self.Timeline = self.Timeline || {};
+
+/* Legacy exported object */
+Timeline = Timeline || {};
+
+/** @constructor */
+Timeline.TimelineLoader = TimelineLoader;
+
+Timeline.TimelineLoader.TransferChunkLengthBytes = TransferChunkLengthBytes;
+
+/** @interface */
+Timeline.TimelineLoader.Client = Client;
+
+/** @enum {symbol} */
+Timeline.TimelineLoader.State = State;

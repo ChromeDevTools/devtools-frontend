@@ -113,9 +113,9 @@ export default class AnimationTimeline extends UI.VBox {
   _createHeader() {
     const toolbarContainer = this.contentElement.createChild('div', 'animation-timeline-toolbar-container');
     const topToolbar = new UI.Toolbar('animation-timeline-toolbar', toolbarContainer);
-    const clearButton = new UI.ToolbarButton(ls`Clear all`, 'largeicon-clear');
-    clearButton.addEventListener(UI.ToolbarButton.Events.Click, this._reset.bind(this));
-    topToolbar.appendToolbarItem(clearButton);
+    this._clearButton = new UI.ToolbarButton(ls`Clear all`, 'largeicon-clear');
+    this._clearButton.addEventListener(UI.ToolbarButton.Events.Click, this._reset.bind(this));
+    topToolbar.appendToolbarItem(this._clearButton);
     topToolbar.appendSeparator();
 
     this._pauseButton = new UI.ToolbarToggle(ls`Pause all`, 'largeicon-pause', 'largeicon-resume');
@@ -123,13 +123,15 @@ export default class AnimationTimeline extends UI.VBox {
     topToolbar.appendToolbarItem(this._pauseButton);
 
     const playbackRateControl = toolbarContainer.createChild('div', 'animation-playback-rate-control');
+    playbackRateControl.addEventListener('keydown', this._handlePlaybackRateControlKeyDown.bind(this));
     this._playbackRateButtons = [];
     for (const playbackRate of Animation.AnimationTimeline.GlobalPlaybackRates) {
-      const button = playbackRateControl.createChild('div', 'animation-playback-rate-button');
+      const button = playbackRateControl.createChild('button', 'animation-playback-rate-button');
       button.textContent = playbackRate ? ls`${playbackRate * 100}%` : ls`Pause`;
       button.playbackRate = playbackRate;
       button.addEventListener('click', this._setPlaybackRate.bind(this, playbackRate));
       button.title = ls`Set speed to ${button.textContent}`;
+      button.tabIndex = -1;
       this._playbackRateButtons.push(button);
     }
     this._updatePlaybackControls();
@@ -162,6 +164,38 @@ export default class AnimationTimeline extends UI.VBox {
     this._currentTime.textContent = '';
 
     return container;
+  }
+
+  /**
+   * @param {!Event} event
+   */
+  _handlePlaybackRateControlKeyDown(event) {
+    switch (event.key) {
+      case 'ArrowLeft':
+      case 'ArrowUp':
+        this._focusNextPlaybackRateButton(event.target, /* focusPrevious */ true);
+        break;
+      case 'ArrowRight':
+      case 'ArrowDown':
+        this._focusNextPlaybackRateButton(event.target);
+        break;
+    }
+  }
+
+  /**
+   * @param {!EventTarget|null} target
+   * @param {boolean=} focusPrevious
+   */
+  _focusNextPlaybackRateButton(target, focusPrevious) {
+    const currentIndex = this._playbackRateButtons.indexOf(target);
+    const nextIndex = focusPrevious ? currentIndex - 1 : currentIndex + 1;
+    if (nextIndex < 0 || nextIndex >= this._playbackRateButtons.length) {
+      return;
+    }
+    const nextButton = this._playbackRateButtons[nextIndex];
+    nextButton.tabIndex = 0;
+    nextButton.focus();
+    target.tabIndex = -1;
   }
 
   /**
@@ -236,6 +270,7 @@ export default class AnimationTimeline extends UI.VBox {
     for (const button of this._playbackRateButtons) {
       const selected = this._playbackRate === button.playbackRate;
       button.classList.toggle('selected', selected);
+      button.tabIndex = selected ? 0 : -1;
     }
   }
 
@@ -393,6 +428,51 @@ export default class AnimationTimeline extends UI.VBox {
     this._previewContainer.appendChild(preview.element);
     preview.removeButton().addEventListener('click', this._removeAnimationGroup.bind(this, group));
     preview.element.addEventListener('click', this._selectAnimationGroup.bind(this, group));
+    preview.element.addEventListener('keydown', this._handleAnimationGroupKeyDown.bind(this, group));
+    if (this._previewMap.size === 1) {
+      this._previewMap.get(this._groupBuffer[0]).element.tabIndex = 0;
+    }
+  }
+
+  /**
+   * @param {!Animation.AnimationModel.AnimationGroup} group
+   * @param {!Event} event
+   */
+  _handleAnimationGroupKeyDown(group, event) {
+    switch (event.key) {
+      case ' ':
+      case 'Enter':
+        this._selectAnimationGroup(group);
+        break;
+      case 'Backspace':
+      case 'Delete':
+        this._removeAnimationGroup(group, event);
+        break;
+      case 'ArrowLeft':
+      case 'ArrowUp':
+        this._focusNextGroup(group, /* target */ event.target, /* focusPrevious */ true);
+        break;
+      case 'ArrowRight':
+      case 'ArrowDown':
+        this._focusNextGroup(group, /* target */ event.target);
+    }
+  }
+
+  /**
+   * @param {!Animation.AnimationModel.AnimationGroup} group
+   * @param {!EventTarget|null} target
+   * @param {boolean=} focusPrevious
+   */
+  _focusNextGroup(group, target, focusPrevious) {
+    const currentGroupIndex = this._groupBuffer.indexOf(group);
+    const nextIndex = focusPrevious ? currentGroupIndex - 1 : currentGroupIndex + 1;
+    if (nextIndex < 0 || nextIndex >= this._groupBuffer.length) {
+      return;
+    }
+    const preview = this._previewMap.get(this._groupBuffer[nextIndex]);
+    preview.element.tabIndex = 0;
+    preview.element.focus();
+    target.tabIndex = -1;
   }
 
   /**
@@ -400,6 +480,8 @@ export default class AnimationTimeline extends UI.VBox {
    * @param {!Event} event
    */
   _removeAnimationGroup(group, event) {
+    const currentGroupIndex = this._groupBuffer.indexOf(group);
+
     this._groupBuffer.remove(group);
     this._previewMap.get(group).element.remove();
     this._previewMap.delete(group);
@@ -410,6 +492,17 @@ export default class AnimationTimeline extends UI.VBox {
       this._clearTimeline();
       this._renderGrid();
     }
+
+    const groupLength = this._groupBuffer.length;
+    if (groupLength === 0) {
+      this._clearButton.element.focus();
+      return;
+    }
+    const nextGroup = currentGroupIndex >= this._groupBuffer.length ?
+        this._previewMap.get(this._groupBuffer[this._groupBuffer.length - 1]) :
+        this._previewMap.get(this._groupBuffer[currentGroupIndex]);
+    nextGroup.element.tabIndex = 0;
+    nextGroup.element.focus();
   }
 
   /**

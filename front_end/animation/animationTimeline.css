@@ -319,8 +319,13 @@ text.animation-timeline-grid-label {
     cursor: pointer;
 }
 
+.animation-buffer-preview[data-keyboard-focus="true"]:not(.selected):focus,
 .animation-buffer-preview:not(.selected):hover {
     background-color: hsla(217,90%,92%,1);
+}
+
+.animation-buffer-preview[data-keyboard-focus="true"]:focus {
+    outline: -webkit-focus-ring-color auto 5px;
 }
 
 .animation-buffer-preview.selected {
@@ -382,6 +387,7 @@ text.animation-timeline-grid-label {
 
 .animation-playback-rate-button {
     border: 1px solid #ccc;
+    color: #000;
     display: inline-block;
     margin-right: -1px;
     padding: 1px 4px;
@@ -389,6 +395,11 @@ text.animation-timeline-grid-label {
     flex: 1 0 auto;
     text-align: center;
     cursor: pointer;
+}
+
+.animation-playback-rate-button[data-keyboard-focus="true"].selected:first-child:focus,
+.animation-playback-rate-button[data-keyboard-focus="true"]:focus {
+    background-color: var(--focus-bg-color);
 }
 
 .animation-playback-rate-button:not(.selected):hover {

@@ -74,7 +74,7 @@ export default class TimelineTreeView extends UI.VBox {
     this._currentThreadSetting = Common.settings.createSetting('timelineTreeCurrentThread', 0);
     this._currentThreadSetting.addChangeListener(this.refreshTree, this);
 
-    const columns = /** @type {!Array<!DataGrid.DataGrid.ColumnDescriptor>} */ ([]);
+    const columns = /** @type {!Array<!DataGrid.ColumnDescriptor>} */ ([]);
     this.populateColumns(columns);
 
     this._splitWidget = new UI.SplitWidget(true, true, 'timelineTreeViewDetailsSplitWidget');
@@ -290,7 +290,7 @@ export default class TimelineTreeView extends UI.VBox {
 
   /**
    * @protected
-   * @param {!Array<!DataGrid.DataGrid.ColumnDescriptor>} columns
+   * @param {!Array<!DataGrid.ColumnDescriptor>} columns
    */
   populateColumns(columns) {
     columns.push({id: 'self', title: Common.UIString('Self Time'), width: '120px', fixedWidth: true, sortable: true});
@@ -1020,7 +1020,7 @@ export class TimelineStackView extends UI.VBox {
     const header = this.element.createChild('div', 'timeline-stack-view-header');
     header.textContent = Common.UIString('Heaviest stack');
     this._treeView = treeView;
-    const columns = /** @type {!Array<!DataGrid.DataGrid.ColumnDescriptor>} */ ([
+    const columns = /** @type {!Array<!DataGrid.ColumnDescriptor>} */ ([
       {id: 'total', title: Common.UIString('Total Time'), fixedWidth: true, width: '110px'},
       {id: 'activity', title: Common.UIString('Activity')}
     ]);

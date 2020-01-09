@@ -42,7 +42,8 @@ export async function getMappings(namespace: string, mappings: Map<string, any>,
 
     if (isMemberExpressionOnLeftAndRight) {
       // Rename FooModule back to Foo because we know we will want to use the latter when doing replacements.
-      if (statement.expression.right.object && statement.expression.right.object.object.type === 'Identifier') {
+      if (statement.expression.right.object && statement.expression.right.object.object &&
+          statement.expression.right.object.object.type === 'Identifier') {
         statement.expression.right.object.object.name = statement.expression.right.object.object.name.replace(/Module$/, '');
       }
 

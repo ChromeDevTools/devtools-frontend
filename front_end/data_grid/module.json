@@ -8,6 +8,7 @@
     ],
     "modules": [
         "data_grid.js",
+        "data_grid-legacy.js",
         "DataGrid.js",
         "ViewportDataGrid.js",
         "SortableDataGrid.js",

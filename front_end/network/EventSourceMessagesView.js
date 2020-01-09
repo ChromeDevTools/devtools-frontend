@@ -14,7 +14,7 @@ export default class EventSourceMessagesView extends UI.VBox {
     this.element.classList.add('event-source-messages-view');
     this._request = request;
 
-    const columns = /** @type {!Array<!DataGrid.DataGrid.ColumnDescriptor>} */ ([
+    const columns = /** @type {!Array<!DataGrid.ColumnDescriptor>} */ ([
       {id: 'id', title: Common.UIString('Id'), sortable: true, weight: 8},
       {id: 'type', title: Common.UIString('Type'), sortable: true, weight: 8},
       {id: 'data', title: Common.UIString('Data'), sortable: false, weight: 88},

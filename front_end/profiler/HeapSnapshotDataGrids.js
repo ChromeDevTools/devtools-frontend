@@ -35,7 +35,7 @@ export class HeapSnapshotSortableDataGrid extends DataGrid.DataGrid {
   /**
    * @param {?SDK.HeapProfilerModel} heapProfilerModel
    * @param {!Profiler.ProfileType.DataDisplayDelegate} dataDisplayDelegate
-   * @param {!DataGrid.DataGrid.Parameters} dataGridParameters
+   * @param {!DataGrid.Parameters} dataGridParameters
    */
   constructor(heapProfilerModel, dataDisplayDelegate, dataGridParameters) {
     // TODO(allada) This entire class needs to be converted to use the templates in DataGridNode.
@@ -336,7 +336,7 @@ export class HeapSnapshotViewportDataGrid extends HeapSnapshotSortableDataGrid {
   /**
    * @param {?SDK.HeapProfilerModel} heapProfilerModel
    * @param {!Profiler.ProfileType.DataDisplayDelegate} dataDisplayDelegate
-   * @param {!DataGrid.DataGrid.Parameters} dataGridParameters
+   * @param {!DataGrid.Parameters} dataGridParameters
    */
   constructor(heapProfilerModel, dataDisplayDelegate, dataGridParameters) {
     super(heapProfilerModel, dataDisplayDelegate, dataGridParameters);
@@ -628,10 +628,10 @@ export class HeapSnapshotContainmentDataGrid extends HeapSnapshotSortableDataGri
    * @param {?SDK.HeapProfilerModel} heapProfilerModel
    * @param {!Profiler.ProfileType.DataDisplayDelegate} dataDisplayDelegate
    * @param {string} displayName
-   * @param {!Array.<!DataGrid.DataGrid.ColumnDescriptor>=} columns
+   * @param {!Array.<!DataGrid.ColumnDescriptor>=} columns
    */
   constructor(heapProfilerModel, dataDisplayDelegate, displayName, columns) {
-    columns = columns || (/** @type {!Array<!DataGrid.DataGrid.ColumnDescriptor>} */ ([
+    columns = columns || (/** @type {!Array<!DataGrid.ColumnDescriptor>} */ ([
                 {id: 'object', title: ls`Object`, disclosure: true, sortable: true},
                 {id: 'distance', title: ls`Distance`, width: '70px', sortable: true, fixedWidth: true},
                 {id: 'shallowSize', title: ls`Shallow Size`, width: '110px', sortable: true, fixedWidth: true}, {
@@ -683,7 +683,7 @@ export class HeapSnapshotRetainmentDataGrid extends HeapSnapshotContainmentDataG
    * @param {!Profiler.ProfileType.DataDisplayDelegate} dataDisplayDelegate
    */
   constructor(heapProfilerModel, dataDisplayDelegate) {
-    const columns = /** @type {!Array<!DataGrid.DataGrid.ColumnDescriptor>} */ ([
+    const columns = /** @type {!Array<!DataGrid.ColumnDescriptor>} */ ([
       {id: 'object', title: ls`Object`, disclosure: true, sortable: true}, {
         id: 'distance',
         title: ls`Distance`,
@@ -745,7 +745,7 @@ export class HeapSnapshotConstructorsDataGrid extends HeapSnapshotViewportDataGr
    * @param {!Profiler.ProfileType.DataDisplayDelegate} dataDisplayDelegate
    */
   constructor(heapProfilerModel, dataDisplayDelegate) {
-    const columns = /** @type {!Array<!DataGrid.DataGrid.ColumnDescriptor>} */ ([
+    const columns = /** @type {!Array<!DataGrid.ColumnDescriptor>} */ ([
       {id: 'object', title: ls`Constructor`, disclosure: true, sortable: true},
       {id: 'distance', title: ls`Distance`, width: '70px', sortable: true, fixedWidth: true},
       {id: 'shallowSize', title: ls`Shallow Size`, width: '110px', sortable: true, fixedWidth: true}, {
@@ -904,7 +904,7 @@ export class HeapSnapshotDiffDataGrid extends HeapSnapshotViewportDataGrid {
    * @param {!Profiler.ProfileType.DataDisplayDelegate} dataDisplayDelegate
    */
   constructor(heapProfilerModel, dataDisplayDelegate) {
-    const columns = /** @type {!Array<!DataGrid.DataGrid.ColumnDescriptor>} */ ([
+    const columns = /** @type {!Array<!DataGrid.ColumnDescriptor>} */ ([
       {id: 'object', title: ls`Constructor`, disclosure: true, sortable: true},
       {id: 'addedCount', title: ls`# New`, width: '75px', sortable: true, fixedWidth: true},
       {id: 'removedCount', title: ls`# Deleted`, width: '75px', sortable: true, fixedWidth: true},
@@ -984,7 +984,7 @@ export class AllocationDataGrid extends HeapSnapshotViewportDataGrid {
    * @param {!Profiler.ProfileType.DataDisplayDelegate} dataDisplayDelegate
    */
   constructor(heapProfilerModel, dataDisplayDelegate) {
-    const columns = /** @type {!Array<!DataGrid.DataGrid.ColumnDescriptor>} */ ([
+    const columns = /** @type {!Array<!DataGrid.ColumnDescriptor>} */ ([
       {id: 'liveCount', title: ls`Live Count`, width: '75px', sortable: true, fixedWidth: true},
       {id: 'count', title: ls`Count`, width: '65px', sortable: true, fixedWidth: true},
       {id: 'liveSize', title: ls`Live Size`, width: '75px', sortable: true, fixedWidth: true},

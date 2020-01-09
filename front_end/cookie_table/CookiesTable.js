@@ -54,7 +54,7 @@ export class CookiesTable extends UI.VBox {
 
     const editable = !!saveCallback;
 
-    const columns = /** @type {!Array<!DataGrid.DataGrid.ColumnDescriptor>} */ ([
+    const columns = /** @type {!Array<!DataGrid.ColumnDescriptor>} */ ([
       {
         id: SDK.Cookie.Attributes.Name,
         title: ls`Name`,

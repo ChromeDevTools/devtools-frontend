@@ -32,7 +32,7 @@ export class ResourceWebSocketFrameView extends UI.VBox {
     this._splitWidget = new UI.SplitWidget(false, true, 'resourceWebSocketFrameSplitViewState');
     this._splitWidget.show(this.element);
 
-    const columns = /** @type {!Array<!DataGrid.DataGrid.ColumnDescriptor>} */ ([
+    const columns = /** @type {!Array<!DataGrid.ColumnDescriptor>} */ ([
       {id: 'data', title: Common.UIString('Data'), sortable: false, weight: 88}, {
         id: 'length',
         title: Common.UIString('Length'),

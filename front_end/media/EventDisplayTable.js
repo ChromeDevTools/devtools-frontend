@@ -140,10 +140,10 @@ Media.EventDisplayTable = class extends UI.VBox {
 
   /**
    * @param {!Media.EventDisplayColumnConfig} columnConfig
-   * @return {!DataGrid.DataGrid.ColumnDescriptor}
+   * @return {!DataGrid.ColumnDescriptor}
    */
   static _convertToGridDescriptor(columnConfig) {
-    return /** @type {!DataGrid.DataGrid.ColumnDescriptor} */ ({
+    return /** @type {!DataGrid.ColumnDescriptor} */ ({
       id: columnConfig.id,
       title: columnConfig.title,
       sortable: columnConfig.sortable,

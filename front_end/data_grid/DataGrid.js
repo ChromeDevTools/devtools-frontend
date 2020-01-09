@@ -27,9 +27,9 @@
  * @unrestricted
  * @template NODE_TYPE
  */
-export default class DataGridImpl extends Common.Object {
+export class DataGridImpl extends Common.Object {
   /**
-   * @param {!DataGrid.DataGrid.Parameters} dataGridParameters
+   * @param {!DataGrid.Parameters} dataGridParameters
    */
   constructor(dataGridParameters) {
     super();
@@ -82,11 +82,11 @@ export default class DataGridImpl extends Common.Object {
     /** @type {boolean} */
     this._inline = false;
 
-    /** @type {!Array.<!DataGrid.DataGrid.ColumnDescriptor>} */
+    /** @type {!Array.<!DataGrid.ColumnDescriptor>} */
     this._columnsArray = [];
-    /** @type {!Object.<string, !DataGrid.DataGrid.ColumnDescriptor>} */
+    /** @type {!Object.<string, !DataGrid.ColumnDescriptor>} */
     this._columns = {};
-    /** @type {!Array.<!DataGrid.DataGrid.ColumnDescriptor>} */
+    /** @type {!Array.<!DataGrid.ColumnDescriptor>} */
     this.visibleColumnsArray = columnsArray;
 
     columnsArray.forEach(column => this._innerAddColumn(column));
@@ -243,7 +243,7 @@ export default class DataGridImpl extends Common.Object {
   }
 
   /**
-   * @param {!DataGrid.DataGrid.ColumnDescriptor} column
+   * @param {!DataGrid.ColumnDescriptor} column
    * @param {number=} position
    */
   _innerAddColumn(column, position) {
@@ -290,7 +290,7 @@ export default class DataGridImpl extends Common.Object {
   }
 
   /**
-   * @param {!DataGrid.DataGrid.ColumnDescriptor} column
+   * @param {!DataGrid.ColumnDescriptor} column
    * @param {number=} position
    */
   addColumn(column, position) {
@@ -514,7 +514,7 @@ export default class DataGridImpl extends Common.Object {
 
     /**
      * @param {boolean} wasChange
-     * @this {DataGrid.DataGrid}
+     * @this {DataGridImpl}
      */
     function moveToNextIfNeeded(wasChange) {
       if (!moveDirection) {
@@ -563,7 +563,7 @@ export default class DataGridImpl extends Common.Object {
     }
 
     // Show trimmed text after editing.
-    DataGrid.DataGrid.setElementText(element, newText, !!column.longText);
+    DataGridImpl.setElementText(element, newText, !!column.longText);
 
     if (textBeforeEditing === newText) {
       this._editingCancelled(element);
@@ -944,7 +944,7 @@ export default class DataGridImpl extends Common.Object {
     for (const column in this._columns) {
       emptyData[column] = null;
     }
-    this.creationNode = new DataGrid.CreationDataGridNode(emptyData, hasChildren);
+    this.creationNode = new CreationDataGridNode(emptyData, hasChildren);
     this.rootNode().appendChild(this.creationNode);
   }
 
@@ -1507,7 +1507,7 @@ export class DataGridNode extends Common.Object {
     this._hasChildren = hasChildren || false;
     /** @type {!Array.<!NODE_TYPE>} */
     this.children = [];
-    /** @type {?DataGrid.DataGrid} */
+    /** @type {?DataGridImpl} */
     this.dataGrid = null;
     /** @type {?NODE_TYPE} */
     this.parent = null;
@@ -1870,7 +1870,7 @@ export class DataGridNode extends Common.Object {
     if (data instanceof Node) {
       cell.appendChild(data);
     } else if (data !== null) {
-      DataGrid.DataGrid.setElementText(cell, /** @type {string} */ (data), !!this.dataGrid._columns[columnId].longText);
+      DataGridImpl.setElementText(cell, /** @type {string} */ (data), !!this.dataGrid._columns[columnId].longText);
     }
 
     return cell;
@@ -2371,7 +2371,7 @@ export class CreationDataGridNode extends DataGridNode {
  */
 export class DataGridWidget extends UI.VBox {
   /**
-   * @param {!DataGrid.DataGrid} dataGrid
+   * @param {!DataGridImpl} dataGrid
    */
   constructor(dataGrid) {
     super();
@@ -2419,105 +2419,3 @@ export class DataGridWidget extends UI.VBox {
     this._dataGrids = [];
   }
 }
-
-/* Legacy exported object */
-self.DataGrid = self.DataGrid || {};
-
-/* Legacy exported object */
-DataGrid = DataGrid || {};
-
-/**
- * @typedef {{
- *   displayName: string,
- *   columns: !Array.<!DataGrid.DataGrid.ColumnDescriptor>,
- *   editCallback: (function(!Object, string, string, string)|undefined),
- *   deleteCallback: (function(!Object)|undefined|function(string)),
- *   refreshCallback: (function()|undefined)
- * }}
- */
-DataGrid.Parameters;
-
-/**
- * @typedef {{
- *   id: string,
- *   title: (string|undefined),
- *   titleDOMFragment: (?DocumentFragment|undefined),
- *   sortable: boolean,
- *   sort: (?Order|undefined),
- *   align: (?Align|undefined),
- *   fixedWidth: (boolean|undefined),
- *   editable: (boolean|undefined),
- *   nonSelectable: (boolean|undefined),
- *   longText: (boolean|undefined),
- *   disclosure: (boolean|undefined),
- *   weight: (number|undefined),
- *   allowInSortByEvenWhenHidden: (boolean|undefined)
- * }}
- */
-DataGrid.ColumnDescriptor;
-
-DataGrid._preferredWidthSymbol = Symbol('preferredWidth');
-DataGrid._columnIdSymbol = Symbol('columnId');
-DataGrid._sortIconSymbol = Symbol('sortIcon');
-DataGrid._longTextSymbol = Symbol('longText');
-
-/**
- * @unrestricted
- * @constructor
- */
-DataGrid.DataGrid = DataGridImpl;
-
-/**
- * @unrestricted
- * @constructor
- */
-DataGrid.CreationDataGridNode = CreationDataGridNode;
-
-/**
- * @unrestricted
- * @constructor
- */
-DataGrid.DataGridNode = DataGridNode;
-DataGrid.DataGridWidget = DataGridWidget;
-
-/** @enum {symbol} */
-DataGrid.DataGrid.Events = Events;
-
-/** @enum {string} */
-DataGrid.DataGrid.Order = Order;
-
-/** @enum {string} */
-DataGrid.DataGrid.Align = Align;
-
-/** @enum {string} */
-DataGrid.DataGrid.ResizeMethod = ResizeMethod;
-
-/**
- * @typedef {{
-  *   displayName: string,
-  *   columns: !Array.<!DataGrid.DataGrid.ColumnDescriptor>,
-  *   editCallback: (function(!Object, string, string, string)|undefined),
-  *   deleteCallback: (function(!Object)|undefined|function(string)),
-  *   refreshCallback: (function()|undefined)
-  * }}
-  */
-DataGrid.DataGrid.Parameters = DataGrid.Parameters;
-
-/**
- * @typedef {{
-  *   id: string,
-  *   title: (string|undefined),
-  *   titleDOMFragment: (?DocumentFragment|undefined),
-  *   sortable: boolean,
-  *   sort: (?Order|undefined),
-  *   align: (?Align|undefined),
-  *   fixedWidth: (boolean|undefined),
-  *   editable: (boolean|undefined),
-  *   nonSelectable: (boolean|undefined),
-  *   longText: (boolean|undefined),
-  *   disclosure: (boolean|undefined),
-  *   weight: (number|undefined),
-  *   allowInSortByEvenWhenHidden: (boolean|undefined)
-  * }}
-  */
-DataGrid.DataGrid.ColumnDescriptor = DataGrid.ColumnDescriptor;

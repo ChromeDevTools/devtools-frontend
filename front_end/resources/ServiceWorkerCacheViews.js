@@ -107,7 +107,7 @@ export class ServiceWorkerCacheView extends UI.SimpleView {
    * @return {!DataGrid.DataGrid}
    */
   _createDataGrid() {
-    const columns = /** @type {!Array<!DataGrid.DataGrid.ColumnDescriptor>} */ ([
+    const columns = /** @type {!Array<!DataGrid.ColumnDescriptor>} */ ([
       {id: 'number', title: '#', sortable: false, width: '3px'},
       {id: 'name', title: Common.UIString('Name'), weight: 4, sortable: true},
       {id: 'responseType', title: ls`Response-Type`, weight: 1, align: DataGrid.DataGrid.Align.Right, sortable: true},

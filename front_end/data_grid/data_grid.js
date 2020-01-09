@@ -12,4 +12,34 @@ import * as ShowMoreDataGridNode from './ShowMoreDataGridNode.js';
 import * as SortableDataGrid from './SortableDataGrid.js';
 import * as ViewportDataGrid from './ViewportDataGrid.js';
 
+/**
+ * @typedef {{
+  *   displayName: string,
+  *   columns: !Array.<!ColumnDescriptor>,
+  *   editCallback: (function(!Object, string, string, string)|undefined),
+  *   deleteCallback: (function(!Object)|undefined|function(string)),
+  *   refreshCallback: (function()|undefined)
+  * }}
+  */
+export let Parameters;
+
+/**
+  * @typedef {{
+  *   id: string,
+  *   title: (string|undefined),
+  *   titleDOMFragment: (?DocumentFragment|undefined),
+  *   sortable: boolean,
+  *   sort: (?DataGrid.Order|undefined),
+  *   align: (?DataGrid.Align|undefined),
+  *   fixedWidth: (boolean|undefined),
+  *   editable: (boolean|undefined),
+  *   nonSelectable: (boolean|undefined),
+  *   longText: (boolean|undefined),
+  *   disclosure: (boolean|undefined),
+  *   weight: (number|undefined),
+  *   allowInSortByEvenWhenHidden: (boolean|undefined)
+  * }}
+  */
+export let ColumnDescriptor;
+
 export {DataGrid, ShowMoreDataGridNode, SortableDataGrid, ViewportDataGrid};

@@ -29,6 +29,8 @@
     ],
     "scripts": [],
     "modules": [
+      "changes.js",
+      "changes-legacy.js",
       "ChangesHighlighter.js",
       "ChangesView.js",
       "ChangesSidebar.js",

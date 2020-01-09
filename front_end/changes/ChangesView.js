@@ -2,7 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-export default class ChangesView extends UI.VBox {
+import {ChangesSidebar, Events} from './ChangesSidebar.js';
+import {ChangesTextEditor} from './ChangesTextEditor.js';
+
+export class ChangesView extends UI.VBox {
   constructor() {
     super(true);
     this.registerRequiredCSS('changes/changesView.css');
@@ -15,9 +18,8 @@ export default class ChangesView extends UI.VBox {
     this._emptyWidget.show(mainWidget.element);
 
     this._workspaceDiff = WorkspaceDiff.workspaceDiff();
-    this._changesSidebar = new Changes.ChangesSidebar(this._workspaceDiff);
-    this._changesSidebar.addEventListener(
-        Changes.ChangesSidebar.Events.SelectedUISourceCodeChanged, this._selectedUISourceCodeChanged, this);
+    this._changesSidebar = new ChangesSidebar(this._workspaceDiff);
+    this._changesSidebar.addEventListener(Events.SelectedUISourceCodeChanged, this._selectedUISourceCodeChanged, this);
     splitWidget.setSidebarWidget(this._changesSidebar);
 
     /** @type {?Workspace.UISourceCode} */
@@ -28,7 +30,7 @@ export default class ChangesView extends UI.VBox {
 
     this._maxLineDigits = 1;
 
-    this._editor = new Changes.ChangesTextEditor({
+    this._editor = new ChangesTextEditor({
       devtoolsAccessibleName: ls`Changes diff viewer`,
       lineNumbers: true,
       lineWrapping: false,
@@ -298,7 +300,7 @@ export default class ChangesView extends UI.VBox {
 
     /**
      * @param {string} text
-     * @param {!Changes.ChangesView.RowType} type
+     * @param {!RowType} type
      * @return {!Changes.ChangesView.Row}
      */
     function createRow(text, type) {
@@ -359,38 +361,9 @@ export class DiffUILocationRevealer {
     if (!(diffUILocation instanceof WorkspaceDiff.DiffUILocation)) {
       throw new Error('Internal error: not a diff ui location');
     }
-    /** @type {!Changes.ChangesView} */
-    const changesView = self.runtime.sharedInstance(Changes.ChangesView);
+    /** @type {!ChangesView} */
+    const changesView = self.runtime.sharedInstance(ChangesView);
     await UI.viewManager.showView('changes.changes');
     changesView._changesSidebar.selectUISourceCode(diffUILocation.uiSourceCode, omitFocus);
   }
 }
-
-/* Legacy exported object */
-self.Changes = self.Changes || {};
-
-/* Legacy exported object */
-Changes = Changes || {};
-
-/**
- * @constructor
- */
-Changes.ChangesView = ChangesView;
-
-/** @enum {string} */
-Changes.ChangesView.RowType = RowType;
-
-/**
- * @typedef {!{
-  *  baselineLineNumber: number,
-  *  currentLineNumber: number,
-  *  tokens: !Array<!{text: string, className: string}>,
-  *  type: !Changes.ChangesView.RowType
-  * }}
-  */
-Changes.ChangesView.Row;
-
-/**
- * @implements {Common.Revealer}
- */
-Changes.ChangesView.DiffUILocationRevealer = DiffUILocationRevealer;

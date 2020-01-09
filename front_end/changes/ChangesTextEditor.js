@@ -2,10 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {RowType} from './ChangesView.js';
+
 /**
  * @extends {TextEditor.CodeMirrorTextEditor}
  */
-export default class ChangesTextEditor extends TextEditor.CodeMirrorTextEditor {
+export class ChangesTextEditor extends TextEditor.CodeMirrorTextEditor {
   /**
    * @param {!UI.TextEditor.Options} options
    */
@@ -24,10 +26,10 @@ export default class ChangesTextEditor extends TextEditor.CodeMirrorTextEditor {
       const lineNumber = this.codeMirror().getLineNumber(line);
       const row = diffRows[lineNumber];
       let gutterMarker;
-      if (row.type === Changes.ChangesView.RowType.Deletion) {
+      if (row.type === RowType.Deletion) {
         gutterMarker = createElementWithClass('div', 'deletion changes-diff-gutter-marker');
         gutterMarker.textContent = '-';
-      } else if (row.type === Changes.ChangesView.RowType.Addition) {
+      } else if (row.type === RowType.Addition) {
         gutterMarker = createElementWithClass('div', 'addition changes-diff-gutter-marker');
         gutterMarker.textContent = '+';
       }
@@ -53,26 +55,15 @@ export class DevToolsAccessibleDiffTextArea extends CodeMirror.inputStyles.devTo
     const lineNumber = this.cm.getCursor().line;
     const rowType = diffRows[lineNumber].type;
 
-    if (rowType === Changes.ChangesView.RowType.Deletion) {
+    if (rowType === RowType.Deletion) {
       this.textarea.value = ls`Deletion:${this.textarea.value}`;
     }
-    if (rowType === Changes.ChangesView.RowType.Addition) {
+    if (rowType === RowType.Addition) {
       this.textarea.value = ls`Addition:${this.textarea.value}`;
     }
     this.prevInput = this.textarea.value;
   }
 }
-
-/* Legacy exported object */
-self.Changes = self.Changes || {};
-
-/* Legacy exported object */
-Changes = Changes || {};
-
-/**
- * @constructor
- */
-Changes.ChangesTextEditor = ChangesTextEditor;
 
 
 /**

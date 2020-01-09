@@ -90,17 +90,3 @@ export const Operation = {
   Delete: -1,
   Edit: 2
 };
-
-/* Legacy exported object */
-self.Diff = self.Diff || {};
-
-/* Legacy exported object */
-Diff = Diff || {};
-
-Diff.Diff = DiffWrapper;
-
-/** @enum {number} */
-Diff.Diff.Operation = Operation;
-
-/** @typedef {!Array<!{0: !Diff.Diff.Operation, 1: !Array<string>}>} */
-Diff.Diff.DiffArray;

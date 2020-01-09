@@ -61,7 +61,7 @@ export class XHRBreakpointsSidebarPane extends UI.VBox {
      * @param {boolean} accept
      * @param {!Element} e
      * @param {string} text
-     * @this {BrowserDebugger.XHRBreakpointsSidebarPane}
+     * @this {XHRBreakpointsSidebarPane}
      */
     function finishEditing(accept, e, text) {
       this._removeListElement(inputElementContainer);
@@ -242,7 +242,7 @@ export class XHRBreakpointsSidebarPane extends UI.VBox {
     const contextMenu = new UI.ContextMenu(event);
 
     /**
-     * @this {BrowserDebugger.XHRBreakpointsSidebarPane}
+     * @this {XHRBreakpointsSidebarPane}
      */
     function removeBreakpoint() {
       SDK.domDebuggerManager.removeXHRBreakpoint(url);
@@ -250,7 +250,7 @@ export class XHRBreakpointsSidebarPane extends UI.VBox {
     }
 
     /**
-     * @this {BrowserDebugger.XHRBreakpointsSidebarPane}
+     * @this {XHRBreakpointsSidebarPane}
      */
     function removeAllBreakpoints() {
       for (const url of this._breakpointElements.keys()) {
@@ -295,7 +295,7 @@ export class XHRBreakpointsSidebarPane extends UI.VBox {
      * @param {boolean} accept
      * @param {!Element} e
      * @param {string} text
-     * @this {BrowserDebugger.XHRBreakpointsSidebarPane}
+     * @this {XHRBreakpointsSidebarPane}
      */
     function finishEditing(accept, e, text) {
       this._removeListElement(inputElement);
@@ -356,14 +356,3 @@ export class XHRBreakpointsSidebarPane extends UI.VBox {
     }
   }
 }
-
-/* Legacy exported object */
-self.BrowserDebugger = self.BrowserDebugger || {};
-
-/* Legacy exported object */
-BrowserDebugger = BrowserDebugger || {};
-
-/**
- * @constructor
- */
-BrowserDebugger.XHRBreakpointsSidebarPane = XHRBreakpointsSidebarPane;

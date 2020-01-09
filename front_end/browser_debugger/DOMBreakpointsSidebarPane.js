@@ -95,7 +95,7 @@ export class DOMBreakpointsSidebarPane extends UI.VBox {
     });
 
     const description = createElement('div');
-    const breakpointTypeLabel = BrowserDebugger.DOMBreakpointsSidebarPane.BreakpointTypeLabels.get(item.type);
+    const breakpointTypeLabel = BreakpointTypeLabels.get(item.type);
     description.textContent = breakpointTypeLabel;
     const linkifiedNode = createElementWithClass('monospace');
     linkifiedNode.style.display = 'block';
@@ -348,21 +348,3 @@ export class ContextMenuProvider {
     }
   }
 }
-
-/* Legacy exported object */
-self.BrowserDebugger = self.BrowserDebugger || {};
-
-/* Legacy exported object */
-BrowserDebugger = BrowserDebugger || {};
-
-/**
- * @constructor
- */
-BrowserDebugger.DOMBreakpointsSidebarPane = DOMBreakpointsSidebarPane;
-
-BrowserDebugger.DOMBreakpointsSidebarPane.BreakpointTypeLabels = BreakpointTypeLabels;
-
-/** @typedef {!{element: !Element, checkbox: !Element, breakpoint: !SDK.DOMDebuggerModel.DOMBreakpoint}} */
-BrowserDebugger.DOMBreakpointsSidebarPane.Item;
-
-BrowserDebugger.DOMBreakpointsSidebarPane.ContextMenuProvider = ContextMenuProvider;

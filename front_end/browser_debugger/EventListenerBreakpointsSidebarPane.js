@@ -160,17 +160,3 @@ export class EventListenerBreakpointsSidebarPane extends UI.VBox {
     }
   }
 }
-
-/* Legacy exported object */
-self.BrowserDebugger = self.BrowserDebugger || {};
-
-/* Legacy exported object */
-BrowserDebugger = BrowserDebugger || {};
-
-/**
- * @constructor
- */
-BrowserDebugger.EventListenerBreakpointsSidebarPane = EventListenerBreakpointsSidebarPane;
-
-/** @typedef {!{element: !UI.TreeElement, checkbox: !Element}} */
-BrowserDebugger.EventListenerBreakpointsSidebarPane.Item;

@@ -120,6 +120,7 @@
     ],
     "modules": [
         "browser_debugger.js",
+        "browser_debugger-legacy.js",
         "DOMBreakpointsSidebarPane.js",
         "EventListenerBreakpointsSidebarPane.js",
         "ObjectEventListenersSidebarPane.js",

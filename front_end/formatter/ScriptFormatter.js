@@ -27,6 +27,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+import {FormatResult, formatterWorkerPool} from './FormatterWorkerPool.js';  // eslint-disable-line no-unused-vars
+
 /**
  * @interface
  */
@@ -87,13 +90,13 @@ export class ScriptFormatter {
     this._callback = callback;
     this._originalContent = content;
 
-    Formatter.formatterWorkerPool()
+    formatterWorkerPool()
         .format(mimeType, content, Common.moduleSetting('textEditorIndent').get())
         .then(this._didFormatContent.bind(this));
   }
 
   /**
-   * @param {!Formatter.FormatterWorkerPool.FormatResult} formatResult
+   * @param {!FormatResult} formatResult
    */
   _didFormatContent(formatResult) {
     const sourceMapping = new FormatterSourceMappingImpl(
@@ -221,18 +224,3 @@ class FormatterSourceMappingImpl {
     return convertedPosition;
   }
 }
-
-/* Legacy exported object */
-self.Formatter = self.Formatter || {};
-
-/* Legacy exported object */
-Formatter = Formatter || {};
-
-/** @interface */
-Formatter.Formatter = FormatterInterface;
-
-/** @constructor */
-Formatter.ScriptFormatter = ScriptFormatter;
-
-/** @interface */
-Formatter.FormatterSourceMapping = FormatterSourceMapping;

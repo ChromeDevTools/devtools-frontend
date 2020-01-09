@@ -5,6 +5,7 @@
     "scripts": [],
     "modules": [
         "formatter.js",
+        "formatter-legacy.js",
         "FormatterWorkerPool.js",
         "ScriptFormatter.js",
         "SourceFormatter.js"

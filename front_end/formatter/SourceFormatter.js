@@ -2,11 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {FormatterInterface, FormatterSourceMapping} from './ScriptFormatter.js';  // eslint-disable-line no-unused-vars
+
 export class SourceFormatData {
   /**
    * @param {!Workspace.UISourceCode} originalSourceCode
    * @param {!Workspace.UISourceCode} formattedSourceCode
-   * @param {!Formatter.FormatterSourceMapping} mapping
+   * @param {!FormatterSourceMapping} mapping
    */
   constructor(originalSourceCode, formattedSourceCode, mapping) {
     this.originalSourceCode = originalSourceCode;
@@ -118,14 +120,14 @@ export class SourceFormatter {
     this._formattedSourceCodes.set(uiSourceCode, {promise: resultPromise, formatData: null});
     const {content} = await uiSourceCode.requestContent();
     // ------------ ASYNC ------------
-    Formatter.Formatter.format(
+    FormatterInterface.format(
         uiSourceCode.contentType(), uiSourceCode.mimeType(), content || '', formatDone.bind(this));
     return resultPromise;
 
     /**
      * @this SourceFormatter
      * @param {string} formattedContent
-     * @param {!Formatter.FormatterSourceMapping} formatterMapping
+     * @param {!FormatterSourceMapping} formatterMapping
      */
     function formatDone(formattedContent, formatterMapping) {
       const cacheEntry = this._formattedSourceCodes.get(uiSourceCode);
@@ -368,15 +370,3 @@ class StyleMapping {
     return [];
   }
 }
-
-/* Legacy exported object */
-self.Formatter = self.Formatter || {};
-
-/* Legacy exported object */
-Formatter = Formatter || {};
-
-/** @constructor */
-Formatter.SourceFormatter = SourceFormatter;
-
-/** @type {!SourceFormatter} */
-Formatter.sourceFormatter = new SourceFormatter();

@@ -533,16 +533,13 @@ export default class SourcesPanel extends UI.Panel {
    */
   _switchToPausedTarget(debuggerModel) {
     delete this._switchToPausedTargetTimeout;
-    if (this._paused) {
+    if (this._paused || debuggerModel.isPaused()) {
       return;
     }
-    if (debuggerModel.isPaused()) {
-      return;
-    }
-    const debuggerModels = SDK.targetManager.models(SDK.DebuggerModel);
-    for (let i = 0; i < debuggerModels.length; ++i) {
-      if (debuggerModels[i].isPaused()) {
-        UI.context.setFlavor(SDK.Target, debuggerModels[i].target());
+
+    for (const debuggerModel of SDK.targetManager.models(SDK.DebuggerModel)) {
+      if (debuggerModel.isPaused()) {
+        UI.context.setFlavor(SDK.Target, debuggerModel.target());
         break;
       }
     }
@@ -554,10 +551,9 @@ export default class SourcesPanel extends UI.Panel {
 
   _runSnippet() {
     const uiSourceCode = this._sourcesView.currentUISourceCode();
-    if (!uiSourceCode) {
-      return;
+    if (uiSourceCode) {
+      Snippets.evaluateScriptSnippet(uiSourceCode);
     }
-    Snippets.evaluateScriptSnippet(uiSourceCode);
   }
 
   /**
@@ -615,12 +611,10 @@ export default class SourcesPanel extends UI.Panel {
    */
   _longResume(event) {
     const debuggerModel = this._prepareToResume();
-    if (!debuggerModel) {
-      return;
+    if (debuggerModel) {
+      debuggerModel.skipAllPausesUntilReloadOrTimeout(500);
+      debuggerModel.resume();
     }
-
-    debuggerModel.skipAllPausesUntilReloadOrTimeout(500);
-    debuggerModel.resume();
   }
 
   /**
@@ -628,11 +622,10 @@ export default class SourcesPanel extends UI.Panel {
    */
   _terminateExecution(event) {
     const debuggerModel = this._prepareToResume();
-    if (!debuggerModel) {
-      return;
+    if (debuggerModel) {
+      debuggerModel.runtimeModel().terminateExecution();
+      debuggerModel.resume();
     }
-    debuggerModel.runtimeModel().terminateExecution();
-    debuggerModel.resume();
   }
 
   /**
@@ -640,11 +633,9 @@ export default class SourcesPanel extends UI.Panel {
    */
   _stepOver() {
     const debuggerModel = this._prepareToResume();
-    if (!debuggerModel) {
-      return true;
+    if (debuggerModel) {
+      debuggerModel.stepOver();
     }
-
-    debuggerModel.stepOver();
     return true;
   }
 
@@ -653,11 +644,9 @@ export default class SourcesPanel extends UI.Panel {
    */
   _stepInto() {
     const debuggerModel = this._prepareToResume();
-    if (!debuggerModel) {
-      return true;
+    if (debuggerModel) {
+      debuggerModel.stepInto();
     }
-
-    debuggerModel.stepInto();
     return true;
   }
 
@@ -666,10 +655,9 @@ export default class SourcesPanel extends UI.Panel {
    */
   _stepIntoAsync() {
     const debuggerModel = this._prepareToResume();
-    if (!debuggerModel) {
-      return true;
+    if (debuggerModel) {
+      debuggerModel.scheduleStepIntoAsync();
     }
-    debuggerModel.scheduleStepIntoAsync();
     return true;
   }
 
@@ -678,11 +666,9 @@ export default class SourcesPanel extends UI.Panel {
    */
   _stepOut() {
     const debuggerModel = this._prepareToResume();
-    if (!debuggerModel) {
-      return true;
+    if (debuggerModel) {
+      debuggerModel.stepOut();
     }
-
-    debuggerModel.stepOut();
     return true;
   }
 
@@ -882,12 +868,7 @@ export default class SourcesPanel extends UI.Panel {
       return;
     }
 
-    const location = response.location;
-    if (!location) {
-      return;
-    }
-
-    const uiLocation = Bindings.debuggerWorkspaceBinding.rawLocationToUILocation(location);
+    const uiLocation = Bindings.debuggerWorkspaceBinding.rawLocationToUILocation(response.location);
     if (uiLocation) {
       this.showUILocation(uiLocation);
     }

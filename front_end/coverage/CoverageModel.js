@@ -1,12 +1,6 @@
-// Copyright (c) 2017 The Chromium Authors. All rights reserved.
+// Copyright (c) 2020 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-
-/** @typedef {{startOffset: number, endOffset: number, count: number}} */
-Coverage.RangeUseCount;
-
-/** @typedef {{end: number, count: (number|undefined)}} */
-Coverage.CoverageSegment;
 
 /**
  * @enum {number}
@@ -33,7 +27,7 @@ export const Events = {
 /** @type {number} */
 const _coveragePollingPeriodMs = 200;
 
-export default class CoverageModel extends SDK.SDKModel {
+export class CoverageModel extends SDK.SDKModel {
   /**
    * @param {!SDK.Target} target
    */
@@ -43,12 +37,12 @@ export default class CoverageModel extends SDK.SDKModel {
     this._cssModel = target.model(SDK.CSSModel);
     this._debuggerModel = target.model(SDK.DebuggerModel);
 
-    /** @type {!Map<string, !Coverage.URLCoverageInfo>} */
+    /** @type {!Map<string, !URLCoverageInfo>} */
     this._coverageByURL = new Map();
-    /** @type {!Map<!Common.ContentProvider, !Coverage.CoverageInfo>} */
+    /** @type {!Map<!Common.ContentProvider, !CoverageInfo>} */
     this._coverageByContentProvider = new Map();
 
-    /** @type {!Coverage.SuspensionState} */
+    /** @type {!SuspensionState} */
     this._suspensionState = SuspensionState.Active;
     /** @type {?number} */
     this._pollTimer = null;
@@ -221,7 +215,7 @@ export default class CoverageModel extends SDK.SDKModel {
   }
 
   /**
-   * @return {!Array<!Coverage.URLCoverageInfo>}
+   * @return {!Array<!URLCoverageInfo>}
    */
   entries() {
     return Array.from(this._coverageByURL.values());
@@ -230,7 +224,7 @@ export default class CoverageModel extends SDK.SDKModel {
   /**
    *
    * @param {string} url
-   * @return {?Coverage.URLCoverageInfo}
+   * @return {?URLCoverageInfo}
    */
   getCoverageForUrl(url) {
     return this._coverageByURL.get(url);
@@ -271,7 +265,7 @@ export default class CoverageModel extends SDK.SDKModel {
   }
 
   /**
-   * @return {!Promise<!Array<!Coverage.CoverageInfo>>}
+   * @return {!Promise<!Array<!CoverageInfo>>}
    */
   async _takeAllCoverage() {
     const [updatesCSS, updatesJS] = await Promise.all([this._takeCSSCoverage(), this._takeJSCoverage()]);
@@ -279,7 +273,7 @@ export default class CoverageModel extends SDK.SDKModel {
   }
 
   /**
-   * @return {!Promise<!Array<!Coverage.CoverageInfo>>}
+   * @return {!Promise<!Array<!CoverageInfo>>}
    */
   async _takeJSCoverage() {
     if (!this._cpuProfilerModel) {
@@ -308,7 +302,7 @@ export default class CoverageModel extends SDK.SDKModel {
 
   /**
    * @param {!Array<!Protocol.Profiler.ScriptCoverage>} scriptsCoverage
-   * @return {!Array<!Coverage.CoverageInfo>}
+   * @return {!Array<!CoverageInfo>}
    */
   _processJSCoverage(scriptsCoverage, stamp) {
     const updatedEntries = [];
@@ -334,7 +328,7 @@ export default class CoverageModel extends SDK.SDKModel {
       }
       const subentry = this._addCoverage(
           script, script.contentLength, script.lineOffset, script.columnOffset, ranges,
-          /** @type {!Coverage.CoverageType} */ (type), stamp);
+          /** @type {!CoverageType} */ (type), stamp);
       if (subentry) {
         updatedEntries.push(subentry);
       }
@@ -349,7 +343,7 @@ export default class CoverageModel extends SDK.SDKModel {
   }
 
   /**
-   * @return {!Promise<!Array<!Coverage.CoverageInfo>>}
+   * @return {!Promise<!Array<!CoverageInfo>>}
    */
   async _takeCSSCoverage() {
     // Don't poll if we have no model, or are suspended.
@@ -379,7 +373,7 @@ export default class CoverageModel extends SDK.SDKModel {
 
   /**
    * @param {!Array<!Protocol.CSS.RuleUsage>} ruleUsageList
-   * @return {!Array<!Coverage.CoverageInfo>}
+   * @return {!Array<!CoverageInfo>}
    */
   _processCSSCoverage(ruleUsageList, stamp) {
     const updatedEntries = [];
@@ -471,8 +465,8 @@ export default class CoverageModel extends SDK.SDKModel {
    * @param {number} startLine
    * @param {number} startColumn
    * @param {!Array<!Coverage.RangeUseCount>} ranges
-   * @param {!Coverage.CoverageType} type
-   * @return {?Coverage.CoverageInfo}
+   * @param {!CoverageType} type
+   * @return {?CoverageInfo}
    */
   _addCoverage(contentProvider, contentLength, startLine, startColumn, ranges, type, stamp) {
     const url = contentProvider.contentURL();
@@ -483,13 +477,13 @@ export default class CoverageModel extends SDK.SDKModel {
     let isNewUrlCoverage = false;
     if (!urlCoverage) {
       isNewUrlCoverage = true;
-      urlCoverage = new Coverage.URLCoverageInfo(url);
+      urlCoverage = new URLCoverageInfo(url);
       this._coverageByURL.set(url, urlCoverage);
     }
 
     const coverageInfo = urlCoverage._ensureEntry(contentProvider, contentLength, startLine, startColumn, type);
     this._coverageByContentProvider.set(contentProvider, coverageInfo);
-    const segments = Coverage.CoverageModel._convertToDisjointSegments(ranges, stamp);
+    const segments = CoverageModel._convertToDisjointSegments(ranges, stamp);
     if (segments.length && segments.peekLast().end < contentLength) {
       segments.push({end: contentLength, stamp: stamp});
     }
@@ -590,11 +584,11 @@ export class URLCoverageInfo extends Common.Object {
     super();
 
     this._url = url;
-    /** @type {!Map<string, !Coverage.CoverageInfo>} */
+    /** @type {!Map<string, !CoverageInfo>} */
     this._coverageInfoByLocation = new Map();
     this._size = 0;
     this._usedSize = 0;
-    /** @type {!Coverage.CoverageType} */
+    /** @type {!CoverageType} */
     this._type;
     this._isContentScript = false;
   }
@@ -607,7 +601,7 @@ export class URLCoverageInfo extends Common.Object {
   }
 
   /**
-   * @return {!Coverage.CoverageType}
+   * @return {!CoverageType}
    */
   type() {
     return this._type;
@@ -672,7 +666,7 @@ export class URLCoverageInfo extends Common.Object {
     this._size += size;
 
     if (usedSize !== 0 || size !== 0) {
-      this.dispatchEventToListeners(Coverage.URLCoverageInfo.Events.SizesChanged);
+      this.dispatchEventToListeners(URLCoverageInfo.Events.SizesChanged);
     }
   }
 
@@ -681,8 +675,8 @@ export class URLCoverageInfo extends Common.Object {
    * @param {number} contentLength
    * @param {number} lineOffset
    * @param {number} columnOffset
-   * @param {!Coverage.CoverageType} type
-   * @return {!Coverage.CoverageInfo}
+   * @param {!CoverageType} type
+   * @return {!CoverageInfo}
    */
   _ensureEntry(contentProvider, contentLength, lineOffset, columnOffset, type) {
     const key = `${lineOffset}:${columnOffset}`;
@@ -702,7 +696,7 @@ export class URLCoverageInfo extends Common.Object {
       this._isContentScript = /** @type {!SDK.Script} */ (contentProvider).isContentScript();
     }
 
-    entry = new Coverage.CoverageInfo(contentProvider, contentLength, lineOffset, columnOffset, type);
+    entry = new CoverageInfo(contentProvider, contentLength, lineOffset, columnOffset, type);
     this._coverageInfoByLocation.set(key, entry);
     this._addToSizes(0, contentLength);
 
@@ -724,7 +718,7 @@ export class CoverageInfo {
    * @param {number} size
    * @param {number} lineOffset
    * @param {number} columnOffset
-   * @param {!Coverage.CoverageType} type
+   * @param {!CoverageType} type
    */
   constructor(contentProvider, size, lineOffset, columnOffset, type) {
     this._contentProvider = contentProvider;
@@ -754,7 +748,7 @@ export class CoverageInfo {
   }
 
   /**
-   * @return {!Coverage.CoverageType}
+   * @return {!CoverageType}
    */
   type() {
     return this._coverageType;
@@ -764,7 +758,7 @@ export class CoverageInfo {
    * @param {!Array<!Coverage.CoverageSegment>} segments
    */
   mergeCoverage(segments) {
-    this._segments = Coverage.CoverageInfo._mergeCoverage(this._segments, segments);
+    this._segments = CoverageInfo._mergeCoverage(this._segments, segments);
     this._updateStats();
   }
 
@@ -849,35 +843,3 @@ export class CoverageInfo {
     }
   }
 }
-
-/* Legacy exported object */
-self.Coverage = self.Coverage || {};
-
-/* Legacy exported object */
-Coverage = Coverage || {};
-
-/**
- * @constructor
- */
-Coverage.CoverageModel = CoverageModel;
-
-/** @enum {symbol} */
-Coverage.CoverageModel.Events = Events;
-
-/**
- * @enum {number}
- */
-Coverage.CoverageType = CoverageType;
-
-/** @enum {symbol} */
-Coverage.SuspensionState = SuspensionState;
-
-/**
- * @constructor
- */
-Coverage.URLCoverageInfo = URLCoverageInfo;
-
-/**
- * @constructor
- */
-Coverage.CoverageInfo = CoverageInfo;

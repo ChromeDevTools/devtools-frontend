@@ -2,11 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-export const _decoratorType = 'coverage';
+import {CoverageInfo, CoverageModel} from './CoverageModel.js';  // eslint-disable-line no-unused-vars
 
-export default class CoverageDecorationManager {
+export const decoratorType = 'coverage';
+
+export class CoverageDecorationManager {
   /**
-   * @param {!Coverage.CoverageModel} coverageModel
+   * @param {!CoverageModel} coverageModel
    */
   constructor(coverageModel) {
     this._coverageModel = coverageModel;
@@ -16,14 +18,14 @@ export default class CoverageDecorationManager {
     this._uiSourceCodeByContentProvider = new Platform.Multimap();
 
     for (const uiSourceCode of Workspace.workspace.uiSourceCodes()) {
-      uiSourceCode.addLineDecoration(0, _decoratorType, this);
+      uiSourceCode.addLineDecoration(0, decoratorType, this);
     }
     Workspace.workspace.addEventListener(Workspace.Workspace.Events.UISourceCodeAdded, this._onUISourceCodeAdded, this);
   }
 
   reset() {
     for (const uiSourceCode of Workspace.workspace.uiSourceCodes()) {
-      uiSourceCode.removeDecorationsForType(_decoratorType);
+      uiSourceCode.removeDecorationsForType(decoratorType);
     }
   }
 
@@ -34,13 +36,13 @@ export default class CoverageDecorationManager {
   }
 
   /**
-   * @param {!Array<!Coverage.CoverageInfo>} updatedEntries
+   * @param {!Array<!CoverageInfo>} updatedEntries
    */
   update(updatedEntries) {
     for (const entry of updatedEntries) {
       for (const uiSourceCode of this._uiSourceCodeByContentProvider.get(entry.contentProvider())) {
-        uiSourceCode.removeDecorationsForType(_decoratorType);
-        uiSourceCode.addLineDecoration(0, _decoratorType, this);
+        uiSourceCode.removeDecorationsForType(decoratorType);
+        uiSourceCode.addLineDecoration(0, decoratorType, this);
       }
     }
   }
@@ -70,7 +72,7 @@ export default class CoverageDecorationManager {
       for (let startIndex = 0, endIndex = 0; startIndex < startLocations.length; ++startIndex) {
         const start = startLocations[startIndex];
         while (endIndex < endLocations.length &&
-               Coverage.CoverageDecorationManager._compareLocations(start, endLocations[endIndex]) >= 0) {
+               CoverageDecorationManager._compareLocations(start, endLocations[endIndex]) >= 0) {
           ++endIndex;
         }
         if (endIndex >= endLocations.length || endLocations[endIndex].id !== start.id) {
@@ -181,7 +183,7 @@ export default class CoverageDecorationManager {
         });
       }
     }
-    return result.sort(Coverage.CoverageDecorationManager._compareLocations);
+    return result.sort(CoverageDecorationManager._compareLocations);
   }
 
   /**
@@ -197,30 +199,6 @@ export default class CoverageDecorationManager {
    */
   _onUISourceCodeAdded(event) {
     const uiSourceCode = /** @type !Workspace.UISourceCode */ (event.data);
-    uiSourceCode.addLineDecoration(0, _decoratorType, this);
+    uiSourceCode.addLineDecoration(0, decoratorType, this);
   }
 }
-
-/* Legacy exported object */
-self.Coverage = self.Coverage || {};
-
-/* Legacy exported object */
-Coverage = Coverage || {};
-
-/**
- * @typedef {!{
- *    id: string,
- *    contentProvider: !Common.ContentProvider,
- *    line: number,
- *    column: number
- * }}
- */
-Coverage.RawLocation;
-
-/**
- * @constructor
- */
-Coverage.CoverageDecorationManager = CoverageDecorationManager;
-
-/** @public */
-Coverage.CoverageDecorationManager.decoratorType = _decoratorType;

@@ -354,7 +354,7 @@ export class ResourceScriptFile extends Common.Object {
       if (!error && !exceptionDetails) {
         // Live edit can cause breakpoints to be in the wrong position, or to be lost altogether.
         // If any breakpoints were in the pre-live edit script, they need to be re-added.
-        breakpoints.map(breakpoint => breakpoint.refreshInDebugger());
+        await Promise.all(breakpoints.map(breakpoint => breakpoint.refreshInDebugger()));
         return;
       }
       if (!exceptionDetails) {

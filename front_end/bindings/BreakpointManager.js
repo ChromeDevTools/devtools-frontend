@@ -317,13 +317,12 @@ export class Breakpoint {
     this._breakpointManager._targetManager.observeModels(SDK.DebuggerModel, this);
   }
 
-  refreshInDebugger() {
+  async refreshInDebugger() {
     if (this._isRemoved) {
       return;
     }
-    for (const breakpoint of this._modelBreakpoints.values()) {
-      breakpoint._refreshBreakpoint();
-    }
+    const breakpoints = Array.from(this._modelBreakpoints.values());
+    return Promise.all(breakpoints.map(breakpoint => breakpoint._refreshBreakpoint()));
   }
 
   /**

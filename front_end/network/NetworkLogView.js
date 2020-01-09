@@ -1890,7 +1890,7 @@ export default class NetworkLogView extends UI.VBox {
     }
 
     if (request.requestMethod !== inferredMethod) {
-      command.push('-X ' + request.requestMethod);
+      command.push('-X ' + escapeString(request.requestMethod));
     }
 
     const requestHeaders = request.requestHeaders();

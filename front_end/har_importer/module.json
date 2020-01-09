@@ -5,6 +5,7 @@
     ],
     "modules": [
         "har_importer.js",
+        "har_importer-legacy.js",
         "HARFormat.js",
         "HARImporter.js"
     ]

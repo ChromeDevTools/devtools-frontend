@@ -2,13 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {HAREntry, HARLog, HARPage, HARTimings} from './HARFormat.js';  // eslint-disable-line no-unused-vars
+
 export class Importer {
   /**
-   * @param {!HARImporter.HARLog} log
+   * @param {!HARLog} log
    * @return {!Array<!SDK.NetworkRequest>}
    */
   static requestsFromHARLog(log) {
-    /** @type {!Map<string, !HARImporter.HARPage>} */
+    /** @type {!Map<string, !HARPage>} */
     const pages = new Map();
     for (const page of log.pages) {
       pages.set(page.id, page);
@@ -37,10 +39,10 @@ export class Importer {
           'har-' + requests.length, entry.request.url, documentURL, '', '', initiator);
       const page = pages.get(entry.pageref);
       if (!pageLoad && page) {
-        pageLoad = HARImporter.Importer._buildPageLoad(page, request);
+        pageLoad = Importer._buildPageLoad(page, request);
         pageLoads.set(entry.pageref, pageLoad);
       }
-      HARImporter.Importer._fillRequestFromHAREntry(request, entry, pageLoad);
+      Importer._fillRequestFromHAREntry(request, entry, pageLoad);
       if (pageLoad) {
         pageLoad.bindRequest(request);
       }
@@ -50,7 +52,7 @@ export class Importer {
   }
 
   /**
-   * @param {!HARImporter.HARPage} page
+   * @param {!HARPage} page
    * @param {!SDK.NetworkRequest} mainRequest
    * @return {!SDK.NetworkLog.PageLoad}
    */
@@ -64,7 +66,7 @@ export class Importer {
 
   /**
    * @param {!SDK.NetworkRequest} request
-   * @param {!HARImporter.HAREntry} entry
+   * @param {!HAREntry} entry
    * @param {?SDK.NetworkLog.PageLoad} pageLoad
    */
   static _fillRequestFromHAREntry(request, entry, pageLoad) {
@@ -120,11 +122,11 @@ export class Importer {
     request.setContentDataProvider(async () => contentData);
 
     // Timing data.
-    HARImporter.Importer._setupTiming(request, issueTime, entry.time, entry.timings);
+    Importer._setupTiming(request, issueTime, entry.time, entry.timings);
 
     // Meta data.
     request.setRemoteAddress(entry.serverIPAddress || '', 80);  // Har does not support port numbers.
-    request.setResourceType(HARImporter.Importer._getResourceType(request, entry, pageLoad));
+    request.setResourceType(Importer._getResourceType(request, entry, pageLoad));
 
     const priority = entry.customAsString('priority');
     if (Protocol.Network.ResourcePriority.hasOwnProperty(priority)) {
@@ -158,7 +160,7 @@ export class Importer {
 
   /**
    * @param {!SDK.NetworkRequest} request
-   * @param {!HARImporter.HAREntry} entry
+   * @param {!HAREntry} entry
    * @param {?SDK.NetworkLog.PageLoad} pageLoad
    * @return {!Common.ResourceType}
    */
@@ -192,7 +194,7 @@ export class Importer {
    * @param {!SDK.NetworkRequest} request
    * @param {number} issueTime
    * @param {number} entryTotalDuration
-   * @param {!HARImporter.HARTimings} timings
+   * @param {!HARTimings} timings
    */
   static _setupTiming(request, issueTime, entryTotalDuration, timings) {
     /**
@@ -245,14 +247,3 @@ export class Importer {
     request.endTime = issueTime + Math.max(entryTotalDuration, lastEntry) / 1000;
   }
 }
-
-/* Legacy exported object */
-self.HARImporter = self.HARImporter || {};
-
-/* Legacy exported object */
-HARImporter = HARImporter || {};
-
-/**
- * @constructor
- */
-HARImporter.Importer = Importer;

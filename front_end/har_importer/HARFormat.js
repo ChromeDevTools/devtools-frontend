@@ -108,7 +108,7 @@ export class HARLog extends HARBase {
     this.version = String(data['version']);
     this.creator = new HARCreator(data['creator']);
     this.browser = data['browser'] ? new HARCreator(data['browser']) : undefined;
-    this.pages = Array.isArray(data['pages']) ? data['pages'].map(page => new HARImporter.HARPage(page)) : [];
+    this.pages = Array.isArray(data['pages']) ? data['pages'].map(page => new HARPage(page)) : [];
     if (!Array.isArray(data['entries'])) {
       throw 'log.entries is expected to be an array';
     }
@@ -182,7 +182,7 @@ export class HAREntry extends HARBase {
 
   /**
    * @param {*} initiator
-   * @return {!HARImporter.HARInitiator|undefined}
+   * @return {!HARInitiator|undefined}
    */
   _importInitiator(initiator) {
     if (typeof initiator !== 'object') {
@@ -194,7 +194,7 @@ export class HAREntry extends HARBase {
 
   /**
    * @param {*} inputMessages
-   * @return {!Array<!HARImporter.HARInitiator>|undefined}
+   * @return {!Array<!HARInitiator>|undefined}
    */
   _importWebSocketMessages(inputMessages) {
     if (!Array.isArray(inputMessages)) {
@@ -302,7 +302,7 @@ class HARPostData extends HARBase {
   constructor(data) {
     super(data);
     this.mimeType = String(data['mimeType']);
-    this.params = Array.isArray(data['params']) ? data['params'].map(param => new HARImporter.HARParam(param)) : [];
+    this.params = Array.isArray(data['params']) ? data['params'].map(param => new HARParam(param)) : [];
     this.text = String(data['text']);
     this.comment = HARBase._optionalString(data['comment']);
   }
@@ -384,44 +384,3 @@ class HARWebSocketMessage extends HARBase {
     this.type = HARBase._optionalString(data['type']);
   }
 }
-
-/* Legacy exported object */
-self.HARImporter = self.HARImporter || {};
-
-/* Legacy exported object */
-HARImporter = HARImporter || {};
-
-/**
- * @constructor
- */
-HARImporter.HARRoot = HARRoot;
-
-/**
- * @constructor
- */
-HARImporter.HARLog = HARLog;
-
-/**
- * @constructor
- */
-HARImporter.HARPage = HARPage;
-
-/**
- * @constructor
- */
-HARImporter.HAREntry = HAREntry;
-
-/**
- * @constructor
- */
-HARImporter.HARParam = HARParam;
-
-/**
- * @constructor
- */
-HARImporter.HARTimings = HARTimings;
-
-/**
- * @constructor
- */
-HARImporter.HARInitiator = HARInitiator;

@@ -18,6 +18,8 @@
         "extensions"
     ],
     "modules": [
+        "css_overview.js",
+        "css_overview-legacy.js",
         "CSSOverviewController.js",
         "CSSOverviewUnusedDeclarations.js",
         "CSSOverviewModel.js",

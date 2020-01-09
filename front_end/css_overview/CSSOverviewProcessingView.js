@@ -2,10 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {Events} from './CSSOverviewController.js';
+
 /**
  * @unrestricted
  */
-export default class CSSOverviewProcessingView extends UI.Widget {
+export class CSSOverviewProcessingView extends UI.Widget {
   constructor(controller) {
     super();
     this.registerRequiredCSS('css_overview/cssOverviewProcessingView.css');
@@ -17,7 +19,7 @@ export default class CSSOverviewProcessingView extends UI.Widget {
 
   _render() {
     const cancelButton = UI.createTextButton(
-        ls`Cancel`, () => this._controller.dispatchEventToListeners(CssOverview.Events.RequestOverviewCancel), '',
+        ls`Cancel`, () => this._controller.dispatchEventToListeners(Events.RequestOverviewCancel), '',
         true /* primary */);
     this.setDefaultFocusedElement(cancelButton);
 
@@ -32,14 +34,3 @@ export default class CSSOverviewProcessingView extends UI.Widget {
     this.contentElement.style.overflow = 'auto';
   }
 }
-
-/* Legacy exported object */
-self.CssOverview = self.CssOverview || {};
-
-/* Legacy exported object */
-CssOverview = CssOverview || {};
-
-/**
- * @constructor
- */
-CssOverview.CSSOverviewProcessingView = CSSOverviewProcessingView;

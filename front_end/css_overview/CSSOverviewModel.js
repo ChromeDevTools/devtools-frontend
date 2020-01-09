@@ -2,10 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {CSSOverviewUnusedDeclarations} from './CSSOverviewUnusedDeclarations.js';
+
 /**
  * @unrestricted
  */
-export default class CSSOverviewModel extends SDK.SDKModel {
+export class CSSOverviewModel extends SDK.SDKModel {
   /**
    * @param {!SDK.Target} target
    */
@@ -191,18 +193,18 @@ export default class CSSOverviewModel extends SDK.SDKModel {
           fontInfo.set(fontFamily, fontFamilyInfo);
         }
 
-        CssOverview.CSSOverviewUnusedDeclarations.checkForUnusedPositionValues(
+        CSSOverviewUnusedDeclarations.checkForUnusedPositionValues(
             unusedDeclarations, nodeId, strings, positionIdx, topIdx, leftIdx, rightIdx, bottomIdx);
 
         // Ignore SVG elements as, despite being inline by default, they can have width & height specified.
         // Also ignore replaced content, for similar reasons.
         if (!isSVGNode(strings[nodeName]) && !isReplacedContent(strings[nodeName])) {
-          CssOverview.CSSOverviewUnusedDeclarations.checkForUnusedWidthAndHeightValues(
+          CSSOverviewUnusedDeclarations.checkForUnusedWidthAndHeightValues(
               unusedDeclarations, nodeId, strings, displayIdx, widthIdx, heightIdx);
         }
 
         if (verticalAlignIdx !== -1 && !isTableElementWithDefaultStyles(strings[nodeName], strings[displayIdx])) {
-          CssOverview.CSSOverviewUnusedDeclarations.checkForInvalidVerticalAlignment(
+          CSSOverviewUnusedDeclarations.checkForInvalidVerticalAlignment(
               unusedDeclarations, nodeId, strings, displayIdx, verticalAlignIdx);
         }
       }
@@ -336,14 +338,3 @@ export default class CSSOverviewModel extends SDK.SDKModel {
 }
 
 SDK.SDKModel.register(CSSOverviewModel, SDK.Target.Capability.DOM, false);
-
-/* Legacy exported object */
-self.CssOverview = self.CssOverview || {};
-
-/* Legacy exported object */
-CssOverview = CssOverview || {};
-
-/**
- * @constructor
- */
-CssOverview.CSSOverviewModel = CSSOverviewModel;

@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {Events} from './CSSOverviewController.js';
+
 /**
  * @unrestricted
  */
@@ -16,8 +18,8 @@ export class CSSOverviewStartView extends UI.Widget {
 
   _render() {
     const startButton = UI.createTextButton(
-        ls`Capture overview`, () => this._controller.dispatchEventToListeners(CssOverview.Events.RequestOverviewStart),
-        '', true /* primary */);
+        ls`Capture overview`, () => this._controller.dispatchEventToListeners(Events.RequestOverviewStart), '',
+        true /* primary */);
 
     this.setDefaultFocusedElement(startButton);
 
@@ -32,14 +34,3 @@ export class CSSOverviewStartView extends UI.Widget {
     this.contentElement.style.overflow = 'auto';
   }
 }
-
-/* Legacy exported object */
-self.CssOverview = self.CssOverview || {};
-
-/* Legacy exported object */
-CssOverview = CssOverview || {};
-
-/**
- * @constructor
- */
-CssOverview.CSSOverviewStartView = CSSOverviewStartView;

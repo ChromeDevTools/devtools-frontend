@@ -2,10 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {Events} from './CSSOverviewController.js';
+import {CSSOverviewSidebarPanel, SidebarEvents} from './CSSOverviewSidebarPanel.js';
+
 /**
  * @unrestricted
  */
-export default class CSSOverviewCompletedView extends UI.PanelWithSidebar {
+export class CSSOverviewCompletedView extends UI.PanelWithSidebar {
   constructor(controller, target) {
     super('css_overview_completed_view');
     this.registerRequiredCSS('css_overview/cssOverviewCompletedView.css');
@@ -33,7 +36,7 @@ export default class CSSOverviewCompletedView extends UI.PanelWithSidebar {
     this._mainContainer.setSecondIsSidebar(true);
     this._mainContainer.setSidebarMinimized(true);
 
-    this._sideBar = new CssOverview.CSSOverviewSidebarPanel();
+    this._sideBar = new CSSOverviewSidebarPanel();
     this.splitWidget().setSidebarWidget(this._sideBar);
     this.splitWidget().setMainWidget(this._mainContainer);
 
@@ -51,10 +54,10 @@ export default class CSSOverviewCompletedView extends UI.PanelWithSidebar {
     this._sideBar.addItem(ls`Media queries`, 'media-queries');
     this._sideBar.select('summary');
 
-    this._sideBar.addEventListener(CssOverview.SidebarEvents.ItemSelected, this._sideBarItemSelected, this);
-    this._sideBar.addEventListener(CssOverview.SidebarEvents.Reset, this._sideBarReset, this);
-    this._controller.addEventListener(CssOverview.Events.Reset, this._reset, this);
-    this._controller.addEventListener(CssOverview.Events.PopulateNodes, this._createElementsView, this);
+    this._sideBar.addEventListener(SidebarEvents.ItemSelected, this._sideBarItemSelected, this);
+    this._sideBar.addEventListener(SidebarEvents.Reset, this._sideBarReset, this);
+    this._controller.addEventListener(Events.Reset, this._reset, this);
+    this._controller.addEventListener(Events.PopulateNodes, this._createElementsView, this);
     this._resultsContainer.element.addEventListener('click', this._onClick.bind(this));
 
     this._data = null;
@@ -80,7 +83,7 @@ export default class CSSOverviewCompletedView extends UI.PanelWithSidebar {
   }
 
   _sideBarReset() {
-    this._controller.dispatchEventToListeners(CssOverview.Events.Reset);
+    this._controller.dispatchEventToListeners(Events.Reset);
   }
 
   _reset() {
@@ -175,7 +178,7 @@ export default class CSSOverviewCompletedView extends UI.PanelWithSidebar {
     }
 
     evt.consume();
-    this._controller.dispatchEventToListeners(CssOverview.Events.PopulateNodes, payload);
+    this._controller.dispatchEventToListeners(Events.PopulateNodes, payload);
     this._mainContainer.setSidebarMinimized(false);
   }
 
@@ -188,7 +191,7 @@ export default class CSSOverviewCompletedView extends UI.PanelWithSidebar {
     }
 
     const backendNodeId = Number(node.dataset.backendNodeId);
-    this._controller.dispatchEventToListeners(CssOverview.Events.RequestNodeHighlight, backendNodeId);
+    this._controller.dispatchEventToListeners(Events.RequestNodeHighlight, backendNodeId);
   }
 
   async _render(data) {
@@ -528,7 +531,7 @@ export class ElementDetailsView extends UI.Widget {
     }
 
     const backendNodeId = Number(node.dataset.backendNodeId);
-    this._controller.dispatchEventToListeners(CssOverview.Events.RequestNodeHighlight, backendNodeId);
+    this._controller.dispatchEventToListeners(Events.RequestNodeHighlight, backendNodeId);
   }
 
   async populateNodes(data) {
@@ -550,11 +553,11 @@ export class ElementDetailsView extends UI.Widget {
       // Grab the nodes from the frontend, but only those that have not been
       // retrieved already.
       const nodeIds = data.reduce((prev, curr) => {
-        if (CssOverview.CSSOverviewCompletedView.pushedNodes.has(curr.nodeId)) {
+        if (CSSOverviewCompletedView.pushedNodes.has(curr.nodeId)) {
           return prev;
         }
 
-        CssOverview.CSSOverviewCompletedView.pushedNodes.add(curr.nodeId);
+        CSSOverviewCompletedView.pushedNodes.add(curr.nodeId);
         return prev.add(curr.nodeId);
       }, new Set());
       relatedNodesMap = await this._domModel.pushNodesByBackendIdsToFrontend(nodeIds);
@@ -645,27 +648,3 @@ export class ElementNode extends DataGrid.SortableDataGridNode {
     return linkifier.linkifyCSSLocation(matchingSelectorLocation);
   }
 }
-
-/* Legacy exported object */
-self.CssOverview = self.CssOverview || {};
-
-/* Legacy exported object */
-CssOverview = CssOverview || {};
-
-/**
- * @constructor
- */
-CssOverview.CSSOverviewCompletedView = CSSOverviewCompletedView;
-
-
-/**
- * @constructor
- */
-CssOverview.CSSOverviewCompletedView.DetailsView = DetailsView;
-
-/**
- * @constructor
- */
-CssOverview.CSSOverviewCompletedView.ElementDetailsView = ElementDetailsView;
-
-CssOverview.CSSOverviewCompletedView.ElementNode = ElementNode;

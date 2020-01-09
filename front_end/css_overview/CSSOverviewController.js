@@ -32,16 +32,3 @@ export const Events = {
   OverviewCompleted: Symbol('OverviewCompleted'),
   Reset: Symbol('Reset'),
 };
-
-/* Legacy exported object */
-self.CssOverview = self.CssOverview || {};
-
-/* Legacy exported object */
-CssOverview = CssOverview || {};
-
-/**
- * @constructor
- */
-CssOverview.OverviewController = OverviewController;
-
-CssOverview.Events = Events;

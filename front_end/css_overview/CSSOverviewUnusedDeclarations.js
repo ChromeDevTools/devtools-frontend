@@ -87,11 +87,3 @@ export class CSSOverviewUnusedDeclarations {
     }
   }
 }
-
-/* Legacy exported object */
-self.CssOverview = self.CssOverview || {};
-
-/* Legacy exported object */
-CssOverview = CssOverview || {};
-
-CssOverview.CSSOverviewUnusedDeclarations = CSSOverviewUnusedDeclarations;

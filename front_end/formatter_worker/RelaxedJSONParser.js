@@ -2,7 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const RelaxedJSONParser = {
+import {ESTreeWalker} from './ESTreeWalker.js';
+
+export const RelaxedJSONParser = {
   /**
  * @param {string} content
  * @return {*}
@@ -17,7 +19,7 @@ const RelaxedJSONParser = {
       return null;
     }
 
-    const walker = new FormatterWorker.ESTreeWalker(beforeVisit, afterVisit);
+    const walker = new ESTreeWalker(beforeVisit, afterVisit);
 
     const rootTip = [];
 
@@ -92,7 +94,7 @@ const RelaxedJSONParser = {
             stackData.state = States.ExpectValue;
           } else if (stackData.state === States.ExpectValue) {
             applyValue(extractValue(node));
-            return FormatterWorker.ESTreeWalker.SkipSubtree;
+            return ESTreeWalker.SkipSubtree;
           }
           break;
         case 'Identifier':
@@ -101,13 +103,13 @@ const RelaxedJSONParser = {
             stackData.state = States.ExpectValue;
           } else if (stackData.state === States.ExpectValue) {
             applyValue(extractValue(node));
-            return FormatterWorker.ESTreeWalker.SkipSubtree;
+            return ESTreeWalker.SkipSubtree;
           }
           break;
         case 'UnaryExpression':
           if (stackData.state === States.ExpectValue) {
             applyValue(extractValue(node));
-            return FormatterWorker.ESTreeWalker.SkipSubtree;
+            return ESTreeWalker.SkipSubtree;
           }
           break;
         case 'Program':
@@ -117,7 +119,7 @@ const RelaxedJSONParser = {
           if (stackData.state === States.ExpectValue) {
             applyValue(extractValue(node));
           }
-          return FormatterWorker.ESTreeWalker.SkipSubtree;
+          return ESTreeWalker.SkipSubtree;
       }
     }
 
@@ -166,16 +168,14 @@ const RelaxedJSONParser = {
   }
 };
 
-export default RelaxedJSONParser;
-
 /** @enum {string} */
-const States = {
+export const States = {
   ExpectKey: 'ExpectKey',
   ExpectValue: 'ExpectValue'
 };
 
 /** @enum {*} */
-const Keywords = {
+export const Keywords = {
   'NaN': NaN,
   'true': true,
   'false': false,
@@ -183,16 +183,3 @@ const Keywords = {
   'undefined': undefined,
   'null': null
 };
-
-/* Legacy exported object */
-self.FormatterWorker = self.FormatterWorker || {};
-
-/* Legacy exported object */
-FormatterWorker = FormatterWorker || {};
-
-FormatterWorker.RelaxedJSONParser = RelaxedJSONParser;
-
-/**
- * @typedef {!{key: (number|string), tip: (!Array|!Object), state: ?States, parentIsArray: boolean}}
- */
-FormatterWorker.RelaxedJSONParser.Context;

@@ -28,12 +28,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import {FormattedContentBuilder} from './FormattedContentBuilder.js';  // eslint-disable-line no-unused-vars
+import {createTokenizer} from './FormatterWorker.js';
+
 /**
  * @unrestricted
  */
 export class CSSFormatter {
   /**
-   * @param {!FormatterWorker.FormattedContentBuilder} builder
+   * @param {!FormattedContentBuilder} builder
    */
   constructor(builder) {
     this._builder = builder;
@@ -51,7 +54,7 @@ export class CSSFormatter {
     this._toOffset = toOffset;
     this._lastLine = -1;
     this._state = {};
-    const tokenize = FormatterWorker.createTokenizer('text/css');
+    const tokenize = createTokenizer('text/css');
     const oldEnforce = this._builder.setEnforceSpaceBetweenWords(false);
     tokenize(text.substring(this._fromOffset, this._toOffset), this._tokenCallback.bind(this));
     this._builder.setEnforceSpaceBetweenWords(oldEnforce);
@@ -125,12 +128,3 @@ export class CSSFormatter {
     }
   }
 }
-
-/* Legacy exported object */
-self.FormatterWorker = self.FormatterWorker || {};
-
-/* Legacy exported object */
-FormatterWorker = FormatterWorker || {};
-
-/** @constructor */
-FormatterWorker.CSSFormatter = CSSFormatter;

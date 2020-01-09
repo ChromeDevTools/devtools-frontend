@@ -28,12 +28,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import {AcornTokenizer} from './AcornTokenizer.js';
+import {ESTreeWalker} from './ESTreeWalker.js';
+import {FormattedContentBuilder} from './FormattedContentBuilder.js';  // eslint-disable-line no-unused-vars
+
 /**
  * @unrestricted
  */
 export class JavaScriptFormatter {
   /**
-   * @param {!FormatterWorker.FormattedContentBuilder} builder
+   * @param {!FormattedContentBuilder} builder
    */
   constructor(builder) {
     this._builder = builder;
@@ -50,10 +54,10 @@ export class JavaScriptFormatter {
     this._toOffset = toOffset;
     this._content = text.substring(this._fromOffset, this._toOffset);
     this._lastLineNumber = 0;
-    this._tokenizer = new FormatterWorker.AcornTokenizer(this._content);
+    this._tokenizer = new AcornTokenizer(this._content);
     const options = {ranges: false, preserveParens: true, allowImportExportEverywhere: true, ecmaVersion: 2020};
     const ast = acorn.parse(this._content, options);
-    const walker = new FormatterWorker.ESTreeWalker(this._beforeVisit.bind(this), this._afterVisit.bind(this));
+    const walker = new ESTreeWalker(this._beforeVisit.bind(this), this._afterVisit.bind(this));
     walker.walk(ast);
   }
 
@@ -133,7 +137,7 @@ export class JavaScriptFormatter {
    * @return {string}
    */
   _formatToken(node, token) {
-    const AT = FormatterWorker.AcornTokenizer;
+    const AT = AcornTokenizer;
     if (AT.lineComment(token)) {
       return 'tn';
     }
@@ -400,12 +404,3 @@ export class JavaScriptFormatter {
     return '';
   }
 }
-
-/* Legacy exported object */
-self.FormatterWorker = self.FormatterWorker || {};
-
-/* Legacy exported object */
-FormatterWorker = FormatterWorker || {};
-
-/** @constructor */
-FormatterWorker.JavaScriptFormatter = JavaScriptFormatter;

@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {createTokenizer} from './FormatterWorker.js';
+
 export const CSSParserStates = {
   Initial: 'Initial',
   Selector: 'Selector',
@@ -167,7 +169,7 @@ export function _innerParseCSS(text, chunkCallback) {
       processedChunkCharacters = 0;
     }
   }
-  const tokenizer = FormatterWorker.createTokenizer('text/css');
+  const tokenizer = createTokenizer('text/css');
   let lineNumber;
   for (lineNumber = 0; lineNumber < lines.length; ++lineNumber) {
     const line = lines[lineNumber];
@@ -183,13 +185,3 @@ export function _innerParseCSS(text, chunkCallback) {
     return {startLine: lineNumber, startColumn: columnNumber, endLine: lineNumber, endColumn: columnNumber};
   }
 }
-
-/* Legacy exported object */
-self.FormatterWorker = self.FormatterWorker || {};
-
-/* Legacy exported object */
-FormatterWorker = FormatterWorker || {};
-
-FormatterWorker.CSSParserStates = CSSParserStates;
-FormatterWorker.parseCSS = parseCSS;
-FormatterWorker._innerParseCSS = _innerParseCSS;

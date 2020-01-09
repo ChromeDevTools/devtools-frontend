@@ -1,6 +1,9 @@
 // Copyright 2016 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
+import {ESTreeWalker} from './ESTreeWalker.js';
+
 /**
  * @param {string} content
  */
@@ -17,7 +20,7 @@ export function javaScriptOutline(content) {
   }
 
   const textCursor = new TextUtils.TextCursor(content.computeLineEndings());
-  const walker = new FormatterWorker.ESTreeWalker(beforeVisit);
+  const walker = new ESTreeWalker(beforeVisit);
   walker.walk(ast);
   postMessage({chunk: outlineChunk, isLastChunk: true});
 
@@ -168,11 +171,3 @@ export function javaScriptOutline(content) {
     lastReportedOffset = textCursor.offset();
   }
 }
-
-/* Legacy exported object */
-self.FormatterWorker = self.FormatterWorker || {};
-
-/* Legacy exported object */
-FormatterWorker = FormatterWorker || {};
-
-FormatterWorker.javaScriptOutline = javaScriptOutline;

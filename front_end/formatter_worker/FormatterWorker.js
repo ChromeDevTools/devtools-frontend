@@ -28,6 +28,17 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import {AcornTokenizer} from './AcornTokenizer.js';
+import {CSSFormatter} from './CSSFormatter.js';
+import {parseCSS} from './CSSRuleParser.js';
+import {ESTreeWalker} from './ESTreeWalker.js';
+import {FormattedContentBuilder} from './FormattedContentBuilder.js';
+import {HTMLFormatter} from './HTMLFormatter.js';
+import {IdentityFormatter} from './IdentityFormatter.js';
+import {JavaScriptFormatter} from './JavaScriptFormatter.js';
+import {javaScriptOutline} from './JavaScriptOutline.js';
+import {RelaxedJSONParser} from './RelaxedJSONParser.js';
+
 /**
  * @param {string} mimeType
  * @return {function(string, function(string, ?string, number, number):(!Object|undefined))}
@@ -67,13 +78,13 @@ self.onmessage = function(event) {
       format(params.mimeType, params.content, params.indentString);
       break;
     case 'parseCSS':
-      FormatterWorker.parseCSS(params.content);
+      parseCSS(params.content);
       break;
     case 'parseSCSS':
       FormatterWorkerContentParser.parse(params.content, 'text/x-scss');
       break;
     case 'javaScriptOutline':
-      FormatterWorker.javaScriptOutline(params.content);
+      javaScriptOutline(params.content);
       break;
     case 'javaScriptIdentifiers':
       javaScriptIdentifiers(params.content);
@@ -102,7 +113,7 @@ self.onmessage = function(event) {
  * @param {string} content
  */
 export function parseJSONRelaxed(content) {
-  postMessage(FormatterWorker.RelaxedJSONParser.parse(content));
+  postMessage(RelaxedJSONParser.parse(content));
 }
 
 /**
@@ -113,7 +124,7 @@ export function evaluatableJavaScriptSubstring(content) {
   let result = '';
   try {
     let token = tokenizer.getToken();
-    while (token.type !== acorn.tokTypes.eof && FormatterWorker.AcornTokenizer.punctuator(token)) {
+    while (token.type !== acorn.tokTypes.eof && AcornTokenizer.punctuator(token)) {
       token = tokenizer.getToken();
     }
 
@@ -121,8 +132,8 @@ export function evaluatableJavaScriptSubstring(content) {
     let endIndex = token.end;
     let openBracketsCounter = 0;
     while (token.type !== acorn.tokTypes.eof) {
-      const isIdentifier = FormatterWorker.AcornTokenizer.identifier(token);
-      const isThis = FormatterWorker.AcornTokenizer.keyword(token, 'this');
+      const isIdentifier = AcornTokenizer.identifier(token);
+      const isThis = AcornTokenizer.keyword(token, 'this');
       const isString = token.type === acorn.tokTypes.string;
       if (!isThis && !isIdentifier && !isString) {
         break;
@@ -130,12 +141,12 @@ export function evaluatableJavaScriptSubstring(content) {
 
       endIndex = token.end;
       token = tokenizer.getToken();
-      while (FormatterWorker.AcornTokenizer.punctuator(token, '.[]')) {
-        if (FormatterWorker.AcornTokenizer.punctuator(token, '[')) {
+      while (AcornTokenizer.punctuator(token, '.[]')) {
+        if (AcornTokenizer.punctuator(token, '[')) {
           openBracketsCounter++;
         }
 
-        if (FormatterWorker.AcornTokenizer.punctuator(token, ']')) {
+        if (AcornTokenizer.punctuator(token, ']')) {
           endIndex = openBracketsCounter > 0 ? token.end : endIndex;
           openBracketsCounter--;
         }
@@ -162,7 +173,7 @@ export function javaScriptIdentifiers(content) {
 
   /** @type {!Array<!ESTree.Node>} */
   const identifiers = [];
-  const walker = new FormatterWorker.ESTreeWalker(beforeVisit);
+  const walker = new ESTreeWalker(beforeVisit);
 
   /**
    * @param {!ESTree.Node} node
@@ -181,7 +192,7 @@ export function javaScriptIdentifiers(content) {
       if (node.id) {
         identifiers.push(node.id);
       }
-      return FormatterWorker.ESTreeWalker.SkipSubtree;
+      return ESTreeWalker.SkipSubtree;
     }
 
     if (node.type !== 'Identifier') {
@@ -218,27 +229,27 @@ export function format(mimeType, text, indentString) {
   // Default to a 4-space indent.
   indentString = indentString || '    ';
   const result = {};
-  const builder = new FormatterWorker.FormattedContentBuilder(indentString);
+  const builder = new FormattedContentBuilder(indentString);
   const lineEndings = text.computeLineEndings();
   try {
     switch (mimeType) {
       case 'text/html': {
-        const formatter = new FormatterWorker.HTMLFormatter(builder);
+        const formatter = new HTMLFormatter(builder);
         formatter.format(text, lineEndings);
         break;
       }
       case 'text/css': {
-        const formatter = new FormatterWorker.CSSFormatter(builder);
+        const formatter = new CSSFormatter(builder);
         formatter.format(text, lineEndings, 0, text.length);
         break;
       }
       case 'text/javascript': {
-        const formatter = new FormatterWorker.JavaScriptFormatter(builder);
+        const formatter = new JavaScriptFormatter(builder);
         formatter.format(text, lineEndings, 0, text.length);
         break;
       }
       default: {
-        const formatter = new FormatterWorker.IdentityFormatter(builder);
+        const formatter = new IdentityFormatter(builder);
         formatter.format(text, lineEndings, 0, text.length);
       }
     }
@@ -424,9 +435,9 @@ export function _lastCompleteExpression(content, suffix, types) {
     return null;
   }
   let baseNode = null;
-  const walker = new FormatterWorker.ESTreeWalker(node => {
+  const walker = new ESTreeWalker(node => {
     if (baseNode || node.end < ast.end) {
-      return FormatterWorker.ESTreeWalker.SkipSubtree;
+      return ESTreeWalker.SkipSubtree;
     }
     if (types.has(node.type)) {
       baseNode = node;
@@ -453,12 +464,12 @@ export function _nodeHasPossibleSideEffects(baseNode) {
     'ObjectExpression', 'ArrayExpression', 'Property', 'ThisExpression'
   ]);
   let possibleSideEffects = false;
-  const sideEffectwalker = new FormatterWorker.ESTreeWalker(node => {
+  const sideEffectwalker = new ESTreeWalker(node => {
     if (!possibleSideEffects && !sideEffectFreeTypes.has(node.type)) {
       possibleSideEffects = true;
     }
     if (possibleSideEffects) {
-      return FormatterWorker.ESTreeWalker.SkipSubtree;
+      return ESTreeWalker.SkipSubtree;
     }
   });
   sideEffectwalker.walk(/** @type {!ESTree.Node} */ (baseNode));
@@ -499,22 +510,3 @@ FormatterWorkerContentParser.parse = function(content, mimeType) {
     console.error = () => undefined;
   }
 })();
-
-/* Legacy exported object */
-self.FormatterWorker = self.FormatterWorker || {};
-
-/* Legacy exported object */
-FormatterWorker = FormatterWorker || {};
-
-FormatterWorker.AbortTokenization = AbortTokenization;
-FormatterWorker.createTokenizer = createTokenizer;
-FormatterWorker.parseJSONRelaxed = parseJSONRelaxed;
-FormatterWorker.evaluatableJavaScriptSubstring = evaluatableJavaScriptSubstring;
-FormatterWorker.javaScriptIdentifiers = javaScriptIdentifiers;
-FormatterWorker.format = format;
-FormatterWorker.findLastFunctionCall = findLastFunctionCall;
-FormatterWorker.argumentsList = argumentsList;
-FormatterWorker.findLastExpression = findLastExpression;
-FormatterWorker._lastCompleteExpression = _lastCompleteExpression;
-FormatterWorker._nodeHasPossibleSideEffects = _nodeHasPossibleSideEffects;
-FormatterWorker.FormatterWorkerContentParser = FormatterWorkerContentParser;

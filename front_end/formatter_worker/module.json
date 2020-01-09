@@ -8,6 +8,7 @@
     "scripts": [],
     "modules": [
         "formatter_worker.js",
+        "formatter_worker-legacy.js",
         "ESTreeWalker.js",
         "FormatterWorker.js",
         "acorn/acorn.js",

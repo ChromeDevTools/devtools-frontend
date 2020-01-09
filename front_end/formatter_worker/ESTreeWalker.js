@@ -1,6 +1,10 @@
 // Copyright (c) 2014 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
+/** @type {!Object} */
+const SkipSubTreeObject = {};
+
 /**
  * @unrestricted
  */
@@ -13,6 +17,13 @@ export class ESTreeWalker {
     this._beforeVisit = beforeVisit;
     this._afterVisit = afterVisit || new Function();
     this._walkNulls = false;
+  }
+
+  /**
+   * @return {!Object}
+   */
+  static get SkipSubtree() {
+    return SkipSubTreeObject;
   }
 
   /**
@@ -45,7 +56,7 @@ export class ESTreeWalker {
     }
     node.parent = parent;
 
-    if (this._beforeVisit.call(null, node) === FormatterWorker.ESTreeWalker.SkipSubtree) {
+    if (this._beforeVisit.call(null, node) === ESTreeWalker.SkipSubtree) {
       this._afterVisit.call(null, node);
       return;
     }
@@ -155,15 +166,3 @@ const _walkOrder = {
   'WithStatement': ['object', 'body'],
   'YieldExpression': ['argument']
 };
-
-/* Legacy exported object */
-self.FormatterWorker = self.FormatterWorker || {};
-
-/* Legacy exported object */
-FormatterWorker = FormatterWorker || {};
-
-/** @constructor */
-FormatterWorker.ESTreeWalker = ESTreeWalker;
-
-/** @typedef {!Object} FormatterWorker.ESTreeWalker.SkipSubtree */
-FormatterWorker.ESTreeWalker.SkipSubtree = {};

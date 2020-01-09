@@ -1,12 +1,15 @@
 // Copyright 2016 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
+import {FormattedContentBuilder} from './FormattedContentBuilder.js';  // eslint-disable-line no-unused-vars
+
 /**
  * @unrestricted
  */
 export class IdentityFormatter {
   /**
-   * @param {!FormatterWorker.FormattedContentBuilder} builder
+   * @param {!FormattedContentBuilder} builder
    */
   constructor(builder) {
     this._builder = builder;
@@ -23,12 +26,3 @@ export class IdentityFormatter {
     this._builder.addToken(content, fromOffset);
   }
 }
-
-/* Legacy exported object */
-self.FormatterWorker = self.FormatterWorker || {};
-
-/* Legacy exported object */
-FormatterWorker = FormatterWorker || {};
-
-/** @constructor */
-FormatterWorker.IdentityFormatter = IdentityFormatter;

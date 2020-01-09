@@ -5,7 +5,7 @@
 /**
  * @unrestricted
  */
-export default class ExtensionTraceProvider {
+export class ExtensionTraceProvider {
   /**
    * @param {string} extensionOrigin
    * @param {string} id
@@ -66,15 +66,3 @@ export class TracingSession {
   complete(url, timeOffsetMicroseconds) {
   }
 }
-
-/* Legacy exported object */
-self.Extensions = self.Extensions || {};
-
-/* Legacy exported object */
-Extensions = Extensions || {};
-
-/** @constructor */
-Extensions.ExtensionTraceProvider = ExtensionTraceProvider;
-
-/** @interface */
-Extensions.TracingSession = TracingSession;

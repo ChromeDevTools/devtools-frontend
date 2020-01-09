@@ -28,10 +28,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import {ExtensionButton, ExtensionPanel, ExtensionSidebarPane} from './ExtensionPanel.js';
+import {ExtensionTraceProvider, TracingSession} from './ExtensionTraceProvider.js';  // eslint-disable-line no-unused-vars
+
 /**
  * @unrestricted
  */
-export default class ExtensionServer extends Common.Object {
+export class ExtensionServer extends Common.Object {
   /**
    * @suppressGlobalPropertiesCheck
    */
@@ -47,11 +50,11 @@ export default class ExtensionServer extends Common.Object {
     this._lastRequestId = 0;
     this._registeredExtensions = {};
     this._status = new ExtensionStatus();
-    /** @type {!Array<!Extensions.ExtensionSidebarPane>} */
+    /** @type {!Array<!ExtensionSidebarPane>} */
     this._sidebarPanes = [];
-    /** @type {!Array<!Extensions.ExtensionTraceProvider>} */
+    /** @type {!Array<!ExtensionTraceProvider>} */
     this._traceProviders = [];
-    /** @type {!Map<string, !Extensions.TracingSession>} */
+    /** @type {!Map<string, !TracingSession>} */
     this._traceSessions = new Map();
 
     const commands = Extensions.extensionAPI.Commands;
@@ -149,7 +152,7 @@ export default class ExtensionServer extends Common.Object {
   /**
    * @param {string} providerId
    * @param {string} sessionId
-   * @param {!Extensions.TracingSession} session
+   * @param {!TracingSession} session
    */
   startTraceRecording(providerId, sessionId, session) {
     this._traceSessions.set(sessionId, session);
@@ -270,8 +273,8 @@ export default class ExtensionServer extends Common.Object {
     const page = this._expandResourcePath(port._extensionOrigin, message.page);
     let persistentId = port._extensionOrigin + message.title;
     persistentId = persistentId.replace(/\s/g, '');
-    const panelView = new ExtensionServerPanelView(
-        persistentId, message.title, new Extensions.ExtensionPanel(this, persistentId, id, page));
+    const panelView =
+        new ExtensionServerPanelView(persistentId, message.title, new ExtensionPanel(this, persistentId, id, page));
     this._clientObjects[id] = panelView;
     UI.inspectorView.addPanel(panelView);
     return this._status.OK();
@@ -291,7 +294,7 @@ export default class ExtensionServer extends Common.Object {
     if (!panelView || !(panelView instanceof ExtensionServerPanelView)) {
       return this._status.E_NOTFOUND(message.panel);
     }
-    const button = new Extensions.ExtensionButton(
+    const button = new ExtensionButton(
         this, message.id, this._expandResourcePath(port._extensionOrigin, message.icon), message.tooltip,
         message.disabled);
     this._clientObjects[message.id] = button;
@@ -302,7 +305,7 @@ export default class ExtensionServer extends Common.Object {
      * @param {!UI.Widget} panel
      */
     function appendButton(panel) {
-      /** @type {!Extensions.ExtensionPanel} panel*/ (panel).addToolbarItem(button.toolbarButton());
+      /** @type {!ExtensionPanel} panel*/ (panel).addToolbarItem(button.toolbarButton());
     }
 
     return this._status.OK();
@@ -310,7 +313,7 @@ export default class ExtensionServer extends Common.Object {
 
   _onUpdateButton(message, port) {
     const button = this._clientObjects[message.id];
-    if (!button || !(button instanceof Extensions.ExtensionButton)) {
+    if (!button || !(button instanceof ExtensionButton)) {
       return this._status.E_NOTFOUND(message.id);
     }
     button.update(this._expandResourcePath(port._extensionOrigin, message.icon), message.tooltip, message.disabled);
@@ -334,7 +337,7 @@ export default class ExtensionServer extends Common.Object {
       return this._status.E_NOTFOUND(message.panel);
     }
     const id = message.id;
-    const sidebar = new Extensions.ExtensionSidebarPane(this, message.panel, message.title, id);
+    const sidebar = new ExtensionSidebarPane(this, message.panel, message.title, id);
     this._sidebarPanes.push(sidebar);
     this._clientObjects[id] = sidebar;
     this.dispatchEventToListeners(Events.SidebarPaneAdded, sidebar);
@@ -343,7 +346,7 @@ export default class ExtensionServer extends Common.Object {
   }
 
   /**
-   * @return {!Array.<!Extensions.ExtensionSidebarPane>}
+   * @return {!Array.<!ExtensionSidebarPane>}
    */
   sidebarPanes() {
     return this._sidebarPanes;
@@ -569,15 +572,15 @@ export default class ExtensionServer extends Common.Object {
    * @param {!MessagePort} port
    */
   _onAddTraceProvider(message, port) {
-    const provider = new Extensions.ExtensionTraceProvider(
-        port._extensionOrigin, message.id, message.categoryName, message.categoryTooltip);
+    const provider =
+        new ExtensionTraceProvider(port._extensionOrigin, message.id, message.categoryName, message.categoryTooltip);
     this._clientObjects[message.id] = provider;
     this._traceProviders.push(provider);
     this.dispatchEventToListeners(Events.TraceProviderAdded, provider);
   }
 
   /**
-   * @return {!Array<!Extensions.ExtensionTraceProvider>}
+   * @return {!Array<!ExtensionTraceProvider>}
    */
   traceProviders() {
     return this._traceProviders;
@@ -1023,26 +1026,3 @@ export class ExtensionStatus {
     this.E_FAILED = makeStatus.bind(null, 'E_FAILED', 'Operation failed: %s');
   }
 }
-
-/* Legacy exported object */
-self.Extensions = self.Extensions || {};
-
-/* Legacy exported object */
-Extensions = Extensions || {};
-
-/** @constructor */
-Extensions.ExtensionServer = ExtensionServer;
-
-/** @enum {symbol} */
-Extensions.ExtensionServer.Events = Events;
-
-/** @constructor */
-Extensions.ExtensionStatus = ExtensionStatus;
-
-/**
- * @typedef {{code: string, description: string, details: !Array.<*>}}
- */
-Extensions.ExtensionStatus.Record;
-
-/** @type {!ExtensionServer} */
-Extensions.extensionServer;

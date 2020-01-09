@@ -27,13 +27,17 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+import {ExtensionServer} from './ExtensionServer.js';  // eslint-disable-line no-unused-vars
+import {ExtensionNotifierView, ExtensionView} from './ExtensionView.js';
+
 /**
  * @implements {UI.Searchable}
  * @unrestricted
  */
-export default class ExtensionPanel extends UI.Panel {
+export class ExtensionPanel extends UI.Panel {
   /**
-   * @param {!Extensions.ExtensionServer} server
+   * @param {!ExtensionServer} server
    * @param {string} panelName
    * @param {string} id
    * @param {string} pageURL
@@ -48,7 +52,7 @@ export default class ExtensionPanel extends UI.Panel {
     this._searchableView = new UI.SearchableView(this);
     this._searchableView.show(this.element);
 
-    const extensionView = new Extensions.ExtensionView(server, this._id, pageURL, 'extension');
+    const extensionView = new ExtensionView(server, this._id, pageURL, 'extension');
     extensionView.show(this._searchableView.element);
   }
 
@@ -123,7 +127,7 @@ export default class ExtensionPanel extends UI.Panel {
  */
 export class ExtensionButton {
   /**
-   * @param {!Extensions.ExtensionServer} server
+   * @param {!ExtensionServer} server
    * @param {string} id
    * @param {string} iconURL
    * @param {string=} tooltip
@@ -168,7 +172,7 @@ export class ExtensionButton {
  */
 export class ExtensionSidebarPane extends UI.SimpleView {
   /**
-   * @param {!Extensions.ExtensionServer} server
+   * @param {!ExtensionServer} server
    * @param {string} panelName
    * @param {string} title
    * @param {string} id
@@ -230,7 +234,7 @@ export class ExtensionSidebarPane extends UI.SimpleView {
       this._extensionView.detach(true);
     }
 
-    this._extensionView = new Extensions.ExtensionView(this._server, this._id, url, 'extension fill');
+    this._extensionView = new ExtensionView(this._server, this._id, url, 'extension fill');
     this._extensionView.show(this.element);
 
     if (!this.element.style.height) {
@@ -268,7 +272,7 @@ export class ExtensionSidebarPane extends UI.SimpleView {
       this._extensionView.detach(true);
       delete this._extensionView;
     }
-    this._objectPropertiesView = new Extensions.ExtensionNotifierView(this._server, this._id);
+    this._objectPropertiesView = new ExtensionNotifierView(this._server, this._id);
     this._objectPropertiesView.show(this.element);
   }
 
@@ -297,18 +301,3 @@ export class ExtensionSidebarPane extends UI.SimpleView {
     });
   }
 }
-
-/* Legacy exported object */
-self.Extensions = self.Extensions || {};
-
-/* Legacy exported object */
-Extensions = Extensions || {};
-
-/** @constructor */
-Extensions.ExtensionPanel = ExtensionPanel;
-
-/** @constructor */
-Extensions.ExtensionButton = ExtensionButton;
-
-/** @constructor */
-Extensions.ExtensionSidebarPane = ExtensionSidebarPane;

@@ -28,7 +28,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-function defineCommonExtensionSymbols(apiPrivate) {
+export function defineCommonExtensionSymbols(apiPrivate) {
   if (!apiPrivate.panels) {
     apiPrivate.panels = {};
   }
@@ -858,12 +858,3 @@ self.buildExtensionAPIInjectedScript = function(extensionInfo, inspectedTabId, t
       '(' + self.injectedExtensionAPI.toString() + ')(' + argumentsJSON + ',' + testHook + ', injectedScriptId);' +
       '})';
 };
-
-/* Legacy exported object */
-self.Extensions = self.Extensions || {};
-
-/* Legacy exported object */
-Extensions = Extensions || {};
-
-Extensions.extensionAPI = {};
-defineCommonExtensionSymbols(Extensions.extensionAPI);

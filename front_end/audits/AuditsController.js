@@ -6,14 +6,14 @@
  * @implements {SDK.SDKModelObserver<!SDK.ServiceWorkerManager>}
  * @unrestricted
  */
-class AuditController extends Common.Object {
+export class AuditController extends Common.Object {
   constructor(protocolService) {
     super();
 
     protocolService.registerStatusCallback(
-        message => this.dispatchEventToListeners(Audits.Events.AuditProgressChanged, {message}));
+        message => this.dispatchEventToListeners(Events.AuditProgressChanged, {message}));
 
-    for (const preset of Audits.Presets) {
+    for (const preset of Presets) {
       preset.setting.addChangeListener(this.recomputePageAuditability.bind(this));
     }
 
@@ -90,7 +90,7 @@ class AuditController extends Common.Object {
    * @return {boolean}
    */
   _hasAtLeastOneCategory() {
-    return Audits.Presets.some(preset => preset.setting.get());
+    return Presets.some(preset => preset.setting.get());
   }
 
   /**
@@ -155,7 +155,7 @@ class AuditController extends Common.Object {
       // DevTools handles all the emulation. This tells Lighthouse to not bother with emulation.
       internalDisableDeviceScreenEmulation: true
     };
-    for (const runtimeSetting of Audits.RuntimeSettings) {
+    for (const runtimeSetting of RuntimeSettings) {
       runtimeSetting.setFlags(flags, runtimeSetting.setting.get());
     }
     return flags;
@@ -166,7 +166,7 @@ class AuditController extends Common.Object {
    */
   getCategoryIDs() {
     const categoryIDs = [];
-    for (const preset of Audits.Presets) {
+    for (const preset of Presets) {
       if (preset.setting.get()) {
         categoryIDs.push(preset.configID);
       }
@@ -200,7 +200,7 @@ class AuditController extends Common.Object {
       helpText = unauditablePageMessage;
     }
 
-    this.dispatchEventToListeners(Audits.Events.PageAuditabilityChanged, {helpText});
+    this.dispatchEventToListeners(Events.PageAuditabilityChanged, {helpText});
   }
 }
 
@@ -287,28 +287,3 @@ export const Events = {
   RequestAuditStart: Symbol('RequestAuditStart'),
   RequestAuditCancel: Symbol('RequestAuditCancel'),
 };
-
-/* Legacy exported object */
-self.Audits = self.Audits || {};
-
-/* Legacy exported object */
-Audits = Audits || {};
-
-/**
- * @constructor
- */
-Audits.AuditController = AuditController;
-
-/** @typedef {{setting: !Common.Setting, configID: string, title: string, description: string}} */
-Audits.Preset;
-
-Audits.Events = Events;
-
-/** @typedef {{setting: !Common.Setting, description: string, setFlags: function(!Object, string), options: (!Array|undefined), title: (string|undefined)}} */
-Audits.RuntimeSetting;
-
-/** @type {!Array.<!Audits.RuntimeSetting>} */
-Audits.RuntimeSettings = RuntimeSettings;
-
-/** @type {!Array.<!Audits.Preset>} */
-Audits.Presets = Presets;

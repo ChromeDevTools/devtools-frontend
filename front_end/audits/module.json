@@ -22,6 +22,7 @@
     "scripts": [],
     "modules": [
         "audits.js",
+        "audits-legacy.js",
         "lighthouse/report.js",
         "lighthouse/report-generator.js",
         "RadioSetting.js",

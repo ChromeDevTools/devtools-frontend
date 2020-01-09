@@ -91,14 +91,3 @@ export class ProtocolService extends Common.Object {
     return this._backendPromise.then(_ => this._backend.send(method, params));
   }
 }
-
-/* Legacy exported object */
-self.Audits = self.Audits || {};
-
-/* Legacy exported object */
-Audits = Audits || {};
-
-/**
- * @constructor
- */
-Audits.ProtocolService = ProtocolService;

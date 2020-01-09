@@ -2,19 +2,26 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {AuditController, Events} from './AuditsController.js';
+import {ProtocolService} from './AuditsProtocolService.js';
+import {AuditsReportRenderer, AuditsReportUIFeatures} from './AuditsReportRenderer.js';
+import {Item, ReportSelector} from './AuditsReportSelector.js';
+import {StartView} from './AuditsStartView.js';
+import {StatusView} from './AuditsStatusView.js';
+
 /**
  * @unrestricted
  */
-export default class AuditsPanel extends UI.Panel {
+export class AuditsPanel extends UI.Panel {
   constructor() {
     super('audits');
     this.registerRequiredCSS('audits/lighthouse/report.css');
     this.registerRequiredCSS('audits/auditsPanel.css');
 
-    this._protocolService = new Audits.ProtocolService();
-    this._controller = new Audits.AuditController(this._protocolService);
-    this._startView = new Audits.StartView(this._controller);
-    this._statusView = new Audits.StatusView(this._controller);
+    this._protocolService = new ProtocolService();
+    this._controller = new AuditController(this._protocolService);
+    this._startView = new StartView(this._controller);
+    this._statusView = new StatusView(this._controller);
 
     this._unauditableExplanation = null;
     this._cachedRenderedReports = new Map();
@@ -23,10 +30,10 @@ export default class AuditsPanel extends UI.Panel {
         this.contentElement, [UI.DropTarget.Type.File], Common.UIString('Drop audit file here'),
         this._handleDrop.bind(this));
 
-    this._controller.addEventListener(Audits.Events.PageAuditabilityChanged, this._refreshStartAuditUI.bind(this));
-    this._controller.addEventListener(Audits.Events.AuditProgressChanged, this._refreshStatusUI.bind(this));
-    this._controller.addEventListener(Audits.Events.RequestAuditStart, this._startAudit.bind(this));
-    this._controller.addEventListener(Audits.Events.RequestAuditCancel, this._cancelAudit.bind(this));
+    this._controller.addEventListener(Events.PageAuditabilityChanged, this._refreshStartAuditUI.bind(this));
+    this._controller.addEventListener(Events.AuditProgressChanged, this._refreshStatusUI.bind(this));
+    this._controller.addEventListener(Events.RequestAuditStart, this._startAudit.bind(this));
+    this._controller.addEventListener(Events.RequestAuditCancel, this._cancelAudit.bind(this));
 
     this._renderToolbar();
     this._auditResultsElement = this.contentElement.createChild('div', 'audits-results-container');
@@ -77,7 +84,7 @@ export default class AuditsPanel extends UI.Panel {
 
     toolbar.appendSeparator();
 
-    this._reportSelector = new Audits.ReportSelector(() => this._renderStartView());
+    this._reportSelector = new ReportSelector(() => this._renderStartView());
     toolbar.appendToolbarItem(this._reportSelector.comboBox());
 
     this._clearButton = new UI.ToolbarButton(Common.UIString('Clear all'), 'largeicon-clear');
@@ -175,7 +182,7 @@ export default class AuditsPanel extends UI.Panel {
     const reportContainer = this._auditResultsElement.createChild('div', 'lh-vars lh-root lh-devtools');
 
     const dom = new DOM(/** @type {!Document} */ (this._auditResultsElement.ownerDocument));
-    const renderer = new Audits.ReportRenderer(dom);
+    const renderer = new AuditsReportRenderer(dom);
 
     const templatesHTML = Root.Runtime.cachedResources['audits/lighthouse/templates.html'];
     const templatesDOM = new DOMParser().parseFromString(templatesHTML, 'text/html');
@@ -185,17 +192,17 @@ export default class AuditsPanel extends UI.Panel {
 
     renderer.setTemplateContext(templatesDOM);
     const el = renderer.renderReport(lighthouseResult, reportContainer);
-    Audits.ReportRenderer.addViewTraceButton(el, artifacts);
+    AuditsReportRenderer.addViewTraceButton(el, artifacts);
     // Linkifying requires the target be loaded. Do not block the report
     // from rendering, as this is just an embellishment and the main target
     // could take awhile to load.
     this._waitForMainTargetLoad().then(() => {
-      Audits.ReportRenderer.linkifyNodeDetails(el);
-      Audits.ReportRenderer.linkifySourceLocationDetails(el);
+      AuditsReportRenderer.linkifyNodeDetails(el);
+      AuditsReportRenderer.linkifySourceLocationDetails(el);
     });
-    Audits.ReportRenderer.handleDarkMode(el);
+    AuditsReportRenderer.handleDarkMode(el);
 
-    const features = new Audits.ReportUIFeatures(dom);
+    const features = new AuditsReportUIFeatures(dom);
     features.setBeforePrint(this._beforePrint.bind(this));
     features.setAfterPrint(this._afterPrint.bind(this));
     features.setTemplateContext(templatesDOM);
@@ -219,7 +226,7 @@ export default class AuditsPanel extends UI.Panel {
       return;
     }
 
-    const optionElement = new Audits.ReportSelector.Item(
+    const optionElement = new Item(
         lighthouseResult, () => this._renderReport(lighthouseResult, artifacts), this._renderStartView.bind(this));
     this._reportSelector.prepend(optionElement);
     this._refreshToolbarUI();
@@ -374,14 +381,3 @@ export default class AuditsPanel extends UI.Panel {
     await resourceTreeModel.navigate(inspectedURL);
   }
 }
-
-/* Legacy exported object */
-self.Audits = self.Audits || {};
-
-/* Legacy exported object */
-Audits = Audits || {};
-
-/**
- * @constructor
- */
-Audits.AuditsPanel = AuditsPanel;

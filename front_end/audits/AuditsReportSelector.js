@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-export default class ReportSelector {
+export class ReportSelector {
   constructor(renderNewAuditView) {
     this._renderNewAuditView = renderNewAuditView;
     this._newAuditItem = createElement('option');
@@ -36,7 +36,7 @@ export default class ReportSelector {
   }
 
   /**
-   * @return {!Audits.ReportSelector.Item}
+   * @return {!Item}
    */
   _selectedItem() {
     const option = this._comboBox.selectedOption();
@@ -65,7 +65,7 @@ export default class ReportSelector {
   }
 
   /**
-   * @param {!Audits.ReportSelector.Item} item
+   * @param {!Item} item
    */
   prepend(item) {
     const optionEl = item.optionElement();
@@ -131,19 +131,3 @@ export class Item {
     this._showLandingCallback();
   }
 }
-
-/* Legacy exported object */
-self.Audits = self.Audits || {};
-
-/* Legacy exported object */
-Audits = Audits || {};
-
-/**
- * @constructor
- */
-Audits.ReportSelector = ReportSelector;
-
-/**
- * @constructor
- */
-Audits.ReportSelector.Item = Item;

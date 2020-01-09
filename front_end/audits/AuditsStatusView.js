@@ -2,9 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-export default class StatusView {
+import {AuditController, Events, RuntimeSettings} from './AuditsController.js';  // eslint-disable-line no-unused-vars
+
+export class StatusView {
   /**
-   * @param {!Audits.AuditController} controller
+   * @param {!AuditController} controller
    */
   constructor(controller) {
     this._controller = controller;
@@ -56,7 +58,7 @@ export default class StatusView {
     this._progressBar = fragment.$('progress-bar');
     this._statusText = fragment.$('status-text');
     // Use StatusPhases array index as progress bar value
-    UI.ARIAUtils.markAsProgressBar(this._progressBar, 0, Audits.StatusView.StatusPhases.length - 1);
+    UI.ARIAUtils.markAsProgressBar(this._progressBar, 0, StatusPhases.length - 1);
     this._cancelButton = cancelButton;
     UI.ARIAUtils.markAsStatus(this._statusText);
 
@@ -125,8 +127,8 @@ export default class StatusView {
     }
 
     const nextPhase = this._getPhaseForMessage(message);
-    const nextPhaseIndex = Audits.StatusView.StatusPhases.indexOf(nextPhase);
-    const currentPhaseIndex = Audits.StatusView.StatusPhases.indexOf(this._currentPhase);
+    const nextPhaseIndex = StatusPhases.indexOf(nextPhase);
+    const currentPhaseIndex = StatusPhases.indexOf(this._currentPhase);
     if (!nextPhase && !this._currentPhase) {
       this._commitTextChange(Common.UIString('Lighthouse is warming up\u2026'));
       clearTimeout(this._scheduledFastFactTimeout);
@@ -142,11 +144,11 @@ export default class StatusView {
   }
 
   _cancel() {
-    this._controller.dispatchEventToListeners(Audits.Events.RequestAuditCancel);
+    this._controller.dispatchEventToListeners(Events.RequestAuditCancel);
   }
 
   /**
-   * @param {!Audits.StatusView.StatusPhases} phase
+   * @param {!StatusPhases} phase
    * @return {string}
    */
   _getMessageForPhase(phase) {
@@ -154,8 +156,8 @@ export default class StatusView {
       return phase.message;
     }
 
-    const deviceType = Audits.RuntimeSettings.find(item => item.setting.name === 'audits.device_type').setting.get();
-    const throttling = Audits.RuntimeSettings.find(item => item.setting.name === 'audits.throttling').setting.get();
+    const deviceType = RuntimeSettings.find(item => item.setting.name === 'audits.device_type').setting.get();
+    const throttling = RuntimeSettings.find(item => item.setting.name === 'audits.throttling').setting.get();
     const match = LoadingMessages.find(item => {
       return item.deviceType === deviceType && item.throttling === throttling;
     });
@@ -165,7 +167,7 @@ export default class StatusView {
 
   /**
    * @param {string} message
-   * @return {?Audits.StatusView.StatusPhases}
+   * @return {?StatusPhases}
    */
   _getPhaseForMessage(message) {
     return StatusPhases.find(phase => message.startsWith(phase.statusMessagePrefix));
@@ -375,17 +377,3 @@ const FastFacts = [
     ls`70% of mobile pages weigh over 1MB, 36% over 2MB, and 12% over 4MB. [Source: Think with Google]`, ls
   `Lighthouse only simulates mobile performance; to measure performance on a real device, try WebPageTest.org [Source: Lighthouse team]`,
 ];
-
-  /* Legacy exported object */
-  self.Audits = self.Audits || {};
-
-  /* Legacy exported object */
-  Audits = Audits || {};
-
-  /**
-* @constructor
-*/
-  Audits.StatusView = StatusView;
-
-  /** @typedef {{message: string, progressBarClass: string, order: number}} */
-  Audits.StatusView.StatusPhases = StatusPhases;

@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-export default class RadioSetting {
+export class RadioSetting {
   /**
    * @param {!Array<!{value: string, label: string}>} options
    * @param {!Common.Setting} setting
@@ -66,12 +66,3 @@ export default class RadioSetting {
     this._setting.set(selectedRadio.value);
   }
 }
-
-/* Legacy exported object */
-self.Audits = self.Audits || {};
-
-/* Legacy exported object */
-Audits = Audits || {};
-
-// TODO(http://crbug.com/1006759): Add type information if necessary
-Audits.RadioSetting = RadioSetting;

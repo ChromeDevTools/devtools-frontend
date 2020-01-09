@@ -2,12 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {AuditController, Events, Presets, RuntimeSettings} from './AuditsController.js';  // eslint-disable-line no-unused-vars
+import {RadioSetting} from './RadioSetting.js';
+
 /**
  * @unrestricted
  */
-export default class StartView extends UI.Widget {
+export class StartView extends UI.Widget {
   /**
-   * @param {!Audits.AuditController} controller
+   * @param {!AuditController} controller
    */
   constructor(controller) {
     super();
@@ -30,12 +33,12 @@ export default class StartView extends UI.Widget {
    * @param {!Element} parentElement
    */
   _populateRuntimeSettingAsRadio(settingName, label, parentElement) {
-    const runtimeSetting = Audits.RuntimeSettings.find(item => item.setting.name === settingName);
+    const runtimeSetting = RuntimeSettings.find(item => item.setting.name === settingName);
     if (!runtimeSetting || !runtimeSetting.options) {
       throw new Error(`${settingName} is not a setting with options`);
     }
 
-    const control = new Audits.RadioSetting(runtimeSetting.options, runtimeSetting.setting, runtimeSetting.description);
+    const control = new RadioSetting(runtimeSetting.options, runtimeSetting.setting, runtimeSetting.description);
     parentElement.appendChild(control.element);
     UI.ARIAUtils.setAccessibleName(control.element, label);
   }
@@ -45,7 +48,7 @@ export default class StartView extends UI.Widget {
    * @param {!UI.Toolbar} toolbar
    */
   _populateRuntimeSettingAsToolbarCheckbox(settingName, toolbar) {
-    const runtimeSetting = Audits.RuntimeSettings.find(item => item.setting.name === settingName);
+    const runtimeSetting = RuntimeSettings.find(item => item.setting.name === settingName);
     if (!runtimeSetting || !runtimeSetting.title) {
       throw new Error(`${settingName} is not a setting with a title`);
     }
@@ -71,7 +74,7 @@ export default class StartView extends UI.Widget {
     // Populate the categories
     const categoryFormElements = fragment.$('categories-form-elements');
     const pluginFormElements = fragment.$('plugins-form-elements');
-    for (const preset of Audits.Presets) {
+    for (const preset of Presets) {
       const formElements = preset.plugin ? pluginFormElements : categoryFormElements;
       preset.setting.setTitle(preset.title);
       const checkbox = new UI.ToolbarSettingCheckbox(preset.setting);
@@ -92,7 +95,7 @@ export default class StartView extends UI.Widget {
     this._startButton = UI.createTextButton(
         ls`Generate report`,
         () => this._controller.dispatchEventToListeners(
-            Audits.Events.RequestAuditStart,
+            Events.RequestAuditStart,
             /* keyboardInitiated */ UI.elementIsFocusedByKeyboard(this._startButton)),
         /* className */ '', /* primary */ true);
     this.setDefaultFocusedElement(this._startButton);
@@ -180,14 +183,3 @@ export default class StartView extends UI.Widget {
     }
   }
 }
-
-/* Legacy exported object */
-self.Audits = self.Audits || {};
-
-/* Legacy exported object */
-Audits = Audits || {};
-
-/**
- * @constructor
- */
-Audits.StartView = StartView;

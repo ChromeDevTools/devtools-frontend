@@ -157,7 +157,7 @@ export class AuditsReportUIFeatures extends ReportUIFeatures {
     printWindow.document.head.appendChild(style);
     printWindow.document.body.replaceWith(clonedReport);
     // Linkified nodes are shadow elements, which aren't exposed via `cloneNode`.
-    await Audits.ReportRenderer.linkifyNodeDetails(clonedReport);
+    await AuditsReportRenderer.linkifyNodeDetails(clonedReport);
 
     if (this._beforePrint) {
       this._beforePrint();
@@ -185,20 +185,3 @@ export class AuditsReportUIFeatures extends ReportUIFeatures {
     this._resetUIState();
   }
 }
-
-
-/* Legacy exported object */
-self.Audits = self.Audits || {};
-
-/* Legacy exported object */
-Audits = Audits || {};
-
-/**
- * @constructor
- */
-Audits.ReportRenderer = AuditsReportRenderer;
-
-/**
- * @constructor
- */
-Audits.ReportUIFeatures = AuditsReportUIFeatures;

@@ -2,11 +2,16 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {CompilerScriptMapping} from './CompilerScriptMapping.js';
+import {DefaultScriptMapping} from './DefaultScriptMapping.js';
+import {LiveLocation, LiveLocationPool, LiveLocationWithPool} from './LiveLocation.js';  // eslint-disable-line no-unused-vars
+import {ResourceScriptFile, ResourceScriptMapping} from './ResourceScriptMapping.js';  // eslint-disable-line no-unused-vars
+
 /**
  * @unrestricted
  * @implements {SDK.SDKModelObserver<!SDK.DebuggerModel>}
  */
-export default class DebuggerWorkspaceBinding {
+export class DebuggerWorkspaceBinding {
   /**
    * @param {!SDK.TargetManager} targetManager
    * @param {!Workspace.Workspace} workspace
@@ -63,8 +68,8 @@ export default class DebuggerWorkspaceBinding {
 
   /**
    * @param {!SDK.DebuggerModel.Location} rawLocation
-   * @param {function(!Bindings.LiveLocation)} updateDelegate
-   * @param {!Bindings.LiveLocationPool} locationPool
+   * @param {function(!LiveLocation)} updateDelegate
+   * @param {!LiveLocationPool} locationPool
    * @return {!Location}
    */
   createLiveLocation(rawLocation, updateDelegate, locationPool) {
@@ -74,8 +79,8 @@ export default class DebuggerWorkspaceBinding {
 
   /**
    * @param {!Array<!SDK.DebuggerModel.Location>} rawLocations
-   * @param {function(!Bindings.LiveLocation)} updateDelegate
-   * @param {!Bindings.LiveLocationPool} locationPool
+   * @param {function(!LiveLocation)} updateDelegate
+   * @param {!LiveLocationPool} locationPool
    * @return {!Bindings.LiveLocation}
    */
   createStackTraceTopFrameLiveLocation(rawLocations, updateDelegate, locationPool) {
@@ -87,8 +92,8 @@ export default class DebuggerWorkspaceBinding {
 
   /**
    * @param {!SDK.DebuggerModel.Location} location
-   * @param {function(!Bindings.LiveLocation)} updateDelegate
-   * @param {!Bindings.LiveLocationPool} locationPool
+   * @param {function(!LiveLocation)} updateDelegate
+   * @param {!LiveLocationPool} locationPool
    * @return {?Location}
    */
   createCallFrameLiveLocation(location, updateDelegate, locationPool) {
@@ -184,7 +189,7 @@ export default class DebuggerWorkspaceBinding {
   /**
    * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {!SDK.DebuggerModel} debuggerModel
-   * @return {?Bindings.ResourceScriptFile}
+   * @return {?ResourceScriptFile}
    */
   scriptFile(uiSourceCode, debuggerModel) {
     const modelData = this._debuggerModelToData.get(debuggerModel);
@@ -274,9 +279,9 @@ class ModelData {
 
     const workspace = debuggerWorkspaceBinding._workspace;
 
-    this._defaultMapping = new Bindings.DefaultScriptMapping(debuggerModel, workspace, debuggerWorkspaceBinding);
-    this._resourceMapping = new Bindings.ResourceScriptMapping(debuggerModel, workspace, debuggerWorkspaceBinding);
-    this._compilerMapping = new Bindings.CompilerScriptMapping(debuggerModel, workspace, debuggerWorkspaceBinding);
+    this._defaultMapping = new DefaultScriptMapping(debuggerModel, workspace, debuggerWorkspaceBinding);
+    this._resourceMapping = new ResourceScriptMapping(debuggerModel, workspace, debuggerWorkspaceBinding);
+    this._compilerMapping = new CompilerScriptMapping(debuggerModel, workspace, debuggerWorkspaceBinding);
 
     /** @type {!Platform.Multimap<!SDK.Script, !Location>} */
     this._locations = new Platform.Multimap();
@@ -286,8 +291,8 @@ class ModelData {
 
   /**
    * @param {!SDK.DebuggerModel.Location} rawLocation
-   * @param {function(!Bindings.LiveLocation)} updateDelegate
-   * @param {!Bindings.LiveLocationPool} locationPool
+   * @param {function(!LiveLocation)} updateDelegate
+   * @param {!LiveLocationPool} locationPool
    * @return {!Location}
    */
   _createLiveLocation(rawLocation, updateDelegate, locationPool) {
@@ -384,13 +389,13 @@ class ModelData {
 /**
  * @unrestricted
  */
-class Location extends Bindings.LiveLocationWithPool {
+class Location extends LiveLocationWithPool {
   /**
    * @param {!SDK.Script} script
    * @param {!SDK.DebuggerModel.Location} rawLocation
    * @param {!DebuggerWorkspaceBinding} binding
-   * @param {function(!Bindings.LiveLocation)} updateDelegate
-   * @param {!Bindings.LiveLocationPool} locationPool
+   * @param {function(!LiveLocation)} updateDelegate
+   * @param {!LiveLocationPool} locationPool
    */
   constructor(script, rawLocation, binding, updateDelegate, locationPool) {
     super(updateDelegate, locationPool);
@@ -426,12 +431,12 @@ class Location extends Bindings.LiveLocationWithPool {
   }
 }
 
-class StackTraceTopFrameLocation extends Bindings.LiveLocationWithPool {
+class StackTraceTopFrameLocation extends LiveLocationWithPool {
   /**
    * @param {!Array<!SDK.DebuggerModel.Location>} rawLocations
    * @param {!DebuggerWorkspaceBinding} binding
-   * @param {function(!Bindings.LiveLocation)} updateDelegate
-   * @param {!Bindings.LiveLocationPool} locationPool
+   * @param {function(!LiveLocation)} updateDelegate
+   * @param {!LiveLocationPool} locationPool
    */
   constructor(rawLocations, binding, updateDelegate, locationPool) {
     super(updateDelegate, locationPool);
@@ -508,20 +513,3 @@ export class DebuggerSourceMapping {
   uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber) {
   }
 }
-
-/* Legacy exported object */
-self.Bindings = self.Bindings || {};
-
-/* Legacy exported object */
-Bindings = Bindings || {};
-
-/** @constructor */
-Bindings.DebuggerWorkspaceBinding = DebuggerWorkspaceBinding;
-
-/** @interface */
-Bindings.DebuggerSourceMapping = DebuggerSourceMapping;
-
-/**
- * @type {!DebuggerWorkspaceBinding}
- */
-Bindings.debuggerWorkspaceBinding;

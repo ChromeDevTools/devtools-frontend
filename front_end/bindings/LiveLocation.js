@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 /** @interface */
-export default class LiveLocation {
+export class LiveLocation {
   update() {
   }
 
@@ -97,18 +97,3 @@ export class LiveLocationPool {
     }
   }
 }
-
-/* Legacy exported object */
-self.Bindings = self.Bindings || {};
-
-/* Legacy exported object */
-Bindings = Bindings || {};
-
-/** @interface */
-Bindings.LiveLocation = LiveLocation;
-
-/** @constructor */
-Bindings.LiveLocationWithPool = LiveLocationWithPool;
-
-/** @constructor */
-Bindings.LiveLocationPool = LiveLocationPool;

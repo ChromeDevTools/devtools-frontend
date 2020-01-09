@@ -13,7 +13,7 @@ import './ui/ui-legacy.js';
 
 import './services/services.js';
 import './workspace/workspace.js';
-import './bindings/bindings.js';
+import './bindings/bindings-legacy.js';
 import './components/components.js';
 import './persistence/persistence.js';
 import './browser_sdk/browser_sdk.js';

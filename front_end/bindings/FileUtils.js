@@ -250,18 +250,3 @@ export class FileOutputStream {
     Workspace.fileManager.close(this._fileName);
   }
 }
-
-/* Legacy exported object */
-self.Bindings = self.Bindings || {};
-
-/* Legacy exported object */
-Bindings = Bindings || {};
-
-/** @interface */
-Bindings.ChunkedReader = ChunkedReader;
-
-/** @constructor */
-Bindings.ChunkedFileReader = ChunkedFileReader;
-
-/** @constructor */
-Bindings.FileOutputStream = FileOutputStream;

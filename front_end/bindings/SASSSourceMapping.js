@@ -28,10 +28,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import {ContentProviderBasedProject} from './ContentProviderBasedProject.js';
+import {SourceMapping} from './CSSWorkspaceBinding.js';  // eslint-disable-line no-unused-vars
+import {NetworkProject} from './NetworkProject.js';
+
 /**
- * @implements {Bindings.CSSWorkspaceBinding.SourceMapping}
+ * @implements {SourceMapping}
  */
-export default class SASSSourceMapping {
+export class SASSSourceMapping {
   /**
    * @param {!SDK.Target} target
    * @param {!SDK.SourceMapManager} sourceMapManager
@@ -39,9 +43,9 @@ export default class SASSSourceMapping {
    */
   constructor(target, sourceMapManager, workspace) {
     this._sourceMapManager = sourceMapManager;
-    this._project = new Bindings.ContentProviderBasedProject(
+    this._project = new ContentProviderBasedProject(
         workspace, 'cssSourceMaps:' + target.id(), Workspace.projectTypes.Network, '', false /* isServiceProject */);
-    Bindings.NetworkProject.setTargetForProject(this._project, target);
+    NetworkProject.setTargetForProject(this._project, target);
 
     this._eventListeners = [
       this._sourceMapManager.addEventListener(
@@ -68,7 +72,7 @@ export default class SASSSourceMapping {
     for (const sassURL of sourceMap.sourceURLs()) {
       let uiSourceCode = this._project.uiSourceCodeForURL(sassURL);
       if (uiSourceCode) {
-        Bindings.NetworkProject.addFrameAttribution(uiSourceCode, header.frameId);
+        NetworkProject.addFrameAttribution(uiSourceCode, header.frameId);
         continue;
       }
 
@@ -78,7 +82,7 @@ export default class SASSSourceMapping {
       const metadata =
           typeof embeddedContent === 'string' ? new Workspace.UISourceCodeMetadata(null, embeddedContent.length) : null;
       uiSourceCode = this._project.createUISourceCode(sassURL, contentProvider.contentType());
-      Bindings.NetworkProject.setInitialFrameAttribution(uiSourceCode, header.frameId);
+      NetworkProject.setInitialFrameAttribution(uiSourceCode, header.frameId);
       uiSourceCode[_sourceMapSymbol] = sourceMap;
       this._project.addUISourceCodeWithProvider(uiSourceCode, contentProvider, metadata, mimeType);
     }
@@ -96,7 +100,7 @@ export default class SASSSourceMapping {
     for (const sassURL of sourceMap.sourceURLs()) {
       if (headers.length) {
         const uiSourceCode = /** @type {!Workspace.UISourceCode} */ (this._project.uiSourceCodeForURL(sassURL));
-        Bindings.NetworkProject.removeFrameAttribution(uiSourceCode, header.frameId);
+        NetworkProject.removeFrameAttribution(uiSourceCode, header.frameId);
       } else {
         this._project.removeFile(sassURL);
       }
@@ -177,12 +181,3 @@ export default class SASSSourceMapping {
 }
 
 const _sourceMapSymbol = Symbol('sourceMap');
-
-/* Legacy exported object */
-self.Bindings = self.Bindings || {};
-
-/* Legacy exported object */
-Bindings = Bindings || {};
-
-/** @constructor */
-Bindings.SASSSourceMapping = SASSSourceMapping;

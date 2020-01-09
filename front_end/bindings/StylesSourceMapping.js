@@ -28,11 +28,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import {ContentProviderBasedProject} from './ContentProviderBasedProject.js';
+import {SourceMapping} from './CSSWorkspaceBinding.js';  // eslint-disable-line no-unused-vars
+import {NetworkProject} from './NetworkProject.js';
+import {metadataForURL} from './ResourceUtils.js';
+
 /**
- * @implements {Bindings.CSSWorkspaceBinding.SourceMapping}
+ * @implements {SourceMapping}
  * @unrestricted
  */
-export default class StylesSourceMapping {
+export class StylesSourceMapping {
   /**
    * @param {!SDK.CSSModel} cssModel
    * @param {!Workspace.Workspace} workspace
@@ -40,9 +45,9 @@ export default class StylesSourceMapping {
   constructor(cssModel, workspace) {
     this._cssModel = cssModel;
     const target = this._cssModel.target();
-    this._project = new Bindings.ContentProviderBasedProject(
+    this._project = new ContentProviderBasedProject(
         workspace, 'css:' + target.id(), Workspace.projectTypes.Network, '', false /* isServiceProject */);
-    Bindings.NetworkProject.setTargetForProject(this._project, target);
+    NetworkProject.setTargetForProject(this._project, target);
 
     /** @type {!Map.<string, !StyleFile>} */
     this._styleFiles = new Map();
@@ -178,7 +183,7 @@ export default class StylesSourceMapping {
 export class StyleFile {
   /**
    * @param {!SDK.CSSModel} cssModel
-   * @param {!Bindings.ContentProviderBasedProject} project
+   * @param {!ContentProviderBasedProject} project
    * @param {!SDK.CSSStyleSheetHeader} header
    */
   constructor(cssModel, project, header) {
@@ -190,11 +195,11 @@ export class StyleFile {
     const target = cssModel.target();
 
     const url = header.resourceURL();
-    const metadata = Bindings.metadataForURL(target, header.frameId, url);
+    const metadata = metadataForURL(target, header.frameId, url);
 
     this._uiSourceCode = this._project.createUISourceCode(url, header.contentType());
     this._uiSourceCode[StyleFile._symbol] = this;
-    Bindings.NetworkProject.setInitialFrameAttribution(this._uiSourceCode, header.frameId);
+    NetworkProject.setInitialFrameAttribution(this._uiSourceCode, header.frameId);
     this._project.addUISourceCodeWithProvider(this._uiSourceCode, this, metadata, 'text/css');
 
     this._eventListeners = [
@@ -212,7 +217,7 @@ export class StyleFile {
    */
   addHeader(header) {
     this._headers.add(header);
-    Bindings.NetworkProject.addFrameAttribution(this._uiSourceCode, header.frameId);
+    NetworkProject.addFrameAttribution(this._uiSourceCode, header.frameId);
   }
 
   /**
@@ -220,7 +225,7 @@ export class StyleFile {
    */
   removeHeader(header) {
     this._headers.delete(header);
-    Bindings.NetworkProject.removeFrameAttribution(this._uiSourceCode, header.frameId);
+    NetworkProject.removeFrameAttribution(this._uiSourceCode, header.frameId);
   }
 
   /**
@@ -360,15 +365,3 @@ export class StyleFile {
 StyleFile._symbol = Symbol('Bindings.StyleFile._symbol');
 
 StyleFile.updateTimeout = 200;
-
-/* Legacy exported object */
-self.Bindings = self.Bindings || {};
-
-/* Legacy exported object */
-Bindings = Bindings || {};
-
-/** @constructor */
-Bindings.StylesSourceMapping = StylesSourceMapping;
-
-/** @constructor */
-Bindings.StyleFile = StyleFile;

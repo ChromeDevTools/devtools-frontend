@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import './LiveLocation.js';
-import './ResourceMapping.js';
-
 import * as BlackboxManager from './BlackboxManager.js';
 import * as BreakpointManager from './BreakpointManager.js';
 import * as CompilerScriptMapping from './CompilerScriptMapping.js';

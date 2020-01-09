@@ -28,6 +28,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import {LiveLocation, LiveLocationPool} from './LiveLocation.js';  // eslint-disable-line no-unused-vars
+
 /**
  * @implements {SDK.SDKModelObserver<!SDK.DebuggerModel>}
  */
@@ -79,7 +81,7 @@ export class PresentationConsoleMessageManager {
 
 PresentationConsoleMessageManager._symbol = Symbol('PresentationConsoleMessageHelper');
 
-export default class PresentationConsoleMessageHelper {
+export class PresentationConsoleMessageHelper {
   /**
    * @param {!SDK.DebuggerModel} debuggerModel
    */
@@ -97,7 +99,7 @@ export default class PresentationConsoleMessageHelper {
         SDK.DebuggerModel.Events.ParsedScriptSource, event => setImmediate(this._parsedScriptSource.bind(this, event)));
     debuggerModel.addEventListener(SDK.DebuggerModel.Events.GlobalObjectCleared, this._debuggerReset, this);
 
-    this._locationPool = new Bindings.LiveLocationPool();
+    this._locationPool = new LiveLocationPool();
   }
 
   /**
@@ -205,7 +207,7 @@ export class PresentationConsoleMessage {
   /**
    * @param {!SDK.ConsoleMessage} message
    * @param {!SDK.DebuggerModel.Location} rawLocation
-   * @param {!Bindings.LiveLocationPool} locationPool
+   * @param {!LiveLocationPool} locationPool
    */
   constructor(message, rawLocation, locationPool) {
     this._text = message.messageText;
@@ -216,7 +218,7 @@ export class PresentationConsoleMessage {
   }
 
   /**
-   * @param {!Bindings.LiveLocation} liveLocation
+   * @param {!LiveLocation} liveLocation
    */
   _updateLocation(liveLocation) {
     if (this._uiMessage) {
@@ -236,15 +238,3 @@ export class PresentationConsoleMessage {
     }
   }
 }
-
-/* Legacy exported object */
-self.Bindings = self.Bindings || {};
-
-/* Legacy exported object */
-Bindings = Bindings || {};
-
-/** @constructor */
-Bindings.PresentationConsoleMessageManager = PresentationConsoleMessageManager;
-
-/** @constructor */
-Bindings.PresentationConsoleMessage = PresentationConsoleMessage;

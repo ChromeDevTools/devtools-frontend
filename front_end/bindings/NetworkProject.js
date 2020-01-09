@@ -37,7 +37,7 @@ export const Events = {
 /**
  * @unrestricted
  */
-export default class NetworkProject {
+export class NetworkProject {
   /**
    * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {string} frameId
@@ -156,17 +156,3 @@ export default class NetworkProject {
 
 const _targetSymbol = Symbol('target');
 const _frameAttributionSymbol = Symbol('_frameAttributionSymbol');
-
-/* Legacy exported object */
-self.Bindings = self.Bindings || {};
-
-/* Legacy exported object */
-Bindings = Bindings || {};
-
-/** @constructor */
-Bindings.NetworkProjectManager = NetworkProjectManager;
-
-Bindings.NetworkProjectManager.Events = Events;
-
-/** @constructor */
-Bindings.NetworkProject = NetworkProject;

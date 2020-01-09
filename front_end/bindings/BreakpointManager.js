@@ -27,14 +27,18 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+import {DebuggerWorkspaceBinding} from './DebuggerWorkspaceBinding.js';  // eslint-disable-line no-unused-vars
+import {LiveLocation, LiveLocationPool} from './LiveLocation.js';        // eslint-disable-line no-unused-vars
+
 /**
  * @unrestricted
  */
-export default class BreakpointManager extends Common.Object {
+export class BreakpointManager extends Common.Object {
   /**
    * @param {!Workspace.Workspace} workspace
    * @param {!SDK.TargetManager} targetManager
-   * @param {!Bindings.DebuggerWorkspaceBinding} debuggerWorkspaceBinding
+   * @param {!DebuggerWorkspaceBinding} debuggerWorkspaceBinding
    */
   constructor(workspace, targetManager, debuggerWorkspaceBinding) {
     super();
@@ -498,20 +502,20 @@ export class Breakpoint {
 /**
  * @unrestricted
  */
-class ModelBreakpoint {
+export class ModelBreakpoint {
   /**
    * @param {!SDK.DebuggerModel} debuggerModel
    * @param {!Breakpoint} breakpoint
-   * @param {!Bindings.DebuggerWorkspaceBinding} debuggerWorkspaceBinding
+   * @param {!DebuggerWorkspaceBinding} debuggerWorkspaceBinding
    */
   constructor(debuggerModel, breakpoint, debuggerWorkspaceBinding) {
     this._debuggerModel = debuggerModel;
     this._breakpoint = breakpoint;
     this._debuggerWorkspaceBinding = debuggerWorkspaceBinding;
 
-    this._liveLocations = new Bindings.LiveLocationPool();
+    this._liveLocations = new LiveLocationPool();
 
-    /** @type {!Map<!Bindings.LiveLocation, !Workspace.UILocation>} */
+    /** @type {!Map<!LiveLocation, !Workspace.UILocation>} */
     this._uiLocations = new Map();
     this._debuggerModel.addEventListener(
         SDK.DebuggerModel.Events.DebuggerWasDisabled, this._cleanUpAfterDebuggerIsGone, this);
@@ -699,7 +703,7 @@ class ModelBreakpoint {
   }
 
   /**
-   * @param {!Bindings.LiveLocation} liveLocation
+   * @param {!LiveLocation} liveLocation
    */
   _locationUpdated(liveLocation) {
     const oldUILocation = this._uiLocations.get(liveLocation);
@@ -867,30 +871,3 @@ Storage.Item = class {
     this.enabled = breakpoint.enabled();
   }
 };
-
-/* Legacy exported object */
-self.Bindings = self.Bindings || {};
-
-/* Legacy exported object */
-Bindings = Bindings || {};
-
-/** @constructor */
-Bindings.BreakpointManager = BreakpointManager;
-
-/** @enum {symbol} */
-Bindings.BreakpointManager.Events = Events;
-
-/** @constructor */
-Bindings.BreakpointManager.Breakpoint = Breakpoint;
-
-Bindings.BreakpointManager.ModelBreakpoint = ModelBreakpoint;
-
-/** @typedef {{
- *    breakpoint: !Breakpoint,
- *    uiLocation: !Workspace.UILocation
- *  }}
- */
-Bindings.BreakpointManager.BreakpointLocation;
-
-/** @type {!Bindings.BreakpointManager} */
-Bindings.breakpointManager;

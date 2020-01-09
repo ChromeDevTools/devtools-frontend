@@ -8,6 +8,7 @@
     "scripts": [],
     "modules": [
         "bindings.js",
+        "bindings-legacy.js",
         "LiveLocation.js",
         "ResourceMapping.js",
         "CompilerScriptMapping.js",

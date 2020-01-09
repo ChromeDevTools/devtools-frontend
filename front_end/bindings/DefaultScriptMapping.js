@@ -27,20 +27,24 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+import {ContentProviderBasedProject} from './ContentProviderBasedProject.js';
+import {DebuggerSourceMapping, DebuggerWorkspaceBinding} from './DebuggerWorkspaceBinding.js';  // eslint-disable-line no-unused-vars
+
 /**
- * @implements {Bindings.DebuggerSourceMapping}
+ * @implements {DebuggerSourceMapping}
  * @unrestricted
  */
-export default class DefaultScriptMapping {
+export class DefaultScriptMapping {
   /**
    * @param {!SDK.DebuggerModel} debuggerModel
    * @param {!Workspace.Workspace} workspace
-   * @param {!Bindings.DebuggerWorkspaceBinding} debuggerWorkspaceBinding
+   * @param {!DebuggerWorkspaceBinding} debuggerWorkspaceBinding
    */
   constructor(debuggerModel, workspace, debuggerWorkspaceBinding) {
     this._debuggerModel = debuggerModel;
     this._debuggerWorkspaceBinding = debuggerWorkspaceBinding;
-    this._project = new Bindings.ContentProviderBasedProject(
+    this._project = new ContentProviderBasedProject(
         workspace, 'debugger:' + debuggerModel.target().id(), Workspace.projectTypes.Debugger, '',
         true /* isServiceProject */);
     this._eventListeners = [
@@ -150,12 +154,3 @@ export default class DefaultScriptMapping {
 
 const _scriptsSymbol = Symbol('symbol');
 const _uiSourceCodeSymbol = Symbol('uiSourceCodeSymbol');
-
-/* Legacy exported object */
-self.Bindings = self.Bindings || {};
-
-/* Legacy exported object */
-Bindings = Bindings || {};
-
-/** @constructor */
-Bindings.DefaultScriptMapping = DefaultScriptMapping;

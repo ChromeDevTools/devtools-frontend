@@ -50,7 +50,7 @@ export function displayNameForURL(url) {
     return '';
   }
 
-  const resource = Bindings.resourceForURL(url);
+  const resource = resourceForURL(url);
   if (resource) {
     return resource.displayName;
   }
@@ -99,7 +99,7 @@ export function metadataForURL(target, frameId, url) {
   if (!frame) {
     return null;
   }
-  return Bindings.resourceMetadata(frame.resourceForURL(url));
+  return resourceMetadata(frame.resourceForURL(url));
 }
 
 /**
@@ -129,15 +129,3 @@ export function frameIdForScript(script) {
   }
   return resourceTreeModel.mainFrame.id;
 }
-
-/* Legacy exported object */
-self.Bindings = self.Bindings || {};
-
-/* Legacy exported object */
-Bindings = Bindings || {};
-
-Bindings.resourceForURL = resourceForURL;
-Bindings.displayNameForURL = displayNameForURL;
-Bindings.metadataForURL = metadataForURL;
-Bindings.resourceMetadata = resourceMetadata;
-Bindings.frameIdForScript = frameIdForScript;

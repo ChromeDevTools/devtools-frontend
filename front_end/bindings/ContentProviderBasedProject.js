@@ -32,7 +32,7 @@
  * @implements {Workspace.Project}
  * @unrestricted
  */
-export default class ContentProviderBasedProject extends Workspace.ProjectStore {
+export class ContentProviderBasedProject extends Workspace.ProjectStore {
   /**
    * @param {!Workspace.Workspace} workspace
    * @param {string} id
@@ -319,12 +319,3 @@ export default class ContentProviderBasedProject extends Workspace.ProjectStore 
 
 const _metadata = Symbol('ContentProviderBasedProject.Metadata');
 const _mimeType = Symbol('ContentProviderBasedProject.MimeType');
-
-/* Legacy exported object */
-self.Bindings = self.Bindings || {};
-
-/* Legacy exported object */
-Bindings = Bindings || {};
-
-/** @constructor */
-Bindings.ContentProviderBasedProject = ContentProviderBasedProject;

@@ -28,7 +28,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-export default class TempFile {
+import {ChunkedFileReader, ChunkedReader} from './FileUtils.js';  // eslint-disable-line no-unused-vars
+
+export class TempFile {
   constructor() {
     /** @type {?Blob} */
     this._lastBlob = null;
@@ -88,7 +90,7 @@ export default class TempFile {
 
   /**
    * @param {!Common.OutputStream} outputStream
-   * @param {function(!Bindings.ChunkedReader)=} progress
+   * @param {function(!ChunkedReader)=} progress
    * @return {!Promise<?FileError>}
    */
   copyToOutputStream(outputStream, progress) {
@@ -96,7 +98,7 @@ export default class TempFile {
       outputStream.close();
       return Promise.resolve(/** @type {?FileError} */ (null));
     }
-    const reader = new Bindings.ChunkedFileReader(/** @type {!Blob} */ (this._lastBlob), 10 * 1000 * 1000, progress);
+    const reader = new ChunkedFileReader(/** @type {!Blob} */ (this._lastBlob), 10 * 1000 * 1000, progress);
     return reader.read(outputStream).then(success => success ? null : reader.error());
   }
 
@@ -184,23 +186,3 @@ export class TempFileBackingStorage {
     return this._file ? this._file.copyToOutputStream(outputStream) : Promise.resolve(null);
   }
 }
-
-/* Legacy exported object */
-self.Bindings = self.Bindings || {};
-
-/* Legacy exported object */
-Bindings = Bindings || {};
-
-/** @constructor */
-Bindings.TempFile = TempFile;
-
-/** @constructor */
-Bindings.TempFileBackingStorage = TempFileBackingStorage;
-
-/**
- * @typedef {{
-  *      startOffset: number,
-  *      endOffset: number
-  * }}
-  */
-Bindings.TempFileBackingStorage.Chunk;

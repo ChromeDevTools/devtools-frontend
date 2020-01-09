@@ -27,15 +27,21 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+import {ContentProviderBasedProject} from './ContentProviderBasedProject.js';
+import {DebuggerSourceMapping, DebuggerWorkspaceBinding} from './DebuggerWorkspaceBinding.js';  // eslint-disable-line no-unused-vars
+import {NetworkProject} from './NetworkProject.js';
+import {frameIdForScript, metadataForURL} from './ResourceUtils.js';
+
 /**
- * @implements {Bindings.DebuggerSourceMapping}
+ * @implements {DebuggerSourceMapping}
  * @unrestricted
  */
-export default class ResourceScriptMapping {
+export class ResourceScriptMapping {
   /**
    * @param {!SDK.DebuggerModel} debuggerModel
    * @param {!Workspace.Workspace} workspace
-   * @param {!Bindings.DebuggerWorkspaceBinding} debuggerWorkspaceBinding
+   * @param {!DebuggerWorkspaceBinding} debuggerWorkspaceBinding
    */
   constructor(debuggerModel, workspace, debuggerWorkspaceBinding) {
     this._debuggerModel = debuggerModel;
@@ -44,7 +50,7 @@ export default class ResourceScriptMapping {
     /** @type {!Map.<!Workspace.UISourceCode, !ResourceScriptFile>} */
     this._uiSourceCodeToScriptFile = new Map();
 
-    /** @type {!Map<string, !Bindings.ContentProviderBasedProject>} */
+    /** @type {!Map<string, !ContentProviderBasedProject>} */
     this._projects = new Map();
 
     /** @type {!Set<!SDK.Script>} */
@@ -61,7 +67,7 @@ export default class ResourceScriptMapping {
 
   /**
    * @param {!SDK.Script} script
-   * @return {!Bindings.ContentProviderBasedProject}
+   * @return {!ContentProviderBasedProject}
    */
   _project(script) {
     const frameId = script[_frameIdSymbol];
@@ -71,9 +77,9 @@ export default class ResourceScriptMapping {
     if (!project) {
       const projectType =
           script.isContentScript() ? Workspace.projectTypes.ContentScripts : Workspace.projectTypes.Network;
-      project = new Bindings.ContentProviderBasedProject(
+      project = new ContentProviderBasedProject(
           this._workspace, projectId, projectType, '' /* displayName */, false /* isServiceProject */);
-      Bindings.NetworkProject.setTargetForProject(project, this._debuggerModel.target());
+      NetworkProject.setTargetForProject(project, this._debuggerModel.target());
       this._projects.set(projectId, project);
     }
     return project;
@@ -165,7 +171,7 @@ export default class ResourceScriptMapping {
     }
     this._acceptedScripts.add(script);
     const originalContentProvider = script.originalContentProvider();
-    const frameId = Bindings.frameIdForScript(script);
+    const frameId = frameIdForScript(script);
     script[_frameIdSymbol] = frameId;
 
     const url = script.sourceURL;
@@ -180,8 +186,8 @@ export default class ResourceScriptMapping {
 
     // Create UISourceCode.
     const uiSourceCode = project.createUISourceCode(url, originalContentProvider.contentType());
-    Bindings.NetworkProject.setInitialFrameAttribution(uiSourceCode, frameId);
-    const metadata = Bindings.metadataForURL(this._debuggerModel.target(), frameId, url);
+    NetworkProject.setInitialFrameAttribution(uiSourceCode, frameId);
+    const metadata = metadataForURL(this._debuggerModel.target(), frameId, url);
 
     // Bind UISourceCode to scripts.
     const scriptFile = new ResourceScriptFile(this, uiSourceCode, [script]);
@@ -460,15 +466,3 @@ ResourceScriptFile.Events = {
   DidMergeToVM: Symbol('DidMergeToVM'),
   DidDivergeFromVM: Symbol('DidDivergeFromVM'),
 };
-
-/* Legacy exported object */
-self.Bindings = self.Bindings || {};
-
-/* Legacy exported object */
-Bindings = Bindings || {};
-
-/** @constructor */
-Bindings.ResourceScriptMapping = ResourceScriptMapping;
-
-/** @constructor */
-Bindings.ResourceScriptFile = ResourceScriptFile;

@@ -2,10 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {LiveLocation as LiveLocationInterface, LiveLocationPool, LiveLocationWithPool} from './LiveLocation.js';  // eslint-disable-line no-unused-vars
+import {SASSSourceMapping} from './SASSSourceMapping.js';
+import {StylesSourceMapping} from './StylesSourceMapping.js';
+
 /**
  * @implements {SDK.SDKModelObserver<!SDK.CSSModel>}
  */
-export default class CSSWorkspaceBinding {
+export class CSSWorkspaceBinding {
   /**
    * @param {!SDK.TargetManager} targetManager
    * @param {!Workspace.Workspace} workspace
@@ -46,8 +50,8 @@ export default class CSSWorkspaceBinding {
 
   /**
    * @param {!SDK.CSSLocation} rawLocation
-   * @param {function(!Bindings.LiveLocation)} updateDelegate
-   * @param {!Bindings.LiveLocationPool} locationPool
+   * @param {function(!LiveLocationInterface)} updateDelegate
+   * @param {!LiveLocationPool} locationPool
    * @return {!LiveLocation}
    */
   createLiveLocation(rawLocation, updateDelegate, locationPool) {
@@ -124,7 +128,7 @@ export default class CSSWorkspaceBinding {
 /**
  * @interface
  */
-class SourceMapping {
+export class SourceMapping {
   /**
    * @param {!SDK.CSSLocation} rawLocation
    * @return {?Workspace.UILocation}
@@ -140,7 +144,7 @@ class SourceMapping {
   }
 }
 
-class ModelInfo {
+export class ModelInfo {
   /**
    * @param {!SDK.CSSModel} cssModel
    * @param {!Workspace.Workspace} workspace
@@ -151,9 +155,9 @@ class ModelInfo {
       cssModel.addEventListener(SDK.CSSModel.Events.StyleSheetRemoved, this._styleSheetRemoved, this)
     ];
 
-    this._stylesSourceMapping = new Bindings.StylesSourceMapping(cssModel, workspace);
+    this._stylesSourceMapping = new StylesSourceMapping(cssModel, workspace);
     const sourceMapManager = cssModel.sourceMapManager();
-    this._sassSourceMapping = new Bindings.SASSSourceMapping(cssModel.target(), sourceMapManager, workspace);
+    this._sassSourceMapping = new SASSSourceMapping(cssModel.target(), sourceMapManager, workspace);
 
     /** @type {!Platform.Multimap<!SDK.CSSStyleSheetHeader, !LiveLocation>} */
     this._locations = new Platform.Multimap();
@@ -163,8 +167,8 @@ class ModelInfo {
 
   /**
    * @param {!SDK.CSSLocation} rawLocation
-   * @param {function(!Bindings.LiveLocation)} updateDelegate
-   * @param {!Bindings.LiveLocationPool} locationPool
+   * @param {function(!LiveLocationInterface)} updateDelegate
+   * @param {!LiveLocationPool} locationPool
    * @return {!LiveLocation}
    */
   _createLiveLocation(rawLocation, updateDelegate, locationPool) {
@@ -268,12 +272,12 @@ class ModelInfo {
 /**
  * @unrestricted
  */
-class LiveLocation extends Bindings.LiveLocationWithPool {
+export class LiveLocation extends LiveLocationWithPool {
   /**
    * @param {!SDK.CSSLocation} rawLocation
    * @param {!ModelInfo} info
-   * @param {function(!Bindings.LiveLocation)} updateDelegate
-   * @param {!Bindings.LiveLocationPool} locationPool
+   * @param {function(!LiveLocationInterface)} updateDelegate
+   * @param {!LiveLocationPool} locationPool
    */
   constructor(rawLocation, info, updateDelegate, locationPool) {
     super(updateDelegate, locationPool);
@@ -312,23 +316,3 @@ class LiveLocation extends Bindings.LiveLocationWithPool {
     return false;
   }
 }
-
-/* Legacy exported object */
-self.Bindings = self.Bindings || {};
-
-/* Legacy exported object */
-Bindings = Bindings || {};
-
-/** @constructor */
-Bindings.CSSWorkspaceBinding = CSSWorkspaceBinding;
-
-/** @interface */
-Bindings.CSSWorkspaceBinding.SourceMapping = SourceMapping;
-
-/** @constructor */
-Bindings.CSSWorkspaceBinding.ModelInfo = ModelInfo;
-
-/**
- * @type {!CSSWorkspaceBinding}
- */
-Bindings.cssWorkspaceBinding;

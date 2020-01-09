@@ -2,10 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {ContentProviderBasedProject} from './ContentProviderBasedProject.js';
+import {NetworkProject} from './NetworkProject.js';
+import {resourceMetadata} from './ResourceUtils.js';
+
 /**
  * @implements {SDK.SDKModelObserver<!SDK.ResourceTreeModel>}
  */
-export default class ResourceMapping {
+export class ResourceMapping {
   /**
    * @param {!SDK.TargetManager} targetManager
    * @param {!Workspace.Workspace} workspace
@@ -62,8 +66,7 @@ export default class ResourceMapping {
     if (!uiSourceCode) {
       return null;
     }
-    const offset =
-        header[_offsetSymbol] || TextUtils.TextRange.createFromLocation(header.startLine, header.startColumn);
+    const offset = header[offsetSymbol] || TextUtils.TextRange.createFromLocation(header.startLine, header.startColumn);
     const lineNumber = cssLocation.lineNumber + offset.startLine - header.startLine;
     let columnNumber = cssLocation.columnNumber;
     if (cssLocation.lineNumber === header.startLine) {
@@ -90,7 +93,7 @@ export default class ResourceMapping {
       return null;
     }
     const offset =
-        script[_offsetSymbol] || TextUtils.TextRange.createFromLocation(script.lineOffset, script.columnOffset);
+        script[offsetSymbol] || TextUtils.TextRange.createFromLocation(script.lineOffset, script.columnOffset);
     const lineNumber = jsLocation.lineNumber + offset.startLine - script.lineOffset;
     let columnNumber = jsLocation.columnNumber;
     if (jsLocation.lineNumber === script.lineOffset) {
@@ -106,10 +109,10 @@ export default class ResourceMapping {
    * @return {!Array<!SDK.DebuggerModel.Location>}
    */
   uiLocationToJSLocations(uiSourceCode, lineNumber, columnNumber) {
-    if (!uiSourceCode[_symbol]) {
+    if (!uiSourceCode[symbol]) {
       return [];
     }
-    const target = Bindings.NetworkProject.targetForUISourceCode(uiSourceCode);
+    const target = NetworkProject.targetForUISourceCode(uiSourceCode);
     if (!target) {
       return [];
     }
@@ -129,10 +132,10 @@ export default class ResourceMapping {
    * @return {!Array<!SDK.CSSLocation>}
    */
   uiLocationToCSSLocations(uiLocation) {
-    if (!uiLocation.uiSourceCode[_symbol]) {
+    if (!uiLocation.uiSourceCode[symbol]) {
       return [];
     }
-    const target = Bindings.NetworkProject.targetForUISourceCode(uiLocation.uiSourceCode);
+    const target = NetworkProject.targetForUISourceCode(uiLocation.uiSourceCode);
     if (!target) {
       return [];
     }
@@ -163,9 +166,9 @@ class ModelInfo {
    */
   constructor(workspace, resourceTreeModel) {
     const target = resourceTreeModel.target();
-    this._project = new Bindings.ContentProviderBasedProject(
+    this._project = new ContentProviderBasedProject(
         workspace, 'resources:' + target.id(), Workspace.projectTypes.Network, '', false /* isServiceProject */);
-    Bindings.NetworkProject.setTargetForProject(this._project, target);
+    NetworkProject.setTargetForProject(this._project, target);
 
     /** @type {!Map<string, !Binding>} */
     this._bindings = new Map();
@@ -294,17 +297,16 @@ class ModelInfo {
  */
 class Binding {
   /**
-   * @param {!Bindings.ContentProviderBasedProject} project
+   * @param {!ContentProviderBasedProject} project
    * @param {!SDK.Resource} resource
    */
   constructor(project, resource) {
     this._resources = new Set([resource]);
     this._project = project;
     this._uiSourceCode = this._project.createUISourceCode(resource.url, resource.contentType());
-    this._uiSourceCode[_symbol] = true;
-    Bindings.NetworkProject.setInitialFrameAttribution(this._uiSourceCode, resource.frameId);
-    this._project.addUISourceCodeWithProvider(
-        this._uiSourceCode, this, Bindings.resourceMetadata(resource), resource.mimeType);
+    this._uiSourceCode[symbol] = true;
+    NetworkProject.setInitialFrameAttribution(this._uiSourceCode, resource.frameId);
+    this._project.addUISourceCodeWithProvider(this._uiSourceCode, this, resourceMetadata(resource), resource.mimeType);
     /** @type {!Array<{stylesheet: !SDK.CSSStyleSheetHeader, edit: ?SDK.CSSModel.Edit}>} */
     this._edits = [];
   }
@@ -313,7 +315,7 @@ class Binding {
    * @return {!Array<!SDK.CSSStyleSheetHeader>}
    */
   _inlineStyles() {
-    const target = Bindings.NetworkProject.targetForUISourceCode(this._uiSourceCode);
+    const target = NetworkProject.targetForUISourceCode(this._uiSourceCode);
     const cssModel = target.model(SDK.CSSModel);
     const stylesheets = [];
     if (cssModel) {
@@ -331,7 +333,7 @@ class Binding {
    * @return {!Array<!SDK.Script>}
    */
   _inlineScripts() {
-    const target = Bindings.NetworkProject.targetForUISourceCode(this._uiSourceCode);
+    const target = NetworkProject.targetForUISourceCode(this._uiSourceCode);
     const debuggerModel = target.model(SDK.DebuggerModel);
     if (!debuggerModel) {
       return [];
@@ -369,7 +371,7 @@ class Binding {
         continue;
       }
       const stylesheet = data.stylesheet;
-      const startLocation = stylesheet[_offsetSymbol] ||
+      const startLocation = stylesheet[offsetSymbol] ||
           TextUtils.TextRange.createFromLocation(stylesheet.startLine, stylesheet.startColumn);
 
       const oldRange = edit.oldRange.relativeFrom(startLocation.startLine, startLocation.startColumn);
@@ -377,20 +379,20 @@ class Binding {
       text = new TextUtils.Text(text.replaceRange(oldRange, edit.newText));
       for (const script of scripts) {
         const scriptOffset =
-            script[_offsetSymbol] || TextUtils.TextRange.createFromLocation(script.lineOffset, script.columnOffset);
+            script[offsetSymbol] || TextUtils.TextRange.createFromLocation(script.lineOffset, script.columnOffset);
         if (!scriptOffset.follows(oldRange)) {
           continue;
         }
-        script[_offsetSymbol] = scriptOffset.rebaseAfterTextEdit(oldRange, newRange);
+        script[offsetSymbol] = scriptOffset.rebaseAfterTextEdit(oldRange, newRange);
         Bindings.debuggerWorkspaceBinding.updateLocations(script);
       }
       for (const style of styles) {
         const styleOffset =
-            style[_offsetSymbol] || TextUtils.TextRange.createFromLocation(style.startLine, style.startColumn);
+            style[offsetSymbol] || TextUtils.TextRange.createFromLocation(style.startLine, style.startColumn);
         if (!styleOffset.follows(oldRange)) {
           continue;
         }
-        style[_offsetSymbol] = styleOffset.rebaseAfterTextEdit(oldRange, newRange);
+        style[offsetSymbol] = styleOffset.rebaseAfterTextEdit(oldRange, newRange);
         Bindings.cssWorkspaceBinding.updateLocations(style);
       }
     }
@@ -402,7 +404,7 @@ class Binding {
    */
   addResource(resource) {
     this._resources.add(resource);
-    Bindings.NetworkProject.addFrameAttribution(this._uiSourceCode, resource.frameId);
+    NetworkProject.addFrameAttribution(this._uiSourceCode, resource.frameId);
   }
 
   /**
@@ -410,7 +412,7 @@ class Binding {
    */
   removeResource(resource) {
     this._resources.delete(resource);
-    Bindings.NetworkProject.removeFrameAttribution(this._uiSourceCode, resource.frameId);
+    NetworkProject.removeFrameAttribution(this._uiSourceCode, resource.frameId);
   }
 
   dispose() {
@@ -461,17 +463,5 @@ class Binding {
   }
 }
 
-export const _symbol = Symbol('Bindings.ResourceMapping._symbol');
-export const _offsetSymbol = Symbol('Bindings.ResourceMapping._offsetSymbol');
-
-/* Legacy exported object */
-self.Bindings = self.Bindings || {};
-
-/* Legacy exported object */
-Bindings = Bindings || {};
-
-/** @constructor */
-Bindings.ResourceMapping = ResourceMapping;
-
-Bindings.ResourceMapping._symbol = _symbol;
-Bindings.ResourceMapping._offsetSymbol = _offsetSymbol;
+export const symbol = Symbol('Bindings.ResourceMapping._symbol');
+export const offsetSymbol = Symbol('Bindings.ResourceMapping._offsetSymbol');

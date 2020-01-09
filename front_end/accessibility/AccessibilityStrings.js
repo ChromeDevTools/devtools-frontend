@@ -186,17 +186,3 @@ export const AXAttributes = {
       'title': {name: ls`From title`, description: ls`Value from title attribute.`},
       'other': {name: ls`From native HTML`, description: ls`Value from native HTML (unknown source).`},
     };
-
-    /* Legacy exported object */
-    self.Accessibility = self.Accessibility || {};
-
-    /* Legacy exported object */
-    Accessibility = Accessibility || {};
-
-    Accessibility.AccessibilityStrings = {};
-
-    Accessibility.AccessibilityStrings.AXAttributes = AXAttributes;
-
-    Accessibility.AccessibilityStrings.AXSourceTypes = AXSourceTypes;
-
-    Accessibility.AccessibilityStrings.AXNativeSourceTypes = AXNativeSourceTypes;

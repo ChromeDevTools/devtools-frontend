@@ -2,9 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-export default class AXBreadcrumbsPane extends Accessibility.AccessibilitySubPane {
+import {AccessibilityNode} from './AccessibilityModel.js';               // eslint-disable-line no-unused-vars
+import {AccessibilitySidebarView} from './AccessibilitySidebarView.js';  // eslint-disable-line no-unused-vars
+import {AccessibilitySubPane} from './AccessibilitySubPane.js';
+
+export class AXBreadcrumbsPane extends AccessibilitySubPane {
   /**
-   * @param {!Accessibility.AccessibilitySidebarView} axSidebarView
+   * @param {!AccessibilitySidebarView} axSidebarView
    */
   constructor(axSidebarView) {
     super(ls`Accessibility Tree`);
@@ -15,9 +19,9 @@ export default class AXBreadcrumbsPane extends Accessibility.AccessibilitySubPan
 
     this._axSidebarView = axSidebarView;
 
-    /** @type {?Accessibility.AXBreadcrumb} */
+    /** @type {?AXBreadcrumb} */
     this._preselectedBreadcrumb = null;
-    /** @type {?Accessibility.AXBreadcrumb} */
+    /** @type {?AXBreadcrumb} */
     this._inspectedNodeBreadcrumb = null;
 
     this._hoveredBreadcrumb = null;
@@ -44,7 +48,7 @@ export default class AXBreadcrumbsPane extends Accessibility.AccessibilitySubPan
   }
 
   /**
-   * @param {?Accessibility.AccessibilityNode} axNode
+   * @param {?AccessibilityNode} axNode
    * @override
    */
   setAXNode(axNode) {
@@ -69,7 +73,7 @@ export default class AXBreadcrumbsPane extends Accessibility.AccessibilitySubPan
     let breadcrumb = null;
     let parent = null;
     for (ancestor of ancestorChain) {
-      breadcrumb = new Accessibility.AXBreadcrumb(ancestor, depth, (ancestor === axNode));
+      breadcrumb = new AXBreadcrumb(ancestor, depth, (ancestor === axNode));
       if (parent) {
         parent.appendChild(breadcrumb);
       } else {
@@ -85,12 +89,12 @@ export default class AXBreadcrumbsPane extends Accessibility.AccessibilitySubPan
     this._setPreselectedBreadcrumb(this._inspectedNodeBreadcrumb);
 
     /**
-     * @param {!Accessibility.AXBreadcrumb} parentBreadcrumb
-     * @param {!Accessibility.AccessibilityNode} axNode
+     * @param {!AXBreadcrumb} parentBreadcrumb
+     * @param {!AccessibilityNode} axNode
      * @param {number} localDepth
      */
     function append(parentBreadcrumb, axNode, localDepth) {
-      const childBreadcrumb = new Accessibility.AXBreadcrumb(axNode, localDepth, false);
+      const childBreadcrumb = new AXBreadcrumb(axNode, localDepth, false);
       parentBreadcrumb.appendChild(childBreadcrumb);
 
       // In most cases there will be no children here, but there are some special cases.
@@ -164,7 +168,7 @@ export default class AXBreadcrumbsPane extends Accessibility.AccessibilitySubPan
   }
 
   /**
-   * @param {?Accessibility.AXBreadcrumb} breadcrumb
+   * @param {?AXBreadcrumb} breadcrumb
    */
   _setPreselectedBreadcrumb(breadcrumb) {
     if (breadcrumb === this._preselectedBreadcrumb) {
@@ -242,7 +246,7 @@ export default class AXBreadcrumbsPane extends Accessibility.AccessibilitySubPan
   }
 
   /**
-   * @param {?Accessibility.AXBreadcrumb} breadcrumb
+   * @param {?AXBreadcrumb} breadcrumb
    */
   _setHoveredBreadcrumb(breadcrumb) {
     if (breadcrumb === this._hoveredBreadcrumb) {
@@ -264,7 +268,7 @@ export default class AXBreadcrumbsPane extends Accessibility.AccessibilitySubPan
   }
 
   /**
-   * @param {!Accessibility.AccessibilityNode} axNode
+   * @param {!AccessibilityNode} axNode
    * @return {boolean}
    */
   _inspectDOMNode(axNode) {
@@ -311,12 +315,12 @@ export default class AXBreadcrumbsPane extends Accessibility.AccessibilitySubPan
 
 export class AXBreadcrumb {
   /**
-   * @param {!Accessibility.AccessibilityNode} axNode
+   * @param {!AccessibilityNode} axNode
    * @param {number} depth
    * @param {boolean} inspected
    */
   constructor(axNode, depth, inspected) {
-    /** @type {!Accessibility.AccessibilityNode} */
+    /** @type {!AccessibilityNode} */
     this._axNode = axNode;
 
     this._element = createElementWithClass('div', 'ax-breadcrumb');
@@ -336,7 +340,7 @@ export class AXBreadcrumb {
     UI.ARIAUtils.markAsGroup(this._childrenGroupElement);
     this._element.appendChild(this._childrenGroupElement);
 
-    /** @type !Array<!Accessibility.AXBreadcrumb> */
+    /** @type !Array<!AXBreadcrumb> */
     this._children = [];
     this._hovered = false;
     this._preselected = false;
@@ -381,7 +385,7 @@ export class AXBreadcrumb {
   }
 
   /**
-   * @param {!Accessibility.AXBreadcrumb} breadcrumb
+   * @param {!AXBreadcrumb} breadcrumb
    */
   appendChild(breadcrumb) {
     this._children.push(breadcrumb);
@@ -392,7 +396,7 @@ export class AXBreadcrumb {
   }
 
   /**
-   * @param {!Accessibility.AXBreadcrumb} breadcrumb
+   * @param {!AXBreadcrumb} breadcrumb
    */
   setParent(breadcrumb) {
     this._parent = breadcrumb;
@@ -448,7 +452,7 @@ export class AXBreadcrumb {
   }
 
   /**
-   * @return {!Accessibility.AccessibilityNode}
+   * @return {!AccessibilityNode}
    */
   axNode() {
     return this._axNode;
@@ -469,7 +473,7 @@ export class AXBreadcrumb {
   }
 
   /**
-   * @return {?Accessibility.AXBreadcrumb}
+   * @return {?AXBreadcrumb}
    */
   nextBreadcrumb() {
     if (this._children.length) {
@@ -483,7 +487,7 @@ export class AXBreadcrumb {
   }
 
   /**
-   * @return {?Accessibility.AXBreadcrumb}
+   * @return {?AXBreadcrumb}
    */
   previousBreadcrumb() {
     const previousSibling = this.element().previousSibling;
@@ -513,7 +517,7 @@ export class AXBreadcrumb {
     }
 
     const roleElement = createElementWithClass('span', 'monospace');
-    roleElement.classList.add(Accessibility.AXBreadcrumb.RoleStyles[role.type]);
+    roleElement.classList.add(RoleStyles[role.type]);
     roleElement.setTextContentTruncatedIfNeeded(role.value || '');
 
     this._nodeWrapper.appendChild(roleElement);
@@ -532,22 +536,3 @@ export const RoleStyles = {
   internalRole: 'ax-internal-role',
   role: 'ax-role',
 };
-
-/* Legacy exported object */
-self.Accessibility = self.Accessibility || {};
-
-/* Legacy exported object */
-Accessibility = Accessibility || {};
-
-/**
- * @constructor
- */
-Accessibility.AXBreadcrumbsPane = AXBreadcrumbsPane;
-
-/**
- * @constructor
- */
-Accessibility.AXBreadcrumb = AXBreadcrumb;
-
-/** @type {!Object<string, string>} */
-Accessibility.AXBreadcrumb.RoleStyles = RoleStyles;

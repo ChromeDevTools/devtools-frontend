@@ -1,15 +1,18 @@
 // Copyright (c) 2016 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
+import {config} from './ARIAProperties.js';
+
 /**
  * @unrestricted
  */
-export default class ARIAMetadata {
+export class ARIAMetadata {
   /**
    * @param {?Object} config
    */
   constructor(config) {
-    /** @type {!Map<string, !Accessibility.ARIAMetadata.Attribute>} */
+    /** @type {!Map<string, !Attribute>} */
     this._attributes = new Map();
 
     if (config) {
@@ -28,7 +31,7 @@ export default class ARIAMetadata {
       if (attributeConfig.type === 'boolean') {
         attributeConfig.enum = booleanEnum;
       }
-      this._attributes.set(attributeConfig.name, new Accessibility.ARIAMetadata.Attribute(attributeConfig));
+      this._attributes.set(attributeConfig.name, new Attribute(attributeConfig));
     }
 
     /** @type {!Array<string>} */
@@ -53,13 +56,13 @@ export default class ARIAMetadata {
 }
 
 /**
- * @return {!Accessibility.ARIAMetadata}
+ * @return {!ARIAMetadata}
  */
 export function ariaMetadata() {
-  if (!Accessibility.ARIAMetadata._instance) {
-    Accessibility.ARIAMetadata._instance = new Accessibility.ARIAMetadata(Accessibility.ARIAMetadata._config || null);
+  if (!ARIAMetadata._instance) {
+    ARIAMetadata._instance = new ARIAMetadata(config || null);
   }
-  return Accessibility.ARIAMetadata._instance;
+  return ARIAMetadata._instance;
 }
 
 /**
@@ -85,25 +88,3 @@ export class Attribute {
     return this._enum;
   }
 }
-
-/* Legacy exported object */
-self.Accessibility = self.Accessibility || {};
-
-/* Legacy exported object */
-Accessibility = Accessibility || {};
-
-/**
- * @constructor
- */
-Accessibility.ARIAMetadata = ARIAMetadata;
-
-/**
- * @unrestricted
- * @constructor
- */
-Accessibility.ARIAMetadata.Attribute = Attribute;
-
-/**
- * @return {!Accessibility.ARIAMetadata}
- */
-Accessibility.ariaMetadata = ariaMetadata;

@@ -7,7 +7,7 @@
  */
 export class AccessibilityNode {
   /**
-   * @param {!Accessibility.AccessibilityModel} accessibilityModel
+   * @param {!AccessibilityModel} accessibilityModel
    * @param {!Protocol.Accessibility.AXNode} payload
    */
   constructor(accessibilityModel, payload) {
@@ -39,7 +39,7 @@ export class AccessibilityNode {
   }
 
   /**
-   * @return {!Accessibility.AccessibilityModel}
+   * @return {!AccessibilityModel}
    */
   accessibilityModel() {
     return this._accessibilityModel;
@@ -115,14 +115,14 @@ export class AccessibilityNode {
   }
 
   /**
-   * @return {?Accessibility.AccessibilityNode}
+   * @return {?AccessibilityNode}
    */
   parentNode() {
     return this._parentNode;
   }
 
   /**
-   * @param {?Accessibility.AccessibilityNode} parentNode
+   * @param {?AccessibilityNode} parentNode
    */
   _setParentNode(parentNode) {
     this._parentNode = parentNode;
@@ -159,7 +159,7 @@ export class AccessibilityNode {
   }
 
   /**
-   * @return {!Array<!Accessibility.AccessibilityNode>}
+   * @return {!Array<!AccessibilityNode>}
    */
   children() {
     const children = [];
@@ -200,7 +200,7 @@ export class AccessibilityNode {
 
   /**
    * TODO(aboxhall): Remove once protocol is stable.
-   * @param {!Accessibility.AccessibilityNode} inspectedNode
+   * @param {!AccessibilityNode} inspectedNode
    * @param {string=} leadingSpace
    * @return {string}
    */
@@ -229,7 +229,7 @@ export class AccessibilityNode {
 /**
  * @unrestricted
  */
-export default class AccessibilityModel extends SDK.SDKModel {
+export class AccessibilityModel extends SDK.SDKModel {
   /**
    * @param {!SDK.Target} target
    */
@@ -237,7 +237,7 @@ export default class AccessibilityModel extends SDK.SDKModel {
     super(target);
     this._agent = target.accessibilityAgent();
 
-    /** @type {!Map<string, !Accessibility.AccessibilityNode>} */
+    /** @type {!Map<string, !AccessibilityNode>} */
     this._axIdToAXNode = new Map();
     this._backendDOMNodeIdToAXNode = new Map();
   }
@@ -257,7 +257,7 @@ export default class AccessibilityModel extends SDK.SDKModel {
     }
 
     for (const payload of payloads) {
-      new Accessibility.AccessibilityNode(this, payload);
+      new AccessibilityNode(this, payload);
     }
 
     for (const axNode of this._axIdToAXNode.values()) {
@@ -269,7 +269,7 @@ export default class AccessibilityModel extends SDK.SDKModel {
 
   /**
    * @param {string} axId
-   * @return {?Accessibility.AccessibilityNode}
+   * @return {?AccessibilityNode}
    */
   axNodeForId(axId) {
     return this._axIdToAXNode.get(axId);
@@ -277,7 +277,7 @@ export default class AccessibilityModel extends SDK.SDKModel {
 
   /**
    * @param {string} axId
-   * @param {!Accessibility.AccessibilityNode} axNode
+   * @param {!AccessibilityNode} axNode
    */
   _setAXNodeForAXId(axId, axNode) {
     this._axIdToAXNode.set(axId, axNode);
@@ -285,7 +285,7 @@ export default class AccessibilityModel extends SDK.SDKModel {
 
   /**
    * @param {?SDK.DOMNode} domNode
-   * @return {?Accessibility.AccessibilityNode}
+   * @return {?AccessibilityNode}
    */
   axNodeForDOMNode(domNode) {
     if (!domNode) {
@@ -296,7 +296,7 @@ export default class AccessibilityModel extends SDK.SDKModel {
 
   /**
    * @param {number} backendDOMNodeId
-   * @param {!Accessibility.AccessibilityNode} axNode
+   * @param {!AccessibilityNode} axNode
    */
   _setAXNodeForBackendDOMNodeId(backendDOMNodeId, axNode) {
     this._backendDOMNodeIdToAXNode.set(backendDOMNodeId, axNode);
@@ -315,20 +315,4 @@ export default class AccessibilityModel extends SDK.SDKModel {
   }
 }
 
-/* Legacy exported object */
-self.Accessibility = self.Accessibility || {};
-
-/* Legacy exported object */
-Accessibility = Accessibility || {};
-
-/**
- * @constructor
- */
-Accessibility.AccessibilityNode = AccessibilityNode;
-
-/**
- * @constructor
- */
-Accessibility.AccessibilityModel = AccessibilityModel;
-
-SDK.SDKModel.register(Accessibility.AccessibilityModel, SDK.Target.Capability.DOM, false);
+SDK.SDKModel.register(AccessibilityModel, SDK.Target.Capability.DOM, false);

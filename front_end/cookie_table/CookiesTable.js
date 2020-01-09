@@ -28,6 +28,8 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+const expiresSessionValue = Common.UIString('Session');
+
 /**
  * @unrestricted
  */
@@ -428,12 +430,12 @@ export class CookiesTable extends UI.VBox {
       data[SDK.Cookie.Attributes.Expires] = Number.secondsToString(parseInt(cookie.maxAge(), 10));
     } else if (cookie.expires()) {
       if (cookie.expires() < 0) {
-        data[SDK.Cookie.Attributes.Expires] = _expiresSessionValue;
+        data[SDK.Cookie.Attributes.Expires] = expiresSessionValue;
       } else {
         data[SDK.Cookie.Attributes.Expires] = new Date(cookie.expires()).toISOString();
       }
     } else {
-      data[SDK.Cookie.Attributes.Expires] = cookie.type() === SDK.Cookie.Type.Request ? ls`N/A` : _expiresSessionValue;
+      data[SDK.Cookie.Attributes.Expires] = cookie.type() === SDK.Cookie.Type.Request ? ls`N/A` : expiresSessionValue;
     }
 
     data[SDK.Cookie.Attributes.Size] = cookie.size();
@@ -491,7 +493,7 @@ export class CookiesTable extends UI.VBox {
       node.data[SDK.Cookie.Attributes.Path] = '/';
     }
     if (node.data[SDK.Cookie.Attributes.Expires] === null) {
-      node.data[SDK.Cookie.Attributes.Expires] = _expiresSessionValue;
+      node.data[SDK.Cookie.Attributes.Expires] = expiresSessionValue;
     }
   }
 
@@ -522,7 +524,7 @@ export class CookiesTable extends UI.VBox {
 
     cookie.addAttribute(SDK.Cookie.Attributes.Domain, data[SDK.Cookie.Attributes.Domain]);
     cookie.addAttribute(SDK.Cookie.Attributes.Path, data[SDK.Cookie.Attributes.Path]);
-    if (data.expires && data.expires !== _expiresSessionValue) {
+    if (data.expires && data.expires !== expiresSessionValue) {
       cookie.addAttribute(SDK.Cookie.Attributes.Expires, (new Date(data[SDK.Cookie.Attributes.Expires])).toUTCString());
     }
     if (data[SDK.Cookie.Attributes.HttpOnly]) {
@@ -573,7 +575,7 @@ export class CookiesTable extends UI.VBox {
    * @returns {boolean}
    */
   _isValidDate(date) {
-    return date === '' || date === _expiresSessionValue || !isNaN(Date.parse(date));
+    return date === '' || date === expiresSessionValue || !isNaN(Date.parse(date));
   }
 
   _refresh() {
@@ -660,23 +662,3 @@ export class DataGridNode extends DataGrid.DataGridNode {
     return cell;
   }
 }
-
-/** @const */
-export const _expiresSessionValue = Common.UIString('Session');
-
-/* Legacy exported object */
-self.CookieTable = self.CookieTable || {};
-
-/* Legacy exported object */
-CookieTable = CookieTable || {};
-
-/** @constructor */
-CookieTable.CookiesTable = CookiesTable;
-
-CookieTable.CookiesTable._expiresSessionValue = _expiresSessionValue;
-
-/** @constructor */
-CookieTable.DataGridNode = DataGridNode;
-
-/** @typedef {!{uiString: string, attribute: ?SDK.Cookie.Attributes}} */
-CookieTable.BlockedReason;

@@ -576,6 +576,7 @@ all_devtools_modules = [
   "front_end/console/ConsoleViewMessage.js",
   "front_end/console/ConsoleViewport.js",
   "front_end/cookie_table/cookie_table.js",
+  "front_end/cookie_table/cookie_table-legacy.js",
   "front_end/cookie_table/CookiesTable.js",
   "front_end/coverage/coverage.js",
   "front_end/coverage/CoverageDecorationManager.js",
@@ -1429,6 +1430,7 @@ copied_devtools_modules = [
   "$resources_out_dir/console/ConsoleViewMessage.js",
   "$resources_out_dir/console/ConsoleViewport.js",
   "$resources_out_dir/cookie_table/cookie_table.js",
+  "$resources_out_dir/cookie_table/cookie_table-legacy.js",
   "$resources_out_dir/cookie_table/CookiesTable.js",
   "$resources_out_dir/coverage/coverage.js",
   "$resources_out_dir/coverage/CoverageDecorationManager.js",
@@ -2188,8 +2190,11 @@ action("generate_devtools_grd") {
     "front_end",
   ]
 
-  args = ["--file-list", "{{response_file_name}}", "--relative_path_dirs" ] +
-         rebase_path(relative_path_dirs, root_build_dir) +
+  args = [
+           "--file-list",
+           "{{response_file_name}}",
+           "--relative_path_dirs",
+         ] + rebase_path(relative_path_dirs, root_build_dir) +
          [
            "--images",
            rebase_path("front_end/Images", root_build_dir),

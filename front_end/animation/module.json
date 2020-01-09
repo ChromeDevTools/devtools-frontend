@@ -16,6 +16,7 @@
     "scripts": [],
     "modules": [
         "animation.js",
+        "animation-legacy.js",
         "AnimationModel.js",
         "AnimationGroupPreviewUI.js",
         "AnimationScreenshotPopover.js",

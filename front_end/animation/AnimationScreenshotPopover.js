@@ -4,7 +4,7 @@
 /**
  * @unrestricted
  */
-export default class AnimationScreenshotPopover extends UI.VBox {
+export class AnimationScreenshotPopover extends UI.VBox {
   /**
    * @param {!Array.<!Image>} images
    */
@@ -60,15 +60,3 @@ export default class AnimationScreenshotPopover extends UI.VBox {
     this._progressBar.style.width = (this._currentFrame % numFrames + 1) / numFrames * 100 + '%';
   }
 }
-
-/* Legacy exported object */
-self.Animation = self.Animation || {};
-
-/* Legacy exported object */
-Animation = Animation || {};
-
-/**
- * @unrestricted
- * @constructor
- */
-Animation.AnimationScreenshotPopover = AnimationScreenshotPopover;

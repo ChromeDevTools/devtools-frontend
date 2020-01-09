@@ -5,7 +5,7 @@
 /**
  * @unrestricted
  */
-export default class AnimationModel extends SDK.SDKModel {
+export class AnimationModel extends SDK.SDKModel {
   /**
    * @param {!SDK.Target} target
    */
@@ -13,10 +13,10 @@ export default class AnimationModel extends SDK.SDKModel {
     super(target);
     this._runtimeModel = /** @type {!SDK.RuntimeModel} */ (target.model(SDK.RuntimeModel));
     this._agent = target.animationAgent();
-    target.registerAnimationDispatcher(new Animation.AnimationDispatcher(this));
-    /** @type {!Map.<string, !Animation.AnimationModel.Animation>} */
+    target.registerAnimationDispatcher(new AnimationDispatcher(this));
+    /** @type {!Map.<string, !AnimationImpl>} */
     this._animationsById = new Map();
-    /** @type {!Map.<string, !Animation.AnimationModel.AnimationGroup>} */
+    /** @type {!Map.<string, !AnimationGroup>} */
     this._animationGroups = new Map();
     /** @type {!Array.<string>} */
     this._pendingAnimations = [];
@@ -88,7 +88,7 @@ export default class AnimationModel extends SDK.SDKModel {
   }
 
   /**
-   * @param {!Animation.AnimationModel.AnimationGroup} incomingGroup
+   * @param {!AnimationGroup} incomingGroup
    * @return {boolean}
    */
   _matchExistingGroups(incomingGroup) {
@@ -112,7 +112,7 @@ export default class AnimationModel extends SDK.SDKModel {
   }
 
   /**
-   * @return {!Animation.AnimationModel.AnimationGroup}
+   * @return {!AnimationGroup}
    */
   _createGroupFromPendingAnimations() {
     console.assert(this._pendingAnimations.length);
@@ -185,7 +185,7 @@ export const Events = {
  */
 export class AnimationImpl {
   /**
-   * @param {!Animation.AnimationModel} animationModel
+   * @param {!AnimationModel} animationModel
    * @param {!Protocol.Animation.Animation} payload
    */
   constructor(animationModel, payload) {
@@ -196,9 +196,9 @@ export class AnimationImpl {
   }
 
   /**
-   * @param {!Animation.AnimationModel} animationModel
+   * @param {!AnimationModel} animationModel
    * @param {!Protocol.Animation.Animation} payload
-   * @return {!Animation.AnimationModel.Animation}
+   * @return {!AnimationImpl}
    */
   static parsePayload(animationModel, payload) {
     return new AnimationImpl(animationModel, payload);
@@ -287,21 +287,22 @@ export class AnimationImpl {
   }
 
   /**
-   * @return {!Animation.AnimationModel.AnimationEffect}
+   * @return {!AnimationEffect}
    */
   source() {
     return this._source;
   }
 
   /**
-   * @return {!Animation.AnimationModel.Animation.Type}
+   * @return {!Type}
    */
   type() {
-    return /** @type {!Animation.AnimationModel.Animation.Type} */ (this._payload.type);
+    return (
+        /** @type {!Type} */ (this._payload.type));
   }
 
   /**
-   * @param {!Animation.AnimationModel.Animation} animation
+   * @param {!AnimationImpl} animation
    * @return {boolean}
    */
   overlaps(animation) {
@@ -374,7 +375,7 @@ export const Type = {
  */
 export class AnimationEffect {
   /**
-   * @param {!Animation.AnimationModel} animationModel
+   * @param {!AnimationModel} animationModel
    * @param {!Protocol.Animation.AnimationEffect} payload
    */
   constructor(animationModel, payload) {
@@ -465,7 +466,7 @@ export class AnimationEffect {
   }
 
   /**
-   * @return {?Animation.AnimationModel.KeyframesRule}
+   * @return {?KeyframesRule}
    */
   keyframesRule() {
     return this._keyframesRule;
@@ -510,7 +511,7 @@ export class KeyframesRule {
   }
 
   /**
-   * @return {!Array.<!Animation.AnimationModel.KeyframeStyle>}
+   * @return {!Array.<!KeyframeStyle>}
    */
   keyframes() {
     return this._keyframes;
@@ -563,9 +564,9 @@ export class KeyframeStyle {
  */
 export class AnimationGroup {
   /**
-   * @param {!Animation.AnimationModel} animationModel
+   * @param {!AnimationModel} animationModel
    * @param {string} id
-   * @param {!Array.<!Animation.AnimationModel.Animation>} animations
+   * @param {!Array.<!AnimationImpl>} animations
    */
   constructor(animationModel, id, animations) {
     this._animationModel = animationModel;
@@ -584,7 +585,7 @@ export class AnimationGroup {
   }
 
   /**
-   * @return {!Array.<!Animation.AnimationModel.Animation>}
+   * @return {!Array.<!AnimationImpl>}
    */
   animations() {
     return this._animations;
@@ -600,7 +601,7 @@ export class AnimationGroup {
    */
   _animationIds() {
     /**
-     * @param {!Animation.AnimationModel.Animation} animation
+     * @param {!AnimationImpl} animation
      * @return {string}
      */
     function extractId(animation) {
@@ -667,12 +668,12 @@ export class AnimationGroup {
   }
 
   /**
-   * @param {!Animation.AnimationModel.AnimationGroup} group
+   * @param {!AnimationGroup} group
    * @return {boolean}
    */
   _matches(group) {
     /**
-     * @param {!Animation.AnimationModel.Animation} anim
+     * @param {!AnimationImpl} anim
      * @return {string}
      */
     function extractId(anim) {
@@ -697,7 +698,7 @@ export class AnimationGroup {
   }
 
   /**
-   * @param {!Animation.AnimationModel.AnimationGroup} group
+   * @param {!AnimationGroup} group
    */
   _update(group) {
     this._animationModel._releaseAnimations(this._animationIds());
@@ -757,7 +758,7 @@ export class AnimationDispatcher {
  */
 export class ScreenshotCapture {
   /**
-   * @param {!Animation.AnimationModel} animationModel
+   * @param {!AnimationModel} animationModel
    * @param {!SDK.ScreenCaptureModel} screenCaptureModel
    */
   constructor(animationModel, screenCaptureModel) {
@@ -829,58 +830,3 @@ export class ScreenshotCapture {
 }
 
 SDK.SDKModel.register(AnimationModel, SDK.Target.Capability.DOM, false);
-
-/* Legacy exported object */
-self.Animation = self.Animation || {};
-
-/* Legacy exported object */
-Animation = Animation || {};
-
-/**
- * @constructor
- */
-Animation.AnimationModel = AnimationModel;
-
-/** @enum {symbol} */
-Animation.AnimationModel.Events = Events;
-
-/**
- * @constructor
- */
-Animation.AnimationModel.Animation = AnimationImpl;
-
-/** @enum {string} */
-Animation.AnimationModel.Animation.Type = Type;
-
-/**
- * @constructor
- */
-Animation.AnimationModel.AnimationEffect = AnimationEffect;
-
-/**
- * @constructor
- */
-Animation.AnimationModel.KeyframesRule = KeyframesRule;
-
-/**
- * @constructor
- */
-Animation.AnimationModel.KeyframeStyle = KeyframeStyle;
-
-/**
- * @constructor
- */
-Animation.AnimationModel.AnimationGroup = AnimationGroup;
-
-/**
- * @constructor
- */
-Animation.AnimationModel.ScreenshotCapture = ScreenshotCapture;
-
-/** @typedef {{ endTime: number, screenshots: !Array.<string>}} */
-Animation.AnimationModel.ScreenshotCapture.Request;
-
-/**
- * @constructor
- */
-Animation.AnimationDispatcher = AnimationDispatcher;

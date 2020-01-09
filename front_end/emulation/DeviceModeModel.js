@@ -1,12 +1,15 @@
 // Copyright 2015 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
+import {EmulatedDevice, Horizontal} from './EmulatedDevices.js';  // eslint-disable-line no-unused-vars
+
 /**
  * @implements {SDK.SDKModelObserver<!SDK.EmulationModel>}
  * @extends {Common.Object}
  * @unrestricted
  */
-export default class DeviceModeModel extends Common.Object {
+export class DeviceModeModel extends Common.Object {
   constructor() {
     super();
     this._screenRect = new UI.Rect(0, 0, 1, 1);
@@ -56,7 +59,7 @@ export default class DeviceModeModel extends Common.Object {
 
     /** @type {!Type} */
     this._type = Type.None;
-    /** @type {?Emulation.EmulatedDevice} */
+    /** @type {?EmulatedDevice} */
     this._device = null;
     /** @type {?Emulation.EmulatedDevice.Mode} */
     this._mode = null;
@@ -151,7 +154,7 @@ export default class DeviceModeModel extends Common.Object {
 
   /**
    * @param {!Type} type
-   * @param {?Emulation.EmulatedDevice} device
+   * @param {?EmulatedDevice} device
    * @param {?Emulation.EmulatedDevice.Mode} mode
    * @param {number=} scale
    */
@@ -228,7 +231,7 @@ export default class DeviceModeModel extends Common.Object {
   }
 
   /**
-   * @return {?Emulation.EmulatedDevice}
+   * @return {?EmulatedDevice}
    */
   device() {
     return this._device;
@@ -508,9 +511,9 @@ export default class DeviceModeModel extends Common.Object {
       }
       this._applyDeviceMetrics(
           new UI.Size(orientation.width, orientation.height), insets, outline, this._scaleSetting.get(),
-          this._device.deviceScaleFactor, mobile, this._mode.orientation === Emulation.EmulatedDevice.Horizontal ?
-              Protocol.Emulation.ScreenOrientationType.LandscapePrimary :
-              Protocol.Emulation.ScreenOrientationType.PortraitPrimary,
+          this._device.deviceScaleFactor, mobile,
+          this._mode.orientation === Horizontal ? Protocol.Emulation.ScreenOrientationType.LandscapePrimary :
+                                                  Protocol.Emulation.ScreenOrientationType.PortraitPrimary,
           resetPageScaleFactor);
       this._applyUserAgent(this._device.userAgent);
       this._applyTouch(this._device.touch(), mobile);
@@ -727,7 +730,7 @@ export default class DeviceModeModel extends Common.Object {
       clip = {x: 0, y: 0, width: deviceMetrics.width, height: deviceMetrics.height, scale: 1};
 
       if (this._device) {
-        const screenOrientation = this._mode.orientation === Emulation.EmulatedDevice.Horizontal ?
+        const screenOrientation = this._mode.orientation === Horizontal ?
             Protocol.Emulation.ScreenOrientationType.LandscapePrimary :
             Protocol.Emulation.ScreenOrientationType.PortraitPrimary;
         const screenOrientationAngle =
@@ -796,31 +799,3 @@ const _mobileUserAgent =
     'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36';
 export const _defaultMobileUserAgent = SDK.MultitargetNetworkManager.patchUserAgentWithChromeVersion(_mobileUserAgent);
 export const defaultMobileScaleFactor = 2;
-
-/* Legacy exported object */
-self.Emulation = self.Emulation || {};
-
-/* Legacy exported object */
-Emulation = Emulation || {};
-
-/**
- * @constructor
- */
-Emulation.DeviceModeModel = DeviceModeModel;
-
-/** @enum {string} */
-Emulation.DeviceModeModel.Events = Events;
-
-/** @enum {string} */
-Emulation.DeviceModeModel.Type = Type;
-
-/** @enum {string} */
-Emulation.DeviceModeModel.UA = UA;
-
-Emulation.DeviceModeModel.MinDeviceSize = MinDeviceSize;
-Emulation.DeviceModeModel.MaxDeviceSize = MaxDeviceSize;
-Emulation.DeviceModeModel.MinDeviceScaleFactor = MinDeviceScaleFactor;
-Emulation.DeviceModeModel.MaxDeviceScaleFactor = MaxDeviceScaleFactor;
-Emulation.DeviceModeModel.MaxDeviceNameLength = MaxDeviceNameLength;
-Emulation.DeviceModeModel._defaultMobileUserAgent = _defaultMobileUserAgent;
-Emulation.DeviceModeModel.defaultMobileScaleFactor = defaultMobileScaleFactor;

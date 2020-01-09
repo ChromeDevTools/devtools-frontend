@@ -5,7 +5,7 @@
 /**
  * @unrestricted
  */
-export default class InspectedPagePlaceholder extends UI.Widget {
+export class InspectedPagePlaceholder extends UI.Widget {
   constructor() {
     super(true);
     this.registerRequiredCSS('emulation/inspectedPagePlaceholder.css');
@@ -77,22 +77,3 @@ export const instance = function() {
 export const Events = {
   Update: Symbol('Update')
 };
-
-/* Legacy exported object */
-self.Emulation = self.Emulation || {};
-
-/* Legacy exported object */
-Emulation = Emulation || {};
-
-/**
- * @constructor
- */
-Emulation.InspectedPagePlaceholder = InspectedPagePlaceholder;
-
-/**
- * @return {!InspectedPagePlaceholder}
- */
-Emulation.InspectedPagePlaceholder.instance = instance;
-
-/** @enum {symbol} */
-Emulation.InspectedPagePlaceholder.Events = Events;

@@ -1,24 +1,31 @@
 // Copyright 2014 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
+import {DeviceModeWrapper} from './DeviceModeWrapper.js';
+import {Events, instance} from './InspectedPagePlaceholder.js';
+
+/** @type {!AdvancedApp} */
+let _appInstance;
+
 /**
  * @implements {Common.App}
  * @unrestricted
  */
-export default class AdvancedApp {
+export class AdvancedApp {
   constructor() {
     Components.dockController.addEventListener(
         Components.DockController.Events.BeforeDockSideChanged, this._openToolboxWindow, this);
   }
 
   /**
-   * @return {!Emulation.AdvancedApp}
+   * @return {!AdvancedApp}
    */
   static _instance() {
-    if (!Emulation.AdvancedApp._appInstance) {
-      Emulation.AdvancedApp._appInstance = new Emulation.AdvancedApp();
+    if (!_appInstance) {
+      _appInstance = new AdvancedApp();
     }
-    return Emulation.AdvancedApp._appInstance;
+    return _appInstance;
   }
 
   /**
@@ -34,10 +41,9 @@ export default class AdvancedApp {
     this._rootSplitWidget.setDefaultFocusedChild(UI.inspectorView);
     UI.inspectorView.setOwnerSplit(this._rootSplitWidget);
 
-    this._inspectedPagePlaceholder = Emulation.InspectedPagePlaceholder.instance();
-    this._inspectedPagePlaceholder.addEventListener(
-        Emulation.InspectedPagePlaceholder.Events.Update, this._onSetInspectedPageBounds.bind(this), this);
-    this._deviceModeView = new Emulation.DeviceModeWrapper(this._inspectedPagePlaceholder);
+    this._inspectedPagePlaceholder = instance();
+    this._inspectedPagePlaceholder.addEventListener(Events.Update, this._onSetInspectedPageBounds.bind(this), this);
+    this._deviceModeView = new DeviceModeWrapper(this._inspectedPagePlaceholder);
 
     Components.dockController.addEventListener(
         Components.DockController.Events.BeforeDockSideChanged, this._onBeforeDockSideChange, this);
@@ -201,25 +207,6 @@ export class AdvancedAppProvider {
    * @return {!Common.App}
    */
   createApp() {
-    return Emulation.AdvancedApp._instance();
+    return AdvancedApp._instance();
   }
 }
-
-/* Legacy exported object */
-self.Emulation = self.Emulation || {};
-
-/* Legacy exported object */
-Emulation = Emulation || {};
-
-/**
- * @constructor
- */
-Emulation.AdvancedApp = AdvancedApp;
-
-/** @type {!Emulation.AdvancedApp} */
-Emulation.AdvancedApp._appInstance;
-
-/**
- * @constructor
- */
-Emulation.AdvancedAppProvider = AdvancedAppProvider;

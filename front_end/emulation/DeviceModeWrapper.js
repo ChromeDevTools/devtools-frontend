@@ -1,21 +1,26 @@
 // Copyright 2016 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
+import {DeviceModeModel} from './DeviceModeModel.js';
+import {DeviceModeView} from './DeviceModeView.js';
+import {InspectedPagePlaceholder} from './InspectedPagePlaceholder.js';  // eslint-disable-line no-unused-vars
+
 /**
  * @unrestricted
  */
-export default class DeviceModeWrapper extends UI.VBox {
+export class DeviceModeWrapper extends UI.VBox {
   /**
-   * @param {!Emulation.InspectedPagePlaceholder} inspectedPagePlaceholder
+   * @param {!InspectedPagePlaceholder} inspectedPagePlaceholder
    */
   constructor(inspectedPagePlaceholder) {
     super();
-    Emulation.DeviceModeView._wrapperInstance = this;
+    DeviceModeView.wrapperInstance = this;
     this._inspectedPagePlaceholder = inspectedPagePlaceholder;
-    /** @type {?Emulation.DeviceModeView} */
+    /** @type {?DeviceModeView} */
     this._deviceModeView = null;
     this._toggleDeviceModeAction = UI.actionRegistry.action('emulation.toggle-device-mode');
-    const model = self.singleton(Emulation.DeviceModeModel);
+    const model = self.singleton(DeviceModeModel);
     this._showDeviceModeSetting = model.enabledSetting();
     this._showDeviceModeSetting.setRequiresUserAction(!!Root.Runtime.queryParam('hasOtherClients'));
     this._showDeviceModeSetting.addChangeListener(this._update.bind(this, false));
@@ -35,7 +40,7 @@ export default class DeviceModeWrapper extends UI.VBox {
    */
   _captureScreenshot(fullSize, clip) {
     if (!this._deviceModeView) {
-      this._deviceModeView = new Emulation.DeviceModeView();
+      this._deviceModeView = new DeviceModeView();
     }
     this._deviceModeView.setNonEmulatedAvailableSize(this._inspectedPagePlaceholder.element);
     if (fullSize) {
@@ -70,7 +75,7 @@ export default class DeviceModeWrapper extends UI.VBox {
 
     if (this._showDeviceModeSetting.get()) {
       if (!this._deviceModeView) {
-        this._deviceModeView = new Emulation.DeviceModeView();
+        this._deviceModeView = new DeviceModeView();
       }
       this._deviceModeView.show(this.element);
       this._inspectedPagePlaceholder.clearMinimumSize();
@@ -85,9 +90,6 @@ export default class DeviceModeWrapper extends UI.VBox {
   }
 }
 
-/** @type {!Emulation.DeviceModeWrapper} */
-Emulation.DeviceModeView._wrapperInstance;
-
 /**
  * @implements {UI.ActionDelegate}
  * @unrestricted
@@ -100,10 +102,10 @@ export class ActionDelegate {
    * @return {boolean}
    */
   handleAction(context, actionId) {
-    if (Emulation.DeviceModeView._wrapperInstance) {
+    if (DeviceModeView.wrapperInstance) {
       switch (actionId) {
         case 'emulation.capture-screenshot':
-          return Emulation.DeviceModeView._wrapperInstance._captureScreenshot();
+          return DeviceModeView.wrapperInstance._captureScreenshot();
 
         case 'emulation.capture-node-screenshot': {
           const node = UI.context.flavor(SDK.DOMNode);
@@ -131,36 +133,20 @@ export class ActionDelegate {
             clip.y *= page_zoom;
             clip.width *= page_zoom;
             clip.height *= page_zoom;
-            Emulation.DeviceModeView._wrapperInstance._captureScreenshot(false, clip);
+            DeviceModeView.wrapperInstance._captureScreenshot(false, clip);
           }
           captureClip();
           return true;
         }
 
         case 'emulation.capture-full-height-screenshot':
-          return Emulation.DeviceModeView._wrapperInstance._captureScreenshot(true);
+          return DeviceModeView.wrapperInstance._captureScreenshot(true);
 
         case 'emulation.toggle-device-mode':
-          Emulation.DeviceModeView._wrapperInstance._toggleDeviceMode();
+          DeviceModeView.wrapperInstance._toggleDeviceMode();
           return true;
       }
     }
     return false;
   }
 }
-
-/* Legacy exported object */
-self.Emulation = self.Emulation || {};
-
-/* Legacy exported object */
-Emulation = Emulation || {};
-
-/**
- * @constructor
- */
-Emulation.DeviceModeWrapper = DeviceModeWrapper;
-
-/**
- * @constructor
- */
-Emulation.DeviceModeWrapper.ActionDelegate = ActionDelegate;

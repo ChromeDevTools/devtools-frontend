@@ -1,10 +1,11 @@
 // Copyright (c) 2015 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
 /**
  * @unrestricted
  */
-export default class SensorsView extends UI.VBox {
+export class SensorsView extends UI.VBox {
   constructor() {
     super(true);
     this.registerRequiredCSS('emulation/sensors.css');
@@ -561,29 +562,3 @@ export class ShowActionDelegate {
 }
 
 export const ShiftDragOrientationSpeed = 16;
-
-/* Legacy exported object */
-self.Emulation = self.Emulation || {};
-
-/* Legacy exported object */
-Emulation = Emulation || {};
-
-/**
- * @constructor
- */
-Emulation.SensorsView = SensorsView;
-
-/** @enum {string} */
-Emulation.SensorsView.DeviceOrientationModificationSource = DeviceOrientationModificationSource;
-
-/** {string} */
-Emulation.SensorsView.NonPresetOptions = NonPresetOptions;
-
-/** @type {!Array.<{title: string, value: !Array.<{title: string, orientation: string}>}>} */
-Emulation.SensorsView.PresetOrientations = PresetOrientations;
-
-/**
- * @constructor
- */
-Emulation.SensorsView.ShowActionDelegate = ShowActionDelegate;
-Emulation.SensorsView.ShiftDragOrientationSpeed = ShiftDragOrientationSpeed;

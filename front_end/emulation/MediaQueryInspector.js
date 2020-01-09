@@ -1,11 +1,12 @@
 // Copyright 2014 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
 /**
  * @implements {SDK.SDKModelObserver<!SDK.CSSModel>}
  * @unrestricted
  */
-export default class MediaQueryInspector extends UI.Widget {
+export class MediaQueryInspector extends UI.Widget {
   /**
    * @param {function():number} getWidthCallback
    * @param {function(number)} setWidthCallback
@@ -489,24 +490,3 @@ export class MediaQueryUIModel {
     return this._active;
   }
 }
-
-/* Legacy exported object */
-self.Emulation = self.Emulation || {};
-
-/* Legacy exported object */
-Emulation = Emulation || {};
-
-/**
- * @constructor
- */
-Emulation.MediaQueryInspector = MediaQueryInspector;
-
-/**
- * @enum {number}
- */
-Emulation.MediaQueryInspector.Section = Section;
-
-/**
- * @constructor
- */
-Emulation.MediaQueryInspector.MediaQueryUIModel = MediaQueryUIModel;

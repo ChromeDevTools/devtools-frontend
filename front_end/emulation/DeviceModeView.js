@@ -1,37 +1,45 @@
 // Copyright 2015 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
+import {DeviceModeModel, Events, MaxDeviceSize, MinDeviceSize, Type} from './DeviceModeModel.js';
+import {DeviceModeToolbar} from './DeviceModeToolbar.js';
+import {MediaQueryInspector} from './MediaQueryInspector.js';
+
 /**
  * @unrestricted
  */
-export default class DeviceModeView extends UI.VBox {
+export class DeviceModeView extends UI.VBox {
   constructor() {
     super(true);
+
+    /** @type {?UI.VBox} */
+    this.wrapperInstance;
+
     this.setMinimumSize(150, 150);
     this.element.classList.add('device-mode-view');
     this.registerRequiredCSS('emulation/deviceModeView.css');
     UI.Tooltip.addNativeOverrideContainer(this.contentElement);
 
-    this._model = self.singleton(Emulation.DeviceModeModel);
-    this._model.addEventListener(Emulation.DeviceModeModel.Events.Updated, this._updateUI, this);
-    this._mediaInspector = new Emulation.MediaQueryInspector(
-        () => this._model.appliedDeviceSize().width, this._model.setWidth.bind(this._model));
+    this._model = self.singleton(DeviceModeModel);
+    this._model.addEventListener(Events.Updated, this._updateUI, this);
+    this._mediaInspector =
+        new MediaQueryInspector(() => this._model.appliedDeviceSize().width, this._model.setWidth.bind(this._model));
     this._showMediaInspectorSetting = Common.settings.moduleSetting('showMediaQueryInspector');
     this._showMediaInspectorSetting.addChangeListener(this._updateUI, this);
     this._showRulersSetting = Common.settings.moduleSetting('emulation.showRulers');
     this._showRulersSetting.addChangeListener(this._updateUI, this);
 
-    this._topRuler = new Emulation.DeviceModeView.Ruler(true, this._model.setWidthAndScaleToFit.bind(this._model));
+    this._topRuler = new Ruler(true, this._model.setWidthAndScaleToFit.bind(this._model));
     this._topRuler.element.classList.add('device-mode-ruler-top');
-    this._leftRuler = new Emulation.DeviceModeView.Ruler(false, this._model.setHeightAndScaleToFit.bind(this._model));
+    this._leftRuler = new Ruler(false, this._model.setHeightAndScaleToFit.bind(this._model));
     this._leftRuler.element.classList.add('device-mode-ruler-left');
     this._createUI();
     UI.zoomManager.addEventListener(UI.ZoomManager.Events.ZoomChanged, this._zoomChanged, this);
   }
 
   _createUI() {
-    this._toolbar =
-        new Emulation.DeviceModeToolbar(this._model, this._showMediaInspectorSetting, this._showRulersSetting);
+    this._toolbar = new DeviceModeToolbar(this._model, this._showMediaInspectorSetting, this._showRulersSetting);
     this.contentElement.appendChild(this._toolbar.element());
 
     this._contentClip = this.contentElement.createChild('div', 'device-mode-content-clip vbox');
@@ -97,10 +105,10 @@ export default class DeviceModeView extends UI.VBox {
     /**
      * @param {number} width
      * @param {!Event} e
-     * @this {Emulation.DeviceModeView}
+     * @this {DeviceModeView}
      */
     function applySize(width, e) {
-      this._model.emulate(Emulation.DeviceModeModel.Type.Responsive, null, null);
+      this._model.emulate(Type.Responsive, null, null);
       this._model.setWidthAndScaleToFit(width);
       e.consume();
     }
@@ -162,7 +170,7 @@ export default class DeviceModeView extends UI.VBox {
       const dipOffsetX = cssOffsetX * UI.zoomManager.zoomFactor();
       let newWidth = this._resizeStart.width + dipOffsetX * widthFactor;
       newWidth = Math.round(newWidth / this._model.scale());
-      if (newWidth >= Emulation.DeviceModeModel.MinDeviceSize && newWidth <= Emulation.DeviceModeModel.MaxDeviceSize) {
+      if (newWidth >= MinDeviceSize && newWidth <= MaxDeviceSize) {
         this._model.setWidth(newWidth);
       }
     }
@@ -171,8 +179,7 @@ export default class DeviceModeView extends UI.VBox {
       const dipOffsetY = cssOffsetY * UI.zoomManager.zoomFactor();
       let newHeight = this._resizeStart.height + dipOffsetY * heightFactor;
       newHeight = Math.round(newHeight / this._model.scale());
-      if (newHeight >= Emulation.DeviceModeModel.MinDeviceSize &&
-          newHeight <= Emulation.DeviceModeModel.MaxDeviceSize) {
+      if (newHeight >= MinDeviceSize && newHeight <= MaxDeviceSize) {
         this._model.setHeight(newHeight);
       }
     }
@@ -204,7 +211,7 @@ export default class DeviceModeView extends UI.VBox {
 
     const zoomFactor = UI.zoomManager.zoomFactor();
     let callDoResize = false;
-    const showRulers = this._showRulersSetting.get() && this._model.type() !== Emulation.DeviceModeModel.Type.None;
+    const showRulers = this._showRulersSetting.get() && this._model.type() !== Type.None;
     let contentAreaResized = false;
     let updateRulers = false;
 
@@ -231,7 +238,7 @@ export default class DeviceModeView extends UI.VBox {
     }
     this._contentClip.classList.toggle('device-mode-outline-visible', !!this._model.outlineImage());
 
-    const resizable = this._model.type() === Emulation.DeviceModeModel.Type.Responsive;
+    const resizable = this._model.type() === Type.Responsive;
     if (resizable !== this._cachedResizable) {
       this._rightResizerElement.classList.toggle('hidden', !resizable);
       this._leftResizerElement.classList.toggle('hidden', !resizable);
@@ -241,8 +248,7 @@ export default class DeviceModeView extends UI.VBox {
       this._cachedResizable = resizable;
     }
 
-    const mediaInspectorVisible =
-        this._showMediaInspectorSetting.get() && this._model.type() !== Emulation.DeviceModeModel.Type.None;
+    const mediaInspectorVisible = this._showMediaInspectorSetting.get() && this._model.type() !== Type.None;
     if (mediaInspectorVisible !== this._cachedMediaInspectorVisible) {
       if (mediaInspectorVisible) {
         this._mediaInspector.show(this._mediaInspectorContainer);
@@ -325,7 +331,7 @@ export default class DeviceModeView extends UI.VBox {
    * @param {!Element} element
    */
   setNonEmulatedAvailableSize(element) {
-    if (this._model.type() !== Emulation.DeviceModeModel.Type.None) {
+    if (this._model.type() !== Type.None) {
       return;
     }
     const zoomFactor = UI.zoomManager.zoomFactor();
@@ -384,7 +390,7 @@ export default class DeviceModeView extends UI.VBox {
    * @override
    */
   willHide() {
-    this._model.emulate(Emulation.DeviceModeModel.Type.None, null, null);
+    this._model.emulate(Type.None, null, null);
   }
 
   /**
@@ -488,7 +494,7 @@ export default class DeviceModeView extends UI.VBox {
   _saveScreenshot(canvas) {
     const url = this._model.inspectedURL();
     let fileName = url ? url.trimURL().removeURLFragment() : '';
-    if (this._model.type() === Emulation.DeviceModeModel.Type.Device) {
+    if (this._model.type() === Type.Device) {
       fileName += Common.UIString('(%s)', this._model.device().title);
     }
     const link = createElement('a');
@@ -609,19 +615,3 @@ export class Ruler extends UI.VBox {
     this._applyCallback.call(null, size);
   }
 }
-
-/* Legacy exported object */
-self.Emulation = self.Emulation || {};
-
-/* Legacy exported object */
-Emulation = Emulation || {};
-
-/**
- * @constructor
- */
-Emulation.DeviceModeView = DeviceModeView;
-
-/**
- * @constructor
- */
-Emulation.DeviceModeView.Ruler = Ruler;

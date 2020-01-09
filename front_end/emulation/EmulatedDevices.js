@@ -1,6 +1,9 @@
 // Copyright 2014 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
+import {MaxDeviceSize, MinDeviceSize} from './DeviceModeModel.js';
+
 /**
  * @unrestricted
  */
@@ -90,14 +93,12 @@ export class EmulatedDevice {
         const result = {};
 
         result.width = parseIntValue(json, 'width');
-        if (result.width < 0 || result.width > Emulation.DeviceModeModel.MaxDeviceSize ||
-            result.width < Emulation.DeviceModeModel.MinDeviceSize) {
+        if (result.width < 0 || result.width > MaxDeviceSize || result.width < MinDeviceSize) {
           throw new Error('Emulated device has wrong width: ' + result.width);
         }
 
         result.height = parseIntValue(json, 'height');
-        if (result.height < 0 || result.height > Emulation.DeviceModeModel.MaxDeviceSize ||
-            result.height < Emulation.DeviceModeModel.MinDeviceSize) {
+        if (result.height < 0 || result.height > MaxDeviceSize || result.height < MinDeviceSize) {
           throw new Error('Emulated device has wrong height: ' + result.height);
         }
 
@@ -372,6 +373,9 @@ export const _Show = {
   Never: 'Never'
 };
 
+/** @type {!EmulatedDevicesList} */
+let _instance;
+
 /**
  * @unrestricted
  */
@@ -399,10 +403,10 @@ export class EmulatedDevicesList extends Common.Object {
    * @return {!EmulatedDevicesList}
    */
   static instance() {
-    if (!this._instance) {
-      this._instance = new EmulatedDevicesList();
+    if (!_instance) {
+      _instance = new EmulatedDevicesList();
     }
-    return /** @type {!EmulatedDevicesList} */ (this._instance);
+    return _instance;
   }
 
   _updateStandardDevices() {
@@ -517,37 +521,3 @@ export const Events = {
   CustomDevicesUpdated: Symbol('CustomDevicesUpdated'),
   StandardDevicesUpdated: Symbol('StandardDevicesUpdated')
 };
-
-/* Legacy exported object */
-self.Emulation = self.Emulation || {};
-
-/* Legacy exported object */
-Emulation = Emulation || {};
-
-/**
- * @constructor
- */
-Emulation.EmulatedDevice = EmulatedDevice;
-
-/** @typedef {!{title: string, orientation: string, insets: !UI.Insets, image: ?string}} */
-Emulation.EmulatedDevice.Mode;
-
-/** @typedef {!{width: number, height: number, outlineInsets: ?UI.Insets, outlineImage: ?string}} */
-Emulation.EmulatedDevice.Orientation;
-
-Emulation.EmulatedDevice.Horizontal = Horizontal;
-Emulation.EmulatedDevice.Vertical = Vertical;
-Emulation.EmulatedDevice.Type = Type;
-Emulation.EmulatedDevice.Capability = Capability;
-Emulation.EmulatedDevice._Show = _Show;
-
-/**
- * @constructor
- */
-Emulation.EmulatedDevicesList = EmulatedDevicesList;
-
-/** @type {?EmulatedDevicesList} */
-Emulation.EmulatedDevicesList._instance;
-
-/** @enum {symbol} */
-Emulation.EmulatedDevicesList.Events = Events;

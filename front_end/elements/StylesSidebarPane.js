@@ -1836,7 +1836,10 @@ export class StylePropertiesSection {
 
     // This gets deleted in finishOperation(), which is called both on success and failure.
     this._parentPane.setUserOperation(true);
-    this._parentPane.cssModel().setMediaText(media.styleSheetId, media.range, newContent).then(userCallback.bind(this));
+    const cssModel = this._parentPane.cssModel();
+    if (cssModel) {
+      cssModel.setMediaText(media.styleSheetId, media.range, newContent).then(userCallback.bind(this));
+    }
   }
 
   _editingMediaTextCommittedForTest() {
@@ -1865,6 +1868,9 @@ export class StylePropertiesSection {
    */
   _navigateToSelectorSource(index, focus) {
     const cssModel = this._parentPane.cssModel();
+    if (!cssModel) {
+      return;
+    }
     const rule = this._style.parentRule;
     const header = cssModel.styleSheetHeaderForId(/** @type {string} */ (rule.styleSheetId));
     if (!header) {
@@ -2159,7 +2165,9 @@ export class BlankStylePropertiesSection extends StylePropertiesSection {
 
     const cssModel = this._parentPane.cssModel();
     const ruleText = this._rulePrefix() + newContent + ' {}';
-    cssModel.addRule(this._styleSheetId, ruleText, this._ruleLocation).then(onRuleAdded.bind(this));
+    if (cssModel) {
+      cssModel.addRule(this._styleSheetId, ruleText, this._ruleLocation).then(onRuleAdded.bind(this));
+    }
   }
 
   /**

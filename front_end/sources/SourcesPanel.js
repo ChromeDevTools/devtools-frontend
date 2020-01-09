@@ -689,23 +689,18 @@ export default class SourcesPanel extends UI.Panel {
   /**
    * @param {!Workspace.UILocation} uiLocation
    */
-  _continueToLocation(uiLocation) {
+  async _continueToLocation(uiLocation) {
     const executionContext = UI.context.flavor(SDK.ExecutionContext);
     if (!executionContext) {
       return;
     }
     // Always use 0 column.
-    const rawLocations =
-        Bindings.debuggerWorkspaceBinding.uiLocationToRawLocations(uiLocation.uiSourceCode, uiLocation.lineNumber, 0);
+    const rawLocations = await Bindings.debuggerWorkspaceBinding.uiLocationToRawLocations(
+        uiLocation.uiSourceCode, uiLocation.lineNumber, 0);
     const rawLocation = rawLocations.find(location => location.debuggerModel === executionContext.debuggerModel);
-    if (!rawLocation) {
-      return;
+    if (rawLocation && this._prepareToResume()) {
+      rawLocation.continueToLocation();
     }
-    if (!this._prepareToResume()) {
-      return;
-    }
-
-    rawLocation.continueToLocation();
   }
 
   _toggleBreakpointsActive() {

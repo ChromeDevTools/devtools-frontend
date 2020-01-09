@@ -56,6 +56,11 @@ function rewriteSource(source: string, fileName: string) {
           if (statement.expression.left.type === 'MemberExpression') {
             // Remove self.Foo = self.Foo || {}
             if (statement.expression.left.object.name === 'self') {
+              // Make sure to only grab the statement if it follows the self.X = self.X || {} pattern.
+              if (statement.expression.right.type !== 'LogicalExpression' || statement.expression.right.operator !== '||') {
+                break;
+              }
+
               // Grab the namespace from the RHS of self.[Namespace]
               if (statement.expression.right.type === 'LogicalExpression') {
                 targetNamespace = statement.expression.right.left.property.name;

@@ -100,7 +100,7 @@ export default class NetworkItemView extends UI.TabbedPane {
   }
 
   _maybeAppendCookiesPanel() {
-    const cookiesPresent = this._request.requestCookies.length || this._request.responseCookies;
+    const cookiesPresent = this._request.requestCookies.length || this._request.responseCookies.length;
     console.assert(cookiesPresent || !this._cookiesView, 'Cookies were introduced in headers and then removed!');
     if (cookiesPresent && !this._cookiesView) {
       this._cookiesView = new Network.RequestCookiesView(this._request);

@@ -187,6 +187,13 @@ export default class RequestCookiesView extends UI.Widget {
       return;
     }
 
+    const gotCookies = this._request.requestCookies.length || this._request.responseCookies.length;
+    if (gotCookies) {
+      this._emptyWidget.hideWidget();
+    } else {
+      this._emptyWidget.showWidget();
+    }
+
     const {requestCookies, requestCookieToBlockedReasons} = this._getRequestCookies();
     const {responseCookies, responseCookieToBlockedReasons, malformedResponseCookies} = this._getResponseCookies();
 
@@ -239,43 +246,22 @@ export default class RequestCookiesView extends UI.Widget {
    * @override
    */
   wasShown() {
-    this._request.addEventListener(SDK.NetworkRequest.Events.RequestHeadersChanged, this._cookiesUpdated, this);
-    this._request.addEventListener(SDK.NetworkRequest.Events.ResponseHeadersChanged, this._cookiesUpdated, this);
+    this._request.addEventListener(
+        SDK.NetworkRequest.Events.RequestHeadersChanged, this._refreshRequestCookiesView, this);
+    this._request.addEventListener(
+        SDK.NetworkRequest.Events.ResponseHeadersChanged, this._refreshRequestCookiesView, this);
 
-    if (this._gotCookies()) {
-      this._refreshRequestCookiesView();
-      this._emptyWidget.hideWidget();
-    } else {
-      this._emptyWidget.showWidget();
-    }
+    this._refreshRequestCookiesView();
   }
 
   /**
    * @override
    */
   willHide() {
-    this._request.removeEventListener(SDK.NetworkRequest.Events.RequestHeadersChanged, this._cookiesUpdated, this);
-    this._request.removeEventListener(SDK.NetworkRequest.Events.ResponseHeadersChanged, this._cookiesUpdated, this);
-  }
-
-  /**
-   * @return {boolean}
-   */
-  _gotCookies() {
-    return !!this._request.requestCookies.length || !!this._request.responseCookies.length;
-  }
-
-  _cookiesUpdated() {
-    if (!this.isShowing()) {
-      return;
-    }
-
-    if (this._gotCookies()) {
-      this._refreshRequestCookiesView();
-      this._emptyWidget.hideWidget();
-    } else {
-      this._emptyWidget.showWidget();
-    }
+    this._request.removeEventListener(
+        SDK.NetworkRequest.Events.RequestHeadersChanged, this._refreshRequestCookiesView, this);
+    this._request.removeEventListener(
+        SDK.NetworkRequest.Events.ResponseHeadersChanged, this._refreshRequestCookiesView, this);
   }
 }
 

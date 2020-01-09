@@ -16,24 +16,35 @@ generate_ci_configs(
         name="ci",
         branch='refs/heads/master',
         view='Main',
-        name_suffix = ''
+        name_suffix='',
+        mastername="client.devtools-frontend.integration"
+      ),
+      config_section(
+        name="chromium",
+        repo='https://chromium.googlesource.com/chromium/src',
+        branch='refs/heads/master',
+        view='Chromium',
+        name_suffix = ' (chromium)',
+        mastername="chromium.devtools-frontend"
       ),
       config_section(
         name="beta",
         branch='refs/heads/chromium/3987',
         view='Beta',
-        name_suffix = ' beta'
+        name_suffix = ' beta',
+        mastername="client.devtools-frontend.integration"
       ),
     ],
     builders = [
       builder_descriptor(
         name='DevTools Linux',
         recipe_name='chromium_integration',
-        is_master_only=True
+        excluded_from=['beta']
       ),
       builder_descriptor(
         name="Stand-alone Linux",
         recipe_name="devtools/devtools-frontend",
+        excluded_from=['chromium']
       ),
     ]
 )

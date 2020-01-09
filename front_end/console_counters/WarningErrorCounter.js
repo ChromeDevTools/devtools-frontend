@@ -6,7 +6,7 @@
  * @implements {UI.ToolbarItem.Provider}
  * @unrestricted
  */
-export default class WarningErrorCounter {
+export class WarningErrorCounter {
   constructor() {
     WarningErrorCounter._instanceForTest = this;
 
@@ -151,12 +151,3 @@ export default class WarningErrorCounter {
     return this._toolbarItem;
   }
 }
-
-/* Legacy exported object */
-self.ConsoleCounters = self.ConsoleCounters || {};
-
-/* Legacy exported object */
-ConsoleCounters = ConsoleCounters || {};
-
-/** @constructor */
-ConsoleCounters.WarningErrorCounter = WarningErrorCounter;

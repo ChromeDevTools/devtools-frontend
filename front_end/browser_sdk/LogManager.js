@@ -5,7 +5,7 @@
 /**
  * @implements {SDK.SDKModelObserver<!SDK.LogModel>}
  */
-export default class LogManager {
+export class LogManager {
   constructor() {
     SDK.targetManager.observeModels(SDK.LogModel, this);
   }
@@ -65,15 +65,3 @@ export default class LogManager {
 }
 
 const _eventSymbol = Symbol('_events');
-
-/* Legacy exported object */
-self.BrowserSDK = self.BrowserSDK || {};
-
-/* Legacy exported object */
-BrowserSDK = BrowserSDK || {};
-
-/** @constructor */
-BrowserSDK.LogManager = LogManager;
-
-// TODO(crbug.com/1006759): Move out of this module
-new LogManager();

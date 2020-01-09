@@ -66,8 +66,9 @@ export class CoverageDecorationManager {
         result.push(undefined);
         continue;
       }
-      const startLocations = this._rawLocationsForSourceLocation(uiSourceCode, line, 0);
-      const endLocations = this._rawLocationsForSourceLocation(uiSourceCode, line, lineLength);
+      const startLocationsPromise = this._rawLocationsForSourceLocation(uiSourceCode, line, 0);
+      const endLocationsPromise = this._rawLocationsForSourceLocation(uiSourceCode, line, lineLength);
+      const [startLocations, endLocations] = await Promise.all([startLocationsPromise, endLocationsPromise]);
       let used = undefined;
       for (let startIndex = 0, endIndex = 0; startIndex < startLocations.length; ++startIndex) {
         const start = startLocations[startIndex];
@@ -109,10 +110,10 @@ export class CoverageDecorationManager {
    * @param {!TextUtils.Text} text
    * @return {!Promise}
    */
-  _updateTexts(uiSourceCode, text) {
+  async _updateTexts(uiSourceCode, text) {
     const promises = [];
     for (let line = 0; line < text.lineCount(); ++line) {
-      for (const entry of this._rawLocationsForSourceLocation(uiSourceCode, line, 0)) {
+      for (const entry of await this._rawLocationsForSourceLocation(uiSourceCode, line, 0)) {
         if (this._textByProvider.has(entry.contentProvider)) {
           continue;
         }
@@ -137,13 +138,13 @@ export class CoverageDecorationManager {
    * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {number} line
    * @param {number} column
-   * @return {!Array<!Coverage.RawLocation>}
+   * @return {!Promise<!Array<!Coverage.RawLocation>>}
    */
-  _rawLocationsForSourceLocation(uiSourceCode, line, column) {
+  async _rawLocationsForSourceLocation(uiSourceCode, line, column) {
     const result = [];
     const contentType = uiSourceCode.contentType();
     if (contentType.hasScripts()) {
-      let locations = Bindings.debuggerWorkspaceBinding.uiLocationToRawLocations(uiSourceCode, line, column);
+      let locations = await Bindings.debuggerWorkspaceBinding.uiLocationToRawLocations(uiSourceCode, line, column);
       locations = locations.filter(location => !!location.script());
       for (const location of locations) {
         const script = location.script();

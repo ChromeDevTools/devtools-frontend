@@ -9,6 +9,7 @@
     "scripts": [],
     "modules": [
         "event_listeners.js",
+        "event_listeners-legacy.js",
         "EventListenersView.js",
         "EventListenersUtils.js"
     ],

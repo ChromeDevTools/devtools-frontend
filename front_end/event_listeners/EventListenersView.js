@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {frameworkEventListeners} from './EventListenersUtils.js';
+
 /**
  * @unrestricted
  */
@@ -67,7 +69,7 @@ export class EventListenersView extends UI.VBox {
     if (domDebuggerModel) {
       promises.push(domDebuggerModel.eventListeners(object).then(storeEventListeners));
     }
-    promises.push(EventListeners.frameworkEventListeners(object).then(storeFrameworkEventListenersObject));
+    promises.push(frameworkEventListeners(object).then(storeFrameworkEventListenersObject));
     return Promise.all(promises).then(markInternalEventListeners).then(addEventListeners.bind(this));
 
     /**
@@ -397,23 +399,3 @@ export class ObjectEventListenerBar extends UI.TreeElement {
     return false;
   }
 }
-
-/* Legacy exported object */
-self.EventListeners = self.EventListeners || {};
-
-/* Legacy exported object */
-EventListeners = EventListeners || {};
-
-/** @constructor */
-EventListeners.EventListenersView = EventListenersView;
-
-/** @constructor */
-EventListeners.EventListenersTreeElement = EventListenersTreeElement;
-
-/** @constructor */
-EventListeners.ObjectEventListenerBar = ObjectEventListenerBar;
-
-/**
- * @typedef {Array<{object: !SDK.RemoteObject, eventListeners: ?Array<!SDK.EventListener>, frameworkEventListeners: ?{eventListeners: ?Array<!SDK.EventListener>, internalHandlers: ?SDK.RemoteArray}, isInternal: ?Array<boolean>}>}
- */
-EventListeners.EventListenersResult;

@@ -31,7 +31,7 @@
 /**
  * @unrestricted
  */
-export default class LayerTreeModel extends SDK.SDKModel {
+export class LayerTreeModel extends SDK.SDKModel {
   constructor(target) {
     super(target);
     this._layerTreeAgent = target.layerTreeAgent();
@@ -92,7 +92,7 @@ export default class LayerTreeModel extends SDK.SDKModel {
    * @param {?Array.<!Protocol.LayerTree.Layer>} layers
    */
   async _innerSetLayers(layers) {
-    const layerTree = /** @type {!Layers.AgentLayerTree} */ (this._layerTree);
+    const layerTree = /** @type {!AgentLayerTree} */ (this._layerTree);
 
     await layerTree.setLayers(layers);
 
@@ -100,7 +100,7 @@ export default class LayerTreeModel extends SDK.SDKModel {
       const lastPaintRect = this._lastPaintRectByLayerId[layerId];
       const layer = layerTree.layerById(layerId);
       if (layer) {
-        /** @type {!Layers.AgentLayer} */ (layer)._lastPaintRect = lastPaintRect;
+        /** @type {!AgentLayer} */ (layer)._lastPaintRect = lastPaintRect;
       }
     }
     this._lastPaintRectByLayerId = {};
@@ -116,8 +116,8 @@ export default class LayerTreeModel extends SDK.SDKModel {
     if (!this._enabled) {
       return;
     }
-    const layerTree = /** @type {!Layers.AgentLayerTree} */ (this._layerTree);
-    const layer = /** @type {!Layers.AgentLayer} */ (layerTree.layerById(layerId));
+    const layerTree = /** @type {!AgentLayerTree} */ (this._layerTree);
+    const layer = /** @type {!AgentLayer} */ (layerTree.layerById(layerId));
     if (!layer) {
       this._lastPaintRectByLayerId[layerId] = clipRect;
       return;
@@ -147,7 +147,7 @@ export const Events = {
  */
 export class AgentLayerTree extends SDK.LayerTreeBase {
   /**
-   * @param {!Layers.LayerTreeModel} layerTreeModel
+   * @param {!LayerTreeModel} layerTreeModel
    */
   constructor(layerTreeModel) {
     super(layerTreeModel.target());
@@ -231,7 +231,7 @@ export class AgentLayerTree extends SDK.LayerTreeBase {
  */
 export class AgentLayer {
   /**
-   * @param {!Layers.LayerTreeModel} layerTreeModel
+   * @param {!LayerTreeModel} layerTreeModel
    * @param {!Protocol.LayerTree.Layer} layerPayload
    */
   constructor(layerTreeModel, layerPayload) {
@@ -284,7 +284,7 @@ export class AgentLayer {
    * @param {!SDK.Layer} childParam
    */
   addChild(childParam) {
-    const child = /** @type {!Layers.AgentLayer} */ (childParam);
+    const child = /** @type {!AgentLayer} */ (childParam);
     if (child._parent) {
       console.assert(false, 'Child already has a parent');
     }
@@ -559,7 +559,7 @@ export class AgentLayer {
  */
 class LayerTreeDispatcher {
   /**
-   * @param {!Layers.LayerTreeModel} layerTreeModel
+   * @param {!LayerTreeModel} layerTreeModel
    */
   constructor(layerTreeModel) {
     this._layerTreeModel = layerTreeModel;
@@ -582,27 +582,3 @@ class LayerTreeDispatcher {
     this._layerTreeModel._layerPainted(layerId, clipRect);
   }
 }
-
-/* Legacy exported object */
-self.Layers = self.Layers || {};
-
-/* Legacy exported object */
-Layers = Layers || {};
-
-/**
- * @constructor
- */
-Layers.LayerTreeModel = LayerTreeModel;
-
-/** @enum {symbol} */
-Layers.LayerTreeModel.Events = Events;
-
-/**
- * @constructor
- */
-Layers.AgentLayerTree = AgentLayerTree;
-
-/**
- * @constructor
- */
-Layers.AgentLayer = AgentLayer;

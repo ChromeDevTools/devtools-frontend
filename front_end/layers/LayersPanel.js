@@ -27,15 +27,19 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+import {LayerPaintProfilerView} from './LayerPaintProfilerView.js';
+import {Events, LayerTreeModel} from './LayerTreeModel.js';
+
 /**
  * @implements {SDK.TargetManager.Observer}
  * @unrestricted
  */
-export default class LayersPanel extends UI.PanelWithSidebar {
+export class LayersPanel extends UI.PanelWithSidebar {
   constructor() {
     super('layers', 225);
 
-    /** @type {?Layers.LayerTreeModel} */
+    /** @type {?LayerTreeModel} */
     this._model = null;
 
     SDK.targetManager.observeTargets(this);
@@ -61,10 +65,9 @@ export default class LayersPanel extends UI.PanelWithSidebar {
     this._layerDetailsView = new LayerViewer.LayerDetailsView(this._layerViewHost);
     this._layerDetailsView.addEventListener(
         LayerViewer.LayerDetailsView.Events.PaintProfilerRequested, this._onPaintProfileRequested, this);
-    this._tabbedPane.appendTab(
-        Layers.LayersPanel.DetailsViewTabs.Details, Common.UIString('Details'), this._layerDetailsView);
+    this._tabbedPane.appendTab(DetailsViewTabs.Details, Common.UIString('Details'), this._layerDetailsView);
 
-    this._paintProfilerView = new Layers.LayerPaintProfilerView(this._showImage.bind(this));
+    this._paintProfilerView = new LayerPaintProfilerView(this._showImage.bind(this));
     this._tabbedPane.addEventListener(UI.TabbedPane.Events.TabClosed, this._onTabClosed, this);
     this._updateThrottler = new Common.Throttler(100);
   }
@@ -104,12 +107,12 @@ export default class LayersPanel extends UI.PanelWithSidebar {
     if (this._model) {
       return;
     }
-    this._model = target.model(Layers.LayerTreeModel);
+    this._model = target.model(LayerTreeModel);
     if (!this._model) {
       return;
     }
-    this._model.addEventListener(Layers.LayerTreeModel.Events.LayerTreeChanged, this._onLayerTreeUpdated, this);
-    this._model.addEventListener(Layers.LayerTreeModel.Events.LayerPainted, this._onLayerPainted, this);
+    this._model.addEventListener(Events.LayerTreeChanged, this._onLayerTreeUpdated, this);
+    this._model.addEventListener(Events.LayerPainted, this._onLayerPainted, this);
     if (this.isShowing()) {
       this._model.enable();
     }
@@ -123,8 +126,8 @@ export default class LayersPanel extends UI.PanelWithSidebar {
     if (!this._model || this._model.target() !== target) {
       return;
     }
-    this._model.removeEventListener(Layers.LayerTreeModel.Events.LayerTreeChanged, this._onLayerTreeUpdated, this);
-    this._model.removeEventListener(Layers.LayerTreeModel.Events.LayerPainted, this._onLayerPainted, this);
+    this._model.removeEventListener(Events.LayerTreeChanged, this._onLayerTreeUpdated, this);
+    this._model.removeEventListener(Events.LayerPainted, this._onLayerPainted, this);
     this._model.disable();
     this._model = null;
   }
@@ -167,12 +170,11 @@ export default class LayersPanel extends UI.PanelWithSidebar {
         return;
       }
       this._layerBeingProfiled = selection.layer();
-      if (!this._tabbedPane.hasTab(Layers.LayersPanel.DetailsViewTabs.Profiler)) {
+      if (!this._tabbedPane.hasTab(DetailsViewTabs.Profiler)) {
         this._tabbedPane.appendTab(
-            Layers.LayersPanel.DetailsViewTabs.Profiler, Common.UIString('Profiler'), this._paintProfilerView,
-            undefined, true, true);
+            DetailsViewTabs.Profiler, Common.UIString('Profiler'), this._paintProfilerView, undefined, true, true);
       }
-      this._tabbedPane.selectTab(Layers.LayersPanel.DetailsViewTabs.Profiler);
+      this._tabbedPane.selectTab(DetailsViewTabs.Profiler);
       this._paintProfilerView.profile(snapshotWithRect.snapshot);
     });
   }
@@ -181,7 +183,7 @@ export default class LayersPanel extends UI.PanelWithSidebar {
    * @param {!Common.Event} event
    */
   _onTabClosed(event) {
-    if (event.data.tabId !== Layers.LayersPanel.DetailsViewTabs.Profiler || !this._layerBeingProfiled) {
+    if (event.data.tabId !== DetailsViewTabs.Profiler || !this._layerBeingProfiled) {
       return;
     }
     this._paintProfilerView.reset();
@@ -208,16 +210,3 @@ export const DetailsViewTabs = {
   Details: 'details',
   Profiler: 'profiler'
 };
-
-/* Legacy exported object */
-self.Layers = self.Layers || {};
-
-/* Legacy exported object */
-Layers = Layers || {};
-
-/**
- * @constructor
- */
-Layers.LayersPanel = LayersPanel;
-
-Layers.LayersPanel.DetailsViewTabs = DetailsViewTabs;

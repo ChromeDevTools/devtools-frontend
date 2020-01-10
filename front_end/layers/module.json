@@ -13,6 +13,8 @@
     "dependencies": ["layer_viewer"],
     "scripts": [],
     "modules": [
+        "layers.js",
+        "layers-legacy.js",
         "LayerPaintProfilerView.js",
         "LayerTreeModel.js",
         "LayersPanel.js"

@@ -11,6 +11,7 @@
     "scripts": [],
     "modules": [
         "js_main.js",
+        "js_main-legacy.js",
         "JsMain.js"
     ]
 }

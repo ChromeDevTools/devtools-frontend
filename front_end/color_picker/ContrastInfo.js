@@ -154,14 +154,3 @@ const _ContrastThresholds = {
   largeFont: {aa: 3.0, aaa: 4.5},
   normalFont: {aa: 4.5, aaa: 7.0}
 };
-
-/* Legacy exported object */
-self.ColorPicker = self.ColorPicker || {};
-
-/* Legacy exported object */
-ColorPicker = ColorPicker || {};
-
-/** @constructor */
-ColorPicker.ContrastInfo = ContrastInfo;
-
-ColorPicker.ContrastInfo.Events = Events;

@@ -2,13 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {ContrastInfo, Events} from './ContrastInfo.js';  // eslint-disable-line no-unused-vars
+
 export class ContrastOverlay {
   /**
-   * @param {!ColorPicker.ContrastInfo} contrastInfo
+   * @param {!ContrastInfo} contrastInfo
    * @param {!Element} colorElement
    */
   constructor(contrastInfo, colorElement) {
-    /** @type {!ColorPicker.ContrastInfo} */
+    /** @type {!ContrastInfo} */
     this._contrastInfo = contrastInfo;
 
     this._visible = false;
@@ -22,12 +24,12 @@ export class ContrastOverlay {
     this._width = 0;
     this._height = 0;
 
-    this._contrastRatioLineBuilder = new ColorPicker.ContrastRatioLineBuilder(this._contrastInfo);
+    this._contrastRatioLineBuilder = new ContrastRatioLineBuilder(this._contrastInfo);
 
     this._contrastRatioLinesThrottler = new Common.Throttler(0);
     this._drawContrastRatioLinesBound = this._drawContrastRatioLines.bind(this);
 
-    this._contrastInfo.addEventListener(ColorPicker.ContrastInfo.Events.ContrastInfoUpdated, this._update.bind(this));
+    this._contrastInfo.addEventListener(Events.ContrastInfoUpdated, this._update.bind(this));
   }
 
   _update() {
@@ -71,10 +73,10 @@ export class ContrastOverlay {
 
 export class ContrastRatioLineBuilder {
   /**
-   * @param {!ColorPicker.ContrastInfo} contrastInfo
+   * @param {!ContrastInfo} contrastInfo
    */
   constructor(contrastInfo) {
-    /** @type {!ColorPicker.ContrastInfo} */
+    /** @type {!ContrastInfo} */
     this._contrastInfo = contrastInfo;
   }
 
@@ -214,15 +216,3 @@ export class ContrastRatioLineBuilder {
     return pathBuilder.join(' ');
   }
 }
-
-/* Legacy exported object */
-self.ColorPicker = self.ColorPicker || {};
-
-/* Legacy exported object */
-ColorPicker = ColorPicker || {};
-
-/** @constructor */
-ColorPicker.ContrastOverlay = ContrastOverlay;
-
-/** @constructor */
-ColorPicker.ContrastRatioLineBuilder = ContrastRatioLineBuilder;

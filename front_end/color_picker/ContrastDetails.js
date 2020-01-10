@@ -2,16 +2,18 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {ContrastInfo, Events as ContrastInfoEvents} from './ContrastInfo.js';  // eslint-disable-line no-unused-vars
+
 export class ContrastDetails extends Common.Object {
   /**
-   * @param {!ColorPicker.ContrastInfo} contrastInfo
+   * @param {!ContrastInfo} contrastInfo
    * @param {!Element} contentElement
    * @param {function(boolean=, !Common.Event=)} toggleMainColorPickerCallback
    * @param {function()} expandedChangedCallback
    */
   constructor(contrastInfo, contentElement, toggleMainColorPickerCallback, expandedChangedCallback) {
     super();
-    /** @type {!ColorPicker.ContrastInfo} */
+    /** @type {!ContrastInfo} */
     this._contrastInfo = contrastInfo;
 
     /** @type {!Element} */
@@ -51,7 +53,7 @@ export class ContrastDetails extends Common.Object {
         this._contrastValueBubble.appendChild(UI.Icon.create('smallicon-checkmark-behind')));
     this._contrastValueBubbleIcons.push(this._contrastValueBubble.appendChild(UI.Icon.create('smallicon-no')));
     this._contrastValueBubbleIcons.forEach(button => button.addEventListener('click', event => {
-      ColorPicker.ContrastDetails._showHelp();
+      ContrastDetails._showHelp();
       event.consume(false);
     }));
 
@@ -87,7 +89,7 @@ export class ContrastDetails extends Common.Object {
 
     this._bgColorSwatch = new Swatch(bgColorContainer);
 
-    this._contrastInfo.addEventListener(ColorPicker.ContrastInfo.Events.ContrastInfoUpdated, this._update.bind(this));
+    this._contrastInfo.addEventListener(ContrastInfoEvents.ContrastInfoUpdated, this._update.bind(this));
   }
 
   _update() {
@@ -142,7 +144,7 @@ export class ContrastDetails extends Common.Object {
       this._contrastPassFailAAA.appendChild(UI.Icon.create('smallicon-no'));
     }
 
-    [labelAA, labelAAA].forEach(e => e.addEventListener('click', event => ColorPicker.ContrastDetails._showHelp()));
+    [labelAA, labelAAA].forEach(e => e.addEventListener('click', event => ContrastDetails._showHelp()));
 
     this._element.classList.toggle('contrast-fail', !this._passesAA);
     this._contrastValueBubble.classList.toggle('contrast-aa', this._passesAA);
@@ -305,17 +307,3 @@ export class Swatch {
     this._swatchElement.classList.toggle('swatch-inner-white', bgColor.hsla()[2] > 0.9);
   }
 }
-
-/* Legacy exported object */
-self.ColorPicker = self.ColorPicker || {};
-
-/* Legacy exported object */
-ColorPicker = ColorPicker || {};
-
-/** @constructor */
-ColorPicker.ContrastDetails = ContrastDetails;
-
-ColorPicker.ContrastDetails.Events = Events;
-
-/** @constructor */
-ColorPicker.ContrastDetails.Swatch = Swatch;

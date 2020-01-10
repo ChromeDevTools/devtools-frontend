@@ -28,6 +28,8 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import {ExecutionContextSelector} from './ExecutionContextSelector.js';
+
 /**
  * @unrestricted
  */
@@ -220,7 +222,7 @@ export class MainImpl {
     Persistence.persistence = new Persistence.Persistence(Workspace.workspace, Bindings.breakpointManager);
     Persistence.networkPersistenceManager = new Persistence.NetworkPersistenceManager(Workspace.workspace);
 
-    new Main.ExecutionContextSelector(SDK.targetManager, UI.context);
+    new ExecutionContextSelector(SDK.targetManager, UI.context);
     Bindings.blackboxManager = new Bindings.BlackboxManager(Bindings.debuggerWorkspaceBinding);
 
     new PauseListener();
@@ -727,40 +729,3 @@ export class ReloadActionDelegate {
 }
 
 new MainImpl();
-
-/* Legacy exported object */
-self.Main = self.Main || {};
-
-/* Legacy exported object */
-Main = Main || {};
-
-/**
- * @constructor
- */
-Main.Main = MainImpl;
-
-/**
- * @constructor
- */
-Main.Main.ZoomActionDelegate = ZoomActionDelegate;
-
-/**
- * @constructor
- */
-Main.Main.SearchActionDelegate = SearchActionDelegate;
-
-/**
- * @constructor
- */
-Main.Main.MainMenuItem = MainMenuItem;
-
-/**
- * @constructor
- */
-Main.Main.PauseListener = PauseListener;
-
-/**
- * @constructor
- */
-Main.ReloadActionDelegate = ReloadActionDelegate;
-Main.sendOverProtocol = sendOverProtocol;

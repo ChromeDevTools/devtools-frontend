@@ -390,6 +390,7 @@
     "scripts": [],
     "modules": [
         "main.js",
+        "main-legacy.js",
         "SimpleApp.js",
         "ExecutionContextSelector.js",
         "MainImpl.js"

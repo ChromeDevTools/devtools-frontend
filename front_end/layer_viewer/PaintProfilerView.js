@@ -65,7 +65,7 @@ export class PaintProfilerView extends UI.HBox {
   }
 
   /**
-   * @return {!Object.<string, !LayerViewer.PaintProfilerCategory>}
+   * @return {!Object.<string, !PaintProfilerCategory>}
    */
   static categories() {
     if (PaintProfilerView._categories) {
@@ -81,7 +81,7 @@ export class PaintProfilerView extends UI.HBox {
   }
 
   /**
-   * @return {!Object.<string, !LayerViewer.PaintProfilerCategory>}
+   * @return {!Object.<string, !PaintProfilerCategory>}
    */
   static _initLogItemCategories() {
     if (PaintProfilerView._logItemCategoriesMap) {
@@ -134,7 +134,7 @@ export class PaintProfilerView extends UI.HBox {
 
   /**
    * @param {!Object} logItem
-   * @return {!LayerViewer.PaintProfilerCategory}
+   * @return {!PaintProfilerCategory}
    */
   static _categoryForLogItem(logItem) {
     const method = logItem.method.toTitleCase();
@@ -451,7 +451,7 @@ export class PaintProfilerCommandLogView extends UI.ThrottledWidget {
  */
 export class LogTreeElement extends UI.TreeElement {
   /**
-   * @param {!LayerViewer.PaintProfilerCommandLogView} ownerView
+   * @param {!PaintProfilerCommandLogView} ownerView
    * @param {!SDK.PaintProfilerLogItem} logItem
    */
   constructor(ownerView, logItem) {
@@ -584,36 +584,3 @@ export class PaintProfilerCategory {
     this.color = color;
   }
 }
-
-/* Legacy exported object */
-self.LayerViewer = self.LayerViewer || {};
-
-/* Legacy exported object */
-LayerViewer = LayerViewer || {};
-
-/**
- * @constructor
- */
-LayerViewer.PaintProfilerView = PaintProfilerView;
-
-LayerViewer.PaintProfilerView.Events = Events;
-
-/**
- * @constructor
- */
-LayerViewer.PaintProfilerCommandLogView = PaintProfilerCommandLogView;
-
-/**
- * @constructor
- */
-LayerViewer.LogTreeElement = LogTreeElement;
-
-/**
- * @constructor
- */
-LayerViewer.LogPropertyTreeElement = LogPropertyTreeElement;
-
-/**
- * @constructor
- */
-LayerViewer.PaintProfilerCategory = PaintProfilerCategory;

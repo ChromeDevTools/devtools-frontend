@@ -27,13 +27,16 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+import {LayerSelection, LayerView, LayerViewHost, ScrollRectSelection, Selection, SnapshotSelection, Type,} from './LayerViewHost.js';  // eslint-disable-line no-unused-vars
+import {Events as TransformControllerEvents, TransformController} from './TransformController.js';
+
 /**
- * @implements {LayerViewer.LayerView}
+ * @implements {LayerView}
  * @unrestricted
  */
 export class Layers3DView extends UI.VBox {
   /**
-   * @param {!LayerViewer.LayerViewHost} layerViewHost
+   * @param {!LayerViewHost} layerViewHost
    */
   constructor(layerViewHost) {
     super(true);
@@ -46,9 +49,8 @@ export class Layers3DView extends UI.VBox {
     this._layerViewHost = layerViewHost;
     this._layerViewHost.registerView(this);
 
-    this._transformController = new LayerViewer.TransformController(this.contentElement);
-    this._transformController.addEventListener(
-        LayerViewer.TransformController.Events.TransformChanged, this._update, this);
+    this._transformController = new TransformController(this.contentElement);
+    this._transformController.addEventListener(TransformControllerEvents.TransformChanged, this._update, this);
     this._initToolbar();
 
     this._canvasElement = this.contentElement.createChild('canvas');
@@ -70,7 +72,7 @@ export class Layers3DView extends UI.VBox {
     this._chromeTextures = [];
     this._rects = [];
 
-    /** @type Map<SDK.Layer, LayerViewer.LayerView.SnapshotSelection> */
+    /** @type Map<SDK.Layer, SnapshotSelection> */
     this._snapshotLayers = new Map();
     this._layerViewHost.setLayerSnapshotMap(this._snapshotLayers);
 
@@ -143,8 +145,8 @@ export class Layers3DView extends UI.VBox {
   }
 
   /**
-   * @param {!LayerViewer.Layers3DView.OutlineType} type
-   * @param {?LayerViewer.LayerView.Selection} selection
+   * @param {!OutlineType} type
+   * @param {?Selection} selection
    */
   _setOutline(type, selection) {
     this._lastSelection[type] = selection;
@@ -152,7 +154,7 @@ export class Layers3DView extends UI.VBox {
   }
 
   /**
-   * @param {?LayerViewer.LayerView.Selection} selection
+   * @param {?Selection} selection
    * @override
    */
   hoverObject(selection) {
@@ -160,7 +162,7 @@ export class Layers3DView extends UI.VBox {
   }
 
   /**
-   * @param {?LayerViewer.LayerView.Selection} selection
+   * @param {?Selection} selection
    * @override
    */
   selectObject(selection) {
@@ -169,12 +171,12 @@ export class Layers3DView extends UI.VBox {
   }
 
   /**
-   * @param {!LayerViewer.LayerView.Selection} selection
+   * @param {!Selection} selection
    * @return {!Promise<?SDK.SnapshotWithRect>}
    */
   snapshotForSelection(selection) {
-    if (selection.type() === LayerViewer.LayerView.Selection.Type.Snapshot) {
-      const snapshotWithRect = /** @type {!LayerViewer.LayerView.SnapshotSelection} */ (selection).snapshot();
+    if (selection.type() === Type.Snapshot) {
+      const snapshotWithRect = /** @type {!SnapshotSelection} */ (selection).snapshot();
       snapshotWithRect.snapshot.addReference();
       return /** @type {!Promise<?SDK.SnapshotWithRect>} */ (Promise.resolve(snapshotWithRect));
     }
@@ -315,8 +317,8 @@ export class Layers3DView extends UI.VBox {
 
   _initChromeTextures() {
     /**
-     * @this {LayerViewer.Layers3DView}
-     * @param {!LayerViewer.Layers3DView.ChromeTexture} index
+     * @this {Layers3DView}
+     * @param {!ChromeTexture} index
      * @param {string} url
      */
     function loadChromeTexture(index, url) {
@@ -407,7 +409,7 @@ export class Layers3DView extends UI.VBox {
     if (!this._visibleLayers.has(layer)) {
       return;
     }
-    const selection = new LayerViewer.LayerView.LayerSelection(layer);
+    const selection = new LayerSelection(layer);
     const rect = new Rectangle(selection);
     rect.setVertices(layer.quad(), this._depthForLayer(layer));
     this._appendRect(rect);
@@ -415,12 +417,12 @@ export class Layers3DView extends UI.VBox {
   }
 
   /**
-   * @param {!LayerViewer.Layers3DView.Rectangle} rect
+   * @param {!Rectangle} rect
    */
   _appendRect(rect) {
     const selection = rect.relatedObject;
-    const isSelected = LayerViewer.LayerView.Selection.isEqual(this._lastSelection[OutlineType.Selected], selection);
-    const isHovered = LayerViewer.LayerView.Selection.isEqual(this._lastSelection[OutlineType.Hovered], selection);
+    const isSelected = Selection.isEqual(this._lastSelection[OutlineType.Selected], selection);
+    const isHovered = Selection.isEqual(this._lastSelection[OutlineType.Hovered], selection);
     if (isSelected) {
       rect.borderColor = SelectedBorderColor;
     } else if (isHovered) {
@@ -444,7 +446,7 @@ export class Layers3DView extends UI.VBox {
   _calculateLayerScrollRects(layer) {
     const scrollRects = layer.scrollRects();
     for (let i = 0; i < scrollRects.length; ++i) {
-      const selection = new LayerViewer.LayerView.ScrollRectSelection(layer, i);
+      const selection = new ScrollRectSelection(layer, i);
       const rect = new Rectangle(selection);
       rect.calculateVerticesFromRect(layer, scrollRects[i].rect, this._calculateScrollRectDepth(layer, i));
       rect.fillColor = ScrollRectBackgroundColor;
@@ -462,7 +464,7 @@ export class Layers3DView extends UI.VBox {
       if (!tile.texture) {
         continue;
       }
-      const selection = new LayerViewer.LayerView.SnapshotSelection(layer, {rect: tile.rect, snapshot: tile.snapshot});
+      const selection = new SnapshotSelection(layer, {rect: tile.rect, snapshot: tile.snapshot});
       const rect = new Rectangle(selection);
       if (!this._snapshotLayers.has(layer)) {
         this._snapshotLayers.set(layer, selection);
@@ -486,7 +488,7 @@ export class Layers3DView extends UI.VBox {
 
     if (this._layerTexture && this._visibleLayers.has(this._layerTexture.layer)) {
       const layer = this._layerTexture.layer;
-      const selection = new LayerViewer.LayerView.LayerSelection(layer);
+      const selection = new LayerSelection(layer);
       const rect = new Rectangle(selection);
       rect.setVertices(layer.quad(), this._depthForLayer(layer));
       rect.texture = this._layerTexture.texture;
@@ -594,7 +596,7 @@ export class Layers3DView extends UI.VBox {
   }
 
   /**
-   * @param {!LayerViewer.Layers3DView.Rectangle} rect
+   * @param {!Rectangle} rect
    */
   _drawViewRect(rect) {
     const vertices = rect.vertices;
@@ -653,7 +655,7 @@ export class Layers3DView extends UI.VBox {
 
   /**
    * @param {!Event} event
-   * @return {?LayerViewer.LayerView.Selection}
+   * @return {?Selection}
    */
   _selectionFromEventPoint(event) {
     if (!this._layerTree) {
@@ -667,7 +669,7 @@ export class Layers3DView extends UI.VBox {
     const y0 = -(event.clientY - this._canvasElement.totalOffsetTop()) * window.devicePixelRatio;
 
     /**
-     * @param {!LayerViewer.Layers3DView.Rectangle} rect
+     * @param {!Rectangle} rect
      */
     function checkIntersection(rect) {
       if (!rect.relatedObject) {
@@ -718,7 +720,7 @@ export class Layers3DView extends UI.VBox {
     contextMenu.defaultSection().appendItem(
         Common.UIString('Reset View'), this._transformController.resetAndNotify.bind(this._transformController), false);
     const selection = this._selectionFromEventPoint(event);
-    if (selection && selection.type() === LayerViewer.LayerView.Selection.Type.Snapshot) {
+    if (selection && selection.type() === Type.Snapshot) {
       contextMenu.defaultSection().appendItem(
           Common.UIString('Show Paint Profiler'),
           this.dispatchEventToListeners.bind(this, Events.PaintProfilerRequested, selection), false);
@@ -762,7 +764,7 @@ export class Layers3DView extends UI.VBox {
    */
   _onDoubleClick(event) {
     const selection = this._selectionFromEventPoint(event);
-    if (selection && (selection.type() === LayerViewer.LayerView.Selection.Type.Snapshot || selection.layer())) {
+    if (selection && (selection.type() === Type.Snapshot || selection.layer())) {
       this.dispatchEventToListeners(Events.PaintProfilerRequested, selection);
     }
     event.stopPropagation();
@@ -894,7 +896,7 @@ export class LayerTextureManager {
       this.setLayerTree(null);
     }
 
-    /** @type {!Map<!SDK.Layer, !Array<!LayerViewer.LayerTextureManager.Tile>>} */
+    /** @type {!Map<!SDK.Layer, !Array<!Tile>>} */
     this._tilesByLayer = new Map();
     /** @type {!Array<!SDK.Layer>} */
     this._queue = [];
@@ -992,7 +994,7 @@ export class LayerTextureManager {
 
   /**
    * @param {!SDK.Layer} layer
-   * @return {!Array<!LayerViewer.LayerTextureManager.Tile>}
+   * @return {!Array<!Tile>}
    */
   tilesForLayer(layer) {
     return this._tilesByLayer.get(layer) || [];
@@ -1063,7 +1065,7 @@ export class LayerTextureManager {
  */
 export class Rectangle {
   /**
-   * @param {?LayerViewer.LayerView.Selection} relatedObject
+   * @param {?Selection} relatedObject
    */
   constructor(relatedObject) {
     this.relatedObject = relatedObject;
@@ -1221,69 +1223,3 @@ export class Tile {
     this.texture = image ? LayerTextureManager._createTextureForImage(glContext, image) : null;
   }
 }
-
-/* Legacy exported object */
-self.LayerViewer = self.LayerViewer || {};
-
-/* Legacy exported object */
-LayerViewer = LayerViewer || {};
-
-/**
- * @constructor
- */
-LayerViewer.Layers3DView = Layers3DView;
-
-/** @typedef {{borderColor: !Array<number>, borderWidth: number}} */
-LayerViewer.Layers3DView.LayerStyle;
-
-/**
- * @enum {string}
- */
-LayerViewer.Layers3DView.OutlineType = OutlineType;
-
-/**
- * @enum {symbol}
- */
-LayerViewer.Layers3DView.Events = Events;
-
-/**
- * @enum {number}
- */
-LayerViewer.Layers3DView.ChromeTexture = ChromeTexture;
-
-/**
- * @enum {string}
- */
-LayerViewer.Layers3DView.ScrollRectTitles = ScrollRectTitles;
-
-LayerViewer.Layers3DView.FragmentShader = FragmentShader;
-LayerViewer.Layers3DView.VertexShader = VertexShader;
-
-LayerViewer.Layers3DView.HoveredBorderColor = HoveredBorderColor;
-LayerViewer.Layers3DView.SelectedBorderColor = SelectedBorderColor;
-LayerViewer.Layers3DView.BorderColor = BorderColor;
-LayerViewer.Layers3DView.ViewportBorderColor = ViewportBorderColor;
-LayerViewer.Layers3DView.ScrollRectBackgroundColor = ScrollRectBackgroundColor;
-LayerViewer.Layers3DView.HoveredImageMaskColor = HoveredImageMaskColor;
-LayerViewer.Layers3DView.BorderWidth = BorderWidth;
-
-LayerViewer.Layers3DView.SelectedBorderWidth = SelectedBorderWidth;
-LayerViewer.Layers3DView.ViewportBorderWidth = ViewportBorderWidth;
-
-LayerViewer.Layers3DView.LayerSpacing = LayerSpacing;
-LayerViewer.Layers3DView.ScrollRectSpacing = ScrollRectSpacing;
-
-/**
- * @constructor
- */
-LayerViewer.Layers3DView.Rectangle = Rectangle;
-
-/**
- * @constructor
- */
-LayerViewer.LayerTextureManager = LayerTextureManager;
-
-/**
- * @constructor
- */
-LayerViewer.LayerTextureManager.Tile = Tile;

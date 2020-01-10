@@ -28,15 +28,17 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-const _symbol = Symbol('layer');
+import {LayerSelection, LayerView, LayerViewHost, Selection} from './LayerViewHost.js';  // eslint-disable-line no-unused-vars
+
+export const layerSymbol = Symbol('layer');
 
 /**
- * @implements {LayerViewer.LayerView}
+ * @implements {LayerView}
  * @unrestricted
  */
 export class LayerTreeOutline extends Common.Object {
   /**
-   * @param {!LayerViewer.LayerViewHost} layerViewHost
+   * @param {!LayerViewHost} layerViewHost
    */
   constructor(layerViewHost) {
     super();
@@ -60,13 +62,13 @@ export class LayerTreeOutline extends Common.Object {
   }
 
   /**
-   * @param {?LayerViewer.LayerView.Selection} selection
+   * @param {?Selection} selection
    * @override
    */
   selectObject(selection) {
     this.hoverObject(null);
     const layer = selection && selection.layer();
-    const node = layer && layer[_symbol];
+    const node = layer && layer[layerSymbol];
     if (node) {
       node.revealAndSelect(true);
     } else if (this._treeOutline.selectedTreeElement) {
@@ -75,12 +77,12 @@ export class LayerTreeOutline extends Common.Object {
   }
 
   /**
-   * @param {?LayerViewer.LayerView.Selection} selection
+   * @param {?Selection} selection
    * @override
    */
   hoverObject(selection) {
     const layer = selection && selection.layer();
-    const node = layer && layer[_symbol];
+    const node = layer && layer[layerSymbol];
     if (node === this._lastHoveredNode) {
       return;
     }
@@ -117,7 +119,7 @@ export class LayerTreeOutline extends Common.Object {
 
     /**
      * @param {!SDK.Layer} layer
-     * @this {LayerViewer.LayerTreeOutline}
+     * @this {LayerTreeOutline}
      */
     function updateLayer(layer) {
       if (!layer.drawsContent() && !showInternalLayers) {
@@ -127,13 +129,13 @@ export class LayerTreeOutline extends Common.Object {
         console.assert(false, 'Duplicate layer: ' + layer.id());
       }
       seenLayers.set(layer, true);
-      let node = layer[_symbol];
+      let node = layer[layerSymbol];
       let parentLayer = layer.parent();
       // Skip till nearest visible ancestor.
       while (parentLayer && parentLayer !== root && !parentLayer.drawsContent() && !showInternalLayers) {
         parentLayer = parentLayer.parent();
       }
-      const parent = layer === root ? this._treeOutline.rootElement() : parentLayer[_symbol];
+      const parent = layer === root ? this._treeOutline.rootElement() : parentLayer[layerSymbol];
       if (!parent) {
         console.assert(false, 'Parent is not in the tree');
         return;
@@ -179,7 +181,7 @@ export class LayerTreeOutline extends Common.Object {
     if (!this._treeOutline.selectedTreeElement) {
       const elementToSelect = this._layerTree.contentRoot() || this._layerTree.root();
       if (elementToSelect) {
-        elementToSelect[_symbol].revealAndSelect(true);
+        elementToSelect[layerSymbol].revealAndSelect(true);
       }
     }
   }
@@ -196,7 +198,7 @@ export class LayerTreeOutline extends Common.Object {
   }
 
   /**
-   * @param {!LayerViewer.LayerTreeElement} node
+   * @param {!LayerTreeElement} node
    */
   _selectedNodeChanged(node) {
     this._layerViewHost.selectObject(this._selectionForNode(node));
@@ -222,10 +224,10 @@ export class LayerTreeOutline extends Common.Object {
 
   /**
    * @param {?UI.TreeElement} node
-   * @return {?LayerViewer.LayerView.Selection}
+   * @return {?Selection}
    */
   _selectionForNode(node) {
-    return node && node._layer ? new LayerViewer.LayerView.LayerSelection(node._layer) : null;
+    return node && node._layer ? new LayerSelection(node._layer) : null;
   }
 }
 
@@ -241,14 +243,14 @@ export const Events = {
  */
 export class LayerTreeElement extends UI.TreeElement {
   /**
-   * @param {!LayerViewer.LayerTreeOutline} tree
+   * @param {!LayerTreeOutline} tree
    * @param {!SDK.Layer} layer
    */
   constructor(tree, layer) {
     super();
     this._treeOutline = tree;
     this._layer = layer;
-    this._layer[_symbol] = this;
+    this._layer[layerSymbol] = this;
     this._update();
   }
 
@@ -277,26 +279,3 @@ export class LayerTreeElement extends UI.TreeElement {
     this.listItemElement.classList.toggle('hovered', hovered);
   }
 }
-
-/* Legacy exported object */
-self.LayerViewer = self.LayerViewer || {};
-
-/* Legacy exported object */
-LayerViewer = LayerViewer || {};
-
-/**
- * @constructor
- */
-LayerViewer.LayerTreeOutline = LayerTreeOutline;
-
-/**
- * @enum {symbol}
- */
-LayerViewer.LayerTreeOutline.Events = Events;
-
-/**
- * @constructor
- */
-LayerViewer.LayerTreeElement = LayerTreeElement;
-
-LayerViewer.LayerTreeElement._symbol = _symbol;

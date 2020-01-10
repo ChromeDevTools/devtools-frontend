@@ -27,13 +27,16 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+import {LayerView, LayerViewHost, ScrollRectSelection, Selection, SnapshotSelection, Type,} from './LayerViewHost.js';  // eslint-disable-line no-unused-vars
+
 /**
- * @implements {LayerViewer.LayerView}
+ * @implements {LayerView}
  * @unrestricted
  */
 export class LayerDetailsView extends UI.Widget {
   /**
-   * @param {!LayerViewer.LayerViewHost} layerViewHost
+   * @param {!LayerViewHost} layerViewHost
    */
   constructor(layerViewHost) {
     super(true);
@@ -46,14 +49,14 @@ export class LayerDetailsView extends UI.Widget {
   }
 
   /**
-   * @param {?LayerViewer.LayerView.Selection} selection
+   * @param {?Selection} selection
    * @override
    */
   hoverObject(selection) {
   }
 
   /**
-   * @param {?LayerViewer.LayerView.Selection} selection
+   * @param {?Selection} selection
    * @override
    */
   selectObject(selection) {
@@ -86,11 +89,11 @@ export class LayerDetailsView extends UI.Widget {
     if (event.which !== 1) {
       return;
     }
-    this._layerViewHost.selectObject(new LayerViewer.LayerView.ScrollRectSelection(this._selection.layer(), index));
+    this._layerViewHost.selectObject(new ScrollRectSelection(this._selection.layer(), index));
   }
 
   _invokeProfilerLink() {
-    const snapshotSelection = this._selection.type() === LayerViewer.LayerView.Selection.Type.Snapshot ?
+    const snapshotSelection = this._selection.type() === Type.Snapshot ?
         this._selection :
         this._layerSnapshotMap.get(this._selection.layer());
     if (snapshotSelection) {
@@ -111,7 +114,7 @@ export class LayerDetailsView extends UI.Widget {
       element.classList.add('active');
     }
     element.textContent = Common.UIString(
-        '%s %d × %d (at %d, %d)', _slowScrollRectNames.get(scrollRect.type), scrollRect.rect.width,
+        '%s %d × %d (at %d, %d)', slowScrollRectNames.get(scrollRect.type), scrollRect.rect.width,
         scrollRect.rect.height, scrollRect.rect.x, scrollRect.rect.y);
     element.addEventListener('click', this._onScrollRectClicked.bind(this, index), false);
   }
@@ -193,8 +196,8 @@ export class LayerDetailsView extends UI.Widget {
     this._scrollRectsCell.removeChildren();
     layer.scrollRects().forEach(this._createScrollRectElement.bind(this));
     this._populateStickyPositionConstraintCell(layer.stickyPositionConstraint());
-    const snapshot = this._selection.type() === LayerViewer.LayerView.Selection.Type.Snapshot ?
-        /** @type {!LayerViewer.LayerView.SnapshotSelection} */ (this._selection).snapshot() :
+    const snapshot = this._selection.type() === Type.Snapshot ?
+        /** @type {!SnapshotSelection} */ (this._selection).snapshot() :
         null;
 
     this._paintProfilerLink.classList.toggle('hidden', !(this._layerSnapshotMap.has(layer) || snapshot));
@@ -262,26 +265,10 @@ export const Events = {
   PaintProfilerRequested: Symbol('PaintProfilerRequested')
 };
 
-export const _slowScrollRectNames = new Map([
+export const slowScrollRectNames = new Map([
   [SDK.Layer.ScrollRectType.NonFastScrollable, Common.UIString('Non fast scrollable')],
   [SDK.Layer.ScrollRectType.TouchEventHandler, Common.UIString('Touch event handler')],
   [SDK.Layer.ScrollRectType.WheelEventHandler, Common.UIString('Wheel event handler')],
   [SDK.Layer.ScrollRectType.RepaintsOnScroll, Common.UIString('Repaints on scroll')],
   [SDK.Layer.ScrollRectType.MainThreadScrollingReason, Common.UIString('Main thread scrolling reason')]
 ]);
-
-/* Legacy exported object */
-self.LayerViewer = self.LayerViewer || {};
-
-/* Legacy exported object */
-LayerViewer = LayerViewer || {};
-
-/**
- * @constructor
- */
-LayerViewer.LayerDetailsView = LayerDetailsView;
-
-/** @enum {symbol} */
-LayerViewer.LayerDetailsView.Events = Events;
-
-LayerViewer.LayerDetailsView._slowScrollRectNames = _slowScrollRectNames;

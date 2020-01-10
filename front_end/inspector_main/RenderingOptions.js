@@ -94,14 +94,3 @@ export class RenderingOptionsView extends UI.VBox {
     }
   }
 }
-
-/* Legacy exported object */
-self.InspectorMain = self.InspectorMain || {};
-
-/* Legacy exported object */
-InspectorMain = InspectorMain || {};
-
-/**
- * @constructor
- */
-InspectorMain.RenderingOptionsView = RenderingOptionsView;

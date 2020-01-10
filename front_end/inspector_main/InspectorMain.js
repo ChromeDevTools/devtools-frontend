@@ -37,7 +37,7 @@ export class InspectorMainImpl extends Common.Object {
     }, Components.TargetDetachedDialog.webSocketConnectionLost);
 
     new SourcesPanelIndicator();
-    new InspectorMain.BackendSettingsSync();
+    new BackendSettingsSync();
     new MobileThrottling.NetworkPanelIndicator();
 
     Host.InspectorFrontendHost.events.addEventListener(
@@ -204,39 +204,3 @@ export class BackendSettingsSync {
 }
 
 SDK.ChildTargetManager.install();
-
-/* Legacy exported object */
-self.InspectorMain = self.InspectorMain || {};
-
-/* Legacy exported object */
-InspectorMain = InspectorMain || {};
-
-/**
- * @constructor
- */
-InspectorMain.InspectorMain = InspectorMainImpl;
-
-/**
- * @constructor
- */
-InspectorMain.ReloadActionDelegate = ReloadActionDelegate;
-
-/**
- * @constructor
- */
-InspectorMain.FocusDebuggeeActionDelegate = FocusDebuggeeActionDelegate;
-
-/**
- * @constructor
- */
-InspectorMain.NodeIndicator = NodeIndicator;
-
-/**
- * @constructor
- */
-InspectorMain.SourcesPanelIndicator = SourcesPanelIndicator;
-
-/**
- * @constructor
- */
-InspectorMain.BackendSettingsSync = BackendSettingsSync;

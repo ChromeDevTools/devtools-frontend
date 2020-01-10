@@ -8,7 +8,7 @@ import './platform/platform.js';
 import './text_utils/text_utils.js';
 import './common/common-legacy.js';
 
-import './heap_snapshot_model/heap_snapshot_model.js';
+import './heap_snapshot_model/heap_snapshot_model-legacy.js';
 import './heap_snapshot_worker/heap_snapshot_worker.js';
 
 Root.Runtime.startWorker('heap_snapshot_worker_entrypoint');

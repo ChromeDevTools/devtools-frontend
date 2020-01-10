@@ -3,6 +3,7 @@
     "scripts": [],
     "modules": [
         "heap_snapshot_model.js",
+        "heap_snapshot_model-legacy.js",
         "HeapSnapshotModel.js"
     ]
 }

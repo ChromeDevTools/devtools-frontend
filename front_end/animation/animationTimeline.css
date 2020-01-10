@@ -243,6 +243,11 @@ svg.animation-ui g:first-child {
     opacity: 1;
 }
 
+svg.animation-ui circle[data-keyboard-focus="true"],
+svg.animation-ui path[data-keyboard-focus="true"] {
+    outline: 2px solid -webkit-focus-ring-color;
+}
+
 .animation-tail-iterations {
     opacity: 0.5;
 }

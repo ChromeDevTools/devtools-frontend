@@ -94,7 +94,7 @@ Animation.AnimationUI = AnimationModule.AnimationUI.AnimationUI;
 /**
  * @enum {string}
  */
-Animation.AnimationUI.MouseEvents = AnimationModule.AnimationUI.MouseEvents;
+Animation.AnimationUI.Events = AnimationModule.AnimationUI.Events;
 
 Animation.AnimationUI.Options = AnimationModule.AnimationUI.Options;
 

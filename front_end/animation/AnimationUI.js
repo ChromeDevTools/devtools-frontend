@@ -32,13 +32,16 @@ export class AnimationUI {
     this._svg.addEventListener('contextmenu', this._onContextMenu.bind(this));
     this._activeIntervalGroup = this._svg.createSVGChild('g');
     UI.installDragHandle(
-        this._activeIntervalGroup, this._mouseDown.bind(this, MouseEvents.AnimationDrag, null),
-        this._mouseMove.bind(this), this._mouseUp.bind(this), '-webkit-grabbing', '-webkit-grab');
+        this._activeIntervalGroup, this._mouseDown.bind(this, Events.AnimationDrag, null), this._mouseMove.bind(this),
+        this._mouseUp.bind(this), '-webkit-grabbing', '-webkit-grab');
+    Animation.AnimationUI.installDragHandleKeyboard(
+        this._activeIntervalGroup, this._keydownMove.bind(this, Animation.AnimationUI.Events.AnimationDrag, null));
 
     /** @type {!Array.<{group: ?Element, animationLine: ?Element, keyframePoints: !Object.<number, !Element>, keyframeRender: !Object.<number, !Element>}>} */
     this._cachedElements = [];
 
     this._movementInMs = 0;
+    this._keyboardMovementRateMs = 50;
     this._color = AnimationUI.Color(this._animation);
   }
 
@@ -50,6 +53,14 @@ export class AnimationUI {
     const names = Object.keys(Colors);
     const color = Colors[names[String.hashCode(animation.name() || animation.id()) % names.length]];
     return color.asString(Common.Color.Format.RGB);
+  }
+
+  /**
+   * @param {!Element} element
+   * @param {function(...?)} elementDrag
+   */
+  static installDragHandleKeyboard(element, elementDrag) {
+    element.addEventListener('keydown', elementDrag, false);
   }
 
   /**
@@ -136,6 +147,7 @@ export class AnimationUI {
     circle.setAttribute('cy', Options.AnimationHeight);
     circle.style.stroke = this._color;
     circle.setAttribute('r', Options.AnimationMargin / 2);
+    circle.tabIndex = 0;
 
     if (keyframeIndex <= 0) {
       circle.style.fill = this._color;
@@ -149,15 +161,16 @@ export class AnimationUI {
 
     let eventType;
     if (keyframeIndex === 0) {
-      eventType = MouseEvents.StartEndpointMove;
+      eventType = Events.StartEndpointMove;
     } else if (keyframeIndex === -1) {
-      eventType = MouseEvents.FinishEndpointMove;
+      eventType = Events.FinishEndpointMove;
     } else {
-      eventType = MouseEvents.KeyframeMove;
+      eventType = Events.KeyframeMove;
     }
     UI.installDragHandle(
         circle, this._mouseDown.bind(this, eventType, keyframeIndex), this._mouseMove.bind(this),
         this._mouseUp.bind(this), 'ew-resize');
+    Animation.AnimationUI.installDragHandleKeyboard(circle, this._keydownMove.bind(this, eventType, keyframeIndex));
   }
 
   /**
@@ -190,6 +203,7 @@ export class AnimationUI {
                                       parentElement.createSVGChild('g', 'animation-keyframe-step');
     }
     const group = cache[keyframeIndex];
+    group.tabIndex = 0;
     group.style.transform = 'translateX(' + leftDistance.toFixed(2) + 'px)';
 
     if (easing === 'linear') {
@@ -290,7 +304,7 @@ export class AnimationUI {
    */
   _delay() {
     let delay = this._animation.source().delay();
-    if (this._mouseEventType === MouseEvents.AnimationDrag || this._mouseEventType === MouseEvents.StartEndpointMove) {
+    if (this._mouseEventType === Events.AnimationDrag || this._mouseEventType === Events.StartEndpointMove) {
       delay += this._movementInMs;
     }
     // FIXME: add support for negative start delay
@@ -302,11 +316,12 @@ export class AnimationUI {
    */
   _duration() {
     let duration = this._animation.source().duration();
-    if (this._mouseEventType === MouseEvents.FinishEndpointMove) {
+    if (this._mouseEventType === Events.FinishEndpointMove) {
       duration += this._movementInMs;
-    } else if (this._mouseEventType === MouseEvents.StartEndpointMove) {
+    } else if (this._mouseEventType === Events.StartEndpointMove) {
       duration -= Math.max(this._movementInMs, -this._animation.source().delay());
-    }  // Cannot have negative delay
+      // Cannot have negative delay
+    }
     return Math.max(0, duration);
   }
 
@@ -316,7 +331,7 @@ export class AnimationUI {
    */
   _offset(i) {
     let offset = this._keyframes[i].offsetAsNumber();
-    if (this._mouseEventType === MouseEvents.KeyframeMove && i === this._keyframeMoved) {
+    if (this._mouseEventType === Events.KeyframeMove && i === this._keyframeMoved) {
       console.assert(i > 0 && i < this._keyframes.length - 1, 'First and last keyframe cannot be moved');
       offset += this._movementInMs / this._animation.source().duration();
       offset = Math.max(offset, this._keyframes[i - 1].offsetAsNumber());
@@ -326,7 +341,7 @@ export class AnimationUI {
   }
 
   /**
-   * @param {!MouseEvents} mouseEventType
+   * @param {!Events} mouseEventType
    * @param {?number} keyframeIndex
    * @param {!Event} event
    */
@@ -365,7 +380,7 @@ export class AnimationUI {
     this._movementInMs = (event.clientX - this._downMouseX) / this._timeline.pixelMsRatio();
 
     // Commit changes
-    if (this._mouseEventType === MouseEvents.KeyframeMove) {
+    if (this._mouseEventType === Events.KeyframeMove) {
       this._keyframes[this._keyframeMoved].setOffset(this._offset(this._keyframeMoved));
     } else {
       this._animation.setTiming(this._duration(), this._delay());
@@ -377,6 +392,35 @@ export class AnimationUI {
     delete this._mouseEventType;
     delete this._downMouseX;
     delete this._keyframeMoved;
+  }
+
+  _keydownMove(mouseEventType, keyframeIndex, event) {
+    this._mouseEventType = mouseEventType;
+    this._keyframeMoved = keyframeIndex;
+    switch (event.key) {
+      case 'ArrowLeft':
+      case 'ArrowUp':
+        this._movementInMs = -this._keyboardMovementRateMs;
+        break;
+      case 'ArrowRight':
+      case 'ArrowDown':
+        this._movementInMs = this._keyboardMovementRateMs;
+        break;
+      default:
+        return;
+    }
+    if (this._mouseEventType === Animation.AnimationUI.Events.KeyframeMove) {
+      this._keyframes[this._keyframeMoved].setOffset(this._offset(this._keyframeMoved));
+    } else {
+      this._animation.setTiming(this._duration(), this._delay());
+    }
+    this._movementInMs = 0;
+    this.redraw();
+
+    delete this._mouseEventType;
+    delete this._keyframeMoved;
+
+    event.consume(true);
   }
 
   /**
@@ -403,7 +447,7 @@ export class AnimationUI {
 /**
  * @enum {string}
  */
-export const MouseEvents = {
+export const Events = {
   AnimationDrag: 'AnimationDrag',
   KeyframeMove: 'KeyframeMove',
   StartEndpointMove: 'StartEndpointMove',

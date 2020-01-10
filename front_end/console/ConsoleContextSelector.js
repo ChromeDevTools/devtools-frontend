@@ -1,11 +1,12 @@
 // Copyright 2015 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
 /**
  * @implements {SDK.SDKModelObserver<!SDK.RuntimeModel>}
  * @implements {UI.SoftDropDown.Delegate<!SDK.ExecutionContext>}
  */
-export default class ConsoleContextSelector {
+export class ConsoleContextSelector {
   constructor() {
     /** @type {!UI.ListModel<!SDK.ExecutionContext>} */
     this._items = new UI.ListModel();
@@ -324,14 +325,3 @@ export default class ConsoleContextSelector {
     }
   }
 }
-
-/* Legacy exported object */
-self.Console = self.Console || {};
-
-/* Legacy exported object */
-Console = Console || {};
-
-/**
- * @constructor
- */
-Console.ConsoleContextSelector = ConsoleContextSelector;

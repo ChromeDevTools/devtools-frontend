@@ -26,12 +26,20 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+import {ConsoleContextSelector} from './ConsoleContextSelector.js';
+import {ConsoleFilter, FilterType} from './ConsoleFilter.js';
+import {ConsolePinPane} from './ConsolePinPane.js';
+import {ConsolePrompt, Events as ConsolePromptEvents} from './ConsolePrompt.js';
+import {ConsoleSidebar, Events} from './ConsoleSidebar.js';
+import {ConsoleGroupViewMessage, ConsoleViewMessage, MaxLengthForLinks} from './ConsoleViewMessage.js';  // eslint-disable-line no-unused-vars
+import {ConsoleViewport, ConsoleViewportElement, ConsoleViewportProvider} from './ConsoleViewport.js';  // eslint-disable-line no-unused-vars
+
 /**
  * @implements {UI.Searchable}
- * @implements {Console.ConsoleViewportProvider}
+ * @implements {ConsoleViewportProvider}
  * @unrestricted
  */
-export default class ConsoleView extends UI.VBox {
+export class ConsoleView extends UI.VBox {
   constructor() {
     super();
     this.setMinimumSize(0, 35);
@@ -42,8 +50,8 @@ export default class ConsoleView extends UI.VBox {
     this._searchableView.element.classList.add('console-searchable-view');
     this._searchableView.setPlaceholder(Common.UIString('Find string in logs'));
     this._searchableView.setMinimalSearchQuerySize(0);
-    this._sidebar = new Console.ConsoleSidebar();
-    this._sidebar.addEventListener(Console.ConsoleSidebar.Events.FilterSelected, this._onFilterChanged.bind(this));
+    this._sidebar = new ConsoleSidebar();
+    this._sidebar.addEventListener(Events.FilterSelected, this._onFilterChanged.bind(this));
     this._isSidebarOpen = false;
     this._filter = new ConsoleViewFilter(this._onFilterChanged.bind(this));
 
@@ -67,15 +75,15 @@ export default class ConsoleView extends UI.VBox {
     this._contentsElement = this._searchableView.element;
     this.element.classList.add('console-view');
 
-    /** @type {!Array.<!Console.ConsoleViewMessage>} */
+    /** @type {!Array.<!ConsoleViewMessage>} */
     this._visibleViewMessages = [];
     this._hiddenByFilterCount = 0;
-    /** @type {!Set<!Console.ConsoleViewMessage>} */
+    /** @type {!Set<!ConsoleViewMessage>} */
     this._shouldBeHiddenCache = new Set();
 
-    /** @type {!Map<string, !Array<!Console.ConsoleViewMessage>>} */
+    /** @type {!Map<string, !Array<!ConsoleViewMessage>>} */
     this._groupableMessages = new Map();
-    /** @type {!Map<string, !Console.ConsoleViewMessage>} */
+    /** @type {!Map<string, !ConsoleViewMessage>} */
     this._groupableMessageTitle = new Map();
 
     /**
@@ -83,7 +91,7 @@ export default class ConsoleView extends UI.VBox {
      */
     this._regexMatchRanges = [];
 
-    this._consoleContextSelector = new Console.ConsoleContextSelector();
+    this._consoleContextSelector = new ConsoleContextSelector();
 
     this._filterStatusText = new UI.ToolbarText();
     this._filterStatusText.element.classList.add('dimmed');
@@ -158,7 +166,7 @@ export default class ConsoleView extends UI.VBox {
     this._showSettingsPaneSetting.addChangeListener(
         () => settingsPane.element.classList.toggle('hidden', !this._showSettingsPaneSetting.get()));
 
-    this._pinPane = new Console.ConsolePinPane(liveExpressionButton);
+    this._pinPane = new ConsolePinPane(liveExpressionButton);
     this._pinPane.element.classList.add('console-view-pinpane');
     this._pinPane.show(this._contentsElement);
     this._pinPane.element.addEventListener('keydown', event => {
@@ -169,7 +177,7 @@ export default class ConsoleView extends UI.VBox {
       }
     });
 
-    this._viewport = new Console.ConsoleViewport(this);
+    this._viewport = new ConsoleViewport(this);
     this._viewport.setStickToBottom(true);
     this._viewport.contentElement().classList.add('console-group', 'console-group-messages');
     this._contentsElement.appendChild(this._viewport.element);
@@ -200,18 +208,18 @@ export default class ConsoleView extends UI.VBox {
 
     this._messagesElement.addEventListener('contextmenu', this._handleContextMenuEvent.bind(this), false);
 
-    this._linkifier = new Components.Linkifier(Console.ConsoleViewMessage.MaxLengthForLinks);
+    this._linkifier = new Components.Linkifier(MaxLengthForLinks);
 
-    /** @type {!Array.<!Console.ConsoleViewMessage>} */
+    /** @type {!Array.<!ConsoleViewMessage>} */
     this._consoleMessages = [];
     this._viewMessageSymbol = Symbol('viewMessage');
 
     this._consoleHistorySetting = Common.settings.createLocalSetting('consoleHistory', []);
 
-    this._prompt = new Console.ConsolePrompt();
+    this._prompt = new ConsolePrompt();
     this._prompt.show(this._promptElement);
     this._prompt.element.addEventListener('keydown', this._promptKeyDown.bind(this), true);
-    this._prompt.addEventListener(Console.ConsolePrompt.Events.TextChanged, this._promptTextChanged, this);
+    this._prompt.addEventListener(ConsolePromptEvents.TextChanged, this._promptTextChanged, this);
 
     this._messagesElement.addEventListener('keydown', this._messagesKeyDown.bind(this), false);
     this._prompt.element.addEventListener('focusin', () => {
@@ -251,7 +259,7 @@ export default class ConsoleView extends UI.VBox {
   }
 
   /**
-   * @return {!Console.ConsoleView}
+   * @return {!ConsoleView}
    */
   static instance() {
     if (!ConsoleView._instance) {
@@ -265,8 +273,8 @@ export default class ConsoleView extends UI.VBox {
   }
 
   _onFilterChanged() {
-    this._filter._currentFilter.levelsMask = this._isSidebarOpen ? Console.ConsoleFilter.allLevelsFilterValue() :
-                                                                   this._filter._messageLevelFiltersSetting.get();
+    this._filter._currentFilter.levelsMask =
+        this._isSidebarOpen ? ConsoleFilter.allLevelsFilterValue() : this._filter._messageLevelFiltersSetting.get();
     this._cancelBuildHiddenCache();
     if (this._immediatelyFilterMessagesForTest) {
       for (const viewMessage of this._consoleMessages) {
@@ -309,7 +317,7 @@ export default class ConsoleView extends UI.VBox {
   /**
    * @override
    * @param {number} index
-   * @return {?Console.ConsoleViewportElement}
+   * @return {?ConsoleViewportElement}
    */
   itemElement(index) {
     return this._visibleViewMessages[index];
@@ -338,7 +346,7 @@ export default class ConsoleView extends UI.VBox {
 
     /**
      * @param {!Common.Event} event
-     * @this {Console.ConsoleView}
+     * @this {ConsoleView}
      */
     function messageAdded(event) {
       this._addSinkMessage(/** @type {!Common.Console.Message} */ (event.data));
@@ -553,7 +561,7 @@ export default class ConsoleView extends UI.VBox {
     this._consoleMessageAddedForTest(viewMessage);
 
     /**
-     * @param {!Console.ConsoleViewMessage} viewMessage1
+     * @param {!ConsoleViewMessage} viewMessage1
      * @param {!Console.ConsoleViewMessage} viewMessage2
      */
     function timeComparator(viewMessage1, viewMessage2) {
@@ -575,13 +583,13 @@ export default class ConsoleView extends UI.VBox {
   }
 
   /**
-   * @param {!Console.ConsoleViewMessage} viewMessage
+   * @param {!ConsoleViewMessage} viewMessage
    */
   _consoleMessageAddedForTest(viewMessage) {
   }
 
   /**
-   * @param {!Console.ConsoleViewMessage} viewMessage
+   * @param {!ConsoleViewMessage} viewMessage
    * @return {boolean}
    */
   _shouldMessageBeVisible(viewMessage) {
@@ -589,7 +597,7 @@ export default class ConsoleView extends UI.VBox {
   }
 
   /**
-   * @param {!Console.ConsoleViewMessage} viewMessage
+   * @param {!ConsoleViewMessage} viewMessage
    */
   _computeShouldMessageBeVisible(viewMessage) {
     if (this._filter.shouldBeVisible(viewMessage) &&
@@ -601,7 +609,7 @@ export default class ConsoleView extends UI.VBox {
   }
 
   /**
-   * @param {!Console.ConsoleViewMessage} viewMessage
+   * @param {!ConsoleViewMessage} viewMessage
    * @param {boolean=} preventCollapse
    */
   _appendMessageToEnd(viewMessage, preventCollapse) {
@@ -645,7 +653,7 @@ export default class ConsoleView extends UI.VBox {
 
   /**
    * @param {!SDK.ConsoleMessage} message
-   * @return {!Console.ConsoleViewMessage}
+   * @return {!ConsoleViewMessage}
    */
   _createViewMessage(message) {
     const nestingLevel = this._currentGroup.nestingLevel();
@@ -656,10 +664,10 @@ export default class ConsoleView extends UI.VBox {
         return new ConsoleCommandResult(message, this._linkifier, nestingLevel, this._onMessageResizedBound);
       case SDK.ConsoleMessage.MessageType.StartGroupCollapsed:
       case SDK.ConsoleMessage.MessageType.StartGroup:
-        return new Console.ConsoleGroupViewMessage(
+        return new ConsoleGroupViewMessage(
             message, this._linkifier, nestingLevel, this._updateMessageList.bind(this), this._onMessageResizedBound);
       default:
-        return new Console.ConsoleViewMessage(message, this._linkifier, nestingLevel, this._onMessageResizedBound);
+        return new ConsoleViewMessage(message, this._linkifier, nestingLevel, this._onMessageResizedBound);
     }
   }
 
@@ -759,7 +767,7 @@ export default class ConsoleView extends UI.VBox {
       const messageContents = [];
       let i;
       for (i = 0; i < chunkSize && i + messageIndex < this.itemCount(); ++i) {
-        const message = /** @type {!Console.ConsoleViewMessage} */ (this.itemElement(messageIndex + i));
+        const message = /** @type {!ConsoleViewMessage} */ (this.itemElement(messageIndex + i));
         messageContents.push(message.toExportString());
       }
       messageIndex += i;
@@ -772,7 +780,7 @@ export default class ConsoleView extends UI.VBox {
   }
 
   /**
-   * @param {!Console.ConsoleViewMessage} viewMessage
+   * @param {!ConsoleViewMessage} viewMessage
    * @param {!Console.ConsoleViewMessage=} lastMessage
    * @return {boolean}
    */
@@ -794,7 +802,7 @@ export default class ConsoleView extends UI.VBox {
 
   /**
    * @param {number} startIndex
-   * @param {!Array<!Console.ConsoleViewMessage>} viewMessages
+   * @param {!Array<!ConsoleViewMessage>} viewMessages
    */
   _buildHiddenCache(startIndex, viewMessages) {
     const startTime = Date.now();
@@ -1196,7 +1204,7 @@ export default class ConsoleView extends UI.VBox {
     this._waitForScrollTimeout = setTimeout(updateViewportState.bind(this), 200);
 
     /**
-     * @this {!Console.ConsoleView}
+     * @this {!ConsoleView}
      */
     function updateViewportState() {
       this._muteViewportUpdates = false;
@@ -1266,7 +1274,7 @@ export class ConsoleViewFilter {
     this._filterByExecutionContextSetting.addChangeListener(this._onFilterChanged.bind(this));
     UI.context.addFlavorChangeListener(SDK.ExecutionContext, this._onFilterChanged, this);
 
-    const filterKeys = Object.values(Console.ConsoleFilter.FilterType);
+    const filterKeys = Object.values(FilterType);
     this._suggestionBuilder = new UI.FilterSuggestionBuilder(filterKeys);
     this._textFilterUI = new UI.ToolbarInput(
         Common.UIString('Filter'), '', 0.2, 1, Common.UIString('e.g. /event\\d/ -cdn url:a.com'),
@@ -1280,7 +1288,7 @@ export class ConsoleViewFilter {
       this._onFilterChanged();
     });
     this._filterParser = new TextUtils.FilterParser(filterKeys);
-    this._currentFilter = new Console.ConsoleFilter('', [], null, this._messageLevelFiltersSetting.get());
+    this._currentFilter = new ConsoleFilter('', [], null, this._messageLevelFiltersSetting.get());
     this._updateCurrentFilter();
 
     this._levelLabels = {};
@@ -1307,13 +1315,13 @@ export class ConsoleViewFilter {
       return;
     }
     if (message.context) {
-      this._suggestionBuilder.addItem(Console.ConsoleFilter.FilterType.Context, message.context);
+      this._suggestionBuilder.addItem(FilterType.Context, message.context);
     }
     if (message.source) {
-      this._suggestionBuilder.addItem(Console.ConsoleFilter.FilterType.Source, message.source);
+      this._suggestionBuilder.addItem(FilterType.Source, message.source);
     }
     if (message.url) {
-      this._suggestionBuilder.addItem(Console.ConsoleFilter.FilterType.Url, message.url);
+      this._suggestionBuilder.addItem(FilterType.Url, message.url);
     }
   }
 
@@ -1321,17 +1329,13 @@ export class ConsoleViewFilter {
    * @return {!Common.Setting}
    */
   static levelFilterSetting() {
-    return Common.settings.createSetting('messageLevelFilters', Console.ConsoleFilter.defaultLevelsFilterValue());
+    return Common.settings.createSetting('messageLevelFilters', ConsoleFilter.defaultLevelsFilterValue());
   }
 
   _updateCurrentFilter() {
     const parsedFilters = this._filterParser.parse(this._textFilterUI.value());
     if (this._hideNetworkMessagesSetting.get()) {
-      parsedFilters.push({
-        key: Console.ConsoleFilter.FilterType.Source,
-        text: SDK.ConsoleMessage.MessageSource.Network,
-        negative: true
-      });
+      parsedFilters.push({key: FilterType.Source, text: SDK.ConsoleMessage.MessageSource.Network, negative: true});
     }
 
     this._currentFilter.executionContext =
@@ -1348,8 +1352,8 @@ export class ConsoleViewFilter {
   _updateLevelMenuButtonText() {
     let isAll = true;
     let isDefault = true;
-    const allValue = Console.ConsoleFilter.allLevelsFilterValue();
-    const defaultValue = Console.ConsoleFilter.defaultLevelsFilterValue();
+    const allValue = ConsoleFilter.allLevelsFilterValue();
+    const defaultValue = ConsoleFilter.defaultLevelsFilterValue();
 
     let text = null;
     const levels = this._messageLevelFiltersSetting.get();
@@ -1384,7 +1388,7 @@ export class ConsoleViewFilter {
         mouseEvent, true /* useSoftMenu */, this._levelMenuButton.element.totalOffsetLeft(),
         this._levelMenuButton.element.totalOffsetTop() + this._levelMenuButton.element.offsetHeight);
     contextMenu.headerSection().appendItem(
-        Common.UIString('Default'), () => setting.set(Console.ConsoleFilter.defaultLevelsFilterValue()));
+        Common.UIString('Default'), () => setting.set(ConsoleFilter.defaultLevelsFilterValue()));
     for (const level in this._levelLabels) {
       contextMenu.defaultSection().appendCheckboxItem(
           this._levelLabels[level], toggleShowLevel.bind(null, level), levels[level]);
@@ -1414,7 +1418,7 @@ export class ConsoleViewFilter {
   }
 
   /**
-   * @param {!Console.ConsoleViewMessage} viewMessage
+   * @param {!ConsoleViewMessage} viewMessage
    * @return {boolean}
    */
   shouldBeVisible(viewMessage) {
@@ -1426,7 +1430,7 @@ export class ConsoleViewFilter {
   }
 
   reset() {
-    this._messageLevelFiltersSetting.set(Console.ConsoleFilter.defaultLevelsFilterValue());
+    this._messageLevelFiltersSetting.set(ConsoleFilter.defaultLevelsFilterValue());
     this._filterByExecutionContextSetting.set(false);
     this._hideNetworkMessagesSetting.set(false);
     this._textFilterUI.setValue('');
@@ -1437,7 +1441,7 @@ export class ConsoleViewFilter {
 /**
  * @unrestricted
  */
-export class ConsoleCommand extends Console.ConsoleViewMessage {
+export class ConsoleCommand extends ConsoleViewMessage {
   /**
    * @override
    * @return {!Element}
@@ -1474,7 +1478,7 @@ export class ConsoleCommand extends Console.ConsoleViewMessage {
 /**
  * @unrestricted
  */
-class ConsoleCommandResult extends Console.ConsoleViewMessage {
+class ConsoleCommandResult extends ConsoleViewMessage {
   /**
    * @override
    * @return {!Element}
@@ -1497,8 +1501,8 @@ class ConsoleCommandResult extends Console.ConsoleViewMessage {
  */
 export class ConsoleGroup {
   /**
-   * @param {?Console.ConsoleGroup} parentGroup
-   * @param {?Console.ConsoleViewMessage} groupMessage
+   * @param {?ConsoleGroup} parentGroup
+   * @param {?ConsoleViewMessage} groupMessage
    */
   constructor(parentGroup, groupMessage) {
     this._parentGroup = parentGroup;
@@ -1508,7 +1512,7 @@ export class ConsoleGroup {
   }
 
   /**
-   * @return {!Console.ConsoleGroup}
+   * @return {!ConsoleGroup}
    */
   static createTopGroup() {
     return new ConsoleGroup(null, null);
@@ -1529,7 +1533,7 @@ export class ConsoleGroup {
   }
 
   /**
-   * @return {?Console.ConsoleGroup}
+   * @return {?ConsoleGroup}
    */
   parentGroup() {
     return this._parentGroup;
@@ -1576,37 +1580,3 @@ const _messageSortingTimeSymbol = Symbol('messageSortingTime');
  * @type {number}
  */
 const MaxLengthToIgnoreHighlighter = 10000;
-
-/* Legacy exported object */
-self.Console = self.Console || {};
-
-/* Legacy exported object */
-Console = Console || {};
-
-/**
- * @constructor
- */
-Console.ConsoleView = ConsoleView;
-
-/** @constructor */
-Console.ConsoleViewFilter = ConsoleViewFilter;
-
-/**
- * @typedef {{messageIndex: number, matchIndex: number}}
- */
-Console.ConsoleView.RegexMatchRange;
-
-/**
- * @implements {UI.ActionDelegate}
- */
-Console.ConsoleView.ActionDelegate = ActionDelegate;
-
-/**
- * @constructor
- */
-Console.ConsoleCommand = ConsoleCommand;
-
-/**
- * @constructor
- */
-Console.ConsoleGroup = ConsoleGroup;

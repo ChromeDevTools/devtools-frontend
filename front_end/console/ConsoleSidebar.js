@@ -2,7 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-export default class ConsoleSidebar extends UI.VBox {
+import {ConsoleFilter, FilterType} from './ConsoleFilter.js';
+import {ConsoleViewMessage} from './ConsoleViewMessage.js';  // eslint-disable-line no-unused-vars
+
+export class ConsoleSidebar extends UI.VBox {
   constructor() {
     super(true);
     this.setMinimumSize(125, 0);
@@ -13,33 +16,30 @@ export default class ConsoleSidebar extends UI.VBox {
     this.contentElement.appendChild(this._tree.element);
     /** @type {?UI.TreeElement} */
     this._selectedTreeElement = null;
-    /** @type {!Array<!Console.ConsoleSidebar.FilterTreeElement>} */
+    /** @type {!Array<!FilterTreeElement>} */
     this._treeElements = [];
     const selectedFilterSetting = Common.settings.createSetting('console.sidebarSelectedFilter', null);
 
     const Levels = SDK.ConsoleMessage.MessageLevel;
-    const consoleAPIParsedFilters = [{
-      key: Console.ConsoleFilter.FilterType.Source,
-      text: SDK.ConsoleMessage.MessageSource.ConsoleAPI,
-      negative: false
-    }];
+    const consoleAPIParsedFilters =
+        [{key: FilterType.Source, text: SDK.ConsoleMessage.MessageSource.ConsoleAPI, negative: false}];
     this._appendGroup(
-        _groupName.All, [], Console.ConsoleFilter.allLevelsFilterValue(), UI.Icon.create('mediumicon-list'),
+        _groupName.All, [], ConsoleFilter.allLevelsFilterValue(), UI.Icon.create('mediumicon-list'),
         selectedFilterSetting);
     this._appendGroup(
-        _groupName.ConsoleAPI, consoleAPIParsedFilters, Console.ConsoleFilter.allLevelsFilterValue(),
+        _groupName.ConsoleAPI, consoleAPIParsedFilters, ConsoleFilter.allLevelsFilterValue(),
         UI.Icon.create('mediumicon-account-circle'), selectedFilterSetting);
     this._appendGroup(
-        _groupName.Error, [], Console.ConsoleFilter.singleLevelMask(Levels.Error),
-        UI.Icon.create('mediumicon-error-circle'), selectedFilterSetting);
+        _groupName.Error, [], ConsoleFilter.singleLevelMask(Levels.Error), UI.Icon.create('mediumicon-error-circle'),
+        selectedFilterSetting);
     this._appendGroup(
-        _groupName.Warning, [], Console.ConsoleFilter.singleLevelMask(Levels.Warning),
+        _groupName.Warning, [], ConsoleFilter.singleLevelMask(Levels.Warning),
         UI.Icon.create('mediumicon-warning-triangle'), selectedFilterSetting);
     this._appendGroup(
-        _groupName.Info, [], Console.ConsoleFilter.singleLevelMask(Levels.Info),
-        UI.Icon.create('mediumicon-info-circle'), selectedFilterSetting);
+        _groupName.Info, [], ConsoleFilter.singleLevelMask(Levels.Info), UI.Icon.create('mediumicon-info-circle'),
+        selectedFilterSetting);
     this._appendGroup(
-        _groupName.Verbose, [], Console.ConsoleFilter.singleLevelMask(Levels.Verbose), UI.Icon.create('mediumicon-bug'),
+        _groupName.Verbose, [], ConsoleFilter.singleLevelMask(Levels.Verbose), UI.Icon.create('mediumicon-bug'),
         selectedFilterSetting);
     const selectedTreeElementName = selectedFilterSetting.get();
     const defaultTreeElement =
@@ -55,7 +55,7 @@ export default class ConsoleSidebar extends UI.VBox {
    * @param {!Common.Setting} selectedFilterSetting
    */
   _appendGroup(name, parsedFilters, levelsMask, icon, selectedFilterSetting) {
-    const filter = new Console.ConsoleFilter(name, parsedFilters, null, levelsMask);
+    const filter = new ConsoleFilter(name, parsedFilters, null, levelsMask);
     const treeElement = new FilterTreeElement(filter, icon, selectedFilterSetting);
     this._tree.appendChild(treeElement);
     this._treeElements.push(treeElement);
@@ -68,7 +68,7 @@ export default class ConsoleSidebar extends UI.VBox {
   }
 
   /**
-   * @param {!Console.ConsoleViewMessage} viewMessage
+   * @param {!ConsoleViewMessage} viewMessage
    */
   onMessageAdded(viewMessage) {
     for (const treeElement of this._treeElements) {
@@ -77,7 +77,7 @@ export default class ConsoleSidebar extends UI.VBox {
   }
 
   /**
-   * @param {!Console.ConsoleViewMessage} viewMessage
+   * @param {!ConsoleViewMessage} viewMessage
    * @return {boolean}
    */
   shouldBeVisible(viewMessage) {
@@ -103,7 +103,7 @@ export const Events = {
 
 export class URLGroupTreeElement extends UI.TreeElement {
   /**
-   * @param {!Console.ConsoleFilter} filter
+   * @param {!ConsoleFilter} filter
    */
   constructor(filter) {
     super(filter.name);
@@ -122,7 +122,7 @@ export class URLGroupTreeElement extends UI.TreeElement {
 
 export class FilterTreeElement extends UI.TreeElement {
   /**
-   * @param {!Console.ConsoleFilter} filter
+   * @param {!ConsoleFilter} filter
    * @param {!Element} icon
    * @param {!Common.Setting} selectedFilterSetting
    */
@@ -130,7 +130,7 @@ export class FilterTreeElement extends UI.TreeElement {
     super(filter.name);
     this._filter = filter;
     this._selectedFilterSetting = selectedFilterSetting;
-    /** @type {!Map<?string, !Console.ConsoleSidebar.URLGroupTreeElement>} */
+    /** @type {!Map<?string, !URLGroupTreeElement>} */
     this._urlTreeElements = new Map();
     this.setLeadingIcons([icon]);
     this._messageCount = 0;
@@ -174,7 +174,7 @@ export class FilterTreeElement extends UI.TreeElement {
   }
 
   /**
-   * @param {!Console.ConsoleViewMessage} viewMessage
+   * @param {!ConsoleViewMessage} viewMessage
    */
   onMessageAdded(viewMessage) {
     const message = viewMessage.consoleMessage();
@@ -191,7 +191,7 @@ export class FilterTreeElement extends UI.TreeElement {
 
   /**
    * @param {string=} url
-   * @return {!Console.ConsoleSidebar.URLGroupTreeElement}
+   * @return {!URLGroupTreeElement}
    */
   _childElement(url) {
     const urlValue = url || null;
@@ -207,7 +207,7 @@ export class FilterTreeElement extends UI.TreeElement {
     } else {
       filter.name = Common.UIString('<other>');
     }
-    filter.parsedFilters.push({key: Console.ConsoleFilter.FilterType.Url, text: urlValue, negative: false});
+    filter.parsedFilters.push({key: FilterType.Url, text: urlValue, negative: false});
     child = new URLGroupTreeElement(filter);
     if (urlValue) {
       child.tooltip = urlValue;
@@ -245,27 +245,3 @@ const _groupNoMessageTitleMap = new Map([
   [_groupName.ConsoleAPI, ls`No user messages`], [_groupName.All, ls`No messages`], [_groupName.Error, ls`No errors`],
   [_groupName.Warning, ls`No warnings`], [_groupName.Info, ls`No info`], [_groupName.Verbose, ls`No verbose`]
 ]);
-
-/* Legacy exported object */
-self.Console = self.Console || {};
-
-/* Legacy exported object */
-Console = Console || {};
-
-/**
- * @constructor
- */
-Console.ConsoleSidebar = ConsoleSidebar;
-
-/** @enum {symbol} */
-Console.ConsoleSidebar.Events = Events;
-
-/**
- * @constructor
- */
-Console.ConsoleSidebar.URLGroupTreeElement = URLGroupTreeElement;
-
-/**
- * @constructor
- */
-Console.ConsoleSidebar.FilterTreeElement = FilterTreeElement;

@@ -27,11 +27,13 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+import {ConsoleViewportElement} from './ConsoleViewport.js';  // eslint-disable-line no-unused-vars
+
 /**
- * @implements {Console.ConsoleViewportElement}
+ * @implements {ConsoleViewportElement}
  * @unrestricted
  */
-export default class ConsoleViewMessage {
+export class ConsoleViewMessage {
   /**
    * @param {!SDK.ConsoleMessage} consoleMessage
    * @param {!Components.Linkifier} linkifier
@@ -386,7 +388,7 @@ export default class ConsoleViewMessage {
     };
 
     /**
-     * @this {!Console.ConsoleViewMessage}
+     * @this {!ConsoleViewMessage}
      * @param {?Event} event
      */
     function toggleStackTrace(event) {
@@ -581,6 +583,7 @@ export default class ConsoleViewMessage {
   /**
    * @param {!SDK.RemoteObject} obj
    * @return {!Element}
+   * @suppress {accessControls}
    */
   _formatParameterAsValue(obj) {
     const result = createElement('span');
@@ -650,7 +653,7 @@ export default class ConsoleViewMessage {
 
     /**
      * @param {!SDK.RemoteObject} targetFunction
-     * @this {Console.ConsoleViewMessage}
+     * @this {ConsoleViewMessage}
      */
     function formatTargetFunction(targetFunction) {
       const functionElement = createElement('span');
@@ -776,7 +779,7 @@ export default class ConsoleViewMessage {
 
     /**
      * @param {!SDK.CallFunctionResult} result
-     * @this {Console.ConsoleViewMessage}
+     * @this {ConsoleViewMessage}
      */
     function onInvokeGetterClick(result) {
       const wasThrown = result.wasThrown;
@@ -824,7 +827,7 @@ export default class ConsoleViewMessage {
      * @param {boolean} includePreview
      * @param {!SDK.RemoteObject} obj
      * @return {!Element}
-     * @this {Console.ConsoleViewMessage}
+     * @this {ConsoleViewMessage}
      */
     function parameterFormatter(force, includePreview, obj) {
       return this._formatParameter(obj, force, includePreview);
@@ -901,7 +904,7 @@ export default class ConsoleViewMessage {
     /**
      * @param {!Element} a
      * @param {*} b
-     * @this {!Console.ConsoleViewMessage}
+     * @this {!ConsoleViewMessage}
      * @return {!Element}
      */
     function append(a, b) {
@@ -1575,6 +1578,7 @@ export default class ConsoleViewMessage {
    * @param {string} string
    * @param {function(string,string,number=,number=):!Node} linkifier
    * @return {!DocumentFragment}
+   * @suppress {accessControls}
    */
   _linkifyWithCustomLinkifier(string, linkifier) {
     if (string.length > Console.ConsoleViewMessage._MaxTokenizableStringLength) {
@@ -1585,7 +1589,7 @@ export default class ConsoleViewMessage {
       return fragment;
     }
     const container = createDocumentFragment();
-    const tokens = Console.ConsoleViewMessage._tokenizeMessageText(string);
+    const tokens = ConsoleViewMessage._tokenizeMessageText(string);
     for (const token of tokens) {
       if (!token.text) {
         continue;
@@ -1627,9 +1631,10 @@ export default class ConsoleViewMessage {
   /**
    * @param {string} string
    * @return {!Array<{type: string, text: (string|undefined)}>}
+   * @suppress {accessControls}
    */
   static _tokenizeMessageText(string) {
-    if (!Console.ConsoleViewMessage._tokenizerRegexes) {
+    if (!ConsoleViewMessage._tokenizerRegexes) {
       const controlCodes = '\\u0000-\\u0020\\u007f-\\u009f';
       const linkStringRegex = new RegExp(
           '(?:[a-zA-Z][a-zA-Z0-9+.-]{2,}:\\/\\/|data:|www\\.)[^\\s' + controlCodes + '"]{2,}[^\\s' + controlCodes +
@@ -1647,15 +1652,14 @@ export default class ConsoleViewMessage {
       handlers.set(eventRegex, 'event');
       handlers.set(milestoneRegex, 'milestone');
       handlers.set(autofillRegex, 'autofill');
-      Console.ConsoleViewMessage._tokenizerRegexes = Array.from(handlers.keys());
-      Console.ConsoleViewMessage._tokenizerTypes = Array.from(handlers.values());
+      ConsoleViewMessage._tokenizerRegexes = Array.from(handlers.keys());
+      ConsoleViewMessage._tokenizerTypes = Array.from(handlers.values());
     }
     if (string.length > Console.ConsoleViewMessage._MaxTokenizableStringLength) {
       return [{text: string, type: undefined}];
     }
-    const results = TextUtils.TextUtils.splitStringByRegexes(string, Console.ConsoleViewMessage._tokenizerRegexes);
-    return results.map(
-        result => ({text: result.value, type: Console.ConsoleViewMessage._tokenizerTypes[result.regexIndex]}));
+    const results = TextUtils.TextUtils.splitStringByRegexes(string, ConsoleViewMessage._tokenizerRegexes);
+    return results.map(result => ({text: result.value, type: ConsoleViewMessage._tokenizerTypes[result.regexIndex]}));
   }
 
   /**
@@ -1672,7 +1676,7 @@ export default class ConsoleViewMessage {
    * @return {string}
    */
   groupTitle() {
-    const tokens = Console.ConsoleViewMessage._tokenizeMessageText(this._message.messageText);
+    const tokens = ConsoleViewMessage._tokenizeMessageText(this._message.messageText);
     const result = tokens.reduce((acc, token) => {
       let text = token.text;
       if (token.type === 'url') {
@@ -1785,29 +1789,3 @@ export const MaxLengthForLinks = 40;
 
 export const _MaxTokenizableStringLength = 10000;
 export const _LongStringVisibleLength = 5000;
-
-/* Legacy exported object */
-self.Console = self.Console || {};
-
-/* Legacy exported object */
-Console = Console || {};
-
-/**
- * @implements {Console.ConsoleViewportElement}
- * @unrestricted
- * @constructor
- */
-Console.ConsoleViewMessage = ConsoleViewMessage;
-
-/**
- * @constructor
- */
-Console.ConsoleGroupViewMessage = ConsoleGroupViewMessage;
-
-/**
- * @const
- * @type {number}
- */
-Console.ConsoleViewMessage.MaxLengthForLinks = MaxLengthForLinks;
-Console.ConsoleViewMessage._MaxTokenizableStringLength = _MaxTokenizableStringLength;
-Console.ConsoleViewMessage._LongStringVisibleLength = _LongStringVisibleLength;

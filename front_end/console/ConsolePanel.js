@@ -26,25 +26,27 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import {ConsoleView} from './ConsoleView.js';
+
 /**
  * @unrestricted
  */
-export default class ConsolePanel extends UI.Panel {
+export class ConsolePanel extends UI.Panel {
   constructor() {
     super('console');
-    this._view = Console.ConsoleView.instance();
+    this._view = ConsoleView.instance();
   }
 
   /**
-   * @return {!Console.ConsolePanel}
+   * @return {!ConsolePanel}
    */
   static instance() {
-    return /** @type {!Console.ConsolePanel} */ (self.runtime.sharedInstance(Console.ConsolePanel));
+    return /** @type {!ConsolePanel} */ (self.runtime.sharedInstance(ConsolePanel));
   }
 
   static _updateContextFlavor() {
-    const consoleView = Console.ConsolePanel.instance()._view;
-    UI.context.setFlavor(Console.ConsoleView, consoleView.isShowing() ? consoleView : null);
+    const consoleView = ConsolePanel.instance()._view;
+    UI.context.setFlavor(ConsoleView, consoleView.isShowing() ? consoleView : null);
   }
 
   /**
@@ -52,12 +54,12 @@ export default class ConsolePanel extends UI.Panel {
    */
   wasShown() {
     super.wasShown();
-    const wrapper = Console.ConsolePanel.WrapperView._instance;
+    const wrapper = WrapperView._instance;
     if (wrapper && wrapper.isShowing()) {
       UI.inspectorView.setDrawerMinimized(true);
     }
     this._view.show(this.element);
-    Console.ConsolePanel._updateContextFlavor();
+    ConsolePanel._updateContextFlavor();
   }
 
   /**
@@ -68,10 +70,10 @@ export default class ConsolePanel extends UI.Panel {
     // The minimized drawer has 0 height, and showing Console inside may set
     // Console's scrollTop to 0. Unminimize before calling show to avoid this.
     UI.inspectorView.setDrawerMinimized(false);
-    if (Console.ConsolePanel.WrapperView._instance) {
-      Console.ConsolePanel.WrapperView._instance._showViewInWrapper();
+    if (WrapperView._instance) {
+      WrapperView._instance._showViewInWrapper();
     }
-    Console.ConsolePanel._updateContextFlavor();
+    ConsolePanel._updateContextFlavor();
   }
 
   /**
@@ -79,7 +81,7 @@ export default class ConsolePanel extends UI.Panel {
    * @return {?UI.SearchableView}
    */
   searchableView() {
-    return Console.ConsoleView.instance().searchableView();
+    return ConsoleView.instance().searchableView();
   }
 }
 
@@ -91,21 +93,21 @@ export class WrapperView extends UI.VBox {
     super();
     this.element.classList.add('console-view-wrapper');
 
-    Console.ConsolePanel.WrapperView._instance = this;
+    WrapperView._instance = this;
 
-    this._view = Console.ConsoleView.instance();
+    this._view = ConsoleView.instance();
   }
 
   /**
    * @override
    */
   wasShown() {
-    if (!Console.ConsolePanel.instance().isShowing()) {
+    if (!ConsolePanel.instance().isShowing()) {
       this._showViewInWrapper();
     } else {
       UI.inspectorView.setDrawerMinimized(true);
     }
-    Console.ConsolePanel._updateContextFlavor();
+    ConsolePanel._updateContextFlavor();
   }
 
   /**
@@ -113,7 +115,7 @@ export class WrapperView extends UI.VBox {
    */
   willHide() {
     UI.inspectorView.setDrawerMinimized(false);
-    Console.ConsolePanel._updateContextFlavor();
+    ConsolePanel._updateContextFlavor();
   }
 
   _showViewInWrapper() {
@@ -132,7 +134,7 @@ export class ConsoleRevealer {
    * @return {!Promise}
    */
   reveal(object) {
-    const consoleView = Console.ConsoleView.instance();
+    const consoleView = ConsoleView.instance();
     if (consoleView.isShowing()) {
       consoleView.focus();
       return Promise.resolve();
@@ -141,24 +143,3 @@ export class ConsoleRevealer {
     return Promise.resolve();
   }
 }
-
-/* Legacy exported object */
-self.Console = self.Console || {};
-
-/* Legacy exported object */
-Console = Console || {};
-
-/**
- * @constructor
- */
-Console.ConsolePanel = ConsolePanel;
-
-/**
- * @constructor
- */
-Console.ConsolePanel.WrapperView = WrapperView;
-
-/**
- * @implements {Common.Revealer}
- */
-Console.ConsolePanel.ConsoleRevealer = ConsoleRevealer;

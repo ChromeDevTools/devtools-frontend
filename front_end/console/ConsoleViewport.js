@@ -31,9 +31,9 @@
 /**
  * @unrestricted
  */
-export default class ConsoleViewport {
+export class ConsoleViewport {
   /**
-   * @param {!Console.ConsoleViewportProvider} provider
+   * @param {!ConsoleViewportProvider} provider
    */
   constructor(provider) {
     this.element = createElement('div');
@@ -276,7 +276,7 @@ export default class ConsoleViewport {
 
   /**
    * @param {number} index
-   * @return {?Console.ConsoleViewportElement}
+   * @return {?ConsoleViewportElement}
    */
   _providerElement(index) {
     if (!this._cachedProviderElements) {
@@ -518,7 +518,7 @@ export default class ConsoleViewport {
         this._cumulativeHeights[this._cumulativeHeights.length - 1] - this._cumulativeHeights[this._lastActiveIndex];
 
     /**
-     * @this {Console.ConsoleViewport}
+     * @this {ConsoleViewport}
      */
     function prepare() {
       this._topGapElement.style.height = topGapHeight + 'px';
@@ -767,7 +767,7 @@ export default class ConsoleViewport {
 /**
  * @interface
  */
-class ConsoleViewportProvider {
+export class ConsoleViewportProvider {
   /**
    * @param {number} index
    * @return {number}
@@ -792,7 +792,7 @@ class ConsoleViewportProvider {
 
   /**
    * @param {number} index
-   * @return {?Console.ConsoleViewportElement}
+   * @return {?ConsoleViewportElement}
    */
   itemElement(index) {
     return null;
@@ -815,24 +815,3 @@ export class ConsoleViewportElement {
   element() {
   }
 }
-
-/* Legacy exported object */
-self.Console = self.Console || {};
-
-/* Legacy exported object */
-Console = Console || {};
-
-/**
- * @constructor
- */
-Console.ConsoleViewport = ConsoleViewport;
-
-/**
- * @interface
- */
-Console.ConsoleViewportProvider = ConsoleViewportProvider;
-
-/**
- * @interface
- */
-Console.ConsoleViewportElement = ConsoleViewportElement;

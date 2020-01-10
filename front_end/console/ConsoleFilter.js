@@ -2,7 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-export default class ConsoleFilter {
+import {ConsoleViewMessage} from './ConsoleViewMessage.js';  // eslint-disable-line no-unused-vars
+
+export class ConsoleFilter {
   /**
    * @param {string} name
    * @param {!Array<!TextUtils.FilterParser.ParsedFilter>} parsedFilters
@@ -13,7 +15,7 @@ export default class ConsoleFilter {
     this.name = name;
     this.parsedFilters = parsedFilters;
     this.executionContext = executionContext;
-    this.levelsMask = levelsMask || Console.ConsoleFilter.defaultLevelsFilterValue();
+    this.levelsMask = levelsMask || ConsoleFilter.defaultLevelsFilterValue();
   }
 
   /**
@@ -31,7 +33,7 @@ export default class ConsoleFilter {
    * @return {!Object<string, boolean>}
    */
   static defaultLevelsFilterValue() {
-    const result = Console.ConsoleFilter.allLevelsFilterValue();
+    const result = ConsoleFilter.allLevelsFilterValue();
     result[SDK.ConsoleMessage.MessageLevel.Verbose] = false;
     return result;
   }
@@ -47,16 +49,16 @@ export default class ConsoleFilter {
   }
 
   /**
-   * @return {!Console.ConsoleFilter}
+   * @return {!ConsoleFilter}
    */
   clone() {
     const parsedFilters = this.parsedFilters.map(TextUtils.FilterParser.cloneFilter);
     const levelsMask = Object.assign({}, this.levelsMask);
-    return new Console.ConsoleFilter(this.name, parsedFilters, this.executionContext, levelsMask);
+    return new ConsoleFilter(this.name, parsedFilters, this.executionContext, levelsMask);
   }
 
   /**
-   * @param {!Console.ConsoleViewMessage} viewMessage
+   * @param {!ConsoleViewMessage} viewMessage
    * @return {boolean}
    */
   shouldBeVisible(viewMessage) {
@@ -142,17 +144,3 @@ export const FilterType = {
   Source: 'source',
   Url: 'url'
 };
-
-/* Legacy exported object */
-self.Console = self.Console || {};
-
-/* Legacy exported object */
-Console = Console || {};
-
-/**
- * @constructor
- */
-Console.ConsoleFilter = ConsoleFilter;
-
-/** @enum {string} */
-Console.ConsoleFilter.FilterType = FilterType;

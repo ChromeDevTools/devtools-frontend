@@ -5,7 +5,7 @@
 /**
  * @implements {Protocol.InspectorDispatcher}
  */
-export default class TargetDetachedDialog extends SDK.SDKModel {
+export class TargetDetachedDialog extends SDK.SDKModel {
   /**
    * @param {!SDK.Target} target
    */
@@ -57,14 +57,5 @@ export default class TargetDetachedDialog extends SDK.SDKModel {
     }
   }
 }
-
-/* Legacy exported object */
-self.Components = self.Components || {};
-
-/* Legacy exported object */
-Components = Components || {};
-
-/** @constructor */
-Components.TargetDetachedDialog = TargetDetachedDialog;
 
 SDK.SDKModel.register(TargetDetachedDialog, SDK.Target.Capability.Inspector, true);

@@ -7,6 +7,7 @@
     "scripts": [],
     "modules": [
         "components.js",
+        "components-legacy.js",
         "JSPresentationUtils.js",
         "DockController.js",
         "ImagePreview.js",

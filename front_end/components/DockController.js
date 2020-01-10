@@ -31,7 +31,7 @@
 /**
  * @unrestricted
  */
-export default class DockController extends Common.Object {
+export class DockController extends Common.Object {
   /**
    * @param {boolean} canDock
    */
@@ -195,28 +195,3 @@ export class CloseButtonProvider {
     return Components.dockController._closeButton;
   }
 }
-
-/* Legacy exported object */
-self.Components = self.Components || {};
-
-/* Legacy exported object */
-Components = Components || {};
-
-/** @constructor */
-Components.DockController = DockController;
-
-Components.DockController.State = State;
-
-/** @enum {symbol} */
-Components.DockController.Events = Events;
-
-/** @constructor */
-Components.DockController.ToggleDockActionDelegate = ToggleDockActionDelegate;
-
-/** @constructor */
-Components.DockController.CloseButtonProvider = CloseButtonProvider;
-
-/**
- * @type {!Components.DockController}
- */
-Components.dockController;

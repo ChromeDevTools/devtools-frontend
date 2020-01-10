@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-export default class ImagePreview {
+export class ImagePreview {
   /**
    * @param {!SDK.Target} target
    * @param {string} originalImageURL
@@ -114,12 +114,3 @@ export default class ImagePreview {
     return ls`Image from ${imageSourceText}`;
   }
 }
-
-/* Legacy exported object */
-self.Components = self.Components || {};
-
-/* Legacy exported object */
-Components = Components || {};
-
-/** @constructor */
-Components.ImagePreview = ImagePreview;

@@ -29,9 +29,11 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import {Linkifier} from './Linkifier.js';
+
 /**
  * @param {?SDK.Target} target
- * @param {!Components.Linkifier} linkifier
+ * @param {!Linkifier} linkifier
  * @param {!Protocol.Runtime.StackTrace=} stackTrace
  * @param {function()=} contentUpdated
  * @return {{element: !Element, links: !Array<!Element>}}
@@ -61,7 +63,7 @@ export function buildStackTracePreviewContents(target, linkifier, stackTrace, co
       const link = linkifier.maybeLinkifyConsoleCallFrame(target, stackFrame);
       if (link) {
         link.addEventListener('contextmenu', populateContextMenu.bind(null, link));
-        const uiLocation = Components.Linkifier.uiLocation(link);
+        const uiLocation = Linkifier.uiLocation(link);
         if (uiLocation && Bindings.blackboxManager.isBlackboxedUISourceCode(uiLocation.uiSourceCode)) {
           shouldHide = true;
         }
@@ -86,7 +88,7 @@ export function buildStackTracePreviewContents(target, linkifier, stackTrace, co
   function populateContextMenu(link, event) {
     const contextMenu = new UI.ContextMenu(event);
     event.consume(true);
-    const uiLocation = Components.Linkifier.uiLocation(link);
+    const uiLocation = Linkifier.uiLocation(link);
     if (uiLocation && Bindings.blackboxManager.canBlackboxUISourceCode(uiLocation.uiSourceCode)) {
       if (Bindings.blackboxManager.isBlackboxedUISourceCode(uiLocation.uiSourceCode)) {
         contextMenu.debugSection().appendItem(
@@ -145,13 +147,3 @@ export function buildStackTracePreviewContents(target, linkifier, stackTrace, co
 
   return {element, links};
 }
-
-/* Legacy exported object */
-self.Components = self.Components || {};
-
-/* Legacy exported object */
-Components = Components || {};
-
-Components.JSPresentationUtils = {};
-
-Components.JSPresentationUtils.buildStackTracePreviewContents = buildStackTracePreviewContents;

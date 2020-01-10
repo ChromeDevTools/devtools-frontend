@@ -32,7 +32,7 @@
  * @implements {SDK.TargetManager.Observer}
  * @unrestricted
  */
-export default class Linkifier {
+export class Linkifier {
   /**
    * @param {number=} maxLengthForDisplayedURLs
    * @param {boolean=} useLinkDecorator
@@ -537,7 +537,7 @@ export default class Linkifier {
     if (UI.isBeingEdited(/** @type {!Node} */ (event.target)) || link.hasSelection()) {
       return false;
     }
-    return Components.Linkifier.invokeFirstAction(link);
+    return Linkifier.invokeFirstAction(link);
   }
 
   /**
@@ -545,7 +545,7 @@ export default class Linkifier {
    * @return {boolean}
    */
   static invokeFirstAction(link) {
-    const actions = Components.Linkifier._linkActions(link);
+    const actions = Linkifier._linkActions(link);
     if (actions.length) {
       actions[0].handler.call(null);
       return true;
@@ -655,7 +655,7 @@ export default class Linkifier {
   }
 }
 
-/** @type {!Set<!Components.Linkifier>} */
+/** @type {!Set<!Linkifier>} */
 const _instances = new Set();
 
 /** @type {?LinkDecorator} */
@@ -781,79 +781,3 @@ export class ContentProviderContextMenuProvider {
         UI.copyLinkAddressLabel(), () => Host.InspectorFrontendHost.copyText(contentProvider.contentURL()));
   }
 }
-
-/* Legacy exported object */
-self.Components = self.Components || {};
-
-/* Legacy exported object */
-Components = Components || {};
-
-/** @constructor */
-Components.Linkifier = Linkifier;
-
-/** @constructor */
-Components.Linkifier.LinkContextMenuProvider = LinkContextMenuProvider;
-
-/** @constructor */
-Components.Linkifier.LinkHandlerSettingUI = LinkHandlerSettingUI;
-
-/** @constructor */
-Components.Linkifier.ContentProviderContextMenuProvider = ContentProviderContextMenuProvider;
-
-/** @interface */
-Components.LinkDecorator = LinkDecorator;
-
-/**
- * @typedef {{
-  *     icon: ?UI.Icon,
-  *     enableDecorator: boolean,
-  *     uiLocation: ?Workspace.UILocation,
-  *     liveLocation: ?Bindings.LiveLocation,
-  *     url: ?string,
-  *     lineNumber: ?number,
-  *     columnNumber: ?number,
-  *     revealable: ?Object,
-  *     fallback: ?Element
-  * }}
-  */
-Components._LinkInfo;
-
-/**
- * @typedef {{
- *     text: (string|undefined),
- *     className: (string|undefined),
- *     lineNumber: (number|undefined),
- *     columnNumber: (number|undefined),
- *     preventClick: (boolean|undefined),
- *     maxLength: (number|undefined),
- *     tabStop: (boolean|undefined),
- *     bypassURLTrimming: (boolean|undefined)
- * }}
- */
-Components.LinkifyURLOptions;
-
-/**
- * @typedef {{
- *     className: (string|undefined),
- *     columnNumber: (number|undefined),
- *     tabStop: (boolean|undefined)
- * }}
- */
-Components.LinkifyOptions;
-
-/**
- * @typedef {{
- *     maxLength: (number|undefined),
- *     title: (string|undefined),
- *     href: (string|undefined),
- *     preventClick: (boolean|undefined),
- *     tabStop: (boolean|undefined),
- *     bypassURLTrimming: (boolean|undefined)
- * }}
- */
-Components._CreateLinkOptions;
-
-/**
- * @typedef {function(!Common.ContentProvider, number)}
- */
-Components.Linkifier.LinkHandler;

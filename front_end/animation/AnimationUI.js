@@ -148,6 +148,8 @@ export class AnimationUI {
     circle.style.stroke = this._color;
     circle.setAttribute('r', Options.AnimationMargin / 2);
     circle.tabIndex = 0;
+    UI.ARIAUtils.setAccessibleName(
+        circle, keyframeIndex <= 0 ? ls`Animation Endpoint slider` : ls`Animation Keyframe slider`);
 
     if (keyframeIndex <= 0) {
       circle.style.fill = this._color;
@@ -204,6 +206,7 @@ export class AnimationUI {
     }
     const group = cache[keyframeIndex];
     group.tabIndex = 0;
+    UI.ARIAUtils.setAccessibleName(group, ls`${this._animation.name()} slider`);
     group.style.transform = 'translateX(' + leftDistance.toFixed(2) + 'px)';
 
     if (easing === 'linear') {

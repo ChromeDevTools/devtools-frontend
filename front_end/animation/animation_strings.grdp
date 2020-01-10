@@ -3,11 +3,23 @@
   <message name="IDS_DEVTOOLS_043d2f0a7edca94cae1cfbf3f90b3b68" desc="Title of the 'Animations' tool in the bottom drawer">
     Animations
   </message>
+  <message name="IDS_DEVTOOLS_1a3281d193785166e6e801b8cefe2243" desc="Title of a specific Animation Preview">
+    Animation Preview <ph name="THIS__GROUPBUFFER_INDEXOF_GROUP_____">$1s<ex>1</ex></ph>
+  </message>
   <message name="IDS_DEVTOOLS_31fb6ba50d7a98f1650f282ecc45af77" desc="Button title in Animation Timeline of the Animation Inspector">
     Set speed to <ph name="BUTTON_TEXTCONTENT">$1s<ex>50%</ex></ph>
   </message>
   <message name="IDS_DEVTOOLS_4008ed4e30be53588254064e9bca502e" desc="Title of control button in animation timeline of the animation inspector">
     Pause timeline
+  </message>
+  <message name="IDS_DEVTOOLS_40612c2ed525fba29c5e56172567ce70" desc="Title of Animation Previews listbox">
+    Animation previews
+  </message>
+  <message name="IDS_DEVTOOLS_535236850b0286b586c8bc7ca796f0fa" desc="Title of an animation keyframe group">
+    <ph name="THIS__ANIMATION_NAME__">$1s<ex>anilogo</ex></ph> slider
+  </message>
+  <message name="IDS_DEVTOOLS_5cfdd8643d823e56b0537cf1db3174ea" desc="Title of an Animation Keyframe point">
+    Animation Keyframe slider
   </message>
   <message name="IDS_DEVTOOLS_5fe41afb268c87f4f56027023d3e6406" desc="Text in Animation Timeline of the Animation Inspector">
     <ph name="PLAYBACKRATE______">$1s<ex>50</ex></ph>%
@@ -17,6 +29,9 @@
   </message>
   <message name="IDS_DEVTOOLS_96b5ffa6e4c4b57e832f8e26229ed786" desc="Title of control button in animation timeline of the animation inspector">
     Play timeline
+  </message>
+  <message name="IDS_DEVTOOLS_9c47daafb73e178239b3bf4d618a3bb8" desc="Title of the first and last points of an animation">
+    Animation Endpoint slider
   </message>
   <message name="IDS_DEVTOOLS_9ea575b416c0fb4d80772ab08ce039f8" desc="Timeline hint text content in Animation Timeline of the Animation Inspector">
     Select an effect above to inspect and modify.
@@ -29,5 +44,8 @@
   </message>
   <message name="IDS_DEVTOOLS_bffa3e523792264bd31830c746b6d388" desc="Text in Animation Timeline of the Animation Inspector">
     Resume all
+  </message>
+  <message name="IDS_DEVTOOLS_f5ee8844703a0664fa59725137b2dc32" desc="Title of the playback rate button listbox">
+    Playback rates
   </message>
 </grit-part>

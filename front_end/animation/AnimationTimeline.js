@@ -128,12 +128,16 @@ export class AnimationTimeline extends UI.VBox {
 
     const playbackRateControl = toolbarContainer.createChild('div', 'animation-playback-rate-control');
     playbackRateControl.addEventListener('keydown', this._handlePlaybackRateControlKeyDown.bind(this));
+    UI.ARIAUtils.markAsListBox(playbackRateControl);
+    UI.ARIAUtils.setAccessibleName(playbackRateControl, ls`Playback rates`);
+
     this._playbackRateButtons = [];
     for (const playbackRate of GlobalPlaybackRates) {
       const button = playbackRateControl.createChild('button', 'animation-playback-rate-button');
       button.textContent = playbackRate ? ls`${playbackRate * 100}%` : ls`Pause`;
       button.playbackRate = playbackRate;
       button.addEventListener('click', this._setPlaybackRate.bind(this, playbackRate));
+      UI.ARIAUtils.markAsOption(button);
       button.title = ls`Set speed to ${button.textContent}`;
       button.tabIndex = -1;
       this._playbackRateButtons.push(button);
@@ -141,6 +145,8 @@ export class AnimationTimeline extends UI.VBox {
     this._updatePlaybackControls();
 
     this._previewContainer = this.contentElement.createChild('div', 'animation-timeline-buffer');
+    UI.ARIAUtils.markAsListBox(this._previewContainer);
+    UI.ARIAUtils.setAccessibleName(this._previewContainer, ls`Animation previews`);
     this._popoverHelper = new UI.PopoverHelper(this._previewContainer, this._getPopoverRequest.bind(this));
     this._popoverHelper.setDisableOnClick(true);
     this._popoverHelper.setTimeout(0);
@@ -433,6 +439,9 @@ export class AnimationTimeline extends UI.VBox {
     preview.removeButton().addEventListener('click', this._removeAnimationGroup.bind(this, group));
     preview.element.addEventListener('click', this._selectAnimationGroup.bind(this, group));
     preview.element.addEventListener('keydown', this._handleAnimationGroupKeyDown.bind(this, group));
+    UI.ARIAUtils.setAccessibleName(preview.element, ls`Animation Preview ${this._groupBuffer.indexOf(group) + 1}`);
+    UI.ARIAUtils.markAsOption(preview.element);
+
     if (this._previewMap.size === 1) {
       this._previewMap.get(this._groupBuffer[0]).element.tabIndex = 0;
     }
@@ -803,6 +812,7 @@ export class NodeUI {
     this._description = this.element.createChild('div', 'animation-node-description');
     this._description.tabIndex = 0;
     this._timelineElement = this.element.createChild('div', 'animation-node-timeline');
+    UI.ARIAUtils.markAsApplication(this._timelineElement);
   }
 
   /**

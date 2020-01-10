@@ -1,6 +1,7 @@
 // Copyright 2016 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
 /**
  * @unrestricted
  */
@@ -11,10 +12,10 @@ export class CSSShadowModel {
   constructor(isBoxShadow) {
     this._isBoxShadow = isBoxShadow;
     this._inset = false;
-    this._offsetX = InlineEditor.CSSLength.zero();
-    this._offsetY = InlineEditor.CSSLength.zero();
-    this._blurRadius = InlineEditor.CSSLength.zero();
-    this._spreadRadius = InlineEditor.CSSLength.zero();
+    this._offsetX = CSSLength.zero();
+    this._offsetY = CSSLength.zero();
+    this._blurRadius = CSSLength.zero();
+    this._spreadRadius = CSSLength.zero();
     this._color = /** @type {!Common.Color} */ (Common.Color.parse('black'));
     this._format = [_Part.OffsetX, _Part.OffsetY];
   }
@@ -59,7 +60,7 @@ export class CSSShadowModel {
       const shadow = new CSSShadowModel(isBoxShadow);
       shadow._format = [];
       let nextPartAllowed = true;
-      const regexes = [/inset/gi, Common.Color.Regex, InlineEditor.CSSLength.Regex];
+      const regexes = [/inset/gi, Common.Color.Regex, CSSLength.Regex];
       const results = TextUtils.TextUtils.splitStringByRegexes(shadowTexts[i], regexes);
       for (let j = 0; j < results.length; j++) {
         const result = results[j];
@@ -87,7 +88,7 @@ export class CSSShadowModel {
             shadow._color = color;
             shadow._format.push(_Part.Color);
           } else if (result.regexIndex === 2) {
-            const length = InlineEditor.CSSLength.parse(result.value);
+            const length = CSSLength.parse(result.value);
             if (!length) {
               return [];
             }
@@ -147,21 +148,21 @@ export class CSSShadowModel {
   }
 
   /**
-   * @param {!InlineEditor.CSSLength} offsetX
+   * @param {!CSSLength} offsetX
    */
   setOffsetX(offsetX) {
     this._offsetX = offsetX;
   }
 
   /**
-   * @param {!InlineEditor.CSSLength} offsetY
+   * @param {!CSSLength} offsetY
    */
   setOffsetY(offsetY) {
     this._offsetY = offsetY;
   }
 
   /**
-   * @param {!InlineEditor.CSSLength} blurRadius
+   * @param {!CSSLength} blurRadius
    */
   setBlurRadius(blurRadius) {
     this._blurRadius = blurRadius;
@@ -172,7 +173,7 @@ export class CSSShadowModel {
   }
 
   /**
-   * @param {!InlineEditor.CSSLength} spreadRadius
+   * @param {!CSSLength} spreadRadius
    */
   setSpreadRadius(spreadRadius) {
     this._spreadRadius = spreadRadius;
@@ -208,28 +209,28 @@ export class CSSShadowModel {
   }
 
   /**
-   * @return {!InlineEditor.CSSLength}
+   * @return {!CSSLength}
    */
   offsetX() {
     return this._offsetX;
   }
 
   /**
-   * @return {!InlineEditor.CSSLength}
+   * @return {!CSSLength}
    */
   offsetY() {
     return this._offsetY;
   }
 
   /**
-   * @return {!InlineEditor.CSSLength}
+   * @return {!CSSLength}
    */
   blurRadius() {
     return this._blurRadius;
   }
 
   /**
-   * @return {!InlineEditor.CSSLength}
+   * @return {!CSSLength}
    */
   spreadRadius() {
     return this._spreadRadius;
@@ -295,25 +296,25 @@ export class CSSLength {
 
   /**
    * @param {string} text
-   * @return {?InlineEditor.CSSLength}
+   * @return {?CSSLength}
    */
   static parse(text) {
-    const lengthRegex = new RegExp('^(?:' + InlineEditor.CSSLength.Regex.source + ')$', 'i');
+    const lengthRegex = new RegExp('^(?:' + CSSLength.Regex.source + ')$', 'i');
     const match = text.match(lengthRegex);
     if (!match) {
       return null;
     }
     if (match.length > 2 && match[2]) {
-      return new InlineEditor.CSSLength(parseFloat(match[1]), match[2]);
+      return new CSSLength(parseFloat(match[1]), match[2]);
     }
-    return InlineEditor.CSSLength.zero();
+    return CSSLength.zero();
   }
 
   /**
-   * @return {!InlineEditor.CSSLength}
+   * @return {!CSSLength}
    */
   static zero() {
-    return new InlineEditor.CSSLength(0, '');
+    return new CSSLength(0, '');
   }
 
   /**
@@ -331,18 +332,3 @@ CSSLength.Regex = (function() {
   const zero = '[+-]?(?:0*[.])?0+(?:[eE][+-]?[0-9]+)?';
   return new RegExp(number + unit + '|' + zero, 'gi');
 })();
-
-/* Legacy exported object */
-self.InlineEditor = self.InlineEditor || {};
-
-/* Legacy exported object */
-InlineEditor = InlineEditor || {};
-
-/** @constructor */
-InlineEditor.CSSShadowModel = CSSShadowModel;
-
-/** @enum {string} */
-InlineEditor.CSSShadowModel._Part = _Part;
-
-/** @constructor */
-InlineEditor.CSSLength = CSSLength;

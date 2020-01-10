@@ -1,6 +1,9 @@
 // Copyright (c) 2015 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
+import {CSSShadowModel} from './CSSShadowModel.js';  // eslint-disable-line no-unused-vars
+
 /**
  * @unrestricted
  */
@@ -236,14 +239,14 @@ export class CSSShadowSwatch extends HTMLSpanElement {
   }
 
   /**
-   * @return {!InlineEditor.CSSShadowModel} cssShadowModel
+   * @return {!CSSShadowModel} cssShadowModel
    */
   model() {
     return this._model;
   }
 
   /**
-   * @param {!InlineEditor.CSSShadowModel} model
+   * @param {!CSSShadowModel} model
    */
   setCSSShadow(model) {
     this._model = model;
@@ -284,18 +287,3 @@ export class CSSShadowSwatch extends HTMLSpanElement {
     return this._colorSwatch;
   }
 }
-
-/* Legacy exported object */
-self.InlineEditor = self.InlineEditor || {};
-
-/* Legacy exported object */
-InlineEditor = InlineEditor || {};
-
-/** @constructor */
-InlineEditor.ColorSwatch = ColorSwatch;
-
-/** @constructor */
-InlineEditor.BezierSwatch = BezierSwatch;
-
-/** @constructor */
-InlineEditor.CSSShadowSwatch = CSSShadowSwatch;

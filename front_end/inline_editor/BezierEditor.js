@@ -1,6 +1,9 @@
 // Copyright (c) 2015 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
+import {BezierUI} from './BezierUI.js';
+
 /**
  * @unrestricted
  */
@@ -22,7 +25,7 @@ export class BezierEditor extends UI.VBox {
 
     // Presets UI
     this._presetsContainer = this._outerContainer.createChild('div', 'bezier-presets');
-    this._presetUI = new InlineEditor.BezierUI(40, 40, 0, 2, false);
+    this._presetUI = new BezierUI(40, 40, 0, 2, false);
     this._presetCategories = [];
     for (let i = 0; i < Presets.length; i++) {
       this._presetCategories[i] = this._createCategory(Presets[i]);
@@ -30,7 +33,7 @@ export class BezierEditor extends UI.VBox {
     }
 
     // Curve UI
-    this._curveUI = new InlineEditor.BezierUI(150, 250, 50, 7, true);
+    this._curveUI = new BezierUI(150, 250, 50, 7, true);
     this._curve = this._outerContainer.createSVGChild('svg', 'bezier-curve');
     UI.installDragHandle(
         this._curve, this._dragStart.bind(this), this._dragMove.bind(this), this._dragEnd.bind(this), 'default');
@@ -272,18 +275,3 @@ export const Presets = [
     {name: 'Out · Back', value: 'cubic-bezier(0.18, 0.89, 0.32, 1.28)'}
   ]
 ];
-
-/* Legacy exported object */
-self.InlineEditor = self.InlineEditor || {};
-
-/* Legacy exported object */
-InlineEditor = InlineEditor || {};
-
-/** @constructor */
-InlineEditor.BezierEditor = BezierEditor;
-
-InlineEditor.BezierEditor.Events = Events;
-InlineEditor.BezierEditor.Presets = Presets;
-
-/** @typedef {{presets: !Array.<{name: string, value: string}>, icon: !Element, presetIndex: number}} */
-InlineEditor.BezierEditor.PresetCategory;

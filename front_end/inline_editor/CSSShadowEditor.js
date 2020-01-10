@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {CSSLength, CSSShadowModel} from './CSSShadowModel.js';  // eslint-disable-line no-unused-vars
+
 /** @type {number} */
 const maxRange = 20;
 /** @type {string} */
@@ -92,7 +94,7 @@ export class CSSShadowEditor extends UI.VBox {
   }
 
   /**
-   * @param {!InlineEditor.CSSShadowModel} model
+   * @param {!CSSShadowModel} model
    */
   setModel(model) {
     this._model = model;
@@ -181,7 +183,7 @@ export class CSSShadowEditor extends UI.VBox {
     if (!modifiedValue) {
       return;
     }
-    const length = InlineEditor.CSSLength.parse(modifiedValue);
+    const length = CSSLength.parse(modifiedValue);
     if (!length) {
       return;
     }
@@ -214,7 +216,7 @@ export class CSSShadowEditor extends UI.VBox {
   _onTextInput(event) {
     this._changedElement = event.currentTarget;
     this._changedElement.classList.remove('invalid');
-    const length = InlineEditor.CSSLength.parse(event.currentTarget.value);
+    const length = CSSLength.parse(event.currentTarget.value);
     if (!length || event.currentTarget === this._blurInput && length.amount < 0) {
       return;
     }
@@ -238,10 +240,9 @@ export class CSSShadowEditor extends UI.VBox {
     if (!this._changedElement) {
       return;
     }
-    let length = !this._changedElement.value.trim() ? InlineEditor.CSSLength.zero() :
-                                                      InlineEditor.CSSLength.parse(this._changedElement.value);
+    let length = !this._changedElement.value.trim() ? CSSLength.zero() : CSSLength.parse(this._changedElement.value);
     if (!length) {
-      length = InlineEditor.CSSLength.parse(this._changedElement.value + defaultUnit);
+      length = CSSLength.parse(this._changedElement.value + defaultUnit);
     }
     if (!length) {
       this._changedElement.classList.add('invalid');
@@ -258,7 +259,7 @@ export class CSSShadowEditor extends UI.VBox {
       this._updateCanvas(false);
     } else if (this._changedElement === this._blurInput) {
       if (length.amount < 0) {
-        length = InlineEditor.CSSLength.zero();
+        length = CSSLength.zero();
       }
       this._model.setBlurRadius(length);
       this._blurInput.value = length.asCSSText();
@@ -277,13 +278,12 @@ export class CSSShadowEditor extends UI.VBox {
    */
   _onSliderInput(event) {
     if (event.currentTarget === this._blurSlider) {
-      this._model.setBlurRadius(
-          new InlineEditor.CSSLength(this._blurSlider.value, this._model.blurRadius().unit || defaultUnit));
+      this._model.setBlurRadius(new CSSLength(this._blurSlider.value, this._model.blurRadius().unit || defaultUnit));
       this._blurInput.value = this._model.blurRadius().asCSSText();
       this._blurInput.classList.remove('invalid');
     } else if (event.currentTarget === this._spreadSlider) {
       this._model.setSpreadRadius(
-          new InlineEditor.CSSLength(this._spreadSlider.value, this._model.spreadRadius().unit || defaultUnit));
+          new CSSLength(this._spreadSlider.value, this._model.spreadRadius().unit || defaultUnit));
       this._spreadInput.value = this._model.spreadRadius().asCSSText();
       this._spreadInput.classList.remove('invalid');
     }
@@ -321,14 +321,14 @@ export class CSSShadowEditor extends UI.VBox {
     const newY = Math.round((constrainedPoint.y / this._innerCanvasSize) * maxRange);
 
     if (event.shiftKey) {
-      this._model.setOffsetX(new InlineEditor.CSSLength(newX, this._model.offsetX().unit || defaultUnit));
-      this._model.setOffsetY(new InlineEditor.CSSLength(newY, this._model.offsetY().unit || defaultUnit));
+      this._model.setOffsetX(new CSSLength(newX, this._model.offsetX().unit || defaultUnit));
+      this._model.setOffsetY(new CSSLength(newY, this._model.offsetY().unit || defaultUnit));
     } else {
       if (!event.altKey) {
-        this._model.setOffsetX(new InlineEditor.CSSLength(newX, this._model.offsetX().unit || defaultUnit));
+        this._model.setOffsetX(new CSSLength(newX, this._model.offsetX().unit || defaultUnit));
       }
       if (!UI.KeyboardShortcut.eventHasCtrlOrMeta(event)) {
-        this._model.setOffsetY(new InlineEditor.CSSLength(newY, this._model.offsetY().unit || defaultUnit));
+        this._model.setOffsetY(new CSSLength(newY, this._model.offsetY().unit || defaultUnit));
       }
     }
     this._xInput.value = this._model.offsetX().asCSSText();
@@ -370,7 +370,7 @@ export class CSSShadowEditor extends UI.VBox {
       if (newAmount === offsetX.amount) {
         return;
       }
-      this._model.setOffsetX(new InlineEditor.CSSLength(newAmount, offsetX.unit || defaultUnit));
+      this._model.setOffsetX(new CSSLength(newAmount, offsetX.unit || defaultUnit));
       this._xInput.value = this._model.offsetX().asCSSText();
       this._xInput.classList.remove('invalid');
     }
@@ -380,7 +380,7 @@ export class CSSShadowEditor extends UI.VBox {
       if (newAmount === offsetY.amount) {
         return;
       }
-      this._model.setOffsetY(new InlineEditor.CSSLength(newAmount, offsetY.unit || defaultUnit));
+      this._model.setOffsetY(new CSSLength(newAmount, offsetY.unit || defaultUnit));
       this._yInput.value = this._model.offsetY().asCSSText();
       this._yInput.classList.remove('invalid');
     }
@@ -441,14 +441,3 @@ export class CSSShadowEditor extends UI.VBox {
 export const Events = {
   ShadowChanged: Symbol('ShadowChanged')
 };
-
-/* Legacy exported object */
-self.InlineEditor = self.InlineEditor || {};
-
-/* Legacy exported object */
-InlineEditor = InlineEditor || {};
-
-/** @constructor */
-InlineEditor.CSSShadowEditor = CSSShadowEditor;
-
-InlineEditor.CSSShadowEditor.Events = Events;

@@ -6,6 +6,7 @@
     ],
     "modules": [
         "inline_editor.js",
+        "inline_editor-legacy.js",
         "BezierEditor.js",
         "BezierUI.js",
         "ColorSwatch.js",

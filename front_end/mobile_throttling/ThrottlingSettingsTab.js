@@ -266,14 +266,3 @@ export function throughputText(throughput, plainText) {
   }
   return Common.UIString('%d%sMb/s', (throughputInKbps / 1024) | 0, delimiter);
 }
-
-/* Legacy exported object */
-self.MobileThrottling = self.MobileThrottling || {};
-
-/* Legacy exported object */
-MobileThrottling = MobileThrottling || {};
-
-/** @constructor */
-MobileThrottling.ThrottlingSettingsTab = ThrottlingSettingsTab;
-
-MobileThrottling.throughputText = throughputText;

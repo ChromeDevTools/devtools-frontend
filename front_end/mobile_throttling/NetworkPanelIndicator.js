@@ -30,12 +30,3 @@ export class NetworkPanelIndicator {
     }
   }
 }
-
-/* Legacy exported object */
-self.MobileThrottling = self.MobileThrottling || {};
-
-/* Legacy exported object */
-MobileThrottling = MobileThrottling || {};
-
-/** @constructor */
-MobileThrottling.NetworkPanelIndicator = NetworkPanelIndicator;

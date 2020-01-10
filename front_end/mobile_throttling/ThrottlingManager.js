@@ -2,17 +2,21 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {MobileThrottlingSelector} from './MobileThrottlingSelector.js';
+import {NetworkThrottlingSelector} from './NetworkThrottlingSelector.js';
+import {cpuThrottlingPresets, CPUThrottlingRates, CustomConditions} from './ThrottlingPresets.js';
+
 /**
  * @implements {SDK.SDKModelObserver<!SDK.EmulationModel>}
  */
 export class ThrottlingManager extends Common.Object {
   constructor() {
     super();
-    /** @type {!MobileThrottling.CPUThrottlingRates} */
-    this._cpuThrottlingRate = MobileThrottling.CPUThrottlingRates.NoThrottling;
+    /** @type {!CPUThrottlingRates} */
+    this._cpuThrottlingRate = CPUThrottlingRates.NoThrottling;
     /** @type {!Set<!UI.ToolbarComboBox>} */
     this._cpuThrottlingControls = new Set();
-    this._cpuThrottlingRates = MobileThrottling.cpuThrottlingPresets;
+    this._cpuThrottlingRates = cpuThrottlingPresets;
     /** @type {!Common.Setting<!Array<!SDK.NetworkManager.Conditions>>} */
     this._customNetworkConditionsSetting = Common.moduleSetting('customNetworkConditions');
     /** @type {!SDK.NetworkManager.Conditions} */
@@ -31,12 +35,11 @@ export class ThrottlingManager extends Common.Object {
 
   /**
    * @param {!HTMLSelectElement} selectElement
-   * @return {!MobileThrottling.NetworkThrottlingSelector}
+   * @return {!NetworkThrottlingSelector}
    */
   decorateSelectWithNetworkThrottling(selectElement) {
     let options = [];
-    const selector =
-        new MobileThrottling.NetworkThrottlingSelector(populate, select, this._customNetworkConditionsSetting);
+    const selector = new NetworkThrottlingSelector(populate, select, this._customNetworkConditionsSetting);
     selectElement.addEventListener('change', optionSelected, false);
     return selector;
 
@@ -128,7 +131,7 @@ export class ThrottlingManager extends Common.Object {
     /** @type {!MobileThrottling.ConditionsList} */
     let options = [];
     let selectedIndex = -1;
-    const selector = new MobileThrottling.MobileThrottlingSelector(populate, select);
+    const selector = new MobileThrottlingSelector(populate, select);
     return button;
 
     /**
@@ -140,8 +143,7 @@ export class ThrottlingManager extends Common.Object {
         if (!conditions) {
           continue;
         }
-        if (conditions.title === MobileThrottling.CustomConditions.title &&
-            conditions.description === MobileThrottling.CustomConditions.description) {
+        if (conditions.title === CustomConditions.title && conditions.description === CustomConditions.description) {
           continue;
         }
         contextMenu.defaultSection().appendCheckboxItem(
@@ -184,7 +186,7 @@ export class ThrottlingManager extends Common.Object {
   }
 
   /**
-   * @param {!MobileThrottling.CPUThrottlingRates} rate
+   * @param {!CPUThrottlingRates} rate
    */
   setCPUThrottlingRate(rate) {
     this._cpuThrottlingRate = rate;
@@ -192,7 +194,7 @@ export class ThrottlingManager extends Common.Object {
       emulationModel.setCPUThrottlingRate(this._cpuThrottlingRate);
     }
     let icon = null;
-    if (this._cpuThrottlingRate !== MobileThrottling.CPUThrottlingRates.NoThrottling) {
+    if (this._cpuThrottlingRate !== CPUThrottlingRates.NoThrottling) {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.CpuThrottlingEnabled);
       icon = UI.Icon.create('smallicon-warning');
       icon.title = Common.UIString('CPU throttling is enabled');
@@ -210,7 +212,7 @@ export class ThrottlingManager extends Common.Object {
    * @param {!SDK.EmulationModel} emulationModel
    */
   modelAdded(emulationModel) {
-    if (this._cpuThrottlingRate !== MobileThrottling.CPUThrottlingRates.NoThrottling) {
+    if (this._cpuThrottlingRate !== CPUThrottlingRates.NoThrottling) {
       emulationModel.setCPUThrottlingRate(this._cpuThrottlingRate);
     }
   }
@@ -286,19 +288,3 @@ export class ActionDelegate {
 export function throttlingManager() {
   return self.singleton(ThrottlingManager);
 }
-
-/* Legacy exported object */
-self.MobileThrottling = self.MobileThrottling || {};
-
-/* Legacy exported object */
-MobileThrottling = MobileThrottling || {};
-
-/** @constructor */
-MobileThrottling.ThrottlingManager = ThrottlingManager;
-
-MobileThrottling.ThrottlingManager.Events = Events;
-
-/** @constructor */
-MobileThrottling.ThrottlingManager.ActionDelegate = ActionDelegate;
-
-MobileThrottling.throttlingManager = throttlingManager;

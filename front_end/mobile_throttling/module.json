@@ -59,6 +59,7 @@
     "scripts": [],
     "modules": [
         "mobile_throttling.js",
+        "mobile_throttling-legacy.js",
         "ThrottlingPresets.js",
         "MobileThrottlingSelector.js",
         "NetworkPanelIndicator.js",

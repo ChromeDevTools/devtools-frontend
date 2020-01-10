@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {networkPresets} from './ThrottlingPresets.js';
+
 export class NetworkThrottlingSelector {
   /**
    * @param {function(!Array<!MobileThrottling.NetworkThrottlingConditionsGroup>):!Array<?SDK.NetworkManager.Conditions>} populateCallback
@@ -34,7 +36,7 @@ export class NetworkThrottlingSelector {
 
   _populateOptions() {
     const disabledGroup = {title: Common.UIString('Disabled'), items: [SDK.NetworkManager.NoThrottlingConditions]};
-    const presetsGroup = {title: Common.UIString('Presets'), items: MobileThrottling.networkPresets};
+    const presetsGroup = {title: Common.UIString('Presets'), items: networkPresets};
     const customGroup = {title: Common.UIString('Custom'), items: this._customNetworkConditionsSetting.get()};
     this._options = this._populateCallback([disabledGroup, presetsGroup, customGroup]);
     if (!this._networkConditionsChanged()) {
@@ -63,12 +65,3 @@ export class NetworkThrottlingSelector {
     return false;
   }
 }
-
-/* Legacy exported object */
-self.MobileThrottling = self.MobileThrottling || {};
-
-/* Legacy exported object */
-MobileThrottling = MobileThrottling || {};
-
-/** @constructor */
-MobileThrottling.NetworkThrottlingSelector = NetworkThrottlingSelector;

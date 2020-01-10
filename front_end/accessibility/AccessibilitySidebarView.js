@@ -1,27 +1,21 @@
 // Copyright 2015 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-
-import {AccessibilityModel, AccessibilityNode} from './AccessibilityModel.js';  // eslint-disable-line no-unused-vars
-import {AXNodeSubPane} from './AccessibilityNodeView.js';
-import {ARIAAttributesPane} from './ARIAAttributesView.js';
-import {AXBreadcrumbsPane} from './AXBreadcrumbsPane.js';
-
 /**
  * @unrestricted
  */
-export class AccessibilitySidebarView extends UI.ThrottledWidget {
+export default class AccessibilitySidebarView extends UI.ThrottledWidget {
   constructor() {
     super();
     this._node = null;
     this._axNode = null;
     this._skipNextPullNode = false;
     this._sidebarPaneStack = UI.viewManager.createStackLocation();
-    this._breadcrumbsSubPane = new AXBreadcrumbsPane(this);
+    this._breadcrumbsSubPane = new Accessibility.AXBreadcrumbsPane(this);
     this._sidebarPaneStack.showView(this._breadcrumbsSubPane);
-    this._ariaSubPane = new ARIAAttributesPane();
+    this._ariaSubPane = new Accessibility.ARIAAttributesPane();
     this._sidebarPaneStack.showView(this._ariaSubPane);
-    this._axNodeSubPane = new AXNodeSubPane();
+    this._axNodeSubPane = new Accessibility.AXNodeSubPane();
     this._sidebarPaneStack.showView(this._axNodeSubPane);
     this._sidebarPaneStack.widget().show(this.element);
     UI.context.addFlavorChangeListener(SDK.DOMNode, this._pullNode, this);
@@ -36,7 +30,7 @@ export class AccessibilitySidebarView extends UI.ThrottledWidget {
   }
 
   /**
-   * @return {?AccessibilityNode}
+   * @return {?Accessibility.AccessibilityNode}
    */
   axNode() {
     return this._axNode;
@@ -53,7 +47,7 @@ export class AccessibilitySidebarView extends UI.ThrottledWidget {
   }
 
   /**
-   * @param {?AccessibilityNode} axNode
+   * @param {?Accessibility.AccessibilityNode} axNode
    */
   accessibilityNodeCallback(axNode) {
     if (!axNode) {
@@ -89,7 +83,7 @@ export class AccessibilitySidebarView extends UI.ThrottledWidget {
     if (!node) {
       return Promise.resolve();
     }
-    const accessibilityModel = node.domModel().target().model(AccessibilityModel);
+    const accessibilityModel = node.domModel().target().model(Accessibility.AccessibilityModel);
     accessibilityModel.clear();
     return accessibilityModel.requestPartialAXTree(node).then(() => {
       this.accessibilityNodeCallback(accessibilityModel.axNodeForDOMNode(node));
@@ -161,3 +155,82 @@ export class AccessibilitySidebarView extends UI.ThrottledWidget {
     this.update();
   }
 }
+
+/**
+ * @unrestricted
+ */
+export class AccessibilitySubPane extends UI.SimpleView {
+  /**
+   * @param {string} name
+   */
+  constructor(name) {
+    super(name);
+
+    this._axNode = null;
+    this.registerRequiredCSS('accessibility/accessibilityProperties.css');
+  }
+
+  /**
+   * @param {?Accessibility.AccessibilityNode} axNode
+   * @protected
+   */
+  setAXNode(axNode) {
+  }
+
+  /**
+   * @return {?SDK.DOMNode}
+   */
+  node() {
+    return this._node;
+  }
+
+  /**
+   * @param {?SDK.DOMNode} node
+   */
+  setNode(node) {
+    this._node = node;
+  }
+
+  /**
+   * @param {string} textContent
+   * @param {string=} className
+   * @return {!Element}
+   */
+  createInfo(textContent, className) {
+    const classNameOrDefault = className || 'gray-info-message';
+    const info = this.element.createChild('div', classNameOrDefault);
+    info.textContent = textContent;
+    return info;
+  }
+
+  /**
+   * @return {!UI.TreeOutline}
+   */
+  createTreeOutline() {
+    const treeOutline = new UI.TreeOutlineInShadow();
+    treeOutline.registerRequiredCSS('accessibility/accessibilityNode.css');
+    treeOutline.registerRequiredCSS('accessibility/accessibilityProperties.css');
+    treeOutline.registerRequiredCSS('object_ui/objectValue.css');
+
+    treeOutline.element.classList.add('hidden');
+    treeOutline.hideOverflow();
+    this.element.appendChild(treeOutline.element);
+    return treeOutline;
+  }
+}
+
+/* Legacy exported object */
+self.Accessibility = self.Accessibility || {};
+
+/* Legacy exported object */
+Accessibility = Accessibility || {};
+
+/**
+ * @constructor
+ */
+Accessibility.AccessibilitySidebarView = AccessibilitySidebarView;
+
+/**
+ * @constructor
+ */
+Accessibility.AccessibilitySubPane = AccessibilitySubPane;

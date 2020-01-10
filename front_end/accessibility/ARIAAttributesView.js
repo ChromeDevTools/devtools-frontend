@@ -1,14 +1,10 @@
 // Copyright 2016 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-
-import {AccessibilitySubPane} from './AccessibilitySubPane.js';
-import {ariaMetadata} from './ARIAMetadata.js';
-
 /**
  * @unrestricted
  */
-export class ARIAAttributesPane extends AccessibilitySubPane {
+export default class ARIAAttributesPane extends Accessibility.AccessibilitySubPane {
   constructor() {
     super(ls`ARIA Attributes`);
 
@@ -34,7 +30,7 @@ export class ARIAAttributesPane extends AccessibilitySubPane {
         continue;
       }
 
-      this._treeOutline.appendChild(new ARIAAttributesTreeElement(this, attribute, target));
+      this._treeOutline.appendChild(new Accessibility.ARIAAttributesTreeElement(this, attribute, target));
     }
 
     const foundAttributes = (this._treeOutline.rootElement().childCount() !== 0);
@@ -56,7 +52,7 @@ export class ARIAAttributesPane extends AccessibilitySubPane {
  */
 export class ARIAAttributesTreeElement extends UI.TreeElement {
   /**
-   * @param {!ARIAAttributesPane} parentPane
+   * @param {!Accessibility.ARIAAttributesPane} parentPane
    * @param {!SDK.DOMNode.Attribute} attribute
    * @param {!SDK.Target} target
    */
@@ -110,7 +106,7 @@ export class ARIAAttributesTreeElement extends UI.TreeElement {
    * @param {string} value
    */
   appendAttributeValueElement(value) {
-    this._valueElement = ARIAAttributesTreeElement.createARIAValueElement(value);
+    this._valueElement = Accessibility.ARIAAttributesTreeElement.createARIAValueElement(value);
     this.listItemElement.appendChild(this._valueElement);
   }
 
@@ -139,14 +135,15 @@ export class ARIAAttributesTreeElement extends UI.TreeElement {
     /**
      * @param {string} previousContent
      * @param {!Event} event
-     * @this {ARIAAttributesTreeElement}
+     * @this {Accessibility.ARIAAttributesTreeElement}
      */
     function blurListener(previousContent, event) {
       const text = event.target.textContent;
       this._editingCommitted(text, previousContent);
     }
 
-    this._prompt = new ARIAAttributePrompt(ariaMetadata().valuesForProperty(this._nameElement.textContent), this);
+    this._prompt = new Accessibility.ARIAAttributesPane.ARIAAttributePrompt(
+        Accessibility.ariaMetadata().valuesForProperty(this._nameElement.textContent), this);
     this._prompt.setAutocompletionTimeout(0);
     const proxyElement = this._prompt.attachAndStartEditing(valueElement, blurListener.bind(this, previousContent));
 
@@ -210,7 +207,7 @@ export class ARIAAttributesTreeElement extends UI.TreeElement {
 export class ARIAAttributePrompt extends UI.TextPrompt {
   /**
    * @param {!Array<string>} ariaCompletions
-   * @param {!ARIAAttributesTreeElement} treeElement
+   * @param {!Accessibility.ARIAAttributesTreeElement} treeElement
    */
   constructor(ariaCompletions, treeElement) {
     super();
@@ -290,3 +287,24 @@ const _attributes = new Set([
   'aria-valuenow',
   'aria-valuetext',
 ]);
+
+/* Legacy exported object */
+self.Accessibility = self.Accessibility || {};
+
+/* Legacy exported object */
+Accessibility = Accessibility || {};
+
+/**
+ * @constructor
+ */
+Accessibility.ARIAAttributesPane = ARIAAttributesPane;
+
+/**
+ * @constructor
+ */
+Accessibility.ARIAAttributesTreeElement = ARIAAttributesTreeElement;
+
+/**
+ * @constructor
+ */
+Accessibility.ARIAAttributesPane.ARIAAttributePrompt = ARIAAttributePrompt;

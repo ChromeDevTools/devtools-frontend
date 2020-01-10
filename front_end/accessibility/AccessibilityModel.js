@@ -7,7 +7,7 @@
  */
 export class AccessibilityNode {
   /**
-   * @param {!AccessibilityModel} accessibilityModel
+   * @param {!Accessibility.AccessibilityModel} accessibilityModel
    * @param {!Protocol.Accessibility.AXNode} payload
    */
   constructor(accessibilityModel, payload) {
@@ -39,7 +39,7 @@ export class AccessibilityNode {
   }
 
   /**
-   * @return {!AccessibilityModel}
+   * @return {!Accessibility.AccessibilityModel}
    */
   accessibilityModel() {
     return this._accessibilityModel;
@@ -115,14 +115,14 @@ export class AccessibilityNode {
   }
 
   /**
-   * @return {?AccessibilityNode}
+   * @return {?Accessibility.AccessibilityNode}
    */
   parentNode() {
     return this._parentNode;
   }
 
   /**
-   * @param {?AccessibilityNode} parentNode
+   * @param {?Accessibility.AccessibilityNode} parentNode
    */
   _setParentNode(parentNode) {
     this._parentNode = parentNode;
@@ -159,7 +159,7 @@ export class AccessibilityNode {
   }
 
   /**
-   * @return {!Array<!AccessibilityNode>}
+   * @return {!Array<!Accessibility.AccessibilityNode>}
    */
   children() {
     const children = [];
@@ -200,7 +200,7 @@ export class AccessibilityNode {
 
   /**
    * TODO(aboxhall): Remove once protocol is stable.
-   * @param {!AccessibilityNode} inspectedNode
+   * @param {!Accessibility.AccessibilityNode} inspectedNode
    * @param {string=} leadingSpace
    * @return {string}
    */
@@ -229,7 +229,7 @@ export class AccessibilityNode {
 /**
  * @unrestricted
  */
-export class AccessibilityModel extends SDK.SDKModel {
+export default class AccessibilityModel extends SDK.SDKModel {
   /**
    * @param {!SDK.Target} target
    */
@@ -237,7 +237,7 @@ export class AccessibilityModel extends SDK.SDKModel {
     super(target);
     this._agent = target.accessibilityAgent();
 
-    /** @type {!Map<string, !AccessibilityNode>} */
+    /** @type {!Map<string, !Accessibility.AccessibilityNode>} */
     this._axIdToAXNode = new Map();
     this._backendDOMNodeIdToAXNode = new Map();
   }
@@ -257,7 +257,7 @@ export class AccessibilityModel extends SDK.SDKModel {
     }
 
     for (const payload of payloads) {
-      new AccessibilityNode(this, payload);
+      new Accessibility.AccessibilityNode(this, payload);
     }
 
     for (const axNode of this._axIdToAXNode.values()) {
@@ -269,7 +269,7 @@ export class AccessibilityModel extends SDK.SDKModel {
 
   /**
    * @param {string} axId
-   * @return {?AccessibilityNode}
+   * @return {?Accessibility.AccessibilityNode}
    */
   axNodeForId(axId) {
     return this._axIdToAXNode.get(axId);
@@ -277,7 +277,7 @@ export class AccessibilityModel extends SDK.SDKModel {
 
   /**
    * @param {string} axId
-   * @param {!AccessibilityNode} axNode
+   * @param {!Accessibility.AccessibilityNode} axNode
    */
   _setAXNodeForAXId(axId, axNode) {
     this._axIdToAXNode.set(axId, axNode);
@@ -285,7 +285,7 @@ export class AccessibilityModel extends SDK.SDKModel {
 
   /**
    * @param {?SDK.DOMNode} domNode
-   * @return {?AccessibilityNode}
+   * @return {?Accessibility.AccessibilityNode}
    */
   axNodeForDOMNode(domNode) {
     if (!domNode) {
@@ -296,7 +296,7 @@ export class AccessibilityModel extends SDK.SDKModel {
 
   /**
    * @param {number} backendDOMNodeId
-   * @param {!AccessibilityNode} axNode
+   * @param {!Accessibility.AccessibilityNode} axNode
    */
   _setAXNodeForBackendDOMNodeId(backendDOMNodeId, axNode) {
     this._backendDOMNodeIdToAXNode.set(backendDOMNodeId, axNode);
@@ -315,4 +315,20 @@ export class AccessibilityModel extends SDK.SDKModel {
   }
 }
 
-SDK.SDKModel.register(AccessibilityModel, SDK.Target.Capability.DOM, false);
+/* Legacy exported object */
+self.Accessibility = self.Accessibility || {};
+
+/* Legacy exported object */
+Accessibility = Accessibility || {};
+
+/**
+ * @constructor
+ */
+Accessibility.AccessibilityNode = AccessibilityNode;
+
+/**
+ * @constructor
+ */
+Accessibility.AccessibilityModel = AccessibilityModel;
+
+SDK.SDKModel.register(Accessibility.AccessibilityModel, SDK.Target.Capability.DOM, false);

@@ -31,7 +31,10 @@
 /**
  * @unrestricted
  */
-export default class TimelineOverviewPane extends UI.VBox {
+import {Events as OverviewGridEvents, OverviewGrid} from './OverviewGrid.js';
+import {Calculator} from './TimelineGrid.js';  // eslint-disable-line no-unused-vars
+
+export class TimelineOverviewPane extends UI.VBox {
   /**
    * @param {string} prefix
    */
@@ -40,7 +43,7 @@ export default class TimelineOverviewPane extends UI.VBox {
     this.element.id = prefix + '-overview-pane';
 
     this._overviewCalculator = new TimelineOverviewCalculator();
-    this._overviewGrid = new PerfUI.OverviewGrid(prefix, this._overviewCalculator);
+    this._overviewGrid = new OverviewGrid(prefix, this._overviewCalculator);
     this.element.appendChild(this._overviewGrid.element);
     this._cursorArea = this._overviewGrid.element.createChild('div', 'overview-grid-cursor-area');
     this._cursorElement = this._overviewGrid.element.createChild('div', 'overview-grid-cursor-position');
@@ -48,7 +51,7 @@ export default class TimelineOverviewPane extends UI.VBox {
     this._cursorArea.addEventListener('mouseleave', this._hideCursor.bind(this), true);
 
     this._overviewGrid.setResizeEnabled(false);
-    this._overviewGrid.addEventListener(PerfUI.OverviewGrid.Events.WindowChanged, this._onWindowChanged, this);
+    this._overviewGrid.addEventListener(OverviewGridEvents.WindowChanged, this._onWindowChanged, this);
     this._overviewGrid.setClickHandler(this._onClick.bind(this));
     this._overviewControls = [];
     this._markers = new Map();
@@ -59,6 +62,10 @@ export default class TimelineOverviewPane extends UI.VBox {
     this._cursorEnabled = false;
     this._cursorPosition = 0;
     this._lastWidth = 0;
+
+    this._windowStartTime = 0;
+    this._windowEndTime = Infinity;
+    this._muteOnWindowChanged = false;
   }
 
   /**
@@ -271,7 +278,7 @@ export const Events = {
 };
 
 /**
- * @implements {PerfUI.TimelineGrid.Calculator}
+ * @implements {Calculator}
  * @unrestricted
  */
 export class TimelineOverviewCalculator {
@@ -536,27 +543,3 @@ export class OverviewInfo {
     this._glassPane.hide();
   }
 }
-
-/* Legacy exported object */
-self.PerfUI = self.PerfUI || {};
-
-/* Legacy exported object */
-PerfUI = PerfUI || {};
-
-/** @constructor */
-PerfUI.TimelineOverviewPane = TimelineOverviewPane;
-
-/** @enum {symbol} */
-PerfUI.TimelineOverviewPane.Events = Events;
-
-/** @constructor */
-PerfUI.TimelineOverviewPane.OverviewInfo = OverviewInfo;
-
-/** @constructor */
-PerfUI.TimelineOverviewCalculator = TimelineOverviewCalculator;
-
-/** @constructor */
-PerfUI.TimelineOverviewBase = TimelineOverviewBase;
-
-/** @interface */
-PerfUI.TimelineOverview = TimelineOverview;

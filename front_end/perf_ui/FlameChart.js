@@ -28,6 +28,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import {ChartViewport, ChartViewportDelegate} from './ChartViewport.js';  // eslint-disable-line no-unused-vars
+import {Calculator, TimelineGrid} from './TimelineGrid.js';               // eslint-disable-line no-unused-vars
+
 /**
  * @interface
  */
@@ -57,10 +60,10 @@ export class FlameChartDelegate {
 
 /**
  * @unrestricted
- * @implements {PerfUI.TimelineGrid.Calculator}
- * @implements {PerfUI.ChartViewportDelegate}
+ * @implements {Calculator}
+ * @implements {ChartViewportDelegate}
  */
-export default class FlameChart extends UI.VBox {
+export class FlameChart extends UI.VBox {
   /**
    * @param {!FlameChartDataProvider} dataProvider
    * @param {!FlameChartDelegate} flameChartDelegate
@@ -75,7 +78,7 @@ export default class FlameChart extends UI.VBox {
     this._flameChartDelegate = flameChartDelegate;
 
     this._useWebGL = Root.Runtime.experiments.isEnabled('timelineWebGL');
-    this._chartViewport = new PerfUI.ChartViewport(this);
+    this._chartViewport = new ChartViewport(this);
     this._chartViewport.show(this.contentElement);
 
     this._dataProvider = dataProvider;
@@ -1138,10 +1141,10 @@ export default class FlameChart extends UI.VBox {
     this._drawGroupHeaders(width, height);
     this._drawFlowEvents(context, width, height);
     this._drawMarkers();
-    const dividersData = PerfUI.TimelineGrid.calculateGridOffsets(this);
-    PerfUI.TimelineGrid.drawCanvasGrid(context, dividersData);
+    const dividersData = TimelineGrid.calculateGridOffsets(this);
+    TimelineGrid.drawCanvasGrid(context, dividersData);
     if (this._rulerEnabled) {
-      PerfUI.TimelineGrid.drawCanvasHeaders(
+      TimelineGrid.drawCanvasHeaders(
           context, dividersData, time => this.formatValue(time, dividersData.precision), 3, HeaderHeight);
     }
 
@@ -2276,60 +2279,3 @@ export const Colors = {
   SelectedGroupBackground: 'hsl(215, 85%, 98%)',
   SelectedGroupBorder: 'hsl(216, 68%, 54%)',
 };
-
-/* Legacy exported object */
-self.PerfUI = self.PerfUI || {};
-
-/* Legacy exported object */
-PerfUI = PerfUI || {};
-
-/** @constructor */
-PerfUI.FlameChart = FlameChart;
-
-PerfUI.FlameChart.HeaderHeight = HeaderHeight;
-PerfUI.FlameChart.MinimalTimeWindowMs = MinimalTimeWindowMs;
-
-/** @constructor */
-PerfUI.FlameChart.TimelineData = TimelineData;
-
-/** @enum {symbol} */
-PerfUI.FlameChart.Events = Events;
-
-PerfUI.FlameChart.Colors = Colors;
-
-/** @interface */
-PerfUI.FlameChartDelegate = FlameChartDelegate;
-
-/** @interface */
-PerfUI.FlameChartDataProvider = FlameChartDataProvider;
-
-/** @interface */
-PerfUI.FlameChartMarker = FlameChartMarker;
-
-/**
- * @typedef {!{
-  *     name: string,
-  *     startLevel: number,
-  *     expanded: (boolean|undefined),
-  *     selectable: (boolean|undefined),
-  *     style: !PerfUI.FlameChart.GroupStyle
-  * }}
-  */
-PerfUI.FlameChart.Group;
-
-/**
-  * @typedef {!{
-  *     height: number,
-  *     padding: number,
-  *     collapsible: boolean,
-  *     font: string,
-  *     color: string,
-  *     backgroundColor: string,
-  *     nestingLevel: number,
-  *     itemsHeight: (number|undefined),
-  *     shareHeaderLine: (boolean|undefined),
-  *     useFirstLineForOverview: (boolean|undefined),
-  *     useDecoratorsForOverview: (boolean|undefined)
-  * }}
-  */
-PerfUI.FlameChart.GroupStyle;

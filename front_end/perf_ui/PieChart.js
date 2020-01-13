@@ -31,7 +31,7 @@
 /**
  * @unrestricted
  */
-export default class PieChart {
+export class PieChart {
   /**
    * @param {!PerfUI.PieChartOptions} options
    */
@@ -175,15 +175,3 @@ export default class PieChart {
     return node;
   }
 }
-
-/* Legacy exported object */
-self.PerfUI = self.PerfUI || {};
-
-/* Legacy exported object */
-PerfUI = PerfUI || {};
-
-/** @constructor */
-PerfUI.PieChart = PieChart;
-
-/** @typedef {{size: number, formatter: function(number):string, showLegend: (boolean|undefined), chartName: string}} */
-PerfUI.PieChartOptions;

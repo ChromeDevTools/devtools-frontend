@@ -5,7 +5,7 @@
 /**
  * @implements {UI.ActionDelegate}
  */
-export default class GCActionDelegate {
+export class GCActionDelegate {
   /**
    * @override
    * @param {!UI.Context} context
@@ -19,12 +19,3 @@ export default class GCActionDelegate {
     return true;
   }
 }
-
-/* Legacy exported object */
-self.PerfUI = self.PerfUI || {};
-
-/* Legacy exported object */
-PerfUI = PerfUI || {};
-
-/** @constructor */
-PerfUI.GCActionDelegate = GCActionDelegate;

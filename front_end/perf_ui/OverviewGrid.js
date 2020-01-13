@@ -28,19 +28,21 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import {Calculator, TimelineGrid} from './TimelineGrid.js';  // eslint-disable-line no-unused-vars
+
 /**
  * @unrestricted
  */
-export default class OverviewGrid {
+export class OverviewGrid {
   /**
    * @param {string} prefix
-   * @param {!PerfUI.TimelineGrid.Calculator=} calculator
+   * @param {!Calculator=} calculator
    */
   constructor(prefix, calculator) {
     this.element = createElement('div');
     this.element.id = prefix + '-overview-container';
 
-    this._grid = new PerfUI.TimelineGrid();
+    this._grid = new TimelineGrid();
     this._grid.element.id = prefix + '-overview-grid';
     this._grid.setScrollTop(0);
 
@@ -57,7 +59,7 @@ export default class OverviewGrid {
   }
 
   /**
-   * @param {!PerfUI.TimelineGrid.Calculator} calculator
+   * @param {!Calculator} calculator
    */
   updateDividers(calculator) {
     this._grid.updateDividers(calculator);
@@ -145,7 +147,7 @@ export class Window extends Common.Object {
   /**
    * @param {!Element} parentElement
    * @param {!Element=} dividersLabelBarElement
-   * @param {!PerfUI.TimelineGrid.Calculator=} calculator
+   * @param {!Calculator=} calculator
    */
   constructor(parentElement, dividersLabelBarElement, calculator) {
     super();
@@ -609,26 +611,3 @@ export class WindowSelector {
     }
   }
 }
-
-/* Legacy exported object */
-self.PerfUI = self.PerfUI || {};
-
-/* Legacy exported object */
-PerfUI = PerfUI || {};
-
-/** @constructor */
-PerfUI.OverviewGrid = OverviewGrid;
-
-PerfUI.OverviewGrid.MinSelectableSize = MinSelectableSize;
-PerfUI.OverviewGrid.WindowScrollSpeedFactor = WindowScrollSpeedFactor;
-PerfUI.OverviewGrid.ResizerOffset = ResizerOffset;
-PerfUI.OverviewGrid.OffsetFromWindowEnds = OffsetFromWindowEnds;
-
-/** @constructor */
-PerfUI.OverviewGrid.Window = Window;
-
-/** @enum {symbol} */
-PerfUI.OverviewGrid.Events = Events;
-
-/** @constructor */
-PerfUI.OverviewGrid.WindowSelector = WindowSelector;

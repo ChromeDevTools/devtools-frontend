@@ -2,11 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {Memory} from './LineLevelProfile.js';
+
 /**
  * @implements {Common.Runnable}
  * @implements {SDK.SDKModelObserver<!SDK.HeapProfilerModel>}
  */
-export default class LiveHeapProfile {
+export class LiveHeapProfile {
   constructor() {
     this._running = false;
     this._sessionId = 0;
@@ -56,7 +58,7 @@ export default class LiveHeapProfile {
       if (sessionId !== this._sessionId) {
         break;
       }
-      const lineLevelProfile = self.runtime.sharedInstance(PerfUI.LineLevelProfile.Memory);
+      const lineLevelProfile = self.runtime.sharedInstance(Memory);
       lineLevelProfile.reset();
       for (let i = 0; i < profiles.length; ++i) {
         if (profiles[i]) {
@@ -74,7 +76,7 @@ export default class LiveHeapProfile {
     for (const model of SDK.targetManager.models(SDK.HeapProfilerModel)) {
       model.stopSampling();
     }
-    self.runtime.sharedInstance(PerfUI.LineLevelProfile.Memory).reset();
+    self.runtime.sharedInstance(Memory).reset();
   }
 
   _stopProfiling() {
@@ -89,12 +91,3 @@ export default class LiveHeapProfile {
     this._loadEventCallback();
   }
 }
-
-/* Legacy exported object */
-self.PerfUI = self.PerfUI || {};
-
-/* Legacy exported object */
-PerfUI = PerfUI || {};
-
-/** @constructor */
-PerfUI.LiveHeapProfile = LiveHeapProfile;

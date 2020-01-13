@@ -31,7 +31,7 @@
 /**
  * @unrestricted
  */
-export default class TimelineGrid {
+export class TimelineGrid {
   constructor() {
     this.element = createElement('div');
     UI.appendStyle(this.element, 'perf_ui/timelineGrid.css');
@@ -303,18 +303,3 @@ export class Calculator {
   /** @return {number} */
   boundarySpan() {}
 }
-
-/* Legacy exported object */
-self.PerfUI = self.PerfUI || {};
-
-/* Legacy exported object */
-PerfUI = PerfUI || {};
-
-/** @constructor */
-PerfUI.TimelineGrid = TimelineGrid;
-
-/** @interface */
-PerfUI.TimelineGrid.Calculator = Calculator;
-
-/** @typedef {!{offsets: !Array<!{position: number, time: number}>, precision: number}} */
-PerfUI.TimelineGrid.DividersData;

@@ -5,7 +5,7 @@
 /**
  * @unrestricted
  */
-export default class FilmStripView extends UI.HBox {
+export class FilmStripView extends UI.HBox {
   constructor() {
     super(true);
     this.registerRequiredCSS('perf_ui/filmStripView.css');
@@ -316,18 +316,3 @@ export class Dialog {
         .then(this._resize.bind(this));
   }
 }
-
-/* Legacy exported object */
-self.PerfUI = self.PerfUI || {};
-
-/* Legacy exported object */
-PerfUI = PerfUI || {};
-
-/** @constructor */
-PerfUI.FilmStripView = FilmStripView;
-
-/** @enum {symbol} */
-PerfUI.FilmStripView.Events = Events;
-
-PerfUI.FilmStripView.Modes = Modes;
-PerfUI.FilmStripView.Dialog = Dialog;

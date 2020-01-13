@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {MinimalTimeWindowMs} from './FlameChart.js';
+
 /**
  * @interface
  */
@@ -34,7 +36,7 @@ export class ChartViewportDelegate {
 /**
  * @unrestricted
  */
-export default class ChartViewport extends UI.VBox {
+export class ChartViewport extends UI.VBox {
   /**
    * @param {!ChartViewportDelegate} delegate
    */
@@ -464,7 +466,7 @@ export default class ChartViewport extends UI.VBox {
       bounds.left = Math.max(bounds.left - bounds.right + maxBound, this._minimumBoundary);
       bounds.right = maxBound;
     }
-    if (bounds.right - bounds.left < PerfUI.FlameChart.MinimalTimeWindowMs) {
+    if (bounds.right - bounds.left < MinimalTimeWindowMs) {
       return;
     }
     this._delegate.windowChanged(bounds.left, bounds.right, animate);
@@ -542,15 +544,3 @@ export default class ChartViewport extends UI.VBox {
     return this._visibleRightTime;
   }
 }
-
-/* Legacy exported object */
-self.PerfUI = self.PerfUI || {};
-
-/* Legacy exported object */
-PerfUI = PerfUI || {};
-
-/** @constructor */
-PerfUI.ChartViewport = ChartViewport;
-
-/** @interface */
-PerfUI.ChartViewportDelegate = ChartViewportDelegate;

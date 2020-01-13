@@ -73,6 +73,7 @@
     "scripts": [],
     "modules": [
         "perf_ui.js",
+        "perf_ui-legacy.js",
         "ChartViewport.js",
         "FilmStripView.js",
         "FlameChart.js",

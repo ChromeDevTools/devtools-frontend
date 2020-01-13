@@ -4,7 +4,7 @@
 
 export class Performance {
   constructor() {
-    this._helper = new _Helper('performance');
+    this._helper = new Helper('performance');
   }
 
   reset() {
@@ -65,7 +65,7 @@ export class Performance {
 
 export class Memory {
   constructor() {
-    this._helper = new _Helper('memory');
+    this._helper = new Helper('memory');
   }
 
   reset() {
@@ -99,7 +99,7 @@ export class Memory {
   }
 }
 
-export class _Helper {
+export class Helper {
   /**
    * @param {string} type
    */
@@ -269,26 +269,3 @@ export class LineDecorator {
     return element;
   }
 }
-
-/* Legacy exported object */
-self.PerfUI = self.PerfUI || {};
-
-/* Legacy exported object */
-PerfUI = PerfUI || {};
-
-PerfUI.LineLevelProfile = {};
-
-/** @constructor */
-PerfUI.LineLevelProfile.Performance = Performance;
-
-/** @constructor */
-PerfUI.LineLevelProfile.Memory = Memory;
-
-/** @constructor */
-PerfUI.LineLevelProfile._Helper = _Helper;
-
-/** @constructor */
-PerfUI.LineLevelProfile.Presentation = Presentation;
-
-/** @constructor */
-PerfUI.LineLevelProfile.LineDecorator = LineDecorator;

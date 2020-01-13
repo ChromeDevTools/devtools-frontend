@@ -184,14 +184,3 @@ export class NodeConnectionsView extends UI.VBox {
     }
   }
 }
-
-/* Legacy exported object */
-self.NodeMain = self.NodeMain || {};
-
-/* Legacy exported object */
-NodeMain = NodeMain || {};
-
-/**
- * @constructor
- */
-NodeMain.NodeConnectionsPanel = NodeConnectionsPanel;

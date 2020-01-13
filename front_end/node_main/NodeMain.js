@@ -32,7 +32,7 @@ export class NodeChildTargetManager extends SDK.SDKModel {
     this._targetAgent = parentTarget.targetAgent();
     /** @type {!Map<string, !SDK.Target>} */
     this._childTargets = new Map();
-    /** @type {!Map<string, !NodeMain.NodeConnection>} */
+    /** @type {!Map<string, !NodeConnection>} */
     this._childConnections = new Map();
 
     parentTarget.registerTargetDispatcher(this);
@@ -192,24 +192,3 @@ export class NodeConnection {
 }
 
 SDK.SDKModel.register(NodeChildTargetManager, SDK.Target.Capability.Target, true);
-
-/* Legacy exported object */
-self.NodeMain = self.NodeMain || {};
-
-/* Legacy exported object */
-NodeMain = NodeMain || {};
-
-/**
- * @constructor
- */
-NodeMain.NodeMain = NodeMainImpl;
-
-/**
- * @constructor
- */
-NodeMain.NodeChildTargetManager = NodeChildTargetManager;
-
-/**
- * @constructor
- */
-NodeMain.NodeConnection = NodeConnection;

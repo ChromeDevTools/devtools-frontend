@@ -2255,7 +2255,7 @@ action("generate_devtools_grd") {
   ]
 
   args = [
-           "--file-list",
+           "--file_list",
            "{{response_file_name}}",
            "--relative_path_dirs",
          ] + rebase_path(relative_path_dirs, root_build_dir) +
@@ -2369,9 +2369,12 @@ action("copy_devtools_modules") {
   ]
 
   inputs = all_devtools_modules
+  response_file_contents = inputs
   outputs = copied_devtools_modules
 
-  args = all_devtools_modules + [
+  args = [
+           "--file_list",
+           "{{response_file_name}}",
            "--input_path",
            rebase_path(".", root_build_dir),
            "--output_path",

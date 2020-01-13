@@ -9,6 +9,7 @@ Copies the modules into the resources folder
 """
 
 from os.path import join, relpath
+import shlex
 import shutil
 import sys
 
@@ -19,13 +20,18 @@ from modular_build import read_file, write_file
 
 def main(argv):
     try:
+        file_list_arg_index = argv.index('--file_list')
+        file_list_filename = argv[file_list_arg_index + 1]
         input_path_flag_index = argv.index('--input_path')
         input_path = argv[input_path_flag_index + 1]
         output_path_flag_index = argv.index('--output_path')
         output_path = argv[output_path_flag_index + 1]
-        devtools_modules = argv[1:input_path_flag_index]
+
+        file_list_file = open(file_list_filename, 'r')
+        file_list_contents = file_list_file.read()
+        devtools_modules = shlex.split(file_list_contents)
     except:
-        print('Usage: %s module_1 module_2 ... module_N --input_path <input_path> --output_path <output_path>' % argv[0])
+        print('Usage: %s --file_list <response_file_path> --input_path <input_path> --output_path <output_path>' % argv[0])
         raise
 
     for file_name in devtools_modules:

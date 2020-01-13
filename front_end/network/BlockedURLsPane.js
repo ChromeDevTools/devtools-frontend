@@ -1,15 +1,19 @@
 // Copyright (c) 2015 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
+/** @type {?BlockedURLsPane} */
+export let _instance = null;
+
 /**
  * @implements {UI.ListWidget.Delegate<SDK.NetworkManager.BlockedPattern>}
  */
-export default class BlockedURLsPane extends UI.VBox {
+export class BlockedURLsPane extends UI.VBox {
   constructor() {
     super(true);
     this.registerRequiredCSS('network/blockedURLsPane.css');
 
-    Network.BlockedURLsPane._instance = this;
+    _instance = this;
     this._manager = SDK.multitargetNetworkManager;
     this._manager.addEventListener(SDK.MultitargetNetworkManager.Events.BlockedPatternsChanged, this._update, this);
 
@@ -57,8 +61,8 @@ export default class BlockedURLsPane extends UI.VBox {
   }
 
   static reset() {
-    if (Network.BlockedURLsPane._instance) {
-      Network.BlockedURLsPane._instance.reset();
+    if (_instance) {
+      _instance.reset();
     }
   }
 
@@ -241,20 +245,3 @@ export default class BlockedURLsPane extends UI.VBox {
     }
   }
 }
-
-/** @type {?BlockedURLsPane} */
-export const _instance = null;
-
-/* Legacy exported object */
-self.Network = self.Network || {};
-
-/* Legacy exported object */
-Network = Network || {};
-
-/**
- * @constructor
- */
-Network.BlockedURLsPane = BlockedURLsPane;
-
-/** @type {?Network.BlockedURLsPane} */
-Network.BlockedURLsPane._instance = _instance;

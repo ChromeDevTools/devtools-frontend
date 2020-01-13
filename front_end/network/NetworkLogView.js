@@ -28,10 +28,17 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import {HARWriter} from './HARWriter.js';
+import {Events, NetworkGroupNode, NetworkLogViewInterface, NetworkNode, NetworkRequestNode} from './NetworkDataGridNode.js';  // eslint-disable-line no-unused-vars
+import {NetworkFrameGrouper} from './NetworkFrameGrouper.js';
+import {NetworkLogViewColumns} from './NetworkLogViewColumns.js';
+import {NetworkTimeBoundary, NetworkTimeCalculator, NetworkTransferDurationCalculator, NetworkTransferTimeCalculator,} from './NetworkTimeCalculator.js';  // eslint-disable-line no-unused-vars
+
 /**
  * @implements {SDK.SDKModelObserver<!SDK.NetworkManager>}
+ * @implements {NetworkLogViewInterface}
  */
-export default class NetworkLogView extends UI.VBox {
+export class NetworkLogView extends UI.VBox {
   /**
    * @param {!UI.FilterBar} filterBar
    * @param {!Element} progressBarContainer
@@ -65,14 +72,14 @@ export default class NetworkLogView extends UI.VBox {
     this._rowHeight = 0;
     updateRowHeight.call(this);
 
-    /** @type {!Network.NetworkTransferTimeCalculator} */
-    this._timeCalculator = new Network.NetworkTransferTimeCalculator();
-    /** @type {!Network.NetworkTransferDurationCalculator} */
-    this._durationCalculator = new Network.NetworkTransferDurationCalculator();
+    /** @type {!NetworkTransferTimeCalculator} */
+    this._timeCalculator = new NetworkTransferTimeCalculator();
+    /** @type {!NetworkTransferDurationCalculator} */
+    this._durationCalculator = new NetworkTransferDurationCalculator();
     this._calculator = this._timeCalculator;
 
-    this._columns = new Network.NetworkLogViewColumns(
-        this, this._timeCalculator, this._durationCalculator, networkLogLargeRowsSetting);
+    this._columns =
+        new NetworkLogViewColumns(this, this._timeCalculator, this._durationCalculator, networkLogLargeRowsSetting);
     this._columns.show(this.element);
 
     /** @type {!Set<!SDK.NetworkRequest>} */
@@ -87,13 +94,13 @@ export default class NetworkLogView extends UI.VBox {
     this._filters = [];
     /** @type {?Network.NetworkLogView.Filter} */
     this._timeFilter = null;
-    /** @type {?Network.NetworkNode} */
+    /** @type {?NetworkNode} */
     this._hoveredNode = null;
     /** @type {?Element} */
     this._recordingHint = null;
     /** @type {?number} */
     this._refreshRequestId = null;
-    /** @type {?Network.NetworkRequestNode} */
+    /** @type {?NetworkRequestNode} */
     this._highlightedNode = null;
 
     this.linkifier = new Components.Linkifier();
@@ -105,7 +112,7 @@ export default class NetworkLogView extends UI.VBox {
 
     /** @type {!Map<string, !GroupLookupInterface>} */
     this._groupLookups = new Map();
-    this._groupLookups.set('Frame', new Network.NetworkFrameGrouper(this));
+    this._groupLookups.set('Frame', new NetworkFrameGrouper(this));
 
     /** @type {?GroupLookupInterface} */
     this._activeGroupLookup = null;
@@ -484,6 +491,7 @@ export default class NetworkLogView extends UI.VBox {
   }
 
   /**
+   * @override
    * @param {!File} file
    */
   async onLoadFromFile(file) {
@@ -532,14 +540,16 @@ export default class NetworkLogView extends UI.VBox {
   }
 
   /**
+   * @override
    * @param {!SDK.NetworkRequest} request
-   * @return {?Network.NetworkRequestNode}
+   * @return {?NetworkRequestNode}
    */
   nodeForRequest(request) {
     return request[_networkNodeSymbol] || null;
   }
 
   /**
+   * @override
    * @return {number}
    */
   headerHeight() {
@@ -547,6 +557,7 @@ export default class NetworkLogView extends UI.VBox {
   }
 
   /**
+   * @override
    * @param {boolean} recording
    */
   setRecording(recording) {
@@ -587,6 +598,7 @@ export default class NetworkLogView extends UI.VBox {
   }
 
   /**
+   * @override
    * @param {number} start
    * @param {number} end
    */
@@ -596,11 +608,12 @@ export default class NetworkLogView extends UI.VBox {
       this._timeCalculator.setWindow(null);
     } else {
       this._timeFilter = NetworkLogView._requestTimeFilter.bind(null, start, end);
-      this._timeCalculator.setWindow(new Network.NetworkTimeBoundary(start, end));
+      this._timeCalculator.setWindow(new NetworkTimeBoundary(start, end));
     }
     this._filterRequests();
   }
 
+  /** @override */
   resetFocus() {
     this._dataGrid.element.focus();
   }
@@ -694,6 +707,7 @@ export default class NetworkLogView extends UI.VBox {
     return [this._dataGrid.scrollContainer];
   }
 
+  /** @override */
   columnExtensionResolved() {
     this._invalidateAllItems(true);
   }
@@ -733,14 +747,15 @@ export default class NetworkLogView extends UI.VBox {
   }
 
   /**
-   * @return {?Network.NetworkNode}
+   * @override
+   * @return {?NetworkNode}
    */
   hoveredNode() {
     return this._hoveredNode;
   }
 
   /**
-   * @param {?Network.NetworkNode} node
+   * @param {?NetworkNode} node
    * @param {boolean=} highlightInitiatorChain
    */
   _setHoveredNode(node, highlightInitiatorChain) {
@@ -784,7 +799,7 @@ export default class NetworkLogView extends UI.VBox {
       transferSize += requestTransferSize;
       const requestResourceSize = request.resourceSize;
       resourceSize += requestResourceSize;
-      if (!node[_isFilteredOutSymbol]) {
+      if (!node[isFilteredOutSymbol]) {
         selectedNodeNumber++;
         selectedTransferSize += requestTransferSize;
         selectedResourceSize += requestResourceSize;
@@ -856,6 +871,7 @@ export default class NetworkLogView extends UI.VBox {
     }
   }
 
+  /** @override */
   scheduleRefresh() {
     if (this._needsRefresh) {
       return;
@@ -869,6 +885,7 @@ export default class NetworkLogView extends UI.VBox {
   }
 
   /**
+   * @override
    * @param {!Array<number>} times
    */
   addFilmStripFrames(times) {
@@ -876,12 +893,14 @@ export default class NetworkLogView extends UI.VBox {
   }
 
   /**
+   * @override
    * @param {number} time
    */
   selectFilmStripFrame(time) {
     this._columns.selectFilmStripFrame(time);
   }
 
+  /** @override */
   clearFilmStripFrame() {
     this._columns.clearFilmStripFrame();
   }
@@ -905,21 +924,24 @@ export default class NetworkLogView extends UI.VBox {
   }
 
   /**
-   * @return {!Network.NetworkTimeCalculator}
+   * @override
+   * @return {!NetworkTimeCalculator}
    */
   timeCalculator() {
     return this._timeCalculator;
   }
 
   /**
-   * @return {!Network.NetworkTimeCalculator}
+   * @override
+   * @return {!NetworkTimeCalculator}
    */
   calculator() {
     return this._calculator;
   }
 
   /**
-   * @param {!Network.NetworkTimeCalculator} x
+   * @override
+   * @param {!NetworkTimeCalculator} x
    */
   setCalculator(x) {
     if (!x || this._calculator === x) {
@@ -993,12 +1015,14 @@ export default class NetworkLogView extends UI.VBox {
   }
 
   /**
-   * @return {!Array<!Network.NetworkNode>}
+   * @override
+   * @return {!Array<!NetworkNode>}
    */
   flatNodesList() {
     return this._dataGrid.rootNode().flatChildren();
   }
 
+  /** @override */
   updateNodeBackground() {
     if (this._dataGrid.selectedNode) {
       this._dataGrid.selectedNode.updateBackgroundColor();
@@ -1006,6 +1030,7 @@ export default class NetworkLogView extends UI.VBox {
   }
 
   /**
+   * @override
    * @param {boolean} isSelected
    */
   updateNodeSelectedClass(isSelected) {
@@ -1016,6 +1041,7 @@ export default class NetworkLogView extends UI.VBox {
     }
   }
 
+  /** @override */
   stylesChanged() {
     this._columns.scheduleRefresh();
   }
@@ -1035,12 +1061,12 @@ export default class NetworkLogView extends UI.VBox {
     this._timeCalculator.updateBoundariesForEventTime(this._mainRequestDOMContentLoadedTime);
     this._durationCalculator.updateBoundariesForEventTime(this._mainRequestDOMContentLoadedTime);
 
-    /** @type {!Map<!Network.NetworkNode, !Network.NetworkNode>} */
+    /** @type {!Map<!NetworkNode, !Network.NetworkNode>} */
     const nodesToInsert = new Map();
-    /** @type {!Array<!Network.NetworkNode>} */
+    /** @type {!Array<!NetworkNode>} */
     const nodesToRefresh = [];
 
-    /** @type {!Set<!Network.NetworkRequestNode>} */
+    /** @type {!Set<!NetworkRequestNode>} */
     const staleNodes = new Set();
 
     // While creating nodes it may add more entries into _staleRequests because redirect request nodes update the parent
@@ -1068,10 +1094,10 @@ export default class NetworkLogView extends UI.VBox {
       this._timeCalculator.updateBoundaries(request);
       this._durationCalculator.updateBoundaries(request);
       const newParent = this._parentNodeForInsert(node);
-      if (node[_isFilteredOutSymbol] === isFilteredOut && node.parent === newParent) {
+      if (node[isFilteredOutSymbol] === isFilteredOut && node.parent === newParent) {
         continue;
       }
-      node[_isFilteredOutSymbol] = isFilteredOut;
+      node[isFilteredOutSymbol] = isFilteredOut;
       const removeFromParent = node.parent && (isFilteredOut || node.parent !== newParent);
       if (removeFromParent) {
         let parent = node.parent;
@@ -1116,8 +1142,8 @@ export default class NetworkLogView extends UI.VBox {
   }
 
   /**
-   * @param {!Network.NetworkRequestNode} node
-   * @return {?Network.NetworkNode}
+   * @param {!NetworkRequestNode} node
+   * @return {?NetworkNode}
    */
   _parentNodeForInsert(node) {
     if (!this._activeGroupLookup) {
@@ -1159,6 +1185,7 @@ export default class NetworkLogView extends UI.VBox {
   }
 
   /**
+   * @override
    * @param {string} filterString
    */
   setTextFilterValue(filterString) {
@@ -1172,9 +1199,9 @@ export default class NetworkLogView extends UI.VBox {
    * @param {!SDK.NetworkRequest} request
    */
   _createNodeForRequest(request) {
-    const node = new Network.NetworkRequestNode(this, request);
+    const node = new NetworkRequestNode(this, request);
     request[_networkNodeSymbol] = node;
-    node[_isFilteredOutSymbol] = true;
+    node[isFilteredOutSymbol] = true;
 
     for (let redirect = request.redirectSource(); redirect; redirect = redirect.redirectSource()) {
       this._refreshRequest(redirect);
@@ -1242,6 +1269,7 @@ export default class NetworkLogView extends UI.VBox {
   }
 
   /**
+   * @override
    * @return {number}
    */
   rowHeight() {
@@ -1249,6 +1277,7 @@ export default class NetworkLogView extends UI.VBox {
   }
 
   /**
+   * @override
    * @param {boolean} gridMode
    */
   switchViewMode(gridMode) {
@@ -1256,6 +1285,7 @@ export default class NetworkLogView extends UI.VBox {
   }
 
   /**
+   * @override
    * @param {!UI.ContextMenu} contextMenu
    * @param {!SDK.NetworkRequest} request
    */
@@ -1432,6 +1462,10 @@ export default class NetworkLogView extends UI.VBox {
     Host.InspectorFrontendHost.copyText(commands);
   }
 
+  /**
+   * @override
+   * @return {!Promise}
+   */
   async exportAll() {
     const url = SDK.targetManager.mainTarget().inspectedURL();
     const parsedURL = Common.ParsedURL.fromString(url);
@@ -1444,7 +1478,7 @@ export default class NetworkLogView extends UI.VBox {
 
     const progressIndicator = new UI.ProgressIndicator();
     this._progressBarContainer.appendChild(progressIndicator.element);
-    await Network.HARWriter.write(stream, this._harRequests(), progressIndicator);
+    await HARWriter.write(stream, this._harRequests(), progressIndicator);
     progressIndicator.done();
     stream.close();
   }
@@ -1470,7 +1504,7 @@ export default class NetworkLogView extends UI.VBox {
   }
 
   /**
-   * @param {!Network.NetworkRequestNode} node
+   * @param {!NetworkRequestNode} node
    * @return {boolean}
    */
   _applyFilter(node) {
@@ -1619,7 +1653,7 @@ export default class NetworkLogView extends UI.VBox {
 
   /**
    * @param {!SDK.NetworkRequest} request
-   * @return {?Network.NetworkRequestNode}
+   * @return {?NetworkRequestNode}
    */
   _reveal(request) {
     this.removeAllNodeHighlights();
@@ -1632,6 +1666,7 @@ export default class NetworkLogView extends UI.VBox {
   }
 
   /**
+   * @override
    * @param {!SDK.NetworkRequest} request
    */
   revealAndHighlightRequest(request) {
@@ -1642,6 +1677,7 @@ export default class NetworkLogView extends UI.VBox {
   }
 
   /**
+   * @override
    * @param {!SDK.NetworkRequest} request
    */
   selectRequest(request) {
@@ -1652,6 +1688,7 @@ export default class NetworkLogView extends UI.VBox {
     }
   }
 
+  /** @override */
   removeAllNodeHighlights() {
     if (this._highlightedNode) {
       this._highlightedNode.element().classList.remove('highlighted-row');
@@ -1660,7 +1697,7 @@ export default class NetworkLogView extends UI.VBox {
   }
 
   /**
-   * @param {!Network.NetworkRequestNode} node
+   * @param {!NetworkRequestNode} node
    */
   _highlightNode(node) {
     UI.runCSSAnimationOnce(node.element(), 'highlighted-row');
@@ -2009,7 +2046,7 @@ export default class NetworkLogView extends UI.VBox {
   }
 }
 
-export const _isFilteredOutSymbol = Symbol('isFilteredOut');
+export const isFilteredOutSymbol = Symbol('isFilteredOut');
 export const _networkNodeSymbol = Symbol('NetworkNode');
 
 export const HTTPSchemas = {
@@ -2017,12 +2054,6 @@ export const HTTPSchemas = {
   'https': true,
   'ws': true,
   'wss': true
-};
-
-/** @enum {symbol} */
-export const Events = {
-  RequestSelected: Symbol('RequestSelected'),
-  RequestActivated: Symbol('RequestActivated')
 };
 
 /** @enum {string} */
@@ -2070,7 +2101,7 @@ export const _searchKeys = Object.keys(FilterType).map(key => FilterType[key]);
 export class GroupLookupInterface {
   /**
    * @param {!SDK.NetworkRequest} request
-   * @return {?Network.NetworkGroupNode}
+   * @return {?NetworkGroupNode}
    */
   groupNodeForRequest(request) {
   }
@@ -2078,41 +2109,3 @@ export class GroupLookupInterface {
   reset() {
   }
 }
-
-/* Legacy exported object */
-self.Network = self.Network || {};
-
-/* Legacy exported object */
-Network = Network || {};
-
-/**
- * @constructor
- */
-Network.NetworkLogView = NetworkLogView;
-
-/** @typedef {function(!SDK.NetworkRequest): boolean} */
-Network.NetworkLogView.Filter;
-
-Network.NetworkLogView._isFilteredOutSymbol = _isFilteredOutSymbol;
-Network.NetworkLogView._networkNodeSymbol = _networkNodeSymbol;
-Network.NetworkLogView.HTTPSchemas = HTTPSchemas;
-
-/** @enum {symbol} */
-Network.NetworkLogView.Events = Events;
-
-/** @enum {string} */
-Network.NetworkLogView.FilterType = FilterType;
-
-/** @enum {string} */
-Network.NetworkLogView.MixedContentFilterValues = MixedContentFilterValues;
-
-/** @enum {string} */
-Network.NetworkLogView.IsFilterType = IsFilterType;
-
-/** @type {!Array<string>} */
-Network.NetworkLogView._searchKeys = _searchKeys;
-
-/**
- * @interface
- */
-Network.GroupLookupInterface = GroupLookupInterface;

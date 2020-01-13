@@ -1,10 +1,11 @@
 // Copyright 2014 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
 /**
  * @unrestricted
  */
-export default class EventSourceMessagesView extends UI.VBox {
+export class EventSourceMessagesView extends UI.VBox {
   /**
    * @param {!SDK.NetworkRequest} request
    */
@@ -110,24 +111,3 @@ export const Comparators = {
   'type': EventSourceMessageNodeComparator.bind(null, 'eventName'),
   'time': EventSourceMessageNodeComparator.bind(null, 'time')
 };
-
-/* Legacy exported object */
-self.Network = self.Network || {};
-
-/* Legacy exported object */
-Network = Network || {};
-
-/**
- * @constructor
- */
-Network.EventSourceMessagesView = EventSourceMessagesView;
-
-Network.EventSourceMessageNodeComparator = EventSourceMessageNodeComparator;
-
-/**
- * @constructor
- */
-Network.EventSourceMessageNode = EventSourceMessageNode;
-
-/** @type {!Object.<string, function(!EventSourceMessageNode, !EventSourceMessageNode):number>} */
-Network.EventSourceMessageNode.Comparators = Comparators;

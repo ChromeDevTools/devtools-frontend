@@ -813,22 +813,3 @@ export class Category extends UI.TreeElement {
     this._expandedSetting.set(false);
   }
 }
-
-/* Legacy exported object */
-self.Network = self.Network || {};
-
-/* Legacy exported object */
-Network = Network || {};
-
-/**
- * @constructor
- */
-Network.RequestHeadersView = RequestHeadersView;
-
-Network.RequestHeadersView._headerNameSymbol = _headerNameSymbol;
-Network.RequestHeadersView._viewSourceSymbol = _viewSourceSymbol;
-
-/**
- * @constructor
- */
-Network.RequestHeadersView.Category = Category;

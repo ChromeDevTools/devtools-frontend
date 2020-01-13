@@ -16,6 +16,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+import {BinaryResourceView} from './BinaryResourceView.js';
+
 /**
  * @unrestricted
  */
@@ -331,7 +333,7 @@ export class ResourceWebSocketFrameNode extends DataGrid.SortableDataGridNode {
   }
 
   /**
-   * @return {?Network.BinaryResourceView}
+   * @return {?BinaryResourceView}
    */
   binaryView() {
     if (this._isTextFrame || this._frame.type === SDK.NetworkRequest.WebSocketFrameType.Error) {
@@ -339,7 +341,7 @@ export class ResourceWebSocketFrameNode extends DataGrid.SortableDataGridNode {
     }
 
     if (!this._binaryView) {
-      this._binaryView = new Network.BinaryResourceView(this._dataText, /* url */ '', Common.resourceTypes.WebSocket);
+      this._binaryView = new BinaryResourceView(this._dataText, /* url */ '', Common.resourceTypes.WebSocket);
     }
     return this._binaryView;
   }
@@ -355,25 +357,3 @@ export function ResourceWebSocketFrameNodeTimeComparator(a, b) {
 }
 
 export const _clearFrameOffsetSymbol = Symbol('ClearFrameOffset');
-
-/* Legacy exported object */
-self.Network = self.Network || {};
-
-/* Legacy exported object */
-Network = Network || {};
-
-/**
- * @constructor
- */
-Network.ResourceWebSocketFrameView = ResourceWebSocketFrameView;
-
-/** @enum {number} */
-Network.ResourceWebSocketFrameView.OpCodes = OpCodes;
-
-/** @type {!Array.<string> } */
-Network.ResourceWebSocketFrameView.opCodeDescriptions = opCodeDescriptions;
-
-/** @type {!Array<!UI.NamedBitSetFilterUI.Item>} */
-Network.ResourceWebSocketFrameView._filterTypes = _filterTypes;
-Network.ResourceWebSocketFrameView._clearFrameOffsetSymbol = _clearFrameOffsetSymbol;
-Network.ResourceWebSocketFrameNode = ResourceWebSocketFrameNode;

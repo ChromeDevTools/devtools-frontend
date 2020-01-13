@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-export default class SignedExchangeInfoView extends UI.VBox {
+export class SignedExchangeInfoView extends UI.VBox {
   /**
    * @param {!SDK.NetworkRequest} request
    */
@@ -26,7 +26,7 @@ export default class SignedExchangeInfoView extends UI.VBox {
     const errorFieldSetMap = new Map();
 
     if (signedExchangeInfo.errors && signedExchangeInfo.errors.length) {
-      const errorMessagesCategory = new Network.SignedExchangeInfoView.Category(root, Common.UIString('Errors'));
+      const errorMessagesCategory = new Category(root, Common.UIString('Errors'));
       for (const error of signedExchangeInfo.errors) {
         const fragment = createDocumentFragment();
         fragment.appendChild(UI.Icon.create('smallicon-error', 'prompt-icon'));
@@ -48,7 +48,7 @@ export default class SignedExchangeInfoView extends UI.VBox {
     const learnMoreNode =
         UI.XLink.create('https://github.com/WICG/webpackage', Common.UIString('Learn\xa0more'), 'header-toggle');
     titleElement.appendChild(learnMoreNode);
-    const headerCategory = new Network.SignedExchangeInfoView.Category(root, titleElement);
+    const headerCategory = new Category(root, titleElement);
     if (signedExchangeInfo.header) {
       const header = signedExchangeInfo.header;
       const redirectDestination = request.redirectDestination();
@@ -75,7 +75,7 @@ export default class SignedExchangeInfoView extends UI.VBox {
       for (let i = 0; i < header.signatures.length; ++i) {
         const errorFieldSet = errorFieldSetMap.get(i) || new Set();
         const signature = header.signatures[i];
-        const signatureCategory = new Network.SignedExchangeInfoView.Category(root, Common.UIString('Signature'));
+        const signatureCategory = new Category(root, Common.UIString('Signature'));
         signatureCategory.createLeaf(this._formatHeader(Common.UIString('Label'), signature.label));
         signatureCategory.createLeaf(this._formatHeaderForHexData(
             Common.UIString('Signature'), signature.signature,
@@ -114,7 +114,7 @@ export default class SignedExchangeInfoView extends UI.VBox {
     }
     if (signedExchangeInfo.securityDetails) {
       const securityDetails = signedExchangeInfo.securityDetails;
-      const securityCategory = new Network.SignedExchangeInfoView.Category(root, Common.UIString('Certificate'));
+      const securityCategory = new Category(root, Common.UIString('Certificate'));
       securityCategory.createLeaf(this._formatHeader(Common.UIString('Subject'), securityDetails.subjectName));
       securityCategory.createLeaf(
           this._formatHeader(Common.UIString('Valid from'), new Date(1000 * securityDetails.validFrom).toUTCString()));
@@ -191,19 +191,3 @@ export class Category extends UI.TreeElement {
     return leaf;
   }
 }
-
-/* Legacy exported object */
-self.Network = self.Network || {};
-
-/* Legacy exported object */
-Network = Network || {};
-
-/**
- * @constructor
- */
-Network.SignedExchangeInfoView = SignedExchangeInfoView;
-
-/**
- * @constructor
- */
-Network.SignedExchangeInfoView.Category = Category;

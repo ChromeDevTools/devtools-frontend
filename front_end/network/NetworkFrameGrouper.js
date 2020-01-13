@@ -2,12 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {NetworkGroupNode} from './NetworkDataGridNode.js';
+import {GroupLookupInterface, NetworkLogView} from './NetworkLogView.js';  // eslint-disable-line no-unused-vars
+
 /**
- * @implements {Network.GroupLookupInterface}
+ * @implements {GroupLookupInterface}
  */
-export default class NetworkFrameGrouper {
+export class NetworkFrameGrouper {
   /**
-   * @param {!Network.NetworkLogView} parentView
+   * @param {!NetworkLogView} parentView
    */
   constructor(parentView) {
     this._parentView = parentView;
@@ -18,7 +21,7 @@ export default class NetworkFrameGrouper {
   /**
    * @override
    * @param {!SDK.NetworkRequest} request
-   * @return {?Network.NetworkGroupNode}
+   * @return {?NetworkGroupNode}
    */
   groupNodeForRequest(request) {
     const frame = SDK.ResourceTreeModel.frameForRequest(request);
@@ -42,9 +45,9 @@ export default class NetworkFrameGrouper {
   }
 }
 
-export class FrameGroupNode extends Network.NetworkGroupNode {
+export class FrameGroupNode extends NetworkGroupNode {
   /**
-   * @param {!Network.NetworkLogView} parentView
+   * @param {!NetworkLogView} parentView
    * @param {!SDK.ResourceTreeFrame} frame
    */
   constructor(parentView, frame) {
@@ -76,19 +79,3 @@ export class FrameGroupNode extends Network.NetworkGroupNode {
     }
   }
 }
-
-/* Legacy exported object */
-self.Network = self.Network || {};
-
-/* Legacy exported object */
-Network = Network || {};
-
-/**
- * @constructor
- */
-Network.NetworkFrameGrouper = NetworkFrameGrouper;
-
-/**
- * @constructor
- */
-Network.FrameGroupNode = FrameGroupNode;

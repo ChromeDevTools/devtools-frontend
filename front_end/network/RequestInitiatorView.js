@@ -1,7 +1,8 @@
 // Copyright 2019 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-export default class RequestInitiatorView extends UI.VBox {
+
+export class RequestInitiatorView extends UI.VBox {
   /**
    * @param {!SDK.NetworkRequest} request
    */
@@ -121,8 +122,7 @@ export default class RequestInitiatorView extends UI.VBox {
       return;
     }
     let initiatorDataPresent = false;
-    const stackTracePreview =
-        Network.RequestInitiatorView.createStackTracePreview(this._request, this._linkifier, true);
+    const stackTracePreview = RequestInitiatorView.createStackTracePreview(this._request, this._linkifier, true);
     if (stackTracePreview) {
       initiatorDataPresent = true;
       this._appendExpandableSection(stackTracePreview.element, ls`Request call stack`, true);
@@ -140,14 +140,3 @@ export default class RequestInitiatorView extends UI.VBox {
     this._hasShown = true;
   }
 }
-
-/* Legacy exported object */
-self.Network = self.Network || {};
-
-/* Legacy exported object */
-Network = Network || {};
-
-/**
- * @constructor
- */
-Network.RequestInitiatorView = RequestInitiatorView;

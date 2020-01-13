@@ -3,11 +3,12 @@
  * Use of this source code is governed by a BSD-style license that can be
  * found in the LICENSE file.
  */
+
 /**
  * @implements {UI.ListWidget.Delegate}
  * @unrestricted
  */
-export default class NetworkManageCustomHeadersView extends UI.VBox {
+export class NetworkManageCustomHeadersView extends UI.VBox {
   /**
    * @param {!Array.<!{title: string, editable: boolean}>} columnData
    * @param {function(string) : boolean} addHeaderColumnCallback
@@ -145,7 +146,7 @@ export default class NetworkManageCustomHeadersView extends UI.VBox {
      * @param {*} item
      * @param {number} index
      * @param {!HTMLInputElement|!HTMLSelectElement} input
-     * @this {Network.NetworkManageCustomHeadersView}
+     * @this {NetworkManageCustomHeadersView}
      * @return {!UI.ListWidget.ValidatorResult}
      */
     function validateHeader(item, index, input) {
@@ -158,14 +159,3 @@ export default class NetworkManageCustomHeadersView extends UI.VBox {
     }
   }
 }
-
-/* Legacy exported object */
-self.Network = self.Network || {};
-
-/* Legacy exported object */
-Network = Network || {};
-
-/**
- * @constructor
- */
-Network.NetworkManageCustomHeadersView = NetworkManageCustomHeadersView;

@@ -5,7 +5,7 @@
 /**
  * @implements {Search.SearchScope}
  */
-export default class NetworkSearchScope {
+export class NetworkSearchScope {
   /**
    * @override
    * @param {!Common.Progress} progress
@@ -245,24 +245,3 @@ export class NetworkSearchResult {
     return location.searchMatch.lineNumber + 1;
   }
 }
-
-/* Legacy exported object */
-self.Network = self.Network || {};
-
-/* Legacy exported object */
-Network = Network || {};
-
-/**
- * @constructor
- */
-Network.NetworkSearchScope = NetworkSearchScope;
-
-/**
- * @constructor
- */
-Network.UIRequestLocation = UIRequestLocation;
-
-/**
- * @constructor
- */
-Network.NetworkSearchResult = NetworkSearchResult;

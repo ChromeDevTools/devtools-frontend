@@ -28,12 +28,187 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import {NetworkTimeCalculator} from './NetworkTimeCalculator.js';  // eslint-disable-line no-unused-vars
+
+/** @enum {symbol} */
+export const Events = {
+  RequestSelected: Symbol('RequestSelected'),
+  RequestActivated: Symbol('RequestActivated')
+};
+
+/**
+ * @interface
+ * @extends {SDK.SDKModelObserver<!SDK.NetworkManager>}
+ * @extends {Common.EventTarget}
+ */
+export class NetworkLogViewInterface {
+  /**
+   * @param {!SDK.NetworkRequest} request
+   * @return {boolean}
+   */
+  static HTTPRequestsFilter(request) {
+  }
+
+  /**
+   * @param {!File} file
+   */
+  async onLoadFromFile(file) {
+  }
+
+  /**
+   * @param {!SDK.NetworkRequest} request
+   * @return {?NetworkRequestNode}
+   */
+  nodeForRequest(request) {
+  }
+
+  /**
+   * @return {number}
+   */
+  headerHeight() {
+  }
+
+  /**
+   * @param {boolean} recording
+   */
+  setRecording(recording) {
+  }
+
+  /**
+   * @param {number} start
+   * @param {number} end
+   */
+  setWindow(start, end) {
+  }
+
+  resetFocus() {
+  }
+
+  columnExtensionResolved() {
+  }
+
+  /**
+   * @return {?NetworkNode}
+   */
+  hoveredNode() {
+  }
+
+  scheduleRefresh() {
+  }
+
+  /**
+   * @param {!Array<number>} times
+   */
+  addFilmStripFrames(times) {
+  }
+
+  /**
+   * @param {number} time
+   */
+  selectFilmStripFrame(time) {
+  }
+
+  clearFilmStripFrame() {
+  }
+
+  /**
+   * @return {!NetworkTimeCalculator}
+   */
+  timeCalculator() {
+  }
+
+  /**
+   * @return {!NetworkTimeCalculator}
+   */
+  calculator() {
+  }
+
+  /**
+   * @param {!NetworkTimeCalculator} x
+   */
+  setCalculator(x) {
+  }
+
+  /**
+   * @return {!Array<!NetworkNode>}
+   */
+  flatNodesList() {
+  }
+
+  updateNodeBackground() {
+  }
+
+  /**
+   * @param {boolean} isSelected
+   */
+  updateNodeSelectedClass(isSelected) {
+  }
+
+  stylesChanged() {
+  }
+
+  /**
+   * @param {string} filterString
+   */
+  setTextFilterValue(filterString) {
+  }
+
+  /**
+   * @return {number}
+   */
+  rowHeight() {
+  }
+
+  /**
+   * @param {boolean} gridMode
+   */
+  switchViewMode(gridMode) {
+  }
+
+  /**
+   * @param {!UI.ContextMenu} contextMenu
+   * @param {!SDK.NetworkRequest} request
+   */
+  handleContextMenuForRequest(contextMenu, request) {
+  }
+
+  async exportAll() {
+  }
+
+  /**
+   * @param {!SDK.NetworkRequest} request
+   */
+  revealAndHighlightRequest(request) {
+  }
+
+  /**
+   * @param {!SDK.NetworkRequest} request
+   */
+  selectRequest(request) {
+  }
+
+  removeAllNodeHighlights() {
+  }
+
+  /**
+   * @return {string}
+   */
+  static getDCLEventColor() {
+  }
+
+  /**
+   * @return {string}
+   */
+  static getLoadEventColor() {
+  }
+}
+
 /**
  * @unrestricted
  */
 export class NetworkNode extends DataGrid.SortableDataGridNode {
   /**
-   * @param {!Network.NetworkLogView} parentView
+   * @param {!NetworkLogViewInterface} parentView
    */
   constructor(parentView) {
     super({});
@@ -145,7 +320,7 @@ export class NetworkNode extends DataGrid.SortableDataGridNode {
   }
 
   /**
-   * @return {!Network.NetworkLogView}
+   * @return {!NetworkLogViewInterface}
    */
   parentView() {
     return this._parentView;
@@ -283,7 +458,7 @@ export const _backgroundColors = {
  */
 export class NetworkRequestNode extends NetworkNode {
   /**
-   * @param {!Network.NetworkLogView} parentView
+   * @param {!NetworkLogViewInterface} parentView
    * @param {!SDK.NetworkRequest} request
    */
   constructor(parentView, request) {
@@ -301,7 +476,7 @@ export class NetworkRequestNode extends NetworkNode {
 
 
   /**
-   * @param {!Network.NetworkNode} a
+   * @param {!NetworkNode} a
    * @param {!Network.NetworkNode} b
    * @return {number}
    */
@@ -320,7 +495,7 @@ export class NetworkRequestNode extends NetworkNode {
   }
 
   /**
-   * @param {!Network.NetworkNode} a
+   * @param {!NetworkNode} a
    * @param {!Network.NetworkNode} b
    * @return {number}
    */
@@ -343,7 +518,7 @@ export class NetworkRequestNode extends NetworkNode {
   }
 
   /**
-   * @param {!Network.NetworkNode} a
+   * @param {!NetworkNode} a
    * @param {!Network.NetworkNode} b
    * @return {number}
    */
@@ -365,7 +540,7 @@ export class NetworkRequestNode extends NetworkNode {
   }
 
   /**
-   * @param {!Network.NetworkNode} a
+   * @param {!NetworkNode} a
    * @param {!Network.NetworkNode} b
    * @return {number}
    */
@@ -389,7 +564,7 @@ export class NetworkRequestNode extends NetworkNode {
   }
 
   /**
-   * @param {!Network.NetworkNode} a
+   * @param {!NetworkNode} a
    * @param {!Network.NetworkNode} b
    * @return {number}
    */
@@ -409,7 +584,7 @@ export class NetworkRequestNode extends NetworkNode {
   }
 
   /**
-   * @param {!Network.NetworkNode} a
+   * @param {!NetworkNode} a
    * @param {!Network.NetworkNode} b
    * @return {number}
    */
@@ -427,8 +602,8 @@ export class NetworkRequestNode extends NetworkNode {
 
   // TODO(allada) This function deserves to be in a network-common of some sort.
   /**
-   * @param {!Network.NetworkNode} a
-   * @param {!Network.NetworkNode} b
+   * @param {!NetworkNode} a
+   * @param {!NetworkNode} b
    * @return {number}
    */
   static ResponseCookiesCountComparator(a, b) {
@@ -444,7 +619,7 @@ export class NetworkRequestNode extends NetworkNode {
   }
 
   /**
-   * @param {!Network.NetworkNode} a
+   * @param {!NetworkNode} a
    * @param {!Network.NetworkNode} b
    * @return {number}
    */
@@ -467,7 +642,7 @@ export class NetworkRequestNode extends NetworkNode {
 
   /**
    * @param {string} propertyName
-   * @param {!Network.NetworkNode} a
+   * @param {!NetworkNode} a
    * @param {!Network.NetworkNode} b
    * @return {number}
    */
@@ -487,7 +662,7 @@ export class NetworkRequestNode extends NetworkNode {
 
   /**
    * @param {string} propertyName
-   * @param {!Network.NetworkNode} a
+   * @param {!NetworkNode} a
    * @param {!Network.NetworkNode} b
    * @return {number}
    */
@@ -505,7 +680,7 @@ export class NetworkRequestNode extends NetworkNode {
 
   /**
    * @param {string} propertyName
-   * @param {!Network.NetworkNode} a
+   * @param {!NetworkNode} a
    * @param {!Network.NetworkNode} b
    * @return {number}
    */
@@ -530,7 +705,7 @@ export class NetworkRequestNode extends NetworkNode {
 
   /**
    * @param {string} propertyName
-   * @param {!Network.NetworkNode} a
+   * @param {!NetworkNode} a
    * @param {!Network.NetworkNode} b
    * @return {number}
    */
@@ -771,7 +946,7 @@ export class NetworkRequestNode extends NetworkNode {
    */
   select(supressSelectedEvent) {
     super.select(supressSelectedEvent);
-    this.parentView().dispatchEventToListeners(Network.NetworkLogView.Events.RequestSelected, this._request);
+    this.parentView().dispatchEventToListeners(Events.RequestSelected, this._request);
   }
 
   /**
@@ -819,8 +994,7 @@ export class NetworkRequestNode extends NetworkNode {
       this._nameCell = cell;
       cell.addEventListener('dblclick', this._openInNewTab.bind(this), false);
       cell.addEventListener('click', () => {
-        this.parentView().dispatchEventToListeners(
-            Network.NetworkLogView.Events.RequestActivated, /* showPanel */ true);
+        this.parentView().dispatchEventToListeners(Events.RequestActivated, /* showPanel */ true);
       });
       let iconElement;
       if (this._request.resourceType() === Common.resourceTypes.Image) {
@@ -950,13 +1124,18 @@ export class NetworkRequestNode extends NetworkNode {
 
       case SDK.NetworkRequest.InitiatorType.Script:
         const networkManager = SDK.NetworkManager.forRequest(request);
+        /**
+         * @type {!Components.Linkifier}
+         * @suppress {checkTypes}
+         */
+        const linkifier = this.parentView().linkifier;
         if (initiator.stack) {
-          this._linkifiedInitiatorAnchor = this.parentView().linkifier.linkifyStackTraceTopFrame(
-              networkManager ? networkManager.target() : null, initiator.stack);
+          this._linkifiedInitiatorAnchor =
+              linkifier.linkifyStackTraceTopFrame(networkManager.target(), initiator.stack);
         } else {
-          this._linkifiedInitiatorAnchor = this.parentView().linkifier.linkifyScriptLocation(
-              networkManager ? networkManager.target() : null, initiator.scriptId, initiator.url, initiator.lineNumber,
-              initiator.columnNumber);
+          this._linkifiedInitiatorAnchor = linkifier.linkifyScriptLocation(
+              networkManager.target(), initiator.scriptId, initiator.url, initiator.lineNumber,
+              {columnNumber: initiator.columnNumber});
         }
         this._linkifiedInitiatorAnchor.title = '';
         cell.appendChild(this._linkifiedInitiatorAnchor);
@@ -1086,44 +1265,7 @@ export class NetworkGroupNode extends NetworkNode {
     super.select(supressSelectedEvent);
     const firstChildNode = this.traverseNextNode(false, true);
     if (firstChildNode && firstChildNode.request()) {
-      this.parentView().dispatchEventToListeners(
-          Network.NetworkLogView.Events.RequestSelected, firstChildNode.request());
+      this.parentView().dispatchEventToListeners(Events.RequestSelected, firstChildNode.request());
     }
   }
 }
-
-/* Legacy exported object */
-self.Network = self.Network || {};
-
-/* Legacy exported object */
-Network = Network || {};
-
-/**
- * @constructor
- */
-Network.NetworkNode = NetworkNode;
-
-/** @type {!Object<string, string>} */
-Network.NetworkNode._backgroundColors = _backgroundColors;
-
-/** @typedef {!{
- Default: string,
- Stripe: string,
- Navigation: string,
- Hovered: string,
- InitiatorPath: string,
- InitiatedPath: string,
- Selected: string,
- FromFrame: string
-}} */
-Network.NetworkNode._SupportedBackgroundColors;
-
-/**
- * @constructor
- */
-Network.NetworkRequestNode = NetworkRequestNode;
-
-/**
- * @constructor
- */
-Network.NetworkGroupNode = NetworkGroupNode;

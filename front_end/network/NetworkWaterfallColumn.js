@@ -1,9 +1,14 @@
 // Copyright 2016 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
+import {NetworkNode} from './NetworkDataGridNode.js';              // eslint-disable-line no-unused-vars
+import {NetworkTimeCalculator} from './NetworkTimeCalculator.js';  // eslint-disable-line no-unused-vars
+import {RequestTimeRangeNames, RequestTimingView} from './RequestTimingView.js';
+
 export class NetworkWaterfallColumn extends UI.VBox {
   /**
-   * @param {!Network.NetworkTimeCalculator} calculator
+   * @param {!NetworkTimeCalculator} calculator
    */
   constructor(calculator) {
     // TODO(allada) Make this a shadowDOM when the NetworkWaterfallColumn gets moved into NetworkLogViewColumns.
@@ -40,10 +45,10 @@ export class NetworkWaterfallColumn extends UI.VBox {
     this._popoverHelper.setHasPadding(true);
     this._popoverHelper.setTimeout(300, 300);
 
-    /** @type {!Array<!Network.NetworkNode>} */
+    /** @type {!Array<!NetworkNode>} */
     this._nodes = [];
 
-    /** @type {?Network.NetworkNode} */
+    /** @type {?NetworkNode} */
     this._hoveredNode = null;
 
     /** @type {!Map<string, !Array<number>>} */
@@ -80,10 +85,10 @@ export class NetworkWaterfallColumn extends UI.VBox {
   }
 
   /**
-   * @return {!Map<!Network.RequestTimeRangeNames, !NetworkWaterfallColumn._LayerStyle>}
+   * @return {!Map<!RequestTimeRangeNames, !NetworkWaterfallColumn._LayerStyle>}
    */
   static _buildRequestTimeRangeStyle() {
-    const types = Network.RequestTimeRangeNames;
+    const types = RequestTimeRangeNames;
     const styleMap = new Map();
     styleMap.set(types.Connecting, {fillStyle: '#FF9800'});
     styleMap.set(types.SSL, {fillStyle: '#9C27B0'});
@@ -212,8 +217,8 @@ export class NetworkWaterfallColumn extends UI.VBox {
     let start;
     let end;
     if (useTimingBars) {
-      range = Network.RequestTimingView.calculateRequestTimeRanges(request, 0)
-                  .find(data => data.name === Network.RequestTimeRangeNames.Total);
+      range = RequestTimingView.calculateRequestTimeRanges(request, 0)
+                  .find(data => data.name === RequestTimeRangeNames.Total);
       start = this._timeToPosition(range.start);
       end = this._timeToPosition(range.end);
     } else {
@@ -250,7 +255,7 @@ export class NetworkWaterfallColumn extends UI.VBox {
       box: anchorBox,
       show: popover => {
         const content =
-            Network.RequestTimingView.createTimingTable(/** @type {!SDK.NetworkRequest} */ (request), this._calculator);
+            RequestTimingView.createTimingTable(/** @type {!SDK.NetworkRequest} */ (request), this._calculator);
         popover.contentElement.appendChild(content);
         return Promise.resolve(true);
       }
@@ -258,7 +263,7 @@ export class NetworkWaterfallColumn extends UI.VBox {
   }
 
   /**
-   * @param {?Network.NetworkNode} node
+   * @param {?NetworkNode} node
    * @param {boolean} highlightInitiatorChain
    */
   _setHoveredNode(node, highlightInitiatorChain) {
@@ -272,7 +277,7 @@ export class NetworkWaterfallColumn extends UI.VBox {
   }
 
   /**
-   * @param {?Network.NetworkNode} node
+   * @param {?NetworkNode} node
    * @returns {boolean}
    */
   _setSelectedNode(node) {
@@ -312,7 +317,7 @@ export class NetworkWaterfallColumn extends UI.VBox {
   }
 
   /**
-   * @param {!Network.NetworkTimeCalculator} calculator
+   * @param {!NetworkTimeCalculator} calculator
    */
   setCalculator(calculator) {
     this._calculator = calculator;
@@ -321,7 +326,7 @@ export class NetworkWaterfallColumn extends UI.VBox {
   /**
    * @param {number} x
    * @param {number} y
-   * @return {?Network.NetworkNode}
+   * @return {?NetworkNode}
    */
   getNodeFromPoint(x, y) {
     if (y <= this._headerHeight) {
@@ -340,7 +345,7 @@ export class NetworkWaterfallColumn extends UI.VBox {
   /**
    * @param {number=} scrollTop
    * @param {!Map<string, !Array<number>>=} eventDividers
-   * @param {!Array<!Network.NetworkNode>=} nodes
+   * @param {!Array<!NetworkNode>=} nodes
    */
   update(scrollTop, eventDividers, nodes) {
     if (scrollTop !== undefined && this._scrollTop !== scrollTop) {
@@ -423,7 +428,7 @@ export class NetworkWaterfallColumn extends UI.VBox {
       this._decorateRow(context, node, rowOffset - this._scrollTop);
       let drawNodes = [];
       if (node.hasChildren() && !node.expanded) {
-        drawNodes = /** @type {!Array<!Network.NetworkNode>} */ (node.flatChildren());
+        drawNodes = /** @type {!Array<!NetworkNode>} */ (node.flatChildren());
       }
       drawNodes.push(node);
       for (const drawNode of drawNodes) {
@@ -499,11 +504,11 @@ export class NetworkWaterfallColumn extends UI.VBox {
   }
 
   /**
-   * @param {!Network.RequestTimeRangeNames=} type
+   * @param {!RequestTimeRangeNames=} type
    * @return {number}
    */
   _getBarHeight(type) {
-    const types = Network.RequestTimeRangeNames;
+    const types = RequestTimeRangeNames;
     switch (type) {
       case types.Connecting:
       case types.SSL:
@@ -535,7 +540,7 @@ export class NetworkWaterfallColumn extends UI.VBox {
 
   /**
    * @param {!CanvasRenderingContext2D} context
-   * @param {!Network.NetworkNode} node
+   * @param {!NetworkNode} node
    * @param {number} y
    */
   _buildSimplifiedBarLayers(context, node, y) {
@@ -594,8 +599,8 @@ export class NetworkWaterfallColumn extends UI.VBox {
     }
 
     if (!this._calculator.startAtZero) {
-      const queueingRange = Network.RequestTimingView.calculateRequestTimeRanges(request, 0)
-                                .find(data => data.name === Network.RequestTimeRangeNames.Total);
+      const queueingRange = RequestTimingView.calculateRequestTimeRanges(request, 0)
+                                .find(data => data.name === RequestTimeRangeNames.Total);
       const leftLabelWidth = labels ? context.measureText(labels.left).width : 0;
       const leftTextPlacedInBar = leftLabelWidth < ranges.mid - ranges.start;
       const wiskerTextPadding = 13;
@@ -615,7 +620,7 @@ export class NetworkWaterfallColumn extends UI.VBox {
   }
 
   /**
-   * @param {!Network.NetworkNode} node
+   * @param {!NetworkNode} node
    * @param {number} y
    */
   _buildTimingBarLayers(node, y) {
@@ -623,9 +628,9 @@ export class NetworkWaterfallColumn extends UI.VBox {
     if (!request) {
       return;
     }
-    const ranges = Network.RequestTimingView.calculateRequestTimeRanges(request, 0);
+    const ranges = RequestTimingView.calculateRequestTimeRanges(request, 0);
     for (const range of ranges) {
-      if (range.name === Network.RequestTimeRangeNames.Total || range.name === Network.RequestTimeRangeNames.Sending ||
+      if (range.name === RequestTimeRangeNames.Total || range.name === RequestTimeRangeNames.Sending ||
           range.end - range.start === 0) {
         continue;
       }
@@ -643,7 +648,7 @@ export class NetworkWaterfallColumn extends UI.VBox {
 
   /**
    * @param {!CanvasRenderingContext2D} context
-   * @param {!Network.NetworkNode} node
+   * @param {!NetworkNode} node
    * @param {number} y
    */
   _decorateRow(context, node, y) {
@@ -664,20 +669,3 @@ export class NetworkWaterfallColumn extends UI.VBox {
     context.restore();
   }
 }
-
-/* Legacy exported object */
-self.Network = self.Network || {};
-
-/* Legacy exported object */
-Network = Network || {};
-
-/**
- * @constructor
- */
-Network.NetworkWaterfallColumn = NetworkWaterfallColumn;
-
-/** @typedef {!{fillStyle: (string|undefined), lineWidth: (number|undefined), borderColor: (string|undefined)}} */
-Network.NetworkWaterfallColumn._LayerStyle;
-
-/** @typedef {!{x: number, y: number, text: string}} */
-Network.NetworkWaterfallColumn._TextLayer;

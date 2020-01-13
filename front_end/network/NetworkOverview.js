@@ -1,10 +1,15 @@
 // Copyright 2015 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
+import {NetworkLogView} from './NetworkLogView.js';
+import {NetworkTimeBoundary} from './NetworkTimeCalculator.js';
+import {RequestTimeRangeNames, RequestTimingView} from './RequestTimingView.js';
+
 /**
  * @unrestricted
  */
-export default class NetworkOverview extends PerfUI.TimelineOverviewBase {
+export class NetworkOverview extends PerfUI.TimelineOverviewBase {
   constructor() {
     super();
     this._selectedFilmStripTime = -1;
@@ -128,7 +133,7 @@ export default class NetworkOverview extends PerfUI.TimelineOverviewBase {
 
     /** @type {number} */
     this._span = 1;
-    /** @type {?Network.NetworkTimeBoundary} */
+    /** @type {?NetworkTimeBoundary} */
     this._lastBoundary = null;
     /** @type {number} */
     this._nextBand = 0;
@@ -166,7 +171,7 @@ export default class NetworkOverview extends PerfUI.TimelineOverviewBase {
 
     const calculator = this.calculator();
 
-    const newBoundary = new Network.NetworkTimeBoundary(calculator.minimumBoundary(), calculator.maximumBoundary());
+    const newBoundary = new NetworkTimeBoundary(calculator.minimumBoundary(), calculator.maximumBoundary());
     if (!this._lastBoundary || !newBoundary.equals(this._lastBoundary)) {
       const span = calculator.boundarySpan();
       while (this._span < span) {
@@ -174,7 +179,7 @@ export default class NetworkOverview extends PerfUI.TimelineOverviewBase {
       }
 
       calculator.setBounds(calculator.minimumBoundary(), calculator.minimumBoundary() + this._span);
-      this._lastBoundary = new Network.NetworkTimeBoundary(calculator.minimumBoundary(), calculator.maximumBoundary());
+      this._lastBoundary = new NetworkTimeBoundary(calculator.minimumBoundary(), calculator.maximumBoundary());
     }
 
     const context = this.context();
@@ -226,11 +231,10 @@ export default class NetworkOverview extends PerfUI.TimelineOverviewBase {
       const request = requests[i];
       const band = this._bandId(request.connectionId);
       const y = (band === -1) ? 0 : (band % this._numBands + 1);
-      const timeRanges =
-          Network.RequestTimingView.calculateRequestTimeRanges(request, this.calculator().minimumBoundary());
+      const timeRanges = RequestTimingView.calculateRequestTimeRanges(request, this.calculator().minimumBoundary());
       for (let j = 0; j < timeRanges.length; ++j) {
         const type = timeRanges[j].name;
-        if (band !== -1 || type === Network.RequestTimeRangeNames.Total) {
+        if (band !== -1 || type === RequestTimeRangeNames.Total) {
           addLine(type, y, timeRanges[j].start * 1000, timeRanges[j].end * 1000);
         }
       }
@@ -240,18 +244,18 @@ export default class NetworkOverview extends PerfUI.TimelineOverviewBase {
     context.save();
     context.scale(window.devicePixelRatio, window.devicePixelRatio);
     context.lineWidth = 2;
-    drawLines(Network.RequestTimeRangeNames.Total);
-    drawLines(Network.RequestTimeRangeNames.Blocking);
-    drawLines(Network.RequestTimeRangeNames.Connecting);
-    drawLines(Network.RequestTimeRangeNames.ServiceWorker);
-    drawLines(Network.RequestTimeRangeNames.ServiceWorkerPreparation);
-    drawLines(Network.RequestTimeRangeNames.Push);
-    drawLines(Network.RequestTimeRangeNames.Proxy);
-    drawLines(Network.RequestTimeRangeNames.DNS);
-    drawLines(Network.RequestTimeRangeNames.SSL);
-    drawLines(Network.RequestTimeRangeNames.Sending);
-    drawLines(Network.RequestTimeRangeNames.Waiting);
-    drawLines(Network.RequestTimeRangeNames.Receiving);
+    drawLines(RequestTimeRangeNames.Total);
+    drawLines(RequestTimeRangeNames.Blocking);
+    drawLines(RequestTimeRangeNames.Connecting);
+    drawLines(RequestTimeRangeNames.ServiceWorker);
+    drawLines(RequestTimeRangeNames.ServiceWorkerPreparation);
+    drawLines(RequestTimeRangeNames.Push);
+    drawLines(RequestTimeRangeNames.Proxy);
+    drawLines(RequestTimeRangeNames.DNS);
+    drawLines(RequestTimeRangeNames.SSL);
+    drawLines(RequestTimeRangeNames.Sending);
+    drawLines(RequestTimeRangeNames.Waiting);
+    drawLines(RequestTimeRangeNames.Receiving);
 
     if (this._highlightedRequest) {
       const size = 5;
@@ -260,8 +264,7 @@ export default class NetworkOverview extends PerfUI.TimelineOverviewBase {
       const request = this._highlightedRequest;
       const band = this._bandId(request.connectionId);
       const y = ((band === -1) ? 0 : (band % this._numBands + 1)) * _bandHeight + paddingTop;
-      const timeRanges =
-          Network.RequestTimingView.calculateRequestTimeRanges(request, this.calculator().minimumBoundary());
+      const timeRanges = RequestTimingView.calculateRequestTimeRanges(request, this.calculator().minimumBoundary());
 
       // This is the value of var(--selection-bg-color)
       // to match the selection color used in the performance panel
@@ -275,7 +278,7 @@ export default class NetworkOverview extends PerfUI.TimelineOverviewBase {
 
       for (let j = 0; j < timeRanges.length; ++j) {
         const type = timeRanges[j].name;
-        if (band !== -1 || type === Network.RequestTimeRangeNames.Total) {
+        if (band !== -1 || type === RequestTimeRangeNames.Total) {
           context.beginPath();
           context.strokeStyle = RequestTimeRangeNameToColor[type];
           context.lineWidth = size;
@@ -292,7 +295,7 @@ export default class NetworkOverview extends PerfUI.TimelineOverviewBase {
     const height = this.element.offsetHeight;
     context.lineWidth = 1;
     context.beginPath();
-    context.strokeStyle = Network.NetworkLogView.getDCLEventColor();
+    context.strokeStyle = NetworkLogView.getDCLEventColor();
     for (let i = this._domContentLoadedEvents.length - 1; i >= 0; --i) {
       const x = Math.round(calculator.computePosition(this._domContentLoadedEvents[i])) + 0.5;
       context.moveTo(x, 0);
@@ -301,7 +304,7 @@ export default class NetworkOverview extends PerfUI.TimelineOverviewBase {
     context.stroke();
 
     context.beginPath();
-    context.strokeStyle = Network.NetworkLogView.getLoadEventColor();
+    context.strokeStyle = NetworkLogView.getLoadEventColor();
     for (let i = this._loadEvents.length - 1; i >= 0; --i) {
       const x = Math.round(calculator.computePosition(this._loadEvents[i])) + 0.5;
       context.moveTo(x, 0);
@@ -323,18 +326,18 @@ export default class NetworkOverview extends PerfUI.TimelineOverviewBase {
 }
 
 export const RequestTimeRangeNameToColor = {
-  [Network.RequestTimeRangeNames.Total]: '#CCCCCC',
-  [Network.RequestTimeRangeNames.Blocking]: '#AAAAAA',
-  [Network.RequestTimeRangeNames.Connecting]: '#FF9800',
-  [Network.RequestTimeRangeNames.ServiceWorker]: '#FF9800',
-  [Network.RequestTimeRangeNames.ServiceWorkerPreparation]: '#FF9800',
-  [Network.RequestTimeRangeNames.Push]: '#8CDBff',
-  [Network.RequestTimeRangeNames.Proxy]: '#A1887F',
-  [Network.RequestTimeRangeNames.DNS]: '#009688',
-  [Network.RequestTimeRangeNames.SSL]: '#9C27B0',
-  [Network.RequestTimeRangeNames.Sending]: '#B0BEC5',
-  [Network.RequestTimeRangeNames.Waiting]: '#00C853',
-  [Network.RequestTimeRangeNames.Receiving]: '#03A9F4',
+  [RequestTimeRangeNames.Total]: '#CCCCCC',
+  [RequestTimeRangeNames.Blocking]: '#AAAAAA',
+  [RequestTimeRangeNames.Connecting]: '#FF9800',
+  [RequestTimeRangeNames.ServiceWorker]: '#FF9800',
+  [RequestTimeRangeNames.ServiceWorkerPreparation]: '#FF9800',
+  [RequestTimeRangeNames.Push]: '#8CDBff',
+  [RequestTimeRangeNames.Proxy]: '#A1887F',
+  [RequestTimeRangeNames.DNS]: '#009688',
+  [RequestTimeRangeNames.SSL]: '#9C27B0',
+  [RequestTimeRangeNames.Sending]: '#B0BEC5',
+  [RequestTimeRangeNames.Waiting]: '#00C853',
+  [RequestTimeRangeNames.Receiving]: '#03A9F4',
 };
 
 /** @type {number} */
@@ -342,25 +345,3 @@ export const _bandHeight = 3;
 
 /** @type {number} */
 export const _padding = 5;
-
-/* Legacy exported object */
-self.Network = self.Network || {};
-
-/* Legacy exported object */
-Network = Network || {};
-
-/**
- * @constructor
- */
-Network.NetworkOverview = NetworkOverview;
-
-/** @typedef {{start: number, end: number}} */
-Network.NetworkOverview.Window;
-
-Network.NetworkOverview.RequestTimeRangeNameToColor = RequestTimeRangeNameToColor;
-
-/** @type {number} */
-Network.NetworkOverview._bandHeight = _bandHeight;
-
-/** @type {number} */
-Network.NetworkOverview._padding = _padding;

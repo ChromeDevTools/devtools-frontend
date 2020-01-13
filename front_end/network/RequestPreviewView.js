@@ -28,7 +28,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-export default class RequestPreviewView extends Network.RequestResponseView {
+import {RequestHTMLView} from './RequestHTMLView.js';
+import {RequestResponseView} from './RequestResponseView.js';
+import {SignedExchangeInfoView} from './SignedExchangeInfoView.js';
+
+export class RequestPreviewView extends RequestResponseView {
   /**
    * @param {!SDK.NetworkRequest} request
    */
@@ -78,7 +82,7 @@ export default class RequestPreviewView extends Network.RequestResponseView {
 
     const dataURL = Common.ContentProvider.contentAsDataURL(
         contentData.content, this.request.mimeType, contentData.encoded, this.request.charset());
-    return dataURL ? new Network.RequestHTMLView(dataURL) : null;
+    return dataURL ? new RequestHTMLView(dataURL) : null;
   }
 
   /**
@@ -88,7 +92,7 @@ export default class RequestPreviewView extends Network.RequestResponseView {
    */
   async createPreview() {
     if (this.request.signedExchangeInfo()) {
-      return new Network.SignedExchangeInfoView(this.request);
+      return new SignedExchangeInfoView(this.request);
     }
 
     const htmlErrorPreview = await this._htmlPreview();
@@ -104,14 +108,3 @@ export default class RequestPreviewView extends Network.RequestResponseView {
     return new UI.EmptyWidget(Common.UIString('Preview not available'));
   }
 }
-
-/* Legacy exported object */
-self.Network = self.Network || {};
-
-/* Legacy exported object */
-Network = Network || {};
-
-/**
- * @constructor
- */
-Network.RequestPreviewView = RequestPreviewView;

@@ -28,7 +28,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-export default class HARWriter {
+export class HARWriter {
   /**
    * @param {!Common.OutputStream} stream
    * @param {!Array.<!SDK.NetworkRequest>} requests
@@ -38,11 +38,11 @@ export default class HARWriter {
   static async write(stream, requests, progress) {
     const compositeProgress = new Common.CompositeProgress(progress);
 
-    const content = await Network.HARWriter._harStringForRequests(requests, compositeProgress);
+    const content = await HARWriter._harStringForRequests(requests, compositeProgress);
     if (progress.isCanceled()) {
       return Promise.resolve();
     }
-    return Network.HARWriter._writeToStream(stream, compositeProgress, content);
+    return HARWriter._writeToStream(stream, compositeProgress, content);
   }
 
   /**
@@ -131,20 +131,3 @@ export const _jsonIndent = 2;
 
 /** @const */
 export const _chunkSize = 100000;
-
-/* Legacy exported object */
-self.Network = self.Network || {};
-
-/* Legacy exported object */
-Network = Network || {};
-
-/**
- * @constructor
- */
-Network.HARWriter = HARWriter;
-
-/** @const */
-Network.HARWriter._jsonIndent = _jsonIndent;
-
-/** @const */
-Network.HARWriter._chunkSize = _chunkSize;

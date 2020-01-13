@@ -28,7 +28,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-export default class RequestResponseView extends UI.VBox {
+export class RequestResponseView extends UI.VBox {
   /**
    * @param {!SDK.NetworkRequest} request
    */
@@ -146,16 +146,3 @@ export default class RequestResponseView extends UI.VBox {
 }
 
 export const _sourceViewSymbol = Symbol('RequestResponseSourceView');
-
-/* Legacy exported object */
-self.Network = self.Network || {};
-
-/* Legacy exported object */
-Network = Network || {};
-
-/**
- * @constructor
- */
-Network.RequestResponseView = RequestResponseView;
-
-Network.RequestResponseView._sourceViewSymbol = _sourceViewSymbol;

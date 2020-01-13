@@ -28,13 +28,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import {Events, NetworkTimeCalculator} from './NetworkTimeCalculator.js';  // eslint-disable-line no-unused-vars
+
 /**
  * @unrestricted
  */
-export default class RequestTimingView extends UI.VBox {
+export class RequestTimingView extends UI.VBox {
   /**
    * @param {!SDK.NetworkRequest} request
-   * @param {!Network.NetworkTimeCalculator} calculator
+   * @param {!NetworkTimeCalculator} calculator
    */
   constructor(request, calculator) {
     super();
@@ -184,7 +186,7 @@ export default class RequestTimingView extends UI.VBox {
 
   /**
    * @param {!SDK.NetworkRequest} request
-   * @param {!Network.NetworkTimeCalculator} calculator
+   * @param {!NetworkTimeCalculator} calculator
    * @return {!Element}
    */
   static createTimingTable(request, calculator) {
@@ -353,7 +355,7 @@ export default class RequestTimingView extends UI.VBox {
   wasShown() {
     this._request.addEventListener(SDK.NetworkRequest.Events.TimingChanged, this._refresh, this);
     this._request.addEventListener(SDK.NetworkRequest.Events.FinishedLoading, this._refresh, this);
-    this._calculator.addEventListener(Network.NetworkTimeCalculator.Events.BoundariesChanged, this._refresh, this);
+    this._calculator.addEventListener(Events.BoundariesChanged, this._refresh, this);
     this._refresh();
   }
 
@@ -363,7 +365,7 @@ export default class RequestTimingView extends UI.VBox {
   willHide() {
     this._request.removeEventListener(SDK.NetworkRequest.Events.TimingChanged, this._refresh, this);
     this._request.removeEventListener(SDK.NetworkRequest.Events.FinishedLoading, this._refresh, this);
-    this._calculator.removeEventListener(Network.NetworkTimeCalculator.Events.BoundariesChanged, this._refresh, this);
+    this._calculator.removeEventListener(Events.BoundariesChanged, this._refresh, this);
   }
 
   _refresh() {
@@ -399,21 +401,3 @@ export const ConnectionSetupRangeNames = new Set([
   RequestTimeRangeNames.Queueing, RequestTimeRangeNames.Blocking, RequestTimeRangeNames.Connecting,
   RequestTimeRangeNames.DNS, RequestTimeRangeNames.Proxy, RequestTimeRangeNames.SSL
 ]);
-
-/* Legacy exported object */
-self.Network = self.Network || {};
-
-/* Legacy exported object */
-Network = Network || {};
-
-/** @typedef {{name: !RequestTimeRangeNames, start: number, end: number}} */
-Network.RequestTimeRange;
-
-/**
- * @constructor
- */
-Network.RequestTimingView = RequestTimingView;
-Network.RequestTimingView.ConnectionSetupRangeNames = ConnectionSetupRangeNames;
-
-/** @enum {string} */
-Network.RequestTimeRangeNames = RequestTimeRangeNames;

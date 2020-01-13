@@ -28,10 +28,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-export default class NetworkItemView extends UI.TabbedPane {
+import {EventSourceMessagesView} from './EventSourceMessagesView.js';
+import {NetworkTimeCalculator} from './NetworkTimeCalculator.js';  // eslint-disable-line no-unused-vars
+import {RequestCookiesView} from './RequestCookiesView.js';
+import {RequestHeadersView} from './RequestHeadersView.js';
+import {RequestInitiatorView} from './RequestInitiatorView.js';
+import {RequestPreviewView} from './RequestPreviewView.js';
+import {RequestResponseView} from './RequestResponseView.js';
+import {RequestTimingView} from './RequestTimingView.js';
+import {ResourceWebSocketFrameView} from './ResourceWebSocketFrameView.js';
+
+export class NetworkItemView extends UI.TabbedPane {
   /**
    * @param {!SDK.NetworkRequest} request
-   * @param {!Network.NetworkTimeCalculator} calculator
+   * @param {!NetworkTimeCalculator} calculator
    */
   constructor(request, calculator) {
     super();
@@ -40,20 +50,20 @@ export default class NetworkItemView extends UI.TabbedPane {
 
     this._resourceViewTabSetting = Common.settings.createSetting('resourceViewTab', 'preview');
 
-    this._headersView = new Network.RequestHeadersView(request);
+    this._headersView = new RequestHeadersView(request);
     this.appendTab(
         Tabs.Headers, Common.UIString('Headers'), this._headersView, Common.UIString('Headers and request body'));
 
     this.addEventListener(UI.TabbedPane.Events.TabSelected, this._tabSelected, this);
 
     if (request.resourceType() === Common.resourceTypes.WebSocket) {
-      const frameView = new Network.ResourceWebSocketFrameView(request);
+      const frameView = new ResourceWebSocketFrameView(request);
       this.appendTab(Tabs.WsFrames, Common.UIString('Messages'), frameView, Common.UIString('WebSocket messages'));
     } else if (request.mimeType === 'text/event-stream') {
-      this.appendTab(Tabs.EventSource, Common.UIString('EventStream'), new Network.EventSourceMessagesView(request));
+      this.appendTab(Tabs.EventSource, Common.UIString('EventStream'), new EventSourceMessagesView(request));
     } else {
-      this._responseView = new Network.RequestResponseView(request);
-      const previewView = new Network.RequestPreviewView(request);
+      this._responseView = new RequestResponseView(request);
+      const previewView = new RequestPreviewView(request);
       this.appendTab(Tabs.Preview, Common.UIString('Preview'), previewView, Common.UIString('Response preview'));
       if (request.signedExchangeInfo() && request.signedExchangeInfo().errors &&
           request.signedExchangeInfo().errors.length) {
@@ -65,14 +75,13 @@ export default class NetworkItemView extends UI.TabbedPane {
           Tabs.Response, Common.UIString('Response'), this._responseView, Common.UIString('Raw response data'));
     }
 
-    this.appendTab(
-        Tabs.Initiator, ls`Initiator`, new Network.RequestInitiatorView(request), ls`Request initiator call stack`);
+    this.appendTab(Tabs.Initiator, ls`Initiator`, new RequestInitiatorView(request), ls`Request initiator call stack`);
 
     this.appendTab(
-        Tabs.Timing, Common.UIString('Timing'), new Network.RequestTimingView(request, calculator),
+        Tabs.Timing, Common.UIString('Timing'), new RequestTimingView(request, calculator),
         Common.UIString('Request and response timeline'));
 
-    /** @type {?Network.RequestCookiesView} */
+    /** @type {?RequestCookiesView} */
     this._cookiesView = null;
   }
 
@@ -103,7 +112,7 @@ export default class NetworkItemView extends UI.TabbedPane {
     const cookiesPresent = this._request.requestCookies.length || this._request.responseCookies.length;
     console.assert(cookiesPresent || !this._cookiesView, 'Cookies were introduced in headers and then removed!');
     if (cookiesPresent && !this._cookiesView) {
-      this._cookiesView = new Network.RequestCookiesView(this._request);
+      this._cookiesView = new RequestCookiesView(this._request);
       this.appendTab(
           Tabs.Cookies, Common.UIString('Cookies'), this._cookiesView, Common.UIString('Request and response cookies'));
     }
@@ -177,19 +186,3 @@ export const Tabs = {
   Timing: 'timing',
   WsFrames: 'webSocketFrames'
 };
-
-/* Legacy exported object */
-self.Network = self.Network || {};
-
-/* Legacy exported object */
-Network = Network || {};
-
-/**
- * @constructor
- */
-Network.NetworkItemView = NetworkItemView;
-
-/**
- * @enum {string}
- */
-Network.NetworkItemView.Tabs = Tabs;

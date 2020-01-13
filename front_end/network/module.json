@@ -184,6 +184,7 @@
     "scripts": [],
     "modules": [
         "network.js",
+        "network-legacy.js",
         "BinaryResourceView.js",
         "BlockedURLsPane.js",
         "EventSourceMessagesView.js",

@@ -344,6 +344,14 @@ export function setCheckboxAsIndeterminate(element) {
  * @param {!Element} element
  * @param {boolean} value
  */
+export function setDisabled(element, value) {
+  element.setAttribute('aria-disabled', !!value);
+}
+
+/**
+ * @param {!Element} element
+ * @param {boolean} value
+ */
 export function setExpanded(element, value) {
   element.setAttribute('aria-expanded', !!value);
 }

@@ -16,6 +16,10 @@
     margin-left: 5px;
 }
 
+.blackboxed-message > .link:focus {
+    outline-width: unset;
+}
+
 .show-more-message {
     text-align: center;
     font-style: italic;
@@ -49,6 +53,11 @@
     background-color: #eee;
 }
 
+.call-frame-item[data-keyboard-focus="true"]:focus,
+.call-frame-item.async-header[data-keyboard-focus="true"]:focus .call-frame-item-title {
+    background-color: var(--focus-bg-color);
+}
+
 .async-header + .call-frame-item {
     border-top: 0;
 }
@@ -71,7 +80,6 @@
     border-top: 1px solid #d8d8d8;
     margin-top: 8px;
     position: absolute;
-    z-index: -1;
     left: 0;
 }
 
@@ -81,6 +89,7 @@
     background-color: white;
     margin-left: -5px;
     padding: 0 5px;
+    z-index: 1;
 }
 
 .blackboxed-call-frame {

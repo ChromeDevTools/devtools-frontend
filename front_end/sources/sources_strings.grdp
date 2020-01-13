@@ -321,6 +321,9 @@
   <message name="IDS_DEVTOOLS_9db6195620a7743228ce74addf1414d8" desc="Text in Debugger Plugin of the Sources panel">
     Associated files should be added to the file tree. You can debug these resolved source files as regular JavaScript files.
   </message>
+  <message name="IDS_DEVTOOLS_9e72db64445e9083fe77c30ce28ac067" desc="Text exposed to screen reader when navigating through a blackboxed call frame in the sources panel.">
+    blackboxed
+  </message>
   <message name="IDS_DEVTOOLS_9f7753821d867a81273a50de2b1e0cac" desc="Title of an action under the Debugger category that can be invoked through the Command Menu">
     Pause script execution
   </message>

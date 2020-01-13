@@ -16,7 +16,7 @@ import './workspace/workspace.js';
 import './bindings/bindings-legacy.js';
 import './components/components-legacy.js';
 import './persistence/persistence.js';
-import './browser_sdk/browser_sdk.js';
+import './browser_sdk/browser_sdk-legacy.js';
 import './extensions/extensions.js';
 import './console_counters/console_counters.js';
 import './text_utils/text_utils.js';

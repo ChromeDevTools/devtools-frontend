@@ -4,7 +4,7 @@
 
 const {assert} = chai;
 
-import '/front_end/root.js'
+import '/front_end/root.js';
 import {Widget} from '/front_end/ui/Widget.js';
 
 describe('Widget', () => {

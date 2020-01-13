@@ -217,6 +217,7 @@ export class ContainerWidget extends VBox {
    */
   wasShown() {
     this._materialize().then(() => {
+      this._view[widgetSymbol].show(this.element);
       this._wasShownForTest();
     });
   }
@@ -254,6 +255,15 @@ export class _ExpandableContainerWidget extends VBox {
     UI.ARIAUtils.setControls(this._titleElement, this.contentElement.createChild('slot'));
     this._view = view;
     view[_ExpandableContainerWidget._symbol] = this;
+  }
+
+  /**
+   * @override
+   */
+  wasShown() {
+    if (this._widget) {
+      this._materializePromise.then(() => this._widget.show(this.element));
+    }
   }
 
   /**

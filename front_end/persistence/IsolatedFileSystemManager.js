@@ -28,14 +28,17 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import {IsolatedFileSystem} from './IsolatedFileSystem.js';
+import {PlatformFileSystem} from './PlatformFileSystem.js';  // eslint-disable-line no-unused-vars
+
 /**
  * @unrestricted
  */
-export default class IsolatedFileSystemManager extends Common.Object {
+export class IsolatedFileSystemManager extends Common.Object {
   constructor() {
     super();
 
-    /** @type {!Map<string, !Persistence.PlatformFileSystem>} */
+    /** @type {!Map<string, !PlatformFileSystem>} */
     this._fileSystems = new Map();
     /** @type {!Map<number, function(!Array.<string>)>} */
     this._callbacks = new Map();
@@ -59,13 +62,13 @@ export default class IsolatedFileSystemManager extends Common.Object {
 
     this._initExcludePatterSetting();
 
-    /** @type {?function(?Persistence.IsolatedFileSystem)} */
+    /** @type {?function(?IsolatedFileSystem)} */
     this._fileSystemRequestResolve = null;
     this._fileSystemsLoadedPromise = this._requestFileSystems();
   }
 
   /**
-   * @return {!Promise<!Array<!Persistence.IsolatedFileSystem>>}
+   * @return {!Promise<!Array<!IsolatedFileSystem>>}
    */
   _requestFileSystems() {
     let fulfill;
@@ -89,7 +92,7 @@ export default class IsolatedFileSystemManager extends Common.Object {
     }
 
     /**
-     * @param {!Array<?Persistence.IsolatedFileSystem>} fileSystems
+     * @param {!Array<?IsolatedFileSystem>} fileSystems
      */
     function onFileSystemsAdded(fileSystems) {
       fulfill(fileSystems.filter(fs => !!fs));
@@ -98,7 +101,7 @@ export default class IsolatedFileSystemManager extends Common.Object {
 
   /**
    * @param {string=} type
-   * @return {!Promise<?Persistence.IsolatedFileSystem>}
+   * @return {!Promise<?IsolatedFileSystem>}
    */
   addFileSystem(type) {
     return new Promise(resolve => {
@@ -108,14 +111,14 @@ export default class IsolatedFileSystemManager extends Common.Object {
   }
 
   /**
-   * @param {!Persistence.PlatformFileSystem} fileSystem
+   * @param {!PlatformFileSystem} fileSystem
    */
   removeFileSystem(fileSystem) {
     Host.InspectorFrontendHost.removeFileSystem(fileSystem.embedderPath());
   }
 
   /**
-   * @return {!Promise<!Array<!Persistence.IsolatedFileSystem>>}
+   * @return {!Promise<!Array<!IsolatedFileSystem>>}
    */
   waitForFileSystems() {
     return this._fileSystemsLoadedPromise;
@@ -124,17 +127,17 @@ export default class IsolatedFileSystemManager extends Common.Object {
   /**
    * @param {!Persistence.IsolatedFileSystemManager.FileSystem} fileSystem
    * @param {boolean} dispatchEvent
-   * @return {!Promise<?Persistence.IsolatedFileSystem>}
+   * @return {!Promise<?IsolatedFileSystem>}
    */
   _innerAddFileSystem(fileSystem, dispatchEvent) {
     const embedderPath = fileSystem.fileSystemPath;
     const fileSystemURL = Common.ParsedURL.platformPathToURL(fileSystem.fileSystemPath);
-    const promise = Persistence.IsolatedFileSystem.create(
+    const promise = IsolatedFileSystem.create(
         this, fileSystemURL, embedderPath, fileSystem.type, fileSystem.fileSystemName, fileSystem.rootURL);
     return promise.then(storeFileSystem.bind(this));
 
     /**
-     * @param {?Persistence.PlatformFileSystem} fileSystem
+     * @param {?PlatformFileSystem} fileSystem
      * @this {IsolatedFileSystemManager}
      */
     function storeFileSystem(fileSystem) {
@@ -151,7 +154,7 @@ export default class IsolatedFileSystemManager extends Common.Object {
 
   /**
    * @param {string} fileSystemURL
-   * @param {!Persistence.PlatformFileSystem} fileSystem
+   * @param {!PlatformFileSystem} fileSystem
    */
   addPlatformFileSystem(fileSystemURL, fileSystem) {
     this._fileSystems.set(fileSystemURL, fileSystem);
@@ -232,7 +235,7 @@ export default class IsolatedFileSystemManager extends Common.Object {
   }
 
   /**
-   * @return {!Array<!Persistence.IsolatedFileSystem>}
+   * @return {!Array<!IsolatedFileSystem>}
    */
   fileSystems() {
     return this._fileSystems.valuesArray();
@@ -240,7 +243,7 @@ export default class IsolatedFileSystemManager extends Common.Object {
 
   /**
    * @param {string} fileSystemPath
-   * @return {?Persistence.PlatformFileSystem}
+   * @return {?PlatformFileSystem}
    */
   fileSystem(fileSystemPath) {
     return this._fileSystems.get(fileSystemPath) || null;
@@ -369,26 +372,3 @@ export const Events = {
 };
 
 let _lastRequestId = 0;
-
-/* Legacy exported object */
-self.Persistence = self.Persistence || {};
-
-/* Legacy exported object */
-Persistence = Persistence || {};
-
-/** @constructor */
-Persistence.IsolatedFileSystemManager = IsolatedFileSystemManager;
-
-/** @enum {symbol} */
-Persistence.IsolatedFileSystemManager.Events = Events;
-
-/** @typedef {!{type: string, fileSystemName: string, rootURL: string, fileSystemPath: string}} */
-Persistence.IsolatedFileSystemManager.FileSystem;
-
-/** @typedef {!{changed:!Platform.Multimap<string, string>, added:!Platform.Multimap<string, string>, removed:!Platform.Multimap<string, string>}} */
-Persistence.IsolatedFileSystemManager.FilesChangedData;
-
-/**
- * @type {!IsolatedFileSystemManager}
- */
-Persistence.isolatedFileSystemManager;

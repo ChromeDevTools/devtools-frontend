@@ -27,11 +27,14 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+import {Events} from './IsolatedFileSystemManager.js';
+
 /**
  * @implements {UI.ListWidget.Delegate}
  * @unrestricted
  */
-export default class EditFileSystemView extends UI.VBox {
+export class EditFileSystemView extends UI.VBox {
   /**
    * @param {string} fileSystemPath
    */
@@ -41,10 +44,8 @@ export default class EditFileSystemView extends UI.VBox {
     this._fileSystemPath = fileSystemPath;
 
     this._eventListeners = [
-      Persistence.isolatedFileSystemManager.addEventListener(
-          Persistence.IsolatedFileSystemManager.Events.ExcludedFolderAdded, this._update, this),
-      Persistence.isolatedFileSystemManager.addEventListener(
-          Persistence.IsolatedFileSystemManager.Events.ExcludedFolderRemoved, this._update, this)
+      Persistence.isolatedFileSystemManager.addEventListener(Events.ExcludedFolderAdded, this._update, this),
+      Persistence.isolatedFileSystemManager.addEventListener(Events.ExcludedFolderRemoved, this._update, this)
     ];
 
     const excludedFoldersHeader = this.contentElement.createChild('div', 'file-system-header');
@@ -197,12 +198,3 @@ export default class EditFileSystemView extends UI.VBox {
     return prefix + (prefix[prefix.length - 1] === '/' ? '' : '/');
   }
 }
-
-/* Legacy exported object */
-self.Persistence = self.Persistence || {};
-
-/* Legacy exported object */
-Persistence = Persistence || {};
-
-/** @constructor */
-Persistence.EditFileSystemView = EditFileSystemView;

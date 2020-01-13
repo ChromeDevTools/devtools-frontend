@@ -2,10 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {Automapping, AutomappingStatus} from './Automapping.js';  // eslint-disable-line no-unused-vars
+import {LinkDecorator} from './PersistenceUtils.js';
+
 /**
  * @unrestricted
  */
-export default class PersistenceImpl extends Common.Object {
+export class PersistenceImpl extends Common.Object {
   /**
    * @param {!Workspace.Workspace} workspace
    * @param {!Bindings.BreakpointManager} breakpointManager
@@ -20,11 +23,10 @@ export default class PersistenceImpl extends Common.Object {
     /** @type {!Platform.Multimap<!Workspace.UISourceCode, function()>} */
     this._subscribedBindingEventListeners = new Platform.Multimap();
 
-    const linkDecorator = new Persistence.PersistenceUtils.LinkDecorator(this);
+    const linkDecorator = new LinkDecorator(this);
     Components.Linkifier.setLinkDecorator(linkDecorator);
 
-    this._mapping =
-        new Persistence.Automapping(this._workspace, this._onStatusAdded.bind(this), this._onStatusRemoved.bind(this));
+    this._mapping = new Automapping(this._workspace, this._onStatusAdded.bind(this), this._onStatusRemoved.bind(this));
   }
 
   /**
@@ -135,7 +137,7 @@ export default class PersistenceImpl extends Common.Object {
   }
 
   /**
-   * @param {!Persistence.AutomappingStatus} status
+   * @param {!AutomappingStatus} status
    */
   _onStatusAdded(status) {
     const binding = new PersistenceBinding(status.network, status.fileSystem);
@@ -144,7 +146,7 @@ export default class PersistenceImpl extends Common.Object {
   }
 
   /**
-   * @param {!Persistence.AutomappingStatus} status
+   * @param {!AutomappingStatus} status
    */
   _onStatusRemoved(status) {
     const binding = /** @type {!PersistenceBinding} */ (status[_binding]);
@@ -250,18 +252,18 @@ export default class PersistenceImpl extends Common.Object {
    */
   static rewrapNodeJSContent(uiSourceCode, currentContent, newContent) {
     if (uiSourceCode.project().type() === Workspace.projectTypes.FileSystem) {
-      if (newContent.startsWith(_NodePrefix) && newContent.endsWith(_NodeSuffix)) {
-        newContent = newContent.substring(_NodePrefix.length, newContent.length - _NodeSuffix.length);
+      if (newContent.startsWith(NodePrefix) && newContent.endsWith(NodeSuffix)) {
+        newContent = newContent.substring(NodePrefix.length, newContent.length - NodeSuffix.length);
       }
-      if (currentContent.startsWith(_NodeShebang)) {
-        newContent = _NodeShebang + newContent;
+      if (currentContent.startsWith(NodeShebang)) {
+        newContent = NodeShebang + newContent;
       }
     } else {
-      if (newContent.startsWith(_NodeShebang)) {
-        newContent = newContent.substring(_NodeShebang.length);
+      if (newContent.startsWith(NodeShebang)) {
+        newContent = newContent.substring(NodeShebang.length);
       }
-      if (currentContent.startsWith(_NodePrefix) && currentContent.endsWith(_NodeSuffix)) {
-        newContent = _NodePrefix + newContent + _NodeSuffix;
+      if (currentContent.startsWith(NodePrefix) && currentContent.endsWith(NodeSuffix)) {
+        newContent = NodePrefix + newContent + NodeSuffix;
       }
     }
     return newContent;
@@ -399,9 +401,9 @@ export default class PersistenceImpl extends Common.Object {
 const _binding = Symbol('Persistence.Binding');
 const _muteCommit = Symbol('Persistence.MuteCommit');
 const _muteWorkingCopy = Symbol('Persistence.MuteWorkingCopy');
-const _NodePrefix = '(function (exports, require, module, __filename, __dirname) { ';
-const _NodeSuffix = '\n});';
-const _NodeShebang = '#!/usr/bin/env node';
+export const NodePrefix = '(function (exports, require, module, __filename, __dirname) { ';
+export const NodeSuffix = '\n});';
+export const NodeShebang = '#!/usr/bin/env node';
 
 export const Events = {
   BindingCreated: Symbol('BindingCreated'),
@@ -447,26 +449,3 @@ export class PersistenceBinding {
     this.fileSystem = fileSystem;
   }
 }
-
-/* Legacy exported object */
-self.Persistence = self.Persistence || {};
-
-/* Legacy exported object */
-Persistence = Persistence || {};
-
-/** @constructor */
-Persistence.Persistence = PersistenceImpl;
-
-Persistence.Persistence.Events = Events;
-Persistence.Persistence._NodeShebang = _NodeShebang;
-Persistence.Persistence._NodePrefix = _NodePrefix;
-Persistence.Persistence._NodeSuffix = _NodeSuffix;
-
-/** @constructor */
-Persistence.PathEncoder = PathEncoder;
-
-/** @constructor */
-Persistence.PersistenceBinding = PersistenceBinding;
-
-/** @type {!PersistenceImpl} */
-Persistence.persistence;

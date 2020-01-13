@@ -28,24 +28,26 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import {IsolatedFileSystem} from './IsolatedFileSystem.js';                        // eslint-disable-line no-unused-vars
+import {Events, IsolatedFileSystemManager} from './IsolatedFileSystemManager.js';  // eslint-disable-line no-unused-vars
+import {PlatformFileSystem} from './PlatformFileSystem.js';                        // eslint-disable-line no-unused-vars
+
 /**
  * @unrestricted
  */
-export default class FileSystemWorkspaceBinding {
+export class FileSystemWorkspaceBinding {
   /**
-   * @param {!Persistence.IsolatedFileSystemManager} isolatedFileSystemManager
+   * @param {!IsolatedFileSystemManager} isolatedFileSystemManager
    * @param {!Workspace.Workspace} workspace
    */
   constructor(isolatedFileSystemManager, workspace) {
     this._isolatedFileSystemManager = isolatedFileSystemManager;
     this._workspace = workspace;
     this._eventListeners = [
+      this._isolatedFileSystemManager.addEventListener(Events.FileSystemAdded, this._onFileSystemAdded, this),
+      this._isolatedFileSystemManager.addEventListener(Events.FileSystemRemoved, this._onFileSystemRemoved, this),
       this._isolatedFileSystemManager.addEventListener(
-          Persistence.IsolatedFileSystemManager.Events.FileSystemAdded, this._onFileSystemAdded, this),
-      this._isolatedFileSystemManager.addEventListener(
-          Persistence.IsolatedFileSystemManager.Events.FileSystemRemoved, this._onFileSystemRemoved, this),
-      this._isolatedFileSystemManager.addEventListener(
-          Persistence.IsolatedFileSystemManager.Events.FileSystemFilesChanged, this._fileSystemFilesChanged, this)
+          Events.FileSystemFilesChanged, this._fileSystemFilesChanged, this)
     ];
     /** @type {!Map.<string, !FileSystem>} */
     this._boundFileSystems = new Map();
@@ -119,14 +121,14 @@ export default class FileSystemWorkspaceBinding {
   }
 
   /**
-   * @return {!Persistence.IsolatedFileSystemManager}
+   * @return {!IsolatedFileSystemManager}
    */
   fileSystemManager() {
     return this._isolatedFileSystemManager;
   }
 
   /**
-   * @param {!Array<!Persistence.IsolatedFileSystem>} fileSystems
+   * @param {!Array<!IsolatedFileSystem>} fileSystems
    */
   _onFileSystemsLoaded(fileSystems) {
     for (const fileSystem of fileSystems) {
@@ -138,12 +140,12 @@ export default class FileSystemWorkspaceBinding {
    * @param {!Common.Event} event
    */
   _onFileSystemAdded(event) {
-    const fileSystem = /** @type {!Persistence.PlatformFileSystem} */ (event.data);
+    const fileSystem = /** @type {!PlatformFileSystem} */ (event.data);
     this._addFileSystem(fileSystem);
   }
 
   /**
-   * @param {!Persistence.PlatformFileSystem} fileSystem
+   * @param {!PlatformFileSystem} fileSystem
    */
   _addFileSystem(fileSystem) {
     const boundFileSystem = new FileSystem(this, fileSystem, this._workspace);
@@ -154,7 +156,7 @@ export default class FileSystemWorkspaceBinding {
    * @param {!Common.Event} event
    */
   _onFileSystemRemoved(event) {
-    const fileSystem = /** @type {!Persistence.PlatformFileSystem} */ (event.data);
+    const fileSystem = /** @type {!PlatformFileSystem} */ (event.data);
     const boundFileSystem = this._boundFileSystems.get(fileSystem.path());
     boundFileSystem.dispose();
     this._boundFileSystems.remove(fileSystem.path());
@@ -206,7 +208,7 @@ export default class FileSystemWorkspaceBinding {
 export class FileSystem extends Workspace.ProjectStore {
   /**
    * @param {!FileSystemWorkspaceBinding} fileSystemWorkspaceBinding
-   * @param {!Persistence.PlatformFileSystem} isolatedFileSystem
+   * @param {!PlatformFileSystem} isolatedFileSystem
    * @param {!Workspace.Workspace} workspace
    */
   constructor(fileSystemWorkspaceBinding, isolatedFileSystem, workspace) {
@@ -582,15 +584,3 @@ export class FileSystem extends Workspace.ProjectStore {
 }
 
 const _metadata = Symbol('FileSystemWorkspaceBinding.Metadata');
-
-/* Legacy exported object */
-self.Persistence = self.Persistence || {};
-
-/* Legacy exported object */
-Persistence = Persistence || {};
-
-/** @constructor */
-Persistence.FileSystemWorkspaceBinding = FileSystemWorkspaceBinding;
-
-/** @constructor */
-Persistence.FileSystemWorkspaceBinding.FileSystem = FileSystem;

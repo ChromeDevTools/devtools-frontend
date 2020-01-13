@@ -27,12 +27,16 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+import {Events, IsolatedFileSystemManager} from './IsolatedFileSystemManager.js';  // eslint-disable-line no-unused-vars
+import {PlatformFileSystem} from './PlatformFileSystem.js';
+
 /**
  * @unrestricted
  */
-export default class IsolatedFileSystem extends Persistence.PlatformFileSystem {
+export class IsolatedFileSystem extends PlatformFileSystem {
   /**
-   * @param {!Persistence.IsolatedFileSystemManager} manager
+   * @param {!IsolatedFileSystemManager} manager
    * @param {string} path
    * @param {string} embedderPath
    * @param {!DOMFileSystem} domFileSystem
@@ -58,7 +62,7 @@ export default class IsolatedFileSystem extends Persistence.PlatformFileSystem {
   }
 
   /**
-   * @param {!Persistence.IsolatedFileSystemManager} manager
+   * @param {!IsolatedFileSystemManager} manager
    * @param {string} path
    * @param {string} embedderPath
    * @param {string} type
@@ -356,7 +360,7 @@ export default class IsolatedFileSystem extends Persistence.PlatformFileSystem {
 
     const reader = new FileReader();
     const extension = Common.ParsedURL.extractExtension(path);
-    const encoded = Persistence.IsolatedFileSystem.BinaryExtensions.has(extension);
+    const encoded = BinaryExtensions.has(extension);
     const readPromise = new Promise(x => reader.onloadend = x);
     if (encoded) {
       reader.readAsBinaryString(blob);
@@ -581,7 +585,7 @@ export default class IsolatedFileSystem extends Persistence.PlatformFileSystem {
   addExcludedFolder(path) {
     this._excludedFolders.add(path);
     this._saveExcludedFolders();
-    this._manager.dispatchEventToListeners(Persistence.IsolatedFileSystemManager.Events.ExcludedFolderAdded, path);
+    this._manager.dispatchEventToListeners(Events.ExcludedFolderAdded, path);
   }
 
   /**
@@ -591,7 +595,7 @@ export default class IsolatedFileSystem extends Persistence.PlatformFileSystem {
   removeExcludedFolder(path) {
     this._excludedFolders.delete(path);
     this._saveExcludedFolders();
-    this._manager.dispatchEventToListeners(Persistence.IsolatedFileSystemManager.Events.ExcludedFolderRemoved, path);
+    this._manager.dispatchEventToListeners(Events.ExcludedFolderRemoved, path);
   }
 
   /**
@@ -736,14 +740,3 @@ export const BinaryExtensions = new Set([
   // Image file extensions
   'jpeg', 'jpg', 'gif', 'webp', 'png', 'ico', 'tiff', 'tif', 'bmp'
 ]);
-
-/* Legacy exported object */
-self.Persistence = self.Persistence || {};
-
-/* Legacy exported object */
-Persistence = Persistence || {};
-
-/** @constructor */
-Persistence.IsolatedFileSystem = IsolatedFileSystem;
-
-Persistence.IsolatedFileSystem.BinaryExtensions = BinaryExtensions;

@@ -2,7 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-export default class PersistenceUtils {
+import {FileSystemWorkspaceBinding} from './FileSystemWorkspaceBinding.js';
+import {Events, PersistenceBinding, PersistenceImpl} from './PersistenceImpl.js';  // eslint-disable-line no-unused-vars
+
+export class PersistenceUtils {
   /**
    * @param {!Workspace.UISourceCode} uiSourceCode
    * @return {string}
@@ -13,7 +16,7 @@ export default class PersistenceUtils {
       return '';
     }
     if (uiSourceCode === binding.network) {
-      return Persistence.FileSystemWorkspaceBinding.tooltipForUISourceCode(binding.fileSystem);
+      return FileSystemWorkspaceBinding.tooltipForUISourceCode(binding.fileSystem);
     }
     if (binding.network.contentType().isFromSourceMap()) {
       return Common.UIString('Linked to source map: %s', binding.network.url().trimMiddle(150));
@@ -56,19 +59,19 @@ export default class PersistenceUtils {
  */
 export class LinkDecorator extends Common.Object {
   /**
-   * @param {!Persistence.Persistence} persistence
+   * @param {!PersistenceImpl} persistence
    */
   constructor(persistence) {
     super();
-    persistence.addEventListener(Persistence.Persistence.Events.BindingCreated, this._bindingChanged, this);
-    persistence.addEventListener(Persistence.Persistence.Events.BindingRemoved, this._bindingChanged, this);
+    persistence.addEventListener(Events.BindingCreated, this._bindingChanged, this);
+    persistence.addEventListener(Events.BindingRemoved, this._bindingChanged, this);
   }
 
   /**
    * @param {!Common.Event} event
    */
   _bindingChanged(event) {
-    const binding = /** @type {!Persistence.PersistenceBinding} */ (event.data);
+    const binding = /** @type {!PersistenceBinding} */ (event.data);
     this.dispatchEventToListeners(Components.LinkDecorator.Events.LinkIconChanged, binding.network);
   }
 
@@ -81,15 +84,3 @@ export class LinkDecorator extends Common.Object {
     return PersistenceUtils.iconForUISourceCode(uiSourceCode);
   }
 }
-
-/* Legacy exported object */
-self.Persistence = self.Persistence || {};
-
-/* Legacy exported object */
-Persistence = Persistence || {};
-
-/** @constructor */
-Persistence.PersistenceUtils = PersistenceUtils;
-
-/** @constructor */
-Persistence.PersistenceUtils.LinkDecorator = LinkDecorator;

@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import './PlatformFileSystem.js';
-
 import * as Automapping from './Automapping.js';
 import * as EditFileSystemView from './EditFileSystemView.js';
 import * as FileSystemWorkspaceBinding from './FileSystemWorkspaceBinding.js';

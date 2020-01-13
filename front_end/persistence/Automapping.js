@@ -2,7 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-export default class Automapping {
+import {FileSystem, FileSystemWorkspaceBinding} from './FileSystemWorkspaceBinding.js';  // eslint-disable-line no-unused-vars
+import {PathEncoder, PersistenceImpl} from './PersistenceImpl.js';
+
+export class Automapping {
   /**
    * @param {!Workspace.Workspace} workspace
    * @param {function(!AutomappingStatus)} onStatusAdded
@@ -24,7 +27,7 @@ export default class Automapping {
     this._fileSystemUISourceCodes = new Map();
     this._sweepThrottler = new Common.Throttler(100);
 
-    const pathEncoder = new Persistence.PathEncoder();
+    const pathEncoder = new PathEncoder();
     this._filesIndex = new FilePathIndex(pathEncoder);
     this._projectFoldersIndex = new FolderIndex(pathEncoder);
     this._activeFoldersIndex = new FolderIndex(pathEncoder);
@@ -101,7 +104,7 @@ export default class Automapping {
     if (project.type() !== Workspace.projectTypes.FileSystem) {
       return;
     }
-    const fileSystem = /** @type {!Persistence.FileSystemWorkspaceBinding.FileSystem} */ (project);
+    const fileSystem = /** @type {!FileSystem} */ (project);
     for (const gitFolder of fileSystem.initialGitFolders()) {
       this._projectFoldersIndex.removeFolder(gitFolder);
     }
@@ -116,7 +119,7 @@ export default class Automapping {
     if (project.type() !== Workspace.projectTypes.FileSystem) {
       return;
     }
-    const fileSystem = /** @type {!Persistence.FileSystemWorkspaceBinding.FileSystem} */ (project);
+    const fileSystem = /** @type {!FileSystem} */ (project);
     for (const gitFolder of fileSystem.initialGitFolders()) {
       this._projectFoldersIndex.addFolder(gitFolder);
     }
@@ -131,7 +134,7 @@ export default class Automapping {
   _onUISourceCodeAdded(uiSourceCode) {
     const project = uiSourceCode.project();
     if (project.type() === Workspace.projectTypes.FileSystem) {
-      if (!Persistence.FileSystemWorkspaceBinding.fileSystemSupportsAutomapping(project)) {
+      if (!FileSystemWorkspaceBinding.fileSystemSupportsAutomapping(project)) {
         return;
       }
       this._filesIndex.addPath(uiSourceCode.url());
@@ -249,7 +252,7 @@ export default class Automapping {
       const fileContent = fileSystemContent.content;
       if (target && target.type() === SDK.Target.Type.Node) {
         const rewrappedNetworkContent =
-            Persistence.Persistence.rewrapNodeJSContent(status.fileSystem, fileContent, networkContent.content);
+            PersistenceImpl.rewrapNodeJSContent(status.fileSystem, fileContent, networkContent.content);
         isValid = fileContent === rewrappedNetworkContent;
       } else {
         // Trim trailing whitespaces because V8 adds trailing newline.
@@ -418,7 +421,7 @@ export default class Automapping {
  */
 class FilePathIndex {
   /**
-   * @param {!Persistence.PathEncoder} encoder
+   * @param {!PathEncoder} encoder
    */
   constructor(encoder) {
     this._encoder = encoder;
@@ -461,7 +464,7 @@ class FilePathIndex {
  */
 class FolderIndex {
   /**
-   * @param {!Persistence.PathEncoder} encoder
+   * @param {!PathEncoder} encoder
    */
   constructor(encoder) {
     this._encoder = encoder;
@@ -533,15 +536,3 @@ export class AutomappingStatus {
     this.exactMatch = exactMatch;
   }
 }
-
-/* Legacy exported object */
-self.Persistence = self.Persistence || {};
-
-/* Legacy exported object */
-Persistence = Persistence || {};
-
-/** @constructor */
-Persistence.Automapping = Automapping;
-
-/** @constructor */
-Persistence.AutomappingStatus = AutomappingStatus;

@@ -52,14 +52,3 @@ export class ContextMenuProvider {
     }
   }
 }
-
-/* Legacy exported object */
-self.Persistence = self.Persistence || {};
-
-/* Legacy exported object */
-Persistence = Persistence || {};
-
-Persistence.PersistenceActions = {};
-
-/** @constructor */
-Persistence.PersistenceActions.ContextMenuProvider = ContextMenuProvider;

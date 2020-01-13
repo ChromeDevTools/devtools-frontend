@@ -4,7 +4,7 @@
 
 const {assert} = chai;
 
-import {default as PlatformFileSystem} from '../../../../front_end/persistence/PlatformFileSystem.js';
+import {PlatformFileSystem} from '../../../../front_end/persistence/PlatformFileSystem.js';
 
 describe('PlatformFileSystem', () => {
   it('can be instantiated successfully', () => {

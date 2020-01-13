@@ -2,7 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-export default class WorkspaceSettingsTab extends UI.VBox {
+import {EditFileSystemView} from './EditFileSystemView.js';
+import {FileSystem} from './FileSystemWorkspaceBinding.js';  // eslint-disable-line no-unused-vars
+import {IsolatedFileSystem} from './IsolatedFileSystem.js';
+import {Events} from './IsolatedFileSystemManager.js';
+import {PlatformFileSystem} from './PlatformFileSystem.js';  // eslint-disable-line no-unused-vars
+
+export class WorkspaceSettingsTab extends UI.VBox {
   constructor() {
     super();
     this.registerRequiredCSS('persistence/workspaceSettingsTab.css');
@@ -14,11 +20,10 @@ export default class WorkspaceSettingsTab extends UI.VBox {
                                 .createChild('div', 'settings-tab settings-content settings-container');
 
     Persistence.isolatedFileSystemManager.addEventListener(
-        Persistence.IsolatedFileSystemManager.Events.FileSystemAdded,
-        event => this._fileSystemAdded(/** @type {!Persistence.PlatformFileSystem} */ (event.data)), this);
+        Events.FileSystemAdded, event => this._fileSystemAdded(/** @type {!PlatformFileSystem} */ (event.data)), this);
     Persistence.isolatedFileSystemManager.addEventListener(
-        Persistence.IsolatedFileSystemManager.Events.FileSystemRemoved,
-        event => this._fileSystemRemoved(/** @type {!Persistence.PlatformFileSystem} */ (event.data)), this);
+        Events.FileSystemRemoved, event => this._fileSystemRemoved(/** @type {!PlatformFileSystem} */ (event.data)),
+        this);
 
     const folderExcludePatternInput = this._createFolderExcludePatternInput();
     folderExcludePatternInput.classList.add('folder-exclude-pattern');
@@ -36,7 +41,7 @@ export default class WorkspaceSettingsTab extends UI.VBox {
     /** @type {!Map<string, !Element>} */
     this._elementByPath = new Map();
 
-    /** @type {!Map<string, !Persistence.EditFileSystemView>} */
+    /** @type {!Map<string, !EditFileSystemView>} */
     this._mappingViewByPath = new Map();
 
     const fileSystems = Persistence.isolatedFileSystemManager.fileSystems();
@@ -79,18 +84,17 @@ export default class WorkspaceSettingsTab extends UI.VBox {
   }
 
   /**
-   * @param {!Persistence.PlatformFileSystem} fileSystem
+   * @param {!PlatformFileSystem} fileSystem
    */
   _addItem(fileSystem) {
     // Support managing only instances of IsolatedFileSystem.
-    if (!(fileSystem instanceof Persistence.IsolatedFileSystem)) {
+    if (!(fileSystem instanceof IsolatedFileSystem)) {
       return;
     }
     const networkPersistenceProject = Persistence.networkPersistenceManager.project();
     if (networkPersistenceProject &&
         Persistence.isolatedFileSystemManager.fileSystem(
-            /** @type {!Persistence.FileSystemWorkspaceBinding.FileSystem} */ (networkPersistenceProject)
-                .fileSystemPath()) === fileSystem) {
+            /** @type {!FileSystem} */ (networkPersistenceProject).fileSystemPath()) === fileSystem) {
       return;
     }
     const element = this._renderFileSystem(fileSystem);
@@ -98,14 +102,14 @@ export default class WorkspaceSettingsTab extends UI.VBox {
 
     this._fileSystemsListContainer.appendChild(element);
 
-    const mappingView = new Persistence.EditFileSystemView(fileSystem.path());
+    const mappingView = new EditFileSystemView(fileSystem.path());
     this._mappingViewByPath.set(fileSystem.path(), mappingView);
     mappingView.element.classList.add('file-system-mapping-view');
     mappingView.show(element);
   }
 
   /**
-   * @param {!Persistence.PlatformFileSystem} fileSystem
+   * @param {!PlatformFileSystem} fileSystem
    * @return {!Element}
    */
   _renderFileSystem(fileSystem) {
@@ -133,7 +137,7 @@ export default class WorkspaceSettingsTab extends UI.VBox {
   }
 
   /**
-   * @param {!Persistence.PlatformFileSystem} fileSystem
+   * @param {!PlatformFileSystem} fileSystem
    */
   _removeFileSystemClicked(fileSystem) {
     Persistence.isolatedFileSystemManager.removeFileSystem(fileSystem);
@@ -144,14 +148,14 @@ export default class WorkspaceSettingsTab extends UI.VBox {
   }
 
   /**
-   * @param {!Persistence.PlatformFileSystem} fileSystem
+   * @param {!PlatformFileSystem} fileSystem
    */
   _fileSystemAdded(fileSystem) {
     this._addItem(fileSystem);
   }
 
   /**
-   * @param {!Persistence.PlatformFileSystem} fileSystem
+   * @param {!PlatformFileSystem} fileSystem
    */
   _fileSystemRemoved(fileSystem) {
     const mappingView = this._mappingViewByPath.get(fileSystem.path());
@@ -167,12 +171,3 @@ export default class WorkspaceSettingsTab extends UI.VBox {
     }
   }
 }
-
-/* Legacy exported object */
-self.Persistence = self.Persistence || {};
-
-/* Legacy exported object */
-Persistence = Persistence || {};
-
-/** @constructor */
-Persistence.WorkspaceSettingsTab = WorkspaceSettingsTab;

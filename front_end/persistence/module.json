@@ -46,6 +46,7 @@
     "scripts": [],
     "modules": [
         "persistence.js",
+        "persistence-legacy.js",
         "PlatformFileSystem.js",
         "IsolatedFileSystem.js",
         "IsolatedFileSystemManager.js",

@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-export default class PlatformFileSystem {
+export class PlatformFileSystem {
   /**
    * @param {string} path
    * @param {string} type
@@ -192,12 +192,3 @@ export default class PlatformFileSystem {
     throw new Error('Not implemented');
   }
 }
-
-/* Legacy exported object */
-self.Persistence = self.Persistence || {};
-
-/* Legacy exported object */
-Persistence = Persistence || {};
-
-/** @constructor */
-Persistence.PlatformFileSystem = PlatformFileSystem;

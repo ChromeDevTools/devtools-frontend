@@ -2,7 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-export default class NetworkPersistenceManager extends Common.Object {
+import {FileSystem, FileSystemWorkspaceBinding} from './FileSystemWorkspaceBinding.js';  // eslint-disable-line no-unused-vars
+import {PersistenceBinding} from './PersistenceImpl.js';
+
+export class NetworkPersistenceManager extends Common.Object {
   /**
    * @param {!Workspace.Workspace} workspace
    */
@@ -136,7 +139,7 @@ export default class NetworkPersistenceManager extends Common.Object {
       urlPath = urlPath + 'index.html';
     }
     let encodedPathParts = encodeUrlPathToLocalPathParts(urlPath);
-    const projectPath = Persistence.FileSystemWorkspaceBinding.fileSystemPath(this._project.id());
+    const projectPath = FileSystemWorkspaceBinding.fileSystemPath(this._project.id());
     const encodedPath = encodedPathParts.join('/');
     if (projectPath.length + encodedPath.length > 200) {
       const domain = encodedPathParts[0];
@@ -232,7 +235,7 @@ export default class NetworkPersistenceManager extends Common.Object {
     if (fileSystemUISourceCode[this._bindingSymbol]) {
       this._unbind(fileSystemUISourceCode);
     }
-    const binding = new Persistence.PersistenceBinding(networkUISourceCode, fileSystemUISourceCode);
+    const binding = new PersistenceBinding(networkUISourceCode, fileSystemUISourceCode);
     networkUISourceCode[this._bindingSymbol] = binding;
     fileSystemUISourceCode[this._bindingSymbol] = binding;
     Persistence.persistence.addBinding(binding);
@@ -288,7 +291,7 @@ export default class NetworkPersistenceManager extends Common.Object {
    * @return {string}
    */
   _patternForFileSystemUISourceCode(uiSourceCode) {
-    const relativePathParts = Persistence.FileSystemWorkspaceBinding.relativePath(uiSourceCode);
+    const relativePathParts = FileSystemWorkspaceBinding.relativePath(uiSourceCode);
     if (relativePathParts.length < 2) {
       return '';
     }
@@ -325,8 +328,7 @@ export default class NetworkPersistenceManager extends Common.Object {
     this._networkUISourceCodeForEncodedPath.set(this._encodedPathFromUrl(url), uiSourceCode);
 
     const fileSystemUISourceCode = this._project.uiSourceCodeForURL(
-        /** @type {!Persistence.FileSystemWorkspaceBinding.FileSystem} */ (this._project).fileSystemPath() + '/' +
-        this._encodedPathFromUrl(url));
+        /** @type {!FileSystem} */ (this._project).fileSystemPath() + '/' + this._encodedPathFromUrl(url));
     if (!fileSystemUISourceCode) {
       return;
     }
@@ -342,7 +344,7 @@ export default class NetworkPersistenceManager extends Common.Object {
     }
     this._updateInterceptionPatterns();
 
-    const relativePath = Persistence.FileSystemWorkspaceBinding.relativePath(uiSourceCode);
+    const relativePath = FileSystemWorkspaceBinding.relativePath(uiSourceCode);
     const networkUISourceCode = this._networkUISourceCodeForEncodedPath.get(relativePath.join('/'));
     if (networkUISourceCode) {
       this._bind(networkUISourceCode, uiSourceCode);
@@ -433,10 +435,10 @@ export default class NetworkPersistenceManager extends Common.Object {
    */
   _onProjectAdded(project) {
     if (project.type() !== Workspace.projectTypes.FileSystem ||
-        Persistence.FileSystemWorkspaceBinding.fileSystemType(project) !== 'overrides') {
+        FileSystemWorkspaceBinding.fileSystemType(project) !== 'overrides') {
       return;
     }
-    const fileSystemPath = Persistence.FileSystemWorkspaceBinding.fileSystemPath(project.id());
+    const fileSystemPath = FileSystemWorkspaceBinding.fileSystemPath(project.id());
     if (!fileSystemPath) {
       return;
     }
@@ -466,8 +468,8 @@ export default class NetworkPersistenceManager extends Common.Object {
     if (!this._active || (method !== 'GET' && method !== 'POST')) {
       return;
     }
-    const path = /** @type {!Persistence.FileSystemWorkspaceBinding.FileSystem} */ (this._project).fileSystemPath() +
-        '/' + this._encodedPathFromUrl(interceptedRequest.request.url);
+    const path = /** @type {!FileSystem} */ (this._project).fileSystemPath() + '/' +
+        this._encodedPathFromUrl(interceptedRequest.request.url);
     const fileSystemUISourceCode = this._project.uiSourceCodeForURL(path);
     if (!fileSystemUISourceCode) {
       return;
@@ -487,7 +489,7 @@ export default class NetworkPersistenceManager extends Common.Object {
       }
     }
     const project =
-        /** @type {!Persistence.FileSystemWorkspaceBinding.FileSystem} */ (fileSystemUISourceCode.project());
+        /** @type {!FileSystem} */ (fileSystemUISourceCode.project());
 
     fileSystemUISourceCode[this._originalResponseContentPromiseSymbol] =
         interceptedRequest.responseBody().then(response => {
@@ -510,17 +512,3 @@ const _reservedFileNames = new Set([
 export const Events = {
   ProjectChanged: Symbol('ProjectChanged')
 };
-
-/* Legacy exported object */
-self.Persistence = self.Persistence || {};
-
-/* Legacy exported object */
-Persistence = Persistence || {};
-
-/** @constructor */
-Persistence.NetworkPersistenceManager = NetworkPersistenceManager;
-
-Persistence.NetworkPersistenceManager.Events = Events;
-
-/** @type {!NetworkPersistenceManager} */
-Persistence.networkPersistenceManager;

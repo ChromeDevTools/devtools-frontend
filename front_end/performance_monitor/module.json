@@ -18,6 +18,7 @@
     "scripts": [],
     "modules": [
         "performance_monitor.js",
+        "performance_monitor-legacy.js",
         "PerformanceMonitor.js"
     ],
     "resources": [

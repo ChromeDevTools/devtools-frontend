@@ -22,7 +22,7 @@ export class PerformanceMonitorImpl extends UI.HBox {
     /** @const */
     this._graphHeight = 90;
     this._gridColor = UI.themeSupport.patchColorText('rgba(0, 0, 0, 0.08)', UI.ThemeSupport.ColorUsage.Foreground);
-    this._controlPane = new PerformanceMonitor.PerformanceMonitor.ControlPane(this.contentElement);
+    this._controlPane = new ControlPane(this.contentElement);
     const chartContainer = this.contentElement.createChild('div', 'perfmon-chart-container');
     this._canvas = /** @type {!HTMLCanvasElement} */ (chartContainer.createChild('canvas'));
     this._canvas.tabIndex = -1;
@@ -30,8 +30,7 @@ export class PerformanceMonitorImpl extends UI.HBox {
         this._canvas, Common.UIString('Graphs displaying a real-time view of performance metrics'));
     this.contentElement.createChild('div', 'perfmon-chart-suspend-overlay fill').createChild('div').textContent =
         Common.UIString('Paused');
-    this._controlPane.addEventListener(
-        PerformanceMonitor.PerformanceMonitor.ControlPane.Events.MetricChanged, this._recalcChartHeight, this);
+    this._controlPane.addEventListener(Events.MetricChanged, this._recalcChartHeight, this);
     SDK.targetManager.observeModels(SDK.PerformanceMetricsModel, this);
   }
 
@@ -105,7 +104,7 @@ export class PerformanceMonitorImpl extends UI.HBox {
     animate.call(this);
 
     /**
-     * @this {PerformanceMonitor.PerformanceMonitor}
+     * @this {PerformanceMonitorImpl}
      */
     function animate() {
       this._draw();
@@ -274,7 +273,7 @@ export class PerformanceMonitorImpl extends UI.HBox {
     ctx.beginPath();
     for (let i = 0; i < 2; ++i) {
       const y = calcY(scaleValue);
-      const labelText = PerformanceMonitor.PerformanceMonitor.MetricIndicator._formatNumber(scaleValue, info);
+      const labelText = MetricIndicator._formatNumber(scaleValue, info);
       ctx.moveTo(0, y);
       ctx.lineTo(4, y);
       ctx.moveTo(ctx.measureText(labelText).width + 12, y);
@@ -405,7 +404,7 @@ export class ControlPane extends Common.Object {
         Common.settings.createSetting('perfmonActiveIndicators2', ['TaskDuration', 'JSHeapTotalSize', 'Nodes']);
     /** @type {!Set<string>} */
     this._enabledCharts = new Set(this._enabledChartsSetting.get());
-    const format = PerformanceMonitor.PerformanceMonitor.Format;
+    const format = Format;
 
     /** @type {!Array<!PerformanceMonitor.PerformanceMonitor.ChartInfo>} */
     this._chartsInfo = [
@@ -440,13 +439,12 @@ export class ControlPane extends Common.Object {
       }
     }
 
-    /** @type {!Map<string, !PerformanceMonitor.PerformanceMonitor.MetricIndicator>} */
+    /** @type {!Map<string, !MetricIndicator>} */
     this._indicators = new Map();
     for (const chartInfo of this._chartsInfo) {
       const chartName = chartInfo.metrics[0].name;
       const active = this._enabledCharts.has(chartName);
-      const indicator = new PerformanceMonitor.PerformanceMonitor.MetricIndicator(
-          this.element, chartInfo, active, this._onToggle.bind(this, chartName));
+      const indicator = new MetricIndicator(this.element, chartInfo, active, this._onToggle.bind(this, chartName));
       this._indicators.set(chartName, indicator);
     }
   }
@@ -462,7 +460,7 @@ export class ControlPane extends Common.Object {
       this._enabledCharts.delete(chartName);
     }
     this._enabledChartsSetting.set(Array.from(this._enabledCharts));
-    this.dispatchEventToListeners(PerformanceMonitor.PerformanceMonitor.ControlPane.Events.MetricChanged);
+    this.dispatchEventToListeners(Events.MetricChanged);
   }
 
   /**
@@ -530,19 +528,17 @@ export class MetricIndicator {
    * @return {string}
    */
   static _formatNumber(value, info) {
-    if (!PerformanceMonitor.PerformanceMonitor.MetricIndicator._numberFormatter) {
-      PerformanceMonitor.PerformanceMonitor.MetricIndicator._numberFormatter =
-          new Intl.NumberFormat('en-US', {maximumFractionDigits: 1});
-      PerformanceMonitor.PerformanceMonitor.MetricIndicator._percentFormatter =
-          new Intl.NumberFormat('en-US', {maximumFractionDigits: 1, style: 'percent'});
+    if (!MetricIndicator._numberFormatter) {
+      MetricIndicator._numberFormatter = new Intl.NumberFormat('en-US', {maximumFractionDigits: 1});
+      MetricIndicator._percentFormatter = new Intl.NumberFormat('en-US', {maximumFractionDigits: 1, style: 'percent'});
     }
     switch (info.format) {
-      case PerformanceMonitor.PerformanceMonitor.Format.Percent:
-        return PerformanceMonitor.PerformanceMonitor.MetricIndicator._percentFormatter.format(value);
-      case PerformanceMonitor.PerformanceMonitor.Format.Bytes:
+      case Format.Percent:
+        return MetricIndicator._percentFormatter.format(value);
+      case Format.Bytes:
         return Number.bytesToString(value);
       default:
-        return PerformanceMonitor.PerformanceMonitor.MetricIndicator._numberFormatter.format(value);
+        return MetricIndicator._numberFormatter.format(value);
     }
   }
 
@@ -550,8 +546,7 @@ export class MetricIndicator {
    * @param {number} value
    */
   setValue(value) {
-    this._valueElement.textContent =
-        PerformanceMonitor.PerformanceMonitor.MetricIndicator._formatNumber(value, this._info);
+    this._valueElement.textContent = MetricIndicator._formatNumber(value, this._info);
   }
 
   _toggleIndicator() {
@@ -572,51 +567,4 @@ export class MetricIndicator {
   }
 }
 
-export const _format = new Intl.NumberFormat('en-US', {maximumFractionDigits: 1});
-
-/* Legacy exported object */
-self.PerformanceMonitor = self.PerformanceMonitor || {};
-
-/* Legacy exported object */
-PerformanceMonitor = PerformanceMonitor || {};
-
-/**
- * @constructor
- */
-PerformanceMonitor.PerformanceMonitor = PerformanceMonitorImpl;
-
-/**
- * @typedef {!{
- *   name: string,
- *   color: string
- * }}
- */
-PerformanceMonitor.PerformanceMonitor.MetricInfo;
-
-PerformanceMonitor.PerformanceMonitor.Format = Format;
-
-/**
- * @typedef {!{
-  *   title: string,
-  *   metrics: !Array<!PerformanceMonitor.PerformanceMonitor.MetricInfo>,
-  *   max: (number|undefined),
-  *   currentMax: (number|undefined),
-  *   format: (!Format|undefined),
-  *   smooth: (boolean|undefined)
-  * }}
-  */
-PerformanceMonitor.PerformanceMonitor.ChartInfo;
-
-/**
- * @constructor
- */
-PerformanceMonitor.PerformanceMonitor.ControlPane = ControlPane;
-
-/** @enum {symbol} */
-PerformanceMonitor.PerformanceMonitor.ControlPane.Events = Events;
-
-/**
- * @constructor
- */
-PerformanceMonitor.PerformanceMonitor.MetricIndicator = MetricIndicator;
-PerformanceMonitor.PerformanceMonitor.MetricIndicator._format = _format;
+export const format = new Intl.NumberFormat('en-US', {maximumFractionDigits: 1});

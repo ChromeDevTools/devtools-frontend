@@ -12,15 +12,8 @@
 /**
  * @return {boolean}
  */
-export function _isDebugTest() {
+export function isDebugTest() {
   return !self.testRunner || !!Root.Runtime.queryParam('debugFrontend');
-}
-
-/**
- * @return {boolean}
- */
-export function _isStartupTest() {
-  return Root.Runtime.queryParam('test').includes('/startup/');
 }
 
 /**
@@ -29,7 +22,7 @@ export function _isStartupTest() {
  * messages printed at the top of the test expectation file (default behavior).
  */
 export function _printDevToolsConsole() {
-  if (_isDebugTest()) {
+  if (isDebugTest()) {
     return;
   }
   console.log = (...args) => {
@@ -74,6 +67,10 @@ let _innerAddResult = text => {
   _results.push(String(text));
 };
 
+export function setInnerResult(updatedInnerResult) {
+  _innerAddResult = updatedInnerResult;
+}
+
 /**
  * @param {*} text
  */
@@ -92,6 +89,10 @@ let _innerCompleteTest = () => {
   self.testRunner.notifyDone();
 };
 
+export function setInnerCompleteTest(updatedInnerCompleteTest) {
+  _innerCompleteTest = updatedInnerCompleteTest;
+}
+
 export function completeTest() {
   _innerCompleteTest();
 }
@@ -99,6 +100,12 @@ export function completeTest() {
 self.TestRunner = {
   _startupTestSetupFinished: () => {}
 };
+
+let _initializeTargetForStartupTest;
+
+export function setInitializeTargetForStartupTest(updatedInitializeTargetForStartupTest) {
+  _initializeTargetForStartupTest = updatedInitializeTargetForStartupTest;
+}
 
 /**
  * Only tests in web_tests/http/tests/devtools/startup/ need to call
@@ -110,7 +117,7 @@ self.TestRunner = {
 export function setupStartupTest(path) {
   const absoluteURL = url(path);
   const promise = new Promise(f => TestRunner._startupTestSetupFinished = () => {
-    TestRunner._initializeTargetForStartupTest();
+    _initializeTargetForStartupTest();
     delete TestRunner._startupTestSetupFinished;
     f();
   });
@@ -136,31 +143,6 @@ export function flushResults() {
     outputElement.appendChild(document.createElement('br'));
   }
   _results = [];
-}
-
-export async function _executeTestScript() {
-  const testScriptURL = /** @type {string} */ (Root.Runtime.queryParam('test'));
-  if (_isDebugTest()) {
-    _innerAddResult = console.log;
-    _innerCompleteTest = () => console.log('Test completed');
-
-    // Auto-start unit tests
-    self.test = async function() {
-      // TODO(crbug.com/1011811): Remove eval when we use TypeScript which does support dynamic imports
-      await eval(`import("${testScriptURL}")`);
-    };
-    return;
-  }
-
-  try {
-    // TODO(crbug.com/1011811): Remove eval when we use TypeScript which does support dynamic imports
-    await eval(`import("${testScriptURL}")`);
-  } catch (err) {
-    addResult('TEST ENDED EARLY DUE TO UNCAUGHT ERROR:');
-    addResult(err && err.stack || err);
-    addResult('=== DO NOT COMMIT THIS INTO -expected.txt ===');
-    completeTest();
-  }
 }
 
 /**
@@ -419,42 +401,6 @@ export function textContentWithoutStyles(node) {
     }
   }
   return buffer;
-}
-
-/**
- * @param {!SDK.Target} target
- */
-export function _setupTestHelpers(target) {
-  TestRunner.BrowserAgent = target.browserAgent();
-  TestRunner.CSSAgent = target.cssAgent();
-  TestRunner.DeviceOrientationAgent = target.deviceOrientationAgent();
-  TestRunner.DOMAgent = target.domAgent();
-  TestRunner.DOMDebuggerAgent = target.domdebuggerAgent();
-  TestRunner.DebuggerAgent = target.debuggerAgent();
-  TestRunner.EmulationAgent = target.emulationAgent();
-  TestRunner.HeapProfilerAgent = target.heapProfilerAgent();
-  TestRunner.InputAgent = target.inputAgent();
-  TestRunner.InspectorAgent = target.inspectorAgent();
-  TestRunner.NetworkAgent = target.networkAgent();
-  TestRunner.OverlayAgent = target.overlayAgent();
-  TestRunner.PageAgent = target.pageAgent();
-  TestRunner.ProfilerAgent = target.profilerAgent();
-  TestRunner.RuntimeAgent = target.runtimeAgent();
-  TestRunner.TargetAgent = target.targetAgent();
-
-  TestRunner.networkManager = target.model(SDK.NetworkManager);
-  TestRunner.securityOriginManager = target.model(SDK.SecurityOriginManager);
-  TestRunner.resourceTreeModel = target.model(SDK.ResourceTreeModel);
-  TestRunner.debuggerModel = target.model(SDK.DebuggerModel);
-  TestRunner.runtimeModel = target.model(SDK.RuntimeModel);
-  TestRunner.domModel = target.model(SDK.DOMModel);
-  TestRunner.domDebuggerModel = target.model(SDK.DOMDebuggerModel);
-  TestRunner.cssModel = target.model(SDK.CSSModel);
-  TestRunner.cpuProfilerModel = target.model(SDK.CPUProfilerModel);
-  TestRunner.overlayModel = target.model(SDK.OverlayModel);
-  TestRunner.serviceWorkerManager = target.model(SDK.ServiceWorkerManager);
-  TestRunner.tracingManager = target.model(SDK.TracingManager);
-  TestRunner.mainTarget = target;
 }
 
 /**
@@ -1467,65 +1413,6 @@ export async function dumpInspectedPageElementText(querySelector) {
   const value = await evaluateInPageAsync(`document.querySelector('${querySelector}').innerText`);
   addResult(value);
 }
-
-/** @type {boolean} */
-let _startedTest = false;
-
-/**
- * @implements {SDK.TargetManager.Observer}
- */
-export class _TestObserver {
-  /**
-   * @param {!SDK.Target} target
-   * @override
-   */
-  targetAdded(target) {
-    if (target.id() === 'main') {
-      _setupTestHelpers(target);
-    }
-    if (_startedTest) {
-      return;
-    }
-    _startedTest = true;
-    if (_isStartupTest()) {
-      return;
-    }
-    TestRunner
-        .loadHTML(`
-      <head>
-        <base href="${url()}">
-      </head>
-      <body>
-      </body>
-    `).then(() => _executeTestScript());
-  }
-
-  /**
-   * @param {!SDK.Target} target
-   * @override
-   */
-  targetRemoved(target) {
-  }
-}
-
-(async function() {
-  SDK.targetManager.observeTargets(new _TestObserver());
-  if (!_isStartupTest()) {
-    return;
-  }
-  /**
-   * Startup test initialization:
-   * 1. Wait for DevTools app UI to load
-   * 2. Execute test script, the first line will be TestRunner.setupStartupTest(...) which:
-   *    A. Navigate secondary window
-   *    B. After preconditions occur, secondary window calls testRunner.inspectSecondaryWindow()
-   * 3. Backend executes TestRunner._startupTestSetupFinished() which calls _initializeTarget()
-   */
-  TestRunner._initializeTargetForStartupTest =
-      override(Main.Main._instanceForTest, '_initializeTarget', () => undefined).bind(Main.Main._instanceForTest);
-  await addSnifferPromise(Main.Main._instanceForTest, '_showAppUI');
-  await _executeTestScript();
-})();
 
 /** @type {!{logToStderr: function(), navigateSecondaryWindow: function(string), notifyDone: function()}|undefined} */
 self.testRunner;

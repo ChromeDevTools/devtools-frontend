@@ -78,6 +78,9 @@
   <message name="IDS_DEVTOOLS_3f9eccbca028a6949c39933d13f82e56" desc="Text in the Shortcuts page to explain a keyboard shortcut (step out of a function in debugger)">
     Step out
   </message>
+  <message name="IDS_DEVTOOLS_4348f6b35ee6cfc6eb04cb351e4213c9" desc="Text to show how many kilobytes the data size is. The number has 0 digit decimal point">
+    <ph name="KILOBYTES">$1.0f<ex>8</ex></ph> kB
+  </message>
   <message name="IDS_DEVTOOLS_44ac014b674d7d86a04702e6fd1fa858" desc="Text in a dialog box showing how to reconnect to DevTools when remote debugging has been terminated">
     Reconnect when ready by reopening <ph name="LOCKED_1">DevTools</ph>.
   </message>
@@ -219,9 +222,6 @@
   <message name="IDS_DEVTOOLS_9f52d2760e4266c7904c59fd9d3e7321" desc="Text in the Shortcuts page to explain a keyboard shortcut (pick a performance recording from history)">
     Pick a recording from history
   </message>
-  <message name="IDS_DEVTOOLS_9f98ff6e7e9fd0475daeb2005234ab5d" desc="Text to show how many kilobytes the data size is. The number has 0 digit decimal point">
-    <ph name="KILOBYTES">$1.0f<ex>2</ex></ph> KB
-  </message>
   <message name="IDS_DEVTOOLS_a169aab715858133b50d2e72ece74f14" desc="Accessibility label for checkable SoftContextMenuItems with shortcuts">
     <ph name="ITEM_LABEL">$1s<ex>Open File</ex></ph>, <ph name="ITEM_SHORTCUT">$2s<ex>Ctrl + P</ex></ph>, <ph name="CHECKEDSTATE">$3s<ex>checked</ex></ph>
   </message>
@@ -233,9 +233,6 @@
   </message>
   <message name="IDS_DEVTOOLS_addec426932e71323700afa1911f8f1c" desc="Text on a button to show more info in the infobar">
     more
-  </message>
-  <message name="IDS_DEVTOOLS_ae240dc70adad29732bb1fdf0c746b84" desc="Text to show how many kilobytes the data size is. The number has 1 digit decimal point">
-    <ph name="KILOBYTES">$1.1f<ex>2.2</ex></ph> KB
   </message>
   <message name="IDS_DEVTOOLS_b014fff4db17dba07ddb6ea5efafd32e" desc="Text in the Shortcuts page to explain a keyboard shortcut (jump to previous/next in performance profile)">
     Jump to previous/next frame
@@ -278,6 +275,9 @@
   </message>
   <message name="IDS_DEVTOOLS_d06337cfbcc777e0a7caa50ef1a9986a" desc="The aria label for the button to open more tabs at the right tabbed pane in Elements tools">
     More tabs
+  </message>
+  <message name="IDS_DEVTOOLS_d4c2a940947d6e71ed20e1bb31f0c8a2" desc="Text to show how many kilobytes the data size is. The number has 1 digit decimal point">
+    <ph name="KILOBYTES">$1.1f<ex>8.1</ex></ph> kB
   </message>
   <message name="IDS_DEVTOOLS_d916eea6390ddc39ee5fbc5c984e940c" desc="Seconds format in UIUtils">
     <ph name="PH1">$1.2f<ex>2.14</ex></ph> s

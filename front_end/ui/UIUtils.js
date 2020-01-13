@@ -660,19 +660,19 @@ Number.secondsToString = function(seconds, higherResolution) {
  * @return {string}
  */
 Number.bytesToString = function(bytes) {
-  if (bytes < 1024) {
+  if (bytes < 1000) {
     return Common.UIString.UIString('%.0f\xa0B', bytes);
   }
 
-  const kilobytes = bytes / 1024;
+  const kilobytes = bytes / 1000;
   if (kilobytes < 100) {
-    return Common.UIString.UIString('%.1f\xa0KB', kilobytes);
+    return Common.UIString.UIString('%.1f\xa0kB', kilobytes);
   }
-  if (kilobytes < 1024) {
-    return Common.UIString.UIString('%.0f\xa0KB', kilobytes);
+  if (kilobytes < 1000) {
+    return Common.UIString.UIString('%.0f\xa0kB', kilobytes);
   }
 
-  const megabytes = kilobytes / 1024;
+  const megabytes = kilobytes / 1000;
   if (megabytes < 100) {
     return Common.UIString.UIString('%.1f\xa0MB', megabytes);
   } else {

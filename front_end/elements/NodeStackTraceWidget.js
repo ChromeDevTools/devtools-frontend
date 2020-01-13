@@ -52,7 +52,7 @@ export class NodeStackTraceWidget extends UI.ThrottledWidget {
       this._creationStackTraceElement.classList.remove('hidden');
 
       const stackTracePreview = Components.JSPresentationUtils.buildStackTracePreviewContents(
-          node.domModel().target(), this._linkifier, creationStackTrace);
+          node.domModel().target(), this._linkifier, {stackTrace: creationStackTrace});
       this._creationStackTraceElement.removeChildren();
       this._creationStackTraceElement.appendChild(stackTracePreview.element);
     } else {

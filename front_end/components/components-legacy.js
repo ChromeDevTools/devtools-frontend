@@ -108,3 +108,12 @@ Components._CreateLinkOptions;
  * @typedef {function(!Common.ContentProvider, number)}
  */
 Components.Linkifier.LinkHandler;
+
+/**
+ * @typedef {{
+ *   stackTrace: (!Protocol.Runtime.StackTrace|undefined),
+ *   contentUpdated: (function()|undefined),
+ *   tabStops: (boolean|undefined)
+ * }}
+ */
+Components.JSPresentationUtils.Options;

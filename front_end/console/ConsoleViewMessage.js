@@ -371,10 +371,9 @@ export class ConsoleViewMessage {
     clickableElement.appendChild(messageElement);
     const stackTraceElement = contentElement.createChild('div');
     const stackTracePreview = Components.JSPresentationUtils.buildStackTracePreviewContents(
-        this._message.runtimeModel().target(), this._linkifier, this._message.stackTrace);
+        this._message.runtimeModel().target(), this._linkifier, {stackTrace: this._message.stackTrace});
     stackTraceElement.appendChild(stackTracePreview.element);
     for (const linkElement of stackTracePreview.links) {
-      linkElement.tabIndex = -1;
       this._selectableChildren.push({element: linkElement, forceSelect: () => linkElement.focus()});
     }
     stackTraceElement.classList.add('hidden');

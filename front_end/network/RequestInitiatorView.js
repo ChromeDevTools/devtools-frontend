@@ -31,13 +31,8 @@ export default class RequestInitiatorView extends UI.VBox {
     }
     const networkManager = SDK.NetworkManager.forRequest(request);
     const target = networkManager ? networkManager.target() : null;
-    const stackTrace =
-        Components.JSPresentationUtils.buildStackTracePreviewContents(target, linkifier, initiator.stack, callback);
-    if (focusableLink) {
-      for (const link of stackTrace.links) {
-        link.tabIndex = 0;
-      }
-    }
+    const stackTrace = Components.JSPresentationUtils.buildStackTracePreviewContents(
+        target, linkifier, {stackTrace: initiator.stack, contentUpdated: callback, tabStops: focusableLink});
     return stackTrace;
   }
 

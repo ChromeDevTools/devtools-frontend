@@ -66,6 +66,7 @@
   "scripts": [],
   "modules": [
     "help.js",
+    "help-legacy.js",
     "HelpImpl.js",
     "ReleaseNoteView.js",
     "ReleaseNoteText.js"

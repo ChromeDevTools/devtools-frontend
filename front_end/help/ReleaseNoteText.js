@@ -759,11 +759,3 @@ export const releaseNoteText = [
     link: 'https://developers.google.com/web/updates/2017/03/devtools-release-notes',
   }
 ];
-
-/* Legacy exported object */
-self.Help = self.Help || {};
-
-/* Legacy exported object */
-Help = Help || {};
-
-Help.releaseNoteText = releaseNoteText;

@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {releaseNoteText} from './ReleaseNoteText.js';
+
 /**
  * @const
  * @type {string}
@@ -14,13 +16,14 @@ export const releaseNoteViewId = 'release-note';
 export function latestReleaseNote() {
   if (!Help._latestReleaseNote) {
     /** @type {!Help.ReleaseNote} */
-    Help._latestReleaseNote = Help.releaseNoteText.reduce((acc, note) => note.version > acc.version ? note : acc);
+    Help._latestReleaseNote =
+        (self.Help.releaseNoteText || releaseNoteText).reduce((acc, note) => note.version > acc.version ? note : acc);
   }
   return Help._latestReleaseNote;
 }
 
-function _showReleaseNoteIfNeeded() {
-  _innerShowReleaseNoteIfNeeded(
+export function showReleaseNoteIfNeeded() {
+  innerShowReleaseNoteIfNeeded(
       Help._releaseNoteVersionSetting.get(), latestReleaseNote().version,
       Common.settings.moduleSetting('help.show-release-note').get());
 }
@@ -30,7 +33,7 @@ function _showReleaseNoteIfNeeded() {
  * @param {number} latestVersion
  * @param {boolean} showReleaseNote
  */
-function _innerShowReleaseNoteIfNeeded(lastSeenVersion, latestVersion, showReleaseNote) {
+export function innerShowReleaseNoteIfNeeded(lastSeenVersion, latestVersion, showReleaseNote) {
   if (!lastSeenVersion) {
     Help._releaseNoteVersionSetting.set(latestVersion);
     return;
@@ -54,7 +57,7 @@ export class HelpLateInitialization {
    */
   async run() {
     if (!Host.isUnderTest()) {
-      _showReleaseNoteIfNeeded();
+      showReleaseNoteIfNeeded();
     }
   }
 }
@@ -91,41 +94,3 @@ export class ReportIssueActionDelegate {
     return true;
   }
 }
-
-/* Legacy exported object */
-self.Help = self.Help || {};
-
-/* Legacy exported object */
-Help = Help || {};
-
-Help.releaseNoteViewId = releaseNoteViewId;
-Help.latestReleaseNote = latestReleaseNote;
-Help._innerShowReleaseNoteIfNeeded = _innerShowReleaseNoteIfNeeded;
-Help._showReleaseNoteIfNeeded = _showReleaseNoteIfNeeded;
-
-/** @type {!Common.Setting} */
-Help._releaseNoteVersionSetting = Common.settings.createSetting('releaseNoteVersionSeen', 0);
-
-/** @typedef {!{title: string, subtitle: string, link: string}} */
-Help.ReleaseNoteHighlight;
-
-/**
- * @typedef {!{version: number, header: string, highlights: !Array<!Help.ReleaseNoteHighlight>,
- *    link: string}}
- */
-Help.ReleaseNote;
-
-/**
- * @constructor
- */
-Help.HelpLateInitialization = HelpLateInitialization;
-
-/**
- * @constructor
- */
-Help.ReleaseNotesActionDelegate = ReleaseNotesActionDelegate;
-
-/**
- * @constructor
- */
-Help.ReportIssueActionDelegate = ReportIssueActionDelegate;

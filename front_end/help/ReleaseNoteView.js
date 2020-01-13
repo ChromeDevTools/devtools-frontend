@@ -2,13 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-export default class ReleaseNoteView extends UI.VBox {
+import {latestReleaseNote, releaseNoteViewId} from './HelpImpl.js';
+
+export class ReleaseNoteView extends UI.VBox {
   constructor() {
     super(true);
     this.registerRequiredCSS('help/releaseNote.css');
-    const releaseNoteElement = this._createReleaseNoteElement(Help.latestReleaseNote());
+    const releaseNoteElement = this._createReleaseNoteElement(latestReleaseNote());
     const topSection = this.contentElement.createChild('div', 'release-note-top-section');
-    topSection.textContent = ls`${Help.latestReleaseNote().header}`;
+    topSection.textContent = ls`${latestReleaseNote().header}`;
     this.contentElement.appendChild(releaseNoteElement);
   }
 
@@ -20,7 +22,7 @@ export default class ReleaseNoteView extends UI.VBox {
     const hbox = createElementWithClass('div', 'hbox');
     const container = hbox.createChild('div', 'release-note-container');
     const contentContainer = container.createChild('ul');
-    UI.ARIAUtils.setAccessibleName(contentContainer, ls`${Help.latestReleaseNote().header}`);
+    UI.ARIAUtils.setAccessibleName(contentContainer, ls`${latestReleaseNote().header}`);
 
     let linkNumber = 1;
     for (const highlight of releaseNote.highlights) {
@@ -51,12 +53,12 @@ export default class ReleaseNoteView extends UI.VBox {
 
     actionContainer.appendChild(UI.createTextButton(ls`Close`, event => {
       event.consume(true);
-      UI.inspectorView.closeDrawerTab(Help.releaseNoteViewId, true);
+      UI.inspectorView.closeDrawerTab(releaseNoteViewId, true);
     }, 'close-release-note'));
 
     const imageLink = UI.XLink.create(releaseNote.link, ' ');
     imageLink.classList.add('release-note-image');
-    imageLink.title = ls`${Help.latestReleaseNote().header}`;
+    imageLink.title = ls`${latestReleaseNote().header}`;
 
     hbox.appendChild(imageLink);
     const image = imageLink.createChild('img');
@@ -67,14 +69,3 @@ export default class ReleaseNoteView extends UI.VBox {
     return hbox;
   }
 }
-
-/* Legacy exported object */
-self.Help = self.Help || {};
-
-/* Legacy exported object */
-Help = Help || {};
-
-/**
- * @constructor
- */
-Help.ReleaseNoteView = ReleaseNoteView;

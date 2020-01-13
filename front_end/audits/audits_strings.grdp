@@ -117,9 +117,6 @@
   <message name="IDS_DEVTOOLS_9103edac10b1749db57ca27386ff29dc" desc="Text when lighthouse is loading the page in the Audits panel">
     <ph name="LOCKED_1">Lighthouse</ph> is loading your page.
   </message>
-  <message name="IDS_DEVTOOLS_93c09fb3e06297a9b9504113fa5915ea" desc="Fast fact in the pop-up dialog when lighthouse is running in the Audits panel">
-    BBC has seen a loss of 10% of their users for every extra second of page load [Source: <ph name="LOCKED_1">WPO Stats</ph>]
-  </message>
   <message name="IDS_DEVTOOLS_a3456af9cc3d7cf0c2e288f889f050b7" desc="Fast fact in the pop-up dialog when lighthouse is running in the Audits panel">
     If a site takes &gt;1 second to become interactive, users lose attention, and their perception of completing the page task is broken [Source: <ph name="LOCKED_1">Google Developers Blog</ph>]
   </message>
@@ -170,12 +167,6 @@
   </message>
   <message name="IDS_DEVTOOLS_e499f5109f685235e6280179fe22beec" desc="Text that appears when user drag and drop something (for example, a file) in Audits Panel">
     Drop audit file here
-  </message>
-  <message name="IDS_DEVTOOLS_e8e1638b0449b103a9fdcee6c12d700c" desc="Fast fact in the pop-up dialog when lighthouse is running in the Audits panel">
-    14 seconds is the average time a mobile web page takes to load on a 4G connection [Source: <ph name="LOCKED_1">Google DoubleClick blog</ph>]
-  </message>
-  <message name="IDS_DEVTOOLS_e9fe69c2de7c38bbe442e38780d20081" desc="Fast fact in the pop-up dialog when lighthouse is running in the Audits panel">
-    53% of all site visits are abandoned if page load takes more than 3 seconds [Source: <ph name="LOCKED_1">Google DoubleClick blog</ph>]
   </message>
   <message name="IDS_DEVTOOLS_ea60ba1496b05c6a5816fb75d0665c8d" desc="Text of a DOM element in Audits Status View">
     If this issue is reproducible, please report it at the <ph name="LOCKED_1">Lighthouse</ph> <ph name="LOCKED_2">GitHub</ph> repo.

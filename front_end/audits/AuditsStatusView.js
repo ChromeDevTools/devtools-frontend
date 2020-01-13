@@ -356,18 +356,13 @@ const LoadingMessages = [
 const FastFacts = [
   ls
 `1MB takes a minimum of 5 seconds to download on a typical 3G connection [Source: WebPageTest and DevTools 3G definition].`,
-    ls`Rebuilding Pinterest pages for performance increased conversion rates by 15% [Source: WPO Stats]`,
-    ls`BBC has seen a loss of 10% of their users for every extra second of page load [Source: WPO Stats]`, ls
+    ls`Rebuilding Pinterest pages for performance increased conversion rates by 15% [Source: WPO Stats]`, ls
 `By reducing the response size of JSON needed for displaying comments, Instagram saw increased impressions [Source: WPO Stats]`,
     ls`Walmart saw a 1% increase in revenue for every 100ms improvement in page load [Source: WPO Stats]`, ls
 `If a site takes >1 second to become interactive, users lose attention, and their perception of completing the page task is broken [Source: Google Developers Blog]`,
     ls`75% of global mobile users in 2016 were on 2G or 3G [Source: GSMA Mobile]`,
-    ls`The average user device costs less than 200 USD. [Source: International Data Corporation]`,
-    ls`53% of all site visits are abandoned if page load takes more than 3 seconds [Source: Google DoubleClick blog]`,
-    ls
+    ls`The average user device costs less than 200 USD. [Source: International Data Corporation]`, ls
 `19 seconds is the average time a mobile web page takes to load on a 3G connection [Source: Google DoubleClick blog]`,
-    ls
-`14 seconds is the average time a mobile web page takes to load on a 4G connection [Source: Google DoubleClick blog]`,
     ls
 `70% of mobile pages take nearly 7 seconds for the visual content above the fold to display on the screen. [Source: Think with Google]`,
     ls

@@ -45,10 +45,10 @@ self['onerror'] = (message, source, lineno, colno, error) => {
   addResult('TEST ENDED IN ERROR: ' + error.stack);
   completeTest();
 };
-/** @suppressGlobalPropertiesCheck */
+/** @suppressGlobalPropertiesCheck @suppress {checkTypes} */
 (() => {
   self.addEventListener('unhandledrejection', event => {
-    addResult(`PROMISE FAILURE: ${event.reason}`);
+    addResult(`PROMISE FAILURE: ${event.reason.stack}`);
     completeTest();
   });
 })();

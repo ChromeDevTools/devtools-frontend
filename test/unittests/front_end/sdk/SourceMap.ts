@@ -17,5 +17,25 @@ describe('SourceMapEntry', () => {
     assert.equal(sourceMapEntry.name, 'example','name was not set correctly');
   });
 
-  // TODO continue writing tests here or use another describe block
+  describe('comparison', () => {
+    it("checks line numbers first", () => {
+      const sourceMapEntry1 = new SourceMapEntry(1, 5, '<foo>', 1, 5, 'foo');
+      const sourceMapEntry2 = new SourceMapEntry(2, 5, '<foo>', 2, 5, 'foo');
+      assert.isBelow(SourceMapEntry.compare(sourceMapEntry1, sourceMapEntry2), 0,
+          "first entry is not smaller");
+    });
+
+    it("checks column numbers second when line numbers are equal", () => {
+      const sourceMapEntry1 = new SourceMapEntry(2, 5, '<foo>', 1, 5, 'foo');
+      const sourceMapEntry2 = new SourceMapEntry(2, 25, '<foo>', 2, 5, 'foo');
+      assert.isBelow(SourceMapEntry.compare(sourceMapEntry1, sourceMapEntry2), 0,
+          "first entry is not smaller");
+    });
+
+    it("works for equal SourceMapEntries", () => {
+      const sourceMapEntry1 = new SourceMapEntry(2, 5, '<foo>', 1, 5, 'foo');
+      const sourceMapEntry2 = new SourceMapEntry(2, 5, '<foo>', 1, 5, 'foo');
+      assert.equal(SourceMapEntry.compare(sourceMapEntry1, sourceMapEntry2), 0);
+    });
+  });
 });

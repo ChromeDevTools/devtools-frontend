@@ -17,6 +17,7 @@
     "scripts": [],
     "modules": [
         "object_ui.js",
+        "object_ui-legacy.js",
         "CustomPreviewComponent.js",
         "ObjectPopoverHelper.js",
         "ObjectPropertiesSection.js",

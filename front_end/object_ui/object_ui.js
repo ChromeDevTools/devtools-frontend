@@ -17,3 +17,5 @@ export {
   ObjectPropertiesSection,
   RemoteObjectPreviewFormatter,
 };
+
+export const javaScriptAutocomplete = new JavaScriptAutocomplete.JavaScriptAutocomplete();

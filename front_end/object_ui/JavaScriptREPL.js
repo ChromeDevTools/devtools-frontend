@@ -2,7 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-export default class JavaScriptREPL {
+import {RemoteObjectPreviewFormatter} from './RemoteObjectPreviewFormatter.js';
+
+export class JavaScriptREPL {
   /**
    * @param {string} code
    * @return {string}
@@ -46,7 +48,10 @@ export default class JavaScriptREPL {
    */
   static async evaluateAndBuildPreview(text, throwOnSideEffect, timeout, allowErrors, objectGroup) {
     const executionContext = UI.context.flavor(SDK.ExecutionContext);
-    const isTextLong = text.length > ObjectUI.JavaScriptREPL._MaxLengthForEvaluation;
+    const maxLength = typeof self.ObjectUI.JavaScriptREPL._MaxLengthForEvaluation !== 'undefined' ?
+        self.ObjectUI.JavaScriptREPL._MaxLengthForEvaluation :
+        MaxLengthForEvaluation;
+    const isTextLong = text.length > maxLength;
     if (!text || !executionContext || (throwOnSideEffect && isTextLong)) {
       return {preview: createDocumentFragment(), result: null};
     }
@@ -85,7 +90,7 @@ export default class JavaScriptREPL {
       return fragment;
     }
 
-    const formatter = new ObjectUI.RemoteObjectPreviewFormatter();
+    const formatter = new RemoteObjectPreviewFormatter();
     const {preview, type, subtype, description} = result.object;
     if (preview && type === 'object' && subtype !== 'node') {
       formatter.appendObjectPreview(fragment, preview, false /* isEntry */);
@@ -101,15 +106,4 @@ export default class JavaScriptREPL {
  * @const
  * @type {number}
  */
-export const _MaxLengthForEvaluation = 2000;
-
-/* Legacy exported object */
-self.ObjectUI = self.ObjectUI || {};
-
-/* Legacy exported object */
-ObjectUI = ObjectUI || {};
-
-/** @constructor */
-ObjectUI.JavaScriptREPL = JavaScriptREPL;
-
-ObjectUI.JavaScriptREPL._MaxLengthForEvaluation = _MaxLengthForEvaluation;
+export const MaxLengthForEvaluation = 2000;

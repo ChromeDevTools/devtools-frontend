@@ -1,10 +1,13 @@
 // Copyright 2014 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
+import {ObjectPropertiesSection} from './ObjectPropertiesSection.js';
+
 /**
  * @unrestricted
  */
-class CustomPreviewSection {
+export class CustomPreviewSection {
   /**
    * @param {!SDK.RemoteObject} object
    */
@@ -99,7 +102,7 @@ class CustomPreviewSection {
       return (new CustomPreviewSection(remoteObject)).element();
     }
 
-    const sectionElement = ObjectUI.ObjectPropertiesSection.defaultObjectPresentation(remoteObject);
+    const sectionElement = ObjectPropertiesSection.defaultObjectPresentation(remoteObject);
     sectionElement.classList.toggle('custom-expandable-section-standard-section', remoteObject.hasChildren);
     return sectionElement;
   }
@@ -221,7 +224,7 @@ class CustomPreviewSection {
 /**
  * @unrestricted
  */
-export default class CustomPreviewComponent {
+export class CustomPreviewComponent {
   /**
    * @param {!SDK.RemoteObject} object
    */
@@ -257,17 +260,8 @@ export default class CustomPreviewComponent {
   _disassemble() {
     this.element.shadowRoot.textContent = '';
     this._customPreviewSection = null;
-    this.element.shadowRoot.appendChild(ObjectUI.ObjectPropertiesSection.defaultObjectPresentation(this._object));
+    this.element.shadowRoot.appendChild(ObjectPropertiesSection.defaultObjectPresentation(this._object));
   }
 }
 
 CustomPreviewSection._tagsWhiteList = new Set(['span', 'div', 'ol', 'li', 'table', 'tr', 'td']);
-
-/* Legacy exported object */
-self.ObjectUI = self.ObjectUI || {};
-
-/* Legacy exported object */
-ObjectUI = ObjectUI || {};
-
-/** @constructor */
-ObjectUI.CustomPreviewComponent = CustomPreviewComponent;

@@ -4,7 +4,7 @@
 /**
  * @unrestricted
  */
-export default class RemoteObjectPreviewFormatter {
+export class RemoteObjectPreviewFormatter {
   /**
    * @param {!Protocol.Runtime.PropertyPreview} a
    * @param {!Protocol.Runtime.PropertyPreview} b
@@ -322,18 +322,3 @@ export const createSpansForNodeTitle = function(container, nodeTitle) {
     container.createChild('span', 'webkit-html-attribute-name').textContent = match[3];
   }
 };
-
-/* Legacy exported object */
-self.ObjectUI = self.ObjectUI || {};
-
-/* Legacy exported object */
-ObjectUI = ObjectUI || {};
-
-/** @constructor */
-ObjectUI.RemoteObjectPreviewFormatter = RemoteObjectPreviewFormatter;
-
-/**
- * @param {!Element} container
- * @param {string} nodeTitle
- */
-ObjectUI.RemoteObjectPreviewFormatter.createSpansForNodeTitle = createSpansForNodeTitle;

@@ -24,10 +24,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import {CustomPreviewComponent} from './CustomPreviewComponent.js';
+import {JavaScriptREPL} from './JavaScriptREPL.js';
+import {createSpansForNodeTitle, RemoteObjectPreviewFormatter} from './RemoteObjectPreviewFormatter.js';
+
 /**
  * @unrestricted
  */
-export default class ObjectPropertiesSection extends UI.TreeOutlineInShadow {
+export class ObjectPropertiesSection extends UI.TreeOutlineInShadow {
   /**
    * @param {!SDK.RemoteObject} object
    * @param {?string|!Element=} title
@@ -272,7 +276,7 @@ export default class ObjectPropertiesSection extends UI.TreeOutlineInShadow {
    */
   static createPropertyValueWithCustomSupport(value, wasThrown, showPreview, parentElement, linkifier) {
     if (value.customPreview()) {
-      const result = (new ObjectUI.CustomPreviewComponent(value)).element;
+      const result = (new CustomPreviewComponent(value)).element;
       result.classList.add('object-properties-section-custom-section');
       return new ObjectPropertyValue(result);
     }
@@ -314,11 +318,13 @@ export default class ObjectPropertiesSection extends UI.TreeOutlineInShadow {
     } else {
       const valueElement = createElementWithClass('span', 'object-value-' + (subtype || type));
       if (value.preview && showPreview) {
-        const previewFormatter = new ObjectUI.RemoteObjectPreviewFormatter();
+        const previewFormatter = new RemoteObjectPreviewFormatter();
         previewFormatter.appendObjectPreview(valueElement, value.preview, false /* isEntry */);
         propertyValue = new ObjectPropertyValue(valueElement);
         propertyValue.element.title = description || '';
-      } else if (description.length > ObjectUI.ObjectPropertiesSection._maxRenderableStringLength) {
+      } else if (
+          description.length >
+          (self.ObjectUI.ObjectPropertiesSection._maxRenderableStringLength || maxRenderableStringLength)) {
         propertyValue = new ExpandableTextPropertyValue(valueElement, description, 50);
       } else {
         propertyValue = new ObjectPropertyValue(valueElement);
@@ -353,7 +359,8 @@ export default class ObjectPropertiesSection extends UI.TreeOutlineInShadow {
       const text = description.replace(/\n/g, '\u21B5');
       let propertyValue;
       valueElement.createChild('span', 'object-value-string-quote').textContent = '"';
-      if (description.length > ObjectUI.ObjectPropertiesSection._maxRenderableStringLength) {
+      if (description.length >
+          (self.ObjectUI.ObjectPropertiesSection._maxRenderableStringLength || maxRenderableStringLength)) {
         propertyValue = new ExpandableTextPropertyValue(valueElement, text, 50);
       } else {
         valueElement.createTextChild(text);
@@ -369,7 +376,7 @@ export default class ObjectPropertiesSection extends UI.TreeOutlineInShadow {
      */
     function createNodeElement() {
       const valueElement = createElementWithClass('span', 'object-value-node');
-      ObjectUI.RemoteObjectPreviewFormatter.createSpansForNodeTitle(valueElement, /** @type {string} */ (description));
+      createSpansForNodeTitle(valueElement, /** @type {string} */ (description));
       valueElement.addEventListener('click', event => {
         Common.Revealer.reveal(value);
         event.consume(true);
@@ -487,7 +494,7 @@ export default class ObjectPropertiesSection extends UI.TreeOutlineInShadow {
 const _arrayLoadThreshold = 100;
 
 /** @const */
-export const _maxRenderableStringLength = 10000;
+export const maxRenderableStringLength = 10000;
 
 export class ObjectPropertiesSectionsTreeOutline extends UI.TreeOutlineInShadow {
   /**
@@ -647,7 +654,7 @@ export class ObjectPropertyTreeElement extends UI.TreeElement {
       value,
       linkifier,
       emptyPlaceholder) {
-    properties.sort(ObjectUI.ObjectPropertiesSection.CompareProperties);
+    properties.sort(ObjectPropertiesSection.CompareProperties);
     internalProperties = internalProperties || [];
 
     const entriesProperty = internalProperties.find(property => property.name === '[[Entries]]');
@@ -1079,7 +1086,7 @@ export class ObjectPropertyTreeElement extends UI.TreeElement {
    */
   async _applyExpression(expression) {
     const property = SDK.RemoteObject.toCallArgument(this.property.symbol || this.property.name);
-    expression = ObjectUI.JavaScriptREPL.wrapObjectLiteral(expression.trim());
+    expression = JavaScriptREPL.wrapObjectLiteral(expression.trim());
 
     if (this.property.synthetic) {
       let invalidate = false;
@@ -1151,7 +1158,7 @@ export class ObjectPropertyTreeElement extends UI.TreeElement {
 /**
  * @unrestricted
  */
-class ArrayGroupingTreeElement extends UI.TreeElement {
+export class ArrayGroupingTreeElement extends UI.TreeElement {
   /**
    * @param {!SDK.RemoteObject} object
    * @param {number} fromIndex
@@ -1690,51 +1697,3 @@ export class ExpandableTextPropertyValue extends ObjectPropertyValue {
     Host.InspectorFrontendHost.copyText(this._text);
   }
 }
-
-/* Legacy exported object */
-self.ObjectUI = self.ObjectUI || {};
-
-/* Legacy exported object */
-ObjectUI = ObjectUI || {};
-
-ObjectUI.ArrayGroupingTreeElement = ArrayGroupingTreeElement;
-
-/** @constructor */
-ObjectUI.ExpandableTextPropertyValue = ExpandableTextPropertyValue;
-
-/** @constructor */
-ObjectUI.ObjectPropertiesSection = ObjectPropertiesSection;
-
-ObjectUI.ObjectPropertiesSection._maxRenderableStringLength = _maxRenderableStringLength;
-
-/** @constructor */
-ObjectUI.ObjectPropertiesSectionsTreeOutline = ObjectPropertiesSectionsTreeOutline;
-
-/**
- * @constructor
- */
-ObjectUI.ObjectPropertiesSection.RootElement = RootElement;
-
-/**
- * @constructor
- */
-ObjectUI.ObjectPropertiesSection.Renderer = Renderer;
-
-/** @constructor */
-ObjectUI.ObjectPropertyTreeElement = ObjectPropertyTreeElement;
-
-/** @constructor */
-ObjectUI.ObjectPropertyPrompt = ObjectPropertyPrompt;
-
-/** @constructor */
-ObjectUI.ObjectPropertiesSectionsTreeExpandController = ObjectPropertiesSectionsTreeExpandController;
-
-/**
- * @typedef {{
- *   readOnly: (boolean|undefined),
- * }}
- */
-ObjectUI.ObjectPropertiesSectionsTreeOutlineOptions;
-
-/** @constructor */
-ObjectUI.ObjectPropertyValue = ObjectPropertyValue;

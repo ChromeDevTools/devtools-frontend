@@ -28,7 +28,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-export default class ObjectPopoverHelper {
+import {CustomPreviewComponent} from './CustomPreviewComponent.js';
+import {ObjectPropertiesSection} from './ObjectPropertiesSection.js';
+
+export class ObjectPopoverHelper {
   /**
    * @param {?Components.Linkifier} linkifier
    * @param {boolean} resultHighlightedAsDOM
@@ -64,7 +67,7 @@ export default class ObjectPopoverHelper {
       }
 
       if (result.customPreview()) {
-        const customPreviewComponent = new ObjectUI.CustomPreviewComponent(result);
+        const customPreviewComponent = new CustomPreviewComponent(result);
         customPreviewComponent.expandIfPossible();
         popoverContentElement = customPreviewComponent.element;
       } else {
@@ -73,7 +76,7 @@ export default class ObjectPopoverHelper {
         const titleElement = popoverContentElement.createChild('div', 'monospace object-popover-title');
         titleElement.createChild('span').textContent = description;
         linkifier = new Components.Linkifier();
-        const section = new ObjectUI.ObjectPropertiesSection(
+        const section = new ObjectPropertiesSection(
             result, '', linkifier, undefined, undefined, undefined, true /* showOverflow */);
         section.element.classList.add('object-popover-tree');
         section.titleLessMode();
@@ -102,7 +105,7 @@ export default class ObjectPopoverHelper {
       return new ObjectPopoverHelper(null, false);
     }
 
-    ObjectUI.ObjectPropertiesSection.formatObjectAsFunction(result, valueElement, true);
+    ObjectPropertiesSection.formatObjectAsFunction(result, valueElement, true);
     const response = await result.debuggerModel().functionDetailsPromise(result);
     if (!response) {
       return null;
@@ -129,12 +132,3 @@ export default class ObjectPopoverHelper {
 }
 
 const MaxPopoverTextLength = 10000;
-
-/* Legacy exported object */
-self.ObjectUI = self.ObjectUI || {};
-
-/* Legacy exported object */
-ObjectUI = ObjectUI || {};
-
-/** @constructor */
-ObjectUI.ObjectPopoverHelper = ObjectPopoverHelper;

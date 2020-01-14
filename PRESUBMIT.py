@@ -135,15 +135,6 @@ def _CheckFormat(input_api, output_api):
     if format_process.returncode != 0:
         return [output_api.PresubmitError(format_out)]
 
-    # Use eslint to autofix the braces.
-    # Also fix semicolon to avoid confusing clang-format.
-    eslint_process = popen(
-        [devtools_paths.node_path(), devtools_paths.eslint_path(), '--config', '.eslintrc.js', '--fix'] + affected_files)
-    eslint_process.communicate()
-
-    # Need to run clang-format again to align the braces
-    popen(format_args).communicate()
-
     return [
         output_api.PresubmitError('ERROR: Found formatting violations.\n'
                                   'Ran clang-format on diff\n'
@@ -241,8 +232,8 @@ def _CommonChecks(input_api, output_api):
     results.extend(input_api.canned_checks.CheckGenderNeutral(input_api, output_api))
     results.extend(_CheckBuildGN(input_api, output_api))
     results.extend(_CheckJSON(input_api, output_api))
-    results.extend(_CheckFormat(input_api, output_api))
     results.extend(_CheckDevtoolsStyle(input_api, output_api))
+    results.extend(_CheckFormat(input_api, output_api))
     results.extend(_CheckOptimizeSVGHashes(input_api, output_api))
     results.extend(_CheckCSSViolations(input_api, output_api))
     results.extend(_CheckChangesAreExclusiveToDirectory(input_api, output_api))

@@ -88,6 +88,16 @@ def _CheckJSON(input_api, output_api):
     return _checkWithNodeScript(input_api, output_api, script_path)
 
 
+def _CheckUnitTests(input_api, output_api):
+    unittest_root = input_api.os_path.join(input_api.PresubmitLocalPath(), 'test')
+    affected_unittest_files = _getAffectedFiles(input_api, [unittest_root], ['D'], ['.ts'])
+    if len(affected_unittest_files) == 0:
+        return []
+
+    script_path = input_api.os_path.join(input_api.PresubmitLocalPath(), 'scripts', 'test', 'check_for_unittest_onlys.js')
+    return _checkWithNodeScript(input_api, output_api, script_path, affected_unittest_files)
+
+
 def _CheckFormat(input_api, output_api):
 
     def popen(args):
@@ -236,6 +246,7 @@ def _CommonChecks(input_api, output_api):
     results.extend(_CheckOptimizeSVGHashes(input_api, output_api))
     results.extend(_CheckCSSViolations(input_api, output_api))
     results.extend(_CheckChangesAreExclusiveToDirectory(input_api, output_api))
+    results.extend(_CheckUnitTests(input_api, output_api))
     return results
 
 

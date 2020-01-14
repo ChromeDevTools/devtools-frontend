@@ -97,9 +97,7 @@ export function completeTest() {
   _innerCompleteTest();
 }
 
-self.TestRunner = {
-  _startupTestSetupFinished: () => {}
-};
+self.TestRunner = self.TestRunner || {_startupTestSetupFinished: () => {}};
 
 let _initializeTargetForStartupTest;
 

@@ -29,6 +29,8 @@ declare global {
     hashCode(value: string): number;
     naturalOrderComparator(a: string, b: string): number;
   }
+
+  function unescapeCssString(input: string): string;
 }
 
 describe('Utilities', () => {
@@ -301,7 +303,7 @@ describe('Utilities', () => {
       'a2xtbm8=',
       'pqrstu',
       'cHFyc3R1',
-      String.fromCharCode(0x444, 0x5555, 0x66666, 0x777777),
+      '\u0444\u5555\u6666\u7777',
       '0YTllZXmmabnnbc=',
     ];
     for (let i = 0; i < testArray.length; i += 2) {
@@ -315,7 +317,7 @@ describe('Utilities', () => {
     const testArray = [
       '',
       '!',
-      '\uD83D\uDE48A\uD83D\uDE48L\uD83D\uDE48I\uD83D\uDE48N\uD83D\uDE48A\uD83D\uDE48\uD83D\uDE48',
+      '\u{1F648}A\u{1F648}L\u{1F648}I\u{1F648}N\u{1F648}A\u{1F648}\u{1F648}',
       'test',
     ];
     for (const string of testArray) {
@@ -324,5 +326,26 @@ describe('Utilities', () => {
         assert.isTrue(trimmed.length <= maxLength);
       }
     }
+  });
+
+  it('unescapes CSS strings', () => {
+    assert.equal(
+      unescapeCssString(String.raw`"I\F1 t\EB rn\E2 ti\F4 n\E0 liz\E6 ti\F8 n\2603 \1F308  can be \t\r\ic\k\y"`),
+      '"I\xF1t\xEBrn\xE2ti\xF4n\xE0liz\xE6ti\xF8n\u2603\u{1F308} can be tricky"');
+    assert.equal(
+      unescapeCssString(String.raw`"_\DBFF_\\DBFF_\\\DBFF_\\\\DBFF_\\\\\DBFF_"`),
+      '"_\uFFFD_\\DBFF_\\\\DBFF_\\\\\\DBFF_\\\\\\\\DBFF_"');
+    assert.equal(
+      unescapeCssString(String.raw`"\0_\DBFF_\DFFF_\110000"`),
+      '"\uFFFD_\uFFFD_\uFFFD_\uFFFD"',
+      'U+0000, lone surrogates, and values above U+10FFFF should become U+FFFD');
+    assert.equal(
+      unescapeCssString(String.raw`"_\D83C\DF08_"`),
+      '"_\uFFFD\uFFFD_"',
+      'surrogates should not be combined');
+    assert.equal(
+      unescapeCssString('"_\\41\n_\\41\t_\\41\x20_"'),
+      '"_A_A_A_"',
+      'certain trailing whitespace characters should be consumed as part of the escape sequence');
   });
 });

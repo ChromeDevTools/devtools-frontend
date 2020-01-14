@@ -38,17 +38,17 @@ describe('Cookie', () => {
   it('can be created from a protocol Cookie with all optional fields set', () => {
     const expires = new Date().getTime() + 3600 * 1000;
     const cookie = Cookie.fromProtocolCookie({
-        domain: '.example.com',
-        expires: expires / 1000,
-        httpOnly: true,
-        name: 'name',
-        path: '/test',
-        sameSite: 'Strict',
-        secure: true,
-        session: false,
-        size: 23,
-        value: 'value',
-        priority: 'High'
+      domain: '.example.com',
+      expires: expires / 1000,
+      httpOnly: true,
+      name: 'name',
+      path: '/test',
+      sameSite: 'Strict',
+      secure: true,
+      session: false,
+      size: 23,
+      value: 'value',
+      priority: 'High',
     });
 
     assert.equal(cookie.key(), '.example.com name /test');
@@ -139,7 +139,7 @@ describe('Cookie', () => {
 
   it('can set the cookie line', () => {
     const cookie = new Cookie('name', 'value');
-    cookie.setCookieLine('name=value')
+    cookie.setCookieLine('name=value');
     assert.equal(cookie.getCookieLine(), 'name=value');
   });
 

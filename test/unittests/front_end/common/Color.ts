@@ -146,37 +146,37 @@ describe('Color', () => {
   it('is able to detect the HEX format of a color with an alpha value', () => {
     const color = new Common.Color.Color([0.5, 0.5, 0.5, 0.5], 'testFormat', 'testColor');
     const result = color.detectHEXFormat();
-    assert.equal(result, 'hexa', 'format was not detected correctly')
+    assert.equal(result, 'hexa', 'format was not detected correctly');
   });
 
   it('is able to detect the HEX format of a color without an alpha value', () => {
     const color = new Common.Color.Color([0.5, 0.5, 0.5, 1], 'testFormat', 'testColor');
     const result = color.detectHEXFormat();
-    assert.equal(result, 'hex', 'format was not detected correctly')
+    assert.equal(result, 'hex', 'format was not detected correctly');
   });
 
   it('is able to return the canonical RGBA of a color', () => {
     const color = new Common.Color.Color([0.5, 0.5, 0.5, 0.5], 'testFormat', 'testColor');
     const result = color.canonicalRGBA();
-    assert.deepEqual(result, [128, 128, 128, 0.5], 'canonical RGBA was not returned correctly')
+    assert.deepEqual(result, [128, 128, 128, 0.5], 'canonical RGBA was not returned correctly');
   });
 
   it('is able to return the nickname of a color', () => {
     const color = new Common.Color.Color([1, 0, 0, 1], 'testFormat', 'testColor');
     const result = color.nickname();
-    assert.equal(result, 'red', 'nickname was not returned correctly')
+    assert.equal(result, 'red', 'nickname was not returned correctly');
   });
 
   it('returns null as a nickname if the color was not recognized', () => {
     const color = new Common.Color.Color([0.5, 0.5, 0.5, 0.5], 'testFormat', 'testColor');
     const result = color.nickname();
-    assert.isNull(result, 'nickname should be returned as Null')
+    assert.isNull(result, 'nickname should be returned as Null');
   });
 
   it('is able to convert the color to a protocol RGBA', () => {
     const color = new Common.Color.Color([0.5, 0.5, 0.5, 0.5], 'testFormat', 'testColor');
     const result = color.toProtocolRGBA();
-    assert.deepEqual(result, {r: 128, g: 128, b: 128, a: 0.5}, 'conversion to protocol RGBA was not correct')
+    assert.deepEqual(result, {r: 128, g: 128, b: 128, a: 0.5}, 'conversion to protocol RGBA was not correct');
   });
 
   it('is able to invert a color', () => {

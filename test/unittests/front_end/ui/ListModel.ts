@@ -4,7 +4,7 @@
 
 const {assert} = chai;
 
-import '/front_end/common/common-legacy.js'
+import '/front_end/common/common-legacy.js';
 import {ListModel} from '/front_end/ui/ListModel.js';
 
 describe('ListModel', () => {

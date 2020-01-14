@@ -34,8 +34,21 @@ declare global {
 describe('Utilities', () => {
   it('removes values', () => {
     const testArrays = [
-      [], [], [], [1], [1], [1], [1, 2, 3, 4, 5, 4, 3, 2, 1], [1, 3, 4, 5, 4, 3, 2, 1], [1, 3, 4, 5, 4, 3, 1],
-      [2, 2, 2, 2, 2], [2, 2, 2, 2], [], [2, 2, 2, 1, 2, 2, 3, 2], [2, 2, 1, 2, 2, 3, 2], [1, 3]
+      [],
+      [],
+      [],
+      [1],
+      [1],
+      [1],
+      [1, 2, 3, 4, 5, 4, 3, 2, 1],
+      [1, 3, 4, 5, 4, 3, 2, 1],
+      [1, 3, 4, 5, 4, 3, 1],
+      [2, 2, 2, 2, 2],
+      [2, 2, 2, 2],
+      [],
+      [2, 2, 2, 1, 2, 2, 3, 2],
+      [2, 2, 1, 2, 2, 3, 2],
+      [1, 3],
     ];
 
     for (let i = 0; i < testArrays.length; i += 3) {
@@ -71,7 +84,7 @@ describe('Utilities', () => {
       let actualCount: number;
 
       for (let i = 0; i < allValues.length; ++i) {
-        let value = allValues[i];
+        const value = allValues[i];
         expectedCount = checkOperation(count(a, value), count(b, value));
         actualCount = count(actual, value);
         assert.equal(expectedCount, actualCount,
@@ -84,8 +97,18 @@ describe('Utilities', () => {
     }
 
     const testArrays = [
-      [], [], [1], [], [1, 2, 2, 2, 3], [], [4, 5, 5, 8, 8], [1, 1, 1, 2, 6], [1, 2, 2, 2, 2, 3, 3, 4],
-      [2, 2, 2, 3, 3, 3, 3], [1, 2, 3, 4, 5], [1, 2, 3]
+      [],
+      [],
+      [1],
+      [],
+      [1, 2, 2, 2, 3],
+      [],
+      [4, 5, 5, 8, 8],
+      [1, 1, 1, 2, 6],
+      [1, 2, 2, 2, 2, 3, 3, 4],
+      [2, 2, 2, 3, 3, 3, 3],
+      [1, 2, 3, 4, 5],
+      [1, 2, 3],
     ];
 
     for (let i = 0; i < testArrays.length; i += 2) {
@@ -96,7 +119,12 @@ describe('Utilities', () => {
 
   it('calculates the binary index', () => {
     const testArrays = [
-      [], [1], [1, 10], [1, 10, 11, 12, 13, 14, 100], [-100, -50, 0, 50, 100], [-100, -14, -13, -12, -11, -10, -1]
+      [],
+      [1],
+      [1, 10],
+      [1, 10, 11, 12, 13, 14, 100],
+      [-100, -50, 0, 50, 100],
+      [-100, -14, -13, -12, -11, -10, -1],
     ];
 
     function testArray(array: number[]) {
@@ -105,8 +133,8 @@ describe('Utilities', () => {
       }
 
       for (let i = -100; i <= 100; ++i) {
-        let reference = array.indexOf(i);
-        let actual = array.binaryIndexOf(i, comparator);
+        const reference = array.indexOf(i);
+        const actual = array.binaryIndexOf(i, comparator);
         assert.deepStrictEqual(reference, actual);
       }
       return true;
@@ -126,7 +154,7 @@ describe('Utilities', () => {
       }
 
       for (let value = -2; value <= 12; ++value) {
-        let index = useComparator ? array.lowerBound(value, comparator) : array.lowerBound(value);
+        const index = useComparator ? array.lowerBound(value, comparator) : array.lowerBound(value);
         assert.isTrue(0 <= index && index <= array.length, 'index is not within bounds');
         assert.isTrue(index === 0 || array[index - 1] < value, 'array[index - 1] >= value');
         assert.isTrue(index === array.length || array[index] >= value, 'array[index] < value');
@@ -148,7 +176,7 @@ describe('Utilities', () => {
       }
 
       for (let value = -2; value <= 12; ++value) {
-        let index = useComparator ? array.upperBound(value, comparator) : array.upperBound(value);
+        const index = useComparator ? array.upperBound(value, comparator) : array.upperBound(value);
         assert.isTrue(0 <= index && index <= array.length, 'index is out of bounds');
         assert.isTrue(index === 0 || array[index - 1] <= value, 'array[index - 1] > value');
         assert.isTrue(index === array.length || array[index] > value, 'array[index] <= value');
@@ -173,13 +201,13 @@ describe('Utilities', () => {
         for (let right = left, r = array.length; right < r; ++right) {
           for (let first = left; first <= right; ++first) {
             for (let count = 1, k = right - first + 1; count <= k; ++count) {
-              let actual = array.slice(0);
+              const actual = array.slice(0);
               actual.sortRange(comparator, left, right, first, first + count - 1);
               assert.deepStrictEqual(array.slice(0, left), actual.slice(0, left), 'left ' + left + ' ' + right + ' ' + count);
               assert.deepStrictEqual(
                   array.slice(right + 1), actual.slice(right + 1), 'right ' + left + ' ' + right + ' ' + count);
 
-              let middle = array.slice(left, right + 1);
+              const middle = array.slice(left, right + 1);
               middle.sort(comparator);
               assert.deepStrictEqual(
                   middle.slice(first - left, first - left + count), actual.slice(first, first + count),
@@ -220,12 +248,13 @@ describe('Utilities', () => {
         const a = testArray[i];
         const b = testArray[j];
         const diff = String.naturalOrderComparator(a, b);
-        if (diff === 0)
+        if (diff === 0) {
           assert.equal(a, b, 'zero diff');
-        else if (diff < 0)
+        } else if (diff < 0) {
           assert.isTrue(i < j);
-        else
+        } else {
           assert.isTrue(i > j);
+        }
       }
     }
   });
@@ -258,8 +287,22 @@ describe('Utilities', () => {
 
   it('converts to base64', () => {
     const testArray = [
-      '', '', 'a', 'YQ==', 'bc', 'YmM=', 'def', 'ZGVm', 'ghij', 'Z2hpag==', 'klmno', 'a2xtbm8=', 'pqrstu', 'cHFyc3R1',
-      String.fromCharCode(0x444, 0x5555, 0x66666, 0x777777), '0YTllZXmmabnnbc='
+      '',
+      '',
+      'a',
+      'YQ==',
+      'bc',
+      'YmM=',
+      'def',
+      'ZGVm',
+      'ghij',
+      'Z2hpag==',
+      'klmno',
+      'a2xtbm8=',
+      'pqrstu',
+      'cHFyc3R1',
+      String.fromCharCode(0x444, 0x5555, 0x66666, 0x777777),
+      '0YTllZXmmabnnbc=',
     ];
     for (let i = 0; i < testArray.length; i += 2) {
       const string = testArray[i];
@@ -270,9 +313,12 @@ describe('Utilities', () => {
 
   it('trims the middle of strings', () => {
     const testArray = [
-      '', '!', '\uD83D\uDE48A\uD83D\uDE48L\uD83D\uDE48I\uD83D\uDE48N\uD83D\uDE48A\uD83D\uDE48\uD83D\uDE48', 'test'
+      '',
+      '!',
+      '\uD83D\uDE48A\uD83D\uDE48L\uD83D\uDE48I\uD83D\uDE48N\uD83D\uDE48A\uD83D\uDE48\uD83D\uDE48',
+      'test',
     ];
-    for (let string of testArray) {
+    for (const string of testArray) {
       for (let maxLength = string.length + 1; maxLength > 0; --maxLength) {
         const trimmed = string.trimMiddle(maxLength);
         assert.isTrue(trimmed.length <= maxLength);

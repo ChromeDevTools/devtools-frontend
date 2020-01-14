@@ -28,7 +28,7 @@ describe('FormattedContentBuilder', () => {
     builder.addToken('Token 2', 0);
 
     assert.equal(builder.content(), 'Token 1\nToken 2');
-  })
+  });
 
   it('should respect the noSquash parameter', () => {
     const builder = new FormattedContentBuilder('  ');
@@ -146,8 +146,8 @@ describe('FormattedContentBuilder', () => {
 
   it('should not cache the identation for more than 20 nesting levels', () => {
     let x = 0;
-    const builder = new FormattedContentBuilder({toString() {return x++}});
-    for(let i = 0; i < 20; i++) {
+    const builder = new FormattedContentBuilder({toString() {return x++;}});
+    for (let i = 0; i < 20; i++) {
       builder.increaseNestingLevel();
     }
 
@@ -168,5 +168,5 @@ describe('FormattedContentBuilder', () => {
     builder.addToken('Token 4', 0);
 
     assert.equal(builder.content(), 'Token 1\n012345678910111213141516171819Token 2\n012345678910111213141516171819Token 3\n202122232425262728293031323334353637383940Token 4');
-  })
+  });
 });

@@ -23,7 +23,7 @@ describe('Console', () => {
     const messageTypes = new Map<string, string>([
       ['Info', 'log'],
       ['Warning', 'warn'],
-      ['Error', 'error']
+      ['Error', 'error'],
     ]);
 
     for (const [type, method] of messageTypes) {
@@ -49,7 +49,7 @@ describe('Console', () => {
     assert.equal(messages.length, 4);
   });
 
-  it('dispatches events to listeners', (done) => {
+  it('dispatches events to listeners', done => {
     consoleImpl.addEventListener(Common.Console.Events.MessageAdded, ({data}) => {
       assert.equal(data.text, 'Foo');
       done();

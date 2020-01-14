@@ -13,7 +13,7 @@ describe('ObjectWrapper', () => {
   });
 
   describe('event listeners', () => {
-    it('adds event listeners', (done) => {
+    it('adds event listeners', done => {
       obj.addEventListener('foo', () => {
         done();
       });
@@ -51,9 +51,9 @@ describe('ObjectWrapper', () => {
       assert.equal(count, 2);
     });
 
-    it('fires event listeners with data', (done) => {
-      let count = 0;
-      const callback = (evt: { data: { bar: string } } ) => {
+    it('fires event listeners with data', done => {
+      const count = 0;
+      const callback = (evt: {data: {bar: string}}) => {
         assert.equal(evt.data.bar, 'baz');
         done();
       };

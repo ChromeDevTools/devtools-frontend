@@ -217,18 +217,4 @@ export function isSnippetsProject(project) {
       Persistence.FileSystemWorkspaceBinding.fileSystemType(project) === 'snippets';
 }
 
-/* Legacy exported object */
-self.Snippets = self.Snippets || {};
-
-/* Legacy exported object */
-Snippets = Snippets || {};
-
-Snippets.evaluateScriptSnippet = evaluateScriptSnippet;
-Snippets.isSnippetsUISourceCode = isSnippetsUISourceCode;
-Snippets.isSnippetsProject = isSnippetsProject;
-
 Persistence.isolatedFileSystemManager.addPlatformFileSystem('snippet://', new SnippetFileSystem());
-
-Snippets.project = /** @type {!Workspace.Project} */ (
-    Workspace.workspace.projectsForType(Workspace.projectTypes.FileSystem)
-        .find(project => Persistence.FileSystemWorkspaceBinding.fileSystemType(project) === 'snippets'));

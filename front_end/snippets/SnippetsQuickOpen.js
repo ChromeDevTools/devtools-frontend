@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {evaluateScriptSnippet} from './ScriptSnippetFileSystem.js';
+
 export default class SnippetsQuickOpen extends QuickOpen.FilteredListWidget.Provider {
   constructor() {
     super();
@@ -17,7 +19,7 @@ export default class SnippetsQuickOpen extends QuickOpen.FilteredListWidget.Prov
     if (itemIndex === null) {
       return;
     }
-    Snippets.evaluateScriptSnippet(this._snippets[itemIndex]);
+    evaluateScriptSnippet(this._snippets[itemIndex]);
   }
 
   /**
@@ -74,14 +76,3 @@ export default class SnippetsQuickOpen extends QuickOpen.FilteredListWidget.Prov
     QuickOpen.FilteredListWidget.highlightRanges(titleElement, query, true);
   }
 }
-
-/* Legacy exported object */
-self.Snippets = self.Snippets || {};
-
-/* Legacy exported object */
-Snippets = Snippets || {};
-
-/**
- * @constructor
- */
-Snippets.SnippetsQuickOpen = SnippetsQuickOpen;

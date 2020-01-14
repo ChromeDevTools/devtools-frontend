@@ -219,6 +219,17 @@ def _CheckCSSViolations(input_api, output_api):
     return results
 
 
+def _CheckNoUncheckedFiles(input_api, output_api):
+    results = []
+    process = input_api.subprocess.Popen(['git', 'diff', '--exit-code'],
+                                         stdout=input_api.subprocess.PIPE,
+                                         stderr=input_api.subprocess.STDOUT)
+    out, _ = process.communicate()
+    if process.returncode != 0:
+        return [output_api.PresubmitError('You have changed files that need to be committed.')]
+    return []
+
+
 def _CommonChecks(input_api, output_api):
     """Checks common to both upload and commit."""
     results = []
@@ -238,6 +249,7 @@ def _CommonChecks(input_api, output_api):
     results.extend(_CheckCSSViolations(input_api, output_api))
     results.extend(_CheckChangesAreExclusiveToDirectory(input_api, output_api))
     results.extend(_CheckUnitTests(input_api, output_api))
+    results.extend(_CheckNoUncheckedFiles(input_api, output_api))
     return results
 
 

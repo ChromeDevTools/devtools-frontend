@@ -10,7 +10,7 @@ vars = {
   'buildtools_revision': '8d2132841536523249669813b928e29144d487f9',
 
   'depot_tools_url': 'https://chromium.googlesource.com/chromium/tools/depot_tools.git',
-  'depot_tools_revision': '7a8bf94894ef3c5da4e09b1850e3b8a268153147',
+  'depot_tools_revision': 'a1266b63b566ad7632c542526018b73cba0eb8ff',
 
   'inspector_protocol_url': 'https://chromium.googlesource.com/deps/inspector_protocol',
   'inspector_protocol_revision': '32a87e9a751db8f2903532134a7c8fc6932620ba',
@@ -19,7 +19,7 @@ vars = {
   'clang_format_revision': '96636aa0e9f047f17447f2d45a094d0b59ed7917',
 
   # GN CIPD package version.
-  'gn_version': 'git_revision:a5bcbd726ac7bd342ca6ee3e3a006478fd1f00b5',
+  'gn_version': 'git_revision:0c5557d173ce217cea095086a9c9610068123503',
 
   # Chromium build number for unit tests. It should be regularly updated to
   # the content of https://commondatastorage.googleapis.com/chromium-browser-snapshots/Linux_x64/LAST_CHANGE

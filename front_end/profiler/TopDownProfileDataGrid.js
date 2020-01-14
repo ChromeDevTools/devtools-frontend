@@ -23,10 +23,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import {Formatter, ProfileDataGridNode, ProfileDataGridTree} from './ProfileDataGrid.js';  // eslint-disable-line no-unused-vars
+
 /**
  * @unrestricted
  */
-export class TopDownProfileDataGridNode extends Profiler.ProfileDataGridNode {
+export class TopDownProfileDataGridNode extends ProfileDataGridNode {
   /**
    * @param {!SDK.ProfileNode} profileNode
    * @param {!TopDownProfileDataGridTree} owningTree
@@ -75,7 +77,7 @@ export class TopDownProfileDataGridNode extends Profiler.ProfileDataGridNode {
     const child = container.childrenByCallUID.get(aCallUID);
 
     if (child) {
-      Profiler.ProfileDataGridNode.merge(container, child, true);
+      ProfileDataGridNode.merge(container, child, true);
     }
   }
 
@@ -90,9 +92,9 @@ export class TopDownProfileDataGridNode extends Profiler.ProfileDataGridNode {
 /**
  * @unrestricted
  */
-export class TopDownProfileDataGridTree extends Profiler.ProfileDataGridTree {
+export class TopDownProfileDataGridTree extends ProfileDataGridTree {
   /**
-   * @param {!Profiler.ProfileDataGridNode.Formatter} formatter
+   * @param {!Formatter} formatter
    * @param {!UI.SearchableView} searchableView
    * @param {!SDK.ProfileNode} rootProfileNode
    * @param {number} total
@@ -100,11 +102,11 @@ export class TopDownProfileDataGridTree extends Profiler.ProfileDataGridTree {
   constructor(formatter, searchableView, rootProfileNode, total) {
     super(formatter, searchableView, total);
     this._remainingChildren = rootProfileNode.children;
-    Profiler.ProfileDataGridNode.populate(this);
+    ProfileDataGridNode.populate(this);
   }
 
   /**
-   * @param {!Profiler.ProfileDataGridNode} profileDataGridNode
+   * @param {!ProfileDataGridNode} profileDataGridNode
    */
   focus(profileDataGridNode) {
     if (!profileDataGridNode) {
@@ -119,7 +121,7 @@ export class TopDownProfileDataGridTree extends Profiler.ProfileDataGridTree {
   }
 
   /**
-   * @param {!Profiler.ProfileDataGridNode} profileDataGridNode
+   * @param {!ProfileDataGridNode} profileDataGridNode
    */
   exclude(profileDataGridNode) {
     if (!profileDataGridNode) {
@@ -155,15 +157,3 @@ export class TopDownProfileDataGridTree extends Profiler.ProfileDataGridTree {
     TopDownProfileDataGridNode._sharedPopulate(this);
   }
 }
-
-/* Legacy exported object */
-self.Profiler = self.Profiler || {};
-
-/* Legacy exported object */
-Profiler = Profiler || {};
-
-/** @constructor */
-Profiler.TopDownProfileDataGridNode = TopDownProfileDataGridNode;
-
-/** @constructor */
-Profiler.TopDownProfileDataGridTree = TopDownProfileDataGridTree;

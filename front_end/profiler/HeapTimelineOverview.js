@@ -5,7 +5,7 @@
 /**
  * @unrestricted
  */
-export default class HeapTimelineOverview extends UI.VBox {
+export class HeapTimelineOverview extends UI.VBox {
   constructor() {
     super();
     this.element.id = 'heap-recording-view';
@@ -362,23 +362,3 @@ export class OverviewCalculator {
     return this._maximumBoundaries - this._minimumBoundaries;
   }
 }
-
-/* Legacy exported object */
-self.Profiler = self.Profiler || {};
-
-/* Legacy exported object */
-Profiler = Profiler || {};
-
-/** @constructor */
-Profiler.HeapTimelineOverview = HeapTimelineOverview;
-
-Profiler.HeapTimelineOverview.IdsRangeChanged = IdsRangeChanged;
-
-/** @constructor */
-Profiler.HeapTimelineOverview.SmoothScale = SmoothScale;
-
-/** @constructor */
-Profiler.HeapTimelineOverview.Samples = Samples;
-
-/** @constructor */
-Profiler.HeapTimelineOverview.OverviewCalculator = OverviewCalculator;

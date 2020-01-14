@@ -23,11 +23,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import {ProfileFlameChartDataProvider} from './CPUProfileFlameChart.js';
+import {Formatter, ProfileDataGridNode} from './ProfileDataGrid.js';           // eslint-disable-line no-unused-vars
+import {ProfileEvents, ProfileHeader, ProfileType} from './ProfileHeader.js';  // eslint-disable-line no-unused-vars
+import {ProfileView, WritableProfileHeader} from './ProfileView.js';
+
 /**
  * @implements {UI.Searchable}
  * @unrestricted
  */
-export default class CPUProfileView extends Profiler.ProfileView {
+export class CPUProfileView extends ProfileView {
   /**
    * @param {!CPUProfileHeader} profileHeader
    */
@@ -68,7 +73,7 @@ export default class CPUProfileView extends Profiler.ProfileView {
 
   /**
    * @override
-   * @return {!Profiler.ProfileFlameChartDataProvider}
+   * @return {!ProfileFlameChartDataProvider}
    */
   createFlameChartDataProvider() {
     return new CPUFlameChartDataProvider(this._profileHeader.profileModel(), this._profileHeader._cpuProfilerModel);
@@ -78,7 +83,7 @@ export default class CPUProfileView extends Profiler.ProfileView {
 /**
  * @unrestricted
  */
-export class CPUProfileType extends Profiler.ProfileType {
+export class CPUProfileType extends ProfileType {
   constructor() {
     super(CPUProfileType.TypeId, Common.UIString('Record JavaScript CPU Profile'));
     this._recording = false;
@@ -189,13 +194,13 @@ export class CPUProfileType extends Profiler.ProfileType {
     }
 
     await SDK.targetManager.resumeAllTargets();
-    this.dispatchEventToListeners(Profiler.ProfileType.Events.ProfileComplete, recordedProfile);
+    this.dispatchEventToListeners(ProfileEvents.ProfileComplete, recordedProfile);
   }
 
   /**
    * @override
    * @param {string} title
-   * @return {!Profiler.ProfileHeader}
+   * @return {!ProfileHeader}
    */
   createProfileLoadedFromFile(title) {
     return new CPUProfileHeader(null, this, title);
@@ -214,7 +219,7 @@ CPUProfileType.TypeId = 'CPU';
 /**
  * @unrestricted
  */
-export class CPUProfileHeader extends Profiler.WritableProfileHeader {
+export class CPUProfileHeader extends WritableProfileHeader {
   /**
    * @param {?SDK.CPUProfilerModel} cpuProfilerModel
    * @param {!CPUProfileType} type
@@ -227,7 +232,7 @@ export class CPUProfileHeader extends Profiler.WritableProfileHeader {
 
   /**
    * @override
-   * @return {!Profiler.ProfileView}
+   * @return {!ProfileView}
    */
   createView() {
     return new CPUProfileView(this);
@@ -258,7 +263,7 @@ export class CPUProfileHeader extends Profiler.WritableProfileHeader {
 }
 
 /**
- * @implements {Profiler.ProfileDataGridNode.Formatter}
+ * @implements {Formatter}
  * @unrestricted
  */
 export class NodeFormatter {
@@ -290,7 +295,7 @@ export class NodeFormatter {
   /**
    * @override
    * @param {number} value
-   * @param {!Profiler.ProfileDataGridNode} node
+   * @param {!ProfileDataGridNode} node
    * @return {string}
    */
   formatPercent(value, node) {
@@ -299,7 +304,7 @@ export class NodeFormatter {
 
   /**
    * @override
-   * @param  {!Profiler.ProfileDataGridNode} node
+   * @param  {!ProfileDataGridNode} node
    * @return {?Element}
    */
   linkifyNode(node) {
@@ -313,7 +318,7 @@ export class NodeFormatter {
 /**
  * @unrestricted
  */
-export class CPUFlameChartDataProvider extends Profiler.ProfileFlameChartDataProvider {
+export class CPUFlameChartDataProvider extends ProfileFlameChartDataProvider {
   /**
    * @param {!SDK.CPUProfileDataModel} cpuProfile
    * @param {?SDK.CPUProfilerModel} cpuProfilerModel
@@ -434,7 +439,7 @@ export class CPUFlameChartDataProvider extends Profiler.ProfileFlameChartDataPro
       pushEntryInfoRow(ls`Not optimized`, node.deoptReason);
     }
 
-    return Profiler.ProfileView.buildPopoverTable(entryInfo);
+    return ProfileView.buildPopoverTable(entryInfo);
   }
 }
 
@@ -457,24 +462,3 @@ CPUFlameChartDataProvider.ChartEntry = class {
     this.node = node;
   }
 };
-
-/* Legacy exported object */
-self.Profiler = self.Profiler || {};
-
-/* Legacy exported object */
-Profiler = Profiler || {};
-
-/** @constructor */
-Profiler.CPUProfileView = CPUProfileView;
-
-/** @constructor */
-Profiler.CPUProfileView.NodeFormatter = NodeFormatter;
-
-/** @constructor */
-Profiler.CPUProfileType = CPUProfileType;
-
-/** @constructor */
-Profiler.CPUProfileHeader = CPUProfileHeader;
-
-/** @constructor */
-Profiler.CPUFlameChartDataProvider = CPUFlameChartDataProvider;

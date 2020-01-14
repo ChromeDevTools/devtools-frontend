@@ -2,11 +2,17 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {ProfileFlameChartDataProvider} from './CPUProfileFlameChart.js';
+import {HeapTimelineOverview, IdsRangeChanged, Samples} from './HeapTimelineOverview.js';  // eslint-disable-line no-unused-vars
+import {Formatter, ProfileDataGridNode} from './ProfileDataGrid.js';           // eslint-disable-line no-unused-vars
+import {ProfileEvents, ProfileHeader, ProfileType} from './ProfileHeader.js';  // eslint-disable-line no-unused-vars
+import {ProfileView, ViewTypes, WritableProfileHeader} from './ProfileView.js';
+
 /**
  * @implements {UI.Searchable}
  * @unrestricted
  */
-export default class HeapProfileView extends Profiler.ProfileView {
+export class HeapProfileView extends ProfileView {
   /**
    * @param {!SamplingHeapProfileHeader} profileHeader
    */
@@ -15,14 +21,12 @@ export default class HeapProfileView extends Profiler.ProfileView {
 
     this._profileHeader = profileHeader;
     this._profileType = profileHeader.profileType();
-    const views = [
-      Profiler.ProfileView.ViewTypes.Flame, Profiler.ProfileView.ViewTypes.Heavy, Profiler.ProfileView.ViewTypes.Tree
-    ];
+    const views = [ViewTypes.Flame, ViewTypes.Heavy, ViewTypes.Tree];
 
     const isNativeProfile = this._profileType.id === SamplingNativeHeapProfileType.TypeId ||
         this._profileType.id === SamplingNativeHeapSnapshotType.TypeId;
     if (isNativeProfile) {
-      views.push(Profiler.ProfileView.ViewTypes.Text);
+      views.push(ViewTypes.Text);
     }
 
     this.initialize(new NodeFormatter(this), views);
@@ -33,14 +37,13 @@ export default class HeapProfileView extends Profiler.ProfileView {
     this._selectedSizeText = new UI.ToolbarText();
 
     if (Root.Runtime.experiments.isEnabled('samplingHeapProfilerTimeline')) {
-      this._timelineOverview = new Profiler.HeapTimelineOverview();
-      this._timelineOverview.addEventListener(
-          Profiler.HeapTimelineOverview.IdsRangeChanged, this._onIdsRangeChanged.bind(this));
+      this._timelineOverview = new HeapTimelineOverview();
+      this._timelineOverview.addEventListener(IdsRangeChanged, this._onIdsRangeChanged.bind(this));
       this._timelineOverview.show(this.element, this.element.firstChild);
       this._timelineOverview.start();
 
       this._profileType.addEventListener(SamplingHeapProfileType.Events.StatsUpdate, this._onStatsUpdate, this);
-      this._profileType.once(Profiler.ProfileType.Events.ProfileComplete).then(() => {
+      this._profileType.once(ProfileEvents.ProfileComplete).then(() => {
         this._profileType.removeEventListener(SamplingHeapProfileType.Events.StatsUpdate, this._onStatsUpdate, this);
         this._timelineOverview.stop();
         this._timelineOverview.updateGrid();
@@ -107,7 +110,7 @@ export default class HeapProfileView extends Profiler.ProfileView {
       this._totalTime *= 2;
     }
 
-    const samples = /** @type {!Profiler.HeapTimelineOverview.Samples} */ ({
+    const samples = /** @type {!Samples} */ ({
       sizes: this._sizes,
       max: this._max,
       ids: this._ordinals,
@@ -135,7 +138,7 @@ export default class HeapProfileView extends Profiler.ProfileView {
 
   /**
    * @override
-   * @return {!Profiler.ProfileFlameChartDataProvider}
+   * @return {!ProfileFlameChartDataProvider}
    */
   createFlameChartDataProvider() {
     return new HeapFlameChartDataProvider(
@@ -219,7 +222,7 @@ export default class HeapProfileView extends Profiler.ProfileView {
 /**
  * @unrestricted
  */
-export class SamplingHeapProfileTypeBase extends Profiler.ProfileType {
+export class SamplingHeapProfileTypeBase extends ProfileType {
   /**
    * @param {string} typeId
    * @param {string} description
@@ -307,13 +310,13 @@ export class SamplingHeapProfileTypeBase extends Profiler.ProfileType {
       this.setProfileBeingRecorded(null);
     }
     UI.inspectorView.setPanelIcon('heap_profiler', null);
-    this.dispatchEventToListeners(Profiler.ProfileType.Events.ProfileComplete, recordedProfile);
+    this.dispatchEventToListeners(ProfileEvents.ProfileComplete, recordedProfile);
   }
 
   /**
    * @override
    * @param {string} title
-   * @return {!Profiler.ProfileHeader}
+   * @return {!ProfileHeader}
    */
   createProfileLoadedFromFile(title) {
     return new SamplingHeapProfileHeader(null, this, title);
@@ -522,7 +525,7 @@ export class SamplingNativeHeapSnapshotType extends SamplingHeapProfileTypeBase 
       this.setProfileBeingRecorded(null);
     }
 
-    this.dispatchEventToListeners(Profiler.ProfileType.Events.ProfileComplete, recordedProfile);
+    this.dispatchEventToListeners(ProfileEvents.ProfileComplete, recordedProfile);
   }
 
   /**
@@ -571,7 +574,7 @@ export class SamplingNativeHeapSnapshotRendererType extends SamplingNativeHeapSn
 /**
  * @unrestricted
  */
-export class SamplingHeapProfileHeader extends Profiler.WritableProfileHeader {
+export class SamplingHeapProfileHeader extends WritableProfileHeader {
   /**
    * @param {?SDK.HeapProfilerModel} heapProfilerModel
    * @param {!SamplingHeapProfileTypeBase} type
@@ -588,10 +591,10 @@ export class SamplingHeapProfileHeader extends Profiler.WritableProfileHeader {
 
   /**
    * @override
-   * @return {!Profiler.ProfileView}
+   * @return {!ProfileView}
    */
   createView() {
-    return new Profiler.HeapProfileView(this);
+    return new HeapProfileView(this);
   }
 
   /**
@@ -697,12 +700,12 @@ export class SamplingHeapProfileModel extends SDK.ProfileTreeModel {
 }
 
 /**
- * @implements {Profiler.ProfileDataGridNode.Formatter}
+ * @implements {Formatter}
  * @unrestricted
  */
 export class NodeFormatter {
   /**
-   * @param {!Profiler.HeapProfileView} profileView
+   * @param {!HeapProfileView} profileView
    */
   constructor(profileView) {
     this._profileView = profileView;
@@ -729,7 +732,7 @@ export class NodeFormatter {
   /**
    * @override
    * @param {number} value
-   * @param {!Profiler.ProfileDataGridNode} node
+   * @param {!ProfileDataGridNode} node
    * @return {string}
    */
   formatPercent(value, node) {
@@ -738,7 +741,7 @@ export class NodeFormatter {
 
   /**
    * @override
-   * @param  {!Profiler.ProfileDataGridNode} node
+   * @param  {!ProfileDataGridNode} node
    * @return {?Element}
    */
   linkifyNode(node) {
@@ -752,7 +755,7 @@ export class NodeFormatter {
 /**
  * @unrestricted
  */
-export class HeapFlameChartDataProvider extends Profiler.ProfileFlameChartDataProvider {
+export class HeapFlameChartDataProvider extends ProfileFlameChartDataProvider {
   /**
    * @param {!SDK.ProfileTreeModel} profile
    * @param {?SDK.HeapProfilerModel} heapProfilerModel
@@ -865,48 +868,6 @@ export class HeapFlameChartDataProvider extends Profiler.ProfileFlameChartDataPr
       pushEntryInfoRow(ls`URL`, link.textContent);
     }
     linkifier.dispose();
-    return Profiler.ProfileView.buildPopoverTable(entryInfo);
+    return ProfileView.buildPopoverTable(entryInfo);
   }
 }
-
-/* Legacy exported object */
-self.Profiler = self.Profiler || {};
-
-/* Legacy exported object */
-Profiler = Profiler || {};
-
-/** @constructor */
-Profiler.HeapProfileView = HeapProfileView;
-
-/** @constructor */
-Profiler.HeapProfileView.NodeFormatter = NodeFormatter;
-
-/** @constructor */
-Profiler.SamplingHeapProfileTypeBase = SamplingHeapProfileTypeBase;
-
-/** @constructor */
-Profiler.SamplingHeapProfileType = SamplingHeapProfileType;
-
-/** @constructor */
-Profiler.SamplingNativeHeapProfileType = SamplingNativeHeapProfileType;
-
-/** @constructor */
-Profiler.SamplingNativeHeapSnapshotType = SamplingNativeHeapSnapshotType;
-
-/** @constructor */
-Profiler.SamplingNativeHeapSnapshotBrowserType = SamplingNativeHeapSnapshotBrowserType;
-
-/** @constructor */
-Profiler.SamplingNativeHeapSnapshotRendererType = SamplingNativeHeapSnapshotRendererType;
-
-/** @constructor */
-Profiler.SamplingHeapProfileHeader = SamplingHeapProfileHeader;
-
-/** @constructor */
-Profiler.SamplingHeapProfileNode = SamplingHeapProfileNode;
-
-/** @constructor */
-Profiler.SamplingHeapProfileModel = SamplingHeapProfileModel;
-
-/** @constructor */
-Profiler.HeapFlameChartDataProvider = HeapFlameChartDataProvider;

@@ -6,7 +6,7 @@
  * @implements {UI.ListDelegate<!ListItem>}
  * @implements {SDK.IsolateManager.Observer}
  */
-export default class IsolateSelector extends UI.VBox {
+export class IsolateSelector extends UI.VBox {
   constructor() {
     super(false);
 
@@ -268,15 +268,3 @@ export class ListItem {
     }
   }
 }
-
-/* Legacy exported object */
-self.Profiler = self.Profiler || {};
-
-/* Legacy exported object */
-Profiler = Profiler || {};
-
-/** @constructor */
-Profiler.IsolateSelector = IsolateSelector;
-
-/** @constructor */
-Profiler.IsolateSelector.ListItem = ListItem;

@@ -28,12 +28,17 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import {ChildrenProvider} from './ChildrenProvider.js';  // eslint-disable-line no-unused-vars
+import {AllocationDataGrid, HeapSnapshotConstructorsDataGrid, HeapSnapshotDiffDataGrid, HeapSnapshotRetainmentDataGrid, HeapSnapshotSortableDataGrid,} from './HeapSnapshotDataGrids.js';  // eslint-disable-line no-unused-vars
+import {HeapSnapshotProviderProxy, HeapSnapshotProxy} from './HeapSnapshotProxy.js';  // eslint-disable-line no-unused-vars
+import {DataDisplayDelegate} from './ProfileHeader.js';  // eslint-disable-line no-unused-vars
+
 /**
  * @unrestricted
  */
 export class HeapSnapshotGridNode extends DataGrid.DataGridNode {
   /**
-   * @param {!Profiler.HeapSnapshotSortableDataGrid} tree
+   * @param {!HeapSnapshotSortableDataGrid} tree
    * @param {boolean} hasChildren
    */
   constructor(tree, hasChildren) {
@@ -65,7 +70,7 @@ export class HeapSnapshotGridNode extends DataGrid.DataGridNode {
   }
 
   /**
-   * @return {!Profiler.HeapSnapshotSortableDataGrid}
+   * @return {!HeapSnapshotSortableDataGrid}
    */
   heapSnapshotDataGrid() {
     return this._dataGrid;
@@ -79,7 +84,7 @@ export class HeapSnapshotGridNode extends DataGrid.DataGridNode {
   }
 
   /**
-   * @return {?{snapshot:!Profiler.HeapSnapshotProxy, snapshotNodeIndex:number}}
+   * @return {?{snapshot:!HeapSnapshotProxy, snapshotNodeIndex:number}}
    */
   retainersDataSource() {
     return null;
@@ -153,7 +158,7 @@ export class HeapSnapshotGridNode extends DataGrid.DataGridNode {
 
   /**
    * @param {!UI.ContextMenu} contextMenu
-   * @param {!Profiler.ProfileType.DataDisplayDelegate} dataDisplayDelegate
+   * @param {!DataDisplayDelegate} dataDisplayDelegate
    * @param {?SDK.HeapProfilerModel} heapProfilerModel
    */
   populateContextMenu(contextMenu, dataDisplayDelegate, heapProfilerModel) {
@@ -452,46 +457,11 @@ HeapSnapshotGridNode.Events = {
 };
 
 /**
- * @interface
- */
-export class ChildrenProvider {
-  dispose() {
-  }
-
-  /**
-   * @param {number} snapshotObjectId
-   * @return {!Promise<number>}
-   */
-  nodePosition(snapshotObjectId) {
-  }
-
-  /**
-   * @return {!Promise<boolean>}
-   */
-  isEmpty() {
-  }
-
-  /**
-   * @param {number} startPosition
-   * @param {number} endPosition
-   * @return {!Promise<!HeapSnapshotModel.ItemsRange>}
-   */
-  serializeItemsRange(startPosition, endPosition) {
-  }
-
-  /**
-   * @param {!HeapSnapshotModel.ComparatorConfig} comparator
-   * @return {!Promise<?>}
-   */
-  sortAndRewind(comparator) {}
-}
-
-/**
  * @unrestricted
  */
 export class HeapSnapshotGenericObjectNode extends HeapSnapshotGridNode {
   /**
-   * @param {!Profiler.HeapSnapshotSortableDataGrid} dataGrid
+   * @param {!HeapSnapshotSortableDataGrid} dataGrid
    * @param {!HeapSnapshotModel.Node} node
    */
   constructor(dataGrid, node) {
@@ -533,7 +503,7 @@ export class HeapSnapshotGenericObjectNode extends HeapSnapshotGridNode {
 
   /**
    * @override
-   * @return {?{snapshot:!Profiler.HeapSnapshotProxy, snapshotNodeIndex:number}}
+   * @return {?{snapshot:!HeapSnapshotProxy, snapshotNodeIndex:number}}
    */
   retainersDataSource() {
     return {snapshot: this._dataGrid.snapshot, snapshotNodeIndex: this.snapshotNodeIndex};
@@ -692,7 +662,7 @@ export class HeapSnapshotGenericObjectNode extends HeapSnapshotGridNode {
   /**
    * @override
    * @param {!UI.ContextMenu} contextMenu
-   * @param {!Profiler.ProfileType.DataDisplayDelegate} dataDisplayDelegate
+   * @param {!DataDisplayDelegate} dataDisplayDelegate
    * @param {?SDK.HeapProfilerModel} heapProfilerModel
    */
   populateContextMenu(contextMenu, dataDisplayDelegate, heapProfilerModel) {
@@ -729,8 +699,8 @@ export class HeapSnapshotGenericObjectNode extends HeapSnapshotGridNode {
  */
 export class HeapSnapshotObjectNode extends HeapSnapshotGenericObjectNode {
   /**
-   * @param {!Profiler.HeapSnapshotSortableDataGrid} dataGrid
-   * @param {!Profiler.HeapSnapshotProxy} snapshot
+   * @param {!HeapSnapshotSortableDataGrid} dataGrid
+   * @param {!HeapSnapshotProxy} snapshot
    * @param {!HeapSnapshotModel.Edge} edge
    * @param {?HeapSnapshotObjectNode} parentObjectNode
    */
@@ -759,7 +729,7 @@ export class HeapSnapshotObjectNode extends HeapSnapshotGenericObjectNode {
 
   /**
    * @override
-   * @return {?{snapshot:!Profiler.HeapSnapshotProxy, snapshotNodeIndex:number}}
+   * @return {?{snapshot:!HeapSnapshotProxy, snapshotNodeIndex:number}}
    */
   retainersDataSource() {
     return {snapshot: this._snapshot, snapshotNodeIndex: this.snapshotNodeIndex};
@@ -767,7 +737,7 @@ export class HeapSnapshotObjectNode extends HeapSnapshotGenericObjectNode {
 
   /**
    * @override
-   * @return {!Profiler.HeapSnapshotProviderProxy}
+   * @return {!HeapSnapshotProviderProxy}
    */
   createProvider() {
     return this._snapshot.createEdgesProvider(this.snapshotNodeIndex);
@@ -865,8 +835,8 @@ export class HeapSnapshotObjectNode extends HeapSnapshotGenericObjectNode {
  */
 export class HeapSnapshotRetainingObjectNode extends HeapSnapshotObjectNode {
   /**
-   * @param {!Profiler.HeapSnapshotSortableDataGrid} dataGrid
-   * @param {!Profiler.HeapSnapshotProxy} snapshot
+   * @param {!HeapSnapshotSortableDataGrid} dataGrid
+   * @param {!HeapSnapshotProxy} snapshot
    * @param {!HeapSnapshotModel.Edge} edge
    * @param {?HeapSnapshotRetainingObjectNode} parentRetainingObjectNode
    */
@@ -876,7 +846,7 @@ export class HeapSnapshotRetainingObjectNode extends HeapSnapshotObjectNode {
 
   /**
    * @override
-   * @return {!Profiler.HeapSnapshotProviderProxy}
+   * @return {!HeapSnapshotProviderProxy}
    */
   createProvider() {
     return this._snapshot.createRetainingEdgesProvider(this.snapshotNodeIndex);
@@ -923,7 +893,7 @@ export class HeapSnapshotRetainingObjectNode extends HeapSnapshotObjectNode {
         return;
       }
     }
-    this._dataGrid.dispatchEventToListeners(Profiler.HeapSnapshotRetainmentDataGrid.Events.ExpandRetainersComplete);
+    this._dataGrid.dispatchEventToListeners(HeapSnapshotRetainmentDataGrid.Events.ExpandRetainersComplete);
   }
 }
 
@@ -932,8 +902,8 @@ export class HeapSnapshotRetainingObjectNode extends HeapSnapshotObjectNode {
  */
 export class HeapSnapshotInstanceNode extends HeapSnapshotGenericObjectNode {
   /**
-   * @param {!Profiler.HeapSnapshotSortableDataGrid} dataGrid
-   * @param {!Profiler.HeapSnapshotProxy} snapshot
+   * @param {!HeapSnapshotSortableDataGrid} dataGrid
+   * @param {!HeapSnapshotProxy} snapshot
    * @param {!HeapSnapshotModel.Node} node
    * @param {boolean} isDeletedNode
    */
@@ -962,7 +932,7 @@ export class HeapSnapshotInstanceNode extends HeapSnapshotGenericObjectNode {
 
   /**
    * @override
-   * @return {?{snapshot:!Profiler.HeapSnapshotProxy, snapshotNodeIndex:number}}
+   * @return {?{snapshot:!HeapSnapshotProxy, snapshotNodeIndex:number}}
    */
   retainersDataSource() {
     return {snapshot: this._baseSnapshotOrSnapshot, snapshotNodeIndex: this.snapshotNodeIndex};
@@ -970,7 +940,7 @@ export class HeapSnapshotInstanceNode extends HeapSnapshotGenericObjectNode {
 
   /**
    * @override
-   * @return {!Profiler.HeapSnapshotProviderProxy}
+   * @return {!HeapSnapshotProviderProxy}
    */
   createProvider() {
     return this._baseSnapshotOrSnapshot.createEdgesProvider(this.snapshotNodeIndex);
@@ -1025,7 +995,7 @@ export class HeapSnapshotInstanceNode extends HeapSnapshotGenericObjectNode {
  */
 export class HeapSnapshotConstructorNode extends HeapSnapshotGridNode {
   /**
-   * @param {!Profiler.HeapSnapshotConstructorsDataGrid} dataGrid
+   * @param {!HeapSnapshotConstructorsDataGrid} dataGrid
    * @param {string} className
    * @param {!HeapSnapshotModel.Aggregate} aggregate
    * @param {!HeapSnapshotModel.NodeFilter} nodeFilter
@@ -1055,7 +1025,7 @@ export class HeapSnapshotConstructorNode extends HeapSnapshotGridNode {
 
   /**
    * @override
-   * @return {!Profiler.HeapSnapshotProviderProxy}
+   * @return {!HeapSnapshotProviderProxy}
    */
   createProvider() {
     return this._dataGrid.snapshot.createNodesProviderForClass(this._name, this._nodeFilter);
@@ -1151,7 +1121,7 @@ export class HeapSnapshotConstructorNode extends HeapSnapshotGridNode {
  */
 export class HeapSnapshotDiffNodesProvider {
   /**
-   * @param {!Profiler.HeapSnapshotProviderProxy} addedNodesProvider
+   * @param {!HeapSnapshotProviderProxy} addedNodesProvider
    * @param {!Profiler.HeapSnapshotProviderProxy} deletedNodesProvider
    * @param {number} addedCount
    * @param {number} removedCount
@@ -1245,7 +1215,7 @@ export class HeapSnapshotDiffNodesProvider {
  */
 export class HeapSnapshotDiffNode extends HeapSnapshotGridNode {
   /**
-   * @param {!Profiler.HeapSnapshotDiffDataGrid} dataGrid
+   * @param {!HeapSnapshotDiffDataGrid} dataGrid
    * @param {string} className
    * @param {!HeapSnapshotModel.DiffForClass} diffForClass
    */
@@ -1365,7 +1335,7 @@ export class HeapSnapshotDiffNode extends HeapSnapshotGridNode {
  */
 export class AllocationGridNode extends HeapSnapshotGridNode {
   /**
-   * @param {!Profiler.AllocationDataGrid} dataGrid
+   * @param {!AllocationDataGrid} dataGrid
    * @param {!HeapSnapshotModel.SerializedAllocationNode} data
    */
   constructor(dataGrid, data) {
@@ -1398,7 +1368,7 @@ export class AllocationGridNode extends HeapSnapshotGridNode {
 
     const callersChain = callers.nodesWithSingleCaller;
     let parentNode = this;
-    const dataGrid = /** @type {!Profiler.AllocationDataGrid} */ (this._dataGrid);
+    const dataGrid = /** @type {!AllocationDataGrid} */ (this._dataGrid);
     for (const caller of callersChain) {
       const child = new AllocationGridNode(dataGrid, caller);
       dataGrid.appendNode(parentNode, child);
@@ -1458,39 +1428,3 @@ export class AllocationGridNode extends HeapSnapshotGridNode {
     return this._allocationNode.id;
   }
 }
-
-/* Legacy exported object */
-self.Profiler = self.Profiler || {};
-
-/* Legacy exported object */
-Profiler = Profiler || {};
-
-/** @constructor */
-Profiler.HeapSnapshotGridNode = HeapSnapshotGridNode;
-
-/** @interface */
-Profiler.HeapSnapshotGridNode.ChildrenProvider = ChildrenProvider;
-
-/** @constructor */
-Profiler.HeapSnapshotGenericObjectNode = HeapSnapshotGenericObjectNode;
-
-/** @constructor */
-Profiler.HeapSnapshotObjectNode = HeapSnapshotObjectNode;
-
-/** @constructor */
-Profiler.HeapSnapshotRetainingObjectNode = HeapSnapshotRetainingObjectNode;
-
-/** @constructor */
-Profiler.HeapSnapshotInstanceNode = HeapSnapshotInstanceNode;
-
-/** @constructor */
-Profiler.HeapSnapshotConstructorNode = HeapSnapshotConstructorNode;
-
-/** @constructor */
-Profiler.HeapSnapshotDiffNodesProvider = HeapSnapshotDiffNodesProvider;
-
-/** @constructor */
-Profiler.HeapSnapshotDiffNode = HeapSnapshotDiffNode;
-
-/** @constructor */
-Profiler.AllocationGridNode = AllocationGridNode;

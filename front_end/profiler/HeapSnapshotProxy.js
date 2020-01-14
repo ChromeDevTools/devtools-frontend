@@ -28,6 +28,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import {ChildrenProvider} from './ChildrenProvider.js';  // eslint-disable-line no-unused-vars
+
 /**
  * @unrestricted
  */
@@ -301,7 +303,7 @@ export class HeapSnapshotLoaderProxy extends HeapSnapshotProxyObject {
 /**
  * @unrestricted
  */
-export default class HeapSnapshotProxy extends HeapSnapshotProxyObject {
+export class HeapSnapshotProxy extends HeapSnapshotProxyObject {
   /**
    * @param {!HeapSnapshotWorkerProxy} worker
    * @param {number} objectId
@@ -493,7 +495,7 @@ export default class HeapSnapshotProxy extends HeapSnapshotProxyObject {
 }
 
 /**
- * @implements {Profiler.HeapSnapshotGridNode.ChildrenProvider}
+ * @implements {ChildrenProvider}
  * @unrestricted
  */
 export class HeapSnapshotProviderProxy extends HeapSnapshotProxyObject {
@@ -541,24 +543,3 @@ export class HeapSnapshotProviderProxy extends HeapSnapshotProxyObject {
     return this._callMethodPromise('sortAndRewind', comparator);
   }
 }
-
-/* Legacy exported object */
-self.Profiler = self.Profiler || {};
-
-/* Legacy exported object */
-Profiler = Profiler || {};
-
-/** @constructor */
-Profiler.HeapSnapshotProxy = HeapSnapshotProxy;
-
-/** @constructor */
-Profiler.HeapSnapshotWorkerProxy = HeapSnapshotWorkerProxy;
-
-/** @constructor */
-Profiler.HeapSnapshotProxyObject = HeapSnapshotProxyObject;
-
-/** @constructor */
-Profiler.HeapSnapshotLoaderProxy = HeapSnapshotLoaderProxy;
-
-/** @constructor */
-Profiler.HeapSnapshotProviderProxy = HeapSnapshotProviderProxy;

@@ -195,7 +195,7 @@ export class ProfileFlameChartDataProvider {
  * @implements {UI.Searchable}
  * @unrestricted
  */
-export default class CPUProfileFlameChart extends UI.VBox {
+export class CPUProfileFlameChart extends UI.VBox {
   /**
    * @param {!UI.SearchableView} searchableView
    * @param {!ProfileFlameChartDataProvider} dataProvider
@@ -590,21 +590,3 @@ export class OverviewPane extends UI.VBox {
     this._overviewCanvas.style.height = height + 'px';
   }
 }
-
-/* Legacy exported object */
-self.Profiler = self.Profiler || {};
-
-/* Legacy exported object */
-Profiler = Profiler || {};
-
-/** @constructor */
-Profiler.CPUProfileFlameChart = CPUProfileFlameChart;
-
-/** @constructor */
-Profiler.CPUProfileFlameChart.OverviewCalculator = OverviewCalculator;
-
-/** @constructor */
-Profiler.CPUProfileFlameChart.OverviewPane = OverviewPane;
-
-/** @constructor */
-Profiler.ProfileFlameChartDataProvider = ProfileFlameChartDataProvider;

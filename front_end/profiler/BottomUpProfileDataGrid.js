@@ -28,13 +28,16 @@
 // each child still represent the root node. We have to be particularly careful of recursion with this mode
 // because a root node can represent itself AND an ancestor.
 
+import {Formatter, ProfileDataGridNode, ProfileDataGridTree} from './ProfileDataGrid.js';  // eslint-disable-line no-unused-vars
+import {TopDownProfileDataGridTree} from './TopDownProfileDataGrid.js';  // eslint-disable-line no-unused-vars
+
 /**
  * @unrestricted
  */
-export class BottomUpProfileDataGridNode extends Profiler.ProfileDataGridNode {
+export class BottomUpProfileDataGridNode extends ProfileDataGridNode {
   /**
    * @param {!SDK.ProfileNode} profileNode
-   * @param {!Profiler.TopDownProfileDataGridTree} owningTree
+   * @param {!TopDownProfileDataGridTree} owningTree
    */
   constructor(profileNode, owningTree) {
     super(profileNode, owningTree, !!profileNode.parent && !!profileNode.parent.parent);
@@ -66,8 +69,7 @@ export class BottomUpProfileDataGridNode extends Profiler.ProfileDataGridNode {
       } else {
         // If not, add it as a true ancestor.
         // In heavy mode, we take our visual identity from ancestor node...
-        child = new BottomUpProfileDataGridNode(
-            ancestor, /** @type {!Profiler.TopDownProfileDataGridTree} */ (container.tree));
+        child = new BottomUpProfileDataGridNode(ancestor, /** @type {!TopDownProfileDataGridTree} */ (container.tree));
 
         if (ancestor !== focusNode) {
           // But the actual statistics from the "root" node (bottom of the callstack).
@@ -89,7 +91,7 @@ export class BottomUpProfileDataGridNode extends Profiler.ProfileDataGridNode {
   }
 
   /**
-   * @param {!Profiler.ProfileDataGridNode} profileDataGridNode
+   * @param {!ProfileDataGridNode} profileDataGridNode
    */
   _takePropertiesFromProfileDataGridNode(profileDataGridNode) {
     this.save();
@@ -99,7 +101,7 @@ export class BottomUpProfileDataGridNode extends Profiler.ProfileDataGridNode {
 
   /**
    * When focusing, we keep just the members of the callstack.
-   * @param {!Profiler.ProfileDataGridNode} child
+   * @param {!ProfileDataGridNode} child
    */
   _keepOnlyChild(child) {
     this.save();
@@ -145,7 +147,7 @@ export class BottomUpProfileDataGridNode extends Profiler.ProfileDataGridNode {
 
   /**
    * @override
-   * @param {!Profiler.ProfileDataGridNode} child
+   * @param {!ProfileDataGridNode} child
    * @param {boolean} shouldAbsorb
    */
   merge(child, shouldAbsorb) {
@@ -170,9 +172,9 @@ export class BottomUpProfileDataGridNode extends Profiler.ProfileDataGridNode {
 /**
  * @unrestricted
  */
-export class BottomUpProfileDataGridTree extends Profiler.ProfileDataGridTree {
+export class BottomUpProfileDataGridTree extends ProfileDataGridTree {
   /**
-   * @param {!Profiler.ProfileDataGridNode.Formatter} formatter
+   * @param {!Formatter} formatter
    * @param {!UI.SearchableView} searchableView
    * @param {!SDK.ProfileNode} rootProfileNode
    * @param {number} total
@@ -236,14 +238,14 @@ export class BottomUpProfileDataGridTree extends Profiler.ProfileDataGridTree {
     }
 
     // Populate the top level nodes.
-    Profiler.ProfileDataGridNode.populate(this);
+    ProfileDataGridNode.populate(this);
 
     return this;
   }
 
   /**
    * When focusing, we keep the entire callstack up to this ancestor.
-   * @param {!Profiler.ProfileDataGridNode} profileDataGridNode
+   * @param {!ProfileDataGridNode} profileDataGridNode
    */
   focus(profileDataGridNode) {
     if (!profileDataGridNode) {
@@ -255,13 +257,13 @@ export class BottomUpProfileDataGridTree extends Profiler.ProfileDataGridTree {
     let currentNode = profileDataGridNode;
     let focusNode = profileDataGridNode;
 
-    while (currentNode.parent && (currentNode instanceof Profiler.ProfileDataGridNode)) {
+    while (currentNode.parent && (currentNode instanceof ProfileDataGridNode)) {
       currentNode._takePropertiesFromProfileDataGridNode(profileDataGridNode);
 
       focusNode = currentNode;
       currentNode = currentNode.parent;
 
-      if (currentNode instanceof Profiler.ProfileDataGridNode) {
+      if (currentNode instanceof ProfileDataGridNode) {
         currentNode._keepOnlyChild(focusNode);
       }
     }
@@ -271,7 +273,7 @@ export class BottomUpProfileDataGridTree extends Profiler.ProfileDataGridTree {
   }
 
   /**
-   * @param {!Profiler.ProfileDataGridNode} profileDataGridNode
+   * @param {!ProfileDataGridNode} profileDataGridNode
    */
   exclude(profileDataGridNode) {
     if (!profileDataGridNode) {
@@ -308,15 +310,3 @@ export class BottomUpProfileDataGridTree extends Profiler.ProfileDataGridTree {
     BottomUpProfileDataGridNode._sharedPopulate(this);
   }
 }
-
-/* Legacy exported object */
-self.Profiler = self.Profiler || {};
-
-/* Legacy exported object */
-Profiler = Profiler || {};
-
-/** @constructor */
-Profiler.BottomUpProfileDataGridNode = BottomUpProfileDataGridNode;
-
-/** @constructor */
-Profiler.BottomUpProfileDataGridTree = BottomUpProfileDataGridTree;

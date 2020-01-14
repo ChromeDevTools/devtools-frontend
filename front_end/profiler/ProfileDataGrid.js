@@ -715,18 +715,3 @@ export class Formatter {
    */
   linkifyNode(node) {}
 }
-
-/* Legacy exported object */
-self.Profiler = self.Profiler || {};
-
-/* Legacy exported object */
-Profiler = Profiler || {};
-
-/** @constructor */
-Profiler.ProfileDataGridNode = ProfileDataGridNode;
-
-/** @constructor */
-Profiler.ProfileDataGridTree = ProfileDataGridTree;
-
-/** @interface */
-Profiler.ProfileDataGridNode.Formatter = Formatter;

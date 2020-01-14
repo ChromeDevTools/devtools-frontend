@@ -2,10 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {SamplingHeapProfileNode} from './HeapProfileView.js';  // eslint-disable-line no-unused-vars
+
 /**
  * @extends {UI.VBox}
  */
-export default class LiveHeapProfileView extends UI.VBox {
+export class LiveHeapProfileView extends UI.VBox {
   constructor() {
     super(true);
     /** @type {!Map<string, !GridNode>} */
@@ -344,18 +346,3 @@ export class ActionDelegate {
     }
   }
 }
-
-/* Legacy exported object */
-self.Profiler = self.Profiler || {};
-
-/* Legacy exported object */
-Profiler = Profiler || {};
-
-/** @constructor */
-Profiler.LiveHeapProfileView = LiveHeapProfileView;
-
-/** @constructor */
-Profiler.LiveHeapProfileView.GridNode = GridNode;
-
-/** @constructor */
-Profiler.LiveHeapProfileView.ActionDelegate = ActionDelegate;

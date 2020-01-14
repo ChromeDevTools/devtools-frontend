@@ -23,14 +23,19 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import {DataDisplayDelegate, Events as ProfileHeaderEvents, ProfileEvents as ProfileTypeEvents, ProfileHeader, ProfileType} from './ProfileHeader.js';  // eslint-disable-line no-unused-vars
+import {Events as ProfileLauncherEvents, ProfileLauncherView} from './ProfileLauncherView.js';
+import {ProfileSidebarTreeElement} from './ProfileSidebarTreeElement.js';  // eslint-disable-line no-unused-vars
+import {instance} from './ProfileTypeRegistry.js';
+
 /**
- * @implements {Profiler.ProfileType.DataDisplayDelegate}
+ * @implements {DataDisplayDelegate}
  * @unrestricted
  */
-export default class ProfilesPanel extends UI.PanelWithSidebar {
+export class ProfilesPanel extends UI.PanelWithSidebar {
   /**
    * @param {string} name
-   * @param {!Array.<!Profiler.ProfileType>} profileTypes
+   * @param {!Array.<!ProfileType>} profileTypes
    * @param {string} recordingActionId
    */
   constructor(name, profileTypes, recordingActionId) {
@@ -81,9 +86,8 @@ export default class ProfilesPanel extends UI.PanelWithSidebar {
     this._profileViewToolbar = new UI.Toolbar('', this._toolbarElement);
 
     this._profileGroups = {};
-    this._launcherView = new Profiler.ProfileLauncherView(this);
-    this._launcherView.addEventListener(
-        Profiler.ProfileLauncherView.Events.ProfileTypeSelected, this._onProfileTypeSelected, this);
+    this._launcherView = new ProfileLauncherView(this);
+    this._launcherView.addEventListener(ProfileLauncherEvents.ProfileTypeSelected, this._onProfileTypeSelected, this);
 
     this._profileToView = [];
     this._typeIdToSidebarSection = {};
@@ -137,7 +141,7 @@ export default class ProfilesPanel extends UI.PanelWithSidebar {
 
   /**
    * @param {string} fileName
-   * @return {?Profiler.ProfileType}
+   * @return {?ProfileType}
    */
   _findProfileTypeByExtension(fileName) {
     return this._profileTypes.find(type => !!type.fileExtension() && fileName.endsWith(type.fileExtension() || '')) ||
@@ -225,7 +229,7 @@ export default class ProfilesPanel extends UI.PanelWithSidebar {
    * @param {!Common.Event} event
    */
   _onProfileTypeSelected(event) {
-    this._selectedProfileType = /** @type {!Profiler.ProfileType} */ (event.data);
+    this._selectedProfileType = /** @type {!ProfileType} */ (event.data);
     this._updateProfileTypeSpecificUI();
   }
 
@@ -262,7 +266,7 @@ export default class ProfilesPanel extends UI.PanelWithSidebar {
   }
 
   /**
-   * @param {!Profiler.ProfileType} profileType
+   * @param {!ProfileType} profileType
    */
   _registerProfileType(profileType) {
     this._launcherView.addProfileType(profileType);
@@ -277,7 +281,7 @@ export default class ProfilesPanel extends UI.PanelWithSidebar {
      * @this {ProfilesPanel}
      */
     function onAddProfileHeader(event) {
-      this._addProfileHeader(/** @type {!Profiler.ProfileHeader} */ (event.data));
+      this._addProfileHeader(/** @type {!ProfileHeader} */ (event.data));
     }
 
     /**
@@ -285,7 +289,7 @@ export default class ProfilesPanel extends UI.PanelWithSidebar {
      * @this {ProfilesPanel}
      */
     function onRemoveProfileHeader(event) {
-      this._removeProfileHeader(/** @type {!Profiler.ProfileHeader} */ (event.data));
+      this._removeProfileHeader(/** @type {!ProfileHeader} */ (event.data));
     }
 
     /**
@@ -293,13 +297,13 @@ export default class ProfilesPanel extends UI.PanelWithSidebar {
      * @this {ProfilesPanel}
      */
     function profileComplete(event) {
-      this.showProfile(/** @type {!Profiler.ProfileHeader} */ (event.data));
+      this.showProfile(/** @type {!ProfileHeader} */ (event.data));
     }
 
-    profileType.addEventListener(Profiler.ProfileType.Events.ViewUpdated, this._updateProfileTypeSpecificUI, this);
-    profileType.addEventListener(Profiler.ProfileType.Events.AddProfileHeader, onAddProfileHeader, this);
-    profileType.addEventListener(Profiler.ProfileType.Events.RemoveProfileHeader, onRemoveProfileHeader, this);
-    profileType.addEventListener(Profiler.ProfileType.Events.ProfileComplete, profileComplete, this);
+    profileType.addEventListener(ProfileTypeEvents.ViewUpdated, this._updateProfileTypeSpecificUI, this);
+    profileType.addEventListener(ProfileTypeEvents.AddProfileHeader, onAddProfileHeader, this);
+    profileType.addEventListener(ProfileTypeEvents.RemoveProfileHeader, onRemoveProfileHeader, this);
+    profileType.addEventListener(ProfileTypeEvents.ProfileComplete, profileComplete, this);
 
     const profiles = profileType.getProfiles();
     for (let i = 0; i < profiles.length; i++) {
@@ -324,7 +328,7 @@ export default class ProfilesPanel extends UI.PanelWithSidebar {
   }
 
   /**
-   * @param {!Profiler.ProfileHeader} profile
+   * @param {!ProfileHeader} profile
    */
   _addProfileHeader(profile) {
     const profileType = profile.profileType();
@@ -336,7 +340,7 @@ export default class ProfilesPanel extends UI.PanelWithSidebar {
   }
 
   /**
-   * @param {!Profiler.ProfileHeader} profile
+   * @param {!ProfileHeader} profile
    */
   _removeProfileHeader(profile) {
     if (profile.profileType().profileBeingRecorded() === profile) {
@@ -361,7 +365,7 @@ export default class ProfilesPanel extends UI.PanelWithSidebar {
 
   /**
    * @override
-   * @param {?Profiler.ProfileHeader} profile
+   * @param {?ProfileHeader} profile
    * @return {?UI.Widget}
    */
   showProfile(profile) {
@@ -413,7 +417,7 @@ export default class ProfilesPanel extends UI.PanelWithSidebar {
   }
 
   /**
-   * @param {!Profiler.ProfileHeader} profile
+   * @param {!ProfileHeader} profile
    * @return {!UI.Widget}
    */
   viewForProfile(profile) {
@@ -428,7 +432,7 @@ export default class ProfilesPanel extends UI.PanelWithSidebar {
   }
 
   /**
-   * @param {!Profiler.ProfileHeader} profile
+   * @param {!ProfileHeader} profile
    * @return {number}
    */
   _indexOfViewForProfile(profile) {
@@ -455,8 +459,8 @@ export default class ProfilesPanel extends UI.PanelWithSidebar {
  */
 export class ProfileTypeSidebarSection extends UI.TreeElement {
   /**
-   * @param {!Profiler.ProfileType.DataDisplayDelegate} dataDisplayDelegate
-   * @param {!Profiler.ProfileType} profileType
+   * @param {!DataDisplayDelegate} dataDisplayDelegate
+   * @param {!ProfileType} profileType
    */
   constructor(dataDisplayDelegate, profileType) {
     super(profileType.treeItemTitle.escapeHTML(), true);
@@ -472,13 +476,14 @@ export class ProfileTypeSidebarSection extends UI.TreeElement {
   }
 
   /**
-   * @param {!Profiler.ProfileHeader} profile
+   * @param {!ProfileHeader} profile
    */
   addProfileHeader(profile) {
     this.hidden = false;
     const profileType = profile.profileType();
     let sidebarParent = this;
-    const profileTreeElement = profile.createSidebarTreeElement(this._dataDisplayDelegate);
+    const profileTreeElement =
+        /** @type {!ProfileSidebarTreeElement} */ (profile.createSidebarTreeElement(this._dataDisplayDelegate));
     this._profileTreeElements.push(profileTreeElement);
 
     if (!profile.fromFile() && profileType.profileBeingRecorded() !== profile) {
@@ -525,7 +530,7 @@ export class ProfileTypeSidebarSection extends UI.TreeElement {
   }
 
   /**
-   * @param {!Profiler.ProfileHeader} profile
+   * @param {!ProfileHeader} profile
    * @return {boolean}
    */
   removeProfileHeader(profile) {
@@ -566,7 +571,7 @@ export class ProfileTypeSidebarSection extends UI.TreeElement {
   }
 
   /**
-   * @param {!Profiler.ProfileHeader} profile
+   * @param {!ProfileHeader} profile
    * @return {?ProfileSidebarTreeElement}
    */
   sidebarElementForProfile(profile) {
@@ -575,7 +580,7 @@ export class ProfileTypeSidebarSection extends UI.TreeElement {
   }
 
   /**
-   * @param {!Profiler.ProfileHeader} profile
+   * @param {!ProfileHeader} profile
    * @return {number}
    */
   _sidebarElementIndex(profile) {
@@ -611,178 +616,9 @@ export class ProfileGroup {
 /**
  * @unrestricted
  */
-export class ProfileSidebarTreeElement extends UI.TreeElement {
-  /**
-   * @param {!Profiler.ProfileType.DataDisplayDelegate} dataDisplayDelegate
-   * @param {!Profiler.ProfileHeader} profile
-   * @param {string} className
-   */
-  constructor(dataDisplayDelegate, profile, className) {
-    super('', false);
-    this._iconElement = createElementWithClass('div', 'icon');
-    this._titlesElement = createElementWithClass('div', 'titles no-subtitle');
-    this._titleContainer = this._titlesElement.createChild('span', 'title-container');
-    this.titleElement = this._titleContainer.createChild('span', 'title');
-    this._subtitleElement = this._titlesElement.createChild('span', 'subtitle');
-
-    this.titleElement.textContent = profile.title;
-    this._className = className;
-    this._small = false;
-    this._dataDisplayDelegate = dataDisplayDelegate;
-    this.profile = profile;
-    profile.addEventListener(Profiler.ProfileHeader.Events.UpdateStatus, this._updateStatus, this);
-    if (profile.canSaveToFile()) {
-      this._createSaveLink();
-    } else {
-      profile.addEventListener(Profiler.ProfileHeader.Events.ProfileReceived, this._onProfileReceived, this);
-    }
-  }
-
-  _createSaveLink() {
-    this._saveLinkElement = this._titleContainer.createChild('span', 'save-link');
-    this._saveLinkElement.textContent = Common.UIString('Save');
-    this._saveLinkElement.addEventListener('click', this._saveProfile.bind(this), false);
-  }
-
-  _onProfileReceived(event) {
-    this._createSaveLink();
-  }
-
-  /**
-   * @param {!Common.Event} event
-   */
-  _updateStatus(event) {
-    const statusUpdate = event.data;
-    if (statusUpdate.subtitle !== null) {
-      this._subtitleElement.textContent = statusUpdate.subtitle || '';
-      this._titlesElement.classList.toggle('no-subtitle', !statusUpdate.subtitle);
-    }
-    if (typeof statusUpdate.wait === 'boolean' && this.listItemElement) {
-      this.listItemElement.classList.toggle('wait', statusUpdate.wait);
-    }
-  }
-
-  /**
-   * @override
-   * @param {!Event} event
-   * @return {boolean}
-   */
-  ondblclick(event) {
-    if (!this._editing) {
-      this._startEditing(/** @type {!Element} */ (event.target));
-    }
-    return false;
-  }
-
-  /**
-   * @param {!Element} eventTarget
-   */
-  _startEditing(eventTarget) {
-    const container = eventTarget.enclosingNodeOrSelfWithClass('title');
-    if (!container) {
-      return;
-    }
-    const config = new UI.InplaceEditor.Config(this._editingCommitted.bind(this), this._editingCancelled.bind(this));
-    this._editing = UI.InplaceEditor.startEditing(container, config);
-  }
-
-  /**
-   * @param {!Element} container
-   * @param {string} newTitle
-   */
-  _editingCommitted(container, newTitle) {
-    delete this._editing;
-    this.profile.setTitle(newTitle);
-  }
-
-  _editingCancelled() {
-    delete this._editing;
-  }
-
-  dispose() {
-    this.profile.removeEventListener(Profiler.ProfileHeader.Events.UpdateStatus, this._updateStatus, this);
-    this.profile.removeEventListener(Profiler.ProfileHeader.Events.ProfileReceived, this._onProfileReceived, this);
-  }
-
-  /**
-   * @override
-   * @return {boolean}
-   */
-  onselect() {
-    this._dataDisplayDelegate.showProfile(this.profile);
-    return true;
-  }
-
-  /**
-   * @override
-   * @return {boolean}
-   */
-  ondelete() {
-    this.profile.profileType().removeProfile(this.profile);
-    return true;
-  }
-
-  /**
-   * @override
-   */
-  onattach() {
-    if (this._className) {
-      this.listItemElement.classList.add(this._className);
-    }
-    if (this._small) {
-      this.listItemElement.classList.add('small');
-    }
-    this.listItemElement.appendChildren(this._iconElement, this._titlesElement);
-    this.listItemElement.addEventListener('contextmenu', this._handleContextMenuEvent.bind(this), true);
-
-    UI.ARIAUtils.setDescription(this.listItemElement, ls`${this.profile.profileType().name}`);
-  }
-
-  /**
-   * @param {!Event} event
-   */
-  _handleContextMenuEvent(event) {
-    const profile = this.profile;
-    const contextMenu = new UI.ContextMenu(event);
-    // FIXME: use context menu provider
-    contextMenu.headerSection().appendItem(
-        Common.UIString('Load\u2026'),
-        ProfilesPanel._fileSelectorElement.click.bind(ProfilesPanel._fileSelectorElement));
-    if (profile.canSaveToFile()) {
-      contextMenu.saveSection().appendItem(Common.UIString('Save\u2026'), profile.saveToFile.bind(profile));
-    }
-    contextMenu.footerSection().appendItem(Common.UIString('Delete'), this.ondelete.bind(this));
-    contextMenu.show();
-  }
-
-  _saveProfile(event) {
-    this.profile.saveToFile();
-  }
-
-  /**
-   * @param {boolean} small
-   */
-  setSmall(small) {
-    this._small = small;
-    if (this.listItemElement) {
-      this.listItemElement.classList.toggle('small', this._small);
-    }
-  }
-
-  /**
-   * @param {string} title
-   */
-  setMainTitle(title) {
-    this.titleElement.textContent = title;
-  }
-}
-
-/**
- * @unrestricted
- */
 export class ProfileGroupSidebarTreeElement extends UI.TreeElement {
   /**
-   * @param {!Profiler.ProfileType.DataDisplayDelegate} dataDisplayDelegate
+   * @param {!DataDisplayDelegate} dataDisplayDelegate
    * @param {string} title
    */
   constructor(dataDisplayDelegate, title) {
@@ -856,7 +692,7 @@ export class ProfilesSidebarTreeElement extends UI.TreeElement {
  */
 export class JSProfilerPanel extends ProfilesPanel {
   constructor() {
-    const registry = Profiler.ProfileTypeRegistry.instance;
+    const registry = instance;
     super('js_profiler', [registry.cpuProfileType], 'profiler.js-toggle-recording');
   }
 
@@ -887,30 +723,3 @@ export class JSProfilerPanel extends ProfilesPanel {
     return true;
   }
 }
-
-/* Legacy exported object */
-self.Profiler = self.Profiler || {};
-
-/* Legacy exported object */
-Profiler = Profiler || {};
-
-/** @constructor */
-Profiler.ProfilesPanel = ProfilesPanel;
-
-/** @constructor */
-Profiler.ProfileTypeSidebarSection = ProfileTypeSidebarSection;
-
-/** @constructor */
-Profiler.ProfileTypeSidebarSection.ProfileGroup = ProfileGroup;
-
-/** @constructor */
-Profiler.ProfileSidebarTreeElement = ProfileSidebarTreeElement;
-
-/** @constructor */
-Profiler.ProfileGroupSidebarTreeElement = ProfileGroupSidebarTreeElement;
-
-/** @constructor */
-Profiler.ProfilesSidebarTreeElement = ProfilesSidebarTreeElement;
-
-/** @constructor */
-Profiler.JSProfilerPanel = JSProfilerPanel;

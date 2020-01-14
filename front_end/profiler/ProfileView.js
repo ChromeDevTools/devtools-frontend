@@ -2,11 +2,18 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {BottomUpProfileDataGridTree} from './BottomUpProfileDataGrid.js';
+import {CPUProfileFlameChart, ProfileFlameChartDataProvider} from './CPUProfileFlameChart.js';  // eslint-disable-line no-unused-vars
+import {Formatter, ProfileDataGridNode, ProfileDataGridTree} from './ProfileDataGrid.js';  // eslint-disable-line no-unused-vars
+import {DataDisplayDelegate, Events, ProfileHeader, ProfileType} from './ProfileHeader.js';  // eslint-disable-line no-unused-vars
+import {ProfileSidebarTreeElement} from './ProfileSidebarTreeElement.js';
+import {TopDownProfileDataGridTree} from './TopDownProfileDataGrid.js';
+
 /**
  * @implements {UI.Searchable}
  * @unrestricted
  */
-export default class ProfileView extends UI.SimpleView {
+export class ProfileView extends UI.SimpleView {
   constructor() {
     super(Common.UIString('Profile'));
 
@@ -48,7 +55,7 @@ export default class ProfileView extends UI.SimpleView {
     this.resetButton.setEnabled(false);
     this.resetButton.addEventListener(UI.ToolbarButton.Events.Click, this._resetClicked, this);
 
-    this._linkifier = new Components.Linkifier(_maxLinkLength);
+    this._linkifier = new Components.Linkifier(maxLinkLength);
   }
 
   /**
@@ -84,7 +91,7 @@ export default class ProfileView extends UI.SimpleView {
   }
 
   /**
-   * @param {!Profiler.ProfileDataGridNode.Formatter} nodeFormatter
+   * @param {!Formatter} nodeFormatter
    * @param {!Array<string>=} viewTypes
    * @protected
    */
@@ -152,22 +159,22 @@ export default class ProfileView extends UI.SimpleView {
   }
 
   /**
-   * @return {!Profiler.ProfileDataGridTree}
+   * @return {!ProfileDataGridTree}
    */
   _getBottomUpProfileDataGridTree() {
     if (!this._bottomUpProfileDataGridTree) {
-      this._bottomUpProfileDataGridTree = new Profiler.BottomUpProfileDataGridTree(
+      this._bottomUpProfileDataGridTree = new BottomUpProfileDataGridTree(
           this._nodeFormatter, this._searchableView, this._profile.root, this.adjustedTotal);
     }
     return this._bottomUpProfileDataGridTree;
   }
 
   /**
-   * @return {!Profiler.ProfileDataGridTree}
+   * @return {!ProfileDataGridTree}
    */
   _getTopDownProfileDataGridTree() {
     if (!this._topDownProfileDataGridTree) {
-      this._topDownProfileDataGridTree = new Profiler.TopDownProfileDataGridTree(
+      this._topDownProfileDataGridTree = new TopDownProfileDataGridTree(
           this._nodeFormatter, this._searchableView, this._profile.root, this.adjustedTotal);
     }
     return this._topDownProfileDataGridTree;
@@ -178,7 +185,7 @@ export default class ProfileView extends UI.SimpleView {
    * @param {!DataGrid.DataGridNode} gridNode
    */
   _populateContextMenu(contextMenu, gridNode) {
-    const node = /** @type {!Profiler.ProfileDataGridNode} */ (gridNode);
+    const node = /** @type {!ProfileDataGridNode} */ (gridNode);
     if (node.linkElement && !contextMenu.containsTarget(node.linkElement)) {
       contextMenu.appendApplicableItems(node.linkElement);
     }
@@ -296,7 +303,7 @@ export default class ProfileView extends UI.SimpleView {
   }
 
   /**
-   * @return {!Profiler.ProfileFlameChartDataProvider}
+   * @return {!ProfileFlameChartDataProvider}
    */
   createFlameChartDataProvider() {
     throw 'Not implemented';
@@ -307,7 +314,7 @@ export default class ProfileView extends UI.SimpleView {
       return;
     }
     this._dataProvider = this.createFlameChartDataProvider();
-    this._flameChart = new Profiler.CPUProfileFlameChart(this._searchableView, this._dataProvider);
+    this._flameChart = new CPUProfileFlameChart(this._searchableView, this._dataProvider);
     this._flameChart.addEventListener(PerfUI.FlameChart.Events.EntryInvoked, this._onEntryInvoked.bind(this));
   }
 
@@ -432,13 +439,13 @@ export default class ProfileView extends UI.SimpleView {
     const sortAscending = this.dataGrid.isSortOrderAscending();
     const sortColumnId = this.dataGrid.sortColumnId();
     const sortProperty = sortColumnId === 'function' ? 'functionName' : sortColumnId || '';
-    this.profileDataGridTree.sort(Profiler.ProfileDataGridTree.propertyComparator(sortProperty, sortAscending));
+    this.profileDataGridTree.sort(ProfileDataGridTree.propertyComparator(sortProperty, sortAscending));
 
     this.refresh();
   }
 }
 
-export const _maxLinkLength = 30;
+export const maxLinkLength = 30;
 
 /** @enum {string} */
 export const ViewTypes = {
@@ -452,10 +459,10 @@ export const ViewTypes = {
  * @implements {Common.OutputStream}
  * @unrestricted
  */
-export class WritableProfileHeader extends Profiler.ProfileHeader {
+export class WritableProfileHeader extends ProfileHeader {
   /**
    * @param {?SDK.DebuggerModel} debuggerModel
-   * @param {!Profiler.ProfileType} type
+   * @param {!ProfileType} type
    * @param {string=} title
    */
   constructor(debuggerModel, type, title) {
@@ -502,11 +509,11 @@ export class WritableProfileHeader extends Profiler.ProfileHeader {
 
   /**
    * @override
-   * @param {!Profiler.ProfileType.DataDisplayDelegate} panel
-   * @return {!Profiler.ProfileSidebarTreeElement}
+   * @param {!DataDisplayDelegate} panel
+   * @return {!ProfileSidebarTreeElement}
    */
   createSidebarTreeElement(panel) {
-    return new Profiler.ProfileSidebarTreeElement(panel, this, 'profile-sidebar-tree-item');
+    return new ProfileSidebarTreeElement(panel, this, 'profile-sidebar-tree-item');
   }
 
   /**
@@ -578,24 +585,7 @@ export class WritableProfileHeader extends Profiler.ProfileHeader {
     this._tempFile = new Bindings.TempFile();
     this._tempFile.write([JSON.stringify(profile)]);
     if (this.canSaveToFile()) {
-      this.dispatchEventToListeners(Profiler.ProfileHeader.Events.ProfileReceived);
+      this.dispatchEventToListeners(Events.ProfileReceived);
     }
   }
 }
-
-/* Legacy exported object */
-self.Profiler = self.Profiler || {};
-
-/* Legacy exported object */
-Profiler = Profiler || {};
-
-/** @constructor */
-Profiler.ProfileView = ProfileView;
-
-Profiler.ProfileView._maxLinkLength = _maxLinkLength;
-
-/** @enum {string} */
-Profiler.ProfileView.ViewTypes = ViewTypes;
-
-/** @constructor */
-Profiler.WritableProfileHeader = WritableProfileHeader;

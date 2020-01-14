@@ -162,8 +162,16 @@ export class BlockedURLsPane extends UI.VBox {
         Common.UIString('Text pattern to block matching requests; use * for wildcard');
     const fields = content.createChild('div', 'blocked-url-edit-row');
     const validator = (item, index, input) => {
-      const valid = !!input.value && !this._manager.blockedPatterns().find(pattern => pattern.url === input.value);
-      return {valid};
+      let valid = true;
+      let errorMessage;
+      if (!input.value) {
+        errorMessage = ls`Pattern input cannot be empty.`;
+        valid = false;
+      } else if (this._manager.blockedPatterns().find(pattern => pattern.url === input.value)) {
+        errorMessage = ls`Pattern already exists.`;
+        valid = false;
+      }
+      return {valid, errorMessage};
     };
     const urlInput = editor.createInput('url', 'text', '', validator);
     fields.createChild('div', 'blocked-url-edit-value').appendChild(urlInput);

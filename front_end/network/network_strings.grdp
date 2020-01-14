@@ -204,6 +204,9 @@
   <message name="IDS_DEVTOOLS_4145ea54b6f576d7646d6a68eb39813f" desc="An option in the user agent dropdown menu in the Network conditions tool">
     <ph name="LOCKED_1">Opera (Presto) — Mac</ph>
   </message>
+  <message name="IDS_DEVTOOLS_41d98c4bb351da4733feff7e1ad628a5" desc="Error text for empty list widget input in Request Blocking tool">
+    Pattern input cannot be empty.
+  </message>
   <message name="IDS_DEVTOOLS_41de6d6cfb8953c021bbe4ba0701c8a1" desc="Text in Network Item View of the Network panel">
     Messages
   </message>
@@ -941,6 +944,9 @@
   </message>
   <message name="IDS_DEVTOOLS_f95d3d09fc16ae9294fbef87ac8d17cb" desc="Text in Network Data Grid Node of the Network panel">
     (pending)
+  </message>
+  <message name="IDS_DEVTOOLS_fa3e0746749fe7ce056ebf7811bdc3fc" desc="Error text for duplicate list widget input in Request Blocking tool">
+    Pattern already exists.
   </message>
   <message name="IDS_DEVTOOLS_fae900d6e2cf6b54ffae8cad77b9e2a6" desc="Text of a DOM element in Network Data Grid Node of the Network panel">
     (prefetch cache)

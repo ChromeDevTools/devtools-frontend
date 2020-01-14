@@ -133,18 +133,18 @@ export default class ServerTiming {
         if (parseParameter) {
           // paramName is valid
           if (entry.hasOwnProperty(paramName)) {
-            this.showWarning(ls`Duplicate parameter \"${paramName}\" ignored.`);
+            this.showWarning(ls`Duplicate parameter "${paramName}" ignored.`);
             continue;
           }
 
           if (paramValue === null) {
-            this.showWarning(ls`No value found for parameter \"${paramName}\".`);
+            this.showWarning(ls`No value found for parameter "${paramName}".`);
           }
 
           parseParameter.call(this, entry, paramValue);
         } else {
           // paramName is not valid
-          this.showWarning(ls`Unrecognized parameter \"${paramName}\".`);
+          this.showWarning(ls`Unrecognized parameter "${paramName}".`);
         }
       }
 
@@ -172,7 +172,7 @@ export default class ServerTiming {
           if (paramValue !== null) {
             const duration = parseFloat(paramValue);
             if (isNaN(duration)) {
-              this.showWarning(ls`Unable to parse \"${paramName}\" value \"${paramValue}\".`);
+              this.showWarning(ls`Unable to parse "${paramName}" value "${paramValue}".`);
               return;
             }
             entry.dur = duration;

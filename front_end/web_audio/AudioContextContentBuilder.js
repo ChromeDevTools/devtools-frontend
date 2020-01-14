@@ -92,19 +92,3 @@ export class AudioContextSummaryBuilder {
     return this._fragment;
   }
 }
-
-/* Legacy exported object */
-self.WebAudio = self.WebAudio || {};
-
-/* Legacy exported object */
-WebAudio = WebAudio || {};
-
-/**
- * @constructor
- */
-WebAudio.ContextDetailBuilder = ContextDetailBuilder;
-
-/**
- * @constructor
- */
-WebAudio.AudioContextSummaryBuilder = AudioContextSummaryBuilder;

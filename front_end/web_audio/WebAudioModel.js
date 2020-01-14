@@ -224,17 +224,3 @@ export const Events = {
   NodeParamConnected: Symbol('NodeParamConnected'),
   NodeParamDisconnected: Symbol('NodeParamDisconnected'),
 };
-
-/* Legacy exported object */
-self.WebAudio = self.WebAudio || {};
-
-/* Legacy exported object */
-WebAudio = WebAudio || {};
-
-/**
- * @constructor
- */
-WebAudio.WebAudioModel = WebAudioModel;
-
-/** @enum {symbol} */
-WebAudio.WebAudioModel.Events = Events;

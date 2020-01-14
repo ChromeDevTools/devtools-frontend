@@ -62,17 +62,3 @@ export class GraphManager extends Common.Object {
     this.dispatchEventToListeners(WebAudio.GraphVisualizer.GraphView.Events.ShouldRedraw, graph);
   }
 }
-
-/* Legacy exported object */
-self.WebAudio = self.WebAudio || {};
-
-/* Legacy exported object */
-WebAudio = WebAudio || {};
-
-/* Legacy exported object */
-WebAudio.GraphVisualizer = WebAudio.GraphVisualizer || {};
-
-/**
- * @constructor
- */
-WebAudio.GraphVisualizer.GraphManager = GraphManager;

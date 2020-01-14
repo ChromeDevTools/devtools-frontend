@@ -101,7 +101,7 @@ export class NodeView {
       BottomPaddingWithoutParam,
       TotalOutputPortHeight,
       NodeLabelFontStyle,
-    } = WebAudio.GraphVisualizer.GraphStyles;
+    } = WebAudio.GraphVisualizer.GraphStyle;
     const inputPortSectionHeight = TotalInputPortHeight * Math.max(1, data.numberOfInputs) + LeftSideTopPadding;
     this._layout.inputPortSectionHeight = inputPortSectionHeight;
     this._layout.outputPortSectionHeight = TotalOutputPortHeight * data.numberOfOutputs;
@@ -128,14 +128,14 @@ export class NodeView {
     // The height after adding param ports and input ports.
     // Include a little padding on the left.
     const leftSideMaxHeight = this._layout.inputPortSectionHeight +
-        numberOfParams * WebAudio.GraphVisualizer.GraphStyles.TotalParamPortHeight +
-        WebAudio.GraphVisualizer.GraphStyles.BottomPaddingWithParam;
+        numberOfParams * WebAudio.GraphVisualizer.GraphStyle.TotalParamPortHeight +
+        WebAudio.GraphVisualizer.GraphStyle.BottomPaddingWithParam;
 
     // Use the max of the left and right side heights as the total height.
     this._layout.totalHeight = Math.max(leftSideMaxHeight, this._layout.outputPortSectionHeight);
 
     // Update max length with param label.
-    const paramLabelLength = measureTextWidth(paramType, WebAudio.GraphVisualizer.GraphStyles.ParamLabelFontStyle);
+    const paramLabelLength = measureTextWidth(paramType, WebAudio.GraphVisualizer.GraphStyle.ParamLabelFontStyle);
     this._layout.maxTextLength = Math.max(this._layout.maxTextLength, paramLabelLength);
 
     this._updateNodeSize();
@@ -144,8 +144,8 @@ export class NodeView {
   _updateNodeSize() {
     this.size = {
       width: Math.ceil(
-          WebAudio.GraphVisualizer.GraphStyles.LeftMarginOfText + this._layout.maxTextLength +
-          WebAudio.GraphVisualizer.GraphStyles.RightMarginOfText),
+          WebAudio.GraphVisualizer.GraphStyle.LeftMarginOfText + this._layout.maxTextLength +
+          WebAudio.GraphVisualizer.GraphStyle.RightMarginOfText),
       height: this._layout.totalHeight,
     };
   }
@@ -265,27 +265,12 @@ export const measureTextWidth = (text, fontStyle) => {
   return width;
 };
 
-
-/* Legacy exported object */
-self.WebAudio = self.WebAudio || {};
-
-/* Legacy exported object */
-WebAudio = WebAudio || {};
-
-/* Legacy exported object */
-WebAudio.GraphVisualizer = WebAudio.GraphVisualizer || {};
-
 /**
- * @constructor
+ * Supported port types.
+ * @enum {symbol}
  */
-WebAudio.GraphVisualizer.NodeView = NodeView;
-
-/**
- * @constructor
- */
-WebAudio.GraphVisualizer.NodeLabelGenerator = NodeLabelGenerator;
-
-WebAudio.GraphVisualizer.generateInputPortId = generateInputPortId;
-WebAudio.GraphVisualizer.generateOutputPortId = generateOutputPortId;
-WebAudio.GraphVisualizer.generateParamPortId = generateParamPortId;
-WebAudio.GraphVisualizer.measureTextWidth = measureTextWidth;
+export const PortTypes = {
+  In: Symbol('In'),
+  Out: Symbol('Out'),
+  Param: Symbol('Param'),
+};

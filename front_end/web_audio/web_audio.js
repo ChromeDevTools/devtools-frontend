@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import './graph_visualizer/Types.js';
 import './graph_visualizer/GraphStyle.js';
 import './graph_visualizer/GraphManager.js';
 import './graph_visualizer/NodeRendererUtility.js';
@@ -22,7 +21,6 @@ import * as GraphStyle from './graph_visualizer/GraphStyle.js';
 import * as GraphView from './graph_visualizer/GraphView.js';
 import * as NodeRendererUtility from './graph_visualizer/NodeRendererUtility.js';
 import * as NodeView from './graph_visualizer/NodeView.js';
-import * as Types from './graph_visualizer/Types.js';
 import * as WebAudioModel from './WebAudioModel.js';
 import * as WebAudioView from './WebAudioView.js';
 
@@ -35,7 +33,6 @@ export {
   GraphView,
   NodeRendererUtility,
   NodeView,
-  Types,
   WebAudioModel,
   WebAudioView
 };

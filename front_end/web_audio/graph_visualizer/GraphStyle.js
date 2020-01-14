@@ -12,6 +12,7 @@ export const BottomPaddingWithoutParam = 6;
 export const BottomPaddingWithParam = 8;
 export const ArrowHeadSize = 12;
 
+// GraphPadding is used to add extra space for the graph layout.
 export const GraphPadding = 20;
 export const GraphMargin = 20;
 
@@ -21,37 +22,3 @@ export const TotalParamPortHeight = AudioParamRadius * 2 + PortPadding;
 
 export const NodeLabelFontStyle = '14px Segoe UI, Arial';
 export const ParamLabelFontStyle = '12px Segoe UI, Arial';
-
-export const GraphStyles = {
-  PortPadding,
-  InputPortRadius,
-  AudioParamRadius,
-  LeftMarginOfText,
-  RightMarginOfText,
-  LeftSideTopPadding,
-  BottomPaddingWithoutParam,
-  BottomPaddingWithParam,
-  ArrowHeadSize,
-
-  // GraphPadding is used to add extra space for the layouted graph.
-  GraphPadding,
-  GraphMargin,
-
-  TotalInputPortHeight,
-  TotalOutputPortHeight,
-  TotalParamPortHeight,
-
-  NodeLabelFontStyle,
-  ParamLabelFontStyle
-};
-
-/* Legacy exported object */
-self.WebAudio = self.WebAudio || {};
-
-/* Legacy exported object */
-WebAudio = WebAudio || {};
-
-/* Legacy exported object */
-WebAudio.GraphVisualizer = WebAudio.GraphVisualizer || {};
-
-WebAudio.GraphVisualizer.GraphStyles = GraphStyles;

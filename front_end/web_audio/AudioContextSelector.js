@@ -170,17 +170,3 @@ export class AudioContextSelector extends Common.Object {
 export const Events = {
   ContextSelected: Symbol('ContextSelected')
 };
-
-/* Legacy exported object */
-self.WebAudio = self.WebAudio || {};
-
-/* Legacy exported object */
-WebAudio = WebAudio || {};
-
-/**
- * @constructor
- */
-WebAudio.AudioContextSelector = AudioContextSelector;
-
-/** @enum {symbol} */
-WebAudio.AudioContextSelector.Events = Events;

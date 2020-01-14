@@ -19,7 +19,7 @@
   "scripts": [],
   "modules": [
       "web_audio.js",
-      "graph_visualizer/Types.js",
+      "web_audio-legacy.js",
       "graph_visualizer/GraphStyle.js",
       "graph_visualizer/GraphManager.js",
       "graph_visualizer/NodeRendererUtility.js",

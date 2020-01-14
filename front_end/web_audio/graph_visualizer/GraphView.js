@@ -204,20 +204,3 @@ export class GraphView extends Common.Object {
 export const Events = {
   ShouldRedraw: Symbol('ShouldRedraw')
 };
-
-/* Legacy exported object */
-self.WebAudio = self.WebAudio || {};
-
-/* Legacy exported object */
-WebAudio = WebAudio || {};
-
-/* Legacy exported object */
-WebAudio.GraphVisualizer = WebAudio.GraphVisualizer || {};
-
-/**
- * @constructor
- */
-WebAudio.GraphVisualizer.GraphView = GraphView;
-
-/** @enum {symbol} */
-WebAudio.GraphVisualizer.GraphView.Events = Events;

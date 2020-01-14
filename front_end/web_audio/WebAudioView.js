@@ -407,14 +407,3 @@ export class WebAudioView extends UI.ThrottledWidget {
     }
   }
 }
-
-/* Legacy exported object */
-self.WebAudio = self.WebAudio || {};
-
-/* Legacy exported object */
-WebAudio = WebAudio || {};
-
-/**
- * @constructor
- */
-WebAudio.WebAudioView = WebAudioView;

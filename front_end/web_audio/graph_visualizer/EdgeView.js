@@ -68,25 +68,3 @@ export const EdgeTypes = {
   NodeToNode: Symbol('NodeToNode'),
   NodeToParam: Symbol('NodeToParam'),
 };
-
-/* Legacy exported object */
-self.WebAudio = self.WebAudio || {};
-
-/* Legacy exported object */
-WebAudio = WebAudio || {};
-
-/* Legacy exported object */
-WebAudio.GraphVisualizer = WebAudio.GraphVisualizer || {};
-
-/**
- * @constructor
- */
-WebAudio.GraphVisualizer.EdgeView = EdgeView;
-
-WebAudio.GraphVisualizer.generateEdgePortIdsByData = generateEdgePortIdsByData;
-
-/**
- * Supported edge types.
- * @enum {symbol}
- */
-WebAudio.GraphVisualizer.EdgeTypes = EdgeTypes;

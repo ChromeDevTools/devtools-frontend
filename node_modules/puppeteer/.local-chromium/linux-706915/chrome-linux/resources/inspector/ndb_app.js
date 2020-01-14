@@ -1,0 +1,1 @@
+Root.allDescriptors.push(...[]);Root.applicationDescriptor.modules.push(...[]);

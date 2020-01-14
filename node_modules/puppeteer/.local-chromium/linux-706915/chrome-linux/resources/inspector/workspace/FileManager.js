@@ -1,0 +1,8 @@
+export default class FileManager extends Common.Object{constructor(){super();this._saveCallbacks=new Map();Host.InspectorFrontendHost.events.addEventListener(Host.InspectorFrontendHostAPI.Events.SavedURL,this._savedURL,this);Host.InspectorFrontendHost.events.addEventListener(Host.InspectorFrontendHostAPI.Events.CanceledSaveURL,this._canceledSavedURL,this);Host.InspectorFrontendHost.events.addEventListener(Host.InspectorFrontendHostAPI.Events.AppendedToURL,this._appendedToURL,this);}
+save(url,content,forceSaveAs){const result=new Promise(resolve=>this._saveCallbacks.set(url,resolve));Host.InspectorFrontendHost.save(url,content,forceSaveAs);return result;}
+_savedURL(event){const url=(event.data.url);const callback=this._saveCallbacks.get(url);this._saveCallbacks.delete(url);if(callback){callback({fileSystemPath:(event.data.fileSystemPath)});}}
+_canceledSavedURL(event){const url=(event.data);const callback=this._saveCallbacks.get(url);this._saveCallbacks.delete(url);if(callback){callback(null);}}
+append(url,content){Host.InspectorFrontendHost.append(url,content);}
+close(url){Host.InspectorFrontendHost.close(url);}
+_appendedToURL(event){const url=(event.data);this.dispatchEventToListeners(Events.AppendedToURL,url);}}
+export const Events={AppendedToURL:Symbol('AppendedToURL')};self.Workspace=self.Workspace||{};Workspace=Workspace||{};Workspace.FileManager=FileManager;Workspace.FileManager.Events=Events;Workspace.fileManager;

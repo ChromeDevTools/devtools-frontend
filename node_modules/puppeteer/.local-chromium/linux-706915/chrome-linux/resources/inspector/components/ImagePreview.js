@@ -1,0 +1,15 @@
+export default class ImagePreview{static build(target,originalImageURL,showDimensions,options={}){const{precomputedFeatures,imageAltText}=options;const resourceTreeModel=target.model(SDK.ResourceTreeModel);if(!resourceTreeModel){return Promise.resolve((null));}
+let resource=resourceTreeModel.resourceForURL(originalImageURL);let imageURL=originalImageURL;if(!isImageResource(resource)&&precomputedFeatures&&precomputedFeatures.currentSrc){imageURL=precomputedFeatures.currentSrc;resource=resourceTreeModel.resourceForURL(imageURL);}
+if(!isImageResource(resource)){return Promise.resolve((null));}
+let fulfill;const promise=new Promise(x=>fulfill=x);const imageElement=createElement('img');imageElement.addEventListener('load',buildContent,false);imageElement.addEventListener('error',()=>fulfill(null),false);if(imageAltText){imageElement.alt=imageAltText;}
+resource.populateImageSource(imageElement);return promise;function isImageResource(resource){return!!resource&&resource.resourceType()===Common.resourceTypes.Image;}
+function buildContent(){const container=createElement('table');UI.appendStyle(container,'components/imagePreview.css');container.className='image-preview-container';const intrinsicWidth=imageElement.naturalWidth;const intrinsicHeight=imageElement.naturalHeight;const renderedWidth=precomputedFeatures?precomputedFeatures.renderedWidth:intrinsicWidth;const renderedHeight=precomputedFeatures?precomputedFeatures.renderedHeight:intrinsicHeight;let description;if(showDimensions){if(renderedHeight!==intrinsicHeight||renderedWidth!==intrinsicWidth){description=ls`${renderedWidth} \xd7 ${renderedHeight} pixels (intrinsic: ${intrinsicWidth} \xd7 ${
+              intrinsicHeight} pixels)`;}else{description=ls`${renderedWidth} \xd7 ${renderedHeight} pixels`;}}
+container.createChild('tr').createChild('td','image-container').appendChild(imageElement);if(description){container.createChild('tr').createChild('td').createChild('span','description').textContent=description;}
+if(imageURL!==originalImageURL){container.createChild('tr').createChild('td').createChild('span','description').textContent=String.sprintf('currentSrc: %s',imageURL.trimMiddle(100));}
+fulfill(container);}}
+static async loadDimensionsForNode(node){if(!node.nodeName()||node.nodeName().toLowerCase()!=='img'){return;}
+const object=await node.resolveToObject('');if(!object){return;}
+const featuresObject=object.callFunctionJSON(features,undefined);object.release();return featuresObject;function features(){return{renderedWidth:this.width,renderedHeight:this.height,currentSrc:this.currentSrc};}}
+static defaultAltTextForImageURL(url){const parsedImageURL=new Common.ParsedURL(url);const imageSourceText=parsedImageURL.isValid?parsedImageURL.displayName:ls`unknown source`;return ls`Image from ${imageSourceText}`;}}
+self.Components=self.Components||{};Components=Components||{};Components.ImagePreview=ImagePreview;

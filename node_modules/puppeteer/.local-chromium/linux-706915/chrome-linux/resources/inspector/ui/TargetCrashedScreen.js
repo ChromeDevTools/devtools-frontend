@@ -1,0 +1,3 @@
+export default class TargetCrashedScreen extends UI.VBox{constructor(hideCallback){super(true);this.registerRequiredCSS('ui/targetCrashedScreen.css');this.contentElement.createChild('div','message').textContent=Common.UIString('DevTools was disconnected from the page.');this.contentElement.createChild('div','message').textContent=Common.UIString('Once page is reloaded, DevTools will automatically reconnect.');this._hideCallback=hideCallback;}
+willHide(){this._hideCallback.call(null);}}
+self.UI=self.UI||{};UI=UI||{};UI.TargetCrashedScreen=TargetCrashedScreen;

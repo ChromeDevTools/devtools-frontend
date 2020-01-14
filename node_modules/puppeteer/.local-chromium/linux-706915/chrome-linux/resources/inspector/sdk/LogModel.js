@@ -1,0 +1,4 @@
+export default class LogModel extends SDK.SDKModel{constructor(target){super(target);target.registerLogDispatcher(this);this._logAgent=target.logAgent();this._logAgent.enable();if(!Host.isUnderTest()){this._logAgent.startViolationsReport([{name:'longTask',threshold:200},{name:'longLayout',threshold:30},{name:'blockedEvent',threshold:100},{name:'blockedParser',threshold:-1},{name:'handler',threshold:150},{name:'recurringHandler',threshold:50},{name:'discouragedAPIUse',threshold:-1}]);}}
+entryAdded(payload){this.dispatchEventToListeners(Events.EntryAdded,{logModel:this,entry:payload});}
+requestClear(){this._logAgent.clear();}}
+export const Events={EntryAdded:Symbol('EntryAdded')};self.SDK=self.SDK||{};SDK=SDK||{};SDK.LogModel=LogModel;SDK.LogModel.Events=Events;SDK.SDKModel.register(SDK.LogModel,SDK.Target.Capability.Log,true);

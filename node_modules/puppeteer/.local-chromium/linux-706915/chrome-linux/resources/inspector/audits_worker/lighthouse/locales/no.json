@@ -1,0 +1,1541 @@
+{
+  "lighthouse-core/audits/accessibility/accesskeys.js | description": {
+    "message": "Med tilgangsnøkler kan brukere raskt fokusere på deler av siden. Hver tilgangsnøkkel må være unik for at navigeringen skal fungere riktig. [Finn ut mer](https://web.dev/accesskeys/)."
+  },
+  "lighthouse-core/audits/accessibility/accesskeys.js | failureTitle": {
+    "message": "`[accesskey]`-verdier er ikke unike"
+  },
+  "lighthouse-core/audits/accessibility/accesskeys.js | title": {
+    "message": "`[accesskey]`-verdiene er unike"
+  },
+  "lighthouse-core/audits/accessibility/aria-allowed-attr.js | description": {
+    "message": "Hver ARIA-`role` støtter en spesifikk undergruppe av `aria-*`-attributter. Manglende samsvar mellom disse gjør `aria-*`-attributtene ugyldige. [Finn ut mer](https://web.dev/aria-allowed-attr/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-allowed-attr.js | failureTitle": {
+    "message": "`[aria-*]`-attributter samsvarer ikke med rollene sine"
+  },
+  "lighthouse-core/audits/accessibility/aria-allowed-attr.js | title": {
+    "message": "`[aria-*]`-attributtene samsvarer med rollene sine"
+  },
+  "lighthouse-core/audits/accessibility/aria-required-attr.js | description": {
+    "message": "Noen ARIA-roller har obligatoriske attributter som beskriver elementenes tilstand for skjermlesere. [Finn ut mer](https://web.dev/aria-required-attr/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-required-attr.js | failureTitle": {
+    "message": "`[role]`-elementer har ikke alle de obligatoriske `[aria-*]`-attributtene"
+  },
+  "lighthouse-core/audits/accessibility/aria-required-attr.js | title": {
+    "message": "`[role]`-elementene har alle de obligatoriske `[aria-*]`-attributtene"
+  },
+  "lighthouse-core/audits/accessibility/aria-required-children.js | description": {
+    "message": "Noen overordnede ARIA-roller må inneholde spesifikke underordnede roller for å utføre de tiltenkte tilgjengelighetsfunksjonene. [Finn ut mer](https://web.dev/aria-required-children/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-required-children.js | failureTitle": {
+    "message": "Elementer med `[role]` som krever spesifikke underordnede `[role]`-elementer, mangler."
+  },
+  "lighthouse-core/audits/accessibility/aria-required-children.js | title": {
+    "message": "Det finnes elementer med `[role]` som krever spesifikke underordnede `[role]`-elementer."
+  },
+  "lighthouse-core/audits/accessibility/aria-required-parent.js | description": {
+    "message": "Noen underordnede ARIA-roller må ligge innenfor de spesifikke overordnede rollene for å utføre de tiltenkte tilgjengelighetsfunksjonene på riktig måte. [Finn ut mer](https://web.dev/aria-required-parent/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-required-parent.js | failureTitle": {
+    "message": "`[role]`-elementer ligger ikke i de obligatoriske overordnede elementene"
+  },
+  "lighthouse-core/audits/accessibility/aria-required-parent.js | title": {
+    "message": "`[role]`-elementer ligger i de obligatoriske overordnede elementene"
+  },
+  "lighthouse-core/audits/accessibility/aria-roles.js | description": {
+    "message": "ARIA-roller må ha gyldige verdier for å utføre de tiltenkte tilgjengelighetsfunksjonene. [Finn ut mer](https://web.dev/aria-roles/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-roles.js | failureTitle": {
+    "message": "`[role]`-verdiene er ikke gyldige"
+  },
+  "lighthouse-core/audits/accessibility/aria-roles.js | title": {
+    "message": "`[role]`-verdiene er gyldige"
+  },
+  "lighthouse-core/audits/accessibility/aria-valid-attr-value.js | description": {
+    "message": "Assisterende teknologi, for eksempel skjermlesere, kan ikke tolke ARIA-attributter med ugyldige verdier. [Finn ut mer](https://web.dev/aria-valid-attr-value/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-valid-attr-value.js | failureTitle": {
+    "message": "`[aria-*]`-attributter har ikke gyldige verdier"
+  },
+  "lighthouse-core/audits/accessibility/aria-valid-attr-value.js | title": {
+    "message": "`[aria-*]`-attributtene har gyldige verdier"
+  },
+  "lighthouse-core/audits/accessibility/aria-valid-attr.js | description": {
+    "message": "Assisterende teknologi, som skjermlesere, kan ikke tolke ARIA-attributter med ugyldige navn. [Finn ut mer](https://web.dev/aria-valid-attr/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-valid-attr.js | failureTitle": {
+    "message": "`[aria-*]`-attributter er ugyldige eller feilstavet"
+  },
+  "lighthouse-core/audits/accessibility/aria-valid-attr.js | title": {
+    "message": "`[aria-*]`-attributtene er gyldige og ikke feilstavet"
+  },
+  "lighthouse-core/audits/accessibility/audio-caption.js | description": {
+    "message": "Når du inkluderer teksting, kan døve og hørselshemmede brukere også dra nytte av lydelementer, siden de får se kritisk informasjon, for eksempel om hvem som snakker, hva de sier, og annen informasjon som ikke er talerelatert. [Finn ut mer](https://web.dev/audio-caption/)."
+  },
+  "lighthouse-core/audits/accessibility/audio-caption.js | failureTitle": {
+    "message": "`<audio>`-elementer mangler et `<track>`-element med `[kind=\"captions\"]`."
+  },
+  "lighthouse-core/audits/accessibility/audio-caption.js | title": {
+    "message": "`<audio>`-elementer inneholder et `<track>`-element med `[kind=\"captions\"]`"
+  },
+  "lighthouse-core/audits/accessibility/axe-audit.js | failingElementsHeader": {
+    "message": "Elementer som ikke besto kontrollen"
+  },
+  "lighthouse-core/audits/accessibility/button-name.js | description": {
+    "message": "Når knapper ikke har tilgjengelige navn, beskriver skjermlesere dem som «knapp». Dermed er de ubrukelige for brukere som er avhengige av skjermlesere. [Finn ut mer](https://web.dev/button-name/)."
+  },
+  "lighthouse-core/audits/accessibility/button-name.js | failureTitle": {
+    "message": "Knapper har ikke tilgjengelige navn"
+  },
+  "lighthouse-core/audits/accessibility/button-name.js | title": {
+    "message": "Knappene har tilgjengelige navn"
+  },
+  "lighthouse-core/audits/accessibility/bypass.js | description": {
+    "message": "Hvis du legger til måter å hoppe over repeterende innhold på, kan tastaturbrukere navigere mer effektivt på siden. [Finn ut mer](https://web.dev/bypass/)."
+  },
+  "lighthouse-core/audits/accessibility/bypass.js | failureTitle": {
+    "message": "Siden mangler overskrift, landemerkeregion eller link for å hoppe over innhold"
+  },
+  "lighthouse-core/audits/accessibility/bypass.js | title": {
+    "message": "Siden inneholder en overskrift, en landemerkeregion eller en link for å hoppe over innhold"
+  },
+  "lighthouse-core/audits/accessibility/color-contrast.js | description": {
+    "message": "Tekst med lav kontrast er vanskelig eller umulig å lese for mange brukere. [Finn ut mer](https://web.dev/color-contrast/)."
+  },
+  "lighthouse-core/audits/accessibility/color-contrast.js | failureTitle": {
+    "message": "Kontrastforholdet mellom bakgrunns- og forgrunnsfarger er ikke tilstrekkelig."
+  },
+  "lighthouse-core/audits/accessibility/color-contrast.js | title": {
+    "message": "Kontrastforholdet mellom bakgrunns- og forgrunnsfargene er tilstrekkelig"
+  },
+  "lighthouse-core/audits/accessibility/definition-list.js | description": {
+    "message": "Når definisjonslister ikke er riktig kodet, kan resultatene fra skjermlesere bli forvirrende eller unøyaktige. [Finn ut mer](https://web.dev/definition-list/)."
+  },
+  "lighthouse-core/audits/accessibility/definition-list.js | failureTitle": {
+    "message": "`<dl>`-elementer inneholder ikke bare velordnede `<dt>`- og `<dd>`-grupper og `<script>`- eller `<template>`-elementer."
+  },
+  "lighthouse-core/audits/accessibility/definition-list.js | title": {
+    "message": "`<dl>`-elementene inneholder bare velordnede `<dt>`- og `<dd>`-grupper og `<script>`- eller `<template>`-elementer."
+  },
+  "lighthouse-core/audits/accessibility/dlitem.js | description": {
+    "message": "Elementer i definisjonslister (`<dt>` og `<dd>`) må være omsluttet av et overordnet `<dl>`-element for å sørge for at skjermlesere kan lese dem opp riktig. [Finn ut mer](https://web.dev/dlitem/)."
+  },
+  "lighthouse-core/audits/accessibility/dlitem.js | failureTitle": {
+    "message": "Elementer i definisjonslister er ikke omsluttet av `<dl>`-elementer"
+  },
+  "lighthouse-core/audits/accessibility/dlitem.js | title": {
+    "message": "Elementene i definisjonslister er omsluttet av `<dl>`-elementer"
+  },
+  "lighthouse-core/audits/accessibility/document-title.js | description": {
+    "message": "Tittelen gir brukere av skjermlesere oversikt over siden, og søkemotorbrukere er svært avhengige av den for å avgjøre om siden er relevant for søket deres. [Finn ut mer](https://web.dev/document-title/)."
+  },
+  "lighthouse-core/audits/accessibility/document-title.js | failureTitle": {
+    "message": "Dokumentet har ikke noe `<title>`-element"
+  },
+  "lighthouse-core/audits/accessibility/document-title.js | title": {
+    "message": "Dokumentet har et `<title>`-element"
+  },
+  "lighthouse-core/audits/accessibility/duplicate-id.js | description": {
+    "message": "ID-attributter må ha unike verdier for å unngå at andre forekomster blir oversett av assisterende teknologi. [Finn ut mer](https://web.dev/duplicate-id/)."
+  },
+  "lighthouse-core/audits/accessibility/duplicate-id.js | failureTitle": {
+    "message": "`[id]`-attributter på siden er ikke unike"
+  },
+  "lighthouse-core/audits/accessibility/duplicate-id.js | title": {
+    "message": "`[id]`-attributtene på siden er unike"
+  },
+  "lighthouse-core/audits/accessibility/frame-title.js | description": {
+    "message": "Brukere av skjermlesere er avhengige av titler for «frame»/«iframe»-elementer for å forstå innholdet i dem. [Finn ut mer](https://web.dev/frame-title/)."
+  },
+  "lighthouse-core/audits/accessibility/frame-title.js | failureTitle": {
+    "message": "`<frame>`- eller `<iframe>`-elementer mangler tittel"
+  },
+  "lighthouse-core/audits/accessibility/frame-title.js | title": {
+    "message": "`<frame>`- og `<iframe>`-elementer har titler"
+  },
+  "lighthouse-core/audits/accessibility/html-has-lang.js | description": {
+    "message": "Hvis en side ikke angir noe «lang»-attributt, antar skjermlesere at siden er på standardspråket brukeren valgte ved konfigurering av skjermleseren. Hvis siden ikke faktisk er på standardspråket, kan det hende skjermleseren leser teksten på siden feil. [Finn ut mer](https://web.dev/html-has-lang/)."
+  },
+  "lighthouse-core/audits/accessibility/html-has-lang.js | failureTitle": {
+    "message": "`<html>`-elementet har ikke noe gyldig `[lang]`-attributt"
+  },
+  "lighthouse-core/audits/accessibility/html-has-lang.js | title": {
+    "message": "`<html>`-elementet har et `[lang]`-attributt"
+  },
+  "lighthouse-core/audits/accessibility/html-lang-valid.js | description": {
+    "message": "Ved å angi et gyldig [BCP 47-språk](https://www.w3.org/International/questions/qa-choosing-language-tags#question) hjelper du skjermlesere med å lese opp teksten riktig. [Finn ut mer](https://web.dev/html-lang-valid/)."
+  },
+  "lighthouse-core/audits/accessibility/html-lang-valid.js | failureTitle": {
+    "message": "`<html>`-elementet har ikke noen gyldig verdi for `[lang]`-attributtet."
+  },
+  "lighthouse-core/audits/accessibility/html-lang-valid.js | title": {
+    "message": "`<html>`-elementet har en gyldig verdi for `[lang]`-attributtet"
+  },
+  "lighthouse-core/audits/accessibility/image-alt.js | description": {
+    "message": "Informative elementer bør ta sikte på korte og beskrivende alternative tekster. Dekorative elementer kan ignoreres med tomme alt-attributter. [Finn ut mer](https://web.dev/image-alt/)."
+  },
+  "lighthouse-core/audits/accessibility/image-alt.js | failureTitle": {
+    "message": "Bildeelementer har ikke `[alt]`-attributter"
+  },
+  "lighthouse-core/audits/accessibility/image-alt.js | title": {
+    "message": "Bildeelementene har `[alt]`-attributter"
+  },
+  "lighthouse-core/audits/accessibility/input-image-alt.js | description": {
+    "message": "Når et bilde brukes som `<input>`-knapp, bør du oppgi en alternativ tekst som hjelper brukere av skjermlesere med å forstå hva knappen er til. [Finn ut mer](https://web.dev/input-image-alt/)."
+  },
+  "lighthouse-core/audits/accessibility/input-image-alt.js | failureTitle": {
+    "message": "`<input type=\"image\">`-elementer har ikke `[alt]`-tekst"
+  },
+  "lighthouse-core/audits/accessibility/input-image-alt.js | title": {
+    "message": "`<input type=\"image\">`-elementer har `[alt]`-tekst"
+  },
+  "lighthouse-core/audits/accessibility/label.js | description": {
+    "message": "Etiketter sørger for at skjemakontroller leses opp på riktig måte av assisterende teknologi, som skjermlesere. [Finn ut mer](https://web.dev/label/)."
+  },
+  "lighthouse-core/audits/accessibility/label.js | failureTitle": {
+    "message": "Skjemaelementer har ikke tilknyttede etiketter"
+  },
+  "lighthouse-core/audits/accessibility/label.js | title": {
+    "message": "Skjemaelementene har tilknyttede etiketter"
+  },
+  "lighthouse-core/audits/accessibility/layout-table.js | description": {
+    "message": "Tabeller som brukes til layoutformål, skal ikke inneholde dataelementer, som th-elementer, caption-elementer eller summary-attributtet, da disse kan skape en forvirrende opplevelse for brukere av skjermlesere. [Finn ut mer](https://web.dev/layout-table/)."
+  },
+  "lighthouse-core/audits/accessibility/layout-table.js | failureTitle": {
+    "message": "Presentasjonsmessige `<table>`-elementer unngår ikke å bruke `<th>`, `<caption>` eller `[summary]`-attributtet."
+  },
+  "lighthouse-core/audits/accessibility/layout-table.js | title": {
+    "message": "Presentasjonsmessige `<table>`-elementer unngår å bruke `<th>`, `<caption>` og `[summary]`-attributtet."
+  },
+  "lighthouse-core/audits/accessibility/link-name.js | description": {
+    "message": "Når du bruker linktekst (og alternativ tekst for bilder som brukes som linker) som er tydelig, unik og mulig å sette fokus på, blir navigeringsopplevelsen bedre for brukere av skjermlesere. [Finn ut mer](https://web.dev/link-name/)."
+  },
+  "lighthouse-core/audits/accessibility/link-name.js | failureTitle": {
+    "message": "Linker har ikke tydelige navn"
+  },
+  "lighthouse-core/audits/accessibility/link-name.js | title": {
+    "message": "Linkene har tydelige navn"
+  },
+  "lighthouse-core/audits/accessibility/list.js | description": {
+    "message": "Skjermlesere har en spesifikk måte å lese opp lister på. Du kan øke kvaliteten på resultatene fra skjermlesere ved å bruke en god listestruktur. [Finn ut mer](https://web.dev/list/)."
+  },
+  "lighthouse-core/audits/accessibility/list.js | failureTitle": {
+    "message": "Lister inneholder ikke kun `<li>`-elementer og elementer som støtter skript (`<script>` og `<template>`)."
+  },
+  "lighthouse-core/audits/accessibility/list.js | title": {
+    "message": "Listene inneholder bare `<li>`-elementer og elementer som støtter skript (`<script>` og `<template>`)."
+  },
+  "lighthouse-core/audits/accessibility/listitem.js | description": {
+    "message": "Skjermlesere krever at listeelementer (`<li>`) ligger i et overordnet `<ul>`- eller `<ol>`-element – ellers kan de ikke leses opp på riktig måte. [Finn ut mer](https://web.dev/listitem/)."
+  },
+  "lighthouse-core/audits/accessibility/listitem.js | failureTitle": {
+    "message": "Listeelementer (`<li>`) ligger ikke i overordnede `<ul>`- eller `<ol>`-elementer."
+  },
+  "lighthouse-core/audits/accessibility/listitem.js | title": {
+    "message": "Listeelementene (`<li>`) ligger i overordnede `<ul>`- eller `<ol>`-elementer"
+  },
+  "lighthouse-core/audits/accessibility/meta-refresh.js | description": {
+    "message": "Brukere forventer ikke at sider oppdateres automatisk, så hvis dette skjer, flyttes fokuset tilbake til toppen av siden. Dette kan føre til frustrasjon eller forvirring. [Finn ut mer](https://web.dev/meta-refresh/)."
+  },
+  "lighthouse-core/audits/accessibility/meta-refresh.js | failureTitle": {
+    "message": "Dokumentet bruker `<meta http-equiv=\"refresh\">`"
+  },
+  "lighthouse-core/audits/accessibility/meta-refresh.js | title": {
+    "message": "Dokumentet bruker ikke `<meta http-equiv=\"refresh\">`"
+  },
+  "lighthouse-core/audits/accessibility/meta-viewport.js | description": {
+    "message": "Deaktivering av zoom er problematisk for brukere med nedsatt synsevne som har behov for å forstørre skjermen for å se innholdet på nettsider. [Finn ut mer](https://web.dev/meta-viewport/)."
+  },
+  "lighthouse-core/audits/accessibility/meta-viewport.js | failureTitle": {
+    "message": "`[user-scalable=\"no\"]` brukes i `<meta name=\"viewport\">`-elementet, eller `[maximum-scale]`-attributtet er mindre enn 5."
+  },
+  "lighthouse-core/audits/accessibility/meta-viewport.js | title": {
+    "message": "`[user-scalable=\"no\"]` brukes ikke i `<meta name=\"viewport\">`-elementet, og `[maximum-scale]`-attributtet er ikke mindre enn 5."
+  },
+  "lighthouse-core/audits/accessibility/object-alt.js | description": {
+    "message": "Skjermlesere kan ikke oversette innhold som ikke er tekst. Ved å legge til alternativ tekst i `<object>`-elementer hjelper du skjermlesere med å formidle mening til brukerne. [Finn ut mer](https://web.dev/object-alt/)."
+  },
+  "lighthouse-core/audits/accessibility/object-alt.js | failureTitle": {
+    "message": "`<object>`-elementer har ikke `[alt]`-tekst"
+  },
+  "lighthouse-core/audits/accessibility/object-alt.js | title": {
+    "message": "`<object>`-elementer har `[alt]`-tekst"
+  },
+  "lighthouse-core/audits/accessibility/tabindex.js | description": {
+    "message": "Større verdier enn 0 antyder en eksplisitt navigeringsrekkefølge. Selv om dette teknisk sett er gyldig, kan det ofte være frustrerende for brukere som er avhengige av assisterende teknologi. [Finn ut mer](https://web.dev/tabindex/)."
+  },
+  "lighthouse-core/audits/accessibility/tabindex.js | failureTitle": {
+    "message": "Noen elementer har en `[tabindex]`-verdi som er større enn 0"
+  },
+  "lighthouse-core/audits/accessibility/tabindex.js | title": {
+    "message": "Ingen elementer har en `[tabindex]`-verdi som er større enn 0"
+  },
+  "lighthouse-core/audits/accessibility/td-headers-attr.js | description": {
+    "message": "Skjermlesere har funksjonalitet som gjør det enklere å navigere i tabeller. Ved å sørge for at `<td>`-celler som bruker `[headers]`-attributtet, kun refererer til andre celler i den samme tabellen, kan du gjøre opplevelsen bedre for brukere av skjermlesere. [Finn ut mer](https://web.dev/td-headers-attr/)."
+  },
+  "lighthouse-core/audits/accessibility/td-headers-attr.js | failureTitle": {
+    "message": "Celler som er en del av et `<table>`-element og bruker `[headers]`-attributtet, refererer bare til andre celler i den samme tabellen."
+  },
+  "lighthouse-core/audits/accessibility/td-headers-attr.js | title": {
+    "message": "Celler som er en del av et `<table>`-element som bruker `[headers]`-attributtet, refererer bare til andre celler i den samme tabellen."
+  },
+  "lighthouse-core/audits/accessibility/th-has-data-cells.js | description": {
+    "message": "Skjermlesere har funksjonalitet som gjør det enklere å navigere i tabeller. Ved å sørge for at tabelloverskrifter alltid refererer til spesifikke cellesett, kan du gjøre opplevelsen bedre for brukere av skjermlesere. [Finn ut mer](https://web.dev/th-has-data-cells/)."
+  },
+  "lighthouse-core/audits/accessibility/th-has-data-cells.js | failureTitle": {
+    "message": "`<th>`-elementer og elementer med `[role=\"columnheader\"/\"rowheader\"]` har ikke datacellene de beskriver."
+  },
+  "lighthouse-core/audits/accessibility/th-has-data-cells.js | title": {
+    "message": "`<th>`-elementene og elementene med `[role=\"columnheader\"/\"rowheader\"]` har datacellene de beskriver."
+  },
+  "lighthouse-core/audits/accessibility/valid-lang.js | description": {
+    "message": "Ved å angi et gyldig [BCP 47-språk](https://www.w3.org/International/questions/qa-choosing-language-tags#question) i elementer bidrar du til at skjermlesere leser opp teksten riktig. [Finn ut mer](https://web.dev/valid-lang/)."
+  },
+  "lighthouse-core/audits/accessibility/valid-lang.js | failureTitle": {
+    "message": "`[lang]`-attributter mangler gyldige verdier"
+  },
+  "lighthouse-core/audits/accessibility/valid-lang.js | title": {
+    "message": "`[lang]`-attributtene har gyldige verdier"
+  },
+  "lighthouse-core/audits/accessibility/video-caption.js | description": {
+    "message": "Når videoer har teksting, blir det lettere for døve og hørselshemmede brukere å få med seg informasjonen i dem. [Finn ut mer](https://web.dev/video-caption/)."
+  },
+  "lighthouse-core/audits/accessibility/video-caption.js | failureTitle": {
+    "message": "`<video>`-elementer mangler et `<track>`-element med `[kind=\"captions\"]`."
+  },
+  "lighthouse-core/audits/accessibility/video-caption.js | title": {
+    "message": "`<video>`-elementer inneholder et `<track>`-element med `[kind=\"captions\"]`"
+  },
+  "lighthouse-core/audits/accessibility/video-description.js | description": {
+    "message": "Lydbeskrivelser gir relevant videoinformasjon som dialog ikke kan formidle, for eksempel ansiktsuttrykk og scener. [Finn ut mer](https://web.dev/video-description/)."
+  },
+  "lighthouse-core/audits/accessibility/video-description.js | failureTitle": {
+    "message": "`<video>`-elementer mangler et `<track>`-element med `[kind=\"description\"]`."
+  },
+  "lighthouse-core/audits/accessibility/video-description.js | title": {
+    "message": "`<video>`-elementer inneholder et `<track>`-element med `[kind=\"description\"]`"
+  },
+  "lighthouse-core/audits/apple-touch-icon.js | description": {
+    "message": "For å oppnå det ideelle utseendet på iOS når brukere legger til progressive nettprogrammer på startskjermen, definer et `apple-touch-icon`. Det må peke til et ugjennomsiktig, kvadratisk PNG-bilde med sidelengde på 192 (eller 180) piksler. [Finn ut mer](https://developers.google.com/web/fundamentals/design-and-ux/browser-customization/)."
+  },
+  "lighthouse-core/audits/apple-touch-icon.js | failureTitle": {
+    "message": "Har ikke noe gyldig `apple-touch-icon`"
+  },
+  "lighthouse-core/audits/apple-touch-icon.js | precomposedWarning": {
+    "message": "`apple-touch-icon-precomposed` er utdatert – `apple-touch-icon` foretrekkes."
+  },
+  "lighthouse-core/audits/apple-touch-icon.js | title": {
+    "message": "Har et gyldig `apple-touch-icon`"
+  },
+  "lighthouse-core/audits/bootup-time.js | chromeExtensionsWarning": {
+    "message": "Chrome-utvidelser gjør innlastingen av denne siden tregere. Prøv å revidere siden i inkognitomodus eller fra en Chrome-profil uten utvidelser."
+  },
+  "lighthouse-core/audits/bootup-time.js | columnScriptEval": {
+    "message": "Skriptevaluering"
+  },
+  "lighthouse-core/audits/bootup-time.js | columnScriptParse": {
+    "message": "Skriptparsing"
+  },
+  "lighthouse-core/audits/bootup-time.js | columnTotal": {
+    "message": "Total CPU-tid"
+  },
+  "lighthouse-core/audits/bootup-time.js | description": {
+    "message": "Vurder å redusere tiden som brukes til parsing, kompilering og kjøring av JavaScript. Levering av mindre JS-ressurser kan bidra til dette. [Finn ut mer](https://developers.google.com/web/tools/lighthouse/audits/bootup)."
+  },
+  "lighthouse-core/audits/bootup-time.js | failureTitle": {
+    "message": "Reduser JavaScript-kjøretiden"
+  },
+  "lighthouse-core/audits/bootup-time.js | title": {
+    "message": "JavaScript-kjøretid"
+  },
+  "lighthouse-core/audits/byte-efficiency/efficient-animated-content.js | description": {
+    "message": "Store GIF-er er mindre effektive for visning av animert innhold. I stedet for GIF bør du vurdere å bruke MPEG4/WebM-videoer for animasjon og PNG/WebP for statiske bilder, da dette belaster nettverket mindre. [Finn ut mer](https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/replace-animated-gifs-with-video/)"
+  },
+  "lighthouse-core/audits/byte-efficiency/efficient-animated-content.js | title": {
+    "message": "Bruk videoformat for animert innhold"
+  },
+  "lighthouse-core/audits/byte-efficiency/offscreen-images.js | description": {
+    "message": "Vurder «lat» innlasting av bilder som er utenfor skjermen eller skjult, etter at alle kritiske ressurser er ferdig innlastet, for å redusere tiden det tar før siden blir interaktiv. [Finn ut mer](https://developers.google.com/web/tools/lighthouse/audits/offscreen-images)."
+  },
+  "lighthouse-core/audits/byte-efficiency/offscreen-images.js | title": {
+    "message": "Utsett bilder utenfor skjermen"
+  },
+  "lighthouse-core/audits/byte-efficiency/render-blocking-resources.js | description": {
+    "message": "Ressurser blokkerer første opptegning (FP) av siden. Vurder å levere kritisk JS/CSS innebygd og utsette all JS/CSS som ikke er kritisk. [Finn ut mer](https://developers.google.com/web/tools/lighthouse/audits/blocking-resources)."
+  },
+  "lighthouse-core/audits/byte-efficiency/render-blocking-resources.js | title": {
+    "message": "Eliminer ressurser som blokkerer gjengivelse"
+  },
+  "lighthouse-core/audits/byte-efficiency/total-byte-weight.js | description": {
+    "message": "Store nettverksressurser koster brukerne ekte penger og er hovedgrunnen til lange innlastingstider. [Finn ut mer](https://developers.google.com/web/tools/lighthouse/audits/network-payloads)."
+  },
+  "lighthouse-core/audits/byte-efficiency/total-byte-weight.js | displayValue": {
+    "message": "Den totale størrelsen var {totalBytes, number, bytes} kB"
+  },
+  "lighthouse-core/audits/byte-efficiency/total-byte-weight.js | failureTitle": {
+    "message": "Unngå enorme nettverksressurser"
+  },
+  "lighthouse-core/audits/byte-efficiency/total-byte-weight.js | title": {
+    "message": "Unngår enorme nettverksbelastninger"
+  },
+  "lighthouse-core/audits/byte-efficiency/unminified-css.js | description": {
+    "message": "Forminskede CSS-filer kan redusere nettverksbelastningen. [Finn ut mer](https://developers.google.com/web/tools/lighthouse/audits/minify-css)."
+  },
+  "lighthouse-core/audits/byte-efficiency/unminified-css.js | title": {
+    "message": "Forminsk CSS"
+  },
+  "lighthouse-core/audits/byte-efficiency/unminified-javascript.js | description": {
+    "message": "Forminskede JavaScript-filer kan redusere mengden data som må overføres, og parsetiden for skript. [Finn ut mer](https://developers.google.com/speed/docs/insights/MinifyResources)."
+  },
+  "lighthouse-core/audits/byte-efficiency/unminified-javascript.js | title": {
+    "message": "Forminsk JavaScript"
+  },
+  "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | description": {
+    "message": "Fjern overflødige regler fra stilark og utsett å laste inn CSS som ikke brukes på innholdet i den synlige delen av nettsiden. Da reduserer du antall byte som går med til unødvendig nettverksaktivitet. [Finn ut mer](https://developers.google.com/web/tools/lighthouse/audits/unused-css)."
+  },
+  "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | title": {
+    "message": "Fjern ubrukt CSS"
+  },
+  "lighthouse-core/audits/byte-efficiency/unused-javascript.js | description": {
+    "message": "Fjern ubrukt JavaScript for å redusere antall byte som brukes av nettverksaktiviteten."
+  },
+  "lighthouse-core/audits/byte-efficiency/unused-javascript.js | title": {
+    "message": "Fjern ubrukt JavaScript"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-long-cache-ttl.js | description": {
+    "message": "En lang bufferlevetid kan gjøre at gjentatte besøk på siden din går raskere. [Finn ut mer](https://developers.google.com/web/tools/lighthouse/audits/cache-policy)."
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-long-cache-ttl.js | displayValue": {
+    "message": "{itemCount,plural, =1{1 ressurs funnet}other{# ressurser funnet}}"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-long-cache-ttl.js | failureTitle": {
+    "message": "Vis statiske ressurser med effektive buffer-retningslinjer"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-long-cache-ttl.js | title": {
+    "message": "Bruker effektive buffer-retningslinjer på statiske ressurser"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-optimized-images.js | description": {
+    "message": "Optimaliserte bilder lastes inn raskere og bruker mindre mobildata. [Finn ut mer](https://developers.google.com/web/tools/lighthouse/audits/optimize-images)."
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-optimized-images.js | title": {
+    "message": "Effektiviser omgjøring av bilder til kode"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | description": {
+    "message": "Vis bilder som har passende størrelse, for å spare mobildata og redusere innlastingstiden. [Finn ut mer](https://developers.google.com/web/tools/lighthouse/audits/oversized-images)."
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | title": {
+    "message": "Velg riktige bildestørrelser"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-text-compression.js | description": {
+    "message": "Tekstbaserte ressurser bør leveres komprimert (gzip, deflate eller brotli) for å minimere antall byte som sendes over nettverket. [Finn ut mer](https://developers.google.com/web/tools/lighthouse/audits/text-compression)."
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-text-compression.js | title": {
+    "message": "Aktiver tekstkomprimering"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-webp-images.js | description": {
+    "message": "Bildeformater som JPEG 2000, JPEG XR og WebP gir ofte bedre komprimering enn PNG eller JPEG, noe som betyr raskere nedlasting og mindre databruk. [Finn ut mer](https://developers.google.com/web/tools/lighthouse/audits/webp)."
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-webp-images.js | title": {
+    "message": "Bruk nyere bildeformater"
+  },
+  "lighthouse-core/audits/content-width.js | description": {
+    "message": "Hvis bredden på appinnholdet ikke samsvarer med bredden på det synlige området, er appen kanskje ikke optimalisert for mobilskjermer. [Finn ut mer](https://developers.google.com/web/tools/lighthouse/audits/content-sized-correctly-for-viewport)."
+  },
+  "lighthouse-core/audits/content-width.js | explanation": {
+    "message": "Det synlige områdets størrelse på {innerWidth} px samsvarer ikke med vindusstørrelsen på {outerWidth} px."
+  },
+  "lighthouse-core/audits/content-width.js | failureTitle": {
+    "message": "Innholdet har ikke riktig størrelse i forhold til det synlige området"
+  },
+  "lighthouse-core/audits/content-width.js | title": {
+    "message": "Innholdet har riktig størrelse i forhold til det synlige området"
+  },
+  "lighthouse-core/audits/critical-request-chains.js | description": {
+    "message": "De kritiske forespørselskjedene nedenfor viser hvilke ressurser som lastes inn med høy prioritet. Vurder å redusere lengden på kjedene, redusere nedlastingsstørrelsen på ressursene eller utsette nedlasting av unødvendige ressurser for å bedre sideinnlastingen. [Finn ut mer](https://developers.google.com/web/tools/lighthouse/audits/critical-request-chains)."
+  },
+  "lighthouse-core/audits/critical-request-chains.js | displayValue": {
+    "message": "{itemCount,plural, =1{1 kjede funnet}other{# kjeder funnet}}"
+  },
+  "lighthouse-core/audits/critical-request-chains.js | title": {
+    "message": "Minimer dybden på kritiske forespørsler"
+  },
+  "lighthouse-core/audits/deprecations.js | columnDeprecate": {
+    "message": "Avvikling/varsel"
+  },
+  "lighthouse-core/audits/deprecations.js | columnLine": {
+    "message": "Linje"
+  },
+  "lighthouse-core/audits/deprecations.js | description": {
+    "message": "Avviklede API-er kommer etter hvert til å bli fjernet fra nettleseren. [Finn ut mer](https://web.dev/deprecations)."
+  },
+  "lighthouse-core/audits/deprecations.js | displayValue": {
+    "message": "{itemCount,plural, =1{1 varsel er funnet}other{# varsler er funnet}}"
+  },
+  "lighthouse-core/audits/deprecations.js | failureTitle": {
+    "message": "Bruker avviklede API-er"
+  },
+  "lighthouse-core/audits/deprecations.js | title": {
+    "message": "Unngår å bruke avviklede API-er"
+  },
+  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | description": {
+    "message": "Programbufferen er avviklet. [Finn ut mer](https://web.dev/appcache-manifest)."
+  },
+  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | displayValue": {
+    "message": "Fant «{AppCacheManifest}»"
+  },
+  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | failureTitle": {
+    "message": "Bruker programbufferen"
+  },
+  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | title": {
+    "message": "Unngår å bruke programbufferen"
+  },
+  "lighthouse-core/audits/dobetterweb/doctype.js | description": {
+    "message": "Ved å angi en doctype forhindrer du nettleseren fra å bytte til modus for bred kompatibilitet. [Finn ut mer](https://web.dev/doctype)."
+  },
+  "lighthouse-core/audits/dobetterweb/doctype.js | explanationBadDoctype": {
+    "message": "Doctype-navnet må være strengen `html` med små bokstaver"
+  },
+  "lighthouse-core/audits/dobetterweb/doctype.js | explanationNoDoctype": {
+    "message": "Dokumentet må ha en doctype"
+  },
+  "lighthouse-core/audits/dobetterweb/doctype.js | explanationPublicId": {
+    "message": "Forventet at publicId skulle være en tom streng"
+  },
+  "lighthouse-core/audits/dobetterweb/doctype.js | explanationSystemId": {
+    "message": "Forventet at systemId skulle være en tom streng"
+  },
+  "lighthouse-core/audits/dobetterweb/doctype.js | failureTitle": {
+    "message": "Siden har ikke HTML som doctype og utløser derfor modus for bred kompatibilitet."
+  },
+  "lighthouse-core/audits/dobetterweb/doctype.js | title": {
+    "message": "Siden har HTML som doctype"
+  },
+  "lighthouse-core/audits/dobetterweb/dom-size.js | columnElement": {
+    "message": "Element"
+  },
+  "lighthouse-core/audits/dobetterweb/dom-size.js | columnStatistic": {
+    "message": "Statistikk"
+  },
+  "lighthouse-core/audits/dobetterweb/dom-size.js | columnValue": {
+    "message": "Verdi"
+  },
+  "lighthouse-core/audits/dobetterweb/dom-size.js | description": {
+    "message": "Nettleseringeniører anbefaler å ha mindre enn 1500 DOM-elementer på nettsider. Ideelt bør treet være mindre enn 32 elementer dypt, og det bør være færre enn 60 underordnede/overordnede elementer. Store DOM-er kan øke minnebruken, forårsake lengre [stilberegninger](https://developers.google.com/web/fundamentals/performance/rendering/reduce-the-scope-and-complexity-of-style-calculations) og utløse kostbare [dynamiske tilpasninger av layouten](https://developers.google.com/speed/articles/reflow). [Finn ut mer](https://web.dev/dom-size)."
+  },
+  "lighthouse-core/audits/dobetterweb/dom-size.js | displayValue": {
+    "message": "{itemCount,plural, =1{1 element}other{# elementer}}"
+  },
+  "lighthouse-core/audits/dobetterweb/dom-size.js | failureTitle": {
+    "message": "Unngå for stor DOM-struktur"
+  },
+  "lighthouse-core/audits/dobetterweb/dom-size.js | statisticDOMDepth": {
+    "message": "Maksimal DOM-dybde"
+  },
+  "lighthouse-core/audits/dobetterweb/dom-size.js | statisticDOMElements": {
+    "message": "Totalt antall DOM-elementer"
+  },
+  "lighthouse-core/audits/dobetterweb/dom-size.js | statisticDOMWidth": {
+    "message": "Maksimalt antall underordnede elementer"
+  },
+  "lighthouse-core/audits/dobetterweb/dom-size.js | title": {
+    "message": "Unngå for stor DOM-struktur"
+  },
+  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | columnRel": {
+    "message": "Rel"
+  },
+  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | columnTarget": {
+    "message": "Mål"
+  },
+  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | description": {
+    "message": "Legg til `rel=\"noopener\"` eller `rel=\"noreferrer\"` i eksterne linker for å øke ytelsen og forhindre sikkerhetssårbarheter. [Finn ut mer](https://web.dev/external-anchors-use-rel-noopener)."
+  },
+  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | failureTitle": {
+    "message": "Linker til opphavsuavhengige destinasjoner er utrygge"
+  },
+  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | title": {
+    "message": "Linker til opphavsuavhengige destinasjoner er trygge"
+  },
+  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | warning": {
+    "message": "Kunne ikke avgjøre destinasjonen for ankeret ({anchorHTML}). Hvis ankeret ikke brukes som hyperlink, vurder å fjerne target=_blank."
+  },
+  "lighthouse-core/audits/dobetterweb/geolocation-on-start.js | description": {
+    "message": "Brukere er mistroiske overfor eller blir forvirret av nettsteder som spør om posisjonen deres uten kontekst. Vurder å knytte forespørselen opp mot en brukerhandling i stedet. [Finn ut mer](https://web.dev/geolocation-on-start)."
+  },
+  "lighthouse-core/audits/dobetterweb/geolocation-on-start.js | failureTitle": {
+    "message": "Spør om geolokaliseringstillatelsen ved sideinnlasting"
+  },
+  "lighthouse-core/audits/dobetterweb/geolocation-on-start.js | title": {
+    "message": "Unngår å spørre om geolokaliseringstillatelsen ved sideinnlasting"
+  },
+  "lighthouse-core/audits/dobetterweb/js-libraries.js | columnVersion": {
+    "message": "Versjon"
+  },
+  "lighthouse-core/audits/dobetterweb/js-libraries.js | description": {
+    "message": "Alle JavaScript-grensesnittsbiblioteker som ble funnet på siden. [Finn ut mer](https://web.dev/js-libraries)."
+  },
+  "lighthouse-core/audits/dobetterweb/js-libraries.js | title": {
+    "message": "JavaScript-biblioteker som ble oppdaget"
+  },
+  "lighthouse-core/audits/dobetterweb/no-document-write.js | description": {
+    "message": "For brukere som har trege tilkoblinger, kan eksterne skript som injiseres dynamisk via `document.write()`, forsinke sideinnlastingen med flere titalls sekunder. [Finn ut mer](https://web.dev/no-document-write)."
+  },
+  "lighthouse-core/audits/dobetterweb/no-document-write.js | failureTitle": {
+    "message": "Bruker `document.write()`"
+  },
+  "lighthouse-core/audits/dobetterweb/no-document-write.js | title": {
+    "message": "Unngår `document.write()`"
+  },
+  "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | columnSeverity": {
+    "message": "Høyeste alvorlighetsgrad"
+  },
+  "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | columnVersion": {
+    "message": "Bibliotekversjon"
+  },
+  "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | columnVuln": {
+    "message": "Antall sårbarheter"
+  },
+  "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | description": {
+    "message": "Noen tredjepartsskript kan inneholde kjente sikkerhetssårbarheter som enkelt kan identifiseres og utnyttes av angripere. [Finn ut mer](https://web.dev/no-vulnerable-libraries)."
+  },
+  "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | displayValue": {
+    "message": "{itemCount,plural, =1{1 sårbarhet er oppdaget}other{# sårbarheter er oppdaget}}"
+  },
+  "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | failureTitle": {
+    "message": "Inkluderer JavaScript-grensesnittsbiblioteker med kjente sikkerhetssårbarheter"
+  },
+  "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | rowSeverityHigh": {
+    "message": "Høy"
+  },
+  "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | rowSeverityLow": {
+    "message": "Lav"
+  },
+  "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | rowSeverityMedium": {
+    "message": "Middels"
+  },
+  "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | title": {
+    "message": "Unngår JavaScript-grensesnittsbiblioteker med kjente sikkerhetssårbarheter"
+  },
+  "lighthouse-core/audits/dobetterweb/notification-on-start.js | description": {
+    "message": "Brukere er mistroiske overfor eller blir forvirret av nettsteder som spør om å få sende varsler uten kontekst. Vurder å knytte forespørselen opp mot brukerbevegelser i stedet. [Finn ut mer](https://web.dev/notification-on-start)."
+  },
+  "lighthouse-core/audits/dobetterweb/notification-on-start.js | failureTitle": {
+    "message": "Spør om varseltillatelsen ved sideinnlasting"
+  },
+  "lighthouse-core/audits/dobetterweb/notification-on-start.js | title": {
+    "message": "Unngår å spørre om varseltillatelsen ved sideinnlasting"
+  },
+  "lighthouse-core/audits/dobetterweb/password-inputs-can-be-pasted-into.js | columnFailingElem": {
+    "message": "Elementer som ikke besto kontrollen"
+  },
+  "lighthouse-core/audits/dobetterweb/password-inputs-can-be-pasted-into.js | description": {
+    "message": "Å hindre brukere i å lime inn passord underminerer gode retningslinjer for sikkerhet. [Finn ut mer](https://web.dev/password-inputs-can-be-pasted-into)."
+  },
+  "lighthouse-core/audits/dobetterweb/password-inputs-can-be-pasted-into.js | failureTitle": {
+    "message": "Forhindrer brukere fra å lime inn i passordfelt"
+  },
+  "lighthouse-core/audits/dobetterweb/password-inputs-can-be-pasted-into.js | title": {
+    "message": "Brukerne kan lime inn i passordfelt"
+  },
+  "lighthouse-core/audits/dobetterweb/uses-http2.js | columnProtocol": {
+    "message": "Protokoll"
+  },
+  "lighthouse-core/audits/dobetterweb/uses-http2.js | description": {
+    "message": "HTTP/2 har mange fordeler sammenlignet med HTTP/1.1, blant annet binære headers, multipleksing og aktiv meldingslevering fra tjener. [Finn ut mer](https://web.dev/uses-http2)."
+  },
+  "lighthouse-core/audits/dobetterweb/uses-http2.js | displayValue": {
+    "message": "{itemCount,plural, =1{1 forespørsel ble ikke vist via HTTP/2}other{# forespørsler ble ikke vist via HTTP/2}}"
+  },
+  "lighthouse-core/audits/dobetterweb/uses-http2.js | failureTitle": {
+    "message": "Bruker ikke HTTP/2 for alle ressursene"
+  },
+  "lighthouse-core/audits/dobetterweb/uses-http2.js | title": {
+    "message": "Bruker HTTP/2 til sine egne ressurser"
+  },
+  "lighthouse-core/audits/dobetterweb/uses-passive-event-listeners.js | description": {
+    "message": "Vurder å markere aktivitetslytterne for berøring og musehjul som `passive` for å oppnå bedre ytelse ved rulling på siden. [Finn ut mer](https://web.dev/uses-passive-event-listeners)."
+  },
+  "lighthouse-core/audits/dobetterweb/uses-passive-event-listeners.js | failureTitle": {
+    "message": "Bruker ikke passive lyttere for å oppnå bedre ytelse ved rulling på siden"
+  },
+  "lighthouse-core/audits/dobetterweb/uses-passive-event-listeners.js | title": {
+    "message": "Bruker passive lyttere for å oppnå bedre ytelse ved rulling på siden"
+  },
+  "lighthouse-core/audits/errors-in-console.js | columnDesc": {
+    "message": "Beskrivelse"
+  },
+  "lighthouse-core/audits/errors-in-console.js | description": {
+    "message": "Feil som loggføres i konsollen, tyder på uløste problemer. De kan stamme fra mislykkede nettverksforespørsler og andre nettleserproblemer. [Finn ut mer](https://web.dev/errors-in-console)"
+  },
+  "lighthouse-core/audits/errors-in-console.js | failureTitle": {
+    "message": "Nettleserfeil ble loggført i konsollen"
+  },
+  "lighthouse-core/audits/errors-in-console.js | title": {
+    "message": "Ingen nettleserfeil ble loggført i konsollen"
+  },
+  "lighthouse-core/audits/font-display.js | description": {
+    "message": "Bruk CSS-funksjonen font-display til å forsikre deg om at brukerne ser teksten mens skrifttypene for nettet lastes inn. [Finn ut mer](https://developers.google.com/web/updates/2016/02/font-display)."
+  },
+  "lighthouse-core/audits/font-display.js | failureTitle": {
+    "message": "Sørg for at teksten forblir synlig under innlasting av skrifttyper for nettet"
+  },
+  "lighthouse-core/audits/font-display.js | title": {
+    "message": "All tekst forblir synlig under innlasting av skrifttype for nettet"
+  },
+  "lighthouse-core/audits/font-display.js | undeclaredFontURLWarning": {
+    "message": "Lighthouse kunne ikke automatisk kontrollere verdien av font-display for denne nettadressen: {fontURL}."
+  },
+  "lighthouse-core/audits/image-aspect-ratio.js | columnActual": {
+    "message": "Høyde/bredde-forhold (faktisk)"
+  },
+  "lighthouse-core/audits/image-aspect-ratio.js | columnDisplayed": {
+    "message": "Høyde/bredde-forhold (vist)"
+  },
+  "lighthouse-core/audits/image-aspect-ratio.js | description": {
+    "message": "Visningsstørrelsen for bilder bør samsvare med det naturlige høyde/bredde-forholdet. [Finn ut mer](https://web.dev/image-aspect-ratio)."
+  },
+  "lighthouse-core/audits/image-aspect-ratio.js | failureTitle": {
+    "message": "Viser bilder med feil høyde/bredde-forhold"
+  },
+  "lighthouse-core/audits/image-aspect-ratio.js | title": {
+    "message": "Viser bilder med riktig høyde/bredde-forhold"
+  },
+  "lighthouse-core/audits/image-aspect-ratio.js | warningCompute": {
+    "message": "Ugyldig informasjon om bildestørrelse – {url}"
+  },
+  "lighthouse-core/audits/installable-manifest.js | description": {
+    "message": "Nettlesere kan aktivt spørre brukere om de vil legge til appen på startskjermen sin. Det kan føre til økt interaksjon. [Finn ut mer](https://developers.google.com/web/tools/lighthouse/audits/install-prompt)."
+  },
+  "lighthouse-core/audits/installable-manifest.js | failureTitle": {
+    "message": "Manifestet til nettprogrammet oppfyller ikke kravene til installerbarhet"
+  },
+  "lighthouse-core/audits/installable-manifest.js | title": {
+    "message": "Manifestet til nettprogrammet oppfyller kravene til installerbarhet"
+  },
+  "lighthouse-core/audits/is-on-https.js | columnInsecureURL": {
+    "message": "Utrygg nettadresse"
+  },
+  "lighthouse-core/audits/is-on-https.js | description": {
+    "message": "Alle nettsteder bør være beskyttet med HTTPS, selv de som ikke håndterer sensitive opplysninger. HTTPS forhindrer inntrengere fra å tukle med eller lytte passivt til kommunikasjonen mellom appen din og brukerne dine og er en forutsetning for å kunne bruke HTTP/2 og mange nye nettplattform-API-er. [Finn ut mer](https://web.dev/is-on-https)."
+  },
+  "lighthouse-core/audits/is-on-https.js | displayValue": {
+    "message": "{itemCount,plural, =1{1 utrygg forespørsel er funnet}other{# utrygge forespørsler er funnet}}"
+  },
+  "lighthouse-core/audits/is-on-https.js | failureTitle": {
+    "message": "Bruker ikke HTTPS"
+  },
+  "lighthouse-core/audits/is-on-https.js | title": {
+    "message": "Bruker HTTPS"
+  },
+  "lighthouse-core/audits/load-fast-enough-for-pwa.js | description": {
+    "message": "Når sider lastes inn raskt over mobilnettverk, gir det en god brukeropplevelse på mobilenheter. [Finn ut mer](https://developers.google.com/web/tools/lighthouse/audits/fast-3g)."
+  },
+  "lighthouse-core/audits/load-fast-enough-for-pwa.js | displayValueText": {
+    "message": "Interaktiv etter {timeInMs, number, seconds} s"
+  },
+  "lighthouse-core/audits/load-fast-enough-for-pwa.js | displayValueTextWithOverride": {
+    "message": "Siden ble interaktiv på det simulerte mobilnettverket etter {timeInMs, number, seconds} s"
+  },
+  "lighthouse-core/audits/load-fast-enough-for-pwa.js | explanationLoadSlow": {
+    "message": "Siden lastes inn for sakte og blir ikke interaktiv i løpet av 10 sekunder. Se på mulighetene og diagnostikken i delen «Ytelse» for å finne ut hva som kan forbedres."
+  },
+  "lighthouse-core/audits/load-fast-enough-for-pwa.js | failureTitle": {
+    "message": "Siden lastes ikke inn raskt nok over mobilnettverk"
+  },
+  "lighthouse-core/audits/load-fast-enough-for-pwa.js | title": {
+    "message": "Siden lastes inn raskt nok over mobilnettverk"
+  },
+  "lighthouse-core/audits/mainthread-work-breakdown.js | columnCategory": {
+    "message": "Kategori"
+  },
+  "lighthouse-core/audits/mainthread-work-breakdown.js | description": {
+    "message": "Vurder å redusere tiden som brukes til parsing, kompilering og kjøring i JS. Levering av mindre JS-ressurser kan bidra til dette."
+  },
+  "lighthouse-core/audits/mainthread-work-breakdown.js | failureTitle": {
+    "message": "Minimer arbeidet på hovedtråden"
+  },
+  "lighthouse-core/audits/mainthread-work-breakdown.js | title": {
+    "message": "Minimerer arbeidet på hovedtråden"
+  },
+  "lighthouse-core/audits/manual/pwa-cross-browser.js | description": {
+    "message": "For å nå så mange brukere som mulig bør nettsteder fungere i alle de vanligste nettleserne. [Finn ut mer](https://developers.google.com/web/progressive-web-apps/checklist#site-works-cross-browser)."
+  },
+  "lighthouse-core/audits/manual/pwa-cross-browser.js | title": {
+    "message": "Nettstedet fungerer i ulike nettlesere"
+  },
+  "lighthouse-core/audits/manual/pwa-each-page-has-url.js | description": {
+    "message": "Sørg for at individuelle sider kan dyplinkes via nettadresser, og at nettadressene er unike, slik at de kan deles på sosiale medier. [Finn ut mer](https://developers.google.com/web/progressive-web-apps/checklist#each-page-has-a-url)."
+  },
+  "lighthouse-core/audits/manual/pwa-each-page-has-url.js | title": {
+    "message": "Hver side har en nettadresse"
+  },
+  "lighthouse-core/audits/manual/pwa-page-transitions.js | description": {
+    "message": "Overganger skal føles smidige når du trykker deg rundt, selv på et tregt nettverk. Dette er sentralt for den opplevde ytelsen. [Finn ut mer](https://developers.google.com/web/progressive-web-apps/checklist#page-transitions-dont-feel-like-they-block-on-the-network)."
+  },
+  "lighthouse-core/audits/manual/pwa-page-transitions.js | title": {
+    "message": "Sideoverganger føles ikke som om de blokkerer på nettverket"
+  },
+  "lighthouse-core/audits/metrics/estimated-input-latency.js | description": {
+    "message": "Beregnet inndataforsinkelse er et estimat av hvor lang tid (i millisekunder) det tar for appen å svare på brukerinndata i det travleste 5-sekunders tidsrommet mens siden lastes inn. Hvis tidsforsinkelsen er høyere enn 50 ms, kan brukere oppleve appen som treg. [Finn ut mer](https://developers.google.com/web/tools/lighthouse/audits/estimated-input-latency)."
+  },
+  "lighthouse-core/audits/metrics/estimated-input-latency.js | title": {
+    "message": "Anslått tidsforsinkelse for inndata"
+  },
+  "lighthouse-core/audits/metrics/first-contentful-paint.js | description": {
+    "message": "Den første innholdsrike opptegningen (FCP) markerer den første gangen tekst eller bilder tegnes opp. [Finn ut mer](https://developers.google.com/web/tools/lighthouse/audits/first-contentful-paint)."
+  },
+  "lighthouse-core/audits/metrics/first-contentful-paint.js | title": {
+    "message": "Første innholdsrike opptegning"
+  },
+  "lighthouse-core/audits/metrics/first-cpu-idle.js | description": {
+    "message": "Første prosessor ledig markerer den første gangen sidens hovedtråd er stille nok til å klare å håndtere inndata. [Finn ut mer](https://developers.google.com/web/tools/lighthouse/audits/first-interactive)."
+  },
+  "lighthouse-core/audits/metrics/first-cpu-idle.js | title": {
+    "message": "Første prosessor ledig"
+  },
+  "lighthouse-core/audits/metrics/first-meaningful-paint.js | description": {
+    "message": "Første vesentlige opptegning måler når hovedinnholdet på en side er synlig. [Finn ut mer](https://developers.google.com/web/tools/lighthouse/audits/first-meaningful-paint)."
+  },
+  "lighthouse-core/audits/metrics/first-meaningful-paint.js | title": {
+    "message": "Første vesentlige opptegning"
+  },
+  "lighthouse-core/audits/metrics/interactive.js | description": {
+    "message": "Tid til interaktiv vil si hvor lang tid det tar før siden blir helt interaktiv. [Finn ut mer](https://developers.google.com/web/tools/lighthouse/audits/consistently-interactive)."
+  },
+  "lighthouse-core/audits/metrics/interactive.js | title": {
+    "message": "Tid til interaktiv"
+  },
+  "lighthouse-core/audits/metrics/max-potential-fid.js | description": {
+    "message": "Den maksimale potensielle forsinkelsen for første inndata som brukerne dine kan oppleve, er varigheten (i millisekunder) av den lengste oppgaven. [Finn ut mer](https://developers.google.com/web/updates/2018/05/first-input-delay)."
+  },
+  "lighthouse-core/audits/metrics/max-potential-fid.js | title": {
+    "message": "Maks forsinkelse for første inndata"
+  },
+  "lighthouse-core/audits/metrics/speed-index.js | description": {
+    "message": "Hastighetsindeksen viser hvor raskt innholdet på siden blir synlig. [Finn ut mer](https://developers.google.com/web/tools/lighthouse/audits/speed-index)."
+  },
+  "lighthouse-core/audits/metrics/speed-index.js | title": {
+    "message": "Hastighetsindeks"
+  },
+  "lighthouse-core/audits/metrics/total-blocking-time.js | description": {
+    "message": "Summen av alle tidsperiodene mellom første innholdsrike opptegning (FCP) og tid til interaktiv, når oppgavelengden har overskredet 50 ms, uttrykt i millisekunder."
+  },
+  "lighthouse-core/audits/metrics/total-blocking-time.js | title": {
+    "message": "Total blokkeringstid"
+  },
+  "lighthouse-core/audits/network-rtt.js | description": {
+    "message": "Rundturstidene (RTT) for nettverket har stor innvirkning på ytelsen. Hvis RTT-en til et bestemt opprinnelsessted er høy, tyder det på at tjenere som befinner seg nærmere brukeren, muligens kan gi bedre ytelse. [Finn ut mer](https://hpbn.co/primer-on-latency-and-bandwidth/)."
+  },
+  "lighthouse-core/audits/network-rtt.js | title": {
+    "message": "Rundturstider for nettverket"
+  },
+  "lighthouse-core/audits/network-server-latency.js | description": {
+    "message": "Tidsforsinkelser fra tjeneren kan påvirke nettytelsen. Hvis tjeneren for et bestemt opprinnelsessted har høy tidsforsinkelse, tyder det på at tjeneren er overbelastet eller har dårlig ytelse i tjenerdelen. [Finn ut mer](https://hpbn.co/primer-on-web-performance/#analyzing-the-resource-waterfall)."
+  },
+  "lighthouse-core/audits/network-server-latency.js | title": {
+    "message": "Forsinkelser i tjenerdelen"
+  },
+  "lighthouse-core/audits/offline-start-url.js | description": {
+    "message": "Med en tjenestearbeider kan nettprogrammet ditt vært pålitelig under uforutsigbare nettverksforhold. [Finn ut mer](https://developers.google.com/web/tools/lighthouse/audits/http-200-when-offline)."
+  },
+  "lighthouse-core/audits/offline-start-url.js | failureTitle": {
+    "message": "`start_url` svarer ikke med 200 når siden er uten nett"
+  },
+  "lighthouse-core/audits/offline-start-url.js | title": {
+    "message": "`start_url` svarer med 200 når siden er uten nett"
+  },
+  "lighthouse-core/audits/offline-start-url.js | warningCantStart": {
+    "message": "Lighthouse kunne ikke lese `start_url` i manifestet. Derfor ble det antatt at `start_url` var dokumentets nettadresse. Feilmelding: «{manifestWarning}»."
+  },
+  "lighthouse-core/audits/performance-budget.js | columnOverBudget": {
+    "message": "Over budsjett"
+  },
+  "lighthouse-core/audits/performance-budget.js | description": {
+    "message": "Sørg for at antall nettverksforespørsler og størrelsen på disse er lavere enn målene som er angitt i det aktuelle ytelsesbudsjettet. [Finn ut mer](https://developers.google.com/web/tools/lighthouse/audits/budgets)."
+  },
+  "lighthouse-core/audits/performance-budget.js | requestCountOverBudget": {
+    "message": "{count,plural, =1{1 forespørsel}other{# forespørsler}}"
+  },
+  "lighthouse-core/audits/performance-budget.js | title": {
+    "message": "Ytelsesbudsjett"
+  },
+  "lighthouse-core/audits/redirects-http.js | description": {
+    "message": "Hvis du allerede har satt opp HTTPS, må du sørge for at du viderekobler all HTTP-trafikk til HTTPS, slik at du gir alle brukerne dine tilgang til sikker nettfunksjonalitet. [Finn ut mer](https://developers.google.com/web/tools/lighthouse/audits/http-redirects-to-https)."
+  },
+  "lighthouse-core/audits/redirects-http.js | failureTitle": {
+    "message": "Viderekobler ikke HTTP-trafikk til HTTPS"
+  },
+  "lighthouse-core/audits/redirects-http.js | title": {
+    "message": "Viderekobler HTTP-trafikk til HTTPS"
+  },
+  "lighthouse-core/audits/redirects.js | description": {
+    "message": "Viderekoblinger fører til flere forsinkelser før siden kan lastes inn. [Finn ut mer](https://developers.google.com/web/tools/lighthouse/audits/redirects)."
+  },
+  "lighthouse-core/audits/redirects.js | title": {
+    "message": "Unngå flere viderekoblinger av siden"
+  },
+  "lighthouse-core/audits/resource-summary.js | description": {
+    "message": "For å angi budsjetter for antall sideressurser og størrelsen på disse, legg til en budget.json-fil. [Finn ut mer](https://developers.google.com/web/tools/lighthouse/audits/budgets)."
+  },
+  "lighthouse-core/audits/resource-summary.js | displayValue": {
+    "message": "{requestCount,plural, =1{1 forespørsel • {byteCount, number, bytes} kB}other{# forespørsler • {byteCount, number, bytes} kB}}"
+  },
+  "lighthouse-core/audits/resource-summary.js | title": {
+    "message": "Minimer antall forespørsler og størrelsen på overføringer"
+  },
+  "lighthouse-core/audits/seo/canonical.js | description": {
+    "message": "Kanoniske linker foreslår hvilken nettadresse som skal vises i søkeresultater. [Finn ut mer](https://web.dev/canonical)."
+  },
+  "lighthouse-core/audits/seo/canonical.js | explanationConflict": {
+    "message": "Flere motstridende nettadresser ({urlList})"
+  },
+  "lighthouse-core/audits/seo/canonical.js | explanationDifferentDomain": {
+    "message": "Peker til et annet domene ({url})"
+  },
+  "lighthouse-core/audits/seo/canonical.js | explanationInvalid": {
+    "message": "Ugyldig nettadresse ({url})"
+  },
+  "lighthouse-core/audits/seo/canonical.js | explanationPointsElsewhere": {
+    "message": "Peker til en annen `hreflang`-plassering ({url})"
+  },
+  "lighthouse-core/audits/seo/canonical.js | explanationRelative": {
+    "message": "Relativ nettadresse ({url})"
+  },
+  "lighthouse-core/audits/seo/canonical.js | explanationRoot": {
+    "message": "Peker til domenets rotadresse (startsiden) i stedet for en tilsvarende side med innhold"
+  },
+  "lighthouse-core/audits/seo/canonical.js | failureTitle": {
+    "message": "Dokumentet har ikke noe gyldig `rel=canonical`-element"
+  },
+  "lighthouse-core/audits/seo/canonical.js | title": {
+    "message": "Dokumentet har en gyldig `rel=canonical`-link"
+  },
+  "lighthouse-core/audits/seo/font-size.js | description": {
+    "message": "Skriftstørrelser på mindre enn 12 px er for små til å være leselige og gjør at besøkende på mobil må «klype for å zoome» for å klare å lese teksten. Prøv å sørge for at mer enn 60 % av teksten på siden er 12 px eller større. [Finn ut mer](https://web.dev/font-size)."
+  },
+  "lighthouse-core/audits/seo/font-size.js | displayValue": {
+    "message": "{decimalProportion, number, extendedPercent} lesbar tekst"
+  },
+  "lighthouse-core/audits/seo/font-size.js | explanationViewport": {
+    "message": "Teksten er uleselig fordi det ikke er noen viewport-metatag som er optimalisert for mobilskjermer."
+  },
+  "lighthouse-core/audits/seo/font-size.js | explanationWithDisclaimer": {
+    "message": "{decimalProportion, number, extendedPercent} av teksten er for liten (basert på et utvalg på {decimalProportionVisited, number, extendedPercent} av siden)."
+  },
+  "lighthouse-core/audits/seo/font-size.js | failureTitle": {
+    "message": "Dokumentet bruker ikke leselige skriftstørrelser"
+  },
+  "lighthouse-core/audits/seo/font-size.js | title": {
+    "message": "Dokumentet bruker leselige skriftstørrelser"
+  },
+  "lighthouse-core/audits/seo/hreflang.js | description": {
+    "message": "hreflang-linker forteller søkemotorer hvilken sideversjon som skal føres opp i søkeresultatene for bestemte språk eller regioner. [Finn ut mer](https://web.dev/hreflang)."
+  },
+  "lighthouse-core/audits/seo/hreflang.js | failureTitle": {
+    "message": "Dokumentet har ikke noe gyldig `hreflang`-attributt"
+  },
+  "lighthouse-core/audits/seo/hreflang.js | title": {
+    "message": "Dokumentet har et gyldig `hreflang`-attributt"
+  },
+  "lighthouse-core/audits/seo/http-status-code.js | description": {
+    "message": "Sider med HTTP-statuskoder som indikerer mislykkede forespørsler, indekseres kanskje ikke skikkelig. [Finn ut mer](https://web.dev/http-status-code)."
+  },
+  "lighthouse-core/audits/seo/http-status-code.js | failureTitle": {
+    "message": "Sidens HTTP-statuskode indikerer mislykket forespørsel"
+  },
+  "lighthouse-core/audits/seo/http-status-code.js | title": {
+    "message": "Sidens HTTP-statuskode er gyldig"
+  },
+  "lighthouse-core/audits/seo/is-crawlable.js | description": {
+    "message": "Søkemotorer kan ikke ta med sidene dine i søkeresultatene hvis de ikke har tillatelse til å gjennomsøke dem. [Finn ut mer](https://web.dev/is-crawable)."
+  },
+  "lighthouse-core/audits/seo/is-crawlable.js | failureTitle": {
+    "message": "Siden er blokkert for indeksering"
+  },
+  "lighthouse-core/audits/seo/is-crawlable.js | title": {
+    "message": "Siden er ikke blokkert for indeksering"
+  },
+  "lighthouse-core/audits/seo/link-text.js | description": {
+    "message": "Beskrivende linktekst hjelper søkemotorer med å forstå innholdet. [Finn ut mer](https://web.dev/link-text)."
+  },
+  "lighthouse-core/audits/seo/link-text.js | displayValue": {
+    "message": "{itemCount,plural, =1{Fant 1 link}other{Fant # linker}}"
+  },
+  "lighthouse-core/audits/seo/link-text.js | failureTitle": {
+    "message": "Linker har ikke beskrivende tekst"
+  },
+  "lighthouse-core/audits/seo/link-text.js | title": {
+    "message": "Linkene har beskrivende tekst"
+  },
+  "lighthouse-core/audits/seo/manual/structured-data.js | description": {
+    "message": "Kjør [Testverktøy for strukturerte data](https://search.google.com/structured-data/testing-tool/) og [Structured Data Linter](http://linter.structured-data.org/) for å validere strukturerte data. [Finn ut mer](https://web.dev/structured-data)."
+  },
+  "lighthouse-core/audits/seo/manual/structured-data.js | title": {
+    "message": "Strukturerte data er gyldige"
+  },
+  "lighthouse-core/audits/seo/meta-description.js | description": {
+    "message": "Metabeskrivelser kan tas med i søkeresultater for å oppsummere sideinnholdet kort og konsist. [Finn ut mer](https://web.dev/meta-description)."
+  },
+  "lighthouse-core/audits/seo/meta-description.js | explanation": {
+    "message": "Beskrivelsesteksten er tom."
+  },
+  "lighthouse-core/audits/seo/meta-description.js | failureTitle": {
+    "message": "Dokumentet har ingen metabeskrivelse"
+  },
+  "lighthouse-core/audits/seo/meta-description.js | title": {
+    "message": "Dokumentet har en metabeskrivelse"
+  },
+  "lighthouse-core/audits/seo/plugins.js | description": {
+    "message": "Søkemotorer kan ikke indeksere innholdet i programtillegg, og mange enheter begrenser programtillegg eller støtter dem ikke. [Finn ut mer](https://web.dev/plugins)."
+  },
+  "lighthouse-core/audits/seo/plugins.js | failureTitle": {
+    "message": "Dokumentet bruker programtillegg"
+  },
+  "lighthouse-core/audits/seo/plugins.js | title": {
+    "message": "Dokumentet bruker ikke programtillegg"
+  },
+  "lighthouse-core/audits/seo/robots-txt.js | description": {
+    "message": "Hvis robots.txt-filen har feil format, kan det hende at søkeroboter ikke forstår hvordan du vil at nettstedet ditt skal gjennomsøkes eller indekseres. [Finn ut mer](https://web.dev/robots-txt)."
+  },
+  "lighthouse-core/audits/seo/robots-txt.js | displayValueHttpBadCode": {
+    "message": "Forespørselen om robots.txt returnerte HTTP-statusen: {statusCode}"
+  },
+  "lighthouse-core/audits/seo/robots-txt.js | displayValueValidationError": {
+    "message": "{itemCount,plural, =1{Fant 1 feil}other{Fant # feil}}"
+  },
+  "lighthouse-core/audits/seo/robots-txt.js | explanation": {
+    "message": "Lighthouse kunne ikke laste ned noen robots.txt-fil"
+  },
+  "lighthouse-core/audits/seo/robots-txt.js | failureTitle": {
+    "message": "robots.txt er ikke gyldig"
+  },
+  "lighthouse-core/audits/seo/robots-txt.js | title": {
+    "message": "robots.txt er gyldig"
+  },
+  "lighthouse-core/audits/seo/tap-targets.js | description": {
+    "message": "Interaktive elementer, som knapper og linker, må være store nok (48 x 48 px) og ha nok plass rundt seg til at det er lett å trykke på dem uten at de overlapper andre elementer. [Finn ut mer](https://web.dev/tap-targets)."
+  },
+  "lighthouse-core/audits/seo/tap-targets.js | displayValue": {
+    "message": "{decimalProportion, number, percent} av de trykkbare elementene er store nok"
+  },
+  "lighthouse-core/audits/seo/tap-targets.js | explanationViewportMetaNotOptimized": {
+    "message": "De trykkbare elementene er for små fordi det ikke er noen viewport-metatag som er optimalisert for mobilskjermer"
+  },
+  "lighthouse-core/audits/seo/tap-targets.js | failureTitle": {
+    "message": "Trykkbare elementer er ikke store nok"
+  },
+  "lighthouse-core/audits/seo/tap-targets.js | overlappingTargetHeader": {
+    "message": "Overlappende trykkbart element"
+  },
+  "lighthouse-core/audits/seo/tap-targets.js | tapTargetHeader": {
+    "message": "Trykkbart element"
+  },
+  "lighthouse-core/audits/seo/tap-targets.js | title": {
+    "message": "Trykkbare elementer er store nok"
+  },
+  "lighthouse-core/audits/service-worker.js | description": {
+    "message": "Tjenestearbeideren er teknologien som gjør at appen din kan bruke mange funksjoner for progressive nettprogrammer, f.eks. muligheten til å bruke appen uten nett, legge den til på startskjermen og sende pushvarslinger. [Finn ut mer](https://developers.google.com/web/tools/lighthouse/audits/registered-service-worker)."
+  },
+  "lighthouse-core/audits/service-worker.js | explanationBadManifest": {
+    "message": "Denne siden styres av en tjenestearbeider, men ingen `start_url` ble funnet fordi manifestet ikke kunne parses som gyldig JSON"
+  },
+  "lighthouse-core/audits/service-worker.js | explanationBadStartUrl": {
+    "message": "Denne siden styres av en tjenestearbeider, men `start_url` ({startUrl}) ligger utenfor tjenestearbeiderens omfang ({scopeUrl})"
+  },
+  "lighthouse-core/audits/service-worker.js | explanationNoManifest": {
+    "message": "Denne siden styres av en tjenestearbeider, men ingen `start_url` ble funnet fordi manifestet ikke ble hentet."
+  },
+  "lighthouse-core/audits/service-worker.js | explanationOutOfScope": {
+    "message": "Denne plasseringen har én eller flere tjenestearbeidere, men siden ({pageUrl}) ligger utenfor omfanget."
+  },
+  "lighthouse-core/audits/service-worker.js | failureTitle": {
+    "message": "Registrerer ikke en tjenestearbeider som styrer siden og `start_url`"
+  },
+  "lighthouse-core/audits/service-worker.js | title": {
+    "message": "Registrerer en tjenestearbeider som styrer siden og `start_url`"
+  },
+  "lighthouse-core/audits/splash-screen.js | description": {
+    "message": "Tematiske splash-skjermer gjør at brukerne får en kvalitetsopplevelse når de starter appen fra startskjermen. [Finn ut mer](https://developers.google.com/web/tools/lighthouse/audits/custom-splash-screen)."
+  },
+  "lighthouse-core/audits/splash-screen.js | failureTitle": {
+    "message": "Er ikke konfigurert med tilpasset splash-skjerm"
+  },
+  "lighthouse-core/audits/splash-screen.js | title": {
+    "message": "Konfigurert med tilpasset splash-skjerm"
+  },
+  "lighthouse-core/audits/themed-omnibox.js | description": {
+    "message": "Adressefeltet i nettleseren kan gis et tema for å stå i stil med nettstedet ditt. [Finn ut mer](https://developers.google.com/web/tools/lighthouse/audits/address-bar)."
+  },
+  "lighthouse-core/audits/themed-omnibox.js | failureTitle": {
+    "message": "Angir ikke en temafarge for adressefeltet."
+  },
+  "lighthouse-core/audits/themed-omnibox.js | title": {
+    "message": "Angir en temafarge for adressefeltet."
+  },
+  "lighthouse-core/audits/third-party-summary.js | columnBlockingTime": {
+    "message": "Blokkeringstid i hovedtråden"
+  },
+  "lighthouse-core/audits/third-party-summary.js | columnThirdParty": {
+    "message": "Tredjepart"
+  },
+  "lighthouse-core/audits/third-party-summary.js | description": {
+    "message": "Tredjepartskode kan ha betydelig innvirkning på hvor lang tid det tar å laste inn siden. Begrens antallet overflødige tredjepartsleverandører, og prøv å laste inn tredjepartskode etter at siden for det meste er ferdig innlastet. [Finn ut mer](https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/loading-third-party-javascript/)."
+  },
+  "lighthouse-core/audits/third-party-summary.js | displayValue": {
+    "message": "Tredjepartskode blokkerte hovedtråden i {timeInMs, number, milliseconds} ms"
+  },
+  "lighthouse-core/audits/third-party-summary.js | failureTitle": {
+    "message": "Reduser innvirkningen av tredjepartskode"
+  },
+  "lighthouse-core/audits/third-party-summary.js | title": {
+    "message": "Tredjepartsbruk"
+  },
+  "lighthouse-core/audits/time-to-first-byte.js | description": {
+    "message": "Tid til første byte identifiserer tidspunktet da tjeneren sendte et svar. [Finn ut mer](https://developers.google.com/web/tools/lighthouse/audits/ttfb)."
+  },
+  "lighthouse-core/audits/time-to-first-byte.js | displayValue": {
+    "message": "Root-dokumentet brukte {timeInMs, number, milliseconds} ms"
+  },
+  "lighthouse-core/audits/time-to-first-byte.js | failureTitle": {
+    "message": "Reduser responstiden for tjener (TTFB)"
+  },
+  "lighthouse-core/audits/time-to-first-byte.js | title": {
+    "message": "Svartiden til tjeneren er lav (TTFB)"
+  },
+  "lighthouse-core/audits/user-timings.js | columnDuration": {
+    "message": "Varighet"
+  },
+  "lighthouse-core/audits/user-timings.js | columnStartTime": {
+    "message": "Starttid"
+  },
+  "lighthouse-core/audits/user-timings.js | columnType": {
+    "message": "Type"
+  },
+  "lighthouse-core/audits/user-timings.js | description": {
+    "message": "Vurder å utstyre appen din med brukertiming-API-et for å måle appens reelle ytelse under viktige brukeropplevelser. [Finn ut mer](https://developers.google.com/web/tools/lighthouse/audits/user-timing)."
+  },
+  "lighthouse-core/audits/user-timings.js | displayValue": {
+    "message": "{itemCount,plural, =1{ 1 brukertiming}other{# brukertiminger}}"
+  },
+  "lighthouse-core/audits/user-timings.js | title": {
+    "message": "User Timing – merker og intervaller"
+  },
+  "lighthouse-core/audits/uses-rel-preconnect.js | crossoriginWarning": {
+    "message": "Det ble funnet en <link> for forhåndstilkobling for {securityOrigin}, men denne ble ikke brukt av nettleseren. Kontrollér at du bruker `crossorigin`-attributtet riktig."
+  },
+  "lighthouse-core/audits/uses-rel-preconnect.js | description": {
+    "message": "Vurder å legge til `preconnect`- eller `dns-prefetch`-ressurshint for å opprette tidlige tilkoblinger til viktige tredjepartsplasseringer. [Finn ut mer](https://developers.google.com/web/fundamentals/performance/resource-prioritization#preconnect)."
+  },
+  "lighthouse-core/audits/uses-rel-preconnect.js | title": {
+    "message": "Opprett forhåndstilkobling til nødvendige domenenavn"
+  },
+  "lighthouse-core/audits/uses-rel-preload.js | crossoriginWarning": {
+    "message": "Det ble funnet en <link> for forhåndsinnlasting for {preloadURL}, men denne ble ikke brukt av nettleseren. Kontrollér at du bruker `crossorigin`-attributtet riktig."
+  },
+  "lighthouse-core/audits/uses-rel-preload.js | description": {
+    "message": "Vurder å bruke `<link rel=preload>` for å prioritere henting av ressurser som for øyeblikket blir forespurt senere i sideinnlastingen. [Finn ut mer](https://developers.google.com/web/tools/lighthouse/audits/preload)."
+  },
+  "lighthouse-core/audits/uses-rel-preload.js | title": {
+    "message": "Forhåndsinnlast (preload) nøkkelforespørsler"
+  },
+  "lighthouse-core/audits/viewport.js | description": {
+    "message": "Legg til en `<meta name=\"viewport\">`-tag for å optimalisere appen for mobilskjermer. [Finn ut mer](https://developers.google.com/web/tools/lighthouse/audits/has-viewport-meta-tag)."
+  },
+  "lighthouse-core/audits/viewport.js | explanationNoTag": {
+    "message": "Fant ingen `<meta name=\"viewport\">`-tag"
+  },
+  "lighthouse-core/audits/viewport.js | failureTitle": {
+    "message": "Har ingen `<meta name=\"viewport\">`-tag med `width` eller `initial-scale`"
+  },
+  "lighthouse-core/audits/viewport.js | title": {
+    "message": "Har en `<meta name=\"viewport\">`-tag med `width` eller `initial-scale`"
+  },
+  "lighthouse-core/audits/without-javascript.js | description": {
+    "message": "Appen bør vise noe innhold når JavaScript er deaktivert, selv om det bare er en advarsel til brukeren om at JavaScript kreves for å bruke appen. [Finn ut mer](https://developers.google.com/web/tools/lighthouse/audits/no-js)."
+  },
+  "lighthouse-core/audits/without-javascript.js | explanation": {
+    "message": "Sidekroppen bør vise noe innhold hvis skriptene ikke er tilgjengelige."
+  },
+  "lighthouse-core/audits/without-javascript.js | failureTitle": {
+    "message": "Tilbyr ikke reserveinnhold når JavaScript ikke er tilgjengelig"
+  },
+  "lighthouse-core/audits/without-javascript.js | title": {
+    "message": "Inneholder noe innhold når JavaScript ikke er tilgjengelig"
+  },
+  "lighthouse-core/audits/works-offline.js | description": {
+    "message": "Hvis du utvikler et progressivt nettprogram, kan du vurdere å bruke en tjenestearbeider, så appen fungerer uten nett. [Finn ut mer](https://developers.google.com/web/tools/lighthouse/audits/http-200-when-offline)."
+  },
+  "lighthouse-core/audits/works-offline.js | failureTitle": {
+    "message": "Den gjeldende siden svarer ikke med 200 når den er uten nett"
+  },
+  "lighthouse-core/audits/works-offline.js | title": {
+    "message": "Den gjeldende siden svarer med 200 når den er uten nett"
+  },
+  "lighthouse-core/audits/works-offline.js | warningNoLoad": {
+    "message": "Siden lastes kanskje ikke inn uten nett, fordi testnettadressen ({requested}) ble viderekoblet til «{final}». Prøv å teste den andre nettadressen direkte."
+  },
+  "lighthouse-core/config/default-config.js | a11yAriaGroupDescription": {
+    "message": "Dette er muligheter til å forbedre bruken av ARIA i programmet ditt, noe som kan gjøre opplevelsen bedre for brukere av assisterende teknologi, som skjermlesere."
+  },
+  "lighthouse-core/config/default-config.js | a11yAriaGroupTitle": {
+    "message": "ARIA"
+  },
+  "lighthouse-core/config/default-config.js | a11yAudioVideoGroupDescription": {
+    "message": "Dette er muligheter til å tilby alternativt innhold for lyd og video. Dette kan gjøre opplevelsen bedre for brukere med nedsatt syn eller hørsel."
+  },
+  "lighthouse-core/config/default-config.js | a11yAudioVideoGroupTitle": {
+    "message": "Lyd og video"
+  },
+  "lighthouse-core/config/default-config.js | a11yBestPracticesGroupDescription": {
+    "message": "Disse punktene fremhever de vanligste anbefalte fremgangsmåtene for å sikre god tilgjengelighet."
+  },
+  "lighthouse-core/config/default-config.js | a11yBestPracticesGroupTitle": {
+    "message": "Anbefalte fremgangsmåter"
+  },
+  "lighthouse-core/config/default-config.js | a11yCategoryDescription": {
+    "message": "Disse kontrollene fremhever muligheter til [å gjøre nettprogrammet ditt mer tilgjengelig](https://developers.google.com/web/fundamentals/accessibility). Kun et utvalg av tilgjengelighetsproblemer kan oppdages automatisk, så du bør teste manuelt i tillegg."
+  },
+  "lighthouse-core/config/default-config.js | a11yCategoryManualDescription": {
+    "message": "Disse punktene tar for seg områder som ikke kan dekkes av automatiske testverktøy. Finn ut mer i veiledningen vår om [å utføre tilgjengelighetsgjennomganger](https://developers.google.com/web/fundamentals/accessibility/how-to-review)."
+  },
+  "lighthouse-core/config/default-config.js | a11yCategoryTitle": {
+    "message": "Tilgjengelighet"
+  },
+  "lighthouse-core/config/default-config.js | a11yColorContrastGroupDescription": {
+    "message": "Dette er muligheter til å gjøre innholdet mer leselig."
+  },
+  "lighthouse-core/config/default-config.js | a11yColorContrastGroupTitle": {
+    "message": "Kontrast"
+  },
+  "lighthouse-core/config/default-config.js | a11yLanguageGroupDescription": {
+    "message": "Dette er muligheter til å gjøre innholdet lettere å tolke for brukere med forskjellige lokaliteter."
+  },
+  "lighthouse-core/config/default-config.js | a11yLanguageGroupTitle": {
+    "message": "Internasjonalisering og lokalisering"
+  },
+  "lighthouse-core/config/default-config.js | a11yNamesLabelsGroupDescription": {
+    "message": "Dette er muligheter til å gjøre kontrollene i programmet mer semantiske. Dette kan gjøre opplevelsen bedre for brukere av assisterende teknologi, som skjermlesere."
+  },
+  "lighthouse-core/config/default-config.js | a11yNamesLabelsGroupTitle": {
+    "message": "Navn og etiketter"
+  },
+  "lighthouse-core/config/default-config.js | a11yNavigationGroupDescription": {
+    "message": "Dette er muligheter til å gjøre tastaturnavigeringen i programmet ditt bedre."
+  },
+  "lighthouse-core/config/default-config.js | a11yNavigationGroupTitle": {
+    "message": "Navigering"
+  },
+  "lighthouse-core/config/default-config.js | a11yTablesListsVideoGroupDescription": {
+    "message": "Dette er muligheter til å gi en bedre opplevelse når assisterende teknologi, som skjermlesere, brukes til å lese data i tabeller eller lister."
+  },
+  "lighthouse-core/config/default-config.js | a11yTablesListsVideoGroupTitle": {
+    "message": "Tabeller og lister"
+  },
+  "lighthouse-core/config/default-config.js | bestPracticesCategoryTitle": {
+    "message": "Gode fremgangsmåter"
+  },
+  "lighthouse-core/config/default-config.js | budgetsGroupDescription": {
+    "message": "Ytelsesbudsjetter angir standarder for ytelsen på nettstedet."
+  },
+  "lighthouse-core/config/default-config.js | budgetsGroupTitle": {
+    "message": "Budsjetter"
+  },
+  "lighthouse-core/config/default-config.js | diagnosticsGroupDescription": {
+    "message": "Mer informasjon om ytelsen til appen din. Disse tallene har ingen [direkte innvirkning](https://github.com/GoogleChrome/lighthouse/blob/d2ec9ffbb21de9ad1a0f86ed24575eda32c796f0/docs/scoring.md#how-are-the-scores-weighted) på ytelsespoengsummen."
+  },
+  "lighthouse-core/config/default-config.js | diagnosticsGroupTitle": {
+    "message": "Diagnostikk"
+  },
+  "lighthouse-core/config/default-config.js | firstPaintImprovementsGroupDescription": {
+    "message": "Det mest kritiske aspektet for ytelse er hvor raskt piksler blir gjengitt på skjermen. Nøkkelberegninger: Første innholdsrike opptegning, Første vesentlige opptegning"
+  },
+  "lighthouse-core/config/default-config.js | firstPaintImprovementsGroupTitle": {
+    "message": "Forbedringer av første opptegning"
+  },
+  "lighthouse-core/config/default-config.js | loadOpportunitiesGroupDescription": {
+    "message": "Disse forslagene kan bidra til at siden lastes inn raskere. De har ingen [direkte innvirkning](https://github.com/GoogleChrome/lighthouse/blob/d2ec9ffbb21de9ad1a0f86ed24575eda32c796f0/docs/scoring.md#how-are-the-scores-weighted) på ytelsespoengsummen."
+  },
+  "lighthouse-core/config/default-config.js | loadOpportunitiesGroupTitle": {
+    "message": "Muligheter"
+  },
+  "lighthouse-core/config/default-config.js | metricGroupTitle": {
+    "message": "Beregninger"
+  },
+  "lighthouse-core/config/default-config.js | overallImprovementsGroupDescription": {
+    "message": "Gjør den totale innlastingsopplevelsen bedre, slik at siden reagerer og er klar til bruk så snart som mulig. Nøkkelberegninger: Tid til interaktiv, Hastighetsindeks"
+  },
+  "lighthouse-core/config/default-config.js | overallImprovementsGroupTitle": {
+    "message": "Forbedringsmuligheter"
+  },
+  "lighthouse-core/config/default-config.js | performanceCategoryTitle": {
+    "message": "Resultater"
+  },
+  "lighthouse-core/config/default-config.js | pwaCategoryDescription": {
+    "message": "Disse kontrollene validerer ulike aspekter av progressive nettprogrammer. [Finn ut mer](https://developers.google.com/web/progressive-web-apps/checklist)."
+  },
+  "lighthouse-core/config/default-config.js | pwaCategoryManualDescription": {
+    "message": "Disse kontrollene kreves av den grunnleggende [sjekklisten for progressive nettprogrammer](https://developers.google.com/web/progressive-web-apps/checklist), men kontrolleres ikke automatisk av Lighthouse. De påvirker ikke poengsummen din, men det er viktig at du verifiserer dem manuelt."
+  },
+  "lighthouse-core/config/default-config.js | pwaCategoryTitle": {
+    "message": "Progressivt nettprogram"
+  },
+  "lighthouse-core/config/default-config.js | pwaFastReliableGroupTitle": {
+    "message": "Rask og pålitelig"
+  },
+  "lighthouse-core/config/default-config.js | pwaInstallableGroupTitle": {
+    "message": "Kan installeres"
+  },
+  "lighthouse-core/config/default-config.js | pwaOptimizedGroupTitle": {
+    "message": "PWA-optimalisert"
+  },
+  "lighthouse-core/config/default-config.js | seoCategoryDescription": {
+    "message": "Disse kontrollene sørger for at siden din er optimalisert for god rangering i resultatene fra søkemotorer. Det finnes flere faktorer som Lighthouse ikke kontrollerer, men som kan påvirke søkerangeringen. [Finn ut mer](https://support.google.com/webmasters/answer/35769)."
+  },
+  "lighthouse-core/config/default-config.js | seoCategoryManualDescription": {
+    "message": "Kjør disse tilleggsvalideringene på nettstedet ditt for å sjekke flere anbefalte fremgangsmåter for SEO."
+  },
+  "lighthouse-core/config/default-config.js | seoCategoryTitle": {
+    "message": "SEO"
+  },
+  "lighthouse-core/config/default-config.js | seoContentGroupDescription": {
+    "message": "Formatér HTML-koden din på en måte som gjør det enklere for søkeroboter å forstå innholdet i appen."
+  },
+  "lighthouse-core/config/default-config.js | seoContentGroupTitle": {
+    "message": "Anbefalte fremgangsmåter for innhold"
+  },
+  "lighthouse-core/config/default-config.js | seoCrawlingGroupDescription": {
+    "message": "Søkeroboter trenger tilgang til appen din for at den skal vises i søkeresultater."
+  },
+  "lighthouse-core/config/default-config.js | seoCrawlingGroupTitle": {
+    "message": "Gjennomsøking og indeksering"
+  },
+  "lighthouse-core/config/default-config.js | seoMobileGroupDescription": {
+    "message": "Sørg for at sidene dine er mobilvennlige, så brukere ikke trenger å klype eller zoome inn for å lese innholdssidene. [Finn ut mer](https://developers.google.com/search/mobile-sites/)."
+  },
+  "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
+    "message": "Mobilvennlig"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnCacheTTL": {
+    "message": "Buffer-TTL"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnLocation": {
+    "message": "Posisjon"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnName": {
+    "message": "Navn"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnRequests": {
+    "message": "Forespørsler"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnResourceType": {
+    "message": "Ressurstype"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnSize": {
+    "message": "Størrelse"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnTimeSpent": {
+    "message": "Brukt tid"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnTransferSize": {
+    "message": "Overføringsstørrelse"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnURL": {
+    "message": "Nettadresse"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnWastedBytes": {
+    "message": "Potensielle besparelser"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnWastedMs": {
+    "message": "Potensielle besparelser"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | displayValueByteSavings": {
+    "message": "Potensielle besparelser på {wastedBytes, number, bytes} kB"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | displayValueMsSavings": {
+    "message": "Potensielle besparelser på {wastedMs, number, milliseconds} ms"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | documentResourceType": {
+    "message": "Dokument"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | fontResourceType": {
+    "message": "Skrifttype"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | imageResourceType": {
+    "message": "Bilde"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | mediaResourceType": {
+    "message": "Medier"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | ms": {
+    "message": "{timeInMs, number, milliseconds} ms"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | otherResourceType": {
+    "message": "Annet"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | scriptResourceType": {
+    "message": "Skript"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | seconds": {
+    "message": "{timeInMs, number, seconds} s"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | stylesheetResourceType": {
+    "message": "Stilark"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | thirdPartyResourceType": {
+    "message": "Tredjepart"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | totalResourceType": {
+    "message": "Totalt"
+  },
+  "lighthouse-core/lib/lh-error.js | badTraceRecording": {
+    "message": "Noe gikk galt med sporingsregistreringen for sideinnlastingen. Kjør Lighthouse på nytt. ({errorCode})"
+  },
+  "lighthouse-core/lib/lh-error.js | criTimeout": {
+    "message": "Tidsavbrudd under venting på første tilkobling fra feilsøkingsprogramprotokollen."
+  },
+  "lighthouse-core/lib/lh-error.js | didntCollectScreenshots": {
+    "message": "Chrome samlet ingen skjermdumper under innlasting av siden. Sørg for at det finnes synlig innhold på siden, og prøv deretter å kjøre Lighthouse på nytt. ({errorCode})"
+  },
+  "lighthouse-core/lib/lh-error.js | dnsFailure": {
+    "message": "DNS-tjenerne kunne ikke oversette domenet du oppga."
+  },
+  "lighthouse-core/lib/lh-error.js | erroredRequiredArtifact": {
+    "message": "Den obligatoriske {artifactName}-samleren støtte på en feil: {errorMessage}"
+  },
+  "lighthouse-core/lib/lh-error.js | internalChromeError": {
+    "message": "Det oppsto en intern Chrome-feil. Start Chrome på nytt, og prøv å kjøre Lighthouse igjen."
+  },
+  "lighthouse-core/lib/lh-error.js | missingRequiredArtifact": {
+    "message": "Den obligatoriske {artifactName}-samleren ble ikke kjørt."
+  },
+  "lighthouse-core/lib/lh-error.js | pageLoadFailed": {
+    "message": "Lighthouse kunne ikke laste inn den forespurte siden på en pålitelig måte. Sjekk at du tester riktig nettadresse, og at tjeneren svarer ordentlig på alle forespørsler."
+  },
+  "lighthouse-core/lib/lh-error.js | pageLoadFailedHung": {
+    "message": "Lighthouse kunne ikke laste inn den forespurte nettadressen på en pålitelig måte, fordi siden sluttet å svare."
+  },
+  "lighthouse-core/lib/lh-error.js | pageLoadFailedInsecure": {
+    "message": "Nettadressen du oppga, har ikke noe gyldig sikkerhetssertifikat. {securityMessages}"
+  },
+  "lighthouse-core/lib/lh-error.js | pageLoadFailedInterstitial": {
+    "message": "Chrome forhindret siden fra å lastes inn og viste en interstitial-skjerm i stedet. Sjekk at du tester riktig nettadresse, og at tjeneren svarer ordentlig på alle forespørsler."
+  },
+  "lighthouse-core/lib/lh-error.js | pageLoadFailedWithDetails": {
+    "message": "Lighthouse kunne ikke laste inn den forespurte siden på en pålitelig måte. Sjekk at du tester riktig nettadresse, og at tjeneren svarer ordentlig på alle forespørsler. (Detaljer: {errorDetails})"
+  },
+  "lighthouse-core/lib/lh-error.js | pageLoadFailedWithStatusCode": {
+    "message": "Lighthouse kunne ikke laste inn den forespurte siden på en pålitelig måte. Sjekk at du tester riktig nettadresse, og at tjeneren svarer ordentlig på alle forespørsler. (Statuskode: {statusCode})"
+  },
+  "lighthouse-core/lib/lh-error.js | pageLoadTookTooLong": {
+    "message": "Det tok for lang tid å laste inn siden. Følg tipsene i rapporten for å redusere sideinnlastingstiden, og prøv deretter å kjøre Lighthouse på nytt. ({errorCode})"
+  },
+  "lighthouse-core/lib/lh-error.js | protocolTimeout": {
+    "message": "Venting på DevTools-protokollsvar har overskredet den kvoterte tiden. (Metode: {protocolMethod})"
+  },
+  "lighthouse-core/lib/lh-error.js | requestContentTimeout": {
+    "message": "Henting av ressursinnhold har overskredet den kvoterte tiden"
+  },
+  "lighthouse-core/lib/lh-error.js | urlInvalid": {
+    "message": "Nettadressen du oppga, ser ut til å være ugyldig."
+  },
+  "lighthouse-core/report/html/renderer/util.js | auditGroupExpandTooltip": {
+    "message": "Vis revisjoner"
+  },
+  "lighthouse-core/report/html/renderer/util.js | crcInitialNavigation": {
+    "message": "Navigasjonsstart"
+  },
+  "lighthouse-core/report/html/renderer/util.js | crcLongestDurationLabel": {
+    "message": "Maksimum kritisk baneforsinkelse:"
+  },
+  "lighthouse-core/report/html/renderer/util.js | errorLabel": {
+    "message": "Feil!"
+  },
+  "lighthouse-core/report/html/renderer/util.js | errorMissingAuditInfo": {
+    "message": "Rapportfeil: ingen revisjonsinformasjon"
+  },
+  "lighthouse-core/report/html/renderer/util.js | labDataTitle": {
+    "message": "Prøvefunksjonsdata"
+  },
+  "lighthouse-core/report/html/renderer/util.js | lsPerformanceCategoryDescription": {
+    "message": "[Lighthouse](https://developers.google.com/web/tools/lighthouse/)-analyse av den nåværende siden på et emulert mobilnettverk. Verdiene er anslått og kan variere."
+  },
+  "lighthouse-core/report/html/renderer/util.js | manualAuditsGroupTitle": {
+    "message": "Tilleggselementer for manuell kontroll"
+  },
+  "lighthouse-core/report/html/renderer/util.js | notApplicableAuditsGroupTitle": {
+    "message": "Ikke relevant"
+  },
+  "lighthouse-core/report/html/renderer/util.js | opportunityResourceColumnLabel": {
+    "message": "Mulighet"
+  },
+  "lighthouse-core/report/html/renderer/util.js | opportunitySavingsColumnLabel": {
+    "message": "Estimerte besparelser"
+  },
+  "lighthouse-core/report/html/renderer/util.js | passedAuditsGroupTitle": {
+    "message": "Beståtte revisjoner"
+  },
+  "lighthouse-core/report/html/renderer/util.js | snippetCollapseButtonLabel": {
+    "message": "Skjul fragment"
+  },
+  "lighthouse-core/report/html/renderer/util.js | snippetExpandButtonLabel": {
+    "message": "Vis fragment"
+  },
+  "lighthouse-core/report/html/renderer/util.js | thirdPartyResourcesLabel": {
+    "message": "Vis tredjepartsressurser"
+  },
+  "lighthouse-core/report/html/renderer/util.js | toplevelWarningsMessage": {
+    "message": "Det oppsto problemer som påvirker denne kjøringen av Lighthouse:"
+  },
+  "lighthouse-core/report/html/renderer/util.js | varianceDisclaimer": {
+    "message": "Verdiene er anslått og kan variere. Ytelsespoengsummen er [kun basert på disse verdiene](https://github.com/GoogleChrome/lighthouse/blob/d2ec9ffbb21de9ad1a0f86ed24575eda32c796f0/docs/scoring.md#how-are-the-scores-weighted)."
+  },
+  "lighthouse-core/report/html/renderer/util.js | warningAuditsGroupTitle": {
+    "message": "Revisjoner som er bestått, men med advarsler"
+  },
+  "lighthouse-core/report/html/renderer/util.js | warningHeader": {
+    "message": "Advarsler: "
+  },
+  "stack-packs/packs/wordpress.js | efficient_animated_content": {
+    "message": "Vurder å laste opp GIF-filen til en tjeneste som gjør det mulig å bygge den inn som en HTML5-video."
+  },
+  "stack-packs/packs/wordpress.js | offscreen_images": {
+    "message": "Installer et [WordPress-programtillegg for utsatt innlasting](https://wordpress.org/plugins/search/lazy+load/) som gjør det mulig å utsette innlasting av bilder som ikke er på skjermen, eller bytt til et tema som gir denne funksjonaliteten. Vurder også å bruke [AMP-programtillegget](https://wordpress.org/plugins/amp/)."
+  },
+  "stack-packs/packs/wordpress.js | render_blocking_resources": {
+    "message": "Det finnes en rekke WordPress-programtillegg som kan hjelpe deg med å [bygge inn kritiske elementer direkte på siden](https://wordpress.org/plugins/search/critical+css/) eller [utsette innlasting av mindre viktige ressurser](https://wordpress.org/plugins/search/defer+css+javascript/). Vær obs på at optimalisering som gjøres av disse programtilleggene, kan ødelegge funksjonalitet i temaet ditt eller programtilleggene dine, så du må sannsynligvis gjøre kodeendringer."
+  },
+  "stack-packs/packs/wordpress.js | time_to_first_byte": {
+    "message": "Både temaer, programtillegg og tjenerspesifikasjoner virker inn på tjenerens responstid. Vurder å finne et mer optimalisert tema, velge et programtillegg for optimalisering nøye og/eller oppgradere tjeneren."
+  },
+  "stack-packs/packs/wordpress.js | total_byte_weight": {
+    "message": "Vurder å vise utdrag på innleggslistene (f.eks. via Mer-taggen), redusere antall innlegg som vises på en gitt side, fordele lange innlegg på flere sider eller bruke et programtillegg for utsatt innlasting av kommentarer."
+  },
+  "stack-packs/packs/wordpress.js | unminified_css": {
+    "message": "En rekke [WordPress-programtillegg](https://wordpress.org/plugins/search/minify+css/) kan gjøre nettstedet ditt raskere ved å slå sammen, forminske og komprimere stilarkene dine. Det kan også være lurt å bruke en byggeprosess til å gjøre denne forminskningen på forhånd hvis mulig."
+  },
+  "stack-packs/packs/wordpress.js | unminified_javascript": {
+    "message": "En rekke [WordPress-programtillegg](https://wordpress.org/plugins/search/minify+javascript/) kan gjøre nettstedet ditt raskere ved å slå sammen, forminske og komprimere skriptene dine. Det kan også være lurt å bruke en byggeprosess til å gjøre denne forminskningen på forhånd hvis mulig."
+  },
+  "stack-packs/packs/wordpress.js | unused_css_rules": {
+    "message": "Vurder å redusere eller endre antall [WordPress-programtillegg](https://wordpress.org/plugins/) som laster inn ubrukt CSS på siden. For å identifisere programtillegg som legger til overflødig CSS, prøv å kjøre [kodedekning](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) i Chrome DevTools. Du kan finne det ansvarlige temaet eller programtillegget i nettadressen til stilarket. Se opp for programtillegg som har mange stilark på listen, og som viser mye rødt i kodedekningen. Programtillegg bør bare legge stilark i kø hvis de faktisk brukes på siden."
+  },
+  "stack-packs/packs/wordpress.js | unused_javascript": {
+    "message": "Vurder å redusere eller endre antall [WordPress-programtillegg](https://wordpress.org/plugins/) som laster inn ubrukt JavaScript på siden. For å identifisere programtillegg som legger til overflødig JavaScript, prøv å kjøre [kodedekning](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) i Chrome DevTools. Du kan finne det ansvarlige temaet eller programtillegget i nettadressen til skriptet. Se opp for programtillegg som har mange skript på listen, og som viser mye rødt i kodedekningen. Programtillegg bør bare legge skript i kø hvis de faktisk brukes på siden."
+  },
+  "stack-packs/packs/wordpress.js | uses_long_cache_ttl": {
+    "message": "Les om [nettleserbufring i WordPress](https://codex.wordpress.org/WordPress_Optimization#Browser_Caching)."
+  },
+  "stack-packs/packs/wordpress.js | uses_optimized_images": {
+    "message": "Vurder å bruke et [WordPress-programtillegg for bildeoptimalisering](https://wordpress.org/plugins/search/optimize+images/) som komprimerer bildene uten at det går ut over kvaliteten."
+  },
+  "stack-packs/packs/wordpress.js | uses_responsive_images": {
+    "message": "Last opp bilder direkte gjennom [mediebiblioteket](https://codex.wordpress.org/Media_Library_Screen) for å sikre at de nødvendige bildestørrelsene er tilgjengelige, og sett dem deretter inn fra mediebiblioteket eller bruk bildemodulen for å sikre at de optimale bildestørrelsene brukes (inkludert dem som brukes for responsive stoppunkter). Unngå å bruke `Full Size`-bilder med mindre størrelsen er tilstrekkelig for bruksområdet. [Finn ut mer](https://codex.wordpress.org/Inserting_Images_into_Posts_and_Pages#Image_Size)."
+  },
+  "stack-packs/packs/wordpress.js | uses_text_compression": {
+    "message": "Du kan slå på tekstkomprimering i oppsettet av nettjeneren."
+  },
+  "stack-packs/packs/wordpress.js | uses_webp_images": {
+    "message": "Vurder å bruke et [programtillegg](https://wordpress.org/plugins/search/convert+webp/) eller en tjeneste som automatisk konverterer opplastede bilder til de optimale formatene."
+  }
+}

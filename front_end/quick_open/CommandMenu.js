@@ -1,6 +1,10 @@
 // Copyright 2016 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
+import {FilteredListWidget, Provider} from './FilteredListWidget.js';
+import {QuickOpenImpl} from './QuickOpen.js';
+
 /**
  * @unrestricted
  */
@@ -17,7 +21,7 @@ export class CommandMenu {
    * @param {string} shortcut
    * @param {function()} executeHandler
    * @param {function()=} availableHandler
-   * @return {!QuickOpen.CommandMenu.Command}
+   * @return {!Command}
    */
   static createCommand(category, keys, title, shortcut, executeHandler, availableHandler) {
     // Get localized keys and separate by null character to prevent fuzzy matching from matching across them.
@@ -34,15 +38,14 @@ export class CommandMenu {
    * @param {!Root.Runtime.Extension} extension
    * @param {string} title
    * @param {V} value
-   * @return {!QuickOpen.CommandMenu.Command}
+   * @return {!Command}
    * @template V
    */
   static createSettingCommand(extension, title, value) {
     const category = extension.descriptor()['category'] || '';
     const tags = extension.descriptor()['tags'] || '';
     const setting = Common.settings.moduleSetting(extension.descriptor()['settingName']);
-    return QuickOpen.CommandMenu.createCommand(
-        ls(category), tags, title, '', setting.set.bind(setting, value), availableHandler);
+    return CommandMenu.createCommand(ls(category), tags, title, '', setting.set.bind(setting, value), availableHandler);
 
     /**
      * @return {boolean}
@@ -54,25 +57,24 @@ export class CommandMenu {
 
   /**
    * @param {!UI.Action} action
-   * @return {!QuickOpen.CommandMenu.Command}
+   * @return {!Command}
    */
   static createActionCommand(action) {
     const shortcut = UI.shortcutRegistry.shortcutTitleForAction(action.id()) || '';
-    return QuickOpen.CommandMenu.createCommand(
+    return CommandMenu.createCommand(
         action.category(), action.tags(), action.title(), shortcut, action.execute.bind(action));
   }
 
   /**
    * @param {!Root.Runtime.Extension} extension
    * @param {string} category
-   * @return {!QuickOpen.CommandMenu.Command}
+   * @return {!Command}
    */
   static createRevealViewCommand(extension, category) {
     const viewId = extension.descriptor()['id'];
     const executeHandler = UI.viewManager.showView.bind(UI.viewManager, viewId);
     const tags = extension.descriptor()['tags'] || '';
-    return QuickOpen.CommandMenu.createCommand(
-        category, tags, Common.UIString('Show %s', extension.title()), '', executeHandler);
+    return CommandMenu.createCommand(category, tags, Common.UIString('Show %s', extension.title()), '', executeHandler);
   }
 
   _loadCommands() {
@@ -88,7 +90,7 @@ export class CommandMenu {
     for (const extension of viewExtensions) {
       const category = locations.get(extension.descriptor()['location']);
       if (category) {
-        this._commands.push(QuickOpen.CommandMenu.createRevealViewCommand(extension, ls(category)));
+        this._commands.push(CommandMenu.createRevealViewCommand(extension, ls(category)));
       }
     }
 
@@ -100,20 +102,20 @@ export class CommandMenu {
         continue;
       }
       for (const pair of options) {
-        this._commands.push(QuickOpen.CommandMenu.createSettingCommand(extension, ls(pair['title']), pair['value']));
+        this._commands.push(CommandMenu.createSettingCommand(extension, ls(pair['title']), pair['value']));
       }
     }
   }
 
   /**
-   * @return {!Array.<!QuickOpen.CommandMenu.Command>}
+   * @return {!Array.<!Command>}
    */
   commands() {
     return this._commands;
   }
 }
 
-export class CommandMenuProvider extends QuickOpen.FilteredListWidget.Provider {
+export class CommandMenuProvider extends Provider {
   constructor() {
     super();
     this._commands = [];
@@ -129,7 +131,7 @@ export class CommandMenuProvider extends QuickOpen.FilteredListWidget.Provider {
     const actions = UI.actionRegistry.availableActions();
     for (const action of actions) {
       if (action.category()) {
-        this._commands.push(QuickOpen.CommandMenu.createActionCommand(action));
+        this._commands.push(CommandMenu.createActionCommand(action));
       }
     }
 
@@ -142,7 +144,7 @@ export class CommandMenuProvider extends QuickOpen.FilteredListWidget.Provider {
     this._commands = this._commands.sort(commandComparator);
 
     /**
-     * @param {!QuickOpen.CommandMenu.Command} left
+     * @param {!Command} left
      * @param {!QuickOpen.CommandMenu.Command} right
      * @return {number}
      */
@@ -218,7 +220,7 @@ export class CommandMenuProvider extends QuickOpen.FilteredListWidget.Provider {
     tagElement.style.backgroundColor = MaterialPaletteColors[index];
     tagElement.textContent = command.category();
     titleElement.createTextChild(command.title());
-    QuickOpen.FilteredListWidget.highlightRanges(titleElement, query, true);
+    FilteredListWidget.highlightRanges(titleElement, query, true);
     subtitleElement.textContent = command.shortcut();
   }
 
@@ -324,38 +326,10 @@ export class ShowActionDelegate {
    */
   handleAction(context, actionId) {
     Host.InspectorFrontendHost.bringToFront();
-    QuickOpen.QuickOpen.show('>');
+    QuickOpenImpl.show('>');
     return true;
   }
 }
 
-/* Legacy exported object */
-self.QuickOpen = self.QuickOpen || {};
-
-/* Legacy exported object */
-QuickOpen = QuickOpen || {};
-
-/**
- * @constructor
- */
-QuickOpen.CommandMenu = CommandMenu;
-
-/**
- * @constructor
- */
-QuickOpen.CommandMenu.Command = Command;
-
-/**
- * @constructor
- */
-QuickOpen.CommandMenu.ShowActionDelegate = ShowActionDelegate;
-
-/**
- * @constructor
- */
-QuickOpen.CommandMenuProvider = CommandMenuProvider;
-QuickOpen.CommandMenuProvider.MaterialPaletteColors = MaterialPaletteColors;
-
-/** @type {!QuickOpen.CommandMenu} */
-const commandMenu = new CommandMenu();
-QuickOpen.commandMenu = commandMenu;
+/** @type {!CommandMenu} */
+export const commandMenu = new CommandMenu();

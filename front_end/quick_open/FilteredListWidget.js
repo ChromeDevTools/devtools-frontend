@@ -9,7 +9,7 @@
  */
 export class FilteredListWidget extends UI.VBox {
   /**
-   * @param {?QuickOpen.FilteredListWidget.Provider} provider
+   * @param {?Provider} provider
    * @param {!Array<string>=} promptHistory
    * @param {function(string)=} queryChangedCallback
    */
@@ -129,7 +129,7 @@ export class FilteredListWidget extends UI.VBox {
   }
 
   /**
-   * @param {?QuickOpen.FilteredListWidget.Provider} provider
+   * @param {?Provider} provider
    */
   setProvider(provider) {
     if (provider === this._provider) {
@@ -212,7 +212,7 @@ export class FilteredListWidget extends UI.VBox {
   }
 
   /**
-   * @param {?QuickOpen.FilteredListWidget.Provider} provider
+   * @param {?Provider} provider
    */
   _itemsLoaded(provider) {
     if (this._loadTimeout || provider !== this._provider) {
@@ -383,7 +383,7 @@ export class FilteredListWidget extends UI.VBox {
 
     /**
      * @param {number} fromIndex
-     * @this {QuickOpen.FilteredListWidget}
+     * @this {FilteredListWidget}
      */
     function scoreItems(fromIndex) {
       delete this._scoringTimer;
@@ -635,19 +635,3 @@ export class Provider {
   detach() {
   }
 }
-
-/* Legacy exported object */
-self.QuickOpen = self.QuickOpen || {};
-
-/* Legacy exported object */
-QuickOpen = QuickOpen || {};
-
-/**
- * @constructor
- */
-QuickOpen.FilteredListWidget = FilteredListWidget;
-
-/**
- * @constructor
- */
-QuickOpen.FilteredListWidget.Provider = Provider;

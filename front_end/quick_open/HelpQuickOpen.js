@@ -1,12 +1,16 @@
 // Copyright 2017 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-export class HelpQuickOpen extends QuickOpen.FilteredListWidget.Provider {
+
+import {Provider} from './FilteredListWidget.js';
+import {QuickOpenImpl} from './QuickOpen.js';
+
+export class HelpQuickOpen extends Provider {
   constructor() {
     super();
     /** @type {!Array<{prefix: string, title: string}>} */
     this._providers = [];
-    self.runtime.extensions(QuickOpen.FilteredListWidget.Provider).forEach(this._addProvider.bind(this));
+    self.runtime.extensions(Provider).forEach(this._addProvider.bind(this));
   }
 
   /**
@@ -66,7 +70,7 @@ export class HelpQuickOpen extends QuickOpen.FilteredListWidget.Provider {
    */
   selectItem(itemIndex, promptValue) {
     if (itemIndex !== null) {
-      QuickOpen.QuickOpen.show(this._providers[itemIndex].prefix);
+      QuickOpenImpl.show(this._providers[itemIndex].prefix);
     }
   }
 
@@ -78,14 +82,3 @@ export class HelpQuickOpen extends QuickOpen.FilteredListWidget.Provider {
     return false;
   }
 }
-
-/* Legacy exported object */
-self.QuickOpen = self.QuickOpen || {};
-
-/* Legacy exported object */
-QuickOpen = QuickOpen || {};
-
-/**
- * @constructor
- */
-QuickOpen.HelpQuickOpen = HelpQuickOpen;

@@ -54,7 +54,7 @@ export class SourcesTextEditor extends TextEditor.CodeMirrorTextEditor {
     this.codeMirror().setOption('smartIndent', false);
 
     /**
-     * @this {SourceFrame.SourcesTextEditor}
+     * @this {SourcesTextEditor}
      */
     function updateAnticipateJumpFlag(value) {
       this._isHandlingMouseDownEvent = value;
@@ -372,7 +372,7 @@ export class SourcesTextEditor extends TextEditor.CodeMirrorTextEditor {
     promise.then(showAsync.bind(this));
 
     /**
-     * @this {SourceFrame.SourcesTextEditor}
+     * @this {SourcesTextEditor}
      */
     function showAsync() {
       contextMenu.appendApplicableItems(this);
@@ -408,7 +408,7 @@ export class SourcesTextEditor extends TextEditor.CodeMirrorTextEditor {
     const extraKeys = {};
     let indent = Common.moduleSetting('textEditorIndent').get();
     if (Common.moduleSetting('textEditorAutoDetectIndent').get()) {
-      indent = SourceFrame.SourcesTextEditor._guessIndentationLevel(lines);
+      indent = SourcesTextEditor._guessIndentationLevel(lines);
     }
 
     if (indent === TextUtils.TextUtils.Indent.TabCharacter) {
@@ -825,7 +825,7 @@ export const _BlockIndentController = {
  */
 export class TokenHighlighter {
   /**
-   * @param {!SourceFrame.SourcesTextEditor} textEditor
+   * @param {!SourcesTextEditor} textEditor
    * @param {!CodeMirror} codeMirror
    */
   constructor(textEditor, codeMirror) {
@@ -989,23 +989,3 @@ export class TokenHighlighter {
 const LinesToScanForIndentationGuessing = 1000;
 const MaximumNumberOfWhitespacesPerSingleSpan = 16;
 export const lineNumbersGutterType = 'CodeMirror-linenumbers';
-
-/* Legacy exported object */
-self.SourceFrame = self.SourceFrame || {};
-
-/* Legacy exported object */
-SourceFrame = SourceFrame || {};
-
-/** @constructor */
-SourceFrame.SourcesTextEditor = SourcesTextEditor;
-
-SourceFrame.SourcesTextEditor.Events = Events;
-SourceFrame.SourcesTextEditor.lineNumbersGutterType = lineNumbersGutterType;
-
-/** @interface */
-SourceFrame.SourcesTextEditorDelegate = SourcesTextEditorDelegate;
-
-SourceFrame.SourcesTextEditor.TokenHighlighter = TokenHighlighter;
-
-/** @typedef {{gutterType: string, lineNumber: number, event: !Event}} */
-SourceFrame.SourcesTextEditor.GutterClickEventData;

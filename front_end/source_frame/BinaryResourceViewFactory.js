@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {ResourceSourceFrame} from './ResourceSourceFrame.js';
+
 export class BinaryResourceViewFactory {
   /**
    * @param {string} base64content
@@ -68,16 +70,16 @@ export class BinaryResourceViewFactory {
   }
 
   /**
-   * @return {!SourceFrame.ResourceSourceFrame}
+   * @return {!ResourceSourceFrame}
    */
   createBase64View() {
-    return new SourceFrame.ResourceSourceFrame(
+    return new ResourceSourceFrame(
         Common.StaticContentProvider.fromString(this._contentUrl, this._resourceType, this._base64content),
         /* autoPrettyPrint */ false, {lineNumbers: false, lineWrapping: true});
   }
 
   /**
-   * @return {!SourceFrame.ResourceSourceFrame}
+   * @return {!ResourceSourceFrame}
    */
   createHexView() {
     const hexViewerContentProvider =
@@ -86,18 +88,18 @@ export class BinaryResourceViewFactory {
           const content = BinaryResourceViewFactory.uint8ArrayToHexViewer(contentAsArray);
           return {content, isEncoded: false};
         });
-    return new SourceFrame.ResourceSourceFrame(
+    return new ResourceSourceFrame(
         hexViewerContentProvider,
         /* autoPrettyPrint */ false, {lineNumbers: false, lineWrapping: false});
   }
 
   /**
-   * @return {!SourceFrame.ResourceSourceFrame}
+   * @return {!ResourceSourceFrame}
    */
   createUtf8View() {
     const utf8fn = this.utf8.bind(this);
     const utf8ContentProvider = new Common.StaticContentProvider(this._contentUrl, this._resourceType, utf8fn);
-    return new SourceFrame.ResourceSourceFrame(
+    return new ResourceSourceFrame(
         utf8ContentProvider,
         /* autoPrettyPrint */ false, {lineNumbers: true, lineWrapping: true});
   }
@@ -176,12 +178,3 @@ export class BinaryResourceViewFactory {
     return output;
   }
 }
-
-/* Legacy exported object */
-self.SourceFrame = self.SourceFrame || {};
-
-/* Legacy exported object */
-SourceFrame = SourceFrame || {};
-
-/** @constructor */
-SourceFrame.BinaryResourceViewFactory = BinaryResourceViewFactory;

@@ -2,6 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {FontView} from './FontView.js';
+import {ImageView} from './ImageView.js';
+import {JSONView} from './JSONView.js';
+import {ResourceSourceFrame} from './ResourceSourceFrame.js';
+import {XMLView} from './XMLView.js';
+
 export class PreviewFactory {
   /**
    * @param {!Common.ContentProvider} provider
@@ -16,9 +22,9 @@ export class PreviewFactory {
 
     switch (resourceType) {
       case Common.resourceTypes.Image:
-        return new SourceFrame.ImageView(mimeType, provider);
+        return new ImageView(mimeType, provider);
       case Common.resourceTypes.Font:
-        return new SourceFrame.FontView(mimeType, provider);
+        return new FontView(mimeType, provider);
     }
 
     const deferredContent = await provider.requestContent();
@@ -33,12 +39,12 @@ export class PreviewFactory {
       content = window.atob(content);
     }
 
-    const parsedXML = SourceFrame.XMLView.parseXML(content, mimeType);
+    const parsedXML = XMLView.parseXML(content, mimeType);
     if (parsedXML) {
-      return SourceFrame.XMLView.createSearchableView(parsedXML);
+      return XMLView.createSearchableView(parsedXML);
     }
 
-    const jsonView = await SourceFrame.JSONView.createView(content);
+    const jsonView = await JSONView.createView(content);
     if (jsonView) {
       return jsonView;
     }
@@ -46,19 +52,9 @@ export class PreviewFactory {
     if (resourceType.isTextType()) {
       const highlighterType =
           provider.contentType().canonicalMimeType() || mimeType.replace(/;.*/, '');  // remove charset
-      return SourceFrame.ResourceSourceFrame.createSearchableView(
-          provider, highlighterType, true /* autoPrettyPrint */);
+      return ResourceSourceFrame.createSearchableView(provider, highlighterType, true /* autoPrettyPrint */);
     }
 
     return null;
   }
 }
-
-/* Legacy exported object */
-self.SourceFrame = self.SourceFrame || {};
-
-/* Legacy exported object */
-SourceFrame = SourceFrame || {};
-
-/** @constructor */
-SourceFrame.PreviewFactory = PreviewFactory;

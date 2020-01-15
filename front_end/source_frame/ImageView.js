@@ -182,12 +182,3 @@ export class ImageView extends UI.SimpleView {
     });
   }
 }
-
-/* Legacy exported object */
-self.SourceFrame = self.SourceFrame || {};
-
-/* Legacy exported object */
-SourceFrame = SourceFrame || {};
-
-/** @constructor */
-SourceFrame.ImageView = ImageView;

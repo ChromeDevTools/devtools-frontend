@@ -342,15 +342,3 @@ export class ParsedJSON {
     this.suffix = suffix;
   }
 }
-
-/* Legacy exported object */
-self.SourceFrame = self.SourceFrame || {};
-
-/* Legacy exported object */
-SourceFrame = SourceFrame || {};
-
-/** @constructor */
-SourceFrame.JSONView = JSONView;
-
-/** @constructor */
-SourceFrame.ParsedJSON = ParsedJSON;

@@ -2,17 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import './BinaryResourceViewFactory.js';
-import './SourcesTextEditor.js';
-import './FontView.js';
-import './ImageView.js';
-import './SourceFrame.js';
-import './ResourceSourceFrame.js';
-import './JSONView.js';
-import './XMLView.js';
-import './PreviewFactory.js';
-import './SourceCodeDiff.js';
-
 import * as BinaryResourceViewFactory from './BinaryResourceViewFactory.js';
 import * as FontView from './FontView.js';
 import * as ImageView from './ImageView.js';

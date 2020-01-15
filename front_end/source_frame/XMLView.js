@@ -394,15 +394,3 @@ export class XMLViewNode extends UI.TreeElement {
     this.appendChild(new XMLViewNode(this._node, true, this._xmlView));
   }
 }
-
-/* Legacy exported object */
-self.SourceFrame = self.SourceFrame || {};
-
-/* Legacy exported object */
-SourceFrame = SourceFrame || {};
-
-/** @constructor */
-SourceFrame.XMLView = XMLView;
-
-/** @constructor */
-SourceFrame.XMLView.Node = XMLViewNode;

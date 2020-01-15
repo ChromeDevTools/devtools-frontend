@@ -28,10 +28,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import {Events, SourcesTextEditor, SourcesTextEditorDelegate} from './SourcesTextEditor.js';  // eslint-disable-line no-unused-vars
+
 /**
  * @implements {UI.Searchable}
  * @implements {UI.Replaceable}
- * @implements {SourceFrame.SourcesTextEditorDelegate}
+ * @implements {SourcesTextEditorDelegate}
  * @unrestricted
  */
 export class SourceFrameImpl extends UI.SimpleView {
@@ -58,7 +60,7 @@ export class SourceFrameImpl extends UI.SimpleView {
     this._shouldAutoPrettyPrint = false;
     this._prettyToggle.setVisible(false);
 
-    this._textEditor = new SourceFrame.SourcesTextEditor(this, codeMirrorOptions);
+    this._textEditor = new SourcesTextEditor(this, codeMirrorOptions);
     this._textEditor.show(this.element);
 
     /** @type {?number} */
@@ -72,10 +74,8 @@ export class SourceFrameImpl extends UI.SimpleView {
     this._searchRegex = null;
     this._loadError = false;
 
-    this._textEditor.addEventListener(
-        SourceFrame.SourcesTextEditor.Events.EditorFocused, this._resetCurrentSearchResultIndex, this);
-    this._textEditor.addEventListener(
-        SourceFrame.SourcesTextEditor.Events.SelectionChanged, this._updateSourcePosition, this);
+    this._textEditor.addEventListener(Events.EditorFocused, this._resetCurrentSearchResultIndex, this);
+    this._textEditor.addEventListener(Events.SelectionChanged, this._updateSourcePosition, this);
     this._textEditor.addEventListener(UI.TextEditor.Events.TextChanged, event => {
       if (!this._muteChangeEventsForSetContent) {
         this.onTextChanged(event.data.oldRange, event.data.newRange);
@@ -832,23 +832,3 @@ export class LineDecorator {
    */
   decorate(uiSourceCode, textEditor, type) {}
 }
-
-/* Legacy exported object */
-self.SourceFrame = self.SourceFrame || {};
-
-/* Legacy exported object */
-SourceFrame = SourceFrame || {};
-
-/** @constructor */
-SourceFrame.SourceFrame = SourceFrameImpl;
-
-/** @interface */
-SourceFrame.LineDecorator = LineDecorator;
-
-/**
- * @typedef {{
-  *  editorToRawLocation: function(number, number=):!Array<number>,
-  *  rawToEditorLocation: function(number, number=):!Array<number>
-  * }}
-  */
-SourceFrame.Transformer;

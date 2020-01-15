@@ -144,15 +144,3 @@ export const EditType = {
   Delete: Symbol('Delete'),
   Modify: Symbol('Modify'),
 };
-
-/* Legacy exported object */
-self.SourceFrame = self.SourceFrame || {};
-
-/* Legacy exported object */
-SourceFrame = SourceFrame || {};
-
-/** @constructor */
-SourceFrame.SourceCodeDiff = SourceCodeDiff;
-
-/** @enum {symbol} */
-SourceFrame.SourceCodeDiff.EditType = EditType;

@@ -43,6 +43,7 @@
     "scripts": [],
     "modules": [
         "source_frame.js",
+        "source_frame-legacy.js",
         "BinaryResourceViewFactory.js",
         "SourcesTextEditor.js",
         "FontView.js",

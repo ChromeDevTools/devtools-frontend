@@ -27,10 +27,12 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import {SourceFrameImpl} from './SourceFrame.js';
+
 /**
  * @unrestricted
  */
-export class ResourceSourceFrame extends SourceFrame.SourceFrame {
+export class ResourceSourceFrame extends SourceFrameImpl {
   /**
    * @param {!Common.ContentProvider} resource
    * @param {boolean=} autoPrettyPrint
@@ -109,15 +111,3 @@ export class SearchableContainer extends UI.VBox {
     this._sourceFrame.revealPosition(lineNumber, columnNumber, true);
   }
 }
-
-/* Legacy exported object */
-self.SourceFrame = self.SourceFrame || {};
-
-/* Legacy exported object */
-SourceFrame = SourceFrame || {};
-
-/** @constructor */
-SourceFrame.ResourceSourceFrame = ResourceSourceFrame;
-
-/** @constructor */
-SourceFrame.ResourceSourceFrame.SearchableContainer = SearchableContainer;

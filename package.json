@@ -29,7 +29,6 @@
     "chrome": "node scripts/hosted_mode/launch_chrome.js", 
     "debug-test": "node scripts/npm_test.js --debug-devtools", 
     "debug-unittest": "DEBUG=1 python scripts/test/run_unittests.py", 
-    "format-py": "yapf --exclude scripts/build/rjsmin.py -i --recursive scripts PRESUBMIT.py", 
     "generate-jsconfig": "node scripts/generate_jsconfig.js", 
     "optimize-svg-images": "python scripts/optimize_svg_images.py", 
     "server": "node scripts/hosted_mode/server.js", 

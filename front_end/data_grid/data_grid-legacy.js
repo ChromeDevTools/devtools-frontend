@@ -40,6 +40,9 @@ DataGrid.DataGrid.Order = DataGridModule.DataGrid.Order;
 /** @enum {string} */
 DataGrid.DataGrid.Align = DataGridModule.DataGrid.Align;
 
+/** @enum {symbol} */
+DataGrid.DataGrid.DataType = DataGridModule.DataGrid.DataType;
+
 /** @enum {string} */
 DataGrid.DataGrid.ResizeMethod = DataGridModule.DataGrid.ResizeMethod;
 
@@ -47,7 +50,7 @@ DataGrid.DataGrid.ResizeMethod = DataGridModule.DataGrid.ResizeMethod;
  * @typedef {{
   *   displayName: string,
   *   columns: !Array.<!DataGrid.ColumnDescriptor>,
-  *   editCallback: (function(!Object, string, string, string)|undefined),
+  *   editCallback: (function(!Object, string, *, *)|undefined),
   *   deleteCallback: (function(!Object)|undefined|function(string)),
   *   refreshCallback: (function()|undefined)
   * }}
@@ -68,7 +71,8 @@ DataGrid.Parameters = DataGridModule.Parameters;
   *   longText: (boolean|undefined),
   *   disclosure: (boolean|undefined),
   *   weight: (number|undefined),
-  *   allowInSortByEvenWhenHidden: (boolean|undefined)
+  *   allowInSortByEvenWhenHidden: (boolean|undefined),
+  *   dataType: (?DataGrid.DataGrid.DataType|undefined)
   * }}
   */
 DataGrid.ColumnDescriptor = DataGridModule.ColumnDescriptor;

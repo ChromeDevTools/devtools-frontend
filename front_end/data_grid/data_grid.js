@@ -16,7 +16,7 @@ import * as ViewportDataGrid from './ViewportDataGrid.js';
  * @typedef {{
   *   displayName: string,
   *   columns: !Array.<!ColumnDescriptor>,
-  *   editCallback: (function(!Object, string, string, string)|undefined),
+  *   editCallback: (function(!Object, string, *, *)|undefined),
   *   deleteCallback: (function(!Object)|undefined|function(string)),
   *   refreshCallback: (function()|undefined)
   * }}
@@ -37,7 +37,8 @@ export let Parameters;
   *   longText: (boolean|undefined),
   *   disclosure: (boolean|undefined),
   *   weight: (number|undefined),
-  *   allowInSortByEvenWhenHidden: (boolean|undefined)
+  *   allowInSortByEvenWhenHidden: (boolean|undefined),
+  *   dataType: (?DataGrid.DataType|undefined)
   * }}
   */
 export let ColumnDescriptor;

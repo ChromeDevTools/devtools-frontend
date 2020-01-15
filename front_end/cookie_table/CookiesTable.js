@@ -71,7 +71,7 @@ export class CookiesTable extends UI.VBox {
         sortable: true,
         longText: true,
         weight: 34,
-        editable: editable
+        editable: editable,
       },
       {id: SDK.Cookie.Attributes.Domain, title: ls`Domain`, sortable: true, weight: 7, editable: editable},
       {id: SDK.Cookie.Attributes.Path, title: ls`Path`, sortable: true, weight: 7, editable: editable},
@@ -81,23 +81,33 @@ export class CookiesTable extends UI.VBox {
         title: ls`Size`,
         sortable: true,
         align: DataGrid.DataGrid.Align.Right,
-        weight: 7
+        weight: 7,
       },
       {
         id: SDK.Cookie.Attributes.HttpOnly,
         title: ls`HttpOnly`,
         sortable: true,
         align: DataGrid.DataGrid.Align.Center,
-        weight: 7
+        weight: 7,
+        dataType: DataGrid.DataGrid.DataType.Boolean,
+        editable,
       },
       {
         id: SDK.Cookie.Attributes.Secure,
         title: ls`Secure`,
         sortable: true,
         align: DataGrid.DataGrid.Align.Center,
-        weight: 7
+        weight: 7,
+        dataType: DataGrid.DataGrid.DataType.Boolean,
+        editable,
       },
-      {id: SDK.Cookie.Attributes.SameSite, title: ls`SameSite`, sortable: true, weight: 7},
+      {
+        id: SDK.Cookie.Attributes.SameSite,
+        title: ls`SameSite`,
+        sortable: true,
+        weight: 7,
+        editable: editable,
+      },
       {
         id: SDK.Cookie.Attributes.Priority,
         title: ls`Priority`,
@@ -439,9 +449,8 @@ export class CookiesTable extends UI.VBox {
     }
 
     data[SDK.Cookie.Attributes.Size] = cookie.size();
-    const checkmark = '\u2713';
-    data[SDK.Cookie.Attributes.HttpOnly] = (cookie.httpOnly() ? checkmark : '');
-    data[SDK.Cookie.Attributes.Secure] = (cookie.secure() ? checkmark : '');
+    data[SDK.Cookie.Attributes.HttpOnly] = cookie.httpOnly();
+    data[SDK.Cookie.Attributes.Secure] = cookie.secure();
     data[SDK.Cookie.Attributes.SameSite] = cookie.sameSite() || '';
     data[SDK.Cookie.Attributes.Priority] = cookie.priority() || '';
 

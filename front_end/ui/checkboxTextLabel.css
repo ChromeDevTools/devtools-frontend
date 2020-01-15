@@ -18,6 +18,11 @@ input {
     flex-shrink: 0;
 }
 
+input.inside-datagrid {
+    height: 10px;
+    width: 10px;
+}
+
 input:focus {
     outline: auto 5px -webkit-focus-ring-color;
 }

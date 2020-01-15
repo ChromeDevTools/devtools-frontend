@@ -11,6 +11,7 @@
   "scripts": [],
   "modules": [
     "javascript_metadata.js",
+    "javascript_metadata-legacy.js",
     "NativeFunctions.js",
     "JavaScriptMetadata.js"
   ]

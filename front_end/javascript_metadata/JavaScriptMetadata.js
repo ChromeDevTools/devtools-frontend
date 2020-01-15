@@ -2,10 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {NativeFunctions} from './NativeFunctions.js';
+
 /**
  * @implements {Common.JavaScriptMetadata}
  */
-export default class JavaScriptMetadataImpl {
+export class JavaScriptMetadataImpl {
   constructor() {
     /** @type {!Map<string, !Array<!Array<string>>>} */
     this._uniqueFunctions = new Map();
@@ -14,7 +16,7 @@ export default class JavaScriptMetadataImpl {
     /** @type {!Map<string, !Map<string, !Array<!Array<string>>>>} */
     this._staticMethods = new Map();
 
-    for (const nativeFunction of JavaScriptMetadata.NativeFunctions) {
+    for (const nativeFunction of NativeFunctions) {
       if (!nativeFunction.receiver) {
         this._uniqueFunctions.set(nativeFunction.name, nativeFunction.signatures);
       } else if (nativeFunction.static) {
@@ -66,24 +68,3 @@ export default class JavaScriptMetadataImpl {
     return this._staticMethods.get(receiverConstructorName).get(name) || null;
   }
 }
-
-/* Legacy exported object */
-self.JavaScriptMetadata = self.JavaScriptMetadata || {};
-
-/* Legacy exported object */
-JavaScriptMetadata = JavaScriptMetadata || {};
-
-/**
- * @constructor
- */
-JavaScriptMetadata.JavaScriptMetadata = JavaScriptMetadataImpl;
-
-/**
- * @type {!Array<{
- *  name: string,
- *  signatures: !Array<!Array<string>>,
- *  static: (boolean|undefined),
- *  receiver: (string|undefined),
- * }>}
- */
-JavaScriptMetadata.NativeFunctions;

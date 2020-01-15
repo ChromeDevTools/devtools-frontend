@@ -9,8 +9,11 @@ const methods = {
 const methodsByName = {
   __proto__: null
 };
-const program =
-    ts.createProgram([path.join(__dirname, 'node_modules', 'typescript', 'lib', 'lib.esnext.d.ts')], {noLib: true});
+const program = ts.createProgram(
+    [
+      path.join(__dirname, 'node_modules', 'typescript', 'lib', 'lib.esnext.d.ts'),
+    ],
+    {noLib: true});
 for (const file of program.getSourceFiles()) {
   ts.forEachChild(file, node => {
     if (node.kind === ts.SyntaxKind.InterfaceDeclaration) {
@@ -42,11 +45,11 @@ function parseTSFunction(func, node) {
   storeMethod(node.name.text, func.name.escapedText, args);
 }
 
-const files = glob('../../../+(core|modules)/**/*.idl', {cwd: __dirname}, function(er, files) {
+const files = glob('../../../../blink/renderer/+(core|modules)/**/*.idl', {cwd: process.env.PWD}, function(er, files) {
   for (const file of files) {
     if (file.includes('testing'))
       continue;
-    const data = fs.readFileSync(path.join(__dirname, file), 'utf8');
+    const data = fs.readFileSync(path.join(process.env.PWD, file), 'utf8');
     const lines = data.split('\n');
     const newLines = [];
     for (line of lines) {
@@ -189,13 +192,5 @@ function postProcess() {
       path.join(__dirname, '..', '..', 'front_end', 'javascript_metadata', 'NativeFunctions.js'),
       `// Generated from ${path.relative(path.join(__dirname, '..', '..'), __filename)}
 export const NativeFunctions = ${JSON.stringify(functions)};
-
-/* Legacy exported object */
-self.JavaScriptMetadata = self.JavaScriptMetadata || {};
-
-/* Legacy exported object */
-JavaScriptMetadata = JavaScriptMetadata || {};
-
-JavaScriptMetadata.NativeFunctions = NativeFunctions;
 `);
 }

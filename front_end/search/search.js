@@ -2,10 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import './SearchView.js';
-import './SearchConfig.js';
-import './SearchResultsPane.js';
-
 import * as SearchConfig from './SearchConfig.js';
 import * as SearchResultsPane from './SearchResultsPane.js';
 import * as SearchView from './SearchView.js';

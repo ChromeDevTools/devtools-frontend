@@ -1,15 +1,18 @@
 // Copyright 2014 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-export default class SearchResultsPane extends UI.VBox {
+
+import {SearchConfig, SearchResult} from './SearchConfig.js';  // eslint-disable-line no-unused-vars
+
+export class SearchResultsPane extends UI.VBox {
   /**
-   * @param {!Search.SearchConfig} searchConfig
+   * @param {!SearchConfig} searchConfig
    */
   constructor(searchConfig) {
     super(true);
     this._searchConfig = searchConfig;
 
-    /** @type {!Array<!Search.SearchResult>} */
+    /** @type {!Array<!SearchResult>} */
     this._searchResults = [];
     this._treeOutline = new UI.TreeOutlineInShadow();
     this._treeOutline.hideOverflow();
@@ -20,7 +23,7 @@ export default class SearchResultsPane extends UI.VBox {
   }
 
   /**
-   * @param {!Search.SearchResult} searchResult
+   * @param {!SearchResult} searchResult
    */
   addSearchResult(searchResult) {
     this._searchResults.push(searchResult);
@@ -28,29 +31,29 @@ export default class SearchResultsPane extends UI.VBox {
   }
 
   /**
-   * @param {!Search.SearchResult} searchResult
+   * @param {!SearchResult} searchResult
    */
   _addTreeElement(searchResult) {
-    const treeElement = new Search.SearchResultsPane.SearchResultsTreeElement(this._searchConfig, searchResult);
+    const treeElement = new SearchResultsTreeElement(this._searchConfig, searchResult);
     this._treeOutline.appendChild(treeElement);
     if (!this._treeOutline.selectedTreeElement) {
       treeElement.select(/* omitFocus */ true, /* selectedByUser */ true);
     }
     // Expand until at least a certain number of matches is expanded.
-    if (this._matchesExpandedCount < Search.SearchResultsPane._matchesExpandedByDefault) {
+    if (this._matchesExpandedCount < matchesExpandedByDefault) {
       treeElement.expand();
     }
     this._matchesExpandedCount += searchResult.matchesCount();
   }
 }
 
-export const _matchesExpandedByDefault = 20;
-export const _matchesShownAtOnce = 20;
+export const matchesExpandedByDefault = 20;
+export const matchesShownAtOnce = 20;
 
 export class SearchResultsTreeElement extends UI.TreeElement {
   /**
-   * @param {!Search.SearchConfig} searchConfig
-   * @param {!Search.SearchResult} searchResult
+   * @param {!SearchConfig} searchConfig
+   * @param {!SearchResult} searchResult
    */
   constructor(searchConfig, searchResult) {
     super('', true);
@@ -74,7 +77,7 @@ export class SearchResultsTreeElement extends UI.TreeElement {
 
   _updateMatchesUI() {
     this.removeChildren();
-    const toIndex = Math.min(this._searchResult.matchesCount(), Search.SearchResultsPane._matchesShownAtOnce);
+    const toIndex = Math.min(this._searchResult.matchesCount(), matchesShownAtOnce);
     if (toIndex < this._searchResult.matchesCount()) {
       this._appendSearchMatches(0, toIndex - 1);
       this._appendShowMoreMatchesElement(toIndex - 1);
@@ -236,21 +239,3 @@ export class SearchResultsTreeElement extends UI.TreeElement {
     return false;
   }
 }
-
-/* Legacy exported object */
-self.Search = self.Search || {};
-
-/* Legacy exported object */
-Search = Search || {};
-
-/**
- * @constructor
- */
-Search.SearchResultsPane = SearchResultsPane;
-Search.SearchResultsPane._matchesExpandedByDefault = _matchesExpandedByDefault;
-Search.SearchResultsPane._matchesShownAtOnce = _matchesShownAtOnce;
-
-/**
- * @constructor
- */
-Search.SearchResultsPane.SearchResultsTreeElement = SearchResultsTreeElement;

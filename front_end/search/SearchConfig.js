@@ -19,7 +19,7 @@ export class SearchConfig {
 
   /**
    * @param {{query: string, ignoreCase: boolean, isRegex: boolean}} object
-   * @return {!Search.SearchConfig}
+   * @return {!SearchConfig}
    */
   static fromPlainObject(object) {
     return new SearchConfig(object.query, object.ignoreCase, object.isRegex);
@@ -72,7 +72,7 @@ export class SearchConfig {
     const regexp = new RegExp(pattern, 'g');
     const queryParts = this._query.match(regexp) || [];
     /**
-     * @type {!Array.<!Search.SearchConfig.QueryTerm>}
+     * @type {!Array.<!QueryTerm>}
      */
     this._fileQueries = [];
 
@@ -145,7 +145,7 @@ export class SearchConfig {
 
   /**
    * @param {string} query
-   * @return {?Search.SearchConfig.QueryTerm}
+   * @return {?QueryTerm}
    */
   _parseFileQuery(query) {
     const match = query.match(FilePatternRegex);
@@ -238,9 +238,9 @@ export class SearchResult {
  */
 export class SearchScope {
   /**
-   * @param {!Search.SearchConfig} searchConfig
+   * @param {!SearchConfig} searchConfig
    * @param {!Common.Progress} progress
-   * @param {function(!Search.SearchResult)} searchResultCallback
+   * @param {function(!SearchResult)} searchResultCallback
    * @param {function(boolean)} searchFinishedCallback
    */
   performSearch(searchConfig, progress, searchResultCallback, searchFinishedCallback) {
@@ -254,33 +254,3 @@ export class SearchScope {
 
   stopSearch() {}
 }
-
-/* Legacy exported object */
-self.Search = self.Search || {};
-
-/* Legacy exported object */
-Search = Search || {};
-
-/**
- * @constructor
- */
-Search.SearchConfig = SearchConfig;
-
-/** @typedef {!{regex: !RegExp, isNegative: boolean}} */
-Search.SearchConfig.RegexQuery;
-Search.SearchConfig.FilePatternRegex = FilePatternRegex;
-
-/**
- * @constructor
- */
-Search.SearchConfig.QueryTerm = QueryTerm;
-
-/**
- * @interface
- */
-Search.SearchResult = SearchResult;
-
-/**
- * @interface
- */
-Search.SearchScope = SearchScope;

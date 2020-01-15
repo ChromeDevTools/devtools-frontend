@@ -1,6 +1,10 @@
 // Copyright 2014 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
+import {SearchConfig, SearchResult, SearchScope} from './SearchConfig.js';  // eslint-disable-line no-unused-vars
+import {SearchResultsPane} from './SearchResultsPane.js';
+
 export class SearchView extends UI.VBox {
   /**
    * @param {string} settingKey
@@ -20,11 +24,11 @@ export class SearchView extends UI.VBox {
     this._searchingView = null;
     /** @type {?UI.Widget} */
     this._notFoundView = null;
-    /** @type {?Search.SearchConfig} */
+    /** @type {?SearchConfig} */
     this._searchConfig = null;
-    /** @type {?Search.SearchConfig} */
+    /** @type {?SearchConfig} */
     this._pendingSearchConfig = null;
-    /** @type {?Search.SearchResultsPane} */
+    /** @type {?SearchResultsPane} */
     this._searchResultsPane = null;
     /** @type {?UI.ProgressIndicator} */
     this._progressIndicator = null;
@@ -53,9 +57,8 @@ export class SearchView extends UI.VBox {
     const searchItem = new UI.ToolbarItem(searchContainer);
 
     const toolbar = new UI.Toolbar('search-toolbar', this._searchPanelElement);
-    this._matchCaseButton = Search.SearchView._appendToolbarToggle(toolbar, 'Aa', Common.UIString('Match Case'));
-    this._regexButton =
-        Search.SearchView._appendToolbarToggle(toolbar, '.*', Common.UIString('Use Regular Expression'));
+    this._matchCaseButton = SearchView._appendToolbarToggle(toolbar, 'Aa', Common.UIString('Match Case'));
+    this._regexButton = SearchView._appendToolbarToggle(toolbar, '.*', Common.UIString('Use Regular Expression'));
     toolbar.appendToolbarItem(searchItem);
     const refreshButton = new UI.ToolbarButton(Common.UIString('Refresh'), 'largeicon-refresh');
     const clearButton = new UI.ToolbarButton(Common.UIString('Clear'), 'largeicon-clear');
@@ -73,10 +76,10 @@ export class SearchView extends UI.VBox {
     this._searchResultsMessageElement = searchStatusBarElement.createChild('div', 'search-message');
 
     this._advancedSearchConfig = Common.settings.createLocalSetting(
-        settingKey + 'SearchConfig', new Search.SearchConfig('', true, false).toPlainObject());
+        settingKey + 'SearchConfig', new SearchConfig('', true, false).toPlainObject());
 
     this._load();
-    /** @type {?Search.SearchScope} */
+    /** @type {?SearchScope} */
     this._searchScope = null;
   }
 
@@ -95,10 +98,10 @@ export class SearchView extends UI.VBox {
   }
 
   /**
-   * @return {!Search.SearchConfig}
+   * @return {!SearchConfig}
    */
   _buildSearchConfig() {
-    return new Search.SearchConfig(this._search.value, !this._matchCaseButton.toggled(), this._regexButton.toggled());
+    return new SearchConfig(this._search.value, !this._matchCaseButton.toggled(), this._regexButton.toggled());
   }
 
   /**
@@ -126,7 +129,7 @@ export class SearchView extends UI.VBox {
 
   /**
    * @protected
-   * @return {!Search.SearchScope}
+   * @return {!SearchScope}
    */
   createScope() {
     throw new Error('Not implemented');
@@ -182,7 +185,7 @@ export class SearchView extends UI.VBox {
 
   /**
    * @param {number} searchId
-   * @param {!Search.SearchResult} searchResult
+   * @param {!SearchResult} searchResult
    */
   _onSearchResult(searchId, searchResult) {
     if (searchId !== this._searchId || !this._progressIndicator) {
@@ -197,7 +200,7 @@ export class SearchView extends UI.VBox {
       return;
     }
     if (!this._searchResultsPane) {
-      this._searchResultsPane = new Search.SearchResultsPane(/** @type {!Search.SearchConfig} */ (this._searchConfig));
+      this._searchResultsPane = new SearchResultsPane(/** @type {!SearchConfig} */ (this._searchConfig));
       this._showPane(this._searchResultsPane);
     }
     this._searchResultsPane.addSearchResult(searchResult);
@@ -222,7 +225,7 @@ export class SearchView extends UI.VBox {
   }
 
   /**
-   * @param {!Search.SearchConfig} searchConfig
+   * @param {!SearchConfig} searchConfig
    */
   async _startSearch(searchConfig) {
     this._resetSearch();
@@ -327,7 +330,7 @@ export class SearchView extends UI.VBox {
   }
 
   /**
-   * @param {!Search.SearchResult} searchResult
+   * @param {!SearchResult} searchResult
    */
   _addSearchResult(searchResult) {
     const matchesCount = searchResult.matchesCount();
@@ -378,7 +381,7 @@ export class SearchView extends UI.VBox {
   }
 
   _load() {
-    const searchConfig = Search.SearchConfig.fromPlainObject(this._advancedSearchConfig.get());
+    const searchConfig = SearchConfig.fromPlainObject(this._advancedSearchConfig.get());
     this._search.value = searchConfig.query();
     this._matchCaseButton.setToggled(!searchConfig.ignoreCase());
     this._regexButton.setToggled(searchConfig.isRegex());
@@ -395,14 +398,3 @@ export class SearchView extends UI.VBox {
     this._startSearch(searchConfig);
   }
 }
-
-/* Legacy exported object */
-self.Search = self.Search || {};
-
-/* Legacy exported object */
-Search = Search || {};
-
-/**
- * @constructor
- */
-Search.SearchView = SearchView;

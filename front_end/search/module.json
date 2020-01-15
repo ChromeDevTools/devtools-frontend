@@ -5,6 +5,7 @@
     "scripts": [],
     "modules": [
         "search.js",
+        "search-legacy.js",
         "SearchView.js",
         "SearchConfig.js",
         "SearchResultsPane.js"

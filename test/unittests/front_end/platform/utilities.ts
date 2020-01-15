@@ -36,21 +36,11 @@ declare global {
 describe('Utilities', () => {
   it('removes values', () => {
     const testArrays = [
-      [],
-      [],
-      [],
-      [1],
-      [1],
-      [1],
-      [1, 2, 3, 4, 5, 4, 3, 2, 1],
-      [1, 3, 4, 5, 4, 3, 2, 1],
-      [1, 3, 4, 5, 4, 3, 1],
-      [2, 2, 2, 2, 2],
-      [2, 2, 2, 2],
-      [],
-      [2, 2, 2, 1, 2, 2, 3, 2],
-      [2, 2, 1, 2, 2, 3, 2],
-      [1, 3],
+      [], [], [],
+      [1], [1], [1],
+      [1, 2, 3, 4, 5, 4, 3, 2, 1], [1, 3, 4, 5, 4, 3, 2, 1], [1, 3, 4, 5, 4, 3, 1],
+      [2, 2, 2, 2, 2], [2, 2, 2, 2], [],
+      [2, 2, 2, 1, 2, 2, 3, 2], [2, 2, 1, 2, 2, 3, 2], [1, 3],
     ];
 
     for (let i = 0; i < testArrays.length; i += 3) {
@@ -98,29 +88,23 @@ describe('Utilities', () => {
       assert.deepStrictEqual(actual.sort(), actual, 'Result array is ordered');
     }
 
-    const testArrays = [
-      [],
-      [],
-      [1],
-      [],
-      [1, 2, 2, 2, 3],
-      [],
-      [4, 5, 5, 8, 8],
-      [1, 1, 1, 2, 6],
-      [1, 2, 2, 2, 2, 3, 3, 4],
-      [2, 2, 2, 3, 3, 3, 3],
-      [1, 2, 3, 4, 5],
-      [1, 2, 3],
-    ];
+    const fixtures = new Map([
+      [[], []],
+      [[1], []],
+      [[1, 2, 2, 2, 3], []],
+      [[4, 5, 5, 8, 8], [1, 1, 1, 2, 6]],
+      [[1, 2, 2, 2, 2, 3, 3, 4], [2, 2, 2, 3, 3, 3, 3]],
+      [[1, 2, 3, 4, 5], [1, 2, 3]],
+    ]);
 
-    for (let i = 0; i < testArrays.length; i += 2) {
-      testAll(testArrays[i], testArrays[i + 1]);
-      testAll(testArrays[i + 1], testArrays[i]);
+    for (const [a, b] of fixtures) {
+      testAll(a, b);
+      testAll(b, a);
     }
   });
 
   it('calculates the binary index', () => {
-    const testArrays = [
+    const fixtures = [
       [],
       [1],
       [1, 10],
@@ -142,13 +126,17 @@ describe('Utilities', () => {
       return true;
     }
 
-    for (let i = 0, l = testArrays.length; i < l; ++i) {
-      testArray(testArrays[i]);
+    for (const fixture of fixtures) {
+      testArray(fixture);
     }
   });
 
   it('calculates the lower bound', () => {
-    const testArrays = [[], [1], [-1, -1, 0, 0, 0, 0, 2, 3, 4, 4, 4, 7, 9, 9, 9]];
+    const fixtures = [
+      [],
+      [1],
+      [-1, -1, 0, 0, 0, 0, 2, 3, 4, 4, 4, 7, 9, 9, 9],
+    ];
 
     function testArray(array: number[], useComparator: boolean) {
       function comparator(a: number, b: number) {
@@ -163,14 +151,18 @@ describe('Utilities', () => {
       }
     }
 
-    for (let i = 0, l = testArrays.length; i < l; ++i) {
-      testArray(testArrays[i], false);
-      testArray(testArrays[i], true);
+    for (const fixture of fixtures) {
+      testArray(fixture, false);
+      testArray(fixture, true);
     }
   });
 
   it('calculates the upper bound', () => {
-    const testArrays = [[], [1], [-1, -1, 0, 0, 0, 0, 2, 3, 4, 4, 4, 7, 9, 9, 9]];
+    const fixtures = [
+      [],
+      [1],
+      [-1, -1, 0, 0, 0, 0, 2, 3, 4, 4, 4, 7, 9, 9, 9],
+    ];
 
     function testArray(array: number[], useComparator: boolean) {
       function comparator(a: number, b: number) {
@@ -185,14 +177,20 @@ describe('Utilities', () => {
       }
     }
 
-    for (let i = 0, l = testArrays.length; i < l; ++i) {
-      testArray(testArrays[i], false);
-      testArray(testArrays[i], true);
+    for (const fixture of fixtures) {
+      testArray(fixture, false);
+      testArray(fixture, true);
     }
   });
 
   it('sorts ranges', () => {
-    const testArrays = [[], [1], [2, 1], [6, 4, 2, 7, 10, 15, 1], [10, 44, 3, 6, 56, 66, 10, 55, 32, 56, 2, 5]];
+    const fixtures = [
+      [],
+      [1],
+      [2, 1],
+      [6, 4, 2, 7, 10, 15, 1],
+      [10, 44, 3, 6, 56, 66, 10, 55, 32, 56, 2, 5],
+    ];
 
     function testArray(array: number[]) {
       function comparator(a: number, b: number) {
@@ -226,8 +224,8 @@ describe('Utilities', () => {
       }
     }
 
-    for (let i = 0, len = testArrays.length; i < len; ++i) {
-      testArray(testArrays[i]);
+    for (const fixture of fixtures) {
+      testArray(fixture);
     }
   });
 
@@ -272,55 +270,40 @@ describe('Utilities', () => {
 
   it('trims URLs', () => {
     const baseURLDomain = 'www.chromium.org';
-    const testArray = [
-      'http://www.chromium.org/foo/bar',
-      '/foo/bar',
-      'https://www.CHromium.ORG/BAZ/zoo',
-      '/BAZ/zoo',
-      'https://example.com/foo[]',
-      'example.com/foo[]',
-    ];
-    for (let i = 0; i < testArray.length; i += 2) {
-      const url = testArray[i];
-      const expected = testArray[i + 1];
+    const fixtures = new Map([
+      ['http://www.chromium.org/foo/bar', '/foo/bar'],
+      ['https://www.CHromium.ORG/BAZ/zoo', '/BAZ/zoo'],
+      ['https://example.com/foo[]', 'example.com/foo[]'],
+    ]);
+    for (const [url, expected] of fixtures) {
       assert.equal(expected, url.trimURL(baseURLDomain), url);
     }
   });
 
   it('converts to base64', () => {
-    const testArray = [
-      '',
-      '',
-      'a',
-      'YQ==',
-      'bc',
-      'YmM=',
-      'def',
-      'ZGVm',
-      'ghij',
-      'Z2hpag==',
-      'klmno',
-      'a2xtbm8=',
-      'pqrstu',
-      'cHFyc3R1',
-      '\u0444\u5555\u6666\u7777',
-      '0YTllZXmmabnnbc=',
-    ];
-    for (let i = 0; i < testArray.length; i += 2) {
-      const string = testArray[i];
-      const encodedString = testArray[i + 1];
+    const fixtures = new Map([
+      ['', ''],
+      ['a', 'YQ=='],
+      ['bc', 'YmM='],
+      ['def', 'ZGVm'],
+      ['ghij', 'Z2hpag=='],
+      ['klmno', 'a2xtbm8='],
+      ['pqrstu', 'cHFyc3R1'],
+      ['\u0444\u5555\u6666\u7777', '0YTllZXmmabnnbc='],
+    ]);
+    for (const [string, encodedString] of fixtures) {
       assert.equal(encodedString, string.toBase64());
     }
   });
 
   it('trims the middle of strings', () => {
-    const testArray = [
+    const fixtures = [
       '',
       '!',
       '\u{1F648}A\u{1F648}L\u{1F648}I\u{1F648}N\u{1F648}A\u{1F648}\u{1F648}',
       'test',
     ];
-    for (const string of testArray) {
+    for (const string of fixtures) {
       for (let maxLength = string.length + 1; maxLength > 0; --maxLength) {
         const trimmed = string.trimMiddle(maxLength);
         assert.isTrue(trimmed.length <= maxLength);

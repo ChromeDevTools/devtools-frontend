@@ -1244,6 +1244,8 @@ experimental domain CSS
   command takeCoverageDelta
     returns
       array of RuleUsage coverage
+      # Monotonically increasing time, in seconds.
+      number timestamp
 
   # Fires whenever a web font is updated.  A non-empty font parameter indicates a successfully loaded
   # web font

@@ -19,6 +19,7 @@
     "scripts": [],
     "modules": [
         "text_editor.js",
+        "text_editor-legacy.js",
         "CodeMirrorUtils.js",
         "TextEditorAutocompleteController.js",
         "CodeMirrorTextEditor.js"

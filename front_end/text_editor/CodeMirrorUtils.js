@@ -112,19 +112,3 @@ export class TokenizerFactory {
     return tokenize;
   }
 }
-
-/* Legacy exported object */
-self.TextEditor = self.TextEditor || {};
-
-/* Legacy exported object */
-TextEditor = TextEditor || {};
-
-TextEditor.CodeMirrorUtils = {};
-
-TextEditor.CodeMirrorUtils.toPos = toPos;
-TextEditor.CodeMirrorUtils.toRange = toRange;
-TextEditor.CodeMirrorUtils.changeObjectToEditOperation = changeObjectToEditOperation;
-TextEditor.CodeMirrorUtils.pullLines = pullLines;
-
-/** @constructor */
-TextEditor.CodeMirrorUtils.TokenizerFactory = TokenizerFactory;

@@ -2,13 +2,16 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {CodeMirrorTextEditor} from './CodeMirrorTextEditor.js';  // eslint-disable-line no-unused-vars
+import {changeObjectToEditOperation} from './CodeMirrorUtils.js';
+
 /**
  * @implements {UI.SuggestBoxDelegate}
  * @unrestricted
  */
 export class TextEditorAutocompleteController {
   /**
-   * @param {!TextEditor.CodeMirrorTextEditor} textEditor
+   * @param {!CodeMirrorTextEditor} textEditor
    * @param {!CodeMirror} codeMirror
    * @param {!UI.AutocompleteConfig} config
    */
@@ -173,7 +176,7 @@ export class TextEditorAutocompleteController {
       const linesToUpdate = {};
       for (let changeIndex = 0; changeIndex < changes.length; ++changeIndex) {
         const changeObject = changes[changeIndex];
-        const editInfo = TextEditor.CodeMirrorUtils.changeObjectToEditOperation(changeObject);
+        const editInfo = changeObjectToEditOperation(changeObject);
         for (let i = editInfo.newRange.startLine; i <= editInfo.newRange.endLine; ++i) {
           linesToUpdate[i] = this._codeMirror.getLine(i);
         }
@@ -548,12 +551,3 @@ export class TextEditorAutocompleteController {
 }
 
 TextEditorAutocompleteController.HintBookmark = Symbol('hint');
-
-/* Legacy exported object */
-self.TextEditor = self.TextEditor || {};
-
-/* Legacy exported object */
-TextEditor = TextEditor || {};
-
-/** @constructor */
-TextEditor.TextEditorAutocompleteController = TextEditorAutocompleteController;

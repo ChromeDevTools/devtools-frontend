@@ -4,10 +4,6 @@
 
 import '../cm_web_modes/cm_web_modes_cm.js';
 
-import './CodeMirrorUtils.js';
-import './TextEditorAutocompleteController.js';
-import './CodeMirrorTextEditor.js';
-
 import * as CodeMirrorTextEditor from './CodeMirrorTextEditor.js';
 import * as CodeMirrorUtils from './CodeMirrorUtils.js';
 import * as TextEditorAutocompleteController from './TextEditorAutocompleteController.js';

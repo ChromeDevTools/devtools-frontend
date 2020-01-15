@@ -31,12 +31,3 @@ SDK.ChildTargetManager.install(async ({target, waitingForDebugger}) => {
   }
   debuggerModel.pause();
 });
-
-/* Legacy exported object */
-self.WorkerMain = self.WorkerMain || {};
-
-/* Legacy exported object */
-WorkerMain = WorkerMain || {};
-
-/** @constructor */
-WorkerMain.WorkerMain = WorkerMainImpl;

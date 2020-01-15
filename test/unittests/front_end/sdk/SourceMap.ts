@@ -81,9 +81,11 @@ describe('TextSourceMap', () => {
     assert.equal(actual.columnNumber, expectedCompiledColumnNumber, 'unexpected compiled column number');
   }
 
+  // FIXME(szuend): The following tests are a straight-up port from a corresponding layout test.
+  //                These tests should be cleaned up, made more readable and maybe refactor
+  //                the underlying code to make the individual parts more testable.
+
   it('can parse a simple source map', () => {
-    // FIXME(szuend): Clean this test up once all test cases from the web test are ported over
-    //                and we refactored the underlying code.
     /*
           The numbers above the respective scripts are column numbers from 0 to 35.
           example.js:
@@ -121,5 +123,26 @@ describe('TextSourceMap', () => {
     assertReverseMapping(sourceMap.sourceLineMapping('example.js', 2), 0, 18);
     assert.isNull(sourceMap.sourceLineMapping('example.js', 4), 'unexpected source mapping for line 4');
     assertReverseMapping(sourceMap.sourceLineMapping('example.js', 5), 0, 29);
+  });
+
+  it('can parse source maps with segments that contain no mapping information', () => {
+    const mappingPayload = {'mappings': 'AAAA,C,CAAE;', 'sources': ['example.js']};
+    const sourceMap = new TextSourceMap('compiled.js', 'source-map.json', mappingPayload);
+
+    assertMapping(sourceMap.findEntry(0, 0), 'example.js', 0, 0);
+    assertMapping(sourceMap.findEntry(0, 2), 'example.js', 0, 2);
+
+    const emptyEntry = sourceMap.findEntry(0, 1);
+    assert.isUndefined(emptyEntry.sourceURL, 'unexpected url present for empty segment');
+    assert.isUndefined(emptyEntry.sourceLineNumber, 'unexpected source line number for empty segment');
+    assert.isUndefined(emptyEntry.sourceColumnNumber, 'unexpected source line number for empty segment');
+  });
+
+  it('can parse source maps with empty lines', () => {
+    const mappingPayload = {'mappings': 'AAAA;;;CACA', 'sources': ['example.js']};
+    const sourceMap = new TextSourceMap('compiled.js', 'source-map.json', mappingPayload);
+
+    assertMapping(sourceMap.findEntry(0, 0), 'example.js', 0, 0);
+    assertReverseMapping(sourceMap.sourceLineMapping('example.js', 1), 3, 1);
   });
 });

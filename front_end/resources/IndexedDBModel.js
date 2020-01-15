@@ -32,7 +32,7 @@
  * @implements {Protocol.StorageDispatcher}
  * @unrestricted
  */
-export default class IndexedDBModel extends SDK.SDKModel {
+export class IndexedDBModel extends SDK.SDKModel {
   /**
    * @param {!SDK.Target} target
    */
@@ -640,41 +640,3 @@ export class Index {
     return /** @type {string}*/ (IndexedDBModel.keyPathStringFromIDBKeyPath(/** @type {string}*/ (this.keyPath)));
   }
 }
-
-/* Legacy exported object */
-self.Resources = self.Resources || {};
-
-/* Legacy exported object */
-Resources = Resources || {};
-
-/** @constructor */
-Resources.IndexedDBModel = IndexedDBModel;
-
-Resources.IndexedDBModel.KeyTypes = KeyTypes;
-Resources.IndexedDBModel.KeyPathTypes = KeyPathTypes;
-
-/** @enum {symbol} */
-Resources.IndexedDBModel.Events = Events;
-
-/** @constructor */
-Resources.IndexedDBModel.Entry = Entry;
-
-/** @constructor */
-Resources.IndexedDBModel.DatabaseId = DatabaseId;
-
-/** @constructor */
-Resources.IndexedDBModel.Database = Database;
-
-/** @constructor */
-Resources.IndexedDBModel.ObjectStore = ObjectStore;
-
-/** @constructor */
-Resources.IndexedDBModel.Index = Index;
-
-/**
- * @typedef {{
-  *      entriesCount: number,
-  *      keyGeneratorValue: number
-  * }}
-  */
-Resources.IndexedDBModel.ObjectStoreMetadata;

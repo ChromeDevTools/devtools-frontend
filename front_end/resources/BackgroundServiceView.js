@@ -2,7 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-export default class BackgroundServiceView extends UI.VBox {
+import {BackgroundServiceModel, Events} from './BackgroundServiceModel.js';  // eslint-disable-line no-unused-vars
+
+export class BackgroundServiceView extends UI.VBox {
   /**
    * @param {string} serviceName The name of the background service.
    * @return {string} The UI String to display.
@@ -28,7 +30,7 @@ export default class BackgroundServiceView extends UI.VBox {
 
   /**
    * @param {!Protocol.BackgroundService.ServiceName} serviceName
-   * @param {!Resources.BackgroundServiceModel} model
+   * @param {!BackgroundServiceModel} model
    */
   constructor(serviceName, model) {
     super(true);
@@ -38,12 +40,10 @@ export default class BackgroundServiceView extends UI.VBox {
     /** @const {!Protocol.BackgroundService.ServiceName} */
     this._serviceName = serviceName;
 
-    /** @const {!Resources.BackgroundServiceModel} */
+    /** @const {!BackgroundServiceModel} */
     this._model = model;
-    this._model.addEventListener(
-        Resources.BackgroundServiceModel.Events.RecordingStateChanged, this._onRecordingStateChanged, this);
-    this._model.addEventListener(
-        Resources.BackgroundServiceModel.Events.BackgroundServiceEventReceived, this._onEventReceived, this);
+    this._model.addEventListener(Events.RecordingStateChanged, this._onRecordingStateChanged, this);
+    this._model.addEventListener(Events.BackgroundServiceEventReceived, this._onEventReceived, this);
     this._model.enable(this._serviceName);
 
     /** @const {?SDK.ServiceWorkerManager} */
@@ -430,30 +430,3 @@ export class ActionDelegate {
     return false;
   }
 }
-
-/* Legacy exported object */
-self.Resources = self.Resources || {};
-
-/* Legacy exported object */
-Resources = Resources || {};
-
-/** @constructor */
-Resources.BackgroundServiceView = BackgroundServiceView;
-
-/** @constructor */
-Resources.BackgroundServiceView.EventDataNode = EventDataNode;
-
-/** @constructor */
-Resources.BackgroundServiceView.ActionDelegate = ActionDelegate;
-
-/**
- * @typedef {{
-  *    id: number,
-  *    timestamp: string,
-  *    origin: string,
-  *    swScope: string,
-  *    eventName: string,
-  *    instanceId: string,
-  * }}
-  */
-Resources.BackgroundServiceView.EventData;

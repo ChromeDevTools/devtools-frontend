@@ -26,7 +26,7 @@
 /**
  * @unrestricted
  */
-export default class DatabaseQueryView extends UI.VBox {
+export class DatabaseQueryView extends UI.VBox {
   constructor(database) {
     super();
 
@@ -70,7 +70,7 @@ export default class DatabaseQueryView extends UI.VBox {
     prefix = prefix.toLowerCase();
     const tableNames = await this.database.tableNames();
     return tableNames.map(name => name + ' ')
-        .concat(_SQL_BUILT_INS)
+        .concat(SQL_BUILT_INS)
         .filter(proposal => proposal.toLowerCase().startsWith(prefix))
         .map(completion => ({text: completion}));
   }
@@ -199,21 +199,7 @@ export const Events = {
   SchemaUpdated: Symbol('SchemaUpdated')
 };
 
-export const _SQL_BUILT_INS = [
+export const SQL_BUILT_INS = [
   'SELECT ', 'FROM ', 'WHERE ', 'LIMIT ', 'DELETE FROM ', 'CREATE ', 'DROP ', 'TABLE ', 'INDEX ', 'UPDATE ',
   'INSERT INTO ', 'VALUES ('
 ];
-
-/* Legacy exported object */
-self.Resources = self.Resources || {};
-
-/* Legacy exported object */
-Resources = Resources || {};
-
-/** @constructor */
-Resources.DatabaseQueryView = DatabaseQueryView;
-
-/** @enum {symbol} */
-Resources.DatabaseQueryView.Events = Events;
-
-Resources.DatabaseQueryView._SQL_BUILT_INS = _SQL_BUILT_INS;

@@ -73,6 +73,7 @@
     "scripts": [],
     "modules": [
         "resources.js",
+        "resources-legacy.js",
         "ApplicationCacheModel.js",
         "AppManifestView.js",
         "ApplicationCacheItemsView.js",
@@ -90,7 +91,6 @@
         "IndexedDBViews.js",
         "ResourcesPanel.js",
         "ApplicationPanelSidebar.js",
-        "ResourcesSection.js",
         "ServiceWorkerCacheViews.js",
         "ServiceWorkersView.js"
     ],

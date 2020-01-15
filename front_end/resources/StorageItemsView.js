@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-export default class StorageItemsView extends UI.VBox {
+export class StorageItemsView extends UI.VBox {
   /**
    * @param {string} title
    * @param {string} filterName
@@ -121,12 +121,3 @@ export default class StorageItemsView extends UI.VBox {
   refreshItems() {
   }
 }
-
-/* Legacy exported object */
-self.Resources = self.Resources || {};
-
-/* Legacy exported object */
-Resources = Resources || {};
-
-/** @constructor */
-Resources.StorageItemsView = StorageItemsView;

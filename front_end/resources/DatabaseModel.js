@@ -120,7 +120,7 @@ export class Database {
 /**
  * @unrestricted
  */
-export default class DatabaseModel extends SDK.SDKModel {
+export class DatabaseModel extends SDK.SDKModel {
   /**
    * @param {!SDK.Target} target
    */
@@ -198,21 +198,3 @@ export class DatabaseDispatcher {
     this._model._addDatabase(new Database(this._model, payload.id, payload.domain, payload.name, payload.version));
   }
 }
-
-/* Legacy exported object */
-self.Resources = self.Resources || {};
-
-/* Legacy exported object */
-Resources = Resources || {};
-
-/** @constructor */
-Resources.DatabaseModel = DatabaseModel;
-
-/** @enum {symbol} */
-Resources.DatabaseModel.Events = Events;
-
-/** @constructor */
-Resources.Database = Database;
-
-/** @constructor */
-Resources.DatabaseDispatcher = DatabaseDispatcher;

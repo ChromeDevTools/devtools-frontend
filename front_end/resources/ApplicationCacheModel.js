@@ -29,7 +29,7 @@
 /**
  * @unrestricted
  */
-export default class ApplicationCacheModel extends SDK.SDKModel {
+export class ApplicationCacheModel extends SDK.SDKModel {
   /**
    * @param {!SDK.Target} target
    */
@@ -229,25 +229,3 @@ export const CHECKING = 2;
 export const DOWNLOADING = 3;
 export const UPDATEREADY = 4;
 export const OBSOLETE = 5;
-
-/* Legacy exported object */
-self.Resources = self.Resources || {};
-
-/* Legacy exported object */
-Resources = Resources || {};
-
-/** @constructor */
-Resources.ApplicationCacheModel = ApplicationCacheModel;
-
-/** @enum {symbol} */
-Resources.ApplicationCacheModel.Events = Events;
-
-Resources.ApplicationCacheModel.UNCACHED = UNCACHED;
-Resources.ApplicationCacheModel.IDLE = IDLE;
-Resources.ApplicationCacheModel.CHECKING = CHECKING;
-Resources.ApplicationCacheModel.DOWNLOADING = DOWNLOADING;
-Resources.ApplicationCacheModel.UPDATEREADY = UPDATEREADY;
-Resources.ApplicationCacheModel.OBSOLETE = OBSOLETE;
-
-/** @constructor */
-Resources.ApplicationCacheDispatcher = ApplicationCacheDispatcher;

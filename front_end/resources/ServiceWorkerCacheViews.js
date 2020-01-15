@@ -455,18 +455,3 @@ export class RequestView extends UI.VBox {
     this._resourceViewTabSetting.set(event.data.tabId);
   }
 }
-
-/* Legacy exported object */
-self.Resources = self.Resources || {};
-
-/* Legacy exported object */
-Resources = Resources || {};
-
-/** @constructor */
-Resources.ServiceWorkerCacheView = ServiceWorkerCacheView;
-
-/** @constructor */
-Resources.ServiceWorkerCacheView.DataGridNode = DataGridNode;
-
-/** @constructor */
-Resources.ServiceWorkerCacheView.RequestView = RequestView;

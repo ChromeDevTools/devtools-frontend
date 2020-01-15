@@ -23,10 +23,12 @@
  * THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import {CHECKING, DOWNLOADING, IDLE, OBSOLETE, UNCACHED, UPDATEREADY} from './ApplicationCacheModel.js';
+
 /**
  * @unrestricted
  */
-export default class ApplicationCacheItemsView extends UI.SimpleView {
+export class ApplicationCacheItemsView extends UI.SimpleView {
   constructor(model, frameId) {
     super(Common.UIString('AppCache'));
 
@@ -106,26 +108,19 @@ export default class ApplicationCacheItemsView extends UI.SimpleView {
 
     const statusInformation = {};
     // We should never have UNCACHED status, since we remove frames with UNCACHED application cache status from the tree.
-    statusInformation[Resources.ApplicationCacheModel.UNCACHED] = {type: 'smallicon-red-ball', text: 'UNCACHED'};
-    statusInformation[Resources.ApplicationCacheModel.IDLE] = {type: 'smallicon-green-ball', text: 'IDLE'};
-    statusInformation[Resources.ApplicationCacheModel.CHECKING] = {type: 'smallicon-orange-ball', text: 'CHECKING'};
-    statusInformation[Resources.ApplicationCacheModel.DOWNLOADING] = {
-      type: 'smallicon-orange-ball',
-      text: 'DOWNLOADING'
-    };
-    statusInformation[Resources.ApplicationCacheModel.UPDATEREADY] = {
-      type: 'smallicon-green-ball',
-      text: 'UPDATEREADY'
-    };
-    statusInformation[Resources.ApplicationCacheModel.OBSOLETE] = {type: 'smallicon-red-ball', text: 'OBSOLETE'};
+    statusInformation[UNCACHED] = {type: 'smallicon-red-ball', text: 'UNCACHED'};
+    statusInformation[IDLE] = {type: 'smallicon-green-ball', text: 'IDLE'};
+    statusInformation[CHECKING] = {type: 'smallicon-orange-ball', text: 'CHECKING'};
+    statusInformation[DOWNLOADING] = {type: 'smallicon-orange-ball', text: 'DOWNLOADING'};
+    statusInformation[UPDATEREADY] = {type: 'smallicon-green-ball', text: 'UPDATEREADY'};
+    statusInformation[OBSOLETE] = {type: 'smallicon-red-ball', text: 'OBSOLETE'};
 
-    const info = statusInformation[status] || statusInformation[Resources.ApplicationCacheModel.UNCACHED];
+    const info = statusInformation[status] || statusInformation[UNCACHED];
 
     this._statusIcon.type = info.type;
     this._statusIcon.textContent = info.text;
 
-    if (this.isShowing() && this._status === Resources.ApplicationCacheModel.IDLE &&
-        (oldStatus === Resources.ApplicationCacheModel.UPDATEREADY || !this._resources)) {
+    if (this.isShowing() && this._status === IDLE && (oldStatus === UPDATEREADY || !this._resources)) {
       this._markDirty();
     }
     this._maybeUpdate();
@@ -264,12 +259,3 @@ export default class ApplicationCacheItemsView extends UI.SimpleView {
     // this._update();
   }
 }
-
-/* Legacy exported object */
-self.Resources = self.Resources || {};
-
-/* Legacy exported object */
-Resources = Resources || {};
-
-/** @constructor */
-Resources.ApplicationCacheItemsView = ApplicationCacheItemsView;

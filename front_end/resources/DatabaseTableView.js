@@ -26,7 +26,7 @@
 /**
  * @unrestricted
  */
-export default class DatabaseTableView extends UI.SimpleView {
+export class DatabaseTableView extends UI.SimpleView {
   constructor(database, tableName) {
     super(Common.UIString('Database'));
 
@@ -146,12 +146,3 @@ export default class DatabaseTableView extends UI.SimpleView {
     this.update();
   }
 }
-
-/* Legacy exported object */
-self.Resources = self.Resources || {};
-
-/* Legacy exported object */
-Resources = Resources || {};
-
-/** @constructor */
-Resources.DatabaseTableView = DatabaseTableView;

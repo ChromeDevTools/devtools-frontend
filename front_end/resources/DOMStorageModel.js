@@ -106,7 +106,7 @@ DOMStorage.Events = {
 /**
  * @unrestricted
  */
-export default class DOMStorageModel extends SDK.SDKModel {
+export class DOMStorageModel extends SDK.SDKModel {
   /**
    * @param {!SDK.Target} target
    */
@@ -347,21 +347,3 @@ export class DOMStorageDispatcher {
     this._model._domStorageItemUpdated(storageId, key, oldValue, value);
   }
 }
-
-/* Legacy exported object */
-self.Resources = self.Resources || {};
-
-/* Legacy exported object */
-Resources = Resources || {};
-
-/** @constructor */
-Resources.DOMStorageModel = DOMStorageModel;
-
-/** @enum {symbol} */
-Resources.DOMStorageModel.Events = Events;
-
-/** @constructor */
-Resources.DOMStorage = DOMStorage;
-
-/** @constructor */
-Resources.DOMStorageDispatcher = DOMStorageDispatcher;

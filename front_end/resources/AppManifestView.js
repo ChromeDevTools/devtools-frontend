@@ -6,7 +6,7 @@
  * @implements {SDK.TargetManager.Observer}
  * @unrestricted
  */
-export default class AppManifestView extends UI.VBox {
+export class AppManifestView extends UI.VBox {
   constructor() {
     super(true);
     this.registerRequiredCSS('resources/appManifestView.css');
@@ -272,12 +272,3 @@ export default class AppManifestView extends UI.VBox {
     return null;
   }
 }
-
-/* Legacy exported object */
-self.Resources = self.Resources || {};
-
-/* Legacy exported object */
-Resources = Resources || {};
-
-/** @constructor */
-Resources.AppManifestView = AppManifestView;

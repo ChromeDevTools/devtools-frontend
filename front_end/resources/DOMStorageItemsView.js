@@ -24,9 +24,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-export default class DOMStorageItemsView extends Resources.StorageItemsView {
+import {DOMStorage} from './DOMStorageModel.js';
+import {StorageItemsView} from './StorageItemsView.js';
+
+export class DOMStorageItemsView extends StorageItemsView {
   /**
-   * @param {!Resources.DOMStorage} domStorage
+   * @param {!DOMStorage} domStorage
    */
   constructor(domStorage) {
     super(Common.UIString('DOM Storage'), 'domStoragePanel');
@@ -78,20 +81,16 @@ export default class DOMStorageItemsView extends Resources.StorageItemsView {
   }
 
   /**
-   * @param {!Resources.DOMStorage} domStorage
+   * @param {!DOMStorage} domStorage
    */
   setStorage(domStorage) {
     Common.EventTarget.removeEventListeners(this._eventListeners);
     this._domStorage = domStorage;
     this._eventListeners = [
-      this._domStorage.addEventListener(
-          Resources.DOMStorage.Events.DOMStorageItemsCleared, this._domStorageItemsCleared, this),
-      this._domStorage.addEventListener(
-          Resources.DOMStorage.Events.DOMStorageItemRemoved, this._domStorageItemRemoved, this),
-      this._domStorage.addEventListener(
-          Resources.DOMStorage.Events.DOMStorageItemAdded, this._domStorageItemAdded, this),
-      this._domStorage.addEventListener(
-          Resources.DOMStorage.Events.DOMStorageItemUpdated, this._domStorageItemUpdated, this),
+      this._domStorage.addEventListener(DOMStorage.Events.DOMStorageItemsCleared, this._domStorageItemsCleared, this),
+      this._domStorage.addEventListener(DOMStorage.Events.DOMStorageItemRemoved, this._domStorageItemRemoved, this),
+      this._domStorage.addEventListener(DOMStorage.Events.DOMStorageItemAdded, this._domStorageItemAdded, this),
+      this._domStorage.addEventListener(DOMStorage.Events.DOMStorageItemUpdated, this._domStorageItemUpdated, this),
     ];
     this.refreshItems();
   }
@@ -310,12 +309,3 @@ export default class DOMStorageItemsView extends Resources.StorageItemsView {
     this._showPreview(preview, value);
   }
 }
-
-/* Legacy exported object */
-self.Resources = self.Resources || {};
-
-/* Legacy exported object */
-Resources = Resources || {};
-
-/** @constructor */
-Resources.DOMStorageItemsView = DOMStorageItemsView;

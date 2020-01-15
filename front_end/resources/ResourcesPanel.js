@@ -2,7 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-export default class ResourcesPanel extends UI.PanelWithSidebar {
+import {ApplicationPanelSidebar, StorageCategoryView} from './ApplicationPanelSidebar.js';
+import {CookieItemsView} from './CookieItemsView.js';
+import {DatabaseQueryView} from './DatabaseQueryView.js';
+import {DatabaseTableView} from './DatabaseTableView.js';
+import {DOMStorageItemsView} from './DOMStorageItemsView.js';
+import {DOMStorage} from './DOMStorageModel.js';  // eslint-disable-line no-unused-vars
+import {StorageItemsView} from './StorageItemsView.js';
+
+export class ResourcesPanel extends UI.PanelWithSidebar {
   constructor() {
     super('resources');
     this.registerRequiredCSS('resources/resourcesPanel.css');
@@ -15,7 +23,7 @@ export default class ResourcesPanel extends UI.PanelWithSidebar {
     /** @type {?Promise<!UI.Widget>} */
     this._pendingViewPromise = null;
 
-    /** @type {?Resources.StorageCategoryView} */
+    /** @type {?StorageCategoryView} */
     this._categoryView = null;
 
     const mainContainer = new UI.VBox();
@@ -23,16 +31,16 @@ export default class ResourcesPanel extends UI.PanelWithSidebar {
     this._storageViewToolbar = new UI.Toolbar('resources-toolbar', mainContainer.element);
     this.splitWidget().setMainWidget(mainContainer);
 
-    /** @type {?Resources.DOMStorageItemsView} */
+    /** @type {?DOMStorageItemsView} */
     this._domStorageView = null;
 
-    /** @type {?Resources.CookieItemsView} */
+    /** @type {?CookieItemsView} */
     this._cookieView = null;
 
     /** @type {?UI.EmptyWidget} */
     this._emptyWidget = null;
 
-    this._sidebar = new Resources.ApplicationPanelSidebar(this);
+    this._sidebar = new ApplicationPanelSidebar(this);
     this._sidebar.show(this.panelSidebarElement());
   }
 
@@ -49,8 +57,8 @@ export default class ResourcesPanel extends UI.PanelWithSidebar {
    */
   static _shouldCloseOnReset(view) {
     const viewClassesToClose = [
-      SourceFrame.ResourceSourceFrame, SourceFrame.ImageView, SourceFrame.FontView, Resources.StorageItemsView,
-      Resources.DatabaseQueryView, Resources.DatabaseTableView
+      SourceFrame.ResourceSourceFrame, SourceFrame.ImageView, SourceFrame.FontView, StorageItemsView, DatabaseQueryView,
+      DatabaseTableView
     ];
     return viewClassesToClose.some(type => view instanceof type);
   }
@@ -128,7 +136,7 @@ export default class ResourcesPanel extends UI.PanelWithSidebar {
    */
   showCategoryView(categoryName, categoryLink) {
     if (!this._categoryView) {
-      this._categoryView = new Resources.StorageCategoryView();
+      this._categoryView = new StorageCategoryView();
     }
     this._categoryView.setText(categoryName);
     this._categoryView.setLink(categoryLink);
@@ -136,7 +144,7 @@ export default class ResourcesPanel extends UI.PanelWithSidebar {
   }
 
   /**
-   * @param {!Resources.DOMStorage} domStorage
+   * @param {!DOMStorage} domStorage
    */
   showDOMStorage(domStorage) {
     if (!domStorage) {
@@ -144,7 +152,7 @@ export default class ResourcesPanel extends UI.PanelWithSidebar {
     }
 
     if (!this._domStorageView) {
-      this._domStorageView = new Resources.DOMStorageItemsView(domStorage);
+      this._domStorageView = new DOMStorageItemsView(domStorage);
     } else {
       this._domStorageView.setStorage(domStorage);
     }
@@ -161,7 +169,7 @@ export default class ResourcesPanel extends UI.PanelWithSidebar {
       return;
     }
     if (!this._cookieView) {
-      this._cookieView = new Resources.CookieItemsView(model, cookieDomain);
+      this._cookieView = new CookieItemsView(model, cookieDomain);
     } else {
       this._cookieView.setCookiesDomain(model, cookieDomain);
     }
@@ -203,15 +211,3 @@ export class ResourceRevealer {
     await sidebar.showResource(resource);
   }
 }
-
-/* Legacy exported object */
-self.Resources = self.Resources || {};
-
-/* Legacy exported object */
-Resources = Resources || {};
-
-/** @constructor */
-Resources.ResourcesPanel = ResourcesPanel;
-
-/** @constructor */
-Resources.ResourcesPanel.ResourceRevealer = ResourceRevealer;

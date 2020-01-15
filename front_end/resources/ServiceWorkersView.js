@@ -5,7 +5,7 @@
 /**
  * @implements {SDK.SDKModelObserver<!SDK.ServiceWorkerManager>}
  */
-export default class ServiceWorkersView extends UI.VBox {
+export class ServiceWorkersView extends UI.VBox {
   constructor() {
     super(true);
     this.registerRequiredCSS('resources/serviceWorkersView.css');
@@ -656,15 +656,3 @@ export class Section {
     return contentElement;
   }
 }
-
-/* Legacy exported object */
-self.Resources = self.Resources || {};
-
-/* Legacy exported object */
-Resources = Resources || {};
-
-/** @constructor */
-Resources.ServiceWorkersView = ServiceWorkersView;
-
-/** @constructor */
-Resources.ServiceWorkersView.Section = Section;

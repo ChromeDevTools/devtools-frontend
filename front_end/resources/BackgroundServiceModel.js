@@ -6,7 +6,7 @@
  * @implements {Protocol.BackgroundServiceDispatcher}
  * @unrestricted
  */
-export default class BackgroundServiceModel extends SDK.SDKModel {
+export class BackgroundServiceModel extends SDK.SDKModel {
   /**
    * @param {!SDK.Target} target
    */
@@ -77,20 +77,3 @@ export const Events = {
   RecordingStateChanged: Symbol('RecordingStateChanged'),
   BackgroundServiceEventReceived: Symbol('BackgroundServiceEventReceived'),
 };
-
-/* Legacy exported object */
-self.Resources = self.Resources || {};
-
-/* Legacy exported object */
-Resources = Resources || {};
-
-/** @constructor */
-Resources.BackgroundServiceModel = BackgroundServiceModel;
-
-/** @enum {symbol} */
-Resources.BackgroundServiceModel.Events = Events;
-
-/**
- * @typedef {!{isRecording: boolean, serviceName: !Protocol.BackgroundService.ServiceName}}
- */
-Resources.BackgroundServiceModel.RecordingState;

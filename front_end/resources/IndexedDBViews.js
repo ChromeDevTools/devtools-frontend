@@ -28,13 +28,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import {Database, DatabaseId, Entry, Index, IndexedDBModel, ObjectStore} from './IndexedDBModel.js';  // eslint-disable-line no-unused-vars
+
 /**
  * @unrestricted
  */
 export class IDBDatabaseView extends UI.VBox {
   /**
-   * @param {!Resources.IndexedDBModel} model
-   * @param {?Resources.IndexedDBModel.Database} database
+   * @param {!IndexedDBModel} model
+   * @param {?Database} database
    */
   constructor(model, database) {
     super();
@@ -74,7 +76,7 @@ export class IDBDatabaseView extends UI.VBox {
   }
 
   /**
-   * @param {!Resources.IndexedDBModel.Database} database
+   * @param {!Database} database
    */
   update(database) {
     this._database = database;
@@ -101,10 +103,10 @@ export class IDBDatabaseView extends UI.VBox {
  */
 export class IDBDataView extends UI.SimpleView {
   /**
-   * @param {!Resources.IndexedDBModel} model
-   * @param {!Resources.IndexedDBModel.DatabaseId} databaseId
-   * @param {!Resources.IndexedDBModel.ObjectStore} objectStore
-   * @param {?Resources.IndexedDBModel.Index} index
+   * @param {!IndexedDBModel} model
+   * @param {!DatabaseId} databaseId
+   * @param {!ObjectStore} objectStore
+   * @param {?Index} index
    * @param {function()} refreshObjectStoreCallback
    */
   constructor(model, databaseId, objectStore, index, refreshObjectStoreCallback) {
@@ -277,8 +279,8 @@ export class IDBDataView extends UI.SimpleView {
   }
 
   /**
-   * @param {!Resources.IndexedDBModel.ObjectStore} objectStore
-   * @param {?Resources.IndexedDBModel.Index} index
+   * @param {!ObjectStore} objectStore
+   * @param {?Index} index
    */
   update(objectStore, index) {
     this._objectStore = objectStore;
@@ -333,7 +335,7 @@ export class IDBDataView extends UI.SimpleView {
     this._lastSkipCount = skipCount;
 
     /**
-     * @param {!Array.<!Resources.IndexedDBModel.Entry>} entries
+     * @param {!Array.<!Entry>} entries
      * @param {boolean} hasMore
      * @this {IDBDataView}
      */
@@ -497,18 +499,3 @@ export class IDBDataGridNode extends DataGrid.DataGridNode {
     return cell;
   }
 }
-
-/* Legacy exported object */
-self.Resources = self.Resources || {};
-
-/* Legacy exported object */
-Resources = Resources || {};
-
-/** @constructor */
-Resources.IDBDatabaseView = IDBDatabaseView;
-
-/** @constructor */
-Resources.IDBDataView = IDBDataView;
-
-/** @constructor */
-Resources.IDBDataGridNode = IDBDataGridNode;

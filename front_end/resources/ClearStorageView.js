@@ -2,10 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {ApplicationCacheModel} from './ApplicationCacheModel.js';
+import {DatabaseModel} from './DatabaseModel.js';
+import {DOMStorageModel} from './DOMStorageModel.js';
+import {IndexedDBModel} from './IndexedDBModel.js';
+
 /**
  * @implements {SDK.TargetManager.Observer}
  */
-export default class ClearStorageView extends UI.ThrottledWidget {
+export class ClearStorageView extends UI.ThrottledWidget {
   constructor() {
     super(true, 1000);
     const types = Protocol.Storage.StorageType;
@@ -177,7 +182,7 @@ export default class ClearStorageView extends UI.ThrottledWidget {
 
     if (set.has(Protocol.Storage.StorageType.Indexeddb) || hasAll) {
       for (const target of SDK.targetManager.targets()) {
-        const indexedDBModel = target.model(Resources.IndexedDBModel);
+        const indexedDBModel = target.model(IndexedDBModel);
         if (indexedDBModel) {
           indexedDBModel.clearForOrigin(securityOrigin);
         }
@@ -185,14 +190,14 @@ export default class ClearStorageView extends UI.ThrottledWidget {
     }
 
     if (set.has(Protocol.Storage.StorageType.Local_storage) || hasAll) {
-      const storageModel = target.model(Resources.DOMStorageModel);
+      const storageModel = target.model(DOMStorageModel);
       if (storageModel) {
         storageModel.clearForOrigin(securityOrigin);
       }
     }
 
     if (set.has(Protocol.Storage.StorageType.Websql) || hasAll) {
-      const databaseModel = target.model(Resources.DatabaseModel);
+      const databaseModel = target.model(DatabaseModel);
       if (databaseModel) {
         databaseModel.disable();
         databaseModel.enable();
@@ -208,7 +213,7 @@ export default class ClearStorageView extends UI.ThrottledWidget {
     }
 
     if (set.has(Protocol.Storage.StorageType.Appcache) || hasAll) {
-      const appcacheModel = target.model(Resources.ApplicationCacheModel);
+      const appcacheModel = target.model(ApplicationCacheModel);
       if (appcacheModel) {
         appcacheModel.reset();
       }
@@ -342,17 +347,3 @@ export class ActionDelegate {
     return true;
   }
 }
-
-/* Legacy exported object */
-self.Resources = self.Resources || {};
-
-/* Legacy exported object */
-Resources = Resources || {};
-
-/** @constructor */
-Resources.ClearStorageView = ClearStorageView;
-
-Resources.ClearStorageView.AllStorageTypes = AllStorageTypes;
-
-/** @constructor */
-Resources.ClearStorageView.ActionDelegate = ActionDelegate;

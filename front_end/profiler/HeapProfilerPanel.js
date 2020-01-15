@@ -87,6 +87,8 @@ export class HeapProfilerPanel extends ProfilesPanel {
    */
   wasShown() {
     UI.context.setFlavor(HeapProfilerPanel, this);
+    // Record the memory tool load time.
+    Host.userMetrics.panelLoaded('heap_profiler', 'DevTools.Launch.HeapProfiler');
   }
 
   /**

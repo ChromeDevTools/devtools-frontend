@@ -4,14 +4,103 @@
 
 const {assert} = chai;
 
-import {Text} from '../../../../front_end/text_utils/Text.js';
+import {Text} from '/front_end/text_utils/Text.js';
+import {TextRange, SourceRange} from '/front_end/text_utils/TextRange.js';
 
 describe('Text', () => {
   it('can be instantiated successfully', () => {
     const testVal = 'Test Value';
     const text = new Text(testVal);
-    assert.equal(text.value(), testVal, 'value was not set or retrieved correctly');
+    assert.equal(text.value(), testVal);
   });
 
-  // TODO continue writing tests here or use another describe block
+  it('has a list of line ending offsets including the end of the string', () => {
+    const text = new Text('\nLine 2\nLine 3\n');
+    assert.deepEqual(text.lineEndings(), [0, 7, 14, 15]);
+  });
+
+  it('should count the number of line endings', () => {
+    const text = new Text('\nLine 2\nLine 3\n');
+    assert.equal(text.lineCount(), 4);
+  });
+
+  it('should return an offset when given a linenumber and column', () => {
+    const text = new Text('\nLine 2\nLine 3\n');
+    assert.equal(text.offsetFromPosition(2, 4), 12);
+  });
+
+  it('should return NaN if the linenumber is out of range when trying to retrieve the offset', () => {
+    const text = new Text('\nLine 2\nLine 3\n');
+    assert.isNaN(text.offsetFromPosition(10, 0));
+  });
+
+  it('should return an offset of zero when given a linenumber of 0 and column of 0 ', () => {
+    const text = new Text('\nLine 2\nLine 3\n');
+    assert.equal(text.offsetFromPosition(0, 0), 0);
+  });
+
+  it('should handle an out of range column number when returning the offset', () => {
+    const text = new Text('\nLine 2\nLine 3\n');
+    assert.equal(text.offsetFromPosition(2, 10), 18);
+  });
+
+  it('should return linenumber and column for an offset', () => {
+    const text = new Text('\nLine 2\nLine 3\n');
+    const {lineNumber, columnNumber} = text.positionFromOffset(10);
+    assert.equal(lineNumber, 2, 'linenumber should be 2');
+    assert.equal(columnNumber, 2, 'columnnumber should be 2');
+  });
+
+  it('should return a given line', () => {
+    const text = new Text('\nLine 2\nLine 3\n');
+    assert.equal(text.lineAt(2), 'Line 3');
+  });
+
+  it('should not include the carriage return when returning a given line', () => {
+    const text = new Text('\nLine 2\nLine 3\r\n');
+    assert.equal(text.lineAt(2), 'Line 3');
+  });
+
+  it('should be able to return line 0', () => {
+    const text = new Text('Line 1\nLine 2\nLine 3\n');
+    assert.equal(text.lineAt(0), 'Line 1');
+  });
+
+  it('should return a source range for a given text range', () => {
+    const text = new Text('\nLine 2\nLine 3\n');
+    const textRange = new TextRange(1, 0, 2, 6);
+    const sourceRange = text.toSourceRange(textRange);
+    assert.equal(sourceRange.offset, 1, 'offset was not set correctly');
+    assert.equal(sourceRange.length, 13, 'length was not set correctly');
+  });
+
+  it('should return a source range with an offset and length of NaN if the startLine is out of range', () => {
+    const text = new Text('\nLine 2\nLine 3\n');
+    const textRange = new TextRange(10, 0, 12, 6);
+    const sourceRange = text.toSourceRange(textRange);
+    assert.isNaN(sourceRange.offset, 'offset should be NaN');
+    assert.isNaN(sourceRange.length, 'length should be NaN');
+  });
+
+  it('should return a text range for a given source range', () => {
+    const text = new Text('\nLine 2\nLine 3\n');
+    const sourceRange = new SourceRange(1, 13);
+    const textRange = text.toTextRange(sourceRange);
+    assert.equal(textRange.startLine, 1, 'startLine was not set correctly');
+    assert.equal(textRange.startColumn, 0, 'startColumn was not set correctly');
+    assert.equal(textRange.endLine, 2, 'endLine was not set correctly');
+    assert.equal(textRange.endColumn, 6, 'endColumn was not set correctly');
+  });
+
+  it('should replace a given range with a new string', () => {
+    const text = new Text('\nLine 2\nLine 3\n');
+    const textRange = new TextRange(1, 0, 2, 0);
+    assert.equal(text.replaceRange(textRange, 'New Text'), '\nNew TextLine 3\n');
+  });
+
+  it('should extract a string given a range', () => {
+    const text = new Text('\nLine 2\nLine 3\n');
+    const textRange = new TextRange(1, 0, 2, 0);
+    assert.equal(text.extract(textRange), 'Line 2\n');
+  });
 });

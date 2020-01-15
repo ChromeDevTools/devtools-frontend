@@ -6,6 +6,7 @@
     "modules": [
         "text_utils.js",
         "Text.js",
+        "TextCursor.js",
         "TextUtils.js",
         "TextRange.js"
     ]

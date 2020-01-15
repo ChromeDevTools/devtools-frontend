@@ -145,6 +145,8 @@ export default class TimelinePanel extends UI.Panel {
    */
   wasShown() {
     UI.context.setFlavor(TimelinePanel, this);
+    // Record the performance tool load time.
+    Host.userMetrics.panelLoaded('timeline', 'DevTools.Launch.Timeline');
   }
 
   /**

@@ -5,6 +5,7 @@
     "scripts": [],
     "modules": [
         "timeline_model.js",
+        "timeline_model-legacy.js",
         "TimelineModelFilter.js",
         "TracingLayerTree.js",
         "TimelineModel.js",

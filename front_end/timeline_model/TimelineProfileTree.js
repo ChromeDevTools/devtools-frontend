@@ -2,6 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {TimelineJSProfileProcessor} from './TimelineJSProfile.js';
+import {RecordType, TimelineData, TimelineModelImpl} from './TimelineModel.js';
+import {TimelineModelFilter} from './TimelineModelFilter.js';  // eslint-disable-line no-unused-vars
+
 /**
  * @unrestricted
  */
@@ -118,7 +122,7 @@ export class TopDownNode extends Node {
     let depth = 0;
     let matchedDepth = 0;
     let currentDirectChild = null;
-    TimelineModel.TimelineModel.forEachEvent(
+    TimelineModelImpl.forEachEvent(
         root._events, onStartEvent, onEndEvent, instantEventCallback, startTime, endTime, root._filter);
 
     /**
@@ -231,7 +235,7 @@ export class TopDownNode extends Node {
 export class TopDownRootNode extends TopDownNode {
   /**
    * @param {!Array<!SDK.TracingModel.Event>} events
-   * @param {!Array<!TimelineModel.TimelineModelFilter>} filters
+   * @param {!Array<!TimelineModelFilter>} filters
    * @param {number} startTime
    * @param {number} endTime
    * @param {boolean=} doNotAggregate
@@ -287,7 +291,7 @@ export class TopDownRootNode extends TopDownNode {
 export class BottomUpRootNode extends Node {
   /**
    * @param {!Array<!SDK.TracingModel.Event>} events
-   * @param {!TimelineModel.TimelineModelFilter} textFilter
+   * @param {!TimelineModelFilter} textFilter
    * @param {!Array<!TimelineModel.TimelineModelFilter>} filters
    * @param {number} startTime
    * @param {number} endTime
@@ -353,8 +357,7 @@ export class BottomUpRootNode extends Node {
     const firstNodeStack = [];
     /** @type {!Map<string, number>} */
     const totalTimeById = new Map();
-    TimelineModel.TimelineModel.forEachEvent(
-        this._events, onStartEvent, onEndEvent, undefined, startTime, endTime, this._filter);
+    TimelineModelImpl.forEachEvent(this._events, onStartEvent, onEndEvent, undefined, startTime, endTime, this._filter);
 
     /**
      * @param {!SDK.TracingModel.Event} e
@@ -514,7 +517,7 @@ export class BottomUpNode extends Node {
     const endTime = this._root._endTime;
     let lastTimeMarker = startTime;
     const self = this;
-    TimelineModel.TimelineModel.forEachEvent(
+    TimelineModelImpl.forEachEvent(
         this._root._events, onStartEvent, onEndEvent, undefined, startTime, endTime, this._root._filter);
 
     /**
@@ -606,10 +609,10 @@ export function eventURL(event) {
  * @return {?Protocol.Runtime.CallFrame}
  */
 export function eventStackFrame(event) {
-  if (event.name === TimelineModel.TimelineModel.RecordType.JSFrame) {
+  if (event.name === RecordType.JSFrame) {
     return /** @type {?Protocol.Runtime.CallFrame} */ (event.args['data'] || null);
   }
-  return TimelineModel.TimelineData.forEvent(event).topFrame();
+  return TimelineData.forEvent(event).topFrame();
 }
 
 /**
@@ -617,52 +620,17 @@ export function eventStackFrame(event) {
  * @return {string}
  */
 export function _eventId(event) {
-  if (event.name === TimelineModel.TimelineModel.RecordType.TimeStamp) {
+  if (event.name === RecordType.TimeStamp) {
     return `${event.name}:${event.args.data.message}`;
   }
-  if (event.name !== TimelineModel.TimelineModel.RecordType.JSFrame) {
+  if (event.name !== RecordType.JSFrame) {
     return event.name;
   }
   const frame = event.args['data'];
   const location = frame['scriptId'] || frame['url'] || '';
   const functionName = frame['functionName'];
-  const name = TimelineModel.TimelineJSProfileProcessor.isNativeRuntimeFrame(frame) ?
-      TimelineModel.TimelineJSProfileProcessor.nativeGroup(functionName) || functionName :
+  const name = TimelineJSProfileProcessor.isNativeRuntimeFrame(frame) ?
+      TimelineJSProfileProcessor.nativeGroup(functionName) || functionName :
       `${functionName}:${frame['lineNumber']}:${frame['columnNumber']}`;
   return `f:${name}@${location}`;
 }
-
-/* Legacy exported object */
-self.TimelineModel = self.TimelineModel || {};
-
-/* Legacy exported object */
-TimelineModel = TimelineModel || {};
-
-TimelineModel.TimelineProfileTree = {};
-
-/** @constructor */
-TimelineModel.TimelineProfileTree.Node = Node;
-
-/** @constructor */
-TimelineModel.TimelineProfileTree.TopDownNode = TopDownNode;
-
-/** @constructor */
-TimelineModel.TimelineProfileTree.TopDownRootNode = TopDownRootNode;
-
-/** @constructor */
-TimelineModel.TimelineProfileTree.BottomUpRootNode = BottomUpRootNode;
-
-/** @constructor */
-TimelineModel.TimelineProfileTree.GroupNode = GroupNode;
-
-/** @constructor */
-TimelineModel.TimelineProfileTree.BottomUpNode = BottomUpNode;
-
-TimelineModel.TimelineProfileTree.eventURL = eventURL;
-TimelineModel.TimelineProfileTree.eventStackFrame = eventStackFrame;
-TimelineModel.TimelineProfileTree._eventId = _eventId;
-
-/**
- * @typedef {Map<string|symbol, !Node>}
- */
-TimelineModel.TimelineProfileTree.ChildrenCache;

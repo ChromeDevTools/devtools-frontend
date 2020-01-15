@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {LayerPaintEvent} from './TimelineFrameModel.js';  // eslint-disable-line no-unused-vars
+
 /**
  * @unrestricted
  */
@@ -19,7 +21,7 @@ export class TracingLayerTree extends SDK.LayerTreeBase {
   /**
    * @param {?TimelineModel.TracingLayerPayload} root
    * @param {?Array<!TimelineModel.TracingLayerPayload>} layers
-   * @param {!Array<!TimelineModel.LayerPaintEvent>} paints
+   * @param {!Array<!LayerPaintEvent>} paints
    * @return {!Promise}
    */
   async setLayers(root, layers, paints) {
@@ -84,7 +86,7 @@ export class TracingLayerTree extends SDK.LayerTreeBase {
   }
 
   /**
-   * @param {!Array<!TimelineModel.LayerPaintEvent>} paints
+   * @param {!Array<!LayerPaintEvent>} paints
    */
   _setPaints(paints) {
     for (let i = 0; i < paints.length; ++i) {
@@ -454,7 +456,7 @@ export class TracingLayer {
   }
 
   /**
-   * @param {!TimelineModel.LayerPaintEvent} paint
+   * @param {!LayerPaintEvent} paint
    */
   _addPaintEvent(paint) {
     this._paints.push(paint);
@@ -476,40 +478,3 @@ export class TracingLayer {
     return this._drawsContent;
   }
 }
-
-/* Legacy exported object */
-self.TimelineModel = self.TimelineModel || {};
-
-/* Legacy exported object */
-TimelineModel = TimelineModel || {};
-
-/** @constructor */
-TimelineModel.TracingLayerTree = TracingLayerTree;
-
-/** @constructor */
-TimelineModel.TracingLayer = TracingLayer;
-
-/** @typedef {!{
-        bounds: {height: number, width: number},
-        children: Array.<!TimelineModel.TracingLayerPayload>,
-        layer_id: number,
-        position: Array.<number>,
-        scroll_offset: Array.<number>,
-        layer_quad: Array.<number>,
-        draws_content: number,
-        gpu_memory_usage: number,
-        transform: Array.<number>,
-        owner_node: number,
-        compositing_reasons: Array.<string>
-    }}
-*/
-TimelineModel.TracingLayerPayload;
-
-/** @typedef {!{
-        id: string,
-        layer_id: string,
-        gpu_memory_usage: number,
-        content_rect: !Array.<number>
-    }}
-*/
-TimelineModel.TracingLayerTile;

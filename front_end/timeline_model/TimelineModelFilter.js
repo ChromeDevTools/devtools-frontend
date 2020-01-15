@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {RecordType, TimelineModelImpl} from './TimelineModel.js';
+
 export class TimelineModelFilter {
   /**
    * @param {!SDK.TracingModel.Event} event
@@ -31,19 +33,19 @@ export class TimelineVisibleEventsFilter extends TimelineModelFilter {
   }
 
   /**
-   * @return {!TimelineModel.TimelineModel.RecordType}
+   * @return {!RecordType}
    */
   static _eventType(event) {
-    if (event.hasCategory(TimelineModel.TimelineModel.Category.Console)) {
-      return TimelineModel.TimelineModel.RecordType.ConsoleTime;
+    if (event.hasCategory(TimelineModelImpl.Category.Console)) {
+      return RecordType.ConsoleTime;
     }
-    if (event.hasCategory(TimelineModel.TimelineModel.Category.UserTiming)) {
-      return TimelineModel.TimelineModel.RecordType.UserTiming;
+    if (event.hasCategory(TimelineModelImpl.Category.UserTiming)) {
+      return RecordType.UserTiming;
     }
-    if (event.hasCategory(TimelineModel.TimelineModel.Category.LatencyInfo)) {
-      return TimelineModel.TimelineModel.RecordType.LatencyInfo;
+    if (event.hasCategory(TimelineModelImpl.Category.LatencyInfo)) {
+      return RecordType.LatencyInfo;
     }
-    return /** @type !TimelineModel.TimelineModel.RecordType */ (event.name);
+    return /** @type !RecordType */ (event.name);
   }
 }
 
@@ -84,21 +86,3 @@ export class ExclusiveNameFilter extends TimelineModelFilter {
     return !this._excludeNames.has(event.name);
   }
 }
-
-/* Legacy exported object */
-self.TimelineModel = self.TimelineModel || {};
-
-/* Legacy exported object */
-TimelineModel = TimelineModel || {};
-
-/** @constructor */
-TimelineModel.TimelineModelFilter = TimelineModelFilter;
-
-/** @constructor */
-TimelineModel.TimelineVisibleEventsFilter = TimelineVisibleEventsFilter;
-
-/** @constructor */
-TimelineModel.TimelineInvisibleEventsFilter = TimelineInvisibleEventsFilter;
-
-/** @constructor */
-TimelineModel.ExclusiveNameFilter = ExclusiveNameFilter;

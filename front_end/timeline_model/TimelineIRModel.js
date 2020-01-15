@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {RecordType} from './TimelineModel.js';
+
 /**
  * @unrestricted
  */
@@ -291,7 +293,7 @@ export const InputEvents = {
   ContextMenu: 'ContextMenu',
   FlingCancel: 'GestureFlingCancel',
   FlingStart: 'GestureFlingStart',
-  ImplSideFling: TimelineModel.TimelineModel.RecordType.ImplSideFling,
+  ImplSideFling: RecordType.ImplSideFling,
   KeyDown: 'KeyDown',
   KeyDownRaw: 'RawKeyDown',
   KeyUp: 'KeyUp',
@@ -323,18 +325,3 @@ TimelineIRModel._mergeThresholdsMs = {
 };
 
 TimelineIRModel._eventIRPhase = Symbol('eventIRPhase');
-
-/* Legacy exported object */
-self.TimelineModel = self.TimelineModel || {};
-
-/* Legacy exported object */
-TimelineModel = TimelineModel || {};
-
-/** @constructor */
-TimelineModel.TimelineIRModel = TimelineIRModel;
-
-/** @enum {string} */
-TimelineModel.TimelineIRModel.Phases = Phases;
-
-/** @enum {string} */
-TimelineModel.TimelineIRModel.InputEvents = InputEvents;

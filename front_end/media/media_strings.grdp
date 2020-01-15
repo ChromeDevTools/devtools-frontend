@@ -6,6 +6,9 @@
   <message name="IDS_DEVTOOLS_62933a2951ef01f4eafd9bdf4d3cd2f0" desc="Media player">
     media
   </message>
+  <message name="IDS_DEVTOOLS_7020795fd5ab35cbfb085a79d323ba50" desc="The column header for event names.">
+    Event Name
+  </message>
   <message name="IDS_DEVTOOLS_83341e272df7a4f2982e7b96b7f26a4a" desc="Button text for viewing properties.">
     Player properties
   </message>

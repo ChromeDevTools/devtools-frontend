@@ -9,7 +9,7 @@ Media.PlayerDetailView = class extends UI.TabbedPane {
   constructor() {
     super();
 
-    const eventView = new Media.MediaPlayerEventTableRenderer();
+    const eventView = new Media.PlayerEventsView();
     const propertyView = new Media.PlayerPropertiesView();
 
     // maps handler type to a list of panels that support rendering changes.

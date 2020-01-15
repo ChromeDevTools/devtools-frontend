@@ -182,7 +182,6 @@ all_devtools_files = [
   "front_end/media/EventDisplayTable.js",
   "front_end/media/MainView.js",
   "front_end/media/MediaModel.js",
-  "front_end/media/MediaTable.js",
   "front_end/media/mediaView.css",
   "front_end/media/module.json",
   "front_end/media/PlayerDetailView.js",

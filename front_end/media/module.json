@@ -16,12 +16,12 @@
       "components",
       "sdk",
       "ui",
-      "data_grid"
+      "data_grid",
+      "source_frame"
   ],
   "scripts": [
       "EventDisplayTable.js",
       "MainView.js",
-      "MediaTable.js",
       "PlayerDetailView.js",
       "PlayerListView.js",
       "PlayerPropertiesView.js",

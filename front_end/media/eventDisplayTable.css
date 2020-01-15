@@ -12,3 +12,17 @@
 .event-display-table-contents-table-container>.widget>.data-grid {
   height: 100%;
 }
+
+.media-event-node-json-renderer {
+  background: none;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  border: none;
+  color: var(--selection-fg-color);
+  font-size: 12px;
+}
+
+.data-grid .event-display-table-basic-text-table-entry {
+  line-height: 26px;
+}

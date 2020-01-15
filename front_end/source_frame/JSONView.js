@@ -33,12 +33,14 @@
 export class JSONView extends UI.VBox {
   /**
    * @param {!ParsedJSON} parsedJSON
+   * @param {boolean=} startCollapsed
    */
-  constructor(parsedJSON) {
+  constructor(parsedJSON, startCollapsed) {
     super();
     this._initialized = false;
     this.registerRequiredCSS('source_frame/jsonView.css');
     this._parsedJSON = parsedJSON;
+    this._startCollapsed = !!startCollapsed;
     this.element.classList.add('json-view');
 
     /** @type {?UI.SearchableView} */
@@ -178,7 +180,9 @@ export class JSONView extends UI.VBox {
         obj, title, undefined, undefined, undefined, undefined, true /* showOverflow */);
     this._treeOutline.enableContextMenu();
     this._treeOutline.setEditable(false);
-    this._treeOutline.expand();
+    if (!this._startCollapsed) {
+      this._treeOutline.expand();
+    }
     this.element.appendChild(this._treeOutline.element);
     this._treeOutline.firstChild().select(true /* omitFocus */, false /* selectedByUser */);
   }

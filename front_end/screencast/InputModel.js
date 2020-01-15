@@ -116,14 +116,3 @@ export class InputModel extends SDK.SDKModel {
 }
 
 SDK.SDKModel.register(InputModel, SDK.Target.Capability.Input, false);
-
-/* Legacy exported object */
-self.Screencast = self.Screencast || {};
-
-/* Legacy exported object */
-Screencast = Screencast || {};
-
-/**
- * @constructor
- */
-Screencast.InputModel = InputModel;

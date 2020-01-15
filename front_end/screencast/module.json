@@ -25,6 +25,7 @@
     "scripts": [],
     "modules": [
         "screencast.js",
+        "screencast-legacy.js",
         "InputModel.js",
         "ScreencastApp.js",
         "ScreencastView.js"

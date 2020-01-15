@@ -7,6 +7,7 @@
   "scripts": [],
   "modules": [
     "workspace_diff.js",
+    "workspace_diff-legacy.js",
     "WorkspaceDiff.js"
   ]
 }

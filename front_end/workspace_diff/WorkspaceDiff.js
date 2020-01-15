@@ -343,25 +343,3 @@ export class DiffUILocation {
 }
 
 export const UpdateTimeout = 200;
-
-/* Legacy exported object */
-self.WorkspaceDiff = self.WorkspaceDiff || {};
-
-/* Legacy exported object */
-WorkspaceDiff = WorkspaceDiff || {};
-
-/** @constructor */
-WorkspaceDiff.WorkspaceDiff = WorkspaceDiffImpl;
-
-/** @constructor */
-WorkspaceDiff.WorkspaceDiff.UISourceCodeDiff = UISourceCodeDiff;
-
-WorkspaceDiff.WorkspaceDiff.UpdateTimeout = UpdateTimeout;
-
-/** @enum {symbol} */
-WorkspaceDiff.Events = Events;
-
-WorkspaceDiff.workspaceDiff = workspaceDiff;
-
-/** @constructor */
-WorkspaceDiff.DiffUILocation = DiffUILocation;

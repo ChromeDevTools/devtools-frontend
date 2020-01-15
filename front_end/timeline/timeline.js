@@ -2,27 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import './CountersGraph.js';
-import './ExtensionTracingSession.js';
-import './PerformanceModel.js';
-import './TimelineController.js';
-import './TimelineDetailsView.js';
-import './TimelineLoader.js';
-import './TimelineEventOverview.js';
-import './TimelineFilters.js';
-import './TimelineFlameChartDataProvider.js';
-import './TimelineFlameChartNetworkDataProvider.js';
-import './TimelineFlameChartView.js';
-import './TimelineHistoryManager.js';
-import './TimelineTreeView.js';
-import './EventsTimelineTreeView.js';
-import './TimelineUIUtils.js';
-import './TimelineLayersView.js';
-import './TimelinePaintProfilerView.js';
-import './TimelinePanel.js';
-import './UIDevtoolsUtils.js';
-import './UIDevtoolsController.js';
-
 import * as CountersGraph from './CountersGraph.js';
 import * as EventsTimelineTreeView from './EventsTimelineTreeView.js';
 import * as ExtensionTracingSession from './ExtensionTracingSession.js';

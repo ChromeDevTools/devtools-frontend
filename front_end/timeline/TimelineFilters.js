@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {TimelineUIUtils} from './TimelineUIUtils.js';
 
 export class IsLong extends TimelineModel.TimelineModelFilter {
   constructor() {
@@ -38,7 +39,7 @@ export class Category extends TimelineModel.TimelineModelFilter {
    * @return {boolean}
    */
   accept(event) {
-    return !Timeline.TimelineUIUtils.eventStyle(event).category.hidden;
+    return !TimelineUIUtils.eventStyle(event).category.hidden;
   }
 }
 
@@ -73,23 +74,6 @@ export class TimelineRegExp extends TimelineModel.TimelineModelFilter {
    * @return {boolean}
    */
   accept(event) {
-    return !this._regExp || Timeline.TimelineUIUtils.testContentMatching(event, this._regExp);
+    return !this._regExp || TimelineUIUtils.testContentMatching(event, this._regExp);
   }
 }
-
-/* Legacy exported object */
-self.Timeline = self.Timeline || {};
-
-/* Legacy exported object */
-Timeline = Timeline || {};
-
-Timeline.TimelineFilters = {};
-
-/** @constructor */
-Timeline.TimelineFilters.IsLong = IsLong;
-
-/** @constructor */
-Timeline.TimelineFilters.Category = Category;
-
-/** @constructor */
-Timeline.TimelineFilters.RegExp = TimelineRegExp;

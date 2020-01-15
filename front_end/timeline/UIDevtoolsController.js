@@ -28,24 +28,19 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import {TimelineController} from './TimelineController.js';
+import {TimelineUIUtils} from './TimelineUIUtils.js';
+import {UIDevtoolsUtils} from './UIDevtoolsUtils.js';
+
 /**
- * @extends {Timeline.TimelineController}
+ * @extends {TimelineController}
  * @unrestricted
  */
-export default class UIDevtoolsController extends Timeline.TimelineController {
+export class UIDevtoolsController extends TimelineController {
   constructor(target, client) {
     super(target, client);
-    Timeline.TimelineUIUtils.setEventStylesMap(Timeline.UIDevtoolsUtils.categorizeEvents());
-    Timeline.TimelineUIUtils.setCategories(Timeline.UIDevtoolsUtils.categories());
-    Timeline.TimelineUIUtils.setTimelineMainEventCategories(Timeline.UIDevtoolsUtils.getMainCategoriesList());
+    TimelineUIUtils.setEventStylesMap(UIDevtoolsUtils.categorizeEvents());
+    TimelineUIUtils.setCategories(UIDevtoolsUtils.categories());
+    TimelineUIUtils.setTimelineMainEventCategories(UIDevtoolsUtils.getMainCategoriesList());
   }
 }
-
-/* Legacy exported object */
-self.Timeline = self.Timeline || {};
-
-/* Legacy exported object */
-Timeline = Timeline || {};
-
-/** @constructor */
-Timeline.UIDevtoolsController = UIDevtoolsController;

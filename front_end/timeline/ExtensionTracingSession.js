@@ -2,14 +2,17 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {PerformanceModel} from './PerformanceModel.js';      // eslint-disable-line no-unused-vars
+import {Client, TimelineLoader} from './TimelineLoader.js';  // eslint-disable-line no-unused-vars
+
 /**
  * @implements {Extensions.TracingSession}
- * @implements {Timeline.TimelineLoader.Client}
+ * @implements {Client}
  */
-export default class ExtensionTracingSession {
+export class ExtensionTracingSession {
   /**
    * @param {!Extensions.ExtensionTraceProvider} provider
-   * @param {!Timeline.PerformanceModel} performanceModel
+   * @param {!PerformanceModel} performanceModel
    */
   constructor(provider, performanceModel) {
     this._provider = provider;
@@ -60,7 +63,7 @@ export default class ExtensionTracingSession {
       return;
     }
     this._timeOffset = timeOffsetMicroseconds;
-    Timeline.TimelineLoader.loadFromURL(url, this);
+    TimelineLoader.loadFromURL(url, this);
   }
 
   start() {
@@ -73,12 +76,3 @@ export default class ExtensionTracingSession {
     return this._completionPromise;
   }
 }
-
-/* Legacy exported object */
-self.Timeline = self.Timeline || {};
-
-/* Legacy exported object */
-Timeline = Timeline || {};
-
-/** @constructor */
-Timeline.ExtensionTracingSession = ExtensionTracingSession;

@@ -232,6 +232,7 @@
     "scripts": [],
     "modules": [
         "timeline.js",
+        "timeline-legacy.js",
         "CountersGraph.js",
         "ExtensionTracingSession.js",
         "PerformanceModel.js",

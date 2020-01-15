@@ -29,10 +29,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import {TimelinePanel, TimelineSelection} from './TimelinePanel.js';
+
 /**
  * @unrestricted
  */
-export default class TimelineUIUtils {
+export class TimelineUIUtils {
   /**
    * @return {!Object.<string, !TimelineRecordStyle>}
    */
@@ -785,7 +787,7 @@ export default class TimelineUIUtils {
     let relatedNodesMap = null;
     if (maybeTarget) {
       const target = /** @type {!SDK.Target} */ (maybeTarget);
-      if (typeof event[_previewElementSymbol] === 'undefined') {
+      if (typeof event[previewElementSymbol] === 'undefined') {
         let previewElement = null;
         const url = TimelineModel.TimelineData.forEvent(event).url;
         if (url) {
@@ -794,7 +796,7 @@ export default class TimelineUIUtils {
         } else if (TimelineModel.TimelineData.forEvent(event).picture) {
           previewElement = await TimelineUIUtils.buildPicturePreviewContent(event, target);
         }
-        event[_previewElementSymbol] = previewElement;
+        event[previewElementSymbol] = previewElement;
       }
 
       /** @type {!Set<number>} */
@@ -1077,9 +1079,9 @@ export default class TimelineUIUtils {
       contentHelper.appendElementRow(relatedNodeLabel || ls`Related Node`, nodeSpan);
     }
 
-    if (event[_previewElementSymbol]) {
+    if (event[previewElementSymbol]) {
       contentHelper.addSection(ls`Preview`);
-      contentHelper.appendElementRow('', event[_previewElementSymbol]);
+      contentHelper.appendElementRow('', event[previewElementSymbol]);
     }
 
     if (initiator || timelineData.stackTraceForSelfOrInitiator() ||
@@ -1122,7 +1124,7 @@ export default class TimelineUIUtils {
      */
     function aggregatedStatsAtTime(time) {
       const stats = {};
-      const cache = events[_categoryBreakdownCacheSymbol];
+      const cache = events[categoryBreakdownCacheSymbol];
       for (const category in cache) {
         const categoryCache = cache[category];
         const index = categoryCache.time.upperBound(time);
@@ -1160,7 +1162,7 @@ export default class TimelineUIUtils {
      * @param {!Array<!SDK.TracingModel.Event>} events
      */
     function buildRangeStatsCacheIfNeeded(events) {
-      if (events[_categoryBreakdownCacheSymbol]) {
+      if (events[categoryBreakdownCacheSymbol]) {
         return;
       }
 
@@ -1237,7 +1239,7 @@ export default class TimelineUIUtils {
       }
 
       const obj = /** @type {!Object} */ (events);
-      obj[_categoryBreakdownCacheSymbol] = aggregatedStats;
+      obj[categoryBreakdownCacheSymbol] = aggregatedStats;
     }
   }
 
@@ -1399,13 +1401,13 @@ export default class TimelineUIUtils {
       link.tabIndex = 0;
       link.textContent = ls`Reveal`;
       link.addEventListener('click', () => {
-        Timeline.TimelinePanel.instance().select(
-            Timeline.TimelineSelection.fromTraceEvent(/** @type {!SDK.TracingModel.Event} */ (initiator)));
+        TimelinePanel.instance().select(
+            TimelineSelection.fromTraceEvent(/** @type {!SDK.TracingModel.Event} */ (initiator)));
       });
       link.addEventListener('keydown', event => {
         if (isEnterKey(event)) {
-          Timeline.TimelinePanel.instance().select(
-              Timeline.TimelineSelection.fromTraceEvent(/** @type {!SDK.TracingModel.Event} */ (initiator)));
+          TimelinePanel.instance().select(
+              TimelineSelection.fromTraceEvent(/** @type {!SDK.TracingModel.Event} */ (initiator)));
           event.consume(true);
         }
       });
@@ -1597,11 +1599,10 @@ export default class TimelineUIUtils {
     UI.ARIAUtils.markAsLink(container);
     container.tabIndex = 0;
     container.addEventListener(
-        'click', () => Timeline.TimelinePanel.instance().select(Timeline.TimelineSelection.fromTraceEvent(event)),
-        false);
+        'click', () => TimelinePanel.instance().select(TimelineSelection.fromTraceEvent(event)), false);
     container.addEventListener('keydown', keyEvent => {
       if (isEnterKey(keyEvent)) {
-        Timeline.TimelinePanel.instance().select(Timeline.TimelineSelection.fromTraceEvent(event));
+        TimelinePanel.instance().select(TimelineSelection.fromTraceEvent(event));
         keyEvent.consume(true);
       }
     });
@@ -2068,7 +2069,7 @@ export const NetworkCategory = {
   Other: Symbol('Other')
 };
 
-export const _aggregatedStatsKey = Symbol('aggregatedStats');
+export const aggregatedStatsKey = Symbol('aggregatedStats');
 
 /**
  * @unrestricted
@@ -2228,7 +2229,7 @@ export class InvalidationsGroupElement extends UI.TreeElement {
   }
 }
 
-export const _previewElementSymbol = Symbol('previewElement');
+export const previewElementSymbol = Symbol('previewElement');
 
 /**
  * @unrestricted
@@ -2522,52 +2523,4 @@ export class TimelineDetailsContentHelper {
   }
 }
 
-export const _categoryBreakdownCacheSymbol = Symbol('categoryBreakdownCache');
-
-/* Legacy exported object */
-self.Timeline = self.Timeline || {};
-
-/* Legacy exported object */
-Timeline = Timeline || {};
-
-/** @constructor */
-Timeline.TimelineUIUtils = TimelineUIUtils;
-
-/** @enum {symbol} */
-Timeline.TimelineUIUtils.NetworkCategory = NetworkCategory;
-
-Timeline.TimelineUIUtils._aggregatedStatsKey = _aggregatedStatsKey;
-
-/** @constructor */
-Timeline.TimelineUIUtils.InvalidationsGroupElement = InvalidationsGroupElement;
-
-Timeline.TimelineUIUtils._previewElementSymbol = _previewElementSymbol;
-
-/** @constructor */
-Timeline.TimelineUIUtils.EventDispatchTypeDescriptor = EventDispatchTypeDescriptor;
-
-Timeline.TimelineUIUtils._categoryBreakdownCacheSymbol = _categoryBreakdownCacheSymbol;
-
-/** @constructor */
-Timeline.TimelineRecordStyle = TimelineRecordStyle;
-
-/** @constructor */
-Timeline.TimelineCategory = TimelineCategory;
-
-/** @constructor */
-Timeline.TimelinePopupContentHelper = TimelinePopupContentHelper;
-
-/** @constructor */
-Timeline.TimelineDetailsContentHelper = TimelineDetailsContentHelper;
-
-/**
- * @typedef {!{
-  *     title: string,
-  *     color: string,
-  *     lineWidth: number,
-  *     dashStyle: !Array.<number>,
-  *     tall: boolean,
-  *     lowPriority: boolean
-  * }}
-  */
-Timeline.TimelineMarkerStyle;
+export const categoryBreakdownCacheSymbol = Symbol('categoryBreakdownCache');

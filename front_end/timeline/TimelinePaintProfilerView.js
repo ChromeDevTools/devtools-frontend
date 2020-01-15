@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-export default class TimelinePaintProfilerView extends UI.SplitWidget {
+export class TimelinePaintProfilerView extends UI.SplitWidget {
   /**
    * @param {!TimelineModel.TimelineFrameModel} frameModel
    */
@@ -225,15 +225,3 @@ export class TimelinePaintImageView extends UI.Widget {
     this._maskElement.classList.toggle('hidden', !maskRectangle);
   }
 }
-
-/* Legacy exported object */
-self.Timeline = self.Timeline || {};
-
-/* Legacy exported object */
-Timeline = Timeline || {};
-
-/** @constructor */
-Timeline.TimelinePaintProfilerView = TimelinePaintProfilerView;
-
-/** @constructor */
-Timeline.TimelinePaintImageView = TimelinePaintImageView;

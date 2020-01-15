@@ -2,9 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-export default class TimelineHistoryManager {
+import {PerformanceModel} from './PerformanceModel.js';  // eslint-disable-line no-unused-vars
+import {TimelineEventOverviewCPUActivity, TimelineEventOverviewFrames, TimelineEventOverviewNetwork, TimelineEventOverviewResponsiveness,} from './TimelineEventOverview.js';
+
+export class TimelineHistoryManager {
   constructor() {
-    /** @type {!Array<!Timeline.PerformanceModel>} */
+    /** @type {!Array<!PerformanceModel>} */
     this._recordings = [];
     this._action = /** @type {!UI.Action} */ (UI.actionRegistry.action('timeline.show-history'));
     /** @type {!Map<string, number>} */
@@ -15,19 +18,19 @@ export default class TimelineHistoryManager {
     this.clear();
 
     this._allOverviews = [
-      {constructor: Timeline.TimelineEventOverviewResponsiveness, height: 3},
-      {constructor: Timeline.TimelineEventOverviewFrames, height: 16},
-      {constructor: Timeline.TimelineEventOverviewCPUActivity, height: 20},
-      {constructor: Timeline.TimelineEventOverviewNetwork, height: 8}
+      {constructor: TimelineEventOverviewResponsiveness, height: 3},
+      {constructor: TimelineEventOverviewFrames, height: 16},
+      {constructor: TimelineEventOverviewCPUActivity, height: 20},
+      {constructor: TimelineEventOverviewNetwork, height: 8}
     ];
     this._totalHeight = this._allOverviews.reduce((acc, entry) => acc + entry.height, 0);
     this._enabled = true;
-    /** @type {?Timeline.PerformanceModel} */
+    /** @type {?PerformanceModel} */
     this._lastActiveModel = null;
   }
 
   /**
-   * @param {!Timeline.PerformanceModel} performanceModel
+   * @param {!PerformanceModel} performanceModel
    */
   addRecording(performanceModel) {
     this._lastActiveModel = performanceModel;
@@ -38,7 +41,7 @@ export default class TimelineHistoryManager {
     const buttonTitle = this._action.title();
     UI.ARIAUtils.setAccessibleName(this._button.element, ls`Current Session: ${modelTitle}. ${buttonTitle}`);
     this._updateState();
-    if (this._recordings.length <= _maxRecordings) {
+    if (this._recordings.length <= maxRecordings) {
       return;
     }
     const lruModel = this._recordings.reduce((a, b) => lastUsedTime(a) < lastUsedTime(b) ? a : b);
@@ -46,7 +49,7 @@ export default class TimelineHistoryManager {
     lruModel.dispose();
 
     /**
-     * @param {!Timeline.PerformanceModel} model
+     * @param {!PerformanceModel} model
      * @return {number}
      */
     function lastUsedTime(model) {
@@ -76,7 +79,7 @@ export default class TimelineHistoryManager {
   }
 
   /**
-   * @return {!Promise<?Timeline.PerformanceModel>}
+   * @return {!Promise<?PerformanceModel>}
    */
   async showHistoryDropDown() {
     if (this._recordings.length < 2 || !this._enabled) {
@@ -85,7 +88,7 @@ export default class TimelineHistoryManager {
 
     // DropDown.show() function finishes when the dropdown menu is closed via selection or losing focus
     const model = await DropDown.show(
-        this._recordings, /** @type {!Timeline.PerformanceModel} */ (this._lastActiveModel), this._button.element);
+        this._recordings, /** @type {!PerformanceModel} */ (this._lastActiveModel), this._button.element);
     if (!model) {
       return null;
     }
@@ -104,7 +107,7 @@ export default class TimelineHistoryManager {
 
   /**
    * @param {number} direction
-   * @return {?Timeline.PerformanceModel}
+   * @return {?PerformanceModel}
    */
   navigate(direction) {
     if (!this._enabled || !this._lastActiveModel) {
@@ -121,7 +124,7 @@ export default class TimelineHistoryManager {
   }
 
   /**
-   * @param {!Timeline.PerformanceModel} model
+   * @param {!PerformanceModel} model
    */
   _setCurrentModel(model) {
     TimelineHistoryManager._dataForModel(model).lastUsed = Date.now();
@@ -137,7 +140,7 @@ export default class TimelineHistoryManager {
   }
 
   /**
-   * @param {!Timeline.PerformanceModel} performanceModel
+   * @param {!PerformanceModel} performanceModel
    * @return {!Element}
    */
   static _previewElement(performanceModel) {
@@ -165,7 +168,7 @@ export default class TimelineHistoryManager {
   }
 
   /**
-   * @param {!Timeline.PerformanceModel} performanceModel
+   * @param {!PerformanceModel} performanceModel
    * @return {string}
    */
   _title(performanceModel) {
@@ -173,7 +176,7 @@ export default class TimelineHistoryManager {
   }
 
   /**
-   * @param {!Timeline.PerformanceModel} performanceModel
+   * @param {!PerformanceModel} performanceModel
    */
   _buildPreview(performanceModel) {
     const parsedURL = Common.ParsedURL.fromString(performanceModel.timelineModel().pageURL());
@@ -185,7 +188,7 @@ export default class TimelineHistoryManager {
 
     const preview = createElementWithClass('div', 'preview-item vbox');
     const data = {preview: preview, title: title, time: timeElement, lastUsed: Date.now()};
-    performanceModel[_previewDataSymbol] = data;
+    performanceModel[previewDataSymbol] = data;
 
     preview.appendChild(this._buildTextDetails(performanceModel, title, timeElement));
     const screenshotAndOverview = preview.createChild('div', 'hbox');
@@ -195,7 +198,7 @@ export default class TimelineHistoryManager {
   }
 
   /**
-   * @param {!Timeline.PerformanceModel} performanceModel
+   * @param {!PerformanceModel} performanceModel
    * @param {string} title
    * @param {!Element} timeElement
    * @return {!Element}
@@ -214,7 +217,7 @@ export default class TimelineHistoryManager {
   }
 
   /**
-   * @param {!Timeline.PerformanceModel} performanceModel
+   * @param {!PerformanceModel} performanceModel
    * @return {!Element}
    */
   _buildScreenshotThumbnail(performanceModel) {
@@ -234,23 +237,23 @@ export default class TimelineHistoryManager {
   }
 
   /**
-   * @param {!Timeline.PerformanceModel} performanceModel
+   * @param {!PerformanceModel} performanceModel
    * @return {!Element}
    */
   _buildOverview(performanceModel) {
     const container = createElement('div');
 
-    container.style.width = _previewWidth + 'px';
+    container.style.width = previewWidth + 'px';
     container.style.height = this._totalHeight + 'px';
     const canvas = container.createChild('canvas');
-    canvas.width = window.devicePixelRatio * _previewWidth;
+    canvas.width = window.devicePixelRatio * previewWidth;
     canvas.height = window.devicePixelRatio * this._totalHeight;
 
     const ctx = canvas.getContext('2d');
     let yOffset = 0;
     for (const overview of this._allOverviews) {
       const timelineOverview = new overview.constructor();
-      timelineOverview.setCanvasSize(_previewWidth, overview.height);
+      timelineOverview.setCanvasSize(previewWidth, overview.height);
       timelineOverview.setModel(performanceModel);
       timelineOverview.update();
       const sourceContext = timelineOverview.context();
@@ -262,24 +265,24 @@ export default class TimelineHistoryManager {
   }
 
   /**
-   * @param {!Timeline.PerformanceModel} model
+   * @param {!PerformanceModel} model
    * @return {?Timeline.TimelineHistoryManager.PreviewData}
    */
   static _dataForModel(model) {
-    return model[_previewDataSymbol] || null;
+    return model[previewDataSymbol] || null;
   }
 }
 
-export const _maxRecordings = 5;
-export const _previewWidth = 450;
-export const _previewDataSymbol = Symbol('previewData');
+export const maxRecordings = 5;
+export const previewWidth = 450;
+export const previewDataSymbol = Symbol('previewData');
 
 /**
- * @implements {UI.ListDelegate<!Timeline.PerformanceModel>}
+ * @implements {UI.ListDelegate<!PerformanceModel>}
  */
 export class DropDown {
   /**
-   * @param {!Array<!Timeline.PerformanceModel>} models
+   * @param {!Array<!PerformanceModel>} models
    */
   constructor(models) {
     this._glassPane = new UI.GlassPane();
@@ -305,19 +308,19 @@ export class DropDown {
     contentElement.addEventListener('click', this._onClick.bind(this), false);
 
     this._focusRestorer = new UI.ElementFocusRestorer(this._listControl.element);
-    /** @type {?function(?Timeline.PerformanceModel)} */
+    /** @type {?function(?PerformanceModel)} */
     this._selectionDone = null;
   }
 
   /**
-   * @param {!Array<!Timeline.PerformanceModel>} models
+   * @param {!Array<!PerformanceModel>} models
    * @param {!Timeline.PerformanceModel} currentModel
    * @param {!Element} anchor
    * @return {!Promise<?Timeline.PerformanceModel>}
    */
   static show(models, currentModel, anchor) {
     if (DropDown._instance) {
-      return Promise.resolve(/** @type {?Timeline.PerformanceModel} */ (null));
+      return Promise.resolve(/** @type {?PerformanceModel} */ (null));
     }
     const instance = new DropDown(models);
     return instance._show(anchor, currentModel);
@@ -332,7 +335,7 @@ export class DropDown {
 
   /**
    * @param {!Element} anchor
-   * @param {!Timeline.PerformanceModel} currentModel
+   * @param {!PerformanceModel} currentModel
    * @return {!Promise<?Timeline.PerformanceModel>}
    */
   _show(anchor, currentModel) {
@@ -386,7 +389,7 @@ export class DropDown {
   }
 
   /**
-   * @param {?Timeline.PerformanceModel} model
+   * @param {?PerformanceModel} model
    */
   _close(model) {
     this._selectionDone(model);
@@ -397,7 +400,7 @@ export class DropDown {
 
   /**
    * @override
-   * @param {!Timeline.PerformanceModel} item
+   * @param {!PerformanceModel} item
    * @return {!Element}
    */
   createElementForItem(item) {
@@ -409,7 +412,7 @@ export class DropDown {
 
   /**
    * @override
-   * @param {!Timeline.PerformanceModel} item
+   * @param {!PerformanceModel} item
    * @return {number}
    */
   heightForItem(item) {
@@ -419,7 +422,7 @@ export class DropDown {
 
   /**
    * @override
-   * @param {!Timeline.PerformanceModel} item
+   * @param {!PerformanceModel} item
    * @return {boolean}
    */
   isItemSelectable(item) {
@@ -428,7 +431,7 @@ export class DropDown {
 
   /**
    * @override
-   * @param {?Timeline.PerformanceModel} from
+   * @param {?PerformanceModel} from
    * @param {?Timeline.PerformanceModel} to
    * @param {?Element} fromElement
    * @param {?Element} toElement
@@ -481,25 +484,3 @@ export class ToolbarButton extends UI.ToolbarItem {
     this._contentElement.textContent = text;
   }
 }
-
-/* Legacy exported object */
-self.Timeline = self.Timeline || {};
-
-/* Legacy exported object */
-Timeline = Timeline || {};
-
-/** @constructor */
-Timeline.TimelineHistoryManager = TimelineHistoryManager;
-
-Timeline.TimelineHistoryManager._maxRecordings = _maxRecordings;
-Timeline.TimelineHistoryManager._previewWidth = _previewWidth;
-Timeline.TimelineHistoryManager._previewDataSymbol = _previewDataSymbol;
-
-/** @constructor */
-Timeline.TimelineHistoryManager.DropDown = DropDown;
-
-/** @constructor */
-Timeline.TimelineHistoryManager.ToolbarButton = ToolbarButton;
-
-/** @typedef {!{preview: !Element, time: !Element, lastUsed: number, title: string}} */
-Timeline.TimelineHistoryManager.PreviewData;

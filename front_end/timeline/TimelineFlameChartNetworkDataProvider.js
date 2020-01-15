@@ -2,11 +2,16 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {PerformanceModel} from './PerformanceModel.js';  // eslint-disable-line no-unused-vars
+import {FlameChartStyle, Selection} from './TimelineFlameChartView.js';
+import {TimelineSelection} from './TimelinePanel.js';
+import {TimelineUIUtils} from './TimelineUIUtils.js';
+
 /**
  * @implements {PerfUI.FlameChartDataProvider}
  * @unrestricted
  */
-export default class TimelineFlameChartNetworkDataProvider {
+export class TimelineFlameChartNetworkDataProvider {
   constructor() {
     this._font = '11px ' + Host.fontFamily();
     this.setModel(null);
@@ -29,7 +34,7 @@ export default class TimelineFlameChartNetworkDataProvider {
   }
 
   /**
-   * @param {?Timeline.PerformanceModel} performanceModel
+   * @param {?PerformanceModel} performanceModel
    */
   setModel(performanceModel) {
     this._model = performanceModel && performanceModel.timelineModel();
@@ -100,20 +105,19 @@ export default class TimelineFlameChartNetworkDataProvider {
 
   /**
    * @param {number} index
-   * @return {?Timeline.TimelineSelection}
+   * @return {?TimelineSelection}
    */
   createSelection(index) {
     if (index === -1) {
       return null;
     }
     const request = this._requests[index];
-    this._lastSelection =
-        new Timeline.TimelineFlameChartView.Selection(Timeline.TimelineSelection.fromNetworkRequest(request), index);
+    this._lastSelection = new Selection(TimelineSelection.fromNetworkRequest(request), index);
     return this._lastSelection.timelineSelection;
   }
 
   /**
-   * @param {?Timeline.TimelineSelection} selection
+   * @param {?TimelineSelection} selection
    * @return {number}
    */
   entryIndexForSelection(selection) {
@@ -125,14 +129,13 @@ export default class TimelineFlameChartNetworkDataProvider {
       return this._lastSelection.entryIndex;
     }
 
-    if (selection.type() !== Timeline.TimelineSelection.Type.NetworkRequest) {
+    if (selection.type() !== TimelineSelection.Type.NetworkRequest) {
       return -1;
     }
     const request = /** @type{!TimelineModel.TimelineModel.NetworkRequest} */ (selection.object());
     const index = this._requests.indexOf(request);
     if (index !== -1) {
-      this._lastSelection =
-          new Timeline.TimelineFlameChartView.Selection(Timeline.TimelineSelection.fromNetworkRequest(request), index);
+      this._lastSelection = new Selection(TimelineSelection.fromNetworkRequest(request), index);
     }
     return index;
   }
@@ -144,8 +147,8 @@ export default class TimelineFlameChartNetworkDataProvider {
    */
   entryColor(index) {
     const request = /** @type {!TimelineModel.TimelineModel.NetworkRequest} */ (this._requests[index]);
-    const category = Timeline.TimelineUIUtils.networkRequestCategory(request);
-    return Timeline.TimelineUIUtils.networkCategoryColor(category);
+    const category = TimelineUIUtils.networkRequestCategory(request);
+    return TimelineUIUtils.networkCategoryColor(category);
   }
 
   /**
@@ -154,7 +157,7 @@ export default class TimelineFlameChartNetworkDataProvider {
    * @return {string}
    */
   textColor(index) {
-    return Timeline.FlameChartStyle.textColor;
+    return FlameChartStyle.textColor;
   }
 
   /**
@@ -440,12 +443,3 @@ export default class TimelineFlameChartNetworkDataProvider {
     return false;
   }
 }
-
-/* Legacy exported object */
-self.Timeline = self.Timeline || {};
-
-/* Legacy exported object */
-Timeline = Timeline || {};
-
-/** @constructor */
-Timeline.TimelineFlameChartNetworkDataProvider = TimelineFlameChartNetworkDataProvider;

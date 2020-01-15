@@ -6,7 +6,7 @@
  * @implements {Common.OutputStream}
  * @unrestricted
  */
-export default class TimelineLoader {
+export class TimelineLoader {
   /**
    * @param {!Client} client
    */
@@ -277,20 +277,3 @@ export const State = {
   SkippingTail: Symbol('SkippingTail'),
   LoadingCPUProfileFormat: Symbol('LoadingCPUProfileFormat')
 };
-
-/* Legacy exported object */
-self.Timeline = self.Timeline || {};
-
-/* Legacy exported object */
-Timeline = Timeline || {};
-
-/** @constructor */
-Timeline.TimelineLoader = TimelineLoader;
-
-Timeline.TimelineLoader.TransferChunkLengthBytes = TransferChunkLengthBytes;
-
-/** @interface */
-Timeline.TimelineLoader.Client = Client;
-
-/** @enum {symbol} */
-Timeline.TimelineLoader.State = State;

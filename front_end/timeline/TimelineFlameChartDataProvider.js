@@ -28,11 +28,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import {PerformanceModel} from './PerformanceModel.js';  // eslint-disable-line no-unused-vars
+import {FlameChartStyle, Selection, TimelineFlameChartMarker} from './TimelineFlameChartView.js';
+import {TimelineSelection} from './TimelinePanel.js';
+import {TimelineCategory, TimelineUIUtils} from './TimelineUIUtils.js';  // eslint-disable-line no-unused-vars
+
 /**
  * @implements {PerfUI.FlameChartDataProvider}
  * @unrestricted
  */
-export default class TimelineFlameChartDataProvider extends Common.Object {
+export class TimelineFlameChartDataProvider extends Common.Object {
   constructor() {
     super();
     this.reset();
@@ -40,7 +45,7 @@ export default class TimelineFlameChartDataProvider extends Common.Object {
     /** @type {?PerfUI.FlameChart.TimelineData} */
     this._timelineData = null;
     this._currentLevel = 0;
-    /** @type {?Timeline.PerformanceModel} */
+    /** @type {?PerformanceModel} */
     this._performanceModel = null;
     /** @type {?TimelineModel.TimelineModel} */
     this._model = null;
@@ -86,7 +91,7 @@ export default class TimelineFlameChartDataProvider extends Common.Object {
   }
 
   /**
-   * @param {?Timeline.PerformanceModel} performanceModel
+   * @param {?PerformanceModel} performanceModel
    */
   setModel(performanceModel) {
     this.reset();
@@ -120,9 +125,9 @@ export default class TimelineFlameChartDataProvider extends Common.Object {
         return Common.UIString('Blackboxed');
       }
       if (this._performanceModel.timelineModel().isMarkerEvent(event)) {
-        return Timeline.TimelineUIUtils.markerShortTitle(event);
+        return TimelineUIUtils.markerShortTitle(event);
       }
-      return Timeline.TimelineUIUtils.eventTitle(event);
+      return TimelineUIUtils.eventTitle(event);
     }
     if (entryType === entryTypes.ExtensionEvent) {
       const event = /** @type {!SDK.TracingModel.Event} */ (this._entryData[entryIndex]);
@@ -146,7 +151,7 @@ export default class TimelineFlameChartDataProvider extends Common.Object {
    */
   textColor(index) {
     const event = this._entryData[index];
-    return event && event._blackboxRoot ? '#888' : Timeline.FlameChartStyle.textColor;
+    return event && event._blackboxRoot ? '#888' : FlameChartStyle.textColor;
   }
 
   /**
@@ -169,9 +174,9 @@ export default class TimelineFlameChartDataProvider extends Common.Object {
     this._entryTypeByLevel = [];
     /** @type {!Array<string>} */
     this._entryIndexToTitle = [];
-    /** @type {!Array<!Timeline.TimelineFlameChartMarker>} */
+    /** @type {!Array<!TimelineFlameChartMarker>} */
     this._markers = [];
-    /** @type {!Map<!Timeline.TimelineCategory, string>} */
+    /** @type {!Map<!TimelineCategory, string>} */
     this._asyncColorByCategory = new Map();
     /** @type {!Map<!TimelineModel.TimelineIRModel.Phases, string>} */
     this._asyncColorByInteractionPhase = new Map();
@@ -428,9 +433,8 @@ export default class TimelineFlameChartDataProvider extends Common.Object {
     for (let i = 0; i < events.length; ++i) {
       const e = events[i];
       if (!isExtension && this._performanceModel.timelineModel().isMarkerEvent(e)) {
-        this._markers.push(new Timeline.TimelineFlameChartMarker(
-            e.startTime, e.startTime - this._model.minimumRecordTime(),
-            Timeline.TimelineUIUtils.markerStyleForEvent(e)));
+        this._markers.push(new TimelineFlameChartMarker(
+            e.startTime, e.startTime - this._model.minimumRecordTime(), TimelineUIUtils.markerStyleForEvent(e)));
       }
       if (!SDK.TracingModel.isFlowPhase(e.phase)) {
         if (!e.endTime && e.phase !== SDK.TracingModel.Phase.Instant) {
@@ -616,12 +620,12 @@ export default class TimelineFlameChartDataProvider extends Common.Object {
     this._framesHeader.collapsible = hasFilmStrip;
     this._appendHeader(Common.UIString('Frames'), this._framesHeader, false /* selectable */);
     this._frameGroup = this._timelineData.groups.peekLast();
-    const style = Timeline.TimelineUIUtils.markerStyleForFrame();
+    const style = TimelineUIUtils.markerStyleForFrame();
 
     this._entryTypeByLevel[this._currentLevel] = EntryType.Frame;
     for (const frame of this._performanceModel.frames()) {
-      this._markers.push(new Timeline.TimelineFlameChartMarker(
-          frame.startTime, frame.startTime - this._model.minimumRecordTime(), style));
+      this._markers.push(
+          new TimelineFlameChartMarker(frame.startTime, frame.startTime - this._model.minimumRecordTime(), style));
       this._appendFrame(frame);
     }
     ++this._currentLevel;
@@ -677,11 +681,11 @@ export default class TimelineFlameChartDataProvider extends Common.Object {
             Number.millisToString(totalTime, true);
       }
       if (this._performanceModel.timelineModel().isMarkerEvent(event)) {
-        title = Timeline.TimelineUIUtils.eventTitle(event);
+        title = TimelineUIUtils.eventTitle(event);
       } else {
         title = this.entryTitle(entryIndex);
       }
-      warning = Timeline.TimelineUIUtils.eventWarning(event);
+      warning = TimelineUIUtils.eventWarning(event);
     } else if (type === EntryType.Frame) {
       const frame = /** @type {!TimelineModel.TimelineFrame} */ (this._entryData[entryIndex]);
       time =
@@ -732,7 +736,7 @@ export default class TimelineFlameChartDataProvider extends Common.Object {
         return this._genericTraceEventColor(event);
       }
       if (this._performanceModel.timelineModel().isMarkerEvent(event)) {
-        return Timeline.TimelineUIUtils.markerStyleForEvent(event).color;
+        return TimelineUIUtils.markerStyleForEvent(event).color;
       }
       if (!SDK.TracingModel.isAsyncPhase(event.phase)) {
         return this._colorForEvent(event);
@@ -744,10 +748,9 @@ export default class TimelineFlameChartDataProvider extends Common.Object {
       if (event.hasCategory(TimelineModel.TimelineModel.Category.LatencyInfo)) {
         const phase =
             TimelineModel.TimelineIRModel.phaseForEvent(event) || TimelineModel.TimelineIRModel.Phases.Uncategorized;
-        return patchColorAndCache(
-            this._asyncColorByInteractionPhase, phase, Timeline.TimelineUIUtils.interactionPhaseColor);
+        return patchColorAndCache(this._asyncColorByInteractionPhase, phase, TimelineUIUtils.interactionPhaseColor);
       }
-      const category = Timeline.TimelineUIUtils.eventStyle(event).category;
+      const category = TimelineUIUtils.eventStyle(event).category;
       return patchColorAndCache(this._asyncColorByCategory, category, () => category.color);
     }
     if (type === entryTypes.Frame) {
@@ -864,7 +867,7 @@ export default class TimelineFlameChartDataProvider extends Common.Object {
     }
 
     if (type === entryTypes.InteractionRecord) {
-      const color = Timeline.TimelineUIUtils.interactionPhaseColor(
+      const color = TimelineUIUtils.interactionPhaseColor(
           /** @type {!TimelineModel.TimelineIRModel.Phases} */ (data));
       context.fillStyle = color;
       context.fillRect(barX, barY, barWidth - 1, 2);
@@ -990,7 +993,7 @@ export default class TimelineFlameChartDataProvider extends Common.Object {
     this._timelineData.entryLevels[index] = level;
     this._timelineData.entryTotalTimes[index] = event.duration || InstantEventVisibleDurationMs;
     this._timelineData.entryStartTimes[index] = event.startTime;
-    event[_indexSymbol] = index;
+    event[indexSymbol] = index;
     return index;
   }
 
@@ -1072,20 +1075,20 @@ export default class TimelineFlameChartDataProvider extends Common.Object {
 
   /**
    * @param {number} entryIndex
-   * @return {?Timeline.TimelineSelection}
+   * @return {?TimelineSelection}
    */
   createSelection(entryIndex) {
     const type = this._entryType(entryIndex);
     let timelineSelection = null;
     if (type === EntryType.Event) {
-      timelineSelection = Timeline.TimelineSelection.fromTraceEvent(
+      timelineSelection = TimelineSelection.fromTraceEvent(
           /** @type {!SDK.TracingModel.Event} */ (this._entryData[entryIndex]));
     } else if (type === EntryType.Frame) {
-      timelineSelection = Timeline.TimelineSelection.fromFrame(
+      timelineSelection = TimelineSelection.fromFrame(
           /** @type {!TimelineModel.TimelineFrame} */ (this._entryData[entryIndex]));
     }
     if (timelineSelection) {
-      this._lastSelection = new Timeline.TimelineFlameChartView.Selection(timelineSelection, entryIndex);
+      this._lastSelection = new Selection(timelineSelection, entryIndex);
     }
     return timelineSelection;
   }
@@ -1110,11 +1113,11 @@ export default class TimelineFlameChartDataProvider extends Common.Object {
   }
 
   /**
-   * @param {?Timeline.TimelineSelection} selection
+   * @param {?TimelineSelection} selection
    * @return {number}
    */
   entryIndexForSelection(selection) {
-    if (!selection || selection.type() === Timeline.TimelineSelection.Type.Range) {
+    if (!selection || selection.type() === TimelineSelection.Type.Range) {
       return -1;
     }
 
@@ -1125,7 +1128,7 @@ export default class TimelineFlameChartDataProvider extends Common.Object {
         /** @type {!SDK.TracingModel.Event|!TimelineModel.TimelineFrame|!TimelineModel.TimelineIRModel.Phases} */
         (selection.object()));
     if (index !== -1) {
-      this._lastSelection = new Timeline.TimelineFlameChartView.Selection(selection, index);
+      this._lastSelection = new Selection(selection, index);
     }
     return index;
   }
@@ -1157,8 +1160,8 @@ export default class TimelineFlameChartDataProvider extends Common.Object {
       if (!initiator) {
         break;
       }
-      const eventIndex = event[_indexSymbol];
-      const initiatorIndex = initiator[_indexSymbol];
+      const eventIndex = event[indexSymbol];
+      const initiatorIndex = initiator[indexSymbol];
       td.flowStartTimes.push(initiator.endTime || initiator.startTime);
       td.flowStartLevels.push(td.entryLevels[initiatorIndex]);
       td.flowEndTimes.push(event.startTime);
@@ -1173,7 +1176,7 @@ export default class TimelineFlameChartDataProvider extends Common.Object {
    * @return {?SDK.TracingModel.Event}
    */
   _eventParent(event) {
-    return this._entryParent[event[_indexSymbol]] || null;
+    return this._entryParent[event[indexSymbol]] || null;
   }
 
   /**
@@ -1195,7 +1198,7 @@ export default class TimelineFlameChartDataProvider extends Common.Object {
 }
 
 export const InstantEventVisibleDurationMs = 0.001;
-export const _indexSymbol = Symbol('index');
+export const indexSymbol = Symbol('index');
 
 /** @enum {symbol} */
 export const Events = {
@@ -1210,21 +1213,3 @@ export const EntryType = {
   ExtensionEvent: Symbol('ExtensionEvent'),
   Screenshot: Symbol('Screenshot'),
 };
-
-/* Legacy exported object */
-self.Timeline = self.Timeline || {};
-
-/* Legacy exported object */
-Timeline = Timeline || {};
-
-/** @constructor */
-Timeline.TimelineFlameChartDataProvider = TimelineFlameChartDataProvider;
-
-Timeline.TimelineFlameChartDataProvider.InstantEventVisibleDurationMs = InstantEventVisibleDurationMs;
-Timeline.TimelineFlameChartDataProvider._indexSymbol = _indexSymbol;
-
-/** @enum {symbol} */
-Timeline.TimelineFlameChartDataProvider.Events = Events;
-
-/** @enum {symbol} */
-Timeline.TimelineFlameChartDataProvider.EntryType = EntryType;

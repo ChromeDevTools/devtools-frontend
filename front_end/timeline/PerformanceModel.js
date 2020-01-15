@@ -2,7 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-export default class PerformanceModel extends Common.Object {
+import {TimelineUIUtils} from './TimelineUIUtils.js';
+
+export class PerformanceModel extends Common.Object {
   constructor() {
     super();
     /** @type {?SDK.Target} */
@@ -13,8 +15,7 @@ export default class PerformanceModel extends Common.Object {
     this._filters = [];
 
     this._timelineModel = new TimelineModel.TimelineModel();
-    this._frameModel =
-        new TimelineModel.TimelineFrameModel(event => Timeline.TimelineUIUtils.eventStyle(event).category.name);
+    this._frameModel = new TimelineModel.TimelineFrameModel(event => TimelineUIUtils.eventStyle(event).category.name);
     /** @type {?SDK.FilmStripModel} */
     this._filmStripModel = null;
     /** @type {?TimelineModel.TimelineIRModel} */
@@ -296,18 +297,3 @@ export const Events = {
   ExtensionDataAdded: Symbol('ExtensionDataAdded'),
   WindowChanged: Symbol('WindowChanged')
 };
-
-/* Legacy exported object */
-self.Timeline = self.Timeline || {};
-
-/* Legacy exported object */
-Timeline = Timeline || {};
-
-/** @constructor */
-Timeline.PerformanceModel = PerformanceModel;
-
-/** @enum {symbol} */
-Timeline.PerformanceModel.Events = Events;
-
-/** @typedef {!{left: number, right: number}} */
-Timeline.PerformanceModel.Window;

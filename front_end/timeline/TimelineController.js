@@ -2,12 +2,16 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {ExtensionTracingSession} from './ExtensionTracingSession.js';
+import {PerformanceModel} from './PerformanceModel.js';
+import {Client as TimelineLoaderClient} from './TimelineLoader.js';  // eslint-disable-line no-unused-vars
+
 /**
  * @implements {SDK.SDKModelObserver<!SDK.CPUProfilerModel>}
  * @implements {SDK.TracingManagerClient}
  * @unrestricted
  */
-export default class TimelineController {
+export class TimelineController {
   /**
    * @param {!SDK.Target} target
    * @param {!Client} client
@@ -15,14 +19,14 @@ export default class TimelineController {
   constructor(target, client) {
     this._target = target;
     this._tracingManager = target.model(SDK.TracingManager);
-    this._performanceModel = new Timeline.PerformanceModel();
+    this._performanceModel = new PerformanceModel();
     this._performanceModel.setMainTarget(target);
     this._client = client;
 
     const backingStorage = new Bindings.TempFileBackingStorage();
     this._tracingModel = new SDK.TracingModel(backingStorage);
 
-    /** @type {!Array<!Timeline.ExtensionTracingSession>} */
+    /** @type {!Array<!ExtensionTracingSession>} */
     this._extensionSessions = [];
     SDK.targetManager.observeModels(SDK.CPUProfilerModel, this);
   }
@@ -85,8 +89,7 @@ export default class TimelineController {
       categoriesArray.push(disabledByDefault('devtools.screenshot'));
     }
 
-    this._extensionSessions =
-        providers.map(provider => new Timeline.ExtensionTracingSession(provider, this._performanceModel));
+    this._extensionSessions = providers.map(provider => new ExtensionTracingSession(provider, this._performanceModel));
     this._extensionSessions.forEach(session => session.start());
     this._performanceModel.setRecordStartTime(Date.now());
     const response = await this._startRecordingWithCategories(categoriesArray.join(','), options.enableJSSampling);
@@ -97,7 +100,7 @@ export default class TimelineController {
   }
 
   /**
-   * @return {!Promise<!Timeline.PerformanceModel>}
+   * @return {!Promise<!PerformanceModel>}
    */
   async stopRecording() {
     if (this._tracingManager) {
@@ -379,7 +382,7 @@ export default class TimelineController {
 
 /**
  * @interface
- * @extends {Timeline.TimelineLoader.Client}
+ * @extends {TimelineLoaderClient}
  */
 export class Client {
   /**
@@ -388,25 +391,3 @@ export class Client {
   recordingProgress(usage) {
   }
 }
-
-/* Legacy exported object */
-self.Timeline = self.Timeline || {};
-
-/* Legacy exported object */
-Timeline = Timeline || {};
-
-/** @constructor */
-Timeline.TimelineController = TimelineController;
-
-/** @interface */
-Timeline.TimelineController.Client = Client;
-
-/**
- * @typedef {!{
-  *   enableJSSampling: (boolean|undefined),
-  *   capturePictures: (boolean|undefined),
-  *   captureFilmStrip: (boolean|undefined),
-  *   startCoverage: (boolean|undefined)
-  * }}
-  */
-Timeline.TimelineController.RecordingOptions;

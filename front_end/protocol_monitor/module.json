@@ -15,6 +15,7 @@
   "scripts": [],
   "modules": [
     "protocol_monitor.js",
+    "protocol_monitor-legacy.js",
     "ProtocolMonitor.js"
   ],
   "resources": [

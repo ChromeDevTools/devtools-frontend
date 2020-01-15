@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-export default class ProtocolMonitorImpl extends UI.VBox {
+export class ProtocolMonitorImpl extends UI.VBox {
   constructor() {
     super(true);
     this._nodes = [];
@@ -42,7 +42,7 @@ export default class ProtocolMonitorImpl extends UI.VBox {
     split.show(this.contentElement);
     this._dataGrid = new DataGrid.SortableDataGrid({displayName: ls`Protocol Monitor`, columns: this._columns});
     this._dataGrid.element.style.flex = '1';
-    this._infoWidget = new ProtocolMonitor.ProtocolMonitor.InfoWidget();
+    this._infoWidget = new InfoWidget();
     split.setMainWidget(this._dataGrid.asWidget());
     split.setSidebarWidget(this._infoWidget);
     this._dataGrid.addEventListener(
@@ -112,7 +112,7 @@ export default class ProtocolMonitorImpl extends UI.VBox {
 
   /**
    * @param {!UI.ContextMenu} contextMenu
-   * @param {!ProtocolMonitor.ProtocolMonitor.ProtocolNode} node
+   * @param {!ProtocolNode} node
    */
   _innerRowContextMenu(contextMenu, node) {
     contextMenu.defaultSection().appendItem(ls`Filter`, () => {
@@ -218,7 +218,7 @@ export default class ProtocolMonitorImpl extends UI.VBox {
     }
 
     const sdkTarget = /** @type {?SDK.Target} */ (target);
-    const node = new ProtocolMonitor.ProtocolMonitor.ProtocolNode({
+    const node = new ProtocolNode({
       method: message.method,
       direction: 'recieved',
       response: message.params,
@@ -238,7 +238,7 @@ export default class ProtocolMonitorImpl extends UI.VBox {
    */
   _messageSent(message, target) {
     const sdkTarget = /** @type {?SDK.Target} */ (target);
-    const node = new ProtocolMonitor.ProtocolMonitor.ProtocolNode({
+    const node = new ProtocolNode({
       method: message.method,
       direction: 'sent',
       request: message.params,
@@ -334,24 +334,3 @@ export class InfoWidget extends UI.VBox {
     this._tabbedPane.changeTabView('response', SourceFrame.JSONView.createViewSync(data.response));
   }
 }
-
-/* Legacy exported object */
-self.ProtocolMonitor = self.ProtocolMonitor || {};
-
-/* Legacy exported object */
-ProtocolMonitor = ProtocolMonitor || {};
-
-/**
- * @constructor
- */
-ProtocolMonitor.ProtocolMonitor = ProtocolMonitorImpl;
-
-/**
- * @constructor
- */
-ProtocolMonitor.ProtocolMonitor.InfoWidget = InfoWidget;
-
-/**
- * @constructor
- */
-ProtocolMonitor.ProtocolMonitor.ProtocolNode = ProtocolNode;

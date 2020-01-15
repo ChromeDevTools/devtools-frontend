@@ -848,6 +848,7 @@ all_devtools_modules = [
   "front_end/profiler/CPUProfileFlameChart.js",
   "front_end/profiler/BottomUpProfileDataGrid.js",
   "front_end/protocol_monitor/protocol_monitor.js",
+  "front_end/protocol_monitor/protocol_monitor-legacy.js",
   "front_end/protocol_monitor/ProtocolMonitor.js",
   "front_end/protocol/InspectorBackend.js",
   "front_end/protocol/NodeURL.js",
@@ -1742,6 +1743,7 @@ copied_devtools_modules = [
   "$resources_out_dir/profiler/CPUProfileFlameChart.js",
   "$resources_out_dir/profiler/BottomUpProfileDataGrid.js",
   "$resources_out_dir/protocol_monitor/protocol_monitor.js",
+  "$resources_out_dir/protocol_monitor/protocol_monitor-legacy.js",
   "$resources_out_dir/protocol_monitor/ProtocolMonitor.js",
   "$resources_out_dir/protocol/InspectorBackend.js",
   "$resources_out_dir/protocol/NodeURL.js",
@@ -2386,13 +2388,13 @@ action("copy_devtools_modules") {
   outputs = copied_devtools_modules
 
   args = [
-           "--file_list",
-           "{{response_file_name}}",
-           "--input_path",
-           rebase_path(".", root_build_dir),
-           "--output_path",
-           rebase_path(resources_out_dir, root_build_dir),
-         ]
+    "--file_list",
+    "{{response_file_name}}",
+    "--input_path",
+    rebase_path(".", root_build_dir),
+    "--output_path",
+    rebase_path(resources_out_dir, root_build_dir),
+  ]
 }
 
 if (debug_devtools) {

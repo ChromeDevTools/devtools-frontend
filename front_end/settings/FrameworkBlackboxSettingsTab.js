@@ -3,11 +3,12 @@
  * Use of this source code is governed by a BSD-style license that can be
  * found in the LICENSE file.
  */
+
 /**
  * @implements {UI.ListWidget.Delegate}
  * @unrestricted
  */
-export default class FrameworkBlackboxSettingsTab extends UI.VBox {
+export class FrameworkBlackboxSettingsTab extends UI.VBox {
   constructor() {
     super(true);
     this.registerRequiredCSS('settings/frameworkBlackboxSettingsTab.css');
@@ -156,7 +157,7 @@ export default class FrameworkBlackboxSettingsTab extends UI.VBox {
      * @param {*} item
      * @param {number} index
      * @param {!HTMLInputElement|!HTMLSelectElement} input
-     * @this {Settings.FrameworkBlackboxSettingsTab}
+     * @this {FrameworkBlackboxSettingsTab}
      * @return {!UI.ListWidget.ValidatorResult}
      */
     function patternValidator(item, index, input) {
@@ -196,14 +197,3 @@ export default class FrameworkBlackboxSettingsTab extends UI.VBox {
     }
   }
 }
-
-/* Legacy exported object */
-self.Settings = self.Settings || {};
-
-/* Legacy exported object */
-Settings = Settings || {};
-
-/**
- * @constructor
- */
-Settings.FrameworkBlackboxSettingsTab = FrameworkBlackboxSettingsTab;

@@ -31,7 +31,7 @@
  * @implements {UI.ViewLocationResolver}
  * @unrestricted
  */
-export default class SettingsScreen extends UI.VBox {
+export class SettingsScreen extends UI.VBox {
   constructor() {
     super(true);
     this.registerRequiredCSS('settings/settingsScreen.css');
@@ -67,7 +67,7 @@ export default class SettingsScreen extends UI.VBox {
    */
   static _showSettingsScreen(name) {
     const settingsScreen =
-        /** @type {!Settings.SettingsScreen} */ (self.runtime.sharedInstance(SettingsScreen));
+        /** @type {!SettingsScreen} */ (self.runtime.sharedInstance(SettingsScreen));
     if (settingsScreen.isShowing()) {
       return;
     }
@@ -213,7 +213,7 @@ export class GenericSettingsTab extends SettingsTab {
 
     /**
      * @param {!Object} object
-     * @this {Settings.GenericSettingsTab}
+     * @this {GenericSettingsTab}
      */
     function appendCustomSetting(object) {
       const settingUI = /** @type {!UI.SettingUI} */ (object);
@@ -376,38 +376,3 @@ export class Revealer {
     }
   }
 }
-
-/* Legacy exported object */
-self.Settings = self.Settings || {};
-
-/* Legacy exported object */
-Settings = Settings || {};
-
-/**
- * @constructor
- */
-Settings.SettingsScreen = SettingsScreen;
-
-/**
- * @implements {UI.ActionDelegate}
- * @unrestricted
- * @constructor
- */
-Settings.SettingsScreen.ActionDelegate = ActionDelegate;
-
-/**
- * @implements {Common.Revealer}
- * @unrestricted
- * @constructor
- */
-Settings.SettingsScreen.Revealer = Revealer;
-
-/**
- * @constructor
- */
-Settings.GenericSettingsTab = GenericSettingsTab;
-
-/**
- * @constructor
- */
-Settings.ExperimentsSettingsTab = ExperimentsSettingsTab;

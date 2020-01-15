@@ -86,6 +86,7 @@
     "scripts": [],
     "modules": [
         "settings.js",
+        "settings-legacy.js",
         "SettingsScreen.js",
         "FrameworkBlackboxSettingsTab.js"
     ],

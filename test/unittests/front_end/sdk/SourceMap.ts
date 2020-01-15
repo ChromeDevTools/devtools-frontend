@@ -5,6 +5,7 @@
 const {assert} = chai;
 
 import {SourceMapEntry,TextSourceMap} from '/front_end/sdk/SourceMap.js';
+import {source} from 'third_party/axe-core/axe';
 
 describe('SourceMapEntry', () => {
   it('can be instantiated correctly', () => {
@@ -144,5 +145,21 @@ describe('TextSourceMap', () => {
 
     assertMapping(sourceMap.findEntry(0, 0), 'example.js', 0, 0);
     assertReverseMapping(sourceMap.sourceLineMapping('example.js', 1), 3, 1);
+  });
+
+  it('can parse the multiple sections format', () => {
+    const mappingPayload = {
+      'sections': [
+        {'offset': {'line': 0, 'column': 0}, 'map': {'mappings': 'AAAA,CAEC', 'sources': ['source1.js', 'source2.js']}},
+        {'offset': {'line': 2, 'column': 10}, 'map': {'mappings': 'AAAA,CAEC', 'sources': ['source2.js']}}
+      ]
+    };
+    const sourceMap = new TextSourceMap('compiled.js', 'source-map.json', mappingPayload);
+
+    assert.lengthOf(sourceMap.sourceURLs(), 2, 'unexpected number of original source URLs');
+    assertMapping(sourceMap.findEntry(0, 0), 'source1.js', 0, 0);
+    assertMapping(sourceMap.findEntry(0, 1), 'source1.js', 2, 1);
+    assertMapping(sourceMap.findEntry(2, 10), 'source2.js', 0, 0);
+    assertMapping(sourceMap.findEntry(2, 11), 'source2.js', 2, 1);
   });
 });

@@ -369,7 +369,14 @@ export class AnimationUI {
    * @param {!Event} event
    */
   _mouseMove(event) {
-    this._movementInMs = (event.clientX - this._downMouseX) / this._timeline.pixelMsRatio();
+    this._setMovementAndRedraw((event.clientX - this._downMouseX) / this._timeline.pixelMsRatio());
+  }
+
+  /**
+   * @param {number} movement
+   */
+  _setMovementAndRedraw(movement) {
+    this._movementInMs = movement;
     if (this._delay() + this._duration() > this._timeline.duration() * 0.8) {
       this._timeline.setDuration(this._timeline.duration() * 1.2);
     }
@@ -417,8 +424,7 @@ export class AnimationUI {
     } else {
       this._animation.setTiming(this._duration(), this._delay());
     }
-    this._movementInMs = 0;
-    this.redraw();
+    this._setMovementAndRedraw(0);
 
     delete this._mouseEventType;
     delete this._keyframeMoved;

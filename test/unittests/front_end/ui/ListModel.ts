@@ -8,17 +8,70 @@ import '/front_end/common/common-legacy.js';
 import {ListModel} from '/front_end/ui/ListModel.js';
 
 describe('ListModel', () => {
-  after(() => {
-    // Clean up polluted globals.
-    // TODO(https://crbug.com/1006759): These need removing once the ESM migration is complete.
-    const globalObj = (self as any);
-    delete globalObj.Common;
-  });
-
   it('can be instantiated correctly without a list of items', () => {
-    const listModel = new ListModel();
-    assert.equal(listModel.length, 0, 'length of list model should be 0');
+    const model = new ListModel();
+    assert.deepEqual([...model], []);
   });
 
-  // TODO continue writing tests here or use another describe block
+  it('can be instantiated correctly with a list of items', () => {
+    const model = new ListModel([4, 5, 6]);
+    assert.deepEqual([...model], [4, 5, 6]);
+  });
+
+  it('supports replacing all list elements', () => {
+    const model = new ListModel();
+    model.replaceAll([0, 1, 2]);
+    assert.deepEqual([...model], [0, 1, 2]);
+  });
+
+  it('supports replacing a range of list elements', () => {
+    const model = new ListModel([0, 1, 2]);
+    model.replaceRange(0, 1, [5, 6, 7]);
+    assert.deepEqual([...model], [5, 6, 7, 1, 2]);
+  });
+
+  it('supports inserting new list elements', () => {
+    const model = new ListModel([5, 6, 7, 1, 2]);
+    model.insert(model.length, 10);
+    assert.deepEqual([...model], [5, 6, 7, 1, 2, 10]);
+  });
+
+  it('supports removing list elements', () => {
+    const model = new ListModel([5, 6, 7, 1, 2, 10]);
+    model.remove(model.length - 1);
+    assert.deepEqual([...model], [5, 6, 7, 1, 2]);
+  });
+
+  it('supports removing list elements', () => {
+    const model = new ListModel([5, 6, 7, 1, 2]);
+    model.remove(4);
+    assert.deepEqual([...model], [5, 6, 7, 1]);
+  });
+
+  it('supports replacing list elements in place', () => {
+    const model = new ListModel([5, 6, 7, 1]);
+    model.insert(1, 8);
+    assert.deepEqual([...model], [5, 8, 6, 7, 1]);
+  });
+
+  it('supports replacing list elements in place', () => {
+    const model = new ListModel([0, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 4, 5, 6, 27, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 28, 29]);
+    model.replaceRange(0, 29, []);
+    assert.deepEqual([...model], [29]);
+  });
+
+  it('fires an event when elements are replaced', () => {
+    const model = new ListModel([0, 1, 2]);
+    let eventData;
+    model.addEventListener(ListModel.Events.ItemsReplaced, event => {
+      eventData = event.data;
+    });
+    model.replaceRange(0, 1, [5, 6, 7]);
+    assert.deepEqual([...model], [5, 6, 7, 1, 2]);
+    assert.deepEqual(eventData, {
+      index: 0,
+      removed: [0],
+      inserted: 3,
+    });
+  });
 });

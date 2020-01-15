@@ -64,4 +64,62 @@ describe('TextSourceMap', () => {
       assert.isFalse(iterator.hasNext());
     });
   });
+
+  function assertMapping(
+      actual: SourceMapEntry, expectedSourceURL: string, expectedSourceLineNumber: number,
+      expectedSourceColumnNumber: number) {
+    assert.isNotNull(actual, 'expected SourceMapEntry to be present');
+    assert.equal(actual.sourceURL, expectedSourceURL, 'unexpected source URL');
+    assert.equal(actual.sourceLineNumber, expectedSourceLineNumber, 'unexpected source line number');
+    assert.equal(actual.sourceColumnNumber, expectedSourceColumnNumber, 'unexpected source column number');
+  }
+
+  function assertReverseMapping(
+      actual: SourceMapEntry, expectedCompiledLineNumber: number, expectedCompiledColumnNumber: number) {
+    assert.isNotNull(actual, 'expected SourceMapEntry to be present');
+    assert.equal(actual.lineNumber, expectedCompiledLineNumber, 'unexpected compiled line number');
+    assert.equal(actual.columnNumber, expectedCompiledColumnNumber, 'unexpected compiled column number');
+  }
+
+  it('can parse a simple source map', () => {
+    // FIXME(szuend): Clean this test up once all test cases from the web test are ported over
+    //                and we refactored the underlying code.
+    /*
+          The numbers above the respective scripts are column numbers from 0 to 35.
+          example.js:
+          0         1         2         3
+          012345678901234567890123456789012345
+          function add(variable_x, variable_y)
+          {
+              return variable_x + variable_y;
+          }
+
+          var global = "foo";
+          ----------------------------------------
+          example-compiled.js:
+          0         1         2         3
+          012345678901234567890123456789012345
+          function add(a,b){return a+b}var global="foo";
+          foo
+    */
+    const mappingPayload = {
+      'mappings': 'AAASA,QAAAA,IAAG,CAACC,CAAD,CAAaC,CAAb,CACZ,CACI,MAAOD,EAAP,CAAoBC,CADxB,CAIA,IAAIC,OAAS;A',
+      'sources': ['example.js'],
+    };
+    const sourceMap = new TextSourceMap('compiled.js', 'source-map.json', mappingPayload);
+
+    assertMapping(sourceMap.findEntry(0, 9), 'example.js', 0, 9);
+    assertMapping(sourceMap.findEntry(0, 13), 'example.js', 0, 13);
+    assertMapping(sourceMap.findEntry(0, 15), 'example.js', 0, 25);
+    assertMapping(sourceMap.findEntry(0, 18), 'example.js', 2, 4);
+    assertMapping(sourceMap.findEntry(0, 25), 'example.js', 2, 11);
+    assertMapping(sourceMap.findEntry(0, 27), 'example.js', 2, 24);
+    assertMapping(sourceMap.findEntry(1, 0), undefined, undefined, undefined);
+
+    assertReverseMapping(sourceMap.sourceLineMapping('example.js', 0), 0, 0);
+    assertReverseMapping(sourceMap.sourceLineMapping('example.js', 1), 0, 17);
+    assertReverseMapping(sourceMap.sourceLineMapping('example.js', 2), 0, 18);
+    assert.isNull(sourceMap.sourceLineMapping('example.js', 4), 'unexpected source mapping for line 4');
+    assertReverseMapping(sourceMap.sourceLineMapping('example.js', 5), 0, 29);
+  });
 });

@@ -83,6 +83,7 @@ export class TabbedEditorContainer extends Common.Object {
 
     this._previouslyViewedFilesSetting = setting;
     this._history = History.fromObject(this._previouslyViewedFilesSetting.get());
+    this._historyUriToUISourceCode = new Map();
   }
 
   /**
@@ -201,17 +202,10 @@ export class TabbedEditorContainer extends Common.Object {
    * @return {!Array.<!Workspace.UISourceCode>}
    */
   historyUISourceCodes() {
-    // FIXME: there should be a way to fetch UISourceCode for its uri.
-    const uriToUISourceCode = {};
-    for (const id in this._files) {
-      const uiSourceCode = this._files[id];
-      uriToUISourceCode[uiSourceCode.url()] = uiSourceCode;
-    }
-
     const result = [];
     const uris = this._history._urls();
-    for (let i = 0; i < uris.length; ++i) {
-      const uiSourceCode = uriToUISourceCode[uris[i]];
+    for (const uri of uris) {
+      const uiSourceCode = this._historyUriToUISourceCode.get(uri);
       if (uiSourceCode) {
         result.push(uiSourceCode);
       }
@@ -391,6 +385,12 @@ export class TabbedEditorContainer extends Common.Object {
       return;
     }
 
+    // Check if we have already opened a tab for this uri....
+    if (this._historyUriToUISourceCode.has(uiSourceCode.url())) {
+      return;
+    }
+    this._historyUriToUISourceCode.set(uiSourceCode.url(), uiSourceCode);
+
     if (!this._tabIds.has(uiSourceCode)) {
       this._appendFileTab(uiSourceCode, false);
     }
@@ -424,11 +424,13 @@ export class TabbedEditorContainer extends Common.Object {
    */
   removeUISourceCodes(uiSourceCodes) {
     const tabIds = [];
-    for (let i = 0; i < uiSourceCodes.length; ++i) {
-      const uiSourceCode = uiSourceCodes[i];
+    for (const uiSourceCode of uiSourceCodes) {
       const tabId = this._tabIds.get(uiSourceCode);
       if (tabId) {
         tabIds.push(tabId);
+      }
+      if (this._historyUriToUISourceCode.get(uiSourceCode.url()) === uiSourceCode) {
+        this._historyUriToUISourceCode.delete(uiSourceCode.url());
       }
     }
     this._tabbedPane.closeTabs(tabIds);

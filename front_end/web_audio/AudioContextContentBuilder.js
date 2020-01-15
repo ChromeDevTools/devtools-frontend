@@ -63,7 +63,7 @@ export class ContextDetailBuilder {
   }
 }
 
-export class AudioContextSummaryBuilder {
+export class ContextSummaryBuilder {
   /**
    * @param {!Protocol.WebAudio.GraphObjectId} contextId
    * @param {!Protocol.WebAudio.ContextRealtimeData} contextRealtimeData

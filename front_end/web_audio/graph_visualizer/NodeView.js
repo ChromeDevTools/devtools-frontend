@@ -2,6 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as GraphStyle from './GraphStyle.js';
+import {calculateInputPortXY, calculateOutputPortXY, calculateParamPortXY} from './NodeRendererUtility.js';
+
 // A class that represents a node of a graph, consisting of the information needed to layout the
 // node and display the node. Each node has zero or more ports, including input, output, and param ports.
 export class NodeView {
@@ -52,14 +55,13 @@ export class NodeView {
    * @param {string} paramType
    */
   addParamPort(paramId, paramType) {
-    const paramPorts = this.getPortsByType(WebAudio.GraphVisualizer.PortTypes.Param);
+    const paramPorts = this.getPortsByType(PortTypes.Param);
     const numberOfParams = paramPorts.length;
 
-    const {x, y} = WebAudio.GraphVisualizer.NodeRendererUtility.calculateParamPortXY(
-        numberOfParams, this._layout.inputPortSectionHeight);
+    const {x, y} = calculateParamPortXY(numberOfParams, this._layout.inputPortSectionHeight);
     this._addPort({
       id: generateParamPortId(this.id, paramId),
-      type: WebAudio.GraphVisualizer.PortTypes.Param,
+      type: PortTypes.Param,
       label: paramType,
       x,
       y,
@@ -72,7 +74,7 @@ export class NodeView {
   }
 
   /**
-   * @param {!WebAudio.GraphVisualizer.PortTypes} type
+   * @param {!PortTypes} type
    * @return {!Array<!WebAudio.GraphVisualizer.Port>}
    */
   getPortsByType(type) {
@@ -101,7 +103,7 @@ export class NodeView {
       BottomPaddingWithoutParam,
       TotalOutputPortHeight,
       NodeLabelFontStyle,
-    } = WebAudio.GraphVisualizer.GraphStyle;
+    } = GraphStyle;
     const inputPortSectionHeight = TotalInputPortHeight * Math.max(1, data.numberOfInputs) + LeftSideTopPadding;
     this._layout.inputPortSectionHeight = inputPortSectionHeight;
     this._layout.outputPortSectionHeight = TotalOutputPortHeight * data.numberOfOutputs;
@@ -127,15 +129,14 @@ export class NodeView {
   _updateNodeLayoutAfterAddingParam(numberOfParams, paramType) {
     // The height after adding param ports and input ports.
     // Include a little padding on the left.
-    const leftSideMaxHeight = this._layout.inputPortSectionHeight +
-        numberOfParams * WebAudio.GraphVisualizer.GraphStyle.TotalParamPortHeight +
-        WebAudio.GraphVisualizer.GraphStyle.BottomPaddingWithParam;
+    const leftSideMaxHeight = this._layout.inputPortSectionHeight + numberOfParams * GraphStyle.TotalParamPortHeight +
+        GraphStyle.BottomPaddingWithParam;
 
     // Use the max of the left and right side heights as the total height.
     this._layout.totalHeight = Math.max(leftSideMaxHeight, this._layout.outputPortSectionHeight);
 
     // Update max length with param label.
-    const paramLabelLength = measureTextWidth(paramType, WebAudio.GraphVisualizer.GraphStyle.ParamLabelFontStyle);
+    const paramLabelLength = measureTextWidth(paramType, GraphStyle.ParamLabelFontStyle);
     this._layout.maxTextLength = Math.max(this._layout.maxTextLength, paramLabelLength);
 
     this._updateNodeSize();
@@ -143,9 +144,7 @@ export class NodeView {
 
   _updateNodeSize() {
     this.size = {
-      width: Math.ceil(
-          WebAudio.GraphVisualizer.GraphStyle.LeftMarginOfText + this._layout.maxTextLength +
-          WebAudio.GraphVisualizer.GraphStyle.RightMarginOfText),
+      width: Math.ceil(GraphStyle.LeftMarginOfText + this._layout.maxTextLength + GraphStyle.RightMarginOfText),
       height: this._layout.totalHeight,
     };
   }
@@ -153,10 +152,10 @@ export class NodeView {
   // Setup the properties of each input port.
   _setupInputPorts() {
     for (let i = 0; i < this.numberOfInputs; i++) {
-      const {x, y} = WebAudio.GraphVisualizer.NodeRendererUtility.calculateInputPortXY(i);
+      const {x, y} = calculateInputPortXY(i);
       this._addPort({
         id: generateInputPortId(this.id, i),
-        type: WebAudio.GraphVisualizer.PortTypes.In,
+        type: PortTypes.In,
         x,
         y,
       });
@@ -167,8 +166,7 @@ export class NodeView {
   _setupOutputPorts() {
     for (let i = 0; i < this.numberOfOutputs; i++) {
       const portId = generateOutputPortId(this.id, i);
-      const {x, y} =
-          WebAudio.GraphVisualizer.NodeRendererUtility.calculateOutputPortXY(i, this.size, this.numberOfOutputs);
+      const {x, y} = calculateOutputPortXY(i, this.size, this.numberOfOutputs);
       if (this.ports.has(portId)) {
         // Update y value of an existing output port.
         const port = this.ports.get(portId);
@@ -177,7 +175,7 @@ export class NodeView {
       } else {
         this._addPort({
           id: portId,
-          type: WebAudio.GraphVisualizer.PortTypes.Out,
+          type: PortTypes.Out,
           x,
           y,
         });

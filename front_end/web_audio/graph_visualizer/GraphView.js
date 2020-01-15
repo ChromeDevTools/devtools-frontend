@@ -2,6 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {EdgeTypes, EdgeView, generateEdgePortIdsByData} from './EdgeView.js';
+import {NodeLabelGenerator, NodeView} from './NodeView.js';
+
 // A class that tracks all the nodes and edges of an audio graph.
 export class GraphView extends Common.Object {
   /**
@@ -12,9 +15,9 @@ export class GraphView extends Common.Object {
 
     this.contextId = contextId;
 
-    /** @type {!Map<!Protocol.WebAudio.GraphObjectId, !WebAudio.GraphVisualizer.NodeView>} */
+    /** @type {!Map<!Protocol.WebAudio.GraphObjectId, !NodeView>} */
     this._nodes = new Map();
-    /** @type {!Map<!Protocol.WebAudio.GraphObjectId, !WebAudio.GraphVisualizer.EdgeView>} */
+    /** @type {!Map<!Protocol.WebAudio.GraphObjectId, !EdgeView>} */
     this._edges = new Map();
 
     /**
@@ -31,7 +34,7 @@ export class GraphView extends Common.Object {
 
     // Use concise node label to replace the long UUID.
     // Each graph has its own label generator so that the label starts from 0.
-    this._nodeLabelGenerator = new WebAudio.GraphVisualizer.NodeLabelGenerator();
+    this._nodeLabelGenerator = new NodeLabelGenerator();
 
     /**
      * For each param ID, save its corresponding node Id.
@@ -46,7 +49,7 @@ export class GraphView extends Common.Object {
    */
   addNode(data) {
     const label = this._nodeLabelGenerator.generateLabel(data.nodeType);
-    const node = new WebAudio.GraphVisualizer.NodeView(data, label);
+    const node = new NodeView(data, label);
     this._nodes.set(data.nodeId, node);
     this._notifyShouldRedraw();
   }
@@ -93,7 +96,7 @@ export class GraphView extends Common.Object {
    * @param {!WebAudio.GraphVisualizer.NodesConnectionData} edgeData
    */
   addNodeToNodeConnection(edgeData) {
-    const edge = new WebAudio.GraphVisualizer.EdgeView(edgeData, WebAudio.GraphVisualizer.EdgeTypes.NodeToNode);
+    const edge = new EdgeView(edgeData, EdgeTypes.NodeToNode);
     this._addEdge(edge);
   }
 
@@ -104,9 +107,9 @@ export class GraphView extends Common.Object {
   removeNodeToNodeConnection(edgeData) {
     if (edgeData.destinationId) {
       // Remove a single edge if destinationId is specified.
-      const {edgeId} = WebAudio.GraphVisualizer.generateEdgePortIdsByData(
+      const {edgeId} = generateEdgePortIdsByData(
           /** @type {!WebAudio.GraphVisualizer.NodesDisconnectionDataWithDestination} */ (edgeData),
-          WebAudio.GraphVisualizer.EdgeTypes.NodeToNode);
+          EdgeTypes.NodeToNode);
       this._removeEdge(edgeId);
     } else {
       // Otherwise, remove all outgoing edges from source node.
@@ -119,7 +122,7 @@ export class GraphView extends Common.Object {
    * @param {!WebAudio.GraphVisualizer.NodeParamConnectionData} edgeData
    */
   addNodeToParamConnection(edgeData) {
-    const edge = new WebAudio.GraphVisualizer.EdgeView(edgeData, WebAudio.GraphVisualizer.EdgeTypes.NodeToParam);
+    const edge = new EdgeView(edgeData, EdgeTypes.NodeToParam);
     this._addEdge(edge);
   }
 
@@ -128,25 +131,24 @@ export class GraphView extends Common.Object {
    * @param {!WebAudio.GraphVisualizer.NodeParamDisconnectionData} edgeData
    */
   removeNodeToParamConnection(edgeData) {
-    const {edgeId} =
-        WebAudio.GraphVisualizer.generateEdgePortIdsByData(edgeData, WebAudio.GraphVisualizer.EdgeTypes.NodeToParam);
+    const {edgeId} = generateEdgePortIdsByData(edgeData, EdgeTypes.NodeToParam);
     this._removeEdge(edgeId);
   }
 
   /**
    * @param {!Protocol.WebAudio.GraphObjectId} nodeId
-   * @return {?WebAudio.GraphVisualizer.NodeView}
+   * @return {?NodeView}
    */
   getNodeById(nodeId) {
     return this._nodes.get(nodeId);
   }
 
-  /** @return {!Map<!Protocol.WebAudio.GraphObjectId, !WebAudio.GraphVisualizer.NodeView>} */
+  /** @return {!Map<!Protocol.WebAudio.GraphObjectId, !NodeView>} */
   getNodes() {
     return this._nodes;
   }
 
-  /** @return {!Map<!Protocol.WebAudio.GraphObjectId, !WebAudio.GraphVisualizer.EdgeView>} */
+  /** @return {!Map<!Protocol.WebAudio.GraphObjectId, !EdgeView>} */
   getEdges() {
     return this._edges;
   }
@@ -161,7 +163,7 @@ export class GraphView extends Common.Object {
 
   /**
    * Add an edge to the graph.
-   * @param {!WebAudio.GraphVisualizer.EdgeView} edge
+   * @param {!EdgeView} edge
    */
   _addEdge(edge) {
     const sourceId = edge.sourceId;

@@ -1,22 +1,25 @@
 // Copyright 2015 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
+import {Events, PageSecurityState, PageVisibleSecurityState, SecurityModel, SecurityStyleExplanation, SummaryMessages,} from './SecurityModel.js';  // eslint-disable-line no-unused-vars
+
 /**
- * @implements {SDK.SDKModelObserver<!Security.SecurityModel>}
+ * @implements {SDK.SDKModelObserver<!SecurityModel>}
  * @unrestricted
  */
-export default class SecurityPanel extends UI.PanelWithSidebar {
+export class SecurityPanel extends UI.PanelWithSidebar {
   constructor() {
     super('security');
 
-    this._mainView = new Security.SecurityMainView(this);
+    this._mainView = new SecurityMainView(this);
 
     const title = createElementWithClass('span', 'title');
     title.textContent = Common.UIString('Overview');
-    this._sidebarMainViewElement = new Security.SecurityPanelSidebarTreeElement(
+    this._sidebarMainViewElement = new SecurityPanelSidebarTreeElement(
         title, this._setVisibleView.bind(this, this._mainView), 'security-main-view-sidebar-tree-item', 'lock-icon');
     this._sidebarMainViewElement.tooltip = title.textContent;
-    this._sidebarTree = new Security.SecurityPanelSidebarTree(this._sidebarMainViewElement, this.showOrigin.bind(this));
+    this._sidebarTree = new SecurityPanelSidebarTree(this._sidebarMainViewElement, this.showOrigin.bind(this));
     this.panelSidebarElement().appendChild(this._sidebarTree.element);
 
     /** @type {!Map<!Protocol.Network.LoaderId, !SDK.NetworkRequest>} */
@@ -28,14 +31,15 @@ export default class SecurityPanel extends UI.PanelWithSidebar {
     /** @type {!Map<!Network.NetworkLogView.MixedContentFilterValues, number>} */
     this._filterRequestCounts = new Map();
 
-    SDK.targetManager.observeModels(Security.SecurityModel, this);
+    SDK.targetManager.observeModels(SecurityModel, this);
   }
 
   /**
-   * @return {!Security.SecurityPanel}
+   * @return {!SecurityPanel}
    */
   static _instance() {
-    return /** @type {!Security.SecurityPanel} */ (self.runtime.sharedInstance(Security.SecurityPanel));
+    return (
+        /** @type {!SecurityPanel} */ (self.runtime.sharedInstance(SecurityPanel)));
   }
 
   /**
@@ -110,7 +114,7 @@ export default class SecurityPanel extends UI.PanelWithSidebar {
    * @param {!Common.Event} event
    */
   _onSecurityStateChanged(event) {
-    const data = /** @type {!Security.PageSecurityState} */ (event.data);
+    const data = /** @type {!PageSecurityState} */ (event.data);
     const securityState = /** @type {!Protocol.Security.SecurityState} */ (data.securityState);
     const explanations = /** @type {!Array<!Protocol.Security.SecurityStateExplanation>} */ (data.explanations);
     const summary = /** @type {?string} */ (data.summary);
@@ -118,7 +122,7 @@ export default class SecurityPanel extends UI.PanelWithSidebar {
   }
 
   /**
-   * @param {!Security.PageVisibleSecurityState} visibleSecurityState
+   * @param {!PageVisibleSecurityState} visibleSecurityState
    */
   _updateVisibleSecurityState(visibleSecurityState) {
     this._sidebarMainViewElement.setSecurityState(visibleSecurityState.securityState);
@@ -129,7 +133,7 @@ export default class SecurityPanel extends UI.PanelWithSidebar {
    * @param {!Common.Event} event
    */
   _onVisibleSecurityStateChanged(event) {
-    const data = /** @type {!Security.PageVisibleSecurityState} */ (event.data);
+    const data = /** @type {!PageVisibleSecurityState} */ (event.data);
     this._updateVisibleSecurityState(data);
   }
 
@@ -143,7 +147,7 @@ export default class SecurityPanel extends UI.PanelWithSidebar {
   showOrigin(origin) {
     const originState = this._origins.get(origin);
     if (!originState.originView) {
-      originState.originView = new Security.SecurityOriginView(this, origin, originState);
+      originState.originView = new SecurityOriginView(this, origin, originState);
     }
 
     this._setVisibleView(originState.originView);
@@ -299,12 +303,12 @@ export default class SecurityPanel extends UI.PanelWithSidebar {
    * @return {!Protocol.Security.SecurityState}
    */
   _securityStateMin(stateA, stateB) {
-    return Security.SecurityModel.SecurityStateComparator(stateA, stateB) < 0 ? stateA : stateB;
+    return SecurityModel.SecurityStateComparator(stateA, stateB) < 0 ? stateA : stateB;
   }
 
   /**
    * @override
-   * @param {!Security.SecurityModel} securityModel
+   * @param {!SecurityModel} securityModel
    */
   modelAdded(securityModel) {
     if (this._securityModel) {
@@ -315,8 +319,7 @@ export default class SecurityPanel extends UI.PanelWithSidebar {
     const resourceTreeModel = securityModel.resourceTreeModel();
     const networkManager = securityModel.networkManager();
     this._eventListeners = [
-      securityModel.addEventListener(
-          Security.SecurityModel.Events.VisibleSecurityStateChanged, this._onVisibleSecurityStateChanged, this),
+      securityModel.addEventListener(Events.VisibleSecurityStateChanged, this._onVisibleSecurityStateChanged, this),
       resourceTreeModel.addEventListener(
           SDK.ResourceTreeModel.Events.MainFrameNavigated, this._onMainFrameNavigated, this),
       resourceTreeModel.addEventListener(
@@ -334,7 +337,7 @@ export default class SecurityPanel extends UI.PanelWithSidebar {
 
   /**
    * @override
-   * @param {!Security.SecurityModel} securityModel
+   * @param {!SecurityModel} securityModel
    */
   modelRemoved(securityModel) {
     if (this._securityModel !== securityModel) {
@@ -390,7 +393,7 @@ export default class SecurityPanel extends UI.PanelWithSidebar {
  */
 export class SecurityPanelSidebarTree extends UI.TreeOutlineInShadow {
   /**
-   * @param {!Security.SecurityPanelSidebarTreeElement} mainViewElement
+   * @param {!SecurityPanelSidebarTreeElement} mainViewElement
    * @param {function(!Security.SecurityPanel.Origin)} showOriginInPanel
    */
   constructor(mainViewElement, showOriginInPanel) {
@@ -402,19 +405,19 @@ export class SecurityPanelSidebarTree extends UI.TreeOutlineInShadow {
     this._showOriginInPanel = showOriginInPanel;
     this._mainOrigin = null;
 
-    /** @type {!Map<!Security.SecurityPanelSidebarTree.OriginGroup, !UI.TreeElement>} */
+    /** @type {!Map<!OriginGroup, !UI.TreeElement>} */
     this._originGroups = new Map();
 
-    /** @type {!Map<!Security.SecurityPanelSidebarTree.OriginGroup, string>} */
+    /** @type {!Map<!OriginGroup, string>} */
     this._originGroupTitles = new Map([
-      [Security.SecurityPanelSidebarTree.OriginGroup.MainOrigin, ls`Main origin`],
-      [Security.SecurityPanelSidebarTree.OriginGroup.NonSecure, ls`Non-secure origins`],
-      [Security.SecurityPanelSidebarTree.OriginGroup.Secure, ls`Secure origins`],
-      [Security.SecurityPanelSidebarTree.OriginGroup.Unknown, ls`Unknown / canceled`],
+      [OriginGroup.MainOrigin, ls`Main origin`],
+      [OriginGroup.NonSecure, ls`Non-secure origins`],
+      [OriginGroup.Secure, ls`Secure origins`],
+      [OriginGroup.Unknown, ls`Unknown / canceled`],
     ]);
 
-    for (const key in Security.SecurityPanelSidebarTree.OriginGroup) {
-      const group = Security.SecurityPanelSidebarTree.OriginGroup[key];
+    for (const key in OriginGroup) {
+      const group = OriginGroup[key];
       const element = this._createOriginGroupElement(this._originGroupTitles.get(group));
       this._originGroups.set(group, element);
       this.appendChild(element);
@@ -426,9 +429,9 @@ export class SecurityPanelSidebarTree extends UI.TreeOutlineInShadow {
     const mainViewReloadMessage = new UI.TreeElement(Common.UIString('Reload to view details'));
     mainViewReloadMessage.selectable = false;
     mainViewReloadMessage.listItemElement.classList.add('security-main-view-reload-message');
-    this._originGroups.get(Security.SecurityPanelSidebarTree.OriginGroup.MainOrigin).appendChild(mainViewReloadMessage);
+    this._originGroups.get(OriginGroup.MainOrigin).appendChild(mainViewReloadMessage);
 
-    /** @type {!Map<!Security.SecurityPanel.Origin, !Security.SecurityPanelSidebarTreeElement>} */
+    /** @type {!Map<!Security.SecurityPanel.Origin, !SecurityPanelSidebarTreeElement>} */
     this._elementsByOrigin = new Map();
   }
 
@@ -460,8 +463,8 @@ export class SecurityPanelSidebarTree extends UI.TreeOutlineInShadow {
    * @param {!Protocol.Security.SecurityState} securityState
    */
   addOrigin(origin, securityState) {
-    const originElement = new Security.SecurityPanelSidebarTreeElement(
-        Security.SecurityPanel.createHighlightedUrl(origin, securityState), this._showOriginInPanel.bind(this, origin),
+    const originElement = new SecurityPanelSidebarTreeElement(
+        SecurityPanel.createHighlightedUrl(origin, securityState), this._showOriginInPanel.bind(this, origin),
         'security-sidebar-tree-item', 'security-property');
     originElement.tooltip = origin;
     this._elementsByOrigin.set(origin, originElement);
@@ -481,12 +484,12 @@ export class SecurityPanelSidebarTree extends UI.TreeOutlineInShadow {
    */
   updateOrigin(origin, securityState) {
     const originElement =
-        /** @type {!Security.SecurityPanelSidebarTreeElement} */ (this._elementsByOrigin.get(origin));
+        /** @type {!SecurityPanelSidebarTreeElement} */ (this._elementsByOrigin.get(origin));
     originElement.setSecurityState(securityState);
 
     let newParent;
     if (origin === this._mainOrigin) {
-      newParent = this._originGroups.get(Security.SecurityPanelSidebarTree.OriginGroup.MainOrigin);
+      newParent = this._originGroups.get(OriginGroup.MainOrigin);
       if (securityState === Protocol.Security.SecurityState.Secure) {
         newParent.title = ls`Main origin (secure)`;
       } else {
@@ -496,13 +499,13 @@ export class SecurityPanelSidebarTree extends UI.TreeOutlineInShadow {
     } else {
       switch (securityState) {
         case Protocol.Security.SecurityState.Secure:
-          newParent = this._originGroups.get(Security.SecurityPanelSidebarTree.OriginGroup.Secure);
+          newParent = this._originGroups.get(OriginGroup.Secure);
           break;
         case Protocol.Security.SecurityState.Unknown:
-          newParent = this._originGroups.get(Security.SecurityPanelSidebarTree.OriginGroup.Unknown);
+          newParent = this._originGroups.get(OriginGroup.Unknown);
           break;
         default:
-          newParent = this._originGroups.get(Security.SecurityPanelSidebarTree.OriginGroup.NonSecure);
+          newParent = this._originGroups.get(OriginGroup.NonSecure);
           break;
       }
     }
@@ -525,8 +528,8 @@ export class SecurityPanelSidebarTree extends UI.TreeOutlineInShadow {
       originGroup.removeChildren();
       originGroup.hidden = true;
     }
-    const mainOrigin = this._originGroups.get(Security.SecurityPanelSidebarTree.OriginGroup.MainOrigin);
-    mainOrigin.title = this._originGroupTitles.get(Security.SecurityPanelSidebarTree.OriginGroup.MainOrigin);
+    const mainOrigin = this._originGroups.get(OriginGroup.MainOrigin);
+    mainOrigin.title = this._originGroupTitles.get(OriginGroup.MainOrigin);
     mainOrigin.hidden = false;
   }
 
@@ -566,12 +569,12 @@ export class SecurityPanelSidebarTreeElement extends UI.TreeElement {
   }
 
   /**
-   * @param {!Security.SecurityPanelSidebarTreeElement} a
+   * @param {!SecurityPanelSidebarTreeElement} a
    * @param {!Security.SecurityPanelSidebarTreeElement} b
    * @return {number}
    */
   static SecurityStateComparator(a, b) {
-    return Security.SecurityModel.SecurityStateComparator(a.securityState(), b.securityState());
+    return SecurityModel.SecurityStateComparator(a.securityState(), b.securityState());
   }
 
   /**
@@ -608,7 +611,7 @@ export class SecurityPanelSidebarTreeElement extends UI.TreeElement {
  */
 export class SecurityMainView extends UI.VBox {
   /**
-   * @param {!Security.SecurityPanel} panel
+   * @param {!SecurityPanel} panel
    */
   constructor(panel) {
     super(true);
@@ -677,7 +680,7 @@ export class SecurityMainView extends UI.VBox {
     text.createChild('div').textContent = explanation.description;
 
     if (explanation.certificate.length) {
-      text.appendChild(Security.SecurityPanel.createCertificateViewerButtonForCert(
+      text.appendChild(SecurityPanel.createCertificateViewerButtonForCert(
           Common.UIString('View certificate'), explanation.certificate));
     }
 
@@ -733,7 +736,7 @@ export class SecurityMainView extends UI.VBox {
   }
 
   /**
-   * @param {!Security.PageVisibleSecurityState} visibleSecurityState
+   * @param {!PageVisibleSecurityState} visibleSecurityState
    */
   updateVisibleSecurityState(visibleSecurityState) {
     // Remove old state.
@@ -758,7 +761,7 @@ export class SecurityMainView extends UI.VBox {
 
     const {summary, explanations} = this._getSecuritySummaryAndExplanations(visibleSecurityState);
     // Use override summary if present, otherwise use base explanation
-    this._summaryText.textContent = summary || Security.SummaryMessages[this._securityState];
+    this._summaryText.textContent = summary || SummaryMessages[this._securityState];
 
     this._explanations = this._orderExplanations(explanations);
 
@@ -766,8 +769,8 @@ export class SecurityMainView extends UI.VBox {
   }
 
   /**
-   * @param {!Security.PageVisibleSecurityState} visibleSecurityState
-   * @returns {!{summary: (string|undefined), explanations: !Array<Security.SecurityStyleExplanation>}}
+   * @param {!PageVisibleSecurityState} visibleSecurityState
+   * @returns {!{summary: (string|undefined), explanations: !Array<SecurityStyleExplanation>}}
    */
   _getSecuritySummaryAndExplanations(visibleSecurityState) {
     const {securityState, securityStateIssueIds} = visibleSecurityState;
@@ -777,7 +780,7 @@ export class SecurityMainView extends UI.VBox {
     if (securityStateIssueIds.includes('malicious-content')) {
       summary = ls`This page is dangerous (flagged by Google Safe Browsing).`;
       // Always insert SafeBrowsing explanation at the front.
-      explanations.unshift(new Security.SecurityStyleExplanation(
+      explanations.unshift(new SecurityStyleExplanation(
           Protocol.Security.SecurityState.Insecure, undefined, ls`Flagged by Google Safe Browsing`,
           ls`To check this page's status, visit g.co/safebrowsingstatus.`));
     } else if (
@@ -794,7 +797,7 @@ export class SecurityMainView extends UI.VBox {
         securityStateIssueIds.includes('scheme-is-not-cryptographic')) {
       summary = summary || ls`This page is insecure (unencrypted HTTP).`;
       if (securityStateIssueIds.includes('insecure-input-events')) {
-        explanations.push(new Security.SecurityStyleExplanation(
+        explanations.push(new SecurityStyleExplanation(
             Protocol.Security.SecurityState.Insecure, undefined, ls`Form field edited on a non-secure page`,
             ls`Data was entered in a field on a non-secure page. A warning has been added to the URL bar.`));
       }
@@ -815,9 +818,9 @@ export class SecurityMainView extends UI.VBox {
   }
 
   /**
-   * @param {!Security.PageVisibleSecurityState} visibleSecurityState
+   * @param {!PageVisibleSecurityState} visibleSecurityState
    * @param {string|undefined} summary
-   * @param {!Array<!Security.SecurityStyleExplanation>} explanations
+   * @param {!Array<!SecurityStyleExplanation>} explanations
    * @returns {string|undefined}
    */
   _explainSafetyTipSecurity(visibleSecurityState, summary, explanations) {
@@ -844,7 +847,7 @@ export class SecurityMainView extends UI.VBox {
       // it's empty. The title set here can be overridden by later checks (e.g.
       // bad HTTP).
       summary = summary || ls`This page is suspicious (flagged by Chrome).`;
-      explanations.push(new Security.SecurityStyleExplanation(
+      explanations.push(new SecurityStyleExplanation(
           Protocol.Security.SecurityState.Insecure, undefined, currentExplanations[0].summary,
           currentExplanations[0].description));
     }
@@ -852,8 +855,8 @@ export class SecurityMainView extends UI.VBox {
   }
 
   /**
-   * @param {!Security.PageVisibleSecurityState} visibleSecurityState
-   * @param {!Array<!Security.SecurityStyleExplanation>} explanations
+   * @param {!PageVisibleSecurityState} visibleSecurityState
+   * @param {!Array<!SecurityStyleExplanation>} explanations
    */
   _explainCertificateSecurity(visibleSecurityState, explanations) {
     const {certificateSecurityState, securityStateIssueIds} = visibleSecurityState;
@@ -862,18 +865,18 @@ export class SecurityMainView extends UI.VBox {
       const explanationSummary = ls`insecure (SHA-1)`;
       const description = ls`The certificate chain for this site contains a certificate signed using SHA-1.`;
       if (certificateSecurityState.certificateHasWeakSignature) {
-        explanations.push(new Security.SecurityStyleExplanation(
+        explanations.push(new SecurityStyleExplanation(
             Protocol.Security.SecurityState.Insecure, title, explanationSummary, description,
             certificateSecurityState.certificate, Protocol.Security.MixedContentType.None));
       } else {
-        explanations.push(new Security.SecurityStyleExplanation(
+        explanations.push(new SecurityStyleExplanation(
             Protocol.Security.SecurityState.Neutral, title, explanationSummary, description,
             certificateSecurityState.certificate, Protocol.Security.MixedContentType.None));
       }
     }
 
     if (certificateSecurityState && securityStateIssueIds.includes('cert-missing-subject-alt-name')) {
-      explanations.push(new Security.SecurityStyleExplanation(
+      explanations.push(new SecurityStyleExplanation(
           Protocol.Security.SecurityState.Insecure, title, ls`Subject Alternative Name missing`,
           ls
           `The certificate for this site does not contain a Subject Alternative Name extension containing a domain name or IP address.`,
@@ -881,12 +884,12 @@ export class SecurityMainView extends UI.VBox {
     }
 
     if (certificateSecurityState && certificateSecurityState.certificateNetworkError !== null) {
-      explanations.push(new Security.SecurityStyleExplanation(
+      explanations.push(new SecurityStyleExplanation(
           Protocol.Security.SecurityState.Insecure, title, ls`missing`,
           ls`This site is missing a valid, trusted certificate (${certificateSecurityState.certificateNetworkError}).`,
           certificateSecurityState.certificate, Protocol.Security.MixedContentType.None));
     } else if (certificateSecurityState && !certificateSecurityState.certificateHasSha1Signature) {
-      explanations.push(new Security.SecurityStyleExplanation(
+      explanations.push(new SecurityStyleExplanation(
           Protocol.Security.SecurityState.Secure, title, ls`valid and trusted`,
           ls`The connection to this site is using a valid, trusted server certificate issued by ${
               certificateSecurityState.issuer}.`,
@@ -894,21 +897,21 @@ export class SecurityMainView extends UI.VBox {
     }
 
     if (securityStateIssueIds.includes('pkp-bypassed')) {
-      explanations.push(new Security.SecurityStyleExplanation(
+      explanations.push(new SecurityStyleExplanation(
           Protocol.Security.SecurityState.Info, title, ls`Public-Key-Pinning bypassed`,
           ls`Public-Key-Pinning was bypassed by a local root certificate.`));
     }
 
     if (certificateSecurityState && certificateSecurityState.isCertificateExpiringSoon()) {
-      explanations.push(new Security.SecurityStyleExplanation(
+      explanations.push(new SecurityStyleExplanation(
           Protocol.Security.SecurityState.Info, undefined, ls`Certificate expires soon`,
           ls`The certificate for this site expires in less than 48 hours and needs to be renewed.`));
     }
   }
 
   /**
-   * @param {!Security.PageVisibleSecurityState} visibleSecurityState
-   * @param {!Array<!Security.SecurityStyleExplanation>} explanations
+   * @param {!PageVisibleSecurityState} visibleSecurityState
+   * @param {!Array<!SecurityStyleExplanation>} explanations
    */
   _explainConnectionSecurity(visibleSecurityState, explanations) {
     const certificateSecurityState = visibleSecurityState.certificateSecurityState;
@@ -918,7 +921,7 @@ export class SecurityMainView extends UI.VBox {
 
     const title = ls`Connection`;
     if (certificateSecurityState.modernSSL) {
-      explanations.push(new Security.SecurityStyleExplanation(
+      explanations.push(new SecurityStyleExplanation(
           Protocol.Security.SecurityState.Secure, title, ls`secure connection settings`,
           ls`The connection to this site is encrypted and authenticated using ${certificateSecurityState.protocol}, ${
               certificateSecurityState.getKeyExchangeName()}, and ${certificateSecurityState.getCipherFullName()}.`));
@@ -941,7 +944,7 @@ export class SecurityMainView extends UI.VBox {
           `The server signature uses SHA-1, which is obsolete. Enable a SHA-2 signature algorithm instead. (Note this is different from the signature in the certificate.)`);
     }
 
-    explanations.push(new Security.SecurityStyleExplanation(
+    explanations.push(new SecurityStyleExplanation(
         Protocol.Security.SecurityState.Info, title, ls`obsolete connection settings`,
         ls`The connection to this site is encrypted and authenticated using ${certificateSecurityState.protocol}, ${
             certificateSecurityState.getKeyExchangeName()}, and ${certificateSecurityState.getCipherFullName()}.`,
@@ -949,8 +952,8 @@ export class SecurityMainView extends UI.VBox {
   }
 
   /**
-   * @param {!Security.PageVisibleSecurityState} visibleSecurityState
-   * @param {!Array<!Security.SecurityStyleExplanation>} explanations
+   * @param {!PageVisibleSecurityState} visibleSecurityState
+   * @param {!Array<!SecurityStyleExplanation>} explanations
    */
   _explainContentSecurity(visibleSecurityState, explanations) {
     // Add the secure explanation unless there is an issue.
@@ -960,7 +963,7 @@ export class SecurityMainView extends UI.VBox {
 
     if (securityStateIssueIds.includes('ran-mixed-content')) {
       addSecureExplanation = false;
-      explanations.push(new Security.SecurityStyleExplanation(
+      explanations.push(new SecurityStyleExplanation(
           Protocol.Security.SecurityState.Insecure, title, ls`active mixed content`,
           ls`You have recently allowed non-secure content (such as scripts or iframes) to run on this site.`, [],
           Protocol.Security.MixedContentType.Blockable));
@@ -968,14 +971,14 @@ export class SecurityMainView extends UI.VBox {
 
     if (securityStateIssueIds.includes('displayed-mixed-content')) {
       addSecureExplanation = false;
-      explanations.push(new Security.SecurityStyleExplanation(
+      explanations.push(new SecurityStyleExplanation(
           Protocol.Security.SecurityState.Neutral, title, ls`mixed content`, ls`This page includes HTTP resources.`, [],
           Protocol.Security.MixedContentType.OptionallyBlockable));
     }
 
     if (securityStateIssueIds.includes('contained-mixed-form')) {
       addSecureExplanation = false;
-      explanations.push(new Security.SecurityStyleExplanation(
+      explanations.push(new SecurityStyleExplanation(
           Protocol.Security.SecurityState.Neutral, title, ls`non-secure form`,
           ls`This page includes a form with a non-secure "action" attribute.`));
     }
@@ -984,7 +987,7 @@ export class SecurityMainView extends UI.VBox {
         visibleSecurityState.certificateSecurityState.certificateNetworkError === null) {
       if (securityStateIssueIds.includes('ran-content-with-cert-error')) {
         addSecureExplanation = false;
-        explanations.push(new Security.SecurityStyleExplanation(
+        explanations.push(new SecurityStyleExplanation(
             Protocol.Security.SecurityState.Insecure, title, ls`active content with certificate errors`,
             ls
             `You have recently allowed content loaded with certificate errors (such as scripts or iframes) to run on this site.`));
@@ -992,7 +995,7 @@ export class SecurityMainView extends UI.VBox {
 
       if (securityStateIssueIds.includes('displayed-content-with-cert-errors')) {
         addSecureExplanation = false;
-        explanations.push(new Security.SecurityStyleExplanation(
+        explanations.push(new SecurityStyleExplanation(
             Protocol.Security.SecurityState.Neutral, title, ls`content with certificate errors`,
             ls`This page includes resources that were loaded with certificate errors.`));
       }
@@ -1000,7 +1003,7 @@ export class SecurityMainView extends UI.VBox {
 
     if (addSecureExplanation) {
       if (!securityStateIssueIds.includes('scheme-is-not-cryptographic')) {
-        explanations.push(new Security.SecurityStyleExplanation(
+        explanations.push(new SecurityStyleExplanation(
             Protocol.Security.SecurityState.Secure, title, ls`all served securely`,
             ls`All resources on this page are served securely.`));
       }
@@ -1008,7 +1011,7 @@ export class SecurityMainView extends UI.VBox {
   }
 
   /**
-   * @param {!Array<!Security.SecurityStyleExplanation>} explanations
+   * @param {!Array<!SecurityStyleExplanation>} explanations
    * @return {!Array<!Security.SecurityStyleExplanation>}
    */
   _orderExplanations(explanations) {
@@ -1116,7 +1119,7 @@ export class SecurityMainView extends UI.VBox {
  */
 export class SecurityOriginView extends UI.VBox {
   /**
-   * @param {!Security.SecurityPanel} panel
+   * @param {!SecurityPanel} panel
    * @param {!Security.SecurityPanel.Origin} origin
    * @param {!Security.SecurityPanel.OriginState} originState
    */
@@ -1138,7 +1141,7 @@ export class SecurityOriginView extends UI.VBox {
     this._originLockIcon = originDisplay.createChild('span', 'security-property');
     this._originLockIcon.classList.add('security-property-' + originState.securityState);
 
-    originDisplay.appendChild(Security.SecurityPanel.createHighlightedUrl(origin, originState.securityState));
+    originDisplay.appendChild(SecurityPanel.createHighlightedUrl(origin, originState.securityState));
 
     const originNetworkDiv = titleSection.createChild('div', 'view-network-button');
     const originNetworkLink = originNetworkDiv.createChild('span', 'devtools-link origin-button');
@@ -1159,7 +1162,7 @@ export class SecurityOriginView extends UI.VBox {
       connectionDiv.textContent = ls`Connection`;
       UI.ARIAUtils.markAsHeading(connectionDiv, 2);
 
-      let table = new Security.SecurityDetailsTable();
+      let table = new SecurityDetailsTable();
       connectionSection.appendChild(table.element());
       table.addRow(Common.UIString('Protocol'), originState.securityDetails.protocol);
       if (originState.securityDetails.keyExchange) {
@@ -1194,7 +1197,7 @@ export class SecurityOriginView extends UI.VBox {
       const validFromString = new Date(1000 * originState.securityDetails.validFrom).toUTCString();
       const validUntilString = new Date(1000 * originState.securityDetails.validTo).toUTCString();
 
-      table = new Security.SecurityDetailsTable();
+      table = new SecurityDetailsTable();
       certificateSection.appendChild(table.element());
       table.addRow(Common.UIString('Subject'), originState.securityDetails.subjectName);
       table.addRow(Common.UIString('SAN'), sanDiv);
@@ -1204,7 +1207,7 @@ export class SecurityOriginView extends UI.VBox {
 
       table.addRow(
           '',
-          Security.SecurityPanel.createCertificateViewerButtonForOrigin(
+          SecurityPanel.createCertificateViewerButtonForOrigin(
               Common.UIString('Open full certificate details'), origin));
 
       if (!sctSection) {
@@ -1212,7 +1215,7 @@ export class SecurityOriginView extends UI.VBox {
       }
 
       // Show summary of SCT(s) of Certificate Transparency.
-      const sctSummaryTable = new Security.SecurityDetailsTable();
+      const sctSummaryTable = new SecurityDetailsTable();
       sctSummaryTable.element().classList.add('sct-summary');
       sctSection.appendChild(sctSummaryTable.element());
       for (let i = 0; i < sctListLength; i++) {
@@ -1225,7 +1228,7 @@ export class SecurityOriginView extends UI.VBox {
       const sctTableWrapper = sctSection.createChild('div', 'sct-details');
       sctTableWrapper.classList.add('hidden');
       for (let i = 0; i < sctListLength; i++) {
-        const sctTable = new Security.SecurityDetailsTable();
+        const sctTable = new SecurityDetailsTable();
         sctTableWrapper.appendChild(sctTable.element());
         const sct = originState.securityDetails.signedCertificateTimestampList[i];
         sctTable.addRow(Common.UIString('Log name'), sct.logDescription);
@@ -1393,54 +1396,3 @@ export class SecurityDetailsTable {
     }
   }
 }
-
-/* Legacy exported object */
-self.Security = self.Security || {};
-
-/* Legacy exported object */
-Security = Security || {};
-
-/**
- * @constructor
- */
-Security.SecurityPanel = SecurityPanel;
-
-/** @typedef {string} */
-Security.SecurityPanel.Origin;
-
-/**
- * @typedef {Object}
- * @property {!Protocol.Security.SecurityState} securityState
- * @property {?Protocol.Network.SecurityDetails} securityDetails
- * @property {?bool} loadedFromCache
- * @property {?Security.SecurityOriginView} originView
- */
-Security.SecurityPanel.OriginState;
-
-/**
- * @constructor
- */
-Security.SecurityPanelSidebarTree = SecurityPanelSidebarTree;
-
-/** @enum {symbol} */
-Security.SecurityPanelSidebarTree.OriginGroup = OriginGroup;
-
-/**
- * @constructor
- */
-Security.SecurityPanelSidebarTreeElement = SecurityPanelSidebarTreeElement;
-
-/**
- * @constructor
- */
-Security.SecurityMainView = SecurityMainView;
-
-/**
- * @constructor
- */
-Security.SecurityOriginView = SecurityOriginView;
-
-/**
- * @constructor
- */
-Security.SecurityDetailsTable = SecurityDetailsTable;

@@ -13,6 +13,7 @@
     "scripts": [],
     "modules": [
         "security.js",
+        "security-legacy.js",
         "SecurityModel.js",
         "SecurityPanel.js"
     ],

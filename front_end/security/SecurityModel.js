@@ -1,10 +1,11 @@
 // Copyright 2015 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
 /**
  * @unrestricted
  */
-export default class SecurityModel extends SDK.SDKModel {
+export class SecurityModel extends SDK.SDKModel {
   /**
    * @param {!SDK.Target} target
    */
@@ -250,40 +251,3 @@ class SecurityDispatcher {
   certificateError(eventId, errorType, requestURL) {
   }
 }
-
-/* Legacy exported object */
-self.Security = self.Security || {};
-
-/* Legacy exported object */
-Security = Security || {};
-
-/**
- * @constructor
- */
-Security.SecurityModel = SecurityModel;
-
-/** @enum {symbol} */
-Security.SecurityModel.Events = Events;
-
-/** @type {!Object<string, string>} */
-Security.SummaryMessages = SummaryMessages;
-
-/**
- * @constructor
- */
-Security.PageSecurityState = PageSecurityState;
-
-/**
- * @constructor
- */
-Security.PageVisibleSecurityState = PageVisibleSecurityState;
-
-/**
- * @constructor
- */
-Security.CertificateSecurityState = CertificateSecurityState;
-
-/**
- * @constructor
- */
-Security.SecurityStyleExplanation = SecurityStyleExplanation;

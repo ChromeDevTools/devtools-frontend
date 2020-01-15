@@ -4,7 +4,7 @@
 /**
  * @unrestricted
  */
-export default class ServiceManager {
+export class ServiceManager {
   /**
    * @param {string} serviceName
    * @return {!Promise<?Service>}
@@ -56,7 +56,7 @@ export default class ServiceManager {
 /**
  * @unrestricted
  */
-class Connection {
+export class Connection {
   /**
    * @param {!ServicePort} port
    */
@@ -221,7 +221,7 @@ export class Service {
  * @implements {ServicePort}
  * @unrestricted
  */
-class RemoteServicePort {
+export class RemoteServicePort {
   /**
    * @param {string} url
    */
@@ -336,7 +336,7 @@ class RemoteServicePort {
  * @implements {ServicePort}
  * @unrestricted
  */
-class WorkerServicePort {
+export class WorkerServicePort {
   /**
    * @param {!Worker} worker
    */
@@ -401,17 +401,3 @@ class WorkerServicePort {
     });
   }
 }
-
-/* Legacy exported object */
-self.Services = self.Services || {};
-
-/* Legacy exported object */
-Services = Services || {};
-
-/** @constructor */
-Services.ServiceManager = ServiceManager;
-
-/** @constructor */
-Services.ServiceManager.Service = Service;
-
-Services.serviceManager = new ServiceManager();

@@ -24,8 +24,11 @@ export class WebAudioView extends UI.ThrottledWidget {
     toolbar.appendSeparator();
     toolbar.appendToolbarItem(this._contextSelector.toolbarItem());
 
+    // Create content container
+    this._contentContainer = this.contentElement.createChild('div', 'web-audio-content-container vbox flex-auto');
+
     // Creates the detail view.
-    this._detailViewContainer = this.contentElement.createChild('div', 'vbox flex-auto');
+    this._detailViewContainer = this._contentContainer.createChild('div', 'web-audio-details-container vbox flex-auto');
 
     this._graphManager = new GraphManager();
 
@@ -40,7 +43,7 @@ export class WebAudioView extends UI.ThrottledWidget {
     this._landingPage.show(this._detailViewContainer);
 
     // Creates the summary bar.
-    this._summaryBarContainer = this.contentElement.createChild('div', 'web-audio-summary-container');
+    this._summaryBarContainer = this._contentContainer.createChild('div', 'web-audio-summary-container');
 
     this._contextSelector.addEventListener(SelectorEvents.ContextSelected, event => {
       const context =

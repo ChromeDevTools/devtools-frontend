@@ -11,6 +11,7 @@
 .web-audio-toolbar-container {
   background-color: var(--toolbar-bg-color);
   border-bottom: var(--divider-border);
+  min-height: fit-content;
 }
 
 .web-audio-toolbar {
@@ -35,6 +36,18 @@
 .web-audio-landing-page > div > p {
   flex: none;
   white-space: pre-line;
+}
+
+.web-audio-content-container {
+  overflow-y: auto;
+}
+
+.web-audio-details-container {
+  min-height: fit-content;
+}
+
+.web-audio-summary-container {
+  flex-shrink: 0;
 }
 
 .context-detail-container {

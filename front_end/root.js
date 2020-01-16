@@ -12,7 +12,7 @@ import './sdk/sdk.js';
 import './ui/ui-legacy.js';
 
 import './services/services-legacy.js';
-import './workspace/workspace.js';
+import './workspace/workspace-legacy.js';
 import './bindings/bindings-legacy.js';
 import './components/components-legacy.js';
 import './persistence/persistence-legacy.js';

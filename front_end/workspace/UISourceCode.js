@@ -27,13 +27,16 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+import {Events as WorkspaceImplEvents, Project, projectTypes} from './WorkspaceImpl.js';  // eslint-disable-line no-unused-vars
+
 /**
  * @implements {Common.ContentProvider}
  * @unrestricted
  */
-export default class UISourceCode extends Common.Object {
+export class UISourceCode extends Common.Object {
   /**
-   * @param {!Workspace.Project} project
+   * @param {!Project} project
    * @param {string} url
    * @param {!Common.ResourceType} contentType
    */
@@ -136,7 +139,7 @@ export default class UISourceCode extends Common.Object {
     }
     let name = this._name;
     try {
-      if (this.project().type() === Workspace.projectTypes.FileSystem) {
+      if (this.project().type() === projectTypes.FileSystem) {
         name = unescape(name);
       } else {
         name = decodeURI(name);
@@ -201,7 +204,7 @@ export default class UISourceCode extends Common.Object {
     }
     this.dispatchEventToListeners(Events.TitleChanged, this);
     this.project().workspace().dispatchEventToListeners(
-        Workspace.Workspace.Events.UISourceCodeRenamed, {oldURL: oldURL, uiSourceCode: this});
+        WorkspaceImplEvents.UISourceCodeRenamed, {oldURL: oldURL, uiSourceCode: this});
   }
 
   /**
@@ -230,7 +233,7 @@ export default class UISourceCode extends Common.Object {
   }
 
   /**
-   * @return {!Workspace.Project}
+   * @return {!Project}
    */
   project() {
     return this._project;
@@ -347,9 +350,9 @@ export default class UISourceCode extends Common.Object {
     this._innerResetWorkingCopy();
     const data = {uiSourceCode: this, content, encoded: this._contentEncoded};
     this.dispatchEventToListeners(Events.WorkingCopyCommitted, data);
-    this._project.workspace().dispatchEventToListeners(Workspace.Workspace.Events.WorkingCopyCommitted, data);
+    this._project.workspace().dispatchEventToListeners(WorkspaceImplEvents.WorkingCopyCommitted, data);
     if (committedByUser) {
-      this._project.workspace().dispatchEventToListeners(Workspace.Workspace.Events.WorkingCopyCommittedByUser, data);
+      this._project.workspace().dispatchEventToListeners(WorkspaceImplEvents.WorkingCopyCommittedByUser, data);
     }
   }
 
@@ -423,8 +426,7 @@ export default class UISourceCode extends Common.Object {
   _workingCopyChanged() {
     this._removeAllMessages();
     this.dispatchEventToListeners(Events.WorkingCopyChanged, this);
-    this._project.workspace().dispatchEventToListeners(
-        Workspace.Workspace.Events.WorkingCopyChanged, {uiSourceCode: this});
+    this._project.workspace().dispatchEventToListeners(WorkspaceImplEvents.WorkingCopyChanged, {uiSourceCode: this});
   }
 
   removeWorkingCopyGetter() {
@@ -827,27 +829,3 @@ export class UISourceCodeMetadata {
     this.contentSize = contentSize;
   }
 }
-
-/* Legacy exported object */
-self.Workspace = self.Workspace || {};
-
-/* Legacy exported object */
-Workspace = Workspace || {};
-
-/** @constructor */
-Workspace.UISourceCode = UISourceCode;
-
-/** @enum {symbol} */
-Workspace.UISourceCode.Events = Events;
-
-/** @constructor */
-Workspace.UISourceCode.Message = Message;
-
-/** @constructor */
-Workspace.UISourceCode.LineMarker = LineMarker;
-
-/** @constructor */
-Workspace.UILocation = UILocation;
-
-/** @constructor */
-Workspace.UISourceCodeMetadata = UISourceCodeMetadata;

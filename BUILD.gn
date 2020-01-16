@@ -1143,6 +1143,7 @@ all_devtools_modules = [
   "front_end/workspace/FileManager.js",
   "front_end/workspace/UISourceCode.js",
   "front_end/workspace/workspace.js",
+  "front_end/workspace/workspace-legacy.js",
   "front_end/workspace/WorkspaceImpl.js",
 ]
 
@@ -2046,6 +2047,7 @@ copied_devtools_modules = [
   "$resources_out_dir/workspace/FileManager.js",
   "$resources_out_dir/workspace/UISourceCode.js",
   "$resources_out_dir/workspace/workspace.js",
+  "$resources_out_dir/workspace/workspace-legacy.js",
   "$resources_out_dir/workspace/WorkspaceImpl.js",
 ]
 

@@ -27,6 +27,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+import {UISourceCode, UISourceCodeMetadata} from './UISourceCode.js';  // eslint-disable-line no-unused-vars
+
 /**
  * @interface
  */
@@ -98,14 +101,14 @@ export class Project {
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
-   * @return {!Promise<?Workspace.UISourceCodeMetadata>}
+   * @param {!UISourceCode} uiSourceCode
+   * @return {!Promise<?UISourceCodeMetadata>}
    */
   requestMetadata(uiSourceCode) {
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!UISourceCode} uiSourceCode
    * @returns {!Promise<!Common.DeferredContent>}
    */
   requestFileContent(uiSourceCode) {
@@ -118,7 +121,7 @@ export class Project {
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!UISourceCode} uiSourceCode
    * @param {string} newContent
    * @param {boolean} isBase64
    * @return {!Promise}
@@ -127,14 +130,14 @@ export class Project {
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!UISourceCode} uiSourceCode
    * @return {string}
    */
   fullDisplayName(uiSourceCode) {
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!UISourceCode} uiSourceCode
    * @return {string}
    */
   mimeType(uiSourceCode) {
@@ -147,7 +150,7 @@ export class Project {
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!UISourceCode} uiSourceCode
    * @param {string} newName
    * @param {function(boolean, string=, string=, !Common.ResourceType=)} callback
    */
@@ -172,7 +175,7 @@ export class Project {
    * @param {?string} name
    * @param {string} content
    * @param {boolean=} isBase64
-   * @return {!Promise<?Workspace.UISourceCode>}
+   * @return {!Promise<?UISourceCode>}
    */
   createFile(path, name, content, isBase64) {
   }
@@ -184,7 +187,7 @@ export class Project {
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!UISourceCode} uiSourceCode
    */
   deleteFile(uiSourceCode) {
   }
@@ -193,7 +196,7 @@ export class Project {
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!UISourceCode} uiSourceCode
    * @param {string} query
    * @param {boolean} caseSensitive
    * @param {boolean} isRegex
@@ -219,13 +222,13 @@ export class Project {
 
   /**
    * @param {string} url
-   * @return {?Workspace.UISourceCode}
+   * @return {?UISourceCode}
    */
   uiSourceCodeForURL(url) {
   }
 
   /**
-   * @return {!Array.<!Workspace.UISourceCode>}
+   * @return {!Array.<!UISourceCode>}
    */
   uiSourceCodes() {
   }
@@ -250,7 +253,7 @@ export class ProjectStore {
   /**
    * @param {!WorkspaceImpl} workspace
    * @param {string} id
-   * @param {!Workspace.projectTypes} type
+   * @param {projectTypes} type
    * @param {string} displayName
    */
   constructor(workspace, id, type, displayName) {
@@ -259,9 +262,9 @@ export class ProjectStore {
     this._type = type;
     this._displayName = displayName;
 
-    /** @type {!Map.<string, !{uiSourceCode: !Workspace.UISourceCode, index: number}>} */
+    /** @type {!Map.<string, !{uiSourceCode: !UISourceCode, index: number}>} */
     this._uiSourceCodesMap = new Map();
-    /** @type {!Array.<!Workspace.UISourceCode>} */
+    /** @type {!Array.<!UISourceCode>} */
     this._uiSourceCodesList = [];
 
     this._project = /** @type {!Project} */ (this);
@@ -298,14 +301,14 @@ export class ProjectStore {
   /**
    * @param {string} url
    * @param {!Common.ResourceType} contentType
-   * @return {!Workspace.UISourceCode}
+   * @return {!UISourceCode}
    */
   createUISourceCode(url, contentType) {
-    return new Workspace.UISourceCode(this._project, url, contentType);
+    return new UISourceCode(this._project, url, contentType);
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!UISourceCode} uiSourceCode
    * @return {boolean}
    */
   addUISourceCode(uiSourceCode) {
@@ -346,7 +349,7 @@ export class ProjectStore {
 
   /**
    * @param {string} url
-   * @return {?Workspace.UISourceCode}
+   * @return {?UISourceCode}
    */
   uiSourceCodeForURL(url) {
     const entry = this._uiSourceCodesMap.get(url);
@@ -354,21 +357,21 @@ export class ProjectStore {
   }
 
   /**
-   * @return {!Array.<!Workspace.UISourceCode>}
+   * @return {!Array.<!UISourceCode>}
    */
   uiSourceCodes() {
     return this._uiSourceCodesList;
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!UISourceCode} uiSourceCode
    * @param {string} newName
    */
   renameUISourceCode(uiSourceCode, newName) {
     const oldPath = uiSourceCode.url();
     const newPath = uiSourceCode.parentURL() ? uiSourceCode.parentURL() + '/' + newName : newName;
     const value =
-        /** @type {!{uiSourceCode: !Workspace.UISourceCode, index: number}} */ (this._uiSourceCodesMap.get(oldPath));
+        /** @type {!{uiSourceCode: !UISourceCode, index: number}} */ (this._uiSourceCodesMap.get(oldPath));
     this._uiSourceCodesMap.set(newPath, value);
     this._uiSourceCodesMap.delete(oldPath);
   }
@@ -377,7 +380,7 @@ export class ProjectStore {
 /**
  * @unrestricted
  */
-export default class WorkspaceImpl extends Common.Object {
+export class WorkspaceImpl extends Common.Object {
   constructor() {
     super();
     /** @type {!Map<string, !Project>} */
@@ -388,7 +391,7 @@ export default class WorkspaceImpl extends Common.Object {
   /**
    * @param {string} projectId
    * @param {string} url
-   * @return {?Workspace.UISourceCode}
+   * @return {?UISourceCode}
    */
   uiSourceCode(projectId, url) {
     const project = this._projects.get(projectId);
@@ -397,7 +400,7 @@ export default class WorkspaceImpl extends Common.Object {
 
   /**
    * @param {string} url
-   * @return {?Workspace.UISourceCode}
+   * @return {?UISourceCode}
    */
   uiSourceCodeForURL(url) {
     for (const project of this._projects.values()) {
@@ -411,7 +414,7 @@ export default class WorkspaceImpl extends Common.Object {
 
   /**
    * @param {string} type
-   * @return {!Array.<!Workspace.UISourceCode>}
+   * @return {!Array.<!UISourceCode>}
    */
   uiSourceCodesForProjectType(type) {
     let result = [];
@@ -467,7 +470,7 @@ export default class WorkspaceImpl extends Common.Object {
   }
 
   /**
-   * @return {!Array.<!Workspace.UISourceCode>}
+   * @return {!Array.<!UISourceCode>}
    */
   uiSourceCodes() {
     let result = [];
@@ -503,32 +506,3 @@ export const Events = {
   ProjectAdded: Symbol('ProjectAdded'),
   ProjectRemoved: Symbol('ProjectRemoved')
 };
-
-/* Legacy exported object */
-self.Workspace = self.Workspace || {};
-
-/* Legacy exported object */
-Workspace = Workspace || {};
-
-/** @constructor */
-Workspace.Workspace = WorkspaceImpl;
-
-/** @enum {symbol} */
-Workspace.Workspace.Events = Events;
-
-/** @interface */
-Workspace.ProjectSearchConfig = ProjectSearchConfig;
-
-/** @interface */
-Workspace.Project = Project;
-
-/** @enum {string} */
-Workspace.projectTypes = projectTypes;
-
-/** @constructor */
-Workspace.ProjectStore = ProjectStore;
-
-/**
- * @type {!WorkspaceImpl}
- */
-Workspace.workspace;

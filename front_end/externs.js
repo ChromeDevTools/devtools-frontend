@@ -74,13 +74,6 @@ Array.prototype.remove = function(value, onlyFirst) {};
  */
 Array.prototype.keySet = function() {};
 /**
- * @param {number} index
- * @return {!Array.<!T>}
- * @this {Array.<T>}
- * @template T
- */
-Array.prototype.rotate = function(index) {};
-/**
  * @param {!S} object
  * @param {function(!S,!T):number=} comparator
  * @param {number=} left

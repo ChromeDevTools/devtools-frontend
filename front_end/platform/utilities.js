@@ -507,23 +507,6 @@ Object.defineProperty(Array.prototype, 'remove', {
   configurable: true
 });
 
-Object.defineProperty(Array.prototype, 'rotate', {
-  /**
-   * @param {number} index
-   * @return {!Array.<!T>}
-   * @this {Array.<!T>}
-   * @template T
-   */
-  value: function(index) {
-    const result = [];
-    for (let i = index; i < index + this.length; ++i) {
-      result.push(this[i % this.length]);
-    }
-    return result;
-  },
-  configurable: true
-});
-
 (function() {
 const partition = {
   /**

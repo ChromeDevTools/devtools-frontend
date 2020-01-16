@@ -538,25 +538,6 @@ Object.defineProperty(Array.prototype, 'rotate', {
   configurable: true
 });
 
-Object.defineProperty(Array.prototype, 'sortNumbers', {
-  /**
-   * @this {Array.<number>}
-   */
-  value: function() {
-    /**
-     * @param {number} a
-     * @param {number} b
-     * @return {number}
-     */
-    function numericComparator(a, b) {
-      return a - b;
-    }
-
-    this.sort(numericComparator);
-  },
-  configurable: true
-});
-
 (function() {
 const partition = {
   /**

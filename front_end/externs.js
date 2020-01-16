@@ -87,10 +87,6 @@ Array.prototype.keySet = function() {};
  */
 Array.prototype.rotate = function(index) {};
 /**
- * @this {Array.<number>}
- */
-Array.prototype.sortNumbers = function() {};
-/**
  * @param {!S} object
  * @param {function(!S,!T):number=} comparator
  * @param {number=} left

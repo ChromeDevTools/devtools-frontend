@@ -12,7 +12,9 @@ import {promisify} from 'util';
 const readFile = promisify(fs.readFile);
 const writeFile = promisify(fs.writeFile);
 
-const FRONT_END_FOLDER = path.join(__dirname, '..', '..', 'front_end');
+const FRONT_END_FOLDER = path.join(process.env.PWD!, '..', '..', 'front_end');
+const TEST_FOLDER =
+    path.join(process.env.PWD!, '..', '..', '..', '..', 'blink', 'web_tests', 'http', 'tests', 'devtools');
 
 function capitalizeFirstLetter(string: string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
@@ -62,11 +64,18 @@ function rewriteSource(refactoringNamespace: string, source: string) {
           const fullName = `${computeNamespaceName(refactoringNamespace)}.${getFullTypeName(topLevelAssignment)}`;
 
           try {
-            const usages =
-                child_process.execSync(`grep -r ${fullName} ${FRONT_END_FOLDER} || true`, {encoding: 'utf8'});
+            let usages = child_process.execSync(`grep -r ${fullName} ${FRONT_END_FOLDER} || true`, {encoding: 'utf8'});
+
+            let usagesCount = usages.split('\n').length;
+
+            usages = child_process.execSync(`grep -r ${fullName} ${TEST_FOLDER} || true`, {encoding: 'utf8'});
+
+            usagesCount += usages.split('\n').length;
 
             // It is only used once, in its assignment
-            if (usages.split('\n').length == 2) {
+            // Grep returns an empty line for every search, so it is
+            // 2 empty lines for the 2 invocations + 1 line for the assignment itself
+            if (usagesCount == 3) {
               removedExports.push(assignment.right.name);
               return b.emptyStatement();
             }
@@ -125,7 +134,7 @@ function rewriteSource(refactoringNamespace: string, source: string) {
 async function main(refactoringNamespace: string) {
   const folderName = path.join(FRONT_END_FOLDER, refactoringNamespace);
   for (const file of fs.readdirSync(folderName, {withFileTypes: true})) {
-    if (!file.name.endsWith('.js')) {
+    if (!file.name.endsWith('-legacy.js')) {
       continue;
     }
     const pathName = path.join(folderName, file.name);

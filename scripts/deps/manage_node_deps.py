@@ -57,7 +57,7 @@ DEPS = {
 def exec_command(cmd):
     try:
         cmd_proc_result = subprocess.check_call(cmd, cwd=devtools_paths.root_path())
-    except CalledProcessError as error:
+    except Error as error:
         print(error.output)
         return True
 

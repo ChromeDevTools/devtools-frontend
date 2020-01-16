@@ -98,9 +98,9 @@ export class SearchableContainer extends UI.VBox {
     searchableView.show(this.contentElement);
 
     const toolbar = new UI.Toolbar('toolbar', this.contentElement);
-    for (const item of sourceFrame.syncToolbarItems()) {
-      toolbar.appendToolbarItem(item);
-    }
+    sourceFrame.toolbarItems().then(items => {
+      items.map(item => toolbar.appendToolbarItem(item));
+    });
   }
 
   /**

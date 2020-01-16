@@ -63,9 +63,9 @@ export class ApplicationCacheItemsView extends UI.SimpleView {
 
   /**
    * @override
-   * @return {!Array.<!UI.ToolbarItem>}
+   * @return {!Promise<!Array.<!UI.ToolbarItem>>}
    */
-  syncToolbarItems() {
+  async toolbarItems() {
     return [
       this._deleteButton, new UI.ToolbarItem(this._connectivityIcon), new UI.ToolbarSeparator(),
       new UI.ToolbarItem(this._statusIcon)

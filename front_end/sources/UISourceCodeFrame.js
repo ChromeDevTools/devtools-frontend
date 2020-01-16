@@ -576,14 +576,14 @@ export default class UISourceCodeFrame extends SourceFrame.SourceFrame {
 
   /**
    * @override
-   * @return {!Array<!UI.ToolbarItem>}
+   * @return {!Promise<!Array<!UI.ToolbarItem>>}
    */
-  syncToolbarItems() {
-    const leftToolbarItems = super.syncToolbarItems();
+  async toolbarItems() {
+    const leftToolbarItems = await super.toolbarItems();
     const rightToolbarItems = [];
     for (const plugin of this._plugins) {
       leftToolbarItems.pushAll(plugin.leftToolbarItems());
-      rightToolbarItems.pushAll(plugin.rightToolbarItems());
+      rightToolbarItems.pushAll(await plugin.rightToolbarItems());
     }
 
     if (!rightToolbarItems.length) {
@@ -860,14 +860,17 @@ export class Plugin {
   }
 
   /**
-   * @return {!Array<!UI.ToolbarItem>}
+   * @return {!Promise<!Array<!UI.ToolbarItem>>}
    */
-  rightToolbarItems() {
+  async rightToolbarItems() {
     return [];
   }
 
   /**
    * @return {!Array<!UI.ToolbarItem>}
+   *
+   * TODO(szuend): It is OK to asyncify this function (similar to {rightToolbarItems}),
+   *               but it is currently not strictly necessary.
    */
   leftToolbarItems() {
     return [];

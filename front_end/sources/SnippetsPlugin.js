@@ -24,9 +24,9 @@ export default class SnippetsPlugin extends Sources.UISourceCodeFrame.Plugin {
 
   /**
    * @override
-   * @return {!Array<!UI.ToolbarItem>}
+   * @return {!Promise<!Array<!UI.ToolbarItem>>}
    */
-  rightToolbarItems() {
+  async rightToolbarItems() {
     const runSnippet = UI.Toolbar.createActionButtonForId('debugger.run-snippet');
     runSnippet.setText(Host.isMac() ? Common.UIString('\u2318+Enter') : Common.UIString('Ctrl+Enter'));
 

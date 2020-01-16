@@ -113,14 +113,7 @@ export class SimpleView extends VBox {
    * @return {!Promise<!Array<!ToolbarItem>>}
    */
   toolbarItems() {
-    return Promise.resolve(this.syncToolbarItems());
-  }
-
-  /**
-   * @return {!Array<!ToolbarItem>}
-   */
-  syncToolbarItems() {
-    return this._toolbarItems;
+    return Promise.resolve(this._toolbarItems);
   }
 
   /**

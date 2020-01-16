@@ -51,9 +51,9 @@ export class RequestPreviewView extends RequestResponseView {
       return view;
     }
     const toolbar = new UI.Toolbar('network-item-preview-toolbar', this.element);
-    for (const item of view.syncToolbarItems()) {
-      toolbar.appendToolbarItem(item);
-    }
+    view.toolbarItems().then(items => {
+      items.map(item => toolbar.appendToolbarItem(item));
+    });
     return view;
   }
 

@@ -109,11 +109,12 @@ export class ResourcesPanel extends UI.PanelWithSidebar {
     this.visibleView = view;
 
     this._storageViewToolbar.removeToolbarItems();
-    const toolbarItems = (view instanceof UI.SimpleView && view.syncToolbarItems()) || [];
-    for (let i = 0; i < toolbarItems.length; ++i) {
-      this._storageViewToolbar.appendToolbarItem(toolbarItems[i]);
+    if (view instanceof UI.SimpleView) {
+      view.toolbarItems().then(items => {
+        items.map(item => this._storageViewToolbar.appendToolbarItem(item));
+        this._storageViewToolbar.element.classList.toggle('hidden', !items.length);
+      });
     }
-    this._storageViewToolbar.element.classList.toggle('hidden', !toolbarItems.length);
   }
 
   /**

@@ -163,6 +163,7 @@
 
 #heap-recording-overview-container {
     border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+    overflow: hidden;
 }
 
 .heap-recording-overview-canvas {

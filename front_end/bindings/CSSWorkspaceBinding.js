@@ -112,7 +112,7 @@ export class CSSWorkspaceBinding {
     }
     const rawLocations = [];
     for (const modelInfo of this._modelToInfo.values()) {
-      rawLocations.pushAll(modelInfo._uiLocationToRawLocations(uiLocation));
+      rawLocations.push(...modelInfo._uiLocationToRawLocations(uiLocation));
     }
     return rawLocations;
   }

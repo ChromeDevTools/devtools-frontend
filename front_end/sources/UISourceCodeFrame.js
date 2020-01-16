@@ -582,8 +582,8 @@ export default class UISourceCodeFrame extends SourceFrame.SourceFrame {
     const leftToolbarItems = await super.toolbarItems();
     const rightToolbarItems = [];
     for (const plugin of this._plugins) {
-      leftToolbarItems.pushAll(plugin.leftToolbarItems());
-      rightToolbarItems.pushAll(await plugin.rightToolbarItems());
+      leftToolbarItems.push(...plugin.leftToolbarItems());
+      rightToolbarItems.push(...await plugin.rightToolbarItems());
     }
 
     if (!rightToolbarItems.length) {

@@ -164,25 +164,25 @@ export class ChangesView extends UI.VBox {
       const token = diff[i];
       switch (token[0]) {
         case Diff.Diff.Operation.Equal:
-          this._diffRows.pushAll(createEqualRows(token[1], i === 0, i === diff.length - 1));
-          originalLines.pushAll(token[1]);
-          currentLines.pushAll(token[1]);
+          this._diffRows.push(...createEqualRows(token[1], i === 0, i === diff.length - 1));
+          originalLines.push(...token[1]);
+          currentLines.push(...token[1]);
           break;
         case Diff.Diff.Operation.Insert:
           for (const line of token[1]) {
             this._diffRows.push(createRow(line, RowType.Addition));
           }
           insertions += token[1].length;
-          currentLines.pushAll(token[1]);
+          currentLines.push(...token[1]);
           break;
         case Diff.Diff.Operation.Delete:
           deletions += token[1].length;
-          originalLines.pushAll(token[1]);
+          originalLines.push(...token[1]);
           if (diff[i + 1] && diff[i + 1][0] === Diff.Diff.Operation.Insert) {
             i++;
-            this._diffRows.pushAll(createModifyRows(token[1].join('\n'), diff[i][1].join('\n')));
+            this._diffRows.push(...createModifyRows(token[1].join('\n'), diff[i][1].join('\n')));
             insertions += diff[i][1].length;
-            currentLines.pushAll(diff[i][1]);
+            currentLines.push(...diff[i][1]);
           } else {
             for (const line of token[1]) {
               this._diffRows.push(createRow(line, RowType.Deletion));

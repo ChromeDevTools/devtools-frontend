@@ -28,7 +28,7 @@ export default class ServerTiming {
 
     const serverTimings = rawServerTimingHeaders.reduce((memo, header) => {
       const timing = this.createFromHeaderValue(header.value);
-      memo.pushAll(timing.map(function(entry) {
+      memo.push(...timing.map(function(entry) {
         return new ServerTiming(
             entry.name, entry.hasOwnProperty('dur') ? entry.dur : null, entry.hasOwnProperty('desc') ? entry.desc : '');
       }));

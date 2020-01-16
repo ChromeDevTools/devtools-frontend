@@ -1193,7 +1193,7 @@ export class HeapSnapshotDiffNodesProvider {
     for (const item of itemsRange.items) {
       item.isAddedNotRemoved = false;
     }
-    addedItems.items.pushAll(itemsRange.items);
+    addedItems.items.push(...itemsRange.items);
     addedItems.endPosition = this._addedCount + itemsRange.endPosition;
     addedItems.totalLength = this._addedCount + this._removedCount;
     return addedItems;

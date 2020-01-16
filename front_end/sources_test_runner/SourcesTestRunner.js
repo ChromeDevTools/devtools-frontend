@@ -133,7 +133,7 @@ SourcesTestRunner.testJavascriptOutline = function(text) {
   return promise;
 
   function onChunk(isLastChunk, outlineItems) {
-    items.pushAll(outlineItems);
+    items.push(...outlineItems);
 
     if (!isLastChunk) {
       return;

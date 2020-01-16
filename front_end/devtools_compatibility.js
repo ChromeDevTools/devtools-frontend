@@ -86,7 +86,7 @@
         if (this._addExtensionCallback) {
           extensions.forEach(this._addExtensionCallback);
         } else {
-          this._pendingExtensionDescriptors.pushAll(extensions);
+          this._pendingExtensionDescriptors.push(...extensions);
         }
       }
     }

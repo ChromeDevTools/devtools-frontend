@@ -169,7 +169,7 @@ export class SASSSourceMapping {
         sourceMap.findReverseEntries(uiLocation.uiSourceCode.url(), uiLocation.lineNumber, uiLocation.columnNumber);
     const locations = [];
     for (const header of this._sourceMapManager.clientsForSourceMap(sourceMap)) {
-      locations.pushAll(entries.map(entry => new SDK.CSSLocation(header, entry.lineNumber, entry.columnNumber)));
+      locations.push(...entries.map(entry => new SDK.CSSLocation(header, entry.lineNumber, entry.columnNumber)));
     }
     return locations;
   }

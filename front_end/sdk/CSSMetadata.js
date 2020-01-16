@@ -117,9 +117,9 @@ export default class CSSMetadata {
                          .sort(CSSMetadata._sortPrefixesToEnd);
       const presets = values.map(value => `${name}: ${value}`);
       if (!this.isSVGProperty(name)) {
-        this._nameValuePresets.pushAll(presets);
+        this._nameValuePresets.push(...presets);
       }
-      this._nameValuePresetsIncludingSVG.pushAll(presets);
+      this._nameValuePresetsIncludingSVG.push(...presets);
     }
   }
 
@@ -317,7 +317,7 @@ export default class CSSMetadata {
   propertyValues(propertyName) {
     const acceptedKeywords = ['inherit', 'initial', 'unset'];
     propertyName = propertyName.toLowerCase();
-    acceptedKeywords.pushAll(this._specificPropertyValues(propertyName));
+    acceptedKeywords.push(...this._specificPropertyValues(propertyName));
     if (this.isColorAwareProperty(propertyName)) {
       acceptedKeywords.push('currentColor');
       for (const color in Common.Color.Nicknames) {

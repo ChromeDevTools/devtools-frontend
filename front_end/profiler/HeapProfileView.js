@@ -681,8 +681,8 @@ export class SamplingHeapProfileModel extends SDK.ProfileTreeModel {
           }
           return targetChild;
         });
-        sourceNodeStack.pushAll(sourceNode.children);
-        targetNodeStack.pushAll(targetNode.children);
+        sourceNodeStack.push(...sourceNode.children);
+        targetNodeStack.push(...targetNode.children);
       }
       pruneEmptyBranches(resultRoot);
       return resultRoot;

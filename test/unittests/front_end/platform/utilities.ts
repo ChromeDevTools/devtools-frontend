@@ -84,8 +84,8 @@ describe('Utilities', () => {
                 ']');
       }
 
-      // FIXME: This appears to be a no-op given the fact that sort works in-place.
-      assert.deepStrictEqual(actual.sort(), actual, 'Result array is ordered');
+      const shallowCopy = [...actual];
+      assert.deepStrictEqual(actual.sort(), shallowCopy, 'Result array is ordered');
     }
 
     const fixtures = new Map([

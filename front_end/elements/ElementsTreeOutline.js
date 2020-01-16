@@ -1550,7 +1550,7 @@ export class ElementsTreeOutline extends UI.TreeOutline {
     }
 
     // Insert close tag.
-    if (node.nodeType() === Node.ELEMENT_NODE && treeElement.isExpandable()) {
+    if (node.nodeType() === Node.ELEMENT_NODE && !node.pseudoType() && treeElement.isExpandable()) {
       this.insertChildElement(treeElement, node, treeElement.childCount(), true);
     }
 

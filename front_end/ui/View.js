@@ -71,8 +71,6 @@ export class SimpleView extends VBox {
   constructor(title, isWebComponent) {
     super(isWebComponent);
     this._title = title;
-    /** @type {!Array<!ToolbarItem>} */
-    this._toolbarItems = [];
     this[_symbol] = this;
   }
 
@@ -113,7 +111,7 @@ export class SimpleView extends VBox {
    * @return {!Promise<!Array<!ToolbarItem>>}
    */
   toolbarItems() {
-    return Promise.resolve(this._toolbarItems);
+    return Promise.resolve([]);
   }
 
   /**
@@ -123,13 +121,6 @@ export class SimpleView extends VBox {
   widget() {
     return (
         /** @type {!Promise<!Widget>} */ (Promise.resolve(this)));
-  }
-
-  /**
-   * @param {!ToolbarItem} item
-   */
-  addToolbarItem(item) {
-    this._toolbarItems.push(item);
   }
 
   /**

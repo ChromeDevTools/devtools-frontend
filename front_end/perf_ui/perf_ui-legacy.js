@@ -10,9 +10,6 @@ PerfUI = PerfUI || {};
 /** @constructor */
 PerfUI.ChartViewport = PerfUIModule.ChartViewport.ChartViewport;
 
-/** @interface */
-PerfUI.ChartViewportDelegate = PerfUIModule.ChartViewport.ChartViewportDelegate;
-
 /** @constructor */
 PerfUI.FilmStripView = PerfUIModule.FilmStripView.FilmStripView;
 
@@ -26,15 +23,12 @@ PerfUI.FilmStripView.Dialog = PerfUIModule.FilmStripView.Dialog;
 PerfUI.FlameChart = PerfUIModule.FlameChart.FlameChart;
 
 PerfUI.FlameChart.HeaderHeight = PerfUIModule.FlameChart.HeaderHeight;
-PerfUI.FlameChart.MinimalTimeWindowMs = PerfUIModule.FlameChart.MinimalTimeWindowMs;
 
 /** @constructor */
 PerfUI.FlameChart.TimelineData = PerfUIModule.FlameChart.TimelineData;
 
 /** @enum {symbol} */
 PerfUI.FlameChart.Events = PerfUIModule.FlameChart.Events;
-
-PerfUI.FlameChart.Colors = PerfUIModule.FlameChart.Colors;
 
 /** @interface */
 PerfUI.FlameChartDelegate = PerfUIModule.FlameChart.FlameChartDelegate;
@@ -54,15 +48,6 @@ PerfUI.LineLevelProfile = {};
 PerfUI.LineLevelProfile.Performance = PerfUIModule.LineLevelProfile.Performance;
 
 /** @constructor */
-PerfUI.LineLevelProfile.Memory = PerfUIModule.LineLevelProfile.Memory;
-
-/** @constructor */
-PerfUI.LineLevelProfile._Helper = PerfUIModule.LineLevelProfile.Helper;
-
-/** @constructor */
-PerfUI.LineLevelProfile.Presentation = PerfUIModule.LineLevelProfile.Presentation;
-
-/** @constructor */
 PerfUI.LineLevelProfile.LineDecorator = PerfUIModule.LineLevelProfile.LineDecorator;
 
 /** @constructor */
@@ -70,25 +55,16 @@ PerfUI.LiveHeapProfile = PerfUIModule.LiveHeapProfile.LiveHeapProfile;
 
 PerfUI.uiLabelForNetworkPriority = PerfUIModule.NetworkPriorities.uiLabelForNetworkPriority;
 PerfUI.uiLabelToNetworkPriority = PerfUIModule.NetworkPriorities.uiLabelToNetworkPriority;
-PerfUI._priorityUILabelMap = PerfUIModule.NetworkPriorities.priorityUILabelMap;
 PerfUI.networkPriorityWeight = PerfUIModule.NetworkPriorities.networkPriorityWeight;
 
 /** @constructor */
 PerfUI.OverviewGrid = PerfUIModule.OverviewGrid.OverviewGrid;
-
-PerfUI.OverviewGrid.MinSelectableSize = PerfUIModule.OverviewGrid.MinSelectableSize;
-PerfUI.OverviewGrid.WindowScrollSpeedFactor = PerfUIModule.OverviewGrid.WindowScrollSpeedFactor;
-PerfUI.OverviewGrid.ResizerOffset = PerfUIModule.OverviewGrid.ResizerOffset;
-PerfUI.OverviewGrid.OffsetFromWindowEnds = PerfUIModule.OverviewGrid.OffsetFromWindowEnds;
 
 /** @constructor */
 PerfUI.OverviewGrid.Window = PerfUIModule.OverviewGrid.Window;
 
 /** @enum {symbol} */
 PerfUI.OverviewGrid.Events = PerfUIModule.OverviewGrid.Events;
-
-/** @constructor */
-PerfUI.OverviewGrid.WindowSelector = PerfUIModule.OverviewGrid.WindowSelector;
 
 /** @constructor */
 PerfUI.PieChart = PerfUIModule.PieChart.PieChart;
@@ -104,12 +80,6 @@ PerfUI.TimelineOverviewPane = PerfUIModule.TimelineOverviewPane.TimelineOverview
 
 /** @enum {symbol} */
 PerfUI.TimelineOverviewPane.Events = PerfUIModule.TimelineOverviewPane.Events;
-
-/** @constructor */
-PerfUI.TimelineOverviewPane.OverviewInfo = PerfUIModule.TimelineOverviewPane.OverviewInfo;
-
-/** @constructor */
-PerfUI.TimelineOverviewCalculator = PerfUIModule.TimelineOverviewPane.TimelineOverviewCalculator;
 
 /** @constructor */
 PerfUI.TimelineOverviewBase = PerfUIModule.TimelineOverviewPane.TimelineOverviewBase;

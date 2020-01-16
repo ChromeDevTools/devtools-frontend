@@ -927,6 +927,8 @@ export class ElementsPanel extends UI.Panel {
   }
 }
 
+ElementsPanel._firstInspectElementCompletedForTest = function() {};
+
 /** @enum {symbol} */
 export const _splitMode = {
   Vertical: Symbol('Vertical'),

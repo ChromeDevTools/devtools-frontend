@@ -62,17 +62,7 @@ ObjectUI.ObjectPropertiesSectionsTreeExpandController =
     ObjectUIModule.ObjectPropertiesSection.ObjectPropertiesSectionsTreeExpandController;
 
 /** @constructor */
-ObjectUI.ObjectPropertyValue = ObjectUIModule.ObjectPropertiesSection.ObjectPropertyValue;
-
-/** @constructor */
 ObjectUI.RemoteObjectPreviewFormatter = ObjectUIModule.RemoteObjectPreviewFormatter.RemoteObjectPreviewFormatter;
-
-/**
- * @param {!Element} container
- * @param {string} nodeTitle
- */
-ObjectUI.RemoteObjectPreviewFormatter.createSpansForNodeTitle =
-    ObjectUIModule.RemoteObjectPreviewFormatter.createSpansForNodeTitle;
 
 /** @typedef {{title:(string|undefined), items:Array<string>}} */
 ObjectUI.JavaScriptAutocomplete.CompletionGroup;

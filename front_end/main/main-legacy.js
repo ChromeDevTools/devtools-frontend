@@ -35,13 +35,7 @@ Main.Main.MainMenuItem = MainModule.MainImpl.MainMenuItem;
 /**
  * @constructor
  */
-Main.Main.PauseListener = MainModule.MainImpl.PauseListener;
-
-/**
- * @constructor
- */
 Main.ReloadActionDelegate = MainModule.MainImpl.ReloadActionDelegate;
-Main.sendOverProtocol = MainModule.MainImpl.sendOverProtocol;
 
 /**
  * @constructor

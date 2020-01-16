@@ -12,18 +12,10 @@ Coverage = Coverage || {};
  */
 Coverage.CoverageDecorationManager = CoverageModule.CoverageDecorationManager.CoverageDecorationManager;
 
-/** @public */
-Coverage.CoverageDecorationManager.decoratorType = CoverageModule.CoverageDecorationManager.decoratorType;
-
 /**
  * @constructor
  */
 Coverage.CoverageListView = CoverageModule.CoverageListView.CoverageListView;
-
-/**
- * @constructor
- */
-Coverage.CoverageListView.GridNode = CoverageModule.CoverageListView.GridNode;
 
 /**
  * @constructor
@@ -37,9 +29,6 @@ Coverage.CoverageModel.Events = CoverageModule.CoverageModel.Events;
  * @enum {number}
  */
 Coverage.CoverageType = CoverageModule.CoverageModel.CoverageType;
-
-/** @enum {symbol} */
-Coverage.SuspensionState = CoverageModule.CoverageModel.SuspensionState;
 
 /**
  * @constructor

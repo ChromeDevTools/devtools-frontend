@@ -11,12 +11,6 @@ Extensions.extensionAPI = {};
 ExtensionsModule.ExtensionAPI.defineCommonExtensionSymbols(Extensions.extensionAPI);
 
 /** @constructor */
-Extensions.ExtensionPanel = ExtensionsModule.ExtensionPanel.ExtensionPanel;
-
-/** @constructor */
-Extensions.ExtensionButton = ExtensionsModule.ExtensionPanel.ExtensionButton;
-
-/** @constructor */
 Extensions.ExtensionSidebarPane = ExtensionsModule.ExtensionPanel.ExtensionSidebarPane;
 
 /** @constructor */
@@ -33,12 +27,6 @@ Extensions.ExtensionTraceProvider = ExtensionsModule.ExtensionTraceProvider.Exte
 
 /** @interface */
 Extensions.TracingSession = ExtensionsModule.ExtensionTraceProvider.TracingSession;
-
-/** @constructor */
-Extensions.ExtensionView = ExtensionsModule.ExtensionView.ExtensionView;
-
-/** @constructor */
-Extensions.ExtensionNotifierView = ExtensionsModule.ExtensionView.ExtensionNotifierView;
 
 /**
  * @typedef {{code: string, description: string, details: !Array.<*>}}

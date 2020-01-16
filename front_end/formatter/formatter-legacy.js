@@ -12,9 +12,6 @@ Formatter.FormatterWorkerPool = FormatterModule.FormatterWorkerPool.FormatterWor
 
 Formatter.formatterWorkerPool = FormatterModule.FormatterWorkerPool.formatterWorkerPool;
 
-/** @constructor */
-Formatter.FormatterWorkerPool.FormatResult = FormatterModule.FormatterWorkerPool.FormatResult;
-
 /** @interface */
 Formatter.Formatter = FormatterModule.ScriptFormatter.FormatterInterface;
 

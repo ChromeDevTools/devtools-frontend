@@ -14,21 +14,6 @@ Changes.ChangesHighlighter = ChangesModule.ChangesHighlighter.ChangesHighlighter
  */
 Changes.ChangesSidebar = ChangesModule.ChangesSidebar.ChangesSidebar;
 
-/**
- * @enum {symbol}
- */
-Changes.ChangesSidebar.Events = ChangesModule.ChangesSidebar.Events;
-
-/**
- * @constructor
- */
-Changes.ChangesSidebar.UISourceCodeTreeElement = ChangesModule.ChangesSidebar.UISourceCodeTreeElement;
-
-/**
- * @constructor
- */
-Changes.ChangesTextEditor = ChangesModule.ChangesTextEditor.ChangesTextEditor;
-
 
 /**
  * @constructor

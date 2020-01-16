@@ -15,7 +15,6 @@ Host.isUnderTest = HostModule.InspectorFrontendHost.isUnderTest;
 Host.InspectorFrontendHostAPI = {};
 
 Host.InspectorFrontendHostAPI.Events = HostModule.InspectorFrontendHostAPI.Events;
-Host.InspectorFrontendHostAPI.EventDescriptors = HostModule.InspectorFrontendHostAPI.EventDescriptors;
 
 Host.platform = HostModule.Platform.platform;
 Host.isWin = HostModule.Platform.isWin;
@@ -24,12 +23,6 @@ Host.isCustomDevtoolsFrontend = HostModule.Platform.isCustomDevtoolsFrontend;
 Host.fontFamily = HostModule.Platform.fontFamily;
 
 Host.ResourceLoader = HostModule.ResourceLoader.ResourceLoader;
-
-/**
- * @param {number} id
- * @param {string} chunk
- */
-Host.ResourceLoader.streamWrite = HostModule.ResourceLoader.streamWrite;
 
 /**
  * @param {string} url

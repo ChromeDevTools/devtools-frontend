@@ -58,9 +58,6 @@ Bindings.FileOutputStream = BindingsModule.FileUtils.FileOutputStream;
 Bindings.LiveLocation = BindingsModule.LiveLocation.LiveLocation;
 
 /** @constructor */
-Bindings.LiveLocationWithPool = BindingsModule.LiveLocation.LiveLocationWithPool;
-
-/** @constructor */
 Bindings.LiveLocationPool = BindingsModule.LiveLocation.LiveLocationPool;
 
 /** @constructor */
@@ -85,16 +82,10 @@ Bindings.ResourceMapping._symbol = BindingsModule.ResourceMapping.symbol;
 Bindings.ResourceMapping._offsetSymbol = BindingsModule.ResourceMapping.offsetSymbol;
 
 /** @constructor */
-Bindings.ResourceScriptMapping = BindingsModule.ResourceScriptMapping.ResourceScriptMapping;
-
-/** @constructor */
 Bindings.ResourceScriptFile = BindingsModule.ResourceScriptMapping.ResourceScriptFile;
 
 Bindings.resourceForURL = BindingsModule.ResourceUtils.resourceForURL;
 Bindings.displayNameForURL = BindingsModule.ResourceUtils.displayNameForURL;
-Bindings.metadataForURL = BindingsModule.ResourceUtils.metadataForURL;
-Bindings.resourceMetadata = BindingsModule.ResourceUtils.resourceMetadata;
-Bindings.frameIdForScript = BindingsModule.ResourceUtils.frameIdForScript;
 
 /** @constructor */
 Bindings.SASSSourceMapping = BindingsModule.SASSSourceMapping.SASSSourceMapping;

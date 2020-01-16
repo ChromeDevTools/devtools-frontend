@@ -12,13 +12,6 @@ Search = Search || {};
  */
 Search.SearchConfig = SearchModule.SearchConfig.SearchConfig;
 
-Search.SearchConfig.FilePatternRegex = SearchModule.SearchConfig.FilePatternRegex;
-
-/**
- * @constructor
- */
-Search.SearchConfig.QueryTerm = SearchModule.SearchConfig.QueryTerm;
-
 /**
  * @interface
  */
@@ -33,13 +26,6 @@ Search.SearchScope = SearchModule.SearchConfig.SearchScope;
  * @constructor
  */
 Search.SearchResultsPane = SearchModule.SearchResultsPane.SearchResultsPane;
-Search.SearchResultsPane._matchesExpandedByDefault = SearchModule.SearchResultsPane.matchesExpandedByDefault;
-Search.SearchResultsPane._matchesShownAtOnce = SearchModule.SearchResultsPane.matchesShownAtOnce;
-
-/**
- * @constructor
- */
-Search.SearchResultsPane.SearchResultsTreeElement = SearchModule.SearchResultsPane.SearchResultsTreeElement;
 
 /**
  * @constructor

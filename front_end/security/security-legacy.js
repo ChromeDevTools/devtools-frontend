@@ -15,14 +15,6 @@ Security.SecurityModel = SecurityModule.SecurityModel.SecurityModel;
 /** @enum {symbol} */
 Security.SecurityModel.Events = SecurityModule.SecurityModel.Events;
 
-/** @type {!Object<string, string>} */
-Security.SummaryMessages = SecurityModule.SecurityModel.SummaryMessages;
-
-/**
- * @constructor
- */
-Security.PageSecurityState = SecurityModule.SecurityModel.PageSecurityState;
-
 /**
  * @constructor
  */
@@ -59,17 +51,7 @@ Security.SecurityPanelSidebarTreeElement = SecurityModule.SecurityPanel.Security
 /**
  * @constructor
  */
-Security.SecurityMainView = SecurityModule.SecurityPanel.SecurityMainView;
-
-/**
- * @constructor
- */
 Security.SecurityOriginView = SecurityModule.SecurityPanel.SecurityOriginView;
-
-/**
- * @constructor
- */
-Security.SecurityDetailsTable = SecurityModule.SecurityPanel.SecurityDetailsTable;
 
 /** @typedef {string} */
 Security.SecurityPanel.Origin;

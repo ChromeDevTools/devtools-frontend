@@ -10,11 +10,6 @@ Screencast = Screencast || {};
 /**
  * @constructor
  */
-Screencast.InputModel = ScreencastModule.InputModel.InputModel;
-
-/**
- * @constructor
- */
 Screencast.ScreencastApp = ScreencastModule.ScreencastApp.ScreencastApp;
 
 /**
@@ -31,8 +26,3 @@ Screencast.ScreencastAppProvider = ScreencastModule.ScreencastApp.ScreencastAppP
  * @constructor
  */
 Screencast.ScreencastView = ScreencastModule.ScreencastView.ScreencastView;
-
-/**
- * @constructor
- */
-Screencast.ScreencastView.ProgressTracker = ScreencastModule.ScreencastView.ProgressTracker;

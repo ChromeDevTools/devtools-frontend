@@ -15,34 +15,4 @@ HARImporter.HARRoot = HARImporterModule.HARFormat.HARRoot;
 /**
  * @constructor
  */
-HARImporter.HARLog = HARImporterModule.HARFormat.HARLog;
-
-/**
- * @constructor
- */
-HARImporter.HARPage = HARImporterModule.HARFormat.HARPage;
-
-/**
- * @constructor
- */
-HARImporter.HAREntry = HARImporterModule.HARFormat.HAREntry;
-
-/**
- * @constructor
- */
-HARImporter.HARParam = HARImporterModule.HARFormat.HARParam;
-
-/**
- * @constructor
- */
-HARImporter.HARTimings = HARImporterModule.HARFormat.HARTimings;
-
-/**
- * @constructor
- */
-HARImporter.HARInitiator = HARImporterModule.HARFormat.HARInitiator;
-
-/**
- * @constructor
- */
 HARImporter.Importer = HARImporterModule.HARImporter.Importer;

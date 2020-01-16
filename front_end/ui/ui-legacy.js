@@ -36,11 +36,6 @@ UI.ContextMenu = UIModule.ContextMenu.ContextMenu;
 /**
  * @constructor
  */
-UI.ContextMenuItem = UIModule.ContextMenu.Item;
-
-/**
- * @constructor
- */
 UI.ContextMenuSection = UIModule.ContextMenu.Section;
 
 /** @constructor */
@@ -82,9 +77,6 @@ UI.CheckboxFilterUI = UIModule.FilterBar.CheckboxFilterUI;
 
 /** @constructor */
 UI.FilterSuggestionBuilder = UIModule.FilterSuggestionBuilder.FilterSuggestionBuilder;
-
-/** @constructor */
-UI.ForwardedInputEventHandler = UIModule.ForwardedInputEventHandler.ForwardedInputEventHandler;
 
 /** @constructor */
 UI.Fragment = UIModule.Fragment.Fragment;
@@ -168,9 +160,6 @@ UI.Insets = UIModule.Geometry.Insets;
 
 /** @constructor */
 UI.Rect = UIModule.Geometry.Rect;
-
-/** @constructor */
-UI.Constraints = UIModule.Geometry.Constraints;
 
 /**
  * @param {!CSSMatrix} matrix
@@ -301,9 +290,6 @@ UI.ResizerWidget = UIModule.ResizerWidget.ResizerWidget;
 
 /** @enum {symbol} */
 UI.ResizerWidget.Events = UIModule.ResizerWidget.Events;
-
-/** @constructor */
-UI.SimpleResizerWidget = UIModule.ResizerWidget.SimpleResizerWidget;
 
 /** @constructor */
 UI.RootView = UIModule.RootView.RootView;
@@ -527,7 +513,6 @@ UI.CheckboxLabel = UIModule.UIUtils.CheckboxLabel;
 UI.Renderer = UIModule.UIUtils.Renderer;
 
 UI.installDragHandle = UIModule.UIUtils.installDragHandle;
-UI.elementDragStart = UIModule.UIUtils.elementDragStart;
 UI.isBeingEdited = UIModule.UIUtils.isBeingEdited;
 UI.isEditing = UIModule.UIUtils.isEditing;
 UI.markBeingEdited = UIModule.UIUtils.markBeingEdited;
@@ -568,12 +553,10 @@ UI.loadImage = UIModule.UIUtils.loadImage;
 UI.loadImageFromData = UIModule.UIUtils.loadImageFromData;
 UI.createFileSelectorElement = UIModule.UIUtils.createFileSelectorElement;
 UI.createInlineButton = UIModule.UIUtils.createInlineButton;
-UI.createExpandableText = UIModule.UIUtils.createExpandableText;
 UI.formatTimestamp = UIModule.UIUtils.formatTimestamp;
 
 UI.appendStyle = UIModule.Utils.appendStyle;
 UI.createShadowRootWithCoreStyles = UIModule.Utils.createShadowRootWithCoreStyles;
-UI.measuredScrollbarWidth = UIModule.Utils.measuredScrollbarWidth;
 UI.registerCustomElement = UIModule.Utils.registerCustomElement;
 
 /** @interface */
@@ -585,14 +568,8 @@ UI.View.widgetSymbol = UIModule.View.widgetSymbol;
 /** @constructor */
 UI.SimpleView = UIModule.View.SimpleView;
 
-/** @constructor */
-UI.ProvidedView = UIModule.View.ProvidedView;
-
 /** @interface */
 UI.ViewLocation = UIModule.View.ViewLocation;
-
-/** @interface */
-UI.TabbedViewLocation = UIModule.View.TabbedViewLocation;
 
 /** @interface */
 UI.ViewLocationResolver = UIModule.View.ViewLocationResolver;
@@ -617,9 +594,6 @@ UI.WidgetFocusRestorer = UIModule.Widget.WidgetFocusRestorer;
 
 /** @constructor */
 UI.VBoxWithResizeCallback = UIModule.Widget.VBoxWithResizeCallback;
-
-/** @constructor */
-UI.XElement = UIModule.XElement.XElement;
 
 /** @constructor */
 UI.XLink = UIModule.XLink.XLink;

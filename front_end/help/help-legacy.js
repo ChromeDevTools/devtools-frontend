@@ -7,7 +7,6 @@ import * as HelpModule from './help.js';
 self.Help = self.Help || {};
 Help = Help || {};
 
-Help.releaseNoteViewId = HelpModule.Help.releaseNoteViewId;
 Help.latestReleaseNote = HelpModule.Help.latestReleaseNote;
 Help._innerShowReleaseNoteIfNeeded = HelpModule.Help.innerShowReleaseNoteIfNeeded;
 Help._showReleaseNoteIfNeeded = HelpModule.Help.showReleaseNoteIfNeeded;

@@ -14,9 +14,6 @@ Persistence.Automapping = PersistenceModule.Automapping.Automapping;
 Persistence.AutomappingStatus = PersistenceModule.Automapping.AutomappingStatus;
 
 /** @constructor */
-Persistence.EditFileSystemView = PersistenceModule.EditFileSystemView.EditFileSystemView;
-
-/** @constructor */
 Persistence.FileSystemWorkspaceBinding = PersistenceModule.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding;
 
 /** @constructor */
@@ -24,8 +21,6 @@ Persistence.FileSystemWorkspaceBinding.FileSystem = PersistenceModule.FileSystem
 
 /** @constructor */
 Persistence.IsolatedFileSystem = PersistenceModule.IsolatedFileSystem.IsolatedFileSystem;
-
-Persistence.IsolatedFileSystem.BinaryExtensions = PersistenceModule.IsolatedFileSystem.BinaryExtensions;
 
 /** @constructor */
 Persistence.IsolatedFileSystemManager = PersistenceModule.IsolatedFileSystemManager.IsolatedFileSystemManager;
@@ -59,9 +54,6 @@ Persistence.PersistenceBinding = PersistenceModule.Persistence.PersistenceBindin
 
 /** @constructor */
 Persistence.PersistenceUtils = PersistenceModule.PersistenceUtils.PersistenceUtils;
-
-/** @constructor */
-Persistence.PersistenceUtils.LinkDecorator = PersistenceModule.PersistenceUtils.LinkDecorator;
 
 /** @constructor */
 Persistence.PlatformFileSystem = PersistenceModule.PlatformFileSystem.PlatformFileSystem;

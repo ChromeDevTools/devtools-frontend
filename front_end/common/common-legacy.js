@@ -111,11 +111,6 @@ Common.CompositeProgress = CommonModule.Progress.CompositeProgress;
 /**
  * @constructor
  */
-Common.SubProgress = CommonModule.Progress.SubProgress;
-
-/**
- * @constructor
- */
 Common.ProgressProxy = CommonModule.Progress.ProgressProxy;
 
 /**
@@ -132,11 +127,6 @@ Common.resourceTypes = CommonModule.ResourceType.resourceTypes;
  * @enum {!ResourceCategory}
  */
 Common.resourceCategories = CommonModule.ResourceType.resourceCategories;
-
-/**
- * @constructor
- */
-Common.ResourceCategory = CommonModule.ResourceType.ResourceCategory;
 
 /**
  * @constructor
@@ -180,10 +170,6 @@ Common.SettingsStorage = CommonModule.Settings.SettingsStorage;
  */
 Common.Setting = CommonModule.Settings.Setting;
 
-/**
- * @constructor
- */
-Common.RegExpSetting = CommonModule.Settings.RegExpSetting;
 Common.settingForTest = CommonModule.Settings.settingForTest;
 
 /**

@@ -5,7 +5,6 @@
 const {assert} = chai;
 
 import {SourceMapEntry,TextSourceMap} from '/front_end/sdk/SourceMap.js';
-import {source} from 'third_party/axe-core/axe';
 
 describe('SourceMapEntry', () => {
   it('can be instantiated correctly', () => {
@@ -151,8 +150,8 @@ describe('TextSourceMap', () => {
     const mappingPayload = {
       'sections': [
         {'offset': {'line': 0, 'column': 0}, 'map': {'mappings': 'AAAA,CAEC', 'sources': ['source1.js', 'source2.js']}},
-        {'offset': {'line': 2, 'column': 10}, 'map': {'mappings': 'AAAA,CAEC', 'sources': ['source2.js']}}
-      ]
+        {'offset': {'line': 2, 'column': 10}, 'map': {'mappings': 'AAAA,CAEC', 'sources': ['source2.js']}},
+      ],
     };
     const sourceMap = new TextSourceMap('compiled.js', 'source-map.json', mappingPayload);
 

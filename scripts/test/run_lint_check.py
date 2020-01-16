@@ -50,6 +50,7 @@ def to_platform_path_exact(filepath):
 
 devtools_path = devtools_paths.devtools_root_path()
 devtools_frontend_path = path.join(devtools_path, 'front_end')
+unittests_path = path.join(devtools_path, 'test', 'unittests')
 
 print('Linting JavaScript with eslint...\n')
 
@@ -58,7 +59,7 @@ def js_lint(files_list=None):
     eslint_errors_found = False
 
     if files_list is None:
-        files_list = [devtools_frontend_path]
+        files_list = [devtools_frontend_path, unittests_path]
     files_list = [file_name for file_name in files_list if not file_name.endswith('.eslintrc.js')]
 
     eslintconfig_path = path.join(devtools_path, '.eslintrc.js')
@@ -70,6 +71,8 @@ def js_lint(files_list=None):
         to_platform_path_exact(eslintconfig_path),
         '--ignore-path',
         to_platform_path_exact(eslintignore_path),
+        '--ext',
+        '.js,.ts',
         '--fix',
     ] + files_list
 

@@ -145,7 +145,7 @@ describe(`TextRange`, () => {
     const rangeB = {startLine: 3, startColumn: 4, endLine: 1, endColumn:2};
     const textRangeB = TextRange.fromObject(rangeB);
     const textRangeANormalized = textRangeA.normalize();
-    const textRangeBNormalized = textRangeB.normalize()
+    const textRangeBNormalized = textRangeB.normalize();
     assertIsTextRangeAndEqualsRange(textRangeANormalized, rangeA, `normalizing should keep range A unchanged`);
     assert.notStrictEqual(textRangeANormalized, textRangeA, `range should have been cloned`);
     assertIsTextRangeAndEqualsRange(textRangeBNormalized, rangeA, `range B should be normalized`);

@@ -3,6 +3,12 @@ module.exports = {
 
   'env': {'browser': true, 'es6': true},
 
+  'parser': '@typescript-eslint/parser',
+
+  'plugins': [
+    '@typescript-eslint',
+  ],
+
   'parserOptions': {'ecmaVersion': 9, 'sourceType': 'module'},
 
   /**
@@ -104,6 +110,17 @@ module.exports = {
     'quote-props': [0, 'as-needed'],
 
     // no-implicit-globals will prevent accidental globals
-    'no-implicit-globals': [0]
-  }
+    'no-implicit-globals': [0],
+
+    '@typescript-eslint/interface-name-prefix': [2, {'prefixWithI': 'never'}],
+    '@typescript-eslint/explicit-member-accessibility': [0],
+  },
+  'overrides': [{
+    'files': ['*.ts'],
+    'rules': {
+      '@typescript-eslint/explicit-member-accessibility': [2, {'accessibility': 'no-public'}],
+      'comma-dangle': [2, 'always-multiline'],
+      '@typescript-eslint/no-unused-vars': [2],
+    }
+  }]
 };

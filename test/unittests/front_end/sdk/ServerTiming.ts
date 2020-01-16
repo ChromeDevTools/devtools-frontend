@@ -76,16 +76,16 @@ describe('ServerTiming.createFromHeaderValue', () => {
 
   it('parses Server Timing metric descriptions correctly', () => {
     assert.deepEqual(ServerTiming.createFromHeaderValue('metric;desc=description'), [
-      { name: 'metric', desc: 'description' }
+      { name: 'metric', desc: 'description' },
     ]);
     assert.deepEqual(ServerTiming.createFromHeaderValue('metric;desc="description"'), [
-      { name: 'metric', desc: 'description' }
+      { name: 'metric', desc: 'description' },
     ]);
     assert.deepEqual(ServerTiming.createFromHeaderValue('metric;dur=123.4;desc=description'), [
-      { name: 'metric', dur: 123.4, desc: 'description' }
+      { name: 'metric', dur: 123.4, desc: 'description' },
     ]);
     assert.deepEqual(ServerTiming.createFromHeaderValue('metric;desc=description;dur=123.4'), [
-      { name: 'metric', desc: 'description', dur: 123.4 }
+      { name: 'metric', desc: 'description', dur: 123.4 },
     ]);
   });
 
@@ -93,13 +93,13 @@ describe('ServerTiming.createFromHeaderValue', () => {
     assert.deepEqual(ServerTiming.createFromHeaderValue('metric ; '), [{ name: 'metric' }]);
     assert.deepEqual(ServerTiming.createFromHeaderValue('metric , '), [{ name: 'metric' }]);
     assert.deepEqual(ServerTiming.createFromHeaderValue('metric ; dur = 123.4 ; desc = description'), [
-      { name: 'metric', dur: 123.4, desc: 'description' }
+      { name: 'metric', dur: 123.4, desc: 'description' },
     ]);
     assert.deepEqual(ServerTiming.createFromHeaderValue('metric ; desc = description ; dur = 123.4'), [
-      { name: 'metric', desc: 'description', dur: 123.4 }
+      { name: 'metric', desc: 'description', dur: 123.4 },
     ]);
     assert.deepEqual(ServerTiming.createFromHeaderValue('metric;desc = "description"'), [
-      { name: 'metric', desc: 'description' }
+      { name: 'metric', desc: 'description' },
     ]);
   });
 
@@ -107,13 +107,13 @@ describe('ServerTiming.createFromHeaderValue', () => {
     assert.deepEqual(ServerTiming.createFromHeaderValue('metric\t;\t'), [{ name: 'metric' }]);
     assert.deepEqual(ServerTiming.createFromHeaderValue('metric\t,\t'), [{ name: 'metric' }]);
     assert.deepEqual(ServerTiming.createFromHeaderValue('metric\t;\tdur\t=\t123.4\t;\tdesc\t=\tdescription'), [
-      { name: 'metric', dur: 123.4, desc: 'description' }
+      { name: 'metric', dur: 123.4, desc: 'description' },
     ]);
     assert.deepEqual(ServerTiming.createFromHeaderValue('metric\t;\tdesc\t=\tdescription\t;\tdur\t=\t123.4'), [
-      { name: 'metric', desc: 'description', dur: 123.4 }
+      { name: 'metric', desc: 'description', dur: 123.4 },
     ]);
     assert.deepEqual(ServerTiming.createFromHeaderValue('metric;desc\t=\t"description"'), [
-      { name: 'metric', desc: 'description' }
+      { name: 'metric', desc: 'description' },
     ]);
   });
 
@@ -130,19 +130,19 @@ describe('ServerTiming.createFromHeaderValue', () => {
       { name: 'metric2' },
       { name: 'metric3' },
       { name: 'metric4' },
-      { name: 'metric5' }
+      { name: 'metric5' },
     ]);
   });
 
   it('handles RFC7230 quoted-string Server Timing values correctly', () => {
     assert.deepEqual(ServerTiming.createFromHeaderValue('metric;desc="description"'), [
-      { name: 'metric', desc: 'description' }
+      { name: 'metric', desc: 'description' },
     ]);
     assert.deepEqual(ServerTiming.createFromHeaderValue('metric;desc="\t description \t"'), [
-      { name: 'metric', desc: '\t description \t' }
+      { name: 'metric', desc: '\t description \t' },
     ]);
     assert.deepEqual(ServerTiming.createFromHeaderValue('metric;desc="descr\\"iption"'), [
-      { name: 'metric', desc: 'descr"iption' }
+      { name: 'metric', desc: 'descr"iption' },
     ]);
     assert.deepEqual(ServerTiming.createFromHeaderValue('metric;desc=\\'), [{ name: 'metric', desc: '' }]);
     assert.deepEqual(ServerTiming.createFromHeaderValue('metric;desc="'), [{ name: 'metric', desc: '' }]);
@@ -178,7 +178,7 @@ describe('ServerTiming.createFromHeaderValue', () => {
 
   it('handles case-sensitivity correctly', () => {
     assert.deepEqual(ServerTiming.createFromHeaderValue('metric;DuR=123.4;DeSc=description'), [
-      { name: 'metric', dur: 123.4, desc: 'description' }
+      { name: 'metric', dur: 123.4, desc: 'description' },
     ]);
   });
 
@@ -187,7 +187,7 @@ describe('ServerTiming.createFromHeaderValue', () => {
     assert.deepEqual(ServerTiming.createFromHeaderValue('metric;dur=12.3;desc=description1,metric;dur=45.6;desc=description2'),
       [
         { name: 'metric', dur: 12.3, desc: 'description1' },
-        { name: 'metric', dur: 45.6, desc: 'description2' }
+        { name: 'metric', dur: 45.6, desc: 'description2' },
       ]
     );
   });
@@ -202,38 +202,38 @@ describe('ServerTiming.createFromHeaderValue', () => {
   it('handles incomplete parameters correctly', () => {
     // Note: also see the tests below that checks for warnings.
     assert.deepEqual(ServerTiming.createFromHeaderValue('metric;dur;dur=123.4;desc=description'), [
-      { name: 'metric', dur: 0, desc: 'description' }
+      { name: 'metric', dur: 0, desc: 'description' },
     ]);
     assert.deepEqual(ServerTiming.createFromHeaderValue('metric;dur=;dur=123.4;desc=description'), [
-      { name: 'metric', dur: 0, desc: 'description' }
+      { name: 'metric', dur: 0, desc: 'description' },
     ]);
     assert.deepEqual(ServerTiming.createFromHeaderValue('metric;desc;desc=description;dur=123.4'), [
-      { name: 'metric', desc: '', dur: 123.4 }
+      { name: 'metric', desc: '', dur: 123.4 },
     ]);
     assert.deepEqual(ServerTiming.createFromHeaderValue('metric;desc=;desc=description;dur=123.4'), [
-      { name: 'metric', desc: '', dur: 123.4 }
+      { name: 'metric', desc: '', dur: 123.4 },
     ]);
   });
 
   it('handles extraneous characters after parameter values correctly', () => {
     // Note: also see the tests below that checks for warnings.
     assert.deepEqual(ServerTiming.createFromHeaderValue('metric;desc=d1 d2;dur=123.4'), [
-      { name: 'metric', desc: 'd1', dur: 123.4 }
+      { name: 'metric', desc: 'd1', dur: 123.4 },
     ]);
     assert.deepEqual(ServerTiming.createFromHeaderValue('metric1;desc=d1 d2,metric2'), [
       { name: 'metric1', desc: 'd1' },
-      { name: 'metric2' }
+      { name: 'metric2' },
     ]);
   });
 
   it('handles extraneous characters after RFC7230 quoted-string parameter values correctly', () => {
     // Note: also see the tests below that checks for warnings.
     assert.deepEqual(ServerTiming.createFromHeaderValue('metric;desc="d1" d2;dur=123.4'), [
-      { name: 'metric', desc: 'd1', dur: 123.4 }
+      { name: 'metric', desc: 'd1', dur: 123.4 },
     ]);
     assert.deepEqual(ServerTiming.createFromHeaderValue('metric1;desc="d1" d2,metric2'), [
       { name: 'metric1', desc: 'd1' },
-      { name: 'metric2' }
+      { name: 'metric2' },
     ]);
   });
 
@@ -266,7 +266,7 @@ describe('ServerTiming.createFromHeaderValue', () => {
     // TODO: These tests require mocking `Common.console.warn`.
     // For now, we override `ServerTiming.showWarning` to throw an
     // exception instead of logging it.
-    ServerTiming.showWarning = (message) => {
+    ServerTiming.showWarning = message => {
       throw new Error(message);
     };
 

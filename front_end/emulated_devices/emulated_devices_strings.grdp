@@ -72,6 +72,9 @@
   <message name="IDS_DEVTOOLS_c99b8431589c0273278e87ebf44a7fd6" desc="Title of the iPhone 5/SE device">
     <ph name="LOCKED_1">iPhone 5/SE</ph>
   </message>
+  <message name="IDS_DEVTOOLS_cc64841a13d27f6e9817bd61c141143d" desc="Title of the Moto G4 device">
+    Moto G4
+  </message>
   <message name="IDS_DEVTOOLS_cc810fb8b8bc7c7d6a8327f0e7b2aead" desc="Title of the Nexus 6P device">
     <ph name="LOCKED_1">Nexus 6P</ph>
   </message>

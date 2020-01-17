@@ -368,6 +368,35 @@ export class Script {
     const beforeEnd = lineNumber < this.endLine || (lineNumber === this.endLine && columnNumber <= this.endColumn);
     return afterStart && beforeEnd;
   }
+
+  /**
+   * @return {string}
+   */
+  get frameId() {
+    if (typeof this[frameIdSymbol] !== 'string') {
+      this[frameIdSymbol] = frameIdForScript(this);
+    }
+    return this[frameIdSymbol];
+  }
+}
+
+const frameIdSymbol = Symbol('frameid');
+
+/**
+ * @param {!SDK.Script} script
+ * @return {string}
+ */
+function frameIdForScript(script) {
+  const executionContext = script.executionContext();
+  if (executionContext) {
+    return executionContext.frameId || '';
+  }
+  // This is to overcome compilation cache which doesn't get reset.
+  const resourceTreeModel = script.debuggerModel.target().model(SDK.ResourceTreeModel);
+  if (!resourceTreeModel || !resourceTreeModel.mainFrame) {
+    return '';
+  }
+  return resourceTreeModel.mainFrame.id;
 }
 
 export const sourceURLRegex = /^[\040\t]*\/\/[@#] sourceURL=\s*(\S*?)\s*$/;

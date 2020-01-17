@@ -112,20 +112,3 @@ export function resourceMetadata(resource) {
   }
   return new Workspace.UISourceCodeMetadata(resource.lastModified(), resource.contentSize());
 }
-
-/**
- * @param {!SDK.Script} script
- * @return {string}
- */
-export function frameIdForScript(script) {
-  const executionContext = script.executionContext();
-  if (executionContext) {
-    return executionContext.frameId || '';
-  }
-  // This is to overcome compilation cache which doesn't get reset.
-  const resourceTreeModel = script.debuggerModel.target().model(SDK.ResourceTreeModel);
-  if (!resourceTreeModel || !resourceTreeModel.mainFrame) {
-    return '';
-  }
-  return resourceTreeModel.mainFrame.id;
-}

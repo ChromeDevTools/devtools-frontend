@@ -31,7 +31,6 @@
 import {ContentProviderBasedProject} from './ContentProviderBasedProject.js';
 import {DebuggerSourceMapping, DebuggerWorkspaceBinding} from './DebuggerWorkspaceBinding.js';  // eslint-disable-line no-unused-vars
 import {NetworkProject} from './NetworkProject.js';
-import {frameIdForScript} from './ResourceUtils.js';
 
 /**
  * @implements {DebuggerSourceMapping}
@@ -243,13 +242,12 @@ export class CompilerScriptMapping {
    */
   _sourceMapDetached(event) {
     const script = /** @type {!SDK.Script} */ (event.data.client);
-    const frameId = script[_frameIdSymbol];
     const sourceMap = /** @type {!SDK.SourceMap} */ (event.data.sourceMap);
     const bindings = script.isContentScript() ? this._contentScriptsBindings : this._regularBindings;
     for (const sourceURL of sourceMap.sourceURLs()) {
       const binding = bindings.get(sourceURL);
       if (binding) {
-        binding.removeSourceMap(sourceMap, frameId);
+        binding.removeSourceMap(sourceMap, script.frameId);
         if (!binding._uiSourceCode) {
           bindings.delete(sourceURL);
         }
@@ -277,8 +275,6 @@ export class CompilerScriptMapping {
    * @param {!SDK.SourceMap} sourceMap
    */
   _populateSourceMapSources(script, sourceMap) {
-    const frameId = frameIdForScript(script);
-    script[_frameIdSymbol] = frameId;
     const project = script.isContentScript() ? this._contentScriptsProject : this._regularProject;
     const bindings = script.isContentScript() ? this._contentScriptsBindings : this._regularBindings;
     for (const sourceURL of sourceMap.sourceURLs()) {
@@ -287,7 +283,7 @@ export class CompilerScriptMapping {
         binding = new Binding(project, sourceURL);
         bindings.set(sourceURL, binding);
       }
-      binding.addSourceMap(sourceMap, frameId);
+      binding.addSourceMap(sourceMap, script.frameId);
     }
     this._debuggerWorkspaceBinding.updateLocations(script);
   }
@@ -313,7 +309,6 @@ export class CompilerScriptMapping {
   }
 }
 
-const _frameIdSymbol = Symbol('_frameIdSymbol');
 const _sourceMapSymbol = Symbol('_sourceMapSymbol');
 
 class Binding {

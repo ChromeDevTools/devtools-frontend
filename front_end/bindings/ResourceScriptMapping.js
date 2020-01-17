@@ -31,7 +31,7 @@
 import {ContentProviderBasedProject} from './ContentProviderBasedProject.js';
 import {DebuggerSourceMapping, DebuggerWorkspaceBinding} from './DebuggerWorkspaceBinding.js';  // eslint-disable-line no-unused-vars
 import {NetworkProject} from './NetworkProject.js';
-import {frameIdForScript, metadataForURL} from './ResourceUtils.js';
+import {metadataForURL} from './ResourceUtils.js';
 
 /**
  * @implements {DebuggerSourceMapping}
@@ -70,9 +70,8 @@ export class ResourceScriptMapping {
    * @return {!ContentProviderBasedProject}
    */
   _project(script) {
-    const frameId = script[_frameIdSymbol];
     const prefix = script.isContentScript() ? 'js:extensions:' : 'js::';
-    const projectId = prefix + this._debuggerModel.target().id() + ':' + frameId;
+    const projectId = prefix + this._debuggerModel.target().id() + ':' + script.frameId;
     let project = this._projects.get(projectId);
     if (!project) {
       const projectType =
@@ -171,8 +170,6 @@ export class ResourceScriptMapping {
     }
     this._acceptedScripts.add(script);
     const originalContentProvider = script.originalContentProvider();
-    const frameId = frameIdForScript(script);
-    script[_frameIdSymbol] = frameId;
 
     const url = script.sourceURL;
     const project = this._project(script);
@@ -186,8 +183,8 @@ export class ResourceScriptMapping {
 
     // Create UISourceCode.
     const uiSourceCode = project.createUISourceCode(url, originalContentProvider.contentType());
-    NetworkProject.setInitialFrameAttribution(uiSourceCode, frameId);
-    const metadata = metadataForURL(this._debuggerModel.target(), frameId, url);
+    NetworkProject.setInitialFrameAttribution(uiSourceCode, script.frameId);
+    const metadata = metadataForURL(this._debuggerModel.target(), script.frameId, url);
 
     // Bind UISourceCode to scripts.
     const scriptFile = new ResourceScriptFile(this, uiSourceCode, [script]);
@@ -458,8 +455,6 @@ export class ResourceScriptFile extends Common.Object {
     return this._script && !!this._script.sourceMapURL;
   }
 }
-
-const _frameIdSymbol = Symbol('frameid');
 
 /** @enum {symbol} */
 ResourceScriptFile.Events = {

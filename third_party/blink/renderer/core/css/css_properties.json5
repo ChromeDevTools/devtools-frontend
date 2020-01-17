@@ -2461,7 +2461,7 @@
       interpolable: true,
       field_group: "box",
       field_template: "<length>",
-      default_value: "Length::MaxSizeNone()",
+      default_value: "Length::None()",
       converter: "ConvertLengthMaxSizing",
       keywords: ["none"],
       typedom_types: ["Keyword", "Length", "Percentage"]
@@ -2474,7 +2474,7 @@
       interpolable: true,
       field_group: "box",
       field_template: "<length>",
-      default_value: "Length::MaxSizeNone()",
+      default_value: "Length::None()",
       converter: "ConvertLengthMaxSizing",
       keywords: ["none"],
       typedom_types: ["Keyword", "Length", "Percentage"]
@@ -2630,6 +2630,17 @@
       type_name: "int",
       computed_style_custom_functions: ["setter"],
       typedom_types: ["Number"]
+    },
+    {
+      // This property is used for testing with origin trial intergration only.
+      // It should never be web-exposed.
+      name: "origin-trial-test-property",
+      property_methods: ["CSSValueFromComputedStyleInternal"],
+      field_template: "keyword",
+      default_value: "normal",
+      keywords: ["normal", "none"],
+      typedom_types: ["Keyword"],
+      runtime_flag: "OriginTrialsSampleAPI"
     },
     {
       name: "orphans",

@@ -123,6 +123,9 @@
   <message name="IDS_DEVTOOLS_2ad7f735dd6d0dedb0d010a612854a17" desc="An option in the user agent dropdown menu in the Network conditions tool">
     <ph name="LOCKED_1">Internet Explorer 8</ph>
   </message>
+  <message name="IDS_DEVTOOLS_2cc979d2cc5eda80f702a242ad5242cf" desc="Tooltip to explain lack of raw headers for a particular network request">
+    Only provisional headers are available because this request was not sent over the network and instead was served from a local cache, which doesn&apos;t store the original request headers. Disable cache to see full request headers.
+  </message>
   <message name="IDS_DEVTOOLS_2d13df6f8b5e4c5af9f87e0dc39df69d" desc="Text in Network Data Grid Node of the Network panel">
     Pending
   </message>
@@ -404,6 +407,9 @@
   </message>
   <message name="IDS_DEVTOOLS_da3211be40e2b7282b37431dc1e6ceb6" desc="An option in the user agent dropdown menu in the Network conditions tool">
     <ph name="LOCKED_1">Googlebot Desktop</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_de9b14d980b77c264d42463f407180be" desc="Message to explain lack of raw headers for a particular network request">
+    Provisional headers are shown
   </message>
   <message name="IDS_DEVTOOLS_e4217cfa8bdee0baaa2249db59b8671b" desc="Text for toggling the view of header data (e.g. query string parameters) from source to parsed in the headers tab">
     View parsed
@@ -843,9 +849,6 @@
   <message name="IDS_DEVTOOLS_de99618e7e2cc63c7262c12965fa31f3" desc="Latency format in Network Time Calculator of the Network panel">
     <ph name="PH1">$1s<ex>20ms</ex></ph> latency
   </message>
-  <message name="IDS_DEVTOOLS_de9b14d980b77c264d42463f407180be" desc="Text in Request Headers View of the Network panel">
-    Provisional headers are shown
-  </message>
   <message name="IDS_DEVTOOLS_df080c10e2e9f1e98c180fe2645f6132" desc="Text in Request Headers View of the Network panel">
     Request URL
   </message>
@@ -947,6 +950,9 @@
   </message>
   <message name="IDS_DEVTOOLS_fa3e0746749fe7ce056ebf7811bdc3fc" desc="Error text for duplicate list widget input in Request Blocking tool">
     Pattern already exists.
+  </message>
+  <message name="IDS_DEVTOOLS_fae735abadea1bcebd7d6f96bc5e3523" desc="Message to explain lack of raw headers for a particular network request">
+    Provisional headers are shown. Disable cache to see full headers.
   </message>
   <message name="IDS_DEVTOOLS_fae900d6e2cf6b54ffae8cad77b9e2a6" desc="Text of a DOM element in Network Data Grid Node of the Network panel">
     (prefetch cache)

@@ -2,9 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-export default class PerformanceMetricsModel extends SDK.SDKModel {
+import {Capability, SDKModel, Target} from './SDKModel.js';  // eslint-disable-line no-unused-vars
+
+export class PerformanceMetricsModel extends SDKModel {
   /**
-   * @param {!SDK.Target} target
+   * @param {!Target} target
    */
   constructor(target) {
     super(target);
@@ -81,13 +83,4 @@ const MetricMode = {
   CumulativeCount: Symbol('CumulativeCount'),
 };
 
-/* Legacy exported object */
-self.SDK = self.SDK || {};
-
-/* Legacy exported object */
-SDK = SDK || {};
-
-/** @constructor */
-SDK.PerformanceMetricsModel = PerformanceMetricsModel;
-
-SDK.SDKModel.register(SDK.PerformanceMetricsModel, SDK.Target.Capability.DOM, false);
+SDKModel.register(PerformanceMetricsModel, Capability.DOM, false);

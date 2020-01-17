@@ -4,7 +4,7 @@
  * found in the LICENSE file.
  */
 
-export default class TracingModel {
+export class TracingModel {
   /**
    * @param {!BackingStorage} backingStorage
    */
@@ -1013,36 +1013,3 @@ export class Thread extends NamedObject {
     return this._asyncEvents;
   }
 }
-
-/* Legacy exported object */
-self.SDK = self.SDK || {};
-
-/* Legacy exported object */
-SDK = SDK || {};
-
-/** @constructor */
-SDK.TracingModel = TracingModel;
-
-SDK.TracingModel.Phase = Phase;
-SDK.TracingModel.MetadataEvent = MetadataEvent;
-SDK.TracingModel.LegacyTopLevelEventCategory = LegacyTopLevelEventCategory;
-SDK.TracingModel.DevToolsMetadataEventCategory = DevToolsMetadataEventCategory;
-SDK.TracingModel.DevToolsTimelineEventCategory = DevToolsTimelineEventCategory;
-
-/** @constructor */
-SDK.TracingModel.Event = Event;
-
-/** @constructor */
-SDK.TracingModel.ObjectSnapshot = ObjectSnapshot;
-
-/** @constructor */
-SDK.TracingModel.AsyncEvent = AsyncEvent;
-
-/** @constructor */
-SDK.TracingModel.Process = Process;
-
-/** @constructor */
-SDK.TracingModel.Thread = Thread;
-
-/** @interface */
-SDK.BackingStorage = BackingStorage;

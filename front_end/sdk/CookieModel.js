@@ -2,20 +2,25 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-export default class CookieModel extends SDK.SDKModel {
+import {Cookie} from './Cookie.js';
+import {Resource} from './Resource.js';  // eslint-disable-line no-unused-vars
+import {ResourceTreeModel} from './ResourceTreeModel.js';
+import {Capability, SDKModel, Target} from './SDKModel.js';  // eslint-disable-line no-unused-vars
+
+export class CookieModel extends SDKModel {
   /**
-   * @param {!SDK.Target} target
+   * @param {!Target} target
    */
   constructor(target) {
     super(target);
 
-    /** Array<!SDK.Cookie> */
+    /** Array<!Cookie> */
     this._blockedCookies = new Map();
     this._cookieToBlockedReasons = new Map();
   }
 
   /**
-   * @param {!SDK.Cookie} cookie
+   * @param {!Cookie} cookie
    * @param {string} resourceURL
    * @return {boolean}
    */
@@ -43,7 +48,7 @@ export default class CookieModel extends SDK.SDKModel {
   }
 
   /**
-   * @param {!SDK.Cookie} cookie
+   * @param {!Cookie} cookie
    * @param {?Array<!CookieTable.BlockedReason>} blockedReasons
    */
   addBlockedCookie(cookie, blockedReasons) {
@@ -66,17 +71,17 @@ export default class CookieModel extends SDK.SDKModel {
 
   /**
    * @param {!Array<string>} urls
-   * @return {!Promise<!Array<!SDK.Cookie>>}
+   * @return {!Promise<!Array<!Cookie>>}
    */
   async getCookies(urls) {
     const normalCookies = await this.target().networkAgent().getCookies(urls).then(
-        cookies => (cookies || []).map(cookie => SDK.Cookie.fromProtocolCookie(cookie)));
+        cookies => (cookies || []).map(cookie => Cookie.fromProtocolCookie(cookie)));
 
     return normalCookies.concat(Array.from(this._blockedCookies.values()));
   }
 
   /**
-   * @param {!SDK.Cookie} cookie
+   * @param {!Cookie} cookie
    * @param {function()=} callback
    */
   deleteCookie(cookie, callback) {
@@ -92,7 +97,7 @@ export default class CookieModel extends SDK.SDKModel {
   }
 
   /**
-   * @param {!SDK.Cookie} cookie
+   * @param {!Cookie} cookie
    * @return {!Promise<boolean>}
    */
   saveCookie(cookie) {
@@ -115,12 +120,12 @@ export default class CookieModel extends SDK.SDKModel {
   /**
    * Returns cookies needed by current page's frames whose security origins are |domain|.
    * @param {?string} domain
-   * @return {!Promise<!Array<!SDK.Cookie>>}
+   * @return {!Promise<!Array<!Cookie>>}
    */
   getCookiesForDomain(domain) {
     const resourceURLs = [];
     /**
-     * @param {!SDK.Resource} resource
+     * @param {!Resource} resource
      */
     function populateResourceURLs(resource) {
       const documentURL = Common.ParsedURL.fromString(resource.documentURL);
@@ -128,7 +133,7 @@ export default class CookieModel extends SDK.SDKModel {
         resourceURLs.push(resource.url);
       }
     }
-    const resourceTreeModel = this.target().model(SDK.ResourceTreeModel);
+    const resourceTreeModel = this.target().model(ResourceTreeModel);
     if (resourceTreeModel) {
       resourceTreeModel.forAllResources(populateResourceURLs);
     }
@@ -136,7 +141,7 @@ export default class CookieModel extends SDK.SDKModel {
   }
 
   /**
-   * @param {!Array<!SDK.Cookie>} cookies
+   * @param {!Array<!Cookie>} cookies
    * @param {function()=} callback
    */
   _deleteAll(cookies, callback) {
@@ -150,13 +155,4 @@ export default class CookieModel extends SDK.SDKModel {
   }
 }
 
-/* Legacy exported object */
-self.SDK = self.SDK || {};
-
-/* Legacy exported object */
-SDK = SDK || {};
-
-/** @constructor */
-SDK.CookieModel = CookieModel;
-
-SDK.SDKModel.register(SDK.CookieModel, SDK.Target.Capability.Network, false);
+SDKModel.register(CookieModel, Capability.Network, false);

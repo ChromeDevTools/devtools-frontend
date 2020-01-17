@@ -27,6 +27,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 /**
  * @implements {Common.ContentProvider}
  * @unrestricted
@@ -77,7 +78,7 @@ export class CompilerSourceMappingContentProvider {
          * @param {number} statusCode
          * @param {!Object.<string, string>} _headers (unused)
          * @param {string} content
-         * @this {SDK.CompilerSourceMappingContentProvider}
+         * @this {CompilerSourceMappingContentProvider}
          */
           (statusCode, _headers, content, netError) => {
             if (statusCode >= 400) {
@@ -107,12 +108,3 @@ export class CompilerSourceMappingContentProvider {
     return Common.ContentProvider.performSearchInContent(content, query, caseSensitive, isRegex);
   }
 }
-
-/* Legacy exported object */
-self.SDK = self.SDK || {};
-
-/* Legacy exported object */
-SDK = SDK || {};
-
-/** @constructor */
-SDK.CompilerSourceMappingContentProvider = CompilerSourceMappingContentProvider;

@@ -2,12 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {Capability, SDKModel, Target} from './SDKModel.js';  // eslint-disable-line no-unused-vars
+
 /**
  * @implements {Protocol.LogDispatcher}
  */
-export default class LogModel extends SDK.SDKModel {
+export class LogModel extends SDKModel {
   /**
-   * @param {!SDK.Target} target
+   * @param {!Target} target
    */
   constructor(target) {
     super(target);
@@ -41,16 +43,4 @@ export const Events = {
   EntryAdded: Symbol('EntryAdded')
 };
 
-/* Legacy exported object */
-self.SDK = self.SDK || {};
-
-/* Legacy exported object */
-SDK = SDK || {};
-
-/** @constructor */
-SDK.LogModel = LogModel;
-
-/** @enum {symbol} */
-SDK.LogModel.Events = Events;
-
-SDK.SDKModel.register(SDK.LogModel, SDK.Target.Capability.Log, true);
+SDKModel.register(LogModel, Capability.Log, true);

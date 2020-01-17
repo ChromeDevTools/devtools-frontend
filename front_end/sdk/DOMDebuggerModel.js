@@ -2,17 +2,23 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-export default class DOMDebuggerModel extends SDK.SDKModel {
+import {Location} from './DebuggerModel.js';                                // eslint-disable-line no-unused-vars
+import {DOMModel, DOMNode, Events as DOMModelEvents} from './DOMModel.js';  // eslint-disable-line no-unused-vars
+import {RemoteObject} from './RemoteObject.js';
+import {RuntimeModel} from './RuntimeModel.js';
+import {Capability, SDKModel, SDKModelObserver, Target} from './SDKModel.js';  // eslint-disable-line no-unused-vars
+
+export class DOMDebuggerModel extends SDKModel {
   /**
-   * @param {!SDK.Target} target
+   * @param {!Target} target
    */
   constructor(target) {
     super(target);
     this._agent = target.domdebuggerAgent();
-    this._runtimeModel = /** @type {!SDK.RuntimeModel} */ (target.model(SDK.RuntimeModel));
-    this._domModel = /** @type {!SDK.DOMModel} */ (target.model(SDK.DOMModel));
-    this._domModel.addEventListener(SDK.DOMModel.Events.DocumentUpdated, this._documentUpdated, this);
-    this._domModel.addEventListener(SDK.DOMModel.Events.NodeRemoved, this._nodeRemoved, this);
+    this._runtimeModel = /** @type {!RuntimeModel} */ (target.model(RuntimeModel));
+    this._domModel = /** @type {!DOMModel} */ (target.model(DOMModel));
+    this._domModel.addEventListener(DOMModelEvents.DocumentUpdated, this._documentUpdated, this);
+    this._domModel.addEventListener(DOMModelEvents.NodeRemoved, this._nodeRemoved, this);
 
     /** @type {!Array<!DOMBreakpoint>} */
     this._domBreakpoints = [];
@@ -23,15 +29,15 @@ export default class DOMDebuggerModel extends SDK.SDKModel {
   }
 
   /**
-   * @return {!SDK.RuntimeModel}
+   * @return {!RuntimeModel}
    */
   runtimeModel() {
     return this._runtimeModel;
   }
 
   /**
-   * @param {!SDK.RemoteObject} remoteObject
-   * @return {!Promise<!Array<!SDK.EventListener>>}
+   * @param {!RemoteObject} remoteObject
+   * @return {!Promise<!Array<!EventListener>>}
    */
   async eventListeners(remoteObject) {
     console.assert(remoteObject.runtimeModel() === this._runtimeModel);
@@ -47,7 +53,7 @@ export default class DOMDebuggerModel extends SDK.SDKModel {
       if (!location) {
         continue;
       }
-      eventListeners.push(new SDK.EventListener(
+      eventListeners.push(new EventListener(
           this, remoteObject, payload.type, payload.useCapture, payload.passive, payload.once,
           payload.handler ? this._runtimeModel.createRemoteObject(payload.handler) : null,
           payload.originalHandler ? this._runtimeModel.createRemoteObject(payload.originalHandler) : null, location,
@@ -68,8 +74,8 @@ export default class DOMDebuggerModel extends SDK.SDKModel {
   }
 
   /**
-   * @param {!SDK.DOMNode} node
-   * @param {!SDK.DOMDebuggerModel.DOMBreakpoint.Type} type
+   * @param {!DOMNode} node
+   * @param {!Protocol.DOMDebugger.DOMBreakpointType} type
    * @return {boolean}
    */
   hasDOMBreakpoint(node, type) {
@@ -77,8 +83,8 @@ export default class DOMDebuggerModel extends SDK.SDKModel {
   }
 
   /**
-   * @param {!SDK.DOMNode} node
-   * @param {!SDK.DOMDebuggerModel.DOMBreakpoint.Type} type
+   * @param {!DOMNode} node
+   * @param {!Protocol.DOMDebugger.DOMBreakpointType} type
    * @return {!DOMBreakpoint}
    */
   setDOMBreakpoint(node, type) {
@@ -97,8 +103,8 @@ export default class DOMDebuggerModel extends SDK.SDKModel {
   }
 
   /**
-   * @param {!SDK.DOMNode} node
-   * @param {!SDK.DOMDebuggerModel.DOMBreakpoint.Type} type
+   * @param {!DOMNode} node
+   * @param {!Protocol.DOMDebugger.DOMBreakpointType} type
    */
   removeDOMBreakpoint(node, type) {
     this._removeDOMBreakpoints(breakpoint => breakpoint.node === node && breakpoint.type === type);
@@ -142,7 +148,7 @@ export default class DOMDebuggerModel extends SDK.SDKModel {
   }
 
   /**
-   * @param {!SDK.DOMNode} node
+   * @param {!DOMNode} node
    * @return {boolean}
    */
   _nodeHasBreakpoints(node) {
@@ -156,7 +162,7 @@ export default class DOMDebuggerModel extends SDK.SDKModel {
 
   /**
    * @param {!Object} auxData
-   * @return {?{type: !SDK.DOMDebuggerModel.DOMBreakpoint.Type, node: !SDK.DOMNode, targetNode: ?SDK.DOMNode, insertion: boolean}}
+   * @return {?{type: !Protocol.DOMDebugger.DOMBreakpointType, node: !DOMNode, targetNode: ?SDK.DOMNode, insertion: boolean}}
    */
   resolveDOMBreakpointData(auxData) {
     const type = auxData['type'];
@@ -166,7 +172,7 @@ export default class DOMDebuggerModel extends SDK.SDKModel {
     }
     let targetNode = null;
     let insertion = false;
-    if (type === SDK.DOMDebuggerModel.DOMBreakpoint.Type.SubtreeModified) {
+    if (type === Protocol.DOMDebugger.DOMBreakpointType.SubtreeModified) {
       insertion = auxData['insertion'] || false;
       targetNode = this._domModel.nodeForId(auxData['targetNodeId']);
     }
@@ -194,7 +200,7 @@ export default class DOMDebuggerModel extends SDK.SDKModel {
     }
 
     /**
-     * @param {!{type: !SDK.DOMDebuggerModel.DOMBreakpoint.Type, enabled: boolean}} breakpoint
+     * @param {!{type: !Protocol.DOMDebugger.DOMBreakpointType, enabled: boolean}} breakpoint
      * @param {?number} nodeId
      * @this {DOMDebuggerModel}
      */
@@ -242,7 +248,7 @@ export default class DOMDebuggerModel extends SDK.SDKModel {
    * @param {!Common.Event} event
    */
   _nodeRemoved(event) {
-    const node = /** @type {!SDK.DOMNode} */ (event.data.node);
+    const node = /** @type {!DOMNode} */ (event.data.node);
     const children = node.children() || [];
     this._removeDOMBreakpoints(breakpoint => breakpoint.node === node || children.indexOf(breakpoint.node) !== -1);
   }
@@ -270,8 +276,8 @@ const Marker = 'breakpoint-marker';
 export class DOMBreakpoint {
   /**
    * @param {!DOMDebuggerModel} domDebuggerModel
-   * @param {!SDK.DOMNode} node
-   * @param {!SDK.DOMDebuggerModel.DOMBreakpoint.Type} type
+   * @param {!DOMNode} node
+   * @param {!Protocol.DOMDebugger.DOMBreakpointType} type
    * @param {boolean} enabled
    */
   constructor(domDebuggerModel, node, type, enabled) {
@@ -285,14 +291,14 @@ export class DOMBreakpoint {
 export class EventListener {
   /**
    * @param {!DOMDebuggerModel} domDebuggerModel
-   * @param {!SDK.RemoteObject} eventTarget
+   * @param {!RemoteObject} eventTarget
    * @param {string} type
    * @param {boolean} useCapture
    * @param {boolean} passive
    * @param {boolean} once
    * @param {?SDK.RemoteObject} handler
    * @param {?SDK.RemoteObject} originalHandler
-   * @param {!SDK.DebuggerModel.Location} location
+   * @param {!Location} location
    * @param {?SDK.RemoteObject} customRemoveFunction
    * @param {!EventListener.Origin=} origin
    */
@@ -350,14 +356,14 @@ export class EventListener {
   }
 
   /**
-   * @return {?SDK.RemoteObject}
+   * @return {?RemoteObject}
    */
   handler() {
     return this._handler;
   }
 
   /**
-   * @return {!SDK.DebuggerModel.Location}
+   * @return {!Location}
    */
   location() {
     return this._location;
@@ -371,7 +377,7 @@ export class EventListener {
   }
 
   /**
-   * @return {?SDK.RemoteObject}
+   * @return {?RemoteObject}
    */
   originalHandler() {
     return this._originalHandler;
@@ -408,8 +414,8 @@ export class EventListener {
       }
 
       return /** @type {!Promise<undefined>} */ (this._eventTarget.callFunction(removeListener, [
-        SDK.RemoteObject.toCallArgument(this._type), SDK.RemoteObject.toCallArgument(this._originalHandler),
-        SDK.RemoteObject.toCallArgument(this._useCapture)
+        RemoteObject.toCallArgument(this._type), RemoteObject.toCallArgument(this._originalHandler),
+        RemoteObject.toCallArgument(this._useCapture)
       ]));
     }
 
@@ -417,10 +423,10 @@ export class EventListener {
         .callFunction(
             callCustomRemove,
             [
-              SDK.RemoteObject.toCallArgument(this._type),
-              SDK.RemoteObject.toCallArgument(this._originalHandler),
-              SDK.RemoteObject.toCallArgument(this._useCapture),
-              SDK.RemoteObject.toCallArgument(this._passive),
+              RemoteObject.toCallArgument(this._type),
+              RemoteObject.toCallArgument(this._originalHandler),
+              RemoteObject.toCallArgument(this._useCapture),
+              RemoteObject.toCallArgument(this._passive),
             ])
         .then(() => undefined);
 
@@ -449,10 +455,10 @@ export class EventListener {
    */
   togglePassive() {
     return /** @type {!Promise<undefined>} */ (this._eventTarget.callFunction(callTogglePassive, [
-      SDK.RemoteObject.toCallArgument(this._type),
-      SDK.RemoteObject.toCallArgument(this._originalHandler),
-      SDK.RemoteObject.toCallArgument(this._useCapture),
-      SDK.RemoteObject.toCallArgument(this._passive),
+      RemoteObject.toCallArgument(this._type),
+      RemoteObject.toCallArgument(this._originalHandler),
+      RemoteObject.toCallArgument(this._useCapture),
+      RemoteObject.toCallArgument(this._passive),
     ]));
 
     /**
@@ -573,7 +579,7 @@ EventListenerBreakpoint._listener = 'listener:';
 EventListenerBreakpoint._instrumentation = 'instrumentation:';
 
 /**
- * @implements {SDK.SDKModelObserver<!DOMDebuggerModel>}
+ * @implements {SDKModelObserver<!DOMDebuggerModel>}
  */
 export class DOMDebuggerManager {
   constructor() {
@@ -696,7 +702,7 @@ export class DOMDebuggerManager {
     this._resolveEventListenerBreakpoint('instrumentation:audioContextSuspended')._title =
         Common.UIString('Suspend AudioContext');
 
-    SDK.targetManager.observeModels(SDK.DOMDebuggerModel, this);
+    SDK.targetManager.observeModels(DOMDebuggerModel, this);
   }
 
   /**
@@ -881,34 +887,4 @@ export class DOMDebuggerManager {
   }
 }
 
-/* Legacy exported object */
-self.SDK = self.SDK || {};
-
-/* Legacy exported object */
-SDK = SDK || {};
-
-/** @constructor */
-SDK.DOMDebuggerModel = DOMDebuggerModel;
-
-/** @enum {symbol} */
-SDK.DOMDebuggerModel.Events = Events;
-
-/** @constructor */
-SDK.DOMDebuggerModel.DOMBreakpoint = DOMBreakpoint;
-
-/** @constructor */
-SDK.DOMDebuggerModel.EventListenerBreakpoint = EventListenerBreakpoint;
-
-/** @constructor */
-SDK.EventListener = EventListener;
-
-/** @constructor */
-SDK.DOMDebuggerManager = DOMDebuggerManager;
-
-SDK.SDKModel.register(SDK.DOMDebuggerModel, SDK.Target.Capability.DOM, false);
-
-/** @typedef {Protocol.DOMDebugger.DOMBreakpointType} */
-SDK.DOMDebuggerModel.DOMBreakpoint.Type = Protocol.DOMDebugger.DOMBreakpointType;
-
-/** @type {!SDK.DOMDebuggerManager} */
-SDK.domDebuggerManager;
+SDKModel.register(DOMDebuggerModel, Capability.DOM, false);

@@ -4,7 +4,7 @@
 
 const {assert} = chai;
 
-import {default as ServerTiming} from '/front_end/sdk/ServerTiming.js';
+import {ServerTiming} from '/front_end/sdk/ServerTiming.js';
 
 describe('ServerTiming', () => {
   it('can be instantiated correctly', () => {

@@ -34,10 +34,12 @@
 // which is in a format slightly different from Set-Cookie and is normally
 // only required on the server side.
 
+import {Cookie, Type} from './Cookie.js';
+
 /**
  * @unrestricted
  */
-export default class CookieParser {
+export class CookieParser {
   /**
    * @param {string=} domain
    */
@@ -51,7 +53,7 @@ export default class CookieParser {
 
   /**
    * @param {string|undefined} header
-   * @return {?Array<!SDK.Cookie>}
+   * @return {?Array<!Cookie>}
    */
   static parseCookie(header) {
     return (new CookieParser()).parseCookie(header);
@@ -60,14 +62,14 @@ export default class CookieParser {
   /**
    * @param {string|undefined} header
    * @param {string=} domain
-   * @return {?Array<!SDK.Cookie>}
+   * @return {?Array<!Cookie>}
    */
   static parseSetCookie(header, domain) {
     return (new CookieParser(domain)).parseSetCookie(header);
   }
 
   /**
-   * @return {!Array<!SDK.Cookie>}
+   * @return {!Array<!Cookie>}
    */
   cookies() {
     return this._cookies;
@@ -75,7 +77,7 @@ export default class CookieParser {
 
   /**
    * @param {string|undefined} cookieHeader
-   * @return {?Array<!SDK.Cookie>}
+   * @return {?Array<!Cookie>}
    */
   parseCookie(cookieHeader) {
     if (!this._initialize(cookieHeader)) {
@@ -86,7 +88,7 @@ export default class CookieParser {
       if (kv.key.charAt(0) === '$' && this._lastCookie) {
         this._lastCookie.addAttribute(kv.key.slice(1), kv.value);
       } else if (kv.key.toLowerCase() !== '$version' && typeof kv.value === 'string') {
-        this._addCookie(kv, SDK.Cookie.Type.Request);
+        this._addCookie(kv, Type.Request);
       }
       this._advanceAndCheckCookieDelimiter();
     }
@@ -96,7 +98,7 @@ export default class CookieParser {
 
   /**
    * @param {string|undefined} setCookieHeader
-   * @return {?Array<!SDK.Cookie>}
+   * @return {?Array<!Cookie>}
    */
   parseSetCookie(setCookieHeader) {
     if (!this._initialize(setCookieHeader)) {
@@ -106,7 +108,7 @@ export default class CookieParser {
       if (this._lastCookie) {
         this._lastCookie.addAttribute(kv.key, kv.value);
       } else {
-        this._addCookie(kv, SDK.Cookie.Type.Response);
+        this._addCookie(kv, Type.Response);
       }
       if (this._advanceAndCheckCookieDelimiter()) {
         this._flushCookie();
@@ -181,7 +183,7 @@ export default class CookieParser {
 
   /**
    * @param {!KeyValue} keyValue
-   * @param {!SDK.Cookie.Type} type
+   * @param {!Type} type
    */
   _addCookie(keyValue, type) {
     if (this._lastCookie) {
@@ -190,8 +192,8 @@ export default class CookieParser {
 
     // Mozilla bug 169091: Mozilla, IE and Chrome treat single token (w/o "=") as
     // specifying a value for a cookie with empty name.
-    this._lastCookie = typeof keyValue.value === 'string' ? new SDK.Cookie(keyValue.key, keyValue.value, type) :
-                                                            new SDK.Cookie('', keyValue.key, type);
+    this._lastCookie = typeof keyValue.value === 'string' ? new Cookie(keyValue.key, keyValue.value, type) :
+                                                            new Cookie('', keyValue.key, type);
     if (this._domain) {
       this._lastCookie.addAttribute('domain', this._domain);
     }
@@ -215,12 +217,3 @@ class KeyValue {
     this.position = position;
   }
 }
-
-/* Legacy exported object */
-self.SDK = self.SDK || {};
-
-/* Legacy exported object */
-SDK = SDK || {};
-
-/** @constructor */
-SDK.CookieParser = CookieParser;

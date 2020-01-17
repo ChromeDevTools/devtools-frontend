@@ -28,12 +28,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import {Events as RuntimeModelEvents, ExecutionContext, RuntimeModel} from './RuntimeModel.js';  // eslint-disable-line no-unused-vars
+import {Capability, SDKModel, Target, Type} from './SDKModel.js';  // eslint-disable-line no-unused-vars
+
 /**
  * @unrestricted
  */
-export default class ServiceWorkerManager extends SDK.SDKModel {
+export class ServiceWorkerManager extends SDKModel {
   /**
-   * @param {!SDK.Target} target
+   * @param {!Target} target
    */
   constructor(target) {
     super(target);
@@ -589,7 +592,7 @@ export class ServiceWorkerRegistration {
  */
 class ServiceWorkerContextNamer {
   /**
-   * @param {!SDK.Target} target
+   * @param {!Target} target
    * @param {!ServiceWorkerManager} serviceWorkerManager
    */
   constructor(target, serviceWorkerManager) {
@@ -600,7 +603,7 @@ class ServiceWorkerContextNamer {
     serviceWorkerManager.addEventListener(Events.RegistrationUpdated, this._registrationsUpdated, this);
     serviceWorkerManager.addEventListener(Events.RegistrationDeleted, this._registrationsUpdated, this);
     SDK.targetManager.addModelListener(
-        SDK.RuntimeModel, SDK.RuntimeModel.Events.ExecutionContextCreated, this._executionContextCreated, this);
+        RuntimeModel, RuntimeModelEvents.ExecutionContextCreated, this._executionContextCreated, this);
   }
 
   /**
@@ -624,7 +627,7 @@ class ServiceWorkerContextNamer {
    * @param {!Common.Event} event
    */
   _executionContextCreated(event) {
-    const executionContext = /** @type {!SDK.ExecutionContext} */ (event.data);
+    const executionContext = /** @type {!ExecutionContext} */ (event.data);
     const serviceWorkerTargetId = this._serviceWorkerTargetId(executionContext.target());
     if (!serviceWorkerTargetId) {
       return;
@@ -633,11 +636,11 @@ class ServiceWorkerContextNamer {
   }
 
   /**
-   * @param {!SDK.Target} target
+   * @param {!Target} target
    * @return {?string}
    */
   _serviceWorkerTargetId(target) {
-    if (target.parentTarget() !== this._target || target.type() !== SDK.Target.Type.ServiceWorker) {
+    if (target.parentTarget() !== this._target || target.type() !== Type.ServiceWorker) {
       return null;
     }
     return target.id();
@@ -650,7 +653,7 @@ class ServiceWorkerContextNamer {
         continue;
       }
       const version = this._versionByTargetId.get(serviceWorkerTargetId) || null;
-      const runtimeModel = target.model(SDK.RuntimeModel);
+      const runtimeModel = target.model(RuntimeModel);
       const executionContexts = runtimeModel ? runtimeModel.executionContexts() : [];
       for (const context of executionContexts) {
         this._updateContextLabel(context, version);
@@ -659,7 +662,7 @@ class ServiceWorkerContextNamer {
   }
 
   /**
-   * @param {!SDK.ExecutionContext} context
+   * @param {!ExecutionContext} context
    * @param {?ServiceWorkerVersion} version
    */
   _updateContextLabel(context, version) {
@@ -674,22 +677,4 @@ class ServiceWorkerContextNamer {
   }
 }
 
-/* Legacy exported object */
-self.SDK = self.SDK || {};
-
-/* Legacy exported object */
-SDK = SDK || {};
-
-/** @constructor */
-SDK.ServiceWorkerManager = ServiceWorkerManager;
-
-/** @enum {symbol} */
-SDK.ServiceWorkerManager.Events = Events;
-
-/** @constructor */
-SDK.ServiceWorkerVersion = ServiceWorkerVersion;
-
-/** @constructor */
-SDK.ServiceWorkerRegistration = ServiceWorkerRegistration;
-
-SDK.SDKModel.register(ServiceWorkerManager, SDK.Target.Capability.ServiceWorker, true);
+SDKModel.register(ServiceWorkerManager, Capability.ServiceWorker, true);

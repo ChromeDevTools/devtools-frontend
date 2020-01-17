@@ -1,10 +1,11 @@
 // Copyright 2016 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
 /**
  * @unrestricted
  */
-export default class ServerTiming {
+export class ServerTiming {
   /**
    * @param {string} metric
    * @param {?number} value
@@ -196,12 +197,3 @@ export default class ServerTiming {
     Common.console.warn(Common.UIString(`ServerTiming: ${msg}`));
   }
 }
-
-/* Legacy exported object */
-self.SDK = self.SDK || {};
-
-/* Legacy exported object */
-SDK = SDK || {};
-
-/** @constructor */
-SDK.ServerTiming = ServerTiming;

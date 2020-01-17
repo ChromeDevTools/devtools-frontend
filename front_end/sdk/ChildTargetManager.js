@@ -2,14 +2,19 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {ParallelConnection} from './Connections.js';
+import {Capability, Events, SDKModel, Target, Type} from './SDKModel.js';  // eslint-disable-line no-unused-vars
+
 let _lastAnonymousTargetId = 0;
+
+let _attachCallback;
 
 /**
  * @implements {Protocol.TargetDispatcher}
  */
-export default class ChildTargetManager extends SDK.SDKModel {
+export class ChildTargetManager extends SDKModel {
   /**
-   * @param {!SDK.Target} parentTarget
+   * @param {!Target} parentTarget
    */
   constructor(parentTarget) {
     super(parentTarget);
@@ -19,7 +24,7 @@ export default class ChildTargetManager extends SDK.SDKModel {
     /** @type {!Map<string, !Protocol.Target.TargetInfo>} */
     this._targetInfos = new Map();
 
-    /** @type {!Map<string, !SDK.Target>} */
+    /** @type {!Map<string, !Target>} */
     this._childTargets = new Map();
 
     /** @type {!Map<string, !Protocol.Connection>} */
@@ -38,11 +43,11 @@ export default class ChildTargetManager extends SDK.SDKModel {
   }
 
   /**
-   * @param {function({target: !SDK.Target, waitingForDebugger: boolean}):!Promise=} attachCallback
+   * @param {function({target: !Target, waitingForDebugger: boolean}):!Promise=} attachCallback
    */
   static install(attachCallback) {
-    SDK.ChildTargetManager._attachCallback = attachCallback;
-    SDK.SDKModel.register(SDK.ChildTargetManager, SDK.Target.Capability.Target, true);
+    _attachCallback = attachCallback;
+    SDKModel.register(ChildTargetManager, Capability.Target, true);
   }
 
   /**
@@ -107,8 +112,7 @@ export default class ChildTargetManager extends SDK.SDKModel {
   }
 
   _fireAvailableTargetsChanged() {
-    SDK.targetManager.dispatchEventToListeners(
-        SDK.TargetManager.Events.AvailableTargetsChanged, this._targetInfos.valuesArray());
+    SDK.targetManager.dispatchEventToListeners(Events.AvailableTargetsChanged, this._targetInfos.valuesArray());
   }
 
   /**
@@ -140,25 +144,25 @@ export default class ChildTargetManager extends SDK.SDKModel {
       targetName = parsedURL ? parsedURL.lastPathComponentWithFragment() : '#' + (++_lastAnonymousTargetId);
     }
 
-    let type = SDK.Target.Type.Browser;
+    let type = Type.Browser;
     if (targetInfo.type === 'iframe') {
-      type = SDK.Target.Type.Frame;
+      type = Type.Frame;
     }
     // TODO(lfg): ensure proper capabilities for child pages (e.g. portals).
     else if (targetInfo.type === 'page') {
-      type = SDK.Target.Type.Frame;
+      type = Type.Frame;
     } else if (targetInfo.type === 'worker') {
-      type = SDK.Target.Type.Worker;
+      type = Type.Worker;
     } else if (targetInfo.type === 'service_worker') {
-      type = SDK.Target.Type.ServiceWorker;
+      type = Type.ServiceWorker;
     }
 
     const target =
         this._targetManager.createTarget(targetInfo.targetId, targetName, type, this._parentTarget, sessionId);
     this._childTargets.set(sessionId, target);
 
-    if (SDK.ChildTargetManager._attachCallback) {
-      SDK.ChildTargetManager._attachCallback({target, waitingForDebugger}).then(() => {
+    if (_attachCallback) {
+      _attachCallback({target, waitingForDebugger}).then(() => {
         target.runtimeAgent().runIfWaitingForDebugger();
       });
     } else {
@@ -195,7 +199,7 @@ export default class ChildTargetManager extends SDK.SDKModel {
    * @return {!Promise<!Protocol.Connection>}
    */
   async createParallelConnection(onMessage) {
-    // The main SDK.Target id is actually just `main`, instead of the real targetId.
+    // The main Target id is actually just `main`, instead of the real targetId.
     // Get the real id (requires an async operation) so that it can be used synchronously later.
     const targetId = await this._getParentTargetId();
     const {connection, sessionId} =
@@ -206,7 +210,7 @@ export default class ChildTargetManager extends SDK.SDKModel {
   }
 
   /**
-   * @param {!SDK.Target} target
+   * @param {!Target} target
    * @param {string} targetId
    * @return {!Promise<!{connection: !Protocol.Connection, sessionId: string}>}
    */
@@ -214,7 +218,7 @@ export default class ChildTargetManager extends SDK.SDKModel {
     const targetAgent = target.targetAgent();
     const targetRouter = target.router();
     const sessionId = /** @type {string} */ (await targetAgent.attachToTarget(targetId, true /* flatten */));
-    const connection = new SDK.ParallelConnection(targetRouter.connection(), sessionId);
+    const connection = new ParallelConnection(targetRouter.connection(), sessionId);
     targetRouter.registerSession(target, sessionId, connection);
     connection.setOnDisconnect(() => {
       targetAgent.detachFromTarget(sessionId);
@@ -223,15 +227,3 @@ export default class ChildTargetManager extends SDK.SDKModel {
     return {connection, sessionId};
   }
 }
-
-/* Legacy exported object */
-self.SDK = self.SDK || {};
-
-/* Legacy exported object */
-SDK = SDK || {};
-
-/** @constructor */
-SDK.ChildTargetManager = ChildTargetManager;
-
-/** @type {function({target: !SDK.Target, waitingForDebugger: boolean})|undefined} */
-SDK.ChildTargetManager._attachCallback;

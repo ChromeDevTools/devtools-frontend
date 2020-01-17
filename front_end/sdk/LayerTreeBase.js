@@ -2,6 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {DOMModel, DOMNode} from './DOMModel.js';  // eslint-disable-line no-unused-vars
+import {Target} from './SDKModel.js';             // eslint-disable-line no-unused-vars
+
 /**
  * @interface
  */
@@ -43,13 +46,13 @@ export class Layer {
   }
 
   /**
-   * @return {?SDK.DOMNode}
+   * @return {?DOMNode}
    */
   node() {
   }
 
   /**
-   * @return {?SDK.DOMNode}
+   * @return {?DOMNode}
    */
   nodeForSelfOrAncestor() {
   }
@@ -214,22 +217,22 @@ export class StickyPositionConstraint {
 /**
  * @unrestricted
  */
-export default class LayerTreeBase {
+export class LayerTreeBase {
   /**
-   * @param {?SDK.Target} target
+   * @param {?Target} target
    */
   constructor(target) {
     this._target = target;
-    this._domModel = target ? target.model(SDK.DOMModel) : null;
+    this._domModel = target ? target.model(DOMModel) : null;
     this._layersById = {};
     this._root = null;
     this._contentRoot = null;
-    /** @type {!Map<number, ?SDK.DOMNode>} */
+    /** @type {!Map<number, ?DOMNode>} */
     this._backendNodeIdToNode = new Map();
   }
 
   /**
-   * @return {?SDK.Target}
+   * @return {?Target}
    */
   target() {
     return this._target;
@@ -308,7 +311,7 @@ export default class LayerTreeBase {
   }
 
   /**
-   * @return {!Map<number, ?SDK.DOMNode>}
+   * @return {!Map<number, ?DOMNode>}
    */
   backendNodeIdToNode() {
     return this._backendNodeIdToNode;
@@ -330,31 +333,9 @@ export default class LayerTreeBase {
 
   /**
    * @param {number} id
-   * @return {?SDK.DOMNode}
+   * @return {?DOMNode}
    */
   _nodeForId(id) {
     return this._domModel ? this._domModel.nodeForId(id) : null;
   }
 }
-
-/* Legacy exported object */
-self.SDK = self.SDK || {};
-
-/* Legacy exported object */
-SDK = SDK || {};
-
-/** @interface */
-SDK.Layer = Layer;
-
-/** @constructor */
-SDK.LayerTreeBase = LayerTreeBase;
-
-/** @constructor */
-SDK.Layer.StickyPositionConstraint = StickyPositionConstraint;
-
-/** @typedef {!{
-        rect: !Protocol.DOM.Rect,
-        snapshot: !SDK.PaintProfilerSnapshot
-    }}
-*/
-SDK.SnapshotWithRect;

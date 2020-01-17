@@ -1,14 +1,18 @@
 // Copyright 2014 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
+import {Capability, SDKModel, Target} from './SDKModel.js';  // eslint-disable-line no-unused-vars
+import {Events as SecurityOriginManagerEvents, SecurityOriginManager} from './SecurityOriginManager.js';
+
 /**
  * @implements {Protocol.StorageDispatcher}
  * @unrestricted
  */
-export default class ServiceWorkerCacheModel extends SDK.SDKModel {
+export class ServiceWorkerCacheModel extends SDKModel {
   /**
    * Invariant: This model can only be constructed on a ServiceWorker target.
-   * @param {!SDK.Target} target
+   * @param {!Target} target
    */
   constructor(target) {
     super(target);
@@ -20,7 +24,7 @@ export default class ServiceWorkerCacheModel extends SDK.SDKModel {
     this._cacheAgent = target.cacheStorageAgent();
     this._storageAgent = target.storageAgent();
 
-    this._securityOriginManager = target.model(SDK.SecurityOriginManager);
+    this._securityOriginManager = target.model(SecurityOriginManager);
 
     this._originsUpdated = new Set();
     this._throttler = new Common.Throttler(2000);
@@ -35,9 +39,9 @@ export default class ServiceWorkerCacheModel extends SDK.SDKModel {
     }
 
     this._securityOriginManager.addEventListener(
-        SDK.SecurityOriginManager.Events.SecurityOriginAdded, this._securityOriginAdded, this);
+        SecurityOriginManagerEvents.SecurityOriginAdded, this._securityOriginAdded, this);
     this._securityOriginManager.addEventListener(
-        SDK.SecurityOriginManager.Events.SecurityOriginRemoved, this._securityOriginRemoved, this);
+        SecurityOriginManagerEvents.SecurityOriginRemoved, this._securityOriginRemoved, this);
 
     for (const securityOrigin of this._securityOriginManager.securityOrigins()) {
       this._addOrigin(securityOrigin);
@@ -133,9 +137,9 @@ export default class ServiceWorkerCacheModel extends SDK.SDKModel {
     this._caches.clear();
     if (this._enabled) {
       this._securityOriginManager.removeEventListener(
-          SDK.SecurityOriginManager.Events.SecurityOriginAdded, this._securityOriginAdded, this);
+          SecurityOriginManagerEvents.SecurityOriginAdded, this._securityOriginAdded, this);
       this._securityOriginManager.removeEventListener(
-          SDK.SecurityOriginManager.Events.SecurityOriginRemoved, this._securityOriginRemoved, this);
+          SecurityOriginManagerEvents.SecurityOriginRemoved, this._securityOriginRemoved, this);
     }
   }
 
@@ -370,19 +374,4 @@ export class Cache {
   }
 }
 
-/* Legacy exported object */
-self.SDK = self.SDK || {};
-
-/* Legacy exported object */
-SDK = SDK || {};
-
-/** @constructor */
-SDK.ServiceWorkerCacheModel = ServiceWorkerCacheModel;
-
-/** @enum {symbol} */
-SDK.ServiceWorkerCacheModel.Events = Events;
-
-/** @constructor */
-SDK.ServiceWorkerCacheModel.Cache = Cache;
-
-SDK.SDKModel.register(SDK.ServiceWorkerCacheModel, SDK.Target.Capability.Storage, false);
+SDKModel.register(ServiceWorkerCacheModel, Capability.Storage, false);

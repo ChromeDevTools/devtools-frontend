@@ -2,19 +2,23 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-export default class EmulationModel extends SDK.SDKModel {
+import {CSSModel} from './CSSModel.js';
+import {Events, OverlayModel} from './OverlayModel.js';
+import {Capability, SDKModel, Target} from './SDKModel.js';  // eslint-disable-line no-unused-vars
+
+export class EmulationModel extends SDKModel {
   /**
-   * @param {!SDK.Target} target
+   * @param {!Target} target
    */
   constructor(target) {
     super(target);
     this._emulationAgent = target.emulationAgent();
     this._pageAgent = target.pageAgent();
     this._deviceOrientationAgent = target.deviceOrientationAgent();
-    this._cssModel = target.model(SDK.CSSModel);
-    this._overlayModel = target.model(SDK.OverlayModel);
+    this._cssModel = target.model(CSSModel);
+    this._overlayModel = target.model(OverlayModel);
     if (this._overlayModel) {
-      this._overlayModel.addEventListener(SDK.OverlayModel.Events.InspectModeWillBeToggled, this._updateTouch, this);
+      this._overlayModel.addEventListener(Events.InspectModeWillBeToggled, this._updateTouch, this);
     }
 
     const disableJavascriptSetting = Common.settings.moduleSetting('javaScriptDisabled');
@@ -60,7 +64,7 @@ export default class EmulationModel extends SDK.SDKModel {
    * @return {boolean}
    */
   supportsDeviceEmulation() {
-    return this.target().hasAllCapabilities(SDK.Target.Capability.DeviceEmulation);
+    return this.target().hasAllCapabilities(Capability.DeviceEmulation);
   }
 
   /**
@@ -83,7 +87,7 @@ export default class EmulationModel extends SDK.SDKModel {
   }
 
   /**
-   * @return {?SDK.OverlayModel}
+   * @return {?OverlayModel}
    */
   overlayModel() {
     return this._overlayModel;
@@ -360,19 +364,4 @@ export class DeviceOrientation {
   }
 }
 
-/* Legacy exported object */
-self.SDK = self.SDK || {};
-
-/* Legacy exported object */
-SDK = SDK || {};
-
-/** @constructor */
-SDK.EmulationModel = EmulationModel;
-
-/** @constructor */
-SDK.EmulationModel.Geolocation = Geolocation;
-
-/** @constructor */
-SDK.EmulationModel.DeviceOrientation = DeviceOrientation;
-
-SDK.SDKModel.register(EmulationModel, SDK.Target.Capability.Emulation, true);
+SDKModel.register(EmulationModel, Capability.Emulation, true);

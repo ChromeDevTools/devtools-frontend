@@ -28,35 +28,45 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import {CSSMatchedStyles} from './CSSMatchedStyles.js';
+import {CSSMedia} from './CSSMedia.js';
+import {CSSStyleRule} from './CSSRule.js';
+import {CSSStyleDeclaration, Type} from './CSSStyleDeclaration.js';
+import {CSSStyleSheetHeader} from './CSSStyleSheetHeader.js';
+import {DOMModel, DOMNode} from './DOMModel.js';  // eslint-disable-line no-unused-vars
+import {Events as ResourceTreeModelEvents, ResourceTreeModel} from './ResourceTreeModel.js';
+import {Capability, SDKModel, Target} from './SDKModel.js';  // eslint-disable-line no-unused-vars
+import {SourceMapManager} from './SourceMapManager.js';
+
 /**
  * @unrestricted
  */
-export default class CSSModel extends SDK.SDKModel {
+export class CSSModel extends SDKModel {
   /**
-   * @param {!SDK.Target} target
+   * @param {!Target} target
    */
   constructor(target) {
     super(target);
-    this._domModel = /** @type {!SDK.DOMModel} */ (target.model(SDK.DOMModel));
-    /** @type {!SDK.SourceMapManager<!SDK.CSSStyleSheetHeader>} */
-    this._sourceMapManager = new SDK.SourceMapManager(target);
+    this._domModel = /** @type {!DOMModel} */ (target.model(DOMModel));
+    /** @type {!SourceMapManager<!CSSStyleSheetHeader>} */
+    this._sourceMapManager = new SourceMapManager(target);
     this._agent = target.cssAgent();
     this._styleLoader = new ComputedStyleLoader(this);
-    this._resourceTreeModel = target.model(SDK.ResourceTreeModel);
+    this._resourceTreeModel = target.model(ResourceTreeModel);
     if (this._resourceTreeModel) {
       this._resourceTreeModel.addEventListener(
-          SDK.ResourceTreeModel.Events.MainFrameNavigated, this._resetStyleSheets, this);
+          ResourceTreeModelEvents.MainFrameNavigated, this._resetStyleSheets, this);
     }
     target.registerCSSDispatcher(new CSSDispatcher(this));
     if (!target.suspended()) {
       this._enable();
     }
-    /** @type {!Map.<string, !SDK.CSSStyleSheetHeader>} */
+    /** @type {!Map.<string, !CSSStyleSheetHeader>} */
     this._styleSheetIdToHeader = new Map();
     /** @type {!Map.<string, !Object.<!Protocol.Page.FrameId, !Array.<!Protocol.CSS.StyleSheetId>>>} */
     this._styleSheetIdsForURL = new Map();
 
-    /** @type {!Map.<!SDK.CSSStyleSheetHeader, !Promise<?string>>} */
+    /** @type {!Map.<!CSSStyleSheetHeader, !Promise<?string>>} */
     this._originalStyleSheetText = new Map();
 
     /** @type {boolean} */
@@ -69,7 +79,7 @@ export default class CSSModel extends SDK.SDKModel {
 
   /**
    * @param {string} sourceURL
-   * @return {!Array<!SDK.CSSStyleSheetHeader>}
+   * @return {!Array<!CSSStyleSheetHeader>}
    */
   headersForSourceURL(sourceURL) {
     const headers = [];
@@ -102,14 +112,14 @@ export default class CSSModel extends SDK.SDKModel {
          index >= 0 && headers[index].startLine === last.startLine && headers[index].startColumn === last.startColumn;
          --index) {
       if (headers[index].containsLocation(lineNumber, columnNumber)) {
-        locations.push(new SDK.CSSLocation(headers[index], lineNumber, columnNumber));
+        locations.push(new CSSLocation(headers[index], lineNumber, columnNumber));
       }
     }
 
 
     return locations;
     /**
-     * @param {!SDK.CSSStyleSheetHeader} a
+     * @param {!CSSStyleSheetHeader} a
      * @param {!SDK.CSSStyleSheetHeader} b
      * @return {number}
      */
@@ -119,7 +129,7 @@ export default class CSSModel extends SDK.SDKModel {
   }
 
   /**
-   * @return {!SDK.SourceMapManager<!SDK.CSSStyleSheetHeader>}
+   * @return {!SourceMapManager<!CSSStyleSheetHeader>}
    */
   sourceMapManager() {
     return this._sourceMapManager;
@@ -150,7 +160,7 @@ export default class CSSModel extends SDK.SDKModel {
   }
 
   /**
-   * @return {!SDK.DOMModel}
+   * @return {!DOMModel}
    */
   domModel() {
     return this._domModel;
@@ -253,11 +263,11 @@ export default class CSSModel extends SDK.SDKModel {
   }
 
   /**
-   * @return {!Promise<!Array<!SDK.CSSMedia>>}
+   * @return {!Promise<!Array<!CSSMedia>>}
    */
   async mediaQueriesPromise() {
     const payload = await this._agent.getMediaQueries();
-    return payload ? SDK.CSSMedia.parseMediaArrayPayload(this, payload) : [];
+    return payload ? CSSMedia.parseMediaArrayPayload(this, payload) : [];
   }
 
   /**
@@ -281,7 +291,7 @@ export default class CSSModel extends SDK.SDKModel {
 
   /**
    * @param {!Protocol.DOM.NodeId} nodeId
-   * @return {!Promise<?SDK.CSSMatchedStyles>}
+   * @return {!Promise<?CSSMatchedStyles>}
    */
   async matchedStylesPromise(nodeId) {
     const response = await this._agent.invoke_getMatchedStylesForNode({nodeId});
@@ -295,8 +305,8 @@ export default class CSSModel extends SDK.SDKModel {
       return null;
     }
 
-    return new SDK.CSSMatchedStyles(
-        this, /** @type {!SDK.DOMNode} */ (node), response.inlineStyle || null, response.attributesStyle || null,
+    return new CSSMatchedStyles(
+        this, /** @type {!DOMNode} */ (node), response.inlineStyle || null, response.attributesStyle || null,
         response.matchedCSSRules || [], response.pseudoElements || [], response.inherited || [],
         response.cssKeyframesRules || []);
   }
@@ -339,12 +349,12 @@ export default class CSSModel extends SDK.SDKModel {
   }
 
   /**
-   * @return {!Array.<!SDK.CSSStyleSheetHeader>}
+   * @return {!Array.<!CSSStyleSheetHeader>}
    */
   allStyleSheets() {
     const values = this._styleSheetIdToHeader.valuesArray();
     /**
-     * @param {!SDK.CSSStyleSheetHeader} a
+     * @param {!CSSStyleSheetHeader} a
      * @param {!SDK.CSSStyleSheetHeader} b
      * @return {number}
      */
@@ -371,16 +381,15 @@ export default class CSSModel extends SDK.SDKModel {
     if (response[Protocol.Error] || !response.inlineStyle) {
       return null;
     }
-    const inlineStyle =
-        new SDK.CSSStyleDeclaration(this, null, response.inlineStyle, SDK.CSSStyleDeclaration.Type.Inline);
+    const inlineStyle = new CSSStyleDeclaration(this, null, response.inlineStyle, Type.Inline);
     const attributesStyle = response.attributesStyle ?
-        new SDK.CSSStyleDeclaration(this, null, response.attributesStyle, SDK.CSSStyleDeclaration.Type.Attributes) :
+        new CSSStyleDeclaration(this, null, response.attributesStyle, Type.Attributes) :
         null;
     return new InlineStyleResult(inlineStyle, attributesStyle);
   }
 
   /**
-   * @param {!SDK.DOMNode} node
+   * @param {!DOMNode} node
    * @param {string} pseudoClass
    * @param {boolean} enable
    * @return {boolean}
@@ -411,7 +420,7 @@ export default class CSSModel extends SDK.SDKModel {
   }
 
   /**
-   * @param {!SDK.DOMNode} node
+   * @param {!DOMNode} node
    * @return {?Array<string>} state
    */
   pseudoState(node) {
@@ -447,7 +456,7 @@ export default class CSSModel extends SDK.SDKModel {
    * @param {!Protocol.CSS.StyleSheetId} styleSheetId
    * @param {string} ruleText
    * @param {!TextUtils.TextRange} ruleLocation
-   * @return {!Promise<?SDK.CSSStyleRule>}
+   * @return {!Promise<?CSSStyleRule>}
    */
   async addRule(styleSheetId, ruleText, ruleLocation) {
     try {
@@ -460,15 +469,15 @@ export default class CSSModel extends SDK.SDKModel {
       this._domModel.markUndoableState();
       const edit = new Edit(styleSheetId, ruleLocation, ruleText, rulePayload);
       this._fireStyleSheetChanged(styleSheetId, edit);
-      return new SDK.CSSStyleRule(this, rulePayload);
+      return new CSSStyleRule(this, rulePayload);
     } catch (e) {
       return null;
     }
   }
 
   /**
-   * @param {!SDK.DOMNode} node
-   * @return {!Promise<?SDK.CSSStyleSheetHeader>}
+   * @param {!DOMNode} node
+   * @return {!Promise<?CSSStyleSheetHeader>}
    */
   async requestViaInspectorStylesheet(node) {
     const frameId = node.frameId() || (this._resourceTreeModel ? this._resourceTreeModel.mainFrame.id : '');
@@ -496,14 +505,14 @@ export default class CSSModel extends SDK.SDKModel {
 
   /**
    * @param {!Protocol.CSS.StyleSheetId} id
-   * @return {?SDK.CSSStyleSheetHeader}
+   * @return {?CSSStyleSheetHeader}
    */
   styleSheetHeaderForId(id) {
     return this._styleSheetIdToHeader.get(id) || null;
   }
 
   /**
-   * @return {!Array.<!SDK.CSSStyleSheetHeader>}
+   * @return {!Array.<!CSSStyleSheetHeader>}
    */
   styleSheetHeaders() {
     return this._styleSheetIdToHeader.valuesArray();
@@ -536,13 +545,13 @@ export default class CSSModel extends SDK.SDKModel {
   }
 
   /**
-   * @param {!SDK.CSSStyleSheetHeader} header
+   * @param {!CSSStyleSheetHeader} header
    */
   _originalContentRequestedForTest(header) {
   }
 
   /**
-   * @param {!SDK.CSSStyleSheetHeader} header
+   * @param {!CSSStyleSheetHeader} header
    * @return {!Promise<?string>}
    */
   originalStyleSheetText(header) {
@@ -551,7 +560,7 @@ export default class CSSModel extends SDK.SDKModel {
 
   /**
    *
-   * @return {!Iterable<!SDK.CSSStyleSheetHeader>}
+   * @return {!Iterable<!CSSStyleSheetHeader>}
    */
   getAllStyleSheetHeaders() {
     return this._styleSheetIdToHeader.values();
@@ -562,7 +571,7 @@ export default class CSSModel extends SDK.SDKModel {
    */
   _styleSheetAdded(header) {
     console.assert(!this._styleSheetIdToHeader.get(header.styleSheetId));
-    const styleSheetHeader = new SDK.CSSStyleSheetHeader(this, header);
+    const styleSheetHeader = new CSSStyleSheetHeader(this, header);
     this._styleSheetIdToHeader.set(header.styleSheetId, styleSheetHeader);
     const url = styleSheetHeader.resourceURL();
     if (!this._styleSheetIdsForURL.get(url)) {
@@ -630,7 +639,7 @@ export default class CSSModel extends SDK.SDKModel {
    * @return {!Promise<?string>}
    */
   async setStyleSheetText(styleSheetId, newText, majorChange) {
-    const header = /** @type {!SDK.CSSStyleSheetHeader} */ (this._styleSheetIdToHeader.get(styleSheetId));
+    const header = /** @type {!CSSStyleSheetHeader} */ (this._styleSheetIdToHeader.get(styleSheetId));
     console.assert(header);
     newText = CSSModel.trimSourceURL(newText);
     if (header.hasSourceURL) {
@@ -702,8 +711,8 @@ export default class CSSModel extends SDK.SDKModel {
   }
 
   /**
-   * @param {!SDK.DOMNode} node
-   * @return {!Promise.<?SDK.CSSMatchedStyles>}
+   * @param {!DOMNode} node
+   * @return {!Promise.<?CSSMatchedStyles>}
    */
   cachedMatchedCascadeForNode(node) {
     if (this._cachedMatchedCascadeNode !== node) {
@@ -764,7 +773,7 @@ export class Edit {
 
 export class CSSLocation {
   /**
-   * @param {!SDK.CSSStyleSheetHeader} header
+   * @param {!CSSStyleSheetHeader} header
    * @param {number} lineNumber
    * @param {number=} columnNumber
    */
@@ -784,7 +793,7 @@ export class CSSLocation {
   }
 
   /**
-   * @return {?SDK.CSSStyleSheetHeader}
+   * @return {?CSSStyleSheetHeader}
    */
   header() {
     return this._cssModel.styleSheetHeaderForId(this.styleSheetId);
@@ -892,7 +901,7 @@ class ComputedStyleLoader {
  */
 export class InlineStyleResult {
   /**
-   * @param {?SDK.CSSStyleDeclaration} inlineStyle
+   * @param {?CSSStyleDeclaration} inlineStyle
    * @param {?SDK.CSSStyleDeclaration} attributesStyle
    */
   constructor(inlineStyle, attributesStyle) {
@@ -901,31 +910,4 @@ export class InlineStyleResult {
   }
 }
 
-/* Legacy exported object */
-self.SDK = self.SDK || {};
-
-/* Legacy exported object */
-SDK = SDK || {};
-
-/** @constructor */
-SDK.CSSModel = CSSModel;
-
-/** @enum {symbol} */
-SDK.CSSModel.Events = Events;
-
-/** @constructor */
-SDK.CSSModel.Edit = Edit;
-
-/** @constructor */
-SDK.CSSModel.InlineStyleResult = InlineStyleResult;
-
-/** @constructor */
-SDK.CSSLocation = CSSLocation;
-
-SDK.SDKModel.register(SDK.CSSModel, SDK.Target.Capability.DOM, true);
-
-/** @typedef {!{range: !Protocol.CSS.SourceRange, styleSheetId: !Protocol.CSS.StyleSheetId, wasUsed: boolean}} */
-SDK.CSSModel.RuleUsage;
-
-/** @typedef {{backgroundColors: ?Array<string>, computedFontSize: string, computedFontWeight: string}} */
-SDK.CSSModel.ContrastInfo;
+SDKModel.register(CSSModel, Capability.DOM, true);

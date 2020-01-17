@@ -23,13 +23,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import {DebuggerModel, Location} from './DebuggerModel.js';  // eslint-disable-line no-unused-vars
+import {ExecutionContext} from './RuntimeModel.js';          // eslint-disable-line no-unused-vars
+
 /**
  * @implements {Common.ContentProvider}
  * @unrestricted
  */
-export default class Script {
+export class Script {
   /**
-   * @param {!SDK.DebuggerModel} debuggerModel
+   * @param {!DebuggerModel} debuggerModel
    * @param {string} scriptId
    * @param {string} sourceURL
    * @param {number} startLine
@@ -107,7 +110,7 @@ export default class Script {
   }
 
   /**
-   * @return {?SDK.ExecutionContext}
+   * @return {?ExecutionContext}
    */
   executionContext() {
     return this.debuggerModel.runtimeModel().executionContext(this.executionContextId);
@@ -162,7 +165,7 @@ export default class Script {
       const source = sourceOrBytecode.scriptSource;
       if (source) {
         if (this.hasSourceURL) {
-          this._source = SDK.Script._trimSourceURLComment(source);
+          this._source = Script._trimSourceURLComment(source);
         } else {
           this._source = source;
         }
@@ -281,22 +284,22 @@ export default class Script {
   /**
    * @param {number} lineNumber
    * @param {number=} columnNumber
-   * @return {?SDK.DebuggerModel.Location}
+   * @return {?Location}
    */
   rawLocation(lineNumber, columnNumber) {
     if (this.containsLocation(lineNumber, columnNumber)) {
-      return new SDK.DebuggerModel.Location(this.debuggerModel, this.scriptId, lineNumber, columnNumber);
+      return new Location(this.debuggerModel, this.scriptId, lineNumber, columnNumber);
     }
     return null;
   }
 
   /**
    * @param {number} lineNumber
-   * @return {?SDK.DebuggerModel.Location}
+   * @return {?Location}
    */
   wasmByteLocation(lineNumber) {
     if (lineNumber < this._lineMap.length) {
-      return new SDK.DebuggerModel.Location(this.debuggerModel, this.scriptId, 0, this._lineMap[lineNumber]);
+      return new Location(this.debuggerModel, this.scriptId, 0, this._lineMap[lineNumber]);
     }
     return null;
   }
@@ -316,7 +319,7 @@ export default class Script {
 
   /**
    *
-   * @param {!SDK.DebuggerModel.Location} location
+   * @param {!Location} location
    * @return {!Array.<number>}
    */
   toRelativeLocation(location) {
@@ -368,14 +371,3 @@ export default class Script {
 }
 
 export const sourceURLRegex = /^[\040\t]*\/\/[@#] sourceURL=\s*(\S*?)\s*$/;
-
-/* Legacy exported object */
-self.SDK = self.SDK || {};
-
-/* Legacy exported object */
-SDK = SDK || {};
-
-/** @constructor */
-SDK.Script = Script;
-
-SDK.Script.sourceURLRegex = sourceURLRegex;

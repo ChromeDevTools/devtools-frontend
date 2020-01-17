@@ -347,24 +347,3 @@ export function _createMainConnection(websocketConnectionLost) {
 
   return new MainConnection();
 }
-
-/* Legacy exported object */
-self.SDK = self.SDK || {};
-
-/* Legacy exported object */
-SDK = SDK || {};
-
-/** @constructor */
-SDK.MainConnection = MainConnection;
-
-/** @constructor */
-SDK.WebSocketConnection = WebSocketConnection;
-
-/** @constructor */
-SDK.StubConnection = StubConnection;
-
-/** @constructor */
-SDK.ParallelConnection = ParallelConnection;
-
-SDK.initMainConnection = initMainConnection;
-SDK._createMainConnection = _createMainConnection;

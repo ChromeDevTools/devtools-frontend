@@ -29,6 +29,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import {CSSModel} from './CSSModel.js';
+import {OverlayModel} from './OverlayModel.js';
+import {RemoteObject} from './RemoteObject.js';  // eslint-disable-line no-unused-vars
+import {RuntimeModel} from './RuntimeModel.js';
+import {Capability, SDKModel, Target} from './SDKModel.js';  // eslint-disable-line no-unused-vars
+
 /**
  * @unrestricted
  */
@@ -45,10 +51,10 @@ export class DOMNode {
    * @param {?DOMDocument} doc
    * @param {boolean} isInShadowTree
    * @param {!Protocol.DOM.Node} payload
-   * @return {!SDK.DOMNode}
+   * @return {!DOMNode}
    */
   static create(domModel, doc, isInShadowTree, payload) {
-    const node = new SDK.DOMNode(domModel);
+    const node = new DOMNode(domModel);
     node._init(doc, isInShadowTree, payload);
     return node;
   }
@@ -101,14 +107,14 @@ export class DOMNode {
     if (payload.shadowRoots) {
       for (let i = 0; i < payload.shadowRoots.length; ++i) {
         const root = payload.shadowRoots[i];
-        const node = SDK.DOMNode.create(this._domModel, this.ownerDocument, true, root);
+        const node = DOMNode.create(this._domModel, this.ownerDocument, true, root);
         this._shadowRoots.push(node);
         node.parentNode = this;
       }
     }
 
     if (payload.templateContent) {
-      this._templateContent = SDK.DOMNode.create(this._domModel, this.ownerDocument, true, payload.templateContent);
+      this._templateContent = DOMNode.create(this._domModel, this.ownerDocument, true, payload.templateContent);
       this._templateContent.parentNode = this;
       this._children = [];
     }
@@ -127,7 +133,7 @@ export class DOMNode {
     }
 
     if (payload.importedDocument) {
-      this._importedDocument = SDK.DOMNode.create(this._domModel, this.ownerDocument, true, payload.importedDocument);
+      this._importedDocument = DOMNode.create(this._domModel, this.ownerDocument, true, payload.importedDocument);
       this._importedDocument.parentNode = this;
       this._children = [];
     }
@@ -195,7 +201,7 @@ export class DOMNode {
   }
 
   /**
-   * @return {?Array.<!SDK.DOMNode>}
+   * @return {?Array.<!DOMNode>}
    */
   children() {
     return this._children ? this._children.slice() : null;
@@ -223,21 +229,21 @@ export class DOMNode {
   }
 
   /**
-   * @return {!Array.<!SDK.DOMNode>}
+   * @return {!Array.<!DOMNode>}
    */
   shadowRoots() {
     return this._shadowRoots.slice();
   }
 
   /**
-   * @return {?SDK.DOMNode}
+   * @return {?DOMNode}
    */
   templateContent() {
     return this._templateContent || null;
   }
 
   /**
-   * @return {?SDK.DOMNode}
+   * @return {?DOMNode}
    */
   contentDocument() {
     return this._contentDocument || null;
@@ -258,7 +264,7 @@ export class DOMNode {
   }
 
   /**
-   * @return {?SDK.DOMNode}
+   * @return {?DOMNode}
    */
   importedDocument() {
     return this._importedDocument || null;
@@ -293,40 +299,40 @@ export class DOMNode {
   }
 
   /**
-   * @return {!Map<string, !SDK.DOMNode>}
+   * @return {!Map<string, !DOMNode>}
    */
   pseudoElements() {
     return this._pseudoElements;
   }
 
   /**
-   * @return {?SDK.DOMNode}
+   * @return {?DOMNode}
    */
   beforePseudoElement() {
     if (!this._pseudoElements) {
       return null;
     }
-    return this._pseudoElements.get(SDK.DOMNode.PseudoElementNames.Before);
+    return this._pseudoElements.get(DOMNode.PseudoElementNames.Before);
   }
 
   /**
-   * @return {?SDK.DOMNode}
+   * @return {?DOMNode}
    */
   afterPseudoElement() {
     if (!this._pseudoElements) {
       return null;
     }
-    return this._pseudoElements.get(SDK.DOMNode.PseudoElementNames.After);
+    return this._pseudoElements.get(DOMNode.PseudoElementNames.After);
   }
 
   /**
-   * @return {?SDK.DOMNode}
+   * @return {?DOMNode}
    */
   markerPseudoElement() {
     if (!this._pseudoElements) {
       return null;
     }
-    return this._pseudoElements.get(SDK.DOMNode.PseudoElementNames.Marker);
+    return this._pseudoElements.get(DOMNode.PseudoElementNames.Marker);
   }
 
   /**
@@ -352,7 +358,7 @@ export class DOMNode {
   }
 
   /**
-   * @return {?SDK.DOMNode}
+   * @return {?DOMNode}
    */
   ancestorShadowHost() {
     const ancestorShadowRoot = this.ancestorShadowRoot();
@@ -360,7 +366,7 @@ export class DOMNode {
   }
 
   /**
-   * @return {?SDK.DOMNode}
+   * @return {?DOMNode}
    */
   ancestorShadowRoot() {
     if (!this._isInShadowTree) {
@@ -375,14 +381,14 @@ export class DOMNode {
   }
 
   /**
-   * @return {?SDK.DOMNode}
+   * @return {?DOMNode}
    */
   ancestorUserAgentShadowRoot() {
     const ancestorShadowRoot = this.ancestorShadowRoot();
     if (!ancestorShadowRoot) {
       return null;
     }
-    return ancestorShadowRoot.shadowRootType() === SDK.DOMNode.ShadowRootTypes.UserAgent ? ancestorShadowRoot : null;
+    return ancestorShadowRoot.shadowRootType() === DOMNode.ShadowRootTypes.UserAgent ? ancestorShadowRoot : null;
   }
 
   /**
@@ -424,7 +430,7 @@ export class DOMNode {
 
   /**
    * @param {string} name
-   * @param {function(?Protocol.Error, ?SDK.DOMNode)=} callback
+   * @param {function(?Protocol.Error, ?DOMNode)=} callback
    */
   setNodeName(name, callback) {
     this._agent.invoke_setNodeName({nodeId: this.id, name}).then(response => {
@@ -541,7 +547,7 @@ export class DOMNode {
   }
 
   /**
-   * @param {function(?Array<!SDK.DOMNode>)} callback
+   * @param {function(?Array<!DOMNode>)} callback
    */
   getChildNodes(callback) {
     if (this._children) {
@@ -556,7 +562,7 @@ export class DOMNode {
   /**
    * @param {number} depth
    * @param {boolean} pierce
-   * @return {!Promise<?Array<!SDK.DOMNode>>}
+   * @return {!Promise<?Array<!DOMNode>>}
    */
   async getSubtree(depth, pierce) {
     const response = await this._agent.invoke_requestChildNodes({nodeId: this.id, depth: depth, pierce: pierce});
@@ -615,7 +621,7 @@ export class DOMNode {
    */
   path() {
     /**
-     * @param {?SDK.DOMNode} node
+     * @param {?DOMNode} node
      */
     function canPush(node) {
       return node && ('index' in node || (node.isShadowRoot() && node.parentNode)) && node._nodeName.length;
@@ -626,7 +632,7 @@ export class DOMNode {
     while (canPush(node)) {
       const index = typeof node.index === 'number' ?
           node.index :
-          (node.shadowRootType() === SDK.DOMNode.ShadowRootTypes.UserAgent ? 'u' : 'a');
+          (node.shadowRootType() === DOMNode.ShadowRootTypes.UserAgent ? 'u' : 'a');
       path.push([index, node._nodeName]);
       node = node.parentNode;
     }
@@ -635,7 +641,7 @@ export class DOMNode {
   }
 
   /**
-   * @param {!SDK.DOMNode} node
+   * @param {!DOMNode} node
    * @return {boolean}
    */
   isAncestor(node) {
@@ -654,7 +660,7 @@ export class DOMNode {
   }
 
   /**
-   * @param {!SDK.DOMNode} descendant
+   * @param {!DOMNode} descendant
    * @return {boolean}
    */
   isDescendant(descendant) {
@@ -700,19 +706,19 @@ export class DOMNode {
   }
 
   /**
-   * @param {!SDK.DOMNode} prev
+   * @param {!DOMNode} prev
    * @param {!Protocol.DOM.Node} payload
    * @return {!SDK.DOMNode}
    */
   _insertChild(prev, payload) {
-    const node = SDK.DOMNode.create(this._domModel, this.ownerDocument, this._isInShadowTree, payload);
+    const node = DOMNode.create(this._domModel, this.ownerDocument, this._isInShadowTree, payload);
     this._children.splice(this._children.indexOf(prev) + 1, 0, node);
     this._renumber();
     return node;
   }
 
   /**
-   * @param {!SDK.DOMNode} node
+   * @param {!DOMNode} node
    */
   _removeChild(node) {
     if (node.pseudoType()) {
@@ -741,7 +747,7 @@ export class DOMNode {
     this._children = [];
     for (let i = 0; i < payloads.length; ++i) {
       const payload = payloads[i];
-      const node = SDK.DOMNode.create(this._domModel, this.ownerDocument, this._isInShadowTree, payload);
+      const node = DOMNode.create(this._domModel, this.ownerDocument, this._isInShadowTree, payload);
       this._children.push(node);
     }
     this._renumber();
@@ -757,7 +763,7 @@ export class DOMNode {
     }
 
     for (let i = 0; i < payloads.length; ++i) {
-      const node = SDK.DOMNode.create(this._domModel, this.ownerDocument, this._isInShadowTree, payloads[i]);
+      const node = DOMNode.create(this._domModel, this.ownerDocument, this._isInShadowTree, payloads[i]);
       node.parentNode = this;
       this._pseudoElements.set(node.pseudoType(), node);
     }
@@ -827,7 +833,7 @@ export class DOMNode {
   }
 
   /**
-   * @param {!SDK.DOMNode} targetNode
+   * @param {!DOMNode} targetNode
    * @param {?SDK.DOMNode} anchorNode
    * @param {function(?Protocol.Error, !Protocol.DOM.NodeId=)=} callback
    */
@@ -846,7 +852,7 @@ export class DOMNode {
   }
 
   /**
-   * @param {!SDK.DOMNode} targetNode
+   * @param {!DOMNode} targetNode
    * @param {?SDK.DOMNode} anchorNode
    * @param {function(?Protocol.Error, ?SDK.DOMNode)=} callback
    */
@@ -912,11 +918,11 @@ export class DOMNode {
   }
 
   /**
-   * @param {function(!SDK.DOMNode, string)} visitor
+   * @param {function(!DOMNode, string)} visitor
    */
   traverseMarkers(visitor) {
     /**
-     * @param {!SDK.DOMNode} node
+     * @param {!DOMNode} node
      */
     function traverse(node) {
       if (!node._subtreeMarkerCount) {
@@ -964,7 +970,7 @@ export class DOMNode {
 
   /**
    * @param {string=} objectGroup
-   * @return {!Promise<?SDK.RemoteObject>}
+   * @return {!Promise<?RemoteObject>}
    */
   async resolveToObject(objectGroup) {
     const object = await this._agent.resolveNode(this.id, undefined, objectGroup);
@@ -996,7 +1002,7 @@ export class DOMNode {
   }
 
   /**
-   *  @return {?SDK.DOMNode}
+   *  @return {?DOMNode}
    */
   enclosingElementOrSelf() {
     let node = this;
@@ -1098,7 +1104,7 @@ DOMNode.ShadowRootTypes = {
  */
 export class DeferredDOMNode {
   /**
-   * @param {!SDK.Target} target
+   * @param {!Target} target
    * @param {number} backendNodeId
    */
   constructor(target, backendNodeId) {
@@ -1107,14 +1113,14 @@ export class DeferredDOMNode {
   }
 
   /**
-   * @param {function(?SDK.DOMNode)} callback
+   * @param {function(?DOMNode)} callback
    */
   resolve(callback) {
     this.resolvePromise().then(callback);
   }
 
   /**
-   * @return {!Promise<?SDK.DOMNode>}
+   * @return {!Promise<?DOMNode>}
    */
   async resolvePromise() {
     const nodeIds = await this._domModel.pushNodesByBackendIdsToFrontend(new Set([this._backendNodeId]));
@@ -1145,7 +1151,7 @@ export class DeferredDOMNode {
  */
 export class DOMNodeShortcut {
   /**
-   * @param {!SDK.Target} target
+   * @param {!Target} target
    * @param {number} backendNodeId
    * @param {number} nodeType
    * @param {string} nodeName
@@ -1153,7 +1159,7 @@ export class DOMNodeShortcut {
   constructor(target, backendNodeId, nodeType, nodeName) {
     this.nodeType = nodeType;
     this.nodeName = nodeName;
-    this.deferredNode = new SDK.DeferredDOMNode(target, backendNodeId);
+    this.deferredNode = new DeferredDOMNode(target, backendNodeId);
   }
 }
 
@@ -1176,16 +1182,16 @@ export class DOMDocument extends DOMNode {
 /**
  * @unrestricted
  */
-export default class DOMModel extends SDK.SDKModel {
+export class DOMModel extends SDKModel {
   /**
-   * @param {!SDK.Target} target
+   * @param {!Target} target
    */
   constructor(target) {
     super(target);
 
     this._agent = target.domAgent();
 
-    /** @type {!Object.<number, !SDK.DOMNode>} */
+    /** @type {!Object.<number, !DOMNode>} */
     this._idToDOMNode = {};
     /** @type {?DOMDocument} */
     this._document = null;
@@ -1193,7 +1199,7 @@ export default class DOMModel extends SDK.SDKModel {
     this._attributeLoadNodeIds = new Set();
     target.registerDOMDispatcher(new DOMDispatcher(this));
 
-    this._runtimeModel = /** @type {!SDK.RuntimeModel} */ (target.model(SDK.RuntimeModel));
+    this._runtimeModel = /** @type {!RuntimeModel} */ (target.model(RuntimeModel));
 
     if (!target.suspended()) {
       this._agent.enable();
@@ -1205,24 +1211,24 @@ export default class DOMModel extends SDK.SDKModel {
   }
 
   /**
-   * @return {!SDK.RuntimeModel}
+   * @return {!RuntimeModel}
    */
   runtimeModel() {
     return this._runtimeModel;
   }
 
   /**
-   * @return {!SDK.CSSModel}
+   * @return {!CSSModel}
    */
   cssModel() {
-    return /** @type {!SDK.CSSModel} */ (this.target().model(SDK.CSSModel));
+    return /** @type {!CSSModel} */ (this.target().model(CSSModel));
   }
 
   /**
-   * @return {!SDK.OverlayModel}
+   * @return {!OverlayModel}
    */
   overlayModel() {
-    return /** @type {!SDK.OverlayModel} */ (this.target().model(SDK.OverlayModel));
+    return /** @type {!OverlayModel} */ (this.target().model(OverlayModel));
   }
 
   static cancelSearch() {
@@ -1232,7 +1238,7 @@ export default class DOMModel extends SDK.SDKModel {
   }
 
   /**
-   * @param {!SDK.DOMNode} node
+   * @param {!DOMNode} node
    */
   _scheduleMutationEvent(node) {
     if (!this.hasEventListeners(Events.DOMMutated)) {
@@ -1244,7 +1250,7 @@ export default class DOMModel extends SDK.SDKModel {
 
     /**
      * @this {DOMModel}
-     * @param {!SDK.DOMNode} node
+     * @param {!DOMNode} node
      * @param {number} mutationId
      */
     function callObserve(node, mutationId) {
@@ -1317,7 +1323,7 @@ export default class DOMModel extends SDK.SDKModel {
 
   /**
    * @param {!Protocol.Runtime.RemoteObjectId} objectId
-   * @return {!Promise<?SDK.DOMNode>}
+   * @return {!Promise<?DOMNode>}
    */
   async pushNodeToFrontend(objectId) {
     await this.requestDocument();
@@ -1335,7 +1341,7 @@ export default class DOMModel extends SDK.SDKModel {
 
   /**
    * @param {!Set<number>} backendNodeIds
-   * @return {!Promise<?Map<number, ?SDK.DOMNode>>}
+   * @return {!Promise<?Map<number, ?DOMNode>>}
    */
   async pushNodesByBackendIdsToFrontend(backendNodeIds) {
     await this.requestDocument();
@@ -1344,7 +1350,7 @@ export default class DOMModel extends SDK.SDKModel {
     if (!nodeIds) {
       return null;
     }
-    /** @type {!Map<number, ?SDK.DOMNode>} */
+    /** @type {!Map<number, ?DOMNode>} */
     const map = new Map();
     for (let i = 0; i < nodeIds.length; ++i) {
       if (nodeIds[i]) {
@@ -1446,7 +1452,7 @@ export default class DOMModel extends SDK.SDKModel {
 
   /**
    * @param {!Protocol.DOM.NodeId} nodeId
-   * @return {?SDK.DOMNode}
+   * @return {?DOMNode}
    */
   nodeForId(nodeId) {
     return this._idToDOMNode[nodeId] || null;
@@ -1486,7 +1492,7 @@ export default class DOMModel extends SDK.SDKModel {
     if (payload.nodeName === '#document') {
       new DOMDocument(this, payload);
     } else {
-      SDK.DOMNode.create(this, null, false, payload);
+      DOMNode.create(this, null, false, payload);
     }
   }
 
@@ -1551,7 +1557,7 @@ export default class DOMModel extends SDK.SDKModel {
     if (!host) {
       return;
     }
-    const node = SDK.DOMNode.create(this, host.ownerDocument, true, root);
+    const node = DOMNode.create(this, host.ownerDocument, true, root);
     node.parentNode = host;
     this._idToDOMNode[node.id] = node;
     host._shadowRoots.unshift(node);
@@ -1587,7 +1593,7 @@ export default class DOMModel extends SDK.SDKModel {
     if (!parent) {
       return;
     }
-    const node = SDK.DOMNode.create(this, parent.ownerDocument, false, pseudoElement);
+    const node = DOMNode.create(this, parent.ownerDocument, false, pseudoElement);
     node.parentNode = parent;
     this._idToDOMNode[node.id] = node;
     console.assert(!parent._pseudoElements.get(node.pseudoType()));
@@ -1630,7 +1636,7 @@ export default class DOMModel extends SDK.SDKModel {
   }
 
   /**
-   * @param {!SDK.DOMNode} node
+   * @param {!DOMNode} node
    */
   _unbind(node) {
     delete this._idToDOMNode[node.id];
@@ -1664,7 +1670,7 @@ export default class DOMModel extends SDK.SDKModel {
 
   /**
    * @param {number} index
-   * @return {!Promise<?SDK.DOMNode>}
+   * @return {!Promise<?DOMNode>}
    */
   async searchResult(index) {
     if (!this._searchId) {
@@ -1719,7 +1725,7 @@ export default class DOMModel extends SDK.SDKModel {
    * @param {number} x
    * @param {number} y
    * @param {boolean} includeUserAgentShadowDOM
-   * @return {!Promise<?SDK.DOMNode>}
+   * @return {!Promise<?DOMNode>}
    */
   async nodeForLocation(x, y, includeUserAgentShadowDOM) {
     const response = await this._agent.invoke_getNodeForLocation({x, y, includeUserAgentShadowDOM});
@@ -1730,8 +1736,8 @@ export default class DOMModel extends SDK.SDKModel {
   }
 
   /**
-   * @param {!SDK.RemoteObject} object
-   * @return {!Promise<?SDK.DOMNode>}
+   * @param {!RemoteObject} object
+   * @return {!Promise<?DOMNode>}
    */
   pushObjectAsNodeToFrontend(object) {
     return object.isNode() ? this.pushNodeToFrontend(/** @type {string} */ (object.objectId)) : Promise.resolve(null);
@@ -1921,7 +1927,7 @@ class DOMDispatcher {
   }
 }
 
-class DOMModelUndoStack {
+export class DOMModelUndoStack {
   constructor() {
     /** @type {!Array<!DOMModel>} */
     this._stack = [];
@@ -2003,33 +2009,4 @@ class DOMModelUndoStack {
   }
 }
 
-/* Legacy exported object */
-self.SDK = self.SDK || {};
-
-/* Legacy exported object */
-SDK = SDK || {};
-
-/** @constructor */
-SDK.DOMModel = DOMModel;
-
-/** @enum {symbol} */
-SDK.DOMModel.Events = Events;
-
-/** @constructor */
-SDK.DeferredDOMNode = DeferredDOMNode;
-
-/** @constructor */
-SDK.DOMNodeShortcut = DOMNodeShortcut;
-
-/** @constructor */
-SDK.DOMDocument = DOMDocument;
-
-/** @constructor */
-SDK.DOMNode = DOMNode;
-
-SDK.domModelUndoStack = new DOMModelUndoStack();
-
-/** @typedef {{name: string, value: string, _node: SDK.DOMNode}} */
-SDK.DOMNode.Attribute;
-
-SDK.SDKModel.register(DOMModel, SDK.Target.Capability.DOM, true);
+SDKModel.register(DOMModel, Capability.DOM, true);

@@ -2,12 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {Events as TargetManagerEvents, Target} from './SDKModel.js';     // eslint-disable-line no-unused-vars
+import {SourceMap, TextSourceMap, WasmSourceMap} from './SourceMap.js';  // eslint-disable-line no-unused-vars
+
 /**
  * @template T
  */
-export default class SourceMapManager extends Common.Object {
+export class SourceMapManager extends Common.Object {
   /**
-   * @param {!SDK.Target} target
+   * @param {!Target} target
    */
   constructor(target) {
     super();
@@ -22,14 +25,14 @@ export default class SourceMapManager extends Common.Object {
     /** @type {!Map<!T, string>} */
     this._resolvedSourceMapId = new Map();
 
-    /** @type {!Map<string, !SDK.SourceMap>} */
+    /** @type {!Map<string, !SourceMap>} */
     this._sourceMapById = new Map();
     /** @type {!Platform.Multimap<string, !T>} */
     this._sourceMapIdToLoadingClients = new Platform.Multimap();
     /** @type {!Platform.Multimap<string, !T>} */
     this._sourceMapIdToClients = new Platform.Multimap();
 
-    SDK.targetManager.addEventListener(SDK.TargetManager.Events.InspectedURLChanged, this._inspectedURLChanged, this);
+    SDK.targetManager.addEventListener(TargetManagerEvents.InspectedURLChanged, this._inspectedURLChanged, this);
   }
 
   /**
@@ -77,7 +80,7 @@ export default class SourceMapManager extends Common.Object {
 
   /**
    * @param {!T} client
-   * @return {?SDK.SourceMap}
+   * @return {?SourceMap}
    */
   sourceMapForClient(client) {
     const sourceMapId = this._resolvedSourceMapId.get(client);
@@ -88,7 +91,7 @@ export default class SourceMapManager extends Common.Object {
   }
 
   /**
-   * @param {!SDK.SourceMap} sourceMap
+   * @param {!SourceMap} sourceMap
    * @return {!Array<!T>}
    */
   clientsForSourceMap(sourceMap) {
@@ -133,7 +136,7 @@ export default class SourceMapManager extends Common.Object {
   /**
    * @param {!T} client
    * @param {string} relativeSourceURL
-   * @param {?string} relativeSourceMapURL
+   * @param {string|undefined} relativeSourceMapURL
    */
   attachSourceMap(client, relativeSourceURL, relativeSourceMapURL) {
     if (!relativeSourceMapURL) {
@@ -161,9 +164,8 @@ export default class SourceMapManager extends Common.Object {
       return;
     }
     if (!this._sourceMapIdToLoadingClients.has(sourceMapId)) {
-      const sourceMapPromise = sourceMapURL === SDK.WasmSourceMap.FAKE_URL ?
-          SDK.WasmSourceMap.load(client, sourceURL) :
-          SDK.TextSourceMap.load(sourceMapURL, sourceURL);
+      const sourceMapPromise = sourceMapURL === WasmSourceMap.FAKE_URL ? WasmSourceMap.load(client, sourceURL) :
+                                                                         TextSourceMap.load(sourceMapURL, sourceURL);
 
       sourceMapPromise
           .catch(error => {
@@ -175,7 +177,7 @@ export default class SourceMapManager extends Common.Object {
 
     /**
      * @param {string} sourceMapId
-     * @param {?SDK.SourceMap} sourceMap
+     * @param {?SourceMap} sourceMap
      * @this {SourceMapManager}
      */
     function onSourceMap(sourceMapId, sourceMap) {
@@ -243,8 +245,7 @@ export default class SourceMapManager extends Common.Object {
     for (const sourceMap of this._sourceMapById.values()) {
       sourceMap.dispose();
     }
-    SDK.targetManager.removeEventListener(
-        SDK.TargetManager.Events.InspectedURLChanged, this._inspectedURLChanged, this);
+    SDK.targetManager.removeEventListener(TargetManagerEvents.InspectedURLChanged, this._inspectedURLChanged, this);
   }
 }
 
@@ -255,14 +256,3 @@ export const Events = {
   SourceMapDetached: Symbol('SourceMapDetached'),
   SourceMapChanged: Symbol('SourceMapChanged')
 };
-
-/* Legacy exported object */
-self.SDK = self.SDK || {};
-
-/* Legacy exported object */
-SDK = SDK || {};
-
-/** @constructor */
-SDK.SourceMapManager = SourceMapManager;
-
-SDK.SourceMapManager.Events = Events;

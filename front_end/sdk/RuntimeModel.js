@@ -28,12 +28,19 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import {DebuggerModel} from './DebuggerModel.js';
+import {HeapProfilerModel} from './HeapProfilerModel.js';
+import {RemoteFunction, RemoteObject,
+        RemoteObjectImpl,  // eslint-disable-line no-unused-vars
+        RemoteObjectProperty, ScopeRef, ScopeRemoteObject,} from './RemoteObject.js';  // eslint-disable-line no-unused-vars
+import {Capability, SDKModel, Target, Type} from './SDKModel.js';  // eslint-disable-line no-unused-vars
+
 /**
  * @unrestricted
  */
-export default class RuntimeModel extends SDK.SDKModel {
+export class RuntimeModel extends SDKModel {
   /**
-   * @param {!SDK.Target} target
+   * @param {!Target} target
    */
   constructor(target) {
     super(target);
@@ -66,17 +73,17 @@ export default class RuntimeModel extends SDK.SDKModel {
   }
 
   /**
-   * @return {!SDK.DebuggerModel}
+   * @return {!DebuggerModel}
    */
   debuggerModel() {
-    return /** @type {!SDK.DebuggerModel} */ (this.target().model(SDK.DebuggerModel));
+    return /** @type {!DebuggerModel} */ (this.target().model(DebuggerModel));
   }
 
   /**
-   * @return {!SDK.HeapProfilerModel}
+   * @return {!HeapProfilerModel}
    */
   heapProfilerModel() {
-    return /** @type {!SDK.HeapProfilerModel} */ (this.target().model(SDK.HeapProfilerModel));
+    return /** @type {!HeapProfilerModel} */ (this.target().model(HeapProfilerModel));
   }
 
   /**
@@ -159,50 +166,50 @@ export default class RuntimeModel extends SDK.SDKModel {
 
   /**
    * @param {!Protocol.Runtime.RemoteObject} payload
-   * @return {!SDK.RemoteObject}
+   * @return {!RemoteObject}
    */
   createRemoteObject(payload) {
     console.assert(typeof payload === 'object', 'Remote object payload should only be an object');
-    return new SDK.RemoteObjectImpl(
+    return new RemoteObjectImpl(
         this, payload.objectId, payload.type, payload.subtype, payload.value, payload.unserializableValue,
         payload.description, payload.preview, payload.customPreview, payload.className);
   }
 
   /**
    * @param {!Protocol.Runtime.RemoteObject} payload
-   * @param {!SDK.ScopeRef} scopeRef
-   * @return {!SDK.RemoteObject}
+   * @param {!ScopeRef} scopeRef
+   * @return {!RemoteObject}
    */
   createScopeRemoteObject(payload, scopeRef) {
-    return new SDK.ScopeRemoteObject(
+    return new ScopeRemoteObject(
         this, payload.objectId, scopeRef, payload.type, payload.subtype, payload.value, payload.unserializableValue,
         payload.description, payload.preview);
   }
 
   /**
    * @param {number|string|boolean|undefined|bigint} value
-   * @return {!SDK.RemoteObject}
+   * @return {!RemoteObject}
    */
   createRemoteObjectFromPrimitiveValue(value) {
     const type = typeof value;
     let unserializableValue = undefined;
-    const unserializableDescription = SDK.RemoteObject.unserializableDescription(value);
+    const unserializableDescription = RemoteObject.unserializableDescription(value);
     if (unserializableDescription !== null) {
       unserializableValue = /** @type {!Protocol.Runtime.UnserializableValue} */ (unserializableDescription);
     }
     if (typeof unserializableValue !== 'undefined') {
       value = undefined;
     }
-    return new SDK.RemoteObjectImpl(this, undefined, type, undefined, value, unserializableValue);
+    return new RemoteObjectImpl(this, undefined, type, undefined, value, unserializableValue);
   }
 
   /**
    * @param {string} name
    * @param {number|string|boolean} value
-   * @return {!SDK.RemoteObjectProperty}
+   * @return {!RemoteObjectProperty}
    */
   createRemotePropertyFromPrimitiveValue(name, value) {
-    return new SDK.RemoteObjectProperty(name, this.createRemoteObjectFromPrimitiveValue(value));
+    return new RemoteObjectProperty(name, this.createRemoteObjectFromPrimitiveValue(value));
   }
 
   discardConsoleEntries() {
@@ -298,7 +305,7 @@ export default class RuntimeModel extends SDK.SDKModel {
   }
 
   /**
-   * @param {!SDK.RemoteObject} prototype
+   * @param {!RemoteObject} prototype
    * @return {!Promise<!SDK.RuntimeModel.QueryObjectResult>}
    */
   async queryObjects(prototype) {
@@ -353,7 +360,7 @@ export default class RuntimeModel extends SDK.SDKModel {
     }
 
     if (object.type === 'function') {
-      SDK.RemoteFunction.objectAsFunction(object).targetFunctionDetails().then(didGetDetails);
+      RemoteFunction.objectAsFunction(object).targetFunctionDetails().then(didGetDetails);
       return;
     }
 
@@ -371,7 +378,7 @@ export default class RuntimeModel extends SDK.SDKModel {
   }
 
   /**
-   * @param {!SDK.RemoteObject} object
+   * @param {!RemoteObject} object
    */
   _copyRequested(object) {
     if (!object.objectId) {
@@ -402,7 +409,7 @@ export default class RuntimeModel extends SDK.SDKModel {
   }
 
   /**
-   * @param {!SDK.RemoteObject} object
+   * @param {!RemoteObject} object
    */
   async _queryObjectsRequested(object) {
     const result = await this.queryObjects(object);
@@ -645,7 +652,7 @@ export class ExecutionContext {
   }
 
   /**
-   * @return {!SDK.Target}
+   * @return {!Target}
    */
   target() {
     return this.runtimeModel.target();
@@ -658,27 +665,27 @@ export class ExecutionContext {
    */
   static comparator(a, b) {
     /**
-     * @param {!SDK.Target} target
+     * @param {!Target} target
      * @return {number}
      */
     function targetWeight(target) {
       if (!target.parentTarget()) {
         return 5;
       }
-      if (target.type() === SDK.Target.Type.Frame) {
+      if (target.type() === Type.Frame) {
         return 4;
       }
-      if (target.type() === SDK.Target.Type.ServiceWorker) {
+      if (target.type() === Type.ServiceWorker) {
         return 3;
       }
-      if (target.type() === SDK.Target.Type.Worker) {
+      if (target.type() === Type.Worker) {
         return 2;
       }
       return 1;
     }
 
     /**
-     * @param {!SDK.Target} target
+     * @param {!Target} target
      * @return {!Array<!SDK.Target>}
      */
     function targetPath(target) {
@@ -853,70 +860,4 @@ export class ExecutionContext {
   }
 }
 
-/* Legacy exported object */
-self.SDK = self.SDK || {};
-
-/* Legacy exported object */
-SDK = SDK || {};
-
-/** @constructor */
-SDK.RuntimeModel = RuntimeModel;
-
-/** @enum {symbol} */
-SDK.RuntimeModel.Events = Events;
-
-/** @constructor */
-SDK.ExecutionContext = ExecutionContext;
-
-/** @typedef {{
- *    scriptId: (Protocol.Runtime.ScriptId|undefined),
- *    exceptionDetails: (!Protocol.Runtime.ExceptionDetails|undefined)
- *  }}
- */
-SDK.RuntimeModel.CompileScriptResult;
-
-/** @typedef {{
- *    expression: string,
- *    objectGroup: (string|undefined),
- *    includeCommandLineAPI: (boolean|undefined),
- *    silent: (boolean|undefined),
- *    returnByValue: (boolean|undefined),
- *    generatePreview: (boolean|undefined),
- *    throwOnSideEffect: (boolean|undefined),
- *    timeout: (number|undefined),
- *    disableBreaks: (boolean|undefined),
- *    replMode: (boolean|undefined)
- *  }}
- */
-SDK.RuntimeModel.EvaluationOptions;
-
-/** @typedef {{
- *    object: (!SDK.RemoteObject|undefined),
- *    exceptionDetails: (!Protocol.Runtime.ExceptionDetails|undefined),
- *    error: (!Protocol.Error|undefined)}
- *  }}
- */
-SDK.RuntimeModel.EvaluationResult;
-
-/** @typedef {{
- *    objects: (!SDK.RemoteObject|undefined),
- *    error: (!Protocol.Error|undefined)}
- *  }}
- */
-SDK.RuntimeModel.QueryObjectResult;
-
-/**
- * @typedef {{
- *    type: string,
- *    args: !Array<!Protocol.Runtime.RemoteObject>,
- *    executionContextId: number,
- *    timestamp: number,
- *    stackTrace: (!Protocol.Runtime.StackTrace|undefined)
- * }}
- */
-SDK.RuntimeModel.ConsoleAPICall;
-
-/** @typedef {{timestamp: number, details: !Protocol.Runtime.ExceptionDetails}} */
-SDK.RuntimeModel.ExceptionWithTimestamp;
-
-SDK.SDKModel.register(SDK.RuntimeModel, SDK.Target.Capability.JS, true);
+SDKModel.register(RuntimeModel, Capability.JS, true);

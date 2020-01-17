@@ -3,6 +3,13 @@
 // found in the LICENSE file.
 
 
+import {CookieModel} from './CookieModel.js';
+import {Events, NetworkManager} from './NetworkManager.js';
+import {NetworkRequest,  // eslint-disable-line no-unused-vars
+        setCookieBlockedReasonToAttribute, setCookieBlockedReasonToUiString,} from './NetworkRequest.js';
+import {Capability, SDKModel, Target} from './SDKModel.js';  // eslint-disable-line no-unused-vars
+
+
 class Issue {
   constructor(category, name, data) {
     this._category = category;
@@ -20,19 +27,19 @@ const connectedIssuesSymbol = Symbol('issues');
 /**
  * @unrestricted
  */
-export default class IssuesModel extends SDK.SDKModel {
+export class IssuesModel extends SDKModel {
   /**
-   * @param {!SDK.Target} target
+   * @param {!Target} target
    */
   constructor(target) {
     super(target);
 
-    const networkManager = target.model(SDK.NetworkManager);
+    const networkManager = target.model(NetworkManager);
     if (networkManager) {
-      networkManager.addEventListener(SDK.NetworkManager.Events.RequestFinished, this._handleRequestFinished, this);
+      networkManager.addEventListener(Events.RequestFinished, this._handleRequestFinished, this);
     }
 
-    this._cookiesModel = target.model(SDK.CookieModel);
+    this._cookiesModel = target.model(CookieModel);
 
     this._issues = [];
   }
@@ -68,7 +75,7 @@ export default class IssuesModel extends SDK.SDKModel {
    * @param {!Common.Event} event
    */
   _handleRequestFinished(event) {
-    const request = /** @type {!SDK.NetworkRequest} */ (event.data);
+    const request = /** @type {!NetworkRequest} */ (event.data);
 
     const blockedResponseCookies = request.blockedResponseCookies();
     for (const blockedCookie of blockedResponseCookies) {
@@ -84,23 +91,12 @@ export default class IssuesModel extends SDK.SDKModel {
       IssuesModel.connectWithIssue(cookie, issue);
 
       this._cookiesModel.addBlockedCookie(
-          cookie,
-          blockedCookie.blockedReasons.map(
-              blockedReason => ({
-                attribute: SDK.NetworkRequest.setCookieBlockedReasonToAttribute(blockedReason),
-                uiString: SDK.NetworkRequest.setCookieBlockedReasonToUiString(blockedReason)
-              })));
+          cookie, blockedCookie.blockedReasons.map(blockedReason => ({
+                                                     attribute: setCookieBlockedReasonToAttribute(blockedReason),
+                                                     uiString: setCookieBlockedReasonToUiString(blockedReason)
+                                                   })));
     }
   }
 }
 
-/* Legacy exported object */
-self.SDK = self.SDK || {};
-
-/* Legacy exported object */
-SDK = SDK || {};
-
-/** @constructor */
-SDK.IssuesModel = IssuesModel;
-
-SDK.SDKModel.register(IssuesModel, SDK.Target.Capability.None, true);
+SDKModel.register(IssuesModel, Capability.None, true);

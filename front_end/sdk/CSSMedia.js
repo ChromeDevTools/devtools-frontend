@@ -1,6 +1,10 @@
 // Copyright 2016 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
+import {CSSLocation, CSSModel, Edit} from './CSSModel.js';     // eslint-disable-line no-unused-vars
+import {CSSStyleSheetHeader} from './CSSStyleSheetHeader.js';  // eslint-disable-line no-unused-vars
+
 /**
  * @unrestricted
  */
@@ -103,9 +107,9 @@ export class CSSMediaQueryExpression {
 /**
  * @unrestricted
  */
-export default class CSSMedia {
+export class CSSMedia {
   /**
-   * @param {!SDK.CSSModel} cssModel
+   * @param {!CSSModel} cssModel
    * @param {!Protocol.CSS.CSSMedia} payload
    */
   constructor(cssModel, payload) {
@@ -114,7 +118,7 @@ export default class CSSMedia {
   }
 
   /**
-   * @param {!SDK.CSSModel} cssModel
+   * @param {!CSSModel} cssModel
    * @param {!Protocol.CSS.CSSMedia} payload
    * @return {!CSSMedia}
    */
@@ -123,7 +127,7 @@ export default class CSSMedia {
   }
 
   /**
-   * @param {!SDK.CSSModel} cssModel
+   * @param {!CSSModel} cssModel
    * @param {!Array.<!Protocol.CSS.CSSMedia>} payload
    * @return {!Array.<!CSSMedia>}
    */
@@ -154,7 +158,7 @@ export default class CSSMedia {
   }
 
   /**
-   * @param {!SDK.CSSModel.Edit} edit
+   * @param {!Edit} edit
    */
   rebase(edit) {
     if (this.styleSheetId !== edit.styleSheetId || !this.range) {
@@ -222,14 +226,14 @@ export default class CSSMedia {
   }
 
   /**
-   * @return {?SDK.CSSStyleSheetHeader}
+   * @return {?CSSStyleSheetHeader}
    */
   header() {
     return this.styleSheetId ? this._cssModel.styleSheetHeaderForId(this.styleSheetId) : null;
   }
 
   /**
-   * @return {?SDK.CSSLocation}
+   * @return {?CSSLocation}
    */
   rawLocation() {
     const header = this.header();
@@ -237,7 +241,7 @@ export default class CSSMedia {
       return null;
     }
     const lineNumber = Number(this.lineNumberInSource());
-    return new SDK.CSSLocation(header, lineNumber, this.columnNumberInSource());
+    return new CSSLocation(header, lineNumber, this.columnNumberInSource());
   }
 }
 
@@ -247,20 +251,3 @@ export const Source = {
   MEDIA_RULE: 'mediaRule',
   IMPORT_RULE: 'importRule'
 };
-
-/* Legacy exported object */
-self.SDK = self.SDK || {};
-
-/* Legacy exported object */
-SDK = SDK || {};
-
-/** @constructor */
-SDK.CSSMediaQuery = CSSMediaQuery;
-
-/** @constructor */
-SDK.CSSMediaQueryExpression = CSSMediaQueryExpression;
-
-/** @constructor */
-SDK.CSSMedia = CSSMedia;
-
-SDK.CSSMedia.Source = Source;

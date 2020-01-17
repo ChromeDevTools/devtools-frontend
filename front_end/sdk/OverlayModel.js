@@ -2,30 +2,35 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {DebuggerModel, Events as DebuggerModelEvents} from './DebuggerModel.js';
+import {DeferredDOMNode, DOMModel, DOMNode} from './DOMModel.js';  // eslint-disable-line no-unused-vars
+import {RemoteObject} from './RemoteObject.js';                    // eslint-disable-line no-unused-vars
+import {Capability, SDKModel, Target} from './SDKModel.js';        // eslint-disable-line no-unused-vars
+
 /**
  * @implements {Protocol.OverlayDispatcher}
  */
-export default class OverlayModel extends SDK.SDKModel {
+export class OverlayModel extends SDKModel {
   /**
-   * @param {!SDK.Target} target
+   * @param {!Target} target
    */
   constructor(target) {
     super(target);
-    this._domModel = /** @type {!SDK.DOMModel} */ (target.model(SDK.DOMModel));
+    this._domModel = /** @type {!DOMModel} */ (target.model(DOMModel));
 
     target.registerOverlayDispatcher(this);
     this._overlayAgent = target.overlayAgent();
 
-    this._debuggerModel = target.model(SDK.DebuggerModel);
+    this._debuggerModel = target.model(DebuggerModel);
     if (this._debuggerModel) {
       Common.moduleSetting('disablePausedStateOverlay').addChangeListener(this._updatePausedInDebuggerMessage, this);
       this._debuggerModel.addEventListener(
-          SDK.DebuggerModel.Events.DebuggerPaused, this._updatePausedInDebuggerMessage, this);
+          DebuggerModelEvents.DebuggerPaused, this._updatePausedInDebuggerMessage, this);
       this._debuggerModel.addEventListener(
-          SDK.DebuggerModel.Events.DebuggerResumed, this._updatePausedInDebuggerMessage, this);
+          DebuggerModelEvents.DebuggerResumed, this._updatePausedInDebuggerMessage, this);
       // TODO(dgozman): we should get DebuggerResumed on navigations instead of listening to GlobalObjectCleared.
       this._debuggerModel.addEventListener(
-          SDK.DebuggerModel.Events.GlobalObjectCleared, this._updatePausedInDebuggerMessage, this);
+          DebuggerModelEvents.GlobalObjectCleared, this._updatePausedInDebuggerMessage, this);
     }
 
     this._inspectModeEnabled = false;
@@ -50,10 +55,10 @@ export default class OverlayModel extends SDK.SDKModel {
   }
 
   /**
-   * @param {!SDK.RemoteObject} object
+   * @param {!RemoteObject} object
    */
   static highlightObjectAsDOMNode(object) {
-    const domModel = object.runtimeModel().target().model(SDK.DOMModel);
+    const domModel = object.runtimeModel().target().model(DOMModel);
     if (domModel) {
       domModel.overlayModel().highlightInOverlay({object});
     }
@@ -284,7 +289,7 @@ export default class OverlayModel extends SDK.SDKModel {
   }
 
   /**
-   * @param {function(!SDK.DOMNode)} handler
+   * @param {function(!DOMNode)} handler
    */
   static setInspectNodeHandler(handler) {
     OverlayModel._inspectNodeHandler = handler;
@@ -295,7 +300,7 @@ export default class OverlayModel extends SDK.SDKModel {
    * @param {!Protocol.DOM.BackendNodeId} backendNodeId
    */
   inspectNodeRequested(backendNodeId) {
-    const deferredNode = new SDK.DeferredDOMNode(this.target(), backendNodeId);
+    const deferredNode = new DeferredDOMNode(this.target(), backendNodeId);
     if (OverlayModel._inspectNodeHandler) {
       deferredNode.resolvePromise().then(node => {
         if (node) {
@@ -407,27 +412,4 @@ class DefaultHighlighter {
   }
 }
 
-/* Legacy exported object */
-self.SDK = self.SDK || {};
-
-/* Legacy exported object */
-SDK = SDK || {};
-
-/** @constructor */
-SDK.OverlayModel = OverlayModel;
-
-/** @enum {symbol} */
-SDK.OverlayModel.Events = Events;
-
-/**
- * @interface
- */
-SDK.OverlayModel.Highlighter = Highlighter;
-
-SDK.SDKModel.register(SDK.OverlayModel, SDK.Target.Capability.DOM, true);
-
-/** @typedef {{node: (!SDK.DOMNode|undefined),
-  deferredNode: (!SDK.DeferredDOMNode|undefined),
-  selectorList: (string|undefined),
-  object:(!SDK.RemoteObject|undefined)}} */
-SDK.OverlayModel.HighlightData;
+SDKModel.register(OverlayModel, Capability.DOM, true);

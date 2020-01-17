@@ -8,7 +8,7 @@ import './dom_extension/dom_extension.js';
 import './common/common-legacy.js';
 import './host/host-legacy.js';
 import './protocol/protocol.js';
-import './sdk/sdk.js';
+import './sdk/sdk-legacy.js';
 import './ui/ui-legacy.js';
 
 import './services/services-legacy.js';

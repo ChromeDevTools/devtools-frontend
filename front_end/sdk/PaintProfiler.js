@@ -28,9 +28,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-export class PaintProfilerModel extends SDK.SDKModel {
+import {Capability, SDKModel, Target} from './SDKModel.js';  // eslint-disable-line no-unused-vars
+
+export class PaintProfilerModel extends SDKModel {
   /**
-   * @param {!SDK.Target} target
+   * @param {!Target} target
    */
   constructor(target) {
     super(target);
@@ -131,29 +133,4 @@ export class PaintProfilerLogItem {
   }
 }
 
-/* Legacy exported object */
-self.SDK = self.SDK || {};
-
-/* Legacy exported object */
-SDK = SDK || {};
-
-/** @constructor */
-SDK.PaintProfilerModel = PaintProfilerModel;
-
-/** @constructor */
-SDK.PaintProfilerSnapshot = PaintProfilerSnapshot;
-
-/** @constructor */
-SDK.PaintProfilerLogItem = PaintProfilerLogItem;
-
-/**
- * @typedef {!{x: number, y: number, picture: string}}
- */
-SDK.PictureFragment;
-
-/**
- * @typedef {!{method: string, params: ?Object<string, *>}}
- */
-SDK.RawPaintProfilerLogItem;
-
-SDK.SDKModel.register(PaintProfilerModel, SDK.Target.Capability.DOM, false);
+SDKModel.register(PaintProfilerModel, Capability.DOM, false);

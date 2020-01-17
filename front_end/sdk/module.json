@@ -367,9 +367,8 @@
     "scripts": [],
     "modules": [
         "sdk.js",
+        "sdk-legacy.js",
         "SDKModel.js",
-        "Target.js",
-        "TargetManager.js",
         "Connections.js",
         "CompilerSourceMappingContentProvider.js",
         "Cookie.js",

@@ -5,8 +5,6 @@
 import './SDKModel.js';
 import './CSSMetadata.js';
 import '../SupportedCSSProperties.js';
-import './Target.js';
-import './TargetManager.js';
 import './ProfileTreeModel.js';
 import './NetworkRequest.js';
 import './NetworkManager.js';
@@ -54,14 +52,13 @@ import * as ResourceTreeModel from './ResourceTreeModel.js';
 import * as RuntimeModel from './RuntimeModel.js';
 import * as ScreenCaptureModel from './ScreenCaptureModel.js';
 import * as Script from './Script.js';
+import * as SDKModel from './SDKModel.js';
 import * as SecurityOriginManager from './SecurityOriginManager.js';
 import * as ServerTiming from './ServerTiming.js';
 import * as ServiceWorkerCacheModel from './ServiceWorkerCacheModel.js';
 import * as ServiceWorkerManager from './ServiceWorkerManager.js';
 import * as SourceMap from './SourceMap.js';
 import * as SourceMapManager from './SourceMapManager.js';
-import * as Target from './Target.js';
-import * as TargetManager from './TargetManager.js';
 import * as TracingManager from './TracingManager.js';
 import * as TracingModel from './TracingModel.js';
 
@@ -107,14 +104,13 @@ export {
   RuntimeModel,
   ScreenCaptureModel,
   Script,
+  SDKModel,
   SecurityOriginManager,
   ServerTiming,
   ServiceWorkerCacheModel,
   ServiceWorkerManager,
   SourceMap,
   SourceMapManager,
-  Target,
-  TargetManager,
   TracingManager,
   TracingModel,
 };

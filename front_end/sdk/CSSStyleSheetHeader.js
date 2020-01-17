@@ -1,13 +1,18 @@
 // Copyright 2016 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
+import {CSSModel} from './CSSModel.js';  // eslint-disable-line no-unused-vars
+import {DeferredDOMNode} from './DOMModel.js';
+import {ResourceTreeModel} from './ResourceTreeModel.js';
+
 /**
  * @implements {Common.ContentProvider}
  * @unrestricted
  */
-export default class CSSStyleSheetHeader {
+export class CSSStyleSheetHeader {
   /**
-   * @param {!SDK.CSSModel} cssModel
+   * @param {!CSSModel} cssModel
    * @param {!Protocol.CSS.CSSStyleSheetHeader} payload
    */
   constructor(cssModel, payload) {
@@ -26,7 +31,7 @@ export default class CSSStyleSheetHeader {
     this.endColumn = payload.endColumn;
     this.contentLength = payload.length;
     if (payload.ownerNode) {
-      this.ownerNode = new SDK.DeferredDOMNode(cssModel.target(), payload.ownerNode);
+      this.ownerNode = new DeferredDOMNode(cssModel.target(), payload.ownerNode);
     }
     this.setSourceMapURL(payload.sourceMapURL);
   }
@@ -58,7 +63,7 @@ export default class CSSStyleSheetHeader {
   }
 
   /**
-   * @return {!SDK.CSSModel}
+   * @return {!CSSModel}
    */
   cssModel() {
     return this._cssModel;
@@ -82,7 +87,7 @@ export default class CSSStyleSheetHeader {
    * @return {string}
    */
   _viaInspectorResourceURL() {
-    const frame = this._cssModel.target().model(SDK.ResourceTreeModel).frameForId(this.frameId);
+    const frame = this._cssModel.target().model(ResourceTreeModel).frameForId(this.frameId);
     console.assert(frame);
     const parsedURL = new Common.ParsedURL(frame.url);
     let fakeURL = 'inspector://' + parsedURL.host + parsedURL.folderPathComponents;
@@ -183,12 +188,3 @@ export default class CSSStyleSheetHeader {
     return this.origin === 'inspector';
   }
 }
-
-/* Legacy exported object */
-self.SDK = self.SDK || {};
-
-/* Legacy exported object */
-SDK = SDK || {};
-
-/** @constructor */
-SDK.CSSStyleSheetHeader = CSSStyleSheetHeader;

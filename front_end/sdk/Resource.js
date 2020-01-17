@@ -25,14 +25,18 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+import {Events, NetworkRequest} from './NetworkRequest.js';                   // eslint-disable-line no-unused-vars
+import {ResourceTreeFrame, ResourceTreeModel} from './ResourceTreeModel.js';  // eslint-disable-line no-unused-vars
+
 /**
  * @implements {Common.ContentProvider}
  * @unrestricted
  */
-export default class Resource {
+export class Resource {
   /**
-   * @param {!SDK.ResourceTreeModel} resourceTreeModel
-   * @param {?SDK.NetworkRequest} request
+   * @param {!ResourceTreeModel} resourceTreeModel
+   * @param {?NetworkRequest} request
    * @param {string} url
    * @param {string} documentURL
    * @param {!Protocol.Page.FrameId} frameId
@@ -61,7 +65,7 @@ export default class Resource {
     /** @type {boolean} */ this._contentEncoded;
     this._pendingContentCallbacks = [];
     if (this._request && !this._request.finished) {
-      this._request.addEventListener(SDK.NetworkRequest.Events.FinishedLoading, this._requestFinished, this);
+      this._request.addEventListener(Events.FinishedLoading, this._requestFinished, this);
     }
   }
 
@@ -89,7 +93,7 @@ export default class Resource {
   }
 
   /**
-   * @return {?SDK.NetworkRequest}
+   * @return {?NetworkRequest}
    */
   get request() {
     return this._request;
@@ -245,7 +249,7 @@ export default class Resource {
   }
 
   _requestFinished() {
-    this._request.removeEventListener(SDK.NetworkRequest.Events.FinishedLoading, this._requestFinished, this);
+    this._request.removeEventListener(Events.FinishedLoading, this._requestFinished, this);
     if (this._pendingContentCallbacks.length) {
       this._innerRequestContent();
     }
@@ -304,18 +308,9 @@ export default class Resource {
   }
 
   /**
-   * @return {!SDK.ResourceTreeFrame}
+   * @return {!ResourceTreeFrame}
    */
   frame() {
     return this._resourceTreeModel.frameForId(this._frameId);
   }
 }
-
-/* Legacy exported object */
-self.SDK = self.SDK || {};
-
-/* Legacy exported object */
-SDK = SDK || {};
-
-/** @constructor */
-SDK.Resource = Resource;

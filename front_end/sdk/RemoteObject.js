@@ -28,9 +28,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-export default class RemoteObject {
+import {DebuggerModel} from './DebuggerModel.js';  // eslint-disable-line no-unused-vars
+import {RuntimeModel} from './RuntimeModel.js';    // eslint-disable-line no-unused-vars
+
+export class RemoteObject {
   /**
-   * This may not be an interface due to "instanceof SDK.RemoteObject" checks in the code.
+   * This may not be an interface due to "instanceof RemoteObject" checks in the code.
    */
 
   /**
@@ -311,14 +314,14 @@ export default class RemoteObject {
   }
 
   /**
-   * @return {!SDK.DebuggerModel}
+   * @return {!DebuggerModel}
    */
   debuggerModel() {
     throw new Error('DebuggerModel-less object');
   }
 
   /**
-   * @return {!SDK.RuntimeModel}
+   * @return {!RuntimeModel}
    */
   runtimeModel() {
     throw new Error('RuntimeModel-less object');
@@ -334,7 +337,7 @@ export default class RemoteObject {
 
 export class RemoteObjectImpl extends RemoteObject {
   /**
-   * @param {!SDK.RuntimeModel} runtimeModel
+   * @param {!RuntimeModel} runtimeModel
    * @param {string|undefined} objectId
    * @param {string} type
    * @param {string|undefined} subtype
@@ -678,7 +681,7 @@ export class RemoteObjectImpl extends RemoteObject {
 
   /**
    * @override
-   * @return {!SDK.DebuggerModel}
+   * @return {!DebuggerModel}
    */
   debuggerModel() {
     return this._runtimeModel.debuggerModel();
@@ -686,7 +689,7 @@ export class RemoteObjectImpl extends RemoteObject {
 
   /**
    * @override
-   * @return {!SDK.RuntimeModel}
+   * @return {!RuntimeModel}
    */
   runtimeModel() {
     return this._runtimeModel;
@@ -703,7 +706,7 @@ export class RemoteObjectImpl extends RemoteObject {
 
 export class ScopeRemoteObject extends RemoteObjectImpl {
   /**
-   * @param {!SDK.RuntimeModel} runtimeModel
+   * @param {!RuntimeModel} runtimeModel
    * @param {string|undefined} objectId
    * @param {!ScopeRef} scopeRef
    * @param {string} type
@@ -1344,43 +1347,3 @@ const UnserializableNumber = {
   Infinity: /** @type {!Protocol.Runtime.UnserializableValue} */ ('Infinity'),
   NegativeInfinity: /** @type {!Protocol.Runtime.UnserializableValue} */ ('-Infinity')
 };
-
-/* Legacy exported object */
-self.SDK = self.SDK || {};
-
-/* Legacy exported object */
-SDK = SDK || {};
-
-/** @constructor */
-SDK.RemoteObject = RemoteObject;
-
-/** @constructor */
-SDK.RemoteObjectImpl = RemoteObjectImpl;
-
-/** @constructor */
-SDK.ScopeRemoteObject = ScopeRemoteObject;
-
-/** @constructor */
-SDK.ScopeRef = ScopeRef;
-
-/** @constructor */
-SDK.RemoteObjectProperty = RemoteObjectProperty;
-
-/** @constructor */
-SDK.LocalJSONObject = LocalJSONObject;
-
-/** @constructor */
-SDK.RemoteArray = RemoteArray;
-
-/** @constructor */
-SDK.RemoteFunction = RemoteFunction;
-
-/**
- * @typedef {{object: ?RemoteObject, wasThrown: (boolean|undefined)}}
- */
-SDK.CallFunctionResult;
-
-/**
- * @typedef {{properties: ?Array<!RemoteObjectProperty>, internalProperties: ?Array<!RemoteObjectProperty>}}
- */
-SDK.GetPropertiesResult;

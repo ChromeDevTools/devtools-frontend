@@ -2,17 +2,23 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-export default class CSSStyleDeclaration {
+import {cssMetadata} from './CSSMetadata.js';
+import {CSSModel, Edit} from './CSSModel.js';  // eslint-disable-line no-unused-vars
+import {CSSProperty} from './CSSProperty.js';
+import {CSSRule} from './CSSRule.js';  // eslint-disable-line no-unused-vars
+import {Target} from './SDKModel.js';  // eslint-disable-line no-unused-vars
+
+export class CSSStyleDeclaration {
   /**
-   * @param {!SDK.CSSModel} cssModel
-   * @param {?SDK.CSSRule} parentRule
+   * @param {!CSSModel} cssModel
+   * @param {?CSSRule} parentRule
    * @param {!Protocol.CSS.CSSStyle} payload
    * @param {!Type} type
    */
   constructor(cssModel, parentRule, payload, type) {
     this._cssModel = cssModel;
     this.parentRule = parentRule;
-    /** @type {!Array<!SDK.CSSProperty>} */
+    /** @type {!Array<!CSSProperty>} */
     this._allProperties;
     /** @type {string|undefined} */
     this.styleSheetId;
@@ -24,16 +30,16 @@ export default class CSSStyleDeclaration {
     this._shorthandValues;
     /** @type {!Set<string>} */
     this._shorthandIsImportant;
-    /** @type {!Map<string, !SDK.CSSProperty>} */
+    /** @type {!Map<string, !CSSProperty>} */
     this._activePropertyMap;
-    /** @type {?Array<!SDK.CSSProperty>} */
+    /** @type {?Array<!CSSProperty>} */
     this._leadingProperties;
     this._reinitialize(payload);
     this.type = type;
   }
 
   /**
-   * @param {!SDK.CSSModel.Edit} edit
+   * @param {!Edit} edit
    */
   rebase(edit) {
     if (this.styleSheetId !== edit.styleSheetId || !this.range) {
@@ -77,12 +83,12 @@ export default class CSSStyleDeclaration {
           parseUnusedText.call(this, cssText, start.line, start.column, range.startLine, range.startColumn);
           start = {line: range.endLine, column: range.endColumn};
         }
-        this._allProperties.push(SDK.CSSProperty.parsePayload(this, this._allProperties.length, cssProperty));
+        this._allProperties.push(CSSProperty.parsePayload(this, this._allProperties.length, cssProperty));
       }
       parseUnusedText.call(this, cssText, start.line, start.column, this.range.endLine, this.range.endColumn);
     } else {
       for (const cssProperty of payload.cssProperties) {
-        this._allProperties.push(SDK.CSSProperty.parsePayload(this, this._allProperties.length, cssProperty));
+        this._allProperties.push(CSSProperty.parsePayload(this, this._allProperties.length, cssProperty));
       }
     }
 
@@ -135,7 +141,7 @@ export default class CSSStyleDeclaration {
               value = trimmedProperty.substring(colonIndex + 1).trim();
             }
             const range = new TextUtils.TextRange(lineNumber, column, lineNumber, column + property.length);
-            this._allProperties.push(new SDK.CSSProperty(
+            this._allProperties.push(new CSSProperty(
                 this, this._allProperties.length, name, value, false, false, false, false, property,
                 range.relativeFrom(startLine, startColumn)));
           }
@@ -185,7 +191,7 @@ export default class CSSStyleDeclaration {
     // For style-based properties, generate shorthands with values when possible.
     for (const property of this._allProperties) {
       // For style-based properties, try generating shorthands.
-      const shorthands = SDK.cssMetadata().shorthands(property.name) || [];
+      const shorthands = cssMetadata().shorthands(property.name) || [];
       for (const shorthand of shorthands) {
         if (propertiesSet.has(shorthand)) {
           continue;
@@ -197,7 +203,7 @@ export default class CSSStyleDeclaration {
 
         // Generate synthetic shorthand we have a value for.
         const shorthandImportance = !!this._shorthandIsImportant.has(shorthand);
-        const shorthandProperty = new SDK.CSSProperty(
+        const shorthandProperty = new CSSProperty(
             this, this.allProperties().length, shorthand, shorthandValue, shorthandImportance, false, true, false);
         generatedProperties.push(shorthandProperty);
         propertiesSet.add(shorthand);
@@ -207,11 +213,11 @@ export default class CSSStyleDeclaration {
   }
 
   /**
-   * @return {!Array.<!SDK.CSSProperty>}
+   * @return {!Array.<!CSSProperty>}
    */
   _computeLeadingProperties() {
     /**
-     * @param {!SDK.CSSProperty} property
+     * @param {!CSSProperty} property
      * @return {boolean}
      */
     function propertyHasRange(property) {
@@ -224,7 +230,7 @@ export default class CSSStyleDeclaration {
 
     const leadingProperties = [];
     for (const property of this._allProperties) {
-      const shorthands = SDK.cssMetadata().shorthands(property.name) || [];
+      const shorthands = cssMetadata().shorthands(property.name) || [];
       let belongToAnyShorthand = false;
       for (const shorthand of shorthands) {
         if (this._shorthandValues.get(shorthand)) {
@@ -241,7 +247,7 @@ export default class CSSStyleDeclaration {
   }
 
   /**
-   * @return {!Array.<!SDK.CSSProperty>}
+   * @return {!Array.<!CSSProperty>}
    */
   leadingProperties() {
     if (!this._leadingProperties) {
@@ -251,14 +257,14 @@ export default class CSSStyleDeclaration {
   }
 
   /**
-   * @return {!SDK.Target}
+   * @return {!Target}
    */
   target() {
     return this._cssModel.target();
   }
 
   /**
-   * @return {!SDK.CSSModel}
+   * @return {!CSSModel}
    */
   cssModel() {
     return this._cssModel;
@@ -272,7 +278,7 @@ export default class CSSStyleDeclaration {
         property.setActive(false);
         continue;
       }
-      const canonicalName = SDK.cssMetadata().canonicalPropertyName(property.name);
+      const canonicalName = cssMetadata().canonicalPropertyName(property.name);
       const activeProperty = activeProperties[canonicalName];
       if (!activeProperty) {
         activeProperties[canonicalName] = property;
@@ -286,7 +292,7 @@ export default class CSSStyleDeclaration {
   }
 
   /**
-   * @return {!Array<!SDK.CSSProperty>}
+   * @return {!Array<!CSSProperty>}
    */
   allProperties() {
     return this._allProperties;
@@ -312,10 +318,10 @@ export default class CSSStyleDeclaration {
 
   /**
    * @param {string} name
-   * @return {!Array.<!SDK.CSSProperty>}
+   * @return {!Array.<!CSSProperty>}
    */
   longhandProperties(name) {
-    const longhands = SDK.cssMetadata().longhands(name);
+    const longhands = cssMetadata().longhands(name);
     const result = [];
     for (let i = 0; longhands && i < longhands.length; ++i) {
       const property = this._activePropertyMap.get(longhands[i]);
@@ -328,7 +334,7 @@ export default class CSSStyleDeclaration {
 
   /**
    * @param {number} index
-   * @return {?SDK.CSSProperty}
+   * @return {?CSSProperty}
    */
   propertyAt(index) {
     return (index < this.allProperties().length) ? this.allProperties()[index] : null;
@@ -357,12 +363,11 @@ export default class CSSStyleDeclaration {
 
   /**
    * @param {number=} index
-   * @return {!SDK.CSSProperty}
+   * @return {!CSSProperty}
    */
   newBlankProperty(index) {
     index = (typeof index === 'undefined') ? this.pastLastSourcePropertyIndex() : index;
-    const property =
-        new SDK.CSSProperty(this, index, '', '', false, false, true, false, '', this._insertionRange(index));
+    const property = new CSSProperty(this, index, '', '', false, false, true, false, '', this._insertionRange(index));
     return property;
   }
 
@@ -404,15 +409,3 @@ export const Type = {
   Inline: 'Inline',
   Attributes: 'Attributes'
 };
-
-/* Legacy exported object */
-self.SDK = self.SDK || {};
-
-/* Legacy exported object */
-SDK = SDK || {};
-
-/** @constructor */
-SDK.CSSStyleDeclaration = CSSStyleDeclaration;
-
-/** @enum {string} */
-SDK.CSSStyleDeclaration.Type = Type;

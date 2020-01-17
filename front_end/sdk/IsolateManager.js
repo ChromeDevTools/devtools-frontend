@@ -2,21 +2,25 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {HeapProfilerModel} from './HeapProfilerModel.js';  // eslint-disable-line no-unused-vars
+import {RuntimeModel} from './RuntimeModel.js';
+import {SDKModelObserver} from './SDKModel.js';  // eslint-disable-line no-unused-vars
+
 /**
- * @implements {SDK.SDKModelObserver}
+ * @implements {SDKModelObserver}
  */
-export default class IsolateManager extends Common.Object {
+export class IsolateManager extends Common.Object {
   constructor() {
     super();
     console.assert(!SDK.isolateManager, 'Use SDK.isolateManager singleton.');
     /** @type {!Map<string, !Isolate>} */
     this._isolates = new Map();
     // _isolateIdByModel contains null while the isolateId is being retrieved.
-    /** @type {!Map<!SDK.RuntimeModel, ?string>} */
+    /** @type {!Map<!RuntimeModel, ?string>} */
     this._isolateIdByModel = new Map();
     /** @type {!Set<!Observer>} */
     this._observers = new Set();
-    SDK.targetManager.observeModels(SDK.RuntimeModel, this);
+    SDK.targetManager.observeModels(RuntimeModel, this);
     this._pollId = 0;
   }
 
@@ -48,14 +52,14 @@ export default class IsolateManager extends Common.Object {
 
   /**
    * @override
-   * @param {!SDK.RuntimeModel} model
+   * @param {!RuntimeModel} model
    */
   modelAdded(model) {
     this._modelAdded(model);
   }
 
   /**
-   * @param {!SDK.RuntimeModel} model
+   * @param {!RuntimeModel} model
    */
   async _modelAdded(model) {
     this._isolateIdByModel.set(model, null);
@@ -88,7 +92,7 @@ export default class IsolateManager extends Common.Object {
 
   /**
    * @override
-   * @param {!SDK.RuntimeModel} model
+   * @param {!RuntimeModel} model
    */
   modelRemoved(model) {
     const isolateId = this._isolateIdByModel.get(model);
@@ -111,7 +115,7 @@ export default class IsolateManager extends Common.Object {
   }
 
   /**
-   * @param {!SDK.RuntimeModel} model
+   * @param {!RuntimeModel} model
    * @return {?Isolate}
    */
   isolateByModel(model) {
@@ -170,7 +174,7 @@ export class Isolate {
    */
   constructor(id) {
     this._id = id;
-    /** @type {!Set<!SDK.RuntimeModel>} */
+    /** @type {!Set<!RuntimeModel>} */
     this._models = new Set();
     this._usedHeapSize = 0;
     const count = MemoryTrendWindowMs / PollIntervalMs;
@@ -185,21 +189,21 @@ export class Isolate {
   }
 
   /**
-   * @return {!Set<!SDK.RuntimeModel>}
+   * @return {!Set<!RuntimeModel>}
    */
   models() {
     return this._models;
   }
 
   /**
-   * @return {?SDK.RuntimeModel}
+   * @return {?RuntimeModel}
    */
   runtimeModel() {
     return this._models.values().next().value || null;
   }
 
   /**
-   * @return {?SDK.HeapProfilerModel}
+   * @return {?HeapProfilerModel}
    */
   heapProfilerModel() {
     const runtimeModel = this.runtimeModel();
@@ -305,28 +309,3 @@ export class MemoryTrend {
     return n < 2 ? 0 : (this._sxy - this._sx * this._sy / n) / (this._sxx - this._sx * this._sx / n);
   }
 }
-
-/* Legacy exported object */
-self.SDK = self.SDK || {};
-
-/* Legacy exported object */
-SDK = SDK || {};
-
-/** @constructor */
-SDK.IsolateManager = IsolateManager;
-
-/** @interface */
-SDK.IsolateManager.Observer = Observer;
-
-/** @enum {symbol} */
-SDK.IsolateManager.Events = Events;
-
-SDK.IsolateManager.MemoryTrendWindowMs = MemoryTrendWindowMs;
-
-/** @constructor */
-SDK.IsolateManager.Isolate = Isolate;
-
-/** @constructor */
-SDK.IsolateManager.MemoryTrend = MemoryTrend;
-
-SDK.isolateManager = new IsolateManager();

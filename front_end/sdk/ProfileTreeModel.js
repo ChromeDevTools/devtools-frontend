@@ -1,6 +1,9 @@
 // Copyright 2016 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
+import {Target} from './SDKModel.js';  // eslint-disable-line no-unused-vars
+
 /**
  * @unrestricted
  */
@@ -64,9 +67,9 @@ export class ProfileNode {
 /**
  * @unrestricted
  */
-export default class ProfileTreeModel {
+export class ProfileTreeModel {
   /**
-   * @param {?SDK.Target=} target
+   * @param {?Target=} target
    */
   constructor(target) {
     this._target = target || null;
@@ -128,21 +131,9 @@ export default class ProfileTreeModel {
   }
 
   /**
-   * @return {?SDK.Target}
+   * @return {?Target}
    */
   target() {
     return this._target;
   }
 }
-
-/* Legacy exported object */
-self.SDK = self.SDK || {};
-
-/* Legacy exported object */
-SDK = SDK || {};
-
-/** @constructor */
-SDK.ProfileTreeModel = ProfileTreeModel;
-
-/** @constructor */
-SDK.ProfileNode = ProfileNode;

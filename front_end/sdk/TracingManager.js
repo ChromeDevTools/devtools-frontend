@@ -4,12 +4,14 @@
  * found in the LICENSE file.
  */
 
+import {Capability, SDKModel, Target} from './SDKModel.js';  // eslint-disable-line no-unused-vars
+
 /**
  * @unrestricted
  */
-export default class TracingManager extends SDK.SDKModel {
+export class TracingManager extends SDKModel {
   /**
-   * @param {!SDK.Target} target
+   * @param {!Target} target
    */
   constructor(target) {
     super(target);
@@ -161,34 +163,4 @@ class TracingDispatcher {
   }
 }
 
-/* Legacy exported object */
-self.SDK = self.SDK || {};
-
-/* Legacy exported object */
-SDK = SDK || {};
-
-/** @constructor */
-SDK.TracingManager = TracingManager;
-
-/** @interface */
-SDK.TracingManagerClient = TracingManagerClient;
-
-/** @typedef {!{
-        cat: (string|undefined),
-        pid: number,
-        tid: number,
-        ts: number,
-        ph: string,
-        name: string,
-        args: !Object,
-        dur: number,
-        id: string,
-        id2: (!{global: (string|undefined), local: (string|undefined)}|undefined),
-        scope: string,
-        bind_id: string,
-        s: string
-    }}
- */
-SDK.TracingManager.EventPayload;
-
-SDK.SDKModel.register(SDK.TracingManager, SDK.Target.Capability.Tracing, false);
+SDKModel.register(TracingManager, Capability.Tracing, false);

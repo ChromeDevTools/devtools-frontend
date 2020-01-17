@@ -26,12 +26,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import {DebuggerModel, Location} from './DebuggerModel.js';
+import {RuntimeModel} from './RuntimeModel.js';              // eslint-disable-line no-unused-vars
+import {Capability, SDKModel, Target} from './SDKModel.js';  // eslint-disable-line no-unused-vars
+
 /**
  * @implements {Protocol.ProfilerDispatcher}
  */
-export default class CPUProfilerModel extends SDK.SDKModel {
+export class CPUProfilerModel extends SDKModel {
   /**
-   * @param {!SDK.Target} target
+   * @param {!Target} target
    */
   constructor(target) {
     super(target);
@@ -41,18 +45,18 @@ export default class CPUProfilerModel extends SDK.SDKModel {
     this._profilerAgent = target.profilerAgent();
     target.registerProfilerDispatcher(this);
     this._profilerAgent.enable();
-    this._debuggerModel = /** @type {!SDK.DebuggerModel} */ (target.model(SDK.DebuggerModel));
+    this._debuggerModel = /** @type {!DebuggerModel} */ (target.model(DebuggerModel));
   }
 
   /**
-   * @return {!SDK.RuntimeModel}
+   * @return {!RuntimeModel}
    */
   runtimeModel() {
     return this._debuggerModel.runtimeModel();
   }
 
   /**
-   * @return {!SDK.DebuggerModel}
+   * @return {!DebuggerModel}
    */
   debuggerModel() {
     return this._debuggerModel;
@@ -98,7 +102,7 @@ export default class CPUProfilerModel extends SDK.SDKModel {
    * @param {!Protocol.Profiler.Profile=} cpuProfile
    */
   _dispatchProfileEvent(eventName, id, scriptLocation, title, cpuProfile) {
-    const debuggerLocation = SDK.DebuggerModel.Location.fromPayload(this._debuggerModel, scriptLocation);
+    const debuggerLocation = Location.fromPayload(this._debuggerModel, scriptLocation);
     const globalId = this.target().id() + '.' + id;
     const data = /** @type {!SDK.CPUProfilerModel.EventData} */ (
         {id: globalId, scriptLocation: debuggerLocation, cpuProfile: cpuProfile, title: title, cpuProfilerModel: this});
@@ -160,19 +164,4 @@ export const Events = {
   ConsoleProfileFinished: Symbol('ConsoleProfileFinished')
 };
 
-/* Legacy exported object */
-self.SDK = self.SDK || {};
-
-/* Legacy exported object */
-SDK = SDK || {};
-
-/** @constructor */
-SDK.CPUProfilerModel = CPUProfilerModel;
-
-/** @enum {symbol} */
-SDK.CPUProfilerModel.Events = Events;
-
-SDK.SDKModel.register(SDK.CPUProfilerModel, SDK.Target.Capability.JS, true);
-
-/** @typedef {!{id: string, scriptLocation: !SDK.DebuggerModel.Location, title: string, cpuProfile: (!Protocol.Profiler.Profile|undefined), cpuProfilerModel: !SDK.CPUProfilerModel}} */
-SDK.CPUProfilerModel.EventData;
+SDKModel.register(CPUProfilerModel, Capability.JS, true);

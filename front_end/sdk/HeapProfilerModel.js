@@ -1,9 +1,14 @@
+import {DebuggerModel} from './DebuggerModel.js';            // eslint-disable-line no-unused-vars
+import {RemoteObject} from './RemoteObject.js';              // eslint-disable-line no-unused-vars
+import {RuntimeModel} from './RuntimeModel.js';              // eslint-disable-line no-unused-vars
+import {Capability, SDKModel, Target} from './SDKModel.js';  // eslint-disable-line no-unused-vars
+
 /**
  * @unrestricted
  */
-export default class HeapProfilerModel extends SDK.SDKModel {
+export class HeapProfilerModel extends SDKModel {
   /**
-   * @param {!SDK.Target} target
+   * @param {!Target} target
    */
   constructor(target) {
     super(target);
@@ -11,19 +16,19 @@ export default class HeapProfilerModel extends SDK.SDKModel {
     this._enabled = false;
     this._heapProfilerAgent = target.heapProfilerAgent();
     this._memoryAgent = target.memoryAgent();
-    this._runtimeModel = /** @type {!SDK.RuntimeModel} */ (target.model(SDK.RuntimeModel));
+    this._runtimeModel = /** @type {!RuntimeModel} */ (target.model(RuntimeModel));
     this._samplingProfilerDepth = 0;
   }
 
   /**
-   * @return {!SDK.DebuggerModel}
+   * @return {!DebuggerModel}
    */
   debuggerModel() {
     return this._runtimeModel.debuggerModel();
   }
 
   /**
-   * @return {!SDK.RuntimeModel}
+   * @return {!RuntimeModel}
    */
   runtimeModel() {
     return this._runtimeModel;
@@ -153,7 +158,7 @@ export default class HeapProfilerModel extends SDK.SDKModel {
   /**
    * @param {string} snapshotObjectId
    * @param {string} objectGroupName
-   * @return {!Promise<?SDK.RemoteObject>}
+   * @return {!Promise<?RemoteObject>}
    */
   async objectForSnapshotObjectId(snapshotObjectId, objectGroupName) {
     const result = await this._heapProfilerAgent.getObjectByHeapObjectId(snapshotObjectId, objectGroupName);
@@ -305,16 +310,4 @@ class HeapProfilerDispatcher {
   }
 }
 
-/* Legacy exported object */
-self.SDK = self.SDK || {};
-
-/* Legacy exported object */
-SDK = SDK || {};
-
-/** @constructor */
-SDK.HeapProfilerModel = HeapProfilerModel;
-
-/** @enum {symbol} */
-SDK.HeapProfilerModel.Events = Events;
-
-SDK.SDKModel.register(SDK.HeapProfilerModel, SDK.Target.Capability.JS, false);
+SDKModel.register(HeapProfilerModel, Capability.JS, false);

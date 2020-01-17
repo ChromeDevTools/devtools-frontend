@@ -4,7 +4,7 @@
 
 const {assert} = chai;
 
-import {default as TracingModel} from '/front_end/sdk/TracingModel.js';
+import {TracingModel} from '/front_end/sdk/TracingModel.js';
 
 describe('TracingModel', () => {
   it('is able to determine if a phase is a nestable async phase', () => {

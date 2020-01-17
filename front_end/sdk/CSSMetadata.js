@@ -30,10 +30,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import {generatedProperties, generatedPropertyValues} from '../SupportedCSSProperties.js';
+
 /**
  * @unrestricted
  */
-export default class CSSMetadata {
+export class CSSMetadata {
   /**
    * @param {!Array.<!SDK.CSSMetadata.CSSPropertyDefinition>} properties
    */
@@ -84,7 +86,7 @@ export default class CSSMetadata {
     // Reads in auto-generated property names and values from blink/public/renderer/core/css/css_properties.json5
     // treats _generatedPropertyValues as basis
     const propertyValueSets = new Map();
-    for (const [propertyName, basisValueObj] of Object.entries(CSSMetadata._generatedPropertyValues)) {
+    for (const [propertyName, basisValueObj] of Object.entries(generatedPropertyValues)) {
       propertyValueSets.set(propertyName, new Set(basisValueObj.values));
     }
     // and add manually maintained map of extra prop-value pairs
@@ -376,7 +378,7 @@ export const GridAreaRowRegex = /((?:\[[\w\- ]+\]\s*)*(?:"[^"]+"|'[^']+'))[^'"\[
  */
 export function cssMetadata() {
   if (!CSSMetadata._instance) {
-    CSSMetadata._instance = new CSSMetadata(CSSMetadata._generatedProperties);
+    CSSMetadata._instance = new CSSMetadata(generatedProperties);
   }
   return CSSMetadata._instance;
 }
@@ -1149,33 +1151,3 @@ const Weight = {
 
 // Common keywords to CSS properties
 const CommonKeywords = ['auto', 'none'];
-
-/* Legacy exported object */
-self.SDK = self.SDK || {};
-
-/* Legacy exported object */
-SDK = SDK || {};
-
-/** @constructor */
-SDK.CSSMetadata = CSSMetadata;
-
-SDK.CSSMetadata.VariableRegex = VariableRegex;
-SDK.CSSMetadata.URLRegex = URLRegex;
-SDK.CSSMetadata.GridAreaRowRegex = GridAreaRowRegex;
-
-SDK.cssMetadata = cssMetadata;
-
-/**
- * @typedef {{name: string, longhands: !Array.<string>, inherited: boolean, svg: boolean}}
- */
-SDK.CSSMetadata.CSSPropertyDefinition;
-
-/**
- * @type {!Array<!SDK.CSSMetadata.CSSPropertyDefinition>}
- */
-CSSMetadata._generatedProperties;
-
-/**
- * @type {!Object.<string, {values: !Array.<string>}>}
- */
-CSSMetadata._generatedPropertyValues;

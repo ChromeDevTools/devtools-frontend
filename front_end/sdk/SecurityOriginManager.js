@@ -1,12 +1,15 @@
 // Copyright 2016 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
+import {Capability, SDKModel, Target} from './SDKModel.js';  // eslint-disable-line no-unused-vars
+
 /**
  * @unrestricted
  */
-export default class SecurityOriginManager extends SDK.SDKModel {
+export class SecurityOriginManager extends SDKModel {
   /**
-   * @param {!SDK.Target} target
+   * @param {!Target} target
    */
   constructor(target) {
     super(target);
@@ -84,17 +87,5 @@ export const Events = {
   MainSecurityOriginChanged: Symbol('MainSecurityOriginChanged')
 };
 
-/* Legacy exported object */
-self.SDK = self.SDK || {};
-
-/* Legacy exported object */
-SDK = SDK || {};
-
-/** @constructor */
-SDK.SecurityOriginManager = SecurityOriginManager;
-
-/** @enum {symbol} */
-SDK.SecurityOriginManager.Events = Events;
-
 // TODO(jarhar): this is the only usage of Capability.None. Do something about it!
-SDK.SDKModel.register(SDK.SecurityOriginManager, SDK.Target.Capability.None, false);
+SDKModel.register(SecurityOriginManager, Capability.None, false);

@@ -1,13 +1,21 @@
 // Copyright 2016 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
+import {cssMetadata, VariableRegex} from './CSSMetadata.js';
+import {CSSModel} from './CSSModel.js';        // eslint-disable-line no-unused-vars
+import {CSSProperty} from './CSSProperty.js';  // eslint-disable-line no-unused-vars
+import {CSSKeyframesRule, CSSStyleRule} from './CSSRule.js';
+import {CSSStyleDeclaration, Type} from './CSSStyleDeclaration.js';
+import {DOMNode} from './DOMModel.js';  // eslint-disable-line no-unused-vars
+
 /**
  * @unrestricted
  */
-export default class CSSMatchedStyles {
+export class CSSMatchedStyles {
   /**
-   * @param {!SDK.CSSModel} cssModel
-   * @param {!SDK.DOMNode} node
+   * @param {!CSSModel} cssModel
+   * @param {!DOMNode} node
    * @param {?Protocol.CSS.CSSStyle} inlinePayload
    * @param {?Protocol.CSS.CSSStyle} attributesPayload
    * @param {!Array.<!Protocol.CSS.RuleMatch>} matchedPayload
@@ -26,18 +34,18 @@ export default class CSSMatchedStyles {
       animationsPayload) {
     this._cssModel = cssModel;
     this._node = node;
-    /** @type {!Map<!SDK.CSSStyleDeclaration, !SDK.DOMNode>} */
+    /** @type {!Map<!CSSStyleDeclaration, !DOMNode>} */
     this._addedStyles = new Map();
     /** @type {!Map<!Protocol.DOM.NodeId, !Map<string, boolean>>} */
     this._matchingSelectors = new Map();
     this._keyframes = [];
     if (animationsPayload) {
-      this._keyframes = animationsPayload.map(rule => new SDK.CSSKeyframesRule(cssModel, rule));
+      this._keyframes = animationsPayload.map(rule => new CSSKeyframesRule(cssModel, rule));
     }
 
-    /** @type {!Map<!SDK.CSSStyleDeclaration, ?SDK.DOMNode>} */
+    /** @type {!Map<!CSSStyleDeclaration, ?DOMNode>} */
     this._nodeForStyle = new Map();
-    /** @type {!Set<!SDK.CSSStyleDeclaration>} */
+    /** @type {!Set<!CSSStyleDeclaration>} */
     this._inheritedStyles = new Set();
 
     matchedPayload = cleanUserAgentPayload(matchedPayload);
@@ -48,7 +56,7 @@ export default class CSSMatchedStyles {
     this._mainDOMCascade = this._buildMainCascade(inlinePayload, attributesPayload, matchedPayload, inheritedPayload);
     this._pseudoDOMCascades = this._buildPseudoCascades(pseudoPayload);
 
-    /** @type {!Map<!SDK.CSSStyleDeclaration, !DOMInheritanceCascade>} */
+    /** @type {!Map<!CSSStyleDeclaration, !DOMInheritanceCascade>} */
     this._styleToDOMCascade = new Map();
     for (const domCascade of Array.from(this._pseudoDOMCascades.values()).concat(this._mainDOMCascade)) {
       for (const style of domCascade.styles()) {
@@ -139,7 +147,7 @@ export default class CSSMatchedStyles {
     /** @type {!Array<!NodeCascade>} */
     const nodeCascades = [];
 
-    /** @type {!Array<!SDK.CSSStyleDeclaration>} */
+    /** @type {!Array<!CSSStyleDeclaration>} */
     const nodeStyles = [];
 
     /**
@@ -149,16 +157,14 @@ export default class CSSMatchedStyles {
       if (!attributesPayload) {
         return;
       }
-      const style =
-          new SDK.CSSStyleDeclaration(this._cssModel, null, attributesPayload, SDK.CSSStyleDeclaration.Type.Attributes);
+      const style = new CSSStyleDeclaration(this._cssModel, null, attributesPayload, Type.Attributes);
       this._nodeForStyle.set(style, this._node);
       nodeStyles.push(style);
     }
 
     // Inline style has the greatest specificity.
     if (inlinePayload && this._node.nodeType() === Node.ELEMENT_NODE) {
-      const style =
-          new SDK.CSSStyleDeclaration(this._cssModel, null, inlinePayload, SDK.CSSStyleDeclaration.Type.Inline);
+      const style = new CSSStyleDeclaration(this._cssModel, null, inlinePayload, Type.Inline);
       this._nodeForStyle.set(style, this._node);
       nodeStyles.push(style);
     }
@@ -166,7 +172,7 @@ export default class CSSMatchedStyles {
     // Add rules in reverse order to match the cascade order.
     let addedAttributesStyle;
     for (let i = matchedPayload.length - 1; i >= 0; --i) {
-      const rule = new SDK.CSSStyleRule(this._cssModel, matchedPayload[i].rule);
+      const rule = new CSSStyleRule(this._cssModel, matchedPayload[i].rule);
       if ((rule.isInjected() || rule.isUserAgent()) && !addedAttributesStyle) {
         // Show element's Style Attributes after all author rules.
         addedAttributesStyle = true;
@@ -188,8 +194,7 @@ export default class CSSMatchedStyles {
       const inheritedStyles = [];
       const entryPayload = inheritedPayload[i];
       const inheritedInlineStyle = entryPayload.inlineStyle ?
-          new SDK.CSSStyleDeclaration(
-              this._cssModel, null, entryPayload.inlineStyle, SDK.CSSStyleDeclaration.Type.Inline) :
+          new CSSStyleDeclaration(this._cssModel, null, entryPayload.inlineStyle, Type.Inline) :
           null;
       if (inheritedInlineStyle && this._containsInherited(inheritedInlineStyle)) {
         this._nodeForStyle.set(inheritedInlineStyle, parentNode);
@@ -199,7 +204,7 @@ export default class CSSMatchedStyles {
 
       const inheritedMatchedCSSRules = entryPayload.matchedCSSRules || [];
       for (let j = inheritedMatchedCSSRules.length - 1; j >= 0; --j) {
-        const inheritedRule = new SDK.CSSStyleRule(this._cssModel, inheritedMatchedCSSRules[j].rule);
+        const inheritedRule = new CSSStyleRule(this._cssModel, inheritedMatchedCSSRules[j].rule);
         this._addMatchingSelectors(parentNode, inheritedRule, inheritedMatchedCSSRules[j].matchingSelectors);
         if (!this._containsInherited(inheritedRule.style)) {
           continue;
@@ -219,7 +224,7 @@ export default class CSSMatchedStyles {
     return new DOMInheritanceCascade(nodeCascades);
 
     /**
-     * @param {!Array<!SDK.CSSStyleDeclaration>|!Set<!SDK.CSSStyleDeclaration>} styles
+     * @param {!Array<!CSSStyleDeclaration>|!Set<!SDK.CSSStyleDeclaration>} styles
      * @param {!SDK.CSSStyleDeclaration} query
      * @return {boolean}
      */
@@ -253,7 +258,7 @@ export default class CSSMatchedStyles {
       const pseudoStyles = [];
       const rules = entryPayload.matches || [];
       for (let j = rules.length - 1; j >= 0; --j) {
-        const pseudoRule = new SDK.CSSStyleRule(this._cssModel, rules[j].rule);
+        const pseudoRule = new CSSStyleRule(this._cssModel, rules[j].rule);
         pseudoStyles.push(pseudoRule.style);
         this._nodeForStyle.set(pseudoRule.style, pseudoElement);
         if (pseudoElement) {
@@ -267,8 +272,8 @@ export default class CSSMatchedStyles {
   }
 
   /**
-   * @param {!SDK.DOMNode} node
-   * @param {!SDK.CSSStyleRule} rule
+   * @param {!DOMNode} node
+   * @param {!CSSStyleRule} rule
    * @param {!Array<number>} matchingSelectorIndices
    * @this {CSSMatchedStyles}
    */
@@ -280,21 +285,21 @@ export default class CSSMatchedStyles {
   }
 
   /**
-   * @return {!SDK.DOMNode}
+   * @return {!DOMNode}
    */
   node() {
     return this._node;
   }
 
   /**
-   * @return {!SDK.CSSModel}
+   * @return {!CSSModel}
    */
   cssModel() {
     return this._cssModel;
   }
 
   /**
-   * @param {!SDK.CSSStyleRule} rule
+   * @param {!CSSStyleRule} rule
    * @return {boolean}
    */
   hasMatchingSelectors(rule) {
@@ -303,7 +308,7 @@ export default class CSSMatchedStyles {
   }
 
   /**
-   * @param {!SDK.CSSStyleRule} rule
+   * @param {!CSSStyleRule} rule
    * @return {!Array<number>}
    */
   matchingSelectors(rule) {
@@ -325,7 +330,7 @@ export default class CSSMatchedStyles {
   }
 
   /**
-   * @param {!SDK.CSSStyleRule} rule
+   * @param {!CSSStyleRule} rule
    * @return {!Promise}
    */
   recomputeMatchingSelectors(rule) {
@@ -340,7 +345,7 @@ export default class CSSMatchedStyles {
     return Promise.all(promises);
 
     /**
-     * @param {!SDK.DOMNode} node
+     * @param {!DOMNode} node
      * @param {string} selectorText
      * @this {CSSMatchedStyles}
      */
@@ -362,8 +367,8 @@ export default class CSSMatchedStyles {
   }
 
   /**
-   * @param {!SDK.CSSStyleRule} rule
-   * @param {!SDK.DOMNode} node
+   * @param {!CSSStyleRule} rule
+   * @param {!DOMNode} node
    * @return {!Promise}
    */
   addNewRule(rule, node) {
@@ -372,7 +377,7 @@ export default class CSSMatchedStyles {
   }
 
   /**
-   * @param {!SDK.DOMNode} node
+   * @param {!DOMNode} node
    * @param {string} selectorText
    * @param {boolean} value
    */
@@ -386,7 +391,7 @@ export default class CSSMatchedStyles {
   }
 
   /**
-   * @param {!SDK.CSSStyleDeclaration} style
+   * @param {!CSSStyleDeclaration} style
    * @return {boolean}
    */
   mediaMatches(style) {
@@ -400,14 +405,14 @@ export default class CSSMatchedStyles {
   }
 
   /**
-   * @return {!Array<!SDK.CSSStyleDeclaration>}
+   * @return {!Array<!CSSStyleDeclaration>}
    */
   nodeStyles() {
     return this._mainDOMCascade.styles();
   }
 
   /**
-   * @return {!Array.<!SDK.CSSKeyframesRule>}
+   * @return {!Array.<!CSSKeyframesRule>}
    */
   keyframes() {
     return this._keyframes;
@@ -415,7 +420,7 @@ export default class CSSMatchedStyles {
 
   /**
    * @param {!Protocol.DOM.PseudoType} pseudoType
-   * @return {!Array<!SDK.CSSStyleDeclaration>}
+   * @return {!Array<!CSSStyleDeclaration>}
    */
   pseudoStyles(pseudoType) {
     const domCascade = this._pseudoDOMCascades.get(pseudoType);
@@ -430,7 +435,7 @@ export default class CSSMatchedStyles {
   }
 
   /**
-   * @param {!SDK.CSSStyleDeclaration} style
+   * @param {!CSSStyleDeclaration} style
    * @return {boolean}
    */
   _containsInherited(style) {
@@ -438,7 +443,7 @@ export default class CSSMatchedStyles {
     for (let i = 0; i < properties.length; ++i) {
       const property = properties[i];
       // Does this style contain non-overridden inherited property?
-      if (property.activeInStyle() && SDK.cssMetadata().isPropertyInherited(property.name)) {
+      if (property.activeInStyle() && cssMetadata().isPropertyInherited(property.name)) {
         return true;
       }
     }
@@ -446,15 +451,15 @@ export default class CSSMatchedStyles {
   }
 
   /**
-   * @param {!SDK.CSSStyleDeclaration} style
-   * @return {?SDK.DOMNode}
+   * @param {!CSSStyleDeclaration} style
+   * @return {?DOMNode}
    */
   nodeForStyle(style) {
     return this._addedStyles.get(style) || this._nodeForStyle.get(style) || null;
   }
 
   /**
-   * @param {!SDK.CSSStyleDeclaration} style
+   * @param {!CSSStyleDeclaration} style
    * @return {!Array<string>}
    */
   availableCSSVariables(style) {
@@ -463,7 +468,7 @@ export default class CSSMatchedStyles {
   }
 
   /**
-   * @param {!SDK.CSSStyleDeclaration} style
+   * @param {!CSSStyleDeclaration} style
    * @param {string} variableName
    * @return {?string}
    */
@@ -473,7 +478,7 @@ export default class CSSMatchedStyles {
   }
 
   /**
-   * @param {!SDK.CSSStyleDeclaration} style
+   * @param {!CSSStyleDeclaration} style
    * @param {string} value
    * @return {?string}
    */
@@ -483,7 +488,7 @@ export default class CSSMatchedStyles {
   }
 
   /**
-   * @param {!SDK.CSSStyleDeclaration} style
+   * @param {!CSSStyleDeclaration} style
    * @return {boolean}
    */
   isInherited(style) {
@@ -491,7 +496,7 @@ export default class CSSMatchedStyles {
   }
 
   /**
-   * @param {!SDK.CSSProperty} property
+   * @param {!CSSProperty} property
    * @return {?PropertyState}
    */
   propertyState(property) {
@@ -510,16 +515,16 @@ export default class CSSMatchedStyles {
 class NodeCascade {
   /**
    * @param {!CSSMatchedStyles} matchedStyles
-   * @param {!Array<!SDK.CSSStyleDeclaration>} styles
+   * @param {!Array<!CSSStyleDeclaration>} styles
    * @param {boolean} isInherited
    */
   constructor(matchedStyles, styles, isInherited) {
     this._matchedStyles = matchedStyles;
     this._styles = styles;
     this._isInherited = isInherited;
-    /** @type {!Map<!SDK.CSSProperty, !PropertyState>} */
+    /** @type {!Map<!CSSProperty, !PropertyState>} */
     this._propertiesState = new Map();
-    /** @type {!Map.<string, !SDK.CSSProperty>} */
+    /** @type {!Map.<string, !CSSProperty>} */
     this._activeProperties = new Map();
   }
 
@@ -530,7 +535,7 @@ class NodeCascade {
     for (const style of this._styles) {
       const rule = style.parentRule;
       // Compute cascade for CSSStyleRules only.
-      if (rule && !(rule instanceof SDK.CSSStyleRule)) {
+      if (rule && !(rule instanceof CSSStyleRule)) {
         continue;
       }
       if (rule && !this._matchedStyles.hasMatchingSelectors(rule)) {
@@ -539,7 +544,7 @@ class NodeCascade {
 
       for (const property of style.allProperties()) {
         // Do not pick non-inherited properties from inherited styles.
-        if (this._isInherited && !SDK.cssMetadata().isPropertyInherited(property.name)) {
+        if (this._isInherited && !cssMetadata().isPropertyInherited(property.name)) {
           continue;
         }
 
@@ -548,7 +553,7 @@ class NodeCascade {
           continue;
         }
 
-        const canonicalName = SDK.cssMetadata().canonicalPropertyName(property.name);
+        const canonicalName = cssMetadata().canonicalPropertyName(property.name);
         const activeProperty = this._activeProperties.get(canonicalName);
         if (activeProperty && (activeProperty.important || !property.important)) {
           this._propertiesState.set(property, PropertyState.Overloaded);
@@ -571,7 +576,7 @@ class DOMInheritanceCascade {
    */
   constructor(nodeCascades) {
     this._nodeCascades = nodeCascades;
-    /** @type {!Map<!SDK.CSSProperty, !PropertyState>} */
+    /** @type {!Map<!CSSProperty, !PropertyState>} */
     this._propertiesState = new Map();
     /** @type {!Map<!NodeCascade, !Map<string, string>>} */
     this._availableCSSVariables = new Map();
@@ -579,7 +584,7 @@ class DOMInheritanceCascade {
     this._computedCSSVariables = new Map();
     this._initialized = false;
 
-    /** @type {!Map<!SDK.CSSStyleDeclaration, !NodeCascade>} */
+    /** @type {!Map<!CSSStyleDeclaration, !NodeCascade>} */
     this._styleToNodeCascade = new Map();
     for (const nodeCascade of nodeCascades) {
       for (const style of nodeCascade._styles) {
@@ -589,7 +594,7 @@ class DOMInheritanceCascade {
   }
 
   /**
-   * @param {!SDK.CSSStyleDeclaration} style
+   * @param {!CSSStyleDeclaration} style
    * @return {!Array<string>}
    */
   availableCSSVariables(style) {
@@ -602,7 +607,7 @@ class DOMInheritanceCascade {
   }
 
   /**
-   * @param {!SDK.CSSStyleDeclaration} style
+   * @param {!CSSStyleDeclaration} style
    * @param {string} variableName
    * @return {?string}
    */
@@ -618,7 +623,7 @@ class DOMInheritanceCascade {
   }
 
   /**
-   * @param {!SDK.CSSStyleDeclaration} style
+   * @param {!CSSStyleDeclaration} style
    * @param {string} value
    * @return {?string}
    */
@@ -661,7 +666,7 @@ class DOMInheritanceCascade {
    * @return {?string}
    */
   _innerComputeValue(availableCSSVariables, computedCSSVariables, value) {
-    const results = TextUtils.TextUtils.splitStringByRegexes(value, [SDK.CSSMetadata.VariableRegex]);
+    const results = TextUtils.TextUtils.splitStringByRegexes(value, [VariableRegex]);
     const tokens = [];
     for (const result of results) {
       if (result.regexIndex === -1) {
@@ -688,14 +693,14 @@ class DOMInheritanceCascade {
   }
 
   /**
-   * @return {!Array<!SDK.CSSStyleDeclaration>}
+   * @return {!Array<!CSSStyleDeclaration>}
    */
   styles() {
     return Array.from(this._styleToNodeCascade.keys());
   }
 
   /**
-   * @param {!SDK.CSSProperty} property
+   * @param {!CSSProperty} property
    * @return {?PropertyState}
    */
   propertyState(property) {
@@ -720,13 +725,13 @@ class DOMInheritanceCascade {
     for (const nodeCascade of this._nodeCascades) {
       nodeCascade._computeActiveProperties();
       for (const entry of nodeCascade._propertiesState.entries()) {
-        const property = /** @type {!SDK.CSSProperty} */ (entry[0]);
+        const property = /** @type {!CSSProperty} */ (entry[0]);
         const state = /** @type {!PropertyState} */ (entry[1]);
         if (state === PropertyState.Overloaded) {
           this._propertiesState.set(property, PropertyState.Overloaded);
           continue;
         }
-        const canonicalName = SDK.cssMetadata().canonicalPropertyName(property.name);
+        const canonicalName = cssMetadata().canonicalPropertyName(property.name);
         if (activeProperties.has(canonicalName)) {
           this._propertiesState.set(property, PropertyState.Overloaded);
           continue;
@@ -738,7 +743,7 @@ class DOMInheritanceCascade {
     // If every longhand of the shorthand is not active, then the shorthand is not active too.
     for (const entry of activeProperties.entries()) {
       const canonicalName = /** @type {string} */ (entry[0]);
-      const shorthandProperty = /** @type {!SDK.CSSProperty} */ (entry[1]);
+      const shorthandProperty = /** @type {!CSSProperty} */ (entry[1]);
       const shorthandStyle = shorthandProperty.ownerStyle;
       const longhands = shorthandStyle.longhandProperties(shorthandProperty.name);
       if (!longhands.length) {
@@ -746,7 +751,7 @@ class DOMInheritanceCascade {
       }
       let hasActiveLonghands = false;
       for (const longhand of longhands) {
-        const longhandCanonicalName = SDK.cssMetadata().canonicalPropertyName(longhand.name);
+        const longhandCanonicalName = cssMetadata().canonicalPropertyName(longhand.name);
         const longhandActiveProperty = activeProperties.get(longhandCanonicalName);
         if (!longhandActiveProperty) {
           continue;
@@ -769,7 +774,7 @@ class DOMInheritanceCascade {
       const nodeCascade = this._nodeCascades[i];
       for (const entry of nodeCascade._activeProperties.entries()) {
         const propertyName = /** @type {string} */ (entry[0]);
-        const property = /** @type {!SDK.CSSProperty} */ (entry[1]);
+        const property = /** @type {!CSSProperty} */ (entry[1]);
         if (propertyName.startsWith('--')) {
           accumulatedCSSVariables.set(propertyName, property.value);
         }
@@ -785,15 +790,3 @@ export const PropertyState = {
   Active: 'Active',
   Overloaded: 'Overloaded'
 };
-
-/* Legacy exported object */
-self.SDK = self.SDK || {};
-
-/* Legacy exported object */
-SDK = SDK || {};
-
-/** @constructor */
-SDK.CSSMatchedStyles = CSSMatchedStyles;
-
-/** @enum {string} */
-SDK.CSSMatchedStyles.PropertyState = PropertyState;

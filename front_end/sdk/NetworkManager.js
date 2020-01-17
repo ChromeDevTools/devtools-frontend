@@ -28,12 +28,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import {Cookie} from './Cookie.js';
+import {Events as NetworkRequestEvents, NetworkRequest} from './NetworkRequest.js';
+import {Capability, SDKModel, SDKModelObserver, Target} from './SDKModel.js';  // eslint-disable-line no-unused-vars
+
 /**
  * @unrestricted
  */
-export default class NetworkManager extends SDK.SDKModel {
+export class NetworkManager extends SDKModel {
   /**
-   * @param {!SDK.Target} target
+   * @param {!Target} target
    */
   constructor(target) {
     super(target);
@@ -56,7 +60,7 @@ export default class NetworkManager extends SDK.SDKModel {
   }
 
   /**
-   * @param {!SDK.NetworkRequest} request
+   * @param {!NetworkRequest} request
    * @return {?NetworkManager}
    */
   static forRequest(request) {
@@ -64,7 +68,7 @@ export default class NetworkManager extends SDK.SDKModel {
   }
 
   /**
-   * @param {!SDK.NetworkRequest} request
+   * @param {!NetworkRequest} request
    * @return {boolean}
    */
   static canReplayRequest(request) {
@@ -72,7 +76,7 @@ export default class NetworkManager extends SDK.SDKModel {
   }
 
   /**
-   * @param {!SDK.NetworkRequest} request
+   * @param {!NetworkRequest} request
    */
   static replayRequest(request) {
     const manager = request[_networkManagerForRequestSymbol];
@@ -83,7 +87,7 @@ export default class NetworkManager extends SDK.SDKModel {
   }
 
   /**
-   * @param {!SDK.NetworkRequest} request
+   * @param {!NetworkRequest} request
    * @param {string} query
    * @param {boolean} caseSensitive
    * @param {boolean} isRegex
@@ -100,7 +104,7 @@ export default class NetworkManager extends SDK.SDKModel {
   }
 
   /**
-   * @param {!SDK.NetworkRequest} request
+   * @param {!NetworkRequest} request
    * @return {!Promise<!SDK.NetworkRequest.ContentData>}
    */
   static async requestContentData(request) {
@@ -108,7 +112,7 @@ export default class NetworkManager extends SDK.SDKModel {
       return {error: 'Content for WebSockets is currently not supported', content: null, encoded: false};
     }
     if (!request.finished) {
-      await request.once(SDK.NetworkRequest.Events.FinishedLoading);
+      await request.once(NetworkRequestEvents.FinishedLoading);
     }
     const manager = NetworkManager.forRequest(request);
     if (!manager) {
@@ -120,7 +124,7 @@ export default class NetworkManager extends SDK.SDKModel {
   }
 
   /**
-   * @param {!SDK.NetworkRequest} request
+   * @param {!NetworkRequest} request
    * @return {!Promise<?string>}
    */
   static requestPostData(request) {
@@ -174,7 +178,7 @@ export default class NetworkManager extends SDK.SDKModel {
 
   /**
    * @param {string} url
-   * @return {!SDK.NetworkRequest}
+   * @return {!NetworkRequest}
    */
   inflightRequestForURL(url) {
     return this._dispatcher._inflightRequestsByURL[url];
@@ -269,9 +273,9 @@ export class NetworkDispatcher {
    */
   constructor(manager) {
     this._manager = manager;
-    /** @type {!Object<!Protocol.Network.RequestId, !SDK.NetworkRequest>} */
+    /** @type {!Object<!Protocol.Network.RequestId, !NetworkRequest>} */
     this._inflightRequestsById = {};
-    /** @type {!Object<string, !SDK.NetworkRequest>} */
+    /** @type {!Object<string, !NetworkRequest>} */
     this._inflightRequestsByURL = {};
     /** @type {!Map<string, !RedirectExtraInfoBuilder>} */
     this._requestIdToRedirectExtraInfoBuilder = new Map();
@@ -293,7 +297,7 @@ export class NetworkDispatcher {
   }
 
   /**
-   * @param {!SDK.NetworkRequest} networkRequest
+   * @param {!NetworkRequest} networkRequest
    * @param {!Protocol.Network.Request} request
    */
   _updateNetworkRequestWithRequest(networkRequest, request) {
@@ -306,7 +310,7 @@ export class NetworkDispatcher {
   }
 
   /**
-   * @param {!SDK.NetworkRequest} networkRequest
+   * @param {!NetworkRequest} networkRequest
    * @param {!Protocol.Network.Response=} response
    */
   _updateNetworkRequestWithResponse(networkRequest, response) {
@@ -370,7 +374,7 @@ export class NetworkDispatcher {
   }
 
   /**
-   * @param {!SDK.NetworkRequest} networkRequest
+   * @param {!NetworkRequest} networkRequest
    * @return {boolean}
    */
   _mimeTypeIsConsistentWithType(networkRequest) {
@@ -642,7 +646,7 @@ export class NetworkDispatcher {
    * @param {!Protocol.Network.Initiator=} initiator
    */
   webSocketCreated(requestId, requestURL, initiator) {
-    const networkRequest = new SDK.NetworkRequest(requestId, requestURL, '', '', '', initiator || null);
+    const networkRequest = new NetworkRequest(requestId, requestURL, '', '', '', initiator || null);
     networkRequest[_networkManagerForRequestSymbol] = this._manager;
     networkRequest.setResourceType(Common.resourceTypes.WebSocket);
     this._startNetworkRequest(networkRequest);
@@ -812,10 +816,7 @@ export class NetworkDispatcher {
     /** @type {!SDK.NetworkRequest.ExtraRequestInfo} */
     const extraRequestInfo = {
       blockedRequestCookies: blockedCookies.map(blockedCookie => {
-        return {
-          blockedReasons: blockedCookie.blockedReasons,
-          cookie: SDK.Cookie.fromProtocolCookie(blockedCookie.cookie)
-        };
+        return {blockedReasons: blockedCookie.blockedReasons, cookie: Cookie.fromProtocolCookie(blockedCookie.cookie)};
       }),
       requestHeaders: this._headersMapToHeadersArray(headers)
     };
@@ -836,7 +837,7 @@ export class NetworkDispatcher {
         return {
           blockedReasons: blockedCookie.blockedReasons,
           cookieLine: blockedCookie.cookieLine,
-          cookie: blockedCookie.cookie ? SDK.Cookie.fromProtocolCookie(blockedCookie.cookie) : null
+          cookie: blockedCookie.cookie ? Cookie.fromProtocolCookie(blockedCookie.cookie) : null
         };
       }),
       responseHeaders: this._headersMapToHeadersArray(headers),
@@ -873,7 +874,7 @@ export class NetworkDispatcher {
    * @param {!Protocol.Network.RequestId} requestId
    * @param {!Protocol.Network.MonotonicTime} time
    * @param {string} redirectURL
-   * @return {!SDK.NetworkRequest}
+   * @return {!NetworkRequest}
    */
   _appendRedirect(requestId, time, redirectURL) {
     const originalNetworkRequest = this._inflightRequestsById[requestId];
@@ -894,7 +895,7 @@ export class NetworkDispatcher {
 
   /**
    * @param {string} requestId
-   * @return {?SDK.NetworkRequest}
+   * @return {?NetworkRequest}
    */
   _maybeAdoptMainResourceRequest(requestId) {
     const request = SDK.multitargetNetworkManager._inflightMainResourceRequests.get(requestId);
@@ -911,7 +912,7 @@ export class NetworkDispatcher {
   }
 
   /**
-   * @param {!SDK.NetworkRequest} networkRequest
+   * @param {!NetworkRequest} networkRequest
    */
   _startNetworkRequest(networkRequest) {
     this._inflightRequestsById[networkRequest.requestId()] = networkRequest;
@@ -926,14 +927,14 @@ export class NetworkDispatcher {
   }
 
   /**
-   * @param {!SDK.NetworkRequest} networkRequest
+   * @param {!NetworkRequest} networkRequest
    */
   _updateNetworkRequest(networkRequest) {
     this._manager.dispatchEventToListeners(Events.RequestUpdated, networkRequest);
   }
 
   /**
-   * @param {!SDK.NetworkRequest} networkRequest
+   * @param {!NetworkRequest} networkRequest
    * @param {!Protocol.Network.MonotonicTime} finishTime
    * @param {number} encodedDataLength
    * @param {boolean=} shouldReportCorbBlocking
@@ -992,14 +993,14 @@ export class NetworkDispatcher {
    * @param {?Protocol.Network.Initiator} initiator
    */
   _createNetworkRequest(requestId, frameId, loaderId, url, documentURL, initiator) {
-    const request = new SDK.NetworkRequest(requestId, url, documentURL, frameId, loaderId, initiator);
+    const request = new NetworkRequest(requestId, url, documentURL, frameId, loaderId, initiator);
     request[_networkManagerForRequestSymbol] = this._manager;
     return request;
   }
 }
 
 /**
- * @implements {SDK.SDKModelObserver<!NetworkManager>}
+ * @implements {SDKModelObserver<!NetworkManager>}
  * @unrestricted
  */
 export class MultitargetNetworkManager extends Common.Object {
@@ -1008,7 +1009,7 @@ export class MultitargetNetworkManager extends Common.Object {
     this._userAgentOverride = '';
     /** @type {!Set<!Protocol.NetworkAgent>} */
     this._agents = new Set();
-    /** @type {!Map<string, !SDK.NetworkRequest>} */
+    /** @type {!Map<string, !NetworkRequest>} */
     this._inflightMainResourceRequests = new Map();
     /** @type {!SDK.NetworkManager.Conditions} */
     this._networkConditions = NoThrottlingConditions;
@@ -1075,7 +1076,7 @@ export class MultitargetNetworkManager extends Common.Object {
    */
   modelRemoved(networkManager) {
     for (const entry of this._inflightMainResourceRequests) {
-      const manager = NetworkManager.forRequest(/** @type {!SDK.NetworkRequest} */ (entry[1]));
+      const manager = NetworkManager.forRequest(/** @type {!NetworkRequest} */ (entry[1]));
       if (manager !== networkManager) {
         continue;
       }
@@ -1474,7 +1475,7 @@ class RedirectExtraInfoBuilder {
    * @param {function()} deleteCallback
    */
   constructor(deleteCallback) {
-    /** @type {!Array<!SDK.NetworkRequest>} */
+    /** @type {!Array<!NetworkRequest>} */
     this._requests = [];
     /** @type {!Array<?SDK.NetworkRequest.ExtraRequestInfo>} */
     this._requestExtraInfos = [];
@@ -1489,7 +1490,7 @@ class RedirectExtraInfoBuilder {
   }
 
   /**
-   * @param {!SDK.NetworkRequest} req
+   * @param {!NetworkRequest} req
    */
   addRequest(req) {
     this._requests.push(req);
@@ -1558,64 +1559,4 @@ class RedirectExtraInfoBuilder {
   }
 }
 
-/* Legacy exported object */
-self.SDK = self.SDK || {};
-
-/* Legacy exported object */
-SDK = SDK || {};
-
-/** @constructor */
-SDK.NetworkManager = NetworkManager;
-
-/** @enum {symbol} */
-SDK.NetworkManager.Events = Events;
-
-/** @type {!SDK.NetworkManager.Conditions} */
-SDK.NetworkManager.NoThrottlingConditions = NoThrottlingConditions;
-
-/** @type {!SDK.NetworkManager.Conditions} */
-SDK.NetworkManager.OfflineConditions = OfflineConditions;
-
-/** @type {!SDK.NetworkManager.Conditions} */
-SDK.NetworkManager.Slow3GConditions = Slow3GConditions;
-
-/** @type {!SDK.NetworkManager.Conditions} */
-SDK.NetworkManager.Fast3GConditions = Fast3GConditions;
-
-/** @constructor */
-SDK.NetworkDispatcher = NetworkDispatcher;
-
-/** @constructor */
-SDK.MultitargetNetworkManager = MultitargetNetworkManager;
-
-/** @constructor */
-SDK.MultitargetNetworkManager.InterceptedRequest = InterceptedRequest;
-
-/** @typedef {{url: string, enabled: boolean}} */
-SDK.NetworkManager.BlockedPattern;
-
-/**
- * @typedef {{
-  *   download: number,
-  *   upload: number,
-  *   latency: number,
-  *   title: string,
-  * }}
-  */
-SDK.NetworkManager.Conditions;
-
-/** @typedef {{message: string, requestId: string, warning: boolean}} */
-SDK.NetworkManager.Message;
-
-/** @typedef {!{urlPattern: string, interceptionStage: !Protocol.Network.InterceptionStage}} */
-SDK.MultitargetNetworkManager.InterceptionPattern;
-
-/** @typedef {!function(!InterceptedRequest):!Promise} */
-SDK.MultitargetNetworkManager.RequestInterceptor;
-
-/**
- * @type {!MultitargetNetworkManager}
- */
-SDK.multitargetNetworkManager;
-
-SDK.SDKModel.register(SDK.NetworkManager, SDK.Target.Capability.Network, true);
+SDKModel.register(NetworkManager, Capability.Network, true);

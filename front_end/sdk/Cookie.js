@@ -25,7 +25,7 @@ export class Cookie {
 
   /**
      * @param {!Protocol.Network.Cookie} protocolCookie
-     * @return {!SDK.Cookie}
+     * @return {!Cookie}
      */
   static fromProtocolCookie(protocolCookie) {
     const cookie = new Cookie(protocolCookie.name, protocolCookie.value, null, protocolCookie.priority);
@@ -242,22 +242,3 @@ export const Attributes = {
   SameSite: 'sameSite',
   Priority: 'priority',
 };
-
-/* Legacy exported object */
-self.SDK = self.SDK || {};
-
-/* Legacy exported object */
-SDK = SDK || {};
-
-/** @constructor */
-SDK.Cookie = Cookie;
-
-/**
- * @enum {number}
- */
-SDK.Cookie.Type = Type;
-
-/**
- * @enum {string}
- */
-SDK.Cookie.Attributes = Attributes;

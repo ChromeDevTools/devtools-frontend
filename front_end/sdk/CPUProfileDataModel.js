@@ -1,10 +1,14 @@
 // Copyright 2014 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
+import {ProfileNode, ProfileTreeModel} from './ProfileTreeModel.js';
+import {Target} from './SDKModel.js';  // eslint-disable-line no-unused-vars
+
 /**
  * @unrestricted
  */
-export class CPUProfileNode extends SDK.ProfileNode {
+export class CPUProfileNode extends ProfileNode {
   /**
    * @param {!Protocol.Profiler.ProfileNode} node
    * @param {number} sampleTime
@@ -30,10 +34,10 @@ export class CPUProfileNode extends SDK.ProfileNode {
 /**
  * @unrestricted
  */
-export default class CPUProfileDataModel extends SDK.ProfileTreeModel {
+export class CPUProfileDataModel extends ProfileTreeModel {
   /**
    * @param {!Protocol.Profiler.Profile} profile
-   * @param {?SDK.Target} target
+   * @param {?Target} target
    */
   constructor(profile, target) {
     super(target);
@@ -314,7 +318,7 @@ export default class CPUProfileDataModel extends SDK.ProfileTreeModel {
       Common.console.warn(ls`DevTools: CPU profile parser is fixing ${count} missing samples.`);
     }
     /**
-     * @param {!SDK.ProfileNode} node
+     * @param {!ProfileNode} node
      * @return {!SDK.ProfileNode}
      */
     function bottomNode(node) {
@@ -465,15 +469,3 @@ export default class CPUProfileDataModel extends SDK.ProfileTreeModel {
     return this._idToNode.get(this.samples[index]) || null;
   }
 }
-
-/* Legacy exported object */
-self.SDK = self.SDK || {};
-
-/* Legacy exported object */
-SDK = SDK || {};
-
-/** @constructor */
-SDK.CPUProfileDataModel = CPUProfileDataModel;
-
-/** @constructor */
-SDK.CPUProfileNode = CPUProfileNode;

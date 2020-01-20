@@ -33,7 +33,7 @@ def try_builder(**kvargs):
   )
   try_builders.append(kvargs['name'])
 
-def presubmit_builder(name, dimensions):
+def presubmit_builder(name, dimensions, **kvargs):
   try_builder(
     name=name,
     recipe_name="run_presubmit",
@@ -44,6 +44,7 @@ def presubmit_builder(name, dimensions):
     },
     priority=25,
     execution_timeout=5 * time.minute,
+    **kvargs
   )
 
 presubmit_builder(
@@ -106,11 +107,17 @@ cq_retry_config=cq.retry_config(
 )
 
 cq_master_builders=[
-  ('devtools_frontend_linux_blink_light_rel'),
-  ('devtools_frontend_linux_rel'),
-  ('devtools_frontend_presubmit'),
-  ('dtf_presubmit_win64')
+  'devtools_frontend_linux_blink_light_rel',
+  'devtools_frontend_linux_rel',
+  'devtools_frontend_presubmit',
+  'dtf_presubmit_win64'
 ]
+
+def experiment_builder(builder):
+  if builder == 'dtf_presubmit_win64':
+    return 100
+  else:
+    return None
 
 luci.cq_group(
   name="master",
@@ -124,7 +131,8 @@ luci.cq_group(
   verifiers=[
     luci.cq_tryjob_verifier(
         builder=builder,
-        disable_reuse=("presubmit" in builder)
+        disable_reuse=("presubmit" in builder),
+        experiment_percentage=experiment_builder(builder)
     ) for builder in cq_master_builders
   ],
 )

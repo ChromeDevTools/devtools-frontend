@@ -16,7 +16,7 @@ Media.EventDisplayColumnConfig;
 /**
  * @typedef {{
  *     name: string,
- *     value: string,
+ *     value: *,
  *     timestamp: (number|string|undefined),
  *     displayTimestamp: string
  * }}
@@ -50,7 +50,7 @@ Media.EventNode = class extends DataGrid.SortableDataGridNode {
     const cell = this.createTD(columnId);
     const cellData = /** @type string */ (this.data[columnId]);
     if (columnId === Media.MediaEventColumnKeys.Value) {
-      const area = new SourceFrame.JSONView(new SourceFrame.ParsedJSON(JSON.parse(cellData), '', ''), true);
+      const area = new SourceFrame.JSONView(new SourceFrame.ParsedJSON(cellData, '', ''), true);
       area.markAsRoot();
       area.show(cell);
     } else {
@@ -152,12 +152,26 @@ Media.PlayerEventsView = class extends UI.VBox {
    * @param {!Media.Event} event
    */
   addEvent(event) {
-    const json = JSON.parse(event.value);
-    event.event = json.event;
-    delete json['event'];
-    event.value = JSON.stringify(json);
-    const node = new Media.EventNode(event);
-    this._dataGrid.rootNode().insertChildOrdered(node);
+    if (event.type === 'triggeredEvent') {
+      // New-style events have 'triggeredEvent' as their type, where older ones
+      // use 'systemEvent'.
+      const stringified = /** @type {string} */ (event.value);
+      const json = JSON.parse(stringified);
+      event.event = json.event;
+      delete json['event'];
+      event.value = json;
+      const node = new Media.EventNode(event);
+      this._dataGrid.rootNode().insertChildOrdered(node);
+    }
+
+    if (event.type === 'systemEvent') {
+      // TODO(tmathmeyer) delete this block when
+      // https://chromium-review.googlesource.com/c/chromium/src/+/2006249
+      // is merged.
+      event.event = event.name;
+      const node = new Media.EventNode(event);
+      this._dataGrid.rootNode().insertChildOrdered(node);
+    }
   }
 
   /**

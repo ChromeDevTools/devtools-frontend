@@ -124,7 +124,7 @@ Media.PlayerListView = class extends UI.VBox {
       for (const change of changes) {
         // Sometimes frame_title can be an empty string.
         if (change.name === 'frame_title' && change.value) {
-          this.setMediaElementPlayerTitle(playerID, change.value, false);
+          this.setMediaElementPlayerTitle(playerID, /** @type {string} */ (change.value), false);
         }
 
         if (change.name === 'frame_url') {

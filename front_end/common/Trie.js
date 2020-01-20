@@ -7,6 +7,19 @@
  */
 export class Trie {
   constructor() {
+    /** @type {number} */
+    this._size;
+    /** @type {number} */
+    this._root = 0;
+    /** @type {!Array<!Object<string, number>>} */
+    this._edges;
+    /** @type {!Array<boolean>} */
+    this._isWord;
+    /** @type {!Array<number>} */
+    this._wordsInSubtree;
+    /** @type {!Array<number>} */
+    this._freeNodes;
+
     this.clear();
   }
 
@@ -22,12 +35,12 @@ export class Trie {
       if (!next) {
         if (this._freeNodes.length) {
           // No need to reset any fields since they were properly cleaned up in remove().
-          next = this._freeNodes.pop();
+          next = /** @type {number} */ (this._freeNodes.pop());
         } else {
           next = this._size++;
           this._isWord.push(false);
           this._wordsInSubtree.push(0);
-          this._edges.push({__proto__: null});
+          this._edges.push(/** @type {?} */ ({__proto__: null}));
         }
         this._edges[node][edge] = next;
       }
@@ -88,6 +101,7 @@ export class Trie {
         return [];
       }
     }
+    /** @type {!Array<string>} */
     const results = [];
     this._dfs(node, prefix, results);
     return results;
@@ -132,7 +146,7 @@ export class Trie {
     this._size = 1;
     this._root = 0;
     /** @type {!Array<!Object<string, number>>} */
-    this._edges = [{__proto__: null}];
+    this._edges = [/** @type {?} */ ({__proto__: null})];
     /** @type {!Array<boolean>} */
     this._isWord = [false];
     /** @type {!Array<number>} */

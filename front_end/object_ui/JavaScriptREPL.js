@@ -64,7 +64,8 @@ export class JavaScriptREPL {
       throwOnSideEffect: throwOnSideEffect,
       timeout: timeout,
       objectGroup: objectGroup,
-      disableBreaks: true
+      disableBreaks: true,
+      replMode: true
     };
     const result = await executionContext.evaluate(options, false /* userGesture */, false /* awaitPromise */);
     const preview = JavaScriptREPL._buildEvaluationPreview(result, allowErrors);

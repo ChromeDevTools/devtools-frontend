@@ -33,7 +33,7 @@ def try_builder(**kvargs):
   )
   try_builders.append(kvargs['name'])
 
-def presubmit_builder(name, dimensions):
+def presubmit_builder(name, dimensions, **kvargs):
   try_builder(
     name=name,
     recipe_name="run_presubmit",
@@ -44,6 +44,7 @@ def presubmit_builder(name, dimensions):
     },
     priority=25,
     execution_timeout=5 * time.minute,
+    **kvargs
   )
 
 presubmit_builder(
@@ -54,6 +55,7 @@ presubmit_builder(
 presubmit_builder(
   name="dtf_presubmit_win64",
   dimensions=dimensions.win10,
+  experimental=True,
 )
 
 try_builder(

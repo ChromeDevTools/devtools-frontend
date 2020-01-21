@@ -1153,7 +1153,9 @@ export class HeapSnapshotProfileType extends ProfileType {
         `Treat global objects as roots (recommended, unchecking this exposes internal nodes and introduces excessive detail, but might help debugging cycles in retaining paths)`,
         this._treatGlobalObjectsAsRoots, true);
         this._customContent = /** @type {!UI.CheckboxLabel} */ (checkboxSetting);
-        return checkboxSetting;
+        const showOptionToNotTreatGlobalObjectsAsRoots =
+            Root.Runtime.experiments.isEnabled('showOptionToNotTreatGlobalObjectsAsRoots');
+        return showOptionToNotTreatGlobalObjectsAsRoots ? checkboxSetting : null;
   }
 
   /**

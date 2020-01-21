@@ -135,6 +135,9 @@ export class MainImpl {
     Root.Runtime.experiments.register(
         'recordCoverageWithPerformanceTracing', 'Record coverage while performance tracing');
     Root.Runtime.experiments.register('samplingHeapProfilerTimeline', 'Sampling heap profiler timeline', true);
+    Root.Runtime.experiments.register(
+        'showOptionToNotTreatGlobalObjectsAsRoots',
+        'Show option to take heap snapshot where globals are not treated as root');
     Root.Runtime.experiments.register('sourceDiff', 'Source diff');
     Root.Runtime.experiments.register('spotlight', 'Spotlight', true);
 

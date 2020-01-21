@@ -28,6 +28,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import {ResourceLoader} from '../host/ResourceLoader.js';  // eslint-disable-line no-unused-vars
+
 import {Cookie} from './Cookie.js';
 import {Events as NetworkRequestEvents, NetworkRequest} from './NetworkRequest.js';
 import {Capability, SDKModel, SDKModelObserver, Target} from './SDKModel.js';  // eslint-disable-line no-unused-vars
@@ -1333,7 +1335,7 @@ export class MultitargetNetworkManager extends Common.Object {
 
   /**
    * @param {string} url
-   * @param {function(number, !Object.<string, string>, string, number)} callback
+   * @param {function(boolean, !Object.<string, string>, string, !ResourceLoader.LoadErrorDescription)} callback
    */
   loadResource(url, callback) {
     const headers = {};

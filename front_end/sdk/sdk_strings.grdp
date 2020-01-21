@@ -81,9 +81,6 @@
   <message name="IDS_DEVTOOLS_5e53467e9b005376370c28e92b42b6f5" desc="Title of a setting under the Rendering drawer that can be invoked through the Command Menu">
     Emulate CSS prefers-reduced-motion: reduce
   </message>
-  <message name="IDS_DEVTOOLS_66c8faee22c98da5169a40a63299f993" desc="Error message when failing to load a source map text via the network">
-    Could not load content for <ph name="SOURCEMAPURL">$1s<ex>https://example.com</ex></ph><ph name="INTERNALERROR">$2s<ex> error code 15</ex></ph>
-  </message>
   <message name="IDS_DEVTOOLS_685c645cb0cb322c5b9989eb12bada19" desc="Title of a setting under the Rendering drawer that can be invoked through the Command Menu">
     Emulate CSS media feature prefers-color-scheme
   </message>
@@ -207,6 +204,9 @@
   <message name="IDS_DEVTOOLS_7121afd196f5c52bef488d5a0f4c097b" desc="Text in the Event Listener Breakpoints Panel of the JavaScript Debugger in the Sources Panel">
     Script First Statement
   </message>
+  <message name="IDS_DEVTOOLS_716ddf802d9b9ee6899a47025e38bff7" desc="Error message when failing to fetch a resource referenced in a source map">
+    Could not load content for <ph name="THIS__SOURCEURL">$1s<ex>https://example.com/sourcemap.map</ex></ph> (<ph name="ERRORMESSAGE">$2s<ex>An error occurred</ex></ph>)
+  </message>
   <message name="IDS_DEVTOOLS_73329564760013a7824ff9d5d1af91ff" desc="Service worker version status displayed in the Threads view of the Debugging side pane in the Sources panel">
     installed
   </message>
@@ -278,9 +278,6 @@
   </message>
   <message name="IDS_DEVTOOLS_a1595abbb4c3a326636dd178757cd6c1" desc="Text in DOMDebugger Model">
     Control
-  </message>
-  <message name="IDS_DEVTOOLS_a4fde38e56094c9fa87b2d9079dad5b4" desc="Error message when failing to load a source map text via the network">
-    ''' (HTTP status code: <ph name="STATUSCODE"><ex>404</ex>$1s</ph>, net error code <ph name="NETERROR"><ex>-202</ex>$2s</ph>)
   </message>
   <message name="IDS_DEVTOOLS_a720fc15eb9ec85751969e8615ace9e1" desc="Text in Server Timing">
     Duplicate parameter &quot;<ph name="PARAMNAME">$1s<ex>https</ex></ph>&quot; ignored.
@@ -390,9 +387,6 @@
   <message name="IDS_DEVTOOLS_edb020d2175281d94054136e09a3e132" desc="Title of a setting under the Debugger category that can be invoked through the Command Menu">
     Do not pause on exceptions
   </message>
-  <message name="IDS_DEVTOOLS_ef2d5ca3248aaeb464b086e633f79d5b" desc="Error message when failing to load a script source text via the network">
-    Could not load content for <ph name="THIS__SOURCEURL"><ex>https://example.com</ex>$1s</ph> (HTTP status code: <ph name="STATUSCODE"><ex>404</ex>$2s</ph>, net error code <ph name="NETERROR"><ex>-202</ex>$3s</ph>)
-  </message>
   <message name="IDS_DEVTOOLS_efa547f7d0b9924fdc7b301838c99fad" desc="A drop-down menu option to do not emulate css media type">
     No emulation
   </message>
@@ -416,6 +410,9 @@
   </message>
   <message name="IDS_DEVTOOLS_f7531e2d0ea27233ce00b5f01c5bf335" desc="A drop-down menu option to emulate css print media type">
     print
+  </message>
+  <message name="IDS_DEVTOOLS_b507642e29a193b6853843992eef8c10" desc="Error message when failing to load a source map text via the network">
+    Could not load content for <ph name="SOURCEMAPURL">$1s<ex>https://example.com/sourcemap.map</ex></ph>: <ph name="ERRORMESSAGE">$2s<ex>A certificate error occured</ex></ph>
   </message>
   <message name="IDS_DEVTOOLS_f9778c8e7464e4bb037ec2463879588f" desc="Text in DOMDebugger Model">
     DOM Mutation

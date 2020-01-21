@@ -133,8 +133,6 @@ export class MainImpl {
     Root.Runtime.experiments.register('nativeHeapProfiler', 'Native memory sampling heap profiler', true);
     Root.Runtime.experiments.register('protocolMonitor', 'Protocol Monitor');
     Root.Runtime.experiments.register(
-        'reportInternalNetErrorOnSourceMapLoadFail', 'Report internal net error code when a SourceMap fails to load');
-    Root.Runtime.experiments.register(
         'recordCoverageWithPerformanceTracing', 'Record coverage while performance tracing');
     Root.Runtime.experiments.register('samplingHeapProfilerTimeline', 'Sampling heap profiler timeline', true);
     Root.Runtime.experiments.register('sourceDiff', 'Source diff');

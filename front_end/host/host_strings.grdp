@@ -1,6 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <grit-part>
+  <message name="IDS_DEVTOOLS_1f651ab3d2499f9ec45d86440334683e" desc="Name of an error category used in error messages">
+    HTTP error
+  </message>
+  <message name="IDS_DEVTOOLS_2e92ae79ff32b37fee4368a594792183" desc="Name of an error category used in error messages">
+    Connection error
+  </message>
   <message name="IDS_DEVTOOLS_92bb7e733a12d24684262f046afcc2fd" desc="Document title in Inspector Frontend Host of the DevTools window">
     <ph name="LOCKED_1">DevTools</ph> - <ph name="URL_REPLACE___HTTPS____________">$1s<ex>example.com</ex></ph>
+  </message>
+  <message name="IDS_DEVTOOLS_92e49dde8a851253ae32a85677e834df" desc="Phrase used in error messages that carry a network error name">
+    HTTP error: status code <ph name="STATUSCODE">$1s<ex>404</ex></ph>, <ph name="NETERRORNAME">$2s<ex>net::ERR_INSUFFICIENT_RESOURCES</ex></ph>
+  </message>
+  <message name="IDS_DEVTOOLS_9c9fc26f84098ba85cdf3397fd8184c7" desc="Name of an error category used in error messages">
+    Cache error
+  </message>
+  <message name="IDS_DEVTOOLS_a1bd59ccc3b0879f006fc81bce5cbde9" desc="Name of an error category used in error messages">
+    System error
+  </message>
+  <message name="IDS_DEVTOOLS_a811fec555556024e2175b487a9e6c21" desc="Name of an error category used in error messages">
+    DNS resolver error
+  </message>
+  <message name="IDS_DEVTOOLS_a900fc2e67bbbc74a2ce79242906b842" desc="Name of an error category used in error messages">
+    FTP error
+  </message>
+  <message name="IDS_DEVTOOLS_aee9784c03b80d38d3271cde2b252b8d" desc="Name of an error category used in error messages">
+    Unknown error
+  </message>
+  <message name="IDS_DEVTOOLS_bf945532466a63b144bf9ad4dc26bde9" desc="Name of an error category used in error messages">
+    Decoding Data URL failed
+  </message>
+  <message name="IDS_DEVTOOLS_c97758a89070ad6146a7f57496d58122" desc="Name of an error category used in error messages">
+    Certificate error
+  </message>
+  <message name="IDS_DEVTOOLS_d8075977a0e561aef111639b8cd9e409" desc="Name of an error category used in error messages">
+    Certificate manager error
+  </message>
+  <message name="IDS_DEVTOOLS_e9dc27efa61d173b27795e7a83db3b7d" desc="Name of an error category used in error messages">
+    Signed Exchange error
+  </message>
+  <message name="IDS_DEVTOOLS_f9c7939a8397ee022fefee2bdb3407af" desc="Name of an error category used in error messages">
+    Invalid URL
   </message>
 </grit-part>

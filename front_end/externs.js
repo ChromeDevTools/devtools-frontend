@@ -1503,7 +1503,11 @@ InspectorFrontendHostAPI.ContextMenuDescriptor;
 /** @typedef
 {{
     statusCode: number,
-    headers: (!Object.<string, string>|undefined)
+    headers: (!Object.<string, string>|undefined),
+    netError: (number|undefined),
+    netErrorName: (string|undefined),
+    urlValid: (boolean|undefined),
+    messageOverride: (string|undefined)
 }} */
 InspectorFrontendHostAPI.LoadNetworkResourceResult;
 

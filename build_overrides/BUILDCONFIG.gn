@@ -40,11 +40,6 @@ declare_args() {
   # every toolchain can pass through the "global" value via toolchain_args().
   host_toolchain = ""
 
-  # Needed to properly resolve the locations for the TypeScript build system
-  # when we are building for DevTools only. This arg will not be defined in
-  # Chromium itself.
-  use_devtools_typescript = true
-
   # DON'T ADD MORE FLAGS HERE. Read the comment above.
 }
 

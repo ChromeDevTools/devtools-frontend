@@ -71,6 +71,10 @@ function requestHandler(request, response) {
       response.setHeader('Content-Type', 'text/javascript');
     }
 
+    if (request.url.endsWith('.svg')) {
+      response.setHeader('Content-Type', 'image/svg+xml');
+    }
+
     response.writeHead(statusCode);
     response.write(data, 'binary');
     response.end();

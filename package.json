@@ -29,6 +29,7 @@
     "chrome": "node scripts/hosted_mode/launch_chrome.js",
     "debug-test": "node scripts/npm_test.js --debug-devtools",
     "debug-unittest": "DEBUG=1 python scripts/test/run_unittests.py",
+    "e2etest": "python scripts/test/run_e2e.py",
     "generate-jsconfig": "node scripts/generate_jsconfig.js",
     "install-deps": "PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true python scripts/deps/manage_node_deps.py",
     "optimize-svg-images": "python scripts/optimize_svg_images.py",

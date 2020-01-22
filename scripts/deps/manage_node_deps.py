@@ -99,7 +99,7 @@ def strip_private_fields():
 
                 pkg_file.truncate(0)
                 pkg_file.seek(0)
-                json.dump(pkg_data, pkg_file, indent=2, sort_keys=True)
+                json.dump(pkg_data, pkg_file, indent=2, sort_keys=True, separators=(',', ': '))
                 print("(%s): %s" % (prop_removal_count, pkg))
             except:
                 print('Unable to fix: %s' % pkg)
@@ -143,7 +143,7 @@ def append_package_json_entries():
 
             pkg_file.truncate(0)
             pkg_file.seek(0)
-            json.dump(pkg_data, pkg_file, indent=2, sort_keys=True)
+            json.dump(pkg_data, pkg_file, indent=2, sort_keys=True, separators=(',', ': '))
 
         except:
             print('Unable to fix: %s' % sys.exc_info()[0])
@@ -164,7 +164,7 @@ def remove_package_json_entries():
 
             pkg_file.truncate(0)
             pkg_file.seek(0)
-            json.dump(pkg_data, pkg_file, indent=2, sort_keys=True)
+            json.dump(pkg_data, pkg_file, indent=2, sort_keys=True, separators=(',', ': '))
         except:
             print('Unable to fix: %s' % pkg)
             return True

@@ -3,9 +3,12 @@
 // found in the LICENSE file.
 
 import {CompilerScriptMapping} from './CompilerScriptMapping.js';
+import {DebuggerLanguagePluginManager} from './DebuggerLanguagePlugins.js';
 import {DefaultScriptMapping} from './DefaultScriptMapping.js';
+import {CXXDWARFLanguagePlugin} from './language_plugins/CXXDWARFLanguagePlugin.js';
 import {LiveLocation, LiveLocationPool, LiveLocationWithPool} from './LiveLocation.js';  // eslint-disable-line no-unused-vars
 import {ResourceScriptFile, ResourceScriptMapping} from './ResourceScriptMapping.js';  // eslint-disable-line no-unused-vars
+
 
 /**
  * @unrestricted
@@ -279,6 +282,12 @@ class ModelData {
 
     const workspace = debuggerWorkspaceBinding._workspace;
 
+    if (Root.Runtime.experiments.isEnabled('wasmDWARFDebugging')) {
+      this._pluginManager = new DebuggerLanguagePluginManager(debuggerModel, workspace, debuggerWorkspaceBinding);
+      this._pluginManager.addPlugin(new CXXDWARFLanguagePlugin());
+    }
+
+
     this._defaultMapping = new DefaultScriptMapping(debuggerModel, workspace, debuggerWorkspaceBinding);
     this._resourceMapping = new ResourceScriptMapping(debuggerModel, workspace, debuggerWorkspaceBinding);
     this._compilerMapping = new CompilerScriptMapping(debuggerModel, workspace, debuggerWorkspaceBinding);
@@ -326,6 +335,9 @@ class ModelData {
    */
   _rawLocationToUILocation(rawLocation) {
     let uiLocation = null;
+    if (Root.Runtime.experiments.isEnabled('wasmDWARFDebugging')) {
+      uiLocation = this._pluginManager.rawLocationToUILocation(rawLocation);
+    }
     uiLocation = uiLocation || this._compilerMapping.rawLocationToUILocation(rawLocation);
     uiLocation = uiLocation || this._resourceMapping.rawLocationToUILocation(rawLocation);
     uiLocation = uiLocation || Bindings.resourceMapping.jsLocationToUILocation(rawLocation);
@@ -342,7 +354,12 @@ class ModelData {
   _uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber) {
     // TODO(szuend): Make this function async and delegate to the language component in
     //               addition to {_uiLocationToRawLocationsExcludeAsync}.
-    return this._uiLocationToRawLocationsExcludeAsync(uiSourceCode, lineNumber, columnNumber);
+    let rawLocations = null;
+    if (Root.Runtime.experiments.isEnabled('wasmDWARFDebugging')) {
+      rawLocations = this._pluginManager.uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber);
+    }
+    rawLocations = rawLocations || this._uiLocationToRawLocationsExcludeAsync(uiSourceCode, lineNumber, columnNumber);
+    return rawLocations;
   }
 
   /**

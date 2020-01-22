@@ -17,6 +17,8 @@
         "StylesSourceMapping.js",
         "CSSWorkspaceBinding.js",
         "DebuggerWorkspaceBinding.js",
+        "DebuggerLanguagePlugins.js",
+        "language_plugins/CXXDWARFLanguagePlugin.js",
         "BreakpointManager.js",
         "ContentProviderBasedProject.js",
         "DefaultScriptMapping.js",

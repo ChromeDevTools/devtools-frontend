@@ -2,40 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import './AddSourceMapURLDialog.js';
-import './BreakpointEditDialog.js';
-import './CallStackSidebarPane.js';
-import './DebuggerPausedMessage.js';
-import './SimpleHistoryManager.js';
-import './EditingLocationHistoryManager.js';
-import './FilePathScoreFunction.js';
-import './FilteredUISourceCodeListProvider.js';
-import './GoToLineQuickOpen.js';
-import './SourceMapNamesResolver.js';
-import './JavaScriptBreakpointsSidebarPane.js';
-import './UISourceCodeFrame.js';
-import './DebuggerPlugin.js';
-import './CoveragePlugin.js';
-import './CSSPlugin.js';
-import './GutterDiffPlugin.js';
-import './SearchSourcesView.js';
-import './NavigatorView.js';
-import './ScopeChainSidebarPane.js';
-import './SourcesNavigator.js';
-import './OutlineQuickOpen.js';
-import './TabbedEditorContainer.js';
-import './WatchExpressionsSidebarPane.js';
-import './ThreadsSidebarPane.js';
-import './ScriptFormatterEditorAction.js';
-import './InplaceFormatterEditorAction.js';
-import './OpenFileQuickOpen.js';
-import './SourcesView.js';
-import './SourcesSearchScope.js';
-import './SourcesPanel.js';
-import './JavaScriptCompilerPlugin.js';
-import './SnippetsPlugin.js';
-import './ScriptOriginPlugin.js';
-
 import * as AddSourceMapURLDialog from './AddSourceMapURLDialog.js';
 import * as BreakpointEditDialog from './BreakpointEditDialog.js';
 import * as CallStackSidebarPane from './CallStackSidebarPane.js';
@@ -54,6 +20,7 @@ import * as JavaScriptCompilerPlugin from './JavaScriptCompilerPlugin.js';
 import * as NavigatorView from './NavigatorView.js';
 import * as OpenFileQuickOpen from './OpenFileQuickOpen.js';
 import * as OutlineQuickOpen from './OutlineQuickOpen.js';
+import * as Plugin from './Plugin.js';
 import * as ScopeChainSidebarPane from './ScopeChainSidebarPane.js';
 import * as ScriptFormatterEditorAction from './ScriptFormatterEditorAction.js';
 import * as ScriptOriginPlugin from './ScriptOriginPlugin.js';
@@ -89,6 +56,7 @@ export {
   NavigatorView,
   OpenFileQuickOpen,
   OutlineQuickOpen,
+  Plugin,
   ScopeChainSidebarPane,
   ScriptFormatterEditorAction,
   ScriptOriginPlugin,

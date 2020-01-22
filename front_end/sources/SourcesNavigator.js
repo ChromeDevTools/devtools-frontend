@@ -26,10 +26,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import {NavigatorUISourceCodeTreeNode, NavigatorView} from './NavigatorView.js';  // eslint-disable-line no-unused-vars
+
 /**
  * @unrestricted
  */
-export class NetworkNavigatorView extends Sources.NavigatorView {
+export class NetworkNavigatorView extends NavigatorView {
   constructor() {
     super();
     SDK.targetManager.addEventListener(SDK.TargetManager.Events.InspectedURLChanged, this._inspectedURLChanged, this);
@@ -85,7 +87,7 @@ export class NetworkNavigatorView extends Sources.NavigatorView {
 /**
  * @unrestricted
  */
-export class FilesNavigatorView extends Sources.NavigatorView {
+export class FilesNavigatorView extends NavigatorView {
   constructor() {
     super();
     const placeholder = new UI.EmptyWidget('');
@@ -125,7 +127,7 @@ export class FilesNavigatorView extends Sources.NavigatorView {
   }
 }
 
-export class OverridesNavigatorView extends Sources.NavigatorView {
+export class OverridesNavigatorView extends NavigatorView {
   constructor() {
     super();
     const placeholder = new UI.EmptyWidget('');
@@ -210,7 +212,7 @@ export class OverridesNavigatorView extends Sources.NavigatorView {
 /**
  * @unrestricted
  */
-export class ContentScriptsNavigatorView extends Sources.NavigatorView {
+export class ContentScriptsNavigatorView extends NavigatorView {
   constructor() {
     super();
     const placeholder = new UI.EmptyWidget('');
@@ -234,7 +236,7 @@ export class ContentScriptsNavigatorView extends Sources.NavigatorView {
 /**
  * @unrestricted
  */
-export class SnippetsNavigatorView extends Sources.NavigatorView {
+export class SnippetsNavigatorView extends NavigatorView {
   constructor() {
     super();
     const placeholder = new UI.EmptyWidget('');
@@ -273,7 +275,7 @@ export class SnippetsNavigatorView extends Sources.NavigatorView {
   /**
    * @override
    * @param {!Event} event
-   * @param {!Sources.NavigatorUISourceCodeTreeNode} node
+   * @param {!NavigatorUISourceCodeTreeNode} node
    */
   handleFileContextMenu(event, node) {
     const uiSourceCode = node.uiSourceCode();
@@ -319,27 +321,3 @@ export class ActionDelegate {
     return false;
   }
 }
-
-/* Legacy exported object */
-self.Sources = self.Sources || {};
-
-/* Legacy exported object */
-Sources = Sources || {};
-
-/** @constructor */
-Sources.NetworkNavigatorView = NetworkNavigatorView;
-
-/** @constructor */
-Sources.FilesNavigatorView = FilesNavigatorView;
-
-/** @constructor */
-Sources.OverridesNavigatorView = OverridesNavigatorView;
-
-/** @constructor */
-Sources.ContentScriptsNavigatorView = ContentScriptsNavigatorView;
-
-/** @constructor */
-Sources.SnippetsNavigatorView = SnippetsNavigatorView;
-
-/** @constructor */
-Sources.ActionDelegate = ActionDelegate;

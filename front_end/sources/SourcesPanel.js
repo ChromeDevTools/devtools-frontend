@@ -24,13 +24,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import {CallStackSidebarPane} from './CallStackSidebarPane.js';
+import {DebuggerPausedMessage} from './DebuggerPausedMessage.js';
+import {NavigatorView} from './NavigatorView.js';
+import {Events, SourcesView} from './SourcesView.js';
+import {ThreadsSidebarPane} from './ThreadsSidebarPane.js';
+import {UISourceCodeFrame} from './UISourceCodeFrame.js';
+
 /**
  * @implements {UI.ContextMenu.Provider}
  * @implements {SDK.TargetManager.Observer}
  * @implements {UI.ViewLocationResolver}
  * @unrestricted
  */
-export default class SourcesPanel extends UI.Panel {
+export class SourcesPanel extends UI.Panel {
   constructor() {
     super('sources');
     SourcesPanel._instance = this;
@@ -55,7 +62,7 @@ export default class SourcesPanel extends UI.Panel {
 
     this._debugToolbar = this._createDebugToolbar();
     this._debugToolbarDrawer = this._createDebugToolbarDrawer();
-    this._debuggerPausedMessage = new Sources.DebuggerPausedMessage();
+    this._debuggerPausedMessage = new DebuggerPausedMessage();
 
     const initialDebugSidebarWidth = 225;
     this._splitWidget = new UI.SplitWidget(true, true, 'sourcesPanelSplitViewState', initialDebugSidebarWidth);
@@ -90,8 +97,8 @@ export default class SourcesPanel extends UI.Panel {
       this.editorView.setSidebarWidget(tabbedPane);
     }
 
-    this._sourcesView = new Sources.SourcesView();
-    this._sourcesView.addEventListener(Sources.SourcesView.Events.EditorSelected, this._editorSelected.bind(this));
+    this._sourcesView = new SourcesView();
+    this._sourcesView.addEventListener(Events.EditorSelected, this._editorSelected.bind(this));
 
     this._toggleNavigatorSidebarButton = this.editorView.createShowHideSidebarButton(ls`navigator`);
     this._toggleDebuggerSidebarButton = this._splitWidget.createShowHideSidebarButton(ls`debugger`);
@@ -99,7 +106,7 @@ export default class SourcesPanel extends UI.Panel {
 
     this._threadsSidebarPane = null;
     this._watchSidebarPane = /** @type {!UI.View} */ (UI.viewManager.view('sources.watch'));
-    this._callstackPane = self.runtime.sharedInstance(Sources.CallStackSidebarPane);
+    this._callstackPane = self.runtime.sharedInstance(CallStackSidebarPane);
 
     Common.moduleSetting('sidebarPosition').addChangeListener(this._updateSidebarPosition.bind(this));
     this._updateSidebarPosition();
@@ -178,7 +185,7 @@ export default class SourcesPanel extends UI.Panel {
   }
 
   _showThreadsIfNeeded() {
-    if (Sources.ThreadsSidebarPane.shouldBeShown() && !this._threadsSidebarPane) {
+    if (ThreadsSidebarPane.shouldBeShown() && !this._threadsSidebarPane) {
       this._threadsSidebarPane = /** @type {!UI.View} */ (UI.viewManager.view('sources.threads'));
       if (this._sidebarPaneStack && this._threadsSidebarPane) {
         this._sidebarPaneStack.showView(
@@ -396,7 +403,7 @@ export default class SourcesPanel extends UI.Panel {
    * @param {boolean=} skipReveal
    */
   _revealInNavigator(uiSourceCode, skipReveal) {
-    const extensions = self.runtime.extensions(Sources.NavigatorView);
+    const extensions = self.runtime.extensions(NavigatorView);
     Promise.all(extensions.map(extension => extension.instance())).then(filterNavigators.bind(this));
 
     /**
@@ -405,7 +412,7 @@ export default class SourcesPanel extends UI.Panel {
      */
     function filterNavigators(objects) {
       for (let i = 0; i < objects.length; ++i) {
-        const navigatorView = /** @type {!Sources.NavigatorView} */ (objects[i]);
+        const navigatorView = /** @type {!NavigatorView} */ (objects[i]);
         const viewId = extensions[i].descriptor()['viewId'];
         if (navigatorView.acceptProject(uiSourceCode.project())) {
           navigatorView.revealUISourceCode(uiSourceCode, true);
@@ -449,7 +456,7 @@ export default class SourcesPanel extends UI.Panel {
     if (!uiLocation) {
       return;
     }
-    if (window.performance.now() - this._lastModificationTime < _lastModificationTimeout) {
+    if (window.performance.now() - this._lastModificationTime < lastModificationTimeout) {
       return;
     }
     this._sourcesView.showSourceLocation(
@@ -457,11 +464,11 @@ export default class SourcesPanel extends UI.Panel {
   }
 
   _lastModificationTimeoutPassedForTest() {
-    _lastModificationTimeout = Number.MIN_VALUE;
+    lastModificationTimeout = Number.MIN_VALUE;
   }
 
   _updateLastModificationTimeForTest() {
-    _lastModificationTimeout = Number.MAX_VALUE;
+    lastModificationTimeout = Number.MAX_VALUE;
   }
 
   _callFrameChanged() {
@@ -777,7 +784,7 @@ export default class SourcesPanel extends UI.Panel {
    * @param {!Object} target
    */
   _appendUISourceCodeFrameItems(event, contextMenu, target) {
-    if (!(target instanceof Sources.UISourceCodeFrame)) {
+    if (!(target instanceof UISourceCodeFrame)) {
       return;
     }
     if (target.uiSourceCode().contentType().isFromSourceMap() || target.textEditor.selection().isEmpty()) {
@@ -1001,7 +1008,7 @@ export default class SourcesPanel extends UI.Panel {
   }
 
   /**
-   * @return {!Sources.SourcesView}
+   * @return {!SourcesView}
    */
   sourcesView() {
     return this._sourcesView;
@@ -1023,7 +1030,7 @@ export default class SourcesPanel extends UI.Panel {
   }
 }
 
-export let _lastModificationTimeout = 200;
+export let lastModificationTimeout = 200;
 export const minToolbarWidth = 215;
 
 /**
@@ -1163,7 +1170,7 @@ export class DebuggingActionDelegate {
         panel._toggleBreakpointsActive();
         return true;
       case 'debugger.evaluate-selection':
-        const frame = UI.context.flavor(Sources.UISourceCodeFrame);
+        const frame = UI.context.flavor(UISourceCodeFrame);
         if (frame) {
           let text = frame.textEditor.text(frame.textEditor.selection());
           const executionContext = UI.context.flavor(SDK.ExecutionContext);
@@ -1222,36 +1229,3 @@ export class WrapperView extends UI.VBox {
     this._view.show(this.element);
   }
 }
-
-/* Legacy exported object */
-self.Sources = self.Sources || {};
-
-/* Legacy exported object */
-Sources = Sources || {};
-
-/** @constructor */
-Sources.SourcesPanel = SourcesPanel;
-
-Sources.SourcesPanel._lastModificationTimeout = _lastModificationTimeout;
-Sources.SourcesPanel.minToolbarWidth = minToolbarWidth;
-
-/** @constructor */
-Sources.SourcesPanel.UILocationRevealer = UILocationRevealer;
-
-/** @constructor */
-Sources.SourcesPanel.DebuggerLocationRevealer = DebuggerLocationRevealer;
-
-/** @constructor */
-Sources.SourcesPanel.UISourceCodeRevealer = UISourceCodeRevealer;
-
-/** @constructor */
-Sources.SourcesPanel.DebuggerPausedDetailsRevealer = DebuggerPausedDetailsRevealer;
-
-/** @constructor */
-Sources.SourcesPanel.RevealingActionDelegate = RevealingActionDelegate;
-
-/** @constructor */
-Sources.SourcesPanel.DebuggingActionDelegate = DebuggingActionDelegate;
-
-/** @constructor */
-Sources.SourcesPanel.WrapperView = WrapperView;

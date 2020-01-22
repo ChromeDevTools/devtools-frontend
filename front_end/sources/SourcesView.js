@@ -2,13 +2,17 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {EditingLocationHistoryManager} from './EditingLocationHistoryManager.js';
+import {Events as TabbedEditorContainerEvents, TabbedEditorContainer, TabbedEditorContainerDelegate} from './TabbedEditorContainer.js';  // eslint-disable-line no-unused-vars
+import {Events as UISourceCodeFrameEvents, UISourceCodeFrame} from './UISourceCodeFrame.js';
+
 /**
- * @implements {Sources.TabbedEditorContainerDelegate}
+ * @implements {TabbedEditorContainerDelegate}
  * @implements {UI.Searchable}
  * @implements {UI.Replaceable}
  * @unrestricted
  */
-export default class SourcesView extends UI.VBox {
+export class SourcesView extends UI.VBox {
   /**
    * @suppressGlobalPropertiesCheck
    */
@@ -27,15 +31,14 @@ export default class SourcesView extends UI.VBox {
     /** @type {!Map.<!Workspace.UISourceCode, !UI.Widget>} */
     this._sourceViewByUISourceCode = new Map();
 
-    this._editorContainer = new Sources.TabbedEditorContainer(
+    this._editorContainer = new TabbedEditorContainer(
         this, Common.settings.createLocalSetting('previouslyViewedFiles', []), this._placeholderElement(),
         this._focusedPlaceholderElement);
     this._editorContainer.show(this._searchableView.element);
-    this._editorContainer.addEventListener(
-        Sources.TabbedEditorContainer.Events.EditorSelected, this._editorSelected, this);
-    this._editorContainer.addEventListener(Sources.TabbedEditorContainer.Events.EditorClosed, this._editorClosed, this);
+    this._editorContainer.addEventListener(TabbedEditorContainerEvents.EditorSelected, this._editorSelected, this);
+    this._editorContainer.addEventListener(TabbedEditorContainerEvents.EditorClosed, this._editorClosed, this);
 
-    this._historyManager = new Sources.EditingLocationHistoryManager(this, this.currentSourceFrame.bind(this));
+    this._historyManager = new EditingLocationHistoryManager(this, this.currentSourceFrame.bind(this));
 
     this._toolbarContainerElement = this.element.createChild('div', 'sources-toolbar');
     if (!Root.Runtime.experiments.isEnabled('sourcesPrettyPrint')) {
@@ -280,14 +283,15 @@ export default class SourcesView extends UI.VBox {
   }
 
   /**
-   * @return {?Sources.UISourceCodeFrame}
+   * @return {?UISourceCodeFrame}
    */
   currentSourceFrame() {
     const view = this.visibleView();
-    if (!(view instanceof Sources.UISourceCodeFrame)) {
+    if (!(view instanceof UISourceCodeFrame)) {
       return null;
     }
-    return /** @type {!Sources.UISourceCodeFrame} */ (view);
+    return (
+        /** @type {!UISourceCodeFrame} */ (view));
   }
 
   /**
@@ -405,7 +409,7 @@ export default class SourcesView extends UI.VBox {
     } else if (contentType === Common.resourceTypes.Font) {
       sourceView = new SourceFrame.FontView(uiSourceCode.mimeType(), uiSourceCode);
     } else {
-      sourceFrame = new Sources.UISourceCodeFrame(uiSourceCode);
+      sourceFrame = new UISourceCodeFrame(uiSourceCode);
     }
 
     if (sourceFrame) {
@@ -427,7 +431,7 @@ export default class SourcesView extends UI.VBox {
 
   /**
    * @override
-   * @param {!Sources.UISourceCodeFrame} sourceFrame
+   * @param {!UISourceCodeFrame} sourceFrame
    * @param {!Workspace.UISourceCode} uiSourceCode
    */
   recycleUISourceCodeFrame(sourceFrame, uiSourceCode) {
@@ -451,8 +455,8 @@ export default class SourcesView extends UI.VBox {
   _removeSourceFrame(uiSourceCode) {
     const sourceView = this._sourceViewByUISourceCode.get(uiSourceCode);
     this._sourceViewByUISourceCode.remove(uiSourceCode);
-    if (sourceView && sourceView instanceof Sources.UISourceCodeFrame) {
-      /** @type {!Sources.UISourceCodeFrame} */ (sourceView).dispose();
+    if (sourceView && sourceView instanceof UISourceCodeFrame) {
+      /** @type {!UISourceCodeFrame} */ (sourceView).dispose();
     }
   }
 
@@ -483,13 +487,11 @@ export default class SourcesView extends UI.VBox {
    * @param {!Common.Event} event
    */
   _editorSelected(event) {
-    const previousSourceFrame =
-        event.data.previousView instanceof Sources.UISourceCodeFrame ? event.data.previousView : null;
+    const previousSourceFrame = event.data.previousView instanceof UISourceCodeFrame ? event.data.previousView : null;
     if (previousSourceFrame) {
       previousSourceFrame.setSearchableView(null);
     }
-    const currentSourceFrame =
-        event.data.currentView instanceof Sources.UISourceCodeFrame ? event.data.currentView : null;
+    const currentSourceFrame = event.data.currentView instanceof UISourceCodeFrame ? event.data.currentView : null;
     if (currentSourceFrame) {
       currentSourceFrame.setSearchableView(this._searchableView);
     }
@@ -516,7 +518,7 @@ export default class SourcesView extends UI.VBox {
       return;
     }
     this._toolbarChangedListener = sourceFrame.addEventListener(
-        Sources.UISourceCodeFrame.Events.ToolbarItemsChanged, this._updateScriptViewToolbarItems, this);
+        UISourceCodeFrameEvents.ToolbarItemsChanged, this._updateScriptViewToolbarItems, this);
   }
 
   /**
@@ -651,10 +653,10 @@ export default class SourcesView extends UI.VBox {
    * @param {?UI.Widget} sourceFrame
    */
   _saveSourceFrame(sourceFrame) {
-    if (!(sourceFrame instanceof Sources.UISourceCodeFrame)) {
+    if (!(sourceFrame instanceof UISourceCodeFrame)) {
       return;
     }
-    const uiSourceCodeFrame = /** @type {!Sources.UISourceCodeFrame} */ (sourceFrame);
+    const uiSourceCodeFrame = /** @type {!UISourceCodeFrame} */ (sourceFrame);
     uiSourceCodeFrame.commitEditing();
   }
 
@@ -791,24 +793,3 @@ export class ActionDelegate {
     return false;
   }
 }
-
-/* Legacy exported object */
-self.Sources = self.Sources || {};
-
-/* Legacy exported object */
-Sources = Sources || {};
-
-/** @constructor */
-Sources.SourcesView = SourcesView;
-
-/** @enum {symbol} */
-Sources.SourcesView.Events = Events;
-
-/** @interface */
-Sources.SourcesView.EditorAction = EditorAction;
-
-/** @constructor */
-Sources.SourcesView.SwitchFileActionDelegate = SwitchFileActionDelegate;
-
-/** @constructor */
-Sources.SourcesView.ActionDelegate = ActionDelegate;

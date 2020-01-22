@@ -26,11 +26,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import {SearchSourcesView} from './SearchSourcesView.js';
+
 /**
  * @implements {SDK.TargetManager.Observer}
  * @unrestricted
  */
-export default class NavigatorView extends UI.VBox {
+export class NavigatorView extends UI.VBox {
   constructor() {
     super(true);
     this.registerRequiredCSS('sources/navigatorView.css');
@@ -124,7 +126,7 @@ export default class NavigatorView extends UI.VBox {
    */
   static appendSearchItem(contextMenu, path) {
     function searchPath() {
-      Sources.SearchSourcesView.openSearch(`file:${path.trim()}`);
+      SearchSourcesView.openSearch(`file:${path.trim()}`);
     }
 
     let searchLabel = Common.UIString('Search in folder');
@@ -1791,35 +1793,3 @@ export class NavigatorGroupTreeNode extends NavigatorTreeNode {
     }
   }
 }
-
-/* Legacy exported object */
-self.Sources = self.Sources || {};
-
-/* Legacy exported object */
-Sources = Sources || {};
-
-/** @constructor */
-Sources.NavigatorView = NavigatorView;
-
-Sources.NavigatorView.Types = Types;
-
-/** @constructor */
-Sources.NavigatorFolderTreeElement = NavigatorFolderTreeElement;
-
-/** @constructor */
-Sources.NavigatorSourceTreeElement = NavigatorSourceTreeElement;
-
-/** @constructor */
-Sources.NavigatorTreeNode = NavigatorTreeNode;
-
-/** @constructor */
-Sources.NavigatorRootTreeNode = NavigatorRootTreeNode;
-
-/** @constructor */
-Sources.NavigatorUISourceCodeTreeNode = NavigatorUISourceCodeTreeNode;
-
-/** @constructor */
-Sources.NavigatorFolderTreeNode = NavigatorFolderTreeNode;
-
-/** @constructor */
-Sources.NavigatorGroupTreeNode = NavigatorGroupTreeNode;

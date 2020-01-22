@@ -28,7 +28,7 @@
  * @implements {UI.ListDelegate<!Item>}
  * @unrestricted
  */
-export default class CallStackSidebarPane extends UI.SimpleView {
+export class CallStackSidebarPane extends UI.SimpleView {
   constructor() {
     super(Common.UIString('Call Stack'), true);
     this.registerRequiredCSS('sources/callStackSidebarPane.css');
@@ -62,7 +62,7 @@ export default class CallStackSidebarPane extends UI.SimpleView {
     this._locationPool = new Bindings.LiveLocationPool();
 
     this._updateThrottler = new Common.Throttler(100);
-    this._maxAsyncStackChainDepth = _defaultMaxAsyncStackChainDepth;
+    this._maxAsyncStackChainDepth = defaultMaxAsyncStackChainDepth;
     this._update();
 
     this._updateItemThrottler = new Common.Throttler(100);
@@ -75,7 +75,7 @@ export default class CallStackSidebarPane extends UI.SimpleView {
    */
   flavorChanged(object) {
     this._showBlackboxed = false;
-    this._maxAsyncStackChainDepth = _defaultMaxAsyncStackChainDepth;
+    this._maxAsyncStackChainDepth = defaultMaxAsyncStackChainDepth;
     this._update();
   }
 
@@ -105,7 +105,7 @@ export default class CallStackSidebarPane extends UI.SimpleView {
 
     const items = details.callFrames.map(frame => {
       const item = Item.createForDebuggerCallFrame(frame, this._locationPool, this._refreshItem.bind(this));
-      item[_debuggerCallFrameSymbol] = frame;
+      item[debuggerCallFrameSymbol] = frame;
       return item;
     });
 
@@ -147,7 +147,7 @@ export default class CallStackSidebarPane extends UI.SimpleView {
     }
     this._showMoreMessageElement.classList.toggle('hidden', !asyncStackTrace);
     this._items.replaceAll(items);
-    if (this._maxAsyncStackChainDepth === _defaultMaxAsyncStackChainDepth) {
+    if (this._maxAsyncStackChainDepth === defaultMaxAsyncStackChainDepth) {
       this._list.selectNextItem(true /* canWrap */, false /* center */);
       const selectedItem = this._list.selectedItem();
       if (selectedItem) {
@@ -218,12 +218,11 @@ export default class CallStackSidebarPane extends UI.SimpleView {
       if (item.isBlackboxed) {
         UI.ARIAUtils.setDescription(element, ls`blackboxed`);
       }
-      if (!item[Sources.CallStackSidebarPane._debuggerCallFrameSymbol]) {
+      if (!item[debuggerCallFrameSymbol]) {
         UI.ARIAUtils.setDisabled(element, true);
       }
     }
-    const isSelected =
-        item[Sources.CallStackSidebarPane._debuggerCallFrameSymbol] === UI.context.flavor(SDK.DebuggerModel.CallFrame);
+    const isSelected = item[debuggerCallFrameSymbol] === UI.context.flavor(SDK.DebuggerModel.CallFrame);
     element.classList.toggle('selected', isSelected);
     UI.ARIAUtils.setSelected(element, isSelected);
     element.classList.toggle('hidden', !this._showBlackboxed && item.isBlackboxed);
@@ -312,7 +311,7 @@ export default class CallStackSidebarPane extends UI.SimpleView {
     const showAllLink = element.createChild('span', 'link');
     showAllLink.textContent = Common.UIString('Show more');
     showAllLink.addEventListener('click', () => {
-      this._maxAsyncStackChainDepth += _defaultMaxAsyncStackChainDepth;
+      this._maxAsyncStackChainDepth += defaultMaxAsyncStackChainDepth;
       this._update();
     }, false);
     return element;
@@ -327,7 +326,7 @@ export default class CallStackSidebarPane extends UI.SimpleView {
       return;
     }
     const contextMenu = new UI.ContextMenu(event);
-    const debuggerCallFrame = item[_debuggerCallFrameSymbol];
+    const debuggerCallFrame = item[debuggerCallFrameSymbol];
     if (debuggerCallFrame) {
       contextMenu.defaultSection().appendItem(Common.UIString('Restart frame'), () => debuggerCallFrame.restart());
     }
@@ -357,7 +356,7 @@ export default class CallStackSidebarPane extends UI.SimpleView {
       return;
     }
     this._list.selectItem(item);
-    const debuggerCallFrame = item[_debuggerCallFrameSymbol];
+    const debuggerCallFrame = item[debuggerCallFrameSymbol];
     const oldItem = this.activeCallFrameItem();
     if (debuggerCallFrame && oldItem !== item) {
       debuggerCallFrame.debuggerModel.setSelectedCallFrame(debuggerCallFrame);
@@ -372,14 +371,12 @@ export default class CallStackSidebarPane extends UI.SimpleView {
   }
 
   /**
-   * @return {?Sources.CallStackSidebarPane.Item}
+   * @return {?Item}
    */
   activeCallFrameItem() {
     const callFrame = UI.context.flavor(SDK.DebuggerModel.CallFrame);
     if (callFrame) {
-      return this._items.find(
-                 callFrameItem => callFrameItem[Sources.CallStackSidebarPane._debuggerCallFrameSymbol] === callFrame) ||
-          null;
+      return this._items.find(callFrameItem => callFrameItem[debuggerCallFrameSymbol] === callFrame) || null;
     }
     return null;
   }
@@ -426,7 +423,7 @@ export default class CallStackSidebarPane extends UI.SimpleView {
     const startIndex = oldItem ? this._items.indexOf(oldItem) + 1 : 0;
     for (let i = startIndex; i < this._items.length; i++) {
       const newItem = this._items.at(i);
-      if (newItem[Sources.CallStackSidebarPane._debuggerCallFrameSymbol]) {
+      if (newItem[debuggerCallFrameSymbol]) {
         this._activateItem(newItem);
         break;
       }
@@ -438,7 +435,7 @@ export default class CallStackSidebarPane extends UI.SimpleView {
     const startIndex = oldItem ? this._items.indexOf(oldItem) - 1 : this._items.length - 1;
     for (let i = startIndex; i >= 0; i--) {
       const newItem = this._items.at(i);
-      if (newItem[Sources.CallStackSidebarPane._debuggerCallFrameSymbol]) {
+      if (newItem[debuggerCallFrameSymbol]) {
         this._activateItem(newItem);
         break;
       }
@@ -458,9 +455,9 @@ export default class CallStackSidebarPane extends UI.SimpleView {
   }
 }
 
-export const _debuggerCallFrameSymbol = Symbol('debuggerCallFrame');
-export const _elementSymbol = Symbol('element');
-export const _defaultMaxAsyncStackChainDepth = 32;
+export const debuggerCallFrameSymbol = Symbol('debuggerCallFrame');
+export const elementSymbol = Symbol('element');
+export const defaultMaxAsyncStackChainDepth = 32;
 
 /**
  * @implements {UI.ActionDelegate}
@@ -577,22 +574,3 @@ export class Item {
     this.updateDelegate(this);
   }
 }
-
-/* Legacy exported object */
-self.Sources = self.Sources || {};
-
-/* Legacy exported object */
-Sources = Sources || {};
-
-/** @constructor */
-Sources.CallStackSidebarPane = CallStackSidebarPane;
-
-Sources.CallStackSidebarPane._debuggerCallFrameSymbol = _debuggerCallFrameSymbol;
-Sources.CallStackSidebarPane._elementSymbol = _elementSymbol;
-Sources.CallStackSidebarPane._defaultMaxAsyncStackChainDepth = _defaultMaxAsyncStackChainDepth;
-
-/** @constructor */
-Sources.CallStackSidebarPane.ActionDelegate = ActionDelegate;
-
-/** @constructor */
-Sources.CallStackSidebarPane.Item = Item;

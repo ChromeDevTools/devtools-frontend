@@ -2,7 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-export default class SearchSourcesView extends Search.SearchView {
+import {SourcesSearchScope} from './SourcesSearchScope.js';
+
+export class SearchSourcesView extends Search.SearchView {
   constructor() {
     super('sources');
   }
@@ -29,7 +31,7 @@ export default class SearchSourcesView extends Search.SearchView {
    * @return {!Search.SearchScope}
    */
   createScope() {
-    return new Sources.SourcesSearchScope();
+    return new SourcesSearchScope();
   }
 }
 
@@ -61,15 +63,3 @@ export class ActionDelegate {
     return SearchSourcesView.openSearch(queryCandidate);
   }
 }
-
-/* Legacy exported object */
-self.Sources = self.Sources || {};
-
-/* Legacy exported object */
-Sources = Sources || {};
-
-/** @constructor */
-Sources.SearchSourcesView = SearchSourcesView;
-
-/** @constructor */
-Sources.SearchSourcesView.ActionDelegate = ActionDelegate;

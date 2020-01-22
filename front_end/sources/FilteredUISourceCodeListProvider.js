@@ -4,16 +4,18 @@
  * found in the LICENSE file.
  */
 
+import {FilePathScoreFunction} from './FilePathScoreFunction.js';
+
 /**
  * @unrestricted
  */
-export default class FilteredUISourceCodeListProvider extends QuickOpen.FilteredListWidget.Provider {
+export class FilteredUISourceCodeListProvider extends QuickOpen.FilteredListWidget.Provider {
   constructor() {
     super();
 
     this._queryLineNumberAndColumnNumber = '';
     this._defaultScores = null;
-    this._scorer = new Sources.FilePathScoreFunction('');
+    this._scorer = new FilePathScoreFunction('');
   }
 
   /**
@@ -108,7 +110,7 @@ export default class FilteredUISourceCodeListProvider extends QuickOpen.Filtered
 
     if (this._query !== query) {
       this._query = query;
-      this._scorer = new Sources.FilePathScoreFunction(query);
+      this._scorer = new FilePathScoreFunction(query);
     }
 
     let multiplier = 10;
@@ -133,7 +135,7 @@ export default class FilteredUISourceCodeListProvider extends QuickOpen.Filtered
     const uiSourceCode = this._uiSourceCodes[itemIndex];
     const fullDisplayName = uiSourceCode.fullDisplayName();
     const indexes = [];
-    new Sources.FilePathScoreFunction(query).score(fullDisplayName, indexes);
+    new FilePathScoreFunction(query).score(fullDisplayName, indexes);
     const fileNameIndex = fullDisplayName.lastIndexOf('/');
 
     titleElement.classList.add('monospace');
@@ -251,12 +253,3 @@ export default class FilteredUISourceCodeListProvider extends QuickOpen.Filtered
     this._defaultScores = null;
   }
 }
-
-/* Legacy exported object */
-self.Sources = self.Sources || {};
-
-/* Legacy exported object */
-Sources = Sources || {};
-
-/** @constructor */
-Sources.FilteredUISourceCodeListProvider = FilteredUISourceCodeListProvider;

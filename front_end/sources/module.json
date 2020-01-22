@@ -929,6 +929,7 @@
     "scripts": [],
     "modules": [
         "sources.js",
+        "sources-legacy.js",
         "AddSourceMapURLDialog.js",
         "BreakpointEditDialog.js",
         "CallStackSidebarPane.js",
@@ -941,6 +942,7 @@
         "SourceMapNamesResolver.js",
         "JavaScriptBreakpointsSidebarPane.js",
         "UISourceCodeFrame.js",
+        "Plugin.js",
         "DebuggerPlugin.js",
         "CoveragePlugin.js",
         "CSSPlugin.js",

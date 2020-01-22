@@ -5,7 +5,7 @@
 /**
  * @unrestricted
  */
-export default class AddSourceMapURLDialog extends UI.HBox {
+export class AddSourceMapURLDialog extends UI.HBox {
   /**
    * @param {function(string)} callback
    */
@@ -56,12 +56,3 @@ export default class AddSourceMapURLDialog extends UI.HBox {
     }
   }
 }
-
-/* Legacy exported object */
-self.Sources = self.Sources || {};
-
-/* Legacy exported object */
-Sources = Sources || {};
-
-/** @constructor */
-Sources.AddSourceMapURLDialog = AddSourceMapURLDialog;

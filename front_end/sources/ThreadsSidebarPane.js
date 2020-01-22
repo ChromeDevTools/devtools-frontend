@@ -6,7 +6,7 @@
  * @implements {SDK.SDKModelObserver<!SDK.DebuggerModel>}
  * @implements {UI.ListDelegate<!SDK.DebuggerModel>}
  */
-export default class ThreadsSidebarPane extends UI.VBox {
+export class ThreadsSidebarPane extends UI.VBox {
   constructor() {
     super(true);
     this.registerRequiredCSS('sources/threadsSidebarPane.css');
@@ -167,12 +167,3 @@ export default class ThreadsSidebarPane extends UI.VBox {
     }
   }
 }
-
-/* Legacy exported object */
-self.Sources = self.Sources || {};
-
-/* Legacy exported object */
-Sources = Sources || {};
-
-/** @constructor */
-Sources.ThreadsSidebarPane = ThreadsSidebarPane;

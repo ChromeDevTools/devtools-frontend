@@ -5,7 +5,7 @@
 /**
  * @unrestricted
  */
-export default class DebuggerPausedMessage {
+export class DebuggerPausedMessage {
   constructor() {
     this._element = createElementWithClass('div', 'paused-message flex-none');
     const root = UI.createShadowRootWithCoreStyles(this._element, 'sources/debuggerPausedMessage.css');
@@ -158,14 +158,3 @@ export const BreakpointTypeNouns = new Map([
   [SDK.DOMDebuggerModel.DOMBreakpoint.Type.AttributeModified, Common.UIString('attribute modifications')],
   [SDK.DOMDebuggerModel.DOMBreakpoint.Type.NodeRemoved, Common.UIString('node removal')],
 ]);
-
-/* Legacy exported object */
-self.Sources = self.Sources || {};
-
-/* Legacy exported object */
-Sources = Sources || {};
-
-/** @constructor */
-Sources.DebuggerPausedMessage = DebuggerPausedMessage;
-
-Sources.DebuggerPausedMessage.BreakpointTypeNouns = BreakpointTypeNouns;

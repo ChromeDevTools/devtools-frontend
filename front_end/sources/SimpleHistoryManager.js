@@ -44,7 +44,7 @@ export class HistoryEntry {
 /**
  * @unrestricted
  */
-export default class SimpleHistoryManager {
+export class SimpleHistoryManager {
   /**
    * @param {number} historyDepth
    */
@@ -166,15 +166,3 @@ export default class SimpleHistoryManager {
     return true;
   }
 }
-
-/* Legacy exported object */
-self.Sources = self.Sources || {};
-
-/* Legacy exported object */
-Sources = Sources || {};
-
-/** @constructor */
-Sources.SimpleHistoryManager = SimpleHistoryManager;
-
-/** @interface */
-Sources.HistoryEntry = HistoryEntry;

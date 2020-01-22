@@ -26,6 +26,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import {UISourceCodeFrame} from './UISourceCodeFrame.js';
+
 /**
  * @interface
  */
@@ -38,7 +40,7 @@ export class TabbedEditorContainerDelegate {
   }
 
   /**
-  * @param {!Sources.UISourceCodeFrame} sourceFrame
+  * @param {!UISourceCodeFrame} sourceFrame
   * @param {!Workspace.UISourceCode} uiSourceCode
   */
   recycleUISourceCodeFrame(sourceFrame, uiSourceCode) {
@@ -48,7 +50,7 @@ export class TabbedEditorContainerDelegate {
 /**
  * @unrestricted
  */
-export default class TabbedEditorContainer extends Common.Object {
+export class TabbedEditorContainer extends Common.Object {
   /**
    * @param {!TabbedEditorContainerDelegate} delegate
    * @param {!Common.Setting} setting
@@ -103,7 +105,7 @@ export default class TabbedEditorContainer extends Common.Object {
     if (!fileSystemTabId) {
       const networkView = this._tabbedPane.tabView(networkTabId);
       const tabIndex = this._tabbedPane.tabIndex(networkTabId);
-      if (networkView instanceof Sources.UISourceCodeFrame) {
+      if (networkView instanceof UISourceCodeFrame) {
         this._delegate.recycleUISourceCodeFrame(networkView, binding.fileSystem);
         fileSystemTabId = this._appendFileTab(binding.fileSystem, false, tabIndex, networkView);
       } else {
@@ -644,7 +646,7 @@ export default class TabbedEditorContainer extends Common.Object {
    * @return {string}
    */
   _generateTabId() {
-    return 'tab_' + (_tabId++);
+    return 'tab_' + (tabId++);
   }
 
   /**
@@ -661,7 +663,7 @@ export const Events = {
   EditorClosed: Symbol('EditorClosed')
 };
 
-export let _tabId = 0;
+export let tabId = 0;
 export const maximalPreviouslyViewedFilesCount = 30;
 
 /**
@@ -890,30 +892,3 @@ export class EditorContainerTabDelegate {
     this._editorContainer._onContextMenu(tabId, contextMenu);
   }
 }
-
-/* Legacy exported object */
-self.Sources = self.Sources || {};
-
-/* Legacy exported object */
-Sources = Sources || {};
-
-/** @constructor */
-Sources.TabbedEditorContainer = TabbedEditorContainer;
-
-/** @enum {symbol} */
-Sources.TabbedEditorContainer.Events = Events;
-
-Sources.TabbedEditorContainer._tabId = _tabId;
-Sources.TabbedEditorContainer.maximalPreviouslyViewedFilesCount = maximalPreviouslyViewedFilesCount;
-
-/** @constructor */
-Sources.TabbedEditorContainer.HistoryItem = HistoryItem;
-
-/** @constructor */
-Sources.TabbedEditorContainer.History = History;
-
-/** @interface */
-Sources.TabbedEditorContainerDelegate = TabbedEditorContainerDelegate;
-
-/** @constructor */
-Sources.EditorContainerTabDelegate = EditorContainerTabDelegate;

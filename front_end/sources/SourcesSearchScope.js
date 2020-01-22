@@ -29,7 +29,7 @@
 /**
  * @implements {Search.SearchScope}
  */
-export default class SourcesSearchScope {
+export class SourcesSearchScope {
   constructor() {
     // FIXME: Add title once it is used by search controller.
     this._searchId = 0;
@@ -374,15 +374,3 @@ export class FileBasedSearchResult {
     return this._searchMatches[index].lineNumber + 1;
   }
 }
-
-/* Legacy exported object */
-self.Sources = self.Sources || {};
-
-/* Legacy exported object */
-Sources = Sources || {};
-
-/** @constructor */
-Sources.SourcesSearchScope = SourcesSearchScope;
-
-/** @constructor */
-Sources.FileBasedSearchResult = FileBasedSearchResult;

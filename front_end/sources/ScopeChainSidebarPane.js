@@ -24,11 +24,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import {resolveScopeInObject, resolveThisObject} from './SourceMapNamesResolver.js';
+
 /**
  * @implements {UI.ContextFlavorListener}
  * @unrestricted
  */
-export default class ScopeChainSidebarPane extends UI.VBox {
+export class ScopeChainSidebarPane extends UI.VBox {
   constructor() {
     super(true);
     this.registerRequiredCSS('sources/scopeChainSidebarPane.css');
@@ -69,7 +71,7 @@ export default class ScopeChainSidebarPane extends UI.VBox {
     const callFrame = UI.context.flavor(SDK.DebuggerModel.CallFrame);
     const details = UI.context.flavor(SDK.DebuggerPausedDetails);
     this._linkifier.reset();
-    Sources.SourceMapNamesResolver.resolveThisObject(callFrame).then(this._innerUpdate.bind(this, details, callFrame));
+    resolveThisObject(callFrame).then(this._innerUpdate.bind(this, details, callFrame));
   }
 
   /**
@@ -142,7 +144,7 @@ export default class ScopeChainSidebarPane extends UI.VBox {
     titleElement.createChild('div', 'scope-chain-sidebar-pane-section-title').textContent = title;
 
     const section = new ObjectUI.ObjectPropertiesSection.RootElement(
-        Sources.SourceMapNamesResolver.resolveScopeInObject(scope), this._linkifier, emptyPlaceholder,
+        resolveScopeInObject(scope), this._linkifier, emptyPlaceholder,
         /* ignoreHasOwnProperty */ true, extraProperties);
     section.title = titleElement;
     section.listItemElement.classList.add('scope-chain-sidebar-pane-section');
@@ -190,15 +192,4 @@ export default class ScopeChainSidebarPane extends UI.VBox {
   }
 }
 
-export const _pathSymbol = Symbol('path');
-
-/* Legacy exported object */
-self.Sources = self.Sources || {};
-
-/* Legacy exported object */
-Sources = Sources || {};
-
-/** @constructor */
-Sources.ScopeChainSidebarPane = ScopeChainSidebarPane;
-
-Sources.ScopeChainSidebarPane._pathSymbol = _pathSymbol;
+export const pathSymbol = Symbol('path');

@@ -2,7 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-export default class JavaScriptCompilerPlugin extends Sources.UISourceCodeFrame.Plugin {
+import {Plugin} from './Plugin.js';
+
+export class JavaScriptCompilerPlugin extends Plugin {
   /**
    * @param {!SourceFrame.SourcesTextEditor} textEditor
    * @param {!Workspace.UISourceCode} uiSourceCode
@@ -127,14 +129,3 @@ export default class JavaScriptCompilerPlugin extends Sources.UISourceCodeFrame.
 }
 
 export const CompileDelay = 1000;
-
-/* Legacy exported object */
-self.Sources = self.Sources || {};
-
-/* Legacy exported object */
-Sources = Sources || {};
-
-/** @constructor */
-Sources.JavaScriptCompilerPlugin = JavaScriptCompilerPlugin;
-
-Sources.JavaScriptCompilerPlugin.CompileDelay = CompileDelay;

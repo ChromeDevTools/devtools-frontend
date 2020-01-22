@@ -4,12 +4,15 @@
  * found in the LICENSE file.
  */
 
-export default class OpenFileQuickOpen extends Sources.FilteredUISourceCodeListProvider {
+import {FilteredUISourceCodeListProvider} from './FilteredUISourceCodeListProvider.js';
+import {SourcesView} from './SourcesView.js';
+
+export class OpenFileQuickOpen extends FilteredUISourceCodeListProvider {
   /**
    * @override
    */
   attach() {
-    this.setDefaultScores(Sources.SourcesView.defaultUISourceCodeScores());
+    this.setDefaultScores(SourcesView.defaultUISourceCodeScores());
     super.attach();
   }
 
@@ -49,12 +52,3 @@ export default class OpenFileQuickOpen extends Sources.FilteredUISourceCodeListP
     return true;
   }
 }
-
-/* Legacy exported object */
-self.Sources = self.Sources || {};
-
-/* Legacy exported object */
-Sources = Sources || {};
-
-/** @constructor */
-Sources.OpenFileQuickOpen = OpenFileQuickOpen;

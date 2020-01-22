@@ -4,7 +4,7 @@
  * found in the LICENSE file.
  */
 
-export default class BreakpointEditDialog extends UI.Widget {
+export class BreakpointEditDialog extends UI.Widget {
   /**
    * @param {number} editorLineNumber
    * @param {string} oldCondition
@@ -21,7 +21,7 @@ export default class BreakpointEditDialog extends UI.Widget {
     this.element.tabIndex = -1;
 
     const logpointPrefix = LogpointPrefix;
-    const logpointSuffix = _LogpointSuffix;
+    const logpointSuffix = LogpointSuffix;
     this._isLogpoint = oldCondition.startsWith(logpointPrefix) && oldCondition.endsWith(logpointSuffix);
     if (this._isLogpoint) {
       oldCondition = oldCondition.substring(logpointPrefix.length, oldCondition.length - logpointSuffix.length);
@@ -66,7 +66,7 @@ export default class BreakpointEditDialog extends UI.Widget {
    * @return {string}
    */
   static _conditionForLogpoint(condition) {
-    return `${LogpointPrefix}${condition}${_LogpointSuffix}`;
+    return `${LogpointPrefix}${condition}${LogpointSuffix}`;
   }
 
   _onTypeChanged() {
@@ -126,23 +126,10 @@ export default class BreakpointEditDialog extends UI.Widget {
 }
 
 export const LogpointPrefix = '/** DEVTOOLS_LOGPOINT */ console.log(';
-export const _LogpointSuffix = ')';
+export const LogpointSuffix = ')';
 
 export const BreakpointType = {
   Breakpoint: 'Breakpoint',
   Conditional: 'Conditional',
   Logpoint: 'Logpoint',
 };
-
-/* Legacy exported object */
-self.Sources = self.Sources || {};
-
-/* Legacy exported object */
-Sources = Sources || {};
-
-/** @constructor */
-Sources.BreakpointEditDialog = BreakpointEditDialog;
-
-Sources.BreakpointEditDialog.LogpointPrefix = LogpointPrefix;
-Sources.BreakpointEditDialog._LogpointSuffix = _LogpointSuffix;
-Sources.BreakpointEditDialog.BreakpointType = BreakpointType;

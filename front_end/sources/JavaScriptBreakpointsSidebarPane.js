@@ -7,7 +7,7 @@
  * @implements {UI.ListDelegate}
  * @unrestricted
  */
-export default class JavaScriptBreakpointsSidebarPane extends UI.ThrottledWidget {
+export class JavaScriptBreakpointsSidebarPane extends UI.ThrottledWidget {
   constructor() {
     super(true);
     this.registerRequiredCSS('sources/javaScriptBreakpointsSidebarPane.css');
@@ -163,8 +163,8 @@ export default class JavaScriptBreakpointsSidebarPane extends UI.ThrottledWidget
       }
     });
 
-    element[Sources.JavaScriptBreakpointsSidebarPane._breakpointLocationsSymbol] = item.locations;
-    element[Sources.JavaScriptBreakpointsSidebarPane._locationSymbol] = uiLocation;
+    element[breakpointLocationsSymbol] = item.locations;
+    element[locationSymbol] = uiLocation;
     return element;
   }
 
@@ -236,7 +236,7 @@ export default class JavaScriptBreakpointsSidebarPane extends UI.ThrottledWidget
     if (!node) {
       return [];
     }
-    return node[_breakpointLocationsSymbol] || [];
+    return node[breakpointLocationsSymbol] || [];
   }
 
   /**
@@ -352,35 +352,7 @@ export default class JavaScriptBreakpointsSidebarPane extends UI.ThrottledWidget
   }
 }
 
-export const _locationSymbol = Symbol('location');
-export const _checkboxLabelSymbol = Symbol('checkbox-label');
-export const _snippetElementSymbol = Symbol('snippet-element');
-export const _breakpointLocationsSymbol = Symbol('locations');
-
-/* Legacy exported object */
-self.Sources = self.Sources || {};
-
-/* Legacy exported object */
-Sources = Sources || {};
-
-/** @constructor */
-Sources.JavaScriptBreakpointsSidebarPane = JavaScriptBreakpointsSidebarPane;
-
-Sources.JavaScriptBreakpointsSidebarPane._locationSymbol = _locationSymbol;
-Sources.JavaScriptBreakpointsSidebarPane._checkboxLabelSymbol = _checkboxLabelSymbol;
-Sources.JavaScriptBreakpointsSidebarPane._snippetElementSymbol = _snippetElementSymbol;
-Sources.JavaScriptBreakpointsSidebarPane._breakpointLocationsSymbol = _breakpointLocationsSymbol;
-
-/** @typedef {{breakpoint: !Bindings.BreakpointManager.Breakpoint, uiLocation: !Workspace.UILocation}} */
-Sources.JavaScriptBreakpointsSidebarPane.Breakpoint;
-
-/**
- * @typedef {{
- * breakpointLocation: !Sources.JavaScriptBreakpointsSidebarPane.Breakpoint,
- * locations: !Array.<!Sources.JavaScriptBreakpointsSidebarPane.Breakpoint>,
- * showColumn: boolean,
- * isSelected: boolean,
- * content: !Promise.<?string>
- * }}
- */
-Sources.JavaScriptBreakpointsSidebarPane.BreakpointItem;
+export const locationSymbol = Symbol('location');
+export const checkboxLabelSymbol = Symbol('checkbox-label');
+export const snippetElementSymbol = Symbol('snippet-element');
+export const breakpointLocationsSymbol = Symbol('locations');

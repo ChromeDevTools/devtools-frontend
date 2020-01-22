@@ -2,11 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {EditorAction, Events, SourcesView} from './SourcesView.js';  // eslint-disable-line no-unused-vars
+
 /**
- * @implements {Sources.SourcesView.EditorAction}
+ * @implements {EditorAction}
  * @unrestricted
  */
-export default class ScriptFormatterEditorAction {
+export class ScriptFormatterEditorAction {
   constructor() {
     /** @type {!Set<string>} */
     this._pathsToFormatOnLoad = new Set();
@@ -50,7 +52,7 @@ export default class ScriptFormatterEditorAction {
 
   /**
    * @override
-   * @param {!Sources.SourcesView} sourcesView
+   * @param {!SourcesView} sourcesView
    * @return {!UI.ToolbarButton}
    */
   button(sourcesView) {
@@ -59,8 +61,8 @@ export default class ScriptFormatterEditorAction {
     }
 
     this._sourcesView = sourcesView;
-    this._sourcesView.addEventListener(Sources.SourcesView.Events.EditorSelected, this._editorSelected.bind(this));
-    this._sourcesView.addEventListener(Sources.SourcesView.Events.EditorClosed, this._editorClosed.bind(this));
+    this._sourcesView.addEventListener(Events.EditorSelected, this._editorSelected.bind(this));
+    this._sourcesView.addEventListener(Events.EditorClosed, this._editorClosed.bind(this));
 
     this._button = new UI.ToolbarButton(Common.UIString('Pretty print'), 'largeicon-pretty-print');
     this._button.addEventListener(UI.ToolbarButton.Events.Click, this._toggleFormatScriptSource, this);
@@ -118,12 +120,3 @@ export default class ScriptFormatterEditorAction {
     this._sourcesView.showSourceLocation(formatData.formattedSourceCode, start[0], start[1]);
   }
 }
-
-/* Legacy exported object */
-self.Sources = self.Sources || {};
-
-/* Legacy exported object */
-Sources = Sources || {};
-
-/** @constructor */
-Sources.ScriptFormatterEditorAction = ScriptFormatterEditorAction;

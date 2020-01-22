@@ -2,7 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-export default class GoToLineQuickOpen extends QuickOpen.FilteredListWidget.Provider {
+import {SourcesView} from './SourcesView.js';
+import {UISourceCodeFrame} from './UISourceCodeFrame.js';  // eslint-disable-line no-unused-vars
+
+export class GoToLineQuickOpen extends QuickOpen.FilteredListWidget.Provider {
   /**
    * @override
    * @param {?number} itemIndex
@@ -66,7 +69,7 @@ export default class GoToLineQuickOpen extends QuickOpen.FilteredListWidget.Prov
    * @return {?Workspace.UISourceCode}
    */
   _currentUISourceCode() {
-    const sourcesView = UI.context.flavor(Sources.SourcesView);
+    const sourcesView = UI.context.flavor(SourcesView);
     if (!sourcesView) {
       return null;
     }
@@ -74,22 +77,13 @@ export default class GoToLineQuickOpen extends QuickOpen.FilteredListWidget.Prov
   }
 
   /**
-   * @return {?Sources.UISourceCodeFrame}
+   * @return {?UISourceCodeFrame}
    */
   _currentSourceFrame() {
-    const sourcesView = UI.context.flavor(Sources.SourcesView);
+    const sourcesView = UI.context.flavor(SourcesView);
     if (!sourcesView) {
       return null;
     }
     return sourcesView.currentSourceFrame();
   }
 }
-
-/* Legacy exported object */
-self.Sources = self.Sources || {};
-
-/* Legacy exported object */
-Sources = Sources || {};
-
-/** @constructor */
-Sources.GoToLineQuickOpen = GoToLineQuickOpen;

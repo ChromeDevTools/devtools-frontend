@@ -31,7 +31,7 @@
 /**
  * @unrestricted
  */
-export default class FilePathScoreFunction {
+export class FilePathScoreFunction {
   /**
    * @param {string} query
    */
@@ -200,12 +200,3 @@ export default class FilePathScoreFunction {
     }
   }
 }
-
-/* Legacy exported object */
-self.Sources = self.Sources || {};
-
-/* Legacy exported object */
-Sources = Sources || {};
-
-/** @constructor */
-Sources.FilePathScoreFunction = FilePathScoreFunction;

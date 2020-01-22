@@ -28,7 +28,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-export default class DebuggerPlugin extends Sources.UISourceCodeFrame.Plugin {
+import {AddSourceMapURLDialog} from './AddSourceMapURLDialog.js';
+import {BreakpointEditDialog, LogpointPrefix} from './BreakpointEditDialog.js';
+import {Plugin} from './Plugin.js';
+import {resolveExpression, resolveScopeInObject} from './SourceMapNamesResolver.js';
+import {SourcesPanel} from './SourcesPanel.js';
+
+export class DebuggerPlugin extends Plugin {
   /**
    * @param {!SourceFrame.SourcesTextEditor} textEditor
    * @param {!Workspace.UISourceCode} uiSourceCode
@@ -52,7 +58,7 @@ export default class DebuggerPlugin extends Sources.UISourceCodeFrame.Plugin {
     /** @type {?number} */
     this._controlTimeout = null;
 
-    this._scriptsPanel = Sources.SourcesPanel.instance();
+    this._scriptsPanel = SourcesPanel.instance();
     this._breakpointManager = Bindings.breakpointManager;
     if (uiSourceCode.project().type() === Workspace.projectTypes.Debugger) {
       this._textEditor.element.classList.add('source-frame-debugger-script');
@@ -293,7 +299,7 @@ export default class DebuggerPlugin extends Sources.UISourceCodeFrame.Plugin {
      * @param {!Bindings.ResourceScriptFile} scriptFile
      */
     function addSourceMapURL(scriptFile) {
-      const dialog = new Sources.AddSourceMapURLDialog(addSourceMapURLDialogCallback.bind(null, scriptFile));
+      const dialog = new AddSourceMapURLDialog(addSourceMapURLDialogCallback.bind(null, scriptFile));
       dialog.show();
     }
 
@@ -509,7 +515,7 @@ export default class DebuggerPlugin extends Sources.UISourceCodeFrame.Plugin {
       box: anchorBox,
       show: async popover => {
         const evaluationText = this._textEditor.line(editorLineNumber).substring(startHighlight, endHighlight + 1);
-        const resolvedText = await Sources.SourceMapNamesResolver.resolveExpression(
+        const resolvedText = await resolveExpression(
             selectedCallFrame, evaluationText, this._uiSourceCode, editorLineNumber, startHighlight, endHighlight);
         const result = await selectedCallFrame.evaluate({
           expression: resolvedText || evaluationText,
@@ -588,8 +594,7 @@ export default class DebuggerPlugin extends Sources.UISourceCodeFrame.Plugin {
       if (breakpoints.length) {
         breakpoint = breakpoints[0];
       }
-      const isLogpoint =
-          breakpoint ? breakpoint.condition().includes(Sources.BreakpointEditDialog.LogpointPrefix) : false;
+      const isLogpoint = breakpoint ? breakpoint.condition().includes(LogpointPrefix) : false;
       this._editBreakpointCondition(selection.startLine, breakpoint, null, isLogpoint);
       event.consume(true);
       return;
@@ -700,7 +705,7 @@ export default class DebuggerPlugin extends Sources.UISourceCodeFrame.Plugin {
   async _editBreakpointCondition(editorLineNumber, breakpoint, location, preferLogpoint) {
     const oldCondition = breakpoint ? breakpoint.condition() : '';
     const decorationElement = createElement('div');
-    const dialog = new Sources.BreakpointEditDialog(editorLineNumber, oldCondition, !!preferLogpoint, result => {
+    const dialog = new BreakpointEditDialog(editorLineNumber, oldCondition, !!preferLogpoint, result => {
       dialog.detach();
       this._textEditor.removeDecoration(decorationElement, editorLineNumber);
       if (!result.committed) {
@@ -761,7 +766,7 @@ export default class DebuggerPlugin extends Sources.UISourceCodeFrame.Plugin {
     const localScope = callFrame.localScope();
     const functionLocation = callFrame.functionLocation();
     if (localScope && functionLocation) {
-      Sources.SourceMapNamesResolver.resolveScopeInObject(localScope)
+      resolveScopeInObject(localScope)
           .getAllProperties(false, false)
           .then(this._prepareScopeVariables.bind(this, callFrame));
     }
@@ -1826,17 +1831,3 @@ BreakpointDecoration.bookmarkSymbol = Symbol('bookmark');
 BreakpointDecoration._elementSymbolForTest = Symbol('element');
 
 export const continueToLocationDecorationSymbol = Symbol('bookmark');
-
-/* Legacy exported object */
-self.Sources = self.Sources || {};
-
-/* Legacy exported object */
-Sources = Sources || {};
-
-/** @constructor */
-Sources.DebuggerPlugin = DebuggerPlugin;
-
-/** @constructor */
-Sources.DebuggerPlugin.BreakpointDecoration = BreakpointDecoration;
-
-Sources.DebuggerPlugin.continueToLocationDecorationSymbol = continueToLocationDecorationSymbol;

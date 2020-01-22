@@ -1423,6 +1423,9 @@ export default class DebuggerPlugin extends Sources.UISourceCodeFrame.Plugin {
       }
       for (const location of possibleLocations) {
         const editorLocation = this._transformer.rawToEditorLocation(location.lineNumber, location.columnNumber);
+        if (editorLocation[0] !== editorLineNumber) {
+          continue;
+        }
         if (columns.has(editorLocation[1])) {
           continue;
         }

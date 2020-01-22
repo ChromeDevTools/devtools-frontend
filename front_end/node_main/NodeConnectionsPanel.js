@@ -26,7 +26,7 @@ export class NodeConnectionsPanel extends UI.Panel {
     Host.InspectorFrontendHost.setDevicesUpdatesEnabled(false);
     Host.InspectorFrontendHost.setDevicesUpdatesEnabled(true);
 
-    this._networkDiscoveryView = new NodeMain.NodeConnectionsView(config => {
+    this._networkDiscoveryView = new NodeConnectionsView(config => {
       this._config.networkDiscoveryConfig = config;
       Host.InspectorFrontendHost.setDevicesDiscoveryConfig(this._config);
     });

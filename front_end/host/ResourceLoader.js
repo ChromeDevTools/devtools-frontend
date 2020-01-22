@@ -2,17 +2,19 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+
 import {InspectorFrontendHostInstance} from './InspectorFrontendHost.js';
 
 export const ResourceLoader = {};
 
 let _lastStreamId = 0;
 
-/** @type {!Object.<number, !Common.OutputStream>} */
+/** @type {!Object.<number, !Common.StringOutputStream.OutputStream>} */
 const _boundStreams = {};
 
 /**
- * @param {!Common.OutputStream} stream
+ * @param {!Common.StringOutputStream.OutputStream} stream
  * @return {number}
  */
 const _bindOutputStream = function(stream) {
@@ -52,7 +54,7 @@ ResourceLoader.LoadErrorDescription;
  * @param {function(boolean, !Object.<string, string>, string, !ResourceLoader.LoadErrorDescription)} callback
  */
 export function load(url, headers, callback) {
-  const stream = new Common.StringOutputStream();
+  const stream = new Common.StringOutputStream.StringOutputStream();
   loadAsStream(url, headers, stream, mycallback);
 
   /**
@@ -146,12 +148,12 @@ function createErrorMessageFromResponse(response) {
 /**
  * @param {string} url
  * @param {?Object.<string, string>} headers
- * @param {!Common.OutputStream} stream
+ * @param {!Common.StringOutputStream.OutputStream} stream
  * @param {function(boolean, !Object.<string, string>, !ResourceLoader.LoadErrorDescription)=} callback
  */
 export const loadAsStream = function(url, headers, stream, callback) {
   const streamId = _bindOutputStream(stream);
-  const parsedURL = new Common.ParsedURL(url);
+  const parsedURL = new Common.ParsedURL.ParsedURL(url);
   if (parsedURL.isDataURL()) {
     loadXHR(url).then(dataURLDecodeSuccessful).catch(dataURLDecodeFailed);
     return;

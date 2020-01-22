@@ -28,6 +28,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as Common from '../common/common.js';
+
 import {EventDescriptors, Events} from './InspectorFrontendHostAPI.js';
 import {streamWrite as resourceLoaderStreamWrite} from './ResourceLoader.js';
 
@@ -58,7 +60,7 @@ export class InspectorFrontendHostStub {
     this._urlsBeingSaved = new Map();
 
     /**
-     * @type {!Common.EventTarget}
+     * @type {!Common.EventTarget.EventTarget}
      */
     this.events;
   }
@@ -136,7 +138,7 @@ export class InspectorFrontendHostStub {
    * @suppressGlobalPropertiesCheck
    */
   inspectedURLChanged(url) {
-    document.title = Common.UIString('DevTools - %s', url.replace(/^https?:\/\//, ''));
+    document.title = Common.UIString.UIString('DevTools - %s', url.replace(/^https?:\/\//, ''));
   }
 
   /**
@@ -158,7 +160,7 @@ export class InspectorFrontendHostStub {
       document.execCommand('copy');
       document.body.removeChild(input);
     } else {
-      Common.console.error('Clipboard is not enabled in hosted mode. Please inspect using chrome://inspect');
+      self.Common.console.error('Clipboard is not enabled in hosted mode. Please inspect using chrome://inspect');
     }
   }
 
@@ -175,7 +177,8 @@ export class InspectorFrontendHostStub {
    * @param {string} fileSystemPath
    */
   showItemInFolder(fileSystemPath) {
-    Common.console.error('Show item in folder is not enabled in hosted mode. Please inspect using chrome://inspect');
+    self.Common.console.error(
+        'Show item in folder is not enabled in hosted mode. Please inspect using chrome://inspect');
   }
 
   /**
@@ -592,7 +595,7 @@ class InspectorFrontendAPIImpl {
     }
 
     // Attach the events object.
-    InspectorFrontendHostInstance.events = new Common.Object();
+    InspectorFrontendHostInstance.events = new Common.ObjectWrapper.ObjectWrapper();
   }
 
   // FIXME: This file is included into both apps, since the devtools_app needs the InspectorFrontendHostAPI only,

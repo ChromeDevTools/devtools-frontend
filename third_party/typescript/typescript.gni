@@ -59,10 +59,14 @@ template("ts_library") {
       rebase_path(get_path_info(sources[0], "dir"), root_build_dir),
     ]
 
-    output_files = [ "$target_gen_dir/$target_name-tsconfig.json" ]
+    output_files = [
+      "$target_gen_dir/$target_name-tsconfig.json",
+      "$target_gen_dir/$target_name-tsconfig.json.tsbuildinfo",
+    ]
 
     foreach(src, sources) {
       _extension = get_path_info(src, "extension")
+      _fileName = get_path_info(src, "dir") + "/" + get_path_info(src, "name")
 
       # Any .d.ts file does not generate a corresponding a .js file, but we
       # copy it over into the generated build folder instead, as tsc doesn't
@@ -72,14 +76,14 @@ template("ts_library") {
         output_files += [ "$target_gen_dir/$src" ]
         # Any file checked by TypeScript that is jsdoc-typed will be also
         # generating a js file in the gen folder
-      } else if (_extension == "js") {
-        js_renamed_path =
-            get_path_info(src, "dir") + "/" + get_path_info(src, "name") + ".js"
-        output_files += [ "$target_gen_dir/$js_renamed_path" ]
+      } else if (_extension == "js" || _extension == "ts") {
+        output_files += [ "$target_gen_dir/$_fileName.js" ]
       } else {
         assert(false,
                "Incorrect extension on '$src' with extension '$_extension'")
       }
+
+      output_files += [ "$target_gen_dir/$_fileName.d.ts" ]
     }
 
     outputs = output_files

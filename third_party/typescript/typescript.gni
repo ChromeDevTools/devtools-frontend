@@ -2,7 +2,11 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-script_path = "//third_party/typescript"
+if (defined(use_devtools_typescript) && use_devtools_typescript) {
+  devtools_location = ""
+} else {
+  devtools_location = "third_party/devtools-frontend/src"
+}
 
 # Defines a target that compiles .ts files using TypeScript.
 # A temporary tsconfig.json is generated which uses the
@@ -17,17 +21,25 @@ script_path = "//third_party/typescript"
 #   }
 template("ts_library") {
   action(target_name) {
-    script = "//third_party/typescript/ts_library.py"
+    script = "//$devtools_location/third_party/typescript/ts_library.py"
 
-    forward_variables_from(invoker, [ "sources", "visibility" ])
+    forward_variables_from(invoker,
+                           [
+                             "sources",
+                             "visibility",
+                           ])
+
+    inputs = [
+      "//$devtools_location/tsconfig.json",
+    ]
 
     args = [
-      "--tsconfig_location",
-      rebase_path(target_gen_dir, root_build_dir) + "/tsconfig.json",
+      "--tsconfig_output_location",
+      rebase_path(target_gen_dir, root_build_dir) + "/$target_name-tsconfig.json",
     ]
     args += [ "--sources" ] + rebase_path(sources, root_build_dir)
 
-    output_files = [ "$target_gen_dir/tsconfig.json" ]
+    output_files = [ "$target_gen_dir/$target_name-tsconfig.json" ]
 
     foreach(src, sources) {
       js_renamed_path =
@@ -42,5 +54,5 @@ template("ts_library") {
 set_defaults("ts_library") {
   # Build output should be private and directories should export all relevant
   # components in a group
-  visibility = [":*"]
+  visibility = [ ":*" ]
 }

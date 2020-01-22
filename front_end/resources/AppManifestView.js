@@ -153,12 +153,12 @@ export class AppManifestView extends UI.VBox {
     this._themeColorSwatch.classList.toggle('hidden', !stringProperty('theme_color'));
     const themeColor = Common.Color.parse(stringProperty('theme_color') || 'white') || Common.Color.parse('white');
     this._themeColorSwatch.setColor(/** @type {!Common.Color} */ (themeColor));
-    this._themeColorSwatch.setFormat(Common.Color.detectColorFormat(this._themeColorSwatch.color()));
+    this._themeColorSwatch.setFormat(Common.Settings.detectColorFormat(this._themeColorSwatch.color()));
     this._backgroundColorSwatch.classList.toggle('hidden', !stringProperty('background_color'));
     const backgroundColor =
         Common.Color.parse(stringProperty('background_color') || 'white') || Common.Color.parse('white');
     this._backgroundColorSwatch.setColor(/** @type {!Common.Color} */ (backgroundColor));
-    this._backgroundColorSwatch.setFormat(Common.Color.detectColorFormat(this._backgroundColorSwatch.color()));
+    this._backgroundColorSwatch.setFormat(Common.Settings.detectColorFormat(this._backgroundColorSwatch.color()));
 
     this._orientationField.textContent = stringProperty('orientation');
     const displayType = stringProperty('display');

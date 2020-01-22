@@ -137,7 +137,7 @@ export class ComputedStyleWidget extends UI.ThrottledWidget {
     }
     const swatch = InlineEditor.ColorSwatch.create();
     swatch.setColor(color);
-    swatch.setFormat(Common.Color.detectColorFormat(color));
+    swatch.setFormat(Common.Settings.detectColorFormat(color));
     return swatch;
   }
 

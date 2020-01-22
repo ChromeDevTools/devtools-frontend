@@ -28,6 +28,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import {Color, Format} from './Color.js';  // eslint-disable-line no-unused-vars
 import {ObjectWrapper} from './Object.js';
 
 /**
@@ -947,4 +948,27 @@ export function moduleSetting(settingName) {
  */
 export function settingForTest(settingName) {
   return Common.settings.settingForTest(settingName);
+}
+
+/**
+ * @param {!Color} color
+ * @return {!Format}
+ */
+export function detectColorFormat(color) {
+  const cf = Format;
+  let format;
+  const formatSetting = moduleSetting('colorFormat').get();
+  if (formatSetting === cf.Original) {
+    format = cf.Original;
+  } else if (formatSetting === cf.RGB) {
+    format = (color.hasAlpha() ? cf.RGBA : cf.RGB);
+  } else if (formatSetting === cf.HSL) {
+    format = (color.hasAlpha() ? cf.HSLA : cf.HSL);
+  } else if (formatSetting === cf.HEX) {
+    format = color.detectHEXFormat();
+  } else {
+    format = cf.RGBA;
+  }
+
+  return format;
 }

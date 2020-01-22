@@ -137,7 +137,7 @@ export class StylePropertyTreeElement extends UI.TreeElement {
 
     const swatch = InlineEditor.ColorSwatch.create();
     swatch.setColor(color);
-    swatch.setFormat(Common.Color.detectColorFormat(swatch.color()));
+    swatch.setFormat(Common.Settings.detectColorFormat(swatch.color()));
     this._addColorContrastInfo(swatch);
 
     return swatch;
@@ -168,7 +168,7 @@ export class StylePropertyTreeElement extends UI.TreeElement {
 
     const swatch = InlineEditor.ColorSwatch.create();
     swatch.setColor(color);
-    swatch.setFormat(Common.Color.detectColorFormat(swatch.color()));
+    swatch.setFormat(Common.Settings.detectColorFormat(swatch.color()));
     swatch.setText(text, computedValue);
     this._addColorContrastInfo(swatch);
     return swatch;

@@ -27,11 +27,12 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/** @type {?Map<string, string>} */
+let _rgbaToNickname;
+
 /**
  * @unrestricted
  */
-import {moduleSetting} from './Settings.js';
-
 export class Color {
   /**
    * @param {!Array.<number>} rgba
@@ -143,7 +144,7 @@ export class Color {
         if (rgba.indexOf(null) > -1) {
           return null;
         }
-        return new Color(rgba, hasAlpha ? Format.RGBA : Format.RGB, text);
+        return new Color(/** @type {!Array.<number>} */ (rgba), hasAlpha ? Format.RGBA : Format.RGB, text);
       }
 
       if (match[2]) {  // hsl/hsla
@@ -154,8 +155,9 @@ export class Color {
         if (hsla.indexOf(null) > -1) {
           return null;
         }
+        /** @type {!Array.<number>} */
         const rgba = [];
-        Color.hsl2rgb(hsla, rgba);
+        Color.hsl2rgb(/** @type {!Array.<number>} */ (hsla), rgba);
         return new Color(rgba, hasAlpha ? Format.HSLA : Format.HSL, text);
       }
     }
@@ -176,6 +178,7 @@ export class Color {
    * @return {!Color}
    */
   static fromHSVA(hsva) {
+    /** @type {!Array.<number>} */
     const rgba = [];
     Color.hsva2rgba(hsva, rgba);
     return new Color(rgba, Format.HSLA);
@@ -183,9 +186,10 @@ export class Color {
 
   /**
    * @param {string} value
-   * return {number}
+   * @return {number|null}
    */
   static _parsePercentOrNumber(value) {
+    // @ts-ignore: isNaN can accept strings
     if (isNaN(value.replace('%', ''))) {
       return null;
     }
@@ -202,7 +206,7 @@ export class Color {
 
   /**
    * @param {string} value
-   * return {number}
+   * @return {number|null}
    */
   static _parseRgbNumeric(value) {
     const parsed = Color._parsePercentOrNumber(value);
@@ -218,10 +222,11 @@ export class Color {
 
   /**
    * @param {string} value
-   * return {number}
+   * @return {number|null}
    */
   static _parseHueNumeric(value) {
     const angle = value.replace(/(deg|g?rad|turn)$/, '');
+    // @ts-ignore: isNaN can accept strings
     if (isNaN(angle) || value.match(/\s+(deg|g?rad|turn)/)) {
       return null;
     }
@@ -239,9 +244,10 @@ export class Color {
 
   /**
    * @param {string} value
-   * return {number}
+   * @return {number|null}
    */
   static _parseSatLightNumeric(value) {
+    // @ts-ignore: isNaN can accept strings
     if (value.indexOf('%') !== value.length - 1 || isNaN(value.replace('%', ''))) {
       return null;
     }
@@ -251,7 +257,7 @@ export class Color {
 
   /**
    * @param {string} value
-   * return {number}
+   * @return {number|null}
    */
   static _parseAlphaNumeric(value) {
     return Color._parsePercentOrNumber(value);
@@ -288,6 +294,11 @@ export class Color {
     let s = hsl[1];
     const l = hsl[2];
 
+    /**
+     * @param {number} p
+     * @param {number} q
+     * @param {number} h
+     */
     function hue2rgb(p, q, h) {
       if (h < 0) {
         h += 1;
@@ -425,29 +436,6 @@ export class Color {
   }
 
   /**
-   * @param {!Color} color
-   * @return {!Format}
-   */
-  static detectColorFormat(color) {
-    const cf = Format;
-    let format;
-    const formatSetting = moduleSetting('colorFormat').get();
-    if (formatSetting === cf.Original) {
-      format = cf.Original;
-    } else if (formatSetting === cf.RGB) {
-      format = (color.hasAlpha() ? cf.RGBA : cf.RGB);
-    } else if (formatSetting === cf.HSL) {
-      format = (color.hasAlpha() ? cf.HSLA : cf.HSL);
-    } else if (formatSetting === cf.HEX) {
-      format = color.detectHEXFormat();
-    } else {
-      format = cf.RGBA;
-    }
-
-    return format;
-  }
-
-  /**
    * @return {!Format}
    */
   format() {
@@ -547,6 +535,7 @@ export class Color {
   }
 
   /**
+   * @param {?string} format
    * @return {?string}
    */
   asString(format) {
@@ -673,18 +662,18 @@ export class Color {
    * @return {?string} nickname
    */
   nickname() {
-    if (!Color._rgbaToNickname) {
-      Color._rgbaToNickname = {};
+    if (!_rgbaToNickname) {
+      _rgbaToNickname = new Map();
       for (const nickname in Nicknames) {
         let rgba = Nicknames[nickname];
         if (rgba.length !== 4) {
           rgba = rgba.concat(1);
         }
-        Color._rgbaToNickname[rgba] = nickname;
+        _rgbaToNickname.set(String(rgba), nickname);
       }
     }
 
-    return Color._rgbaToNickname[this.canonicalRGBA()] || null;
+    return _rgbaToNickname.get(String(this.canonicalRGBA())) || null;
   }
 
   /**
@@ -692,7 +681,8 @@ export class Color {
    */
   toProtocolRGBA() {
     const rgba = this.canonicalRGBA();
-    const result = {r: rgba[0], g: rgba[1], b: rgba[2]};
+    /** @type {!{r: number, g: number, b: number, a: (number|undefined)}} */
+    const result = {r: rgba[0], g: rgba[1], b: rgba[2], a: undefined};
     if (rgba[3] !== 1) {
       result.a = rgba[3];
     }
@@ -726,6 +716,7 @@ export class Color {
    * @return {!Color}
    */
   blendWith(fgColor) {
+    /** @type {!Array.<number>} */
     const rgba = [];
     Color.blendColors(fgColor._rgba, this._rgba, rgba);
     return new Color(rgba, Format.RGBA);
@@ -751,6 +742,7 @@ export const Format = {
   HSLA: 'hsla'
 };
 
+/** @type {!Object<string, !Array.<number>>} */
 export const Nicknames = {
   'aliceblue': [240, 248, 255],
   'antiquewhite': [250, 235, 215],
@@ -921,13 +913,13 @@ export const PageHighlight = {
 
 export class Generator {
   /**
-   * @param {!{min: number, max: number}|number=} hueSpace
+   * @param {!{min: number, max: number, count: (number|undefined)}|number=} hueSpace
    * @param {!{min: number, max: number, count: (number|undefined)}|number=} satSpace
    * @param {!{min: number, max: number, count: (number|undefined)}|number=} lightnessSpace
    * @param {!{min: number, max: number, count: (number|undefined)}|number=} alphaSpace
    */
   constructor(hueSpace, satSpace, lightnessSpace, alphaSpace) {
-    this._hueSpace = hueSpace || {min: 0, max: 360};
+    this._hueSpace = hueSpace || {min: 0, max: 360, count: undefined};
     this._satSpace = satSpace || 67;
     this._lightnessSpace = lightnessSpace || 80;
     this._alphaSpace = alphaSpace || 1;

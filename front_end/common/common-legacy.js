@@ -160,6 +160,8 @@ Common.SegmentedRange = CommonModule.SegmentedRange.SegmentedRange;
  */
 Common.Settings = CommonModule.Settings.Settings;
 
+Common.Settings.detectColorFormat = CommonModule.Settings.detectColorFormat;
+
 /**
  * @constructor
  */

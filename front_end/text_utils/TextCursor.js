@@ -57,12 +57,3 @@ export class TextCursor {
     return this._columnNumber;
   }
 }
-
-/* Legacy exported object */
-self.TextUtils = self.TextUtils || {};
-
-/* Legacy exported object */
-TextUtils = TextUtils || {};
-
-/** @constructor */
-TextUtils.TextCursor = TextCursor;

@@ -359,18 +359,3 @@ export class SourceEdit {
     return TextRange.fromEdit(this.oldRange, this.newText);
   }
 }
-
-/* Legacy exported object */
-self.TextUtils = self.TextUtils || {};
-
-/* Legacy exported object */
-TextUtils = TextUtils || {};
-
-/** @constructor */
-TextUtils.TextRange = TextRange;
-
-/** @constructor */
-TextUtils.SourceRange = SourceRange;
-
-/** @constructor */
-TextUtils.SourceEdit = SourceEdit;

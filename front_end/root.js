@@ -19,4 +19,4 @@ import './persistence/persistence-legacy.js';
 import './browser_sdk/browser_sdk-legacy.js';
 import './extensions/extensions-legacy.js';
 import './console_counters/console_counters-legacy.js';
-import './text_utils/text_utils.js';
+import './text_utils/text_utils-legacy.js';

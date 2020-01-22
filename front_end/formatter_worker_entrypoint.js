@@ -5,7 +5,7 @@
 import './Runtime.js';
 
 import './platform/platform.js';
-import './text_utils/text_utils.js';
+import './text_utils/text_utils-legacy.js';
 import './cm_headless/cm_headless.js';
 import './formatter_worker/formatter_worker.js';
 

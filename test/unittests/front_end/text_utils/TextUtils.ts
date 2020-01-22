@@ -4,7 +4,7 @@
 
 const {assert} = chai;
 
-import {FilterParser, BalancedJSONTokenizer, isMinified, default as Utils} from '/front_end/text_utils/TextUtils.js';
+import {FilterParser, BalancedJSONTokenizer, isMinified, Utils} from '/front_end/text_utils/TextUtils.js';
 
 describe('Utils Object', () => {
   describe('isStopChar', () => {

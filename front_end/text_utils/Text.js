@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {TextCursor} from './TextCursor.js';
+import {SourceRange, TextRange} from './TextRange.js';
 
 /**
  * @unrestricted
@@ -74,22 +75,22 @@ export class Text {
   }
 
   /**
-   * @param {!TextUtils.TextRange} range
-   * @return {!TextUtils.SourceRange}
+   * @param {!TextRange} range
+   * @return {!SourceRange}
    */
   toSourceRange(range) {
     const start = this.offsetFromPosition(range.startLine, range.startColumn);
     const end = this.offsetFromPosition(range.endLine, range.endColumn);
-    return new TextUtils.SourceRange(start, end - start);
+    return new SourceRange(start, end - start);
   }
 
   /**
-   * @param {!TextUtils.SourceRange} sourceRange
-   * @return {!TextUtils.TextRange}
+   * @param {!SourceRange} sourceRange
+   * @return {!TextRange}
    */
   toTextRange(sourceRange) {
     const cursor = new TextCursor(this.lineEndings());
-    const result = TextUtils.TextRange.createFromLocation(0, 0);
+    const result = TextRange.createFromLocation(0, 0);
 
     cursor.resetTo(sourceRange.offset);
     result.startLine = cursor.lineNumber();
@@ -102,7 +103,7 @@ export class Text {
   }
 
   /**
-   * @param {!TextUtils.TextRange} range
+   * @param {!TextRange} range
    * @param {string} replacement
    * @return {string}
    */
@@ -113,7 +114,7 @@ export class Text {
   }
 
   /**
-   * @param {!TextUtils.TextRange} range
+   * @param {!TextRange} range
    * @return {string}
    */
   extract(range) {
@@ -121,15 +122,3 @@ export class Text {
     return this._value.substr(sourceRange.offset, sourceRange.length);
   }
 }
-
-/* Legacy exported object */
-self.TextUtils = self.TextUtils || {};
-
-/* Legacy exported object */
-TextUtils = TextUtils || {};
-
-/** @constructor */
-TextUtils.Text = Text;
-
-/** @typedef {{lineNumber: number, columnNumber: number}} */
-TextUtils.Text.Position;

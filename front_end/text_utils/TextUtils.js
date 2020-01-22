@@ -27,7 +27,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-const Utils = {
+export const Utils = {
   /**
    * @param {string} char
    * @return {boolean}
@@ -42,7 +42,7 @@ const Utils = {
    * @return {boolean}
    */
   isWordChar: function(char) {
-    return !TextUtils.TextUtils.isStopChar(char) && !TextUtils.TextUtils.isSpaceChar(char);
+    return !Utils.isStopChar(char) && !Utils.isSpaceChar(char);
   },
 
   /**
@@ -50,7 +50,7 @@ const Utils = {
    * @return {boolean}
    */
   isSpaceChar: function(char) {
-    return TextUtils.TextUtils._SpaceCharRegex.test(char);
+    return Utils._SpaceCharRegex.test(char);
   },
 
   /**
@@ -59,7 +59,7 @@ const Utils = {
    */
   isWord: function(word) {
     for (let i = 0; i < word.length; ++i) {
-      if (!TextUtils.TextUtils.isWordChar(word.charAt(i))) {
+      if (!Utils.isWordChar(word.charAt(i))) {
         return false;
       }
     }
@@ -87,7 +87,7 @@ const Utils = {
    * @return {boolean}
    */
   isBraceChar: function(char) {
-    return TextUtils.TextUtils.isOpeningBraceChar(char) || TextUtils.TextUtils.isClosingBraceChar(char);
+    return Utils.isOpeningBraceChar(char) || Utils.isClosingBraceChar(char);
   },
 
   /**
@@ -118,7 +118,7 @@ const Utils = {
    */
   lineIndent: function(line) {
     let indentation = 0;
-    while (indentation < line.length && TextUtils.TextUtils.isSpaceChar(line.charAt(indentation))) {
+    while (indentation < line.length && Utils.isSpaceChar(line.charAt(indentation))) {
       ++indentation;
     }
     return line.substr(0, indentation);
@@ -196,8 +196,6 @@ const Utils = {
   }
 };
 
-export default Utils;
-
 export class FilterParser {
   /**
    * @param {!Array<string>} keys
@@ -219,10 +217,8 @@ export class FilterParser {
    * @return {!Array<!TextUtils.FilterParser.ParsedFilter>}
    */
   parse(query) {
-    const splitResult = TextUtils.TextUtils.splitStringByRegexes(query, [
-      TextUtils.TextUtils._keyValueFilterRegex, TextUtils.TextUtils._regexFilterRegex,
-      TextUtils.TextUtils._textFilterRegex
-    ]);
+    const splitResult = Utils.splitStringByRegexes(
+        query, [Utils._keyValueFilterRegex, Utils._regexFilterRegex, Utils._textFilterRegex]);
     const filters = [];
     for (let i = 0; i < splitResult.length; i++) {
       const regexIndex = splitResult[i].regexIndex;
@@ -386,25 +382,3 @@ export function isMinified(text) {
   } while (--linesToCheck >= 0 && lastPosition > 0);
   return false;
 }
-
-/* Legacy exported object */
-self.TextUtils = self.TextUtils || {};
-
-/* Legacy exported object */
-TextUtils = TextUtils || {};
-
-TextUtils.TextUtils = Utils;
-
-/** @constructor */
-TextUtils.FilterParser = FilterParser;
-
-/** @constructor */
-TextUtils.BalancedJSONTokenizer = BalancedJSONTokenizer;
-
-/** @interface */
-TextUtils.TokenizerFactory = TokenizerFactory;
-
-TextUtils.isMinified = isMinified;
-
-/** @typedef {{key:(string|undefined), text:(?string|undefined), regex:(!RegExp|undefined), negative:boolean}} */
-TextUtils.FilterParser.ParsedFilter;

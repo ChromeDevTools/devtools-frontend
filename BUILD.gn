@@ -1018,6 +1018,7 @@ all_devtools_modules = [
   "front_end/text_editor/text_editor-legacy.js",
   "front_end/text_editor/TextEditorAutocompleteController.js",
   "front_end/text_utils/text_utils.js",
+  "front_end/text_utils/text_utils-legacy.js",
   "front_end/text_utils/Text.js",
   "front_end/text_utils/TextCursor.js",
   "front_end/text_utils/TextRange.js",
@@ -1927,6 +1928,7 @@ copied_devtools_modules = [
   "$resources_out_dir/text_editor/text_editor-legacy.js",
   "$resources_out_dir/text_editor/TextEditorAutocompleteController.js",
   "$resources_out_dir/text_utils/text_utils.js",
+  "$resources_out_dir/text_utils/text_utils-legacy.js",
   "$resources_out_dir/text_utils/Text.js",
   "$resources_out_dir/text_utils/TextCursor.js",
   "$resources_out_dir/text_utils/TextRange.js",
@@ -2189,9 +2191,7 @@ group("devtools_all_files") {
     # This enalbes us to test bots with whitespace changes.
     "scripts/whitespaces.txt",
   ]
-  deps = [
-    ":devtools_frontend_resources_data",
-  ]
+  deps = [ ":devtools_frontend_resources_data" ]
 }
 
 devtools_typescript_deps = [ "front_end/common:common" ]
@@ -2230,32 +2230,22 @@ group("devtools_frontend_resources_data") {
 
 copy("copy_embedder_scripts") {
   sources = devtools_embedder_scripts
-  outputs = [
-    "$resources_out_dir/{{source_file_part}}",
-  ]
+  outputs = [ "$resources_out_dir/{{source_file_part}}" ]
 }
 
 copy("copy_htaccess") {
-  sources = [
-    "htaccess",
-  ]
-  outputs = [
-    "$resources_out_dir/.htaccess",
-  ]
+  sources = [ "htaccess" ]
+  outputs = [ "$resources_out_dir/.htaccess" ]
 }
 
 copy("copy_inspector_images") {
   sources = devtools_image_files
-  outputs = [
-    "$resources_out_dir/Images/{{source_file_part}}",
-  ]
+  outputs = [ "$resources_out_dir/Images/{{source_file_part}}" ]
 }
 
 copy("copy_emulated_devices_images") {
   sources = devtools_emulated_devices_images
-  outputs = [
-    "$resources_out_dir/emulated_devices/{{source_file_part}}",
-  ]
+  outputs = [ "$resources_out_dir/emulated_devices/{{source_file_part}}" ]
 }
 
 copy("copy_lighthouse_locale_files") {
@@ -2266,20 +2256,15 @@ copy("copy_lighthouse_locale_files") {
 }
 
 copy("copy_wasm_deps") {
-  sources = [
-    "front_end/sdk/wasm_source_map/pkg/wasm_source_map_bg.wasm",
-  ]
-  outputs = [
-    "$resources_out_dir/sdk/wasm_source_map/pkg/wasm_source_map_bg.wasm",
-  ]
+  sources = [ "front_end/sdk/wasm_source_map/pkg/wasm_source_map_bg.wasm" ]
+  outputs =
+      [ "$resources_out_dir/sdk/wasm_source_map/pkg/wasm_source_map_bg.wasm" ]
 }
 
 action("generate_devtools_grd") {
   script = "scripts/build/generate_devtools_grd.py"
 
-  deps = [
-    ":devtools_frontend_resources",
-  ]
+  deps = [ ":devtools_frontend_resources" ]
 
   grd_files =
       copied_devtools_modules + generated_applications +
@@ -2293,9 +2278,7 @@ action("generate_devtools_grd") {
   inputs = grd_files + devtools_image_files
   response_file_contents = rebase_path(grd_files, root_build_dir)
   outfile = "$root_gen_dir/devtools/devtools_resources.grd"
-  outputs = [
-    outfile,
-  ]
+  outputs = [ outfile ]
 
   relative_path_dirs = [
     resources_out_dir,
@@ -2320,9 +2303,7 @@ action("devtools_extension_api") {
 
   devtools_extension_api_files = [ "front_end/extensions/ExtensionAPI.js" ]
   inputs = devtools_extension_api_files
-  outputs = [
-    "$resources_out_dir/devtools_extension_api.js",
-  ]
+  outputs = [ "$resources_out_dir/devtools_extension_api.js" ]
 
   args = rebase_path(outputs, root_build_dir) +
          rebase_path(devtools_extension_api_files, root_build_dir)
@@ -2331,13 +2312,9 @@ action("devtools_extension_api") {
 action("supported_css_properties") {
   script = "scripts/build/generate_supported_css.py"
 
-  inputs = [
-    "//third_party/blink/renderer/core/css/css_properties.json5",
-  ]
+  inputs = [ "//third_party/blink/renderer/core/css/css_properties.json5" ]
 
-  outputs = [
-    "$resources_out_dir/SupportedCSSProperties.js",
-  ]
+  outputs = [ "$resources_out_dir/SupportedCSSProperties.js" ]
 
   args =
       rebase_path(inputs, root_build_dir) + rebase_path(outputs, root_build_dir)
@@ -2346,13 +2323,9 @@ action("supported_css_properties") {
 action("aria_properties") {
   script = "scripts/build/generate_aria.py"
 
-  inputs = [
-    "//third_party/blink/renderer/core/html/aria_properties.json5",
-  ]
+  inputs = [ "//third_party/blink/renderer/core/html/aria_properties.json5" ]
 
-  outputs = [
-    "$resources_out_dir/accessibility/ARIAProperties.js",
-  ]
+  outputs = [ "$resources_out_dir/accessibility/ARIAProperties.js" ]
 
   args =
       rebase_path(inputs, root_build_dir) + rebase_path(outputs, root_build_dir)
@@ -2360,15 +2333,11 @@ action("aria_properties") {
 
 action("frontend_protocol_sources") {
   script = "scripts/build/code_generator_frontend.py"
-  deps = [
-    "//third_party/blink/public/devtools_protocol:protocol_version",
-  ]
+  deps = [ "//third_party/blink/public/devtools_protocol:protocol_version" ]
   inputs = [
     "$root_gen_dir/third_party/blink/public/devtools_protocol/protocol.json",
   ]
-  outputs = [
-    "$resources_out_dir/InspectorBackendCommands.js",
-  ]
+  outputs = [ "$resources_out_dir/InspectorBackendCommands.js" ]
 
   args = rebase_path(inputs, root_build_dir) + [
            "--output_js_dir",
@@ -2412,9 +2381,7 @@ action("build_release_devtools") {
 action("copy_devtools_modules") {
   script = "scripts/build/copy_devtools_modules.py"
 
-  deps = [
-    ":build_release_devtools",
-  ]
+  deps = [ ":build_release_devtools" ]
 
   inputs = all_devtools_modules
   response_file_contents = inputs
@@ -2437,9 +2404,7 @@ if (debug_devtools) {
     script = "scripts/build/build_debug_applications.py"
     inputs = all_devtools_files + application_templates
     stamp = "$resources_out_debug_dir/build.stamp"
-    outputs = [
-      stamp,
-    ]
+    outputs = [ stamp ]
 
     args = [
       "--input_path",
@@ -2459,9 +2424,7 @@ if (debug_devtools) {
       ":supported_css_properties",
     ]
     sources = generated_scripts
-    outputs = [
-      "$resources_out_debug_dir/{{source_file_part}}",
-    ]
+    outputs = [ "$resources_out_debug_dir/{{source_file_part}}" ]
   }
 
   copy("copy_aria_properties") {
@@ -2472,9 +2435,7 @@ if (debug_devtools) {
 
     sources = generated_aria_properties
 
-    outputs = [
-      "$resources_out_debug_dir/accessibility/{{source_file_part}}",
-    ]
+    outputs = [ "$resources_out_debug_dir/accessibility/{{source_file_part}}" ]
   }
 }
 

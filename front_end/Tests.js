@@ -1519,7 +1519,7 @@
     }
 
     function showConsoleAndEvaluate() {
-      Common.console.showPromise().then(innerEvaluate.bind(this));
+      self.Common.console.showPromise().then(innerEvaluate.bind(this));
     }
 
     if (!UI.context.flavor(SDK.ExecutionContext)) {

@@ -219,7 +219,7 @@ export function frameworkEventListeners(object) {
    * @param {!SDK.RemoteObject} errorString
    */
   function printErrorString(errorString) {
-    Common.console.error(String(errorString.value));
+    self.Common.console.error(String(errorString.value));
   }
 
   /**

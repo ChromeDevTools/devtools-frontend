@@ -125,7 +125,7 @@ export class TracingModel {
     if (tracingStartedInBrowser.length === 1) {
       return tracingStartedInBrowser[0].thread;
     }
-    Common.console.error('Failed to find browser main thread in trace, some timeline features may be unavailable');
+    self.Common.console.error('Failed to find browser main thread in trace, some timeline features may be unavailable');
     return null;
   }
 
@@ -715,7 +715,7 @@ export class ObjectSnapshot extends Event {
         const payload = JSON.parse(result);
         callback(payload['args']['snapshot']);
       } catch (e) {
-        Common.console.error('Malformed event data in backing storage');
+        self.Common.console.error('Malformed event data in backing storage');
         callback(null);
       }
     }

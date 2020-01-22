@@ -315,7 +315,7 @@ export class CPUProfileDataModel extends ProfileTreeModel {
       nodeId = nextNodeId;
     }
     if (count) {
-      Common.console.warn(ls`DevTools: CPU profile parser is fixing ${count} missing samples.`);
+      self.Common.console.warn(ls`DevTools: CPU profile parser is fixing ${count} missing samples.`);
     }
     /**
      * @param {!ProfileNode} node

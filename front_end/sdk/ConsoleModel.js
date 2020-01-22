@@ -149,7 +149,7 @@ export class ConsoleModel extends Common.Object {
     if (result.error) {
       return;
     }
-    await Common.console.showPromise();
+    await self.Common.console.showPromise();
     this.dispatchEventToListeners(
         Events.CommandEvaluated,
         {result: result.object, commandMessage: originatingMessage, exceptionDetails: result.exceptionDetails});
@@ -275,7 +275,7 @@ export class ConsoleModel extends Common.Object {
    */
   _mainFrameNavigated(event) {
     if (Common.moduleSetting('preserveConsoleLog').get()) {
-      Common.console.log(Common.UIString('Navigated to %s', event.data.url));
+      self.Common.console.log(Common.UIString('Navigated to %s', event.data.url));
     }
   }
 
@@ -441,7 +441,7 @@ export class ConsoleModel extends Common.Object {
       if (result) {
         message += ' ' + result.description;
       }
-      Common.console.error(message);
+      self.Common.console.error(message);
     }
   }
 }

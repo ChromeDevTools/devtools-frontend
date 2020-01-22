@@ -14,7 +14,7 @@ export class WarningErrorCounter {
     this._toolbarItem = new UI.ToolbarItem(countersWrapper);
 
     this._counter = createElement('div');
-    this._counter.addEventListener('click', Common.console.show.bind(Common.console), false);
+    this._counter.addEventListener('click', self.Common.console.show.bind(self.Common.console), false);
     const shadowRoot = UI.createShadowRootWithCoreStyles(this._counter, 'console_counters/errorWarningCounter.css');
     countersWrapper.appendChild(this._counter);
 

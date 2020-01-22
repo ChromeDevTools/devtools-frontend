@@ -685,7 +685,7 @@ export class HeapSnapshotGenericObjectNode extends HeapSnapshotGridNode {
         const remoteObject =
             await this.tryQueryObjectContent(/** @type {!SDK.HeapProfilerModel} */ (heapProfilerModel), '');
         if (!remoteObject) {
-          Common.console.error(ls`Preview is not available`);
+          self.Common.console.error(ls`Preview is not available`);
         } else {
           await SDK.consoleModel.saveToTempVariable(UI.context.flavor(SDK.ExecutionContext), remoteObject);
         }

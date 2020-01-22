@@ -192,7 +192,7 @@ export class TimelineLoader {
    */
   _reportErrorAndCancelLoading(message) {
     if (message) {
-      Common.console.error(message);
+      self.Common.console.error(message);
     }
     this.cancel();
   }

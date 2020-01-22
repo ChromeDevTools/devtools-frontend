@@ -22,12 +22,12 @@ export class CustomPreviewSection {
     try {
       headerJSON = JSON.parse(customPreview.header);
     } catch (e) {
-      Common.console.error('Broken formatter: header is invalid json ' + e);
+      self.Common.console.error('Broken formatter: header is invalid json ' + e);
       return;
     }
     this._header = this._renderJSONMLTag(headerJSON);
     if (this._header.nodeType === Node.TEXT_NODE) {
-      Common.console.error('Broken formatter: header should be an element node.');
+      self.Common.console.error('Broken formatter: header should be an element node.');
       return;
     }
 
@@ -69,7 +69,7 @@ export class CustomPreviewSection {
   _renderElement(object) {
     const tagName = object.shift();
     if (!CustomPreviewSection._tagsWhiteList.has(tagName)) {
-      Common.console.error('Broken formatter: element ' + tagName + ' is not allowed!');
+      self.Common.console.error('Broken formatter: element ' + tagName + ' is not allowed!');
       return createElement('span');
     }
     const element = createElement(/** @type {string} */ (tagName));

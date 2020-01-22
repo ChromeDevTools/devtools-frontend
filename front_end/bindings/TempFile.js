@@ -67,7 +67,7 @@ export class TempFile {
    */
   async readRange(startOffset, endOffset) {
     if (!this._lastBlob) {
-      Common.console.error('Attempt to read a temp file that was never written');
+      self.Common.console.error('Attempt to read a temp file that was never written');
       return Promise.resolve('');
     }
     const blob = typeof startOffset === 'number' || typeof endOffset === 'number' ?
@@ -82,7 +82,7 @@ export class TempFile {
         reader.readAsText(blob);
       });
     } catch (error) {
-      Common.console.error('Failed to read from temp file: ' + error.message);
+      self.Common.console.error('Failed to read from temp file: ' + error.message);
     }
 
     return /** @type {?string} */ (reader.result);

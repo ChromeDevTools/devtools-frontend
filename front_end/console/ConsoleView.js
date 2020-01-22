@@ -341,8 +341,8 @@ export class ConsoleView extends UI.VBox {
   }
 
   _registerWithMessageSink() {
-    Common.console.messages().forEach(this._addSinkMessage, this);
-    Common.console.addEventListener(Common.Console.Events.MessageAdded, messageAdded, this);
+    self.Common.console.messages().forEach(this._addSinkMessage, this);
+    self.Common.console.addEventListener(Common.Console.Events.MessageAdded, messageAdded, this);
 
     /**
      * @param {!Common.Event} event
@@ -1554,7 +1554,7 @@ export class ActionDelegate {
     switch (actionId) {
       case 'console.show':
         Host.InspectorFrontendHost.bringToFront();
-        Common.console.show();
+        self.Common.console.show();
         ConsoleView.instance()._focusPrompt();
         return true;
       case 'console.clear':

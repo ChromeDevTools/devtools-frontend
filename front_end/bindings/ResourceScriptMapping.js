@@ -361,7 +361,8 @@ export class ResourceScriptFile extends Common.Object {
         return;
       }
       if (!exceptionDetails) {
-        Common.console.addMessage(Common.UIString('LiveEdit failed: %s', error), Common.Console.MessageLevel.Warning);
+        self.Common.console.addMessage(
+            Common.UIString('LiveEdit failed: %s', error), Common.Console.MessageLevel.Warning);
         return;
       }
       const messageText = Common.UIString('LiveEdit compile failed: %s', exceptionDetails.text);

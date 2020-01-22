@@ -517,7 +517,7 @@ export class NetworkLogView extends UI.VBox {
    * @param {string} message
    */
   _harLoadFailed(message) {
-    Common.console.error('Failed to load HAR file with following error: ' + message);
+    self.Common.console.error('Failed to load HAR file with following error: ' + message);
   }
 
   /**

@@ -91,7 +91,7 @@ export class ServiceWorkerCacheModel extends SDKModel {
     if (!response[Protocol.Error]) {
       return;
     }
-    Common.console.error(Common.UIString(
+    self.Common.console.error(Common.UIString(
         'ServiceWorkerCacheAgent error deleting cache entry %s in cache: %s', cache.toString(),
         response[Protocol.Error]));
   }

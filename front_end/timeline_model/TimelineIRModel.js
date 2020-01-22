@@ -85,7 +85,7 @@ export class TimelineIRModel {
 
         case eventTypes.FlingStart:
           if (flingStart) {
-            Common.console.error(
+            self.Common.console.error(
                 Common.UIString('Two flings at the same time? %s vs %s', flingStart.startTime, event.startTime));
             break;
           }
@@ -120,7 +120,7 @@ export class TimelineIRModel {
           // We do not produce any response segment for TouchStart -- there's either going to be one upon
           // TouchMove for drag, or one for GestureTap.
           if (touchStart) {
-            Common.console.error(
+            self.Common.console.error(
                 Common.UIString('Two touches at the same time? %s vs %s', touchStart.startTime, event.startTime));
             break;
           }

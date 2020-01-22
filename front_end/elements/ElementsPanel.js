@@ -1019,7 +1019,7 @@ export class DOMNodeRevealer {
         const isDocument = node instanceof SDK.DOMDocument;
         if (!isDocument && isDetached) {
           const msg = ls`Node cannot be found in the current page.`;
-          Common.console.warn(msg);
+          self.Common.console.warn(msg);
           reject(new Error(msg));
           return;
         }

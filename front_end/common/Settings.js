@@ -236,7 +236,7 @@ export class SettingsStorage {
   }
 
   _dumpSizes() {
-    Common.console.log('Ten largest settings: ');
+    self.Common.console.log('Ten largest settings: ');
 
     const sizes = {__proto__: null};
     for (const key in this._object) {
@@ -251,7 +251,7 @@ export class SettingsStorage {
     keys.sort(comparator);
 
     for (let i = 0; i < 10 && i < keys.length; ++i) {
-      Common.console.log('Setting: \'' + keys[i] + '\', size: ' + sizes[keys[i]]);
+      self.Common.console.log('Setting: \'' + keys[i] + '\', size: ' + sizes[keys[i]]);
     }
   }
 }
@@ -358,7 +358,7 @@ export class Setting {
         this._printSettingsSavingError(e.message, this._name, settingString);
       }
     } catch (e) {
-      Common.console.error('Cannot stringify setting with name: ' + this._name + ', error: ' + e.message);
+      self.Common.console.error('Cannot stringify setting with name: ' + this._name + ', error: ' + e.message);
     }
     this._eventSupport.dispatchEventToListeners(this._name, value);
   }
@@ -385,7 +385,7 @@ export class Setting {
     const errorMessage =
         'Error saving setting with name: ' + this._name + ', value length: ' + value.length + '. Error: ' + message;
     console.error(errorMessage);
-    Common.console.error(errorMessage);
+    self.Common.console.error(errorMessage);
     this._storage._dumpSizes();
   }
 }

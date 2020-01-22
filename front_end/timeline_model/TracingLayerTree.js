@@ -74,12 +74,12 @@ export class TracingLayerTree extends SDK.LayerTreeBase {
   pictureForRasterTile(tileId) {
     const tile = this._tileById.get('cc::Tile/' + tileId);
     if (!tile) {
-      Common.console.error(`Tile ${tileId} is missing`);
+      self.Common.console.error(`Tile ${tileId} is missing`);
       return /** @type {!Promise<?SDK.SnapshotWithRect>} */ (Promise.resolve(null));
     }
     const layer = /** @type {?TracingLayer} */ (this.layerById(tile.layer_id));
     if (!layer) {
-      Common.console.error(`Layer ${tile.layer_id} for tile ${tileId} is not found`);
+      self.Common.console.error(`Layer ${tile.layer_id} for tile ${tileId} is not found`);
       return /** @type {!Promise<?SDK.SnapshotWithRect>} */ (Promise.resolve(null));
     }
     return layer._pictureForRect(tile.content_rect);

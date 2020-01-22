@@ -169,7 +169,7 @@ export class SourceMapManager extends Common.Object {
 
       sourceMapPromise
           .catch(error => {
-            Common.console.warn(ls`DevTools failed to load SourceMap: ${error.message}`);
+            self.Common.console.warn(ls`DevTools failed to load SourceMap: ${error.message}`);
           })
           .then(onSourceMap.bind(this, sourceMapId));
     }

@@ -662,7 +662,7 @@ export class HeapSnapshotView extends UI.SimpleView {
     if (node) {
       node.select();
     } else {
-      Common.console.error('Cannot find corresponding heap snapshot node');
+      self.Common.console.error('Cannot find corresponding heap snapshot node');
     }
   }
 
@@ -1598,7 +1598,7 @@ export class HeapProfileHeader extends ProfileHeader {
   _handleWorkerEvent(eventName, data) {
     if (HeapSnapshotModel.HeapSnapshotProgressEvent.BrokenSnapshot === eventName) {
       const error = /** @type {string} */ (data);
-      Common.console.error(error);
+      self.Common.console.error(error);
       return;
     }
 
@@ -1686,14 +1686,14 @@ export class HeapProfileHeader extends ProfileHeader {
         return;
       }
       if (this._failedToCreateTempFile) {
-        Common.console.error('Failed to open temp file with heap snapshot');
+        self.Common.console.error('Failed to open temp file with heap snapshot');
         fileOutputStream.close();
         return;
       }
       if (this._tempFile) {
         const error = await this._tempFile.copyToOutputStream(fileOutputStream, this._onChunkTransferred.bind(this));
         if (error) {
-          Common.console.error('Failed to read heap snapshot from temp file: ' + error.message);
+          self.Common.console.error('Failed to read heap snapshot from temp file: ' + error.message);
         }
         this._didCompleteSnapshotTransfer();
         return;

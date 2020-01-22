@@ -38,10 +38,18 @@ for (const [name, moduleJSON] of modules) {
   };
   for (const dependency of dependencyChain(name)) {
     jsconfig.include.push('../' + dependency + '/**/*');
+
+    // We don't load module.json files recursively so the module might not be found.
+    if (!modules.get(dependency)) {
+      continue;
+    }
+
     for (const file of modules.get(dependency).skip_compilation || [])
       jsconfig.exclude.push(path.posix.join('..',dependency, file));
   }
-  fs.writeFileSync(path.resolve(FRONTEND_PATH, name, 'jsconfig.json'), JSON.stringify(jsconfig, undefined, 2));
+
+  const outputPath = path.resolve(FRONTEND_PATH, name, 'jsconfig.json');
+  fs.writeFileSync(outputPath, JSON.stringify(jsconfig, undefined, 2));
 }
 
 /**
@@ -50,6 +58,12 @@ for (const [name, moduleJSON] of modules) {
  */
 function dependencyChain(moduleName) {
   const dependencies = new Set();
+
+  // We don't load module.json files recursively so the module might not be found.
+  if (!modules.get(moduleName)) {
+    return dependencies;
+  }
+
   for (const dependency of modules.get(moduleName).dependencies || []){
     dependencies.add(dependency);
     for (const innerDependency of dependencyChain(dependency))

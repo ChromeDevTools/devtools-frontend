@@ -821,9 +821,9 @@ export class TimelineEventOverviewCoverage extends TimelineEventOverview {
     const percentUsed = total ? Math.round(100 * total_used / total) : 0;
     const lowerOffset = 3 * ratio;
 
-    const minTime = this._model.recordStartTime();
-    const maxTime =
-        minTime + (this._model.timelineModel().maximumRecordTime() - this._model.timelineModel().minimumRecordTime());
+    const millisecondsPerSecond = 1000;
+    const minTime = this._model.timelineModel().minimumRecordTime() / millisecondsPerSecond;
+    const maxTime = this._model.timelineModel().maximumRecordTime() / millisecondsPerSecond;
 
     const lineWidth = 1;
     const width = this.width();

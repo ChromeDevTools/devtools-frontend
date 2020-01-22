@@ -144,10 +144,13 @@ export class CPUProfilerModel extends SDKModel {
   }
 
   /**
-   * @return {!Promise<!Array<!Protocol.Profiler.ScriptCoverage>>}
+   * @return {!Promise<{timestamp:number, coverage:!Array<!Protocol.Profiler.ScriptCoverage>}>}
    */
-  takePreciseCoverage() {
-    return this._profilerAgent.takePreciseCoverage().then(result => result || []);
+  async takePreciseCoverage() {
+    const r = await this._profilerAgent.invoke_takePreciseCoverage({});
+    const timestamp = (r && r.timestamp) || 0;
+    const coverage = (r && r.result) || [];
+    return {timestamp, coverage};
   }
 
   /**

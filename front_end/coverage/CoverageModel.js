@@ -279,9 +279,8 @@ export class CoverageModel extends SDK.SDKModel {
     if (!this._cpuProfilerModel) {
       return [];
     }
-    const now = Date.now();
-    const freshRawCoverageData = await this._cpuProfilerModel.takePreciseCoverage();
-    return this._backlogOrProcessJSCoverage(freshRawCoverageData, now);
+    const {coverage, timestamp} = await this._cpuProfilerModel.takePreciseCoverage();
+    return this._backlogOrProcessJSCoverage(coverage, timestamp);
   }
 
   async _backlogOrProcessJSCoverage(freshRawCoverageData, freshTimestamp) {
@@ -291,8 +290,9 @@ export class CoverageModel extends SDK.SDKModel {
     if (this._suspensionState !== SuspensionState.Active) {
       return [];
     }
+    const ascendingByTimestamp = (x, y) => x.stamp - y.stamp;
     const results = [];
-    for (const {rawCoverageData, stamp} of this._jsBacklog) {
+    for (const {rawCoverageData, stamp} of this._jsBacklog.sort(ascendingByTimestamp)) {
       results.push(this._processJSCoverage(rawCoverageData, stamp));
     }
     this._jsBacklog = [];
@@ -349,24 +349,23 @@ export class CoverageModel extends SDK.SDKModel {
     if (!this._cssModel || this._suspensionState !== SuspensionState.Active) {
       return [];
     }
-    const now = Date.now();
-    const freshRawCoverageData = await this._cssModel.takeCoverageDelta();
-    if (this._suspensionState !== SuspensionState.Active) {
-      if (freshRawCoverageData.length > 0) {
-        this._cssBacklog.push({rawCoverageData: freshRawCoverageData, stamp: now});
-      }
+    const {coverage, timestamp} = await this._cssModel.takeCoverageDelta();
+    return this._backlogOrProcessCSSCoverage(coverage, timestamp);
+  }
 
+  async _backlogOrProcessCSSCoverage(freshRawCoverageData, freshTimestamp) {
+    if (freshRawCoverageData.length > 0) {
+      this._cssBacklog.push({rawCoverageData: freshRawCoverageData, stamp: freshTimestamp});
+    }
+    if (this._suspensionState !== SuspensionState.Active) {
       return [];
     }
+    const ascendingByTimestamp = (x, y) => x.stamp - y.stamp;
     const results = [];
-    for (const {rawCoverageData, stamp} of this._cssBacklog) {
+    for (const {rawCoverageData, stamp} of this._cssBacklog.sort(ascendingByTimestamp)) {
       results.push(this._processCSSCoverage(rawCoverageData, stamp));
     }
-
     this._cssBacklog = [];
-    if (freshRawCoverageData.length > 0) {
-      results.push(this._processCSSCoverage(freshRawCoverageData, now));
-    }
     return results.flat();
   }
 

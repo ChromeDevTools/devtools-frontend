@@ -145,31 +145,6 @@ String.filterRegex = function(query) {
 };
 
 /**
-  * @param {string} text
-  * @return {string}
-  */
-String.escapeInvalidUnicodeCharacters = function(text) {
-  // Escape lone surrogates and non-characters.
-  // https://unicode.org/faq/private_use.html#nonchar1
-  const reInvalid =
-      /[\p{Surrogate}\uFDD0-\uFDEF\uFFFE\uFFFF\u{1FFFE}\u{1FFFF}\u{2FFFE}\u{2FFFF}\u{3FFFE}\u{3FFFF}\u{4FFFE}\u{4FFFF}\u{5FFFE}\u{5FFFF}\u{6FFFE}\u{6FFFF}\u{7FFFE}\u{7FFFF}\u{8FFFE}\u{8FFFF}\u{9FFFE}\u{9FFFF}\u{AFFFE}\u{AFFFF}\u{BFFFE}\u{BFFFF}\u{CFFFE}\u{CFFFF}\u{DFFFE}\u{DFFFF}\u{EFFFE}\u{EFFFF}\u{FFFFE}\u{FFFFF}\u{10FFFE}\u{10FFFF}]/gu;
-  let result = '';
-  let lastPos = 0;
-  while (true) {
-    const match = reInvalid.exec(text);
-    if (!match) {
-      break;
-    }
-    result += text.substring(lastPos, match.index) + '\\u' + text.charCodeAt(match.index).toString(16);
-    if (match.index + 1 < reInvalid.lastIndex) {
-      result += '\\u' + text.charCodeAt(match.index + 1).toString(16);
-    }
-    lastPos = reInvalid.lastIndex;
-  }
-  return result + text.substring(lastPos);
-};
-
-/**
  * @return {string}
  */
 String.prototype.escapeHTML = function() {

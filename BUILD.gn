@@ -693,6 +693,7 @@ all_devtools_modules = [
   "front_end/heap_snapshot_model/HeapSnapshotModel.js",
   "front_end/heap_snapshot_worker/AllocationProfile.js",
   "front_end/heap_snapshot_worker/heap_snapshot_worker.js",
+  "front_end/heap_snapshot_worker/heap_snapshot_worker-legacy.js",
   "front_end/heap_snapshot_worker/HeapSnapshot.js",
   "front_end/heap_snapshot_worker/HeapSnapshotLoader.js",
   "front_end/heap_snapshot_worker/HeapSnapshotWorker.js",
@@ -1604,6 +1605,7 @@ copied_devtools_modules = [
   "$resources_out_dir/heap_snapshot_model/HeapSnapshotModel.js",
   "$resources_out_dir/heap_snapshot_worker/AllocationProfile.js",
   "$resources_out_dir/heap_snapshot_worker/heap_snapshot_worker.js",
+  "$resources_out_dir/heap_snapshot_worker/heap_snapshot_worker-legacy.js",
   "$resources_out_dir/heap_snapshot_worker/HeapSnapshot.js",
   "$resources_out_dir/heap_snapshot_worker/HeapSnapshotLoader.js",
   "$resources_out_dir/heap_snapshot_worker/HeapSnapshotWorker.js",
@@ -2161,6 +2163,12 @@ generated_test_modules = [
   "$resources_out_dir/sources_test_runner/sources_test_runner_module.js",
 ]
 
+all_worker_entrypoints = [
+  "front_end/formatter_worker_entrypoint.js",
+  "front_end/heap_snapshot_worker_entrypoint.js",
+  "front_end/wasmparser_worker_entrypoint.js",
+]
+
 generated_worker_bundles = [
   "$resources_out_dir/formatter_worker_entrypoint.js",
   "$resources_out_dir/heap_snapshot_worker_entrypoint.js",
@@ -2362,6 +2370,7 @@ action("build_release_devtools") {
   inputs =
       helper_scripts + all_devtools_files + devtools_test_files +
       generated_scripts + generated_aria_properties + application_templates +
+      all_worker_entrypoints +
       # In `build_release_applications` we sometimes include
       # the content of Runtime.js into the build output.
       [ "front_end/Runtime.js" ]

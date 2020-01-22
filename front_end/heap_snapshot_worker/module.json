@@ -2,6 +2,7 @@
     "scripts": [],
     "modules": [
         "heap_snapshot_worker.js",
+        "heap_snapshot_worker-legacy.js",
         "AllocationProfile.js",
         "HeapSnapshot.js",
         "HeapSnapshotLoader.js",

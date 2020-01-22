@@ -27,11 +27,13 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+import {HeapSnapshotWorkerDispatcher} from './HeapSnapshotWorkerDispatcher.js';
+
 function postMessageWrapper(message) {
   postMessage(message);
 }
 
-const dispatcher = new HeapSnapshotWorker.HeapSnapshotWorkerDispatcher(self, postMessageWrapper);
+const dispatcher = new HeapSnapshotWorkerDispatcher(self, postMessageWrapper);
 
 /**
  * @param {function(!Event)} listener

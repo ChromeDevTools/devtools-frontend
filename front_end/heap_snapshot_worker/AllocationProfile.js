@@ -378,21 +378,3 @@ export class FunctionAllocationInfo {
     }
   }
 }
-
-/* Legacy exported object */
-self.HeapSnapshotWorker = self.HeapSnapshotWorker || {};
-
-/* Legacy exported object */
-HeapSnapshotWorker = HeapSnapshotWorker || {};
-
-/** @constructor */
-HeapSnapshotWorker.AllocationProfile = AllocationProfile;
-
-/** @constructor */
-HeapSnapshotWorker.TopDownAllocationNode = TopDownAllocationNode;
-
-/** @constructor */
-HeapSnapshotWorker.BottomUpAllocationNode = BottomUpAllocationNode;
-
-/** @constructor */
-HeapSnapshotWorker.FunctionAllocationInfo = FunctionAllocationInfo;

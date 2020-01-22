@@ -105,12 +105,3 @@ export class HeapSnapshotWorkerDispatcher {
     this._postMessage(response);
   }
 }
-
-/* Legacy exported object */
-self.HeapSnapshotWorker = self.HeapSnapshotWorker || {};
-
-/* Legacy exported object */
-HeapSnapshotWorker = HeapSnapshotWorker || {};
-
-/** @constructor */
-HeapSnapshotWorker.HeapSnapshotWorkerDispatcher = HeapSnapshotWorkerDispatcher;

@@ -27,6 +27,10 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+import {AllocationProfile} from './AllocationProfile.js';
+import {HeapSnapshotWorkerDispatcher} from './HeapSnapshotWorkerDispatcher.js';  // eslint-disable-line no-unused-vars
+
 /**
  * @interface
  */
@@ -748,7 +752,7 @@ export class HeapSnapshotFilteredIterator {
  */
 export class HeapSnapshotProgress {
   /**
-   * @param {!HeapSnapshotWorker.HeapSnapshotWorkerDispatcher=} dispatcher
+   * @param {!HeapSnapshotWorkerDispatcher=} dispatcher
    */
   constructor(dispatcher) {
     this._dispatcher = dispatcher;
@@ -962,7 +966,7 @@ export class HeapSnapshot {
         stats.size += node.selfSize();
         stats.ids.push(node.id());
       }
-      this._allocationProfile = new HeapSnapshotWorker.AllocationProfile(this._profile, liveObjects);
+      this._allocationProfile = new AllocationProfile(this._profile, liveObjects);
       this._progress.updateStatus(ls`Done`);
     }
   }
@@ -3267,96 +3271,3 @@ export class JSHeapSnapshotRetainerEdge extends HeapSnapshotRetainerEdge {
     console.warn = () => undefined;
   }
 })();
-
-/* Legacy exported object */
-self.HeapSnapshotWorker = self.HeapSnapshotWorker || {};
-
-/* Legacy exported object */
-HeapSnapshotWorker = HeapSnapshotWorker || {};
-
-/** @interface */
-HeapSnapshotWorker.HeapSnapshotItem = HeapSnapshotItem;
-
-/** @constructor */
-HeapSnapshotWorker.HeapSnapshotEdge = HeapSnapshotEdge;
-
-/** @interface */
-HeapSnapshotWorker.HeapSnapshotItemIterator = HeapSnapshotItemIterator;
-
-/** @interface */
-HeapSnapshotWorker.HeapSnapshotItemIndexProvider = HeapSnapshotItemIndexProvider;
-
-/** @constructor */
-HeapSnapshotWorker.HeapSnapshotNodeIndexProvider = HeapSnapshotNodeIndexProvider;
-
-/** @constructor */
-HeapSnapshotWorker.HeapSnapshotEdgeIndexProvider = HeapSnapshotEdgeIndexProvider;
-
-/** @constructor */
-HeapSnapshotWorker.HeapSnapshotRetainerEdgeIndexProvider = HeapSnapshotRetainerEdgeIndexProvider;
-
-/** @constructor */
-HeapSnapshotWorker.HeapSnapshotEdgeIterator = HeapSnapshotEdgeIterator;
-
-/** @constructor */
-HeapSnapshotWorker.HeapSnapshotRetainerEdge = HeapSnapshotRetainerEdge;
-
-/** @constructor */
-HeapSnapshotWorker.HeapSnapshotRetainerEdgeIterator = HeapSnapshotRetainerEdgeIterator;
-
-/** @constructor */
-HeapSnapshotWorker.HeapSnapshotNode = HeapSnapshotNode;
-
-/** @constructor */
-HeapSnapshotWorker.HeapSnapshotNodeIterator = HeapSnapshotNodeIterator;
-
-/** @constructor */
-HeapSnapshotWorker.HeapSnapshotIndexRangeIterator = HeapSnapshotIndexRangeIterator;
-
-/** @constructor */
-HeapSnapshotWorker.HeapSnapshotFilteredIterator = HeapSnapshotFilteredIterator;
-
-/** @constructor */
-HeapSnapshotWorker.HeapSnapshotProgress = HeapSnapshotProgress;
-
-/** @constructor */
-HeapSnapshotWorker.HeapSnapshotProblemReport = HeapSnapshotProblemReport;
-
-/** @constructor */
-HeapSnapshotWorker.HeapSnapshot = HeapSnapshot;
-
-/** @constructor */
-HeapSnapshotWorker.HeapSnapshotHeader = HeapSnapshotHeader;
-
-/** @constructor */
-HeapSnapshotWorker.HeapSnapshotItemProvider = HeapSnapshotItemProvider;
-
-/** @constructor */
-HeapSnapshotWorker.HeapSnapshotEdgesProvider = HeapSnapshotEdgesProvider;
-
-/** @constructor */
-HeapSnapshotWorker.HeapSnapshotNodesProvider = HeapSnapshotNodesProvider;
-
-/** @constructor */
-HeapSnapshotWorker.JSHeapSnapshot = JSHeapSnapshot;
-
-/** @constructor */
-HeapSnapshotWorker.JSHeapSnapshotNode = JSHeapSnapshotNode;
-
-/** @constructor */
-HeapSnapshotWorker.JSHeapSnapshotEdge = JSHeapSnapshotEdge;
-
-/** @constructor */
-HeapSnapshotWorker.JSHeapSnapshotRetainerEdge = JSHeapSnapshotRetainerEdge;
-
-/**
- * @typedef {!{
- *   count: number,
- *   distance: number,
- *   self: number,
- *   maxRet: number,
- *   name: ?string,
- *   idxs: !Array<number>
- * }}
- */
-HeapSnapshotWorker.HeapSnapshot.AggregatedInfo;

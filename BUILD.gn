@@ -434,10 +434,12 @@ all_devtools_files += lighthouse_locale_files
 
 all_devtools_modules = [
   "front_end/accessibility/accessibility.js",
+  "front_end/accessibility/accessibility-legacy.js",
   "front_end/accessibility/AccessibilityModel.js",
   "front_end/accessibility/AccessibilityNodeView.js",
   "front_end/accessibility/AccessibilitySidebarView.js",
   "front_end/accessibility/AccessibilityStrings.js",
+  "front_end/accessibility/AccessibilitySubPane.js",
   "front_end/accessibility/ARIAAttributesView.js",
   "front_end/accessibility/ARIAMetadata.js",
   "front_end/accessibility/AXBreadcrumbsPane.js",
@@ -1342,10 +1344,12 @@ application_templates = [
 
 copied_devtools_modules = [
   "$resources_out_dir/accessibility/accessibility.js",
+  "$resources_out_dir/accessibility/accessibility-legacy.js",
   "$resources_out_dir/accessibility/AccessibilityModel.js",
   "$resources_out_dir/accessibility/AccessibilityNodeView.js",
   "$resources_out_dir/accessibility/AccessibilitySidebarView.js",
   "$resources_out_dir/accessibility/AccessibilityStrings.js",
+  "$resources_out_dir/accessibility/AccessibilitySubPane.js",
   "$resources_out_dir/accessibility/ARIAAttributesView.js",
   "$resources_out_dir/accessibility/ARIAMetadata.js",
   "$resources_out_dir/accessibility/AXBreadcrumbsPane.js",
@@ -2279,8 +2283,8 @@ action("generate_devtools_grd") {
 
   grd_files =
       copied_devtools_modules + generated_applications +
-      generated_non_autostart_non_remote_modules + devtools_embedder_scripts +
-      generated_scripts + generated_worker_bundles +
+      generated_aria_properties + generated_non_autostart_non_remote_modules +
+      devtools_embedder_scripts + generated_scripts + generated_worker_bundles +
       [
         "$resources_out_dir/devtools_extension_api.js",
         "$resources_out_dir/sdk/wasm_source_map/pkg/wasm_source_map_bg.wasm",

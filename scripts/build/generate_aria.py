@@ -20,4 +20,4 @@ def properties_from_file(file_name):
 
 ARIA_PROPERTIES = properties_from_file(sys.argv[1])
 with open(sys.argv[2], "w") as f:
-    f.write("Accessibility.ARIAMetadata._config = %s;" % json.dumps(ARIA_PROPERTIES))
+    f.write("export const config = %s;" % json.dumps(ARIA_PROPERTIES))

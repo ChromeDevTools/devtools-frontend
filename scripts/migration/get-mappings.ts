@@ -52,7 +52,15 @@ export async function getMappings(namespace: string, mappings: Map<string, any>,
       const rightSideParts = rightSide.split('.');
       const file = useExternalRefs ? externalModule : path.join(FRONT_END_FOLDER, src, rightSideParts[1] + '.js');
 
-      mappings.set(leftSide, { file, replacement: rightSide, sameFolderReplacement: rightSideParts[rightSideParts.length - 1] });
+      if (rightSideParts[0] === 'Protocol') {
+        rightSideParts[0] = 'ProtocolModule';
+      }
+
+      mappings.set(leftSide, {
+        file,
+        replacement: rightSideParts.join('.'),
+        sameFolderReplacement: rightSideParts[rightSideParts.length - 1]
+      });
     }
   }
 

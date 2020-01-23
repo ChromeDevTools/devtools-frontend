@@ -2,9 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Host from '../host/host.js';
+import * as UI from '../ui/ui.js';
+
 import {latestReleaseNote, releaseNoteViewId} from './HelpImpl.js';
 
-export class ReleaseNoteView extends UI.VBox {
+export class ReleaseNoteView extends UI.Widget.VBox {
   constructor() {
     super(true);
     this.registerRequiredCSS('help/releaseNote.css');
@@ -27,7 +30,7 @@ export class ReleaseNoteView extends UI.VBox {
     let linkNumber = 1;
     for (const highlight of releaseNote.highlights) {
       const listItem = contentContainer.createChild('li');
-      const linkWrapper = UI.XLink.create(highlight.link, '', 'release-note-link');
+      const linkWrapper = UI.XLink.XLink.create(highlight.link, '', 'release-note-link');
       linkWrapper.textContent = '';
       UI.ARIAUtils.markAsLink(linkWrapper);
       UI.ARIAUtils.setAccessibleName(
@@ -44,19 +47,19 @@ export class ReleaseNoteView extends UI.VBox {
     }
 
     const actionContainer = container.createChild('div', 'release-note-action-container');
-    const learnMore = UI.createTextButton(ls`Learn more`, event => {
+    const learnMore = UI.UIUtils.createTextButton(ls`Learn more`, event => {
       event.consume(true);
-      Host.InspectorFrontendHost.openInNewTab(releaseNote.link);
+      Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(releaseNote.link);
     });
     UI.ARIAUtils.markAsLink(learnMore);
     actionContainer.appendChild(learnMore);
 
-    actionContainer.appendChild(UI.createTextButton(ls`Close`, event => {
+    actionContainer.appendChild(UI.UIUtils.createTextButton(ls`Close`, event => {
       event.consume(true);
       self.UI.inspectorView.closeDrawerTab(releaseNoteViewId, true);
     }, 'close-release-note'));
 
-    const imageLink = UI.XLink.create(releaseNote.link, ' ');
+    const imageLink = UI.XLink.XLink.create(releaseNote.link, ' ');
     imageLink.classList.add('release-note-image');
     imageLink.title = ls`${latestReleaseNote().header}`;
 

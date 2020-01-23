@@ -2,6 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
+import * as Host from '../host/host.js';
+import * as UI from '../ui/ui.js';  // eslint-disable-line no-unused-vars
+
 import {releaseNoteText} from './ReleaseNoteText.js';
 
 /**
@@ -49,47 +53,47 @@ export function innerShowReleaseNoteIfNeeded(lastSeenVersion, latestVersion, sho
 }
 
 /**
- * @implements {Common.Runnable}
+ * @implements {Common.Runnable.Runnable}
  */
 export class HelpLateInitialization {
   /**
    * @override
    */
   async run() {
-    if (!Host.isUnderTest()) {
+    if (!Host.InspectorFrontendHost.isUnderTest()) {
       showReleaseNoteIfNeeded();
     }
   }
 }
 
 /**
- * @implements {UI.ActionDelegate}
+ * @implements {UI.ActionDelegate.ActionDelegate}
  */
 export class ReleaseNotesActionDelegate {
   /**
    * @override
-   * @param {!UI.Context} context
+   * @param {!UI.Context.Context} context
    * @param {string} actionId
    * @return {boolean}
    */
   handleAction(context, actionId) {
-    Host.InspectorFrontendHost.openInNewTab(latestReleaseNote().link);
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(latestReleaseNote().link);
     return true;
   }
 }
 
 /**
- * @implements {UI.ActionDelegate}
+ * @implements {UI.ActionDelegate.ActionDelegate}
  */
 export class ReportIssueActionDelegate {
   /**
    * @override
-   * @param {!UI.Context} context
+   * @param {!UI.Context.Context} context
    * @param {string} actionId
    * @return {boolean}
    */
   handleAction(context, actionId) {
-    Host.InspectorFrontendHost.openInNewTab(
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(
         'https://bugs.chromium.org/p/chromium/issues/entry?template=DevTools+issue');
     return true;
   }

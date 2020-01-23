@@ -28,6 +28,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as Common from '../common/common.js';
+
 import {UISourceCode, UISourceCodeMetadata} from './UISourceCode.js';  // eslint-disable-line no-unused-vars
 
 /**
@@ -152,7 +154,7 @@ export class Project {
   /**
    * @param {!UISourceCode} uiSourceCode
    * @param {string} newName
-   * @param {function(boolean, string=, string=, !Common.ResourceType=)} callback
+   * @param {function(boolean, string=, string=, !Common.ResourceType.ResourceType=)} callback
    */
   rename(uiSourceCode, newName, callback) {
   }
@@ -208,14 +210,14 @@ export class Project {
   /**
    * @param {!ProjectSearchConfig} searchConfig
    * @param {!Array.<string>} filesMathingFileQuery
-   * @param {!Common.Progress} progress
+   * @param {!Common.Progress.Progress} progress
    * @return {!Promise<!Array<string>>}
    */
   findFilesMatchingSearchRequest(searchConfig, filesMathingFileQuery, progress) {
   }
 
   /**
-   * @param {!Common.Progress} progress
+   * @param {!Common.Progress.Progress} progress
    */
   indexContent(progress) {
   }
@@ -300,7 +302,7 @@ export class ProjectStore {
 
   /**
    * @param {string} url
-   * @param {!Common.ResourceType} contentType
+   * @param {!Common.ResourceType.ResourceType} contentType
    * @return {!UISourceCode}
    */
   createUISourceCode(url, contentType) {
@@ -380,7 +382,7 @@ export class ProjectStore {
 /**
  * @unrestricted
  */
-export class WorkspaceImpl extends Common.Object {
+export class WorkspaceImpl extends Common.ObjectWrapper.ObjectWrapper {
   constructor() {
     super();
     /** @type {!Map<string, !Project>} */

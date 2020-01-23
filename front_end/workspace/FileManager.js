@@ -28,19 +28,22 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as Common from '../common/common.js';
+import * as Host from '../host/host.js';
+
 /**
  * @unrestricted
  */
-export class FileManager extends Common.Object {
+export class FileManager extends Common.ObjectWrapper.ObjectWrapper {
   constructor() {
     super();
     /** @type {!Map<string, function(?{fileSystemPath: (string|undefined)})>} */
     this._saveCallbacks = new Map();
-    Host.InspectorFrontendHost.events.addEventListener(
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
         Host.InspectorFrontendHostAPI.Events.SavedURL, this._savedURL, this);
-    Host.InspectorFrontendHost.events.addEventListener(
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
         Host.InspectorFrontendHostAPI.Events.CanceledSaveURL, this._canceledSavedURL, this);
-    Host.InspectorFrontendHost.events.addEventListener(
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
         Host.InspectorFrontendHostAPI.Events.AppendedToURL, this._appendedToURL, this);
   }
 
@@ -53,7 +56,7 @@ export class FileManager extends Common.Object {
   save(url, content, forceSaveAs) {
     // Remove this url from the saved URLs while it is being saved.
     const result = new Promise(resolve => this._saveCallbacks.set(url, resolve));
-    Host.InspectorFrontendHost.save(url, content, forceSaveAs);
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.save(url, content, forceSaveAs);
     return result;
   }
 
@@ -86,14 +89,14 @@ export class FileManager extends Common.Object {
    * @param {string} content
    */
   append(url, content) {
-    Host.InspectorFrontendHost.append(url, content);
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.append(url, content);
   }
 
   /**
    * @param {string} url
    */
   close(url) {
-    Host.InspectorFrontendHost.close(url);
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.close(url);
   }
 
   /**

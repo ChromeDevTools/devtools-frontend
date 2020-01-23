@@ -509,10 +509,10 @@ export class TimelineModelImpl {
         const nodesAndSamples = eventData['cpuProfile'] || {};
         const samples = nodesAndSamples['samples'] || [];
         const lines = eventData['lines'] || Array(samples.length).fill(0);
-        cpuProfile.nodes.push(...nodesAndSamples['nodes'] || []);
+        cpuProfile.nodes.push(...(nodesAndSamples['nodes'] || []));
         cpuProfile.lines.push(...lines);
         cpuProfile.samples.push(...samples);
-        cpuProfile.timeDeltas.push(...eventData['timeDeltas'] || []);
+        cpuProfile.timeDeltas.push(...(eventData['timeDeltas'] || []));
         if (cpuProfile.samples.length !== cpuProfile.timeDeltas.length) {
           self.Common.console.error('Failed to parse CPU profile.');
           return null;

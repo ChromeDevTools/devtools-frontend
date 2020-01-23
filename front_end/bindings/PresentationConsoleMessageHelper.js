@@ -37,11 +37,11 @@ export class PresentationConsoleMessageManager {
   constructor() {
     self.SDK.targetManager.observeModels(SDK.DebuggerModel, this);
 
-    SDK.consoleModel.addEventListener(SDK.ConsoleModel.Events.ConsoleCleared, this._consoleCleared, this);
-    SDK.consoleModel.addEventListener(
+    self.SDK.consoleModel.addEventListener(SDK.ConsoleModel.Events.ConsoleCleared, this._consoleCleared, this);
+    self.SDK.consoleModel.addEventListener(
         SDK.ConsoleModel.Events.MessageAdded,
         event => this._consoleMessageAdded(/** @type {!SDK.ConsoleMessage} */ (event.data)));
-    SDK.consoleModel.messages().forEach(this._consoleMessageAdded, this);
+    self.SDK.consoleModel.messages().forEach(this._consoleMessageAdded, this);
   }
 
   /**

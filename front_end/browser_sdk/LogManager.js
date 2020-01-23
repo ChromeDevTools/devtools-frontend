@@ -55,11 +55,11 @@ export class LogManager {
       }
       setTimeout(() => {
         if (!self.SDK.targetManager.targetById(workerId)) {
-          SDK.consoleModel.addMessage(consoleMessage);
+          self.SDK.consoleModel.addMessage(consoleMessage);
         }
       }, 1000);
     } else {
-      SDK.consoleModel.addMessage(consoleMessage);
+      self.SDK.consoleModel.addMessage(consoleMessage);
     }
   }
 }

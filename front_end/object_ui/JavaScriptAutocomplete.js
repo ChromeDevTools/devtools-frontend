@@ -6,7 +6,7 @@ export class JavaScriptAutocomplete {
   constructor() {
     /** @type {!Map<string, {date: number, value: !Promise<?Object>}>} */
     this._expressionCache = new Map();
-    SDK.consoleModel.addEventListener(SDK.ConsoleModel.Events.CommandEvaluated, this._clearCache, this);
+    self.SDK.consoleModel.addEventListener(SDK.ConsoleModel.Events.CommandEvaluated, this._clearCache, this);
     UI.context.addFlavorChangeListener(SDK.ExecutionContext, this._clearCache, this);
     self.SDK.targetManager.addModelListener(
         SDK.DebuggerModel, SDK.DebuggerModel.Events.DebuggerResumed, this._clearCache, this);

@@ -251,11 +251,11 @@ export class ConsoleView extends UI.VBox {
     this._messagesElement.addEventListener('touchend', this._updateStickToBottomOnPointerUp.bind(this), false);
     this._messagesElement.addEventListener('touchcancel', this._updateStickToBottomOnPointerUp.bind(this), false);
 
-    SDK.consoleModel.addEventListener(SDK.ConsoleModel.Events.ConsoleCleared, this._consoleCleared, this);
-    SDK.consoleModel.addEventListener(SDK.ConsoleModel.Events.MessageAdded, this._onConsoleMessageAdded, this);
-    SDK.consoleModel.addEventListener(SDK.ConsoleModel.Events.MessageUpdated, this._onConsoleMessageUpdated, this);
-    SDK.consoleModel.addEventListener(SDK.ConsoleModel.Events.CommandEvaluated, this._commandEvaluated, this);
-    SDK.consoleModel.messages().forEach(this._addConsoleMessage, this);
+    self.SDK.consoleModel.addEventListener(SDK.ConsoleModel.Events.ConsoleCleared, this._consoleCleared, this);
+    self.SDK.consoleModel.addEventListener(SDK.ConsoleModel.Events.MessageAdded, this._onConsoleMessageAdded, this);
+    self.SDK.consoleModel.addEventListener(SDK.ConsoleModel.Events.MessageUpdated, this._onConsoleMessageUpdated, this);
+    self.SDK.consoleModel.addEventListener(SDK.ConsoleModel.Events.CommandEvaluated, this._commandEvaluated, this);
+    self.SDK.consoleModel.messages().forEach(this._addConsoleMessage, this);
   }
 
   /**
@@ -269,7 +269,7 @@ export class ConsoleView extends UI.VBox {
   }
 
   static clearConsole() {
-    SDK.consoleModel.requestClearMessages();
+    self.SDK.consoleModel.requestClearMessages();
   }
 
   _onFilterChanged() {
@@ -1002,7 +1002,7 @@ export class ConsoleView extends UI.VBox {
           result.runtimeModel(), exceptionDetails, SDK.ConsoleMessage.MessageType.Result, undefined, undefined);
     }
     message.setOriginatingMessage(originatingConsoleMessage);
-    SDK.consoleModel.addMessage(message);
+    self.SDK.consoleModel.addMessage(message);
   }
 
   /**

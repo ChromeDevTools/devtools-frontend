@@ -195,7 +195,7 @@ export class MainImpl {
     UI.ContextMenu.installHandler(document);
     UI.Tooltip.installHandler(document);
     Components.dockController = new Components.DockController(canDock);
-    SDK.consoleModel = new SDK.ConsoleModel();
+    self.SDK.consoleModel = new SDK.ConsoleModel();
     SDK.multitargetNetworkManager = new SDK.MultitargetNetworkManager();
     SDK.domDebuggerManager = new SDK.DOMDebuggerManager();
     self.SDK.targetManager.addEventListener(

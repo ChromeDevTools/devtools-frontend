@@ -841,7 +841,7 @@ export class SourcesPanel extends UI.Panel {
     const remoteObject = /** @type {!SDK.RemoteObject} */ (target);
     const executionContext = UI.context.flavor(SDK.ExecutionContext);
     contextMenu.debugSection().appendItem(
-        ls`Store as global variable`, () => SDK.consoleModel.saveToTempVariable(executionContext, remoteObject));
+        ls`Store as global variable`, () => self.SDK.consoleModel.saveToTempVariable(executionContext, remoteObject));
     if (remoteObject.type === 'function') {
       contextMenu.debugSection().appendItem(
           ls`Show function definition`, this._showFunctionDefinition.bind(this, remoteObject));
@@ -1180,9 +1180,9 @@ export class DebuggingActionDelegate {
           let text = frame.textEditor.text(frame.textEditor.selection());
           const executionContext = UI.context.flavor(SDK.ExecutionContext);
           if (executionContext) {
-            const message = SDK.consoleModel.addCommandMessage(executionContext, text);
+            const message = self.SDK.consoleModel.addCommandMessage(executionContext, text);
             text = ObjectUI.JavaScriptREPL.wrapObjectLiteral(text);
-            SDK.consoleModel.evaluateCommandInConsole(
+            self.SDK.consoleModel.evaluateCommandInConsole(
                 executionContext, message, text, /* useCommandLineAPI */ true, /* awaitPromise */ false);
           }
         }

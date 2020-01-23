@@ -311,9 +311,9 @@ export class ConsolePrompt extends UI.Widget {
     const currentExecutionContext = UI.context.flavor(SDK.ExecutionContext);
     if (currentExecutionContext) {
       const executionContext = currentExecutionContext;
-      const message = SDK.consoleModel.addCommandMessage(executionContext, text);
+      const message = self.SDK.consoleModel.addCommandMessage(executionContext, text);
       const expression = ObjectUI.JavaScriptREPL.preprocessExpression(text);
-      SDK.consoleModel.evaluateCommandInConsole(
+      self.SDK.consoleModel.evaluateCommandInConsole(
           executionContext, message, expression, useCommandLineAPI,
           /* awaitPromise */ false);
       if (ConsolePanel.instance().isShowing()) {

@@ -7,15 +7,6 @@ const {assert} = chai;
 import {SettingsStorage} from '../../../../front_end/common/Settings.js';
 
 describe('SettingsStorage class', () => {
-  it('is able to be instantiated successfully', () => {
-    const settingsStorage = new SettingsStorage({});
-    assert.instanceOf(settingsStorage._object, Object, 'object type is not Object');
-    assert.instanceOf(settingsStorage._setCallback, Function, 'setCallback type is not function');
-    assert.instanceOf(settingsStorage._removeCallback, Function, 'removeCallback type is not function');
-    assert.instanceOf(settingsStorage._removeAllCallback, Function, 'removeAllCallback type is not function');
-    assert.equal(settingsStorage._storagePrefix, '', 'storagePrefix type is not an empty string');
-  });
-
   it('is able to set a name', () => {
     const settingsStorage = new SettingsStorage({});
     settingsStorage.set('Test Name', 'Test Value');

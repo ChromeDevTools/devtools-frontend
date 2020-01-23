@@ -7,13 +7,6 @@ const {assert} = chai;
 import {CharacterIdMap} from '../../../../front_end/common/CharacterIdMap.js';
 
 describe('CharacterIdMap class', () => {
-  it('is able to be instantiated successfully', () => {
-    const characterIdMap = new CharacterIdMap();
-    assert.instanceOf(characterIdMap._elementToCharacter, Map, 'elementToCharacter is not of type Map');
-    assert.instanceOf(characterIdMap._characterToElement, Map, 'characterToElement is not of type Map');
-    assert.equal(characterIdMap._charCode, 33, 'charCode is not equal to 33');
-  });
-
   it('is able to convert an element to a character', () => {
     const testElement = document.createElement('p');
     const characterIdMap = new CharacterIdMap();

@@ -2,6 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+
+import * as Host from '../host/host.js';
+
 export class NodeURL {
   /**
    * @param {!Object} object
@@ -14,8 +18,8 @@ export class NodeURL {
      * @param {string} path
      */
     function process(object, path) {
-      if (object.url && NodeURL._isPlatformPath(object.url, Host.isWin())) {
-        object.url = Common.ParsedURL.platformPathToURL(object.url);
+      if (object.url && NodeURL._isPlatformPath(object.url, Host.Platform.isWin())) {
+        object.url = Common.ParsedURL.ParsedURL.platformPathToURL(object.url);
       }
       for (const entry of Object.entries(object)) {
         const key = entry[0];

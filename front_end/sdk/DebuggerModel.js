@@ -183,19 +183,18 @@ export class DebuggerModel extends SDKModel {
   /**
    * @return {!Promise}
    */
-  _disableDebugger() {
+  async _disableDebugger() {
     if (!this._debuggerEnabled) {
       return Promise.resolve();
     }
     this._debuggerEnabled = false;
 
-    const disablePromise = this._agent.disable();
+    await this._asyncStackTracesStateChanged();
+    await this._agent.disable();
     this._isPausing = false;
-    this._asyncStackTracesStateChanged();
     this.globalObjectCleared();
     this.dispatchEventToListeners(Events.DebuggerWasDisabled);
     _debuggerIdToModel.delete(this._debuggerId);
-    return disablePromise;
   }
 
   /**
@@ -237,7 +236,7 @@ export class DebuggerModel extends SDKModel {
   _asyncStackTracesStateChanged() {
     const maxAsyncStackChainDepth = 32;
     const enabled = !self.Common.settings.moduleSetting('disableAsyncStackTraces').get() && this._debuggerEnabled;
-    this._agent.setAsyncCallStackDepth(enabled ? maxAsyncStackChainDepth : 0);
+    return this._agent.setAsyncCallStackDepth(enabled ? maxAsyncStackChainDepth : 0);
   }
 
   _breakpointsActiveChanged() {

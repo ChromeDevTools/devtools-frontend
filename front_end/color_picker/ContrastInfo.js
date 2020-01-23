@@ -2,7 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-export class ContrastInfo extends Common.Object {
+import * as Common from '../common/common.js';
+
+export class ContrastInfo extends Common.ObjectWrapper.ObjectWrapper {
   /**
    * @param {?SDK.CSSModel.ContrastInfo} contrastInfo
    */
@@ -13,9 +15,9 @@ export class ContrastInfo extends Common.Object {
     this._contrastRatio = null;
     /** @type {?Object<string, number>} */
     this._contrastRatioThresholds = null;
-    /** @type {?Common.Color} */
+    /** @type {?Common.Color.Color} */
     this._fgColor = null;
-    /** @type {?Common.Color} */
+    /** @type {?Common.Color.Color} */
     this._bgColor = null;
 
     if (!contrastInfo) {
@@ -32,7 +34,7 @@ export class ContrastInfo extends Common.Object {
 
     this._contrastRatioThresholds = _ContrastThresholds[(isLargeFont ? 'largeFont' : 'normalFont')];
     const bgColorText = contrastInfo.backgroundColors[0];
-    const bgColor = Common.Color.parse(bgColorText);
+    const bgColor = Common.Color.Color.parse(bgColorText);
     if (bgColor) {
       this._setBgColorInternal(bgColor);
     }
@@ -46,7 +48,7 @@ export class ContrastInfo extends Common.Object {
   }
 
   /**
-   * @param {!Common.Color} fgColor
+   * @param {!Common.Color.Color} fgColor
    */
   setColor(fgColor) {
     this._fgColor = fgColor;
@@ -55,7 +57,7 @@ export class ContrastInfo extends Common.Object {
   }
 
   /**
-   * @return {?Common.Color}
+   * @return {?Common.Color.Color}
    */
   color() {
     return this._fgColor;
@@ -69,7 +71,7 @@ export class ContrastInfo extends Common.Object {
   }
 
   /**
-   * @param {!Common.Color} bgColor
+   * @param {!Common.Color.Color} bgColor
    */
   setBgColor(bgColor) {
     this._setBgColorInternal(bgColor);
@@ -77,7 +79,7 @@ export class ContrastInfo extends Common.Object {
   }
 
   /**
-   * @param {!Common.Color} bgColor
+   * @param {!Common.Color.Color} bgColor
    */
   _setBgColorInternal(bgColor) {
     this._bgColor = bgColor;
@@ -93,15 +95,15 @@ export class ContrastInfo extends Common.Object {
     // the unknown background is the same color as the text.
     if (bgColor.hasAlpha()) {
       const blendedRGBA = [];
-      Common.Color.blendColors(bgColor.rgba(), fgRGBA, blendedRGBA);
-      this._bgColor = new Common.Color(blendedRGBA, Common.Color.Format.RGBA);
+      Common.Color.Color.blendColors(bgColor.rgba(), fgRGBA, blendedRGBA);
+      this._bgColor = new Common.Color.Color(blendedRGBA, Common.Color.Format.RGBA);
     }
 
-    this._contrastRatio = Common.Color.calculateContrastRatio(fgRGBA, this._bgColor.rgba());
+    this._contrastRatio = Common.Color.Color.calculateContrastRatio(fgRGBA, this._bgColor.rgba());
   }
 
   /**
-   * @return {?Common.Color}
+   * @return {?Common.Color.Color}
    */
   bgColor() {
     return this._bgColor;
@@ -111,7 +113,7 @@ export class ContrastInfo extends Common.Object {
     if (!this._bgColor || !this._fgColor) {
       return;
     }
-    this._contrastRatio = Common.Color.calculateContrastRatio(this._fgColor.rgba(), this._bgColor.rgba());
+    this._contrastRatio = Common.Color.Color.calculateContrastRatio(this._fgColor.rgba(), this._bgColor.rgba());
   }
 
   /**

@@ -2,9 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+import * as Host from '../host/host.js';
+import * as UI from '../ui/ui.js';
+
 import {ContrastInfo, Events as ContrastInfoEvents} from './ContrastInfo.js';  // eslint-disable-line no-unused-vars
 
-export class ContrastDetails extends Common.Object {
+export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper {
   /**
    * @param {!ContrastInfo} contrastInfo
    * @param {!Element} contentElement
@@ -42,24 +46,24 @@ export class ContrastDetails extends Common.Object {
     const contrastValueRow = this._element.createChild('div');
     contrastValueRow.addEventListener('click', this._topRowClicked.bind(this));
     const contrastValueRowContents = contrastValueRow.createChild('div', 'container');
-    contrastValueRowContents.createTextChild(Common.UIString('Contrast ratio'));
+    contrastValueRowContents.createTextChild(Common.UIString.UIString('Contrast ratio'));
 
     this._contrastValueBubble = contrastValueRowContents.createChild('span', 'contrast-details-value');
     this._contrastValue = this._contrastValueBubble.createChild('span');
     this._contrastValueBubbleIcons = [];
     this._contrastValueBubbleIcons.push(
-        this._contrastValueBubble.appendChild(UI.Icon.create('smallicon-checkmark-square')));
+        this._contrastValueBubble.appendChild(UI.Icon.Icon.create('smallicon-checkmark-square')));
     this._contrastValueBubbleIcons.push(
-        this._contrastValueBubble.appendChild(UI.Icon.create('smallicon-checkmark-behind')));
-    this._contrastValueBubbleIcons.push(this._contrastValueBubble.appendChild(UI.Icon.create('smallicon-no')));
+        this._contrastValueBubble.appendChild(UI.Icon.Icon.create('smallicon-checkmark-behind')));
+    this._contrastValueBubbleIcons.push(this._contrastValueBubble.appendChild(UI.Icon.Icon.create('smallicon-no')));
     this._contrastValueBubbleIcons.forEach(button => button.addEventListener('click', event => {
       ContrastDetails._showHelp();
       event.consume(false);
     }));
 
-    const expandToolbar = new UI.Toolbar('expand', contrastValueRowContents);
-    this._expandButton = new UI.ToolbarButton(Common.UIString('Show more'), 'smallicon-expand-more');
-    this._expandButton.addEventListener(UI.ToolbarButton.Events.Click, this._expandButtonClicked.bind(this));
+    const expandToolbar = new UI.Toolbar.Toolbar('expand', contrastValueRowContents);
+    this._expandButton = new UI.Toolbar.ToolbarButton(Common.UIString.UIString('Show more'), 'smallicon-expand-more');
+    this._expandButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._expandButtonClicked.bind(this));
     UI.ARIAUtils.setExpanded(this._expandButton.element, false);
     expandToolbar.appendToolbarItem(this._expandButton);
 
@@ -75,15 +79,15 @@ export class ContrastDetails extends Common.Object {
     this._contrastPassFailAAA = this._contrastAAA.createChild('span', 'contrast-pass-fail');
 
     this._chooseBgColor = this._expandedDetails.createChild('div', 'contrast-choose-bg-color');
-    this._chooseBgColor.textContent = Common.UIString('Pick background color');
+    this._chooseBgColor.textContent = Common.UIString.UIString('Pick background color');
 
     const bgColorContainer = this._expandedDetails.createChild('div', 'background-color');
 
-    const pickerToolbar = new UI.Toolbar('spectrum-eye-dropper', bgColorContainer);
-    this._bgColorPickerButton =
-        new UI.ToolbarToggle(Common.UIString('Toggle background color picker'), 'largeicon-eyedropper');
+    const pickerToolbar = new UI.Toolbar.Toolbar('spectrum-eye-dropper', bgColorContainer);
+    this._bgColorPickerButton = new UI.Toolbar.ToolbarToggle(
+        Common.UIString.UIString('Toggle background color picker'), 'largeicon-eyedropper');
     this._bgColorPickerButton.addEventListener(
-        UI.ToolbarButton.Events.Click, this._toggleBackgroundColorPicker.bind(this, undefined, true));
+        UI.Toolbar.ToolbarButton.Events.Click, this._toggleBackgroundColorPicker.bind(this, undefined, true));
     pickerToolbar.appendToolbarItem(this._bgColorPickerButton);
     this._bgColorPickedBound = this._bgColorPicked.bind(this);
 
@@ -124,24 +128,24 @@ export class ContrastDetails extends Common.Object {
     this._passesAA = this._contrastInfo.contrastRatio() >= aa;
     this._contrastPassFailAA.removeChildren();
     const labelAA = this._contrastPassFailAA.createChild('span', 'contrast-link-label');
-    labelAA.textContent = Common.UIString('AA');
-    this._contrastPassFailAA.createChild('span').textContent = Common.UIString(': %s', aa.toFixed(1));
+    labelAA.textContent = Common.UIString.UIString('AA');
+    this._contrastPassFailAA.createChild('span').textContent = Common.UIString.UIString(': %s', aa.toFixed(1));
     if (this._passesAA) {
-      this._contrastPassFailAA.appendChild(UI.Icon.create('smallicon-checkmark-square'));
+      this._contrastPassFailAA.appendChild(UI.Icon.Icon.create('smallicon-checkmark-square'));
     } else {
-      this._contrastPassFailAA.appendChild(UI.Icon.create('smallicon-no'));
+      this._contrastPassFailAA.appendChild(UI.Icon.Icon.create('smallicon-no'));
     }
 
     const aaa = this._contrastInfo.contrastRatioThreshold('aaa');
     const passesAAA = this._contrastInfo.contrastRatio() >= aaa;
     this._contrastPassFailAAA.removeChildren();
     const labelAAA = this._contrastPassFailAAA.createChild('span', 'contrast-link-label');
-    labelAAA.textContent = Common.UIString('AAA');
-    this._contrastPassFailAAA.createChild('span').textContent = Common.UIString(': %s', aaa.toFixed(1));
+    labelAAA.textContent = Common.UIString.UIString('AAA');
+    this._contrastPassFailAAA.createChild('span').textContent = Common.UIString.UIString(': %s', aaa.toFixed(1));
     if (passesAAA) {
-      this._contrastPassFailAAA.appendChild(UI.Icon.create('smallicon-checkmark-square'));
+      this._contrastPassFailAAA.appendChild(UI.Icon.Icon.create('smallicon-checkmark-square'));
     } else {
-      this._contrastPassFailAAA.appendChild(UI.Icon.create('smallicon-no'));
+      this._contrastPassFailAAA.appendChild(UI.Icon.Icon.create('smallicon-no'));
     }
 
     [labelAA, labelAAA].forEach(e => e.addEventListener('click', event => ContrastDetails._showHelp()));
@@ -152,7 +156,7 @@ export class ContrastDetails extends Common.Object {
   }
 
   static _showHelp() {
-    Host.InspectorFrontendHost.openInNewTab(
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(
         'https://developers.google.com/web/fundamentals/accessibility/accessible-styles#color_and_contrast');
   }
 
@@ -202,14 +206,14 @@ export class ContrastDetails extends Common.Object {
     if (this._expanded) {
       this._toggleMainColorPicker(false);
       this._expandButton.setGlyph('smallicon-expand-less');
-      this._expandButton.setTitle(Common.UIString('Show less'));
+      this._expandButton.setTitle(Common.UIString.UIString('Show less'));
       if (this._contrastUnknown) {
         this._toggleBackgroundColorPicker(true);
       }
     } else {
       this._toggleBackgroundColorPicker(false);
       this._expandButton.setGlyph('smallicon-expand-more');
-      this._expandButton.setTitle(Common.UIString('Show more'));
+      this._expandButton.setTitle(Common.UIString.UIString('Show more'));
     }
     this._expandedChangedCallback();
   }
@@ -256,12 +260,12 @@ export class ContrastDetails extends Common.Object {
       this.dispatchEventToListeners(Events.BackgroundColorPickerWillBeToggled, enabled);
     }
 
-    Host.InspectorFrontendHost.setEyeDropperActive(enabled);
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.setEyeDropperActive(enabled);
     if (enabled) {
-      Host.InspectorFrontendHost.events.addEventListener(
+      Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
           Host.InspectorFrontendHostAPI.Events.EyeDropperPickedColor, this._bgColorPickedBound);
     } else {
-      Host.InspectorFrontendHost.events.removeEventListener(
+      Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.removeEventListener(
           Host.InspectorFrontendHostAPI.Events.EyeDropperPickedColor, this._bgColorPickedBound);
     }
   }
@@ -272,10 +276,10 @@ export class ContrastDetails extends Common.Object {
   _bgColorPicked(event) {
     const rgbColor = /** @type {!{r: number, g: number, b: number, a: number}} */ (event.data);
     const rgba = [rgbColor.r, rgbColor.g, rgbColor.b, (rgbColor.a / 2.55 | 0) / 100];
-    const color = Common.Color.fromRGBA(rgba);
+    const color = Common.Color.Color.fromRGBA(rgba);
     this._contrastInfo.setBgColor(color);
     this._toggleBackgroundColorPicker(false);
-    Host.InspectorFrontendHost.bringToFront();
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.bringToFront();
   }
 }
 
@@ -296,8 +300,8 @@ export class Swatch {
   }
 
   /**
-   * @param {!Common.Color} fgColor
-   * @param {!Common.Color} bgColor
+   * @param {!Common.Color.Color} fgColor
+   * @param {!Common.Color.Color} bgColor
    */
   setColors(fgColor, bgColor) {
     this._textPreview.style.color = /** @type {string} */ (fgColor.asString(Common.Color.Format.RGBA));

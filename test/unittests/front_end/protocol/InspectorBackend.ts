@@ -4,7 +4,7 @@
 
 const {assert} = chai;
 
-import {default as InspectorBackend} from '../../../../front_end/protocol/InspectorBackend.js';
+import {InspectorBackend} from '/front_end/protocol/InspectorBackend.js';
 
 describe('InspectorBackend', () => {
   it('can be instantiated successfully', () => {

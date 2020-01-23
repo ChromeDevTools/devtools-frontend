@@ -28,6 +28,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import {NodeURL} from './NodeURL.js';
+
 /**
  * @typedef {string}
  * @suppress {checkTypes}
@@ -42,7 +44,7 @@ const _ConnectionClosedErrorCode = -32001;
 /**
  * @unrestricted
  */
-export default class InspectorBackend {
+export class InspectorBackend {
   constructor() {
     /** @type {!Map<string, !_AgentPrototype>} */
     this._agentPrototypes = new Map();
@@ -238,7 +240,7 @@ export class Connection {
   }
 }
 
-const test = {
+export const test = {
   /**
    * This will get called for every protocol message.
    * Protocol.test.dumpProtocol = console.log
@@ -277,7 +279,7 @@ const test = {
   onMessageReceived: null,
 };
 
-class SessionRouter {
+export class SessionRouter {
   /**
    * @param {!Connection} connection
    */
@@ -432,7 +434,7 @@ class SessionRouter {
       }
 
       if (!session.proxyConnection._onMessage) {
-        Protocol.InspectorBackend.reportProtocolError(
+        InspectorBackend.reportProtocolError(
             'Protocol Error: the session has a proxyConnection with no _onMessage', messageObject);
         continue;
       }
@@ -445,8 +447,7 @@ class SessionRouter {
     const session = this._sessions.get(sessionId);
     if (!session) {
       if (!suppressUnknownMessageErrors) {
-        Protocol.InspectorBackend.reportProtocolError(
-            'Protocol Error: the message with wrong session id', messageObject);
+        InspectorBackend.reportProtocolError('Protocol Error: the message with wrong session id', messageObject);
       }
       return;
     }
@@ -457,7 +458,7 @@ class SessionRouter {
     }
 
     if (session.target._needsNodeJSPatching) {
-      Protocol.NodeURL.patch(messageObject);
+      NodeURL.patch(messageObject);
     }
 
     if ('id' in messageObject) {  // just a response for some request
@@ -465,7 +466,7 @@ class SessionRouter {
       session.callbacks.delete(messageObject.id);
       if (!callback) {
         if (!suppressUnknownMessageErrors) {
-          Protocol.InspectorBackend.reportProtocolError('Protocol Error: the message with wrong id', messageObject);
+          InspectorBackend.reportProtocolError('Protocol Error: the message with wrong id', messageObject);
         }
         return;
       }
@@ -478,14 +479,14 @@ class SessionRouter {
       }
     } else {
       if (!('method' in messageObject)) {
-        Protocol.InspectorBackend.reportProtocolError('Protocol Error: the message without method', messageObject);
+        InspectorBackend.reportProtocolError('Protocol Error: the message without method', messageObject);
         return;
       }
 
       const method = messageObject.method.split('.');
       const domainName = method[0];
       if (!(domainName in session.target._dispatchers)) {
-        Protocol.InspectorBackend.reportProtocolError(
+        InspectorBackend.reportProtocolError(
             `Protocol Error: the message ${messageObject.method} is for non-existing domain '${domainName}'`,
             messageObject);
         return;
@@ -734,8 +735,8 @@ class _AgentPrototype {
     return new Promise((resolve, reject) => {
       const callback = (error, result) => {
         if (error) {
-          if (!test.suppressRequestErrors && error.code !== Protocol.DevToolsStubErrorCode &&
-              error.code !== _GenericError && error.code !== _ConnectionClosedErrorCode) {
+          if (!test.suppressRequestErrors && error.code !== DevToolsStubErrorCode && error.code !== _GenericError &&
+              error.code !== _ConnectionClosedErrorCode) {
             console.error('Request ' + method + ' failed. ' + JSON.stringify(error));
             reject(error);
           } else {
@@ -765,7 +766,7 @@ class _AgentPrototype {
   _invoke(method, request) {
     return new Promise(fulfill => {
       const callback = (error, result) => {
-        if (error && !test.suppressRequestErrors && error.code !== Protocol.DevToolsStubErrorCode &&
+        if (error && !test.suppressRequestErrors && error.code !== DevToolsStubErrorCode &&
             error.code !== _GenericError && error.code !== _ConnectionClosedErrorCode) {
           console.error('Request ' + method + ' failed. ' + JSON.stringify(error));
         }
@@ -775,7 +776,7 @@ class _AgentPrototype {
           result = {};
         }
         if (error) {
-          result[Protocol.Error] = error.message;
+          result[ProtocolError] = error.message;
         }
         fulfill(result);
       };
@@ -822,7 +823,7 @@ class _DispatcherPrototype {
     }
 
     if (!this._eventArgs[messageObject.method]) {
-      Protocol.InspectorBackend.reportProtocolError(
+      InspectorBackend.reportProtocolError(
           `Protocol Error: Attempted to dispatch an unspecified method '${messageObject.method}'`, messageObject);
       return;
     }
@@ -843,36 +844,3 @@ class _DispatcherPrototype {
     }
   }
 }
-
-/* Legacy exported object */
-self.Protocol = self.Protocol || {};
-
-/* Legacy exported object */
-Protocol = Protocol || {};
-
-Protocol.DevToolsStubErrorCode = DevToolsStubErrorCode;
-
-Protocol.SessionRouter = SessionRouter;
-
-/** @constructor */
-Protocol.InspectorBackend = InspectorBackend;
-
-/** @interface */
-Protocol.Connection = Connection;
-
-/** @type {!InspectorBackend} */
-Protocol.inspectorBackend = new InspectorBackend();
-
-Protocol.test = test;
-
-/** @constructor */
-Protocol.TargetBase = TargetBase;
-
-/**
- * Takes error and result.
- * @typedef {function(?Object, ?Object)}
- */
-Protocol._Callback;
-
-/** @typedef {string} */
-Protocol.Error = ProtocolError;

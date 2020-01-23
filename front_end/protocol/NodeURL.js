@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-export default class NodeURL {
+export class NodeURL {
   /**
    * @param {!Object} object
    */
@@ -42,12 +42,3 @@ export default class NodeURL {
     }
   }
 }
-
-/* Legacy exported object */
-self.Protocol = self.Protocol || {};
-
-/* Legacy exported object */
-Protocol = Protocol || {};
-
-/** @constructor */
-Protocol.NodeURL = NodeURL;

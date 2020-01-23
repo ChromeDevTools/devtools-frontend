@@ -177,11 +177,13 @@ class Templates:
                     """// Copyright (c) 2011 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+export function registerCommands(inspectorBackend) {
 """)
 
     backend_js = string.Template(file_header_ + """
 
 $domainInitializers
+}
 """)
 
 
@@ -230,7 +232,7 @@ class Generator:
             enum_members.append("%s: \"%s\"" % (fix_camel_case(member), member))
 
         Generator.backend_js_domain_initializer_list.append(
-            "Protocol.inspectorBackend.registerEnum(\"%s\", {%s});\n" % (enum_name, ", ".join(enum_members)))
+            "inspectorBackend.registerEnum(\"%s\", {%s});\n" % (enum_name, ", ".join(enum_members)))
 
     @staticmethod
     def process_event(json_event, domain_name):
@@ -244,7 +246,7 @@ class Generator:
                 parameter_name = parameter["name"]
                 backend_js_event_param_list.append("\"%s\"" % parameter_name)
 
-        Generator.backend_js_domain_initializer_list.append("Protocol.inspectorBackend.registerEvent(\"%s.%s\", [%s]);\n" %
+        Generator.backend_js_domain_initializer_list.append("inspectorBackend.registerEvent(\"%s.%s\", [%s]);\n" %
                                                             (domain_name, event_name, ", ".join(backend_js_event_param_list)))
 
     @staticmethod
@@ -282,7 +284,7 @@ class Generator:
             has_error_data_param = "false"
 
         Generator.backend_js_domain_initializer_list.append(
-            "Protocol.inspectorBackend.registerCommand(\"%s.%s\", [%s], %s, %s);\n" %
+            "inspectorBackend.registerCommand(\"%s.%s\", [%s], %s, %s);\n" %
             (domain_name, json_command_name, js_parameters_text, js_reply_list, has_error_data_param))
 
 

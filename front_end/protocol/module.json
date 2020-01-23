@@ -6,6 +6,7 @@
   "scripts": [],
   "modules": [
     "protocol.js",
+    "protocol-legacy.js",
     "NodeURL.js",
     "InspectorBackend.js",
     "../InspectorBackendCommands.js"

@@ -1100,7 +1100,7 @@ export class NetworkRequestNode extends NetworkNode {
     switch (initiator.type) {
       case SDK.NetworkRequest.InitiatorType.Parser:
         cell.title = initiator.url + ':' + (initiator.lineNumber + 1);
-        const uiSourceCode = Workspace.workspace.uiSourceCodeForURL(initiator.url);
+        const uiSourceCode = self.Workspace.workspace.uiSourceCodeForURL(initiator.url);
         cell.appendChild(Components.Linkifier.linkifyURL(initiator.url, {
           text: uiSourceCode ? uiSourceCode.displayName() : undefined,
           lineNumber: initiator.lineNumber,

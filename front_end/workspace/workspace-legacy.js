@@ -57,4 +57,4 @@ Workspace.fileManager;
 /**
  * @type {!Workspace.Workspace}
  */
-Workspace.workspace;
+self.Workspace.workspace;

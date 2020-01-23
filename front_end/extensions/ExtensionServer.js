@@ -390,7 +390,7 @@ export class ExtensionServer extends Common.Object {
   }
 
   _onOpenResource(message) {
-    const uiSourceCode = Workspace.workspace.uiSourceCodeForURL(message.url);
+    const uiSourceCode = self.Workspace.workspace.uiSourceCodeForURL(message.url);
     if (uiSourceCode) {
       Common.Revealer.reveal(uiSourceCode.uiLocation(message.lineNumber, 0));
       return this._status.OK();
@@ -491,9 +491,9 @@ export class ExtensionServer extends Common.Object {
         resources.set(contentProvider.contentURL(), this._makeResource(contentProvider));
       }
     }
-    let uiSourceCodes = Workspace.workspace.uiSourceCodesForProjectType(Workspace.projectTypes.Network);
-    uiSourceCodes =
-        uiSourceCodes.concat(Workspace.workspace.uiSourceCodesForProjectType(Workspace.projectTypes.ContentScripts));
+    let uiSourceCodes = self.Workspace.workspace.uiSourceCodesForProjectType(Workspace.projectTypes.Network);
+    uiSourceCodes = uiSourceCodes.concat(
+        self.Workspace.workspace.uiSourceCodesForProjectType(Workspace.projectTypes.ContentScripts));
     uiSourceCodes.forEach(pushResourceData.bind(this));
     for (const resourceTreeModel of self.SDK.targetManager.models(SDK.ResourceTreeModel)) {
       resourceTreeModel.forAllResources(pushResourceData.bind(this));
@@ -522,7 +522,7 @@ export class ExtensionServer extends Common.Object {
 
   _onGetResourceContent(message, port) {
     const url = /** @type {string} */ (message.url);
-    const contentProvider = Workspace.workspace.uiSourceCodeForURL(url) || Bindings.resourceForURL(url);
+    const contentProvider = self.Workspace.workspace.uiSourceCodeForURL(url) || Bindings.resourceForURL(url);
     if (!contentProvider) {
       return this._status.E_NOTFOUND(url);
     }
@@ -540,7 +540,7 @@ export class ExtensionServer extends Common.Object {
     }
 
     const url = /** @type {string} */ (message.url);
-    const uiSourceCode = Workspace.workspace.uiSourceCodeForURL(url);
+    const uiSourceCode = self.Workspace.workspace.uiSourceCodeForURL(url);
     if (!uiSourceCode || !uiSourceCode.contentType().isDocumentOrScriptOrStyleSheet()) {
       const resource = SDK.ResourceTreeModel.resourceForURL(url);
       if (!resource) {
@@ -630,8 +630,8 @@ export class ExtensionServer extends Common.Object {
 
   _initExtensions() {
     this._registerAutosubscriptionHandler(
-        Extensions.extensionAPI.Events.ResourceAdded, Workspace.workspace, Workspace.Workspace.Events.UISourceCodeAdded,
-        this._notifyResourceAdded);
+        Extensions.extensionAPI.Events.ResourceAdded, self.Workspace.workspace,
+        Workspace.Workspace.Events.UISourceCodeAdded, this._notifyResourceAdded);
     this._registerAutosubscriptionTargetManagerHandler(
         Extensions.extensionAPI.Events.NetworkRequestFinished, SDK.NetworkManager,
         SDK.NetworkManager.Events.RequestFinished, this._notifyRequestFinished);
@@ -813,16 +813,17 @@ export class ExtensionServer extends Common.Object {
      * @this {ExtensionServer}
      */
     function addFirstEventListener() {
-      Workspace.workspace.addEventListener(Workspace.Workspace.Events.WorkingCopyCommittedByUser, handler, this);
-      Workspace.workspace.setHasResourceContentTrackingExtensions(true);
+      self.Workspace.workspace.addEventListener(Workspace.Workspace.Events.WorkingCopyCommittedByUser, handler, this);
+      self.Workspace.workspace.setHasResourceContentTrackingExtensions(true);
     }
 
     /**
      * @this {ExtensionServer}
      */
     function removeLastEventListener() {
-      Workspace.workspace.setHasResourceContentTrackingExtensions(false);
-      Workspace.workspace.removeEventListener(Workspace.Workspace.Events.WorkingCopyCommittedByUser, handler, this);
+      self.Workspace.workspace.setHasResourceContentTrackingExtensions(false);
+      self.Workspace.workspace.removeEventListener(
+          Workspace.Workspace.Events.WorkingCopyCommittedByUser, handler, this);
     }
 
     this._registerSubscriptionHandler(

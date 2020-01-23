@@ -11,7 +11,7 @@ BindingsTestRunner.createOverrideProject = async function(folderPath) {
   const isolatedFileSystem = await testFileSystem.reportCreatedPromise('overrides');
   isolatedFileSystem._type = 'overrides';
   const project =
-      Workspace.workspace.project(Persistence.FileSystemWorkspaceBinding.projectId(isolatedFileSystem.path()));
+      self.Workspace.workspace.project(Persistence.FileSystemWorkspaceBinding.projectId(isolatedFileSystem.path()));
   console.assert(project);
   return {isolatedFileSystem, project, testFileSystem};
 };

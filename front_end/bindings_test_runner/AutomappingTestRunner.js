@@ -51,7 +51,7 @@ BindingsTestRunner.AutomappingTest = function(workspace) {
   this._networkProject = new Bindings.ContentProviderBasedProject(
       this._workspace, 'AUTOMAPPING', Workspace.projectTypes.Network, 'simple website');
 
-  if (workspace !== Workspace.workspace) {
+  if (workspace !== self.Workspace.workspace) {
     new Persistence.FileSystemWorkspaceBinding(Persistence.isolatedFileSystemManager, this._workspace);
   }
 

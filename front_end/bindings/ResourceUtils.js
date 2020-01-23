@@ -55,7 +55,7 @@ export function displayNameForURL(url) {
     return resource.displayName;
   }
 
-  const uiSourceCode = Workspace.workspace.uiSourceCodeForURL(url);
+  const uiSourceCode = self.Workspace.workspace.uiSourceCodeForURL(url);
   if (uiSourceCode) {
     return uiSourceCode.displayName();
   }

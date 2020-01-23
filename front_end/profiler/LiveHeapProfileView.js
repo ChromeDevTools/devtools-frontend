@@ -211,7 +211,7 @@ export class LiveHeapProfileView extends UI.VBox {
     if (!node || !node._url) {
       return;
     }
-    const sourceCode = Workspace.workspace.uiSourceCodeForURL(node._url);
+    const sourceCode = self.Workspace.workspace.uiSourceCodeForURL(node._url);
     if (sourceCode) {
       Common.Revealer.reveal(sourceCode);
     }

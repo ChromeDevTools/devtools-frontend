@@ -12,7 +12,7 @@ Snippets.isSnippetsUISourceCode = SnippetsModule.ScriptSnippetFileSystem.isSnipp
 Snippets.isSnippetsProject = SnippetsModule.ScriptSnippetFileSystem.isSnippetsProject;
 
 Snippets.project = /** @type {!Workspace.Project} */ (
-    Workspace.workspace.projectsForType(Workspace.projectTypes.FileSystem)
+    self.Workspace.workspace.projectsForType(Workspace.projectTypes.FileSystem)
         .find(project => Persistence.FileSystemWorkspaceBinding.fileSystemType(project) === 'snippets'));
 
 /**

@@ -1498,7 +1498,7 @@
       return !uiSourceCode.project().isServiceProject();
     }
 
-    const uiSourceCodes = Workspace.workspace.uiSourceCodes();
+    const uiSourceCodes = self.Workspace.workspace.uiSourceCodes();
     return uiSourceCodes.filter(filterOutService);
   };
 

@@ -137,7 +137,7 @@ export class CoverageListView extends UI.VBox {
       return;
     }
     const coverageInfo = /** @type {!GridNode} */ (node)._coverageInfo;
-    let sourceCode = Workspace.workspace.uiSourceCodeForURL(coverageInfo.url());
+    let sourceCode = self.Workspace.workspace.uiSourceCodeForURL(coverageInfo.url());
     if (!sourceCode) {
       return;
     }

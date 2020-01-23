@@ -81,20 +81,20 @@ export class NetworkPersistenceManager extends Common.Object {
     this._enabled = this._enabledSetting.get();
     if (this._enabled) {
       this._eventDescriptors = [
-        Workspace.workspace.addEventListener(
+        self.Workspace.workspace.addEventListener(
             Workspace.Workspace.Events.UISourceCodeRenamed,
             event => {
               const uiSourceCode = /** @type {!Workspace.UISourceCode} */ (event.data.uiSourceCode);
               this._onUISourceCodeRemoved(uiSourceCode);
               this._onUISourceCodeAdded(uiSourceCode);
             }),
-        Workspace.workspace.addEventListener(
+        self.Workspace.workspace.addEventListener(
             Workspace.Workspace.Events.UISourceCodeAdded,
             event => this._onUISourceCodeAdded(/** @type {!Workspace.UISourceCode} */ (event.data))),
-        Workspace.workspace.addEventListener(
+        self.Workspace.workspace.addEventListener(
             Workspace.Workspace.Events.UISourceCodeRemoved,
             event => this._onUISourceCodeRemoved(/** @type {!Workspace.UISourceCode} */ (event.data))),
-        Workspace.workspace.addEventListener(
+        self.Workspace.workspace.addEventListener(
             Workspace.Workspace.Events.WorkingCopyCommitted,
             event => this._onUISourceCodeWorkingCopyCommitted(
                 /** @type {!Workspace.UISourceCode} */ (event.data.uiSourceCode)))

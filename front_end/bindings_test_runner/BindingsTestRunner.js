@@ -16,7 +16,7 @@ BindingsTestRunner.cleanupURL = function(url) {
 };
 
 BindingsTestRunner.dumpWorkspace = function(previousSnapshot) {
-  const uiSourceCodes = Workspace.workspace.uiSourceCodes().slice();
+  const uiSourceCodes = self.Workspace.workspace.uiSourceCodes().slice();
   let urls = uiSourceCodes.map(code => code.url());
 
   urls = urls.map(BindingsTestRunner.cleanupURL);

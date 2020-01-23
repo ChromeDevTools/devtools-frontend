@@ -328,7 +328,7 @@ let _instance = null;
  */
 export function workspaceDiff() {
   if (!_instance) {
-    _instance = new WorkspaceDiffImpl(Workspace.workspace);
+    _instance = new WorkspaceDiffImpl(self.Workspace.workspace);
   }
   return _instance;
 }

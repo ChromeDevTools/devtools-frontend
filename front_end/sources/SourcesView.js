@@ -22,7 +22,7 @@ export class SourcesView extends UI.VBox {
     this.element.id = 'sources-panel-sources-view';
     this.setMinimumAndPreferredSizes(88, 52, 150, 100);
 
-    const workspace = Workspace.workspace;
+    const workspace = self.Workspace.workspace;
 
     this._searchableView = new UI.SearchableView(this, 'sourcesViewSearchConfig');
     this._searchableView.setMinimalSearchQuerySize(0);
@@ -78,7 +78,7 @@ export class SourcesView extends UI.VBox {
       }
 
       let unsavedSourceCodes = [];
-      const projects = Workspace.workspace.projectsForType(Workspace.projectTypes.FileSystem);
+      const projects = self.Workspace.workspace.projectsForType(Workspace.projectTypes.FileSystem);
       for (let i = 0; i < projects.length; ++i) {
         unsavedSourceCodes =
             unsavedSourceCodes.concat(projects[i].uiSourceCodes().filter(sourceCode => sourceCode.isDirty()));

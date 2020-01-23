@@ -607,8 +607,8 @@ export class Linkifier {
       url = uiLocation.uiSourceCode.contentURL();
     } else if (info.url) {
       url = info.url;
-      const uiSourceCode = Workspace.workspace.uiSourceCodeForURL(url) ||
-          Workspace.workspace.uiSourceCodeForURL(Common.ParsedURL.urlWithoutHash(url));
+      const uiSourceCode = self.Workspace.workspace.uiSourceCodeForURL(url) ||
+          self.Workspace.workspace.uiSourceCodeForURL(Common.ParsedURL.urlWithoutHash(url));
       uiLocation = uiSourceCode ? uiSourceCode.uiLocation(info.lineNumber || 0, info.columnNumber || 0) : null;
     }
     const resource = url ? Bindings.resourceForURL(url) : null;

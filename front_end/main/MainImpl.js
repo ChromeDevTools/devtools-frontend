@@ -190,7 +190,7 @@ export class MainImpl {
 
     const canDock = !!Root.Runtime.queryParam('can_dock');
     self.UI.zoomManager = new UI.ZoomManager(window, Host.InspectorFrontendHost);
-    UI.inspectorView = UI.InspectorView.instance();
+    self.UI.inspectorView = UI.InspectorView.instance();
     UI.ContextMenu.initialize();
     UI.ContextMenu.installHandler(document);
     UI.Tooltip.installHandler(document);
@@ -262,7 +262,7 @@ export class MainImpl {
     Host.InspectorFrontendHost.events.addEventListener(
         Host.InspectorFrontendHostAPI.Events.RevealSourceLine, this._revealSourceLine, this);
 
-    UI.inspectorView.createToolbars();
+    self.UI.inspectorView.createToolbars();
     Host.InspectorFrontendHost.loadCompleted();
 
     const extensions = self.runtime.extensions(Common.QueryParamHandler);
@@ -475,7 +475,7 @@ export class MainImpl {
 
   _onSuspendStateChanged() {
     const suspended = self.SDK.targetManager.allTargetsSuspended();
-    UI.inspectorView.onSuspendStateChanged(suspended);
+    self.UI.inspectorView.onSuspendStateChanged(suspended);
   }
 }
 
@@ -525,7 +525,7 @@ export class SearchActionDelegate {
   handleAction(context, actionId) {
     let searchableView = UI.SearchableView.fromElement(document.deepActiveElement());
     if (!searchableView) {
-      const currentPanel = UI.inspectorView.currentPanelDeprecated();
+      const currentPanel = self.UI.inspectorView.currentPanelDeprecated();
       if (currentPanel) {
         searchableView = currentPanel.searchableView();
       }
@@ -651,8 +651,8 @@ export class MainMenuItem {
 
     contextMenu.defaultSection().appendAction(
         'main.toggle-drawer',
-        UI.inspectorView.drawerVisible() ? Common.UIString('Hide console drawer') :
-                                           Common.UIString('Show console drawer'));
+        self.UI.inspectorView.drawerVisible() ? Common.UIString('Hide console drawer') :
+                                                Common.UIString('Show console drawer'));
     contextMenu.appendItemsAtLocation('mainMenu');
     const moreTools = contextMenu.defaultSection().appendSubMenuItem(Common.UIString('More tools'));
     const extensions = self.runtime.extensions('view', undefined, true);

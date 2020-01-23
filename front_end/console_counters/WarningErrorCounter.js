@@ -137,7 +137,7 @@ export class WarningErrorCounter {
 
     this._counter.title = this._titles;
     UI.ARIAUtils.setAccessibleName(this._counter, this._titles);
-    UI.inspectorView.toolbarItemResized();
+    self.UI.inspectorView.toolbarItemResized();
     this._updatingForTest = false;
     this._updatedForTest();
     return Promise.resolve();

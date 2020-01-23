@@ -805,7 +805,7 @@ export class ActionDelegate {
         panel._networkLogView.resetFocus();
         return true;
       case 'network.search':
-        const selection = UI.inspectorView.element.window().getSelection();
+        const selection = self.UI.inspectorView.element.window().getSelection();
         let queryCandidate = '';
         if (selection.rangeCount) {
           queryCandidate = selection.toString().replace(/\r?\n.*/, '');

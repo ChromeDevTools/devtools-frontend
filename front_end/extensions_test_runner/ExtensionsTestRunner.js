@@ -37,9 +37,9 @@ function onEvaluate(message, port) {
 
 ExtensionsTestRunner.showPanel = function(panelId) {
   if (panelId === 'extension') {
-    panelId = UI.inspectorView._tabbedPane._tabs[UI.inspectorView._tabbedPane._tabs.length - 1].id;
+    panelId = self.UI.inspectorView._tabbedPane._tabs[self.UI.inspectorView._tabbedPane._tabs.length - 1].id;
   }
-  return UI.inspectorView.showPanel(panelId);
+  return self.UI.inspectorView.showPanel(panelId);
 };
 
 ExtensionsTestRunner.evaluateInExtension = function(code) {

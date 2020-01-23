@@ -5,7 +5,7 @@
 export class NetworkPanelIndicator {
   constructor() {
     // TODO: we should not access network from other modules.
-    if (!UI.inspectorView.hasPanel('network')) {
+    if (!self.UI.inspectorView.hasPanel('network')) {
       return;
     }
     const manager = SDK.multitargetNetworkManager;
@@ -26,7 +26,7 @@ export class NetworkPanelIndicator {
         icon = UI.Icon.create('smallicon-warning');
         icon.title = Common.UIString('Requests may be blocked');
       }
-      UI.inspectorView.setPanelIcon('network', icon);
+      self.UI.inspectorView.setPanelIcon('network', icon);
     }
   }
 }

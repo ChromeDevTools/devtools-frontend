@@ -240,7 +240,7 @@
    * @param {string} panelName Name of the panel to show.
    */
   TestSuite.prototype.showPanel = function(panelName) {
-    return UI.inspectorView.showPanel(panelName);
+    return self.UI.inspectorView.showPanel(panelName);
   };
 
   // UI Tests

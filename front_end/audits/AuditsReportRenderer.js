@@ -30,7 +30,7 @@ export class AuditsReportRenderer extends ReportRenderer {
 
     async function onViewTraceClick() {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.AuditsViewTrace);
-      await UI.inspectorView.showPanel('timeline');
+      await self.UI.inspectorView.showPanel('timeline');
       Timeline.TimelinePanel.instance().loadFromEvents(defaultPassTrace.traceEvents);
     }
   }

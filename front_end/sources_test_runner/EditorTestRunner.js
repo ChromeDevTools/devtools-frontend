@@ -13,7 +13,7 @@ SourcesTestRunner.createTestEditor = function(clientHeight, textEditorDelegate) 
   clientHeight = clientHeight || 100;
   textEditor.element.style.height = clientHeight + 'px';
   textEditor.element.style.flex = 'none';
-  textEditor.show(UI.inspectorView.element);
+  textEditor.show(self.UI.inspectorView.element);
   return textEditor;
 };
 

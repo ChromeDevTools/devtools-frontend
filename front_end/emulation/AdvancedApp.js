@@ -37,9 +37,9 @@ export class AdvancedApp {
 
     this._rootSplitWidget = new UI.SplitWidget(false, true, 'InspectorView.splitViewState', 555, 300, true);
     this._rootSplitWidget.show(rootView.element);
-    this._rootSplitWidget.setSidebarWidget(UI.inspectorView);
-    this._rootSplitWidget.setDefaultFocusedChild(UI.inspectorView);
-    UI.inspectorView.setOwnerSplit(this._rootSplitWidget);
+    this._rootSplitWidget.setSidebarWidget(self.UI.inspectorView);
+    this._rootSplitWidget.setDefaultFocusedChild(self.UI.inspectorView);
+    self.UI.inspectorView.setOwnerSplit(this._rootSplitWidget);
 
     this._inspectedPagePlaceholder = instance();
     this._inspectedPagePlaceholder.addEventListener(Events.Update, this._onSetInspectedPageBounds.bind(this), this);
@@ -162,13 +162,13 @@ export class AdvancedApp {
         dockSide === Components.DockController.State.DockedToBottom);
     this._rootSplitWidget.toggleResizer(this._rootSplitWidget.resizerElement(), true);
     this._rootSplitWidget.toggleResizer(
-        UI.inspectorView.topResizerElement(), dockSide === Components.DockController.State.DockedToBottom);
+        self.UI.inspectorView.topResizerElement(), dockSide === Components.DockController.State.DockedToBottom);
     this._rootSplitWidget.showBoth();
   }
 
   _updateForUndocked() {
     this._rootSplitWidget.toggleResizer(this._rootSplitWidget.resizerElement(), false);
-    this._rootSplitWidget.toggleResizer(UI.inspectorView.topResizerElement(), false);
+    this._rootSplitWidget.toggleResizer(self.UI.inspectorView.topResizerElement(), false);
     this._rootSplitWidget.hideMain();
   }
 

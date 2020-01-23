@@ -71,7 +71,7 @@ export class Dialog extends GlassPane {
    */
   show(where) {
     const document = /** @type {!Document} */ (
-        where instanceof Document ? where : (where || UI.inspectorView.element).ownerDocument);
+        where instanceof Document ? where : (where || self.UI.inspectorView.element).ownerDocument);
     this._targetDocument = document;
     this._targetDocument.addEventListener('keydown', this._targetDocumentKeyDownHandler, true);
 
@@ -128,7 +128,7 @@ export class Dialog extends GlassPane {
 
     let exclusionSet = /** @type {?Set.<!HTMLElement>} */ (null);
     if (this._tabIndexBehavior === OutsideTabIndexBehavior.PreserveMainViewTabIndex) {
-      exclusionSet = this._getMainWidgetTabIndexElements(UI.inspectorView.ownerSplit());
+      exclusionSet = this._getMainWidgetTabIndexElements(self.UI.inspectorView.ownerSplit());
     }
 
     this._tabIndexMap.clear();

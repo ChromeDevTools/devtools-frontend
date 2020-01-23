@@ -142,7 +142,7 @@ export class SourcesPanelIndicator {
         icon = UI.Icon.create('smallicon-warning');
         icon.title = Common.UIString('JavaScript is disabled');
       }
-      UI.inspectorView.setPanelIcon('sources', icon);
+      self.UI.inspectorView.setPanelIcon('sources', icon);
     }
   }
 }

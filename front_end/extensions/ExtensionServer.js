@@ -266,7 +266,7 @@ export class ExtensionServer extends Common.Object {
     const id = message.id;
     // The ids are generated on the client API side and must be unique, so the check below
     // shouldn't be hit unless someone is bypassing the API.
-    if (id in this._clientObjects || UI.inspectorView.hasPanel(id)) {
+    if (id in this._clientObjects || self.UI.inspectorView.hasPanel(id)) {
       return this._status.E_EXISTS(id);
     }
 
@@ -276,7 +276,7 @@ export class ExtensionServer extends Common.Object {
     const panelView =
         new ExtensionServerPanelView(persistentId, message.title, new ExtensionPanel(this, persistentId, id, page));
     this._clientObjects[id] = panelView;
-    UI.inspectorView.addPanel(panelView);
+    self.UI.inspectorView.addPanel(panelView);
     return this._status.OK();
   }
 
@@ -286,7 +286,7 @@ export class ExtensionServer extends Common.Object {
     if (panelView && panelView instanceof ExtensionServerPanelView) {
       panelViewId = panelView.viewId();
     }
-    UI.inspectorView.showPanel(panelViewId);
+    self.UI.inspectorView.showPanel(panelViewId);
   }
 
   _onCreateToolbarButton(message, port) {

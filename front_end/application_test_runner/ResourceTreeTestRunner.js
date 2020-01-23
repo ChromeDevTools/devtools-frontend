@@ -77,7 +77,7 @@ ApplicationTestRunner.dumpResourcesTree = function() {
 
   if (!ApplicationTestRunner._testSourceNavigator) {
     ApplicationTestRunner._testSourceNavigator = new Sources.NetworkNavigatorView();
-    ApplicationTestRunner._testSourceNavigator.show(UI.inspectorView.element);
+    ApplicationTestRunner._testSourceNavigator.show(self.UI.inspectorView.element);
   }
 
   SourcesTestRunner.dumpNavigatorViewInAllModes(ApplicationTestRunner._testSourceNavigator);

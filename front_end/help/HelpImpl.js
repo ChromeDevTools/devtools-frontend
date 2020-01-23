@@ -45,7 +45,7 @@ export function innerShowReleaseNoteIfNeeded(lastSeenVersion, latestVersion, sho
     return;
   }
   Help._releaseNoteVersionSetting.set(latestVersion);
-  UI.viewManager.showView(releaseNoteViewId, true);
+  self.UI.viewManager.showView(releaseNoteViewId, true);
 }
 
 /**

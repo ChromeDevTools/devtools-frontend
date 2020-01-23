@@ -1364,7 +1364,7 @@ export class NetworkLogView extends UI.VBox {
         patterns.push({enabled: true, url: url});
         manager.setBlockedPatterns(patterns);
         manager.setBlockingEnabled(true);
-        UI.viewManager.showView('network.blocked-urls');
+        self.UI.viewManager.showView('network.blocked-urls');
       }
 
       /**
@@ -1373,7 +1373,7 @@ export class NetworkLogView extends UI.VBox {
       function removeBlockedURL(url) {
         patterns = patterns.filter(pattern => pattern.url !== url);
         manager.setBlockedPatterns(patterns);
-        UI.viewManager.showView('network.blocked-urls');
+        self.UI.viewManager.showView('network.blocked-urls');
       }
 
       const urlWithoutScheme = request.parsedURL.urlWithoutScheme();

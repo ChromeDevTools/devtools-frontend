@@ -49,7 +49,7 @@ export class XHRBreakpointsSidebarPane extends UI.VBox {
   }
 
   async _addButtonClicked() {
-    await UI.viewManager.showView('sources.xhrBreakpoints');
+    await self.UI.viewManager.showView('sources.xhrBreakpoints');
 
     const inputElementContainer = createElementWithClass('p', 'breakpoint-condition');
     inputElementContainer.textContent = Common.UIString('Break when URL contains:');
@@ -346,7 +346,7 @@ export class XHRBreakpointsSidebarPane extends UI.VBox {
       return;
     }
     this._list.refreshItem(url);
-    UI.viewManager.showView('sources.xhrBreakpoints');
+    self.UI.viewManager.showView('sources.xhrBreakpoints');
   }
 
   _restoreBreakpoints() {

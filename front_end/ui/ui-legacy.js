@@ -736,9 +736,9 @@ UI.Renderer.Options;
 /**
  * @type {!UI.ViewManager}
  */
-UI.viewManager;
+self.UI.viewManager;
 
 /**
  * @type {!UI.ZoomManager}
  */
-UI.zoomManager;
+self.UI.zoomManager;

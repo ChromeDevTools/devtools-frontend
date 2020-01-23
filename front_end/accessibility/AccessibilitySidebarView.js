@@ -16,7 +16,7 @@ export class AccessibilitySidebarView extends UI.ThrottledWidget {
     this._node = null;
     this._axNode = null;
     this._skipNextPullNode = false;
-    this._sidebarPaneStack = UI.viewManager.createStackLocation();
+    this._sidebarPaneStack = self.UI.viewManager.createStackLocation();
     this._breadcrumbsSubPane = new AXBreadcrumbsPane(this);
     this._sidebarPaneStack.showView(this._breadcrumbsSubPane);
     this._ariaSubPane = new ARIAAttributesPane();

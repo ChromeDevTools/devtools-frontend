@@ -102,8 +102,8 @@ export class NetworkPanel extends UI.Panel {
     splitWidget.hideSidebar();
     splitWidget.enableShowModeSaving();
     splitWidget.show(this.element);
-    this._sidebarLocation = UI.viewManager.createTabbedLocation(async () => {
-      UI.viewManager.showView('network');
+    this._sidebarLocation = self.UI.viewManager.createTabbedLocation(async () => {
+      self.UI.viewManager.showView('network');
       splitWidget.showBoth();
     }, 'network-sidebar', true);
     const tabbedPane = this._sidebarLocation.tabbedPane();
@@ -179,7 +179,7 @@ export class NetworkPanel extends UI.Panel {
       filterString += `${filter.filterType}:${filter.filterValue} `;
     }
     panel._networkLogView.setTextFilterValue(filterString);
-    UI.viewManager.showView('network');
+    self.UI.viewManager.showView('network');
   }
 
   /**
@@ -450,7 +450,7 @@ export class NetworkPanel extends UI.Panel {
    * @return {!Promise<?NetworkItemView>}
    */
   async selectRequest(request) {
-    await UI.viewManager.showView('network');
+    await self.UI.viewManager.showView('network');
     this._networkLogView.selectRequest(request);
     return this._networkItemView;
   }
@@ -548,7 +548,7 @@ export class NetworkPanel extends UI.Panel {
      * @this {NetworkPanel}
      */
     function reveal(request) {
-      UI.viewManager.showView('network').then(this.revealAndHighlightRequest.bind(this, request));
+      self.UI.viewManager.showView('network').then(this.revealAndHighlightRequest.bind(this, request));
     }
 
     /**
@@ -672,7 +672,7 @@ export class RequestRevealer {
       return Promise.reject(new Error('Internal error: not a network request'));
     }
     const panel = NetworkPanel._instance();
-    return UI.viewManager.showView('network').then(panel.revealAndHighlightRequest.bind(panel, request));
+    return self.UI.viewManager.showView('network').then(panel.revealAndHighlightRequest.bind(panel, request));
   }
 }
 
@@ -855,7 +855,7 @@ export class SearchNetworkView extends Search.SearchView {
    * @return {!Promise<!Search.SearchView>}
    */
   static async openSearch(query, searchImmediately) {
-    await UI.viewManager.showView('network.search-network-tab');
+    await self.UI.viewManager.showView('network.search-network-tab');
     const searchView =
         /** @type {!SearchNetworkView} */ (self.runtime.sharedInstance(SearchNetworkView));
     searchView.toggle(query, !!searchImmediately);

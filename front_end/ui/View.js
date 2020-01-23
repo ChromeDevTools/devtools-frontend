@@ -127,7 +127,7 @@ export class SimpleView extends VBox {
    * @return {!Promise}
    */
   revealView() {
-    return UI.viewManager.revealView(this);
+    return self.UI.viewManager.revealView(this);
   }
 
   /**

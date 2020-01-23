@@ -67,7 +67,7 @@ export class TabbedPane extends VBox {
 
     this._triggerDropDownTimeout = null;
     this._dropDownButton = this._createDropDownButton();
-    UI.zoomManager.addEventListener(ZoomManagerEvents.ZoomChanged, this._zoomChanged, this);
+    self.UI.zoomManager.addEventListener(ZoomManagerEvents.ZoomChanged, this._zoomChanged, this);
     this.makeTabSlider();
   }
 

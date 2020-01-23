@@ -264,7 +264,7 @@ export async function loadModule(module) {
  * @return {!Promise.<?UI.Panel>}
  */
 export function showPanel(panel) {
-  return UI.viewManager.showView(panel);
+  return self.UI.viewManager.showView(panel);
 }
 
 /**

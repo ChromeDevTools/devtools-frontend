@@ -528,8 +528,8 @@ export class TimelinePanel extends UI.Panel {
     };
 
     if (recordingOptions.startCoverage) {
-      await UI.viewManager.showView('coverage')
-          .then(() => UI.viewManager.view('coverage').widget())
+      await self.UI.viewManager.showView('coverage')
+          .then(() => self.UI.viewManager.view('coverage').widget())
           .then(widget => widget.ensureRecordingStarted());
     }
 
@@ -822,8 +822,8 @@ export class TimelinePanel extends UI.Panel {
     this._historyManager.addRecording(this._performanceModel);
 
     if (this._startCoverage.get()) {
-      UI.viewManager.showView('coverage')
-          .then(() => UI.viewManager.view('coverage').widget())
+      self.UI.viewManager.showView('coverage')
+          .then(() => self.UI.viewManager.view('coverage').widget())
           .then(widget => widget.stopRecording())
           .then(() => this._updateOverviewControls());
     }
@@ -1267,7 +1267,7 @@ export class LoadTimelineHandler {
    * @param {string} value
    */
   handleQueryParam(value) {
-    UI.viewManager.showView('timeline').then(() => {
+    self.UI.viewManager.showView('timeline').then(() => {
       TimelinePanel.instance()._loadFromURL(window.decodeURIComponent(value));
     });
   }

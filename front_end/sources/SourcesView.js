@@ -89,7 +89,7 @@ export class SourcesView extends UI.VBox {
       }
 
       event.returnValue = Common.UIString('DevTools have unsaved changes that will be permanently lost.');
-      UI.viewManager.showView('sources');
+      self.UI.viewManager.showView('sources');
       for (let i = 0; i < unsavedSourceCodes.length; ++i) {
         Common.Revealer.reveal(unsavedSourceCodes[i]);
       }

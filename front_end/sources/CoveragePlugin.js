@@ -21,7 +21,7 @@ export class CoveragePlugin extends Plugin {
     this._text = new UI.ToolbarButton(ls`Click to show Coverage Panel`);
     this._text.setSecondary();
     this._text.addEventListener(UI.ToolbarButton.Events.Click, () => {
-      UI.viewManager.showView('coverage');
+      self.UI.viewManager.showView('coverage');
     });
 
     const mainTarget = self.SDK.targetManager.mainTarget();

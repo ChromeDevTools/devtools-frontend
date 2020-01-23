@@ -193,8 +193,8 @@ export class ActionDelegate {
    */
   handleAction(context, actionId) {
     const inputViewId = 'Inputs';
-    UI.viewManager.showView(inputViewId)
-        .then(() => UI.viewManager.view(inputViewId).widget())
+    self.UI.viewManager.showView(inputViewId)
+        .then(() => self.UI.viewManager.view(inputViewId).widget())
         .then(widget => this._innerHandleAction(/** @type !Input.InputTimeline} */ (widget), actionId));
 
     return true;

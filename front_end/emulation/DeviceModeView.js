@@ -35,7 +35,7 @@ export class DeviceModeView extends UI.VBox {
     this._leftRuler = new Ruler(false, this._model.setHeightAndScaleToFit.bind(this._model));
     this._leftRuler.element.classList.add('device-mode-ruler-left');
     this._createUI();
-    UI.zoomManager.addEventListener(UI.ZoomManager.Events.ZoomChanged, this._zoomChanged, this);
+    self.UI.zoomManager.addEventListener(UI.ZoomManager.Events.ZoomChanged, this._zoomChanged, this);
   }
 
   _createUI() {
@@ -167,7 +167,7 @@ export class DeviceModeView extends UI.VBox {
     }
 
     if (widthFactor) {
-      const dipOffsetX = cssOffsetX * UI.zoomManager.zoomFactor();
+      const dipOffsetX = cssOffsetX * self.UI.zoomManager.zoomFactor();
       let newWidth = this._resizeStart.width + dipOffsetX * widthFactor;
       newWidth = Math.round(newWidth / this._model.scale());
       if (newWidth >= MinDeviceSize && newWidth <= MaxDeviceSize) {
@@ -176,7 +176,7 @@ export class DeviceModeView extends UI.VBox {
     }
 
     if (heightFactor) {
-      const dipOffsetY = cssOffsetY * UI.zoomManager.zoomFactor();
+      const dipOffsetY = cssOffsetY * self.UI.zoomManager.zoomFactor();
       let newHeight = this._resizeStart.height + dipOffsetY * heightFactor;
       newHeight = Math.round(newHeight / this._model.scale());
       if (newHeight >= MinDeviceSize && newHeight <= MaxDeviceSize) {
@@ -209,7 +209,7 @@ export class DeviceModeView extends UI.VBox {
       return;
     }
 
-    const zoomFactor = UI.zoomManager.zoomFactor();
+    const zoomFactor = self.UI.zoomManager.zoomFactor();
     let callDoResize = false;
     const showRulers = this._showRulersSetting.get() && this._model.type() !== Type.None;
     let contentAreaResized = false;
@@ -334,14 +334,14 @@ export class DeviceModeView extends UI.VBox {
     if (this._model.type() !== Type.None) {
       return;
     }
-    const zoomFactor = UI.zoomManager.zoomFactor();
+    const zoomFactor = self.UI.zoomManager.zoomFactor();
     const rect = element.getBoundingClientRect();
     const availableSize = new UI.Size(Math.max(rect.width * zoomFactor, 1), Math.max(rect.height * zoomFactor, 1));
     this._model.setAvailableSize(availableSize, availableSize);
   }
 
   _contentAreaResized() {
-    const zoomFactor = UI.zoomManager.zoomFactor();
+    const zoomFactor = self.UI.zoomManager.zoomFactor();
     const rect = this._contentArea.getBoundingClientRect();
     const availableSize = new UI.Size(Math.max(rect.width * zoomFactor, 1), Math.max(rect.height * zoomFactor, 1));
     const preferredSize = new UI.Size(
@@ -545,7 +545,7 @@ export class Ruler extends UI.VBox {
    * @return {!Promise.<?>}
    */
   _update() {
-    const zoomFactor = UI.zoomManager.zoomFactor();
+    const zoomFactor = self.UI.zoomManager.zoomFactor();
     const size = this._horizontal ? this._contentElement.offsetWidth : this._contentElement.offsetHeight;
 
     if (this._scale !== this._renderedScale || zoomFactor !== this._renderedZoomFactor) {

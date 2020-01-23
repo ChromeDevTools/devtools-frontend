@@ -12,7 +12,7 @@
  * @return {!Promise}
  */
 CoverageTestRunner.startCoverage = async function(jsCoveragePerBlock) {
-  UI.viewManager.showView('coverage');
+  self.UI.viewManager.showView('coverage');
   const coverageView = self.runtime.sharedInstance(Coverage.CoverageView);
   await coverageView._startRecording({reload: false, jsCoveragePerBlock});
 };

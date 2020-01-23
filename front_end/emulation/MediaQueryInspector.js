@@ -24,7 +24,7 @@ export class MediaQueryInspector extends UI.Widget {
     this._scale = 1;
 
     self.SDK.targetManager.observeModels(SDK.CSSModel, this);
-    UI.zoomManager.addEventListener(UI.ZoomManager.Events.ZoomChanged, this._renderMediaQueries.bind(this), this);
+    self.UI.zoomManager.addEventListener(UI.ZoomManager.Events.ZoomChanged, this._renderMediaQueries.bind(this), this);
   }
 
   /**
@@ -249,7 +249,7 @@ export class MediaQueryInspector extends UI.Widget {
    * @return {number}
    */
   _zoomFactor() {
-    return UI.zoomManager.zoomFactor() / this._scale;
+    return self.UI.zoomManager.zoomFactor() / this._scale;
   }
 
   /**

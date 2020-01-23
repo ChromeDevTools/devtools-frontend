@@ -159,7 +159,7 @@ PerformanceTestRunner.runPerfTraceWithReload = async function() {
 };
 
 PerformanceTestRunner.getTimelineWidget = async function() {
-  return await UI.viewManager.view('timeline').widget();
+  return await self.UI.viewManager.view('timeline').widget();
 };
 
 PerformanceTestRunner.getNetworkFlameChartElement = async function() {

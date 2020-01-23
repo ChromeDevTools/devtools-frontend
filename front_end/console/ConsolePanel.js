@@ -139,7 +139,7 @@ export class ConsoleRevealer {
       consoleView.focus();
       return Promise.resolve();
     }
-    UI.viewManager.showView('console-view');
+    self.UI.viewManager.showView('console-view');
     return Promise.resolve();
   }
 }

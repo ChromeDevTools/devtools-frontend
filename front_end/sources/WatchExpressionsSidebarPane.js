@@ -103,7 +103,7 @@ export class WatchExpressionsSidebarPane extends UI.ThrottledWidget {
   }
 
   async _addButtonClicked() {
-    await UI.viewManager.showView('sources.watch');
+    await self.UI.viewManager.showView('sources.watch');
     this._createWatchExpression(null).startEditing();
   }
 
@@ -210,7 +210,7 @@ export class WatchExpressionsSidebarPane extends UI.ThrottledWidget {
    * @param {string} expression
    */
   _focusAndAddExpressionToWatch(expression) {
-    UI.viewManager.showView('sources.watch');
+    self.UI.viewManager.showView('sources.watch');
     this.doUpdate();
     this._addExpressionToWatch(expression);
   }

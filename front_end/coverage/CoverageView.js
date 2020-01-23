@@ -381,8 +381,8 @@ export class ActionDelegate {
    */
   handleAction(context, actionId) {
     const coverageViewId = 'coverage';
-    UI.viewManager.showView(coverageViewId)
-        .then(() => UI.viewManager.view(coverageViewId).widget())
+    self.UI.viewManager.showView(coverageViewId)
+        .then(() => self.UI.viewManager.view(coverageViewId).widget())
         .then(widget => this._innerHandleAction(/** @type !CoverageView} */ (widget), actionId));
 
     return true;
@@ -466,11 +466,13 @@ export class LineDecorator {
         return;
       }
       const coverageViewId = 'coverage';
-      UI.viewManager.showView(coverageViewId).then(() => UI.viewManager.view(coverageViewId).widget()).then(widget => {
-        const matchFormattedSuffix = url.match(/(.*):formatted$/);
-        const urlWithoutFormattedSuffix = (matchFormattedSuffix && matchFormattedSuffix[1]) || url;
-        widget.selectCoverageItemByUrl(urlWithoutFormattedSuffix);
-      });
+      self.UI.viewManager.showView(coverageViewId)
+          .then(() => self.UI.viewManager.view(coverageViewId).widget())
+          .then(widget => {
+            const matchFormattedSuffix = url.match(/(.*):formatted$/);
+            const urlWithoutFormattedSuffix = (matchFormattedSuffix && matchFormattedSuffix[1]) || url;
+            widget.selectCoverageItemByUrl(urlWithoutFormattedSuffix);
+          });
     }
     return handleGutterClick;
   }

@@ -97,7 +97,7 @@ export class JavaScriptBreakpointsSidebarPane extends UI.ThrottledWidget {
       }
     }
     if (shouldShowView) {
-      UI.viewManager.showView('sources.jsBreakpoints');
+      self.UI.viewManager.showView('sources.jsBreakpoints');
     }
     this._list.element.classList.toggle(
         'breakpoints-list-deactivated', !self.Common.settings.moduleSetting('breakpointsActive').get());

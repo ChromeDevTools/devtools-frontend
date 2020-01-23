@@ -175,7 +175,7 @@ export class MainImpl {
   async _createAppUI() {
     MainImpl.time('Main._createAppUI');
 
-    UI.viewManager = new UI.ViewManager();
+    self.UI.viewManager = new UI.ViewManager();
 
     // Request filesystems early, we won't create connections until callback is fired. Things will happen in parallel.
     Persistence.isolatedFileSystemManager = new Persistence.IsolatedFileSystemManager();
@@ -189,7 +189,7 @@ export class MainImpl {
     this._addMainEventListeners(document);
 
     const canDock = !!Root.Runtime.queryParam('can_dock');
-    UI.zoomManager = new UI.ZoomManager(window, Host.InspectorFrontendHost);
+    self.UI.zoomManager = new UI.ZoomManager(window, Host.InspectorFrontendHost);
     UI.inspectorView = UI.InspectorView.instance();
     UI.ContextMenu.initialize();
     UI.ContextMenu.installHandler(document);
@@ -665,7 +665,7 @@ export class MainMenuItem {
         continue;
       }
       moreTools.defaultSection().appendItem(
-          extension.title(), UI.viewManager.showView.bind(UI.viewManager, descriptor['id']));
+          extension.title(), self.UI.viewManager.showView.bind(self.UI.viewManager, descriptor['id']));
     }
 
     const helpSubMenu = contextMenu.footerSection().appendSubMenuItem(Common.UIString('Help'));

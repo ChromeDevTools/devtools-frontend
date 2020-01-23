@@ -109,7 +109,7 @@ export class EventListenerBreakpointsSidebarPane extends UI.VBox {
       return;
     }
 
-    UI.viewManager.showView('sources.eventListenerBreakpoints');
+    self.UI.viewManager.showView('sources.eventListenerBreakpoints');
     this._categories.get(breakpoint.category()).element.expand();
     this._highlightedElement = this._breakpoints.get(breakpoint).element.listItemElement;
     UI.ARIAUtils.setDescription(this._highlightedElement, ls`breakpoint hit`);

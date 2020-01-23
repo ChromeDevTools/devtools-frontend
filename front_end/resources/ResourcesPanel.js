@@ -208,7 +208,7 @@ export class ResourceRevealer {
       return Promise.reject(new Error('Internal error: not a resource'));
     }
     const sidebar = ResourcesPanel._instance()._sidebar;
-    await UI.viewManager.showView('resources');
+    await self.UI.viewManager.showView('resources');
     await sidebar.showResource(resource);
   }
 }

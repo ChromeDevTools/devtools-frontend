@@ -99,7 +99,7 @@ export class NetworkProject {
     }
 
     const data = {uiSourceCode: uiSourceCode, frame: frame};
-    Bindings.networkProjectManager.dispatchEventToListeners(Events.FrameAttributionAdded, data);
+    self.Bindings.networkProjectManager.dispatchEventToListeners(Events.FrameAttributionAdded, data);
   }
 
   /**
@@ -119,7 +119,7 @@ export class NetworkProject {
     }
     frameAttribution.delete(frameId);
     const data = {uiSourceCode: uiSourceCode, frame: attributionInfo.frame};
-    Bindings.networkProjectManager.dispatchEventToListeners(Events.FrameAttributionRemoved, data);
+    self.Bindings.networkProjectManager.dispatchEventToListeners(Events.FrameAttributionRemoved, data);
   }
 
   /**

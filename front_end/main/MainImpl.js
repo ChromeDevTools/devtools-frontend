@@ -211,7 +211,7 @@ export class MainImpl {
     Workspace.fileManager = new Workspace.FileManager();
     Workspace.workspace = new Workspace.Workspace();
 
-    Bindings.networkProjectManager = new Bindings.NetworkProjectManager();
+    self.Bindings.networkProjectManager = new Bindings.NetworkProjectManager();
     Bindings.resourceMapping = new Bindings.ResourceMapping(self.SDK.targetManager, Workspace.workspace);
     new Bindings.PresentationConsoleMessageManager();
     Bindings.cssWorkspaceBinding = new Bindings.CSSWorkspaceBinding(self.SDK.targetManager, Workspace.workspace);

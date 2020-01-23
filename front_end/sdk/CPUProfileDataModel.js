@@ -171,7 +171,7 @@ export class CPUProfileDataModel extends ProfileTreeModel {
     buildChildrenFromParents(nodes);
     this.totalHitCount = nodes.reduce((acc, node) => acc + node.hitCount, 0);
     const sampleTime = (this.profileEndTime - this.profileStartTime) / this.totalHitCount;
-    const keepNatives = !!Common.moduleSetting('showNativeFunctionsInJSProfile').get();
+    const keepNatives = !!self.Common.settings.moduleSetting('showNativeFunctionsInJSProfile').get();
     const root = nodes[0];
     /** @type {!Map<number, number>} */
     const idMap = new Map([[root.id, root.id]]);

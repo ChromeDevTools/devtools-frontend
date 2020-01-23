@@ -93,8 +93,9 @@ export class InspectElementModeController {
     if (this._isInInspectElementMode()) {
       mode = Protocol.Overlay.InspectMode.None;
     } else {
-      mode = Common.moduleSetting('showUAShadowDOM').get() ? Protocol.Overlay.InspectMode.SearchForUAShadowDOM :
-                                                             Protocol.Overlay.InspectMode.SearchForNode;
+      mode = self.Common.settings.moduleSetting('showUAShadowDOM').get() ?
+          Protocol.Overlay.InspectMode.SearchForUAShadowDOM :
+          Protocol.Overlay.InspectMode.SearchForNode;
     }
     this._setMode(mode);
   }

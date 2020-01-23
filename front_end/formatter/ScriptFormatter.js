@@ -91,7 +91,7 @@ export class ScriptFormatter {
     this._originalContent = content;
 
     formatterWorkerPool()
-        .format(mimeType, content, Common.moduleSetting('textEditorIndent').get())
+        .format(mimeType, content, self.Common.settings.moduleSetting('textEditorIndent').get())
         .then(this._didFormatContent.bind(this));
   }
 

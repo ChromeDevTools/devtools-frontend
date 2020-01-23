@@ -957,7 +957,7 @@ export function settingForTest(settingName) {
 export function detectColorFormat(color) {
   const cf = Format;
   let format;
-  const formatSetting = moduleSetting('colorFormat').get();
+  const formatSetting = self.Common.settings.moduleSetting('colorFormat').get();
   if (formatSetting === cf.Original) {
     format = cf.Original;
   } else if (formatSetting === cf.RGB) {

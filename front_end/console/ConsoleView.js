@@ -124,8 +124,8 @@ export class ConsoleView extends UI.VBox {
     rightToolbar.appendToolbarItem(this._showSettingsPaneButton);
 
     this._preserveLogCheckbox = new UI.ToolbarSettingCheckbox(
-        Common.moduleSetting('preserveConsoleLog'), Common.UIString('Do not clear log on page reload / navigation'),
-        Common.UIString('Preserve log'));
+        self.Common.settings.moduleSetting('preserveConsoleLog'),
+        Common.UIString('Do not clear log on page reload / navigation'), Common.UIString('Preserve log'));
     this._hideNetworkMessagesCheckbox = new UI.ToolbarSettingCheckbox(
         this._filter._hideNetworkMessagesSetting, this._filter._hideNetworkMessagesSetting.title(),
         Common.UIString('Hide network'));
@@ -133,9 +133,9 @@ export class ConsoleView extends UI.VBox {
         this._filter._filterByExecutionContextSetting,
         Common.UIString('Only show messages from the current context (top, iframe, worker, extension)'),
         Common.UIString('Selected context only'));
-    const monitoringXHREnabledSetting = Common.moduleSetting('monitoringXHREnabled');
-    this._timestampsSetting = Common.moduleSetting('consoleTimestampsEnabled');
-    this._consoleHistoryAutocompleteSetting = Common.moduleSetting('consoleHistoryAutocomplete');
+    const monitoringXHREnabledSetting = self.Common.settings.moduleSetting('monitoringXHREnabled');
+    this._timestampsSetting = self.Common.settings.moduleSetting('consoleTimestampsEnabled');
+    this._consoleHistoryAutocompleteSetting = self.Common.settings.moduleSetting('consoleHistoryAutocomplete');
 
     const settingsPane = new UI.HBox();
     settingsPane.show(this._contentsElement);
@@ -1266,8 +1266,8 @@ export class ConsoleViewFilter {
     this._filterChanged = filterChangedCallback;
 
     this._messageLevelFiltersSetting = ConsoleViewFilter.levelFilterSetting();
-    this._hideNetworkMessagesSetting = Common.moduleSetting('hideNetworkMessages');
-    this._filterByExecutionContextSetting = Common.moduleSetting('selectedContextFilterEnabled');
+    this._hideNetworkMessagesSetting = self.Common.settings.moduleSetting('hideNetworkMessages');
+    this._filterByExecutionContextSetting = self.Common.settings.moduleSetting('selectedContextFilterEnabled');
 
     this._messageLevelFiltersSetting.addChangeListener(this._onFilterChanged.bind(this));
     this._hideNetworkMessagesSetting.addChangeListener(this._onFilterChanged.bind(this));

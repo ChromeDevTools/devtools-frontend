@@ -132,12 +132,12 @@ export class NodeIndicator {
  */
 export class SourcesPanelIndicator {
   constructor() {
-    Common.moduleSetting('javaScriptDisabled').addChangeListener(javaScriptDisabledChanged);
+    self.Common.settings.moduleSetting('javaScriptDisabled').addChangeListener(javaScriptDisabledChanged);
     javaScriptDisabledChanged();
 
     function javaScriptDisabledChanged() {
       let icon = null;
-      const javaScriptDisabled = Common.moduleSetting('javaScriptDisabled').get();
+      const javaScriptDisabled = self.Common.settings.moduleSetting('javaScriptDisabled').get();
       if (javaScriptDisabled) {
         icon = UI.Icon.create('smallicon-warning');
         icon.title = Common.UIString('JavaScript is disabled');

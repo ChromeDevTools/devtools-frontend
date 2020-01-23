@@ -24,7 +24,7 @@ export class ThrottlingSettingsTab extends UI.VBox {
     this._list.registerRequiredCSS('mobile_throttling/throttlingSettingsTab.css');
     this._list.show(this.contentElement);
 
-    this._customSetting = Common.moduleSetting('customNetworkConditions');
+    this._customSetting = self.Common.settings.moduleSetting('customNetworkConditions');
     this._customSetting.addChangeListener(this._conditionsUpdated, this);
 
     this.setDefaultFocusedElement(addButton);

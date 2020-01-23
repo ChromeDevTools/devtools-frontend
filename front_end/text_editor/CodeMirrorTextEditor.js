@@ -47,7 +47,7 @@ export class CodeMirrorTextEditor extends UI.VBox {
     this.registerRequiredCSS('text_editor/cmdevtools.css');
 
     const {indentWithTabs, indentUnit} =
-        CodeMirrorTextEditor._getIndentation(Common.moduleSetting('textEditorIndent').get());
+        CodeMirrorTextEditor._getIndentation(self.Common.settings.moduleSetting('textEditorIndent').get());
 
     this._codeMirror = new CodeMirror(this.element, {
       devtoolsAccessibleName: options.devtoolsAccessibleName,
@@ -69,7 +69,7 @@ export class CodeMirrorTextEditor extends UI.VBox {
 
     this._codeMirror._codeMirrorTextEditor = this;
 
-    Common.moduleSetting('textEditorIndent').addChangeListener(this._updateIndentSize.bind(this));
+    self.Common.settings.moduleSetting('textEditorIndent').addChangeListener(this._updateIndentSize.bind(this));
 
     CodeMirror.keyMap['devtools-common'] = {
       'Left': 'goCharLeft',
@@ -609,7 +609,7 @@ export class CodeMirrorTextEditor extends UI.VBox {
    * @param {!Event} e
    */
   _handleKeyDown(e) {
-    if (e.key === 'Tab' && Common.moduleSetting('textEditorTabMovesFocus').get()) {
+    if (e.key === 'Tab' && self.Common.settings.moduleSetting('textEditorTabMovesFocus').get()) {
       e.consume(false);
       return;
     }
@@ -1456,7 +1456,7 @@ CodeMirror.commands.UserIndent = function(codeMirror) {
     return;
   }
 
-  const indentation = Common.moduleSetting('textEditorIndent').get();
+  const indentation = self.Common.settings.moduleSetting('textEditorIndent').get();
   codeMirror.replaceSelection(indentation);
 };
 

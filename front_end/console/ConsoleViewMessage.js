@@ -220,7 +220,7 @@ export class ConsoleViewMessage {
           break;
         case SDK.ConsoleMessage.MessageType.Clear:
           messageElement = createElementWithClass('span', 'console-info');
-          if (Common.moduleSetting('preserveConsoleLog').get()) {
+          if (self.Common.settings.moduleSetting('preserveConsoleLog').get()) {
             messageElement.textContent = Common.UIString('console.clear() was prevented due to \'Preserve log\'');
           } else {
             messageElement.textContent = Common.UIString('Console was cleared');
@@ -1000,7 +1000,7 @@ export class ConsoleViewMessage {
       return;
     }
 
-    if (Common.moduleSetting('consoleTimestampsEnabled').get()) {
+    if (self.Common.settings.moduleSetting('consoleTimestampsEnabled').get()) {
       if (!this._timestampElement) {
         this._timestampElement = createElementWithClass('span', 'console-timestamp');
       }

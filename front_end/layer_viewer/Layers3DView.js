@@ -565,8 +565,8 @@ export class Layers3DView extends UI.VBox {
       return;
     }
 
-    const drawChrome = !Common.moduleSetting('frameViewerHideChromeWindow').get() && this._chromeTextures.length >= 3 &&
-        this._chromeTextures.indexOf(undefined) < 0;
+    const drawChrome = !self.Common.settings.moduleSetting('frameViewerHideChromeWindow').get() &&
+        this._chromeTextures.length >= 3 && this._chromeTextures.indexOf(undefined) < 0;
     const z = (this._maxDepth + 1) * LayerSpacing;
     const borderWidth = Math.ceil(ViewportBorderWidth * this._scale);
     let vertices = [viewport.width, 0, z, viewport.width, viewport.height, z, 0, viewport.height, z, 0, 0, z];
@@ -709,7 +709,7 @@ export class Layers3DView extends UI.VBox {
     this._showPaintsSetting =
         this._createVisibilitySetting(ls`Paints`, 'frameViewerShowPaints', true, this._panelToolbar);
     this._showPaintsSetting.addChangeListener(this._updatePaints, this);
-    Common.moduleSetting('frameViewerHideChromeWindow').addChangeListener(this._update, this);
+    self.Common.settings.moduleSetting('frameViewerHideChromeWindow').addChangeListener(this._update, this);
   }
 
   /**

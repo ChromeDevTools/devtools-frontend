@@ -254,7 +254,7 @@ export class ScreencastView extends UI.VBox {
     const node = await this._domModel.nodeForLocation(
         Math.floor(position.x / this._pageScaleFactor + this._scrollOffsetX),
         Math.floor(position.y / this._pageScaleFactor + this._scrollOffsetY),
-        Common.moduleSetting('showUAShadowDOM').get());
+        self.Common.settings.moduleSetting('showUAShadowDOM').get());
 
     if (!node) {
       return;

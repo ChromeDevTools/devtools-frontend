@@ -110,8 +110,9 @@ export class DebuggerPlugin extends Plugin {
     /** @type {!Map.<!SDK.DebuggerModel, !Bindings.ResourceScriptFile>}*/
     this._scriptFileForDebuggerModel = new Map();
 
-    Common.moduleSetting('skipStackFramesPattern').addChangeListener(this._showBlackboxInfobarIfNeeded, this);
-    Common.moduleSetting('skipContentScripts').addChangeListener(this._showBlackboxInfobarIfNeeded, this);
+    self.Common.settings.moduleSetting('skipStackFramesPattern')
+        .addChangeListener(this._showBlackboxInfobarIfNeeded, this);
+    self.Common.settings.moduleSetting('skipContentScripts').addChangeListener(this._showBlackboxInfobarIfNeeded, this);
 
     /** @type {!Map.<number, !Element>} */
     this._valueWidgets = new Map();
@@ -319,7 +320,7 @@ export class DebuggerPlugin extends Plugin {
      */
     function populateSourceMapMembers() {
       if (this._uiSourceCode.project().type() === Workspace.projectTypes.Network &&
-          Common.moduleSetting('jsSourceMapsEnabled').get() &&
+          self.Common.settings.moduleSetting('jsSourceMapsEnabled').get() &&
           !Bindings.blackboxManager.isBlackboxedUISourceCode(this._uiSourceCode)) {
         if (this._scriptFileForDebuggerModel.size) {
           const scriptFile = this._scriptFileForDebuggerModel.valuesArray()[0];
@@ -751,7 +752,7 @@ export class DebuggerPlugin extends Plugin {
   }
 
   _generateValuesInSource() {
-    if (!Common.moduleSetting('inlineVariableValues').get()) {
+    if (!self.Common.settings.moduleSetting('inlineVariableValues').get()) {
       return;
     }
     const executionContext = UI.context.flavor(SDK.ExecutionContext);
@@ -1660,7 +1661,7 @@ export class DebuggerPlugin extends Plugin {
       return;
     }
 
-    Common.moduleSetting('breakpointsActive').set(true);
+    self.Common.settings.moduleSetting('breakpointsActive').set(true);
     this._breakpointManager.setBreakpoint(this._uiSourceCode, lineNumber, columnNumber, condition, enabled);
     this._breakpointWasSetForTest(lineNumber, columnNumber, condition, enabled);
   }
@@ -1737,8 +1738,10 @@ export class DebuggerPlugin extends Plugin {
     this._uiSourceCode.removeEventListener(
         Workspace.UISourceCode.Events.WorkingCopyCommitted, this._workingCopyCommitted, this);
 
-    Common.moduleSetting('skipStackFramesPattern').removeChangeListener(this._showBlackboxInfobarIfNeeded, this);
-    Common.moduleSetting('skipContentScripts').removeChangeListener(this._showBlackboxInfobarIfNeeded, this);
+    self.Common.settings.moduleSetting('skipStackFramesPattern')
+        .removeChangeListener(this._showBlackboxInfobarIfNeeded, this);
+    self.Common.settings.moduleSetting('skipContentScripts')
+        .removeChangeListener(this._showBlackboxInfobarIfNeeded, this);
     super.dispose();
 
     this._clearExecutionLine();

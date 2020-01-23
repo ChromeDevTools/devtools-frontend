@@ -212,7 +212,8 @@ export class NetworkWaterfallColumn extends UI.VBox {
     if (!request) {
       return null;
     }
-    const useTimingBars = !Common.moduleSetting('networkColorCodeResourceTypes').get() && !this._calculator.startAtZero;
+    const useTimingBars =
+        !self.Common.settings.moduleSetting('networkColorCodeResourceTypes').get() && !this._calculator.startAtZero;
     let range;
     let start;
     let end;
@@ -411,7 +412,8 @@ export class NetworkWaterfallColumn extends UI.VBox {
   }
 
   _draw() {
-    const useTimingBars = !Common.moduleSetting('networkColorCodeResourceTypes').get() && !this._calculator.startAtZero;
+    const useTimingBars =
+        !self.Common.settings.moduleSetting('networkColorCodeResourceTypes').get() && !this._calculator.startAtZero;
     const nodes = this._nodes;
     const context = this._canvas.getContext('2d');
     context.save();

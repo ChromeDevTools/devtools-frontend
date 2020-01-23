@@ -264,7 +264,7 @@ export class ConsoleModel extends Common.Object {
   }
 
   _clearIfNecessary() {
-    if (!Common.moduleSetting('preserveConsoleLog').get()) {
+    if (!self.Common.settings.moduleSetting('preserveConsoleLog').get()) {
       this._clear();
     }
     ++this._pageLoadSequenceNumber;
@@ -274,7 +274,7 @@ export class ConsoleModel extends Common.Object {
    * @param {!Common.Event} event
    */
   _mainFrameNavigated(event) {
-    if (Common.moduleSetting('preserveConsoleLog').get()) {
+    if (self.Common.settings.moduleSetting('preserveConsoleLog').get()) {
       self.Common.console.log(Common.UIString('Navigated to %s', event.data.url));
     }
   }

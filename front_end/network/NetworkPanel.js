@@ -148,7 +148,7 @@ export class NetworkPanel extends UI.Panel {
     this._networkLogLargeRowsSetting.addChangeListener(this._toggleLargerRequests, this);
     this._networkRecordFilmStripSetting.addChangeListener(this._toggleRecordFilmStrip, this);
 
-    this._preserveLogSetting = Common.moduleSetting('network_log.preserve-log');
+    this._preserveLogSetting = self.Common.settings.moduleSetting('network_log.preserve-log');
 
     this._throttlingSelect = this._createThrottlingConditionsSelect();
     this._setupToolbarButtons(splitWidget);
@@ -233,7 +233,7 @@ export class NetworkPanel extends UI.Panel {
         Common.UIString('Preserve log')));
 
     const disableCacheCheckbox = new UI.ToolbarSettingCheckbox(
-        Common.moduleSetting('cacheDisabled'), Common.UIString('Disable cache (while DevTools is open)'),
+        self.Common.settings.moduleSetting('cacheDisabled'), Common.UIString('Disable cache (while DevTools is open)'),
         Common.UIString('Disable cache'));
     this._panelToolbar.appendToolbarItem(disableCacheCheckbox);
 
@@ -254,8 +254,8 @@ export class NetworkPanel extends UI.Panel {
 
     const settingsToolbarRight = new UI.Toolbar('', this._settingsPane.element);
     settingsToolbarRight.makeVertical();
-    settingsToolbarRight.appendToolbarItem(
-        new UI.ToolbarSettingCheckbox(Common.moduleSetting('network.group-by-frame'), '', ls`Group by frame`));
+    settingsToolbarRight.appendToolbarItem(new UI.ToolbarSettingCheckbox(
+        self.Common.settings.moduleSetting('network.group-by-frame'), '', ls`Group by frame`));
     settingsToolbarRight.appendToolbarItem(
         new UI.ToolbarSettingCheckbox(this._networkRecordFilmStripSetting, '', ls`Capture screenshots`));
 

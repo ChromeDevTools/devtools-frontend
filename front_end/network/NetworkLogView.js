@@ -158,7 +158,7 @@ export class NetworkLogView extends UI.VBox {
     new UI.DropTarget(
         this.element, [UI.DropTarget.Type.File], Common.UIString('Drop HAR files here'), this._handleDrop.bind(this));
 
-    Common.moduleSetting('networkColorCodeResourceTypes')
+    self.Common.settings.moduleSetting('networkColorCodeResourceTypes')
         .addChangeListener(this._invalidateAllItems.bind(this, false), this);
 
     self.SDK.targetManager.observeModels(SDK.NetworkManager, this);
@@ -167,13 +167,13 @@ export class NetworkLogView extends UI.VBox {
     SDK.networkLog.addEventListener(SDK.NetworkLog.Events.Reset, this._reset, this);
 
     this._updateGroupByFrame();
-    Common.moduleSetting('network.group-by-frame').addChangeListener(() => this._updateGroupByFrame());
+    self.Common.settings.moduleSetting('network.group-by-frame').addChangeListener(() => this._updateGroupByFrame());
 
     this._filterBar = filterBar;
   }
 
   _updateGroupByFrame() {
-    const value = Common.moduleSetting('network.group-by-frame').get();
+    const value = self.Common.settings.moduleSetting('network.group-by-frame').get();
     this._setGrouping(value ? 'Frame' : null);
   }
 

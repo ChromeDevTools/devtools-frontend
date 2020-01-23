@@ -68,10 +68,10 @@ export class ElementsPanel extends UI.Panel {
 
     this._contentElement.id = 'elements-content';
     // FIXME: crbug.com/425984
-    if (Common.moduleSetting('domWordWrap').get()) {
+    if (self.Common.settings.moduleSetting('domWordWrap').get()) {
       this._contentElement.classList.add('elements-wrap');
     }
-    Common.moduleSetting('domWordWrap').addChangeListener(this._domWordWrapSettingChanged.bind(this));
+    self.Common.settings.moduleSetting('domWordWrap').addChangeListener(this._domWordWrapSettingChanged.bind(this));
 
     crumbsContainer.id = 'elements-crumbs';
     this._breadcrumbs = new ElementsBreadcrumbs();
@@ -82,7 +82,7 @@ export class ElementsPanel extends UI.Panel {
     this._computedStyleWidget = new ComputedStyleWidget();
     this._metricsWidget = new MetricsSidebarPane();
 
-    Common.moduleSetting('sidebarPosition').addChangeListener(this._updateSidebarPosition.bind(this));
+    self.Common.settings.moduleSetting('sidebarPosition').addChangeListener(this._updateSidebarPosition.bind(this));
     this._updateSidebarPosition();
 
     /** @type {!Array.<!ElementsTreeOutline>} */
@@ -93,7 +93,7 @@ export class ElementsPanel extends UI.Panel {
     self.SDK.targetManager.addEventListener(
         SDK.TargetManager.Events.NameChanged,
         event => this._targetNameChanged(/** @type {!SDK.Target} */ (event.data)));
-    Common.moduleSetting('showUAShadowDOM').addChangeListener(this._showUAShadowDOMChanged.bind(this));
+    self.Common.settings.moduleSetting('showUAShadowDOM').addChangeListener(this._showUAShadowDOMChanged.bind(this));
     self.SDK.targetManager.addModelListener(
         SDK.DOMModel, SDK.DOMModel.Events.DocumentUpdated, this._documentUpdatedEvent, this);
     Extensions.extensionServer.addEventListener(
@@ -148,7 +148,7 @@ export class ElementsPanel extends UI.Panel {
     let treeOutline = parentModel ? ElementsTreeOutline.forDOMModel(parentModel) : null;
     if (!treeOutline) {
       treeOutline = new ElementsTreeOutline(true, true);
-      treeOutline.setWordWrap(Common.moduleSetting('domWordWrap').get());
+      treeOutline.setWordWrap(self.Common.settings.moduleSetting('domWordWrap').get());
       treeOutline.addEventListener(ElementsTreeOutline.Events.SelectedNodeChanged, this._selectedNodeChanged, this);
       treeOutline.addEventListener(
           ElementsTreeOutline.Events.ElementsTreeUpdated, this._updateBreadcrumbIfNeeded, this);
@@ -454,7 +454,7 @@ export class ElementsPanel extends UI.Panel {
 
     this._searchConfig = searchConfig;
 
-    const showUAShadowDOM = Common.moduleSetting('showUAShadowDOM').get();
+    const showUAShadowDOM = self.Common.settings.moduleSetting('showUAShadowDOM').get();
     const domModels = self.SDK.targetManager.models(SDK.DOMModel);
     const promises = domModels.map(domModel => domModel.performSearch(whitespaceTrimmedQuery, showUAShadowDOM));
     Promise.all(promises).then(resultCountCallback.bind(this));
@@ -715,7 +715,7 @@ export class ElementsPanel extends UI.Panel {
   revealAndSelectNode(node, focus, omitHighlight) {
     this._omitDefaultSelection = true;
 
-    node = Common.moduleSetting('showUAShadowDOM').get() ? node : this._leaveUserAgentShadowDOM(node);
+    node = self.Common.settings.moduleSetting('showUAShadowDOM').get() ? node : this._leaveUserAgentShadowDOM(node);
     if (!omitHighlight) {
       node.highlightForTwoSeconds();
     }
@@ -799,7 +799,7 @@ export class ElementsPanel extends UI.Panel {
     }  // We can't reparent extension iframes.
 
     let splitMode;
-    const position = Common.moduleSetting('sidebarPosition').get();
+    const position = self.Common.settings.moduleSetting('sidebarPosition').get();
     if (position === 'right' || (position === 'auto' && UI.inspectorView.element.offsetWidth > 680)) {
       splitMode = _splitMode.Vertical;
     } else if (UI.inspectorView.element.offsetWidth > 415) {

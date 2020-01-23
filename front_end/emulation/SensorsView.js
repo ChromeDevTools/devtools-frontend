@@ -58,7 +58,7 @@ export class SensorsView extends UI.VBox {
     // Locations
     this._customLocationsGroup = this._locationSelectElement.createChild('optgroup');
     this._customLocationsGroup.label = ls`Overrides`;
-    const customGeolocations = Common.moduleSetting('emulation.geolocations');
+    const customGeolocations = self.Common.settings.moduleSetting('emulation.geolocations');
     const manageButton = UI.createTextButton(ls`Manage`, () => Common.Revealer.reveal(customGeolocations));
     UI.ARIAUtils.setAccessibleName(manageButton, ls`Manage the list of geolocations`);
     fields.appendChild(manageButton);

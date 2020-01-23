@@ -72,8 +72,8 @@ export class CSSModel extends SDKModel {
     /** @type {boolean} */
     this._isRuleUsageTrackingEnabled = false;
 
-    this._sourceMapManager.setEnabled(Common.moduleSetting('cssSourceMapsEnabled').get());
-    Common.moduleSetting('cssSourceMapsEnabled')
+    this._sourceMapManager.setEnabled(self.Common.settings.moduleSetting('cssSourceMapsEnabled').get());
+    self.Common.settings.moduleSetting('cssSourceMapsEnabled')
         .addChangeListener(event => this._sourceMapManager.setEnabled(/** @type {boolean} */ (event.data)));
   }
 

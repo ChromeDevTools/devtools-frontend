@@ -203,7 +203,8 @@ export class ChartViewport extends UI.VBox {
    * @param {!Event} e
    */
   _onMouseWheel(e) {
-    const doZoomInstead = e.shiftKey ^ (Common.moduleSetting('flamechartMouseWheelAction').get() === 'zoom');
+    const doZoomInstead =
+        e.shiftKey ^ (self.Common.settings.moduleSetting('flamechartMouseWheelAction').get() === 'zoom');
     const panVertically = !doZoomInstead && (e.wheelDeltaY || Math.abs(e.wheelDeltaX) === 120);
     const panHorizontally = doZoomInstead && Math.abs(e.wheelDeltaX) > Math.abs(e.wheelDeltaY);
     if (panVertically) {

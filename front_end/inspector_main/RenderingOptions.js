@@ -37,39 +37,40 @@ export class RenderingOptionsView extends UI.VBox {
         ls`Paint flashing`,
         ls
         `Highlights areas of the page (green) that need to be repainted. May not be suitable for people prone to photosensitive epilepsy.`,
-        Common.moduleSetting('showPaintRects'));
+        self.Common.settings.moduleSetting('showPaintRects'));
     this._appendCheckbox(
         ls`Layout Shift Regions`,
         ls
         `Highlights areas of the page (blue) that were shifted. May not be suitable for people prone to photosensitive epilepsy.`,
-        Common.moduleSetting('showLayoutShiftRegions'));
+        self.Common.settings.moduleSetting('showLayoutShiftRegions'));
         this._appendCheckbox(
             ls`Layer borders`, ls`Shows layer borders (orange/olive) and tiles (cyan).`,
-            Common.moduleSetting('showDebugBorders'));
+            self.Common.settings.moduleSetting('showDebugBorders'));
         this._appendCheckbox(
             ls`FPS meter`, ls`Plots frames per second, frame rate distribution, and GPU memory.`,
-            Common.moduleSetting('showFPSCounter'));
+            self.Common.settings.moduleSetting('showFPSCounter'));
     this._appendCheckbox(
         ls`Scrolling performance issues`,
         ls
         `Highlights elements (teal) that can slow down scrolling, including touch & wheel event handlers and other main-thread scrolling situations.`,
-        Common.moduleSetting('showScrollBottleneckRects'));
+        self.Common.settings.moduleSetting('showScrollBottleneckRects'));
         this._appendCheckbox(
             ls`Highlight ad frames`, ls`Highlights frames (red) detected to be ads.`,
-            Common.moduleSetting('showAdHighlights'));
+            self.Common.settings.moduleSetting('showAdHighlights'));
         this._appendCheckbox(
             ls`Hit-test borders`, ls`Shows borders around hit-test regions.`,
-            Common.moduleSetting('showHitTestBorders'));
+            self.Common.settings.moduleSetting('showHitTestBorders'));
         this.contentElement.createChild('div').classList.add('panel-section-separator');
 
         this._appendSelect(
-            ls`Forces media type for testing print and screen styles`, Common.moduleSetting('emulatedCSSMedia'));
+            ls`Forces media type for testing print and screen styles`,
+            self.Common.settings.moduleSetting('emulatedCSSMedia'));
         this._appendSelect(
             ls`Forces CSS prefers-color-scheme media feature`,
-            Common.moduleSetting('emulatedCSSMediaFeaturePrefersColorScheme'));
+            self.Common.settings.moduleSetting('emulatedCSSMediaFeaturePrefersColorScheme'));
         this._appendSelect(
             ls`Forces CSS prefers-reduced-motion media feature`,
-            Common.moduleSetting('emulatedCSSMediaFeaturePrefersReducedMotion'));
+            self.Common.settings.moduleSetting('emulatedCSSMediaFeaturePrefersReducedMotion'));
   }
 
   /**

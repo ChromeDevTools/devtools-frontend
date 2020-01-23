@@ -85,7 +85,7 @@ export class TimelineJSProfileProcessor {
     let ordinal = 0;
     const showAllEvents = Root.Runtime.experiments.isEnabled('timelineShowAllEvents');
     const showRuntimeCallStats = Root.Runtime.experiments.isEnabled('timelineV8RuntimeCallStats');
-    const showNativeFunctions = Common.moduleSetting('showNativeFunctionsInJSProfile').get();
+    const showNativeFunctions = self.Common.settings.moduleSetting('showNativeFunctionsInJSProfile').get();
 
     /**
      * @param {!SDK.TracingModel.Event} e

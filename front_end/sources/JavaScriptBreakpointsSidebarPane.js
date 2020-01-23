@@ -15,7 +15,7 @@ export class JavaScriptBreakpointsSidebarPane extends UI.ThrottledWidget {
     this._breakpointManager = Bindings.breakpointManager;
     this._breakpointManager.addEventListener(Bindings.BreakpointManager.Events.BreakpointAdded, this.update, this);
     this._breakpointManager.addEventListener(Bindings.BreakpointManager.Events.BreakpointRemoved, this.update, this);
-    Common.moduleSetting('breakpointsActive').addChangeListener(this.update, this);
+    self.Common.settings.moduleSetting('breakpointsActive').addChangeListener(this.update, this);
 
     /** @type {!UI.ListModel.<!Sources.JavaScriptBreakpointsSidebarPane.BreakpointItem>} */
     this._breakpoints = new UI.ListModel();
@@ -100,7 +100,7 @@ export class JavaScriptBreakpointsSidebarPane extends UI.ThrottledWidget {
       UI.viewManager.showView('sources.jsBreakpoints');
     }
     this._list.element.classList.toggle(
-        'breakpoints-list-deactivated', !Common.moduleSetting('breakpointsActive').get());
+        'breakpoints-list-deactivated', !self.Common.settings.moduleSetting('breakpointsActive').get());
     this._breakpoints.replaceAll(breakpoints);
     this._list.selectItem(itemToSelect || this._breakpoints.at(0));
     if (hadFocus) {
@@ -292,11 +292,11 @@ export class JavaScriptBreakpointsSidebarPane extends UI.ThrottledWidget {
       contextMenu.defaultSection().appendItem(ls`Reveal location`, this._revealLocation.bind(this, event.target));
     }
 
-    const breakpointActive = Common.moduleSetting('breakpointsActive').get();
+    const breakpointActive = self.Common.settings.moduleSetting('breakpointsActive').get();
     const breakpointActiveTitle =
         breakpointActive ? Common.UIString('Deactivate breakpoints') : Common.UIString('Activate breakpoints');
     contextMenu.defaultSection().appendItem(
-        breakpointActiveTitle, () => Common.moduleSetting('breakpointsActive').set(!breakpointActive));
+        breakpointActiveTitle, () => self.Common.settings.moduleSetting('breakpointsActive').set(!breakpointActive));
 
     if (breakpoints.some(breakpoint => !breakpoint.enabled())) {
       const enableTitle = Common.UIString('Enable all breakpoints');

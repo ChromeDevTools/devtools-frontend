@@ -196,7 +196,7 @@ export class GenericSettingsTab extends SettingsTab {
       return;
     }
     const sectionElement = this._sectionElement(extension.descriptor()['category']);
-    const setting = Common.moduleSetting(extension.descriptor()['settingName']);
+    const setting = self.Common.settings.moduleSetting(extension.descriptor()['settingName']);
     const settingControl = UI.SettingsUI.createControlForSetting(setting);
     if (settingControl) {
       sectionElement.appendChild(settingControl);

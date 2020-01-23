@@ -21,7 +21,7 @@ export class FrameworkBlackboxSettingsTab extends UI.VBox {
 
     const blackboxContentScripts = this.contentElement.createChild('div', 'blackbox-content-scripts');
     blackboxContentScripts.appendChild(UI.SettingsUI.createSettingCheckbox(
-        ls`Blackbox content scripts`, Common.moduleSetting('skipContentScripts'), true));
+        ls`Blackbox content scripts`, self.Common.settings.moduleSetting('skipContentScripts'), true));
     blackboxContentScripts.title = ls`Blackbox content scripts (extension scripts in the page)`;
 
     this._blackboxLabel = Common.UIString('Blackbox');
@@ -39,7 +39,7 @@ export class FrameworkBlackboxSettingsTab extends UI.VBox {
         UI.createTextButton(Common.UIString('Add pattern...'), this._addButtonClicked.bind(this), 'add-button');
     this.contentElement.appendChild(addPatternButton);
 
-    this._setting = Common.moduleSetting('skipStackFramesPattern');
+    this._setting = self.Common.settings.moduleSetting('skipStackFramesPattern');
     this._setting.addChangeListener(this._settingUpdated, this);
 
     this.setDefaultFocusedElement(addPatternButton);

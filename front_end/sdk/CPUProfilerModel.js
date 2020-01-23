@@ -121,7 +121,7 @@ export class CPUProfilerModel extends SDKModel {
    */
   startRecording() {
     this._isRecording = true;
-    const intervalUs = Common.moduleSetting('highResolutionCpuProfiling').get() ? 100 : 1000;
+    const intervalUs = self.Common.settings.moduleSetting('highResolutionCpuProfiling').get() ? 100 : 1000;
     this._profilerAgent.setSamplingInterval(intervalUs);
     return this._profilerAgent.start();
   }

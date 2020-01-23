@@ -258,7 +258,7 @@ export class StylePropertyTreeElement extends UI.TreeElement {
       return createTextNode(propertyValue);
     }
 
-    const indent = Common.moduleSetting('textEditorIndent').get();
+    const indent = self.Common.settings.moduleSetting('textEditorIndent').get();
     const container = createDocumentFragment();
     for (const result of splitResult) {
       const value = result.value.trim();
@@ -469,7 +469,7 @@ export class StylePropertyTreeElement extends UI.TreeElement {
       return;
     }
 
-    const indent = Common.moduleSetting('textEditorIndent').get();
+    const indent = self.Common.settings.moduleSetting('textEditorIndent').get();
     this.listItemElement.createChild('span', 'styles-clipboard-only')
         .createTextChild(indent + (this.property.disabled ? '/* ' : ''));
     this.listItemElement.appendChild(this.nameElement);

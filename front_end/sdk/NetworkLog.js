@@ -304,7 +304,7 @@ export class NetworkLog extends Common.Object {
   }
 
   _willReloadPage() {
-    if (!Common.moduleSetting('network_log.preserve-log').get()) {
+    if (!self.Common.settings.moduleSetting('network_log.preserve-log').get()) {
       this.reset();
     }
   }
@@ -368,7 +368,7 @@ export class NetworkLog extends Common.Object {
       this.dispatchEventToListeners(Events.RequestAdded, request);
     }
 
-    if (Common.moduleSetting('network_log.preserve-log').get()) {
+    if (self.Common.settings.moduleSetting('network_log.preserve-log').get()) {
       for (const request of oldRequestsSet) {
         this._requests.push(request);
         this._requestsSet.add(request);

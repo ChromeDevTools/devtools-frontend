@@ -54,11 +54,12 @@ export class RuntimeModel extends SDKModel {
     /** @type {?boolean} */
     this._hasSideEffectSupport = null;
 
-    if (Common.moduleSetting('customFormatters').get()) {
+    if (self.Common.settings.moduleSetting('customFormatters').get()) {
       this._agent.setCustomObjectFormatterEnabled(true);
     }
 
-    Common.moduleSetting('customFormatters').addChangeListener(this._customFormattersStateChanged.bind(this));
+    self.Common.settings.moduleSetting('customFormatters')
+        .addChangeListener(this._customFormattersStateChanged.bind(this));
   }
 
   /**

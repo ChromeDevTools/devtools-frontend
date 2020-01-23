@@ -29,6 +29,8 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as UI from '../ui/ui.js';
+
 import {Linkifier} from './Linkifier.js';
 
 /**
@@ -41,7 +43,7 @@ export function buildStackTracePreviewContents(target, linkifier, options = {}) 
   const {stackTrace, contentUpdated, tabStops} = options;
   const element = createElementWithClass('span', 'monospace');
   element.style.display = 'inline-block';
-  const shadowRoot = UI.createShadowRootWithCoreStyles(element, 'components/jsUtils.css');
+  const shadowRoot = UI.Utils.createShadowRootWithCoreStyles(element, 'components/jsUtils.css');
   const contentElement = shadowRoot.createChild('table', 'stack-preview-container');
   let totalHiddenCallFramesCount = 0;
   let totalCallFramesCount = 0;
@@ -59,7 +61,7 @@ export function buildStackTracePreviewContents(target, linkifier, options = {}) 
       let shouldHide = totalCallFramesCount > 30 && stackTrace.callFrames.length > 31;
       const row = createElement('tr');
       row.createChild('td').textContent = '\n';
-      row.createChild('td', 'function-name').textContent = UI.beautifyFunctionName(stackFrame.functionName);
+      row.createChild('td', 'function-name').textContent = UI.UIUtils.beautifyFunctionName(stackFrame.functionName);
       const link = linkifier.maybeLinkifyConsoleCallFrame(target, stackFrame, {tabStop: !!tabStops});
       if (link) {
         link.addEventListener('contextmenu', populateContextMenu.bind(null, link));
@@ -86,7 +88,7 @@ export function buildStackTracePreviewContents(target, linkifier, options = {}) 
    * @param {!Event} event
    */
   function populateContextMenu(link, event) {
-    const contextMenu = new UI.ContextMenu(event);
+    const contextMenu = new UI.ContextMenu.ContextMenu(event);
     event.consume(true);
     const uiLocation = Linkifier.uiLocation(link);
     if (uiLocation && self.Bindings.blackboxManager.canBlackboxUISourceCode(uiLocation.uiSourceCode)) {
@@ -117,7 +119,7 @@ export function buildStackTracePreviewContents(target, linkifier, options = {}) 
     const row = contentElement.createChild('tr');
     row.createChild('td').textContent = '\n';
     row.createChild('td', 'stack-preview-async-description').textContent =
-        UI.asyncStackTraceLabel(asyncStackTrace.description);
+        UI.UIUtils.asyncStackTraceLabel(asyncStackTrace.description);
     row.createChild('td');
     row.createChild('td');
     if (appendStackTrace(asyncStackTrace)) {

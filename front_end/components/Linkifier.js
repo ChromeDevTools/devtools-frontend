@@ -28,6 +28,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as Bindings from '../bindings/bindings.js';
+import * as Common from '../common/common.js';
+import * as Host from '../host/host.js';
+import * as UI from '../ui/ui.js';
+
 /**
  * @implements {SDK.TargetManager.Observer}
  * @unrestricted
@@ -38,10 +43,10 @@ export class Linkifier {
    * @param {boolean=} useLinkDecorator
    */
   constructor(maxLengthForDisplayedURLs, useLinkDecorator) {
-    this._maxLength = maxLengthForDisplayedURLs || UI.MaxLengthForDisplayedURLs;
+    this._maxLength = maxLengthForDisplayedURLs || UI.UIUtils.MaxLengthForDisplayedURLs;
     /** @type {!Map<!SDK.Target, !Array<!Element>>} */
     this._anchorsByTarget = new Map();
-    /** @type {!Map<!SDK.Target, !Bindings.LiveLocationPool>} */
+    /** @type {!Map<!SDK.Target, !Bindings.LiveLocation.LiveLocationPool>} */
     this._locationPoolByTarget = new Map();
     this._useLinkDecorator = !!useLinkDecorator;
     _instances.add(this);
@@ -120,7 +125,7 @@ export class Linkifier {
    */
   targetAdded(target) {
     this._anchorsByTarget.set(target, []);
-    this._locationPoolByTarget.set(target, new Bindings.LiveLocationPool());
+    this._locationPoolByTarget.set(target, new Bindings.LiveLocation.LiveLocationPool());
   }
 
   /**
@@ -128,7 +133,8 @@ export class Linkifier {
    * @param {!SDK.Target} target
    */
   targetRemoved(target) {
-    const locationPool = /** @type {!Bindings.LiveLocationPool} */ (this._locationPoolByTarget.remove(target));
+    const locationPool =
+        /** @type {!Bindings.LiveLocation.LiveLocationPool} */ (this._locationPoolByTarget.remove(target));
     locationPool.disposeAll();
     const anchors = this._anchorsByTarget.remove(target);
     for (const anchor of anchors) {
@@ -185,7 +191,8 @@ export class Linkifier {
     info.fallback = fallbackAnchor;
     info.liveLocation = self.Bindings.debuggerWorkspaceBinding.createLiveLocation(
         rawLocation, this._updateAnchor.bind(this, anchor),
-        /** @type {!Bindings.LiveLocationPool} */ (this._locationPoolByTarget.get(rawLocation.debuggerModel.target())));
+        /** @type {!Bindings.LiveLocation.LiveLocationPool} */
+        (this._locationPoolByTarget.get(rawLocation.debuggerModel.target())));
 
     const anchors = /** @type {!Array<!Element>} */ (this._anchorsByTarget.get(rawLocation.debuggerModel.target()));
     anchors.push(anchor);
@@ -259,7 +266,7 @@ export class Linkifier {
     info.fallback = fallbackAnchor;
     info.liveLocation = self.Bindings.debuggerWorkspaceBinding.createStackTraceTopFrameLiveLocation(
         rawLocations, this._updateAnchor.bind(this, anchor),
-        /** @type {!Bindings.LiveLocationPool} */ (this._locationPoolByTarget.get(target)));
+        /** @type {!Bindings.LiveLocation.LiveLocationPool} */ (this._locationPoolByTarget.get(target)));
 
     const anchors = /** @type {!Array<!Element>} */ (this._anchorsByTarget.get(target));
     anchors.push(anchor);
@@ -277,7 +284,8 @@ export class Linkifier {
     info.enableDecorator = this._useLinkDecorator;
     info.liveLocation = self.Bindings.cssWorkspaceBinding.createLiveLocation(
         rawLocation, this._updateAnchor.bind(this, anchor),
-        /** @type {!Bindings.LiveLocationPool} */ (this._locationPoolByTarget.get(rawLocation.cssModel().target())));
+        /** @type {!Bindings.LiveLocation.LiveLocationPool} */
+        (this._locationPoolByTarget.get(rawLocation.cssModel().target())));
 
     const anchors = /** @type {!Array<!Element>} */ (this._anchorsByTarget.get(rawLocation.cssModel().target()));
     anchors.push(anchor);
@@ -301,7 +309,7 @@ export class Linkifier {
 
   /**
    * @param {!Element} anchor
-   * @param {!Bindings.LiveLocation} liveLocation
+   * @param {!Bindings.LiveLocation.LiveLocation} liveLocation
    */
   _updateAnchor(anchor, liveLocation) {
     Linkifier._unbindUILocation(anchor);
@@ -357,15 +365,15 @@ export class Linkifier {
     const lineNumber = options.lineNumber;
     const columnNumber = options.columnNumber;
     const preventClick = options.preventClick;
-    const maxLength = options.maxLength || UI.MaxLengthForDisplayedURLs;
+    const maxLength = options.maxLength || UI.UIUtils.MaxLengthForDisplayedURLs;
     const bypassURLTrimming = options.bypassURLTrimming;
     if (!url || url.trim().toLowerCase().startsWith('javascript:')) {
       const element = createElementWithClass('span', className);
-      element.textContent = text || url || Common.UIString('(unknown)');
+      element.textContent = text || url || Common.UIString.UIString('(unknown)');
       return element;
     }
 
-    let linkText = text || Bindings.displayNameForURL(url);
+    let linkText = text || Bindings.ResourceUtils.displayNameForURL(url);
     if (typeof lineNumber === 'number' && !text) {
       linkText += ':' + (lineNumber + 1);
     }
@@ -389,7 +397,7 @@ export class Linkifier {
    * @return {!Element}
    */
   static linkifyRevealable(revealable, text, fallbackHref) {
-    const link = Linkifier._createLink(text, '', {maxLength: UI.MaxLengthForDisplayedURLs, href: fallbackHref});
+    const link = Linkifier._createLink(text, '', {maxLength: UI.UIUtils.MaxLengthForDisplayedURLs, href: fallbackHref});
     Linkifier._linkInfo(link).revealable = revealable;
     return link;
   }
@@ -534,7 +542,7 @@ export class Linkifier {
    */
   static _handleClick(event) {
     const link = /** @type {!Element} */ (event.currentTarget);
-    if (UI.isBeingEdited(/** @type {!Node} */ (event.target)) || link.hasSelection()) {
+    if (UI.UIUtils.isBeingEdited(/** @type {!Node} */ (event.target)) || link.hasSelection()) {
       return false;
     }
     return Linkifier.invokeFirstAction(link);
@@ -554,7 +562,7 @@ export class Linkifier {
   }
 
   /**
-   * @return {!Common.Setting}
+   * @return {!Common.Settings.Setting}
    */
   static _linkHandlerSetting() {
     if (!Linkifier._linkHandlerSettingInstance) {
@@ -608,10 +616,10 @@ export class Linkifier {
     } else if (info.url) {
       url = info.url;
       const uiSourceCode = self.Workspace.workspace.uiSourceCodeForURL(url) ||
-          self.Workspace.workspace.uiSourceCodeForURL(Common.ParsedURL.urlWithoutHash(url));
+          self.Workspace.workspace.uiSourceCodeForURL(Common.ParsedURL.ParsedURL.urlWithoutHash(url));
       uiLocation = uiSourceCode ? uiSourceCode.uiLocation(info.lineNumber || 0, info.columnNumber || 0) : null;
     }
-    const resource = url ? Bindings.resourceForURL(url) : null;
+    const resource = url ? Bindings.ResourceUtils.resourceForURL(url) : null;
     const contentProvider = uiLocation ? uiLocation.uiSourceCode : resource;
 
     const revealable = info.revealable || uiLocation || resource;
@@ -629,7 +637,7 @@ export class Linkifier {
         const handler = _linkHandlers.get(title);
         const action = {
           section: 'reveal',
-          title: Common.UIString('Open using %s', title),
+          title: Common.UIString.UIString('Open using %s', title),
           handler: handler.bind(null, contentProvider, lineNumber)
         };
         if (title === Linkifier._linkHandlerSetting().get()) {
@@ -642,13 +650,13 @@ export class Linkifier {
     if (resource || info.url) {
       result.push({
         section: 'reveal',
-        title: UI.openLinkExternallyLabel(),
-        handler: () => Host.InspectorFrontendHost.openInNewTab(url)
+        title: UI.UIUtils.openLinkExternallyLabel(),
+        handler: () => Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(url)
       });
       result.push({
         section: 'clipboard',
-        title: UI.copyLinkAddressLabel(),
-        handler: () => Host.InspectorFrontendHost.copyText(url)
+        title: UI.UIUtils.copyLinkAddressLabel(),
+        handler: () => Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(url)
       });
     }
     return result;
@@ -669,13 +677,13 @@ const _untruncatedNodeTextSymbol = Symbol('Linkifier.untruncatedNodeText');
 const _linkHandlers = new Map();
 
 /**
- * @extends {Common.EventTarget}
+ * @extends {Common.EventTarget.EventTarget}
  * @interface
  */
 export class LinkDecorator {
   /**
    * @param {!Workspace.UISourceCode} uiSourceCode
-   * @return {?UI.Icon}
+   * @return {?UI.Icon.Icon}
    */
   linkIcon(uiSourceCode) {}
 }
@@ -692,7 +700,7 @@ export class LinkContextMenuProvider {
   /**
    * @override
    * @param {!Event} event
-   * @param {!UI.ContextMenu} contextMenu
+   * @param {!UI.ContextMenu.ContextMenu} contextMenu
    * @param {!Object} target
    */
   appendApplicableItems(event, contextMenu, target) {
@@ -709,7 +717,7 @@ export class LinkContextMenuProvider {
 }
 
 /**
- * @implements {UI.SettingUI}
+ * @implements {UI.SettingsUI.SettingUI}
  * @unrestricted
  */
 export class LinkHandlerSettingUI {
@@ -722,7 +730,7 @@ export class LinkHandlerSettingUI {
   _update() {
     this._element.removeChildren();
     const names = _linkHandlers.keysArray();
-    names.unshift(Common.UIString('auto'));
+    names.unshift(Common.UIString.UIString('auto'));
     for (const name of names) {
       const option = createElement('option');
       option.textContent = name;
@@ -745,7 +753,7 @@ export class LinkHandlerSettingUI {
    * @return {?Element}
    */
   settingElement() {
-    return UI.SettingsUI.createCustomSetting(Common.UIString('Link handling:'), this._element);
+    return UI.SettingsUI.createCustomSetting(Common.UIString.UIString('Link handling:'), this._element);
   }
 }
 
@@ -757,27 +765,29 @@ export class ContentProviderContextMenuProvider {
   /**
    * @override
    * @param {!Event} event
-   * @param {!UI.ContextMenu} contextMenu
+   * @param {!UI.ContextMenu.ContextMenu} contextMenu
    * @param {!Object} target
    */
   appendApplicableItems(event, contextMenu, target) {
-    const contentProvider = /** @type {!Common.ContentProvider} */ (target);
+    const contentProvider = /** @type {!Common.ContentProvider.ContentProvider} */ (target);
     if (!contentProvider.contentURL()) {
       return;
     }
 
     contextMenu.revealSection().appendItem(
-        UI.openLinkExternallyLabel(), () => Host.InspectorFrontendHost.openInNewTab(contentProvider.contentURL()));
+        UI.UIUtils.openLinkExternallyLabel(),
+        () => Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(contentProvider.contentURL()));
     for (const title of _linkHandlers.keys()) {
       const handler = _linkHandlers.get(title);
       contextMenu.revealSection().appendItem(
-          Common.UIString('Open using %s', title), handler.bind(null, contentProvider, 0));
+          Common.UIString.UIString('Open using %s', title), handler.bind(null, contentProvider, 0));
     }
     if (contentProvider instanceof SDK.NetworkRequest) {
       return;
     }
 
     contextMenu.clipboardSection().appendItem(
-        UI.copyLinkAddressLabel(), () => Host.InspectorFrontendHost.copyText(contentProvider.contentURL()));
+        UI.UIUtils.copyLinkAddressLabel(),
+        () => Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(contentProvider.contentURL()));
   }
 }

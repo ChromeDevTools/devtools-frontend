@@ -2,11 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Host from '../host/host.js';
+
 import {State} from './DockController.js';
 
 export function reload() {
   if (Components.dockController.canDock() && Components.dockController.dockSide() === State.Undocked) {
-    Host.InspectorFrontendHost.setIsDocked(true, function() {});
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.setIsDocked(true, function() {});
   }
   window.location.reload();
 }

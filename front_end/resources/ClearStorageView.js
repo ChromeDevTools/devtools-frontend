@@ -72,7 +72,7 @@ export class ClearStorageView extends UI.ThrottledWidget {
     this._appendItem(caches, Common.UIString('Application cache'), 'appcache');
     caches.markFieldListAsGroup();
 
-    SDK.targetManager.observeTargets(this);
+    self.SDK.targetManager.observeTargets(this);
   }
 
   /**
@@ -181,7 +181,7 @@ export class ClearStorageView extends UI.ThrottledWidget {
     }
 
     if (set.has(Protocol.Storage.StorageType.Indexeddb) || hasAll) {
-      for (const target of SDK.targetManager.targets()) {
+      for (const target of self.SDK.targetManager.targets()) {
         const indexedDBModel = target.model(IndexedDBModel);
         if (indexedDBModel) {
           indexedDBModel.clearForOrigin(securityOrigin);
@@ -205,7 +205,7 @@ export class ClearStorageView extends UI.ThrottledWidget {
     }
 
     if (set.has(Protocol.Storage.StorageType.Cache_storage) || hasAll) {
-      const target = SDK.targetManager.mainTarget();
+      const target = self.SDK.targetManager.mainTarget();
       const model = target && target.model(SDK.ServiceWorkerCacheModel);
       if (model) {
         model.clearForOrigin(securityOrigin);
@@ -330,7 +330,7 @@ export class ActionDelegate {
    * @return {boolean}
    */
   _handleClear() {
-    const target = SDK.targetManager.mainTarget();
+    const target = self.SDK.targetManager.mainTarget();
     if (!target) {
       return false;
     }

@@ -325,7 +325,7 @@ export async function initMainConnection(createMainTarget, websocketConnectionLo
   await createMainTarget();
   Host.InspectorFrontendHost.connectionReady();
   Host.InspectorFrontendHost.events.addEventListener(Host.InspectorFrontendHostAPI.Events.ReattachMainTarget, () => {
-    SDK.targetManager.mainTarget().router().connection().disconnect();
+    self.SDK.targetManager.mainTarget().router().connection().disconnect();
     createMainTarget();
   });
   return Promise.resolve();

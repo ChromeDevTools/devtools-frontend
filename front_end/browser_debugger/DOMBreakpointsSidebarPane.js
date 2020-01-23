@@ -49,14 +49,14 @@ export class DOMBreakpointsSidebarPane extends UI.VBox {
     UI.ARIAUtils.setAccessibleName(this._list.element, ls`DOM Breakpoints list`);
     this._emptyElement.tabIndex = -1;
 
-    SDK.targetManager.addModelListener(
+    self.SDK.targetManager.addModelListener(
         SDK.DOMDebuggerModel, SDK.DOMDebuggerModel.Events.DOMBreakpointAdded, this._breakpointAdded, this);
-    SDK.targetManager.addModelListener(
+    self.SDK.targetManager.addModelListener(
         SDK.DOMDebuggerModel, SDK.DOMDebuggerModel.Events.DOMBreakpointToggled, this._breakpointToggled, this);
-    SDK.targetManager.addModelListener(
+    self.SDK.targetManager.addModelListener(
         SDK.DOMDebuggerModel, SDK.DOMDebuggerModel.Events.DOMBreakpointsRemoved, this._breakpointsRemoved, this);
 
-    for (const domDebuggerModel of SDK.targetManager.models(SDK.DOMDebuggerModel)) {
+    for (const domDebuggerModel of self.SDK.targetManager.models(SDK.DOMDebuggerModel)) {
       domDebuggerModel.retrieveDOMBreakpoints();
       for (const breakpoint of domDebuggerModel.domBreakpoints()) {
         this._addBreakpoint(breakpoint);

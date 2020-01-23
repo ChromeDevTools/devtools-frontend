@@ -267,7 +267,7 @@
    */
   TestSuite.prototype.testScriptsTabIsPopulatedOnInspectedPageRefresh = function() {
     const test = this;
-    const debuggerModel = SDK.targetManager.mainTarget().model(SDK.DebuggerModel);
+    const debuggerModel = self.SDK.targetManager.mainTarget().model(SDK.DebuggerModel);
     debuggerModel.addEventListener(SDK.DebuggerModel.Events.GlobalObjectCleared, waitUntilScriptIsParsed);
 
     this.showPanel('elements').then(function() {
@@ -352,7 +352,7 @@
   // Tests that debugger works correctly if pause event occurs when DevTools
   // frontend is being loaded.
   TestSuite.prototype.testPauseWhenLoadingDevTools = function() {
-    const debuggerModel = SDK.targetManager.mainTarget().model(SDK.DebuggerModel);
+    const debuggerModel = self.SDK.targetManager.mainTarget().model(SDK.DebuggerModel);
     if (debuggerModel.debuggerPausedDetails) {
       return;
     }
@@ -585,7 +585,7 @@
     this._waitForTargets(1, callback.bind(this));
 
     function callback() {
-      const debuggerModel = SDK.targetManager.models(SDK.DebuggerModel)[0];
+      const debuggerModel = self.SDK.targetManager.models(SDK.DebuggerModel)[0];
       if (debuggerModel.isPaused()) {
         SDK.consoleModel.addEventListener(SDK.ConsoleModel.Events.MessageAdded, onConsoleMessage, this);
         debuggerModel.resume();
@@ -615,12 +615,12 @@
 
   TestSuite.prototype.enableTouchEmulation = function() {
     const deviceModeModel = new Emulation.DeviceModeModel(function() {});
-    deviceModeModel._target = SDK.targetManager.mainTarget();
+    deviceModeModel._target = self.SDK.targetManager.mainTarget();
     deviceModeModel._applyTouch(true, true);
   };
 
   TestSuite.prototype.waitForDebuggerPaused = function() {
-    const debuggerModel = SDK.targetManager.mainTarget().model(SDK.DebuggerModel);
+    const debuggerModel = self.SDK.targetManager.mainTarget().model(SDK.DebuggerModel);
     if (debuggerModel.debuggerPausedDetails) {
       return;
     }
@@ -644,7 +644,7 @@
     const test = this;
 
     async function testOverrides(params, metrics, callback) {
-      await SDK.targetManager.mainTarget().emulationAgent().invoke_setDeviceMetricsOverride(params);
+      await self.SDK.targetManager.mainTarget().emulationAgent().invoke_setDeviceMetricsOverride(params);
       test.evaluateInConsole_('(' + dumpPageMetrics.toString() + ')()', checkMetrics);
 
       function checkMetrics(consoleResult) {
@@ -691,20 +691,20 @@
     let receivedReady = false;
 
     function signalToShowAutofill() {
-      SDK.targetManager.mainTarget().inputAgent().invoke_dispatchKeyEvent(
+      self.SDK.targetManager.mainTarget().inputAgent().invoke_dispatchKeyEvent(
           {type: 'rawKeyDown', key: 'Down', windowsVirtualKeyCode: 40, nativeVirtualKeyCode: 40});
-      SDK.targetManager.mainTarget().inputAgent().invoke_dispatchKeyEvent(
+      self.SDK.targetManager.mainTarget().inputAgent().invoke_dispatchKeyEvent(
           {type: 'keyUp', key: 'Down', windowsVirtualKeyCode: 40, nativeVirtualKeyCode: 40});
     }
 
     function selectTopAutoFill() {
-      SDK.targetManager.mainTarget().inputAgent().invoke_dispatchKeyEvent(
+      self.SDK.targetManager.mainTarget().inputAgent().invoke_dispatchKeyEvent(
           {type: 'rawKeyDown', key: 'Down', windowsVirtualKeyCode: 40, nativeVirtualKeyCode: 40});
-      SDK.targetManager.mainTarget().inputAgent().invoke_dispatchKeyEvent(
+      self.SDK.targetManager.mainTarget().inputAgent().invoke_dispatchKeyEvent(
           {type: 'keyUp', key: 'Down', windowsVirtualKeyCode: 40, nativeVirtualKeyCode: 40});
-      SDK.targetManager.mainTarget().inputAgent().invoke_dispatchKeyEvent(
+      self.SDK.targetManager.mainTarget().inputAgent().invoke_dispatchKeyEvent(
           {type: 'rawKeyDown', key: 'Enter', windowsVirtualKeyCode: 13, nativeVirtualKeyCode: 13});
-      SDK.targetManager.mainTarget().inputAgent().invoke_dispatchKeyEvent(
+      self.SDK.targetManager.mainTarget().inputAgent().invoke_dispatchKeyEvent(
           {type: 'keyUp', key: 'Enter', windowsVirtualKeyCode: 13, nativeVirtualKeyCode: 13});
 
       test.evaluateInConsole_('document.getElementById("name").value', onResultOfInput);
@@ -753,7 +753,7 @@
           Host.InspectorFrontendHostAPI.Events.KeyEventUnhandled, onKeyEventUnhandledKeyDown, this);
       Host.InspectorFrontendHost.events.addEventListener(
           Host.InspectorFrontendHostAPI.Events.KeyEventUnhandled, onKeyEventUnhandledKeyUp, this);
-      SDK.targetManager.mainTarget().inputAgent().invoke_dispatchKeyEvent(
+      self.SDK.targetManager.mainTarget().inputAgent().invoke_dispatchKeyEvent(
           {type: 'keyUp', key: 'F8', code: 'F8', windowsVirtualKeyCode: 119, nativeVirtualKeyCode: 119});
     }
     function onKeyEventUnhandledKeyUp(event) {
@@ -767,14 +767,14 @@
     this.takeControl();
     Host.InspectorFrontendHost.events.addEventListener(
         Host.InspectorFrontendHostAPI.Events.KeyEventUnhandled, onKeyEventUnhandledKeyDown, this);
-    SDK.targetManager.mainTarget().inputAgent().invoke_dispatchKeyEvent(
+    self.SDK.targetManager.mainTarget().inputAgent().invoke_dispatchKeyEvent(
         {type: 'rawKeyDown', key: 'F8', windowsVirtualKeyCode: 119, nativeVirtualKeyCode: 119});
   };
 
   TestSuite.prototype.testDispatchKeyEventDoesNotCrash = function() {
-    SDK.targetManager.mainTarget().inputAgent().invoke_dispatchKeyEvent(
+    self.SDK.targetManager.mainTarget().inputAgent().invoke_dispatchKeyEvent(
         {type: 'rawKeyDown', windowsVirtualKeyCode: 0x23, key: 'End'});
-    SDK.targetManager.mainTarget().inputAgent().invoke_dispatchKeyEvent(
+    self.SDK.targetManager.mainTarget().inputAgent().invoke_dispatchKeyEvent(
         {type: 'keyUp', windowsVirtualKeyCode: 0x23, key: 'End'});
   };
 
@@ -1091,7 +1091,7 @@
   TestSuite.prototype.testRawHeadersWithHSTS = function(url) {
     const test = this;
     test.takeControl();
-    SDK.targetManager.addModelListener(
+    self.SDK.targetManager.addModelListener(
         SDK.NetworkManager, SDK.NetworkManager.Events.ResponseReceived, onResponseReceived);
 
     this.evaluateInConsole_(`
@@ -1269,7 +1269,7 @@
 
   TestSuite.prototype.testDisposeEmptyBrowserContext = async function(url) {
     this.takeControl();
-    const targetAgent = SDK.targetManager.mainTarget().targetAgent();
+    const targetAgent = self.SDK.targetManager.mainTarget().targetAgent();
     const {browserContextId} = await targetAgent.invoke_createBrowserContext();
     const response1 = await targetAgent.invoke_getBrowserContexts();
     this.assertEquals(response1.browserContextIds.length, 1);
@@ -1282,7 +1282,7 @@
   TestSuite.prototype.testCreateBrowserContext = async function(url) {
     this.takeControl();
     const browserContextIds = [];
-    const targetAgent = SDK.targetManager.mainTarget().targetAgent();
+    const targetAgent = self.SDK.targetManager.mainTarget().targetAgent();
 
     const target1 = await createIsolatedTarget(url);
     const target2 = await createIsolatedTarget(url);
@@ -1301,7 +1301,8 @@
     this.assertEquals(await evalCode(target2, 'localStorage.getItem("page2")'), 'page2');
 
     const removedTargets = [];
-    SDK.targetManager.observeTargets({targetAdded: () => {}, targetRemoved: target => removedTargets.push(target)});
+    self.SDK.targetManager.observeTargets(
+        {targetAdded: () => {}, targetRemoved: target => removedTargets.push(target)});
     await Promise.all([disposeBrowserContext(browserContextIds[0]), disposeBrowserContext(browserContextIds[1])]);
     this.assertEquals(removedTargets.length, 2);
     this.assertEquals(removedTargets.indexOf(target1) !== -1, true);
@@ -1320,7 +1321,7 @@
       const {targetId} = await targetAgent.invoke_createTarget({url: 'about:blank', browserContextId});
       await targetAgent.invoke_attachToTarget({targetId, flatten: true});
 
-      const target = SDK.targetManager.targets().find(target => target.id() === targetId);
+      const target = self.SDK.targetManager.targets().find(target => target.id() === targetId);
       const pageAgent = target.pageAgent();
       await pageAgent.invoke_enable();
       await pageAgent.invoke_navigate({url});
@@ -1328,7 +1329,7 @@
     }
 
     async function disposeBrowserContext(browserContextId) {
-      const targetAgent = SDK.targetManager.mainTarget().targetAgent();
+      const targetAgent = self.SDK.targetManager.mainTarget().targetAgent();
       await targetAgent.invoke_disposeBrowserContext({browserContextId});
     }
 
@@ -1356,8 +1357,8 @@
     let parentFrameOutput;
     let childFrameOutput;
 
-    const inputAgent = SDK.targetManager.mainTarget().inputAgent();
-    const runtimeAgent = SDK.targetManager.mainTarget().runtimeAgent();
+    const inputAgent = self.SDK.targetManager.mainTarget().inputAgent();
+    const runtimeAgent = self.SDK.targetManager.mainTarget().runtimeAgent();
     await inputAgent.invoke_dispatchMouseEvent({type: 'mousePressed', button: 'left', clickCount: 1, x: 10, y: 10});
     await inputAgent.invoke_dispatchMouseEvent({type: 'mouseMoved', button: 'left', clickCount: 1, x: 10, y: 20});
     await inputAgent.invoke_dispatchMouseEvent({type: 'mouseReleased', button: 'left', clickCount: 1, x: 10, y: 20});
@@ -1365,27 +1366,27 @@
     await inputAgent.invoke_dispatchMouseEvent({type: 'mouseMoved', button: 'left', clickCount: 1, x: 230, y: 150});
     await inputAgent.invoke_dispatchMouseEvent({type: 'mouseReleased', button: 'left', clickCount: 1, x: 230, y: 150});
     parentFrameOutput = 'Event type: mousedown button: 0 x: 10 y: 10 Event type: mouseup button: 0 x: 10 y: 20';
-    this.assertEquals(parentFrameOutput, await takeLogs(SDK.targetManager.targets()[0]));
+    this.assertEquals(parentFrameOutput, await takeLogs(self.SDK.targetManager.targets()[0]));
     childFrameOutput = 'Event type: mousedown button: 0 x: 30 y: 40 Event type: mouseup button: 0 x: 30 y: 50';
-    this.assertEquals(childFrameOutput, await takeLogs(SDK.targetManager.targets()[1]));
+    this.assertEquals(childFrameOutput, await takeLogs(self.SDK.targetManager.targets()[1]));
 
 
     await inputAgent.invoke_dispatchKeyEvent({type: 'keyDown', key: 'a'});
     await runtimeAgent.invoke_evaluate({expression: `document.querySelector('iframe').focus()`});
     await inputAgent.invoke_dispatchKeyEvent({type: 'keyDown', key: 'a'});
     parentFrameOutput = 'Event type: keydown';
-    this.assertEquals(parentFrameOutput, await takeLogs(SDK.targetManager.targets()[0]));
+    this.assertEquals(parentFrameOutput, await takeLogs(self.SDK.targetManager.targets()[0]));
     childFrameOutput = 'Event type: keydown';
-    this.assertEquals(childFrameOutput, await takeLogs(SDK.targetManager.targets()[1]));
+    this.assertEquals(childFrameOutput, await takeLogs(self.SDK.targetManager.targets()[1]));
 
     await inputAgent.invoke_dispatchTouchEvent({type: 'touchStart', touchPoints: [{x: 10, y: 10}]});
     await inputAgent.invoke_dispatchTouchEvent({type: 'touchEnd', touchPoints: []});
     await inputAgent.invoke_dispatchTouchEvent({type: 'touchStart', touchPoints: [{x: 230, y: 140}]});
     await inputAgent.invoke_dispatchTouchEvent({type: 'touchEnd', touchPoints: []});
     parentFrameOutput = 'Event type: touchstart touch x: 10 touch y: 10';
-    this.assertEquals(parentFrameOutput, await takeLogs(SDK.targetManager.targets()[0]));
+    this.assertEquals(parentFrameOutput, await takeLogs(self.SDK.targetManager.targets()[0]));
     childFrameOutput = 'Event type: touchstart touch x: 30 touch y: 40';
-    this.assertEquals(childFrameOutput, await takeLogs(SDK.targetManager.targets()[1]));
+    this.assertEquals(childFrameOutput, await takeLogs(self.SDK.targetManager.targets()[1]));
 
     this.releaseControl();
   };
@@ -1421,14 +1422,14 @@
     await testCase(baseURL + 'echoheader?x-devtools-test', {'x-devtools-test': 'Foo'}, 200, ['cache-control'], 'Foo');
     await testCase(baseURL + 'set-header?pragma:%20no-cache', undefined, 200, ['pragma'], 'pragma: no-cache');
 
-    await SDK.targetManager.mainTarget().runtimeAgent().invoke_evaluate({
+    await self.SDK.targetManager.mainTarget().runtimeAgent().invoke_evaluate({
       expression: `fetch("/set-cookie?devtools-test-cookie=Bar",
                          {credentials: 'include'})`,
       awaitPromise: true
     });
     await testCase(baseURL + 'echoheader?Cookie', undefined, 200, ['cache-control'], 'devtools-test-cookie=Bar');
 
-    await SDK.targetManager.mainTarget().runtimeAgent().invoke_evaluate({
+    await self.SDK.targetManager.mainTarget().runtimeAgent().invoke_evaluate({
       expression: `fetch("/set-cookie?devtools-test-cookie=same-site-cookie;SameSite=Lax",
                          {credentials: 'include'})`,
       awaitPromise: true
@@ -1466,7 +1467,7 @@
       this.assertEquals(testUserAgent, actualUserAgent);
       this.releaseControl();
     }
-    SDK.targetManager.addModelListener(
+    self.SDK.targetManager.addModelListener(
         SDK.NetworkManager, SDK.NetworkManager.Events.RequestUpdated, onRequestUpdated.bind(this));
 
     this.evaluateInConsole_(`new WebSocket('ws://127.0.0.1:${websocketPort}')`, () => {});
@@ -1581,7 +1582,7 @@
     checkTargets.call(this);
 
     function checkTargets() {
-      if (SDK.targetManager.targets().length >= n) {
+      if (self.SDK.targetManager.targets().length >= n) {
         callback.call(null);
       } else {
         this.addSniffer(SDK.TargetManager.prototype, 'createTarget', checkTargets.bind(this));
@@ -1590,7 +1591,7 @@
   };
 
   TestSuite.prototype._waitForExecutionContexts = function(n, callback) {
-    const runtimeModel = SDK.targetManager.mainTarget().model(SDK.RuntimeModel);
+    const runtimeModel = self.SDK.targetManager.mainTarget().model(SDK.RuntimeModel);
     checkForExecutionContexts.call(this);
 
     function checkForExecutionContexts() {

@@ -6,7 +6,7 @@
   // about:blank never fires a load event so just wait until we see the URL change
   function navigateToAboutBlankAndWait() {
     var listenerPromise = new Promise(resolve => {
-      SDK.targetManager.addEventListener(SDK.TargetManager.Events.InspectedURLChanged, resolve);
+      self.SDK.targetManager.addEventListener(SDK.TargetManager.Events.InspectedURLChanged, resolve);
     });
 
     TestRunner.navigate('about:blank');

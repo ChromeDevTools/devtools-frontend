@@ -7,7 +7,7 @@
  */
 export class LogManager {
   constructor() {
-    SDK.targetManager.observeModels(SDK.LogModel, this);
+    self.SDK.targetManager.observeModels(SDK.LogModel, this);
   }
 
   /**
@@ -50,11 +50,11 @@ export class LogManager {
       // user can see messages from the worker which has been already destroyed.
       // When opening DevTools, give us some time to connect to the worker and
       // not report the message twice if the worker is still alive.
-      if (SDK.targetManager.targetById(workerId)) {
+      if (self.SDK.targetManager.targetById(workerId)) {
         return;
       }
       setTimeout(() => {
-        if (!SDK.targetManager.targetById(workerId)) {
+        if (!self.SDK.targetManager.targetById(workerId)) {
           SDK.consoleModel.addMessage(consoleMessage);
         }
       }, 1000);

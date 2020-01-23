@@ -35,7 +35,7 @@ import {LiveLocation, LiveLocationPool} from './LiveLocation.js';  // eslint-dis
  */
 export class PresentationConsoleMessageManager {
   constructor() {
-    SDK.targetManager.observeModels(SDK.DebuggerModel, this);
+    self.SDK.targetManager.observeModels(SDK.DebuggerModel, this);
 
     SDK.consoleModel.addEventListener(SDK.ConsoleModel.Events.ConsoleCleared, this._consoleCleared, this);
     SDK.consoleModel.addEventListener(
@@ -73,7 +73,7 @@ export class PresentationConsoleMessageManager {
   }
 
   _consoleCleared() {
-    for (const debuggerModel of SDK.targetManager.models(SDK.DebuggerModel)) {
+    for (const debuggerModel of self.SDK.targetManager.models(SDK.DebuggerModel)) {
       debuggerModel[PresentationConsoleMessageManager._symbol]._consoleCleared();
     }
   }

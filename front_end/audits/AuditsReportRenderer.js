@@ -39,7 +39,7 @@ export class AuditsReportRenderer extends ReportRenderer {
    * @param {!Element} el
    */
   static async linkifyNodeDetails(el) {
-    const mainTarget = SDK.targetManager.mainTarget();
+    const mainTarget = self.SDK.targetManager.mainTarget();
     const domModel = mainTarget.model(SDK.DOMModel);
 
     for (const origElement of el.getElementsByClassName('lh-node')) {

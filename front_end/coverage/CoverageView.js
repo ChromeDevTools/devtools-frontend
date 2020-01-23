@@ -47,7 +47,7 @@ export class CoverageView extends UI.VBox {
     this._toggleRecordButton = UI.Toolbar.createActionButton(this._toggleRecordAction);
     toolbar.appendToolbarItem(this._toggleRecordButton);
 
-    const mainTarget = SDK.targetManager.mainTarget();
+    const mainTarget = self.SDK.targetManager.mainTarget();
     const mainTargetSupportsRecordOnReload = mainTarget && mainTarget.model(SDK.ResourceTreeModel);
     if (mainTargetSupportsRecordOnReload) {
       const startWithReloadAction =
@@ -202,7 +202,7 @@ export class CoverageView extends UI.VBox {
    */
   async _startRecording(options) {
     this._reset();
-    const mainTarget = SDK.targetManager.mainTarget();
+    const mainTarget = self.SDK.targetManager.mainTarget();
     if (!mainTarget) {
       return;
     }

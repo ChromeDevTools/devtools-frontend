@@ -24,7 +24,7 @@ export class CoveragePlugin extends Plugin {
       UI.viewManager.showView('coverage');
     });
 
-    const mainTarget = SDK.targetManager.mainTarget();
+    const mainTarget = self.SDK.targetManager.mainTarget();
     if (mainTarget) {
       this._model = mainTarget.model(Coverage.CoverageModel);
       this._model.addEventListener(Coverage.CoverageModel.Events.CoverageReset, this._handleReset, this);

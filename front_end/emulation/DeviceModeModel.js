@@ -72,7 +72,7 @@ export class DeviceModeModel extends Common.Object {
     this._emulationModel = null;
     /** @type {?function()} */
     this._onModelAvailable = null;
-    SDK.targetManager.observeModels(SDK.EmulationModel, this);
+    self.SDK.targetManager.observeModels(SDK.EmulationModel, this);
   }
 
   /**
@@ -763,7 +763,7 @@ export class DeviceModeModel extends Common.Object {
   _applyTouch(touchEnabled, mobile) {
     this._touchEnabled = touchEnabled;
     this._touchMobile = mobile;
-    for (const emulationModel of SDK.targetManager.models(SDK.EmulationModel)) {
+    for (const emulationModel of self.SDK.targetManager.models(SDK.EmulationModel)) {
       emulationModel.emulateTouch(touchEnabled, mobile);
     }
   }

@@ -31,7 +31,7 @@ export class SecurityPanel extends UI.PanelWithSidebar {
     /** @type {!Map<!Network.NetworkLogView.MixedContentFilterValues, number>} */
     this._filterRequestCounts = new Map();
 
-    SDK.targetManager.observeModels(SecurityModel, this);
+    self.SDK.targetManager.observeModels(SecurityModel, this);
   }
 
   /**

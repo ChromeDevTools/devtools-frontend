@@ -180,7 +180,7 @@ export class SensorsView extends UI.VBox {
     if (this._geolocationOverrideEnabled) {
       this._geolocationSetting.set(this._geolocation.toSetting());
     }
-    for (const emulationModel of SDK.targetManager.models(SDK.EmulationModel)) {
+    for (const emulationModel of self.SDK.targetManager.models(SDK.EmulationModel)) {
       emulationModel.emulateGeolocation(this._geolocationOverrideEnabled ? this._geolocation : null).catch(err => {
         switch (err.type) {
           case 'emulation-set-timezone':
@@ -283,7 +283,7 @@ export class SensorsView extends UI.VBox {
     if (this._deviceOrientationOverrideEnabled) {
       this._deviceOrientationSetting.set(this._deviceOrientation.toSetting());
     }
-    for (const emulationModel of SDK.targetManager.models(SDK.EmulationModel)) {
+    for (const emulationModel of self.SDK.targetManager.models(SDK.EmulationModel)) {
       emulationModel.emulateDeviceOrientation(this._deviceOrientationOverrideEnabled ? this._deviceOrientation : null);
     }
   }
@@ -503,11 +503,11 @@ export class SensorsView extends UI.VBox {
     UI.ARIAUtils.markAsAlert(reloadWarning);
 
     function applyTouch() {
-      for (const emulationModel of SDK.targetManager.models(SDK.EmulationModel)) {
+      for (const emulationModel of self.SDK.targetManager.models(SDK.EmulationModel)) {
         emulationModel.overrideEmulateTouch(select.value === 'enabled');
       }
       reloadWarning.classList.remove('hidden');
-      const resourceTreeModel = SDK.targetManager.models(SDK.ResourceTreeModel)[0];
+      const resourceTreeModel = self.SDK.targetManager.models(SDK.ResourceTreeModel)[0];
       if (resourceTreeModel) {
         resourceTreeModel.once(SDK.ResourceTreeModel.Events.MainFrameNavigated)
             .then(() => reloadWarning.classList.add('hidden'));

@@ -32,7 +32,7 @@
  * @return {?SDK.Resource}
  */
 export function resourceForURL(url) {
-  for (const resourceTreeModel of SDK.targetManager.models(SDK.ResourceTreeModel)) {
+  for (const resourceTreeModel of self.SDK.targetManager.models(SDK.ResourceTreeModel)) {
     const resource = resourceTreeModel.resourceForURL(url);
     if (resource) {
       return resource;
@@ -60,7 +60,7 @@ export function displayNameForURL(url) {
     return uiSourceCode.displayName();
   }
 
-  const mainTarget = SDK.targetManager.mainTarget();
+  const mainTarget = self.SDK.targetManager.mainTarget();
   const inspectedURL = mainTarget && mainTarget.inspectedURL();
   if (!inspectedURL) {
     return url.trimURL('');

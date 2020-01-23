@@ -12,7 +12,7 @@ export class JsMainImpl extends Common.Object {
   run() {
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.ConnectToNodeJSDirectly);
     SDK.initMainConnection(() => {
-      const target = SDK.targetManager.createTarget('main', ls`Main`, SDK.Target.Type.Node, null);
+      const target = self.SDK.targetManager.createTarget('main', ls`Main`, SDK.Target.Type.Node, null);
       target.runtimeAgent().runIfWaitingForDebugger();
     }, Components.TargetDetachedDialog.webSocketConnectionLost);
   }

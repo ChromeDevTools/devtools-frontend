@@ -31,8 +31,8 @@ export class IsolateSelector extends UI.VBox {
     this._totalValueDiv.title = ls`Total page JS heap size across all VM instances.`;
 
     SDK.isolateManager.observeIsolates(this);
-    SDK.targetManager.addEventListener(SDK.TargetManager.Events.NameChanged, this._targetChanged, this);
-    SDK.targetManager.addEventListener(SDK.TargetManager.Events.InspectedURLChanged, this._targetChanged, this);
+    self.SDK.targetManager.addEventListener(SDK.TargetManager.Events.NameChanged, this._targetChanged, this);
+    self.SDK.targetManager.addEventListener(SDK.TargetManager.Events.InspectedURLChanged, this._targetChanged, this);
   }
 
   /**
@@ -55,7 +55,7 @@ export class IsolateSelector extends UI.VBox {
    */
   isolateAdded(isolate) {
     const item = new ListItem(isolate);
-    const index = item.model().target() === SDK.targetManager.mainTarget() ? 0 : this._items.length;
+    const index = item.model().target() === self.SDK.targetManager.mainTarget() ? 0 : this._items.length;
     this._items.insert(index, item);
     this._itemByIsolate.set(isolate, item);
     if (this._items.length === 1) {
@@ -251,7 +251,7 @@ export class ListItem {
     const modelCountByName = new Map();
     for (const model of this._isolate.models()) {
       const target = model.target();
-      const name = SDK.targetManager.mainTarget() !== target ? target.name() : '';
+      const name = self.SDK.targetManager.mainTarget() !== target ? target.name() : '';
       const parsedURL = new Common.ParsedURL(target.inspectedURL());
       const domain = parsedURL.isValid ? parsedURL.domain() : '';
       const title = target.decorateLabel(domain && name ? `${domain}: ${name}` : name || domain || ls`(empty)`);

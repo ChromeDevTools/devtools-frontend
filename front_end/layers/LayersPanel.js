@@ -42,7 +42,7 @@ export class LayersPanel extends UI.PanelWithSidebar {
     /** @type {?LayerTreeModel} */
     this._model = null;
 
-    SDK.targetManager.observeTargets(this);
+    self.SDK.targetManager.observeTargets(this);
     this._layerViewHost = new LayerViewer.LayerViewHost();
     this._layerTreeOutline = new LayerViewer.LayerTreeOutline(this._layerViewHost);
     this._layerTreeOutline.addEventListener(

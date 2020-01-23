@@ -1027,7 +1027,7 @@ export class MultitargetNetworkManager extends Common.Object {
     /** @type {!Platform.Multimap<!SDK.MultitargetNetworkManager.RequestInterceptor, !SDK.MultitargetNetworkManager.InterceptionPattern>} */
     this._urlsForRequestInterceptor = new Platform.Multimap();
 
-    SDK.targetManager.observeModels(NetworkManager, this);
+    self.SDK.targetManager.observeModels(NetworkManager, this);
   }
 
   /**
@@ -1329,7 +1329,7 @@ export class MultitargetNetworkManager extends Common.Object {
    * @return {!Promise<!Array<string>>}
    */
   getCertificate(origin) {
-    const target = SDK.targetManager.mainTarget();
+    const target = self.SDK.targetManager.mainTarget();
     return target.networkAgent().getCertificate(origin).then(certificate => certificate || []);
   }
 

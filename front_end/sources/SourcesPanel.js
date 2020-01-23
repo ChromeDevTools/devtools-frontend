@@ -121,19 +121,19 @@ export class SourcesPanel extends UI.Panel {
     Common.moduleSetting('breakpointsActive').addChangeListener(this._breakpointsActiveStateChanged, this);
     UI.context.addFlavorChangeListener(SDK.Target, this._onCurrentTargetChanged, this);
     UI.context.addFlavorChangeListener(SDK.DebuggerModel.CallFrame, this._callFrameChanged, this);
-    SDK.targetManager.addModelListener(
+    self.SDK.targetManager.addModelListener(
         SDK.DebuggerModel, SDK.DebuggerModel.Events.DebuggerWasEnabled, this._debuggerWasEnabled, this);
-    SDK.targetManager.addModelListener(
+    self.SDK.targetManager.addModelListener(
         SDK.DebuggerModel, SDK.DebuggerModel.Events.DebuggerPaused, this._debuggerPaused, this);
-    SDK.targetManager.addModelListener(
+    self.SDK.targetManager.addModelListener(
         SDK.DebuggerModel, SDK.DebuggerModel.Events.DebuggerResumed,
         event => this._debuggerResumed(/** @type {!SDK.DebuggerModel} */ (event.data)));
-    SDK.targetManager.addModelListener(
+    self.SDK.targetManager.addModelListener(
         SDK.DebuggerModel, SDK.DebuggerModel.Events.GlobalObjectCleared,
         event => this._debuggerResumed(/** @type {!SDK.DebuggerModel} */ (event.data)));
     Extensions.extensionServer.addEventListener(
         Extensions.ExtensionServer.Events.SidebarPaneAdded, this._extensionSidebarPaneAdded, this);
-    SDK.targetManager.observeTargets(this);
+    self.SDK.targetManager.observeTargets(this);
   }
 
   /**
@@ -544,7 +544,7 @@ export class SourcesPanel extends UI.Panel {
       return;
     }
 
-    for (const debuggerModel of SDK.targetManager.models(SDK.DebuggerModel)) {
+    for (const debuggerModel of self.SDK.targetManager.models(SDK.DebuggerModel)) {
       if (debuggerModel.isPaused()) {
         UI.context.setFlavor(SDK.Target, debuggerModel.target());
         break;

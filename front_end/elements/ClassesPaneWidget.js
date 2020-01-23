@@ -25,7 +25,7 @@ export class ClassesPaneWidget extends UI.Widget {
     this._prompt.addEventListener(UI.TextPrompt.Events.TextChanged, this._onTextChanged, this);
     proxyElement.addEventListener('keydown', this._onKeyDown.bind(this), false);
 
-    SDK.targetManager.addModelListener(SDK.DOMModel, SDK.DOMModel.Events.DOMMutated, this._onDOMMutated, this);
+    self.SDK.targetManager.addModelListener(SDK.DOMModel, SDK.DOMModel.Events.DOMMutated, this._onDOMMutated, this);
     /** @type {!Set<!SDK.DOMNode>} */
     this._mutatingNodes = new Set();
     /** @type {!Map<!SDK.DOMNode, string>} */

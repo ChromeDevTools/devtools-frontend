@@ -745,7 +745,7 @@ export class ConsoleView extends UI.VBox {
   }
 
   async _saveConsole() {
-    const url = SDK.targetManager.mainTarget().inspectedURL();
+    const url = self.SDK.targetManager.mainTarget().inspectedURL();
     const parsedURL = Common.ParsedURL.fromString(url);
     const filename = String.sprintf('%s-%d.log', parsedURL ? parsedURL.host : 'console', Date.now());
     const stream = new Bindings.FileOutputStream();

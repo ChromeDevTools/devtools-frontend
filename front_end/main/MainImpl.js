@@ -198,7 +198,7 @@ export class MainImpl {
     SDK.consoleModel = new SDK.ConsoleModel();
     SDK.multitargetNetworkManager = new SDK.MultitargetNetworkManager();
     SDK.domDebuggerManager = new SDK.DOMDebuggerManager();
-    SDK.targetManager.addEventListener(
+    self.SDK.targetManager.addEventListener(
         SDK.TargetManager.Events.SuspendStateChanged, this._onSuspendStateChanged.bind(this));
 
     UI.shortcutsScreen = new UI.ShortcutsScreen();
@@ -212,19 +212,20 @@ export class MainImpl {
     Workspace.workspace = new Workspace.Workspace();
 
     Bindings.networkProjectManager = new Bindings.NetworkProjectManager();
-    Bindings.resourceMapping = new Bindings.ResourceMapping(SDK.targetManager, Workspace.workspace);
+    Bindings.resourceMapping = new Bindings.ResourceMapping(self.SDK.targetManager, Workspace.workspace);
     new Bindings.PresentationConsoleMessageManager();
-    Bindings.cssWorkspaceBinding = new Bindings.CSSWorkspaceBinding(SDK.targetManager, Workspace.workspace);
-    Bindings.debuggerWorkspaceBinding = new Bindings.DebuggerWorkspaceBinding(SDK.targetManager, Workspace.workspace);
+    Bindings.cssWorkspaceBinding = new Bindings.CSSWorkspaceBinding(self.SDK.targetManager, Workspace.workspace);
+    Bindings.debuggerWorkspaceBinding =
+        new Bindings.DebuggerWorkspaceBinding(self.SDK.targetManager, Workspace.workspace);
     Bindings.breakpointManager =
-        new Bindings.BreakpointManager(Workspace.workspace, SDK.targetManager, Bindings.debuggerWorkspaceBinding);
+        new Bindings.BreakpointManager(Workspace.workspace, self.SDK.targetManager, Bindings.debuggerWorkspaceBinding);
     Extensions.extensionServer = new Extensions.ExtensionServer();
 
     new Persistence.FileSystemWorkspaceBinding(Persistence.isolatedFileSystemManager, Workspace.workspace);
     Persistence.persistence = new Persistence.Persistence(Workspace.workspace, Bindings.breakpointManager);
     Persistence.networkPersistenceManager = new Persistence.NetworkPersistenceManager(Workspace.workspace);
 
-    new ExecutionContextSelector(SDK.targetManager, UI.context);
+    new ExecutionContextSelector(self.SDK.targetManager, UI.context);
     Bindings.blackboxManager = new Bindings.BlackboxManager(Bindings.debuggerWorkspaceBinding);
 
     new PauseListener();
@@ -472,7 +473,7 @@ export class MainImpl {
   }
 
   _onSuspendStateChanged() {
-    const suspended = SDK.targetManager.allTargetsSuspended();
+    const suspended = self.SDK.targetManager.allTargetsSuspended();
     UI.inspectorView.onSuspendStateChanged(suspended);
   }
 }
@@ -643,7 +644,7 @@ export class MainMenuItem {
     }
 
     if (Components.dockController.dockSide() === Components.DockController.State.Undocked &&
-        SDK.targetManager.mainTarget() && SDK.targetManager.mainTarget().type() === SDK.Target.Type.Frame) {
+        self.SDK.targetManager.mainTarget() && self.SDK.targetManager.mainTarget().type() === SDK.Target.Type.Frame) {
       contextMenu.defaultSection().appendAction('inspector_main.focus-debuggee', Common.UIString('Focus debuggee'));
     }
 
@@ -676,7 +677,7 @@ export class MainMenuItem {
  */
 export class PauseListener {
   constructor() {
-    SDK.targetManager.addModelListener(
+    self.SDK.targetManager.addModelListener(
         SDK.DebuggerModel, SDK.DebuggerModel.Events.DebuggerPaused, this._debuggerPaused, this);
   }
 
@@ -684,7 +685,7 @@ export class PauseListener {
    * @param {!Common.Event} event
    */
   _debuggerPaused(event) {
-    SDK.targetManager.removeModelListener(
+    self.SDK.targetManager.removeModelListener(
         SDK.DebuggerModel, SDK.DebuggerModel.Events.DebuggerPaused, this._debuggerPaused, this);
     const debuggerModel = /** @type {!SDK.DebuggerModel} */ (event.data);
     const debuggerPausedDetails = debuggerModel.debuggerPausedDetails();

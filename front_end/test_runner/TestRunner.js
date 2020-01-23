@@ -943,7 +943,7 @@ export function waitForEvent(eventName, obj, condition) {
  */
 export function waitForTarget(filter) {
   filter = filter || (target => true);
-  for (const target of SDK.targetManager.targets()) {
+  for (const target of self.SDK.targetManager.targets()) {
     if (filter(target)) {
       return Promise.resolve(target);
     }
@@ -952,13 +952,13 @@ export function waitForTarget(filter) {
     const observer = /** @type {!SDK.TargetManager.Observer} */ ({
       targetAdded: function(target) {
         if (filter(target)) {
-          SDK.targetManager.unobserveTargets(observer);
+          self.SDK.targetManager.unobserveTargets(observer);
           fulfill(target);
         }
       },
       targetRemoved: function() {},
     });
-    SDK.targetManager.observeTargets(observer);
+    self.SDK.targetManager.observeTargets(observer);
   });
 }
 
@@ -971,13 +971,13 @@ export function waitForTargetRemoved(targetToRemove) {
     const observer = /** @type {!SDK.TargetManager.Observer} */ ({
       targetRemoved: function(target) {
         if (target === targetToRemove) {
-          SDK.targetManager.unobserveTargets(observer);
+          self.SDK.targetManager.unobserveTargets(observer);
           fulfill(target);
         }
       },
       targetAdded: function() {},
     });
-    SDK.targetManager.observeTargets(observer);
+    self.SDK.targetManager.observeTargets(observer);
   });
 }
 

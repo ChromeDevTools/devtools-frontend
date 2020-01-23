@@ -31,7 +31,7 @@ export class PerformanceMonitorImpl extends UI.HBox {
     this.contentElement.createChild('div', 'perfmon-chart-suspend-overlay fill').createChild('div').textContent =
         Common.UIString('Paused');
     this._controlPane.addEventListener(Events.MetricChanged, this._recalcChartHeight, this);
-    SDK.targetManager.observeModels(SDK.PerformanceMetricsModel, this);
+    self.SDK.targetManager.observeModels(SDK.PerformanceMetricsModel, this);
   }
 
   /**
@@ -41,7 +41,8 @@ export class PerformanceMonitorImpl extends UI.HBox {
     if (!this._model) {
       return;
     }
-    SDK.targetManager.addEventListener(SDK.TargetManager.Events.SuspendStateChanged, this._suspendStateChanged, this);
+    self.SDK.targetManager.addEventListener(
+        SDK.TargetManager.Events.SuspendStateChanged, this._suspendStateChanged, this);
     this._model.enable();
     this._suspendStateChanged();
   }
@@ -53,7 +54,7 @@ export class PerformanceMonitorImpl extends UI.HBox {
     if (!this._model) {
       return;
     }
-    SDK.targetManager.removeEventListener(
+    self.SDK.targetManager.removeEventListener(
         SDK.TargetManager.Events.SuspendStateChanged, this._suspendStateChanged, this);
     this._stopPolling();
     this._model.disable();
@@ -88,7 +89,7 @@ export class PerformanceMonitorImpl extends UI.HBox {
   }
 
   _suspendStateChanged() {
-    const suspended = SDK.targetManager.allTargetsSuspended();
+    const suspended = self.SDK.targetManager.allTargetsSuspended();
     if (suspended) {
       this._stopPolling();
     } else {

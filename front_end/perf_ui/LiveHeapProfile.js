@@ -48,12 +48,12 @@ export class LiveHeapProfile {
     }
     this._running = true;
     const sessionId = this._sessionId;
-    SDK.targetManager.observeModels(SDK.HeapProfilerModel, this);
-    SDK.targetManager.addModelListener(
+    self.SDK.targetManager.observeModels(SDK.HeapProfilerModel, this);
+    self.SDK.targetManager.addModelListener(
         SDK.ResourceTreeModel, SDK.ResourceTreeModel.Events.Load, this._loadEventFired, this);
 
     do {
-      const models = SDK.targetManager.models(SDK.HeapProfilerModel);
+      const models = self.SDK.targetManager.models(SDK.HeapProfilerModel);
       const profiles = await Promise.all(models.map(model => model.getSamplingProfile()));
       if (sessionId !== this._sessionId) {
         break;
@@ -70,10 +70,10 @@ export class LiveHeapProfile {
       ]);
     } while (sessionId === this._sessionId);
 
-    SDK.targetManager.unobserveModels(SDK.HeapProfilerModel, this);
-    SDK.targetManager.removeModelListener(
+    self.SDK.targetManager.unobserveModels(SDK.HeapProfilerModel, this);
+    self.SDK.targetManager.removeModelListener(
         SDK.ResourceTreeModel, SDK.ResourceTreeModel.Events.Load, this._loadEventFired, this);
-    for (const model of SDK.targetManager.models(SDK.HeapProfilerModel)) {
+    for (const model of self.SDK.targetManager.models(SDK.HeapProfilerModel)) {
       model.stopSampling();
     }
     self.runtime.sharedInstance(Memory).reset();

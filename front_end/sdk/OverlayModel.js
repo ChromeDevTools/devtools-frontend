@@ -65,17 +65,17 @@ export class OverlayModel extends SDKModel {
   }
 
   static hideDOMNodeHighlight() {
-    for (const overlayModel of SDK.targetManager.models(OverlayModel)) {
+    for (const overlayModel of self.SDK.targetManager.models(OverlayModel)) {
       overlayModel._delayedHideHighlight(0);
     }
   }
 
   static async muteHighlight() {
-    return Promise.all(SDK.targetManager.models(OverlayModel).map(model => model.suspendModel()));
+    return Promise.all(self.SDK.targetManager.models(OverlayModel).map(model => model.suspendModel()));
   }
 
   static async unmuteHighlight() {
-    return Promise.all(SDK.targetManager.models(OverlayModel).map(model => model.resumeModel()));
+    return Promise.all(self.SDK.targetManager.models(OverlayModel).map(model => model.resumeModel()));
   }
 
   /**

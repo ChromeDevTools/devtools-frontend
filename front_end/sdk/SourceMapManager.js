@@ -32,7 +32,7 @@ export class SourceMapManager extends Common.Object {
     /** @type {!Platform.Multimap<string, !T>} */
     this._sourceMapIdToClients = new Platform.Multimap();
 
-    SDK.targetManager.addEventListener(TargetManagerEvents.InspectedURLChanged, this._inspectedURLChanged, this);
+    self.SDK.targetManager.addEventListener(TargetManagerEvents.InspectedURLChanged, this._inspectedURLChanged, this);
   }
 
   /**
@@ -245,7 +245,8 @@ export class SourceMapManager extends Common.Object {
     for (const sourceMap of this._sourceMapById.values()) {
       sourceMap.dispose();
     }
-    SDK.targetManager.removeEventListener(TargetManagerEvents.InspectedURLChanged, this._inspectedURLChanged, this);
+    self.SDK.targetManager.removeEventListener(
+        TargetManagerEvents.InspectedURLChanged, this._inspectedURLChanged, this);
   }
 }
 

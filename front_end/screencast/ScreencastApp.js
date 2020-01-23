@@ -19,7 +19,7 @@ export class ScreencastApp {
     this._toggleButton.setToggled(this._enabledSetting.get());
     this._toggleButton.setEnabled(false);
     this._toggleButton.addEventListener(UI.ToolbarButton.Events.Click, this._toggleButtonClicked, this);
-    SDK.targetManager.observeModels(SDK.ScreenCaptureModel, this);
+    self.SDK.targetManager.observeModels(SDK.ScreenCaptureModel, this);
   }
 
   /**

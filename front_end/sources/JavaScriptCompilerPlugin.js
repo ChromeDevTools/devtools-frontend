@@ -39,7 +39,7 @@ export class JavaScriptCompilerPlugin extends Plugin {
     if (Snippets.isSnippetsUISourceCode(uiSourceCode)) {
       return true;
     }
-    for (const debuggerModel of SDK.targetManager.models(SDK.DebuggerModel)) {
+    for (const debuggerModel of self.SDK.targetManager.models(SDK.DebuggerModel)) {
       if (Bindings.debuggerWorkspaceBinding.scriptFile(uiSourceCode, debuggerModel)) {
         return true;
       }
@@ -62,14 +62,14 @@ export class JavaScriptCompilerPlugin extends Plugin {
    * @return {?SDK.RuntimeModel}
    */
   _findRuntimeModel() {
-    const debuggerModels = SDK.targetManager.models(SDK.DebuggerModel);
+    const debuggerModels = self.SDK.targetManager.models(SDK.DebuggerModel);
     for (let i = 0; i < debuggerModels.length; ++i) {
       const scriptFile = Bindings.debuggerWorkspaceBinding.scriptFile(this._uiSourceCode, debuggerModels[i]);
       if (scriptFile) {
         return debuggerModels[i].runtimeModel();
       }
     }
-    return SDK.targetManager.mainTarget() ? SDK.targetManager.mainTarget().model(SDK.RuntimeModel) : null;
+    return self.SDK.targetManager.mainTarget() ? self.SDK.targetManager.mainTarget().model(SDK.RuntimeModel) : null;
   }
 
   async _compile() {

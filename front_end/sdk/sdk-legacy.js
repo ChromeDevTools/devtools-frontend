@@ -767,7 +767,7 @@ SDK.RuntimeModel.ExceptionWithTimestamp;
  */
 SDK.TracingManager.EventPayload;
 
-SDK.targetManager = new SDKModule.SDKModel.TargetManager();
+self.SDK.targetManager = new SDKModule.SDKModel.TargetManager();
 SDK.isolateManager = new SDKModule.IsolateManager.IsolateManager();
 SDK.domModelUndoStack = new SDKModule.DOMModel.DOMModelUndoStack();
 SDK.networkLog = new SDKModule.NetworkLog.NetworkLog();

@@ -113,7 +113,7 @@ export default class InputTimeline extends UI.VBox {
     this._setState(State.StartPending);
 
     this._tracingClient =
-        new InputTimeline.TracingClient(/** @type {!SDK.Target} */ (SDK.targetManager.mainTarget()), this);
+        new InputTimeline.TracingClient(/** @type {!SDK.Target} */ (self.SDK.targetManager.mainTarget()), this);
 
     const response = await this._tracingClient.startRecording();
     if (response[Protocol.Error]) {
@@ -152,7 +152,7 @@ export default class InputTimeline extends UI.VBox {
       this._reset();
       return;
     }
-    this._inputModel = new Input.InputModel(/** @type {!SDK.Target} */ (SDK.targetManager.mainTarget()));
+    this._inputModel = new Input.InputModel(/** @type {!SDK.Target} */ (self.SDK.targetManager.mainTarget()));
     this._inputModel.setEvents(tracingModel);
 
     this._setState(State.Idle);
@@ -265,7 +265,7 @@ export class TracingClient {
     }
 
     await this._waitForTracingToStop(true);
-    await SDK.targetManager.resumeAllTargets();
+    await self.SDK.targetManager.resumeAllTargets();
     this._tracingModel.tracingComplete();
     this._client.recordingComplete(this._tracingModel);
   }

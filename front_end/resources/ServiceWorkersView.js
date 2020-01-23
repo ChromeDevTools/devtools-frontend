@@ -70,7 +70,7 @@ export class ServiceWorkersView extends UI.VBox {
 
     /** @type {!Map<!SDK.ServiceWorkerManager, !Array<!Common.EventTarget.EventDescriptor>>}*/
     this._eventListeners = new Map();
-    SDK.targetManager.observeModels(SDK.ServiceWorkerManager, this);
+    self.SDK.targetManager.observeModels(SDK.ServiceWorkerManager, this);
     this._updateListVisibility();
   }
 
@@ -406,7 +406,7 @@ export class Section {
     if (!version || !version.targetId) {
       return null;
     }
-    return SDK.targetManager.targetById(version.targetId);
+    return self.SDK.targetManager.targetById(version.targetId);
   }
 
   /**

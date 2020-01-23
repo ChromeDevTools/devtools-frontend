@@ -108,7 +108,7 @@ export class NetworkPersistenceManager extends Common.Object {
 
   _updateActiveProject() {
     const wasActive = this._active;
-    this._active = !!(this._enabledSetting.get() && SDK.targetManager.mainTarget() && this._project);
+    this._active = !!(this._enabledSetting.get() && self.SDK.targetManager.mainTarget() && this._project);
     if (this._active === wasActive) {
       return;
     }

@@ -20,7 +20,7 @@ export class IsolateManager extends Common.Object {
     this._isolateIdByModel = new Map();
     /** @type {!Set<!Observer>} */
     this._observers = new Set();
-    SDK.targetManager.observeModels(RuntimeModel, this);
+    self.SDK.targetManager.observeModels(RuntimeModel, this);
     this._pollId = 0;
   }
 

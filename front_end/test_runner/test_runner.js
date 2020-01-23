@@ -120,7 +120,7 @@ export class _TestObserver {
 
 /** @suppress {accessControls} */
 (async function() {
-  SDK.targetManager.observeTargets(new _TestObserver());
+  self.SDK.targetManager.observeTargets(new _TestObserver());
   if (!_isStartupTest()) {
     return;
   }

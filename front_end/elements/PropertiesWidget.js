@@ -35,11 +35,11 @@ export class PropertiesWidget extends UI.ThrottledWidget {
     super(true /* isWebComponent */);
     this.registerRequiredCSS('elements/propertiesWidget.css');
 
-    SDK.targetManager.addModelListener(SDK.DOMModel, SDK.DOMModel.Events.AttrModified, this._onNodeChange, this);
-    SDK.targetManager.addModelListener(SDK.DOMModel, SDK.DOMModel.Events.AttrRemoved, this._onNodeChange, this);
-    SDK.targetManager.addModelListener(
+    self.SDK.targetManager.addModelListener(SDK.DOMModel, SDK.DOMModel.Events.AttrModified, this._onNodeChange, this);
+    self.SDK.targetManager.addModelListener(SDK.DOMModel, SDK.DOMModel.Events.AttrRemoved, this._onNodeChange, this);
+    self.SDK.targetManager.addModelListener(
         SDK.DOMModel, SDK.DOMModel.Events.CharacterDataModified, this._onNodeChange, this);
-    SDK.targetManager.addModelListener(
+    self.SDK.targetManager.addModelListener(
         SDK.DOMModel, SDK.DOMModel.Events.ChildNodeCountUpdated, this._onNodeChange, this);
     UI.context.addFlavorChangeListener(SDK.DOMNode, this._setNode, this);
     this._node = UI.context.flavor(SDK.DOMNode);

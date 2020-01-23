@@ -52,7 +52,7 @@ export class WebAudioView extends UI.ThrottledWidget {
       this.doUpdate();
     });
 
-    SDK.targetManager.observeModels(WebAudioModel, this);
+    self.SDK.targetManager.observeModels(WebAudioModel, this);
   }
 
   /**
@@ -60,7 +60,7 @@ export class WebAudioView extends UI.ThrottledWidget {
    */
   wasShown() {
     super.wasShown();
-    for (const model of SDK.targetManager.models(WebAudioModel)) {
+    for (const model of self.SDK.targetManager.models(WebAudioModel)) {
       this._addEventListeners(model);
     }
   }
@@ -69,7 +69,7 @@ export class WebAudioView extends UI.ThrottledWidget {
    * @override
    */
   willHide() {
-    for (const model of SDK.targetManager.models(WebAudioModel)) {
+    for (const model of self.SDK.targetManager.models(WebAudioModel)) {
       this._removeEventListeners(model);
     }
   }
@@ -388,7 +388,7 @@ export class WebAudioView extends UI.ThrottledWidget {
       return;
     }
 
-    for (const model of SDK.targetManager.models(WebAudio.WebAudioModel)) {
+    for (const model of self.SDK.targetManager.models(WebAudio.WebAudioModel)) {
       // Display summary only for real-time context.
       if (context.contextType === 'realtime') {
         if (!this._graphManager.hasContext(context.contextId)) {

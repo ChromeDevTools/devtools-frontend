@@ -144,7 +144,8 @@ ApplicationTestRunner.addIDBValue = function(frameId, databaseName, objectStoreN
 };
 
 ApplicationTestRunner.createIndexedDBModel = function() {
-  const indexedDBModel = new Resources.IndexedDBModel(SDK.targetManager.mainTarget(), TestRunner.securityOriginManager);
+  const indexedDBModel =
+      new Resources.IndexedDBModel(self.SDK.targetManager.mainTarget(), TestRunner.securityOriginManager);
   indexedDBModel.enable();
   return indexedDBModel;
 };

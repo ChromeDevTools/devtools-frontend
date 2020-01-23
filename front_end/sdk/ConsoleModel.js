@@ -54,7 +54,7 @@ export class ConsoleModel extends Common.Object {
     this._violations = 0;
     this._pageLoadSequenceNumber = 0;
 
-    SDK.targetManager.observeTargets(this);
+    self.SDK.targetManager.observeTargets(this);
   }
 
   /**
@@ -346,10 +346,10 @@ export class ConsoleModel extends Common.Object {
   }
 
   requestClearMessages() {
-    for (const logModel of SDK.targetManager.models(LogModel)) {
+    for (const logModel of self.SDK.targetManager.models(LogModel)) {
       logModel.requestClear();
     }
-    for (const runtimeModel of SDK.targetManager.models(RuntimeModel)) {
+    for (const runtimeModel of self.SDK.targetManager.models(RuntimeModel)) {
       runtimeModel.discardConsoleEntries();
     }
     this._clear();

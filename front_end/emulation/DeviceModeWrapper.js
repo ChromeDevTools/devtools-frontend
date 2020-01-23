@@ -24,7 +24,7 @@ export class DeviceModeWrapper extends UI.VBox {
     this._showDeviceModeSetting = model.enabledSetting();
     this._showDeviceModeSetting.setRequiresUserAction(!!Root.Runtime.queryParam('hasOtherClients'));
     this._showDeviceModeSetting.addChangeListener(this._update.bind(this, false));
-    SDK.targetManager.addModelListener(
+    self.SDK.targetManager.addModelListener(
         SDK.OverlayModel, SDK.OverlayModel.Events.ScreenshotRequested, this._screenshotRequestedFromOverlay, this);
     this._update(true);
   }

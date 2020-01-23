@@ -165,8 +165,8 @@ export class ApplicationPanelSidebar extends UI.VBox {
     this._sidebarTree.contentElement.addEventListener('mousemove', this._onmousemove.bind(this), false);
     this._sidebarTree.contentElement.addEventListener('mouseleave', this._onmouseleave.bind(this), false);
 
-    SDK.targetManager.observeTargets(this);
-    SDK.targetManager.addModelListener(
+    self.SDK.targetManager.observeTargets(this);
+    self.SDK.targetManager.addModelListener(
         SDK.ResourceTreeModel, SDK.ResourceTreeModel.Events.FrameNavigated, this._frameNavigated, this);
 
     const selection = this._panel.lastSelectedItemPath();
@@ -265,12 +265,12 @@ export class ApplicationPanelSidebar extends UI.VBox {
     if (resourceTreeModel) {
       this._populateApplicationCacheTree(resourceTreeModel);
     }
-    SDK.targetManager.observeModels(DOMStorageModel, /** @type {!SDK.SDKModelObserver} */ ({
-                                      modelAdded: model => this._domStorageModelAdded(model),
-                                      modelRemoved: model => this._domStorageModelRemoved(model)
-                                    }));
+    self.SDK.targetManager.observeModels(DOMStorageModel, /** @type {!SDK.SDKModelObserver} */ ({
+                                           modelAdded: model => this._domStorageModelAdded(model),
+                                           modelRemoved: model => this._domStorageModelRemoved(model)
+                                         }));
     this.indexedDBListTreeElement._initialize();
-    SDK.targetManager.observeModels(
+    self.SDK.targetManager.observeModels(
         IndexedDBModel, /** @type {!SDK.SDKModelObserver} */ ({
           modelAdded: model => model.enable(),
           modelRemoved: model => this.indexedDBListTreeElement.removeIndexedDBForModel(model)
@@ -995,9 +995,9 @@ export class ServiceWorkerCacheTreeElement extends StorageCategoryTreeElement {
         this._addCache(model, cache);
       }
     }
-    SDK.targetManager.addModelListener(
+    self.SDK.targetManager.addModelListener(
         SDK.ServiceWorkerCacheModel, SDK.ServiceWorkerCacheModel.Events.CacheAdded, this._cacheAdded, this);
-    SDK.targetManager.addModelListener(
+    self.SDK.targetManager.addModelListener(
         SDK.ServiceWorkerCacheModel, SDK.ServiceWorkerCacheModel.Events.CacheRemoved, this._cacheRemoved, this);
   }
 
@@ -1262,17 +1262,18 @@ export class IndexedDBTreeElement extends StorageCategoryTreeElement {
   }
 
   _initialize() {
-    SDK.targetManager.addModelListener(IndexedDBModel, IndexedDBModelEvents.DatabaseAdded, this._indexedDBAdded, this);
-    SDK.targetManager.addModelListener(
+    self.SDK.targetManager.addModelListener(
+        IndexedDBModel, IndexedDBModelEvents.DatabaseAdded, this._indexedDBAdded, this);
+    self.SDK.targetManager.addModelListener(
         IndexedDBModel, IndexedDBModelEvents.DatabaseRemoved, this._indexedDBRemoved, this);
-    SDK.targetManager.addModelListener(
+    self.SDK.targetManager.addModelListener(
         IndexedDBModel, IndexedDBModelEvents.DatabaseLoaded, this._indexedDBLoaded, this);
-    SDK.targetManager.addModelListener(
+    self.SDK.targetManager.addModelListener(
         IndexedDBModel, IndexedDBModelEvents.IndexedDBContentUpdated, this._indexedDBContentUpdated, this);
     /** @type {!Array.<!IDBDatabaseTreeElement>} */
     this._idbDatabaseTreeElements = [];
 
-    for (const indexedDBModel of SDK.targetManager.models(IndexedDBModel)) {
+    for (const indexedDBModel of self.SDK.targetManager.models(IndexedDBModel)) {
       const databases = indexedDBModel.databases();
       for (let j = 0; j < databases.length; ++j) {
         this._addIndexedDB(indexedDBModel, databases[j]);
@@ -1305,7 +1306,7 @@ export class IndexedDBTreeElement extends StorageCategoryTreeElement {
   }
 
   refreshIndexedDB() {
-    for (const indexedDBModel of SDK.targetManager.models(IndexedDBModel)) {
+    for (const indexedDBModel of self.SDK.targetManager.models(IndexedDBModel)) {
       indexedDBModel.refreshDatabaseNames();
     }
   }
@@ -1995,14 +1996,15 @@ export class ResourcesSection {
     this._treeElementForFrameId = new Map();
 
     function addListener(eventType, handler, target) {
-      SDK.targetManager.addModelListener(SDK.ResourceTreeModel, eventType, event => handler.call(target, event.data));
+      self.SDK.targetManager.addModelListener(
+          SDK.ResourceTreeModel, eventType, event => handler.call(target, event.data));
     }
     addListener(SDK.ResourceTreeModel.Events.FrameAdded, this._frameAdded, this);
     addListener(SDK.ResourceTreeModel.Events.FrameNavigated, this._frameNavigated, this);
     addListener(SDK.ResourceTreeModel.Events.FrameDetached, this._frameDetached, this);
     addListener(SDK.ResourceTreeModel.Events.ResourceAdded, this._resourceAdded, this);
 
-    const mainTarget = SDK.targetManager.mainTarget();
+    const mainTarget = self.SDK.targetManager.mainTarget();
     const resourceTreeModel = mainTarget && mainTarget.model(SDK.ResourceTreeModel);
     const mainFrame = resourceTreeModel && resourceTreeModel.mainFrame;
     if (mainFrame) {

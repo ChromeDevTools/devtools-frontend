@@ -11,7 +11,7 @@ Devices.DevicesView = class extends UI.VBox {
     `<a class="devtools-link" role="link" tabindex="0" href="#" style="display: inline; cursor: pointer;">chrome://inspect/#devices</a>`;
 
     self.onInvokeElement(documentationLink, event => {
-      SDK.targetManager.mainTarget().pageAgent().navigate('chrome://inspect/#devices');
+      self.SDK.targetManager.mainTarget().pageAgent().navigate('chrome://inspect/#devices');
       event.consume(true);
     });
 

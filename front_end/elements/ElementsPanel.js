@@ -89,12 +89,12 @@ export class ElementsPanel extends UI.Panel {
     this._treeOutlines = [];
     /** @type {!Map<!ElementsTreeOutline, !Element>} */
     this._treeOutlineHeaders = new Map();
-    SDK.targetManager.observeModels(SDK.DOMModel, this);
-    SDK.targetManager.addEventListener(
+    self.SDK.targetManager.observeModels(SDK.DOMModel, this);
+    self.SDK.targetManager.addEventListener(
         SDK.TargetManager.Events.NameChanged,
         event => this._targetNameChanged(/** @type {!SDK.Target} */ (event.data)));
     Common.moduleSetting('showUAShadowDOM').addChangeListener(this._showUAShadowDOMChanged.bind(this));
-    SDK.targetManager.addModelListener(
+    self.SDK.targetManager.addModelListener(
         SDK.DOMModel, SDK.DOMModel.Events.DocumentUpdated, this._documentUpdatedEvent, this);
     Extensions.extensionServer.addEventListener(
         Extensions.ExtensionServer.Events.SidebarPaneAdded, this._extensionSidebarPaneAdded, this);
@@ -260,7 +260,7 @@ export class ElementsPanel extends UI.Panel {
     super.wasShown();
     this._breadcrumbs.update();
 
-    const domModels = SDK.targetManager.models(SDK.DOMModel);
+    const domModels = self.SDK.targetManager.models(SDK.DOMModel);
     for (const domModel of domModels) {
       if (domModel.parentModel()) {
         continue;
@@ -455,7 +455,7 @@ export class ElementsPanel extends UI.Panel {
     this._searchConfig = searchConfig;
 
     const showUAShadowDOM = Common.moduleSetting('showUAShadowDOM').get();
-    const domModels = SDK.targetManager.models(SDK.DOMModel);
+    const domModels = self.SDK.targetManager.models(SDK.DOMModel);
     const promises = domModels.map(domModel => domModel.performSearch(whitespaceTrimmedQuery, showUAShadowDOM));
     Promise.all(promises).then(resultCountCallback.bind(this));
 

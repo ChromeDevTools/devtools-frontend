@@ -84,7 +84,7 @@ export class ResourceTreeModel extends SDKModel {
    */
   static frames() {
     let result = [];
-    for (const resourceTreeModel of SDK.targetManager.models(ResourceTreeModel)) {
+    for (const resourceTreeModel of self.SDK.targetManager.models(ResourceTreeModel)) {
       result = result.concat(resourceTreeModel._frames.valuesArray());
     }
     return result;
@@ -95,7 +95,7 @@ export class ResourceTreeModel extends SDKModel {
    * @return {?Resource}
    */
   static resourceForURL(url) {
-    for (const resourceTreeModel of SDK.targetManager.models(ResourceTreeModel)) {
+    for (const resourceTreeModel of self.SDK.targetManager.models(ResourceTreeModel)) {
       const mainFrame = resourceTreeModel.mainFrame;
       const result = mainFrame ? mainFrame.resourceForURL(url) : null;
       if (result) {
@@ -110,7 +110,7 @@ export class ResourceTreeModel extends SDKModel {
    * @param {string=} scriptToEvaluateOnLoad
    */
   static reloadAllPages(bypassCache, scriptToEvaluateOnLoad) {
-    for (const resourceTreeModel of SDK.targetManager.models(ResourceTreeModel)) {
+    for (const resourceTreeModel of self.SDK.targetManager.models(ResourceTreeModel)) {
       if (!resourceTreeModel.target().parentTarget()) {
         resourceTreeModel.reloadPage(bypassCache, scriptToEvaluateOnLoad);
       }

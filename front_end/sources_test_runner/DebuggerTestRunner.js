@@ -639,7 +639,7 @@ SourcesTestRunner.queryScripts = function(filter) {
 
 SourcesTestRunner.createScriptMock = function(
     url, startLine, startColumn, isContentScript, source, target, preRegisterCallback) {
-  target = target || SDK.targetManager.mainTarget();
+  target = target || self.SDK.targetManager.mainTarget();
   const debuggerModel = target.model(SDK.DebuggerModel);
   const scriptId = ++SourcesTestRunner._lastScriptId + '';
   const lineCount = source.computeLineEndings().length;

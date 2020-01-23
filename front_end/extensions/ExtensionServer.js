@@ -141,7 +141,7 @@ export class ExtensionServer extends Common.Object {
   }
 
   _inspectedURLChanged(event) {
-    if (event.data !== SDK.targetManager.mainTarget()) {
+    if (event.data !== self.SDK.targetManager.mainTarget()) {
       return;
     }
     this._requests = {};
@@ -495,7 +495,7 @@ export class ExtensionServer extends Common.Object {
     uiSourceCodes =
         uiSourceCodes.concat(Workspace.workspace.uiSourceCodesForProjectType(Workspace.projectTypes.ContentScripts));
     uiSourceCodes.forEach(pushResourceData.bind(this));
-    for (const resourceTreeModel of SDK.targetManager.models(SDK.ResourceTreeModel)) {
+    for (const resourceTreeModel of self.SDK.targetManager.models(SDK.ResourceTreeModel)) {
       resourceTreeModel.forAllResources(pushResourceData.bind(this));
     }
     return resources.valuesArray();
@@ -655,7 +655,8 @@ export class ExtensionServer extends Common.Object {
         onElementsSubscriptionStopped.bind(this));
     this._registerResourceContentCommittedHandler(this._notifyUISourceCodeContentCommitted);
 
-    SDK.targetManager.addEventListener(SDK.TargetManager.Events.InspectedURLChanged, this._inspectedURLChanged, this);
+    self.SDK.targetManager.addEventListener(
+        SDK.TargetManager.Events.InspectedURLChanged, this._inspectedURLChanged, this);
   }
 
   _notifyResourceAdded(event) {
@@ -801,8 +802,10 @@ export class ExtensionServer extends Common.Object {
   _registerAutosubscriptionTargetManagerHandler(eventTopic, modelClass, frontendEventType, handler) {
     this._registerSubscriptionHandler(
         eventTopic,
-        SDK.targetManager.addModelListener.bind(SDK.targetManager, modelClass, frontendEventType, handler, this),
-        SDK.targetManager.removeModelListener.bind(SDK.targetManager, modelClass, frontendEventType, handler, this));
+        self.SDK.targetManager.addModelListener.bind(
+            self.SDK.targetManager, modelClass, frontendEventType, handler, this),
+        self.SDK.targetManager.removeModelListener.bind(
+            self.SDK.targetManager, modelClass, frontendEventType, handler, this));
   }
 
   _registerResourceContentCommittedHandler(handler) {
@@ -886,7 +889,7 @@ export class ExtensionServer extends Common.Object {
     if (options.frameURL) {
       frame = resolveURLToFrame(options.frameURL);
     } else {
-      const target = SDK.targetManager.mainTarget();
+      const target = self.SDK.targetManager.mainTarget();
       const resourceTreeModel = target && target.model(SDK.ResourceTreeModel);
       frame = resourceTreeModel && resourceTreeModel.mainFrame;
     }

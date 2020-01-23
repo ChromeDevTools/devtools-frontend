@@ -45,7 +45,7 @@ export class Linkifier {
     this._locationPoolByTarget = new Map();
     this._useLinkDecorator = !!useLinkDecorator;
     _instances.add(this);
-    SDK.targetManager.observeTargets(this);
+    self.SDK.targetManager.observeTargets(this);
   }
 
   /**
@@ -295,7 +295,7 @@ export class Linkifier {
     for (const target of this._anchorsByTarget.keysArray()) {
       this.targetRemoved(target);
     }
-    SDK.targetManager.unobserveTargets(this);
+    self.SDK.targetManager.unobserveTargets(this);
     _instances.delete(this);
   }
 

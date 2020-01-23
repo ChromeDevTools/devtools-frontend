@@ -9,17 +9,17 @@ export class OverviewController extends Common.Object {
   constructor() {
     super();
 
-    this.currentUrl = SDK.targetManager.inspectedURL();
-    SDK.targetManager.addEventListener(
+    this.currentUrl = self.SDK.targetManager.inspectedURL();
+    self.SDK.targetManager.addEventListener(
         SDK.TargetManager.Events.InspectedURLChanged, this._checkUrlAndResetIfChanged, this);
   }
 
   _checkUrlAndResetIfChanged() {
-    if (this.currentUrl === SDK.targetManager.inspectedURL()) {
+    if (this.currentUrl === self.SDK.targetManager.inspectedURL()) {
       return;
     }
 
-    this.currentUrl = SDK.targetManager.inspectedURL();
+    this.currentUrl = self.SDK.targetManager.inspectedURL();
     this.dispatchEventToListeners(Events.Reset);
   }
 }

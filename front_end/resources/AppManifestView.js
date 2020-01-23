@@ -48,7 +48,7 @@ export class AppManifestView extends UI.VBox {
     this._displayField = this._presentationSection.appendField(Common.UIString('Display'));
 
     this._throttler = new Common.Throttler(1000);
-    SDK.targetManager.observeTargets(this);
+    self.SDK.targetManager.observeTargets(this);
   }
 
   /**

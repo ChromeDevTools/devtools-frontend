@@ -8,9 +8,9 @@ export class JavaScriptAutocomplete {
     this._expressionCache = new Map();
     SDK.consoleModel.addEventListener(SDK.ConsoleModel.Events.CommandEvaluated, this._clearCache, this);
     UI.context.addFlavorChangeListener(SDK.ExecutionContext, this._clearCache, this);
-    SDK.targetManager.addModelListener(
+    self.SDK.targetManager.addModelListener(
         SDK.DebuggerModel, SDK.DebuggerModel.Events.DebuggerResumed, this._clearCache, this);
-    SDK.targetManager.addModelListener(
+    self.SDK.targetManager.addModelListener(
         SDK.DebuggerModel, SDK.DebuggerModel.Events.DebuggerPaused, this._clearCache, this);
   }
 

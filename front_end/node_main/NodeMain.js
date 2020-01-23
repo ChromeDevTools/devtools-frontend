@@ -12,7 +12,8 @@ export class NodeMainImpl extends Common.Object {
   run() {
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.ConnectToNodeJSFromFrontend);
     SDK.initMainConnection(() => {
-      const target = SDK.targetManager.createTarget('main', Common.UIString('Main'), SDK.Target.Type.Browser, null);
+      const target =
+          self.SDK.targetManager.createTarget('main', Common.UIString('Main'), SDK.Target.Type.Browser, null);
       target.setInspectedURL('Node.js');
     }, Components.TargetDetachedDialog.webSocketConnectionLost);
   }

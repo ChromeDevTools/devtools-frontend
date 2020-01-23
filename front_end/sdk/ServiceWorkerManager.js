@@ -602,7 +602,7 @@ class ServiceWorkerContextNamer {
     this._versionByTargetId = new Map();
     serviceWorkerManager.addEventListener(Events.RegistrationUpdated, this._registrationsUpdated, this);
     serviceWorkerManager.addEventListener(Events.RegistrationDeleted, this._registrationsUpdated, this);
-    SDK.targetManager.addModelListener(
+    self.SDK.targetManager.addModelListener(
         RuntimeModel, RuntimeModelEvents.ExecutionContextCreated, this._executionContextCreated, this);
   }
 
@@ -647,7 +647,7 @@ class ServiceWorkerContextNamer {
   }
 
   _updateAllContextLabels() {
-    for (const target of SDK.targetManager.targets()) {
+    for (const target of self.SDK.targetManager.targets()) {
       const serviceWorkerTargetId = this._serviceWorkerTargetId(target);
       if (!serviceWorkerTargetId) {
         continue;

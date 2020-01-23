@@ -178,7 +178,7 @@ export class MainImpl {
     self.UI.viewManager = new UI.ViewManager();
 
     // Request filesystems early, we won't create connections until callback is fired. Things will happen in parallel.
-    Persistence.isolatedFileSystemManager = new Persistence.IsolatedFileSystemManager();
+    self.Persistence.isolatedFileSystemManager = new Persistence.IsolatedFileSystemManager();
 
     const themeSetting = self.Common.settings.createSetting('uiTheme', 'systemPreferred');
     UI.initializeUIUtils(document, themeSetting);
@@ -222,7 +222,7 @@ export class MainImpl {
         self.Workspace.workspace, self.SDK.targetManager, self.Bindings.debuggerWorkspaceBinding);
     Extensions.extensionServer = new Extensions.ExtensionServer();
 
-    new Persistence.FileSystemWorkspaceBinding(Persistence.isolatedFileSystemManager, self.Workspace.workspace);
+    new Persistence.FileSystemWorkspaceBinding(self.Persistence.isolatedFileSystemManager, self.Workspace.workspace);
     Persistence.persistence = new Persistence.Persistence(self.Workspace.workspace, self.Bindings.breakpointManager);
     Persistence.networkPersistenceManager = new Persistence.NetworkPersistenceManager(self.Workspace.workspace);
 

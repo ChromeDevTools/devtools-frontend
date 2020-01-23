@@ -19,9 +19,9 @@ export class WorkspaceSettingsTab extends UI.VBox {
     this.containerElement = this.element.createChild('div', 'settings-container-wrapper')
                                 .createChild('div', 'settings-tab settings-content settings-container');
 
-    Persistence.isolatedFileSystemManager.addEventListener(
+    self.Persistence.isolatedFileSystemManager.addEventListener(
         Events.FileSystemAdded, event => this._fileSystemAdded(/** @type {!PlatformFileSystem} */ (event.data)), this);
-    Persistence.isolatedFileSystemManager.addEventListener(
+    self.Persistence.isolatedFileSystemManager.addEventListener(
         Events.FileSystemRemoved, event => this._fileSystemRemoved(/** @type {!PlatformFileSystem} */ (event.data)),
         this);
 
@@ -44,7 +44,7 @@ export class WorkspaceSettingsTab extends UI.VBox {
     /** @type {!Map<string, !EditFileSystemView>} */
     this._mappingViewByPath = new Map();
 
-    const fileSystems = Persistence.isolatedFileSystemManager.fileSystems();
+    const fileSystems = self.Persistence.isolatedFileSystemManager.fileSystems();
     for (let i = 0; i < fileSystems.length; ++i) {
       this._addItem(fileSystems[i]);
     }
@@ -61,7 +61,7 @@ export class WorkspaceSettingsTab extends UI.VBox {
     UI.ARIAUtils.bindLabelToControl(labelElement, inputElement);
     p.appendChild(inputElement);
     inputElement.style.width = '270px';
-    const folderExcludeSetting = Persistence.isolatedFileSystemManager.workspaceFolderExcludePatternSetting();
+    const folderExcludeSetting = self.Persistence.isolatedFileSystemManager.workspaceFolderExcludePatternSetting();
     const setValue =
         UI.bindInput(inputElement, folderExcludeSetting.set.bind(folderExcludeSetting), regexValidator, false);
     folderExcludeSetting.addChangeListener(() => setValue.call(null, folderExcludeSetting.get()));
@@ -93,7 +93,7 @@ export class WorkspaceSettingsTab extends UI.VBox {
     }
     const networkPersistenceProject = Persistence.networkPersistenceManager.project();
     if (networkPersistenceProject &&
-        Persistence.isolatedFileSystemManager.fileSystem(
+        self.Persistence.isolatedFileSystemManager.fileSystem(
             /** @type {!FileSystem} */ (networkPersistenceProject).fileSystemPath()) === fileSystem) {
       return;
     }
@@ -140,11 +140,11 @@ export class WorkspaceSettingsTab extends UI.VBox {
    * @param {!PlatformFileSystem} fileSystem
    */
   _removeFileSystemClicked(fileSystem) {
-    Persistence.isolatedFileSystemManager.removeFileSystem(fileSystem);
+    self.Persistence.isolatedFileSystemManager.removeFileSystem(fileSystem);
   }
 
   _addFileSystemClicked() {
-    Persistence.isolatedFileSystemManager.addFileSystem();
+    self.Persistence.isolatedFileSystemManager.addFileSystem();
   }
 
   /**

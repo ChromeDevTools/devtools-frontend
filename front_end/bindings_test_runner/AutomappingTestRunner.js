@@ -52,7 +52,7 @@ BindingsTestRunner.AutomappingTest = function(workspace) {
       this._workspace, 'AUTOMAPPING', Workspace.projectTypes.Network, 'simple website');
 
   if (workspace !== self.Workspace.workspace) {
-    new Persistence.FileSystemWorkspaceBinding(Persistence.isolatedFileSystemManager, this._workspace);
+    new Persistence.FileSystemWorkspaceBinding(self.Persistence.isolatedFileSystemManager, this._workspace);
   }
 
   this._failedBindingsCount = 0;

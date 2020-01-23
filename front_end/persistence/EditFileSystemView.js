@@ -44,8 +44,8 @@ export class EditFileSystemView extends UI.VBox {
     this._fileSystemPath = fileSystemPath;
 
     this._eventListeners = [
-      Persistence.isolatedFileSystemManager.addEventListener(Events.ExcludedFolderAdded, this._update, this),
-      Persistence.isolatedFileSystemManager.addEventListener(Events.ExcludedFolderRemoved, this._update, this)
+      self.Persistence.isolatedFileSystemManager.addEventListener(Events.ExcludedFolderAdded, this._update, this),
+      self.Persistence.isolatedFileSystemManager.addEventListener(Events.ExcludedFolderRemoved, this._update, this)
     ];
 
     const excludedFoldersHeader = this.contentElement.createChild('div', 'file-system-header');
@@ -75,7 +75,7 @@ export class EditFileSystemView extends UI.VBox {
 
     this._excludedFoldersList.clear();
     this._excludedFolders = [];
-    for (const folder of Persistence.isolatedFileSystemManager.fileSystem(this._fileSystemPath)
+    for (const folder of self.Persistence.isolatedFileSystemManager.fileSystem(this._fileSystemPath)
              .excludedFolders()
              .values()) {
       this._excludedFolders.push(folder);
@@ -108,7 +108,7 @@ export class EditFileSystemView extends UI.VBox {
    * @param {number} index
    */
   removeItemRequested(item, index) {
-    Persistence.isolatedFileSystemManager.fileSystem(this._fileSystemPath)
+    self.Persistence.isolatedFileSystemManager.fileSystem(this._fileSystemPath)
         .removeExcludedFolder(this._excludedFolders[index]);
   }
 
@@ -121,10 +121,10 @@ export class EditFileSystemView extends UI.VBox {
   commitEdit(item, editor, isNew) {
     this._muteUpdate = true;
     if (!isNew) {
-      Persistence.isolatedFileSystemManager.fileSystem(this._fileSystemPath)
+      self.Persistence.isolatedFileSystemManager.fileSystem(this._fileSystemPath)
           .removeExcludedFolder(/** @type {string} */ (item));
     }
-    Persistence.isolatedFileSystemManager.fileSystem(this._fileSystemPath)
+    self.Persistence.isolatedFileSystemManager.fileSystem(this._fileSystemPath)
         .addExcludedFolder(this._normalizePrefix(editor.control('pathPrefix').value));
     this._muteUpdate = false;
     this._update();
@@ -177,7 +177,7 @@ export class EditFileSystemView extends UI.VBox {
       }
 
       const configurableCount =
-          Persistence.isolatedFileSystemManager.fileSystem(this._fileSystemPath).excludedFolders().size;
+          self.Persistence.isolatedFileSystemManager.fileSystem(this._fileSystemPath).excludedFolders().size;
       for (let i = 0; i < configurableCount; ++i) {
         if (i !== index && this._excludedFolders[i] === prefix) {
           return {valid: false, errorMessage: ls`Enter a unique path`};

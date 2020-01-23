@@ -47,7 +47,7 @@ BindingsTestRunner.TestFileSystem.prototype = {
         Host.InspectorFrontendHostAPI.Events.FileSystemAdded,
         {fileSystem: {fileSystemPath: this.fileSystemPath, fileSystemName: this.fileSystemPath, type}});
 
-    Persistence.isolatedFileSystemManager.addEventListener(
+    self.Persistence.isolatedFileSystemManager.addEventListener(
         Persistence.IsolatedFileSystemManager.Events.FileSystemAdded, created);
 
     function created(event) {
@@ -57,7 +57,7 @@ BindingsTestRunner.TestFileSystem.prototype = {
         return;
       }
 
-      Persistence.isolatedFileSystemManager.removeEventListener(
+      self.Persistence.isolatedFileSystemManager.removeEventListener(
           Persistence.IsolatedFileSystemManager.Events.FileSystemAdded, created);
       callback(fileSystem);
     }

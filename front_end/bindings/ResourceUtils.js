@@ -27,12 +27,17 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+import * as Common from '../common/common.js';
+import * as SDK from '../sdk/sdk.js';
+import * as Workspace from '../workspace/workspace.js';
+
 /**
  * @param {string} url
- * @return {?SDK.Resource}
+ * @return {?SDK.Resource.Resource}
  */
 export function resourceForURL(url) {
-  for (const resourceTreeModel of self.SDK.targetManager.models(SDK.ResourceTreeModel)) {
+  for (const resourceTreeModel of self.SDK.targetManager.models(SDK.ResourceTreeModel.ResourceTreeModel)) {
     const resource = resourceTreeModel.resourceForURL(url);
     if (resource) {
       return resource;
@@ -66,7 +71,7 @@ export function displayNameForURL(url) {
     return url.trimURL('');
   }
 
-  const parsedURL = Common.ParsedURL.fromString(inspectedURL);
+  const parsedURL = Common.ParsedURL.ParsedURL.fromString(inspectedURL);
   const lastPathComponent = parsedURL ? parsedURL.lastPathComponent : parsedURL;
   const index = inspectedURL.indexOf(lastPathComponent);
   if (index !== -1 && index + lastPathComponent.length === inspectedURL.length) {
@@ -85,13 +90,13 @@ export function displayNameForURL(url) {
 }
 
 /**
- * @param {!SDK.Target} target
+ * @param {!SDK.SDKModel.Target} target
  * @param {string} frameId
  * @param {string} url
- * @return {?Workspace.UISourceCodeMetadata}
+ * @return {?Workspace.UISourceCode.UISourceCodeMetadata}
  */
 export function metadataForURL(target, frameId, url) {
-  const resourceTreeModel = target.model(SDK.ResourceTreeModel);
+  const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
   if (!resourceTreeModel) {
     return null;
   }
@@ -103,12 +108,12 @@ export function metadataForURL(target, frameId, url) {
 }
 
 /**
- * @param {?SDK.Resource} resource
- * @return {?Workspace.UISourceCodeMetadata}
+ * @param {?SDK.Resource.Resource} resource
+ * @return {?Workspace.UISourceCode.UISourceCodeMetadata}
  */
 export function resourceMetadata(resource) {
   if (!resource || (typeof resource.contentSize() !== 'number' && !resource.lastModified())) {
     return null;
   }
-  return new Workspace.UISourceCodeMetadata(resource.lastModified(), resource.contentSize());
+  return new Workspace.UISourceCode.UISourceCodeMetadata(resource.lastModified(), resource.contentSize());
 }

@@ -2,6 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as SDK from '../sdk/sdk.js';
+import * as Workspace from '../workspace/workspace.js';  // eslint-disable-line no-unused-vars
+
 import {CompilerScriptMapping} from './CompilerScriptMapping.js';
 import {DebuggerLanguagePluginManager} from './DebuggerLanguagePlugins.js';
 import {DefaultScriptMapping} from './DefaultScriptMapping.js';
@@ -12,12 +15,12 @@ import {ResourceScriptFile, ResourceScriptMapping} from './ResourceScriptMapping
 
 /**
  * @unrestricted
- * @implements {SDK.SDKModelObserver<!SDK.DebuggerModel>}
+ * @implements {SDK.SDKModel.SDKModelObserver<!SDK.DebuggerModel.DebuggerModel>}
  */
 export class DebuggerWorkspaceBinding {
   /**
-   * @param {!SDK.TargetManager} targetManager
-   * @param {!Workspace.Workspace} workspace
+   * @param {!SDK.SDKModel.TargetManager} targetManager
+   * @param {!Workspace.Workspace.WorkspaceImpl} workspace
    */
   constructor(targetManager, workspace) {
     this._workspace = workspace;
@@ -25,13 +28,13 @@ export class DebuggerWorkspaceBinding {
     /** @type {!Array<!DebuggerSourceMapping>} */
     this._sourceMappings = [];
 
-    /** @type {!Map.<!SDK.DebuggerModel, !ModelData>} */
+    /** @type {!Map.<!SDK.DebuggerModel.DebuggerModel, !ModelData>} */
     this._debuggerModelToData = new Map();
     targetManager.addModelListener(
-        SDK.DebuggerModel, SDK.DebuggerModel.Events.GlobalObjectCleared, this._globalObjectCleared, this);
+        SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.GlobalObjectCleared, this._globalObjectCleared, this);
     targetManager.addModelListener(
-        SDK.DebuggerModel, SDK.DebuggerModel.Events.DebuggerResumed, this._debuggerResumed, this);
-    targetManager.observeModels(SDK.DebuggerModel, this);
+        SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.DebuggerResumed, this._debuggerResumed, this);
+    targetManager.observeModels(SDK.DebuggerModel.DebuggerModel, this);
   }
 
   /**
@@ -43,7 +46,7 @@ export class DebuggerWorkspaceBinding {
 
   /**
    * @override
-   * @param {!SDK.DebuggerModel} debuggerModel
+   * @param {!SDK.DebuggerModel.DebuggerModel} debuggerModel
    */
   modelAdded(debuggerModel) {
     this._debuggerModelToData.set(debuggerModel, new ModelData(debuggerModel, this));
@@ -51,7 +54,7 @@ export class DebuggerWorkspaceBinding {
 
   /**
    * @override
-   * @param {!SDK.DebuggerModel} debuggerModel
+   * @param {!SDK.DebuggerModel.DebuggerModel} debuggerModel
    */
   modelRemoved(debuggerModel) {
     const modelData = this._debuggerModelToData.get(debuggerModel);
@@ -60,7 +63,7 @@ export class DebuggerWorkspaceBinding {
   }
 
   /**
-   * @param {!SDK.Script} script
+   * @param {!SDK.Script.Script} script
    */
   updateLocations(script) {
     const modelData = this._debuggerModelToData.get(script.debuggerModel);
@@ -112,7 +115,7 @@ export class DebuggerWorkspaceBinding {
 
   /**
    * @param {!SDK.DebuggerModel.Location} rawLocation
-   * @return {?Workspace.UILocation}
+   * @return {?Workspace.UISourceCode.UILocation}
    */
   rawLocationToUILocation(rawLocation) {
     for (let i = 0; i < this._sourceMappings.length; ++i) {
@@ -126,7 +129,7 @@ export class DebuggerWorkspaceBinding {
   }
 
   /**
-   * @param {!SDK.DebuggerModel} debuggerModel
+   * @param {!SDK.DebuggerModel.DebuggerModel} debuggerModel
    * @param {string} url
    * @param {boolean} isContentScript
    */
@@ -139,7 +142,7 @@ export class DebuggerWorkspaceBinding {
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    * @param {number} lineNumber
    * @param {number} columnNumber
    * @return {!Array<!SDK.DebuggerModel.Location>}
@@ -159,7 +162,7 @@ export class DebuggerWorkspaceBinding {
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    * @param {number} lineNumber
    * @param {number} columnNumber
    * @return {!Array<!SDK.DebuggerModel.Location>}
@@ -174,8 +177,8 @@ export class DebuggerWorkspaceBinding {
   }
 
   /**
-   * @param {!Workspace.UILocation} uiLocation
-   * @return {!Workspace.UILocation}
+   * @param {!Workspace.UISourceCode.UILocation} uiLocation
+   * @return {!Workspace.UISourceCode.UILocation}
    */
   normalizeUILocation(uiLocation) {
     const rawLocations =
@@ -190,8 +193,8 @@ export class DebuggerWorkspaceBinding {
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
-   * @param {!SDK.DebuggerModel} debuggerModel
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
+   * @param {!SDK.DebuggerModel.DebuggerModel} debuggerModel
    * @return {?ResourceScriptFile}
    */
   scriptFile(uiSourceCode, debuggerModel) {
@@ -200,8 +203,8 @@ export class DebuggerWorkspaceBinding {
   }
 
   /**
-   * @param {!SDK.Script} script
-   * @return {?SDK.SourceMap}
+   * @param {!SDK.Script.Script} script
+   * @return {?SDK.SourceMap.SourceMap}
    */
   sourceMapForScript(script) {
     const modelData = this._debuggerModelToData.get(script.debuggerModel);
@@ -215,12 +218,12 @@ export class DebuggerWorkspaceBinding {
    * @param {!Common.Event} event
    */
   _globalObjectCleared(event) {
-    const debuggerModel = /** @type {!SDK.DebuggerModel} */ (event.data);
+    const debuggerModel = /** @type {!SDK.DebuggerModel.DebuggerModel} */ (event.data);
     this._reset(debuggerModel);
   }
 
   /**
-   * @param {!SDK.DebuggerModel} debuggerModel
+   * @param {!SDK.DebuggerModel.DebuggerModel} debuggerModel
    */
   _reset(debuggerModel) {
     const modelData = this._debuggerModelToData.get(debuggerModel);
@@ -229,16 +232,17 @@ export class DebuggerWorkspaceBinding {
   }
 
   /**
-   * @param {!SDK.Target} target
+   * @param {!SDK.SDKModel.Target} target
    */
   _resetForTest(target) {
-    const debuggerModel = /** @type {!SDK.DebuggerModel} */ (target.model(SDK.DebuggerModel));
+    const debuggerModel =
+        /** @type {!SDK.DebuggerModel.DebuggerModel} */ (target.model(SDK.DebuggerModel.DebuggerModel));
     const modelData = this._debuggerModelToData.get(debuggerModel);
     modelData._resourceMapping.resetForTest();
   }
 
   /**
-   * @param {!SDK.DebuggerModel} debuggerModel
+   * @param {!SDK.DebuggerModel.DebuggerModel} debuggerModel
    * @param {!Location} location
    */
   _registerCallFrameLiveLocation(debuggerModel, location) {
@@ -260,7 +264,7 @@ export class DebuggerWorkspaceBinding {
    * @param {!Common.Event} event
    */
   _debuggerResumed(event) {
-    const debuggerModel = /** @type {!SDK.DebuggerModel} */ (event.data);
+    const debuggerModel = /** @type {!SDK.DebuggerModel.DebuggerModel} */ (event.data);
     this._reset(debuggerModel);
   }
 }
@@ -270,7 +274,7 @@ export class DebuggerWorkspaceBinding {
  */
 class ModelData {
   /**
-   * @param {!SDK.DebuggerModel} debuggerModel
+   * @param {!SDK.DebuggerModel.DebuggerModel} debuggerModel
    * @param {!DebuggerWorkspaceBinding} debuggerWorkspaceBinding
    */
   constructor(debuggerModel, debuggerWorkspaceBinding) {
@@ -292,7 +296,7 @@ class ModelData {
     this._resourceMapping = new ResourceScriptMapping(debuggerModel, workspace, debuggerWorkspaceBinding);
     this._compilerMapping = new CompilerScriptMapping(debuggerModel, workspace, debuggerWorkspaceBinding);
 
-    /** @type {!Platform.Multimap<!SDK.Script, !Location>} */
+    /** @type {!Platform.Multimap<!SDK.Script.Script, !Location>} */
     this._locations = new Platform.Multimap();
 
     debuggerModel.setBeforePausedCallback(this._beforePaused.bind(this));
@@ -305,7 +309,7 @@ class ModelData {
    * @return {!Location}
    */
   _createLiveLocation(rawLocation, updateDelegate, locationPool) {
-    const script = /** @type {!SDK.Script} */ (rawLocation.script());
+    const script = /** @type {!SDK.Script.Script} */ (rawLocation.script());
     console.assert(script);
     const location = new Location(script, rawLocation, this._debuggerWorkspaceBinding, updateDelegate, locationPool);
     this._locations.set(script, location);
@@ -321,7 +325,7 @@ class ModelData {
   }
 
   /**
-   * @param {!SDK.Script} script
+   * @param {!SDK.Script.Script} script
    */
   _updateLocations(script) {
     for (const location of this._locations.get(script)) {
@@ -331,7 +335,7 @@ class ModelData {
 
   /**
    * @param {!SDK.DebuggerModel.Location} rawLocation
-   * @return {?Workspace.UILocation}
+   * @return {?Workspace.UISourceCode.UILocation}
    */
   _rawLocationToUILocation(rawLocation) {
     let uiLocation = null;
@@ -342,11 +346,11 @@ class ModelData {
     uiLocation = uiLocation || this._resourceMapping.rawLocationToUILocation(rawLocation);
     uiLocation = uiLocation || self.Bindings.resourceMapping.jsLocationToUILocation(rawLocation);
     uiLocation = uiLocation || this._defaultMapping.rawLocationToUILocation(rawLocation);
-    return /** @type {!Workspace.UILocation} */ (uiLocation);
+    return /** @type {!Workspace.UISourceCode.UILocation} */ (uiLocation);
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    * @param {number} lineNumber
    * @param {number} columnNumber
    * @return {!Array<!SDK.DebuggerModel.Location>}
@@ -363,7 +367,7 @@ class ModelData {
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    * @param {number} lineNumber
    * @param {number} columnNumber
    * @return {!Array<!SDK.DebuggerModel.Location>}
@@ -383,12 +387,12 @@ class ModelData {
   }
 
   /**
-   * @param {!SDK.DebuggerPausedDetails} debuggerPausedDetails
+   * @param {!SDK.DebuggerModel.DebuggerPausedDetails} debuggerPausedDetails
    * @return {boolean}
    */
   _beforePaused(debuggerPausedDetails) {
     const callFrame = debuggerPausedDetails.callFrames[0];
-    if (callFrame.script.sourceMapURL !== SDK.WasmSourceMap.FAKE_URL &&
+    if (callFrame.script.sourceMapURL !== SDK.SourceMap.WasmSourceMap.FAKE_URL &&
         !Root.Runtime.experiments.isEnabled('emptySourceMapAutoStepping')) {
       return true;
     }
@@ -408,7 +412,7 @@ class ModelData {
  */
 class Location extends LiveLocationWithPool {
   /**
-   * @param {!SDK.Script} script
+   * @param {!SDK.Script.Script} script
    * @param {!SDK.DebuggerModel.Location} rawLocation
    * @param {!DebuggerWorkspaceBinding} binding
    * @param {function(!LiveLocation)} updateDelegate
@@ -423,7 +427,7 @@ class Location extends LiveLocationWithPool {
 
   /**
    * @override
-   * @return {?Workspace.UILocation}
+   * @return {?Workspace.UISourceCode.UILocation}
    */
   uiLocation() {
     const debuggerModelLocation = this._rawLocation;
@@ -466,7 +470,7 @@ class StackTraceTopFrameLocation extends LiveLocationWithPool {
 
   /**
    * @override
-   * @return {?Workspace.UILocation}
+   * @return {?Workspace.UISourceCode.UILocation}
    */
   uiLocation() {
     return this._current.uiLocation();
@@ -516,13 +520,13 @@ class StackTraceTopFrameLocation extends LiveLocationWithPool {
 export class DebuggerSourceMapping {
   /**
    * @param {!SDK.DebuggerModel.Location} rawLocation
-   * @return {?Workspace.UILocation}
+   * @return {?Workspace.UISourceCode.UILocation}
    */
   rawLocationToUILocation(rawLocation) {
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    * @param {number} lineNumber
    * @param {number} columnNumber
    * @return {!Array<!SDK.DebuggerModel.Location>}

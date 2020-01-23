@@ -2,28 +2,32 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+import * as SDK from '../sdk/sdk.js';
+import * as Workspace from '../workspace/workspace.js';
+
 import {ContentProviderBasedProject} from './ContentProviderBasedProject.js';
 import {NetworkProject} from './NetworkProject.js';
 import {resourceMetadata} from './ResourceUtils.js';
 
 /**
- * @implements {SDK.SDKModelObserver<!SDK.ResourceTreeModel>}
+ * @implements {SDK.SDKModel.SDKModelObserver<!SDK.ResourceTreeModel.ResourceTreeModel>}
  */
 export class ResourceMapping {
   /**
-   * @param {!SDK.TargetManager} targetManager
-   * @param {!Workspace.Workspace} workspace
+   * @param {!SDK.SDKModel.TargetManager} targetManager
+   * @param {!Workspace.Workspace.WorkspaceImpl} workspace
    */
   constructor(targetManager, workspace) {
     this._workspace = workspace;
-    /** @type {!Map<!SDK.ResourceTreeModel, !ModelInfo>} */
+    /** @type {!Map<!SDK.ResourceTreeModel.ResourceTreeModel, !ModelInfo>} */
     this._modelToInfo = new Map();
-    targetManager.observeModels(SDK.ResourceTreeModel, this);
+    targetManager.observeModels(SDK.ResourceTreeModel.ResourceTreeModel, this);
   }
 
   /**
    * @override
-   * @param {!SDK.ResourceTreeModel} resourceTreeModel
+   * @param {!SDK.ResourceTreeModel.ResourceTreeModel} resourceTreeModel
    */
   modelAdded(resourceTreeModel) {
     const info = new ModelInfo(this._workspace, resourceTreeModel);
@@ -32,7 +36,7 @@ export class ResourceMapping {
 
   /**
    * @override
-   * @param {!SDK.ResourceTreeModel} resourceTreeModel
+   * @param {!SDK.ResourceTreeModel.ResourceTreeModel} resourceTreeModel
    */
   modelRemoved(resourceTreeModel) {
     const info = this._modelToInfo.get(resourceTreeModel);
@@ -41,17 +45,17 @@ export class ResourceMapping {
   }
 
   /**
-   * @param {!SDK.Target} target
+   * @param {!SDK.SDKModel.Target} target
    * @return {?ModelInfo}
    */
   _infoForTarget(target) {
-    const resourceTreeModel = target.model(SDK.ResourceTreeModel);
+    const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
     return resourceTreeModel ? this._modelToInfo.get(resourceTreeModel) : null;
   }
 
   /**
-   * @param {!SDK.CSSLocation} cssLocation
-   * @return {?Workspace.UILocation}
+   * @param {!SDK.CSSModel.CSSLocation} cssLocation
+   * @return {?Workspace.UISourceCode.UILocation}
    */
   cssLocationToUILocation(cssLocation) {
     const header = cssLocation.header();
@@ -77,7 +81,7 @@ export class ResourceMapping {
 
   /**
    * @param {!SDK.DebuggerModel.Location} jsLocation
-   * @return {?Workspace.UILocation}
+   * @return {?Workspace.UISourceCode.UILocation}
    */
   jsLocationToUILocation(jsLocation) {
     const script = jsLocation.script();
@@ -103,7 +107,7 @@ export class ResourceMapping {
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    * @param {number} lineNumber
    * @param {number} columnNumber
    * @return {!Array<!SDK.DebuggerModel.Location>}
@@ -116,7 +120,7 @@ export class ResourceMapping {
     if (!target) {
       return [];
     }
-    const debuggerModel = target.model(SDK.DebuggerModel);
+    const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
     if (!debuggerModel) {
       return [];
     }
@@ -128,8 +132,8 @@ export class ResourceMapping {
   }
 
   /**
-   * @param {!Workspace.UILocation} uiLocation
-   * @return {!Array<!SDK.CSSLocation>}
+   * @param {!Workspace.UISourceCode.UILocation} uiLocation
+   * @return {!Array<!SDK.CSSModel.CSSLocation>}
    */
   uiLocationToCSSLocations(uiLocation) {
     if (!uiLocation.uiSourceCode[symbol]) {
@@ -139,7 +143,7 @@ export class ResourceMapping {
     if (!target) {
       return [];
     }
-    const cssModel = target.model(SDK.CSSModel);
+    const cssModel = target.model(SDK.CSSModel.CSSModel);
     if (!cssModel) {
       return [];
     }
@@ -148,10 +152,10 @@ export class ResourceMapping {
   }
 
   /**
-   * @param {!SDK.Target} target
+   * @param {!SDK.SDKModel.Target} target
    */
   _resetForTest(target) {
-    const resourceTreeModel = target.model(SDK.ResourceTreeModel);
+    const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
     const info = resourceTreeModel ? this._modelToInfo.get(resourceTreeModel) : null;
     if (info) {
       info._resetForTest();
@@ -161,19 +165,20 @@ export class ResourceMapping {
 
 class ModelInfo {
   /**
-   * @param {!Workspace.Workspace} workspace
-   * @param {!SDK.ResourceTreeModel} resourceTreeModel
+   * @param {!Workspace.Workspace.WorkspaceImpl} workspace
+   * @param {!SDK.ResourceTreeModel.ResourceTreeModel} resourceTreeModel
    */
   constructor(workspace, resourceTreeModel) {
     const target = resourceTreeModel.target();
     this._project = new ContentProviderBasedProject(
-        workspace, 'resources:' + target.id(), Workspace.projectTypes.Network, '', false /* isServiceProject */);
+        workspace, 'resources:' + target.id(), Workspace.Workspace.projectTypes.Network, '',
+        false /* isServiceProject */);
     NetworkProject.setTargetForProject(this._project, target);
 
     /** @type {!Map<string, !Binding>} */
     this._bindings = new Map();
 
-    const cssModel = target.model(SDK.CSSModel);
+    const cssModel = target.model(SDK.CSSModel.CSSModel);
     this._cssModel = cssModel;
     this._eventListeners = [
       resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.ResourceAdded, this._resourceAdded, this),
@@ -199,24 +204,29 @@ class ModelInfo {
   }
 
   /**
-   * @param {!SDK.Resource} resource
+   * @param {!SDK.Resource.Resource} resource
    */
   _acceptsResource(resource) {
     const resourceType = resource.resourceType();
     // Only load selected resource types from resources.
-    if (resourceType !== Common.resourceTypes.Image && resourceType !== Common.resourceTypes.Font &&
-        resourceType !== Common.resourceTypes.Document && resourceType !== Common.resourceTypes.Manifest) {
+    if (resourceType !== Common.ResourceType.resourceTypes.Image &&
+        resourceType !== Common.ResourceType.resourceTypes.Font &&
+        resourceType !== Common.ResourceType.resourceTypes.Document &&
+        resourceType !== Common.ResourceType.resourceTypes.Manifest) {
       return false;
     }
 
     // Ignore non-images and non-fonts.
-    if (resourceType === Common.resourceTypes.Image && resource.mimeType && !resource.mimeType.startsWith('image')) {
+    if (resourceType === Common.ResourceType.resourceTypes.Image && resource.mimeType &&
+        !resource.mimeType.startsWith('image')) {
       return false;
     }
-    if (resourceType === Common.resourceTypes.Font && resource.mimeType && !resource.mimeType.includes('font')) {
+    if (resourceType === Common.ResourceType.resourceTypes.Font && resource.mimeType &&
+        !resource.mimeType.includes('font')) {
       return false;
     }
-    if ((resourceType === Common.resourceTypes.Image || resourceType === Common.resourceTypes.Font) &&
+    if ((resourceType === Common.ResourceType.resourceTypes.Image ||
+         resourceType === Common.ResourceType.resourceTypes.Font) &&
         resource.contentURL().startsWith('data:')) {
       return false;
     }
@@ -227,7 +237,7 @@ class ModelInfo {
    * @param {!Common.Event} event
    */
   _resourceAdded(event) {
-    const resource = /** @type {!SDK.Resource} */ (event.data);
+    const resource = /** @type {!SDK.Resource.Resource} */ (event.data);
     if (!this._acceptsResource(resource)) {
       return;
     }
@@ -242,7 +252,7 @@ class ModelInfo {
   }
 
   /**
-   * @param {!SDK.ResourceTreeFrame} frame
+   * @param {!SDK.ResourceTreeModel.ResourceTreeFrame} frame
    */
   _removeFrameResources(frame) {
     for (const resource of frame.resources()) {
@@ -263,7 +273,7 @@ class ModelInfo {
    * @param {!Common.Event} event
    */
   _frameWillNavigate(event) {
-    const frame = /** @type {!SDK.ResourceTreeFrame} */ (event.data);
+    const frame = /** @type {!SDK.ResourceTreeModel.ResourceTreeFrame} */ (event.data);
     this._removeFrameResources(frame);
   }
 
@@ -271,7 +281,7 @@ class ModelInfo {
    * @param {!Common.Event} event
    */
   _frameDetached(event) {
-    const frame = /** @type {!SDK.ResourceTreeFrame} */ (event.data);
+    const frame = /** @type {!SDK.ResourceTreeModel.ResourceTreeFrame} */ (event.data);
     this._removeFrameResources(frame);
   }
 
@@ -283,7 +293,7 @@ class ModelInfo {
   }
 
   dispose() {
-    Common.EventTarget.removeEventListeners(this._eventListeners);
+    Common.EventTarget.EventTarget.removeEventListeners(this._eventListeners);
     for (const binding of this._bindings.valuesArray()) {
       binding.dispose();
     }
@@ -293,12 +303,12 @@ class ModelInfo {
 }
 
 /**
- * @implements {Common.ContentProvider}
+ * @implements {Common.ContentProvider.ContentProvider}
  */
 class Binding {
   /**
    * @param {!ContentProviderBasedProject} project
-   * @param {!SDK.Resource} resource
+   * @param {!SDK.Resource.Resource} resource
    */
   constructor(project, resource) {
     this._resources = new Set([resource]);
@@ -307,16 +317,16 @@ class Binding {
     this._uiSourceCode[symbol] = true;
     NetworkProject.setInitialFrameAttribution(this._uiSourceCode, resource.frameId);
     this._project.addUISourceCodeWithProvider(this._uiSourceCode, this, resourceMetadata(resource), resource.mimeType);
-    /** @type {!Array<{stylesheet: !SDK.CSSStyleSheetHeader, edit: ?SDK.CSSModel.Edit}>} */
+    /** @type {!Array<{stylesheet: !SDK.CSSStyleSheetHeader.CSSStyleSheetHeader, edit: ?SDK.CSSModel.Edit}>} */
     this._edits = [];
   }
 
   /**
-   * @return {!Array<!SDK.CSSStyleSheetHeader>}
+   * @return {!Array<!SDK.CSSStyleSheetHeader.CSSStyleSheetHeader>}
    */
   _inlineStyles() {
     const target = NetworkProject.targetForUISourceCode(this._uiSourceCode);
-    const cssModel = target.model(SDK.CSSModel);
+    const cssModel = target.model(SDK.CSSModel.CSSModel);
     const stylesheets = [];
     if (cssModel) {
       for (const headerId of cssModel.styleSheetIdsForURL(this._uiSourceCode.url())) {
@@ -330,11 +340,11 @@ class Binding {
   }
 
   /**
-   * @return {!Array<!SDK.Script>}
+   * @return {!Array<!SDK.Script.Script>}
    */
   _inlineScripts() {
     const target = NetworkProject.targetForUISourceCode(this._uiSourceCode);
-    const debuggerModel = target.model(SDK.DebuggerModel);
+    const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
     if (!debuggerModel) {
       return [];
     }
@@ -342,7 +352,7 @@ class Binding {
   }
 
   /**
-   * @param {!SDK.CSSStyleSheetHeader} stylesheet
+   * @param {!SDK.CSSStyleSheetHeader.CSSStyleSheetHeader} stylesheet
    * @param {?SDK.CSSModel.Edit} edit
    */
   async _styleSheetChanged(stylesheet, edit) {
@@ -400,7 +410,7 @@ class Binding {
   }
 
   /**
-   * @param {!SDK.Resource} resource
+   * @param {!SDK.Resource.Resource} resource
    */
   addResource(resource) {
     this._resources.add(resource);
@@ -408,7 +418,7 @@ class Binding {
   }
 
   /**
-   * @param {!SDK.Resource} resource
+   * @param {!SDK.Resource.Resource} resource
    */
   removeResource(resource) {
     this._resources.delete(resource);
@@ -429,7 +439,7 @@ class Binding {
 
   /**
    * @override
-   * @return {!Common.ResourceType}
+   * @return {!Common.ResourceType.ResourceType}
    */
   contentType() {
     return this._resources.firstValue().contentType();

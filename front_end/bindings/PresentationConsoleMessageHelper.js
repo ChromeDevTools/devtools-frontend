@@ -28,25 +28,28 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as SDK from '../sdk/sdk.js';
+import * as Workspace from '../workspace/workspace.js';
+
 import {LiveLocation, LiveLocationPool} from './LiveLocation.js';  // eslint-disable-line no-unused-vars
 
 /**
- * @implements {SDK.SDKModelObserver<!SDK.DebuggerModel>}
+ * @implements {SDK.SDKModel.SDKModelObserver<!SDK.DebuggerModel.DebuggerModel>}
  */
 export class PresentationConsoleMessageManager {
   constructor() {
-    self.SDK.targetManager.observeModels(SDK.DebuggerModel, this);
+    self.SDK.targetManager.observeModels(SDK.DebuggerModel.DebuggerModel, this);
 
     self.SDK.consoleModel.addEventListener(SDK.ConsoleModel.Events.ConsoleCleared, this._consoleCleared, this);
     self.SDK.consoleModel.addEventListener(
         SDK.ConsoleModel.Events.MessageAdded,
-        event => this._consoleMessageAdded(/** @type {!SDK.ConsoleMessage} */ (event.data)));
+        event => this._consoleMessageAdded(/** @type {!SDK.ConsoleModel.ConsoleMessage} */ (event.data)));
     self.SDK.consoleModel.messages().forEach(this._consoleMessageAdded, this);
   }
 
   /**
    * @override
-   * @param {!SDK.DebuggerModel} debuggerModel
+   * @param {!SDK.DebuggerModel.DebuggerModel} debuggerModel
    */
   modelAdded(debuggerModel) {
     debuggerModel[PresentationConsoleMessageManager._symbol] = new PresentationConsoleMessageHelper(debuggerModel);
@@ -54,18 +57,18 @@ export class PresentationConsoleMessageManager {
 
   /**
    * @override
-   * @param {!SDK.DebuggerModel} debuggerModel
+   * @param {!SDK.DebuggerModel.DebuggerModel} debuggerModel
    */
   modelRemoved(debuggerModel) {
     debuggerModel[PresentationConsoleMessageManager._symbol]._consoleCleared();
   }
 
   /**
-   * @param {!SDK.ConsoleMessage} message
+   * @param {!SDK.ConsoleModel.ConsoleMessage} message
    */
   _consoleMessageAdded(message) {
     if (!message.isErrorOrWarning() || !message.runtimeModel() ||
-        message.source === SDK.ConsoleMessage.MessageSource.Violation) {
+        message.source === SDK.ConsoleModel.MessageSource.Violation) {
       return;
     }
     const debuggerModel = message.runtimeModel().debuggerModel();
@@ -73,7 +76,7 @@ export class PresentationConsoleMessageManager {
   }
 
   _consoleCleared() {
-    for (const debuggerModel of self.SDK.targetManager.models(SDK.DebuggerModel)) {
+    for (const debuggerModel of self.SDK.targetManager.models(SDK.DebuggerModel.DebuggerModel)) {
       debuggerModel[PresentationConsoleMessageManager._symbol]._consoleCleared();
     }
   }
@@ -83,12 +86,12 @@ PresentationConsoleMessageManager._symbol = Symbol('PresentationConsoleMessageHe
 
 export class PresentationConsoleMessageHelper {
   /**
-   * @param {!SDK.DebuggerModel} debuggerModel
+   * @param {!SDK.DebuggerModel.DebuggerModel} debuggerModel
    */
   constructor(debuggerModel) {
     this._debuggerModel = debuggerModel;
 
-    /** @type {!Object.<string, !Array.<!SDK.ConsoleMessage>>} */
+    /** @type {!Object.<string, !Array.<!SDK.ConsoleModel.ConsoleMessage>>} */
     this._pendingConsoleMessages = {};
 
     /** @type {!Array.<!PresentationConsoleMessage>} */
@@ -103,7 +106,7 @@ export class PresentationConsoleMessageHelper {
   }
 
   /**
-   * @param {!SDK.ConsoleMessage} message
+   * @param {!SDK.ConsoleModel.ConsoleMessage} message
    */
   _consoleMessageAdded(message) {
     const rawLocation = this._rawLocation(message);
@@ -115,7 +118,7 @@ export class PresentationConsoleMessageHelper {
   }
 
   /**
-   * @param {!SDK.ConsoleMessage} message
+   * @param {!SDK.ConsoleModel.ConsoleMessage} message
    * @return {?SDK.DebuggerModel.Location}
    */
   _rawLocation(message) {
@@ -134,7 +137,7 @@ export class PresentationConsoleMessageHelper {
   }
 
   /**
-   * @param {!SDK.ConsoleMessage} message
+   * @param {!SDK.ConsoleModel.ConsoleMessage} message
    * @param {!SDK.DebuggerModel.Location} rawLocation
    */
   _addConsoleMessageToScript(message, rawLocation) {
@@ -142,7 +145,7 @@ export class PresentationConsoleMessageHelper {
   }
 
   /**
-   * @param {!SDK.ConsoleMessage} message
+   * @param {!SDK.ConsoleModel.ConsoleMessage} message
    */
   _addPendingConsoleMessage(message) {
     if (!message.url) {
@@ -158,7 +161,7 @@ export class PresentationConsoleMessageHelper {
    * @param {!Common.Event} event
    */
   _parsedScriptSource(event) {
-    const script = /** @type {!SDK.Script} */ (event.data);
+    const script = /** @type {!SDK.Script.Script} */ (event.data);
 
     const messages = this._pendingConsoleMessages[script.sourceURL];
     if (!messages) {
@@ -205,15 +208,14 @@ export class PresentationConsoleMessageHelper {
  */
 export class PresentationConsoleMessage {
   /**
-   * @param {!SDK.ConsoleMessage} message
+   * @param {!SDK.ConsoleModel.ConsoleMessage} message
    * @param {!SDK.DebuggerModel.Location} rawLocation
    * @param {!LiveLocationPool} locationPool
    */
   constructor(message, rawLocation, locationPool) {
     this._text = message.messageText;
-    this._level = message.level === SDK.ConsoleMessage.MessageLevel.Error ?
-        Workspace.UISourceCode.Message.Level.Error :
-        Workspace.UISourceCode.Message.Level.Warning;
+    this._level = message.level === SDK.ConsoleModel.MessageLevel.Error ? Workspace.UISourceCode.Message.Level.Error :
+                                                                          Workspace.UISourceCode.Message.Level.Warning;
     self.Bindings.debuggerWorkspaceBinding.createLiveLocation(
         rawLocation, this._updateLocation.bind(this), locationPool);
   }

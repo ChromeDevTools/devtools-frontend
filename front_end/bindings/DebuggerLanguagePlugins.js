@@ -2,13 +2,17 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+import * as SDK from '../sdk/sdk.js';
+import * as Workspace from '../workspace/workspace.js';
+
 /**
  * @unrestricted
  */
 export class DebuggerLanguagePluginManager {
   /**
-   * @param {!SDK.DebuggerModel} debuggerModel
-   * @param {!Workspace.Workspace} workspace
+   * @param {!SDK.DebuggerModel.DebuggerModel} debuggerModel
+   * @param {!Workspace.Workspace.WorkspaceImpl} workspace
    * @param {!Bindings.DebuggerWorkspaceBinding} debuggerWorkspaceBinding
    */
   constructor(debuggerModel, workspace, debuggerWorkspaceBinding) {
@@ -17,14 +21,14 @@ export class DebuggerLanguagePluginManager {
     this._debuggerWorkspaceBinding = debuggerWorkspaceBinding;
     this._plugins = [];
 
-    // @type {!Map<!Workspace.UISourceCode, !Array<[string, !SDK.Script]>>}
+    // @type {!Map<!Workspace.UISourceCode.UISourceCode, !Array<[string, !SDK.Script.Script]>>}
     this._uiSourceCodes = new Map();
     // @type {!Map<string, !DebuggerLanguagePlugin>}
     this._pluginForScriptId = new Map();
 
     const target = this._debuggerModel.target();
     this._project = new Bindings.ContentProviderBasedProject(
-        workspace, 'language_plugins::' + target.id(), Workspace.projectTypes.Network, '',
+        workspace, 'language_plugins::' + target.id(), Workspace.Workspace.projectTypes.Network, '',
         false /* isServiceProject */);
     Bindings.NetworkProject.setTargetForProject(this._project, target);
 
@@ -46,7 +50,7 @@ export class DebuggerLanguagePluginManager {
 
   /** TODO(chromium:1032016): Make async once chromium:1032016 is complete.
    * @param {!SDK.DebuggerModel.Location} rawLocation
-   * @return {?Workspace.UILocation}
+   * @return {?Workspace.UISourceCode.UILocation}
    */
   /* async */ rawLocationToUILocation(rawLocation) {
     const script = rawLocation.script();
@@ -86,7 +90,7 @@ export class DebuggerLanguagePluginManager {
   }
 
   /** TODO(chromium:1032016): Make async once chromium:1032016 is complete.
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    * @param {number} lineNumber
    * @param {number} columnNumber
    * @return {!Array<!SDK.DebuggerModel.Location>}
@@ -125,7 +129,7 @@ export class DebuggerLanguagePluginManager {
   }
 
   /**
-   * @param {!SDK.Script} script
+   * @param {!SDK.Script.Script} script
    * @return {!Promise<?Array<string>>}
    */
   async _getSourceFiles(script) {
@@ -167,7 +171,7 @@ export class DebuggerLanguagePluginManager {
 
   /**
    * @param {string} sourceFileURL
-   * @return {!Workspace.UISourceCode}
+   * @return {!Workspace.UISourceCode.UISourceCode}
    */
   _getOrCreateUISourceCode(sourceFile, script, sourceFileURL) {
     let uiSourceCode = this._project.uiSourceCodeForURL(sourceFileURL);
@@ -175,10 +179,10 @@ export class DebuggerLanguagePluginManager {
       return uiSourceCode;
     }
 
-    uiSourceCode = this._project.createUISourceCode(sourceFileURL, Common.resourceTypes.SourceMapScript);
+    uiSourceCode = this._project.createUISourceCode(sourceFileURL, Common.ResourceType.resourceTypes.SourceMapScript);
     Bindings.NetworkProject.setInitialFrameAttribution(uiSourceCode, script.frameId);
-    const contentProvider =
-        new SDK.CompilerSourceMappingContentProvider(sourceFileURL, Common.resourceTypes.SourceMapScript);
+    const contentProvider = new SDK.CompilerSourceMappingContentProvider.CompilerSourceMappingContentProvider(
+        sourceFileURL, Common.ResourceType.resourceTypes.SourceMapScript);
     this._bindUISourceCode(uiSourceCode, script, sourceFile);
 
     // TODO(pfaffe) Try and set a correct mimetype here? We don't actually know the mime type of the source code here,
@@ -188,8 +192,8 @@ export class DebuggerLanguagePluginManager {
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
-   * @param {!SDK.Script} script
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
+   * @param {!SDK.Script.Script} script
    * @param {string} sourceFile
    */
   _bindUISourceCode(uiSourceCode, script, sourceFile) {
@@ -202,8 +206,8 @@ export class DebuggerLanguagePluginManager {
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
-   * @param {!Set<!SDK.Script>} scripts
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
+   * @param {!Set<!SDK.Script.Script>} scripts
    */
   _unbindUISourceCode(uiSourceCode, scripts) {
     const filter = ([sourceFile, script]) => !scripts.has(script);
@@ -218,7 +222,7 @@ export class DebuggerLanguagePluginManager {
    * @param {!Common.Event} event
    */
   async _newSourceMap(event) {
-    const script = /** @type {!SDK.Script} */ (event.data);
+    const script = /** @type {!SDK.Script.Script} */ (event.data);
     const sourceFiles = await this._getSourceFiles(script);
     if (!sourceFiles) {
       return;
@@ -239,7 +243,7 @@ export class DebuggerLanguagePluginManager {
    * @param {!Common.Event} event
    */
   _executionContextDestroyed(event) {
-    const executionContext = /** @type {!SDK.ExecutionContext} */ (event.data);
+    const executionContext = /** @type {!SDK.RuntimeModel.ExecutionContext} */ (event.data);
     const scripts = new Set(this._debuggerModel.scriptsForExecutionContext(executionContext));
 
     for (const uiSourceCode of this._uiSourceCodes.keys()) {
@@ -315,7 +319,7 @@ export let Variable;
  */
 export class DebuggerLanguagePlugin {
   /**
-   * @param {!SDK.Script} script
+   * @param {!SDK.Script.Script} script
    * @return {boolean} True if this plugin should handle this script
    */
   handleScript(script) {

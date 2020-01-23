@@ -27,7 +27,12 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-export class NetworkProjectManager extends Common.Object {}
+
+import * as Common from '../common/common.js';
+import * as SDK from '../sdk/sdk.js';
+import * as Workspace from '../workspace/workspace.js';  // eslint-disable-line no-unused-vars
+
+export class NetworkProjectManager extends Common.ObjectWrapper.ObjectWrapper {}
 
 export const Events = {
   FrameAttributionAdded: Symbol('FrameAttributionAdded'),
@@ -39,17 +44,17 @@ export const Events = {
  */
 export class NetworkProject {
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    * @param {string} frameId
    */
   static _resolveFrame(uiSourceCode, frameId) {
     const target = NetworkProject.targetForUISourceCode(uiSourceCode);
-    const resourceTreeModel = target && target.model(SDK.ResourceTreeModel);
+    const resourceTreeModel = target && target.model(SDK.ResourceTreeModel.ResourceTreeModel);
     return resourceTreeModel ? resourceTreeModel.frameForId(frameId) : null;
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    * @param {string} frameId
    */
   static setInitialFrameAttribution(uiSourceCode, frameId) {
@@ -57,22 +62,22 @@ export class NetworkProject {
     if (!frame) {
       return;
     }
-    /** @type {!Map<string, !{frame: !SDK.ResourceTreeFrame, count: number}>} */
+    /** @type {!Map<string, !{frame: !SDK.ResourceTreeModel.ResourceTreeFrame, count: number}>} */
     const attribution = new Map();
     attribution.set(frameId, {frame: frame, count: 1});
     uiSourceCode[_frameAttributionSymbol] = attribution;
   }
 
   /**
-   * @param {!Workspace.UISourceCode} fromUISourceCode
-   * @param {!Workspace.UISourceCode} toUISourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} fromUISourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} toUISourceCode
    */
   static cloneInitialFrameAttribution(fromUISourceCode, toUISourceCode) {
     const fromAttribution = fromUISourceCode[_frameAttributionSymbol];
     if (!fromAttribution) {
       return;
     }
-    /** @type {!Map<string, !{frame: !SDK.ResourceTreeFrame, count: number}>} */
+    /** @type {!Map<string, !{frame: !SDK.ResourceTreeModel.ResourceTreeFrame, count: number}>} */
     const toAttribution = new Map();
     toUISourceCode[_frameAttributionSymbol] = toAttribution;
     for (const frameId of fromAttribution.keys()) {
@@ -82,7 +87,7 @@ export class NetworkProject {
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    * @param {string} frameId
    */
   static addFrameAttribution(uiSourceCode, frameId) {
@@ -103,7 +108,7 @@ export class NetworkProject {
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    * @param {string} frameId
    */
   static removeFrameAttribution(uiSourceCode, frameId) {
@@ -123,28 +128,28 @@ export class NetworkProject {
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
-   * @return {?SDK.Target} target
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
+   * @return {?SDK.SDKModel.Target} target
    */
   static targetForUISourceCode(uiSourceCode) {
     return uiSourceCode.project()[_targetSymbol] || null;
   }
 
   /**
-   * @param {!Workspace.Project} project
-   * @param {!SDK.Target} target
+   * @param {!Workspace.Workspace.Project} project
+   * @param {!SDK.SDKModel.Target} target
    */
   static setTargetForProject(project, target) {
     project[_targetSymbol] = target;
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
-   * @return {!Array<!SDK.ResourceTreeFrame>}
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
+   * @return {!Array<!SDK.ResourceTreeModel.ResourceTreeFrame>}
    */
   static framesForUISourceCode(uiSourceCode) {
     const target = NetworkProject.targetForUISourceCode(uiSourceCode);
-    const resourceTreeModel = target && target.model(SDK.ResourceTreeModel);
+    const resourceTreeModel = target && target.model(SDK.ResourceTreeModel.ResourceTreeModel);
     const attribution = uiSourceCode[_frameAttributionSymbol];
     if (!resourceTreeModel || !attribution) {
       return [];

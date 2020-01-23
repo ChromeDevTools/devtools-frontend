@@ -2,11 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+import * as SDK from '../sdk/sdk.js';
+import * as Workspace from '../workspace/workspace.js';
+
 import {DebuggerWorkspaceBinding} from './DebuggerWorkspaceBinding.js';  // eslint-disable-line no-unused-vars
 
 /**
  * @unrestricted
- * @implements {SDK.SDKModelObserver<!SDK.DebuggerModel>}
+ * @implements {SDK.SDKModel.SDKModelObserver<!SDK.DebuggerModel.DebuggerModel>}
  */
 export class BlackboxManager {
   /**
@@ -16,7 +20,8 @@ export class BlackboxManager {
     this._debuggerWorkspaceBinding = debuggerWorkspaceBinding;
 
     self.SDK.targetManager.addModelListener(
-        SDK.DebuggerModel, SDK.DebuggerModel.Events.GlobalObjectCleared, this._clearCacheIfNeeded.bind(this), this);
+        SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.GlobalObjectCleared,
+        this._clearCacheIfNeeded.bind(this), this);
     self.Common.settings.moduleSetting('skipStackFramesPattern').addChangeListener(this._patternChanged.bind(this));
     self.Common.settings.moduleSetting('skipContentScripts').addChangeListener(this._patternChanged.bind(this));
 
@@ -26,7 +31,7 @@ export class BlackboxManager {
     /** @type {!Map<string, boolean>} */
     this._isBlackboxedURLCache = new Map();
 
-    self.SDK.targetManager.observeModels(SDK.DebuggerModel, this);
+    self.SDK.targetManager.observeModels(SDK.DebuggerModel.DebuggerModel, this);
   }
 
   /**
@@ -45,7 +50,7 @@ export class BlackboxManager {
 
   /**
    * @override
-   * @param {!SDK.DebuggerModel} debuggerModel
+   * @param {!SDK.DebuggerModel.DebuggerModel} debuggerModel
    */
   modelAdded(debuggerModel) {
     this._setBlackboxPatterns(debuggerModel);
@@ -56,7 +61,7 @@ export class BlackboxManager {
 
   /**
    * @override
-   * @param {!SDK.DebuggerModel} debuggerModel
+   * @param {!SDK.DebuggerModel.DebuggerModel} debuggerModel
    */
   modelRemoved(debuggerModel) {
     this._clearCacheIfNeeded();
@@ -72,7 +77,7 @@ export class BlackboxManager {
   }
 
   /**
-   * @param {!SDK.DebuggerModel} debuggerModel
+   * @param {!SDK.DebuggerModel.DebuggerModel} debuggerModel
    * @return {!Promise<boolean>}
    */
   _setBlackboxPatterns(debuggerModel) {
@@ -87,12 +92,12 @@ export class BlackboxManager {
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    * @return {boolean}
    */
   isBlackboxedUISourceCode(uiSourceCode) {
     const projectType = uiSourceCode.project().type();
-    const isContentScript = projectType === Workspace.projectTypes.ContentScripts;
+    const isContentScript = projectType === Workspace.Workspace.projectTypes.ContentScripts;
     if (isContentScript && self.Common.settings.moduleSetting('skipContentScripts').get()) {
       return true;
     }
@@ -122,8 +127,8 @@ export class BlackboxManager {
    * @param {!Common.Event} event
    */
   _sourceMapAttached(event) {
-    const script = /** @type {!SDK.Script} */ (event.data.client);
-    const sourceMap = /** @type {!SDK.SourceMap} */ (event.data.sourceMap);
+    const script = /** @type {!SDK.Script.Script} */ (event.data.client);
+    const sourceMap = /** @type {!SDK.SourceMap.SourceMap} */ (event.data.sourceMap);
     this._updateScriptRanges(script, sourceMap);
   }
 
@@ -131,13 +136,13 @@ export class BlackboxManager {
    * @param {!Common.Event} event
    */
   _sourceMapDetached(event) {
-    const script = /** @type {!SDK.Script} */ (event.data.client);
+    const script = /** @type {!SDK.Script.Script} */ (event.data.client);
     this._updateScriptRanges(script, null);
   }
 
   /**
-   * @param {!SDK.Script} script
-   * @param {?SDK.SourceMap} sourceMap
+   * @param {!SDK.Script.Script} script
+   * @param {?SDK.SourceMap.SourceMap} sourceMap
    * @return {!Promise<undefined>}
    */
   async _updateScriptRanges(script, sourceMap) {
@@ -192,15 +197,15 @@ export class BlackboxManager {
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    * @return {?string}
    */
   _uiSourceCodeURL(uiSourceCode) {
-    return uiSourceCode.project().type() === Workspace.projectTypes.Debugger ? null : uiSourceCode.url();
+    return uiSourceCode.project().type() === Workspace.Workspace.projectTypes.Debugger ? null : uiSourceCode.url();
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    * @return {boolean}
    */
   canBlackboxUISourceCode(uiSourceCode) {
@@ -209,7 +214,7 @@ export class BlackboxManager {
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    */
   blackboxUISourceCode(uiSourceCode) {
     const url = this._uiSourceCodeURL(uiSourceCode);
@@ -219,7 +224,7 @@ export class BlackboxManager {
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    */
   unblackboxUISourceCode(uiSourceCode) {
     const url = this._uiSourceCodeURL(uiSourceCode);
@@ -293,7 +298,7 @@ export class BlackboxManager {
 
     /** @type {!Array<!Promise>} */
     const promises = [];
-    for (const debuggerModel of self.SDK.targetManager.models(SDK.DebuggerModel)) {
+    for (const debuggerModel of self.SDK.targetManager.models(SDK.DebuggerModel.DebuggerModel)) {
       promises.push(this._setBlackboxPatterns(debuggerModel));
       const sourceMapManager = debuggerModel.sourceMapManager();
       for (const script of debuggerModel.scripts()) {
@@ -317,7 +322,7 @@ export class BlackboxManager {
    * @return {string}
    */
   _urlToRegExpString(url) {
-    const parsedURL = new Common.ParsedURL(url);
+    const parsedURL = new Common.ParsedURL.ParsedURL(url);
     if (parsedURL.isAboutBlank() || parsedURL.isDataURL()) {
       return '';
     }

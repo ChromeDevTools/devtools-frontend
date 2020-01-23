@@ -28,21 +28,24 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
+import * as Workspace from '../workspace/workspace.js';
+
 /**
- * @implements {Workspace.Project}
+ * @implements {Workspace.Workspace.Project}
  * @unrestricted
  */
-export class ContentProviderBasedProject extends Workspace.ProjectStore {
+export class ContentProviderBasedProject extends Workspace.Workspace.ProjectStore {
   /**
-   * @param {!Workspace.Workspace} workspace
+   * @param {!Workspace.Workspace.WorkspaceImpl} workspace
    * @param {string} id
-   * @param {!Workspace.projectTypes} type
+   * @param {!Workspace.Workspace.projectTypes} type
    * @param {string} displayName
    * @param {boolean} isServiceProject
    */
   constructor(workspace, id, type, displayName, isServiceProject) {
     super(workspace, id, type, displayName);
-    /** @type {!Object.<string, !Common.ContentProvider>} */
+    /** @type {!Object.<string, !Common.ContentProvider.ContentProvider>} */
     this._contentProviders = {};
     this._isServiceProject = isServiceProject;
     workspace.addProject(this);
@@ -50,7 +53,7 @@ export class ContentProviderBasedProject extends Workspace.ProjectStore {
 
   /**
    * @override
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    * @returns {!Promise<!Common.DeferredContent>}
    */
   async requestFileContent(uiSourceCode) {
@@ -75,8 +78,8 @@ export class ContentProviderBasedProject extends Workspace.ProjectStore {
 
   /**
    * @override
-   * @param {!Workspace.UISourceCode} uiSourceCode
-   * @return {!Promise<?Workspace.UISourceCodeMetadata>}
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
+   * @return {!Promise<?Workspace.UISourceCode.UISourceCodeMetadata>}
    */
   requestMetadata(uiSourceCode) {
     return Promise.resolve(uiSourceCode[_metadata]);
@@ -92,7 +95,7 @@ export class ContentProviderBasedProject extends Workspace.ProjectStore {
 
   /**
    * @override
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    * @param {string} newContent
    * @param {boolean} isBase64
    * @return {!Promise}
@@ -102,7 +105,7 @@ export class ContentProviderBasedProject extends Workspace.ProjectStore {
 
   /**
    * @override
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    * @return {string}
    */
   fullDisplayName(uiSourceCode) {
@@ -116,7 +119,7 @@ export class ContentProviderBasedProject extends Workspace.ProjectStore {
 
   /**
    * @override
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    * @return {string}
    */
   mimeType(uiSourceCode) {
@@ -133,9 +136,9 @@ export class ContentProviderBasedProject extends Workspace.ProjectStore {
 
   /**
    * @override
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    * @param {string} newName
-   * @param {function(boolean, string=, string=, !Common.ResourceType=)} callback
+   * @param {function(boolean, string=, string=, !Common.ResourceType.ResourceType=)} callback
    */
   rename(uiSourceCode, newName, callback) {
     const path = uiSourceCode.url();
@@ -181,7 +184,7 @@ export class ContentProviderBasedProject extends Workspace.ProjectStore {
    * @param {?string} name
    * @param {string} content
    * @param {boolean=} isBase64
-   * @return {!Promise<?Workspace.UISourceCode>}
+   * @return {!Promise<?Workspace.UISourceCode.UISourceCode>}
    */
   createFile(path, name, content, isBase64) {
   }
@@ -196,7 +199,7 @@ export class ContentProviderBasedProject extends Workspace.ProjectStore {
 
   /**
    * @override
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    */
   deleteFile(uiSourceCode) {
   }
@@ -218,7 +221,7 @@ export class ContentProviderBasedProject extends Workspace.ProjectStore {
 
   /**
    * @override
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    * @param {string} query
    * @param {boolean} caseSensitive
    * @param {boolean} isRegex
@@ -231,9 +234,9 @@ export class ContentProviderBasedProject extends Workspace.ProjectStore {
 
   /**
    * @override
-   * @param {!Workspace.ProjectSearchConfig} searchConfig
+   * @param {!Workspace.Workspace.ProjectSearchConfig} searchConfig
    * @param {!Array<string>} filesMathingFileQuery
-   * @param {!Common.Progress} progress
+   * @param {!Common.Progress.Progress} progress
    * @return {!Promise<!Array<string>>}
    */
   async findFilesMatchingSearchRequest(searchConfig, filesMathingFileQuery, progress) {
@@ -266,16 +269,16 @@ export class ContentProviderBasedProject extends Workspace.ProjectStore {
 
   /**
    * @override
-   * @param {!Common.Progress} progress
+   * @param {!Common.Progress.Progress} progress
    */
   indexContent(progress) {
     setImmediate(progress.done.bind(progress));
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
-   * @param {!Common.ContentProvider} contentProvider
-   * @param {?Workspace.UISourceCodeMetadata} metadata
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
+   * @param {!Common.ContentProvider.ContentProvider} contentProvider
+   * @param {?Workspace.UISourceCode.UISourceCodeMetadata} metadata
    * @param {string} mimeType
    */
   addUISourceCodeWithProvider(uiSourceCode, contentProvider, metadata, mimeType) {
@@ -287,9 +290,9 @@ export class ContentProviderBasedProject extends Workspace.ProjectStore {
 
   /**
    * @param {string} url
-   * @param {!Common.ContentProvider} contentProvider
+   * @param {!Common.ContentProvider.ContentProvider} contentProvider
    * @param {string} mimeType
-   * @return {!Workspace.UISourceCode}
+   * @return {!Workspace.UISourceCode.UISourceCode}
    */
   addContentProvider(url, contentProvider, mimeType) {
     const uiSourceCode = this.createUISourceCode(url, contentProvider.contentType());

@@ -28,6 +28,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
+
+import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
+
 import {ChunkedFileReader, ChunkedReader} from './FileUtils.js';  // eslint-disable-line no-unused-vars
 
 export class TempFile {
@@ -89,7 +93,7 @@ export class TempFile {
   }
 
   /**
-   * @param {!Common.OutputStream} outputStream
+   * @param {!Common.StringOutputStream.OutputStream} outputStream
    * @param {function(!ChunkedReader)=} progress
    * @return {!Promise<?FileError>}
    */
@@ -108,7 +112,7 @@ export class TempFile {
 }
 
 /**
- * @implements {SDK.BackingStorage}
+ * @implements {SDK.TracingModel.BackingStorage}
  */
 export class TempFileBackingStorage {
   constructor() {
@@ -179,7 +183,7 @@ export class TempFileBackingStorage {
   }
 
   /**
-   * @param {!Common.OutputStream} outputStream
+   * @param {!Common.StringOutputStream.OutputStream} outputStream
    * @return {!Promise<?FileError>}
    */
   writeToStream(outputStream) {

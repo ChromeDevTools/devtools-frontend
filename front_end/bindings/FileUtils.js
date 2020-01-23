@@ -28,6 +28,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
+import * as Workspace from '../workspace/workspace.js';
+
 /**
  * @interface
  */
@@ -82,7 +85,7 @@ export class ChunkedFileReader {
   }
 
   /**
-   * @param {!Common.OutputStream} output
+   * @param {!Common.StringOutputStream.OutputStream} output
    * @return {!Promise<boolean>}
    */
   read(output) {
@@ -188,7 +191,7 @@ export class ChunkedFileReader {
 }
 
 /**
- * @implements {Common.OutputStream}
+ * @implements {Common.StringOutputStream.OutputStream}
  * @unrestricted
  */
 export class FileOutputStream {
@@ -201,9 +204,9 @@ export class FileOutputStream {
     /** @type {!Array<function()>} */
     this._writeCallbacks = [];
     this._fileName = fileName;
-    const saveResponse = await Workspace.fileManager.save(this._fileName, '', true);
+    const saveResponse = await self.Workspace.fileManager.save(this._fileName, '', true);
     if (saveResponse) {
-      Workspace.fileManager.addEventListener(Workspace.FileManager.Events.AppendedToURL, this._onAppendDone, this);
+      self.Workspace.fileManager.addEventListener(Workspace.FileManager.Events.AppendedToURL, this._onAppendDone, this);
     }
     return !!saveResponse;
   }
@@ -216,7 +219,7 @@ export class FileOutputStream {
   write(data) {
     return new Promise(resolve => {
       this._writeCallbacks.push(resolve);
-      Workspace.fileManager.append(this._fileName, data);
+      self.Workspace.fileManager.append(this._fileName, data);
     });
   }
 
@@ -228,8 +231,9 @@ export class FileOutputStream {
     if (this._writeCallbacks.length) {
       return;
     }
-    Workspace.fileManager.removeEventListener(Workspace.FileManager.Events.AppendedToURL, this._onAppendDone, this);
-    Workspace.fileManager.close(this._fileName);
+    self.Workspace.fileManager.removeEventListener(
+        Workspace.FileManager.Events.AppendedToURL, this._onAppendDone, this);
+    self.Workspace.fileManager.close(this._fileName);
   }
 
   /**
@@ -246,7 +250,8 @@ export class FileOutputStream {
     if (!this._closed) {
       return;
     }
-    Workspace.fileManager.removeEventListener(Workspace.FileManager.Events.AppendedToURL, this._onAppendDone, this);
-    Workspace.fileManager.close(this._fileName);
+    self.Workspace.fileManager.removeEventListener(
+        Workspace.FileManager.Events.AppendedToURL, this._onAppendDone, this);
+    self.Workspace.fileManager.close(this._fileName);
   }
 }

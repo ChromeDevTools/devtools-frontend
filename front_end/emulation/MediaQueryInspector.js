@@ -113,7 +113,7 @@ export class MediaQueryInspector extends UI.Widget {
     const locations = mediaQueryMarker._locations;
     const uiLocations = new Map();
     for (let i = 0; i < locations.length; ++i) {
-      const uiLocation = Bindings.cssWorkspaceBinding.rawLocationToUILocation(locations[i]);
+      const uiLocation = self.Bindings.cssWorkspaceBinding.rawLocationToUILocation(locations[i]);
       if (!uiLocation) {
         continue;
       }

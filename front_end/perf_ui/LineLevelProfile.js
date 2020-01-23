@@ -195,7 +195,8 @@ export class Presentation {
     this._type = type;
     this._time = time;
     this._uiLocation = null;
-    Bindings.debuggerWorkspaceBinding.createLiveLocation(rawLocation, this.updateLocation.bind(this), locationPool);
+    self.Bindings.debuggerWorkspaceBinding.createLiveLocation(
+        rawLocation, this.updateLocation.bind(this), locationPool);
   }
 
   /**

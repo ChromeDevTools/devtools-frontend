@@ -214,7 +214,8 @@ export class PresentationConsoleMessage {
     this._level = message.level === SDK.ConsoleMessage.MessageLevel.Error ?
         Workspace.UISourceCode.Message.Level.Error :
         Workspace.UISourceCode.Message.Level.Warning;
-    Bindings.debuggerWorkspaceBinding.createLiveLocation(rawLocation, this._updateLocation.bind(this), locationPool);
+    self.Bindings.debuggerWorkspaceBinding.createLiveLocation(
+        rawLocation, this._updateLocation.bind(this), locationPool);
   }
 
   /**

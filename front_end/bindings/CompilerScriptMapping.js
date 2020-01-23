@@ -228,7 +228,7 @@ export class CompilerScriptMapping {
     const sourceMap = /** @type {!SDK.SourceMap} */ (event.data.sourceMap);
     this._removeStubUISourceCode(script);
 
-    if (Bindings.blackboxManager.isBlackboxedURL(script.sourceURL, script.isContentScript())) {
+    if (self.Bindings.blackboxManager.isBlackboxedURL(script.sourceURL, script.isContentScript())) {
       this._sourceMapAttachedForTest(sourceMap);
       return;
     }

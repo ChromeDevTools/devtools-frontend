@@ -338,7 +338,7 @@ export class ResourceScriptFile extends Common.Object {
       return;
     }
     const debuggerModel = this._resourceScriptMapping._debuggerModel;
-    const breakpoints = Bindings.breakpointManager.breakpointLocationsForUISourceCode(this._uiSourceCode)
+    const breakpoints = self.Bindings.breakpointManager.breakpointLocationsForUISourceCode(this._uiSourceCode)
                             .map(breakpointLocation => breakpointLocation.breakpoint);
     const source = this._uiSourceCode.workingCopy();
     debuggerModel.setScriptSource(this._script.scriptId, source, scriptSourceWasSet.bind(this));

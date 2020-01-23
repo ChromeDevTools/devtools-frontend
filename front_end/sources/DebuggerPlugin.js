@@ -59,7 +59,7 @@ export class DebuggerPlugin extends Plugin {
     this._controlTimeout = null;
 
     this._scriptsPanel = SourcesPanel.instance();
-    this._breakpointManager = Bindings.breakpointManager;
+    this._breakpointManager = self.Bindings.breakpointManager;
     if (uiSourceCode.project().type() === Workspace.projectTypes.Debugger) {
       this._textEditor.element.classList.add('source-frame-debugger-script');
     }
@@ -167,7 +167,7 @@ export class DebuggerPlugin extends Plugin {
       return;
     }
     const projectType = uiSourceCode.project().type();
-    if (!Bindings.blackboxManager.isBlackboxedUISourceCode(uiSourceCode)) {
+    if (!self.Bindings.blackboxManager.isBlackboxedUISourceCode(uiSourceCode)) {
       this._hideBlackboxInfobar();
       return;
     }
@@ -196,9 +196,9 @@ export class DebuggerPlugin extends Plugin {
     unblackboxLink.addEventListener('click', unblackbox, false);
 
     function unblackbox() {
-      Bindings.blackboxManager.unblackboxUISourceCode(uiSourceCode);
+      self.Bindings.blackboxManager.unblackboxUISourceCode(uiSourceCode);
       if (projectType === Workspace.projectTypes.ContentScripts) {
-        Bindings.blackboxManager.unblackboxContentScripts();
+        self.Bindings.blackboxManager.unblackboxContentScripts();
       }
     }
     this._textEditor.attachInfobar(this._blackboxInfobar);
@@ -321,7 +321,7 @@ export class DebuggerPlugin extends Plugin {
     function populateSourceMapMembers() {
       if (this._uiSourceCode.project().type() === Workspace.projectTypes.Network &&
           self.Common.settings.moduleSetting('jsSourceMapsEnabled').get() &&
-          !Bindings.blackboxManager.isBlackboxedUISourceCode(this._uiSourceCode)) {
+          !self.Bindings.blackboxManager.isBlackboxedUISourceCode(this._uiSourceCode)) {
         if (this._scriptFileForDebuggerModel.size) {
           const scriptFile = this._scriptFileForDebuggerModel.valuesArray()[0];
           const addSourceMapURLLabel = Common.UIString('Add source map\u2026');
@@ -977,9 +977,9 @@ export class DebuggerPlugin extends Plugin {
       return;
     }
 
-    const functionUILocation = Bindings.debuggerWorkspaceBinding.rawLocationToUILocation(
+    const functionUILocation = self.Bindings.debuggerWorkspaceBinding.rawLocationToUILocation(
         /** @type {!SDK.DebuggerModel.Location} */ (callFrame.functionLocation()));
-    const executionUILocation = Bindings.debuggerWorkspaceBinding.rawLocationToUILocation(callFrame.location());
+    const executionUILocation = self.Bindings.debuggerWorkspaceBinding.rawLocationToUILocation(callFrame.location());
     if (!functionUILocation || !executionUILocation || functionUILocation.uiSourceCode !== this._uiSourceCode ||
         executionUILocation.uiSourceCode !== this._uiSourceCode) {
       return;
@@ -1502,7 +1502,7 @@ export class DebuggerPlugin extends Plugin {
 
   _updateScriptFiles() {
     for (const debuggerModel of self.SDK.targetManager.models(SDK.DebuggerModel)) {
-      const scriptFile = Bindings.debuggerWorkspaceBinding.scriptFile(this._uiSourceCode, debuggerModel);
+      const scriptFile = self.Bindings.debuggerWorkspaceBinding.scriptFile(this._uiSourceCode, debuggerModel);
       if (scriptFile) {
         this._updateScriptFile(debuggerModel);
       }
@@ -1514,7 +1514,7 @@ export class DebuggerPlugin extends Plugin {
    */
   _updateScriptFile(debuggerModel) {
     const oldScriptFile = this._scriptFileForDebuggerModel.get(debuggerModel);
-    const newScriptFile = Bindings.debuggerWorkspaceBinding.scriptFile(this._uiSourceCode, debuggerModel);
+    const newScriptFile = self.Bindings.debuggerWorkspaceBinding.scriptFile(this._uiSourceCode, debuggerModel);
     this._scriptFileForDebuggerModel.delete(debuggerModel);
     if (oldScriptFile) {
       oldScriptFile.removeEventListener(Bindings.ResourceScriptFile.Events.DidMergeToVM, this._didMergeToVM, this);
@@ -1683,7 +1683,7 @@ export class DebuggerPlugin extends Plugin {
       this._clearExecutionLine();
       return;
     }
-    Bindings.debuggerWorkspaceBinding.createCallFrameLiveLocation(
+    self.Bindings.debuggerWorkspaceBinding.createCallFrameLiveLocation(
         callFrame.location(), this._executionLineChanged.bind(this), this._liveLocationPool);
   }
 

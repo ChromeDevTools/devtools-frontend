@@ -340,7 +340,7 @@ class ModelData {
     }
     uiLocation = uiLocation || this._compilerMapping.rawLocationToUILocation(rawLocation);
     uiLocation = uiLocation || this._resourceMapping.rawLocationToUILocation(rawLocation);
-    uiLocation = uiLocation || Bindings.resourceMapping.jsLocationToUILocation(rawLocation);
+    uiLocation = uiLocation || self.Bindings.resourceMapping.jsLocationToUILocation(rawLocation);
     uiLocation = uiLocation || this._defaultMapping.rawLocationToUILocation(rawLocation);
     return /** @type {!Workspace.UILocation} */ (uiLocation);
   }
@@ -375,7 +375,7 @@ class ModelData {
         this._resourceMapping.uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber);
     locations = locations.length ?
         locations :
-        Bindings.resourceMapping.uiLocationToJSLocations(uiSourceCode, lineNumber, columnNumber);
+        self.Bindings.resourceMapping.uiLocationToJSLocations(uiSourceCode, lineNumber, columnNumber);
     locations = locations.length ?
         locations :
         this._defaultMapping.uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber);
@@ -444,7 +444,7 @@ class Location extends LiveLocationWithPool {
    */
   isBlackboxed() {
     const uiLocation = this.uiLocation();
-    return uiLocation ? Bindings.blackboxManager.isBlackboxedUISourceCode(uiLocation.uiSourceCode) : false;
+    return uiLocation ? self.Bindings.blackboxManager.isBlackboxedUISourceCode(uiLocation.uiSourceCode) : false;
   }
 }
 

@@ -142,7 +142,7 @@ export class BlackboxManager {
    */
   async _updateScriptRanges(script, sourceMap) {
     let hasBlackboxedMappings = false;
-    if (!Bindings.blackboxManager.isBlackboxedURL(script.sourceURL, script.isContentScript())) {
+    if (!self.Bindings.blackboxManager.isBlackboxedURL(script.sourceURL, script.isContentScript())) {
       hasBlackboxedMappings = sourceMap ? sourceMap.sourceURLs().some(url => this.isBlackboxedURL(url)) : false;
     }
     if (!hasBlackboxedMappings) {
@@ -265,7 +265,7 @@ export class BlackboxManager {
    */
   _unblackboxURL(url) {
     let regexPatterns = self.Common.settings.moduleSetting('skipStackFramesPattern').getAsArray();
-    const regexValue = Bindings.blackboxManager._urlToRegExpString(url);
+    const regexValue = self.Bindings.blackboxManager._urlToRegExpString(url);
     if (!regexValue) {
       return;
     }

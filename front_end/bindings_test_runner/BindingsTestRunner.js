@@ -199,14 +199,15 @@ const createdSymbol = Symbol('LiveLocationCreated');
 BindingsTestRunner.createDebuggerLiveLocation = function(name, urlSuffix, lineNumber, columnNumber) {
   const script = TestRunner.debuggerModel.scripts().find(script => script.sourceURL.endsWith(urlSuffix));
   const rawLocation = TestRunner.debuggerModel.createRawLocation(script, lineNumber || 0, columnNumber || 0);
-  return Bindings.debuggerWorkspaceBinding.createLiveLocation(
+  return self.Bindings.debuggerWorkspaceBinding.createLiveLocation(
       rawLocation, updateDelegate.bind(null, name), locationPool);
 };
 
 BindingsTestRunner.createCSSLiveLocation = function(name, urlSuffix, lineNumber, columnNumber) {
   const header = TestRunner.cssModel.styleSheetHeaders().find(header => header.resourceURL().endsWith(urlSuffix));
   const rawLocation = new SDK.CSSLocation(header, lineNumber || 0, columnNumber || 0);
-  return Bindings.cssWorkspaceBinding.createLiveLocation(rawLocation, updateDelegate.bind(null, name), locationPool);
+  return self.Bindings.cssWorkspaceBinding.createLiveLocation(
+      rawLocation, updateDelegate.bind(null, name), locationPool);
 };
 
 function updateDelegate(name, liveLocation) {

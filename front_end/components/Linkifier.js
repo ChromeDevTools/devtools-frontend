@@ -183,7 +183,7 @@ export class Linkifier {
     const info = Linkifier._linkInfo(anchor);
     info.enableDecorator = this._useLinkDecorator;
     info.fallback = fallbackAnchor;
-    info.liveLocation = Bindings.debuggerWorkspaceBinding.createLiveLocation(
+    info.liveLocation = self.Bindings.debuggerWorkspaceBinding.createLiveLocation(
         rawLocation, this._updateAnchor.bind(this, anchor),
         /** @type {!Bindings.LiveLocationPool} */ (this._locationPoolByTarget.get(rawLocation.debuggerModel.target())));
 
@@ -257,7 +257,7 @@ export class Linkifier {
     const info = Linkifier._linkInfo(anchor);
     info.enableDecorator = this._useLinkDecorator;
     info.fallback = fallbackAnchor;
-    info.liveLocation = Bindings.debuggerWorkspaceBinding.createStackTraceTopFrameLiveLocation(
+    info.liveLocation = self.Bindings.debuggerWorkspaceBinding.createStackTraceTopFrameLiveLocation(
         rawLocations, this._updateAnchor.bind(this, anchor),
         /** @type {!Bindings.LiveLocationPool} */ (this._locationPoolByTarget.get(target)));
 
@@ -275,7 +275,7 @@ export class Linkifier {
     const anchor = Linkifier._createLink('', classes || '');
     const info = Linkifier._linkInfo(anchor);
     info.enableDecorator = this._useLinkDecorator;
-    info.liveLocation = Bindings.cssWorkspaceBinding.createLiveLocation(
+    info.liveLocation = self.Bindings.cssWorkspaceBinding.createLiveLocation(
         rawLocation, this._updateAnchor.bind(this, anchor),
         /** @type {!Bindings.LiveLocationPool} */ (this._locationPoolByTarget.get(rawLocation.cssModel().target())));
 

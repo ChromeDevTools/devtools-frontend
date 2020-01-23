@@ -481,7 +481,7 @@ export class SourcesPanel extends UI.Panel {
     if (this._executionLineLocation) {
       this._executionLineLocation.dispose();
     }
-    this._executionLineLocation = Bindings.debuggerWorkspaceBinding.createCallFrameLiveLocation(
+    this._executionLineLocation = self.Bindings.debuggerWorkspaceBinding.createCallFrameLiveLocation(
         callFrame.location(), this._executionLineChanged.bind(this), this._liveLocationPool);
   }
 
@@ -518,7 +518,8 @@ export class SourcesPanel extends UI.Panel {
     }
 
     const details = currentDebuggerModel ? currentDebuggerModel.debuggerPausedDetails() : null;
-    await this._debuggerPausedMessage.render(details, Bindings.debuggerWorkspaceBinding, Bindings.breakpointManager);
+    await this._debuggerPausedMessage.render(
+        details, self.Bindings.debuggerWorkspaceBinding, self.Bindings.breakpointManager);
     if (details) {
       this._updateDebuggerButtonsAndStatusForTest();
     }
@@ -690,7 +691,7 @@ export class SourcesPanel extends UI.Panel {
       return;
     }
     // Always use 0 column.
-    const rawLocations = await Bindings.debuggerWorkspaceBinding.uiLocationToRawLocations(
+    const rawLocations = await self.Bindings.debuggerWorkspaceBinding.uiLocationToRawLocations(
         uiLocation.uiSourceCode, uiLocation.lineNumber, 0);
     const rawLocation = rawLocations.find(location => location.debuggerModel === executionContext.debuggerModel);
     if (rawLocation && this._prepareToResume()) {
@@ -878,7 +879,7 @@ export class SourcesPanel extends UI.Panel {
       return;
     }
 
-    const uiLocation = Bindings.debuggerWorkspaceBinding.rawLocationToUILocation(response.location);
+    const uiLocation = self.Bindings.debuggerWorkspaceBinding.rawLocationToUILocation(response.location);
     if (uiLocation) {
       this.showUILocation(uiLocation);
     }
@@ -1071,7 +1072,7 @@ export class DebuggerLocationRevealer {
     if (!(rawLocation instanceof SDK.DebuggerModel.Location)) {
       return Promise.reject(new Error('Internal error: not a debugger location'));
     }
-    const uiLocation = Bindings.debuggerWorkspaceBinding.rawLocationToUILocation(rawLocation);
+    const uiLocation = self.Bindings.debuggerWorkspaceBinding.rawLocationToUILocation(rawLocation);
     if (!uiLocation) {
       return Promise.resolve();
     }

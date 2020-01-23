@@ -103,7 +103,7 @@ Bindings.TempFile = BindingsModule.TempFile.TempFile;
 Bindings.TempFileBackingStorage = BindingsModule.TempFile.TempFileBackingStorage;
 
 /** @type {!BindingsModule.BlackboxManager.BlackboxManager} */
-Bindings.blackboxManager;
+self.Bindings.blackboxManager;
 
 /** @typedef {{
  *    breakpoint: !BindingsModule.BreakpointManager.Breakpoint,
@@ -113,17 +113,17 @@ Bindings.blackboxManager;
 Bindings.BreakpointManager.BreakpointLocation;
 
 /** @type {!BindingsModule.BreakpointManager.BreakpointManager} */
-Bindings.breakpointManager;
+self.Bindings.breakpointManager;
 
 /**
  * @type {!BindingsModule.CSSWorkspaceBinding.CSSWorkspaceBinding}
  */
-Bindings.cssWorkspaceBinding;
+self.Bindings.cssWorkspaceBinding;
 
 /**
  * @type {!BindingsModule.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding}
  */
-Bindings.debuggerWorkspaceBinding;
+self.Bindings.debuggerWorkspaceBinding;
 
 /**
  * @typedef {{

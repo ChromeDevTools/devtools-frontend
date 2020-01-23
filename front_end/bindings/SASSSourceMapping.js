@@ -86,7 +86,7 @@ export class SASSSourceMapping {
       uiSourceCode[_sourceMapSymbol] = sourceMap;
       this._project.addUISourceCodeWithProvider(uiSourceCode, contentProvider, metadata, mimeType);
     }
-    Bindings.cssWorkspaceBinding.updateLocations(header);
+    self.Bindings.cssWorkspaceBinding.updateLocations(header);
     this._sourceMapAttachedForTest(sourceMap);
   }
 
@@ -105,7 +105,7 @@ export class SASSSourceMapping {
         this._project.removeFile(sassURL);
       }
     }
-    Bindings.cssWorkspaceBinding.updateLocations(header);
+    self.Bindings.cssWorkspaceBinding.updateLocations(header);
   }
 
   /**
@@ -125,7 +125,7 @@ export class SASSSourceMapping {
       uiSourceCode.setWorkingCopy(sassText);
     }
     for (const header of headers) {
-      Bindings.cssWorkspaceBinding.updateLocations(header);
+      self.Bindings.cssWorkspaceBinding.updateLocations(header);
     }
   }
 

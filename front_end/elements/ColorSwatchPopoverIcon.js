@@ -51,7 +51,8 @@ export class BezierPopoverIcon {
 
     this._originalPropertyText = this._treeElement.property.propertyText;
     this._treeElement.parentPane().setEditingStyle(true);
-    const uiLocation = Bindings.cssWorkspaceBinding.propertyUILocation(this._treeElement.property, false /* forName */);
+    const uiLocation =
+        self.Bindings.cssWorkspaceBinding.propertyUILocation(this._treeElement.property, false /* forName */);
     if (uiLocation) {
       Common.Revealer.reveal(uiLocation, true /* omitFocus */);
     }
@@ -190,7 +191,8 @@ export class ColorSwatchPopoverIcon {
 
     this._originalPropertyText = this._treeElement.property.propertyText;
     this._treeElement.parentPane().setEditingStyle(true);
-    const uiLocation = Bindings.cssWorkspaceBinding.propertyUILocation(this._treeElement.property, false /* forName */);
+    const uiLocation =
+        self.Bindings.cssWorkspaceBinding.propertyUILocation(this._treeElement.property, false /* forName */);
     if (uiLocation) {
       Common.Revealer.reveal(uiLocation, true /* omitFocus */);
     }
@@ -304,7 +306,8 @@ export class ShadowSwatchPopoverHelper {
 
     this._originalPropertyText = this._treeElement.property.propertyText;
     this._treeElement.parentPane().setEditingStyle(true);
-    const uiLocation = Bindings.cssWorkspaceBinding.propertyUILocation(this._treeElement.property, false /* forName */);
+    const uiLocation =
+        self.Bindings.cssWorkspaceBinding.propertyUILocation(this._treeElement.property, false /* forName */);
     if (uiLocation) {
       Common.Revealer.reveal(uiLocation, true /* omitFocus */);
     }

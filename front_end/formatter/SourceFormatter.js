@@ -171,7 +171,7 @@ export class SourceFormatter {
  */
 class ScriptMapping {
   constructor() {
-    Bindings.debuggerWorkspaceBinding.addSourceMapping(this);
+    self.Bindings.debuggerWorkspaceBinding.addSourceMapping(this);
   }
 
   /**
@@ -222,7 +222,7 @@ class ScriptMapping {
       // Here we have a script that is displayed on its own (i.e. it has a dedicated uiSourceCode). This means it is
       // either a stand-alone script or an inline script with a #sourceURL= and in both cases we can just forward the
       // question to the original (unformatted) source code.
-      const rawLocations = Bindings.debuggerWorkspaceBinding.uiLocationToRawLocationsForUnformattedJavaScript(
+      const rawLocations = self.Bindings.debuggerWorkspaceBinding.uiLocationToRawLocationsForUnformattedJavaScript(
           formatData.originalSourceCode, originalLine, originalColumn);
       console.assert(rawLocations.every(l => l && !!l.script()));
       return rawLocations;
@@ -262,7 +262,7 @@ class ScriptMapping {
       }
     }
     for (const script of scripts) {
-      Bindings.debuggerWorkspaceBinding.updateLocations(script);
+      self.Bindings.debuggerWorkspaceBinding.updateLocations(script);
     }
   }
 
@@ -285,7 +285,7 @@ class ScriptMapping {
           !uiSourceCode[SourceFormatData._formatDataSymbol] ||
           uiSourceCode[SourceFormatData._formatDataSymbol] === uiSourceCode);
       const rawLocations =
-          Bindings.debuggerWorkspaceBinding.uiLocationToRawLocationsForUnformattedJavaScript(uiSourceCode, 0, 0);
+          self.Bindings.debuggerWorkspaceBinding.uiLocationToRawLocationsForUnformattedJavaScript(uiSourceCode, 0, 0);
       return rawLocations.map(location => location.script()).filter(script => !!script);
     }
     return [];
@@ -297,7 +297,7 @@ class ScriptMapping {
  */
 class StyleMapping {
   constructor() {
-    Bindings.cssWorkspaceBinding.addSourceMapping(this);
+    self.Bindings.cssWorkspaceBinding.addSourceMapping(this);
     this._headersSymbol = Symbol('Formatter.SourceFormatter.StyleMapping._headersSymbol');
   }
 
@@ -348,7 +348,7 @@ class StyleMapping {
       original[this._headersSymbol] = null;
       headers.forEach(header => delete header[SourceFormatData._formatDataSymbol]);
     }
-    headers.forEach(header => Bindings.cssWorkspaceBinding.updateLocations(header));
+    headers.forEach(header => self.Bindings.cssWorkspaceBinding.updateLocations(header));
   }
 
   /**
@@ -364,7 +364,7 @@ class StyleMapping {
             .filter(header => header.isInline && !header.hasSourceURL);
       }
     } else if (uiSourceCode.contentType().isStyleSheet()) {
-      const rawLocations = Bindings.cssWorkspaceBinding.uiLocationToRawLocations(uiSourceCode.uiLocation(0, 0));
+      const rawLocations = self.Bindings.cssWorkspaceBinding.uiLocationToRawLocations(uiSourceCode.uiLocation(0, 0));
       return rawLocations.map(rawLocation => rawLocation.header()).filter(header => !!header);
     }
     return [];

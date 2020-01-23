@@ -393,11 +393,11 @@ export class CallStackSidebarPane extends UI.SimpleView {
     if (uiSourceCode.project().type() === Workspace.projectTypes.FileSystem) {
       return;
     }
-    const canBlackbox = Bindings.blackboxManager.canBlackboxUISourceCode(uiSourceCode);
-    const isBlackboxed = Bindings.blackboxManager.isBlackboxedUISourceCode(uiSourceCode);
+    const canBlackbox = self.Bindings.blackboxManager.canBlackboxUISourceCode(uiSourceCode);
+    const isBlackboxed = self.Bindings.blackboxManager.isBlackboxedUISourceCode(uiSourceCode);
     const isContentScript = uiSourceCode.project().type() === Workspace.projectTypes.ContentScripts;
 
-    const manager = Bindings.blackboxManager;
+    const manager = self.Bindings.blackboxManager;
     if (canBlackbox) {
       if (isBlackboxed) {
         contextMenu.defaultSection().appendItem(
@@ -492,7 +492,7 @@ export class Item {
    */
   static createForDebuggerCallFrame(frame, locationPool, updateDelegate) {
     const item = new Item(UI.beautifyFunctionName(frame.functionName), updateDelegate);
-    Bindings.debuggerWorkspaceBinding.createCallFrameLiveLocation(
+    self.Bindings.debuggerWorkspaceBinding.createCallFrameLiveLocation(
         frame.location(), item._update.bind(item), locationPool);
     return item;
   }
@@ -520,7 +520,7 @@ export class Item {
         item.linkText = (frame.url || '<unknown>') + ':' + (frame.lineNumber + 1);
         item.updateDelegate(item);
       } else {
-        Bindings.debuggerWorkspaceBinding.createCallFrameLiveLocation(
+        self.Bindings.debuggerWorkspaceBinding.createCallFrameLiveLocation(
             rawLocation, item._update.bind(item), locationPool);
       }
       return item;
@@ -568,7 +568,8 @@ export class Item {
    */
   _update(liveLocation) {
     const uiLocation = liveLocation.uiLocation();
-    this.isBlackboxed = uiLocation ? Bindings.blackboxManager.isBlackboxedUISourceCode(uiLocation.uiSourceCode) : false;
+    this.isBlackboxed =
+        uiLocation ? self.Bindings.blackboxManager.isBlackboxedUISourceCode(uiLocation.uiSourceCode) : false;
     this.linkText = uiLocation ? uiLocation.linkText() : '';
     this.uiLocation = uiLocation;
     this.updateDelegate(this);

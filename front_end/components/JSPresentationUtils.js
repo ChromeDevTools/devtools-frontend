@@ -64,7 +64,7 @@ export function buildStackTracePreviewContents(target, linkifier, options = {}) 
       if (link) {
         link.addEventListener('contextmenu', populateContextMenu.bind(null, link));
         const uiLocation = Linkifier.uiLocation(link);
-        if (uiLocation && Bindings.blackboxManager.isBlackboxedUISourceCode(uiLocation.uiSourceCode)) {
+        if (uiLocation && self.Bindings.blackboxManager.isBlackboxedUISourceCode(uiLocation.uiSourceCode)) {
           shouldHide = true;
         }
         row.createChild('td').textContent = ' @ ';
@@ -89,13 +89,13 @@ export function buildStackTracePreviewContents(target, linkifier, options = {}) 
     const contextMenu = new UI.ContextMenu(event);
     event.consume(true);
     const uiLocation = Linkifier.uiLocation(link);
-    if (uiLocation && Bindings.blackboxManager.canBlackboxUISourceCode(uiLocation.uiSourceCode)) {
-      if (Bindings.blackboxManager.isBlackboxedUISourceCode(uiLocation.uiSourceCode)) {
+    if (uiLocation && self.Bindings.blackboxManager.canBlackboxUISourceCode(uiLocation.uiSourceCode)) {
+      if (self.Bindings.blackboxManager.isBlackboxedUISourceCode(uiLocation.uiSourceCode)) {
         contextMenu.debugSection().appendItem(
-            ls`Stop blackboxing`, () => Bindings.blackboxManager.unblackboxUISourceCode(uiLocation.uiSourceCode));
+            ls`Stop blackboxing`, () => self.Bindings.blackboxManager.unblackboxUISourceCode(uiLocation.uiSourceCode));
       } else {
         contextMenu.debugSection().appendItem(
-            ls`Blackbox script`, () => Bindings.blackboxManager.blackboxUISourceCode(uiLocation.uiSourceCode));
+            ls`Blackbox script`, () => self.Bindings.blackboxManager.blackboxUISourceCode(uiLocation.uiSourceCode));
       }
     }
     contextMenu.appendApplicableItems(event);

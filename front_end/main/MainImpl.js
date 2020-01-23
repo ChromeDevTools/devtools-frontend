@@ -212,21 +212,21 @@ export class MainImpl {
     Workspace.workspace = new Workspace.Workspace();
 
     self.Bindings.networkProjectManager = new Bindings.NetworkProjectManager();
-    Bindings.resourceMapping = new Bindings.ResourceMapping(self.SDK.targetManager, Workspace.workspace);
+    self.Bindings.resourceMapping = new Bindings.ResourceMapping(self.SDK.targetManager, Workspace.workspace);
     new Bindings.PresentationConsoleMessageManager();
-    Bindings.cssWorkspaceBinding = new Bindings.CSSWorkspaceBinding(self.SDK.targetManager, Workspace.workspace);
-    Bindings.debuggerWorkspaceBinding =
+    self.Bindings.cssWorkspaceBinding = new Bindings.CSSWorkspaceBinding(self.SDK.targetManager, Workspace.workspace);
+    self.Bindings.debuggerWorkspaceBinding =
         new Bindings.DebuggerWorkspaceBinding(self.SDK.targetManager, Workspace.workspace);
-    Bindings.breakpointManager =
-        new Bindings.BreakpointManager(Workspace.workspace, self.SDK.targetManager, Bindings.debuggerWorkspaceBinding);
+    self.Bindings.breakpointManager = new Bindings.BreakpointManager(
+        Workspace.workspace, self.SDK.targetManager, self.Bindings.debuggerWorkspaceBinding);
     Extensions.extensionServer = new Extensions.ExtensionServer();
 
     new Persistence.FileSystemWorkspaceBinding(Persistence.isolatedFileSystemManager, Workspace.workspace);
-    Persistence.persistence = new Persistence.Persistence(Workspace.workspace, Bindings.breakpointManager);
+    Persistence.persistence = new Persistence.Persistence(Workspace.workspace, self.Bindings.breakpointManager);
     Persistence.networkPersistenceManager = new Persistence.NetworkPersistenceManager(Workspace.workspace);
 
     new ExecutionContextSelector(self.SDK.targetManager, UI.context);
-    Bindings.blackboxManager = new Bindings.BlackboxManager(Bindings.debuggerWorkspaceBinding);
+    self.Bindings.blackboxManager = new Bindings.BlackboxManager(self.Bindings.debuggerWorkspaceBinding);
 
     new PauseListener();
 

@@ -384,7 +384,7 @@ class Binding {
           continue;
         }
         script[offsetSymbol] = scriptOffset.rebaseAfterTextEdit(oldRange, newRange);
-        Bindings.debuggerWorkspaceBinding.updateLocations(script);
+        self.Bindings.debuggerWorkspaceBinding.updateLocations(script);
       }
       for (const style of styles) {
         const styleOffset =
@@ -393,7 +393,7 @@ class Binding {
           continue;
         }
         style[offsetSymbol] = styleOffset.rebaseAfterTextEdit(oldRange, newRange);
-        Bindings.cssWorkspaceBinding.updateLocations(style);
+        self.Bindings.cssWorkspaceBinding.updateLocations(style);
       }
     }
     this._uiSourceCode.addRevision(text.value());

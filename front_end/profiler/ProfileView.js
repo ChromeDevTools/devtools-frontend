@@ -334,7 +334,7 @@ export class ProfileView extends UI.SimpleView {
     }
     const location = /** @type {!SDK.DebuggerModel.Location} */ (
         debuggerModel.createRawLocation(script, node.lineNumber, node.columnNumber));
-    Common.Revealer.reveal(Bindings.debuggerWorkspaceBinding.rawLocationToUILocation(location));
+    Common.Revealer.reveal(self.Bindings.debuggerWorkspaceBinding.rawLocationToUILocation(location));
   }
 
   _changeView() {

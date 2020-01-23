@@ -93,7 +93,7 @@ export const resolveScope = function(scope) {
   }
 
   const script = scope.callFrame().script;
-  const sourceMap = Bindings.debuggerWorkspaceBinding.sourceMapForScript(script);
+  const sourceMap = self.Bindings.debuggerWorkspaceBinding.sourceMapForScript(script);
   if (!sourceMap) {
     return Promise.resolve(new Map());
   }
@@ -161,7 +161,7 @@ export const resolveScope = function(scope) {
     const sourceTextRange = new TextUtils.TextRange(
         startEntry.sourceLineNumber, startEntry.sourceColumnNumber, endEntry.sourceLineNumber,
         endEntry.sourceColumnNumber);
-    const uiSourceCode = Bindings.debuggerWorkspaceBinding.uiSourceCodeForSourceMapSourceURL(
+    const uiSourceCode = self.Bindings.debuggerWorkspaceBinding.uiSourceCodeForSourceMapSourceURL(
         script.debuggerModel, startEntry.sourceURL, script.isContentScript());
     if (!uiSourceCode) {
       return Promise.resolve(/** @type {?string} */ (null));
@@ -271,8 +271,8 @@ export const resolveExpression = function(
  */
 export const resolveExpressionAsync =
     async function(debuggerModel, uiSourceCode, lineNumber, startColumnNumber, endColumnNumber) {
-  const rawLocations =
-      await Bindings.debuggerWorkspaceBinding.uiLocationToRawLocations(uiSourceCode, lineNumber, startColumnNumber);
+  const rawLocations = await self.Bindings.debuggerWorkspaceBinding.uiLocationToRawLocations(
+      uiSourceCode, lineNumber, startColumnNumber);
   const rawLocation = rawLocations.find(location => location.debuggerModel === debuggerModel);
   if (!rawLocation) {
     return '';
@@ -282,7 +282,8 @@ export const resolveExpressionAsync =
   if (!script) {
     return '';
   }
-  const sourceMap = /** @type {!SDK.TextSourceMap} */ (Bindings.debuggerWorkspaceBinding.sourceMapForScript(script));
+  const sourceMap =
+      /** @type {!SDK.TextSourceMap} */ (self.Bindings.debuggerWorkspaceBinding.sourceMapForScript(script));
   if (!sourceMap) {
     return '';
   }

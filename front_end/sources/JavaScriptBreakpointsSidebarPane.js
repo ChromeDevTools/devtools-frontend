@@ -12,7 +12,7 @@ export class JavaScriptBreakpointsSidebarPane extends UI.ThrottledWidget {
     super(true);
     this.registerRequiredCSS('sources/javaScriptBreakpointsSidebarPane.css');
 
-    this._breakpointManager = Bindings.breakpointManager;
+    this._breakpointManager = self.Bindings.breakpointManager;
     this._breakpointManager.addEventListener(Bindings.BreakpointManager.Events.BreakpointAdded, this.update, this);
     this._breakpointManager.addEventListener(Bindings.BreakpointManager.Events.BreakpointRemoved, this.update, this);
     self.Common.settings.moduleSetting('breakpointsActive').addChangeListener(this.update, this);
@@ -68,7 +68,7 @@ export class JavaScriptBreakpointsSidebarPane extends UI.ThrottledWidget {
 
     const details = UI.context.flavor(SDK.DebuggerPausedDetails);
     const selectedUILocation = details && details.callFrames.length ?
-        Bindings.debuggerWorkspaceBinding.rawLocationToUILocation(details.callFrames[0].location()) :
+        self.Bindings.debuggerWorkspaceBinding.rawLocationToUILocation(details.callFrames[0].location()) :
         null;
 
     let shouldShowView = false;

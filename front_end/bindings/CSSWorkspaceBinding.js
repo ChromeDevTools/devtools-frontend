@@ -242,7 +242,7 @@ export class ModelInfo {
     let uiLocation = null;
     uiLocation = uiLocation || this._sassSourceMapping.rawLocationToUILocation(rawLocation);
     uiLocation = uiLocation || this._stylesSourceMapping.rawLocationToUILocation(rawLocation);
-    uiLocation = uiLocation || Bindings.resourceMapping.cssLocationToUILocation(rawLocation);
+    uiLocation = uiLocation || self.Bindings.resourceMapping.cssLocationToUILocation(rawLocation);
     return uiLocation;
   }
 
@@ -259,7 +259,7 @@ export class ModelInfo {
     if (rawLocations.length) {
       return rawLocations;
     }
-    return Bindings.resourceMapping.uiLocationToCSSLocations(uiLocation);
+    return self.Bindings.resourceMapping.uiLocationToCSSLocations(uiLocation);
   }
 
   _dispose() {
@@ -297,7 +297,7 @@ export class LiveLocation extends LiveLocationWithPool {
       return null;
     }
     const rawLocation = new SDK.CSSLocation(this._header, this._lineNumber, this._columnNumber);
-    return Bindings.cssWorkspaceBinding.rawLocationToUILocation(rawLocation);
+    return self.Bindings.cssWorkspaceBinding.rawLocationToUILocation(rawLocation);
   }
 
   /**

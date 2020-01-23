@@ -305,9 +305,9 @@ SourcesTestRunner.captureStackTraceIntoString = function(callFrames, asyncStackT
       const frame = callFrames[i];
       const location = locationFunction.call(frame);
       const script = location.script();
-      const uiLocation = Bindings.debuggerWorkspaceBinding.rawLocationToUILocation(location);
+      const uiLocation = self.Bindings.debuggerWorkspaceBinding.rawLocationToUILocation(location);
       const isFramework =
-          uiLocation ? Bindings.blackboxManager.isBlackboxedUISourceCode(uiLocation.uiSourceCode) : false;
+          uiLocation ? self.Bindings.blackboxManager.isBlackboxedUISourceCode(uiLocation.uiSourceCode) : false;
 
       if (options.dropFrameworkCallFrames && isFramework) {
         continue;
@@ -513,7 +513,7 @@ SourcesTestRunner.waitBreakpointSidebarPane = function(waitUntilResolved) {
       return;
     }
 
-    for (const {breakpoint} of Bindings.breakpointManager.allBreakpointLocations()) {
+    for (const {breakpoint} of self.Bindings.breakpointManager.allBreakpointLocations()) {
       if (breakpoint._uiLocations.size === 0 && breakpoint.enabled()) {
         return SourcesTestRunner.waitBreakpointSidebarPane();
       }
@@ -733,7 +733,7 @@ SourcesTestRunner.waitDebuggerPluginBreakpoints = function(sourceFrame) {
   return SourcesTestRunner.waitDebuggerPluginDecorations().then(checkIfReady);
 
   function checkIfReady() {
-    for (const {breakpoint} of Bindings.breakpointManager.allBreakpointLocations()) {
+    for (const {breakpoint} of self.Bindings.breakpointManager.allBreakpointLocations()) {
       if (breakpoint._uiLocations.size === 0 && breakpoint.enabled()) {
         return SourcesTestRunner.waitDebuggerPluginDecorations().then(checkIfReady);
       }

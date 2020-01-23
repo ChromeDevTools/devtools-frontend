@@ -144,7 +144,7 @@ export class CoverageDecorationManager {
     const result = [];
     const contentType = uiSourceCode.contentType();
     if (contentType.hasScripts()) {
-      let locations = await Bindings.debuggerWorkspaceBinding.uiLocationToRawLocations(uiSourceCode, line, column);
+      let locations = await self.Bindings.debuggerWorkspaceBinding.uiLocationToRawLocations(uiSourceCode, line, column);
       locations = locations.filter(location => !!location.script());
       for (const location of locations) {
         const script = location.script();
@@ -163,8 +163,8 @@ export class CoverageDecorationManager {
       }
     }
     if (contentType.isStyleSheet() || contentType.isDocument()) {
-      const rawStyleLocations =
-          Bindings.cssWorkspaceBinding.uiLocationToRawLocations(new Workspace.UILocation(uiSourceCode, line, column));
+      const rawStyleLocations = self.Bindings.cssWorkspaceBinding.uiLocationToRawLocations(
+          new Workspace.UILocation(uiSourceCode, line, column));
       for (const location of rawStyleLocations) {
         const header = location.header();
         if (!header) {

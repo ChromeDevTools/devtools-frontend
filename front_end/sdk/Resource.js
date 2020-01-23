@@ -26,11 +26,14 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as Common from '../common/common.js';
+import * as ProtocolModule from '../protocol/protocol.js';
+
 import {Events, NetworkRequest} from './NetworkRequest.js';                   // eslint-disable-line no-unused-vars
 import {ResourceTreeFrame, ResourceTreeModel} from './ResourceTreeModel.js';  // eslint-disable-line no-unused-vars
 
 /**
- * @implements {Common.ContentProvider}
+ * @implements {Common.ContentProvider.ContentProvider}
  * @unrestricted
  */
 export class Resource {
@@ -41,7 +44,7 @@ export class Resource {
    * @param {string} documentURL
    * @param {!Protocol.Page.FrameId} frameId
    * @param {!Protocol.Network.LoaderId} loaderId
-   * @param {!Common.ResourceType} type
+   * @param {!Common.ResourceType.ResourceType} type
    * @param {string} mimeType
    * @param {?Date} lastModified
    * @param {?number} contentSize
@@ -54,7 +57,7 @@ export class Resource {
     this._documentURL = documentURL;
     this._frameId = frameId;
     this._loaderId = loaderId;
-    this._type = type || Common.resourceTypes.Other;
+    this._type = type || Common.ResourceType.resourceTypes.Other;
     this._mimeType = mimeType;
 
     this._lastModified = lastModified && lastModified.isValid() ? lastModified : null;
@@ -111,7 +114,7 @@ export class Resource {
    */
   set url(x) {
     this._url = x;
-    this._parsedURL = new Common.ParsedURL(x);
+    this._parsedURL = new Common.ParsedURL.ParsedURL(x);
   }
 
   get parsedURL() {
@@ -147,7 +150,7 @@ export class Resource {
   }
 
   /**
-   * @return {!Common.ResourceType}
+   * @return {!Common.ResourceType.ResourceType}
    */
   resourceType() {
     return this._request ? this._request.resourceType() : this._type;
@@ -177,11 +180,12 @@ export class Resource {
 
   /**
    * @override
-   * @return {!Common.ResourceType}
+   * @return {!Common.ResourceType.ResourceType}
    */
   contentType() {
-    if (this.resourceType() === Common.resourceTypes.Document && this.mimeType.indexOf('javascript') !== -1) {
-      return Common.resourceTypes.Script;
+    if (this.resourceType() === Common.ResourceType.resourceTypes.Document &&
+        this.mimeType.indexOf('javascript') !== -1) {
+      return Common.ResourceType.resourceTypes.Script;
     }
     return this.resourceType();
   }
@@ -271,10 +275,10 @@ export class Resource {
     } else {
       const response = await this._resourceTreeModel.target().pageAgent().invoke_getResourceContent(
           {frameId: this.frameId, url: this.url});
-      if (response[Protocol.Error]) {
-        this._contentLoadError = response[Protocol.Error];
+      if (response[ProtocolModule.InspectorBackend.ProtocolError]) {
+        this._contentLoadError = response[ProtocolModule.InspectorBackend.ProtocolError];
         this._content = null;
-        loadResult = {error: response[Protocol.Error], isEncoded: false};
+        loadResult = {error: response[ProtocolModule.InspectorBackend.ProtocolError], isEncoded: false};
       } else {
         this._content = response.content;
         this._contentLoadError = null;
@@ -301,7 +305,7 @@ export class Resource {
     if (this._type.isTextType()) {
       return true;
     }
-    if (this._type === Common.resourceTypes.Other) {
+    if (this._type === Common.ResourceType.resourceTypes.Other) {
       return !!this._content && !this._contentEncoded;
     }
     return false;

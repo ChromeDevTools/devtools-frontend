@@ -2,13 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+
 import {Events as TargetManagerEvents, Target} from './SDKModel.js';     // eslint-disable-line no-unused-vars
 import {SourceMap, TextSourceMap, WasmSourceMap} from './SourceMap.js';  // eslint-disable-line no-unused-vars
 
 /**
  * @template T
  */
-export class SourceMapManager extends Common.Object {
+export class SourceMapManager extends Common.ObjectWrapper.ObjectWrapper {
   /**
    * @param {!Target} target
    */
@@ -118,11 +120,11 @@ export class SourceMapManager extends Common.Object {
   _resolveRelativeURLs(sourceURL, sourceMapURL) {
     // |sourceURL| can be a random string, but is generally an absolute path.
     // Complete it to inspected page url for relative links.
-    const resolvedSourceURL = Common.ParsedURL.completeURL(this._target.inspectedURL(), sourceURL);
+    const resolvedSourceURL = Common.ParsedURL.ParsedURL.completeURL(this._target.inspectedURL(), sourceURL);
     if (!resolvedSourceURL) {
       return null;
     }
-    const resolvedSourceMapURL = Common.ParsedURL.completeURL(resolvedSourceURL, sourceMapURL);
+    const resolvedSourceMapURL = Common.ParsedURL.ParsedURL.completeURL(resolvedSourceURL, sourceMapURL);
     if (!resolvedSourceMapURL) {
       return null;
     }

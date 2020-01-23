@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+
 import {Cookie} from './Cookie.js';
 import {Resource} from './Resource.js';  // eslint-disable-line no-unused-vars
 import {ResourceTreeModel} from './ResourceTreeModel.js';
@@ -25,7 +27,7 @@ export class CookieModel extends SDKModel {
    * @return {boolean}
    */
   static cookieMatchesResourceURL(cookie, resourceURL) {
-    const url = Common.ParsedURL.fromString(resourceURL);
+    const url = Common.ParsedURL.ParsedURL.fromString(resourceURL);
     if (!url || !CookieModel.cookieDomainMatchesResourceDomain(cookie.domain(), url.host)) {
       return false;
     }
@@ -128,7 +130,7 @@ export class CookieModel extends SDKModel {
      * @param {!Resource} resource
      */
     function populateResourceURLs(resource) {
-      const documentURL = Common.ParsedURL.fromString(resource.documentURL);
+      const documentURL = Common.ParsedURL.ParsedURL.fromString(resource.documentURL);
       if (documentURL && (!domain || documentURL.securityOrigin() === domain)) {
         resourceURLs.push(resource.url);
       }

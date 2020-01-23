@@ -28,6 +28,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as Common from '../common/common.js';
+
 import {DebuggerModel, Location} from './DebuggerModel.js';
 import {RuntimeModel} from './RuntimeModel.js';              // eslint-disable-line no-unused-vars
 import {Capability, SDKModel, Target} from './SDKModel.js';  // eslint-disable-line no-unused-vars
@@ -72,7 +74,7 @@ export class CPUProfilerModel extends SDKModel {
    */
   consoleProfileStarted(id, scriptLocation, title) {
     if (!title) {
-      title = Common.UIString('Profile %d', this._nextAnonymousConsoleProfileNumber++);
+      title = Common.UIString.UIString('Profile %d', this._nextAnonymousConsoleProfileNumber++);
       this._anonymousConsoleProfileIdToTitle.set(id, title);
     }
     this._dispatchProfileEvent(Events.ConsoleProfileStarted, id, scriptLocation, title);

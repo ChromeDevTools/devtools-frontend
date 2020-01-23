@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as ProtocolModule from '../protocol/protocol.js';
+
 import {Capability, SDKModel, Target} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 
 /**
@@ -76,7 +78,7 @@ export class TracingManager extends SDKModel {
       transferMode: TransferMode.ReportEvents
     };
     const response = await this._tracingAgent.invoke_start(args);
-    if (response[Protocol.Error]) {
+    if (response[ProtocolModule.InspectorBackend.ProtocolError]) {
       this._activeClient = null;
     }
     return response;

@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as ProtocolModule from '../protocol/protocol.js';
+
 import {OverlayModel} from './OverlayModel.js';
 import {Capability, SDKModel, Target} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 
@@ -61,7 +63,7 @@ export class ScreenCaptureModel extends SDKModel {
    */
   async fetchLayoutMetrics() {
     const response = await this._agent.invoke_getLayoutMetrics({});
-    if (response[Protocol.Error]) {
+    if (response[ProtocolModule.InspectorBackend.ProtocolError]) {
       return null;
     }
     return {

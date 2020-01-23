@@ -33,9 +33,10 @@
 // FIXME: Some fields are not yet supported due to back-end limitations.
 // See https://bugs.webkit.org/show_bug.cgi?id=58127 for details.
 
-import {Cookie} from './Cookie.js';  // eslint-disable-line no-unused-vars
+import * as Common from '../common/common.js';
 
-import {PageLoad} from './NetworkLog.js';
+import {Cookie} from './Cookie.js';                  // eslint-disable-line no-unused-vars
+import {PageLoad} from './NetworkLog.js';            // eslint-disable-line no-unused-vars
 import {NetworkRequest} from './NetworkRequest.js';  // eslint-disable-line no-unused-vars
 
 /**
@@ -201,7 +202,7 @@ export class Entry {
       entry.pageref = 'page_' + page.id;
     }
 
-    if (harEntry._request.resourceType() === Common.resourceTypes.WebSocket) {
+    if (harEntry._request.resourceType() === Common.ResourceType.resourceTypes.WebSocket) {
       const messages = [];
       for (const message of harEntry._request.frames()) {
         messages.push({type: message.type, time: message.time, opcode: message.opCode, data: message.text});

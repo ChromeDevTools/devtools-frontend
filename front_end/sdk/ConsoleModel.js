@@ -28,6 +28,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as Common from '../common/common.js';
+import * as HostModule from '../host/host.js';
+
 import {CPUProfilerModel, Events as CPUProfilerModelEvents} from './CPUProfilerModel.js';
 import {Events as DebuggerModelEvents, Location} from './DebuggerModel.js';  // eslint-disable-line no-unused-vars
 import {LogModel} from './LogModel.js';
@@ -41,7 +44,7 @@ const _events = Symbol('SDK.ConsoleModel.events');
 /**
  * @implements {Observer}
  */
-export class ConsoleModel extends Common.Object {
+export class ConsoleModel extends Common.ObjectWrapper.ObjectWrapper {
   constructor() {
     super();
 
@@ -69,7 +72,7 @@ export class ConsoleModel extends Common.Object {
     }
 
     const eventListener = resourceTreeModel.addEventListener(ResourceTreeModelEvents.CachedResourcesLoaded, () => {
-      Common.EventTarget.removeEventListeners([eventListener]);
+      Common.EventTarget.EventTarget.removeEventListeners([eventListener]);
       this._initTarget(target);
     });
   }
@@ -122,7 +125,7 @@ export class ConsoleModel extends Common.Object {
     if (runtimeModel) {
       this._messageByExceptionId.delete(runtimeModel);
     }
-    Common.EventTarget.removeEventListeners(target[_events] || []);
+    Common.EventTarget.EventTarget.removeEventListeners(target[_events] || []);
   }
 
   /**
@@ -145,7 +148,7 @@ export class ConsoleModel extends Common.Object {
           replMode: true
         },
         self.Common.settings.moduleSetting('consoleUserActivationEval').get(), awaitPromise);
-    Host.userMetrics.actionTaken(Host.UserMetrics.Action.ConsoleEvaluated);
+    HostModule.userMetrics.actionTaken(Host.UserMetrics.Action.ConsoleEvaluated);
     if (result.error) {
       return;
     }
@@ -275,7 +278,7 @@ export class ConsoleModel extends Common.Object {
    */
   _mainFrameNavigated(event) {
     if (self.Common.settings.moduleSetting('preserveConsoleLog').get()) {
-      self.Common.console.log(Common.UIString('Navigated to %s', event.data.url));
+      self.Common.console.log(Common.UIString.UIString('Navigated to %s', event.data.url));
     }
   }
 
@@ -287,7 +290,7 @@ export class ConsoleModel extends Common.Object {
     const data = /** @type {!SDK.CPUProfilerModel.EventData} */ (event.data);
     this._addConsoleProfileMessage(
         cpuProfilerModel, MessageType.Profile, data.scriptLocation,
-        Common.UIString('Profile \'%s\' started.', data.title));
+        Common.UIString.UIString('Profile \'%s\' started.', data.title));
   }
 
   /**
@@ -298,7 +301,7 @@ export class ConsoleModel extends Common.Object {
     const data = /** @type {!SDK.CPUProfilerModel.EventData} */ (event.data);
     this._addConsoleProfileMessage(
         cpuProfilerModel, MessageType.ProfileEnd, data.scriptLocation,
-        Common.UIString('Profile \'%s\' finished.', data.title));
+        Common.UIString.UIString('Profile \'%s\' finished.', data.title));
   }
 
   /**
@@ -437,7 +440,7 @@ export class ConsoleModel extends Common.Object {
      * @param {?RemoteObject} result
      */
     function failedToSave(result) {
-      let message = Common.UIString('Failed to save to temp variable.');
+      let message = Common.UIString.UIString('Failed to save to temp variable.');
       if (result) {
         message += ' ' + result.description;
       }

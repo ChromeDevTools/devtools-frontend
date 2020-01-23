@@ -28,6 +28,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as ProtocolModule from '../protocol/protocol.js';
+
 import {DebuggerModel} from './DebuggerModel.js';  // eslint-disable-line no-unused-vars
 import {RuntimeModel} from './RuntimeModel.js';    // eslint-disable-line no-unused-vars
 
@@ -506,7 +508,7 @@ export class RemoteObjectImpl extends RemoteObject {
 
     const response = await this._runtimeAgent.invoke_getProperties(
         {objectId: this._objectId, ownProperties, accessorPropertiesOnly, generatePreview});
-    if (response[Protocol.Error]) {
+    if (response[ProtocolModule.InspectorBackend.ProtocolError]) {
       return /** @type {!SDK.GetPropertiesResult} */ ({properties: null, internalProperties: null});
     }
     if (response.exceptionDetails) {
@@ -566,8 +568,8 @@ export class RemoteObjectImpl extends RemoteObject {
     }
 
     const response = await this._runtimeAgent.invoke_evaluate({expression: value, silent: true});
-    if (response[Protocol.Error] || response.exceptionDetails) {
-      return response[Protocol.Error] ||
+    if (response[ProtocolModule.InspectorBackend.ProtocolError] || response.exceptionDetails) {
+      return response[ProtocolModule.InspectorBackend.ProtocolError] ||
           (response.result.type !== 'string' ? response.result.description :
                                                /** @type {string} */ (response.result.value));
     }
@@ -600,7 +602,7 @@ export class RemoteObjectImpl extends RemoteObject {
     const argv = [name, RemoteObject.toCallArgument(result)];
     const response = await this._runtimeAgent.invoke_callFunctionOn(
         {objectId: this._objectId, functionDeclaration: setPropertyValueFunction, arguments: argv, silent: true});
-    const error = response[Protocol.Error];
+    const error = response[ProtocolModule.InspectorBackend.ProtocolError];
     return error || response.exceptionDetails ? error || response.result.description : undefined;
   }
 
@@ -618,8 +620,8 @@ export class RemoteObjectImpl extends RemoteObject {
     const response = await this._runtimeAgent.invoke_callFunctionOn(
         {objectId: this._objectId, functionDeclaration: deletePropertyFunction, arguments: [name], silent: true});
 
-    if (response[Protocol.Error] || response.exceptionDetails) {
-      return response[Protocol.Error] || response.result.description;
+    if (response[ProtocolModule.InspectorBackend.ProtocolError] || response.exceptionDetails) {
+      return response[ProtocolModule.InspectorBackend.ProtocolError] || response.result.description;
     }
 
     if (!response.result.value) {
@@ -636,7 +638,7 @@ export class RemoteObjectImpl extends RemoteObject {
   async callFunction(functionDeclaration, args) {
     const response = await this._runtimeAgent.invoke_callFunctionOn(
         {objectId: this._objectId, functionDeclaration: functionDeclaration.toString(), arguments: args, silent: true});
-    if (response[Protocol.Error]) {
+    if (response[ProtocolModule.InspectorBackend.ProtocolError]) {
       return {object: null, wasThrown: false};
     }
     // TODO: release exceptionDetails object
@@ -658,7 +660,8 @@ export class RemoteObjectImpl extends RemoteObject {
       silent: true,
       returnByValue: true
     });
-    return response[Protocol.Error] || response.exceptionDetails ? null : response.result.value;
+    return response[ProtocolModule.InspectorBackend.ProtocolError] || response.exceptionDetails ? null :
+                                                                                                  response.result.value;
   }
 
   /**

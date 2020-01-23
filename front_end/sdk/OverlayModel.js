@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+
 import {DebuggerModel, Events as DebuggerModelEvents} from './DebuggerModel.js';
 import {DeferredDOMNode, DOMModel, DOMNode} from './DOMModel.js';  // eslint-disable-line no-unused-vars
 import {RemoteObject} from './RemoteObject.js';                    // eslint-disable-line no-unused-vars
@@ -132,7 +134,7 @@ export class OverlayModel extends SDKModel {
    * @return {!Promise}
    */
   suspendModel() {
-    Common.EventTarget.removeEventListeners(this._registeredListeners);
+    Common.EventTarget.EventTarget.removeEventListeners(this._registeredListeners);
     return this._overlayAgent.disable();
   }
 
@@ -165,7 +167,7 @@ export class OverlayModel extends SDKModel {
     }
     const message =
         this._debuggerModel.isPaused() && !self.Common.settings.moduleSetting('disablePausedStateOverlay').get() ?
-        Common.UIString('Paused in debugger') :
+        Common.UIString.UIString('Paused in debugger') :
         undefined;
     return this._overlayAgent.setPausedInDebuggerMessage(message);
   }

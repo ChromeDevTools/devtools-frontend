@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+
 /**
  * @unrestricted
  */
@@ -194,6 +196,6 @@ export class ServerTiming {
    * @param {string} msg
    */
   static showWarning(msg) {
-    self.Common.console.warn(Common.UIString(`ServerTiming: ${msg}`));
+    self.Common.console.warn(Common.UIString.UIString(`ServerTiming: ${msg}`));
   }
 }

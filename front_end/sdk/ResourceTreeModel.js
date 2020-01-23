@@ -28,6 +28,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as Common from '../common/common.js';
+import * as ProtocolModule from '../protocol/protocol.js';
+
 import {DOMModel} from './DOMModel.js';
 import {Events as NetworkManagerEvents, NetworkManager} from './NetworkManager.js';
 import {NetworkRequest} from './NetworkRequest.js';  // eslint-disable-line no-unused-vars
@@ -264,7 +267,7 @@ export class ResourceTreeModel extends SDKModel {
     }
 
     const request = /** @type {!NetworkRequest} */ (event.data);
-    if (request.failed || request.resourceType() === Common.resourceTypes.XHR) {
+    if (request.failed || request.resourceType() === Common.ResourceType.resourceTypes.XHR) {
       return;
     }
 
@@ -294,8 +297,8 @@ export class ResourceTreeModel extends SDKModel {
     }
 
     const resource = new Resource(
-        this, null, url, frame.url, frameId, event.data.loaderId, Common.resourceTypes[event.data.resourceType],
-        event.data.mimeType, event.data.lastModified, null);
+        this, null, url, frame.url, frameId, event.data.loaderId,
+        Common.ResourceType.resourceTypes[event.data.resourceType], event.data.mimeType, event.data.lastModified, null);
     frame.addResource(resource);
   }
 
@@ -353,14 +356,15 @@ export class ResourceTreeModel extends SDKModel {
     for (let i = 0; i < frameTreePayload.resources.length; ++i) {
       const subresource = frameTreePayload.resources[i];
       const resource = this._createResourceFromFramePayload(
-          framePayload, subresource.url, Common.resourceTypes[subresource.type], subresource.mimeType,
+          framePayload, subresource.url, Common.ResourceType.resourceTypes[subresource.type], subresource.mimeType,
           subresource.lastModified || null, subresource.contentSize || null);
       frame.addResource(resource);
     }
 
     if (!frame._resourcesMap[framePayload.url]) {
       const frameResource = this._createResourceFromFramePayload(
-          framePayload, framePayload.url, Common.resourceTypes.Document, framePayload.mimeType, null, null);
+          framePayload, framePayload.url, Common.ResourceType.resourceTypes.Document, framePayload.mimeType, null,
+          null);
       frame.addResource(frameResource);
     }
   }
@@ -368,7 +372,7 @@ export class ResourceTreeModel extends SDKModel {
   /**
    * @param {!Protocol.Page.Frame} frame
    * @param {string} url
-   * @param {!Common.ResourceType} type
+   * @param {!Common.ResourceType.ResourceType} type
    * @param {string} mimeType
    * @param {?number} lastModifiedTime
    * @param {?number} contentSize
@@ -423,7 +427,7 @@ export class ResourceTreeModel extends SDKModel {
    */
   async navigationHistory() {
     const response = await this._agent.invoke_getNavigationHistory({});
-    if (response[Protocol.Error]) {
+    if (response[ProtocolModule.InspectorBackend.ProtocolError]) {
       return null;
     }
     return {currentIndex: response.currentIndex, entries: response.entries};
@@ -441,7 +445,7 @@ export class ResourceTreeModel extends SDKModel {
    */
   async fetchAppManifest() {
     const response = await this._agent.invoke_getAppManifest({});
-    if (response[Protocol.Error]) {
+    if (response[ProtocolModule.InspectorBackend.ProtocolError]) {
       return {url: response.url, data: null, errors: []};
     }
     return {url: response.url, data: response.data || null, errors: response.errors};
@@ -532,7 +536,7 @@ export class ResourceTreeModel extends SDKModel {
       if (frame.isMainFrame()) {
         mainSecurityOrigin = origin;
         if (frame.unreachableUrl()) {
-          const unreachableParsed = new Common.ParsedURL(frame.unreachableUrl());
+          const unreachableParsed = new Common.ParsedURL.ParsedURL(frame.unreachableUrl());
           unreachableMainSecurityOrigin = unreachableParsed.securityOrigin();
         }
       }
@@ -863,16 +867,16 @@ export class ResourceTreeFrame {
    */
   displayName() {
     if (this.isTopFrame()) {
-      return Common.UIString('top');
+      return Common.UIString.UIString('top');
     }
-    const subtitle = new Common.ParsedURL(this._url).displayName;
+    const subtitle = new Common.ParsedURL.ParsedURL(this._url).displayName;
     if (subtitle) {
       if (!this._name) {
         return subtitle;
       }
       return this._name + ' (' + subtitle + ')';
     }
-    return Common.UIString('<iframe>');
+    return Common.UIString.UIString('<iframe>');
   }
 }
 

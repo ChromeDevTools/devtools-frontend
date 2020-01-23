@@ -28,6 +28,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as Common from '../common/common.js';
+
 import {ConsoleMessage, MessageLevel, MessageSource} from './ConsoleModel.js';
 import {Events as NetworkManagerEvents, NetworkManager} from './NetworkManager.js';  // eslint-disable-line no-unused-vars
 import {Events as NetworkRequestEvents, InitiatorType, NetworkRequest} from './NetworkRequest.js';  // eslint-disable-line no-unused-vars
@@ -38,7 +40,7 @@ import {SDKModelObserver} from './SDKModel.js';  // eslint-disable-line no-unuse
 /**
  * @implements {SDKModelObserver<!NetworkManager>}
  */
-export class NetworkLog extends Common.Object {
+export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper {
   constructor() {
     super();
     /** @type {!Array<!NetworkRequest>} */
@@ -94,7 +96,7 @@ export class NetworkLog extends Common.Object {
    * @param {!NetworkManager} networkManager
    */
   _removeNetworkManagerListeners(networkManager) {
-    Common.EventTarget.removeEventListeners(networkManager[_events]);
+    Common.EventTarget.EventTarget.removeEventListeners(networkManager[_events]);
   }
 
   /**
@@ -206,7 +208,7 @@ export class NetworkLog extends Common.Object {
             continue;
           }
           type = InitiatorType.Script;
-          url = topFrame.url || Common.UIString('<anonymous>');
+          url = topFrame.url || Common.UIString.UIString('<anonymous>');
           lineNumber = topFrame.lineNumber;
           columnNumber = topFrame.columnNumber;
           scriptId = topFrame.scriptId;
@@ -539,8 +541,8 @@ export class PageLoad {
     }
     const saveDataHeader = this.mainRequest.requestHeaderValue('Save-Data');
     if (!PageLoad._dataSaverMessageWasShown && saveDataHeader && saveDataHeader === 'on') {
-      const message = Common.UIString(
-          'Consider disabling %s while debugging. For more info see: %s', Common.UIString('Chrome Data Saver'),
+      const message = Common.UIString.UIString(
+          'Consider disabling %s while debugging. For more info see: %s', Common.UIString.UIString('Chrome Data Saver'),
           'https://support.google.com/chrome/?p=datasaver');
       manager.dispatchEventToListeners(
           NetworkManagerEvents.MessageGenerated,

@@ -28,6 +28,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as Common from '../common/common.js';
+
 import {Attributes, Cookie} from './Cookie.js';  // eslint-disable-line no-unused-vars
 import {CookieParser} from './CookieParser.js';
 import {NetworkManager} from './NetworkManager.js';
@@ -35,10 +37,10 @@ import {Type} from './SDKModel.js';
 import {ServerTiming} from './ServerTiming.js';
 
 /**
- * @implements {Common.ContentProvider}
+ * @implements {Common.ContentProvider.ContentProvider}
  * @unrestricted
  */
-export class NetworkRequest extends Common.Object {
+export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper {
   /**
    * @param {!Protocol.Network.RequestId} requestId
    * @param {string} url
@@ -85,8 +87,8 @@ export class NetworkRequest extends Common.Object {
     /** @type {?Protocol.Network.SignedExchangeInfo} */
     this._signedExchangeInfo = null;
 
-    /** @type {!Common.ResourceType} */
-    this._resourceType = Common.resourceTypes.Other;
+    /** @type {!Common.ResourceType.ResourceType} */
+    this._resourceType = Common.ResourceType.resourceTypes.Other;
     /** @type {?Promise<!SDK.NetworkRequest.ContentData>} */
     this._contentData = null;
     /** @type {!Array.<!SDK.NetworkRequest.WebSocketFrame>} */
@@ -185,7 +187,7 @@ export class NetworkRequest extends Common.Object {
     }
 
     this._url = x;
-    this._parsedURL = new Common.ParsedURL(x);
+    this._parsedURL = new Common.ParsedURL.ParsedURL(x);
     delete this._queryString;
     delete this._parsedQueryParameters;
     delete this._name;
@@ -619,7 +621,8 @@ export class NetworkRequest extends Common.Object {
       this._path = this._parsedURL.host + this._parsedURL.folderPathComponents;
 
       const networkManager = NetworkManager.forRequest(this);
-      const inspectedURL = networkManager ? Common.ParsedURL.fromString(networkManager.target().inspectedURL()) : null;
+      const inspectedURL =
+          networkManager ? Common.ParsedURL.ParsedURL.fromString(networkManager.target().inspectedURL()) : null;
       this._path = this._path.trimURL(inspectedURL ? inspectedURL.host : '');
       if (this._parsedURL.lastPathComponent || this._parsedURL.queryParams) {
         this._name =
@@ -657,14 +660,14 @@ export class NetworkRequest extends Common.Object {
   }
 
   /**
-   * @return {!Common.ResourceType}
+   * @return {!Common.ResourceType.ResourceType}
    */
   resourceType() {
     return this._resourceType;
   }
 
   /**
-   * @param {!Common.ResourceType} resourceType
+   * @param {!Common.ResourceType.ResourceType} resourceType
    */
   setResourceType(resourceType) {
     this._resourceType = resourceType;
@@ -1146,7 +1149,7 @@ export class NetworkRequest extends Common.Object {
 
   /**
    * @override
-   * @return {!Common.ResourceType}
+   * @return {!Common.ResourceType.ResourceType}
    */
   contentType() {
     return this._resourceType;

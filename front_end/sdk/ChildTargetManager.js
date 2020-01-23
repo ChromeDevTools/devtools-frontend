@@ -2,6 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+import * as Host from '../host/host.js';
+import * as ProtocolModule from '../protocol/protocol.js';  // eslint-disable-line no-unused-vars
+
 import {ParallelConnection} from './Connections.js';
 import {Capability, Events, SDKModel, Target, Type} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 
@@ -27,7 +31,7 @@ export class ChildTargetManager extends SDKModel {
     /** @type {!Map<string, !Target>} */
     this._childTargets = new Map();
 
-    /** @type {!Map<string, !Protocol.Connection>} */
+    /** @type {!Map<string, !ProtocolModule.InspectorBackend.Connection>} */
     this._parallelConnections = new Map();
 
     /** @type {string | null} */
@@ -36,7 +40,7 @@ export class ChildTargetManager extends SDKModel {
     parentTarget.registerTargetDispatcher(this);
     this._targetAgent.invoke_setAutoAttach({autoAttach: true, waitForDebuggerOnStart: true, flatten: true});
 
-    if (!parentTarget.parentTarget() && !Host.isUnderTest()) {
+    if (!parentTarget.parentTarget() && !Host.InspectorFrontendHost.isUnderTest()) {
       this._targetAgent.setDiscoverTargets(true);
       this._targetAgent.setRemoteLocations([{host: 'localhost', port: 9229}]);
     }
@@ -140,7 +144,7 @@ export class ChildTargetManager extends SDKModel {
     if (targetInfo.type === 'worker' && targetInfo.title && targetInfo.title !== targetInfo.url) {
       targetName = targetInfo.title;
     } else if (targetInfo.type !== 'iframe') {
-      const parsedURL = Common.ParsedURL.fromString(targetInfo.url);
+      const parsedURL = Common.ParsedURL.ParsedURL.fromString(targetInfo.url);
       targetName = parsedURL ? parsedURL.lastPathComponentWithFragment() : '#' + (++_lastAnonymousTargetId);
     }
 
@@ -196,7 +200,7 @@ export class ChildTargetManager extends SDKModel {
 
   /**
    * @param {function((!Object|string))} onMessage
-   * @return {!Promise<!Protocol.Connection>}
+   * @return {!Promise<!ProtocolModule.InspectorBackend.Connection>}
    */
   async createParallelConnection(onMessage) {
     // The main Target id is actually just `main`, instead of the real targetId.
@@ -212,7 +216,7 @@ export class ChildTargetManager extends SDKModel {
   /**
    * @param {!Target} target
    * @param {string} targetId
-   * @return {!Promise<!{connection: !Protocol.Connection, sessionId: string}>}
+   * @return {!Promise<!{connection: !ProtocolModule.InspectorBackend.Connection, sessionId: string}>}
    */
   async _createParallelConnectionAndSessionForTarget(target, targetId) {
     const targetAgent = target.targetAgent();

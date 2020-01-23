@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+
 import {HeapProfilerModel} from './HeapProfilerModel.js';  // eslint-disable-line no-unused-vars
 import {RuntimeModel} from './RuntimeModel.js';
 import {SDKModelObserver} from './SDKModel.js';  // eslint-disable-line no-unused-vars
@@ -9,7 +11,7 @@ import {SDKModelObserver} from './SDKModel.js';  // eslint-disable-line no-unuse
 /**
  * @implements {SDKModelObserver}
  */
-export class IsolateManager extends Common.Object {
+export class IsolateManager extends Common.ObjectWrapper.ObjectWrapper {
   constructor() {
     super();
     console.assert(!SDK.isolateManager, 'Use SDK.isolateManager singleton.');

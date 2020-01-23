@@ -20,7 +20,7 @@ export class Revealer {
  * @param {boolean=} omitFocus
  * @return {!Promise.<undefined>}
  */
-export const reveal = function(revealable, omitFocus) {
+export let reveal = function(revealable, omitFocus) {
   if (!revealable) {
     return Promise.reject(new Error('Can\'t reveal ' + revealable));
   }
@@ -38,6 +38,10 @@ export const reveal = function(revealable, omitFocus) {
     return Promise.race(promises);
   }
 };
+
+export function setRevealForTest(newReveal) {
+  reveal = newReveal;
+}
 
 /**
  * @param {?Object} revealable

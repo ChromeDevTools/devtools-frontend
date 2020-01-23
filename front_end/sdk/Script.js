@@ -23,11 +23,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as Common from '../common/common.js';
+import * as ProtocolModule from '../protocol/protocol.js';
+
 import {DebuggerModel, Location} from './DebuggerModel.js';  // eslint-disable-line no-unused-vars
 import {ExecutionContext} from './RuntimeModel.js';          // eslint-disable-line no-unused-vars
 
 /**
- * @implements {Common.ContentProvider}
+ * @implements {Common.ContentProvider.ContentProvider}
  * @unrestricted
  */
 export class Script {
@@ -133,10 +136,10 @@ export class Script {
 
   /**
    * @override
-   * @return {!Common.ResourceType}
+   * @return {!Common.ResourceType.ResourceType}
    */
   contentType() {
-    return Common.resourceTypes.Script;
+    return Common.ResourceType.resourceTypes.Script;
   }
 
   /**
@@ -172,7 +175,7 @@ export class Script {
       } else {
         this._source = '';
         if (sourceOrBytecode.bytecode) {
-          const worker = new Common.Worker('wasmparser_worker_entrypoint');
+          const worker = new Common.Worker.WorkerWrapper('wasmparser_worker_entrypoint');
           const promise = new Promise(function(resolve, reject) {
             worker.onmessage = resolve;
             worker.onerror = reject;
@@ -205,7 +208,7 @@ export class Script {
   }
 
   /**
-   * @return {!Common.ContentProvider}
+   * @return {!Common.ContentProvider.ContentProvider}
    */
   originalContentProvider() {
     if (!this._originalContentProvider) {
@@ -216,7 +219,7 @@ export class Script {
         };
       });
       this._originalContentProvider =
-          new Common.StaticContentProvider(this.contentURL(), this.contentType(), lazyContent);
+          new Common.StaticContentProvider.StaticContentProvider(this.contentURL(), this.contentType(), lazyContent);
     }
     return this._originalContentProvider;
   }
@@ -251,7 +254,7 @@ export class Script {
 
   /**
    * @param {string} newSource
-   * @param {function(?Protocol.Error, !Protocol.Runtime.ExceptionDetails=, !Array.<!Protocol.Debugger.CallFrame>=, !Protocol.Runtime.StackTrace=, !Protocol.Runtime.StackTraceId=, boolean=)} callback
+   * @param {function(?ProtocolModule.InspectorBackend.ProtocolError, !Protocol.Runtime.ExceptionDetails=, !Array.<!Protocol.Debugger.CallFrame>=, !Protocol.Runtime.StackTrace=, !Protocol.Runtime.StackTraceId=, boolean=)} callback
    */
   async editSource(newSource, callback) {
     newSource = Script._trimSourceURLComment(newSource);
@@ -271,14 +274,14 @@ export class Script {
     const response = await this.debuggerModel.target().debuggerAgent().invoke_setScriptSource(
         {scriptId: this.scriptId, scriptSource: newSource});
 
-    if (!response[Protocol.Error] && !response.exceptionDetails) {
+    if (!response[ProtocolModule.InspectorBackend.ProtocolError] && !response.exceptionDetails) {
       this._source = newSource;
     }
 
     const needsStepIn = !!response.stackChanged;
     callback(
-        response[Protocol.Error], response.exceptionDetails, response.callFrames, response.asyncStackTrace,
-        response.asyncStackTraceId, needsStepIn);
+        response[ProtocolModule.InspectorBackend.ProtocolError], response.exceptionDetails, response.callFrames,
+        response.asyncStackTrace, response.asyncStackTraceId, needsStepIn);
   }
 
   /**
@@ -359,7 +362,7 @@ export class Script {
   async setBlackboxedRanges(positions) {
     const response = await this.debuggerModel.target().debuggerAgent().invoke_setBlackboxedRanges(
         {scriptId: this.scriptId, positions});
-    return !response[Protocol.Error];
+    return !response[ProtocolModule.InspectorBackend.ProtocolError];
   }
 
   containsLocation(lineNumber, columnNumber) {

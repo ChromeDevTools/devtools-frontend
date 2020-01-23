@@ -138,6 +138,7 @@ Common.ResourceType = CommonModule.ResourceType.ResourceType;
  */
 Common.Revealer = CommonModule.Revealer.Revealer;
 Common.Revealer.reveal = CommonModule.Revealer.reveal;
+Common.Revealer.setRevealForTest = CommonModule.Revealer.setRevealForTest;
 Common.Revealer.revealDestination = CommonModule.Revealer.revealDestination;
 
 /**

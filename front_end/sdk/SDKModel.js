@@ -2,13 +2,17 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+import * as Host from '../host/host.js';
+import * as ProtocolModule from '../protocol/protocol.js';
+
 /** @type {!Map<function(new:SDKModel, !Target), !{capabilities: number, autostart: boolean}>} */
 const _registeredModels = new Map();
 
 /**
  * @unrestricted
  */
-export class SDKModel extends Common.Object {
+export class SDKModel extends Common.ObjectWrapper.ObjectWrapper {
   /**
    * @param {!Target} target
    */
@@ -78,7 +82,7 @@ export class SDKModel extends Common.Object {
 /**
  * @unrestricted
  */
-export class Target extends Protocol.TargetBase {
+export class Target extends ProtocolModule.InspectorBackend.TargetBase {
   /**
    * @param {!TargetManager} targetManager
    * @param {string} id
@@ -87,7 +91,7 @@ export class Target extends Protocol.TargetBase {
    * @param {?Target} parentTarget
    * @param {string} sessionId
    * @param {boolean} suspended
-   * @param {?Protocol.Connection} connection
+   * @param {?ProtocolModule.InspectorBackend.Connection} connection
    */
   constructor(targetManager, id, name, type, parentTarget, sessionId, suspended, connection) {
     const needsNodeJSPatching = type === Type.Node;
@@ -262,10 +266,10 @@ export class Target extends Protocol.TargetBase {
    */
   setInspectedURL(inspectedURL) {
     this._inspectedURL = inspectedURL;
-    const parsedURL = Common.ParsedURL.fromString(inspectedURL);
+    const parsedURL = Common.ParsedURL.ParsedURL.fromString(inspectedURL);
     this._inspectedURLName = parsedURL ? parsedURL.lastPathComponentWithFragment() : '#' + this._id;
     if (!this.parentTarget()) {
-      Host.InspectorFrontendHost.inspectedURLChanged(inspectedURL || '');
+      Host.InspectorFrontendHost.InspectorFrontendHostInstance.inspectedURLChanged(inspectedURL || '');
     }
     this._targetManager.dispatchEventToListeners(Events.InspectedURLChanged, this);
     if (!this._name) {
@@ -342,7 +346,7 @@ export const Type = {
   Browser: 'browser',
 };
 
-export class TargetManager extends Common.Object {
+export class TargetManager extends Common.ObjectWrapper.ObjectWrapper {
   constructor() {
     super();
     /** @type {!Array.<!Target>} */
@@ -523,7 +527,7 @@ export class TargetManager extends Common.Object {
    * @param {?Target} parentTarget
    * @param {string=} sessionId
    * @param {boolean=} waitForDebuggerInPage
-   * @param {!Protocol.Connection=} connection
+   * @param {!ProtocolModule.InspectorBackend.Connection=} connection
    * @return {!SDK.Target}
    */
   createTarget(id, name, type, parentTarget, sessionId, waitForDebuggerInPage, connection) {

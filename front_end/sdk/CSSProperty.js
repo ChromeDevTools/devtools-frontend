@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as HostModule from '../host/host.js';
+
 import {cssMetadata, GridAreaRowRegex} from './CSSMetadata.js';
 import {Edit} from './CSSModel.js';                            // eslint-disable-line no-unused-vars
 import {CSSStyleDeclaration} from './CSSStyleDeclaration.js';  // eslint-disable-line no-unused-vars
@@ -168,7 +170,7 @@ export class CSSProperty {
     }
 
     if (majorChange) {
-      Host.userMetrics.actionTaken(Host.UserMetrics.Action.StyleRuleEdited);
+      HostModule.userMetrics.actionTaken(Host.UserMetrics.Action.StyleRuleEdited);
     }
 
     if (overwrite && propertyText === this.propertyText) {

@@ -28,6 +28,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as Common from '../common/common.js';
+import * as Host from '../host/host.js';
+import * as ProtocolModule from '../protocol/protocol.js';
+
 import {DebuggerModel} from './DebuggerModel.js';
 import {HeapProfilerModel} from './HeapProfilerModel.js';
 import {RemoteFunction, RemoteObject,
@@ -67,7 +71,7 @@ export class RuntimeModel extends SDKModel {
    * @return {boolean}
    */
   static isSideEffectFailure(response) {
-    const exceptionDetails = !response[Protocol.Error] && response.exceptionDetails;
+    const exceptionDetails = !response[ProtocolModule.InspectorBackend.ProtocolError] && response.exceptionDetails;
     return !!(
         exceptionDetails && exceptionDetails.exception && exceptionDetails.exception.description &&
         exceptionDetails.exception.description.startsWith('EvalError: Possible side-effect in debug-evaluate'));
@@ -265,8 +269,8 @@ export class RuntimeModel extends SDKModel {
       executionContextId: executionContextId
     });
 
-    if (response[Protocol.Error]) {
-      console.error(response[Protocol.Error]);
+    if (response[ProtocolModule.InspectorBackend.ProtocolError]) {
+      console.error(response[ProtocolModule.InspectorBackend.ProtocolError]);
       return null;
     }
     return {scriptId: response.scriptId, exceptionDetails: response.exceptionDetails};
@@ -297,7 +301,7 @@ export class RuntimeModel extends SDKModel {
       awaitPromise
     });
 
-    const error = response[Protocol.Error];
+    const error = response[ProtocolModule.InspectorBackend.ProtocolError];
     if (error) {
       console.error(error);
       return {error: error};
@@ -315,7 +319,7 @@ export class RuntimeModel extends SDKModel {
     }
     const response = await this._agent.invoke_queryObjects(
         {prototypeObjectId: /** @type {string} */ (prototype.objectId), objectGroup: 'console'});
-    const error = response[Protocol.Error];
+    const error = response[ProtocolModule.InspectorBackend.ProtocolError];
     if (error) {
       console.error(error);
       return {error: error};
@@ -335,7 +339,7 @@ export class RuntimeModel extends SDKModel {
    */
   async heapUsage() {
     const result = await this._agent.invoke_getHeapUsage({});
-    return result[Protocol.Error] ? null : result;
+    return result[ProtocolModule.InspectorBackend.ProtocolError] ? null : result;
   }
 
   /**
@@ -383,11 +387,13 @@ export class RuntimeModel extends SDKModel {
    */
   _copyRequested(object) {
     if (!object.objectId) {
-      Host.InspectorFrontendHost.copyText(object.unserializableValue() || /** @type {string} */ (object.value));
+      Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(
+          object.unserializableValue() || /** @type {string} */ (object.value));
       return;
     }
     object.callFunctionJSON(toStringForClipboard, [{value: object.subtype}])
-        .then(Host.InspectorFrontendHost.copyText.bind(Host.InspectorFrontendHost));
+        .then(Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText.bind(
+            Host.InspectorFrontendHost.InspectorFrontendHostInstance));
 
     /**
      * @param {string} subtype
@@ -813,7 +819,7 @@ export class ExecutionContext {
       replMode: options.replMode
     });
 
-    const error = response[Protocol.Error];
+    const error = response[ProtocolModule.InspectorBackend.ProtocolError];
     if (error) {
       console.error(error);
       return {error: error};
@@ -826,7 +832,7 @@ export class ExecutionContext {
    */
   async globalLexicalScopeNames() {
     const response = await this.runtimeModel._agent.invoke_globalLexicalScopeNames({executionContextId: this.id});
-    return response[Protocol.Error] ? [] : response.names;
+    return response[ProtocolModule.InspectorBackend.ProtocolError] ? [] : response.names;
   }
 
   /**
@@ -856,7 +862,7 @@ export class ExecutionContext {
       this._label = this.name;
       return;
     }
-    const parsedUrl = Common.ParsedURL.fromString(this.origin);
+    const parsedUrl = Common.ParsedURL.ParsedURL.fromString(this.origin);
     this._label = parsedUrl ? parsedUrl.lastPathComponentWithFragment() : '';
   }
 }

@@ -28,6 +28,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as Common from '../common/common.js';
+
 import {CompilerSourceMappingContentProvider} from './CompilerSourceMappingContentProvider.js';
 
 /**
@@ -54,8 +56,8 @@ export class SourceMap {
 
   /**
    * @param {string} sourceURL
-   * @param {!Common.ResourceType} contentType
-   * @return {!Common.ContentProvider}
+   * @param {!Common.ResourceType.ResourceType} contentType
+   * @return {!Common.ContentProvider.ContentProvider}
    */
   sourceContentProvider(sourceURL, contentType) {
   }
@@ -276,13 +278,13 @@ export class TextSourceMap {
   /**
    * @override
    * @param {string} sourceURL
-   * @param {!Common.ResourceType} contentType
-   * @return {!Common.ContentProvider}
+   * @param {!Common.ResourceType.ResourceType} contentType
+   * @return {!Common.ContentProvider.ContentProvider}
    */
   sourceContentProvider(sourceURL, contentType) {
     const info = this._sourceInfos.get(sourceURL);
     if (info.content) {
-      return Common.StaticContentProvider.fromString(sourceURL, contentType, info.content);
+      return Common.StaticContentProvider.StaticContentProvider.fromString(sourceURL, contentType, info.content);
     }
     return new CompilerSourceMappingContentProvider(sourceURL, contentType);
   }
@@ -437,10 +439,10 @@ export class TextSourceMap {
     }
     for (let i = 0; i < sourceMap.sources.length; ++i) {
       const href = sourceRoot + sourceMap.sources[i];
-      let url = Common.ParsedURL.completeURL(this._baseURL, href) || href;
+      let url = Common.ParsedURL.ParsedURL.completeURL(this._baseURL, href) || href;
       const source = sourceMap.sourcesContent && sourceMap.sourcesContent[i];
       if (url === this._compiledURL && source) {
-        url += Common.UIString('? [sm]');
+        url += Common.UIString.UIString('? [sm]');
       }
       this._sourceInfos.set(url, new TextSourceMap.SourceInfo(source, null));
       sourcesList.push(url);
@@ -692,8 +694,8 @@ export class WasmSourceMap {
   /**
    * @override
    * @param {string} sourceURL
-   * @param {!Common.ResourceType} contentType
-   * @return {!Common.ContentProvider}
+   * @param {!Common.ResourceType.ResourceType} contentType
+   * @return {!Common.ContentProvider.ContentProvider}
    */
   sourceContentProvider(sourceURL, contentType) {
     return new CompilerSourceMappingContentProvider(sourceURL, contentType);

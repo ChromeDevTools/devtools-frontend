@@ -2,8 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+import * as Host from '../host/host.js';
+import * as ProtocolModule from '../protocol/protocol.js';
+
 /**
- * @implements {Protocol.Connection}
+ * @implements {ProtocolModule.InspectorBackend.Connection}
  */
 export class MainConnection {
   constructor() {
@@ -12,9 +16,9 @@ export class MainConnection {
     this._messageBuffer = '';
     this._messageSize = 0;
     this._eventListeners = [
-      Host.InspectorFrontendHost.events.addEventListener(
+      Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
           Host.InspectorFrontendHostAPI.Events.DispatchMessage, this._dispatchMessage, this),
-      Host.InspectorFrontendHost.events.addEventListener(
+      Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
           Host.InspectorFrontendHostAPI.Events.DispatchMessageChunk, this._dispatchMessageChunk, this),
     ];
   }
@@ -41,7 +45,7 @@ export class MainConnection {
    */
   sendRawMessage(message) {
     if (this._onMessage) {
-      Host.InspectorFrontendHost.sendMessageToBackend(message);
+      Host.InspectorFrontendHost.InspectorFrontendHostInstance.sendMessageToBackend(message);
     }
   }
 
@@ -78,7 +82,7 @@ export class MainConnection {
    */
   disconnect() {
     const onDisconnect = this._onDisconnect;
-    Common.EventTarget.removeEventListeners(this._eventListeners);
+    Common.EventTarget.EventTarget.removeEventListeners(this._eventListeners);
     this._onDisconnect = null;
     this._onMessage = null;
 
@@ -90,7 +94,7 @@ export class MainConnection {
 }
 
 /**
- * @implements {Protocol.Connection}
+ * @implements {ProtocolModule.InspectorBackend.Connection}
  */
 export class WebSocketConnection {
   /**
@@ -196,7 +200,7 @@ export class WebSocketConnection {
 }
 
 /**
- * @implements {Protocol.Connection}
+ * @implements {ProtocolModule.InspectorBackend.Connection}
  */
 export class StubConnection {
   constructor() {
@@ -235,7 +239,7 @@ export class StubConnection {
     const messageObject = JSON.parse(message);
     const error = {
       message: 'This is a stub connection, can\'t dispatch message.',
-      code: Protocol.DevToolsStubErrorCode,
+      code: ProtocolModule.InspectorBackend.DevToolsStubErrorCode,
       data: messageObject
     };
     if (this._onMessage) {
@@ -258,11 +262,11 @@ export class StubConnection {
 }
 
 /**
- * @implements {Protocol.Connection}
+ * @implements {ProtocolModule.InspectorBackend.Connection}
  */
 export class ParallelConnection {
   /**
-   * @param {!Protocol.Connection} connection
+   * @param {!ProtocolModule.InspectorBackend.Connection} connection
    * @param {string} sessionId
    */
   constructor(connection, sessionId) {
@@ -321,19 +325,20 @@ export class ParallelConnection {
  * @return {!Promise}
  */
 export async function initMainConnection(createMainTarget, websocketConnectionLost) {
-  Protocol.Connection.setFactory(_createMainConnection.bind(null, websocketConnectionLost));
+  ProtocolModule.InspectorBackend.Connection.setFactory(_createMainConnection.bind(null, websocketConnectionLost));
   await createMainTarget();
-  Host.InspectorFrontendHost.connectionReady();
-  Host.InspectorFrontendHost.events.addEventListener(Host.InspectorFrontendHostAPI.Events.ReattachMainTarget, () => {
-    self.SDK.targetManager.mainTarget().router().connection().disconnect();
-    createMainTarget();
-  });
+  Host.InspectorFrontendHost.InspectorFrontendHostInstance.connectionReady();
+  Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
+      Host.InspectorFrontendHostAPI.Events.ReattachMainTarget, () => {
+        self.SDK.targetManager.mainTarget().router().connection().disconnect();
+        createMainTarget();
+      });
   return Promise.resolve();
 }
 
 /**
  * @param {function()} websocketConnectionLost
- * @return {!Protocol.Connection}
+ * @return {!ProtocolModule.InspectorBackend.Connection}
  */
 export function _createMainConnection(websocketConnectionLost) {
   const wsParam = Root.Runtime.queryParam('ws');
@@ -341,7 +346,7 @@ export function _createMainConnection(websocketConnectionLost) {
   if (wsParam || wssParam) {
     const ws = wsParam ? `ws://${wsParam}` : `wss://${wssParam}`;
     return new WebSocketConnection(ws, websocketConnectionLost);
-  } else if (Host.InspectorFrontendHost.isHostedMode()) {
+  } else if (Host.InspectorFrontendHost.InspectorFrontendHostInstance.isHostedMode()) {
     return new StubConnection();
   }
 

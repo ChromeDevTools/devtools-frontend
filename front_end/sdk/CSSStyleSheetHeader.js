@@ -2,12 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+
 import {CSSModel} from './CSSModel.js';  // eslint-disable-line no-unused-vars
 import {DeferredDOMNode} from './DOMModel.js';
 import {ResourceTreeModel} from './ResourceTreeModel.js';
 
 /**
- * @implements {Common.ContentProvider}
+ * @implements {Common.ContentProvider.ContentProvider}
  * @unrestricted
  */
 export class CSSStyleSheetHeader {
@@ -37,7 +39,7 @@ export class CSSStyleSheetHeader {
   }
 
   /**
-   * @return {!Common.ContentProvider}
+   * @return {!Common.ContentProvider.ContentProvider}
    */
   originalContentProvider() {
     if (!this._originalContentProvider) {
@@ -50,7 +52,7 @@ export class CSSStyleSheetHeader {
         return {content: originalText, isEncoded: false};
       });
       this._originalContentProvider =
-          new Common.StaticContentProvider(this.contentURL(), this.contentType(), lazyContent);
+          new Common.StaticContentProvider.StaticContentProvider(this.contentURL(), this.contentType(), lazyContent);
     }
     return this._originalContentProvider;
   }
@@ -89,7 +91,7 @@ export class CSSStyleSheetHeader {
   _viaInspectorResourceURL() {
     const frame = this._cssModel.target().model(ResourceTreeModel).frameForId(this.frameId);
     console.assert(frame);
-    const parsedURL = new Common.ParsedURL(frame.url);
+    const parsedURL = new Common.ParsedURL.ParsedURL(frame.url);
     let fakeURL = 'inspector://' + parsedURL.host + parsedURL.folderPathComponents;
     if (!fakeURL.endsWith('/')) {
       fakeURL += '/';
@@ -139,10 +141,10 @@ export class CSSStyleSheetHeader {
 
   /**
    * @override
-   * @return {!Common.ResourceType}
+   * @return {!Common.ResourceType.ResourceType}
    */
   contentType() {
-    return Common.resourceTypes.Stylesheet;
+    return Common.ResourceType.resourceTypes.Stylesheet;
   }
 
   /**

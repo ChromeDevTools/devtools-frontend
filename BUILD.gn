@@ -721,6 +721,7 @@ all_devtools_modules = [
   "front_end/inline_editor/inline_editor-legacy.js",
   "front_end/inline_editor/SwatchPopoverHelper.js",
   "front_end/input/input.js",
+  "front_end/input/input-legacy.js",
   "front_end/input/InputModel.js",
   "front_end/input/InputTimeline.js",
   "front_end/inspector_main/inspector_main.js",
@@ -1638,6 +1639,7 @@ copied_devtools_modules = [
   "$resources_out_dir/inline_editor/inline_editor-legacy.js",
   "$resources_out_dir/inline_editor/SwatchPopoverHelper.js",
   "$resources_out_dir/input/input.js",
+  "$resources_out_dir/input/input-legacy.js",
   "$resources_out_dir/input/InputModel.js",
   "$resources_out_dir/input/InputTimeline.js",
   "$resources_out_dir/inspector_main/inspector_main.js",
@@ -2377,13 +2379,12 @@ action("build_release_devtools") {
     "scripts/build/rjsmin.py",
   ]
 
-  inputs =
-      helper_scripts + all_devtools_files + devtools_test_files +
-      generated_scripts + generated_aria_properties + application_templates +
-      all_worker_entrypoints +
-      # In `build_release_applications` we sometimes include
-      # the content of Runtime.js into the build output.
-      [ "front_end/Runtime.js" ]
+  inputs = helper_scripts + all_devtools_files + devtools_test_files +
+           generated_scripts + generated_aria_properties +
+           application_templates + all_worker_entrypoints +
+           # In `build_release_applications` we sometimes include
+           # the content of Runtime.js into the build output.
+           [ "front_end/Runtime.js" ]
   outputs =
       generated_applications + generated_non_autostart_non_remote_modules +
       generated_remote_modules + generated_test_modules +

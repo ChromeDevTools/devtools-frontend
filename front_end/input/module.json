@@ -71,6 +71,7 @@
     "scripts": [],
     "modules": [
         "input.js",
+        "input-legacy.js",
         "InputModel.js",
         "InputTimeline.js"
     ],

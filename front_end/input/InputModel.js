@@ -2,9 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-export default class InputModel extends SDK.SDKModel {
+import * as SDK from '../sdk/sdk.js';
+
+export class InputModel extends SDK.SDKModel.SDKModel {
   /**
-   * @param {!SDK.Target} target
+   * @param {!SDK.SDKModel.Target} target
    */
   constructor(target) {
     super(target);
@@ -30,7 +32,7 @@ export default class InputModel extends SDK.SDKModel {
   }
 
   /**
-   * @param {!SDK.TracingModel} tracingModel
+   * @param {!SDK.TracingModel.TracingModel} tracingModel
    */
   setEvents(tracingModel) {
     this._dispatchEventDataList = [];
@@ -75,7 +77,7 @@ export default class InputModel extends SDK.SDKModel {
   }
 
   /**
-   * @param {!SDK.TracingModel} tracingModel
+   * @param {!SDK.TracingModel.TracingModel} tracingModel
    * @param {!SDK.TracingModel.Thread} thread
    */
   _processThreadEvents(tracingModel, thread) {
@@ -192,19 +194,4 @@ InputModel.MouseEventTypes = new Map([
 
 InputModel.KeyboardEventTypes = new Map([['keydown', 'keyDown'], ['keyup', 'keyUp'], ['keypress', 'char']]);
 
-SDK.SDKModel.register(InputModel, SDK.Target.Capability.Input, false);
-
-/* Legacy exported object */
-self.Input = self.Input || {};
-/* Legacy exported object */
-Input = Input || {};
-
-/** @constructor */
-Input.InputModel = InputModel;
-
-/** @typedef {{type: string, modifiers: number, timestamp: number}} */
-Input.InputModel.EventData;
-/** @typedef {{x: number, y: number, button: number, buttons: number, clickCount: number, deltaX: number, deltaY: number}} */
-Input.InputModel.MouseEventData;
-/** @typedef {{code: string, key: string}} */
-Input.InputModel.KeyboardEventData;
+SDK.SDKModel.SDKModel.register(InputModel, SDK.SDKModel.Capability.Input, false);

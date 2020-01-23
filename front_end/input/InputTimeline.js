@@ -2,7 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-export default class InputTimeline extends UI.VBox {
+import * as SDK from '../sdk/sdk.js';
+import * as UI from '../ui/ui.js';
+
+import {InputModel} from './InputModel.js';
+
+export class InputTimeline extends UI.Widget.VBox {
   constructor() {
     super(true);
     this.registerRequiredCSS('input/inputTimeline.css');
@@ -15,21 +20,21 @@ export default class InputTimeline extends UI.VBox {
 
 
     this._toggleRecordAction =
-        /** @type {!UI.Action }*/ (UI.actionRegistry.action('input.toggle-recording'));
+        /** @type {!UI.Action.Action }*/ (self.UI.actionRegistry.action('input.toggle-recording'));
     this._startReplayAction =
-        /** @type {!UI.Action }*/ (UI.actionRegistry.action('input.start-replaying'));
+        /** @type {!UI.Action.Action }*/ (self.UI.actionRegistry.action('input.start-replaying'));
     this._togglePauseAction =
-        /** @type {!UI.Action }*/ (UI.actionRegistry.action('input.toggle-pause'));
+        /** @type {!UI.Action.Action }*/ (self.UI.actionRegistry.action('input.toggle-pause'));
 
     const toolbarContainer = this.contentElement.createChild('div', 'input-timeline-toolbar-container');
-    this._panelToolbar = new UI.Toolbar('input-timeline-toolbar', toolbarContainer);
+    this._panelToolbar = new UI.Toolbar.Toolbar('input-timeline-toolbar', toolbarContainer);
 
-    this._panelToolbar.appendToolbarItem(UI.Toolbar.createActionButton(this._toggleRecordAction));
-    this._panelToolbar.appendToolbarItem(UI.Toolbar.createActionButton(this._startReplayAction));
-    this._panelToolbar.appendToolbarItem(UI.Toolbar.createActionButton(this._togglePauseAction));
+    this._panelToolbar.appendToolbarItem(UI.Toolbar.Toolbar.createActionButton(this._toggleRecordAction));
+    this._panelToolbar.appendToolbarItem(UI.Toolbar.Toolbar.createActionButton(this._startReplayAction));
+    this._panelToolbar.appendToolbarItem(UI.Toolbar.Toolbar.createActionButton(this._togglePauseAction));
 
-    this._clearButton = new UI.ToolbarButton(ls`Clear all`, 'largeicon-clear');
-    this._clearButton.addEventListener(UI.ToolbarButton.Events.Click, this._reset.bind(this));
+    this._clearButton = new UI.Toolbar.ToolbarButton(ls`Clear all`, 'largeicon-clear');
+    this._clearButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._reset.bind(this));
     this._panelToolbar.appendToolbarItem(this._clearButton);
 
     this._panelToolbar.appendSeparator();
@@ -112,8 +117,8 @@ export default class InputTimeline extends UI.VBox {
   async _startRecording() {
     this._setState(State.StartPending);
 
-    this._tracingClient =
-        new InputTimeline.TracingClient(/** @type {!SDK.Target} */ (self.SDK.targetManager.mainTarget()), this);
+    this._tracingClient = new InputTimeline.TracingClient(
+        /** @type {!SDK.SDKModel.Target} */ (self.SDK.targetManager.mainTarget()), this);
 
     const response = await this._tracingClient.startRecording();
     if (response[Protocol.Error]) {
@@ -145,14 +150,14 @@ export default class InputTimeline extends UI.VBox {
   }
 
   /**
-   * @param {?SDK.TracingModel} tracingModel
+   * @param {?SDK.TracingModel.TracingModel} tracingModel
    */
   recordingComplete(tracingModel) {
     if (!tracingModel) {
       this._reset();
       return;
     }
-    this._inputModel = new Input.InputModel(/** @type {!SDK.Target} */ (self.SDK.targetManager.mainTarget()));
+    this._inputModel = new InputModel(/** @type {!SDK.SDKModel.Target} */ (self.SDK.targetManager.mainTarget()));
     this._inputModel.setEvents(tracingModel);
 
     this._setState(State.Idle);
@@ -182,12 +187,12 @@ export const State = {
 
 
 /**
- * @implements {UI.ActionDelegate}
+ * @implements {UI.ActionDelegate.ActionDelegate}
  */
 export class ActionDelegate {
   /**
    * @override
-   * @param {!UI.Context} context
+   * @param {!UI.Context.Context} context
    * @param {string} actionId
    * @return {boolean}
    */
@@ -195,13 +200,13 @@ export class ActionDelegate {
     const inputViewId = 'Inputs';
     self.UI.viewManager.showView(inputViewId)
         .then(() => self.UI.viewManager.view(inputViewId).widget())
-        .then(widget => this._innerHandleAction(/** @type !Input.InputTimeline} */ (widget), actionId));
+        .then(widget => this._innerHandleAction(/** @type !InputTimeline} */ (widget), actionId));
 
     return true;
   }
 
   /**
-   * @param {!Input.InputTimeline} inputTimeline
+   * @param {!InputTimeline} inputTimeline
    * @param {string} actionId
    */
   _innerHandleAction(inputTimeline, actionId) {
@@ -222,20 +227,20 @@ export class ActionDelegate {
 }
 
 /**
- * @implements {SDK.TracingManagerClient}
+ * @implements {SDK.TracingManager.TracingManagerClient}
  */
 export class TracingClient {
   /**
-   * @param {!SDK.Target} target
-   * @param {!Input.InputTimeline} client
+   * @param {!SDK.SDKModel.Target} target
+   * @param {!InputTimeline} client
    */
   constructor(target, client) {
     this._target = target;
-    this._tracingManager = target.model(SDK.TracingManager);
+    this._tracingManager = target.model(SDK.TracingManager.TracingManager);
     this._client = client;
 
     const backingStorage = new Bindings.TempFileBackingStorage();
-    this._tracingModel = new SDK.TracingModel(backingStorage);
+    this._tracingModel = new SDK.TracingModel.TracingModel(backingStorage);
 
     /** @type {?function()} */
     this._tracingCompleteCallback = null;
@@ -313,30 +318,3 @@ export class TracingClient {
     });
   }
 }
-
-
-/* Legacy exported object */
-self.Input = self.Input || {};
-
-/* Legacy exported object */
-Input = Input || {};
-
-/**
- * @implements {SDK.SDKModelObserver<!Input.InputModel>}
- * @constructor
- * @unrestricted
- */
-Input.InputTimeline = InputTimeline;
-
-/** @enum {symbol} */
-Input.InputTimeline.State = State;
-
-/**
- * @constructor
- */
-Input.InputTimeline.TracingClient = TracingClient;
-
-/**
- * @constructor
- */
-Input.InputTimeline.ActionDelegate = ActionDelegate;

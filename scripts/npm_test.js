@@ -272,7 +272,7 @@ function runTests(buildDirectoryPath, useDebugDevtools) {
     console.log('=============================================\n');
   }
   const args = [BLINK_TEST_PATH].concat(testArgs).concat(getTestFlags());
-  console.log(`Running web tests with args: ${args}`);
+  console.log(`Running web tests with args: ${args.join(' ')}`);
   childProcess.spawn(PYTHON, args, {stdio: 'inherit'});
 }
 

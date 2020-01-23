@@ -38,6 +38,6 @@ describe('The Console Tab', async () => {
       return message.textContent;
     });
 
-    assert.equal(msg, 'hello-world.html:11 Hello, World!');
+    assert.isTrue(msg.includes('Hello, World!'));
   });
 });

@@ -175,7 +175,7 @@ export class OverridesNavigatorView extends NavigatorView {
     const project = Persistence.networkPersistenceManager.project();
     if (project) {
       const enableCheckbox =
-          new UI.ToolbarSettingCheckbox(Common.settings.moduleSetting('persistenceNetworkOverridesEnabled'));
+          new UI.ToolbarSettingCheckbox(self.Common.settings.moduleSetting('persistenceNetworkOverridesEnabled'));
       this._toolbar.appendToolbarItem(enableCheckbox);
 
       this._toolbar.appendToolbarItem(new UI.ToolbarSeparator(true));
@@ -197,7 +197,7 @@ export class OverridesNavigatorView extends NavigatorView {
     if (!fileSystem) {
       return;
     }
-    Common.settings.moduleSetting('persistenceNetworkOverridesEnabled').set(true);
+    self.Common.settings.moduleSetting('persistenceNetworkOverridesEnabled').set(true);
   }
 
   /**

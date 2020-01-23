@@ -35,7 +35,7 @@ export class ClearStorageView extends UI.ThrottledWidget {
 
     this._settings = new Map();
     for (const type of AllStorageTypes) {
-      this._settings.set(type, Common.settings.createSetting('clear-storage-' + type, true));
+      this._settings.set(type, self.Common.settings.createSetting('clear-storage-' + type, true));
     }
 
     const quota = this._reportView.appendSection(Common.UIString('Usage'));

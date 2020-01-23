@@ -44,7 +44,7 @@ export class WatchExpressionsSidebarPane extends UI.ThrottledWidget {
 
     /** @type {!Array.<!WatchExpression>} */
     this._watchExpressions = [];
-    this._watchExpressionsSetting = Common.settings.createLocalSetting('watchExpressions', []);
+    this._watchExpressionsSetting = self.Common.settings.createLocalSetting('watchExpressions', []);
 
     this._addButton = new UI.ToolbarButton(ls`Add watch expression`, 'largeicon-add');
     this._addButton.addEventListener(UI.ToolbarButton.Events.Click, this._addButtonClicked.bind(this));

@@ -20,7 +20,7 @@ export class NetworkConfigView extends UI.VBox {
    * @return {{select: !Element, input: !Element, error: !Element}}
    */
   static createUserAgentSelectAndInput(title) {
-    const userAgentSetting = Common.settings.createSetting('customUserAgent', '');
+    const userAgentSetting = self.Common.settings.createSetting('customUserAgent', '');
     const userAgentSelectElement = createElement('select');
     UI.ARIAUtils.setAccessibleName(userAgentSelectElement, title);
 
@@ -136,7 +136,7 @@ export class NetworkConfigView extends UI.VBox {
     section.appendChild(checkboxLabel);
     const autoCheckbox = checkboxLabel.checkboxElement;
 
-    const customUserAgentSetting = Common.settings.createSetting('customUserAgent', '');
+    const customUserAgentSetting = self.Common.settings.createSetting('customUserAgent', '');
     customUserAgentSetting.addChangeListener(() => {
       if (autoCheckbox.checked) {
         return;

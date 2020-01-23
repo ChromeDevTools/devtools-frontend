@@ -52,9 +52,9 @@ export class NetworkLogView extends UI.VBox {
     this.element.id = 'network-container';
     this.element.classList.add('no-node-selected');
 
-    this._networkHideDataURLSetting = Common.settings.createSetting('networkHideDataURL', false);
-    this._networkShowIssuesOnlySetting = Common.settings.createSetting('networkShowIssuesOnly', false);
-    this._networkResourceTypeFiltersSetting = Common.settings.createSetting('networkResourceTypeFilters', {});
+    this._networkHideDataURLSetting = self.Common.settings.createSetting('networkHideDataURL', false);
+    this._networkShowIssuesOnlySetting = self.Common.settings.createSetting('networkShowIssuesOnly', false);
+    this._networkResourceTypeFiltersSetting = self.Common.settings.createSetting('networkResourceTypeFilters', {});
 
     this._rawRowHeight = 0;
     this._progressBarContainer = progressBarContainer;

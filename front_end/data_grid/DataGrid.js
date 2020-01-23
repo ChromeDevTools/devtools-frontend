@@ -869,7 +869,7 @@ export class DataGridImpl extends Common.Object {
    * @param {string} name
    */
   setName(name) {
-    this._columnWeightsSetting = Common.settings.createSetting('dataGrid-' + name + '-columnWeights', {});
+    this._columnWeightsSetting = self.Common.settings.createSetting('dataGrid-' + name + '-columnWeights', {});
     this._loadColumnWeights();
   }
 

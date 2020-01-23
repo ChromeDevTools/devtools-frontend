@@ -384,14 +384,14 @@ export class EmulatedDevicesList extends Common.Object {
     super();
 
     /** @type {!Common.Setting} */
-    this._standardSetting = Common.settings.createSetting('standardEmulatedDeviceList', []);
+    this._standardSetting = self.Common.settings.createSetting('standardEmulatedDeviceList', []);
     /** @type {!Array.<!EmulatedDevice>} */
     this._standard = [];
     this._listFromJSONV1(this._standardSetting.get(), this._standard);
     this._updateStandardDevices();
 
     /** @type {!Common.Setting} */
-    this._customSetting = Common.settings.createSetting('customEmulatedDeviceList', []);
+    this._customSetting = self.Common.settings.createSetting('customEmulatedDeviceList', []);
     /** @type {!Array.<!EmulatedDevice>} */
     this._custom = [];
     if (!this._listFromJSONV1(this._customSetting.get(), this._custom)) {

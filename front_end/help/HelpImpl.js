@@ -25,7 +25,7 @@ export function latestReleaseNote() {
 export function showReleaseNoteIfNeeded() {
   innerShowReleaseNoteIfNeeded(
       Help._releaseNoteVersionSetting.get(), latestReleaseNote().version,
-      Common.settings.moduleSetting('help.show-release-note').get());
+      self.Common.settings.moduleSetting('help.show-release-note').get());
 }
 
 /**

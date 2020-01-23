@@ -13,7 +13,7 @@ export class LiveHeapProfile {
     this._running = false;
     this._sessionId = 0;
     this._loadEventCallback = () => {};
-    this._setting = Common.settings.moduleSetting('memoryLiveHeapProfile');
+    this._setting = self.Common.settings.moduleSetting('memoryLiveHeapProfile');
     this._setting.addChangeListener(event => event.data ? this._startProfiling() : this._stopProfiling());
     if (this._setting.get()) {
       this._startProfiling();

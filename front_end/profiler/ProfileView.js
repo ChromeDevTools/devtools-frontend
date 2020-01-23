@@ -98,7 +98,7 @@ export class ProfileView extends UI.SimpleView {
   initialize(nodeFormatter, viewTypes) {
     this._nodeFormatter = nodeFormatter;
 
-    this._viewType = Common.settings.createSetting('profileView', ViewTypes.Heavy);
+    this._viewType = self.Common.settings.createSetting('profileView', ViewTypes.Heavy);
     viewTypes = viewTypes || [ViewTypes.Flame, ViewTypes.Heavy, ViewTypes.Tree];
 
     const optionNames = new Map([

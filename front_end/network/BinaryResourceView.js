@@ -39,7 +39,7 @@ export class BinaryResourceView extends UI.VBox {
           this._binaryResourceViewFactory.createUtf8View.bind(this._binaryResourceViewFactory),
           this._binaryResourceViewFactory.utf8.bind(this._binaryResourceViewFactory)),
     ];
-    this._binaryViewTypeSetting = Common.settings.createSetting('binaryViewType', 'hex');
+    this._binaryViewTypeSetting = self.Common.settings.createSetting('binaryViewType', 'hex');
     this._binaryViewTypeCombobox = new UI.ToolbarComboBox(this._binaryViewTypeChanged.bind(this), ls`Binary view type`);
     for (const viewObject of this._binaryViewObjects) {
       this._binaryViewTypeCombobox.addOption(

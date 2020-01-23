@@ -1541,7 +1541,7 @@ export class DebuggerPlugin extends Plugin {
     }
     this._sourceMapInfobar = UI.Infobar.create(
         UI.Infobar.Type.Info, Common.UIString('Source Map detected.'),
-        Common.settings.createSetting('sourceMapInfobarDisabled', false));
+        self.Common.settings.createSetting('sourceMapInfobarDisabled', false));
     if (!this._sourceMapInfobar) {
       return;
     }
@@ -1562,7 +1562,7 @@ export class DebuggerPlugin extends Plugin {
 
     this._prettyPrintInfobar = UI.Infobar.create(
         UI.Infobar.Type.Info, Common.UIString('Pretty-print this minified file?'),
-        Common.settings.createSetting('prettyPrintInfobarDisabled', false));
+        self.Common.settings.createSetting('prettyPrintInfobarDisabled', false));
     if (!this._prettyPrintInfobar) {
       return;
     }

@@ -25,9 +25,9 @@ export class DeviceModeView extends UI.VBox {
     this._model.addEventListener(Events.Updated, this._updateUI, this);
     this._mediaInspector =
         new MediaQueryInspector(() => this._model.appliedDeviceSize().width, this._model.setWidth.bind(this._model));
-    this._showMediaInspectorSetting = Common.settings.moduleSetting('showMediaQueryInspector');
+    this._showMediaInspectorSetting = self.Common.settings.moduleSetting('showMediaQueryInspector');
     this._showMediaInspectorSetting.addChangeListener(this._updateUI, this);
-    this._showRulersSetting = Common.settings.moduleSetting('emulation.showRulers');
+    this._showRulersSetting = self.Common.settings.moduleSetting('emulation.showRulers');
     this._showRulersSetting.addChangeListener(this._updateUI, this);
 
     this._topRuler = new Ruler(true, this._model.setWidthAndScaleToFit.bind(this._model));

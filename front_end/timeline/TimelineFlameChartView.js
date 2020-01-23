@@ -32,12 +32,13 @@ export class TimelineFlameChartView extends UI.VBox {
     /** @type {!Array<!Common.EventTarget.EventDescriptor>} */
     this._eventListeners = [];
 
-    this._showMemoryGraphSetting = Common.settings.createSetting('timelineShowMemory', false);
+    this._showMemoryGraphSetting = self.Common.settings.createSetting('timelineShowMemory', false);
 
     // Create main and network flamecharts.
     this._networkSplitWidget = new UI.SplitWidget(false, false, 'timelineFlamechartMainView', 150);
 
-    const mainViewGroupExpansionSetting = Common.settings.createSetting('timelineFlamechartMainViewGroupExpansion', {});
+    const mainViewGroupExpansionSetting =
+        self.Common.settings.createSetting('timelineFlamechartMainViewGroupExpansion', {});
     this._mainDataProvider = new TimelineFlameChartDataProvider();
     this._mainDataProvider.addEventListener(
         TimelineFlameChartDataProviderEvents.DataChanged, () => this._mainFlameChart.scheduleUpdate());
@@ -46,7 +47,7 @@ export class TimelineFlameChartView extends UI.VBox {
     this._mainFlameChart.enableRuler(false);
 
     this._networkFlameChartGroupExpansionSetting =
-        Common.settings.createSetting('timelineFlamechartNetworkViewGroupExpansion', {});
+        self.Common.settings.createSetting('timelineFlamechartNetworkViewGroupExpansion', {});
     this._networkDataProvider = new TimelineFlameChartNetworkDataProvider();
     this._networkFlameChart = new PerfUI.FlameChart(
         this._networkDataProvider, this, this._networkFlameChartGroupExpansionSetting);
@@ -95,7 +96,7 @@ export class TimelineFlameChartView extends UI.VBox {
 
     this._mainDataProvider.setEventColorMapping(TimelineUIUtils.eventColor);
     this._groupBySetting =
-        Common.settings.createSetting('timelineTreeGroupBy', AggregatedTimelineTreeView.GroupBy.None);
+        self.Common.settings.createSetting('timelineTreeGroupBy', AggregatedTimelineTreeView.GroupBy.None);
     this._groupBySetting.addChangeListener(this._updateColorMapper, this);
     this._updateColorMapper();
   }

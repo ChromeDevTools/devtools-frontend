@@ -50,9 +50,9 @@ export class DockController extends Common.Object {
     }
 
     this._states = [State.DockedToRight, State.DockedToBottom, State.DockedToLeft, State.Undocked];
-    this._currentDockStateSetting = Common.settings.moduleSetting('currentDockState');
+    this._currentDockStateSetting = self.Common.settings.moduleSetting('currentDockState');
     this._currentDockStateSetting.addChangeListener(this._dockSideChanged, this);
-    this._lastDockStateSetting = Common.settings.createSetting('lastDockState', 'bottom');
+    this._lastDockStateSetting = self.Common.settings.createSetting('lastDockState', 'bottom');
     if (this._states.indexOf(this._currentDockStateSetting.get()) === -1) {
       this._currentDockStateSetting.set('right');
     }

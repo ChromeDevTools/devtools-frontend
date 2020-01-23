@@ -95,11 +95,11 @@ export class ConsoleView extends UI.VBox {
 
     this._filterStatusText = new UI.ToolbarText();
     this._filterStatusText.element.classList.add('dimmed');
-    this._showSettingsPaneSetting = Common.settings.createSetting('consoleShowSettingsToolbar', false);
+    this._showSettingsPaneSetting = self.Common.settings.createSetting('consoleShowSettingsToolbar', false);
     this._showSettingsPaneButton = new UI.ToolbarSettingToggle(
         this._showSettingsPaneSetting, 'largeicon-settings-gear', Common.UIString('Console settings'));
     this._progressToolbarItem = new UI.ToolbarItem(createElement('div'));
-    this._groupSimilarSetting = Common.settings.moduleSetting('consoleGroupSimilar');
+    this._groupSimilarSetting = self.Common.settings.moduleSetting('consoleGroupSimilar');
     this._groupSimilarSetting.addChangeListener(() => this._updateMessageList());
     const groupSimilarToggle =
         new UI.ToolbarSettingCheckbox(this._groupSimilarSetting, Common.UIString('Group similar'));
@@ -154,11 +154,11 @@ export class ConsoleView extends UI.VBox {
     settingsToolbarRight.makeVertical();
     settingsToolbarRight.appendToolbarItem(new UI.ToolbarSettingCheckbox(monitoringXHREnabledSetting));
     const eagerEvalCheckbox = new UI.ToolbarSettingCheckbox(
-        Common.settings.moduleSetting('consoleEagerEval'), ls`Eagerly evaluate text in the prompt`);
+        self.Common.settings.moduleSetting('consoleEagerEval'), ls`Eagerly evaluate text in the prompt`);
     settingsToolbarRight.appendToolbarItem(eagerEvalCheckbox);
     settingsToolbarRight.appendToolbarItem(new UI.ToolbarSettingCheckbox(this._consoleHistoryAutocompleteSetting));
     const userGestureCheckbox =
-        new UI.ToolbarSettingCheckbox(Common.settings.moduleSetting('consoleUserActivationEval'));
+        new UI.ToolbarSettingCheckbox(self.Common.settings.moduleSetting('consoleUserActivationEval'));
     settingsToolbarRight.appendToolbarItem(userGestureCheckbox);
     if (!this._showSettingsPaneSetting.get()) {
       settingsPane.element.classList.add('hidden');
@@ -214,7 +214,7 @@ export class ConsoleView extends UI.VBox {
     this._consoleMessages = [];
     this._viewMessageSymbol = Symbol('viewMessage');
 
-    this._consoleHistorySetting = Common.settings.createLocalSetting('consoleHistory', []);
+    this._consoleHistorySetting = self.Common.settings.createLocalSetting('consoleHistory', []);
 
     this._prompt = new ConsolePrompt();
     this._prompt.show(this._promptElement);
@@ -1279,7 +1279,7 @@ export class ConsoleViewFilter {
     this._textFilterUI = new UI.ToolbarInput(
         Common.UIString('Filter'), '', 0.2, 1, Common.UIString('e.g. /event\\d/ -cdn url:a.com'),
         this._suggestionBuilder.completions.bind(this._suggestionBuilder));
-    this._textFilterSetting = Common.settings.createSetting('console.textFilter', '');
+    this._textFilterSetting = self.Common.settings.createSetting('console.textFilter', '');
     if (this._textFilterSetting.get()) {
       this._textFilterUI.setValue(this._textFilterSetting.get());
     }
@@ -1329,7 +1329,7 @@ export class ConsoleViewFilter {
    * @return {!Common.Setting}
    */
   static levelFilterSetting() {
-    return Common.settings.createSetting('messageLevelFilters', ConsoleFilter.defaultLevelsFilterValue());
+    return self.Common.settings.createSetting('messageLevelFilters', ConsoleFilter.defaultLevelsFilterValue());
   }
 
   _updateCurrentFilter() {

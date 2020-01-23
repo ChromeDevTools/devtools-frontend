@@ -71,7 +71,7 @@ export class SplitWidget extends Widget {
     this._constraintsInDip = !!constraintsInDip;
     this._resizeStartSizeDIP = 0;
     // Note: go via self.Common for globally-namespaced singletons.
-    this._setting = settingName ? self.Common.settings.createSetting(settingName, {}) : null;
+    this._setting = settingName ? self.self.Common.settings.createSetting(settingName, {}) : null;
 
     this._totalSizeCSS = 0;
     this._totalSizeOtherDimensionCSS = 0;

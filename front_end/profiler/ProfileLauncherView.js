@@ -47,7 +47,7 @@ export class ProfileLauncherView extends UI.VBox {
     this._contentElement = this.element.createChild('div', 'profile-launcher-view-content vbox');
 
     const profileTypeSelectorElement = this._contentElement.createChild('div', 'vbox');
-    this._selectedProfileTypeSetting = Common.settings.createSetting('selectedProfileType', 'CPU');
+    this._selectedProfileTypeSetting = self.Common.settings.createSetting('selectedProfileType', 'CPU');
     this._profileTypeHeaderElement = profileTypeSelectorElement.createChild('h1');
     this._profileTypeSelectorForm = profileTypeSelectorElement.createChild('form');
     UI.ARIAUtils.markAsRadioGroup(this._profileTypeSelectorForm);

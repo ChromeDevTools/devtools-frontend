@@ -15,7 +15,7 @@ export class ResourcesPanel extends UI.PanelWithSidebar {
     super('resources');
     this.registerRequiredCSS('resources/resourcesPanel.css');
 
-    this._resourcesLastSelectedItemSetting = Common.settings.createSetting('resourcesLastSelectedElementPath', []);
+    this._resourcesLastSelectedItemSetting = self.Common.settings.createSetting('resourcesLastSelectedElementPath', []);
 
     /** @type {?UI.Widget} */
     this.visibleView = null;

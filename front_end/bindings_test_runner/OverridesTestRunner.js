@@ -20,5 +20,5 @@ BindingsTestRunner.createOverrideProject = async function(folderPath) {
  * @param {boolean} enabled
  */
 BindingsTestRunner.setOverridesEnabled = function(enabled) {
-  Common.settings.moduleSetting('persistenceNetworkOverridesEnabled').set(enabled);
+  self.Common.settings.moduleSetting('persistenceNetworkOverridesEnabled').set(enabled);
 };

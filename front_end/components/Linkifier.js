@@ -558,7 +558,7 @@ export class Linkifier {
    */
   static _linkHandlerSetting() {
     if (!Linkifier._linkHandlerSettingInstance) {
-      Linkifier._linkHandlerSettingInstance = Common.settings.createSetting('openLinkHandler', ls`auto`);
+      Linkifier._linkHandlerSettingInstance = self.Common.settings.createSetting('openLinkHandler', ls`auto`);
     }
     return Linkifier._linkHandlerSettingInstance;
   }

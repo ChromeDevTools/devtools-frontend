@@ -68,18 +68,19 @@ export class TimelinePanel extends UI.Panel {
     /** @type {?PerformanceModel} */
     this._performanceModel = null;
 
-    this._viewModeSetting = Common.settings.createSetting('timelineViewMode', ViewMode.FlameChart);
+    this._viewModeSetting = self.Common.settings.createSetting('timelineViewMode', ViewMode.FlameChart);
 
-    this._disableCaptureJSProfileSetting = Common.settings.createSetting('timelineDisableJSSampling', false);
+    this._disableCaptureJSProfileSetting = self.Common.settings.createSetting('timelineDisableJSSampling', false);
     this._disableCaptureJSProfileSetting.setTitle(Common.UIString('Disable JavaScript samples'));
-    this._captureLayersAndPicturesSetting = Common.settings.createSetting('timelineCaptureLayersAndPictures', false);
+    this._captureLayersAndPicturesSetting =
+        self.Common.settings.createSetting('timelineCaptureLayersAndPictures', false);
     this._captureLayersAndPicturesSetting.setTitle(Common.UIString('Enable advanced paint instrumentation (slow)'));
 
-    this._showScreenshotsSetting = Common.settings.createSetting('timelineShowScreenshots', true);
+    this._showScreenshotsSetting = self.Common.settings.createSetting('timelineShowScreenshots', true);
     this._showScreenshotsSetting.setTitle(Common.UIString('Screenshots'));
     this._showScreenshotsSetting.addChangeListener(this._updateOverviewControls, this);
 
-    this._startCoverage = Common.settings.createSetting('timelineStartCoverage', false);
+    this._startCoverage = self.Common.settings.createSetting('timelineStartCoverage', false);
     this._startCoverage.setTitle(ls`Coverage`);
 
     if (!Root.Runtime.experiments.isEnabled('recordCoverageWithPerformanceTracing')) {
@@ -87,7 +88,7 @@ export class TimelinePanel extends UI.Panel {
     }
 
 
-    this._showMemorySetting = Common.settings.createSetting('timelineShowMemory', false);
+    this._showMemorySetting = self.Common.settings.createSetting('timelineShowMemory', false);
     this._showMemorySetting.setTitle(Common.UIString('Memory'));
     this._showMemorySetting.addChangeListener(this._onModeChanged, this);
 
@@ -262,7 +263,7 @@ export class TimelinePanel extends UI.Panel {
   }
 
   _createSettingsPane() {
-    this._showSettingsPaneSetting = Common.settings.createSetting('timelineShowSettingsToolbar', false);
+    this._showSettingsPaneSetting = self.Common.settings.createSetting('timelineShowSettingsToolbar', false);
     this._showSettingsPaneButton = new UI.ToolbarSettingToggle(
         this._showSettingsPaneSetting, 'largeicon-settings-gear', Common.UIString('Capture settings'));
     SDK.multitargetNetworkManager.addEventListener(
@@ -322,7 +323,7 @@ export class TimelinePanel extends UI.Panel {
     let setting = traceProvider[traceProviderSettingSymbol];
     if (!setting) {
       const providerId = traceProvider.persistentIdentifier();
-      setting = Common.settings.createSetting(providerId, false);
+      setting = self.Common.settings.createSetting(providerId, false);
       setting.setTitle(traceProvider.shortDisplayName());
       traceProvider[traceProviderSettingSymbol] = setting;
     }

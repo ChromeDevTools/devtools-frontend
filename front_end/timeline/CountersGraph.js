@@ -374,7 +374,7 @@ export class CounterUI {
     this.counter = counter;
     this._formatter = formatter || Number.withThousandsSeparator;
 
-    this._setting = Common.settings.createSetting('timelineCountersGraph-' + title, true);
+    this._setting = self.Common.settings.createSetting('timelineCountersGraph-' + title, true);
     this._setting.setTitle(title);
     this._filter = new UI.ToolbarSettingCheckbox(this._setting, title);
     this._filter.inputElement.classList.add('-theme-preserve');

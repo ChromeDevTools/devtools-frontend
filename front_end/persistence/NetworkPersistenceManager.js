@@ -15,7 +15,7 @@ export class NetworkPersistenceManager extends Common.Object {
     this._originalResponseContentPromiseSymbol = Symbol('OriginalResponsePromise');
     this._savingSymbol = Symbol('SavingForOverrides');
 
-    this._enabledSetting = Common.settings.moduleSetting('persistenceNetworkOverridesEnabled');
+    this._enabledSetting = self.Common.settings.moduleSetting('persistenceNetworkOverridesEnabled');
     this._enabledSetting.addChangeListener(this._enabledChanged, this);
 
     this._workspace = workspace;

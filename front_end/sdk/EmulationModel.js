@@ -21,7 +21,7 @@ export class EmulationModel extends SDKModel {
       this._overlayModel.addEventListener(Events.InspectModeWillBeToggled, this._updateTouch, this);
     }
 
-    const disableJavascriptSetting = Common.settings.moduleSetting('javaScriptDisabled');
+    const disableJavascriptSetting = self.Common.settings.moduleSetting('javaScriptDisabled');
     disableJavascriptSetting.addChangeListener(
         () => this._emulationAgent.setScriptExecutionDisabled(disableJavascriptSetting.get()));
     if (disableJavascriptSetting.get()) {

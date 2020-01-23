@@ -269,7 +269,7 @@ export class IsolatedFileSystemManager extends Common.Object {
       defaultExcludedFolders = defaultExcludedFolders.concat(defaultLinuxExcludedFolders);
     }
     const defaultExcludedFoldersPattern = defaultExcludedFolders.join('|');
-    this._workspaceFolderExcludePatternSetting = Common.settings.createRegExpSetting(
+    this._workspaceFolderExcludePatternSetting = self.Common.settings.createRegExpSetting(
         'workspaceFolderExcludePattern', defaultExcludedFoldersPattern, Host.isWin() ? 'i' : '');
   }
 

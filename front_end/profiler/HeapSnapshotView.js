@@ -1067,7 +1067,7 @@ export class HeapSnapshotProfileType extends ProfileType {
     self.SDK.targetManager.addModelListener(
         SDK.HeapProfilerModel, SDK.HeapProfilerModel.Events.ReportHeapSnapshotProgress,
         this._reportHeapSnapshotProgress, this);
-    this._treatGlobalObjectsAsRoots = Common.settings.createSetting('treatGlobalObjectsAsRoots', true);
+    this._treatGlobalObjectsAsRoots = self.Common.settings.createSetting('treatGlobalObjectsAsRoots', true);
     /** @type {?UI.CheckboxLabel} */
     this._customContent = null;
   }
@@ -1253,7 +1253,7 @@ HeapSnapshotProfileType.SnapshotReceived = 'SnapshotReceived';
 export class TrackingHeapSnapshotProfileType extends HeapSnapshotProfileType {
   constructor() {
     super(TrackingHeapSnapshotProfileType.TypeId, ls`Allocation instrumentation on timeline`);
-    this._recordAllocationStacksSetting = Common.settings.createSetting('recordAllocationStacks', false);
+    this._recordAllocationStacksSetting = self.Common.settings.createSetting('recordAllocationStacks', false);
     /** @type {?UI.CheckboxLabel} */
     this._customContent = null;
   }

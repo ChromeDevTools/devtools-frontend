@@ -76,7 +76,7 @@ export class TimelineTreeView extends UI.VBox {
     this._taskFilter = new TimelineModel.ExclusiveNameFilter([TimelineModel.TimelineModel.RecordType.Task]);
     this._textFilter = new TimelineRegExp();
 
-    this._currentThreadSetting = Common.settings.createSetting('timelineTreeCurrentThread', 0);
+    this._currentThreadSetting = self.Common.settings.createSetting('timelineTreeCurrentThread', 0);
     this._currentThreadSetting.addChangeListener(this.refreshTree, this);
 
     const columns = /** @type {!Array<!DataGrid.ColumnDescriptor>} */ ([]);
@@ -670,7 +670,7 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
   constructor() {
     super();
     this._groupBySetting =
-        Common.settings.createSetting('timelineTreeGroupBy', AggregatedTimelineTreeView.GroupBy.None);
+        self.Common.settings.createSetting('timelineTreeGroupBy', AggregatedTimelineTreeView.GroupBy.None);
     this._groupBySetting.addChangeListener(this.refreshTree.bind(this));
     this.init();
     this._stackView = new TimelineStackView(this);

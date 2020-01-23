@@ -952,7 +952,7 @@
       }
     }
 
-    const captureFilmStripSetting = Common.settings.createSetting('timelineCaptureFilmStrip', false);
+    const captureFilmStripSetting = self.Common.settings.createSetting('timelineCaptureFilmStrip', false);
     captureFilmStripSetting.set(true);
     test.evaluateInConsole_(performActionsInPage.toString(), function() {});
     test.invokeAsyncWithTimeline_('performActionsInPage', onTimelineDone);
@@ -1026,9 +1026,9 @@
     setTimeout(reset, 0);
 
     function createSettings() {
-      const localSetting = Common.settings.createLocalSetting('local', undefined);
+      const localSetting = self.Common.settings.createLocalSetting('local', undefined);
       localSetting.set({s: 'local', n: 1});
-      const globalSetting = Common.settings.createSetting('global', undefined);
+      const globalSetting = self.Common.settings.createSetting('global', undefined);
       globalSetting.set({s: 'global', n: 2});
     }
 
@@ -1040,11 +1040,11 @@
     function gotPreferences(prefs) {
       Main.Main._instanceForTest._createSettings(prefs);
 
-      const localSetting = Common.settings.createLocalSetting('local', undefined);
+      const localSetting = self.Common.settings.createLocalSetting('local', undefined);
       test.assertEquals('object', typeof localSetting.get());
       test.assertEquals('local', localSetting.get().s);
       test.assertEquals(1, localSetting.get().n);
-      const globalSetting = Common.settings.createSetting('global', undefined);
+      const globalSetting = self.Common.settings.createSetting('global', undefined);
       test.assertEquals('object', typeof globalSetting.get());
       test.assertEquals('global', globalSetting.get().s);
       test.assertEquals(2, globalSetting.get().n);

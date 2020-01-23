@@ -106,7 +106,7 @@ export class MainImpl {
     const globalStorage = new Common.SettingsStorage(
         prefs, Host.InspectorFrontendHost.setPreference, Host.InspectorFrontendHost.removePreference,
         Host.InspectorFrontendHost.clearPreferences, storagePrefix);
-    Common.settings = new Common.Settings(globalStorage, localStorage);
+    self.Common.settings = new Common.Settings(globalStorage, localStorage);
     if (!Host.isUnderTest()) {
       new Common.VersionController().updateVersion();
     }
@@ -180,7 +180,7 @@ export class MainImpl {
     // Request filesystems early, we won't create connections until callback is fired. Things will happen in parallel.
     Persistence.isolatedFileSystemManager = new Persistence.IsolatedFileSystemManager();
 
-    const themeSetting = Common.settings.createSetting('uiTheme', 'systemPreferred');
+    const themeSetting = self.Common.settings.createSetting('uiTheme', 'systemPreferred');
     UI.initializeUIUtils(document, themeSetting);
     themeSetting.addChangeListener(Components.reload.bind(Components));
 
@@ -307,7 +307,7 @@ export class MainImpl {
     const promises = [];
     for (const extension of extensions) {
       const setting = extension.descriptor()['setting'];
-      if (!setting || Common.settings.moduleSetting(setting).get()) {
+      if (!setting || self.Common.settings.moduleSetting(setting).get()) {
         promises.push(extension.instance().then(instance => (/** @type {!Common.Runnable} */ (instance)).run()));
         continue;
       }
@@ -318,10 +318,10 @@ export class MainImpl {
         if (!event.data) {
           return;
         }
-        Common.settings.moduleSetting(setting).removeChangeListener(changeListener);
+        self.Common.settings.moduleSetting(setting).removeChangeListener(changeListener);
         (/** @type {!Common.Runnable} */ (await extension.instance())).run();
       }
-      Common.settings.moduleSetting(setting).addChangeListener(changeListener);
+      self.Common.settings.moduleSetting(setting).addChangeListener(changeListener);
     }
     this._lateInitDonePromise = Promise.all(promises);
     MainImpl.timeEnd('Main._lateInitialization');

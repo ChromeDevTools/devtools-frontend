@@ -53,7 +53,7 @@ export class FilterBar extends HBox {
     this.element.classList.add('filter-bar');
 
     // Note: go via self.Common for globally-namespaced singletons.
-    this._stateSetting = self.Common.settings.createSetting('filterBar-' + name + '-toggled', !!visibleByDefault);
+    this._stateSetting = self.self.Common.settings.createSetting('filterBar-' + name + '-toggled', !!visibleByDefault);
     this._filterButton =
         new ToolbarSettingToggle(this._stateSetting, 'largeicon-filter', Common.UIString.UIString('Filter'));
 

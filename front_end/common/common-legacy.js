@@ -249,7 +249,7 @@ Common.Object._listenerCallbackTuple;
 /**
  * @type {!Common.Settings}
  */
-Common.settings;
+self.Common.settings;
 
 /** @typedef {function(!Error=)} */
 Common.Throttler.FinishCallback;

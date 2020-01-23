@@ -12,7 +12,7 @@ Help._innerShowReleaseNoteIfNeeded = HelpModule.Help.innerShowReleaseNoteIfNeede
 Help._showReleaseNoteIfNeeded = HelpModule.Help.showReleaseNoteIfNeeded;
 
 /** @type {!Common.Setting} */
-Help._releaseNoteVersionSetting = self.Common.settings.createSetting('releaseNoteVersionSeen', 0);
+Help._releaseNoteVersionSetting = self.self.Common.settings.createSetting('releaseNoteVersionSeen', 0);
 
 /**
  * @constructor

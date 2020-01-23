@@ -144,7 +144,7 @@ export class ConsoleModel extends Common.Object {
           generatePreview: true,
           replMode: true
         },
-        Common.settings.moduleSetting('consoleUserActivationEval').get(), awaitPromise);
+        self.Common.settings.moduleSetting('consoleUserActivationEval').get(), awaitPromise);
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.ConsoleEvaluated);
     if (result.error) {
       return;

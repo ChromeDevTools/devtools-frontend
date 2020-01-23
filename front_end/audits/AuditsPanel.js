@@ -95,7 +95,7 @@ export class AuditsPanel extends UI.Panel {
     this._settingsPane.show(this.contentElement);
     this._settingsPane.element.classList.add('audits-settings-pane');
     this._settingsPane.element.appendChild(this._startView.settingsToolbar().element);
-    this._showSettingsPaneSetting = Common.settings.createSetting('auditsShowSettingsToolbar', false);
+    this._showSettingsPaneSetting = self.Common.settings.createSetting('auditsShowSettingsToolbar', false);
 
     this._rightToolbar = new UI.Toolbar('', auditsToolbarContainer);
     this._rightToolbar.appendSeparator();

@@ -32,7 +32,7 @@ export class SourcesView extends UI.VBox {
     this._sourceViewByUISourceCode = new Map();
 
     this._editorContainer = new TabbedEditorContainer(
-        this, Common.settings.createLocalSetting('previouslyViewedFiles', []), this._placeholderElement(),
+        this, self.Common.settings.createLocalSetting('previouslyViewedFiles', []), this._placeholderElement(),
         this._focusedPlaceholderElement);
     this._editorContainer.show(this._searchableView.element);
     this._editorContainer.addEventListener(TabbedEditorContainerEvents.EditorSelected, this._editorSelected, this);

@@ -75,7 +75,7 @@ export class SearchView extends UI.VBox {
     this._searchProgressPlaceholderElement = searchStatusBarElement.createChild('div', 'flex-centered');
     this._searchResultsMessageElement = searchStatusBarElement.createChild('div', 'search-message');
 
-    this._advancedSearchConfig = Common.settings.createLocalSetting(
+    this._advancedSearchConfig = self.Common.settings.createLocalSetting(
         settingKey + 'SearchConfig', new SearchConfig('', true, false).toPlainObject());
 
     this._load();

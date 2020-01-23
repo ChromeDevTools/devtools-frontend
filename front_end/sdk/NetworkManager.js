@@ -52,7 +52,7 @@ export class NetworkManager extends SDKModel {
 
     this._networkAgent.enable(undefined, undefined, MAX_EAGER_POST_REQUEST_BODY_LENGTH);
 
-    this._bypassServiceWorkerSetting = Common.settings.createSetting('bypassServiceWorker', false);
+    this._bypassServiceWorkerSetting = self.Common.settings.createSetting('bypassServiceWorker', false);
     if (this._bypassServiceWorkerSetting.get()) {
       this._bypassServiceWorkerChanged();
     }
@@ -1020,7 +1020,7 @@ export class MultitargetNetworkManager extends Common.Object {
 
     // TODO(allada) Remove these and merge it with request interception.
     this._blockingEnabledSetting = Common.moduleSetting('requestBlockingEnabled');
-    this._blockedPatternsSetting = Common.settings.createSetting('networkBlockedPatterns', []);
+    this._blockedPatternsSetting = self.Common.settings.createSetting('networkBlockedPatterns', []);
     this._effectiveBlockedURLs = [];
     this._updateBlockedPatterns();
 

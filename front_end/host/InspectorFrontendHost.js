@@ -617,5 +617,5 @@ export function isUnderTest(prefs) {
   if (prefs) {
     return prefs['isUnderTest'] === 'true';
   }
-  return Common.settings && Common.settings.createSetting('isUnderTest', false).get();
+  return self.Common.settings && self.Common.settings.createSetting('isUnderTest', false).get();
 }

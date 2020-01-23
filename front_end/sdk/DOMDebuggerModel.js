@@ -22,7 +22,7 @@ export class DOMDebuggerModel extends SDKModel {
 
     /** @type {!Array<!DOMBreakpoint>} */
     this._domBreakpoints = [];
-    this._domBreakpointsSetting = Common.settings.createLocalSetting('domBreakpoints', []);
+    this._domBreakpointsSetting = self.Common.settings.createLocalSetting('domBreakpoints', []);
     if (this._domModel.existingDocument()) {
       this._documentUpdated();
     }
@@ -583,7 +583,7 @@ EventListenerBreakpoint._instrumentation = 'instrumentation:';
  */
 export class DOMDebuggerManager {
   constructor() {
-    this._xhrBreakpointsSetting = Common.settings.createLocalSetting('xhrBreakpoints', []);
+    this._xhrBreakpointsSetting = self.Common.settings.createLocalSetting('xhrBreakpoints', []);
     /** @type {!Map<string, boolean>} */
     this._xhrBreakpoints = new Map();
     for (const breakpoint of this._xhrBreakpointsSetting.get()) {

@@ -405,13 +405,13 @@ export class _TabbedLocation extends _Location {
     this._tabbedPane.addEventListener(TabbedPaneEvents.TabSelected, this._tabSelected, this);
     this._tabbedPane.addEventListener(TabbedPaneEvents.TabClosed, this._tabClosed, this);
     // Note: go via self.Common for globally-namespaced singletons.
-    this._closeableTabSetting = self.Common.settings.createSetting(location + '-closeableTabs', {});
+    this._closeableTabSetting = self.self.Common.settings.createSetting(location + '-closeableTabs', {});
     // Note: go via self.Common for globally-namespaced singletons.
-    this._tabOrderSetting = self.Common.settings.createSetting(location + '-tabOrder', {});
+    this._tabOrderSetting = self.self.Common.settings.createSetting(location + '-tabOrder', {});
     this._tabbedPane.addEventListener(TabbedPaneEvents.TabOrderChanged, this._persistTabOrder, this);
     if (restoreSelection) {
       // Note: go via self.Common for globally-namespaced singletons.
-      this._lastSelectedTabSetting = self.Common.settings.createSetting(location + '-selectedTab', '');
+      this._lastSelectedTabSetting = self.self.Common.settings.createSetting(location + '-selectedTab', '');
     }
     this._defaultTab = defaultTab;
 

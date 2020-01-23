@@ -50,7 +50,7 @@ export class SearchableView extends VBox {
 
     this._searchProvider = searchable;
     // Note: go via self.Common for globally-namespaced singletons.
-    this._setting = settingName ? self.Common.settings.createSetting(settingName, {}) : null;
+    this._setting = settingName ? self.self.Common.settings.createSetting(settingName, {}) : null;
     this._replaceable = false;
 
     this.contentElement.createChild('slot');

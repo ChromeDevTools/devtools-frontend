@@ -79,7 +79,7 @@ export class AdvancedApp {
    * @param {!Document} toolboxDocument
    */
   toolboxLoaded(toolboxDocument) {
-    UI.initializeUIUtils(toolboxDocument, Common.settings.createSetting('uiTheme', 'default'));
+    UI.initializeUIUtils(toolboxDocument, self.Common.settings.createSetting('uiTheme', 'default'));
     UI.installComponentRootStyles(/** @type {!Element} */ (toolboxDocument.body));
     UI.ContextMenu.installHandler(toolboxDocument);
     UI.Tooltip.installHandler(toolboxDocument);

@@ -48,7 +48,7 @@ export class NetworkItemView extends UI.TabbedPane {
     this._request = request;
     this.element.classList.add('network-item-view');
 
-    this._resourceViewTabSetting = Common.settings.createSetting('resourceViewTab', 'preview');
+    this._resourceViewTabSetting = self.Common.settings.createSetting('resourceViewTab', 'preview');
 
     this._headersView = new RequestHeadersView(request);
     this.appendTab(

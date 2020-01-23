@@ -45,9 +45,9 @@ export class NetworkPanel extends UI.Panel {
     super('network');
     this.registerRequiredCSS('network/networkPanel.css');
 
-    this._networkLogShowOverviewSetting = Common.settings.createSetting('networkLogShowOverview', true);
-    this._networkLogLargeRowsSetting = Common.settings.createSetting('networkLogLargeRows', false);
-    this._networkRecordFilmStripSetting = Common.settings.createSetting('networkRecordFilmStripSetting', false);
+    this._networkLogShowOverviewSetting = self.Common.settings.createSetting('networkLogShowOverview', true);
+    this._networkLogLargeRowsSetting = self.Common.settings.createSetting('networkLogLargeRows', false);
+    this._networkRecordFilmStripSetting = self.Common.settings.createSetting('networkRecordFilmStripSetting', false);
     this._toggleRecordAction = /** @type {!UI.Action }*/ (UI.actionRegistry.action('network.toggle-recording'));
 
     /** @type {number|undefined} */
@@ -74,7 +74,7 @@ export class NetworkPanel extends UI.Panel {
     this._settingsPane = new UI.HBox();
     this._settingsPane.element.classList.add('network-settings-pane');
     this._settingsPane.show(panel.contentElement);
-    this._showSettingsPaneSetting = Common.settings.createSetting('networkShowSettingsToolbar', false);
+    this._showSettingsPaneSetting = self.Common.settings.createSetting('networkShowSettingsToolbar', false);
     this._showSettingsPaneSetting.addChangeListener(this._updateSettingsPaneVisibility.bind(this));
     this._updateSettingsPaneVisibility();
 

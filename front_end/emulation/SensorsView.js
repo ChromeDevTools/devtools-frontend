@@ -11,14 +11,14 @@ export class SensorsView extends UI.VBox {
     this.registerRequiredCSS('emulation/sensors.css');
     this.contentElement.classList.add('sensors-view');
 
-    this._geolocationSetting = Common.settings.createSetting('emulation.geolocationOverride', '');
+    this._geolocationSetting = self.Common.settings.createSetting('emulation.geolocationOverride', '');
     this._geolocation = SDK.EmulationModel.Geolocation.parseSetting(this._geolocationSetting.get());
     this._geolocationOverrideEnabled = false;
     this._createGeolocationSection(this._geolocation);
 
     this.contentElement.createChild('div').classList.add('panel-section-separator');
 
-    this._deviceOrientationSetting = Common.settings.createSetting('emulation.deviceOrientationOverride', '');
+    this._deviceOrientationSetting = self.Common.settings.createSetting('emulation.deviceOrientationOverride', '');
     this._deviceOrientation = SDK.EmulationModel.DeviceOrientation.parseSetting(this._deviceOrientationSetting.get());
     this._deviceOrientationOverrideEnabled = false;
     this._createDeviceOrientationSection();

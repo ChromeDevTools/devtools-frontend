@@ -402,7 +402,7 @@ export class ControlPane extends Common.Object {
     this.element = parent.createChild('div', 'perfmon-control-pane');
 
     this._enabledChartsSetting =
-        Common.settings.createSetting('perfmonActiveIndicators2', ['TaskDuration', 'JSHeapTotalSize', 'Nodes']);
+        self.Common.settings.createSetting('perfmonActiveIndicators2', ['TaskDuration', 'JSHeapTotalSize', 'Nodes']);
     /** @type {!Set<string>} */
     this._enabledCharts = new Set(this._enabledChartsSetting.get());
     const format = Format;

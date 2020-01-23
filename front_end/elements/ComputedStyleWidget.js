@@ -43,7 +43,7 @@ export class ComputedStyleWidget extends UI.ThrottledWidget {
     this._computedStyleModel.addEventListener(Events.ComputedStyleChanged, this.update, this);
 
     this._showInheritedComputedStylePropertiesSetting =
-        Common.settings.createSetting('showInheritedComputedStyleProperties', false);
+        self.Common.settings.createSetting('showInheritedComputedStyleProperties', false);
     this._showInheritedComputedStylePropertiesSetting.addChangeListener(
         this._showInheritedComputedStyleChanged.bind(this));
 

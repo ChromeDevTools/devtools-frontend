@@ -153,14 +153,14 @@ export class SourcesPanelIndicator {
  */
 export class BackendSettingsSync {
   constructor() {
-    this._autoAttachSetting = Common.settings.moduleSetting('autoAttachToCreatedPages');
+    this._autoAttachSetting = self.Common.settings.moduleSetting('autoAttachToCreatedPages');
     this._autoAttachSetting.addChangeListener(this._updateAutoAttach, this);
     this._updateAutoAttach();
 
-    this._adBlockEnabledSetting = Common.settings.moduleSetting('network.adBlockingEnabled');
+    this._adBlockEnabledSetting = self.Common.settings.moduleSetting('network.adBlockingEnabled');
     this._adBlockEnabledSetting.addChangeListener(this._update, this);
 
-    this._emulatePageFocusSetting = Common.settings.moduleSetting('emulatePageFocus');
+    this._emulatePageFocusSetting = self.Common.settings.moduleSetting('emulatePageFocus');
     this._emulatePageFocusSetting.addChangeListener(this._update, this);
 
     self.SDK.targetManager.observeTargets(this);

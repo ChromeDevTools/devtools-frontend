@@ -168,7 +168,7 @@ export class GenericSettingsTab extends SettingsTab {
         UI.createTextButton(Common.UIString('Restore defaults and reload'), restoreAndReload));
 
     function restoreAndReload() {
-      Common.settings.clearAll();
+      self.Common.settings.clearAll();
       Components.reload();
     }
   }

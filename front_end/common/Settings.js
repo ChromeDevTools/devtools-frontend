@@ -153,7 +153,7 @@ export class Settings {
   clearAll() {
     this._globalStorage.removeAll();
     this._localStorage.removeAll();
-    const versionSetting = Common.settings.createSetting(VersionController._currentVersionName, 0);
+    const versionSetting = self.Common.settings.createSetting(VersionController._currentVersionName, 0);
     versionSetting.set(VersionController.currentVersion);
   }
 
@@ -479,7 +479,7 @@ export class VersionController {
 
   updateVersion() {
     const localStorageVersion = window.localStorage ? window.localStorage[VersionController._currentVersionName] : 0;
-    const versionSetting = Common.settings.createSetting(VersionController._currentVersionName, 0);
+    const versionSetting = self.Common.settings.createSetting(VersionController._currentVersionName, 0);
     const currentVersion = VersionController.currentVersion;
     const oldVersion = versionSetting.get() || parseInt(localStorageVersion || '0', 10);
     if (oldVersion === 0) {
@@ -507,20 +507,20 @@ export class VersionController {
   }
 
   _updateVersionFrom0To1() {
-    this._clearBreakpointsWhenTooMany(Common.settings.createLocalSetting('breakpoints', []), 500000);
+    this._clearBreakpointsWhenTooMany(self.Common.settings.createLocalSetting('breakpoints', []), 500000);
   }
 
   _updateVersionFrom1To2() {
-    Common.settings.createSetting('previouslyViewedFiles', []).set([]);
+    self.Common.settings.createSetting('previouslyViewedFiles', []).set([]);
   }
 
   _updateVersionFrom2To3() {
-    Common.settings.createSetting('fileSystemMapping', {}).set({});
-    Common.settings.createSetting('fileMappingEntries', []).remove();
+    self.Common.settings.createSetting('fileSystemMapping', {}).set({});
+    self.Common.settings.createSetting('fileMappingEntries', []).remove();
   }
 
   _updateVersionFrom3To4() {
-    const advancedMode = Common.settings.createSetting('showHeaSnapshotObjectsHiddenProperties', false);
+    const advancedMode = self.Common.settings.createSetting('showHeaSnapshotObjectsHiddenProperties', false);
     moduleSetting('showAdvancedHeapSnapshotProperties').set(advancedMode.get());
     advancedMode.remove();
   }
@@ -553,14 +553,14 @@ export class VersionController {
       const oldNameH = oldName + 'H';
 
       let newValue = null;
-      const oldSetting = Common.settings.createSetting(oldName, empty);
+      const oldSetting = self.Common.settings.createSetting(oldName, empty);
       if (oldSetting.get() !== empty) {
         newValue = newValue || {};
         newValue.vertical = {};
         newValue.vertical.size = oldSetting.get();
         oldSetting.remove();
       }
-      const oldSettingH = Common.settings.createSetting(oldNameH, empty);
+      const oldSettingH = self.Common.settings.createSetting(oldNameH, empty);
       if (oldSettingH.get() !== empty) {
         newValue = newValue || {};
         newValue.horizontal = {};
@@ -568,7 +568,7 @@ export class VersionController {
         oldSettingH.remove();
       }
       if (newValue) {
-        Common.settings.createSetting(newName, {}).set(newValue);
+        self.Common.settings.createSetting(newName, {}).set(newValue);
       }
     }
   }
@@ -581,7 +581,7 @@ export class VersionController {
     };
 
     for (const oldName in settingNames) {
-      const oldSetting = Common.settings.createSetting(oldName, null);
+      const oldSetting = self.Common.settings.createSetting(oldName, null);
       if (oldSetting.get() === null) {
         oldSetting.remove();
         continue;
@@ -593,7 +593,7 @@ export class VersionController {
       oldSetting.remove();
       const showMode = hidden ? 'OnlyMain' : 'Both';
 
-      const newSetting = Common.settings.createSetting(newName, {});
+      const newSetting = self.Common.settings.createSetting(newName, {});
       const newValue = newSetting.get() || {};
       newValue.vertical = newValue.vertical || {};
       newValue.vertical.showMode = showMode;
@@ -613,7 +613,7 @@ export class VersionController {
 
     const empty = {};
     for (const name in settingNames) {
-      const setting = Common.settings.createSetting(name, empty);
+      const setting = self.Common.settings.createSetting(name, empty);
       const value = setting.get();
       if (value === empty) {
         continue;
@@ -636,7 +636,7 @@ export class VersionController {
     const settingNames = ['skipStackFramesPattern', 'workspaceFolderExcludePattern'];
 
     for (let i = 0; i < settingNames.length; ++i) {
-      const setting = Common.settings.createSetting(settingNames[i], '');
+      const setting = self.Common.settings.createSetting(settingNames[i], '');
       let value = setting.get();
       if (!value) {
         return;
@@ -668,7 +668,7 @@ export class VersionController {
   _updateVersionFrom10To11() {
     const oldSettingName = 'customDevicePresets';
     const newSettingName = 'customEmulatedDeviceList';
-    const oldSetting = Common.settings.createSetting(oldSettingName, undefined);
+    const oldSetting = self.Common.settings.createSetting(oldSettingName, undefined);
     const list = oldSetting.get();
     if (!Array.isArray(list)) {
       return;
@@ -697,7 +697,7 @@ export class VersionController {
       newList.push(device);
     }
     if (newList.length) {
-      Common.settings.createSetting(newSettingName, []).set(newList);
+      self.Common.settings.createSetting(newSettingName, []).set(newList);
     }
     oldSetting.remove();
   }
@@ -708,16 +708,16 @@ export class VersionController {
 
   _updateVersionFrom12To13() {
     this._migrateSettingsFromLocalStorage();
-    Common.settings.createSetting('timelineOverviewMode', '').remove();
+    self.Common.settings.createSetting('timelineOverviewMode', '').remove();
   }
 
   _updateVersionFrom13To14() {
     const defaultValue = {'throughput': -1, 'latency': 0};
-    Common.settings.createSetting('networkConditions', defaultValue).set(defaultValue);
+    self.Common.settings.createSetting('networkConditions', defaultValue).set(defaultValue);
   }
 
   _updateVersionFrom14To15() {
-    const setting = Common.settings.createLocalSetting('workspaceExcludedFolders', {});
+    const setting = self.Common.settings.createLocalSetting('workspaceExcludedFolders', {});
     const oldValue = setting.get();
     const newValue = {};
     for (const fileSystemPath in oldValue) {
@@ -730,7 +730,7 @@ export class VersionController {
   }
 
   _updateVersionFrom15To16() {
-    const setting = Common.settings.createSetting('InspectorView.panelOrder', {});
+    const setting = self.Common.settings.createSetting('InspectorView.panelOrder', {});
     const tabOrders = setting.get();
     for (const key of Object.keys(tabOrders)) {
       tabOrders[key] = (tabOrders[key] + 1) * 10;
@@ -739,7 +739,7 @@ export class VersionController {
   }
 
   _updateVersionFrom16To17() {
-    const setting = Common.settings.createSetting('networkConditionsCustomProfiles', []);
+    const setting = self.Common.settings.createSetting('networkConditionsCustomProfiles', []);
     const oldValue = setting.get();
     const newValue = [];
     if (Array.isArray(oldValue)) {
@@ -758,7 +758,7 @@ export class VersionController {
   }
 
   _updateVersionFrom17To18() {
-    const setting = Common.settings.createLocalSetting('workspaceExcludedFolders', {});
+    const setting = self.Common.settings.createLocalSetting('workspaceExcludedFolders', {});
     const oldValue = setting.get();
     const newValue = {};
     for (const oldKey in oldValue) {
@@ -777,7 +777,7 @@ export class VersionController {
 
   _updateVersionFrom18To19() {
     const defaultColumns = {status: true, type: true, initiator: true, size: true, time: true};
-    const visibleColumnSettings = Common.settings.createSetting('networkLogColumnsVisibility', defaultColumns);
+    const visibleColumnSettings = self.Common.settings.createSetting('networkLogColumnsVisibility', defaultColumns);
     const visibleColumns = visibleColumnSettings.get();
     visibleColumns.name = true;
     visibleColumns.timeline = true;
@@ -789,20 +789,20 @@ export class VersionController {
       }
       configs[columnId.toLowerCase()] = {visible: visibleColumns[columnId]};
     }
-    const newSetting = Common.settings.createSetting('networkLogColumns', {});
+    const newSetting = self.Common.settings.createSetting('networkLogColumns', {});
     newSetting.set(configs);
     visibleColumnSettings.remove();
   }
 
   _updateVersionFrom19To20() {
-    const oldSetting = Common.settings.createSetting('InspectorView.panelOrder', {});
-    const newSetting = Common.settings.createSetting('panel-tabOrder', {});
+    const oldSetting = self.Common.settings.createSetting('InspectorView.panelOrder', {});
+    const newSetting = self.Common.settings.createSetting('panel-tabOrder', {});
     newSetting.set(oldSetting.get());
     oldSetting.remove();
   }
 
   _updateVersionFrom20To21() {
-    const networkColumns = Common.settings.createSetting('networkLogColumns', {});
+    const networkColumns = self.Common.settings.createSetting('networkLogColumns', {});
     const columns = /** @type {!Object} */ (networkColumns.get());
     delete columns['timeline'];
     delete columns['waterfall'];
@@ -810,7 +810,7 @@ export class VersionController {
   }
 
   _updateVersionFrom21To22() {
-    const breakpointsSetting = Common.settings.createLocalSetting('breakpoints', []);
+    const breakpointsSetting = self.Common.settings.createLocalSetting('breakpoints', []);
     const breakpoints = breakpointsSetting.get();
     for (const breakpoint of breakpoints) {
       breakpoint['url'] = breakpoint['sourceFileId'];
@@ -824,26 +824,26 @@ export class VersionController {
   }
 
   _updateVersionFrom23To24() {
-    const oldSetting = Common.settings.createSetting('searchInContentScripts', false);
-    const newSetting = Common.settings.createSetting('searchInAnonymousAndContentScripts', false);
+    const oldSetting = self.Common.settings.createSetting('searchInContentScripts', false);
+    const newSetting = self.Common.settings.createSetting('searchInAnonymousAndContentScripts', false);
     newSetting.set(oldSetting.get());
     oldSetting.remove();
   }
 
   _updateVersionFrom24To25() {
     const defaultColumns = {status: true, type: true, initiator: true, size: true, time: true};
-    const networkLogColumnsSetting = Common.settings.createSetting('networkLogColumns', defaultColumns);
+    const networkLogColumnsSetting = self.Common.settings.createSetting('networkLogColumns', defaultColumns);
     const columns = networkLogColumnsSetting.get();
     delete columns.product;
     networkLogColumnsSetting.set(columns);
   }
 
   _updateVersionFrom25To26() {
-    const oldSetting = Common.settings.createSetting('messageURLFilters', {});
+    const oldSetting = self.Common.settings.createSetting('messageURLFilters', {});
     const urls = Object.keys(oldSetting.get());
     const textFilter = urls.map(url => `-url:${url}`).join(' ');
     if (textFilter) {
-      const textFilterSetting = Common.settings.createSetting('console.textFilter', '');
+      const textFilterSetting = self.Common.settings.createSetting('console.textFilter', '');
       const suffix = textFilterSetting.get() ? ` ${textFilterSetting.get()}` : '';
       textFilterSetting.set(`${textFilter}${suffix}`);
     }
@@ -857,7 +857,7 @@ export class VersionController {
      * @param {string} to
      */
     function renameKeyInObjectSetting(settingName, from, to) {
-      const setting = Common.settings.createSetting(settingName, {});
+      const setting = self.Common.settings.createSetting(settingName, {});
       const value = setting.get();
       if (from in value) {
         value[to] = value[from];
@@ -872,7 +872,7 @@ export class VersionController {
      * @param {string} to
      */
     function renameInStringSetting(settingName, from, to) {
-      const setting = Common.settings.createSetting(settingName, '');
+      const setting = self.Common.settings.createSetting(settingName, '');
       const value = setting.get();
       if (value === from) {
         setting.set(to);
@@ -885,7 +885,7 @@ export class VersionController {
   }
 
   _updateVersionFrom27To28() {
-    const setting = Common.settings.createSetting('uiTheme', 'systemPreferred');
+    const setting = self.Common.settings.createSetting('uiTheme', 'systemPreferred');
     if (setting.get() === 'default') {
       setting.set('systemPreferred');
     }
@@ -908,7 +908,7 @@ export class VersionController {
       }
       const value = window.localStorage[key];
       window.localStorage.removeItem(key);
-      Common.settings._globalStorage[key] = value;
+      self.Common.settings._globalStorage[key] = value;
     }
   }
 
@@ -939,7 +939,7 @@ export const SettingStorageType = {
  * @return {!Setting}
  */
 export function moduleSetting(settingName) {
-  return Common.settings.moduleSetting(settingName);
+  return self.Common.settings.moduleSetting(settingName);
 }
 
 /**
@@ -947,7 +947,7 @@ export function moduleSetting(settingName) {
  * @return {!Setting}
  */
 export function settingForTest(settingName) {
-  return Common.settings.settingForTest(settingName);
+  return self.Common.settings.settingForTest(settingName);
 }
 
 /**

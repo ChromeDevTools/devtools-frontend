@@ -208,37 +208,37 @@ export class AuditController extends Common.Object {
 export const Presets = [
   // configID maps to Lighthouse's Object.keys(config.categories)[0] value
   {
-    setting: Common.settings.createSetting('audits.cat_perf', true),
+    setting: self.Common.settings.createSetting('audits.cat_perf', true),
     configID: 'performance',
     title: ls`Performance`,
     description: ls`How long does this app take to show content and become usable`
   },
   {
-    setting: Common.settings.createSetting('audits.cat_pwa', true),
+    setting: self.Common.settings.createSetting('audits.cat_pwa', true),
     configID: 'pwa',
     title: ls`Progressive Web App`,
     description: ls`Does this page meet the standard of a Progressive Web App`
   },
   {
-    setting: Common.settings.createSetting('audits.cat_best_practices', true),
+    setting: self.Common.settings.createSetting('audits.cat_best_practices', true),
     configID: 'best-practices',
     title: ls`Best practices`,
     description: ls`Does this page follow best practices for modern web development`
   },
   {
-    setting: Common.settings.createSetting('audits.cat_a11y', true),
+    setting: self.Common.settings.createSetting('audits.cat_a11y', true),
     configID: 'accessibility',
     title: ls`Accessibility`,
     description: ls`Is this page usable by people with disabilities or impairments`
   },
   {
-    setting: Common.settings.createSetting('audits.cat_seo', true),
+    setting: self.Common.settings.createSetting('audits.cat_seo', true),
     configID: 'seo',
     title: ls`SEO`,
     description: ls`Is this page optimized for search engine results ranking`
   },
   {
-    setting: Common.settings.createSetting('audits.cat_pubads', false),
+    setting: self.Common.settings.createSetting('audits.cat_pubads', false),
     plugin: true,
     configID: 'lighthouse-plugin-publisher-ads',
     title: ls`Publisher Ads`,
@@ -249,7 +249,7 @@ export const Presets = [
 /** @type {!Array.<!Audits.RuntimeSetting>} */
 export const RuntimeSettings = [
   {
-    setting: Common.settings.createSetting('audits.device_type', 'mobile'),
+    setting: self.Common.settings.createSetting('audits.device_type', 'mobile'),
     description: ls`Apply mobile emulation during auditing`,
     setFlags: (flags, value) => {
       // See Audits.AuditsPanel._setupEmulationAndProtocolConnection()
@@ -262,7 +262,7 @@ export const RuntimeSettings = [
   },
   {
     // This setting is disabled, but we keep it around to show in the UI.
-    setting: Common.settings.createSetting('audits.throttling', true),
+    setting: self.Common.settings.createSetting('audits.throttling', true),
     title: ls`Simulated throttling`,
     // We will disable this when we have a Lantern trace viewer within DevTools.
     learnMore:
@@ -272,7 +272,7 @@ export const RuntimeSettings = [
     },
   },
   {
-    setting: Common.settings.createSetting('audits.clear_storage', true),
+    setting: self.Common.settings.createSetting('audits.clear_storage', true),
     title: ls`Clear storage`,
     description: ls`Reset storage (localStorage, IndexedDB, etc) before auditing. (Good for performance & PWA testing)`,
     setFlags: (flags, value) => {

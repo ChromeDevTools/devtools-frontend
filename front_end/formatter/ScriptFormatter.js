@@ -28,6 +28,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
+
 import {FormatResult, formatterWorkerPool} from './FormatterWorkerPool.js';  // eslint-disable-line no-unused-vars
 
 /**
@@ -36,7 +38,7 @@ import {FormatResult, formatterWorkerPool} from './FormatterWorkerPool.js';  // 
 export class FormatterInterface {}
 
 /**
- * @param {!Common.ResourceType} contentType
+ * @param {!Common.ResourceType.ResourceType} contentType
  * @param {string} mimeType
  * @param {string} content
  * @param {function(string, !FormatterSourceMapping)} callback

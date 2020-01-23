@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+
 const MaxWorkers = 2;
 
 /**
@@ -10,15 +12,15 @@ const MaxWorkers = 2;
 export class FormatterWorkerPool {
   constructor() {
     this._taskQueue = [];
-    /** @type {!Map<!Common.Worker, ?Task>} */
+    /** @type {!Map<!Common.Worker.WorkerWrapper, ?Task>} */
     this._workerTasks = new Map();
   }
 
   /**
-   * @return {!Common.Worker}
+   * @return {!Common.Worker.WorkerWrapper}
    */
   _createWorker() {
-    const worker = new Common.Worker('formatter_worker_entrypoint');
+    const worker = new Common.Worker.WorkerWrapper('formatter_worker_entrypoint');
     worker.onmessage = this._onWorkerMessage.bind(this, worker);
     worker.onerror = this._onWorkerError.bind(this, worker);
     return worker;
@@ -43,7 +45,7 @@ export class FormatterWorkerPool {
   }
 
   /**
-   * @param {!Common.Worker} worker
+   * @param {!Common.Worker.WorkerWrapper} worker
    * @param {!MessageEvent} event
    */
   _onWorkerMessage(worker, event) {
@@ -59,7 +61,7 @@ export class FormatterWorkerPool {
   }
 
   /**
-   * @param {!Common.Worker} worker
+   * @param {!Common.Worker.WorkerWrapper} worker
    * @param {!Event} event
    */
   _onWorkerError(worker, event) {

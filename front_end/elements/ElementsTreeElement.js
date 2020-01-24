@@ -587,7 +587,7 @@ export class ElementsTreeElement extends UI.TreeElement {
     menuItem = contextMenu.debugSection().appendCheckboxItem(
         Common.UIString('Hide element'), treeOutline.toggleHideElement.bind(treeOutline, this._node),
         treeOutline.isToggledToHidden(this._node));
-    menuItem.setShortcut(UI.shortcutRegistry.shortcutTitleForAction('elements.hide-element'));
+    menuItem.setShortcut(self.UI.shortcutRegistry.shortcutTitleForAction('elements.hide-element'));
 
     if (isEditable) {
       contextMenu.editSection().appendItem(Common.UIString('Delete element'), this.remove.bind(this));

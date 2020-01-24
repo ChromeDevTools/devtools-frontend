@@ -670,7 +670,7 @@ UI.ListWidget.ValidatorResult;
 UI.PopoverRequest;
 
 /** @type {!UI.ShortcutRegistry} */
-UI.shortcutRegistry;
+self.UI.shortcutRegistry;
 
 /**
  * We cannot initialize it here as localized strings are not loaded yet.

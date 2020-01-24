@@ -565,7 +565,7 @@ export class DebuggerPlugin extends Plugin {
       return;
     }
 
-    if (UI.shortcutRegistry.eventMatchesAction(event, 'debugger.toggle-breakpoint')) {
+    if (self.UI.shortcutRegistry.eventMatchesAction(event, 'debugger.toggle-breakpoint')) {
       const selection = this._textEditor.selection();
       if (!selection) {
         return;
@@ -574,7 +574,7 @@ export class DebuggerPlugin extends Plugin {
       event.consume(true);
       return;
     }
-    if (UI.shortcutRegistry.eventMatchesAction(event, 'debugger.toggle-breakpoint-enabled')) {
+    if (self.UI.shortcutRegistry.eventMatchesAction(event, 'debugger.toggle-breakpoint-enabled')) {
       const selection = this._textEditor.selection();
       if (!selection) {
         return;
@@ -583,7 +583,7 @@ export class DebuggerPlugin extends Plugin {
       event.consume(true);
       return;
     }
-    if (UI.shortcutRegistry.eventMatchesAction(event, 'debugger.breakpoint-input-window')) {
+    if (self.UI.shortcutRegistry.eventMatchesAction(event, 'debugger.breakpoint-input-window')) {
       const selection = this._textEditor.selection();
       if (!selection) {
         return;
@@ -1550,7 +1550,7 @@ export class DebuggerPlugin extends Plugin {
         'Associated files should be added to the file tree. You can debug these resolved source files as regular JavaScript files.'));
     this._sourceMapInfobar.createDetailsRowMessage(Common.UIString(
         'Associated files are available via file tree or %s.',
-        UI.shortcutRegistry.shortcutTitleForAction('quickOpen.show')));
+        self.UI.shortcutRegistry.shortcutTitleForAction('quickOpen.show')));
     this._sourceMapInfobar.setCloseCallback(() => this._sourceMapInfobar = null);
     this._textEditor.attachInfobar(this._sourceMapInfobar);
   }

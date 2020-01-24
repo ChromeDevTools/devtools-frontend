@@ -401,7 +401,7 @@ export class NetworkPanel extends UI.Panel {
   }
 
   _resetFilmStripView() {
-    const reloadShortcutDescriptor = UI.shortcutRegistry.shortcutDescriptorsForAction('inspector_main.reload')[0];
+    const reloadShortcutDescriptor = self.UI.shortcutRegistry.shortcutDescriptorsForAction('inspector_main.reload')[0];
 
     this._filmStripView.reset();
     if (reloadShortcutDescriptor) {

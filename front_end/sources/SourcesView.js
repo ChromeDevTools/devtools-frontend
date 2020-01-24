@@ -124,7 +124,7 @@ export class SourcesView extends UI.VBox {
 
     for (let i = 0; i < shortcuts.length; i++) {
       const shortcut = shortcuts[i];
-      const shortcutKeyText = UI.shortcutRegistry.shortcutTitleForAction(shortcut.actionId);
+      const shortcutKeyText = self.UI.shortcutRegistry.shortcutTitleForAction(shortcut.actionId);
       const listItemElement = list.createChild('div');
       UI.ARIAUtils.markAsListitem(listItemElement);
       const row = listItemElement.createChild('div', 'tabbed-pane-placeholder-row');

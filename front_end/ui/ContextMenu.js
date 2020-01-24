@@ -174,7 +174,7 @@ export class Section {
       label = action.title();
     }
     const result = this.appendItem(label, action.execute.bind(action));
-    const shortcut = UI.shortcutRegistry.shortcutTitleForAction(actionId);
+    const shortcut = self.UI.shortcutRegistry.shortcutTitleForAction(actionId);
     if (shortcut) {
       result.setShortcut(shortcut);
     }

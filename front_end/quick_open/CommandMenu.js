@@ -60,7 +60,7 @@ export class CommandMenu {
    * @return {!Command}
    */
   static createActionCommand(action) {
-    const shortcut = UI.shortcutRegistry.shortcutTitleForAction(action.id()) || '';
+    const shortcut = self.UI.shortcutRegistry.shortcutTitleForAction(action.id()) || '';
     return CommandMenu.createCommand(
         action.category(), action.tags(), action.title(), shortcut, action.execute.bind(action));
   }

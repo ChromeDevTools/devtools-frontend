@@ -645,7 +645,7 @@ export class NetworkLogView extends UI.VBox {
     const hintText = this._recordingHint.createChild('div', 'recording-hint');
 
     let reloadShortcutNode = null;
-    const reloadShortcutDescriptor = UI.shortcutRegistry.shortcutDescriptorsForAction('inspector_main.reload')[0];
+    const reloadShortcutDescriptor = self.UI.shortcutRegistry.shortcutDescriptorsForAction('inspector_main.reload')[0];
     if (reloadShortcutDescriptor) {
       reloadShortcutNode = this._recordingHint.createChild('b');
       reloadShortcutNode.textContent = reloadShortcutDescriptor.name;
@@ -661,7 +661,7 @@ export class NetworkLogView extends UI.VBox {
       }
     } else {
       const recordNode = hintText.createChild('b');
-      recordNode.textContent = UI.shortcutRegistry.shortcutTitleForAction('network.toggle-recording');
+      recordNode.textContent = self.UI.shortcutRegistry.shortcutTitleForAction('network.toggle-recording');
       if (reloadShortcutNode) {
         hintText.appendChild(UI.formatLocalized(
             'Record (%s) or reload (%s) to display network activity.', [recordNode, reloadShortcutNode]));

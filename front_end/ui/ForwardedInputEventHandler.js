@@ -30,7 +30,7 @@ export class ForwardedInputEventHandler {
     }
 
     self.UI.context.setFlavor(ForwardedShortcut, ForwardedShortcut.instance);
-    UI.shortcutRegistry.handleKey(KeyboardShortcut.makeKey(keyCode, modifiers), key);
+    self.UI.shortcutRegistry.handleKey(KeyboardShortcut.makeKey(keyCode, modifiers), key);
     self.UI.context.setFlavor(ForwardedShortcut, null);
   }
 }

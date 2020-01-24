@@ -108,7 +108,7 @@ export class Tooltip {
     }
 
     if (tooltip.actionId) {
-      const shortcuts = UI.shortcutRegistry.shortcutDescriptorsForAction(tooltip.actionId);
+      const shortcuts = self.UI.shortcutRegistry.shortcutDescriptorsForAction(tooltip.actionId);
       for (const shortcut of shortcuts) {
         const shortcutElement = this._tooltipElement.createChild('div', 'tooltip-shortcut');
         shortcutElement.textContent = shortcut.name;

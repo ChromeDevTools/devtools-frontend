@@ -233,7 +233,7 @@ export class MainImpl {
     new PauseListener();
 
     self.UI.actionRegistry = new UI.ActionRegistry();
-    UI.shortcutRegistry = new UI.ShortcutRegistry(self.UI.actionRegistry, document);
+    self.UI.shortcutRegistry = new UI.ShortcutRegistry(self.UI.actionRegistry, document);
     UI.ShortcutsScreen.registerShortcuts();
     this._registerForwardedShortcuts();
     this._registerMessageSinkListener();
@@ -342,7 +342,7 @@ export class MainImpl {
       'console.show'
     ];
     const actionKeys =
-        UI.shortcutRegistry.keysForActions(forwardedActions).map(UI.KeyboardShortcut.keyCodeAndModifiersFromKey);
+        self.UI.shortcutRegistry.keysForActions(forwardedActions).map(UI.KeyboardShortcut.keyCodeAndModifiersFromKey);
     Host.InspectorFrontendHost.setWhitelistedShortcuts(JSON.stringify(actionKeys));
   }
 
@@ -417,7 +417,7 @@ export class MainImpl {
     section.addKey(advancedSearchShortcut, Common.UIString('Search across all sources'));
 
     const inspectElementModeShortcuts =
-        UI.shortcutRegistry.shortcutDescriptorsForAction('elements.toggle-element-search');
+        self.UI.shortcutRegistry.shortcutDescriptorsForAction('elements.toggle-element-search');
     if (inspectElementModeShortcuts.length) {
       section.addKey(inspectElementModeShortcuts[0], Common.UIString('Select node to inspect'));
     }
@@ -436,7 +436,7 @@ export class MainImpl {
 
   _postDocumentKeyDown(event) {
     if (!event.handled) {
-      UI.shortcutRegistry.handleShortcut(event);
+      self.UI.shortcutRegistry.handleShortcut(event);
     }
   }
 
@@ -574,7 +574,7 @@ export class MainMenuItem {
       dockItemElement.tabIndex = -1;
       const titleElement = dockItemElement.createChild('span', 'flex-auto');
       titleElement.textContent = Common.UIString('Dock side');
-      const toggleDockSideShorcuts = UI.shortcutRegistry.shortcutDescriptorsForAction('main.toggle-dock');
+      const toggleDockSideShorcuts = self.UI.shortcutRegistry.shortcutDescriptorsForAction('main.toggle-dock');
       titleElement.title = Common.UIString(
           'Placement of DevTools relative to the page. (%s to restore last position)', toggleDockSideShorcuts[0].name);
       dockItemElement.appendChild(titleElement);

@@ -134,3 +134,10 @@ export class PaintProfilerLogItem {
 }
 
 SDKModel.register(PaintProfilerModel, Capability.DOM, false);
+
+/** @typedef {!{
+        rect: !Protocol.DOM.Rect,
+        snapshot: !PaintProfilerSnapshot
+    }}
+*/
+export let SnapshotWithRect;

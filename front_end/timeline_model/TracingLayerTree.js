@@ -2,20 +2,22 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as SDK from '../sdk/sdk.js';
+
 import {LayerPaintEvent} from './TimelineFrameModel.js';  // eslint-disable-line no-unused-vars
 
 /**
  * @unrestricted
  */
-export class TracingLayerTree extends SDK.LayerTreeBase {
+export class TracingLayerTree extends SDK.LayerTreeBase.LayerTreeBase {
   /**
-   * @param {?SDK.Target} target
+   * @param {?SDK.SDKModel.Target} target
    */
   constructor(target) {
     super(target);
     /** @type {!Map.<string, !TimelineModel.TracingLayerTile>} */
     this._tileById = new Map();
-    this._paintProfilerModel = target && target.model(SDK.PaintProfilerModel);
+    this._paintProfilerModel = target && target.model(SDK.PaintProfiler.PaintProfilerModel);
   }
 
   /**
@@ -69,18 +71,18 @@ export class TracingLayerTree extends SDK.LayerTreeBase {
 
   /**
    * @param {string} tileId
-   * @return {!Promise<?SDK.SnapshotWithRect>}
+   * @return {!Promise<?SDK.PaintProfiler.SnapshotWithRect>}
    */
   pictureForRasterTile(tileId) {
     const tile = this._tileById.get('cc::Tile/' + tileId);
     if (!tile) {
       self.Common.console.error(`Tile ${tileId} is missing`);
-      return /** @type {!Promise<?SDK.SnapshotWithRect>} */ (Promise.resolve(null));
+      return /** @type {!Promise<?SDK.PaintProfiler.SnapshotWithRect>} */ (Promise.resolve(null));
     }
     const layer = /** @type {?TracingLayer} */ (this.layerById(tile.layer_id));
     if (!layer) {
       self.Common.console.error(`Layer ${tile.layer_id} for tile ${tileId} is not found`);
-      return /** @type {!Promise<?SDK.SnapshotWithRect>} */ (Promise.resolve(null));
+      return /** @type {!Promise<?SDK.PaintProfiler.SnapshotWithRect>} */ (Promise.resolve(null));
     }
     return layer._pictureForRect(tile.content_rect);
   }
@@ -98,7 +100,7 @@ export class TracingLayerTree extends SDK.LayerTreeBase {
   }
 
   /**
-   * @param {!Object<(string|number), !SDK.Layer>} oldLayersById
+   * @param {!Object<(string|number), !SDK.LayerTreeBase.Layer>} oldLayersById
    * @param {!TimelineModel.TracingLayerPayload} payload
    * @return {!TracingLayer}
    */
@@ -139,12 +141,12 @@ export class TracingLayerTree extends SDK.LayerTreeBase {
 }
 
 /**
- * @implements {SDK.Layer}
+ * @implements {SDK.LayerTreeBase.Layer}
  * @unrestricted
  */
 export class TracingLayer {
   /**
-   * @param {?SDK.PaintProfilerModel} paintProfilerModel
+   * @param {?SDK.PaintProfiler.PaintProfilerModel} paintProfilerModel
    * @param {!TimelineModel.TracingLayerPayload} payload
    */
   constructor(paintProfilerModel, payload) {
@@ -156,7 +158,7 @@ export class TracingLayer {
    * @param {!TimelineModel.TracingLayerPayload} payload
    */
   _reset(payload) {
-    /** @type {?SDK.DOMNode} */
+    /** @type {?SDK.DOMModel.DOMNode} */
     this._node = null;
     this._layerId = String(payload.layer_id);
     this._offsetX = payload.position[0];
@@ -197,7 +199,7 @@ export class TracingLayer {
 
   /**
    * @override
-   * @return {?SDK.Layer}
+   * @return {?SDK.LayerTreeBase.Layer}
    */
   parent() {
     return this._parent;
@@ -213,7 +215,7 @@ export class TracingLayer {
 
   /**
    * @override
-   * @return {!Array.<!SDK.Layer>}
+   * @return {!Array.<!SDK.LayerTreeBase.Layer>}
    */
   children() {
     return this._children;
@@ -221,7 +223,7 @@ export class TracingLayer {
 
   /**
    * @override
-   * @param {!SDK.Layer} childParam
+   * @param {!SDK.LayerTreeBase.Layer} childParam
    */
   addChild(childParam) {
     const child = /** @type {!TracingLayer} */ (childParam);
@@ -234,7 +236,7 @@ export class TracingLayer {
   }
 
   /**
-   * @param {?SDK.DOMNode} node
+   * @param {?SDK.DOMModel.DOMNode} node
    */
   _setNode(node) {
     this._node = node;
@@ -242,7 +244,7 @@ export class TracingLayer {
 
   /**
    * @override
-   * @return {?SDK.DOMNode}
+   * @return {?SDK.DOMModel.DOMNode}
    */
   node() {
     return this._node;
@@ -250,7 +252,7 @@ export class TracingLayer {
 
   /**
    * @override
-   * @return {?SDK.DOMNode}
+   * @return {?SDK.DOMModel.DOMNode}
    */
   nodeForSelfOrAncestor() {
     for (let layer = this; layer; layer = layer._parent) {
@@ -351,7 +353,7 @@ export class TracingLayer {
 
   /**
    * @override
-   * @return {?SDK.Layer.StickyPositionConstraint}
+   * @return {?SDK.LayerTreeBase.StickyPositionConstraint}
    */
   stickyPositionConstraint() {
     // TODO(smcgruer): Provide sticky layer information in traces.
@@ -368,7 +370,7 @@ export class TracingLayer {
 
   /**
    * @override
-   * @return {!Array<!Promise<?SDK.SnapshotWithRect>>}
+   * @return {!Array<!Promise<?SDK.PaintProfiler.SnapshotWithRect>>}
    */
   snapshots() {
     return this._paints.map(paint => paint.snapshotPromise().then(snapshot => {
@@ -382,7 +384,7 @@ export class TracingLayer {
 
   /**
    * @param {!Array<number>} targetRect
-   * @return {!Promise<?SDK.SnapshotWithRect>}
+   * @return {!Promise<?SDK.PaintProfiler.SnapshotWithRect>}
    */
   _pictureForRect(targetRect) {
     return Promise.all(this._paints.map(paint => paint.picturePromise())).then(pictures => {
@@ -439,19 +441,19 @@ export class TracingLayer {
     this._scrollRects = [];
     if (payload.non_fast_scrollable_region) {
       this._scrollRects.push(this._scrollRectsFromParams(
-          payload.non_fast_scrollable_region, SDK.Layer.ScrollRectType.NonFastScrollable.name));
+          payload.non_fast_scrollable_region, SDK.LayerTreeBase.Layer.ScrollRectType.NonFastScrollable.name));
     }
     if (payload.touch_event_handler_region) {
       this._scrollRects.push(this._scrollRectsFromParams(
-          payload.touch_event_handler_region, SDK.Layer.ScrollRectType.TouchEventHandler.name));
+          payload.touch_event_handler_region, SDK.LayerTreeBase.Layer.ScrollRectType.TouchEventHandler.name));
     }
     if (payload.wheel_event_handler_region) {
       this._scrollRects.push(this._scrollRectsFromParams(
-          payload.wheel_event_handler_region, SDK.Layer.ScrollRectType.WheelEventHandler.name));
+          payload.wheel_event_handler_region, SDK.LayerTreeBase.Layer.ScrollRectType.WheelEventHandler.name));
     }
     if (payload.scroll_event_handler_region) {
       this._scrollRects.push(this._scrollRectsFromParams(
-          payload.scroll_event_handler_region, SDK.Layer.ScrollRectType.RepaintsOnScroll.name));
+          payload.scroll_event_handler_region, SDK.LayerTreeBase.Layer.ScrollRectType.RepaintsOnScroll.name));
     }
   }
 

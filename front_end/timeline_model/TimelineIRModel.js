@@ -2,6 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
+
 import {RecordType} from './TimelineModel.js';
 
 /**
@@ -33,7 +36,7 @@ export class TimelineIRModel {
     if (animations) {
       this._processAnimations(animations);
     }
-    const range = new Common.SegmentedRange();
+    const range = new Common.SegmentedRange.SegmentedRange();
     range.appendRange(this._drags);  // Drags take lower precedence than animation, as we can't detect them reliably.
     range.appendRange(this._cssAnimations);
     range.appendRange(this._scrolls);
@@ -85,8 +88,8 @@ export class TimelineIRModel {
 
         case eventTypes.FlingStart:
           if (flingStart) {
-            self.Common.console.error(
-                Common.UIString('Two flings at the same time? %s vs %s', flingStart.startTime, event.startTime));
+            self.Common.console.error(Common.UIString.UIString(
+                'Two flings at the same time? %s vs %s', flingStart.startTime, event.startTime));
             break;
           }
           flingStart = event;
@@ -120,8 +123,8 @@ export class TimelineIRModel {
           // We do not produce any response segment for TouchStart -- there's either going to be one upon
           // TouchMove for drag, or one for GestureTap.
           if (touchStart) {
-            self.Common.console.error(
-                Common.UIString('Two touches at the same time? %s vs %s', touchStart.startTime, event.startTime));
+            self.Common.console.error(Common.UIString.UIString(
+                'Two touches at the same time? %s vs %s', touchStart.startTime, event.startTime));
             break;
           }
           touchStart = event;
@@ -201,23 +204,23 @@ export class TimelineIRModel {
   /**
    * @param {!SDK.TracingModel.AsyncEvent} event
    * @param {!Phases} phase
-   * @return {!Common.Segment}
+   * @return {!Common.SegmentedRange.Segment}
    */
   _segmentForEvent(event, phase) {
     this._setPhaseForEvent(event, phase);
-    return new Common.Segment(event.startTime, event.endTime, phase);
+    return new Common.SegmentedRange.Segment(event.startTime, event.endTime, phase);
   }
 
   /**
    * @param {!SDK.TracingModel.AsyncEvent} startEvent
    * @param {!SDK.TracingModel.AsyncEvent} endEvent
    * @param {!Phases} phase
-   * @return {!Common.Segment}
+   * @return {!Common.SegmentedRange.Segment}
    */
   _segmentForEventRange(startEvent, endEvent, phase) {
     this._setPhaseForEvent(startEvent, phase);
     this._setPhaseForEvent(endEvent, phase);
-    return new Common.Segment(startEvent.startTime, endEvent.endTime, phase);
+    return new Common.SegmentedRange.Segment(startEvent.startTime, endEvent.endTime, phase);
   }
 
   /**
@@ -229,7 +232,7 @@ export class TimelineIRModel {
   }
 
   /**
-   * @return {!Array<!Common.Segment>}
+   * @return {!Array<!Common.SegmentedRange.Segment>}
    */
   interactionRecords() {
     return this._segments;
@@ -239,15 +242,15 @@ export class TimelineIRModel {
     const thresholdsMs = TimelineIRModel._mergeThresholdsMs;
 
     this._segments = [];
-    this._drags = new Common.SegmentedRange(merge.bind(null, thresholdsMs.mouse));
-    this._cssAnimations = new Common.SegmentedRange(merge.bind(null, thresholdsMs.animation));
-    this._responses = new Common.SegmentedRange(merge.bind(null, 0));
-    this._scrolls = new Common.SegmentedRange(merge.bind(null, thresholdsMs.animation));
+    this._drags = new Common.SegmentedRange.SegmentedRange(merge.bind(null, thresholdsMs.mouse));
+    this._cssAnimations = new Common.SegmentedRange.SegmentedRange(merge.bind(null, thresholdsMs.animation));
+    this._responses = new Common.SegmentedRange.SegmentedRange(merge.bind(null, 0));
+    this._scrolls = new Common.SegmentedRange.SegmentedRange(merge.bind(null, thresholdsMs.animation));
 
     /**
      * @param {number} threshold
-     * @param {!Common.Segment} first
-     * @param {!Common.Segment} second
+     * @param {!Common.SegmentedRange.Segment} first
+     * @param {!Common.SegmentedRange.Segment} second
      */
     function merge(threshold, first, second) {
       return first.end + threshold >= second.begin && first.data === second.data ? first : null;

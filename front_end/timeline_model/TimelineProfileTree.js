@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
+
 import {TimelineJSProfileProcessor} from './TimelineJSProfile.js';
 import {RecordType, TimelineData, TimelineModelImpl} from './TimelineModel.js';
 import {TimelineModelFilter} from './TimelineModelFilter.js';  // eslint-disable-line no-unused-vars

@@ -28,6 +28,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as SDK from '../sdk/sdk.js';
+
 import {RecordType, TimelineData} from './TimelineModel.js';
 import {TracingLayerTree} from './TracingLayerTree.js';
 
@@ -76,7 +78,7 @@ export class TimelineFrameModel {
 
   /**
    * @param {!SDK.TracingModel.Event} rasterTask
-   * @return Promise<?{rect: !Protocol.DOM.Rect, snapshot: !SDK.PaintProfilerSnapshot}>}
+   * @return Promise<?{rect: !Protocol.DOM.Rect, snapshot: !SDK.PaintProfiler.PaintProfilerSnapshot}>}
    */
   rasterTilePromise(rasterTask) {
     if (!this._target) {
@@ -233,7 +235,7 @@ export class TimelineFrameModel {
   }
 
   /**
-   * @param {?SDK.Target} target
+   * @param {?SDK.SDKModel.Target} target
    * @param {!Array.<!SDK.TracingModel.Event>} events
    * @param {!Array<!{thread: !SDK.TracingModel.Thread, time: number}>} threadData
    */
@@ -270,7 +272,7 @@ export class TimelineFrameModel {
       this._processCompositorEvents(event);
       if (event.thread === this._currentProcessMainThread) {
         this._addMainThreadTraceEvent(event);
-      } else if (this._lastFrame && event.selfTime && !SDK.TracingModel.isTopLevelEvent(event)) {
+      } else if (this._lastFrame && event.selfTime && !SDK.TracingModel.TracingModel.isTopLevelEvent(event)) {
         this._lastFrame._addTimeForCategory(this._categoryMapper(event), event.selfTime);
       }
     }
@@ -306,7 +308,7 @@ export class TimelineFrameModel {
   _addMainThreadTraceEvent(event) {
     const eventNames = RecordType;
 
-    if (SDK.TracingModel.isTopLevelEvent(event)) {
+    if (SDK.TracingModel.TracingModel.isTopLevelEvent(event)) {
       this._currentTaskTimeByCategory = {};
       this._lastTaskBeginTime = event.startTime;
     }
@@ -355,7 +357,7 @@ TimelineFrameModel._mainFrameMarkers = [
  */
 export class TracingFrameLayerTree {
   /**
-   * @param {!SDK.Target} target
+   * @param {!SDK.SDKModel.Target} target
    * @param {!SDK.TracingModel.ObjectSnapshot} snapshot
    */
   constructor(target, snapshot) {
@@ -471,7 +473,7 @@ export class TimelineFrame {
 export class LayerPaintEvent {
   /**
    * @param {!SDK.TracingModel.Event} event
-   * @param {?SDK.Target} target
+   * @param {?SDK.SDKModel.Target} target
    */
   constructor(event, target) {
     this._event = event;
@@ -508,10 +510,10 @@ export class LayerPaintEvent {
   }
 
   /**
-   * @return !Promise<?{rect: !Array<number>, snapshot: !SDK.PaintProfilerSnapshot}>}
+   * @return !Promise<?{rect: !Array<number>, snapshot: !SDK.PaintProfiler.PaintProfilerSnapshot}>}
    */
   snapshotPromise() {
-    const paintProfilerModel = this._target && this._target.model(SDK.PaintProfilerModel);
+    const paintProfilerModel = this._target && this._target.model(SDK.PaintProfiler.PaintProfilerModel);
     return this.picturePromise().then(picture => {
       if (!picture || !paintProfilerModel) {
         return null;

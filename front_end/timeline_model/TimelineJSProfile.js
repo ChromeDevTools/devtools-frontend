@@ -2,11 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as SDK from '../sdk/sdk.js';
+
 import {RecordType, TimelineModelImpl} from './TimelineModel.js';
 
 export class TimelineJSProfileProcessor {
   /**
-   * @param {!SDK.CPUProfileDataModel} jsProfileModel
+   * @param {!SDK.CPUProfileDataModel.CPUProfileDataModel} jsProfileModel
    * @param {!SDK.TracingModel.Thread} thread
    * @return {!Array<!SDK.TracingModel.Event>}
    */
@@ -210,7 +212,7 @@ export class TimelineJSProfileProcessor {
       }
     }
 
-    const firstTopLevelEvent = events.find(SDK.TracingModel.isTopLevelEvent);
+    const firstTopLevelEvent = events.find(SDK.TracingModel.TracingModel.isTopLevelEvent);
     const startTime = firstTopLevelEvent ? firstTopLevelEvent.startTime : 0;
     TimelineModelImpl.forEachEvent(events, onStartEvent, onEndEvent, onInstantEvent, startTime);
     return jsFrameEvents;

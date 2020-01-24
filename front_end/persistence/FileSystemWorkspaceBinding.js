@@ -28,6 +28,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as Common from '../common/common.js';
+import * as Workspace from '../workspace/workspace.js';
+
 import {IsolatedFileSystem} from './IsolatedFileSystem.js';                        // eslint-disable-line no-unused-vars
 import {Events, IsolatedFileSystemManager} from './IsolatedFileSystemManager.js';  // eslint-disable-line no-unused-vars
 import {PlatformFileSystem} from './PlatformFileSystem.js';                        // eslint-disable-line no-unused-vars
@@ -38,7 +41,7 @@ import {PlatformFileSystem} from './PlatformFileSystem.js';                     
 export class FileSystemWorkspaceBinding {
   /**
    * @param {!IsolatedFileSystemManager} isolatedFileSystemManager
-   * @param {!Workspace.Workspace} workspace
+   * @param {!Workspace.Workspace.WorkspaceImpl} workspace
    */
   constructor(isolatedFileSystemManager, workspace) {
     this._isolatedFileSystemManager = isolatedFileSystemManager;
@@ -63,7 +66,7 @@ export class FileSystemWorkspaceBinding {
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    * @return {!Array<string>}
    */
   static relativePath(uiSourceCode) {
@@ -73,7 +76,7 @@ export class FileSystemWorkspaceBinding {
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    * @return {string}
    */
   static tooltipForUISourceCode(uiSourceCode) {
@@ -83,7 +86,7 @@ export class FileSystemWorkspaceBinding {
   }
 
   /**
-   * @param {!Workspace.Project} project
+   * @param {!Workspace.Workspace.Project} project
    * @return {string}
    */
   static fileSystemType(project) {
@@ -93,7 +96,7 @@ export class FileSystemWorkspaceBinding {
   }
 
   /**
-   * @param {!Workspace.Project} project
+   * @param {!Workspace.Workspace.Project} project
    * @return {boolean}
    */
   static fileSystemSupportsAutomapping(project) {
@@ -103,7 +106,7 @@ export class FileSystemWorkspaceBinding {
   }
 
   /**
-   * @param {!Workspace.Project} project
+   * @param {!Workspace.Workspace.Project} project
    * @param {string} relativePath
    * @return {string}
    */
@@ -193,7 +196,7 @@ export class FileSystemWorkspaceBinding {
   }
 
   dispose() {
-    Common.EventTarget.removeEventListeners(this._eventListeners);
+    Common.EventTarget.EventTarget.removeEventListeners(this._eventListeners);
     for (const fileSystem of this._boundFileSystems.values()) {
       fileSystem.dispose();
       this._boundFileSystems.remove(fileSystem._fileSystem.path());
@@ -202,14 +205,14 @@ export class FileSystemWorkspaceBinding {
 }
 
 /**
- * @implements {Workspace.Project}
+ * @implements {Workspace.Workspace.Project}
  * @unrestricted
  */
-export class FileSystem extends Workspace.ProjectStore {
+export class FileSystem extends Workspace.Workspace.ProjectStore {
   /**
    * @param {!FileSystemWorkspaceBinding} fileSystemWorkspaceBinding
    * @param {!PlatformFileSystem} isolatedFileSystem
-   * @param {!Workspace.Workspace} workspace
+   * @param {!Workspace.Workspace.WorkspaceImpl} workspace
    */
   constructor(fileSystemWorkspaceBinding, isolatedFileSystem, workspace) {
     const fileSystemPath = isolatedFileSystem.path();
@@ -217,7 +220,7 @@ export class FileSystem extends Workspace.ProjectStore {
     console.assert(!workspace.project(id));
     const displayName = fileSystemPath.substr(fileSystemPath.lastIndexOf('/') + 1);
 
-    super(workspace, id, Workspace.projectTypes.FileSystem, displayName);
+    super(workspace, id, Workspace.Workspace.projectTypes.FileSystem, displayName);
 
     this._fileSystem = isolatedFileSystem;
     this._fileSystemBaseURL = this._fileSystem.path() + '/';
@@ -240,7 +243,7 @@ export class FileSystem extends Workspace.ProjectStore {
 
   /**
    * @override
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    * @return {string}
    */
   mimeType(uiSourceCode) {
@@ -255,7 +258,7 @@ export class FileSystem extends Workspace.ProjectStore {
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    * @return {string}
    */
   _filePathForUISourceCode(uiSourceCode) {
@@ -272,8 +275,8 @@ export class FileSystem extends Workspace.ProjectStore {
 
   /**
    * @override
-   * @param {!Workspace.UISourceCode} uiSourceCode
-   * @return {!Promise<?Workspace.UISourceCodeMetadata>}
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
+   * @return {!Promise<?Workspace.UISourceCode.UISourceCodeMetadata>}
    */
   requestMetadata(uiSourceCode) {
     if (uiSourceCode[_metadata]) {
@@ -286,18 +289,18 @@ export class FileSystem extends Workspace.ProjectStore {
 
     /**
      * @param {?{modificationTime: !Date, size: number}} metadata
-     * @return {?Workspace.UISourceCodeMetadata}
+     * @return {?Workspace.UISourceCode.UISourceCodeMetadata}
      */
     function onMetadata(metadata) {
       if (!metadata) {
         return null;
       }
-      return new Workspace.UISourceCodeMetadata(metadata.modificationTime, metadata.size);
+      return new Workspace.UISourceCode.UISourceCodeMetadata(metadata.modificationTime, metadata.size);
     }
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    * @return {!Promise<?Blob>}
    */
   requestFileBlob(uiSourceCode) {
@@ -306,7 +309,7 @@ export class FileSystem extends Workspace.ProjectStore {
 
   /**
    * @override
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    * @returns {!Promise<!Common.DeferredContent>}
    */
   requestFileContent(uiSourceCode) {
@@ -324,7 +327,7 @@ export class FileSystem extends Workspace.ProjectStore {
 
   /**
    * @override
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    * @param {string} newContent
    * @param {boolean} isBase64
    * @return {!Promise}
@@ -336,7 +339,7 @@ export class FileSystem extends Workspace.ProjectStore {
 
   /**
    * @override
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    * @return {string}
    */
   fullDisplayName(uiSourceCode) {
@@ -355,9 +358,9 @@ export class FileSystem extends Workspace.ProjectStore {
 
   /**
    * @override
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    * @param {string} newName
-   * @param {function(boolean, string=, string=, !Common.ResourceType=)} callback
+   * @param {function(boolean, string=, string=, !Common.ResourceType.ResourceType=)} callback
    */
   rename(uiSourceCode, newName, callback) {
     if (newName === uiSourceCode.name()) {
@@ -392,7 +395,7 @@ export class FileSystem extends Workspace.ProjectStore {
 
   /**
    * @override
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    * @param {string} query
    * @param {boolean} caseSensitive
    * @param {boolean} isRegex
@@ -409,9 +412,9 @@ export class FileSystem extends Workspace.ProjectStore {
 
   /**
    * @override
-   * @param {!Workspace.ProjectSearchConfig} searchConfig
+   * @param {!Workspace.Workspace.ProjectSearchConfig} searchConfig
    * @param {!Array.<string>} filesMathingFileQuery
-   * @param {!Common.Progress} progress
+   * @param {!Common.Progress.Progress} progress
    * @return {!Promise<!Array<string>>}
    */
   async findFilesMatchingSearchRequest(searchConfig, filesMathingFileQuery, progress) {
@@ -434,7 +437,7 @@ export class FileSystem extends Workspace.ProjectStore {
 
   /**
    * @override
-   * @param {!Common.Progress} progress
+   * @param {!Common.Progress.Progress} progress
    */
   indexContent(progress) {
     this._fileSystem.indexContent(progress);
@@ -506,7 +509,7 @@ export class FileSystem extends Workspace.ProjectStore {
    * @param {?string} name
    * @param {string} content
    * @param {boolean=} isBase64
-   * @return {!Promise<?Workspace.UISourceCode>}
+   * @return {!Promise<?Workspace.UISourceCode.UISourceCode>}
    */
   async createFile(path, name, content, isBase64) {
     const guardFileName = this._fileSystemPath + path + (!path.endsWith('/') ? '/' : '') + name;
@@ -523,7 +526,7 @@ export class FileSystem extends Workspace.ProjectStore {
 
   /**
    * @override
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    */
   deleteFile(uiSourceCode) {
     const relativePath = this._filePathForUISourceCode(uiSourceCode);
@@ -543,7 +546,7 @@ export class FileSystem extends Workspace.ProjectStore {
 
   /**
    * @param {string} filePath
-   * @return {!Workspace.UISourceCode}
+   * @return {!Workspace.UISourceCode.UISourceCode}
    */
   _addFile(filePath) {
     const contentType = this._fileSystem.contentType(filePath);

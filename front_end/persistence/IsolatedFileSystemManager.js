@@ -28,13 +28,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as Common from '../common/common.js';
+import * as Host from '../host/host.js';
+
 import {IsolatedFileSystem} from './IsolatedFileSystem.js';
 import {PlatformFileSystem} from './PlatformFileSystem.js';  // eslint-disable-line no-unused-vars
 
 /**
  * @unrestricted
  */
-export class IsolatedFileSystemManager extends Common.Object {
+export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrapper {
   constructor() {
     super();
 
@@ -42,22 +45,22 @@ export class IsolatedFileSystemManager extends Common.Object {
     this._fileSystems = new Map();
     /** @type {!Map<number, function(!Array.<string>)>} */
     this._callbacks = new Map();
-    /** @type {!Map<number, !Common.Progress>} */
+    /** @type {!Map<number, !Common.Progress.Progress>} */
     this._progresses = new Map();
 
-    Host.InspectorFrontendHost.events.addEventListener(
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
         Host.InspectorFrontendHostAPI.Events.FileSystemRemoved, this._onFileSystemRemoved, this);
-    Host.InspectorFrontendHost.events.addEventListener(
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
         Host.InspectorFrontendHostAPI.Events.FileSystemAdded, this._onFileSystemAdded, this);
-    Host.InspectorFrontendHost.events.addEventListener(
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
         Host.InspectorFrontendHostAPI.Events.FileSystemFilesChangedAddedRemoved, this._onFileSystemFilesChanged, this);
-    Host.InspectorFrontendHost.events.addEventListener(
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
         Host.InspectorFrontendHostAPI.Events.IndexingTotalWorkCalculated, this._onIndexingTotalWorkCalculated, this);
-    Host.InspectorFrontendHost.events.addEventListener(
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
         Host.InspectorFrontendHostAPI.Events.IndexingWorked, this._onIndexingWorked, this);
-    Host.InspectorFrontendHost.events.addEventListener(
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
         Host.InspectorFrontendHostAPI.Events.IndexingDone, this._onIndexingDone, this);
-    Host.InspectorFrontendHost.events.addEventListener(
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
         Host.InspectorFrontendHostAPI.Events.SearchCompleted, this._onSearchCompleted, this);
 
     this._initExcludePatterSetting();
@@ -73,9 +76,9 @@ export class IsolatedFileSystemManager extends Common.Object {
   _requestFileSystems() {
     let fulfill;
     const promise = new Promise(f => fulfill = f);
-    Host.InspectorFrontendHost.events.addEventListener(
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
         Host.InspectorFrontendHostAPI.Events.FileSystemsLoaded, onFileSystemsLoaded, this);
-    Host.InspectorFrontendHost.requestFileSystems();
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.requestFileSystems();
     return promise;
 
     /**
@@ -106,7 +109,7 @@ export class IsolatedFileSystemManager extends Common.Object {
   addFileSystem(type) {
     return new Promise(resolve => {
       this._fileSystemRequestResolve = resolve;
-      Host.InspectorFrontendHost.addFileSystem(type || '');
+      Host.InspectorFrontendHost.InspectorFrontendHostInstance.addFileSystem(type || '');
     });
   }
 
@@ -114,7 +117,7 @@ export class IsolatedFileSystemManager extends Common.Object {
    * @param {!PlatformFileSystem} fileSystem
    */
   removeFileSystem(fileSystem) {
-    Host.InspectorFrontendHost.removeFileSystem(fileSystem.embedderPath());
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.removeFileSystem(fileSystem.embedderPath());
   }
 
   /**
@@ -131,7 +134,7 @@ export class IsolatedFileSystemManager extends Common.Object {
    */
   _innerAddFileSystem(fileSystem, dispatchEvent) {
     const embedderPath = fileSystem.fileSystemPath;
-    const fileSystemURL = Common.ParsedURL.platformPathToURL(fileSystem.fileSystemPath);
+    const fileSystemURL = Common.ParsedURL.ParsedURL.platformPathToURL(fileSystem.fileSystemPath);
     const promise = IsolatedFileSystem.create(
         this, fileSystemURL, embedderPath, fileSystem.type, fileSystem.fileSystemName, fileSystem.rootURL);
     return promise.then(storeFileSystem.bind(this));
@@ -168,7 +171,7 @@ export class IsolatedFileSystemManager extends Common.Object {
     const errorMessage = /** @type {string} */ (event.data['errorMessage']);
     let fileSystem = /** @type {?Persistence.IsolatedFileSystemManager.FileSystem} */ (event.data['fileSystem']);
     if (errorMessage) {
-      self.Common.console.error(Common.UIString('Unable to add filesystem: %s', errorMessage));
+      self.Common.console.error(Common.UIString.UIString('Unable to add filesystem: %s', errorMessage));
       if (!this._fileSystemRequestResolve) {
         return;
       }
@@ -188,7 +191,7 @@ export class IsolatedFileSystemManager extends Common.Object {
    */
   _onFileSystemRemoved(event) {
     const embedderPath = /** @type {string} */ (event.data);
-    const fileSystemPath = Common.ParsedURL.platformPathToURL(embedderPath);
+    const fileSystemPath = Common.ParsedURL.ParsedURL.platformPathToURL(embedderPath);
     const isolatedFileSystem = this._fileSystems.get(fileSystemPath);
     if (!isolatedFileSystem) {
       return;
@@ -218,7 +221,7 @@ export class IsolatedFileSystemManager extends Common.Object {
     function groupFilePathsIntoFileSystemPaths(embedderPaths) {
       const paths = new Platform.Multimap();
       for (const embedderPath of embedderPaths) {
-        const filePath = Common.ParsedURL.platformPathToURL(embedderPath);
+        const filePath = Common.ParsedURL.ParsedURL.platformPathToURL(embedderPath);
         for (const fileSystemPath of this._fileSystems.keys()) {
           if (this._fileSystems.get(fileSystemPath).isFileExcluded(embedderPath)) {
             continue;
@@ -261,20 +264,20 @@ export class IsolatedFileSystemManager extends Common.Object {
     ];
     const defaultLinuxExcludedFolders = ['/.*~$'];
     let defaultExcludedFolders = defaultCommonExcludedFolders;
-    if (Host.isWin()) {
+    if (Host.Platform.isWin()) {
       defaultExcludedFolders = defaultExcludedFolders.concat(defaultWinExcludedFolders);
-    } else if (Host.isMac()) {
+    } else if (Host.Platform.isMac()) {
       defaultExcludedFolders = defaultExcludedFolders.concat(defaultMacExcludedFolders);
     } else {
       defaultExcludedFolders = defaultExcludedFolders.concat(defaultLinuxExcludedFolders);
     }
     const defaultExcludedFoldersPattern = defaultExcludedFolders.join('|');
     this._workspaceFolderExcludePatternSetting = self.Common.settings.createRegExpSetting(
-        'workspaceFolderExcludePattern', defaultExcludedFoldersPattern, Host.isWin() ? 'i' : '');
+        'workspaceFolderExcludePattern', defaultExcludedFoldersPattern, Host.Platform.isWin() ? 'i' : '');
   }
 
   /**
-   * @return {!Common.Setting}
+   * @return {!Common.Settings.Setting}
    */
   workspaceFolderExcludePatternSetting() {
     return this._workspaceFolderExcludePatternSetting;
@@ -291,7 +294,7 @@ export class IsolatedFileSystemManager extends Common.Object {
   }
 
   /**
-   * @param {!Common.Progress} progress
+   * @param {!Common.Progress.Progress} progress
    * @return {number}
    */
   registerProgress(progress) {
@@ -327,7 +330,7 @@ export class IsolatedFileSystemManager extends Common.Object {
     }
     progress.worked(worked);
     if (progress.isCanceled()) {
-      Host.InspectorFrontendHost.stopIndexing(requestId);
+      Host.InspectorFrontendHost.InspectorFrontendHostInstance.stopIndexing(requestId);
       this._onIndexingDone(event);
     }
   }

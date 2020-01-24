@@ -2,19 +2,22 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+import * as UI from '../ui/ui.js';
+
 import {EditFileSystemView} from './EditFileSystemView.js';
 import {FileSystem} from './FileSystemWorkspaceBinding.js';  // eslint-disable-line no-unused-vars
 import {IsolatedFileSystem} from './IsolatedFileSystem.js';
 import {Events} from './IsolatedFileSystemManager.js';
 import {PlatformFileSystem} from './PlatformFileSystem.js';  // eslint-disable-line no-unused-vars
 
-export class WorkspaceSettingsTab extends UI.VBox {
+export class WorkspaceSettingsTab extends UI.Widget.VBox {
   constructor() {
     super();
     this.registerRequiredCSS('persistence/workspaceSettingsTab.css');
 
     const header = this.element.createChild('header');
-    header.createChild('h1').createTextChild(Common.UIString('Workspace'));
+    header.createChild('h1').createTextChild(Common.UIString.UIString('Workspace'));
 
     this.containerElement = this.element.createChild('div', 'settings-container-wrapper')
                                 .createChild('div', 'settings-tab settings-content settings-container');
@@ -30,11 +33,11 @@ export class WorkspaceSettingsTab extends UI.VBox {
     this.containerElement.appendChild(folderExcludePatternInput);
 
     const div = this.containerElement.createChild('div', 'settings-info-message');
-    div.createTextChild(Common.UIString('Mappings are inferred automatically.'));
+    div.createTextChild(Common.UIString.UIString('Mappings are inferred automatically.'));
 
     this._fileSystemsListContainer = this.containerElement.createChild('div', '');
 
-    const addButton = UI.createTextButton(ls`Add folder\u2026`, this._addFileSystemClicked.bind(this));
+    const addButton = UI.UIUtils.createTextButton(ls`Add folder\u2026`, this._addFileSystemClicked.bind(this));
     this.containerElement.appendChild(addButton);
     this.setDefaultFocusedElement(addButton);
 
@@ -57,13 +60,13 @@ export class WorkspaceSettingsTab extends UI.VBox {
     const p = createElement('p');
     const labelElement = p.createChild('label');
     labelElement.textContent = ls`Folder exclude pattern`;
-    const inputElement = UI.createInput('', 'text');
+    const inputElement = UI.UIUtils.createInput('', 'text');
     UI.ARIAUtils.bindLabelToControl(labelElement, inputElement);
     p.appendChild(inputElement);
     inputElement.style.width = '270px';
     const folderExcludeSetting = self.Persistence.isolatedFileSystemManager.workspaceFolderExcludePatternSetting();
     const setValue =
-        UI.bindInput(inputElement, folderExcludeSetting.set.bind(folderExcludeSetting), regexValidator, false);
+        UI.UIUtils.bindInput(inputElement, folderExcludeSetting.set.bind(folderExcludeSetting), regexValidator, false);
     folderExcludeSetting.addChangeListener(() => setValue.call(null, folderExcludeSetting.get()));
     setValue(folderExcludeSetting.get());
     return p;
@@ -127,9 +130,10 @@ export class WorkspaceSettingsTab extends UI.VBox {
     path.textContent = fileSystemPath;
     path.title = fileSystemPath;
 
-    const toolbar = new UI.Toolbar('');
-    const button = new UI.ToolbarButton(Common.UIString('Remove'), 'largeicon-delete');
-    button.addEventListener(UI.ToolbarButton.Events.Click, this._removeFileSystemClicked.bind(this, fileSystem));
+    const toolbar = new UI.Toolbar.Toolbar('');
+    const button = new UI.Toolbar.ToolbarButton(Common.UIString.UIString('Remove'), 'largeicon-delete');
+    button.addEventListener(
+        UI.Toolbar.ToolbarButton.Events.Click, this._removeFileSystemClicked.bind(this, fileSystem));
     toolbar.appendToolbarItem(button);
     header.appendChild(toolbar.element);
 

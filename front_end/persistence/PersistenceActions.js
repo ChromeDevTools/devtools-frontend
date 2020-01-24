@@ -2,6 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+import * as Host from '../host/host.js';
+import * as UI from '../ui/ui.js';  // eslint-disable-line no-unused-vars
+import * as Workspace from '../workspace/workspace.js';
+
 /**
  * @implements {UI.ContextMenu.Provider}
  * @unrestricted
@@ -10,14 +15,14 @@ export class ContextMenuProvider {
   /**
    * @override
    * @param {!Event} event
-   * @param {!UI.ContextMenu} contextMenu
+   * @param {!UI.ContextMenu.ContextMenu} contextMenu
    * @param {!Object} target
    */
   appendApplicableItems(event, contextMenu, target) {
-    const contentProvider = /** @type {!Common.ContentProvider} */ (target);
+    const contentProvider = /** @type {!Common.ContentProvider.ContentProvider} */ (target);
     async function saveAs() {
-      if (contentProvider instanceof Workspace.UISourceCode) {
-        /** @type {!Workspace.UISourceCode} */ (contentProvider).commitWorkingCopy();
+      if (contentProvider instanceof Workspace.UISourceCode.UISourceCode) {
+        /** @type {!Workspace.UISourceCode.UISourceCode} */ (contentProvider).commitWorkingCopy();
       }
       let content = (await contentProvider.requestContent()).content || '';
       if (await contentProvider.contentEncoded()) {
@@ -29,16 +34,16 @@ export class ContextMenuProvider {
     }
 
     if (contentProvider.contentType().isDocumentOrScriptOrStyleSheet()) {
-      contextMenu.saveSection().appendItem(Common.UIString('Save as...'), saveAs);
+      contextMenu.saveSection().appendItem(Common.UIString.UIString('Save as...'), saveAs);
     }
 
     // Retrieve uiSourceCode by URL to pick network resources everywhere.
     const uiSourceCode = self.Workspace.workspace.uiSourceCodeForURL(contentProvider.contentURL());
     if (uiSourceCode && Persistence.networkPersistenceManager.canSaveUISourceCodeForOverrides(uiSourceCode)) {
-      contextMenu.saveSection().appendItem(Common.UIString('Save for overrides'), () => {
+      contextMenu.saveSection().appendItem(Common.UIString.UIString('Save for overrides'), () => {
         uiSourceCode.commitWorkingCopy();
         Persistence.networkPersistenceManager.saveUISourceCodeForOverrides(
-            /** @type {!Workspace.UISourceCode} */ (uiSourceCode));
+            /** @type {!Workspace.UISourceCode.UISourceCode} */ (uiSourceCode));
         Common.Revealer.reveal(uiSourceCode);
       });
     }
@@ -46,9 +51,10 @@ export class ContextMenuProvider {
     const binding = uiSourceCode && self.Persistence.persistence.binding(uiSourceCode);
     const fileURL = binding ? binding.fileSystem.contentURL() : contentProvider.contentURL();
     if (fileURL.startsWith('file://')) {
-      const path = Common.ParsedURL.urlToPlatformPath(fileURL, Host.isWin());
+      const path = Common.ParsedURL.ParsedURL.urlToPlatformPath(fileURL, Host.Platform.isWin());
       contextMenu.revealSection().appendItem(
-          Common.UIString('Open in containing folder'), () => Host.InspectorFrontendHost.showItemInFolder(path));
+          Common.UIString.UIString('Open in containing folder'),
+          () => Host.InspectorFrontendHost.InspectorFrontendHostInstance.showItemInFolder(path));
     }
   }
 }

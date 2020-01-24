@@ -2,12 +2,17 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+import * as Components from '../components/components.js';
+import * as UI from '../ui/ui.js';
+import * as Workspace from '../workspace/workspace.js';
+
 import {FileSystemWorkspaceBinding} from './FileSystemWorkspaceBinding.js';
 import {Events, PersistenceBinding, PersistenceImpl} from './PersistenceImpl.js';  // eslint-disable-line no-unused-vars
 
 export class PersistenceUtils {
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    * @return {string}
    */
   static tooltipForUISourceCode(uiSourceCode) {
@@ -19,14 +24,14 @@ export class PersistenceUtils {
       return FileSystemWorkspaceBinding.tooltipForUISourceCode(binding.fileSystem);
     }
     if (binding.network.contentType().isFromSourceMap()) {
-      return Common.UIString('Linked to source map: %s', binding.network.url().trimMiddle(150));
+      return Common.UIString.UIString('Linked to source map: %s', binding.network.url().trimMiddle(150));
     }
-    return Common.UIString('Linked to %s', binding.network.url().trimMiddle(150));
+    return Common.UIString.UIString('Linked to %s', binding.network.url().trimMiddle(150));
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
-   * @return {?UI.Icon}
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
+   * @return {?UI.Icon.Icon}
    */
   static iconForUISourceCode(uiSourceCode) {
     const binding = self.Persistence.persistence.binding(uiSourceCode);
@@ -34,7 +39,7 @@ export class PersistenceUtils {
       if (!binding.fileSystem.url().startsWith('file://')) {
         return null;
       }
-      const icon = UI.Icon.create('mediumicon-file-sync');
+      const icon = UI.Icon.Icon.create('mediumicon-file-sync');
       icon.title = PersistenceUtils.tooltipForUISourceCode(binding.network);
       // TODO(allada) This will not work properly with dark theme.
       if (Persistence.networkPersistenceManager.project() === binding.fileSystem.project()) {
@@ -42,22 +47,22 @@ export class PersistenceUtils {
       }
       return icon;
     }
-    if (uiSourceCode.project().type() !== Workspace.projectTypes.FileSystem ||
+    if (uiSourceCode.project().type() !== Workspace.Workspace.projectTypes.FileSystem ||
         !uiSourceCode.url().startsWith('file://')) {
       return null;
     }
 
-    const icon = UI.Icon.create('mediumicon-file');
+    const icon = UI.Icon.Icon.create('mediumicon-file');
     icon.title = PersistenceUtils.tooltipForUISourceCode(uiSourceCode);
     return icon;
   }
 }
 
 /**
- * @extends {Common.Object}
- * @implements {Components.LinkDecorator}
+ * @extends {Common.ObjectWrapper.ObjectWrapper}
+ * @implements {Components.Linkifier.LinkDecorator}
  */
-export class LinkDecorator extends Common.Object {
+export class LinkDecorator extends Common.ObjectWrapper.ObjectWrapper {
   /**
    * @param {!PersistenceImpl} persistence
    */
@@ -72,13 +77,13 @@ export class LinkDecorator extends Common.Object {
    */
   _bindingChanged(event) {
     const binding = /** @type {!PersistenceBinding} */ (event.data);
-    this.dispatchEventToListeners(Components.LinkDecorator.Events.LinkIconChanged, binding.network);
+    this.dispatchEventToListeners(Components.Linkifier.LinkDecorator.Events.LinkIconChanged, binding.network);
   }
 
   /**
    * @override
-   * @param {!Workspace.UISourceCode} uiSourceCode
-   * @return {?UI.Icon}
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
+   * @return {?UI.Icon.Icon}
    */
   linkIcon(uiSourceCode) {
     return PersistenceUtils.iconForUISourceCode(uiSourceCode);

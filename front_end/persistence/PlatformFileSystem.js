@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
+
 export class PlatformFileSystem {
   /**
    * @param {string} path
@@ -139,7 +141,7 @@ export class PlatformFileSystem {
 
   /**
    * @param {string} query
-   * @param {!Common.Progress} progress
+   * @param {!Common.Progress.Progress} progress
    * @return {!Promise<!Array<string>>}
    */
   searchInPath(query, progress) {
@@ -147,7 +149,7 @@ export class PlatformFileSystem {
   }
 
   /**
-   * @param {!Common.Progress} progress
+   * @param {!Common.Progress.Progress} progress
    */
   indexContent(progress) {
     setImmediate(() => progress.done());
@@ -171,7 +173,7 @@ export class PlatformFileSystem {
 
   /**
    * @param {string} path
-   * @return {!Common.ResourceType}
+   * @return {!Common.ResourceType.ResourceType}
    */
   contentType(path) {
     throw new Error('Not implemented');

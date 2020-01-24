@@ -28,6 +28,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as Common from '../common/common.js';
+import * as Host from '../host/host.js';
+
 import {Events, IsolatedFileSystemManager} from './IsolatedFileSystemManager.js';  // eslint-disable-line no-unused-vars
 import {PlatformFileSystem} from './PlatformFileSystem.js';
 
@@ -71,7 +74,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
    * @return {!Promise<?IsolatedFileSystem>}
    */
   static create(manager, path, embedderPath, type, name, rootURL) {
-    const domFileSystem = Host.InspectorFrontendHost.isolatedFileSystem(name, rootURL);
+    const domFileSystem = Host.InspectorFrontendHost.InspectorFrontendHostInstance.isolatedFileSystem(name, rootURL);
     if (!domFileSystem) {
       return Promise.resolve(/** @type {?IsolatedFileSystem} */ (null));
     }
@@ -87,7 +90,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
    * @return {string}
    */
   static errorMessage(error) {
-    return Common.UIString('File system error: %s', error.message);
+    return Common.UIString.UIString('File system error: %s', error.message);
   }
 
   /**
@@ -185,7 +188,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
           }
           if (this.isFileExcluded(entry.fullPath + '/')) {
             this._excludedEmbedderFolders.push(
-                Common.ParsedURL.urlToPlatformPath(this.path() + entry.fullPath, Host.isWin()));
+                Common.ParsedURL.ParsedURL.urlToPlatformPath(this.path() + entry.fullPath, Host.Platform.isWin()));
             continue;
           }
           ++pendingRequests;
@@ -359,7 +362,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
     }
 
     const reader = new FileReader();
-    const extension = Common.ParsedURL.extractExtension(path);
+    const extension = Common.ParsedURL.ParsedURL.extractExtension(path);
     const encoded = BinaryExtensions.has(extension);
     const readPromise = new Promise(x => reader.onloadend = x);
     if (encoded) {
@@ -631,19 +634,19 @@ export class IsolatedFileSystem extends PlatformFileSystem {
   /**
    * @override
    * @param {string} query
-   * @param {!Common.Progress} progress
+   * @param {!Common.Progress.Progress} progress
    * @return {!Promise<!Array<string>>}
    */
   searchInPath(query, progress) {
     return new Promise(resolve => {
       const requestId = this._manager.registerCallback(innerCallback);
-      Host.InspectorFrontendHost.searchInPath(requestId, this._embedderPath, query);
+      Host.InspectorFrontendHost.InspectorFrontendHostInstance.searchInPath(requestId, this._embedderPath, query);
 
       /**
        * @param {!Array<string>} files
        */
       function innerCallback(files) {
-        resolve(files.map(path => Common.ParsedURL.platformPathToURL(path)));
+        resolve(files.map(path => Common.ParsedURL.ParsedURL.platformPathToURL(path)));
         progress.worked(1);
       }
     });
@@ -651,12 +654,13 @@ export class IsolatedFileSystem extends PlatformFileSystem {
 
   /**
    * @override
-   * @param {!Common.Progress} progress
+   * @param {!Common.Progress.Progress} progress
    */
   indexContent(progress) {
     progress.setTotalWork(1);
     const requestId = this._manager.registerProgress(progress);
-    Host.InspectorFrontendHost.indexPath(requestId, this._embedderPath, JSON.stringify(this._excludedEmbedderFolders));
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.indexPath(
+        requestId, this._embedderPath, JSON.stringify(this._excludedEmbedderFolders));
   }
 
   /**
@@ -665,7 +669,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
    * @return {string}
    */
   mimeFromPath(path) {
-    return Common.ResourceType.mimeFromURL(path) || 'text/plain';
+    return Common.ResourceType.ResourceType.mimeFromURL(path) || 'text/plain';
   }
 
   /**
@@ -680,23 +684,24 @@ export class IsolatedFileSystem extends PlatformFileSystem {
   /**
    * @override
    * @param {string} path
-   * @return {!Common.ResourceType}
+   * @return {!Common.ResourceType.ResourceType}
    */
   contentType(path) {
-    const extension = Common.ParsedURL.extractExtension(path);
+    const extension = Common.ParsedURL.ParsedURL.extractExtension(path);
     if (_styleSheetExtensions.has(extension)) {
-      return Common.resourceTypes.Stylesheet;
+      return Common.ResourceType.resourceTypes.Stylesheet;
     }
     if (_documentExtensions.has(extension)) {
-      return Common.resourceTypes.Document;
+      return Common.ResourceType.resourceTypes.Document;
     }
     if (ImageExtensions.has(extension)) {
-      return Common.resourceTypes.Image;
+      return Common.ResourceType.resourceTypes.Image;
     }
     if (_scriptExtensions.has(extension)) {
-      return Common.resourceTypes.Script;
+      return Common.ResourceType.resourceTypes.Script;
     }
-    return BinaryExtensions.has(extension) ? Common.resourceTypes.Other : Common.resourceTypes.Document;
+    return BinaryExtensions.has(extension) ? Common.ResourceType.resourceTypes.Other :
+                                             Common.ResourceType.resourceTypes.Document;
   }
 
   /**
@@ -705,7 +710,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
    * @return {string}
    */
   tooltipForURL(url) {
-    const path = Common.ParsedURL.urlToPlatformPath(url, Host.isWin()).trimMiddle(150);
+    const path = Common.ParsedURL.ParsedURL.urlToPlatformPath(url, Host.Platform.isWin()).trimMiddle(150);
     return ls`Linked to ${path}`;
   }
 

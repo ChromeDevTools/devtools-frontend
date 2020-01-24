@@ -2,16 +2,22 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Bindings from '../bindings/bindings.js';
+import * as Common from '../common/common.js';
+import * as Components from '../components/components.js';
+import * as SDK from '../sdk/sdk.js';
+import * as Workspace from '../workspace/workspace.js';
+
 import {Automapping, AutomappingStatus} from './Automapping.js';  // eslint-disable-line no-unused-vars
 import {LinkDecorator} from './PersistenceUtils.js';
 
 /**
  * @unrestricted
  */
-export class PersistenceImpl extends Common.Object {
+export class PersistenceImpl extends Common.ObjectWrapper.ObjectWrapper {
   /**
-   * @param {!Workspace.Workspace} workspace
-   * @param {!Bindings.BreakpointManager} breakpointManager
+   * @param {!Workspace.Workspace.WorkspaceImpl} workspace
+   * @param {!Bindings.BreakpointManager.BreakpointManager} breakpointManager
    */
   constructor(workspace, breakpointManager) {
     super();
@@ -20,17 +26,17 @@ export class PersistenceImpl extends Common.Object {
     /** @type {!Map<string, number>} */
     this._filePathPrefixesToBindingCount = new Map();
 
-    /** @type {!Platform.Multimap<!Workspace.UISourceCode, function()>} */
+    /** @type {!Platform.Multimap<!Workspace.UISourceCode.UISourceCode, function()>} */
     this._subscribedBindingEventListeners = new Platform.Multimap();
 
     const linkDecorator = new LinkDecorator(this);
-    Components.Linkifier.setLinkDecorator(linkDecorator);
+    Components.Linkifier.Linkifier.setLinkDecorator(linkDecorator);
 
     this._mapping = new Automapping(this._workspace, this._onStatusAdded.bind(this), this._onStatusRemoved.bind(this));
   }
 
   /**
-   * @param {function(!Workspace.UISourceCode):boolean} interceptor
+   * @param {function(!Workspace.UISourceCode.UISourceCode):boolean} interceptor
    */
   addNetworkInterceptor(interceptor) {
     this._mapping.addNetworkInterceptor(interceptor);
@@ -157,12 +163,12 @@ export class PersistenceImpl extends Common.Object {
    * @param {!Common.Event} event
    */
   _onWorkingCopyChanged(event) {
-    const uiSourceCode = /** @type {!Workspace.UISourceCode} */ (event.data);
+    const uiSourceCode = /** @type {!Workspace.UISourceCode.UISourceCode} */ (event.data);
     this._syncWorkingCopy(uiSourceCode);
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    */
   _syncWorkingCopy(uiSourceCode) {
     const binding = uiSourceCode[_binding];
@@ -178,8 +184,8 @@ export class PersistenceImpl extends Common.Object {
       return;
     }
 
-    const target = Bindings.NetworkProject.targetForUISourceCode(binding.network);
-    if (target.type() === SDK.Target.Type.Node) {
+    const target = Bindings.NetworkProject.NetworkProject.targetForUISourceCode(binding.network);
+    if (target.type() === SDK.SDKModel.Type.Node) {
       const newContent = uiSourceCode.workingCopy();
       other.requestContent().then(() => {
         const nodeJSContent = PersistenceImpl.rewrapNodeJSContent(other, other.workingCopy(), newContent);
@@ -206,13 +212,13 @@ export class PersistenceImpl extends Common.Object {
    * @param {!Common.Event} event
    */
   _onWorkingCopyCommitted(event) {
-    const uiSourceCode = /** @type {!Workspace.UISourceCode} */ (event.data.uiSourceCode);
+    const uiSourceCode = /** @type {!Workspace.UISourceCode.UISourceCode} */ (event.data.uiSourceCode);
     const newContent = /** @type {string} */ (event.data.content);
     this.syncContent(uiSourceCode, newContent, event.data.encoded);
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    * @param {string} newContent
    * @param {boolean} encoded
    */
@@ -222,8 +228,8 @@ export class PersistenceImpl extends Common.Object {
       return;
     }
     const other = binding.network === uiSourceCode ? binding.fileSystem : binding.network;
-    const target = Bindings.NetworkProject.targetForUISourceCode(binding.network);
-    if (target.type() === SDK.Target.Type.Node) {
+    const target = Bindings.NetworkProject.NetworkProject.targetForUISourceCode(binding.network);
+    if (target.type() === SDK.SDKModel.Type.Node) {
       other.requestContent().then(currentContent => {
         const nodeJSContent = PersistenceImpl.rewrapNodeJSContent(other, currentContent.content, newContent);
         setContent.call(this, nodeJSContent);
@@ -245,13 +251,13 @@ export class PersistenceImpl extends Common.Object {
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    * @param {string} currentContent
    * @param {string} newContent
    * @return {string}
    */
   static rewrapNodeJSContent(uiSourceCode, currentContent, newContent) {
-    if (uiSourceCode.project().type() === Workspace.projectTypes.FileSystem) {
+    if (uiSourceCode.project().type() === Workspace.Workspace.projectTypes.FileSystem) {
       if (newContent.startsWith(NodePrefix) && newContent.endsWith(NodeSuffix)) {
         newContent = newContent.substring(NodePrefix.length, newContent.length - NodeSuffix.length);
       }
@@ -273,8 +279,8 @@ export class PersistenceImpl extends Common.Object {
   }
 
   /**
-   * @param {!Workspace.UISourceCode} from
-   * @param {!Workspace.UISourceCode} to
+   * @param {!Workspace.UISourceCode.UISourceCode} from
+   * @param {!Workspace.UISourceCode.UISourceCode} to
    */
   _moveBreakpoints(from, to) {
     const breakpoints = this._breakpointManager.breakpointLocationsForUISourceCode(from).map(
@@ -287,7 +293,7 @@ export class PersistenceImpl extends Common.Object {
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    * @return {boolean}
    */
   hasUnsavedCommittedChanges(uiSourceCode) {
@@ -304,7 +310,7 @@ export class PersistenceImpl extends Common.Object {
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    * @return {?PersistenceBinding}
    */
   binding(uiSourceCode) {
@@ -312,7 +318,7 @@ export class PersistenceImpl extends Common.Object {
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    * @param {function()} listener
    */
   subscribeForBindingEvent(uiSourceCode, listener) {
@@ -320,7 +326,7 @@ export class PersistenceImpl extends Common.Object {
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    * @param {function()} listener
    */
   unsubscribeFromBindingEvent(uiSourceCode, listener) {
@@ -328,7 +334,7 @@ export class PersistenceImpl extends Common.Object {
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    */
   _notifyBindingEvent(uiSourceCode) {
     if (!this._subscribedBindingEventListeners.has(uiSourceCode)) {
@@ -341,8 +347,8 @@ export class PersistenceImpl extends Common.Object {
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
-   * @return {?Workspace.UISourceCode}
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
+   * @return {?Workspace.UISourceCode.UISourceCode}
    */
   fileSystem(uiSourceCode) {
     const binding = this.binding(uiSourceCode);
@@ -350,8 +356,8 @@ export class PersistenceImpl extends Common.Object {
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
-   * @return {?Workspace.UISourceCode}
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
+   * @return {?Workspace.UISourceCode.UISourceCode}
    */
   network(uiSourceCode) {
     const binding = this.binding(uiSourceCode);
@@ -415,8 +421,8 @@ export const Events = {
  */
 export class PathEncoder {
   constructor() {
-    /** @type {!Common.CharacterIdMap<string>} */
-    this._encoder = new Common.CharacterIdMap();
+    /** @type {!Common.CharacterIdMap.CharacterIdMap<string>} */
+    this._encoder = new Common.CharacterIdMap.CharacterIdMap();
   }
 
   /**
@@ -441,8 +447,8 @@ export class PathEncoder {
  */
 export class PersistenceBinding {
   /**
-   * @param {!Workspace.UISourceCode} network
-   * @param {!Workspace.UISourceCode} fileSystem
+   * @param {!Workspace.UISourceCode.UISourceCode} network
+   * @param {!Workspace.UISourceCode.UISourceCode} fileSystem
    */
   constructor(network, fileSystem) {
     this.network = network;

@@ -28,6 +28,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as Common from '../common/common.js';
+
 import {DataGridNode} from './DataGrid.js';
 
 /**
@@ -50,7 +52,7 @@ export class ShowMoreDataGridNode extends DataGridNode {
     this.showNext = createElement('button');
     this.showNext.setAttribute('type', 'button');
     this.showNext.addEventListener('click', this._showNextChunk.bind(this), false);
-    this.showNext.textContent = Common.UIString('Show %d before', this._chunkSize);
+    this.showNext.textContent = Common.UIString.UIString('Show %d before', this._chunkSize);
 
     this.showAll = createElement('button');
     this.showAll.setAttribute('type', 'button');
@@ -59,7 +61,7 @@ export class ShowMoreDataGridNode extends DataGridNode {
     this.showLast = createElement('button');
     this.showLast.setAttribute('type', 'button');
     this.showLast.addEventListener('click', this._showLastChunk.bind(this), false);
-    this.showLast.textContent = Common.UIString('Show %d after', this._chunkSize);
+    this.showLast.textContent = Common.UIString.UIString('Show %d after', this._chunkSize);
 
     this._updateLabels();
     this.selectable = false;
@@ -86,7 +88,7 @@ export class ShowMoreDataGridNode extends DataGridNode {
       this.showNext.classList.add('hidden');
       this.showLast.classList.add('hidden');
     }
-    this.showAll.textContent = Common.UIString('Show all %d', totalSize);
+    this.showAll.textContent = Common.UIString.UIString('Show all %d', totalSize);
   }
 
   /**

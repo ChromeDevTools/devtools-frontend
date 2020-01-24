@@ -2,10 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
+
 import {NativeFunctions} from './NativeFunctions.js';
 
 /**
- * @implements {Common.JavaScriptMetadata}
+ * @implements {Common.JavaScriptMetaData.JavaScriptMetaData}
  */
 export class JavaScriptMetadataImpl {
   constructor() {

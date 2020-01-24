@@ -2,9 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+import * as Components from '../components/components.js';
+import * as TextUtils from '../text_utils/text_utils.js';
+import * as UI from '../ui/ui.js';
+
 import {SearchConfig, SearchResult} from './SearchConfig.js';  // eslint-disable-line no-unused-vars
 
-export class SearchResultsPane extends UI.VBox {
+export class SearchResultsPane extends UI.Widget.VBox {
   /**
    * @param {!SearchConfig} searchConfig
    */
@@ -14,7 +19,7 @@ export class SearchResultsPane extends UI.VBox {
 
     /** @type {!Array<!SearchResult>} */
     this._searchResults = [];
-    this._treeOutline = new UI.TreeOutlineInShadow();
+    this._treeOutline = new UI.TreeOutline.TreeOutlineInShadow();
     this._treeOutline.hideOverflow();
     this._treeOutline.registerRequiredCSS('search/searchResultsPane.css');
     this.contentElement.appendChild(this._treeOutline.element);
@@ -50,7 +55,7 @@ export class SearchResultsPane extends UI.VBox {
 export const matchesExpandedByDefault = 20;
 export const matchesShownAtOnce = 20;
 
-export class SearchResultsTreeElement extends UI.TreeElement {
+export class SearchResultsTreeElement extends UI.TreeOutline.TreeElement {
   /**
    * @param {!SearchConfig} searchConfig
    * @param {!SearchResult} searchResult
@@ -146,7 +151,7 @@ export class SearchResultsTreeElement extends UI.TreeElement {
         matchRanges = matchRanges.concat(this._regexMatchRanges(lineContent, regexes[j]));
       }
 
-      const anchor = Components.Linkifier.linkifyRevealable(searchResult.matchRevealable(i), '');
+      const anchor = Components.Linkifier.Linkifier.linkifyRevealable(searchResult.matchRevealable(i), '');
       anchor.classList.add('search-match-link');
       const labelSpan = createElement('span');
       labelSpan.classList.add('search-match-line-number');
@@ -162,7 +167,7 @@ export class SearchResultsTreeElement extends UI.TreeElement {
       const contentSpan = this._createContentSpan(lineContent, matchRanges);
       anchor.appendChild(contentSpan);
 
-      const searchMatchElement = new UI.TreeElement();
+      const searchMatchElement = new UI.TreeOutline.TreeElement();
       this.appendChild(searchMatchElement);
       searchMatchElement.listItemElement.className = 'search-match';
       searchMatchElement.listItemElement.appendChild(anchor);
@@ -181,8 +186,8 @@ export class SearchResultsTreeElement extends UI.TreeElement {
    */
   _appendShowMoreMatchesElement(startMatchIndex) {
     const matchesLeftCount = this._searchResult.matchesCount() - startMatchIndex;
-    const showMoreMatchesText = Common.UIString('Show %d more', matchesLeftCount);
-    const showMoreMatchesTreeElement = new UI.TreeElement(showMoreMatchesText);
+    const showMoreMatchesText = Common.UIString.UIString('Show %d more', matchesLeftCount);
+    const showMoreMatchesTreeElement = new UI.TreeOutline.TreeElement(showMoreMatchesText);
     this.appendChild(showMoreMatchesTreeElement);
     showMoreMatchesTreeElement.listItemElement.classList.add('show-more-matches');
     showMoreMatchesTreeElement.onselect =
@@ -191,7 +196,7 @@ export class SearchResultsTreeElement extends UI.TreeElement {
 
   /**
    * @param {string} lineContent
-   * @param {!Array.<!TextUtils.SourceRange>} matchRanges
+   * @param {!Array.<!TextUtils.TextRange.SourceRange>} matchRanges
    * @return {!Element}
    */
   _createContentSpan(lineContent, matchRanges) {
@@ -201,35 +206,36 @@ export class SearchResultsTreeElement extends UI.TreeElement {
     }
     lineContent = lineContent.substring(trimBy, 1000 + trimBy);
     if (trimBy) {
-      matchRanges = matchRanges.map(range => new TextUtils.SourceRange(range.offset - trimBy + 1, range.length));
+      matchRanges =
+          matchRanges.map(range => new TextUtils.TextRange.SourceRange(range.offset - trimBy + 1, range.length));
       lineContent = '\u2026' + lineContent;
     }
     const contentSpan = createElement('span');
     contentSpan.className = 'search-match-content';
     contentSpan.textContent = lineContent;
     UI.ARIAUtils.setAccessibleName(contentSpan, `${lineContent} line`);
-    UI.highlightRangesWithStyleClass(contentSpan, matchRanges, 'highlighted-match');
+    UI.UIUtils.highlightRangesWithStyleClass(contentSpan, matchRanges, 'highlighted-match');
     return contentSpan;
   }
 
   /**
    * @param {string} lineContent
    * @param {!RegExp} regex
-   * @return {!Array.<!TextUtils.SourceRange>}
+   * @return {!Array.<!TextUtils.TextRange.SourceRange>}
    */
   _regexMatchRanges(lineContent, regex) {
     regex.lastIndex = 0;
     let match;
     const matchRanges = [];
     while ((regex.lastIndex < lineContent.length) && (match = regex.exec(lineContent))) {
-      matchRanges.push(new TextUtils.SourceRange(match.index, match[0].length));
+      matchRanges.push(new TextUtils.TextRange.SourceRange(match.index, match[0].length));
     }
 
     return matchRanges;
   }
 
   /**
-   * @param {!UI.TreeElement} showMoreMatchesTreeElement
+   * @param {!UI.TreeOutline.TreeElement} showMoreMatchesTreeElement
    * @param {number} startMatchIndex
    * @return {boolean}
    */

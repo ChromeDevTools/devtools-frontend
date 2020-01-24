@@ -2,10 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+import * as UI from '../ui/ui.js';
+
 import {SearchConfig, SearchResult, SearchScope} from './SearchConfig.js';  // eslint-disable-line no-unused-vars
 import {SearchResultsPane} from './SearchResultsPane.js';
 
-export class SearchView extends UI.VBox {
+export class SearchView extends UI.Widget.VBox {
   /**
    * @param {string} settingKey
    */
@@ -20,9 +23,9 @@ export class SearchView extends UI.VBox {
     this._searchMatchesCount = 0;
     this._searchResultsCount = 0;
     this._nonEmptySearchResultsCount = 0;
-    /** @type {?UI.Widget} */
+    /** @type {?UI.Widget.Widget} */
     this._searchingView = null;
-    /** @type {?UI.Widget} */
+    /** @type {?UI.Widget.Widget} */
     this._notFoundView = null;
     /** @type {?SearchConfig} */
     this._searchConfig = null;
@@ -30,9 +33,9 @@ export class SearchView extends UI.VBox {
     this._pendingSearchConfig = null;
     /** @type {?SearchResultsPane} */
     this._searchResultsPane = null;
-    /** @type {?UI.ProgressIndicator} */
+    /** @type {?UI.ProgressIndicator.ProgressIndicator} */
     this._progressIndicator = null;
-    /** @type {?UI.Widget} */
+    /** @type {?UI.Widget.Widget} */
     this._visiblePane = null;
 
     this.contentElement.classList.add('search-view');
@@ -47,25 +50,26 @@ export class SearchView extends UI.VBox {
     searchContainer.style.flex = 'auto';
     searchContainer.style.justifyContent = 'start';
     searchContainer.style.maxWidth = '300px';
-    this._search = UI.HistoryInput.create();
+    this._search = UI.HistoryInput.HistoryInput.create();
     searchContainer.appendChild(this._search);
-    this._search.placeholder = Common.UIString('Search');
+    this._search.placeholder = Common.UIString.UIString('Search');
     this._search.setAttribute('type', 'text');
     this._search.setAttribute('results', '0');
     this._search.setAttribute('size', 42);
     UI.ARIAUtils.setAccessibleName(this._search, ls`Search Query`);
-    const searchItem = new UI.ToolbarItem(searchContainer);
+    const searchItem = new UI.Toolbar.ToolbarItem(searchContainer);
 
-    const toolbar = new UI.Toolbar('search-toolbar', this._searchPanelElement);
-    this._matchCaseButton = SearchView._appendToolbarToggle(toolbar, 'Aa', Common.UIString('Match Case'));
-    this._regexButton = SearchView._appendToolbarToggle(toolbar, '.*', Common.UIString('Use Regular Expression'));
+    const toolbar = new UI.Toolbar.Toolbar('search-toolbar', this._searchPanelElement);
+    this._matchCaseButton = SearchView._appendToolbarToggle(toolbar, 'Aa', Common.UIString.UIString('Match Case'));
+    this._regexButton =
+        SearchView._appendToolbarToggle(toolbar, '.*', Common.UIString.UIString('Use Regular Expression'));
     toolbar.appendToolbarItem(searchItem);
-    const refreshButton = new UI.ToolbarButton(Common.UIString('Refresh'), 'largeicon-refresh');
-    const clearButton = new UI.ToolbarButton(Common.UIString('Clear'), 'largeicon-clear');
+    const refreshButton = new UI.Toolbar.ToolbarButton(Common.UIString.UIString('Refresh'), 'largeicon-refresh');
+    const clearButton = new UI.Toolbar.ToolbarButton(Common.UIString.UIString('Clear'), 'largeicon-clear');
     toolbar.appendToolbarItem(refreshButton);
     toolbar.appendToolbarItem(clearButton);
-    refreshButton.addEventListener(UI.ToolbarButton.Events.Click, this._onAction.bind(this));
-    clearButton.addEventListener(UI.ToolbarButton.Events.Click, () => {
+    refreshButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._onAction.bind(this));
+    clearButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => {
       this._resetSearch();
       this._onSearchInputClear();
     });
@@ -84,15 +88,15 @@ export class SearchView extends UI.VBox {
   }
 
   /**
-   * @param {!UI.Toolbar} toolbar
+   * @param {!UI.Toolbar.Toolbar} toolbar
    * @param {string} text
    * @param {string} tooltip
-   * @return {!UI.ToolbarToggle}
+   * @return {!UI.Toolbar.ToolbarToggle}
    */
   static _appendToolbarToggle(toolbar, text, tooltip) {
-    const toggle = new UI.ToolbarToggle(tooltip);
+    const toggle = new UI.Toolbar.ToolbarToggle(tooltip);
     toggle.setText(text);
-    toggle.addEventListener(UI.ToolbarButton.Events.Click, () => toggle.setToggled(!toggle.toggled()));
+    toggle.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => toggle.setToggled(!toggle.toggled()));
     toolbar.appendToolbarItem(toggle);
     return toggle;
   }
@@ -171,11 +175,11 @@ export class SearchView extends UI.VBox {
     if (this._progressIndicator) {
       this._progressIndicator.done();
     }
-    this._progressIndicator = new UI.ProgressIndicator();
-    this._searchMessageElement.textContent = Common.UIString('Indexing\u2026');
+    this._progressIndicator = new UI.ProgressIndicator.ProgressIndicator();
+    this._searchMessageElement.textContent = Common.UIString.UIString('Indexing\u2026');
     this._progressIndicator.show(this._searchProgressPlaceholderElement);
     this._searchScope.performIndexing(
-        new Common.ProgressProxy(this._progressIndicator, this._onIndexingFinished.bind(this)));
+        new Common.Progress.ProgressProxy(this._progressIndicator, this._onIndexingFinished.bind(this)));
   }
 
   _onSearchInputClear() {
@@ -242,7 +246,7 @@ export class SearchView extends UI.VBox {
     if (this._progressIndicator) {
       this._progressIndicator.done();
     }
-    this._progressIndicator = new UI.ProgressIndicator();
+    this._progressIndicator = new UI.ProgressIndicator.ProgressIndicator();
     this._searchStarted(this._progressIndicator);
     this._searchScope.performSearch(
         searchConfig, this._progressIndicator, this._onSearchResult.bind(this, this._searchId),
@@ -266,15 +270,15 @@ export class SearchView extends UI.VBox {
   }
 
   /**
-   * @param {!UI.ProgressIndicator} progressIndicator
+   * @param {!UI.ProgressIndicator.ProgressIndicator} progressIndicator
    */
   _searchStarted(progressIndicator) {
     this._resetCounters();
     if (!this._searchingView) {
-      this._searchingView = new UI.EmptyWidget(Common.UIString('Searching\u2026'));
+      this._searchingView = new UI.EmptyWidget.EmptyWidget(Common.UIString.UIString('Searching\u2026'));
     }
     this._showPane(this._searchingView);
-    this._searchMessageElement.textContent = Common.UIString('Searching\u2026');
+    this._searchMessageElement.textContent = Common.UIString.UIString('Searching\u2026');
     progressIndicator.show(this._searchProgressPlaceholderElement);
     this._updateSearchResultsMessage();
   }
@@ -283,18 +287,18 @@ export class SearchView extends UI.VBox {
    * @param {boolean} finished
    */
   _indexingFinished(finished) {
-    this._searchMessageElement.textContent = finished ? '' : Common.UIString('Indexing interrupted.');
+    this._searchMessageElement.textContent = finished ? '' : Common.UIString.UIString('Indexing interrupted.');
   }
 
   _updateSearchResultsMessage() {
     if (this._searchMatchesCount && this._searchResultsCount) {
       if (this._searchMatchesCount === 1 && this._nonEmptySearchResultsCount === 1) {
-        this._searchResultsMessageElement.textContent = Common.UIString('Found 1 matching line in 1 file.');
+        this._searchResultsMessageElement.textContent = Common.UIString.UIString('Found 1 matching line in 1 file.');
       } else if (this._searchMatchesCount > 1 && this._nonEmptySearchResultsCount === 1) {
         this._searchResultsMessageElement.textContent =
-            Common.UIString('Found %d matching lines in 1 file.', this._searchMatchesCount);
+            Common.UIString.UIString('Found %d matching lines in 1 file.', this._searchMatchesCount);
       } else {
-        this._searchResultsMessageElement.textContent = Common.UIString(
+        this._searchResultsMessageElement.textContent = Common.UIString.UIString(
             'Found %d matching lines in %d files.', this._searchMatchesCount, this._nonEmptySearchResultsCount);
       }
     } else {
@@ -303,7 +307,7 @@ export class SearchView extends UI.VBox {
   }
 
   /**
-   * @param {?UI.Widget} panel
+   * @param {?UI.Widget.Widget} panel
    */
   _showPane(panel) {
     if (this._visiblePane) {
@@ -323,10 +327,10 @@ export class SearchView extends UI.VBox {
 
   _nothingFound() {
     if (!this._notFoundView) {
-      this._notFoundView = new UI.EmptyWidget(Common.UIString('No matches found.'));
+      this._notFoundView = new UI.EmptyWidget.EmptyWidget(Common.UIString.UIString('No matches found.'));
     }
     this._showPane(this._notFoundView);
-    this._searchResultsMessageElement.textContent = Common.UIString('No matches found.');
+    this._searchResultsMessageElement.textContent = Common.UIString.UIString('No matches found.');
   }
 
   /**
@@ -347,7 +351,7 @@ export class SearchView extends UI.VBox {
    */
   _searchFinished(finished) {
     this._searchMessageElement.textContent =
-        finished ? Common.UIString('Search finished.') : Common.UIString('Search interrupted.');
+        finished ? Common.UIString.UIString('Search finished.') : Common.UIString.UIString('Search interrupted.');
   }
 
   /**

@@ -1,8 +1,12 @@
 // Copyright 2014 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
+import * as Common from '../common/common.js';           // eslint-disable-line no-unused-vars
+import * as Workspace from '../workspace/workspace.js';  // eslint-disable-line no-unused-vars
+
 /**
- * @implements {Workspace.ProjectSearchConfig}
+ * @implements {Workspace.Workspace.ProjectSearchConfig}
  */
 export class SearchConfig {
   /**
@@ -239,7 +243,7 @@ export class SearchResult {
 export class SearchScope {
   /**
    * @param {!SearchConfig} searchConfig
-   * @param {!Common.Progress} progress
+   * @param {!Common.Progress.Progress} progress
    * @param {function(!SearchResult)} searchResultCallback
    * @param {function(boolean)} searchFinishedCallback
    */
@@ -247,7 +251,7 @@ export class SearchScope {
   }
 
   /**
-   * @param {!Common.Progress} progress
+   * @param {!Common.Progress.Progress} progress
    */
   performIndexing(progress) {
   }

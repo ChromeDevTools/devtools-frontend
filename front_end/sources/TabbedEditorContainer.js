@@ -266,7 +266,7 @@ export class TabbedEditorContainer extends Common.Object {
     this._history.updateSelectionRange(this._currentFile.url(), range);
     this._history.save(this._previouslyViewedFilesSetting);
 
-    Extensions.extensionServer.sourceSelectionChanged(this._currentFile.url(), range);
+    self.Extensions.extensionServer.sourceSelectionChanged(this._currentFile.url(), range);
   }
 
   /**

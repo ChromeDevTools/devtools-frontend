@@ -8,23 +8,23 @@
  */
 
 const extensionsHost = 'devtools-extensions.oopif.test';
-Extensions.extensionServer._registerHandler('evaluateForTestInFrontEnd', onEvaluate);
+self.Extensions.extensionServer._registerHandler('evaluateForTestInFrontEnd', onEvaluate);
 Extensions.extensionsOrigin = `http://${extensionsHost}:8000`;
-Extensions.extensionServer._extensionAPITestHook = function(extensionServerClient, coreAPI) {
+self.Extensions.extensionServer._extensionAPITestHook = function(extensionServerClient, coreAPI) {
   window.webInspector = coreAPI;
   window._extensionServerForTests = extensionServerClient;
   coreAPI.panels.themeName = 'themeNameForTest';
 };
 
 ExtensionsTestRunner._replyToExtension = function(requestId, port) {
-  Extensions.extensionServer._dispatchCallback(requestId, port);
+  self.Extensions.extensionServer._dispatchCallback(requestId, port);
 };
 
 function onEvaluate(message, port) {
   // Note: reply(...) is actually used in eval strings
   // eslint-disable-next-line no-unused-vars
   function reply(param) {
-    Extensions.extensionServer._dispatchCallback(message.requestId, port, param);
+    self.Extensions.extensionServer._dispatchCallback(message.requestId, port, param);
   }
 
   try {
@@ -58,7 +58,7 @@ ExtensionsTestRunner.runExtensionTests = async function(tests) {
   let extensionURL = pageURL.replace(/^(https?:\/\/[^\/]*\/).*$/, '$1') + 'devtools/resources/extension-main.html';
   extensionURL = extensionURL.replace('127.0.0.1', extensionsHost);
 
-  Extensions.extensionServer._addExtension(
+  self.Extensions.extensionServer._addExtension(
       {startPage: extensionURL, name: 'test extension', exposeWebInspectorNamespace: true});
 };
 

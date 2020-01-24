@@ -723,7 +723,7 @@ export class ExtensionServer extends Common.Object {
         // See ExtensionAPI.js for details.
         const injectedAPI = self.buildExtensionAPIInjectedScript(
             extensionInfo, this._inspectedTabId, UI.themeSupport.themeName(),
-            self.UI.shortcutRegistry.globalShortcutKeys(), Extensions.extensionServer['_extensionAPITestHook']);
+            self.UI.shortcutRegistry.globalShortcutKeys(), self.Extensions.extensionServer['_extensionAPITestHook']);
         Host.InspectorFrontendHost.setInjectedScriptForOrigin(extensionOrigin, injectedAPI);
         this._registeredExtensions[extensionOrigin] = {name: name};
       }

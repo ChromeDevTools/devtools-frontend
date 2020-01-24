@@ -34,4 +34,4 @@ Extensions.TracingSession = ExtensionsModule.ExtensionTraceProvider.TracingSessi
 Extensions.ExtensionStatus.Record;
 
 /** @type {!Extensions.ExtensionServer} */
-Extensions.extensionServer;
+self.Extensions.extensionServer;

@@ -24,11 +24,11 @@ export class ExtensionTraceProvider {
    */
   start(session) {
     const sessionId = String(++_lastSessionId);
-    Extensions.extensionServer.startTraceRecording(this._id, sessionId, session);
+    self.Extensions.extensionServer.startTraceRecording(this._id, sessionId, session);
   }
 
   stop() {
-    Extensions.extensionServer.stopTraceRecording(this._id);
+    self.Extensions.extensionServer.stopTraceRecording(this._id);
   }
 
   /**

@@ -220,7 +220,7 @@ export class MainImpl {
         new Bindings.DebuggerWorkspaceBinding(self.SDK.targetManager, self.Workspace.workspace);
     self.Bindings.breakpointManager = new Bindings.BreakpointManager(
         self.Workspace.workspace, self.SDK.targetManager, self.Bindings.debuggerWorkspaceBinding);
-    Extensions.extensionServer = new Extensions.ExtensionServer();
+    self.Extensions.extensionServer = new Extensions.ExtensionServer();
 
     new Persistence.FileSystemWorkspaceBinding(self.Persistence.isolatedFileSystemManager, self.Workspace.workspace);
     self.Persistence.persistence =
@@ -304,7 +304,7 @@ export class MainImpl {
   _lateInitialization() {
     MainImpl.time('Main._lateInitialization');
     this._registerShortcuts();
-    Extensions.extensionServer.initializeExtensions();
+    self.Extensions.extensionServer.initializeExtensions();
     const extensions = self.runtime.extensions('late-initialization');
     const promises = [];
     for (const extension of extensions) {

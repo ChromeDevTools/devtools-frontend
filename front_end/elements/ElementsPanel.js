@@ -244,7 +244,7 @@ export class ElementsPanel extends UI.Panel {
    * @override
    */
   wasShown() {
-    UI.context.setFlavor(ElementsPanel, this);
+    self.UI.context.setFlavor(ElementsPanel, this);
 
     for (let i = 0; i < this._treeOutlines.length; ++i) {
       const treeOutline = this._treeOutlines[i];
@@ -298,7 +298,7 @@ export class ElementsPanel extends UI.Panel {
       this._popoverHelper.hidePopover();
     }
     super.willHide();
-    UI.context.setFlavor(ElementsPanel, null);
+    self.UI.context.setFlavor(ElementsPanel, null);
   }
 
   /**
@@ -323,7 +323,7 @@ export class ElementsPanel extends UI.Panel {
 
     this._breadcrumbs.setSelectedNode(selectedNode);
 
-    UI.context.setFlavor(SDK.DOMNode, selectedNode);
+    self.UI.context.setFlavor(SDK.DOMNode, selectedNode);
 
     if (!selectedNode) {
       return;
@@ -338,7 +338,7 @@ export class ElementsPanel extends UI.Panel {
     const nodeFrameId = selectedNode.frameId();
     for (const context of executionContexts) {
       if (context.frameId === nodeFrameId) {
-        UI.context.setFlavor(SDK.ExecutionContext, context);
+        self.UI.context.setFlavor(SDK.ExecutionContext, context);
         break;
       }
     }
@@ -1063,7 +1063,7 @@ export class ElementsActionDelegate {
    * @return {boolean}
    */
   handleAction(context, actionId) {
-    const node = UI.context.flavor(SDK.DOMNode);
+    const node = self.UI.context.flavor(SDK.DOMNode);
     if (!node) {
       return true;
     }

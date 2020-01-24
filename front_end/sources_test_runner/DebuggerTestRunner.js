@@ -718,7 +718,7 @@ SourcesTestRunner.waitForExecutionContextInTarget = function(target, callback) {
 };
 
 SourcesTestRunner.selectThread = function(target) {
-  UI.context.setFlavor(SDK.Target, target);
+  self.UI.context.setFlavor(SDK.Target, target);
 };
 
 SourcesTestRunner.evaluateOnCurrentCallFrame = function(code) {

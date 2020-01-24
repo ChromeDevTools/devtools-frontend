@@ -25,7 +25,7 @@ UI.ActionRegistry = UIModule.ActionRegistry.ActionRegistry;
 UI.Context = UIModule.Context.Context;
 
 /** @type {!UIModule.Context.Context} */
-UI.context = new UIModule.Context.Context();
+self.UI.context = new UIModule.Context.Context();
 
 /** @interface */
 UI.ContextFlavorListener = UIModule.ContextFlavorListener.ContextFlavorListener;

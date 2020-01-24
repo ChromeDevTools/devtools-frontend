@@ -226,7 +226,7 @@ export class MainImpl {
     Persistence.persistence = new Persistence.Persistence(self.Workspace.workspace, self.Bindings.breakpointManager);
     Persistence.networkPersistenceManager = new Persistence.NetworkPersistenceManager(self.Workspace.workspace);
 
-    new ExecutionContextSelector(self.SDK.targetManager, UI.context);
+    new ExecutionContextSelector(self.SDK.targetManager, self.UI.context);
     self.Bindings.blackboxManager = new Bindings.BlackboxManager(self.Bindings.debuggerWorkspaceBinding);
 
     new PauseListener();
@@ -690,7 +690,7 @@ export class PauseListener {
         SDK.DebuggerModel, SDK.DebuggerModel.Events.DebuggerPaused, this._debuggerPaused, this);
     const debuggerModel = /** @type {!SDK.DebuggerModel} */ (event.data);
     const debuggerPausedDetails = debuggerModel.debuggerPausedDetails();
-    UI.context.setFlavor(SDK.Target, debuggerModel.target());
+    self.UI.context.setFlavor(SDK.Target, debuggerModel.target());
     Common.Revealer.reveal(debuggerPausedDetails);
   }
 }

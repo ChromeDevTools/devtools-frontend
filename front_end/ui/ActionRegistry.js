@@ -43,7 +43,7 @@ export class ActionRegistry {
    * @return {!Array.<!Action>}
    */
   availableActions() {
-    return this.applicableActions(this._actionsById.keysArray(), UI.context);
+    return this.applicableActions(this._actionsById.keysArray(), self.UI.context);
   }
 
   /**

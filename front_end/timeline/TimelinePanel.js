@@ -156,7 +156,7 @@ export class TimelinePanel extends UI.Panel {
    * @override
    */
   wasShown() {
-    UI.context.setFlavor(TimelinePanel, this);
+    self.UI.context.setFlavor(TimelinePanel, this);
     // Record the performance tool load time.
     Host.userMetrics.panelLoaded('timeline', 'DevTools.Launch.Timeline');
   }
@@ -165,7 +165,7 @@ export class TimelinePanel extends UI.Panel {
    * @override
    */
   willHide() {
-    UI.context.setFlavor(TimelinePanel, null);
+    self.UI.context.setFlavor(TimelinePanel, null);
     this._historyManager.cancelIfShowing();
   }
 
@@ -1285,7 +1285,7 @@ export class ActionDelegate {
    * @return {boolean}
    */
   handleAction(context, actionId) {
-    const panel = UI.context.flavor(TimelinePanel);
+    const panel = self.UI.context.flavor(TimelinePanel);
     console.assert(panel && panel instanceof TimelinePanel);
     switch (actionId) {
       case 'timeline.toggle-recording':

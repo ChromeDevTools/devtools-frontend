@@ -1511,7 +1511,7 @@
  */
   TestSuite.prototype.evaluateInConsole_ = function(code, callback) {
     function innerEvaluate() {
-      UI.context.removeFlavorChangeListener(SDK.ExecutionContext, showConsoleAndEvaluate, this);
+      self.UI.context.removeFlavorChangeListener(SDK.ExecutionContext, showConsoleAndEvaluate, this);
       const consoleView = Console.ConsoleView.instance();
       consoleView._prompt._appendCommand(code);
 
@@ -1524,8 +1524,8 @@
       self.Common.console.showPromise().then(innerEvaluate.bind(this));
     }
 
-    if (!UI.context.flavor(SDK.ExecutionContext)) {
-      UI.context.addFlavorChangeListener(SDK.ExecutionContext, showConsoleAndEvaluate, this);
+    if (!self.UI.context.flavor(SDK.ExecutionContext)) {
+      self.UI.context.addFlavorChangeListener(SDK.ExecutionContext, showConsoleAndEvaluate, this);
       return;
     }
     showConsoleAndEvaluate.call(this);

@@ -109,7 +109,7 @@ export class OutlineQuickOpen extends QuickOpen.FilteredListWidget.Provider {
    * @return {?Workspace.UISourceCode}
    */
   _currentUISourceCode() {
-    const sourcesView = UI.context.flavor(SourcesView);
+    const sourcesView = self.UI.context.flavor(SourcesView);
     if (!sourcesView) {
       return null;
     }

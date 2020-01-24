@@ -8,10 +8,10 @@
 export class ComputedStyleModel extends Common.Object {
   constructor() {
     super();
-    this._node = UI.context.flavor(SDK.DOMNode);
+    this._node = self.UI.context.flavor(SDK.DOMNode);
     this._cssModel = null;
     this._eventListeners = [];
-    UI.context.addFlavorChangeListener(SDK.DOMNode, this._onNodeChanged, this);
+    self.UI.context.addFlavorChangeListener(SDK.DOMNode, this._onNodeChanged, this);
   }
 
   /**

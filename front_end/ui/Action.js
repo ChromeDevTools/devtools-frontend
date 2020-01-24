@@ -47,7 +47,7 @@ export class Action extends Common.ObjectWrapper.ObjectWrapper {
     function handleAction(actionDelegate) {
       const actionId = this._extension.descriptor()['actionId'];
       const delegate = /** @type {!ActionDelegate} */ (actionDelegate);
-      return delegate.handleAction(UI.context, actionId);
+      return delegate.handleAction(self.UI.context, actionId);
     }
   }
 

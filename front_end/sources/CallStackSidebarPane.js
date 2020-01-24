@@ -89,14 +89,14 @@ export class CallStackSidebarPane extends UI.SimpleView {
   async _doUpdate() {
     this._locationPool.disposeAll();
 
-    const details = UI.context.flavor(SDK.DebuggerPausedDetails);
+    const details = self.UI.context.flavor(SDK.DebuggerPausedDetails);
     if (!details) {
       this.setDefaultFocusedElement(this._notPausedMessageElement);
       this._notPausedMessageElement.classList.remove('hidden');
       this._blackboxedMessageElement.classList.add('hidden');
       this._showMoreMessageElement.classList.add('hidden');
       this._items.replaceAll([]);
-      UI.context.setFlavor(SDK.DebuggerModel.CallFrame, null);
+      self.UI.context.setFlavor(SDK.DebuggerModel.CallFrame, null);
       return;
     }
 
@@ -222,7 +222,7 @@ export class CallStackSidebarPane extends UI.SimpleView {
         UI.ARIAUtils.setDisabled(element, true);
       }
     }
-    const isSelected = item[debuggerCallFrameSymbol] === UI.context.flavor(SDK.DebuggerModel.CallFrame);
+    const isSelected = item[debuggerCallFrameSymbol] === self.UI.context.flavor(SDK.DebuggerModel.CallFrame);
     element.classList.toggle('selected', isSelected);
     UI.ARIAUtils.setSelected(element, isSelected);
     element.classList.toggle('hidden', !this._showBlackboxed && item.isBlackboxed);
@@ -360,7 +360,7 @@ export class CallStackSidebarPane extends UI.SimpleView {
     const oldItem = this.activeCallFrameItem();
     if (debuggerCallFrame && oldItem !== item) {
       debuggerCallFrame.debuggerModel.setSelectedCallFrame(debuggerCallFrame);
-      UI.context.setFlavor(SDK.DebuggerModel.CallFrame, debuggerCallFrame);
+      self.UI.context.setFlavor(SDK.DebuggerModel.CallFrame, debuggerCallFrame);
       if (oldItem) {
         this._refreshItem(oldItem);
       }
@@ -374,7 +374,7 @@ export class CallStackSidebarPane extends UI.SimpleView {
    * @return {?Item}
    */
   activeCallFrameItem() {
-    const callFrame = UI.context.flavor(SDK.DebuggerModel.CallFrame);
+    const callFrame = self.UI.context.flavor(SDK.DebuggerModel.CallFrame);
     if (callFrame) {
       return this._items.find(callFrameItem => callFrameItem[debuggerCallFrameSymbol] === callFrame) || null;
     }

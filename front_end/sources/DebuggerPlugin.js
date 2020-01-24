@@ -119,7 +119,7 @@ export class DebuggerPlugin extends Plugin {
     /** @type {?Map<!Object, !Function>} */
     this._continueToLocationDecorations = null;
 
-    UI.context.addFlavorChangeListener(SDK.DebuggerModel.CallFrame, this._callFrameChanged, this);
+    self.UI.context.addFlavorChangeListener(SDK.DebuggerModel.CallFrame, this._callFrameChanged, this);
     this._liveLocationPool = new Bindings.LiveLocationPool();
     this._callFrameChanged();
 
@@ -424,7 +424,7 @@ export class DebuggerPlugin extends Plugin {
     if (UI.KeyboardShortcut.eventHasCtrlOrMeta(event)) {
       return null;
     }
-    const target = UI.context.flavor(SDK.Target);
+    const target = self.UI.context.flavor(SDK.Target);
     const debuggerModel = target ? target.model(SDK.DebuggerModel) : null;
     if (!debuggerModel || !debuggerModel.isPaused()) {
       return null;
@@ -444,7 +444,7 @@ export class DebuggerPlugin extends Plugin {
     let endHighlight;
 
     const selectedCallFrame =
-        /** @type {!SDK.DebuggerModel.CallFrame} */ (UI.context.flavor(SDK.DebuggerModel.CallFrame));
+        /** @type {!SDK.DebuggerModel.CallFrame} */ (self.UI.context.flavor(SDK.DebuggerModel.CallFrame));
     if (!selectedCallFrame) {
       return null;
     }
@@ -530,7 +530,7 @@ export class DebuggerPlugin extends Plugin {
           return false;
         }
         objectPopoverHelper = await ObjectUI.ObjectPopoverHelper.buildObjectPopover(result.object, popover);
-        const potentiallyUpdatedCallFrame = UI.context.flavor(SDK.DebuggerModel.CallFrame);
+        const potentiallyUpdatedCallFrame = self.UI.context.flavor(SDK.DebuggerModel.CallFrame);
         if (!objectPopoverHelper || selectedCallFrame !== potentiallyUpdatedCallFrame) {
           debuggerModel.runtimeModel().releaseObjectGroup('popover');
           if (objectPopoverHelper) {
@@ -755,11 +755,11 @@ export class DebuggerPlugin extends Plugin {
     if (!self.Common.settings.moduleSetting('inlineVariableValues').get()) {
       return;
     }
-    const executionContext = UI.context.flavor(SDK.ExecutionContext);
+    const executionContext = self.UI.context.flavor(SDK.ExecutionContext);
     if (!executionContext) {
       return;
     }
-    const callFrame = UI.context.flavor(SDK.DebuggerModel.CallFrame);
+    const callFrame = self.UI.context.flavor(SDK.DebuggerModel.CallFrame);
     if (!callFrame) {
       return;
     }
@@ -775,11 +775,11 @@ export class DebuggerPlugin extends Plugin {
 
   _showContinueToLocations() {
     this._popoverHelper.hidePopover();
-    const executionContext = UI.context.flavor(SDK.ExecutionContext);
+    const executionContext = self.UI.context.flavor(SDK.ExecutionContext);
     if (!executionContext) {
       return;
     }
-    const callFrame = UI.context.flavor(SDK.DebuggerModel.CallFrame);
+    const callFrame = self.UI.context.flavor(SDK.DebuggerModel.CallFrame);
     if (!callFrame) {
       return;
     }
@@ -1678,7 +1678,7 @@ export class DebuggerPlugin extends Plugin {
 
   _callFrameChanged() {
     this._liveLocationPool.disposeAll();
-    const callFrame = UI.context.flavor(SDK.DebuggerModel.CallFrame);
+    const callFrame = self.UI.context.flavor(SDK.DebuggerModel.CallFrame);
     if (!callFrame) {
       this._clearExecutionLine();
       return;
@@ -1745,7 +1745,7 @@ export class DebuggerPlugin extends Plugin {
     super.dispose();
 
     this._clearExecutionLine();
-    UI.context.removeFlavorChangeListener(SDK.DebuggerModel.CallFrame, this._callFrameChanged, this);
+    self.UI.context.removeFlavorChangeListener(SDK.DebuggerModel.CallFrame, this._callFrameChanged, this);
     this._liveLocationPool.disposeAll();
   }
 }

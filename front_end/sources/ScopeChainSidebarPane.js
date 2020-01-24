@@ -62,14 +62,14 @@ export class ScopeChainSidebarPane extends UI.VBox {
       return;
     }
 
-    if (UI.context.flavor(SDK.DebuggerPausedDetails)) {
+    if (self.UI.context.flavor(SDK.DebuggerPausedDetails)) {
       this._treeOutline.forceSelect();
     }
   }
 
   _update() {
-    const callFrame = UI.context.flavor(SDK.DebuggerModel.CallFrame);
-    const details = UI.context.flavor(SDK.DebuggerPausedDetails);
+    const callFrame = self.UI.context.flavor(SDK.DebuggerModel.CallFrame);
+    const details = self.UI.context.flavor(SDK.DebuggerPausedDetails);
     this._linkifier.reset();
     resolveThisObject(callFrame).then(this._innerUpdate.bind(this, details, callFrame));
   }

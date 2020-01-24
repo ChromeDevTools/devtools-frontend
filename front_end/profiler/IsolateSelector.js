@@ -207,8 +207,8 @@ export class IsolateSelector extends UI.VBox {
       toElement.classList.add('selected');
     }
     const model = to && to.model();
-    UI.context.setFlavor(SDK.HeapProfilerModel, model && model.heapProfilerModel());
-    UI.context.setFlavor(SDK.CPUProfilerModel, model && model.target().model(SDK.CPUProfilerModel));
+    self.UI.context.setFlavor(SDK.HeapProfilerModel, model && model.heapProfilerModel());
+    self.UI.context.setFlavor(SDK.CPUProfilerModel, model && model.target().model(SDK.CPUProfilerModel));
   }
 
   _update() {

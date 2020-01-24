@@ -157,7 +157,7 @@ export async function evaluateScriptSnippet(uiSourceCode) {
     return;
   }
 
-  const executionContext = UI.context.flavor(SDK.ExecutionContext);
+  const executionContext = self.UI.context.flavor(SDK.ExecutionContext);
   if (!executionContext) {
     return;
   }

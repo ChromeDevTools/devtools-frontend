@@ -49,7 +49,7 @@ export class JavaScriptREPL {
    * @return {!Promise<!{preview: !DocumentFragment, result: ?SDK.RuntimeModel.EvaluationResult}>}
    */
   static async evaluateAndBuildPreview(text, throwOnSideEffect, timeout, allowErrors, objectGroup) {
-    const executionContext = UI.context.flavor(SDK.RuntimeModel.ExecutionContext);
+    const executionContext = self.UI.context.flavor(SDK.RuntimeModel.ExecutionContext);
     const maxLength = typeof self.ObjectUI.JavaScriptREPL._MaxLengthForEvaluation !== 'undefined' ?
         self.ObjectUI.JavaScriptREPL._MaxLengthForEvaluation :
         MaxLengthForEvaluation;

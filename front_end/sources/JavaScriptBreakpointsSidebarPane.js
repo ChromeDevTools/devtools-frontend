@@ -66,7 +66,7 @@ export class JavaScriptBreakpointsSidebarPane extends UI.ThrottledWidget {
       breakpointEntriesForLine.set(lineDescriptor, entryDescriptor);
     }
 
-    const details = UI.context.flavor(SDK.DebuggerPausedDetails);
+    const details = self.UI.context.flavor(SDK.DebuggerPausedDetails);
     const selectedUILocation = details && details.callFrames.length ?
         self.Bindings.debuggerWorkspaceBinding.rawLocationToUILocation(details.callFrames[0].location()) :
         null;

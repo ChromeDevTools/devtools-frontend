@@ -30,8 +30,8 @@ export class ConsoleContextSelector {
     self.SDK.targetManager.addModelListener(
         SDK.ResourceTreeModel, SDK.ResourceTreeModel.Events.FrameNavigated, this._frameNavigated, this);
 
-    UI.context.addFlavorChangeListener(SDK.ExecutionContext, this._executionContextChangedExternally, this);
-    UI.context.addFlavorChangeListener(SDK.DebuggerModel.CallFrame, this._callFrameSelectedInUI, this);
+    self.UI.context.addFlavorChangeListener(SDK.ExecutionContext, this._executionContextChangedExternally, this);
+    self.UI.context.addFlavorChangeListener(SDK.DebuggerModel.CallFrame, this._callFrameSelectedInUI, this);
     self.SDK.targetManager.observeModels(SDK.RuntimeModel, this);
     self.SDK.targetManager.addModelListener(
         SDK.DebuggerModel, SDK.DebuggerModel.Events.CallFrameSelected, this._callFrameSelectedInModel, this);
@@ -124,7 +124,7 @@ export class ConsoleContextSelector {
   _executionContextCreated(executionContext) {
     this._items.insertWithComparator(executionContext, executionContext.runtimeModel.executionContextComparator());
 
-    if (executionContext === UI.context.flavor(SDK.ExecutionContext)) {
+    if (executionContext === self.UI.context.flavor(SDK.ExecutionContext)) {
       this._dropDown.selectItem(executionContext);
     }
   }
@@ -286,14 +286,14 @@ export class ConsoleContextSelector {
     this._toolbarItem.element.classList.toggle('warning', !this._isTopContext(item) && this._hasTopContext());
     const title = item ? ls`JavaScript context: ${this.titleFor(item)}` : ls`JavaScript context: Not selected`;
     this._toolbarItem.setTitle(title);
-    UI.context.setFlavor(SDK.ExecutionContext, item);
+    self.UI.context.setFlavor(SDK.ExecutionContext, item);
   }
 
   _callFrameSelectedInUI() {
-    const callFrame = UI.context.flavor(SDK.DebuggerModel.CallFrame);
+    const callFrame = self.UI.context.flavor(SDK.DebuggerModel.CallFrame);
     const callFrameContext = callFrame && callFrame.script.executionContext();
     if (callFrameContext) {
-      UI.context.setFlavor(SDK.ExecutionContext, callFrameContext);
+      self.UI.context.setFlavor(SDK.ExecutionContext, callFrameContext);
     }
   }
 

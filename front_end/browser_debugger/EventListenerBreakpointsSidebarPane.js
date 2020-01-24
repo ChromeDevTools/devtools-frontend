@@ -36,7 +36,7 @@ export class EventListenerBreakpointsSidebarPane extends UI.VBox {
         SDK.DebuggerModel, SDK.DebuggerModel.Events.DebuggerPaused, this._update, this);
     self.SDK.targetManager.addModelListener(
         SDK.DebuggerModel, SDK.DebuggerModel.Events.DebuggerResumed, this._update, this);
-    UI.context.addFlavorChangeListener(SDK.Target, this._update, this);
+    self.UI.context.addFlavorChangeListener(SDK.Target, this._update, this);
   }
 
   /**
@@ -91,7 +91,7 @@ export class EventListenerBreakpointsSidebarPane extends UI.VBox {
   }
 
   _update() {
-    const target = UI.context.flavor(SDK.Target);
+    const target = self.UI.context.flavor(SDK.Target);
     const debuggerModel = target ? target.model(SDK.DebuggerModel) : null;
     const details = debuggerModel ? debuggerModel.debuggerPausedDetails() : null;
 

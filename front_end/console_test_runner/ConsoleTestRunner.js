@@ -175,7 +175,7 @@ ConsoleTestRunner.selectMainExecutionContext = function() {
   const executionContexts = TestRunner.runtimeModel.executionContexts();
   for (const context of executionContexts) {
     if (context.isDefault) {
-      UI.context.setFlavor(SDK.ExecutionContext, context);
+      self.UI.context.setFlavor(SDK.ExecutionContext, context);
       return;
     }
   }
@@ -537,7 +537,7 @@ ConsoleTestRunner.changeExecutionContext = function(namePrefix) {
   const selector = Console.ConsoleView.instance()._consoleContextSelector;
   for (const executionContext of selector._items) {
     if (selector.titleFor(executionContext).startsWith(namePrefix)) {
-      UI.context.setFlavor(SDK.ExecutionContext, executionContext);
+      self.UI.context.setFlavor(SDK.ExecutionContext, executionContext);
       return;
     }
   }

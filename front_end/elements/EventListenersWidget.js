@@ -77,7 +77,7 @@ export class EventListenersWidget extends UI.ThrottledWidget {
     this._toolbarItems.push(new UI.ToolbarSettingCheckbox(
         this._showFrameworkListenersSetting, Common.UIString('Resolve event listeners bound with framework')));
 
-    UI.context.addFlavorChangeListener(SDK.DOMNode, this.update, this);
+    self.UI.context.addFlavorChangeListener(SDK.DOMNode, this.update, this);
     this.update();
   }
 
@@ -91,7 +91,7 @@ export class EventListenersWidget extends UI.ThrottledWidget {
       this._lastRequestedNode.domModel().runtimeModel().releaseObjectGroup(_objectGroupName);
       delete this._lastRequestedNode;
     }
-    const node = UI.context.flavor(SDK.DOMNode);
+    const node = self.UI.context.flavor(SDK.DOMNode);
     if (!node) {
       this._eventListenersView.reset();
       this._eventListenersView.addEmptyHolderIfNeeded();

@@ -69,7 +69,7 @@ export class GoToLineQuickOpen extends QuickOpen.FilteredListWidget.Provider {
    * @return {?Workspace.UISourceCode}
    */
   _currentUISourceCode() {
-    const sourcesView = UI.context.flavor(SourcesView);
+    const sourcesView = self.UI.context.flavor(SourcesView);
     if (!sourcesView) {
       return null;
     }
@@ -80,7 +80,7 @@ export class GoToLineQuickOpen extends QuickOpen.FilteredListWidget.Provider {
    * @return {?UISourceCodeFrame}
    */
   _currentSourceFrame() {
-    const sourcesView = UI.context.flavor(SourcesView);
+    const sourcesView = self.UI.context.flavor(SourcesView);
     if (!sourcesView) {
       return null;
     }

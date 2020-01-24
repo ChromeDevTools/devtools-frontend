@@ -32,7 +32,7 @@ export class ShortcutRegistry {
    * @return {!Array.<!Action>}
    */
   _applicableActions(key) {
-    return this._actionRegistry.applicableActions(this._defaultActionsForKey(key).valuesArray(), UI.context);
+    return this._actionRegistry.applicableActions(this._defaultActionsForKey(key).valuesArray(), self.UI.context);
   }
 
   /**

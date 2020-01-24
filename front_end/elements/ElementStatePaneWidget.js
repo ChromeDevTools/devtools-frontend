@@ -21,7 +21,7 @@ export class ElementStatePaneWidget extends UI.Widget {
      * @param {!Event} event
      */
     function clickListener(event) {
-      const node = UI.context.flavor(SDK.DOMNode);
+      const node = self.UI.context.flavor(SDK.DOMNode);
       if (!node) {
         return;
       }
@@ -60,7 +60,7 @@ export class ElementStatePaneWidget extends UI.Widget {
     }
 
     this.contentElement.appendChild(table);
-    UI.context.addFlavorChangeListener(SDK.DOMNode, this._update, this);
+    self.UI.context.addFlavorChangeListener(SDK.DOMNode, this._update, this);
   }
 
   /**
@@ -91,7 +91,7 @@ export class ElementStatePaneWidget extends UI.Widget {
       return;
     }
 
-    let node = UI.context.flavor(SDK.DOMNode);
+    let node = self.UI.context.flavor(SDK.DOMNode);
     if (node) {
       node = node.enclosingElementOrSelf();
     }

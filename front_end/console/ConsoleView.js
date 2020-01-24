@@ -239,7 +239,7 @@ export class ConsoleView extends UI.VBox {
 
     this._registerWithMessageSink();
 
-    UI.context.addFlavorChangeListener(SDK.ExecutionContext, this._executionContextChanged, this);
+    self.UI.context.addFlavorChangeListener(SDK.ExecutionContext, this._executionContextChanged, this);
 
     this._messagesElement.addEventListener(
         'mousedown', event => this._updateStickToBottomOnPointerDown(event.button === 2), false);
@@ -1272,7 +1272,7 @@ export class ConsoleViewFilter {
     this._messageLevelFiltersSetting.addChangeListener(this._onFilterChanged.bind(this));
     this._hideNetworkMessagesSetting.addChangeListener(this._onFilterChanged.bind(this));
     this._filterByExecutionContextSetting.addChangeListener(this._onFilterChanged.bind(this));
-    UI.context.addFlavorChangeListener(SDK.ExecutionContext, this._onFilterChanged, this);
+    self.UI.context.addFlavorChangeListener(SDK.ExecutionContext, this._onFilterChanged, this);
 
     const filterKeys = Object.values(FilterType);
     this._suggestionBuilder = new UI.FilterSuggestionBuilder(filterKeys);
@@ -1339,7 +1339,7 @@ export class ConsoleViewFilter {
     }
 
     this._currentFilter.executionContext =
-        this._filterByExecutionContextSetting.get() ? UI.context.flavor(SDK.ExecutionContext) : null;
+        this._filterByExecutionContextSetting.get() ? self.UI.context.flavor(SDK.ExecutionContext) : null;
     this._currentFilter.parsedFilters = parsedFilters;
     this._currentFilter.levelsMask = this._messageLevelFiltersSetting.get();
   }

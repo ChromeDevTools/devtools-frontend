@@ -33,7 +33,7 @@ export class ClassesPaneWidget extends UI.Widget {
     this._updateNodeThrottler = new Common.Throttler(0);
     /** @type {?SDK.DOMNode} */
     this._previousTarget = null;
-    UI.context.addFlavorChangeListener(SDK.DOMNode, this._onSelectedNodeChanged, this);
+    self.UI.context.addFlavorChangeListener(SDK.DOMNode, this._onSelectedNodeChanged, this);
   }
 
   /**
@@ -72,7 +72,7 @@ export class ClassesPaneWidget extends UI.Widget {
     this._prompt.clearAutocomplete();
     event.target.textContent = '';
 
-    const node = UI.context.flavor(SDK.DOMNode);
+    const node = self.UI.context.flavor(SDK.DOMNode);
     if (!node) {
       return;
     }
@@ -86,7 +86,7 @@ export class ClassesPaneWidget extends UI.Widget {
   }
 
   _onTextChanged() {
-    const node = UI.context.flavor(SDK.DOMNode);
+    const node = self.UI.context.flavor(SDK.DOMNode);
     if (!node) {
       return;
     }
@@ -129,7 +129,7 @@ export class ClassesPaneWidget extends UI.Widget {
       return;
     }
 
-    let node = UI.context.flavor(SDK.DOMNode);
+    let node = self.UI.context.flavor(SDK.DOMNode);
     if (node) {
       node = node.enclosingElementOrSelf();
     }
@@ -158,7 +158,7 @@ export class ClassesPaneWidget extends UI.Widget {
    * @param {!Event} event
    */
   _onClick(className, event) {
-    const node = UI.context.flavor(SDK.DOMNode);
+    const node = self.UI.context.flavor(SDK.DOMNode);
     if (!node) {
       return;
     }
@@ -328,7 +328,7 @@ export class ClassNamePrompt extends UI.TextPrompt {
       this._classNamesPromise = null;
     }
 
-    const selectedNode = UI.context.flavor(SDK.DOMNode);
+    const selectedNode = self.UI.context.flavor(SDK.DOMNode);
     if (!selectedNode || (!prefix && !force && !expression.trim())) {
       return Promise.resolve([]);
     }

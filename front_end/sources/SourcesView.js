@@ -194,7 +194,7 @@ export class SourcesView extends UI.VBox {
   static defaultUISourceCodeScores() {
     /** @type {!Map.<!Workspace.UISourceCode, number>} */
     const defaultScores = new Map();
-    const sourcesView = UI.context.flavor(SourcesView);
+    const sourcesView = self.UI.context.flavor(SourcesView);
     if (sourcesView) {
       const uiSourceCodes = sourcesView._editorContainer.historyUISourceCodes();
       for (let i = 1; i < uiSourceCodes.length; ++i)  // Skip current element
@@ -249,14 +249,14 @@ export class SourcesView extends UI.VBox {
    */
   wasShown() {
     super.wasShown();
-    UI.context.setFlavor(SourcesView, this);
+    self.UI.context.setFlavor(SourcesView, this);
   }
 
   /**
    * @override
    */
   willHide() {
-    UI.context.setFlavor(SourcesView, null);
+    self.UI.context.setFlavor(SourcesView, null);
     this._resetPlaceholderState();
     super.willHide();
   }
@@ -733,7 +733,7 @@ export class SwitchFileActionDelegate {
    * @return {boolean}
    */
   handleAction(context, actionId) {
-    const sourcesView = UI.context.flavor(SourcesView);
+    const sourcesView = self.UI.context.flavor(SourcesView);
     const currentUISourceCode = sourcesView.currentUISourceCode();
     if (!currentUISourceCode) {
       return false;
@@ -759,7 +759,7 @@ export class ActionDelegate {
    * @return {boolean}
    */
   handleAction(context, actionId) {
-    const sourcesView = UI.context.flavor(SourcesView);
+    const sourcesView = self.UI.context.flavor(SourcesView);
     if (!sourcesView) {
       return false;
     }

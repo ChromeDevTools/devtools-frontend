@@ -422,7 +422,7 @@ export class NetworkPanel extends UI.Panel {
    * @override
    */
   wasShown() {
-    UI.context.setFlavor(NetworkPanel, this);
+    self.UI.context.setFlavor(NetworkPanel, this);
 
     // Record the network tool load time after the panel has loaded.
     Host.userMetrics.panelLoaded('network', 'DevTools.Launch.Network');
@@ -432,7 +432,7 @@ export class NetworkPanel extends UI.Panel {
    * @override
    */
   willHide() {
-    UI.context.setFlavor(NetworkPanel, null);
+    self.UI.context.setFlavor(NetworkPanel, null);
   }
 
   /**
@@ -791,7 +791,7 @@ export class ActionDelegate {
    * @return {boolean}
    */
   handleAction(context, actionId) {
-    const panel = UI.context.flavor(NetworkPanel);
+    const panel = self.UI.context.flavor(NetworkPanel);
     console.assert(panel && panel instanceof NetworkPanel);
     switch (actionId) {
       case 'network.toggle-recording':

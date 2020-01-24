@@ -119,11 +119,11 @@ export class SourcesPanel extends UI.Panel {
 
     this._liveLocationPool = new Bindings.LiveLocationPool();
 
-    this._setTarget(UI.context.flavor(SDK.Target));
+    this._setTarget(self.UI.context.flavor(SDK.Target));
     self.Common.settings.moduleSetting('breakpointsActive')
         .addChangeListener(this._breakpointsActiveStateChanged, this);
-    UI.context.addFlavorChangeListener(SDK.Target, this._onCurrentTargetChanged, this);
-    UI.context.addFlavorChangeListener(SDK.DebuggerModel.CallFrame, this._callFrameChanged, this);
+    self.UI.context.addFlavorChangeListener(SDK.Target, this._onCurrentTargetChanged, this);
+    self.UI.context.addFlavorChangeListener(SDK.DebuggerModel.CallFrame, this._callFrameChanged, this);
     self.SDK.targetManager.addModelListener(
         SDK.DebuggerModel, SDK.DebuggerModel.Events.DebuggerWasEnabled, this._debuggerWasEnabled, this);
     self.SDK.targetManager.addModelListener(
@@ -237,7 +237,7 @@ export class SourcesPanel extends UI.Panel {
    * @override
    */
   wasShown() {
-    UI.context.setFlavor(SourcesPanel, this);
+    self.UI.context.setFlavor(SourcesPanel, this);
     super.wasShown();
     const wrapper = WrapperView._instance;
     if (wrapper && wrapper.isShowing()) {
@@ -252,7 +252,7 @@ export class SourcesPanel extends UI.Panel {
    */
   willHide() {
     super.willHide();
-    UI.context.setFlavor(SourcesPanel, null);
+    self.UI.context.setFlavor(SourcesPanel, null);
     if (WrapperView.isShowing()) {
       WrapperView._instance._showViewInWrapper();
       self.UI.inspectorView.setDrawerMinimized(false);
@@ -315,10 +315,10 @@ export class SourcesPanel extends UI.Panel {
       this._setAsCurrentPanel();
     }
 
-    if (UI.context.flavor(SDK.Target) === debuggerModel.target()) {
+    if (self.UI.context.flavor(SDK.Target) === debuggerModel.target()) {
       this._showDebuggerPausedDetails(/** @type {!SDK.DebuggerPausedDetails} */ (details));
     } else if (!this._paused) {
-      UI.context.setFlavor(SDK.Target, debuggerModel.target());
+      self.UI.context.setFlavor(SDK.Target, debuggerModel.target());
     }
   }
 
@@ -328,7 +328,7 @@ export class SourcesPanel extends UI.Panel {
   _showDebuggerPausedDetails(details) {
     this._paused = true;
     this._updateDebuggerButtonsAndStatus();
-    UI.context.setFlavor(SDK.DebuggerPausedDetails, details);
+    self.UI.context.setFlavor(SDK.DebuggerPausedDetails, details);
     this._toggleDebuggerSidebarButton.setEnabled(false);
     this._revealDebuggerSidebar();
     window.focus();
@@ -340,7 +340,7 @@ export class SourcesPanel extends UI.Panel {
    */
   _debuggerResumed(debuggerModel) {
     const target = debuggerModel.target();
-    if (UI.context.flavor(SDK.Target) !== target) {
+    if (self.UI.context.flavor(SDK.Target) !== target) {
       return;
     }
     this._paused = false;
@@ -354,7 +354,7 @@ export class SourcesPanel extends UI.Panel {
    */
   _debuggerWasEnabled(event) {
     const debuggerModel = /** @type {!SDK.DebuggerModel} */ (event.data);
-    if (UI.context.flavor(SDK.Target) !== debuggerModel.target()) {
+    if (self.UI.context.flavor(SDK.Target) !== debuggerModel.target()) {
       return;
     }
 
@@ -475,7 +475,7 @@ export class SourcesPanel extends UI.Panel {
   }
 
   _callFrameChanged() {
-    const callFrame = UI.context.flavor(SDK.DebuggerModel.CallFrame);
+    const callFrame = self.UI.context.flavor(SDK.DebuggerModel.CallFrame);
     if (!callFrame) {
       return;
     }
@@ -494,7 +494,7 @@ export class SourcesPanel extends UI.Panel {
   }
 
   async _updateDebuggerButtonsAndStatus() {
-    const currentTarget = UI.context.flavor(SDK.Target);
+    const currentTarget = self.UI.context.flavor(SDK.Target);
     const currentDebuggerModel = currentTarget ? currentTarget.model(SDK.DebuggerModel) : null;
     if (!currentDebuggerModel) {
       this._togglePauseAction.setEnabled(false);
@@ -531,7 +531,7 @@ export class SourcesPanel extends UI.Panel {
 
   _clearInterface() {
     this._updateDebuggerButtonsAndStatus();
-    UI.context.setFlavor(SDK.DebuggerPausedDetails, null);
+    self.UI.context.setFlavor(SDK.DebuggerPausedDetails, null);
 
     if (this._switchToPausedTargetTimeout) {
       clearTimeout(this._switchToPausedTargetTimeout);
@@ -550,7 +550,7 @@ export class SourcesPanel extends UI.Panel {
 
     for (const debuggerModel of self.SDK.targetManager.models(SDK.DebuggerModel)) {
       if (debuggerModel.isPaused()) {
-        UI.context.setFlavor(SDK.Target, debuggerModel.target());
+        self.UI.context.setFlavor(SDK.Target, debuggerModel.target());
         break;
       }
     }
@@ -581,7 +581,7 @@ export class SourcesPanel extends UI.Panel {
    * @return {boolean}
    */
   _togglePause() {
-    const target = UI.context.flavor(SDK.Target);
+    const target = self.UI.context.flavor(SDK.Target);
     if (!target) {
       return true;
     }
@@ -613,7 +613,7 @@ export class SourcesPanel extends UI.Panel {
     this._paused = false;
 
     this._clearInterface();
-    const target = UI.context.flavor(SDK.Target);
+    const target = self.UI.context.flavor(SDK.Target);
     return target ? target.model(SDK.DebuggerModel) : null;
   }
 
@@ -687,7 +687,7 @@ export class SourcesPanel extends UI.Panel {
    * @param {!Workspace.UILocation} uiLocation
    */
   async _continueToLocation(uiLocation) {
-    const executionContext = UI.context.flavor(SDK.ExecutionContext);
+    const executionContext = self.UI.context.flavor(SDK.ExecutionContext);
     if (!executionContext) {
       return;
     }
@@ -811,7 +811,7 @@ export class SourcesPanel extends UI.Panel {
 
     const contentType = uiSourceCode.contentType();
     if (contentType.hasScripts()) {
-      const target = UI.context.flavor(SDK.Target);
+      const target = self.UI.context.flavor(SDK.Target);
       const debuggerModel = target ? target.model(SDK.DebuggerModel) : null;
       if (debuggerModel && debuggerModel.isPaused()) {
         contextMenu.debugSection().appendItem(
@@ -839,7 +839,7 @@ export class SourcesPanel extends UI.Panel {
       return;
     }
     const remoteObject = /** @type {!SDK.RemoteObject} */ (target);
-    const executionContext = UI.context.flavor(SDK.ExecutionContext);
+    const executionContext = self.UI.context.flavor(SDK.ExecutionContext);
     contextMenu.debugSection().appendItem(
         ls`Store as global variable`, () => self.SDK.consoleModel.saveToTempVariable(executionContext, remoteObject));
     if (remoteObject.type === 'function') {
@@ -1175,10 +1175,10 @@ export class DebuggingActionDelegate {
         panel._toggleBreakpointsActive();
         return true;
       case 'debugger.evaluate-selection':
-        const frame = UI.context.flavor(UISourceCodeFrame);
+        const frame = self.UI.context.flavor(UISourceCodeFrame);
         if (frame) {
           let text = frame.textEditor.text(frame.textEditor.selection());
-          const executionContext = UI.context.flavor(SDK.ExecutionContext);
+          const executionContext = self.UI.context.flavor(SDK.ExecutionContext);
           if (executionContext) {
             const message = self.SDK.consoleModel.addCommandMessage(executionContext, text);
             text = ObjectUI.JavaScriptREPL.wrapObjectLiteral(text);

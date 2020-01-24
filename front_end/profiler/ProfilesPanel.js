@@ -104,8 +104,8 @@ export class ProfilesPanel extends UI.PanelWithSidebar {
 
     self.SDK.targetManager.addEventListener(
         SDK.TargetManager.Events.SuspendStateChanged, this._onSuspendStateChanged, this);
-    UI.context.addFlavorChangeListener(SDK.CPUProfilerModel, this._updateProfileTypeSpecificUI, this);
-    UI.context.addFlavorChangeListener(SDK.HeapProfilerModel, this._updateProfileTypeSpecificUI, this);
+    self.UI.context.addFlavorChangeListener(SDK.CPUProfilerModel, this._updateProfileTypeSpecificUI, this);
+    self.UI.context.addFlavorChangeListener(SDK.HeapProfilerModel, this._updateProfileTypeSpecificUI, this);
   }
 
   /**
@@ -207,7 +207,8 @@ export class ProfilesPanel extends UI.PanelWithSidebar {
    * @param {boolean} toggled
    */
   _updateToggleRecordAction(toggled) {
-    const hasSelectedTarget = !!(UI.context.flavor(SDK.CPUProfilerModel) || UI.context.flavor(SDK.HeapProfilerModel));
+    const hasSelectedTarget =
+        !!(self.UI.context.flavor(SDK.CPUProfilerModel) || self.UI.context.flavor(SDK.HeapProfilerModel));
     const enable = toggled || (!self.SDK.targetManager.allTargetsSuspended() && hasSelectedTarget);
     this._toggleRecordAction.setEnabled(enable);
     this._toggleRecordAction.setToggled(toggled);
@@ -700,14 +701,14 @@ export class JSProfilerPanel extends ProfilesPanel {
    * @override
    */
   wasShown() {
-    UI.context.setFlavor(JSProfilerPanel, this);
+    self.UI.context.setFlavor(JSProfilerPanel, this);
   }
 
   /**
    * @override
    */
   willHide() {
-    UI.context.setFlavor(JSProfilerPanel, null);
+    self.UI.context.setFlavor(JSProfilerPanel, null);
   }
 
   /**
@@ -717,7 +718,7 @@ export class JSProfilerPanel extends ProfilesPanel {
    * @return {boolean}
    */
   handleAction(context, actionId) {
-    const panel = UI.context.flavor(JSProfilerPanel);
+    const panel = self.UI.context.flavor(JSProfilerPanel);
     console.assert(panel && panel instanceof JSProfilerPanel);
     panel.toggleRecord();
     return true;

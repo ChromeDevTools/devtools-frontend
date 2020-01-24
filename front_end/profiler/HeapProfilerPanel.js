@@ -76,7 +76,7 @@ export class HeapProfilerPanel extends ProfilesPanel {
    * @return {boolean}
    */
   handleAction(context, actionId) {
-    const panel = UI.context.flavor(HeapProfilerPanel);
+    const panel = self.UI.context.flavor(HeapProfilerPanel);
     console.assert(panel && panel instanceof HeapProfilerPanel);
     panel.toggleRecord();
     return true;
@@ -86,7 +86,7 @@ export class HeapProfilerPanel extends ProfilesPanel {
    * @override
    */
   wasShown() {
-    UI.context.setFlavor(HeapProfilerPanel, this);
+    self.UI.context.setFlavor(HeapProfilerPanel, this);
     // Record the memory tool load time.
     Host.userMetrics.panelLoaded('heap_profiler', 'DevTools.Launch.HeapProfiler');
   }
@@ -95,7 +95,7 @@ export class HeapProfilerPanel extends ProfilesPanel {
    * @override
    */
   willHide() {
-    UI.context.setFlavor(HeapProfilerPanel, null);
+    self.UI.context.setFlavor(HeapProfilerPanel, null);
   }
 
   /**

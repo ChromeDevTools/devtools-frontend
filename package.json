@@ -19,10 +19,11 @@
     "url": "git+https://github.com/ChromeDevTools/devtools-frontend.git"
   },
   "scripts": {
-    "check": "npm run check-json && npm run check-gn && npm run check-lint && npm run check-loc && npm run check-type",
+    "check": "npm run check-json && npm run check-gn && npm run check-license && npm run check-lint && npm run check-loc && npm run check-type",
     "check-gn": "node scripts/check_gn.js",
     "check-grdp": "node scripts/localization/check_localizable_resources.js",
     "check-json": "node scripts/json_validator/validate_module_json.js",
+    "check-license": "node scripts/test/run_license_header_check.js",
     "check-lint": "python scripts/test/run_lint_check.py",
     "check-loc": "python scripts/test/run_localization_check.py",
     "check-type": "python scripts/test/run_type_check.py",

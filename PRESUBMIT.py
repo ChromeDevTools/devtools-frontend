@@ -88,6 +88,11 @@ def _CheckJSON(input_api, output_api):
     return _checkWithNodeScript(input_api, output_api, script_path)
 
 
+def _CheckLicenses(input_api, output_api):
+    script_path = input_api.os_path.join(input_api.PresubmitLocalPath(), 'scripts', 'test', 'run_license_header_check.js')
+    return _checkWithNodeScript(input_api, output_api, script_path)
+
+
 def _CheckUnitTests(input_api, output_api):
     unittest_root = input_api.os_path.join(input_api.PresubmitLocalPath(), 'test')
     affected_unittest_files = _getAffectedFiles(input_api, [unittest_root], ['D'], ['.ts'])
@@ -243,6 +248,7 @@ def _CommonChecks(input_api, output_api):
     results.extend(input_api.canned_checks.CheckGenderNeutral(input_api, output_api))
     results.extend(_CheckBuildGN(input_api, output_api))
     results.extend(_CheckJSON(input_api, output_api))
+    results.extend(_CheckLicenses(input_api, output_api))
     results.extend(_CheckDevtoolsStyle(input_api, output_api))
     results.extend(_CheckFormat(input_api, output_api))
     results.extend(_CheckOptimizeSVGHashes(input_api, output_api))

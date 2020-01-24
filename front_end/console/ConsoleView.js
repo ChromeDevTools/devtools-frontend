@@ -108,12 +108,12 @@ export class ConsoleView extends UI.VBox {
     const rightToolbar = new UI.Toolbar('', consoleToolbarContainer);
     toolbar.appendToolbarItem(this._splitWidget.createShowHideSidebarButton(ls`console sidebar`));
     toolbar.appendToolbarItem(UI.Toolbar.createActionButton(
-        /** @type {!UI.Action }*/ (UI.actionRegistry.action('console.clear'))));
+        /** @type {!UI.Action }*/ (self.UI.actionRegistry.action('console.clear'))));
     toolbar.appendSeparator();
     toolbar.appendToolbarItem(this._consoleContextSelector.toolbarItem());
     toolbar.appendSeparator();
     const liveExpressionButton =
-        UI.Toolbar.createActionButton(/** @type {!UI.Action }*/ (UI.actionRegistry.action('console.create-pin')));
+        UI.Toolbar.createActionButton(/** @type {!UI.Action }*/ (self.UI.actionRegistry.action('console.create-pin')));
     toolbar.appendToolbarItem(liveExpressionButton);
     toolbar.appendSeparator();
     toolbar.appendToolbarItem(this._filter._textFilterUI);

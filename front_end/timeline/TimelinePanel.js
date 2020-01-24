@@ -59,9 +59,9 @@ export class TimelinePanel extends UI.Panel {
     this._recordingPageReload = false;
     this._millisecondsToRecordAfterLoadEvent = 3000;
     this._toggleRecordAction =
-        /** @type {!UI.Action }*/ (UI.actionRegistry.action('timeline.toggle-recording'));
+        /** @type {!UI.Action }*/ (self.UI.actionRegistry.action('timeline.toggle-recording'));
     this._recordReloadAction =
-        /** @type {!UI.Action }*/ (UI.actionRegistry.action('timeline.record-reload'));
+        /** @type {!UI.Action }*/ (self.UI.actionRegistry.action('timeline.record-reload'));
 
     this._historyManager = new TimelineHistoryManager();
 

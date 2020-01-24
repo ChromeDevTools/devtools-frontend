@@ -163,7 +163,7 @@ export class Section {
    * @param {boolean=} optional
    */
   appendAction(actionId, label, optional) {
-    const action = UI.actionRegistry.action(actionId);
+    const action = self.UI.actionRegistry.action(actionId);
     if (!action) {
       if (!optional) {
         console.error(`Action ${actionId} was not defined`);

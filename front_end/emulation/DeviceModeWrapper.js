@@ -19,7 +19,7 @@ export class DeviceModeWrapper extends UI.VBox {
     this._inspectedPagePlaceholder = inspectedPagePlaceholder;
     /** @type {?DeviceModeView} */
     this._deviceModeView = null;
-    this._toggleDeviceModeAction = UI.actionRegistry.action('emulation.toggle-device-mode');
+    this._toggleDeviceModeAction = self.UI.actionRegistry.action('emulation.toggle-device-mode');
     const model = self.singleton(DeviceModeModel);
     this._showDeviceModeSetting = model.enabledSetting();
     this._showDeviceModeSetting.setRequiresUserAction(!!Root.Runtime.queryParam('hasOtherClients'));

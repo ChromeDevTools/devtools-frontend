@@ -128,7 +128,7 @@ export class CommandMenuProvider extends Provider {
     const allCommands = commandMenu.commands();
 
     // Populate whitelisted actions.
-    const actions = UI.actionRegistry.availableActions();
+    const actions = self.UI.actionRegistry.availableActions();
     for (const action of actions) {
       if (action.category()) {
         this._commands.push(CommandMenu.createActionCommand(action));

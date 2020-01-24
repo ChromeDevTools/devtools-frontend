@@ -233,7 +233,7 @@ export class Toolbar {
    * @return {!ToolbarButton}
    */
   static createActionButtonForId(actionId, showLabel) {
-    const action = UI.actionRegistry.action(actionId);
+    const action = self.UI.actionRegistry.action(actionId);
     return Toolbar.createActionButton(/** @type {!Action} */ (action), showLabel);
   }
 

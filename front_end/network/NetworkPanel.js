@@ -48,7 +48,7 @@ export class NetworkPanel extends UI.Panel {
     this._networkLogShowOverviewSetting = self.Common.settings.createSetting('networkLogShowOverview', true);
     this._networkLogLargeRowsSetting = self.Common.settings.createSetting('networkLogLargeRows', false);
     this._networkRecordFilmStripSetting = self.Common.settings.createSetting('networkRecordFilmStripSetting', false);
-    this._toggleRecordAction = /** @type {!UI.Action }*/ (UI.actionRegistry.action('network.toggle-recording'));
+    this._toggleRecordAction = /** @type {!UI.Action }*/ (self.UI.actionRegistry.action('network.toggle-recording'));
 
     /** @type {number|undefined} */
     this._pendingStopTimer;
@@ -141,7 +141,7 @@ export class NetworkPanel extends UI.Panel {
 
     this._closeButtonElement = createElement('div', 'dt-close-button');
     this._closeButtonElement.addEventListener(
-        'click', async () => await UI.actionRegistry.action('network.hide-request-details').execute(), false);
+        'click', async () => await self.UI.actionRegistry.action('network.hide-request-details').execute(), false);
     this._closeButtonElement.style.margin = '0 5px';
 
     this._networkLogShowOverviewSetting.addChangeListener(this._toggleShowOverview, this);
@@ -224,7 +224,7 @@ export class NetworkPanel extends UI.Panel {
     updateSidebarToggle();
     splitWidget.addEventListener(UI.SplitWidget.Events.ShowModeChanged, updateSidebarToggle);
     searchToggle.addEventListener(
-        UI.ToolbarButton.Events.Click, async () => await UI.actionRegistry.action('network.search').execute());
+        UI.ToolbarButton.Events.Click, async () => await self.UI.actionRegistry.action('network.search').execute());
     this._panelToolbar.appendToolbarItem(searchToggle);
     this._panelToolbar.appendSeparator();
 

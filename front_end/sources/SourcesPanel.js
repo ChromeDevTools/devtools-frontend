@@ -49,16 +49,16 @@ export class SourcesPanel extends UI.Panel {
     this._workspace = self.Workspace.workspace;
 
     this._togglePauseAction =
-        /** @type {!UI.Action }*/ (UI.actionRegistry.action('debugger.toggle-pause'));
+        /** @type {!UI.Action }*/ (self.UI.actionRegistry.action('debugger.toggle-pause'));
     this._stepOverAction =
-        /** @type {!UI.Action }*/ (UI.actionRegistry.action('debugger.step-over'));
+        /** @type {!UI.Action }*/ (self.UI.actionRegistry.action('debugger.step-over'));
     this._stepIntoAction =
-        /** @type {!UI.Action }*/ (UI.actionRegistry.action('debugger.step-into'));
-    this._stepOutAction = /** @type {!UI.Action }*/ (UI.actionRegistry.action('debugger.step-out'));
+        /** @type {!UI.Action }*/ (self.UI.actionRegistry.action('debugger.step-into'));
+    this._stepOutAction = /** @type {!UI.Action }*/ (self.UI.actionRegistry.action('debugger.step-out'));
     this._stepAction =
-        /** @type {!UI.Action }*/ (UI.actionRegistry.action('debugger.step'));
+        /** @type {!UI.Action }*/ (self.UI.actionRegistry.action('debugger.step'));
     this._toggleBreakpointsActiveAction =
-        /** @type {!UI.Action }*/ (UI.actionRegistry.action('debugger.toggle-breakpoints-active'));
+        /** @type {!UI.Action }*/ (self.UI.actionRegistry.action('debugger.toggle-breakpoints-active'));
 
     this._debugToolbar = this._createDebugToolbar();
     this._debugToolbarDrawer = this._createDebugToolbarDrawer();

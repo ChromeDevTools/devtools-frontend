@@ -613,7 +613,7 @@ UI.ZoomManager = UIModule.ZoomManager.ZoomManager;
 UI.ZoomManager.Events = UIModule.ZoomManager.Events;
 
 /** @type {!UI.ActionRegistry} */
-UI.actionRegistry;
+self.UI.actionRegistry;
 
 /** @typedef {{name: string, label: string, title: (string|undefined)}} */
 UI.NamedBitSetFilterUI.Item;

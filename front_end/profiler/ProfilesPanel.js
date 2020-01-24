@@ -73,7 +73,7 @@ export class ProfilesPanel extends UI.PanelWithSidebar {
     const toolbar = new UI.Toolbar('', toolbarContainerLeft);
 
     this._toggleRecordAction =
-        /** @type {!UI.Action }*/ (UI.actionRegistry.action(recordingActionId));
+        /** @type {!UI.Action }*/ (self.UI.actionRegistry.action(recordingActionId));
     this._toggleRecordButton = UI.Toolbar.createActionButton(this._toggleRecordAction);
     toolbar.appendToolbarItem(this._toggleRecordButton);
 

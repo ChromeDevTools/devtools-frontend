@@ -231,8 +231,8 @@ export class MainImpl {
 
     new PauseListener();
 
-    UI.actionRegistry = new UI.ActionRegistry();
-    UI.shortcutRegistry = new UI.ShortcutRegistry(UI.actionRegistry, document);
+    self.UI.actionRegistry = new UI.ActionRegistry();
+    UI.shortcutRegistry = new UI.ShortcutRegistry(self.UI.actionRegistry, document);
     UI.ShortcutsScreen.registerShortcuts();
     this._registerForwardedShortcuts();
     this._registerMessageSinkListener();
@@ -252,7 +252,7 @@ export class MainImpl {
     self.Components.dockController.initialize();
     app.presentUI(document);
 
-    const toggleSearchNodeAction = UI.actionRegistry.action('elements.toggle-element-search');
+    const toggleSearchNodeAction = self.UI.actionRegistry.action('elements.toggle-element-search');
     // TODO: we should not access actions from other modules.
     if (toggleSearchNodeAction) {
       Host.InspectorFrontendHost.events.addEventListener(

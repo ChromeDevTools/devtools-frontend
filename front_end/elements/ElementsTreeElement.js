@@ -1812,7 +1812,7 @@ export class ElementsTreeElement extends UI.TreeElement {
 
   _editAsHTML() {
     const promise = Common.Revealer.reveal(this.node());
-    promise.then(() => UI.actionRegistry.action('elements.edit-as-html').execute());
+    promise.then(() => self.UI.actionRegistry.action('elements.edit-as-html').execute());
   }
 }
 

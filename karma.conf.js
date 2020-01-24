@@ -9,6 +9,7 @@ let node_modules_path = external_devtools_frontend
 
 const IS_DEBUG = !!process.env['DEBUG'];
 const NOCOVERAGE = !!process.env['NOCOVERAGE'];
+const NO_TEXT_COVERAGE = !!process.env['NO_TEXT_COVERAGE'];
 const instrumenterPreprocessors = (IS_DEBUG || NOCOVERAGE) ? [] : ['karma-coverage-istanbul-instrumenter'];
 const browsers = IS_DEBUG ? ['Chrome'] : ['ChromeHeadless'];
 
@@ -17,8 +18,10 @@ module.exports = function(config) {
     basePath: '',
 
     files: [
-      {pattern: 'front_end/**/*.js', included: false, served: true}, {pattern: 'test/unittests/**/*.ts', type: 'module'},
-      {pattern: 'front_end/**/*.svg', included: false, served: true}, {pattern: 'front_end/**/*.png', included: false, served: true},
+      {pattern: 'front_end/**/*.js', included: false, served: true},
+      {pattern: 'test/unittests/**/*.ts', type: 'module'},
+      {pattern: 'front_end/**/*.svg', included: false, served: true},
+      {pattern: 'front_end/**/*.png', included: false, served: true},
     ],
 
     // FIXME(https://crbug.com/1006759): Re-enable these tests when ESM work is completed.
@@ -37,7 +40,7 @@ module.exports = function(config) {
       './front_end/persistence/*.js': instrumenterPreprocessors,
       './front_end/platform/*.js': instrumenterPreprocessors,
       './front_end/protocol/*.js': instrumenterPreprocessors,
-      './front_end/sdk/*.js':instrumenterPreprocessors,
+      './front_end/sdk/*.js': instrumenterPreprocessors,
       './front_end/text_utils/*.js': instrumenterPreprocessors,
       './front_end/ui/**/*.js': instrumenterPreprocessors,
       './front_end/workspace/*.js': instrumenterPreprocessors,
@@ -54,9 +57,7 @@ module.exports = function(config) {
         typeRoots: external_devtools_frontend ? undefined : [node_modules_path + '@types'],
         lib: ['esnext', 'dom'],
         baseUrl: '.',
-        paths: {
-          '/front_end/*': ['front_end/*']
-        }
+        paths: {'/front_end/*': ['front_end/*']}
       },
       coverageOptions: {instrumentation: false},
       bundlerOptions: {resolve: {directories: [node_modules_path]}},
@@ -76,7 +77,7 @@ module.exports = function(config) {
 
     coverageIstanbulInstrumenter: {esModules: true},
 
-    coverageIstanbulReporter: {reports: ['text', 'html'], dir: 'karma-coverage'},
+    coverageIstanbulReporter: {reports: NO_TEXT_COVERAGE ? ['html'] : ['text', 'html'], dir: 'karma-coverage'},
 
     singleRun: !IS_DEBUG
   };

@@ -28,14 +28,15 @@ describe('CharacterIdMap class', () => {
   });
 
   it('throws an error when trying to convert a number when there is no capacity left', () => {
+    const upperLimit = parseInt('0xFFFF', 16);
     const characterIdMap = new CharacterIdMap();
-    for (let index = 0; index < 65502; index++) {
-      const el = document.createElement('div');
-      el.setAttribute('id', 'Div' + index);
-      characterIdMap.toChar(el);
-    }
-    const testElement = document.createElement('p');
-    assert.throws(() => characterIdMap.toChar(testElement), 'CharacterIdMap ran out of capacity!');
+    assert.throws(() => {
+      for (let index = 0; index <= upperLimit; index++) {
+        const el = document.createElement('div');
+        el.setAttribute('id', 'Div' + index);
+        characterIdMap.toChar(el);
+      }
+    }, 'CharacterIdMap ran out of capacity!');
   });
 
   it('returns null when trying to convert  a character that does not exist in the Map', () => {

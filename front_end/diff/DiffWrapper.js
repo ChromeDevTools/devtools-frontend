@@ -92,3 +92,6 @@ export const Operation = {
   Delete: -1,
   Edit: 2
 };
+
+/** @typedef {!Array<!{0: !Operation, 1: !Array<string>}>} */
+export let DiffArray;

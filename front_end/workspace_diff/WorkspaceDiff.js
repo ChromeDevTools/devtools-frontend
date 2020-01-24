@@ -2,19 +2,24 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-export class WorkspaceDiffImpl extends Common.Object {
+import * as Common from '../common/common.js';
+import * as Diff from '../diff/diff.js';
+import * as Host from '../host/host.js';
+import * as Workspace from '../workspace/workspace.js';
+
+export class WorkspaceDiffImpl extends Common.ObjectWrapper.ObjectWrapper {
   /**
-   * @param {!Workspace.Workspace} workspace
+   * @param {!Workspace.Workspace.WorkspaceImpl} workspace
    */
   constructor(workspace) {
     super();
-    /** @type {!WeakMap<!Workspace.UISourceCode, !UISourceCodeDiff>} */
+    /** @type {!WeakMap<!Workspace.UISourceCode.UISourceCode, !UISourceCodeDiff>} */
     this._uiSourceCodeDiffs = new WeakMap();
 
-    /** @type {!Map<!Workspace.UISourceCode, !Promise>} */
+    /** @type {!Map<!Workspace.UISourceCode.UISourceCode, !Promise>} */
     this._loadingUISourceCodes = new Map();
 
-    /** @type {!Set<!Workspace.UISourceCode>} */
+    /** @type {!Set<!Workspace.UISourceCode.UISourceCode>} */
     this._modifiedUISourceCodes = new Set();
     workspace.addEventListener(Workspace.Workspace.Events.WorkingCopyChanged, this._uiSourceCodeChanged, this);
     workspace.addEventListener(Workspace.Workspace.Events.WorkingCopyCommitted, this._uiSourceCodeChanged, this);
@@ -25,7 +30,7 @@ export class WorkspaceDiffImpl extends Common.Object {
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    * @return {!Promise<?Diff.Diff.DiffArray>}
    */
   requestDiff(uiSourceCode) {
@@ -33,7 +38,7 @@ export class WorkspaceDiffImpl extends Common.Object {
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    * @param {function(!Common.Event)} callback
    * @param {!Object=} thisObj
    */
@@ -42,7 +47,7 @@ export class WorkspaceDiffImpl extends Common.Object {
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    * @param {function(!Common.Event)} callback
    * @param {!Object=} thisObj
    */
@@ -51,14 +56,14 @@ export class WorkspaceDiffImpl extends Common.Object {
   }
 
   /**
-   * @return {!Array<!Workspace.UISourceCode>}
+   * @return {!Array<!Workspace.UISourceCode.UISourceCode>}
    */
   modifiedUISourceCodes() {
     return Array.from(this._modifiedUISourceCodes);
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    * @return {boolean}
    */
   isUISourceCodeModified(uiSourceCode) {
@@ -66,7 +71,7 @@ export class WorkspaceDiffImpl extends Common.Object {
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    * @return {!UISourceCodeDiff}
    */
   _uiSourceCodeDiff(uiSourceCode) {
@@ -80,7 +85,7 @@ export class WorkspaceDiffImpl extends Common.Object {
    * @param {!Common.Event} event
    */
   _uiSourceCodeChanged(event) {
-    const uiSourceCode = /** @type {!Workspace.UISourceCode} */ (event.data.uiSourceCode);
+    const uiSourceCode = /** @type {!Workspace.UISourceCode.UISourceCode} */ (event.data.uiSourceCode);
     this._updateModifiedState(uiSourceCode);
   }
 
@@ -88,7 +93,7 @@ export class WorkspaceDiffImpl extends Common.Object {
    * @param {!Common.Event} event
    */
   _uiSourceCodeAdded(event) {
-    const uiSourceCode = /** @type {!Workspace.UISourceCode} */ (event.data);
+    const uiSourceCode = /** @type {!Workspace.UISourceCode.UISourceCode} */ (event.data);
     this._updateModifiedState(uiSourceCode);
   }
 
@@ -96,7 +101,7 @@ export class WorkspaceDiffImpl extends Common.Object {
    * @param {!Common.Event} event
    */
   _uiSourceCodeRemoved(event) {
-    const uiSourceCode = /** @type {!Workspace.UISourceCode} */ (event.data);
+    const uiSourceCode = /** @type {!Workspace.UISourceCode.UISourceCode} */ (event.data);
     this._removeUISourceCode(uiSourceCode);
   }
 
@@ -104,14 +109,14 @@ export class WorkspaceDiffImpl extends Common.Object {
    * @param {!Common.Event} event
    */
   _projectRemoved(event) {
-    const project = /** @type {!Workspace.Project} */ (event.data);
+    const project = /** @type {!Workspace.Workspace.Project} */ (event.data);
     for (const uiSourceCode of project.uiSourceCodes()) {
       this._removeUISourceCode(uiSourceCode);
     }
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    */
   _removeUISourceCode(uiSourceCode) {
     this._loadingUISourceCodes.delete(uiSourceCode);
@@ -123,7 +128,7 @@ export class WorkspaceDiffImpl extends Common.Object {
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    */
   _markAsUnmodified(uiSourceCode) {
     this._uiSourceCodeProcessedForTest();
@@ -133,7 +138,7 @@ export class WorkspaceDiffImpl extends Common.Object {
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    */
   _markAsModified(uiSourceCode) {
     this._uiSourceCodeProcessedForTest();
@@ -148,12 +153,12 @@ export class WorkspaceDiffImpl extends Common.Object {
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    */
   async _updateModifiedState(uiSourceCode) {
     this._loadingUISourceCodes.delete(uiSourceCode);
 
-    if (uiSourceCode.project().type() !== Workspace.projectTypes.Network) {
+    if (uiSourceCode.project().type() !== Workspace.Workspace.projectTypes.Network) {
       this._markAsUnmodified(uiSourceCode);
       return;
     }
@@ -186,7 +191,7 @@ export class WorkspaceDiffImpl extends Common.Object {
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    * @return {!Promise<?string>}
    */
   requestOriginalContentForUISourceCode(uiSourceCode) {
@@ -194,7 +199,7 @@ export class WorkspaceDiffImpl extends Common.Object {
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    * @return {!Promise}
    */
   revertToOriginal(uiSourceCode) {
@@ -214,9 +219,9 @@ export class WorkspaceDiffImpl extends Common.Object {
   }
 }
 
-export class UISourceCodeDiff extends Common.Object {
+export class UISourceCodeDiff extends Common.ObjectWrapper.ObjectWrapper {
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    */
   constructor(uiSourceCode) {
     super();
@@ -308,7 +313,7 @@ export class UISourceCodeDiff extends Common.Object {
     if (current === null || baseline === null) {
       return null;
     }
-    return Diff.Diff.lineDiff(baseline.split(/\r\n|\n|\r/), current.split(/\r\n|\n|\r/));
+    return Diff.Diff.DiffWrapper.lineDiff(baseline.split(/\r\n|\n|\r/), current.split(/\r\n|\n|\r/));
   }
 }
 
@@ -335,7 +340,7 @@ export function workspaceDiff() {
 
 export class DiffUILocation {
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    */
   constructor(uiSourceCode) {
     this.uiSourceCode = uiSourceCode;

@@ -2,11 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+import * as UI from '../ui/ui.js';
+
 /**
  * @implements {UI.ListWidget.Delegate}
  * @unrestricted
  */
-export class FrameworkBlackboxSettingsTab extends UI.VBox {
+export class FrameworkBlackboxSettingsTab extends UI.Widget.VBox {
   constructor() {
     super(true);
     this.registerRequiredCSS('settings/frameworkBlackboxSettingsTab.css');
@@ -22,19 +25,19 @@ export class FrameworkBlackboxSettingsTab extends UI.VBox {
         ls`Blackbox content scripts`, self.Common.settings.moduleSetting('skipContentScripts'), true));
     blackboxContentScripts.title = ls`Blackbox content scripts (extension scripts in the page)`;
 
-    this._blackboxLabel = Common.UIString('Blackbox');
-    this._disabledLabel = Common.UIString('Disabled');
+    this._blackboxLabel = Common.UIString.UIString('Blackbox');
+    this._disabledLabel = Common.UIString.UIString('Disabled');
 
-    this._list = new UI.ListWidget(this);
+    this._list = new UI.ListWidget.ListWidget(this);
     this._list.element.classList.add('blackbox-list');
     this._list.registerRequiredCSS('settings/frameworkBlackboxSettingsTab.css');
 
     const placeholder = createElementWithClass('div', 'blackbox-list-empty');
-    placeholder.textContent = Common.UIString('No blackboxed patterns');
+    placeholder.textContent = Common.UIString.UIString('No blackboxed patterns');
     this._list.setEmptyPlaceholder(placeholder);
     this._list.show(this.contentElement);
-    const addPatternButton =
-        UI.createTextButton(Common.UIString('Add pattern...'), this._addButtonClicked.bind(this), 'add-button');
+    const addPatternButton = UI.UIUtils.createTextButton(
+        Common.UIString.UIString('Add pattern...'), this._addButtonClicked.bind(this), 'add-button');
     this.contentElement.appendChild(addPatternButton);
 
     this._setting = self.Common.settings.moduleSetting('skipStackFramesPattern');
@@ -136,9 +139,9 @@ export class FrameworkBlackboxSettingsTab extends UI.VBox {
     const content = editor.contentElement();
 
     const titles = content.createChild('div', 'blackbox-edit-row');
-    titles.createChild('div', 'blackbox-pattern').textContent = Common.UIString('Pattern');
+    titles.createChild('div', 'blackbox-pattern').textContent = Common.UIString.UIString('Pattern');
     titles.createChild('div', 'blackbox-separator blackbox-separator-invisible');
-    titles.createChild('div', 'blackbox-behavior').textContent = Common.UIString('Behavior');
+    titles.createChild('div', 'blackbox-behavior').textContent = Common.UIString.UIString('Behavior');
 
     const fields = content.createChild('div', 'blackbox-edit-row');
     const pattern = editor.createInput('pattern', 'text', '/framework\\.js$', patternValidator.bind(this));

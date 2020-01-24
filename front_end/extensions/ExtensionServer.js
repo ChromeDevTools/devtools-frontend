@@ -402,7 +402,7 @@ export class ExtensionServer extends Common.Object {
       return this._status.OK();
     }
 
-    const request = SDK.networkLog.requestForURL(message.url);
+    const request = self.SDK.networkLog.requestForURL(message.url);
     if (request) {
       Common.Revealer.reveal(request);
       return this._status.OK();
@@ -462,7 +462,7 @@ export class ExtensionServer extends Common.Object {
   }
 
   async _onGetHAR() {
-    const requests = SDK.networkLog.requests();
+    const requests = self.SDK.networkLog.requests();
     const harLog = await SDK.HARLog.build(requests);
     for (let i = 0; i < harLog.entries.length; ++i) {
       harLog.entries[i]._requestId = this._requestId(requests[i]);

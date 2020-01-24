@@ -164,9 +164,9 @@ export class NetworkPanel extends UI.Panel {
     self.SDK.targetManager.addModelListener(SDK.ResourceTreeModel, SDK.ResourceTreeModel.Events.Load, this._load, this);
     this._networkLogView.addEventListener(Events.RequestSelected, this._onRequestSelected, this);
     this._networkLogView.addEventListener(Events.RequestActivated, this._onRequestActivated, this);
-    SDK.networkLog.addEventListener(SDK.NetworkLog.Events.RequestAdded, this._onUpdateRequest, this);
-    SDK.networkLog.addEventListener(SDK.NetworkLog.Events.RequestUpdated, this._onUpdateRequest, this);
-    SDK.networkLog.addEventListener(SDK.NetworkLog.Events.Reset, this._onNetworkLogReset, this);
+    self.SDK.networkLog.addEventListener(SDK.NetworkLog.Events.RequestAdded, this._onUpdateRequest, this);
+    self.SDK.networkLog.addEventListener(SDK.NetworkLog.Events.RequestUpdated, this._onUpdateRequest, this);
+    self.SDK.networkLog.addEventListener(SDK.NetworkLog.Events.Reset, this._onNetworkLogReset, this);
   }
 
   /**
@@ -216,7 +216,7 @@ export class NetworkPanel extends UI.Panel {
     }
     this._panelToolbar.appendToolbarItem(UI.Toolbar.createActionButton(this._toggleRecordAction));
     const clearButton = new UI.ToolbarButton(Common.UIString('Clear'), 'largeicon-clear');
-    clearButton.addEventListener(UI.ToolbarButton.Events.Click, () => SDK.networkLog.reset(), this);
+    clearButton.addEventListener(UI.ToolbarButton.Events.Click, () => self.SDK.networkLog.reset(), this);
     this._panelToolbar.appendToolbarItem(clearButton);
     this._panelToolbar.appendSeparator();
 
@@ -284,7 +284,7 @@ export class NetworkPanel extends UI.Panel {
 
   _toggleRecording() {
     if (!this._preserveLogSetting.get() && !this._toggleRecordAction.toggled()) {
-      SDK.networkLog.reset();
+      self.SDK.networkLog.reset();
     }
     this._toggleRecord(!this._toggleRecordAction.toggled());
   }
@@ -300,7 +300,7 @@ export class NetworkPanel extends UI.Panel {
     }
     // TODO(einbinder) This should be moved to a setting/action that NetworkLog owns but NetworkPanel controls, but
     // always be present in the command menu.
-    SDK.networkLog.setIsRecording(toggled);
+    self.SDK.networkLog.setIsRecording(toggled);
   }
 
   /**

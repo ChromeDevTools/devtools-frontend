@@ -732,7 +732,7 @@ export class NetworkRequestNode extends NetworkNode {
   showingInitiatorChainChanged() {
     const showInitiatorChain = this.showingInitiatorChain();
 
-    const initiatorGraph = SDK.networkLog.initiatorGraphForRequest(this._request);
+    const initiatorGraph = self.SDK.networkLog.initiatorGraphForRequest(this._request);
     for (const request of initiatorGraph.initiators) {
       if (request === this._request) {
         continue;
@@ -1091,7 +1091,7 @@ export class NetworkRequestNode extends NetworkNode {
   _renderInitiatorCell(cell) {
     this._initiatorCell = cell;
     const request = this._request;
-    const initiator = SDK.networkLog.initiatorInfoForRequest(request);
+    const initiator = self.SDK.networkLog.initiatorInfoForRequest(request);
 
     const timing = request.timing;
     if (timing && timing.pushStart) {

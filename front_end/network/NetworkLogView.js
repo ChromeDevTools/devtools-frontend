@@ -162,9 +162,9 @@ export class NetworkLogView extends UI.VBox {
         .addChangeListener(this._invalidateAllItems.bind(this, false), this);
 
     self.SDK.targetManager.observeModels(SDK.NetworkManager, this);
-    SDK.networkLog.addEventListener(SDK.NetworkLog.Events.RequestAdded, this._onRequestUpdated, this);
-    SDK.networkLog.addEventListener(SDK.NetworkLog.Events.RequestUpdated, this._onRequestUpdated, this);
-    SDK.networkLog.addEventListener(SDK.NetworkLog.Events.Reset, this._reset, this);
+    self.SDK.networkLog.addEventListener(SDK.NetworkLog.Events.RequestAdded, this._onRequestUpdated, this);
+    self.SDK.networkLog.addEventListener(SDK.NetworkLog.Events.RequestUpdated, this._onRequestUpdated, this);
+    self.SDK.networkLog.addEventListener(SDK.NetworkLog.Events.Reset, this._reset, this);
 
     this._updateGroupByFrame();
     self.Common.settings.moduleSetting('network.group-by-frame').addChangeListener(() => this._updateGroupByFrame());
@@ -510,7 +510,7 @@ export class NetworkLogView extends UI.VBox {
       this._harLoadFailed(e);
       return;
     }
-    SDK.networkLog.importRequests(HARImporter.Importer.requestsFromHARLog(harRoot.log));
+    self.SDK.networkLog.importRequests(HARImporter.Importer.requestsFromHARLog(harRoot.log));
   }
 
   /**
@@ -789,7 +789,7 @@ export class NetworkLogView extends UI.VBox {
     let maxTime = -1;
 
     let nodeCount = 0;
-    for (const request of SDK.networkLog.requests()) {
+    for (const request of self.SDK.networkLog.requests()) {
       const node = request[_networkNodeSymbol];
       if (!node) {
         continue;
@@ -915,7 +915,7 @@ export class NetworkLogView extends UI.VBox {
    * @param {boolean=} deferUpdate
    */
   _invalidateAllItems(deferUpdate) {
-    this._staleRequests = new Set(SDK.networkLog.requests());
+    this._staleRequests = new Set(self.SDK.networkLog.requests());
     if (deferUpdate) {
       this.scheduleRefresh();
     } else {
@@ -1404,7 +1404,7 @@ export class NetworkLogView extends UI.VBox {
   }
 
   _harRequests() {
-    return SDK.networkLog.requests().filter(NetworkLogView.HTTPRequestsFilter).filter(request => {
+    return self.SDK.networkLog.requests().filter(NetworkLogView.HTTPRequestsFilter).filter(request => {
       return request.finished ||
           (request.resourceType() === Common.resourceTypes.WebSocket && request.responseReceivedTime);
     });
@@ -1428,7 +1428,7 @@ export class NetworkLogView extends UI.VBox {
    * @param {string} platform
    */
   async _copyAllCurlCommand(platform) {
-    const commands = await this._generateAllCurlCommand(SDK.networkLog.requests(), platform);
+    const commands = await this._generateAllCurlCommand(self.SDK.networkLog.requests(), platform);
     Host.InspectorFrontendHost.copyText(commands);
   }
 
@@ -1445,7 +1445,7 @@ export class NetworkLogView extends UI.VBox {
    * @param {boolean} includeCookies
    */
   async _copyAllFetchCall(includeCookies) {
-    const commands = await this._generateAllFetchCall(SDK.networkLog.requests(), includeCookies);
+    const commands = await this._generateAllFetchCall(self.SDK.networkLog.requests(), includeCookies);
     Host.InspectorFrontendHost.copyText(commands);
   }
 
@@ -1458,7 +1458,7 @@ export class NetworkLogView extends UI.VBox {
   }
 
   async _copyAllPowerShellCommand() {
-    const commands = await this._generateAllPowerShellCommand(SDK.networkLog.requests());
+    const commands = await this._generateAllPowerShellCommand(self.SDK.networkLog.requests());
     Host.InspectorFrontendHost.copyText(commands);
   }
 

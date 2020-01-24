@@ -459,3 +459,6 @@ export class Editor {
     cancel();
   }
 }
+
+/** @typedef {{valid: boolean, errorMessage: (string|undefined)}} */
+export let ValidatorResult;

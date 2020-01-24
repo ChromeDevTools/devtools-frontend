@@ -2,34 +2,40 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+import * as Host from '../host/host.js';
+import * as SDK from '../sdk/sdk.js';
+import * as UI from '../ui/ui.js';
+
 import {MobileThrottlingSelector} from './MobileThrottlingSelector.js';
 import {NetworkThrottlingSelector} from './NetworkThrottlingSelector.js';
 import {cpuThrottlingPresets, CPUThrottlingRates, CustomConditions} from './ThrottlingPresets.js';
 
 /**
- * @implements {SDK.SDKModelObserver<!SDK.EmulationModel>}
+ * @implements {SDK.SDKModel.SDKModelObserver<!SDK.EmulationModel.EmulationModel>}
  */
-export class ThrottlingManager extends Common.Object {
+export class ThrottlingManager extends Common.ObjectWrapper.ObjectWrapper {
   constructor() {
     super();
     /** @type {!CPUThrottlingRates} */
     this._cpuThrottlingRate = CPUThrottlingRates.NoThrottling;
-    /** @type {!Set<!UI.ToolbarComboBox>} */
+    /** @type {!Set<!UI.Toolbar.ToolbarComboBox>} */
     this._cpuThrottlingControls = new Set();
     this._cpuThrottlingRates = cpuThrottlingPresets;
-    /** @type {!Common.Setting<!Array<!SDK.NetworkManager.Conditions>>} */
+    /** @type {!Common.Settings.Setting<!Array<!SDK.NetworkManager.Conditions>>} */
     this._customNetworkConditionsSetting = self.Common.settings.moduleSetting('customNetworkConditions');
     /** @type {!SDK.NetworkManager.Conditions} */
     this._currentNetworkThrottlingConditions = SDK.NetworkManager.NoThrottlingConditions;
     /** @type {!SDK.NetworkManager.Conditions} */
     this._lastNetworkThrottlingConditions;
 
-    self.SDK.multitargetNetworkManager.addEventListener(SDK.MultitargetNetworkManager.Events.ConditionsChanged, () => {
-      this._lastNetworkThrottlingConditions = this._currentNetworkThrottlingConditions;
-      this._currentNetworkThrottlingConditions = self.SDK.multitargetNetworkManager.networkConditions();
-    });
+    self.SDK.multitargetNetworkManager.addEventListener(
+        SDK.NetworkManager.MultitargetNetworkManager.Events.ConditionsChanged, () => {
+          this._lastNetworkThrottlingConditions = this._currentNetworkThrottlingConditions;
+          this._currentNetworkThrottlingConditions = self.SDK.multitargetNetworkManager.networkConditions();
+        });
 
-    self.SDK.targetManager.observeModels(SDK.EmulationModel, this);
+    self.SDK.targetManager.observeModels(SDK.EmulationModel.EmulationModel, this);
   }
 
 
@@ -90,13 +96,14 @@ export class ThrottlingManager extends Common.Object {
   }
 
   /**
-   * @return {!UI.ToolbarCheckbox}
+   * @return {!UI.Toolbar.ToolbarCheckbox}
    */
   createOfflineToolbarCheckbox() {
-    const checkbox = new UI.ToolbarCheckbox(
-        Common.UIString('Offline'), Common.UIString('Force disconnected from network'), forceOffline.bind(this));
+    const checkbox = new UI.Toolbar.ToolbarCheckbox(
+        Common.UIString.UIString('Offline'), Common.UIString.UIString('Force disconnected from network'),
+        forceOffline.bind(this));
     self.SDK.multitargetNetworkManager.addEventListener(
-        SDK.MultitargetNetworkManager.Events.ConditionsChanged, networkConditionsChanged);
+        SDK.NetworkManager.MultitargetNetworkManager.Events.ConditionsChanged, networkConditionsChanged);
     checkbox.setChecked(
         self.SDK.multitargetNetworkManager.networkConditions() === SDK.NetworkManager.OfflineConditions);
 
@@ -121,11 +128,11 @@ export class ThrottlingManager extends Common.Object {
 
 
   /**
-   * @return {!UI.ToolbarMenuButton}
+   * @return {!UI.Toolbar.ToolbarMenuButton}
    */
   createMobileThrottlingButton() {
-    const button = new UI.ToolbarMenuButton(appendItems);
-    button.setTitle(Common.UIString('Throttling'));
+    const button = new UI.Toolbar.ToolbarMenuButton(appendItems);
+    button.setTitle(Common.UIString.UIString('Throttling'));
     button.setGlyph('');
     button.turnIntoSelect();
     button.setDarkText();
@@ -137,7 +144,7 @@ export class ThrottlingManager extends Common.Object {
     return button;
 
     /**
-     * @param {!UI.ContextMenu} contextMenu
+     * @param {!UI.ContextMenu.ContextMenu} contextMenu
      */
     function appendItems(contextMenu) {
       for (let index = 0; index < options.length; ++index) {
@@ -149,7 +156,7 @@ export class ThrottlingManager extends Common.Object {
           continue;
         }
         contextMenu.defaultSection().appendCheckboxItem(
-            Common.UIString(conditions.title),
+            Common.UIString.UIString(conditions.title),
             selector.optionSelected.bind(selector, /** @type {!MobileThrottling.Conditions} */ (conditions)),
             selectedIndex === index);
       }
@@ -192,14 +199,14 @@ export class ThrottlingManager extends Common.Object {
    */
   setCPUThrottlingRate(rate) {
     this._cpuThrottlingRate = rate;
-    for (const emulationModel of self.SDK.targetManager.models(SDK.EmulationModel)) {
+    for (const emulationModel of self.SDK.targetManager.models(SDK.EmulationModel.EmulationModel)) {
       emulationModel.setCPUThrottlingRate(this._cpuThrottlingRate);
     }
     let icon = null;
     if (this._cpuThrottlingRate !== CPUThrottlingRates.NoThrottling) {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.CpuThrottlingEnabled);
-      icon = UI.Icon.create('smallicon-warning');
-      icon.title = Common.UIString('CPU throttling is enabled');
+      icon = UI.Icon.Icon.create('smallicon-warning');
+      icon.title = Common.UIString.UIString('CPU throttling is enabled');
     }
     const index = this._cpuThrottlingRates.indexOf(this._cpuThrottlingRate);
     for (const control of this._cpuThrottlingControls) {
@@ -211,7 +218,7 @@ export class ThrottlingManager extends Common.Object {
 
   /**
    * @override
-   * @param {!SDK.EmulationModel} emulationModel
+   * @param {!SDK.EmulationModel.EmulationModel} emulationModel
    */
   modelAdded(emulationModel) {
     if (this._cpuThrottlingRate !== CPUThrottlingRates.NoThrottling) {
@@ -221,23 +228,24 @@ export class ThrottlingManager extends Common.Object {
 
   /**
    * @override
-   * @param {!SDK.EmulationModel} emulationModel
+   * @param {!SDK.EmulationModel.EmulationModel} emulationModel
    */
   modelRemoved(emulationModel) {
   }
 
   /**
-   * @return {!UI.ToolbarComboBox}
+   * @return {!UI.Toolbar.ToolbarComboBox}
    */
   createCPUThrottlingSelector() {
-    const control = new UI.ToolbarComboBox(
+    const control = new UI.Toolbar.ToolbarComboBox(
         event => this.setCPUThrottlingRate(this._cpuThrottlingRates[event.target.selectedIndex]), ls`CPU throttling`);
     this._cpuThrottlingControls.add(control);
     const currentRate = this._cpuThrottlingRate;
 
     for (let i = 0; i < this._cpuThrottlingRates.length; ++i) {
       const rate = this._cpuThrottlingRates[i];
-      const title = rate === 1 ? Common.UIString('No throttling') : Common.UIString('%d\xD7 slowdown', rate);
+      const title =
+          rate === 1 ? Common.UIString.UIString('No throttling') : Common.UIString.UIString('%d\xD7 slowdown', rate);
       const option = control.createOption(title);
       control.addOption(option);
       if (currentRate === rate) {
@@ -254,12 +262,12 @@ export const Events = {
 };
 
 /**
- * @implements {UI.ActionDelegate}
+ * @implements {UI.ActionDelegate.ActionDelegate}
  */
 export class ActionDelegate {
   /**
    * @override
-   * @param {!UI.Context} context
+   * @param {!UI.Context.Context} context
    * @param {string} actionId
    * @return {boolean}
    */

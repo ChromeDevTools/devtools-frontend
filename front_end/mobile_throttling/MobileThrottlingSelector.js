@@ -2,6 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+import * as SDK from '../sdk/sdk.js';
+
 import {Events, throttlingManager} from './ThrottlingManager.js';
 import {advancedMobilePresets, CustomConditions, mobilePresets, NoThrottlingConditions,} from './ThrottlingPresets.js';
 
@@ -15,7 +18,7 @@ export class MobileThrottlingSelector {
     this._selectCallback = selectCallback;
     throttlingManager().addEventListener(Events.RateChanged, this._conditionsChanged, this);
     self.SDK.multitargetNetworkManager.addEventListener(
-        SDK.MultitargetNetworkManager.Events.ConditionsChanged, this._conditionsChanged, this);
+        SDK.NetworkManager.MultitargetNetworkManager.Events.ConditionsChanged, this._conditionsChanged, this);
     /** @type {!MobileThrottling.ConditionsList} */
     this._options = this._populateOptions();
     this._conditionsChanged();
@@ -33,9 +36,9 @@ export class MobileThrottlingSelector {
    * @return {!MobileThrottling.ConditionsList}
    */
   _populateOptions() {
-    const disabledGroup = {title: Common.UIString('Disabled'), items: [NoThrottlingConditions]};
-    const presetsGroup = {title: Common.UIString('Presets'), items: mobilePresets};
-    const advancedGroup = {title: Common.UIString('Advanced'), items: advancedMobilePresets};
+    const disabledGroup = {title: Common.UIString.UIString('Disabled'), items: [NoThrottlingConditions]};
+    const presetsGroup = {title: Common.UIString.UIString('Presets'), items: mobilePresets};
+    const advancedGroup = {title: Common.UIString.UIString('Advanced'), items: advancedMobilePresets};
     return this._populateCallback([disabledGroup, presetsGroup, advancedGroup]);
   }
 

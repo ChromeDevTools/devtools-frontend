@@ -2,11 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+import * as UI from '../ui/ui.js';
+
 /**
  * @implements {UI.ListWidget.Delegate}
  * @unrestricted
  */
-export class ThrottlingSettingsTab extends UI.VBox {
+export class ThrottlingSettingsTab extends UI.Widget.VBox {
   constructor() {
     super(true);
     this.registerRequiredCSS('mobile_throttling/throttlingSettingsTab.css');
@@ -15,11 +18,11 @@ export class ThrottlingSettingsTab extends UI.VBox {
     header.textContent = ls`Network Throttling Profiles`;
     UI.ARIAUtils.markAsHeading(header, 1);
 
-    const addButton = UI.createTextButton(
-        Common.UIString('Add custom profile...'), this._addButtonClicked.bind(this), 'add-conditions-button');
+    const addButton = UI.UIUtils.createTextButton(
+        Common.UIString.UIString('Add custom profile...'), this._addButtonClicked.bind(this), 'add-conditions-button');
     this.contentElement.appendChild(addButton);
 
-    this._list = new UI.ListWidget(this);
+    this._list = new UI.ListWidget.ListWidget(this);
     this._list.element.classList.add('conditions-list');
     this._list.registerRequiredCSS('mobile_throttling/throttlingSettingsTab.css');
     this._list.show(this.contentElement);
@@ -71,7 +74,8 @@ export class ThrottlingSettingsTab extends UI.VBox {
     element.createChild('div', 'conditions-list-separator');
     element.createChild('div', 'conditions-list-text').textContent = throughputText(conditions.upload);
     element.createChild('div', 'conditions-list-separator');
-    element.createChild('div', 'conditions-list-text').textContent = Common.UIString('%dms', conditions.latency);
+    element.createChild('div', 'conditions-list-text').textContent =
+        Common.UIString.UIString('%dms', conditions.latency);
     return element;
   }
 
@@ -259,10 +263,10 @@ export function throughputText(throughput, plainText) {
   const throughputInKbps = throughput / (1024 / 8);
   const delimiter = plainText ? '' : ' ';
   if (throughputInKbps < 1024) {
-    return Common.UIString('%d%skb/s', throughputInKbps, delimiter);
+    return Common.UIString.UIString('%d%skb/s', throughputInKbps, delimiter);
   }
   if (throughputInKbps < 1024 * 10) {
-    return Common.UIString('%.1f%sMb/s', throughputInKbps / 1024, delimiter);
+    return Common.UIString.UIString('%.1f%sMb/s', throughputInKbps / 1024, delimiter);
   }
-  return Common.UIString('%d%sMb/s', (throughputInKbps / 1024) | 0, delimiter);
+  return Common.UIString.UIString('%d%sMb/s', (throughputInKbps / 1024) | 0, delimiter);
 }

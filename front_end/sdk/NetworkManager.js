@@ -1566,3 +1566,13 @@ class RedirectExtraInfoBuilder {
 }
 
 SDKModel.register(NetworkManager, Capability.Network, true);
+
+/**
+ * @typedef {{
+  *   download: number,
+  *   upload: number,
+  *   latency: number,
+  *   title: string,
+  * }}
+  */
+export let Conditions;

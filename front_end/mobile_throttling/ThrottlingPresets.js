@@ -2,6 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+import * as SDK from '../sdk/sdk.js';
+
 /** @enum {number} */
 export const CPUThrottlingRates = {
   NoThrottling: 1,
@@ -12,7 +15,7 @@ export const CPUThrottlingRates = {
 /** @type {!MobileThrottling.Conditions} */
 export const NoThrottlingConditions = {
   title: SDK.NetworkManager.NoThrottlingConditions.title,
-  description: Common.UIString('No throttling'),
+  description: Common.UIString.UIString('No throttling'),
   network: SDK.NetworkManager.NoThrottlingConditions,
   cpuThrottlingRate: CPUThrottlingRates.NoThrottling,
 };
@@ -20,31 +23,31 @@ export const NoThrottlingConditions = {
 /** @type {!MobileThrottling.Conditions} */
 export const OfflineConditions = {
   title: SDK.NetworkManager.OfflineConditions.title,
-  description: Common.UIString('No internet connectivity'),
+  description: Common.UIString.UIString('No internet connectivity'),
   network: SDK.NetworkManager.OfflineConditions,
   cpuThrottlingRate: CPUThrottlingRates.NoThrottling,
 };
 
 /** @type {!MobileThrottling.Conditions} */
 export const LowEndMobileConditions = {
-  title: Common.UIString('Low-end mobile'),
-  description: Common.UIString('Slow 3G & 6x CPU slowdown'),
+  title: Common.UIString.UIString('Low-end mobile'),
+  description: Common.UIString.UIString('Slow 3G & 6x CPU slowdown'),
   network: SDK.NetworkManager.Slow3GConditions,
   cpuThrottlingRate: CPUThrottlingRates.LowEndMobile,
 };
 
 /** @type {!MobileThrottling.Conditions} */
 export const MidTierMobileConditions = {
-  title: Common.UIString('Mid-tier mobile'),
-  description: Common.UIString('Fast 3G & 4x CPU slowdown'),
+  title: Common.UIString.UIString('Mid-tier mobile'),
+  description: Common.UIString.UIString('Fast 3G & 4x CPU slowdown'),
   network: SDK.NetworkManager.Fast3GConditions,
   cpuThrottlingRate: CPUThrottlingRates.MidTierMobile,
 };
 
 /** @type {!MobileThrottling.PlaceholderConditions} */
 export const CustomConditions = {
-  title: Common.UIString('Custom'),
-  description: Common.UIString('Check Network and Performance panels'),
+  title: Common.UIString.UIString('Custom'),
+  description: Common.UIString.UIString('Check Network and Performance panels'),
 };
 
 /** @type {!Array.<!MobileThrottling.Conditions>} */

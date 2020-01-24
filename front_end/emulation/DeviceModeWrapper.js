@@ -2,6 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as ProtocolModule from '../protocol/protocol.js';
+import * as SDK from '../sdk/sdk.js';
+import * as UI from '../ui/ui.js';
+
 import {DeviceModeModel} from './DeviceModeModel.js';
 import {DeviceModeView} from './DeviceModeView.js';
 import {InspectedPagePlaceholder} from './InspectedPagePlaceholder.js';  // eslint-disable-line no-unused-vars
@@ -9,7 +13,7 @@ import {InspectedPagePlaceholder} from './InspectedPagePlaceholder.js';  // esli
 /**
  * @unrestricted
  */
-export class DeviceModeWrapper extends UI.VBox {
+export class DeviceModeWrapper extends UI.Widget.VBox {
   /**
    * @param {!InspectedPagePlaceholder} inspectedPagePlaceholder
    */
@@ -25,7 +29,8 @@ export class DeviceModeWrapper extends UI.VBox {
     this._showDeviceModeSetting.setRequiresUserAction(!!Root.Runtime.queryParam('hasOtherClients'));
     this._showDeviceModeSetting.addChangeListener(this._update.bind(this, false));
     self.SDK.targetManager.addModelListener(
-        SDK.OverlayModel, SDK.OverlayModel.Events.ScreenshotRequested, this._screenshotRequestedFromOverlay, this);
+        SDK.OverlayModel.OverlayModel, SDK.OverlayModel.Events.ScreenshotRequested,
+        this._screenshotRequestedFromOverlay, this);
     this._update(true);
   }
 
@@ -91,13 +96,13 @@ export class DeviceModeWrapper extends UI.VBox {
 }
 
 /**
- * @implements {UI.ActionDelegate}
+ * @implements {UI.ActionDelegate.ActionDelegate}
  * @unrestricted
  */
 export class ActionDelegate {
   /**
    * @override
-   * @param {!UI.Context} context
+   * @param {!UI.Context.Context} context
    * @param {string} actionId
    * @return {boolean}
    */
@@ -108,7 +113,7 @@ export class ActionDelegate {
           return DeviceModeView.wrapperInstance._captureScreenshot();
 
         case 'emulation.capture-node-screenshot': {
-          const node = self.UI.context.flavor(SDK.DOMNode);
+          const node = self.UI.context.flavor(SDK.DOMModel.DOMNode);
           if (!node) {
             return true;
           }
@@ -128,7 +133,8 @@ export class ActionDelegate {
             const clip =
                 /** @type {!Protocol.Page.Viewport} */ (JSON.parse(/** @type {string} */ (result.object.value)));
             const response = await node.domModel().target().pageAgent().invoke_getLayoutMetrics({});
-            const page_zoom = !response[Protocol.Error] && response.visualViewport.zoom || 1;
+            const page_zoom =
+                !response[ProtocolModule.InspectorBackend.ProtocolError] && response.visualViewport.zoom || 1;
             clip.x *= page_zoom;
             clip.y *= page_zoom;
             clip.width *= page_zoom;

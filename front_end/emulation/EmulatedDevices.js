@@ -2,6 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+import * as SDK from '../sdk/sdk.js';
+import * as UI from '../ui/ui.js';
+
 import {MaxDeviceSize, MinDeviceSize} from './DeviceModeModel.js';
 
 /**
@@ -77,10 +81,10 @@ export class EmulatedDevice {
 
       /**
        * @param {*} json
-       * @return {!UI.Insets}
+       * @return {!UI.Geometry.Insets}
        */
       function parseInsets(json) {
-        return new UI.Insets(
+        return new UI.Geometry.Insets(
             parseIntValue(json, 'left'), parseIntValue(json, 'top'), parseIntValue(json, 'right'),
             parseIntValue(json, 'bottom'));
       }
@@ -117,7 +121,7 @@ export class EmulatedDevice {
       result.title = /** @type {string} */ (parseValue(json, 'title', 'string'));
       result.type = /** @type {string} */ (parseValue(json, 'type', 'string'));
       const rawUserAgent = /** @type {string} */ (parseValue(json, 'user-agent', 'string'));
-      result.userAgent = SDK.MultitargetNetworkManager.patchUserAgentWithChromeVersion(rawUserAgent);
+      result.userAgent = SDK.NetworkManager.MultitargetNetworkManager.patchUserAgentWithChromeVersion(rawUserAgent);
 
       const capabilities = parseValue(json, 'capabilities', 'object', []);
       if (!Array.isArray(capabilities)) {
@@ -379,18 +383,18 @@ let _instance;
 /**
  * @unrestricted
  */
-export class EmulatedDevicesList extends Common.Object {
+export class EmulatedDevicesList extends Common.ObjectWrapper.ObjectWrapper {
   constructor() {
     super();
 
-    /** @type {!Common.Setting} */
+    /** @type {!Common.Settings.Setting} */
     this._standardSetting = self.Common.settings.createSetting('standardEmulatedDeviceList', []);
     /** @type {!Array.<!EmulatedDevice>} */
     this._standard = [];
     this._listFromJSONV1(this._standardSetting.get(), this._standard);
     this._updateStandardDevices();
 
-    /** @type {!Common.Setting} */
+    /** @type {!Common.Settings.Setting} */
     this._customSetting = self.Common.settings.createSetting('customEmulatedDeviceList', []);
     /** @type {!Array.<!EmulatedDevice>} */
     this._custom = [];
@@ -437,8 +441,10 @@ export class EmulatedDevicesList extends Common.Object {
       if (device) {
         result.push(device);
         if (!device.modes.length) {
-          device.modes.push({title: '', orientation: Horizontal, insets: new UI.Insets(0, 0, 0, 0), image: null});
-          device.modes.push({title: '', orientation: Vertical, insets: new UI.Insets(0, 0, 0, 0), image: null});
+          device.modes.push(
+              {title: '', orientation: Horizontal, insets: new UI.Geometry.Insets(0, 0, 0, 0), image: null});
+          device.modes.push(
+              {title: '', orientation: Vertical, insets: new UI.Geometry.Insets(0, 0, 0, 0), image: null});
         }
       } else {
         success = false;

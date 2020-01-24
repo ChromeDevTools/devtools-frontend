@@ -2,11 +2,16 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+import * as SDK from '../sdk/sdk.js';
+import * as UI from '../ui/ui.js';
+import * as Workspace from '../workspace/workspace.js';  // eslint-disable-line no-unused-vars
+
 /**
- * @implements {SDK.SDKModelObserver<!SDK.CSSModel>}
+ * @implements {SDK.SDKModel.SDKModelObserver<!SDK.CSSModel.CSSModel>}
  * @unrestricted
  */
-export class MediaQueryInspector extends UI.Widget {
+export class MediaQueryInspector extends UI.Widget.Widget {
   /**
    * @param {function():number} getWidthCallback
    * @param {function(number)} setWidthCallback
@@ -17,19 +22,19 @@ export class MediaQueryInspector extends UI.Widget {
     this.contentElement.classList.add('media-inspector-view');
     this.contentElement.addEventListener('click', this._onMediaQueryClicked.bind(this), false);
     this.contentElement.addEventListener('contextmenu', this._onContextMenu.bind(this), false);
-    this._mediaThrottler = new Common.Throttler(0);
+    this._mediaThrottler = new Common.Throttler.Throttler(0);
 
     this._getWidthCallback = getWidthCallback;
     this._setWidthCallback = setWidthCallback;
     this._scale = 1;
 
-    self.SDK.targetManager.observeModels(SDK.CSSModel, this);
+    self.SDK.targetManager.observeModels(SDK.CSSModel.CSSModel, this);
     self.UI.zoomManager.addEventListener(UI.ZoomManager.Events.ZoomChanged, this._renderMediaQueries.bind(this), this);
   }
 
   /**
    * @override
-   * @param {!SDK.CSSModel} cssModel
+   * @param {!SDK.CSSModel.CSSModel} cssModel
    */
   modelAdded(cssModel) {
     // FIXME: adapt this to multiple targets.
@@ -46,7 +51,7 @@ export class MediaQueryInspector extends UI.Widget {
 
   /**
    * @override
-   * @param {!SDK.CSSModel} cssModel
+   * @param {!SDK.CSSModel.CSSModel} cssModel
    */
   modelRemoved(cssModel) {
     if (cssModel !== this._cssModel) {
@@ -123,18 +128,21 @@ export class MediaQueryInspector extends UI.Widget {
     }
 
     const contextMenuItems = uiLocations.keysArray().sort();
-    const contextMenu = new UI.ContextMenu(event);
-    const subMenuItem = contextMenu.defaultSection().appendSubMenuItem(Common.UIString('Reveal in source code'));
+    const contextMenu = new UI.ContextMenu.ContextMenu(event);
+    const subMenuItem =
+        contextMenu.defaultSection().appendSubMenuItem(Common.UIString.UIString('Reveal in source code'));
     for (let i = 0; i < contextMenuItems.length; ++i) {
       const title = contextMenuItems[i];
       subMenuItem.defaultSection().appendItem(
-          title, this._revealSourceLocation.bind(this, /** @type {!Workspace.UILocation} */ (uiLocations.get(title))));
+          title,
+          this._revealSourceLocation.bind(
+              this, /** @type {!Workspace.UISourceCode.UILocation} */ (uiLocations.get(title))));
     }
     contextMenu.show();
   }
 
   /**
-   * @param {!Workspace.UILocation} location
+   * @param {!Workspace.UISourceCode.UILocation} location
    */
   _revealSourceLocation(location) {
     Common.Revealer.reveal(location);
@@ -171,7 +179,7 @@ export class MediaQueryInspector extends UI.Widget {
   }
 
   /**
-   * @param {!Array.<!SDK.CSSMedia>} cssMedias
+   * @param {!Array.<!SDK.CSSMedia.CSSMedia>} cssMedias
    */
   _rebuildMediaQueries(cssMedias) {
     let queryModels = [];
@@ -337,9 +345,9 @@ export const Section = {
  */
 export class MediaQueryUIModel {
   /**
-   * @param {!SDK.CSSMedia} cssMedia
-   * @param {?SDK.CSSMediaQueryExpression} minWidthExpression
-   * @param {?SDK.CSSMediaQueryExpression} maxWidthExpression
+   * @param {!SDK.CSSMedia.CSSMedia} cssMedia
+   * @param {?SDK.CSSMedia.CSSMediaQueryExpression} minWidthExpression
+   * @param {?SDK.CSSMedia.CSSMediaQueryExpression} maxWidthExpression
    * @param {boolean} active
    */
   constructor(cssMedia, minWidthExpression, maxWidthExpression, active) {
@@ -357,8 +365,8 @@ export class MediaQueryUIModel {
   }
 
   /**
-   * @param {!SDK.CSSMedia} cssMedia
-   * @param {!SDK.CSSMediaQuery} mediaQuery
+   * @param {!SDK.CSSMedia.CSSMedia} cssMedia
+   * @param {!SDK.CSSMedia.CSSMediaQuery} mediaQuery
    * @return {?MediaQueryUIModel}
    */
   static createFromMediaQuery(cssMedia, mediaQuery) {
@@ -460,7 +468,7 @@ export class MediaQueryUIModel {
   }
 
   /**
-   * @return {?SDK.CSSLocation}
+   * @return {?SDK.CSSModel.CSSLocation}
    */
   rawLocation() {
     if (!this._rawLocation) {
@@ -470,14 +478,14 @@ export class MediaQueryUIModel {
   }
 
   /**
-   * @return {?SDK.CSSMediaQueryExpression}
+   * @return {?SDK.CSSMedia.CSSMediaQueryExpression}
    */
   minWidthExpression() {
     return this._minWidthExpression;
   }
 
   /**
-   * @return {?SDK.CSSMediaQueryExpression}
+   * @return {?SDK.CSSMedia.CSSMediaQueryExpression}
    */
   maxWidthExpression() {
     return this._maxWidthExpression;

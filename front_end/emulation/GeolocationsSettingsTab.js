@@ -2,22 +2,25 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+import * as UI from '../ui/ui.js';
+
 /**
  * @implements {UI.ListWidget.Delegate}
  * @unrestricted
  */
-export class GeolocationsSettingsTab extends UI.VBox {
+export class GeolocationsSettingsTab extends UI.Widget.VBox {
   constructor() {
     super(true);
     this.registerRequiredCSS('emulation/geolocationsSettingsTab.css');
 
-    this.contentElement.createChild('div', 'header').textContent = Common.UIString('Custom Geolocations');
+    this.contentElement.createChild('div', 'header').textContent = Common.UIString.UIString('Custom Geolocations');
 
-    const addButton = UI.createTextButton(
-        Common.UIString('Add location...'), this._addButtonClicked.bind(this), 'add-geolocations-button');
+    const addButton = UI.UIUtils.createTextButton(
+        Common.UIString.UIString('Add location...'), this._addButtonClicked.bind(this), 'add-geolocations-button');
     this.contentElement.appendChild(addButton);
 
-    this._list = new UI.ListWidget(this);
+    this._list = new UI.ListWidget.ListWidget(this);
     this._list.element.classList.add('geolocations-list');
     this._list.registerRequiredCSS('emulation/geolocationsSettingsTab.css');
     this._list.show(this.contentElement);
@@ -136,13 +139,13 @@ export class GeolocationsSettingsTab extends UI.VBox {
 
     const titles = content.createChild('div', 'geolocations-edit-row');
     titles.createChild('div', 'geolocations-list-text geolocations-list-title').textContent =
-        Common.UIString('Location name');
+        Common.UIString.UIString('Location name');
     titles.createChild('div', 'geolocations-list-separator geolocations-list-separator-invisible');
-    titles.createChild('div', 'geolocations-list-text').textContent = Common.UIString('Lat');
+    titles.createChild('div', 'geolocations-list-text').textContent = Common.UIString.UIString('Lat');
     titles.createChild('div', 'geolocations-list-separator geolocations-list-separator-invisible');
-    titles.createChild('div', 'geolocations-list-text').textContent = Common.UIString('Long');
+    titles.createChild('div', 'geolocations-list-text').textContent = Common.UIString.UIString('Long');
     titles.createChild('div', 'geolocations-list-separator geolocations-list-separator-invisible');
-    titles.createChild('div', 'geolocations-list-text').textContent = Common.UIString('Timezone ID');
+    titles.createChild('div', 'geolocations-list-text').textContent = Common.UIString.UIString('Timezone ID');
 
     const fields = content.createChild('div', 'geolocations-edit-row');
     fields.createChild('div', 'geolocations-list-text geolocations-list-title')

@@ -2,6 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+import * as UI from '../ui/ui.js';
+
 import {DeviceModeModel, MaxDeviceNameLength, UA} from './DeviceModeModel.js';
 import {Capability, EmulatedDevice, EmulatedDevicesList, Events, Horizontal, Vertical,} from './EmulatedDevices.js';
 
@@ -9,7 +12,7 @@ import {Capability, EmulatedDevice, EmulatedDevicesList, Events, Horizontal, Ver
  * @implements {UI.ListWidget.Delegate}
  * @unrestricted
  */
-export class DevicesSettingsTab extends UI.VBox {
+export class DevicesSettingsTab extends UI.Widget.VBox {
   constructor() {
     super();
     this.element.classList.add('settings-tab-container');
@@ -23,10 +26,10 @@ export class DevicesSettingsTab extends UI.VBox {
 
     const buttonsRow = this.containerElement.createChild('div', 'devices-button-row');
     this._addCustomButton =
-        UI.createTextButton(Common.UIString('Add custom device...'), this._addCustomDevice.bind(this));
+        UI.UIUtils.createTextButton(Common.UIString.UIString('Add custom device...'), this._addCustomDevice.bind(this));
     buttonsRow.appendChild(this._addCustomButton);
 
-    this._list = new UI.ListWidget(this);
+    this._list = new UI.ListWidget.ListWidget(this);
     this._list.registerRequiredCSS('emulation/devicesSettingsTab.css');
     this._list.element.classList.add('devices-list');
     this._list.show(this.containerElement);
@@ -154,8 +157,8 @@ export class DevicesSettingsTab extends UI.VBox {
     device.deviceScaleFactor = editor.control('scale').value ? parseFloat(editor.control('scale').value) : 0;
     device.userAgent = editor.control('user-agent').value;
     device.modes = [];
-    device.modes.push({title: '', orientation: Vertical, insets: new UI.Insets(0, 0, 0, 0), image: null});
-    device.modes.push({title: '', orientation: Horizontal, insets: new UI.Insets(0, 0, 0, 0), image: null});
+    device.modes.push({title: '', orientation: Vertical, insets: new UI.Geometry.Insets(0, 0, 0, 0), image: null});
+    device.modes.push({title: '', orientation: Horizontal, insets: new UI.Geometry.Insets(0, 0, 0, 0), image: null});
     device.capabilities = [];
     const uaType = editor.control('ua-type').value;
     if (uaType === UA.Mobile || uaType === UA.MobileNoTouch) {

@@ -2,6 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
+import * as Components from '../components/components.js';
+import * as Host from '../host/host.js';
+import * as UI from '../ui/ui.js';
+
 import {DeviceModeWrapper} from './DeviceModeWrapper.js';
 import {Events, instance} from './InspectedPagePlaceholder.js';
 
@@ -9,7 +14,7 @@ import {Events, instance} from './InspectedPagePlaceholder.js';
 let _appInstance;
 
 /**
- * @implements {Common.App}
+ * @implements {Common.App.App}
  * @unrestricted
  */
 export class AdvancedApp {
@@ -33,9 +38,9 @@ export class AdvancedApp {
    * @param {!Document} document
    */
   presentUI(document) {
-    const rootView = new UI.RootView();
+    const rootView = new UI.RootView.RootView();
 
-    this._rootSplitWidget = new UI.SplitWidget(false, true, 'InspectorView.splitViewState', 555, 300, true);
+    this._rootSplitWidget = new UI.SplitWidget.SplitWidget(false, true, 'InspectorView.splitViewState', 555, 300, true);
     this._rootSplitWidget.show(rootView.element);
     this._rootSplitWidget.setSidebarWidget(self.UI.inspectorView);
     this._rootSplitWidget.setDefaultFocusedChild(self.UI.inspectorView);
@@ -79,12 +84,12 @@ export class AdvancedApp {
    * @param {!Document} toolboxDocument
    */
   toolboxLoaded(toolboxDocument) {
-    UI.initializeUIUtils(toolboxDocument, self.Common.settings.createSetting('uiTheme', 'default'));
-    UI.installComponentRootStyles(/** @type {!Element} */ (toolboxDocument.body));
-    UI.ContextMenu.installHandler(toolboxDocument);
-    UI.Tooltip.installHandler(toolboxDocument);
+    UI.UIUtils.initializeUIUtils(toolboxDocument, self.Common.settings.createSetting('uiTheme', 'default'));
+    UI.UIUtils.installComponentRootStyles(/** @type {!Element} */ (toolboxDocument.body));
+    UI.ContextMenu.ContextMenu.installHandler(toolboxDocument);
+    UI.Tooltip.Tooltip.installHandler(toolboxDocument);
 
-    this._toolboxRootView = new UI.RootView();
+    this._toolboxRootView = new UI.RootView.RootView();
     this._toolboxRootView.attachToDocument(toolboxDocument);
 
     this._updateDeviceModeView();
@@ -192,19 +197,19 @@ export class AdvancedApp {
     }
     const bounds = /** @type {{x: number, y: number, width: number, height: number}} */ (event.data);
     console.timeStamp('AdvancedApp.setInspectedPageBounds');
-    Host.InspectorFrontendHost.setInspectedPageBounds(bounds);
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.setInspectedPageBounds(bounds);
   }
 }
 
 
 /**
- * @implements {Common.AppProvider}
+ * @implements {Common.AppProvider.AppProvider}
  * @unrestricted
  */
 export class AdvancedAppProvider {
   /**
    * @override
-   * @return {!Common.App}
+   * @return {!Common.App.App}
    */
   createApp() {
     return AdvancedApp._instance();

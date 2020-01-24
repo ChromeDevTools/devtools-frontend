@@ -2,6 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+import * as Host from '../host/host.js';
+import * as UI from '../ui/ui.js';
+
 import {DeviceModeModel, Events, MaxDeviceSize, MinDeviceSize, Type} from './DeviceModeModel.js';
 import {DeviceModeToolbar} from './DeviceModeToolbar.js';
 import {MediaQueryInspector} from './MediaQueryInspector.js';
@@ -9,17 +13,17 @@ import {MediaQueryInspector} from './MediaQueryInspector.js';
 /**
  * @unrestricted
  */
-export class DeviceModeView extends UI.VBox {
+export class DeviceModeView extends UI.Widget.VBox {
   constructor() {
     super(true);
 
-    /** @type {?UI.VBox} */
+    /** @type {?UI.Widget.VBox} */
     this.wrapperInstance;
 
     this.setMinimumSize(150, 150);
     this.element.classList.add('device-mode-view');
     this.registerRequiredCSS('emulation/deviceModeView.css');
-    UI.Tooltip.addNativeOverrideContainer(this.contentElement);
+    UI.Tooltip.Tooltip.addNativeOverrideContainer(this.contentElement);
 
     this._model = self.singleton(DeviceModeModel);
     this._model.addEventListener(Events.Updated, this._updateUI, this);
@@ -79,7 +83,7 @@ export class DeviceModeView extends UI.VBox {
     this._bottomResizerElement.createChild('div', '');
     this._createResizer(this._bottomResizerElement, 0, 1);
     this._bottomResizerElement.addEventListener('dblclick', this._model.setHeight.bind(this._model, 0), false);
-    this._bottomResizerElement.title = Common.UIString('Double-click for full height');
+    this._bottomResizerElement.title = Common.UIString.UIString('Double-click for full height');
 
     this._pageArea = this._screenArea.createChild('div', 'device-mode-page-area');
     this._pageArea.createChild('slot');
@@ -88,8 +92,9 @@ export class DeviceModeView extends UI.VBox {
   _populatePresetsContainer() {
     const sizes = [320, 375, 425, 768, 1024, 1440, 2560];
     const titles = [
-      Common.UIString('Mobile S'), Common.UIString('Mobile M'), Common.UIString('Mobile L'), Common.UIString('Tablet'),
-      Common.UIString('Laptop'), Common.UIString('Laptop L'), Common.UIString('4K')
+      Common.UIString.UIString('Mobile S'), Common.UIString.UIString('Mobile M'), Common.UIString.UIString('Mobile L'),
+      Common.UIString.UIString('Tablet'), Common.UIString.UIString('Laptop'), Common.UIString.UIString('Laptop L'),
+      Common.UIString.UIString('4K')
     ];
     this._presetBlocks = [];
     const inner = this._responsivePresetsContainer.createChild('div', 'device-mode-presets-container-inner');
@@ -118,10 +123,10 @@ export class DeviceModeView extends UI.VBox {
    * @param {!Element} element
    * @param {number} widthFactor
    * @param {number} heightFactor
-   * @return {!UI.ResizerWidget}
+   * @return {!UI.ResizerWidget.ResizerWidget}
    */
   _createResizer(element, widthFactor, heightFactor) {
-    const resizer = new UI.ResizerWidget();
+    const resizer = new UI.ResizerWidget.ResizerWidget();
     resizer.addElement(element);
     let cursor = widthFactor ? 'ew-resize' : 'ns-resize';
     if (widthFactor * heightFactor > 0) {
@@ -143,7 +148,7 @@ export class DeviceModeView extends UI.VBox {
    */
   _onResizeStart(event) {
     this._slowPositionStart = null;
-    /** @type {!UI.Size} */
+    /** @type {!UI.Geometry.Size} */
     this._resizeStart = this._model.screenRect().size();
   }
 
@@ -196,7 +201,7 @@ export class DeviceModeView extends UI.VBox {
   _updateUI() {
     /**
      * @param {!Element} element
-     * @param {!UI.Rect} rect
+     * @param {!UI.Geometry.Rect} rect
      */
     function applyRect(element, rect) {
       element.style.left = rect.left + 'px';
@@ -336,15 +341,17 @@ export class DeviceModeView extends UI.VBox {
     }
     const zoomFactor = self.UI.zoomManager.zoomFactor();
     const rect = element.getBoundingClientRect();
-    const availableSize = new UI.Size(Math.max(rect.width * zoomFactor, 1), Math.max(rect.height * zoomFactor, 1));
+    const availableSize =
+        new UI.Geometry.Size(Math.max(rect.width * zoomFactor, 1), Math.max(rect.height * zoomFactor, 1));
     this._model.setAvailableSize(availableSize, availableSize);
   }
 
   _contentAreaResized() {
     const zoomFactor = self.UI.zoomManager.zoomFactor();
     const rect = this._contentArea.getBoundingClientRect();
-    const availableSize = new UI.Size(Math.max(rect.width * zoomFactor, 1), Math.max(rect.height * zoomFactor, 1));
-    const preferredSize = new UI.Size(
+    const availableSize =
+        new UI.Geometry.Size(Math.max(rect.width * zoomFactor, 1), Math.max(rect.height * zoomFactor, 1));
+    const preferredSize = new UI.Geometry.Size(
         Math.max((rect.width - 2 * this._handleWidth) * zoomFactor, 1),
         Math.max((rect.height - this._handleHeight) * zoomFactor, 1));
     this._model.setAvailableSize(availableSize, preferredSize);
@@ -472,7 +479,7 @@ export class DeviceModeView extends UI.VBox {
   /**
    * @param {!CanvasRenderingContext2D} ctx
    * @param {string} src
-   * @param {!UI.Rect} rect
+   * @param {!UI.Geometry.Rect} rect
    * @return {!Promise}
    */
   _paintImage(ctx, src, rect) {
@@ -495,7 +502,7 @@ export class DeviceModeView extends UI.VBox {
     const url = this._model.inspectedURL();
     let fileName = url ? url.trimURL().removeURLFragment() : '';
     if (this._model.type() === Type.Device) {
-      fileName += Common.UIString('(%s)', this._model.device().title);
+      fileName += Common.UIString.UIString('(%s)', this._model.device().title);
     }
     const link = createElement('a');
     link.download = fileName + '.png';
@@ -509,7 +516,7 @@ export class DeviceModeView extends UI.VBox {
 /**
  * @unrestricted
  */
-export class Ruler extends UI.VBox {
+export class Ruler extends UI.Widget.VBox {
   /**
    * @param {boolean} horizontal
    * @param {function(number)} applyCallback
@@ -522,7 +529,7 @@ export class Ruler extends UI.VBox {
     this._horizontal = horizontal;
     this._scale = 1;
     this._count = 0;
-    this._throttler = new Common.Throttler(0);
+    this._throttler = new Common.Throttler.Throttler(0);
     this._applyCallback = applyCallback;
   }
 

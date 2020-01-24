@@ -266,7 +266,7 @@ export class UISourceCodeDiff extends Common.Object {
    */
   async _originalContent() {
     const originalNetworkContent =
-        Persistence.networkPersistenceManager.originalContentForUISourceCode(this._uiSourceCode);
+        self.Persistence.networkPersistenceManager.originalContentForUISourceCode(this._uiSourceCode);
     if (originalNetworkContent) {
       return originalNetworkContent;
     }

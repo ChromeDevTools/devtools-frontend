@@ -42,7 +42,7 @@ export class PersistenceUtils {
       const icon = UI.Icon.Icon.create('mediumicon-file-sync');
       icon.title = PersistenceUtils.tooltipForUISourceCode(binding.network);
       // TODO(allada) This will not work properly with dark theme.
-      if (Persistence.networkPersistenceManager.project() === binding.fileSystem.project()) {
+      if (self.Persistence.networkPersistenceManager.project() === binding.fileSystem.project()) {
         icon.style.filter = 'hue-rotate(160deg)';
       }
       return icon;

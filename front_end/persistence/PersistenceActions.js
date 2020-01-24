@@ -39,10 +39,10 @@ export class ContextMenuProvider {
 
     // Retrieve uiSourceCode by URL to pick network resources everywhere.
     const uiSourceCode = self.Workspace.workspace.uiSourceCodeForURL(contentProvider.contentURL());
-    if (uiSourceCode && Persistence.networkPersistenceManager.canSaveUISourceCodeForOverrides(uiSourceCode)) {
+    if (uiSourceCode && self.Persistence.networkPersistenceManager.canSaveUISourceCodeForOverrides(uiSourceCode)) {
       contextMenu.saveSection().appendItem(Common.UIString.UIString('Save for overrides'), () => {
         uiSourceCode.commitWorkingCopy();
-        Persistence.networkPersistenceManager.saveUISourceCodeForOverrides(
+        self.Persistence.networkPersistenceManager.saveUISourceCodeForOverrides(
             /** @type {!Workspace.UISourceCode.UISourceCode} */ (uiSourceCode));
         Common.Revealer.reveal(uiSourceCode);
       });

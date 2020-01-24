@@ -242,7 +242,7 @@ export class UISourceCodeFrame extends SourceFrame.SourceFrame {
       return false;
     }
     if (this._uiSourceCode.project().type() === Workspace.projectTypes.Network &&
-        Persistence.networkPersistenceManager.active()) {
+        self.Persistence.networkPersistenceManager.active()) {
       return true;
     }
     // Because live edit fails on large whitespace changes, pretty printed scripts are not editable.

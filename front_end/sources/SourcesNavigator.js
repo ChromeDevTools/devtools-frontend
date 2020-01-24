@@ -144,7 +144,7 @@ export class OverridesNavigatorView extends NavigatorView {
 
     this.contentElement.insertBefore(this._toolbar.element, this.contentElement.firstChild);
 
-    Persistence.networkPersistenceManager.addEventListener(
+    self.Persistence.networkPersistenceManager.addEventListener(
         Persistence.NetworkPersistenceManager.Events.ProjectChanged, this._updateProjectAndUI, this);
     this.workspace().addEventListener(Workspace.Workspace.Events.ProjectAdded, this._onProjectAddOrRemoved, this);
     this.workspace().addEventListener(Workspace.Workspace.Events.ProjectRemoved, this._onProjectAddOrRemoved, this);
@@ -165,7 +165,7 @@ export class OverridesNavigatorView extends NavigatorView {
 
   _updateProjectAndUI() {
     this.reset();
-    const project = Persistence.networkPersistenceManager.project();
+    const project = self.Persistence.networkPersistenceManager.project();
     if (project) {
       this.tryAddProject(project);
     }
@@ -174,7 +174,7 @@ export class OverridesNavigatorView extends NavigatorView {
 
   _updateUI() {
     this._toolbar.removeToolbarItems();
-    const project = Persistence.networkPersistenceManager.project();
+    const project = self.Persistence.networkPersistenceManager.project();
     if (project) {
       const enableCheckbox =
           new UI.ToolbarSettingCheckbox(self.Common.settings.moduleSetting('persistenceNetworkOverridesEnabled'));
@@ -208,7 +208,7 @@ export class OverridesNavigatorView extends NavigatorView {
    * @return {boolean}
    */
   acceptProject(project) {
-    return project === Persistence.networkPersistenceManager.project();
+    return project === self.Persistence.networkPersistenceManager.project();
   }
 }
 

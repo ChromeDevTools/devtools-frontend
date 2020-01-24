@@ -131,12 +131,18 @@ async function rewriteSource(pathName: string, srcFile: string, mappings:Map<str
   return print(ast).code;
 }
 
-async function main(folder: string, namespace?: string) {
+async function main(folder: string, namespaces?: string[]) {
   const pathName = path.join(FRONT_END_FOLDER, folder);
   const srcDir = await readDir(pathName);
-  const targetNamespace = namespace ? namespace : folder;
-  const useExternalRefs = namespace !== undefined && (namespace !== folder);
-  const mappings = await getMappings(targetNamespace, new Map(), useExternalRefs);
+  const useExternalRefs = namespaces !== undefined && (namespaces[0] !== folder);
+  let mappings = new Map();
+  if (namespaces && namespaces.length) {
+    for (const namespace of namespaces) {
+      mappings = await getMappings(namespace, mappings, useExternalRefs);
+    }
+  } else {
+    mappings = await getMappings(folder, mappings, useExternalRefs);
+  }
 
   for (const srcFile of srcDir) {
     if (srcFile === `${folder}.js` || srcFile === `${folder}-legacy.js` || !srcFile.endsWith('.js')) {
@@ -153,4 +159,4 @@ if (!process.argv[2]) {
   process.exit(1);
 }
 
-main(process.argv[2], process.argv[3]);
+main(process.argv[2], process.argv[3] && process.argv[3].split(',') || undefined);

@@ -76,4 +76,4 @@ self.Persistence.isolatedFileSystemManager;
 Persistence.networkPersistenceManager;
 
 /** @type {!PersistenceModule.Persistence.PersistenceImpl} */
-Persistence.persistence;
+self.Persistence.persistence;

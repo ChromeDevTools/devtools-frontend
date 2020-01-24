@@ -66,7 +66,7 @@ export class InplaceFormatterEditorAction {
     if (uiSourceCode.project().canSetFileContent()) {
       return true;
     }
-    if (Persistence.persistence.binding(uiSourceCode)) {
+    if (self.Persistence.persistence.binding(uiSourceCode)) {
       return true;
     }
     return uiSourceCode.contentType().isStyleSheet();

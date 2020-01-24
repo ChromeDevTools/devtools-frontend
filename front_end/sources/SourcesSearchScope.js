@@ -58,9 +58,9 @@ export class SourcesSearchScope {
       return 1;
     }
     const isFileSystem1 = uiSourceCode1.project().type() === Workspace.projectTypes.FileSystem &&
-        !Persistence.persistence.binding(uiSourceCode1);
+        !self.Persistence.persistence.binding(uiSourceCode1);
     const isFileSystem2 = uiSourceCode2.project().type() === Workspace.projectTypes.FileSystem &&
-        !Persistence.persistence.binding(uiSourceCode2);
+        !self.Persistence.persistence.binding(uiSourceCode2);
     if (isFileSystem1 !== isFileSystem2) {
       return isFileSystem1 ? 1 : -1;
     }
@@ -160,7 +160,7 @@ export class SourcesSearchScope {
       if (!uiSourceCode.contentType().isTextType()) {
         continue;
       }
-      const binding = Persistence.persistence.binding(uiSourceCode);
+      const binding = self.Persistence.persistence.binding(uiSourceCode);
       if (binding && binding.network === uiSourceCode) {
         continue;
       }

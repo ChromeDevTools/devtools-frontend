@@ -212,7 +212,7 @@ export class ContextMenuProvider {
    */
   appendApplicableItems(event, contextMenu, target) {
     let uiSourceCode = /** @type {!Workspace.UISourceCode} */ (target);
-    const binding = Persistence.persistence.binding(uiSourceCode);
+    const binding = self.Persistence.persistence.binding(uiSourceCode);
     if (binding) {
       uiSourceCode = binding.network;
     }

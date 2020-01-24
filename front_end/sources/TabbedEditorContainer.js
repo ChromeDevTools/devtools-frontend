@@ -73,9 +73,9 @@ export class TabbedEditorContainer extends Common.Object {
     this._tabbedPane.addEventListener(UI.TabbedPane.Events.TabClosed, this._tabClosed, this);
     this._tabbedPane.addEventListener(UI.TabbedPane.Events.TabSelected, this._tabSelected, this);
 
-    Persistence.persistence.addEventListener(
+    self.Persistence.persistence.addEventListener(
         Persistence.Persistence.Events.BindingCreated, this._onBindingCreated, this);
-    Persistence.persistence.addEventListener(
+    self.Persistence.persistence.addEventListener(
         Persistence.Persistence.Events.BindingRemoved, this._onBindingRemoved, this);
 
     this._tabIds = new Map();
@@ -274,7 +274,7 @@ export class TabbedEditorContainer extends Common.Object {
    * @param {boolean=} userGesture
    */
   _innerShowFile(uiSourceCode, userGesture) {
-    const binding = Persistence.persistence.binding(uiSourceCode);
+    const binding = self.Persistence.persistence.binding(uiSourceCode);
     uiSourceCode = binding ? binding.fileSystem : uiSourceCode;
     if (this._currentFile === uiSourceCode) {
       return;
@@ -379,7 +379,7 @@ export class TabbedEditorContainer extends Common.Object {
    * @param {!Workspace.UISourceCode} uiSourceCode
    */
   addUISourceCode(uiSourceCode) {
-    const binding = Persistence.persistence.binding(uiSourceCode);
+    const binding = self.Persistence.persistence.binding(uiSourceCode);
     uiSourceCode = binding ? binding.fileSystem : uiSourceCode;
     if (this._currentFile === uiSourceCode) {
       return;
@@ -466,7 +466,7 @@ export class TabbedEditorContainer extends Common.Object {
    * @return {string}
    */
   _tooltipForFile(uiSourceCode) {
-    uiSourceCode = Persistence.persistence.network(uiSourceCode) || uiSourceCode;
+    uiSourceCode = self.Persistence.persistence.network(uiSourceCode) || uiSourceCode;
     return uiSourceCode.url();
   }
 
@@ -609,7 +609,7 @@ export class TabbedEditorContainer extends Common.Object {
       if (uiSourceCode.loadError()) {
         icon = UI.Icon.create('smallicon-error');
         icon.title = ls`Unable to load this content.`;
-      } else if (Persistence.persistence.hasUnsavedCommittedChanges(uiSourceCode)) {
+      } else if (self.Persistence.persistence.hasUnsavedCommittedChanges(uiSourceCode)) {
         icon = UI.Icon.create('smallicon-warning');
         icon.title = Common.UIString('Changes to this file were not saved to file system.');
       } else {

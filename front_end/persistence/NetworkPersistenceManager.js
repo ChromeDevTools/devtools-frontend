@@ -40,7 +40,7 @@ export class NetworkPersistenceManager extends Common.Object {
         Workspace.Workspace.Events.ProjectRemoved,
         event => this._onProjectRemoved(/** @type {!Workspace.Project} */ (event.data)));
 
-    Persistence.persistence.addNetworkInterceptor(this._canHandleNetworkUISourceCode.bind(this));
+    self.Persistence.persistence.addNetworkInterceptor(this._canHandleNetworkUISourceCode.bind(this));
 
     /** @type {!Array<!Common.EventTarget.EventDescriptor>} */
     this._eventDescriptors = [];
@@ -123,7 +123,7 @@ export class NetworkPersistenceManager extends Common.Object {
       this._project.uiSourceCodes().forEach(this._filesystemUISourceCodeRemoved.bind(this));
       this._networkUISourceCodeForEncodedPath.clear();
     }
-    Persistence.persistence.refreshAutomapping();
+    self.Persistence.persistence.refreshAutomapping();
   }
 
   /**
@@ -221,7 +221,7 @@ export class NetworkPersistenceManager extends Common.Object {
     }
     delete binding.network[this._bindingSymbol];
     delete binding.fileSystem[this._bindingSymbol];
-    Persistence.persistence.removeBinding(binding);
+    self.Persistence.persistence.removeBinding(binding);
   }
 
   /**
@@ -238,11 +238,11 @@ export class NetworkPersistenceManager extends Common.Object {
     const binding = new PersistenceBinding(networkUISourceCode, fileSystemUISourceCode);
     networkUISourceCode[this._bindingSymbol] = binding;
     fileSystemUISourceCode[this._bindingSymbol] = binding;
-    Persistence.persistence.addBinding(binding);
+    self.Persistence.persistence.addBinding(binding);
     const uiSourceCodeOfTruth = networkUISourceCode[this._savingSymbol] ? networkUISourceCode : fileSystemUISourceCode;
     const [{content}, encoded] =
         await Promise.all([uiSourceCodeOfTruth.requestContent(), uiSourceCodeOfTruth.contentEncoded()]);
-    Persistence.persistence.syncContent(uiSourceCodeOfTruth, content, encoded);
+    self.Persistence.persistence.syncContent(uiSourceCodeOfTruth, content, encoded);
   }
 
   /**

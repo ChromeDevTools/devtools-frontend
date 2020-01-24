@@ -67,9 +67,9 @@ export class NavigatorView extends UI.VBox {
 
     this._initGrouping();
 
-    Persistence.persistence.addEventListener(
+    self.Persistence.persistence.addEventListener(
         Persistence.Persistence.Events.BindingCreated, this._onBindingChanged, this);
-    Persistence.persistence.addEventListener(
+    self.Persistence.persistence.addEventListener(
         Persistence.Persistence.Events.BindingRemoved, this._onBindingChanged, this);
     self.SDK.targetManager.addEventListener(SDK.TargetManager.Events.NameChanged, this._targetNameChanged, this);
 
@@ -1082,7 +1082,7 @@ export class NavigatorSourceTreeElement extends UI.TreeElement {
   }
 
   updateIcon() {
-    const binding = Persistence.persistence.binding(this._uiSourceCode);
+    const binding = self.Persistence.persistence.binding(this._uiSourceCode);
     if (binding) {
       const container = createElementWithClass('span', 'icon-stack');
       let iconType = 'largeicon-navigator-file-sync';
@@ -1584,7 +1584,7 @@ export class NavigatorFolderTreeNode extends NavigatorTreeNode {
     }
     const absoluteFileSystemPath =
         Persistence.FileSystemWorkspaceBinding.fileSystemPath(this._project.id()) + '/' + this._folderPath;
-    const hasMappedFiles = Persistence.persistence.filePathHasBindings(absoluteFileSystemPath);
+    const hasMappedFiles = self.Persistence.persistence.filePathHasBindings(absoluteFileSystemPath);
     this._treeElement.listItemElement.classList.toggle('has-mapped-files', hasMappedFiles);
   }
 
@@ -1769,7 +1769,7 @@ export class NavigatorGroupTreeNode extends NavigatorTreeNode {
     }
     const fileSystemPath = Persistence.FileSystemWorkspaceBinding.fileSystemPath(this._project.id());
     const wasActive = this._treeElement.listItemElement.classList.contains('has-mapped-files');
-    const isActive = Persistence.persistence.filePathHasBindings(fileSystemPath);
+    const isActive = self.Persistence.persistence.filePathHasBindings(fileSystemPath);
     if (wasActive === isActive) {
       return;
     }

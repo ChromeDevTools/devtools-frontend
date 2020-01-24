@@ -386,7 +386,7 @@ export class CallStackSidebarPane extends UI.SimpleView {
    * @param {!Workspace.UISourceCode} uiSourceCode
    */
   appendBlackboxURLContextMenuItems(contextMenu, uiSourceCode) {
-    const binding = Persistence.persistence.binding(uiSourceCode);
+    const binding = self.Persistence.persistence.binding(uiSourceCode);
     if (binding) {
       uiSourceCode = binding.network;
     }

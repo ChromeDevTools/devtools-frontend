@@ -27,7 +27,7 @@ BindingsTestRunner.waitForBinding = function(fileName) {
   const uiSourceCodes = self.Workspace.workspace.uiSourceCodes();
 
   for (const uiSourceCode of uiSourceCodes) {
-    const binding = Persistence.persistence.binding(uiSourceCode);
+    const binding = self.Persistence.persistence.binding(uiSourceCode);
 
     if (!binding) {
       continue;
@@ -39,7 +39,7 @@ BindingsTestRunner.waitForBinding = function(fileName) {
   }
 
   return TestRunner.waitForEvent(
-      Persistence.Persistence.Events.BindingCreated, Persistence.persistence,
+      Persistence.Persistence.Events.BindingCreated, self.Persistence.persistence,
       binding => binding.network.name() === fileName || binding.fileSystem.name() === fileName);
 };
 
@@ -51,7 +51,7 @@ BindingsTestRunner.addFooJSFile = function(fs) {
 };
 
 BindingsTestRunner.initializeTestMapping = function() {
-  return new TestMapping(Persistence.persistence);
+  return new TestMapping(self.Persistence.persistence);
 };
 
 class TestMapping {

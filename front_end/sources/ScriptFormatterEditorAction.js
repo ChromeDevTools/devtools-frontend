@@ -85,7 +85,7 @@ export class ScriptFormatterEditorAction {
     if (uiSourceCode.project().type() === Workspace.projectTypes.Formatter) {
       return false;
     }
-    if (Persistence.persistence.binding(uiSourceCode)) {
+    if (self.Persistence.persistence.binding(uiSourceCode)) {
       return false;
     }
     return uiSourceCode.contentType().hasScripts();

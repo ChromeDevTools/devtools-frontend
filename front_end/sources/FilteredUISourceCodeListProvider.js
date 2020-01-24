@@ -46,7 +46,7 @@ export class FilteredUISourceCodeListProvider extends QuickOpen.FilteredListWidg
    * @return {boolean}
    */
   _filterUISourceCode(uiSourceCode) {
-    const binding = Persistence.persistence.binding(uiSourceCode);
+    const binding = self.Persistence.persistence.binding(uiSourceCode);
     return !binding || binding.fileSystem === uiSourceCode;
   }
 
@@ -113,7 +113,7 @@ export class FilteredUISourceCodeListProvider extends QuickOpen.FilteredListWidg
 
     let multiplier = 10;
     if (uiSourceCode.project().type() === Workspace.projectTypes.FileSystem &&
-        !Persistence.persistence.binding(uiSourceCode)) {
+        !self.Persistence.persistence.binding(uiSourceCode)) {
       multiplier = 5;
     }
 

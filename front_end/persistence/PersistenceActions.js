@@ -43,7 +43,7 @@ export class ContextMenuProvider {
       });
     }
 
-    const binding = uiSourceCode && Persistence.persistence.binding(uiSourceCode);
+    const binding = uiSourceCode && self.Persistence.persistence.binding(uiSourceCode);
     const fileURL = binding ? binding.fileSystem.contentURL() : contentProvider.contentURL();
     if (fileURL.startsWith('file://')) {
       const path = Common.ParsedURL.urlToPlatformPath(fileURL, Host.isWin());

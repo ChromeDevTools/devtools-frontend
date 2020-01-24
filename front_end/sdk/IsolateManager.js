@@ -14,7 +14,7 @@ import {SDKModelObserver} from './SDKModel.js';  // eslint-disable-line no-unuse
 export class IsolateManager extends Common.ObjectWrapper.ObjectWrapper {
   constructor() {
     super();
-    console.assert(!SDK.isolateManager, 'Use SDK.isolateManager singleton.');
+    console.assert(!self.SDK.isolateManager, 'Use self.SDK.isolateManager singleton.');
     /** @type {!Map<string, !Isolate>} */
     this._isolates = new Map();
     // _isolateIdByModel contains null while the isolateId is being retrieved.
@@ -220,7 +220,7 @@ export class Isolate {
     }
     this._usedHeapSize = usage.usedSize;
     this._memoryTrend.add(this._usedHeapSize);
-    SDK.isolateManager.dispatchEventToListeners(Events.MemoryChanged, this);
+    self.SDK.isolateManager.dispatchEventToListeners(Events.MemoryChanged, this);
   }
 
   /**

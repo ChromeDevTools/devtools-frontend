@@ -1485,7 +1485,7 @@ export class DOMModel extends SDKModel {
     } else {
       this._document = null;
     }
-    SDK.domModelUndoStack._dispose(this);
+    self.SDK.domModelUndoStack._dispose(this);
 
     if (!this.parentModel()) {
       this.dispatchEventToListeners(Events.DocumentUpdated, this);
@@ -1725,7 +1725,7 @@ export class DOMModel extends SDKModel {
    * @param {boolean=} minorChange
    */
   markUndoableState(minorChange) {
-    SDK.domModelUndoStack._markUndoableState(this, minorChange || false);
+    self.SDK.domModelUndoStack._markUndoableState(this, minorChange || false);
   }
 
   /**
@@ -1770,7 +1770,7 @@ export class DOMModel extends SDKModel {
    * @override
    */
   dispose() {
-    SDK.domModelUndoStack._dispose(this);
+    self.SDK.domModelUndoStack._dispose(this);
   }
 
   /**

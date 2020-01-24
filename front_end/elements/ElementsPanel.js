@@ -1080,11 +1080,11 @@ export class ElementsActionDelegate {
         treeOutline.toggleEditAsHTML(node);
         return true;
       case 'elements.undo':
-        SDK.domModelUndoStack.undo();
+        self.SDK.domModelUndoStack.undo();
         ElementsPanel.instance()._stylesWidget.forceUpdate();
         return true;
       case 'elements.redo':
-        SDK.domModelUndoStack.redo();
+        self.SDK.domModelUndoStack.redo();
         ElementsPanel.instance()._stylesWidget.forceUpdate();
         return true;
     }

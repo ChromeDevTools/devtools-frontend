@@ -81,7 +81,7 @@ ElementsTestRunner.setOuterHTMLUseUndo = function(newText, next) {
 
   async function bringBack() {
     TestRunner.addResult('\nBringing things back\n');
-    await SDK.domModelUndoStack.undo();
+    await self.SDK.domModelUndoStack.undo();
     ElementsTestRunner._dumpOuterHTML(true, next);
   }
 };

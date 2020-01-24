@@ -960,7 +960,7 @@ ElementsTestRunner.generateUndoTest = function(testBody) {
           ElementsTestRunner.dumpElementsTree(testNode);
         }
 
-        SDK.domModelUndoStack.undo().then(redo);
+        self.SDK.domModelUndoStack.undo().then(redo);
       }
     }
 
@@ -975,7 +975,7 @@ ElementsTestRunner.generateUndoTest = function(testBody) {
           ElementsTestRunner.dumpElementsTree(testNode);
         }
 
-        SDK.domModelUndoStack.redo().then(done);
+        self.SDK.domModelUndoStack.redo().then(done);
       }
     }
 

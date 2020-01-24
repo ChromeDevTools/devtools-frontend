@@ -30,7 +30,7 @@ export class IsolateSelector extends UI.VBox {
     this._totalTrendDiv.title = ls`Total page JS heap size change trend over the last ${trendIntervalMinutes} minutes.`;
     this._totalValueDiv.title = ls`Total page JS heap size across all VM instances.`;
 
-    SDK.isolateManager.observeIsolates(this);
+    self.SDK.isolateManager.observeIsolates(this);
     self.SDK.targetManager.addEventListener(SDK.TargetManager.Events.NameChanged, this._targetChanged, this);
     self.SDK.targetManager.addEventListener(SDK.TargetManager.Events.InspectedURLChanged, this._targetChanged, this);
   }
@@ -39,14 +39,14 @@ export class IsolateSelector extends UI.VBox {
    * @override
    */
   wasShown() {
-    SDK.isolateManager.addEventListener(SDK.IsolateManager.Events.MemoryChanged, this._heapStatsChanged, this);
+    self.SDK.isolateManager.addEventListener(SDK.IsolateManager.Events.MemoryChanged, this._heapStatsChanged, this);
   }
 
   /**
    * @override
    */
   willHide() {
-    SDK.isolateManager.removeEventListener(SDK.IsolateManager.Events.MemoryChanged, this._heapStatsChanged, this);
+    self.SDK.isolateManager.removeEventListener(SDK.IsolateManager.Events.MemoryChanged, this._heapStatsChanged, this);
   }
 
   /**
@@ -94,7 +94,7 @@ export class IsolateSelector extends UI.VBox {
     if (!model) {
       return;
     }
-    const isolate = SDK.isolateManager.isolateByModel(model);
+    const isolate = self.SDK.isolateManager.isolateByModel(model);
     const item = isolate && this._itemByIsolate.get(isolate);
     if (item) {
       item.updateTitle();
@@ -116,7 +116,7 @@ export class IsolateSelector extends UI.VBox {
   _updateTotal() {
     let total = 0;
     let trend = 0;
-    for (const isolate of SDK.isolateManager.isolates()) {
+    for (const isolate of self.SDK.isolateManager.isolates()) {
       total += isolate.usedHeapSize();
       trend += isolate.usedHeapSizeGrowRate();
     }

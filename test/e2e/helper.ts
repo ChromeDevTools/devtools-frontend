@@ -37,18 +37,14 @@ const collectAllElementsFromPage =
     }
 
     container.__elements = [];
-    const collect = (root: HTMLElement|ShadowRoot = document.body) => {
-      const walker = document.createTreeWalker(root);
+    const collect = (root: HTMLElement|ShadowRoot) => {
+      const walker = document.createTreeWalker(root, NodeFilter.SHOW_ELEMENT);
       do {
         const currentNode = walker.currentNode as HTMLElement;
         if (currentNode.shadowRoot) {
           collect(currentNode.shadowRoot);
         }
-
-        // Confirm that it is an HTMLElement before storing it.
-        if ('classList' in currentNode) {
-          container.__elements.push(currentNode);
-        }
+        container.__elements.push(currentNode);
       } while (walker.nextNode());
     }
 

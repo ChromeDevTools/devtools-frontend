@@ -28,6 +28,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as HeapSnapshotModel from '../heap_snapshot_model/heap_snapshot_model.js';
+
 /**
  * @unrestricted
  */
@@ -107,7 +109,7 @@ export class AllocationProfile {
   }
 
   /**
-   * @return {!Array.<!HeapSnapshotModel.SerializedAllocationNode>}
+   * @return {!Array.<!HeapSnapshotModel.HeapSnapshotModel.SerializedAllocationNode>}
    */
   serializeTraceTops() {
     if (this._traceTops) {
@@ -134,7 +136,7 @@ export class AllocationProfile {
 
   /**
    * @param {number} nodeId
-   * @return {!HeapSnapshotModel.AllocationNodeCallers}
+   * @return {!HeapSnapshotModel.HeapSnapshotModel.AllocationNodeCallers}
    */
   serializeCallers(nodeId) {
     let node = this._ensureBottomUpNode(nodeId);
@@ -150,19 +152,19 @@ export class AllocationProfile {
       branchingCallers.push(this._serializeCaller(callers[i]));
     }
 
-    return new HeapSnapshotModel.AllocationNodeCallers(nodesWithSingleCaller, branchingCallers);
+    return new HeapSnapshotModel.HeapSnapshotModel.AllocationNodeCallers(nodesWithSingleCaller, branchingCallers);
   }
 
   /**
    * @param {number} traceNodeId
-   * @return {!Array.<!HeapSnapshotModel.AllocationStackFrame>}
+   * @return {!Array.<!HeapSnapshotModel.HeapSnapshotModel.AllocationStackFrame>}
    */
   serializeAllocationStack(traceNodeId) {
     let node = this._idToTopDownNode[traceNodeId];
     const result = [];
     while (node) {
       const functionInfo = node.functionInfo;
-      result.push(new HeapSnapshotModel.AllocationStackFrame(
+      result.push(new HeapSnapshotModel.HeapSnapshotModel.AllocationStackFrame(
           functionInfo.functionName, functionInfo.scriptName, functionInfo.scriptId, functionInfo.line,
           functionInfo.column));
       node = node.parent;
@@ -195,7 +197,7 @@ export class AllocationProfile {
 
   /**
    * @param {!BottomUpAllocationNode} node
-   * @return {!HeapSnapshotModel.SerializedAllocationNode}
+   * @return {!HeapSnapshotModel.HeapSnapshotModel.SerializedAllocationNode}
    */
   _serializeCaller(node) {
     const callerId = this._nextNodeId++;
@@ -213,10 +215,10 @@ export class AllocationProfile {
    * @param {number} liveCount
    * @param {number} liveSize
    * @param {boolean} hasChildren
-   * @return {!HeapSnapshotModel.SerializedAllocationNode}
+   * @return {!HeapSnapshotModel.HeapSnapshotModel.SerializedAllocationNode}
    */
   _serializeNode(nodeId, functionInfo, count, size, liveCount, liveSize, hasChildren) {
-    return new HeapSnapshotModel.SerializedAllocationNode(
+    return new HeapSnapshotModel.HeapSnapshotModel.SerializedAllocationNode(
         nodeId, functionInfo.functionName, functionInfo.scriptName, functionInfo.scriptId, functionInfo.line,
         functionInfo.column, count, size, liveCount, liveSize, hasChildren);
   }

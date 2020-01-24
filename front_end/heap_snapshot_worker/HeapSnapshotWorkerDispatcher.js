@@ -28,6 +28,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as HeapSnapshotModel from '../heap_snapshot_model/heap_snapshot_model.js';  // eslint-disable-line no-unused-vars
+
 /**
  * @unrestricted
  */
@@ -56,7 +58,7 @@ export class HeapSnapshotWorkerDispatcher {
   }
 
   dispatchMessage(event) {
-    const data = /** @type {!HeapSnapshotModel.WorkerCommand } */ (event.data);
+    const data = /** @type {!HeapSnapshotModel.HeapSnapshotModel.WorkerCommand } */ (event.data);
     const response = {callId: data.callId};
     try {
       switch (data.disposition) {

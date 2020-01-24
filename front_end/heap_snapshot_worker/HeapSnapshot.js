@@ -28,6 +28,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as Common from '../common/common.js';
+import * as HeapSnapshotModel from '../heap_snapshot_model/heap_snapshot_model.js';
+
 import {AllocationProfile} from './AllocationProfile.js';
 import {HeapSnapshotWorkerDispatcher} from './HeapSnapshotWorkerDispatcher.js';  // eslint-disable-line no-unused-vars
 
@@ -122,10 +125,11 @@ export class HeapSnapshotEdge {
 
   /**
    * @override
-   * @return {!HeapSnapshotModel.Edge}
+   * @return {!HeapSnapshotModel.HeapSnapshotModel.Edge}
    */
   serialize() {
-    return new HeapSnapshotModel.Edge(this.name(), this.node().serialize(), this.type(), this.edgeIndex);
+    return new HeapSnapshotModel.HeapSnapshotModel.Edge(
+        this.name(), this.node().serialize(), this.type(), this.edgeIndex);
   }
 
   /**
@@ -383,10 +387,11 @@ export class HeapSnapshotRetainerEdge {
 
   /**
    * @override
-   * @return {!HeapSnapshotModel.Edge}
+   * @return {!HeapSnapshotModel.HeapSnapshotModel.Edge}
    */
   serialize() {
-    return new HeapSnapshotModel.Edge(this.name(), this.node().serialize(), this.type(), this._globalEdgeIndex);
+    return new HeapSnapshotModel.HeapSnapshotModel.Edge(
+        this.name(), this.node().serialize(), this.type(), this._globalEdgeIndex);
   }
 
   /**
@@ -571,10 +576,10 @@ export class HeapSnapshotNode {
 
   /**
    * @override
-   * @return {!HeapSnapshotModel.Node}
+   * @return {!HeapSnapshotModel.HeapSnapshotModel.Node}
    */
   serialize() {
-    return new HeapSnapshotModel.Node(
+    return new HeapSnapshotModel.HeapSnapshotModel.Node(
         this.id(), this.name(), this.distance(), this.nodeIndex, this.retainedSize(), this.selfSize(), this.type());
   }
 
@@ -762,7 +767,7 @@ export class HeapSnapshotProgress {
    * @param {string} status
    */
   updateStatus(status) {
-    this._sendUpdateEvent(Common.serializeUIString(status));
+    this._sendUpdateEvent(Common.UIString.serializeUIString(status));
   }
 
   /**
@@ -772,7 +777,7 @@ export class HeapSnapshotProgress {
    */
   updateProgress(title, value, total) {
     const percentValue = ((total ? (value / total) : 0) * 100).toFixed(0);
-    this._sendUpdateEvent(Common.serializeUIString(title, [percentValue]));
+    this._sendUpdateEvent(Common.UIString.serializeUIString(title, [percentValue]));
   }
 
   /**
@@ -781,7 +786,7 @@ export class HeapSnapshotProgress {
   reportProblem(error) {
     // May be undefined in tests.
     if (this._dispatcher) {
-      this._dispatcher.sendEvent(HeapSnapshotModel.HeapSnapshotProgressEvent.BrokenSnapshot, error);
+      this._dispatcher.sendEvent(HeapSnapshotModel.HeapSnapshotModel.HeapSnapshotProgressEvent.BrokenSnapshot, error);
     }
   }
 
@@ -791,7 +796,7 @@ export class HeapSnapshotProgress {
   _sendUpdateEvent(serializedText) {
     // May be undefined in tests.
     if (this._dispatcher) {
-      this._dispatcher.sendEvent(HeapSnapshotModel.HeapSnapshotProgressEvent.Update, serializedText);
+      this._dispatcher.sendEvent(HeapSnapshotModel.HeapSnapshotModel.HeapSnapshotProgressEvent.Update, serializedText);
     }
   }
 }
@@ -843,7 +848,7 @@ export class HeapSnapshot {
     this._metaNode = profile.snapshot.meta;
     /** @type {!Array.<number>} */
     this._rawSamples = profile.samples;
-    /** @type {?HeapSnapshotModel.Samples} */
+    /** @type {?HeapSnapshotModel.HeapSnapshotModel.Samples} */
     this._samples = null;
     /** @type {!Array.<string>} */
     this.strings = profile.strings;
@@ -1096,7 +1101,7 @@ export class HeapSnapshot {
   }
 
   /**
-   * @param {!HeapSnapshotModel.NodeFilter} nodeFilter
+   * @param {!HeapSnapshotModel.HeapSnapshotModel.NodeFilter} nodeFilter
    * @return {undefined|function(!HeapSnapshotNode):boolean}
    */
   _createFilter(nodeFilter) {
@@ -1115,8 +1120,8 @@ export class HeapSnapshot {
   }
 
   /**
-   * @param {!HeapSnapshotModel.SearchConfig} searchConfig
-   * @param {!HeapSnapshotModel.NodeFilter} nodeFilter
+   * @param {!HeapSnapshotModel.HeapSnapshotModel.SearchConfig} searchConfig
+   * @param {!HeapSnapshotModel.HeapSnapshotModel.NodeFilter} nodeFilter
    * @return {!Array.<number>}
    */
   search(searchConfig, nodeFilter) {
@@ -1166,8 +1171,8 @@ export class HeapSnapshot {
   }
 
   /**
-   * @param {!HeapSnapshotModel.NodeFilter} nodeFilter
-   * @return {!Object.<string, !HeapSnapshotModel.Aggregate>}
+   * @param {!HeapSnapshotModel.HeapSnapshotModel.NodeFilter} nodeFilter
+   * @return {!Object.<string, !HeapSnapshotModel.HeapSnapshotModel.Aggregate>}
    */
   aggregatesWithFilter(nodeFilter) {
     const filter = this._createFilter(nodeFilter);
@@ -1219,7 +1224,7 @@ export class HeapSnapshot {
    * @param {boolean} sortedIndexes
    * @param {string=} key
    * @param {function(!HeapSnapshotNode):boolean=} filter
-   * @return {!Object.<string, !HeapSnapshotModel.Aggregate>}
+   * @return {!Object.<string, !HeapSnapshotModel.HeapSnapshotModel.Aggregate>}
    */
   aggregates(sortedIndexes, key, filter) {
     let aggregatesByClassName = key && this._aggregates[key];
@@ -1242,7 +1247,7 @@ export class HeapSnapshot {
   }
 
   /**
-   * @return {!Array.<!HeapSnapshotModel.SerializedAllocationNode>}
+   * @return {!Array.<!HeapSnapshotModel.HeapSnapshotModel.SerializedAllocationNode>}
    */
   allocationTracesTops() {
     return this._allocationProfile.serializeTraceTops();
@@ -1250,7 +1255,7 @@ export class HeapSnapshot {
 
   /**
    * @param {number} nodeId
-   * @return {!HeapSnapshotModel.AllocationNodeCallers}
+   * @return {!HeapSnapshotModel.HeapSnapshotModel.AllocationNodeCallers}
    */
   allocationNodeCallers(nodeId) {
     return this._allocationProfile.serializeCallers(nodeId);
@@ -1258,7 +1263,7 @@ export class HeapSnapshot {
 
   /**
    * @param {number} nodeIndex
-   * @return {?Array.<!HeapSnapshotModel.AllocationStackFrame>}
+   * @return {?Array.<!HeapSnapshotModel.HeapSnapshotModel.AllocationStackFrame>}
    */
   allocationStack(nodeIndex) {
     const node = this.createNode(nodeIndex);
@@ -1270,7 +1275,7 @@ export class HeapSnapshot {
   }
 
   /**
-   * @return {!Object.<string, !HeapSnapshotModel.AggregateForDiff>}
+   * @return {!Object.<string, !HeapSnapshotModel.HeapSnapshotModel.AggregateForDiff>}
    */
   aggregatesForDiff() {
     if (this._aggregatesForDiff) {
@@ -1331,7 +1336,8 @@ export class HeapSnapshot {
     this._bfs(nodesToVisit, nodesToVisitLength, distances, filter);
 
     // BFS for objects not reached from user roots.
-    distances[this.rootNode().ordinal()] = nodesToVisitLength > 0 ? HeapSnapshotModel.baseSystemDistance : 0;
+    distances[this.rootNode().ordinal()] =
+        nodesToVisitLength > 0 ? HeapSnapshotModel.HeapSnapshotModel.baseSystemDistance : 0;
     nodesToVisit[0] = this.rootNode().nodeIndex;
     nodesToVisitLength = 1;
     this._bfs(nodesToVisit, nodesToVisitLength, distances, filter);
@@ -1916,11 +1922,11 @@ export class HeapSnapshot {
       }
       sizeForRange[rangeIndex] += node.selfSize();
     }
-    this._samples = new HeapSnapshotModel.Samples(timestamps, lastAssignedIds, sizeForRange);
+    this._samples = new HeapSnapshotModel.HeapSnapshotModel.Samples(timestamps, lastAssignedIds, sizeForRange);
   }
 
   _buildLocationMap() {
-    /** @type {!Map<number, !HeapSnapshotModel.Location>} */
+    /** @type {!Map<number, !HeapSnapshotModel.HeapSnapshotModel.Location>} */
     const map = new Map();
     const locations = this._locations;
 
@@ -1929,7 +1935,7 @@ export class HeapSnapshot {
       const scriptId = locations[i + this._locationScriptIdOffset];
       const line = locations[i + this._locationLineOffset];
       const col = locations[i + this._locationColumnOffset];
-      map.set(nodeIndex, new HeapSnapshotModel.Location(scriptId, line, col));
+      map.set(nodeIndex, new HeapSnapshotModel.HeapSnapshotModel.Location(scriptId, line, col));
     }
 
     this._locationMap = map;
@@ -1937,14 +1943,14 @@ export class HeapSnapshot {
 
   /**
    * @param {number} nodeIndex
-   * @return {?HeapSnapshotModel.Location}
+   * @return {?HeapSnapshotModel.HeapSnapshotModel.Location}
    */
   getLocation(nodeIndex) {
     return this._locationMap.get(nodeIndex) || null;
   }
 
   /**
-   * @return {?HeapSnapshotModel.Samples}
+   * @return {?HeapSnapshotModel.HeapSnapshotModel.Samples}
    */
   getSamples() {
     return this._samples;
@@ -1970,8 +1976,8 @@ export class HeapSnapshot {
 
   /**
    * @param {string} baseSnapshotId
-   * @param {!Object.<string, !HeapSnapshotModel.AggregateForDiff>} baseSnapshotAggregates
-   * @return {!Object.<string, !HeapSnapshotModel.Diff>}
+   * @param {!Object.<string, !HeapSnapshotModel.HeapSnapshotModel.AggregateForDiff>} baseSnapshotAggregates
+   * @return {!Object.<string, !HeapSnapshotModel.HeapSnapshotModel.Diff>}
    */
   calculateSnapshotDiff(baseSnapshotId, baseSnapshotAggregates) {
     let snapshotDiff = this._snapshotDiffs[baseSnapshotId];
@@ -1988,7 +1994,7 @@ export class HeapSnapshot {
         snapshotDiff[className] = diff;
       }
     }
-    const emptyBaseAggregate = new HeapSnapshotModel.AggregateForDiff();
+    const emptyBaseAggregate = new HeapSnapshotModel.HeapSnapshotModel.AggregateForDiff();
     for (const className in aggregates) {
       if (className in baseSnapshotAggregates) {
         continue;
@@ -2001,9 +2007,9 @@ export class HeapSnapshot {
   }
 
   /**
-   * @param {!HeapSnapshotModel.AggregateForDiff} baseAggregate
-   * @param {!HeapSnapshotModel.Aggregate} aggregate
-   * @return {?HeapSnapshotModel.Diff}
+   * @param {!HeapSnapshotModel.HeapSnapshotModel.AggregateForDiff} baseAggregate
+   * @param {!HeapSnapshotModel.HeapSnapshotModel.Aggregate} aggregate
+   * @return {?HeapSnapshotModel.HeapSnapshotModel.Diff}
    */
   _calculateDiffForClass(baseAggregate, aggregate) {
     const baseIds = baseAggregate.ids;
@@ -2016,7 +2022,7 @@ export class HeapSnapshot {
     let j = 0;
     const l = baseIds.length;
     const m = indexes.length;
-    const diff = new HeapSnapshotModel.Diff();
+    const diff = new HeapSnapshotModel.HeapSnapshotModel.Diff();
 
     const nodeB = this.createNode(indexes[j]);
     while (i < l && j < m) {
@@ -2161,7 +2167,7 @@ export class HeapSnapshot {
 
   /**
    * @param {string} className
-   * @param {!HeapSnapshotModel.NodeFilter} nodeFilter
+   * @param {!HeapSnapshotModel.HeapSnapshotModel.NodeFilter} nodeFilter
    * @return {!HeapSnapshotNodesProvider}
    */
   createNodesProviderForClass(className, nodeFilter) {
@@ -2190,10 +2196,11 @@ export class HeapSnapshot {
   }
 
   /**
-   * @return {!HeapSnapshotModel.StaticData}
+   * @return {!HeapSnapshotModel.HeapSnapshotModel.StaticData}
    */
   updateStaticData() {
-    return new HeapSnapshotModel.StaticData(this.nodeCount, this._rootNodeIndex, this.totalSize, this._maxJsNodeId());
+    return new HeapSnapshotModel.HeapSnapshotModel.StaticData(
+        this.nodeCount, this._rootNodeIndex, this.totalSize, this._maxJsNodeId());
   }
 }
 
@@ -2267,7 +2274,7 @@ export class HeapSnapshotItemProvider {
   /**
    * @param {number} begin
    * @param {number} end
-   * @return {!HeapSnapshotModel.ItemsRange}
+   * @return {!HeapSnapshotModel.HeapSnapshotModel.ItemsRange}
    */
   serializeItemsRange(begin, end) {
     this._createIterationOrder();
@@ -2296,7 +2303,7 @@ export class HeapSnapshotItemProvider {
       const item = this._indexProvider.itemForIndex(itemIndex);
       result[i] = item.serialize();
     }
-    return new HeapSnapshotModel.ItemsRange(begin, end, this._iterationOrder.length, result);
+    return new HeapSnapshotModel.HeapSnapshotModel.ItemsRange(begin, end, this._iterationOrder.length, result);
   }
 
   sortAndRewind(comparator) {
@@ -2325,7 +2332,7 @@ export class HeapSnapshotEdgesProvider extends HeapSnapshotItemProvider {
   }
 
   /**
-   * @param {!HeapSnapshotModel.ComparatorConfig} comparator
+   * @param {!HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig} comparator
    * @param {number} leftBound
    * @param {number} rightBound
    * @param {number} windowLeft
@@ -2497,7 +2504,7 @@ export class HeapSnapshotNodesProvider extends HeapSnapshotItemProvider {
   }
 
   /**
-   * @param {!HeapSnapshotModel.ComparatorConfig} comparator
+   * @param {!HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig} comparator
    * @param {number} leftBound
    * @param {number} rightBound
    * @param {number} windowLeft
@@ -2802,7 +2809,7 @@ export class JSHeapSnapshot extends HeapSnapshot {
     for (let nodeIndex = 0; nodeIndex < nodesLength; nodeIndex += nodeFieldCount) {
       const nodeSize = nodes[nodeIndex + nodeSizeOffset];
       const ordinal = nodeIndex / nodeFieldCount;
-      if (distances[ordinal] >= HeapSnapshotModel.baseSystemDistance) {
+      if (distances[ordinal] >= HeapSnapshotModel.HeapSnapshotModel.baseSystemDistance) {
         sizeSystem += nodeSize;
         continue;
       }
@@ -2818,7 +2825,7 @@ export class JSHeapSnapshot extends HeapSnapshot {
         sizeJSArrays += this._calculateArraySize(node);
       }
     }
-    this._statistics = new HeapSnapshotModel.Statistics();
+    this._statistics = new HeapSnapshotModel.HeapSnapshotModel.Statistics();
     this._statistics.total = this.totalSize;
     this._statistics.v8heap = this.totalSize - sizeNative;
     this._statistics.native = sizeNative;
@@ -2863,7 +2870,7 @@ export class JSHeapSnapshot extends HeapSnapshot {
   }
 
   /**
-   * @return {!HeapSnapshotModel.Statistics}
+   * @return {!HeapSnapshotModel.HeapSnapshotModel.Statistics}
    */
   getStatistics() {
     return this._statistics;
@@ -3044,7 +3051,7 @@ export class JSHeapSnapshotNode extends HeapSnapshotNode {
 
   /**
    * @override
-   * @return {!HeapSnapshotModel.Node}
+   * @return {!HeapSnapshotModel.HeapSnapshotModel.Node}
    */
   serialize() {
     const result = super.serialize();

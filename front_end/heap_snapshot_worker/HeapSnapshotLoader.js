@@ -28,6 +28,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as TextUtils from '../text_utils/text_utils.js';
+
 import {HeapSnapshotHeader, HeapSnapshotProgress, JSHeapSnapshot} from './HeapSnapshot.js';  // eslint-disable-line no-unused-vars
 import {HeapSnapshotWorkerDispatcher} from './HeapSnapshotWorkerDispatcher.js';  // eslint-disable-line no-unused-vars
 
@@ -189,7 +191,7 @@ export class HeapSnapshotLoader {
 
     this._progress.updateStatus(ls`Loading snapshot info\u2026`);
     const json = this._json.slice(snapshotTokenIndex + snapshotToken.length + 1);
-    this._jsonTokenizer = new TextUtils.BalancedJSONTokenizer(metaJSON => {
+    this._jsonTokenizer = new TextUtils.TextUtils.BalancedJSONTokenizer(metaJSON => {
       this._json = this._jsonTokenizer.remainder();
       this._jsonTokenizer = null;
       this._snapshot.snapshot = /** @type {!HeapSnapshotHeader} */ (JSON.parse(metaJSON));

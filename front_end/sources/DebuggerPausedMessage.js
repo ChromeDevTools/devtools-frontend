@@ -96,7 +96,7 @@ export class DebuggerPausedMessage {
       let eventNameForUI = '';
       if (details.auxData) {
         eventNameForUI =
-            SDK.domDebuggerManager.resolveEventListenerBreakpointTitle(/** @type {!Object} */ (details.auxData));
+            self.SDK.domDebuggerManager.resolveEventListenerBreakpointTitle(/** @type {!Object} */ (details.auxData));
       }
       messageWrapper = buildWrapper(Common.UIString('Paused on event listener'), eventNameForUI);
     } else if (details.reason === SDK.DebuggerModel.BreakReason.XHR) {

@@ -66,7 +66,7 @@ export class XHRBreakpointsSidebarPane extends UI.VBox {
     function finishEditing(accept, e, text) {
       this._removeListElement(inputElementContainer);
       if (accept) {
-        SDK.domDebuggerManager.addXHRBreakpoint(text, true);
+        self.SDK.domDebuggerManager.addXHRBreakpoint(text, true);
         this._setBreakpoint(text);
       }
       this._update();
@@ -126,7 +126,7 @@ export class XHRBreakpointsSidebarPane extends UI.VBox {
     UI.ARIAUtils.markAsListitem(listItemElement);
     const element = listItemElement.createChild('div', 'breakpoint-entry');
     listItemElement.checkboxElement = element;
-    const enabled = SDK.domDebuggerManager.xhrBreakpoints().get(item);
+    const enabled = self.SDK.domDebuggerManager.xhrBreakpoints().get(item);
     UI.ARIAUtils.markAsCheckbox(element);
     UI.ARIAUtils.setChecked(element, enabled);
     element._url = item;
@@ -245,7 +245,7 @@ export class XHRBreakpointsSidebarPane extends UI.VBox {
      * @this {XHRBreakpointsSidebarPane}
      */
     function removeBreakpoint() {
-      SDK.domDebuggerManager.removeXHRBreakpoint(url);
+      self.SDK.domDebuggerManager.removeXHRBreakpoint(url);
       this._removeBreakpoint(url);
     }
 
@@ -254,7 +254,7 @@ export class XHRBreakpointsSidebarPane extends UI.VBox {
      */
     function removeAllBreakpoints() {
       for (const url of this._breakpointElements.keys()) {
-        SDK.domDebuggerManager.removeXHRBreakpoint(url);
+        self.SDK.domDebuggerManager.removeXHRBreakpoint(url);
         this._removeBreakpoint(url);
       }
       this._update();
@@ -273,7 +273,7 @@ export class XHRBreakpointsSidebarPane extends UI.VBox {
    */
   _checkboxClicked(url, checked) {
     const hadFocus = this.hasFocus();
-    SDK.domDebuggerManager.toggleXHRBreakpoint(url, !checked);
+    self.SDK.domDebuggerManager.toggleXHRBreakpoint(url, !checked);
     this._list.refreshItem(url);
     this._list.selectItem(url);
     if (hadFocus) {
@@ -300,10 +300,10 @@ export class XHRBreakpointsSidebarPane extends UI.VBox {
     function finishEditing(accept, e, text) {
       this._removeListElement(inputElement);
       if (accept) {
-        SDK.domDebuggerManager.removeXHRBreakpoint(url);
+        self.SDK.domDebuggerManager.removeXHRBreakpoint(url);
         this._removeBreakpoint(url);
         const enabled = element ? element.checkboxElement._checkboxElement.checked : true;
-        SDK.domDebuggerManager.addXHRBreakpoint(text, enabled);
+        self.SDK.domDebuggerManager.addXHRBreakpoint(text, enabled);
         this._setBreakpoint(text);
         this._list.selectItem(text);
       } else {
@@ -350,7 +350,7 @@ export class XHRBreakpointsSidebarPane extends UI.VBox {
   }
 
   _restoreBreakpoints() {
-    const breakpoints = SDK.domDebuggerManager.xhrBreakpoints();
+    const breakpoints = self.SDK.domDebuggerManager.xhrBreakpoints();
     for (const url of breakpoints.keys()) {
       this._setBreakpoint(url);
     }

@@ -14,7 +14,7 @@ export class EventListenerBreakpointsSidebarPane extends UI.VBox {
 
     /** @type {!Map<string, !BrowserDebugger.EventListenerBreakpointsSidebarPane.Item>} */
     this._categories = new Map();
-    const categories = SDK.domDebuggerManager.eventListenerBreakpoints().map(breakpoint => breakpoint.category());
+    const categories = self.SDK.domDebuggerManager.eventListenerBreakpoints().map(breakpoint => breakpoint.category());
     categories.sort();
     for (const category of categories) {
       if (!this._categories.has(category)) {
@@ -28,7 +28,7 @@ export class EventListenerBreakpointsSidebarPane extends UI.VBox {
 
     /** @type {!Map<!SDK.DOMDebuggerModel.EventListenerBreakpoint, !BrowserDebugger.EventListenerBreakpointsSidebarPane.Item>} */
     this._breakpoints = new Map();
-    for (const breakpoint of SDK.domDebuggerManager.eventListenerBreakpoints()) {
+    for (const breakpoint of self.SDK.domDebuggerManager.eventListenerBreakpoints()) {
       this._createBreakpoint(breakpoint);
     }
 
@@ -104,7 +104,8 @@ export class EventListenerBreakpointsSidebarPane extends UI.VBox {
       return;
     }
 
-    const breakpoint = SDK.domDebuggerManager.resolveEventListenerBreakpoint(/** @type {!Object} */ (details.auxData));
+    const breakpoint =
+        self.SDK.domDebuggerManager.resolveEventListenerBreakpoint(/** @type {!Object} */ (details.auxData));
     if (!breakpoint) {
       return;
     }

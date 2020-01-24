@@ -549,7 +549,7 @@ SDK.ChildTargetManager._attachCallback;
 SDK.consoleModel;
 
 /** @type {!SDK.DOMDebuggerManager} */
-SDK.domDebuggerManager;
+self.SDK.domDebuggerManager;
 
 /** @typedef {{name: string, value: string, _node: SDK.DOMNode}} */
 SDK.DOMNode.Attribute;

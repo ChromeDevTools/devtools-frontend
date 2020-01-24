@@ -197,7 +197,7 @@ export class MainImpl {
     self.SDK.consoleModel = new SDK.ConsoleModel();
     self.Components.dockController = new Components.DockController(canDock);
     self.SDK.multitargetNetworkManager = new SDK.MultitargetNetworkManager();
-    SDK.domDebuggerManager = new SDK.DOMDebuggerManager();
+    self.SDK.domDebuggerManager = new SDK.DOMDebuggerManager();
     self.SDK.targetManager.addEventListener(
         SDK.TargetManager.Events.SuspendStateChanged, this._onSuspendStateChanged.bind(this));
 

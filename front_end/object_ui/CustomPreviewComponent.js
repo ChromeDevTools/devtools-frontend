@@ -2,6 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
+import * as UI from '../ui/ui.js';
+
 import {ObjectPropertiesSection} from './ObjectPropertiesSection.js';
 
 /**
@@ -9,7 +13,7 @@ import {ObjectPropertiesSection} from './ObjectPropertiesSection.js';
  */
 export class CustomPreviewSection {
   /**
-   * @param {!SDK.RemoteObject} object
+   * @param {!SDK.RemoteObject.RemoteObject} object
    */
   constructor(object) {
     this._sectionElement = createElementWithClass('span', 'custom-expandable-section');
@@ -34,7 +38,7 @@ export class CustomPreviewSection {
     if (customPreview.hasBody || customPreview.bodyGetterId) {
       this._header.classList.add('custom-expandable-section-header');
       this._header.addEventListener('click', this._onClick.bind(this), false);
-      this._expandIcon = UI.Icon.create('smallicon-triangle-right', 'custom-expand-icon');
+      this._expandIcon = UI.Icon.Icon.create('smallicon-triangle-right', 'custom-expand-icon');
       this._header.insertBefore(this._expandIcon, this._header.firstChild);
     }
 
@@ -226,13 +230,13 @@ export class CustomPreviewSection {
  */
 export class CustomPreviewComponent {
   /**
-   * @param {!SDK.RemoteObject} object
+   * @param {!SDK.RemoteObject.RemoteObject} object
    */
   constructor(object) {
     this._object = object;
     this._customPreviewSection = new CustomPreviewSection(object);
     this.element = createElementWithClass('span', 'source-code');
-    const shadowRoot = UI.createShadowRootWithCoreStyles(this.element, 'object_ui/customPreviewComponent.css');
+    const shadowRoot = UI.Utils.createShadowRootWithCoreStyles(this.element, 'object_ui/customPreviewComponent.css');
     this.element.addEventListener('contextmenu', this._contextMenuEventFired.bind(this), false);
     shadowRoot.appendChild(this._customPreviewSection.element());
   }
@@ -248,10 +252,10 @@ export class CustomPreviewComponent {
    * @param {!Event} event
    */
   _contextMenuEventFired(event) {
-    const contextMenu = new UI.ContextMenu(event);
+    const contextMenu = new UI.ContextMenu.ContextMenu(event);
     if (this._customPreviewSection) {
       contextMenu.revealSection().appendItem(
-          Common.UIString('Show as JavaScript object'), this._disassemble.bind(this));
+          Common.UIString.UIString('Show as JavaScript object'), this._disassemble.bind(this));
     }
     contextMenu.appendApplicableItems(this._object);
     contextMenu.show();

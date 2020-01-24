@@ -2165,3 +2165,6 @@ export function formatTimestamp(timestamp, full) {
     return valueString.padStart(length, '0');
   }
 }
+
+/** @typedef {!{title: (string|!Element|undefined), editable: (boolean|undefined) }} */
+export let Options;

@@ -389,3 +389,34 @@ export class SuggestBox {
     return hasSelectedItem;
   }
 }
+
+/**
+ * @typedef {{
+  *      text: string,
+  *      title: (string|undefined),
+  *      subtitle: (string|undefined),
+  *      iconType: (string|undefined),
+  *      priority: (number|undefined),
+  *      isSecondary: (boolean|undefined),
+  *      subtitleRenderer: (function():!Element|undefined),
+  *      selectionRange: ({startColumn: number, endColumn: number}|undefined),
+  *      hideGhostText: (boolean|undefined)
+  * }}
+  */
+export let Suggestion;
+
+/**
+  * @typedef {!Array<!Suggestion>}
+  */
+export let Suggestions;
+
+/**
+  * @typedef {{
+    *     substituteRangeCallback: ((function(number, number):?TextUtils.TextRange)|undefined),
+    *     tooltipCallback: ((function(number, number):!Promise<?Element>)|undefined),
+    *     suggestionsCallback: ((function(!TextUtils.TextRange, !TextUtils.TextRange, boolean=):?Promise.<!Suggestions>)|undefined),
+    *     isWordChar: ((function(string):boolean)|undefined),
+    *     anchorBehavior: (UI.GlassPane.AnchorBehavior|undefined)
+    * }}
+    */
+export let AutocompleteConfig;

@@ -1571,3 +1571,6 @@ export class DebuggerPausedDetails {
 }
 
 SDKModel.register(DebuggerModel, Capability.JS, true);
+
+/** @typedef {{location: ?Location, functionName: string}} */
+export let FunctionDetails;

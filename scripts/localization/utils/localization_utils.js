@@ -82,7 +82,8 @@ function isNodeCommonUIStringFormat(node) {
 }
 
 function isNodeUIformatLocalized(node) {
-  return isNodeCallOnObject(node, 'UI', 'formatLocalized');
+  return isNodeCallOnObject(node, 'UI', 'formatLocalized') ||
+      isNodeCallOnNestedObject(node, 'UI', 'UIUtils', 'formatLocalized');
 }
 
 function isNodelsTaggedTemplateExpression(node) {

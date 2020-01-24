@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as SDK from '../sdk/sdk.js';
+
 import {RemoteObjectPreviewFormatter} from './RemoteObjectPreviewFormatter.js';
 
 export class JavaScriptREPL {
@@ -47,7 +49,7 @@ export class JavaScriptREPL {
    * @return {!Promise<!{preview: !DocumentFragment, result: ?SDK.RuntimeModel.EvaluationResult}>}
    */
   static async evaluateAndBuildPreview(text, throwOnSideEffect, timeout, allowErrors, objectGroup) {
-    const executionContext = UI.context.flavor(SDK.ExecutionContext);
+    const executionContext = UI.context.flavor(SDK.RuntimeModel.ExecutionContext);
     const maxLength = typeof self.ObjectUI.JavaScriptREPL._MaxLengthForEvaluation !== 'undefined' ?
         self.ObjectUI.JavaScriptREPL._MaxLengthForEvaluation :
         MaxLengthForEvaluation;

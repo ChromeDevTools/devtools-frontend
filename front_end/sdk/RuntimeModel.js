@@ -868,3 +868,11 @@ export class ExecutionContext {
 }
 
 SDKModel.register(RuntimeModel, Capability.JS, true);
+
+/** @typedef {{
+ *    object: (!RemoteObject|undefined),
+ *    exceptionDetails: (!Protocol.Runtime.ExceptionDetails|undefined),
+ *    error: (!Protocol.Error|undefined)}
+ *  }}
+ */
+export let EvaluationResult;

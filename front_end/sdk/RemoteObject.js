@@ -1350,3 +1350,8 @@ const UnserializableNumber = {
   Infinity: /** @type {!Protocol.Runtime.UnserializableValue} */ ('Infinity'),
   NegativeInfinity: /** @type {!Protocol.Runtime.UnserializableValue} */ ('-Infinity')
 };
+
+/**
+ * @typedef {{object: ?RemoteObject, wasThrown: (boolean|undefined)}}
+ */
+export let CallFunctionResult;

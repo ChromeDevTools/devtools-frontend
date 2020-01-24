@@ -1263,6 +1263,8 @@ devtools_emulated_devices_images = [
   "front_end/emulated_devices/iPhone6-portrait.svg",
   "front_end/emulated_devices/iPhone6Plus-landscape.svg",
   "front_end/emulated_devices/iPhone6Plus-portrait.svg",
+  "front_end/emulated_devices/MotoG4-landscape.svg",
+  "front_end/emulated_devices/MotoG4-portrait.svg",
   "front_end/emulated_devices/Nexus5X-landscape.svg",
   "front_end/emulated_devices/Nexus5X-portrait.svg",
   "front_end/emulated_devices/Nexus6P-landscape.svg",

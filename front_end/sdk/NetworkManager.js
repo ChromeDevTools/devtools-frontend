@@ -807,7 +807,7 @@ export class NetworkDispatcher {
   requestIntercepted(
       interceptionId, request, frameId, resourceType, isNavigationRequest, isDownload, redirectUrl, authChallenge,
       responseErrorReason, responseStatusCode, responseHeaders, requestId) {
-    SDK.multitargetNetworkManager._requestIntercepted(new InterceptedRequest(
+    self.SDK.multitargetNetworkManager._requestIntercepted(new InterceptedRequest(
         this._manager.target().networkAgent(), interceptionId, request, frameId, resourceType, isNavigationRequest,
         isDownload, redirectUrl, authChallenge, responseErrorReason, responseStatusCode, responseHeaders, requestId));
   }
@@ -904,7 +904,7 @@ export class NetworkDispatcher {
    * @return {?NetworkRequest}
    */
   _maybeAdoptMainResourceRequest(requestId) {
-    const request = SDK.multitargetNetworkManager._inflightMainResourceRequests.get(requestId);
+    const request = self.SDK.multitargetNetworkManager._inflightMainResourceRequests.get(requestId);
     if (!request) {
       return null;
     }
@@ -926,7 +926,7 @@ export class NetworkDispatcher {
     // The following relies on the fact that loaderIds and requestIds are
     // globally unique and that the main request has them equal.
     if (networkRequest.loaderId === networkRequest.requestId()) {
-      SDK.multitargetNetworkManager._inflightMainResourceRequests.set(networkRequest.requestId(), networkRequest);
+      self.SDK.multitargetNetworkManager._inflightMainResourceRequests.set(networkRequest.requestId(), networkRequest);
     }
 
     this._manager.dispatchEventToListeners(Events.RequestStarted, networkRequest);
@@ -961,7 +961,7 @@ export class NetworkDispatcher {
     this._manager.dispatchEventToListeners(Events.RequestFinished, networkRequest);
     delete this._inflightRequestsById[networkRequest.requestId()];
     delete this._inflightRequestsByURL[networkRequest.url()];
-    SDK.multitargetNetworkManager._inflightMainResourceRequests.delete(networkRequest.requestId());
+    self.SDK.multitargetNetworkManager._inflightMainResourceRequests.delete(networkRequest.requestId());
 
     if (shouldReportCorbBlocking) {
       const message = Common.UIString.UIString(

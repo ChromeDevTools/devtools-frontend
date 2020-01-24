@@ -50,7 +50,7 @@ export class SecurityPanel extends UI.PanelWithSidebar {
   static createCertificateViewerButtonForOrigin(text, origin) {
     const certificateButton = UI.createTextButton(text, async e => {
       e.consume();
-      const names = await SDK.multitargetNetworkManager.getCertificate(origin);
+      const names = await self.SDK.multitargetNetworkManager.getCertificate(origin);
       if (names.length > 0) {
         Host.InspectorFrontendHost.showCertificateViewer(names);
       }

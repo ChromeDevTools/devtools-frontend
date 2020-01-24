@@ -334,7 +334,7 @@ export class AuditsPanel extends UI.Panel {
         outlineEnabled: emulationModel.deviceOutlineSetting().get(),
         toolbarControlsEnabled: emulationModel.toolbarControlsEnabledSetting().get()
       },
-      network: {conditions: SDK.multitargetNetworkManager.networkConditions()}
+      network: {conditions: self.SDK.multitargetNetworkManager.networkConditions()}
     };
 
     emulationModel.toolbarControlsEnabledSetting().set(false);
@@ -369,7 +369,7 @@ export class AuditsPanel extends UI.Panel {
       emulationModel.enabledSetting().set(this._stateBefore.emulation.enabled);
       emulationModel.deviceOutlineSetting().set(this._stateBefore.emulation.outlineEnabled);
       emulationModel.toolbarControlsEnabledSetting().set(this._stateBefore.emulation.toolbarControlsEnabled);
-      SDK.multitargetNetworkManager.setNetworkConditions(this._stateBefore.network.conditions);
+      self.SDK.multitargetNetworkManager.setNetworkConditions(this._stateBefore.network.conditions);
       delete this._stateBefore;
     }
 

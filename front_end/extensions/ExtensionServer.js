@@ -238,7 +238,7 @@ export class ExtensionServer extends Common.Object {
       }
     }
 
-    SDK.multitargetNetworkManager.setExtraHTTPHeaders(allHeaders);
+    self.SDK.multitargetNetworkManager.setExtraHTTPHeaders(allHeaders);
   }
 
   /**
@@ -428,7 +428,8 @@ export class ExtensionServer extends Common.Object {
   _onReload(message) {
     const options = /** @type {!ExtensionReloadOptions} */ (message.options || {});
 
-    SDK.multitargetNetworkManager.setUserAgentOverride(typeof options.userAgent === 'string' ? options.userAgent : '');
+    self.SDK.multitargetNetworkManager.setUserAgentOverride(
+        typeof options.userAgent === 'string' ? options.userAgent : '');
     let injectedScript;
     if (options.injectedScript) {
       injectedScript = '(function(){' + options.injectedScript + '})()';

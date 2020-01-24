@@ -141,7 +141,7 @@ export class NetworkConfigView extends UI.VBox {
       if (autoCheckbox.checked) {
         return;
       }
-      SDK.multitargetNetworkManager.setCustomUserAgentOverride(customUserAgentSetting.get());
+      self.SDK.multitargetNetworkManager.setCustomUserAgentOverride(customUserAgentSetting.get());
     });
     const customUserAgentSelectBox = section.createChild('div', 'network-config-ua-custom');
     autoCheckbox.addEventListener('change', userAgentSelectBoxChanged);
@@ -159,7 +159,7 @@ export class NetworkConfigView extends UI.VBox {
       customSelectAndInput.input.disabled = !useCustomUA;
       customSelectAndInput.error.hidden = !useCustomUA;
       const customUA = useCustomUA ? customUserAgentSetting.get() : '';
-      SDK.multitargetNetworkManager.setCustomUserAgentOverride(customUA);
+      self.SDK.multitargetNetworkManager.setCustomUserAgentOverride(customUA);
     }
   }
 }

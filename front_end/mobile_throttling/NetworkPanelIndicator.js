@@ -8,7 +8,7 @@ export class NetworkPanelIndicator {
     if (!self.UI.inspectorView.hasPanel('network')) {
       return;
     }
-    const manager = SDK.multitargetNetworkManager;
+    const manager = self.SDK.multitargetNetworkManager;
     manager.addEventListener(SDK.MultitargetNetworkManager.Events.ConditionsChanged, updateVisibility);
     manager.addEventListener(SDK.MultitargetNetworkManager.Events.BlockedPatternsChanged, updateVisibility);
     manager.addEventListener(SDK.MultitargetNetworkManager.Events.InterceptorsChanged, updateVisibility);
@@ -19,7 +19,7 @@ export class NetworkPanelIndicator {
       if (manager.isThrottling()) {
         icon = UI.Icon.create('smallicon-warning');
         icon.title = Common.UIString('Network throttling is enabled');
-      } else if (SDK.multitargetNetworkManager.isIntercepting()) {
+      } else if (self.SDK.multitargetNetworkManager.isIntercepting()) {
         icon = UI.Icon.create('smallicon-warning');
         icon.title = Common.UIString('Requests may be rewritten by local overrides');
       } else if (manager.isBlocking()) {

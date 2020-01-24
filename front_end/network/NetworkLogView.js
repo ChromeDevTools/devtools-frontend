@@ -1354,7 +1354,7 @@ export class NetworkLogView extends UI.VBox {
 
     if (request) {
       const maxBlockedURLLength = 20;
-      const manager = SDK.multitargetNetworkManager;
+      const manager = self.SDK.multitargetNetworkManager;
       let patterns = manager.blockedPatterns();
 
       /**
@@ -1485,13 +1485,13 @@ export class NetworkLogView extends UI.VBox {
 
   _clearBrowserCache() {
     if (confirm(Common.UIString('Are you sure you want to clear browser cache?'))) {
-      SDK.multitargetNetworkManager.clearBrowserCache();
+      self.SDK.multitargetNetworkManager.clearBrowserCache();
     }
   }
 
   _clearBrowserCookies() {
     if (confirm(Common.UIString('Are you sure you want to clear browser cookies?'))) {
-      SDK.multitargetNetworkManager.clearBrowserCookies();
+      self.SDK.multitargetNetworkManager.clearBrowserCookies();
     }
   }
 

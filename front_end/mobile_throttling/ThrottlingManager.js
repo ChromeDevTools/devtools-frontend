@@ -24,9 +24,9 @@ export class ThrottlingManager extends Common.Object {
     /** @type {!SDK.NetworkManager.Conditions} */
     this._lastNetworkThrottlingConditions;
 
-    SDK.multitargetNetworkManager.addEventListener(SDK.MultitargetNetworkManager.Events.ConditionsChanged, () => {
+    self.SDK.multitargetNetworkManager.addEventListener(SDK.MultitargetNetworkManager.Events.ConditionsChanged, () => {
       this._lastNetworkThrottlingConditions = this._currentNetworkThrottlingConditions;
-      this._currentNetworkThrottlingConditions = SDK.multitargetNetworkManager.networkConditions();
+      this._currentNetworkThrottlingConditions = self.SDK.multitargetNetworkManager.networkConditions();
     });
 
     self.SDK.targetManager.observeModels(SDK.EmulationModel, this);
@@ -95,23 +95,25 @@ export class ThrottlingManager extends Common.Object {
   createOfflineToolbarCheckbox() {
     const checkbox = new UI.ToolbarCheckbox(
         Common.UIString('Offline'), Common.UIString('Force disconnected from network'), forceOffline.bind(this));
-    SDK.multitargetNetworkManager.addEventListener(
+    self.SDK.multitargetNetworkManager.addEventListener(
         SDK.MultitargetNetworkManager.Events.ConditionsChanged, networkConditionsChanged);
-    checkbox.setChecked(SDK.multitargetNetworkManager.networkConditions() === SDK.NetworkManager.OfflineConditions);
+    checkbox.setChecked(
+        self.SDK.multitargetNetworkManager.networkConditions() === SDK.NetworkManager.OfflineConditions);
 
     /**
      * @this {!ThrottlingManager}
      */
     function forceOffline() {
       if (checkbox.checked()) {
-        SDK.multitargetNetworkManager.setNetworkConditions(SDK.NetworkManager.OfflineConditions);
+        self.SDK.multitargetNetworkManager.setNetworkConditions(SDK.NetworkManager.OfflineConditions);
       } else {
-        SDK.multitargetNetworkManager.setNetworkConditions(this._lastNetworkThrottlingConditions);
+        self.SDK.multitargetNetworkManager.setNetworkConditions(this._lastNetworkThrottlingConditions);
       }
     }
 
     function networkConditionsChanged() {
-      checkbox.setChecked(SDK.multitargetNetworkManager.networkConditions() === SDK.NetworkManager.OfflineConditions);
+      checkbox.setChecked(
+          self.SDK.multitargetNetworkManager.networkConditions() === SDK.NetworkManager.OfflineConditions);
     }
 
     return checkbox;
@@ -263,19 +265,19 @@ export class ActionDelegate {
    */
   handleAction(context, actionId) {
     if (actionId === 'network-conditions.network-online') {
-      SDK.multitargetNetworkManager.setNetworkConditions(SDK.NetworkManager.NoThrottlingConditions);
+      self.SDK.multitargetNetworkManager.setNetworkConditions(SDK.NetworkManager.NoThrottlingConditions);
       return true;
     }
     if (actionId === 'network-conditions.network-low-end-mobile') {
-      SDK.multitargetNetworkManager.setNetworkConditions(SDK.NetworkManager.Slow3GConditions);
+      self.SDK.multitargetNetworkManager.setNetworkConditions(SDK.NetworkManager.Slow3GConditions);
       return true;
     }
     if (actionId === 'network-conditions.network-mid-tier-mobile') {
-      SDK.multitargetNetworkManager.setNetworkConditions(SDK.NetworkManager.Fast3GConditions);
+      self.SDK.multitargetNetworkManager.setNetworkConditions(SDK.NetworkManager.Fast3GConditions);
       return true;
     }
     if (actionId === 'network-conditions.network-offline') {
-      SDK.multitargetNetworkManager.setNetworkConditions(SDK.NetworkManager.OfflineConditions);
+      self.SDK.multitargetNetworkManager.setNetworkConditions(SDK.NetworkManager.OfflineConditions);
       return true;
     }
     return false;

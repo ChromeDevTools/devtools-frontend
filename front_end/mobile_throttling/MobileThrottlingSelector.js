@@ -14,7 +14,7 @@ export class MobileThrottlingSelector {
     this._populateCallback = populateCallback;
     this._selectCallback = selectCallback;
     throttlingManager().addEventListener(Events.RateChanged, this._conditionsChanged, this);
-    SDK.multitargetNetworkManager.addEventListener(
+    self.SDK.multitargetNetworkManager.addEventListener(
         SDK.MultitargetNetworkManager.Events.ConditionsChanged, this._conditionsChanged, this);
     /** @type {!MobileThrottling.ConditionsList} */
     this._options = this._populateOptions();
@@ -25,7 +25,7 @@ export class MobileThrottlingSelector {
    * @param {!MobileThrottling.Conditions} conditions
    */
   optionSelected(conditions) {
-    SDK.multitargetNetworkManager.setNetworkConditions(conditions.network);
+    self.SDK.multitargetNetworkManager.setNetworkConditions(conditions.network);
     throttlingManager().setCPUThrottlingRate(conditions.cpuThrottlingRate);
   }
 
@@ -40,7 +40,7 @@ export class MobileThrottlingSelector {
   }
 
   _conditionsChanged() {
-    const networkConditions = SDK.multitargetNetworkManager.networkConditions();
+    const networkConditions = self.SDK.multitargetNetworkManager.networkConditions();
     const cpuThrottlingRate = throttlingManager().cpuThrottlingRate();
     for (let index = 0; index < this._options.length; ++index) {
       const option = this._options[index];

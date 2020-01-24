@@ -74,15 +74,16 @@ export class CompilerSourceMappingContentProvider {
    */
   requestContent() {
     return new Promise(resolve => {
-      SDK.multitargetNetworkManager.loadResource(this._sourceURL, (success, _headers, content, errorDescription) => {
-        if (!success) {
-          const error = ls`Could not load content for ${this._sourceURL} (${errorDescription.message})`;
-          console.error(error);
-          resolve({error, isEncoded: false});
-        } else {
-          resolve({content, isEncoded: false});
-        }
-      });
+      self.SDK.multitargetNetworkManager.loadResource(
+          this._sourceURL, (success, _headers, content, errorDescription) => {
+            if (!success) {
+              const error = ls`Could not load content for ${this._sourceURL} (${errorDescription.message})`;
+              console.error(error);
+              resolve({error, isEncoded: false});
+            } else {
+              resolve({content, isEncoded: false});
+            }
+          });
     });
   }
 

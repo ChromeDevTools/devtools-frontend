@@ -14,7 +14,7 @@ export class BlockedURLsPane extends UI.VBox {
     this.registerRequiredCSS('network/blockedURLsPane.css');
 
     _instance = this;
-    this._manager = SDK.multitargetNetworkManager;
+    this._manager = self.SDK.multitargetNetworkManager;
     this._manager.addEventListener(SDK.MultitargetNetworkManager.Events.BlockedPatternsChanged, this._update, this);
 
     this._toolbar = new UI.Toolbar('', this.contentElement);

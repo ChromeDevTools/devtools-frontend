@@ -229,7 +229,7 @@ export class TextSourceMap {
    */
   static async load(sourceMapURL, compiledURL) {
     let content = await new Promise((resolve, reject) => {
-      SDK.multitargetNetworkManager.loadResource(sourceMapURL, (success, _headers, content, errorDescription) => {
+      self.SDK.multitargetNetworkManager.loadResource(sourceMapURL, (success, _headers, content, errorDescription) => {
         if (!content || !success) {
           const error = new Error(ls`Could not load content for ${sourceMapURL}: ${errorDescription.message}`);
           reject(error);

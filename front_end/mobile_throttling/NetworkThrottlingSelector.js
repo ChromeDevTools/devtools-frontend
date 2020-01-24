@@ -15,7 +15,7 @@ export class NetworkThrottlingSelector {
     this._selectCallback = selectCallback;
     this._customNetworkConditionsSetting = customNetworkConditionsSetting;
     this._customNetworkConditionsSetting.addChangeListener(this._populateOptions, this);
-    SDK.multitargetNetworkManager.addEventListener(
+    self.SDK.multitargetNetworkManager.addEventListener(
         SDK.MultitargetNetworkManager.Events.ConditionsChanged, this._networkConditionsChanged, this);
     /** @type {!Array<?SDK.NetworkManager.Conditions>} */
     this._options;
@@ -31,7 +31,7 @@ export class NetworkThrottlingSelector {
    * @param {!SDK.NetworkManager.Conditions} conditions
    */
   optionSelected(conditions) {
-    SDK.multitargetNetworkManager.setNetworkConditions(conditions);
+    self.SDK.multitargetNetworkManager.setNetworkConditions(conditions);
   }
 
   _populateOptions() {
@@ -53,7 +53,7 @@ export class NetworkThrottlingSelector {
    * @return {boolean} returns false if selected condition no longer exists
    */
   _networkConditionsChanged() {
-    const value = SDK.multitargetNetworkManager.networkConditions();
+    const value = self.SDK.multitargetNetworkManager.networkConditions();
     for (let index = 0; index < this._options.length; ++index) {
       const option = this._options[index];
       if (option && option.download === value.download && option.upload === value.upload &&

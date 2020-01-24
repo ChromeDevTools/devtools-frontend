@@ -603,7 +603,7 @@ export class DeviceModeModel extends Common.Object {
    * @param {string} userAgent
    */
   _applyUserAgent(userAgent) {
-    SDK.multitargetNetworkManager.setUserAgentOverride(userAgent);
+    self.SDK.multitargetNetworkManager.setUserAgentOverride(userAgent);
   }
 
   /**

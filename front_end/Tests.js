@@ -866,7 +866,7 @@
   // See crbug.com/747724
   TestSuite.prototype.testOfflineNetworkConditions = async function() {
     const test = this;
-    SDK.multitargetNetworkManager.setNetworkConditions(SDK.NetworkManager.OfflineConditions);
+    self.SDK.multitargetNetworkManager.setNetworkConditions(SDK.NetworkManager.OfflineConditions);
 
     function finishRequest(request) {
       test.assertEquals(
@@ -899,7 +899,7 @@
       }
 
       self.SDK.consoleModel.addEventListener(SDK.ConsoleModel.Events.MessageAdded, onConsoleMessage, this);
-      SDK.multitargetNetworkManager.setNetworkConditions(preset);
+      self.SDK.multitargetNetworkManager.setNetworkConditions(preset);
     }
 
     test.takeControl();
@@ -1448,7 +1448,7 @@
     this.takeControl();
 
     const testUserAgent = 'test user agent';
-    SDK.multitargetNetworkManager.setUserAgentOverride(testUserAgent);
+    self.SDK.multitargetNetworkManager.setUserAgentOverride(testUserAgent);
 
     function onRequestUpdated(event) {
       const request = event.data;

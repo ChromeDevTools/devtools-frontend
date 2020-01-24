@@ -2,12 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+import * as SDK from '../sdk/sdk.js';
+
 import {HAREntry, HARLog, HARPage, HARTimings} from './HARFormat.js';  // eslint-disable-line no-unused-vars
 
 export class Importer {
   /**
    * @param {!HARLog} log
-   * @return {!Array<!SDK.NetworkRequest>}
+   * @return {!Array<!SDK.NetworkRequest.NetworkRequest>}
    */
   static requestsFromHARLog(log) {
     /** @type {!Map<string, !HARPage>} */
@@ -20,7 +23,7 @@ export class Importer {
 
     /** @type {!Map<string, !SDK.NetworkLog.PageLoad>} */
     const pageLoads = new Map();
-    /** @type {!Array<!SDK.NetworkRequest>} */
+    /** @type {!Array<!SDK.NetworkRequest.NetworkRequest>} */
     const requests = [];
     for (const entry of log.entries) {
       let pageLoad = pageLoads.get(entry.pageref);
@@ -35,7 +38,7 @@ export class Importer {
         };
       }
 
-      const request = new SDK.NetworkRequest(
+      const request = new SDK.NetworkRequest.NetworkRequest(
           'har-' + requests.length, entry.request.url, documentURL, '', '', initiator);
       const page = pages.get(entry.pageref);
       if (!pageLoad && page) {
@@ -53,7 +56,7 @@ export class Importer {
 
   /**
    * @param {!HARPage} page
-   * @param {!SDK.NetworkRequest} mainRequest
+   * @param {!SDK.NetworkRequest.NetworkRequest} mainRequest
    * @return {!SDK.NetworkLog.PageLoad}
    */
   static _buildPageLoad(page, mainRequest) {
@@ -65,7 +68,7 @@ export class Importer {
   }
 
   /**
-   * @param {!SDK.NetworkRequest} request
+   * @param {!SDK.NetworkRequest.NetworkRequest} request
    * @param {!HAREntry} entry
    * @param {?SDK.NetworkLog.PageLoad} pageLoad
    */
@@ -159,39 +162,39 @@ export class Importer {
   }
 
   /**
-   * @param {!SDK.NetworkRequest} request
+   * @param {!SDK.NetworkRequest.NetworkRequest} request
    * @param {!HAREntry} entry
    * @param {?SDK.NetworkLog.PageLoad} pageLoad
-   * @return {!Common.ResourceType}
+   * @return {!Common.ResourceType.ResourceType}
    */
   static _getResourceType(request, entry, pageLoad) {
     const customResourceTypeName = entry.customAsString('resourceType');
     if (customResourceTypeName) {
-      const customResourceType = Common.ResourceType.fromName(customResourceTypeName);
+      const customResourceType = Common.ResourceType.ResourceType.fromName(customResourceTypeName);
       if (customResourceType) {
         return customResourceType;
       }
     }
 
     if (pageLoad && pageLoad.mainRequest === request) {
-      return Common.resourceTypes.Document;
+      return Common.ResourceType.resourceTypes.Document;
     }
 
-    const resourceTypeFromMime = Common.ResourceType.fromMimeType(entry.response.content.mimeType);
-    if (resourceTypeFromMime !== Common.resourceTypes.Other) {
+    const resourceTypeFromMime = Common.ResourceType.ResourceType.fromMimeType(entry.response.content.mimeType);
+    if (resourceTypeFromMime !== Common.ResourceType.resourceTypes.Other) {
       return resourceTypeFromMime;
     }
 
-    const resourceTypeFromUrl = Common.ResourceType.fromURL(entry.request.url);
+    const resourceTypeFromUrl = Common.ResourceType.ResourceType.fromURL(entry.request.url);
     if (resourceTypeFromUrl) {
       return resourceTypeFromUrl;
     }
 
-    return Common.resourceTypes.Other;
+    return Common.ResourceType.resourceTypes.Other;
   }
 
   /**
-   * @param {!SDK.NetworkRequest} request
+   * @param {!SDK.NetworkRequest.NetworkRequest} request
    * @param {number} issueTime
    * @param {number} entryTotalDuration
    * @param {!HARTimings} timings

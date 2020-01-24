@@ -153,9 +153,9 @@ export class FlameChart extends UI.VBox {
     this._keyboardFocusedGroup = -1;
 
     this._selectedGroupBackroundColor =
-        UI.themeSupport.patchColorText(Colors.SelectedGroupBackground, UI.ThemeSupport.ColorUsage.Background);
+        self.UI.themeSupport.patchColorText(Colors.SelectedGroupBackground, UI.ThemeSupport.ColorUsage.Background);
     this._selectedGroupBorderColor =
-        UI.themeSupport.patchColorText(Colors.SelectedGroupBorder, UI.ThemeSupport.ColorUsage.Background);
+        self.UI.themeSupport.patchColorText(Colors.SelectedGroupBorder, UI.ThemeSupport.ColorUsage.Background);
   }
 
   /**
@@ -1402,7 +1402,7 @@ export class FlameChart extends UI.VBox {
     const defaultFont = '11px ' + Host.fontFamily();
     context.font = defaultFont;
 
-    context.fillStyle = UI.themeSupport.patchColorText('#fff', colorUsage.Background);
+    context.fillStyle = self.UI.themeSupport.patchColorText('#fff', colorUsage.Background);
     this._forEachGroupInViewport((offset, index, group) => {
       const paddingHeight = group.style.padding;
       if (paddingHeight < 5) {
@@ -1414,7 +1414,7 @@ export class FlameChart extends UI.VBox {
       context.fillRect(0, lastGroupOffset + 2, width, top + height - lastGroupOffset);
     }
 
-    context.strokeStyle = UI.themeSupport.patchColorText('#eee', colorUsage.Background);
+    context.strokeStyle = self.UI.themeSupport.patchColorText('#eee', colorUsage.Background);
     context.beginPath();
     this._forEachGroupInViewport((offset, index, group, isFirst) => {
       if (isFirst || group.style.padding < 4) {
@@ -1469,7 +1469,7 @@ export class FlameChart extends UI.VBox {
     });
     context.restore();
 
-    context.fillStyle = UI.themeSupport.patchColorText('#6e6e6e', colorUsage.Foreground);
+    context.fillStyle = self.UI.themeSupport.patchColorText('#6e6e6e', colorUsage.Foreground);
     context.beginPath();
     this._forEachGroupInViewport((offset, index, group) => {
       if (this._isGroupCollapsible(index)) {
@@ -1480,7 +1480,7 @@ export class FlameChart extends UI.VBox {
     });
     context.fill();
 
-    context.strokeStyle = UI.themeSupport.patchColorText('#ddd', colorUsage.Background);
+    context.strokeStyle = self.UI.themeSupport.patchColorText('#ddd', colorUsage.Background);
     context.beginPath();
     context.stroke();
 

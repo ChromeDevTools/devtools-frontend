@@ -2032,7 +2032,7 @@ export class NetworkLogView extends UI.VBox {
    * @return {string}
    */
   static getDCLEventColor() {
-    if (UI.themeSupport.themeName() === 'dark') {
+    if (self.UI.themeSupport.themeName() === 'dark') {
       return '#03A9F4';
     }
     return '#0867CB';
@@ -2042,7 +2042,7 @@ export class NetworkLogView extends UI.VBox {
    * @return {string}
    */
   static getLoadEventColor() {
-    return UI.themeSupport.patchColorText('#B31412', UI.ThemeSupport.ColorUsage.Foreground);
+    return self.UI.themeSupport.patchColorText('#B31412', UI.ThemeSupport.ColorUsage.Foreground);
   }
 }
 

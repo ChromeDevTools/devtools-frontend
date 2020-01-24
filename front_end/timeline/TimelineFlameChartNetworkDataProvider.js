@@ -19,9 +19,9 @@ export class TimelineFlameChartNetworkDataProvider {
       padding: 4,
       height: 17,
       collapsible: true,
-      color: UI.themeSupport.patchColorText('#222', UI.ThemeSupport.ColorUsage.Foreground),
+      color: self.UI.themeSupport.patchColorText('#222', UI.ThemeSupport.ColorUsage.Foreground),
       font: this._font,
-      backgroundColor: UI.themeSupport.patchColorText('white', UI.ThemeSupport.ColorUsage.Background),
+      backgroundColor: self.UI.themeSupport.patchColorText('white', UI.ThemeSupport.ColorUsage.Background),
       nestingLevel: 0,
       useFirstLineForOverview: false,
       useDecoratorsForOverview: true,
@@ -219,7 +219,7 @@ export class TimelineFlameChartNetworkDataProvider {
     context.fillStyle = 'hsla(0, 100%, 100%, 0.8)';
     context.fillRect(sendStart + 0.5, barY + 0.5, headersEnd - sendStart - 0.5, barHeight - 2);
     // Clear portions of initial rect to prepare for the ticks.
-    context.fillStyle = UI.themeSupport.patchColorText('white', UI.ThemeSupport.ColorUsage.Background);
+    context.fillStyle = self.UI.themeSupport.patchColorText('white', UI.ThemeSupport.ColorUsage.Background);
     context.fillRect(barX, barY - 0.5, sendStart - barX, barHeight);
     context.fillRect(finish, barY - 0.5, barX + barWidth - finish, barHeight);
 

@@ -579,7 +579,7 @@ export class MainMenuItem {
           'Placement of DevTools relative to the page. (%s to restore last position)', toggleDockSideShorcuts[0].name);
       dockItemElement.appendChild(titleElement);
       const dockItemToolbar = new UI.Toolbar('', dockItemElement);
-      if (Host.isMac() && !UI.themeSupport.hasTheme()) {
+      if (Host.isMac() && !self.UI.themeSupport.hasTheme()) {
         dockItemToolbar.makeBlueOnHover();
       }
       const undock = new UI.ToolbarToggle(Common.UIString('Undock into separate window'), 'largeicon-undock');

@@ -961,7 +961,8 @@ export class ConsoleViewMessage {
     element.style.setProperty('-webkit-text-stroke', '0', 'important');
     element.style.setProperty('text-decoration', 'underline', 'important');
 
-    const themedColor = UI.themeSupport.patchColorText('rgb(33%, 33%, 33%)', UI.ThemeSupport.ColorUsage.Foreground);
+    const themedColor =
+        self.UI.themeSupport.patchColorText('rgb(33%, 33%, 33%)', UI.ThemeSupport.ColorUsage.Foreground);
     element.style.setProperty('color', themedColor, 'important');
 
     let backgroundColor = 'hsl(0, 0%, 100%)';
@@ -971,7 +972,7 @@ export class ConsoleViewMessage {
       backgroundColor = 'hsl(50, 100%, 95%)';
     }
     const themedBackgroundColor =
-        UI.themeSupport.patchColorText(backgroundColor, UI.ThemeSupport.ColorUsage.Background);
+        self.UI.themeSupport.patchColorText(backgroundColor, UI.ThemeSupport.ColorUsage.Background);
     element.style.setProperty('background-color', themedBackgroundColor, 'important');
   }
 

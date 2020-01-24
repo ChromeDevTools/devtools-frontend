@@ -10,6 +10,6 @@ import {appendStyle} from './append-style.js';
 export function injectCoreStyles(root) {
   appendStyle(root, 'ui/inspectorCommon.css');
   appendStyle(root, 'ui/textButton.css');
-  UI.themeSupport.injectHighlightStyleSheets(root);
-  UI.themeSupport.injectCustomStyleSheets(root);
+  self.UI.themeSupport.injectHighlightStyleSheets(root);
+  self.UI.themeSupport.injectCustomStyleSheets(root);
 }

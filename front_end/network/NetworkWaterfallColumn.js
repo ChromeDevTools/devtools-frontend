@@ -69,7 +69,7 @@ export class NetworkWaterfallColumn extends UI.VBox {
     /** @type {!Map<!Common.ResourceType, !NetworkWaterfallColumn._LayerStyle>} */
     this._styleForDownloadingResourceType = resourceStyleTuple[1];
 
-    const baseLineColor = UI.themeSupport.patchColorText('#a5a5a5', UI.ThemeSupport.ColorUsage.Foreground);
+    const baseLineColor = self.UI.themeSupport.patchColorText('#a5a5a5', UI.ThemeSupport.ColorUsage.Foreground);
     /** @type {!NetworkWaterfallColumn._LayerStyle} */
     this._wiskerStyle = {borderColor: baseLineColor, lineWidth: 1};
     /** @type {!NetworkWaterfallColumn._LayerStyle} */
@@ -444,7 +444,7 @@ export class NetworkWaterfallColumn extends UI.VBox {
     this._drawLayers(context);
 
     context.save();
-    context.fillStyle = UI.themeSupport.patchColorText('#888', UI.ThemeSupport.ColorUsage.Foreground);
+    context.fillStyle = self.UI.themeSupport.patchColorText('#888', UI.ThemeSupport.ColorUsage.Foreground);
     for (const textData of this._textLayers) {
       context.fillText(textData.text, textData.x, textData.y);
     }

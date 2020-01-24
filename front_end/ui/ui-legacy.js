@@ -728,7 +728,7 @@ UI.TextEditor.Options;
 UI.AutocompleteConfig;
 
 /** @type {?UI.ThemeSupport} */
-UI.themeSupport;
+self.UI.themeSupport;
 
 /** @typedef {!{title: (string|!Element|undefined), editable: (boolean|undefined) }} */
 UI.Renderer.Options;

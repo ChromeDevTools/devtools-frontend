@@ -105,7 +105,8 @@ export class TimelineGrid {
     context.save();
     context.scale(window.devicePixelRatio, window.devicePixelRatio);
     const height = Math.floor(context.canvas.height / window.devicePixelRatio);
-    context.strokeStyle = UI.themeSupport.patchColorText('rgba(0, 0, 0, 0.1)', UI.ThemeSupport.ColorUsage.Foreground);
+    context.strokeStyle =
+        self.UI.themeSupport.patchColorText('rgba(0, 0, 0, 0.1)', UI.ThemeSupport.ColorUsage.Foreground);
     context.lineWidth = 1;
 
     context.translate(0.5, 0.5);
@@ -133,10 +134,10 @@ export class TimelineGrid {
 
     context.beginPath();
     context.fillStyle =
-        UI.themeSupport.patchColorText('rgba(255, 255, 255, 0.5)', UI.ThemeSupport.ColorUsage.Background);
+        self.UI.themeSupport.patchColorText('rgba(255, 255, 255, 0.5)', UI.ThemeSupport.ColorUsage.Background);
     context.fillRect(0, 0, width, headerHeight);
 
-    context.fillStyle = UI.themeSupport.patchColorText('#333', UI.ThemeSupport.ColorUsage.Foreground);
+    context.fillStyle = self.UI.themeSupport.patchColorText('#333', UI.ThemeSupport.ColorUsage.Foreground);
     context.textBaseline = 'hanging';
     context.font = '11px ' + Host.fontFamily();
 

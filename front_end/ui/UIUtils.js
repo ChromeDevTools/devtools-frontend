@@ -1244,10 +1244,10 @@ export function initializeUIUtils(document, themeSetting) {
     document.defaultView.requestAnimationFrame(() => void(UI._keyboardFocus = false));
   }, true);
 
-  if (!UI.themeSupport) {
-    UI.themeSupport = new ThemeSupport(themeSetting);
+  if (!self.UI.themeSupport) {
+    self.UI.themeSupport = new ThemeSupport(themeSetting);
   }
-  UI.themeSupport.applyTheme(document);
+  self.UI.themeSupport.applyTheme(document);
 
   const body = /** @type {!Element} */ (document.body);
   appendStyle(body, 'ui/inspectorStyle.css');

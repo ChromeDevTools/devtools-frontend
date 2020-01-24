@@ -91,7 +91,7 @@ export class AuditsReportRenderer extends ReportRenderer {
    * @param {!Element} el
    */
   static handleDarkMode(el) {
-    if (UI.themeSupport.themeName() === 'dark') {
+    if (self.UI.themeSupport.themeName() === 'dark') {
       el.classList.add('dark');
     }
   }

@@ -16,7 +16,7 @@ export function appendStyle(node, cssFile) {
   styleElement.textContent = content;
   node.appendChild(styleElement);
 
-  const themeStyleSheet = UI.themeSupport.themeStyleSheet(cssFile, content);
+  const themeStyleSheet = self.UI.themeSupport.themeStyleSheet(cssFile, content);
   if (themeStyleSheet) {
     styleElement = createElement('style');
     styleElement.textContent = themeStyleSheet + '\n' + Root.Runtime.resolveSourceURL(cssFile + '.theme');

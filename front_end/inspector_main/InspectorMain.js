@@ -2,20 +2,27 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+import * as Components from '../components/components.js';
+import * as Host from '../host/host.js';
+import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
+import * as SDK from '../sdk/sdk.js';
+import * as UI from '../ui/ui.js';
+
 /**
- * @implements {Common.Runnable}
+ * @implements {Common.Runnable.Runnable}
  */
-export class InspectorMainImpl extends Common.Object {
+export class InspectorMainImpl extends Common.ObjectWrapper.ObjectWrapper {
   /**
    * @override
    */
   async run() {
     let firstCall = true;
-    await SDK.initMainConnection(async () => {
-      const type = Root.Runtime.queryParam('v8only') ? SDK.Target.Type.Node : SDK.Target.Type.Frame;
-      const waitForDebuggerInPage = type === SDK.Target.Type.Frame && Root.Runtime.queryParam('panel') === 'sources';
+    await SDK.Connections.initMainConnection(async () => {
+      const type = Root.Runtime.queryParam('v8only') ? SDK.SDKModel.Type.Node : SDK.SDKModel.Type.Frame;
+      const waitForDebuggerInPage = type === SDK.SDKModel.Type.Frame && Root.Runtime.queryParam('panel') === 'sources';
       const target = self.SDK.targetManager.createTarget(
-          'main', Common.UIString('Main'), type, null, undefined, waitForDebuggerInPage);
+          'main', Common.UIString.UIString('Main'), type, null, undefined, waitForDebuggerInPage);
 
       // Only resume target during the first connection,
       // subsequent connections are due to connection hand-over,
@@ -26,7 +33,7 @@ export class InspectorMainImpl extends Common.Object {
       firstCall = false;
 
       if (waitForDebuggerInPage) {
-        const debuggerModel = target.model(SDK.DebuggerModel);
+        const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
         if (!debuggerModel.isReadyToPause()) {
           await debuggerModel.once(SDK.DebuggerModel.Events.DebuggerIsReadyToPause);
         }
@@ -34,38 +41,38 @@ export class InspectorMainImpl extends Common.Object {
       }
 
       target.runtimeAgent().runIfWaitingForDebugger();
-    }, Components.TargetDetachedDialog.webSocketConnectionLost);
+    }, Components.TargetDetachedDialog.TargetDetachedDialog.webSocketConnectionLost);
 
     new SourcesPanelIndicator();
     new BackendSettingsSync();
-    new MobileThrottling.NetworkPanelIndicator();
+    new MobileThrottling.NetworkPanelIndicator.NetworkPanelIndicator();
 
-    Host.InspectorFrontendHost.events.addEventListener(
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
         Host.InspectorFrontendHostAPI.Events.ReloadInspectedPage, event => {
           const hard = /** @type {boolean} */ (event.data);
-          SDK.ResourceTreeModel.reloadAllPages(hard);
+          SDK.ResourceTreeModel.ResourceTreeModel.reloadAllPages(hard);
         });
   }
 }
 
 /**
- * @implements {UI.ActionDelegate}
+ * @implements {UI.ActionDelegate.ActionDelegate}
  * @unrestricted
  */
 export class ReloadActionDelegate {
   /**
    * @override
-   * @param {!UI.Context} context
+   * @param {!UI.Context.Context} context
    * @param {string} actionId
    * @return {boolean}
    */
   handleAction(context, actionId) {
     switch (actionId) {
       case 'inspector_main.reload':
-        SDK.ResourceTreeModel.reloadAllPages(false);
+        SDK.ResourceTreeModel.ResourceTreeModel.reloadAllPages(false);
         return true;
       case 'inspector_main.hard-reload':
-        SDK.ResourceTreeModel.reloadAllPages(true);
+        SDK.ResourceTreeModel.ResourceTreeModel.reloadAllPages(true);
         return true;
     }
     return false;
@@ -73,13 +80,13 @@ export class ReloadActionDelegate {
 }
 
 /**
- * @implements {UI.ActionDelegate}
+ * @implements {UI.ActionDelegate.ActionDelegate}
  * @unrestricted
  */
 export class FocusDebuggeeActionDelegate {
   /**
    * @override
-   * @param {!UI.Context} context
+   * @param {!UI.Context.Context} context
    * @param {string} actionId
    * @return {boolean}
    */
@@ -90,18 +97,19 @@ export class FocusDebuggeeActionDelegate {
 }
 
 /**
- * @implements {UI.ToolbarItem.Provider}
+ * @implements {UI.Toolbar.Provider}
  */
 export class NodeIndicator {
   constructor() {
     const element = createElement('div');
-    const shadowRoot = UI.createShadowRootWithCoreStyles(element, 'inspector_main/nodeIcon.css');
+    const shadowRoot = UI.Utils.createShadowRootWithCoreStyles(element, 'inspector_main/nodeIcon.css');
     this._element = shadowRoot.createChild('div', 'node-icon');
-    element.addEventListener('click', () => Host.InspectorFrontendHost.openNodeFrontend(), false);
-    this._button = new UI.ToolbarItem(element);
-    this._button.setTitle(Common.UIString('Open dedicated DevTools for Node.js'));
+    element.addEventListener(
+        'click', () => Host.InspectorFrontendHost.InspectorFrontendHostInstance.openNodeFrontend(), false);
+    this._button = new UI.Toolbar.ToolbarItem(element);
+    this._button.setTitle(Common.UIString.UIString('Open dedicated DevTools for Node.js'));
     self.SDK.targetManager.addEventListener(
-        SDK.TargetManager.Events.AvailableTargetsChanged,
+        SDK.SDKModel.Events.AvailableTargetsChanged,
         event => this._update(/** @type {!Array<!Protocol.Target.TargetInfo>} */ (event.data)));
     this._button.setVisible(false);
     this._update([]);
@@ -120,7 +128,7 @@ export class NodeIndicator {
 
   /**
    * @override
-   * @return {?UI.ToolbarItem}
+   * @return {?UI.Toolbar.ToolbarItem}
    */
   item() {
     return this._button;
@@ -139,8 +147,8 @@ export class SourcesPanelIndicator {
       let icon = null;
       const javaScriptDisabled = self.Common.settings.moduleSetting('javaScriptDisabled').get();
       if (javaScriptDisabled) {
-        icon = UI.Icon.create('smallicon-warning');
-        icon.title = Common.UIString('JavaScript is disabled');
+        icon = UI.Icon.Icon.create('smallicon-warning');
+        icon.title = Common.UIString.UIString('JavaScript is disabled');
       }
       self.UI.inspectorView.setPanelIcon('sources', icon);
     }
@@ -148,7 +156,7 @@ export class SourcesPanelIndicator {
 }
 
 /**
- * @implements {SDK.TargetManager.Observer}
+ * @implements {SDK.SDKModel.Observer}
  * @unrestricted
  */
 export class BackendSettingsSync {
@@ -167,10 +175,10 @@ export class BackendSettingsSync {
   }
 
   /**
-   * @param {!SDK.Target} target
+   * @param {!SDK.SDKModel.Target} target
    */
   _updateTarget(target) {
-    if (target.type() !== SDK.Target.Type.Frame || target.parentTarget()) {
+    if (target.type() !== SDK.SDKModel.Type.Frame || target.parentTarget()) {
       return;
     }
     target.pageAgent().setAdBlockingEnabled(this._adBlockEnabledSetting.get());
@@ -178,7 +186,7 @@ export class BackendSettingsSync {
   }
 
   _updateAutoAttach() {
-    Host.InspectorFrontendHost.setOpenNewWindowForPopups(this._autoAttachSetting.get());
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.setOpenNewWindowForPopups(this._autoAttachSetting.get());
   }
 
   _update() {
@@ -188,7 +196,7 @@ export class BackendSettingsSync {
   }
 
   /**
-   * @param {!SDK.Target} target
+   * @param {!SDK.SDKModel.Target} target
    * @override
    */
   targetAdded(target) {
@@ -196,11 +204,11 @@ export class BackendSettingsSync {
   }
 
   /**
-   * @param {!SDK.Target} target
+   * @param {!SDK.SDKModel.Target} target
    * @override
    */
   targetRemoved(target) {
   }
 }
 
-SDK.ChildTargetManager.install();
+SDK.ChildTargetManager.ChildTargetManager.install();

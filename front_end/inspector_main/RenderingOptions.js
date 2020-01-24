@@ -28,7 +28,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-export class RenderingOptionsView extends UI.VBox {
+import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
+import * as UI from '../ui/ui.js';
+
+export class RenderingOptionsView extends UI.Widget.VBox {
   constructor() {
     super(true);
     this.registerRequiredCSS('inspector_main/renderingOptions.css');
@@ -76,17 +79,17 @@ export class RenderingOptionsView extends UI.VBox {
   /**
    * @param {string} label
    * @param {string} subtitle
-   * @param {!Common.Setting} setting
+   * @param {!Common.Settings.Setting} setting
    */
   _appendCheckbox(label, subtitle, setting) {
-    const checkboxLabel = UI.CheckboxLabel.create(label, false, subtitle);
+    const checkboxLabel = UI.UIUtils.CheckboxLabel.create(label, false, subtitle);
     UI.SettingsUI.bindCheckbox(checkboxLabel.checkboxElement, setting);
     this.contentElement.appendChild(checkboxLabel);
   }
 
   /**
    * @param {string} label
-   * @param {!Common.Setting} setting
+   * @param {!Common.Settings.Setting} setting
    */
   _appendSelect(label, setting) {
     const control = UI.SettingsUI.createControlForSetting(setting, label);

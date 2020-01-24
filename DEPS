@@ -10,10 +10,10 @@ vars = {
   'buildtools_revision': '48cce924d685e103eb320a560b5cb6d7883dc670',
 
   'depot_tools_url': 'https://chromium.googlesource.com/chromium/tools/depot_tools.git',
-  'depot_tools_revision': 'bdd89366d34e81683873c153d276e9be93ad086b',
+  'depot_tools_revision': '9403c3fc39e8b9054a9d5e1481c9d318bd8dc02c',
 
   'inspector_protocol_url': 'https://chromium.googlesource.com/deps/inspector_protocol',
-  'inspector_protocol_revision': 'a84e91f6696a0b76e1a73286c9c2765154de9889',
+  'inspector_protocol_revision': '607bfb87bdc389997abf6ae3b7e08027856b886e',
 
   'clang_format_url': 'https://chromium.googlesource.com/chromium/llvm-project/cfe/tools/clang-format.git',
   'clang_format_revision': '96636aa0e9f047f17447f2d45a094d0b59ed7917',

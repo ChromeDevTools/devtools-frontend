@@ -145,7 +145,7 @@ export class AuditsReportUIFeatures extends ReportUIFeatures {
     const ext = blob.type.match('json') ? '.json' : '.html';
     const basename = `${sanitizedDomain}-${timestamp}${ext}`;
     const text = await blob.text();
-    Workspace.fileManager.save(basename, text, true /* forceSaveAs */);
+    self.Workspace.fileManager.save(basename, text, true /* forceSaveAs */);
   }
 
   async _print() {

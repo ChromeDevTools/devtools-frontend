@@ -208,7 +208,7 @@ export class MainImpl {
     UI.shortcutsScreen.section(Common.UIString('Debugger'));
     UI.shortcutsScreen.section(Common.UIString('Console'));
 
-    Workspace.fileManager = new Workspace.FileManager();
+    self.Workspace.fileManager = new Workspace.FileManager();
     self.Workspace.workspace = new Workspace.Workspace();
 
     self.Bindings.networkProjectManager = new Bindings.NetworkProjectManager();

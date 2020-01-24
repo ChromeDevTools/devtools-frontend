@@ -24,8 +24,8 @@ export class ContextMenuProvider {
         content = window.atob(content);
       }
       const url = contentProvider.contentURL();
-      Workspace.fileManager.save(url, /** @type {string} */ (content), true);
-      Workspace.fileManager.close(url);
+      self.Workspace.fileManager.save(url, /** @type {string} */ (content), true);
+      self.Workspace.fileManager.close(url);
     }
 
     if (contentProvider.contentType().isDocumentOrScriptOrStyleSheet()) {

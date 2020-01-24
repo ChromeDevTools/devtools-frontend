@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as UI from '../ui/ui.js';
+
 export class ContextDetailBuilder {
   /**
    * @param {!Protocol.WebAudio.BaseAudioContext} context
@@ -32,7 +34,7 @@ export class ContextDetailBuilder {
    * @param {string} subtitle
    */
   _addTitle(title, subtitle) {
-    this._container.appendChild(UI.html`
+    this._container.appendChild(UI.Fragment.html`
       <div class="context-detail-header">
         <div class="context-detail-title">${title}</div>
         <div class="context-detail-subtitle">${subtitle}</div>
@@ -47,7 +49,7 @@ export class ContextDetailBuilder {
    */
   _addEntry(entry, value, unit) {
     const valueWithUnit = value + (unit ? ` ${unit}` : '');
-    this._container.appendChild(UI.html`
+    this._container.appendChild(UI.Fragment.html`
       <div class="context-detail-row">
         <div class="context-detail-row-entry">${entry}</div>
         <div class="context-detail-row-value">${valueWithUnit}</div>
@@ -74,7 +76,7 @@ export class ContextSummaryBuilder {
     const stddev = (Math.sqrt(contextRealtimeData.callbackIntervalVariance) * 1000).toFixed(3);
     const capacity = (contextRealtimeData.renderCapacity * 100).toFixed(3);
     this._fragment = createDocumentFragment();
-    this._fragment.appendChild(UI.html`
+    this._fragment.appendChild(UI.Fragment.html`
       <div class="context-summary-container">
         <span>${ls`Current Time`}: ${time} s</span>
         <span>\u2758</span>

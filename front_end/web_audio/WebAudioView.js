@@ -2,15 +2,18 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
+import * as UI from '../ui/ui.js';
+
 import {ContextDetailBuilder, ContextSummaryBuilder} from './AudioContextContentBuilder.js';
 import {AudioContextSelector, Events as SelectorEvents} from './AudioContextSelector.js';
 import {GraphManager} from './graph_visualizer/GraphManager.js';
 import {Events as ModelEvents, WebAudioModel} from './WebAudioModel.js';
 
 /**
- * @implements {SDK.SDKModelObserver<!WebAudioModel>}
+ * @implements {SDK.SDKModel.SDKModelObserver<!WebAudioModel>}
  */
-export class WebAudioView extends UI.ThrottledWidget {
+export class WebAudioView extends UI.ThrottledWidget.ThrottledWidget {
   constructor() {
     super(true, 1000);
     this.element.classList.add('web-audio-drawer');
@@ -19,8 +22,8 @@ export class WebAudioView extends UI.ThrottledWidget {
     // Creates the toolbar.
     const toolbarContainer = this.contentElement.createChild('div', 'web-audio-toolbar-container vbox');
     this._contextSelector = new AudioContextSelector();
-    const toolbar = new UI.Toolbar('web-audio-toolbar', toolbarContainer);
-    toolbar.appendToolbarItem(UI.Toolbar.createActionButtonForId('components.collect-garbage'));
+    const toolbar = new UI.Toolbar.Toolbar('web-audio-toolbar', toolbarContainer);
+    toolbar.appendToolbarItem(UI.Toolbar.Toolbar.createActionButtonForId('components.collect-garbage'));
     toolbar.appendSeparator();
     toolbar.appendToolbarItem(this._contextSelector.toolbarItem());
 
@@ -33,9 +36,9 @@ export class WebAudioView extends UI.ThrottledWidget {
     this._graphManager = new GraphManager();
 
     // Creates the landing page.
-    this._landingPage = new UI.VBox();
+    this._landingPage = new UI.Widget.VBox();
     this._landingPage.contentElement.classList.add('web-audio-landing-page', 'fill');
-    this._landingPage.contentElement.appendChild(UI.html`
+    this._landingPage.contentElement.appendChild(UI.Fragment.html`
       <div>
         <p>${ls`Open a page that uses Web Audio API to start monitoring.`}</p>
       </div>

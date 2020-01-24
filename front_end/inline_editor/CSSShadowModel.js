@@ -2,6 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+import * as TextUtils from '../text_utils/text_utils.js';
+
 /**
  * @unrestricted
  */
@@ -16,7 +19,7 @@ export class CSSShadowModel {
     this._offsetY = CSSLength.zero();
     this._blurRadius = CSSLength.zero();
     this._spreadRadius = CSSLength.zero();
-    this._color = /** @type {!Common.Color} */ (Common.Color.parse('black'));
+    this._color = /** @type {!Common.Color.Color} */ (Common.Color.Color.parse('black'));
     this._format = [_Part.OffsetX, _Part.OffsetY];
   }
 
@@ -44,7 +47,7 @@ export class CSSShadowModel {
   static _parseShadow(text, isBoxShadow) {
     const shadowTexts = [];
     // Split by commas that aren't inside of color values to get the individual shadow values.
-    const splits = TextUtils.TextUtils.splitStringByRegexes(text, [Common.Color.Regex, /,/g]);
+    const splits = TextUtils.TextUtils.Utils.splitStringByRegexes(text, [Common.Color.Regex, /,/g]);
     let currentIndex = 0;
     for (let i = 0; i < splits.length; i++) {
       if (splits[i].regexIndex === 1) {
@@ -61,7 +64,7 @@ export class CSSShadowModel {
       shadow._format = [];
       let nextPartAllowed = true;
       const regexes = [/inset/gi, Common.Color.Regex, CSSLength.Regex];
-      const results = TextUtils.TextUtils.splitStringByRegexes(shadowTexts[i], regexes);
+      const results = TextUtils.TextUtils.Utils.splitStringByRegexes(shadowTexts[i], regexes);
       for (let j = 0; j < results.length; j++) {
         const result = results[j];
         if (result.regexIndex === -1) {
@@ -81,7 +84,7 @@ export class CSSShadowModel {
             shadow._inset = true;
             shadow._format.push(_Part.Inset);
           } else if (result.regexIndex === 1) {
-            const color = Common.Color.parse(result.value);
+            const color = Common.Color.Color.parse(result.value);
             if (!color) {
               return [];
             }
@@ -185,7 +188,7 @@ export class CSSShadowModel {
   }
 
   /**
-   * @param {!Common.Color} color
+   * @param {!Common.Color.Color} color
    */
   setColor(color) {
     this._color = color;
@@ -237,7 +240,7 @@ export class CSSShadowModel {
   }
 
   /**
-   * @return {!Common.Color}
+   * @return {!Common.Color.Color}
    */
   color() {
     return this._color;

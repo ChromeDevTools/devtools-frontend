@@ -2,13 +2,16 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+import * as UI from '../ui/ui.js';
+
 /**
  * @unrestricted
  */
-export class SwatchPopoverHelper extends Common.Object {
+export class SwatchPopoverHelper extends Common.ObjectWrapper.ObjectWrapper {
   constructor() {
     super();
-    this._popover = new UI.GlassPane();
+    this._popover = new UI.GlassPane.GlassPane();
     this._popover.registerRequiredCSS('inline_editor/swatchPopover.css');
     this._popover.setSizeBehavior(UI.GlassPane.SizeBehavior.MeasureContent);
     this._popover.setMarginBehavior(UI.GlassPane.MarginBehavior.Arrow);
@@ -38,7 +41,7 @@ export class SwatchPopoverHelper extends Common.Object {
   }
 
   /**
-   * @param {!UI.Widget} view
+   * @param {!UI.Widget.Widget} view
    * @param {!Element} anchorElement
    * @param {function(boolean)=} hiddenCallback
    */
@@ -73,7 +76,7 @@ export class SwatchPopoverHelper extends Common.Object {
     this._popover.show(this._anchorElement.ownerDocument);
     this._view.contentElement.addEventListener('focusout', this._boundFocusOut, false);
     if (!this._focusRestorer) {
-      this._focusRestorer = new UI.WidgetFocusRestorer(this._view);
+      this._focusRestorer = new UI.Widget.WidgetFocusRestorer(this._view);
     }
   }
 

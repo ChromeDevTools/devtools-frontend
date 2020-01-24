@@ -2,12 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+import * as UI from '../ui/ui.js';
+
 import {BezierUI} from './BezierUI.js';
 
 /**
  * @unrestricted
  */
-export class BezierEditor extends UI.VBox {
+export class BezierEditor extends UI.Widget.VBox {
   constructor() {
     super(true);
     this.registerRequiredCSS('inline_editor/bezierEditor.css');
@@ -35,7 +38,7 @@ export class BezierEditor extends UI.VBox {
     // Curve UI
     this._curveUI = new BezierUI(150, 250, 50, 7, true);
     this._curve = this._outerContainer.createSVGChild('svg', 'bezier-curve');
-    UI.installDragHandle(
+    UI.UIUtils.installDragHandle(
         this._curve, this._dragStart.bind(this), this._dragMove.bind(this), this._dragEnd.bind(this), 'default');
 
     this._header = this.contentElement.createChild('div', 'bezier-header');
@@ -91,7 +94,7 @@ export class BezierEditor extends UI.VBox {
   _updateUI() {
     const labelText = this._selectedCategory ? this._selectedCategory.presets[this._selectedCategory.presetIndex].name :
                                                this._bezier.asCSSText().replace(/\s(-\d\.\d)/g, '$1');
-    this._label.textContent = Common.UIString(labelText);
+    this._label.textContent = Common.UIString.UIString(labelText);
     this._curveUI.drawCurve(this._bezier, this._curve);
     this._previewOnion.removeChildren();
   }

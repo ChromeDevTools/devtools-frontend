@@ -2,6 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+import * as TextUtils from '../text_utils/text_utils.js';
+import * as UI from '../ui/ui.js';
+
 import {CSSShadowModel} from './CSSShadowModel.js';  // eslint-disable-line no-unused-vars
 
 /**
@@ -10,10 +14,10 @@ import {CSSShadowModel} from './CSSShadowModel.js';  // eslint-disable-line no-u
 export class ColorSwatch extends HTMLSpanElement {
   constructor() {
     super();
-    const root = UI.createShadowRootWithCoreStyles(this, 'inline_editor/colorSwatch.css');
+    const root = UI.Utils.createShadowRootWithCoreStyles(this, 'inline_editor/colorSwatch.css');
 
     this._iconElement = root.createChild('span', 'color-swatch');
-    this._iconElement.title = Common.UIString('Shift-click to change color format');
+    this._iconElement.title = Common.UIString.UIString('Shift-click to change color format');
     this._swatchInner = this._iconElement.createChild('span', 'color-swatch-inner');
     this._swatchInner.addEventListener('dblclick', e => e.consume(), false);
     this._swatchInner.addEventListener('mousedown', e => e.consume(), false);
@@ -28,7 +32,7 @@ export class ColorSwatch extends HTMLSpanElement {
    */
   static create() {
     if (!ColorSwatch._constructor) {
-      ColorSwatch._constructor = UI.registerCustomElement('span', 'color-swatch', ColorSwatch);
+      ColorSwatch._constructor = UI.Utils.registerCustomElement('span', 'color-swatch', ColorSwatch);
     }
 
 
@@ -36,7 +40,7 @@ export class ColorSwatch extends HTMLSpanElement {
   }
 
   /**
-   * @param {!Common.Color} color
+   * @param {!Common.Color.Color} color
    * @param {string} curFormat
    */
   static _nextColorFormat(color, curFormat) {
@@ -83,14 +87,14 @@ export class ColorSwatch extends HTMLSpanElement {
   }
 
   /**
-   * @return {!Common.Color} color
+   * @return {!Common.Color.Color} color
    */
   color() {
     return this._color;
   }
 
   /**
-   * @param {!Common.Color} color
+   * @param {!Common.Color.Color} color
    */
   setColor(color) {
     this._color = color;
@@ -166,8 +170,8 @@ export class ColorSwatch extends HTMLSpanElement {
 export class BezierSwatch extends HTMLSpanElement {
   constructor() {
     super();
-    const root = UI.createShadowRootWithCoreStyles(this, 'inline_editor/bezierSwatch.css');
-    this._iconElement = UI.Icon.create('smallicon-bezier', 'bezier-swatch-icon');
+    const root = UI.Utils.createShadowRootWithCoreStyles(this, 'inline_editor/bezierSwatch.css');
+    this._iconElement = UI.Icon.Icon.create('smallicon-bezier', 'bezier-swatch-icon');
     root.appendChild(this._iconElement);
     this._textElement = this.createChild('span');
     root.createChild('slot');
@@ -178,7 +182,7 @@ export class BezierSwatch extends HTMLSpanElement {
    */
   static create() {
     if (!BezierSwatch._constructor) {
-      BezierSwatch._constructor = UI.registerCustomElement('span', 'bezier-swatch', BezierSwatch);
+      BezierSwatch._constructor = UI.Utils.registerCustomElement('span', 'bezier-swatch', BezierSwatch);
     }
 
 
@@ -220,8 +224,8 @@ export class BezierSwatch extends HTMLSpanElement {
 export class CSSShadowSwatch extends HTMLSpanElement {
   constructor() {
     super();
-    const root = UI.createShadowRootWithCoreStyles(this, 'inline_editor/cssShadowSwatch.css');
-    this._iconElement = UI.Icon.create('smallicon-shadow', 'shadow-swatch-icon');
+    const root = UI.Utils.createShadowRootWithCoreStyles(this, 'inline_editor/cssShadowSwatch.css');
+    this._iconElement = UI.Icon.Icon.create('smallicon-shadow', 'shadow-swatch-icon');
     root.appendChild(this._iconElement);
     root.createChild('slot');
     this._contentElement = this.createChild('span');
@@ -232,7 +236,7 @@ export class CSSShadowSwatch extends HTMLSpanElement {
    */
   static create() {
     if (!CSSShadowSwatch._constructor) {
-      CSSShadowSwatch._constructor = UI.registerCustomElement('span', 'css-shadow-swatch', CSSShadowSwatch);
+      CSSShadowSwatch._constructor = UI.Utils.registerCustomElement('span', 'css-shadow-swatch', CSSShadowSwatch);
     }
 
     return /** @type {!CSSShadowSwatch} */ (CSSShadowSwatch._constructor());
@@ -251,7 +255,7 @@ export class CSSShadowSwatch extends HTMLSpanElement {
   setCSSShadow(model) {
     this._model = model;
     this._contentElement.removeChildren();
-    const results = TextUtils.TextUtils.splitStringByRegexes(model.asCSSText(), [/inset/g, Common.Color.Regex]);
+    const results = TextUtils.TextUtils.Utils.splitStringByRegexes(model.asCSSText(), [/inset/g, Common.Color.Regex]);
     for (let i = 0; i < results.length; i++) {
       const result = results[i];
       if (result.regexIndex === 1) {

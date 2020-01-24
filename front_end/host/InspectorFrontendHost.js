@@ -518,8 +518,8 @@ export let InspectorFrontendHostInstance = window.InspectorFrontendHost;
  */
 class InspectorFrontendAPIImpl {
   constructor() {
-    this._debugFrontend =
-        !!Root.Runtime.queryParam('debugFrontend') || (window['InspectorTest'] && window['InspectorTest']['debugTest']);
+    this._debugFrontend = (self.Root && Root.Runtime && !!Root.Runtime.queryParam('debugFrontend')) ||
+        (window['InspectorTest'] && window['InspectorTest']['debugTest']);
 
     const descriptors = EventDescriptors;
     for (let i = 0; i < descriptors.length; ++i) {

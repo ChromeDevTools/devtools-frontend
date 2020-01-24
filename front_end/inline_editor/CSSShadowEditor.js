@@ -2,6 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+import * as UI from '../ui/ui.js';
+
 import {CSSLength, CSSShadowModel} from './CSSShadowModel.js';  // eslint-disable-line no-unused-vars
 
 /** @type {number} */
@@ -16,7 +19,7 @@ const canvasSize = 88;
 /**
  * @unrestricted
  */
-export class CSSShadowEditor extends UI.VBox {
+export class CSSShadowEditor extends UI.Widget.VBox {
   constructor() {
     super(true);
     this.registerRequiredCSS('inline_editor/cssShadowEditor.css');
@@ -24,35 +27,36 @@ export class CSSShadowEditor extends UI.VBox {
     this.setDefaultFocusedElement(this.contentElement);
 
     this._typeField = this.contentElement.createChild('div', 'shadow-editor-field shadow-editor-flex-field');
-    this._typeField.createChild('label', 'shadow-editor-label').textContent = Common.UIString('Type');
+    this._typeField.createChild('label', 'shadow-editor-label').textContent = Common.UIString.UIString('Type');
     this._outsetButton = this._typeField.createChild('button', 'shadow-editor-button-left');
-    this._outsetButton.textContent = Common.UIString('Outset');
+    this._outsetButton.textContent = Common.UIString.UIString('Outset');
     this._outsetButton.addEventListener('click', this._onButtonClick.bind(this), false);
     this._insetButton = this._typeField.createChild('button', 'shadow-editor-button-right');
-    this._insetButton.textContent = Common.UIString('Inset');
+    this._insetButton.textContent = Common.UIString.UIString('Inset');
     this._insetButton.addEventListener('click', this._onButtonClick.bind(this), false);
 
     const xField = this.contentElement.createChild('div', 'shadow-editor-field');
-    this._xInput = this._createTextInput(xField, Common.UIString('X offset'));
+    this._xInput = this._createTextInput(xField, Common.UIString.UIString('X offset'));
     const yField = this.contentElement.createChild('div', 'shadow-editor-field');
-    this._yInput = this._createTextInput(yField, Common.UIString('Y offset'));
+    this._yInput = this._createTextInput(yField, Common.UIString.UIString('Y offset'));
     this._xySlider = xField.createChild('canvas', 'shadow-editor-2D-slider');
     this._xySlider.width = canvasSize;
     this._xySlider.height = canvasSize;
     this._xySlider.tabIndex = -1;
     this._halfCanvasSize = canvasSize / 2;
     this._innerCanvasSize = this._halfCanvasSize - sliderThumbRadius;
-    UI.installDragHandle(this._xySlider, this._dragStart.bind(this), this._dragMove.bind(this), null, 'default');
+    UI.UIUtils.installDragHandle(
+        this._xySlider, this._dragStart.bind(this), this._dragMove.bind(this), null, 'default');
     this._xySlider.addEventListener('keydown', this._onCanvasArrowKey.bind(this), false);
     this._xySlider.addEventListener('blur', this._onCanvasBlur.bind(this), false);
 
     const blurField =
         this.contentElement.createChild('div', 'shadow-editor-field shadow-editor-flex-field shadow-editor-blur-field');
-    this._blurInput = this._createTextInput(blurField, Common.UIString('Blur'));
+    this._blurInput = this._createTextInput(blurField, Common.UIString.UIString('Blur'));
     this._blurSlider = this._createSlider(blurField);
 
     this._spreadField = this.contentElement.createChild('div', 'shadow-editor-field shadow-editor-flex-field');
-    this._spreadInput = this._createTextInput(this._spreadField, Common.UIString('Spread'));
+    this._spreadInput = this._createTextInput(this._spreadField, Common.UIString.UIString('Spread'));
     this._spreadSlider = this._createSlider(this._spreadField);
   }
 
@@ -65,7 +69,7 @@ export class CSSShadowEditor extends UI.VBox {
     const label = field.createChild('label', 'shadow-editor-label');
     label.textContent = propertyName;
     label.setAttribute('for', propertyName);
-    const textInput = UI.createInput('shadow-editor-text-input', 'text');
+    const textInput = UI.UIUtils.createInput('shadow-editor-text-input', 'text');
     field.appendChild(textInput);
     textInput.id = propertyName;
     textInput.addEventListener('keydown', this._handleValueModification.bind(this), false);
@@ -80,7 +84,7 @@ export class CSSShadowEditor extends UI.VBox {
    * @return {!Element}
    */
   _createSlider(field) {
-    const slider = UI.createSlider(0, maxRange, -1);
+    const slider = UI.UIUtils.createSlider(0, maxRange, -1);
     slider.addEventListener('input', this._onSliderInput.bind(this), false);
     field.appendChild(slider);
     return slider;
@@ -179,7 +183,7 @@ export class CSSShadowEditor extends UI.VBox {
    * @param {!Event} event
    */
   _handleValueModification(event) {
-    const modifiedValue = UI.createReplacementString(event.currentTarget.value, event, customNumberHandler);
+    const modifiedValue = UI.UIUtils.createReplacementString(event.currentTarget.value, event, customNumberHandler);
     if (!modifiedValue) {
       return;
     }
@@ -327,7 +331,7 @@ export class CSSShadowEditor extends UI.VBox {
       if (!event.altKey) {
         this._model.setOffsetX(new CSSLength(newX, this._model.offsetX().unit || defaultUnit));
       }
-      if (!UI.KeyboardShortcut.eventHasCtrlOrMeta(event)) {
+      if (!UI.KeyboardShortcut.KeyboardShortcut.eventHasCtrlOrMeta(event)) {
         this._model.setOffsetY(new CSSLength(newY, this._model.offsetY().unit || defaultUnit));
       }
     }

@@ -3,6 +3,12 @@
   <message name="IDS_DEVTOOLS_01abfc750a0c942167651c40d088531d" desc="Text in Background Service View of the Application panel">
     #
   </message>
+  <message name="IDS_DEVTOOLS_027a5c9fbe6caf85fd598a81eaf26492" desc="Manifest installability error in the Application panel">
+    Page is not served from a secure origin
+  </message>
+  <message name="IDS_DEVTOOLS_03ea25886ec5efba7a20fbeb6c7070fa" desc="Manifest installability error in the Application panel">
+    The specified application platform is not supported on Android
+  </message>
   <message name="IDS_DEVTOOLS_05b2812ab435addb8ae4853ead93f1b3" desc="Text in Service Workers View of the Application panel">
     Received <ph name="NEW_DATE_VERSION_SCRIPTRESPONSETIME_________TOLOCALESTRING__">$1s<ex>7/3/2019, 3:38:37 PM</ex></ph>
   </message>
@@ -58,6 +64,9 @@
     The &quot;<ph name="THIS_TABLENAME">$1s<ex>database</ex></ph>&quot;
 table is empty.
   </message>
+  <message name="IDS_DEVTOOLS_212ff8e8805933e1839b72594abad47c" desc="Manifest installability error in the Application panel">
+    Could not download a required icon from the manifest
+  </message>
   <message name="IDS_DEVTOOLS_22554c2f3f431fa4243965df392b9ea9" desc="Text in Application Cache Items View of the Application panel">
     AppCache
   </message>
@@ -106,11 +115,20 @@ table is empty.
   <message name="IDS_DEVTOOLS_3afd748bcc6315d69cff002ec6c377ed" desc="Aria accessible name in Service Workers View of the Application panel">
     <ph name="THIS__REGISTRATION_ERRORS_LENGTH">$1s<ex>3</ex></ph> registration errors
   </message>
+  <message name="IDS_DEVTOOLS_3d7394095f1d2e18e2e09b736c5af485" desc="Manifest installability error in the Application panel">
+    Manifest specifies prefer_related_applications: true
+  </message>
+  <message name="IDS_DEVTOOLS_3ea5d985e1b51235f5f4056921ea4f38" desc="Manifest installability error in the Application panel">
+    Page is not loaded in the main frame
+  </message>
   <message name="IDS_DEVTOOLS_3eab5d12656f2f4462f6594019e77355" desc="Text in Database Table View of the Application panel">
     Visible columns
   </message>
   <message name="IDS_DEVTOOLS_44323440df1f92dfd551c7efc0aece80" desc="Data grid name for DOM Storage Items data grids">
     DOM Storage Items
+  </message>
+  <message name="IDS_DEVTOOLS_457e0305e5c05fccf452f238863faa46" desc="Manifest installability error in the Application panel">
+    Manifest start URL is not valid
   </message>
   <message name="IDS_DEVTOOLS_458efe6e41ed41835b8d84b28db3f394" desc="Filter label text content in Service Workers View of the Application panel">
     Service workers from other origins
@@ -133,6 +151,9 @@ table is empty.
   <message name="IDS_DEVTOOLS_579fdc74b6520ab8906ecddf3e62d951" desc="Text in Application Panel Sidebar of the Application panel">
     Application Cache
   </message>
+  <message name="IDS_DEVTOOLS_5af7e09b8b3d8b201c0621de9815bcb0" desc="Manifest installability error in the Application panel">
+    Downloaded icon was empty or corrupted
+  </message>
   <message name="IDS_DEVTOOLS_5bb07b23ba5cd47d49a0a030556b21ba" desc="Text in Background Service View of the Application panel">
     Background Fetch
   </message>
@@ -154,8 +175,14 @@ table is empty.
   <message name="IDS_DEVTOOLS_6827a85b76e967f6a129e08f9272e76d" desc="Text in Application Panel Sidebar of the Application panel">
     Local Storage
   </message>
+  <message name="IDS_DEVTOOLS_6b2bfcecfdc437d73d756be2f262945d" desc="Manifest installability error in the Application panel">
+    The Play Store app URL and Play Store ID do not match
+  </message>
   <message name="IDS_DEVTOOLS_6c202452e44c42e323204da2a3a3c24a" desc="Text in Clear Storage View of the Application panel">
     File System
+  </message>
+  <message name="IDS_DEVTOOLS_6d65f4db97e4eb3e0324e2d84ad16b28" desc="Manifest installability error in the Application panel">
+    Page does not work offline
   </message>
   <message name="IDS_DEVTOOLS_6e72748dc2f2224dfabb374ca0cc988f" desc="Text in Service Workers View of the Application panel">
     #<ph name="REDUNDANT_ID">$1s<ex>2</ex></ph> is redundant
@@ -187,6 +214,9 @@ table is empty.
   <message name="IDS_DEVTOOLS_83b33e9633245178cb76ecb91dd424d8" desc="Text in DOMStorage Items View of the Application panel">
     Select a value to preview
   </message>
+  <message name="IDS_DEVTOOLS_85227db7fd939316f51910ce690955a0" desc="Manifest installability error in the Application panel">
+    Manifest could not be fetched, is empty, or could not be parsed
+  </message>
   <message name="IDS_DEVTOOLS_85b285ed4a5b8960e8f85a6e5c125680" desc="Text in the Periodic Background Service View of the Application panel">
     Periodic Background Sync
   </message>
@@ -201,6 +231,9 @@ table is empty.
   </message>
   <message name="IDS_DEVTOOLS_897356954c2cd3d41b221e3f24f99bba" desc="Text in DOMStorage Items View of the Application panel">
     Key
+  </message>
+  <message name="IDS_DEVTOOLS_8a6bd58d43215a9efccc3753ab42b347" desc="Manifest installability error in the Application panel">
+    Manifest does not contain a suitable icon - PNG, SVG or WebP format of at least <ph name="MINIMUM_ICON_SIZE">$1s<ex>100</ex></ph>px is required, the sizes attribute must be set, and the purpose attribute, if set, must include &quot;any&quot; or &quot;maskable&quot;.
   </message>
   <message name="IDS_DEVTOOLS_8c4aa541ee911e8d80451ef8cc304806" desc="Text in Application Panel Sidebar of the Application panel">
     Storage
@@ -261,6 +294,9 @@ as used by Chrome
   <message name="IDS_DEVTOOLS_a7d5ee58baead2f3bc229d3d9c047875" desc="Text in Service Workers View of the Application panel">
     Unregister service worker
   </message>
+  <message name="IDS_DEVTOOLS_a7e235e15f97e23fa65a3c9564329e43" desc="Manifest installability error in the Application panel">
+    The app is already installed
+  </message>
   <message name="IDS_DEVTOOLS_a8656f0069a025f05357939b80da2612" desc="Text in App Manifest View of the Application panel">
     Show only the minimum safe area for maskable icons
   </message>
@@ -287,6 +323,9 @@ as used by Chrome
   </message>
   <message name="IDS_DEVTOOLS_b275ec0eb3bbc2f5ab8988fe15b47817" desc="Text in App Manifest View of the Application panel">
     Errors and warnings
+  </message>
+  <message name="IDS_DEVTOOLS_b29728d72d14907bdf5618db1f12b322" desc="Manifest installability error in the Application panel">
+    Page has no manifest &lt;link&gt; URL
   </message>
   <message name="IDS_DEVTOOLS_b5dc9b0e6beecb1e80f6f1b5b3050f12" desc="The UI destination when right clicking an item that can be revealed">
     Application panel
@@ -366,6 +405,12 @@ as used by Chrome
   <message name="IDS_DEVTOOLS_cfde4f71aaac6d02831a661f4f9990f1" desc="Text in App Manifest View of the Application panel">
     App Manifest
   </message>
+  <message name="IDS_DEVTOOLS_d09f38bbd6293be52bb942adfe3dbb52" desc="Manifest installability error in the Application panel">
+    A URL in the manifest contains a username, password, or port
+  </message>
+  <message name="IDS_DEVTOOLS_d378d278bc37990a5b5ad6437d80a857" desc="Manifest installability error in the Application panel">
+    Page is loaded in an incognito window
+  </message>
   <message name="IDS_DEVTOOLS_d3b206d196cd6be3a2764c1fb90b200f" desc="Tooltip text that appears when hovering over the largeicon delete button in the Indexed DBViews of the Application panel">
     Delete selected
   </message>
@@ -402,6 +447,9 @@ as used by Chrome
   <message name="IDS_DEVTOOLS_dc87ca61695d643744b53bca9bf3f1d5" desc="Span text content in Indexed DBViews of the Application panel">
     Total entries: <ph name="STRING_METADATA_ENTRIESCOUNT_">$1s<ex>2</ex></ph>
   </message>
+  <message name="IDS_DEVTOOLS_dce1121d5ec5434e70d2d809fd7828e1" desc="Manifest installability error in the Application panel">
+    Manifest &apos;display&apos; property must be one of &apos;standalone&apos;, &apos;fullscreen&apos;, or &apos;minimal-ui&apos;
+  </message>
   <message name="IDS_DEVTOOLS_e00a7ac13697ba51e098449fd644935b" desc="Text in Background Service View of the Application panel">
     Show events from other domains
   </message>
@@ -423,6 +471,9 @@ as used by Chrome
   <message name="IDS_DEVTOOLS_ea2b2676c28c0db26d39331a336c6b92" desc="Text in Service Workers View of the Application panel">
     start
   </message>
+  <message name="IDS_DEVTOOLS_ebfabf3434ab96d355274e76214e61ed" desc="Manifest installability error in the Application panel">
+    Manifest does not contain a &apos;name&apos; or &apos;short_name&apos; field
+  </message>
   <message name="IDS_DEVTOOLS_ec1e074d56484165315c26a9baebaebd" desc="Text in Application Panel Sidebar of the Application panel">
     Web SQL
   </message>
@@ -431,6 +482,9 @@ as used by Chrome
   </message>
   <message name="IDS_DEVTOOLS_ed1f65c89bd76342be87bec8edd63904" desc="A context menu item in the Application Panel Sidebar of the Application panel">
     Refresh IndexedDB
+  </message>
+  <message name="IDS_DEVTOOLS_edfea37d34e2f56d9ef6c2fc90487f28" desc="Manifest installability error in the Application panel">
+    No matching service worker detected. You may need to reload the page, or check that the scope of the service worker for the current page encloses the scope and start URL from the manifest.
   </message>
   <message name="IDS_DEVTOOLS_eeb6ddeed2e08678ebc14eb39c8340bf" desc="Text in Indexed DBViews of the Application panel">
     IDB
@@ -441,8 +495,17 @@ as used by Chrome
   <message name="IDS_DEVTOOLS_ef399b2d446bb37b7c32ad2cc1b6045b" desc="Text in Service Workers View of the Application panel">
     stop
   </message>
+  <message name="IDS_DEVTOOLS_f0134cf28b55123eff2dc62bd223d0dd" desc="Manifest installability error in the Application panel">
+    Could not check service worker without a &apos;start_url&apos; field in the manifest
+  </message>
   <message name="IDS_DEVTOOLS_f18cd4b9f925d85b3a669adc015a9797" desc="Data grid name for Service Worker Cache data grids">
     Service Worker Cache
+  </message>
+  <message name="IDS_DEVTOOLS_f4d6426949b935ced95ef5e5d0bc5ef5" desc="Manifest installability error in the Application panel">
+    No Play store ID provided
+  </message>
+  <message name="IDS_DEVTOOLS_f5649c3ccd8b0c75730dc2125db86b7c" desc="Manifest installability error in the Application panel">
+    No supplied icon is at least <ph name="MINIMUM_ICON_SIZE">$1s<ex>100</ex></ph>px square in PNG, SVG or WebP format
   </message>
   <message name="IDS_DEVTOOLS_f75623bb4626a57e8a7a3c0e1c092463" desc="Text in Cookie Items View of the Application panel">
     Select a cookie to preview its value

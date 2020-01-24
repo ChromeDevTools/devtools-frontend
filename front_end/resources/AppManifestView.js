@@ -108,7 +108,7 @@ export class AppManifestView extends UI.VBox {
    * @param {string} url
    * @param {?string} data
    * @param {!Array<!Protocol.Page.AppManifestError>} errors
-   * @param {!Array<string>} installabilityErrors
+   * @param {!Array<!Protocol.Page.InstallabilityError>} installabilityErrors
    */
   async _renderManifest(url, data, errors, installabilityErrors, manifestIcons) {
     if (!data && !errors.length) {
@@ -227,7 +227,8 @@ export class AppManifestView extends UI.VBox {
 
     this._installabilitySection.clearContent();
     this._installabilitySection.element.classList.toggle('hidden', !installabilityErrors.length);
-    for (const error of installabilityErrors) {
+    const errorMessages = this.getInstallabilityErrorMessages(installabilityErrors);
+    for (const error of errorMessages) {
       this._installabilitySection.appendRow().appendChild(UI.createIconLabel(error, 'smallicon-warning'));
     }
 
@@ -247,6 +248,103 @@ export class AppManifestView extends UI.VBox {
       }
       return value;
     }
+  }
+
+  /**
+   * @param {!Array<!Protocol.Page.InstallabilityError>} installabilityErrors
+   * @return {!Array<string>}
+   */
+  getInstallabilityErrorMessages(installabilityErrors) {
+    const errorMessages = [];
+    for (const installabilityError of installabilityErrors) {
+      let errorMessage;
+      switch (installabilityError.errorId) {
+        case 'not-in-main-frame':
+          errorMessage = ls`Page is not loaded in the main frame`;
+          break;
+        case 'not-from-secure-origin':
+          errorMessage = ls`Page is not served from a secure origin`;
+          break;
+        case 'no-manifest':
+          errorMessage = ls`Page has no manifest <link> URL`;
+          break;
+        case 'manifest-empty':
+          errorMessage = ls`Manifest could not be fetched, is empty, or could not be parsed`;
+          break;
+        case 'start-url-not-valid':
+          errorMessage = ls`Manifest start URL is not valid`;
+          break;
+        case 'manifest-missing-name-or-short-name':
+          errorMessage = ls`Manifest does not contain a 'name' or 'short_name' field`;
+          break;
+        case 'manifest-display-not-supported':
+          errorMessage = ls`Manifest 'display' property must be one of 'standalone', 'fullscreen', or 'minimal-ui'`;
+          break;
+        case 'manifest-missing-suitable-icon':
+          if (installabilityError.errorArguments.length !== 1 ||
+              installabilityError.errorArguments[0].name !== 'minimum-icon-size-in-pixels') {
+            console.error('Installability error does not have the correct errorArguments');
+            break;
+          }
+          errorMessage = ls`Manifest does not contain a suitable icon - PNG, SVG or WebP format of at least ${
+              installabilityError.errorArguments[0]
+                  .value}px is required, the sizes attribute must be set, and the purpose attribute, if set, must include "any" or "maskable".`;
+          break;
+        case 'no-matching-service-worker':
+          errorMessage = ls
+          `No matching service worker detected. You may need to reload the page, or check that the scope of the service worker for the current page encloses the scope and start URL from the manifest.`;
+          break;
+        case 'no-acceptable-icon':
+          if (installabilityError.errorArguments.length !== 1 ||
+              installabilityError.errorArguments[0].name !== 'minimum-icon-size-in-pixels') {
+            console.error('Installability error does not have the correct errorArguments');
+            break;
+          }
+          errorMessage = ls`No supplied icon is at least ${
+              installabilityError.errorArguments[0].value}px square in PNG, SVG or WebP format`;
+          break;
+        case 'cannot-download-icon':
+          errorMessage = ls`Could not download a required icon from the manifest`;
+          break;
+        case 'no-icon-available':
+          errorMessage = ls`Downloaded icon was empty or corrupted`;
+          break;
+        case 'platform-not-supported-on-android':
+          errorMessage = ls`The specified application platform is not supported on Android`;
+          break;
+        case 'no-id-specified':
+          errorMessage = ls`No Play store ID provided`;
+          break;
+        case 'ids-do-not-match':
+          errorMessage = ls`The Play Store app URL and Play Store ID do not match`;
+          break;
+        case 'already-installed':
+          errorMessage = ls`The app is already installed`;
+          break;
+        case 'url-not-supported-for-webapk':
+          errorMessage = ls`A URL in the manifest contains a username, password, or port`;
+          break;
+        case 'in-incognito':
+          errorMessage = ls`Page is loaded in an incognito window`;
+          break;
+        case 'not-offline-capable':
+          errorMessage = ls`Page does not work offline`;
+          break;
+        case 'no-url-for-service-worker':
+          errorMessage = ls`Could not check service worker without a 'start_url' field in the manifest`;
+          break;
+        case 'prefer-related-applications':
+          errorMessage = ls`Manifest specifies prefer_related_applications: true`;
+          break;
+        default:
+          console.error(`Installability error id '${installabilityError.errorId}' is not recognized`);
+          break;
+      }
+      if (errorMessages) {
+        errorMessages.push(errorMessage);
+      }
+    }
+    return errorMessages;
   }
 
   /**

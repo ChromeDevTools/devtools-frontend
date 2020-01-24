@@ -452,11 +452,11 @@ export class ResourceTreeModel extends SDKModel {
   }
 
   /**
-   * @return {!Promise<!Array<string>>}
+   * @return {!Promise<!Array<!Protocol.Page.InstallabilityError>>}
    */
   async getInstallabilityErrors() {
     const response = await this._agent.invoke_getInstallabilityErrors({});
-    return response.errors || [];
+    return response.installabilityErrors || [];
   }
 
   /**

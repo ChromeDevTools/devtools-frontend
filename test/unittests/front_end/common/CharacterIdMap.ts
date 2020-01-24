@@ -28,7 +28,7 @@ describe('CharacterIdMap class', () => {
   });
 
   it('throws an error when trying to convert a number when there is no capacity left', () => {
-    const upperLimit = parseInt('0xFFFF', 16);
+    const upperLimit = 0xFFFF;
     const characterIdMap = new CharacterIdMap();
     assert.throws(() => {
       for (let index = 0; index <= upperLimit; index++) {

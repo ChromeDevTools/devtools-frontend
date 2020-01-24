@@ -1355,3 +1355,8 @@ const UnserializableNumber = {
  * @typedef {{object: ?RemoteObject, wasThrown: (boolean|undefined)}}
  */
 export let CallFunctionResult;
+
+/**
+ * @typedef {{properties: ?Array<!RemoteObjectProperty>, internalProperties: ?Array<!RemoteObjectProperty>}}
+ */
+export let GetPropertiesResult;

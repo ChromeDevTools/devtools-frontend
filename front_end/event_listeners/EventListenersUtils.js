@@ -2,12 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as SDK from '../sdk/sdk.js';
+
 /**
- * @param {!SDK.RemoteObject} object
+ * @param {!SDK.RemoteObject.RemoteObject} object
  * @return {!Promise<!EventListeners.FrameworkEventListenersObject>}
  */
 export function frameworkEventListeners(object) {
-  const domDebuggerModel = object.runtimeModel().target().model(SDK.DOMDebuggerModel);
+  const domDebuggerModel = object.runtimeModel().target().model(SDK.DOMDebuggerModel.DOMDebuggerModel);
   if (!domDebuggerModel) {
     // TODO(kozyatinskiy): figure out how this should work for |window|.
     return Promise.resolve(
@@ -23,15 +25,15 @@ export function frameworkEventListeners(object) {
       .catchException(listenersResult);
 
   /**
-   * @param {!SDK.RemoteObject} object
-   * @return {!Promise<!SDK.GetPropertiesResult>}
+   * @param {!SDK.RemoteObject.RemoteObject} object
+   * @return {!Promise<!SDK.RemoteObject.GetPropertiesResult>}
    */
   function getOwnProperties(object) {
     return object.getOwnProperties(false /* generatePreview */);
   }
 
   /**
-   * @param {!SDK.GetPropertiesResult} result
+   * @param {!SDK.RemoteObject.GetPropertiesResult} result
    * @return {!Promise<undefined>}
    */
   function createEventListeners(result) {
@@ -54,15 +56,17 @@ export function frameworkEventListeners(object) {
   }
 
   /**
-   * @param {!SDK.RemoteObject} pageEventListenersObject
-   * @return {!Promise<!Array<!SDK.EventListener>>}
+   * @param {!SDK.RemoteObject.RemoteObject} pageEventListenersObject
+   * @return {!Promise<!Array<!SDK.DOMDebuggerModel.EventListener>>}
    */
   function convertToEventListeners(pageEventListenersObject) {
-    return SDK.RemoteArray.objectAsArray(pageEventListenersObject).map(toEventListener).then(filterOutEmptyObjects);
+    return SDK.RemoteObject.RemoteArray.objectAsArray(pageEventListenersObject)
+        .map(toEventListener)
+        .then(filterOutEmptyObjects);
 
     /**
-     * @param {!SDK.RemoteObject} listenerObject
-     * @return {!Promise<?SDK.EventListener>}
+     * @param {!SDK.RemoteObject.RemoteObject} listenerObject
+     * @return {!Promise<?SDK.DOMDebuggerModel.EventListener>}
      */
     function toEventListener(listenerObject) {
       /** @type {string} */
@@ -73,13 +77,13 @@ export function frameworkEventListeners(object) {
       let passive;
       /** @type {boolean} */
       let once;
-      /** @type {?SDK.RemoteObject} */
+      /** @type {?SDK.RemoteObject.RemoteObject} */
       let handler = null;
-      /** @type {?SDK.RemoteObject} */
+      /** @type {?SDK.RemoteObject.RemoteObject} */
       let originalHandler = null;
       /** @type {?SDK.DebuggerModel.Location} */
       let location = null;
-      /** @type {?SDK.RemoteObject} */
+      /** @type {?SDK.RemoteObject.RemoteObject} */
       let removeFunctionObject = null;
 
       const promises = [];
@@ -120,8 +124,8 @@ export function frameworkEventListeners(object) {
       }
 
       /**
-       * @param {!SDK.RemoteObject} functionObject
-       * @return {!SDK.RemoteObject}
+       * @param {!SDK.RemoteObject.RemoteObject} functionObject
+       * @return {!SDK.RemoteObject.RemoteObject}
        */
       function storeOriginalHandler(functionObject) {
         originalHandler = functionObject;
@@ -129,7 +133,7 @@ export function frameworkEventListeners(object) {
       }
 
       /**
-       * @param {!SDK.RemoteObject} functionObject
+       * @param {!SDK.RemoteObject.RemoteObject} functionObject
        * @return {!Promise<undefined>}
        */
       function storeFunctionWithDetails(functionObject) {
@@ -158,7 +162,7 @@ export function frameworkEventListeners(object) {
       }
 
       /**
-       * @param {!SDK.RemoteObject} functionObject
+       * @param {!SDK.RemoteObject.RemoteObject} functionObject
        */
       function storeRemoveFunction(functionObject) {
         if (functionObject.type !== 'function') {
@@ -167,56 +171,59 @@ export function frameworkEventListeners(object) {
         removeFunctionObject = functionObject;
       }
 
-      return Promise.all(promises).then(createEventListener).catchException(/** @type {?SDK.EventListener} */ (null));
+      return Promise.all(promises)
+          .then(createEventListener)
+          .catchException(/** @type {?SDK.DOMDebuggerModel.EventListener} */ (null));
 
       /**
-       * @return {!SDK.EventListener}
+       * @return {!SDK.DOMDebuggerModel.EventListener}
        */
       function createEventListener() {
         if (!location) {
           throw new Error('Empty event listener\'s location');
         }
-        return new SDK.EventListener(
-            /** @type {!SDK.DOMDebuggerModel} */ (domDebuggerModel), object, type, useCapture, passive, once, handler,
-            originalHandler, location, removeFunctionObject, SDK.EventListener.Origin.FrameworkUser);
+        return new SDK.DOMDebuggerModel.EventListener(
+            /** @type {!SDK.DOMDebuggerModel.DOMDebuggerModel} */ (domDebuggerModel), object, type, useCapture, passive,
+            once, handler, originalHandler, location, removeFunctionObject,
+            SDK.DOMDebuggerModel.EventListener.Origin.FrameworkUser);
       }
     }
   }
 
   /**
-   * @param {!SDK.RemoteObject} pageInternalHandlersObject
-   * @return {!Promise<!SDK.RemoteArray>}
+   * @param {!SDK.RemoteObject.RemoteObject} pageInternalHandlersObject
+   * @return {!Promise<!SDK.RemoteObject.RemoteArray>}
    */
   function convertToInternalHandlers(pageInternalHandlersObject) {
-    return SDK.RemoteArray.objectAsArray(pageInternalHandlersObject)
+    return SDK.RemoteObject.RemoteArray.objectAsArray(pageInternalHandlersObject)
         .map(toTargetFunction)
-        .then(SDK.RemoteArray.createFromRemoteObjects.bind(null));
+        .then(SDK.RemoteObject.RemoteArray.createFromRemoteObjects.bind(null));
   }
 
   /**
-   * @param {!SDK.RemoteObject} functionObject
-   * @return {!Promise<!SDK.RemoteObject>}
+   * @param {!SDK.RemoteObject.RemoteObject} functionObject
+   * @return {!Promise<!SDK.RemoteObject.RemoteObject>}
    */
   function toTargetFunction(functionObject) {
-    return SDK.RemoteFunction.objectAsFunction(functionObject).targetFunction();
+    return SDK.RemoteObject.RemoteFunction.objectAsFunction(functionObject).targetFunction();
   }
 
   /**
-   * @param {!Array<!SDK.EventListener>} eventListeners
+   * @param {!Array<!SDK.DOMDebuggerModel.EventListener>} eventListeners
    */
   function storeEventListeners(eventListeners) {
     listenersResult.eventListeners = eventListeners;
   }
 
   /**
-   * @param {!SDK.RemoteArray} internalHandlers
+   * @param {!SDK.RemoteObject.RemoteArray} internalHandlers
    */
   function storeInternalHandlers(internalHandlers) {
     listenersResult.internalHandlers = internalHandlers;
   }
 
   /**
-   * @param {!SDK.RemoteObject} errorString
+   * @param {!SDK.RemoteObject.RemoteObject} errorString
    */
   function printErrorString(errorString) {
     self.Common.console.error(String(errorString.value));
@@ -230,8 +237,8 @@ export function frameworkEventListeners(object) {
   }
 
   /**
-   * @param {!SDK.CallFunctionResult} result
-   * @return {!SDK.RemoteObject}
+   * @param {!SDK.RemoteObject.CallFunctionResult} result
+   * @return {!SDK.RemoteObject.RemoteObject}
    */
   function assertCallFunctionResult(result) {
     if (result.wasThrown || !result.object) {

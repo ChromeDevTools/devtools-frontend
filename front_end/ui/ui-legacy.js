@@ -676,7 +676,7 @@ self.UI.shortcutRegistry;
  * We cannot initialize it here as localized strings are not loaded yet.
  * @type {!UI.ShortcutsScreen}
  */
-UI.shortcutsScreen;
+self.UI.shortcutsScreen;
 
 /** @typedef {{showMode: string, size: number}} */
 UI.SplitWidget.SettingForOrientation;

@@ -201,12 +201,12 @@ export class MainImpl {
     self.SDK.targetManager.addEventListener(
         SDK.TargetManager.Events.SuspendStateChanged, this._onSuspendStateChanged.bind(this));
 
-    UI.shortcutsScreen = new UI.ShortcutsScreen();
+    self.UI.shortcutsScreen = new UI.ShortcutsScreen();
     // set order of some sections explicitly
-    UI.shortcutsScreen.section(Common.UIString('Elements Panel'));
-    UI.shortcutsScreen.section(Common.UIString('Styles Pane'));
-    UI.shortcutsScreen.section(Common.UIString('Debugger'));
-    UI.shortcutsScreen.section(Common.UIString('Console'));
+    self.UI.shortcutsScreen.section(Common.UIString('Elements Panel'));
+    self.UI.shortcutsScreen.section(Common.UIString('Styles Pane'));
+    self.UI.shortcutsScreen.section(Common.UIString('Debugger'));
+    self.UI.shortcutsScreen.section(Common.UIString('Console'));
 
     self.Workspace.fileManager = new Workspace.FileManager();
     self.Workspace.workspace = new Workspace.Workspace();
@@ -390,7 +390,7 @@ export class MainImpl {
 
   _registerShortcuts() {
     const shortcut = UI.KeyboardShortcut;
-    const section = UI.shortcutsScreen.section(Common.UIString('All Panels'));
+    const section = self.UI.shortcutsScreen.section(Common.UIString('All Panels'));
     let keys = [
       shortcut.makeDescriptor('[', shortcut.Modifiers.CtrlOrMeta),
       shortcut.makeDescriptor(']', shortcut.Modifiers.CtrlOrMeta)

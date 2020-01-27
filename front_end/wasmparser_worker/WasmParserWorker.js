@@ -51,6 +51,7 @@ self.onmessage = async function(event) {
   parser.setData(data, 0, data.length);
   const dis = new WasmDis.WasmDisassembler();
   dis.addOffsets = true;
+  dis.maxLines = 1000000;
   dis.disassembleChunk(parser);
   const result = dis.getResult();
   this.postMessage({source: result.lines.join('\n'), offsets: result.offsets});

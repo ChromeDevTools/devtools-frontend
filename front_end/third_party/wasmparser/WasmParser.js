@@ -615,6 +615,19 @@ export class Int64 {
     }
 }
 export class BinaryReader {
+    constructor() {
+        this._data = null;
+        this._pos = 0;
+        this._length = 0;
+        this._eof = false;
+        this.state = 0 /* INITIAL */;
+        this.result = null;
+        this.error = null;
+        this._sectionEntriesLeft = 0;
+        this._sectionId = -1 /* Unknown */;
+        this._sectionRange = null;
+        this._functionRange = null;
+    }
     get currentSection() {
         return this.result; // TODO remove currentSection()
     }
@@ -629,19 +642,6 @@ export class BinaryReader {
     }
     get length() {
         return this._length;
-    }
-    constructor() {
-        this._data = null;
-        this._pos = 0;
-        this._length = 0;
-        this._eof = false;
-        this.state = 0 /* INITIAL */;
-        this.result = null;
-        this.error = null;
-        this._sectionEntriesLeft = 0;
-        this._sectionId = -1 /* Unknown */;
-        this._sectionRange = null;
-        this._functionRange = null;
     }
     setData(buffer, pos, length, eof) {
         var posDelta = pos - this._pos;
@@ -1587,7 +1587,7 @@ export class BinaryReader {
                     return false;
                 }
                 brTable = [];
-                for (var i = 0; i <= tableCount; i++) {
+                for (var i = 0; i <= tableCount; i++) { // including default
                     if (!this.hasVarIntBytes()) {
                         this._pos = pos;
                         return false;
@@ -2197,7 +2197,7 @@ if (typeof TextDecoder !== 'undefined') {
             return b => utf8Decoder.decode(b);
         }();
     }
-    catch (_) { }
+    catch (_) { /* ignore */ }
 }
 if (!bytesToString) {
     bytesToString = b => {

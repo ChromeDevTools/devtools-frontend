@@ -174,9 +174,9 @@ function memoryAddressToString(address, code) {
             defaultAlignFlags = 0;
             break;
     }
-    if (address.flags == defaultAlignFlags)
+    if (address.flags == defaultAlignFlags) // hide default flags
         return !address.offset ? null : `offset=${address.offset}`;
-    if (!address.offset)
+    if (!address.offset) // hide default offset
         return `align=${1 << address.flags}`;
     return `offset=${address.offset | 0} align=${1 << address.flags}`;
 }
@@ -258,64 +258,6 @@ export class NumericNameResolver {
         return null;
     }
 }
-class LineBuffer {
-    constructor() {
-        this._firstPart = '';
-        this._secondPart = '';
-        this._thirdPart = '';
-        this._count = 0;
-    }
-    get length() {
-        switch (this._count) {
-            case 0:
-                return 0;
-            case 1:
-                return this._firstPart.length;
-            case 2:
-                return this._firstPart.length + this._secondPart.length;
-            default:
-                return this._firstPart.length +
-                    this._secondPart.length +
-                    this._thirdPart.length;
-        }
-    }
-    append(part) {
-        switch (this._count) {
-            case 0:
-                this._firstPart = part;
-                this._count = 1;
-                break;
-            case 1:
-                this._secondPart = part;
-                this._count = 2;
-                break;
-            case 2:
-                this._thirdPart = part;
-                this._count = 3;
-                break;
-            default:
-                this._count = 1;
-                this._firstPart = this._firstPart + this._secondPart +
-                    this._thirdPart + part;
-                break;
-        }
-    }
-    finalize() {
-        switch (this._count) {
-            case 0:
-                return '';
-            case 1:
-                this._count = 0;
-                return this._firstPart;
-            case 2:
-                this._count = 0;
-                return this._firstPart + this._secondPart;
-            default:
-                this._count = 0;
-                return this._firstPart + this._secondPart + this._thirdPart;
-        }
-    }
-}
 export var LabelMode;
 (function (LabelMode) {
     LabelMode[LabelMode["Depth"] = 0] = "Depth";
@@ -326,7 +268,7 @@ export class WasmDisassembler {
     constructor() {
         this._lines = [];
         this._offsets = [];
-        this._buffer = new LineBuffer();
+        this._buffer = '';
         this._indent = null;
         this._indentLevel = 0;
         this._addOffsets = false;
@@ -347,6 +289,7 @@ export class WasmDisassembler {
         this._initExpression = [];
         this._backrefLabels = null;
         this._labelIndex = 0;
+        this._maxLines = 0;
     }
     get addOffsets() {
         return this._addOffsets;
@@ -372,13 +315,17 @@ export class WasmDisassembler {
             throw new Error('Cannot switch nameResolver during processing.');
         this._nameResolver = resolver;
     }
+    set maxLines(value) {
+        this._maxLines = value;
+    }
     appendBuffer(s) {
-        this._buffer.append(s);
+        this._buffer += s;
     }
     newLine() {
         if (this.addOffsets)
             this._offsets.push(this._currentPosition);
-        this._lines.push(this._buffer.finalize());
+        this._lines.push(this._buffer);
+        this._buffer = '';
     }
     printFuncType(typeIndex) {
         var type = this._types[typeIndex];
@@ -740,6 +687,11 @@ export class WasmDisassembler {
         if (this._done)
             throw new Error('Invalid state: disassembly process was already finished.');
         while (true) {
+            if (this._maxLines && this._lines.length >= this._maxLines) {
+                this.appendBuffer(';; -- truncated --');
+                this.newLine();
+                return true;
+            }
             this._currentPosition = reader.position + offsetInModule;
             if (!reader.read())
                 return false;

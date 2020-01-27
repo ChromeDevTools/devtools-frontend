@@ -946,6 +946,10 @@ export class SourcesPanel extends UI.Panel {
 
     this._sidebarPaneStack.showView(this._callstackPane);
     const jsBreakpoints = /** @type {!UI.View} */ (self.UI.viewManager.view('sources.jsBreakpoints'));
+    const sourceScopeChainView = /** @type {?UI.View} */
+        (Root.Runtime.experiments.isEnabled('wasmDWARFDebugging') ?
+             self.UI.viewManager.view('sources.sourceScopeChain') :
+             null);
     const scopeChainView = /** @type {!UI.View} */ (self.UI.viewManager.view('sources.scopeChain'));
 
     if (this._tabbedLocationHeader) {
@@ -955,6 +959,9 @@ export class SourcesPanel extends UI.Panel {
 
     if (!vertically) {
       // Populate the rest of the stack.
+      if (Root.Runtime.experiments.isEnabled('wasmDWARFDebugging')) {
+        this._sidebarPaneStack.showView(/** @type {!UI.View} */ (sourceScopeChainView));
+      }
       this._sidebarPaneStack.showView(scopeChainView);
       this._sidebarPaneStack.showView(jsBreakpoints);
       this._extensionSidebarPanesContainer = this._sidebarPaneStack;
@@ -972,6 +979,9 @@ export class SourcesPanel extends UI.Panel {
       this._tabbedLocationHeader = tabbedLocation.tabbedPane().headerElement();
       this._splitWidget.installResizer(this._tabbedLocationHeader);
       this._splitWidget.installResizer(this._debugToolbar.gripElementForResize());
+      if (Root.Runtime.experiments.isEnabled('wasmDWARFDebugging')) {
+        tabbedLocation.appendView(/** @type {!UI.View} */ (sourceScopeChainView));
+      }
       tabbedLocation.appendView(scopeChainView);
       tabbedLocation.appendView(this._watchSidebarPane);
       tabbedLocation.appendApplicableItems('sources.sidebar-tabs');

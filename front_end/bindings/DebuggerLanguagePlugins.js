@@ -6,6 +6,116 @@ import * as Common from '../common/common.js';
 import * as SDK from '../sdk/sdk.js';
 import * as Workspace from '../workspace/workspace.js';
 
+class SourceScopeRemoteObject extends SDK.RemoteObject.RemoteObjectImpl {
+  /**
+   * @param {!SDK.RuntimeModel.RuntimeModel} runtimeModel
+   * @param {string} type
+   */
+  constructor(runtimeModel, type) {
+    super(runtimeModel, undefined, 'object', undefined, null);
+    /** @type {!Array<!Variable>} */
+    this.variables = [];
+  }
+
+  /**
+   * @override
+   * @param {boolean} ownProperties
+   * @param {boolean} accessorPropertiesOnly
+   * @param {boolean} generatePreview
+   * @return {!Promise<!SDK.RemoteObject.GetPropertiesResult>}
+   */
+  async doGetProperties(ownProperties, accessorPropertiesOnly, generatePreview) {
+    if (accessorPropertiesOnly) {
+      return /** @type {!SDK.RemoteObject.GetPropertiesResult} */ ({properties: [], internalProperties: []});
+    }
+
+    const variableObjects = this.variables.map(
+        v => new SDK.RemoteObject.RemoteObjectProperty(
+            v.name, new SDK.RemoteObject.LocalJSONObject('(type: ' + v.type + ')'), false, false, true, false));
+
+
+    return /** @type {!SDK.RemoteObject.GetPropertiesResult} */ ({properties: variableObjects, internalProperties: []});
+  }
+}
+
+/**
+ * @unrestricted
+ * TODO rename Scope to RawScope and add an interface
+ */
+class SourceScope {
+  /**
+   * @param {!SDK.DebuggerModel.CallFrame} callFrame
+   * @param {string} type Scope type.
+   */
+  constructor(callFrame, type) {
+    this._callFrame = callFrame;
+    this._type = type;
+    this._object = new SourceScopeRemoteObject(callFrame.debuggerModel.runtimeModel(), type);
+    this._name = type;
+    /** @type {?Location} */
+    this._startLocation = null;
+    /** @type {?Location} */
+    this._endLocation = null;
+  }
+
+  /**
+   * @return {!SDK.DebuggerModel.CallFrame}
+   */
+  callFrame() {
+    return this._callFrame;
+  }
+
+  /**
+   * @return {string}
+   */
+  type() {
+    return this._type;
+  }
+
+  /**
+   * @return {string}
+   */
+  typeName() {
+    return this.type();
+  }
+
+
+  /**
+   * @return {string|undefined}
+   */
+  name() {
+    return this._name;
+  }
+
+  /**
+   * @return {?Location}
+   */
+  startLocation() {
+    return this._startLocation;
+  }
+
+  /**
+   * @return {?Location}
+   */
+  endLocation() {
+    return this._endLocation;
+  }
+
+  /**
+   * @return {!SourceScopeRemoteObject}
+   */
+  object() {
+    return this._object;
+  }
+
+  /**
+   * @return {string}
+   */
+  description() {
+    return this.type();
+  }
+}
+
 /**
  * @unrestricted
  */
@@ -19,6 +129,7 @@ export class DebuggerLanguagePluginManager {
     this._sourceMapManager = debuggerModel.sourceMapManager();
     this._debuggerModel = debuggerModel;
     this._debuggerWorkspaceBinding = debuggerWorkspaceBinding;
+    /** @type {!Array<!DebuggerLanguagePlugin>} */
     this._plugins = [];
 
     // @type {!Map<!Workspace.UISourceCode.UISourceCode, !Array<[string, !SDK.Script.Script]>>}
@@ -121,6 +232,9 @@ export class DebuggerLanguagePluginManager {
     }
   }
 
+  /**
+     * @param {!SDK.Script.Script} script
+     */
   async _getRawModule(script) {
     if (!script.sourceURL.startsWith('wasm://')) {
       return {url: script.sourceURL};
@@ -133,6 +247,9 @@ export class DebuggerLanguagePluginManager {
    * @return {!Promise<?Array<string>>}
    */
   async _getSourceFiles(script) {
+    if (!script.sourceMapURL) {
+      return null;
+    }
     for (const plugin of this._plugins) {
       if (plugin.handleScript(script)) {
         const rawModule = await this._getRawModule(script);
@@ -201,7 +318,7 @@ export class DebuggerLanguagePluginManager {
     if (entry) {
       entry.push([sourceFile, script]);
     } else {
-      this._uiSourceCodes.set(uiSourceCode, [sourceFile, script]);
+      this._uiSourceCodes.set(uiSourceCode, [[sourceFile, script]]);
     }
   }
 
@@ -264,6 +381,30 @@ export class DebuggerLanguagePluginManager {
     }
     this._pluginForScriptId.clear();
     this._uiSourceCodes.clear();
+  }
+
+  /**
+   * @param {!SDK.DebuggerModel.CallFrame} callFrame
+   * @return {!Promise<?Array<!SourceScope>>}
+   */
+  async resolveScopeChain(callFrame) {
+    const script = callFrame.script;
+    /** @type {?DebuggerLanguagePlugin} */
+    const plugin = this._pluginForScriptId.get(script.scriptId);
+    if (!plugin) {
+      return null;
+    }
+    /** @type {!Map<string, !SourceScope>} */
+    const scopes = new Map();
+    const variables = await plugin.listVariablesInScope(
+        {'rawModuleId': script.scriptId, 'codeOffset': callFrame.location().columnNumber});
+    for (const variable of variables) {
+      if (!scopes.has(variable.scope)) {
+        scopes.set(variable.scope, new SourceScope(callFrame, variable.scope));
+      }
+      scopes.get(variable.scope).object().variables.push(variable);
+    }
+    return Array.from(scopes.values());
   }
 }
 

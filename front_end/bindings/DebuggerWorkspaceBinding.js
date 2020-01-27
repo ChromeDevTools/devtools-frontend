@@ -63,6 +63,19 @@ export class DebuggerWorkspaceBinding {
   }
 
   /**
+   * @param {!SDK.DebuggerModel.DebuggerModel} debuggerModel
+   * @return {?DebuggerLanguagePluginManager}
+   */
+  getLanguagePluginManager(debuggerModel) {
+    const modelData = this._debuggerModelToData.get(debuggerModel);
+    if (!modelData) {
+      return null;
+    }
+    return modelData.pluginManager;
+  }
+
+
+  /**
    * @param {!SDK.Script.Script} script
    */
   updateLocations(script) {
@@ -300,6 +313,13 @@ class ModelData {
     this._locations = new Platform.Multimap();
 
     debuggerModel.setBeforePausedCallback(this._beforePaused.bind(this));
+  }
+
+  /**
+   * return {?DebuggerLanguagePluginManager}
+   */
+  get pluginManager() {
+    return this._pluginManager || null;
   }
 
   /**

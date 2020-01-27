@@ -128,7 +128,7 @@ export class CXXDWARFLanguagePlugin {
    * @throws {DebuggerLanguagePluginError}
   */
   async listVariablesInScope(rawLocation) {
-    return [];
+    return _sendJsonRPC('listVariablesInScope', rawLocation).variable;
   }
 
   /** Evaluate the content of a variable in a given lexical scope

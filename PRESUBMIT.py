@@ -234,6 +234,34 @@ def _CheckNoUncheckedFiles(input_api, output_api):
         return [output_api.PresubmitError('You have changed files that need to be committed.')]
     return []
 
+def _CheckForTooLargeFiles(input_api, output_api):
+  """Avoid large files, especially binary files, in the repository since
+  git doesn't scale well for those. They will be in everyone's repo
+  clones forever, forever making Chromium slower to clone and work
+  with."""
+  # Uploading files to cloud storage is not trivial so we don't want
+  # to set the limit too low, but the upper limit for "normal" large
+  # files seems to be 1-2 MB, with a handful around 5-8 MB, so
+  # anything over 20 MB is exceptional.
+  TOO_LARGE_FILE_SIZE_LIMIT = 20 * 1024 * 1024  # 10 MB
+  too_large_files = []
+  for f in input_api.AffectedFiles():
+    # Check both added and modified files (but not deleted files).
+    if f.Action() in ('A', 'M'):
+      size = input_api.os_path.getsize(f.AbsoluteLocalPath())
+      if size > TOO_LARGE_FILE_SIZE_LIMIT:
+        too_large_files.append("%s: %d bytes" % (f.LocalPath(), size))
+  if too_large_files:
+    message = (
+      'Do not commit large files to git since git scales badly for those.\n' +
+      'Instead put the large files in cloud storage and use DEPS to\n' +
+      'fetch them.\n' + '\n'.join(too_large_files)
+    )
+    return [output_api.PresubmitError(
+        'Too large files found in commit', long_text=message + '\n')]
+  else:
+    return []
+
 
 def _CommonChecks(input_api, output_api):
     """Checks common to both upload and commit."""
@@ -256,6 +284,7 @@ def _CommonChecks(input_api, output_api):
     results.extend(_CheckChangesAreExclusiveToDirectory(input_api, output_api))
     results.extend(_CheckUnitTests(input_api, output_api))
     results.extend(_CheckNoUncheckedFiles(input_api, output_api))
+    results.extend(_CheckForTooLargeFiles(input_api, output_api))
     return results
 
 

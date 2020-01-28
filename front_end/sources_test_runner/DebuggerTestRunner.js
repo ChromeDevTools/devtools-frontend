@@ -743,22 +743,6 @@ SourcesTestRunner.waitDebuggerPluginBreakpoints = function(sourceFrame) {
   }
 };
 
-/**
- * @param {number} expectedCount The exact number of {BreakpointDecoration}s that that need be updated,
- *                               before we continue. Can be zero if a breakpoint is removed.
- */
-SourcesTestRunner.waitExactDebuggerPluginBreakpointDecorations = function(expectedCount) {
-  return SourcesTestRunner.waitDebuggerPluginDecorations().then(checkIfCountReached);
-
-  function checkIfCountReached(updatedCount) {
-    if (updatedCount !== expectedCount) {
-      return SourcesTestRunner.waitExactDebuggerPluginBreakpointDecorations(expectedCount);
-    }
-
-    return Promise.resolve();
-  }
-};
-
 SourcesTestRunner.dumpDebuggerPluginBreakpoints = function(sourceFrame) {
   const textEditor = sourceFrame._textEditor;
 

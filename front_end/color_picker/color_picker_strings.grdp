@@ -21,6 +21,9 @@
   <message name="IDS_DEVTOOLS_3b98e2dffc6cb06a89dcb0d5c60a0206" desc="Label aa text content in Contrast Details of the Color Picker">
     AA
   </message>
+  <message name="IDS_DEVTOOLS_52318660306e9ed2a2b4b7adb9e858f9" desc="Color element title in Spectrum of the Color Picker">
+    Long-click or long-press space to show alternate shades of <ph name="PALETTE_COLORS_I_">$1s<ex>#9c1724</ex></ph>
+  </message>
   <message name="IDS_DEVTOOLS_58c9566f3c750ce7147b045fdd14202b" desc="Aria label for HEX color format input">
     HEX
   </message>
@@ -47,9 +50,6 @@
   </message>
   <message name="IDS_DEVTOOLS_b74447172f9edfe492a21feee374c1fd" desc="A context menu item in the Spectrum of the Color Picker">
     Clear palette
-  </message>
-  <message name="IDS_DEVTOOLS_bbe0cb0a04956e97e8fc70f519d10e0d" desc="Color element title in Spectrum of the Color Picker">
-    <ph name="PALETTE_COLORS_I_">$1s<ex>#9c1724</ex></ph>. Long-click to show alternate shades.
   </message>
   <message name="IDS_DEVTOOLS_c5bdbf2fd625704541f51288fd37b726" desc="Label for close button in Color Picker">
     Return to color picker

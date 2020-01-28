@@ -390,8 +390,9 @@ export class Spectrum extends UI.Widget.VBox {
           'mousedown',
           this._paletteColorSelected.bind(this, palette.colors[i], palette.colorNames[i], palette.matchUserFormat));
       colorElement.addEventListener(
-          'keydown',
-          this._onPaletteColorKeydown.bind(this, palette.colors[i], palette.colorNames[i], palette.matchUserFormat));
+          'focus',
+          this._paletteColorSelected.bind(this, palette.colors[i], palette.colorNames[i], palette.matchUserFormat));
+      colorElement.addEventListener('keydown', this._onPaletteColorKeydown.bind(this, i));
       if (palette.mutable) {
         colorElement.__mutable = true;
         colorElement.__color = palette.colors[i];
@@ -402,7 +403,7 @@ export class Spectrum extends UI.Widget.VBox {
         shadow.style.background = palette.colors[i];
         shadow = colorElement.createChild('div', 'spectrum-palette-color spectrum-palette-color-shadow');
         shadow.style.background = palette.colors[i];
-        colorElement.title = ls`${palette.colors[i]}. Long-click to show alternate shades.`;
+        colorElement.title = ls`Long-click or long-press space to show alternate shades of ${palette.colors[i]}`;
         UI.ARIAUtils.setAccessibleName(colorElement, colorElement.title);
         new UI.UIUtils.LongClickController(
             colorElement, this._showLightnessShades.bind(this, colorElement, palette.colors[i]));
@@ -468,8 +469,8 @@ export class Spectrum extends UI.Widget.VBox {
       UI.ARIAUtils.setAccessibleName(shadeElement, ls`Color ${shades[i]}`);
       shadeElement.tabIndex = -1;
       shadeElement.addEventListener('mousedown', this._paletteColorSelected.bind(this, shades[i], shades[i], false));
-      shadeElement.addEventListener(
-          'keydown', this._onShadeColorKeydown.bind(this, shades[i], shades[i], false, colorElement));
+      shadeElement.addEventListener('focus', this._paletteColorSelected.bind(this, shades[i], shades[i], false));
+      shadeElement.addEventListener('keydown', this._onShadeColorKeydown.bind(this, colorElement));
       this._shadesContainer.appendChild(shadeElement);
     }
 
@@ -696,37 +697,36 @@ export class Spectrum extends UI.Widget.VBox {
   }
 
   /**
-   * @param {string} colorText
-   * @param {(string|undefined)} colorName
-   * @param {boolean} matchUserFormat
+   * @param {number} colorIndex
    * @param {!Event} event
    */
-  _onPaletteColorKeydown(colorText, colorName, matchUserFormat, event) {
-    if (isEnterOrSpaceKey(event)) {
-      this._paletteColorSelected(colorText, colorName, matchUserFormat);
-      // If this is a long keypress on color palette of type Material then, it needs to handled by _showLightnessShades on same element. So, just stopPropagation instead of consuming it.
-      event.stopPropagation();
-    } else if (event.key === 'ArrowLeft' && event.target.previousElementSibling) {
-      event.target.previousElementSibling.focus();
-      event.consume(true);
-    } else if (event.key === 'ArrowRight' && event.target.nextElementSibling) {
-      event.target.nextElementSibling.focus();
-      event.consume(true);
+  _onPaletteColorKeydown(colorIndex, event) {
+    let nextColorIndex;
+    switch (event.key) {
+      case 'ArrowLeft':
+        nextColorIndex = colorIndex - 1;
+        break;
+      case 'ArrowRight':
+        nextColorIndex = colorIndex + 1;
+        break;
+      case 'ArrowUp':
+        nextColorIndex = colorIndex - _itemsPerPaletteRow;
+        break;
+      case 'ArrowDown':
+        nextColorIndex = colorIndex + _itemsPerPaletteRow;
+        break;
+    }
+    if (nextColorIndex > -1 && nextColorIndex < this._paletteContainer.childNodes.length) {
+      this._paletteContainer.childNodes[nextColorIndex].focus();
     }
   }
 
   /**
-   * @param {string} colorText
-   * @param {(string|undefined)} colorName
-   * @param {boolean} matchUserFormat
    * @param {!Element} colorElement
    * @param {!Event} event
    */
-  _onShadeColorKeydown(colorText, colorName, matchUserFormat, colorElement, event) {
-    if (isEnterOrSpaceKey(event)) {
-      this._paletteColorSelected(colorText, colorName, matchUserFormat);
-      event.consume(true);
-    } else if (isEscKey(event) || event.key === 'Tab') {
+  _onShadeColorKeydown(colorElement, event) {
+    if (isEscKey(event) || event.key === 'Tab') {
       colorElement.focus();
       this._shadesCloseHandler();
       event.consume(true);

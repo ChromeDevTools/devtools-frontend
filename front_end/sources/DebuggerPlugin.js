@@ -1215,6 +1215,7 @@ export class DebuggerPlugin extends Plugin {
         editorLineNumbers.add(location.lineNumber);
       }
       this._scheduledBreakpointDecorationUpdates = null;
+      let updatedDecorationsCount = 0;
       let waitingForInlineDecorations = false;
       for (const lineNumber of editorLineNumbers) {
         const decorations = this._lineBreakpointDecorations(lineNumber);
@@ -1224,9 +1225,10 @@ export class DebuggerPlugin extends Plugin {
           continue;
         }
         updateInlineDecorations.call(this, lineNumber, decorations);
+        updatedDecorationsCount += decorations.length;
       }
       if (!waitingForInlineDecorations) {
-        this._breakpointDecorationsUpdatedForTest();
+        this._breakpointDecorationsUpdatedForTest(updatedDecorationsCount);
       }
     }
 
@@ -1284,7 +1286,8 @@ export class DebuggerPlugin extends Plugin {
     }
   }
 
-  _breakpointDecorationsUpdatedForTest() {
+  _breakpointDecorationsUpdatedForTest(count) {
+    return count;
   }
 
   /**

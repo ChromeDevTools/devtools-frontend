@@ -19,7 +19,7 @@ describe('The Console Tab', async () => {
     await target.goto(`${resourcesPath}/pages/hello-world.html`);
 
     // Locate the button for switching to the console tab.
-    const consoleTabButtonLocation = await getElementPosition({id: 'tab-console'});
+    const consoleTabButtonLocation = await getElementPosition('#tab-console');
     if (!consoleTabButtonLocation) {
       assert.fail('Unable to locate console tab button.');
     }

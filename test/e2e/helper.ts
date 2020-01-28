@@ -17,25 +17,19 @@ const browserInstance = Symbol('BrowserInstance');
 
 export let resetPages: () => void;
 
+// TODO: Remove once Chromium updates its version of Node.js to 12+.
+const globalThis: any = global;
+
 /**
  * Because querySelector is unable to go through shadow roots, we take the opportunity
- * to collect all elements from everywhere in the page, and cache it for future requests.
- * This means that when we attempt to locate elements for the purposes of interactions,
- * we can use this flattened list rather than attempting querySelector dances.
+ * to collect all elements from everywhere in the page.  This means that when we attempt
+ * to locate elements for the purposes of interactions, we can use this flattened list
+ * rather than attempting querySelector dances.
  */
-const collectAllElementsFromPage =
-    async () => {
-  const frontend: puppeteer.Page = global[frontEndPage];
-  if (!frontend) {
-    throw new Error('Unable to locate DevTools frontend page. Was it stored first?');
-  }
-
+const collectAllElementsFromPage = async () => {
+  const frontend: puppeteer.Page = globalThis[frontEndPage];
   return frontend.evaluate(() => {
     const container = (self as any);
-    if (container.__elements) {
-      return container.__elements;
-    }
-
     container.__elements = [];
     const collect = (root: HTMLElement|ShadowRoot) => {
       const walker = document.createTreeWalker(root, NodeFilter.SHOW_ELEMENT);
@@ -44,80 +38,70 @@ const collectAllElementsFromPage =
         if (currentNode.shadowRoot) {
           collect(currentNode.shadowRoot);
         }
-        container.__elements.push(currentNode);
+        // We're only interested in actual elements that we can later use for selector
+        // matching, so skip shadow roots.
+        if (!(currentNode instanceof ShadowRoot)) {
+          container.__elements.push(currentNode);
+        }
       } while (walker.nextNode());
-    }
+    };
 
     collect(document.documentElement);
   });
 }
 
-export async function getElementPosition({id, className}: {id?: string, className?: string}) {
-  const frontend: puppeteer.Page = global[frontEndPage];
+export async function getElementPosition(selector: string) {
+  const element = await $(selector);
+  const position = await element.evaluate(element => {
+    // Extract the location values.
+    const {left, top, width, height} = element.getBoundingClientRect();
+    return {
+      x: left + width * 0.5,
+      y: top + height * 0.5,
+    };
+  });
+  return position;
+}
 
-  if (!id && !className) {
-    return null;
-  }
-
+// Get a single element handle, across Shadow DOM boundaries.
+export const $ = async (selector) => {
+  const frontend: puppeteer.Page = globalThis[frontEndPage];
   if (!frontend) {
     throw new Error('Unable to locate DevTools frontend page. Was it stored first?');
   }
-
-  // Make sure all elements are flattened in the target document.
   await collectAllElementsFromPage();
+  const element = await frontend.evaluateHandle(selector => {
+    const elements = globalThis.__elements;
+    return elements.find(element => element.matches(selector));
+  }, selector);
+  return element;
+};
 
-  return frontend.evaluate((targetId, targetClassName) => {
-    const container = (self as any);
-    if (!container.__elements) {
-      return null;
-    }
-
-    const target = container.__elements.find(el => {
-      if (el.id === targetId) {
-        return el;
-      }
-
-      if (('classList' in el) && el.classList.contains(targetClassName)) {
-        return el;
-      }
-    });
-
-    if (!target) {
-      return null;
-    }
-
-    // Extract the location values.
-    const {left, top, width, height} = target.getBoundingClientRect();
-    return {x: left + width * 0.5, y: top + height * 0.5,};
-  }, id, className);
-}
-
-// TODO: Move to globalThis when Chromium updates its version of node
-export function store(browser, target, frontend, reset) {
-  global[browserInstance] = browser;
-  global[targetPage] = target;
-  global[frontEndPage] = frontend;
+export const store = (browser, target, frontend, reset) => {
+  globalThis[browserInstance] = browser;
+  globalThis[targetPage] = target;
+  globalThis[frontEndPage] = frontend;
   resetPages = reset;
-}
+};
 
-export function
-getBrowserAndPages():
-    BrowserAndPages {
-      if (!global[targetPage]) {
-        throw new Error('Unable to locate target page. Was it stored first?');
-      }
+export const getBrowserAndPages = (): BrowserAndPages => {
+  if (!globalThis[targetPage]) {
+    throw new Error('Unable to locate target page. Was it stored first?');
+  }
 
-      if (!global[frontEndPage]) {
-        throw new Error('Unable to locate DevTools frontend page. Was it stored first?');
-      }
+  if (!globalThis[frontEndPage]) {
+    throw new Error('Unable to locate DevTools frontend page. Was it stored first?');
+  }
 
-      if (!global[browserInstance]) {
-        throw new Error('Unable to locate browser instance. Was it stored first?');
-      }
+  if (!globalThis[browserInstance]) {
+    throw new Error('Unable to locate browser instance. Was it stored first?');
+  }
 
-      return {
-        browser: global[browserInstance], target: global[targetPage], frontend: global[frontEndPage],
-      };
-    }
+  return {
+    browser: globalThis[browserInstance],
+    target: globalThis[targetPage],
+    frontend: globalThis[frontEndPage],
+  };
+};
 
 export const resourcesPath = `file://${join(__dirname, 'resources')}`;

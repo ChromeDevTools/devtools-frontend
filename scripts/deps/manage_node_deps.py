@@ -40,6 +40,7 @@ DEPS = {
     "eslint": "6.0.1",
     "esprima": "git+https://git@github.com/ChromeDevTools/esprima.git#4d0f0e18bd8d3731e5f931bf573af3394cbf7cbe",
     "handlebars": "4.3.1",
+    "istanbul-diff": "2.0.0",
     "karma": "4.2.0",
     "karma-chai": "0.1.0",
     "karma-chrome-launcher": "3.1.0",

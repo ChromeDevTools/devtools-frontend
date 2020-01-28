@@ -1,0 +1,54 @@
+{
+  "istanbul/": {
+    "branches": {
+      "covered": 764,
+      "pct": 71.26,
+      "skipped": 27,
+      "total": 1087
+    },
+    "functions": {
+      "covered": 467,
+      "pct": 95.74,
+      "skipped": 18,
+      "total": 543
+    },
+    "lines": {
+      "covered": 1826,
+      "pct": 20.53,
+      "skipped": 0,
+      "total": 2270
+    },
+    "statements": {
+      "covered": 1892,
+      "pct": 80.2,
+      "skipped": 18,
+      "total": 2359
+    }
+  },
+  "istanbul/foo/": {
+    "branches": {
+      "covered": 763,
+      "pct": 70.26,
+      "skipped": 26,
+      "total": 1086
+    },
+    "functions": {
+      "covered": 457,
+      "pct": 85.74,
+      "skipped": 8,
+      "total": 533
+    },
+    "lines": {
+      "covered": 1846,
+      "pct": 82.53,
+      "skipped": 0,
+      "total": 2280
+    },
+    "statements": {
+      "covered": 1892,
+      "pct": 80.2,
+      "skipped": 18,
+      "total": 2359
+    }
+  }
+}

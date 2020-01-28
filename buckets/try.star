@@ -113,8 +113,14 @@ cq_master_builders=[
   'dtf_presubmit_win64'
 ]
 
+cq_master_experiment_builders = [
+  # Quarantine a builder here
+  # This will make them experiment 100%
+  #'dtf_presubmit_win64',
+]
+
 def experiment_builder(builder):
-  if builder == 'dtf_presubmit_win64':
+  if builder in cq_master_experiment_builders:
     return 100
   else:
     return None

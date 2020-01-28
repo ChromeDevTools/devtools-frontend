@@ -48,7 +48,7 @@ def presubmit_builder(name, dimensions, **kvargs):
   )
 
 presubmit_builder(
-  name="devtools_frontend_presubmit",
+  name="dtf_presubmit_linux",
   dimensions=dimensions.ubuntu,
 )
 
@@ -109,7 +109,7 @@ cq_retry_config=cq.retry_config(
 cq_master_builders=[
   'devtools_frontend_linux_blink_light_rel',
   'devtools_frontend_linux_rel',
-  'devtools_frontend_presubmit',
+  'dtf_presubmit_linux',
   'dtf_presubmit_win64'
 ]
 
@@ -146,6 +146,6 @@ luci.cq_group(
   acls=cq_acls,
   retry_config=cq_retry_config,
   verifiers=[
-    luci.cq_tryjob_verifier(builder="devtools_frontend_presubmit", disable_reuse=True)
+    luci.cq_tryjob_verifier(builder="dtf_presubmit_linux", disable_reuse=True)
   ],
 )

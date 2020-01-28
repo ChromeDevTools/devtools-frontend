@@ -47,6 +47,8 @@ export class CPUProfilerModel extends SDKModel {
     this._nextAnonymousConsoleProfileNumber = 1;
     this._anonymousConsoleProfileIdToTitle = new Map();
     this._profilerAgent = target.profilerAgent();
+    /** @type {?function(number, string, !Array<!Protocol.Profiler.ScriptCoverage>)} */
+    this._preciseCoverageDeltaUpdateCallback = null;
     target.registerProfilerDispatcher(this);
     this._profilerAgent.enable();
     this._debuggerModel = /** @type {!DebuggerModel} */ (target.model(DebuggerModel));
@@ -140,10 +142,12 @@ export class CPUProfilerModel extends SDKModel {
 
   /**
    * @param {boolean} jsCoveragePerBlock - Collect per Block coverage if `true`, per function coverage otherwise.
+   * @param {?function(number, string, !Array<!Protocol.Profiler.ScriptCoverage>)} preciseCoverageDeltaUpdateCallback - Callback for coverage updates initiated from the back-end
    * @return {!Promise}
    */
-  startPreciseCoverage(jsCoveragePerBlock) {
+  startPreciseCoverage(jsCoveragePerBlock, preciseCoverageDeltaUpdateCallback) {
     const callCount = false;
+    this._preciseCoverageDeltaUpdateCallback = preciseCoverageDeltaUpdateCallback;
     return this._profilerAgent.startPreciseCoverage(callCount, jsCoveragePerBlock);
   }
 
@@ -161,6 +165,7 @@ export class CPUProfilerModel extends SDKModel {
    * @return {!Promise}
    */
   stopPreciseCoverage() {
+    this._preciseCoverageDeltaUpdateCallback = null;
     return this._profilerAgent.stopPreciseCoverage();
   }
 
@@ -171,7 +176,9 @@ export class CPUProfilerModel extends SDKModel {
    * @param {!Array<!Protocol.Profiler.ScriptCoverage>} coverageData
    */
   preciseCoverageDeltaUpdate(timestampInSeconds, occassion, coverageData) {
-    // TODO(chromium:1042927): Implement this event handler.
+    if (this._preciseCoverageDeltaUpdateCallback) {
+      this._preciseCoverageDeltaUpdateCallback(timestampInSeconds, occassion, coverageData);
+    }
   }
 }
 

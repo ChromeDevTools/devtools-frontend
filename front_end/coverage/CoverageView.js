@@ -275,6 +275,10 @@ export class CoverageView extends UI.VBox {
     this._clearButton.setEnabled(true);
   }
 
+  processBacklog() {
+    this._model.processJSBacklog();
+  }
+
   _onMainFrameNavigated() {
     this._model.reset();
     this._decorationManager.reset();

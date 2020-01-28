@@ -789,7 +789,6 @@ export class TimelineEventOverviewCoverage extends TimelineEventOverview {
           if (!totalByTimestamp.has(stamp)) {
             totalByTimestamp.set(stamp, new Set());
           }
-
           totalByTimestamp.get(stamp).add(info);
 
           if (!usedByTimestamp.has(stamp)) {
@@ -843,7 +842,13 @@ export class TimelineEventOverviewCoverage extends TimelineEventOverview {
 
     ctx.lineTo(-lineWidth, height - yOffset);
 
-    for (const [stamp, coverage] of coverageByTimestamp) {
+    let previous = null;
+    for (const stamp of this._coverageModel.coverageUpdateTimes()) {
+      const coverage = coverageByTimestamp.get(stamp) || previous;
+      previous = coverage;
+      if (!coverage) {
+        continue;
+      }
       if (stamp > maxTime) {
         break;
       }
@@ -852,18 +857,25 @@ export class TimelineEventOverviewCoverage extends TimelineEventOverview {
       ctx.lineTo(x, height - yOffset);
     }
 
+    const white = 'hsl(0, 100%, 100%)';
+    const blue = 'hsl(220, 90%, 70%)';
+    const transparentBlue = 'hsla(220, 90%, 70%, 0.2)';
+
     ctx.lineTo(width + lineWidth, height - yOffset);
     ctx.lineTo(width + lineWidth, heightBeyondView);
     ctx.closePath();
-    ctx.fillStyle = 'hsla(220, 90%, 70%, 0.2)';
+    ctx.fillStyle = transparentBlue;
     ctx.fill();
     ctx.lineWidth = lineWidth;
-    ctx.strokeStyle = 'hsl(220, 90%, 70%)';
+    ctx.strokeStyle = blue;
     ctx.stroke();
 
-    for (const [stamp, coverage] of coverageByTimestamp) {
-      if (stamp > maxTime) {
-        break;
+    previous = null;
+    for (const stamp of this._coverageModel.coverageUpdateTimes()) {
+      const coverage = coverageByTimestamp.get(stamp) || previous;
+      previous = coverage;
+      if (!coverage) {
+        continue;
       }
       ctx.beginPath();
       const x = (stamp - minTime) * xFactor;
@@ -871,6 +883,7 @@ export class TimelineEventOverviewCoverage extends TimelineEventOverview {
       ctx.arc(x, y, 2 * lineWidth, 0, 2 * Math.PI, false);
       ctx.closePath();
       ctx.stroke();
+      ctx.fillStyle = coverageByTimestamp.has(stamp) ? blue : white;
       ctx.fill();
     }
 

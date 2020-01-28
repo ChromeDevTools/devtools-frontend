@@ -561,6 +561,11 @@ export class TimelinePanel extends UI.Panel {
       this._statusPane.updateProgressBar(Common.UIString('Received'), 0);
     }
     this._setState(State.StopPending);
+    if (this._startCoverage.get()) {
+      await UI.viewManager.showView('coverage')
+          .then(() => UI.viewManager.view('coverage').widget())
+          .then(widget => widget.stopRecording());
+    }
     const model = await this._controller.stopRecording();
     this._performanceModel = model;
     this._setUIControlsEnabled(true);
@@ -822,9 +827,9 @@ export class TimelinePanel extends UI.Panel {
     this._historyManager.addRecording(this._performanceModel);
 
     if (this._startCoverage.get()) {
-      self.UI.viewManager.showView('coverage')
-          .then(() => self.UI.viewManager.view('coverage').widget())
-          .then(widget => widget.stopRecording())
+      UI.viewManager.showView('coverage')
+          .then(() => UI.viewManager.view('coverage').widget())
+          .then(widget => widget.processBacklog())
           .then(() => this._updateOverviewControls());
     }
   }

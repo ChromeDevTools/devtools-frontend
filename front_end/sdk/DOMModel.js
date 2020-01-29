@@ -993,6 +993,9 @@ export class DOMNode {
 
   setAsInspectedNode() {
     let node = this;
+    if (node.pseudoType()) {
+      node = node.parentNode;
+    }
     while (true) {
       let ancestor = node.ancestorUserAgentShadowRoot();
       if (!ancestor) {

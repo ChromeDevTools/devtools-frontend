@@ -160,6 +160,7 @@ export class ClearStorageView extends UI.ThrottledWidget {
     setTimeout(() => {
       this._clearButton.disabled = false;
       this._clearButton.textContent = label;
+      this._clearButton.focus();
     }, 500);
   }
 

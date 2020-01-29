@@ -15,6 +15,43 @@ const commandMenuShortcut = Host.Platform.isMac() ? 'Command+Shift+P' : 'Control
 /** @type {!Array<!Help.ReleaseNote>} */
 export const releaseNoteText = [
   {
+    version: 23,
+    header: 'Highlights from the Chrome 81 update',
+    highlights: [
+      {
+        title: 'Moto G4 support in Device Mode',
+        subtitle: 'Simulate Moto G4 viewport dimensions and display its hardware around the viewport.',
+        link: 'https://developers.google.com/web/updates/2020/01/devtools#motog4',
+      },
+      {
+        title: 'Cookie-related updates',
+        subtitle: 'Blocked cookies and cookie priority in the Cookies pane, editing all cookie values, and more.',
+        link: 'https://developers.google.com/web/updates/2020/01/devtools#cookies',
+      },
+      {
+        title: 'More accurate web app manifest icons',
+        subtitle: 'DevTools now shows the exact icon that Chrome uses.',
+        link: 'https://developers.google.com/web/updates/2020/01/devtools#manifesticons',
+      },
+      {
+        title: 'Hover over CSS "content" properties to see unescaped values',
+        subtitle: 'Hover over a "content" value to see the rendered version of the value in a tooltip.',
+        link: 'https://developers.google.com/web/updates/2020/01/devtools#content',
+      },
+      {
+        title: 'Source map errors in the Console',
+        subtitle: 'The Console now tells you when a source map has failed to load or parse.',
+        link: 'https://developers.google.com/web/updates/2020/01/devtools#sourcemaperrors',
+      },
+      {
+        title: 'A setting for disabling scrolling past the end of a file',
+        subtitle: 'Go to Settings and disable the "Allow scrolling past end of file" checkbox.',
+        link: 'https://developers.google.com/web/updates/2020/01/devtools#scrolling',
+      },
+    ],
+    link: 'https://developers.google.com/web/updates/2020/01/devtools',
+  },
+  {
     version: 22,
     header: 'Highlights from the Chrome 80 update',
     highlights: [

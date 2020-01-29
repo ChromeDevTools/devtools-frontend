@@ -77,7 +77,7 @@ module.exports = function(config) {
 
     coverageIstanbulInstrumenter: {esModules: true},
 
-    coverageIstanbulReporter: {reports: NO_TEXT_COVERAGE ? ['html'] : ['text', 'html'], dir: 'karma-coverage'},
+    coverageIstanbulReporter: {reports: NO_TEXT_COVERAGE ? ['html', 'json-summary'] : ['text', 'html', 'json-summary'], dir: 'karma-coverage'},
 
     singleRun: !IS_DEBUG
   };

@@ -743,6 +743,66 @@ SourcesTestRunner.waitDebuggerPluginBreakpoints = function(sourceFrame) {
   }
 };
 
+/**
+ * Useful for tests that want to run some breakpoint action like setting, toggling, adding a condition, etc.
+ * and dumping the set breakpoint decorations afterwards.
+ * See {SourcesTestRunner.waitForExactBreakpointDecorations} for the format of the {expectedDecorations} paramter.
+ */
+SourcesTestRunner.runActionAndWaitForExactBreakpointDecorations =
+    async function(sourceFrame, expectedDecorations, action) {
+  const waitPromise = SourcesTestRunner.waitForExactBreakpointDecorations(sourceFrame, expectedDecorations);
+  await action();
+  await waitPromise;
+  SourcesTestRunner.dumpDebuggerPluginBreakpoints(sourceFrame);
+};
+
+/**
+ * Waits for breakpoint decoration updates until specific decorations are met.
+ *
+ * @param expectedDecorations An array of key/value pairs where the key is a line number
+ *    and the value is the number of decorations in the given line, e.g.:
+ *
+ *      expectedDecorations = [[5, 1], [10, 2]]
+ *
+ *    waits until line 5 has one breakpoint decoration and line 10 has two decorations.
+ */
+SourcesTestRunner.waitForExactBreakpointDecorations = function(sourceFrame, expectedDecorations) {
+  return SourcesTestRunner.waitDebuggerPluginDecorations().then(checkIfDecorationsReady);
+
+  function checkIfDecorationsReady() {
+    const currentDecorations = collectCurrentDecorationsFromDebuggerPlugin();
+    const expectedDecorationsMap = new Map(expectedDecorations);
+    if (decorationsAreEqual(currentDecorations, expectedDecorationsMap)) {
+      return Promise.resolve();
+    }
+    return SourcesTestRunner.waitForExactBreakpointDecorations(sourceFrame, expectedDecorations);
+  }
+
+  function collectCurrentDecorationsFromDebuggerPlugin() {
+    const currentDecorationCountPerLine = new Map();
+    for (const decoration of SourcesTestRunner.debuggerPlugin(sourceFrame)._breakpointDecorations.values()) {
+      const lineNumber = (decoration.handle.resolve() || {}).lineNumber;
+      if (lineNumber) {
+        const count = currentDecorationCountPerLine.get(lineNumber) || 0;
+        currentDecorationCountPerLine.set(lineNumber, count + 1);
+      }
+    }
+    return currentDecorationCountPerLine;
+  }
+
+  function decorationsAreEqual(map1, map2) {
+    if (map1.size !== map2.size) {
+      return false;
+    }
+    for (const [line1, count1] of map1) {
+      if (map2.get(line1) !== count1) {
+        return false;
+      }
+    }
+    return true;
+  }
+};
+
 SourcesTestRunner.dumpDebuggerPluginBreakpoints = function(sourceFrame) {
   const textEditor = sourceFrame._textEditor;
 

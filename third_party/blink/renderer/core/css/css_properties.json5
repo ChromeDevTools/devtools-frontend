@@ -3008,8 +3008,8 @@
       field_group: "*",
       field_size: 2, // FIXME: Convert this to a keyword field
       field_template: "primitive",
-      default_value: "kScrollBehaviorAuto",
-      type_name: "ScrollBehavior",
+      default_value: "mojom::blink::ScrollIntoViewParams::Behavior::kAuto",
+      type_name: "mojom::blink::ScrollIntoViewParams::Behavior",
       keywords: ["auto", "smooth"],
       typedom_types: ["Keyword"],
     },

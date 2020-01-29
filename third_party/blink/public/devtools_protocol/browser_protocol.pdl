@@ -7538,8 +7538,8 @@ experimental domain Media
   # Break out events into different types
   type PlayerEventType extends string
     enum
-      playbackEvent
-      systemEvent
+      errorEvent
+      triggeredEvent
       messageEvent
 
   type PlayerEvent extends object

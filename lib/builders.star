@@ -38,6 +38,10 @@ dimensions=struct(
   win10={
     "cpu":"x86-64",
     "os":"Windows-10",
+  },
+  mac={
+    "cpu":"x86-64",
+    "os":"Mac-10.13",
   }
 )
 
@@ -71,6 +75,19 @@ def builder(
     **kvargs
   )
 
+os_dimensions = {
+  "linux": dimensions.ubuntu,
+  "win64": dimensions.win10,
+  "mac": dimensions.mac,
+}
+
+def builder_coverage(covered_oss, buider_factory, builder_name_pattern, **kvargs):
+  for os in covered_oss:
+    buider_factory(
+      dimensions=os_dimensions[os],
+      name= builder_name_pattern % os,
+      **kvargs
+    )
 
 def config_section(name, branch, view, name_suffix, mastername, repo=defaults.repo):
   return struct(

@@ -3,6 +3,7 @@ load('//lib/builders.star',
   'acls',
   'defaults',
   'dimensions',
+  'builder_coverage',
 )
 
 BUCKET_NAME='try'
@@ -47,14 +48,11 @@ def presubmit_builder(name, dimensions, **kvargs):
     **kvargs
   )
 
-presubmit_builder(
-  name="dtf_presubmit_linux",
-  dimensions=dimensions.ubuntu,
-)
 
-presubmit_builder(
-  name="dtf_presubmit_win64",
-  dimensions=dimensions.win10,
+builder_coverage(
+  covered_oss = ["linux", "win64"],
+  buider_factory = presubmit_builder,
+  builder_name_pattern = "dtf_presubmit_%s"
 )
 
 try_builder(
@@ -73,10 +71,11 @@ try_builder(
   build_numbers=True,
 )
 
-try_builder(
-  name="devtools_frontend_linux_rel",
+builder_coverage(
+  covered_oss = ["linux", "win64", "mac"],
+  buider_factory = try_builder,
+  builder_name_pattern = "devtools_frontend_%s_rel",
   recipe_name="devtools/devtools-frontend",
-  dimensions=dimensions.ubuntu,
   execution_timeout=2 * time.hour,
 )
 
@@ -109,6 +108,8 @@ cq_retry_config=cq.retry_config(
 cq_master_builders=[
   'devtools_frontend_linux_blink_light_rel',
   'devtools_frontend_linux_rel',
+  'devtools_frontend_mac_rel',
+  'devtools_frontend_win64_rel',
   'dtf_presubmit_linux',
   'dtf_presubmit_win64'
 ]
@@ -116,7 +117,8 @@ cq_master_builders=[
 cq_master_experiment_builders = [
   # Quarantine a builder here
   # This will make them experiment 100%
-  #'dtf_presubmit_win64',
+  'devtools_frontend_mac_rel',
+  'devtools_frontend_win64_rel',
 ]
 
 def experiment_builder(builder):

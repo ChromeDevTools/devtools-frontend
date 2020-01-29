@@ -22,13 +22,14 @@ const globalThis: any = global;
 
 /**
  * Because querySelector is unable to go through shadow roots, we take the opportunity
- * to collect all elements from everywhere in the page.  This means that when we attempt
- * to locate elements for the purposes of interactions, we can use this flattened list
- * rather than attempting querySelector dances.
+ * to collect all elements from everywhere in the page, optionally starting at a given
+ * root node. This means that when we attempt to locate elements for the purposes of
+ * interactions, we can use this flattened list rather than attempting querySelector
+ * dances.
  */
-const collectAllElementsFromPage = async () => {
+const collectAllElementsFromPage = async (root?: puppeteer.JSHandle) => {
   const frontend: puppeteer.Page = globalThis[frontEndPage];
-  return frontend.evaluate(() => {
+  await frontend.evaluate((root) => {
     const container = (self as any);
     container.__elements = [];
     const collect = (root: HTMLElement|ShadowRoot) => {
@@ -45,12 +46,11 @@ const collectAllElementsFromPage = async () => {
         }
       } while (walker.nextNode());
     };
-
-    collect(document.documentElement);
-  });
+    collect(root || document.documentElement);
+  }, root);
 }
 
-export async function getElementPosition(selector: string) {
+export const getElementPosition = async (selector: string) => {
   const element = await $(selector);
   const position = await element.evaluate(element => {
     // Extract the location values.
@@ -61,15 +61,15 @@ export async function getElementPosition(selector: string) {
     };
   });
   return position;
-}
+};
 
 // Get a single element handle, across Shadow DOM boundaries.
-export const $ = async (selector) => {
+export const $ = async (selector: string, root?: puppeteer.JSHandle) => {
   const frontend: puppeteer.Page = globalThis[frontEndPage];
   if (!frontend) {
     throw new Error('Unable to locate DevTools frontend page. Was it stored first?');
   }
-  await collectAllElementsFromPage();
+  await collectAllElementsFromPage(root);
   const element = await frontend.evaluateHandle(selector => {
     const elements = globalThis.__elements;
     return elements.find(element => element.matches(selector));

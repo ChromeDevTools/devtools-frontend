@@ -10,3 +10,6 @@ build_with_chromium = false
 ignore_elf32_limitations = true
 
 use_system_xcode = true
+
+# Some non-Chromium builds don't use Chromium's third_party/binutils.
+linux_use_bundled_binutils_override = true

@@ -33,9 +33,10 @@ import * as Host from '../host/host.js';
 import * as ProtocolModule from '../protocol/protocol.js';
 
 import {RemoteObject, RemoteObjectImpl, ScopeRef} from './RemoteObject.js';  // eslint-disable-line no-unused-vars
-import {ExecutionContext, RuntimeModel} from './RuntimeModel.js';  // eslint-disable-line no-unused-vars
+import {ExecutionContext, RuntimeModel} from './RuntimeModel.js';            // eslint-disable-line no-unused-vars
 import {Script} from './Script.js';
 import {Capability, SDKModel, Target, Type} from './SDKModel.js';  // eslint-disable-line no-unused-vars
+import {WasmSourceMap} from './SourceMap.js';
 import {SourceMapManager} from './SourceMapManager.js';
 
 /**
@@ -651,16 +652,18 @@ export class DebuggerModel extends SDKModel {
     this._registerScript(script);
     this.dispatchEventToListeners(Events.ParsedScriptSource, script);
 
-    const sourceMapId = DebuggerModel._sourceMapId(script.executionContextId, script.sourceURL, script.sourceMapURL);
-    if (sourceMapId && !hasSyntaxError) {
-      // Consecutive script evaluations in the same execution context with the same sourceURL
-      // and sourceMappingURL should result in source map reloading.
-      const previousScript = this._sourceMapIdToScript.get(sourceMapId);
-      if (previousScript) {
-        this._sourceMapManager.detachSourceMap(previousScript);
+    if (!Root.Runtime.experiments.isEnabled('wasmDWARFDebugging') || script.sourceMapURL !== WasmSourceMap.FAKE_URL) {
+      const sourceMapId = DebuggerModel._sourceMapId(script.executionContextId, script.sourceURL, script.sourceMapURL);
+      if (sourceMapId && !hasSyntaxError) {
+        // Consecutive script evaluations in the same execution context with the same sourceURL
+        // and sourceMappingURL should result in source map reloading.
+        const previousScript = this._sourceMapIdToScript.get(sourceMapId);
+        if (previousScript) {
+          this._sourceMapManager.detachSourceMap(previousScript);
+        }
+        this._sourceMapIdToScript.set(sourceMapId, script);
+        this._sourceMapManager.attachSourceMap(script, script.sourceURL, script.sourceMapURL);
       }
-      this._sourceMapIdToScript.set(sourceMapId, script);
-      this._sourceMapManager.attachSourceMap(script, script.sourceURL, script.sourceMapURL);
     }
 
     const isDiscardable = hasSyntaxError && script.isAnonymousScript();

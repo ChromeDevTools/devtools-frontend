@@ -145,8 +145,7 @@ export class DebuggerLanguagePluginManager {
 
     const runtimeModel = debuggerModel.runtimeModel();
     this._eventHandlers = [
-      this._sourceMapManager.addEventListener(
-          SDK.SourceMapManager.Events.SourceMapWillAttach, this._newSourceMap, this),
+      this._debuggerModel.addEventListener(SDK.DebuggerModel.Events.ParsedScriptSource, this._newScriptSource, this),
       runtimeModel.addEventListener(
           SDK.RuntimeModel.Events.ExecutionContextDestroyed, this._executionContextDestroyed, this)
     ];
@@ -338,7 +337,7 @@ export class DebuggerLanguagePluginManager {
   /**
    * @param {!Common.Event} event
    */
-  async _newSourceMap(event) {
+  async _newScriptSource(event) {
     const script = /** @type {!SDK.Script.Script} */ (event.data);
     const sourceFiles = await this._getSourceFiles(script);
     if (!sourceFiles) {
@@ -397,12 +396,14 @@ export class DebuggerLanguagePluginManager {
     /** @type {!Map<string, !SourceScope>} */
     const scopes = new Map();
     const variables = await plugin.listVariablesInScope(
-        {'rawModuleId': script.scriptId, 'codeOffset': callFrame.location().columnNumber});
-    for (const variable of variables) {
-      if (!scopes.has(variable.scope)) {
-        scopes.set(variable.scope, new SourceScope(callFrame, variable.scope));
+        {'rawModuleId': script.scriptId, 'codeOffset': callFrame.location().columnNumber - script.columnOffset});
+    if (variables) {
+      for (const variable of variables) {
+        if (!scopes.has(variable.scope)) {
+          scopes.set(variable.scope, new SourceScope(callFrame, variable.scope));
+        }
+        scopes.get(variable.scope).object().variables.push(variable);
       }
-      scopes.get(variable.scope).object().variables.push(variable);
     }
     return Array.from(scopes.values());
   }

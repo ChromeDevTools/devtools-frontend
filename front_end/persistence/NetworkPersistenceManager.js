@@ -78,7 +78,7 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
     return fileSystemUISourceCode[this._originalResponseContentPromiseSymbol] || null;
   }
 
-  _enabledChanged() {
+  async _enabledChanged() {
     if (this._enabled === this._enabledSetting.get()) {
       return;
     }
@@ -87,30 +87,32 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
       this._eventDescriptors = [
         self.Workspace.workspace.addEventListener(
             Workspace.Workspace.Events.UISourceCodeRenamed,
-            event => {
+            async event => {
               const uiSourceCode = /** @type {!Workspace.UISourceCode.UISourceCode} */ (event.data.uiSourceCode);
-              this._onUISourceCodeRemoved(uiSourceCode);
-              this._onUISourceCodeAdded(uiSourceCode);
+              await this._onUISourceCodeRemoved(uiSourceCode);
+              await this._onUISourceCodeAdded(uiSourceCode);
             }),
         self.Workspace.workspace.addEventListener(
             Workspace.Workspace.Events.UISourceCodeAdded,
-            event => this._onUISourceCodeAdded(/** @type {!Workspace.UISourceCode.UISourceCode} */ (event.data))),
+            async event =>
+                await this._onUISourceCodeAdded(/** @type {!Workspace.UISourceCode.UISourceCode} */ (event.data))),
         self.Workspace.workspace.addEventListener(
             Workspace.Workspace.Events.UISourceCodeRemoved,
-            event => this._onUISourceCodeRemoved(/** @type {!Workspace.UISourceCode.UISourceCode} */ (event.data))),
+            async event =>
+                await this._onUISourceCodeRemoved(/** @type {!Workspace.UISourceCode.UISourceCode} */ (event.data))),
         self.Workspace.workspace.addEventListener(
             Workspace.Workspace.Events.WorkingCopyCommitted,
             event => this._onUISourceCodeWorkingCopyCommitted(
                 /** @type {!Workspace.UISourceCode.UISourceCode} */ (event.data.uiSourceCode)))
       ];
-      this._updateActiveProject();
+      await this._updateActiveProject();
     } else {
       Common.EventTarget.EventTarget.removeEventListeners(this._eventDescriptors);
-      this._updateActiveProject();
+      await this._updateActiveProject();
     }
   }
 
-  _updateActiveProject() {
+  async _updateActiveProject() {
     const wasActive = this._active;
     this._active = !!(this._enabledSetting.get() && self.SDK.targetManager.mainTarget() && this._project);
     if (this._active === wasActive) {
@@ -118,13 +120,17 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
     }
 
     if (this._active) {
-      this._project.uiSourceCodes().forEach(this._filesystemUISourceCodeAdded.bind(this));
+      await Promise.all(
+          this._project.uiSourceCodes().map(uiSourceCode => this._filesystemUISourceCodeAdded(uiSourceCode)));
+
       const networkProjects = this._workspace.projectsForType(Workspace.Workspace.projectTypes.Network);
       for (const networkProject of networkProjects) {
-        networkProject.uiSourceCodes().forEach(this._networkUISourceCodeAdded.bind(this));
+        await Promise.all(
+            networkProject.uiSourceCodes().map(uiSourceCode => this._networkUISourceCodeAdded(uiSourceCode)));
       }
     } else if (this._project) {
-      this._project.uiSourceCodes().forEach(this._filesystemUISourceCodeRemoved.bind(this));
+      await Promise.all(
+          this._project.uiSourceCodes().map(uiSourceCode => this._filesystemUISourceCodeRemoved(uiSourceCode)));
       this._networkUISourceCodeForEncodedPath.clear();
     }
     self.Persistence.persistence.refreshAutomapping();
@@ -218,14 +224,13 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
   /**
    * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    */
-  _unbind(uiSourceCode) {
+  async _unbind(uiSourceCode) {
     const binding = uiSourceCode[this._bindingSymbol];
-    if (!binding) {
-      return;
+    if (binding) {
+      delete binding.network[this._bindingSymbol];
+      delete binding.fileSystem[this._bindingSymbol];
+      await self.Persistence.persistence.removeBinding(binding);
     }
-    delete binding.network[this._bindingSymbol];
-    delete binding.fileSystem[this._bindingSymbol];
-    self.Persistence.persistence.removeBinding(binding);
   }
 
   /**
@@ -234,15 +239,15 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
    */
   async _bind(networkUISourceCode, fileSystemUISourceCode) {
     if (networkUISourceCode[this._bindingSymbol]) {
-      this._unbind(networkUISourceCode);
+      await this._unbind(networkUISourceCode);
     }
     if (fileSystemUISourceCode[this._bindingSymbol]) {
-      this._unbind(fileSystemUISourceCode);
+      await this._unbind(fileSystemUISourceCode);
     }
     const binding = new PersistenceBinding(networkUISourceCode, fileSystemUISourceCode);
     networkUISourceCode[this._bindingSymbol] = binding;
     fileSystemUISourceCode[this._bindingSymbol] = binding;
-    self.Persistence.persistence.addBinding(binding);
+    await self.Persistence.persistence.addBinding(binding);
     const uiSourceCodeOfTruth = networkUISourceCode[this._savingSymbol] ? networkUISourceCode : fileSystemUISourceCode;
     const [{content}, encoded] =
         await Promise.all([uiSourceCodeOfTruth.requestContent(), uiSourceCodeOfTruth.contentEncoded()]);
@@ -308,9 +313,9 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
   /**
    * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    */
-  _onUISourceCodeAdded(uiSourceCode) {
-    this._networkUISourceCodeAdded(uiSourceCode);
-    this._filesystemUISourceCodeAdded(uiSourceCode);
+  async _onUISourceCodeAdded(uiSourceCode) {
+    await this._networkUISourceCodeAdded(uiSourceCode);
+    await this._filesystemUISourceCodeAdded(uiSourceCode);
   }
 
   /**
@@ -323,7 +328,7 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
   /**
    * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    */
-  _networkUISourceCodeAdded(uiSourceCode) {
+  async _networkUISourceCodeAdded(uiSourceCode) {
     if (uiSourceCode.project().type() !== Workspace.Workspace.projectTypes.Network ||
         !this._canHandleNetworkUISourceCode(uiSourceCode)) {
       return;
@@ -333,16 +338,15 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
 
     const fileSystemUISourceCode = this._project.uiSourceCodeForURL(
         /** @type {!FileSystem} */ (this._project).fileSystemPath() + '/' + this._encodedPathFromUrl(url));
-    if (!fileSystemUISourceCode) {
-      return;
+    if (fileSystemUISourceCode) {
+      await this._bind(uiSourceCode, fileSystemUISourceCode);
     }
-    this._bind(uiSourceCode, fileSystemUISourceCode);
   }
 
   /**
     * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
     */
-  _filesystemUISourceCodeAdded(uiSourceCode) {
+  async _filesystemUISourceCodeAdded(uiSourceCode) {
     if (!this._active || uiSourceCode.project() !== this._project) {
       return;
     }
@@ -351,7 +355,7 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
     const relativePath = FileSystemWorkspaceBinding.relativePath(uiSourceCode);
     const networkUISourceCode = this._networkUISourceCodeForEncodedPath.get(relativePath.join('/'));
     if (networkUISourceCode) {
-      this._bind(networkUISourceCode, uiSourceCode);
+      await this._bind(networkUISourceCode, uiSourceCode);
     }
   }
 
@@ -387,57 +391,58 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
   /**
    * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    */
-  _onUISourceCodeRemoved(uiSourceCode) {
-    this._networkUISourceCodeRemoved(uiSourceCode);
-    this._filesystemUISourceCodeRemoved(uiSourceCode);
+  async _onUISourceCodeRemoved(uiSourceCode) {
+    await this._networkUISourceCodeRemoved(uiSourceCode);
+    await this._filesystemUISourceCodeRemoved(uiSourceCode);
   }
 
   /**
    * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    */
-  _networkUISourceCodeRemoved(uiSourceCode) {
-    if (uiSourceCode.project().type() !== Workspace.Workspace.projectTypes.Network) {
-      return;
+  async _networkUISourceCodeRemoved(uiSourceCode) {
+    if (uiSourceCode.project().type() === Workspace.Workspace.projectTypes.Network) {
+      await this._unbind(uiSourceCode);
+      this._networkUISourceCodeForEncodedPath.delete(this._encodedPathFromUrl(uiSourceCode.url()));
     }
-    this._unbind(uiSourceCode);
-    this._networkUISourceCodeForEncodedPath.delete(this._encodedPathFromUrl(uiSourceCode.url()));
   }
 
   /**
    * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    */
-  _filesystemUISourceCodeRemoved(uiSourceCode) {
+  async _filesystemUISourceCodeRemoved(uiSourceCode) {
     if (uiSourceCode.project() !== this._project) {
       return;
     }
     this._updateInterceptionPatterns();
     delete uiSourceCode[this._originalResponseContentPromiseSymbol];
-    this._unbind(uiSourceCode);
+    await this._unbind(uiSourceCode);
   }
 
-  _setProject(project) {
+  async _setProject(project) {
     if (project === this._project) {
       return;
     }
 
     if (this._project) {
-      this._project.uiSourceCodes().forEach(this._filesystemUISourceCodeRemoved.bind(this));
+      await Promise.all(
+          this._project.uiSourceCodes().map(uiSourceCode => this._filesystemUISourceCodeRemoved(uiSourceCode)));
     }
 
     this._project = project;
 
     if (this._project) {
-      this._project.uiSourceCodes().forEach(this._filesystemUISourceCodeAdded.bind(this));
+      await Promise.all(
+          this._project.uiSourceCodes().map(uiSourceCode => this._filesystemUISourceCodeAdded(uiSourceCode)));
     }
 
-    this._updateActiveProject();
+    await this._updateActiveProject();
     this.dispatchEventToListeners(Events.ProjectChanged, this._project);
   }
 
   /**
    * @param {!Workspace.Workspace.Project} project
    */
-  _onProjectAdded(project) {
+  async _onProjectAdded(project) {
     if (project.type() !== Workspace.Workspace.projectTypes.FileSystem ||
         FileSystemWorkspaceBinding.fileSystemType(project) !== 'overrides') {
       return;
@@ -450,17 +455,16 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
       this._project.remove();
     }
 
-    this._setProject(project);
+    await this._setProject(project);
   }
 
   /**
    * @param {!Workspace.Workspace.Project} project
    */
-  _onProjectRemoved(project) {
-    if (project !== this._project) {
-      return;
+  async _onProjectRemoved(project) {
+    if (project === this._project) {
+      await this._setProject(null);
     }
-    this._setProject(null);
   }
 
   /**

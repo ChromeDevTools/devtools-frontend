@@ -45,7 +45,7 @@ AUTOROLL_ACCOUNT = "devtools-ci-autoroll-builder@chops-service-accounts.iam.gser
 def _CheckChangesAreExclusiveToDirectory(input_api, output_api):
     if input_api.change.DISABLE_THIRD_PARTY_CHECK != None:
         return []
-
+    results = [output_api.PresubmitNotifyResult('Directory Exclusivity Check:')]
     def IsParentDir(file, dir):
         while file != '':
             if file == dir:
@@ -70,47 +70,55 @@ def _CheckChangesAreExclusiveToDirectory(input_api, output_api):
         if '.gitignore' in affected_files:
             num_in_dir = num_in_dir + 1
         if num_in_dir < num_affected:
-            return [
-                output_api
+            results.append(output_api
                 .PresubmitError(('CLs that affect files in "%s" should be limited to these files/directories.' % dir_list) +
-                                ' You can disable this check by adding DISABLE_THIRD_PARTY_CHECK=<reason> to your commit message')
-            ]
-    return []
+                                ' You can disable this check by adding DISABLE_THIRD_PARTY_CHECK=<reason> to your commit message'))
+            break
+
+    return results
 
 
 def _CheckBuildGN(input_api, output_api):
+    results = [output_api.PresubmitNotifyResult('Running BUILD.GN check:')]
     script_path = input_api.os_path.join(input_api.PresubmitLocalPath(), 'scripts', 'check_gn.js')
-    return _checkWithNodeScript(input_api, output_api, script_path)
+    results.extend(_checkWithNodeScript(input_api, output_api, script_path))
+    return results
 
 
 def _CheckJSON(input_api, output_api):
+    results = [output_api.PresubmitNotifyResult('Running JSON Validator:')]
     script_path = input_api.os_path.join(input_api.PresubmitLocalPath(), 'scripts', 'json_validator', 'validate_module_json.js')
-    return _checkWithNodeScript(input_api, output_api, script_path)
+    results.extend(_checkWithNodeScript(input_api, output_api, script_path))
+    return results
 
 
 def _CheckLicenses(input_api, output_api):
+    results = [output_api.PresubmitNotifyResult('Running License Header Check:')]
     script_path = input_api.os_path.join(input_api.PresubmitLocalPath(), 'scripts', 'test', 'run_license_header_check.js')
-    return _checkWithNodeScript(input_api, output_api, script_path)
+    results.extend(_checkWithNodeScript(input_api, output_api, script_path))
+    return results
 
 
 def _CheckUnitTests(input_api, output_api):
+    results = [output_api.PresubmitNotifyResult('Running Unit Tests:')]
     unittest_root = input_api.os_path.join(input_api.PresubmitLocalPath(), 'test')
     affected_unittest_files = _getAffectedFiles(input_api, [unittest_root], ['D'], ['.ts'])
     if len(affected_unittest_files) == 0:
-        return []
+        return results
 
     script_path = input_api.os_path.join(input_api.PresubmitLocalPath(), 'scripts', 'test', 'check_for_unittest_onlys.js')
-    return _checkWithNodeScript(input_api, output_api, script_path, affected_unittest_files)
+    results.extend(_checkWithNodeScript(input_api, output_api, script_path, affected_unittest_files))
+    return results
 
 
 def _CheckFormat(input_api, output_api):
-
+    results = [output_api.PresubmitNotifyResult('Running Format Checks:')]
     def popen(args):
         return input_api.subprocess.Popen(args=args, stdout=input_api.subprocess.PIPE, stderr=input_api.subprocess.STDOUT)
 
     affected_files = _getAffectedJSFiles(input_api)
     if len(affected_files) == 0:
-        return []
+        return results
     original_sys_path = sys.path
     try:
         sys.path = sys.path + [input_api.os_path.join(input_api.PresubmitLocalPath(), 'scripts')]
@@ -127,28 +135,29 @@ def _CheckFormat(input_api, output_api):
         affected_file for affected_file in affected_files if all(ignore_file not in affected_file for ignore_file in ignore_files)
     ]
     if len(formattable_files) == 0:
-        return []
+        return results
 
     check_formatting_process = popen(['git', 'cl', 'format', '--js', '--dry-run'] + formattable_files)
     check_formatting_process.communicate()
     if check_formatting_process.returncode == 0:
-        return []
+        return results
 
     format_args = ['git', 'cl', 'format', '--js'] + formattable_files
     format_process = popen(format_args)
     format_out, _ = format_process.communicate()
     if format_process.returncode != 0:
-        return [output_api.PresubmitError(format_out)]
+        results.append(output_api.PresubmitError(format_out))
+        return results
 
-    return [
-        output_api.PresubmitError('ERROR: Found formatting violations.\n'
+    results.append(output_api.PresubmitError('ERROR: Found formatting violations.\n'
                                   'Ran clang-format on diff\n'
-                                  'Use git status to check the formatting changes'),
-        output_api.PresubmitError(format_out),
-    ]
+                                  'Use git status to check the formatting changes'))
+    results.append(output_api.PresubmitError(format_out))
+    return results
 
 
 def _CheckDevtoolsLocalization(input_api, output_api, check_all_files=False):  # pylint: disable=invalid-name
+    results = [output_api.PresubmitNotifyResult('Running Localization Checks:')]
     devtools_root = input_api.PresubmitLocalPath()
     script_path = input_api.os_path.join(devtools_root, 'scripts', 'test', 'run_localization_check.py')
     if check_all_files == True:
@@ -160,7 +169,7 @@ def _CheckDevtoolsLocalization(input_api, output_api, check_all_files=False):  #
                                                      ['.js', '.grdp', '.grd', 'module.json'])
 
         if len(affected_front_end_files) == 0:
-            return []
+            return results
         # Scan only added or modified files with specific extensions.
         args = [
             '--autofix',
@@ -170,24 +179,30 @@ def _CheckDevtoolsLocalization(input_api, output_api, check_all_files=False):  #
         [input_api.python_executable, script_path] + args, stdout=input_api.subprocess.PIPE, stderr=input_api.subprocess.STDOUT)
     out, _ = process.communicate()
     if process.returncode != 0:
-        return [output_api.PresubmitError(out)]
-    return [output_api.PresubmitNotifyResult(out)]
+        results.append(output_api.PresubmitError(out))
+    else:
+        results.append(output_api.PresubmitNotifyResult(out))
+    return results
 
 
 def _CheckDevtoolsStyle(input_api, output_api):
+    results = [output_api.PresubmitNotifyResult('Running Devtools Style Check:')]
     lint_path = input_api.os_path.join(input_api.PresubmitLocalPath(), 'scripts', 'test', 'run_lint_check.py')
     process = input_api.subprocess.Popen([input_api.python_executable, lint_path],
                                          stdout=input_api.subprocess.PIPE,
                                          stderr=input_api.subprocess.STDOUT)
     out, _ = process.communicate()
     if process.returncode != 0:
-        return [output_api.PresubmitError(out)]
-    return [output_api.PresubmitNotifyResult(out)]
+        results.append(output_api.PresubmitError(out))
+    else:
+        results.append(output_api.PresubmitNotifyResult(out))
+    return results
 
 
 def _CheckOptimizeSVGHashes(input_api, output_api):
+    results = [output_api.PresubmitNotifyResult('Running SVG Optimization Check:')]
     if not input_api.platform.startswith('linux'):
-        return []
+        return results
 
     original_sys_path = sys.path
     try:
@@ -204,15 +219,16 @@ def _CheckOptimizeSVGHashes(input_api, output_api):
     hashes_file_path = input_api.os_path.join(image_sources_path, hashes_file_name)
     invalid_hash_file_paths = devtools_file_hashes.files_with_invalid_hashes(hashes_file_path, image_source_file_paths)
     if len(invalid_hash_file_paths) == 0:
-        return []
+        return results
     invalid_hash_file_names = [input_api.os_path.basename(file_path) for file_path in invalid_hash_file_paths]
     file_paths_str = ', '.join(invalid_hash_file_names)
     error_message = 'The following SVG files should be optimized using optimize_svg_images script before uploading: \n  - %s' % file_paths_str
-    return [output_api.PresubmitError(error_message)]
+    results.append(output_api.PresubmitError(error_message))
+    return results
 
 
 def _CheckCSSViolations(input_api, output_api):
-    results = []
+    results = [output_api.PresubmitNotifyResult('Running CSS Violation Check:')]
     for f in input_api.AffectedFiles(include_deletes=False):
         if not f.LocalPath().endswith('.css'):
             continue

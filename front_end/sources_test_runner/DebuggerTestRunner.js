@@ -471,10 +471,10 @@ SourcesTestRunner.objectForPopover = function(sourceFrame, lineNumber, columnNum
   return promise;
 };
 
-SourcesTestRunner.setBreakpoint = function(sourceFrame, lineNumber, condition, enabled) {
+SourcesTestRunner.setBreakpoint = async function(sourceFrame, lineNumber, condition, enabled) {
   const debuggerPlugin = SourcesTestRunner.debuggerPlugin(sourceFrame);
   if (!debuggerPlugin._muted) {
-    debuggerPlugin._setBreakpoint(lineNumber, 0, condition, enabled);
+    await debuggerPlugin._setBreakpoint(lineNumber, 0, condition, enabled);
   }
 };
 
@@ -487,18 +487,18 @@ SourcesTestRunner.removeBreakpoint = function(sourceFrame, lineNumber) {
   breakpointLocation.breakpoint.remove();
 };
 
-SourcesTestRunner.createNewBreakpoint = function(sourceFrame, lineNumber, condition, enabled) {
+SourcesTestRunner.createNewBreakpoint = async function(sourceFrame, lineNumber, condition, enabled) {
   const debuggerPlugin = SourcesTestRunner.debuggerPlugin(sourceFrame);
   const promise =
       new Promise(resolve => TestRunner.addSniffer(debuggerPlugin.__proto__, '_breakpointWasSetForTest', resolve));
-  debuggerPlugin._createNewBreakpoint(lineNumber, condition, enabled);
+  await debuggerPlugin._createNewBreakpoint(lineNumber, condition, enabled);
   return promise;
 };
 
-SourcesTestRunner.toggleBreakpoint = function(sourceFrame, lineNumber, disableOnly) {
+SourcesTestRunner.toggleBreakpoint = async function(sourceFrame, lineNumber, disableOnly) {
   const debuggerPlugin = SourcesTestRunner.debuggerPlugin(sourceFrame);
   if (!debuggerPlugin._muted) {
-    debuggerPlugin._toggleBreakpoint(lineNumber, disableOnly);
+    await debuggerPlugin._toggleBreakpoint(lineNumber, disableOnly);
   }
 };
 
@@ -823,7 +823,7 @@ SourcesTestRunner.dumpDebuggerPluginBreakpoints = function(sourceFrame) {
     TestRunner.addResult(
         'breakpoint at ' + lineNumber + ((disabled ? ' disabled' : '')) + ((conditional ? ' conditional' : '')));
     const range = new TextUtils.TextRange(lineNumber, 0, lineNumber, textEditor.line(lineNumber).length);
-    let bookmarks = textEditor.bookmarks(range, Sources.DebuggerPlugin.BreakpointDecoration._bookmarkSymbol);
+    let bookmarks = textEditor.bookmarks(range, Sources.DebuggerPlugin.BreakpointDecoration.bookmarkSymbol);
     bookmarks = bookmarks.filter(bookmark => !!bookmark.position());
     bookmarks.sort((bookmark1, bookmark2) => bookmark1.position().startColumn - bookmark2.position().startColumn);
 
@@ -844,7 +844,7 @@ SourcesTestRunner.clickDebuggerPluginBreakpoint = function(sourceFrame, lineNumb
   const textEditor = sourceFrame._textEditor;
   const lineLength = textEditor.line(lineNumber).length;
   const lineRange = new TextUtils.TextRange(lineNumber, 0, lineNumber, lineLength);
-  const bookmarks = textEditor.bookmarks(lineRange, Sources.DebuggerPlugin.BreakpointDecoration._bookmarkSymbol);
+  const bookmarks = textEditor.bookmarks(lineRange, Sources.DebuggerPlugin.BreakpointDecoration.bookmarkSymbol);
   bookmarks.sort((bookmark1, bookmark2) => bookmark1.position().startColumn - bookmark2.position().startColumn);
   const bookmark = bookmarks[index];
 

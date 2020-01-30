@@ -72,7 +72,7 @@ class TestMapping {
     const fileSystemUISourceCode = await TestRunner.waitForUISourceCode(urlSuffix, Workspace.projectTypes.FileSystem);
     const binding = new Persistence.PersistenceBinding(networkUISourceCode, fileSystemUISourceCode);
     this._bindings.add(binding);
-    this._persistence.addBindingForTest(binding);
+    await this._persistence.addBindingForTest(binding);
   }
 
   _findBinding(urlSuffix) {
@@ -95,12 +95,12 @@ class TestMapping {
     }
 
     this._bindings.delete(binding);
-    this._persistence.removeBindingForTest(binding);
+    await this._persistence.removeBindingForTest(binding);
   }
 
-  dispose() {
+  async dispose() {
     for (const binding of this._bindings) {
-      this._persistence.removeBindingForTest(binding);
+      await this._persistence.removeBindingForTest(binding);
     }
 
     this._bindings.clear();

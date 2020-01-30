@@ -174,8 +174,8 @@ export class TracingLayer {
     // Keep payload.compositing_reasons as a default
     // but use the newer payload.debug_info.compositing_reasons
     // if the first one is not set.
-    this._compositingReasons =
-        payload.compositing_reasons || (payload.debug_info && payload.debug_info.compositing_reasons) || [];
+    this._compositingReasonIds =
+        payload.compositing_reason_ids || (payload.debug_info && payload.debug_info.compositing_reason_ids) || [];
     this._drawsContent = !!payload.draws_content;
     this._gpuMemoryUsage = payload.gpu_memory_usage;
     this._paints = [];
@@ -468,9 +468,10 @@ export class TracingLayer {
    * @override
    * @return {!Promise<!Array<string>>}
    */
-  requestCompositingReasons() {
-    return Promise.resolve(this._compositingReasons);
+  requestCompositingReasonIds() {
+    return Promise.resolve(this._compositingReasonIds);
   }
+
 
   /**
    * @override

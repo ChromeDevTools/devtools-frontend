@@ -138,7 +138,7 @@ export class Layer {
   /**
    * @return {!Promise<!Array<string>>}
    */
-  requestCompositingReasons() {
+  requestCompositingReasonIds() {
   }
 
   /**

@@ -424,9 +424,9 @@ export class AgentLayer {
    * @override
    * @return {!Promise<!Array<string>>}
    */
-  async requestCompositingReasons() {
-    const reasons = await this._layerTreeModel._layerTreeAgent.compositingReasons(this.id());
-    return reasons || [];
+  async requestCompositingReasonIds() {
+    const reasons = await this._layerTreeModel._layerTreeAgent.invoke_compositingReasons({layerId: this.id()});
+    return reasons.compositingReasonIds || [];
   }
 
   /**

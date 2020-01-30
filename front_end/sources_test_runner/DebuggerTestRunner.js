@@ -749,8 +749,9 @@ SourcesTestRunner.waitDebuggerPluginBreakpoints = function(sourceFrame) {
  * See {SourcesTestRunner.waitForExactBreakpointDecorations} for the format of the {expectedDecorations} paramter.
  */
 SourcesTestRunner.runActionAndWaitForExactBreakpointDecorations =
-    async function(sourceFrame, expectedDecorations, action) {
-  const waitPromise = SourcesTestRunner.waitForExactBreakpointDecorations(sourceFrame, expectedDecorations);
+    async function(sourceFrame, expectedDecorations, action, skipFirstWait = false) {
+  const waitPromise =
+      SourcesTestRunner.waitForExactBreakpointDecorations(sourceFrame, expectedDecorations, skipFirstWait);
   await action();
   await waitPromise;
   SourcesTestRunner.dumpDebuggerPluginBreakpoints(sourceFrame);
@@ -765,8 +766,14 @@ SourcesTestRunner.runActionAndWaitForExactBreakpointDecorations =
  *      expectedDecorations = [[5, 1], [10, 2]]
  *
  *    waits until line 5 has one breakpoint decoration and line 10 has two decorations.
+ * @param skipFirstWait Check decorations immediately without waiting for the
+ *                      "decorations updated" event.
  */
-SourcesTestRunner.waitForExactBreakpointDecorations = function(sourceFrame, expectedDecorations) {
+SourcesTestRunner.waitForExactBreakpointDecorations = function(
+    sourceFrame, expectedDecorations, skipFirstWait = false) {
+  if (skipFirstWait) {
+    return checkIfDecorationsReady();
+  }
   return SourcesTestRunner.waitDebuggerPluginDecorations().then(checkIfDecorationsReady);
 
   function checkIfDecorationsReady() {

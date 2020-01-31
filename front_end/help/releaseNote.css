@@ -56,7 +56,15 @@
 }
 
 .release-note-container .release-note-link {
+    border: 1px solid rgba(0, 0, 0, .2);
+    padding-left: 8px;
+    padding-right: 8px;
+    margin-bottom: 4px;
     text-decoration: none;
+}
+
+.release-note-container .release-note-link:hover {
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, .5) inset;
 }
 
 .release-note-title,
@@ -98,4 +106,19 @@ img {
 
 img:hover {
     box-shadow: 0 2px 4px rgba(0, 0, 0, .5);
+}
+
+@media (forced-colors: active) {
+    .release-note-container .release-note-link {
+        border-color: ButtonText;
+    }
+    .release-note-container .release-note-link:hover {
+        forced-color-adjust: none;
+        border-color: Highlight;
+    }
+    .release-note-container li .release-note-title,
+    .release-note-container li:not(:hover) .release-note-subtitle {
+        forced-color-adjust: none;
+        color: LinkText;
+    }
 }

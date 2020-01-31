@@ -49,35 +49,35 @@ export class PersistenceImpl extends Common.ObjectWrapper.ObjectWrapper {
   /**
    * @param {!PersistenceBinding} binding
    */
-  addBinding(binding) {
-    this._innerAddBinding(binding);
+  async addBinding(binding) {
+    await this._innerAddBinding(binding);
   }
 
   /**
    * @param {!PersistenceBinding} binding
    */
-  addBindingForTest(binding) {
-    this._innerAddBinding(binding);
+  async addBindingForTest(binding) {
+    await this._innerAddBinding(binding);
   }
 
   /**
    * @param {!PersistenceBinding} binding
    */
-  removeBinding(binding) {
-    this._innerRemoveBinding(binding);
+  async removeBinding(binding) {
+    await this._innerRemoveBinding(binding);
   }
 
   /**
    * @param {!PersistenceBinding} binding
    */
-  removeBindingForTest(binding) {
-    this._innerRemoveBinding(binding);
+  async removeBindingForTest(binding) {
+    await this._innerRemoveBinding(binding);
   }
 
   /**
    * @param {!PersistenceBinding} binding
    */
-  _innerAddBinding(binding) {
+  async _innerAddBinding(binding) {
     binding.network[_binding] = binding;
     binding.fileSystem[_binding] = binding;
 
@@ -94,7 +94,7 @@ export class PersistenceImpl extends Common.ObjectWrapper.ObjectWrapper {
 
     this._addFilePathBindingPrefixes(binding.fileSystem.url());
 
-    this._moveBreakpoints(binding.fileSystem, binding.network);
+    await this._moveBreakpoints(binding.fileSystem, binding.network);
 
     console.assert(!binding.fileSystem.isDirty() || !binding.network.isDirty());
     if (binding.fileSystem.isDirty()) {
@@ -114,7 +114,7 @@ export class PersistenceImpl extends Common.ObjectWrapper.ObjectWrapper {
   /**
    * @param {!PersistenceBinding} binding
    */
-  _innerRemoveBinding(binding) {
+  async _innerRemoveBinding(binding) {
     if (binding.network[_binding] !== binding) {
       return;
     }
@@ -135,7 +135,7 @@ export class PersistenceImpl extends Common.ObjectWrapper.ObjectWrapper {
         Workspace.UISourceCode.Events.WorkingCopyChanged, this._onWorkingCopyChanged, this);
 
     this._removeFilePathBindingPrefixes(binding.fileSystem.url());
-    this._breakpointManager.copyBreakpoints(binding.network.url(), binding.fileSystem);
+    await this._breakpointManager.copyBreakpoints(binding.network.url(), binding.fileSystem);
 
     this._notifyBindingEvent(binding.network);
     this._notifyBindingEvent(binding.fileSystem);
@@ -145,18 +145,18 @@ export class PersistenceImpl extends Common.ObjectWrapper.ObjectWrapper {
   /**
    * @param {!AutomappingStatus} status
    */
-  _onStatusAdded(status) {
+  async _onStatusAdded(status) {
     const binding = new PersistenceBinding(status.network, status.fileSystem);
     status[_binding] = binding;
-    this._innerAddBinding(binding);
+    await this._innerAddBinding(binding);
   }
 
   /**
    * @param {!AutomappingStatus} status
    */
-  _onStatusRemoved(status) {
+  async _onStatusRemoved(status) {
     const binding = /** @type {!PersistenceBinding} */ (status[_binding]);
-    this._innerRemoveBinding(binding);
+    await this._innerRemoveBinding(binding);
   }
 
   /**
@@ -282,14 +282,14 @@ export class PersistenceImpl extends Common.ObjectWrapper.ObjectWrapper {
    * @param {!Workspace.UISourceCode.UISourceCode} from
    * @param {!Workspace.UISourceCode.UISourceCode} to
    */
-  _moveBreakpoints(from, to) {
+  async _moveBreakpoints(from, to) {
     const breakpoints = this._breakpointManager.breakpointLocationsForUISourceCode(from).map(
         breakpointLocation => breakpointLocation.breakpoint);
-    for (const breakpoint of breakpoints) {
+    await Promise.all(breakpoints.map(breakpoint => {
       breakpoint.remove(false /* keepInStorage */);
-      this._breakpointManager.setBreakpoint(
+      return this._breakpointManager.setBreakpoint(
           to, breakpoint.lineNumber(), breakpoint.columnNumber(), breakpoint.condition(), breakpoint.enabled());
-    }
+    }));
   }
 
   /**

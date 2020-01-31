@@ -11,6 +11,9 @@
 // Since the check scans for common error patterns, it might misidentify something.
 // In this case, add it to the excluded errors at the top of the script.
 
+const fs = require('fs');
+const {promisify} = require('util');
+const readFileAsync = promisify(fs.readFile);
 const path = require('path');
 const localizationUtils = require('./utils/localization_utils');
 const esprimaTypes = localizationUtils.esprimaTypes;
@@ -52,8 +55,15 @@ async function main() {
     if (process.argv[2] === '-a') {
       filePathPromises.push(localizationUtils.getFilesFromDirectory(frontendPath, filePaths, ['.js']));
     } else {
+      if (process.argv[2] === '--file-list') {
+        const fileContent = await readFileAsync(process.argv[3]);
+        // convert to a list of filenames, remove the last empty string
+        filePaths = fileContent.toString().split(/\r?\n/g).slice(0, -1);
+      } else {
+        filePaths = process.argv.slice(2);
+      }
       // esprima has a bug parsing a valid JSON format, so exclude them.
-      filePaths = process.argv.slice(2).filter( file => {
+      filePaths = filePaths.filter( file => {
         return (path.extname(file) !== '.json') && localizationUtils.shouldParseDirectory(file);
       });
     }

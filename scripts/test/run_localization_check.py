@@ -21,13 +21,14 @@ def parse_options(cli_args):
     parser = argparse.ArgumentParser(description='Process localization check arguments.')
     parser.add_argument('--all', '-a', action='store_true', dest='all_files', help='If present, check all devtools frontend .js files')
     parser.add_argument('--files', nargs='+', help='List of .js files with absolute paths separated by a space')
+    parser.add_argument('--file-list', dest='file_list', help='Specifies a file with a list of files (one per line)')
     parser.add_argument(
         '--autofix', action='store_true', help='If present, errors in localizable resources will be fixed automatically')
     args = parser.parse_args(cli_args)
 
     if len(cli_args) == 0:
-      print('No argument provided. Assuming --all to check all files.')
-      args.all_files = True
+        print('No argument provided. Assuming --all to check all files.')
+        args.all_files = True
 
     if args.all_files and args.files:
         parser.error(
@@ -85,6 +86,8 @@ def main():
         check_devtools_localizability_args = ['-a']
     elif parsed_args.files:
         check_devtools_localizability_args = parsed_args.files
+    elif parsed_args.file_list:
+        check_devtools_localizability_args = ['--file-list', parsed_args.file_list]
 
     if parsed_args.autofix:
         check_devtools_localizable_resources_args = ['--autofix']

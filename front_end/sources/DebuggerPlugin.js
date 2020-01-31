@@ -374,7 +374,7 @@ export class DebuggerPlugin extends Plugin {
     this._muted = true;
   }
 
-  _restoreBreakpointsIfConsistentScripts() {
+  async _restoreBreakpointsIfConsistentScripts() {
     const scriptFiles = this._scriptFileForDebuggerModel.valuesArray();
     for (let i = 0; i < scriptFiles.length; ++i) {
       if (scriptFiles[i].hasDivergedFromVM() || scriptFiles[i].isMergingToVM()) {
@@ -382,10 +382,10 @@ export class DebuggerPlugin extends Plugin {
       }
     }
 
-    this._restoreBreakpointsAfterEditing();
+    await this._restoreBreakpointsAfterEditing();
   }
 
-  _restoreBreakpointsAfterEditing() {
+  async _restoreBreakpointsAfterEditing() {
     this._muted = false;
     if (this._mutedFromStart) {
       this._mutedFromStart = false;
@@ -403,7 +403,7 @@ export class DebuggerPlugin extends Plugin {
       decoration.breakpoint.remove();
       const location = decoration.handle.resolve();
       if (location) {
-        this._setBreakpoint(location.lineNumber, location.columnNumber, decoration.condition, enabled);
+        await this._setBreakpoint(location.lineNumber, location.columnNumber, decoration.condition, enabled);
       }
     }
   }
@@ -554,7 +554,7 @@ export class DebuggerPlugin extends Plugin {
   /**
    * @param {!KeyboardEvent} event
    */
-  _onKeyDown(event) {
+  async _onKeyDown(event) {
     this._clearControlDown();
 
     if (event.key === 'Escape') {
@@ -570,7 +570,7 @@ export class DebuggerPlugin extends Plugin {
       if (!selection) {
         return;
       }
-      this._toggleBreakpoint(selection.startLine, false);
+      await this._toggleBreakpoint(selection.startLine, false);
       event.consume(true);
       return;
     }
@@ -579,7 +579,7 @@ export class DebuggerPlugin extends Plugin {
       if (!selection) {
         return;
       }
-      this._toggleBreakpoint(selection.startLine, true);
+      await this._toggleBreakpoint(selection.startLine, true);
       event.consume(true);
       return;
     }
@@ -706,7 +706,7 @@ export class DebuggerPlugin extends Plugin {
   async _editBreakpointCondition(editorLineNumber, breakpoint, location, preferLogpoint) {
     const oldCondition = breakpoint ? breakpoint.condition() : '';
     const decorationElement = createElement('div');
-    const dialog = new BreakpointEditDialog(editorLineNumber, oldCondition, !!preferLogpoint, result => {
+    const dialog = new BreakpointEditDialog(editorLineNumber, oldCondition, !!preferLogpoint, async result => {
       dialog.detach();
       this._textEditor.removeDecoration(decorationElement, editorLineNumber);
       if (!result.committed) {
@@ -715,9 +715,9 @@ export class DebuggerPlugin extends Plugin {
       if (breakpoint) {
         breakpoint.setCondition(result.condition);
       } else if (location) {
-        this._setBreakpoint(location.lineNumber, location.columnNumber, result.condition, true);
+        await this._setBreakpoint(location.lineNumber, location.columnNumber, result.condition, true);
       } else {
-        this._createNewBreakpoint(editorLineNumber, result.condition, true);
+        await this._createNewBreakpoint(editorLineNumber, result.condition, true);
       }
     });
     this._textEditor.addDecoration(decorationElement, editorLineNumber);
@@ -1291,7 +1291,7 @@ export class DebuggerPlugin extends Plugin {
    * @param {!BreakpointDecoration} decoration
    * @param {!Event} event
    */
-  _inlineBreakpointClick(decoration, event) {
+  async _inlineBreakpointClick(decoration, event) {
     event.consume(true);
     if (decoration.breakpoint) {
       if (event.shiftKey) {
@@ -1305,7 +1305,7 @@ export class DebuggerPlugin extends Plugin {
         return;
       }
       const location = this._transformer.editorToRawLocation(editorLocation.lineNumber, editorLocation.columnNumber);
-      this._setBreakpoint(location[0], location[1], decoration.condition, true);
+      await this._setBreakpoint(location[0], location[1], decoration.condition, true);
     }
   }
 
@@ -1587,7 +1587,7 @@ export class DebuggerPlugin extends Plugin {
   /**
    * @param {!Common.Event} event
    */
-  _handleGutterClick(event) {
+  async _handleGutterClick(event) {
     if (this._muted) {
       return;
     }
@@ -1603,7 +1603,7 @@ export class DebuggerPlugin extends Plugin {
       return;
     }
 
-    this._toggleBreakpoint(editorLineNumber, eventObject.shiftKey);
+    await this._toggleBreakpoint(editorLineNumber, eventObject.shiftKey);
     eventObject.consume(true);
   }
 
@@ -1611,10 +1611,10 @@ export class DebuggerPlugin extends Plugin {
    * @param {number} editorLineNumber
    * @param {boolean} onlyDisable
    */
-  _toggleBreakpoint(editorLineNumber, onlyDisable) {
+  async _toggleBreakpoint(editorLineNumber, onlyDisable) {
     const decorations = this._lineBreakpointDecorations(editorLineNumber);
     if (!decorations.length) {
-      this._createNewBreakpoint(editorLineNumber, '', true);
+      await this._createNewBreakpoint(editorLineNumber, '', true);
       return;
     }
     const hasDisabled = this._textEditor.hasLineClass(editorLineNumber, 'cm-breakpoint-disabled');
@@ -1642,7 +1642,7 @@ export class DebuggerPlugin extends Plugin {
       const locations = await this._breakpointManager.possibleBreakpoints(
           this._uiSourceCode, new TextUtils.TextRange(start[0], start[1], end[0], end[1]));
       if (locations && locations.length) {
-        this._setBreakpoint(locations[0].lineNumber, locations[0].columnNumber, condition, enabled);
+        await this._setBreakpoint(locations[0].lineNumber, locations[0].columnNumber, condition, enabled);
         return;
       }
     }
@@ -1656,13 +1656,13 @@ export class DebuggerPlugin extends Plugin {
    * @param {string} condition
    * @param {boolean} enabled
    */
-  _setBreakpoint(lineNumber, columnNumber, condition, enabled) {
+  async _setBreakpoint(lineNumber, columnNumber, condition, enabled) {
     if (!Bindings.CompilerScriptMapping.uiLineHasMapping(this._uiSourceCode, lineNumber)) {
       return;
     }
 
     self.Common.settings.moduleSetting('breakpointsActive').set(true);
-    this._breakpointManager.setBreakpoint(this._uiSourceCode, lineNumber, columnNumber, condition, enabled);
+    await this._breakpointManager.setBreakpoint(this._uiSourceCode, lineNumber, columnNumber, condition, enabled);
     this._breakpointWasSetForTest(lineNumber, columnNumber, condition, enabled);
   }
 

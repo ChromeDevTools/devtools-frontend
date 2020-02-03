@@ -18,6 +18,9 @@
   <message name="IDS_DEVTOOLS_2b32f15dc0ebe6f7950f93e0e5f54723" desc="Default Accessible Text for a Datagrid">
     <ph name="THIS__DISPLAYNAME">$1s<ex>Coverage grid</ex></ph>, use the up and down arrow keys to navigate and interact with the rows of the table; Use browse mode to read cell by cell.
   </message>
+  <message name="IDS_DEVTOOLS_2d1a0357b8c9e3ec6634b8dad39764c5" desc="A context menu item in data grids to reset the columns to their default weight">
+    Reset Columns
+  </message>
   <message name="IDS_DEVTOOLS_3338c02fe80ef02fc4bfb78f90bf173c" desc="accessible name for expandible nodes in datagrids">
     collapsed
   </message>

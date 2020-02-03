@@ -276,6 +276,8 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
    * @param {number=} position
    */
   _innerAddColumn(column, position) {
+    column.defaultWeight = column.weight;
+
     const columnId = column.id;
     if (columnId in this._columns) {
       this._innerRemoveColumn(columnId);
@@ -876,6 +878,15 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
     this._loadColumnWeights();
   }
 
+  _resetColumnWeights() {
+    for (let i = 0; i < this._columnsArray.length; ++i) {
+      const column = this._columnsArray[i];
+      column.weight = column.defaultWeight;
+    }
+    this._applyColumnWeights();
+    this._saveColumnWeights();
+  }
+
   _loadColumnWeights() {
     if (!this._columnWeightsSetting) {
       return;
@@ -1301,16 +1312,22 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
       }
     }
 
-    if (this._headerContextMenuCallback) {
-      if (target.isSelfOrDescendant(this._headerTableBody)) {
+    if (target.isSelfOrDescendant(this._headerTableBody)) {
+      if (this._headerContextMenuCallback) {
         this._headerContextMenuCallback(contextMenu);
-        contextMenu.show();
-        return;
-      } else {
-        // Add header context menu to a subsection available from the body
-        const headerSubMenu = contextMenu.defaultSection().appendSubMenuItem(ls`Header Options`);
+      }
+      contextMenu.defaultSection().appendItem(
+          Common.UIString.UIString('Reset Columns'), this._resetColumnWeights.bind(this));
+      contextMenu.show();
+      return;
+    } else {
+      // Add header context menu to a subsection available from the body
+      const headerSubMenu = contextMenu.defaultSection().appendSubMenuItem(ls`Header Options`);
+      if (this._headerContextMenuCallback) {
         this._headerContextMenuCallback(headerSubMenu);
       }
+      headerSubMenu.defaultSection().appendItem(
+          Common.UIString.UIString('Reset Columns'), this._resetColumnWeights.bind(this));
     }
 
     const isContextMenuKey = (event.button === 0);

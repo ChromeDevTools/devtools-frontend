@@ -15,7 +15,7 @@ const targetPage = Symbol('TargetPage');
 const frontEndPage = Symbol('DevToolsPage');
 const browserInstance = Symbol('BrowserInstance');
 
-export let resetPages: () => void;
+export let resetPages: (...enabledExperiments: string[]) => void;
 
 // TODO: Remove once Chromium updates its version of Node.js to 12+.
 const globalThis: any = global;

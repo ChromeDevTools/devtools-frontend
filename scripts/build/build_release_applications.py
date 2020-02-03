@@ -175,11 +175,6 @@ class ReleaseBuilder(object):
         self._concatenate_autostart_modules(output)
 
         self._write_module_resources(self.autorun_resource_names(), output)
-        if not self.descriptors.has_html and not self.descriptors.worker:
-            js_file = join(self.application_dir, self.app_file('js'))
-            if path.exists(js_file):
-                output.write(';\n/* Autostart script for worker */\n')
-                output.write(read_file(js_file))
 
     def _concatenate_dynamic_module(self, module_name):
         module = self.descriptors.modules[module_name]

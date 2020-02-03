@@ -50,7 +50,7 @@ export class ServiceManager {
       url += `?${queryParams.join('&')}`;
     }
 
-    const worker = new Worker(url);
+    const worker = new Worker(url, {type: 'module'});
     const connection = new Connection(new WorkerServicePort(worker));
     return connection._createService(serviceName);
   }

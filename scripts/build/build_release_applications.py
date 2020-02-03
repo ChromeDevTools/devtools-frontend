@@ -68,28 +68,6 @@ def concatenated_module_filename(module_name, output_dir):
     return join(output_dir, module_name + '/' + module_name + '_module.js')
 
 
-def symlink_or_copy_file(src, dest, safe=False):
-    if safe and path.exists(dest):
-        os.remove(dest)
-    if hasattr(os, 'symlink'):
-        os.symlink(src, dest)
-    else:
-        shutil.copy(src, dest)
-
-
-def symlink_or_copy_dir(src, dest):
-    if path.exists(dest):
-        shutil.rmtree(dest)
-    for src_dir, dirs, files in os.walk(src):
-        subpath = path.relpath(src_dir, src)
-        dest_dir = path.normpath(join(dest, subpath))
-        os.mkdir(dest_dir)
-        for name in files:
-            src_name = join(os.getcwd(), src_dir, name)
-            dest_name = join(dest_dir, name)
-            symlink_or_copy_file(src_name, dest_name)
-
-
 # Outputs:
 #   <app_name>.html
 #   <app_name>.js
@@ -185,10 +163,6 @@ class ReleaseBuilder(object):
                         'Non-autostart dependencies specified for the autostarted module "%s": %s' % (name, non_autostart_deps))
             else:
                 non_autostart.add(name)
-
-    def _map_module_to_namespace(self, module):
-        camel_case_namespace = "".join(map(lambda x: x[0].upper() + x[1:], module.split('_')))
-        return self._special_case_namespaces.get(module, camel_case_namespace)
 
     def _concatenate_application_script(self, output):
         output.write('Root.allDescriptors.push(...%s);' % self._release_module_descriptors())

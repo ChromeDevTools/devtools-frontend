@@ -104,4 +104,4 @@ export const getBrowserAndPages = (): BrowserAndPages => {
   };
 };
 
-export const resourcesPath = `file://${join(__dirname, 'resources')}`;
+export const resourcesPath = 'http://localhost:8090/test/e2e/resources';

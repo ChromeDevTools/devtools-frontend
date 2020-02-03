@@ -129,7 +129,7 @@ async function runTests() {
     mocha.timeout(envDebug ? 100000 : 4000);
 
     mochaRun = mocha.run();
-    mochaRun.on('suite end', () => {
+    mochaRun.on('end', () => {
       (mocha as any).unloadFiles();
       resolve();
     });

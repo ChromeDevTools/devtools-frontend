@@ -59,7 +59,7 @@ const pages: puppeteer.Page[] = [];
 
     // Connect to the DevTools frontend.
     const frontend = await browser.newPage();
-    const frontendUrl = `http://localhost:8090/front_end/devtools_app.html?ws=localhost:${envPort}/devtools/page/${id}`;
+    const frontendUrl = `http://localhost:8090/front_end/devtools_app.html?ws=localhost:${envPort}/devtools/page/${id}&experiments=true`;
     frontend.goto(frontendUrl);
 
     const resetPages =

@@ -23,12 +23,17 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as Common from '../common/common.js';
+import * as DataGrid from '../data_grid/data_grid.js';
+import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
+import * as UI from '../ui/ui.js';
+
 /**
  * @unrestricted
  */
-export class ProfileDataGridNode extends DataGrid.DataGridNode {
+export class ProfileDataGridNode extends DataGrid.DataGrid.DataGridNode {
   /**
-   * @param {!SDK.ProfileNode} profileNode
+   * @param {!SDK.ProfileTreeModel.ProfileNode} profileNode
    * @param {!ProfileDataGridTree} owningTree
    * @param {boolean} hasChildren
    */
@@ -48,7 +53,7 @@ export class ProfileDataGridNode extends DataGrid.DataGridNode {
     this.callUID = profileNode.callUID;
     this.self = profileNode.self;
     this.total = profileNode.total;
-    this.functionName = UI.beautifyFunctionName(profileNode.functionName);
+    this.functionName = UI.UIUtils.beautifyFunctionName(profileNode.functionName);
     this._deoptReason = profileNode.deoptReason || '';
     this.url = profileNode.url;
     /** @type {?Element} */
@@ -176,8 +181,8 @@ export class ProfileDataGridNode extends DataGrid.DataGridNode {
         cell.classList.toggle('highlight', this._searchMatchedFunctionColumn);
         if (this._deoptReason) {
           cell.classList.add('not-optimized');
-          const warningIcon = UI.Icon.create('smallicon-warning', 'profile-warn-marker');
-          warningIcon.title = Common.UIString('Not optimized: %s', this._deoptReason);
+          const warningIcon = UI.Icon.Icon.create('smallicon-warning', 'profile-warn-marker');
+          warningIcon.title = Common.UIString.UIString('Not optimized: %s', this._deoptReason);
           cell.appendChild(warningIcon);
         }
         cell.createTextChild(this.functionName);
@@ -231,7 +236,7 @@ export class ProfileDataGridNode extends DataGrid.DataGridNode {
 
   /**
    * @override
-   * @param {!DataGrid.DataGridNode} profileDataGridNode
+   * @param {!DataGrid.DataGrid.DataGridNode} profileDataGridNode
    * @param {number} index
    */
   insertChild(profileDataGridNode, index) {
@@ -242,7 +247,7 @@ export class ProfileDataGridNode extends DataGrid.DataGridNode {
 
   /**
    * @override
-   * @param {!DataGrid.DataGridNode} profileDataGridNode
+   * @param {!DataGrid.DataGrid.DataGridNode} profileDataGridNode
    */
   removeChild(profileDataGridNode) {
     super.removeChild(profileDataGridNode);
@@ -340,13 +345,13 @@ export class ProfileDataGridNode extends DataGrid.DataGridNode {
 
 
 /**
- * @implements {UI.Searchable}
+ * @implements {UI.SearchableView.Searchable}
  * @unrestricted
  */
 export class ProfileDataGridTree {
   /**
    * @param {!Formatter} formatter
-   * @param {!UI.SearchableView} searchableView
+   * @param {!UI.SearchableView.SearchableView} searchableView
    * @param {number} total
    */
   constructor(formatter, searchableView, total) {

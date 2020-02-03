@@ -28,6 +28,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as Common from '../common/common.js';
+import * as Host from '../host/host.js';
+import * as UI from '../ui/ui.js';
+
 /**
  * @implements {PerfUI.FlameChartDataProvider}
  * @unrestricted
@@ -127,7 +131,7 @@ export class ProfileFlameChartDataProvider {
    */
   entryTitle(entryIndex) {
     const node = this._entryNodes[entryIndex];
-    return UI.beautifyFunctionName(node.functionName);
+    return UI.UIUtils.beautifyFunctionName(node.functionName);
   }
 
   /**
@@ -137,7 +141,7 @@ export class ProfileFlameChartDataProvider {
    */
   entryFont(entryIndex) {
     if (!this._font) {
-      this._font = '11px ' + Host.fontFamily();
+      this._font = '11px ' + Host.Platform.fontFamily();
       this._boldFont = 'bold ' + this._font;
     }
     const node = this._entryNodes[entryIndex];
@@ -192,12 +196,12 @@ export class ProfileFlameChartDataProvider {
 
 
 /**
- * @implements {UI.Searchable}
+ * @implements {UI.SearchableView.Searchable}
  * @unrestricted
  */
-export class CPUProfileFlameChart extends UI.VBox {
+export class CPUProfileFlameChart extends UI.Widget.VBox {
   /**
-   * @param {!UI.SearchableView} searchableView
+   * @param {!UI.SearchableView.SearchableView} searchableView
    * @param {!ProfileFlameChartDataProvider} dataProvider
    */
   constructor(searchableView, dataProvider) {
@@ -427,7 +431,7 @@ export class OverviewCalculator {
  * @implements {PerfUI.FlameChartDelegate}
  * @unrestricted
  */
-export class OverviewPane extends UI.VBox {
+export class OverviewPane extends UI.Widget.VBox {
   /**
    * @param {!PerfUI.FlameChartDataProvider} dataProvider
    */

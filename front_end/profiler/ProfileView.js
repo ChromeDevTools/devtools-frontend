@@ -2,6 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Bindings from '../bindings/bindings.js';
+import * as Common from '../common/common.js';
+import * as Components from '../components/components.js';
+import * as DataGrid from '../data_grid/data_grid.js';  // eslint-disable-line no-unused-vars
+import * as Host from '../host/host.js';
+import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
+import * as UI from '../ui/ui.js';
+
 import {BottomUpProfileDataGridTree} from './BottomUpProfileDataGrid.js';
 import {CPUProfileFlameChart, ProfileFlameChartDataProvider} from './CPUProfileFlameChart.js';  // eslint-disable-line no-unused-vars
 import {Formatter, ProfileDataGridNode, ProfileDataGridTree} from './ProfileDataGrid.js';  // eslint-disable-line no-unused-vars
@@ -10,17 +18,17 @@ import {ProfileSidebarTreeElement} from './ProfileSidebarTreeElement.js';
 import {TopDownProfileDataGridTree} from './TopDownProfileDataGrid.js';
 
 /**
- * @implements {UI.Searchable}
+ * @implements {UI.SearchableView.Searchable}
  * @unrestricted
  */
-export class ProfileView extends UI.SimpleView {
+export class ProfileView extends UI.View.SimpleView {
   constructor() {
-    super(Common.UIString('Profile'));
+    super(Common.UIString.UIString('Profile'));
 
     this._profile = null;
 
-    this._searchableView = new UI.SearchableView(this);
-    this._searchableView.setPlaceholder(Common.UIString('Find by cost (>50ms), name or file'));
+    this._searchableView = new UI.SearchableView.SearchableView(this);
+    this._searchableView.setPlaceholder(Common.UIString.UIString('Find by cost (>50ms), name or file'));
     this._searchableView.show(this.element);
 
     const columns = /** @type {!Array<!DataGrid.ColumnDescriptor>} */ ([]);
@@ -33,29 +41,32 @@ export class ProfileView extends UI.SimpleView {
       sort: DataGrid.DataGrid.Order.Descending
     });
     columns.push({id: 'total', title: this.columnHeader('total'), width: '120px', fixedWidth: true, sortable: true});
-    columns.push({id: 'function', title: Common.UIString('Function'), disclosure: true, sortable: true});
+    columns.push({id: 'function', title: Common.UIString.UIString('Function'), disclosure: true, sortable: true});
 
-    this.dataGrid = new DataGrid.DataGrid({displayName: ls`Profiler`, columns});
+    this.dataGrid = new DataGrid.DataGrid.DataGridImpl({displayName: ls`Profiler`, columns});
     this.dataGrid.addEventListener(DataGrid.DataGrid.Events.SortingChanged, this._sortProfile, this);
     this.dataGrid.addEventListener(DataGrid.DataGrid.Events.SelectedNode, this._nodeSelected.bind(this, true));
     this.dataGrid.addEventListener(DataGrid.DataGrid.Events.DeselectedNode, this._nodeSelected.bind(this, false));
     this.dataGrid.setRowContextMenuCallback(this._populateContextMenu.bind(this));
 
-    this.viewSelectComboBox = new UI.ToolbarComboBox(this._changeView.bind(this), ls`Profile view mode`);
+    this.viewSelectComboBox = new UI.Toolbar.ToolbarComboBox(this._changeView.bind(this), ls`Profile view mode`);
 
-    this.focusButton = new UI.ToolbarButton(Common.UIString('Focus selected function'), 'largeicon-visibility');
+    this.focusButton =
+        new UI.Toolbar.ToolbarButton(Common.UIString.UIString('Focus selected function'), 'largeicon-visibility');
     this.focusButton.setEnabled(false);
-    this.focusButton.addEventListener(UI.ToolbarButton.Events.Click, this._focusClicked, this);
+    this.focusButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._focusClicked, this);
 
-    this.excludeButton = new UI.ToolbarButton(Common.UIString('Exclude selected function'), 'largeicon-delete');
+    this.excludeButton =
+        new UI.Toolbar.ToolbarButton(Common.UIString.UIString('Exclude selected function'), 'largeicon-delete');
     this.excludeButton.setEnabled(false);
-    this.excludeButton.addEventListener(UI.ToolbarButton.Events.Click, this._excludeClicked, this);
+    this.excludeButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._excludeClicked, this);
 
-    this.resetButton = new UI.ToolbarButton(Common.UIString('Restore all functions'), 'largeicon-refresh');
+    this.resetButton =
+        new UI.Toolbar.ToolbarButton(Common.UIString.UIString('Restore all functions'), 'largeicon-refresh');
     this.resetButton.setEnabled(false);
-    this.resetButton.addEventListener(UI.ToolbarButton.Events.Click, this._resetClicked, this);
+    this.resetButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._resetClicked, this);
 
-    this._linkifier = new Components.Linkifier(maxLinkLength);
+    this._linkifier = new Components.Linkifier.Linkifier(maxLinkLength);
   }
 
   /**
@@ -73,7 +84,7 @@ export class ProfileView extends UI.SimpleView {
   }
 
   /**
-   * @param {!SDK.ProfileTreeModel} profile
+   * @param {!SDK.ProfileTreeModel.ProfileTreeModel} profile
    */
   setProfile(profile) {
     this._profile = profile;
@@ -84,7 +95,7 @@ export class ProfileView extends UI.SimpleView {
   }
 
   /**
-   * @return {?SDK.ProfileTreeModel}
+   * @return {?SDK.ProfileTreeModel.ProfileTreeModel}
    */
   profile() {
     return this._profile;
@@ -152,7 +163,7 @@ export class ProfileView extends UI.SimpleView {
 
   /**
    * @override
-   * @return {!Promise<!Array<!UI.ToolbarItem>>}
+   * @return {!Promise<!Array<!UI.Toolbar.ToolbarItem>>}
    */
   async toolbarItems() {
     return [this.viewSelectComboBox, this.focusButton, this.excludeButton, this.resetButton];
@@ -181,8 +192,8 @@ export class ProfileView extends UI.SimpleView {
   }
 
   /**
-   * @param {!UI.ContextMenu} contextMenu
-   * @param {!DataGrid.DataGridNode} gridNode
+   * @param {!UI.ContextMenu.ContextMenu} contextMenu
+   * @param {!DataGrid.DataGrid.DataGridNode} gridNode
    */
   _populateContextMenu(contextMenu, gridNode) {
     const node = /** @type {!ProfileDataGridNode} */ (gridNode);
@@ -227,7 +238,7 @@ export class ProfileView extends UI.SimpleView {
   }
 
   /**
-   * @return {!UI.SearchableView}
+   * @return {!UI.SearchableView.SearchableView}
    */
   searchableView() {
     return this._searchableView;
@@ -281,7 +292,7 @@ export class ProfileView extends UI.SimpleView {
   }
 
   /**
-   * @return {!Components.Linkifier}
+   * @return {!Components.Linkifier.Linkifier}
    */
   linkifier() {
     return this._linkifier;
@@ -291,13 +302,13 @@ export class ProfileView extends UI.SimpleView {
     if (this._textView) {
       return;
     }
-    this._textView = new UI.SimpleView(ls`Call tree`);
+    this._textView = new UI.View.SimpleView(ls`Call tree`);
     this._textView.registerRequiredCSS('profiler/profilesPanel.css');
     this.populateTextView(this._textView);
   }
 
   /**
-   * @param {!UI.SimpleView} view
+   * @param {!UI.View.SimpleView} view
    */
   populateTextView(view) {
   }
@@ -456,33 +467,34 @@ export const ViewTypes = {
 };
 
 /**
- * @implements {Common.OutputStream}
+ * @implements {Common.StringOutputStream.OutputStream}
  * @unrestricted
  */
 export class WritableProfileHeader extends ProfileHeader {
   /**
-   * @param {?SDK.DebuggerModel} debuggerModel
+   * @param {?SDK.DebuggerModel.DebuggerModel} debuggerModel
    * @param {!ProfileType} type
    * @param {string=} title
    */
   constructor(debuggerModel, type, title) {
-    super(type, title || Common.UIString('Profile %d', type.nextProfileUid()));
+    super(type, title || Common.UIString.UIString('Profile %d', type.nextProfileUid()));
     this._debuggerModel = debuggerModel;
     this._tempFile = null;
   }
 
   /**
-   * @param {!Bindings.ChunkedReader} reader
+   * @param {!Bindings.FileUtils.ChunkedReader} reader
    */
   _onChunkTransferred(reader) {
-    this.updateStatus(Common.UIString('Loading\u2026 %d%%', Number.bytesToString(this._jsonifiedProfile.length)));
+    this.updateStatus(
+        Common.UIString.UIString('Loading\u2026 %d%%', Number.bytesToString(this._jsonifiedProfile.length)));
   }
 
   /**
-   * @param {!Bindings.ChunkedReader} reader
+   * @param {!Bindings.FileUtils.ChunkedReader} reader
    */
   _onError(reader) {
-    this.updateStatus(Common.UIString(`File '%s' read error: %s`, reader.fileName(), reader.error().message));
+    this.updateStatus(Common.UIString.UIString(`File '%s' read error: %s`, reader.fileName(), reader.error().message));
   }
 
   /**
@@ -528,7 +540,7 @@ export class WritableProfileHeader extends ProfileHeader {
    * @override
    */
   async saveToFile() {
-    const fileOutputStream = new Bindings.FileOutputStream();
+    const fileOutputStream = new Bindings.FileUtils.FileOutputStream();
     this._fileName = this._fileName ||
         `${this.profileType().typeName()}-${new Date().toISO8601Compact()}${this.profileType().fileExtension()}`;
     const accepted = await fileOutputStream.open(this._fileName);
@@ -548,22 +560,22 @@ export class WritableProfileHeader extends ProfileHeader {
    * @return {!Promise<?Error>}
    */
   async loadFromFile(file) {
-    this.updateStatus(Common.UIString('Loading\u2026'), true);
-    const fileReader = new Bindings.ChunkedFileReader(file, 10000000, this._onChunkTransferred.bind(this));
+    this.updateStatus(Common.UIString.UIString('Loading\u2026'), true);
+    const fileReader = new Bindings.FileUtils.ChunkedFileReader(file, 10000000, this._onChunkTransferred.bind(this));
     this._jsonifiedProfile = '';
 
     const success = await fileReader.read(this);
     if (!success) {
       this._onError(fileReader);
-      return new Error(Common.UIString('Failed to read file'));
+      return new Error(Common.UIString.UIString('Failed to read file'));
     }
 
-    this.updateStatus(Common.UIString('Parsing\u2026'), true);
+    this.updateStatus(Common.UIString.UIString('Parsing\u2026'), true);
     let error = null;
     try {
       this._profile = /** @type {!Protocol.Profiler.Profile} */ (JSON.parse(this._jsonifiedProfile));
       this.setProfile(this._profile);
-      this.updateStatus(Common.UIString('Loaded'), false);
+      this.updateStatus(Common.UIString.UIString('Loaded'), false);
     } catch (e) {
       error = e;
       this.profileType().removeProfile(this);
@@ -582,7 +594,7 @@ export class WritableProfileHeader extends ProfileHeader {
   setProtocolProfile(profile) {
     this.setProfile(profile);
     this._protocolProfile = profile;
-    this._tempFile = new Bindings.TempFile();
+    this._tempFile = new Bindings.TempFile.TempFile();
     this._tempFile.write([JSON.stringify(profile)]);
     if (this.canSaveToFile()) {
       this.dispatchEventToListeners(Events.ProfileReceived);

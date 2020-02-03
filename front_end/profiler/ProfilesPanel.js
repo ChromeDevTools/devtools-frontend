@@ -23,7 +23,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import {DataDisplayDelegate, Events as ProfileHeaderEvents, ProfileEvents as ProfileTypeEvents, ProfileHeader, ProfileType} from './ProfileHeader.js';  // eslint-disable-line no-unused-vars
+import * as Common from '../common/common.js';
+import * as SDK from '../sdk/sdk.js';
+import * as UI from '../ui/ui.js';
+
+import {DataDisplayDelegate,            // eslint-disable-line no-unused-vars
+        Events as ProfileHeaderEvents,  // eslint-disable-line no-unused-vars
+        ProfileEvents as ProfileTypeEvents, ProfileHeader, ProfileType,} from './ProfileHeader.js';  // eslint-disable-line no-unused-vars
 import {Events as ProfileLauncherEvents, ProfileLauncherView} from './ProfileLauncherView.js';
 import {ProfileSidebarTreeElement} from './ProfileSidebarTreeElement.js';  // eslint-disable-line no-unused-vars
 import {instance} from './ProfileTypeRegistry.js';
@@ -32,7 +38,7 @@ import {instance} from './ProfileTypeRegistry.js';
  * @implements {DataDisplayDelegate}
  * @unrestricted
  */
-export class ProfilesPanel extends UI.PanelWithSidebar {
+export class ProfilesPanel extends UI.Panel.PanelWithSidebar {
   /**
    * @param {string} name
    * @param {!Array.<!ProfileType>} profileTypes
@@ -45,12 +51,12 @@ export class ProfilesPanel extends UI.PanelWithSidebar {
     this.registerRequiredCSS('profiler/profilesPanel.css');
     this.registerRequiredCSS('object_ui/objectValue.css');
 
-    const mainContainer = new UI.VBox();
+    const mainContainer = new UI.Widget.VBox();
     this.splitWidget().setMainWidget(mainContainer);
 
     this.profilesItemTreeElement = new ProfilesSidebarTreeElement(this);
 
-    this._sidebarTree = new UI.TreeOutlineInShadow();
+    this._sidebarTree = new UI.TreeOutline.TreeOutlineInShadow();
     this._sidebarTree.registerRequiredCSS('profiler/profilesSidebarTree.css');
     this._sidebarTree.element.classList.add('profiles-sidebar-tree-box');
     this.panelSidebarElement().appendChild(this._sidebarTree.element);
@@ -70,20 +76,21 @@ export class ProfilesPanel extends UI.PanelWithSidebar {
     this.panelSidebarElement().classList.add('profiles-tree-sidebar');
     const toolbarContainerLeft = createElementWithClass('div', 'profiles-toolbar');
     this.panelSidebarElement().insertBefore(toolbarContainerLeft, this.panelSidebarElement().firstChild);
-    const toolbar = new UI.Toolbar('', toolbarContainerLeft);
+    const toolbar = new UI.Toolbar.Toolbar('', toolbarContainerLeft);
 
     this._toggleRecordAction =
-        /** @type {!UI.Action }*/ (self.UI.actionRegistry.action(recordingActionId));
-    this._toggleRecordButton = UI.Toolbar.createActionButton(this._toggleRecordAction);
+        /** @type {!UI.Action.Action }*/ (self.UI.actionRegistry.action(recordingActionId));
+    this._toggleRecordButton = UI.Toolbar.Toolbar.createActionButton(this._toggleRecordAction);
     toolbar.appendToolbarItem(this._toggleRecordButton);
 
-    this.clearResultsButton = new UI.ToolbarButton(Common.UIString('Clear all profiles'), 'largeicon-clear');
-    this.clearResultsButton.addEventListener(UI.ToolbarButton.Events.Click, this._reset, this);
+    this.clearResultsButton =
+        new UI.Toolbar.ToolbarButton(Common.UIString.UIString('Clear all profiles'), 'largeicon-clear');
+    this.clearResultsButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._reset, this);
     toolbar.appendToolbarItem(this.clearResultsButton);
     toolbar.appendSeparator();
-    toolbar.appendToolbarItem(UI.Toolbar.createActionButtonForId('components.collect-garbage'));
+    toolbar.appendToolbarItem(UI.Toolbar.Toolbar.createActionButtonForId('components.collect-garbage'));
 
-    this._profileViewToolbar = new UI.Toolbar('', this._toolbarElement);
+    this._profileViewToolbar = new UI.Toolbar.Toolbar('', this._toolbarElement);
 
     this._profileGroups = {};
     this._launcherView = new ProfileLauncherView(this);
@@ -102,10 +109,11 @@ export class ProfilesPanel extends UI.PanelWithSidebar {
     this._createFileSelectorElement();
     this.element.addEventListener('contextmenu', this._handleContextMenuEvent.bind(this), false);
 
-    self.SDK.targetManager.addEventListener(
-        SDK.TargetManager.Events.SuspendStateChanged, this._onSuspendStateChanged, this);
-    self.UI.context.addFlavorChangeListener(SDK.CPUProfilerModel, this._updateProfileTypeSpecificUI, this);
-    self.UI.context.addFlavorChangeListener(SDK.HeapProfilerModel, this._updateProfileTypeSpecificUI, this);
+    self.SDK.targetManager.addEventListener(SDK.SDKModel.Events.SuspendStateChanged, this._onSuspendStateChanged, this);
+    self.UI.context.addFlavorChangeListener(
+        SDK.CPUProfilerModel.CPUProfilerModel, this._updateProfileTypeSpecificUI, this);
+    self.UI.context.addFlavorChangeListener(
+        SDK.HeapProfilerModel.HeapProfilerModel, this._updateProfileTypeSpecificUI, this);
   }
 
   /**
@@ -125,7 +133,7 @@ export class ProfilesPanel extends UI.PanelWithSidebar {
 
   /**
    * @override
-   * @return {?UI.SearchableView}
+   * @return {?UI.SearchableView.SearchableView}
    */
   searchableView() {
     return this.visibleView && this.visibleView.searchableView ? this.visibleView.searchableView() : null;
@@ -135,7 +143,7 @@ export class ProfilesPanel extends UI.PanelWithSidebar {
     if (this._fileSelectorElement) {
       this.element.removeChild(this._fileSelectorElement);
     }
-    this._fileSelectorElement = UI.createFileSelectorElement(this._loadFromFile.bind(this));
+    this._fileSelectorElement = UI.UIUtils.createFileSelectorElement(this._loadFromFile.bind(this));
     ProfilesPanel._fileSelectorElement = this._fileSelectorElement;
     this.element.appendChild(this._fileSelectorElement);
   }
@@ -158,19 +166,20 @@ export class ProfilesPanel extends UI.PanelWithSidebar {
     const profileType = this._findProfileTypeByExtension(file.name);
     if (!profileType) {
       const extensions = new Set(this._profileTypes.map(type => type.fileExtension()).filter(ext => ext));
-      self.Common.console.error(
-          Common.UIString(`Can't load file. Supported file extensions: '%s'.`, Array.from(extensions).join(`', '`)));
+      self.Common.console.error(Common.UIString.UIString(
+          `Can't load file. Supported file extensions: '%s'.`, Array.from(extensions).join(`', '`)));
       return;
     }
 
     if (!!profileType.profileBeingRecorded()) {
-      self.Common.console.error(Common.UIString(`Can't load profile while another profile is being recorded.`));
+      self.Common.console.error(
+          Common.UIString.UIString(`Can't load profile while another profile is being recorded.`));
       return;
     }
 
     const error = await profileType.loadFromFile(file);
     if (error) {
-      UI.MessageDialog.show(Common.UIString('Profile loading failed: %s.', error.message));
+      UI.UIUtils.MessageDialog.show(Common.UIString.UIString('Profile loading failed: %s.', error.message));
     }
   }
 
@@ -208,14 +217,15 @@ export class ProfilesPanel extends UI.PanelWithSidebar {
    */
   _updateToggleRecordAction(toggled) {
     const hasSelectedTarget =
-        !!(self.UI.context.flavor(SDK.CPUProfilerModel) || self.UI.context.flavor(SDK.HeapProfilerModel));
+        !!(self.UI.context.flavor(SDK.CPUProfilerModel.CPUProfilerModel) ||
+           self.UI.context.flavor(SDK.HeapProfilerModel.HeapProfilerModel));
     const enable = toggled || (!self.SDK.targetManager.allTargetsSuspended() && hasSelectedTarget);
     this._toggleRecordAction.setEnabled(enable);
     this._toggleRecordAction.setToggled(toggled);
     if (enable) {
       this._toggleRecordButton.setTitle(this._selectedProfileType ? this._selectedProfileType.buttonTooltip : '');
     } else {
-      this._toggleRecordButton.setTitle(UI.anotherProfilerActiveLabel());
+      this._toggleRecordButton.setTitle(UI.UIUtils.anotherProfilerActiveLabel());
     }
     if (this._selectedProfileType) {
       this._launcherView.updateProfileType(this._selectedProfileType, enable);
@@ -317,10 +327,10 @@ export class ProfilesPanel extends UI.PanelWithSidebar {
    * @param {!Event} event
    */
   _handleContextMenuEvent(event) {
-    const contextMenu = new UI.ContextMenu(event);
+    const contextMenu = new UI.ContextMenu.ContextMenu(event);
     if (this.panelSidebarElement().isSelfOrAncestor(event.srcElement)) {
       contextMenu.defaultSection().appendItem(
-          Common.UIString('Load\u2026'), this._fileSelectorElement.click.bind(this._fileSelectorElement));
+          Common.UIString.UIString('Load\u2026'), this._fileSelectorElement.click.bind(this._fileSelectorElement));
     }
     contextMenu.show();
   }
@@ -368,7 +378,7 @@ export class ProfilesPanel extends UI.PanelWithSidebar {
   /**
    * @override
    * @param {?ProfileHeader} profile
-   * @return {?UI.Widget}
+   * @return {?UI.Widget.Widget}
    */
   showProfile(profile) {
     if (!profile ||
@@ -419,7 +429,7 @@ export class ProfilesPanel extends UI.PanelWithSidebar {
 
   /**
    * @param {!ProfileHeader} profile
-   * @return {!UI.Widget}
+   * @return {!UI.Widget.Widget}
    */
   viewForProfile(profile) {
     const index = this._indexOfViewForProfile(profile);
@@ -458,7 +468,7 @@ export class ProfilesPanel extends UI.PanelWithSidebar {
 /**
  * @unrestricted
  */
-export class ProfileTypeSidebarSection extends UI.TreeElement {
+export class ProfileTypeSidebarSection extends UI.TreeOutline.TreeElement {
   /**
    * @param {!DataDisplayDelegate} dataDisplayDelegate
    * @param {!ProfileType} profileType
@@ -498,7 +508,7 @@ export class ProfileTypeSidebarSection extends UI.TreeElement {
 
       const groupSize = group.profileSidebarTreeElements.length;
       if (groupSize === 2) {
-        // Make a group UI.TreeElement now that there are 2 profiles.
+        // Make a group UI.TreeOutline.TreeElement now that there are 2 profiles.
         group.sidebarTreeElement = new ProfileGroupSidebarTreeElement(this._dataDisplayDelegate, profile.title);
 
         const firstProfileTreeElement = group.profileSidebarTreeElements[0];
@@ -515,7 +525,7 @@ export class ProfileTypeSidebarSection extends UI.TreeElement {
         }
 
         firstProfileTreeElement.setSmall(true);
-        firstProfileTreeElement.setMainTitle(Common.UIString('Run %d', 1));
+        firstProfileTreeElement.setMainTitle(Common.UIString.UIString('Run %d', 1));
 
         this.treeOutline.element.classList.add('some-expandable');
       }
@@ -523,7 +533,7 @@ export class ProfileTypeSidebarSection extends UI.TreeElement {
       if (groupSize >= 2) {
         sidebarParent = group.sidebarTreeElement;
         profileTreeElement.setSmall(true);
-        profileTreeElement.setMainTitle(Common.UIString('Run %d', groupSize));
+        profileTreeElement.setMainTitle(Common.UIString.UIString('Run %d', groupSize));
       }
     }
 
@@ -617,7 +627,7 @@ export class ProfileGroup {
 /**
  * @unrestricted
  */
-export class ProfileGroupSidebarTreeElement extends UI.TreeElement {
+export class ProfileGroupSidebarTreeElement extends UI.TreeOutline.TreeElement {
   /**
    * @param {!DataDisplayDelegate} dataDisplayDelegate
    * @param {string} title
@@ -656,7 +666,7 @@ export class ProfileGroupSidebarTreeElement extends UI.TreeElement {
   }
 }
 
-export class ProfilesSidebarTreeElement extends UI.TreeElement {
+export class ProfilesSidebarTreeElement extends UI.TreeOutline.TreeElement {
   /**
    * @param {!ProfilesPanel} panel
    */
@@ -684,12 +694,12 @@ export class ProfilesSidebarTreeElement extends UI.TreeElement {
     this.listItemElement.createChild('div', 'titles no-subtitle')
         .createChild('span', 'title-container')
         .createChild('span', 'title')
-        .textContent = Common.UIString('Profiles');
+        .textContent = Common.UIString.UIString('Profiles');
   }
 }
 
 /**
- * @implements {UI.ActionDelegate}
+ * @implements {UI.ActionDelegate.ActionDelegate}
  */
 export class JSProfilerPanel extends ProfilesPanel {
   constructor() {
@@ -713,7 +723,7 @@ export class JSProfilerPanel extends ProfilesPanel {
 
   /**
    * @override
-   * @param {!UI.Context} context
+   * @param {!UI.Context.Context} context
    * @param {string} actionId
    * @return {boolean}
    */

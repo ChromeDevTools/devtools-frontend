@@ -2,10 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+import * as UI from '../ui/ui.js';  // eslint-disable-line no-unused-vars
+
 /**
  * @unrestricted
  */
-export class ProfileHeader extends Common.Object {
+export class ProfileHeader extends Common.ObjectWrapper.ObjectWrapper {
   /**
    * @param {!ProfileType} profileType
    * @param {string} title
@@ -44,7 +47,7 @@ export class ProfileHeader extends Common.Object {
   /**
    * Must be implemented by subclasses.
    * @param {!DataDisplayDelegate} dataDisplayDelegate
-   * @return {!UI.TreeElement}
+   * @return {!UI.TreeOutline.TreeElement}
    */
   createSidebarTreeElement(dataDisplayDelegate) {
     throw new Error('Not implemented.');
@@ -52,7 +55,7 @@ export class ProfileHeader extends Common.Object {
 
   /**
    * @param {!DataDisplayDelegate} dataDisplayDelegate
-   * @return {!UI.Widget}
+   * @return {!UI.Widget.Widget}
    */
   createView(dataDisplayDelegate) {
     throw new Error('Not implemented.');
@@ -130,7 +133,7 @@ export const Events = {
 /**
  * @unrestricted
  */
-export class ProfileType extends Common.Object {
+export class ProfileType extends Common.ObjectWrapper.ObjectWrapper {
   /**
    * @param {string} id
    * @param {string} name
@@ -371,7 +374,7 @@ export const ProfileEvents = {
 export class DataDisplayDelegate {
   /**
    * @param {?ProfileHeader} profile
-   * @return {?UI.Widget}
+   * @return {?UI.Widget.Widget}
    */
   showProfile(profile) {
   }

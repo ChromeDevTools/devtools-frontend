@@ -2,10 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as UI from '../ui/ui.js';
+
 /**
  * @unrestricted
  */
-export class HeapTimelineOverview extends UI.VBox {
+export class HeapTimelineOverview extends UI.Widget.VBox {
   constructor() {
     super();
     this.element.id = 'heap-recording-view';

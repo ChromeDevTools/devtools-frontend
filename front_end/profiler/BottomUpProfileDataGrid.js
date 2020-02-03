@@ -28,6 +28,9 @@
 // each child still represent the root node. We have to be particularly careful of recursion with this mode
 // because a root node can represent itself AND an ancestor.
 
+import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
+import * as UI from '../ui/ui.js';     // eslint-disable-line no-unused-vars
+
 import {Formatter, ProfileDataGridNode, ProfileDataGridTree} from './ProfileDataGrid.js';  // eslint-disable-line no-unused-vars
 import {TopDownProfileDataGridTree} from './TopDownProfileDataGrid.js';  // eslint-disable-line no-unused-vars
 
@@ -36,7 +39,7 @@ import {TopDownProfileDataGridTree} from './TopDownProfileDataGrid.js';  // esli
  */
 export class BottomUpProfileDataGridNode extends ProfileDataGridNode {
   /**
-   * @param {!SDK.ProfileNode} profileNode
+   * @param {!SDK.ProfileTreeModel.ProfileNode} profileNode
    * @param {!TopDownProfileDataGridTree} owningTree
    */
   constructor(profileNode, owningTree) {
@@ -175,8 +178,8 @@ export class BottomUpProfileDataGridNode extends ProfileDataGridNode {
 export class BottomUpProfileDataGridTree extends ProfileDataGridTree {
   /**
    * @param {!Formatter} formatter
-   * @param {!UI.SearchableView} searchableView
-   * @param {!SDK.ProfileNode} rootProfileNode
+   * @param {!UI.SearchableView.SearchableView} searchableView
+   * @param {!SDK.ProfileTreeModel.ProfileNode} rootProfileNode
    * @param {number} total
    */
   constructor(formatter, searchableView, rootProfileNode, total) {

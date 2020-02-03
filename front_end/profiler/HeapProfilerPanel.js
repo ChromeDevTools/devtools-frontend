@@ -2,12 +2,17 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+import * as Host from '../host/host.js';
+import * as SDK from '../sdk/sdk.js';
+import * as UI from '../ui/ui.js';  // eslint-disable-line no-unused-vars
+
 import {ProfilesPanel} from './ProfilesPanel.js';
 import {instance} from './ProfileTypeRegistry.js';
 
 /**
  * @implements {UI.ContextMenu.Provider}
- * @implements {UI.ActionDelegate}
+ * @implements {UI.ActionDelegate.ActionDelegate}
  */
 export class HeapProfilerPanel extends ProfilesPanel {
   constructor() {
@@ -25,11 +30,11 @@ export class HeapProfilerPanel extends ProfilesPanel {
   /**
    * @override
    * @param {!Event} event
-   * @param {!UI.ContextMenu} contextMenu
+   * @param {!UI.ContextMenu.ContextMenu} contextMenu
    * @param {!Object} target
    */
   appendApplicableItems(event, contextMenu, target) {
-    if (!(target instanceof SDK.RemoteObject)) {
+    if (!(target instanceof SDK.RemoteObject.RemoteObject)) {
       return;
     }
 
@@ -37,7 +42,7 @@ export class HeapProfilerPanel extends ProfilesPanel {
       return;
     }
 
-    const object = /** @type {!SDK.RemoteObject} */ (target);
+    const object = /** @type {!SDK.RemoteObject.RemoteObject} */ (target);
     if (!object.objectId) {
       return;
     }
@@ -66,12 +71,12 @@ export class HeapProfilerPanel extends ProfilesPanel {
     }
 
     contextMenu.revealSection().appendItem(
-        Common.UIString('Reveal in Summary view'), revealInView.bind(this, 'Summary'));
+        Common.UIString.UIString('Reveal in Summary view'), revealInView.bind(this, 'Summary'));
   }
 
   /**
    * @override
-   * @param {!UI.Context} context
+   * @param {!UI.Context.Context} context
    * @param {string} actionId
    * @return {boolean}
    */

@@ -189,3 +189,6 @@ export const Events = {
 };
 
 SDKModel.register(CPUProfilerModel, Capability.JS, true);
+
+/** @typedef {!{id: string, scriptLocation: !DebuggerModel.Location, title: string, cpuProfile: (!Protocol.Profiler.Profile|undefined), cpuProfilerModel: !CPUProfilerModel}} */
+export let EventData;

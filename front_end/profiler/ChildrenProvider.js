@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as HeapSnapshotModel from '../heap_snapshot_model/heap_snapshot_model.js';  // eslint-disable-line no-unused-vars
+
 /**
  * @interface
  */
@@ -25,13 +27,13 @@ export class ChildrenProvider {
   /**
    * @param {number} startPosition
    * @param {number} endPosition
-   * @return {!Promise<!HeapSnapshotModel.ItemsRange>}
+   * @return {!Promise<!HeapSnapshotModel.HeapSnapshotModel.ItemsRange>}
    */
   serializeItemsRange(startPosition, endPosition) {
   }
 
   /**
-   * @param {!HeapSnapshotModel.ComparatorConfig} comparator
+   * @param {!HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig} comparator
    * @return {!Promise<?>}
    */
   sortAndRewind(comparator) {

@@ -23,13 +23,19 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as Common from '../common/common.js';
+import * as Components from '../components/components.js';
+import * as Host from '../host/host.js';
+import * as SDK from '../sdk/sdk.js';
+import * as UI from '../ui/ui.js';
+
 import {ProfileFlameChartDataProvider} from './CPUProfileFlameChart.js';
 import {Formatter, ProfileDataGridNode} from './ProfileDataGrid.js';           // eslint-disable-line no-unused-vars
 import {ProfileEvents, ProfileHeader, ProfileType} from './ProfileHeader.js';  // eslint-disable-line no-unused-vars
 import {ProfileView, WritableProfileHeader} from './ProfileView.js';
 
 /**
- * @implements {UI.Searchable}
+ * @implements {UI.SearchableView.Searchable}
  * @unrestricted
  */
 export class CPUProfileView extends ProfileView {
@@ -64,9 +70,9 @@ export class CPUProfileView extends ProfileView {
   columnHeader(columnId) {
     switch (columnId) {
       case 'self':
-        return Common.UIString('Self Time');
+        return Common.UIString.UIString('Self Time');
       case 'total':
-        return Common.UIString('Total Time');
+        return Common.UIString.UIString('Total Time');
     }
     return '';
   }
@@ -85,12 +91,13 @@ export class CPUProfileView extends ProfileView {
  */
 export class CPUProfileType extends ProfileType {
   constructor() {
-    super(CPUProfileType.TypeId, Common.UIString('Record JavaScript CPU Profile'));
+    super(CPUProfileType.TypeId, Common.UIString.UIString('Record JavaScript CPU Profile'));
     this._recording = false;
 
     CPUProfileType.instance = this;
     self.SDK.targetManager.addModelListener(
-        SDK.CPUProfilerModel, SDK.CPUProfilerModel.Events.ConsoleProfileFinished, this._consoleProfileFinished, this);
+        SDK.CPUProfilerModel.CPUProfilerModel, SDK.CPUProfilerModel.Events.ConsoleProfileFinished,
+        this._consoleProfileFinished, this);
   }
 
   /**
@@ -121,7 +128,8 @@ export class CPUProfileType extends ProfileType {
    * @override
    */
   get buttonTooltip() {
-    return this._recording ? Common.UIString('Stop CPU profiling') : Common.UIString('Start CPU profiling');
+    return this._recording ? Common.UIString.UIString('Stop CPU profiling') :
+                             Common.UIString.UIString('Start CPU profiling');
   }
 
   /**
@@ -142,14 +150,15 @@ export class CPUProfileType extends ProfileType {
    * @override
    */
   get treeItemTitle() {
-    return Common.UIString('CPU PROFILES');
+    return Common.UIString.UIString('CPU PROFILES');
   }
 
   /**
    * @override
    */
   get description() {
-    return Common.UIString('CPU profiles show where the execution time is spent in your page\'s JavaScript functions.');
+    return Common.UIString.UIString(
+        'CPU profiles show where the execution time is spent in your page\'s JavaScript functions.');
   }
 
   /**
@@ -164,7 +173,7 @@ export class CPUProfileType extends ProfileType {
   }
 
   _startRecordingProfile() {
-    const cpuProfilerModel = self.UI.context.flavor(SDK.CPUProfilerModel);
+    const cpuProfilerModel = self.UI.context.flavor(SDK.CPUProfilerModel.CPUProfilerModel);
     if (this.profileBeingRecorded() || !cpuProfilerModel) {
       return;
     }
@@ -172,7 +181,7 @@ export class CPUProfileType extends ProfileType {
     this.setProfileBeingRecorded(profile);
     self.SDK.targetManager.suspendAllTargets();
     this.addProfile(profile);
-    profile.updateStatus(Common.UIString('Recording\u2026'));
+    profile.updateStatus(Common.UIString.UIString('Recording\u2026'));
     this._recording = true;
     cpuProfilerModel.startRecording();
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.ProfilesCPUProfileTaken);
@@ -221,7 +230,7 @@ CPUProfileType.TypeId = 'CPU';
  */
 export class CPUProfileHeader extends WritableProfileHeader {
   /**
-   * @param {?SDK.CPUProfilerModel} cpuProfilerModel
+   * @param {?SDK.CPUProfilerModel.CPUProfilerModel} cpuProfilerModel
    * @param {!CPUProfileType} type
    * @param {string=} title
    */
@@ -246,7 +255,7 @@ export class CPUProfileHeader extends WritableProfileHeader {
   }
 
   /**
-   * @return {!SDK.CPUProfileDataModel}
+   * @return {!SDK.CPUProfileDataModel.CPUProfileDataModel}
    */
   profileModel() {
     return this._profileModel;
@@ -258,7 +267,7 @@ export class CPUProfileHeader extends WritableProfileHeader {
    */
   setProfile(profile) {
     const target = this._cpuProfilerModel && this._cpuProfilerModel.target() || null;
-    this._profileModel = new SDK.CPUProfileDataModel(profile, target);
+    this._profileModel = new SDK.CPUProfileDataModel.CPUProfileDataModel(profile, target);
   }
 }
 
@@ -280,7 +289,7 @@ export class NodeFormatter {
    * @return {string}
    */
   formatValue(value) {
-    return Common.UIString('%.1f\xa0ms', value);
+    return Common.UIString.UIString('%.1f\xa0ms', value);
   }
 
   /**
@@ -299,7 +308,8 @@ export class NodeFormatter {
    * @return {string}
    */
   formatPercent(value, node) {
-    return node.profileNode === this._profileView.profile().idleNode ? '' : Common.UIString('%.2f\xa0%%', value);
+    return node.profileNode === this._profileView.profile().idleNode ? '' :
+                                                                       Common.UIString.UIString('%.2f\xa0%%', value);
   }
 
   /**
@@ -320,8 +330,8 @@ export class NodeFormatter {
  */
 export class CPUFlameChartDataProvider extends ProfileFlameChartDataProvider {
   /**
-   * @param {!SDK.CPUProfileDataModel} cpuProfile
-   * @param {?SDK.CPUProfilerModel} cpuProfilerModel
+   * @param {!SDK.CPUProfileDataModel.CPUProfileDataModel} cpuProfile
+   * @param {?SDK.CPUProfilerModel.CPUProfilerModel} cpuProfilerModel
    */
   constructor(cpuProfile, cpuProfilerModel) {
     super();
@@ -348,7 +358,7 @@ export class CPUFlameChartDataProvider extends ProfileFlameChartDataProvider {
     }
     /**
      * @param {number} depth
-     * @param {!SDK.CPUProfileNode} node
+     * @param {!SDK.CPUProfileDataModel.CPUProfileNode} node
      * @param {number} startTime
      * @param {number} totalTime
      * @param {number} selfTime
@@ -360,7 +370,7 @@ export class CPUFlameChartDataProvider extends ProfileFlameChartDataProvider {
     }
     this._cpuProfile.forEachFrame(onOpenFrame, onCloseFrame);
 
-    /** @type {!Array<!SDK.CPUProfileNode>} */
+    /** @type {!Array<!SDK.CPUProfileDataModel.CPUProfileNode>} */
     const entryNodes = new Array(entries.length);
     const entryLevels = new Uint16Array(entries.length);
     const entryTotalTimes = new Float32Array(entries.length);
@@ -380,7 +390,7 @@ export class CPUFlameChartDataProvider extends ProfileFlameChartDataProvider {
 
     this._timelineData = new PerfUI.FlameChart.TimelineData(entryLevels, entryTotalTimes, entryStartTimes, null);
 
-    /** @type {!Array<!SDK.CPUProfileNode>} */
+    /** @type {!Array<!SDK.CPUProfileDataModel.CPUProfileNode>} */
     this._entryNodes = entryNodes;
     this._entrySelfTimes = entrySelfTimes;
 
@@ -416,17 +426,17 @@ export class CPUFlameChartDataProvider extends ProfileFlameChartDataProvider {
         return '0';
       }
       if (ms < 1000) {
-        return Common.UIString('%.1f\xa0ms', ms);
+        return Common.UIString.UIString('%.1f\xa0ms', ms);
       }
       return Number.secondsToString(ms / 1000, true);
     }
-    const name = UI.beautifyFunctionName(node.functionName);
+    const name = UI.UIUtils.beautifyFunctionName(node.functionName);
     pushEntryInfoRow(ls`Name`, name);
     const selfTime = millisecondsToString(this._entrySelfTimes[entryIndex]);
     const totalTime = millisecondsToString(timelineData.entryTotalTimes[entryIndex]);
     pushEntryInfoRow(ls`Self time`, selfTime);
     pushEntryInfoRow(ls`Total time`, totalTime);
-    const linkifier = new Components.Linkifier();
+    const linkifier = new Components.Linkifier.Linkifier();
     const link = linkifier.maybeLinkifyConsoleCallFrame(
         this._cpuProfilerModel && this._cpuProfilerModel.target(), node.callFrame);
     if (link) {
@@ -452,7 +462,7 @@ CPUFlameChartDataProvider.ChartEntry = class {
    * @param {number} duration
    * @param {number} startTime
    * @param {number} selfTime
-   * @param {!SDK.CPUProfileNode} node
+   * @param {!SDK.CPUProfileDataModel.CPUProfileNode} node
    */
   constructor(depth, duration, startTime, selfTime, node) {
     this.depth = depth;

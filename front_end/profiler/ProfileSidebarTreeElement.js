@@ -2,12 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+import * as UI from '../ui/ui.js';
+
 import {DataDisplayDelegate, Events as ProfileHeaderEvents, ProfileHeader} from './ProfileHeader.js';  // eslint-disable-line no-unused-vars
 
 /**
  * @unrestricted
  */
-export class ProfileSidebarTreeElement extends UI.TreeElement {
+export class ProfileSidebarTreeElement extends UI.TreeOutline.TreeElement {
   /**
    * @param {!DataDisplayDelegate} dataDisplayDelegate
    * @param {!ProfileHeader} profile
@@ -36,7 +39,7 @@ export class ProfileSidebarTreeElement extends UI.TreeElement {
 
   _createSaveLink() {
     this._saveLinkElement = this._titleContainer.createChild('span', 'save-link');
-    this._saveLinkElement.textContent = Common.UIString('Save');
+    this._saveLinkElement.textContent = Common.UIString.UIString('Save');
     this._saveLinkElement.addEventListener('click', this._saveProfile.bind(this), false);
   }
 
@@ -79,7 +82,7 @@ export class ProfileSidebarTreeElement extends UI.TreeElement {
       return;
     }
     const config = new UI.InplaceEditor.Config(this._editingCommitted.bind(this), this._editingCancelled.bind(this));
-    this._editing = UI.InplaceEditor.startEditing(container, config);
+    this._editing = UI.InplaceEditor.InplaceEditor.startEditing(container, config);
   }
 
   /**
@@ -139,15 +142,15 @@ export class ProfileSidebarTreeElement extends UI.TreeElement {
    */
   _handleContextMenuEvent(event) {
     const profile = this.profile;
-    const contextMenu = new UI.ContextMenu(event);
+    const contextMenu = new UI.ContextMenu.ContextMenu(event);
     // FIXME: use context menu provider
     contextMenu.headerSection().appendItem(
-        Common.UIString('Load\u2026'),
+        Common.UIString.UIString('Load\u2026'),
         self.Profiler.ProfilesPanel._fileSelectorElement.click.bind(self.Profiler.ProfilesPanel._fileSelectorElement));
     if (profile.canSaveToFile()) {
-      contextMenu.saveSection().appendItem(Common.UIString('Save\u2026'), profile.saveToFile.bind(profile));
+      contextMenu.saveSection().appendItem(Common.UIString.UIString('Save\u2026'), profile.saveToFile.bind(profile));
     }
-    contextMenu.footerSection().appendItem(Common.UIString('Delete'), this.ondelete.bind(this));
+    contextMenu.footerSection().appendItem(Common.UIString.UIString('Delete'), this.ondelete.bind(this));
     contextMenu.show();
   }
 

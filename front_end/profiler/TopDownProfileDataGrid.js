@@ -23,6 +23,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
+import * as UI from '../ui/ui.js';     // eslint-disable-line no-unused-vars
+
 import {Formatter, ProfileDataGridNode, ProfileDataGridTree} from './ProfileDataGrid.js';  // eslint-disable-line no-unused-vars
 
 /**
@@ -30,7 +33,7 @@ import {Formatter, ProfileDataGridNode, ProfileDataGridTree} from './ProfileData
  */
 export class TopDownProfileDataGridNode extends ProfileDataGridNode {
   /**
-   * @param {!SDK.ProfileNode} profileNode
+   * @param {!SDK.ProfileTreeModel.ProfileNode} profileNode
    * @param {!TopDownProfileDataGridTree} owningTree
    */
   constructor(profileNode, owningTree) {
@@ -95,8 +98,8 @@ export class TopDownProfileDataGridNode extends ProfileDataGridNode {
 export class TopDownProfileDataGridTree extends ProfileDataGridTree {
   /**
    * @param {!Formatter} formatter
-   * @param {!UI.SearchableView} searchableView
-   * @param {!SDK.ProfileNode} rootProfileNode
+   * @param {!UI.SearchableView.SearchableView} searchableView
+   * @param {!SDK.ProfileTreeModel.ProfileNode} rootProfileNode
    * @param {number} total
    */
   constructor(formatter, searchableView, rootProfileNode, total) {

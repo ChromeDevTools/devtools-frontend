@@ -71,6 +71,10 @@ function requestHandler(request, response) {
       response.setHeader('Content-Type', 'text/javascript');
     }
 
+    if (request.url.endsWith('.wasm')) {
+      response.setHeader('Content-Type', 'application/wasm');
+    }
+
     if (request.url.endsWith('.svg')) {
       response.setHeader('Content-Type', 'image/svg+xml');
     }

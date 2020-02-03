@@ -28,14 +28,18 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as ProtocolModule from '../protocol/protocol.js';  // eslint-disable-line no-unused-vars
+import * as SDK from '../sdk/sdk.js';
+import * as UI from '../ui/ui.js';
+
 import {ExtensionServer} from './ExtensionServer.js';  // eslint-disable-line no-unused-vars
 import {ExtensionNotifierView, ExtensionView} from './ExtensionView.js';
 
 /**
- * @implements {UI.Searchable}
+ * @implements {UI.SearchableView.Searchable}
  * @unrestricted
  */
-export class ExtensionPanel extends UI.Panel {
+export class ExtensionPanel extends UI.Panel.Panel {
   /**
    * @param {!ExtensionServer} server
    * @param {string} panelName
@@ -47,9 +51,9 @@ export class ExtensionPanel extends UI.Panel {
     this._server = server;
     this._id = id;
     this.setHideOnDetach();
-    this._panelToolbar = new UI.Toolbar('hidden', this.element);
+    this._panelToolbar = new UI.Toolbar.Toolbar('hidden', this.element);
 
-    this._searchableView = new UI.SearchableView(this);
+    this._searchableView = new UI.SearchableView.SearchableView(this);
     this._searchableView.show(this.element);
 
     const extensionView = new ExtensionView(server, this._id, pageURL, 'extension');
@@ -57,7 +61,7 @@ export class ExtensionPanel extends UI.Panel {
   }
 
   /**
-   * @param {!UI.ToolbarItem} item
+   * @param {!UI.Toolbar.ToolbarItem} item
    */
   addToolbarItem(item) {
     this._panelToolbar.element.classList.remove('hidden');
@@ -74,7 +78,7 @@ export class ExtensionPanel extends UI.Panel {
 
   /**
    * @override
-   * @return {!UI.SearchableView}
+   * @return {!UI.SearchableView.SearchableView}
    */
   searchableView() {
     return this._searchableView;
@@ -136,9 +140,9 @@ export class ExtensionButton {
   constructor(server, id, iconURL, tooltip, disabled) {
     this._id = id;
 
-    this._toolbarButton = new UI.ToolbarButton('', '');
+    this._toolbarButton = new UI.Toolbar.ToolbarButton('', '');
     this._toolbarButton.addEventListener(
-        UI.ToolbarButton.Events.Click, server.notifyButtonClicked.bind(server, this._id));
+        UI.Toolbar.ToolbarButton.Events.Click, server.notifyButtonClicked.bind(server, this._id));
     this.update(iconURL, tooltip, disabled);
   }
 
@@ -160,7 +164,7 @@ export class ExtensionButton {
   }
 
   /**
-   * @return {!UI.ToolbarButton}
+   * @return {!UI.Toolbar.ToolbarButton}
    */
   toolbarButton() {
     return this._toolbarButton;
@@ -170,7 +174,7 @@ export class ExtensionButton {
 /**
  * @unrestricted
  */
-export class ExtensionSidebarPane extends UI.SimpleView {
+export class ExtensionSidebarPane extends UI.View.SimpleView {
   /**
    * @param {!ExtensionServer} server
    * @param {string} panelName
@@ -206,7 +210,7 @@ export class ExtensionSidebarPane extends UI.SimpleView {
    */
   setObject(object, title, callback) {
     this._createObjectPropertiesView();
-    this._setObject(SDK.RemoteObject.fromLocalObject(object), title, callback);
+    this._setObject(SDK.RemoteObject.RemoteObject.fromLocalObject(object), title, callback);
   }
 
   /**
@@ -252,8 +256,8 @@ export class ExtensionSidebarPane extends UI.SimpleView {
   /**
    * @param {string} title
    * @param {function(?string=)} callback
-   * @param {?Protocol.Error} error
-   * @param {?SDK.RemoteObject} result
+   * @param {?ProtocolModule.InspectorBackend.ProtocolError} error
+   * @param {?SDK.RemoteObject.RemoteObject} result
    * @param {boolean=} wasThrown
    */
   _onEvaluate(title, callback, error, result, wasThrown) {
@@ -277,7 +281,7 @@ export class ExtensionSidebarPane extends UI.SimpleView {
   }
 
   /**
-   * @param {!SDK.RemoteObject} object
+   * @param {!SDK.RemoteObject.RemoteObject} object
    * @param {string} title
    * @param {function(?string=)} callback
    */
@@ -288,7 +292,7 @@ export class ExtensionSidebarPane extends UI.SimpleView {
       return;
     }
     this._objectPropertiesView.element.removeChildren();
-    UI.Renderer.render(object, {title, editable: false}).then(result => {
+    UI.UIUtils.Renderer.render(object, {title, editable: false}).then(result => {
       if (!result) {
         callback();
         return;

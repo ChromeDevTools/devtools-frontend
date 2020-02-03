@@ -28,12 +28,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as UI from '../ui/ui.js';
+
 import {ExtensionServer} from './ExtensionServer.js';  // eslint-disable-line no-unused-vars
 
 /**
  * @unrestricted
 */
-export class ExtensionView extends UI.Widget {
+export class ExtensionView extends UI.Widget.Widget {
   /**
    * @param {!ExtensionServer} server
    * @param {string} id
@@ -91,7 +93,7 @@ export class ExtensionView extends UI.Widget {
 /**
  * @unrestricted
  */
-export class ExtensionNotifierView extends UI.VBox {
+export class ExtensionNotifierView extends UI.Widget.VBox {
   /**
    * @param {!ExtensionServer} server
    * @param {string} id

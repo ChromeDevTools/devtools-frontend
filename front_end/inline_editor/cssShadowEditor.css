@@ -91,3 +91,9 @@
     text-align: right;
     box-shadow: var(--focus-ring-inactive-shadow);
 }
+
+@media (forced-colors: active) {
+    :host {
+        border: 1px solid CanvasText !important;
+    }
+}

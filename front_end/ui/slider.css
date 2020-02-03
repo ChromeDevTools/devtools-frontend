@@ -42,3 +42,9 @@
 .dt-range-input:disabled::-webkit-slider-thumb {
     background-color: #bdbdbd;
 }
+
+@media (forced-colors: active) {
+    .dt-range-input {
+        forced-color-adjust: none;
+    }
+}

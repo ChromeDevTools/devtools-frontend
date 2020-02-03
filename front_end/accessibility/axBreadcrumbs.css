@@ -113,3 +113,42 @@
 .ax-breadcrumbs .ax-node.inspected:focus * {
     color: inherit;
 }
+
+@media (forced-colors: active) {
+    .ax-value-source-unused,
+    .ax-breadcrumbs .ax-node.children-unloaded::before {
+        opacity: 1;
+    }
+    .ax-breadcrumbs .ax-node.parent::before,
+    .ax-breadcrumbs .ax-node.children-unloaded::before {
+        forced-color-adjust: none;
+        background-color: ButtonText;
+    }
+    .ax-breadcrumbs .ax-node.parent.inspected:focus::before,
+    .ax-breadcrumbs .ax-node.parent.inspected::before {
+        background-color: HighlightText;
+    }
+    .ax-breadcrumbs .ax-node.inspected .selection {
+        forced-color-adjust: none;
+        background: Highlight !important;
+    }
+    .ax-breadcrumbs .ax-node.inspected .wrapper {
+        forced-color-adjust: none;
+        color: HighlightText;
+    }
+    .ax-breadcrumbs .ax-node.preselected:not(.inspected) .selection,
+    .ax-breadcrumbs .ax-node.hovered:not(.inspected) .selection,
+    .ax-breadcrumbs .ax-node.hovered:not(.inspected) .wrapper,
+    .ax-breadcrumbs .ax-node[data-keyboard-focus="true"]:focus:not(.inspected) .wrapper {
+        forced-color-adjust: none;
+        background-color: Highlight;
+        color: HighlightText;
+        border-radius: 0;
+    }
+    .ax-breadcrumbs .ax-node.parent.hovered:not(.inspected)::before,
+    .ax-breadcrumbs .ax-node.parent[data-keyboard-focus="true"]:focus:not(.inspected)::before,
+    .ax-breadcrumbs .ax-node.children-unloaded[data-keyboard-focus="true"]:focus:not(.inspected)::before,
+    .ax-breadcrumbs .ax-node.hovered:not(.inspected).children-unloaded::before {
+        background-color: HighlightText;
+    }
+}

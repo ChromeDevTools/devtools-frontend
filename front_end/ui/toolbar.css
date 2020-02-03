@@ -344,3 +344,52 @@ input[is=history-input]:not(:placeholder-shown) {
 .toolbar-item.warning {
     background: hsl(0, 100%, 95%);
 }
+
+@media (forced-colors: active) {
+    select.toolbar-item {
+        border: 1px solid ButtonText;
+    }
+    select.toolbar-item:disabled,
+    select.toolbar-item:disabled + .toolbar-dropdown-arrow {
+        opacity: 1;
+        background-color: Graytext !important;
+    }
+    :not(.toolbar-render-as-links) .toolbar-button:enabled:hover .toolbar-glyph,
+    :not(.toolbar-render-as-links) .toolbar-button:enabled:focus .toolbar-glyph,
+    .toolbar-button:enabled:hover [is=ui-icon].icon-mask,
+    .toolbar-button:enabled:focus [is=ui-icon].icon-mask {
+        background-color: HighlightText !important;
+    }
+    :not(.toolbar-render-as-links) .toolbar-button:enabled:hover:not(:active) .toolbar-text,
+    :not(.toolbar-render-as-links) .toolbar-button:enabled:focus:not(:active) .toolbar-text {
+        color: HighlightText;
+    }
+    .toolbar-button:enabled.hover:not(:active) .toolbar-glyph, .toolbar-button.toolbar-state-on .toolbar-glyph,
+    .toolbar-button:hover:enabled,
+    .toolbar-button:focus,
+    .toolbar-toggled-gray:not(.toolbar-render-as-links) .toolbar-button:not(.toolbar-has-glyph):not(.toolbar-has-dropdown):not(.largeicon-menu):hover {
+        forced-color-adjust: none;
+        background-color: Highlight !important;
+    }
+    .toolbar-button[data-keyboard-focus="true"]:focus {
+        box-shadow: 0 0 0 1px ButtonText inset;
+    }
+    .toolbar-button:disabled {
+        opacity: 1;
+    }
+    :not(.toolbar-render-as-links) .toolbar-button:disabled .toolbar-glyph,
+    .toolbar-button:disabled [is=ui-icon].icon-mask {
+        background-color: GrayText !important;
+        color: GrayText;
+    }
+    .toolbar-has-dropdown:disabled {
+        opacity: 1;
+        border: 1px solid GrayText;
+    }
+    .toolbar-input.focused,
+    .toolbar-input:not(.toolbar-input-empty) {
+        forced-color-adjust: none;
+        background: Canvas !important;
+        box-shadow: 0 0 0 1px Highlight inset !important;
+    }
+}

@@ -472,3 +472,18 @@ button.link[data-keyboard-focus="true"]:focus {
 }
 @keyframes ANIMATION-HACK {
 }
+
+@media (forced-colors: active) {
+    [is=ui-icon].icon-mask,
+    :host-context(.force-white-icons) [is=ui-icon].spritesheet-smallicons, .force-white-icons [is=ui-icon].spritesheet-smallicons, [is=ui-icon].force-white-icons.spritesheet-smallicons, -theme-preserve,
+    :host-context(.force-white-icons) [is=ui-icon].spritesheet-largeicons, .force-white-icons [is=ui-icon].spritesheet-largeicons, [is=ui-icon].force-white-icons.spritesheet-largeicons, -theme-preserve,
+    :host-context(.force-white-icons) [is=ui-icon].spritesheet-mediumicon, .force-white-icons [is=ui-icon].spritesheet-mediumicons, [is=ui-icon].force-white-icons.spritesheet-mediumicons, -theme-preserve {
+        forced-color-adjust: none;
+        background-color: ButtonText;
+    }
+    .harmony-input:not([type]),
+    .harmony-input[type=number],
+    .harmony-input[type=text] {
+        border: 1px solid ButtonText;
+    }
+}

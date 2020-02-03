@@ -37,3 +37,13 @@
   border-radius: 2px;
   background: rgba(0, 0, 0, 0.08);
 }
+
+@media (forced-colors: active) {
+  .history-dropdown-button[disabled] {
+    opacity: 1;
+    border: 1px solid GrayText;
+  }
+  .history-dropdown-button[disabled] [is=ui-icon].icon-mask {
+    background-color: GrayText !important;
+  }
+}

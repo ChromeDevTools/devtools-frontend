@@ -32,3 +32,19 @@ button.soft-dropdown[data-keyboard-focus="true"]:focus::before {
     border-radius: 2px;
     background: rgba(0, 0, 0, 0.08);
 }
+
+@media (forced-colors: active) {
+    button.soft-dropdown {
+        border: 1px solid ButtonText;
+    }
+    button.soft-dropdown[disabled],
+    button.soft-dropdown[data-keyboard-focus="true"]:focus::before {
+        forced-color-adjust: none;
+        opacity: 1;
+        background: Canvas !important;
+        color: GrayText !important;
+    }
+    button.soft-dropdown:disabled > .smallicon-triangle-down {
+        background-color: GrayText !important;
+    }
+}

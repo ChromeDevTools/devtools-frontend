@@ -241,3 +241,27 @@
     overflow: hidden;
     max-width: -webkit-fill-available;
 }
+
+@media (forced-colors: active) {
+    .styles-sidebar-pane-filter-box > input {
+        border: 1px solid ButtonText;
+        background: ButtonFace;
+    }
+    .styles-section[data-keyboard-focus="true"]:focus,
+    .styles-section.read-only[data-keyboard-focus="true"]:focus {
+        forced-color-adjust: none;
+        background-color: Highlight;
+    }
+    .styles-section[data-keyboard-focus="true"]:focus *,
+    .styles-section.read-only[data-keyboard-focus="true"]:focus * {
+        color: HighlightText;
+    }
+    .styles-section[data-keyboard-focus="true"]:focus .sidebar-pane-section-toolbar {
+        background-color: ButtonFace;
+    }
+    .sidebar-pane-section-toolbar {
+        forced-color-adjust: none;
+        border-color: 1px solid ButtonText;
+        background-color: ButtonFace;
+    }
+}

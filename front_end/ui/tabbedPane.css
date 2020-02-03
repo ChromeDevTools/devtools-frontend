@@ -291,3 +291,25 @@
     margin-left: -4px;
     flex: none;
 }
+
+@media (forced-colors: active) {
+    .tabbed-pane-tab-slider {
+        forced-color-adjust: none;
+        background-color: Highlight;
+    }
+    .tabbed-pane-header {
+        forced-color-adjust: none;
+        border-bottom: 1px solid transparent;
+        background-color: ButtonFace;
+    }
+    .tabbed-pane-header-tab,
+    .tabbed-pane-header-tab.selected {
+        background: ButtonFace;
+        color: ButtonText;
+    }
+    .tabbed-pane-header-tab:hover,
+    .tabbed-pane-shadow .tabbed-pane-header-tab[data-keyboard-focus="true"]:focus {
+        background-color: Highlight;
+        color: HighlightText;
+    }
+}

@@ -101,3 +101,10 @@
 .object-properties-preview .name {
     color: #565656;
 }
+
+@media (forced-colors: active) {
+    .object-value-calculate-value-button:hover {
+        forced-color-adjust: none;
+        color: Highlight;
+    }
+}

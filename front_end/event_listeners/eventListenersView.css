@@ -68,3 +68,26 @@
 .tree-outline-disclosure li:hover .event-listener-button {
     display: inline;
 }
+
+@media (forced-colors: active) {
+    .event-listener-details .event-listener-button {
+        forced-color-adjust: none;
+        opacity: 1;
+        background: ButtonFace;
+        color: ButtonText;
+        border-color: ButtonText;
+    }
+    .event-listener-button:hover {
+        background-color: Highlight !important;
+        color: HighlightText;
+        border-color: ButtonText;
+    }
+    .tree-outline.hide-selection-when-blurred .selected:focus[data-keyboard-focus="true"] .event-listener-button {
+        background-color: Highlight;
+        color: HighlightText;
+        border-color: HighlightText;
+    }
+    .tree-outline-disclosure:hover li.parent::before {
+        background-color: ButtonText;
+    }
+}

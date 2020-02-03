@@ -32,3 +32,9 @@
 .color-swatch-inner:hover {
     border: 1px solid rgba(64, 64, 64, 0.8);
 }
+
+@media (forced-colors: active) {
+    .color-swatch {
+        forced-color-adjust: none;
+    }
+}

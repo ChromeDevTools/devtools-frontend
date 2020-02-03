@@ -326,3 +326,23 @@ li.hovered:not(.always-parent) + ol.children:not(.shadow-root) {
 li.selected:not(.always-parent) + ol.children {
     border-color: hsla(216,68%,80%,1) !important;
 }
+
+@media (forced-colors: active) {
+    .elements-disclosure li.parent::before {
+        forced-color-adjust: none;
+        background-color: ButtonText !important;
+    }
+    .elements-disclosure .elements-tree-outline:not(.hide-selection-when-blurred) li.selected .selected-hint:before {
+        opacity: unset;
+    }
+    .elements-disclosure li.hovered:not(.selected) .selection,
+    .elements-disclosure .elements-tree-outline:not(.hide-selection-when-blurred) li.selected:focus .selection,
+    .elements-disclosure .elements-tree-outline:not(.hide-selection-when-blurred) .selection {
+        forced-color-adjust: none;
+        background: Canvas !important;
+        border: 1px solid Highlight !important;
+    }
+    .gutter-menu-icon {
+        forced-color-adjust: none;
+    }
+}

@@ -68,3 +68,37 @@ input.dt-checkbox-themed:after {
 .dt-checkbox-subtitle {
     color: gray;
 }
+
+@media (forced-colors: active) {
+    input.dt-checkbox-theme-preserve {
+      forced-color-adjust: none;
+    }
+    input.dt-checkbox-theme-preserve:hover:enabled {
+      border-color: Highlight;
+    }
+    input.dt-checkbox-theme-preserve:active::before,
+    input.dt-checkbox-theme-preserve:active::after {
+      background-color: Highlight;
+    }
+    input.dt-checkbox-theme-preserve:active {
+      background: HighlightText;
+    }
+    input.dt-checkbox-theme-preserve:active:checked::before,
+    input.dt-checkbox-theme-preserve:active:checked::after,
+    input.dt-checkbox-theme-preserve:checked::before,
+    input.dt-checkbox-theme-preserve:checked::after {
+      background-color: HighlightText;
+    }
+    input.dt-checkbox-theme-preserve:active:checked,
+    input.dt-checkbox-theme-preserve:checked {
+      background: Highlight;
+      border-color: Highlight;
+    }
+    input.dt-checkbox-theme-preserve:hover:checked::before,
+    input.dt-checkbox-theme-preserve:hover:checked::after {
+      background-color: Highlight !important;
+    }
+    input.dt-checkbox-theme-preserve:hover:checked {
+      background: HighlightText;
+    }
+  }

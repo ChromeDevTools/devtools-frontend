@@ -604,3 +604,41 @@ div.palette-preview {
 .swatch.contrast [is=ui-icon] {
     margin: -2px;
 }
+
+@media (forced-colors: active) {
+    :host {
+        border: 1px solid CanvasText !important;
+    }
+    .spectrum-color {
+        forced-color-adjust: none;
+    }
+    :host-context(.-theme-with-dark-background) .spectrum-switcher {
+        -webkit-filter: unset;
+    }
+    .spectrum-switcher:hover,
+    .spectrum-switcher[data-keyboard-focus="true"]:focus {
+        forced-color-adjust: none;
+        background-color: Highlight !important;
+    }
+    .spectrum-switcher:hover svg,
+    .spectrum-switcher[data-keyboard-focus="true"]:focus svg {
+        fill: HighlightText;
+    }
+    .swatch {
+        forced-color-adjust: none;
+    }
+    .swatch-inner,
+    .swatch-overlay,
+    .swatch-inner-white {
+        border: 1px solid ButtonText;
+    }
+    .swatch-overlay:hover,
+    .swatch-overlay[data-keyboard-focus="true"]:focus {
+        background-color: Canvas !important;
+    }
+    .spectrum-slider {
+        forced-color-adjust: none;
+        background-color: ButtonText !important;
+        box-shadow: 0 1px 4px 0 ButtonFace !important;
+    }
+}

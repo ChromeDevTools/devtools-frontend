@@ -198,18 +198,17 @@ export class BreakpointManager extends Common.ObjectWrapper.ObjectWrapper {
     function toUILocations(locations) {
       let sortedLocations = locations.map(location => this._debuggerWorkspaceBinding.rawLocationToUILocation(location));
       sortedLocations = sortedLocations.filter(location => location && location.uiSourceCode === uiSourceCode);
-      sortedLocations.sort(Workspace.UISourceCode.UILocation.comparator);
       if (!sortedLocations.length) {
         return [];
       }
-      const result = [sortedLocations[0]];
+      sortedLocations.sort(Workspace.UISourceCode.UILocation.comparator);
       let lastLocation = sortedLocations[0];
-      for (let i = 1; i < sortedLocations.length; ++i) {
-        if (sortedLocations[i].id() === lastLocation.id()) {
-          continue;
+      const result = [lastLocation];
+      for (const location of sortedLocations) {
+        if (location.id() !== lastLocation.id()) {
+          result.push(location);
+          lastLocation = location;
         }
-        result.push(sortedLocations[i]);
-        lastLocation = sortedLocations[i];
       }
       return result;
     }
@@ -228,9 +227,9 @@ export class BreakpointManager extends Common.ObjectWrapper.ObjectWrapper {
    * @return {!Array<!Bindings.BreakpointManager.BreakpointLocation>}
    */
   allBreakpointLocations() {
-    let result = [];
+    const result = [];
     for (const breakpoints of this._breakpointsForUISourceCode.values()) {
-      result = result.concat(Array.from(breakpoints.values()));
+      result.push(...breakpoints.values());
     }
     return result;
   }
@@ -326,11 +325,10 @@ export class Breakpoint {
   }
 
   async refreshInDebugger() {
-    if (this._isRemoved) {
-      return;
+    if (!this._isRemoved) {
+      const breakpoints = Array.from(this._modelBreakpoints.values());
+      return Promise.all(breakpoints.map(breakpoint => breakpoint._refreshBreakpoint()));
     }
-    const breakpoints = Array.from(this._modelBreakpoints.values());
-    return Promise.all(breakpoints.map(breakpoint => breakpoint._refreshBreakpoint()));
   }
 
   /**
@@ -477,9 +475,9 @@ export class Breakpoint {
     this._isRemoved = true;
     const removeFromStorage = !keepInStorage;
     const modelBreakpoints = this._modelBreakpoints.valuesArray();
-    for (let i = 0; i < modelBreakpoints.length; ++i) {
-      modelBreakpoints[i]._scheduleUpdateInDebugger();
-      modelBreakpoints[i]._removeEventListeners();
+    for (const modelBreakpoint of modelBreakpoints) {
+      modelBreakpoint._scheduleUpdateInDebugger();
+      modelBreakpoint._removeEventListeners();
     }
 
     this._breakpointManager._removeBreakpoint(this, removeFromStorage);
@@ -497,8 +495,8 @@ export class Breakpoint {
   _resetLocations() {
     this.setPrimaryUISourceCode(null);
     const modelBreakpoints = this._modelBreakpoints.valuesArray();
-    for (let i = 0; i < modelBreakpoints.length; ++i) {
-      modelBreakpoints[i]._resetLocations();
+    for (const modelBreakpoint of modelBreakpoints) {
+      modelBreakpoint._resetLocations();
     }
   }
 }
@@ -680,8 +678,8 @@ export class ModelBreakpoint {
 
     this._debuggerId = breakpointId;
     this._debuggerModel.addBreakpointListener(this._debuggerId, this._breakpointResolved, this);
-    for (let i = 0; i < locations.length; ++i) {
-      if (!this._addResolvedLocation(locations[i])) {
+    for (const location of locations) {
+      if (!this._addResolvedLocation(location)) {
         break;
       }
     }
@@ -848,11 +846,10 @@ class Storage {
    * @param {!Breakpoint} breakpoint
    */
   _removeBreakpoint(breakpoint) {
-    if (this._muted) {
-      return;
+    if (!this._muted) {
+      this._breakpoints.delete(breakpoint._breakpointStorageId());
+      this._save();
     }
-    this._breakpoints.delete(breakpoint._breakpointStorageId());
-    this._save();
   }
 
   _save() {

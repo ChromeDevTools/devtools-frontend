@@ -447,6 +447,10 @@ experimental domain ApplicationCache
 experimental domain Audits
   depends on Network
 
+  type Issue extends object
+    properties
+      string code
+
   # Returns the response body and size if it were re-encoded with the specified settings. Only
   # applies to images.
   command getEncodedResponse
@@ -469,6 +473,17 @@ experimental domain Audits
       integer originalSize
       # Size after re-encoding.
       integer encodedSize
+
+  # Disables issues domain, prevents further issues from being reported to the client.
+  command disable
+
+  # Enables issues domain, sends the issues collected so far to the client by means of the
+  # `issueAdded` event.
+  command enable
+
+  event issueAdded
+    parameters
+      Issue issue
 
 # Defines events for background web platform features.
 experimental domain BackgroundService

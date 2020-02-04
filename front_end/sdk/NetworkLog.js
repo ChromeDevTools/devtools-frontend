@@ -581,3 +581,6 @@ export const Events = {
 
 const _initiatorDataSymbol = Symbol('InitiatorData');
 const _events = Symbol('SDK.NetworkLog.events');
+
+/** @typedef {!{initiators: !Set<!NetworkRequest>, initiated: !Map<!NetworkRequest, !NetworkRequest>}} */
+export let InitiatorGraph;

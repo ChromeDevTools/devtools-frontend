@@ -16,14 +16,21 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+import * as Common from '../common/common.js';
+import * as DataGrid from '../data_grid/data_grid.js';
+import * as Host from '../host/host.js';
+import * as SDK from '../sdk/sdk.js';
+import * as SourceFrame from '../source_frame/source_frame.js';
+import * as UI from '../ui/ui.js';
+
 import {BinaryResourceView} from './BinaryResourceView.js';
 
 /**
  * @unrestricted
  */
-export class ResourceWebSocketFrameView extends UI.VBox {
+export class ResourceWebSocketFrameView extends UI.Widget.VBox {
   /**
-   * @param {!SDK.NetworkRequest} request
+   * @param {!SDK.NetworkRequest.NetworkRequest} request
    */
   constructor(request) {
     super();
@@ -31,21 +38,21 @@ export class ResourceWebSocketFrameView extends UI.VBox {
     this.element.classList.add('websocket-frame-view');
     this._request = request;
 
-    this._splitWidget = new UI.SplitWidget(false, true, 'resourceWebSocketFrameSplitViewState');
+    this._splitWidget = new UI.SplitWidget.SplitWidget(false, true, 'resourceWebSocketFrameSplitViewState');
     this._splitWidget.show(this.element);
 
     const columns = /** @type {!Array<!DataGrid.ColumnDescriptor>} */ ([
-      {id: 'data', title: Common.UIString('Data'), sortable: false, weight: 88}, {
+      {id: 'data', title: Common.UIString.UIString('Data'), sortable: false, weight: 88}, {
         id: 'length',
-        title: Common.UIString('Length'),
+        title: Common.UIString.UIString('Length'),
         sortable: false,
         align: DataGrid.DataGrid.Align.Right,
         weight: 5
       },
-      {id: 'time', title: Common.UIString('Time'), sortable: true, weight: 7}
+      {id: 'time', title: Common.UIString.UIString('Time'), sortable: true, weight: 7}
     ]);
 
-    this._dataGrid = new DataGrid.SortableDataGrid({displayName: ls`Web Socket Frame`, columns});
+    this._dataGrid = new DataGrid.SortableDataGrid.SortableDataGrid({displayName: ls`Web Socket Frame`, columns});
     this._dataGrid.setRowContextMenuCallback(onRowContextMenu.bind(this));
     this._dataGrid.setStickToBottom(true);
     this._dataGrid.setCellClass('websocket-frame-view-td');
@@ -60,13 +67,13 @@ export class ResourceWebSocketFrameView extends UI.VBox {
     this._dataGrid.addEventListener(DataGrid.DataGrid.Events.SelectedNode, this._onFrameSelected, this);
     this._dataGrid.addEventListener(DataGrid.DataGrid.Events.DeselectedNode, this._onFrameDeselected, this);
 
-    this._mainToolbar = new UI.Toolbar('');
+    this._mainToolbar = new UI.Toolbar.Toolbar('');
 
-    this._clearAllButton = new UI.ToolbarButton(Common.UIString('Clear All'), 'largeicon-clear');
-    this._clearAllButton.addEventListener(UI.ToolbarButton.Events.Click, this._clearFrames, this);
+    this._clearAllButton = new UI.Toolbar.ToolbarButton(Common.UIString.UIString('Clear All'), 'largeicon-clear');
+    this._clearAllButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._clearFrames, this);
     this._mainToolbar.appendToolbarItem(this._clearAllButton);
 
-    this._filterTypeCombobox = new UI.ToolbarComboBox(this._updateFilterSetting.bind(this), ls`Filter`);
+    this._filterTypeCombobox = new UI.Toolbar.ToolbarComboBox(this._updateFilterSetting.bind(this), ls`Filter`);
     for (const filterItem of _filterTypes) {
       const option = this._filterTypeCombobox.createOption(filterItem.label, filterItem.name);
       this._filterTypeCombobox.addOption(option);
@@ -75,26 +82,27 @@ export class ResourceWebSocketFrameView extends UI.VBox {
     this._filterType = null;
 
     const placeholder = 'Enter regex, for example: (web)?socket';
-    this._filterTextInput = new UI.ToolbarInput(Common.UIString(placeholder), '', 0.4);
-    this._filterTextInput.addEventListener(UI.ToolbarInput.Event.TextChanged, this._updateFilterSetting, this);
+    this._filterTextInput = new UI.Toolbar.ToolbarInput(Common.UIString.UIString(placeholder), '', 0.4);
+    this._filterTextInput.addEventListener(UI.Toolbar.ToolbarInput.Event.TextChanged, this._updateFilterSetting, this);
     this._mainToolbar.appendToolbarItem(this._filterTextInput);
     this._filterRegex = null;
 
-    const mainContainer = new UI.VBox();
+    const mainContainer = new UI.Widget.VBox();
     mainContainer.element.appendChild(this._mainToolbar.element);
     this._dataGrid.asWidget().show(mainContainer.element);
     mainContainer.setMinimumSize(0, 72);
     this._splitWidget.setMainWidget(mainContainer);
 
-    this._frameEmptyWidget = new UI.EmptyWidget(Common.UIString('Select message to browse its content.'));
+    this._frameEmptyWidget =
+        new UI.EmptyWidget.EmptyWidget(Common.UIString.UIString('Select message to browse its content.'));
     this._splitWidget.setSidebarWidget(this._frameEmptyWidget);
 
     /** @type {?ResourceWebSocketFrameNode} */
     this._selectedNode = null;
 
     /**
-     * @param {!UI.ContextMenu} contextMenu
-     * @param {!DataGrid.DataGridNode} genericNode
+     * @param {!UI.ContextMenu.ContextMenu} contextMenu
+     * @param {!DataGrid.DataGrid.DataGridNode} genericNode
      * @this {ResourceWebSocketFrameView}
      */
     function onRowContextMenu(contextMenu, genericNode) {
@@ -104,10 +112,11 @@ export class ResourceWebSocketFrameView extends UI.VBox {
         binaryView.addCopyToContextMenu(contextMenu, ls`Copy message...`);
       } else {
         contextMenu.clipboardSection().appendItem(
-            Common.UIString('Copy message'),
-            Host.InspectorFrontendHost.copyText.bind(Host.InspectorFrontendHost, node.data.data));
+            Common.UIString.UIString('Copy message'),
+            Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText.bind(
+                Host.InspectorFrontendHost.InspectorFrontendHostInstance, node.data.data));
       }
-      contextMenu.footerSection().appendItem(Common.UIString('Clear all'), this._clearFrames.bind(this));
+      contextMenu.footerSection().appendItem(Common.UIString.UIString('Clear all'), this._clearFrames.bind(this));
     }
   }
 
@@ -188,14 +197,15 @@ export class ResourceWebSocketFrameView extends UI.VBox {
       return;
     }
 
-    const jsonView = await SourceFrame.JSONView.createView(content);
+    const jsonView = await SourceFrame.JSONView.JSONView.createView(content);
     if (jsonView) {
       this._splitWidget.setSidebarWidget(jsonView);
       return;
     }
 
-    this._splitWidget.setSidebarWidget(new SourceFrame.ResourceSourceFrame(
-        Common.StaticContentProvider.fromString(this._request.url(), Common.resourceTypes.WebSocket, content)));
+    this._splitWidget.setSidebarWidget(new SourceFrame.ResourceSourceFrame.ResourceSourceFrame(
+        Common.StaticContentProvider.StaticContentProvider.fromString(
+            this._request.url(), Common.ResourceType.resourceTypes.WebSocket, content)));
   }
 
   /**
@@ -245,17 +255,17 @@ export const opCodeDescriptions = (function() {
   return map;
 })();
 
-/** @type {!Array<!UI.NamedBitSetFilterUI.Item>} */
+/** @type {!Array<!UI.FilterBar.Item>} */
 export const _filterTypes = [
-  {name: 'all', label: Common.UIString('All')},
-  {name: 'send', label: Common.UIString('Send')},
-  {name: 'receive', label: Common.UIString('Receive')},
+  {name: 'all', label: Common.UIString.UIString('All')},
+  {name: 'send', label: Common.UIString.UIString('Send')},
+  {name: 'receive', label: Common.UIString.UIString('Receive')},
 ];
 
 /**
  * @unrestricted
  */
-export class ResourceWebSocketFrameNode extends DataGrid.SortableDataGridNode {
+export class ResourceWebSocketFrameNode extends DataGrid.SortableDataGrid.SortableDataGridNode {
   /**
    * @param {string} url
    * @param {!SDK.NetworkRequest.WebSocketFrame} frame
@@ -341,7 +351,8 @@ export class ResourceWebSocketFrameNode extends DataGrid.SortableDataGridNode {
     }
 
     if (!this._binaryView) {
-      this._binaryView = new BinaryResourceView(this._dataText, /* url */ '', Common.resourceTypes.WebSocket);
+      this._binaryView =
+          new BinaryResourceView(this._dataText, /* url */ '', Common.ResourceType.resourceTypes.WebSocket);
     }
     return this._binaryView;
   }

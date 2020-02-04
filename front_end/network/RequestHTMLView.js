@@ -28,10 +28,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as UI from '../ui/ui.js';
+
 /**
  * @unrestricted
  */
-export class RequestHTMLView extends UI.VBox {
+export class RequestHTMLView extends UI.Widget.VBox {
   /**
    * @param {string} dataURL
    */

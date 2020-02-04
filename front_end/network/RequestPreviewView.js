@@ -28,13 +28,18 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as Common from '../common/common.js';
+import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
+import * as SourceFrame from '../source_frame/source_frame.js';
+import * as UI from '../ui/ui.js';
+
 import {RequestHTMLView} from './RequestHTMLView.js';
 import {RequestResponseView} from './RequestResponseView.js';
 import {SignedExchangeInfoView} from './SignedExchangeInfoView.js';
 
 export class RequestPreviewView extends RequestResponseView {
   /**
-   * @param {!SDK.NetworkRequest} request
+   * @param {!SDK.NetworkRequest.NetworkRequest} request
    */
   constructor(request) {
     super(request);
@@ -43,14 +48,14 @@ export class RequestPreviewView extends RequestResponseView {
   /**
    * @override
    * @protected
-   * @return {!Promise<!UI.Widget>}
+   * @return {!Promise<!UI.Widget.Widget>}
    */
   async showPreview() {
     const view = await super.showPreview();
-    if (!(view instanceof UI.SimpleView)) {
+    if (!(view instanceof UI.View.SimpleView)) {
       return view;
     }
-    const toolbar = new UI.Toolbar('network-item-preview-toolbar', this.element);
+    const toolbar = new UI.Toolbar.Toolbar('network-item-preview-toolbar', this.element);
     view.toolbarItems().then(items => {
       items.map(item => toolbar.appendToolbarItem(item));
     });
@@ -58,12 +63,12 @@ export class RequestPreviewView extends RequestResponseView {
   }
 
   /**
-   * @return {!Promise<?UI.Widget>}
+   * @return {!Promise<?UI.Widget.Widget>}
    */
   async _htmlPreview() {
     const contentData = await this.request.contentData();
     if (contentData.error) {
-      return new UI.EmptyWidget(Common.UIString('Failed to load response data'));
+      return new UI.EmptyWidget.EmptyWidget(Common.UIString.UIString('Failed to load response data'));
     }
 
     const whitelist = new Set(['text/html', 'text/plain', 'application/xhtml+xml']);
@@ -75,7 +80,7 @@ export class RequestPreviewView extends RequestResponseView {
                                           /** @type {string} */ (contentData.content);
 
     // http://crbug.com/767393 - DevTools should recognize JSON regardless of the content type
-    const jsonView = await SourceFrame.JSONView.createView(content);
+    const jsonView = await SourceFrame.JSONView.JSONView.createView(content);
     if (jsonView) {
       return jsonView;
     }
@@ -88,7 +93,7 @@ export class RequestPreviewView extends RequestResponseView {
   /**
    * @override
    * @protected
-   * @return {!Promise<!UI.Widget>}
+   * @return {!Promise<!UI.Widget.Widget>}
    */
   async createPreview() {
     if (this.request.signedExchangeInfo()) {
@@ -100,11 +105,11 @@ export class RequestPreviewView extends RequestResponseView {
       return htmlErrorPreview;
     }
 
-    const provided = await SourceFrame.PreviewFactory.createPreview(this.request, this.request.mimeType);
+    const provided = await SourceFrame.PreviewFactory.PreviewFactory.createPreview(this.request, this.request.mimeType);
     if (provided) {
       return provided;
     }
 
-    return new UI.EmptyWidget(Common.UIString('Preview not available'));
+    return new UI.EmptyWidget.EmptyWidget(Common.UIString.UIString('Preview not available'));
   }
 }

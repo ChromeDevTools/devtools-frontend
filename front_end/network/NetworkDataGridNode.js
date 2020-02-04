@@ -28,6 +28,14 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as Bindings from '../bindings/bindings.js';
+import * as Common from '../common/common.js';
+import * as Components from '../components/components.js';
+import * as DataGrid from '../data_grid/data_grid.js';
+import * as Host from '../host/host.js';
+import * as SDK from '../sdk/sdk.js';
+import * as UI from '../ui/ui.js';
+
 import {NetworkTimeCalculator} from './NetworkTimeCalculator.js';  // eslint-disable-line no-unused-vars
 
 /** @enum {symbol} */
@@ -38,12 +46,12 @@ export const Events = {
 
 /**
  * @interface
- * @extends {SDK.SDKModelObserver<!SDK.NetworkManager>}
- * @extends {Common.EventTarget}
+ * @extends {SDK.SDKModel.SDKModelObserver<!SDK.NetworkManager.NetworkManager>}
+ * @extends {Common.EventTarget.EventTarget}
  */
 export class NetworkLogViewInterface {
   /**
-   * @param {!SDK.NetworkRequest} request
+   * @param {!SDK.NetworkRequest.NetworkRequest} request
    * @return {boolean}
    */
   static HTTPRequestsFilter(request) {
@@ -56,7 +64,7 @@ export class NetworkLogViewInterface {
   }
 
   /**
-   * @param {!SDK.NetworkRequest} request
+   * @param {!SDK.NetworkRequest.NetworkRequest} request
    * @return {?NetworkRequestNode}
    */
   nodeForRequest(request) {
@@ -166,8 +174,8 @@ export class NetworkLogViewInterface {
   }
 
   /**
-   * @param {!UI.ContextMenu} contextMenu
-   * @param {!SDK.NetworkRequest} request
+   * @param {!UI.ContextMenu.ContextMenu} contextMenu
+   * @param {!SDK.NetworkRequest.NetworkRequest} request
    */
   handleContextMenuForRequest(contextMenu, request) {
   }
@@ -176,13 +184,13 @@ export class NetworkLogViewInterface {
   }
 
   /**
-   * @param {!SDK.NetworkRequest} request
+   * @param {!SDK.NetworkRequest.NetworkRequest} request
    */
   revealAndHighlightRequest(request) {
   }
 
   /**
-   * @param {!SDK.NetworkRequest} request
+   * @param {!SDK.NetworkRequest.NetworkRequest} request
    */
   selectRequest(request) {
   }
@@ -206,7 +214,7 @@ export class NetworkLogViewInterface {
 /**
  * @unrestricted
  */
-export class NetworkNode extends DataGrid.SortableDataGridNode {
+export class NetworkNode extends DataGrid.SortableDataGrid.SortableDataGridNode {
   /**
    * @param {!NetworkLogViewInterface} parentView
    */
@@ -215,7 +223,7 @@ export class NetworkNode extends DataGrid.SortableDataGridNode {
     this._parentView = parentView;
     this._isHovered = false;
     this._showingInitiatorChain = false;
-    /** @type {?SDK.NetworkRequest} */
+    /** @type {?SDK.NetworkRequest.NetworkRequest} */
     this._requestOrFirstKnownChildRequest = null;
   }
 
@@ -391,7 +399,7 @@ export class NetworkNode extends DataGrid.SortableDataGridNode {
   }
 
   /**
-   * @return {?SDK.NetworkRequest}
+   * @return {?SDK.NetworkRequest.NetworkRequest}
    */
   request() {
     return null;
@@ -414,7 +422,7 @@ export class NetworkNode extends DataGrid.SortableDataGridNode {
 
   /**
    * @protected
-   * @return {?SDK.NetworkRequest}
+   * @return {?SDK.NetworkRequest.NetworkRequest}
    */
   requestOrFirstKnownChildRequest() {
     if (this._requestOrFirstKnownChildRequest) {
@@ -459,7 +467,7 @@ export const _backgroundColors = {
 export class NetworkRequestNode extends NetworkNode {
   /**
    * @param {!NetworkLogViewInterface} parentView
-   * @param {!SDK.NetworkRequest} request
+   * @param {!SDK.NetworkRequest.NetworkRequest} request
    */
   constructor(parentView, request) {
     super(parentView);
@@ -801,7 +809,8 @@ export class NetworkRequestNode extends NetworkNode {
     const resourceType = this._request.resourceType();
     let simpleType = resourceType.name();
 
-    if (resourceType === Common.resourceTypes.Other || resourceType === Common.resourceTypes.Image) {
+    if (resourceType === Common.ResourceType.resourceTypes.Other ||
+        resourceType === Common.ResourceType.resourceTypes.Image) {
       simpleType = mimeType.replace(/^(application|image)\//, '');
     }
 
@@ -818,7 +827,7 @@ export class NetworkRequestNode extends NetworkNode {
 
   /**
    * @override
-   * @return {!SDK.NetworkRequest}
+   * @return {!SDK.NetworkRequest.NetworkRequest}
    */
   request() {
     return this._request;
@@ -962,13 +971,13 @@ export class NetworkRequestNode extends NetworkNode {
     const domChanges = [];
     const matchInfo = this._nameCell.textContent.match(regexp);
     if (matchInfo) {
-      UI.highlightSearchResult(this._nameCell, matchInfo.index, matchInfo[0].length, domChanges);
+      UI.UIUtils.highlightSearchResult(this._nameCell, matchInfo.index, matchInfo[0].length, domChanges);
     }
     return domChanges;
   }
 
   _openInNewTab() {
-    Host.InspectorFrontendHost.openInNewTab(this._request.url());
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(this._request.url());
   }
 
   /**
@@ -997,7 +1006,7 @@ export class NetworkRequestNode extends NetworkNode {
         this.parentView().dispatchEventToListeners(Events.RequestActivated, /* showPanel */ true);
       });
       let iconElement;
-      if (this._request.resourceType() === Common.resourceTypes.Image) {
+      if (this._request.resourceType() === Common.ResourceType.resourceTypes.Image) {
         const previewImage = createElementWithClass('img', 'image-network-icon-preview');
         previewImage.alt = this._request.resourceType().title();
         this._request.populateImageSource(previewImage);
@@ -1015,7 +1024,7 @@ export class NetworkRequestNode extends NetworkNode {
 
     if (columnId === 'name') {
       const name = this._request.name().trimMiddle(100);
-      const networkManager = SDK.NetworkManager.forRequest(this._request);
+      const networkManager = SDK.NetworkManager.NetworkManager.forRequest(this._request);
       cell.createTextChild(networkManager ? networkManager.target().decorateLabel(name) : name);
       this._appendSubtitle(cell, this._request.path());
       cell.title = this._request.url();
@@ -1033,7 +1042,7 @@ export class NetworkRequestNode extends NetworkNode {
         'network-dim-cell', !this._isFailed() && (this._request.cached() || !this._request.statusCode));
 
     if (this._request.failed && !this._request.canceled && !this._request.wasBlocked()) {
-      const failText = Common.UIString('(failed)');
+      const failText = Common.UIString.UIString('(failed)');
       if (this._request.localizedFailDescription) {
         cell.createTextChild(failText);
         this._appendSubtitle(cell, this._request.localizedFailDescription, true);
@@ -1046,42 +1055,42 @@ export class NetworkRequestNode extends NetworkNode {
       this._appendSubtitle(cell, this._request.statusText);
       cell.title = this._request.statusCode + ' ' + this._request.statusText;
     } else if (this._request.parsedURL.isDataURL()) {
-      this._setTextAndTitle(cell, Common.UIString('(data)'));
+      this._setTextAndTitle(cell, Common.UIString.UIString('(data)'));
     } else if (this._request.canceled) {
-      this._setTextAndTitle(cell, Common.UIString('(canceled)'));
+      this._setTextAndTitle(cell, Common.UIString.UIString('(canceled)'));
     } else if (this._request.wasBlocked()) {
-      let reason = Common.UIString('other');
+      let reason = Common.UIString.UIString('other');
       switch (this._request.blockedReason()) {
         case Protocol.Network.BlockedReason.Other:
-          reason = Common.UIString('other');
+          reason = Common.UIString.UIString('other');
           break;
         case Protocol.Network.BlockedReason.Csp:
-          reason = Common.UIString('csp');
+          reason = Common.UIString.UIString('csp');
           break;
         case Protocol.Network.BlockedReason.MixedContent:
-          reason = Common.UIString('mixed-content');
+          reason = Common.UIString.UIString('mixed-content');
           break;
         case Protocol.Network.BlockedReason.Origin:
-          reason = Common.UIString('origin');
+          reason = Common.UIString.UIString('origin');
           break;
         case Protocol.Network.BlockedReason.Inspector:
-          reason = Common.UIString('devtools');
+          reason = Common.UIString.UIString('devtools');
           break;
         case Protocol.Network.BlockedReason.SubresourceFilter:
-          reason = Common.UIString('subresource-filter');
+          reason = Common.UIString.UIString('subresource-filter');
           break;
         case Protocol.Network.BlockedReason.ContentType:
-          reason = Common.UIString('content-type');
+          reason = Common.UIString.UIString('content-type');
           break;
         case Protocol.Network.BlockedReason.CollapsedByClient:
-          reason = Common.UIString('extension');
+          reason = Common.UIString.UIString('extension');
           break;
       }
-      this._setTextAndTitle(cell, Common.UIString('(blocked:%s)', reason));
+      this._setTextAndTitle(cell, Common.UIString.UIString('(blocked:%s)', reason));
     } else if (this._request.finished) {
-      this._setTextAndTitle(cell, Common.UIString('Finished'));
+      this._setTextAndTitle(cell, Common.UIString.UIString('Finished'));
     } else {
-      this._setTextAndTitle(cell, Common.UIString('(pending)'));
+      this._setTextAndTitle(cell, Common.UIString.UIString('(pending)'));
     }
   }
 
@@ -1095,37 +1104,37 @@ export class NetworkRequestNode extends NetworkNode {
 
     const timing = request.timing;
     if (timing && timing.pushStart) {
-      cell.appendChild(createTextNode(Common.UIString('Push / ')));
+      cell.appendChild(createTextNode(Common.UIString.UIString('Push / ')));
     }
     switch (initiator.type) {
       case SDK.NetworkRequest.InitiatorType.Parser:
         cell.title = initiator.url + ':' + (initiator.lineNumber + 1);
         const uiSourceCode = self.Workspace.workspace.uiSourceCodeForURL(initiator.url);
-        cell.appendChild(Components.Linkifier.linkifyURL(initiator.url, {
+        cell.appendChild(Components.Linkifier.Linkifier.linkifyURL(initiator.url, {
           text: uiSourceCode ? uiSourceCode.displayName() : undefined,
           lineNumber: initiator.lineNumber,
           columnNumber: initiator.columnNumber
         }));
-        this._appendSubtitle(cell, Common.UIString('Parser'));
+        this._appendSubtitle(cell, Common.UIString.UIString('Parser'));
         break;
 
       case SDK.NetworkRequest.InitiatorType.Redirect:
         cell.title = initiator.url;
-        const redirectSource = /** @type {!SDK.NetworkRequest} */ (request.redirectSource());
+        const redirectSource = /** @type {!SDK.NetworkRequest.NetworkRequest} */ (request.redirectSource());
         console.assert(redirectSource);
         if (this.parentView().nodeForRequest(redirectSource)) {
-          cell.appendChild(
-              Components.Linkifier.linkifyRevealable(redirectSource, Bindings.displayNameForURL(redirectSource.url())));
+          cell.appendChild(Components.Linkifier.Linkifier.linkifyRevealable(
+              redirectSource, Bindings.ResourceUtils.displayNameForURL(redirectSource.url())));
         } else {
-          cell.appendChild(Components.Linkifier.linkifyURL(redirectSource.url()));
+          cell.appendChild(Components.Linkifier.Linkifier.linkifyURL(redirectSource.url()));
         }
-        this._appendSubtitle(cell, Common.UIString('Redirect'));
+        this._appendSubtitle(cell, Common.UIString.UIString('Redirect'));
         break;
 
       case SDK.NetworkRequest.InitiatorType.Script:
-        const networkManager = SDK.NetworkManager.forRequest(request);
+        const networkManager = SDK.NetworkManager.NetworkManager.forRequest(request);
         /**
-         * @type {!Components.Linkifier}
+         * @type {!Components.Linkifier.Linkifier}
          * @suppress {checkTypes}
          */
         const linkifier = this.parentView().linkifier;
@@ -1139,26 +1148,26 @@ export class NetworkRequestNode extends NetworkNode {
         }
         this._linkifiedInitiatorAnchor.title = '';
         cell.appendChild(this._linkifiedInitiatorAnchor);
-        this._appendSubtitle(cell, Common.UIString('Script'));
+        this._appendSubtitle(cell, Common.UIString.UIString('Script'));
         cell.classList.add('network-script-initiated');
         cell.request = request;
         break;
 
       case SDK.NetworkRequest.InitiatorType.Preload:
-        cell.title = Common.UIString('Preload');
+        cell.title = Common.UIString.UIString('Preload');
         cell.classList.add('network-dim-cell');
-        cell.appendChild(createTextNode(Common.UIString('Preload')));
+        cell.appendChild(createTextNode(Common.UIString.UIString('Preload')));
         break;
 
       case SDK.NetworkRequest.InitiatorType.SignedExchange:
-        cell.appendChild(Components.Linkifier.linkifyURL(initiator.url));
-        this._appendSubtitle(cell, Common.UIString('signed-exchange'));
+        cell.appendChild(Components.Linkifier.Linkifier.linkifyURL(initiator.url));
+        this._appendSubtitle(cell, Common.UIString.UIString('signed-exchange'));
         break;
 
       default:
-        cell.title = Common.UIString('Other');
+        cell.title = Common.UIString.UIString('Other');
         cell.classList.add('network-dim-cell');
-        cell.appendChild(createTextNode(Common.UIString('Other')));
+        cell.appendChild(createTextNode(Common.UIString.UIString('Other')));
     }
   }
 
@@ -1207,7 +1216,7 @@ export class NetworkRequestNode extends NetworkNode {
       this._appendSubtitle(cell, Number.secondsToString(this._request.latency));
     } else {
       cell.classList.add('network-dim-cell');
-      this._setTextAndTitle(cell, Common.UIString('Pending'));
+      this._setTextAndTitle(cell, Common.UIString.UIString('Pending'));
     }
   }
 

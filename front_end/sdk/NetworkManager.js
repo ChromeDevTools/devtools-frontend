@@ -1576,3 +1576,6 @@ SDKModel.register(NetworkManager, Capability.Network, true);
   * }}
   */
 export let Conditions;
+
+/** @typedef {{url: string, enabled: boolean}} */
+export let BlockedPattern;

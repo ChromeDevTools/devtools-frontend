@@ -275,7 +275,7 @@ export class TextFilterUI extends Common.ObjectWrapper.ObjectWrapper {
  */
 export class NamedBitSetFilterUI extends Common.ObjectWrapper.ObjectWrapper {
   /**
-   * @param {!Array.<!UI.NamedBitSetFilterUI.Item>} items
+   * @param {!Array.<!Item>} items
    * @param {!Common.Settings.Setting=} setting
    */
   constructor(items, setting) {
@@ -534,3 +534,6 @@ export class CheckboxFilterUI extends Common.ObjectWrapper.ObjectWrapper {
     this._label.borderColor = borderColor;
   }
 }
+
+/** @typedef {{name: string, label: string, title: (string|undefined)}} */
+export let Item;

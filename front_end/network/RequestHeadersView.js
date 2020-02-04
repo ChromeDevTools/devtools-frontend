@@ -28,9 +28,14 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-export class RequestHeadersView extends UI.VBox {
+import * as Common from '../common/common.js';
+import * as ObjectUI from '../object_ui/object_ui.js';
+import * as SDK from '../sdk/sdk.js';
+import * as UI from '../ui/ui.js';
+
+export class RequestHeadersView extends UI.Widget.VBox {
   /**
-   * @param {!SDK.NetworkRequest} request
+   * @param {!SDK.NetworkRequest.NetworkRequest} request
    */
   constructor(request) {
     super();
@@ -42,10 +47,10 @@ export class RequestHeadersView extends UI.VBox {
     this._showRequestHeadersText = false;
     this._showResponseHeadersText = false;
 
-    /** @type {?UI.TreeElement} */
+    /** @type {?UI.TreeOutline.TreeElement} */
     this._highlightedElement = null;
 
-    const root = new UI.TreeOutlineInShadow();
+    const root = new UI.TreeOutline.TreeOutlineInShadow();
     root.registerRequiredCSS('object_ui/objectValue.css');
     root.registerRequiredCSS('object_ui/objectPropertiesSection.css');
     root.registerRequiredCSS('network/requestHeadersTree.css');
@@ -53,7 +58,7 @@ export class RequestHeadersView extends UI.VBox {
     root.makeDense();
     this.element.appendChild(root.element);
 
-    const generalCategory = new Category(root, 'general', Common.UIString('General'));
+    const generalCategory = new Category(root, 'general', Common.UIString.UIString('General'));
     generalCategory.hidden = false;
     this._root = generalCategory;
     this._urlItem = generalCategory.createLeaf();
@@ -68,7 +73,7 @@ export class RequestHeadersView extends UI.VBox {
     this._requestHeadersCategory = new Category(root, 'requestHeaders', '');
     this._queryStringCategory = new Category(root, 'queryString', '');
     this._formDataCategory = new Category(root, 'formData', '');
-    this._requestPayloadCategory = new Category(root, 'requestPayload', Common.UIString('Request Payload'));
+    this._requestPayloadCategory = new Category(root, 'requestPayload', Common.UIString.UIString('Request Payload'));
   }
 
   /**
@@ -142,7 +147,7 @@ export class RequestHeadersView extends UI.VBox {
       div.classList.add('empty-value');
     }
     if (errorDecoding) {
-      div.createChild('span', 'header-decode-error').textContent = Common.UIString('(unable to decode value)');
+      div.createChild('span', 'header-decode-error').textContent = Common.UIString.UIString('(unable to decode value)');
     } else {
       div.textContent = value;
     }
@@ -150,7 +155,7 @@ export class RequestHeadersView extends UI.VBox {
   }
 
   _refreshURL() {
-    this._urlItem.title = this._formatHeader(Common.UIString('Request URL'), this._request.url());
+    this._urlItem.title = this._formatHeader(Common.UIString.UIString('Request URL'), this._request.url());
   }
 
   _refreshQueryString() {
@@ -159,7 +164,7 @@ export class RequestHeadersView extends UI.VBox {
     this._queryStringCategory.hidden = !queryParameters;
     if (queryParameters) {
       this._refreshParams(
-          Common.UIString('Query String Parameters'), queryParameters, queryString, this._queryStringCategory);
+          Common.UIString.UIString('Query String Parameters'), queryParameters, queryString, this._queryStringCategory);
     }
   }
 
@@ -175,7 +180,7 @@ export class RequestHeadersView extends UI.VBox {
     const formParameters = await this._request.formParameters();
     if (formParameters) {
       this._formDataCategory.hidden = false;
-      this._refreshParams(Common.UIString('Form Data'), formParameters, formData, this._formDataCategory);
+      this._refreshParams(Common.UIString.UIString('Form Data'), formParameters, formData, this._formDataCategory);
     } else {
       this._requestPayloadCategory.hidden = false;
       try {
@@ -188,7 +193,7 @@ export class RequestHeadersView extends UI.VBox {
   }
 
   /**
-   * @param {!UI.TreeElement} treeElement
+   * @param {!UI.TreeOutline.TreeElement} treeElement
    * @param {?string} sourceText
    */
   _populateTreeElementWithSourceText(treeElement, sourceText) {
@@ -199,7 +204,7 @@ export class RequestHeadersView extends UI.VBox {
     const sourceTextElement = createElementWithClass('span', 'header-value source-code');
     sourceTextElement.textContent = trim ? text.substr(0, max_len) : text;
 
-    const sourceTreeElement = new UI.TreeElement(sourceTextElement);
+    const sourceTreeElement = new UI.TreeOutline.TreeElement(sourceTextElement);
     treeElement.removeChildren();
     treeElement.appendChild(sourceTreeElement);
     if (!trim) {
@@ -207,7 +212,7 @@ export class RequestHeadersView extends UI.VBox {
     }
 
     const showMoreButton = createElementWithClass('button', 'request-headers-show-more-button');
-    showMoreButton.textContent = Common.UIString('Show more');
+    showMoreButton.textContent = Common.UIString.UIString('Show more');
 
     function showMore() {
       showMoreButton.remove();
@@ -220,7 +225,7 @@ export class RequestHeadersView extends UI.VBox {
      * @param {!Event} event
      */
     function onContextMenuShowMore(event) {
-      const contextMenu = new UI.ContextMenu(event);
+      const contextMenu = new UI.ContextMenu.ContextMenu(event);
       const section = contextMenu.newSection();
       section.appendItem(ls`Show more`, showMore);
       contextMenu.show();
@@ -233,7 +238,7 @@ export class RequestHeadersView extends UI.VBox {
    * @param {string} title
    * @param {?Array.<!SDK.NetworkRequest.NameValue>} params
    * @param {?string} sourceText
-   * @param {!UI.TreeElement} paramsTreeElement
+   * @param {!UI.TreeOutline.TreeElement} paramsTreeElement
    */
   _refreshParams(title, params, sourceText, paramsTreeElement) {
     paramsTreeElement.removeChildren();
@@ -243,7 +248,7 @@ export class RequestHeadersView extends UI.VBox {
     paramsTreeElement.listItemElement.createTextChild(title);
 
     const headerCount = createElementWithClass('span', 'header-count');
-    headerCount.textContent = Common.UIString('\xA0(%d)', params.length);
+    headerCount.textContent = Common.UIString.UIString('\xA0(%d)', params.length);
     paramsTreeElement.listItemElement.appendChild(headerCount);
 
     const shouldViewSource = paramsTreeElement[_viewSourceSymbol];
@@ -258,7 +263,7 @@ export class RequestHeadersView extends UI.VBox {
    * @param {string} title
    * @param {?Array.<!SDK.NetworkRequest.NameValue>} params
    * @param {?string} sourceText
-   * @param {!UI.TreeElement} paramsTreeElement
+   * @param {!UI.TreeOutline.TreeElement} paramsTreeElement
    */
   _appendParamsSource(title, params, sourceText, paramsTreeElement) {
     this._populateTreeElementWithSourceText(paramsTreeElement, sourceText);
@@ -285,7 +290,7 @@ export class RequestHeadersView extends UI.VBox {
       if (!paramsTreeElement.expanded) {
         return;
       }
-      const contextMenu = new UI.ContextMenu(event);
+      const contextMenu = new UI.ContextMenu.ContextMenu(event);
       contextMenu.newSection().appendItem(ls`View parsed`, viewParsed.bind(this, event));
       contextMenu.show();
     }.bind(this);
@@ -300,7 +305,7 @@ export class RequestHeadersView extends UI.VBox {
    * @param {string} title
    * @param {?Array.<!SDK.NetworkRequest.NameValue>} params
    * @param {?string} sourceText
-   * @param {!UI.TreeElement} paramsTreeElement
+   * @param {!UI.TreeOutline.TreeElement} paramsTreeElement
    */
   _appendParamsParsed(title, params, sourceText, paramsTreeElement) {
     for (let i = 0; i < params.length; ++i) {
@@ -312,11 +317,11 @@ export class RequestHeadersView extends UI.VBox {
         paramNameValue.createChild('span', 'header-separator');
         paramNameValue.appendChild(value);
       } else {
-        paramNameValue.appendChild(
-            this._formatParameter(Common.UIString('(empty)'), 'empty-request-header', this._decodeRequestParameters));
+        paramNameValue.appendChild(this._formatParameter(
+            Common.UIString.UIString('(empty)'), 'empty-request-header', this._decodeRequestParameters));
       }
 
-      const paramTreeElement = new UI.TreeElement(paramNameValue);
+      const paramTreeElement = new UI.TreeOutline.TreeElement(paramNameValue);
       paramsTreeElement.appendChild(paramTreeElement);
     }
 
@@ -351,7 +356,7 @@ export class RequestHeadersView extends UI.VBox {
       if (!paramsTreeElement.expanded) {
         return;
       }
-      const contextMenu = new UI.ContextMenu(event);
+      const contextMenu = new UI.ContextMenu.ContextMenu(event);
       const section = contextMenu.newSection();
       section.appendItem(ls`View source`, viewSource.bind(this, event));
       const viewURLEncodedText = this._decodeRequestParameters ? ls`View URL encoded` : ls`View decoded`;
@@ -422,7 +427,7 @@ export class RequestHeadersView extends UI.VBox {
       if (!rootListItem.expanded) {
         return;
       }
-      const contextMenu = new UI.ContextMenu(event);
+      const contextMenu = new UI.ContextMenu.ContextMenu(event);
       contextMenu.newSection().appendItem(ls`View parsed`, viewParsed.bind(this, event));
       contextMenu.show();
     }.bind(this);
@@ -436,7 +441,8 @@ export class RequestHeadersView extends UI.VBox {
    * @param {string} sourceText
    */
   _appendJSONPayloadParsed(rootListItem, parsedObject, sourceText) {
-    const object = /** @type {!SDK.LocalJSONObject} */ (SDK.RemoteObject.fromLocalObject(parsedObject));
+    const object =
+        /** @type {!SDK.RemoteObject.LocalJSONObject} */ (SDK.RemoteObject.RemoteObject.fromLocalObject(parsedObject));
     const section = new ObjectUI.ObjectPropertiesSection.RootElement(object);
     section.title = object.description;
     section.expand();
@@ -466,7 +472,7 @@ export class RequestHeadersView extends UI.VBox {
       if (!rootListItem.expanded) {
         return;
       }
-      const contextMenu = new UI.ContextMenu(event);
+      const contextMenu = new UI.ContextMenu.ContextMenu(event);
       contextMenu.newSection().appendItem(ls`View source`, viewSource.bind(this, event));
       contextMenu.show();
     }.bind(this);
@@ -483,7 +489,8 @@ export class RequestHeadersView extends UI.VBox {
    * @return {!Element}
    */
   _createViewSourceToggle(viewSource, handler) {
-    const viewSourceToggleTitle = viewSource ? Common.UIString('view parsed') : Common.UIString('view source');
+    const viewSourceToggleTitle =
+        viewSource ? Common.UIString.UIString('view parsed') : Common.UIString.UIString('view source');
     const viewSourceToggleButton = this._createToggleButton(viewSourceToggleTitle);
     viewSourceToggleButton.addEventListener('click', handler, false);
     return viewSourceToggleButton;
@@ -508,9 +515,10 @@ export class RequestHeadersView extends UI.VBox {
     const headersText = this._request.requestHeadersText();
 
     if (this._showRequestHeadersText && headersText) {
-      this._refreshHeadersText(Common.UIString('Request Headers'), headers.length, headersText, treeElement);
+      this._refreshHeadersText(Common.UIString.UIString('Request Headers'), headers.length, headersText, treeElement);
     } else {
-      this._refreshHeaders(Common.UIString('Request Headers'), headers, treeElement, headersText === undefined);
+      this._refreshHeaders(
+          Common.UIString.UIString('Request Headers'), headers, treeElement, headersText === undefined);
     }
 
     if (headersText) {
@@ -528,10 +536,10 @@ export class RequestHeadersView extends UI.VBox {
     const headersText = this._request.responseHeadersText;
 
     if (this._showResponseHeadersText) {
-      this._refreshHeadersText(Common.UIString('Response Headers'), headers.length, headersText, treeElement);
+      this._refreshHeadersText(Common.UIString.UIString('Response Headers'), headers.length, headersText, treeElement);
     } else {
       this._refreshHeaders(
-          Common.UIString('Response Headers'), headers, treeElement, /* provisional */ false,
+          Common.UIString.UIString('Response Headers'), headers, treeElement, /* provisional */ false,
           this._request.blockedResponseCookies());
     }
 
@@ -595,7 +603,7 @@ export class RequestHeadersView extends UI.VBox {
 
   /**
    * @param {string} title
-   * @param {!UI.TreeElement} headersTreeElement
+   * @param {!UI.TreeOutline.TreeElement} headersTreeElement
    * @param {number} headersLength
    */
   _refreshHeadersTitle(title, headersTreeElement, headersLength) {
@@ -603,14 +611,14 @@ export class RequestHeadersView extends UI.VBox {
     headersTreeElement.listItemElement.createChild('div', 'selection fill');
     headersTreeElement.listItemElement.createTextChild(title);
 
-    const headerCount = Common.UIString('\xA0(%d)', headersLength);
+    const headerCount = Common.UIString.UIString('\xA0(%d)', headersLength);
     headersTreeElement.listItemElement.createChild('span', 'header-count').textContent = headerCount;
   }
 
   /**
    * @param {string} title
    * @param {!Array.<!SDK.NetworkRequest.NameValue>} headers
-   * @param {!UI.TreeElement} headersTreeElement
+   * @param {!UI.TreeOutline.TreeElement} headersTreeElement
    * @param {boolean=} provisionalHeaders
    * @param {!Array<!SDK.NetworkRequest.BlockedSetCookieWithReason>=} blockedResponseCookies
    */
@@ -634,7 +642,7 @@ export class RequestHeadersView extends UI.VBox {
       cautionElement.title = cautionTitle;
       cautionElement.createChild('span', '', 'dt-icon-label').type = 'smallicon-warning';
       cautionElement.createChild('div', 'caution').textContent = cautionText;
-      const cautionTreeElement = new UI.TreeElement(cautionElement);
+      const cautionTreeElement = new UI.TreeOutline.TreeElement(cautionElement);
       headersTreeElement.appendChild(cautionTreeElement);
     }
 
@@ -648,13 +656,13 @@ export class RequestHeadersView extends UI.VBox {
 
     headersTreeElement.hidden = !length && !provisionalHeaders;
     for (let i = 0; i < length; ++i) {
-      const headerTreeElement = new UI.TreeElement(this._formatHeader(headers[i].name, headers[i].value));
+      const headerTreeElement = new UI.TreeOutline.TreeElement(this._formatHeader(headers[i].name, headers[i].value));
       headerTreeElement[_headerNameSymbol] = headers[i].name;
 
       if (headers[i].name.toLowerCase() === 'set-cookie') {
         const matchingBlockedReasons = blockedCookieLineToReasons.get(headers[i].value);
         if (matchingBlockedReasons) {
-          const icon = UI.Icon.create('smallicon-warning', '');
+          const icon = UI.Icon.Icon.create('smallicon-warning', '');
           headerTreeElement.listItemElement.appendChild(icon);
 
           let titleText = '';
@@ -676,7 +684,7 @@ export class RequestHeadersView extends UI.VBox {
    * @param {string} title
    * @param {number} count
    * @param {string} headersText
-   * @param {!UI.TreeElement} headersTreeElement
+   * @param {!UI.TreeOutline.TreeElement} headersTreeElement
    */
   _refreshHeadersText(title, count, headersText, headersTreeElement) {
     this._populateTreeElementWithSourceText(headersTreeElement, headersText);
@@ -688,7 +696,7 @@ export class RequestHeadersView extends UI.VBox {
     const treeElement = this._remoteAddressItem;
     treeElement.hidden = !remoteAddress;
     if (remoteAddress) {
-      treeElement.title = this._formatHeader(Common.UIString('Remote Address'), remoteAddress);
+      treeElement.title = this._formatHeader(Common.UIString.UIString('Remote Address'), remoteAddress);
     }
   }
 
@@ -697,7 +705,7 @@ export class RequestHeadersView extends UI.VBox {
     const treeElement = this._referrerPolicyItem;
     treeElement.hidden = !referrerPolicy;
     if (referrerPolicy) {
-      treeElement.title = this._formatHeader(Common.UIString('Referrer Policy'), referrerPolicy);
+      treeElement.title = this._formatHeader(Common.UIString.UIString('Referrer Policy'), referrerPolicy);
     }
   }
 
@@ -734,7 +742,8 @@ export class RequestHeadersView extends UI.VBox {
    * @return {!Element}
    */
   _createHeadersToggleButton(isHeadersTextShown) {
-    const toggleTitle = isHeadersTextShown ? Common.UIString('view parsed') : Common.UIString('view source');
+    const toggleTitle =
+        isHeadersTextShown ? Common.UIString.UIString('view parsed') : Common.UIString.UIString('view source');
     return this._createToggleButton(toggleTitle);
   }
 
@@ -747,7 +756,7 @@ export class RequestHeadersView extends UI.VBox {
 
 
   /**
-   * @param {?UI.TreeElement} category
+   * @param {?UI.TreeOutline.TreeElement} category
    * @param {string} name
    */
   _revealAndHighlight(category, name) {
@@ -784,9 +793,9 @@ export const _viewSourceSymbol = Symbol('ViewSource');
 /**
  * @unrestricted
  */
-export class Category extends UI.TreeElement {
+export class Category extends UI.TreeOutline.TreeElement {
   /**
-   * @param {!UI.TreeOutline} root
+   * @param {!UI.TreeOutline.TreeOutline} root
    * @param {string} name
    * @param {string=} title
    */
@@ -800,10 +809,10 @@ export class Category extends UI.TreeElement {
   }
 
   /**
-   * @return {!UI.TreeElement}
+   * @return {!UI.TreeOutline.TreeElement}
    */
   createLeaf() {
-    const leaf = new UI.TreeElement();
+    const leaf = new UI.TreeOutline.TreeElement();
     this.appendChild(leaf);
     return leaf;
   }

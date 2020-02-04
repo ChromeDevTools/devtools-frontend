@@ -28,14 +28,18 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as Common from '../common/common.js';
+import * as SDK from '../sdk/sdk.js';
+import * as UI from '../ui/ui.js';
+
 import {Events, NetworkTimeCalculator} from './NetworkTimeCalculator.js';  // eslint-disable-line no-unused-vars
 
 /**
  * @unrestricted
  */
-export class RequestTimingView extends UI.VBox {
+export class RequestTimingView extends UI.Widget.VBox {
   /**
-   * @param {!SDK.NetworkRequest} request
+   * @param {!SDK.NetworkRequest.NetworkRequest} request
    * @param {!NetworkTimeCalculator} calculator
    */
   constructor(request, calculator) {
@@ -53,40 +57,40 @@ export class RequestTimingView extends UI.VBox {
   static _timeRangeTitle(name) {
     switch (name) {
       case RequestTimeRangeNames.Push:
-        return Common.UIString('Receiving Push');
+        return Common.UIString.UIString('Receiving Push');
       case RequestTimeRangeNames.Queueing:
-        return Common.UIString('Queueing');
+        return Common.UIString.UIString('Queueing');
       case RequestTimeRangeNames.Blocking:
-        return Common.UIString('Stalled');
+        return Common.UIString.UIString('Stalled');
       case RequestTimeRangeNames.Connecting:
-        return Common.UIString('Initial connection');
+        return Common.UIString.UIString('Initial connection');
       case RequestTimeRangeNames.DNS:
-        return Common.UIString('DNS Lookup');
+        return Common.UIString.UIString('DNS Lookup');
       case RequestTimeRangeNames.Proxy:
-        return Common.UIString('Proxy negotiation');
+        return Common.UIString.UIString('Proxy negotiation');
       case RequestTimeRangeNames.ReceivingPush:
-        return Common.UIString('Reading Push');
+        return Common.UIString.UIString('Reading Push');
       case RequestTimeRangeNames.Receiving:
-        return Common.UIString('Content Download');
+        return Common.UIString.UIString('Content Download');
       case RequestTimeRangeNames.Sending:
-        return Common.UIString('Request sent');
+        return Common.UIString.UIString('Request sent');
       case RequestTimeRangeNames.ServiceWorker:
-        return Common.UIString('Request to ServiceWorker');
+        return Common.UIString.UIString('Request to ServiceWorker');
       case RequestTimeRangeNames.ServiceWorkerPreparation:
-        return Common.UIString('ServiceWorker Preparation');
+        return Common.UIString.UIString('ServiceWorker Preparation');
       case RequestTimeRangeNames.SSL:
-        return Common.UIString('SSL');
+        return Common.UIString.UIString('SSL');
       case RequestTimeRangeNames.Total:
-        return Common.UIString('Total');
+        return Common.UIString.UIString('Total');
       case RequestTimeRangeNames.Waiting:
-        return Common.UIString('Waiting (TTFB)');
+        return Common.UIString.UIString('Waiting (TTFB)');
       default:
-        return Common.UIString(name);
+        return Common.UIString.UIString(name);
     }
   }
 
   /**
-   * @param {!SDK.NetworkRequest} request
+   * @param {!SDK.NetworkRequest.NetworkRequest} request
    * @param {number} navigationStart
    * @return {!Array.<!Network.RequestTimeRange>}
    */
@@ -185,13 +189,13 @@ export class RequestTimingView extends UI.VBox {
   }
 
   /**
-   * @param {!SDK.NetworkRequest} request
+   * @param {!SDK.NetworkRequest.NetworkRequest} request
    * @param {!NetworkTimeCalculator} calculator
    * @return {!Element}
    */
   static createTimingTable(request, calculator) {
     const tableElement = createElementWithClass('table', 'network-timing-table');
-    UI.appendStyle(tableElement, 'network/networkTimingTable.css');
+    UI.Utils.appendStyle(tableElement, 'network/networkTimingTable.css');
     const colgroup = tableElement.createChild('colgroup');
     colgroup.createChild('col', 'labels');
     colgroup.createChild('col', 'bars');
@@ -222,8 +226,10 @@ export class RequestTimingView extends UI.VBox {
     const queuedCell = startTimeHeader.createChild('tr').createChild('td');
     const startedCell = startTimeHeader.createChild('tr').createChild('td');
     queuedCell.colSpan = startedCell.colSpan = 3;
-    queuedCell.createTextChild(Common.UIString('Queued at %s', calculator.formatValue(request.issueTime(), 2)));
-    startedCell.createTextChild(Common.UIString('Started at %s', calculator.formatValue(request.startTime, 2)));
+    queuedCell.createTextChild(
+        Common.UIString.UIString('Queued at %s', calculator.formatValue(request.issueTime(), 2)));
+    startedCell.createTextChild(
+        Common.UIString.UIString('Started at %s', calculator.formatValue(request.startTime, 2)));
 
     let right;
     for (let i = 0; i < timeRanges.length; ++i) {
@@ -234,18 +240,18 @@ export class RequestTimingView extends UI.VBox {
         continue;
       }
       if (rangeName === RequestTimeRangeNames.Push) {
-        createHeader(Common.UIString('Server Push'));
+        createHeader(Common.UIString.UIString('Server Push'));
       } else if (rangeName === RequestTimeRangeNames.Queueing) {
         if (!queueingHeader) {
           queueingHeader = createHeader(ls`Resource Scheduling`);
         }
       } else if (ConnectionSetupRangeNames.has(rangeName)) {
         if (!connectionHeader) {
-          connectionHeader = createHeader(Common.UIString('Connection Start'));
+          connectionHeader = createHeader(Common.UIString.UIString('Connection Start'));
         }
       } else {
         if (!dataHeader) {
-          dataHeader = createHeader(Common.UIString('Request/Response'));
+          dataHeader = createHeader(Common.UIString.UIString('Request/Response'));
         }
       }
 
@@ -269,14 +275,14 @@ export class RequestTimingView extends UI.VBox {
     if (!request.finished) {
       const cell = tableElement.createChild('tr').createChild('td', 'caution');
       cell.colSpan = 3;
-      cell.createTextChild(Common.UIString('CAUTION: request is not finished yet!'));
+      cell.createTextChild(Common.UIString.UIString('CAUTION: request is not finished yet!'));
     }
 
     const footer = tableElement.createChild('tr', 'network-timing-footer');
     const note = footer.createChild('td');
     note.colSpan = 1;
-    note.appendChild(
-        UI.createDocumentationLink('network-performance/reference#timing-explanation', Common.UIString('Explanation')));
+    note.appendChild(UI.UIUtils.createDocumentationLink(
+        'network-performance/reference#timing-explanation', Common.UIString.UIString('Explanation')));
     footer.createChild('td');
     footer.createChild('td').createTextChild(Number.secondsToString(totalDuration, true));
 
@@ -292,9 +298,9 @@ export class RequestTimingView extends UI.VBox {
     breakElement.createChild('hr', 'break');
 
     const serverHeader = tableElement.createChild('tr', 'network-timing-table-header');
-    serverHeader.createChild('td').createTextChild(Common.UIString('Server Timing'));
+    serverHeader.createChild('td').createTextChild(Common.UIString.UIString('Server Timing'));
     serverHeader.createChild('td');
-    serverHeader.createChild('td').createTextChild(Common.UIString('TIME'));
+    serverHeader.createChild('td').createTextChild(Common.UIString.UIString('TIME'));
 
     serverTimings.filter(item => item.metric.toLowerCase() !== 'total')
         .forEach(item => addTiming(item, lastTimingRightEdge));
@@ -304,7 +310,7 @@ export class RequestTimingView extends UI.VBox {
     return tableElement;
 
     /**
-     * @param {!SDK.ServerTiming} serverTiming
+     * @param {!SDK.ServerTiming.ServerTiming} serverTiming
      * @param {number} right
      */
     function addTiming(serverTiming, right) {

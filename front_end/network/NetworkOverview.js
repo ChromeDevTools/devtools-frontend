@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as SDK from '../sdk/sdk.js';
+
 import {NetworkLogView} from './NetworkLogView.js';
 import {NetworkTimeBoundary} from './NetworkTimeCalculator.js';
 import {RequestTimeRangeNames, RequestTimingView} from './RequestTimingView.js';
@@ -22,9 +24,10 @@ export class NetworkOverview extends PerfUI.TimelineOverviewBase {
     this._highlightedRequest = null;
 
     self.SDK.targetManager.addModelListener(
-        SDK.ResourceTreeModel, SDK.ResourceTreeModel.Events.Load, this._loadEventFired, this);
+        SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.Load, this._loadEventFired, this);
     self.SDK.targetManager.addModelListener(
-        SDK.ResourceTreeModel, SDK.ResourceTreeModel.Events.DOMContentLoaded, this._domContentLoadedEventFired, this);
+        SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.DOMContentLoaded,
+        this._domContentLoadedEventFired, this);
 
     this.reset();
   }
@@ -35,7 +38,7 @@ export class NetworkOverview extends PerfUI.TimelineOverviewBase {
   }
 
   /**
-   * @param {?SDK.FilmStripModel} filmStripModel
+   * @param {?SDK.FilmStripModel.FilmStripModel} filmStripModel
    */
   setFilmStripModel(filmStripModel) {
     this._filmStripModel = filmStripModel;
@@ -94,7 +97,7 @@ export class NetworkOverview extends PerfUI.TimelineOverviewBase {
   }
 
   /**
-   * @param {!SDK.NetworkRequest} request
+   * @param {!SDK.NetworkRequest.NetworkRequest} request
    */
   updateRequest(request) {
     if (!this._requestsSet.has(request)) {
@@ -128,7 +131,7 @@ export class NetworkOverview extends PerfUI.TimelineOverviewBase {
    * @override
    */
   reset() {
-    /** @type {?SDK.FilmStripModel} */
+    /** @type {?SDK.FilmStripModel.FilmStripModel} */
     this._filmStripModel = null;
 
     /** @type {number} */
@@ -139,9 +142,9 @@ export class NetworkOverview extends PerfUI.TimelineOverviewBase {
     this._nextBand = 0;
     /** @type {!Map.<string, number>} */
     this._bandMap = new Map();
-    /** @type {!Array.<!SDK.NetworkRequest>} */
+    /** @type {!Array.<!SDK.NetworkRequest.NetworkRequest>} */
     this._requestsList = [];
-    /** @type {!Set.<!SDK.NetworkRequest>} */
+    /** @type {!Set.<!SDK.NetworkRequest.NetworkRequest>} */
     this._requestsSet = new Set();
     /** @type {!Array.<number>} */
     this._loadEvents = [];

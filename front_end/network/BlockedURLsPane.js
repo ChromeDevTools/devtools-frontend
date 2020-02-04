@@ -2,35 +2,41 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+import * as SDK from '../sdk/sdk.js';
+import * as UI from '../ui/ui.js';
+
 /** @type {?BlockedURLsPane} */
 export let _instance = null;
 
 /**
  * @implements {UI.ListWidget.Delegate<SDK.NetworkManager.BlockedPattern>}
  */
-export class BlockedURLsPane extends UI.VBox {
+export class BlockedURLsPane extends UI.Widget.VBox {
   constructor() {
     super(true);
     this.registerRequiredCSS('network/blockedURLsPane.css');
 
     _instance = this;
     this._manager = self.SDK.multitargetNetworkManager;
-    this._manager.addEventListener(SDK.MultitargetNetworkManager.Events.BlockedPatternsChanged, this._update, this);
+    this._manager.addEventListener(
+        SDK.NetworkManager.MultitargetNetworkManager.Events.BlockedPatternsChanged, this._update, this);
 
-    this._toolbar = new UI.Toolbar('', this.contentElement);
-    this._enabledCheckbox =
-        new UI.ToolbarCheckbox(Common.UIString('Enable request blocking'), undefined, this._toggleEnabled.bind(this));
+    this._toolbar = new UI.Toolbar.Toolbar('', this.contentElement);
+    this._enabledCheckbox = new UI.Toolbar.ToolbarCheckbox(
+        Common.UIString.UIString('Enable request blocking'), undefined, this._toggleEnabled.bind(this));
     this._toolbar.appendToolbarItem(this._enabledCheckbox);
     this._toolbar.appendSeparator();
-    const addButton = new UI.ToolbarButton(Common.UIString('Add pattern'), 'largeicon-add');
-    addButton.addEventListener(UI.ToolbarButton.Events.Click, this._addButtonClicked, this);
+    const addButton = new UI.Toolbar.ToolbarButton(Common.UIString.UIString('Add pattern'), 'largeicon-add');
+    addButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._addButtonClicked, this);
     this._toolbar.appendToolbarItem(addButton);
-    const clearButton = new UI.ToolbarButton(Common.UIString('Remove all patterns'), 'largeicon-clear');
-    clearButton.addEventListener(UI.ToolbarButton.Events.Click, this._removeAll, this);
+    const clearButton =
+        new UI.Toolbar.ToolbarButton(Common.UIString.UIString('Remove all patterns'), 'largeicon-clear');
+    clearButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._removeAll, this);
     this._toolbar.appendToolbarItem(clearButton);
 
-    /** @type {!UI.ListWidget<!SDK.NetworkManager.BlockedPattern>} */
-    this._list = new UI.ListWidget(this);
+    /** @type {!UI.ListWidget.ListWidget<!SDK.NetworkManager.BlockedPattern>} */
+    this._list = new UI.ListWidget.ListWidget(this);
     this._list.element.classList.add('blocked-urls');
     this._list.registerRequiredCSS('network/blockedURLsPane.css');
     this._list.setEmptyPlaceholder(this._createEmptyPlaceholder());
@@ -42,9 +48,9 @@ export class BlockedURLsPane extends UI.VBox {
     /** @type {!Map<string, number>} */
     this._blockedCountForUrl = new Map();
     self.SDK.targetManager.addModelListener(
-        SDK.NetworkManager, SDK.NetworkManager.Events.RequestFinished, this._onRequestFinished, this);
+        SDK.NetworkManager.NetworkManager, SDK.NetworkManager.Events.RequestFinished, this._onRequestFinished, this);
 
-    this._updateThrottler = new Common.Throttler(200);
+    this._updateThrottler = new Common.Throttler.Throttler(200);
 
     this._update();
   }
@@ -54,9 +60,9 @@ export class BlockedURLsPane extends UI.VBox {
    */
   _createEmptyPlaceholder() {
     const element = this.contentElement.createChild('div', 'no-blocked-urls');
-    const addButton = UI.createTextButton(ls`Add pattern`, this._addButtonClicked.bind(this), 'add-button');
+    const addButton = UI.UIUtils.createTextButton(ls`Add pattern`, this._addButtonClicked.bind(this), 'add-button');
     UI.ARIAUtils.setAccessibleName(addButton, ls`Add request blocking pattern`);
-    element.appendChild(UI.formatLocalized('Requests are not blocked. %s', [addButton]));
+    element.appendChild(UI.UIUtils.formatLocalized('Requests are not blocked. %s', [addButton]));
     return element;
   }
 
@@ -85,7 +91,7 @@ export class BlockedURLsPane extends UI.VBox {
     checkbox.checked = pattern.enabled;
     checkbox.disabled = !this._manager.blockingEnabled();
     element.createChild('div', 'blocked-url-label').textContent = pattern.url;
-    element.createChild('div', 'blocked-url-count').textContent = Common.UIString('%d blocked', count);
+    element.createChild('div', 'blocked-url-count').textContent = Common.UIString.UIString('%d blocked', count);
     element.addEventListener('click', event => this._togglePattern(pattern, event), false);
     checkbox.addEventListener('click', event => this._togglePattern(pattern, event), false);
     return element;
@@ -159,7 +165,7 @@ export class BlockedURLsPane extends UI.VBox {
     const content = editor.contentElement();
     const titles = content.createChild('div', 'blocked-url-edit-row');
     titles.createChild('div').textContent =
-        Common.UIString('Text pattern to block matching requests; use * for wildcard');
+        Common.UIString.UIString('Text pattern to block matching requests; use * for wildcard');
     const fields = content.createChild('div', 'blocked-url-edit-row');
     const validator = (item, index, input) => {
       let valid = true;
@@ -245,7 +251,7 @@ export class BlockedURLsPane extends UI.VBox {
    * @param {!Common.Event} event
    */
   _onRequestFinished(event) {
-    const request = /** @type {!SDK.NetworkRequest} */ (event.data);
+    const request = /** @type {!SDK.NetworkRequest.NetworkRequest} */ (event.data);
     if (request.wasBlocked()) {
       const count = this._blockedCountForUrl.get(request.url()) || 0;
       this._blockedCountForUrl.set(request.url(), count + 1);

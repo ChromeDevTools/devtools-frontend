@@ -2,11 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
+import * as UI from '../ui/ui.js';
+
 import {NetworkNode} from './NetworkDataGridNode.js';              // eslint-disable-line no-unused-vars
 import {NetworkTimeCalculator} from './NetworkTimeCalculator.js';  // eslint-disable-line no-unused-vars
 import {RequestTimeRangeNames, RequestTimingView} from './RequestTimingView.js';
 
-export class NetworkWaterfallColumn extends UI.VBox {
+export class NetworkWaterfallColumn extends UI.Widget.VBox {
   /**
    * @param {!NetworkTimeCalculator} calculator
    */
@@ -41,7 +45,7 @@ export class NetworkWaterfallColumn extends UI.VBox {
     this._startTime = this._calculator.minimumBoundary();
     this._endTime = this._calculator.maximumBoundary();
 
-    this._popoverHelper = new UI.PopoverHelper(this.element, this._getPopoverRequest.bind(this));
+    this._popoverHelper = new UI.PopoverHelper.PopoverHelper(this.element, this._getPopoverRequest.bind(this));
     this._popoverHelper.setHasPadding(true);
     this._popoverHelper.setTimeout(300, 300);
 
@@ -64,12 +68,12 @@ export class NetworkWaterfallColumn extends UI.VBox {
     this._styleForTimeRangeName = NetworkWaterfallColumn._buildRequestTimeRangeStyle();
 
     const resourceStyleTuple = NetworkWaterfallColumn._buildResourceTypeStyle();
-    /** @type {!Map<!Common.ResourceType, !NetworkWaterfallColumn._LayerStyle>} */
+    /** @type {!Map<!Common.ResourceType.ResourceType, !NetworkWaterfallColumn._LayerStyle>} */
     this._styleForWaitingResourceType = resourceStyleTuple[0];
-    /** @type {!Map<!Common.ResourceType, !NetworkWaterfallColumn._LayerStyle>} */
+    /** @type {!Map<!Common.ResourceType.ResourceType, !NetworkWaterfallColumn._LayerStyle>} */
     this._styleForDownloadingResourceType = resourceStyleTuple[1];
 
-    const baseLineColor = self.UI.themeSupport.patchColorText('#a5a5a5', UI.ThemeSupport.ColorUsage.Foreground);
+    const baseLineColor = self.UI.themeSupport.patchColorText('#a5a5a5', UI.UIUtils.ThemeSupport.ColorUsage.Foreground);
     /** @type {!NetworkWaterfallColumn._LayerStyle} */
     this._wiskerStyle = {borderColor: baseLineColor, lineWidth: 1};
     /** @type {!NetworkWaterfallColumn._LayerStyle} */
@@ -107,7 +111,7 @@ export class NetworkWaterfallColumn extends UI.VBox {
   }
 
   /**
-   * @return {!Array<!Map<!Common.ResourceType, !NetworkWaterfallColumn._LayerStyle>>}
+   * @return {!Array<!Map<!Common.ResourceType.ResourceType, !NetworkWaterfallColumn._LayerStyle>>}
    */
   static _buildResourceTypeStyle() {
     const baseResourceTypeColors = new Map([
@@ -126,7 +130,7 @@ export class NetworkWaterfallColumn extends UI.VBox {
     const waitingStyleMap = new Map();
     const downloadingStyleMap = new Map();
 
-    for (const resourceType of Object.values(Common.resourceTypes)) {
+    for (const resourceType of Object.values(Common.ResourceType.resourceTypes)) {
       let color = baseResourceTypeColors.get(resourceType.name());
       if (!color) {
         color = baseResourceTypeColors.get('other');
@@ -142,7 +146,7 @@ export class NetworkWaterfallColumn extends UI.VBox {
      * @param {string} color
      */
     function toBorderColor(color) {
-      const parsedColor = Common.Color.parse(color);
+      const parsedColor = Common.Color.Color.parse(color);
       const hsla = parsedColor.hsla();
       hsla[1] /= 2;
       hsla[2] -= Math.min(hsla[2], 0.2);
@@ -153,7 +157,7 @@ export class NetworkWaterfallColumn extends UI.VBox {
      * @param {string} color
      */
     function toWaitingColor(color) {
-      const parsedColor = Common.Color.parse(color);
+      const parsedColor = Common.Color.Color.parse(color);
       const hsla = parsedColor.hsla();
       hsla[2] *= 1.1;
       return parsedColor.asString(null);
@@ -255,8 +259,8 @@ export class NetworkWaterfallColumn extends UI.VBox {
     return {
       box: anchorBox,
       show: popover => {
-        const content =
-            RequestTimingView.createTimingTable(/** @type {!SDK.NetworkRequest} */ (request), this._calculator);
+        const content = RequestTimingView.createTimingTable(
+            /** @type {!SDK.NetworkRequest.NetworkRequest} */ (request), this._calculator);
         popover.contentElement.appendChild(content);
         return Promise.resolve(true);
       }
@@ -444,7 +448,7 @@ export class NetworkWaterfallColumn extends UI.VBox {
     this._drawLayers(context);
 
     context.save();
-    context.fillStyle = self.UI.themeSupport.patchColorText('#888', UI.ThemeSupport.ColorUsage.Foreground);
+    context.fillStyle = self.UI.themeSupport.patchColorText('#888', UI.UIUtils.ThemeSupport.ColorUsage.Foreground);
     for (const textData of this._textLayers) {
       context.fillText(textData.text, textData.x, textData.y);
     }
@@ -526,7 +530,7 @@ export class NetworkWaterfallColumn extends UI.VBox {
   }
 
   /**
-   * @param {!SDK.NetworkRequest} request
+   * @param {!SDK.NetworkRequest.NetworkRequest} request
    * @param {number} borderOffset
    * @return {!{start: number, mid: number, end: number}}
    */

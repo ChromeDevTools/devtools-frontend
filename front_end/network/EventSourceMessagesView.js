@@ -2,12 +2,17 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+import * as DataGrid from '../data_grid/data_grid.js';
+import * as SDK from '../sdk/sdk.js';
+import * as UI from '../ui/ui.js';
+
 /**
  * @unrestricted
  */
-export class EventSourceMessagesView extends UI.VBox {
+export class EventSourceMessagesView extends UI.Widget.VBox {
   /**
-   * @param {!SDK.NetworkRequest} request
+   * @param {!SDK.NetworkRequest.NetworkRequest} request
    */
   constructor(request) {
     super();
@@ -16,13 +21,13 @@ export class EventSourceMessagesView extends UI.VBox {
     this._request = request;
 
     const columns = /** @type {!Array<!DataGrid.ColumnDescriptor>} */ ([
-      {id: 'id', title: Common.UIString('Id'), sortable: true, weight: 8},
-      {id: 'type', title: Common.UIString('Type'), sortable: true, weight: 8},
-      {id: 'data', title: Common.UIString('Data'), sortable: false, weight: 88},
-      {id: 'time', title: Common.UIString('Time'), sortable: true, weight: 8}
+      {id: 'id', title: Common.UIString.UIString('Id'), sortable: true, weight: 8},
+      {id: 'type', title: Common.UIString.UIString('Type'), sortable: true, weight: 8},
+      {id: 'data', title: Common.UIString.UIString('Data'), sortable: false, weight: 88},
+      {id: 'time', title: Common.UIString.UIString('Time'), sortable: true, weight: 8}
     ]);
 
-    this._dataGrid = new DataGrid.SortableDataGrid({displayName: ls`Event Source`, columns});
+    this._dataGrid = new DataGrid.SortableDataGrid.SortableDataGrid({displayName: ls`Event Source`, columns});
     this._dataGrid.setStriped(true);
     this._dataGrid.setStickToBottom(true);
     this._dataGrid.markColumnAsSortedBy('time', DataGrid.DataGrid.Order.Ascending);
@@ -77,7 +82,7 @@ export class EventSourceMessagesView extends UI.VBox {
 /**
  * @unrestricted
  */
-export class EventSourceMessageNode extends DataGrid.SortableDataGridNode {
+export class EventSourceMessageNode extends DataGrid.SortableDataGrid.SortableDataGridNode {
   /**
    * @param {!SDK.NetworkRequest.EventSourceMessage} message
    */

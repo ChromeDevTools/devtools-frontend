@@ -2,11 +2,16 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-export class BinaryResourceView extends UI.VBox {
+import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
+import * as Host from '../host/host.js';
+import * as SourceFrame from '../source_frame/source_frame.js';
+import * as UI from '../ui/ui.js';
+
+export class BinaryResourceView extends UI.Widget.VBox {
   /**
    * @param {string} base64content
    * @param {string} contentUrl
-   * @param {!Common.ResourceType} resourceType
+   * @param {!Common.ResourceType.ResourceType} resourceType
    */
   constructor(base64content, contentUrl, resourceType) {
     super();
@@ -15,14 +20,14 @@ export class BinaryResourceView extends UI.VBox {
     /** @type {boolean} */
     this._empty = !base64content.length;
     if (this._empty) {
-      new UI.EmptyWidget('No data present in selected item').show(this.element);
+      new UI.EmptyWidget.EmptyWidget('No data present in selected item').show(this.element);
       return;
     }
 
     this._binaryResourceViewFactory =
-        new SourceFrame.BinaryResourceViewFactory(base64content, contentUrl, resourceType);
+        new SourceFrame.BinaryResourceViewFactory.BinaryResourceViewFactory(base64content, contentUrl, resourceType);
 
-    this._toolbar = new UI.Toolbar('binary-view-toolbar', this.element);
+    this._toolbar = new UI.Toolbar.Toolbar('binary-view-toolbar', this.element);
 
     /** @type {!Array<!BinaryViewObject>} */
     this._binaryViewObjects = [
@@ -40,25 +45,27 @@ export class BinaryResourceView extends UI.VBox {
           this._binaryResourceViewFactory.utf8.bind(this._binaryResourceViewFactory)),
     ];
     this._binaryViewTypeSetting = self.Common.settings.createSetting('binaryViewType', 'hex');
-    this._binaryViewTypeCombobox = new UI.ToolbarComboBox(this._binaryViewTypeChanged.bind(this), ls`Binary view type`);
+    this._binaryViewTypeCombobox =
+        new UI.Toolbar.ToolbarComboBox(this._binaryViewTypeChanged.bind(this), ls`Binary view type`);
     for (const viewObject of this._binaryViewObjects) {
       this._binaryViewTypeCombobox.addOption(
           this._binaryViewTypeCombobox.createOption(viewObject.label, viewObject.type));
     }
     this._toolbar.appendToolbarItem(this._binaryViewTypeCombobox);
 
-    const copyButton = new UI.ToolbarButton(ls`Copy to clipboard`, 'largeicon-copy');
-    copyButton.addEventListener(UI.ToolbarButton.Events.Click, this._copySelectedViewToClipboard.bind(this), this);
+    const copyButton = new UI.Toolbar.ToolbarButton(ls`Copy to clipboard`, 'largeicon-copy');
+    copyButton.addEventListener(
+        UI.Toolbar.ToolbarButton.Events.Click, this._copySelectedViewToClipboard.bind(this), this);
     this._toolbar.appendToolbarItem(copyButton);
 
-    this._copiedText = new UI.ToolbarText();
+    this._copiedText = new UI.Toolbar.ToolbarText();
     this._copiedText.element.classList.add('binary-view-copied-text');
     this._toolbar.element.appendChild(this._copiedText.element);
 
     /** @type {?number} */
     this._addFadeoutSettimeoutId = null;
 
-    /** @type {?UI.Widget} */
+    /** @type {?UI.Widget.Widget} */
     this._lastView = null;
     this._updateView();
   }
@@ -78,7 +85,7 @@ export class BinaryResourceView extends UI.VBox {
 
   async _copySelectedViewToClipboard() {
     const viewObject = this._getCurrentViewObject();
-    Host.InspectorFrontendHost.copyText((await viewObject.content()).content);
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText((await viewObject.content()).content);
     this._copiedText.setText(viewObject.copiedMessage);
     this._copiedText.element.classList.remove('fadeout');
     /**
@@ -133,7 +140,7 @@ export class BinaryResourceView extends UI.VBox {
   }
 
   /**
-   * @param {!UI.ContextMenu} contextMenu
+   * @param {!UI.ContextMenu.ContextMenu} contextMenu
    * @param {string} submenuItemText
    */
   addCopyToContextMenu(contextMenu, submenuItemText) {
@@ -145,15 +152,15 @@ export class BinaryResourceView extends UI.VBox {
 
     footerSection.appendItem(ls`Copy as Base64`, async () => {
       const content = await this._binaryResourceViewFactory.base64();
-      Host.InspectorFrontendHost.copyText(content.content);
+      Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(content.content);
     });
     footerSection.appendItem(ls`Copy as Hex`, async () => {
       const content = await this._binaryResourceViewFactory.hex();
-      Host.InspectorFrontendHost.copyText(content.content);
+      Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(content.content);
     });
     footerSection.appendItem(ls`Copy as UTF-8`, async () => {
       const content = await this._binaryResourceViewFactory.utf8();
-      Host.InspectorFrontendHost.copyText(content.content);
+      Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(content.content);
     });
   }
 }
@@ -163,7 +170,7 @@ export class BinaryViewObject {
    * @param {string} type
    * @param {string} label
    * @param {string} copiedMessage
-   * @param {function():!UI.Widget} createViewFn
+   * @param {function():!UI.Widget.Widget} createViewFn
    * @param {function():Promise<!Common.DeferredContent>} deferredContent
    */
   constructor(type, label, copiedMessage, createViewFn, deferredContent) {
@@ -173,12 +180,12 @@ export class BinaryViewObject {
     this.content = deferredContent;
     this._createViewFn = createViewFn;
 
-    /** @type {?UI.Widget} */
+    /** @type {?UI.Widget.Widget} */
     this._view = null;
   }
 
   /**
-   * @return {!UI.Widget}
+   * @return {!UI.Widget.Widget}
    */
   getView() {
     if (!this._view) {

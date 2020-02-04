@@ -62,6 +62,9 @@ import * as XLink from './XLink.js';
 import * as XWidget from './XWidget.js';
 import * as ZoomManager from './ZoomManager.js';
 
+/** @typedef {{box: !AnchorBox, show:(function(!GlassPane.GlassPane):!Promise<boolean>), hide:(function()|undefined)}} */
+export let PopoverRequest;
+
 export {
   Action,
   ActionDelegate,

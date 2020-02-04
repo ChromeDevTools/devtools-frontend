@@ -28,6 +28,9 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as Common from '../common/common.js';
+import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
+
 /**
  * @unrestricted
  */
@@ -54,13 +57,13 @@ export class NetworkTimeBoundary {
  * @implements {PerfUI.TimelineGrid.Calculator}
  * @unrestricted
  */
-export class NetworkTimeCalculator extends Common.Object {
+export class NetworkTimeCalculator extends Common.ObjectWrapper.ObjectWrapper {
   constructor(startAtZero) {
     super();
     this.startAtZero = startAtZero;
     this._minimumBoundary = -1;
     this._maximumBoundary = -1;
-    this._boundryChangedEventThrottler = new Common.Throttler(0);
+    this._boundryChangedEventThrottler = new Common.Throttler.Throttler(0);
     /** @type {?NetworkTimeBoundary} */
     this._window = null;
   }
@@ -157,7 +160,7 @@ export class NetworkTimeCalculator extends Common.Object {
   }
 
   /**
-   * @param {!SDK.NetworkRequest} request
+   * @param {!SDK.NetworkRequest.NetworkRequest} request
    * @return {!{start: number, middle: number, end: number}}
    */
   computeBarGraphPercentages(request) {
@@ -242,7 +245,7 @@ export class NetworkTimeCalculator extends Common.Object {
   }
 
   /**
-   * @param {!SDK.NetworkRequest} request
+   * @param {!SDK.NetworkRequest.NetworkRequest} request
    * @return {!{left: string, right: string, tooltip: (string|undefined)}}
    */
   computeBarGraphLabels(request) {
@@ -277,7 +280,7 @@ export class NetworkTimeCalculator extends Common.Object {
   }
 
   /**
-   * @param {!SDK.NetworkRequest} request
+   * @param {!SDK.NetworkRequest.NetworkRequest} request
    */
   updateBoundaries(request) {
     const lowerBound = this._lowerBound(request);
@@ -313,7 +316,7 @@ export class NetworkTimeCalculator extends Common.Object {
   }
 
   /**
-   * @param {!SDK.NetworkRequest} request
+   * @param {!SDK.NetworkRequest.NetworkRequest} request
    * @return {number}
    */
   _lowerBound(request) {
@@ -321,7 +324,7 @@ export class NetworkTimeCalculator extends Common.Object {
   }
 
   /**
-   * @param {!SDK.NetworkRequest} request
+   * @param {!SDK.NetworkRequest.NetworkRequest} request
    * @return {number}
    */
   _upperBound(request) {
@@ -336,20 +339,20 @@ export const Events = {
   BoundariesChanged: Symbol('BoundariesChanged')
 };
 
-/** @type {!Common.UIStringFormat} */
-export const _latencyDownloadTotalFormat = new Common.UIStringFormat('%s latency, %s download (%s total)');
+/** @type {!Common.UIString.UIStringFormat} */
+export const _latencyDownloadTotalFormat = new Common.UIString.UIStringFormat('%s latency, %s download (%s total)');
 
-/** @type {!Common.UIStringFormat} */
-export const _latencyFormat = new Common.UIStringFormat('%s latency');
+/** @type {!Common.UIString.UIStringFormat} */
+export const _latencyFormat = new Common.UIString.UIStringFormat('%s latency');
 
-/** @type {!Common.UIStringFormat} */
-export const _downloadFormat = new Common.UIStringFormat('%s download');
+/** @type {!Common.UIString.UIStringFormat} */
+export const _downloadFormat = new Common.UIString.UIStringFormat('%s download');
 
-/** @type {!Common.UIStringFormat} */
-export const _fromServiceWorkerFormat = new Common.UIStringFormat('%s (from ServiceWorker)');
+/** @type {!Common.UIString.UIStringFormat} */
+export const _fromServiceWorkerFormat = new Common.UIString.UIStringFormat('%s (from ServiceWorker)');
 
-/** @type {!Common.UIStringFormat} */
-export const _fromCacheFormat = new Common.UIStringFormat('%s (from cache)');
+/** @type {!Common.UIString.UIStringFormat} */
+export const _fromCacheFormat = new Common.UIString.UIStringFormat('%s (from cache)');
 
 /**
  * @unrestricted
@@ -371,7 +374,7 @@ export class NetworkTransferTimeCalculator extends NetworkTimeCalculator {
 
   /**
    * @override
-   * @param {!SDK.NetworkRequest} request
+   * @param {!SDK.NetworkRequest.NetworkRequest} request
    * @return {number}
    */
   _lowerBound(request) {
@@ -380,7 +383,7 @@ export class NetworkTransferTimeCalculator extends NetworkTimeCalculator {
 
   /**
    * @override
-   * @param {!SDK.NetworkRequest} request
+   * @param {!SDK.NetworkRequest.NetworkRequest} request
    * @return {number}
    */
   _upperBound(request) {
@@ -408,7 +411,7 @@ export class NetworkTransferDurationCalculator extends NetworkTimeCalculator {
 
   /**
    * @override
-   * @param {!SDK.NetworkRequest} request
+   * @param {!SDK.NetworkRequest.NetworkRequest} request
    * @return {number}
    */
   _upperBound(request) {

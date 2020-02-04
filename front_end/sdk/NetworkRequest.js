@@ -1599,3 +1599,24 @@ export const setCookieBlockedReasonToAttribute = function(blockedReason) {
   }
   return null;
 };
+
+/** @typedef {!{name: string, value: string}} */
+export let NameValue;
+
+/** @typedef {!{type: WebSocketFrameType, time: number, text: string, opCode: number, mask: boolean}} */
+export let WebSocketFrame;
+
+/**
+  * @typedef {!{
+  *   blockedReasons: !Array<!Protocol.Network.SetCookieBlockedReason>,
+  *   cookieLine: string,
+  *   cookie: ?Cookie
+  * }}
+  */
+export let BlockedSetCookieWithReason;
+
+/** @typedef {!{error: ?string, content: ?string, encoded: boolean}} */
+export let ContentData;
+
+/** @typedef {!{time: number, eventName: string, eventId: string, data: string}} */
+export let EventSourceMessage;

@@ -2,13 +2,17 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+import * as SDK from '../sdk/sdk.js';           // eslint-disable-line no-unused-vars
+import * as Search from '../search/search.js';  // eslint-disable-line no-unused-vars
+
 /**
- * @implements {Search.SearchScope}
+ * @implements {Search.SearchConfig.SearchScope}
  */
 export class NetworkSearchScope {
   /**
    * @override
-   * @param {!Common.Progress} progress
+   * @param {!Common.Progress.Progress} progress
    */
   performIndexing(progress) {
     setImmediate(progress.done.bind(progress));
@@ -16,9 +20,9 @@ export class NetworkSearchScope {
 
   /**
    * @override
-   * @param {!Search.SearchConfig} searchConfig
-   * @param {!Common.Progress} progress
-   * @param {function(!Search.SearchResult)} searchResultCallback
+   * @param {!Search.SearchConfig.SearchConfig} searchConfig
+   * @param {!Common.Progress.Progress} progress
+   * @param {function(!Search.SearchConfig.SearchResult)} searchResultCallback
    * @param {function(boolean)} searchFinishedCallback
    * @return {?}
    */
@@ -46,9 +50,9 @@ export class NetworkSearchScope {
   }
 
   /**
-   * @param {!Search.SearchConfig} searchConfig
-   * @param {!SDK.NetworkRequest} request
-   * @param {!Common.Progress} progress
+   * @param {!Search.SearchConfig.SearchConfig} searchConfig
+   * @param {!SDK.NetworkRequest.NetworkRequest} request
+   * @param {!Common.Progress.Progress} progress
    * @return {!Promise<?NetworkSearchResult>}
    */
   async _searchRequest(searchConfig, request, progress) {
@@ -116,7 +120,7 @@ export class NetworkSearchScope {
 
 export class UIRequestLocation {
   /**
-   * @param {!SDK.NetworkRequest} request
+   * @param {!SDK.NetworkRequest.NetworkRequest} request
    * @param {?SDK.NetworkRequest.NameValue} requestHeader
    * @param {?SDK.NetworkRequest.NameValue} responseHeader
    * @param {?Common.ContentProvider.SearchMatch} searchMatch
@@ -131,7 +135,7 @@ export class UIRequestLocation {
   }
 
   /**
-   * @param {!SDK.NetworkRequest} request
+   * @param {!SDK.NetworkRequest.NetworkRequest} request
    * @param {?SDK.NetworkRequest.NameValue} header
    */
   static requestHeaderMatch(request, header) {
@@ -139,7 +143,7 @@ export class UIRequestLocation {
   }
 
   /**
-   * @param {!SDK.NetworkRequest} request
+   * @param {!SDK.NetworkRequest.NetworkRequest} request
    * @param {?SDK.NetworkRequest.NameValue} header
    */
   static responseHeaderMatch(request, header) {
@@ -147,7 +151,7 @@ export class UIRequestLocation {
   }
 
   /**
-   * @param {!SDK.NetworkRequest} request
+   * @param {!SDK.NetworkRequest.NetworkRequest} request
    * @param {?Common.ContentProvider.SearchMatch} searchMatch
    */
   static bodyMatch(request, searchMatch) {
@@ -155,7 +159,7 @@ export class UIRequestLocation {
   }
 
   /**
-   * @param {!SDK.NetworkRequest} request
+   * @param {!SDK.NetworkRequest.NetworkRequest} request
    */
   static urlMatch(request) {
     return new UIRequestLocation(request, null, null, null, true);
@@ -163,11 +167,11 @@ export class UIRequestLocation {
 }
 
 /**
- * @implements Search.SearchResult
+ * @implements Search.SearchConfig.SearchResult
  */
 export class NetworkSearchResult {
   /**
-   * @param {!SDK.NetworkRequest} request
+   * @param {!SDK.NetworkRequest.NetworkRequest} request
    * @param {!Array<!UIRequestLocation>} locations
    */
   constructor(request, locations) {
@@ -237,7 +241,7 @@ export class NetworkSearchResult {
   matchLabel(index) {
     const location = this._locations[index];
     if (location.isUrlMatch) {
-      return Common.UIString('URL');
+      return Common.UIString.UIString('URL');
     }
     const header = location.requestHeader || location.responseHeader;
     if (header) {

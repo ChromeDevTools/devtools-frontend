@@ -3,6 +3,10 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
+import * as TextUtils from '../text_utils/text_utils.js';  // eslint-disable-line no-unused-vars
+
+import {AnchorBehavior} from './GlassPane.js';  // eslint-disable-line no-unused-vars
+import {Suggestions} from './SuggestBox.js';    // eslint-disable-line no-unused-vars
 import {Widget} from './Widget.js';  // eslint-disable-line no-unused-vars
 
 /**
@@ -27,25 +31,25 @@ export class TextEditor extends Common.EventTarget.EventTarget {
   }
 
   /**
-   * @return {!TextUtils.TextRange}
+   * @return {!TextUtils.TextRange.TextRange}
    */
   fullRange() {
   }
 
   /**
-   * @return {!TextUtils.TextRange}
+   * @return {!TextUtils.TextRange.TextRange}
    */
   selection() {
   }
 
   /**
-   * @param {!TextUtils.TextRange} selection
+   * @param {!TextUtils.TextRange.TextRange} selection
    */
   setSelection(selection) {
   }
 
   /**
-   * @param {!TextUtils.TextRange=} textRange
+   * @param {!TextUtils.TextRange.TextRange=} textRange
    * @return {string}
    */
   text(textRange) {
@@ -80,7 +84,7 @@ export class TextEditor extends Common.EventTarget.EventTarget {
   }
 
   /**
-   * @param {?UI.AutocompleteConfig} config
+   * @param {?AutocompleteConfig} config
    */
   configureAutocomplete(config) {
   }
@@ -116,3 +120,29 @@ export const Events = {
   TextChanged: Symbol('TextChanged'),
   SuggestionChanged: Symbol('SuggestionChanged')
 };
+
+/**
+ * @typedef {{
+  *  bracketMatchingSetting: (!Common.Settings.Setting|undefined),
+  *  devtoolsAccessibleName: (string|undefined),
+  *  lineNumbers: boolean,
+  *  lineWrapping: boolean,
+  *  mimeType: (string|undefined),
+  *  autoHeight: (boolean|undefined),
+  *  padBottom: (boolean|undefined),
+  *  maxHighlightLength: (number|undefined),
+  *  placeholder: (string|undefined)
+  * }}
+  */
+export let Options;
+
+/**
+  * @typedef {{
+  *     substituteRangeCallback: ((function(number, number):?TextUtils.TextRange.TextRange)|undefined),
+  *     tooltipCallback: ((function(number, number):!Promise<?Element>)|undefined),
+  *     suggestionsCallback: ((function(!TextUtils.TextRange.TextRange, !TextUtils.TextRange.TextRange, boolean=):?Promise.<!Suggestions>)|undefined),
+  *     isWordChar: ((function(string):boolean)|undefined),
+  *     anchorBehavior: (AnchorBehavior|undefined)
+  * }}
+  */
+export let AutocompleteConfig;

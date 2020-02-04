@@ -2,18 +2,22 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+import * as TextUtils from '../text_utils/text_utils.js';
+import * as UI from '../ui/ui.js';
+
 import {CodeMirrorTextEditor} from './CodeMirrorTextEditor.js';  // eslint-disable-line no-unused-vars
 import {changeObjectToEditOperation} from './CodeMirrorUtils.js';
 
 /**
- * @implements {UI.SuggestBoxDelegate}
+ * @implements {UI.SuggestBox.SuggestBoxDelegate}
  * @unrestricted
  */
 export class TextEditorAutocompleteController {
   /**
    * @param {!CodeMirrorTextEditor} textEditor
    * @param {!CodeMirror} codeMirror
-   * @param {!UI.AutocompleteConfig} config
+   * @param {!UI.TextEditor.AutocompleteConfig} config
    */
   constructor(textEditor, codeMirror, config) {
     this._textEditor = textEditor;
@@ -32,18 +36,18 @@ export class TextEditorAutocompleteController {
     };
     this._codeMirror.on('changes', this._changes);
     this._lastHintText = '';
-    /** @type {?UI.SuggestBox} */
+    /** @type {?UI.SuggestBox.SuggestBox} */
     this._suggestBox = null;
     /** @type {?UI.SuggestBox.Suggestion} */
     this._currentSuggestion = null;
     this._hintElement = createElementWithClass('span', 'auto-complete-text');
 
-    this._tooltipGlassPane = new UI.GlassPane();
+    this._tooltipGlassPane = new UI.GlassPane.GlassPane();
     this._tooltipGlassPane.setSizeBehavior(UI.GlassPane.SizeBehavior.MeasureContent);
     this._tooltipGlassPane.setOutsideClickCallback(this._tooltipGlassPane.hide.bind(this._tooltipGlassPane));
     this._tooltipElement = createElementWithClass('div', 'autocomplete-tooltip');
-    const shadowRoot =
-        UI.createShadowRootWithCoreStyles(this._tooltipGlassPane.contentElement, 'text_editor/autocompleteTooltip.css');
+    const shadowRoot = UI.Utils.createShadowRootWithCoreStyles(
+        this._tooltipGlassPane.contentElement, 'text_editor/autocompleteTooltip.css');
     shadowRoot.appendChild(this._tooltipElement);
   }
 
@@ -58,7 +62,7 @@ export class TextEditorAutocompleteController {
     this._codeMirror.on('blur', this._blur);
     if (this._config.isWordChar) {
       this._codeMirror.on('beforeChange', this._beforeChange);
-      this._dictionary = new Common.TextDictionary();
+      this._dictionary = new Common.TextDictionary.TextDictionary();
       this._addWordsFromText(this._codeMirror.getValue());
     }
   }
@@ -94,7 +98,7 @@ export class TextEditorAutocompleteController {
    * @param {string} text
    */
   _addWordsFromText(text) {
-    TextUtils.TextUtils.textToWords(
+    TextUtils.TextUtils.Utils.textToWords(
         text, /** @type {function(string):boolean} */ (this._config.isWordChar), addWord.bind(this));
 
     /**
@@ -112,7 +116,7 @@ export class TextEditorAutocompleteController {
    * @param {string} text
    */
   _removeWordsFromText(text) {
-    TextUtils.TextUtils.textToWords(
+    TextUtils.TextUtils.Utils.textToWords(
         text, /** @type {function(string):boolean} */ (this._config.isWordChar),
         word => this._dictionary.removeWord(word));
   }
@@ -120,7 +124,7 @@ export class TextEditorAutocompleteController {
   /**
    * @param {number} lineNumber
    * @param {number} columnNumber
-   * @return {?TextUtils.TextRange}
+   * @return {?TextUtils.TextRange.TextRange}
    */
   _substituteRange(lineNumber, columnNumber) {
     let range =
@@ -132,8 +136,8 @@ export class TextEditorAutocompleteController {
   }
 
   /**
-   * @param {!TextUtils.TextRange} queryRange
-   * @param {!TextUtils.TextRange} substituteRange
+   * @param {!TextUtils.TextRange.TextRange} queryRange
+   * @param {!TextUtils.TextRange.TextRange} substituteRange
    * @param {boolean=} force
    * @return {!Promise.<!UI.SuggestBox.Suggestions>}
    */
@@ -226,7 +230,7 @@ export class TextEditorAutocompleteController {
   }
 
   /**
-   * @param {!TextUtils.TextRange} mainSelection
+   * @param {!TextUtils.TextRange.TextRange} mainSelection
    * @return {boolean}
    */
   _validateSelectionsContexts(mainSelection) {
@@ -286,7 +290,7 @@ export class TextEditorAutocompleteController {
         return;
       }
       if (!this._suggestBox) {
-        this._suggestBox = new UI.SuggestBox(this, 20);
+        this._suggestBox = new UI.SuggestBox.SuggestBox(this, 20);
         if (this._config.anchorBehavior) {
           this._suggestBox.setAnchorBehavior(this._config.anchorBehavior);
         }
@@ -320,7 +324,7 @@ export class TextEditorAutocompleteController {
     const cursor = this._codeMirror.getCursor('to');
     if (this._hintMarker) {
       const position = this._hintMarker.position();
-      if (!position || !position.equal(TextUtils.TextRange.createFromLocation(cursor.line, cursor.ch))) {
+      if (!position || !position.equal(TextUtils.TextRange.TextRange.createFromLocation(cursor.line, cursor.ch))) {
         this._hintMarker.clear();
         this._hintMarker = null;
       }
@@ -463,13 +467,13 @@ export class TextEditorAutocompleteController {
     let text = '';
     const queryLength = this._queryRange.endColumn - this._queryRange.startColumn;
     for (const selection of selections) {
-      const range =
-          new TextUtils.TextRange(last.line, last.column, selection.head.line, selection.head.ch - queryLength);
+      const range = new TextUtils.TextRange.TextRange(
+          last.line, last.column, selection.head.line, selection.head.ch - queryLength);
       text += this._textEditor.text(range);
       text += this._currentSuggestion.text;
       last = {line: selection.head.line, column: selection.head.ch};
     }
-    const range = new TextUtils.TextRange(last.line, last.column, Infinity, Infinity);
+    const range = new TextUtils.TextRange.TextRange(last.line, last.column, Infinity, Infinity);
     text += this._textEditor.text(range);
     return text;
   }

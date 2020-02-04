@@ -28,8 +28,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as TextUtils from '../text_utils/text_utils.js';
+
 /**
- * @param {!TextUtils.TextRange} range
+ * @param {!TextUtils.TextRange.TextRange} range
  * @return {!{start: !CodeMirror.Pos, end: !CodeMirror.Pos}}
  */
 export function toPos(range) {
@@ -42,15 +44,15 @@ export function toPos(range) {
 /**
  * @param {!CodeMirror.Pos} start
  * @param {!CodeMirror.Pos} end
- * @return {!TextUtils.TextRange}
+ * @return {!TextUtils.TextRange.TextRange}
  */
 export function toRange(start, end) {
-  return new TextUtils.TextRange(start.line, start.ch, end.line, end.ch);
+  return new TextUtils.TextRange.TextRange(start.line, start.ch, end.line, end.ch);
 }
 
 /**
  * @param {!CodeMirror.ChangeObject} changeObject
- * @return {{oldRange: !TextUtils.TextRange, newRange: !TextUtils.TextRange}}
+ * @return {{oldRange: !TextUtils.TextRange.TextRange, newRange: !TextUtils.TextRange.TextRange}}
  */
 export function changeObjectToEditOperation(changeObject) {
   const oldRange = toRange(changeObject.from, changeObject.to);
@@ -88,7 +90,7 @@ export function pullLines(codeMirror, linesCount) {
 }
 
 /**
- * @implements {TextUtils.TokenizerFactory}
+ * @implements {TextUtils.TextUtils.TokenizerFactory}
  * @unrestricted
  */
 export class TokenizerFactory {

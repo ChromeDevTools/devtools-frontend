@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Document</title>
+  </head>
+  <body>
+    <script type="module">
+      console.log(Object.create(null));
+      console.log(Object);
+      console.log(Object.prototype);
+
+      const foo = { foo: 'foo' };
+      console.log(foo);
+
+      const bar = { bar: "bar" };
+      bar.__proto__ = foo;
+      console.log(bar);
+
+      const singleArray = ["test"];
+      console.log(singleArray);
+
+      const array = ["test", "test2"];
+      array.length = 10;
+      array.foo = {};
+      array[4] = "test4";
+      console.log(array);
+
+      const bigArray = [];
+      bigArray.length = 200;
+      bigArray.fill(1);
+      console.log(bigArray);
+
+      const crossReferencingArray1 = [1];
+      const crossReferencingArray2 = [2, crossReferencingArray1];
+      crossReferencingArray1.push(crossReferencingArray2);
+      console.log(crossReferencingArray1);
+    </script>
+  </body>
+</html>

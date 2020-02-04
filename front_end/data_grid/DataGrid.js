@@ -72,7 +72,7 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
 
     /** @type {!Element} */
     this._ariaLiveLabel = this.element.createChild('div', 'aria-live-label');
-    UI.ARIAUtils.markAsPoliteLiveRegion(this._ariaLiveLabel);
+    UI.ARIAUtils.markAsPoliteLiveRegion(this._ariaLiveLabel, false);
 
     // FIXME: Add a createCallback which is different from editCallback and has different
     // behavior when creating a new node.

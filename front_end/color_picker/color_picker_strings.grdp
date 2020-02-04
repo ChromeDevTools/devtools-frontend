@@ -27,6 +27,9 @@
   <message name="IDS_DEVTOOLS_58c9566f3c750ce7147b045fdd14202b" desc="Aria label for HEX color format input">
     HEX
   </message>
+  <message name="IDS_DEVTOOLS_6998ba8e5afd02c79be7cafe9839eed0" desc="Aria label for swatch in Color Picker">
+    Press arrow keys with or without modifiers to move swatch position. Arrow key with Shift key moves position largely, with Ctrl key it is less and with Alt key it is even less
+  </message>
   <message name="IDS_DEVTOOLS_704c5365ab9b8fb8d8be5f08b8c0f19c" desc="Aria label for alpha slider in Color Picker">
     Change alpha
   </message>

@@ -20,6 +20,10 @@
     flex: none;
 }
 
+.spectrum-color:focus .spectrum-dragger {
+    border: 1px solid var(--accent-color-hover);
+}
+
 .spectrum-tools {
     position: relative;
     height: 111px;

@@ -236,9 +236,13 @@ export function markAsHeading(element, level) {
 
 /**
  * @param {!Element} element
+ * @param {boolean} isAtomic
  */
-export function markAsPoliteLiveRegion(element) {
+export function markAsPoliteLiveRegion(element, isAtomic) {
   element.setAttribute('aria-live', 'polite');
+  if (isAtomic) {
+    element.setAttribute('aria-atomic', 'true');
+  }
 }
 
 /**

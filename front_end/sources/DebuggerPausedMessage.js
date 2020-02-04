@@ -10,7 +10,7 @@ export class DebuggerPausedMessage {
     this._element = createElementWithClass('div', 'paused-message flex-none');
     const root = UI.createShadowRootWithCoreStyles(this._element, 'sources/debuggerPausedMessage.css');
     this._contentElement = root.createChild('div');
-    UI.ARIAUtils.markAsPoliteLiveRegion(this._element);
+    UI.ARIAUtils.markAsPoliteLiveRegion(this._element, false);
   }
 
   /**

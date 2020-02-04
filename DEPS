@@ -4,16 +4,16 @@
 
 vars = {
   'build_url': 'https://chromium.googlesource.com/chromium/src/build.git',
-  'build_revision': '20448fb7084ed20e07ed67a71416a3c7bb27b5fa',
+  'build_revision': '2283658cb716ed66af0178b3b41576105097d42e',
 
   'buildtools_url': 'https://chromium.googlesource.com/chromium/src/buildtools.git',
   'buildtools_revision': 'afc5b798c72905e85f9991152be878714c579958',
 
   'depot_tools_url': 'https://chromium.googlesource.com/chromium/tools/depot_tools.git',
-  'depot_tools_revision': '906bfde9b6e2f461f4350a274fe6e53bd5898612',
+  'depot_tools_revision': 'e93101895e74bae915fb1f456d15c21751cbd41d',
 
   'inspector_protocol_url': 'https://chromium.googlesource.com/deps/inspector_protocol',
-  'inspector_protocol_revision': '0213a8545f6362cd1cd5091cedf29747736552e8',
+  'inspector_protocol_revision': '0e0a1995497511008864546c094e885f3f1e13a3',
 
   'clang_format_url': 'https://chromium.googlesource.com/chromium/llvm-project/cfe/tools/clang-format.git',
   'clang_format_revision': '96636aa0e9f047f17447f2d45a094d0b59ed7917',

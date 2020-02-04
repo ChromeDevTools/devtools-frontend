@@ -78,7 +78,8 @@ export const $ = async (selector: string, root?: puppeteer.JSHandle) => {
   return element;
 };
 
-export const waitFor = async (selector: string, root?: puppeteer.JSHandle, maxTotalTimeout = 0) => {
+export const waitFor =
+    async (selector: string, root?: puppeteer.JSHandle, maxTotalTimeout = 0) => {
   if (maxTotalTimeout === 0) {
     maxTotalTimeout = Number.POSITIVE_INFINITY;
   }
@@ -95,6 +96,12 @@ export const waitFor = async (selector: string, root?: puppeteer.JSHandle, maxTo
 
   throw new Error(`Unable to find element with selector ${selector}`);
 }
+
+export const debuggerStatement = (frontend: puppeteer.Page) => {
+  return frontend.evaluate(() => {
+    debugger;
+  });
+};
 
 export const store = (browser, target, frontend, reset) => {
   globalThis[browserInstance] = browser;

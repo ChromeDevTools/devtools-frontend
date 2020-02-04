@@ -4,6 +4,7 @@
 
 import {join} from 'path';
 import * as puppeteer from 'puppeteer';
+import {performance} from 'perf_hooks';
 
 interface BrowserAndPages {
   browser: puppeteer.Browser;
@@ -76,6 +77,24 @@ export const $ = async (selector: string, root?: puppeteer.JSHandle) => {
   }, selector);
   return element;
 };
+
+export const waitFor = async (selector: string, root?: puppeteer.JSHandle, maxTotalTimeout = 0) => {
+  if (maxTotalTimeout === 0) {
+    maxTotalTimeout = Number.POSITIVE_INFINITY;
+  }
+
+  const start = performance.now();
+  const timeout = (duration: number) => new Promise((resolve) => setTimeout(resolve, duration));
+  do {
+    await timeout(100);
+    const element = await $(selector, root);
+    if (element.asElement()) {
+      return element;
+    }
+  } while (performance.now() - start < maxTotalTimeout);
+
+  throw new Error(`Unable to find element with selector ${selector}`);
+}
 
 export const store = (browser, target, frontend, reset) => {
   globalThis[browserInstance] = browser;

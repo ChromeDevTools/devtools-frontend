@@ -26,28 +26,31 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as Common from '../common/common.js';
+import * as UI from '../ui/ui.js';
+
 /**
  * @unrestricted
  */
-export class FontView extends UI.SimpleView {
+export class FontView extends UI.View.SimpleView {
   /**
    * @param {string} mimeType
-   * @param {!Common.ContentProvider} contentProvider
+   * @param {!Common.ContentProvider.ContentProvider} contentProvider
    */
   constructor(mimeType, contentProvider) {
-    super(Common.UIString('Font'));
+    super(Common.UIString.UIString('Font'));
     this.registerRequiredCSS('source_frame/fontView.css');
     this.element.classList.add('font-view');
     this._url = contentProvider.contentURL();
     UI.ARIAUtils.setAccessibleName(this.element, ls`Preview of font from ${this._url}`);
     this._mimeType = mimeType;
     this._contentProvider = contentProvider;
-    this._mimeTypeLabel = new UI.ToolbarText(mimeType);
+    this._mimeTypeLabel = new UI.Toolbar.ToolbarText(mimeType);
   }
 
   /**
    * @override
-   * @return {!Promise<!Array<!UI.ToolbarItem>>}
+   * @return {!Promise<!Array<!UI.Toolbar.ToolbarItem>>}
    */
   async toolbarItems() {
     return [this._mimeTypeLabel];

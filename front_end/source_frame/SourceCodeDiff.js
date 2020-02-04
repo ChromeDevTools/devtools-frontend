@@ -2,13 +2,16 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Diff from '../diff/diff.js';
+import * as TextEditor from '../text_editor/text_editor.js';  // eslint-disable-line no-unused-vars
+
 export class SourceCodeDiff {
   /**
-   * @param {!TextEditor.CodeMirrorTextEditor} textEditor
+   * @param {!TextEditor.CodeMirrorTextEditor.CodeMirrorTextEditor} textEditor
    */
   constructor(textEditor) {
     this._textEditor = textEditor;
-    /** @type {!Array<!TextEditor.TextEditorPositionHandle>}*/
+    /** @type {!Array<!TextEditor.CodeMirrorTextEditor.TextEditorPositionHandle>}*/
     this._animatedLines = [];
     /** @type {?number} */
     this._animationTimeout = null;
@@ -23,7 +26,8 @@ export class SourceCodeDiff {
       return;
     }
 
-    const diff = SourceCodeDiff.computeDiff(Diff.Diff.lineDiff(oldContent.split('\n'), newContent.split('\n')));
+    const diff =
+        SourceCodeDiff.computeDiff(Diff.Diff.DiffWrapper.lineDiff(oldContent.split('\n'), newContent.split('\n')));
     const changedLines = [];
     for (let i = 0; i < diff.length; ++i) {
       const diffEntry = diff[i];
@@ -43,7 +47,7 @@ export class SourceCodeDiff {
   }
 
   /**
-   * @param {!Array<!TextEditor.TextEditorPositionHandle>} newLines
+   * @param {!Array<!TextEditor.CodeMirrorTextEditor.TextEditorPositionHandle>} newLines
    */
   _updateHighlightedLines(newLines) {
     if (this._animationTimeout) {

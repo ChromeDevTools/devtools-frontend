@@ -27,6 +27,9 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
+import * as UI from '../ui/ui.js';
+
 import {SourceFrameImpl} from './SourceFrame.js';
 
 /**
@@ -34,7 +37,7 @@ import {SourceFrameImpl} from './SourceFrame.js';
  */
 export class ResourceSourceFrame extends SourceFrameImpl {
   /**
-   * @param {!Common.ContentProvider} resource
+   * @param {!Common.ContentProvider.ContentProvider} resource
    * @param {boolean=} autoPrettyPrint
    * @param {!UI.TextEditor.Options=} codeMirrorOptions
    */
@@ -51,10 +54,10 @@ export class ResourceSourceFrame extends SourceFrameImpl {
   }
 
   /**
-   * @param {!Common.ContentProvider} resource
+   * @param {!Common.ContentProvider.ContentProvider} resource
    * @param {string} highlighterType
    * @param {boolean=} autoPrettyPrint
-   * @return {!UI.Widget}
+   * @return {!UI.Widget.Widget}
    */
   static createSearchableView(resource, highlighterType, autoPrettyPrint) {
     return new SearchableContainer(resource, highlighterType, autoPrettyPrint);
@@ -66,7 +69,7 @@ export class ResourceSourceFrame extends SourceFrameImpl {
 
   /**
    * @override
-   * @param {!UI.ContextMenu} contextMenu
+   * @param {!UI.ContextMenu.ContextMenu} contextMenu
    * @param {number} lineNumber
    * @param {number} columnNumber
    * @return {!Promise}
@@ -77,12 +80,12 @@ export class ResourceSourceFrame extends SourceFrameImpl {
   }
 }
 
-export class SearchableContainer extends UI.VBox {
+export class SearchableContainer extends UI.Widget.VBox {
   /**
-   * @param {!Common.ContentProvider} resource
+   * @param {!Common.ContentProvider.ContentProvider} resource
    * @param {string} highlighterType
    * @param {boolean=} autoPrettyPrint
-   * @return {!UI.Widget}
+   * @return {!UI.Widget.Widget}
    */
   constructor(resource, highlighterType, autoPrettyPrint) {
     super(true);
@@ -90,14 +93,14 @@ export class SearchableContainer extends UI.VBox {
     const sourceFrame = new ResourceSourceFrame(resource, autoPrettyPrint);
     this._sourceFrame = sourceFrame;
     sourceFrame.setHighlighterType(highlighterType);
-    const searchableView = new UI.SearchableView(sourceFrame);
+    const searchableView = new UI.SearchableView.SearchableView(sourceFrame);
     searchableView.element.classList.add('searchable-view');
     searchableView.setPlaceholder(ls`Find`);
     sourceFrame.show(searchableView.element);
     sourceFrame.setSearchableView(searchableView);
     searchableView.show(this.contentElement);
 
-    const toolbar = new UI.Toolbar('toolbar', this.contentElement);
+    const toolbar = new UI.Toolbar.Toolbar('toolbar', this.contentElement);
     sourceFrame.toolbarItems().then(items => {
       items.map(item => toolbar.appendToolbarItem(item));
     });

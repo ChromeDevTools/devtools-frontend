@@ -27,10 +27,17 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+import * as Common from '../common/common.js';
+import * as Formatter from '../formatter/formatter.js';
+import * as ObjectUI from '../object_ui/object_ui.js';
+import * as SDK from '../sdk/sdk.js';
+import * as UI from '../ui/ui.js';
+
 /**
- * @implements {UI.Searchable}
+ * @implements {UI.SearchableView.Searchable}
  */
-export class JSONView extends UI.VBox {
+export class JSONView extends UI.Widget.VBox {
   /**
    * @param {!ParsedJSON} parsedJSON
    * @param {boolean=} startCollapsed
@@ -43,13 +50,13 @@ export class JSONView extends UI.VBox {
     this._startCollapsed = !!startCollapsed;
     this.element.classList.add('json-view');
 
-    /** @type {?UI.SearchableView} */
+    /** @type {?UI.SearchableView.SearchableView} */
     this._searchableView;
-    /** @type {!ObjectUI.ObjectPropertiesSection} */
+    /** @type {!ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection} */
     this._treeOutline;
     /** @type {number} */
     this._currentSearchFocusIndex = 0;
-    /** @type {!Array.<!UI.TreeElement>} */
+    /** @type {!Array.<!UI.TreeOutline.TreeElement>} */
     this._currentSearchTreeElements = [];
     /** @type {?RegExp} */
     this._searchRegex = null;
@@ -57,7 +64,7 @@ export class JSONView extends UI.VBox {
 
   /**
    * @param {string} content
-   * @return {!Promise<?UI.SearchableView>}
+   * @return {!Promise<?UI.SearchableView.SearchableView>}
    */
   static async createView(content) {
     // We support non-strict JSON parsing by parsing an AST tree which is why we offload it to a worker.
@@ -67,8 +74,8 @@ export class JSONView extends UI.VBox {
     }
 
     const jsonView = new JSONView(parsedJSON);
-    const searchableView = new UI.SearchableView(jsonView);
-    searchableView.setPlaceholder(Common.UIString('Find'));
+    const searchableView = new UI.SearchableView.SearchableView(jsonView);
+    searchableView.setPlaceholder(Common.UIString.UIString('Find'));
     jsonView._searchableView = searchableView;
     jsonView.show(searchableView.element);
     return searchableView;
@@ -76,12 +83,12 @@ export class JSONView extends UI.VBox {
 
   /**
    * @param {?Object} obj
-   * @return {!UI.SearchableView}
+   * @return {!UI.SearchableView.SearchableView}
    */
   static createViewSync(obj) {
     const jsonView = new JSONView(new ParsedJSON(obj, '', ''));
-    const searchableView = new UI.SearchableView(jsonView);
-    searchableView.setPlaceholder(Common.UIString('Find'));
+    const searchableView = new UI.SearchableView.SearchableView(jsonView);
+    searchableView.setPlaceholder(Common.UIString.UIString('Find'));
     jsonView._searchableView = searchableView;
     jsonView.show(searchableView.element);
     jsonView.element.setAttribute('tabIndex', 0);
@@ -100,7 +107,9 @@ export class JSONView extends UI.VBox {
     if (!returnObj) {
       return Promise.resolve(/** @type {?ParsedJSON} */ (null));
     }
-    return Formatter.formatterWorkerPool().parseJSONRelaxed(returnObj.data).then(handleReturnedJSON);
+    return Formatter.FormatterWorkerPool.formatterWorkerPool()
+        .parseJSONRelaxed(returnObj.data)
+        .then(handleReturnedJSON);
 
     /**
      * @param {*} data
@@ -174,9 +183,9 @@ export class JSONView extends UI.VBox {
     }
     this._initialized = true;
 
-    const obj = SDK.RemoteObject.fromLocalObject(this._parsedJSON.data);
+    const obj = SDK.RemoteObject.RemoteObject.fromLocalObject(this._parsedJSON.data);
     const title = this._parsedJSON.prefix + obj.description + this._parsedJSON.suffix;
-    this._treeOutline = new ObjectUI.ObjectPropertiesSection(
+    this._treeOutline = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection(
         obj, title, undefined, undefined, undefined, undefined, true /* showOverflow */);
     this._treeOutline.enableContextMenu();
     this._treeOutline.setEditable(false);
@@ -202,7 +211,7 @@ export class JSONView extends UI.VBox {
     const newFocusElement = this._currentSearchTreeElements[index];
     if (newFocusElement) {
       this._updateSearchIndex(index);
-      newFocusElement.setSearchRegex(this._searchRegex, UI.highlightedCurrentSearchResultClassName);
+      newFocusElement.setSearchRegex(this._searchRegex, UI.UIUtils.highlightedCurrentSearchResultClassName);
       newFocusElement.reveal();
     } else {
       this._updateSearchIndex(0);
@@ -238,7 +247,7 @@ export class JSONView extends UI.VBox {
     this._currentSearchTreeElements = [];
 
     for (let element = this._treeOutline.rootElement(); element; element = element.traverseNextTreeElement(false)) {
-      if (!(element instanceof ObjectUI.ObjectPropertyTreeElement)) {
+      if (!(element instanceof ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement)) {
         continue;
       }
       element.revertHighlightChanges();
@@ -260,7 +269,7 @@ export class JSONView extends UI.VBox {
     this._searchRegex = searchConfig.toSearchRegex(true);
 
     for (let element = this._treeOutline.rootElement(); element; element = element.traverseNextTreeElement(false)) {
-      if (!(element instanceof ObjectUI.ObjectPropertyTreeElement)) {
+      if (!(element instanceof ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement)) {
         continue;
       }
       const hasMatch = element.setSearchRegex(this._searchRegex);

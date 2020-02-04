@@ -2,6 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+import * as UI from '../ui/ui.js';
+
 import {FontView} from './FontView.js';
 import {ImageView} from './ImageView.js';
 import {JSONView} from './JSONView.js';
@@ -10,28 +13,28 @@ import {XMLView} from './XMLView.js';
 
 export class PreviewFactory {
   /**
-   * @param {!Common.ContentProvider} provider
+   * @param {!Common.ContentProvider.ContentProvider} provider
    * @param {string} mimeType
-   * @returns {!Promise<?UI.Widget>}
+   * @returns {!Promise<?UI.Widget.Widget>}
    */
   static async createPreview(provider, mimeType) {
-    let resourceType = Common.ResourceType.fromMimeType(mimeType);
-    if (resourceType === Common.resourceTypes.Other) {
+    let resourceType = Common.ResourceType.ResourceType.fromMimeType(mimeType);
+    if (resourceType === Common.ResourceType.resourceTypes.Other) {
       resourceType = provider.contentType();
     }
 
     switch (resourceType) {
-      case Common.resourceTypes.Image:
+      case Common.ResourceType.resourceTypes.Image:
         return new ImageView(mimeType, provider);
-      case Common.resourceTypes.Font:
+      case Common.ResourceType.resourceTypes.Font:
         return new FontView(mimeType, provider);
     }
 
     const deferredContent = await provider.requestContent();
     if (deferredContent.error) {
-      return new UI.EmptyWidget(deferredContent.error);
+      return new UI.EmptyWidget.EmptyWidget(deferredContent.error);
     } else if (!deferredContent.content) {
-      return new UI.EmptyWidget(Common.UIString('Nothing to preview'));
+      return new UI.EmptyWidget.EmptyWidget(Common.UIString.UIString('Nothing to preview'));
     }
 
     let content = deferredContent.content;

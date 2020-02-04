@@ -2,13 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+
 import {ResourceSourceFrame} from './ResourceSourceFrame.js';
 
 export class BinaryResourceViewFactory {
   /**
    * @param {string} base64content
    * @param {string} contentUrl
-   * @param {!Common.ResourceType} resourceType
+   * @param {!Common.ResourceType.ResourceType} resourceType
    */
   constructor(base64content, contentUrl, resourceType) {
     this._base64content = base64content;
@@ -74,7 +76,8 @@ export class BinaryResourceViewFactory {
    */
   createBase64View() {
     return new ResourceSourceFrame(
-        Common.StaticContentProvider.fromString(this._contentUrl, this._resourceType, this._base64content),
+        Common.StaticContentProvider.StaticContentProvider.fromString(
+            this._contentUrl, this._resourceType, this._base64content),
         /* autoPrettyPrint */ false, {lineNumbers: false, lineWrapping: true});
   }
 
@@ -83,7 +86,7 @@ export class BinaryResourceViewFactory {
    */
   createHexView() {
     const hexViewerContentProvider =
-        new Common.StaticContentProvider(this._contentUrl, this._resourceType, async () => {
+        new Common.StaticContentProvider.StaticContentProvider(this._contentUrl, this._resourceType, async () => {
           const contentAsArray = await this._fetchContentAsArray();
           const content = BinaryResourceViewFactory.uint8ArrayToHexViewer(contentAsArray);
           return {content, isEncoded: false};
@@ -98,7 +101,8 @@ export class BinaryResourceViewFactory {
    */
   createUtf8View() {
     const utf8fn = this.utf8.bind(this);
-    const utf8ContentProvider = new Common.StaticContentProvider(this._contentUrl, this._resourceType, utf8fn);
+    const utf8ContentProvider =
+        new Common.StaticContentProvider.StaticContentProvider(this._contentUrl, this._resourceType, utf8fn);
     return new ResourceSourceFrame(
         utf8ContentProvider,
         /* autoPrettyPrint */ false, {lineNumbers: true, lineWrapping: true});

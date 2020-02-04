@@ -50,8 +50,8 @@ const collectAllElementsFromPage = async (root?: puppeteer.JSHandle) => {
   }, root);
 }
 
-export const getElementPosition = async (selector: string) => {
-  const element = await $(selector);
+export const getElementPosition = async (selector: string, root?: puppeteer.JSHandle) => {
+  const element = await $(selector, root);
   const position = await element.evaluate(element => {
     // Extract the location values.
     const {left, top, width, height} = element.getBoundingClientRect();

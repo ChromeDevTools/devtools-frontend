@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as UI from '../ui/ui.js';  // eslint-disable-line no-unused-vars
+
 import {FilteredListWidget, Provider} from './FilteredListWidget.js';
 
 export const history = [];
@@ -75,12 +77,12 @@ export class QuickOpenImpl {
 }
 
 /**
- * @implements {UI.ActionDelegate}
+ * @implements {UI.ActionDelegate.ActionDelegate}
  */
 export class ShowActionDelegate {
   /**
    * @override
-   * @param {!UI.Context} context
+   * @param {!UI.Context.Context} context
    * @param {string} actionId
    * @return {boolean}
    */

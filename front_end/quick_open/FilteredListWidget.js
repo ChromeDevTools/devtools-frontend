@@ -2,11 +2,16 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+import * as Diff from '../diff/diff.js';
+import * as TextUtils from '../text_utils/text_utils.js';
+import * as UI from '../ui/ui.js';
+
 /**
  * @unrestricted
- * @implements {UI.ListDelegate}
+ * @implements {UI.ListControl.ListDelegate}
  */
-export class FilteredListWidget extends UI.VBox {
+export class FilteredListWidget extends UI.Widget.VBox {
   /**
    * @param {?Provider} provider
    * @param {!Array<string>=} promptHistory
@@ -25,7 +30,7 @@ export class FilteredListWidget extends UI.VBox {
     UI.ARIAUtils.setAccessibleName(this._promptElement, ls`Quick open prompt`);
     this._promptElement.setAttribute('spellcheck', 'false');
     this._promptElement.setAttribute('contenteditable', 'plaintext-only');
-    this._prompt = new UI.TextPrompt();
+    this._prompt = new UI.TextPrompt.TextPrompt();
     this._prompt.initialize(() => Promise.resolve([]));
     const promptProxy = this._prompt.attach(this._promptElement);
     promptProxy.addEventListener('input', this._onInput.bind(this), false);
@@ -35,10 +40,10 @@ export class FilteredListWidget extends UI.VBox {
     this._progressElement = this._bottomElementsContainer.createChild('div', 'filtered-list-widget-progress');
     this._progressBarElement = this._progressElement.createChild('div', 'filtered-list-widget-progress-bar');
 
-    /** @type {!UI.ListModel<number>} */
-    this._items = new UI.ListModel();
-    /** @type {!UI.ListControl<number>} */
-    this._list = new UI.ListControl(this._items, this, UI.ListMode.EqualHeightItems);
+    /** @type {!UI.ListModel.ListModel<number>} */
+    this._items = new UI.ListModel.ListModel();
+    /** @type {!UI.ListControl.ListControl<number>} */
+    this._list = new UI.ListControl.ListControl(this._items, this, UI.ListControl.ListMode.EqualHeightItems);
     this._itemElementsContainer = this._list.element;
     this._itemElementsContainer.classList.add('container');
     this._bottomElementsContainer.appendChild(this._itemElementsContainer);
@@ -71,16 +76,16 @@ export class FilteredListWidget extends UI.VBox {
     /**
      * @param {string} text
      * @param {string} query
-     * @return {?Array.<!TextUtils.SourceRange>}
+     * @return {?Array.<!TextUtils.TextRange.SourceRange>}
      */
     function rangesForMatch(text, query) {
-      const opcodes = Diff.Diff.charDiff(query, text);
+      const opcodes = Diff.Diff.DiffWrapper.charDiff(query, text);
       let offset = 0;
       const ranges = [];
       for (let i = 0; i < opcodes.length; ++i) {
         const opcode = opcodes[i];
         if (opcode[0] === Diff.Diff.Operation.Equal) {
-          ranges.push(new TextUtils.SourceRange(offset, opcode[1].length));
+          ranges.push(new TextUtils.TextRange.SourceRange(offset, opcode[1].length));
         } else if (opcode[0] !== Diff.Diff.Operation.Insert) {
           return null;
         }
@@ -95,7 +100,7 @@ export class FilteredListWidget extends UI.VBox {
       ranges = rangesForMatch(text.toUpperCase(), query.toUpperCase());
     }
     if (ranges) {
-      UI.highlightRangesWithStyleClass(element, ranges, 'highlight');
+      UI.UIUtils.highlightRangesWithStyleClass(element, ranges, 'highlight');
       return true;
     }
     return false;
@@ -110,9 +115,9 @@ export class FilteredListWidget extends UI.VBox {
   }
 
   showAsDialog() {
-    this._dialog = new UI.Dialog();
+    this._dialog = new UI.Dialog.Dialog();
     UI.ARIAUtils.setAccessibleName(this._dialog.contentElement, ls`Quick open`);
-    this._dialog.setMaxContentSize(new UI.Size(504, 340));
+    this._dialog.setMaxContentSize(new UI.Geometry.Size(504, 340));
     this._dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.SetExactWidthMaxHeight);
     this._dialog.setContentPosition(null, 22);
     this.show(this._dialog.contentElement);
@@ -628,7 +633,7 @@ export class Provider {
    * @return {string}
    */
   notFoundText(query) {
-    return Common.UIString('No results found');
+    return Common.UIString.UIString('No results found');
   }
 
   detach() {

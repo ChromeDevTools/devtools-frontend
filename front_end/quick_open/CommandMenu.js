@@ -2,6 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+import * as Diff from '../diff/diff.js';
+import * as Host from '../host/host.js';
+import * as UI from '../ui/ui.js';
+
 import {FilteredListWidget, Provider} from './FilteredListWidget.js';
 import {QuickOpenImpl} from './QuickOpen.js';
 
@@ -56,7 +61,7 @@ export class CommandMenu {
   }
 
   /**
-   * @param {!UI.Action} action
+   * @param {!UI.Action.Action} action
    * @return {!Command}
    */
   static createActionCommand(action) {
@@ -74,12 +79,13 @@ export class CommandMenu {
     const viewId = extension.descriptor()['id'];
     const executeHandler = self.UI.viewManager.showView.bind(self.UI.viewManager, viewId);
     const tags = extension.descriptor()['tags'] || '';
-    return CommandMenu.createCommand(category, tags, Common.UIString('Show %s', extension.title()), '', executeHandler);
+    return CommandMenu.createCommand(
+        category, tags, Common.UIString.UIString('Show %s', extension.title()), '', executeHandler);
   }
 
   _loadCommands() {
     const locations = new Map();
-    self.runtime.extensions(UI.ViewLocationResolver).forEach(extension => {
+    self.runtime.extensions(UI.View.ViewLocationResolver).forEach(extension => {
       const category = extension.descriptor()['category'];
       const name = extension.descriptor()['name'];
       if (category && name) {
@@ -186,7 +192,7 @@ export class CommandMenuProvider extends Provider {
    */
   itemScoreAt(itemIndex, query) {
     const command = this._commands[itemIndex];
-    const opcodes = Diff.Diff.charDiff(query.toLowerCase(), command.title().toLowerCase());
+    const opcodes = Diff.Diff.DiffWrapper.charDiff(query.toLowerCase(), command.title().toLowerCase());
     let score = 0;
     // Score longer sequences higher.
     for (let i = 0; i < opcodes.length; ++i) {
@@ -314,18 +320,18 @@ export class Command {
 
 
 /**
- * @implements {UI.ActionDelegate}
+ * @implements {UI.ActionDelegate.ActionDelegate}
  * @unrestricted
  */
 export class ShowActionDelegate {
   /**
    * @override
-   * @param {!UI.Context} context
+   * @param {!UI.Context.Context} context
    * @param {string} actionId
    * @return {boolean}
    */
   handleAction(context, actionId) {
-    Host.InspectorFrontendHost.bringToFront();
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.bringToFront();
     QuickOpenImpl.show('>');
     return true;
   }

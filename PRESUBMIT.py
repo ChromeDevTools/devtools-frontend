@@ -99,18 +99,6 @@ def _CheckLicenses(input_api, output_api):
     return results
 
 
-def _CheckUnitTests(input_api, output_api):
-    results = [output_api.PresubmitNotifyResult('Running Unit Tests:')]
-    unittest_root = input_api.os_path.join(input_api.PresubmitLocalPath(), 'test')
-    affected_unittest_files = _getAffectedFiles(input_api, [unittest_root], ['D'], ['.ts'])
-    if len(affected_unittest_files) == 0:
-        return results
-
-    script_path = input_api.os_path.join(input_api.PresubmitLocalPath(), 'scripts', 'test', 'check_for_unittest_onlys.js')
-    results.extend(_checkWithNodeScript(input_api, output_api, script_path, affected_unittest_files))
-    return results
-
-
 def _CheckFormat(input_api, output_api):
     results = [output_api.PresubmitNotifyResult('Running Format Checks:')]
     def popen(args):
@@ -301,7 +289,6 @@ def _CommonChecks(input_api, output_api):
     results.extend(_CheckOptimizeSVGHashes(input_api, output_api))
     results.extend(_CheckCSSViolations(input_api, output_api))
     results.extend(_CheckChangesAreExclusiveToDirectory(input_api, output_api))
-    results.extend(_CheckUnitTests(input_api, output_api))
     results.extend(_CheckNoUncheckedFiles(input_api, output_api))
     results.extend(_CheckForTooLargeFiles(input_api, output_api))
     return results

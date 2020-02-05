@@ -158,20 +158,21 @@ export class DebuggerWorkspaceBinding {
    * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    * @param {number} lineNumber
    * @param {number} columnNumber
-   * @return {!Array<!SDK.DebuggerModel.Location>}
+   * @return {!Promise<!Array<!SDK.DebuggerModel.Location>>}
    */
-  uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber) {
-    let locations = [];
-    for (let i = 0; i < this._sourceMappings.length && !locations.length; ++i) {
-      locations = this._sourceMappings[i].uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber);
+  async uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber) {
+    for (const sourceMapping of this._sourceMappings) {
+      const locations = sourceMapping.uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber);
+      if (locations.length) {
+        return locations;
+      }
     }
-    if (locations.length) {
-      return locations;
-    }
+
+    const locationsPromises = [];
     for (const modelData of this._debuggerModelToData.values()) {
-      locations.push(...modelData._uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber));
+      locationsPromises.push(modelData._uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber));
     }
-    return locations;
+    return (await Promise.all(locationsPromises)).flat();
   }
 
   /**
@@ -191,11 +192,11 @@ export class DebuggerWorkspaceBinding {
 
   /**
    * @param {!Workspace.UISourceCode.UILocation} uiLocation
-   * @return {!Workspace.UISourceCode.UILocation}
+   * @return {!Promise<!Workspace.UISourceCode.UILocation>}
    */
-  normalizeUILocation(uiLocation) {
+  async normalizeUILocation(uiLocation) {
     const rawLocations =
-        this.uiLocationToRawLocations(uiLocation.uiSourceCode, uiLocation.lineNumber, uiLocation.columnNumber);
+        await this.uiLocationToRawLocations(uiLocation.uiSourceCode, uiLocation.lineNumber, uiLocation.columnNumber);
     for (const location of rawLocations) {
       const uiLocationCandidate = this.rawLocationToUILocation(location);
       if (uiLocationCandidate) {
@@ -373,14 +374,12 @@ class ModelData {
    * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    * @param {number} lineNumber
    * @param {number} columnNumber
-   * @return {!Array<!SDK.DebuggerModel.Location>}
+   * @return {!Promise<!Array<!SDK.DebuggerModel.Location>>}
    */
-  _uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber) {
-    // TODO(szuend): Make this function async and delegate to the language component in
-    //               addition to {_uiLocationToRawLocationsExcludeAsync}.
+  async _uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber) {
     let rawLocations = null;
     if (Root.Runtime.experiments.isEnabled('wasmDWARFDebugging')) {
-      rawLocations = this._pluginManager.uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber);
+      rawLocations = await this._pluginManager.uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber);
     }
     rawLocations = rawLocations || this._uiLocationToRawLocationsExcludeAsync(uiSourceCode, lineNumber, columnNumber);
     return rawLocations;

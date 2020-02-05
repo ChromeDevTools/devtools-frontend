@@ -199,13 +199,13 @@ export class DebuggerLanguagePluginManager {
     return uiSourceCode.uiLocation(sourceLocation.lineNumber, sourceLocation.columnNumber);
   }
 
-  /** TODO(chromium:1032016): Make async once chromium:1032016 is complete.
+  /**
    * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    * @param {number} lineNumber
    * @param {number} columnNumber
-   * @return {!Array<!SDK.DebuggerModel.Location>}
+   * @return {!Promise<!Array<!SDK.DebuggerModel.Location>>}
    */
-  /* async */ uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber) {
+  async uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber) {
     const locations = [];
     for (const [sourceFile, script] of this._uiSourceCodes.get(uiSourceCode) || []) {
       const plugin = this._pluginForScriptId.get(script.scriptId);

@@ -107,8 +107,10 @@ export class SASSSourceMapping {
     const headers = this._sourceMapManager.clientsForSourceMap(sourceMap);
     for (const sassURL of sourceMap.sourceURLs()) {
       if (headers.length) {
-        const uiSourceCode =
-            /** @type {!Workspace.UISourceCode.UISourceCode} */ (this._project.uiSourceCodeForURL(sassURL));
+        const uiSourceCode = this._project.uiSourceCodeForURL(sassURL);
+        if (!uiSourceCode) {
+          continue;
+        }
         NetworkProject.removeFrameAttribution(uiSourceCode, header.frameId);
       } else {
         this._project.removeFile(sassURL);

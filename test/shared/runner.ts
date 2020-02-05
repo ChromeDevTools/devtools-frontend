@@ -3,12 +3,11 @@
 // found in the LICENSE file.
 
 import * as Mocha from 'mocha';
-import {join} from 'path';
 import * as puppeteer from 'puppeteer';
 
 import {store} from './helper.js';
-import {testList} from './test-list.js';
 
+const testListPath = process.env['TEST_LIST'];
 const envChromeBinary = process.env['CHROME_BIN'];
 const envDebug = !!process.env['DEBUG'];
 const envPort = process.env['PORT'] || 9222;
@@ -128,10 +127,12 @@ async function waitForInput() {
 
 let mochaRun: Mocha.Runner;
 async function runTests() {
+  const {testList} = await import(testListPath);
+
   return new Promise((resolve) => {
     const mocha = new Mocha();
     for (const test of testList) {
-      mocha.addFile(join(__dirname, test));
+      mocha.addFile(test);
     }
     mocha.ui('bdd');
     mocha.reporter('list');

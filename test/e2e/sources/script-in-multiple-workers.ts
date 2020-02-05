@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 import {describe, it} from 'mocha';
 
-import {getBrowserAndPages, getElementPosition, resetPages, resourcesPath, $} from '../helper.js';
+import {getBrowserAndPages, getElementPosition, resetPages, resourcesPath, $} from '../../shared/helper.js';
 
 describe('Multi-Workers', async () => {
   beforeEach(async () => {

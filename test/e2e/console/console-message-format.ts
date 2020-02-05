@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 import {describe, it} from 'mocha';
 
-import {debuggerStatement, getBrowserAndPages, getElementPosition, resetPages, resourcesPath} from '../helper.js';
+import {debuggerStatement, getBrowserAndPages, getElementPosition, resetPages, resourcesPath} from '../../shared/helper.js';
 
 async function obtainMessagesForTest(testName: string) {
   const {target, frontend} = getBrowserAndPages();

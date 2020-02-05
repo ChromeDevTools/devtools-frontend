@@ -36,3 +36,4 @@ npm-debug.log
 !/third_party/typescript
 
 test/e2e/**/*.js
+test/shared/**/*.js

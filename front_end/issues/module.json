@@ -1,0 +1,24 @@
+{
+    "extensions": [
+      {
+          "type": "view",
+          "location": "drawer-view",
+          "id": "issues-pane",
+          "title": "Issues",
+          "order": 100,
+          "persistence": "closeable",
+          "className": "Issues.IssuesPane",
+          "experiment": "issuesPane"
+      }
+    ],
+    "dependencies": ["platform", "ui", "host", "components"],
+    "scripts": [],
+    "modules": [
+      "issues.js",
+      "issues-legacy.js",
+      "IssuesPane.js"
+    ],
+    "resources": [
+      "issuesPane.css"
+    ]
+  }

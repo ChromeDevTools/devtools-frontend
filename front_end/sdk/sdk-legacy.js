@@ -263,6 +263,9 @@ SDK.IsolateManager.MemoryTrend = SDKModule.IsolateManager.MemoryTrend;
 /** @constructor */
 SDK.IssuesModel = SDKModule.IssuesModel.IssuesModel;
 
+/** @constructor */
+SDK.Issue = SDKModule.Issue.Issue;
+
 /** @interface */
 SDK.Layer = SDKModule.LayerTreeBase.Layer;
 

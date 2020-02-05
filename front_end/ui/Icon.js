@@ -246,6 +246,8 @@ export const Descriptors = {
   'largeicon-undock': {position: 'g1', spritesheet: 'largeicons', isMask: true},
   'largeicon-visibility': {position: 'h9', spritesheet: 'largeicons', isMask: true},
   'largeicon-waterfall': {position: 'h8', spritesheet: 'largeicons', isMask: true},
+  'largeicon-breaking-change': {position: 'h3', spritesheet: 'largeicons'},
+  'largeicon-link': {position: 'i1', spritesheet: 'largeicons'},
 
   'mediumicon-arrow-top': {position: 'a4', spritesheet: 'arrowicons'},
   'mediumicon-arrow-bottom': {position: 'a3', spritesheet: 'arrowicons'},

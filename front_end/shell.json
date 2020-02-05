@@ -44,6 +44,7 @@
     { "name": "text_editor" },
     { "name": "workspace_diff" },
     { "name": "protocol_monitor"},
+    { "name": "issues"},
     { "name": "input"}
   ]
 }

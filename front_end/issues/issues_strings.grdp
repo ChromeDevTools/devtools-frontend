@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<grit-part>
+  <message name="IDS_DEVTOOLS_0c94f752d037fd8475e98b0711b543a6" desc="Label for the link for SameSiteCookies Issues">
+    SameSite cookies explained
+  </message>
+  <message name="IDS_DEVTOOLS_3ac50b50b2090885755631100cb73b51" desc="Message for the SameSiteCookies::SameSiteNoneWithoutSecure issue code">
+    In a future version of chrome, third party cookies will only be sent when marked as SameSite=None and Secure to prevent them from being accessed in a man in the middle scenario.
+  </message>
+  <message name="IDS_DEVTOOLS_80b768b15c3693e345a436b9dc0ea36f" desc="Label for the issues Pane">
+    Issues
+  </message>
+  <message name="IDS_DEVTOOLS_888fab4d70ed5244fb152416372e6e3c" desc="Title for the SameSiteCookies::SameSiteNoneWithoutSecure issue code">
+    A Cookie has been set with SameSite=None but without Secure
+  </message>
+  <message name="IDS_DEVTOOLS_8e6aefb01ad865cdce56f1992b317e4a" desc="Link for SameSiteCookies Issues">
+    https://web.dev/samesite-cookies-explained/
+  </message>
+  <message name="IDS_DEVTOOLS_9f47b91013372f367a71d5f6eabc7e67" desc="Title for the SameSiteCookies::SameSiteNoneMissingForThirdParty issue code">
+    A Cookie in a third party context has been set without SameSite=None
+  </message>
+  <message name="IDS_DEVTOOLS_bc25f01b7b9a256f417f28a44866ef07" desc="Message for the SameSiteCookies::SameSiteNoneMissingForThirdParty issue code">
+    In a future version of chrome, third party cookies will only be sent when marked as SameSite=None and Secure to prevent them from being accessed in a man in the middle szenario.
+  </message>
+  <message name="IDS_DEVTOOLS_bf3d65060c91ba1d205face215fced7b" desc="Label for High Priority">
+    High Priority
+  </message>
+</grit-part>

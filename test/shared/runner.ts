@@ -4,6 +4,8 @@
 
 import * as Mocha from 'mocha';
 import * as puppeteer from 'puppeteer';
+import {spawn} from 'child_process';
+import {join} from 'path';
 
 import {store} from './helper.js';
 
@@ -37,7 +39,22 @@ else {
 const launchedBrowser = puppeteer.launch(opts);
 const pages: puppeteer.Page[] = [];
 
-// 2. Spin up the test environment
+// 2. Start DevTools hosted mode.
+function handleHostedModeError(data) {
+  console.log('Hosted mode server:');
+  console.log(data.toString());
+  shutdown();
+}
+
+console.log('Spawning hosted mode server');
+const serverScriptPath = join(__dirname, '..', '..', 'scripts/hosted_mode/server.js');
+const cwd = join(__dirname, '..', '..');
+const {execPath} = process;
+const hostedModeServer = spawn(execPath, [serverScriptPath], { cwd, shell: true, detached: true});
+hostedModeServer.on('error', handleHostedModeError);
+hostedModeServer.stderr.on('data', handleHostedModeError);
+
+// 3. Spin up the test environment
 (async function() {
   try {
     const browser = await launchedBrowser;
@@ -100,9 +117,7 @@ const pages: puppeteer.Page[] = [];
   } catch (err) {
     console.warn(err);
   } finally {
-    const browser = await launchedBrowser;
-    browser.close();
-    process.exit(exitCode);
+    shutdown();
   }
 })();
 
@@ -118,11 +133,18 @@ async function waitForInput() {
     process.stdin.on('data', (str) => {
       // Listen for ctrl+c to exit.
       if (str.toString() === '\x03') {
-        process.exit(0);
+        shutdown();
       }
       resolve();
     });
   });
+}
+
+async function shutdown() {
+  const browser = await launchedBrowser;
+  browser.close();
+  hostedModeServer.kill();
+  process.exit(exitCode);
 }
 
 let mochaRun: Mocha.Runner;

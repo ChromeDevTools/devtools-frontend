@@ -55,20 +55,6 @@ def to_platform_path_exact(filepath):
     return output.strip().replace('\\', '\\\\')
 
 
-def start_hosted_mode_server():
-    proc = popen([devtools_paths.node_path(), devtools_paths.hosted_mode_script_path()])
-    hosted_mode_pid = proc.pid
-    return hosted_mode_pid
-
-
-def stop_hosted_mode_server(hosted_mode_pid):
-    if hosted_mode_pid is None:
-        return
-
-    os.kill(hosted_mode_pid, signal.SIGTERM)
-    hosted_mode_pid = None
-
-
 def compile_typescript_test_files():
     tsc_compile_errors_found = False
     cwd = devtools_paths.devtools_root_path()
@@ -138,17 +124,13 @@ def main():
     print('Using Chromium binary (%s)\n' % chrome_binary)
 
     errors_found = False
-    hosted_mode_pid = None
     try:
-        hosted_mode_pid = start_hosted_mode_server()
         errors_found = compile_typescript_test_files()
         if (errors_found):
             raise Exception('Typescript failed to compile')
         errors_found = run_e2e_test(chrome_binary)
     except Exception as err:
         print(err)
-    finally:
-        stop_hosted_mode_server(hosted_mode_pid)
 
     if errors_found:
         print('ERRORS DETECTED')

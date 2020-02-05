@@ -935,6 +935,14 @@ export class PageDispatcher {
    * @param {!Protocol.Page.Frame} frame
    */
   frameNavigated(frame) {
+    const url = new URL(frame.url);
+    if (url.protocol === 'chrome-error:') {
+      // Skip navigation to chrome-error interstitials to
+      // allow developers to see resources of the origin they
+      // originally intended to see.
+      return;
+    }
+
     this._resourceTreeModel._frameNavigated(frame);
   }
 

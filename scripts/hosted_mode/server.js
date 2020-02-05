@@ -39,10 +39,10 @@ function requestHandler(request, response) {
     sendResponse(500, '500 - Internal Server Error');
   }
 
-  var absoluteFilePath = path.join(process.cwd(), filePath);
+  var absoluteFilePath = path.join(devtoolsFolder, filePath);
   if (!path.resolve(absoluteFilePath).startsWith(devtoolsFolder)) {
     console.log(`File requested is outside of devtools folder: ${devtoolsFolder}`);
-    sendResponse(403, `403 - Access denied. File requested is outside of devtools folder: ${devtoolsFolder}`);
+    sendResponse(403, `403 - Access denied. File requested (${absoluteFilePath}) is outside of devtools folder: ${devtoolsFolder}`);
     return;
   }
 

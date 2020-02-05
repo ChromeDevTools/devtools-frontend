@@ -17,6 +17,8 @@ const headless = !envDebug;
 const width = 1280;
 const height = 720;
 
+let exitCode = 0;
+
 const opts: puppeteer.LaunchOptions = {
   headless,
   executablePath: envChromeBinary,
@@ -101,6 +103,7 @@ const pages: puppeteer.Page[] = [];
   } finally {
     const browser = await launchedBrowser;
     browser.close();
+    process.exit(exitCode);
   }
 })();
 
@@ -138,6 +141,10 @@ async function runTests() {
     mochaRun.on('end', () => {
       (mocha as any).unloadFiles();
       resolve();
+    });
+
+    mochaRun.on('fail', () => {
+      exitCode = 1;
     });
   });
 }

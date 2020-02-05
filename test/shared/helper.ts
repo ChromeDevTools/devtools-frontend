@@ -53,6 +53,9 @@ const collectAllElementsFromPage = async (root?: puppeteer.JSHandle) => {
 export const getElementPosition = async (selector: string, root?: puppeteer.JSHandle) => {
   const element = await $(selector, root);
   const position = await element.evaluate(element => {
+    if (!element) {
+      return {};
+    }
     // Extract the location values.
     const {left, top, width, height} = element.getBoundingClientRect();
     return {
@@ -60,7 +63,29 @@ export const getElementPosition = async (selector: string, root?: puppeteer.JSHa
       y: top + height * 0.5,
     };
   });
+  if (position.x === undefined || position.y === undefined) {
+    throw new Error(`Unable to find element with selector "${selector}"`);
+  }
   return position;
+};
+
+export const click = async (selector: string, root?: puppeteer.JSHandle) => {
+  const frontend: puppeteer.Page = globalThis[frontEndPage];
+  if (!frontend) {
+    throw new Error('Unable to locate DevTools frontend page. Was it stored first?');
+  }
+  const clickableElement = await getElementPosition(selector, root);
+
+  if (!clickableElement) {
+    throw new Error(`Unable to locate clickable element "${selector}".`);
+  }
+
+  // Click on the button and wait for the console to load. The reason we use this method
+  // rather than elementHandle.click() is because the frontend attaches the behavior to
+  // a 'mousedown' event (not the 'click' event). To avoid attaching the test behavior
+  // to a specific event we instead locate the button in question and ask Puppeteer to
+  // click on it instead.
+  await frontend.mouse.click(clickableElement.x, clickableElement.y);
 };
 
 // Get a single element handle, across Shadow DOM boundaries.

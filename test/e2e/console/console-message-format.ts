@@ -4,29 +4,25 @@
 
 import {assert} from 'chai';
 import {describe, it} from 'mocha';
+import * as puppeteer from 'puppeteer';
 
-import {debuggerStatement, getBrowserAndPages, getElementPosition, resetPages, resourcesPath} from '../../shared/helper.js';
+import {click, debuggerStatement, getBrowserAndPages, resetPages, resourcesPath} from '../../shared/helper.js';
 
-async function obtainMessagesForTest(testName: string) {
+async function obtainMessagesForTest(testName: string, callback?: (page: puppeteer.Page) => Promise<void>) {
   const {target, frontend} = getBrowserAndPages();
 
   // Have the target load the page.
   await target.goto(`${resourcesPath}/console/${testName}.html`);
 
   // Locate the button for switching to the console tab.
-  const consoleTabButtonLocation = await getElementPosition('#tab-console');
-  if (!consoleTabButtonLocation) {
-    assert.fail('Unable to locate console tab button.');
-  }
-
-  // Click on the button and wait for the console to load. The reason we use this method
-  // rather than elementHandle.click() is because the frontend attaches the behavior to
-  // a 'mousedown' event (not the 'click' event). To avoid attaching the test behavior
-  // to a specific event we instead locate the button in question and ask Puppeteer to
-  // click on it instead.
-  await frontend.mouse.click(consoleTabButtonLocation.x, consoleTabButtonLocation.y);
+  await click('#tab-console');
+  // Obtain console messages that were logged
   await frontend.waitForSelector('.console-group-messages');
 
+  if (callback) {
+    await debuggerStatement(frontend);
+    await callback(frontend);
+  }
   await debuggerStatement(frontend);
 
   // Get the first message from the console.
@@ -202,5 +198,73 @@ error message
       `DOMTokenList(3)\xA0["c1", "c2", "c3", value: "c1 c2 c3"]`,
       `DOMException: Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node.`,
     ]);
+  });
+
+  it('can handle sourceURLs in exceptions', async () => {
+    const messages = await obtainMessagesForTest('source-url-exceptions');
+
+    assert.deepEqual(messages, [
+      `Uncaught ReferenceError: FAIL is not defined
+    at foo (foo2.js:1)
+    at source-url-exceptions.html:12`,
+    ]);
+  });
+
+  it('can show stackoverflow exceptions', async () => {
+    const messages = await obtainMessagesForTest('stack-overflow');
+
+    assert.deepEqual(messages, [
+      `Uncaught RangeError: Maximum call stack size exceeded
+    at boo (foo2.js:1)
+    at boo (foo2.js:2)
+    at boo (foo2.js:2)
+    at boo (foo2.js:2)
+    at boo (foo2.js:2)
+    at boo (foo2.js:2)
+    at boo (foo2.js:2)
+    at boo (foo2.js:2)
+    at boo (foo2.js:2)
+    at boo (foo2.js:2)`,
+    ]);
+  });
+
+  it('can show verbose promise unhandledrejections', async () => {
+    const messages = await obtainMessagesForTest('onunhandledrejection', async () => {
+      await click(`[aria-label="Log level: Default levels"]`);
+
+      await click(`[aria-label="Verbose, unchecked"]`);
+    });
+
+    assert.deepEqual(messages, [
+      `onunhandledrejection1`,
+      `onrejectionhandled1`,
+      `onunhandledrejection2`,
+      `Uncaught (in promise) Error: e
+    at runSecondPromiseRejection (onunhandledrejection.html:26)`,
+      `onrejectionhandled2`,
+    ]);
+  });
+
+  describe('shows messages from before', async () => {
+    it('iframe removal', async () => {
+      const messages = await obtainMessagesForTest('navigation/after-removal');
+
+      assert.deepEqual(messages, [
+        `A message with first argument string Second argument which should not be discarded`,
+        `2011 "A message with first argument integer"`,
+        `Window\xA0{parent: Window, opener: null, top: Window, length: 0, frames: Window,\xA0…} "A message with first argument window"`,
+      ]);
+    });
+
+    it('and after iframe navigation', async () => {
+      const messages = await obtainMessagesForTest('navigation/after-navigation');
+
+      assert.deepEqual(messages, [
+        `A message with first argument string Second argument which should not be discarded`,
+        `2011 "A message with first argument integer"`,
+        `Window\xA0{parent: Window, opener: null, top: Window, length: 0, frames: Window,\xA0…} "A message with first argument window"`,
+        `After iframe navigation.`,
+      ]);
+    });
   });
 });

@@ -117,8 +117,8 @@ export class BackgroundServiceView extends UI.VBox {
 
     this._toolbar.appendSeparator();
 
-    this._originCheckbox =
-        new UI.ToolbarCheckbox(ls`Show events from other domains`, undefined, () => this._refreshView());
+    this._originCheckbox = new UI.ToolbarCheckbox(
+        ls`Show events from other domains`, ls`Show events from other domains`, () => this._refreshView());
     this._toolbar.appendToolbarItem(this._originCheckbox);
   }
 

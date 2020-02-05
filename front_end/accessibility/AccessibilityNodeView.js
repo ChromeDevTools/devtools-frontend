@@ -339,10 +339,9 @@ export class AXValueSourceTreeElement extends AXNodePropertyTreeElement {
 
   /**
    * @param {!Protocol.Accessibility.AXRelatedNode} relatedNode
-   * @param {number} index
    * @param {string} idref
    */
-  appendRelatedNodeWithIdref(relatedNode, index, idref) {
+  appendRelatedNodeWithIdref(relatedNode, idref) {
     const deferredNode =
         new SDK.DeferredDOMNode(this._axNode.accessibilityModel().target(), relatedNode.backendDOMNodeId);
     const nodeTreeElement = new AXRelatedNodeSourceTreeElement({deferredNode: deferredNode, idref: idref}, relatedNode);
@@ -353,28 +352,36 @@ export class AXValueSourceTreeElement extends AXNodePropertyTreeElement {
    * @param {!Protocol.Accessibility.AXValue} value
    */
   appendIDRefValueElement(value) {
-    const relatedNodes = value.relatedNodes;
+    if (value.value === null) {
+      return;
+    }
+
+    const relatedNodes = value.relatedNodes || [];
+
+    // Content attribute is empty, but if the relationship was set via the IDL
+    // then there may be related nodes.
+    if (value.value === '') {
+      for (const node of relatedNodes) {
+        const idref = node.idref || '';
+        this.appendRelatedNodeWithIdref(node, idref);
+      }
+      return;
+    }
 
     const idrefs = value.value.trim().split(/\s+/);
-    if (idrefs.length === 1) {
-      const idref = idrefs[0];
+    for (const idref of idrefs) {
       const matchingNode = relatedNodes.find(node => node.idref === idref);
-      if (matchingNode) {
-        this.appendRelatedNodeWithIdref(matchingNode, 0, idref);
-      } else {
-        this.listItemElement.appendChild(new AXRelatedNodeElement({idref: idref}).render());
-      }
 
-    } else {
+      // If there is exactly one related node, it is rendered on the same line
+      // of the label. If there are more, they are each rendered on their own
+      // line below the label.
       // TODO(aboxhall): exclamation mark if not idreflist type
-      for (let i = 0; i < idrefs.length; ++i) {
-        const idref = idrefs[i];
-        const matchingNode = relatedNodes.find(node => node.idref === idref);
-        if (matchingNode) {
-          this.appendRelatedNodeWithIdref(matchingNode, i, idref);
-        } else {
-          this.appendChild(new AXRelatedNodeSourceTreeElement({idref: idref}));
-        }
+      if (matchingNode) {
+        this.appendRelatedNodeWithIdref(matchingNode, idref);
+      } else if (idrefs.length === 1) {
+        this.listItemElement.appendChild(new Accessibility.AXRelatedNodeElement({idref: idref}).render());
+      } else {
+        this.appendChild(new Accessibility.AXRelatedNodeSourceTreeElement({idref: idref}));
       }
     }
   }

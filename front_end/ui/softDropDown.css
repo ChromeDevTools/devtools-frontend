@@ -21,10 +21,6 @@
     background-color: var(--selection-bg-color);
 }
 
-.list-container {
-    width: 100%;
-}
-
 @media (forced-colors: active) {
     .item.disabled {
         opacity: 1;

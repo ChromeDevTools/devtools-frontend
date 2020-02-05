@@ -492,3 +492,26 @@
     flex: none;
     max-height: 50%;
 }
+
+@media (forced-colors: active) {
+    .console-message-expand-icon,
+    .console-warning-level [is=ui-icon].icon-mask.expand-group-icon {
+        forced-color-adjust: none;
+        background-color: ButtonText;
+    }
+    .console-message-wrapper:focus,
+    .console-message-wrapper:focus:last-of-type {
+        forced-color-adjust: none;
+        background-color: Highlight;
+    }
+    .console-message-wrapper.console-warning-level .console-message-text,
+    .console-message-wrapper.console-warning-level .console-message-anchor #console-messages .link, #console-messages .devtools-link {
+        color: HighlightText;
+    }
+    #console-messages .link[data-keyboard-focus="true"]:focus,
+    #console-messages .devtools-link[data-keyboard-focus="true"]:focus {
+        forced-color-adjust: none;
+        background: Highlight;
+        color: HighlightText;
+    }
+}

@@ -39,10 +39,25 @@ def popen(arguments, cwd=None, env=None, capture=False):
     if not capture:
         return process
 
+    def handle_signal(signum, frame):
+        print 'Sending signal (%i) to process' % signum
+        process.send_signal(signum)
+        process.terminate()
+
+    # Propagate sigterm / int to the child process.
+    original_sigint = signal.getsignal(signal.SIGINT)
+    original_sigterm = signal.getsignal(signal.SIGTERM)
+    signal.signal(signal.SIGINT, handle_signal)
+    signal.signal(signal.SIGTERM, handle_signal)
+
     for line in iter(process.stdout.readline, ''):
         sys.stdout.write(line)
         if process.returncode == 0:
             sys.stdout.write('done')
+
+    # Restore the original sigterm / int handlers.
+    signal.signal(signal.SIGINT, original_sigint)
+    signal.signal(signal.SIGTERM, original_sigterm)
 
     return process
 

@@ -6,7 +6,6 @@ import * as Mocha from 'mocha';
 import * as puppeteer from 'puppeteer';
 import {spawn} from 'child_process';
 import {join} from 'path';
-
 import {store} from './helper.js';
 
 const testListPath = process.env['TEST_LIST'];
@@ -18,8 +17,34 @@ const headless = !envDebug;
 const width = 1280;
 const height = 720;
 
+let mochaRun: Mocha.Runner;
 let exitCode = 0;
 
+function interruptionHandler() {
+  console.log('\n');
+  if (mochaRun) {
+    console.log('Aborting tests');
+    mochaRun.abort();
+  }
+  exitCode = 1;
+  shutdown();
+}
+
+function shutdown() {
+  console.log('\n');
+  console.log('Stopping hosted mode server');
+  hostedModeServer.kill();
+
+  console.log(`Exiting with status code ${exitCode}`);
+  process.exit(exitCode);
+}
+
+process.on('SIGINT', interruptionHandler);
+process.on('SIGTERM', interruptionHandler);
+process.on('uncaughtException', interruptionHandler);
+process.stdin.resume();
+
+// 1. Launch Chromium.
 const opts: puppeteer.LaunchOptions = {
   headless,
   executablePath: envChromeBinary,
@@ -35,7 +60,6 @@ else {
   opts.args.push(`--window-size=${width},${height}`);
 }
 
-// 1. Launch Chromium.
 const launchedBrowser = puppeteer.launch(opts);
 const pages: puppeteer.Page[] = [];
 
@@ -43,14 +67,14 @@ const pages: puppeteer.Page[] = [];
 function handleHostedModeError(data) {
   console.log('Hosted mode server:');
   console.log(data.toString());
-  shutdown();
+  interruptionHandler();
 }
 
 console.log('Spawning hosted mode server');
 const serverScriptPath = join(__dirname, '..', '..', 'scripts', 'hosted_mode', 'server.js');
 const cwd = join(__dirname, '..', '..');
 const {execPath} = process;
-const hostedModeServer = spawn(execPath, [serverScriptPath], { cwd, shell: true, detached: true});
+const hostedModeServer = spawn(execPath, [serverScriptPath], { cwd, shell: true, detached: true });
 hostedModeServer.on('error', handleHostedModeError);
 hostedModeServer.stderr.on('data', handleHostedModeError);
 
@@ -78,7 +102,7 @@ hostedModeServer.stderr.on('data', handleHostedModeError);
     // Connect to the DevTools frontend.
     const frontend = await browser.newPage();
     const frontendUrl = `http://localhost:8090/front_end/devtools_app.html?ws=localhost:${envPort}/devtools/page/${id}`;
-    frontend.goto(frontendUrl);
+    await frontend.goto(frontendUrl, {waitUntil: ['networkidle2', 'domcontentloaded']});
 
     const resetPages =
         async (...enabledExperiments: string[]) => {
@@ -131,24 +155,16 @@ async function waitForInput() {
 
     process.stdin.setRawMode(true);
     process.stdin.resume();
-    process.stdin.on('data', (str) => {
+    process.stdin.on('data', async (str) => {
       // Listen for ctrl+c to exit.
       if (str.toString() === '\x03') {
-        shutdown();
+        interruptionHandler();
       }
       resolve();
     });
   });
 }
 
-async function shutdown() {
-  const browser = await launchedBrowser;
-  browser.close();
-  hostedModeServer.kill();
-  process.exit(exitCode);
-}
-
-let mochaRun: Mocha.Runner;
 async function runTests() {
   const {testList} = await import(testListPath);
 

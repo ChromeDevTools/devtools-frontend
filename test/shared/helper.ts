@@ -96,10 +96,24 @@ export const $ = async (selector: string, root?: puppeteer.JSHandle) => {
   }
   await collectAllElementsFromPage(root);
   const element = await frontend.evaluateHandle(selector => {
-    const elements = globalThis.__elements;
+    const elements: Element[] = globalThis.__elements;
     return elements.find(element => element.matches(selector));
   }, selector);
   return element;
+};
+
+// Get a multiple element handles, across Shadow DOM boundaries.
+export const $$ = async (selector: string, root?: puppeteer.JSHandle) => {
+  const frontend: puppeteer.Page = globalThis[frontEndPage];
+  if (!frontend) {
+    throw new Error('Unable to locate DevTools frontend page. Was it stored first?');
+  }
+  await collectAllElementsFromPage(root);
+  const elements = await frontend.evaluateHandle(selector => {
+    const elements: Element[] = globalThis.__elements;
+    return elements.filter(element => element.matches(selector));
+  }, selector);
+  return elements;
 };
 
 export const waitFor =

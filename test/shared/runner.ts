@@ -13,7 +13,7 @@ const testListPath = process.env['TEST_LIST'];
 const envChromeBinary = process.env['CHROME_BIN'];
 const envDebug = !!process.env['DEBUG'];
 const envPort = process.env['PORT'] || 9222;
-const targetUrl = 'about:blank';
+const blankPage = 'data:text/html,';
 const headless = !envDebug;
 const width = 1280;
 const height = 720;
@@ -61,7 +61,7 @@ hostedModeServer.stderr.on('data', handleHostedModeError);
 
     // Load the target page.
     const srcPage = await browser.newPage();
-    await srcPage.goto(targetUrl);
+    await srcPage.goto(blankPage);
     pages.push(srcPage);
 
     // Now get the DevTools listings.
@@ -72,7 +72,7 @@ hostedModeServer.stderr.on('data', handleHostedModeError);
     const listing = await devtools.$('pre');
     const json = await devtools.evaluate(listing => listing.textContent, listing);
     const targets = JSON.parse(json);
-    const {id} = targets.find((target) => target.url === targetUrl);
+    const {id} = targets.find((target) => target.url === blankPage);
     await devtools.close();
 
     // Connect to the DevTools frontend.
@@ -83,7 +83,7 @@ hostedModeServer.stderr.on('data', handleHostedModeError);
     const resetPages =
         async (...enabledExperiments: string[]) => {
       // Reload the target page.
-      await srcPage.reload({waitUntil: ['networkidle2', 'domcontentloaded']});
+      await srcPage.goto(blankPage, {waitUntil: ['domcontentloaded']});
 
       // Clear any local storage settings.
       await frontend.evaluate(() => localStorage.clear());
@@ -95,7 +95,8 @@ hostedModeServer.stderr.on('data', handleHostedModeError);
       }, enabledExperiments);
 
       // Reload the DevTools frontend and await the elements panel.
-      await frontend.reload({waitUntil: ['networkidle2', 'domcontentloaded']});
+      await frontend.goto(blankPage, {waitUntil: ['domcontentloaded']});
+      await frontend.goto(frontendUrl, {waitUntil: ['networkidle2', 'domcontentloaded']});
       await frontend.waitForSelector('.elements');
     }
 

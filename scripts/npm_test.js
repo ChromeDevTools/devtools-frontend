@@ -259,9 +259,7 @@ function runTests(buildDirectoryPath, useDebugDevtools) {
     if (unitTest) {
       const unitTestPath = `http://localhost:8080/${unitTest.slice('http/tests/'.length)}`;
       const link =
-          `http://localhost:8080/inspector-sources/debug/integration_test_runner.html?experiments=true&test=${
-                                                                                                              unitTestPath
-                                                                                                            }`;
+          `http://localhost:8080/inspector-sources/debug/integration_test_runner.html?test=${unitTestPath}`;
       console.log('1) Go to: ', link);
       console.log('2) Go to: http://localhost:9222/, click on "inspected-page.html", and copy the ws query parameter');
       console.log('3) Open DevTools on DevTools and you can refresh to re-run the test')

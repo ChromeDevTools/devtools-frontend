@@ -77,7 +77,7 @@ hostedModeServer.stderr.on('data', handleHostedModeError);
 
     // Connect to the DevTools frontend.
     const frontend = await browser.newPage();
-    const frontendUrl = `http://localhost:8090/front_end/devtools_app.html?ws=localhost:${envPort}/devtools/page/${id}&experiments=true`;
+    const frontendUrl = `http://localhost:8090/front_end/devtools_app.html?ws=localhost:${envPort}/devtools/page/${id}`;
     frontend.goto(frontendUrl);
 
     const resetPages =

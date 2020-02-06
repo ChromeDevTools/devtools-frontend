@@ -69,12 +69,13 @@ export const getElementPosition = async (selector: string, root?: puppeteer.JSHa
   return position;
 };
 
-export const click = async (selector: string, root?: puppeteer.JSHandle) => {
+export const click =
+    async (selector: string, options?: {root?: puppeteer.JSHandle, clickOptions?: puppeteer.ClickOptions}) => {
   const frontend: puppeteer.Page = globalThis[frontEndPage];
   if (!frontend) {
     throw new Error('Unable to locate DevTools frontend page. Was it stored first?');
   }
-  const clickableElement = await getElementPosition(selector, root);
+  const clickableElement = await getElementPosition(selector, options?.root);
 
   if (!clickableElement) {
     throw new Error(`Unable to locate clickable element "${selector}".`);
@@ -85,7 +86,7 @@ export const click = async (selector: string, root?: puppeteer.JSHandle) => {
   // a 'mousedown' event (not the 'click' event). To avoid attaching the test behavior
   // to a specific event we instead locate the button in question and ask Puppeteer to
   // click on it instead.
-  await frontend.mouse.click(clickableElement.x, clickableElement.y);
+  await frontend.mouse.click(clickableElement.x, clickableElement.y, options?.clickOptions);
 };
 
 // Get a single element handle, across Shadow DOM boundaries.

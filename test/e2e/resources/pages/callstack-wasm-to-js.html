@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<title>Launch wasm module that launches debugger</title>
+<script>
+  (async () => {
+    function bar() {
+      debugger;
+    }
+    const module = await WebAssembly.compileStreaming(fetch('callstack-wasm-to-js.wasm'));
+    const instance = await WebAssembly.instantiate(module, {imports: {bar: bar}});
+    instance.exports.foo();
+  })();
+</script>

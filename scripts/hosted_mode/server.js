@@ -67,15 +67,16 @@ function requestHandler(request, response) {
   }
 
   function sendResponse(statusCode, data) {
-    if (request.url.endsWith('.js')) {
+    const path = parseURL(request.url).pathname;
+    if (path.endsWith('.js')) {
       response.setHeader('Content-Type', 'text/javascript');
     }
 
-    if (request.url.endsWith('.wasm')) {
+    if (path.endsWith('.wasm')) {
       response.setHeader('Content-Type', 'application/wasm');
     }
 
-    if (request.url.endsWith('.svg')) {
+    if (path.endsWith('.svg')) {
       response.setHeader('Content-Type', 'image/svg+xml');
     }
 

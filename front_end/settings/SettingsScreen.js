@@ -64,8 +64,6 @@ export class SettingsScreen extends UI.Widget.VBox {
     this._tabbedLocation.appendView(shortcutsView);
     tabbedPane.show(this.contentElement);
 
-    this.element.addEventListener('keydown', this._keyDown.bind(this), false);
-    this._developerModeCounter = 0;
     this.setDefaultFocusedElement(this.contentElement);
   }
 
@@ -103,16 +101,6 @@ export class SettingsScreen extends UI.Widget.VBox {
    */
   _selectTab(name) {
     self.UI.viewManager.showView(name);
-  }
-
-  /**
-   * @param {!Event} event
-   */
-  _keyDown(event) {
-    const shiftKeyCode = 16;
-    if (event.keyCode === shiftKeyCode && ++this._developerModeCounter > 5) {
-      this.contentElement.classList.add('settings-developer-mode');
-    }
   }
 }
 
@@ -253,26 +241,39 @@ export class ExperimentsSettingsTab extends SettingsTab {
   constructor() {
     super(Common.UIString.UIString('Experiments'), 'experiments-tab-content');
 
-    const experiments = Root.Runtime.experiments.allConfigurableExperiments();
-    if (experiments.length) {
+    const experiments = Root.Runtime.experiments.allConfigurableExperiments().sort();
+    const unstableExperiments = experiments.filter(e => e.unstable);
+    const stableExperiments = experiments.filter(e => !e.unstable);
+    if (stableExperiments.length) {
       const experimentsSection = this._appendSection();
-      experimentsSection.appendChild(this._createExperimentsWarningSubsection());
-      for (let i = 0; i < experiments.length; ++i) {
-        experimentsSection.appendChild(this._createExperimentCheckbox(experiments[i]));
+      const warningMessage = Common.UIString.UIString('These experiments could be dangerous and may require restart.');
+      experimentsSection.appendChild(this._createExperimentsWarningSubsection(warningMessage));
+      for (const experiment of stableExperiments) {
+        experimentsSection.appendChild(this._createExperimentCheckbox(experiment));
+      }
+    }
+    if (unstableExperiments.length) {
+      const experimentsSection = this._appendSection();
+      const warningMessage =
+          Common.UIString.UIString('These experiments are particularly unstable. Enable at your own risk.');
+      experimentsSection.appendChild(this._createExperimentsWarningSubsection(warningMessage));
+      for (const experiment of unstableExperiments) {
+        experimentsSection.appendChild(this._createExperimentCheckbox(experiment));
       }
     }
   }
 
   /**
+   * @param {string} warningMessage
    * @return {!Element} element
    */
-  _createExperimentsWarningSubsection() {
+  _createExperimentsWarningSubsection(warningMessage) {
     const subsection = createElement('div');
     const warning = subsection.createChild('span', 'settings-experiments-warning-subsection-warning');
     warning.textContent = Common.UIString.UIString('WARNING:');
     subsection.createTextChild(' ');
     const message = subsection.createChild('span', 'settings-experiments-warning-subsection-message');
-    message.textContent = Common.UIString.UIString('These experiments could be dangerous and may require restart.');
+    message.textContent = warningMessage;
     return subsection;
   }
 
@@ -286,7 +287,7 @@ export class ExperimentsSettingsTab extends SettingsTab {
     input.addEventListener('click', listener, false);
 
     const p = createElement('p');
-    p.className = experiment.hidden && !experiment.isEnabled() ? 'settings-experiment-hidden' : '';
+    p.className = experiment.unstable && !experiment.isEnabled() ? 'settings-experiment-unstable' : '';
     p.appendChild(label);
     return p;
   }

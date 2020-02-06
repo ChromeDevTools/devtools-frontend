@@ -1082,12 +1082,12 @@ class ExperimentsSupport {
   /**
    * @param {string} experimentName
    * @param {string} experimentTitle
-   * @param {boolean=} hidden
+   * @param {boolean=} unstable
    */
-  register(experimentName, experimentTitle, hidden) {
+  register(experimentName, experimentTitle, unstable) {
     Runtime._assert(!this._experimentNames[experimentName], 'Duplicate registration of experiment ' + experimentName);
     this._experimentNames[experimentName] = true;
-    this._experiments.push(new Runtime.Experiment(this, experimentName, experimentTitle, !!hidden));
+    this._experiments.push(new Runtime.Experiment(this, experimentName, experimentTitle, !!unstable));
   }
 
   /**
@@ -1185,12 +1185,12 @@ class Experiment {
    * @param {!Runtime.ExperimentsSupport} experiments
    * @param {string} name
    * @param {string} title
-   * @param {boolean} hidden
+   * @param {boolean} unstable
    */
-  constructor(experiments, name, title, hidden) {
+  constructor(experiments, name, title, unstable) {
     this.name = name;
     this.title = title;
-    this.hidden = hidden;
+    this.unstable = unstable;
     this._experiments = experiments;
   }
 

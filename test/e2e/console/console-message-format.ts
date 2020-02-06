@@ -228,6 +228,15 @@ error message
     ]);
   });
 
+  it('can show document.write messages', async () => {
+    const messages = await obtainMessagesForTest('document-write');
+
+    assert.deepEqual(messages, [
+      `script element`,
+      `document.write from onload`,
+    ]);
+  });
+
   it('can show verbose promise unhandledrejections', async () => {
     const messages = await obtainMessagesForTest('onunhandledrejection', async () => {
       await click(`[aria-label="Log level: Default levels"]`);

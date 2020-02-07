@@ -5,7 +5,8 @@
 import {join} from 'path';
 
 export const testList = [
-  join(__dirname, '.', 'sources', 'script-in-multiple-workers.js'),
   join(__dirname, '.', 'console', 'console-message-format.js'),
+  join(__dirname, '.', 'network', 'network-datagrid.js'),
+  join(__dirname, '.', 'sources', 'script-in-multiple-workers.js'),
   join(__dirname, '.', 'sources', 'debug-raw-wasm.js'),
 ];

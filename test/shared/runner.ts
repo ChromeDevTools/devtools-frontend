@@ -12,6 +12,7 @@ const testListPath = process.env['TEST_LIST'];
 const envChromeBinary = process.env['CHROME_BIN'];
 const envDebug = !!process.env['DEBUG'];
 const envPort = process.env['PORT'] || 9222;
+const envNoShuffle = !!process.env['NO_SHUFFLE'];
 const blankPage = 'data:text/html,';
 const headless = !envDebug;
 const width = 1280;
@@ -167,10 +168,11 @@ async function waitForInput() {
 
 async function runTests() {
   const {testList} = await import(testListPath);
+  const shuffledTests = shuffleTestFiles(testList);
 
   return new Promise((resolve) => {
     const mocha = new Mocha();
-    for (const test of testList) {
+    for (const test of shuffledTests) {
       mocha.addFile(test);
     }
     mocha.ui('bdd');
@@ -193,4 +195,27 @@ function logHelp() {
   console.log('Running in debug mode.');
   console.log(' - Press any key to run the test suite.');
   console.log(' - Press ctrl + c to quit.');
+}
+
+function shuffleTestFiles(files: string[]) {
+  if (envNoShuffle) {
+    console.log('Running tests unshuffled');
+    return files;
+  }
+
+  const swap = (arr, a, b) => {
+    const temp = arr[a];
+    arr[a] = arr[b];
+    arr[b] = temp;
+  }
+
+  for (let i = files.length; i >= 0; i--) {
+    const a = Math.floor(Math.random() * files.length);
+    const b = Math.floor(Math.random() * files.length);
+
+    swap(files, a, b);
+  }
+
+  console.log(`Running tests in the following order:\n${files.join('\n')}`);
+  return files;
 }

@@ -72,6 +72,9 @@
   <message name="IDS_DEVTOOLS_3b9dc6454ee96394b3d853e8d597ebc6" desc="Text in the Shortcuts page to explain a keyboard shortcut (increment value in Styles pane)">
     Increment value
   </message>
+  <message name="IDS_DEVTOOLS_3dc4bfdcf1b17a60979e2872cdd0922a" desc="Text on a button to close the infobar and never show the infobar in the future">
+    Don&apos;t show again
+  </message>
   <message name="IDS_DEVTOOLS_3f0b6654f9648ab6331823837c2b9f73" desc="Text in the Shortcuts page to explain a keyboard shortcut (step over to the next statement in debugger)">
     Step over
   </message>
@@ -219,9 +222,6 @@
   <message name="IDS_DEVTOOLS_a950da8e902568f9a6879abe4313efe7" desc="Text content of content element">
     Once page is reloaded, <ph name="LOCKED_1">DevTools</ph> will automatically reconnect.
   </message>
-  <message name="IDS_DEVTOOLS_addec426932e71323700afa1911f8f1c" desc="Text on a button to show more info in the infobar">
-    more
-  </message>
   <message name="IDS_DEVTOOLS_b014fff4db17dba07ddb6ea5efafd32e" desc="Text in the Shortcuts page to explain a keyboard shortcut (jump to previous/next in performance profile)">
     Jump to previous/next frame
   </message>
@@ -290,9 +290,6 @@
   </message>
   <message name="IDS_DEVTOOLS_e9947a82726be2fb77368eb27c082402" desc="Placeholder text in Soft Drop Down">
     (no item selected)
-  </message>
-  <message name="IDS_DEVTOOLS_f68d3333dcde01f3ef29184f1bcdf1c5" desc="Text on a button to close the infobar or never show the info">
-    never show
   </message>
   <message name="IDS_DEVTOOLS_f6c46678b34ad4b4c0241c9487a26b59" desc="Text in the Shortcuts page to explain a keyboard shortcut (increment value by a number in Styles pane) ">
     Increment by <ph name="__">$1f<ex>2.4</ex></ph>

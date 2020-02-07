@@ -10,8 +10,12 @@
     flex: auto;
     border-bottom: 1px solid rgb(171, 171, 171);
     flex-direction: column;
-    align-items: stretch;
     position: relative;
+    padding: 1px 6px 1px;
+}
+
+.infobar:focus {
+    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.2) inset;
 }
 
 .infobar-warning {
@@ -25,26 +29,26 @@
 .infobar-main-row {
     display: flex;
     flex-direction: row;
-    flex: auto;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    justify-content: space-between;
-    margin-right: 20px;
+    justify-content: flex-start;
     min-height: 25px;
+}
+
+.infobar-info-container {
+    display: flex;
     align-items: center;
-    padding-left: 4px;
+    flex-grow: 1;
+    flex-wrap: wrap;
 }
 
-.infobar-main-row > * {
-    flex: none;
-    padding: 0 3px;
+.infobar-info-message {
+    display: flex;
+    margin: 5px 0;
 }
 
-.infobar-main-title {
-    flex: auto;
-    overflow: hidden;
-    text-overflow: ellipsis;
+.infobar-info-text {
+    display: flex;
+    align-items: center;
+    margin: 0 4px;
 }
 
 .infobar-details-rows {
@@ -58,21 +62,20 @@
     padding-bottom: 6px;
 }
 
-.close-button {
-    position: absolute;
-    top: 5px;
-    right: 6px;
+.infobar-close-container {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
 }
 
-.infobar-toggle {
-    color: hsl(214, 92%, 50%);
+.infobar-close-container > .infobar-button.link-style {
+    margin: 4px;
+}
+
+.infobar-button {
+    color: #757575;
     cursor: pointer;
-    margin-top: 5px;
-    margin-bottom: 5px;
-}
-
-.infobar-toggle:hover {
-    color: hsl(214, 92%, 30%);
+    padding: 0 4px;
 }
 
 .info-icon {
@@ -88,5 +91,6 @@
 .icon {
     -webkit-mask-size: 18px 18px;
     width: 18px;
-    height: 19px;
+    height: 18px;
+    flex-shrink: 0;
 }

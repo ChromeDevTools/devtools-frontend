@@ -14,33 +14,74 @@ export class Infobar {
   /**
    * @param {!Type} type
    * @param {string} text
+   * @param {!Array<!InfobarAction>=} actions
    * @param {!Common.Settings.Setting=} disableSetting
    */
-  constructor(type, text, disableSetting) {
+  constructor(type, text, actions, disableSetting) {
     this.element = createElementWithClass('div', 'flex-none');
     this._shadowRoot = createShadowRootWithCoreStyles(this.element, 'ui/infobar.css');
     this._contentElement = this._shadowRoot.createChild('div', 'infobar infobar-' + type);
 
     this._mainRow = this._contentElement.createChild('div', 'infobar-main-row');
-    this._mainRow.createChild('div', type + '-icon icon');
-    this._mainRowText = this._mainRow.createChild('div', 'infobar-main-title');
-    this._mainRowText.textContent = text;
     this._detailsRows = this._contentElement.createChild('div', 'infobar-details-rows hidden');
 
-    this._toggleElement =
-        createTextButton(ls`more`, this._onToggleDetails.bind(this), 'infobar-toggle link-style hidden');
-    this._mainRow.appendChild(this._toggleElement);
+    this._infoContainer = this._mainRow.createChild('div', 'infobar-info-container');
+
+    this._infoMessage = this._infoContainer.createChild('div', 'infobar-info-message');
+    this._infoMessage.createChild('div', type + '-icon icon');
+    this._infoText = this._infoMessage.createChild('div', 'infobar-info-text');
+    this._infoText.textContent = text;
+    UI.ARIAUtils.markAsAlert(this._infoText);
+
+    this._actionContainer = this._infoContainer.createChild('div', 'infobar-info-actions');
+    if (actions) {
+      for (const action of actions) {
+        const actionCallback = this._actionCallbackFactory(action);
+        let buttonClass = 'infobar-button';
+        if (action.highlight) {
+          buttonClass += ' primary-button';
+        }
+
+        const button = createTextButton(action.text, actionCallback, buttonClass);
+        this._actionContainer.appendChild(button);
+      }
+    }
 
     /** @type {?Common.Settings.Setting} */
     this._disableSetting = disableSetting || null;
     if (disableSetting) {
-      const disableButton = createTextButton(ls`never show`, this._onDisable.bind(this), 'infobar-toggle link-style');
-      this._mainRow.appendChild(disableButton);
+      const disableButton = createTextButton(ls`Don't show again`, this._onDisable.bind(this), 'infobar-button');
+      this._actionContainer.appendChild(disableButton);
     }
 
-    this._closeButton = this._contentElement.createChild('div', 'close-button', 'dt-close-button');
+    this._closeContainer = this._mainRow.createChild('div', 'infobar-close-container');
+    this._toggleElement =
+        createTextButton(ls`Learn more`, this._onToggleDetails.bind(this), 'link-style devtools-link hidden');
+    this._closeContainer.appendChild(this._toggleElement);
+    this._closeButton = this._closeContainer.createChild('div', 'close-button', 'dt-close-button');
     this._closeButton.setTabbable(true);
+    UI.ARIAUtils.setDescription(this._closeButton, ls`Close`);
     self.onInvokeElement(this._closeButton, this.dispose.bind(this));
+
+    this._contentElement.tabIndex = 0;
+    UI.ARIAUtils.setAccessibleName(this._contentElement, text);
+    this._contentElement.addEventListener('keydown', event => {
+      if (event.keyCode === UI.KeyboardShortcut.Keys.Esc.code) {
+        this.dispose();
+        event.consume();
+        return;
+      }
+
+      if (event.target !== this._contentElement) {
+        return;
+      }
+
+      if (event.key === 'Enter') {
+        this._onToggleDetails();
+        event.consume();
+        return;
+      }
+    });
 
     /** @type {?function()} */
     this._closeCallback = null;
@@ -49,14 +90,15 @@ export class Infobar {
   /**
    * @param {!Type} type
    * @param {string} text
+   * @param {!Array<!InfobarAction>=} actions
    * @param {!Common.Settings.Setting=} disableSetting
    * @return {?Infobar}
    */
-  static create(type, text, disableSetting) {
+  static create(type, text, actions, disableSetting) {
     if (disableSetting && disableSetting.get()) {
       return null;
     }
-    return new Infobar(type, text, disableSetting);
+    return new Infobar(type, text, actions, disableSetting);
   }
 
   dispose() {
@@ -71,7 +113,7 @@ export class Infobar {
    * @param {string} text
    */
   setText(text) {
-    this._mainRowText.textContent = text;
+    this._infoText.textContent = text;
     this._onResize();
   }
 
@@ -87,6 +129,26 @@ export class Infobar {
    */
   setParentView(parentView) {
     this._parentView = parentView;
+  }
+
+  /**
+   * @param {!InfobarAction} action
+   * @returns {!function()}
+   */
+  _actionCallbackFactory(action) {
+    if (!action.delegate) {
+      return action.dismiss ? this.dispose.bind(this) : () => {};
+    }
+
+    if (!action.dismiss) {
+      return action.delegate;
+    }
+
+    return (() => {
+             action.delegate();
+             this.dispose();
+           })
+        .bind(this);
   }
 
   _onResize() {
@@ -118,6 +180,15 @@ export class Infobar {
     return detailsRowMessage;
   }
 }
+
+/** @typedef {{
+ *        text: !string,
+ *        highlight: !boolean,
+ *        delegate: ?function(),
+ *        dismiss: !boolean
+ * }}
+ */
+export let InfobarAction;
 
 /** @enum {string} */
 export const Type = {

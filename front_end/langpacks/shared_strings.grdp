@@ -535,9 +535,6 @@
   <message name="IDS_DEVTOOLS_c9cc8cce247e49bae79f15173ce97354" desc="Text to save something">
     Save
   </message>
-  <message name="IDS_DEVTOOLS_c9deece3e6de26d07ef6409b96f21fd0" desc="Title of Blackboxing settings">
-    Blackboxing
-  </message>
   <message name="IDS_DEVTOOLS_ce82e07fa1f0521f5cee30e368fe2e73" desc="Text that starts with a colon and includes a placeholder">
     : <ph name="AA_NUMBER">$1s<ex>3.0</ex></ph>
   </message>

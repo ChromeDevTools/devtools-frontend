@@ -93,7 +93,6 @@ export class SourcesTextEditor extends TextEditor.CodeMirrorTextEditor.CodeMirro
   attachInfobar(infobar) {
     if (!this._infoBarDiv) {
       this._infoBarDiv = createElementWithClass('div', 'flex-none');
-      UI.ARIAUtils.markAsAlert(this._infoBarDiv);
       this.element.insertBefore(this._infoBarDiv, this.element.firstChild);
     }
     this._infoBarDiv.appendChild(infobar.element);

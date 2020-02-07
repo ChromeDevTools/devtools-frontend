@@ -42,6 +42,9 @@
   <message name="IDS_DEVTOOLS_c745d3ac390f120535d734cd14e2f6aa" desc="Blackbox content scripts title in Framework Blackbox Settings Tab of the Settings">
     Blackbox content scripts (extension scripts in the page)
   </message>
+  <message name="IDS_DEVTOOLS_c9deece3e6de26d07ef6409b96f21fd0" desc="Title of Blackboxing settings">
+    Blackboxing
+  </message>
   <message name="IDS_DEVTOOLS_d0834fcec6337785ee749c8f5464f6f6" desc="Text in Settings Screen of the Settings">
     Preferences
   </message>

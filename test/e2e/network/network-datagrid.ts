@@ -20,7 +20,7 @@ describe('The Network Tab', async () => {
     await resetPages();
   });
 
-  it('shows Last-Modified', async () => {
+  it.only('shows Last-Modified', async () => {
     const {target, frontend} = getBrowserAndPages();
     await navigateToNetworkTab(target, frontend, 'last-modified');
 
@@ -31,8 +31,10 @@ describe('The Network Tab', async () => {
     await click(`[aria-label="Response Headers"]`);
     await click(`[aria-label="Last-Modified, unchecked"]`);
 
-    // Wait for the column to show up
-    await frontend.waitForSelector('.last-modified-column');
+    // Wait for the column to show up and populate its values
+    await frontend.waitForFunction(() => {
+      return document.querySelectorAll('.last-modified-column').length === 3;
+    });
 
     const lastModifiedColumnValues = await frontend.evaluate(() => {
       return Array.from(document.querySelectorAll('.last-modified-column')).map(message => message.textContent);

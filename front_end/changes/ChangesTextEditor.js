@@ -15,7 +15,22 @@ export class ChangesTextEditor extends TextEditor.CodeMirrorTextEditor {
     options.inputStyle = 'devToolsAccessibleDiffTextArea';
     super(options);
     this.codeMirror().setOption('gutters', ['CodeMirror-linenumbers', 'changes-diff-gutter']);
-    this.codeMirror().setOption('extraKeys', {Enter: false, Space: false});
+    this.codeMirror().setOption('extraKeys', {
+      Enter: false,
+      Space: false,
+      Left: function(cm) {
+        const scrollInfo = cm.getScrollInfo();
+        // Left edge check required due to bug where line numbers would disappear when attempting to scroll left when the scrollbar is at the leftmost point.
+        // CodeMirror Issue: https://github.com/codemirror/CodeMirror/issues/6139
+        if (scrollInfo.left > 0) {
+          cm.scrollTo(scrollInfo.left - Math.round(scrollInfo.clientWidth / 6), null);
+        }
+      },
+      Right: function(cm) {
+        const scrollInfo = cm.getScrollInfo();
+        cm.scrollTo(scrollInfo.left + Math.round(scrollInfo.clientWidth / 6), null);
+      }
+    });
   }
 
   /**

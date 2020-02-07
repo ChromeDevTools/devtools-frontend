@@ -71,6 +71,14 @@ try_builder(
   build_numbers=True,
 )
 
+try_builder(
+  name="dtf_linux_experiments",
+  recipe_name="devtools/devtools-frontend",
+  dimensions=dimensions.ubuntu,
+  execution_timeout=2 * time.hour,
+  build_numbers=True,
+)
+
 builder_coverage(
   covered_oss = ["linux", "win64", "mac"],
   buider_factory = try_builder,
@@ -111,7 +119,8 @@ cq_master_builders=[
   'devtools_frontend_mac_rel',
   'devtools_frontend_win64_rel',
   'dtf_presubmit_linux',
-  'dtf_presubmit_win64'
+  'dtf_presubmit_win64',
+  'dtf_linux_experiments',
 ]
 
 cq_master_experiment_builders = [
@@ -119,6 +128,7 @@ cq_master_experiment_builders = [
   # This will make them experiment 100%
   'devtools_frontend_mac_rel',
   'devtools_frontend_win64_rel',
+  'dtf_linux_experiments',
 ]
 
 def experiment_builder(builder):

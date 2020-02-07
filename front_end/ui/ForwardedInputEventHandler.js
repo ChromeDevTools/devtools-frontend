@@ -34,3 +34,5 @@ export class ForwardedInputEventHandler {
     self.UI.context.setFlavor(ForwardedShortcut, null);
   }
 }
+
+new ForwardedInputEventHandler();

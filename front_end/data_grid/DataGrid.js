@@ -227,6 +227,9 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
    */
   setFocusable(focusable) {
     this.element.tabIndex = focusable ? 0 : -1;
+    if (focusable === false) {
+      UI.ARIAUtils.removeRole(this.element);
+    }
   }
 
   /**

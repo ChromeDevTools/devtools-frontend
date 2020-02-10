@@ -35,6 +35,12 @@ export class DatabaseQueryView extends UI.VBox {
     this.element.classList.add('storage-view', 'query', 'monospace');
     this.element.addEventListener('selectstart', this._selectStart.bind(this), false);
 
+    this._queryWrapper = this.element.createChild('div', 'database-query-group-messages');
+    this._queryWrapper.addEventListener('focusin', this._onFocusIn.bind(this));
+    this._queryWrapper.addEventListener('focusout', this._onFocusOut.bind(this));
+    this._queryWrapper.addEventListener('keydown', this._onKeyDown.bind(this));
+    this._queryWrapper.tabIndex = -1;
+
     this._promptContainer = this.element.createChild('div', 'database-query-prompt-container');
     this._promptContainer.appendChild(UI.Icon.create('smallicon-text-prompt', 'prompt-icon'));
     this._promptElement = this._promptContainer.createChild('div');
@@ -46,14 +52,109 @@ export class DatabaseQueryView extends UI.VBox {
     this._proxyElement = this._prompt.attach(this._promptElement);
 
     this.element.addEventListener('click', this._messagesClicked.bind(this), true);
-    this.element.tabIndex = 0;
-    this.element.addEventListener('focus', this._prompt.focus.bind(this._prompt));
+
+    /** @type {!Array<!Element>} */
+    this._queryResults = [];
+    this._virtualSelectedIndex = -1;
   }
 
   _messagesClicked() {
+    this._prompt.focus();
     if (!this._prompt.isCaretInsidePrompt() && !this.element.hasSelection()) {
       this._prompt.moveCaretToEndOfPrompt();
     }
+  }
+
+  /**
+   * @param {!Event} event
+   */
+  _onKeyDown(event) {
+    if (UI.isEditing() || !this._queryResults.length || event.shiftKey) {
+      return;
+    }
+    switch (event.key) {
+      case 'ArrowUp':
+        if (this._virtualSelectedIndex > 0) {
+          this._virtualSelectedIndex--;
+        } else {
+          return;
+        }
+        break;
+      case 'ArrowDown':
+        if (this._virtualSelectedIndex < this._queryResults.length - 1) {
+          this._virtualSelectedIndex++;
+        } else {
+          return;
+        }
+        break;
+      case 'Home':
+        this._virtualSelectedIndex = 0;
+        break;
+      case 'End':
+        this._virtualSelectedIndex = this._queryResults.length - 1;
+        break;
+      default:
+        return;
+    }
+    event.consume(true);
+    this._updateFocusedItem();
+  }
+
+  /**
+   * @param {!Event} event
+   */
+  _onFocusIn(event) {
+    // Make default selection when moving from external (e.g. prompt) to the container.
+    if (this._virtualSelectedIndex === -1 && this._isOutsideViewport(/** @type {?Element} */ (event.relatedTarget)) &&
+        event.target === this._queryWrapper && this._queryResults.length) {
+      this._virtualSelectedIndex = this._queryResults.length - 1;
+    }
+    this._updateFocusedItem();
+  }
+
+  /**
+   * @param {!Event} event
+   */
+  _onFocusOut(event) {
+    // Remove selection when focus moves to external location (e.g. prompt).
+    if (this._isOutsideViewport(/** @type {?Element} */ (event.relatedTarget))) {
+      this._virtualSelectedIndex = -1;
+    }
+    this._updateFocusedItem();
+
+    this._queryWrapper.scrollTop = 10000000;
+  }
+
+  /**
+   * @param {?Element} element
+   * @return {boolean}
+   */
+  _isOutsideViewport(element) {
+    return !!element && !element.isSelfOrDescendant(this._queryWrapper);
+  }
+
+  _updateFocusedItem() {
+    let index = this._virtualSelectedIndex;
+    if (this._queryResults.length && this._virtualSelectedIndex < 0) {
+      index = this._queryResults.length - 1;
+    }
+
+    const selectedElement = index >= 0 ? this._queryResults[index] : null;
+    const changed = this._lastSelectedElement !== selectedElement;
+    const containerHasFocus = this._queryWrapper === this.element.ownerDocument.deepActiveElement();
+
+    if (selectedElement && (changed || containerHasFocus) && this.element.hasFocus()) {
+      if (!selectedElement.hasFocus()) {
+        selectedElement.focus();
+      }
+    }
+
+    if (this._queryResults.length && !this._queryWrapper.hasFocus()) {
+      this._queryWrapper.tabIndex = 0;
+    } else {
+      this._queryWrapper.tabIndex = -1;
+    }
+    this._lastSelectedElement = selectedElement;
   }
 
   /**
@@ -138,6 +239,7 @@ export class DatabaseQueryView extends UI.VBox {
       dataGrid.renderInline();
       dataGrid.autoSizeColumns(5);
       view = dataGrid.asWidget();
+      dataGrid.setFocusable(false);
     }
     this._appendViewQueryResult(trimmedQuery, view);
 
@@ -157,7 +259,8 @@ export class DatabaseQueryView extends UI.VBox {
     } else {
       resultElement.remove();
     }
-    this._promptElement.scrollIntoView(false);
+
+    this._scrollResultIntoView();
   }
 
   /**
@@ -170,6 +273,11 @@ export class DatabaseQueryView extends UI.VBox {
     resultElement.appendChild(UI.Icon.create('smallicon-error', 'prompt-icon'));
     resultElement.createTextChild(errorText);
 
+    this._scrollResultIntoView();
+  }
+
+  _scrollResultIntoView() {
+    this._queryResults[this._queryResults.length - 1].scrollIntoView(false);
     this._promptElement.scrollIntoView(false);
   }
 
@@ -179,8 +287,13 @@ export class DatabaseQueryView extends UI.VBox {
   _appendQueryResult(query) {
     const element = createElement('div');
     element.className = 'database-user-query';
+    element.tabIndex = -1;
+
+    UI.ARIAUtils.setAccessibleName(element, ls`Query: ${query}`);
+    this._queryResults.push(element);
+    this._updateFocusedItem();
+
     element.appendChild(UI.Icon.create('smallicon-user-command', 'prompt-icon'));
-    this.element.insertBefore(element, this._promptContainer);
 
     const commandTextElement = createElement('span');
     commandTextElement.className = 'database-query-text';
@@ -190,6 +303,8 @@ export class DatabaseQueryView extends UI.VBox {
     const resultElement = createElement('div');
     resultElement.className = 'database-query-result';
     element.appendChild(resultElement);
+
+    this._queryWrapper.appendChild(element);
     return resultElement;
   }
 }

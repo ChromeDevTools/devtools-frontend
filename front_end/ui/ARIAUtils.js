@@ -255,6 +255,13 @@ export function hasRole(element) {
 
 /**
  * @param {!Element} element
+ */
+export function removeRole(element) {
+  element.removeAttribute('role');
+}
+
+/**
+ * @param {!Element} element
  * @param {?string} placeholder
  */
 export function setPlaceholder(element, placeholder) {

@@ -1213,51 +1213,6 @@ Promise.prototype.catchException = function(defaultValue) {
 };
 
 /**
- * @param {!Map<number, ?>} other
- * @param {function(!VALUE,?):boolean} isEqual
- * @return {!{removed: !Array<!VALUE>, added: !Array<?>, equal: !Array<!VALUE>}}
- * @this {Map<number, VALUE>}
- */
-Map.prototype.diff = function(other, isEqual) {
-  const leftKeys = this.keysArray();
-  const rightKeys = other.keysArray();
-  leftKeys.sort((a, b) => a - b);
-  rightKeys.sort((a, b) => a - b);
-
-  const removed = [];
-  const added = [];
-  const equal = [];
-  let leftIndex = 0;
-  let rightIndex = 0;
-  while (leftIndex < leftKeys.length && rightIndex < rightKeys.length) {
-    const leftKey = leftKeys[leftIndex];
-    const rightKey = rightKeys[rightIndex];
-    if (leftKey === rightKey && isEqual(this.get(leftKey), other.get(rightKey))) {
-      equal.push(this.get(leftKey));
-      ++leftIndex;
-      ++rightIndex;
-      continue;
-    }
-    if (leftKey <= rightKey) {
-      removed.push(this.get(leftKey));
-      ++leftIndex;
-      continue;
-    }
-    added.push(other.get(rightKey));
-    ++rightIndex;
-  }
-  while (leftIndex < leftKeys.length) {
-    const leftKey = leftKeys[leftIndex++];
-    removed.push(this.get(leftKey));
-  }
-  while (rightIndex < rightKeys.length) {
-    const rightKey = rightKeys[rightIndex++];
-    added.push(other.get(rightKey));
-  }
-  return {added: added, removed: removed, equal: equal};
-};
-
-/**
  * TODO: move into its own module
  * @param {function()} callback
  */

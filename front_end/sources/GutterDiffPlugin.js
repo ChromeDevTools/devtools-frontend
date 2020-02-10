@@ -66,17 +66,6 @@ export class GutterDiffPlugin extends Plugin {
       return;
     }
 
-    /** @type {!Map<number, !GutterDecoration>} */
-    const oldDecorations = new Map();
-    for (let i = 0; i < this._decorations.length; ++i) {
-      const decoration = this._decorations[i];
-      const lineNumber = decoration.lineNumber();
-      if (lineNumber === -1) {
-        continue;
-      }
-      oldDecorations.set(lineNumber, decoration);
-    }
-
     const diff = SourceFrame.SourceCodeDiff.computeDiff(lineDiff);
 
     /** @type {!Map<number, !{lineNumber: number, type: !SourceFrame.SourceCodeDiff.EditType}>} */
@@ -88,13 +77,70 @@ export class GutterDiffPlugin extends Plugin {
       }
     }
 
-    const decorationDiff = oldDecorations.diff(newDecorations, (e1, e2) => e1.type === e2.type);
+    const decorationDiff = this._calculateDecorationsDiff(newDecorations);
     const addedDecorations =
         decorationDiff.added.map(entry => new GutterDecoration(this._textEditor, entry.lineNumber, entry.type));
 
     this._decorations = decorationDiff.equal.concat(addedDecorations);
     this._updateDecorations(decorationDiff.removed, addedDecorations);
     this._decorationsSetForTest(newDecorations);
+  }
+
+  /**
+   * @return {!Map<number, !GutterDecoration>}
+   */
+  _decorationsByLine() {
+    const decorations = new Map();
+    for (const decoration of this._decorations) {
+      const lineNumber = decoration.lineNumber();
+      if (lineNumber !== -1) {
+        decorations.set(lineNumber, decoration);
+      }
+    }
+    return decorations;
+  }
+
+  /**
+   * @param {!Map<number, !{lineNumber: number, type: !SourceFrame.SourceCodeDiff.EditType}>} decorations
+   */
+  _calculateDecorationsDiff(decorations) {
+    const oldDecorations = this._decorationsByLine();
+    const leftKeys = oldDecorations.keysArray();
+    const rightKeys = decorations.keysArray();
+    leftKeys.sort((a, b) => a - b);
+    rightKeys.sort((a, b) => a - b);
+
+    const removed = [];
+    const added = [];
+    const equal = [];
+    let leftIndex = 0;
+    let rightIndex = 0;
+    while (leftIndex < leftKeys.length && rightIndex < rightKeys.length) {
+      const leftKey = leftKeys[leftIndex];
+      const rightKey = rightKeys[rightIndex];
+      const left = oldDecorations.get(leftKey);
+      const right = decorations.get(rightKey);
+      if (leftKey === rightKey && left.type === right.type) {
+        equal.push(left);
+        ++leftIndex;
+        ++rightIndex;
+      } else if (leftKey <= rightKey) {
+        removed.push(left);
+        ++leftIndex;
+      } else {
+        added.push(right);
+        ++rightIndex;
+      }
+    }
+    while (leftIndex < leftKeys.length) {
+      const leftKey = leftKeys[leftIndex++];
+      removed.push(oldDecorations.get(leftKey));
+    }
+    while (rightIndex < rightKeys.length) {
+      const rightKey = rightKeys[rightIndex++];
+      added.push(decorations.get(rightKey));
+    }
+    return {added: added, removed: removed, equal: equal};
   }
 
   /**

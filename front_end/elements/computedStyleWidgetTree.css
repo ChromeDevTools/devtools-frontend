@@ -138,6 +138,8 @@
         forced-color-adjust: none;
         background-color: Highlight;
     }
+    :host-context(.monospace.computed-properties) .tree-outline:not(.hide-selection-when-blurred) li.parent:hover.selected::before,
+    :host-context(.monospace.computed-properties) .tree-outline-disclosure li.parent:hover::before,
     :host-context(.monospace.computed-properties) .tree-outline li:hover .goto-source-icon {
         background-color: HighlightText;
     }

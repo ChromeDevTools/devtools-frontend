@@ -184,9 +184,7 @@ ol.tree-outline:not(.hide-selection-when-blurred) li.selected:focus * {
     }
     ol.tree-outline:not(.hide-selection-when-blurred) li.parent.selected:focus::before,
     .tree-outline.hide-selection-when-blurred .selected:focus[data-keyboard-focus="true"]::before,
-    .tree-outline-disclosure li.parent:hover::before,
-    .tree-outline:not(.hide-selection-when-blurred) li.parent.selected::before,
-    .tree-outline:not(.hide-selection-when-blurred) li.parent:hover.selected::before {
+    .tree-outline:not(.hide-selection-when-blurred) li.parent.selected::before {
         background-color: HighlightText;
     }
     .tree-outline.hide-selection-when-blurred .selected:focus[data-keyboard-focus="true"]:not(.parent)::before {
@@ -201,8 +199,13 @@ ol.tree-outline:not(.hide-selection-when-blurred) li.selected:focus * {
         forced-color-adjust: none;
         color: HighlightText;
     }
+    ol.tree-outline:not(.hide-selection-when-blurred) li.parent:hover .selection,
     ol.tree-outline:not(.hide-selection-when-blurred) li.selected:focus .selection {
         forced-color-adjust: none;
         background-color: Highlight;
+    }
+    .tree-outline:not(.hide-selection-when-blurred) li.selected .leading-icons span {
+        forced-color-adjust: none;
+        background-color: HighlightText !important;
     }
 }

@@ -166,3 +166,10 @@
 .cm-link {color: #00c;}
 
 .cm-error {color: #f00;}
+
+@media (forced-colors: active) {
+    .devtools-link:not(.devtools-link-prevent-click) {
+        forced-color-adjust: none;
+        color: LinkText;
+    }
+}

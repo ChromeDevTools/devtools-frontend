@@ -100,9 +100,10 @@ export class ComputedStyleWidget extends UI.ThrottledWidget {
    * @override
    * @return {!Promise.<?>}
    */
-  doUpdate() {
+  async doUpdate() {
     const promises = [this._computedStyleModel.fetchComputedStyle(), this._fetchMatchedCascade()];
-    return Promise.all(promises).spread(this._innerRebuildUpdate.bind(this));
+    const [nodeStyles, matchedStyles] = await Promise.all(promises);
+    this._innerRebuildUpdate(nodeStyles, matchedStyles);
   }
 
   /**

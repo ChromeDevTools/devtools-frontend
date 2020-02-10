@@ -1242,19 +1242,6 @@ self.setImmediate = function(callback) {
 };
 
 /**
- * @param {function(...?)} callback
- * @return {!Promise.<T>}
- * @template T
- */
-Promise.prototype.spread = function(callback) {
-  return this.then(spreadPromise);
-
-  function spreadPromise(arg) {
-    return callback.apply(null, arg);
-  }
-};
-
-/**
  * @param {T} defaultValue
  * @return {!Promise.<T>}
  * @template T

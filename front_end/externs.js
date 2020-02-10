@@ -920,13 +920,6 @@ const createSearchRegex = function(query, caseSensitive, isRegex) {};
 const createPlainTextSearchRegex = function(query, flags) {};
 
 /**
- * @param {!RegExp} regex
- * @param {string} content
- * @return {number}
- */
-const countRegexMatches = function(regex, content) {};
-
-/**
  * @param {number} spacesCount
  * @return {string}
  */

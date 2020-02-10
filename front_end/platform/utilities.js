@@ -967,24 +967,6 @@ self.createPlainTextSearchRegex = function(query, flags) {
 };
 
 /**
- * @param {!RegExp} regex
- * @param {string} content
- * @return {number}
- */
-self.countRegexMatches = function(regex, content) {
-  let text = content;
-  let result = 0;
-  let match;
-  while (text && (match = regex.exec(text))) {
-    if (match[0].length > 0) {
-      ++result;
-    }
-    text = text.substring(match.index + 1);
-  }
-  return result;
-};
-
-/**
  * @param {number} spacesCount
  * @return {string}
  */

@@ -146,7 +146,11 @@ describe('FormattedContentBuilder', () => {
 
   it('should not cache the identation for more than 20 nesting levels', () => {
     let x = 0;
-    const builder = new FormattedContentBuilder({toString() {return x++;}});
+    const builder = new FormattedContentBuilder({
+      toString() {
+        return x++;
+      },
+    } as unknown as string);
     for (let i = 0; i < 20; i++) {
       builder.increaseNestingLevel();
     }

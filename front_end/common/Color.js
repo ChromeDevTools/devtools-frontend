@@ -535,7 +535,7 @@ export class Color {
   }
 
   /**
-   * @param {?string} format
+   * @param {?string=} format
    * @return {?string}
    */
   asString(format) {

@@ -98,7 +98,7 @@ export class TextRange {
   }
 
   /**
-   * @param {!TextRange} range
+   * @param {!TextRange=} range
    * @return {boolean}
    */
   immediatelyPrecedes(range) {
@@ -109,7 +109,7 @@ export class TextRange {
   }
 
   /**
-   * @param {!TextRange} range
+   * @param {!TextRange=} range
    * @return {boolean}
    */
   immediatelyFollows(range) {

@@ -10,7 +10,7 @@ describe('Throttler class', () => {
   it('is able to schedule a process as soon as possible', () => {
     let result = 'original value';
 
-    function assignVar1() {
+    async function assignVar1() {
       result = 'new value';
     }
 
@@ -26,11 +26,11 @@ describe('Throttler class', () => {
   it('is able to schedule two processes as soon as possible', () => {
     let result = 'original value';
 
-    function assignVar1() {
+    async function assignVar1() {
       result = 'new value 1';
     }
 
-    function assignVar2() {
+    async function assignVar2() {
       result = 'new value 2';
     }
 

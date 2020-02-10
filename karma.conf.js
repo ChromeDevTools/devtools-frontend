@@ -51,17 +51,15 @@ module.exports = function(config) {
     frameworks: ['mocha', 'chai', 'karma-typescript'],
 
     karmaTypescriptConfig: {
+      tsconfig: './tsconfig.json',
       compilerOptions: {
-        target: 'esnext',
-        module: 'esnext',
         typeRoots: external_devtools_frontend ? undefined : [node_modules_path + '@types'],
-        lib: ['esnext', 'dom'],
+        checkJs: false,
         baseUrl: '.',
-        paths: {'/front_end/*': ['front_end/*']}
       },
       coverageOptions: {instrumentation: false},
       bundlerOptions: {resolve: {directories: [node_modules_path]}},
-      exclude: ['scripts']
+      include: {mode: 'replace', values: ['test/unittests/**/*.ts']},
     },
 
     proxies: {
@@ -77,7 +75,10 @@ module.exports = function(config) {
 
     coverageIstanbulInstrumenter: {esModules: true},
 
-    coverageIstanbulReporter: {reports: NO_TEXT_COVERAGE ? ['html', 'json-summary'] : ['text', 'html', 'json-summary'], dir: 'karma-coverage'},
+    coverageIstanbulReporter: {
+      reports: NO_TEXT_COVERAGE ? ['html', 'json-summary'] : ['text', 'html', 'json-summary'],
+      dir: 'karma-coverage'
+    },
 
     singleRun: !IS_DEBUG
   };

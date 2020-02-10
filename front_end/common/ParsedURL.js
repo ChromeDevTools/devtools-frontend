@@ -120,7 +120,7 @@ export class ParsedURL {
 
   /**
    * @param {string} fileURL
-   * @param {boolean} isWindows
+   * @param {boolean=} isWindows
    * @return {string}
    */
   static urlToPlatformPath(fileURL, isWindows) {

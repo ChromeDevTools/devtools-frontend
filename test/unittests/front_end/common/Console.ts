@@ -20,7 +20,7 @@ describe('Console', () => {
   });
 
   it('adds handles messages of all types', () => {
-    const messageTypes = new Map<string, string>([
+    const messageTypes = new Map<Common.Console.MessageLevel, string>([
       ['Info', 'log'],
       ['Warning', 'warn'],
       ['Error', 'error'],
@@ -30,12 +30,14 @@ describe('Console', () => {
       consoleImpl = new Common.Console.Console();
 
       // Dispatch the message of the appropriate type.
+      // @ts-ignore
       consoleImpl[method](type);
 
       // Now read the message back and check it.
       const messages = consoleImpl.messages();
       assert.equal(messages.length, 1);
       assert.equal(messages[0].text, type);
+      // @ts-ignore
       assert.equal(messages[0].level, Common.Console.MessageLevel[type]);
     }
   });

@@ -9,7 +9,7 @@ export class Cookie {
   /**
      * @param {string} name
      * @param {string} value
-     * @param {?Type} type
+     * @param {?Type=} type
      * @param {!Protocol.Network.CookiePriority=} priority
      */
   constructor(name, value, type, priority) {
@@ -70,7 +70,7 @@ export class Cookie {
   }
 
   /**
-     * @return {?Type}
+     * @return {?Type|undefined}
      */
   type() {
     return this._type;

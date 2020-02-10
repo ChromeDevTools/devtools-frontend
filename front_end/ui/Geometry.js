@@ -352,7 +352,7 @@ export class Size {
   }
 
   /**
-   * @param {?Size} size
+   * @param {?Size=} size
    * @return {!Size}
    */
   clipTo(size) {

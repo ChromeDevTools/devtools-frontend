@@ -96,7 +96,7 @@ describe('Utils Object', () => {
   describe('textToWords', () => {
     it('returns the correct result for various inputs', () => {
       const isWordChar = Utils.isWordChar;
-      const words = [];
+      const words: string[] = [];
       const callback = (word: string) => {
         words.push(word);
       };
@@ -226,7 +226,7 @@ describe('BalancedJSONTokenizer', () => {
   });
 
   it('can balance simple patterns', () => {
-    const callbackResults = [];
+    const callbackResults: string[] = [];
     const callback = (str: string) => {
       callbackResults.push(str);
     };
@@ -243,7 +243,7 @@ describe('BalancedJSONTokenizer', () => {
   });
 
   it('can find simple unbalanced patterns', () => {
-    const callbackResults = [];
+    const callbackResults: string[] = [];
     const callback = (str: string) => {
       callbackResults.push(str);
     };
@@ -257,7 +257,7 @@ describe('BalancedJSONTokenizer', () => {
   });
 
   it('can find simple unbalanced quote patterns', () => {
-    const callbackResults = [];
+    const callbackResults: string[] = [];
     const callback = (str: string) => {
       callbackResults.push(str);
     };
@@ -271,7 +271,7 @@ describe('BalancedJSONTokenizer', () => {
   });
 
   it('can find unbalanced patterns that start with }', () => {
-    const callbackResults = [];
+    const callbackResults: string[] = [];
     const callback = (str: string) => {
       callbackResults.push(str);
     };
@@ -296,114 +296,118 @@ describe('BalancedJSONTokenizer', () => {
     it('returns correct results for a range of inputs', () => {
       const filterParser = new FilterParser(['key1', 'key2']);
 
-      let result = filterParser.parse('text');
+      const parse = (text: string) => {
+        return filterParser.parse(text) as {key?: string, text?: string, regex?: RegExp, negative: boolean}[];
+      };
+
+      let result = parse('text');
       assert.deepEqual(result[0], {text: 'text', negative: false}, 'result was incorrect');
 
-      result = filterParser.parse('spaced text');
+      result = parse('spaced text');
       assert.deepEqual(result[0], {text: 'spaced', negative: false}, 'result was incorrect');
       assert.deepEqual(result[1], {text: 'text', negative: false}, 'result was incorrect');
 
-      result = filterParser.parse('-');
+      result = parse('-');
       assert.deepEqual(result[0], {text: '-', negative: false}, 'result was incorrect');
 
-      result = filterParser.parse('-text');
+      result = parse('-text');
       assert.deepEqual(result[0], {text: 'text', negative: true}, 'result was incorrect');
 
-      result = filterParser.parse('//');
+      result = parse('//');
       assert.deepEqual(result[0], {text: '//', negative: false}, 'result was incorrect');
 
-      result = filterParser.parse('/regex/');
+      result = parse('/regex/');
       assert.deepEqual(result[0], {regex: /regex/i, negative: false}, 'result was incorrect');
 
-      result = filterParser.parse('/regex/ /another/');
+      result = parse('/regex/ /another/');
       assert.deepEqual(result[0], {regex: /regex/i, negative: false}, 'result was incorrect');
       assert.deepEqual(result[1], {regex: /another/i, negative: false}, 'result was incorrect');
 
-      result = filterParser.parse('/complex\/regex/');
+      result = parse('/complex\/regex/');
       assert.deepEqual(result[0], {regex: /complex\/regex/i, negative: false}, 'result was incorrect');
 
-      result = filterParser.parse('/regex/ text');
+      result = parse('/regex/ text');
       assert.deepEqual(result[0], {regex: /regex/i, negative: false}, 'result was incorrect');
       assert.deepEqual(result[1], {text: 'text', negative: false}, 'result was incorrect');
 
-      result = filterParser.parse('key1:foo');
+      result = parse('key1:foo');
       assert.deepEqual(result[0], {key: 'key1', text: 'foo', negative: false}, 'result was incorrect');
 
-      result = filterParser.parse('-key1:foo');
+      result = parse('-key1:foo');
       assert.deepEqual(result[0], {key: 'key1', text: 'foo', negative: true}, 'result was incorrect');
 
-      result = filterParser.parse('key1:foo key2:bar');
+      result = parse('key1:foo key2:bar');
       assert.deepEqual(result[0], {key: 'key1', text: 'foo', negative: false}, 'result was incorrect');
       assert.deepEqual(result[1], {key: 'key2', text: 'bar', negative: false}, 'result was incorrect');
 
-      result = filterParser.parse('-key1:foo key2:bar');
+      result = parse('-key1:foo key2:bar');
       assert.deepEqual(result[0], {key: 'key1', text: 'foo', negative: true}, 'result was incorrect');
       assert.deepEqual(result[1], {key: 'key2', text: 'bar', negative: false}, 'result was incorrect');
 
-      result = filterParser.parse('key1:foo -key2:bar');
+      result = parse('key1:foo -key2:bar');
       assert.deepEqual(result[0], {key: 'key1', text: 'foo', negative: false}, 'result was incorrect');
       assert.deepEqual(result[1], {key: 'key2', text: 'bar', negative: true}, 'result was incorrect');
 
-      result = filterParser.parse('-key1:foo -key2:bar');
+      result = parse('-key1:foo -key2:bar');
       assert.deepEqual(result[0], {key: 'key1', text: 'foo', negative: true}, 'result was incorrect');
       assert.deepEqual(result[1], {key: 'key2', text: 'bar', negative: true}, 'result was incorrect');
 
-      result = filterParser.parse('key1:/regex/');
+      result = parse('key1:/regex/');
       assert.deepEqual(result[0], {key: 'key1', text: '/regex/', negative: false}, 'result was incorrect');
 
-      result = filterParser.parse('key1:foo innerText key2:bar');
+      result = parse('key1:foo innerText key2:bar');
       assert.deepEqual(result[0], {key: 'key1', text: 'foo', negative: false}, 'result was incorrect');
       assert.deepEqual(result[1], {text: 'innerText', negative: false}, 'result was incorrect');
       assert.deepEqual(result[2], {key: 'key2', text: 'bar', negative: false}, 'result was incorrect');
 
-      result = filterParser.parse('bar key1 foo');
+      result = parse('bar key1 foo');
       assert.deepEqual(result[0], {text: 'bar', negative: false}, 'result was incorrect');
       assert.deepEqual(result[1], {text: 'key1', negative: false}, 'result was incorrect');
       assert.deepEqual(result[2], {text: 'foo', negative: false}, 'result was incorrect');
 
-      result = filterParser.parse('bar key1:foo');
+      result = parse('bar key1:foo');
       assert.deepEqual(result[0], {text: 'bar', negative: false}, 'result was incorrect');
       assert.deepEqual(result[1], {key: 'key1', text: 'foo', negative: false}, 'result was incorrect');
 
-      result = filterParser.parse('bar key1:foo baz');
+      result = parse('bar key1:foo baz');
       assert.deepEqual(result[0], {text: 'bar', negative: false}, 'result was incorrect');
       assert.deepEqual(result[1], {key: 'key1', text: 'foo', negative: false}, 'result was incorrect');
       assert.deepEqual(result[2], {text: 'baz', negative: false}, 'result was incorrect');
 
-      result = filterParser.parse('bar key1:foo yek:roo baz');
+      result = parse('bar key1:foo yek:roo baz');
       assert.deepEqual(result[0], {text: 'bar', negative: false}, 'result was incorrect');
       assert.deepEqual(result[1], {key: 'key1', text: 'foo', negative: false}, 'result was incorrect');
       assert.deepEqual(result[2], {text: 'yek:roo', negative: false}, 'result was incorrect');
       assert.deepEqual(result[3], {text: 'baz', negative: false}, 'result was incorrect');
 
-      result = filterParser.parse('bar key1:foo -yek:roo baz');
+      result = parse('bar key1:foo -yek:roo baz');
       assert.deepEqual(result[0], {text: 'bar', negative: false}, 'result was incorrect');
       assert.deepEqual(result[1], {key: 'key1', text: 'foo', negative: false}, 'result was incorrect');
       assert.deepEqual(result[2], {text: 'yek:roo', negative: true}, 'result was incorrect');
       assert.deepEqual(result[3], {text: 'baz', negative: false}, 'result was incorrect');
 
-      result = filterParser.parse('bar baz key1:foo goo zoo');
+      result = parse('bar baz key1:foo goo zoo');
       assert.deepEqual(result[0], {text: 'bar', negative: false}, 'result was incorrect');
       assert.deepEqual(result[1], {text: 'baz', negative: false}, 'result was incorrect');
       assert.deepEqual(result[2], {key: 'key1', text: 'foo', negative: false}, 'result was incorrect');
       assert.deepEqual(result[3], {text: 'goo', negative: false}, 'result was incorrect');
       assert.deepEqual(result[4], {text: 'zoo', negative: false}, 'result was incorrect');
 
-      result = filterParser.parse('bar key1:key1:foo');
+      result = parse('bar key1:key1:foo');
       assert.deepEqual(result[0], {text: 'bar', negative: false}, 'result was incorrect');
       assert.deepEqual(result[1], {key: 'key1', text: 'key1:foo', negative: false}, 'result was incorrect');
 
-      result = filterParser.parse('bar :key1:foo baz');
+      result = parse('bar :key1:foo baz');
       assert.deepEqual(result[0], {text: 'bar', negative: false}, 'result was incorrect');
       assert.deepEqual(result[1], {text: ':key1:foo', negative: false}, 'result was incorrect');
       assert.deepEqual(result[2], {text: 'baz', negative: false}, 'result was incorrect');
 
-      result = filterParser.parse('bar -:key1:foo baz');
+      result = parse('bar -:key1:foo baz');
       assert.deepEqual(result[0], {text: 'bar', negative: false}, 'result was incorrect');
       assert.deepEqual(result[1], {text: '-:key1:foo', negative: false}, 'result was incorrect');
       assert.deepEqual(result[2], {text: 'baz', negative: false}, 'result was incorrect');
 
-      result = filterParser.parse('bar key1:-foo baz');
+      result = parse('bar key1:-foo baz');
       assert.deepEqual(result[0], {text: 'bar', negative: false}, 'result was incorrect');
       assert.deepEqual(result[1], {key: 'key1', text: '-foo', negative: false}, 'result was incorrect');
       assert.deepEqual(result[2], {text: 'baz', negative: false}, 'result was incorrect');
@@ -430,7 +434,7 @@ describe('BalancedJSONTokenizer', () => {
   });
 
   it('can balance simple patterns', () => {
-    const callbackResults = [];
+    const callbackResults: string[] = [];
     const callback = (str: string) => {
       callbackResults.push(str);
     };
@@ -447,7 +451,7 @@ describe('BalancedJSONTokenizer', () => {
   });
 
   it('can find simple unbalanced patterns', () => {
-    const callbackResults = [];
+    const callbackResults: string[] = [];
     const callback = (str: string) => {
       callbackResults.push(str);
     };
@@ -461,7 +465,7 @@ describe('BalancedJSONTokenizer', () => {
   });
 
   it('can find simple unbalanced quote patterns', () => {
-    const callbackResults = [];
+    const callbackResults: string[] = [];
     const callback = (str: string) => {
       callbackResults.push(str);
     };
@@ -475,7 +479,7 @@ describe('BalancedJSONTokenizer', () => {
   });
 
   it('can find unbalanced patterns that start with }', () => {
-    const callbackResults = [];
+    const callbackResults: string[] = [];
     const callback = (str: string) => {
       callbackResults.push(str);
     };
@@ -489,7 +493,7 @@ describe('BalancedJSONTokenizer', () => {
   });
 
   it('can find unbalanced patterns that start with ]', () => {
-    const callbackResults = [];
+    const callbackResults: string[] = [];
     const callback = (str: string) => {
       callbackResults.push(str);
     };

@@ -47,6 +47,10 @@ class MockProgressIndicator implements Progress {
     this.title = title;
   }
 
+  worked(worked: number) {
+    this.totalWork += worked;
+  }
+
   // Test methods.
   cancel() {
     this.isCanceledInternal = true;

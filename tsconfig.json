@@ -9,6 +9,8 @@
     "checkJs": true,
     "allowJs": true,
 
+    "noEmitOnError": true,
+
     "lib": [
       "esnext",
       "dom"

@@ -6,7 +6,14 @@ const { assert } = chai;
 
 import { TextRange } from '/front_end/text_utils/TextRange.js';
 
-function assertIsTextRangeAndEqualsRange(range, expectedRange, description) {
+interface ExpectedTextRange {
+  startLine: number;
+  startColumn: number;
+  endLine: number;
+  endColumn: number;
+}
+
+function assertIsTextRangeAndEqualsRange(range: TextRange, expectedRange: ExpectedTextRange, description: string) {
   const prefix = description.length ? `${description}, but ` : ``;
   assert.isTrue(range instanceof TextRange, `${prefix}range is not a TextRange`);
   assert.equal(range.startLine, expectedRange.startLine, `${prefix}range's startLine differs from expectation`);
@@ -15,7 +22,7 @@ function assertIsTextRangeAndEqualsRange(range, expectedRange, description) {
   assert.equal(range.endColumn, expectedRange.endColumn, `${prefix}range's endColumn differs from expectation`);
 }
 
-function assertIsUnitTextRange(range, line, column, description) {
+function assertIsUnitTextRange(range: TextRange, line: number, column: number, description: string) {
   const prefix = description.length ? `${description}, but ` : ``;
   assert.isTrue(range instanceof TextRange, `${prefix}range is not a TextRange`);
   assert.equal(range.startLine, range.endLine, `${prefix}the range is not a unit range: start/end lines differ`);
@@ -48,7 +55,7 @@ describe(`TextRange`, () => {
     const range = { startLine: 1, startColumn: 2, endLine: 3, endColumn: 4 };
     const textRange = TextRange.fromObject(range);
     assertIsTextRangeAndEqualsRange(textRange, range, `deserializing should preserve the range`);
-    const serializedRange = textRange.serializeToObject(textRange);
+    const serializedRange = textRange.serializeToObject();
     const deserializedTextRange = TextRange.fromObject(serializedRange);
     assertIsTextRangeAndEqualsRange(deserializedTextRange, range, `deserializing should preserve the range`);
   });
@@ -295,8 +302,8 @@ describe(`TextRange`, () => {
   });
 
   describe(`rebaseAfterTextEdit()`, () => {
-    let originalRange;
-    let editedRange;
+    let originalRange: TextRange;
+    let editedRange: TextRange;
 
     beforeEach(() => {
       originalRange = TextRange.fromObject({ startLine: 1, startColumn: 2, endLine: 3, endColumn: 4 });

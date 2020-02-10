@@ -65,7 +65,7 @@ export class ObjectWrapper {
 
   /**
    * @override
-   * @param {symbol} eventType
+   * @param {string|symbol} eventType
    * @return {!Promise<*>}
    */
   once(eventType) {

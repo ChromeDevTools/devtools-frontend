@@ -191,7 +191,7 @@ export class SubProgress {
  */
 export class ProgressProxy {
   /**
-   * @param {?Progress} delegate
+   * @param {?Progress=} delegate
    * @param {function()=} doneCallback
    */
   constructor(delegate, doneCallback) {

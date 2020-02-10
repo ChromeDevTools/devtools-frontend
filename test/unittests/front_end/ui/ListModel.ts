@@ -5,7 +5,7 @@
 const {assert} = chai;
 
 import '/front_end/common/common-legacy.js';
-import {ListModel} from '/front_end/ui/ListModel.js';
+import {ListModel, Events} from '/front_end/ui/ListModel.js';
 
 describe('ListModel', () => {
   it('can be instantiated correctly without a list of items', () => {
@@ -62,8 +62,8 @@ describe('ListModel', () => {
 
   it('fires an event when elements are replaced', () => {
     const model = new ListModel([0, 1, 2]);
-    let eventData;
-    model.addEventListener(ListModel.Events.ItemsReplaced, event => {
+    let eventData: any;
+    model.addEventListener(Events.ItemsReplaced, (event: {data: any}) => {
       eventData = event.data;
     });
     model.replaceRange(0, 1, [5, 6, 7]);

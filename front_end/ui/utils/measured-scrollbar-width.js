@@ -6,7 +6,7 @@
 let _measuredScrollbarWidth;
 
 /**
- * @param {?Document} document
+ * @param {?Document=} document
  * @return {number}
  */
 export function measuredScrollbarWidth(document) {

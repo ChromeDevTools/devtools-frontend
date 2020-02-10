@@ -32,7 +32,7 @@ export class EventTarget {
   }
 
   /**
-   * @param {symbol} eventType
+   * @param {string|symbol} eventType
    * @return {!Promise<*>}
    */
   once(eventType) {

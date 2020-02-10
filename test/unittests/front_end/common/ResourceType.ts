@@ -117,7 +117,7 @@ describe('ResourceType class', () => {
   });
 
   it('is able to return a resource type from a URL that contains a mapped extension', () => {
-    const result = ResourceType.fromURL('http://www.example.com/test/testFile.js');
+    const result = ResourceType.fromURL('http://www.example.com/test/testFile.js')!;
     assert.instanceOf(result, ResourceType, 'result type is incorrect');
     assert.equal(result.name(), 'script', 'name was not set correctly');
     assert.equal(result.title(), 'Script', 'title was not set correctly');
@@ -132,7 +132,7 @@ describe('ResourceType class', () => {
   });
 
   it('is able to return a resource type from a mapped name', () => {
-    const result = ResourceType.fromName('script');
+    const result = ResourceType.fromName('script')!;
     assert.instanceOf(result, ResourceType, 'result type is incorrect');
     assert.equal(result.name(), 'script', 'name was not set correctly');
     assert.equal(result.title(), 'Script', 'title was not set correctly');

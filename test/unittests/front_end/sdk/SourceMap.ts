@@ -66,19 +66,19 @@ describe('TextSourceMap', () => {
   });
 
   function assertMapping(
-      actual: SourceMapEntry, expectedSourceURL: string, expectedSourceLineNumber: number,
-      expectedSourceColumnNumber: number) {
+      actual: SourceMapEntry|null, expectedSourceURL: string|undefined, expectedSourceLineNumber: number|undefined,
+      expectedSourceColumnNumber: number|undefined) {
     assert.isNotNull(actual, 'expected SourceMapEntry to be present');
-    assert.equal(actual.sourceURL, expectedSourceURL, 'unexpected source URL');
-    assert.equal(actual.sourceLineNumber, expectedSourceLineNumber, 'unexpected source line number');
-    assert.equal(actual.sourceColumnNumber, expectedSourceColumnNumber, 'unexpected source column number');
+    assert.equal(actual!.sourceURL, expectedSourceURL, 'unexpected source URL');
+    assert.equal(actual!.sourceLineNumber, expectedSourceLineNumber, 'unexpected source line number');
+    assert.equal(actual!.sourceColumnNumber, expectedSourceColumnNumber, 'unexpected source column number');
   }
 
   function assertReverseMapping(
-      actual: SourceMapEntry, expectedCompiledLineNumber: number, expectedCompiledColumnNumber: number) {
+      actual: SourceMapEntry|null, expectedCompiledLineNumber: number, expectedCompiledColumnNumber: number) {
     assert.isNotNull(actual, 'expected SourceMapEntry to be present');
-    assert.equal(actual.lineNumber, expectedCompiledLineNumber, 'unexpected compiled line number');
-    assert.equal(actual.columnNumber, expectedCompiledColumnNumber, 'unexpected compiled column number');
+    assert.equal(actual!.lineNumber, expectedCompiledLineNumber, 'unexpected compiled line number');
+    assert.equal(actual!.columnNumber, expectedCompiledColumnNumber, 'unexpected compiled column number');
   }
 
   // FIXME(szuend): The following tests are a straight-up port from a corresponding layout test.
@@ -105,8 +105,13 @@ describe('TextSourceMap', () => {
           foo
     */
     const mappingPayload = {
-      'mappings': 'AAASA,QAAAA,IAAG,CAACC,CAAD,CAAaC,CAAb,CACZ,CACI,MAAOD,EAAP,CAAoBC,CADxB,CAIA,IAAIC,OAAS;A',
-      'sources': ['example.js'],
+      mappings: 'AAASA,QAAAA,IAAG,CAACC,CAAD,CAAaC,CAAb,CACZ,CACI,MAAOD,EAAP,CAAoBC,CADxB,CAIA,IAAIC,OAAS;A',
+      sources: ['example.js'],
+      version: 1,
+      file: undefined,
+      sections: undefined,
+      sourceRoot: undefined,
+      names: undefined,
     };
     const sourceMap = new TextSourceMap('compiled.js', 'source-map.json', mappingPayload);
 
@@ -118,40 +123,84 @@ describe('TextSourceMap', () => {
     assertMapping(sourceMap.findEntry(0, 27), 'example.js', 2, 24);
     assertMapping(sourceMap.findEntry(1, 0), undefined, undefined, undefined);
 
-    assertReverseMapping(sourceMap.sourceLineMapping('example.js', 0), 0, 0);
-    assertReverseMapping(sourceMap.sourceLineMapping('example.js', 1), 0, 17);
-    assertReverseMapping(sourceMap.sourceLineMapping('example.js', 2), 0, 18);
-    assert.isNull(sourceMap.sourceLineMapping('example.js', 4), 'unexpected source mapping for line 4');
-    assertReverseMapping(sourceMap.sourceLineMapping('example.js', 5), 0, 29);
+    assertReverseMapping(sourceMap.sourceLineMapping('example.js', 0, 0), 0, 0);
+    assertReverseMapping(sourceMap.sourceLineMapping('example.js', 1, 0), 0, 17);
+    assertReverseMapping(sourceMap.sourceLineMapping('example.js', 2, 0), 0, 18);
+    assert.isNull(sourceMap.sourceLineMapping('example.js', 4, 0), 'unexpected source mapping for line 4');
+    assertReverseMapping(sourceMap.sourceLineMapping('example.js', 5, 0), 0, 29);
   });
 
   it('can parse source maps with segments that contain no mapping information', () => {
-    const mappingPayload = {'mappings': 'AAAA,C,CAAE;', 'sources': ['example.js']};
+    const mappingPayload = {
+      mappings: 'AAAA,C,CAAE;',
+      sources: ['example.js'],
+      version: 1,
+      file: undefined,
+      sections: undefined,
+      sourceRoot: undefined,
+      names: undefined,
+    };
     const sourceMap = new TextSourceMap('compiled.js', 'source-map.json', mappingPayload);
 
     assertMapping(sourceMap.findEntry(0, 0), 'example.js', 0, 0);
     assertMapping(sourceMap.findEntry(0, 2), 'example.js', 0, 2);
 
-    const emptyEntry = sourceMap.findEntry(0, 1);
+    const emptyEntry = sourceMap.findEntry(0, 1)!;
     assert.isUndefined(emptyEntry.sourceURL, 'unexpected url present for empty segment');
     assert.isUndefined(emptyEntry.sourceLineNumber, 'unexpected source line number for empty segment');
     assert.isUndefined(emptyEntry.sourceColumnNumber, 'unexpected source line number for empty segment');
   });
 
   it('can parse source maps with empty lines', () => {
-    const mappingPayload = {'mappings': 'AAAA;;;CACA', 'sources': ['example.js']};
+    const mappingPayload = {
+      mappings: 'AAAA;;;CACA',
+      sources: ['example.js'],
+      version: 1,
+      file: undefined,
+      sections: undefined,
+      sourceRoot: undefined,
+      names: undefined,
+    };
     const sourceMap = new TextSourceMap('compiled.js', 'source-map.json', mappingPayload);
 
     assertMapping(sourceMap.findEntry(0, 0), 'example.js', 0, 0);
-    assertReverseMapping(sourceMap.sourceLineMapping('example.js', 1), 3, 1);
+    assertReverseMapping(sourceMap.sourceLineMapping('example.js', 1, 0), 3, 1);
   });
 
   it('can parse the multiple sections format', () => {
     const mappingPayload = {
-      'sections': [
-        {'offset': {'line': 0, 'column': 0}, 'map': {'mappings': 'AAAA,CAEC', 'sources': ['source1.js', 'source2.js']}},
-        {'offset': {'line': 2, 'column': 10}, 'map': {'mappings': 'AAAA,CAEC', 'sources': ['source2.js']}},
+      mappings: '',
+      sources: [],
+      sections: [
+        {
+          offset: {line: 0, 'column': 0},
+          map: {
+            mappings: 'AAAA,CAEC',
+            sources: ['source1.js', 'source2.js'],
+            version: 1,
+            file: undefined,
+            sections: undefined,
+            sourceRoot: undefined,
+            names: undefined,
+          },
+        },
+        {
+          offset: {line: 2, 'column': 10},
+          map: {
+            mappings: 'AAAA,CAEC',
+            sources: ['source2.js'],
+            version: 1,
+            file: undefined,
+            sections: undefined,
+            sourceRoot: undefined,
+            names: undefined,
+          },
+        },
       ],
+      version: 1,
+      file: undefined,
+      sourceRoot: undefined,
+      names: undefined,
     };
     const sourceMap = new TextSourceMap('compiled.js', 'source-map.json', mappingPayload);
 

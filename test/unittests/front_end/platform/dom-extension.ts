@@ -14,21 +14,21 @@ declare global {
     }
 }
 
-function createSlot(parent, name) {
-    const slot = parent.createChild('slot');
-    if (name) {
-      slot.name = name;
-    }
-    return slot;
+function createSlot(parent: HTMLElement, name?: string) {
+  const slot = parent.createChild('slot') as HTMLSlotElement;
+  if (name) {
+    slot.name = name;
+  }
+  return slot;
 }
 
-function createChild(parent, tagName, name, text = '') {
-    const child = parent.createChild(tagName, name);
-    if (name) {
-      child.slot = name;
-    }
-    child.textContent = text;
-    return child;
+function createChild(parent: HTMLElement, tagName: string, name?: string, text = '') {
+  const child = parent.createChild(tagName, name);
+  if (name) {
+    child.slot = name;
+  }
+  child.textContent = text;
+  return child;
 }
 
 
@@ -144,7 +144,7 @@ describe('DataGrid', () => {
     const shadow1Content = createElementWithClass('div', 'shadow-component1');
     shadow1.appendChild(shadow1Content);
     createSlot(shadow1Content, 'component1-content');
-    createSlot(shadow1Content, null);
+    createSlot(shadow1Content);
     const component2 = shadow1Content.createChild('div', 'component2');
     const shadow2 = component2.attachShadow({mode: 'open'});
     createSlot(component2, 'component2-content');
@@ -153,7 +153,7 @@ describe('DataGrid', () => {
     shadow2.appendChild(shadow2Content);
     const midDiv = createChild(shadow2Content, 'div', 'mid-div');
     createChild(midDiv, 'div', undefined, 'component2-text');
-    createSlot(midDiv, null);
+    createSlot(midDiv);
     createSlot(midDiv, 'component2-content');
 
     // Now we have:

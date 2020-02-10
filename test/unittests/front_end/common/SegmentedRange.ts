@@ -24,7 +24,7 @@ describe('Segment', () => {
 describe('SegmentedRange', () => {
   let segmentedRange: Common.SegmentedRange.SegmentedRange;
 
-  function mergeSegments(first, second) {
+  function mergeSegments(first: Common.SegmentedRange.Segment, second: Common.SegmentedRange.Segment) {
     const inOrder = first.end >= second.begin;
     const matchingData = first.data === second.data;
     return inOrder && matchingData ? first : null;
@@ -35,9 +35,10 @@ describe('SegmentedRange', () => {
   });
 
   it('handles single ranges', () => {
-    segmentedRange.append(new Common.SegmentedRange.Segment(0, 1, 'A'));
+    const segment = new Common.SegmentedRange.Segment(0, 1, 'A');
+    segmentedRange.append(segment);
 
-    assert.deepEqual(segmentedRange.segments(), [{ begin: 0, end: 1, data: 'A' }]);
+    assert.deepEqual(segmentedRange.segments(), [segment]);
   });
 
   it('handles two adjacent ranges', () => {
@@ -47,17 +48,19 @@ describe('SegmentedRange', () => {
     segmentedRange.append(segmentA);
     segmentedRange.append(segmentB);
 
-    assert.deepEqual(segmentedRange.segments(), [{ begin: 1, end: 2, data: 'A' }, { begin: 2, end: 3, data: 'B' }]);
+    assert.deepEqual(segmentedRange.segments(), [segmentA, segmentB]);
   });
 
   it('handles two overlapping mergeable ranges', () => {
     const segmentA = new Common.SegmentedRange.Segment(1, 2, 'A');
     const segmentB = new Common.SegmentedRange.Segment(1.5, 3, 'A');
 
+
     segmentedRange.append(segmentA);
     segmentedRange.append(segmentB);
 
-    assert.deepEqual(segmentedRange.segments(), [{ begin: 1, end: 3, data: 'A' }]);
+    const expectedSegment = new Common.SegmentedRange.Segment(1, 3, 'A');
+    assert.deepEqual(segmentedRange.segments(), [expectedSegment]);
   });
 
   it('handles multiple overlapping mergeable ranges', () => {
@@ -69,7 +72,8 @@ describe('SegmentedRange', () => {
     segmentedRange.append(segmentB);
     segmentedRange.append(segmentC);
 
-    assert.deepEqual(segmentedRange.segments(), [{ begin: 1, end: 5, data: 'A' }]);
+    const expectedSegment = new Common.SegmentedRange.Segment(1, 5, 'A');
+    assert.deepEqual(segmentedRange.segments(), [expectedSegment]);
   });
 
   it('handles multiple overlapping non-mergeable ranges', () => {
@@ -81,8 +85,12 @@ describe('SegmentedRange', () => {
     segmentedRange.append(segmentB);
     segmentedRange.append(segmentC);
 
-    assert.deepEqual(segmentedRange.segments(), [{ begin: 1, end: 1.5, data: 'A' }, { begin: 1.5, end: 3.5, data: 'B' },
-        { begin: 3.5, end: 5, data: 'A' }]);
+    const expectedSegments = [
+      new Common.SegmentedRange.Segment(1, 1.5, 'A'),
+      new Common.SegmentedRange.Segment(1.5, 3.5, 'B'),
+      new Common.SegmentedRange.Segment(3.5, 5, 'A'),
+    ];
+    assert.deepEqual(segmentedRange.segments(), expectedSegments);
   });
 
   it('handles two overlapping non-mergeable ranges', () => {
@@ -92,7 +100,11 @@ describe('SegmentedRange', () => {
     segmentedRange.append(segmentA);
     segmentedRange.append(segmentB);
 
-    assert.deepEqual(segmentedRange.segments(), [{ begin: 1, end: 1.5, data: 'A' }, { begin: 1.5, end: 3, data: 'B' }]);
+    const expectedSegments = [
+      new Common.SegmentedRange.Segment(1, 1.5, 'A'),
+      new Common.SegmentedRange.Segment(1.5, 3, 'B'),
+    ];
+    assert.deepEqual(segmentedRange.segments(), expectedSegments);
   });
 
   it('handles nested, mergeable ranges', () => {
@@ -102,7 +114,8 @@ describe('SegmentedRange', () => {
     segmentedRange.append(segmentA);
     segmentedRange.append(segmentB);
 
-    assert.deepEqual(segmentedRange.segments(), [{ begin: 0, end: 4, data: 'A' }]);
+    const expectedSegment = new Common.SegmentedRange.Segment(0, 4, 'A');
+    assert.deepEqual(segmentedRange.segments(), [expectedSegment]);
   });
 
   it('handles nested, non-mergeable ranges', () => {
@@ -112,8 +125,12 @@ describe('SegmentedRange', () => {
     segmentedRange.append(segmentA);
     segmentedRange.append(segmentB);
 
-    assert.deepEqual(segmentedRange.segments(), [{ begin: 0, end: 2, data: 'A' }, { begin: 2, end: 3, data: 'B' },
-        { begin: 3, end: 4, data: 'A' }]);
+    const expectedSegments = [
+      new Common.SegmentedRange.Segment(0, 2, 'A'),
+      new Common.SegmentedRange.Segment(2, 3, 'B'),
+      new Common.SegmentedRange.Segment(3, 4, 'A'),
+    ];
+    assert.deepEqual(segmentedRange.segments(), expectedSegments);
   });
 
   it('handles out-of-order, mergeable ranges', () => {
@@ -125,7 +142,8 @@ describe('SegmentedRange', () => {
     segmentedRange.append(segmentB);
     segmentedRange.append(segmentC);
 
-    assert.deepEqual(segmentedRange.segments(), [{ begin: 0, end: 5, data: 'A' }]);
+    const expectedSegment = new Common.SegmentedRange.Segment(0, 5, 'A');
+    assert.deepEqual(segmentedRange.segments(), [expectedSegment]);
   });
 
   it('handles out-of-order, non-mergeable ranges', () => {
@@ -137,8 +155,12 @@ describe('SegmentedRange', () => {
     segmentedRange.append(segmentB);
     segmentedRange.append(segmentC);
 
-    assert.deepEqual(segmentedRange.segments(), [{ begin: 0, end: 2, data: 'A' }, { begin: 2, end: 3, data: 'B' },
-        { begin: 3, end: 5, data: 'A' }]);
+    const expectedSegments = [
+      new Common.SegmentedRange.Segment(0, 2, 'A'),
+      new Common.SegmentedRange.Segment(2, 3, 'B'),
+      new Common.SegmentedRange.Segment(3, 5, 'A'),
+    ];
+    assert.deepEqual(segmentedRange.segments(), expectedSegments);
   });
 
   it('handles one segment consuming many mergeable ranges', () => {
@@ -156,7 +178,11 @@ describe('SegmentedRange', () => {
     segmentedRange.append(segmentD);
     segmentedRange.append(segmentE);
 
-    assert.deepEqual(segmentedRange.segments(), [{ begin: 0, end: 1, data: 'A' }, { begin: 2, end: 7, data: 'A' }]);
+    const expectedSegments = [
+      new Common.SegmentedRange.Segment(0, 1, 'A'),
+      new Common.SegmentedRange.Segment(2, 7, 'A'),
+    ];
+    assert.deepEqual(segmentedRange.segments(), expectedSegments);
   });
 
   it('handles one segment consuming many non-mergeable ranges', () => {
@@ -174,7 +200,11 @@ describe('SegmentedRange', () => {
     segmentedRange.append(segmentD);
     segmentedRange.append(segmentE);
 
-    assert.deepEqual(segmentedRange.segments(), [{ begin: 0, end: 1, data: 'A' }, { begin: 2, end: 6, data: 'B' },
-        { begin: 6, end: 7, data: 'A' }]);
+    const expectedSegments = [
+      new Common.SegmentedRange.Segment(0, 1, 'A'),
+      new Common.SegmentedRange.Segment(2, 6, 'B'),
+      new Common.SegmentedRange.Segment(6, 7, 'A'),
+    ];
+    assert.deepEqual(segmentedRange.segments(), expectedSegments);
   });
 });

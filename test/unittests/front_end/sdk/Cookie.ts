@@ -153,7 +153,7 @@ describe('Cookie', () => {
     const now = new Date();
     const expires = Math.floor(now.getTime()) + 3600 * 1000;
     cookie.addAttribute('Max-Age', '3600');
-    assert.equal(cookie.expiresDate(now).toISOString(), new Date(expires).toISOString());
+    assert.equal(cookie.expiresDate(now)!.toISOString(), new Date(expires).toISOString());
   });
 
   it('can calculate the expiration date for cookies with expires attribute', () => {
@@ -161,6 +161,6 @@ describe('Cookie', () => {
     const now = new Date();
     const expires = Math.floor(now.getTime()) + 3600 * 1000;
     cookie.addAttribute('Expires', expires);
-    assert.equal(cookie.expiresDate(now).toISOString(), new Date(expires).toISOString());
+    assert.equal(cookie.expiresDate(now)!.toISOString(), new Date(expires).toISOString());
   });
 });

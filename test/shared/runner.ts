@@ -45,11 +45,16 @@ process.on('SIGTERM', interruptionHandler);
 process.on('uncaughtException', interruptionHandler);
 process.stdin.resume();
 
+if (!testListPath) {
+  throw new Error(`Must specify a list of tests in the "TEST_LIST" environment variable.`);
+}
+
+const launchArgs = [`--remote-debugging-port=${envPort}`];
+
 // 1. Launch Chromium.
 const opts: puppeteer.LaunchOptions = {
   headless,
   executablePath: envChromeBinary,
-  args: [`--remote-debugging-port=${envPort}`],
   defaultViewport: null,
 };
 
@@ -58,14 +63,16 @@ if (headless) {
   opts.defaultViewport = {width, height};
 }
 else {
-  opts.args.push(`--window-size=${width},${height}`);
+  launchArgs.push(`--window-size=${width},${height}`);
 }
+
+opts.args = launchArgs;
 
 const launchedBrowser = puppeteer.launch(opts);
 const pages: puppeteer.Page[] = [];
 
 // 2. Start DevTools hosted mode.
-function handleHostedModeError(data) {
+function handleHostedModeError(data: Error) {
   console.log('Hosted mode server:');
   console.log(data.toString());
   interruptionHandler();
@@ -78,6 +85,11 @@ const {execPath} = process;
 const hostedModeServer = spawn(execPath, [serverScriptPath], { cwd, shell: true, detached: true });
 hostedModeServer.on('error', handleHostedModeError);
 hostedModeServer.stderr.on('data', handleHostedModeError);
+
+interface DevToolsTarget {
+  url: string;
+  id: string;
+}
 
 // 3. Spin up the test environment
 (async function() {
@@ -96,8 +108,8 @@ hostedModeServer.stderr.on('data', handleHostedModeError);
     // Find the appropriate item to inspect the target page.
     const listing = await devtools.$('pre');
     const json = await devtools.evaluate(listing => listing.textContent, listing);
-    const targets = JSON.parse(json);
-    const {id} = targets.find((target) => target.url === blankPage);
+    const targets: DevToolsTarget[] = JSON.parse(json);
+    const {id} = targets.find((target) => target.url === blankPage)!;
     await devtools.close();
 
     // Connect to the DevTools frontend.
@@ -115,6 +127,7 @@ hostedModeServer.stderr.on('data', handleHostedModeError);
 
       await frontend.evaluate((enabledExperiments) => {
         for (const experiment of enabledExperiments) {
+          // @ts-ignore
           globalThis.Root.Runtime.experiments.setEnabled(experiment, true);
         }
       }, enabledExperiments);
@@ -167,7 +180,7 @@ async function waitForInput() {
 }
 
 async function runTests() {
-  const {testList} = await import(testListPath);
+  const {testList} = await import(testListPath!);
   const shuffledTests = shuffleTestFiles(testList);
 
   return new Promise((resolve) => {
@@ -203,11 +216,11 @@ function shuffleTestFiles(files: string[]) {
     return files;
   }
 
-  const swap = (arr, a, b) => {
+  const swap = (arr: string[], a: number, b: number) => {
     const temp = arr[a];
     arr[a] = arr[b];
     arr[b] = temp;
-  }
+  };
 
   for (let i = files.length; i >= 0; i--) {
     const a = Math.floor(Math.random() * files.length);

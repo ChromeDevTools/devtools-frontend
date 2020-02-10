@@ -5,9 +5,7 @@
     "composite": true,
 
     "checkJs": false,
-    "allowJs": false,
-
-    "strict": false,
+    "allowJs": false
   },
   "extends": "../../tsconfig.json",
 }

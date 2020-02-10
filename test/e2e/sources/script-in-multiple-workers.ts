@@ -34,7 +34,7 @@ describe('Multi-Workers', async () => {
     const expectedWorkers = new Array(10).fill('multi-workers.js');
     {
       const pane = await frontend.waitForSelector('.navigator-tabbed-pane div[aria-label="Page panel"] div.vbox');
-      const tree = (await $('.tree-outline', pane)).asElement();
+      const tree = (await $('.tree-outline', pane)).asElement()!;
       // Check that all 10 workers have appeared
       const workers = await tree.$$eval('.navigator-worker-tree-item span.tree-element-title', nodes => nodes.map(n => n.innerHTML));
       assert.deepEqual(workers, expectedWorkers);
@@ -60,6 +60,7 @@ describe('Multi-Workers', async () => {
       // Look at source tabs
       const sourceTabPane = await frontend.waitForSelector('#sources-panel-sources-view .tabbed-pane');
       const sourceTabs = (await $('.tabbed-pane-header-tabs', sourceTabPane)).asElement();
+      // @ts-ignore
       const openSources = await sourceTabs.$$eval('.tabbed-pane-header-tab', nodes => nodes.map(n => n.getAttribute('aria-label')));
       assert.deepEqual(openSources, ['multi-workers.js']);
     }
@@ -70,12 +71,14 @@ describe('Multi-Workers', async () => {
       // Check workers again
       const pane = await frontend.waitForSelector('.navigator-tabbed-pane div[aria-label="Page panel"] div.vbox');
       const tree = (await $('.tree-outline', pane)).asElement();
+      // @ts-ignore
       const workers = await tree.$$eval('.navigator-worker-tree-item span.tree-element-title', nodes => nodes.map(n => n.innerHTML));
       assert.deepEqual(workers, expectedWorkers);
 
       // Look at source tabs again
       const sourceTabPane = await frontend.waitForSelector('#sources-panel-sources-view .tabbed-pane');
       const sourceTabs = (await $('.tabbed-pane-header-tabs', sourceTabPane)).asElement();
+      // @ts-ignore
       const openSources = await sourceTabs.$$eval('.tabbed-pane-header-tab', nodes => nodes.map(n => n.getAttribute('aria-label')));
       assert.deepEqual(openSources, ['multi-workers.js']);
     }

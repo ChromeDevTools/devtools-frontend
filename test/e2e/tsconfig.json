@@ -4,9 +4,7 @@
     "baseUrl": ".",
 
     "checkJs": false,
-    "allowJs": false,
-
-    "strict": false,
+    "allowJs": false
   },
   "references": [
     {

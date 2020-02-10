@@ -20,7 +20,7 @@ describe('The Network Tab', async () => {
     await resetPages();
   });
 
-  it.only('shows Last-Modified', async () => {
+  it('shows Last-Modified', async () => {
     const {target, frontend} = getBrowserAndPages();
     await navigateToNetworkTab(target, frontend, 'last-modified');
 

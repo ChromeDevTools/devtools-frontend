@@ -169,6 +169,13 @@ export class TabbedPane extends VBox {
     }
   }
 
+  focusSelectedTabHeader() {
+    const selectedTab = this._currentTab;
+    if (selectedTab) {
+      selectedTab.tabElement.focus();
+    }
+  }
+
   /**
    * @return {!Element}
    */
@@ -545,6 +552,10 @@ export class TabbedPane extends VBox {
       this._placeholderContainerElement.removeChildren();
       this._placeholderContainerElement.appendChild(element);
     }
+  }
+
+  async waitForTabElementUpdate() {
+    this._innerUpdateTabElements();
   }
 
   _innerUpdateTabElements() {

@@ -241,7 +241,9 @@ export class DebuggerWorkspaceBinding {
    */
   _reset(debuggerModel) {
     const modelData = this._debuggerModelToData.get(debuggerModel);
-    modelData.callFrameLocations.valuesArray().forEach(location => this._removeLiveLocation(location));
+    for (const location of modelData.callFrameLocations.values()) {
+      this._removeLiveLocation(location);
+    }
     modelData.callFrameLocations.clear();
   }
 

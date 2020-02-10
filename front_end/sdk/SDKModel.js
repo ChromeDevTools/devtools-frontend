@@ -220,7 +220,7 @@ export class Target extends ProtocolModule.InspectorBackend.TargetBase {
   dispose(reason) {
     super.dispose(reason);
     this._targetManager.removeTarget(this);
-    for (const model of this._modelByConstructor.valuesArray()) {
+    for (const model of this._modelByConstructor.values()) {
       model.dispose();
     }
   }
@@ -443,7 +443,7 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper {
    * @param {!SDK.SDKModel} model
    */
   modelAdded(target, modelClass, model) {
-    for (const observer of this._modelObservers.get(modelClass).valuesArray()) {
+    for (const observer of this._modelObservers.get(modelClass).values()) {
       observer.modelAdded(model);
     }
   }
@@ -454,7 +454,7 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper {
    * @param {!SDK.SDKModel} model
    */
   _modelRemoved(target, modelClass, model) {
-    for (const observer of this._modelObservers.get(modelClass).valuesArray()) {
+    for (const observer of this._modelObservers.get(modelClass).values()) {
       observer.modelRemoved(model);
     }
   }

@@ -319,9 +319,8 @@ export class ApplicationPanelSidebar extends UI.VBox {
   }
 
   _resetWebSQL() {
-    const queryViews = this._databaseQueryViews.valuesArray();
-    for (let i = 0; i < queryViews.length; ++i) {
-      queryViews[i].removeEventListener(DatabaseQueryViewEvents.SchemaUpdated, this._updateDatabaseTables, this);
+    for (const queryView of this._databaseQueryViews.values()) {
+      queryView.removeEventListener(DatabaseQueryViewEvents.SchemaUpdated, this._updateDatabaseTables, this);
     }
     this._databaseTableViews.clear();
     this._databaseQueryViews.clear();

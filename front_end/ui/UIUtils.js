@@ -1059,14 +1059,11 @@ class InvokeOnceHandlers {
   }
 
   _invoke() {
-    const handlers = this._handlers;
+    const handlers = this._handlers || new Map();  // Make closure happy. This should not be null.
     this._handlers = null;
-    const keys = handlers.keysArray();
-    for (let i = 0; i < keys.length; ++i) {
-      const object = keys[i];
-      const methods = handlers.get(object).valuesArray();
-      for (let j = 0; j < methods.length; ++j) {
-        methods[j].call(object);
+    for (const [object, methods] of handlers) {
+      for (const method of methods) {
+        method.call(object);
       }
     }
   }

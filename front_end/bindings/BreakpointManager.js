@@ -463,9 +463,8 @@ export class Breakpoint {
     if (this._uiLocations.size === 0 && this._defaultUILocation && !this._isRemoved) {
       this._breakpointManager._uiLocationAdded(this, this._defaultUILocation);
     }
-    const modelBreakpoints = this._modelBreakpoints.valuesArray();
-    for (let i = 0; i < modelBreakpoints.length; ++i) {
-      modelBreakpoints[i]._scheduleUpdateInDebugger();
+    for (const modelBreakpoint of this._modelBreakpoints.values()) {
+      modelBreakpoint._scheduleUpdateInDebugger();
     }
   }
 
@@ -475,8 +474,7 @@ export class Breakpoint {
   remove(keepInStorage) {
     this._isRemoved = true;
     const removeFromStorage = !keepInStorage;
-    const modelBreakpoints = this._modelBreakpoints.valuesArray();
-    for (const modelBreakpoint of modelBreakpoints) {
+    for (const modelBreakpoint of this._modelBreakpoints.values()) {
       modelBreakpoint._scheduleUpdateInDebugger();
       modelBreakpoint._removeEventListeners();
     }
@@ -495,8 +493,7 @@ export class Breakpoint {
 
   _resetLocations() {
     this.setPrimaryUISourceCode(null);
-    const modelBreakpoints = this._modelBreakpoints.valuesArray();
-    for (const modelBreakpoint of modelBreakpoints) {
+    for (const modelBreakpoint of this._modelBreakpoints.values()) {
       modelBreakpoint._resetLocations();
     }
   }

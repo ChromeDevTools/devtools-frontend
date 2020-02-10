@@ -138,9 +138,8 @@ export class DebuggerPlugin extends Plugin {
     this._blackboxInfobar = null;
     this._showBlackboxInfobarIfNeeded();
 
-    const scriptFiles = this._scriptFileForDebuggerModel.valuesArray();
-    for (let i = 0; i < scriptFiles.length; ++i) {
-      scriptFiles[i].checkMapping();
+    for (const scriptFile of this._scriptFileForDebuggerModel.values()) {
+      scriptFile.checkMapping();
     }
 
     this._hasLineWithoutMapping = false;
@@ -375,9 +374,8 @@ export class DebuggerPlugin extends Plugin {
   }
 
   async _restoreBreakpointsIfConsistentScripts() {
-    const scriptFiles = this._scriptFileForDebuggerModel.valuesArray();
-    for (let i = 0; i < scriptFiles.length; ++i) {
-      if (scriptFiles[i].hasDivergedFromVM() || scriptFiles[i].isMergingToVM()) {
+    for (const scriptFile of this._scriptFileForDebuggerModel.values()) {
+      if (scriptFile.hasDivergedFromVM() || scriptFile.isMergingToVM()) {
         return;
       }
     }
@@ -1351,9 +1349,8 @@ export class DebuggerPlugin extends Plugin {
     if (this._muted) {
       return true;
     }
-    const scriptFiles = this._scriptFileForDebuggerModel.valuesArray();
-    for (let i = 0; i < scriptFiles.length; ++i) {
-      if (scriptFiles[i].isDivergingFromVM() || scriptFiles[i].isMergingToVM()) {
+    for (const scriptFile of this._scriptFileForDebuggerModel.values()) {
+      if (scriptFile.isDivergingFromVM() || scriptFile.isMergingToVM()) {
         return true;
       }
     }

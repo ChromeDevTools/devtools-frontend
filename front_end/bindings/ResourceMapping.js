@@ -286,7 +286,7 @@ class ModelInfo {
   }
 
   _resetForTest() {
-    for (const binding of this._bindings.valuesArray()) {
+    for (const binding of this._bindings.values()) {
       binding.dispose();
     }
     this._bindings.clear();
@@ -294,7 +294,7 @@ class ModelInfo {
 
   dispose() {
     Common.EventTarget.EventTarget.removeEventListeners(this._eventListeners);
-    for (const binding of this._bindings.valuesArray()) {
+    for (const binding of this._bindings.values()) {
       binding.dispose();
     }
     this._bindings.clear();

@@ -71,7 +71,7 @@ export class Automapping {
   }
 
   scheduleRemap() {
-    for (const status of this._statuses.valuesArray()) {
+    for (const status of this._statuses.values()) {
       this._clearNetworkStatus(status.network);
     }
     this._scheduleSweep();

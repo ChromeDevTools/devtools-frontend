@@ -613,10 +613,9 @@ class ServiceWorkerContextNamer {
    */
   _registrationsUpdated(event) {
     this._versionByTargetId.clear();
-    const registrations = this._serviceWorkerManager.registrations().valuesArray();
+    const registrations = this._serviceWorkerManager.registrations().values();
     for (const registration of registrations) {
-      const versions = registration.versions.valuesArray();
-      for (const version of versions) {
+      for (const version of registration.versions.values()) {
         if (version.targetId) {
           this._versionByTargetId.set(version.targetId, version);
         }

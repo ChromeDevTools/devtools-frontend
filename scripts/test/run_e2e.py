@@ -74,8 +74,8 @@ def compile_typescript_test_files():
     tsc_compile_errors_found = False
     cwd = devtools_paths.devtools_root_path()
     env = os.environ.copy()
-    shared_path = os.path.join(cwd, 'test/shared')
-    e2e_test_path = os.path.join(cwd, 'test/e2e')
+    shared_path = os.path.join(cwd, 'test', 'shared')
+    e2e_test_path = os.path.join(cwd, 'test', 'e2e')
 
     # Compile shared code, e.g. helper and runner.
     print("Compiling shared TypeScript")
@@ -99,8 +99,8 @@ def compile_typescript_test_files():
 def run_e2e_test(chrome_binary):
     e2e_errors_found = False
     cwd = devtools_paths.devtools_root_path()
-    e2e_test_path = os.path.join(cwd, 'test/shared/runner.js')
-    e2e_test_list = os.path.join(cwd, 'test/e2e/test-list.js')
+    e2e_test_path = os.path.join(cwd, 'test', 'shared', 'runner.js')
+    e2e_test_list = os.path.join(cwd, 'test', 'e2e', 'test-list.js')
     exec_command = [devtools_paths.node_path(), e2e_test_path]
 
     env = os.environ.copy()

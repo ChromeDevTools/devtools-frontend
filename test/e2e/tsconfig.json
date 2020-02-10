@@ -1,6 +1,17 @@
 {
   "compilerOptions": {
-    "target": "es5",
-    "module": "commonjs"
-  }
+    "module": "commonjs",
+    "baseUrl": ".",
+
+    "checkJs": false,
+    "allowJs": false,
+
+    "strict": false,
+  },
+  "references": [
+    {
+      "path": "../shared/tsconfig.json"
+    }
+  ],
+  "extends": "../../tsconfig.json"
 }

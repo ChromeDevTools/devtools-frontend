@@ -35,5 +35,5 @@ npm-debug.log
 !/third_party/pyjson5
 !/third_party/typescript
 
-test/e2e/**/*.js
-test/shared/**/*.js
+test/e2e/**/*[.js, .tsbuildinfo]
+test/shared/**/*[.js, .tsbuildinfo]

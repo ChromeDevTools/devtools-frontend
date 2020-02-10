@@ -147,29 +147,6 @@ String.filterRegex = function(query) {
 /**
  * @return {string}
  */
-String.prototype.escapeHTML = function() {
-  return this.replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;');  // " doublequotes just for editor
-};
-
-/**
- * @return {string}
- */
-String.prototype.unescapeHTML = function() {
-  return this.replace(/&lt;/g, '<')
-      .replace(/&gt;/g, '>')
-      .replace(/&#58;/g, ':')
-      .replace(/&quot;/g, '"')
-      .replace(/&#60;/g, '<')
-      .replace(/&#62;/g, '>')
-      .replace(/&amp;/g, '&');
-};
-
-/**
- * @return {string}
- */
 String.prototype.collapseWhitespace = function() {
   return this.replace(/[\s\xA0]+/g, ' ');
 };

@@ -464,7 +464,7 @@ export class ProfileTypeSidebarSection extends UI.TreeElement {
    * @param {!ProfileType} profileType
    */
   constructor(dataDisplayDelegate, profileType) {
-    super(profileType.treeItemTitle.escapeHTML(), true);
+    super(profileType.treeItemTitle, true);
     this.selectable = false;
     this._dataDisplayDelegate = dataDisplayDelegate;
     /** @type {!Array<!ProfileSidebarTreeElement>} */

@@ -1,4 +1,4 @@
 # tags: [ Release Debug ]
 # results: [ Timeout Crash Pass Failure Slow Skip ]
 
-crbug.com/1034903 http/tests/devtools/audits/audits-export-run.js [ Pass Failure Crash ]
+crbug.com/1034903 http/tests/devtools/lighthouse/lighthouse-export-run.js [ Pass Failure Crash ]

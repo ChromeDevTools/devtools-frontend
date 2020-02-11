@@ -1,4 +1,4 @@
 # tags: [ Release Debug ]
 # results: [ Timeout Crash Pass Failure Slow Skip ]
 
-crbug.com/680917 http/tests/devtools/audits/* [ Slow ]
+crbug.com/680917 http/tests/devtools/lighthouse/* [ Slow ]

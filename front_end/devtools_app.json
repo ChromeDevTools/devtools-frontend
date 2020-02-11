@@ -6,7 +6,7 @@
 
     { "name": "accessibility" },
     { "name": "animation" },
-    { "name": "audits" },
+    { "name": "lighthouse" },
     { "name": "browser_debugger" },
     { "name": "css_overview" },
     { "name": "cookie_table" },

@@ -244,6 +244,12 @@
         {
             "type": "@UI.ToolbarItem.Provider",
             "separator": true,
+            "order": 97,
+            "location": "main-toolbar-right"
+        },
+        {
+            "type": "@UI.ToolbarItem.Provider",
+            "className": "Main.Main.SettingsButtonProvider",
             "order": 98,
             "location": "main-toolbar-right"
         },

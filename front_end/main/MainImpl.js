@@ -710,19 +710,49 @@ export class MainMenuItem {
     const extensions = self.runtime.extensions('view', undefined, true);
     for (const extension of extensions) {
       const descriptor = extension.descriptor();
+
+      if (descriptor['id'] === 'settings-default') {
+        moreTools.defaultSection().appendItem(extension.title(), () => {
+          Host.userMetrics.actionTaken(Host.UserMetrics.Action.SettingsOpenedFromMenu);
+          UI.ViewManager.ViewManager.instance().showView('preferences', /* userGesture */ true);
+        });
+        continue;
+      }
+
       if (descriptor['persistence'] !== 'closeable') {
         continue;
       }
       if (descriptor['location'] !== 'drawer-view' && descriptor['location'] !== 'panel') {
         continue;
       }
+
       moreTools.defaultSection().appendItem(
           extension.title(),
-          UI.ViewManager.ViewManager.instance().showView.bind(UI.ViewManager.ViewManager.instance(), descriptor['id']));
+          UI.ViewManager.ViewManager.instance().showView.bind(
+              UI.ViewManager.ViewManager.instance(), descriptor['id'], /* userGesture */ true));
     }
 
     const helpSubMenu = contextMenu.footerSection().appendSubMenuItem(Common.UIString.UIString('Help'));
     helpSubMenu.appendItemsAtLocation('mainMenuHelp');
+  }
+}
+
+/**
+ * @implements {UI.Toolbar.Provider}
+ */
+export class SettingsButtonProvider {
+  constructor() {
+    const settingsActionId = 'settings.show';
+    this._settingsButton = UI.Toolbar.Toolbar.createActionButtonForId(
+        settingsActionId, {showLabel: false, userActionCode: Host.UserMetrics.Action.SettingsOpenedFromGear});
+  }
+
+  /**
+   * @override
+   * @return {?UI.Toolbar.ToolbarItem}
+   */
+  item() {
+    return this._settingsButton;
   }
 }
 

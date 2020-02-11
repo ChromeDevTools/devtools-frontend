@@ -62,6 +62,13 @@ export class UserMetrics {
   }
 
   /**
+   * @param {string} settingsViewId
+   */
+  settingsPanelShown(settingsViewId) {
+    this.panelShown('settings-' + settingsViewId);
+  }
+
+  /**
    * @param {!Action} action
    */
   actionTaken(action) {
@@ -162,6 +169,9 @@ export const Action = {
   FilmStripStartedRecording: 33,
   CoverageReportFiltered: 34,
   CoverageStartedPerBlock: 35,
+  SettingsOpenedFromGear: 36,
+  SettingsOpenedFromMenu: 37,
+  SettingsOpenedFromCommandMenu: 38
 };
 
 /** @type {!Object<string, number>} */
@@ -195,6 +205,14 @@ export const PanelCodes = {
   'drawer-live_heap_profile': 26,
   'drawer-sources.quick': 27,
   'drawer-network.blocked-urls': 28,
+  'settings-preferences': 29,
+  'settings-workspace': 30,
+  'settings-experiments': 31,
+  'settings-blackbox': 32,
+  'settings-devices': 33,
+  'settings-throttling-conditions': 34,
+  'settings-emulation-geolocations': 35,
+  'settings-shortcuts': 36
 };
 
 /** @type {!Object<string, number>} */

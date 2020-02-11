@@ -6,6 +6,7 @@
             "actionId": "settings.show",
             "title": "Settings",
             "className": "Settings.SettingsScreen.ActionDelegate",
+            "iconClass": "largeicon-settings-gear",
             "bindings": [
                 {
                     "shortcut": "F1 Shift+?"
@@ -44,9 +45,9 @@
             "actionId": "settings.documentation"
         },
         {
-            "type": "context-menu-item",
-            "location": "mainMenu/footer",
-            "actionId": "settings.show"
+            "type": "view",
+            "id": "settings-default",
+            "title": "Settings"
         },
         {
             "type": "view",

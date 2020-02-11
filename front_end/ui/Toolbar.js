@@ -29,6 +29,7 @@
  */
 
 import * as Common from '../common/common.js';
+import * as Host from '../host/host.js';
 
 import {Action, Events as ActionEvents} from './Action.js';  // eslint-disable-line no-unused-vars
 import * as ARIAUtils from './ARIAUtils.js';
@@ -178,18 +179,27 @@ export class Toolbar {
 
   /**
    * @param {!Action} action
-   * @param {boolean=} showLabel
+   * @param {!ToolbarButtonOptions=} options
    * @return {!ToolbarButton}
    */
-  static createActionButton(action, showLabel) {
+  static createActionButton(action, options = TOOLBAR_BUTTON_DEFAULT_OPTIONS) {
     const button = action.toggleable() ? makeToggle() : makeButton();
 
-    if (showLabel) {
+    if (options.showLabel) {
       button.setText(action.title());
     }
-    button.addEventListener(ToolbarButton.Events.Click, event => {
+
+    let handler = event => {
       action.execute();
-    }, action);
+    };
+    if (options.userActionCode) {
+      const actionCode = options.userActionCode;
+      handler = () => {
+        Host.userMetrics.actionTaken(actionCode);
+        action.execute();
+      };
+    }
+    button.addEventListener(ToolbarButton.Events.Click, handler, action);
     action.addEventListener(ActionEvents.Enabled, enabledChanged);
     button.setEnabled(action.enabled());
     return button;
@@ -235,12 +245,12 @@ export class Toolbar {
 
   /**
    * @param {string} actionId
-   * @param {boolean=} showLabel
+   * @param {!ToolbarButtonOptions=} options
    * @return {!ToolbarButton}
    */
-  static createActionButtonForId(actionId, showLabel) {
+  static createActionButtonForId(actionId, options = TOOLBAR_BUTTON_DEFAULT_OPTIONS) {
     const action = self.UI.actionRegistry.action(actionId);
-    return Toolbar.createActionButton(/** @type {!Action} */ (action), showLabel);
+    return Toolbar.createActionButton(/** @type {!Action} */ (action), options);
   }
 
   /**
@@ -397,6 +407,20 @@ export class Toolbar {
     items.filter(item => item).forEach(item => this.appendToolbarItem(item));
   }
 }
+
+/**
+ * @typedef {{
+  *    showLabel: boolean,
+  *    userActionCode: (!Host.UserMetrics.Action|undefined)
+  * }}
+  */
+export let ToolbarButtonOptions;
+
+/** @type {!ToolbarButtonOptions} */
+const TOOLBAR_BUTTON_DEFAULT_OPTIONS = {
+  showLabel: false,
+  userActionCode: undefined
+};
 
 /**
  * @unrestricted

@@ -35,6 +35,11 @@ Main.Main.MainMenuItem = MainModule.MainImpl.MainMenuItem;
 /**
  * @constructor
  */
+Main.Main.SettingsButtonProvider = MainModule.MainImpl.SettingsButtonProvider;
+
+/**
+ * @constructor
+ */
 Main.ReloadActionDelegate = MainModule.MainImpl.ReloadActionDelegate;
 
 /**

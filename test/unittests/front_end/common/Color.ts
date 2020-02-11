@@ -99,31 +99,31 @@ describe('Color', () => {
   });
 
   it('parses rgb(a) values', () => {
-    const colorOne = Common.Color.Color.parse('rgb(255, 255, 0)');
-    assert.deepEqual(colorOne!.rgba(), [1, 1, 0, 1]);
+    const colorOne = Common.Color.Color.parse('rgb(255, 255, 0)')!;
+    assert.deepEqual(colorOne.rgba(), [1, 1, 0, 1]);
 
-    const colorTwo = Common.Color.Color.parse('rgba(0, 255, 255, 0.5)');
-    assert.deepEqual(colorTwo!.rgba(), [0, 1, 1, 0.5]);
+    const colorTwo = Common.Color.Color.parse('rgba(0, 255, 255, 0.5)')!;
+    assert.deepEqual(colorTwo.rgba(), [0, 1, 1, 0.5]);
 
-    const colorThree = Common.Color.Color.parse('rgb(255 255 255)');
-    assert.deepEqual(colorThree!.rgba(), [1, 1, 1, 1]);
+    const colorThree = Common.Color.Color.parse('rgb(255 255 255)')!;
+    assert.deepEqual(colorThree.rgba(), [1, 1, 1, 1]);
 
-    const colorFour = Common.Color.Color.parse('rgb(10% 10% 10%)');
-    assert.deepEqual(colorFour!.rgba(), [0.1, 0.1, 0.1, 1]);
+    const colorFour = Common.Color.Color.parse('rgb(10% 10% 10%)')!;
+    assert.deepEqual(colorFour.rgba(), [0.1, 0.1, 0.1, 1]);
 
-    const colorFive = Common.Color.Color.parse('rgb(10% 10% 10% / 0.4)');
-    assert.deepEqual(colorFive!.rgba(), [0.1, 0.1, 0.1, 0.4]);
+    const colorFive = Common.Color.Color.parse('rgb(10% 10% 10% / 0.4)')!;
+    assert.deepEqual(colorFive.rgba(), [0.1, 0.1, 0.1, 0.4]);
   });
 
   it('parses hsl(a) values', () => {
-    const colorOne = Common.Color.Color.parse('hsl(0, 100%, 50%)');
-    assert.deepEqual(colorOne!.rgba(), [1, 0, 0, 1]);
+    const colorOne = Common.Color.Color.parse('hsl(0, 100%, 50%)')!;
+    assert.deepEqual(colorOne.rgba(), [1, 0, 0, 1]);
 
-    const colorTwo = Common.Color.Color.parse('hsla(0, 100%, 50%, 0.5)');
-    assert.deepEqual(colorTwo!.rgba(), [1, 0, 0, 0.5]);
+    const colorTwo = Common.Color.Color.parse('hsla(0, 100%, 50%, 0.5)')!;
+    assert.deepEqual(colorTwo.rgba(), [1, 0, 0, 0.5]);
 
-    const colorThree = Common.Color.Color.parse('hsla(50deg 100% 100% / 50%)');
-    assert.deepEqual(colorThree!.rgba(), [1, 1, 1, 0.5]);
+    const colorThree = Common.Color.Color.parse('hsla(50deg 100% 100% / 50%)')!;
+    assert.deepEqual(colorThree.rgba(), [1, 1, 1, 0.5]);
   });
 
   it('handles invalid values', () => {

@@ -50,7 +50,7 @@ export function serializeUIString(string, values = []) {
 }
 
 /**
- * @param {string} serializedMessage
+ * @param {string=} serializedMessage
  * @return {*}
  */
 export function deserializeUIString(serializedMessage) {

@@ -109,7 +109,12 @@ interface DevToolsTarget {
     const listing = await devtools.$('pre');
     const json = await devtools.evaluate(listing => listing.textContent, listing);
     const targets: DevToolsTarget[] = JSON.parse(json);
-    const {id} = targets.find((target) => target.url === blankPage)!;
+    const target = targets.find((target) => target.url === blankPage);
+    if (!target) {
+      throw new Error(`Unable to find target page: ${blankPage}`);
+    }
+
+    const {id} = target;
     await devtools.close();
 
     // Connect to the DevTools frontend.

@@ -164,7 +164,7 @@ export class HeapSnapshotWorkerProxy extends Common.Object {
     }
     const hasLongRunningCalls = !!this._previousCallbacks.size;
     this.dispatchEventToListeners(HeapSnapshotWorkerProxy.Events.Wait, hasLongRunningCalls);
-    for (const callId of this._callbacks.keysArray()) {
+    for (const callId of this._callbacks.keys()) {
       this._previousCallbacks.add(callId);
     }
   }

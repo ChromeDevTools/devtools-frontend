@@ -31,7 +31,7 @@ export class FormatterWorkerPool {
       return;
     }
 
-    let freeWorker = this._workerTasks.keysArray().find(worker => !this._workerTasks.get(worker));
+    let freeWorker = [...this._workerTasks.keys()].find(worker => !this._workerTasks.get(worker));
     if (!freeWorker && this._workerTasks.size < MaxWorkers) {
       freeWorker = this._createWorker();
     }

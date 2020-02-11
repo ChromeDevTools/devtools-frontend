@@ -105,8 +105,8 @@ export class GutterDiffPlugin extends Plugin {
    */
   _calculateDecorationsDiff(decorations) {
     const oldDecorations = this._decorationsByLine();
-    const leftKeys = oldDecorations.keysArray();
-    const rightKeys = decorations.keysArray();
+    const leftKeys = [...oldDecorations.keys()];
+    const rightKeys = [...decorations.keys()];
     leftKeys.sort((a, b) => a - b);
     rightKeys.sort((a, b) => a - b);
 

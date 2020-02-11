@@ -142,7 +142,7 @@ export class ClassesPaneWidget extends UI.Widget {
     }
 
     const classes = this._nodeClasses(node);
-    const keys = classes.keysArray();
+    const keys = [...classes.keys()];
     keys.sort(String.caseInsensetiveComparator);
     for (let i = 0; i < keys.length; ++i) {
       const className = keys[i];

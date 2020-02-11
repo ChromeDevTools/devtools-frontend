@@ -293,14 +293,16 @@ export class Linkifier {
   }
 
   reset() {
-    for (const target of this._anchorsByTarget.keysArray()) {
+    // Create a copy of {keys} so {targetRemoved} can safely modify the map.
+    for (const target of [...this._anchorsByTarget.keys()]) {
       this.targetRemoved(target);
       this.targetAdded(target);
     }
   }
 
   dispose() {
-    for (const target of this._anchorsByTarget.keysArray()) {
+    // Create a copy of {keys} so {targetRemoved} can safely modify the map.
+    for (const target of [...this._anchorsByTarget.keys()]) {
       this.targetRemoved(target);
     }
     self.SDK.targetManager.unobserveTargets(this);
@@ -729,7 +731,7 @@ export class LinkHandlerSettingUI {
 
   _update() {
     this._element.removeChildren();
-    const names = _linkHandlers.keysArray();
+    const names = [..._linkHandlers.keys()];
     names.unshift(Common.UIString.UIString('auto'));
     for (const name of names) {
       const option = createElement('option');

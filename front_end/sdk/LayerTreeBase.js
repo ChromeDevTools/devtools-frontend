@@ -305,7 +305,7 @@ export class LayerTreeBase {
     if (!nodesMap) {
       return;
     }
-    for (const nodeId of nodesMap.keysArray()) {
+    for (const nodeId of nodesMap.keys()) {
       this._backendNodeIdToNode.set(nodeId, nodesMap.get(nodeId) || null);
     }
   }

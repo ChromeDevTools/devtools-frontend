@@ -222,8 +222,8 @@ export class AnimationTimeline extends UI.VBox {
       box: event.target.boxInWindow(),
       show: popover => {
         let animGroup;
-        for (const group of this._previewMap.keysArray()) {
-          if (this._previewMap.get(group).element === element.parentElement) {
+        for (const [group, previewUI] of this._previewMap) {
+          if (previewUI.element === element.parentElement) {
             animGroup = group;
           }
         }

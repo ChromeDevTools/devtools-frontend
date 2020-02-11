@@ -106,8 +106,8 @@ export class CSSMatchedStyles {
         for (const entry of from.rule.style.cssProperties) {
           properties.set(entry.name, entry.value);
         }
-        to.rule.style.shorthandEntries = shorthands.keysArray().map(name => ({name, value: shorthands.get(name)}));
-        to.rule.style.cssProperties = properties.keysArray().map(name => ({name, value: properties.get(name)}));
+        to.rule.style.shorthandEntries = [...shorthands.keys()].map(name => ({name, value: shorthands.get(name)}));
+        to.rule.style.cssProperties = [...properties.keys()].map(name => ({name, value: properties.get(name)}));
       }
 
       /**

@@ -1216,7 +1216,7 @@ export class PaletteGenerator {
       return (hsvb[0] + 0.94) % 1 - (hsva[0] + 0.94) % 1;
     }
 
-    let colors = this._frequencyMap.keysArray();
+    let colors = [...this._frequencyMap.keys()];
     colors = colors.sort(this._frequencyComparator.bind(this));
     /** @type {!Map.<string, !Common.Color.Color>} */
     const paletteColors = new Map();
@@ -1232,7 +1232,7 @@ export class PaletteGenerator {
 
     this._callback({
       title: GeneratedPaletteTitle,
-      colors: paletteColors.keysArray().sort(hueComparator),
+      colors: [...paletteColors.keys()].sort(hueComparator),
       colorNames: [],
       mutable: false
     });

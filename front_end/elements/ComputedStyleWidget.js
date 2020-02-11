@@ -165,7 +165,7 @@ export class ComputedStyleWidget extends UI.ThrottledWidget {
       return;
     }
 
-    const uniqueProperties = nodeStyle.computedStyle.keysArray();
+    const uniqueProperties = [...nodeStyle.computedStyle.keys()];
     uniqueProperties.sort(propertySorter);
 
     const propertyTraces = this._computePropertyTraces(matchedStyles);

@@ -1197,7 +1197,7 @@ export class ElementsTreeOutline extends UI.TreeOutline {
       delete this._updateModifiedNodesTimeout;
     }
 
-    const updatedNodes = this._updateRecords.keysArray();
+    const updatedNodes = [...this._updateRecords.keys()];
     const hidePanelWhileUpdating = updatedNodes.length > 10;
     let treeOutlineContainerElement;
     let originalScrollTop;

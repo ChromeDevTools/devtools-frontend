@@ -1136,7 +1136,7 @@ const Multimap = class {
    * @return {!Array.<K>}
    */
   keysArray() {
-    return this._map.keysArray();
+    return [...this._map.keys()];
   }
 
   /**
@@ -1144,9 +1144,8 @@ const Multimap = class {
    */
   valuesArray() {
     const result = [];
-    const keys = this.keysArray();
-    for (let i = 0; i < keys.length; ++i) {
-      result.push(...this.get(keys[i]).values());
+    for (const set of this._map.values()) {
+      result.push(...set.values());
     }
     return result;
   }

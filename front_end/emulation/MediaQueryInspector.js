@@ -127,7 +127,7 @@ export class MediaQueryInspector extends UI.Widget.Widget {
       uiLocations.set(descriptor, uiLocation);
     }
 
-    const contextMenuItems = uiLocations.keysArray().sort();
+    const contextMenuItems = [...uiLocations.keys()].sort();
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     const subMenuItem =
         contextMenu.defaultSection().appendSubMenuItem(Common.UIString.UIString('Reveal in source code'));

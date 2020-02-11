@@ -23,34 +23,6 @@ export class CookieModel extends SDKModel {
 
   /**
    * @param {!Cookie} cookie
-   * @param {string} resourceURL
-   * @return {boolean}
-   */
-  static cookieMatchesResourceURL(cookie, resourceURL) {
-    const url = Common.ParsedURL.ParsedURL.fromString(resourceURL);
-    if (!url || !CookieModel.cookieDomainMatchesResourceDomain(cookie.domain(), url.host)) {
-      return false;
-    }
-    return (
-        url.path.startsWith(cookie.path()) && (!cookie.port() || url.port === cookie.port()) &&
-        (!cookie.secure() || url.scheme === 'https'));
-  }
-
-  /**
-   * @param {string} cookieDomain
-   * @param {string} resourceDomain
-   * @return {boolean}
-   */
-  static cookieDomainMatchesResourceDomain(cookieDomain, resourceDomain) {
-    if (cookieDomain.charAt(0) !== '.') {
-      return resourceDomain === cookieDomain;
-    }
-    return !!resourceDomain.match(
-        new RegExp('^([^\\.]+\\.)*' + cookieDomain.substring(1).escapeForRegExp() + '$', 'i'));
-  }
-
-  /**
-   * @param {!Cookie} cookie
    * @param {?Array<!CookieTable.BlockedReason>} blockedReasons
    */
   addBlockedCookie(cookie, blockedReasons) {
@@ -61,10 +33,6 @@ export class CookieModel extends SDKModel {
     if (previousCookie) {
       this._cookieToBlockedReasons.delete(key);
     }
-  }
-
-  getBlockedReasonsByCookie(cookie) {
-    return this._cookieToBlockedReasons.get(cookie) || null;
   }
 
   getCookieToBlockedReasonsMap() {

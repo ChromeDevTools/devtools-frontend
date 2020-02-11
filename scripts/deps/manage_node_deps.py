@@ -53,6 +53,7 @@ DEPS = {
     "puppeteer": "2.0.0",
     "recast": "0.18.2",
     "rollup": "1.23.1",
+    "sinon": "8.1.1",
     "typescript": "3.7.5",
     "yargs": "15.0.2"
 }

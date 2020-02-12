@@ -26,6 +26,10 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as Common from '../common/common.js';
+import * as ProtocolModule from '../protocol/protocol.js';
+import * as SDK from '../sdk/sdk.js';
+
 /**
  * @unrestricted
  */
@@ -95,7 +99,7 @@ export class Database {
    */
   async executeSql(query, onSuccess, onError) {
     const response = await this._model._agent.invoke_executeSQL({'databaseId': this._id, 'query': query});
-    const error = response[Protocol.Error];
+    const error = response[ProtocolModule.InspectorBackend.ProtocolError];
     if (error) {
       onError(error);
       return;
@@ -109,9 +113,9 @@ export class Database {
     if (sqlError.message) {
       message = sqlError.message;
     } else if (sqlError.code === 2) {
-      message = Common.UIString('Database no longer has expected version.');
+      message = Common.UIString.UIString('Database no longer has expected version.');
     } else {
-      message = Common.UIString('An unexpected error %s occurred.', sqlError.code);
+      message = Common.UIString.UIString('An unexpected error %s occurred.', sqlError.code);
     }
     onError(message);
   }
@@ -120,9 +124,9 @@ export class Database {
 /**
  * @unrestricted
  */
-export class DatabaseModel extends SDK.SDKModel {
+export class DatabaseModel extends SDK.SDKModel.SDKModel {
   /**
-   * @param {!SDK.Target} target
+   * @param {!SDK.SDKModel.Target} target
    */
   constructor(target) {
     super(target);
@@ -170,7 +174,7 @@ export class DatabaseModel extends SDK.SDKModel {
   }
 }
 
-SDK.SDKModel.register(DatabaseModel, SDK.Target.Capability.DOM, false);
+SDK.SDKModel.SDKModel.register(DatabaseModel, SDK.SDKModel.Capability.DOM, false);
 
 /** @enum {symbol} */
 export const Events = {

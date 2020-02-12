@@ -26,12 +26,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as SDK from '../sdk/sdk.js';
+
 /**
  * @unrestricted
  */
-export class ApplicationCacheModel extends SDK.SDKModel {
+export class ApplicationCacheModel extends SDK.SDKModel.SDKModel {
   /**
-   * @param {!SDK.Target} target
+   * @param {!SDK.SDKModel.Target} target
    */
   constructor(target) {
     super(target);
@@ -40,7 +42,7 @@ export class ApplicationCacheModel extends SDK.SDKModel {
     this._agent = target.applicationCacheAgent();
     this._agent.enable();
 
-    const resourceTreeModel = target.model(SDK.ResourceTreeModel);
+    const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
     resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.FrameNavigated, this._frameNavigated, this);
     resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.FrameDetached, this._frameDetached, this);
 
@@ -55,7 +57,7 @@ export class ApplicationCacheModel extends SDK.SDKModel {
    * @param {!Common.Event} event
    */
   async _frameNavigated(event) {
-    const frame = /** @type {!SDK.ResourceTreeFrame} */ (event.data);
+    const frame = /** @type {!SDK.ResourceTreeModel.ResourceTreeFrame} */ (event.data);
     if (frame.isMainFrame()) {
       this._mainFrameNavigated();
       return;
@@ -72,7 +74,7 @@ export class ApplicationCacheModel extends SDK.SDKModel {
    * @param {!Common.Event} event
    */
   _frameDetached(event) {
-    const frame = /** @type {!SDK.ResourceTreeFrame} */ (event.data);
+    const frame = /** @type {!SDK.ResourceTreeModel.ResourceTreeFrame} */ (event.data);
     this._frameManifestRemoved(frame.id);
   }
 
@@ -184,7 +186,7 @@ export class ApplicationCacheModel extends SDK.SDKModel {
   }
 }
 
-SDK.SDKModel.register(ApplicationCacheModel, SDK.Target.Capability.DOM, false);
+SDK.SDKModel.SDKModel.register(ApplicationCacheModel, SDK.SDKModel.Capability.DOM, false);
 
 /** @enum {symbol} */
 export const Events = {

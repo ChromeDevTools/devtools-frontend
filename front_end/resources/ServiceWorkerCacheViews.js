@@ -2,13 +2,19 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-export class ServiceWorkerCacheView extends UI.SimpleView {
+import * as Common from '../common/common.js';
+import * as DataGrid from '../data_grid/data_grid.js';
+import * as Network from '../network/network.js';
+import * as SDK from '../sdk/sdk.js';
+import * as UI from '../ui/ui.js';
+
+export class ServiceWorkerCacheView extends UI.View.SimpleView {
   /**
-   * @param {!SDK.ServiceWorkerCacheModel} model
+   * @param {!SDK.ServiceWorkerCacheModel.ServiceWorkerCacheModel} model
    * @param {!SDK.ServiceWorkerCacheModel.Cache} cache
    */
   constructor(model, cache) {
-    super(Common.UIString('Cache'));
+    super(Common.UIString.UIString('Cache'));
     this.registerRequiredCSS('resources/serviceWorkerCacheViews.css');
 
     this._model = model;
@@ -17,35 +23,37 @@ export class ServiceWorkerCacheView extends UI.SimpleView {
     this.element.classList.add('service-worker-cache-data-view');
     this.element.classList.add('storage-view');
 
-    const editorToolbar = new UI.Toolbar('data-view-toolbar', this.element);
-    this._splitWidget = new UI.SplitWidget(false, false);
+    const editorToolbar = new UI.Toolbar.Toolbar('data-view-toolbar', this.element);
+    this._splitWidget = new UI.SplitWidget.SplitWidget(false, false);
     this._splitWidget.show(this.element);
 
-    this._previewPanel = new UI.VBox();
+    this._previewPanel = new UI.Widget.VBox();
     const resizer = this._previewPanel.element.createChild('div', 'cache-preview-panel-resizer');
     this._splitWidget.setMainWidget(this._previewPanel);
     this._splitWidget.installResizer(resizer);
 
-    /** @type {?UI.Widget} */
+    /** @type {?UI.Widget.Widget} */
     this._preview = null;
 
     this._cache = cache;
-    /** @type {?DataGrid.DataGrid} */
+    /** @type {?DataGrid.DataGrid.DataGridImpl} */
     this._dataGrid = null;
-    this._refreshThrottler = new Common.Throttler(300);
-    this._refreshButton = new UI.ToolbarButton(Common.UIString('Refresh'), 'largeicon-refresh');
-    this._refreshButton.addEventListener(UI.ToolbarButton.Events.Click, this._refreshButtonClicked, this);
+    this._refreshThrottler = new Common.Throttler.Throttler(300);
+    this._refreshButton = new UI.Toolbar.ToolbarButton(Common.UIString.UIString('Refresh'), 'largeicon-refresh');
+    this._refreshButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._refreshButtonClicked, this);
     editorToolbar.appendToolbarItem(this._refreshButton);
 
-    this._deleteSelectedButton = new UI.ToolbarButton(Common.UIString('Delete Selected'), 'largeicon-delete');
-    this._deleteSelectedButton.addEventListener(UI.ToolbarButton.Events.Click, () => this._deleteButtonClicked(null));
+    this._deleteSelectedButton =
+        new UI.Toolbar.ToolbarButton(Common.UIString.UIString('Delete Selected'), 'largeicon-delete');
+    this._deleteSelectedButton.addEventListener(
+        UI.Toolbar.ToolbarButton.Events.Click, () => this._deleteButtonClicked(null));
     editorToolbar.appendToolbarItem(this._deleteSelectedButton);
 
-    const entryPathFilterBox = new UI.ToolbarInput(ls`Filter by Path`, '', 1);
+    const entryPathFilterBox = new UI.Toolbar.ToolbarInput(ls`Filter by Path`, '', 1);
     editorToolbar.appendToolbarItem(entryPathFilterBox);
-    const entryPathFilterThrottler = new Common.Throttler(300);
+    const entryPathFilterThrottler = new Common.Throttler.Throttler(300);
     this._entryPathFilter = '';
-    entryPathFilterBox.addEventListener(UI.ToolbarInput.Event.TextChanged, () => {
+    entryPathFilterBox.addEventListener(UI.Toolbar.ToolbarInput.Event.TextChanged, () => {
       entryPathFilterThrottler.schedule(() => {
         this._entryPathFilter = entryPathFilterBox.value();
         return this._updateData(true);
@@ -87,7 +95,7 @@ export class ServiceWorkerCacheView extends UI.SimpleView {
   }
 
   /**
-   * @param {?UI.Widget} preview
+   * @param {?UI.Widget.Widget} preview
    */
   _showPreview(preview) {
     if (preview && this._preview === preview) {
@@ -97,37 +105,37 @@ export class ServiceWorkerCacheView extends UI.SimpleView {
       this._preview.detach();
     }
     if (!preview) {
-      preview = new UI.EmptyWidget(Common.UIString('Select a cache entry above to preview'));
+      preview = new UI.EmptyWidget.EmptyWidget(Common.UIString.UIString('Select a cache entry above to preview'));
     }
     this._preview = preview;
     this._preview.show(this._previewPanel.element);
   }
 
   /**
-   * @return {!DataGrid.DataGrid}
+   * @return {!DataGrid.DataGrid.DataGridImpl}
    */
   _createDataGrid() {
     const columns = /** @type {!Array<!DataGrid.ColumnDescriptor>} */ ([
       {id: 'number', title: '#', sortable: false, width: '3px'},
-      {id: 'name', title: Common.UIString('Name'), weight: 4, sortable: true},
+      {id: 'name', title: Common.UIString.UIString('Name'), weight: 4, sortable: true},
       {id: 'responseType', title: ls`Response-Type`, weight: 1, align: DataGrid.DataGrid.Align.Right, sortable: true},
-      {id: 'contentType', title: Common.UIString('Content-Type'), weight: 1, sortable: true}, {
+      {id: 'contentType', title: Common.UIString.UIString('Content-Type'), weight: 1, sortable: true}, {
         id: 'contentLength',
-        title: Common.UIString('Content-Length'),
+        title: Common.UIString.UIString('Content-Length'),
         weight: 1,
         align: DataGrid.DataGrid.Align.Right,
         sortable: true
       },
       {
         id: 'responseTime',
-        title: Common.UIString('Time Cached'),
+        title: Common.UIString.UIString('Time Cached'),
         width: '12em',
         weight: 1,
         align: DataGrid.DataGrid.Align.Right,
         sortable: true
       }
     ]);
-    const dataGrid = new DataGrid.DataGrid({
+    const dataGrid = new DataGrid.DataGrid.DataGridImpl({
       displayName: ls`Service Worker Cache`,
       columns,
       deleteCallback: this._deleteButtonClicked.bind(this),
@@ -172,7 +180,7 @@ export class ServiceWorkerCacheView extends UI.SimpleView {
   }
 
   /**
-   * @param {?DataGrid.DataGridNode} node
+   * @param {?DataGrid.DataGrid.DataGridNode} node
    */
   async _deleteButtonClicked(node) {
     if (!node) {
@@ -221,7 +229,7 @@ export class ServiceWorkerCacheView extends UI.SimpleView {
     this._returnCount = returnCount;
     this._updateSummaryBar();
 
-    /** @type {!Map<string, !DataGrid.DataGridNode>} */
+    /** @type {!Map<string, !DataGrid.DataGrid.DataGridNode>} */
     const oldEntries = new Map();
     const rootNode = this._dataGrid.rootNode();
     for (const node of rootNode.children) {
@@ -294,7 +302,7 @@ export class ServiceWorkerCacheView extends UI.SimpleView {
   }
 
   /**
-   * @param {!SDK.NetworkRequest} request
+   * @param {!SDK.NetworkRequest.NetworkRequest} request
    */
   async _previewCachedResponse(request) {
     let preview = request[ServiceWorkerCacheView._previewSymbol];
@@ -311,15 +319,16 @@ export class ServiceWorkerCacheView extends UI.SimpleView {
 
   /**
    * @param {!Protocol.CacheStorage.DataEntry} entry
-   * @return {!SDK.NetworkRequest}
+   * @return {!SDK.NetworkRequest.NetworkRequest}
    */
   _createRequest(entry) {
-    const request = new SDK.NetworkRequest('cache-storage-' + entry.requestURL, entry.requestURL, '', '', '', null);
+    const request =
+        new SDK.NetworkRequest.NetworkRequest('cache-storage-' + entry.requestURL, entry.requestURL, '', '', '', null);
     request.requestMethod = entry.requestMethod;
     request.setRequestHeaders(entry.requestHeaders);
     request.statusCode = entry.responseStatus;
     request.statusText = entry.responseStatusText;
-    request.protocol = new Common.ParsedURL(entry.requestURL).scheme;
+    request.protocol = new Common.ParsedURL.ParsedURL(entry.requestURL).scheme;
     request.responseHeaders = entry.responseHeaders;
     request.setRequestHeadersText('');
     request.endTime = entry.responseTime;
@@ -331,9 +340,10 @@ export class ServiceWorkerCacheView extends UI.SimpleView {
     header = entry.responseHeaders.find(header => header.name.toLowerCase() === 'content-length');
     request.resourceSize = (header && header.value) | 0;
 
-    let resourceType = Common.ResourceType.fromMimeType(contentType);
+    let resourceType = Common.ResourceType.ResourceType.fromMimeType(contentType);
     if (!resourceType) {
-      resourceType = Common.ResourceType.fromURL(entry.requestURL) || Common.resourceTypes.Other;
+      resourceType =
+          Common.ResourceType.ResourceType.fromURL(entry.requestURL) || Common.ResourceType.resourceTypes.Other;
     }
     request.setResourceType(resourceType);
     request.setContentDataProvider(this._requestContent.bind(this, request));
@@ -341,7 +351,7 @@ export class ServiceWorkerCacheView extends UI.SimpleView {
   }
 
   /**
-   * @param {!SDK.NetworkRequest} request
+   * @param {!SDK.NetworkRequest.NetworkRequest} request
    * @return {!Promise<!SDK.NetworkRequest.ContentData>}
    */
   async _requestContent(request) {
@@ -360,16 +370,16 @@ export class ServiceWorkerCacheView extends UI.SimpleView {
 
 ServiceWorkerCacheView._previewSymbol = Symbol('preview');
 
-export class DataGridNode extends DataGrid.DataGridNode {
+export class DataGridNode extends DataGrid.DataGrid.DataGridNode {
   /**
    * @param {number} number
-   * @param {!SDK.NetworkRequest} request
+   * @param {!SDK.NetworkRequest.NetworkRequest} request
    * @param {!Protocol.CacheStorage.CachedResponseType} responseType
    */
   constructor(number, request, responseType) {
     super(request);
     this._number = number;
-    const parsed = new Common.ParsedURL(request.url());
+    const parsed = new Common.ParsedURL.ParsedURL(request.url());
     if (parsed.isValid) {
       this._name = request.url().trimURL(parsed.domain());
     } else {
@@ -406,25 +416,27 @@ export class DataGridNode extends DataGrid.DataGridNode {
     } else if (columnId === 'responseTime') {
       value = new Date(this._request.endTime * 1000).toLocaleString();
     }
-    DataGrid.DataGrid.setElementText(cell, value || '', true);
+    DataGrid.DataGrid.DataGridImpl.setElementText(cell, value || '', true);
     cell.title = this._request.url();
     return cell;
   }
 }
 
-export class RequestView extends UI.VBox {
+export class RequestView extends UI.Widget.VBox {
   /**
-   * @param {!SDK.NetworkRequest} request
+   * @param {!SDK.NetworkRequest.NetworkRequest} request
    */
   constructor(request) {
     super();
 
-    this._tabbedPane = new UI.TabbedPane();
+    this._tabbedPane = new UI.TabbedPane.TabbedPane();
     this._tabbedPane.addEventListener(UI.TabbedPane.Events.TabSelected, this._tabSelected, this);
     this._resourceViewTabSetting = self.Common.settings.createSetting('cacheStorageViewTab', 'preview');
 
-    this._tabbedPane.appendTab('headers', Common.UIString('Headers'), new Network.RequestHeadersView(request));
-    this._tabbedPane.appendTab('preview', Common.UIString('Preview'), new Network.RequestPreviewView(request));
+    this._tabbedPane.appendTab(
+        'headers', Common.UIString.UIString('Headers'), new Network.RequestHeadersView.RequestHeadersView(request));
+    this._tabbedPane.appendTab(
+        'preview', Common.UIString.UIString('Preview'), new Network.RequestPreviewView.RequestPreviewView(request));
     this._tabbedPane.show(this.element);
   }
 

@@ -23,10 +23,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as DataGrid from '../data_grid/data_grid.js';
+import * as UI from '../ui/ui.js';
+
 /**
  * @unrestricted
  */
-export class DatabaseQueryView extends UI.VBox {
+export class DatabaseQueryView extends UI.Widget.VBox {
   constructor(database) {
     super();
 
@@ -42,12 +45,12 @@ export class DatabaseQueryView extends UI.VBox {
     this._queryWrapper.tabIndex = -1;
 
     this._promptContainer = this.element.createChild('div', 'database-query-prompt-container');
-    this._promptContainer.appendChild(UI.Icon.create('smallicon-text-prompt', 'prompt-icon'));
+    this._promptContainer.appendChild(UI.Icon.Icon.create('smallicon-text-prompt', 'prompt-icon'));
     this._promptElement = this._promptContainer.createChild('div');
     this._promptElement.className = 'database-query-prompt';
     this._promptElement.addEventListener('keydown', this._promptKeyDown.bind(this));
 
-    this._prompt = new UI.TextPrompt();
+    this._prompt = new UI.TextPrompt.TextPrompt();
     this._prompt.initialize(this.completions.bind(this), ' ');
     this._proxyElement = this._prompt.attach(this._promptElement);
 
@@ -56,6 +59,10 @@ export class DatabaseQueryView extends UI.VBox {
     /** @type {!Array<!Element>} */
     this._queryResults = [];
     this._virtualSelectedIndex = -1;
+    /** @type {?Element} */
+    this._lastSelectedElement;
+    /** @type {number} */
+    this._selectionTimeout = 0;
   }
 
   _messagesClicked() {
@@ -69,7 +76,7 @@ export class DatabaseQueryView extends UI.VBox {
    * @param {!Event} event
    */
   _onKeyDown(event) {
-    if (UI.isEditing() || !this._queryResults.length || event.shiftKey) {
+    if (UI.UIUtils.isEditing() || !this._queryResults.length || event.shiftKey) {
       return;
     }
     switch (event.key) {
@@ -230,7 +237,7 @@ export class DatabaseQueryView extends UI.VBox {
   }
 
   _queryFinished(query, columnNames, values) {
-    const dataGrid = DataGrid.SortableDataGrid.create(columnNames, values, ls`Database Query`);
+    const dataGrid = DataGrid.SortableDataGrid.SortableDataGrid.create(columnNames, values, ls`Database Query`);
     const trimmedQuery = query.trim();
 
     let view = null;
@@ -250,7 +257,7 @@ export class DatabaseQueryView extends UI.VBox {
 
   /**
    * @param {string} query
-   * @param {?UI.Widget} view
+   * @param {?UI.Widget.Widget} view
    */
   _appendViewQueryResult(query, view) {
     const resultElement = this._appendQueryResult(query);
@@ -270,7 +277,7 @@ export class DatabaseQueryView extends UI.VBox {
   _appendErrorQueryResult(query, errorText) {
     const resultElement = this._appendQueryResult(query);
     resultElement.classList.add('error');
-    resultElement.appendChild(UI.Icon.create('smallicon-error', 'prompt-icon'));
+    resultElement.appendChild(UI.Icon.Icon.create('smallicon-error', 'prompt-icon'));
     resultElement.createTextChild(errorText);
 
     this._scrollResultIntoView();
@@ -293,7 +300,7 @@ export class DatabaseQueryView extends UI.VBox {
     this._queryResults.push(element);
     this._updateFocusedItem();
 
-    element.appendChild(UI.Icon.create('smallicon-user-command', 'prompt-icon'));
+    element.appendChild(UI.Icon.Icon.create('smallicon-user-command', 'prompt-icon'));
 
     const commandTextElement = createElement('span');
     commandTextElement.className = 'database-query-text';

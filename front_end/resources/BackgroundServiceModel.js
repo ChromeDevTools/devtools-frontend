@@ -2,13 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as SDK from '../sdk/sdk.js';
+
 /**
  * @implements {Protocol.BackgroundServiceDispatcher}
  * @unrestricted
  */
-export class BackgroundServiceModel extends SDK.SDKModel {
+export class BackgroundServiceModel extends SDK.SDKModel.SDKModel {
   /**
-   * @param {!SDK.Target} target
+   * @param {!SDK.SDKModel.Target} target
    */
   constructor(target) {
     super(target);
@@ -70,7 +72,7 @@ export class BackgroundServiceModel extends SDK.SDKModel {
   }
 }
 
-SDK.SDKModel.register(BackgroundServiceModel, SDK.Target.Capability.Browser, false);
+SDK.SDKModel.SDKModel.register(BackgroundServiceModel, SDK.SDKModel.Capability.Browser, false);
 
 /** @enum {symbol} */
 export const Events = {

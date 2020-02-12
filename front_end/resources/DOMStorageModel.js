@@ -27,10 +27,13 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as Common from '../common/common.js';
+import * as SDK from '../sdk/sdk.js';
+
 /**
  * @unrestricted
  */
-export class DOMStorage extends Common.Object {
+export class DOMStorage extends Common.ObjectWrapper.ObjectWrapper {
   /**
    * @param {!DOMStorageModel} model
    * @param {string} securityOrigin
@@ -106,14 +109,14 @@ DOMStorage.Events = {
 /**
  * @unrestricted
  */
-export class DOMStorageModel extends SDK.SDKModel {
+export class DOMStorageModel extends SDK.SDKModel.SDKModel {
   /**
-   * @param {!SDK.Target} target
+   * @param {!SDK.SDKModel.Target} target
    */
   constructor(target) {
     super(target);
 
-    this._securityOriginManager = target.model(SDK.SecurityOriginManager);
+    this._securityOriginManager = target.model(SDK.SecurityOriginManager.SecurityOriginManager);
     /** @type {!Object.<string, !DOMStorage>} */
     this._storages = {};
     this._agent = target.domstorageAgent();
@@ -165,7 +168,7 @@ export class DOMStorageModel extends SDK.SDKModel {
    * @param {string} securityOrigin
    */
   _addOrigin(securityOrigin) {
-    const parsed = new Common.ParsedURL(securityOrigin);
+    const parsed = new Common.ParsedURL.ParsedURL(securityOrigin);
     // These are "opaque" origins which are not supposed to support DOM storage.
     if (!parsed.isValid || parsed.scheme === 'data' || parsed.scheme === 'about' || parsed.scheme === 'javascript') {
       return;
@@ -289,7 +292,7 @@ export class DOMStorageModel extends SDK.SDKModel {
   }
 }
 
-SDK.SDKModel.register(DOMStorageModel, SDK.Target.Capability.DOM, false);
+SDK.SDKModel.SDKModel.register(DOMStorageModel, SDK.SDKModel.Capability.DOM, false);
 
 /** @enum {symbol} */
 export const Events = {

@@ -28,18 +28,22 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as Common from '../common/common.js';
+import * as ProtocolModule from '../protocol/protocol.js';
+import * as SDK from '../sdk/sdk.js';
+
 /**
  * @implements {Protocol.StorageDispatcher}
  * @unrestricted
  */
-export class IndexedDBModel extends SDK.SDKModel {
+export class IndexedDBModel extends SDK.SDKModel.SDKModel {
   /**
-   * @param {!SDK.Target} target
+   * @param {!SDK.SDKModel.Target} target
    */
   constructor(target) {
     super(target);
     target.registerStorageDispatcher(this);
-    this._securityOriginManager = target.model(SDK.SecurityOriginManager);
+    this._securityOriginManager = target.model(SDK.SecurityOriginManager.SecurityOriginManager);
     this._indexedDBAgent = target.indexedDBAgent();
     this._storageAgent = target.storageAgent();
 
@@ -49,7 +53,7 @@ export class IndexedDBModel extends SDK.SDKModel {
     this._databaseNamesBySecurityOrigin = {};
 
     this._originsUpdated = new Set();
-    this._throttler = new Common.Throttler(1000);
+    this._throttler = new Common.Throttler.Throttler(1000);
   }
 
   /**
@@ -267,7 +271,7 @@ export class IndexedDBModel extends SDK.SDKModel {
    * @return {boolean}
    */
   _isValidSecurityOrigin(securityOrigin) {
-    const parsedURL = Common.ParsedURL.fromString(securityOrigin);
+    const parsedURL = Common.ParsedURL.ParsedURL.fromString(securityOrigin);
     return !!parsedURL && parsedURL.scheme.startsWith('http');
   }
 
@@ -423,12 +427,12 @@ export class IndexedDBModel extends SDK.SDKModel {
       keyRange
     });
 
-    if (response[Protocol.Error]) {
-      console.error('IndexedDBAgent error: ' + response[Protocol.Error]);
+    if (response[ProtocolModule.InspectorBackend.ProtocolError]) {
+      console.error('IndexedDBAgent error: ' + response[ProtocolModule.InspectorBackend.ProtocolError]);
       return;
     }
 
-    const runtimeModel = this.target().model(SDK.RuntimeModel);
+    const runtimeModel = this.target().model(SDK.RuntimeModel.RuntimeModel);
     if (!runtimeModel || !this._databaseNamesBySecurityOrigin[databaseId.securityOrigin]) {
       return;
     }
@@ -455,8 +459,8 @@ export class IndexedDBModel extends SDK.SDKModel {
     const response =
         await this._indexedDBAgent.invoke_getMetadata({securityOrigin: databaseOrigin, databaseName, objectStoreName});
 
-    if (response[Protocol.Error]) {
-      console.error('IndexedDBAgent error: ' + response[Protocol.Error]);
+    if (response[ProtocolModule.InspectorBackend.ProtocolError]) {
+      console.error('IndexedDBAgent error: ' + response[ProtocolModule.InspectorBackend.ProtocolError]);
       return null;
     }
     return {entriesCount: response.entriesCount, keyGeneratorValue: response.keyGeneratorValue};
@@ -515,7 +519,7 @@ export class IndexedDBModel extends SDK.SDKModel {
   }
 }
 
-SDK.SDKModel.register(IndexedDBModel, SDK.Target.Capability.Storage, false);
+SDK.SDKModel.SDKModel.register(IndexedDBModel, SDK.SDKModel.Capability.Storage, false);
 
 export const KeyTypes = {
   NumberType: 'number',
@@ -544,9 +548,9 @@ export const Events = {
  */
 export class Entry {
   /**
-   * @param {!SDK.RemoteObject} key
-   * @param {!SDK.RemoteObject} primaryKey
-   * @param {!SDK.RemoteObject} value
+   * @param {!SDK.RemoteObject.RemoteObject} key
+   * @param {!SDK.RemoteObject.RemoteObject} primaryKey
+   * @param {!SDK.RemoteObject.RemoteObject} value
    */
   constructor(key, primaryKey, value) {
     this.key = key;

@@ -2,15 +2,21 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+import * as Components from '../components/components.js';
+import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
+import * as SDK from '../sdk/sdk.js';
+import * as UI from '../ui/ui.js';
+
 /**
- * @implements {SDK.SDKModelObserver<!SDK.ServiceWorkerManager>}
+ * @implements {SDK.SDKModel.SDKModelObserver<!SDK.ServiceWorkerManager.ServiceWorkerManager>}
  */
-export class ServiceWorkersView extends UI.VBox {
+export class ServiceWorkersView extends UI.Widget.VBox {
   constructor() {
     super(true);
     this.registerRequiredCSS('resources/serviceWorkersView.css');
 
-    this._currentWorkersView = new UI.ReportView(Common.UIString('Service Workers'));
+    this._currentWorkersView = new UI.ReportView.ReportView(Common.UIString.UIString('Service Workers'));
     this._currentWorkersView.setBodyScrollable(false);
     this.contentElement.classList.add('service-worker-list');
     this._currentWorkersView.show(this.contentElement);
@@ -19,17 +25,17 @@ export class ServiceWorkersView extends UI.VBox {
     this._toolbar = this._currentWorkersView.createToolbar();
     this._toolbar.makeWrappable(true /* growVertically */);
 
-    /** @type {!Map<!SDK.ServiceWorkerRegistration, !Section>} */
+    /** @type {!Map<!SDK.ServiceWorkerManager.ServiceWorkerRegistration, !Section>} */
     this._sections = new Map();
     /** @type {symbol} */
     this._registrationSymbol = Symbol('Resources.ServiceWorkersView');
 
-    /** @type {?SDK.ServiceWorkerManager} */
+    /** @type {?SDK.ServiceWorkerManager.ServiceWorkerManager} */
     this._manager = null;
-    /** @type {?SDK.SecurityOriginManager} */
+    /** @type {?SDK.SecurityOriginManager.SecurityOriginManager} */
     this._securityOriginManager = null;
 
-    this._filterThrottler = new Common.Throttler(300);
+    this._filterThrottler = new Common.Throttler.Throttler(300);
 
     this._otherWorkers = this.contentElement.createChild('div', 'service-workers-other-origin');
     this._otherSWFilter = this._otherWorkers.createChild('div', 'service-worker-filter');
@@ -37,53 +43,54 @@ export class ServiceWorkersView extends UI.VBox {
     this._otherSWFilter.setAttribute('role', 'switch');
     this._otherSWFilter.setAttribute('aria-checked', false);
     const filterLabel = this._otherSWFilter.createChild('label', 'service-worker-filter-label');
-    filterLabel.textContent = Common.UIString('Service workers from other origins');
+    filterLabel.textContent = Common.UIString.UIString('Service workers from other origins');
     self.onInvokeElement(this._otherSWFilter, event => {
       if (event.target === this._otherSWFilter || event.target === filterLabel) {
         this._toggleFilter();
       }
     });
 
-    const toolbar = new UI.Toolbar('service-worker-filter-toolbar', this._otherSWFilter);
-    this._filter = new UI.ToolbarInput(ls`Filter service worker`, '', 1);
-    this._filter.addEventListener(UI.ToolbarInput.Event.TextChanged, () => this._filterChanged());
+    const toolbar = new UI.Toolbar.Toolbar('service-worker-filter-toolbar', this._otherSWFilter);
+    this._filter = new UI.Toolbar.ToolbarInput(ls`Filter service worker`, '', 1);
+    this._filter.addEventListener(UI.Toolbar.ToolbarInput.Event.TextChanged, () => this._filterChanged());
     toolbar.appendToolbarItem(this._filter);
 
-    this._otherWorkersView = new UI.ReportView();
+    this._otherWorkersView = new UI.ReportView.ReportView();
     this._otherWorkersView.setBodyScrollable(false);
     this._otherWorkersView.show(this._otherWorkers);
     this._otherWorkersView.element.classList.add('service-workers-for-other-origins');
 
     this._updateCollapsedStyle();
 
-    this._toolbar.appendToolbarItem(MobileThrottling.throttlingManager().createOfflineToolbarCheckbox());
+    this._toolbar.appendToolbarItem(
+        MobileThrottling.ThrottlingManager.throttlingManager().createOfflineToolbarCheckbox());
     const updateOnReloadSetting = self.Common.settings.createSetting('serviceWorkerUpdateOnReload', false);
-    updateOnReloadSetting.setTitle(Common.UIString('Update on reload'));
-    const forceUpdate = new UI.ToolbarSettingCheckbox(
+    updateOnReloadSetting.setTitle(Common.UIString.UIString('Update on reload'));
+    const forceUpdate = new UI.Toolbar.ToolbarSettingCheckbox(
         updateOnReloadSetting, ls`On page reload, force the service worker to update, and activate it`);
     this._toolbar.appendToolbarItem(forceUpdate);
     const bypassServiceWorkerSetting = self.Common.settings.createSetting('bypassServiceWorker', false);
-    bypassServiceWorkerSetting.setTitle(Common.UIString('Bypass for network'));
-    const fallbackToNetwork = new UI.ToolbarSettingCheckbox(
+    bypassServiceWorkerSetting.setTitle(Common.UIString.UIString('Bypass for network'));
+    const fallbackToNetwork = new UI.Toolbar.ToolbarSettingCheckbox(
         bypassServiceWorkerSetting, ls`Bypass the service worker and load resources from the network`);
     this._toolbar.appendToolbarItem(fallbackToNetwork);
 
-    /** @type {!Map<!SDK.ServiceWorkerManager, !Array<!Common.EventTarget.EventDescriptor>>}*/
+    /** @type {!Map<!SDK.ServiceWorkerManager.ServiceWorkerManager, !Array<!Common.EventTarget.EventDescriptor>>}*/
     this._eventListeners = new Map();
-    self.SDK.targetManager.observeModels(SDK.ServiceWorkerManager, this);
+    self.SDK.targetManager.observeModels(SDK.ServiceWorkerManager.ServiceWorkerManager, this);
     this._updateListVisibility();
   }
 
   /**
    * @override
-   * @param {!SDK.ServiceWorkerManager} serviceWorkerManager
+   * @param {!SDK.ServiceWorkerManager.ServiceWorkerManager} serviceWorkerManager
    */
   modelAdded(serviceWorkerManager) {
     if (this._manager) {
       return;
     }
     this._manager = serviceWorkerManager;
-    this._securityOriginManager = serviceWorkerManager.target().model(SDK.SecurityOriginManager);
+    this._securityOriginManager = serviceWorkerManager.target().model(SDK.SecurityOriginManager.SecurityOriginManager);
 
     for (const registration of this._manager.registrations().values()) {
       this._updateRegistration(registration);
@@ -103,14 +110,14 @@ export class ServiceWorkersView extends UI.VBox {
 
   /**
    * @override
-   * @param {!SDK.ServiceWorkerManager} serviceWorkerManager
+   * @param {!SDK.ServiceWorkerManager.ServiceWorkerManager} serviceWorkerManager
    */
   modelRemoved(serviceWorkerManager) {
     if (!this._manager || this._manager !== serviceWorkerManager) {
       return;
     }
 
-    Common.EventTarget.removeEventListeners(this._eventListeners.get(serviceWorkerManager));
+    Common.EventTarget.EventTarget.removeEventListeners(this._eventListeners.get(serviceWorkerManager));
     this._eventListeners.delete(serviceWorkerManager);
     this._manager = null;
     this._securityOriginManager = null;
@@ -118,7 +125,7 @@ export class ServiceWorkersView extends UI.VBox {
 
 
   /**
-   * @param {!SDK.ServiceWorkerRegistration} registration
+   * @param {!SDK.ServiceWorkerManager.ServiceWorkerRegistration} registration
    * @return {number}
    */
   _getTimeStamp(registration) {
@@ -126,10 +133,10 @@ export class ServiceWorkersView extends UI.VBox {
 
     let timestamp = 0;
 
-    const active = versions.get(SDK.ServiceWorkerVersion.Modes.Active);
-    const installing = versions.get(SDK.ServiceWorkerVersion.Modes.Installing);
-    const waiting = versions.get(SDK.ServiceWorkerVersion.Modes.Waiting);
-    const redundant = versions.get(SDK.ServiceWorkerVersion.Modes.Redundant);
+    const active = versions.get(SDK.ServiceWorkerManager.ServiceWorkerVersion.Modes.Active);
+    const installing = versions.get(SDK.ServiceWorkerManager.ServiceWorkerVersion.Modes.Installing);
+    const waiting = versions.get(SDK.ServiceWorkerManager.ServiceWorkerVersion.Modes.Waiting);
+    const redundant = versions.get(SDK.ServiceWorkerManager.ServiceWorkerVersion.Modes.Redundant);
 
     if (active) {
       timestamp = active.scriptResponseTime;
@@ -192,7 +199,7 @@ export class ServiceWorkersView extends UI.VBox {
    * @param {!Common.Event} event
    */
   _registrationUpdated(event) {
-    const registration = /** @type {!SDK.ServiceWorkerRegistration} */ (event.data);
+    const registration = /** @type {!SDK.ServiceWorkerManager.ServiceWorkerRegistration} */ (event.data);
     this._updateRegistration(registration);
     this._gcRegistrations();
   }
@@ -224,7 +231,7 @@ export class ServiceWorkersView extends UI.VBox {
 
   /**
    * @param {string} origin
-   * @return {!UI.ReportView}
+   * @return {!UI.ReportView.ReportView}
    */
   _getReportViewForOrigin(origin) {
     if (this._securityOriginManager.securityOrigins().includes(origin) ||
@@ -236,7 +243,7 @@ export class ServiceWorkersView extends UI.VBox {
   }
 
   /**
-   * @param {!SDK.ServiceWorkerRegistration} registration
+   * @param {!SDK.ServiceWorkerManager.ServiceWorkerRegistration} registration
    * @param {boolean=} skipUpdate
    */
   _updateRegistration(registration, skipUpdate) {
@@ -247,7 +254,7 @@ export class ServiceWorkersView extends UI.VBox {
       uiSection.setUiGroupTitle(ls`Service worker for ${title}`);
       uiSection[this._registrationSymbol] = registration;
       section = new Section(
-          /** @type {!SDK.ServiceWorkerManager} */ (this._manager), uiSection, registration);
+          /** @type {!SDK.ServiceWorkerManager.ServiceWorkerManager} */ (this._manager), uiSection, registration);
       this._sections.set(registration, section);
     }
     if (skipUpdate) {
@@ -261,12 +268,12 @@ export class ServiceWorkersView extends UI.VBox {
    * @param {!Common.Event} event
    */
   _registrationDeleted(event) {
-    const registration = /** @type {!SDK.ServiceWorkerRegistration} */ (event.data);
+    const registration = /** @type {!SDK.ServiceWorkerManager.ServiceWorkerRegistration} */ (event.data);
     this._removeRegistrationFromList(registration);
   }
 
   /**
-   * @param {!SDK.ServiceWorkerRegistration} registration
+   * @param {!SDK.ServiceWorkerManager.ServiceWorkerRegistration} registration
    */
   _removeRegistrationFromList(registration) {
     const section = this._sections.get(registration);
@@ -278,7 +285,7 @@ export class ServiceWorkersView extends UI.VBox {
   }
 
   /**
-   * @param {!SDK.ServiceWorkerRegistration} registration
+   * @param {!SDK.ServiceWorkerManager.ServiceWorkerRegistration} registration
    * @return {boolean}
    */
   _isRegistrationVisible(registration) {
@@ -320,9 +327,9 @@ export class ServiceWorkersView extends UI.VBox {
 
 export class Section {
   /**
-   * @param {!SDK.ServiceWorkerManager} manager
+   * @param {!SDK.ServiceWorkerManager.ServiceWorkerManager} manager
    * @param {!UI.ReportView.Section} section
-   * @param {!SDK.ServiceWorkerRegistration} registration
+   * @param {!SDK.ServiceWorkerManager.ServiceWorkerRegistration} registration
    */
   constructor(manager, section, registration) {
     this._manager = manager;
@@ -330,39 +337,41 @@ export class Section {
     this._registration = registration;
     /** @type {?symbol} */
     this._fingerprint = null;
-    this._pushNotificationDataSetting =
-        self.Common.settings.createLocalSetting('pushData', Common.UIString('Test push message from DevTools.'));
+    this._pushNotificationDataSetting = self.Common.settings.createLocalSetting(
+        'pushData', Common.UIString.UIString('Test push message from DevTools.'));
     this._syncTagNameSetting = self.Common.settings.createLocalSetting('syncTagName', 'test-tag-from-devtools');
     this._periodicSyncTagNameSetting =
         self.Common.settings.createLocalSetting('periodicSyncTagName', 'test-tag-from-devtools');
 
     this._toolbar = section.createToolbar();
     this._toolbar.renderAsLinks();
-    this._updateButton = new UI.ToolbarButton(Common.UIString('Update'), undefined, Common.UIString('Update'));
-    this._updateButton.addEventListener(UI.ToolbarButton.Events.Click, this._updateButtonClicked, this);
+    this._updateButton =
+        new UI.Toolbar.ToolbarButton(Common.UIString.UIString('Update'), undefined, Common.UIString.UIString('Update'));
+    this._updateButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._updateButtonClicked, this);
     this._toolbar.appendToolbarItem(this._updateButton);
-    this._deleteButton =
-        new UI.ToolbarButton(Common.UIString('Unregister service worker'), undefined, Common.UIString('Unregister'));
-    this._deleteButton.addEventListener(UI.ToolbarButton.Events.Click, this._unregisterButtonClicked, this);
+    this._deleteButton = new UI.Toolbar.ToolbarButton(
+        Common.UIString.UIString('Unregister service worker'), undefined, Common.UIString.UIString('Unregister'));
+    this._deleteButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._unregisterButtonClicked, this);
     this._toolbar.appendToolbarItem(this._deleteButton);
 
     // Preserve the order.
-    this._sourceField = this._wrapWidget(this._section.appendField(Common.UIString('Source')));
-    this._statusField = this._wrapWidget(this._section.appendField(Common.UIString('Status')));
-    this._clientsField = this._wrapWidget(this._section.appendField(Common.UIString('Clients')));
+    this._sourceField = this._wrapWidget(this._section.appendField(Common.UIString.UIString('Source')));
+    this._statusField = this._wrapWidget(this._section.appendField(Common.UIString.UIString('Status')));
+    this._clientsField = this._wrapWidget(this._section.appendField(Common.UIString.UIString('Clients')));
     this._createSyncNotificationField(
-        Common.UIString('Push'), this._pushNotificationDataSetting.get(), Common.UIString('Push data'),
-        this._push.bind(this));
+        Common.UIString.UIString('Push'), this._pushNotificationDataSetting.get(),
+        Common.UIString.UIString('Push data'), this._push.bind(this));
     this._createSyncNotificationField(
-        Common.UIString('Sync'), this._syncTagNameSetting.get(), Common.UIString('Sync tag'), this._sync.bind(this));
+        Common.UIString.UIString('Sync'), this._syncTagNameSetting.get(), Common.UIString.UIString('Sync tag'),
+        this._sync.bind(this));
     this._createSyncNotificationField(
         ls`Periodic Sync`, this._periodicSyncTagNameSetting.get(), ls`Periodic Sync tag`,
         tag => this._periodicSync(tag));
 
-    this._linkifier = new Components.Linkifier();
+    this._linkifier = new Components.Linkifier.Linkifier();
     /** @type {!Map<string, !Protocol.Target.TargetInfo>} */
     this._clientInfoCache = new Map();
-    this._throttler = new Common.Throttler(500);
+    this._throttler = new Common.Throttler.Throttler(500);
   }
 
   /**
@@ -375,7 +384,7 @@ export class Section {
     const form =
         this._wrapWidget(this._section.appendField(label)).createChild('form', 'service-worker-editor-with-button');
     const editor = form.createChild('input', 'source-code service-worker-notification-editor');
-    const button = UI.createTextButton(label);
+    const button = UI.UIUtils.createTextButton(label);
     button.type = 'submit';
     form.appendChild(button);
 
@@ -399,7 +408,7 @@ export class Section {
 
   /**
    * @param {string} versionId
-   * @return {?SDK.Target}
+   * @return {?SDK.SDKModel.Target}
    */
   _targetForVersionId(versionId) {
     const version = this._manager.findVersion(versionId);
@@ -423,11 +432,11 @@ export class Section {
   }
 
   /**
-   * @param {!SDK.ServiceWorkerVersion} version
+   * @param {!SDK.ServiceWorkerManager.ServiceWorkerVersion} version
    */
   _updateClientsField(version) {
     this._clientsField.removeChildren();
-    this._section.setFieldVisible(Common.UIString('Clients'), version.controlledClients.length);
+    this._section.setFieldVisible(Common.UIString.UIString('Clients'), version.controlledClients.length);
     for (const client of version.controlledClients) {
       const clientLabelText = this._clientsField.createChild('div', 'service-worker-client');
       if (this._clientInfoCache.has(client)) {
@@ -439,17 +448,17 @@ export class Section {
   }
 
   /**
-   * @param {!SDK.ServiceWorkerVersion} version
+   * @param {!SDK.ServiceWorkerManager.ServiceWorkerVersion} version
    */
   _updateSourceField(version) {
     this._sourceField.removeChildren();
-    const fileName = Common.ParsedURL.extractName(version.scriptURL);
+    const fileName = Common.ParsedURL.ParsedURL.extractName(version.scriptURL);
     const name = this._sourceField.createChild('div', 'report-field-value-filename');
-    const link = Components.Linkifier.linkifyURL(version.scriptURL, {text: fileName});
+    const link = Components.Linkifier.Linkifier.linkifyURL(version.scriptURL, {text: fileName});
     link.tabIndex = 0;
     name.appendChild(link);
     if (this._registration.errors.length) {
-      const errorsLabel = UI.createIconLabel(String(this._registration.errors.length), 'smallicon-error');
+      const errorsLabel = UI.UIUtils.createIconLabel(String(this._registration.errors.length), 'smallicon-error');
       errorsLabel.classList.add('link');
       errorsLabel.tabIndex = 0;
       UI.ARIAUtils.setAccessibleName(errorsLabel, ls`${this._registration.errors.length} registration errors`);
@@ -457,7 +466,7 @@ export class Section {
       name.appendChild(errorsLabel);
     }
     this._sourceField.createChild('div', 'report-field-value-subtitle').textContent =
-        Common.UIString('Received %s', new Date(version.scriptResponseTime * 1000).toLocaleString());
+        Common.UIString.UIString('Received %s', new Date(version.scriptResponseTime * 1000).toLocaleString());
   }
 
   /**
@@ -474,13 +483,13 @@ export class Section {
 
     const versions = this._registration.versionsByMode();
     const scopeURL = this._registration.scopeURL;
-    const title = this._registration.isDeleted ? Common.UIString('%s - deleted', scopeURL) : scopeURL;
+    const title = this._registration.isDeleted ? Common.UIString.UIString('%s - deleted', scopeURL) : scopeURL;
     this._section.setTitle(title);
 
-    const active = versions.get(SDK.ServiceWorkerVersion.Modes.Active);
-    const waiting = versions.get(SDK.ServiceWorkerVersion.Modes.Waiting);
-    const installing = versions.get(SDK.ServiceWorkerVersion.Modes.Installing);
-    const redundant = versions.get(SDK.ServiceWorkerVersion.Modes.Redundant);
+    const active = versions.get(SDK.ServiceWorkerManager.ServiceWorkerVersion.Modes.Active);
+    const waiting = versions.get(SDK.ServiceWorkerManager.ServiceWorkerVersion.Modes.Waiting);
+    const installing = versions.get(SDK.ServiceWorkerManager.ServiceWorkerVersion.Modes.Installing);
+    const redundant = versions.get(SDK.ServiceWorkerManager.ServiceWorkerVersion.Modes.Redundant);
 
     this._statusField.removeChildren();
     const versionsStack = this._statusField.createChild('div', 'service-worker-version-stack');
@@ -488,44 +497,48 @@ export class Section {
 
     if (active) {
       this._updateSourceField(active);
-      const localizedRunningStatus = SDK.ServiceWorkerVersion.RunningStatus[active.runningStatus];
+      const localizedRunningStatus = SDK.ServiceWorkerManager.ServiceWorkerVersion.RunningStatus[active.runningStatus];
       const activeEntry = this._addVersion(
           versionsStack, 'service-worker-active-circle', ls`#${active.id} activated and is ${localizedRunningStatus}`);
 
       if (active.isRunning() || active.isStarting()) {
-        this._createLink(activeEntry, Common.UIString('stop'), this._stopButtonClicked.bind(this, active.id));
+        this._createLink(activeEntry, Common.UIString.UIString('stop'), this._stopButtonClicked.bind(this, active.id));
         if (!this._targetForVersionId(active.id)) {
-          this._createLink(activeEntry, Common.UIString('inspect'), this._inspectButtonClicked.bind(this, active.id));
+          this._createLink(
+              activeEntry, Common.UIString.UIString('inspect'), this._inspectButtonClicked.bind(this, active.id));
         }
       } else if (active.isStartable()) {
-        this._createLink(activeEntry, Common.UIString('start'), this._startButtonClicked.bind(this));
+        this._createLink(activeEntry, Common.UIString.UIString('start'), this._startButtonClicked.bind(this));
       }
       this._updateClientsField(active);
     } else if (redundant) {
       this._updateSourceField(redundant);
       this._addVersion(
-          versionsStack, 'service-worker-redundant-circle', Common.UIString('#%s is redundant', redundant.id));
+          versionsStack, 'service-worker-redundant-circle', Common.UIString.UIString('#%s is redundant', redundant.id));
       this._updateClientsField(redundant);
     }
 
     if (waiting) {
       const waitingEntry = this._addVersion(
-          versionsStack, 'service-worker-waiting-circle', Common.UIString('#%s waiting to activate', waiting.id));
-      this._createLink(waitingEntry, Common.UIString('skipWaiting'), this._skipButtonClicked.bind(this));
+          versionsStack, 'service-worker-waiting-circle',
+          Common.UIString.UIString('#%s waiting to activate', waiting.id));
+      this._createLink(waitingEntry, Common.UIString.UIString('skipWaiting'), this._skipButtonClicked.bind(this));
       waitingEntry.createChild('div', 'service-worker-subtitle').textContent =
-          Common.UIString('Received %s', new Date(waiting.scriptResponseTime * 1000).toLocaleString());
+          Common.UIString.UIString('Received %s', new Date(waiting.scriptResponseTime * 1000).toLocaleString());
       if (!this._targetForVersionId(waiting.id) && (waiting.isRunning() || waiting.isStarting())) {
-        this._createLink(waitingEntry, Common.UIString('inspect'), this._inspectButtonClicked.bind(this, waiting.id));
+        this._createLink(
+            waitingEntry, Common.UIString.UIString('inspect'), this._inspectButtonClicked.bind(this, waiting.id));
       }
     }
     if (installing) {
       const installingEntry = this._addVersion(
-          versionsStack, 'service-worker-installing-circle', Common.UIString('#%s trying to install', installing.id));
+          versionsStack, 'service-worker-installing-circle',
+          Common.UIString.UIString('#%s trying to install', installing.id));
       installingEntry.createChild('div', 'service-worker-subtitle').textContent =
-          Common.UIString('Received %s', new Date(installing.scriptResponseTime * 1000).toLocaleString());
+          Common.UIString.UIString('Received %s', new Date(installing.scriptResponseTime * 1000).toLocaleString());
       if (!this._targetForVersionId(installing.id) && (installing.isRunning() || installing.isStarting())) {
         this._createLink(
-            installingEntry, Common.UIString('inspect'), this._inspectButtonClicked.bind(this, installing.id));
+            installingEntry, Common.UIString.UIString('inspect'), this._inspectButtonClicked.bind(this, installing.id));
       }
     }
     return Promise.resolve();
@@ -649,8 +662,8 @@ export class Section {
    * @return {!Element}
    */
   _wrapWidget(container) {
-    const shadowRoot = UI.createShadowRootWithCoreStyles(container);
-    UI.appendStyle(shadowRoot, 'resources/serviceWorkersView.css');
+    const shadowRoot = UI.Utils.createShadowRootWithCoreStyles(container);
+    UI.Utils.appendStyle(shadowRoot, 'resources/serviceWorkersView.css');
     const contentElement = createElement('div');
     shadowRoot.appendChild(contentElement);
     return contentElement;

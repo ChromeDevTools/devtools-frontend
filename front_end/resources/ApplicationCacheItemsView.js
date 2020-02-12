@@ -23,22 +23,26 @@
  * THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as Common from '../common/common.js';
+import * as DataGrid from '../data_grid/data_grid.js';
+import * as UI from '../ui/ui.js';
+
 import {CHECKING, DOWNLOADING, IDLE, OBSOLETE, UNCACHED, UPDATEREADY} from './ApplicationCacheModel.js';
 
 /**
  * @unrestricted
  */
-export class ApplicationCacheItemsView extends UI.SimpleView {
+export class ApplicationCacheItemsView extends UI.View.SimpleView {
   constructor(model, frameId) {
-    super(Common.UIString('AppCache'));
+    super(Common.UIString.UIString('AppCache'));
 
     this._model = model;
 
     this.element.classList.add('storage-view', 'table');
 
-    this._deleteButton = new UI.ToolbarButton(Common.UIString('Delete'), 'largeicon-delete');
+    this._deleteButton = new UI.Toolbar.ToolbarButton(Common.UIString.UIString('Delete'), 'largeicon-delete');
     this._deleteButton.setVisible(false);
-    this._deleteButton.addEventListener(UI.ToolbarButton.Events.Click, this._deleteButtonClicked, this);
+    this._deleteButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._deleteButtonClicked, this);
 
     this._connectivityIcon = createElement('span', 'dt-icon-label');
     this._connectivityIcon.style.margin = '0 2px 0 5px';
@@ -47,7 +51,8 @@ export class ApplicationCacheItemsView extends UI.SimpleView {
 
     this._frameId = frameId;
 
-    this._emptyWidget = new UI.EmptyWidget(Common.UIString('No Application Cache information available.'));
+    this._emptyWidget =
+        new UI.EmptyWidget.EmptyWidget(Common.UIString.UIString('No Application Cache information available.'));
     this._emptyWidget.show(this.element);
 
     this._markDirty();
@@ -63,12 +68,12 @@ export class ApplicationCacheItemsView extends UI.SimpleView {
 
   /**
    * @override
-   * @return {!Promise<!Array.<!UI.ToolbarItem>>}
+   * @return {!Promise<!Array.<!UI.Toolbar.ToolbarItem>>}
    */
   async toolbarItems() {
     return [
-      this._deleteButton, new UI.ToolbarItem(this._connectivityIcon), new UI.ToolbarSeparator(),
-      new UI.ToolbarItem(this._statusIcon)
+      this._deleteButton, new UI.Toolbar.ToolbarItem(this._connectivityIcon), new UI.Toolbar.ToolbarSeparator(),
+      new UI.Toolbar.ToolbarItem(this._statusIcon)
     ];
   }
 
@@ -132,10 +137,10 @@ export class ApplicationCacheItemsView extends UI.SimpleView {
   updateNetworkState(isNowOnline) {
     if (isNowOnline) {
       this._connectivityIcon.type = 'smallicon-green-ball';
-      this._connectivityIcon.textContent = Common.UIString('Online');
+      this._connectivityIcon.textContent = Common.UIString.UIString('Online');
     } else {
       this._connectivityIcon.type = 'smallicon-red-ball';
-      this._connectivityIcon.textContent = Common.UIString('Offline');
+      this._connectivityIcon.textContent = Common.UIString.UIString('Offline');
     }
   }
 
@@ -175,16 +180,21 @@ export class ApplicationCacheItemsView extends UI.SimpleView {
 
     // FIXME: For Chrome, put creationTime and updateTime somewhere.
     // NOTE: localizedString has not yet been added.
-    // Common.UIString("(%s) Created: %s Updated: %s", this._size, this._creationTime, this._updateTime);
+    // Common.UIString.UIString("(%s) Created: %s Updated: %s", this._size, this._creationTime, this._updateTime);
   }
 
   _createDataGrid() {
     const columns = /** @type {!Array<!DataGrid.ColumnDescriptor>} */ ([
-      {id: 'resource', title: Common.UIString('Resource'), sort: DataGrid.DataGrid.Order.Ascending, sortable: true},
-      {id: 'type', title: Common.UIString('Type'), sortable: true},
-      {id: 'size', title: Common.UIString('Size'), align: DataGrid.DataGrid.Align.Right, sortable: true}
+      {
+        id: 'resource',
+        title: Common.UIString.UIString('Resource'),
+        sort: DataGrid.DataGrid.Order.Ascending,
+        sortable: true
+      },
+      {id: 'type', title: Common.UIString.UIString('Type'), sortable: true},
+      {id: 'size', title: Common.UIString.UIString('Size'), align: DataGrid.DataGrid.Align.Right, sortable: true}
     ]);
-    this._dataGrid = new DataGrid.DataGrid({displayName: ls`Application Cache`, columns});
+    this._dataGrid = new DataGrid.DataGrid.DataGridImpl({displayName: ls`Application Cache`, columns});
     this._dataGrid.setStriped(true);
     this._dataGrid.asWidget().show(this.element);
     this._dataGrid.addEventListener(DataGrid.DataGrid.Events.SortingChanged, this._populateDataGrid, this);
@@ -226,7 +236,7 @@ export class ApplicationCacheItemsView extends UI.SimpleView {
       data.resource = resource.url;
       data.type = resource.type;
       data.size = Number.bytesToString(resource.size);
-      const node = new DataGrid.DataGridNode(data);
+      const node = new DataGrid.DataGrid.DataGridNode(data);
       node.resource = resource;
       node.selectable = true;
       this._dataGrid.rootNode().appendChild(node);

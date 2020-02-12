@@ -86,9 +86,9 @@ export class ResourceTreeModel extends SDKModel {
    * @return {!Array.<!ResourceTreeFrame>}
    */
   static frames() {
-    let result = [];
+    const result = [];
     for (const resourceTreeModel of self.SDK.targetManager.models(ResourceTreeModel)) {
-      result = result.concat(resourceTreeModel._frames.valuesArray());
+      result.push(...resourceTreeModel._frames.values());
     }
     return result;
   }
@@ -325,7 +325,7 @@ export class ResourceTreeModel extends SDKModel {
    * @return {!Array<!ResourceTreeFrame>}
    */
   frames() {
-    return this._frames.valuesArray();
+    return [...this._frames.values()];
   }
 
   /**

@@ -241,7 +241,7 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
    * @return {!Array<!IsolatedFileSystem>}
    */
   fileSystems() {
-    return this._fileSystems.valuesArray();
+    return [...this._fileSystems.values()];
   }
 
   /**

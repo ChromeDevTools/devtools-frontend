@@ -1355,7 +1355,7 @@ export class DOMModel extends SDKModel {
    */
   async pushNodesByBackendIdsToFrontend(backendNodeIds) {
     await this.requestDocument();
-    const backendNodeIdsArray = backendNodeIds.valuesArray();
+    const backendNodeIdsArray = [...backendNodeIds];
     const nodeIds = await this._agent.pushNodesByBackendIdsToFrontend(backendNodeIdsArray);
     if (!nodeIds) {
       return null;

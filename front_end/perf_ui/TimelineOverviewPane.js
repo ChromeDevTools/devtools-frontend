@@ -196,7 +196,7 @@ export class TimelineOverviewPane extends UI.VBox {
       marker.style.left = position + 'px';
     }
     this._overviewGrid.removeEventDividers();
-    this._overviewGrid.addEventDividers(filteredMarkers.valuesArray());
+    this._overviewGrid.addEventDividers([...filteredMarkers.values()]);
   }
 
   reset() {

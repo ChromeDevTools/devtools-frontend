@@ -1505,7 +1505,7 @@ export class TimelineUIUtils {
           causeToInvalidationMap.set(causeKey, [invalidation]);
         }
       }
-      return causeToInvalidationMap.valuesArray();
+      return [...causeToInvalidationMap.values()];
     }
   }
 

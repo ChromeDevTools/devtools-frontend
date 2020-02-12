@@ -95,7 +95,7 @@ export class RuntimeModel extends SDKModel {
    * @return {!Array.<!ExecutionContext>}
    */
   executionContexts() {
-    return this._executionContextById.valuesArray().sort(this.executionContextComparator());
+    return [...this._executionContextById.values()].sort(this.executionContextComparator());
   }
 
   /**

@@ -407,7 +407,7 @@ export class TimelineModelImpl {
     if (mismatchingIds.size) {
       self.Common.console.error(
           'Timeline recording was started in more than one page simultaneously. Session id mismatch: ' +
-          this._sessionId + ' and ' + mismatchingIds.valuesArray() + '.');
+          this._sessionId + ' and ' + [...mismatchingIds] + '.');
     }
     return result;
   }

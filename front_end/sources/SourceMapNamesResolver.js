@@ -335,7 +335,7 @@ export const resolveThisObject = function(callFrame) {
       return Promise.resolve(callFrame.thisObject());
     }
 
-    const thisMapping = thisMappings.valuesArray()[0];
+    const thisMapping = thisMappings.values().next().value;
     return callFrame
         .evaluate({
           expression: thisMapping,

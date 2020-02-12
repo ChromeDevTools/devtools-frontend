@@ -116,7 +116,7 @@ export class ChildTargetManager extends SDKModel {
   }
 
   _fireAvailableTargetsChanged() {
-    self.SDK.targetManager.dispatchEventToListeners(Events.AvailableTargetsChanged, this._targetInfos.valuesArray());
+    self.SDK.targetManager.dispatchEventToListeners(Events.AvailableTargetsChanged, [...this._targetInfos.values()]);
   }
 
   /**

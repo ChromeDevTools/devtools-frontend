@@ -51,11 +51,11 @@ ApplicationTestRunner.dumpServiceWorkersView = function() {
 };
 
 ApplicationTestRunner.deleteServiceWorkerRegistration = function(scope) {
-  TestRunner.serviceWorkerManager.registrations().valuesArray().map(function(registration) {
+  for (const registration of TestRunner.serviceWorkerManager.registrations().values()) {
     if (registration.scopeURL === scope) {
       TestRunner.serviceWorkerManager.deleteRegistration(registration.id);
     }
-  });
+  }
 };
 
 ApplicationTestRunner.makeFetchInServiceWorker = function(scope, url, requestInitializer, callback) {

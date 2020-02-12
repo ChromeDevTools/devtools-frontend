@@ -108,7 +108,7 @@ export class CSSMetadata {
         }
       }
 
-      this._propertyValues.set(propertyName, values.valuesArray());
+      this._propertyValues.set(propertyName, [...values]);
     }
 
     /** @type {!Array<string>} */

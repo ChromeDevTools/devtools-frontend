@@ -49,7 +49,7 @@ export class SecurityOriginManager extends SDKModel {
    * @return {!Array<string>}
    */
   securityOrigins() {
-    return this._securityOrigins.valuesArray();
+    return [...this._securityOrigins];
   }
 
   /**

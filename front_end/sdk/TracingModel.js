@@ -298,7 +298,7 @@ export class TracingModel {
    * @return {!Array.<!Process>}
    */
   sortedProcesses() {
-    return NamedObject._sort(this._processById.valuesArray());
+    return NamedObject._sort([...this._processById.values()]);
   }
 
   /**
@@ -897,7 +897,7 @@ export class Process extends NamedObject {
    * @return {!Array.<!Thread>}
    */
   sortedThreads() {
-    return NamedObject._sort(this._threads.valuesArray());
+    return NamedObject._sort([...this._threads.values()]);
   }
 }
 

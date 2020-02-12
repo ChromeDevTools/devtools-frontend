@@ -529,7 +529,7 @@ export class StylesSidebarPane extends ElementsSidebarPane {
     if (keys.delete(Protocol.DOM.PseudoType.Before)) {
       pseudoTypes.push(Protocol.DOM.PseudoType.Before);
     }
-    pseudoTypes = pseudoTypes.concat(keys.valuesArray().sort());
+    pseudoTypes = pseudoTypes.concat([...keys].sort());
     for (const pseudoType of pseudoTypes) {
       const block = SectionBlock.createPseudoTypeBlock(pseudoType);
       for (const style of matchedStyles.pseudoStyles(pseudoType)) {

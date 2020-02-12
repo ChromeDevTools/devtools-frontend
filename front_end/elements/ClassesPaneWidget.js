@@ -216,8 +216,7 @@ export class ClassesPaneWidget extends UI.Widget {
       activeClasses.add(className);
     }
 
-    const newClasses = activeClasses.valuesArray();
-    newClasses.sort();
+    const newClasses = [...activeClasses.values()].sort();
 
     this._pendingNodeClasses.set(node, newClasses.join(' '));
     this._updateNodeThrottler.schedule(this._flushPendingClasses.bind(this));
@@ -314,7 +313,7 @@ export class ClassNamePrompt extends UI.TextPrompt {
                            .classNamesPromise(selectedNode.ownerDocument.id)
                            .then(classes => completions.addAll(classes));
     promises.push(domPromise);
-    return Promise.all(promises).then(() => completions.valuesArray());
+    return Promise.all(promises).then(() => [...completions]);
   }
 
   /**

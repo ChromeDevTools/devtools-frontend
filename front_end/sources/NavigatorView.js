@@ -1320,7 +1320,7 @@ export class NavigatorTreeNode {
    * @return {!Array.<!NavigatorTreeNode>}
    */
   children() {
-    return this._children.valuesArray();
+    return [...this._children.values()];
   }
 
   /**

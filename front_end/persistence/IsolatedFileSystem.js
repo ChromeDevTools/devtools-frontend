@@ -138,7 +138,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
    * @return {!Array<string>}
    */
   initialFilePaths() {
-    return this._initialFilePaths.valuesArray();
+    return [...this._initialFilePaths];
   }
 
   /**
@@ -146,7 +146,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
    * @return {!Array<string>}
    */
   initialGitFolders() {
-    return this._initialGitFolders.valuesArray();
+    return [...this._initialGitFolders];
   }
 
   /**
@@ -577,7 +577,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
 
   _saveExcludedFolders() {
     const settingValue = this._excludedFoldersSetting.get();
-    settingValue[this.path()] = this._excludedFolders.valuesArray();
+    settingValue[this.path()] = [...this._excludedFolders];
     this._excludedFoldersSetting.set(settingValue);
   }
 

@@ -191,7 +191,7 @@ export class RemoteObject {
       }
     }
     return {
-      properties: propertiesMap.valuesArray().concat(propertySymbols),
+      properties: [...propertiesMap.values()].concat(propertySymbols),
       internalProperties: internalProperties ? internalProperties : null
     };
   }

@@ -509,7 +509,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
     for (const resourceTreeModel of self.SDK.targetManager.models(SDK.ResourceTreeModel.ResourceTreeModel)) {
       resourceTreeModel.forAllResources(pushResourceData.bind(this));
     }
-    return resources.valuesArray();
+    return [...resources.values()];
   }
 
   /**

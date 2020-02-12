@@ -986,14 +986,6 @@ self.numberToStringWithSpacesPadding = function(value, symbolsCount) {
 };
 
 /**
- * @return {!Array.<T>}
- * @template T
- */
-Set.prototype.valuesArray = function() {
-  return Array.from(this.values());
-};
-
-/**
  * @return {?T}
  * @template T
  */
@@ -1022,13 +1014,6 @@ Map.prototype.remove = function(key) {
   const value = this.get(key);
   this.delete(key);
   return value;
-};
-
-/**
- * @return {!Array<!VALUE>}
- */
-Map.prototype.valuesArray = function() {
-  return Array.from(this.values());
 };
 
 /**

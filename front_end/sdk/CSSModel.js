@@ -358,7 +358,7 @@ export class CSSModel extends SDKModel {
    * @return {!Array.<!CSSStyleSheetHeader>}
    */
   allStyleSheets() {
-    const values = this._styleSheetIdToHeader.valuesArray();
+    const values = [...this._styleSheetIdToHeader.values()];
     /**
      * @param {!CSSStyleSheetHeader} a
      * @param {!SDK.CSSStyleSheetHeader} b
@@ -487,7 +487,7 @@ export class CSSModel extends SDKModel {
    */
   async requestViaInspectorStylesheet(node) {
     const frameId = node.frameId() || (this._resourceTreeModel ? this._resourceTreeModel.mainFrame.id : '');
-    const headers = this._styleSheetIdToHeader.valuesArray();
+    const headers = [...this._styleSheetIdToHeader.values()];
     const styleSheetHeader = headers.find(header => header.frameId === frameId && header.isViaInspector());
     if (styleSheetHeader) {
       return styleSheetHeader;
@@ -521,7 +521,7 @@ export class CSSModel extends SDKModel {
    * @return {!Array.<!CSSStyleSheetHeader>}
    */
   styleSheetHeaders() {
-    return this._styleSheetIdToHeader.valuesArray();
+    return [...this._styleSheetIdToHeader.values()];
   }
 
   /**
@@ -681,12 +681,12 @@ export class CSSModel extends SDKModel {
   }
 
   _resetStyleSheets() {
-    const headers = this._styleSheetIdToHeader.valuesArray();
+    const headers = [...this._styleSheetIdToHeader.values()];
     this._styleSheetIdsForURL.clear();
     this._styleSheetIdToHeader.clear();
-    for (let i = 0; i < headers.length; ++i) {
-      this._sourceMapManager.detachSourceMap(headers[i]);
-      this.dispatchEventToListeners(Events.StyleSheetRemoved, headers[i]);
+    for (const header of headers) {
+      this._sourceMapManager.detachSourceMap(header);
+      this.dispatchEventToListeners(Events.StyleSheetRemoved, header);
     }
   }
 

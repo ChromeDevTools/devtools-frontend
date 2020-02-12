@@ -121,7 +121,7 @@ export class DatabaseTableView extends UI.View.SimpleView {
         columnsVisibility[this._columnsMap.get(part)] = true;
       }
     }
-    const newVisibleColumns = matches.valuesArray().sort().join(', ');
+    const newVisibleColumns = [...matches].sort().join(', ');
     if (newVisibleColumns.length === 0) {
       for (const v of this._columnsMap.values()) {
         columnsVisibility[v] = true;

@@ -181,7 +181,8 @@ export class DebuggerPlugin extends Plugin {
     infobar.createDetailsRowMessage(
         Common.UIString('Debugger will skip stepping through this script, and will not stop on exceptions'));
 
-    const scriptFile = this._scriptFileForDebuggerModel.size ? this._scriptFileForDebuggerModel.valuesArray()[0] : null;
+    const scriptFile =
+        this._scriptFileForDebuggerModel.size ? this._scriptFileForDebuggerModel.values().next().value : null;
     if (scriptFile && scriptFile.hasSourceMapURL()) {
       infobar.createDetailsRowMessage(Common.UIString('Source map found, but ignored for blackboxed file.'));
     }
@@ -322,7 +323,7 @@ export class DebuggerPlugin extends Plugin {
           self.Common.settings.moduleSetting('jsSourceMapsEnabled').get() &&
           !self.Bindings.blackboxManager.isBlackboxedUISourceCode(this._uiSourceCode)) {
         if (this._scriptFileForDebuggerModel.size) {
-          const scriptFile = this._scriptFileForDebuggerModel.valuesArray()[0];
+          const scriptFile = this._scriptFileForDebuggerModel.values().next().value;
           const addSourceMapURLLabel = Common.UIString('Add source map\u2026');
           contextMenu.debugSection().appendItem(addSourceMapURLLabel, addSourceMapURL.bind(null, scriptFile));
         }

@@ -2,11 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
+import * as Host from '../host/host.js';
+import * as SDK from '../sdk/sdk.js';
+
 import {Memory} from './LineLevelProfile.js';
 
 /**
- * @implements {Common.Runnable}
- * @implements {SDK.SDKModelObserver<!SDK.HeapProfilerModel>}
+ * @implements {Common.Runnable.Runnable}
+ * @implements {SDK.SDKModel.SDKModelObserver<!SDK.HeapProfilerModel.HeapProfilerModel>}
  */
 export class LiveHeapProfile {
   constructor() {
@@ -28,7 +32,7 @@ export class LiveHeapProfile {
 
   /**
    * @override
-   * @param {!SDK.HeapProfilerModel} model
+   * @param {!SDK.HeapProfilerModel.HeapProfilerModel} model
    */
   modelAdded(model) {
     model.startSampling(1e4);
@@ -36,7 +40,7 @@ export class LiveHeapProfile {
 
   /**
    * @override
-   * @param {!SDK.HeapProfilerModel} model
+   * @param {!SDK.HeapProfilerModel.HeapProfilerModel} model
    */
   modelRemoved(model) {
     // Cannot do much when the model has already been removed.
@@ -48,12 +52,12 @@ export class LiveHeapProfile {
     }
     this._running = true;
     const sessionId = this._sessionId;
-    self.SDK.targetManager.observeModels(SDK.HeapProfilerModel, this);
+    self.SDK.targetManager.observeModels(SDK.HeapProfilerModel.HeapProfilerModel, this);
     self.SDK.targetManager.addModelListener(
-        SDK.ResourceTreeModel, SDK.ResourceTreeModel.Events.Load, this._loadEventFired, this);
+        SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.Load, this._loadEventFired, this);
 
     do {
-      const models = self.SDK.targetManager.models(SDK.HeapProfilerModel);
+      const models = self.SDK.targetManager.models(SDK.HeapProfilerModel.HeapProfilerModel);
       const profiles = await Promise.all(models.map(model => model.getSamplingProfile()));
       if (sessionId !== this._sessionId) {
         break;
@@ -66,14 +70,15 @@ export class LiveHeapProfile {
         }
       }
       await Promise.race([
-        new Promise(r => setTimeout(r, Host.isUnderTest() ? 10 : 5000)), new Promise(r => this._loadEventCallback = r)
+        new Promise(r => setTimeout(r, Host.InspectorFrontendHost.isUnderTest() ? 10 : 5000)),
+        new Promise(r => this._loadEventCallback = r)
       ]);
     } while (sessionId === this._sessionId);
 
-    self.SDK.targetManager.unobserveModels(SDK.HeapProfilerModel, this);
+    self.SDK.targetManager.unobserveModels(SDK.HeapProfilerModel.HeapProfilerModel, this);
     self.SDK.targetManager.removeModelListener(
-        SDK.ResourceTreeModel, SDK.ResourceTreeModel.Events.Load, this._loadEventFired, this);
-    for (const model of self.SDK.targetManager.models(SDK.HeapProfilerModel)) {
+        SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.Load, this._loadEventFired, this);
+    for (const model of self.SDK.targetManager.models(SDK.HeapProfilerModel.HeapProfilerModel)) {
       model.stopSampling();
     }
     self.runtime.sharedInstance(Memory).reset();

@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as UI from '../ui/ui.js';
+
 import {MinimalTimeWindowMs} from './FlameChart.js';
 
 /**
@@ -36,7 +38,7 @@ export class ChartViewportDelegate {
 /**
  * @unrestricted
  */
-export class ChartViewport extends UI.VBox {
+export class ChartViewport extends UI.Widget.VBox {
   /**
    * @param {!ChartViewportDelegate} delegate
    */
@@ -53,10 +55,10 @@ export class ChartViewport extends UI.VBox {
     this.viewportElement.addEventListener('keydown', this._onChartKeyDown.bind(this), false);
     this.viewportElement.addEventListener('keyup', this._onChartKeyUp.bind(this), false);
 
-    UI.installDragHandle(
+    UI.UIUtils.installDragHandle(
         this.viewportElement, this._startDragging.bind(this), this._dragging.bind(this), this._endDragging.bind(this),
         '-webkit-grabbing', null);
-    UI.installDragHandle(
+    UI.UIUtils.installDragHandle(
         this.viewportElement, this._startRangeSelection.bind(this), this._rangeSelectionDragging.bind(this),
         this._endRangeSelection.bind(this), 'text', null);
 
@@ -405,7 +407,7 @@ export class ChartViewport extends UI.VBox {
    * @param {!Event} e
    */
   _handleZoomPanKeys(e) {
-    if (!UI.KeyboardShortcut.hasNoModifiers(e)) {
+    if (!UI.KeyboardShortcut.KeyboardShortcut.hasNoModifiers(e)) {
       return;
     }
     const zoomFactor = e.shiftKey ? 0.8 : 0.3;
@@ -514,7 +516,7 @@ export class ChartViewport extends UI.VBox {
     }
     this._targetLeftTime = startTime;
     this._targetRightTime = endTime;
-    this._cancelWindowTimesAnimation = UI.animateFunction(
+    this._cancelWindowTimesAnimation = UI.UIUtils.animateFunction(
         this.element.window(), animateWindowTimes.bind(this),
         [{from: this._visibleLeftTime, to: startTime}, {from: this._visibleRightTime, to: endTime}], 100,
         () => this._cancelWindowTimesAnimation = null);

@@ -28,13 +28,16 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as Host from '../host/host.js';
+import * as UI from '../ui/ui.js';
+
 /**
  * @unrestricted
  */
 export class TimelineGrid {
   constructor() {
     this.element = createElement('div');
-    UI.appendStyle(this.element, 'perf_ui/timelineGrid.css');
+    UI.Utils.appendStyle(this.element, 'perf_ui/timelineGrid.css');
 
     this._dividersElement = this.element.createChild('div', 'resources-dividers');
 
@@ -106,7 +109,7 @@ export class TimelineGrid {
     context.scale(window.devicePixelRatio, window.devicePixelRatio);
     const height = Math.floor(context.canvas.height / window.devicePixelRatio);
     context.strokeStyle =
-        self.UI.themeSupport.patchColorText('rgba(0, 0, 0, 0.1)', UI.ThemeSupport.ColorUsage.Foreground);
+        self.UI.themeSupport.patchColorText('rgba(0, 0, 0, 0.1)', UI.UIUtils.ThemeSupport.ColorUsage.Foreground);
     context.lineWidth = 1;
 
     context.translate(0.5, 0.5);
@@ -134,12 +137,12 @@ export class TimelineGrid {
 
     context.beginPath();
     context.fillStyle =
-        self.UI.themeSupport.patchColorText('rgba(255, 255, 255, 0.5)', UI.ThemeSupport.ColorUsage.Background);
+        self.UI.themeSupport.patchColorText('rgba(255, 255, 255, 0.5)', UI.UIUtils.ThemeSupport.ColorUsage.Background);
     context.fillRect(0, 0, width, headerHeight);
 
-    context.fillStyle = self.UI.themeSupport.patchColorText('#333', UI.ThemeSupport.ColorUsage.Foreground);
+    context.fillStyle = self.UI.themeSupport.patchColorText('#333', UI.UIUtils.ThemeSupport.ColorUsage.Foreground);
     context.textBaseline = 'hanging';
-    context.font = '11px ' + Host.fontFamily();
+    context.font = '11px ' + Host.Platform.fontFamily();
 
     const paddingRight = 4;
     for (const offsetInfo of dividersData.offsets) {

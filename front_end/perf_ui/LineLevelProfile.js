@@ -2,6 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Bindings from '../bindings/bindings.js';
+import * as Common from '../common/common.js';
+import * as Profiler from '../profiler/profiler.js';  // eslint-disable-line no-unused-vars
+import * as SDK from '../sdk/sdk.js';
+import * as SourceFrame from '../source_frame/source_frame.js';  // eslint-disable-line no-unused-vars
+import * as TextEditor from '../text_editor/text_editor.js';     // eslint-disable-line no-unused-vars
+import * as Workspace from '../workspace/workspace.js';          // eslint-disable-line no-unused-vars
+
 export class Performance {
   constructor() {
     this._helper = new Helper('performance');
@@ -12,7 +20,7 @@ export class Performance {
   }
 
   /**
-   * @param {!SDK.CPUProfileDataModel} profile
+   * @param {!SDK.CPUProfileDataModel.CPUProfileDataModel} profile
    */
   _appendLegacyCPUProfile(profile) {
     const target = profile.target();
@@ -37,7 +45,7 @@ export class Performance {
   }
 
   /**
-   * @param {!SDK.CPUProfileDataModel} profile
+   * @param {!SDK.CPUProfileDataModel.CPUProfileDataModel} profile
    */
   appendCPUProfile(profile) {
     if (!profile.lines) {
@@ -74,7 +82,7 @@ export class Memory {
 
   /**
    * @param {!Protocol.HeapProfiler.SamplingHeapProfile} profile
-   * @param {?SDK.Target} target
+   * @param {?SDK.SDKModel.Target} target
    */
   appendHeapProfile(profile, target) {
     const helper = this._helper;
@@ -105,20 +113,20 @@ export class Helper {
    */
   constructor(type) {
     this._type = type;
-    this._locationPool = new Bindings.LiveLocationPool();
+    this._locationPool = new Bindings.LiveLocation.LiveLocationPool();
     this._updateTimer = null;
     this.reset();
   }
 
   reset() {
     // The second map uses string keys for script URLs and numbers for scriptId.
-    /** @type {!Map<?SDK.Target, !Map<string|number, !Map<number, number>>>} */
+    /** @type {!Map<?SDK.SDKModel.Target, !Map<string|number, !Map<number, number>>>} */
     this._lineData = new Map();
     this.scheduleUpdate();
   }
 
   /**
-   * @param {?SDK.Target} target
+   * @param {?SDK.SDKModel.Target} target
    * @param {string|number} scriptIdOrUrl
    * @param {number} line
    * @param {number} data
@@ -151,8 +159,8 @@ export class Helper {
     this._locationPool.disposeAll();
     self.Workspace.workspace.uiSourceCodes().forEach(uiSourceCode => uiSourceCode.removeDecorationsForType(this._type));
     for (const targetToScript of this._lineData) {
-      const target = /** @type {?SDK.Target} */ (targetToScript[0]);
-      const debuggerModel = target ? target.model(SDK.DebuggerModel) : null;
+      const target = /** @type {?SDK.SDKModel.Target} */ (targetToScript[0]);
+      const debuggerModel = target ? target.model(SDK.DebuggerModel.DebuggerModel) : null;
       const scriptToLineMap = /** @type {!Map<string|number, !Map<number, number>>} */ (targetToScript[1]);
       for (const scriptToLine of scriptToLineMap) {
         const scriptIdOrUrl = /** @type {string|number} */ (scriptToLine[0]);
@@ -189,7 +197,7 @@ export class Presentation {
    * @param {!SDK.DebuggerModel.Location} rawLocation
    * @param {string} type
    * @param {number} time
-   * @param {!Bindings.LiveLocationPool} locationPool
+   * @param {!Bindings.LiveLocation.LiveLocationPool} locationPool
    */
   constructor(rawLocation, type, time, locationPool) {
     this._type = type;
@@ -200,7 +208,7 @@ export class Presentation {
   }
 
   /**
-   * @param {!Bindings.LiveLocation} liveLocation
+   * @param {!Bindings.LiveLocation.LiveLocation} liveLocation
    */
   updateLocation(liveLocation) {
     if (this._uiLocation) {
@@ -214,13 +222,13 @@ export class Presentation {
 }
 
 /**
- * @implements {SourceFrame.LineDecorator}
+ * @implements {SourceFrame.SourceFrame.LineDecorator}
  */
 export class LineDecorator {
   /**
    * @override
-   * @param {!Workspace.UISourceCode} uiSourceCode
-   * @param {!TextEditor.CodeMirrorTextEditor} textEditor
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
+   * @param {!TextEditor.CodeMirrorTextEditor.CodeMirrorTextEditor} textEditor
    * @param {string} type
    */
   decorate(uiSourceCode, textEditor, type) {
@@ -247,7 +255,7 @@ export class LineDecorator {
     const element = createElementWithClass('div', 'text-editor-line-marker-text');
     if (type === 'performance') {
       const intensity = Number.constrain(Math.log10(1 + 10 * value) / 5, 0.02, 1);
-      element.textContent = Common.UIString('%.1f', value);
+      element.textContent = Common.UIString.UIString('%.1f', value);
       element.style.backgroundColor = `hsla(44, 100%, 50%, ${intensity.toFixed(3)})`;
       element.createChild('span', 'line-marker-units').textContent = ls`ms`;
     } else {
@@ -264,7 +272,7 @@ export class LineDecorator {
         units = ls`KB`;
         fractionDigits = 0;
       }
-      element.textContent = Common.UIString(`%.${fractionDigits}f`, value);
+      element.textContent = Common.UIString.UIString(`%.${fractionDigits}f`, value);
       element.createChild('span', 'line-marker-units').textContent = units;
     }
     return element;

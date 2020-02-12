@@ -28,6 +28,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as Common from '../common/common.js';
+import * as Host from '../host/host.js';
+import * as UI from '../ui/ui.js';
+
 import {ChartViewport, ChartViewportDelegate} from './ChartViewport.js';  // eslint-disable-line no-unused-vars
 import {Calculator, TimelineGrid} from './TimelineGrid.js';               // eslint-disable-line no-unused-vars
 
@@ -63,11 +67,11 @@ export class FlameChartDelegate {
  * @implements {Calculator}
  * @implements {ChartViewportDelegate}
  */
-export class FlameChart extends UI.VBox {
+export class FlameChart extends UI.Widget.VBox {
   /**
    * @param {!FlameChartDataProvider} dataProvider
    * @param {!FlameChartDelegate} flameChartDelegate
-   * @param {!Common.Setting=} groupExpansionSetting
+   * @param {!Common.Settings.Setting=} groupExpansionSetting
    */
   constructor(dataProvider, flameChartDelegate, groupExpansionSetting) {
     super(true);
@@ -112,7 +116,7 @@ export class FlameChart extends UI.VBox {
       this._selectedElement.classList.add('flame-chart-unfocused-selected-element');
     }, false);
 
-    UI.installDragHandle(
+    UI.UIUtils.installDragHandle(
         this._viewportElement, this._startDragging.bind(this), this._dragging.bind(this), this._endDragging.bind(this),
         null);
 
@@ -152,10 +156,10 @@ export class FlameChart extends UI.VBox {
     // Keyboard focused group is used to navigate groups irrespective of whether they are selectable or not
     this._keyboardFocusedGroup = -1;
 
-    this._selectedGroupBackroundColor =
-        self.UI.themeSupport.patchColorText(Colors.SelectedGroupBackground, UI.ThemeSupport.ColorUsage.Background);
+    this._selectedGroupBackroundColor = self.UI.themeSupport.patchColorText(
+        Colors.SelectedGroupBackground, UI.UIUtils.ThemeSupport.ColorUsage.Background);
     this._selectedGroupBorderColor =
-        self.UI.themeSupport.patchColorText(Colors.SelectedGroupBorder, UI.ThemeSupport.ColorUsage.Background);
+        self.UI.themeSupport.patchColorText(Colors.SelectedGroupBorder, UI.UIUtils.ThemeSupport.ColorUsage.Background);
   }
 
   /**
@@ -588,7 +592,7 @@ export class FlameChart extends UI.VBox {
    * @param {!Event} e
    */
   _onKeyDown(e) {
-    if (!UI.KeyboardShortcut.hasNoModifiers(e) || !this._timelineData()) {
+    if (!UI.KeyboardShortcut.KeyboardShortcut.hasNoModifiers(e) || !this._timelineData()) {
       return;
     }
 
@@ -974,7 +978,7 @@ export class FlameChart extends UI.VBox {
     context.fillStyle = 'rgba(0, 0, 0, 0)';
     context.fillRect(0, 0, width, height);
     context.translate(0, -top);
-    const defaultFont = '11px ' + Host.fontFamily();
+    const defaultFont = '11px ' + Host.Platform.fontFamily();
     context.font = defaultFont;
 
     const entryTotalTimes = timelineData.entryTotalTimes;
@@ -985,7 +989,7 @@ export class FlameChart extends UI.VBox {
     const titleIndices = [];
     const markerIndices = [];
     const textPadding = this._textPadding;
-    const minTextWidth = 2 * textPadding + UI.measureTextWidth(context, '\u2026');
+    const minTextWidth = 2 * textPadding + UI.UIUtils.measureTextWidth(context, '\u2026');
     const minTextWidthDuration = this._chartViewport.pixelToTimeOffset(minTextWidth);
     const minVisibleBarLevel = Math.max(this._visibleLevelOffsets.upperBound(top) - 1, 0);
     this._markerPositions.clear();
@@ -1098,7 +1102,7 @@ export class FlameChart extends UI.VBox {
       const y = this._levelToOffset(level);
       const h = this._levelHeight(level);
       const padding = 4;
-      const width = Math.ceil(UI.measureTextWidth(context, title)) + 2 * padding;
+      const width = Math.ceil(UI.UIUtils.measureTextWidth(context, title)) + 2 * padding;
       lastMarkerX = x + width + 1;
       lastMarkerLevel = level;
       this._markerPositions.set(entryIndex, {x, width});
@@ -1121,7 +1125,7 @@ export class FlameChart extends UI.VBox {
       let text = this._dataProvider.entryTitle(entryIndex);
       if (text && text.length) {
         context.font = this._dataProvider.entryFont(entryIndex) || defaultFont;
-        text = UI.trimTextMiddle(context, text, barWidth - 2 * textPadding);
+        text = UI.UIUtils.trimTextMiddle(context, text, barWidth - 2 * textPadding);
       }
       const unclippedBarX = this._chartViewport.timeToPosition(entryStartTime);
       const barHeight = this._levelHeight(barLevel);
@@ -1283,7 +1287,7 @@ export class FlameChart extends UI.VBox {
       }
       let colorIndex = parsedColorCache.get(color);
       if (colorIndex === undefined) {
-        const rgba = Common.Color.parse(color).canonicalRGBA();
+        const rgba = Common.Color.Color.parse(color).canonicalRGBA();
         rgba[3] = Math.round(rgba[3] * 255);
         colorIndex = colors.length / 4;
         colors.push(...rgba);
@@ -1394,12 +1398,12 @@ export class FlameChart extends UI.VBox {
 
     const groupOffsets = this._groupOffsets;
     const lastGroupOffset = Array.prototype.peekLast.call(groupOffsets);
-    const colorUsage = UI.ThemeSupport.ColorUsage;
+    const colorUsage = UI.UIUtils.ThemeSupport.ColorUsage;
 
     context.save();
     context.scale(ratio, ratio);
     context.translate(0, -top);
-    const defaultFont = '11px ' + Host.fontFamily();
+    const defaultFont = '11px ' + Host.Platform.fontFamily();
     context.font = defaultFont;
 
     context.fillStyle = self.UI.themeSupport.patchColorText('#fff', colorUsage.Background);
@@ -1455,7 +1459,7 @@ export class FlameChart extends UI.VBox {
         if (this._isGroupFocused(index)) {
           context.fillStyle = this._selectedGroupBackroundColor;
         } else {
-          context.fillStyle = Common.Color.parse(group.style.backgroundColor).setAlpha(0.8).asString(null);
+          context.fillStyle = Common.Color.Color.parse(group.style.backgroundColor).setAlpha(0.8).asString(null);
         }
 
         context.fillRect(
@@ -1576,8 +1580,8 @@ export class FlameChart extends UI.VBox {
    * @return {number}
    */
   _labelWidthForGroup(context, group) {
-    return UI.measureTextWidth(context, group.name) + this._expansionArrowIndent * (group.style.nestingLevel + 1) +
-        2 * this._headerLabelXPadding;
+    return UI.UIUtils.measureTextWidth(context, group.name) +
+        this._expansionArrowIndent * (group.style.nestingLevel + 1) + 2 * this._headerLabelXPadding;
   }
 
   /**
@@ -1586,7 +1590,7 @@ export class FlameChart extends UI.VBox {
    * @param {number} endLevel
    */
   _drawCollapsedOverviewForGroup(group, y, endLevel) {
-    const range = new Common.SegmentedRange(mergeCallback);
+    const range = new Common.SegmentedRange.SegmentedRange(mergeCallback);
     const timeWindowLeft = this._chartViewport.windowLeftTime();
     const timeWindowRight = this._chartViewport.windowRightTime();
     const context = /** @type {!CanvasRenderingContext2D} */ (this._canvas.getContext('2d'));
@@ -1625,7 +1629,7 @@ export class FlameChart extends UI.VBox {
               entryIndex, context, '', barX, y, barWidth, barHeight, unclippedBarX, timeToPixel);
           continue;
         }
-        range.append(new Common.Segment(barX, endBarX, color));
+        range.append(new Common.SegmentedRange.Segment(barX, endBarX, color));
       }
     }
 
@@ -1645,9 +1649,9 @@ export class FlameChart extends UI.VBox {
     context.fill();
 
     /**
-     * @param {!Common.Segment} a
-     * @param {!Common.Segment} b
-     * @return {?Common.Segment}
+     * @param {!Common.SegmentedRange.Segment} a
+     * @param {!Common.SegmentedRange.Segment} b
+     * @return {?Common.SegmentedRange.Segment}
      */
     function mergeCallback(a, b) {
       return a.data === b.data && a.end + 0.4 > b.end ? a : null;

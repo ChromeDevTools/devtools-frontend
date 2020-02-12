@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+
 /**
  * @param {!Protocol.Network.ResourcePriority} priority
  * @return {string}
@@ -36,11 +38,11 @@ export function priorityUILabelMap() {
 
   /** @type {!Map<!Protocol.Network.ResourcePriority, string>} */
   const map = new Map();
-  map.set(Protocol.Network.ResourcePriority.VeryLow, Common.UIString('Lowest'));
-  map.set(Protocol.Network.ResourcePriority.Low, Common.UIString('Low'));
-  map.set(Protocol.Network.ResourcePriority.Medium, Common.UIString('Medium'));
-  map.set(Protocol.Network.ResourcePriority.High, Common.UIString('High'));
-  map.set(Protocol.Network.ResourcePriority.VeryHigh, Common.UIString('Highest'));
+  map.set(Protocol.Network.ResourcePriority.VeryLow, Common.UIString.UIString('Lowest'));
+  map.set(Protocol.Network.ResourcePriority.Low, Common.UIString.UIString('Low'));
+  map.set(Protocol.Network.ResourcePriority.Medium, Common.UIString.UIString('Medium'));
+  map.set(Protocol.Network.ResourcePriority.High, Common.UIString.UIString('High'));
+  map.set(Protocol.Network.ResourcePriority.VeryHigh, Common.UIString.UIString('Highest'));
   _priorityUILabelMapInstance = map;
   return map;
 }

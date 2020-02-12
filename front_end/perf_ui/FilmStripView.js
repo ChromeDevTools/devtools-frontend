@@ -2,10 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+import * as Host from '../host/host.js';
+import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
+import * as UI from '../ui/ui.js';
+
 /**
  * @unrestricted
  */
-export class FilmStripView extends UI.HBox {
+export class FilmStripView extends UI.Widget.HBox {
   constructor() {
     super(true);
     this.registerRequiredCSS('perf_ui/filmStripView.css');
@@ -35,7 +40,7 @@ export class FilmStripView extends UI.HBox {
   }
 
   /**
-   * @param {!SDK.FilmStripModel} filmStripModel
+   * @param {!SDK.FilmStripModel.FilmStripModel} filmStripModel
    * @param {number} zeroTime
    * @param {number} spanTime
    */
@@ -58,7 +63,7 @@ export class FilmStripView extends UI.HBox {
   createFrameElement(frame) {
     const time = frame.timestamp;
     const element = createElementWithClass('div', 'frame');
-    element.title = Common.UIString('Doubleclick to zoom image. Click to view preceding requests.');
+    element.title = Common.UIString.UIString('Doubleclick to zoom image. Click to view preceding requests.');
     element.createChild('div', 'time').textContent = Number.millisToString(time - this._zeroTime);
     const imageElement = element.createChild('div', 'thumbnail').createChild('img');
     imageElement.alt = ls`Screenshot`;
@@ -120,7 +125,7 @@ export class FilmStripView extends UI.HBox {
      * @param {!Element} element0
      */
     function continueWhenFrameImageLoaded(element0) {
-      const frameWidth = Math.ceil(UI.measurePreferredSize(element0, this.contentElement).width);
+      const frameWidth = Math.ceil(UI.UIUtils.measurePreferredSize(element0, this.contentElement).width);
       if (!frameWidth) {
         return;
       }
@@ -210,12 +215,12 @@ export class Dialog {
    * @param {number=} zeroTime
    */
   constructor(filmStripFrame, zeroTime) {
-    const prevButton = UI.createTextButton('\u25C0', this._onPrevFrame.bind(this));
-    prevButton.title = Common.UIString('Previous frame');
-    const nextButton = UI.createTextButton('\u25B6', this._onNextFrame.bind(this));
-    nextButton.title = Common.UIString('Next frame');
+    const prevButton = UI.UIUtils.createTextButton('\u25C0', this._onPrevFrame.bind(this));
+    prevButton.title = Common.UIString.UIString('Previous frame');
+    const nextButton = UI.UIUtils.createTextButton('\u25B6', this._onNextFrame.bind(this));
+    nextButton.title = Common.UIString.UIString('Next frame');
 
-    this._fragment = UI.Fragment.build`
+    this._fragment = UI.Fragment.Fragment.build`
       <x-widget flex=none margin=12px>
         <x-hbox overflow=auto border='1px solid #ddd' max-height=80vh max-width=80vw>
           <img $=image></img>
@@ -228,21 +233,21 @@ export class Dialog {
       </x-widget>
     `;
 
-    this._widget = /** @type {!UI.XWidget} */ (this._fragment.element());
+    this._widget = /** @type {!UI.XWidget.XWidget} */ (this._fragment.element());
     this._widget.tabIndex = 0;
     this._widget.addEventListener('keydown', this._keyDown.bind(this), false);
 
     this._frames = filmStripFrame.model().frames();
     this._index = filmStripFrame.index;
     this._zeroTime = zeroTime || filmStripFrame.model().zeroTime();
-    /** @type {?UI.Dialog} */
+    /** @type {?UI.Dialog.Dialog} */
     this._dialog = null;
     this._render();
   }
 
   _resize() {
     if (!this._dialog) {
-      this._dialog = new UI.Dialog();
+      this._dialog = new UI.Dialog.Dialog();
       this._dialog.contentElement.appendChild(this._widget);
       this._dialog.setDefaultFocusedElement(this._widget);
       this._dialog.show();
@@ -256,7 +261,7 @@ export class Dialog {
   _keyDown(event) {
     switch (event.key) {
       case 'ArrowLeft':
-        if (Host.isMac() && event.metaKey) {
+        if (Host.Platform.isMac() && event.metaKey) {
           this._onFirstFrame();
         } else {
           this._onPrevFrame();
@@ -264,7 +269,7 @@ export class Dialog {
         break;
 
       case 'ArrowRight':
-        if (Host.isMac() && event.metaKey) {
+        if (Host.Platform.isMac() && event.metaKey) {
           this._onLastFrame();
         } else {
           this._onNextFrame();

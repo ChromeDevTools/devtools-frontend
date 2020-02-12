@@ -28,13 +28,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * @unrestricted
- */
+import * as Common from '../common/common.js';
+import * as UI from '../ui/ui.js';
+
 import {Events as OverviewGridEvents, OverviewGrid} from './OverviewGrid.js';
 import {Calculator} from './TimelineGrid.js';  // eslint-disable-line no-unused-vars
 
-export class TimelineOverviewPane extends UI.VBox {
+/**
+ * @unrestricted
+ */
+export class TimelineOverviewPane extends UI.Widget.VBox {
   /**
    * @param {string} prefix
    */
@@ -57,7 +60,7 @@ export class TimelineOverviewPane extends UI.VBox {
     this._markers = new Map();
 
     this._overviewInfo = new OverviewInfo(this._cursorElement);
-    this._updateThrottler = new Common.Throttler(100);
+    this._updateThrottler = new Common.Throttler.Throttler(100);
 
     this._cursorEnabled = false;
     this._cursorPosition = 0;
@@ -411,7 +414,7 @@ export class TimelineOverview {
  * @implements {TimelineOverview}
  * @unrestricted
  */
-export class TimelineOverviewBase extends UI.VBox {
+export class TimelineOverviewBase extends UI.Widget.VBox {
   constructor() {
     super();
     /** @type {?TimelineOverviewCalculator} */
@@ -511,13 +514,13 @@ export class OverviewInfo {
    */
   constructor(anchor) {
     this._anchorElement = anchor;
-    this._glassPane = new UI.GlassPane();
+    this._glassPane = new UI.GlassPane.GlassPane();
     this._glassPane.setPointerEventsBehavior(UI.GlassPane.PointerEventsBehavior.PierceContents);
     this._glassPane.setMarginBehavior(UI.GlassPane.MarginBehavior.Arrow);
     this._glassPane.setSizeBehavior(UI.GlassPane.SizeBehavior.MeasureContent);
     this._visible = false;
     this._element =
-        UI.createShadowRootWithCoreStyles(this._glassPane.contentElement, 'perf_ui/timelineOverviewInfo.css')
+        UI.Utils.createShadowRootWithCoreStyles(this._glassPane.contentElement, 'perf_ui/timelineOverviewInfo.css')
             .createChild('div', 'overview-info');
   }
 

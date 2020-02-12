@@ -2,24 +2,28 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+import * as SDK from '../sdk/sdk.js';
+import * as UI from '../ui/ui.js';
+
 import {ScreencastView} from './ScreencastView.js';
 
 /** @type {!ScreencastApp} */
 let _appInstance;
 
 /**
- * @implements {Common.App}
- * @implements {SDK.SDKModelObserver<!SDK.ScreenCaptureModel>}
+ * @implements {Common.App.App}
+ * @implements {SDK.SDKModel.SDKModelObserver<!SDK.ScreenCaptureModel.ScreenCaptureModel>}
  * @unrestricted
  */
 export class ScreencastApp {
   constructor() {
     this._enabledSetting = self.Common.settings.createSetting('screencastEnabled', true);
-    this._toggleButton = new UI.ToolbarToggle(Common.UIString('Toggle screencast'), 'largeicon-phone');
+    this._toggleButton = new UI.Toolbar.ToolbarToggle(Common.UIString.UIString('Toggle screencast'), 'largeicon-phone');
     this._toggleButton.setToggled(this._enabledSetting.get());
     this._toggleButton.setEnabled(false);
-    this._toggleButton.addEventListener(UI.ToolbarButton.Events.Click, this._toggleButtonClicked, this);
-    self.SDK.targetManager.observeModels(SDK.ScreenCaptureModel, this);
+    this._toggleButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._toggleButtonClicked, this);
+    self.SDK.targetManager.observeModels(SDK.ScreenCaptureModel.ScreenCaptureModel, this);
   }
 
   /**
@@ -37,9 +41,10 @@ export class ScreencastApp {
    * @param {!Document} document
    */
   presentUI(document) {
-    const rootView = new UI.RootView();
+    const rootView = new UI.RootView.RootView();
 
-    this._rootSplitWidget = new UI.SplitWidget(false, true, 'InspectorView.screencastSplitViewState', 300, 300);
+    this._rootSplitWidget =
+        new UI.SplitWidget.SplitWidget(false, true, 'InspectorView.screencastSplitViewState', 300, 300);
     this._rootSplitWidget.setVertical(true);
     this._rootSplitWidget.setSecondIsSidebar(true);
     this._rootSplitWidget.show(rootView.element);
@@ -53,7 +58,7 @@ export class ScreencastApp {
 
   /**
    * @override
-   * @param {!SDK.ScreenCaptureModel} screenCaptureModel
+   * @param {!SDK.ScreenCaptureModel.ScreenCaptureModel} screenCaptureModel
    */
   modelAdded(screenCaptureModel) {
     if (this._screenCaptureModel) {
@@ -69,7 +74,7 @@ export class ScreencastApp {
 
   /**
    * @override
-   * @param {!SDK.ScreenCaptureModel} screenCaptureModel
+   * @param {!SDK.ScreenCaptureModel.ScreenCaptureModel} screenCaptureModel
    */
   modelRemoved(screenCaptureModel) {
     if (this._screenCaptureModel !== screenCaptureModel) {
@@ -103,13 +108,13 @@ export class ScreencastApp {
 }
 
 /**
- * @implements {UI.ToolbarItem.Provider}
+ * @implements {UI.Toolbar.Provider}
  * @unrestricted
  */
 export class ToolbarButtonProvider {
   /**
    * @override
-   * @return {?UI.ToolbarItem}
+   * @return {?UI.Toolbar.ToolbarItem}
    */
   item() {
     return ScreencastApp._instance()._toggleButton;
@@ -117,13 +122,13 @@ export class ToolbarButtonProvider {
 }
 
 /**
- * @implements {Common.AppProvider}
+ * @implements {Common.AppProvider.AppProvider}
  * @unrestricted
  */
 export class ScreencastAppProvider {
   /**
    * @override
-   * @return {!Common.App}
+   * @return {!Common.App.App}
    */
   createApp() {
     return ScreencastApp._instance();

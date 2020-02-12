@@ -2,9 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-export class InputModel extends SDK.SDKModel {
+import * as SDK from '../sdk/sdk.js';
+
+export class InputModel extends SDK.SDKModel.SDKModel {
   /**
-   * @param {!SDK.Target} target
+   * @param {!SDK.SDKModel.Target} target
    */
   constructor(target) {
     super(target);
@@ -115,4 +117,4 @@ export class InputModel extends SDK.SDKModel {
   }
 }
 
-SDK.SDKModel.register(InputModel, SDK.Target.Capability.Input, false);
+SDK.SDKModel.SDKModel.register(InputModel, SDK.SDKModel.Capability.Input, false);

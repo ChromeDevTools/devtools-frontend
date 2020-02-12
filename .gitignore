@@ -36,4 +36,5 @@ npm-debug.log
 !/third_party/typescript
 
 test/e2e/**/*[.js, .tsbuildinfo]
+!test/e2e/resources/**/*.js
 test/shared/**/*[.js, .tsbuildinfo]

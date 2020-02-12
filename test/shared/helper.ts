@@ -121,6 +121,8 @@ export const $$ = async (selector: string, root?: puppeteer.JSHandle) => {
   return elements;
 };
 
+export const timeout = (duration: number) => new Promise((resolve) => setTimeout(resolve, duration));
+
 export const waitFor =
     async (selector: string, root?: puppeteer.JSHandle, maxTotalTimeout = 0) => {
   if (maxTotalTimeout === 0) {
@@ -128,7 +130,6 @@ export const waitFor =
   }
 
   const start = performance.now();
-  const timeout = (duration: number) => new Promise((resolve) => setTimeout(resolve, duration));
   do {
     await timeout(100);
     const element = await $(selector, root);

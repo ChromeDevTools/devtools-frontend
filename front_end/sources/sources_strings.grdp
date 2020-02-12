@@ -129,6 +129,9 @@
   <message name="IDS_DEVTOOLS_3a9bd88b445fd1f4d4d8c3ce995be74a" desc="Title of an action in the debugger tool to step over">
     Step over next function call
   </message>
+  <message name="IDS_DEVTOOLS_3ab12cfceb890756fd3fad14332615b9" desc="Title of the pretty print button in the Sources panel">
+    Pretty print <ph name="UISOURCECODE_NAME__">$1s<ex>file name</ex></ph>
+  </message>
   <message name="IDS_DEVTOOLS_3e27fe84bd1fddd585c8d06e6307b67a" desc="Text in Debugger Plugin of the Sources panel">
     Remove all breakpoints in line
   </message>
@@ -449,6 +452,9 @@
   </message>
   <message name="IDS_DEVTOOLS_c9f7198c57735fa7a7a8ac2cc18dd542" desc="Title of the file navigator sidebar in the Sources panel">
     navigator
+  </message>
+  <message name="IDS_DEVTOOLS_cd0c0d812cf934352ea777a85e8f9645" desc="Title of the format button in the Sources panel">
+    Format <ph name="UISOURCECODE_NAME__">$1s<ex>file name</ex></ph>
   </message>
   <message name="IDS_DEVTOOLS_cd26a6a87959e99fdf99f5ccccef0464" desc="Text in Debugger Plugin of the Sources panel">
     Disable breakpoint

@@ -47,7 +47,11 @@ export class ScriptFormatterEditorAction {
    * @param {?Workspace.UISourceCode} uiSourceCode
    */
   _updateButton(uiSourceCode) {
-    this._button.element.classList.toggle('hidden', !this._isFormatableScript(uiSourceCode));
+    const isFormattable = this._isFormatableScript(uiSourceCode);
+    this._button.element.classList.toggle('hidden', !isFormattable);
+    if (isFormattable) {
+      this._button.setTitle(Common.UIString(`Pretty print ${uiSourceCode.name()}`));
+    }
   }
 
   /**

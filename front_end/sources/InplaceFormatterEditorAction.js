@@ -31,7 +31,11 @@ export class InplaceFormatterEditorAction {
    * @param {?Workspace.UISourceCode} uiSourceCode
    */
   _updateButton(uiSourceCode) {
-    this._button.element.classList.toggle('hidden', !this._isFormattable(uiSourceCode));
+    const isFormattable = this._isFormattable(uiSourceCode);
+    this._button.element.classList.toggle('hidden', !isFormattable);
+    if (isFormattable) {
+      this._button.setTitle(Common.UIString(`Format ${uiSourceCode.name()}`));
+    }
   }
 
   /**

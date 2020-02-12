@@ -76,7 +76,7 @@ export class PropertiesWidget extends UI.ThrottledWidget {
     }
 
     if (!this._node) {
-      this.contentElement.removeChildren();
+      this._treeOutline.removeChildren();
       return;
     }
 

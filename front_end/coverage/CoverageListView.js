@@ -2,9 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+import * as DataGrid from '../data_grid/data_grid.js';
+import * as Formatter from '../formatter/formatter.js';
+import * as TextUtils from '../text_utils/text_utils.js';
+import * as UI from '../ui/ui.js';
+
 import {CoverageType, URLCoverageInfo} from './CoverageModel.js';  // eslint-disable-line no-unused-vars
 
-export class CoverageListView extends UI.VBox {
+export class CoverageListView extends UI.Widget.VBox {
   /**
    * @param {function(!URLCoverageInfo):boolean} filterCallback
    */
@@ -17,10 +23,10 @@ export class CoverageListView extends UI.VBox {
     this._highlightRegExp = null;
     this.registerRequiredCSS('coverage/coverageListView.css');
     const columns = [
-      {id: 'url', title: Common.UIString('URL'), width: '250px', fixedWidth: false, sortable: true},
-      {id: 'type', title: Common.UIString('Type'), width: '45px', fixedWidth: true, sortable: true}, {
+      {id: 'url', title: Common.UIString.UIString('URL'), width: '250px', fixedWidth: false, sortable: true},
+      {id: 'type', title: Common.UIString.UIString('Type'), width: '45px', fixedWidth: true, sortable: true}, {
         id: 'size',
-        title: Common.UIString('Total Bytes'),
+        title: Common.UIString.UIString('Total Bytes'),
         width: '60px',
         fixedWidth: true,
         sortable: true,
@@ -28,7 +34,7 @@ export class CoverageListView extends UI.VBox {
       },
       {
         id: 'unusedSize',
-        title: Common.UIString('Unused Bytes'),
+        title: Common.UIString.UIString('Unused Bytes'),
         width: '100px',
         fixedWidth: true,
         sortable: true,
@@ -37,7 +43,7 @@ export class CoverageListView extends UI.VBox {
       },
       {id: 'bars', title: ls`Usage Visualization`, width: '250px', fixedWidth: false, sortable: true}
     ];
-    this._dataGrid = new DataGrid.SortableDataGrid({displayName: ls`Code Coverage`, columns});
+    this._dataGrid = new DataGrid.SortableDataGrid.SortableDataGrid({displayName: ls`Code Coverage`, columns});
     this._dataGrid.setResizeMethod(DataGrid.DataGrid.ResizeMethod.Last);
     this._dataGrid.element.classList.add('flex-auto');
     this._dataGrid.element.addEventListener('keydown', this._onKeyDown.bind(this), false);
@@ -179,8 +185,8 @@ export class CoverageListView extends UI.VBox {
     this._dataGrid.sortNodes(sortFunction, !this._dataGrid.isSortOrderAscending());
 
     /**
-     * @param {!DataGrid.DataGridNode} a
-     * @param {!DataGrid.DataGridNode} b
+     * @param {!DataGrid.DataGrid.DataGridNode} a
+     * @param {!DataGrid.DataGrid.DataGridNode} b
      * @return {number}
      */
     function compareURL(a, b) {
@@ -192,8 +198,8 @@ export class CoverageListView extends UI.VBox {
 
     /**
      * @param {string} fieldName
-     * @param {!DataGrid.DataGridNode} a
-     * @param {!DataGrid.DataGridNode} b
+     * @param {!DataGrid.DataGrid.DataGridNode} a
+     * @param {!DataGrid.DataGrid.DataGridNode} b
      * @return {number}
      */
     function compareNumericField(fieldName, a, b) {
@@ -204,8 +210,8 @@ export class CoverageListView extends UI.VBox {
     }
 
     /**
-     * @param {!DataGrid.DataGridNode} a
-     * @param {!DataGrid.DataGridNode} b
+     * @param {!DataGrid.DataGrid.DataGridNode} a
+     * @param {!DataGrid.DataGrid.DataGridNode} b
      * @return {number}
      */
     function compareType(a, b) {
@@ -223,18 +229,18 @@ export class CoverageListView extends UI.VBox {
   static _typeToString(type) {
     const types = [];
     if (type & CoverageType.CSS) {
-      types.push(Common.UIString('CSS'));
+      types.push(Common.UIString.UIString('CSS'));
     }
     if (type & CoverageType.JavaScriptPerFunction) {
-      types.push(Common.UIString('JS (per function)'));
+      types.push(Common.UIString.UIString('JS (per function)'));
     } else if (type & CoverageType.JavaScript) {
-      types.push(Common.UIString('JS (per block)'));
+      types.push(Common.UIString.UIString('JS (per block)'));
     }
     return types.join('+');
   }
 }
 
-export class GridNode extends DataGrid.SortableDataGridNode {
+export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode {
   /**
    * @param {!URLCoverageInfo} coverageInfo
    * @param {number} maxSize
@@ -374,7 +380,7 @@ export class GridNode extends DataGrid.SortableDataGridNode {
     if (!matches || !matches.length) {
       return;
     }
-    const range = new TextUtils.SourceRange(matches.index, matches[0].length);
-    UI.highlightRangesWithStyleClass(element, [range], 'filter-highlight');
+    const range = new TextUtils.TextRange.SourceRange(matches.index, matches[0].length);
+    UI.UIUtils.highlightRangesWithStyleClass(element, [range], 'filter-highlight');
   }
 }

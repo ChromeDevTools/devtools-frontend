@@ -2,6 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
+import * as TextUtils from '../text_utils/text_utils.js';
+import * as Workspace from '../workspace/workspace.js';
+
 import {CoverageInfo, CoverageModel} from './CoverageModel.js';  // eslint-disable-line no-unused-vars
 
 export const decoratorType = 'coverage';
@@ -12,9 +16,9 @@ export class CoverageDecorationManager {
    */
   constructor(coverageModel) {
     this._coverageModel = coverageModel;
-    /** @type {!Map<!Common.ContentProvider, ?TextUtils.Text>} */
+    /** @type {!Map<!Common.ContentProvider.ContentProvider, ?TextUtils.Text.Text>} */
     this._textByProvider = new Map();
-    /** @type {!Platform.Multimap<!Common.ContentProvider, !Workspace.UISourceCode>} */
+    /** @type {!Platform.Multimap<!Common.ContentProvider.ContentProvider, !Workspace.UISourceCode.UISourceCode>} */
     this._uiSourceCodeByContentProvider = new Platform.Multimap();
 
     for (const uiSourceCode of self.Workspace.workspace.uiSourceCodes()) {
@@ -49,7 +53,7 @@ export class CoverageDecorationManager {
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    * @return {!Promise<!Array<boolean>>}
    */
   async usageByLine(uiSourceCode) {
@@ -58,7 +62,7 @@ export class CoverageDecorationManager {
     if (!content) {
       return [];
     }
-    const sourceText = new TextUtils.Text(/** @type {string} */ (content));
+    const sourceText = new TextUtils.Text.Text(/** @type {string} */ (content));
     await this._updateTexts(uiSourceCode, sourceText);
     const lineEndings = sourceText.lineEndings();
     for (let line = 0; line < sourceText.lineCount(); ++line) {
@@ -107,8 +111,8 @@ export class CoverageDecorationManager {
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
-   * @param {!TextUtils.Text} text
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
+   * @param {!TextUtils.Text.Text} text
    * @return {!Promise}
    */
   async _updateTexts(uiSourceCode, text) {
@@ -127,16 +131,16 @@ export class CoverageDecorationManager {
   }
 
   /**
-   * @param {!Common.ContentProvider} contentProvider
+   * @param {!Common.ContentProvider.ContentProvider} contentProvider
    * @return {!Promise}
    */
   async _updateTextForProvider(contentProvider) {
     const {content} = await contentProvider.requestContent();
-    this._textByProvider.set(contentProvider, new TextUtils.Text(content || ''));
+    this._textByProvider.set(contentProvider, new TextUtils.Text.Text(content || ''));
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    * @param {number} line
    * @param {number} column
    * @return {!Promise<!Array<!Coverage.RawLocation>>}
@@ -165,7 +169,7 @@ export class CoverageDecorationManager {
     }
     if (contentType.isStyleSheet() || contentType.isDocument()) {
       const rawStyleLocations = self.Bindings.cssWorkspaceBinding.uiLocationToRawLocations(
-          new Workspace.UILocation(uiSourceCode, line, column));
+          new Workspace.UISourceCode.UILocation(uiSourceCode, line, column));
       for (const location of rawStyleLocations) {
         const header = location.header();
         if (!header) {
@@ -200,7 +204,7 @@ export class CoverageDecorationManager {
    * @param {!Common.Event} event
    */
   _onUISourceCodeAdded(event) {
-    const uiSourceCode = /** @type !Workspace.UISourceCode */ (event.data);
+    const uiSourceCode = /** @type !Workspace.UISourceCode.UISourceCode */ (event.data);
     uiSourceCode.addLineDecoration(0, decoratorType, this);
   }
 }

@@ -1003,3 +1003,6 @@ export class TokenHighlighter {
 const LinesToScanForIndentationGuessing = 1000;
 const MaximumNumberOfWhitespacesPerSingleSpan = 16;
 export const lineNumbersGutterType = 'CodeMirror-linenumbers';
+
+/** @typedef {{gutterType: string, lineNumber: number, event: !Event}} */
+export let GutterClickEventData;

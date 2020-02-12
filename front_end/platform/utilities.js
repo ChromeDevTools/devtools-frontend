@@ -1032,13 +1032,6 @@ Map.prototype.valuesArray = function() {
 };
 
 /**
- * @return {!Array<!KEY>}
- */
-Map.prototype.keysArray = function() {
-  return Array.from(this.keys());
-};
-
-/**
  * @return {!Platform.Multimap<!KEY, !VALUE>}
  */
 Map.prototype.inverse = function() {

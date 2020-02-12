@@ -2,8 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+import * as SDK from '../sdk/sdk.js';
+import * as UI from '../ui/ui.js';
+
 /**
- * @param {!SDK.DOMNode} node
+ * @param {!SDK.DOMModel.DOMNode} node
  * @param {!Element} parentElement
  * @param {string=} tooltipContent
  */
@@ -59,24 +63,24 @@ export const decorateNodeLabel = function(node, parentElement, tooltipContent) {
 };
 
 /**
- * @param {?SDK.DOMNode} node
+ * @param {?SDK.DOMModel.DOMNode} node
  * @param {!Common.Linkifier.Options=} options
  * @return {!Node}
  */
 export const linkifyNodeReference = function(node, options = {}) {
   if (!node) {
-    return createTextNode(Common.UIString('<node>'));
+    return createTextNode(Common.UIString.UIString('<node>'));
   }
 
   const root = createElementWithClass('span', 'monospace');
-  const shadowRoot = UI.createShadowRootWithCoreStyles(root, 'elements/domLinkifier.css');
+  const shadowRoot = UI.Utils.createShadowRootWithCoreStyles(root, 'elements/domLinkifier.css');
   const link = shadowRoot.createChild('div', 'node-link');
 
   decorateNodeLabel(node, link, options.tooltip);
 
   link.addEventListener('click', () => Common.Revealer.reveal(node, false) && false, false);
   link.addEventListener('mouseover', node.highlight.bind(node, undefined), false);
-  link.addEventListener('mouseleave', () => SDK.OverlayModel.hideDOMNodeHighlight(), false);
+  link.addEventListener('mouseleave', () => SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight(), false);
 
   if (!options.preventKeyboardFocus) {
     link.addEventListener('keydown', event => isEnterKey(event) && Common.Revealer.reveal(node, false) && false);
@@ -88,13 +92,13 @@ export const linkifyNodeReference = function(node, options = {}) {
 };
 
 /**
- * @param {!SDK.DeferredDOMNode} deferredNode
+ * @param {!SDK.DOMModel.DeferredDOMNode} deferredNode
  * @param {!Common.Linkifier.Options=} options
  * @return {!Node}
  */
 export const linkifyDeferredNodeReference = function(deferredNode, options = {}) {
   const root = createElement('div');
-  const shadowRoot = UI.createShadowRootWithCoreStyles(root, 'elements/domLinkifier.css');
+  const shadowRoot = UI.Utils.createShadowRootWithCoreStyles(root, 'elements/domLinkifier.css');
   const link = shadowRoot.createChild('div', 'node-link');
   link.createChild('slot');
   link.addEventListener('click', deferredNode.resolve.bind(deferredNode, onDeferredNodeResolved), false);
@@ -107,7 +111,7 @@ export const linkifyDeferredNodeReference = function(deferredNode, options = {})
   }
 
   /**
-   * @param {?SDK.DOMNode} node
+   * @param {?SDK.DOMModel.DOMNode} node
    */
   function onDeferredNodeResolved(node) {
     Common.Revealer.reveal(node);
@@ -117,7 +121,7 @@ export const linkifyDeferredNodeReference = function(deferredNode, options = {})
 };
 
 /**
- * @implements {Common.Linkifier}
+ * @implements {Common.Linkifier.Linkifier}
  */
 export class Linkifier {
   /**
@@ -127,10 +131,10 @@ export class Linkifier {
    * @return {!Node}
    */
   linkify(object, options) {
-    if (object instanceof SDK.DOMNode) {
+    if (object instanceof SDK.DOMModel.DOMNode) {
       return linkifyNodeReference(object, options);
     }
-    if (object instanceof SDK.DeferredDOMNode) {
+    if (object instanceof SDK.DOMModel.DeferredDOMNode) {
       return linkifyDeferredNodeReference(object, options);
     }
     throw new Error('Can\'t linkify non-node');

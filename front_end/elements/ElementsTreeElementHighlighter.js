@@ -1,6 +1,11 @@
 // Copyright (c) 2015 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
+import * as Common from '../common/common.js';
+import * as SDK from '../sdk/sdk.js';
+import * as UI from '../ui/ui.js';
+
 import {ElementsTreeOutline} from './ElementsTreeOutline.js';
 
 /**
@@ -11,15 +16,15 @@ export class ElementsTreeElementHighlighter {
    * @param {!ElementsTreeOutline} treeOutline
    */
   constructor(treeOutline) {
-    this._throttler = new Common.Throttler(100);
+    this._throttler = new Common.Throttler.Throttler(100);
     this._treeOutline = treeOutline;
     this._treeOutline.addEventListener(UI.TreeOutline.Events.ElementExpanded, this._clearState, this);
     this._treeOutline.addEventListener(UI.TreeOutline.Events.ElementCollapsed, this._clearState, this);
     this._treeOutline.addEventListener(ElementsTreeOutline.Events.SelectedNodeChanged, this._clearState, this);
     self.SDK.targetManager.addModelListener(
-        SDK.OverlayModel, SDK.OverlayModel.Events.HighlightNodeRequested, this._highlightNode, this);
+        SDK.OverlayModel.OverlayModel, SDK.OverlayModel.Events.HighlightNodeRequested, this._highlightNode, this);
     self.SDK.targetManager.addModelListener(
-        SDK.OverlayModel, SDK.OverlayModel.Events.InspectModeWillBeToggled, this._clearState, this);
+        SDK.OverlayModel.OverlayModel, SDK.OverlayModel.Events.InspectModeWillBeToggled, this._clearState, this);
   }
 
   /**
@@ -30,7 +35,7 @@ export class ElementsTreeElementHighlighter {
       return;
     }
 
-    const domNode = /** @type {!SDK.DOMNode} */ (event.data);
+    const domNode = /** @type {!SDK.DOMModel.DOMNode} */ (event.data);
 
     this._throttler.schedule(callback.bind(this));
     this._pendingHighlightNode =
@@ -47,7 +52,7 @@ export class ElementsTreeElementHighlighter {
   }
 
   /**
-   * @param {?SDK.DOMNode} node
+   * @param {?SDK.DOMModel.DOMNode} node
    */
   _highlightNodeInternal(node) {
     this._isModifyingTreeOutline = true;

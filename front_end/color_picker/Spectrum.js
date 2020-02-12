@@ -1358,3 +1358,6 @@ export class Swatch {
     UI.ARIAUtils.setPressed(this._swatchOverlayElement, false);
   }
 }
+
+/** @typedef {{ title: string, colors: !Array<string>, colorNames: !Array<string>, mutable: boolean }} */
+export let Palette;

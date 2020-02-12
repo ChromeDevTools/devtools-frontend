@@ -27,26 +27,34 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as Host from '../host/host.js';
+import * as ObjectUI from '../object_ui/object_ui.js';
+import * as SDK from '../sdk/sdk.js';
+import * as UI from '../ui/ui.js';
+
 /**
  * @unrestricted
  */
-export class PropertiesWidget extends UI.ThrottledWidget {
+export class PropertiesWidget extends UI.ThrottledWidget.ThrottledWidget {
   constructor() {
     super(true /* isWebComponent */);
     this.registerRequiredCSS('elements/propertiesWidget.css');
 
-    self.SDK.targetManager.addModelListener(SDK.DOMModel, SDK.DOMModel.Events.AttrModified, this._onNodeChange, this);
-    self.SDK.targetManager.addModelListener(SDK.DOMModel, SDK.DOMModel.Events.AttrRemoved, this._onNodeChange, this);
     self.SDK.targetManager.addModelListener(
-        SDK.DOMModel, SDK.DOMModel.Events.CharacterDataModified, this._onNodeChange, this);
+        SDK.DOMModel.DOMModel, SDK.DOMModel.Events.AttrModified, this._onNodeChange, this);
     self.SDK.targetManager.addModelListener(
-        SDK.DOMModel, SDK.DOMModel.Events.ChildNodeCountUpdated, this._onNodeChange, this);
-    self.UI.context.addFlavorChangeListener(SDK.DOMNode, this._setNode, this);
-    this._node = self.UI.context.flavor(SDK.DOMNode);
+        SDK.DOMModel.DOMModel, SDK.DOMModel.Events.AttrRemoved, this._onNodeChange, this);
+    self.SDK.targetManager.addModelListener(
+        SDK.DOMModel.DOMModel, SDK.DOMModel.Events.CharacterDataModified, this._onNodeChange, this);
+    self.SDK.targetManager.addModelListener(
+        SDK.DOMModel.DOMModel, SDK.DOMModel.Events.ChildNodeCountUpdated, this._onNodeChange, this);
+    self.UI.context.addFlavorChangeListener(SDK.DOMModel.DOMNode, this._setNode, this);
+    this._node = self.UI.context.flavor(SDK.DOMModel.DOMNode);
 
-    this._treeOutline = new ObjectUI.ObjectPropertiesSectionsTreeOutline({readOnly: true});
+    this._treeOutline = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionsTreeOutline({readOnly: true});
     this._treeOutline.setShowSelectionOnKeyboardFocus(/* show */ true, /* preventTabOrder */ false);
-    this._expandController = new ObjectUI.ObjectPropertiesSectionsTreeExpandController(this._treeOutline);
+    this._expandController =
+        new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionsTreeExpandController(this._treeOutline);
     this.contentElement.appendChild(this._treeOutline.element);
 
     this._treeOutline.addEventListener(UI.TreeOutline.Events.ElementExpanded, () => {
@@ -60,7 +68,7 @@ export class PropertiesWidget extends UI.ThrottledWidget {
    * @param {!Common.Event} event
    */
   _setNode(event) {
-    this._node = /** @type {?SDK.DOMNode} */ (event.data);
+    this._node = /** @type {?SDK.DOMModel.DOMNode} */ (event.data);
     this.update();
   }
 
@@ -138,7 +146,7 @@ export class PropertiesWidget extends UI.ThrottledWidget {
   }
 
   /**
-   * @param {!SDK.RemoteObject} property
+   * @param {!SDK.RemoteObject.RemoteObject} property
    * @param {string} title
    * @returns {!ObjectUI.ObjectPropertiesSection.RootElement}
    */
@@ -161,7 +169,7 @@ export class PropertiesWidget extends UI.ThrottledWidget {
       return;
     }
     const data = event.data;
-    const node = /** @type {!SDK.DOMNode} */ (data instanceof SDK.DOMNode ? data : data.node);
+    const node = /** @type {!SDK.DOMModel.DOMNode} */ (data instanceof SDK.DOMModel.DOMNode ? data : data.node);
     if (this._node !== node) {
       return;
     }

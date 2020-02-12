@@ -2,27 +2,30 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+import * as SDK from '../sdk/sdk.js';
+
 /**
  * @unrestricted
  */
-export class ComputedStyleModel extends Common.Object {
+export class ComputedStyleModel extends Common.ObjectWrapper.ObjectWrapper {
   constructor() {
     super();
-    this._node = self.UI.context.flavor(SDK.DOMNode);
+    this._node = self.UI.context.flavor(SDK.DOMModel.DOMNode);
     this._cssModel = null;
     this._eventListeners = [];
-    self.UI.context.addFlavorChangeListener(SDK.DOMNode, this._onNodeChanged, this);
+    self.UI.context.addFlavorChangeListener(SDK.DOMModel.DOMNode, this._onNodeChanged, this);
   }
 
   /**
-   * @return {?SDK.DOMNode}
+   * @return {?SDK.DOMModel.DOMNode}
    */
   node() {
     return this._node;
   }
 
   /**
-   * @return {?SDK.CSSModel}
+   * @return {?SDK.CSSModel.CSSModel}
    */
   cssModel() {
     return this._cssModel && this._cssModel.isEnabled() ? this._cssModel : null;
@@ -32,22 +35,22 @@ export class ComputedStyleModel extends Common.Object {
    * @param {!Common.Event} event
    */
   _onNodeChanged(event) {
-    this._node = /** @type {?SDK.DOMNode} */ (event.data);
+    this._node = /** @type {?SDK.DOMModel.DOMNode} */ (event.data);
     this._updateModel(this._node ? this._node.domModel().cssModel() : null);
     this._onComputedStyleChanged(null);
   }
 
   /**
-   * @param {?SDK.CSSModel} cssModel
+   * @param {?SDK.CSSModel.CSSModel} cssModel
    */
   _updateModel(cssModel) {
     if (this._cssModel === cssModel) {
       return;
     }
-    Common.EventTarget.removeEventListeners(this._eventListeners);
+    Common.EventTarget.EventTarget.removeEventListeners(this._eventListeners);
     this._cssModel = cssModel;
     const domModel = cssModel ? cssModel.domModel() : null;
-    const resourceTreeModel = cssModel ? cssModel.target().model(SDK.ResourceTreeModel) : null;
+    const resourceTreeModel = cssModel ? cssModel.target().model(SDK.ResourceTreeModel.ResourceTreeModel) : null;
     if (cssModel && domModel && resourceTreeModel) {
       this._eventListeners = [
         cssModel.addEventListener(SDK.CSSModel.Events.StyleSheetAdded, this._onComputedStyleChanged, this),
@@ -76,7 +79,7 @@ export class ComputedStyleModel extends Common.Object {
    */
   _onDOMModelChanged(event) {
     // Any attribute removal or modification can affect the styles of "related" nodes.
-    const node = /** @type {!SDK.DOMNode} */ (event.data);
+    const node = /** @type {!SDK.DOMModel.DOMNode} */ (event.data);
     if (!this._node ||
         this._node !== node && node.parentNode !== this._node.parentNode && !node.isAncestor(this._node)) {
       return;
@@ -104,7 +107,7 @@ export class ComputedStyleModel extends Common.Object {
   }
 
   /**
-   * @return {?SDK.DOMNode}
+   * @return {?SDK.DOMModel.DOMNode}
    */
   _elementNode() {
     return this.node() ? this.node().enclosingElementOrSelf() : null;
@@ -128,7 +131,7 @@ export class ComputedStyleModel extends Common.Object {
     return this._computedStylePromise;
 
     /**
-     * @param {!SDK.DOMNode} elementNode
+     * @param {!SDK.DOMModel.DOMNode} elementNode
      * @param {?Map.<string, string>} style
      * @return {?ComputedStyle}
      * @this {ComputedStyleModel}
@@ -150,7 +153,7 @@ export const Events = {
  */
 export class ComputedStyle {
   /**
-   * @param {!SDK.DOMNode} node
+   * @param {!SDK.DOMModel.DOMNode} node
    * @param {!Map.<string, string>} computedStyle
    */
   constructor(node, computedStyle) {

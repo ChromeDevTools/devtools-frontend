@@ -25,6 +25,12 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+import * as Common from '../common/common.js';
+import * as HostModule from '../host/host.js';
+import * as SDK from '../sdk/sdk.js';
+import * as UI from '../ui/ui.js';
+
 import {ElementsSidebarPane} from './ElementsSidebarPane.js';
 
 /**
@@ -35,7 +41,7 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
     super();
     this.registerRequiredCSS('elements/metricsSidebarPane.css');
 
-    /** @type {?SDK.CSSStyleDeclaration} */
+    /** @type {?SDK.CSSStyleDeclaration.CSSStyleDeclaration} */
     this._inlineStyle = null;
   }
 
@@ -130,7 +136,7 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
       this.node().highlight(mode);
     } else {
       delete this._highlightMode;
-      SDK.OverlayModel.hideDOMNodeHighlight();
+      SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
     }
 
     for (let i = 0; this._boxElements && i < this._boxElements.length; ++i) {
@@ -236,11 +242,11 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
     const boxes = ['content', 'padding', 'border', 'margin', 'position'];
     const boxColors = [
       Common.Color.PageHighlight.Content, Common.Color.PageHighlight.Padding, Common.Color.PageHighlight.Border,
-      Common.Color.PageHighlight.Margin, Common.Color.fromRGBA([0, 0, 0, 0])
+      Common.Color.PageHighlight.Margin, Common.Color.Color.fromRGBA([0, 0, 0, 0])
     ];
     const boxLabels = [
-      Common.UIString('content'), Common.UIString('padding'), Common.UIString('border'), Common.UIString('margin'),
-      Common.UIString('position')
+      Common.UIString.UIString('content'), Common.UIString.UIString('padding'), Common.UIString.UIString('border'),
+      Common.UIString.UIString('margin'), Common.UIString.UIString('position')
     ];
     let previousBox = null;
     this._boxElements = [];
@@ -310,7 +316,7 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
     this.contentElement.appendChild(metricsElement);
 
     // Record the elements tool load time after the sidepane has loaded.
-    Host.userMetrics.panelLoaded('elements', 'DevTools.Launch.Elements');
+    HostModule.userMetrics.panelLoaded('elements', 'DevTools.Launch.Elements');
   }
 
   /**
@@ -320,7 +326,7 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
    * @param {!Map.<string, string>} computedStyle
    */
   startEditing(targetElement, box, styleProperty, computedStyle) {
-    if (UI.isBeingEdited(targetElement)) {
+    if (UI.UIUtils.isBeingEdited(targetElement)) {
       return;
     }
 
@@ -333,7 +339,7 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
 
     const config =
         new UI.InplaceEditor.Config(this._editingCommitted.bind(this), this.editingCancelled.bind(this), context);
-    UI.InplaceEditor.startEditing(targetElement, config);
+    UI.InplaceEditor.InplaceEditor.startEditing(targetElement, config);
 
     targetElement.getComponentSelection().selectAllChildren(targetElement);
   }
@@ -363,7 +369,8 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
       return prefix + number + suffix;
     }
 
-    UI.handleElementValueModifications(event, element, finishHandler.bind(this), undefined, customNumberHandler);
+    UI.UIUtils.handleElementValueModifications(
+        event, element, finishHandler.bind(this), undefined, customNumberHandler);
   }
 
   editingEnded(element, context) {

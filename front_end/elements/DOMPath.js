@@ -2,8 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as SDK from '../sdk/sdk.js';
+
 /**
- * @param {!SDK.DOMNode} node
+ * @param {!SDK.DOMModel.DOMNode} node
  * @param {boolean=} justSelector
  * @return {string}
  */
@@ -15,7 +17,7 @@ export const fullQualifiedSelector = function(node, justSelector) {
 };
 
 /**
- * @param {!SDK.DOMNode} node
+ * @param {!SDK.DOMModel.DOMNode} node
  * @param {boolean=} optimized
  * @return {string}
  */
@@ -43,13 +45,14 @@ export const cssPath = function(node, optimized) {
 };
 
 /**
- * @param {!SDK.DOMNode} node
+ * @param {!SDK.DOMModel.DOMNode} node
  * @return {boolean}
  */
 export const canGetJSPath = function(node) {
   let wp = node;
   while (wp) {
-    if (wp.ancestorShadowRoot() && wp.ancestorShadowRoot().shadowRootType() !== SDK.DOMNode.ShadowRootTypes.Open) {
+    if (wp.ancestorShadowRoot() &&
+        wp.ancestorShadowRoot().shadowRootType() !== SDK.DOMModel.DOMNode.ShadowRootTypes.Open) {
       return false;
     }
     wp = wp.ancestorShadowHost();
@@ -58,7 +61,7 @@ export const canGetJSPath = function(node) {
 };
 
 /**
- * @param {!SDK.DOMNode} node
+ * @param {!SDK.DOMModel.DOMNode} node
  * @param {boolean=} optimized
  * @return {string}
  */
@@ -87,7 +90,7 @@ export const jsPath = function(node, optimized) {
 };
 
 /**
- * @param {!SDK.DOMNode} node
+ * @param {!SDK.DOMModel.DOMNode} node
  * @param {boolean} optimized
  * @param {boolean} isTargetNode
  * @return {?Step}
@@ -118,7 +121,7 @@ export const _cssPathStep = function(node, optimized, isTargetNode) {
   }
 
   /**
-   * @param {!SDK.DOMNode} node
+   * @param {!SDK.DOMModel.DOMNode} node
    * @return {!Array.<string>}
    */
   function prefixedElementClassNames(node) {
@@ -201,7 +204,7 @@ export const _cssPathStep = function(node, optimized, isTargetNode) {
 };
 
 /**
- * @param {!SDK.DOMNode} node
+ * @param {!SDK.DOMModel.DOMNode} node
  * @param {boolean=} optimized
  * @return {string}
  */
@@ -229,7 +232,7 @@ export const xPath = function(node, optimized) {
 };
 
 /**
- * @param {!SDK.DOMNode} node
+ * @param {!SDK.DOMModel.DOMNode} node
  * @param {boolean=} optimized
  * @return {?Step}
  */
@@ -276,7 +279,7 @@ export const _xPathValue = function(node, optimized) {
 };
 
 /**
- * @param {!SDK.DOMNode} node
+ * @param {!SDK.DOMModel.DOMNode} node
  * @return {number}
  */
 export const _xPathIndex = function(node) {

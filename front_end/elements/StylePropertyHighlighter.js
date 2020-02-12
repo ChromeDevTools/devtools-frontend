@@ -1,6 +1,9 @@
 // Copyright (c) 2015 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
+import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
+
 import {StylesSidebarPane} from './StylesSidebarPane.js';  // eslint-disable-line no-unused-vars
 
 /**
@@ -9,7 +12,7 @@ import {StylesSidebarPane} from './StylesSidebarPane.js';  // eslint-disable-lin
 export class StylePropertyHighlighter {
   /**
    * @param {!StylesSidebarPane} ssp
-   * @param {!SDK.CSSProperty} cssProperty
+   * @param {!SDK.CSSProperty.CSSProperty} cssProperty
    */
   constructor(ssp, cssProperty) {
     this._styleSidebarPane = ssp;

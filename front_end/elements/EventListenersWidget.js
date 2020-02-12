@@ -27,11 +27,16 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as Common from '../common/common.js';
+import * as EventListeners from '../event_listeners/event_listeners.js';
+import * as SDK from '../sdk/sdk.js';
+import * as UI from '../ui/ui.js';
+
 /**
- * @implements {UI.ToolbarItem.ItemsProvider}
+ * @implements {UI.Toolbar.ItemsProvider}
  * @unrestricted
  */
-export class EventListenersWidget extends UI.ThrottledWidget {
+export class EventListenersWidget extends UI.ThrottledWidget.ThrottledWidget {
   constructor() {
     super();
     this._toolbarItems = [];
@@ -44,19 +49,19 @@ export class EventListenersWidget extends UI.ThrottledWidget {
     this._dispatchFilterBySetting.addChangeListener(this.update.bind(this));
 
     this._showFrameworkListenersSetting = self.Common.settings.createSetting('showFrameowkrListeners', true);
-    this._showFrameworkListenersSetting.setTitle(Common.UIString('Framework listeners'));
+    this._showFrameworkListenersSetting.setTitle(Common.UIString.UIString('Framework listeners'));
     this._showFrameworkListenersSetting.addChangeListener(this._showFrameworkListenersChanged.bind(this));
-    this._eventListenersView = new EventListeners.EventListenersView(this.update.bind(this));
+    this._eventListenersView = new EventListeners.EventListenersView.EventListenersView(this.update.bind(this));
     this._eventListenersView.show(this.element);
 
-    const refreshButton = new UI.ToolbarButton(Common.UIString('Refresh'), 'largeicon-refresh');
-    refreshButton.addEventListener(UI.ToolbarButton.Events.Click, this.update.bind(this));
+    const refreshButton = new UI.Toolbar.ToolbarButton(Common.UIString.UIString('Refresh'), 'largeicon-refresh');
+    refreshButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.update.bind(this));
     this._toolbarItems.push(refreshButton);
-    this._toolbarItems.push(new UI.ToolbarSettingCheckbox(
-        this._showForAncestorsSetting, Common.UIString('Show listeners on the ancestors'),
-        Common.UIString('Ancestors')));
+    this._toolbarItems.push(new UI.Toolbar.ToolbarSettingCheckbox(
+        this._showForAncestorsSetting, Common.UIString.UIString('Show listeners on the ancestors'),
+        Common.UIString.UIString('Ancestors')));
     const dispatchFilter =
-        new UI.ToolbarComboBox(this._onDispatchFilterTypeChanged.bind(this), ls`Event listeners category`);
+        new UI.Toolbar.ToolbarComboBox(this._onDispatchFilterTypeChanged.bind(this), ls`Event listeners category`);
 
     /**
      * @param {string} name
@@ -69,15 +74,15 @@ export class EventListenersWidget extends UI.ThrottledWidget {
         dispatchFilter.select(option);
       }
     }
-    addDispatchFilterOption.call(this, Common.UIString('All'), DispatchFilterBy.All);
-    addDispatchFilterOption.call(this, Common.UIString('Passive'), DispatchFilterBy.Passive);
-    addDispatchFilterOption.call(this, Common.UIString('Blocking'), DispatchFilterBy.Blocking);
+    addDispatchFilterOption.call(this, Common.UIString.UIString('All'), DispatchFilterBy.All);
+    addDispatchFilterOption.call(this, Common.UIString.UIString('Passive'), DispatchFilterBy.Passive);
+    addDispatchFilterOption.call(this, Common.UIString.UIString('Blocking'), DispatchFilterBy.Blocking);
     dispatchFilter.setMaxWidth(200);
     this._toolbarItems.push(dispatchFilter);
-    this._toolbarItems.push(new UI.ToolbarSettingCheckbox(
-        this._showFrameworkListenersSetting, Common.UIString('Resolve event listeners bound with framework')));
+    this._toolbarItems.push(new UI.Toolbar.ToolbarSettingCheckbox(
+        this._showFrameworkListenersSetting, Common.UIString.UIString('Resolve event listeners bound with framework')));
 
-    self.UI.context.addFlavorChangeListener(SDK.DOMNode, this.update, this);
+    self.UI.context.addFlavorChangeListener(SDK.DOMModel.DOMNode, this.update, this);
     this.update();
   }
 
@@ -91,7 +96,7 @@ export class EventListenersWidget extends UI.ThrottledWidget {
       this._lastRequestedNode.domModel().runtimeModel().releaseObjectGroup(_objectGroupName);
       delete this._lastRequestedNode;
     }
-    const node = self.UI.context.flavor(SDK.DOMNode);
+    const node = self.UI.context.flavor(SDK.DOMModel.DOMNode);
     if (!node) {
       this._eventListenersView.reset();
       this._eventListenersView.addEmptyHolderIfNeeded();
@@ -116,7 +121,7 @@ export class EventListenersWidget extends UI.ThrottledWidget {
 
   /**
    * @override
-   * @return {!Array<!UI.ToolbarItem>}
+   * @return {!Array<!UI.Toolbar.ToolbarItem>}
    */
   toolbarItems() {
     return this._toolbarItems;
@@ -138,8 +143,8 @@ export class EventListenersWidget extends UI.ThrottledWidget {
   }
 
   /**
-   * @param {!SDK.DOMNode} node
-   * @return {!Promise<?SDK.RemoteObject>}
+   * @param {!SDK.DOMModel.DOMNode} node
+   * @return {!Promise<?SDK.RemoteObject.RemoteObject>}
    */
   _windowObjectInNodeContext(node) {
     const executionContexts = node.domModel().runtimeModel().executionContexts();

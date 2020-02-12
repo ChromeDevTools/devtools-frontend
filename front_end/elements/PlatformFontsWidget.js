@@ -27,12 +27,17 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+import * as Common from '../common/common.js';
+import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
+import * as UI from '../ui/ui.js';
+
 import {ComputedStyleModel, Events} from './ComputedStyleModel.js';  // eslint-disable-line no-unused-vars
 
 /**
  * @unrestricted
  */
-export class PlatformFontsWidget extends UI.ThrottledWidget {
+export class PlatformFontsWidget extends UI.ThrottledWidget.ThrottledWidget {
   /**
    * @param {!ComputedStyleModel} sharedModel
    */
@@ -46,7 +51,7 @@ export class PlatformFontsWidget extends UI.ThrottledWidget {
     this._sectionTitle = createElementWithClass('div', 'title');
     this.contentElement.classList.add('platform-fonts');
     this.contentElement.appendChild(this._sectionTitle);
-    this._sectionTitle.textContent = Common.UIString('Rendered Fonts');
+    this._sectionTitle.textContent = Common.UIString.UIString('Rendered Fonts');
     this._fontStatsSection = this.contentElement.createChild('div', 'stats-section');
   }
 
@@ -66,7 +71,7 @@ export class PlatformFontsWidget extends UI.ThrottledWidget {
   }
 
   /**
-   * @param {!SDK.DOMNode} node
+   * @param {!SDK.DOMModel.DOMNode} node
    * @param {?Array.<!Protocol.CSS.PlatformFontUsage>} platformFonts
    */
   _refreshUI(node, platformFonts) {
@@ -95,13 +100,13 @@ export class PlatformFontsWidget extends UI.ThrottledWidget {
       fontDelimeterElement.textContent = '\u2014';
 
       const fontOrigin = fontStatElement.createChild('span');
-      fontOrigin.textContent =
-          platformFonts[i].isCustomFont ? Common.UIString('Network resource') : Common.UIString('Local file');
+      fontOrigin.textContent = platformFonts[i].isCustomFont ? Common.UIString.UIString('Network resource') :
+                                                               Common.UIString.UIString('Local file');
 
       const fontUsageElement = fontStatElement.createChild('span', 'font-usage');
       const usage = platformFonts[i].glyphCount;
       fontUsageElement.textContent =
-          usage === 1 ? Common.UIString('(%d glyph)', usage) : Common.UIString('(%d glyphs)', usage);
+          usage === 1 ? Common.UIString.UIString('(%d glyph)', usage) : Common.UIString.UIString('(%d glyphs)', usage);
     }
   }
 }

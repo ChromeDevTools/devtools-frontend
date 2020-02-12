@@ -2,12 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
+
 /**
  * @interface
  */
 export class MarkerDecorator {
   /**
-   * @param {!SDK.DOMNode} node
+   * @param {!SDK.DOMModel.DOMNode} node
    * @return {?{title: string, color: string}}
    */
   decorate(node) {}
@@ -22,13 +25,13 @@ export class GenericDecorator {
    * @param {!Root.Runtime.Extension} extension
    */
   constructor(extension) {
-    this._title = Common.UIString(extension.title());
+    this._title = Common.UIString.UIString(extension.title());
     this._color = extension.descriptor()['color'];
   }
 
   /**
    * @override
-   * @param {!SDK.DOMNode} node
+   * @param {!SDK.DOMModel.DOMNode} node
    * @return {?{title: string, color: string}}
    */
   decorate(node) {

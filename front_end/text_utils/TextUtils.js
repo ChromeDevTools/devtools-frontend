@@ -205,8 +205,8 @@ export class FilterParser {
   }
 
   /**
-   * @param {!TextUtils.FilterParser.ParsedFilter} filter
-   * @return {!TextUtils.FilterParser.ParsedFilter}
+   * @param {!ParsedFilter} filter
+   * @return {!ParsedFilter}
    */
   static cloneFilter(filter) {
     return {key: filter.key, text: filter.text, regex: filter.regex, negative: filter.negative};
@@ -214,7 +214,7 @@ export class FilterParser {
 
   /**
    * @param {string} query
-   * @return {!Array<!TextUtils.FilterParser.ParsedFilter>}
+   * @return {!Array<!ParsedFilter>}
    */
   parse(query) {
     const splitResult = Utils.splitStringByRegexes(
@@ -382,3 +382,6 @@ export function isMinified(text) {
   } while (--linesToCheck >= 0 && lastPosition > 0);
   return false;
 }
+
+/** @typedef {{key:(string|undefined), text:(?string|undefined), regex:(!RegExp|undefined), negative:boolean}} */
+export let ParsedFilter;

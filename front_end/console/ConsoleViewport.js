@@ -28,6 +28,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as Components from '../components/components.js';
+import * as UI from '../ui/ui.js';
+
 /**
  * @unrestricted
  */
@@ -186,7 +189,7 @@ export class ConsoleViewport {
    * @param {!Event} event
    */
   _onKeyDown(event) {
-    if (UI.isEditing() || !this._itemCount || event.shiftKey) {
+    if (UI.UIUtils.isEditing() || !this._itemCount || event.shiftKey) {
       return;
     }
     let isArrowUp = false;
@@ -605,7 +608,7 @@ export class ConsoleViewport {
     const textLines = [];
     for (let i = startSelection.item; i <= endSelection.item; ++i) {
       const element = this._providerElement(i).element();
-      const lineContent = element.childTextNodes().map(Components.Linkifier.untruncatedNodeText).join('');
+      const lineContent = element.childTextNodes().map(Components.Linkifier.Linkifier.untruncatedNodeText).join('');
       textLines.push(lineContent);
     }
 
@@ -648,10 +651,10 @@ export class ConsoleViewport {
           node.parentElement.nodeName === 'SCRIPT') {
         continue;
       }
-      chars += Components.Linkifier.untruncatedNodeText(node).length;
+      chars += Components.Linkifier.Linkifier.untruncatedNodeText(node).length;
     }
     // If the selected node text was truncated, treat any non-zero offset as the full length.
-    const untruncatedContainerLength = Components.Linkifier.untruncatedNodeText(selectionNode).length;
+    const untruncatedContainerLength = Components.Linkifier.Linkifier.untruncatedNodeText(selectionNode).length;
     if (offset > 0 && untruncatedContainerLength !== selectionNode.textContent.length) {
       offset = untruncatedContainerLength;
     }

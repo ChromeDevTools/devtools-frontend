@@ -2,11 +2,17 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+import * as ObjectUI from '../object_ui/object_ui.js';
+import * as SDK from '../sdk/sdk.js';
+import * as TextUtils from '../text_utils/text_utils.js';
+import * as UI from '../ui/ui.js';
+
 const _PinSymbol = Symbol('pinSymbol');
 
-export class ConsolePinPane extends UI.ThrottledWidget {
+export class ConsolePinPane extends UI.ThrottledWidget.ThrottledWidget {
   /**
-   * @param {!UI.ToolbarButton} liveExpressionButton
+   * @param {!UI.Toolbar.ToolbarButton} liveExpressionButton
    */
   constructor(liveExpressionButton) {
     super(true, 250);
@@ -42,7 +48,7 @@ export class ConsolePinPane extends UI.ThrottledWidget {
    * @param {!Event} event
    */
   _contextMenuEventFired(event) {
-    const contextMenu = new UI.ContextMenu(event);
+    const contextMenu = new UI.ContextMenu.ContextMenu(event);
     const target = event.deepElementFromPoint();
     if (target) {
       const targetPinElement = target.enclosingNodeOrSelfWithClass('console-pin');
@@ -109,14 +115,14 @@ export class ConsolePinPane extends UI.ThrottledWidget {
 /**
  * @unrestricted
  */
-export class ConsolePin extends Common.Object {
+export class ConsolePin extends Common.ObjectWrapper.ObjectWrapper {
   /**
    * @param {string} expression
    * @param {!ConsolePinPane} pinPane
    */
   constructor(expression, pinPane) {
     super();
-    const deletePinIcon = UI.Icon.create('smallicon-cross', 'console-delete-pin');
+    const deletePinIcon = UI.Icon.Icon.create('smallicon-cross', 'console-delete-pin');
     self.onInvokeElement(deletePinIcon, event => {
       pinPane._removePin(this);
       event.consume(true);
@@ -125,7 +131,7 @@ export class ConsolePin extends Common.Object {
     UI.ARIAUtils.setAccessibleName(deletePinIcon, ls`Remove expression`);
     UI.ARIAUtils.markAsButton(deletePinIcon);
 
-    const fragment = UI.Fragment.build`
+    const fragment = UI.Fragment.Fragment.build`
     <div class='console-pin'>
       ${deletePinIcon}
       <div class='console-pin-name' $='name'></div>
@@ -139,13 +145,13 @@ export class ConsolePin extends Common.Object {
 
     /** @type {?SDK.RuntimeModel.EvaluationResult} */
     this._lastResult = null;
-    /** @type {?SDK.ExecutionContext} */
+    /** @type {?SDK.RuntimeModel.ExecutionContext} */
     this._lastExecutionContext = null;
-    /** @type {?UI.TextEditor} */
+    /** @type {?UI.TextEditor.TextEditor} */
     this._editor = null;
     this._committedExpression = expression;
     this._hovered = false;
-    /** @type {?SDK.RemoteObject} */
+    /** @type {?SDK.RemoteObject.RemoteObject} */
     this._lastNode = null;
 
     this._pinPreview.addEventListener('mouseenter', this.setHovered.bind(this, true), false);
@@ -157,7 +163,7 @@ export class ConsolePin extends Common.Object {
       }
     }, false);
 
-    this._editorPromise = self.runtime.extension(UI.TextEditorFactory).instance().then(factory => {
+    this._editorPromise = self.runtime.extension(UI.TextEditor.TextEditorFactory).instance().then(factory => {
       this._editor = factory.createEditor({
         devtoolsAccessibleName: ls`Live expression editor`,
         lineNumbers: false,
@@ -166,7 +172,8 @@ export class ConsolePin extends Common.Object {
         autoHeight: true,
         placeholder: ls`Expression`
       });
-      this._editor.configureAutocomplete(ObjectUI.JavaScriptAutocompleteConfig.createConfigForEditor(this._editor));
+      this._editor.configureAutocomplete(
+          ObjectUI.JavaScriptAutocomplete.JavaScriptAutocompleteConfig.createConfigForEditor(this._editor));
       this._editor.widget().show(nameElement);
       this._editor.widget().element.classList.add('console-pin-editor');
       this._editor.widget().element.tabIndex = -1;
@@ -188,7 +195,7 @@ export class ConsolePin extends Common.Object {
         }
         this._committedExpression = trimmedText;
         pinPane._savePins();
-        this._editor.setSelection(TextUtils.TextRange.createFromLocation(Infinity, Infinity));
+        this._editor.setSelection(TextUtils.TextRange.TextRange.createFromLocation(Infinity, Infinity));
       });
     });
   }
@@ -202,7 +209,7 @@ export class ConsolePin extends Common.Object {
     }
     this._hovered = hovered;
     if (!hovered && this._lastNode) {
-      SDK.OverlayModel.hideDOMNodeHighlight();
+      SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
     }
   }
 
@@ -223,11 +230,11 @@ export class ConsolePin extends Common.Object {
   async focus() {
     await this._editorPromise;
     this._editor.widget().focus();
-    this._editor.setSelection(TextUtils.TextRange.createFromLocation(Infinity, Infinity));
+    this._editor.setSelection(TextUtils.TextRange.TextRange.createFromLocation(Infinity, Infinity));
   }
 
   /**
-   * @param {!UI.ContextMenu} contextMenu
+   * @param {!UI.ContextMenu.ContextMenu} contextMenu
    */
   appendToContextMenu(contextMenu) {
     if (this._lastResult && this._lastResult.object) {
@@ -248,8 +255,8 @@ export class ConsolePin extends Common.Object {
     const isEditing = this._pinElement.hasFocus();
     const throwOnSideEffect = isEditing && text !== this._committedExpression;
     const timeout = throwOnSideEffect ? 250 : undefined;
-    const executionContext = self.UI.context.flavor(SDK.ExecutionContext);
-    const {preview, result} = await ObjectUI.JavaScriptREPL.evaluateAndBuildPreview(
+    const executionContext = self.UI.context.flavor(SDK.RuntimeModel.ExecutionContext);
+    const {preview, result} = await ObjectUI.JavaScriptREPL.JavaScriptREPL.evaluateAndBuildPreview(
         text, throwOnSideEffect, timeout, !isEditing /* allowErrors */, 'console');
     if (this._lastResult && this._lastExecutionContext) {
       this._lastExecutionContext.runtimeModel.releaseEvaluationResult(this._lastResult);
@@ -260,7 +267,7 @@ export class ConsolePin extends Common.Object {
     const previewText = preview.deepTextContent();
     if (!previewText || previewText !== this._pinPreview.deepTextContent()) {
       this._pinPreview.removeChildren();
-      if (result && SDK.RuntimeModel.isSideEffectFailure(result)) {
+      if (result && SDK.RuntimeModel.RuntimeModel.isSideEffectFailure(result)) {
         const sideEffectLabel = this._pinPreview.createChild('span', 'object-value-calculate-value-button');
         sideEffectLabel.textContent = `(...)`;
         sideEffectLabel.title = ls`Evaluate, allowing side effects`;
@@ -278,14 +285,14 @@ export class ConsolePin extends Common.Object {
     }
     if (this._hovered) {
       if (node) {
-        SDK.OverlayModel.highlightObjectAsDOMNode(node);
+        SDK.OverlayModel.OverlayModel.highlightObjectAsDOMNode(node);
       } else if (this._lastNode) {
-        SDK.OverlayModel.hideDOMNodeHighlight();
+        SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
       }
     }
     this._lastNode = node || null;
 
-    const isError = result && result.exceptionDetails && !SDK.RuntimeModel.isSideEffectFailure(result);
+    const isError = result && result.exceptionDetails && !SDK.RuntimeModel.RuntimeModel.isSideEffectFailure(result);
     this._pinElement.classList.toggle('error-level', !!isError);
   }
 }

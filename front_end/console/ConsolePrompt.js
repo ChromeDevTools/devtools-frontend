@@ -2,9 +2,16 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+import * as Host from '../host/host.js';
+import * as ObjectUI from '../object_ui/object_ui.js';
+import * as SDK from '../sdk/sdk.js';
+import * as TextUtils from '../text_utils/text_utils.js';
+import * as UI from '../ui/ui.js';
+
 import {ConsolePanel} from './ConsolePanel.js';
 
-export class ConsolePrompt extends UI.Widget {
+export class ConsolePrompt extends UI.Widget.Widget {
   constructor() {
     super();
     this.registerRequiredCSS('console/consolePrompt.css');
@@ -12,21 +19,21 @@ export class ConsolePrompt extends UI.Widget {
     this._history = new ConsoleHistoryManager();
 
     this._initialText = '';
-    /** @type {?UI.TextEditor} */
+    /** @type {?UI.TextEditor.TextEditor} */
     this._editor = null;
     this._eagerPreviewElement = createElementWithClass('div', 'console-eager-preview');
-    this._textChangeThrottler = new Common.Throttler(150);
-    this._formatter = new ObjectUI.RemoteObjectPreviewFormatter();
+    this._textChangeThrottler = new Common.Throttler.Throttler(150);
+    this._formatter = new ObjectUI.RemoteObjectPreviewFormatter.RemoteObjectPreviewFormatter();
     this._requestPreviewBound = this._requestPreview.bind(this);
     this._innerPreviewElement = this._eagerPreviewElement.createChild('div', 'console-eager-inner-preview');
-    this._eagerPreviewElement.appendChild(UI.Icon.create('smallicon-command-result', 'preview-result-icon'));
+    this._eagerPreviewElement.appendChild(UI.Icon.Icon.create('smallicon-command-result', 'preview-result-icon'));
 
     const editorContainerElement = this.element.createChild('div', 'console-prompt-editor-container');
     this.element.appendChild(this._eagerPreviewElement);
 
-    this._promptIcon = UI.Icon.create('smallicon-text-prompt', 'console-prompt-icon');
+    this._promptIcon = UI.Icon.Icon.create('smallicon-text-prompt', 'console-prompt-icon');
     this.element.appendChild(this._promptIcon);
-    this._iconThrottler = new Common.Throttler(0);
+    this._iconThrottler = new Common.Throttler.Throttler(0);
 
     this._eagerEvalSetting = self.Common.settings.moduleSetting('consoleEagerEval');
     this._eagerEvalSetting.addChangeListener(this._eagerSettingChanged.bind(this));
@@ -36,15 +43,15 @@ export class ConsolePrompt extends UI.Widget {
     /** @type {?Promise} */
     this._previewRequestForTest = null;
 
-    /** @type {?UI.AutocompleteConfig} */
+    /** @type {?UI.TextEditor.AutocompleteConfig} */
     this._defaultAutocompleteConfig = null;
 
     this._highlightingNode = false;
 
-    self.runtime.extension(UI.TextEditorFactory).instance().then(gotFactory.bind(this));
+    self.runtime.extension(UI.TextEditor.TextEditorFactory).instance().then(gotFactory.bind(this));
 
     /**
-     * @param {!UI.TextEditorFactory} factory
+     * @param {!UI.TextEditor.TextEditorFactory} factory
      * @this {ConsolePrompt}
      */
     function gotFactory(factory) {
@@ -56,7 +63,8 @@ export class ConsolePrompt extends UI.Widget {
         autoHeight: true
       });
 
-      this._defaultAutocompleteConfig = ObjectUI.JavaScriptAutocompleteConfig.createConfigForEditor(this._editor);
+      this._defaultAutocompleteConfig =
+          ObjectUI.JavaScriptAutocomplete.JavaScriptAutocompleteConfig.createConfigForEditor(this._editor);
       this._editor.configureAutocomplete(Object.assign({}, this._defaultAutocompleteConfig, {
         suggestionsCallback: this._wordsWithQuery.bind(this),
         anchorBehavior: UI.GlassPane.AnchorBehavior.PreferTop
@@ -113,19 +121,19 @@ export class ConsolePrompt extends UI.Widget {
    */
   async _requestPreview() {
     const text = this._editor.textWithCurrentSuggestion().trim();
-    const executionContext = self.UI.context.flavor(SDK.ExecutionContext);
+    const executionContext = self.UI.context.flavor(SDK.RuntimeModel.ExecutionContext);
     const {preview, result} =
-        await ObjectUI.JavaScriptREPL.evaluateAndBuildPreview(text, true /* throwOnSideEffect */, 500);
+        await ObjectUI.JavaScriptREPL.JavaScriptREPL.evaluateAndBuildPreview(text, true /* throwOnSideEffect */, 500);
     this._innerPreviewElement.removeChildren();
     if (preview.deepTextContent() !== this._editor.textWithCurrentSuggestion().trim()) {
       this._innerPreviewElement.appendChild(preview);
     }
     if (result && result.object && result.object.subtype === 'node') {
       this._highlightingNode = true;
-      SDK.OverlayModel.highlightObjectAsDOMNode(result.object);
+      SDK.OverlayModel.OverlayModel.highlightObjectAsDOMNode(result.object);
     } else if (this._highlightingNode) {
       this._highlightingNode = false;
-      SDK.OverlayModel.hideDOMNodeHighlight();
+      SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
     }
     if (result) {
       executionContext.runtimeModel.releaseEvaluationResult(result);
@@ -138,7 +146,7 @@ export class ConsolePrompt extends UI.Widget {
   willHide() {
     if (this._highlightingNode) {
       this._highlightingNode = false;
-      SDK.OverlayModel.hideDOMNodeHighlight();
+      SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
     }
   }
 
@@ -164,7 +172,7 @@ export class ConsolePrompt extends UI.Widget {
 
   moveCaretToEndOfPrompt() {
     if (this._editor) {
-      this._editor.setSelection(TextUtils.TextRange.createFromLocation(Infinity, Infinity));
+      this._editor.setSelection(TextUtils.TextRange.TextRange.createFromLocation(Infinity, Infinity));
     }
   }
 
@@ -223,14 +231,14 @@ export class ConsolePrompt extends UI.Widget {
         newText = this._history.next();
         break;
       case UI.KeyboardShortcut.Keys.P.code:  // Ctrl+P = Previous
-        if (Host.isMac() && keyboardEvent.ctrlKey && !keyboardEvent.metaKey && !keyboardEvent.altKey &&
+        if (Host.Platform.isMac() && keyboardEvent.ctrlKey && !keyboardEvent.metaKey && !keyboardEvent.altKey &&
             !keyboardEvent.shiftKey) {
           newText = this._history.previous(this.text());
           isPrevious = true;
         }
         break;
       case UI.KeyboardShortcut.Keys.N.code:  // Ctrl+N = Next
-        if (Host.isMac() && keyboardEvent.ctrlKey && !keyboardEvent.metaKey && !keyboardEvent.altKey &&
+        if (Host.Platform.isMac() && keyboardEvent.ctrlKey && !keyboardEvent.metaKey && !keyboardEvent.altKey &&
             !keyboardEvent.shiftKey) {
           newText = this._history.next();
         }
@@ -252,7 +260,7 @@ export class ConsolePrompt extends UI.Widget {
     this.setText(newText);
 
     if (isPrevious) {
-      this._editor.setSelection(TextUtils.TextRange.createFromLocation(0, Infinity));
+      this._editor.setSelection(TextUtils.TextRange.TextRange.createFromLocation(0, Infinity));
     } else {
       this.moveCaretToEndOfPrompt();
     }
@@ -265,7 +273,7 @@ export class ConsolePrompt extends UI.Widget {
     if (!this._isCaretAtEndOfPrompt()) {
       return true;
     }
-    return await ObjectUI.JavaScriptAutocomplete.isExpressionComplete(this.text());
+    return await ObjectUI.JavaScriptAutocomplete.JavaScriptAutocomplete.isExpressionComplete(this.text());
   }
 
   _updatePromptIcon() {
@@ -308,11 +316,11 @@ export class ConsolePrompt extends UI.Widget {
    */
   async _appendCommand(text, useCommandLineAPI) {
     this.setText('');
-    const currentExecutionContext = self.UI.context.flavor(SDK.ExecutionContext);
+    const currentExecutionContext = self.UI.context.flavor(SDK.RuntimeModel.ExecutionContext);
     if (currentExecutionContext) {
       const executionContext = currentExecutionContext;
       const message = self.SDK.consoleModel.addCommandMessage(executionContext, text);
-      const expression = ObjectUI.JavaScriptREPL.preprocessExpression(text);
+      const expression = ObjectUI.JavaScriptREPL.JavaScriptREPL.preprocessExpression(text);
       self.SDK.consoleModel.evaluateCommandInConsole(
           executionContext, message, expression, useCommandLineAPI,
           /* awaitPromise */ false);
@@ -365,8 +373,8 @@ export class ConsolePrompt extends UI.Widget {
   }
 
   /**
-   * @param {!TextUtils.TextRange} queryRange
-   * @param {!TextUtils.TextRange} substituteRange
+   * @param {!TextUtils.TextRange.TextRange} queryRange
+   * @param {!TextUtils.TextRange.TextRange} substituteRange
    * @param {boolean=} force
    * @return {!Promise<!UI.SuggestBox.Suggestions>}
    */

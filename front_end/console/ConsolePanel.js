@@ -26,12 +26,15 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
+import * as UI from '../ui/ui.js';
+
 import {ConsoleView} from './ConsoleView.js';
 
 /**
  * @unrestricted
  */
-export class ConsolePanel extends UI.Panel {
+export class ConsolePanel extends UI.Panel.Panel {
   constructor() {
     super('console');
     this._view = ConsoleView.instance();
@@ -78,7 +81,7 @@ export class ConsolePanel extends UI.Panel {
 
   /**
    * @override
-   * @return {?UI.SearchableView}
+   * @return {?UI.SearchableView.SearchableView}
    */
   searchableView() {
     return ConsoleView.instance().searchableView();
@@ -88,7 +91,7 @@ export class ConsolePanel extends UI.Panel {
 /**
  * @unrestricted
  */
-export class WrapperView extends UI.VBox {
+export class WrapperView extends UI.Widget.VBox {
   constructor() {
     super();
     this.element.classList.add('console-view-wrapper');
@@ -124,7 +127,7 @@ export class WrapperView extends UI.VBox {
 }
 
 /**
- * @implements {Common.Revealer}
+ * @implements {Common.Revealer.Revealer}
  * @unrestricted
  */
 export class ConsoleRevealer {

@@ -2,11 +2,16 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+import * as Host from '../host/host.js';
+import * as SDK from '../sdk/sdk.js';
+import * as UI from '../ui/ui.js';
+
 /**
- * @implements {SDK.SDKModelObserver}
+ * @implements {SDK.SDKModel.SDKModelObserver}
  * @unrestricted
  */
-export class PerformanceMonitorImpl extends UI.HBox {
+export class PerformanceMonitorImpl extends UI.Widget.HBox {
   constructor() {
     super(true);
     this.registerRequiredCSS('performance_monitor/performanceMonitor.css');
@@ -21,17 +26,18 @@ export class PerformanceMonitorImpl extends UI.HBox {
     this._scaleHeight = 16;
     /** @const */
     this._graphHeight = 90;
-    this._gridColor = self.UI.themeSupport.patchColorText('rgba(0, 0, 0, 0.08)', UI.ThemeSupport.ColorUsage.Foreground);
+    this._gridColor =
+        self.UI.themeSupport.patchColorText('rgba(0, 0, 0, 0.08)', UI.UIUtils.ThemeSupport.ColorUsage.Foreground);
     this._controlPane = new ControlPane(this.contentElement);
     const chartContainer = this.contentElement.createChild('div', 'perfmon-chart-container');
     this._canvas = /** @type {!HTMLCanvasElement} */ (chartContainer.createChild('canvas'));
     this._canvas.tabIndex = -1;
     UI.ARIAUtils.setAccessibleName(
-        this._canvas, Common.UIString('Graphs displaying a real-time view of performance metrics'));
+        this._canvas, Common.UIString.UIString('Graphs displaying a real-time view of performance metrics'));
     this.contentElement.createChild('div', 'perfmon-chart-suspend-overlay fill').createChild('div').textContent =
-        Common.UIString('Paused');
+        Common.UIString.UIString('Paused');
     this._controlPane.addEventListener(Events.MetricChanged, this._recalcChartHeight, this);
-    self.SDK.targetManager.observeModels(SDK.PerformanceMetricsModel, this);
+    self.SDK.targetManager.observeModels(SDK.PerformanceMetricsModel.PerformanceMetricsModel, this);
   }
 
   /**
@@ -41,8 +47,7 @@ export class PerformanceMonitorImpl extends UI.HBox {
     if (!this._model) {
       return;
     }
-    self.SDK.targetManager.addEventListener(
-        SDK.TargetManager.Events.SuspendStateChanged, this._suspendStateChanged, this);
+    self.SDK.targetManager.addEventListener(SDK.SDKModel.Events.SuspendStateChanged, this._suspendStateChanged, this);
     this._model.enable();
     this._suspendStateChanged();
   }
@@ -55,14 +60,14 @@ export class PerformanceMonitorImpl extends UI.HBox {
       return;
     }
     self.SDK.targetManager.removeEventListener(
-        SDK.TargetManager.Events.SuspendStateChanged, this._suspendStateChanged, this);
+        SDK.SDKModel.Events.SuspendStateChanged, this._suspendStateChanged, this);
     this._stopPolling();
     this._model.disable();
   }
 
   /**
    * @override
-   * @param {!SDK.PerformanceMetricsModel} model
+   * @param {!SDK.PerformanceMetricsModel.PerformanceMetricsModel} model
    */
   modelAdded(model) {
     if (this._model) {
@@ -76,7 +81,7 @@ export class PerformanceMonitorImpl extends UI.HBox {
 
   /**
    * @override
-   * @param {!SDK.PerformanceMetricsModel} model
+   * @param {!SDK.PerformanceMetricsModel.PerformanceMetricsModel} model
    */
   modelRemoved(model) {
     if (this._model !== model) {
@@ -158,9 +163,11 @@ export class PerformanceMonitorImpl extends UI.HBox {
    */
   _drawHorizontalGrid(ctx) {
     const labelDistanceSeconds = 10;
-    const lightGray = self.UI.themeSupport.patchColorText('rgba(0, 0, 0, 0.02)', UI.ThemeSupport.ColorUsage.Foreground);
-    ctx.font = '10px ' + Host.fontFamily();
-    ctx.fillStyle = self.UI.themeSupport.patchColorText('rgba(0, 0, 0, 0.55)', UI.ThemeSupport.ColorUsage.Foreground);
+    const lightGray =
+        self.UI.themeSupport.patchColorText('rgba(0, 0, 0, 0.02)', UI.UIUtils.ThemeSupport.ColorUsage.Foreground);
+    ctx.font = '10px ' + Host.Platform.fontFamily();
+    ctx.fillStyle =
+        self.UI.themeSupport.patchColorText('rgba(0, 0, 0, 0.55)', UI.UIUtils.ThemeSupport.ColorUsage.Foreground);
     const currentTime = Date.now() / 1000;
     for (let sec = Math.ceil(currentTime);; --sec) {
       const x = this._width - ((currentTime - sec) * 1000 - this._pollIntervalMs) * this._pixelsPerMs;
@@ -200,20 +207,21 @@ export class PerformanceMonitorImpl extends UI.HBox {
         color: metricInfo.color
       });
     }
-    const backgroundColor =
-        Common.Color.parse(self.UI.themeSupport.patchColorText('white', UI.ThemeSupport.ColorUsage.Background));
+    const backgroundColor = Common.Color.Color.parse(
+        self.UI.themeSupport.patchColorText('white', UI.UIUtils.ThemeSupport.ColorUsage.Background));
     for (const path of paths.reverse()) {
       const color = path.color;
       ctx.save();
-      ctx.fillStyle = backgroundColor.blendWith(Common.Color.parse(color).setAlpha(0.2)).asString(null);
+      ctx.fillStyle = backgroundColor.blendWith(Common.Color.Color.parse(color).setAlpha(0.2)).asString(null);
       ctx.fill(path.path);
       ctx.strokeStyle = color;
       ctx.lineWidth = 0.5;
       ctx.stroke(path.path);
       ctx.restore();
     }
-    ctx.fillStyle = self.UI.themeSupport.patchColorText('rgba(0, 0, 0, 0.55)', UI.ThemeSupport.ColorUsage.Foreground);
-    ctx.font = `10px  ${Host.fontFamily()}`;
+    ctx.fillStyle =
+        self.UI.themeSupport.patchColorText('rgba(0, 0, 0, 0.55)', UI.UIUtils.ThemeSupport.ColorUsage.Foreground);
+    ctx.font = `10px  ${Host.Platform.fontFamily()}`;
     ctx.fillText(chartInfo.title, 8, 10);
     this._drawVerticalGrid(ctx, height - bottomPadding, max, chartInfo);
     ctx.restore();
@@ -269,7 +277,8 @@ export class PerformanceMonitorImpl extends UI.HBox {
     const span = max;
     const topPadding = 18;
     const visibleHeight = height - topPadding;
-    ctx.fillStyle = self.UI.themeSupport.patchColorText('rgba(0, 0, 0, 0.55)', UI.ThemeSupport.ColorUsage.Foreground);
+    ctx.fillStyle =
+        self.UI.themeSupport.patchColorText('rgba(0, 0, 0, 0.55)', UI.UIUtils.ThemeSupport.ColorUsage.Foreground);
     ctx.strokeStyle = this._gridColor;
     ctx.beginPath();
     for (let i = 0; i < 2; ++i) {
@@ -286,7 +295,8 @@ export class PerformanceMonitorImpl extends UI.HBox {
     ctx.beginPath();
     ctx.moveTo(0, height + 0.5);
     ctx.lineTo(this._width, height + 0.5);
-    ctx.strokeStyle = self.UI.themeSupport.patchColorText('rgba(0, 0, 0, 0.2)', UI.ThemeSupport.ColorUsage.Foreground);
+    ctx.strokeStyle =
+        self.UI.themeSupport.patchColorText('rgba(0, 0, 0, 0.2)', UI.UIUtils.ThemeSupport.ColorUsage.Foreground);
     ctx.stroke();
     /**
      * @param {number} value
@@ -393,7 +403,7 @@ export const Format = {
   Bytes: Symbol('Bytes'),
 };
 
-export class ControlPane extends Common.Object {
+export class ControlPane extends Common.ObjectWrapper.ObjectWrapper {
   /**
    * @param {!Element} parent
    */
@@ -410,7 +420,7 @@ export class ControlPane extends Common.Object {
     /** @type {!Array<!PerformanceMonitor.PerformanceMonitor.ChartInfo>} */
     this._chartsInfo = [
       {
-        title: Common.UIString('CPU usage'),
+        title: Common.UIString.UIString('CPU usage'),
         metrics: [
           {name: 'TaskDuration', color: '#999'}, {name: 'ScriptDuration', color: 'orange'},
           {name: 'LayoutDuration', color: 'blueviolet'}, {name: 'RecalcStyleDuration', color: 'violet'}
@@ -422,21 +432,23 @@ export class ControlPane extends Common.Object {
         max: 1
       },
       {
-        title: Common.UIString('JS heap size'),
+        title: Common.UIString.UIString('JS heap size'),
         metrics: [{name: 'JSHeapTotalSize', color: '#99f'}, {name: 'JSHeapUsedSize', color: 'blue'}],
         format: format.Bytes,
         color: 'blue'
       },
-      {title: Common.UIString('DOM Nodes'), metrics: [{name: 'Nodes', color: 'green'}]},
-      {title: Common.UIString('JS event listeners'), metrics: [{name: 'JSEventListeners', color: 'yellowgreen'}]},
-      {title: Common.UIString('Documents'), metrics: [{name: 'Documents', color: 'darkblue'}]},
-      {title: Common.UIString('Document Frames'), metrics: [{name: 'Frames', color: 'darkcyan'}]},
-      {title: Common.UIString('Layouts / sec'), metrics: [{name: 'LayoutCount', color: 'hotpink'}]},
-      {title: Common.UIString('Style recalcs / sec'), metrics: [{name: 'RecalcStyleCount', color: 'deeppink'}]}
+      {title: Common.UIString.UIString('DOM Nodes'), metrics: [{name: 'Nodes', color: 'green'}]}, {
+        title: Common.UIString.UIString('JS event listeners'),
+        metrics: [{name: 'JSEventListeners', color: 'yellowgreen'}]
+      },
+      {title: Common.UIString.UIString('Documents'), metrics: [{name: 'Documents', color: 'darkblue'}]},
+      {title: Common.UIString.UIString('Document Frames'), metrics: [{name: 'Frames', color: 'darkcyan'}]},
+      {title: Common.UIString.UIString('Layouts / sec'), metrics: [{name: 'LayoutCount', color: 'hotpink'}]},
+      {title: Common.UIString.UIString('Style recalcs / sec'), metrics: [{name: 'RecalcStyleCount', color: 'deeppink'}]}
     ];
     for (const info of this._chartsInfo) {
       for (const metric of info.metrics) {
-        metric.color = self.UI.themeSupport.patchColorText(metric.color, UI.ThemeSupport.ColorUsage.Foreground);
+        metric.color = self.UI.themeSupport.patchColorText(metric.color, UI.UIUtils.ThemeSupport.ColorUsage.Foreground);
       }
     }
 
@@ -509,7 +521,7 @@ export class MetricIndicator {
     this._active = active;
     this._onToggle = onToggle;
     this.element = parent.createChild('div', 'perfmon-indicator');
-    this._swatchElement = UI.Icon.create('smallicon-checkmark-square', 'perfmon-indicator-swatch');
+    this._swatchElement = UI.Icon.Icon.create('smallicon-checkmark-square', 'perfmon-indicator-swatch');
     this._swatchElement.style.backgroundColor = color;
     this.element.appendChild(this._swatchElement);
     this.element.createChild('div', 'perfmon-indicator-title').textContent = info.title;

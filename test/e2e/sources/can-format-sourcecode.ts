@@ -6,7 +6,7 @@ import {assert} from 'chai';
 import {describe, it} from 'mocha';
 import * as puppeteer from 'puppeteer';
 
-import {click, debuggerStatement, getBrowserAndPages, resetPages, resourcesPath, waitFor} from '../../shared/helper.js';
+import {$, click, getBrowserAndPages, resetPages, resourcesPath, waitFor} from '../../shared/helper.js';
 
 const PRETTY_PRINT_BUTTON = `[aria-label="Pretty print minified-sourcecode.js"]`;
 
@@ -19,7 +19,7 @@ function retrieveCodeMirrorEditorContent() {
   return document.querySelector('.CodeMirror-code')!.textContent;
 }
 
-async function prettyPrintMinifiedFile(target: puppeteer.Page, frontend: puppeteer.Page) {
+async function openFileInSourcesPanel(target: puppeteer.Page) {
   await target.goto(`${resourcesPath}/sources/minified-sourcecode.html`);
 
   // Locate the button for switching to the sources tab.
@@ -33,7 +33,9 @@ async function prettyPrintMinifiedFile(target: puppeteer.Page, frontend: puppete
 
   // Wait for the file to be formattable, this process is async after opening a file
   await waitFor(PRETTY_PRINT_BUTTON);
+}
 
+async function prettyPrintMinifiedFile(frontend: puppeteer.Page) {
   const previousTextContent = await frontend.evaluate(retrieveCodeMirrorEditorContent);
 
   await click(PRETTY_PRINT_BUTTON);
@@ -44,6 +46,50 @@ async function prettyPrintMinifiedFile(target: puppeteer.Page, frontend: puppete
   }, {}, previousTextContent);
 }
 
+// We can't use the click helper, as it is not possible to select a particular
+// line number element in CodeMirror.
+async function addBreakpointForLine(frontend: puppeteer.Page, index: number) {
+  const breakpointLineNumber = await frontend.evaluate((index) => {
+    const element = document.querySelectorAll('.CodeMirror-linenumber')[index];
+
+    const {left, top, width, height} = element.getBoundingClientRect();
+    return {
+      x: left + width * 0.5,
+      y: top + height * 0.5,
+    };
+  }, index);
+
+  await frontend.mouse.click(breakpointLineNumber.x, breakpointLineNumber.y);
+
+  await frontend.waitForFunction(() => {
+    return document.querySelectorAll('.cm-breakpoint').length !== 0;
+  });
+}
+
+async function retrieveTopCallFrameScriptLocation(target: puppeteer.Page) {
+  // The script will run into a breakpoint, which means that it will not actually
+  // finish the evaluation, until we continue executing.
+  // Thus, we have to await it at a later point, while stepping through the code.
+  const scriptEvaluation = target.evaluate('notFormattedFunction();');
+
+  // Wait for the evaluation to be paused and shown in the UI
+  await waitFor('.paused-message');
+
+  // Retrieve the top level call frame script location name
+  const scriptLocation =
+      await (await $('.call-frame-location')).evaluate((location: HTMLElement) => location.textContent);
+
+  // Resume the evaluation
+  await click(`[aria-label="Pause script execution"]`);
+
+  // Make sure to await the context evaluate before asserting
+  // Otherwise the Puppeteer process might crash on a failure assertion,
+  // as its execution context is destroyed
+  await scriptEvaluation;
+
+  return scriptLocation;
+}
+
 describe('The Sources Tab', async () => {
   beforeEach(async () => {
     await resetPages();
@@ -52,7 +98,8 @@ describe('The Sources Tab', async () => {
   it('can format a JavaScript file', async () => {
     const {target, frontend} = getBrowserAndPages();
 
-    await prettyPrintMinifiedFile(target, frontend);
+    await openFileInSourcesPanel(target);
+    await prettyPrintMinifiedFile(frontend);
 
     const expectedLines = [
       `// clang-format off`,
@@ -82,7 +129,8 @@ describe('The Sources Tab', async () => {
   it('causes the correct line number to show up in the console panel', async () => {
     const {target, frontend} = getBrowserAndPages();
 
-    await prettyPrintMinifiedFile(target, frontend);
+    await openFileInSourcesPanel(target);
+    await prettyPrintMinifiedFile(frontend);
 
     await click('#tab-console');
 
@@ -96,8 +144,6 @@ describe('The Sources Tab', async () => {
                }));
     });
 
-    await debuggerStatement(frontend);
-
     assert.deepEqual(messageLinks, [
       {
         message: `Test for correct line number`,
@@ -108,5 +154,26 @@ describe('The Sources Tab', async () => {
         lineNumber: `minified-sourcecode.js:formatted:7 `,
       }
     ]);
+  });
+
+  it('can add breakpoint for formatted file', async () => {
+    const {target, frontend} = getBrowserAndPages();
+
+    await openFileInSourcesPanel(target);
+    await prettyPrintMinifiedFile(frontend);
+    await addBreakpointForLine(frontend, 7);
+
+    const scriptLocation = await retrieveTopCallFrameScriptLocation(target);
+    assert.deepEqual(scriptLocation, `minified-source…js:formatted:7`);
+  });
+
+  it('can add breakpoint for unformatted file', async () => {
+    const {target, frontend} = getBrowserAndPages();
+
+    await openFileInSourcesPanel(target);
+    await addBreakpointForLine(frontend, 2);
+
+    const scriptLocation = await retrieveTopCallFrameScriptLocation(target);
+    assert.deepEqual(scriptLocation, `minified-sourcecode.js:3`);
   });
 });

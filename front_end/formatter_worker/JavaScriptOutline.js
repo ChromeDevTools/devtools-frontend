@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as TextUtils from '../text_utils/text_utils.js';
+
 import {ESTreeWalker} from './ESTreeWalker.js';
 
 /**
@@ -19,7 +21,7 @@ export function javaScriptOutline(content) {
     ast = acorn.loose.parse(content, {ranges: false});
   }
 
-  const textCursor = new TextUtils.TextCursor(content.computeLineEndings());
+  const textCursor = new TextUtils.TextCursor.TextCursor(content.computeLineEndings());
   const walker = new ESTreeWalker(beforeVisit);
   walker.walk(ast);
   postMessage({chunk: outlineChunk, isLastChunk: true});

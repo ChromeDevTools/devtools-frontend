@@ -168,44 +168,40 @@ ol.tree-outline:not(.hide-selection-when-blurred) li.selected:focus * {
 
 @media (forced-colors: active) {
     .tree-outline li:not(.parent)::before,
-    .tree-outline li:hover:not(.parent)::before {
-        background-color: transparent !important;
+    .tree-outline li:not(.parent):hover::before,
+    .tree-outline.hide-selection-when-blurred .selected:focus[data-keyboard-focus="true"]:not(.parent)::before {
+        forced-color-adjust: none;
+        background-color: transparent;
     }
-    .tree-outline li::before,
-    .tree-outline-disclosure li.parent::before {
+    .tree-outline-disclosure li.parent::before,
+    .tree-outline:not(.hide-selection-when-blurred) li.parent:not(.selected)::before,
+    .tree-outline li [is=ui-icon].icon-mask {
         forced-color-adjust: none;
         background-color: ButtonText;
     }
-    .tree-outline.hide-selection-when-blurred .selected:focus[data-keyboard-focus="true"],
-    .tree-outline.hide-selection-when-blurred .selected:focus[data-keyboard-focus="true"] span {
+    .tree-outline-disclosure li.parent:hover:not(.selected)::before,
+    .tree-outline:not(.hide-selection-when-blurred) li.parent:hover:not(.selected)::before {
+        background-color: ButtonText;
+    }
+    ol.tree-outline:not(.hide-selection-when-blurred) li.selected:focus .selection,
+    .tree-outline.hide-selection-when-blurred .selected:focus[data-keyboard-focus="true"] {
         forced-color-adjust: none;
-        background: Highlight;
-        color: HighlightText;
-    }
-    ol.tree-outline:not(.hide-selection-when-blurred) li.parent.selected:focus::before,
-    .tree-outline.hide-selection-when-blurred .selected:focus[data-keyboard-focus="true"]::before,
-    .tree-outline:not(.hide-selection-when-blurred) li.parent.selected::before {
-        background-color: HighlightText;
-    }
-    .tree-outline.hide-selection-when-blurred .selected:focus[data-keyboard-focus="true"]:not(.parent)::before {
-        background-color: transparent;
+        background-color: Highlight;
     }
     .tree-outline:not(.hide-selection-when-blurred) li.selected .selection {
-        background-color: Highlight;
-    }
-    ol.tree-outline:not(.hide-selection-when-blurred) li.selected:focus,
-    .tree-outline:not(.hide-selection-when-blurred) li.selected,
-    .tree-outline:not(.hide-selection-when-blurred) li.selected span {
         forced-color-adjust: none;
-        color: HighlightText;
+        background-color: ButtonText;
     }
-    ol.tree-outline:not(.hide-selection-when-blurred) li.parent:hover .selection,
-    ol.tree-outline:not(.hide-selection-when-blurred) li.selected:focus .selection {
-        forced-color-adjust: none;
-        background-color: Highlight;
-    }
-    .tree-outline:not(.hide-selection-when-blurred) li.selected .leading-icons span {
-        forced-color-adjust: none;
+    .tree-outline:not(.hide-selection-when-blurred) li.parent.selected::before,
+    .tree-outline.hide-selection-when-blurred .selected:focus[data-keyboard-focus="true"]::before,
+    .tree-outline li.selected [is=ui-icon].icon-mask,
+    .tree-outline li.selected:focus [is=ui-icon]:not(.icon-mask) {
         background-color: HighlightText !important;
+    }
+    .tree-outline:not(.hide-selection-when-blurred) li.selected,
+    .tree-outline li[data-keyboard-focus="true"]:focus .tree-element-title,
+    .tree-outline.hide-selection-when-blurred .selected:focus[data-keyboard-focus="true"] span {
+        forced-color-adjust: none;
+        color: HighlightText !important;
     }
 }

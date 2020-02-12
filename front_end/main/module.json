@@ -355,6 +355,11 @@
                     "title": "Dock to bottom"
                 },
                 {
+                    "value": "left",
+                    "text": "Left",
+                    "title": "Dock to left"
+                },
+                {
                     "value": "undocked",
                     "text": "Undocked",
                     "title": "Undock into separate window"

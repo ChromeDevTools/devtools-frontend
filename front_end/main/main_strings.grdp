@@ -78,6 +78,9 @@
   <message name="IDS_DEVTOOLS_93445501d5239cedddc0bd6a0a453a95" desc="Title element text content in Main">
     Dock side
   </message>
+  <message name="IDS_DEVTOOLS_945d5e233cf7d6240f6b783b36a374ff" desc="A drop-down menu option to dock to left">
+    Left
+  </message>
   <message name="IDS_DEVTOOLS_956853d02d2c6947b6c15515e669dfad" desc="Title of a setting under the Appearance category that can be invoked through the Command Menu">
     Set color format to RGB
   </message>

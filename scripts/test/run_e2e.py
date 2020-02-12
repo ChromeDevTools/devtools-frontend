@@ -4,14 +4,14 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 """
-Run boot perf test on a pre-built chrome or one specified via --chrome-binary.
+Run tests on a pinned version of chrome.
 """
 
 import argparse
 import os
 import platform
 import re
-import subprocess
+from subprocess import Popen
 import sys
 import signal
 
@@ -24,9 +24,9 @@ is_cygwin = sys.platform == 'cygwin'
 
 
 def parse_options(cli_args):
-    parser = argparse.ArgumentParser(description='Run boot perf test')
-    parser.add_argument('--runs', help='Number of runs', type=int)
+    parser = argparse.ArgumentParser(description='Run tests')
     parser.add_argument('--chrome-binary', dest='chrome_binary', help='path to Chromium binary')
+    parser.add_argument('--test-suite', dest='test_suite', help='path to test suite')
     return parser.parse_args(cli_args)
 
 
@@ -34,11 +34,8 @@ def check_chrome_binary(chrome_binary):
     return os.path.exists(chrome_binary) and os.path.isfile(chrome_binary) and os.access(chrome_binary, os.X_OK)
 
 
-def popen(arguments, cwd=None, env=None, capture=False):
-    process = subprocess.Popen(arguments, cwd=cwd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, env=env)
-    if not capture:
-        return process
-
+def popen(arguments, cwd=devtools_paths.devtools_root_path(), env=os.environ.copy()):
+    process = Popen(arguments, cwd=cwd, env=env, shell=True)
     def handle_signal(signum, frame):
         print 'Sending signal (%i) to process' % signum
         process.send_signal(signum)
@@ -50,16 +47,13 @@ def popen(arguments, cwd=None, env=None, capture=False):
     signal.signal(signal.SIGINT, handle_signal)
     signal.signal(signal.SIGTERM, handle_signal)
 
-    for line in iter(process.stdout.readline, ''):
-        sys.stdout.write(line)
-        if process.returncode == 0:
-            sys.stdout.write('done')
+    process.communicate()
 
     # Restore the original sigterm / int handlers.
     signal.signal(signal.SIGINT, original_sigint)
     signal.signal(signal.SIGTERM, original_sigterm)
 
-    return process
+    return process.returncode
 
 
 def to_platform_path_exact(filepath):
@@ -71,48 +65,43 @@ def to_platform_path_exact(filepath):
 
 
 def compile_typescript_test_files():
-    tsc_compile_errors_found = False
     cwd = devtools_paths.devtools_root_path()
-    env = os.environ.copy()
     shared_path = os.path.join(cwd, 'test', 'shared')
     e2e_test_path = os.path.join(cwd, 'test', 'e2e')
 
     # Compile shared code, e.g. helper and runner.
     print("Compiling shared TypeScript")
-    exec_command = [devtools_paths.node_path(), devtools_paths.typescript_compiler_path(), '-p', shared_path]
-    tsc_compile_proc = popen(exec_command, cwd=cwd, env=env, capture=True)
-    tsc_compile_proc.communicate()
-    if tsc_compile_proc.returncode != 0:
-        tsc_compile_errors_found = True
+    exec_command = '%s %s -p %s' % (devtools_paths.node_path(), devtools_paths.typescript_compiler_path(),  shared_path)
+    exit_code = popen(exec_command)
+    if exit_code != 0:
+        print(exit_code)
+        return True
 
     # Compile e2e tests, e.g. helper and runner.
     print("Compiling e2e TypeScript")
-    exec_command = [devtools_paths.node_path(), devtools_paths.typescript_compiler_path(), '-p', e2e_test_path]
-    tsc_compile_proc = popen(exec_command, cwd=cwd, env=env, capture=True)
-    tsc_compile_proc.communicate()
-    if tsc_compile_proc.returncode != 0:
-        tsc_compile_errors_found = True
+    exec_command = '%s %s -p %s' % (devtools_paths.node_path(), devtools_paths.typescript_compiler_path(), e2e_test_path)
+    exit_code = popen(exec_command)
+    if exit_code != 0:
+        return True
 
-    return tsc_compile_errors_found
+    return False
 
 
-def run_e2e_test(chrome_binary):
-    e2e_errors_found = False
+def run_browser_test(chrome_binary):
     cwd = devtools_paths.devtools_root_path()
     e2e_test_path = os.path.join(cwd, 'test', 'shared', 'runner.js')
     e2e_test_list = os.path.join(cwd, 'test', 'e2e', 'test-list.js')
-    exec_command = [devtools_paths.node_path(), e2e_test_path]
+    exec_command = '%s %s' % (devtools_paths.node_path(), e2e_test_path)
 
     env = os.environ.copy()
     env['CHROME_BIN'] = chrome_binary
     env['TEST_LIST'] = e2e_test_list
 
-    e2e_proc = popen(exec_command, cwd=cwd, env=env, capture=True)
-    e2e_proc.communicate()
-    if e2e_proc.returncode != 0:
-        e2e_errors_found = True
+    exit_code = popen(exec_command, cwd=cwd, env=env)
+    if exit_code != 0:
+        return True
 
-    return e2e_errors_found
+    return False
 
 
 def main():
@@ -143,7 +132,7 @@ def main():
         errors_found = compile_typescript_test_files()
         if (errors_found):
             raise Exception('Typescript failed to compile')
-        errors_found = run_e2e_test(chrome_binary)
+        errors_found = run_browser_test(chrome_binary)
     except Exception as err:
         print(err)
 

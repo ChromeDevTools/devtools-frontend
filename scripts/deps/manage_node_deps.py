@@ -54,6 +54,8 @@ DEPS = {
     "mocha": "6.2.0",
     "puppeteer": "2.0.0",
     "recast": "0.18.2",
+    "resemblejs": "3.2.3",
+    "rimraf": "3.0.2",
     "rollup": "1.23.1",
     "sinon": "8.1.1",
     "typescript": "3.7.5",

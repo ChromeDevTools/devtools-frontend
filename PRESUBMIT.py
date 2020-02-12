@@ -99,16 +99,6 @@ def _CheckLicenses(input_api, output_api):
     return results
 
 
-def _CheckTypeScriptForOnlys(input_api, output_api):
-    unittest_root = input_api.os_path.join(input_api.PresubmitLocalPath(), 'test')
-    affected_unittest_files = _getAffectedFiles(input_api, [unittest_root], ['D'], ['.ts'])
-    if len(affected_unittest_files) == 0:
-        return []
-
-    script_path = input_api.os_path.join(input_api.PresubmitLocalPath(), 'scripts', 'test', 'check_for_onlys_in_typescript.js')
-    return _checkWithNodeScript(input_api, output_api, script_path, affected_unittest_files)
-
-
 def _CheckFormat(input_api, output_api):
     results = [output_api.PresubmitNotifyResult('Running Format Checks:')]
     def popen(args):
@@ -301,7 +291,6 @@ def _CommonChecks(input_api, output_api):
     results.extend(_CheckChangesAreExclusiveToDirectory(input_api, output_api))
     results.extend(_CheckNoUncheckedFiles(input_api, output_api))
     results.extend(_CheckForTooLargeFiles(input_api, output_api))
-    results.extend(_CheckTypeScriptForOnlys(input_api, output_api))
     return results
 
 

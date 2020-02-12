@@ -7,6 +7,7 @@ module.exports = {
 
   'plugins': [
     '@typescript-eslint',
+    'mocha',
   ],
 
   'parserOptions': {'ecmaVersion': 9, 'sourceType': 'module'},
@@ -114,6 +115,13 @@ module.exports = {
 
     '@typescript-eslint/interface-name-prefix': [2, {'prefixWithI': 'never'}],
     '@typescript-eslint/explicit-member-accessibility': [0],
+
+    // errors on it('test') with no body
+    'mocha/no-pending-tests': 2,
+    // errors on {describe, it}.only
+    'mocha/no-exclusive-tests': 2,
+    // errors on {describe, it}.skip
+    'mocha/no-skipped-tests': 2,
   },
   'overrides': [{
     'files': ['*.ts'],

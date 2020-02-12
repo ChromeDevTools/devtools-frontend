@@ -6,13 +6,13 @@ import {assert} from 'chai';
 import {describe, it} from 'mocha';
 import * as puppeteer from 'puppeteer';
 
-import {click, getBrowserAndPages, resetPages, resourcesPath} from '../../shared/helper.js';
+import {click, getBrowserAndPages, resetPages, resourcesPath, waitFor} from '../../shared/helper.js';
 
-async function navigateToNetworkTab(target: puppeteer.Page, frontend: puppeteer.Page, testName: string) {
+async function navigateToNetworkTab(target: puppeteer.Page, testName: string) {
   await target.goto(`${resourcesPath}/network/${testName}.html`);
   await click('#tab-network');
   // Make sure the network tab is shown on the screen
-  await frontend.waitForSelector('.network-log-grid');
+  await waitFor('.network-log-grid');
 }
 
 describe('The Network Tab', async () => {
@@ -22,7 +22,7 @@ describe('The Network Tab', async () => {
 
   it('shows Last-Modified', async () => {
     const {target, frontend} = getBrowserAndPages();
-    await navigateToNetworkTab(target, frontend, 'last-modified');
+    await navigateToNetworkTab(target, 'last-modified');
 
     // Open the contextmenu for all network column
     await click('.name-column', {clickOptions: {button: 'right'}});

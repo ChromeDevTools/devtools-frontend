@@ -132,7 +132,7 @@ class Runtime {
     return Runtime.loadResourcePromise(url).catch(err => {
       const urlWithFallbackVersion = url.replace(/@[0-9a-f]{40}/, REMOTE_MODULE_FALLBACK_REVISION);
       // TODO(phulce): mark fallbacks in module.json and modify build script instead
-      if (urlWithFallbackVersion === url || !url.includes('lighthouse_worker_module')) {
+      if (urlWithFallbackVersion === url || !url.includes('audits_worker_module')) {
         throw err;
       }
       return Runtime.loadResourcePromise(urlWithFallbackVersion);

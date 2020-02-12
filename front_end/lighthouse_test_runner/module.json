@@ -1,9 +1,0 @@
-{
-  "dependencies": [
-    "test_runner",
-    "lighthouse"
-  ],
-  "scripts": [
-    "LighthouseTestRunner.js"
-  ]
-}

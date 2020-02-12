@@ -24,14 +24,7 @@ const esprimaTypes = {
 };
 
 const excludeFiles = ['Tests.js'];
-const excludeDirs = [
-  'test_runner',
-  'Images',
-  'langpacks',
-  'node_modules',
-  'lighthouse/lighthouse',
-  'lighthouse_worker/lighthouse'
-];
+const excludeDirs = ['test_runner', 'Images', 'langpacks', 'node_modules', 'lighthouse'];
 const cppSpecialCharactersMap = {
   '"': '\\"',
   '\\': '\\\\',

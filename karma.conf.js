@@ -48,7 +48,7 @@ module.exports = function(config) {
 
     browsers,
 
-    frameworks: ['mocha', 'chai', 'karma-typescript'],
+    frameworks: ['mocha', 'chai', 'sinon', 'karma-typescript'],
 
     karmaTypescriptConfig: {
       tsconfig: './tsconfig.json',
@@ -68,7 +68,11 @@ module.exports = function(config) {
     },
 
     plugins: [
-      'karma-chrome-launcher', 'karma-mocha', 'karma-chai', 'karma-typescript',
+      require(node_modules_path + 'karma-chrome-launcher'),
+      require(node_modules_path + 'karma-mocha'),
+      require(node_modules_path + 'karma-chai'),
+      require(node_modules_path + 'karma-sinon'),
+      require(node_modules_path + 'karma-typescript'),
       require(node_modules_path + 'karma-coverage-istanbul-instrumenter'),
       require(node_modules_path + 'karma-coverage-istanbul-reporter')
     ],

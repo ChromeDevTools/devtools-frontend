@@ -1,32 +1,37 @@
 // Copyright (c) 2015 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
+import * as Common from '../common/common.js';
+import * as SDK from '../sdk/sdk.js';
+import * as UI from '../ui/ui.js';
+
 /**
- * @implements {UI.ContextFlavorListener}
- * @implements {UI.ToolbarItem.ItemsProvider}
- * @implements {UI.ListDelegate}
+ * @implements {UI.ContextFlavorListener.ContextFlavorListener}
+ * @implements {UI.Toolbar.ItemsProvider}
+ * @implements {UI.ListControl.ListDelegate}
  * @unrestricted
  */
-export class XHRBreakpointsSidebarPane extends UI.VBox {
+export class XHRBreakpointsSidebarPane extends UI.Widget.VBox {
   constructor() {
     super(true);
     this.registerRequiredCSS('browser_debugger/xhrBreakpointsSidebarPane.css');
 
-    /** @type {!UI.ListModel<string>} */
-    this._breakpoints = new UI.ListModel();
-    this._list = new UI.ListControl(this._breakpoints, this, UI.ListMode.NonViewport);
+    /** @type {!UI.ListModel.ListModel<string>} */
+    this._breakpoints = new UI.ListModel.ListModel();
+    this._list = new UI.ListControl.ListControl(this._breakpoints, this, UI.ListControl.ListMode.NonViewport);
     this.contentElement.appendChild(this._list.element);
     this._list.element.classList.add('breakpoint-list', 'hidden');
     UI.ARIAUtils.markAsList(this._list.element);
     UI.ARIAUtils.setAccessibleName(this._list.element, ls`XHR/fetch Breakpoints`);
     this._emptyElement = this.contentElement.createChild('div', 'gray-info-message');
-    this._emptyElement.textContent = Common.UIString('No breakpoints');
+    this._emptyElement.textContent = Common.UIString.UIString('No breakpoints');
 
     /** @type {!Map.<string, !Element>} */
     this._breakpointElements = new Map();
 
-    this._addButton = new UI.ToolbarButton(ls`Add XHR/fetch breakpoint`, 'largeicon-add');
-    this._addButton.addEventListener(UI.ToolbarButton.Events.Click, this._addButtonClicked.bind(this));
+    this._addButton = new UI.Toolbar.ToolbarButton(ls`Add XHR/fetch breakpoint`, 'largeicon-add');
+    this._addButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._addButtonClicked.bind(this));
 
     this._emptyElement.addEventListener('contextmenu', this._emptyElementContextMenu.bind(this), true);
     this._emptyElement.tabIndex = -1;
@@ -36,15 +41,16 @@ export class XHRBreakpointsSidebarPane extends UI.VBox {
 
   /**
    * @override
-   * @return {!Array<!UI.ToolbarItem>}
+   * @return {!Array<!UI.Toolbar.ToolbarItem>}
    */
   toolbarItems() {
     return [this._addButton];
   }
 
   _emptyElementContextMenu(event) {
-    const contextMenu = new UI.ContextMenu(event);
-    contextMenu.defaultSection().appendItem(Common.UIString('Add breakpoint'), this._addButtonClicked.bind(this));
+    const contextMenu = new UI.ContextMenu.ContextMenu(event);
+    contextMenu.defaultSection().appendItem(
+        Common.UIString.UIString('Add breakpoint'), this._addButtonClicked.bind(this));
     contextMenu.show();
   }
 
@@ -52,7 +58,7 @@ export class XHRBreakpointsSidebarPane extends UI.VBox {
     await self.UI.viewManager.showView('sources.xhrBreakpoints');
 
     const inputElementContainer = createElementWithClass('p', 'breakpoint-condition');
-    inputElementContainer.textContent = Common.UIString('Break when URL contains:');
+    inputElementContainer.textContent = Common.UIString.UIString('Break when URL contains:');
 
     const inputElement = inputElementContainer.createChild('span', 'breakpoint-condition-input');
     this._addListElement(inputElementContainer, /** @type {?Element} */ (this._list.element.firstChild));
@@ -73,7 +79,7 @@ export class XHRBreakpointsSidebarPane extends UI.VBox {
     }
 
     const config = new UI.InplaceEditor.Config(finishEditing.bind(this, true), finishEditing.bind(this, false));
-    UI.InplaceEditor.startEditing(inputElement, config);
+    UI.InplaceEditor.InplaceEditor.startEditing(inputElement, config);
   }
 
   /**
@@ -132,8 +138,9 @@ export class XHRBreakpointsSidebarPane extends UI.VBox {
     element._url = item;
     element.addEventListener('contextmenu', this._contextMenu.bind(this, item), true);
 
-    const title = item ? Common.UIString('URL contains "%s"', item) : Common.UIString('Any XHR or fetch');
-    const label = UI.CheckboxLabel.create(title, enabled);
+    const title =
+        item ? Common.UIString.UIString('URL contains "%s"', item) : Common.UIString.UIString('Any XHR or fetch');
+    const label = UI.UIUtils.CheckboxLabel.create(title, enabled);
     UI.ARIAUtils.markAsHidden(label);
     UI.ARIAUtils.setAccessibleName(element, title);
     element.appendChild(label);
@@ -239,7 +246,7 @@ export class XHRBreakpointsSidebarPane extends UI.VBox {
   }
 
   _contextMenu(url, event) {
-    const contextMenu = new UI.ContextMenu(event);
+    const contextMenu = new UI.ContextMenu.ContextMenu(event);
 
     /**
      * @this {XHRBreakpointsSidebarPane}
@@ -259,10 +266,11 @@ export class XHRBreakpointsSidebarPane extends UI.VBox {
       }
       this._update();
     }
-    const removeAllTitle = Common.UIString('Remove all breakpoints');
+    const removeAllTitle = Common.UIString.UIString('Remove all breakpoints');
 
-    contextMenu.defaultSection().appendItem(Common.UIString('Add breakpoint'), this._addButtonClicked.bind(this));
-    contextMenu.defaultSection().appendItem(Common.UIString('Remove breakpoint'), removeBreakpoint.bind(this));
+    contextMenu.defaultSection().appendItem(
+        Common.UIString.UIString('Add breakpoint'), this._addButtonClicked.bind(this));
+    contextMenu.defaultSection().appendItem(Common.UIString.UIString('Remove breakpoint'), removeBreakpoint.bind(this));
     contextMenu.defaultSection().appendItem(removeAllTitle, removeAllBreakpoints.bind(this));
     contextMenu.show();
   }
@@ -312,7 +320,7 @@ export class XHRBreakpointsSidebarPane extends UI.VBox {
       this.focus();
     }
 
-    UI.InplaceEditor.startEditing(
+    UI.InplaceEditor.InplaceEditor.startEditing(
         inputElement, new UI.InplaceEditor.Config(finishEditing.bind(this, true), finishEditing.bind(this, false)));
   }
 
@@ -329,7 +337,7 @@ export class XHRBreakpointsSidebarPane extends UI.VBox {
     this._list.element.classList.toggle('hidden', isEmpty);
     this._emptyElement.classList.toggle('hidden', !isEmpty);
 
-    const details = self.UI.context.flavor(SDK.DebuggerPausedDetails);
+    const details = self.UI.context.flavor(SDK.DebuggerModel.DebuggerPausedDetails);
     if (!details || details.reason !== SDK.DebuggerModel.BreakReason.XHR) {
       if (this._hitBreakpoint) {
         const oldHitBreakpoint = this._hitBreakpoint;

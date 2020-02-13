@@ -1,13 +1,17 @@
 // Copyright (c) 2015 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
+import * as SDK from '../sdk/sdk.js';
+import * as UI from '../ui/ui.js';
+
 /**
  * @unrestricted
  */
-export class EventListenerBreakpointsSidebarPane extends UI.VBox {
+export class EventListenerBreakpointsSidebarPane extends UI.Widget.VBox {
   constructor() {
     super(true);
-    this._categoriesTreeOutline = new UI.TreeOutlineInShadow();
+    this._categoriesTreeOutline = new UI.TreeOutline.TreeOutlineInShadow();
     this._categoriesTreeOutline.registerRequiredCSS('browser_debugger/eventListenerBreakpoints.css');
     this._categoriesTreeOutline.setShowSelectionOnKeyboardFocus(/* show */ true);
     this.contentElement.appendChild(this._categoriesTreeOutline.element);
@@ -33,10 +37,10 @@ export class EventListenerBreakpointsSidebarPane extends UI.VBox {
     }
 
     self.SDK.targetManager.addModelListener(
-        SDK.DebuggerModel, SDK.DebuggerModel.Events.DebuggerPaused, this._update, this);
+        SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.DebuggerPaused, this._update, this);
     self.SDK.targetManager.addModelListener(
-        SDK.DebuggerModel, SDK.DebuggerModel.Events.DebuggerResumed, this._update, this);
-    self.UI.context.addFlavorChangeListener(SDK.Target, this._update, this);
+        SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.DebuggerResumed, this._update, this);
+    self.UI.context.addFlavorChangeListener(SDK.SDKModel.Target, this._update, this);
   }
 
   /**
@@ -50,11 +54,11 @@ export class EventListenerBreakpointsSidebarPane extends UI.VBox {
    * @param {string} name
    */
   _createCategory(name) {
-    const labelNode = UI.CheckboxLabel.create(name);
+    const labelNode = UI.UIUtils.CheckboxLabel.create(name);
     labelNode.checkboxElement.addEventListener('click', this._categoryCheckboxClicked.bind(this, name), true);
     labelNode.checkboxElement.tabIndex = -1;
 
-    const treeElement = new UI.TreeElement(labelNode);
+    const treeElement = new UI.TreeOutline.TreeElement(labelNode);
     treeElement.listItemElement.addEventListener('keydown', event => {
       if (event.key === ' ') {
         this._categories.get(name).checkbox.click();
@@ -71,12 +75,12 @@ export class EventListenerBreakpointsSidebarPane extends UI.VBox {
    * @param {!SDK.DOMDebuggerModel.EventListenerBreakpoint} breakpoint
    */
   _createBreakpoint(breakpoint) {
-    const labelNode = UI.CheckboxLabel.create(breakpoint.title());
+    const labelNode = UI.UIUtils.CheckboxLabel.create(breakpoint.title());
     labelNode.classList.add('source-code');
     labelNode.checkboxElement.addEventListener('click', this._breakpointCheckboxClicked.bind(this, breakpoint), true);
     labelNode.checkboxElement.tabIndex = -1;
 
-    const treeElement = new UI.TreeElement(labelNode);
+    const treeElement = new UI.TreeOutline.TreeElement(labelNode);
     treeElement.listItemElement.addEventListener('keydown', event => {
       if (event.key === ' ') {
         this._breakpoints.get(breakpoint).checkbox.click();
@@ -91,8 +95,8 @@ export class EventListenerBreakpointsSidebarPane extends UI.VBox {
   }
 
   _update() {
-    const target = self.UI.context.flavor(SDK.Target);
-    const debuggerModel = target ? target.model(SDK.DebuggerModel) : null;
+    const target = self.UI.context.flavor(SDK.SDKModel.Target);
+    const debuggerModel = target ? target.model(SDK.DebuggerModel.DebuggerModel) : null;
     const details = debuggerModel ? debuggerModel.debuggerPausedDetails() : null;
 
     if (!details || details.reason !== SDK.DebuggerModel.BreakReason.EventListener || !details.auxData) {

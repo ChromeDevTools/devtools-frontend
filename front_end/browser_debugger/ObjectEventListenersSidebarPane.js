@@ -1,25 +1,30 @@
 // Copyright 2015 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
+import * as EventListeners from '../event_listeners/event_listeners.js';
+import * as SDK from '../sdk/sdk.js';
+import * as UI from '../ui/ui.js';
+
 /**
- * @implements {UI.ToolbarItem.ItemsProvider}
+ * @implements {UI.Toolbar.ItemsProvider}
  * @unrestricted
  */
-export class ObjectEventListenersSidebarPane extends UI.VBox {
+export class ObjectEventListenersSidebarPane extends UI.Widget.VBox {
   constructor() {
     super();
-    this._refreshButton = new UI.ToolbarButton(ls`Refresh global listeners`, 'largeicon-refresh');
-    this._refreshButton.addEventListener(UI.ToolbarButton.Events.Click, this._refreshClick, this);
+    this._refreshButton = new UI.Toolbar.ToolbarButton(ls`Refresh global listeners`, 'largeicon-refresh');
+    this._refreshButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._refreshClick, this);
     this._refreshButton.setEnabled(false);
 
-    this._eventListenersView = new EventListeners.EventListenersView(this.update.bind(this));
+    this._eventListenersView = new EventListeners.EventListenersView.EventListenersView(this.update.bind(this));
     this._eventListenersView.show(this.element);
     this.setDefaultFocusedChild(this._eventListenersView);
   }
 
   /**
    * @override
-   * @return {!Array<!UI.ToolbarItem>}
+   * @return {!Array<!UI.Toolbar.ToolbarItem>}
    */
   toolbarItems() {
     return [this._refreshButton];
@@ -30,7 +35,7 @@ export class ObjectEventListenersSidebarPane extends UI.VBox {
       this._lastRequestedContext.runtimeModel.releaseObjectGroup(objectGroupName);
       delete this._lastRequestedContext;
     }
-    const executionContext = self.UI.context.flavor(SDK.ExecutionContext);
+    const executionContext = self.UI.context.flavor(SDK.RuntimeModel.ExecutionContext);
     if (!executionContext) {
       this._eventListenersView.reset();
       this._eventListenersView.addEmptyHolderIfNeeded();
@@ -46,7 +51,7 @@ export class ObjectEventListenersSidebarPane extends UI.VBox {
    */
   wasShown() {
     super.wasShown();
-    self.UI.context.addFlavorChangeListener(SDK.ExecutionContext, this.update, this);
+    self.UI.context.addFlavorChangeListener(SDK.RuntimeModel.ExecutionContext, this.update, this);
     this._refreshButton.setEnabled(true);
     this.update();
   }
@@ -56,13 +61,13 @@ export class ObjectEventListenersSidebarPane extends UI.VBox {
    */
   willHide() {
     super.willHide();
-    self.UI.context.removeFlavorChangeListener(SDK.ExecutionContext, this.update, this);
+    self.UI.context.removeFlavorChangeListener(SDK.RuntimeModel.ExecutionContext, this.update, this);
     this._refreshButton.setEnabled(false);
   }
 
   /**
-   * @param {!SDK.ExecutionContext} executionContext
-   * @return {!Promise<?SDK.RemoteObject>} object
+   * @param {!SDK.RuntimeModel.ExecutionContext} executionContext
+   * @return {!Promise<?SDK.RemoteObject.RemoteObject>} object
    */
   _windowObjectInContext(executionContext) {
     return executionContext

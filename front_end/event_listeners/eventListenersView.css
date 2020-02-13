@@ -82,12 +82,10 @@
         color: HighlightText;
         border-color: ButtonText;
     }
-    .tree-outline.hide-selection-when-blurred .selected:focus[data-keyboard-focus="true"] .event-listener-button {
+    .tree-outline.hide-selection-when-blurred .selected:focus[data-keyboard-focus="true"] .event-listener-button,
+    .tree-outline-disclosure li[data-keyboard-focus="true"]:focus .gray-info-message {
         background-color: Highlight;
         color: HighlightText;
         border-color: HighlightText;
-    }
-    .tree-outline-disclosure:hover li.parent::before {
-        background-color: ButtonText;
     }
 }

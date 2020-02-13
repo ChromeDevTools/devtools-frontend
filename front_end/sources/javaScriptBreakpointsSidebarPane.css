@@ -46,3 +46,15 @@
     background-color: hsl(46, 98%, 22%);
     color: #ccc;
 }
+
+@media (forced-colors: active) {
+    :not(.breakpoints-list-deactivated) > .breakpoint-entry:hover,
+    .breakpoint-entry:focus {
+        forced-color-adjust: none;
+        background-color: Highlight;
+    }
+    :not(.breakpoints-list-deactivated) > .breakpoint-entry:hover > *,
+    .breakpoint-entry:focus > * {
+        color: HighlightText;
+    }
+}

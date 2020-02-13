@@ -48,3 +48,15 @@
 .thread-item.selected .selected-thread-icon {
     display: block;
 }
+
+@media (forced-colors: active) {
+    .thread-item:hover,
+    .thread-item[data-keyboard-focus="true"] {
+        forced-color-adjust: none;
+        background-color: Highlight;
+    }
+    .thread-item:hover > div,
+    .thread-item[data-keyboard-focus="true"] > div {
+        color: HighlightText;
+    }
+}

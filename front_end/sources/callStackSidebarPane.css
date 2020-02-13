@@ -116,3 +116,15 @@
 :host-context(.-theme-with-dark-background) .blackboxed-message > .link {
     color: hsl(0, 0%, 67%);
 }
+
+@media (forced-colors: active) {
+    .call-frame-item:not(.async-header):hover,
+    .call-frame-item[data-keyboard-focus="true"]:focus {
+        forced-color-adjust: none;
+        background-color: Highlight;
+    }
+    .call-frame-item:not(.async-header):hover *,
+    .call-frame-item[data-keyboard-focus="true"]:focus * {
+        color: HighlightText;
+    }
+}

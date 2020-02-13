@@ -474,6 +474,10 @@ button.link[data-keyboard-focus="true"]:focus {
 }
 
 @media (forced-colors: active) {
+    .dimmed,
+    .chrome-select:disabled {
+        opacity: 1;
+    }
     [is=ui-icon].icon-mask,
     :host-context(.force-white-icons) [is=ui-icon].spritesheet-smallicons, .force-white-icons [is=ui-icon].spritesheet-smallicons, [is=ui-icon].force-white-icons.spritesheet-smallicons, -theme-preserve,
     :host-context(.force-white-icons) [is=ui-icon].spritesheet-largeicons, .force-white-icons [is=ui-icon].spritesheet-largeicons, [is=ui-icon].force-white-icons.spritesheet-largeicons, -theme-preserve,

@@ -20,8 +20,6 @@ sys.path.append(scripts_path)
 import devtools_paths
 import test_helpers
 
-is_cygwin = sys.platform == 'cygwin'
-
 
 def parse_options(cli_args):
     parser = argparse.ArgumentParser(description='Run tests')
@@ -30,38 +28,25 @@ def parse_options(cli_args):
     return parser.parse_args(cli_args)
 
 
-def compile_typescript_test_files():
-    cwd = devtools_paths.devtools_root_path()
-    shared_path = os.path.join(cwd, 'test', 'shared')
-    e2e_test_path = os.path.join(cwd, 'test', 'e2e')
-
-    # Compile shared code, e.g. helper and runner.
-    print("Compiling shared TypeScript")
-    exec_command = [devtools_paths.node_path(), devtools_paths.typescript_compiler_path(), '-p', shared_path]
-    exit_code = test_helpers.popen(exec_command)
-    if exit_code != 0:
-        print(exit_code)
-        return True
-
-    # Compile e2e tests, e.g. helper and runner.
-    print("Compiling e2e TypeScript")
-    exec_command = [devtools_paths.node_path(), devtools_paths.typescript_compiler_path(), '-p', e2e_test_path]
-    exit_code = test_helpers.popen(exec_command)
-    if exit_code != 0:
-        return True
+def compile_typescript(typescript_targets):
+    for target in typescript_targets:
+        print("Compiling %s TypeScript" % (target['name']))
+        exec_command = [devtools_paths.node_path(), devtools_paths.typescript_compiler_path(), '-p', target['path']]
+        exit_code = test_helpers.popen(exec_command)
+        if exit_code != 0:
+            return True
 
     return False
 
 
-def run_browser_test(chrome_binary):
-    cwd = devtools_paths.devtools_root_path()
-    e2e_test_path = os.path.join(cwd, 'test', 'shared', 'runner.js')
-    e2e_test_list = os.path.join(cwd, 'test', 'e2e', 'test-list.js')
-    exec_command = [devtools_paths.node_path(), e2e_test_path]
-
+def run_tests(chrome_binary, test_suite_list_path):
     env = os.environ.copy()
     env['CHROME_BIN'] = chrome_binary
-    env['TEST_LIST'] = e2e_test_list
+    env['TEST_LIST'] = test_suite_list_path
+
+    cwd = devtools_paths.devtools_root_path()
+    runner_path = os.path.join(cwd, 'test', 'shared', 'runner.js')
+    exec_command = [devtools_paths.node_path(), runner_path]
 
     exit_code = test_helpers.popen(exec_command, cwd=cwd, env=env)
     if exit_code != 0:
@@ -70,10 +55,11 @@ def run_browser_test(chrome_binary):
     return False
 
 
-def main():
+def run_test():
     OPTIONS = parse_options(sys.argv[1:])
     is_cygwin = sys.platform == 'cygwin'
     chrome_binary = None
+    test_suite = None
 
     # Default to the downloaded / pinned Chromium binary
     downloaded_chrome_binary = devtools_paths.downloaded_chrome_binary_path()
@@ -91,14 +77,36 @@ def main():
         print('Unable to run, no Chrome binary provided')
         sys.exit(1)
 
+    if (OPTIONS.test_suite is None):
+        print('Unable to run, no test suite provided')
+        sys.exit(1)
+
+    test_suite = OPTIONS.test_suite
+
     print('Using Chromium binary (%s)\n' % chrome_binary)
+    print('Using Test Suite (%s)\n' % test_suite)
+
+    cwd = devtools_paths.devtools_root_path()
+    shared_path = os.path.join(cwd, 'test', 'shared')
+    test_suite_path = os.path.join(cwd, 'test', test_suite)
+    typescript_paths = [
+      {
+        'name': 'shared',
+        'path': shared_path
+      },
+      {
+        'name': 'suite',
+        'path': test_suite_path
+      }
+    ]
 
     errors_found = False
     try:
-        errors_found = compile_typescript_test_files()
+        errors_found = compile_typescript(typescript_paths)
         if (errors_found):
             raise Exception('Typescript failed to compile')
-        errors_found = run_browser_test(chrome_binary)
+        test_suite_list_path = os.path.join(test_suite_path, 'test-list.js')
+        errors_found = run_tests(chrome_binary, test_suite_list_path)
     except Exception as err:
         print(err)
 
@@ -108,4 +116,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    run_test()

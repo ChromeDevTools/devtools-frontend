@@ -74,5 +74,8 @@ luci.list_view(
     name="infra",
     title="Infra",
     favicon=defaults.favicon,
-    entries =[luci.list_view_entry(builder="Auto-roll - devtools deps")],
+    entries=[
+      luci.list_view_entry(builder="Auto-roll - devtools chromium"),
+      luci.list_view_entry(builder="Auto-roll - devtools deps"),
+    ],
 )

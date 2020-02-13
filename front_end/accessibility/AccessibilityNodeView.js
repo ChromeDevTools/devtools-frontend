@@ -2,6 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+import * as SDK from '../sdk/sdk.js';
+import * as UI from '../ui/ui.js';
+
 import {AccessibilityNode} from './AccessibilityModel.js';  // eslint-disable-line no-unused-vars
 import {AXAttributes, AXNativeSourceTypes, AXSourceTypes} from './AccessibilityStrings.js';
 import {AccessibilitySubPane} from './AccessibilitySubPane.js';
@@ -115,7 +119,7 @@ export class AXNodeSubPane extends AccessibilitySubPane {
 
   /**
    * @override
-   * @param {?SDK.DOMNode} node
+   * @param {?SDK.DOMModel.DOMNode} node
    */
   setNode(node) {
     super.setNode(node);
@@ -126,7 +130,7 @@ export class AXNodeSubPane extends AccessibilitySubPane {
 /**
  * @unrestricted
  */
-export class AXNodePropertyTreeElement extends UI.TreeElement {
+export class AXNodePropertyTreeElement extends UI.TreeOutline.TreeElement {
   /**
    * @param {!AccessibilityNode} axNode
    */
@@ -226,7 +230,7 @@ export class AXNodePropertyTreeElement extends UI.TreeElement {
    */
   appendRelatedNode(relatedNode, index) {
     const deferredNode =
-        new SDK.DeferredDOMNode(this._axNode.accessibilityModel().target(), relatedNode.backendDOMNodeId);
+        new SDK.DOMModel.DeferredDOMNode(this._axNode.accessibilityModel().target(), relatedNode.backendDOMNodeId);
     const nodeTreeElement = new AXRelatedNodeSourceTreeElement({deferredNode: deferredNode}, relatedNode);
     this.appendChild(nodeTreeElement);
   }
@@ -236,7 +240,7 @@ export class AXNodePropertyTreeElement extends UI.TreeElement {
    */
   appendRelatedNodeInline(relatedNode) {
     const deferredNode =
-        new SDK.DeferredDOMNode(this._axNode.accessibilityModel().target(), relatedNode.backendDOMNodeId);
+        new SDK.DOMModel.DeferredDOMNode(this._axNode.accessibilityModel().target(), relatedNode.backendDOMNodeId);
     const linkedNode = new AXRelatedNodeElement({deferredNode: deferredNode}, relatedNode);
     this.listItemElement.appendChild(linkedNode.render());
   }
@@ -343,7 +347,7 @@ export class AXValueSourceTreeElement extends AXNodePropertyTreeElement {
    */
   appendRelatedNodeWithIdref(relatedNode, idref) {
     const deferredNode =
-        new SDK.DeferredDOMNode(this._axNode.accessibilityModel().target(), relatedNode.backendDOMNodeId);
+        new SDK.DOMModel.DeferredDOMNode(this._axNode.accessibilityModel().target(), relatedNode.backendDOMNodeId);
     const nodeTreeElement = new AXRelatedNodeSourceTreeElement({deferredNode: deferredNode, idref: idref}, relatedNode);
     this.appendChild(nodeTreeElement);
   }
@@ -486,9 +490,9 @@ export class AXValueSourceTreeElement extends AXNodePropertyTreeElement {
 /**
  * @unrestricted
  */
-export class AXRelatedNodeSourceTreeElement extends UI.TreeElement {
+export class AXRelatedNodeSourceTreeElement extends UI.TreeOutline.TreeElement {
   /**
-   * @param {{deferredNode: (!SDK.DeferredDOMNode|undefined), idref: (string|undefined)}} node
+   * @param {{deferredNode: (!SDK.DOMModel.DeferredDOMNode|undefined), idref: (string|undefined)}} node
    * @param {!Protocol.Accessibility.AXRelatedNode=} value
    */
   constructor(node, value) {
@@ -528,7 +532,7 @@ export class AXRelatedNodeSourceTreeElement extends UI.TreeElement {
  */
 export class AXRelatedNodeElement {
   /**
-   * @param {{deferredNode: (!SDK.DeferredDOMNode|undefined), idref: (string|undefined)}} node
+   * @param {{deferredNode: (!SDK.DOMModel.DeferredDOMNode|undefined), idref: (string|undefined)}} node
    * @param {!Protocol.Accessibility.AXRelatedNode=} value
    */
   constructor(node, value) {
@@ -548,7 +552,7 @@ export class AXRelatedNodeElement {
       valueElement = createElement('span');
       element.appendChild(valueElement);
       this._deferredNode.resolvePromise().then(node => {
-        Common.Linkifier.linkify(node, {preventKeyboardFocus: true})
+        Common.Linkifier.Linkifier.linkify(node, {preventKeyboardFocus: true})
             .then(linkfied => valueElement.appendChild(linkfied));
       });
     } else if (this._idref) {
@@ -594,62 +598,62 @@ export class AXNodeIgnoredReasonTreeElement extends AXNodePropertyTreeElement {
     let reasonElement = null;
     switch (reason) {
       case 'activeModalDialog':
-        reasonElement = UI.formatLocalized('Element is hidden by active modal dialog:\xA0', []);
+        reasonElement = UI.UIUtils.formatLocalized('Element is hidden by active modal dialog:\xA0', []);
         break;
       case 'ancestorIsLeafNode':
-        reasonElement = UI.formatLocalized('Ancestor\'s children are all presentational:\xA0', []);
+        reasonElement = UI.UIUtils.formatLocalized('Ancestor\'s children are all presentational:\xA0', []);
         break;
       case 'ariaHiddenElement': {
         const ariaHiddenSpan = createElement('span', 'source-code').textContent = 'aria-hidden';
-        reasonElement = UI.formatLocalized('Element is %s.', [ariaHiddenSpan]);
+        reasonElement = UI.UIUtils.formatLocalized('Element is %s.', [ariaHiddenSpan]);
         break;
       }
       case 'ariaHiddenSubtree': {
         const ariaHiddenSpan = createElement('span', 'source-code').textContent = 'aria-hidden';
         const trueSpan = createElement('span', 'source-code').textContent = 'true';
-        reasonElement = UI.formatLocalized('%s is %s on ancestor:\xA0', [ariaHiddenSpan, trueSpan]);
+        reasonElement = UI.UIUtils.formatLocalized('%s is %s on ancestor:\xA0', [ariaHiddenSpan, trueSpan]);
         break;
       }
       case 'emptyAlt':
-        reasonElement = UI.formatLocalized('Element has empty alt text.', []);
+        reasonElement = UI.UIUtils.formatLocalized('Element has empty alt text.', []);
         break;
       case 'emptyText':
-        reasonElement = UI.formatLocalized('No text content.', []);
+        reasonElement = UI.UIUtils.formatLocalized('No text content.', []);
         break;
       case 'inertElement':
-        reasonElement = UI.formatLocalized('Element is inert.', []);
+        reasonElement = UI.UIUtils.formatLocalized('Element is inert.', []);
         break;
       case 'inertSubtree':
-        reasonElement = UI.formatLocalized('Element is in an inert subtree from\xA0', []);
+        reasonElement = UI.UIUtils.formatLocalized('Element is in an inert subtree from\xA0', []);
         break;
       case 'inheritsPresentation':
-        reasonElement = UI.formatLocalized('Element inherits presentational role from\xA0', []);
+        reasonElement = UI.UIUtils.formatLocalized('Element inherits presentational role from\xA0', []);
         break;
       case 'labelContainer':
-        reasonElement = UI.formatLocalized('Part of label element:\xA0', []);
+        reasonElement = UI.UIUtils.formatLocalized('Part of label element:\xA0', []);
         break;
       case 'labelFor':
-        reasonElement = UI.formatLocalized('Label for\xA0', []);
+        reasonElement = UI.UIUtils.formatLocalized('Label for\xA0', []);
         break;
       case 'notRendered':
-        reasonElement = UI.formatLocalized('Element is not rendered.', []);
+        reasonElement = UI.UIUtils.formatLocalized('Element is not rendered.', []);
         break;
       case 'notVisible':
-        reasonElement = UI.formatLocalized('Element is not visible.', []);
+        reasonElement = UI.UIUtils.formatLocalized('Element is not visible.', []);
         break;
       case 'presentationalRole': {
         const rolePresentationSpan = createElement('span', 'source-code').textContent = 'role=' + axNode.role().value;
-        reasonElement = UI.formatLocalized('Element has %s.', [rolePresentationSpan]);
+        reasonElement = UI.UIUtils.formatLocalized('Element has %s.', [rolePresentationSpan]);
         break;
       }
       case 'probablyPresentational':
-        reasonElement = UI.formatLocalized('Element is presentational.', []);
+        reasonElement = UI.UIUtils.formatLocalized('Element is presentational.', []);
         break;
       case 'staticTextUsedAsNameFor':
-        reasonElement = UI.formatLocalized('Static text node is used as name for\xA0', []);
+        reasonElement = UI.UIUtils.formatLocalized('Static text node is used as name for\xA0', []);
         break;
       case 'uninteresting':
-        reasonElement = UI.formatLocalized('Element not interesting for accessibility.', []);
+        reasonElement = UI.UIUtils.formatLocalized('Element not interesting for accessibility.', []);
         break;
     }
     if (reasonElement) {

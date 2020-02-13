@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as SDK from '../sdk/sdk.js';
+
 /**
  * @unrestricted
  */
@@ -19,7 +21,7 @@ export class AccessibilityNode {
     if (payload.backendDOMNodeId) {
       accessibilityModel._setAXNodeForBackendDOMNodeId(payload.backendDOMNodeId, this);
       this._backendDOMNodeId = payload.backendDOMNodeId;
-      this._deferredDOMNode = new SDK.DeferredDOMNode(accessibilityModel.target(), payload.backendDOMNodeId);
+      this._deferredDOMNode = new SDK.DOMModel.DeferredDOMNode(accessibilityModel.target(), payload.backendDOMNodeId);
     } else {
       this._backendDOMNodeId = null;
       this._deferredDOMNode = null;
@@ -143,7 +145,7 @@ export class AccessibilityNode {
   }
 
   /**
-   * @return {?SDK.DeferredDOMNode}
+   * @return {?SDK.DOMModel.DeferredDOMNode}
    */
   deferredDOMNode() {
     return this._deferredDOMNode;
@@ -229,9 +231,9 @@ export class AccessibilityNode {
 /**
  * @unrestricted
  */
-export class AccessibilityModel extends SDK.SDKModel {
+export class AccessibilityModel extends SDK.SDKModel.SDKModel {
   /**
-   * @param {!SDK.Target} target
+   * @param {!SDK.SDKModel.Target} target
    */
   constructor(target) {
     super(target);
@@ -247,7 +249,7 @@ export class AccessibilityModel extends SDK.SDKModel {
   }
 
   /**
-   * @param {!SDK.DOMNode} node
+   * @param {!SDK.DOMModel.DOMNode} node
    * @return {!Promise}
    */
   async requestPartialAXTree(node) {
@@ -284,7 +286,7 @@ export class AccessibilityModel extends SDK.SDKModel {
   }
 
   /**
-   * @param {?SDK.DOMNode} domNode
+   * @param {?SDK.DOMModel.DOMNode} domNode
    * @return {?AccessibilityNode}
    */
   axNodeForDOMNode(domNode) {
@@ -304,7 +306,7 @@ export class AccessibilityModel extends SDK.SDKModel {
 
   // TODO(aboxhall): Remove once protocol is stable.
   /**
-   * @param {!SDK.DOMNode} inspectedNode
+   * @param {!SDK.DOMModel.DOMNode} inspectedNode
    */
   logTree(inspectedNode) {
     let rootNode = inspectedNode;
@@ -315,4 +317,4 @@ export class AccessibilityModel extends SDK.SDKModel {
   }
 }
 
-SDK.SDKModel.register(AccessibilityModel, SDK.Target.Capability.DOM, false);
+SDK.SDKModel.SDKModel.register(AccessibilityModel, SDK.SDKModel.Capability.DOM, false);

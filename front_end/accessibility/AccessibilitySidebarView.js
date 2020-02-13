@@ -2,6 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as SDK from '../sdk/sdk.js';
+import * as UI from '../ui/ui.js';
+
 import {AccessibilityModel, AccessibilityNode} from './AccessibilityModel.js';  // eslint-disable-line no-unused-vars
 import {AXNodeSubPane} from './AccessibilityNodeView.js';
 import {ARIAAttributesPane} from './ARIAAttributesView.js';
@@ -10,7 +13,7 @@ import {AXBreadcrumbsPane} from './AXBreadcrumbsPane.js';
 /**
  * @unrestricted
  */
-export class AccessibilitySidebarView extends UI.ThrottledWidget {
+export class AccessibilitySidebarView extends UI.ThrottledWidget.ThrottledWidget {
   constructor() {
     super();
     this._node = null;
@@ -24,12 +27,12 @@ export class AccessibilitySidebarView extends UI.ThrottledWidget {
     this._axNodeSubPane = new AXNodeSubPane();
     this._sidebarPaneStack.showView(this._axNodeSubPane);
     this._sidebarPaneStack.widget().show(this.element);
-    self.UI.context.addFlavorChangeListener(SDK.DOMNode, this._pullNode, this);
+    self.UI.context.addFlavorChangeListener(SDK.DOMModel.DOMNode, this._pullNode, this);
     this._pullNode();
   }
 
   /**
-   * @return {?SDK.DOMNode}
+   * @return {?SDK.DOMModel.DOMNode}
    */
   node() {
     return this._node;
@@ -43,7 +46,7 @@ export class AccessibilitySidebarView extends UI.ThrottledWidget {
   }
 
   /**
-   * @param {?SDK.DOMNode} node
+   * @param {?SDK.DOMModel.DOMNode} node
    * @param {boolean=} fromAXTree
    */
   setNode(node, fromAXTree) {
@@ -105,12 +108,14 @@ export class AccessibilitySidebarView extends UI.ThrottledWidget {
     // Pull down the latest date for this node.
     this.doUpdate();
 
-    self.SDK.targetManager.addModelListener(SDK.DOMModel, SDK.DOMModel.Events.AttrModified, this._onAttrChange, this);
-    self.SDK.targetManager.addModelListener(SDK.DOMModel, SDK.DOMModel.Events.AttrRemoved, this._onAttrChange, this);
     self.SDK.targetManager.addModelListener(
-        SDK.DOMModel, SDK.DOMModel.Events.CharacterDataModified, this._onNodeChange, this);
+        SDK.DOMModel.DOMModel, SDK.DOMModel.Events.AttrModified, this._onAttrChange, this);
     self.SDK.targetManager.addModelListener(
-        SDK.DOMModel, SDK.DOMModel.Events.ChildNodeCountUpdated, this._onNodeChange, this);
+        SDK.DOMModel.DOMModel, SDK.DOMModel.Events.AttrRemoved, this._onAttrChange, this);
+    self.SDK.targetManager.addModelListener(
+        SDK.DOMModel.DOMModel, SDK.DOMModel.Events.CharacterDataModified, this._onNodeChange, this);
+    self.SDK.targetManager.addModelListener(
+        SDK.DOMModel.DOMModel, SDK.DOMModel.Events.ChildNodeCountUpdated, this._onNodeChange, this);
   }
 
   /**
@@ -118,12 +123,13 @@ export class AccessibilitySidebarView extends UI.ThrottledWidget {
    */
   willHide() {
     self.SDK.targetManager.removeModelListener(
-        SDK.DOMModel, SDK.DOMModel.Events.AttrModified, this._onAttrChange, this);
-    self.SDK.targetManager.removeModelListener(SDK.DOMModel, SDK.DOMModel.Events.AttrRemoved, this._onAttrChange, this);
+        SDK.DOMModel.DOMModel, SDK.DOMModel.Events.AttrModified, this._onAttrChange, this);
     self.SDK.targetManager.removeModelListener(
-        SDK.DOMModel, SDK.DOMModel.Events.CharacterDataModified, this._onNodeChange, this);
+        SDK.DOMModel.DOMModel, SDK.DOMModel.Events.AttrRemoved, this._onAttrChange, this);
     self.SDK.targetManager.removeModelListener(
-        SDK.DOMModel, SDK.DOMModel.Events.ChildNodeCountUpdated, this._onNodeChange, this);
+        SDK.DOMModel.DOMModel, SDK.DOMModel.Events.CharacterDataModified, this._onNodeChange, this);
+    self.SDK.targetManager.removeModelListener(
+        SDK.DOMModel.DOMModel, SDK.DOMModel.Events.ChildNodeCountUpdated, this._onNodeChange, this);
   }
 
   _pullNode() {
@@ -131,7 +137,7 @@ export class AccessibilitySidebarView extends UI.ThrottledWidget {
       this._skipNextPullNode = false;
       return;
     }
-    this.setNode(self.UI.context.flavor(SDK.DOMNode));
+    this.setNode(self.UI.context.flavor(SDK.DOMModel.DOMNode));
   }
 
   /**

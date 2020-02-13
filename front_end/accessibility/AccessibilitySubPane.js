@@ -2,12 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
+import * as UI from '../ui/ui.js';
+
 import {AccessibilityNode} from './AccessibilityModel.js';  // eslint-disable-line no-unused-vars
 
 /**
  * @unrestricted
  */
-export class AccessibilitySubPane extends UI.SimpleView {
+export class AccessibilitySubPane extends UI.View.SimpleView {
   /**
    * @param {string} name
    */
@@ -29,14 +32,14 @@ export class AccessibilitySubPane extends UI.SimpleView {
   }
 
   /**
-   * @return {?SDK.DOMNode}
+   * @return {?SDK.DOMModel.DOMNode}
    */
   node() {
     return this._node;
   }
 
   /**
-   * @param {?SDK.DOMNode} node
+   * @param {?SDK.DOMModel.DOMNode} node
    */
   setNode(node) {
     this._node = node;
@@ -55,10 +58,10 @@ export class AccessibilitySubPane extends UI.SimpleView {
   }
 
   /**
-   * @return {!UI.TreeOutline}
+   * @return {!UI.TreeOutline.TreeOutline}
    */
   createTreeOutline() {
-    const treeOutline = new UI.TreeOutlineInShadow();
+    const treeOutline = new UI.TreeOutline.TreeOutlineInShadow();
     treeOutline.registerRequiredCSS('accessibility/accessibilityNode.css');
     treeOutline.registerRequiredCSS('accessibility/accessibilityProperties.css');
     treeOutline.registerRequiredCSS('object_ui/objectValue.css');

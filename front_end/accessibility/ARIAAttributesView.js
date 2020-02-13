@@ -2,6 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
+import * as UI from '../ui/ui.js';
+
 import {AccessibilitySubPane} from './AccessibilitySubPane.js';
 import {ariaMetadata} from './ARIAMetadata.js';
 
@@ -18,7 +21,7 @@ export class ARIAAttributesPane extends AccessibilitySubPane {
 
   /**
    * @override
-   * @param {?SDK.DOMNode} node
+   * @param {?SDK.DOMModel.DOMNode} node
    */
   setNode(node) {
     super.setNode(node);
@@ -43,7 +46,7 @@ export class ARIAAttributesPane extends AccessibilitySubPane {
   }
 
   /**
-   * @param {!SDK.DOMNode.Attribute} attribute
+   * @param {!SDK.DOMModel.Attribute} attribute
    * @return {boolean}
    */
   _isARIAAttribute(attribute) {
@@ -54,11 +57,11 @@ export class ARIAAttributesPane extends AccessibilitySubPane {
 /**
  * @unrestricted
  */
-export class ARIAAttributesTreeElement extends UI.TreeElement {
+export class ARIAAttributesTreeElement extends UI.TreeOutline.TreeElement {
   /**
    * @param {!ARIAAttributesPane} parentPane
-   * @param {!SDK.DOMNode.Attribute} attribute
-   * @param {!SDK.Target} target
+   * @param {!SDK.DOMModel.Attribute} attribute
+   * @param {!SDK.SDKModel.Target} target
    */
   constructor(parentPane, attribute, target) {
     super('');
@@ -130,7 +133,7 @@ export class ARIAAttributesTreeElement extends UI.TreeElement {
   _startEditing() {
     const valueElement = this._valueElement;
 
-    if (UI.isBeingEdited(valueElement)) {
+    if (UI.UIUtils.isBeingEdited(valueElement)) {
       return;
     }
 
@@ -207,7 +210,7 @@ export class ARIAAttributesTreeElement extends UI.TreeElement {
 /**
  * @unrestricted
  */
-export class ARIAAttributePrompt extends UI.TextPrompt {
+export class ARIAAttributePrompt extends UI.TextPrompt.TextPrompt {
   /**
    * @param {!Array<string>} ariaCompletions
    * @param {!ARIAAttributesTreeElement} treeElement

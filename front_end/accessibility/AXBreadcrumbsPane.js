@@ -2,6 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+import * as SDK from '../sdk/sdk.js';
+import * as UI from '../ui/ui.js';
+
 import {AccessibilityNode} from './AccessibilityModel.js';               // eslint-disable-line no-unused-vars
 import {AccessibilitySidebarView} from './AccessibilitySidebarView.js';  // eslint-disable-line no-unused-vars
 import {AccessibilitySubPane} from './AccessibilitySubPane.js';
@@ -186,7 +190,7 @@ export class AXBreadcrumbsPane extends AccessibilitySubPane {
     }
     this._preselectedBreadcrumb.setPreselected(true, hadFocus);
     if (!breadcrumb && hadFocus) {
-      SDK.OverlayModel.hideDOMNodeHighlight();
+      SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
     }
   }
 
@@ -298,7 +302,7 @@ export class AXBreadcrumbsPane extends AccessibilitySubPane {
       return;
     }
 
-    const contextMenu = new UI.ContextMenu(event);
+    const contextMenu = new UI.ContextMenu.ContextMenu(event);
     contextMenu.viewSection().appendItem(ls`Scroll into view`, () => {
       axNode.deferredDOMNode().resolvePromise().then(domNode => {
         if (!domNode) {
@@ -431,7 +435,7 @@ export class AXBreadcrumb {
       if (!this._inspected) {
         this._axNode.highlightDOMNode();
       } else {
-        SDK.OverlayModel.hideDOMNodeHighlight();
+        SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
       }
     }
   }

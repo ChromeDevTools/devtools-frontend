@@ -2020,3 +2020,6 @@ export class DOMModelUndoStack {
 }
 
 SDKModel.register(DOMModel, Capability.DOM, true);
+
+/** @typedef {{name: string, value: string, _node: DOMNode}} */
+export let Attribute;

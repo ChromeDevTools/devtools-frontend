@@ -2,13 +2,19 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-export class ChangesSidebar extends UI.Widget {
+import * as Common from '../common/common.js';
+import * as Snippets from '../snippets/snippets.js';
+import * as UI from '../ui/ui.js';
+import * as Workspace from '../workspace/workspace.js';
+import * as WorkspaceDiff from '../workspace_diff/workspace_diff.js';
+
+export class ChangesSidebar extends UI.Widget.Widget {
   /**
-   * @param {!WorkspaceDiff.WorkspaceDiff} workspaceDiff
+   * @param {!WorkspaceDiff.WorkspaceDiff.WorkspaceDiffImpl} workspaceDiff
    */
   constructor(workspaceDiff) {
     super();
-    this._treeoutline = new UI.TreeOutlineInShadow();
+    this._treeoutline = new UI.TreeOutline.TreeOutlineInShadow();
     this._treeoutline.registerRequiredCSS('changes/changesSidebar.css');
     this._treeoutline.setComparator((a, b) => a.titleAsText().compareTo(b.titleAsText()));
     this._treeoutline.addEventListener(UI.TreeOutline.Events.ElementSelected, this._selectionChanged, this);
@@ -16,16 +22,16 @@ export class ChangesSidebar extends UI.Widget {
 
     this.element.appendChild(this._treeoutline.element);
 
-    /** @type {!Map<!Workspace.UISourceCode, !UISourceCodeTreeElement>} */
+    /** @type {!Map<!Workspace.UISourceCode.UISourceCode, !UISourceCodeTreeElement>} */
     this._treeElements = new Map();
     this._workspaceDiff = workspaceDiff;
     this._workspaceDiff.modifiedUISourceCodes().forEach(this._addUISourceCode.bind(this));
     this._workspaceDiff.addEventListener(
-        WorkspaceDiff.Events.ModifiedStatusChanged, this._uiSourceCodeMofiedStatusChanged, this);
+        WorkspaceDiff.WorkspaceDiff.Events.ModifiedStatusChanged, this._uiSourceCodeMofiedStatusChanged, this);
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    * @param {boolean=} omitFocus
    */
   selectUISourceCode(uiSourceCode, omitFocus) {
@@ -37,7 +43,7 @@ export class ChangesSidebar extends UI.Widget {
   }
 
   /**
-   * @return {?Workspace.UISourceCode}
+   * @return {?Workspace.UISourceCode.UISourceCode}
    */
   selectedUISourceCode() {
     return this._treeoutline.selectedTreeElement ? this._treeoutline.selectedTreeElement.uiSourceCode : null;
@@ -59,7 +65,7 @@ export class ChangesSidebar extends UI.Widget {
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    */
   _removeUISourceCode(uiSourceCode) {
     const treeElement = this._treeElements.get(uiSourceCode);
@@ -78,7 +84,7 @@ export class ChangesSidebar extends UI.Widget {
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    */
   _addUISourceCode(uiSourceCode) {
     const treeElement = new UISourceCodeTreeElement(uiSourceCode);
@@ -97,9 +103,9 @@ export const Events = {
   SelectedUISourceCodeChanged: Symbol('SelectedUISourceCodeChanged')
 };
 
-export class UISourceCodeTreeElement extends UI.TreeElement {
+export class UISourceCodeTreeElement extends UI.TreeOutline.TreeElement {
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    */
   constructor(uiSourceCode) {
     super();
@@ -108,10 +114,10 @@ export class UISourceCodeTreeElement extends UI.TreeElement {
     UI.ARIAUtils.markAsTab(this.listItemElement);
 
     let iconType = 'largeicon-navigator-file';
-    if (Snippets.isSnippetsUISourceCode(this.uiSourceCode)) {
+    if (Snippets.ScriptSnippetFileSystem.isSnippetsUISourceCode(this.uiSourceCode)) {
       iconType = 'largeicon-navigator-snippet';
     }
-    const defaultIcon = UI.Icon.create(iconType, 'icon');
+    const defaultIcon = UI.Icon.Icon.create(iconType, 'icon');
     this.setLeadingIcons([defaultIcon]);
 
     this._eventListeners = [
@@ -132,12 +138,12 @@ export class UISourceCodeTreeElement extends UI.TreeElement {
 
     let tooltip = this.uiSourceCode.url();
     if (this.uiSourceCode.contentType().isFromSourceMap()) {
-      tooltip = Common.UIString('%s (from source map)', this.uiSourceCode.displayName());
+      tooltip = Common.UIString.UIString('%s (from source map)', this.uiSourceCode.displayName());
     }
     this.tooltip = tooltip;
   }
 
   dispose() {
-    Common.EventTarget.removeEventListeners(this._eventListeners);
+    Common.EventTarget.EventTarget.removeEventListeners(this._eventListeners);
   }
 }

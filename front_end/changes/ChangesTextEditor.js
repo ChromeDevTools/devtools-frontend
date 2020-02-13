@@ -2,12 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as TextEditor from '../text_editor/text_editor.js';
+
 import {RowType} from './ChangesView.js';
 
 /**
- * @extends {TextEditor.CodeMirrorTextEditor}
+ * @extends {TextEditor.CodeMirrorTextEditor.CodeMirrorTextEditor}
  */
-export class ChangesTextEditor extends TextEditor.CodeMirrorTextEditor {
+export class ChangesTextEditor extends TextEditor.CodeMirrorTextEditor.CodeMirrorTextEditor {
   /**
    * @param {!UI.TextEditor.Options} options
    */

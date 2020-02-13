@@ -157,3 +157,12 @@
     user-select: text;
     cursor: text;
 }
+
+@media (forced-colors: active) {
+    .profile-view .data-grid tr:hover td:not(.bottom-filler-td) {
+        background: Highlight;
+    }
+    .profile-view .data-grid table.data {
+        background: transparent;
+    }
+}

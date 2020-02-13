@@ -117,3 +117,43 @@ body.inactive .profile-launcher-view-content button.running:not(.toolbar-item) {
     height: 28px;
     margin: 4px 16px 4px 0;
 }
+
+@media (forced-colors: active) {
+    .profile-memory-usage-item {
+        forced-color-adjust: none;
+        border-left-color: transparent;
+    }
+    .profile-memory-usage-item-trend,
+    .profile-memory-usage-item-trend.increasing,
+    .profile-launcher-view-content button.running,
+    body.inactive .profile-launcher-view-content button.running:not(.toolbar-item) {
+        color: ButtonText;
+    }
+    .profile-launcher-view-content button:not(:disabled):hover.running {
+        color: HighlightText;
+    }
+    .javascript-vm-instances-list .profile-memory-usage-item:hover:not(.selected) {
+        background-color: Highlight;
+        color: HighlightText;
+    }
+    .javascript-vm-instances-list .profile-memory-usage-item:hover:not(.selected) .profile-memory-usage-item-trend,
+    .javascript-vm-instances-list .profile-memory-usage-item:hover:not(.selected) .profile-memory-usage-item-trend.increasing {
+        background-color: Highlight;
+        color: HighlightText;
+    }
+    .javascript-vm-instances-list .profile-memory-usage-item.selected {
+        background-color: ButtonText;
+        border-color: Highlight;
+        color: ButtonFace;
+    }
+    .javascript-vm-instances-list .profile-memory-usage-item.selected .profile-memory-usage-item-trend,
+    .javascript-vm-instances-list .profile-memory-usage-item.selected .profile-memory-usage-item-trend.increasing {
+        color: ButtonFace;
+    }
+    .javascript-vm-instances-list:focus .profile-memory-usage-item.selected,
+    .javascript-vm-instances-list[data-keyboard-focus="true"]:focus .profile-memory-usage-item.selected {
+        background-color: Highlight;
+        border-color: ButtonText;
+        color: HighlightText;
+    }
+}

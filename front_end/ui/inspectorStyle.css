@@ -82,6 +82,7 @@
     --selection-bg-color: var(--accent-color);
     --divider-border: 1px solid var(--divider-color);
     --item-hover-color: rgba(56, 121, 217, 0.1);
+    --high-contrast-button-text-focus: 0 0 0 2px ButtonText;
 }
 
 body {

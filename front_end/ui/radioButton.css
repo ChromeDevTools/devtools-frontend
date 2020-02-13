@@ -41,3 +41,14 @@
   --gradient-start: #3D3D3D;
   --gradient-end: #101010;
 }
+
+@media (forced-colors: active) {
+  ::slotted(input.dt-radio-button) {
+    --gradient-start: ButtonFace;
+    --gradient-end: ButtonFace;
+  }
+  ::slotted(input.dt-radio-button:checked) {
+    --gradient-start: Highlight;
+    --gradient-end: Highlight;
+  }
+}

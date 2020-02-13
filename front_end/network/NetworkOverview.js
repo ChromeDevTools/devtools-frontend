@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as PerfUI from '../perf_ui/perf_ui.js';
 import * as SDK from '../sdk/sdk.js';
 
 import {NetworkLogView} from './NetworkLogView.js';
@@ -11,7 +12,7 @@ import {RequestTimeRangeNames, RequestTimingView} from './RequestTimingView.js';
 /**
  * @unrestricted
  */
-export class NetworkOverview extends PerfUI.TimelineOverviewBase {
+export class NetworkOverview extends PerfUI.TimelineOverviewPane.TimelineOverviewBase {
   constructor() {
     super();
     this._selectedFilmStripTime = -1;

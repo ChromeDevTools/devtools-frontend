@@ -28,18 +28,24 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-const expiresSessionValue = Common.UIString('Session');
+import * as Common from '../common/common.js';
+import * as DataGrid from '../data_grid/data_grid.js';
+import * as Network from '../network/network.js';
+import * as SDK from '../sdk/sdk.js';
+import * as UI from '../ui/ui.js';
+
+const expiresSessionValue = Common.UIString.UIString('Session');
 
 /**
  * @unrestricted
  */
-export class CookiesTable extends UI.VBox {
+export class CookiesTable extends UI.Widget.VBox {
   /**
    * @param {boolean=} renderInline
-   * @param {function(!SDK.Cookie, ?SDK.Cookie): !Promise<boolean>=} saveCallback
+   * @param {function(!SDK.Cookie.Cookie, ?SDK.Cookie.Cookie): !Promise<boolean>=} saveCallback
    * @param {function()=} refreshCallback
    * @param {function()=} selectedCallback
-   * @param {function(!SDK.Cookie, function())=} deleteCallback
+   * @param {function(!SDK.Cookie.Cookie, function())=} deleteCallback
    */
   constructor(renderInline, saveCallback, refreshCallback, selectedCallback, deleteCallback) {
     super();
@@ -119,7 +125,7 @@ export class CookiesTable extends UI.VBox {
     ]);
 
     if (editable) {
-      this._dataGrid = new DataGrid.DataGrid({
+      this._dataGrid = new DataGrid.DataGrid.DataGridImpl({
         displayName: ls`Editable Cookies`,
         columns,
         editCallback: this._onUpdateCookie.bind(this),
@@ -127,7 +133,7 @@ export class CookiesTable extends UI.VBox {
         refreshCallback
       });
     } else {
-      this._dataGrid = new DataGrid.DataGrid({displayName: ls`Cookies`, columns});
+      this._dataGrid = new DataGrid.DataGrid.DataGridImpl({displayName: ls`Cookies`, columns});
     }
     this._dataGrid.setStriped(true);
     this._dataGrid.setName('cookiesTable');
@@ -150,21 +156,21 @@ export class CookiesTable extends UI.VBox {
     /** @type {string} */
     this._cookieDomain = '';
 
-    /** @type {?Map<!SDK.Cookie, !Array<!CookieTable.BlockedReason>>} */
+    /** @type {?Map<!SDK.Cookie.Cookie, !Array<!CookieTable.BlockedReason>>} */
     this._cookieToBlockedReasons = null;
   }
 
   /**
-   * @param {!Array.<!SDK.Cookie>} cookies
-   * @param {!Map<!SDK.Cookie, !Array<!CookieTable.BlockedReason>>=} cookieToBlockedReasons
+   * @param {!Array.<!SDK.Cookie.Cookie>} cookies
+   * @param {!Map<!SDK.Cookie.Cookie, !Array<!CookieTable.BlockedReason>>=} cookieToBlockedReasons
    */
   setCookies(cookies, cookieToBlockedReasons) {
     this.setCookieFolders([{cookies: cookies}], cookieToBlockedReasons);
   }
 
   /**
-   * @param {!Array.<!{folderName: ?string, cookies: ?Array.<!SDK.Cookie>}>} cookieFolders
-   * @param {!Map<!SDK.Cookie, !Array<!CookieTable.BlockedReason>>=} cookieToBlockedReasons
+   * @param {!Array.<!{folderName: ?string, cookies: ?Array.<!SDK.Cookie.Cookie>}>} cookieFolders
+   * @param {!Map<!SDK.Cookie.Cookie, !Array<!CookieTable.BlockedReason>>=} cookieToBlockedReasons
    */
   setCookieFolders(cookieFolders, cookieToBlockedReasons) {
     this._data = cookieFolders;
@@ -180,7 +186,7 @@ export class CookiesTable extends UI.VBox {
   }
 
   /**
-   * @return {?SDK.Cookie}
+   * @return {?SDK.Cookie.Cookie}
    */
   selectedCookie() {
     const node = this._dataGrid.selectedNode;
@@ -188,7 +194,7 @@ export class CookiesTable extends UI.VBox {
   }
 
   /**
-   * @return {{current: ?SDK.Cookie, neighbor: ?SDK.Cookie}}
+   * @return {{current: ?SDK.Cookie.Cookie, neighbor: ?SDK.Cookie.Cookie}}
    */
   _getSelectionCookies() {
     const node = this._dataGrid.selectedNode;
@@ -209,9 +215,9 @@ export class CookiesTable extends UI.VBox {
   }
 
   /**
-   * @param {{current: ?SDK.Cookie, neighbor: ?SDK.Cookie}} selectionCookies
-   * @param {?Array<!SDK.Cookie>} cookies
-   * @return {?SDK.Cookie}
+   * @param {{current: ?SDK.Cookie.Cookie, neighbor: ?SDK.Cookie.Cookie}} selectionCookies
+   * @param {?Array<!SDK.Cookie.Cookie>} cookies
+   * @return {?SDK.Cookie.Cookie}
    */
   _findSelectedCookie(selectionCookies, cookies) {
     if (!cookies) {
@@ -234,8 +240,8 @@ export class CookiesTable extends UI.VBox {
   }
 
   /**
-   * @param {!SDK.Cookie} cookieA
-   * @param {?SDK.Cookie} cookieB
+   * @param {!SDK.Cookie.Cookie} cookieA
+   * @param {?SDK.Cookie.Cookie} cookieB
    * @return {boolean}
    */
   _isSameCookie(cookieA, cookieB) {
@@ -264,7 +270,7 @@ export class CookiesTable extends UI.VBox {
         groupData[SDK.Cookie.Attributes.SameSite] = '';
         groupData[SDK.Cookie.Attributes.Priority] = '';
 
-        const groupNode = new DataGrid.DataGridNode(groupData);
+        const groupNode = new DataGrid.DataGrid.DataGridNode(groupData);
         groupNode.selectable = true;
         this._dataGrid.rootNode().appendChild(groupNode);
         groupNode.element().classList.add('row-group');
@@ -283,9 +289,9 @@ export class CookiesTable extends UI.VBox {
   }
 
   /**
-   * @param {!DataGrid.DataGridNode} parentNode
-   * @param {?Array.<!SDK.Cookie>} cookies
-   * @param {?SDK.Cookie} selectedCookie
+   * @param {!DataGrid.DataGrid.DataGridNode} parentNode
+   * @param {?Array.<!SDK.Cookie.Cookie>} cookies
+   * @param {?SDK.Cookie.Cookie} selectedCookie
    * @param {?string} lastEditedColumnId
    */
   _populateNode(parentNode, cookies, selectedCookie, lastEditedColumnId) {
@@ -309,8 +315,8 @@ export class CookiesTable extends UI.VBox {
   }
 
   /**
-   * @param {!DataGrid.DataGridNode} parentNode
-   * @param {!SDK.Cookie} cookie
+   * @param {!DataGrid.DataGrid.DataGridNode} parentNode
+   * @param {!SDK.Cookie.Cookie} cookie
    * @param {?string} editedColumnId
    */
   _addInactiveNode(parentNode, cookie, editedColumnId) {
@@ -332,13 +338,13 @@ export class CookiesTable extends UI.VBox {
   }
 
   /**
-   * @param {!Array.<!SDK.Cookie>} cookies
+   * @param {!Array.<!SDK.Cookie.Cookie>} cookies
    */
   _sortCookies(cookies) {
     const sortDirection = this._dataGrid.isSortOrderAscending() ? 1 : -1;
 
     /**
-     * @param {!SDK.Cookie} cookie
+     * @param {!SDK.Cookie.Cookie} cookie
      * @param {string} property
      * @return {string}
      */
@@ -348,8 +354,8 @@ export class CookiesTable extends UI.VBox {
 
     /**
      * @param {string} property
-     * @param {!SDK.Cookie} cookie1
-     * @param {!SDK.Cookie} cookie2
+     * @param {!SDK.Cookie.Cookie} cookie1
+     * @param {!SDK.Cookie.Cookie} cookie2
      * @return {number}
      */
     function compareTo(property, cookie1, cookie2) {
@@ -357,8 +363,8 @@ export class CookiesTable extends UI.VBox {
     }
 
     /**
-     * @param {!SDK.Cookie} cookie1
-     * @param {!SDK.Cookie} cookie2
+     * @param {!SDK.Cookie.Cookie} cookie1
+     * @param {!SDK.Cookie.Cookie} cookie2
      * @return {number}
      */
     function numberCompare(cookie1, cookie2) {
@@ -366,8 +372,8 @@ export class CookiesTable extends UI.VBox {
     }
 
     /**
-     * @param {!SDK.Cookie} cookie1
-     * @param {!SDK.Cookie} cookie2
+     * @param {!SDK.Cookie.Cookie} cookie1
+     * @param {!SDK.Cookie.Cookie} cookie2
      * @return {number}
      */
     function priorityCompare(cookie1, cookie2) {
@@ -383,8 +389,8 @@ export class CookiesTable extends UI.VBox {
     }
 
     /**
-     * @param {!SDK.Cookie} cookie1
-     * @param {!SDK.Cookie} cookie2
+     * @param {!SDK.Cookie.Cookie} cookie1
+     * @param {!SDK.Cookie.Cookie} cookie2
      * @return {number}
      */
     function expiresCompare(cookie1, cookie2) {
@@ -420,8 +426,8 @@ export class CookiesTable extends UI.VBox {
   }
 
   /**
-   * @param {!SDK.Cookie} cookie
-   * @return {!DataGrid.DataGridNode}
+   * @param {!SDK.Cookie.Cookie} cookie
+   * @return {!DataGrid.DataGrid.DataGridNode}
    */
   _createGridNode(cookie) {
     const data = {};
@@ -461,7 +467,7 @@ export class CookiesTable extends UI.VBox {
   }
 
   /**
-   * @param {!DataGrid.DataGridNode} node
+   * @param {!DataGrid.DataGrid.DataGridNode} node
    */
   _onDeleteCookie(node) {
     if (node.cookie && this._deleteCallback) {
@@ -470,7 +476,7 @@ export class CookiesTable extends UI.VBox {
   }
 
   /**
-   * @param {!DataGrid.DataGridNode} editingNode
+   * @param {!DataGrid.DataGrid.DataGridNode} editingNode
    * @param {string} columnIdentifier
    * @param {string} oldText
    * @param {string} newText
@@ -486,7 +492,7 @@ export class CookiesTable extends UI.VBox {
   }
 
   /**
-   * @param {!DataGrid.DataGridNode} node
+   * @param {!DataGrid.DataGrid.DataGridNode} node
    */
   _setDefaults(node) {
     if (node.data[SDK.Cookie.Attributes.Name] === null) {
@@ -507,7 +513,7 @@ export class CookiesTable extends UI.VBox {
   }
 
   /**
-   * @param {!DataGrid.DataGridNode} node
+   * @param {!DataGrid.DataGrid.DataGridNode} node
    */
   _saveNode(node) {
     const oldCookie = node.cookie;
@@ -524,10 +530,10 @@ export class CookiesTable extends UI.VBox {
 
   /**
    * @param {!Object.<string, string>} data
-   * @returns {!SDK.Cookie}
+   * @returns {!SDK.Cookie.Cookie}
    */
   _createCookieFromData(data) {
-    const cookie = new SDK.Cookie(
+    const cookie = new SDK.Cookie.Cookie(
         data[SDK.Cookie.Attributes.Name], data[SDK.Cookie.Attributes.Value], null,
         /** @type {!Protocol.Network.CookiePriority} */ (data[SDK.Cookie.Attributes.Priority]));
 
@@ -566,7 +572,7 @@ export class CookiesTable extends UI.VBox {
     if (!domain) {
       return true;
     }
-    const parsedURL = Common.ParsedURL.fromString('http://' + domain);
+    const parsedURL = Common.ParsedURL.ParsedURL.fromString('http://' + domain);
     return !!parsedURL && parsedURL.domain() === domain;
   }
 
@@ -575,7 +581,7 @@ export class CookiesTable extends UI.VBox {
    * @returns {boolean}
    */
   _isValidPath(path) {
-    const parsedURL = Common.ParsedURL.fromString('http://example.com' + path);
+    const parsedURL = Common.ParsedURL.ParsedURL.fromString('http://example.com' + path);
     return !!parsedURL && parsedURL.path === path;
   }
 
@@ -594,14 +600,14 @@ export class CookiesTable extends UI.VBox {
   }
 
   /**
-   * @param {!UI.ContextMenu} contextMenu
-   * @param {!DataGrid.DataGridNode} gridNode
+   * @param {!UI.ContextMenu.ContextMenu} contextMenu
+   * @param {!DataGrid.DataGrid.DataGridNode} gridNode
    */
   _populateContextMenu(contextMenu, gridNode) {
-    const cookie = /** @type {!SDK.Cookie} */ (gridNode.cookie);
+    const cookie = /** @type {!SDK.Cookie.Cookie} */ (gridNode.cookie);
 
     contextMenu.revealSection().appendItem(ls`Show Requests With This Cookie`, () => {
-      Network.NetworkPanel.revealAndFilter([
+      Network.NetworkPanel.NetworkPanel.revealAndFilter([
         {
           filterType: 'cookie-domain',
           filterValue: cookie.domain(),
@@ -615,10 +621,10 @@ export class CookiesTable extends UI.VBox {
   }
 }
 
-export class DataGridNode extends DataGrid.DataGridNode {
+export class DataGridNode extends DataGrid.DataGrid.DataGridNode {
   /**
    * @param {!Object<string, *>} data
-   * @param {!SDK.Cookie} cookie
+   * @param {!SDK.Cookie.Cookie} cookie
    * @param {?Array<!CookieTable.BlockedReason>} blockedReasons
    */
   constructor(data, cookie, blockedReasons) {
@@ -662,7 +668,7 @@ export class DataGridNode extends DataGrid.DataGridNode {
     }
 
     if (blockedReasonString) {
-      const infoElement = UI.Icon.create('smallicon-info', 'cookie-warning-icon');
+      const infoElement = UI.Icon.Icon.create('smallicon-info', 'cookie-warning-icon');
       infoElement.title = blockedReasonString;
       cell.insertBefore(infoElement, cell.firstChild);
       cell.classList.add('flagged-cookie-attribute-cell');

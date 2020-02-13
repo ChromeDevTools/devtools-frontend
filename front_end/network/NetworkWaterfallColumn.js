@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
+import * as PerfUI from '../perf_ui/perf_ui.js';
 import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';
 
@@ -459,9 +460,9 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
 
     const freeZoneAtLeft = 75;
     const freeZoneAtRight = 18;
-    const dividersData = PerfUI.TimelineGrid.calculateGridOffsets(this._calculator);
-    PerfUI.TimelineGrid.drawCanvasGrid(context, dividersData);
-    PerfUI.TimelineGrid.drawCanvasHeaders(
+    const dividersData = PerfUI.TimelineGrid.TimelineGrid.calculateGridOffsets(this._calculator);
+    PerfUI.TimelineGrid.TimelineGrid.drawCanvasGrid(context, dividersData);
+    PerfUI.TimelineGrid.TimelineGrid.drawCanvasHeaders(
         context, dividersData, time => this._calculator.formatValue(time, dividersData.precision), this._fontSize,
         this._headerHeight, freeZoneAtLeft);
     context.clearRect(this._offsetWidth - freeZoneAtRight, 0, freeZoneAtRight, this._headerHeight);

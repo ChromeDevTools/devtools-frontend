@@ -32,6 +32,7 @@ import * as Bindings from '../bindings/bindings.js';
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
+import * as PerfUI from '../perf_ui/perf_ui.js';
 import * as SDK from '../sdk/sdk.js';
 import * as Search from '../search/search.js';
 import * as UI from '../ui/ui.js';
@@ -64,7 +65,7 @@ export class NetworkPanel extends UI.Panel.Panel {
     this._pendingStopTimer;
     /** @type {?NetworkItemView} */
     this._networkItemView = null;
-    /** @type {?PerfUI.FilmStripView} */
+    /** @type {?PerfUI.FilmStripView.FilmStripView} */
     this._filmStripView = null;
     /** @type {?FilmStripRecorder} */
     this._filmStripRecorder = null;
@@ -91,7 +92,7 @@ export class NetworkPanel extends UI.Panel.Panel {
     this._filmStripPlaceholderElement = panel.contentElement.createChild('div', 'network-film-strip-placeholder');
 
     // Create top overview component.
-    this._overviewPane = new PerfUI.TimelineOverviewPane('network');
+    this._overviewPane = new PerfUI.TimelineOverviewPane.TimelineOverviewPane('network');
     this._overviewPane.addEventListener(
         PerfUI.TimelineOverviewPane.Events.WindowChanged, this._onWindowChanged.bind(this));
     this._overviewPane.element.id = 'network-overview-panel';
@@ -398,7 +399,7 @@ export class NetworkPanel extends UI.Panel.Panel {
   _toggleRecordFilmStrip() {
     const toggled = this._networkRecordFilmStripSetting.get();
     if (toggled && !this._filmStripRecorder) {
-      this._filmStripView = new PerfUI.FilmStripView();
+      this._filmStripView = new PerfUI.FilmStripView.FilmStripView();
       this._filmStripView.setMode(PerfUI.FilmStripView.Modes.FrameBased);
       this._filmStripView.element.classList.add('network-film-strip');
       this._filmStripRecorder = new FilmStripRecorder(this._networkLogView.timeCalculator(), this._filmStripView);
@@ -699,7 +700,7 @@ export class RequestRevealer {
 export class FilmStripRecorder {
   /**
    * @param {!NetworkTimeCalculator} timeCalculator
-   * @param {!PerfUI.FilmStripView} filmStripView
+   * @param {!PerfUI.FilmStripView.FilmStripView} filmStripView
    */
   constructor(timeCalculator, filmStripView) {
     /** @type {?SDK.TracingManager.TracingManager} */

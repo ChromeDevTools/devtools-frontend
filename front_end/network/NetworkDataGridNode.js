@@ -33,6 +33,7 @@ import * as Common from '../common/common.js';
 import * as Components from '../components/components.js';
 import * as DataGrid from '../data_grid/data_grid.js';
 import * as Host from '../host/host.js';
+import * as PerfUI from '../perf_ui/perf_ui.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
@@ -639,10 +640,10 @@ export class NetworkRequestNode extends NetworkNode {
       return !aRequest ? -1 : 1;
     }
     const aPriority = aRequest.priority();
-    let aScore = aPriority ? PerfUI.networkPriorityWeight(aPriority) : 0;
+    let aScore = aPriority ? PerfUI.NetworkPriorities.networkPriorityWeight(aPriority) : 0;
     aScore = aScore || 0;
     const bPriority = bRequest.priority();
-    let bScore = bPriority ? PerfUI.networkPriorityWeight(bPriority) : 0;
+    let bScore = bPriority ? PerfUI.NetworkPriorities.networkPriorityWeight(bPriority) : 0;
     bScore = bScore || 0;
 
     return aScore - bScore || aRequest.indentityCompare(bRequest);
@@ -915,7 +916,7 @@ export class NetworkRequestNode extends NetworkNode {
         break;
       case 'priority':
         const priority = this._request.priority();
-        this._setTextAndTitle(cell, priority ? PerfUI.uiLabelForNetworkPriority(priority) : '');
+        this._setTextAndTitle(cell, priority ? PerfUI.NetworkPriorities.uiLabelForNetworkPriority(priority) : '');
         break;
       case 'connectionid':
         this._setTextAndTitle(cell, this._request.connectionId);

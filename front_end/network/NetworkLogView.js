@@ -34,6 +34,7 @@ import * as Components from '../components/components.js';
 import * as DataGrid from '../data_grid/data_grid.js';
 import * as HARImporter from '../har_importer/har_importer.js';
 import * as Host from '../host/host.js';
+import * as PerfUI from '../perf_ui/perf_ui.js';
 import * as SDK from '../sdk/sdk.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as UI from '../ui/ui.js';
@@ -200,9 +201,12 @@ export class NetworkLogView extends UI.Widget.VBox {
   static _sortSearchValues(key, values) {
     if (key === FilterType.Priority) {
       values.sort((a, b) => {
-        const aPriority = /** @type {!Protocol.Network.ResourcePriority} */ (PerfUI.uiLabelToNetworkPriority(a));
-        const bPriority = /** @type {!Protocol.Network.ResourcePriority} */ (PerfUI.uiLabelToNetworkPriority(b));
-        return PerfUI.networkPriorityWeight(aPriority) - PerfUI.networkPriorityWeight(bPriority);
+        const aPriority =
+            /** @type {!Protocol.Network.ResourcePriority} */ (PerfUI.NetworkPriorities.uiLabelToNetworkPriority(a));
+        const bPriority =
+            /** @type {!Protocol.Network.ResourcePriority} */ (PerfUI.NetworkPriorities.uiLabelToNetworkPriority(b));
+        return PerfUI.NetworkPriorities.networkPriorityWeight(aPriority) -
+            PerfUI.NetworkPriorities.networkPriorityWeight(bPriority);
       });
     } else {
       values.sort();
@@ -1247,7 +1251,8 @@ export class NetworkLogView extends UI.Widget.VBox {
 
     const priority = request.priority();
     if (priority) {
-      this._suggestionBuilder.addItem(FilterType.Priority, PerfUI.uiLabelForNetworkPriority(priority));
+      this._suggestionBuilder.addItem(
+          FilterType.Priority, PerfUI.NetworkPriorities.uiLabelForNetworkPriority(priority));
     }
 
     if (request.mixedContentType !== Protocol.Security.MixedContentType.None) {
@@ -1650,7 +1655,8 @@ export class NetworkLogView extends UI.Widget.VBox {
         return NetworkLogView._requestCookieValueFilter.bind(null, value);
 
       case FilterType.Priority:
-        return NetworkLogView._requestPriorityFilter.bind(null, PerfUI.uiLabelToNetworkPriority(value));
+        return NetworkLogView._requestPriorityFilter.bind(
+            null, PerfUI.NetworkPriorities.uiLabelToNetworkPriority(value));
 
       case FilterType.StatusCode:
         return NetworkLogView._statusCodeFilter.bind(null, value);

@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as UI from '../ui/ui.js';
+
 import {CSSOverviewCompletedView} from './CSSOverviewCompletedView.js';
 import {Events, OverviewController} from './CSSOverviewController.js';
 import {CSSOverviewModel} from './CSSOverviewModel.js';
@@ -11,7 +13,7 @@ import {CSSOverviewStartView} from './CSSOverviewStartView.js';
 /**
  * @unrestricted
  */
-export class CSSOverviewPanel extends UI.Panel {
+export class CSSOverviewPanel extends UI.Panel.Panel {
   constructor() {
     super('css_overview');
     this.registerRequiredCSS('css_overview/cssOverview.css');

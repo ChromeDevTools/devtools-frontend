@@ -2,7 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-export class CSSOverviewSidebarPanel extends UI.VBox {
+import * as UI from '../ui/ui.js';
+
+export class CSSOverviewSidebarPanel extends UI.Widget.VBox {
   static get ITEM_CLASS_NAME() {
     return 'overview-sidebar-panel-item';
   }
@@ -19,12 +21,12 @@ export class CSSOverviewSidebarPanel extends UI.VBox {
     this.contentElement.addEventListener('click', this._onItemClick.bind(this));
 
     // Clear overview.
-    const clearResultsButton = new UI.ToolbarButton(ls`Clear overview`, 'largeicon-clear');
-    clearResultsButton.addEventListener(UI.ToolbarButton.Events.Click, this._reset, this);
+    const clearResultsButton = new UI.Toolbar.ToolbarButton(ls`Clear overview`, 'largeicon-clear');
+    clearResultsButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._reset, this);
 
     // Toolbar.
     const toolbarElement = this.contentElement.createChild('div', 'overview-toolbar');
-    const toolbar = new UI.Toolbar('', toolbarElement);
+    const toolbar = new UI.Toolbar.Toolbar('', toolbarElement);
     toolbar.appendToolbarItem(clearResultsButton);
   }
 

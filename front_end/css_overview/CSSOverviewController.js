@@ -2,16 +2,19 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+import * as SDK from '../sdk/sdk.js';
+
 /**
  * @unrestricted
  */
-export class OverviewController extends Common.Object {
+export class OverviewController extends Common.ObjectWrapper.ObjectWrapper {
   constructor() {
     super();
 
     this.currentUrl = self.SDK.targetManager.inspectedURL();
     self.SDK.targetManager.addEventListener(
-        SDK.TargetManager.Events.InspectedURLChanged, this._checkUrlAndResetIfChanged, this);
+        SDK.SDKModel.Events.InspectedURLChanged, this._checkUrlAndResetIfChanged, this);
   }
 
   _checkUrlAndResetIfChanged() {

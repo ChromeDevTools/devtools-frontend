@@ -2,14 +2,17 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+import * as SDK from '../sdk/sdk.js';
+
 import {CSSOverviewUnusedDeclarations} from './CSSOverviewUnusedDeclarations.js';
 
 /**
  * @unrestricted
  */
-export class CSSOverviewModel extends SDK.SDKModel {
+export class CSSOverviewModel extends SDK.SDKModel.SDKModel {
   /**
-   * @param {!SDK.Target} target
+   * @param {!SDK.SDKModel.Target} target
    */
   constructor(target) {
     super(target);
@@ -71,7 +74,7 @@ export class CSSOverviewModel extends SDK.SDKModel {
 
       // Parse the color, discard transparent ones.
       const colorText = strings[id];
-      const color = Common.Color.parse(colorText);
+      const color = Common.Color.Color.parse(colorText);
       if (!color || color.rgba()[3] === 0) {
         return;
       }
@@ -337,4 +340,4 @@ export class CSSOverviewModel extends SDK.SDKModel {
   }
 }
 
-SDK.SDKModel.register(CSSOverviewModel, SDK.Target.Capability.DOM, false);
+SDK.SDKModel.SDKModel.register(CSSOverviewModel, SDK.SDKModel.Capability.DOM, false);

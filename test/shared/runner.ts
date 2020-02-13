@@ -82,7 +82,7 @@ console.log('Spawning hosted mode server');
 const serverScriptPath = join(__dirname, '..', '..', 'scripts', 'hosted_mode', 'server.js');
 const cwd = join(__dirname, '..', '..');
 const {execPath} = process;
-const hostedModeServer = spawn(execPath, [serverScriptPath], { cwd, shell: true, detached: true });
+const hostedModeServer = spawn(execPath, [serverScriptPath], { cwd });
 hostedModeServer.on('error', handleHostedModeError);
 hostedModeServer.stderr.on('data', handleHostedModeError);
 

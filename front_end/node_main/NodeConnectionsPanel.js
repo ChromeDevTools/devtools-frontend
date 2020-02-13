@@ -2,7 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-export class NodeConnectionsPanel extends UI.Panel {
+import * as Common from '../common/common.js';
+import * as Host from '../host/host.js';
+import * as UI from '../ui/ui.js';
+
+export class NodeConnectionsPanel extends UI.Panel.Panel {
   constructor() {
     super('node-connection');
     this.registerRequiredCSS('node_main/nodeConnectionsPanel.css');
@@ -13,7 +17,7 @@ export class NodeConnectionsPanel extends UI.Panel {
     const image = container.createChild('img', 'node-panel-logo');
     image.src = 'https://nodejs.org/static/images/logos/nodejs-new-pantone-black.svg';
 
-    Host.InspectorFrontendHost.events.addEventListener(
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
         Host.InspectorFrontendHostAPI.Events.DevicesDiscoveryConfigChanged, this._devicesDiscoveryConfigChanged, this);
 
     /** @type {!Adb.Config} */
@@ -23,12 +27,12 @@ export class NodeConnectionsPanel extends UI.Panel {
     this.setDefaultFocusedElement(this.contentElement);
 
     // Trigger notification once.
-    Host.InspectorFrontendHost.setDevicesUpdatesEnabled(false);
-    Host.InspectorFrontendHost.setDevicesUpdatesEnabled(true);
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.setDevicesUpdatesEnabled(false);
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.setDevicesUpdatesEnabled(true);
 
     this._networkDiscoveryView = new NodeConnectionsView(config => {
       this._config.networkDiscoveryConfig = config;
-      Host.InspectorFrontendHost.setDevicesDiscoveryConfig(this._config);
+      Host.InspectorFrontendHost.InspectorFrontendHostInstance.setDevicesDiscoveryConfig(this._config);
     });
     this._networkDiscoveryView.show(container);
   }
@@ -45,7 +49,7 @@ export class NodeConnectionsPanel extends UI.Panel {
 /**
  * @implements {UI.ListWidget.Delegate<Adb.PortForwardingRule>}
  */
-export class NodeConnectionsView extends UI.VBox {
+export class NodeConnectionsView extends UI.Widget.VBox {
   /**
    * @param {function(!Adb.NetworkDiscoveryConfig)} callback
    */
@@ -55,25 +59,26 @@ export class NodeConnectionsView extends UI.VBox {
     this.element.classList.add('network-discovery-view');
 
     const networkDiscoveryFooter = this.element.createChild('div', 'network-discovery-footer');
-    const documentationLink = UI.XLink.create('https://nodejs.org/en/docs/inspector/', ls`Node.js debugging guide`);
-    networkDiscoveryFooter.appendChild(UI.formatLocalized(
+    const documentationLink =
+        UI.XLink.XLink.create('https://nodejs.org/en/docs/inspector/', ls`Node.js debugging guide`);
+    networkDiscoveryFooter.appendChild(UI.UIUtils.formatLocalized(
         'Specify network endpoint and DevTools will connect to it automatically. Read %s to learn more.',
         [documentationLink]));
 
-    /** @type {!UI.ListWidget<!Adb.PortForwardingRule>} */
-    this._list = new UI.ListWidget(this);
+    /** @type {!UI.ListWidget.ListWidget<!Adb.PortForwardingRule>} */
+    this._list = new UI.ListWidget.ListWidget(this);
     this._list.registerRequiredCSS('node_main/nodeConnectionsPanel.css');
     this._list.element.classList.add('network-discovery-list');
     const placeholder = createElementWithClass('div', 'network-discovery-list-empty');
-    placeholder.textContent = Common.UIString('No connections specified');
+    placeholder.textContent = Common.UIString.UIString('No connections specified');
     this._list.setEmptyPlaceholder(placeholder);
     this._list.show(this.element);
     /** @type {?UI.ListWidget.Editor<!Adb.PortForwardingRule>} */
     this._editor = null;
 
-    const addButton = UI.createTextButton(
-        Common.UIString('Add connection'), this._addNetworkTargetButtonClicked.bind(this), 'add-network-target-button',
-        true /* primary */);
+    const addButton = UI.UIUtils.createTextButton(
+        Common.UIString.UIString('Add connection'), this._addNetworkTargetButtonClicked.bind(this),
+        'add-network-target-button', true /* primary */);
     this.element.appendChild(addButton);
 
     /** @type {!Array<{address: string}>} */

@@ -2,6 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+import * as UI from '../ui/ui.js';
+
 import {PerformanceModel} from './PerformanceModel.js';  // eslint-disable-line no-unused-vars
 import {TimelineEventOverviewCPUActivity, TimelineEventOverviewFrames, TimelineEventOverviewNetwork, TimelineEventOverviewResponsiveness,} from './TimelineEventOverview.js';
 
@@ -9,7 +12,7 @@ export class TimelineHistoryManager {
   constructor() {
     /** @type {!Array<!PerformanceModel>} */
     this._recordings = [];
-    this._action = /** @type {!UI.Action} */ (self.UI.actionRegistry.action('timeline.show-history'));
+    this._action = /** @type {!UI.Action.Action} */ (self.UI.actionRegistry.action('timeline.show-history'));
     /** @type {!Map<string, number>} */
     this._nextNumberByDomain = new Map();
     this._button = new ToolbarButton(this._action);
@@ -74,7 +77,7 @@ export class TimelineHistoryManager {
     this._recordings = [];
     this._lastActiveModel = null;
     this._updateState();
-    this._button.setText(Common.UIString('(no recordings)'));
+    this._button.setText(Common.UIString.UIString('(no recordings)'));
     this._nextNumberByDomain.clear();
   }
 
@@ -146,7 +149,8 @@ export class TimelineHistoryManager {
   static _previewElement(performanceModel) {
     const data = TimelineHistoryManager._dataForModel(performanceModel);
     const startedAt = performanceModel.recordStartTime();
-    data.time.textContent = startedAt ? Common.UIString('(%s ago)', TimelineHistoryManager._coarseAge(startedAt)) : '';
+    data.time.textContent =
+        startedAt ? Common.UIString.UIString('(%s ago)', TimelineHistoryManager._coarseAge(startedAt)) : '';
     return data.preview;
   }
 
@@ -157,14 +161,14 @@ export class TimelineHistoryManager {
   static _coarseAge(time) {
     const seconds = Math.round((Date.now() - time) / 1000);
     if (seconds < 50) {
-      return Common.UIString('moments');
+      return Common.UIString.UIString('moments');
     }
     const minutes = Math.round(seconds / 60);
     if (minutes < 50) {
-      return Common.UIString('%s m', minutes);
+      return Common.UIString.UIString('%s m', minutes);
     }
     const hours = Math.round(minutes / 60);
-    return Common.UIString('%s h', hours);
+    return Common.UIString.UIString('%s h', hours);
   }
 
   /**
@@ -179,10 +183,10 @@ export class TimelineHistoryManager {
    * @param {!PerformanceModel} performanceModel
    */
   _buildPreview(performanceModel) {
-    const parsedURL = Common.ParsedURL.fromString(performanceModel.timelineModel().pageURL());
+    const parsedURL = Common.ParsedURL.ParsedURL.fromString(performanceModel.timelineModel().pageURL());
     const domain = parsedURL ? parsedURL.host : '';
     const sequenceNumber = this._nextNumberByDomain.get(domain) || 1;
-    const title = Common.UIString('%s #%d', domain, sequenceNumber);
+    const title = Common.UIString.UIString('%s #%d', domain, sequenceNumber);
     this._nextNumberByDomain.set(domain, sequenceNumber + 1);
     const timeElement = createElement('span');
 
@@ -231,7 +235,7 @@ export class TimelineHistoryManager {
       return container;
     }
     lastFrame.imageDataPromise()
-        .then(data => UI.loadImageFromData(data))
+        .then(data => UI.UIUtils.loadImageFromData(data))
         .then(image => image && container.appendChild(image));
     return container;
   }
@@ -278,14 +282,14 @@ export const previewWidth = 450;
 export const previewDataSymbol = Symbol('previewData');
 
 /**
- * @implements {UI.ListDelegate<!PerformanceModel>}
+ * @implements {UI.ListControl.ListDelegate<!PerformanceModel>}
  */
 export class DropDown {
   /**
    * @param {!Array<!PerformanceModel>} models
    */
   constructor(models) {
-    this._glassPane = new UI.GlassPane();
+    this._glassPane = new UI.GlassPane.GlassPane();
     this._glassPane.setSizeBehavior(UI.GlassPane.SizeBehavior.MeasureContent);
     this._glassPane.setOutsideClickCallback(() => this._close(null));
     this._glassPane.setPointerEventsBehavior(UI.GlassPane.PointerEventsBehavior.BlockedByGlassPane);
@@ -293,11 +297,11 @@ export class DropDown {
     this._glassPane.element.addEventListener('blur', () => this._close(null));
 
     const shadowRoot =
-        UI.createShadowRootWithCoreStyles(this._glassPane.contentElement, 'timeline/timelineHistoryManager.css');
+        UI.Utils.createShadowRootWithCoreStyles(this._glassPane.contentElement, 'timeline/timelineHistoryManager.css');
     const contentElement = shadowRoot.createChild('div', 'drop-down');
 
-    const listModel = new UI.ListModel();
-    this._listControl = new UI.ListControl(listModel, this, UI.ListMode.NonViewport);
+    const listModel = new UI.ListModel.ListModel();
+    this._listControl = new UI.ListControl.ListControl(listModel, this, UI.ListControl.ListMode.NonViewport);
     this._listControl.element.addEventListener('mousemove', this._onMouseMove.bind(this), false);
     listModel.replaceAll(models);
 
@@ -307,7 +311,7 @@ export class DropDown {
     contentElement.addEventListener('keydown', this._onKeyDown.bind(this), false);
     contentElement.addEventListener('click', this._onClick.bind(this), false);
 
-    this._focusRestorer = new UI.ElementFocusRestorer(this._listControl.element);
+    this._focusRestorer = new UI.UIUtils.ElementFocusRestorer(this._listControl.element);
     /** @type {?function(?PerformanceModel)} */
     this._selectionDone = null;
   }
@@ -461,15 +465,15 @@ export class DropDown {
  */
 DropDown._instance = null;
 
-export class ToolbarButton extends UI.ToolbarItem {
+export class ToolbarButton extends UI.Toolbar.ToolbarItem {
   /**
-   * @param {!UI.Action} action
+   * @param {!UI.Action.Action} action
    */
   constructor(action) {
     super(createElementWithClass('button', 'history-dropdown-button'));
-    UI.appendStyle(this.element, 'timeline/historyToolbarButton.css');
+    UI.Utils.appendStyle(this.element, 'timeline/historyToolbarButton.css');
     this._contentElement = this.element.createChild('span', 'content');
-    const dropdownArrowIcon = UI.Icon.create('smallicon-triangle-down');
+    const dropdownArrowIcon = UI.Icon.Icon.create('smallicon-triangle-down');
     this.element.appendChild(dropdownArrowIcon);
     this.element.addEventListener('click', () => void action.execute(), false);
     this.setEnabled(action.enabled());

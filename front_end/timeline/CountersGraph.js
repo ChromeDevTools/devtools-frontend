@@ -28,13 +28,18 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as Common from '../common/common.js';
+import * as PerfUI from '../perf_ui/perf_ui.js';
+import * as TimelineModel from '../timeline_model/timeline_model.js';
+import * as UI from '../ui/ui.js';
+
 import {Events, PerformanceModel} from './PerformanceModel.js';  // eslint-disable-line no-unused-vars
 import {TimelineModeViewDelegate} from './TimelinePanel.js';     // eslint-disable-line no-unused-vars
 
 /**
  * @unrestricted
  */
-export class CountersGraph extends UI.VBox {
+export class CountersGraph extends UI.Widget.VBox {
   /**
    * @param {!TimelineModeViewDelegate} delegate
    */
@@ -46,15 +51,15 @@ export class CountersGraph extends UI.VBox {
     this._calculator = new Calculator();
 
     // Create selectors
-    this._header = new UI.HBox();
+    this._header = new UI.Widget.HBox();
     this._header.element.classList.add('timeline-memory-header');
     this._header.show(this.element);
-    this._toolbar = new UI.Toolbar('timeline-memory-toolbar');
+    this._toolbar = new UI.Toolbar.Toolbar('timeline-memory-toolbar');
     this._header.element.appendChild(this._toolbar.element);
 
-    this._graphsContainer = new UI.VBox();
+    this._graphsContainer = new UI.Widget.VBox();
     this._graphsContainer.show(this.element);
-    const canvasWidget = new UI.VBoxWithResizeCallback(this._resize.bind(this));
+    const canvasWidget = new UI.Widget.VBoxWithResizeCallback(this._resize.bind(this));
     canvasWidget.show(this._graphsContainer.element);
     this._createCurrentValuesBar();
     this._canvasContainer = canvasWidget.element;
@@ -67,7 +72,7 @@ export class CountersGraph extends UI.VBox {
     this._canvasContainer.addEventListener('mouseleave', this._onMouseLeave.bind(this), true);
     this._canvasContainer.addEventListener('click', this._onClick.bind(this), true);
     // We create extra timeline grid here to reuse its event dividers.
-    this._timelineGrid = new PerfUI.TimelineGrid();
+    this._timelineGrid = new PerfUI.TimelineGrid.TimelineGrid();
     this._canvasContainer.appendChild(this._timelineGrid.dividersElement);
 
     this._counters = [];
@@ -75,15 +80,16 @@ export class CountersGraph extends UI.VBox {
 
     this._countersByName = {};
     this._countersByName['jsHeapSizeUsed'] = this._createCounter(
-        Common.UIString('JS Heap'), Common.UIString('JS Heap: %s'), 'hsl(220, 90%, 43%)', Number.bytesToString);
-    this._countersByName['documents'] =
-        this._createCounter(Common.UIString('Documents'), Common.UIString('Documents: %s'), 'hsl(0, 90%, 43%)');
-    this._countersByName['nodes'] =
-        this._createCounter(Common.UIString('Nodes'), Common.UIString('Nodes: %s'), 'hsl(120, 90%, 43%)');
-    this._countersByName['jsEventListeners'] =
-        this._createCounter(Common.UIString('Listeners'), Common.UIString('Listeners: %s'), 'hsl(38, 90%, 43%)');
+        Common.UIString.UIString('JS Heap'), Common.UIString.UIString('JS Heap: %s'), 'hsl(220, 90%, 43%)',
+        Number.bytesToString);
+    this._countersByName['documents'] = this._createCounter(
+        Common.UIString.UIString('Documents'), Common.UIString.UIString('Documents: %s'), 'hsl(0, 90%, 43%)');
+    this._countersByName['nodes'] = this._createCounter(
+        Common.UIString.UIString('Nodes'), Common.UIString.UIString('Nodes: %s'), 'hsl(120, 90%, 43%)');
+    this._countersByName['jsEventListeners'] = this._createCounter(
+        Common.UIString.UIString('Listeners'), Common.UIString.UIString('Listeners: %s'), 'hsl(38, 90%, 43%)');
     this._gpuMemoryCounter = this._createCounter(
-        Common.UIString('GPU Memory'), Common.UIString('GPU Memory [KB]: %s'), 'hsl(300, 90%, 43%)',
+        Common.UIString.UIString('GPU Memory'), Common.UIString.UIString('GPU Memory [KB]: %s'), 'hsl(300, 90%, 43%)',
         Number.bytesToString);
     this._countersByName['gpuMemoryUsedKB'] = this._gpuMemoryCounter;
   }
@@ -181,7 +187,7 @@ export class CountersGraph extends UI.VBox {
   }
 
   scheduleRefresh() {
-    UI.invokeOnceAfterBatchUpdate(this, this.refresh);
+    UI.UIUtils.invokeOnceAfterBatchUpdate(this, this.refresh);
   }
 
   draw() {
@@ -376,9 +382,9 @@ export class CounterUI {
 
     this._setting = self.Common.settings.createSetting('timelineCountersGraph-' + title, true);
     this._setting.setTitle(title);
-    this._filter = new UI.ToolbarSettingCheckbox(this._setting, title);
+    this._filter = new UI.Toolbar.ToolbarSettingCheckbox(this._setting, title);
     this._filter.inputElement.classList.add('-theme-preserve');
-    const color = Common.Color.parse(graphColor).setAlpha(0.5).asString(Common.Color.Format.RGBA);
+    const color = Common.Color.Color.parse(graphColor).setAlpha(0.5).asString(Common.Color.Format.RGBA);
     if (color) {
       this._filter.element.backgroundColor = color;
       this._filter.element.borderColor = 'transparent';
@@ -390,7 +396,7 @@ export class CounterUI {
     this._value = countersPane._currentValuesBar.createChild('span', 'memory-counter-value');
     this._value.style.color = graphColor;
     this.graphColor = graphColor;
-    this.limitColor = Common.Color.parse(graphColor).setAlpha(0.3).asString(Common.Color.Format.RGBA);
+    this.limitColor = Common.Color.Color.parse(graphColor).setAlpha(0.3).asString(Common.Color.Format.RGBA);
     this.graphYValues = [];
     this._verticalPadding = 10;
 
@@ -411,7 +417,7 @@ export class CounterUI {
   setRange(minValue, maxValue) {
     const min = this._formatter(minValue);
     const max = this._formatter(maxValue);
-    this._range.textContent = Common.UIString('[%s\xa0\u2013\xa0%s]', min, max);
+    this._range.textContent = Common.UIString.UIString('[%s\xa0\u2013\xa0%s]', min, max);
   }
 
   /**
@@ -441,7 +447,7 @@ export class CounterUI {
     }
     const index = this._recordIndexAt(x);
     const value = Number.withThousandsSeparator(this.counter.values[index]);
-    this._value.textContent = Common.UIString(this._currentValueLabel, value);
+    this._value.textContent = Common.UIString.UIString(this._currentValueLabel, value);
     const y = this.graphYValues[index] / window.devicePixelRatio;
     this._marker.style.left = x + 'px';
     this._marker.style.top = y + 'px';

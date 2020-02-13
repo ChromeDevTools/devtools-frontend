@@ -2,6 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+import * as PerfUI from '../perf_ui/perf_ui.js';
+import * as SDK from '../sdk/sdk.js';
+import * as TimelineModel from '../timeline_model/timeline_model.js';
+import * as UI from '../ui/ui.js';
+
 import {CountersGraph} from './CountersGraph.js';
 import {Events as PerformanceModelEvents, PerformanceModel} from './PerformanceModel.js';  // eslint-disable-line no-unused-vars
 import {TimelineDetailsView} from './TimelineDetailsView.js';
@@ -13,11 +19,11 @@ import {AggregatedTimelineTreeView} from './TimelineTreeView.js';
 import {TimelineUIUtils} from './TimelineUIUtils.js';
 
 /**
- * @implements {PerfUI.FlameChartDelegate}
- * @implements {UI.Searchable}
+ * @implements {PerfUI.FlameChart.FlameChartDelegate}
+ * @implements {UI.SearchableView.Searchable}
  * @unrestricted
  */
-export class TimelineFlameChartView extends UI.VBox {
+export class TimelineFlameChartView extends UI.Widget.VBox {
   /**
    * @param {!TimelineModeViewDelegate} delegate
    */
@@ -35,26 +41,27 @@ export class TimelineFlameChartView extends UI.VBox {
     this._showMemoryGraphSetting = self.Common.settings.createSetting('timelineShowMemory', false);
 
     // Create main and network flamecharts.
-    this._networkSplitWidget = new UI.SplitWidget(false, false, 'timelineFlamechartMainView', 150);
+    this._networkSplitWidget = new UI.SplitWidget.SplitWidget(false, false, 'timelineFlamechartMainView', 150);
 
     const mainViewGroupExpansionSetting =
         self.Common.settings.createSetting('timelineFlamechartMainViewGroupExpansion', {});
     this._mainDataProvider = new TimelineFlameChartDataProvider();
     this._mainDataProvider.addEventListener(
         TimelineFlameChartDataProviderEvents.DataChanged, () => this._mainFlameChart.scheduleUpdate());
-    this._mainFlameChart = new PerfUI.FlameChart(this._mainDataProvider, this, mainViewGroupExpansionSetting);
+    this._mainFlameChart =
+        new PerfUI.FlameChart.FlameChart(this._mainDataProvider, this, mainViewGroupExpansionSetting);
     this._mainFlameChart.alwaysShowVerticalScroll();
     this._mainFlameChart.enableRuler(false);
 
     this._networkFlameChartGroupExpansionSetting =
         self.Common.settings.createSetting('timelineFlamechartNetworkViewGroupExpansion', {});
     this._networkDataProvider = new TimelineFlameChartNetworkDataProvider();
-    this._networkFlameChart = new PerfUI.FlameChart(
-        this._networkDataProvider, this, this._networkFlameChartGroupExpansionSetting);
+    this._networkFlameChart =
+        new PerfUI.FlameChart.FlameChart(this._networkDataProvider, this, this._networkFlameChartGroupExpansionSetting);
     this._networkFlameChart.alwaysShowVerticalScroll();
     this._networkFlameChart.disableRangeSelection();
 
-    this._networkPane = new UI.VBox();
+    this._networkPane = new UI.Widget.VBox();
     this._networkPane.setMinimumSize(23, 23);
     this._networkFlameChart.show(this._networkPane.element);
     this._splitResizer = this._networkPane.element.createChild('div', 'timeline-flamechart-resizer');
@@ -65,7 +72,7 @@ export class TimelineFlameChartView extends UI.VBox {
     this._networkSplitWidget.setSidebarWidget(this._networkPane);
 
     // Create counters chart splitter.
-    this._chartSplitWidget = new UI.SplitWidget(false, true, 'timelineCountersSplitViewState');
+    this._chartSplitWidget = new UI.SplitWidget.SplitWidget(false, true, 'timelineCountersSplitViewState');
     this._countersView = new CountersGraph(this._delegate);
     this._chartSplitWidget.setMainWidget(this._networkSplitWidget);
     this._chartSplitWidget.setSidebarWidget(this._countersView);
@@ -74,7 +81,7 @@ export class TimelineFlameChartView extends UI.VBox {
     this._updateCountersGraphToggle();
 
     // Create top level properties splitter.
-    this._detailsSplitWidget = new UI.SplitWidget(false, true, 'timelinePanelDetailsSplitViewState');
+    this._detailsSplitWidget = new UI.SplitWidget.SplitWidget(false, true, 'timelinePanelDetailsSplitViewState');
     this._detailsSplitWidget.element.classList.add('timeline-details-split');
     this._detailsView = new TimelineDetailsView(delegate);
     this._detailsSplitWidget.installResizer(this._detailsView.headerElement());
@@ -144,7 +151,7 @@ export class TimelineFlameChartView extends UI.VBox {
 
   /**
    * @override
-   * @param {!PerfUI.FlameChart} flameChart
+   * @param {!PerfUI.FlameChart.FlameChart} flameChart
    * @param {?PerfUI.FlameChart.Group} group
    */
   updateSelectedGroup(flameChart, group) {
@@ -163,7 +170,7 @@ export class TimelineFlameChartView extends UI.VBox {
     if (model === this._model) {
       return;
     }
-    Common.EventTarget.removeEventListeners(this._eventListeners);
+    Common.EventTarget.EventTarget.removeEventListeners(this._eventListeners);
     this._model = model;
     this._selectedTrack = null;
     this._mainDataProvider.setModel(this._model);
@@ -220,7 +227,7 @@ export class TimelineFlameChartView extends UI.VBox {
    * @param {!Common.Event} commonEvent
    */
   _onEntryHighlighted(commonEvent) {
-    SDK.OverlayModel.hideDOMNodeHighlight();
+    SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
     const entryIndex = /** @type {number} */ (commonEvent.data);
     const event = this._mainDataProvider.eventByIndex(entryIndex);
     if (!event) {
@@ -230,12 +237,12 @@ export class TimelineFlameChartView extends UI.VBox {
     if (!target) {
       return;
     }
-    const timelineData = TimelineModel.TimelineData.forEvent(event);
+    const timelineData = TimelineModel.TimelineModel.TimelineData.forEvent(event);
     const backendNodeId = timelineData.backendNodeId;
     if (!backendNodeId) {
       return;
     }
-    new SDK.DeferredDOMNode(target, backendNodeId).highlight();
+    new SDK.DOMModel.DeferredDOMNode(target, backendNodeId).highlight();
   }
 
   /**
@@ -296,7 +303,7 @@ export class TimelineFlameChartView extends UI.VBox {
   }
 
   /**
-   * @param {!PerfUI.FlameChartDataProvider} dataProvider
+   * @param {!PerfUI.FlameChart.FlameChartDataProvider} dataProvider
    * @param {!Common.Event} event
    */
   _onEntrySelected(dataProvider, event) {
@@ -324,13 +331,13 @@ export class TimelineFlameChartView extends UI.VBox {
   }
 
   /**
-   * @param {!UI.SearchableView} searchableView
+   * @param {!UI.SearchableView.SearchableView} searchableView
    */
   setSearchableView(searchableView) {
     this._searchableView = searchableView;
   }
 
-  // UI.Searchable implementation
+  // UI.SearchableView.Searchable implementation
 
   /**
    * @override
@@ -450,7 +457,7 @@ export const FlameChartStyle = {
 };
 
 /**
- * @implements {PerfUI.FlameChartMarker}
+ * @implements {PerfUI.FlameChart.FlameChartMarker}
  * @unrestricted
  */
 export class TimelineFlameChartMarker {

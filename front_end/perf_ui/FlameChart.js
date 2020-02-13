@@ -2283,3 +2283,31 @@ export const Colors = {
   SelectedGroupBackground: 'hsl(215, 85%, 98%)',
   SelectedGroupBorder: 'hsl(216, 68%, 54%)',
 };
+
+/**
+ * @typedef {!{
+  *     name: string,
+  *     startLevel: number,
+  *     expanded: (boolean|undefined),
+  *     selectable: (boolean|undefined),
+  *     style: !GroupStyle
+  * }}
+  */
+export let Group;
+
+/**
+  * @typedef {!{
+    *     height: number,
+    *     padding: number,
+    *     collapsible: boolean,
+    *     font: string,
+    *     color: string,
+    *     backgroundColor: string,
+    *     nestingLevel: number,
+    *     itemsHeight: (number|undefined),
+    *     shareHeaderLine: (boolean|undefined),
+    *     useFirstLineForOverview: (boolean|undefined),
+    *     useDecoratorsForOverview: (boolean|undefined)
+    * }}
+    */
+export let GroupStyle;

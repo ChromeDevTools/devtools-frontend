@@ -2,9 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-export class TimelinePaintProfilerView extends UI.SplitWidget {
+import * as LayerViewer from '../layer_viewer/layer_viewer.js';
+import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
+import * as TimelineModel from '../timeline_model/timeline_model.js';
+import * as UI from '../ui/ui.js';
+
+export class TimelinePaintProfilerView extends UI.SplitWidget.SplitWidget {
   /**
-   * @param {!TimelineModel.TimelineFrameModel} frameModel
+   * @param {!TimelineModel.TimelineFrameModel.TimelineFrameModel} frameModel
    */
   constructor(frameModel) {
     super(false, false);
@@ -13,28 +18,29 @@ export class TimelinePaintProfilerView extends UI.SplitWidget {
     this.setResizable(false);
 
     this._frameModel = frameModel;
-    this._logAndImageSplitWidget = new UI.SplitWidget(true, false);
+    this._logAndImageSplitWidget = new UI.SplitWidget.SplitWidget(true, false);
     this._logAndImageSplitWidget.element.classList.add('timeline-paint-profiler-log-split');
     this.setMainWidget(this._logAndImageSplitWidget);
     this._imageView = new TimelinePaintImageView();
     this._logAndImageSplitWidget.setMainWidget(this._imageView);
 
-    this._paintProfilerView = new LayerViewer.PaintProfilerView(this._imageView.showImage.bind(this._imageView));
+    this._paintProfilerView =
+        new LayerViewer.PaintProfilerView.PaintProfilerView(this._imageView.showImage.bind(this._imageView));
     this._paintProfilerView.addEventListener(
         LayerViewer.PaintProfilerView.Events.WindowChanged, this._onWindowChanged, this);
     this.setSidebarWidget(this._paintProfilerView);
 
-    this._logTreeView = new LayerViewer.PaintProfilerCommandLogView();
+    this._logTreeView = new LayerViewer.PaintProfilerView.PaintProfilerCommandLogView();
     this._logAndImageSplitWidget.setSidebarWidget(this._logTreeView);
 
     this._needsUpdateWhenVisible = false;
-    /** @type {?SDK.PaintProfilerSnapshot} */
+    /** @type {?SDK.PaintProfiler.PaintProfilerSnapshot} */
     this._pendingSnapshot = null;
     /** @type {?SDK.TracingModel.Event} */
     this._event = null;
-    /** @type {?SDK.PaintProfilerModel} */
+    /** @type {?SDK.PaintProfiler.PaintProfilerModel} */
     this._paintProfilerModel = null;
-    /** @type {?SDK.PaintProfilerSnapshot} */
+    /** @type {?SDK.PaintProfiler.PaintProfilerSnapshot} */
     this._lastLoadedSnapshot = null;
   }
 
@@ -49,7 +55,7 @@ export class TimelinePaintProfilerView extends UI.SplitWidget {
   }
 
   /**
-   * @param {!SDK.PaintProfilerSnapshot} snapshot
+   * @param {!SDK.PaintProfiler.PaintProfilerSnapshot} snapshot
    */
   setSnapshot(snapshot) {
     this._releaseSnapshot();
@@ -59,7 +65,7 @@ export class TimelinePaintProfilerView extends UI.SplitWidget {
   }
 
   /**
-   * @param {!SDK.PaintProfilerModel} paintProfilerModel
+   * @param {!SDK.PaintProfiler.PaintProfilerModel} paintProfilerModel
    * @param {!SDK.TracingModel.Event} event
    * @return {boolean}
    */
@@ -71,7 +77,7 @@ export class TimelinePaintProfilerView extends UI.SplitWidget {
 
     this._updateWhenVisible();
     if (this._event.name === TimelineModel.TimelineModel.RecordType.Paint) {
-      return !!TimelineModel.TimelineData.forEvent(event).picture;
+      return !!TimelineModel.TimelineModel.TimelineData.forEvent(event).picture;
     }
     if (this._event.name === TimelineModel.TimelineModel.RecordType.RasterTask) {
       return this._frameModel.hasRasterTile(this._event);
@@ -95,7 +101,7 @@ export class TimelinePaintProfilerView extends UI.SplitWidget {
     if (this._pendingSnapshot) {
       snapshotPromise = Promise.resolve({rect: null, snapshot: this._pendingSnapshot});
     } else if (this._event.name === TimelineModel.TimelineModel.RecordType.Paint) {
-      const picture = TimelineModel.TimelineData.forEvent(this._event).picture;
+      const picture = TimelineModel.TimelineModel.TimelineData.forEvent(this._event).picture;
       snapshotPromise = picture.objectPromise()
                             .then(data => this._paintProfilerModel.loadSnapshot(data['skp64']))
                             .then(snapshot => snapshot && {rect: null, snapshot: snapshot});
@@ -118,9 +124,9 @@ export class TimelinePaintProfilerView extends UI.SplitWidget {
     });
 
     /**
-     * @param {!SDK.PaintProfilerSnapshot} snapshot
+     * @param {!SDK.PaintProfiler.PaintProfilerSnapshot} snapshot
      * @param {?Protocol.DOM.Rect} clipRect
-     * @param {!Array.<!SDK.PaintProfilerLogItem>=} log
+     * @param {!Array.<!SDK.PaintProfiler.PaintProfilerLogItem>=} log
      * @this {TimelinePaintProfilerView}
      */
     function onCommandLogDone(snapshot, clipRect, log) {
@@ -145,7 +151,7 @@ export class TimelinePaintProfilerView extends UI.SplitWidget {
 /**
  * @unrestricted
  */
-export class TimelinePaintImageView extends UI.Widget {
+export class TimelinePaintImageView extends UI.Widget.Widget {
   constructor() {
     super(true);
     this.registerRequiredCSS('timeline/timelinePaintProfiler.css');
@@ -155,7 +161,7 @@ export class TimelinePaintImageView extends UI.Widget {
     this._maskElement = this._imageContainer.createChild('div');
     this._imageElement.addEventListener('load', this._updateImagePosition.bind(this), false);
 
-    this._transformController = new LayerViewer.TransformController(this.contentElement, true);
+    this._transformController = new LayerViewer.TransformController.TransformController(this.contentElement, true);
     this._transformController.addEventListener(
         LayerViewer.TransformController.Events.TransformChanged, this._updateImagePosition, this);
   }

@@ -2,16 +2,19 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Extensions from '../extensions/extensions.js';  // eslint-disable-line no-unused-vars
+import * as SDK from '../sdk/sdk.js';                       // eslint-disable-line no-unused-vars
+
 import {PerformanceModel} from './PerformanceModel.js';      // eslint-disable-line no-unused-vars
 import {Client, TimelineLoader} from './TimelineLoader.js';  // eslint-disable-line no-unused-vars
 
 /**
- * @implements {Extensions.TracingSession}
+ * @implements {Extensions.ExtensionTraceProvider.TracingSession}
  * @implements {Client}
  */
 export class ExtensionTracingSession {
   /**
-   * @param {!Extensions.ExtensionTraceProvider} provider
+   * @param {!Extensions.ExtensionTraceProvider.ExtensionTraceProvider} provider
    * @param {!PerformanceModel} performanceModel
    */
   constructor(provider, performanceModel) {
@@ -42,7 +45,7 @@ export class ExtensionTracingSession {
 
   /**
    * @override
-   * @param {?SDK.TracingModel} tracingModel
+   * @param {?SDK.TracingModel.TracingModel} tracingModel
    */
   loadingComplete(tracingModel) {
     if (!tracingModel) {

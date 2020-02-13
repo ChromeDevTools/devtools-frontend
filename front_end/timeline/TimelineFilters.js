@@ -2,9 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
+import * as TimelineModel from '../timeline_model/timeline_model.js';
+
 import {TimelineUIUtils} from './TimelineUIUtils.js';
 
-export class IsLong extends TimelineModel.TimelineModelFilter {
+export class IsLong extends TimelineModel.TimelineModelFilter.TimelineModelFilter {
   constructor() {
     super();
     this._minimumRecordDuration = 0;
@@ -28,7 +31,7 @@ export class IsLong extends TimelineModel.TimelineModelFilter {
   }
 }
 
-export class Category extends TimelineModel.TimelineModelFilter {
+export class Category extends TimelineModel.TimelineModelFilter.TimelineModelFilter {
   constructor() {
     super();
   }
@@ -43,7 +46,7 @@ export class Category extends TimelineModel.TimelineModelFilter {
   }
 }
 
-export class TimelineRegExp extends TimelineModel.TimelineModelFilter {
+export class TimelineRegExp extends TimelineModel.TimelineModelFilter.TimelineModelFilter {
   /**
    * @param {!RegExp=} regExp
    */

@@ -2,6 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+import * as DataGrid from '../data_grid/data_grid.js';
+import * as SDK from '../sdk/sdk.js';                                  // eslint-disable-line no-unused-vars
+import * as TimelineModel from '../timeline_model/timeline_model.js';  // eslint-disable-line no-unused-vars
+import * as UI from '../ui/ui.js';
+
 import {Category, IsLong} from './TimelineFilters.js';
 import {TimelineModeViewDelegate, TimelineSelection} from './TimelinePanel.js';  // eslint-disable-line no-unused-vars
 import {TimelineTreeView} from './TimelineTreeView.js';
@@ -27,7 +33,7 @@ export class EventsTimelineTreeView extends TimelineTreeView {
   /**
    * @override
    * @protected
-   * @return {!Array<!TimelineModel.TimelineModelFilter>}
+   * @return {!Array<!TimelineModel.TimelineModelFilter.TimelineModelFilter>}
    */
   filters() {
     return [...super.filters(), ...this._filtersControl.filters()];
@@ -112,15 +118,20 @@ export class EventsTimelineTreeView extends TimelineTreeView {
    * @param {!Array<!DataGrid.ColumnDescriptor>} columns
    */
   populateColumns(columns) {
-    columns.push(
-        {id: 'startTime', title: Common.UIString('Start Time'), width: '80px', fixedWidth: true, sortable: true});
+    columns.push({
+      id: 'startTime',
+      title: Common.UIString.UIString('Start Time'),
+      width: '80px',
+      fixedWidth: true,
+      sortable: true
+    });
     super.populateColumns(columns);
     columns.filter(c => c.fixedWidth).forEach(c => c.width = '80px');
   }
 
   /**
    * @override
-   * @param {!UI.Toolbar} toolbar
+   * @param {!UI.Toolbar.Toolbar} toolbar
    */
   populateToolbar(toolbar) {
     super.populateToolbar(toolbar);
@@ -154,7 +165,7 @@ export class EventsTimelineTreeView extends TimelineTreeView {
 /**
  * @unrestricted
  */
-export class Filters extends Common.Object {
+export class Filters extends Common.ObjectWrapper.ObjectWrapper {
   constructor() {
     super();
     this._categoryFilter = new Category();
@@ -163,20 +174,20 @@ export class Filters extends Common.Object {
   }
 
   /**
-   * @return {!Array<!TimelineModel.TimelineModelFilter>}
+   * @return {!Array<!TimelineModel.TimelineModelFilter.TimelineModelFilter>}
    */
   filters() {
     return this._filters;
   }
 
   /**
-   * @param {!UI.Toolbar} toolbar
+   * @param {!UI.Toolbar.Toolbar} toolbar
    */
   populateToolbar(toolbar) {
-    const durationFilterUI = new UI.ToolbarComboBox(durationFilterChanged.bind(this), ls`Duration filter`);
+    const durationFilterUI = new UI.Toolbar.ToolbarComboBox(durationFilterChanged.bind(this), ls`Duration filter`);
     for (const durationMs of Filters._durationFilterPresetsMs) {
       durationFilterUI.addOption(durationFilterUI.createOption(
-          durationMs ? Common.UIString('\u2265 %d\xa0ms', durationMs) : Common.UIString('All'),
+          durationMs ? Common.UIString.UIString('\u2265 %d\xa0ms', durationMs) : Common.UIString.UIString('All'),
           String(durationMs)));
     }
     toolbar.appendToolbarItem(durationFilterUI);
@@ -189,7 +200,7 @@ export class Filters extends Common.Object {
         continue;
       }
       const checkbox =
-          new UI.ToolbarCheckbox(category.title, undefined, categoriesFilterChanged.bind(this, categoryName));
+          new UI.Toolbar.ToolbarCheckbox(category.title, undefined, categoriesFilterChanged.bind(this, categoryName));
       checkbox.setChecked(true);
       checkbox.inputElement.style.backgroundColor = category.color;
       categoryFiltersUI[category.name] = checkbox;

@@ -28,26 +28,33 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as Common from '../common/common.js';
+import * as Host from '../host/host.js';
+import * as PerfUI from '../perf_ui/perf_ui.js';
+import * as SDK from '../sdk/sdk.js';
+import * as TimelineModel from '../timeline_model/timeline_model.js';
+import * as UI from '../ui/ui.js';
+
 import {PerformanceModel} from './PerformanceModel.js';  // eslint-disable-line no-unused-vars
 import {FlameChartStyle, Selection, TimelineFlameChartMarker} from './TimelineFlameChartView.js';
 import {TimelineSelection} from './TimelinePanel.js';
 import {TimelineCategory, TimelineUIUtils} from './TimelineUIUtils.js';  // eslint-disable-line no-unused-vars
 
 /**
- * @implements {PerfUI.FlameChartDataProvider}
+ * @implements {PerfUI.FlameChart.FlameChartDataProvider}
  * @unrestricted
  */
-export class TimelineFlameChartDataProvider extends Common.Object {
+export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectWrapper {
   constructor() {
     super();
     this.reset();
-    this._font = '11px ' + Host.fontFamily();
+    this._font = '11px ' + Host.Platform.fontFamily();
     /** @type {?PerfUI.FlameChart.TimelineData} */
     this._timelineData = null;
     this._currentLevel = 0;
     /** @type {?PerformanceModel} */
     this._performanceModel = null;
-    /** @type {?TimelineModel.TimelineModel} */
+    /** @type {?TimelineModel.TimelineModel.TimelineModelImpl} */
     this._model = null;
     this._minimumBoundary = 0;
     this._maximumBoundary = 0;
@@ -81,8 +88,8 @@ export class TimelineFlameChartDataProvider extends Common.Object {
       padding: 4,
       height: 17,
       collapsible: true,
-      color: self.UI.themeSupport.patchColorText('#222', UI.ThemeSupport.ColorUsage.Foreground),
-      backgroundColor: self.UI.themeSupport.patchColorText('white', UI.ThemeSupport.ColorUsage.Background),
+      color: self.UI.themeSupport.patchColorText('#222', UI.UIUtils.ThemeSupport.ColorUsage.Foreground),
+      backgroundColor: self.UI.themeSupport.patchColorText('white', UI.UIUtils.ThemeSupport.ColorUsage.Background),
       font: this._font,
       nestingLevel: 0,
       shareHeaderLine: true
@@ -122,7 +129,7 @@ export class TimelineFlameChartDataProvider extends Common.Object {
         return event.name + ':' + event.args['step'];
       }
       if (event._blackboxRoot) {
-        return Common.UIString('Blackboxed');
+        return Common.UIString.UIString('Blackboxed');
       }
       if (this._performanceModel.timelineModel().isMarkerEvent(event)) {
         return TimelineUIUtils.markerShortTitle(event);
@@ -138,7 +145,7 @@ export class TimelineFlameChartDataProvider extends Common.Object {
     }
     let title = this._entryIndexToTitle[entryIndex];
     if (!title) {
-      title = Common.UIString('Unexpected entryIndex %d', entryIndex);
+      title = Common.UIString.UIString('Unexpected entryIndex %d', entryIndex);
       console.error(title);
     }
     return title;
@@ -166,7 +173,7 @@ export class TimelineFlameChartDataProvider extends Common.Object {
   reset() {
     this._currentLevel = 0;
     this._timelineData = null;
-    /** @type {!Array<!SDK.FilmStripModel.Frame|!SDK.TracingModel.Event|!TimelineModel.TimelineFrame|!TimelineModel.TimelineIRModel.Phases>} */
+    /** @type {!Array<!SDK.FilmStripModel.Frame|!SDK.TracingModel.Event|!TimelineModel.TimelineFrameModel.TimelineFrame|!TimelineModel.TimelineIRModel.Phases>} */
     this._entryData = [];
     /** @type {!Array<!SDK.TracingModel.Event>} */
     this._entryParent = [];
@@ -180,7 +187,7 @@ export class TimelineFlameChartDataProvider extends Common.Object {
     this._asyncColorByCategory = new Map();
     /** @type {!Map<!TimelineModel.TimelineIRModel.Phases, string>} */
     this._asyncColorByInteractionPhase = new Map();
-    /** @type {!Array<!{title: string, model: !SDK.TracingModel}>} */
+    /** @type {!Array<!{title: string, model: !SDK.TracingModel.TracingModel}>} */
     this._extensionInfo = [];
     /** @type {!Map<!SDK.FilmStripModel.Frame, ?Image>} */
     this._screenshotImageCache = new Map();
@@ -244,7 +251,8 @@ export class TimelineFlameChartDataProvider extends Common.Object {
       for (const track of tracksByProcess.get(process)) {
         const group = this._appendSyncEvents(
             track, track.events, track.name, threadGroupStyle, eventEntryType, true /* selectable */);
-        if (!this._timelineData.selectedGroup || track.name === TimelineModel.TimelineModel.BrowserMainThreadName) {
+        if (!this._timelineData.selectedGroup ||
+            track.name === TimelineModel.TimelineModel.TimelineModelImpl.BrowserMainThreadName) {
           this._timelineData.selectedGroup = group;
         }
       }
@@ -378,7 +386,7 @@ export class TimelineFlameChartDataProvider extends Common.Object {
   /**
    * @param {number} startTime
    * @param {number} endTime
-   * @param {!TimelineModel.TimelineModelFilter} filter
+   * @param {!TimelineModel.TimelineModelFilter.TimelineModelFilter} filter
    * @return {!Array<number>}
    */
   search(startTime, endTime, filter) {
@@ -436,11 +444,11 @@ export class TimelineFlameChartDataProvider extends Common.Object {
         this._markers.push(new TimelineFlameChartMarker(
             e.startTime, e.startTime - this._model.minimumRecordTime(), TimelineUIUtils.markerStyleForEvent(e)));
       }
-      if (!SDK.TracingModel.isFlowPhase(e.phase)) {
+      if (!SDK.TracingModel.TracingModel.isFlowPhase(e.phase)) {
         if (!e.endTime && e.phase !== SDK.TracingModel.Phase.Instant) {
           continue;
         }
-        if (SDK.TracingModel.isAsyncPhase(e.phase)) {
+        if (SDK.TracingModel.TracingModel.isAsyncPhase(e.phase)) {
           continue;
         }
         if (!isExtension && !this._performanceModel.isVisible(e)) {
@@ -618,7 +626,7 @@ export class TimelineFlameChartDataProvider extends Common.Object {
     const screenshots = this._performanceModel.filmStripModel().frames();
     const hasFilmStrip = !!screenshots.length;
     this._framesHeader.collapsible = hasFilmStrip;
-    this._appendHeader(Common.UIString('Frames'), this._framesHeader, false /* selectable */);
+    this._appendHeader(Common.UIString.UIString('Frames'), this._framesHeader, false /* selectable */);
     this._frameGroup = this._timelineData.groups.peekLast();
     const style = TimelineUIUtils.markerStyleForFrame();
 
@@ -676,7 +684,7 @@ export class TimelineFlameChartDataProvider extends Common.Object {
       const /** @const */ eps = 1e-6;
       if (typeof totalTime === 'number') {
         time = Math.abs(totalTime - selfTime) > eps && selfTime > eps ?
-            Common.UIString(
+            Common.UIString.UIString(
                 '%s (self %s)', Number.millisToString(totalTime, true), Number.millisToString(selfTime, true)) :
             Number.millisToString(totalTime, true);
       }
@@ -687,19 +695,19 @@ export class TimelineFlameChartDataProvider extends Common.Object {
       }
       warning = TimelineUIUtils.eventWarning(event);
     } else if (type === EntryType.Frame) {
-      const frame = /** @type {!TimelineModel.TimelineFrame} */ (this._entryData[entryIndex]);
-      time =
-          Common.UIString('%s ~ %.0f\xa0fps', Number.preciseMillisToString(frame.duration, 1), (1000 / frame.duration));
-      title = frame.idle ? Common.UIString('Idle Frame') : Common.UIString('Frame');
+      const frame = /** @type {!TimelineModel.TimelineFrameModel.TimelineFrame} */ (this._entryData[entryIndex]);
+      time = Common.UIString.UIString(
+          '%s ~ %.0f\xa0fps', Number.preciseMillisToString(frame.duration, 1), (1000 / frame.duration));
+      title = frame.idle ? Common.UIString.UIString('Idle Frame') : Common.UIString.UIString('Frame');
       if (frame.hasWarnings()) {
         warning = createElement('span');
-        warning.textContent = Common.UIString('Long frame');
+        warning.textContent = Common.UIString.UIString('Long frame');
       }
     } else {
       return null;
     }
     const element = createElement('div');
-    const root = UI.createShadowRootWithCoreStyles(element, 'timeline/timelineFlamechartPopover.css');
+    const root = UI.Utils.createShadowRootWithCoreStyles(element, 'timeline/timelineFlamechartPopover.css');
     const contents = root.createChild('div', 'timeline-flamechart-popover');
     contents.createChild('span', 'timeline-info-time').textContent = time;
     contents.createChild('span', 'timeline-info-title').textContent = title;
@@ -722,7 +730,7 @@ export class TimelineFlameChartDataProvider extends Common.Object {
       if (color) {
         return color;
       }
-      const parsedColor = Common.Color.parse(lookupColor(key));
+      const parsedColor = Common.Color.Color.parse(lookupColor(key));
       color = parsedColor.setAlpha(0.7).asString(Common.Color.Format.RGBA) || '';
       cache.set(key, color);
       return color;
@@ -738,16 +746,16 @@ export class TimelineFlameChartDataProvider extends Common.Object {
       if (this._performanceModel.timelineModel().isMarkerEvent(event)) {
         return TimelineUIUtils.markerStyleForEvent(event).color;
       }
-      if (!SDK.TracingModel.isAsyncPhase(event.phase)) {
+      if (!SDK.TracingModel.TracingModel.isAsyncPhase(event.phase)) {
         return this._colorForEvent(event);
       }
-      if (event.hasCategory(TimelineModel.TimelineModel.Category.Console) ||
-          event.hasCategory(TimelineModel.TimelineModel.Category.UserTiming)) {
+      if (event.hasCategory(TimelineModel.TimelineModel.TimelineModelImpl.Category.Console) ||
+          event.hasCategory(TimelineModel.TimelineModel.TimelineModelImpl.Category.UserTiming)) {
         return this._consoleColorGenerator.colorForID(event.name);
       }
-      if (event.hasCategory(TimelineModel.TimelineModel.Category.LatencyInfo)) {
-        const phase =
-            TimelineModel.TimelineIRModel.phaseForEvent(event) || TimelineModel.TimelineIRModel.Phases.Uncategorized;
+      if (event.hasCategory(TimelineModel.TimelineModel.TimelineModelImpl.Category.LatencyInfo)) {
+        const phase = TimelineModel.TimelineIRModel.TimelineIRModel.phaseForEvent(event) ||
+            TimelineModel.TimelineIRModel.Phases.Uncategorized;
         return patchColorAndCache(this._asyncColorByInteractionPhase, phase, TimelineUIUtils.interactionPhaseColor);
       }
       const category = TimelineUIUtils.eventStyle(event).category;
@@ -786,7 +794,7 @@ export class TimelineFlameChartDataProvider extends Common.Object {
    */
   _drawFrame(entryIndex, context, text, barX, barY, barWidth, barHeight) {
     const /** @const */ hPadding = 1;
-    const frame = /** @type {!TimelineModel.TimelineFrame} */ (this._entryData[entryIndex]);
+    const frame = /** @type {!TimelineModel.TimelineFrameModel.TimelineFrame} */ (this._entryData[entryIndex]);
     barX += hPadding;
     barWidth -= 2 * hPadding;
     context.fillStyle = frame.idle ? 'white' : (frame.hasWarnings() ? '#fad1d1' : '#d7f0d1');
@@ -813,7 +821,7 @@ export class TimelineFlameChartDataProvider extends Common.Object {
     if (!this._screenshotImageCache.has(screenshot)) {
       this._screenshotImageCache.set(screenshot, null);
       const data = await screenshot.imageDataPromise();
-      const image = await UI.loadImageFromData(data);
+      const image = await UI.UIUtils.loadImageFromData(data);
       this._screenshotImageCache.set(screenshot, image);
       this.dispatchEventToListeners(Events.DataChanged);
       return;
@@ -878,15 +886,16 @@ export class TimelineFlameChartDataProvider extends Common.Object {
 
     if (type === entryTypes.Event) {
       const event = /** @type {!SDK.TracingModel.Event} */ (data);
-      if (event.hasCategory(TimelineModel.TimelineModel.Category.LatencyInfo)) {
-        const timeWaitingForMainThread = TimelineModel.TimelineData.forEvent(event).timeWaitingForMainThread;
+      if (event.hasCategory(TimelineModel.TimelineModel.TimelineModelImpl.Category.LatencyInfo)) {
+        const timeWaitingForMainThread =
+            TimelineModel.TimelineModel.TimelineData.forEvent(event).timeWaitingForMainThread;
         if (timeWaitingForMainThread) {
           context.fillStyle = 'hsla(0, 70%, 60%, 1)';
           const width = Math.floor(unclippedBarX - barX + timeWaitingForMainThread * timeToPixels);
           context.fillRect(barX, barY + barHeight - 3, width, 2);
         }
       }
-      if (TimelineModel.TimelineData.forEvent(event).warning) {
+      if (TimelineModel.TimelineModel.TimelineData.forEvent(event).warning) {
         paintWarningDecoration(barX, barWidth - 1.5);
       }
     }
@@ -930,13 +939,13 @@ export class TimelineFlameChartDataProvider extends Common.Object {
 
     if (type === entryTypes.Event) {
       const event = /** @type {!SDK.TracingModel.Event} */ (this._entryData[entryIndex]);
-      return !!TimelineModel.TimelineData.forEvent(event).warning;
+      return !!TimelineModel.TimelineModel.TimelineData.forEvent(event).warning;
     }
     return false;
   }
 
   /**
-   * @param {!{title: string, model: !SDK.TracingModel}} entry
+   * @param {!{title: string, model: !SDK.TracingModel.TracingModel}} entry
    */
   appendExtensionEvents(entry) {
     this._extensionInfo.push(entry);
@@ -1002,7 +1011,7 @@ export class TimelineFlameChartDataProvider extends Common.Object {
    * @param {number} level
    */
   _appendAsyncEvent(asyncEvent, level) {
-    if (SDK.TracingModel.isNestableAsyncPhase(asyncEvent.phase)) {
+    if (SDK.TracingModel.TracingModel.isNestableAsyncPhase(asyncEvent.phase)) {
       // FIXME: also add steps once we support event nesting in the FlameChart.
       this._appendEvent(asyncEvent, level);
       return;
@@ -1062,7 +1071,7 @@ export class TimelineFlameChartDataProvider extends Common.Object {
   }
 
   /**
-   * @param {!TimelineModel.TimelineFrame} frame
+   * @param {!TimelineModel.TimelineFrameModel.TimelineFrame} frame
    */
   _appendFrame(frame) {
     const index = this._entryData.length;
@@ -1085,7 +1094,7 @@ export class TimelineFlameChartDataProvider extends Common.Object {
           /** @type {!SDK.TracingModel.Event} */ (this._entryData[entryIndex]));
     } else if (type === EntryType.Frame) {
       timelineSelection = TimelineSelection.fromFrame(
-          /** @type {!TimelineModel.TimelineFrame} */ (this._entryData[entryIndex]));
+          /** @type {!TimelineModel.TimelineFrameModel.TimelineFrame} */ (this._entryData[entryIndex]));
     }
     if (timelineSelection) {
       this._lastSelection = new Selection(timelineSelection, entryIndex);
@@ -1125,7 +1134,7 @@ export class TimelineFlameChartDataProvider extends Common.Object {
       return this._lastSelection.entryIndex;
     }
     const index = this._entryData.indexOf(
-        /** @type {!SDK.TracingModel.Event|!TimelineModel.TimelineFrame|!TimelineModel.TimelineIRModel.Phases} */
+        /** @type {!SDK.TracingModel.Event|!TimelineModel.TimelineFrameModel.TimelineFrame|!TimelineModel.TimelineIRModel.Phases} */
         (selection.object()));
     if (index !== -1) {
       this._lastSelection = new Selection(selection, index);
@@ -1152,7 +1161,7 @@ export class TimelineFlameChartDataProvider extends Common.Object {
       // Find the closest ancestor with an initiator.
       let initiator;
       for (; event; event = this._eventParent(event)) {
-        initiator = TimelineModel.TimelineData.forEvent(event).initiator();
+        initiator = TimelineModel.TimelineModel.TimelineData.forEvent(event).initiator();
         if (initiator) {
           break;
         }

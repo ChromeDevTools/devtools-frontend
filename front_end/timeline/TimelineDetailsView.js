@@ -2,6 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+import * as Components from '../components/components.js';
+import * as SDK from '../sdk/sdk.js';
+import * as TimelineModel from '../timeline_model/timeline_model.js';
+import * as UI from '../ui/ui.js';
+
 import {EventsTimelineTreeView} from './EventsTimelineTreeView.js';
 import {Events, PerformanceModel} from './PerformanceModel.js';  // eslint-disable-line no-unused-vars
 import {TimelineLayersView} from './TimelineLayersView.js';
@@ -13,7 +19,7 @@ import {TimelineDetailsContentHelper, TimelineUIUtils} from './TimelineUIUtils.j
 /**
  * @unrestricted
  */
-export class TimelineDetailsView extends UI.VBox {
+export class TimelineDetailsView extends UI.Widget.VBox {
   /**
    * @param {!TimelineModeViewDelegate} delegate
    */
@@ -21,33 +27,33 @@ export class TimelineDetailsView extends UI.VBox {
     super();
     this.element.classList.add('timeline-details');
 
-    this._detailsLinkifier = new Components.Linkifier();
+    this._detailsLinkifier = new Components.Linkifier.Linkifier();
 
-    this._tabbedPane = new UI.TabbedPane();
+    this._tabbedPane = new UI.TabbedPane.TabbedPane();
     this._tabbedPane.show(this.element);
 
     const tabIds = Tab;
 
-    this._defaultDetailsWidget = new UI.VBox();
+    this._defaultDetailsWidget = new UI.Widget.VBox();
     this._defaultDetailsWidget.element.classList.add('timeline-details-view');
     this._defaultDetailsContentElement =
         this._defaultDetailsWidget.element.createChild('div', 'timeline-details-view-body vbox');
-    this._appendTab(tabIds.Details, Common.UIString('Summary'), this._defaultDetailsWidget);
+    this._appendTab(tabIds.Details, Common.UIString.UIString('Summary'), this._defaultDetailsWidget);
     this.setPreferredTab(tabIds.Details);
 
     /** @type Map<string, TimelineTreeView> */
     this._rangeDetailViews = new Map();
 
     const bottomUpView = new BottomUpTimelineTreeView();
-    this._appendTab(tabIds.BottomUp, Common.UIString('Bottom-Up'), bottomUpView);
+    this._appendTab(tabIds.BottomUp, Common.UIString.UIString('Bottom-Up'), bottomUpView);
     this._rangeDetailViews.set(tabIds.BottomUp, bottomUpView);
 
     const callTreeView = new CallTreeTimelineTreeView();
-    this._appendTab(tabIds.CallTree, Common.UIString('Call Tree'), callTreeView);
+    this._appendTab(tabIds.CallTree, Common.UIString.UIString('Call Tree'), callTreeView);
     this._rangeDetailViews.set(tabIds.CallTree, callTreeView);
 
     const eventsView = new EventsTimelineTreeView(delegate);
-    this._appendTab(tabIds.EventLog, Common.UIString('Event Log'), eventsView);
+    this._appendTab(tabIds.EventLog, Common.UIString.UIString('Event Log'), eventsView);
     this._rangeDetailViews.set(tabIds.EventLog, eventsView);
 
     this._tabbedPane.addEventListener(UI.TabbedPane.Events.TabSelected, this._tabSelected, this);
@@ -102,7 +108,7 @@ export class TimelineDetailsView extends UI.VBox {
   /**
    * @param {string} id
    * @param {string} tabTitle
-   * @param {!UI.Widget} view
+   * @param {!UI.Widget.Widget} view
    * @param {boolean=} isCloseable
    */
   _appendTab(id, tabTitle, view, isCloseable) {
@@ -137,7 +143,7 @@ export class TimelineDetailsView extends UI.VBox {
 
   _updateContentsFromWindow() {
     if (!this._model) {
-      this._setContent(UI.html`<div/>`);
+      this._setContent(UI.Fragment.html`<div/>`);
       return;
     }
     const window = this._model.window();
@@ -162,14 +168,14 @@ export class TimelineDetailsView extends UI.VBox {
             .then(fragment => this._appendDetailsTabsForTraceEventAndShowDetails(event, fragment));
         break;
       case TimelineSelection.Type.Frame:
-        const frame = /** @type {!TimelineModel.TimelineFrame} */ (this._selection.object());
+        const frame = /** @type {!TimelineModel.TimelineFrameModel.TimelineFrame} */ (this._selection.object());
         const filmStripFrame = this._model.filmStripModelFrame(frame);
         this._setContent(TimelineUIUtils.generateDetailsContentForFrame(frame, filmStripFrame));
         if (frame.layerTree) {
           const layersView = this._layersView();
           layersView.showLayerTree(frame.layerTree);
           if (!this._tabbedPane.hasTab(Tab.LayerViewer)) {
-            this._appendTab(Tab.LayerViewer, Common.UIString('Layers'), layersView);
+            this._appendTab(Tab.LayerViewer, Common.UIString.UIString('Layers'), layersView);
           }
         }
         break;
@@ -198,7 +204,7 @@ export class TimelineDetailsView extends UI.VBox {
   }
 
   /**
-   * @return {!UI.Widget}
+   * @return {!UI.Widget.Widget}
    */
   _layersView() {
     if (this._lazyLayersView) {
@@ -221,13 +227,13 @@ export class TimelineDetailsView extends UI.VBox {
   }
 
   /**
-   * @param {!SDK.PaintProfilerSnapshot} snapshot
+   * @param {!SDK.PaintProfiler.PaintProfilerSnapshot} snapshot
    */
   _showSnapshotInPaintProfiler(snapshot) {
     const paintProfilerView = this._paintProfilerView();
     paintProfilerView.setSnapshot(snapshot);
     if (!this._tabbedPane.hasTab(Tab.PaintProfiler)) {
-      this._appendTab(Tab.PaintProfiler, Common.UIString('Paint Profiler'), paintProfilerView, true);
+      this._appendTab(Tab.PaintProfiler, Common.UIString.UIString('Paint Profiler'), paintProfilerView, true);
     }
     this._tabbedPane.selectTab(Tab.PaintProfiler, true);
   }
@@ -248,7 +254,7 @@ export class TimelineDetailsView extends UI.VBox {
    * @param {!SDK.TracingModel.Event} event
    */
   _showEventInPaintProfiler(event) {
-    const paintProfilerModel = self.SDK.targetManager.models(SDK.PaintProfilerModel)[0];
+    const paintProfilerModel = self.SDK.targetManager.models(SDK.PaintProfiler.PaintProfilerModel)[0];
     if (!paintProfilerModel) {
       return;
     }
@@ -260,7 +266,7 @@ export class TimelineDetailsView extends UI.VBox {
     if (this._tabbedPane.hasTab(Tab.PaintProfiler)) {
       return;
     }
-    this._appendTab(Tab.PaintProfiler, Common.UIString('Paint Profiler'), paintProfilerView);
+    this._appendTab(Tab.PaintProfiler, Common.UIString.UIString('Paint Profiler'), paintProfilerView);
   }
 
   /**

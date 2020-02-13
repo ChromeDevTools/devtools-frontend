@@ -28,6 +28,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as Common from '../common/common.js';
+import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
+import * as UI from '../ui/ui.js';
+
 import {LayerSelection, LayerView, LayerViewHost, Selection} from './LayerViewHost.js';  // eslint-disable-line no-unused-vars
 
 export const layerSymbol = Symbol('layer');
@@ -36,7 +40,7 @@ export const layerSymbol = Symbol('layer');
  * @implements {LayerView}
  * @unrestricted
  */
-export class LayerTreeOutline extends Common.Object {
+export class LayerTreeOutline extends Common.ObjectWrapper.ObjectWrapper {
   /**
    * @param {!LayerViewHost} layerViewHost
    */
@@ -45,7 +49,7 @@ export class LayerTreeOutline extends Common.Object {
     this._layerViewHost = layerViewHost;
     this._layerViewHost.registerView(this);
 
-    this._treeOutline = new UI.TreeOutlineInShadow();
+    this._treeOutline = new UI.TreeOutline.TreeOutlineInShadow();
     this._treeOutline.element.classList.add('layer-tree', 'overflow-auto');
     this._treeOutline.element.addEventListener('mousemove', this._onMouseMove.bind(this), false);
     this._treeOutline.element.addEventListener('mouseout', this._onMouseMove.bind(this), false);
@@ -96,7 +100,7 @@ export class LayerTreeOutline extends Common.Object {
   }
 
   /**
-   * @param {?SDK.LayerTreeBase} layerTree
+   * @param {?SDK.LayerTreeBase.LayerTreeBase} layerTree
    * @override
    */
   setLayerTree(layerTree) {
@@ -118,7 +122,7 @@ export class LayerTreeOutline extends Common.Object {
     }
 
     /**
-     * @param {!SDK.Layer} layer
+     * @param {!SDK.LayerTreeBase.Layer} layer
      * @this {LayerTreeOutline}
      */
     function updateLayer(layer) {
@@ -209,7 +213,7 @@ export class LayerTreeOutline extends Common.Object {
    */
   _onContextMenu(event) {
     const selection = this._selectionForNode(this._treeOutline.treeElementFromEvent(event));
-    const contextMenu = new UI.ContextMenu(event);
+    const contextMenu = new UI.ContextMenu.ContextMenu(event);
     const layer = selection && selection.layer();
     if (layer) {
       this._layerSnapshotMap = this._layerViewHost.getLayerSnapshotMap();
@@ -223,7 +227,7 @@ export class LayerTreeOutline extends Common.Object {
   }
 
   /**
-   * @param {?UI.TreeElement} node
+   * @param {?UI.TreeOutline.TreeElement} node
    * @return {?Selection}
    */
   _selectionForNode(node) {
@@ -241,10 +245,10 @@ export const Events = {
 /**
  * @unrestricted
  */
-export class LayerTreeElement extends UI.TreeElement {
+export class LayerTreeElement extends UI.TreeOutline.TreeElement {
   /**
    * @param {!LayerTreeOutline} tree
-   * @param {!SDK.Layer} layer
+   * @param {!SDK.LayerTreeBase.Layer} layer
    */
   constructor(tree, layer) {
     super();
@@ -259,7 +263,7 @@ export class LayerTreeElement extends UI.TreeElement {
     const title = createDocumentFragment();
     title.createTextChild(node ? node.simpleSelector() : '#' + this._layer.id());
     const details = title.createChild('span', 'dimmed');
-    details.textContent = Common.UIString(' (%d × %d)', this._layer.width(), this._layer.height());
+    details.textContent = Common.UIString.UIString(' (%d × %d)', this._layer.width(), this._layer.height());
     this.title = title;
   }
 

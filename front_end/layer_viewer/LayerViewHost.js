@@ -2,6 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+import * as SDK from '../sdk/sdk.js';
+import * as UI from '../ui/ui.js';  // eslint-disable-line no-unused-vars
+
 /**
  * @interface
  */
@@ -19,7 +23,7 @@ export class LayerView {
   }
 
   /**
-   * @param {?SDK.LayerTreeBase} layerTree
+   * @param {?SDK.LayerTreeBase.LayerTreeBase} layerTree
    */
   setLayerTree(layerTree) {}
 }
@@ -30,7 +34,7 @@ export class LayerView {
 export class Selection {
   /**
    * @param {!Type} type
-   * @param {!SDK.Layer} layer
+   * @param {!SDK.LayerTreeBase.Layer} layer
    */
   constructor(type, layer) {
     this._type = type;
@@ -54,7 +58,7 @@ export class Selection {
   }
 
   /**
-   * @return {!SDK.Layer}
+   * @return {!SDK.LayerTreeBase.Layer}
    */
   layer() {
     return this._layer;
@@ -83,7 +87,7 @@ export const Type = {
  */
 export class LayerSelection extends Selection {
   /**
-   * @param {!SDK.Layer} layer
+   * @param {!SDK.LayerTreeBase.Layer} layer
    */
   constructor(layer) {
     console.assert(layer, 'LayerSelection with empty layer');
@@ -105,7 +109,7 @@ export class LayerSelection extends Selection {
  */
 export class ScrollRectSelection extends Selection {
   /**
-   * @param {!SDK.Layer} layer
+   * @param {!SDK.LayerTreeBase.Layer} layer
    * @param {number} scrollRectIndex
    */
   constructor(layer, scrollRectIndex) {
@@ -129,8 +133,8 @@ export class ScrollRectSelection extends Selection {
  */
 export class SnapshotSelection extends Selection {
   /**
-   * @param {!SDK.Layer} layer
-   * @param {!SDK.SnapshotWithRect} snapshot
+   * @param {!SDK.LayerTreeBase.Layer} layer
+   * @param {!SDK.PaintProfiler.SnapshotWithRect} snapshot
    */
   constructor(layer, snapshot) {
     super(Type.Snapshot, layer);
@@ -148,7 +152,7 @@ export class SnapshotSelection extends Selection {
   }
 
   /**
-   * @return {!SDK.SnapshotWithRect}
+   * @return {!SDK.PaintProfiler.SnapshotWithRect}
    */
   snapshot() {
     return this._snapshot;
@@ -175,21 +179,21 @@ export class LayerViewHost {
   }
 
   /**
-   * @param {!Map<!SDK.Layer, !SnapshotSelection>} snapshotLayers
+   * @param {!Map<!SDK.LayerTreeBase.Layer, !SnapshotSelection>} snapshotLayers
    */
   setLayerSnapshotMap(snapshotLayers) {
     this._snapshotLayers = snapshotLayers;
   }
 
   /**
-   * @return {!Map<!SDK.Layer, !SnapshotSelection>}
+   * @return {!Map<!SDK.LayerTreeBase.Layer, !SnapshotSelection>}
    */
   getLayerSnapshotMap() {
     return this._snapshotLayers;
   }
 
   /**
-   * @param {?SDK.LayerTreeBase} layerTree
+   * @param {?SDK.LayerTreeBase.LayerTreeBase} layerTree
    */
   setLayerTree(layerTree) {
     this._target = layerTree.target();
@@ -242,12 +246,12 @@ export class LayerViewHost {
   }
 
   /**
-   * @param {!UI.ContextMenu} contextMenu
+   * @param {!UI.ContextMenu.ContextMenu} contextMenu
    * @param {?Selection} selection
    */
   showContextMenu(contextMenu, selection) {
     contextMenu.defaultSection().appendCheckboxItem(
-        Common.UIString('Show internal layers'), this._toggleShowInternalLayers.bind(this),
+        Common.UIString.UIString('Show internal layers'), this._toggleShowInternalLayers.bind(this),
         this._showInternalLayersSetting.get());
     const node = selection && selection.layer() && selection.layer().nodeForSelfOrAncestor();
     if (node) {
@@ -257,7 +261,7 @@ export class LayerViewHost {
   }
 
   /**
-   * @return {!Common.Setting}
+   * @return {!Common.Settings.Setting}
    */
   showInternalLayersSetting() {
     return this._showInternalLayersSetting;
@@ -268,13 +272,13 @@ export class LayerViewHost {
   }
 
   /**
-   * @param {?SDK.DOMNode} node
+   * @param {?SDK.DOMModel.DOMNode} node
    */
   _toggleNodeHighlight(node) {
     if (node) {
       node.highlightForTwoSeconds();
       return;
     }
-    SDK.OverlayModel.hideDOMNodeHighlight();
+    SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
   }
 }

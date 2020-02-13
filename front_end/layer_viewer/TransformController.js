@@ -2,10 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+import * as UI from '../ui/ui.js';
+
 /**
  * @unrestricted
  */
-export class TransformController extends Common.Object {
+export class TransformController extends Common.ObjectWrapper.ObjectWrapper {
   /**
    * @param {!Element} element
    * @param {boolean=} disableRotate
@@ -15,45 +18,47 @@ export class TransformController extends Common.Object {
     this._shortcuts = {};
     this.element = element;
     this._registerShortcuts();
-    UI.installDragHandle(
+    UI.UIUtils.installDragHandle(
         element, this._onDragStart.bind(this), this._onDrag.bind(this), this._onDragEnd.bind(this), 'move', null);
     element.addEventListener('keydown', this._onKeyDown.bind(this), false);
     element.addEventListener('mousewheel', this._onMouseWheel.bind(this), false);
     this._minScale = 0;
     this._maxScale = Infinity;
 
-    this._controlPanelToolbar = new UI.Toolbar('transform-control-panel');
+    this._controlPanelToolbar = new UI.Toolbar.Toolbar('transform-control-panel');
 
-    /** @type {!Object<string, !UI.ToolbarToggle>} */
+    /** @type {!Object<string, !UI.Toolbar.ToolbarToggle>} */
     this._modeButtons = {};
     if (!disableRotate) {
-      const panModeButton = new UI.ToolbarToggle(Common.UIString('Pan mode (X)'), 'largeicon-pan');
-      panModeButton.addEventListener(UI.ToolbarButton.Events.Click, this._setMode.bind(this, Modes.Pan));
+      const panModeButton = new UI.Toolbar.ToolbarToggle(Common.UIString.UIString('Pan mode (X)'), 'largeicon-pan');
+      panModeButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._setMode.bind(this, Modes.Pan));
       this._modeButtons[Modes.Pan] = panModeButton;
       this._controlPanelToolbar.appendToolbarItem(panModeButton);
-      const rotateModeButton = new UI.ToolbarToggle(Common.UIString('Rotate mode (V)'), 'largeicon-rotate');
-      rotateModeButton.addEventListener(UI.ToolbarButton.Events.Click, this._setMode.bind(this, Modes.Rotate));
+      const rotateModeButton =
+          new UI.Toolbar.ToolbarToggle(Common.UIString.UIString('Rotate mode (V)'), 'largeicon-rotate');
+      rotateModeButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._setMode.bind(this, Modes.Rotate));
       this._modeButtons[Modes.Rotate] = rotateModeButton;
       this._controlPanelToolbar.appendToolbarItem(rotateModeButton);
     }
     this._setMode(Modes.Pan);
 
-    const resetButton = new UI.ToolbarButton(Common.UIString('Reset transform (0)'), 'largeicon-center');
-    resetButton.addEventListener(UI.ToolbarButton.Events.Click, this.resetAndNotify.bind(this, undefined));
+    const resetButton =
+        new UI.Toolbar.ToolbarButton(Common.UIString.UIString('Reset transform (0)'), 'largeicon-center');
+    resetButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.resetAndNotify.bind(this, undefined));
     this._controlPanelToolbar.appendToolbarItem(resetButton);
 
     this._reset();
   }
 
   /**
-   * @return {!UI.Toolbar}
+   * @return {!UI.Toolbar.Toolbar}
    */
   toolbar() {
     return this._controlPanelToolbar;
   }
 
   _onKeyDown(event) {
-    const shortcutKey = UI.KeyboardShortcut.makeKeyFromEventIgnoringModifiers(event);
+    const shortcutKey = UI.KeyboardShortcut.KeyboardShortcut.makeKeyFromEventIgnoringModifiers(event);
     const handler = this._shortcuts[shortcutKey];
     if (handler && handler(event)) {
       event.consume();

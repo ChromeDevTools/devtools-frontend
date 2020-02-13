@@ -27,6 +27,10 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+import * as Common from '../common/common.js';
+import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
+import * as UI from '../ui/ui.js';
+
 import {LayerSelection, LayerView, LayerViewHost, ScrollRectSelection, Selection, SnapshotSelection, Type,} from './LayerViewHost.js';  // eslint-disable-line no-unused-vars
 import {Events as TransformControllerEvents, TransformController} from './TransformController.js';
 
@@ -34,7 +38,7 @@ import {Events as TransformControllerEvents, TransformController} from './Transf
  * @implements {LayerView}
  * @unrestricted
  */
-export class Layers3DView extends UI.VBox {
+export class Layers3DView extends UI.Widget.VBox {
   /**
    * @param {!LayerViewHost} layerViewHost
    */
@@ -42,9 +46,9 @@ export class Layers3DView extends UI.VBox {
     super(true);
     this.registerRequiredCSS('layer_viewer/layers3DView.css');
     this.contentElement.classList.add('layers-3d-view');
-    this._failBanner = new UI.VBox();
+    this._failBanner = new UI.Widget.VBox();
     this._failBanner.element.classList.add('full-widget-dimmed-banner');
-    this._failBanner.element.createTextChild(Common.UIString('Layer information is not yet available.'));
+    this._failBanner.element.createTextChild(Common.UIString.UIString('Layer information is not yet available.'));
 
     this._layerViewHost = layerViewHost;
     this._layerViewHost.registerView(this);
@@ -72,7 +76,7 @@ export class Layers3DView extends UI.VBox {
     this._chromeTextures = [];
     this._rects = [];
 
-    /** @type Map<SDK.Layer, SnapshotSelection> */
+    /** @type Map<SDK.LayerTreeBase.Layer, SnapshotSelection> */
     this._snapshotLayers = new Map();
     this._layerViewHost.setLayerSnapshotMap(this._snapshotLayers);
 
@@ -80,7 +84,7 @@ export class Layers3DView extends UI.VBox {
   }
 
   /**
-   * @param {?SDK.LayerTreeBase} layerTree
+   * @param {?SDK.LayerTreeBase.LayerTreeBase} layerTree
    * @override
    */
   setLayerTree(layerTree) {
@@ -94,7 +98,7 @@ export class Layers3DView extends UI.VBox {
   }
 
   /**
-   * @param {!SDK.Layer} layer
+   * @param {!SDK.LayerTreeBase.Layer} layer
    * @param {string=} imageURL
    */
   showImageForLayer(layer, imageURL) {
@@ -103,7 +107,7 @@ export class Layers3DView extends UI.VBox {
       this._update();
       return;
     }
-    UI.loadImage(imageURL).then(image => {
+    UI.UIUtils.loadImage(imageURL).then(image => {
       const texture = image && LayerTextureManager._createTextureForImage(this._gl, image);
       this._layerTexture = texture ? {layer: layer, texture: texture} : null;
       this._update();
@@ -138,7 +142,7 @@ export class Layers3DView extends UI.VBox {
   }
 
   /**
-   * @param {!SDK.Layer} layer
+   * @param {!SDK.LayerTreeBase.Layer} layer
    */
   updateLayerSnapshot(layer) {
     this._textureManager.layerNeedsUpdate(layer);
@@ -172,13 +176,13 @@ export class Layers3DView extends UI.VBox {
 
   /**
    * @param {!Selection} selection
-   * @return {!Promise<?SDK.SnapshotWithRect>}
+   * @return {!Promise<?SDK.PaintProfiler.SnapshotWithRect>}
    */
   snapshotForSelection(selection) {
     if (selection.type() === Type.Snapshot) {
       const snapshotWithRect = /** @type {!SnapshotSelection} */ (selection).snapshot();
       snapshotWithRect.snapshot.addReference();
-      return /** @type {!Promise<?SDK.SnapshotWithRect>} */ (Promise.resolve(snapshotWithRect));
+      return /** @type {!Promise<?SDK.PaintProfiler.SnapshotWithRect>} */ (Promise.resolve(snapshotWithRect));
     }
     if (selection.layer()) {
       const promise = selection.layer().snapshots()[0];
@@ -186,7 +190,7 @@ export class Layers3DView extends UI.VBox {
         return promise;
       }
     }
-    return /** @type {!Promise<?SDK.SnapshotWithRect>} */ (Promise.resolve(null));
+    return /** @type {!Promise<?SDK.PaintProfiler.SnapshotWithRect>} */ (Promise.resolve(null));
   }
 
   /**
@@ -322,7 +326,7 @@ export class Layers3DView extends UI.VBox {
      * @param {string} url
      */
     function loadChromeTexture(index, url) {
-      UI.loadImage(url).then(image => {
+      UI.UIUtils.loadImage(url).then(image => {
         this._chromeTextures[index] = image && LayerTextureManager._createTextureForImage(this._gl, image) || undefined;
       });
     }
@@ -357,7 +361,7 @@ export class Layers3DView extends UI.VBox {
         showInternalLayers ? this._layerTree.root() : (this._layerTree.contentRoot() || this._layerTree.root());
     const queue = [root];
     this._depthByLayerId[root.id()] = 0;
-    /** @type {!Set<!SDK.Layer>} */
+    /** @type {!Set<!SDK.LayerTreeBase.Layer>} */
     this._visibleLayers = new Set();
     while (queue.length > 0) {
       const layer = queue.shift();
@@ -374,7 +378,7 @@ export class Layers3DView extends UI.VBox {
   }
 
   /**
-   * @param {!SDK.Layer} layer
+   * @param {!SDK.LayerTreeBase.Layer} layer
    * @return {number}
    */
   _depthForLayer(layer) {
@@ -382,7 +386,7 @@ export class Layers3DView extends UI.VBox {
   }
 
   /**
-   * @param {!SDK.Layer} layer
+   * @param {!SDK.LayerTreeBase.Layer} layer
    * @param {number} index
    * @return {number}
    */
@@ -391,7 +395,7 @@ export class Layers3DView extends UI.VBox {
   }
 
   /**
-   * @param {!SDK.Layer} layer
+   * @param {!SDK.LayerTreeBase.Layer} layer
    */
   _updateDimensionsForAutoscale(layer) {
     // We don't want to be precise, but rather pick something least affected by
@@ -403,7 +407,7 @@ export class Layers3DView extends UI.VBox {
   }
 
   /**
-   * @param {!SDK.Layer} layer
+   * @param {!SDK.LayerTreeBase.Layer} layer
    */
   _calculateLayerRect(layer) {
     if (!this._visibleLayers.has(layer)) {
@@ -441,7 +445,7 @@ export class Layers3DView extends UI.VBox {
   }
 
   /**
-   * @param {!SDK.Layer} layer
+   * @param {!SDK.LayerTreeBase.Layer} layer
    */
   _calculateLayerScrollRects(layer) {
     const scrollRects = layer.scrollRects();
@@ -455,7 +459,7 @@ export class Layers3DView extends UI.VBox {
   }
 
   /**
-   * @param {!SDK.Layer} layer
+   * @param {!SDK.LayerTreeBase.Layer} layer
    */
   _calculateLayerTileRects(layer) {
     const tiles = this._textureManager.tilesForLayer(layer);
@@ -647,9 +651,10 @@ export class Layers3DView extends UI.VBox {
    */
   _webglDisabledBanner() {
     const fragment = this.contentElement.ownerDocument.createDocumentFragment();
-    fragment.createChild('div').textContent = Common.UIString('Can\'t display layers,');
-    fragment.createChild('div').textContent = Common.UIString('WebGL support is disabled in your browser.');
-    fragment.appendChild(UI.formatLocalized('Check %s for possible reasons.', [UI.XLink.create('about:gpu')]));
+    fragment.createChild('div').textContent = Common.UIString.UIString('Can\'t display layers,');
+    fragment.createChild('div').textContent = Common.UIString.UIString('WebGL support is disabled in your browser.');
+    fragment.appendChild(
+        UI.UIUtils.formatLocalized('Check %s for possible reasons.', [UI.XLink.XLink.create('about:gpu')]));
     return fragment;
   }
 
@@ -690,14 +695,14 @@ export class Layers3DView extends UI.VBox {
    * @param {string} caption
    * @param {string} name
    * @param {boolean} value
-   * @param {!UI.Toolbar} toolbar
-   * @return {!Common.Setting}
+   * @param {!UI.Toolbar.Toolbar} toolbar
+   * @return {!Common.Settings.Setting}
    */
   _createVisibilitySetting(caption, name, value, toolbar) {
     const setting = self.Common.settings.createSetting(name, value);
-    setting.setTitle(Common.UIString(caption));
+    setting.setTitle(Common.UIString.UIString(caption));
     setting.addChangeListener(this._update, this);
-    toolbar.appendToolbarItem(new UI.ToolbarSettingCheckbox(setting));
+    toolbar.appendToolbarItem(new UI.Toolbar.ToolbarSettingCheckbox(setting));
     return setting;
   }
 
@@ -716,13 +721,14 @@ export class Layers3DView extends UI.VBox {
    * @param {!Event} event
    */
   _onContextMenu(event) {
-    const contextMenu = new UI.ContextMenu(event);
+    const contextMenu = new UI.ContextMenu.ContextMenu(event);
     contextMenu.defaultSection().appendItem(
-        Common.UIString('Reset View'), this._transformController.resetAndNotify.bind(this._transformController), false);
+        Common.UIString.UIString('Reset View'),
+        this._transformController.resetAndNotify.bind(this._transformController), false);
     const selection = this._selectionFromEventPoint(event);
     if (selection && selection.type() === Type.Snapshot) {
       contextMenu.defaultSection().appendItem(
-          Common.UIString('Show Paint Profiler'),
+          Common.UIString.UIString('Show Paint Profiler'),
           this.dispatchEventToListeners.bind(this, Events.PaintProfilerRequested, selection), false);
     }
     this._layerViewHost.showContextMenu(contextMenu, selection);
@@ -815,9 +821,9 @@ export const ChromeTexture = {
  * @enum {string}
  */
 export const ScrollRectTitles = {
-  RepaintsOnScroll: Common.UIString('repaints on scroll'),
-  TouchEventHandler: Common.UIString('touch event listener'),
-  WheelEventHandler: Common.UIString('mousewheel event listener')
+  RepaintsOnScroll: Common.UIString.UIString('repaints on scroll'),
+  TouchEventHandler: Common.UIString.UIString('touch event listener'),
+  WheelEventHandler: Common.UIString.UIString('mousewheel event listener')
 };
 
 export const FragmentShader = '' +
@@ -866,7 +872,7 @@ export class LayerTextureManager {
    */
   constructor(textureUpdatedCallback) {
     this._textureUpdatedCallback = textureUpdatedCallback;
-    this._throttler = new Common.Throttler(0);
+    this._throttler = new Common.Throttler.Throttler(0);
     this._scale = 0;
     this._active = false;
     this.reset();
@@ -896,9 +902,9 @@ export class LayerTextureManager {
       this.setLayerTree(null);
     }
 
-    /** @type {!Map<!SDK.Layer, !Array<!Tile>>} */
+    /** @type {!Map<!SDK.LayerTreeBase.Layer, !Array<!Tile>>} */
     this._tilesByLayer = new Map();
-    /** @type {!Array<!SDK.Layer>} */
+    /** @type {!Array<!SDK.LayerTreeBase.Layer>} */
     this._queue = [];
   }
 
@@ -924,7 +930,7 @@ export class LayerTextureManager {
   }
 
   /**
-   * @param {?SDK.LayerTreeBase} layerTree
+   * @param {?SDK.LayerTreeBase.LayerTreeBase} layerTree
    */
   setLayerTree(layerTree) {
     const newLayers = new Set();
@@ -954,8 +960,8 @@ export class LayerTextureManager {
   }
 
   /**
-   * @param {!SDK.Layer} layer
-   * @param {!Array<!SDK.SnapshotWithRect>} snapshots
+   * @param {!SDK.LayerTreeBase.Layer} layer
+   * @param {!Array<!SDK.PaintProfiler.SnapshotWithRect>} snapshots
    * @return {!Promise}
    */
   _setSnapshotsForLayer(layer, snapshots) {
@@ -993,7 +999,7 @@ export class LayerTextureManager {
   }
 
   /**
-   * @param {!SDK.Layer} layer
+   * @param {!SDK.LayerTreeBase.Layer} layer
    * @return {!Array<!Tile>}
    */
   tilesForLayer(layer) {
@@ -1001,7 +1007,7 @@ export class LayerTextureManager {
   }
 
   /**
-   * @param {!SDK.Layer} layer
+   * @param {!SDK.LayerTreeBase.Layer} layer
    */
   layerNeedsUpdate(layer) {
     if (this._queue.indexOf(layer) < 0) {
@@ -1033,7 +1039,7 @@ export class LayerTextureManager {
   }
 
   /**
-   * @param {!SDK.Layer} layer
+   * @param {!SDK.LayerTreeBase.Layer} layer
    * @return {!Promise}
    */
   _updateLayer(layer) {
@@ -1116,7 +1122,7 @@ export class Rectangle {
   }
 
   /**
-   * @param {!SDK.Layer} layer
+   * @param {!SDK.LayerTreeBase.Layer} layer
    * @param {!Protocol.DOM.Rect} rect
    * @param {number} z
    */
@@ -1180,7 +1186,7 @@ export class Rectangle {
  */
 export class Tile {
   /**
-   * @param {!SDK.SnapshotWithRect} snapshotWithRect
+   * @param {!SDK.PaintProfiler.SnapshotWithRect} snapshotWithRect
    */
   constructor(snapshotWithRect) {
     this.snapshot = snapshotWithRect.snapshot;
@@ -1219,7 +1225,7 @@ export class Tile {
     this._gl = glContext;
     this.scale = scale;
     const imageURL = await this.snapshot.replay(scale);
-    const image = imageURL ? await UI.loadImage(imageURL) : null;
+    const image = imageURL ? await UI.UIUtils.loadImage(imageURL) : null;
     this.texture = image ? LayerTextureManager._createTextureForImage(glContext, image) : null;
   }
 }

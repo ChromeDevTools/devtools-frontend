@@ -28,13 +28,17 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as Common from '../common/common.js';
+import * as SDK from '../sdk/sdk.js';
+import * as UI from '../ui/ui.js';
+
 import {LayerView, LayerViewHost, ScrollRectSelection, Selection, SnapshotSelection, Type,} from './LayerViewHost.js';  // eslint-disable-line no-unused-vars
 
 /**
  * @implements {LayerView}
  * @unrestricted
  */
-export class LayerDetailsView extends UI.Widget {
+export class LayerDetailsView extends UI.Widget.Widget {
   /**
    * @param {!LayerViewHost} layerViewHost
    */
@@ -43,7 +47,7 @@ export class LayerDetailsView extends UI.Widget {
     this.registerRequiredCSS('layer_viewer/layerDetailsView.css');
     this._layerViewHost = layerViewHost;
     this._layerViewHost.registerView(this);
-    this._emptyWidget = new UI.EmptyWidget(Common.UIString('Select a layer to see its details'));
+    this._emptyWidget = new UI.EmptyWidget.EmptyWidget(Common.UIString.UIString('Select a layer to see its details'));
     this._layerSnapshotMap = this._layerViewHost.getLayerSnapshotMap();
     this._buildContent();
   }
@@ -67,7 +71,7 @@ export class LayerDetailsView extends UI.Widget {
   }
 
   /**
-   * @param {?SDK.LayerTreeBase} layerTree
+   * @param {?SDK.LayerTreeBase.LayerTreeBase} layerTree
    * @override
    */
   setLayerTree(layerTree) {
@@ -113,7 +117,7 @@ export class LayerDetailsView extends UI.Widget {
     if (this._selection.scrollRectIndex === index) {
       element.classList.add('active');
     }
-    element.textContent = Common.UIString(
+    element.textContent = Common.UIString.UIString(
         '%s %d × %d (at %d, %d)', slowScrollRectNames.get(scrollRect.type), scrollRect.rect.width,
         scrollRect.rect.height, scrollRect.rect.x, scrollRect.rect.y);
     element.addEventListener('click', this._onScrollRectClicked.bind(this, index), false);
@@ -121,7 +125,7 @@ export class LayerDetailsView extends UI.Widget {
 
   /**
    * @param {string} title
-   * @param {?SDK.Layer} layer
+   * @param {?SDK.LayerTreeBase.Layer} layer
    * @return {string}
    */
   _formatStickyAncestorLayer(title, layer) {
@@ -130,13 +134,13 @@ export class LayerDetailsView extends UI.Widget {
     }
 
     const node = layer.nodeForSelfOrAncestor();
-    const name = node ? node.simpleSelector() : Common.UIString('<unnamed>');
-    return Common.UIString('%s: %s (%s)', title, name, layer.id());
+    const name = node ? node.simpleSelector() : Common.UIString.UIString('<unnamed>');
+    return Common.UIString.UIString('%s: %s (%s)', title, name, layer.id());
   }
 
   /**
    * @param {string} title
-   * @param {?SDK.Layer} layer
+   * @param {?SDK.LayerTreeBase.Layer} layer
    */
   _createStickyAncestorChild(title, layer) {
     if (!layer) {
@@ -149,7 +153,7 @@ export class LayerDetailsView extends UI.Widget {
   }
 
   /**
-   * @param {?SDK.Layer.StickyPositionConstraint} constraint
+   * @param {?SDK.LayerTreeBase.StickyPositionConstraint} constraint
    */
   _populateStickyPositionConstraintCell(constraint) {
     this._stickyPositionConstraintCell.removeChildren();
@@ -159,21 +163,22 @@ export class LayerDetailsView extends UI.Widget {
 
     const stickyBoxRect = constraint.stickyBoxRect();
     const stickyBoxRectElement = this._stickyPositionConstraintCell.createChild('span');
-    stickyBoxRectElement.textContent = Common.UIString(
+    stickyBoxRectElement.textContent = Common.UIString.UIString(
         'Sticky Box %d × %d (at %d, %d)', stickyBoxRect.width, stickyBoxRect.height, stickyBoxRect.x, stickyBoxRect.y);
 
     this._stickyPositionConstraintCell.createTextChild(', ');
 
     const containingBlockRect = constraint.containingBlockRect();
     const containingBlockRectElement = this._stickyPositionConstraintCell.createChild('span');
-    containingBlockRectElement.textContent = Common.UIString(
+    containingBlockRectElement.textContent = Common.UIString.UIString(
         'Containing Block %d × %d (at %d, %d)', containingBlockRect.width, containingBlockRect.height,
         containingBlockRect.x, containingBlockRect.y);
 
     this._createStickyAncestorChild(
-        Common.UIString('Nearest Layer Shifting Sticky Box'), constraint.nearestLayerShiftingStickyBox());
+        Common.UIString.UIString('Nearest Layer Shifting Sticky Box'), constraint.nearestLayerShiftingStickyBox());
     this._createStickyAncestorChild(
-        Common.UIString('Nearest Layer Shifting Containing Block'), constraint.nearestLayerShiftingContainingBlock());
+        Common.UIString.UIString('Nearest Layer Shifting Containing Block'),
+        constraint.nearestLayerShiftingContainingBlock());
   }
 
   update() {
@@ -188,7 +193,7 @@ export class LayerDetailsView extends UI.Widget {
     this.contentElement.appendChild(this._tableElement);
     this.contentElement.appendChild(this._paintProfilerLink);
     this._sizeCell.textContent =
-        Common.UIString('%d × %d (at %d,%d)', layer.width(), layer.height(), layer.offsetX(), layer.offsetY());
+        Common.UIString.UIString('%d × %d (at %d,%d)', layer.width(), layer.height(), layer.offsetX(), layer.offsetY());
     this._paintCountCell.parentElement.classList.toggle('hidden', !layer.paintCount());
     this._paintCountCell.textContent = layer.paintCount();
     this._memoryEstimateCell.textContent = Number.bytesToString(layer.gpuMemoryUsage());
@@ -206,12 +211,12 @@ export class LayerDetailsView extends UI.Widget {
   _buildContent() {
     this._tableElement = this.contentElement.createChild('table');
     this._tbodyElement = this._tableElement.createChild('tbody');
-    this._sizeCell = this._createRow(Common.UIString('Size'));
-    this._compositingReasonsCell = this._createRow(Common.UIString('Compositing Reasons'));
-    this._memoryEstimateCell = this._createRow(Common.UIString('Memory estimate'));
-    this._paintCountCell = this._createRow(Common.UIString('Paint count'));
-    this._scrollRectsCell = this._createRow(Common.UIString('Slow scroll regions'));
-    this._stickyPositionConstraintCell = this._createRow(Common.UIString('Sticky position constraint'));
+    this._sizeCell = this._createRow(Common.UIString.UIString('Size'));
+    this._compositingReasonsCell = this._createRow(Common.UIString.UIString('Compositing Reasons'));
+    this._memoryEstimateCell = this._createRow(Common.UIString.UIString('Memory estimate'));
+    this._paintCountCell = this._createRow(Common.UIString.UIString('Paint count'));
+    this._scrollRectsCell = this._createRow(Common.UIString.UIString('Slow scroll regions'));
+    this._stickyPositionConstraintCell = this._createRow(Common.UIString.UIString('Sticky position constraint'));
     this._paintProfilerLink = this.contentElement.createChild('span', 'hidden devtools-link link-margin');
     UI.ARIAUtils.markAsLink(this._paintProfilerLink);
     this._paintProfilerLink.textContent = ls`Paint Profiler`;
@@ -364,9 +369,12 @@ export const Events = {
 };
 
 export const slowScrollRectNames = new Map([
-  [SDK.Layer.ScrollRectType.NonFastScrollable, Common.UIString('Non fast scrollable')],
-  [SDK.Layer.ScrollRectType.TouchEventHandler, Common.UIString('Touch event handler')],
-  [SDK.Layer.ScrollRectType.WheelEventHandler, Common.UIString('Wheel event handler')],
-  [SDK.Layer.ScrollRectType.RepaintsOnScroll, Common.UIString('Repaints on scroll')],
-  [SDK.Layer.ScrollRectType.MainThreadScrollingReason, Common.UIString('Main thread scrolling reason')]
+  [SDK.LayerTreeBase.Layer.ScrollRectType.NonFastScrollable, Common.UIString.UIString('Non fast scrollable')],
+  [SDK.LayerTreeBase.Layer.ScrollRectType.TouchEventHandler, Common.UIString.UIString('Touch event handler')],
+  [SDK.LayerTreeBase.Layer.ScrollRectType.WheelEventHandler, Common.UIString.UIString('Wheel event handler')],
+  [SDK.LayerTreeBase.Layer.ScrollRectType.RepaintsOnScroll, Common.UIString.UIString('Repaints on scroll')],
+  [
+    SDK.LayerTreeBase.Layer.ScrollRectType.MainThreadScrollingReason,
+    Common.UIString.UIString('Main thread scrolling reason')
+  ]
 ]);

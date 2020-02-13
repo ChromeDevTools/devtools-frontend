@@ -2,16 +2,21 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+import * as Host from '../host/host.js';
+import * as SDK from '../sdk/sdk.js';
+import * as UI from '../ui/ui.js';
+
 import {AnimationGroupPreviewUI} from './AnimationGroupPreviewUI.js';
 import {AnimationEffect, AnimationGroup, AnimationImpl, AnimationModel, Events} from './AnimationModel.js';  // eslint-disable-line no-unused-vars
 import {AnimationScreenshotPopover} from './AnimationScreenshotPopover.js';
 import {AnimationUI} from './AnimationUI.js';
 
 /**
- * @implements {SDK.SDKModelObserver<!AnimationModel>}
+ * @implements {SDK.SDKModel.SDKModelObserver<!AnimationModel>}
  * @unrestricted
  */
-export class AnimationTimeline extends UI.VBox {
+export class AnimationTimeline extends UI.Widget.VBox {
   constructor() {
     super(true);
     this.registerRequiredCSS('animation/animationTimeline.css');
@@ -38,9 +43,10 @@ export class AnimationTimeline extends UI.VBox {
     this._symbol = Symbol('animationTimeline');
     /** @type {!Map.<string, !AnimationImpl>} */
     this._animationsMap = new Map();
-    self.SDK.targetManager.addModelListener(SDK.DOMModel, SDK.DOMModel.Events.NodeRemoved, this._nodeRemoved, this);
+    self.SDK.targetManager.addModelListener(
+        SDK.DOMModel.DOMModel, SDK.DOMModel.Events.NodeRemoved, this._nodeRemoved, this);
     self.SDK.targetManager.observeModels(AnimationModel, this);
-    self.UI.context.addFlavorChangeListener(SDK.DOMNode, this._nodeChanged, this);
+    self.UI.context.addFlavorChangeListener(SDK.DOMModel.DOMNode, this._nodeChanged, this);
   }
 
   /**
@@ -116,14 +122,14 @@ export class AnimationTimeline extends UI.VBox {
 
   _createHeader() {
     const toolbarContainer = this.contentElement.createChild('div', 'animation-timeline-toolbar-container');
-    const topToolbar = new UI.Toolbar('animation-timeline-toolbar', toolbarContainer);
-    this._clearButton = new UI.ToolbarButton(ls`Clear all`, 'largeicon-clear');
-    this._clearButton.addEventListener(UI.ToolbarButton.Events.Click, this._reset.bind(this));
+    const topToolbar = new UI.Toolbar.Toolbar('animation-timeline-toolbar', toolbarContainer);
+    this._clearButton = new UI.Toolbar.ToolbarButton(ls`Clear all`, 'largeicon-clear');
+    this._clearButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._reset.bind(this));
     topToolbar.appendToolbarItem(this._clearButton);
     topToolbar.appendSeparator();
 
-    this._pauseButton = new UI.ToolbarToggle(ls`Pause all`, 'largeicon-pause', 'largeicon-resume');
-    this._pauseButton.addEventListener(UI.ToolbarButton.Events.Click, this._togglePauseAll.bind(this));
+    this._pauseButton = new UI.Toolbar.ToolbarToggle(ls`Pause all`, 'largeicon-pause', 'largeicon-resume');
+    this._pauseButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._togglePauseAll.bind(this));
     topToolbar.appendToolbarItem(this._pauseButton);
 
     const playbackRateControl = toolbarContainer.createChild('div', 'animation-playback-rate-control');
@@ -147,7 +153,8 @@ export class AnimationTimeline extends UI.VBox {
     this._previewContainer = this.contentElement.createChild('div', 'animation-timeline-buffer');
     UI.ARIAUtils.markAsListBox(this._previewContainer);
     UI.ARIAUtils.setAccessibleName(this._previewContainer, ls`Animation previews`);
-    this._popoverHelper = new UI.PopoverHelper(this._previewContainer, this._getPopoverRequest.bind(this));
+    this._popoverHelper =
+        new UI.PopoverHelper.PopoverHelper(this._previewContainer, this._getPopoverRequest.bind(this));
     this._popoverHelper.setDisableOnClick(true);
     this._popoverHelper.setTimeout(0);
     const emptyBufferHint = this.contentElement.createChild('div', 'animation-timeline-buffer-hint');
@@ -156,19 +163,19 @@ export class AnimationTimeline extends UI.VBox {
     const controls = container.createChild('div', 'animation-controls');
     this._currentTime = controls.createChild('div', 'animation-timeline-current-time monospace');
 
-    const toolbar = new UI.Toolbar('animation-controls-toolbar', controls);
-    this._controlButton = new UI.ToolbarToggle(ls`Replay timeline`, 'largeicon-replay-animation');
+    const toolbar = new UI.Toolbar.Toolbar('animation-controls-toolbar', controls);
+    this._controlButton = new UI.Toolbar.ToolbarToggle(ls`Replay timeline`, 'largeicon-replay-animation');
     this._controlState = _ControlState.Replay;
     this._controlButton.setToggled(true);
-    this._controlButton.addEventListener(UI.ToolbarButton.Events.Click, this._controlButtonToggle.bind(this));
+    this._controlButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._controlButtonToggle.bind(this));
     toolbar.appendToolbarItem(this._controlButton);
 
     const gridHeader = container.createChild('div', 'animation-grid-header');
-    UI.installDragHandle(
+    UI.UIUtils.installDragHandle(
         gridHeader, this._repositionScrubber.bind(this), this._scrubberDragMove.bind(this),
         this._scrubberDragEnd.bind(this), 'text');
     container.appendChild(this._createScrubber());
-    UI.installDragHandle(
+    UI.UIUtils.installDragHandle(
         this._timelineScrubberLine, this._scrubberDragStart.bind(this), this._scrubberDragMove.bind(this),
         this._scrubberDragEnd.bind(this), 'col-resize');
     this._currentTime.textContent = '';
@@ -554,7 +561,7 @@ export class AnimationTimeline extends UI.VBox {
    */
   _addAnimation(animation) {
     /**
-     * @param {?SDK.DOMNode} node
+     * @param {?SDK.DOMModel.DOMNode} node
      * @this {AnimationTimeline}
      */
     function nodeResolved(node) {
@@ -816,7 +823,7 @@ export class NodeUI {
   }
 
   /**
-   * @param {?SDK.DOMNode} node
+   * @param {?SDK.DOMModel.DOMNode} node
    */
   nodeResolved(node) {
     if (!node) {
@@ -825,7 +832,7 @@ export class NodeUI {
     }
     this._node = node;
     this._nodeChanged();
-    Common.Linkifier.linkify(node, {preventKeyboardFocus: true}).then(link => {
+    Common.Linkifier.Linkifier.linkify(node, {preventKeyboardFocus: true}).then(link => {
       this._description.appendChild(link);
       this._description.addEventListener('keydown', event => {
         if (isEnterOrSpaceKey(event) && this._node) {
@@ -853,7 +860,7 @@ export class NodeUI {
 
   _nodeChanged() {
     this.element.classList.toggle(
-        'animation-node-selected', this._node && this._node === self.UI.context.flavor(SDK.DOMNode));
+        'animation-node-selected', this._node && this._node === self.UI.context.flavor(SDK.DOMModel.DOMNode));
   }
 }
 

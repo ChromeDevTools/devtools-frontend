@@ -2,6 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+import * as InlineEditor from '../inline_editor/inline_editor.js';
+import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
+import * as UI from '../ui/ui.js';
+
 import {AnimationImpl} from './AnimationModel.js';                             // eslint-disable-line no-unused-vars
 import {AnimationTimeline, StepTimingFunction} from './AnimationTimeline.js';  // eslint-disable-line no-unused-vars
 
@@ -31,7 +36,7 @@ export class AnimationUI {
     this._svg.style.marginLeft = '-' + Options.AnimationMargin + 'px';
     this._svg.addEventListener('contextmenu', this._onContextMenu.bind(this));
     this._activeIntervalGroup = this._svg.createSVGChild('g');
-    UI.installDragHandle(
+    UI.UIUtils.installDragHandle(
         this._activeIntervalGroup, this._mouseDown.bind(this, Events.AnimationDrag, null), this._mouseMove.bind(this),
         this._mouseUp.bind(this), '-webkit-grabbing', '-webkit-grab');
     Animation.AnimationUI.installDragHandleKeyboard(
@@ -71,7 +76,7 @@ export class AnimationUI {
   }
 
   /**
-   * @param {?SDK.DOMNode} node
+   * @param {?SDK.DOMModel.DOMNode} node
    */
   setNode(node) {
     this._node = node;
@@ -169,7 +174,7 @@ export class AnimationUI {
     } else {
       eventType = Events.KeyframeMove;
     }
-    UI.installDragHandle(
+    UI.UIUtils.installDragHandle(
         circle, this._mouseDown.bind(this, eventType, keyframeIndex), this._mouseMove.bind(this),
         this._mouseUp.bind(this), 'ew-resize');
     Animation.AnimationUI.installDragHandleKeyboard(circle, this._keydownMove.bind(this, eventType, keyframeIndex));
@@ -216,7 +221,7 @@ export class AnimationUI {
           'd', ['M', 0, height, 'L', 0, 5, 'L', width.toFixed(2), 5, 'L', width.toFixed(2), height, 'Z'].join(' '));
     } else if (bezier) {
       group.style.fill = this._color;
-      InlineEditor.BezierUI.drawVelocityChart(bezier, group, width);
+      InlineEditor.BezierUI.BezierUI.drawVelocityChart(bezier, group, width);
     } else {
       const stepFunction = StepTimingFunction.parse(easing);
       group.removeChildren();
@@ -437,13 +442,13 @@ export class AnimationUI {
    */
   _onContextMenu(event) {
     /**
-     * @param {?SDK.RemoteObject} remoteObject
+     * @param {?SDK.RemoteObject.RemoteObject} remoteObject
      */
     function showContextMenu(remoteObject) {
       if (!remoteObject) {
         return;
       }
-      const contextMenu = new UI.ContextMenu(event);
+      const contextMenu = new UI.ContextMenu.ContextMenu(event);
       contextMenu.appendApplicableItems(remoteObject);
       contextMenu.show();
     }
@@ -472,14 +477,14 @@ export const Options = {
 };
 
 export const Colors = {
-  'Purple': Common.Color.parse('#9C27B0'),
-  'Light Blue': Common.Color.parse('#03A9F4'),
-  'Deep Orange': Common.Color.parse('#FF5722'),
-  'Blue': Common.Color.parse('#5677FC'),
-  'Lime': Common.Color.parse('#CDDC39'),
-  'Blue Grey': Common.Color.parse('#607D8B'),
-  'Pink': Common.Color.parse('#E91E63'),
-  'Green': Common.Color.parse('#0F9D58'),
-  'Brown': Common.Color.parse('#795548'),
-  'Cyan': Common.Color.parse('#00BCD4')
+  'Purple': Common.Color.Color.parse('#9C27B0'),
+  'Light Blue': Common.Color.Color.parse('#03A9F4'),
+  'Deep Orange': Common.Color.Color.parse('#FF5722'),
+  'Blue': Common.Color.Color.parse('#5677FC'),
+  'Lime': Common.Color.Color.parse('#CDDC39'),
+  'Blue Grey': Common.Color.Color.parse('#607D8B'),
+  'Pink': Common.Color.Color.parse('#E91E63'),
+  'Green': Common.Color.Color.parse('#0F9D58'),
+  'Brown': Common.Color.Color.parse('#795548'),
+  'Cyan': Common.Color.Color.parse('#00BCD4')
 };

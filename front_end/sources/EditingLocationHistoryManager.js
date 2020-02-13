@@ -28,6 +28,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as SourceFrame from '../source_frame/source_frame.js';
+import * as TextUtils from '../text_utils/text_utils.js';  // eslint-disable-line no-unused-vars
+import * as Workspace from '../workspace/workspace.js';    // eslint-disable-line no-unused-vars
+
 import {HistoryEntry, SimpleHistoryManager} from './SimpleHistoryManager.js';  // eslint-disable-line no-unused-vars
 import {SourcesView} from './SourcesView.js';                                  // eslint-disable-line no-unused-vars
 import {UISourceCodeFrame} from './UISourceCodeFrame.js';                      // eslint-disable-line no-unused-vars
@@ -91,7 +95,7 @@ export class EditingLocationHistoryManager {
   }
 
   /**
-   * @param {!TextUtils.TextRange} selection
+   * @param {!TextUtils.TextRange.TextRange} selection
    */
   _updateActiveState(selection) {
     const active = /** @type {?EditingLocationHistoryEntry} */ (this._historyManager.active());
@@ -107,7 +111,7 @@ export class EditingLocationHistoryManager {
   }
 
   /**
-   * @param {!TextUtils.TextRange} selection
+   * @param {!TextUtils.TextRange.TextRange} selection
    */
   _pushActiveState(selection) {
     const sourceFrame = this._currentSourceFrameCallback();
@@ -119,7 +123,7 @@ export class EditingLocationHistoryManager {
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    */
   removeHistoryForSourceCode(uiSourceCode) {
     function filterOut(entry) {
@@ -141,7 +145,7 @@ export class EditingLocationHistoryEntry {
    * @param {!SourcesView} sourcesView
    * @param {!EditingLocationHistoryManager} editingLocationManager
    * @param {!UISourceCodeFrame} sourceFrame
-   * @param {!TextUtils.TextRange} selection
+   * @param {!TextUtils.TextRange.TextRange} selection
    */
   constructor(sourcesView, editingLocationManager, sourceFrame, selection) {
     this._sourcesView = sourcesView;
@@ -165,7 +169,7 @@ export class EditingLocationHistoryEntry {
   }
 
   /**
-   * @param {!TextUtils.TextRange} selection
+   * @param {!TextUtils.TextRange.TextRange} selection
    * @return {!{lineNumber: number, columnNumber: number}}
    */
   _positionFromSelection(selection) {

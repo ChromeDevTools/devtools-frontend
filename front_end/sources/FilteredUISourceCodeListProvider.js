@@ -2,6 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+import * as QuickOpen from '../quick_open/quick_open.js';
+import * as UI from '../ui/ui.js';
+import * as Workspace from '../workspace/workspace.js';
+
 import {FilePathScoreFunction} from './FilePathScoreFunction.js';
 
 /**
@@ -20,16 +25,16 @@ export class FilteredUISourceCodeListProvider extends QuickOpen.FilteredListWidg
    * @param {!Common.Event} event
    */
   _projectRemoved(event) {
-    const project = /** @type {!Workspace.Project} */ (event.data);
+    const project = /** @type {!Workspace.Workspace.Project} */ (event.data);
     this._populate(project);
     this.refresh();
   }
 
   /**
-   * @param {!Workspace.Project=} skipProject
+   * @param {!Workspace.Workspace.Project=} skipProject
    */
   _populate(skipProject) {
-    /** @type {!Array.<!Workspace.UISourceCode>} */
+    /** @type {!Array.<!Workspace.UISourceCode.UISourceCode>} */
     this._uiSourceCodes = [];
     const projects = self.Workspace.workspace.projects().filter(this.filterProject.bind(this));
     for (let i = 0; i < projects.length; ++i) {
@@ -42,7 +47,7 @@ export class FilteredUISourceCodeListProvider extends QuickOpen.FilteredListWidg
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    * @return {boolean}
    */
   _filterUISourceCode(uiSourceCode) {
@@ -51,7 +56,7 @@ export class FilteredUISourceCodeListProvider extends QuickOpen.FilteredListWidg
   }
 
   /**
-   * @param {?Workspace.UISourceCode} uiSourceCode
+   * @param {?Workspace.UISourceCode.UISourceCode} uiSourceCode
    * @param {number=} lineNumber
    * @param {number=} columnNumber
    */
@@ -60,7 +65,7 @@ export class FilteredUISourceCodeListProvider extends QuickOpen.FilteredListWidg
   }
 
   /**
-   * @param {!Workspace.Project} project
+   * @param {!Workspace.Workspace.Project} project
    * @return {boolean}
    */
   filterProject(project) {
@@ -87,7 +92,7 @@ export class FilteredUISourceCodeListProvider extends QuickOpen.FilteredListWidg
 
   /**
    * @protected
-   * @param {?Map.<!Workspace.UISourceCode, number>} defaultScores
+   * @param {?Map.<!Workspace.UISourceCode.UISourceCode, number>} defaultScores
    */
   setDefaultScores(defaultScores) {
     this._defaultScores = defaultScores;
@@ -112,7 +117,7 @@ export class FilteredUISourceCodeListProvider extends QuickOpen.FilteredListWidg
     }
 
     let multiplier = 10;
-    if (uiSourceCode.project().type() === Workspace.projectTypes.FileSystem &&
+    if (uiSourceCode.project().type() === Workspace.Workspace.projectTypes.FileSystem &&
         !self.Persistence.persistence.binding(uiSourceCode)) {
       multiplier = 5;
     }
@@ -150,9 +155,9 @@ export class FilteredUISourceCodeListProvider extends QuickOpen.FilteredListWidg
       for (let i = 0; i < ranges.length; ++i) {
         ranges[i].offset -= fileNameIndex + 1;
       }
-      UI.highlightRangesWithStyleClass(titleElement, ranges, 'highlight');
+      UI.UIUtils.highlightRangesWithStyleClass(titleElement, ranges, 'highlight');
     } else {
-      UI.highlightRangesWithStyleClass(subtitleElement, ranges, 'highlight');
+      UI.UIUtils.highlightRangesWithStyleClass(subtitleElement, ranges, 'highlight');
     }
   }
 
@@ -215,7 +220,7 @@ export class FilteredUISourceCodeListProvider extends QuickOpen.FilteredListWidg
    * @param {!Common.Event} event
    */
   _uiSourceCodeAdded(event) {
-    const uiSourceCode = /** @type {!Workspace.UISourceCode} */ (event.data);
+    const uiSourceCode = /** @type {!Workspace.UISourceCode.UISourceCode} */ (event.data);
     if (!this._filterUISourceCode(uiSourceCode) || !this.filterProject(uiSourceCode.project())) {
       return;
     }
@@ -228,7 +233,7 @@ export class FilteredUISourceCodeListProvider extends QuickOpen.FilteredListWidg
    * @return {string}
    */
   notFoundText() {
-    return Common.UIString('No files found');
+    return Common.UIString.UIString('No files found');
   }
 
   /**

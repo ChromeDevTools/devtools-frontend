@@ -28,26 +28,31 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as Bindings from '../bindings/bindings.js';
+import * as Common from '../common/common.js';
+import * as Search from '../search/search.js';  // eslint-disable-line no-unused-vars
+import * as Workspace from '../workspace/workspace.js';
+
 /**
- * @implements {Search.SearchScope}
+ * @implements {Search.SearchConfig.SearchScope}
  */
 export class SourcesSearchScope {
   constructor() {
     // FIXME: Add title once it is used by search controller.
     this._searchId = 0;
-    /** @type {!Array<!Workspace.UISourceCode>} */
+    /** @type {!Array<!Workspace.UISourceCode.UISourceCode>} */
     this._searchResultCandidates = [];
-    /** @type {?function(!Search.SearchResult)} */
+    /** @type {?function(!Search.SearchConfig.SearchResult)} */
     this._searchResultCallback = null;
     /** @type {?function(boolean)} */
     this._searchFinishedCallback = null;
-    /** @type {?Workspace.ProjectSearchConfig} */
+    /** @type {?Workspace.Workspace.ProjectSearchConfig} */
     this._searchConfig = null;
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode1
-   * @param {!Workspace.UISourceCode} uiSourceCode2
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode1
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode2
    * @return {number}
    */
   static _filesComparator(uiSourceCode1, uiSourceCode2) {
@@ -57,9 +62,9 @@ export class SourcesSearchScope {
     if (!uiSourceCode1.isDirty() && uiSourceCode2.isDirty()) {
       return 1;
     }
-    const isFileSystem1 = uiSourceCode1.project().type() === Workspace.projectTypes.FileSystem &&
+    const isFileSystem1 = uiSourceCode1.project().type() === Workspace.Workspace.projectTypes.FileSystem &&
         !self.Persistence.persistence.binding(uiSourceCode1);
-    const isFileSystem2 = uiSourceCode2.project().type() === Workspace.projectTypes.FileSystem &&
+    const isFileSystem2 = uiSourceCode2.project().type() === Workspace.Workspace.projectTypes.FileSystem &&
         !self.Persistence.persistence.binding(uiSourceCode2);
     if (isFileSystem1 !== isFileSystem2) {
       return isFileSystem1 ? 1 : -1;
@@ -77,13 +82,13 @@ export class SourcesSearchScope {
 
   /**
    * @override
-   * @param {!Common.Progress} progress
+   * @param {!Common.Progress.Progress} progress
    */
   performIndexing(progress) {
     this.stopSearch();
 
     const projects = this._projects();
-    const compositeProgress = new Common.CompositeProgress(progress);
+    const compositeProgress = new Common.Progress.CompositeProgress(progress);
     for (let i = 0; i < projects.length; ++i) {
       const project = projects[i];
       const projectProgress = compositeProgress.createSubProgress(project.uiSourceCodes().length);
@@ -92,20 +97,20 @@ export class SourcesSearchScope {
   }
 
   /**
-   * @return {!Array.<!Workspace.Project>}
+   * @return {!Array.<!Workspace.Workspace.Project>}
    */
   _projects() {
     const searchInAnonymousAndContentScripts =
         self.Common.settings.moduleSetting('searchInAnonymousAndContentScripts').get();
 
     return self.Workspace.workspace.projects().filter(project => {
-      if (project.type() === Workspace.projectTypes.Service) {
+      if (project.type() === Workspace.Workspace.projectTypes.Service) {
         return false;
       }
       if (!searchInAnonymousAndContentScripts && project.isServiceProject()) {
         return false;
       }
-      if (!searchInAnonymousAndContentScripts && project.type() === Workspace.projectTypes.ContentScripts) {
+      if (!searchInAnonymousAndContentScripts && project.type() === Workspace.Workspace.projectTypes.ContentScripts) {
         return false;
       }
       return true;
@@ -114,9 +119,9 @@ export class SourcesSearchScope {
 
   /**
    * @override
-   * @param {!Workspace.ProjectSearchConfig} searchConfig
-   * @param {!Common.Progress} progress
-   * @param {function(!Search.SearchResult)} searchResultCallback
+   * @param {!Workspace.Workspace.ProjectSearchConfig} searchConfig
+   * @param {!Common.Progress.Progress} progress
+   * @param {function(!Search.SearchConfig.SearchResult)} searchResultCallback
    * @param {function(boolean)} searchFinishedCallback
    */
   performSearch(searchConfig, progress, searchResultCallback, searchFinishedCallback) {
@@ -127,9 +132,9 @@ export class SourcesSearchScope {
     this._searchConfig = searchConfig;
 
     const promises = [];
-    const compositeProgress = new Common.CompositeProgress(progress);
+    const compositeProgress = new Common.Progress.CompositeProgress(progress);
     const searchContentProgress = compositeProgress.createSubProgress();
-    const findMatchingFilesProgress = new Common.CompositeProgress(compositeProgress.createSubProgress());
+    const findMatchingFilesProgress = new Common.Progress.CompositeProgress(compositeProgress.createSubProgress());
     for (const project of this._projects()) {
       const weight = project.uiSourceCodes().length;
       const findMatchingFilesInProjectProgress = findMatchingFilesProgress.createSubProgress(weight);
@@ -147,8 +152,8 @@ export class SourcesSearchScope {
   }
 
   /**
-   * @param {!Workspace.Project} project
-   * @param {!Workspace.ProjectSearchConfig} searchConfig
+   * @param {!Workspace.Workspace.Project} project
+   * @param {!Workspace.Workspace.ProjectSearchConfig} searchConfig
    * @param {boolean=} dirtyOnly
    * @return {!Array.<string>}
    */
@@ -177,8 +182,8 @@ export class SourcesSearchScope {
 
   /**
    * @param {number} searchId
-   * @param {!Workspace.Project} project
-   * @param {!Workspace.ProjectSearchConfig} searchConfig
+   * @param {!Workspace.Workspace.Project} project
+   * @param {!Workspace.Workspace.ProjectSearchConfig} searchConfig
    * @param {!Array<string>} filesMathingFileQuery
    * @param {!Array<string>} files
    */
@@ -199,7 +204,7 @@ export class SourcesSearchScope {
       if (!uiSourceCode) {
         continue;
       }
-      const script = Bindings.DefaultScriptMapping.scriptForUISourceCode(uiSourceCode);
+      const script = Bindings.DefaultScriptMapping.DefaultScriptMapping.scriptForUISourceCode(uiSourceCode);
       if (script && !script.isAnonymousScript()) {
         continue;
       }
@@ -212,7 +217,7 @@ export class SourcesSearchScope {
 
   /**
    * @param {number} searchId
-   * @param {!Common.Progress} progress
+   * @param {!Common.Progress.Progress} progress
    * @param {function()} callback
    */
   _processMatchingFiles(searchId, progress, callback) {
@@ -239,7 +244,7 @@ export class SourcesSearchScope {
     }
 
     /**
-     * @param {!Workspace.UISourceCode} uiSourceCode
+     * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
      * @this {SourcesSearchScope}
      */
     function searchInNextFile(uiSourceCode) {
@@ -271,7 +276,7 @@ export class SourcesSearchScope {
     }
 
     /**
-     * @param {!Workspace.UISourceCode} uiSourceCode
+     * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
      * @param {string} content
      * @this {SourcesSearchScope}
      */
@@ -313,11 +318,11 @@ export class SourcesSearchScope {
 }
 
 /**
- * @implements {Search.SearchResult}
+ * @implements {Search.SearchConfig.SearchResult}
  */
 export class FileBasedSearchResult {
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    * @param {!Array.<!Common.ContentProvider.SearchMatch>} searchMatches
    */
   constructor(uiSourceCode, searchMatches) {

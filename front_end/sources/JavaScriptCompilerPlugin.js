@@ -2,12 +2,18 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as SDK from '../sdk/sdk.js';
+import * as Snippets from '../snippets/snippets.js';
+import * as SourceFrame from '../source_frame/source_frame.js';  // eslint-disable-line no-unused-vars
+import * as UI from '../ui/ui.js';
+import * as Workspace from '../workspace/workspace.js';
+
 import {Plugin} from './Plugin.js';
 
 export class JavaScriptCompilerPlugin extends Plugin {
   /**
-   * @param {!SourceFrame.SourcesTextEditor} textEditor
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!SourceFrame.SourcesTextEditor.SourcesTextEditor} textEditor
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    */
   constructor(textEditor, uiSourceCode) {
     super();
@@ -29,17 +35,17 @@ export class JavaScriptCompilerPlugin extends Plugin {
 
   /**
    * @override
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    * @return {boolean}
    */
   static accepts(uiSourceCode) {
     if (uiSourceCode.extension() === 'js') {
       return true;
     }
-    if (Snippets.isSnippetsUISourceCode(uiSourceCode)) {
+    if (Snippets.ScriptSnippetFileSystem.isSnippetsUISourceCode(uiSourceCode)) {
       return true;
     }
-    for (const debuggerModel of self.SDK.targetManager.models(SDK.DebuggerModel)) {
+    for (const debuggerModel of self.SDK.targetManager.models(SDK.DebuggerModel.DebuggerModel)) {
       if (self.Bindings.debuggerWorkspaceBinding.scriptFile(uiSourceCode, debuggerModel)) {
         return true;
       }
@@ -59,17 +65,19 @@ export class JavaScriptCompilerPlugin extends Plugin {
   }
 
   /**
-   * @return {?SDK.RuntimeModel}
+   * @return {?SDK.RuntimeModel.RuntimeModel}
    */
   _findRuntimeModel() {
-    const debuggerModels = self.SDK.targetManager.models(SDK.DebuggerModel);
+    const debuggerModels = self.SDK.targetManager.models(SDK.DebuggerModel.DebuggerModel);
     for (let i = 0; i < debuggerModels.length; ++i) {
       const scriptFile = self.Bindings.debuggerWorkspaceBinding.scriptFile(this._uiSourceCode, debuggerModels[i]);
       if (scriptFile) {
         return debuggerModels[i].runtimeModel();
       }
     }
-    return self.SDK.targetManager.mainTarget() ? self.SDK.targetManager.mainTarget().model(SDK.RuntimeModel) : null;
+    return self.SDK.targetManager.mainTarget() ?
+        self.SDK.targetManager.mainTarget().model(SDK.RuntimeModel.RuntimeModel) :
+        null;
   }
 
   async _compile() {
@@ -77,7 +85,7 @@ export class JavaScriptCompilerPlugin extends Plugin {
     if (!runtimeModel) {
       return;
     }
-    const currentExecutionContext = self.UI.context.flavor(SDK.ExecutionContext);
+    const currentExecutionContext = self.UI.context.flavor(SDK.RuntimeModel.ExecutionContext);
     if (!currentExecutionContext) {
       return;
     }
@@ -104,7 +112,7 @@ export class JavaScriptCompilerPlugin extends Plugin {
     }
 
     const exceptionDetails = result.exceptionDetails;
-    const text = SDK.RuntimeModel.simpleTextFromException(exceptionDetails);
+    const text = SDK.RuntimeModel.RuntimeModel.simpleTextFromException(exceptionDetails);
     this._message = this._uiSourceCode.addLineMessage(
         Workspace.UISourceCode.Message.Level.Error, text, exceptionDetails.lineNumber, exceptionDetails.columnNumber);
     this._compilationFinishedForTest();

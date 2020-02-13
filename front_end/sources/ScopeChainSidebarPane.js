@@ -24,21 +24,28 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as Common from '../common/common.js';
+import * as Components from '../components/components.js';
+import * as ObjectUI from '../object_ui/object_ui.js';
+import * as SDK from '../sdk/sdk.js';
+import * as UI from '../ui/ui.js';
+
 import {resolveScopeInObject, resolveThisObject} from './SourceMapNamesResolver.js';
 
 /**
- * @implements {UI.ContextFlavorListener}
+ * @implements {UI.ContextFlavorListener.ContextFlavorListener}
  * @unrestricted
  */
-export class ScopeChainSidebarPaneBase extends UI.VBox {
+export class ScopeChainSidebarPaneBase extends UI.Widget.VBox {
   constructor() {
     super(true);
     this.registerRequiredCSS('sources/scopeChainSidebarPane.css');
-    this._treeOutline = new ObjectUI.ObjectPropertiesSectionsTreeOutline();
+    this._treeOutline = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionsTreeOutline();
     this._treeOutline.registerRequiredCSS('sources/scopeChainSidebarPane.css');
     this._treeOutline.setShowSelectionOnKeyboardFocus(/* show */ true);
-    this._expandController = new ObjectUI.ObjectPropertiesSectionsTreeExpandController(this._treeOutline);
-    this._linkifier = new Components.Linkifier();
+    this._expandController =
+        new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionsTreeExpandController(this._treeOutline);
+    this._linkifier = new Components.Linkifier.Linkifier();
     this._infoElement = createElement('div');
     this._infoElement.className = 'gray-info-message';
     this._infoElement.textContent = ls`Not paused`;
@@ -62,7 +69,7 @@ export class ScopeChainSidebarPaneBase extends UI.VBox {
       return;
     }
 
-    if (self.UI.context.flavor(SDK.DebuggerPausedDetails)) {
+    if (self.UI.context.flavor(SDK.DebuggerModel.DebuggerPausedDetails)) {
       this._treeOutline.forceSelect();
     }
   }
@@ -73,15 +80,15 @@ export class ScopeChainSidebarPaneBase extends UI.VBox {
 
   _update() {
     const callFrame = self.UI.context.flavor(SDK.DebuggerModel.CallFrame);
-    const details = self.UI.context.flavor(SDK.DebuggerPausedDetails);
+    const details = self.UI.context.flavor(SDK.DebuggerModel.DebuggerPausedDetails);
     this._linkifier.reset();
     resolveThisObject(callFrame).then(this._innerUpdate.bind(this, details, callFrame));
   }
 
   /**
-   * @param {?SDK.DebuggerPausedDetails} details
+   * @param {?SDK.DebuggerModel.DebuggerPausedDetails} details
    * @param {?SDK.DebuggerModel.CallFrame} callFrame
-   * @param {?SDK.RemoteObject} thisObject
+   * @param {?SDK.RemoteObject.RemoteObject} thisObject
    */
   _innerUpdate(details, callFrame, thisObject) {
     this._treeOutline.removeChildren();
@@ -122,7 +129,7 @@ export class ScopeChainSidebarPaneBase extends UI.VBox {
 
   /**
    * @param {!SDK.DebuggerModel.Scope} scope
-   * @param {!Array.<!SDK.RemoteObjectProperty>} extraProperties
+   * @param {!Array.<!SDK.RemoteObject.RemoteObjectProperty>} extraProperties
    * @return {!ObjectUI.ObjectPropertiesSection.RootElement}
    */
   _createScopeSectionTreeElement(scope, extraProperties) {
@@ -135,7 +142,7 @@ export class ScopeChainSidebarPaneBase extends UI.VBox {
     if (scope.type() === Protocol.Debugger.ScopeType.Closure) {
       const scopeName = scope.name();
       if (scopeName) {
-        title = ls`Closure (${UI.beautifyFunctionName(scopeName)})`;
+        title = ls`Closure (${UI.UIUtils.beautifyFunctionName(scopeName)})`;
       } else {
         title = ls`Closure`;
       }
@@ -161,11 +168,11 @@ export class ScopeChainSidebarPaneBase extends UI.VBox {
 
   /**
    * @param {!SDK.DebuggerModel.Scope} scope
-   * @param {?SDK.DebuggerPausedDetails} details
+   * @param {?SDK.DebuggerModel.DebuggerPausedDetails} details
    * @param {?SDK.DebuggerModel.CallFrame} callFrame
-   * @param {?SDK.RemoteObject} thisObject
+   * @param {?SDK.RemoteObject.RemoteObject} thisObject
    * @param {boolean} isFirstScope
-   * @return {!Array.<!SDK.RemoteObjectProperty>}
+   * @return {!Array.<!SDK.RemoteObject.RemoteObjectProperty>}
    */
   _extraPropertiesForScope(scope, details, callFrame, thisObject, isFirstScope) {
     if (scope.type() !== Protocol.Debugger.ScopeType.Local) {
@@ -174,19 +181,20 @@ export class ScopeChainSidebarPaneBase extends UI.VBox {
 
     const extraProperties = [];
     if (thisObject) {
-      extraProperties.push(new SDK.RemoteObjectProperty('this', thisObject));
+      extraProperties.push(new SDK.RemoteObject.RemoteObjectProperty('this', thisObject));
     }
     if (isFirstScope) {
       const exception = details.exception();
       if (exception) {
-        extraProperties.push(new SDK.RemoteObjectProperty(
-            Common.UIString('Exception'), exception, undefined, undefined, undefined, undefined, undefined,
+        extraProperties.push(new SDK.RemoteObject.RemoteObjectProperty(
+            Common.UIString.UIString('Exception'), exception, undefined, undefined, undefined, undefined, undefined,
             /* synthetic */ true));
       }
       const returnValue = callFrame.returnValue();
       if (returnValue) {
-        extraProperties.push(new SDK.RemoteObjectProperty(
-            Common.UIString('Return value'), returnValue, undefined, undefined, undefined, undefined, undefined,
+        extraProperties.push(new SDK.RemoteObject.RemoteObjectProperty(
+            Common.UIString.UIString('Return value'), returnValue, undefined, undefined, undefined, undefined,
+            undefined,
             /* synthetic */ true, callFrame.setReturnValue.bind(callFrame)));
       }
     }

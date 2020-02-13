@@ -291,3 +291,6 @@ for (const key in Keys) {
   }
 }
 })();
+
+/** @typedef {!{key: number, name: string}} */
+export let Descriptor;

@@ -2,6 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+import * as Host from '../host/host.js';
+import * as Workspace from '../workspace/workspace.js';  // eslint-disable-line no-unused-vars
+
 import {FilteredUISourceCodeListProvider} from './FilteredUISourceCodeListProvider.js';
 import {SourcesView} from './SourcesView.js';
 
@@ -16,7 +20,7 @@ export class OpenFileQuickOpen extends FilteredUISourceCodeListProvider {
 
   /**
    * @override
-   * @param {?Workspace.UISourceCode} uiSourceCode
+   * @param {?Workspace.UISourceCode.UISourceCode} uiSourceCode
    * @param {number=} lineNumber
    * @param {number=} columnNumber
    */
@@ -35,7 +39,7 @@ export class OpenFileQuickOpen extends FilteredUISourceCodeListProvider {
 
   /**
    * @override
-   * @param {!Workspace.Project} project
+   * @param {!Workspace.Workspace.Project} project
    * @return {boolean}
    */
   filterProject(project) {

@@ -2,12 +2,19 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Bindings from '../bindings/bindings.js';
+import * as Common from '../common/common.js';
+import * as SDK from '../sdk/sdk.js';
+import * as TextUtils from '../text_utils/text_utils.js';
+import * as UI from '../ui/ui.js';
+import * as Workspace from '../workspace/workspace.js';
+
 /**
- * @implements {UI.ContextFlavorListener}
- * @implements {UI.ListDelegate}
+ * @implements {UI.ContextFlavorListener.ContextFlavorListener}
+ * @implements {UI.ListControl.ListDelegate}
  * @unrestricted
  */
-export class JavaScriptBreakpointsSidebarPane extends UI.ThrottledWidget {
+export class JavaScriptBreakpointsSidebarPane extends UI.ThrottledWidget.ThrottledWidget {
   constructor() {
     super(true);
     this.registerRequiredCSS('sources/javaScriptBreakpointsSidebarPane.css');
@@ -17,10 +24,10 @@ export class JavaScriptBreakpointsSidebarPane extends UI.ThrottledWidget {
     this._breakpointManager.addEventListener(Bindings.BreakpointManager.Events.BreakpointRemoved, this.update, this);
     self.Common.settings.moduleSetting('breakpointsActive').addChangeListener(this.update, this);
 
-    /** @type {!UI.ListModel.<!Sources.JavaScriptBreakpointsSidebarPane.BreakpointItem>} */
-    this._breakpoints = new UI.ListModel();
-    /** @type {!UI.ListControl.<!Sources.JavaScriptBreakpointsSidebarPane.BreakpointItem>} */
-    this._list = new UI.ListControl(this._breakpoints, this, UI.ListMode.NonViewport);
+    /** @type {!UI.ListModel.ListModel.<!Sources.JavaScriptBreakpointsSidebarPane.BreakpointItem>} */
+    this._breakpoints = new UI.ListModel.ListModel();
+    /** @type {!UI.ListControl.ListControl.<!Sources.JavaScriptBreakpointsSidebarPane.BreakpointItem>} */
+    this._list = new UI.ListControl.ListControl(this._breakpoints, this, UI.ListControl.ListMode.NonViewport);
     UI.ARIAUtils.markAsList(this._list.element);
     this.contentElement.appendChild(this._list.element);
 
@@ -39,7 +46,7 @@ export class JavaScriptBreakpointsSidebarPane extends UI.ThrottledWidget {
     const hadFocus = this.hasFocus();
     const breakpointLocations = this._breakpointManager.allBreakpointLocations().filter(
         breakpointLocation =>
-            breakpointLocation.uiLocation.uiSourceCode.project().type() !== Workspace.projectTypes.Debugger);
+            breakpointLocation.uiLocation.uiSourceCode.project().type() !== Workspace.Workspace.projectTypes.Debugger);
     if (!breakpointLocations.length) {
       this._list.element.classList.add('hidden');
       this._emptyElement.classList.remove('hidden');
@@ -56,7 +63,7 @@ export class JavaScriptBreakpointsSidebarPane extends UI.ThrottledWidget {
     /** @type {!Platform.Multimap<string, string>} */
     const breakpointEntriesForLine = new Platform.Multimap();
 
-    /** @type {!Platform.Multimap<string, !{breakpoint: !Bindings.BreakpointManager.Breakpoint, uiLocation: !Workspace.UILocation}>} */
+    /** @type {!Platform.Multimap<string, !{breakpoint: !Bindings.BreakpointManager.Breakpoint, uiLocation: !Workspace.UISourceCode.UILocation}>} */
     const locationForEntry = new Platform.Multimap();
     for (const breakpointLocation of breakpointLocations) {
       const uiLocation = breakpointLocation.uiLocation;
@@ -66,7 +73,7 @@ export class JavaScriptBreakpointsSidebarPane extends UI.ThrottledWidget {
       breakpointEntriesForLine.set(lineDescriptor, entryDescriptor);
     }
 
-    const details = self.UI.context.flavor(SDK.DebuggerPausedDetails);
+    const details = self.UI.context.flavor(SDK.DebuggerModel.DebuggerPausedDetails);
     const selectedUILocation = details && details.callFrames.length ?
         self.Bindings.debuggerWorkspaceBinding.rawLocationToUILocation(details.callFrames[0].location()) :
         null;
@@ -120,7 +127,7 @@ export class JavaScriptBreakpointsSidebarPane extends UI.ThrottledWidget {
     element.tabIndex = this._list.selectedItem() === item ? 0 : -1;
     element.addEventListener('contextmenu', this._breakpointContextMenu.bind(this), true);
     element.addEventListener('click', this._revealLocation.bind(this, element), false);
-    const checkboxLabel = UI.CheckboxLabel.create('');
+    const checkboxLabel = UI.UIUtils.CheckboxLabel.create('');
 
     const uiLocation = item.locations[0].uiLocation;
     const hasEnabled = item.locations.some(location => location.breakpoint.enabled());
@@ -154,7 +161,7 @@ export class JavaScriptBreakpointsSidebarPane extends UI.ThrottledWidget {
     const snippetElement = element.createChild('div', 'source-text monospace');
     item.content.then(content => {
       const lineNumber = uiLocation.lineNumber;
-      const text = new TextUtils.Text(content.content || '');
+      const text = new TextUtils.Text.Text(content.content || '');
       if (lineNumber < text.lineCount()) {
         const lineText = text.lineAt(lineNumber);
         const maxSnippetLength = 200;
@@ -283,9 +290,9 @@ export class JavaScriptBreakpointsSidebarPane extends UI.ThrottledWidget {
   _breakpointContextMenu(event) {
     const breakpoints = this._breakpointLocations(event).map(breakpointLocation => breakpointLocation.breakpoint);
 
-    const contextMenu = new UI.ContextMenu(event);
-    const removeEntryTitle = breakpoints.length > 1 ? Common.UIString('Remove all breakpoints in line') :
-                                                      Common.UIString('Remove breakpoint');
+    const contextMenu = new UI.ContextMenu.ContextMenu(event);
+    const removeEntryTitle = breakpoints.length > 1 ? Common.UIString.UIString('Remove all breakpoints in line') :
+                                                      Common.UIString.UIString('Remove breakpoint');
     contextMenu.defaultSection().appendItem(
         removeEntryTitle, () => breakpoints.map(breakpoint => breakpoint.remove(false /* keepInStorage */)));
     if (event.target instanceof Element) {
@@ -293,22 +300,22 @@ export class JavaScriptBreakpointsSidebarPane extends UI.ThrottledWidget {
     }
 
     const breakpointActive = self.Common.settings.moduleSetting('breakpointsActive').get();
-    const breakpointActiveTitle =
-        breakpointActive ? Common.UIString('Deactivate breakpoints') : Common.UIString('Activate breakpoints');
+    const breakpointActiveTitle = breakpointActive ? Common.UIString.UIString('Deactivate breakpoints') :
+                                                     Common.UIString.UIString('Activate breakpoints');
     contextMenu.defaultSection().appendItem(
         breakpointActiveTitle, () => self.Common.settings.moduleSetting('breakpointsActive').set(!breakpointActive));
 
     if (breakpoints.some(breakpoint => !breakpoint.enabled())) {
-      const enableTitle = Common.UIString('Enable all breakpoints');
+      const enableTitle = Common.UIString.UIString('Enable all breakpoints');
       contextMenu.defaultSection().appendItem(enableTitle, this._toggleAllBreakpoints.bind(this, true));
     }
     if (breakpoints.some(breakpoint => breakpoint.enabled())) {
-      const disableTitle = Common.UIString('Disable all breakpoints');
+      const disableTitle = Common.UIString.UIString('Disable all breakpoints');
       contextMenu.defaultSection().appendItem(disableTitle, this._toggleAllBreakpoints.bind(this, false));
     }
-    const removeAllTitle = Common.UIString('Remove all breakpoints');
+    const removeAllTitle = Common.UIString.UIString('Remove all breakpoints');
     contextMenu.defaultSection().appendItem(removeAllTitle, this._removeAllBreakpoints.bind(this));
-    const removeOtherTitle = Common.UIString('Remove other breakpoints');
+    const removeOtherTitle = Common.UIString.UIString('Remove other breakpoints');
     contextMenu.defaultSection().appendItem(
         removeOtherTitle, this._removeOtherBreakpoints.bind(this, new Set(breakpoints)));
     contextMenu.show();

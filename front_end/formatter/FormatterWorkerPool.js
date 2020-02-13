@@ -368,3 +368,6 @@ export function formatterWorkerPool() {
   }
   return Formatter._formatterWorkerPool;
 }
+
+/** @typedef {{line: number, column: number, title: string, subtitle: (string|undefined) }} */
+export let OutlineItem;

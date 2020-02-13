@@ -28,6 +28,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as Common from '../common/common.js';
+import * as Persistence from '../persistence/persistence.js';
+import * as Snippets from '../snippets/snippets.js';
+import * as SourceFrame from '../source_frame/source_frame.js';
+import * as TextUtils from '../text_utils/text_utils.js';
+import * as UI from '../ui/ui.js';
+import * as Workspace from '../workspace/workspace.js';
+
 import {UISourceCodeFrame} from './UISourceCodeFrame.js';
 
 /**
@@ -35,15 +43,15 @@ import {UISourceCodeFrame} from './UISourceCodeFrame.js';
  */
 export class TabbedEditorContainerDelegate {
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
-   * @return {!UI.Widget}
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
+   * @return {!UI.Widget.Widget}
    */
   viewForFile(uiSourceCode) {
   }
 
   /**
   * @param {!UISourceCodeFrame} sourceFrame
-  * @param {!Workspace.UISourceCode} uiSourceCode
+  * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
   */
   recycleUISourceCodeFrame(sourceFrame, uiSourceCode) {
   }
@@ -52,10 +60,10 @@ export class TabbedEditorContainerDelegate {
 /**
  * @unrestricted
  */
-export class TabbedEditorContainer extends Common.Object {
+export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper {
   /**
    * @param {!TabbedEditorContainerDelegate} delegate
-   * @param {!Common.Setting} setting
+   * @param {!Common.Settings.Setting} setting
    * @param {!Element} placeholderElement
    * @param {!Element=} focusedPlaceholderElement
    */
@@ -63,7 +71,7 @@ export class TabbedEditorContainer extends Common.Object {
     super();
     this._delegate = delegate;
 
-    this._tabbedPane = new UI.TabbedPane();
+    this._tabbedPane = new UI.TabbedPane.TabbedPane();
     this._tabbedPane.setPlaceholderElement(placeholderElement, focusedPlaceholderElement);
     this._tabbedPane.setTabDelegate(new EditorContainerTabDelegate(this));
 
@@ -90,7 +98,7 @@ export class TabbedEditorContainer extends Common.Object {
    * @param {!Common.Event} event
    */
   _onBindingCreated(event) {
-    const binding = /** @type {!Persistence.PersistenceBinding} */ (event.data);
+    const binding = /** @type {!Persistence.Persistence.PersistenceBinding} */ (event.data);
     this._updateFileTitle(binding.fileSystem);
 
     const networkTabId = this._tabIds.get(binding.network);
@@ -113,7 +121,7 @@ export class TabbedEditorContainer extends Common.Object {
         fileSystemTabId = this._appendFileTab(binding.fileSystem, false, tabIndex, networkView);
       } else {
         fileSystemTabId = this._appendFileTab(binding.fileSystem, false, tabIndex);
-        const fileSystemTabView = /** @type {!UI.Widget} */ (this._tabbedPane.tabView(fileSystemTabId));
+        const fileSystemTabView = /** @type {!UI.Widget.Widget} */ (this._tabbedPane.tabView(fileSystemTabId));
         this._restoreEditorProperties(fileSystemTabView, currentSelectionRange, currentScrollLineNumber);
       }
     }
@@ -130,40 +138,40 @@ export class TabbedEditorContainer extends Common.Object {
    * @param {!Common.Event} event
    */
   _onBindingRemoved(event) {
-    const binding = /** @type {!Persistence.PersistenceBinding} */ (event.data);
+    const binding = /** @type {!Persistence.Persistence.PersistenceBinding} */ (event.data);
     this._updateFileTitle(binding.fileSystem);
   }
 
   /**
-   * @return {!UI.Widget}
+   * @return {!UI.Widget.Widget}
    */
   get view() {
     return this._tabbedPane;
   }
 
   /**
-   * @return {?UI.Widget}
+   * @return {?UI.Widget.Widget}
    */
   get visibleView() {
     return this._tabbedPane.visibleView;
   }
 
   /**
-   * @return {!Array.<!UI.Widget>}
+   * @return {!Array.<!UI.Widget.Widget>}
    */
   fileViews() {
-    return /** @type {!Array.<!UI.Widget>} */ (this._tabbedPane.tabViews());
+    return /** @type {!Array.<!UI.Widget.Widget>} */ (this._tabbedPane.tabViews());
   }
 
   /**
-   * @return {!UI.Toolbar}
+   * @return {!UI.Toolbar.Toolbar}
    */
   leftToolbar() {
     return this._tabbedPane.leftToolbar();
   }
 
   /**
-   * @return {!UI.Toolbar}
+   * @return {!UI.Toolbar.Toolbar}
    */
   rightToolbar() {
     return this._tabbedPane.rightToolbar();
@@ -177,14 +185,14 @@ export class TabbedEditorContainer extends Common.Object {
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    */
   showFile(uiSourceCode) {
     this._innerShowFile(uiSourceCode, true);
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    */
   closeFile(uiSourceCode) {
     const tabId = this._tabIds.get(uiSourceCode);
@@ -199,7 +207,7 @@ export class TabbedEditorContainer extends Common.Object {
   }
 
   /**
-   * @return {!Array.<!Workspace.UISourceCode>}
+   * @return {!Array.<!Workspace.UISourceCode.UISourceCode>}
    */
   historyUISourceCodes() {
     const result = [];
@@ -256,7 +264,7 @@ export class TabbedEditorContainer extends Common.Object {
    * @param {!Common.Event} event
    */
   _selectionChanged(event) {
-    const range = /** @type {!TextUtils.TextRange} */ (event.data);
+    const range = /** @type {!TextUtils.TextRange.TextRange} */ (event.data);
     this._history.updateSelectionRange(this._currentFile.url(), range);
     this._history.save(this._previouslyViewedFilesSetting);
 
@@ -264,7 +272,7 @@ export class TabbedEditorContainer extends Common.Object {
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    * @param {boolean=} userGesture
    */
   _innerShowFile(uiSourceCode, userGesture) {
@@ -298,7 +306,7 @@ export class TabbedEditorContainer extends Common.Object {
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    * @return {string}
    */
   _titleForFile(uiSourceCode) {
@@ -319,7 +327,7 @@ export class TabbedEditorContainer extends Common.Object {
     const shouldPrompt = uiSourceCode.isDirty() && uiSourceCode.project().canSetFileContent();
     // FIXME: this should be replaced with common Save/Discard/Cancel dialog.
     if (!shouldPrompt ||
-        confirm(Common.UIString('Are you sure you want to close unsaved file: %s?', uiSourceCode.name()))) {
+        confirm(Common.UIString.UIString('Are you sure you want to close unsaved file: %s?', uiSourceCode.name()))) {
       uiSourceCode.resetWorkingCopy();
       if (nextTabId) {
         this._tabbedPane.selectTab(nextTabId, true);
@@ -360,7 +368,7 @@ export class TabbedEditorContainer extends Common.Object {
 
   /**
    * @param {string} tabId
-   * @param {!UI.ContextMenu} contextMenu
+   * @param {!UI.ContextMenu.ContextMenu} contextMenu
    */
   _onContextMenu(tabId, contextMenu) {
     const uiSourceCode = this._files[tabId];
@@ -370,7 +378,7 @@ export class TabbedEditorContainer extends Common.Object {
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    */
   addUISourceCode(uiSourceCode) {
     const binding = self.Persistence.persistence.binding(uiSourceCode);
@@ -405,22 +413,22 @@ export class TabbedEditorContainer extends Common.Object {
       return;
     }
 
-    const currentProjectIsSnippets = Snippets.isSnippetsUISourceCode(this._currentFile);
-    const addedProjectIsSnippets = Snippets.isSnippetsUISourceCode(uiSourceCode);
+    const currentProjectIsSnippets = Snippets.ScriptSnippetFileSystem.isSnippetsUISourceCode(this._currentFile);
+    const addedProjectIsSnippets = Snippets.ScriptSnippetFileSystem.isSnippetsUISourceCode(uiSourceCode);
     if (this._history.index(this._currentFile.url()) && currentProjectIsSnippets && !addedProjectIsSnippets) {
       this._innerShowFile(uiSourceCode, false);
     }
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    */
   removeUISourceCode(uiSourceCode) {
     this.removeUISourceCodes([uiSourceCode]);
   }
 
   /**
-   * @param {!Array.<!Workspace.UISourceCode>} uiSourceCodes
+   * @param {!Array.<!Workspace.UISourceCode.UISourceCode>} uiSourceCodes
    */
   removeUISourceCodes(uiSourceCodes) {
     const tabIds = [];
@@ -437,7 +445,7 @@ export class TabbedEditorContainer extends Common.Object {
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    */
   _editorClosedByUserAction(uiSourceCode) {
     this._history.remove(uiSourceCode.url());
@@ -464,7 +472,7 @@ export class TabbedEditorContainer extends Common.Object {
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    * @return {string}
    */
   _tooltipForFile(uiSourceCode) {
@@ -473,10 +481,10 @@ export class TabbedEditorContainer extends Common.Object {
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    * @param {boolean=} userGesture
    * @param {number=} index
-   * @param {!UI.Widget=} replaceView
+   * @param {!UI.Widget.Widget=} replaceView
    * @return {string}
    */
   _appendFileTab(uiSourceCode, userGesture, index, replaceView) {
@@ -514,7 +522,7 @@ export class TabbedEditorContainer extends Common.Object {
    * @param {string} tabId
    */
   _addLoadErrorIcon(tabId) {
-    const icon = UI.Icon.create('smallicon-error');
+    const icon = UI.Icon.Icon.create('smallicon-error');
     icon.title = ls`Unable to load this content.`;
     if (this._tabbedPane.tabView(tabId)) {
       this._tabbedPane.setTabIcon(tabId, icon);
@@ -522,13 +530,14 @@ export class TabbedEditorContainer extends Common.Object {
   }
 
   /**
-   * @param {!UI.Widget} editorView
-   * @param {!TextUtils.TextRange=} selection
+   * @param {!UI.Widget.Widget} editorView
+   * @param {!TextUtils.TextRange.TextRange=} selection
    * @param {number=} firstLineNumber
    */
   _restoreEditorProperties(editorView, selection, firstLineNumber) {
-    const sourceFrame =
-        editorView instanceof SourceFrame.SourceFrame ? /** @type {!SourceFrame.SourceFrame} */ (editorView) : null;
+    const sourceFrame = editorView instanceof SourceFrame.SourceFrame.SourceFrameImpl ?
+        /** @type {!SourceFrame.SourceFrame.SourceFrameImpl} */ (editorView) :
+        null;
     if (!sourceFrame) {
       return;
     }
@@ -577,7 +586,7 @@ export class TabbedEditorContainer extends Common.Object {
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    */
   _addUISourceCodeListeners(uiSourceCode) {
     uiSourceCode.addEventListener(Workspace.UISourceCode.Events.TitleChanged, this._uiSourceCodeTitleChanged, this);
@@ -588,7 +597,7 @@ export class TabbedEditorContainer extends Common.Object {
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    */
   _removeUISourceCodeListeners(uiSourceCode) {
     uiSourceCode.removeEventListener(Workspace.UISourceCode.Events.TitleChanged, this._uiSourceCodeTitleChanged, this);
@@ -599,7 +608,7 @@ export class TabbedEditorContainer extends Common.Object {
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    */
   _updateFileTitle(uiSourceCode) {
     const tabId = this._tabIds.get(uiSourceCode);
@@ -609,13 +618,13 @@ export class TabbedEditorContainer extends Common.Object {
       this._tabbedPane.changeTabTitle(tabId, title, tooltip);
       let icon = null;
       if (uiSourceCode.loadError()) {
-        icon = UI.Icon.create('smallicon-error');
+        icon = UI.Icon.Icon.create('smallicon-error');
         icon.title = ls`Unable to load this content.`;
       } else if (self.Persistence.persistence.hasUnsavedCommittedChanges(uiSourceCode)) {
-        icon = UI.Icon.create('smallicon-warning');
-        icon.title = Common.UIString('Changes to this file were not saved to file system.');
+        icon = UI.Icon.Icon.create('smallicon-warning');
+        icon.title = Common.UIString.UIString('Changes to this file were not saved to file system.');
       } else {
-        icon = Persistence.PersistenceUtils.iconForUISourceCode(uiSourceCode);
+        icon = Persistence.PersistenceUtils.PersistenceUtils.iconForUISourceCode(uiSourceCode);
       }
       this._tabbedPane.setTabIcon(tabId, icon);
     }
@@ -625,7 +634,7 @@ export class TabbedEditorContainer extends Common.Object {
    * @param {!Common.Event} event
    */
   _uiSourceCodeTitleChanged(event) {
-    const uiSourceCode = /** @type {!Workspace.UISourceCode} */ (event.data);
+    const uiSourceCode = /** @type {!Workspace.UISourceCode.UISourceCode} */ (event.data);
     this._updateFileTitle(uiSourceCode);
     this._updateHistory();
   }
@@ -634,7 +643,7 @@ export class TabbedEditorContainer extends Common.Object {
    * @param {!Common.Event} event
    */
   _uiSourceCodeWorkingCopyChanged(event) {
-    const uiSourceCode = /** @type {!Workspace.UISourceCode} */ (event.data);
+    const uiSourceCode = /** @type {!Workspace.UISourceCode.UISourceCode} */ (event.data);
     this._updateFileTitle(uiSourceCode);
   }
 
@@ -642,7 +651,7 @@ export class TabbedEditorContainer extends Common.Object {
    * @param {!Common.Event} event
    */
   _uiSourceCodeWorkingCopyCommitted(event) {
-    const uiSourceCode = /** @type {!Workspace.UISourceCode} */ (event.data.uiSourceCode);
+    const uiSourceCode = /** @type {!Workspace.UISourceCode.UISourceCode} */ (event.data.uiSourceCode);
     this._updateFileTitle(uiSourceCode);
   }
 
@@ -654,7 +663,7 @@ export class TabbedEditorContainer extends Common.Object {
   }
 
   /**
-   * @return {?Workspace.UISourceCode} uiSourceCode
+   * @return {?Workspace.UISourceCode.UISourceCode} uiSourceCode
    */
   currentFile() {
     return this._currentFile || null;
@@ -676,7 +685,7 @@ export const maximalPreviouslyViewedFilesCount = 30;
 export class HistoryItem {
   /**
    * @param {string} url
-   * @param {!TextUtils.TextRange=} selectionRange
+   * @param {!TextUtils.TextRange.TextRange=} selectionRange
    * @param {number=} scrollLineNumber
    */
   constructor(url, selectionRange, scrollLineNumber) {
@@ -692,7 +701,7 @@ export class HistoryItem {
    */
   static fromObject(serializedHistoryItem) {
     const selectionRange = serializedHistoryItem.selectionRange ?
-        TextUtils.TextRange.fromObject(serializedHistoryItem.selectionRange) :
+        TextUtils.TextRange.TextRange.fromObject(serializedHistoryItem.selectionRange) :
         undefined;
     return new HistoryItem(serializedHistoryItem.url, selectionRange, serializedHistoryItem.scrollLineNumber);
   }
@@ -757,7 +766,7 @@ export class History {
 
   /**
    * @param {string} url
-   * @return {!TextUtils.TextRange|undefined}
+   * @return {!TextUtils.TextRange.TextRange|undefined}
    */
   selectionRange(url) {
     const index = this.index(url);
@@ -766,7 +775,7 @@ export class History {
 
   /**
    * @param {string} url
-   * @param {!TextUtils.TextRange=} selectionRange
+   * @param {!TextUtils.TextRange.TextRange=} selectionRange
    */
   updateSelectionRange(url, selectionRange) {
     if (!selectionRange) {
@@ -830,7 +839,7 @@ export class History {
   }
 
   /**
-   * @param {!Common.Setting} setting
+   * @param {!Common.Settings.Setting} setting
    */
   save(setting) {
     setting.set(this._serializeToObject());
@@ -867,7 +876,7 @@ export class History {
 
 
 /**
- * @implements {UI.TabbedPaneTabDelegate}
+ * @implements {UI.TabbedPane.TabbedPaneTabDelegate}
  * @unrestricted
  */
 export class EditorContainerTabDelegate {
@@ -880,7 +889,7 @@ export class EditorContainerTabDelegate {
 
   /**
    * @override
-   * @param {!UI.TabbedPane} tabbedPane
+   * @param {!UI.TabbedPane.TabbedPane} tabbedPane
    * @param {!Array.<string>} ids
    */
   closeTabs(tabbedPane, ids) {
@@ -890,7 +899,7 @@ export class EditorContainerTabDelegate {
   /**
    * @override
    * @param {string} tabId
-   * @param {!UI.ContextMenu} contextMenu
+   * @param {!UI.ContextMenu.ContextMenu} contextMenu
    */
   onContextMenu(tabId, contextMenu) {
     this._editorContainer._onContextMenu(tabId, contextMenu);

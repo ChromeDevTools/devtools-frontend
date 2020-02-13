@@ -2,7 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-export class BreakpointEditDialog extends UI.Widget {
+import * as ObjectUI from '../object_ui/object_ui.js';
+import * as UI from '../ui/ui.js';
+
+export class BreakpointEditDialog extends UI.Widget.Widget {
   /**
    * @param {number} editorLineNumber
    * @param {string} oldCondition
@@ -14,7 +17,7 @@ export class BreakpointEditDialog extends UI.Widget {
     this.registerRequiredCSS('sources/breakpointEditDialog.css');
     this._onFinish = onFinish;
     this._finished = false;
-    /** @type {?UI.TextEditor} */
+    /** @type {?UI.TextEditor.TextEditor} */
     this._editor = null;
     this.element.tabIndex = -1;
 
@@ -27,22 +30,23 @@ export class BreakpointEditDialog extends UI.Widget {
     this._isLogpoint = this._isLogpoint || preferLogpoint;
 
     this.element.classList.add('sources-edit-breakpoint-dialog');
-    const toolbar = new UI.Toolbar('source-frame-breakpoint-toolbar', this.contentElement);
+    const toolbar = new UI.Toolbar.Toolbar('source-frame-breakpoint-toolbar', this.contentElement);
     toolbar.appendText(`Line ${editorLineNumber + 1}:`);
 
-    this._typeSelector = new UI.ToolbarComboBox(this._onTypeChanged.bind(this), ls`Breakpoint type`);
+    this._typeSelector = new UI.Toolbar.ToolbarComboBox(this._onTypeChanged.bind(this), ls`Breakpoint type`);
     this._typeSelector.createOption(ls`Breakpoint`, BreakpointType.Breakpoint);
     const conditionalOption = this._typeSelector.createOption(ls`Conditional breakpoint`, BreakpointType.Conditional);
     const logpointOption = this._typeSelector.createOption(ls`Logpoint`, BreakpointType.Logpoint);
     this._typeSelector.select(this._isLogpoint ? logpointOption : conditionalOption);
     toolbar.appendToolbarItem(this._typeSelector);
 
-    self.runtime.extension(UI.TextEditorFactory).instance().then(factory => {
+    self.runtime.extension(UI.TextEditor.TextEditorFactory).instance().then(factory => {
       const editorOptions = {lineNumbers: false, lineWrapping: true, mimeType: 'javascript', autoHeight: true};
       this._editor = factory.createEditor(editorOptions);
       this._updatePlaceholder();
       this._editor.widget().element.classList.add('condition-editor');
-      this._editor.configureAutocomplete(ObjectUI.JavaScriptAutocompleteConfig.createConfigForEditor(this._editor));
+      this._editor.configureAutocomplete(
+          ObjectUI.JavaScriptAutocomplete.JavaScriptAutocompleteConfig.createConfigForEditor(this._editor));
       if (oldCondition) {
         this._editor.setText(oldCondition);
       }
@@ -111,7 +115,8 @@ export class BreakpointEditDialog extends UI.Widget {
     if (isEnterKey(event) && !event.shiftKey) {
       event.consume(true);
       const expression = this._editor.text();
-      if (event.ctrlKey || await ObjectUI.JavaScriptAutocomplete.isExpressionComplete(expression)) {
+      if (event.ctrlKey ||
+          await ObjectUI.JavaScriptAutocomplete.JavaScriptAutocomplete.isExpressionComplete(expression)) {
         this._finishEditing(true);
       } else {
         this._editor.newlineAndIndent();

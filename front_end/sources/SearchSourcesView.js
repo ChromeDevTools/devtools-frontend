@@ -2,9 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Search from '../search/search.js';
+import * as UI from '../ui/ui.js';  // eslint-disable-line no-unused-vars
+
 import {SourcesSearchScope} from './SourcesSearchScope.js';
 
-export class SearchSourcesView extends Search.SearchView {
+export class SearchSourcesView extends Search.SearchView.SearchView {
   constructor() {
     super('sources');
   }
@@ -20,15 +23,15 @@ export class SearchSourcesView extends Search.SearchView {
     // based on the setting later.
     const location = await self.UI.viewManager.resolveLocation('drawer-view');
     location.appendView(view);
-    await self.UI.viewManager.revealView(/** @type {!UI.View} */ (view));
-    const widget = /** @type {!Search.SearchView} */ (await view.widget());
+    await self.UI.viewManager.revealView(/** @type {!UI.View.View} */ (view));
+    const widget = /** @type {!Search.SearchView.SearchView} */ (await view.widget());
     widget.toggle(query, !!searchImmediately);
     return widget;
   }
 
   /**
    * @override
-   * @return {!Search.SearchScope}
+   * @return {!Search.SearchConfig.SearchScope}
    */
   createScope() {
     return new SourcesSearchScope();
@@ -36,12 +39,12 @@ export class SearchSourcesView extends Search.SearchView {
 }
 
 /**
- * @implements {UI.ActionDelegate}
+ * @implements {UI.ActionDelegate.ActionDelegate}
  */
 export class ActionDelegate {
   /**
    * @override
-   * @param {!UI.Context} context
+   * @param {!UI.Context.Context} context
    * @param {string} actionId
    * @return {boolean}
    */

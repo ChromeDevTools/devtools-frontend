@@ -2,17 +2,24 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+import * as Persistence from '../persistence/persistence.js';
+import * as QuickOpen from '../quick_open/quick_open.js';
+import * as SourceFrame from '../source_frame/source_frame.js';
+import * as UI from '../ui/ui.js';
+import * as Workspace from '../workspace/workspace.js';
+
 import {EditingLocationHistoryManager} from './EditingLocationHistoryManager.js';
 import {Events as TabbedEditorContainerEvents, TabbedEditorContainer, TabbedEditorContainerDelegate} from './TabbedEditorContainer.js';  // eslint-disable-line no-unused-vars
 import {Events as UISourceCodeFrameEvents, UISourceCodeFrame} from './UISourceCodeFrame.js';
 
 /**
  * @implements {TabbedEditorContainerDelegate}
- * @implements {UI.Searchable}
- * @implements {UI.Replaceable}
+ * @implements {UI.SearchableView.Searchable}
+ * @implements {UI.SearchableView.Replaceable}
  * @unrestricted
  */
-export class SourcesView extends UI.VBox {
+export class SourcesView extends UI.Widget.VBox {
   /**
    * @suppressGlobalPropertiesCheck
    */
@@ -24,11 +31,11 @@ export class SourcesView extends UI.VBox {
 
     const workspace = self.Workspace.workspace;
 
-    this._searchableView = new UI.SearchableView(this, 'sourcesViewSearchConfig');
+    this._searchableView = new UI.SearchableView.SearchableView(this, 'sourcesViewSearchConfig');
     this._searchableView.setMinimalSearchQuerySize(0);
     this._searchableView.show(this.element);
 
-    /** @type {!Map.<!Workspace.UISourceCode, !UI.Widget>} */
+    /** @type {!Map.<!Workspace.UISourceCode.UISourceCode, !UI.Widget.Widget>} */
     this._sourceViewByUISourceCode = new Map();
 
     this._editorContainer = new TabbedEditorContainer(
@@ -42,7 +49,7 @@ export class SourcesView extends UI.VBox {
 
     this._toolbarContainerElement = this.element.createChild('div', 'sources-toolbar');
     if (!Root.Runtime.experiments.isEnabled('sourcesPrettyPrint')) {
-      this._toolbarEditorActions = new UI.Toolbar('', this._toolbarContainerElement);
+      this._toolbarEditorActions = new UI.Toolbar.Toolbar('', this._toolbarContainerElement);
       self.runtime.allInstances(EditorAction).then(appendButtonsForExtensions.bind(this));
     }
     /**
@@ -54,16 +61,16 @@ export class SourcesView extends UI.VBox {
         this._toolbarEditorActions.appendToolbarItem(actions[i].button(this));
       }
     }
-    this._scriptViewToolbar = new UI.Toolbar('', this._toolbarContainerElement);
+    this._scriptViewToolbar = new UI.Toolbar.Toolbar('', this._toolbarContainerElement);
     this._scriptViewToolbar.element.style.flex = 'auto';
-    this._bottomToolbar = new UI.Toolbar('', this._toolbarContainerElement);
+    this._bottomToolbar = new UI.Toolbar.Toolbar('', this._toolbarContainerElement);
 
     /** @type {?Common.EventTarget.EventDescriptor} */
     this._toolbarChangedListener = null;
 
-    UI.startBatchUpdate();
+    UI.UIUtils.startBatchUpdate();
     workspace.uiSourceCodes().forEach(this._addUISourceCode.bind(this));
-    UI.endBatchUpdate();
+    UI.UIUtils.endBatchUpdate();
 
     workspace.addEventListener(Workspace.Workspace.Events.UISourceCodeAdded, this._uiSourceCodeAdded, this);
     workspace.addEventListener(Workspace.Workspace.Events.UISourceCodeRemoved, this._uiSourceCodeRemoved, this);
@@ -78,7 +85,7 @@ export class SourcesView extends UI.VBox {
       }
 
       let unsavedSourceCodes = [];
-      const projects = self.Workspace.workspace.projectsForType(Workspace.projectTypes.FileSystem);
+      const projects = self.Workspace.workspace.projectsForType(Workspace.Workspace.projectTypes.FileSystem);
       for (let i = 0; i < projects.length; ++i) {
         unsavedSourceCodes =
             unsavedSourceCodes.concat(projects[i].uiSourceCodes().filter(sourceCode => sourceCode.isDirty()));
@@ -88,7 +95,7 @@ export class SourcesView extends UI.VBox {
         return;
       }
 
-      event.returnValue = Common.UIString('DevTools have unsaved changes that will be permanently lost.');
+      event.returnValue = Common.UIString.UIString('DevTools have unsaved changes that will be permanently lost.');
       self.UI.viewManager.showView('sources');
       for (let i = 0; i < unsavedSourceCodes.length; ++i) {
         Common.Revealer.reveal(unsavedSourceCodes[i]);
@@ -146,7 +153,7 @@ export class SourcesView extends UI.VBox {
     this._focusedPlaceholderElement = firstElement;
     this._selectedIndex = 0;
 
-    element.appendChild(UI.XLink.create(
+    element.appendChild(UI.XLink.XLink.create(
         'https://developers.google.com/web/tools/chrome-devtools/sources?utm_source=devtools&utm_campaign=2018Q1',
         'Learn more'));
 
@@ -189,10 +196,10 @@ export class SourcesView extends UI.VBox {
   }
 
   /**
-   * @return {!Map.<!Workspace.UISourceCode, number>}
+   * @return {!Map.<!Workspace.UISourceCode.UISourceCode, number>}
    */
   static defaultUISourceCodeScores() {
-    /** @type {!Map.<!Workspace.UISourceCode, number>} */
+    /** @type {!Map.<!Workspace.UISourceCode.UISourceCode, number>} */
     const defaultScores = new Map();
     const sourcesView = self.UI.context.flavor(SourcesView);
     if (sourcesView) {
@@ -206,21 +213,21 @@ export class SourcesView extends UI.VBox {
   }
 
   /**
-   * @return {!UI.Toolbar}
+   * @return {!UI.Toolbar.Toolbar}
    */
   leftToolbar() {
     return this._editorContainer.leftToolbar();
   }
 
   /**
-   * @return {!UI.Toolbar}
+   * @return {!UI.Toolbar.Toolbar}
    */
   rightToolbar() {
     return this._editorContainer.rightToolbar();
   }
 
   /**
-   * @return {!UI.Toolbar}
+   * @return {!UI.Toolbar.Toolbar}
    */
   bottomToolbar() {
     return this._bottomToolbar;
@@ -237,7 +244,7 @@ export class SourcesView extends UI.VBox {
   }
 
   _handleKeyDown(event) {
-    const shortcutKey = UI.KeyboardShortcut.makeKeyFromEvent(event);
+    const shortcutKey = UI.KeyboardShortcut.KeyboardShortcut.makeKeyFromEvent(event);
     const handler = this._shortcuts[shortcutKey];
     if (handler && handler()) {
       event.consume(true);
@@ -269,14 +276,14 @@ export class SourcesView extends UI.VBox {
   }
 
   /**
-   * @return {!UI.SearchableView}
+   * @return {!UI.SearchableView.SearchableView}
    */
   searchableView() {
     return this._searchableView;
   }
 
   /**
-   * @return {?UI.Widget}
+   * @return {?UI.Widget.Widget}
    */
   visibleView() {
     return this._editorContainer.visibleView;
@@ -295,7 +302,7 @@ export class SourcesView extends UI.VBox {
   }
 
   /**
-   * @return {?Workspace.UISourceCode}
+   * @return {?Workspace.UISourceCode.UISourceCode}
    */
   currentUISourceCode() {
     return this._editorContainer.currentFile();
@@ -325,31 +332,32 @@ export class SourcesView extends UI.VBox {
    * @param {!Common.Event} event
    */
   _uiSourceCodeAdded(event) {
-    const uiSourceCode = /** @type {!Workspace.UISourceCode} */ (event.data);
+    const uiSourceCode = /** @type {!Workspace.UISourceCode.UISourceCode} */ (event.data);
     this._addUISourceCode(uiSourceCode);
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    */
   _addUISourceCode(uiSourceCode) {
     if (uiSourceCode.project().isServiceProject()) {
       return;
     }
-    if (uiSourceCode.project().type() === Workspace.projectTypes.FileSystem &&
-        Persistence.FileSystemWorkspaceBinding.fileSystemType(uiSourceCode.project()) === 'overrides') {
+    if (uiSourceCode.project().type() === Workspace.Workspace.projectTypes.FileSystem &&
+        Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.fileSystemType(uiSourceCode.project()) ===
+            'overrides') {
       return;
     }
     this._editorContainer.addUISourceCode(uiSourceCode);
   }
 
   _uiSourceCodeRemoved(event) {
-    const uiSourceCode = /** @type {!Workspace.UISourceCode} */ (event.data);
+    const uiSourceCode = /** @type {!Workspace.UISourceCode.UISourceCode} */ (event.data);
     this._removeUISourceCodes([uiSourceCode]);
   }
 
   /**
-   * @param {!Array.<!Workspace.UISourceCode>} uiSourceCodes
+   * @param {!Array.<!Workspace.UISourceCode.UISourceCode>} uiSourceCodes
    */
   _removeUISourceCodes(uiSourceCodes) {
     this._editorContainer.removeUISourceCodes(uiSourceCodes);
@@ -368,15 +376,15 @@ export class SourcesView extends UI.VBox {
   _updateScriptViewToolbarItems() {
     this._scriptViewToolbar.removeToolbarItems();
     const view = this.visibleView();
-    if (view instanceof UI.SimpleView) {
-      (/** @type {?UI.SimpleView} */ (view)).toolbarItems().then(items => {
+    if (view instanceof UI.View.SimpleView) {
+      (/** @type {?UI.View.SimpleView} */ (view)).toolbarItems().then(items => {
         items.map(item => this._scriptViewToolbar.appendToolbarItem(item));
       });
     }
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    * @param {number=} lineNumber 0-based
    * @param {number=} columnNumber
    * @param {boolean=} omitFocus
@@ -396,18 +404,18 @@ export class SourcesView extends UI.VBox {
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
-   * @return {!UI.Widget}
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
+   * @return {!UI.Widget.Widget}
    */
   _createSourceView(uiSourceCode) {
     let sourceFrame;
     let sourceView;
     const contentType = uiSourceCode.contentType();
 
-    if (contentType === Common.resourceTypes.Image) {
-      sourceView = new SourceFrame.ImageView(uiSourceCode.mimeType(), uiSourceCode);
-    } else if (contentType === Common.resourceTypes.Font) {
-      sourceView = new SourceFrame.FontView(uiSourceCode.mimeType(), uiSourceCode);
+    if (contentType === Common.ResourceType.resourceTypes.Image) {
+      sourceView = new SourceFrame.ImageView.ImageView(uiSourceCode.mimeType(), uiSourceCode);
+    } else if (contentType === Common.ResourceType.resourceTypes.Font) {
+      sourceView = new SourceFrame.FontView.FontView(uiSourceCode.mimeType(), uiSourceCode);
     } else {
       sourceFrame = new UISourceCodeFrame(uiSourceCode);
     }
@@ -416,14 +424,14 @@ export class SourcesView extends UI.VBox {
       this._historyManager.trackSourceFrameCursorJumps(sourceFrame);
     }
 
-    const widget = /** @type {!UI.Widget} */ (sourceFrame || sourceView);
+    const widget = /** @type {!UI.Widget.Widget} */ (sourceFrame || sourceView);
     this._sourceViewByUISourceCode.set(uiSourceCode, widget);
     return widget;
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
-   * @return {!UI.Widget}
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
+   * @return {!UI.Widget.Widget}
    */
   _getOrCreateSourceView(uiSourceCode) {
     return this._sourceViewByUISourceCode.get(uiSourceCode) || this._createSourceView(uiSourceCode);
@@ -432,7 +440,7 @@ export class SourcesView extends UI.VBox {
   /**
    * @override
    * @param {!UISourceCodeFrame} sourceFrame
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    */
   recycleUISourceCodeFrame(sourceFrame, uiSourceCode) {
     this._sourceViewByUISourceCode.delete(sourceFrame.uiSourceCode());
@@ -442,15 +450,15 @@ export class SourcesView extends UI.VBox {
 
   /**
    * @override
-   * @param {!Workspace.UISourceCode} uiSourceCode
-   * @return {!UI.Widget}
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
+   * @return {!UI.Widget.Widget}
    */
   viewForFile(uiSourceCode) {
     return this._getOrCreateSourceView(uiSourceCode);
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    */
   _removeSourceFrame(uiSourceCode) {
     const sourceView = this._sourceViewByUISourceCode.get(uiSourceCode);
@@ -464,7 +472,7 @@ export class SourcesView extends UI.VBox {
    * @param {!Common.Event} event
    */
   _editorClosed(event) {
-    const uiSourceCode = /** @type {!Workspace.UISourceCode} */ (event.data);
+    const uiSourceCode = /** @type {!Workspace.UISourceCode.UISourceCode} */ (event.data);
     this._historyManager.removeHistoryForSourceCode(uiSourceCode);
 
     let wasSelected = false;
@@ -506,7 +514,7 @@ export class SourcesView extends UI.VBox {
 
   _removeToolbarChangedListener() {
     if (this._toolbarChangedListener) {
-      Common.EventTarget.removeEventListeners([this._toolbarChangedListener]);
+      Common.EventTarget.EventTarget.removeEventListeners([this._toolbarChangedListener]);
     }
     this._toolbarChangedListener = null;
   }
@@ -631,12 +639,12 @@ export class SourcesView extends UI.VBox {
   }
 
   _showOutlineQuickOpen() {
-    QuickOpen.QuickOpen.show('@');
+    QuickOpen.QuickOpen.QuickOpenImpl.show('@');
   }
 
   _showGoToLineQuickOpen() {
     if (this._editorContainer.currentFile()) {
-      QuickOpen.QuickOpen.show(':');
+      QuickOpen.QuickOpen.QuickOpenImpl.show(':');
     }
   }
 
@@ -650,7 +658,7 @@ export class SourcesView extends UI.VBox {
   }
 
   /**
-   * @param {?UI.Widget} sourceFrame
+   * @param {?UI.Widget.Widget} sourceFrame
    */
   _saveSourceFrame(sourceFrame) {
     if (!(sourceFrame instanceof UISourceCodeFrame)) {
@@ -680,19 +688,19 @@ export const Events = {
 export class EditorAction {
   /**
    * @param {!SourcesView} sourcesView
-   * @return {!UI.ToolbarButton}
+   * @return {!UI.Toolbar.ToolbarButton}
    */
   button(sourcesView) {}
 }
 
 /**
- * @implements {UI.ActionDelegate}
+ * @implements {UI.ActionDelegate.ActionDelegate}
  * @unrestricted
  */
 export class SwitchFileActionDelegate {
   /**
-   * @param {!Workspace.UISourceCode} currentUISourceCode
-   * @return {?Workspace.UISourceCode}
+   * @param {!Workspace.UISourceCode.UISourceCode} currentUISourceCode
+   * @return {?Workspace.UISourceCode.UISourceCode}
    */
   static _nextFile(currentUISourceCode) {
     /**
@@ -728,7 +736,7 @@ export class SwitchFileActionDelegate {
 
   /**
    * @override
-   * @param {!UI.Context} context
+   * @param {!UI.Context.Context} context
    * @param {string} actionId
    * @return {boolean}
    */
@@ -748,13 +756,13 @@ export class SwitchFileActionDelegate {
 }
 
 /**
- * @implements {UI.ActionDelegate}
+ * @implements {UI.ActionDelegate.ActionDelegate}
  * @unrestricted
  */
 export class ActionDelegate {
   /**
    * @override
-   * @param {!UI.Context} context
+   * @param {!UI.Context.Context} context
    * @param {string} actionId
    * @return {boolean}
    */

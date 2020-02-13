@@ -2,9 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as UI from '../ui/ui.js';                       // eslint-disable-line no-unused-vars
+import * as Workspace from '../workspace/workspace.js';  // eslint-disable-line no-unused-vars
+
 export class Plugin {
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    * @return {boolean}
    */
   static accepts(uiSourceCode) {
@@ -18,14 +21,14 @@ export class Plugin {
   }
 
   /**
-   * @return {!Promise<!Array<!UI.ToolbarItem>>}
+   * @return {!Promise<!Array<!UI.Toolbar.ToolbarItem>>}
    */
   async rightToolbarItems() {
     return [];
   }
 
   /**
-   * @return {!Array<!UI.ToolbarItem>}
+   * @return {!Array<!UI.Toolbar.ToolbarItem>}
    *
    * TODO(szuend): It is OK to asyncify this function (similar to {rightToolbarItems}),
    *               but it is currently not strictly necessary.
@@ -35,7 +38,7 @@ export class Plugin {
   }
 
   /**
-   * @param {!UI.ContextMenu} contextMenu
+   * @param {!UI.ContextMenu.ContextMenu} contextMenu
    * @param {number} lineNumber
    * @return {!Promise}
    */
@@ -44,7 +47,7 @@ export class Plugin {
   }
 
   /**
-   * @param {!UI.ContextMenu} contextMenu
+   * @param {!UI.ContextMenu.ContextMenu} contextMenu
    * @param {number} lineNumber
    * @param {number} columnNumber
    * @return {!Promise}

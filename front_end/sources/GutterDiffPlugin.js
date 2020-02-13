@@ -2,12 +2,19 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+import * as SourceFrame from '../source_frame/source_frame.js';
+import * as TextEditor from '../text_editor/text_editor.js';  // eslint-disable-line no-unused-vars
+import * as UI from '../ui/ui.js';                            // eslint-disable-line no-unused-vars
+import * as Workspace from '../workspace/workspace.js';
+import * as WorkspaceDiff from '../workspace_diff/workspace_diff.js';
+
 import {Plugin} from './Plugin.js';
 
 export class GutterDiffPlugin extends Plugin {
   /**
-   * @param {!TextEditor.CodeMirrorTextEditor} textEditor
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!TextEditor.CodeMirrorTextEditor.CodeMirrorTextEditor} textEditor
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    */
   constructor(textEditor, uiSourceCode) {
     super();
@@ -17,18 +24,18 @@ export class GutterDiffPlugin extends Plugin {
     /** @type {!Array<!GutterDecoration>} */
     this._decorations = [];
     this._textEditor.installGutter(DiffGutterType, true);
-    this._workspaceDiff = WorkspaceDiff.workspaceDiff();
+    this._workspaceDiff = WorkspaceDiff.WorkspaceDiff.workspaceDiff();
     this._workspaceDiff.subscribeToDiffChange(this._uiSourceCode, this._update, this);
     this._update();
   }
 
   /**
    * @override
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    * @return {boolean}
    */
   static accepts(uiSourceCode) {
-    return uiSourceCode.project().type() === Workspace.projectTypes.Network;
+    return uiSourceCode.project().type() === Workspace.Workspace.projectTypes.Network;
   }
 
   /**
@@ -66,7 +73,7 @@ export class GutterDiffPlugin extends Plugin {
       return;
     }
 
-    const diff = SourceFrame.SourceCodeDiff.computeDiff(lineDiff);
+    const diff = SourceFrame.SourceCodeDiff.SourceCodeDiff.computeDiff(lineDiff);
 
     /** @type {!Map<number, !{lineNumber: number, type: !SourceFrame.SourceCodeDiff.EditType}>} */
     const newDecorations = new Map();
@@ -151,7 +158,7 @@ export class GutterDiffPlugin extends Plugin {
 
   /**
    * @override
-   * @param {!UI.ContextMenu} contextMenu
+   * @param {!UI.ContextMenu.ContextMenu} contextMenu
    * @param {number} lineNumber
    * @return {!Promise}
    */
@@ -161,7 +168,7 @@ export class GutterDiffPlugin extends Plugin {
 
   /**
    * @override
-   * @param {!UI.ContextMenu} contextMenu
+   * @param {!UI.ContextMenu.ContextMenu} contextMenu
    * @param {number} lineNumber
    * @param {number} columnNumber
    * @return {!Promise}
@@ -171,11 +178,11 @@ export class GutterDiffPlugin extends Plugin {
   }
 
   static _appendRevealDiffContextMenu(contextMenu, uiSourceCode) {
-    if (!WorkspaceDiff.workspaceDiff().isUISourceCodeModified(uiSourceCode)) {
+    if (!WorkspaceDiff.WorkspaceDiff.workspaceDiff().isUISourceCodeModified(uiSourceCode)) {
       return;
     }
     contextMenu.revealSection().appendItem(ls`Local Modifications...`, () => {
-      Common.Revealer.reveal(new WorkspaceDiff.DiffUILocation(uiSourceCode));
+      Common.Revealer.reveal(new WorkspaceDiff.WorkspaceDiff.DiffUILocation(uiSourceCode));
     });
   }
 
@@ -186,13 +193,13 @@ export class GutterDiffPlugin extends Plugin {
     for (const decoration of this._decorations) {
       decoration.remove();
     }
-    WorkspaceDiff.workspaceDiff().unsubscribeFromDiffChange(this._uiSourceCode, this._update, this);
+    WorkspaceDiff.WorkspaceDiff.workspaceDiff().unsubscribeFromDiffChange(this._uiSourceCode, this._update, this);
   }
 }
 
 export class GutterDecoration {
   /**
-   * @param {!TextEditor.CodeMirrorTextEditor} textEditor
+   * @param {!TextEditor.CodeMirrorTextEditor.CodeMirrorTextEditor} textEditor
    * @param {number} lineNumber
    * @param {!SourceFrame.SourceCodeDiff.EditType} type
    */
@@ -253,11 +260,11 @@ export class ContextMenuProvider {
   /**
    * @override
    * @param {!Event} event
-   * @param {!UI.ContextMenu} contextMenu
+   * @param {!UI.ContextMenu.ContextMenu} contextMenu
    * @param {!Object} target
    */
   appendApplicableItems(event, contextMenu, target) {
-    let uiSourceCode = /** @type {!Workspace.UISourceCode} */ (target);
+    let uiSourceCode = /** @type {!Workspace.UISourceCode.UISourceCode} */ (target);
     const binding = self.Persistence.persistence.binding(uiSourceCode);
     if (binding) {
       uiSourceCode = binding.network;

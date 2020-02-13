@@ -870,3 +870,10 @@ Storage.Item = class {
     this.enabled = breakpoint.enabled();
   }
 };
+
+/** @typedef {{
+ *    breakpoint: !Breakpoint,
+ *    uiLocation: !Workspace.UISourceCode.UILocation
+ *  }}
+ */
+export let BreakpointLocation;

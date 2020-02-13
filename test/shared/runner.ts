@@ -2,6 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable no-console */
+// no-console disabled here as this is a test runner and expects to output to the console
+
 import * as Mocha from 'mocha';
 import * as puppeteer from 'puppeteer';
 import {spawn} from 'child_process';
@@ -109,7 +112,7 @@ interface DevToolsTarget {
     const listing = await devtools.$('pre');
     const json = await devtools.evaluate(listing => listing.textContent, listing);
     const targets: DevToolsTarget[] = JSON.parse(json);
-    const target = targets.find((target) => target.url === blankPage);
+    const target = targets.find(target => target.url === blankPage);
     if (!target) {
       throw new Error(`Unable to find target page: ${blankPage}`);
     }
@@ -122,12 +125,12 @@ interface DevToolsTarget {
     const frontendUrl = `http://localhost:8090/front_end/devtools_app.html?ws=localhost:${envPort}/devtools/page/${id}`;
     await frontend.goto(frontendUrl, {waitUntil: ['networkidle2', 'domcontentloaded']});
 
-    frontend.on('error', (err) => {
+    frontend.on('error', err => {
       console.log('Error in Frontend');
       console.log(err);
     });
 
-    frontend.on('pageerror', (err) => {
+    frontend.on('pageerror', err => {
       console.log('Page Error in Frontend');
       console.log(err);
     });
@@ -140,7 +143,7 @@ interface DevToolsTarget {
       // Clear any local storage settings.
       await frontend.evaluate(() => localStorage.clear());
 
-      await frontend.evaluate((enabledExperiments) => {
+      await frontend.evaluate(enabledExperiments => {
         for (const experiment of enabledExperiments) {
           // @ts-ignore
           globalThis.Root.Runtime.experiments.setEnabled(experiment, true);
@@ -151,7 +154,7 @@ interface DevToolsTarget {
       await frontend.goto(blankPage, {waitUntil: ['domcontentloaded']});
       await frontend.goto(frontendUrl, {waitUntil: ['networkidle2', 'domcontentloaded']});
       await frontend.waitForSelector('.elements');
-    }
+    };
 
     store(browser, srcPage, frontend, resetPages);
 
@@ -176,7 +179,7 @@ interface DevToolsTarget {
 })();
 
 async function waitForInput() {
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     if (!envDebug) {
       resolve();
       return;
@@ -184,7 +187,7 @@ async function waitForInput() {
 
     process.stdin.setRawMode(true);
     process.stdin.resume();
-    process.stdin.on('data', async (str) => {
+    process.stdin.on('data', async str => {
       // Listen for ctrl+c to exit.
       if (str.toString() === '\x03') {
         interruptionHandler();
@@ -198,7 +201,7 @@ async function runTests() {
   const {testList} = await import(testListPath!);
   const shuffledTests = shuffleTestFiles(testList);
 
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     const mocha = new Mocha();
     for (const test of shuffledTests) {
       mocha.addFile(test);

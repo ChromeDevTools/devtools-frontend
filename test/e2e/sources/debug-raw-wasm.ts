@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 import {describe, it} from 'mocha';
 
-import {getBrowserAndPages, resetPages, resourcesPath, $, getElementPosition} from '../../shared/helper.js';
+import {getBrowserAndPages, resetPages, resourcesPath, $} from '../../shared/helper.js';
 
 describe('Raw-Wasm', async () => {
   beforeEach(async () => {
@@ -20,7 +20,7 @@ describe('Raw-Wasm', async () => {
 
     // This page automatically enters debugging.
     const messageElement = await frontend.waitForSelector('.paused-message');
-    const statusMain = await $('.status-main', messageElement)
+    const statusMain = await $('.status-main', messageElement);
     const statusMainElement = statusMain.asElement();
 
     if (!statusMainElement) {
@@ -30,7 +30,7 @@ describe('Raw-Wasm', async () => {
 
     const pauseMessage = await statusMainElement.evaluate(n => n.textContent);
 
-    assert.equal(pauseMessage, "Debugger paused");
+    assert.equal(pauseMessage, 'Debugger paused');
 
     const sidebar = await messageElement.evaluateHandle(n => n.parentElement);
 
@@ -56,8 +56,8 @@ describe('Raw-Wasm', async () => {
 
     const location = await callFrameLocation.evaluate(n => n.textContent);
 
-    assert.equal(title, "foo");
-    assert.equal(location, "callstack-wasm-to-js.wasm:1");
+    assert.equal(title, 'foo');
+    assert.equal(location, 'callstack-wasm-to-js.wasm:1');
 
     // Select next call frame.
     await callFrame.press('ArrowDown');

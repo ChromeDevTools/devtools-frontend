@@ -6,7 +6,7 @@ import {describe, it} from 'mocha';
 import {click, getBrowserAndPages, resetPages, resourcesPath, assertScreenshotUnchanged} from '../../shared/helper.js';
 
 describe('hello world', () => {
-  beforeEach(async() => {
+  beforeEach(async () => {
     await resetPages();
   });
 

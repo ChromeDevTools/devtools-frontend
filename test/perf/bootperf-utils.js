@@ -9,7 +9,7 @@ function percentile(values, position) {
 
     values = Array.from(values).sort();
     const idx = Math.floor(values.length * position);
-    if (values.length % 2 == 1) {
+    if (values.length % 2 === 1) {
         return values[idx];
     } else {
         return (values[idx] + values[idx - 1]) / 2;

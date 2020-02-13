@@ -46,7 +46,7 @@ describe('The Console Tab', async () => {
       '[1n]',
       '[BigInt]',
       'null 1n BigInt\xA0{2n}',
-    ])
+    ]);
   });
 
   it('shows uncaught promises', async () => {
@@ -59,7 +59,7 @@ describe('The Console Tab', async () => {
     at uncaught-promise.html:28`,
       `Uncaught (in promise) DOMException: Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node.
     at throwDOMException (http://localhost:8090/test/e2e/resources/console/uncaught-promise.html:43:11)
-    at catcher (http://localhost:8090/test/e2e/resources/console/uncaught-promise.html:36:9)`
+    at catcher (http://localhost:8090/test/e2e/resources/console/uncaught-promise.html:36:9)`,
     ]);
   });
 

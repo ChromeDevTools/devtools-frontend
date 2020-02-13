@@ -58,7 +58,7 @@ describe('The Network Tab', async () => {
       {
         key: '',
         value: '',
-      }
+      },
     ]);
   });
 });

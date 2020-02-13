@@ -1,5 +1,9 @@
-// Do not use glob pattern, this file is used by PRESUBMIT.py
-// to ignore these same files/folders for clang-format
+// this file is also used by PRESUBMIT.py to tell clang-format
+// to not check the format of files in here
+// it will ignore any that contain a glob, so if you add a
+// glob into this file it willl not mean that the
+// clang-format check also ignores that file
+
 front_end/.eslintrc.js
 front_end/InspectorBackendCommands.js
 front_end/SupportedCSSProperties.js
@@ -16,4 +20,7 @@ front_end/protocol_externs.js
 front_end/javascript_metadata/NativeFunctions.js
 front_end/sdk/wasm_source_map/pkg/wasm_source_map.js
 front_end/third_party/
+test/e2e/resources/
+test/webtests/
 scripts/
+test/e2e/**/*.js

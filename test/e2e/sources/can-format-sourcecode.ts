@@ -41,7 +41,7 @@ async function prettyPrintMinifiedFile(frontend: puppeteer.Page) {
   await click(PRETTY_PRINT_BUTTON);
 
   // A separate editor is opened which shows the formatted file
-  await frontend.waitForFunction((previousTextContent) => {
+  await frontend.waitForFunction(previousTextContent => {
     return document.querySelector('.CodeMirror-code')!.textContent !== previousTextContent;
   }, {}, previousTextContent);
 }
@@ -49,7 +49,7 @@ async function prettyPrintMinifiedFile(frontend: puppeteer.Page) {
 // We can't use the click helper, as it is not possible to select a particular
 // line number element in CodeMirror.
 async function addBreakpointForLine(frontend: puppeteer.Page, index: number) {
-  const breakpointLineNumber = await frontend.evaluate((index) => {
+  const breakpointLineNumber = await frontend.evaluate(index => {
     const element = document.querySelectorAll('.CodeMirror-linenumber')[index];
 
     const {left, top, width, height} = element.getBoundingClientRect();
@@ -152,7 +152,7 @@ describe('The Sources Tab', async () => {
       {
         message: `second log`,
         lineNumber: `minified-sourcecode.js:formatted:7 `,
-      }
+      },
     ]);
   });
 

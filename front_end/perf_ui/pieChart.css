@@ -65,3 +65,10 @@
     text-align: right;
     width: 70px;
 }
+
+@media (forced-colors: active) {
+    .pie-chart-swatch {
+        forced-color-adjust: none;
+        border-color: ButtonText;
+    }
+}

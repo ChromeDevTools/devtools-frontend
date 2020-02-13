@@ -73,3 +73,41 @@
 .-theme-with-dark-background .text-button:not(.primary-button):not(:disabled):active {
     background-color: #3e3e3e;
 }
+
+@media (forced-colors: active) {
+    .text-button {
+        background-color: ButtonFace;
+        color: ButtonText;
+        border-color: ButtonText;
+    }
+    .text-button:not(:disabled):focus[data-keyboard-focus="true"] {
+        background-color: ButtonFace;
+        color: ButtonText;
+        border-color: Highlight
+    }
+    .text-button:not(:disabled):hover,
+    .text-button:not(:disabled):active {
+        background-color: Highlight;
+        color: HighlightText;
+    }
+    .text-button.primary-button {
+        forced-color-adjust: none;
+        background-color: Highlight;
+        color: HighlightText;
+        border: 1px solid Highlight;
+    }
+    .text-button.primary-button:not(:disabled):focus[data-keyboard-focus="true"] {
+        background-color: Highlight;
+        color: HighlightText;
+        border-color: ButtonText
+    }
+    .text-button.primary-button:not(:disabled):hover,
+    .text-button.primary-button:not(:disabled):active {
+        background-color: HighlightText;
+        color: Highlight;
+        border-color: Highlight;
+    }
+    .text-button:disabled {
+        opacity: 1;
+    }
+}

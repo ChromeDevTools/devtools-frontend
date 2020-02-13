@@ -598,3 +598,22 @@
     flex: none;
     white-space: pre-line;
 }
+
+@media (forced-colors: active) {
+    .timeline-tree-view .data-grid .name-container .activity-icon {
+        forced-color-adjust: none;
+    }
+    .timeline-tree-view .data-grid tr.selected span.percent-column,
+    .timeline-tree-view .data-grid tr.selected div.background-percent-bar span,
+    .timeline-tree-view .data-grid tr.selected .name-container .activity-link .devtools-link {
+        color: HighlightText;
+    }
+    .timeline-tree-view .data-grid .background-bar,
+    .timeline-tree-view .data-grid tr:hover td:not(.bottom-filler-td) {
+        background-color: transparent;
+    }
+    .timeline-tree-view .data-grid tr.selected .background-bar {
+        background-color: transparent;
+        border-bottom-color: HighlightText;
+    }
+}

@@ -52,3 +52,17 @@
 .timeline-status-dialog .stop-button button {
     min-width: 80px;
 }
+
+@media (forced-colors: active) {
+    .timeline-status-dialog {
+        border: 1px solid CanvasText;
+    }
+    .timeline-status-dialog .progress .indicator-container {
+        border: 1px solid ButtonText;
+        background-color: ButtonFace;
+    }
+    .timeline-status-dialog .progress .indicator {
+        forced-color-adjust: none;
+        background-color: ButtonText;
+    }
+}

@@ -5,6 +5,7 @@
     "https://build.chromium.org/p/client.devtools-frontend.integration": [
       {
         "excluded_builders" : [
+          "Auto-roll - devtools chromium",
           "Auto-roll - devtools deps",
           "Stand-alone Linux beta",
           "Stand-alone Linux stable"

@@ -59,6 +59,17 @@ builder(
     execution_timeout=2 * time.hour
 )
 
+builder(
+    name="Auto-roll - devtools chromium",
+    bucket="ci",
+    mastername="client.devtools-frontend.integration",
+    service_account='devtools-ci-autoroll-builder@chops-service-accounts.iam.gserviceaccount.com',
+    schedule="0 4 * * *",
+    recipe_name="v8/auto_roll_v8_deps",
+    dimensions=dimensions.default_ubuntu,
+    execution_timeout=2 * time.hour
+)
+
 luci.list_view(
     name="infra",
     title="Infra",

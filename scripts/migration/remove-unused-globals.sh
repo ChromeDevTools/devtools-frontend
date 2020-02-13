@@ -5,6 +5,8 @@ directories=$(find "$script_full_path/../../front_end/" -type d -maxdepth 1 -min
 
 cd $script_full_path
 
+npm run build
+
 for file in $directories; do
   npm run remove-unused $file
 done

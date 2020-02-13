@@ -64,18 +64,12 @@ function rewriteSource(refactoringNamespace: string, source: string) {
           const fullName = `${computeNamespaceName(refactoringNamespace)}.${getFullTypeName(topLevelAssignment)}`;
 
           try {
-            let usages = child_process.execSync(`grep -r ${fullName} ${FRONT_END_FOLDER} || true`, {encoding: 'utf8'});
+            const usedInModuleJson = !!child_process.execSync(
+                `grep --include=\*module.json -r ${fullName} ${FRONT_END_FOLDER} || true`, {encoding: 'utf8'});
+            const usedInLayoutTests =
+                !!child_process.execSync(`grep -r ${fullName} ${TEST_FOLDER} || true`, {encoding: 'utf8'});
 
-            let usagesCount = usages.split('\n').length;
-
-            usages = child_process.execSync(`grep -r ${fullName} ${TEST_FOLDER} || true`, {encoding: 'utf8'});
-
-            usagesCount += usages.split('\n').length;
-
-            // It is only used once, in its assignment
-            // Grep returns an empty line for every search, so it is
-            // 2 empty lines for the 2 invocations + 1 line for the assignment itself
-            if (usagesCount == 3) {
+            if (!usedInModuleJson && !usedInLayoutTests) {
               removedExports.push(assignment.right.name);
               return b.emptyStatement();
             }

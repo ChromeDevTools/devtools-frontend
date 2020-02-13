@@ -215,7 +215,7 @@ error message
 
     assert.deepEqual(messages, [
       `Uncaught RangeError: Maximum call stack size exceeded
-    at boo (foo2.js:1)
+    at boo (foo2.js:2)
     at boo (foo2.js:2)
     at boo (foo2.js:2)
     at boo (foo2.js:2)

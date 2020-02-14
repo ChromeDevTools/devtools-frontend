@@ -24,3 +24,4 @@ test/e2e/resources/
 test/webtests/
 scripts/
 test/e2e/**/*.js
+test/shared/**/*.js

@@ -3,7 +3,8 @@
 // found in the LICENSE file.
 
 import {describe, it} from 'mocha';
-import {click, getBrowserAndPages, resetPages, resourcesPath, assertScreenshotUnchanged} from '../../shared/helper.js';
+import {click, getBrowserAndPages, resetPages, resourcesPath} from '../../shared/helper.js';
+import {assertScreenshotUnchanged} from '../../shared/screenshot.js';
 
 describe('hello world', () => {
   beforeEach(async () => {

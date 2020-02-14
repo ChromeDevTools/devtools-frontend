@@ -171,7 +171,7 @@ export class BinaryViewObject {
    * @param {string} label
    * @param {string} copiedMessage
    * @param {function():!UI.Widget.Widget} createViewFn
-   * @param {function():Promise<!Common.DeferredContent>} deferredContent
+   * @param {function():Promise<!Common.ContentProvider.DeferredContent>} deferredContent
    */
   constructor(type, label, copiedMessage, createViewFn, deferredContent) {
     this.type = type;

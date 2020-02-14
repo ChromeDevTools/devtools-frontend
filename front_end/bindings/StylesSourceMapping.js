@@ -348,7 +348,7 @@ export class StyleFile {
 
   /**
    * @override
-   * @return {!Promise<!Common.DeferredContent>}
+   * @return {!Promise<!Common.ContentProvider.DeferredContent>}
    */
   requestContent() {
     return this._headers.firstValue().originalContentProvider().requestContent();

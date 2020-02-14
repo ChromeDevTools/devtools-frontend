@@ -201,7 +201,7 @@ export class Resource {
 
   /**
    * @override
-   * @return {!Promise<!Common.DeferredContent>}
+   * @return {!Promise<!Common.ContentProvider.DeferredContent>}
    */
   requestContent() {
     if (typeof this._content !== 'undefined') {
@@ -265,7 +265,7 @@ export class Resource {
     }
     this._contentRequested = true;
 
-    /** @type {!Common.DeferredContent} */
+    /** @type {!Common.ContentProvider.DeferredContent} */
     let loadResult;
     if (this.request) {
       const contentData = await this.request.contentData();

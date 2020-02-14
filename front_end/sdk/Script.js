@@ -153,7 +153,7 @@ export class Script {
 
   /**
    * @override
-   * @return {!Promise<!Common.DeferredContent>}
+   * @return {!Promise<!Common.ContentProvider.DeferredContent>}
    */
   async requestContent() {
     if (this._source) {

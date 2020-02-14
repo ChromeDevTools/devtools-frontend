@@ -455,7 +455,7 @@ class Binding {
 
   /**
    * @override
-   * @return {!Promise<!Common.DeferredContent>}
+   * @return {!Promise<!Common.ContentProvider.DeferredContent>}
    */
   requestContent() {
     return this._resources.firstValue().requestContent();

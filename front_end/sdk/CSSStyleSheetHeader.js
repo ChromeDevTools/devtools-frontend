@@ -43,7 +43,7 @@ export class CSSStyleSheetHeader {
    */
   originalContentProvider() {
     if (!this._originalContentProvider) {
-      const lazyContent = /** @type {function():!Promise<!Common.DeferredContent>} */ (async () => {
+      const lazyContent = /** @type {function():!Promise<!Common.ContentProvider.DeferredContent>} */ (async () => {
         const originalText = await this._cssModel.originalStyleSheetText(this);
         // originalText might be an empty string which should not trigger the error
         if (originalText === null) {
@@ -157,7 +157,7 @@ export class CSSStyleSheetHeader {
 
   /**
    * @override
-   * @return {!Promise<!Common.DeferredContent>}
+   * @return {!Promise<!Common.ContentProvider.DeferredContent>}
    */
   async requestContent() {
     try {

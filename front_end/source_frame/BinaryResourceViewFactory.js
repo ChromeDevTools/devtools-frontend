@@ -20,7 +20,7 @@ export class BinaryResourceViewFactory {
     this._arrayPromise = null;
     /** @type {?Promise<string>} */
     this._hexPromise = null;
-    /** @type {?Promise<!Common.DeferredContent>} */
+    /** @type {?Promise<!Common.ContentProvider.DeferredContent>} */
     this._utf8Promise = null;
   }
 
@@ -35,7 +35,7 @@ export class BinaryResourceViewFactory {
   }
 
   /**
-   * @return {!Promise<!Common.DeferredContent>}
+   * @return {!Promise<!Common.ContentProvider.DeferredContent>}
    */
   async hex() {
     if (!this._hexPromise) {
@@ -50,14 +50,14 @@ export class BinaryResourceViewFactory {
   }
 
   /**
-   * @return {!Promise<!Common.DeferredContent>}
+   * @return {!Promise<!Common.ContentProvider.DeferredContent>}
    */
   async base64() {
     return {content: this._base64content, isEncoded: true};
   }
 
   /**
-   * @return {!Promise<!Common.DeferredContent>}
+   * @return {!Promise<!Common.ContentProvider.DeferredContent>}
    */
   async utf8() {
     if (!this._utf8Promise) {

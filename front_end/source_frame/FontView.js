@@ -58,7 +58,7 @@ export class FontView extends UI.View.SimpleView {
 
   /**
    * @param {string} uniqueFontName
-   * @param {!Common.DeferredContent} deferredContent
+   * @param {!Common.ContentProvider.DeferredContent} deferredContent
    */
   _onFontContentLoaded(uniqueFontName, deferredContent) {
     const {content} = deferredContent;

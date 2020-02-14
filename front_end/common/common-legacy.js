@@ -218,17 +218,6 @@ Common.localize = CommonModule.UIString.localize;
  */
 Common.Worker = CommonModule.Worker.WorkerWrapper;
 
-/**
- * @typedef {{
-  *    content: string,
-  *    isEncoded: boolean,
-  * }|{
-  *    error: string,
-  *    isEncoded: boolean,
-  * }}
-  */
-Common.DeferredContent;
-
 /** @typedef {{tooltip: (string|undefined), preventKeyboardFocus: (boolean|undefined)}} */
 Common.Linkifier.Options;
 

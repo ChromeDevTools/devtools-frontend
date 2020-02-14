@@ -53,7 +53,7 @@ export class ContentProvider {
   }
 
   /**
-   * @return {!Promise<!Common.DeferredContent>}
+   * @return {!Promise<!DeferredContent>}
    */
   requestContent() {
   }
@@ -119,3 +119,14 @@ export const contentAsDataURL = function(content, mimeType, contentEncoded, char
   return 'data:' + mimeType + (charset ? ';charset=' + charset : '') + (contentEncoded ? ';base64' : '') + ',' +
       content;
 };
+
+/**
+ * @typedef {{
+ *    content: string,
+ *    isEncoded: boolean,
+ * }|{
+ *    error: string,
+ *    isEncoded: boolean,
+ * }}
+ */
+export let DeferredContent;

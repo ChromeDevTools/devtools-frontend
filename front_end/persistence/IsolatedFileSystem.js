@@ -345,7 +345,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
   /**
    * @override
    * @param {string} path
-   * @returns {!Promise<!Common.DeferredContent>}
+   * @returns {!Promise<!Common.ContentProvider.DeferredContent>}
    */
   requestFileContent(path) {
     return this._serializedFileOperation(path, () => this._innerRequestFileContent(path));
@@ -353,7 +353,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
 
   /**
    * @param {string} path
-   * @return {!Promise<!Common.DeferredContent>}
+   * @return {!Promise<!Common.ContentProvider.DeferredContent>}
    */
   async _innerRequestFileContent(path) {
     const blob = await this.requestFileBlob(path);

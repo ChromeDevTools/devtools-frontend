@@ -54,7 +54,7 @@ export class ContentProviderBasedProject extends Workspace.Workspace.ProjectStor
   /**
    * @override
    * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
-   * @returns {!Promise<!Common.DeferredContent>}
+   * @returns {!Promise<!Common.ContentProvider.DeferredContent>}
    */
   async requestFileContent(uiSourceCode) {
     const contentProvider = this._contentProviders[uiSourceCode.url()];

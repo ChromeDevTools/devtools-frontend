@@ -45,7 +45,7 @@ import {Events, SourcesTextEditor, SourcesTextEditorDelegate} from './SourcesTex
  */
 export class SourceFrameImpl extends UI.View.SimpleView {
   /**
-   * @param {function(): !Promise<!Common.DeferredContent>} lazyContent
+   * @param {function(): !Promise<!Common.ContentProvider.DeferredContent>} lazyContent
    * @param {!UI.TextEditor.Options=} codeMirrorOptions
    */
   constructor(lazyContent, codeMirrorOptions) {

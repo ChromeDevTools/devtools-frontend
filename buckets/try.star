@@ -58,7 +58,7 @@ builder_coverage(
 try_builder(
   name="devtools_frontend_linux_blink_rel",
   recipe_name="chromium_trybot",
-  dimensions=dimensions.ubuntu,
+  dimensions=dimensions.default_ubuntu,
   execution_timeout=2 * time.hour,
   build_numbers=True,
 )
@@ -74,7 +74,7 @@ try_builder(
 try_builder(
   name="dtf_linux_experiments",
   recipe_name="devtools/devtools-frontend",
-  dimensions=dimensions.ubuntu,
+  dimensions=dimensions.default_ubuntu,
   execution_timeout=2 * time.hour,
   build_numbers=True,
 )

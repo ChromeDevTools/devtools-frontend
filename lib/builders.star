@@ -76,7 +76,7 @@ def builder(
   )
 
 os_dimensions = {
-  "linux": dimensions.ubuntu,
+  "linux": dimensions.default_ubuntu,
   "win64": dimensions.win10,
   "mac": dimensions.mac,
 }

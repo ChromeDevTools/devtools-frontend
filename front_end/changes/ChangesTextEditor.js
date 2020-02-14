@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as TextEditor from '../text_editor/text_editor.js';
+import * as UI from '../ui/ui.js';  // eslint-disable-line no-unused-vars
 
 import {RowType} from './ChangesView.js';
 

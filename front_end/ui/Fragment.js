@@ -53,7 +53,7 @@ export class Fragment {
 
   /**
    * @param {!Array<string>} strings
-   * @return {!Fragment._Template}
+   * @return {!_Template}
    * @suppressGlobalPropertiesCheck
    */
   static _template(strings) {
@@ -143,7 +143,7 @@ export class Fragment {
   }
 
   /**
-   * @param {!Fragment._Template} template
+   * @param {!_Template} template
    * @param {!Array<*>} values
    * @return {!Fragment}
    */
@@ -232,3 +232,26 @@ const _templateCache = new Map();
 export const html = (strings, ...vararg) => {
   return Fragment.cached(strings, ...vararg).element();
 };
+
+/**
+  * @typedef {!{
+  *   elementId: (string|undefined),
+  *
+  *   attr: (!{
+  *     index: number,
+  *     names: !Array<string>,
+  *     values: !Array<string>
+  *   }|undefined),
+  *
+  *   replaceNodeIndex: (number|undefined)
+  * }}
+  */
+export let _Bind;
+
+/**
+ * @typedef {!{
+  *   template: !Element,
+  *   binds: !Array<!_Bind>
+  * }}
+  */
+export let _Template;

@@ -28,6 +28,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as ARIAUtils from './ARIAUtils.js';
 import {GlassPane, PointerEventsBehavior} from './GlassPane.js';
 import {KeyboardShortcut, Keys} from './KeyboardShortcut.js';
 import {SplitWidget} from './SplitWidget.js';  // eslint-disable-line no-unused-vars
@@ -45,7 +46,7 @@ export class Dialog extends GlassPane {
       this.hide();
       event.consume(true);
     });
-    UI.ARIAUtils.markAsModalDialog(this.contentElement);
+    ARIAUtils.markAsModalDialog(this.contentElement);
     /** @type {!OutsideTabIndexBehavior} */
     this._tabIndexBehavior = OutsideTabIndexBehavior.DisableAllOutsideTabIndex;
     /** @type {!Map<!HTMLElement, number>} */

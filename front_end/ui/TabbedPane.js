@@ -29,6 +29,8 @@
  */
 
 import * as Common from '../common/common.js';
+
+import * as ARIAUtils from './ARIAUtils.js';
 import {ContextMenu} from './ContextMenu.js';
 import {Constraints, Size} from './Geometry.js';
 import {Icon} from './Icon.js';
@@ -75,7 +77,7 @@ export class TabbedPane extends VBox {
    * @param {string} name
    */
   setAccessibleName(name) {
-    UI.ARIAUtils.setAccessibleName(this._tabsElement, name);
+    ARIAUtils.setAccessibleName(this._tabsElement, name);
   }
 
   /**
@@ -452,7 +454,7 @@ export class TabbedPane extends VBox {
     }
     if (tab.title !== tabTitle) {
       tab.title = tabTitle;
-      UI.ARIAUtils.setAccessibleName(tab.tabElement, tabTitle);
+      ARIAUtils.setAccessibleName(tab.tabElement, tabTitle);
       this._updateTabElements();
     }
   }
@@ -612,8 +614,8 @@ export class TabbedPane extends VBox {
   _createDropDownButton() {
     const dropDownContainer = createElementWithClass('div', 'tabbed-pane-header-tabs-drop-down-container');
     const chevronIcon = Icon.create('largeicon-chevron', 'chevron-icon');
-    UI.ARIAUtils.markAsMenuButton(dropDownContainer);
-    UI.ARIAUtils.setAccessibleName(dropDownContainer, ls`More tabs`);
+    ARIAUtils.markAsMenuButton(dropDownContainer);
+    ARIAUtils.setAccessibleName(dropDownContainer, ls`More tabs`);
     dropDownContainer.tabIndex = 0;
     dropDownContainer.appendChild(chevronIcon);
     dropDownContainer.addEventListener('click', this._dropDownClicked.bind(this));
@@ -877,7 +879,7 @@ export class TabbedPane extends VBox {
   _showTab(tab) {
     tab.tabElement.tabIndex = 0;
     tab.tabElement.classList.add('selected');
-    UI.ARIAUtils.setSelected(tab.tabElement, true);
+    ARIAUtils.setSelected(tab.tabElement, true);
     tab.view.show(this.element);
     this._updateTabSlider();
   }
@@ -1199,9 +1201,9 @@ export class TabbedPaneTab {
   _createTabElement(measuring) {
     const tabElement = createElementWithClass('div', 'tabbed-pane-header-tab');
     tabElement.id = 'tab-' + this._id;
-    UI.ARIAUtils.markAsTab(tabElement);
-    UI.ARIAUtils.setSelected(tabElement, false);
-    UI.ARIAUtils.setAccessibleName(tabElement, this.title);
+    ARIAUtils.markAsTab(tabElement);
+    ARIAUtils.setSelected(tabElement, false);
+    ARIAUtils.setAccessibleName(tabElement, this.title);
 
     const titleElement = tabElement.createChild('span', 'tabbed-pane-header-tab-title');
     titleElement.textContent = this.title;

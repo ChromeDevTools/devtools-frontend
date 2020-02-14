@@ -33,7 +33,7 @@ import {GlassPane, MarginBehavior, SizeBehavior} from './GlassPane.js';
 export class PopoverHelper {
   /**
    * @param {!Element} container
-   * @param {function(!MouseEvent):?UI.PopoverRequest} getRequest
+   * @param {function(!MouseEvent):?PopoverRequest} getRequest
    */
   constructor(container, getRequest) {
     this._disableOnClick = false;
@@ -279,3 +279,6 @@ export class PopoverHelper {
     this._container.removeEventListener('mouseout', this._boundMouseOut, false);
   }
 }
+
+/** @typedef {{box: !AnchorBox, show:(function(!GlassPane):!Promise<boolean>), hide:(function()|undefined)}} */
+export let PopoverRequest;

@@ -14,7 +14,7 @@ import {Widget} from './Widget.js';  // eslint-disable-line no-unused-vars
  */
 export class TextEditorFactory {
   /**
-   * @param {!UI.TextEditor.Options} options
+   * @param {!Options} options
    * @return {!TextEditor}
    */
   createEditor(options) {}

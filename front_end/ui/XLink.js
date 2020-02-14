@@ -3,6 +3,8 @@
 // found in the LICENSE file.
 
 import * as Host from '../host/host.js';
+
+import * as ARIAUtils from './ARIAUtils.js';
 import {ContextMenu, Provider} from './ContextMenu.js';  // eslint-disable-line no-unused-vars
 import {html} from './Fragment.js';
 import {copyLinkAddressLabel, MaxLengthForDisplayedURLs, openLinkExternallyLabel} from './UIUtils.js';
@@ -36,7 +38,7 @@ export class XLink extends XElement {
     super();
 
     this.style.setProperty('display', 'inline');
-    UI.ARIAUtils.markAsLink(this);
+    ARIAUtils.markAsLink(this);
     this.tabIndex = 0;
     this.target = '_blank';
     this.rel = 'noopener';

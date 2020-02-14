@@ -29,11 +29,14 @@
  */
 
 import * as Common from '../common/common.js';
+
 import {Action, Events as ActionEvents} from './Action.js';  // eslint-disable-line no-unused-vars
+import * as ARIAUtils from './ARIAUtils.js';
 import {ContextMenu} from './ContextMenu.js';
 import {GlassPane, PointerEventsBehavior} from './GlassPane.js';
 import {Icon} from './Icon.js';
 import {bindCheckbox} from './SettingsUI.js';
+import {Suggestions} from './SuggestBox.js';  // eslint-disable-line no-unused-vars
 import {Events as TextPromptEvents, TextPrompt} from './TextPrompt.js';
 import {Tooltip} from './Tooltip.js';
 import {CheckboxLabel, LongClickController} from './UIUtils.js';
@@ -415,7 +418,7 @@ export class ToolbarItem extends Common.ObjectWrapper.ObjectWrapper {
       return;
     }
     this._title = title;
-    UI.ARIAUtils.setAccessibleName(this.element, title);
+    ARIAUtils.setAccessibleName(this.element, title);
     Tooltip.install(this.element, title);
   }
 
@@ -603,7 +606,7 @@ export class ToolbarInput extends ToolbarItem {
    * @param {number=} growFactor
    * @param {number=} shrinkFactor
    * @param {string=} tooltip
-   * @param {(function(string, string, boolean=):!Promise<!UI.SuggestBox.Suggestions>)=} completions
+   * @param {(function(string, string, boolean=):!Promise<!Suggestions>)=} completions
    */
   constructor(placeholder, accessiblePlaceholder, growFactor, shrinkFactor, tooltip, completions) {
     super(createElementWithClass('div', 'toolbar-input'));
@@ -611,7 +614,7 @@ export class ToolbarInput extends ToolbarItem {
     const internalPromptElement = this.element.createChild('div', 'toolbar-input-prompt');
     internalPromptElement.addEventListener('focus', () => this.element.classList.add('focused'));
     internalPromptElement.addEventListener('blur', () => this.element.classList.remove('focused'));
-    UI.ARIAUtils.markAsHidden(internalPromptElement);
+    ARIAUtils.markAsHidden(internalPromptElement);
 
     this._prompt = new TextPrompt();
     this._proxyElement = this._prompt.attach(internalPromptElement);
@@ -708,7 +711,7 @@ export class ToolbarToggle extends ToolbarButton {
     this._untoggledGlyph = glyph;
     this._toggledGlyph = toggledGlyph;
     this.element.classList.add('toolbar-state-off');
-    UI.ARIAUtils.setPressed(this.element, false);
+    ARIAUtils.setPressed(this.element, false);
   }
 
   /**
@@ -728,7 +731,7 @@ export class ToolbarToggle extends ToolbarButton {
     this._toggled = toggled;
     this.element.classList.toggle('toolbar-state-on', toggled);
     this.element.classList.toggle('toolbar-state-off', !toggled);
-    UI.ARIAUtils.setPressed(this.element, toggled);
+    ARIAUtils.setPressed(this.element, toggled);
     if (this._toggledGlyph && this._untoggledGlyph) {
       this.setGlyph(toggled ? this._toggledGlyph : this._untoggledGlyph);
     }
@@ -762,7 +765,7 @@ export class ToolbarMenuButton extends ToolbarButton {
     super('', 'largeicon-menu');
     this._contextMenuHandler = contextMenuHandler;
     this._useSoftMenu = !!useSoftMenu;
-    UI.ARIAUtils.markAsMenuButton(this.element);
+    ARIAUtils.markAsMenuButton(this.element);
   }
 
   /**
@@ -894,7 +897,7 @@ export class ToolbarComboBox extends ToolbarItem {
     if (changeHandler) {
       this._selectElement.addEventListener('change', changeHandler, false);
     }
-    UI.ARIAUtils.setAccessibleName(this._selectElement, title);
+    ARIAUtils.setAccessibleName(this._selectElement, title);
     super.setTitle(title);
     if (className) {
       this._selectElement.classList.add(className);

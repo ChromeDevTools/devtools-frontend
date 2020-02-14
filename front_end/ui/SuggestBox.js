@@ -28,6 +28,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as ARIAUtils from './ARIAUtils.js';
 import {Size} from './Geometry.js';
 import {AnchorBehavior, GlassPane} from './GlassPane.js';
 import {Icon} from './Icon.js';
@@ -42,7 +43,7 @@ import {measuredScrollbarWidth} from './utils/measured-scrollbar-width.js';
  */
 export class SuggestBoxDelegate {
   /**
-   * @param {?UI.SuggestBox.Suggestion} suggestion
+   * @param {?Suggestion} suggestion
    * @param {boolean=} isIntermediateSuggestion
    */
   applySuggestion(suggestion, isIntermediateSuggestion) {
@@ -70,12 +71,12 @@ export class SuggestBox {
     this._userEnteredText = '';
     this._defaultSelectionIsDimmed = false;
 
-    /** @type {?UI.SuggestBox.Suggestion} */
+    /** @type {?Suggestion} */
     this._onlyCompletion = null;
 
-    /** @type {!ListModel<!UI.SuggestBox.Suggestion>} */
+    /** @type {!ListModel<!Suggestion>} */
     this._items = new ListModel();
-    /** @type {!ListControl<!UI.SuggestBox.Suggestion>} */
+    /** @type {!ListControl<!Suggestion>} */
     this._list = new ListControl(this._items, this, ListMode.EqualHeightItems);
     this._element = this._list.element;
     this._element.classList.add('suggest-box');
@@ -111,7 +112,7 @@ export class SuggestBox {
   }
 
   /**
-   * @param {!UI.SuggestBox.Suggestions} items
+   * @param {!Suggestions} items
    */
   _updateMaxSize(items) {
     const maxWidth = this._maxWidth(items);
@@ -121,7 +122,7 @@ export class SuggestBox {
   }
 
   /**
-   * @param {!UI.SuggestBox.Suggestions} items
+   * @param {!Suggestions} items
    * @return {number}
    */
   _maxWidth(items) {
@@ -138,7 +139,7 @@ export class SuggestBox {
         maxItem = items[i];
       }
     }
-    const element = this.createElementForItem(/** @type {!UI.SuggestBox.Suggestion} */ (maxItem));
+    const element = this.createElementForItem(/** @type {!Suggestion} */ (maxItem));
     const preferredWidth =
         measurePreferredSize(element, this._element).width + measuredScrollbarWidth(this._element.ownerDocument);
     return Math.min(kMaxWidth, preferredWidth);
@@ -170,13 +171,13 @@ export class SuggestBox {
    */
   _applySuggestion(isIntermediateSuggestion) {
     if (this._onlyCompletion) {
-      UI.ARIAUtils.alert(ls`${this._onlyCompletion.text}, suggestion`, this._element);
+      ARIAUtils.alert(ls`${this._onlyCompletion.text}, suggestion`, this._element);
       this._suggestBoxDelegate.applySuggestion(this._onlyCompletion, isIntermediateSuggestion);
       return true;
     }
     const suggestion = this._list.selectedItem();
     if (suggestion && suggestion.text) {
-      UI.ARIAUtils.alert(ls`${suggestion.title || suggestion.text}, suggestion`, this._element);
+      ARIAUtils.alert(ls`${suggestion.title || suggestion.text}, suggestion`, this._element);
     }
     this._suggestBoxDelegate.applySuggestion(suggestion, isIntermediateSuggestion);
 
@@ -200,7 +201,7 @@ export class SuggestBox {
 
   /**
    * @override
-   * @param {!UI.SuggestBox.Suggestion} item
+   * @param {!Suggestion} item
    * @return {!Element}
    */
   createElementForItem(item) {
@@ -240,7 +241,7 @@ export class SuggestBox {
 
   /**
    * @override
-   * @param {!UI.SuggestBox.Suggestion} item
+   * @param {!Suggestion} item
    * @return {number}
    */
   heightForItem(item) {
@@ -249,7 +250,7 @@ export class SuggestBox {
 
   /**
    * @override
-   * @param {!UI.SuggestBox.Suggestion} item
+   * @param {!Suggestion} item
    * @return {boolean}
    */
   isItemSelectable(item) {
@@ -258,8 +259,8 @@ export class SuggestBox {
 
   /**
    * @override
-   * @param {?UI.SuggestBox.Suggestion} from
-   * @param {?UI.SuggestBox.Suggestion} to
+   * @param {?Suggestion} from
+   * @param {?Suggestion} to
    * @param {?Element} fromElement
    * @param {?Element} toElement
    */
@@ -299,8 +300,8 @@ export class SuggestBox {
   }
 
   /**
-   * @param {!UI.SuggestBox.Suggestions} completions
-   * @param {?UI.SuggestBox.Suggestion} highestPriorityItem
+   * @param {!Suggestions} completions
+   * @param {?Suggestion} highestPriorityItem
    * @param {boolean} canShowForSingleItem
    * @param {string} userEnteredText
    * @return {boolean}
@@ -325,7 +326,7 @@ export class SuggestBox {
 
   /**
    * @param {!AnchorBox} anchorBox
-   * @param {!UI.SuggestBox.Suggestions} completions
+   * @param {!Suggestions} completions
    * @param {boolean} selectHighestPriority
    * @param {boolean} canShowForSingleItem
    * @param {string} userEnteredText
@@ -416,7 +417,7 @@ export let Suggestions;
     *     tooltipCallback: ((function(number, number):!Promise<?Element>)|undefined),
     *     suggestionsCallback: ((function(!TextUtils.TextRange, !TextUtils.TextRange, boolean=):?Promise.<!Suggestions>)|undefined),
     *     isWordChar: ((function(string):boolean)|undefined),
-    *     anchorBehavior: (UI.GlassPane.AnchorBehavior|undefined)
+    *     anchorBehavior: (AnchorBehavior|undefined)
     * }}
     */
 export let AutocompleteConfig;

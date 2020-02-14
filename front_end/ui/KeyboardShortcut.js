@@ -99,9 +99,9 @@ export class KeyboardShortcut {
   }
 
   /**
-   * @param {string|!UI.KeyboardShortcut.Key} key
+   * @param {string|!Key} key
    * @param {number=} modifiers
-   * @return {!KeyboardShortcut.Descriptor}
+   * @return {!Descriptor}
    */
   static makeDescriptor(key, modifiers) {
     return {
@@ -112,7 +112,7 @@ export class KeyboardShortcut {
 
   /**
    * @param {string} shortcut
-   * @return {?KeyboardShortcut.Descriptor}
+   * @return {?Descriptor}
    */
   static makeDescriptorFromBindingShortcut(shortcut) {
     const parts = shortcut.split(/\+(?!$)/);
@@ -141,7 +141,7 @@ export class KeyboardShortcut {
   }
 
   /**
-   * @param {string|!UI.KeyboardShortcut.Key} key
+   * @param {string|!Key} key
    * @param {number=} modifiers
    * @return {string}
    */
@@ -150,7 +150,7 @@ export class KeyboardShortcut {
   }
 
   /**
-   * @param {string|!UI.KeyboardShortcut.Key} key
+   * @param {string|!Key} key
    * @return {string}
    */
   static _keyName(key) {
@@ -223,7 +223,7 @@ export const Modifiers = {
   }
 };
 
-/** @type {!Object.<string, !UI.KeyboardShortcut.Key>} */
+/** @type {!Object.<string, !Key>} */
 export const Keys = {
   Backspace: {code: 8, name: '\u21a4'},
   Tab: {code: 9, name: {mac: '\u21e5', other: 'Tab'}},
@@ -291,6 +291,9 @@ for (const key in Keys) {
   }
 }
 })();
+
+/** @typedef {!{code: number, name: (string|!Object.<string, string>)}} */
+export let Key;
 
 /** @typedef {!{key: number, name: string}} */
 export let Descriptor;

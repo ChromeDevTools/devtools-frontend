@@ -47,37 +47,6 @@ DataGrid.DataGrid.DataType = DataGridModule.DataGrid.DataType;
 DataGrid.DataGrid.ResizeMethod = DataGridModule.DataGrid.ResizeMethod;
 
 /**
- * @typedef {{
-  *   displayName: string,
-  *   columns: !Array.<!DataGrid.ColumnDescriptor>,
-  *   editCallback: (function(!Object, string, *, *)|undefined),
-  *   deleteCallback: (function(!Object)|undefined|function(string)),
-  *   refreshCallback: (function()|undefined)
-  * }}
-  */
-DataGrid.Parameters = DataGridModule.Parameters;
-
-/**
- * @typedef {{
-  *   id: string,
-  *   title: (string|undefined),
-  *   titleDOMFragment: (?DocumentFragment|undefined),
-  *   sortable: boolean,
-  *   sort: (?DataGrid.DataGrid.Order|undefined),
-  *   align: (?DataGrid.DataGrid.Align|undefined),
-  *   fixedWidth: (boolean|undefined),
-  *   editable: (boolean|undefined),
-  *   nonSelectable: (boolean|undefined),
-  *   longText: (boolean|undefined),
-  *   disclosure: (boolean|undefined),
-  *   weight: (number|undefined),
-  *   allowInSortByEvenWhenHidden: (boolean|undefined),
-  *   dataType: (?DataGrid.DataGrid.DataType|undefined)
-  * }}
-  */
-DataGrid.ColumnDescriptor = DataGridModule.ColumnDescriptor;
-
-/**
  * @constructor
  */
 DataGrid.ShowMoreDataGridNode = DataGridModule.ShowMoreDataGridNode.ShowMoreDataGridNode;

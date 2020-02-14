@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as DataGrid from '../data_grid/data_grid.js';
+
 /**
  * @typedef {{
  *     id: string,
@@ -33,7 +35,7 @@ Media.MediaEventColumnKeys = {
 /**
  * @unrestricted
  */
-Media.EventNode = class extends DataGrid.DataGridNode {
+Media.EventNode = class extends DataGrid.DataGrid.DataGridNode {
   /**
    * @param {!Media.Event} event
    */
@@ -79,7 +81,8 @@ Media.PlayerEventsView = class extends UI.VBox {
         id: Media.MediaEventColumnKeys.Timestamp,
         title: ls`Timestamp`,
         weight: 1,
-        sortingFunction: DataGrid.SortableDataGrid.NumericComparator.bind(null, Media.MediaEventColumnKeys.Timestamp)
+        sortingFunction: DataGrid.SortableDataGrid.SortableDataGrid.NumericComparator.bind(
+            null, Media.MediaEventColumnKeys.Timestamp)
       },
       {id: Media.MediaEventColumnKeys.Event, title: ls`Event Name`, weight: 2},
       {id: Media.MediaEventColumnKeys.Value, title: ls`Value`, weight: 7}
@@ -103,7 +106,7 @@ Media.PlayerEventsView = class extends UI.VBox {
     // TODO(tmathmeyer) SortableDataGrid doesn't play nice with nested JSON
     // renderers, since they can change size, and this breaks the visible
     // element computation in ViewportDataGrid.
-    const datagrid = new DataGrid.DataGrid({displayName: ls`Event Display`, columns: gridColumnDescs});
+    const datagrid = new DataGrid.DataGrid.DataGrid({displayName: ls`Event Display`, columns: gridColumnDescs});
     datagrid.asWidget().contentElement.classList.add('no-border-top-datagrid');
     return datagrid;
   }
@@ -159,10 +162,10 @@ Media.PlayerEventsView = class extends UI.VBox {
 
   /**
    * @param {!Media.EventDisplayColumnConfig} columnConfig
-   * @return {!DataGrid.ColumnDescriptor}
+   * @return {!DataGrid.DataGrid.ColumnDescriptor}
    */
   static _convertToGridDescriptor(columnConfig) {
-    return /** @type {!DataGrid.ColumnDescriptor} */ ({
+    return /** @type {!DataGrid.DataGrid.ColumnDescriptor} */ ({
       id: columnConfig.id,
       title: columnConfig.title,
       sortable: columnConfig.sortable,

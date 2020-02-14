@@ -32,7 +32,7 @@ import * as UI from '../ui/ui.js';
  */
 export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
   /**
-   * @param {!DataGrid.Parameters} dataGridParameters
+   * @param {!Parameters} dataGridParameters
    */
   constructor(dataGridParameters) {
     super();
@@ -85,11 +85,11 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
     /** @type {boolean} */
     this._inline = false;
 
-    /** @type {!Array.<!DataGrid.ColumnDescriptor>} */
+    /** @type {!Array.<!ColumnDescriptor>} */
     this._columnsArray = [];
-    /** @type {!Object.<string, !DataGrid.ColumnDescriptor>} */
+    /** @type {!Object.<string, !ColumnDescriptor>} */
     this._columns = {};
-    /** @type {!Array.<!DataGrid.ColumnDescriptor>} */
+    /** @type {!Array.<!ColumnDescriptor>} */
     this.visibleColumnsArray = columnsArray;
 
     columnsArray.forEach(column => this._innerAddColumn(column));
@@ -275,7 +275,7 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
-   * @param {!DataGrid.ColumnDescriptor} column
+   * @param {!ColumnDescriptor} column
    * @param {number=} position
    */
   _innerAddColumn(column, position) {
@@ -324,7 +324,7 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
-   * @param {!DataGrid.ColumnDescriptor} column
+   * @param {!ColumnDescriptor} column
    * @param {number=} position
    */
   addColumn(column, position) {
@@ -2525,3 +2525,34 @@ export class DataGridWidget extends UI.Widget.VBox {
     this._dataGrids = [];
   }
 }
+
+/**
+ * @typedef {{
+ *   displayName: string,
+ *   columns: !Array.<!ColumnDescriptor>,
+ *   editCallback: (function(!Object, string, *, *)|undefined),
+ *   deleteCallback: (function(!Object)|undefined|function(string)),
+ *   refreshCallback: (function()|undefined)
+ * }}
+ */
+export let Parameters;
+
+/**
+ * @typedef {{
+ *   id: string,
+ *   title: (string|undefined),
+ *   titleDOMFragment: (?DocumentFragment|undefined),
+ *   sortable: boolean,
+ *   sort: (?Order|undefined),
+ *   align: (?Align|undefined),
+ *   fixedWidth: (boolean|undefined),
+ *   editable: (boolean|undefined),
+ *   nonSelectable: (boolean|undefined),
+ *   longText: (boolean|undefined),
+ *   disclosure: (boolean|undefined),
+ *   weight: (number|undefined),
+ *   allowInSortByEvenWhenHidden: (boolean|undefined),
+ *   dataType: (?DataType|undefined)
+ * }}
+ */
+export let ColumnDescriptor;

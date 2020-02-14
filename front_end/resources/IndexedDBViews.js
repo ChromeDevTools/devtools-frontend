@@ -159,7 +159,7 @@ export class IDBDataView extends UI.View.SimpleView {
   _createDataGrid() {
     const keyPath = this._isIndex ? this._index.keyPath : this._objectStore.keyPath;
 
-    const columns = /** @type {!Array<!DataGrid.ColumnDescriptor>} */ ([]);
+    const columns = /** @type {!Array<!DataGrid.DataGrid.ColumnDescriptor>} */ ([]);
     columns.push({id: 'number', title: Common.UIString.UIString('#'), sortable: false, width: '50px'});
     columns.push({
       id: 'key',

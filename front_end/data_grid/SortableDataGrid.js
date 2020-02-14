@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {Events} from './DataGrid.js';
+import {ColumnDescriptor, Events, Parameters} from './DataGrid.js';  // eslint-disable-line no-unused-vars
 import {ViewportDataGrid, ViewportDataGridNode} from './ViewportDataGrid.js';
 
 /**
@@ -12,7 +12,7 @@ import {ViewportDataGrid, ViewportDataGridNode} from './ViewportDataGrid.js';
  */
 export class SortableDataGrid extends ViewportDataGrid {
   /**
-   * @param {!DataGrid.Parameters} dataGridParameters
+   * @param {!Parameters} dataGridParameters
    */
   constructor(dataGridParameters) {
     super(dataGridParameters);
@@ -82,7 +82,7 @@ export class SortableDataGrid extends ViewportDataGrid {
       return null;
     }
 
-    const columns = /** @type {!Array<!DataGrid.ColumnDescriptor>} */ ([]);
+    const columns = /** @type {!Array<!ColumnDescriptor>} */ ([]);
     for (let i = 0; i < columnNames.length; ++i) {
       columns.push({id: String(i), title: columnNames[i], width: columnNames[i].length, sortable: true});
     }

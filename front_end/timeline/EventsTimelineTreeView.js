@@ -115,7 +115,7 @@ export class EventsTimelineTreeView extends TimelineTreeView {
 
   /**
    * @override
-   * @param {!Array<!DataGrid.ColumnDescriptor>} columns
+   * @param {!Array<!DataGrid.DataGrid.ColumnDescriptor>} columns
    */
   populateColumns(columns) {
     columns.push({

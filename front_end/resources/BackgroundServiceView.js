@@ -218,7 +218,7 @@ export class BackgroundServiceView extends UI.Widget.VBox {
    * @return {!DataGrid.DataGrid.DataGridImpl}
    */
   _createDataGrid() {
-    const columns = /** @type {!Array<!DataGrid.ColumnDescriptor>} */ ([
+    const columns = /** @type {!Array<!DataGrid.DataGrid.ColumnDescriptor>} */ ([
       {id: 'id', title: ls`#`, weight: 1},
       {id: 'timestamp', title: ls`Timestamp`, weight: 8},
       {id: 'eventName', title: ls`Event`, weight: 10},

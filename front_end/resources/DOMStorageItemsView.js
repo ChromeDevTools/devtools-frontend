@@ -43,7 +43,7 @@ export class DOMStorageItemsView extends StorageItemsView {
 
     this.element.classList.add('storage-view', 'table');
 
-    const columns = /** @type {!Array<!DataGrid.ColumnDescriptor>} */ ([
+    const columns = /** @type {!Array<!DataGrid.DataGrid.ColumnDescriptor>} */ ([
       {id: 'key', title: Common.UIString.UIString('Key'), sortable: false, editable: true, longText: true, weight: 50},
       {
         id: 'value',

@@ -218,21 +218,10 @@ Common.localize = CommonModule.UIString.localize;
  */
 Common.Worker = CommonModule.Worker.WorkerWrapper;
 
-/** @typedef {{tooltip: (string|undefined), preventKeyboardFocus: (boolean|undefined)}} */
-Common.Linkifier.Options;
-
-/**
- * @typedef {!{thisObject: (!Object|undefined), listener: function(!CommonModule.EventTarget.EventTargetEvent), disposed: (boolean|undefined)}}
- */
-Common.Object._listenerCallbackTuple;
-
 /**
  * @type {!Common.Settings}
  */
 self.Common.settings;
-
-/** @typedef {function(!Error=)} */
-Common.Throttler.FinishCallback;
 
 /**
  * @param {!Array<string>|string} strings

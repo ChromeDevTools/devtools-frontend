@@ -1,1 +1,0 @@
-Please read https://github.com/HuddleEng/Open-Source/blob/master/CONTRIBUTING.md

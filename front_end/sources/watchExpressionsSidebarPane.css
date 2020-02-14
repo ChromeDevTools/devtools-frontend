@@ -21,13 +21,13 @@
     opacity: 1;
 }
 
+.watch-expression-header:hover {
+    padding-right: 26px;
+}
+
 .watch-expressions {
     overflow-x: hidden;
     min-height: 26px;
-}
-
-.watch-expressions .dimmed {
-    opacity: 0.6;
 }
 
 .watch-expression-title {

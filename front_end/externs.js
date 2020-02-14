@@ -1171,22 +1171,15 @@ DetailsRenderer.SourceLocationDetailsJSON;
  */
 DetailsRenderer.OpportunitySummary;
 
-const Lighthouse = {};
-
-Lighthouse.ReportGenerator = {};
-
-/**
- * @param {!ReportRenderer.ReportJSON} lhr
- * @return {string}
- */
-Lighthouse.ReportGenerator.generateReportHtml;
-
-/**
- * @param {string} source
- * @param {Array<{search: string, replacement: string}>} replacements
- * @return {string}
- */
-Lighthouse.ReportGenerator.replaceStrings;
+const LighthouseReportGenerator = class {
+  /**
+   * @param {!ReportRenderer.ReportJSON} lhr
+   * @return {string}
+   */
+  generateReportHtml(lhr) {
+    return '';
+  }
+};
 
 /** @interface */
 class InspectorFrontendHostAPI {

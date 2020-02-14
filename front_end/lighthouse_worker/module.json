@@ -1,0 +1,19 @@
+{
+    "dependencies": [
+        "worker_service"
+    ],
+    "extensions": [
+        {
+            "type": "@Service",
+            "factoryName": "LighthouseService",
+            "name": "LighthouseService"
+        }
+    ],
+    "scripts": [
+        "lighthouse/lighthouse-dt-bundle.js",
+        "LighthouseService.js"
+    ],
+    "skip_compilation": [
+        "lighthouse/lighthouse-dt-bundle.js"
+    ]
+}

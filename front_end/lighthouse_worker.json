@@ -1,0 +1,7 @@
+{
+    "worker": true,
+    "modules": [
+        { "name": "worker_service", "type": "autostart" },
+        { "name": "lighthouse_worker", "type": "remote" }
+    ]
+}

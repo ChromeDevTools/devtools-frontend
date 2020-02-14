@@ -892,6 +892,40 @@ export class VersionController {
     }
   }
 
+  _updateVersionFrom28To29() {
+    /**
+     * @param {string} settingName
+     * @param {string} from
+     * @param {string} to
+     */
+    function renameKeyInObjectSetting(settingName, from, to) {
+      const setting = self.Common.settings.createSetting(settingName, {});
+      const value = setting.get();
+      if (from in value) {
+        value[to] = value[from];
+        delete value[from];
+        setting.set(value);
+      }
+    }
+
+    /**
+     * @param {string} settingName
+     * @param {string} from
+     * @param {string} to
+     */
+    function renameInStringSetting(settingName, from, to) {
+      const setting = self.Common.settings.createSetting(settingName, '');
+      const value = setting.get();
+      if (value === from) {
+        setting.set(to);
+      }
+    }
+
+    renameKeyInObjectSetting('panel-tabOrder', 'audits', 'lighthouse');
+    renameKeyInObjectSetting('panel-closeableTabs', 'audits', 'lighthouse');
+    renameInStringSetting('panel-selectedTab', 'audits', 'lighthouse');
+  }
+
   _migrateSettingsFromLocalStorage() {
     // This step migrates all the settings except for the ones below into the browser profile.
     const localSettings = new Set([

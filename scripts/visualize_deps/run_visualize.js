@@ -42,7 +42,7 @@ function generateDot() {
     const moduleJSONPath = path.join(FRONTEND_PATH, file, 'module.json');
     if (fs.statSync(path.join(FRONTEND_PATH, file)).isDirectory() && utils.isFile(moduleJSONPath)) {
       const module = file;
-      if (module === 'audits_worker')
+      if (module === 'lighthouse_worker')
         return;
       modules.add(module);
       const moduleJSON = require(moduleJSONPath);

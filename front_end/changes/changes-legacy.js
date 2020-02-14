@@ -14,7 +14,6 @@ Changes.ChangesHighlighter = ChangesModule.ChangesHighlighter.ChangesHighlighter
  */
 Changes.ChangesSidebar = ChangesModule.ChangesSidebar.ChangesSidebar;
 
-
 /**
  * @constructor
  */
@@ -27,29 +26,3 @@ Changes.ChangesView.RowType = ChangesModule.ChangesView.RowType;
  * @implements {Common.Revealer}
  */
 Changes.ChangesView.DiffUILocationRevealer = ChangesModule.ChangesView.DiffUILocationRevealer;
-
-/**
- * @typedef {!{
-  *  rowNumber: number,
-  *  diffTokenIndex: number,
-  *  currentLineNumber: number,
-  *  baselineLineNumber: number,
-  *  currentSyntaxState: !Object,
-  *  baselineSyntaxState: !Object,
-  *  syntaxPosition: number,
-  *  diffPosition: number,
-  *  syntaxStyle: string,
-  *  diffStyle: string
-  * }}
-  */
-Changes.ChangesHighlighter.DiffState;
-
-/**
- * @typedef {!{
-  *  baselineLineNumber: number,
-  *  currentLineNumber: number,
-  *  tokens: !Array<!{text: string, className: string}>,
-  *  type: !Changes.ChangesView.RowType
-  * }}
-  */
-Changes.ChangesView.Row;

@@ -5,7 +5,7 @@
 import * as TextEditor from '../text_editor/text_editor.js';
 import * as UI from '../ui/ui.js';  // eslint-disable-line no-unused-vars
 
-import {RowType} from './ChangesView.js';
+import {Row, RowType} from './ChangesView.js';  // eslint-disable-line no-unused-vars
 
 /**
  * @extends {TextEditor.CodeMirrorTextEditor.CodeMirrorTextEditor}
@@ -37,7 +37,7 @@ export class ChangesTextEditor extends TextEditor.CodeMirrorTextEditor.CodeMirro
   }
 
   /**
-   * @param {!Array<!Changes.ChangesView.Row>} diffRows
+   * @param {!Array<!Row>} diffRows
    */
   updateDiffGutter(diffRows) {
     this.codeMirror().eachLine(line => {

@@ -31,7 +31,7 @@ export class ChangesView extends UI.Widget.VBox {
     /** @type {?Workspace.UISourceCode.UISourceCode} */
     this._selectedUISourceCode = null;
 
-    /** @type {!Array<!Changes.ChangesView.Row>} */
+    /** @type {!Array<!Row>} */
     this._diffRows = [];
 
     this._maxLineDigits = 1;
@@ -236,7 +236,7 @@ export class ChangesView extends UI.Widget.VBox {
      * @param {!Array<string>} lines
      * @param {boolean} atStart
      * @param {boolean} atEnd
-     * @return {!Array<!Changes.ChangesView.Row>}}
+     * @return {!Array<!Row>}}
      */
     function createEqualRows(lines, atStart, atEnd) {
       const equalRows = [];
@@ -271,7 +271,7 @@ export class ChangesView extends UI.Widget.VBox {
     /**
      * @param {string} before
      * @param {string} after
-     * @return {!Array<!Changes.ChangesView.Row>}}
+     * @return {!Array<!Row>}}
      */
     function createModifyRows(before, after) {
       const internalDiff = Diff.Diff.DiffWrapper.charDiff(before, after, true /* cleanup diff */);
@@ -307,7 +307,7 @@ export class ChangesView extends UI.Widget.VBox {
     /**
      * @param {string} text
      * @param {!RowType} type
-     * @return {!Changes.ChangesView.Row}
+     * @return {!Row}
      */
     function createRow(text, type) {
       if (type === RowType.Addition) {
@@ -373,3 +373,13 @@ export class DiffUILocationRevealer {
     changesView._changesSidebar.selectUISourceCode(diffUILocation.uiSourceCode, omitFocus);
   }
 }
+
+/**
+ * @typedef {!{
+ *  baselineLineNumber: number,
+ *  currentLineNumber: number,
+ *  tokens: !Array<!{text: string, className: string}>,
+ *  type: !RowType
+ * }}
+ */
+export let Row;

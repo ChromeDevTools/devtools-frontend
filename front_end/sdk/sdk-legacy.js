@@ -295,16 +295,16 @@ SDK.NetworkManager = SDKModule.NetworkManager.NetworkManager;
 /** @enum {symbol} */
 SDK.NetworkManager.Events = SDKModule.NetworkManager.Events;
 
-/** @type {!SDK.NetworkManager.Conditions} */
+/** @type {!SDKModule.NetworkManager.Conditions} */
 SDK.NetworkManager.NoThrottlingConditions = SDKModule.NetworkManager.NoThrottlingConditions;
 
-/** @type {!SDK.NetworkManager.Conditions} */
+/** @type {!SDKModule.NetworkManager.Conditions} */
 SDK.NetworkManager.OfflineConditions = SDKModule.NetworkManager.OfflineConditions;
 
-/** @type {!SDK.NetworkManager.Conditions} */
+/** @type {!SDKModule.NetworkManager.Conditions} */
 SDK.NetworkManager.Slow3GConditions = SDKModule.NetworkManager.Slow3GConditions;
 
-/** @type {!SDK.NetworkManager.Conditions} */
+/** @type {!SDKModule.NetworkManager.Conditions} */
 SDK.NetworkManager.Fast3GConditions = SDKModule.NetworkManager.Fast3GConditions;
 
 /** @constructor */
@@ -537,12 +537,6 @@ SDK.CPUProfilerModel.EventData;
  */
 SDK.CSSMetadata.CSSPropertyDefinition;
 
-/** @typedef {!{range: !Protocol.CSS.SourceRange, styleSheetId: !Protocol.CSS.StyleSheetId, wasUsed: boolean}} */
-SDK.CSSModel.RuleUsage;
-
-/** @typedef {{backgroundColors: ?Array<string>, computedFontSize: string, computedFontWeight: string}} */
-SDK.CSSModel.ContrastInfo;
-
 /** @type {function({target: !SDK.Target, waitingForDebugger: boolean})|undefined} */
 SDK.ChildTargetManager._attachCallback;
 
@@ -554,221 +548,10 @@ SDK.consoleModel;
 /** @type {!SDK.DOMDebuggerManager} */
 self.SDK.domDebuggerManager;
 
-/** @typedef {{name: string, value: string, _node: SDK.DOMNode}} */
-SDK.DOMNode.Attribute;
-
-/** @typedef {{location: ?SDK.DebuggerModel.Location, functionName: string}} */
-SDK.DebuggerModel.FunctionDetails;
-
-/** @typedef {{
- *    breakpointId: ?Protocol.Debugger.BreakpointId,
- *    locations: !Array<!SDK.DebuggerModel.Location>
- *  }}
- */
-SDK.DebuggerModel.SetBreakpointResult;
-
-/** @typedef {!{
-  blocked: number,
-  dns: number,
-  ssl: number,
-  connect: number,
-  send: number,
-  wait: number,
-  receive: number,
-  _blocked_queueing: number,
-  _blocked_proxy: (number|undefined)
-}} */
-SDK.HARLog.Entry.Timing;
-
-/** @typedef {!{
-        rect: !Protocol.DOM.Rect,
-        snapshot: !SDK.PaintProfilerSnapshot
-    }}
-*/
-SDK.SnapshotWithRect;
-
-/** @typedef {!{initiators: !Set<!SDK.NetworkRequest>, initiated: !Map<!SDK.NetworkRequest, !SDK.NetworkRequest>}} */
-SDK.NetworkLog.InitiatorGraph;
-
-/** @typedef {!{type: !SDK.NetworkRequest.InitiatorType, url: string, lineNumber: number, columnNumber: number, scriptId: ?string, stack: ?Protocol.Runtime.StackTrace}} */
-SDK.NetworkLog._InitiatorInfo;
-
-/** @typedef {{url: string, enabled: boolean}} */
-SDK.NetworkManager.BlockedPattern;
-
-/**
- * @typedef {{
-  *   download: number,
-  *   upload: number,
-  *   latency: number,
-  *   title: string,
-  * }}
-  */
-SDK.NetworkManager.Conditions;
-
-/** @typedef {{message: string, requestId: string, warning: boolean}} */
-SDK.NetworkManager.Message;
-
-/** @typedef {!{urlPattern: string, interceptionStage: !Protocol.Network.InterceptionStage}} */
-SDK.MultitargetNetworkManager.InterceptionPattern;
-
-/** @typedef {!function(!SDK.MultitargetNetworkManager.InterceptedRequest):!Promise} */
-SDK.MultitargetNetworkManager.RequestInterceptor;
-
 /**
  * @type {!SDK.MultitargetNetworkManager}
  */
 SDK.multitargetNetworkManager;
-
-/** @typedef {!{name: string, value: string}} */
-SDK.NetworkRequest.NameValue;
-
-/** @typedef {!{type: SDK.NetworkRequest.WebSocketFrameType, time: number, text: string, opCode: number, mask: boolean}} */
-SDK.NetworkRequest.WebSocketFrame;
-
-/** @typedef {!{time: number, eventName: string, eventId: string, data: string}} */
-SDK.NetworkRequest.EventSourceMessage;
-
-/** @typedef {!{error: ?string, content: ?string, encoded: boolean}} */
-SDK.NetworkRequest.ContentData;
-
-/**
- * @typedef {!{
-  *   blockedReasons: !Array<!Protocol.Network.CookieBlockedReason>,
-  *   cookie: !SDK.Cookie
-  * }}
-  */
-SDK.NetworkRequest.BlockedCookieWithReason;
-
-/**
-  * @typedef {!{
-  *   blockedRequestCookies: !Array<!SDK.NetworkRequest.BlockedCookieWithReason>,
-  *   requestHeaders: !Array<!SDK.NetworkRequest.NameValue>
-  * }}
-  */
-SDK.NetworkRequest.ExtraRequestInfo;
-
-/**
-  * @typedef {!{
-  *   blockedReasons: !Array<!Protocol.Network.SetCookieBlockedReason>,
-  *   cookieLine: string,
-  *   cookie: ?SDK.Cookie
-  * }}
-  */
-SDK.NetworkRequest.BlockedSetCookieWithReason;
-
-/**
-  * @typedef {!{
-  *   blockedResponseCookies: !Array<!SDK.NetworkRequest.BlockedSetCookieWithReason>,
-  *   responseHeaders: !Array<!SDK.NetworkRequest.NameValue>,
-  *   responseHeadersText: (string|undefined)
-  * }}
-  */
-SDK.NetworkRequest.ExtraResponseInfo;
-
-/** @typedef {{node: (!SDK.DOMNode|undefined),
-  deferredNode: (!SDK.DeferredDOMNode|undefined),
-  selectorList: (string|undefined),
-  object:(!SDK.RemoteObject|undefined)}} */
-SDK.OverlayModel.HighlightData;
-
-/**
- * @typedef {!{x: number, y: number, picture: string}}
- */
-SDK.PictureFragment;
-
-/**
- * @typedef {!{method: string, params: ?Object<string, *>}}
- */
-SDK.RawPaintProfilerLogItem;
-
-/**
- * @typedef {{object: ?SDKModule.RemoteObject.RemoteObject, wasThrown: (boolean|undefined)}}
- */
-SDK.CallFunctionResult;
-
-/**
- * @typedef {{properties: ?Array<!SDKModule.RemoteObject.RemoteObjectProperty>, internalProperties: ?Array<!SDKModule.RemoteObject.RemoteObjectProperty>}}
- */
-SDK.GetPropertiesResult;
-
-/**
- * @typedef {{
-  *      securityOrigins: !Set<string>,
-  *      mainSecurityOrigin: ?string,
-  *      unreachableMainSecurityOrigin: ?string
-  * }}
-  */
-SDK.ResourceTreeModel.SecurityOriginData;
-
-/** @typedef {{
- *    scriptId: (Protocol.Runtime.ScriptId|undefined),
- *    exceptionDetails: (!Protocol.Runtime.ExceptionDetails|undefined)
- *  }}
- */
-SDK.RuntimeModel.CompileScriptResult;
-
-/** @typedef {{
- *    expression: string,
- *    objectGroup: (string|undefined),
- *    includeCommandLineAPI: (boolean|undefined),
- *    silent: (boolean|undefined),
- *    returnByValue: (boolean|undefined),
- *    generatePreview: (boolean|undefined),
- *    throwOnSideEffect: (boolean|undefined),
- *    timeout: (number|undefined),
- *    disableBreaks: (boolean|undefined),
- *    replMode: (boolean|undefined)
- *  }}
- */
-SDK.RuntimeModel.EvaluationOptions;
-
-/** @typedef {{
- *    object: (!SDKModule.RemoteObject.RemoteObject|undefined),
- *    exceptionDetails: (!Protocol.Runtime.ExceptionDetails|undefined),
- *    error: (!Protocol.Error|undefined)}
- *  }}
- */
-SDK.RuntimeModel.EvaluationResult;
-
-/** @typedef {{
- *    objects: (!SDKModule.RemoteObject.RemoteObject|undefined),
- *    error: (!Protocol.Error|undefined)}
- *  }}
- */
-SDK.RuntimeModel.QueryObjectResult;
-
-/**
- * @typedef {{
- *    type: string,
- *    args: !Array<!Protocol.Runtime.RemoteObject>,
- *    executionContextId: number,
- *    timestamp: number,
- *    stackTrace: (!Protocol.Runtime.StackTrace|undefined)
- * }}
- */
-SDK.RuntimeModel.ConsoleAPICall;
-
-/** @typedef {{timestamp: number, details: !Protocol.Runtime.ExceptionDetails}} */
-SDK.RuntimeModel.ExceptionWithTimestamp;
-
-/** @typedef {!{
-        cat: (string|undefined),
-        pid: number,
-        tid: number,
-        ts: number,
-        ph: string,
-        name: string,
-        args: !Object,
-        dur: number,
-        id: string,
-        id2: (!{global: (string|undefined), local: (string|undefined)}|undefined),
-        scope: string,
-        bind_id: string,
-        s: string
-    }}
- */
-SDK.TracingManager.EventPayload;
 
 self.SDK.targetManager = new SDKModule.SDKModel.TargetManager();
 self.SDK.isolateManager = new SDKModule.IsolateManager.IsolateManager();

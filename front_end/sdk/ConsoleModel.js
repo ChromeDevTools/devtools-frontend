@@ -199,7 +199,7 @@ export class ConsoleModel extends Common.ObjectWrapper.ObjectWrapper {
    * @param {!Common.Event} event
    */
   _exceptionThrown(runtimeModel, event) {
-    const exceptionWithTimestamp = /** @type {!SDK.RuntimeModel.ExceptionWithTimestamp} */ (event.data);
+    const exceptionWithTimestamp = /** @type {!ExceptionWithTimestamp} */ (event.data);
     const consoleMessage = ConsoleMessage.fromException(
         runtimeModel, exceptionWithTimestamp.details, undefined, exceptionWithTimestamp.timestamp, undefined);
     consoleMessage.setExceptionId(exceptionWithTimestamp.details.exceptionId);
@@ -227,7 +227,7 @@ export class ConsoleModel extends Common.ObjectWrapper.ObjectWrapper {
    * @param {!Common.Event} event
    */
   _consoleAPICalled(runtimeModel, event) {
-    const call = /** @type {!SDK.RuntimeModel.ConsoleAPICall} */ (event.data);
+    const call = /** @type {!ConsoleAPICall} */ (event.data);
     let level = MessageLevel.Info;
     if (call.type === MessageType.Debug) {
       level = MessageLevel.Verbose;
@@ -747,3 +747,17 @@ export const MessageSourceDisplayName = new Map([
   [MessageSource.Intervention, 'intervention'], [MessageSource.Recommendation, 'recommendation'],
   [MessageSource.Other, 'other']
 ]);
+
+/**
+ * @typedef {{
+  *    type: string,
+  *    args: !Array<!Protocol.Runtime.RemoteObject>,
+  *    executionContextId: number,
+  *    timestamp: number,
+  *    stackTrace: (!Protocol.Runtime.StackTrace|undefined)
+  * }}
+  */
+export let ConsoleAPICall;
+
+/** @typedef {{timestamp: number, details: !Protocol.Runtime.ExceptionDetails}} */
+export let ExceptionWithTimestamp;

@@ -12,7 +12,7 @@ export const CPUThrottlingRates = {
   LowEndMobile: 6,
 };
 
-/** @type {!MobileThrottling.Conditions} */
+/** @type {!Conditions} */
 export const NoThrottlingConditions = {
   title: SDK.NetworkManager.NoThrottlingConditions.title,
   description: Common.UIString.UIString('No throttling'),
@@ -20,7 +20,7 @@ export const NoThrottlingConditions = {
   cpuThrottlingRate: CPUThrottlingRates.NoThrottling,
 };
 
-/** @type {!MobileThrottling.Conditions} */
+/** @type {!Conditions} */
 export const OfflineConditions = {
   title: SDK.NetworkManager.OfflineConditions.title,
   description: Common.UIString.UIString('No internet connectivity'),
@@ -28,7 +28,7 @@ export const OfflineConditions = {
   cpuThrottlingRate: CPUThrottlingRates.NoThrottling,
 };
 
-/** @type {!MobileThrottling.Conditions} */
+/** @type {!Conditions} */
 export const LowEndMobileConditions = {
   title: Common.UIString.UIString('Low-end mobile'),
   description: Common.UIString.UIString('Slow 3G & 6x CPU slowdown'),
@@ -36,7 +36,7 @@ export const LowEndMobileConditions = {
   cpuThrottlingRate: CPUThrottlingRates.LowEndMobile,
 };
 
-/** @type {!MobileThrottling.Conditions} */
+/** @type {!Conditions} */
 export const MidTierMobileConditions = {
   title: Common.UIString.UIString('Mid-tier mobile'),
   description: Common.UIString.UIString('Fast 3G & 4x CPU slowdown'),
@@ -44,16 +44,16 @@ export const MidTierMobileConditions = {
   cpuThrottlingRate: CPUThrottlingRates.MidTierMobile,
 };
 
-/** @type {!MobileThrottling.PlaceholderConditions} */
+/** @type {!PlaceholderConditions} */
 export const CustomConditions = {
   title: Common.UIString.UIString('Custom'),
   description: Common.UIString.UIString('Check Network and Performance panels'),
 };
 
-/** @type {!Array.<!MobileThrottling.Conditions>} */
+/** @type {!Array.<!Conditions>} */
 export const mobilePresets = [MidTierMobileConditions, LowEndMobileConditions, CustomConditions];
 
-/** @type {!Array.<!MobileThrottling.Conditions>} */
+/** @type {!Array.<!Conditions>} */
 export const advancedMobilePresets = [
   OfflineConditions,
 ];
@@ -71,3 +71,30 @@ export const cpuThrottlingPresets = [
   CPUThrottlingRates.MidTierMobile,
   CPUThrottlingRates.LowEndMobile,
 ];
+
+/**
+ * @typedef {{
+  *   title: string,
+  *   description: string,
+  *   network: !SDK.NetworkManager.Conditions,
+  *   cpuThrottlingRate: !CPUThrottlingRates
+  * }}
+  **/
+export let Conditions;
+
+/** @typedef {!{title: string, items: !Array<!SDK.NetworkManager.Conditions>}} */
+export let NetworkThrottlingConditionsGroup;
+
+/** @typedef {!{title: string, items: !Array<!Conditions|!PlaceholderConditions>}} */
+export let MobileThrottlingConditionsGroup;
+
+/** @typedef {!Array<?Conditions|!PlaceholderConditions>} */
+export let ConditionsList;
+
+/**
+ * @typedef {{
+  *   title: string,
+  *   description: string
+  * }}
+  **/
+export let PlaceholderConditions;

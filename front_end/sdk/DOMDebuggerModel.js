@@ -164,7 +164,7 @@ export class DOMDebuggerModel extends SDKModel {
 
   /**
    * @param {!Object} auxData
-   * @return {?{type: !Protocol.DOMDebugger.DOMBreakpointType, node: !DOMNode, targetNode: ?SDK.DOMNode, insertion: boolean}}
+   * @return {?{type: !Protocol.DOMDebugger.DOMBreakpointType, node: !DOMNode, targetNode: ?DOMNode, insertion: boolean}}
    */
   resolveDOMBreakpointData(auxData) {
     const type = auxData['type'];
@@ -298,7 +298,7 @@ export class EventListener {
    * @param {boolean} useCapture
    * @param {boolean} passive
    * @param {boolean} once
-   * @param {?SDK.RemoteObject} handler
+   * @param {?RemoteObject} handler
    * @param {?SDK.RemoteObject} originalHandler
    * @param {!Location} location
    * @param {?SDK.RemoteObject} customRemoveFunction

@@ -248,7 +248,7 @@ export class Target extends ProtocolModule.InspectorBackend.TargetBase {
   }
 
   /**
-   * @return {!Map<function(new:SDKModel, !Target), !SDK.SDKModel>}
+   * @return {!Map<function(new:SDKModel, !Target), !SDKModel>}
    */
   models() {
     return this._modelByConstructor;
@@ -439,8 +439,8 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper {
 
   /**
    * @param {!Target} target
-   * @param {function(new:SDKModel,!SDK.Target)} modelClass
-   * @param {!SDK.SDKModel} model
+   * @param {function(new:SDKModel,!Target)} modelClass
+   * @param {!SDKModel} model
    */
   modelAdded(target, modelClass, model) {
     for (const observer of this._modelObservers.get(modelClass).values()) {
@@ -450,8 +450,8 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper {
 
   /**
    * @param {!Target} target
-   * @param {function(new:SDKModel,!SDK.Target)} modelClass
-   * @param {!SDK.SDKModel} model
+   * @param {function(new:SDKModel,!Target)} modelClass
+   * @param {!SDKModel} model
    */
   _modelRemoved(target, modelClass, model) {
     for (const observer of this._modelObservers.get(modelClass).values()) {
@@ -528,7 +528,7 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper {
    * @param {string=} sessionId
    * @param {boolean=} waitForDebuggerInPage
    * @param {!ProtocolModule.InspectorBackend.Connection=} connection
-   * @return {!SDK.Target}
+   * @return {!Target}
    */
   createTarget(id, name, type, parentTarget, sessionId, waitForDebuggerInPage, connection) {
     const target =

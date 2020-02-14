@@ -44,30 +44,3 @@ MobileThrottling.cpuThrottlingPresets = MobileThrottlingModule.ThrottlingPresets
 MobileThrottling.ThrottlingSettingsTab = MobileThrottlingModule.ThrottlingSettingsTab.ThrottlingSettingsTab;
 
 MobileThrottling.throughputText = MobileThrottlingModule.ThrottlingSettingsTab.throughputText;
-
-/**
- * @typedef {{
- *   title: string,
- *   description: string,
- *   network: !SDK.NetworkManager.Conditions,
- *   cpuThrottlingRate: !MobileThrottling.CPUThrottlingRates
- * }}
- **/
-MobileThrottling.Conditions;
-
-/** @typedef {!{title: string, items: !Array<!SDK.NetworkManager.Conditions>}} */
-MobileThrottling.NetworkThrottlingConditionsGroup;
-
-/** @typedef {!{title: string, items: !Array<!MobileThrottling.Conditions|!MobileThrottling.PlaceholderConditions>}} */
-MobileThrottling.MobileThrottlingConditionsGroup;
-
-/** @typedef {!Array<?MobileThrottling.Conditions|!MobileThrottling.PlaceholderConditions>} */
-MobileThrottling.ConditionsList;
-
-/**
- * @typedef {{
- *   title: string,
- *   description: string
- * }}
- **/
-MobileThrottling.PlaceholderConditions;

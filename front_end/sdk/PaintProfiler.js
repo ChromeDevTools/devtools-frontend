@@ -40,7 +40,7 @@ export class PaintProfilerModel extends SDKModel {
   }
 
   /**
-   * @param {!Array.<!SDK.PictureFragment>} fragments
+   * @param {!Array.<!PictureFragment>} fragments
    * @return {!Promise<?PaintProfilerSnapshot>}
    */
   async loadSnapshotFromFragments(fragments) {
@@ -114,7 +114,7 @@ export class PaintProfilerSnapshot {
   async commandLog() {
     const log = await this._paintProfilerModel._layerTreeAgent.snapshotCommandLog(this._id);
     return log &&
-        log.map((entry, index) => new PaintProfilerLogItem(/** @type {!SDK.RawPaintProfilerLogItem} */ (entry), index));
+        log.map((entry, index) => new PaintProfilerLogItem(/** @type {!RawPaintProfilerLogItem} */ (entry), index));
   }
 }
 
@@ -123,7 +123,7 @@ export class PaintProfilerSnapshot {
  */
 export class PaintProfilerLogItem {
   /**
-   * @param {!SDK.RawPaintProfilerLogItem} rawEntry
+   * @param {!RawPaintProfilerLogItem} rawEntry
    * @param {number} commandIndex
    */
   constructor(rawEntry, commandIndex) {
@@ -141,3 +141,13 @@ SDKModel.register(PaintProfilerModel, Capability.DOM, false);
     }}
 */
 export let SnapshotWithRect;
+
+/**
+ * @typedef {!{x: number, y: number, picture: string}}
+ */
+export let PictureFragment;
+
+/**
+ * @typedef {!{method: string, params: ?Object<string, *>}}
+ */
+export let RawPaintProfilerLogItem;

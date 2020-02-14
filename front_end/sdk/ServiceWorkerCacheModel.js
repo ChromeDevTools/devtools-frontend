@@ -5,6 +5,7 @@
 import * as Common from '../common/common.js';
 import * as ProtocolModule from '../protocol/protocol.js';
 
+import {NameValue} from './NetworkRequest.js';               // eslint-disable-line no-unused-vars
 import {Capability, SDKModel, Target} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 import {Events as SecurityOriginManagerEvents, SecurityOriginManager} from './SecurityOriginManager.js';
 
@@ -374,7 +375,7 @@ export class Cache {
 
   /**
    * @param {string} url
-   * @param {!Array.<!SDK.NetworkRequest.NameValue>} requestHeaders
+   * @param {!Array.<!NameValue>} requestHeaders
    * @return {!Promise<?Protocol.CacheStorage.CachedResponse>}
    */
   requestCachedResponse(url, requestHeaders) {

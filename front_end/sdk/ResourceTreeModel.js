@@ -469,7 +469,7 @@ export class ResourceTreeModel extends SDKModel {
 
   /**
    * @param {!ExecutionContext} a
-   * @param {!SDK.ExecutionContext} b
+   * @param {!ExecutionContext} b
    * @return {number}
    */
   _executionContextComparator(a, b) {
@@ -518,7 +518,7 @@ export class ResourceTreeModel extends SDKModel {
   }
 
   /**
-   * @return {!SDK.ResourceTreeModel.SecurityOriginData}
+   * @return {!SecurityOriginData}
    */
   _getSecurityOriginData() {
     /** @type {!Set<string>} */
@@ -1086,3 +1086,12 @@ export class PageDispatcher {
 }
 
 SDKModel.register(ResourceTreeModel, Capability.DOM, true);
+
+/**
+ * @typedef {{
+  *      securityOrigins: !Set<string>,
+  *      mainSecurityOrigin: ?string,
+  *      unreachableMainSecurityOrigin: ?string
+  * }}
+  */
+export let SecurityOriginData;

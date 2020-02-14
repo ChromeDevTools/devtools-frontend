@@ -199,7 +199,7 @@ export class OverlayModel extends SDKModel {
   }
 
   /**
-   * @param {!SDK.OverlayModel.HighlightData} data
+   * @param {!HighlightData} data
    * @param {string=} mode
    * @param {boolean=} showInfo
    */
@@ -216,7 +216,7 @@ export class OverlayModel extends SDKModel {
   }
 
   /**
-   * @param {!SDK.OverlayModel.HighlightData} data
+   * @param {!HighlightData} data
    */
   highlightInOverlayForTwoSeconds(data) {
     this.highlightInOverlay(data);
@@ -347,7 +347,7 @@ export const Events = {
  */
 export class Highlighter {
   /**
-   * @param {!SDK.OverlayModel.HighlightData} data
+   * @param {!HighlightData} data
    * @param {!Protocol.Overlay.HighlightConfig} config
    */
   highlightInOverlay(data, config) {
@@ -380,7 +380,7 @@ class DefaultHighlighter {
 
   /**
    * @override
-   * @param {!SDK.OverlayModel.HighlightData} data
+   * @param {!HighlightData} data
    * @param {!Protocol.Overlay.HighlightConfig} config
    */
   highlightInOverlay(data, config) {

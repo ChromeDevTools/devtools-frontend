@@ -32,8 +32,8 @@ import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import * as ProtocolModule from '../protocol/protocol.js';
 
-import {RemoteObject, RemoteObjectImpl, ScopeRef} from './RemoteObject.js';  // eslint-disable-line no-unused-vars
-import {ExecutionContext, RuntimeModel} from './RuntimeModel.js';            // eslint-disable-line no-unused-vars
+import {GetPropertiesResult, RemoteObject, RemoteObjectImpl, ScopeRef} from './RemoteObject.js';  // eslint-disable-line no-unused-vars
+import {EvaluationOptions, EvaluationResult, ExecutionContext, RuntimeModel} from './RuntimeModel.js';  // eslint-disable-line no-unused-vars
 import {Script} from './Script.js';
 import {Capability, SDKModel, Target, Type} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 import {WasmSourceMap} from './SourceMap.js';
@@ -287,7 +287,7 @@ export class DebuggerModel extends SDKModel {
    * @param {number} lineNumber
    * @param {number=} columnNumber
    * @param {string=} condition
-   * @return {!Promise<!SDK.DebuggerModel.SetBreakpointResult>}
+   * @return {!Promise<!SetBreakpointResult>}
    */
   async setBreakpointByURL(url, lineNumber, columnNumber, condition) {
     // Convert file url to node-js path.
@@ -329,7 +329,7 @@ export class DebuggerModel extends SDKModel {
    * @param {number} lineNumber
    * @param {number=} columnNumber
    * @param {string=} condition
-   * @return {!Promise<!SDK.DebuggerModel.SetBreakpointResult>}
+   * @return {!Promise<!SetBreakpointResult>}
    */
   async setBreakpointInAnonymousScript(scriptId, scriptHash, lineNumber, columnNumber, condition) {
     const response = await this._agent.invoke_setBreakpointByUrl(
@@ -354,7 +354,7 @@ export class DebuggerModel extends SDKModel {
    * @param {number} lineNumber
    * @param {number=} columnNumber
    * @param {string=} condition
-   * @return {!Promise<!SDK.DebuggerModel.SetBreakpointResult>}
+   * @return {!Promise<!SetBreakpointResult>}
    */
   async _setBreakpointBySourceId(scriptId, lineNumber, columnNumber, condition) {
     // This method is required for backward compatibility with V8 before 6.3.275.
@@ -847,8 +847,8 @@ export class DebuggerModel extends SDKModel {
   }
 
   /**
-   * @param {!SDK.RuntimeModel.EvaluationOptions} options
-   * @return {!Promise<!SDK.RuntimeModel.EvaluationResult>}
+   * @param {!EvaluationOptions} options
+   * @return {!Promise<!EvaluationResult>}
    */
   evaluateOnSelectedCallFrame(options) {
     return this.selectedCallFrame().evaluate(options);
@@ -856,15 +856,15 @@ export class DebuggerModel extends SDKModel {
 
   /**
    * @param {!RemoteObject} remoteObject
-   * @return {!Promise<?SDK.DebuggerModel.FunctionDetails>}
+   * @return {!Promise<?FunctionDetails>}
    */
   functionDetailsPromise(remoteObject) {
     return remoteObject.getAllProperties(false /* accessorPropertiesOnly */, false /* generatePreview */)
         .then(buildDetails.bind(this));
 
     /**
-     * @param {!SDK.GetPropertiesResult} response
-     * @return {?SDK.DebuggerModel.FunctionDetails}
+     * @param {!GetPropertiesResult} response
+     * @return {?FunctionDetails}
      * @this {!DebuggerModel}
      */
     function buildDetails(response) {
@@ -1371,8 +1371,8 @@ export class CallFrame {
   }
 
   /**
-   * @param {!SDK.RuntimeModel.EvaluationOptions} options
-   * @return {!Promise<!SDK.RuntimeModel.EvaluationResult>}
+   * @param {!EvaluationOptions} options
+   * @return {!Promise<!EvaluationResult>}
    */
   async evaluate(options) {
     const runtimeModel = this.debuggerModel.runtimeModel();
@@ -1585,3 +1585,10 @@ SDKModel.register(DebuggerModel, Capability.JS, true);
 
 /** @typedef {{location: ?Location, functionName: string}} */
 export let FunctionDetails;
+
+/** @typedef {{
+ *    breakpointId: ?Protocol.Debugger.BreakpointId,
+ *    locations: !Array<!Location>
+ *  }}
+ */
+export let SetBreakpointResult;

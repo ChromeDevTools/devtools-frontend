@@ -31,7 +31,7 @@
 import * as Common from '../common/common.js';
 
 import {ConsoleMessage, MessageLevel, MessageSource} from './ConsoleModel.js';
-import {Events as NetworkManagerEvents, NetworkManager} from './NetworkManager.js';  // eslint-disable-line no-unused-vars
+import {Events as NetworkManagerEvents, Message, NetworkManager} from './NetworkManager.js';  // eslint-disable-line no-unused-vars
 import {Events as NetworkRequestEvents, InitiatorType, NetworkRequest} from './NetworkRequest.js';  // eslint-disable-line no-unused-vars
 import {Events as ResourceTreeModelEvents, ResourceTreeFrame, ResourceTreeModel} from './ResourceTreeModel.js';  // eslint-disable-line no-unused-vars
 import {RuntimeModel} from './RuntimeModel.js';
@@ -165,7 +165,7 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper {
    */
   _initializeInitiatorSymbolIfNeeded(request) {
     if (!request[_initiatorDataSymbol]) {
-      /** @type {!{info: ?SDK.NetworkLog._InitiatorInfo, chain: !Set<!NetworkRequest>, request: (?SDK.NetworkRequest|undefined)}} */
+      /** @type {!{info: ?_InitiatorInfo, chain: !Set<!NetworkRequest>, request: (?NetworkRequest|undefined)}} */
       request[_initiatorDataSymbol] = {
         info: null,
         chain: null,
@@ -176,7 +176,7 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper {
 
   /**
    * @param {!NetworkRequest} request
-   * @return {!SDK.NetworkLog._InitiatorInfo}
+   * @return {!_InitiatorInfo}
    */
   initiatorInfoForRequest(request) {
     this._initializeInitiatorSymbolIfNeeded(request);
@@ -243,7 +243,7 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper {
 
   /**
    * @param {!NetworkRequest} request
-   * @return {!SDK.NetworkLog.InitiatorGraph}
+   * @return {!InitiatorGraph}
    */
   initiatorGraphForRequest(request) {
     /** @type {!Map<!NetworkRequest>} */
@@ -261,7 +261,7 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper {
 
   /**
    * @param {!NetworkRequest} request
-   * @return {!Set<!SDK.NetworkRequest>}
+   * @return {!Set<!NetworkRequest>}
    */
   _initiatorChain(request) {
     this._initializeInitiatorSymbolIfNeeded(request);
@@ -292,7 +292,7 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper {
 
   /**
    * @param {!NetworkRequest} request
-   * @return {?SDK.NetworkRequest}
+   * @return {?NetworkRequest}
    */
   _initiatorRequest(request) {
     this._initializeInitiatorSymbolIfNeeded(request);
@@ -472,7 +472,7 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper {
    * @param {!Common.Event} event
    */
   _networkMessageGenerated(networkManager, event) {
-    const message = /** @type {!SDK.NetworkManager.Message} */ (event.data);
+    const message = /** @type {!Message} */ (event.data);
     const consoleMessage = new ConsoleMessage(
         networkManager.target().model(RuntimeModel), MessageSource.Network,
         message.warning ? MessageLevel.Warning : MessageLevel.Info, message.message);
@@ -584,3 +584,6 @@ const _events = Symbol('SDK.NetworkLog.events');
 
 /** @typedef {!{initiators: !Set<!NetworkRequest>, initiated: !Map<!NetworkRequest, !NetworkRequest>}} */
 export let InitiatorGraph;
+
+/** @typedef {!{type: !InitiatorType, url: string, lineNumber: number, columnNumber: number, scriptId: ?string, stack: ?Protocol.Runtime.StackTrace}} */
+export let _InitiatorInfo;

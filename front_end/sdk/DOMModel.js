@@ -528,7 +528,7 @@ export class DOMNode {
   }
 
   /**
-   * @return {!Array<!SDK.DOMNode.Attribute>}
+   * @return {!Array<!Attribute>}
    */
   attributes() {
     return this._attributes;
@@ -713,7 +713,7 @@ export class DOMNode {
   /**
    * @param {!DOMNode} prev
    * @param {!Protocol.DOM.Node} payload
-   * @return {!SDK.DOMNode}
+   * @return {!DOMNode}
    */
   _insertChild(prev, payload) {
     const node = DOMNode.create(this._domModel, this.ownerDocument, this._isInShadowTree, payload);
@@ -839,7 +839,7 @@ export class DOMNode {
 
   /**
    * @param {!DOMNode} targetNode
-   * @param {?SDK.DOMNode} anchorNode
+   * @param {?DOMNode} anchorNode
    * @param {function(?ProtocolModule.InspectorBackend.ProtocolError, !Protocol.DOM.NodeId=)=} callback
    */
   copyTo(targetNode, anchorNode, callback) {
@@ -858,7 +858,7 @@ export class DOMNode {
 
   /**
    * @param {!DOMNode} targetNode
-   * @param {?SDK.DOMNode} anchorNode
+   * @param {?DOMNode} anchorNode
    * @param {function(?ProtocolModule.InspectorBackend.ProtocolError, ?SDK.DOMNode)=} callback
    */
   moveTo(targetNode, anchorNode, callback) {

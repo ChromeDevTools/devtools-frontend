@@ -224,7 +224,7 @@ export class CSSMatchedStyles {
     return new DOMInheritanceCascade(nodeCascades);
 
     /**
-     * @param {!Array<!CSSStyleDeclaration>|!Set<!SDK.CSSStyleDeclaration>} styles
+     * @param {!Array<!CSSStyleDeclaration>|!Set<!CSSStyleDeclaration>} styles
      * @param {!SDK.CSSStyleDeclaration} query
      * @return {boolean}
      */

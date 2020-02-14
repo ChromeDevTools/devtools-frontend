@@ -6,11 +6,11 @@ import * as Common from '../common/common.js';
 import * as SDK from '../sdk/sdk.js';
 
 import {Events, throttlingManager} from './ThrottlingManager.js';
-import {advancedMobilePresets, CustomConditions, mobilePresets, NoThrottlingConditions,} from './ThrottlingPresets.js';
+import {advancedMobilePresets, Conditions, ConditionsList, CustomConditions, mobilePresets, MobileThrottlingConditionsGroup, NoThrottlingConditions} from './ThrottlingPresets.js';  // eslint-disable-line no-unused-vars
 
 export class MobileThrottlingSelector {
   /**
-   * @param {function(!Array<!MobileThrottling.MobileThrottlingConditionsGroup>):!MobileThrottling.ConditionsList} populateCallback
+   * @param {function(!Array<!MobileThrottlingConditionsGroup>):!ConditionsList} populateCallback
    * @param {function(number)} selectCallback
    */
   constructor(populateCallback, selectCallback) {
@@ -19,13 +19,13 @@ export class MobileThrottlingSelector {
     throttlingManager().addEventListener(Events.RateChanged, this._conditionsChanged, this);
     self.SDK.multitargetNetworkManager.addEventListener(
         SDK.NetworkManager.MultitargetNetworkManager.Events.ConditionsChanged, this._conditionsChanged, this);
-    /** @type {!MobileThrottling.ConditionsList} */
+    /** @type {!ConditionsList} */
     this._options = this._populateOptions();
     this._conditionsChanged();
   }
 
   /**
-   * @param {!MobileThrottling.Conditions} conditions
+   * @param {!Conditions} conditions
    */
   optionSelected(conditions) {
     self.SDK.multitargetNetworkManager.setNetworkConditions(conditions.network);
@@ -33,7 +33,7 @@ export class MobileThrottlingSelector {
   }
 
   /**
-   * @return {!MobileThrottling.ConditionsList}
+   * @return {!ConditionsList}
    */
   _populateOptions() {
     const disabledGroup = {title: Common.UIString.UIString('Disabled'), items: [NoThrottlingConditions]};

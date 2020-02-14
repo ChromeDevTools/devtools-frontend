@@ -9,7 +9,7 @@ import * as UI from '../ui/ui.js';
 
 import {MobileThrottlingSelector} from './MobileThrottlingSelector.js';
 import {NetworkThrottlingSelector} from './NetworkThrottlingSelector.js';
-import {cpuThrottlingPresets, CPUThrottlingRates, CustomConditions} from './ThrottlingPresets.js';
+import {Conditions, ConditionsList, cpuThrottlingPresets, CPUThrottlingRates, CustomConditions, MobileThrottlingConditionsGroup, NetworkThrottlingConditionsGroup} from './ThrottlingPresets.js';  // eslint-disable-line no-unused-vars
 
 /**
  * @implements {SDK.SDKModel.SDKModelObserver<!SDK.EmulationModel.EmulationModel>}
@@ -50,7 +50,7 @@ export class ThrottlingManager extends Common.ObjectWrapper.ObjectWrapper {
     return selector;
 
     /**
-     * @param {!Array.<!MobileThrottling.NetworkThrottlingConditionsGroup>} groups
+     * @param {!Array.<!NetworkThrottlingConditionsGroup>} groups
      * @return {!Array<?SDK.NetworkManager.Conditions>}
      */
     function populate(groups) {
@@ -137,7 +137,7 @@ export class ThrottlingManager extends Common.ObjectWrapper.ObjectWrapper {
     button.turnIntoSelect();
     button.setDarkText();
 
-    /** @type {!MobileThrottling.ConditionsList} */
+    /** @type {!ConditionsList} */
     let options = [];
     let selectedIndex = -1;
     const selector = new MobileThrottlingSelector(populate, select);
@@ -157,14 +157,13 @@ export class ThrottlingManager extends Common.ObjectWrapper.ObjectWrapper {
         }
         contextMenu.defaultSection().appendCheckboxItem(
             Common.UIString.UIString(conditions.title),
-            selector.optionSelected.bind(selector, /** @type {!MobileThrottling.Conditions} */ (conditions)),
-            selectedIndex === index);
+            selector.optionSelected.bind(selector, /** @type {!Conditions} */ (conditions)), selectedIndex === index);
       }
     }
 
     /**
-     * @param {!Array.<!MobileThrottling.MobileThrottlingConditionsGroup>} groups
-     * @return {!MobileThrottling.ConditionsList}
+     * @param {!Array.<!MobileThrottlingConditionsGroup>} groups
+     * @return {!ConditionsList}
      */
     function populate(groups) {
       options = [];

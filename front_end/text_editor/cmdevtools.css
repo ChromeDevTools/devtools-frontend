@@ -636,3 +636,10 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
 .CodeMirror .CodeMirror-line > span > span::selection {
     background: var(--item-selection-bg-color);
 }
+
+@media (forced-colors: active) {
+    .cm-token-highlight:before {
+        forced-color-adjust: none;
+        border-color: Highlight;
+    }
+}

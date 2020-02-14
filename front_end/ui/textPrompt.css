@@ -64,3 +64,9 @@
 .text-prompt-root:not(:focus-within) ::selection {
     background: transparent;
 }
+
+@media (forced-colors: active) {
+    .text-prompt[data-placeholder]:empty::before {
+        color: GrayText !important;
+    }
+}

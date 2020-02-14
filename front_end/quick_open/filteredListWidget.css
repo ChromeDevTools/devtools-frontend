@@ -8,6 +8,7 @@
     display: flex;
     flex-direction: column;
     flex: auto;
+    border: 1px solid transparent;
 }
 
 .filtered-list-widget-prompt-element {
@@ -25,6 +26,7 @@
     margin-top: 12px;
     overflow: hidden;
     flex: auto;
+    border: 1px solid transparent;
 }
 
 .filtered-list-widget-progress {
@@ -122,4 +124,25 @@
     font-style: italic;
     color: #888;
     background: #fbfbfb;
+}
+
+@media (forced-colors: active) {
+    .filtered-list-widget {
+        forced-color-adjust: none;
+        border-color:  ButtonText;
+    }
+    .filtered-list-widget-item .filtered-list-widget-title,
+    .filtered-list-widget-item .filtered-list-widget-subtitle {
+        color: ButtonText;
+    }
+    .filtered-list-widget-item.selected {
+        background-color: Highlight;
+    }
+    .filtered-list-widget-item.selected .filtered-list-widget-title,
+    .filtered-list-widget-item.selected .filtered-list-widget-subtitle {
+        color: HighlightText;
+    }
+    .filtered-list-widget-input {
+        border-color: ButtonText;
+    }
 }

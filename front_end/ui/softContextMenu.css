@@ -124,3 +124,38 @@
     opacity: 1;
     filter: none;
 }
+
+@media (forced-colors: active) {
+    .soft-context-menu-item {
+        forced-color-adjust: none;
+    }
+    .soft-context-menu-item-mouse-over {
+        border-top-color: Highlight;
+        border-bottom-color: Highlight;
+        background-color: Highlight;
+        color: HighlightText;
+    }
+    .soft-context-menu-shortcut {
+        color: ButtonText;
+    }
+    .soft-context-menu-item-mouse-over .soft-context-menu-shortcut {
+        color: HighlightText;
+    }
+    .soft-context-menu[data-keyboard-focus="true"]:focus {
+        forced-color-adjust: none;
+        background: Canvas;
+        border-color: Highlight;
+    }
+    .soft-context-menu-separator > .separator-line {
+        border-bottom-color: ButtonText;
+    }
+    .checkmark {
+        opacity: 1;
+    }
+    .spritesheet-smallicons:not(.icon-mask) {
+        filter: invert(100%);
+    }
+    .soft-context-menu-item-mouse-over .spritesheet-smallicons:not(.icon-mask) {
+        filter: invert(0);
+    }
+}

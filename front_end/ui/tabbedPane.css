@@ -312,4 +312,18 @@
         background-color: Highlight;
         color: HighlightText;
     }
+    .tabbed-pane-header-tabs-drop-down-container {
+        opacity: 1;
+    }
+    .tabbed-pane-header-tabs-drop-down-container:hover,
+    .tabbed-pane-header-tabs-drop-down-container[data-keyboard-focus="true"]:focus {
+        background-color: Highlight;
+    }
+    .tabbed-pane-header-tabs-drop-down-container > .chevron-icon {
+        background-color: ButtonText;
+    }
+    .tabbed-pane-header-tabs-drop-down-container:hover > .chevron-icon,
+    .tabbed-pane-header-tabs-drop-down-container[data-keyboard-focus="true"]:focus > .chevron-icon {
+        background-color: HighlightText;
+    }
 }

@@ -100,3 +100,21 @@
 :host{
     overflow-y: auto;
 }
+
+@media (forced-colors: active) {
+    .tree-outline li .leading-icons [is=ui-icon].icon-mask {
+        background: ButtonText;
+    }
+    .tree-outline li:hover:not(.selected) .selection {
+        forced-color-adjust: none;
+        background-color: Highlight;
+    }
+    .tree-outline:not(.hide-selection-when-blurred) li.parent:hover:not(.selected)::before,
+    .tree-outline:not(.hide-selection-when-blurred) li:hover:not(.selected) [is=ui-icon].icon-mask {
+        background-color: HighlightText;
+    }
+    .tree-outline li:not(.selected):hover .tree-element-title {
+        forced-color-adjust: none;
+        color: HighlightText;
+    }
+}

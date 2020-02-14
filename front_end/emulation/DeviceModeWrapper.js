@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
 import * as ProtocolModule from '../protocol/protocol.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
@@ -59,7 +60,7 @@ export class DeviceModeWrapper extends UI.Widget.VBox {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _screenshotRequestedFromOverlay(event) {
     const clip = /** @type {!Protocol.Page.Viewport} */ (event.data);

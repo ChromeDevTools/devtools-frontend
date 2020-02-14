@@ -32,7 +32,7 @@ export class ComputedStyleModel extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _onNodeChanged(event) {
     this._node = /** @type {?SDK.DOMModel.DOMNode} */ (event.data);
@@ -67,7 +67,7 @@ export class ComputedStyleModel extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
-   * @param {?Common.Event} event
+   * @param {?Common.EventTarget.EventTargetEvent} event
    */
   _onComputedStyleChanged(event) {
     delete this._computedStylePromise;
@@ -75,7 +75,7 @@ export class ComputedStyleModel extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _onDOMModelChanged(event) {
     // Any attribute removal or modification can affect the styles of "related" nodes.
@@ -88,7 +88,7 @@ export class ComputedStyleModel extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _onFrameResized(event) {
     /**

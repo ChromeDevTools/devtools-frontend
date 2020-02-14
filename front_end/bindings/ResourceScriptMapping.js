@@ -165,7 +165,7 @@ export class ResourceScriptMapping {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _parsedScriptSource(event) {
     const script = /** @type {!SDK.Script.Script} */ (event.data);
@@ -225,7 +225,7 @@ export class ResourceScriptMapping {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _executionContextDestroyed(event) {
     const executionContext = /** @type {!SDK.RuntimeModel.ExecutionContext} */ (event.data);
@@ -236,7 +236,7 @@ export class ResourceScriptMapping {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _globalObjectCleared(event) {
     const scripts = Array.from(this._acceptedScripts);
@@ -326,14 +326,14 @@ export class ResourceScriptFile extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _workingCopyChanged(event) {
     this._update();
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _workingCopyCommitted(event) {
     if (this._uiSourceCode.project().canSetFileContent()) {

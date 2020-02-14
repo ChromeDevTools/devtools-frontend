@@ -74,7 +74,7 @@ export class ElementsSidebarPane extends UI.Widget.VBox {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   onCSSModelChanged(event) {
   }

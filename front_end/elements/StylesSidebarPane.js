@@ -462,7 +462,7 @@ export class StylesSidebarPane extends ElementsSidebarPane {
 
   /**
    * @override
-   * @param {!Common.Event=} event
+   * @param {!Common.EventTarget.EventTargetEvent=} event
    */
   onCSSModelChanged(event) {
     const edit = event && event.data ? /** @type {?SDK.CSSModel.Edit} */ (event.data.edit) : null;
@@ -1325,7 +1325,7 @@ export class StylePropertiesSection {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _onNewRuleClick(event) {
     event.data.consume();
@@ -1337,7 +1337,7 @@ export class StylePropertiesSection {
 
   /**
    * @param {string} propertyName
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _onInsertShadowPropertyClick(propertyName, event) {
     event.data.consume(true);
@@ -1352,7 +1352,7 @@ export class StylePropertiesSection {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _onInsertColorPropertyClick(event) {
     event.data.consume(true);
@@ -1367,7 +1367,7 @@ export class StylePropertiesSection {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _onInsertBackgroundColorPropertyClick(event) {
     event.data.consume(true);
@@ -2735,7 +2735,7 @@ export class ButtonProvider {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _clicked(event) {
     StylesSidebarPane._instance._createNewRuleInViaInspectorStyleSheet();

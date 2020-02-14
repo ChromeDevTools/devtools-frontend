@@ -95,7 +95,7 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _onBindingCreated(event) {
     const binding = /** @type {!Persistence.Persistence.PersistenceBinding} */ (event.data);
@@ -135,7 +135,7 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _onBindingRemoved(event) {
     const binding = /** @type {!Persistence.Persistence.PersistenceBinding} */ (event.data);
@@ -242,7 +242,7 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _scrollChanged(event) {
     if (this._scrollTimer) {
@@ -261,7 +261,7 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _selectionChanged(event) {
     const range = /** @type {!TextUtils.TextRange.TextRange} */ (event.data);
@@ -550,7 +550,7 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _tabClosed(event) {
     const tabId = /** @type {string} */ (event.data.tabId);
@@ -575,7 +575,7 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _tabSelected(event) {
     const tabId = /** @type {string} */ (event.data.tabId);
@@ -631,7 +631,7 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _uiSourceCodeTitleChanged(event) {
     const uiSourceCode = /** @type {!Workspace.UISourceCode.UISourceCode} */ (event.data);
@@ -640,7 +640,7 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _uiSourceCodeWorkingCopyChanged(event) {
     const uiSourceCode = /** @type {!Workspace.UISourceCode.UISourceCode} */ (event.data);
@@ -648,7 +648,7 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _uiSourceCodeWorkingCopyCommitted(event) {
     const uiSourceCode = /** @type {!Workspace.UISourceCode.UISourceCode} */ (event.data.uiSourceCode);

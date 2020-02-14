@@ -260,7 +260,7 @@ export class IDBDataView extends UI.View.SimpleView {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _pageBackButtonClicked(event) {
     this._skipCount = Math.max(0, this._skipCount - this._pageSize);
@@ -268,7 +268,7 @@ export class IDBDataView extends UI.View.SimpleView {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _pageForwardButtonClicked(event) {
     this._skipCount = this._skipCount + this._pageSize;
@@ -425,14 +425,14 @@ export class IDBDataView extends UI.View.SimpleView {
   }
 
   /**
-   * @param {?Common.Event} event
+   * @param {?Common.EventTarget.EventTargetEvent} event
    */
   _refreshButtonClicked(event) {
     this._updateData(true);
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   async _clearButtonClicked(event) {
     this._clearButton.setEnabled(false);

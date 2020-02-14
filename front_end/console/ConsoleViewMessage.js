@@ -47,7 +47,7 @@ export class ConsoleViewMessage {
    * @param {!SDK.ConsoleModel.ConsoleMessage} consoleMessage
    * @param {!Components.Linkifier.Linkifier} linkifier
    * @param {number} nestingLevel
-   * @param {function(!Common.Event)} onResize
+   * @param {function(!Common.EventTarget.EventTargetEvent)} onResize
    */
   constructor(consoleMessage, linkifier, nestingLevel, onResize) {
     this._message = consoleMessage;
@@ -1718,7 +1718,7 @@ export class ConsoleGroupViewMessage extends ConsoleViewMessage {
    * @param {!Components.Linkifier.Linkifier} linkifier
    * @param {number} nestingLevel
    * @param {function()} onToggle
-   * @param {function(!Common.Event)} onResize
+   * @param {function(!Common.EventTarget.EventTargetEvent)} onResize
    */
   constructor(consoleMessage, linkifier, nestingLevel, onToggle, onResize) {
     console.assert(consoleMessage.isGroupStartMessage());

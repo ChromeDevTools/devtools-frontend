@@ -140,7 +140,7 @@ export class ConsoleContextSelector {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _onExecutionContextCreated(event) {
     const executionContext = /** @type {!SDK.RuntimeModel.ExecutionContext} */ (event.data);
@@ -148,7 +148,7 @@ export class ConsoleContextSelector {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _onExecutionContextChanged(event) {
     const executionContext = /** @type {!SDK.RuntimeModel.ExecutionContext} */ (event.data);
@@ -171,7 +171,7 @@ export class ConsoleContextSelector {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _onExecutionContextDestroyed(event) {
     const executionContext = /** @type {!SDK.RuntimeModel.ExecutionContext} */ (event.data);
@@ -179,7 +179,7 @@ export class ConsoleContextSelector {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _executionContextChangedExternally(event) {
     const executionContext = /** @type {?SDK.RuntimeModel.ExecutionContext} */ (event.data);
@@ -308,7 +308,7 @@ export class ConsoleContextSelector {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _callFrameSelectedInModel(event) {
     const debuggerModel = /** @type {!SDK.DebuggerModel.DebuggerModel} */ (event.data);
@@ -320,7 +320,7 @@ export class ConsoleContextSelector {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _frameNavigated(event) {
     const frame = /** @type {!SDK.ResourceTreeModel.ResourceTreeFrame} */ (event.data);

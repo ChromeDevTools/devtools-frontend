@@ -227,7 +227,7 @@ export class TimelineOverviewPane extends UI.Widget.VBox {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _onWindowChanged(event) {
     if (this._muteOnWindowChanged) {

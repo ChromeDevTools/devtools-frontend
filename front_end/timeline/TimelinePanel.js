@@ -192,7 +192,7 @@ export class TimelinePanel extends UI.Panel.Panel {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _onOverviewWindowChanged(event) {
     const left = event.data.startTime;
@@ -201,7 +201,7 @@ export class TimelinePanel extends UI.Panel.Panel {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _onModelWindowChanged(event) {
     const window = /** @type {!Timeline.PerformanceModel.Window} */ (event.data.window);
@@ -320,7 +320,7 @@ export class TimelinePanel extends UI.Panel.Panel {
   }
 
   /**
-    * @param {!Common.Event} event
+    * @param {!Common.EventTarget.EventTargetEvent} event
     */
   _appendExtensionsToToolbar(event) {
     const provider = /** @type {!Extensions.ExtensionTraceProvider.ExtensionTraceProvider} */ (event.data);
@@ -882,7 +882,7 @@ export class TimelinePanel extends UI.Panel.Panel {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   async _loadEventFired(event) {
     if (this._state !== State.Recording || !this._recordingPageReload ||

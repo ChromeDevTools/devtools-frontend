@@ -120,7 +120,7 @@ export class ClearStorageView extends UI.ThrottledWidget.ThrottledWidget {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _originChanged(event) {
     const mainOrigin = /** *@type {string} */ (event.data.mainSecurityOrigin);

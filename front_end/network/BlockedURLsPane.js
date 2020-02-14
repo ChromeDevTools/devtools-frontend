@@ -248,7 +248,7 @@ export class BlockedURLsPane extends UI.Widget.VBox {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _onRequestFinished(event) {
     const request = /** @type {!SDK.NetworkRequest.NetworkRequest} */ (event.data);

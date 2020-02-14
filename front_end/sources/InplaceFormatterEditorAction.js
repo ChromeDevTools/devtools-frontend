@@ -15,7 +15,7 @@ import {EditorAction, Events, SourcesView} from './SourcesView.js';  // eslint-d
  */
 export class InplaceFormatterEditorAction {
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _editorSelected(event) {
     const uiSourceCode = /** @type {!Workspace.UISourceCode.UISourceCode} */ (event.data);
@@ -23,7 +23,7 @@ export class InplaceFormatterEditorAction {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _editorClosed(event) {
     const wasSelected = /** @type {boolean} */ (event.data.wasSelected);
@@ -82,7 +82,7 @@ export class InplaceFormatterEditorAction {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _formatSourceInPlace(event) {
     const uiSourceCode = this._sourcesView.currentUISourceCode();

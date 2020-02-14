@@ -206,7 +206,7 @@ export class ScreencastView extends UI.Widget.VBox {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _onSuspendStateChange(event) {
     if (self.SDK.targetManager.allTargetsSuspended()) {

@@ -1110,7 +1110,7 @@ export class ElementsTreeOutline extends UI.TreeOutline.TreeOutline {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _documentUpdated(event) {
     const domModel = /** @type {!SDK.DOMModel.DOMModel} */ (event.data);
@@ -1121,7 +1121,7 @@ export class ElementsTreeOutline extends UI.TreeOutline.TreeOutline {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _attributeModified(event) {
     const node = /** @type {!SDK.DOMModel.DOMNode} */ (event.data.node);
@@ -1130,7 +1130,7 @@ export class ElementsTreeOutline extends UI.TreeOutline.TreeOutline {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _attributeRemoved(event) {
     const node = /** @type {!SDK.DOMModel.DOMNode} */ (event.data.node);
@@ -1139,7 +1139,7 @@ export class ElementsTreeOutline extends UI.TreeOutline.TreeOutline {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _characterDataModified(event) {
     const node = /** @type {!SDK.DOMModel.DOMNode} */ (event.data);
@@ -1152,7 +1152,7 @@ export class ElementsTreeOutline extends UI.TreeOutline.TreeOutline {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _nodeInserted(event) {
     const node = /** @type {!SDK.DOMModel.DOMNode} */ (event.data);
@@ -1161,7 +1161,7 @@ export class ElementsTreeOutline extends UI.TreeOutline.TreeOutline {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _nodeRemoved(event) {
     const node = /** @type {!SDK.DOMModel.DOMNode} */ (event.data.node);
@@ -1172,7 +1172,7 @@ export class ElementsTreeOutline extends UI.TreeOutline.TreeOutline {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _childNodeCountUpdated(event) {
     const node = /** @type {!SDK.DOMModel.DOMNode} */ (event.data);
@@ -1181,7 +1181,7 @@ export class ElementsTreeOutline extends UI.TreeOutline.TreeOutline {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _distributedNodesChanged(event) {
     const node = /** @type {!SDK.DOMModel.DOMNode} */ (event.data);
@@ -1567,7 +1567,7 @@ export class ElementsTreeOutline extends UI.TreeOutline.TreeOutline {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _markersChanged(event) {
     const node = /** @type {!SDK.DOMModel.DOMNode} */ (event.data);

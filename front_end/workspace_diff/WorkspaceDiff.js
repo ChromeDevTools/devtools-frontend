@@ -39,7 +39,7 @@ export class WorkspaceDiffImpl extends Common.ObjectWrapper.ObjectWrapper {
 
   /**
    * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
-   * @param {function(!Common.Event)} callback
+   * @param {function(!Common.EventTarget.EventTargetEvent)} callback
    * @param {!Object=} thisObj
    */
   subscribeToDiffChange(uiSourceCode, callback, thisObj) {
@@ -48,7 +48,7 @@ export class WorkspaceDiffImpl extends Common.ObjectWrapper.ObjectWrapper {
 
   /**
    * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
-   * @param {function(!Common.Event)} callback
+   * @param {function(!Common.EventTarget.EventTargetEvent)} callback
    * @param {!Object=} thisObj
    */
   unsubscribeFromDiffChange(uiSourceCode, callback, thisObj) {
@@ -82,7 +82,7 @@ export class WorkspaceDiffImpl extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _uiSourceCodeChanged(event) {
     const uiSourceCode = /** @type {!Workspace.UISourceCode.UISourceCode} */ (event.data.uiSourceCode);
@@ -90,7 +90,7 @@ export class WorkspaceDiffImpl extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _uiSourceCodeAdded(event) {
     const uiSourceCode = /** @type {!Workspace.UISourceCode.UISourceCode} */ (event.data);
@@ -98,7 +98,7 @@ export class WorkspaceDiffImpl extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _uiSourceCodeRemoved(event) {
     const uiSourceCode = /** @type {!Workspace.UISourceCode.UISourceCode} */ (event.data);
@@ -106,7 +106,7 @@ export class WorkspaceDiffImpl extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _projectRemoved(event) {
     const project = /** @type {!Workspace.Workspace.Project} */ (event.data);

@@ -65,7 +65,7 @@ export class AdvancedApp {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _openToolboxWindow(event) {
     if (/** @type {string} */ (event.data.to) !== Components.DockController.State.Undocked) {
@@ -104,7 +104,7 @@ export class AdvancedApp {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _onBeforeDockSideChange(event) {
     if (/** @type {string} */ (event.data.to) === Components.DockController.State.Undocked && this._toolboxRootView) {
@@ -117,7 +117,7 @@ export class AdvancedApp {
   }
 
   /**
-   * @param {!Common.Event=} event
+   * @param {!Common.EventTarget.EventTargetEvent=} event
    */
   _onDockSideChange(event) {
     this._updateDeviceModeView();
@@ -136,7 +136,7 @@ export class AdvancedApp {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _onAfterDockSideChange(event) {
     // We may get here on the first dock side change while loading without BeforeDockSideChange.
@@ -182,7 +182,7 @@ export class AdvancedApp {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _onSetInspectedPageBounds(event) {
     if (this._changingDockSide) {

@@ -149,7 +149,7 @@ export class ResourceWebSocketFrameView extends UI.Widget.VBox {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _frameAdded(event) {
     const frame = /** @type {!SDK.NetworkRequest.WebSocketFrame} */ (event.data);
@@ -185,7 +185,7 @@ export class ResourceWebSocketFrameView extends UI.Widget.VBox {
   }
 
   /**
-  * @param {!Common.Event} event
+  * @param {!Common.EventTarget.EventTargetEvent} event
    */
   async _onFrameSelected(event) {
     this._currentSelectedNode = /** @type {!ResourceWebSocketFrameNode} */ (event.data);
@@ -209,7 +209,7 @@ export class ResourceWebSocketFrameView extends UI.Widget.VBox {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _onFrameDeselected(event) {
     this._currentSelectedNode = null;

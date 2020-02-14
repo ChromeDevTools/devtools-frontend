@@ -284,14 +284,14 @@ export class CSSPlugin extends Plugin {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _spectrumResized(event) {
     this._swatchPopoverHelper.reposition();
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _spectrumChanged(event) {
     const colorString = /** @type {string} */ (event.data);
@@ -321,7 +321,7 @@ export class CSSPlugin extends Plugin {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _bezierChanged(event) {
     const bezierString = /** @type {string} */ (event.data);
@@ -350,7 +350,7 @@ export class CSSPlugin extends Plugin {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _onTextChanged(event) {
     if (!this._muteSwatchProcessing) {

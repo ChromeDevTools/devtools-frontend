@@ -61,7 +61,7 @@ export class FileManager extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _savedURL(event) {
     const url = /** @type {string} */ (event.data.url);
@@ -73,7 +73,7 @@ export class FileManager extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _canceledSavedURL(event) {
     const url = /** @type {string} */ (event.data);
@@ -100,7 +100,7 @@ export class FileManager extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _appendedToURL(event) {
     const url = /** @type {string} */ (event.data);

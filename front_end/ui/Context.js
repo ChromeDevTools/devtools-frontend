@@ -54,7 +54,7 @@ export class Context {
 
   /**
    * @param {function(new:Object, ...)} flavorType
-   * @param {function(!Common.Event)} listener
+   * @param {function(!Common.EventTarget.EventTargetEvent)} listener
    * @param {!Object=} thisObject
    */
   addFlavorChangeListener(flavorType, listener, thisObject) {
@@ -68,7 +68,7 @@ export class Context {
 
   /**
    * @param {function(new:Object, ...)} flavorType
-   * @param {function(!Common.Event)} listener
+   * @param {function(!Common.EventTarget.EventTargetEvent)} listener
    * @param {!Object=} thisObject
    */
   removeFlavorChangeListener(flavorType, listener, thisObject) {

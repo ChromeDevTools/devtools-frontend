@@ -229,21 +229,11 @@ Common.Worker = CommonModule.Worker.WorkerWrapper;
   */
 Common.DeferredContent;
 
-/**
- * @typedef {!{eventTarget: !Common.EventTarget, eventType: (string|symbol), thisObject: (!Object|undefined), listener: function(!Common.Event)}}
- */
-Common.EventTarget.EventDescriptor;
-
-/**
- * @typedef {!{data: *}}
- */
-Common.Event;
-
 /** @typedef {{tooltip: (string|undefined), preventKeyboardFocus: (boolean|undefined)}} */
 Common.Linkifier.Options;
 
 /**
- * @typedef {!{thisObject: (!Object|undefined), listener: function(!Common.Event), disposed: (boolean|undefined)}}
+ * @typedef {!{thisObject: (!Object|undefined), listener: function(!CommonModule.EventTarget.EventTargetEvent), disposed: (boolean|undefined)}}
  */
 Common.Object._listenerCallbackTuple;
 

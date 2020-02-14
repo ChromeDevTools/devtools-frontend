@@ -124,7 +124,7 @@ export class BlackboxManager {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _sourceMapAttached(event) {
     const script = /** @type {!SDK.Script.Script} */ (event.data.client);
@@ -133,7 +133,7 @@ export class BlackboxManager {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _sourceMapDetached(event) {
     const script = /** @type {!SDK.Script.Script} */ (event.data.client);

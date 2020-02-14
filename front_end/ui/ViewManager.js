@@ -592,7 +592,7 @@ export class _TabbedLocation extends _Location {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _tabSelected(event) {
     const tabId = /** @type {string} */ (event.data.tabId);
@@ -602,7 +602,7 @@ export class _TabbedLocation extends _Location {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _tabClosed(event) {
     const id = /** @type {string} */ (event.data['tabId']);

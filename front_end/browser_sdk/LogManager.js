@@ -32,7 +32,7 @@ export class LogManager {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _logEntryAdded(event) {
     const data = /** @type {{logModel: !SDK.LogModel.LogModel, entry: !Protocol.Log.LogEntry}} */ (event.data);

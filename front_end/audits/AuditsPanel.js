@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
+
 import {AuditController, Events} from './AuditsController.js';
 import {ProtocolService} from './AuditsProtocolService.js';
 import {AuditsReportRenderer, AuditsReportUIFeatures} from './AuditsReportRenderer.js';
@@ -27,7 +29,7 @@ export class AuditsPanel extends UI.Panel {
     this._cachedRenderedReports = new Map();
 
     this._dropTarget = new UI.DropTarget(
-        this.contentElement, [UI.DropTarget.Type.File], Common.UIString('Drop audit file here'),
+        this.contentElement, [UI.DropTarget.Type.File], Common.UIString.UIString('Drop audit file here'),
         this._handleDrop.bind(this));
 
     this._controller.addEventListener(Events.PageAuditabilityChanged, this._refreshStartAuditUI.bind(this));
@@ -43,7 +45,7 @@ export class AuditsPanel extends UI.Panel {
   }
 
   /**
-   * @param {!Common.Event} evt
+   * @param {!Common.EventTarget.EventTargetEvent} evt
    */
   _refreshStartAuditUI(evt) {
     // PageAuditabilityChanged fires multiple times during an audit, which we want to ignore.
@@ -57,7 +59,7 @@ export class AuditsPanel extends UI.Panel {
   }
 
   /**
-   * @param {!Common.Event} evt
+   * @param {!Common.EventTarget.EventTargetEvent} evt
    */
   _refreshStatusUI(evt) {
     this._statusView.updateStatus(evt.data.message);
@@ -78,7 +80,7 @@ export class AuditsPanel extends UI.Panel {
 
     const toolbar = new UI.Toolbar('', auditsToolbarContainer);
 
-    this._newButton = new UI.ToolbarButton(Common.UIString('Perform an audit\u2026'), 'largeicon-add');
+    this._newButton = new UI.ToolbarButton(Common.UIString.UIString('Perform an audit\u2026'), 'largeicon-add');
     toolbar.appendToolbarItem(this._newButton);
     this._newButton.addEventListener(UI.ToolbarButton.Events.Click, this._renderStartView.bind(this));
 
@@ -87,7 +89,7 @@ export class AuditsPanel extends UI.Panel {
     this._reportSelector = new ReportSelector(() => this._renderStartView());
     toolbar.appendToolbarItem(this._reportSelector.comboBox());
 
-    this._clearButton = new UI.ToolbarButton(Common.UIString('Clear all'), 'largeicon-clear');
+    this._clearButton = new UI.ToolbarButton(Common.UIString.UIString('Clear all'), 'largeicon-clear');
     toolbar.appendToolbarItem(this._clearButton);
     this._clearButton.addEventListener(UI.ToolbarButton.Events.Click, this._clearAll.bind(this));
 
@@ -267,7 +269,7 @@ export class AuditsPanel extends UI.Panel {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   async _startAudit(event) {
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.AuditsStarted);

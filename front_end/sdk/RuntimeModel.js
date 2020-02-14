@@ -247,7 +247,7 @@ export class RuntimeModel extends SDKModel {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _customFormattersStateChanged(event) {
     const enabled = /** @type {boolean} */ (event.data);

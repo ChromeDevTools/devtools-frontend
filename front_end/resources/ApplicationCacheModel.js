@@ -26,6 +26,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
 import * as SDK from '../sdk/sdk.js';
 
 /**
@@ -54,7 +55,7 @@ export class ApplicationCacheModel extends SDK.SDKModel.SDKModel {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   async _frameNavigated(event) {
     const frame = /** @type {!SDK.ResourceTreeModel.ResourceTreeFrame} */ (event.data);
@@ -71,7 +72,7 @@ export class ApplicationCacheModel extends SDK.SDKModel.SDKModel {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _frameDetached(event) {
     const frame = /** @type {!SDK.ResourceTreeModel.ResourceTreeFrame} */ (event.data);

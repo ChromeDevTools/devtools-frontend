@@ -12,7 +12,7 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper {
   /**
    * @param {!ContrastInfo} contrastInfo
    * @param {!Element} contentElement
-   * @param {function(boolean=, !Common.Event=)} toggleMainColorPickerCallback
+   * @param {function(boolean=, !Common.EventTarget.EventTargetEvent=)} toggleMainColorPickerCallback
    * @param {function()} expandedChangedCallback
    */
   constructor(contrastInfo, contentElement, toggleMainColorPickerCallback, expandedChangedCallback) {
@@ -23,7 +23,7 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper {
     /** @type {!Element} */
     this._element = contentElement.createChild('div', 'spectrum-contrast-details collapsed');
 
-    /** @type {function(boolean=, !Common.Event=)} */
+    /** @type {function(boolean=, !Common.EventTarget.EventTargetEvent=)} */
     this._toggleMainColorPicker = toggleMainColorPickerCallback;
 
     /** @type {function()} */
@@ -183,7 +183,7 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _expandButtonClicked(event) {
     this._contrastValueBubble.getComponentSelection().empty();
@@ -271,7 +271,7 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _bgColorPicked(event) {
     const rgbColor = /** @type {!{r: number, g: number, b: number, a: number}} */ (event.data);

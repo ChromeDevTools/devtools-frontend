@@ -65,7 +65,7 @@ export class Linkifier {
     }
 
     /**
-     * @param {!Common.Event} event
+     * @param {!Common.EventTarget.EventTargetEvent} event
      */
     function onLinkIconChanged(event) {
       const uiSourceCode = /** @type {!Workspace.UISourceCode} */ (event.data);

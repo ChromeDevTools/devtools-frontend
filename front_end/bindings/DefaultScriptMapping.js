@@ -108,7 +108,7 @@ export class DefaultScriptMapping {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _parsedScriptSource(event) {
     const script = /** @type {!SDK.Script.Script} */ (event.data);
@@ -128,7 +128,7 @@ export class DefaultScriptMapping {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _discardedScriptSource(event) {
     const script = /** @type {!SDK.Script.Script} */ (event.data);

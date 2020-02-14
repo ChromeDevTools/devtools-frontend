@@ -196,7 +196,7 @@ export class ServiceWorkersView extends UI.Widget.VBox {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _registrationUpdated(event) {
     const registration = /** @type {!SDK.ServiceWorkerManager.ServiceWorkerRegistration} */ (event.data);
@@ -265,7 +265,7 @@ export class ServiceWorkersView extends UI.Widget.VBox {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _registrationDeleted(event) {
     const registration = /** @type {!SDK.ServiceWorkerManager.ServiceWorkerRegistration} */ (event.data);
@@ -562,14 +562,14 @@ export class Section {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _unregisterButtonClicked(event) {
     this._manager.deleteRegistration(this._registration.id);
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _updateButtonClicked(event) {
     this._manager.updateRegistration(this._registration.id);

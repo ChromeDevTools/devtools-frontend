@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
+
 import * as ARIAUtils from './ARIAUtils.js';
 import {Events as ListModelEvents, ListModel} from './ListModel.js';  // eslint-disable-line no-unused-vars
 import {measurePreferredSize} from './UIUtils.js';
@@ -118,7 +120,7 @@ export class ListControl {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _replacedItemsInRange(event) {
     const data = /** @type {{index: number, removed: !Array<T>, inserted: number}} */ (event.data);

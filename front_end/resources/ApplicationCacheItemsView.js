@@ -252,7 +252,7 @@ export class ApplicationCacheItemsView extends UI.View.SimpleView {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _deleteButtonClicked(event) {
     if (!this._dataGrid || !this._dataGrid.selectedNode) {

@@ -43,11 +43,6 @@ import * as Worker from './Worker.js';
 export let DeferredContent;
 
 /**
- * @typedef {!{data: *}}
- */
-export let Event;
-
-/**
  * @type {!Settings.Settings}
  */
 export let settings;

@@ -133,7 +133,7 @@ export class TimelineDetailsView extends UI.Widget.VBox {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _onWindowChanged(event) {
     if (!this._selection) {
@@ -193,7 +193,7 @@ export class TimelineDetailsView extends UI.Widget.VBox {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _tabSelected(event) {
     if (!event.data.isUserGesture) {

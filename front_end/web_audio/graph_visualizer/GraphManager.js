@@ -2,11 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../common/common.js';  // eslint-disable-line no-unused-vars
+
 import {Events as ViewEvents, GraphView} from './GraphView.js';
 
 // A class that maps each context to its corresponding graph.
 // It controls which graph to render when the context is switched or updated.
-export class GraphManager extends Common.Object {
+export class GraphManager extends Common.ObjectWrapper.ObjectWrapper {
   constructor() {
     super();
 
@@ -57,7 +59,7 @@ export class GraphManager extends Common.Object {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _notifyShouldRedraw(event) {
     const graph = /** @type {!GraphView} */ (event.data);

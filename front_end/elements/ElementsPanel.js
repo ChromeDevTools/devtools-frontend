@@ -318,7 +318,7 @@ export class ElementsPanel extends UI.Panel.Panel {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _selectedNodeChanged(event) {
     const selectedNode = /** @type {?SDK.DOMModel.DOMNode} */ (event.data.node);
@@ -353,7 +353,7 @@ export class ElementsPanel extends UI.Panel.Panel {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _documentUpdatedEvent(event) {
     const domModel = /** @type {!SDK.DOMModel.DOMModel} */ (event.data);
@@ -667,7 +667,7 @@ export class ElementsPanel extends UI.Panel.Panel {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _updateBreadcrumbIfNeeded(event) {
     const nodes = /** @type {!Array.<!SDK.DOMModel.DOMNode>} */ (event.data);
@@ -675,7 +675,7 @@ export class ElementsPanel extends UI.Panel.Panel {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _crumbNodeSelected(event) {
     const node = /** @type {!SDK.DOMModel.DOMNode} */ (event.data);
@@ -855,7 +855,7 @@ export class ElementsPanel extends UI.Panel.Panel {
     }
 
     /**
-     * @param {!Common.Event} event
+     * @param {!Common.EventTarget.EventTargetEvent} event
      * @this {ElementsPanel}
      */
     function tabSelected(event) {
@@ -919,7 +919,7 @@ export class ElementsPanel extends UI.Panel.Panel {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _extensionSidebarPaneAdded(event) {
     const pane = /** @type {!Extensions.ExtensionPanel.ExtensionSidebarPane} */ (event.data);

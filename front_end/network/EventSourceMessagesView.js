@@ -59,7 +59,7 @@ export class EventSourceMessagesView extends UI.Widget.VBox {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _messageAdded(event) {
     const message = /** @type {!SDK.NetworkRequest.EventSourceMessage} */ (event.data);

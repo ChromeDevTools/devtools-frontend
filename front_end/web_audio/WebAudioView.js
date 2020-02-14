@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
 import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';
 
@@ -149,7 +150,7 @@ export class WebAudioView extends UI.ThrottledWidget.ThrottledWidget {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _contextCreated(event) {
     const context = /** @type {!Protocol.WebAudio.BaseAudioContext} */ (event.data);
@@ -158,7 +159,7 @@ export class WebAudioView extends UI.ThrottledWidget.ThrottledWidget {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _contextDestroyed(event) {
     const contextId = /** @type {!Protocol.WebAudio.GraphObjectId} */ (event.data);
@@ -167,7 +168,7 @@ export class WebAudioView extends UI.ThrottledWidget.ThrottledWidget {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _contextChanged(event) {
     const context = /** @type {!Protocol.WebAudio.BaseAudioContext} */ (event.data);
@@ -193,7 +194,7 @@ export class WebAudioView extends UI.ThrottledWidget.ThrottledWidget {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _audioListenerCreated(event) {
     const listener = /** @type {!Protocol.WebAudio.AudioListener} */ (event.data);
@@ -210,7 +211,7 @@ export class WebAudioView extends UI.ThrottledWidget.ThrottledWidget {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _audioListenerWillBeDestroyed(event) {
     const {contextId, listenerId} = event.data;
@@ -222,7 +223,7 @@ export class WebAudioView extends UI.ThrottledWidget.ThrottledWidget {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _audioNodeCreated(event) {
     const node = /** @type {!Protocol.WebAudio.AudioNode} */ (event.data);
@@ -239,7 +240,7 @@ export class WebAudioView extends UI.ThrottledWidget.ThrottledWidget {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _audioNodeWillBeDestroyed(event) {
     const {contextId, nodeId} = event.data;
@@ -251,7 +252,7 @@ export class WebAudioView extends UI.ThrottledWidget.ThrottledWidget {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _audioParamCreated(event) {
     const param = /** @type {!Protocol.WebAudio.AudioParam} */ (event.data);
@@ -267,7 +268,7 @@ export class WebAudioView extends UI.ThrottledWidget.ThrottledWidget {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _audioParamWillBeDestroyed(event) {
     const {contextId, paramId} = event.data;
@@ -279,7 +280,7 @@ export class WebAudioView extends UI.ThrottledWidget.ThrottledWidget {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _nodesConnected(event) {
     const {contextId, sourceId, destinationId, sourceOutputIndex, destinationInputIndex} = event.data;
@@ -296,7 +297,7 @@ export class WebAudioView extends UI.ThrottledWidget.ThrottledWidget {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _nodesDisconnected(event) {
     const {contextId, sourceId, destinationId, sourceOutputIndex, destinationInputIndex} = event.data;
@@ -313,7 +314,7 @@ export class WebAudioView extends UI.ThrottledWidget.ThrottledWidget {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _nodeParamConnected(event) {
     const {contextId, sourceId, destinationId, sourceOutputIndex} = event.data;
@@ -336,7 +337,7 @@ export class WebAudioView extends UI.ThrottledWidget.ThrottledWidget {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _nodeParamDisconnected(event) {
     const {contextId, sourceId, destinationId, sourceOutputIndex} = event.data;

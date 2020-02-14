@@ -50,7 +50,7 @@ export class MainConnection {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _dispatchMessage(event) {
     if (this._onMessage) {
@@ -59,7 +59,7 @@ export class MainConnection {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _dispatchMessageChunk(event) {
     const messageChunk = /** @type {string} */ (event.data['messageChunk']);

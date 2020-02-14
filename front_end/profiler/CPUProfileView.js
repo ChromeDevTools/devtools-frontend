@@ -162,7 +162,7 @@ export class CPUProfileType extends ProfileType {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _consoleProfileFinished(event) {
     const data = /** @type {!SDK.CPUProfilerModel.EventData} */ (event.data);

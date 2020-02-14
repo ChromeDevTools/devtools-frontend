@@ -237,7 +237,7 @@ export class FileOutputStream {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _onAppendDone(event) {
     if (event.data !== this._fileName) {

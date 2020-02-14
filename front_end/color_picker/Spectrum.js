@@ -1109,7 +1109,7 @@ export class Spectrum extends UI.Widget.VBox {
 
   /**
    * @param {boolean=} enabled
-   * @param {!Common.Event=} event
+   * @param {!Common.EventTarget.EventTargetEvent=} event
    */
   _toggleColorPicker(enabled, event) {
     if (enabled === undefined) {
@@ -1134,7 +1134,7 @@ export class Spectrum extends UI.Widget.VBox {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _colorPicked(event) {
     const rgbColor = /** @type {!{r: number, g: number, b: number, a: number}} */ (event.data);

@@ -158,7 +158,7 @@ export class DOMStorageModel extends SDK.SDKModel.SDKModel {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _securityOriginAdded(event) {
     this._addOrigin(/** @type {string} */ (event.data));
@@ -184,7 +184,7 @@ export class DOMStorageModel extends SDK.SDKModel.SDKModel {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _securityOriginRemoved(event) {
     this._removeOrigin(/** @type {string} */ (event.data));

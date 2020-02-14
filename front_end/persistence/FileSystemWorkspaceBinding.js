@@ -140,7 +140,7 @@ export class FileSystemWorkspaceBinding {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _onFileSystemAdded(event) {
     const fileSystem = /** @type {!PlatformFileSystem} */ (event.data);
@@ -156,7 +156,7 @@ export class FileSystemWorkspaceBinding {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _onFileSystemRemoved(event) {
     const fileSystem = /** @type {!PlatformFileSystem} */ (event.data);
@@ -166,7 +166,7 @@ export class FileSystemWorkspaceBinding {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _fileSystemFilesChanged(event) {
     const paths = /** @type {!Persistence.IsolatedFileSystemManager.FilesChangedData} */ (event.data);

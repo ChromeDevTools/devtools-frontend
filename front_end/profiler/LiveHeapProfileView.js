@@ -99,7 +99,7 @@ export class LiveHeapProfileView extends UI.Widget.VBox {
   }
 
   /**
-   * @param {!Common.Event} value
+   * @param {!Common.EventTarget.EventTargetEvent} value
    */
   _settingChanged(value) {
     this._toggleRecordButton.setToggled(/** @type {boolean} */ (value.data));

@@ -117,7 +117,7 @@ export class SecurityPanel extends UI.Panel.PanelWithSidebar {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _onSecurityStateChanged(event) {
     const data = /** @type {!PageSecurityState} */ (event.data);
@@ -136,7 +136,7 @@ export class SecurityPanel extends UI.Panel.PanelWithSidebar {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _onVisibleSecurityStateChanged(event) {
     const data = /** @type {!PageVisibleSecurityState} */ (event.data);
@@ -196,7 +196,7 @@ export class SecurityPanel extends UI.Panel.PanelWithSidebar {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _onResponseReceived(event) {
     const request = /** @type {!SDK.NetworkRequest.NetworkRequest} */ (event.data);
@@ -260,7 +260,7 @@ export class SecurityPanel extends UI.Panel.PanelWithSidebar {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _onRequestFinished(event) {
     const request = /** @type {!SDK.NetworkRequest.NetworkRequest} */ (event.data);
@@ -355,7 +355,7 @@ export class SecurityPanel extends UI.Panel.PanelWithSidebar {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _onMainFrameNavigated(event) {
     const frame = /** type {!Protocol.Page.Frame}*/ (event.data);

@@ -90,7 +90,7 @@ export class IsolateSelector extends UI.Widget.VBox {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _targetChanged(event) {
     const target = /** @type {!SDK.SDKModel.Target} */ (event.data);
@@ -106,7 +106,7 @@ export class IsolateSelector extends UI.Widget.VBox {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _heapStatsChanged(event) {
     const isolate = /** @type {!SDK.IsolateManager.Isolate} */ (event.data);

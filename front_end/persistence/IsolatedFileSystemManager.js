@@ -82,7 +82,7 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
     return promise;
 
     /**
-     * @param {!Common.Event} event
+     * @param {!Common.EventTarget.EventTargetEvent} event
      * @this {IsolatedFileSystemManager}
      */
     function onFileSystemsLoaded(event) {
@@ -165,7 +165,7 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   async _onFileSystemAdded(event) {
     const errorMessage = /** @type {string} */ (event.data['errorMessage']);
@@ -187,7 +187,7 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _onFileSystemRemoved(event) {
     const embedderPath = /** @type {string} */ (event.data);
@@ -202,7 +202,7 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _onFileSystemFilesChanged(event) {
     const urlPaths = {
@@ -304,7 +304,7 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _onIndexingTotalWorkCalculated(event) {
     const requestId = /** @type {number} */ (event.data['requestId']);
@@ -318,7 +318,7 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _onIndexingWorked(event) {
     const requestId = /** @type {number} */ (event.data['requestId']);
@@ -336,7 +336,7 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _onIndexingDone(event) {
     const requestId = /** @type {number} */ (event.data['requestId']);
@@ -350,7 +350,7 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _onSearchCompleted(event) {
     const requestId = /** @type {number} */ (event.data['requestId']);

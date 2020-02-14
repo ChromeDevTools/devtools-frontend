@@ -229,7 +229,7 @@ export class ServiceWorkerCacheModel extends SDKModel {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _securityOriginAdded(event) {
     const securityOrigin = /** @type {string} */ (event.data);
@@ -237,7 +237,7 @@ export class ServiceWorkerCacheModel extends SDKModel {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _securityOriginRemoved(event) {
     const securityOrigin = /** @type {string} */ (event.data);

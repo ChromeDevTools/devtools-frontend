@@ -178,7 +178,7 @@ export class CountersGraph extends UI.Widget.VBox {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _onWindowChanged(event) {
     const window = /** @type {!Timeline.PerformanceModel.Window} */ (event.data.window);
@@ -421,7 +421,7 @@ export class CounterUI {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _toggleCounterGraph(event) {
     this._value.classList.toggle('hidden', !this._filter.checked());

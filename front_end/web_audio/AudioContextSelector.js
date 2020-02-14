@@ -41,7 +41,7 @@ export class AudioContextSelector extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   contextCreated(event) {
     const context = /** @type {!Protocol.WebAudio.BaseAudioContext} */ (event.data);
@@ -54,7 +54,7 @@ export class AudioContextSelector extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   contextDestroyed(event) {
     const contextId = /** @type {!Protocol.WebAudio.GraphObjectId} */ (event.data);
@@ -65,7 +65,7 @@ export class AudioContextSelector extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   contextChanged(event) {
     const changedContext = /** @type {!Protocol.WebAudio.BaseAudioContext} */ (event.data);

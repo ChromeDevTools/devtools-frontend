@@ -98,7 +98,7 @@ export class FilterBar extends HBox {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _filterChanged(event) {
     this._updateFilterButton();

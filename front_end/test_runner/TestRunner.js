@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
+
 /**
  * @fileoverview using private properties isn't a Closure violation in tests.
  * @suppress {accessControls}
@@ -913,7 +915,7 @@ export function dumpObjectPropertyTreeElement(treeElement) {
 
 /**
  * @param {symbol} eventName
- * @param {!Common.Object} obj
+ * @param {!Common.ObjectWrapper.ObjectWrapper} obj
  * @param {function(?):boolean=} condition
  * @return {!Promise}
  */
@@ -925,7 +927,7 @@ export function waitForEvent(eventName, obj, condition) {
     obj.addEventListener(eventName, onEventFired);
 
     /**
-     * @param {!Common.Event} event
+     * @param {!Common.EventTarget.EventTargetEvent} event
      */
     function onEventFired(event) {
       if (!condition(event.data)) {

@@ -23,10 +23,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import {EventTarget} from './EventTarget.js';  // eslint-disable-line no-unused-vars
+import {EventDescriptor, EventTarget, EventTargetEvent} from './EventTarget.js';  // eslint-disable-line no-unused-vars
 
 /**
- * @typedef {!{thisObject: (!Object|undefined), listener: function(!Common.Event), disposed: (boolean|undefined)}}
+ * @typedef {!{thisObject: (!Object|undefined), listener: function(!EventTargetEvent), disposed: (boolean|undefined)}}
  */
 let _listenerCallbackTuple;  // eslint-disable-line no-unused-vars
 
@@ -43,9 +43,9 @@ export class ObjectWrapper {
   /**
    * @override
    * @param {string|symbol} eventType
-   * @param {function(!Common.Event)} listener
+   * @param {function(!EventTargetEvent)} listener
    * @param {!Object=} thisObject
-   * @return {!Common.EventTarget.EventDescriptor}
+   * @return {!EventDescriptor}
    */
   addEventListener(eventType, listener, thisObject) {
     if (!listener) {
@@ -80,7 +80,7 @@ export class ObjectWrapper {
   /**
    * @override
    * @param {string|symbol} eventType
-   * @param {function(!Common.Event)} listener
+   * @param {function(!EventTargetEvent)} listener
    * @param {!Object=} thisObject
    */
   removeEventListener(eventType, listener, thisObject) {
@@ -121,7 +121,7 @@ export class ObjectWrapper {
       return;
     }
 
-    const event = /** @type {!Common.Event} */ ({data: eventData});
+    const event = /** @type {!EventTargetEvent} */ ({data: eventData});
     const listeners = this._listeners.get(eventType).slice(0);
     for (let i = 0; i < listeners.length; ++i) {
       if (!listeners[i].disposed) {

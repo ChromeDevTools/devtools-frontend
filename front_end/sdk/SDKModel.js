@@ -353,7 +353,7 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper {
     this._targets = [];
     /** @type {!Array.<!Observer>} */
     this._observers = [];
-    /** @type {!Platform.Multimap<symbol, !{modelClass: !Function, thisObject: (!Object|undefined), listener: function(!Common.Event)}>} */
+    /** @type {!Platform.Multimap<symbol, !{modelClass: !Function, thisObject: (!Object|undefined), listener: function(!Common.EventTarget.EventTargetEvent)}>} */
     this._modelListeners = new Platform.Multimap();
     /** @type {!Platform.Multimap<function(new:SDKModel, !Target), !SDKModelObserver>} */
     this._modelObservers = new Platform.Multimap();
@@ -462,7 +462,7 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper {
   /**
    * @param {!Function} modelClass
    * @param {symbol} eventType
-   * @param {function(!Common.Event)} listener
+   * @param {function(!Common.EventTarget.EventTargetEvent)} listener
    * @param {!Object=} thisObject
    */
   addModelListener(modelClass, eventType, listener, thisObject) {
@@ -478,7 +478,7 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper {
   /**
    * @param {!Function} modelClass
    * @param {symbol} eventType
-   * @param {function(!Common.Event)} listener
+   * @param {function(!Common.EventTarget.EventTargetEvent)} listener
    * @param {!Object=} thisObject
    */
   removeModelListener(modelClass, eventType, listener, thisObject) {

@@ -196,7 +196,7 @@ export class ConsoleModel extends Common.ObjectWrapper.ObjectWrapper {
 
   /**
    * @param {!RuntimeModel} runtimeModel
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _exceptionThrown(runtimeModel, event) {
     const exceptionWithTimestamp = /** @type {!ExceptionWithTimestamp} */ (event.data);
@@ -208,7 +208,7 @@ export class ConsoleModel extends Common.ObjectWrapper.ObjectWrapper {
 
   /**
    * @param {!RuntimeModel} runtimeModel
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _exceptionRevoked(runtimeModel, event) {
     const exceptionId = /** @type {number} */ (event.data);
@@ -224,7 +224,7 @@ export class ConsoleModel extends Common.ObjectWrapper.ObjectWrapper {
 
   /**
    * @param {!RuntimeModel} runtimeModel
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _consoleAPICalled(runtimeModel, event) {
     const call = /** @type {!ConsoleAPICall} */ (event.data);
@@ -257,7 +257,7 @@ export class ConsoleModel extends Common.ObjectWrapper.ObjectWrapper {
 
   /**
    * @param {!RuntimeModel} runtimeModel
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _queryObjectRequested(runtimeModel, event) {
     const consoleMessage = new ConsoleMessage(
@@ -274,7 +274,7 @@ export class ConsoleModel extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _mainFrameNavigated(event) {
     if (self.Common.settings.moduleSetting('preserveConsoleLog').get()) {
@@ -284,7 +284,7 @@ export class ConsoleModel extends Common.ObjectWrapper.ObjectWrapper {
 
   /**
    * @param {!CPUProfilerModel} cpuProfilerModel
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _consoleProfileStarted(cpuProfilerModel, event) {
     const data = /** @type {!SDK.CPUProfilerModel.EventData} */ (event.data);
@@ -295,7 +295,7 @@ export class ConsoleModel extends Common.ObjectWrapper.ObjectWrapper {
 
   /**
    * @param {!CPUProfilerModel} cpuProfilerModel
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _consoleProfileFinished(cpuProfilerModel, event) {
     const data = /** @type {!SDK.CPUProfilerModel.EventData} */ (event.data);

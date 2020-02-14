@@ -101,7 +101,7 @@ export class InspectorView extends VBox {
 
     /**
      * @this {InspectorView}
-     * @param {!Common.Event} event
+     * @param {!Common.EventTarget.EventTargetEvent} event
      */
     function showPanel(event) {
       const panelName = /** @type {string} */ (event.data);
@@ -322,7 +322,7 @@ export class InspectorView extends VBox {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _tabSelected(event) {
     const tabId = /** @type {string} */ (event.data['tabId']);
@@ -330,7 +330,7 @@ export class InspectorView extends VBox {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _drawerTabSelected(event) {
     const tabId = /** @type {string} */ (event.data['tabId']);

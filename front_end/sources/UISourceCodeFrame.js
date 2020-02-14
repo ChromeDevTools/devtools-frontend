@@ -331,7 +331,7 @@ export class UISourceCodeFrame extends SourceFrame.SourceFrame.SourceFrameImpl {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _onWorkingCopyChanged(event) {
     if (this._muteSourceCodeEvents) {
@@ -341,7 +341,7 @@ export class UISourceCodeFrame extends SourceFrame.SourceFrame.SourceFrameImpl {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _onWorkingCopyCommitted(event) {
     if (!this._muteSourceCodeEvents) {
@@ -453,7 +453,7 @@ export class UISourceCodeFrame extends SourceFrame.SourceFrame.SourceFrameImpl {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _onMessageAdded(event) {
     const message = /** @type {!Workspace.UISourceCode.Message} */ (event.data);
@@ -485,7 +485,7 @@ export class UISourceCodeFrame extends SourceFrame.SourceFrame.SourceFrameImpl {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _onMessageRemoved(event) {
     const message = /** @type {!Workspace.UISourceCode.Message} */ (event.data);
@@ -551,7 +551,7 @@ export class UISourceCodeFrame extends SourceFrame.SourceFrame.SourceFrameImpl {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _onLineDecorationAdded(event) {
     const marker = /** @type {!Workspace.UISourceCode.LineMarker} */ (event.data);
@@ -559,7 +559,7 @@ export class UISourceCodeFrame extends SourceFrame.SourceFrame.SourceFrameImpl {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _onLineDecorationRemoved(event) {
     const marker = /** @type {!Workspace.UISourceCode.LineMarker} */ (event.data);

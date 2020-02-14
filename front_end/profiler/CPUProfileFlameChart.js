@@ -234,7 +234,7 @@ export class CPUProfileFlameChart extends UI.Widget.VBox {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _onWindowChanged(event) {
     const windowLeft = event.data.windowTimeLeft;
@@ -251,7 +251,7 @@ export class CPUProfileFlameChart extends UI.Widget.VBox {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _onEntrySelected(event) {
     if (event.data) {
@@ -269,7 +269,7 @@ export class CPUProfileFlameChart extends UI.Widget.VBox {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _onEntryInvoked(event) {
     this._onEntrySelected(event);
@@ -484,7 +484,7 @@ export class OverviewPane extends UI.Widget.VBox {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _onWindowChanged(event) {
     const windowPosition = {windowTimeLeft: event.data.rawStartValue, windowTimeRight: event.data.rawEndValue};

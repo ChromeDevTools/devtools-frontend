@@ -3,12 +3,12 @@
 // found in the LICENSE file.
 
 /**
- * @typedef {!{eventTarget: !Common.EventTarget, eventType: (string|symbol), thisObject: (!Object|undefined), listener: function(!Common.Event)}}
+ * @typedef {!{eventTarget: !EventTarget, eventType: (string|symbol), thisObject: (!Object|undefined), listener: function(!EventTargetEvent)}}
  */
 export let EventDescriptor;
 
 /**
- * @param {!Array<!Common.EventTarget.EventDescriptor>} eventList
+ * @param {!Array<!EventDescriptor>} eventList
  */
 export function removeEventListeners(eventList) {
   for (const eventInfo of eventList) {
@@ -24,9 +24,9 @@ export function removeEventListeners(eventList) {
 export class EventTarget {
   /**
    * @param {symbol} eventType
-   * @param {function(!Common.Event)} listener
+   * @param {function(!EventTargetEvent)} listener
    * @param {!Object=} thisObject
-   * @return {!Common.EventTarget.EventDescriptor}
+   * @return {!EventDescriptor}
    */
   addEventListener(eventType, listener, thisObject) {
   }
@@ -40,7 +40,7 @@ export class EventTarget {
 
   /**
    * @param {string|symbol} eventType
-   * @param {function(!Common.Event)} listener
+   * @param {function(!EventTargetEvent)} listener
    * @param {!Object=} thisObject
    */
   removeEventListener(eventType, listener, thisObject) {
@@ -62,3 +62,8 @@ export class EventTarget {
 }
 
 EventTarget.removeEventListeners = removeEventListeners;
+
+/**
+ * @typedef {!{data: *}}
+ */
+export let EventTargetEvent;

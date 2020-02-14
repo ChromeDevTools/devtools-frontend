@@ -210,7 +210,7 @@ export class NetworkPanel extends UI.Panel.Panel {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _onWindowChanged(event) {
     const startTime = Math.max(this._calculator.minimumBoundary(), event.data.startTime / 1000);
@@ -355,7 +355,7 @@ export class NetworkPanel extends UI.Panel.Panel {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _willReloadPage(event) {
     this._toggleRecord(true);
@@ -369,7 +369,7 @@ export class NetworkPanel extends UI.Panel.Panel {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _load(event) {
     if (this._filmStripRecorder && this._filmStripRecorder.isRecording()) {
@@ -473,21 +473,21 @@ export class NetworkPanel extends UI.Panel.Panel {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _handleFilterChanged(event) {
     this._hideRequestPanel();
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _onRowSizeChanged(event) {
     this._updateUI();
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _onRequestSelected(event) {
     const request = /** @type {?SDK.NetworkRequest.NetworkRequest} */ (event.data);
@@ -497,7 +497,7 @@ export class NetworkPanel extends UI.Panel.Panel {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _onRequestActivated(event) {
     const showPanel = /** @type {boolean} */ (event.data);
@@ -608,7 +608,7 @@ export class NetworkPanel extends UI.Panel.Panel {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _onFilmFrameSelected(event) {
     const timestamp = /** @type {number} */ (event.data);
@@ -616,7 +616,7 @@ export class NetworkPanel extends UI.Panel.Panel {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _onFilmFrameEnter(event) {
     const timestamp = /** @type {number} */ (event.data);
@@ -625,7 +625,7 @@ export class NetworkPanel extends UI.Panel.Panel {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _onFilmFrameExit(event) {
     this._networkOverview.clearFilmStripFrame();
@@ -633,7 +633,7 @@ export class NetworkPanel extends UI.Panel.Panel {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _onUpdateRequest(event) {
     const request = /** @type {!SDK.NetworkRequest.NetworkRequest} */ (event.data);

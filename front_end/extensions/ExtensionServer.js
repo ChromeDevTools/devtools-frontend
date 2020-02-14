@@ -707,7 +707,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _setInspectedTabId(event) {
     this._inspectedTabId = /** @type {string} */ (event.data);
@@ -797,7 +797,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
    * @param {string} eventTopic
    * @param {!Object} eventTarget
    * @param {symbol} frontendEventType
-   * @param {function(!Common.Event)} handler
+   * @param {function(!Common.EventTarget.EventTargetEvent)} handler
    */
   _registerAutosubscriptionHandler(eventTopic, eventTarget, frontendEventType, handler) {
     this._registerSubscriptionHandler(
@@ -809,7 +809,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
    * @param {string} eventTopic
    * @param {!Function} modelClass
    * @param {symbol} frontendEventType
-   * @param {function(!Common.Event)} handler
+   * @param {function(!Common.EventTarget.EventTargetEvent)} handler
    */
   _registerAutosubscriptionTargetManagerHandler(eventTopic, modelClass, frontendEventType, handler) {
     this._registerSubscriptionHandler(

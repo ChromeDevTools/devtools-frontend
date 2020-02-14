@@ -233,7 +233,7 @@ export class SourcesPanel extends UI.Panel.Panel {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _onCurrentTargetChanged(event) {
     const target = /** @type {?SDK.SDKModel.Target} */ (event.data);
@@ -319,7 +319,7 @@ export class SourcesPanel extends UI.Panel.Panel {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _debuggerPaused(event) {
     const debuggerModel = /** @type {!SDK.DebuggerModel.DebuggerModel} */ (event.data);
@@ -363,7 +363,7 @@ export class SourcesPanel extends UI.Panel.Panel {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _debuggerWasEnabled(event) {
     const debuggerModel = /** @type {!SDK.DebuggerModel.DebuggerModel} */ (event.data);
@@ -581,7 +581,7 @@ export class SourcesPanel extends UI.Panel.Panel {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _editorSelected(event) {
     const uiSourceCode = /** @type {!Workspace.UISourceCode.UISourceCode} */ (event.data);
@@ -631,7 +631,7 @@ export class SourcesPanel extends UI.Panel.Panel {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _longResume(event) {
     const debuggerModel = this._prepareToResume();
@@ -642,7 +642,7 @@ export class SourcesPanel extends UI.Panel.Panel {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _terminateExecution(event) {
     const debuggerModel = this._prepareToResume();
@@ -1020,7 +1020,7 @@ export class SourcesPanel extends UI.Panel.Panel {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _extensionSidebarPaneAdded(event) {
     const pane = /** @type {!Extensions.ExtensionPanel.ExtensionSidebarPane} */ (event.data);

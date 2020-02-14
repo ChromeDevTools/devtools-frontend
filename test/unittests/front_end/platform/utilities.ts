@@ -23,6 +23,7 @@ declare global {
     toBase64(): string;
     trimMiddle(maxLength: number): string;
     repeat(length: number): string;
+    escapeForRegExp(): string;
   }
 
   interface StringConstructor {
@@ -266,6 +267,12 @@ describe('Utilities', () => {
     assert.isTrue(hashA !== String.hashCode(stringB));
     assert.isTrue(isFinite(hashA));
     assert.isTrue(hashA + 1 !== hashA);
+  });
+
+  it('escapes regex characters', () => {
+    const inputString = '^[]{}()\\.^$*+?|-';
+    const outputString = inputString.escapeForRegExp();
+    assert.equal(outputString, '\\^\\[\\]\\{\\}\\(\\)\\\\\\.\\^\\$\\*\\+\\?\\|\\-');
   });
 
   it('trims URLs', () => {

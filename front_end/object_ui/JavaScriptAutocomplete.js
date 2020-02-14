@@ -4,6 +4,7 @@
 
 import * as Common from '../common/common.js';
 import * as Formatter from '../formatter/formatter.js';
+import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as UI from '../ui/ui.js';
@@ -601,7 +602,7 @@ export class JavaScriptAutocomplete {
 
         if (bracketNotation) {
           if (!/^[0-9]+$/.test(property)) {
-            property = quoteUsed + property.escapeCharacters(quoteUsed + '\\') + quoteUsed;
+            property = quoteUsed + Platform.StringUtilities.escapeCharacters(property, quoteUsed + '\\') + quoteUsed;
           }
           property += ']';
         }

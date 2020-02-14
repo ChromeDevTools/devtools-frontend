@@ -29,3 +29,7 @@
  */
 
 import './utilities.js';
+
+import * as StringUtilities from './string-utilities.js';
+
+export {StringUtilities};

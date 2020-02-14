@@ -27,6 +27,13 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* the long term goal here is to remove all functions in this file and
+ * replace them with ES Module functions rather than prototype
+ * extensions but in the mean time if an old func in here depends on one
+ * that has been migrated it will need to be imported
+ */
+import * as StringUtilities from './string-utilities.js';
+
 /**
  * @param {number} m
  * @param {number} n
@@ -86,30 +93,6 @@ String.prototype.computeLineEndings = function() {
  * @param {string} chars
  * @return {string}
  */
-String.prototype.escapeCharacters = function(chars) {
-  let foundChar = false;
-  for (let i = 0; i < chars.length; ++i) {
-    if (this.indexOf(chars.charAt(i)) !== -1) {
-      foundChar = true;
-      break;
-    }
-  }
-
-  if (!foundChar) {
-    return String(this);
-  }
-
-  let result = '';
-  for (let i = 0; i < this.length; ++i) {
-    if (chars.indexOf(this.charAt(i)) !== -1) {
-      result += '\\';
-    }
-    result += this.charAt(i);
-  }
-
-  return result;
-};
-
 /**
  * @return {string}
  */
@@ -118,10 +101,11 @@ String.regexSpecialCharacters = function() {
 };
 
 /**
+ * @this {string}
  * @return {string}
  */
 String.prototype.escapeForRegExp = function() {
-  return this.escapeCharacters(String.regexSpecialCharacters());
+  return StringUtilities.escapeCharacters(this, String.regexSpecialCharacters());
 };
 
 /**

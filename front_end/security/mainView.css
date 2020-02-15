@@ -169,3 +169,15 @@
 .security-explanation-recommendations > li {
     margin-bottom: 4px;
 }
+
+@media (forced-colors: active) {
+    .security-summary:not(.security-summary-secure) .lock-icon-secure,
+    .security-summary:not(.security-summary-neutral) .lock-icon-neutral,
+    .security-summary:not(.security-summary-insecure) .lock-icon-insecure,
+    .security-summary:not(.security-summary-insecure-broken) .lock-icon-insecure-broken {
+        background-color: CanvasText;
+    }
+    .security-summary-neutral .lock-icon-neutral {
+        background-color: Highlight;
+    }
+}

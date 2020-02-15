@@ -72,3 +72,14 @@
     color: rgba(0, 0, 0, 0.5);
     padding-left: 8px;
 }
+
+@media (forced-colors: active) {
+    .tree-outline .lock-icon,
+    .tree-outline .security-property {
+        forced-color-adjust: none;
+    }
+    .tree-outline li.selected:focus .lock-icon,
+    .tree-outline .security-sidebar-tree-item.selected:focus .icon {
+        background-color: HighlightText;
+    }
+}

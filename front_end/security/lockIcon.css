@@ -85,3 +85,25 @@
 .url-scheme-separator {
     color: #8a8a8a;
 }
+
+@media (forced-colors: active) {
+    .lock-icon,
+    .security-property,
+    .url-scheme-neutral,
+    .url-scheme-insecure,
+    .url-scheme-insecure-broken {
+        forced-color-adjust: none;
+    }
+    .lock-icon-unknown,
+    .lock-icon-neutral {
+        background-color: Highlight;
+    }
+    .tree-outline:not(.hide-selection-when-blurred) li.selected .security-property-info,
+    .tree-outline:not(.hide-selection-when-blurred) li.selected .security-property-unknown {
+        background-color: HighlightText;
+    }
+    .security-property-info,
+    .security-property-unknown {
+        background-color: CanvasText;
+    }
+}

@@ -1907,7 +1907,7 @@ export class TimelineUIUtils {
 
   /**
    * @param {!SDK.TracingModel.Event} event
-   * @return {!Timeline.TimelineMarkerStyle}
+   * @return {!TimelineMarkerStyle}
    */
   static markerStyleForEvent(event) {
     const tallMarkerDashStyle = [6, 4];
@@ -1972,7 +1972,7 @@ export class TimelineUIUtils {
   }
 
   /**
-   * @return {!Timeline.TimelineMarkerStyle}
+   * @return {!TimelineMarkerStyle}
    */
   static markerStyleForFrame() {
     return {
@@ -2543,3 +2543,15 @@ export class TimelineDetailsContentHelper {
 }
 
 export const categoryBreakdownCacheSymbol = Symbol('categoryBreakdownCache');
+
+/**
+ * @typedef {!{
+ *     title: string,
+ *     color: string,
+ *     lineWidth: number,
+ *     dashStyle: !Array.<number>,
+ *     tall: boolean,
+ *     lowPriority: boolean
+ * }}
+ */
+export let TimelineMarkerStyle;

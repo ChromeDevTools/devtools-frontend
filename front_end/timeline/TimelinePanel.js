@@ -40,8 +40,8 @@ import * as SDK from '../sdk/sdk.js';
 import * as TimelineModel from '../timeline_model/timeline_model.js';
 import * as UI from '../ui/ui.js';
 
-import {Events, PerformanceModel} from './PerformanceModel.js';
-import {Client, TimelineController} from './TimelineController.js';  // eslint-disable-line no-unused-vars
+import {Events, PerformanceModel, Window} from './PerformanceModel.js';  // eslint-disable-line no-unused-vars
+import {Client, TimelineController} from './TimelineController.js';      // eslint-disable-line no-unused-vars
 import {TimelineEventOverview, TimelineEventOverviewCoverage, TimelineEventOverviewCPUActivity, TimelineEventOverviewFrames, TimelineEventOverviewInput, TimelineEventOverviewMemory, TimelineEventOverviewNetwork, TimelineEventOverviewResponsiveness, TimelineFilmStripOverview,} from './TimelineEventOverview.js';  // eslint-disable-line no-unused-vars
 import {TimelineFlameChartView} from './TimelineFlameChartView.js';
 import {TimelineHistoryManager} from './TimelineHistoryManager.js';
@@ -204,7 +204,7 @@ export class TimelinePanel extends UI.Panel.Panel {
    * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _onModelWindowChanged(event) {
-    const window = /** @type {!Timeline.PerformanceModel.Window} */ (event.data.window);
+    const window = /** @type {!Window} */ (event.data.window);
     this._overviewPane.setWindowTimes(window.left, window.right);
   }
 

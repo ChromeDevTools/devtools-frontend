@@ -9,14 +9,14 @@ import * as TimelineModel from '../timeline_model/timeline_model.js';
 import * as UI from '../ui/ui.js';
 
 import {CountersGraph} from './CountersGraph.js';
-import {Events as PerformanceModelEvents, PerformanceModel} from './PerformanceModel.js';  // eslint-disable-line no-unused-vars
+import {Events as PerformanceModelEvents, PerformanceModel, Window} from './PerformanceModel.js';  // eslint-disable-line no-unused-vars
 import {TimelineDetailsView} from './TimelineDetailsView.js';
 import {TimelineRegExp} from './TimelineFilters.js';
 import {Events as TimelineFlameChartDataProviderEvents, TimelineFlameChartDataProvider} from './TimelineFlameChartDataProvider.js';
 import {TimelineFlameChartNetworkDataProvider} from './TimelineFlameChartNetworkDataProvider.js';
 import {TimelineModeViewDelegate, TimelineSelection} from './TimelinePanel.js';  // eslint-disable-line no-unused-vars
 import {AggregatedTimelineTreeView} from './TimelineTreeView.js';
-import {TimelineUIUtils} from './TimelineUIUtils.js';
+import {TimelineMarkerStyle, TimelineUIUtils} from './TimelineUIUtils.js';  // eslint-disable-line no-unused-vars
 
 /**
  * @implements {PerfUI.FlameChart.FlameChartDelegate}
@@ -122,7 +122,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox {
    * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _onWindowChanged(event) {
-    const window = /** @type {!Timeline.PerformanceModel.Window} */ (event.data.window);
+    const window = /** @type {!Window} */ (event.data.window);
     const animate = !!event.data.animate;
     this._mainFlameChart.setWindowTimes(window.left, window.right, animate);
     this._networkFlameChart.setWindowTimes(window.left, window.right, animate);
@@ -464,7 +464,7 @@ export class TimelineFlameChartMarker {
   /**
    * @param {number} startTime
    * @param {number} startOffset
-   * @param {!Timeline.TimelineMarkerStyle} style
+   * @param {!TimelineMarkerStyle} style
    */
   constructor(startTime, startOffset, style) {
     this._startTime = startTime;

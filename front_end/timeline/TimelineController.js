@@ -50,7 +50,7 @@ export class TimelineController {
   }
 
   /**
-   * @param {!Timeline.TimelineController.RecordingOptions} options
+   * @param {!RecordingOptions} options
    * @param {!Array<!Extensions.ExtensionTraceProvider.ExtensionTraceProvider>} providers
    * @return {!Promise<!Object>}
    */
@@ -401,3 +401,13 @@ export class Client {
   recordingProgress(usage) {
   }
 }
+
+/**
+ * @typedef {!{
+ *   enableJSSampling: (boolean|undefined),
+ *   capturePictures: (boolean|undefined),
+ *   captureFilmStrip: (boolean|undefined),
+ *   startCoverage: (boolean|undefined)
+ * }}
+ */
+export let RecordingOptions;

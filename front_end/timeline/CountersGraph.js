@@ -33,7 +33,7 @@ import * as PerfUI from '../perf_ui/perf_ui.js';
 import * as TimelineModel from '../timeline_model/timeline_model.js';
 import * as UI from '../ui/ui.js';
 
-import {Events, PerformanceModel} from './PerformanceModel.js';  // eslint-disable-line no-unused-vars
+import {Events, PerformanceModel, Window} from './PerformanceModel.js';  // eslint-disable-line no-unused-vars
 import {TimelineModeViewDelegate} from './TimelinePanel.js';     // eslint-disable-line no-unused-vars
 
 /**
@@ -181,7 +181,7 @@ export class CountersGraph extends UI.Widget.VBox {
    * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _onWindowChanged(event) {
-    const window = /** @type {!Timeline.PerformanceModel.Window} */ (event.data.window);
+    const window = /** @type {!Window} */ (event.data.window);
     this._calculator.setWindow(window.left, window.right);
     this.scheduleRefresh();
   }

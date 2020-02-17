@@ -104,39 +104,3 @@ TimelineModel.TracingLayerTree = TimelineModelModule.TracingLayerTree.TracingLay
 
 /** @constructor */
 TimelineModel.TracingLayer = TimelineModelModule.TracingLayerTree.TracingLayer;
-
-/** @typedef {{reason: string, stackTrace: ?Array<!Protocol.Runtime.CallFrame>}} */
-TimelineModel.InvalidationCause;
-
-/** @typedef {!{page: !Array<!SDK.TracingModel.Event>, workers: !Array<!SDK.TracingModel.Event>}} */
-TimelineModel.TimelineModel.MetadataEvents;
-
-/**
- * @typedef {Map<string|symbol, !TimelineModel.TimelineProfileTree.Node>}
- */
-TimelineModel.TimelineProfileTree.ChildrenCache;
-
-/** @typedef {!{
-        bounds: {height: number, width: number},
-        children: Array.<!TimelineModel.TracingLayerPayload>,
-        layer_id: number,
-        position: Array.<number>,
-        scroll_offset: Array.<number>,
-        layer_quad: Array.<number>,
-        draws_content: number,
-        gpu_memory_usage: number,
-        transform: Array.<number>,
-        owner_node: number,
-        compositing_reasons: Array.<string>
-    }}
-*/
-TimelineModel.TracingLayerPayload;
-
-/** @typedef {!{
-        id: string,
-        layer_id: string,
-        gpu_memory_usage: number,
-        content_rect: !Array.<number>
-    }}
-*/
-TimelineModel.TracingLayerTile;

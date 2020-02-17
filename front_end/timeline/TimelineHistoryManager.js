@@ -270,7 +270,7 @@ export class TimelineHistoryManager {
 
   /**
    * @param {!PerformanceModel} model
-   * @return {?Timeline.TimelineHistoryManager.PreviewData}
+   * @return {?PreviewData}
    */
   static _dataForModel(model) {
     return model[previewDataSymbol] || null;
@@ -488,3 +488,6 @@ export class ToolbarButton extends UI.Toolbar.ToolbarItem {
     this._contentElement.textContent = text;
   }
 }
+
+/** @typedef {!{preview: !Element, time: !Element, lastUsed: number, title: string}} */
+export let PreviewData;

@@ -27,7 +27,7 @@ export class PerformanceModel extends Common.ObjectWrapper.ObjectWrapper {
     /** @type {?TimelineModel.TimelineIRModel.TimelineIRModel} */
     this._irModel = new TimelineModel.TimelineIRModel.TimelineIRModel();
 
-    /** @type {!Timeline.PerformanceModel.Window} */
+    /** @type {!Window} */
     this._window = {left: 0, right: Infinity};
 
     /** @type {!Array<!{title: string, model: !SDK.TracingModel.TracingModel, timeOffset: number}>} */
@@ -227,7 +227,7 @@ export class PerformanceModel extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
-   * @param {!Timeline.PerformanceModel.Window} window
+   * @param {!Window} window
    * @param {boolean=} animate
    */
   setWindow(window, animate) {
@@ -236,7 +236,7 @@ export class PerformanceModel extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
-   * @return {!Timeline.PerformanceModel.Window}
+   * @return {!Window}
    */
   window() {
     return this._window;
@@ -304,3 +304,6 @@ export const Events = {
   ExtensionDataAdded: Symbol('ExtensionDataAdded'),
   WindowChanged: Symbol('WindowChanged')
 };
+
+/** @typedef {!{left: number, right: number}} */
+export let Window;

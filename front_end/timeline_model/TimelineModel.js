@@ -225,7 +225,7 @@ export class TimelineModelImpl {
 
   /**
    * @param {!SDK.TracingModel.TracingModel} tracingModel
-   * @param {!TimelineModel.TimelineModel.MetadataEvents} metadataEvents
+   * @param {!MetadataEvents} metadataEvents
    */
   _processMetadataAndThreads(tracingModel, metadataEvents) {
     let startTime = 0;
@@ -351,7 +351,7 @@ export class TimelineModelImpl {
 
   /**
    * @param {!SDK.TracingModel.TracingModel} tracingModel
-   * @return {?TimelineModel.TimelineModel.MetadataEvents}
+   * @return {?MetadataEvents}
    */
   _processMetadataEvents(tracingModel) {
     const metadataEvents = tracingModel.devToolsMetadataEvents();
@@ -1830,7 +1830,7 @@ export class InvalidationTrackingEvent {
     this.extraData = eventData['extraData'];
     /** @type {?Array.<!Object.<string, number>>} */
     this.invalidationList = eventData['invalidationList'];
-    /** @type {!TimelineModel.InvalidationCause} */
+    /** @type {!InvalidationCause} */
     this.cause = {reason: eventData['reason'], stackTrace: eventData['stackTrace']};
 
     // FIXME: Move this to TimelineUIUtils.js.
@@ -2233,3 +2233,9 @@ export class TimelineData {
 }
 
 TimelineData._symbol = Symbol('timelineData');
+
+/** @typedef {{reason: string, stackTrace: ?Array<!Protocol.Runtime.CallFrame>}} */
+export let InvalidationCause;
+
+/** @typedef {!{page: !Array<!SDK.TracingModel.Event>, workers: !Array<!SDK.TracingModel.Event>}} */
+export let MetadataEvents;

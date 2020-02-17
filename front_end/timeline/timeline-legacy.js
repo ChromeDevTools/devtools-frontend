@@ -239,34 +239,3 @@ Timeline.UIDevtoolsUtils = TimelineModule.UIDevtoolsUtils.UIDevtoolsUtils;
 
 /** @enum {string} */
 Timeline.UIDevtoolsUtils.RecordType = TimelineModule.UIDevtoolsUtils.RecordType;
-
-/** @typedef {!{left: number, right: number}} */
-Timeline.PerformanceModel.Window;
-
-/**
- * @typedef {!{
-  *   enableJSSampling: (boolean|undefined),
-  *   capturePictures: (boolean|undefined),
-  *   captureFilmStrip: (boolean|undefined),
-  *   startCoverage: (boolean|undefined)
-  * }}
-  */
-Timeline.TimelineController.RecordingOptions;
-
-/** @typedef {!{preview: !Element, time: !Element, lastUsed: number, title: string}} */
-Timeline.TimelineHistoryManager.PreviewData;
-
-/** @typedef {{selection: ?TimelineModule.TimelinePanel.TimelineSelection, windowLeftTime: number, windowRightTime: number}} */
-Timeline.TimelinePanel.ModelSelectionData;
-
-/**
- * @typedef {!{
-  *     title: string,
-  *     color: string,
-  *     lineWidth: number,
-  *     dashStyle: !Array.<number>,
-  *     tall: boolean,
-  *     lowPriority: boolean
-  * }}
-  */
-Timeline.TimelineMarkerStyle;

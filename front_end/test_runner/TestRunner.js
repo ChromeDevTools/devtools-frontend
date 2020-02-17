@@ -1414,6 +1414,23 @@ export async function dumpInspectedPageElementText(querySelector) {
   addResult(value);
 }
 
+/**
+ * This method blocks until all currently queued live location update handlers are done.
+ *
+ * Creating and updating live locations causes the update handler of each live location
+ * to run. These update handlers are potentially asynchronous and usually cause re-rendering or
+ * UI updates. Web tests then check for these updates.
+ * To give tests more control, waitForPendingLiveLocationUpdates returns a promise that resolves
+ * once all currently-pending updates (at call time) are completed.
+ */
+export async function waitForPendingLiveLocationUpdates() {
+  // TODO(chromium:1032016): Implement once the frontend has the actual methods in the bindings.
+  //
+  //                         This empty function is here so we can prepare affected web
+  //                         tests and than asyncify the frontend without needing to disable the
+  //                         affected web tests inbetween.
+}
+
 /** @type {!{logToStderr: function(), navigateSecondaryWindow: function(string), notifyDone: function()}|undefined} */
 self.testRunner;
 
@@ -1492,6 +1509,7 @@ TestRunner.evaluateInPageAsync = evaluateInPageAsync;
 TestRunner.deprecatedInitAsync = deprecatedInitAsync;
 TestRunner.runAsyncTestSuite = runAsyncTestSuite;
 TestRunner.dumpInspectedPageElementText = dumpInspectedPageElementText;
+TestRunner.waitForPendingLiveLocationUpdates = waitForPendingLiveLocationUpdates;
 
 /**
  * @typedef {!Object<string, string>}

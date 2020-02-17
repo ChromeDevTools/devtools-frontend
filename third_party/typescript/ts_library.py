@@ -37,7 +37,7 @@ def runTsc(tsconfig_location):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-s', '--sources', nargs='*', required=True, help='List of TypeScript source files')
+    parser.add_argument('-s', '--sources', nargs='*', help='List of TypeScript source files')
     parser.add_argument('-deps', '--deps', nargs='*', help='List of Ninja build dependencies')
     parser.add_argument('-dir', '--front_end_directory', required=True, help='Folder that contains source files')
     parser.add_argument('-b', '--tsconfig_output_location', required=True)
@@ -50,7 +50,8 @@ def main():
             print(e)
             return 1
     tsconfig_output_location = path.join(os.getcwd(), opts.tsconfig_output_location)
-    tsconfig['files'] = [path.join(os.getcwd(), src) for src in opts.sources] + [path.abspath(GLOBAL_DEFS)]
+    sources = opts.sources or []
+    tsconfig['files'] = [path.join(os.getcwd(), src) for src in sources] + [path.abspath(GLOBAL_DEFS)]
     if (opts.deps is not None):
         tsconfig['references'] = [{'path': src} for src in opts.deps]
     tsconfig['compilerOptions']['declaration'] = True
@@ -80,7 +81,7 @@ def main():
     # but we generate our sources in out/<NAME>/gen/ (which is the proper location).
     # For now, copy paste the build output back into resources/inspector to keep
     # DevTools loading properly
-    copy_all_typescript_sources(opts.sources, path.dirname(tsconfig_output_location))
+    copy_all_typescript_sources(sources, path.dirname(tsconfig_output_location))
 
     return 0
 
@@ -90,14 +91,12 @@ def copy_all_typescript_sources(sources, output_directory):
     while path.basename(front_end_output_location) != 'front_end':
         front_end_output_location = path.dirname(front_end_output_location)
     for src in sources:
-        if src.endswith('.ts'):
+        if src.endswith('.ts') or src.endswith('_bridge.js'):
             generated_javascript_location = path.join(output_directory, path.basename(src).replace('.ts', '.js'))
 
             relative_path_from_generated_front_end_folder = path.relpath(generated_javascript_location, front_end_output_location)
 
             dest = path.join(RESOURCES_INSPECTOR_PATH, relative_path_from_generated_front_end_folder)
-
-            print(path.exists(generated_javascript_location))
 
             if path.exists(dest):
                 os.remove(dest)

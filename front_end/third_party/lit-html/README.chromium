@@ -1,0 +1,16 @@
+Name: An efficient, expressive, extensible HTML templating library for JavaScript
+Short Name: lit-html
+URL: https://github.com/polymer/lit-html
+Version: 1.1.2
+License: BSD-3
+License File: LICENSE
+Security Critical: no
+
+Description:
+lit-html lets you write HTML templates in JavaScript, then efficiently render and re-render those templates together with data to create and update DOM.
+
+To update this package, run the following command (replace version number with updated version number):
+
+```bash
+wget -qO- https://registry.npmjs.org/lit-html/-/lit-html-1.1.2.tgz | tar xzf -
+```

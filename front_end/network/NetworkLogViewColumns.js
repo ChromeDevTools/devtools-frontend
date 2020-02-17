@@ -40,7 +40,7 @@ export class NetworkLogViewColumns {
 
     this._gridMode = true;
 
-    /** @type {!Array.<!Network.NetworkLogViewColumns.Descriptor>} */
+    /** @type {!Array.<!Descriptor>} */
     this._columns = [];
 
     this._waterfallRequestsAreStale = false;
@@ -61,7 +61,7 @@ export class NetworkLogViewColumns {
   }
 
   /**
-   * @param {!Network.NetworkLogViewColumns.Descriptor} columnConfig
+   * @param {!Descriptor} columnConfig
    * @return {!DataGrid.DataGrid.ColumnDescriptor}
    */
   static _convertToDataGridDescriptor(columnConfig) {
@@ -95,10 +95,10 @@ export class NetworkLogViewColumns {
     const defaultColumns = _defaultColumns;
     const defaultColumnConfig = _defaultColumnConfig;
 
-    this._columns = /** @type {!Array<!Network.NetworkLogViewColumns.Descriptor>} */ ([]);
+    this._columns = /** @type {!Array<!Descriptor>} */ ([]);
     for (const currentConfigColumn of defaultColumns) {
-      const columnConfig = /** @type {!Network.NetworkLogViewColumns.Descriptor} */ (
-          Object.assign({}, defaultColumnConfig, currentConfigColumn));
+      const descriptor = Object.assign({}, defaultColumnConfig, currentConfigColumn);
+      const columnConfig = /** @type {!Descriptor} */ (descriptor);
       columnConfig.id = columnConfig.id;
       if (columnConfig.subtitle) {
         columnConfig.titleDOMFragment = this._makeHeaderFragment(columnConfig.title, columnConfig.subtitle);
@@ -386,7 +386,7 @@ export class NetworkLogViewColumns {
   }
 
   /**
-   * @param {!Network.NetworkLogViewColumns.Descriptor} columnConfig
+   * @param {!Descriptor} columnConfig
    */
   _toggleColumnVisibility(columnConfig) {
     this._loadCustomColumnsAndSettings();
@@ -442,9 +442,9 @@ export class NetworkLogViewColumns {
     const columnConfigs = this._columns.filter(columnConfig => columnConfig.hideable);
     const nonResponseHeaders = columnConfigs.filter(columnConfig => !columnConfig.isResponseHeader);
 
-    /** @type {!Map<string, !Array<!Network.NetworkLogViewColumns.Descriptor>>} */
+    /** @type {!Map<string, !Array<!Descriptor>>} */
     const hideableGroups = new Map();
-    /** @type {!Array.<!Network.NetworkLogViewColumns.Descriptor>} */
+    /** @type {!Array.<!Descriptor>} */
     const nonResponseHeadersWithoutGroup = [];
 
     // Sort columns into their groups
@@ -566,7 +566,7 @@ export class NetworkLogViewColumns {
    * @param {string} headerTitle
    * @param {string=} headerId
    * @param {number=} index
-   * @return {?Network.NetworkLogViewColumns.Descriptor}
+   * @return {?Descriptor}
    */
   _addCustomHeader(headerTitle, headerId, index) {
     if (!headerId) {
@@ -592,7 +592,7 @@ export class NetworkLogViewColumns {
 
     // Split out the column config from the typed version, as doing it in a single assignment causes
     // issues with Closure compiler.
-    const columnConfig = /** @type {!Network.NetworkLogViewColumns.Descriptor} */ (columnConfigBase);
+    const columnConfig = /** @type {!Descriptor} */ (columnConfigBase);
 
     this._columns.splice(index, 0, columnConfig);
     if (this._dataGrid) {
@@ -733,7 +733,7 @@ export const _defaultColumnConfig = {
 };
 
 /**
- * @type {!Array.<!Network.NetworkLogViewColumns.Descriptor>} column
+ * @type {!Array.<!Descriptor>} column
  */
 export const _defaultColumns = [
   {
@@ -914,3 +914,24 @@ export const WaterfallSortIds = {
   Duration: 'duration',
   Latency: 'latency'
 };
+
+/**
+ * @typedef {{
+ *     id: string,
+ *     title: string,
+ *     titleDOMFragment: (!DocumentFragment|undefined),
+ *     subtitle: (string|null),
+ *     visible: boolean,
+ *     weight: number,
+ *     hideable: boolean,
+ *     hideableGroup: ?string,
+ *     nonSelectable: boolean,
+ *     sortable: boolean,
+ *     align: (?DataGrid.DataGrid.Align|undefined),
+ *     isResponseHeader: boolean,
+ *     sortingFunction: (!function(!NetworkNode, !NetworkNode):number|undefined),
+ *     isCustomHeader: boolean,
+ *     allowInSortByEvenWhenHidden: boolean
+ * }}
+ */
+export let Descriptor;

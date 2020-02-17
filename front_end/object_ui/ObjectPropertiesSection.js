@@ -506,7 +506,7 @@ export const maxRenderableStringLength = 10000;
 
 export class ObjectPropertiesSectionsTreeOutline extends UI.TreeOutline.TreeOutlineInShadow {
   /**
-   * @param {?ObjectUI.ObjectPropertiesSectionsTreeOutlineOptions=} options
+   * @param {?TreeOutlineOptions=} options
    */
   constructor(options) {
     super();
@@ -1708,3 +1708,10 @@ export class ExpandableTextPropertyValue extends ObjectPropertyValue {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(this._text);
   }
 }
+
+/**
+ * @typedef {{
+ *   readOnly: (boolean|undefined),
+ * }}
+ */
+export let TreeOutlineOptions;

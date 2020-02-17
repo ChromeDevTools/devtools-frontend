@@ -63,13 +63,3 @@ ObjectUI.ObjectPropertiesSectionsTreeExpandController =
 
 /** @constructor */
 ObjectUI.RemoteObjectPreviewFormatter = ObjectUIModule.RemoteObjectPreviewFormatter.RemoteObjectPreviewFormatter;
-
-/** @typedef {{title:(string|undefined), items:Array<string>}} */
-ObjectUI.JavaScriptAutocomplete.CompletionGroup;
-
-/**
- * @typedef {{
- *   readOnly: (boolean|undefined),
- * }}
- */
-ObjectUI.ObjectPropertiesSectionsTreeOutlineOptions;

@@ -101,9 +101,9 @@ export class NetworkLogView extends UI.Widget.VBox {
     this._mainRequestDOMContentLoadedTime = -1;
     this._highlightedSubstringChanges = [];
 
-    /** @type {!Array.<!Network.NetworkLogView.Filter>} */
+    /** @type {!Array.<!Filter>} */
     this._filters = [];
-    /** @type {?Network.NetworkLogView.Filter} */
+    /** @type {?Filter} */
     this._timeFilter = null;
     /** @type {?NetworkNode} */
     this._hoveredNode = null;
@@ -214,7 +214,7 @@ export class NetworkLogView extends UI.Widget.VBox {
   }
 
   /**
-   * @param {!Network.NetworkLogView.Filter} filter
+   * @param {!Filter} filter
    * @param {!SDK.NetworkRequest.NetworkRequest} request
    * @return {boolean}
    */
@@ -251,7 +251,7 @@ export class NetworkLogView extends UI.Widget.VBox {
 
   /**
    * @param {string} value
-   * @return {!Network.NetworkLogView.Filter}
+   * @return {!Filter}
    */
   static _createRequestDomainFilter(value) {
     /**
@@ -1600,7 +1600,7 @@ export class NetworkLogView extends UI.Widget.VBox {
   /**
    * @param {!FilterType} type
    * @param {string} value
-   * @return {?Network.NetworkLogView.Filter}
+   * @return {?Filter}
    */
   _createSpecialFilter(type, value) {
     switch (type) {
@@ -1670,7 +1670,7 @@ export class NetworkLogView extends UI.Widget.VBox {
 
   /**
    * @param {string} value
-   * @return {?Network.NetworkLogView.Filter}
+   * @return {?Filter}
    */
   _createSizeFilter(value) {
     let multiplier = 1;
@@ -2153,3 +2153,6 @@ export class GroupLookupInterface {
   reset() {
   }
 }
+
+/** @typedef {function(!SDK.NetworkRequest.NetworkRequest): boolean} */
+export let Filter;

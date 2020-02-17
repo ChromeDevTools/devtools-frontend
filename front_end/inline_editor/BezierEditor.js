@@ -153,7 +153,7 @@ export class BezierEditor extends UI.Widget.VBox {
 
   /**
    * @param {!Array<{name: string, value: string}>} presetGroup
-   * @return {!InlineEditor.BezierEditor.PresetCategory}
+   * @return {!PresetCategory}
    */
   _createCategory(presetGroup) {
     const presetElement = createElementWithClass('div', 'bezier-preset-category');
@@ -188,7 +188,7 @@ export class BezierEditor extends UI.Widget.VBox {
   }
 
   /**
-   * @param {!InlineEditor.BezierEditor.PresetCategory} category
+   * @param {!PresetCategory} category
    * @param {!Event=} event
    */
   _presetCategorySelected(category, event) {
@@ -278,3 +278,6 @@ export const Presets = [
     {name: 'Out · Back', value: 'cubic-bezier(0.18, 0.89, 0.32, 1.28)'}
   ]
 ];
+
+/** @typedef {{presets: !Array.<{name: string, value: string}>, icon: !Element, presetIndex: number}} */
+export let PresetCategory;

@@ -370,7 +370,7 @@ export class JavaScriptAutocomplete {
     /**
      * @this {JavaScriptAutocomplete}
      * @param {!SDK.RuntimeModel.EvaluationResult} result
-     * @return {!Promise<!Array<!ObjectUI.JavaScriptAutocomplete.CompletionGroup>>}
+     * @return {!Promise<!Array<!CompletionGroup>>}
      */
     async function completionsOnGlobal(result) {
       if (result.error || !!result.exceptionDetails || !result.object) {
@@ -510,7 +510,7 @@ export class JavaScriptAutocomplete {
   }
 
   /**
-   * @param {?Array<!ObjectUI.JavaScriptAutocomplete.CompletionGroup>} propertyGroups
+   * @param {?Array<!CompletionGroup>} propertyGroups
    * @param {boolean} dotNotation
    * @param {boolean} bracketNotation
    * @param {string} expressionString
@@ -558,7 +558,7 @@ export class JavaScriptAutocomplete {
      * @param {boolean} bracketNotation
      * @param {string} expressionString
      * @param {string} query
-     * @param {!Array<!ObjectUI.JavaScriptAutocomplete.CompletionGroup>} propertyGroups
+     * @param {!Array<!CompletionGroup>} propertyGroups
      * @return {!UI.SuggestBox.Suggestions}
      */
   _completionsForQuery(dotNotation, bracketNotation, expressionString, query, propertyGroups) {
@@ -788,3 +788,6 @@ export class JavaScriptAutocompleteConfig {
     return tooltip;
   }
 }
+
+/** @typedef {{title:(string|undefined), items:Array<string>}} */
+export let CompletionGroup;

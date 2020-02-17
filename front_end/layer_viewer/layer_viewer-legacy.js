@@ -167,6 +167,3 @@ LayerViewer.TransformController.Events = LayerViewerModule.TransformController.E
  * @enum {string}
  */
 LayerViewer.TransformController.Modes = LayerViewerModule.TransformController.Modes;
-
-/** @typedef {{borderColor: !Array<number>, borderWidth: number}} */
-LayerViewer.Layers3DView.LayerStyle;

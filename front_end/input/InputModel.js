@@ -13,7 +13,7 @@ export class InputModel extends SDK.SDKModel.SDKModel {
     this._inputAgent = target.inputAgent();
     /** @type {?number} */
     this._eventDispatchTimer = null;
-    /** @type {!Array<!Input.InputModel.EventData>}*/
+    /** @type {!Array<!EventData>}*/
     this._dispatchEventDataList = [];
     /** @type {?function()} */
     this._finishCallback = null;
@@ -90,16 +90,16 @@ export class InputModel extends SDK.SDKModel.SDKModel {
 
 
   /**
-   * @param {!Input.InputModel.EventData} eventData
+   * @param {!EventData} eventData
    * @return {boolean}
    */
   _isValidInputEvent(eventData) {
-    return this._isMouseEvent(/** @type {!Input.InputModel.MouseEventData} */ (eventData)) ||
-        this._isKeyboardEvent(/** @type {!Input.InputModel.KeyboardEventData} */ (eventData));
+    return this._isMouseEvent(/** @type {!MouseEventData} */ (eventData)) ||
+        this._isKeyboardEvent(/** @type {!KeyboardEventData} */ (eventData));
   }
 
   /**
-   * @param {!Input.InputModel.MouseEventData} eventData
+   * @param {!MouseEventData} eventData
    * @return {boolean}
    */
   _isMouseEvent(eventData) {
@@ -113,7 +113,7 @@ export class InputModel extends SDK.SDKModel.SDKModel {
   }
 
   /**
-   * @param {!Input.InputModel.KeyboardEventData} eventData
+   * @param {!KeyboardEventData} eventData
    * @return {boolean}
    */
   _isKeyboardEvent(eventData) {
@@ -130,9 +130,9 @@ export class InputModel extends SDK.SDKModel.SDKModel {
     const eventData = this._dispatchEventDataList[this._dispatchingIndex];
     this._lastEventTime = eventData.timestamp;
     if (InputModel.MouseEventTypes.has(eventData.type)) {
-      this._dispatchMouseEvent(/** @type {!Input.InputModel.MouseEventData} */ (eventData));
+      this._dispatchMouseEvent(/** @type {!MouseEventData} */ (eventData));
     } else if (InputModel.KeyboardEventTypes.has(eventData.type)) {
-      this._dispatchKeyEvent(/** @type {!Input.InputModel.KeyboardEventData} */ (eventData));
+      this._dispatchKeyEvent(/** @type {!KeyboardEventData} */ (eventData));
     }
 
     ++this._dispatchingIndex;
@@ -145,7 +145,7 @@ export class InputModel extends SDK.SDKModel.SDKModel {
   }
 
   /**
-   * @param {!Input.InputModel.MouseEventData} eventData
+   * @param {!MouseEventData} eventData
    */
   async _dispatchMouseEvent(eventData) {
     console.assert(InputModel.MouseEventTypes.has(eventData.type));
@@ -165,7 +165,7 @@ export class InputModel extends SDK.SDKModel.SDKModel {
   }
 
   /**
-   * @param {!Input.InputModel.KeyboardEventData } eventData
+   * @param {!KeyboardEventData } eventData
    */
   async _dispatchKeyEvent(eventData) {
     console.assert(InputModel.KeyboardEventTypes.has(eventData.type));
@@ -195,3 +195,12 @@ InputModel.MouseEventTypes = new Map([
 InputModel.KeyboardEventTypes = new Map([['keydown', 'keyDown'], ['keyup', 'keyUp'], ['keypress', 'char']]);
 
 SDK.SDKModel.SDKModel.register(InputModel, SDK.SDKModel.Capability.Input, false);
+
+/** @typedef {{type: string, modifiers: number, timestamp: number}} */
+export let EventData;
+
+/** @typedef {{x: number, y: number, button: number, buttons: number, clickCount: number, deltaX: number, deltaY: number}} */
+export let MouseEventData;
+
+/** @typedef {{code: string, key: string}} */
+export let KeyboardEventData;

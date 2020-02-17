@@ -152,39 +152,3 @@ Network.ResourceWebSocketFrameNode = NetworkModule.ResourceWebSocketFrameView.Re
  * @constructor
  */
 Network.SignedExchangeInfoView = NetworkModule.SignedExchangeInfoView.SignedExchangeInfoView;
-
-/** @typedef {function(!SDK.NetworkRequest): boolean} */
-Network.NetworkLogView.Filter;
-
-/**
- * @typedef {{
- *     id: string,
- *     title: string,
- *     titleDOMFragment: (!DocumentFragment|undefined),
- *     subtitle: (string|null),
- *     visible: boolean,
- *     weight: number,
- *     hideable: boolean,
- *     hideableGroup: ?string,
- *     nonSelectable: boolean,
- *     sortable: boolean,
- *     align: (?DataGrid.DataGrid.Align|undefined),
- *     isResponseHeader: boolean,
- *     sortingFunction: (!function(!Network.NetworkNode, !Network.NetworkNode):number|undefined),
- *     isCustomHeader: boolean,
- *     allowInSortByEvenWhenHidden: boolean
- * }}
- */
-Network.NetworkLogViewColumns.Descriptor;
-
-/** @typedef {{start: number, end: number}} */
-Network.NetworkOverview.Window;
-
-/** @typedef {!{fillStyle: (string|undefined), lineWidth: (number|undefined), borderColor: (string|undefined)}} */
-Network.NetworkWaterfallColumn._LayerStyle;
-
-/** @typedef {!{x: number, y: number, text: string}} */
-Network.NetworkWaterfallColumn._TextLayer;
-
-/** @typedef {{name: !Network.RequestTimeRangeNames, start: number, end: number}} */
-Network.RequestTimeRange;

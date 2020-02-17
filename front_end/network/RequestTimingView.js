@@ -92,7 +92,7 @@ export class RequestTimingView extends UI.Widget.VBox {
   /**
    * @param {!SDK.NetworkRequest.NetworkRequest} request
    * @param {number} navigationStart
-   * @return {!Array.<!Network.RequestTimeRange>}
+   * @return {!Array.<!RequestTimeRange>}
    */
   static calculateRequestTimeRanges(request, navigationStart) {
     const result = [];
@@ -416,3 +416,6 @@ export const ConnectionSetupRangeNames = new Set([
   RequestTimeRangeNames.Queueing, RequestTimeRangeNames.Blocking, RequestTimeRangeNames.Connecting,
   RequestTimeRangeNames.DNS, RequestTimeRangeNames.Proxy, RequestTimeRangeNames.SSL
 ]);
+
+/** @typedef {{name: !RequestTimeRangeNames, start: number, end: number}} */
+export let RequestTimeRange;

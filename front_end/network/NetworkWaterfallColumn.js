@@ -69,20 +69,20 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
     this._styleForTimeRangeName = NetworkWaterfallColumn._buildRequestTimeRangeStyle();
 
     const resourceStyleTuple = NetworkWaterfallColumn._buildResourceTypeStyle();
-    /** @type {!Map<!Common.ResourceType.ResourceType, !NetworkWaterfallColumn._LayerStyle>} */
+    /** @type {!Map<!Common.ResourceType.ResourceType, !_LayerStyle>} */
     this._styleForWaitingResourceType = resourceStyleTuple[0];
-    /** @type {!Map<!Common.ResourceType.ResourceType, !NetworkWaterfallColumn._LayerStyle>} */
+    /** @type {!Map<!Common.ResourceType.ResourceType, !_LayerStyle>} */
     this._styleForDownloadingResourceType = resourceStyleTuple[1];
 
     const baseLineColor = self.UI.themeSupport.patchColorText('#a5a5a5', UI.UIUtils.ThemeSupport.ColorUsage.Foreground);
-    /** @type {!NetworkWaterfallColumn._LayerStyle} */
+    /** @type {!_LayerStyle} */
     this._wiskerStyle = {borderColor: baseLineColor, lineWidth: 1};
-    /** @type {!NetworkWaterfallColumn._LayerStyle} */
+    /** @type {!_LayerStyle} */
     this._hoverDetailsStyle = {fillStyle: baseLineColor, lineWidth: 1, borderColor: baseLineColor};
 
-    /** @type {!Map<!NetworkWaterfallColumn._LayerStyle, !Path2D>} */
+    /** @type {!Map<!_LayerStyle, !Path2D>} */
     this._pathForStyle = new Map();
-    /** @type {!Array<!NetworkWaterfallColumn._TextLayer>} */
+    /** @type {!Array<!_TextLayer>} */
     this._textLayers = [];
 
     /** @type {?CSSStyleDeclaration} */
@@ -90,7 +90,7 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
   }
 
   /**
-   * @return {!Map<!RequestTimeRangeNames, !NetworkWaterfallColumn._LayerStyle>}
+   * @return {!Map<!RequestTimeRangeNames, !_LayerStyle>}
    */
   static _buildRequestTimeRangeStyle() {
     const types = RequestTimeRangeNames;
@@ -112,7 +112,7 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
   }
 
   /**
-   * @return {!Array<!Map<!Common.ResourceType.ResourceType, !NetworkWaterfallColumn._LayerStyle>>}
+   * @return {!Array<!Map<!Common.ResourceType.ResourceType, !_LayerStyle>>}
    */
   static _buildResourceTypeStyle() {
     const baseResourceTypeColors = new Map([
@@ -474,7 +474,7 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
    */
   _drawLayers(context) {
     for (const entry of this._pathForStyle) {
-      const style = /** @type {!NetworkWaterfallColumn._LayerStyle} */ (entry[0]);
+      const style = /** @type {!_LayerStyle} */ (entry[0]);
       const path = /** @type {!Path2D} */ (entry[1]);
       context.save();
       context.beginPath();
@@ -676,3 +676,9 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
     context.restore();
   }
 }
+
+/** @typedef {!{x: number, y: number, text: string}} */
+export let _TextLayer;
+
+/** @typedef {!{fillStyle: (string|undefined), lineWidth: (number|undefined), borderColor: (string|undefined)}} */
+export let _LayerStyle;

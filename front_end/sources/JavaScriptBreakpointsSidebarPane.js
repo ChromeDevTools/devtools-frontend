@@ -24,9 +24,9 @@ export class JavaScriptBreakpointsSidebarPane extends UI.ThrottledWidget.Throttl
     this._breakpointManager.addEventListener(Bindings.BreakpointManager.Events.BreakpointRemoved, this.update, this);
     self.Common.settings.moduleSetting('breakpointsActive').addChangeListener(this.update, this);
 
-    /** @type {!UI.ListModel.ListModel.<!Sources.JavaScriptBreakpointsSidebarPane.BreakpointItem>} */
+    /** @type {!UI.ListModel.ListModel.<!BreakpointItem>} */
     this._breakpoints = new UI.ListModel.ListModel();
-    /** @type {!UI.ListControl.ListControl.<!Sources.JavaScriptBreakpointsSidebarPane.BreakpointItem>} */
+    /** @type {!UI.ListControl.ListControl.<!BreakpointItem>} */
     this._list = new UI.ListControl.ListControl(this._breakpoints, this, UI.ListControl.ListMode.NonViewport);
     UI.ARIAUtils.markAsList(this._list.element);
     this.contentElement.appendChild(this._list.element);
@@ -118,7 +118,7 @@ export class JavaScriptBreakpointsSidebarPane extends UI.ThrottledWidget.Throttl
 
   /**
    * @override
-   * @param {!Sources.JavaScriptBreakpointsSidebarPane.BreakpointItem} item
+   * @param {!BreakpointItem} item
    * @return {!Element}
    */
   createElementForItem(item) {
@@ -177,7 +177,7 @@ export class JavaScriptBreakpointsSidebarPane extends UI.ThrottledWidget.Throttl
 
   /**
    * @override
-   * @param {!Sources.JavaScriptBreakpointsSidebarPane.BreakpointItem} item
+   * @param {!BreakpointItem} item
    * @return {number}
    */
   heightForItem(item) {
@@ -186,7 +186,7 @@ export class JavaScriptBreakpointsSidebarPane extends UI.ThrottledWidget.Throttl
 
   /**
    * @override
-   * @param {!Sources.JavaScriptBreakpointsSidebarPane.BreakpointItem} item
+   * @param {!BreakpointItem} item
    * @return {boolean}
    */
   isItemSelectable(item) {
@@ -195,8 +195,8 @@ export class JavaScriptBreakpointsSidebarPane extends UI.ThrottledWidget.Throttl
 
   /**
    * @override
-   * @param {?Sources.JavaScriptBreakpointsSidebarPane.BreakpointItem} from
-   * @param {?Sources.JavaScriptBreakpointsSidebarPane.BreakpointItem} to
+   * @param {?BreakpointItem} from
+   * @param {?BreakpointItem} to
    * @param {?Element} fromElement
    * @param {?Element} toElement
    */
@@ -363,3 +363,17 @@ export const locationSymbol = Symbol('location');
 export const checkboxLabelSymbol = Symbol('checkbox-label');
 export const snippetElementSymbol = Symbol('snippet-element');
 export const breakpointLocationsSymbol = Symbol('locations');
+
+/** @typedef {{breakpoint: !Bindings.BreakpointManager.Breakpoint, uiLocation: !Workspace.UISourceCode.UILocation}} */
+export let Breakpoint;
+
+/**
+ * @typedef {{
+ * breakpointLocation: !Breakpoint,
+ * locations: !Array.<!Breakpoint>,
+ * showColumn: boolean,
+ * isSelected: boolean,
+ * content: !Promise.<?string>
+ * }}
+ */
+export let BreakpointItem;

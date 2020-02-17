@@ -52,7 +52,7 @@ export class Text {
 
   /**
    * @param {number} offset
-   * @return {!TextUtils.Text.Position}
+   * @return {!Position}
    */
   positionFromOffset(offset) {
     const lineEndings = this.lineEndings();
@@ -122,3 +122,6 @@ export class Text {
     return this._value.substr(sourceRange.offset, sourceRange.length);
   }
 }
+
+/** @typedef {{lineNumber: number, columnNumber: number}} */
+export let Position;

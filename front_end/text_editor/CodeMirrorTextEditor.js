@@ -186,7 +186,7 @@ export class CodeMirrorTextEditor extends UI.Widget.VBox {
     this._codeMirrorElement.classList.add('source-code');
     this._codeMirrorElement.classList.add('fill');
 
-    /** @type {!Platform.Multimap<number, !TextEditor.CodeMirrorTextEditor.Decoration>} */
+    /** @type {!Platform.Multimap<number, !Decoration>} */
     this._decorations = new Platform.Multimap();
 
     this.element.addEventListener('keydown', this._handleKeyDown.bind(this), true);
@@ -971,7 +971,7 @@ export class CodeMirrorTextEditor extends UI.Widget.VBox {
     this._decorations.get(lineNumber).forEach(innerUpdateDecorations);
 
     /**
-     * @param {!TextEditor.CodeMirrorTextEditor.Decoration} decoration
+     * @param {!Decoration} decoration
      */
     function innerUpdateDecorations(decoration) {
       if (decoration.update) {
@@ -989,7 +989,7 @@ export class CodeMirrorTextEditor extends UI.Widget.VBox {
 
     /**
      * @this {CodeMirrorTextEditor}
-     * @param {!TextEditor.CodeMirrorTextEditor.Decoration} decoration
+     * @param {!Decoration} decoration
      */
     function innerRemoveDecoration(decoration) {
       if (decoration.element !== element) {
@@ -1963,3 +1963,12 @@ CodeMirror.inputStyles.devToolsAccessibleTextArea = class extends CodeMirror.inp
     return result;
   }
 };
+
+/**
+ * @typedef {{
+ *  element: !Element,
+ *  widget: !CodeMirror.LineWidget,
+ *  update: ?function()
+ * }}
+ */
+export let Decoration;

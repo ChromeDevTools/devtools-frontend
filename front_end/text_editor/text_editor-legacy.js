@@ -45,12 +45,3 @@ TextEditor.CodeMirrorUtils.TokenizerFactory = TextEditorModule.CodeMirrorUtils.T
 /** @constructor */
 TextEditor.TextEditorAutocompleteController =
     TextEditorModule.TextEditorAutocompleteController.TextEditorAutocompleteController;
-
-/**
- * @typedef {{
-  *  element: !Element,
-  *  widget: !CodeMirror.LineWidget,
-  *  update: ?function()
-  * }}
-  */
-TextEditor.CodeMirrorTextEditor.Decoration;

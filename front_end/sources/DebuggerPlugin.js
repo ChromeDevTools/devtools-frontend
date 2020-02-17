@@ -49,7 +49,7 @@ export class DebuggerPlugin extends Plugin {
   /**
    * @param {!SourceFrame.SourcesTextEditor.SourcesTextEditor} textEditor
    * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
-   * @param {!SourceFrame.Transformer} transformer
+   * @param {!SourceFrame.SourceFrame.Transformer} transformer
    */
   constructor(textEditor, uiSourceCode, transformer) {
     super();

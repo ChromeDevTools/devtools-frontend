@@ -34,9 +34,3 @@ TextUtils.BalancedJSONTokenizer = TextUtilsModule.TextUtils.BalancedJSONTokenize
 TextUtils.TokenizerFactory = TextUtilsModule.TextUtils.TokenizerFactory;
 
 TextUtils.isMinified = TextUtilsModule.TextUtils.isMinified;
-
-/** @typedef {{lineNumber: number, columnNumber: number}} */
-TextUtils.Text.Position;
-
-/** @typedef {{key:(string|undefined), text:(?string|undefined), regex:(!RegExp|undefined), negative:boolean}} */
-TextUtils.FilterParser.ParsedFilter;

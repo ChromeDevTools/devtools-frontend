@@ -107,7 +107,7 @@ export class SourceFrameImpl extends UI.View.SimpleView {
     this._loaded = false;
     this._contentRequested = false;
     this._highlighterType = '';
-    /** @type {!SourceFrame.Transformer} */
+    /** @type {!Transformer} */
     this._transformer = {
       /**
        * @param {number} editorLineNumber
@@ -200,7 +200,7 @@ export class SourceFrameImpl extends UI.View.SimpleView {
   }
 
   /**
-   * @return {!SourceFrame.Transformer}
+   * @return {!Transformer}
    */
   transformer() {
     return this._transformer;
@@ -840,3 +840,11 @@ export class LineDecorator {
    */
   decorate(uiSourceCode, textEditor, type) {}
 }
+
+/**
+ * @typedef {{
+ *  editorToRawLocation: function(number, number=):!Array<number>,
+ *  rawToEditorLocation: function(number, number=):!Array<number>
+ * }}
+ */
+export let Transformer;

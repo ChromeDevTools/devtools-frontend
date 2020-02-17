@@ -305,17 +305,3 @@ Sources.WatchExpressionsSidebarPane = SourcesModule.WatchExpressionsSidebarPane.
 
 /** @constructor */
 Sources.WatchExpression = SourcesModule.WatchExpressionsSidebarPane.WatchExpression;
-
-/** @typedef {{breakpoint: !Bindings.BreakpointManager.Breakpoint, uiLocation: !Workspace.UILocation}} */
-Sources.JavaScriptBreakpointsSidebarPane.Breakpoint;
-
-/**
- * @typedef {{
- * breakpointLocation: !Sources.JavaScriptBreakpointsSidebarPane.Breakpoint,
- * locations: !Array.<!Sources.JavaScriptBreakpointsSidebarPane.Breakpoint>,
- * showColumn: boolean,
- * isSelected: boolean,
- * content: !Promise.<?string>
- * }}
- */
-Sources.JavaScriptBreakpointsSidebarPane.BreakpointItem;

@@ -59,14 +59,3 @@ SourceFrame.XMLView = SourceFrameModule.XMLView.XMLView;
 
 /** @constructor */
 SourceFrame.XMLView.Node = SourceFrameModule.XMLView.XMLViewNode;
-
-/**
- * @typedef {{
-  *  editorToRawLocation: function(number, number=):!Array<number>,
-  *  rawToEditorLocation: function(number, number=):!Array<number>
-  * }}
-  */
-SourceFrame.Transformer;
-
-/** @typedef {{gutterType: string, lineNumber: number, event: !Event}} */
-SourceFrame.SourcesTextEditor.GutterClickEventData;

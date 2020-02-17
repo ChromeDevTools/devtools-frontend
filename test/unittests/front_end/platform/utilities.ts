@@ -20,7 +20,6 @@ declare global {
 
   interface String {
     trimURL(base: string): string;
-    toBase64(): string;
     trimMiddle(maxLength: number): string;
     repeat(length: number): string;
     escapeForRegExp(): string;
@@ -284,22 +283,6 @@ describe('Utilities', () => {
     ]);
     for (const [url, expected] of fixtures) {
       assert.equal(expected, url.trimURL(baseURLDomain), url);
-    }
-  });
-
-  it('converts to base64', () => {
-    const fixtures = new Map([
-      ['', ''],
-      ['a', 'YQ=='],
-      ['bc', 'YmM='],
-      ['def', 'ZGVm'],
-      ['ghij', 'Z2hpag=='],
-      ['klmno', 'a2xtbm8='],
-      ['pqrstu', 'cHFyc3R1'],
-      ['\u0444\u5555\u6666\u7777', '0YTllZXmmabnnbc='],
-    ]);
-    for (const [string, encodedString] of fixtures) {
-      assert.equal(encodedString, string.toBase64());
     }
   });
 

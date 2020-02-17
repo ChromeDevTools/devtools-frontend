@@ -29,6 +29,7 @@
  */
 
 import * as Common from '../common/common.js';
+import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 
 export class HARWriter {
@@ -99,7 +100,7 @@ export class HARWriter {
       if (contentData.content !== null) {
         let content = contentData.content;
         if (content && !encoded && needsEncoding(content)) {
-          content = content.toBase64();
+          content = Platform.StringUtilities.toBase64(content);
           encoded = true;
         }
         entry.response.content.text = content;

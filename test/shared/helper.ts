@@ -9,10 +9,12 @@ interface BrowserAndPages {
   browser: puppeteer.Browser;
   target: puppeteer.Page;
   frontend: puppeteer.Page;
+  screenshot?: puppeteer.Page;
 }
 
 const targetPage = Symbol('TargetPage');
 const frontEndPage = Symbol('DevToolsPage');
+const screenshotPage = Symbol('ScreenshotPage');
 const browserInstance = Symbol('BrowserInstance');
 
 export let resetPages: (...enabledExperiments: string[]) => void;
@@ -149,11 +151,12 @@ export const debuggerStatement = (frontend: puppeteer.Page) => {
 };
 
 export const store =
-    (browser: puppeteer.Browser, target: puppeteer.Page, frontend: puppeteer.Page,
+    (browser: puppeteer.Browser, target: puppeteer.Page, frontend: puppeteer.Page, screenshot: puppeteer.Page | undefined,
      reset: (...enabledExperiments: string[]) => void) => {
       globalThis[browserInstance] = browser;
       globalThis[targetPage] = target;
       globalThis[frontEndPage] = frontend;
+      globalThis[screenshotPage] = screenshot;
       resetPages = reset;
     };
 
@@ -174,6 +177,7 @@ export const getBrowserAndPages = (): BrowserAndPages => {
     browser: globalThis[browserInstance],
     target: globalThis[targetPage],
     frontend: globalThis[frontEndPage],
+    screenshot: globalThis[screenshotPage],
   };
 };
 

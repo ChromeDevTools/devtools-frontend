@@ -13,7 +13,7 @@ describe('hello world', () => {
 
   it('takes a screenshot', async () => {
     const {target, frontend} = getBrowserAndPages();
-    await target.goto(`${resourcesPath}/console/big-int.html`);
+    await target.goto(`${resourcesPath}/console/built-ins.html`);
     await click('#tab-console');
     await frontend.waitForSelector('.console-group-messages');
 

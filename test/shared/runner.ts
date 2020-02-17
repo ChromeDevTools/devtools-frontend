@@ -16,6 +16,8 @@ const envChromeBinary = process.env['CHROME_BIN'];
 const envDebug = !!process.env['DEBUG'];
 const envPort = process.env['PORT'] || 9222;
 const envNoShuffle = !!process.env['NO_SHUFFLE'];
+const envInteractive = !!process.env['INTERACTIVE'];
+const interactivePage = 'http://localhost:8090/test/screenshots/interactive/index.html';
 const blankPage = 'data:text/html,';
 const headless = !envDebug;
 const width = 1280;
@@ -97,6 +99,18 @@ interface DevToolsTarget {
 // 3. Spin up the test environment
 (async function() {
   try {
+    let screenshotPage: puppeteer.Page | undefined;
+    if (envInteractive) {
+      const screenshotBrowser = await puppeteer.launch({
+        headless: false,
+        executablePath: envChromeBinary,
+        defaultViewport: null,
+        args: [`--window-size=${width},${height}`],
+      });
+      screenshotPage = await screenshotBrowser.newPage();
+      await screenshotPage.goto(interactivePage, {waitUntil: ['domcontentloaded']});
+    }
+
     const browser = await launchedBrowser;
 
     // Load the target page.
@@ -156,7 +170,7 @@ interface DevToolsTarget {
       await frontend.waitForSelector('.elements');
     };
 
-    store(browser, srcPage, frontend, resetPages);
+    store(browser, srcPage, frontend, screenshotPage, resetPages);
 
     // 3. Run tests.
     do {
@@ -208,7 +222,7 @@ async function runTests() {
     }
     mocha.ui('bdd');
     mocha.reporter('list');
-    mocha.timeout(envDebug ? 100000 : 4000);
+    mocha.timeout((envDebug || envInteractive) ? 300000 : 4000);
 
     mochaRun = mocha.run();
     mochaRun.on('end', () => {

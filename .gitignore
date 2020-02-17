@@ -43,5 +43,6 @@ test/shared/**/helper.d.ts
 test/shared/**/screenshot.d.ts
 test/shared/**/*.tsbuildinfo
 test/screenshots/**/*.js
+!test/screenshots/**/interactive.js
 test/screenshots/**/*.tsbuildinfo
 test/screenshots/.generated

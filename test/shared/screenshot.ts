@@ -3,11 +3,14 @@
 // found in the LICENSE file.
 
 import * as puppeteer from 'puppeteer';
-import * as resemblejs from 'resemblejs';
 import {assert} from 'chai';
 import {join} from 'path';
 import * as fs from 'fs';
 import * as rimraf from 'rimraf';
+import * as childProcess from 'child_process';
+import * as os from 'os';
+import * as path from 'path';
+import {getBrowserAndPages} from './helper.js';
 
 const goldensScreenshotFolder = join(__dirname, '..', 'screenshots', 'goldens');
 const generatedScreenshotFolder = join(__dirname, '..', 'screenshots', '.generated');
@@ -34,18 +37,104 @@ export const assertScreenshotUnchanged = async (page: puppeteer.Page, fileName: 
   const opts = {...defaultScreenshotOpts, ...options, path: generatedScreenshotPath};
   await page.screenshot(opts);
 
-  return new Promise((resolve, reject) => {
-    resemblejs.compare(generatedScreenshotPath, goldensScreenshotPath, {}, (err, data) => {
-      if (err) {
-        reject(err);
+  return compare(goldensScreenshotPath, generatedScreenshotPath, fileName);
+};
+
+interface ImageDiff {
+  rawMisMatchPercentage: number;
+  diffPath: string;
+}
+
+async function imageDiff(golden: string, generated: string, isInteractive = false) {
+  let imageDiffDir: string;
+
+  switch (os.platform()) {
+    case 'darwin':
+      imageDiffDir = 'mac';
+      break;
+
+    case 'win32':
+      imageDiffDir = 'win32';
+      break;
+
+    default:
+      imageDiffDir = 'linux';
+      break;
+  }
+
+  const imageDiffPath = join(__dirname, '..', 'screenshots', 'image_diff', imageDiffDir, 'image_diff');
+  return new Promise<ImageDiff>(async (resolve, reject) => {
+    const imageDiff: ImageDiff = {rawMisMatchPercentage: 0, diffPath: ''};
+    const diffText = await exec(`${imageDiffPath} --histogram ${golden} ${generated}`);
+
+    // Parse out the number from the cmd output, i.e. diff: 48.9% failed => 48.9
+    imageDiff.rawMisMatchPercentage = Number(diffText.replace(/^diff:\s/, '').replace(/%.*/, ''));
+
+    if (Number.isNaN(imageDiff.rawMisMatchPercentage)) {
+      reject('Unable to compare images');
+    }
+
+    // Only create a diff image if necessary.
+    if (isInteractive || imageDiff.rawMisMatchPercentage > 0) {
+      imageDiff.diffPath = join(path.dirname(generated), `${path.basename(generated, '.png')}-diff.png`);
+      await exec(`${imageDiffPath} --diff ${golden} ${generated} ${imageDiff.diffPath}`);
+    }
+
+    resolve(imageDiff);
+  });
+}
+
+async function exec(cmd: string) {
+  return new Promise<string>((resolve, reject) => {
+    let commandOutput = '';
+    try {
+      commandOutput = childProcess.execSync(cmd, {encoding: 'utf8'});
+      resolve(commandOutput);
+    } catch (e) {
+      // image_diff will exit with a status code of 1 if the diff is too big, so
+      // this needs to be caught, but the outcome is the same - we want to send
+      // back the string for processing.
+      if (e.stdout.indexOf('diff') === -1) {
+        reject(e.stdout);
         return;
       }
 
-      const {dimensionDifference, rawMisMatchPercentage} = data;
-      assert.deepEqual(dimensionDifference, { width: 0, height: 0});
-      assert.isBelow(rawMisMatchPercentage, 1);
-      resolve();
-    });
-    resolve();
+      resolve(e.stdout);
+    }
   });
-};
+}
+
+async function compare(golden: string, generated: string, fileName: string) {
+  const {screenshot} = getBrowserAndPages();
+  if (screenshot) {
+    await screenshot.evaluate(opts => {
+      (self as any).setState(opts);
+    }, {type: 'status', msg: `Comparing ${fileName} to generated image...`});
+  }
+
+  const isInteractive = typeof screenshot !== 'undefined';
+  const {rawMisMatchPercentage, diffPath} = await imageDiff(golden, generated, isInteractive);
+
+  // Interactively allow the user to choose.
+  if (screenshot && diffPath) {
+    const root = join(__dirname, '..', '..');
+    const left = golden.replace(root, '');
+    const right = generated.replace(root, '');
+    const diff = diffPath.replace(root, '');
+    const type = 'outcome';
+
+    await screenshot.evaluate(opts => {
+      (self as any).setState(opts);
+    }, {type, left, right, diff, rawMisMatchPercentage, fileName});
+
+    const elementHandle = await screenshot.waitForSelector('.choice', {timeout: 0});
+    const choice = await elementHandle.evaluate(node => node.getAttribute('data-choice'));
+
+    // If they choose the test output, copy the generated screenshot over the golden.
+    if (choice === 'generated') {
+      fs.copyFileSync(generated, golden);
+    }
+  } else {  // Assert no change.
+    assert.isBelow(rawMisMatchPercentage, 1, `There is a ${rawMisMatchPercentage}% difference`);
+  }
+}

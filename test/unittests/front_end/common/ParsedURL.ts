@@ -300,6 +300,27 @@ describe('Parsed URL', () => {
        assert.equal(splitResult.columnNumber, 19, 'column number is incorrect');
      });
 
+  it('uses the removeWasmFunctionInfoFromURL function to return unmodified URL if not pointing to a wasm source',
+     () => {
+       const stringTest = 'http://www.example.com:15:20';
+       const url = Common.ParsedURL.ParsedURL.removeWasmFunctionInfoFromURL(stringTest);
+       assert.equal(url, 'http://www.example.com:15:20', 'URL is not correct');
+     });
+
+  it('uses the removeWasmFunctionInfoFromURL function to return the wasm unmodified URL if it points to a wasm source',
+     () => {
+       const stringTest = 'http://www.example.com/example.wasm:wasm-function[0]:0x3e';
+       const url = Common.ParsedURL.ParsedURL.removeWasmFunctionInfoFromURL(stringTest);
+       assert.equal(url, 'http://www.example.com/example.wasm', 'URL is not correct');
+     });
+
+  it('uses the removeWasmFunctionInfoFromURL function to return the wasm unmodified URL if it points to a wasm source with port number',
+     () => {
+       const stringTest = 'http://www.example.com:8080/example.wasm:wasm-function[0]:0x3e';
+       const url = Common.ParsedURL.ParsedURL.removeWasmFunctionInfoFromURL(stringTest);
+       assert.equal(url, 'http://www.example.com:8080/example.wasm', 'URL is not correct');
+     });
+
   it('uses the isRelativeURL function to return true if the URL is relative', () => {
     const urlTest = '/test/path';
     const isRelativeResult = Common.ParsedURL.ParsedURL.isRelativeURL(urlTest);

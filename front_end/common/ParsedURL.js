@@ -325,6 +325,20 @@ export class ParsedURL {
 
   /**
    * @param {string} url
+   * @return {string}
+   */
+  static removeWasmFunctionInfoFromURL(url) {
+    const wasmFunctionRegEx = /:wasm-function\[\d+\]/;
+    const wasmFunctionIndex = url.search(wasmFunctionRegEx);
+    if (wasmFunctionIndex === -1) {
+      return url;
+    } else {
+      return url.substring(0, wasmFunctionIndex);
+    }
+  }
+
+  /**
+   * @param {string} url
    * @return {boolean}
    */
   static isRelativeURL(url) {

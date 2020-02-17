@@ -22,3 +22,115 @@ export const TotalParamPortHeight = AudioParamRadius * 2 + PortPadding;
 
 export const NodeLabelFontStyle = '14px Segoe UI, Arial';
 export const ParamLabelFontStyle = '12px Segoe UI, Arial';
+
+/**
+ * Supported port types.
+ * @enum {symbol}
+ */
+export const PortTypes = {
+  In: Symbol('In'),
+  Out: Symbol('Out'),
+  Param: Symbol('Param'),
+};
+
+/**
+ * @typedef {{width: number, height: number}}
+ */
+export let Size;
+
+/**
+ * @typedef {{x: number, y: number}}
+ */
+export let Point;
+
+/**
+ * @typedef {{
+ *   inputPortSectionHeight: number,
+ *   outputPortSectionHeight: number,
+ *   maxTextLength: number,
+ *   totalHeight: number
+ * }}
+ */
+export let NodeLayout;
+
+/**
+ * y: The Y value relative to the top of node.
+ * edgeCounter: The number of edges connected to the port, default 0.
+ * @typedef {{
+ *   id: string,
+ *   type: !PortTypes,
+ *   label: (string|undefined),
+ *   x: number,
+ *   y: number,
+ * }}
+ */
+export let Port;
+
+/**
+ * @typedef {{
+ *   nodeId: string,
+ *   nodeType: string,
+ *   numberOfInputs: number,
+ *   numberOfOutputs: number,
+ * }}
+ */
+export let NodeCreationData;
+
+/**
+ * @typedef {{
+ *   paramId: string,
+ *   paramType: string,
+ *   nodeId: string,
+ * }}
+ */
+export let ParamCreationData;
+
+/**
+ * @typedef {{
+ *   sourceId: string,
+ *   destinationId: string,
+ *   sourceOutputIndex: (number|undefined),
+ *   destinationInputIndex: (number|undefined),
+ * }}
+ */
+export let NodesConnectionData;
+
+/**
+ * @typedef {{
+ *   sourceId: string,
+ *   destinationId: (?string|undefined),
+ *   sourceOutputIndex: (number|undefined),
+ *   destinationInputIndex: (number|undefined),
+ * }}
+ */
+export let NodesDisconnectionData;
+
+/**
+ * @typedef {{
+ *   sourceId: string,
+ *   destinationId: string,
+ *   sourceOutputIndex: (number|undefined),
+ *   destinationInputIndex: (number|undefined),
+ * }}
+ */
+export let NodesDisconnectionDataWithDestination;
+
+/**
+ * @typedef {{
+ *   sourceId: string,
+ *   destinationId: string,
+ *   sourceOutputIndex: (number|undefined),
+ *   destinationParamId: string,
+ * }}
+ */
+export let NodeParamConnectionData;
+
+/**
+ * @typedef {{
+ *   sourceId: string,
+ *   destinationId: string,
+ *   sourceOutputIndex: (number|undefined),
+ *   destinationParamId: string,
+ * }}
+ */
+export let NodeParamDisconnectionData;

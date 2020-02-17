@@ -100,7 +100,7 @@ WebAudio.GraphVisualizer.NodeView = WebAudioModule.NodeView.NodeView;
  * Supported port types.
  * @enum {symbol}
  */
-WebAudio.GraphVisualizer.PortTypes = WebAudioModule.NodeView.PortTypes;
+WebAudio.GraphVisualizer.PortTypes = WebAudioModule.GraphStyle.PortTypes;
 
 /**
  * @constructor
@@ -111,107 +111,3 @@ WebAudio.GraphVisualizer.generateInputPortId = WebAudioModule.NodeView.generateI
 WebAudio.GraphVisualizer.generateOutputPortId = WebAudioModule.NodeView.generateOutputPortId;
 WebAudio.GraphVisualizer.generateParamPortId = WebAudioModule.NodeView.generateParamPortId;
 WebAudio.GraphVisualizer.measureTextWidth = WebAudioModule.NodeView.measureTextWidth;
-
-/**
- * @typedef {{width: number, height: number}}
- */
-WebAudio.GraphVisualizer.Size;
-
-/**
- * @typedef {{x: number, y: number}}
- */
-WebAudio.GraphVisualizer.Point;
-
-/**
- * @typedef {{
- *   inputPortSectionHeight: number,
- *   outputPortSectionHeight: number,
- *   maxTextLength: number,
- *   totalHeight: number
- * }}
- */
-WebAudio.GraphVisualizer.NodeLayout;
-
-/**
- * y: The Y value relative to the top of node.
- * edgeCounter: The number of edges connected to the port, default 0.
- * @typedef {{
- *   id: string,
- *   type: !WebAudio.GraphVisualizer.PortTypes,
- *   label: (string|undefined),
- *   x: number,
- *   y: number,
- * }}
- */
-WebAudio.GraphVisualizer.Port;
-
-// Message data
-
-/**
- * @typedef {{
- *   nodeId: string,
- *   nodeType: string,
- *   numberOfInputs: number,
- *   numberOfOutputs: number,
- * }}
- */
-WebAudio.GraphVisualizer.NodeCreationData;
-
-/**
- * @typedef {{
- *   paramId: string,
- *   paramType: string,
- *   nodeId: string,
- * }}
- */
-WebAudio.GraphVisualizer.ParamCreationData;
-
-/**
- * @typedef {{
- *   sourceId: string,
- *   destinationId: string,
- *   sourceOutputIndex: (number|undefined),
- *   destinationInputIndex: (number|undefined),
- * }}
- */
-WebAudio.GraphVisualizer.NodesConnectionData;
-
-/**
- * @typedef {{
- *   sourceId: string,
- *   destinationId: (?string|undefined),
- *   sourceOutputIndex: (number|undefined),
- *   destinationInputIndex: (number|undefined),
- * }}
- */
-WebAudio.GraphVisualizer.NodesDisconnectionData;
-
-/**
- * @typedef {{
- *   sourceId: string,
- *   destinationId: string,
- *   sourceOutputIndex: (number|undefined),
- *   destinationInputIndex: (number|undefined),
- * }}
- */
-WebAudio.GraphVisualizer.NodesDisconnectionDataWithDestination;
-
-/**
- * @typedef {{
- *   sourceId: string,
- *   destinationId: string,
- *   sourceOutputIndex: (number|undefined),
- *   destinationParamId: string,
- * }}
- */
-WebAudio.GraphVisualizer.NodeParamConnectionData;
-
-/**
- * @typedef {{
- *   sourceId: string,
- *   destinationId: string,
- *   sourceOutputIndex: (number|undefined),
- *   destinationParamId: string,
- * }}
- */
-WebAudio.GraphVisualizer.NodeParamDisconnectionData;

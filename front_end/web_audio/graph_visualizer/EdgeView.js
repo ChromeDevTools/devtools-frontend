@@ -2,13 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as GraphStyle from './GraphStyle.js';  // eslint-disable-line no-unused-vars
 import {generateInputPortId, generateOutputPortId, generateParamPortId} from './NodeView.js';
 
 // A class that represents an edge of a graph, including node-to-node connection,
 // and node-to-param connection.
 export class EdgeView {
   /**
-   * @param {!WebAudio.GraphVisualizer.NodesConnectionData | !WebAudio.GraphVisualizer.NodeParamConnectionData} data
+   * @param {!GraphStyle.NodesConnectionData | !GraphStyle.NodeParamConnectionData} data
    * @param {!EdgeTypes} type
    */
   constructor(data, type) {
@@ -25,7 +26,7 @@ export class EdgeView {
 
 /**
  * Generates the edge id and source/destination portId using edge data and type.
- * @param {!WebAudio.GraphVisualizer.NodesConnectionData | !WebAudio.GraphVisualizer.NodeParamConnectionData} data
+ * @param {!GraphStyle.NodesConnectionData | !GraphStyle.NodeParamConnectionData} data
  * @param {!EdgeTypes} type
  * @return {?{edgeId: string, sourcePortId: string, destinationPortId: string}}
  */
@@ -46,7 +47,7 @@ export const generateEdgePortIdsByData = (data, type) => {
 
   /**
    * Get the destination portId based on connection type.
-   * @param {!WebAudio.GraphVisualizer.NodesConnectionData | !WebAudio.GraphVisualizer.NodeParamConnectionData} data
+   * @param {!GraphStyle.NodesConnectionData | !GraphStyle.NodeParamConnectionData} data
    * @param {!EdgeTypes} type
    * @return {string}
    */

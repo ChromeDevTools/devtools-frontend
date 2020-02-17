@@ -9,7 +9,7 @@ import {calculateInputPortXY, calculateOutputPortXY, calculateParamPortXY} from 
 // node and display the node. Each node has zero or more ports, including input, output, and param ports.
 export class NodeView {
   /**
-   * @param {!WebAudio.GraphVisualizer.NodeCreationData} data
+   * @param {!GraphStyle.NodeCreationData} data
    * @param {string} label
    */
   constructor(data, label) {
@@ -24,21 +24,21 @@ export class NodeView {
     // and this node should not be rendered. It will be set after layouting.
     this.position = null;
 
-    /** @type {!WebAudio.GraphVisualizer.NodeLayout} */
+    /** @type {!GraphStyle.NodeLayout} */
     this._layout = {
       inputPortSectionHeight: 0,
       outputPortSectionHeight: 0,
       maxTextLength: 0,
       totalHeight: 0,
     };
-    /** @type {!Map<string, !WebAudio.GraphVisualizer.Port>} */
+    /** @type {!Map<string, !GraphStyle.Port>} */
     this.ports = new Map();
 
     this._initialize(data);
   }
 
   /**
-   * @param {!WebAudio.GraphVisualizer.NodeCreationData} data
+   * @param {!GraphStyle.NodeCreationData} data
    */
   _initialize(data) {
     this._updateNodeLayoutAfterAddingNode(data);
@@ -55,13 +55,13 @@ export class NodeView {
    * @param {string} paramType
    */
   addParamPort(paramId, paramType) {
-    const paramPorts = this.getPortsByType(PortTypes.Param);
+    const paramPorts = this.getPortsByType(GraphStyle.PortTypes.Param);
     const numberOfParams = paramPorts.length;
 
     const {x, y} = calculateParamPortXY(numberOfParams, this._layout.inputPortSectionHeight);
     this._addPort({
       id: generateParamPortId(this.id, paramId),
-      type: PortTypes.Param,
+      type: GraphStyle.PortTypes.Param,
       label: paramType,
       x,
       y,
@@ -74,8 +74,8 @@ export class NodeView {
   }
 
   /**
-   * @param {!PortTypes} type
-   * @return {!Array<!WebAudio.GraphVisualizer.Port>}
+   * @param {!GraphStyle.PortTypes} type
+   * @return {!Array<!GraphStyle.Port>}
    */
   getPortsByType(type) {
     const result = [];
@@ -93,7 +93,7 @@ export class NodeView {
    * Credit: This function is mostly borrowed from Audion/
    *      `audion.entryPoints.handleNodeCreated_()`.
    *      https://github.com/google/audion/blob/master/js/entry-points/panel.js
-   * @param {!WebAudio.GraphVisualizer.NodeCreationData} data
+   * @param {!GraphStyle.NodeCreationData} data
    */
   _updateNodeLayoutAfterAddingNode(data) {
     // Even if there are no input ports, leave room for the node label.
@@ -155,7 +155,7 @@ export class NodeView {
       const {x, y} = calculateInputPortXY(i);
       this._addPort({
         id: generateInputPortId(this.id, i),
-        type: PortTypes.In,
+        type: GraphStyle.PortTypes.In,
         x,
         y,
       });
@@ -175,7 +175,7 @@ export class NodeView {
       } else {
         this._addPort({
           id: portId,
-          type: PortTypes.Out,
+          type: GraphStyle.PortTypes.Out,
           x,
           y,
         });
@@ -183,7 +183,7 @@ export class NodeView {
     }
   }
 
-  /** @param {!WebAudio.GraphVisualizer.Port} port */
+  /** @param {!GraphStyle.Port} port */
   _addPort(port) {
     this.ports.set(port.id, port);
   }
@@ -244,6 +244,8 @@ export class NodeLabelGenerator {
   }
 }
 
+let _contextForFontTextMeasuring;
+
 /**
  * Get the text width using given font style.
  * @param {string} text
@@ -251,24 +253,14 @@ export class NodeLabelGenerator {
  * @return {number}
  */
 export const measureTextWidth = (text, fontStyle) => {
-  if (!WebAudio.GraphVisualizer._contextForFontTextMeasuring) {
-    WebAudio.GraphVisualizer._contextForFontTextMeasuring = createElement('canvas').getContext('2d');
+  if (!_contextForFontTextMeasuring) {
+    _contextForFontTextMeasuring = createElement('canvas').getContext('2d');
   }
 
-  const context = WebAudio.GraphVisualizer._contextForFontTextMeasuring;
+  const context = _contextForFontTextMeasuring;
   context.save();
   context.font = fontStyle;
   const width = UI.measureTextWidth(context, text);
   context.restore();
   return width;
-};
-
-/**
- * Supported port types.
- * @enum {symbol}
- */
-export const PortTypes = {
-  In: Symbol('In'),
-  Out: Symbol('Out'),
-  Param: Symbol('Param'),
 };

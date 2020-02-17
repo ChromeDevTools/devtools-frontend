@@ -8,7 +8,7 @@ import * as GraphStyle from './GraphStyle.js';
  * Calculate the x, y value of input port.
  * Input ports are placed near the top of the left-side border.
  * @param {number} portIndex
- * @return {!WebAudio.GraphVisualizer.Point}
+ * @return {!GraphStyle.Point}
  */
 export const calculateInputPortXY = portIndex => {
   const y = GraphStyle.InputPortRadius + GraphStyle.LeftSideTopPadding + portIndex * GraphStyle.TotalInputPortHeight;
@@ -19,9 +19,9 @@ export const calculateInputPortXY = portIndex => {
  * Calculate the x, y value of output port.
  * Output ports are placed near the center of the right-side border.
  * @param {number} portIndex
- * @param {!WebAudio.GraphVisualizer.Size} nodeSize
+ * @param {!GraphStyle.Size} nodeSize
  * @param {number} numberOfOutputs
- * @return {!WebAudio.GraphVisualizer.Point}
+ * @return {!GraphStyle.Point}
  */
 export const calculateOutputPortXY = (portIndex, nodeSize, numberOfOutputs) => {
   const {width, height} = nodeSize;
@@ -35,7 +35,7 @@ export const calculateOutputPortXY = (portIndex, nodeSize, numberOfOutputs) => {
  * Param ports are placed near the bottom of the left-side border.
  * @param {number} portIndex
  * @param {number} offsetY
- * @return {!WebAudio.GraphVisualizer.Point}
+ * @return {!GraphStyle.Point}
  */
 export const calculateParamPortXY = (portIndex, offsetY) => {
   const paramPortY = offsetY + GraphStyle.TotalParamPortHeight * (portIndex + 1) - GraphStyle.AudioParamRadius;

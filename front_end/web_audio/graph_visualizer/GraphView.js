@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {EdgeTypes, EdgeView, generateEdgePortIdsByData} from './EdgeView.js';
+import * as GraphStyle from './GraphStyle.js';  // eslint-disable-line no-unused-vars
 import {NodeLabelGenerator, NodeView} from './NodeView.js';
 
 // A class that tracks all the nodes and edges of an audio graph.
@@ -45,7 +46,7 @@ export class GraphView extends Common.Object {
 
   /**
    * Add a node to the graph.
-   * @param {!WebAudio.GraphVisualizer.NodeCreationData} data
+   * @param {!GraphStyle.NodeCreationData} data
    */
   addNode(data) {
     const label = this._nodeLabelGenerator.generateLabel(data.nodeType);
@@ -67,7 +68,7 @@ export class GraphView extends Common.Object {
 
   /**
    * Add a param to the node.
-   * @param {!WebAudio.GraphVisualizer.ParamCreationData} data
+   * @param {!GraphStyle.ParamCreationData} data
    */
   addParam(data) {
     const node = this.getNodeById(data.nodeId);
@@ -93,7 +94,7 @@ export class GraphView extends Common.Object {
 
   /**
    * Add a Node-to-Node connection to the graph.
-   * @param {!WebAudio.GraphVisualizer.NodesConnectionData} edgeData
+   * @param {!GraphStyle.NodesConnectionData} edgeData
    */
   addNodeToNodeConnection(edgeData) {
     const edge = new EdgeView(edgeData, EdgeTypes.NodeToNode);
@@ -102,14 +103,13 @@ export class GraphView extends Common.Object {
 
   /**
    * Remove a Node-to-Node connection from the graph.
-   * @param {!WebAudio.GraphVisualizer.NodesDisconnectionData} edgeData
+   * @param {!GraphStyle.NodesDisconnectionData} edgeData
    */
   removeNodeToNodeConnection(edgeData) {
     if (edgeData.destinationId) {
       // Remove a single edge if destinationId is specified.
       const {edgeId} = generateEdgePortIdsByData(
-          /** @type {!WebAudio.GraphVisualizer.NodesDisconnectionDataWithDestination} */ (edgeData),
-          EdgeTypes.NodeToNode);
+          /** @type {!GraphStyle.NodesDisconnectionDataWithDestination} */ (edgeData), EdgeTypes.NodeToNode);
       this._removeEdge(edgeId);
     } else {
       // Otherwise, remove all outgoing edges from source node.
@@ -119,7 +119,7 @@ export class GraphView extends Common.Object {
 
   /**
    * Add a Node-to-Param connection to the graph.
-   * @param {!WebAudio.GraphVisualizer.NodeParamConnectionData} edgeData
+   * @param {!GraphStyle.NodeParamConnectionData} edgeData
    */
   addNodeToParamConnection(edgeData) {
     const edge = new EdgeView(edgeData, EdgeTypes.NodeToParam);
@@ -128,7 +128,7 @@ export class GraphView extends Common.Object {
 
   /**
    * Remove a Node-to-Param connection from the graph.
-   * @param {!WebAudio.GraphVisualizer.NodeParamDisconnectionData} edgeData
+   * @param {!GraphStyle.NodeParamDisconnectionData} edgeData
    */
   removeNodeToParamConnection(edgeData) {
     const {edgeId} = generateEdgePortIdsByData(edgeData, EdgeTypes.NodeToParam);

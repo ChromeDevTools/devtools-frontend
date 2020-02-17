@@ -424,9 +424,6 @@
   <message name="IDS_DEVTOOLS_aab112fba39c10ed5df335ae0e47f329" desc="Text that indicates something is not optimized">
     Not optimized
   </message>
-  <message name="IDS_DEVTOOLS_ab57fd0432e25d5b3013133a1c910d56" desc="A unit">
-    KB
-  </message>
   <message name="IDS_DEVTOOLS_abbd64f40c34c537d3a571af068fce29" desc="Text for the orientation of something">
     Orientation
   </message>

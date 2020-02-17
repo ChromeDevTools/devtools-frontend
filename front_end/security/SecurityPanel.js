@@ -31,7 +31,7 @@ export class SecurityPanel extends UI.Panel.PanelWithSidebar {
     /** @type {!Map<!Protocol.Network.LoaderId, !SDK.NetworkRequest.NetworkRequest>} */
     this._lastResponseReceivedForLoaderId = new Map();
 
-    /** @type {!Map<!Security.SecurityPanel.Origin, !Security.SecurityPanel.OriginState>} */
+    /** @type {!Map<!Origin, !OriginState>} */
     this._origins = new Map();
 
     /** @type {!Map<!Network.NetworkLogView.MixedContentFilterValues, number>} */
@@ -148,7 +148,7 @@ export class SecurityPanel extends UI.Panel.PanelWithSidebar {
     this._sidebarMainViewElement.select(true);
   }
   /**
-   * @param {!Security.SecurityPanel.Origin} origin
+   * @param {!Origin} origin
    */
   showOrigin(origin) {
     const originState = this._origins.get(origin);
@@ -400,7 +400,7 @@ export class SecurityPanel extends UI.Panel.PanelWithSidebar {
 export class SecurityPanelSidebarTree extends UI.TreeOutline.TreeOutlineInShadow {
   /**
    * @param {!SecurityPanelSidebarTreeElement} mainViewElement
-   * @param {function(!Security.SecurityPanel.Origin)} showOriginInPanel
+   * @param {function(!Origin)} showOriginInPanel
    */
   constructor(mainViewElement, showOriginInPanel) {
     super();
@@ -437,7 +437,7 @@ export class SecurityPanelSidebarTree extends UI.TreeOutline.TreeOutlineInShadow
     mainViewReloadMessage.listItemElement.classList.add('security-main-view-reload-message');
     this._originGroups.get(OriginGroup.MainOrigin).appendChild(mainViewReloadMessage);
 
-    /** @type {!Map<!Security.SecurityPanel.Origin, !SecurityPanelSidebarTreeElement>} */
+    /** @type {!Map<!Origin, !SecurityPanelSidebarTreeElement>} */
     this._elementsByOrigin = new Map();
   }
 
@@ -465,7 +465,7 @@ export class SecurityPanelSidebarTree extends UI.TreeOutline.TreeOutlineInShadow
   }
 
   /**
-   * @param {!Security.SecurityPanel.Origin} origin
+   * @param {!Origin} origin
    * @param {!Protocol.Security.SecurityState} securityState
    */
   addOrigin(origin, securityState) {
@@ -478,14 +478,14 @@ export class SecurityPanelSidebarTree extends UI.TreeOutline.TreeOutlineInShadow
   }
 
   /**
-   * @param {!Security.SecurityPanel.Origin} origin
+   * @param {!Origin} origin
    */
   setMainOrigin(origin) {
     this._mainOrigin = origin;
   }
 
   /**
-   * @param {!Security.SecurityPanel.Origin} origin
+   * @param {!Origin} origin
    * @param {!Protocol.Security.SecurityState} securityState
    */
   updateOrigin(origin, securityState) {
@@ -1127,8 +1127,8 @@ export class SecurityMainView extends UI.Widget.VBox {
 export class SecurityOriginView extends UI.Widget.VBox {
   /**
    * @param {!SecurityPanel} panel
-   * @param {!Security.SecurityPanel.Origin} origin
-   * @param {!Security.SecurityPanel.OriginState} originState
+   * @param {!Origin} origin
+   * @param {!OriginState} originState
    */
   constructor(panel, origin, originState) {
     super();
@@ -1404,3 +1404,16 @@ export class SecurityDetailsTable {
     }
   }
 }
+
+/**
+ * @typedef {{
+ * securityState: !Protocol.Security.SecurityState,
+ * securityDetails: ?Protocol.Network.SecurityDetails,
+ * loadedFromCache: boolean,
+ * originView: (?SecurityOriginView|undefined),
+ * }}
+ */
+export let OriginState;
+
+/** @typedef {string} */
+export let Origin;

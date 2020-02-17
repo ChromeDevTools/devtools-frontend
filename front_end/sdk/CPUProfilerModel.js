@@ -110,7 +110,7 @@ export class CPUProfilerModel extends SDKModel {
   _dispatchProfileEvent(eventName, id, scriptLocation, title, cpuProfile) {
     const debuggerLocation = Location.fromPayload(this._debuggerModel, scriptLocation);
     const globalId = this.target().id() + '.' + id;
-    const data = /** @type {!SDK.CPUProfilerModel.EventData} */ (
+    const data = /** @type {!EventData} */ (
         {id: globalId, scriptLocation: debuggerLocation, cpuProfile: cpuProfile, title: title, cpuProfilerModel: this});
     this.dispatchEventToListeners(eventName, data);
   }

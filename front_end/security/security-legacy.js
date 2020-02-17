@@ -52,15 +52,3 @@ Security.SecurityPanelSidebarTreeElement = SecurityModule.SecurityPanel.Security
  * @constructor
  */
 Security.SecurityOriginView = SecurityModule.SecurityPanel.SecurityOriginView;
-
-/** @typedef {string} */
-Security.SecurityPanel.Origin;
-
-/**
- * @typedef {Object}
- * @property {!Protocol.Security.SecurityState} securityState
- * @property {?Protocol.Network.SecurityDetails} securityDetails
- * @property {?bool} loadedFromCache
- * @property {?Security.SecurityOriginView} originView
- */
-Security.SecurityPanel.OriginState;

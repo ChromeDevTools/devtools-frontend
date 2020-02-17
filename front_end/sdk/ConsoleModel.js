@@ -31,7 +31,7 @@
 import * as Common from '../common/common.js';
 import * as HostModule from '../host/host.js';
 
-import {CPUProfilerModel, Events as CPUProfilerModelEvents} from './CPUProfilerModel.js';
+import {CPUProfilerModel, EventData, Events as CPUProfilerModelEvents} from './CPUProfilerModel.js';  // eslint-disable-line no-unused-vars
 import {Events as DebuggerModelEvents, Location} from './DebuggerModel.js';  // eslint-disable-line no-unused-vars
 import {LogModel} from './LogModel.js';
 import {RemoteObject} from './RemoteObject.js';
@@ -287,7 +287,7 @@ export class ConsoleModel extends Common.ObjectWrapper.ObjectWrapper {
    * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _consoleProfileStarted(cpuProfilerModel, event) {
-    const data = /** @type {!SDK.CPUProfilerModel.EventData} */ (event.data);
+    const data = /** @type {!EventData} */ (event.data);
     this._addConsoleProfileMessage(
         cpuProfilerModel, MessageType.Profile, data.scriptLocation,
         Common.UIString.UIString('Profile \'%s\' started.', data.title));
@@ -298,7 +298,7 @@ export class ConsoleModel extends Common.ObjectWrapper.ObjectWrapper {
    * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _consoleProfileFinished(cpuProfilerModel, event) {
-    const data = /** @type {!SDK.CPUProfilerModel.EventData} */ (event.data);
+    const data = /** @type {!EventData} */ (event.data);
     this._addConsoleProfileMessage(
         cpuProfilerModel, MessageType.ProfileEnd, data.scriptLocation,
         Common.UIString.UIString('Profile \'%s\' finished.', data.title));

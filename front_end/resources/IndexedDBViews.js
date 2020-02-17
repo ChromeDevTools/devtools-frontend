@@ -34,7 +34,7 @@ import * as ObjectUI from '../object_ui/object_ui.js';
 import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';
 
-import {Database, DatabaseId, Entry, Index, IndexedDBModel, ObjectStore} from './IndexedDBModel.js';  // eslint-disable-line no-unused-vars
+import {Database, DatabaseId, Entry, Index, IndexedDBModel, ObjectStore, ObjectStoreMetadata} from './IndexedDBModel.js';  // eslint-disable-line no-unused-vars
 
 /**
  * @unrestricted
@@ -398,7 +398,7 @@ export class IDBDataView extends UI.View.SimpleView {
   }
 
   /**
-   * @param {?Resources.IndexedDBModel.ObjectStoreMetadata} metadata
+   * @param {?ObjectStoreMetadata} metadata
    */
   _updateSummaryBar(metadata) {
     if (!this._summaryBarElement) {

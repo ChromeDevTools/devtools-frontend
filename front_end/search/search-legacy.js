@@ -31,6 +31,3 @@ Search.SearchResultsPane = SearchModule.SearchResultsPane.SearchResultsPane;
  * @constructor
  */
 Search.SearchView = SearchModule.SearchView.SearchView;
-
-/** @typedef {!{regex: !RegExp, isNegative: boolean}} */
-Search.SearchConfig.RegexQuery;

@@ -159,9 +159,6 @@ SDK.DOMDebuggerModel.Events = SDKModule.DOMDebuggerModel.Events;
 /** @constructor */
 SDK.DOMDebuggerModel.DOMBreakpoint = SDKModule.DOMDebuggerModel.DOMBreakpoint;
 
-/** @typedef {Protocol.DOMDebugger.DOMBreakpointType} */
-SDK.DOMDebuggerModel.DOMBreakpoint.Type = Protocol.DOMDebugger.DOMBreakpointType;
-
 /** @constructor */
 SDK.DOMDebuggerModel.EventListenerBreakpoint = SDKModule.DOMDebuggerModel.EventListenerBreakpoint;
 
@@ -528,14 +525,6 @@ SDK.TracingModel.Thread = SDKModule.TracingModel.Thread;
 
 /** @interface */
 SDK.BackingStorage = SDKModule.TracingModel.BackingStorage;
-
-/** @typedef {!{id: string, scriptLocation: !SDK.DebuggerModel.Location, title: string, cpuProfile: (!Protocol.Profiler.Profile|undefined), cpuProfilerModel: !SDK.CPUProfilerModel}} */
-SDK.CPUProfilerModel.EventData;
-
-/**
- * @typedef {{name: string, longhands: !Array.<string>, inherited: boolean, svg: boolean}}
- */
-SDK.CSSMetadata.CSSPropertyDefinition;
 
 /** @type {function({target: !SDK.Target, waitingForDebugger: boolean})|undefined} */
 SDK.ChildTargetManager._attachCallback;

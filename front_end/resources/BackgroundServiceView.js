@@ -168,7 +168,7 @@ export class BackgroundServiceView extends UI.Widget.VBox {
    * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _onRecordingStateChanged(event) {
-    const state = /** @type {!Resources.BackgroundServiceModel.RecordingState} */ (event.data);
+    const state = /** @type {!RecordingState} */ (event.data);
     if (state.serviceName !== this._serviceName) {
       return;
     }
@@ -238,7 +238,7 @@ export class BackgroundServiceView extends UI.Widget.VBox {
   /**
    * Creates the data object to pass to the DataGrid Node.
    * @param {!Protocol.BackgroundService.BackgroundServiceEvent} serviceEvent
-   * @return {!Resources.BackgroundServiceView.EventData}
+   * @return {!EventData}
    */
   _createEventData(serviceEvent) {
     let swScope = '';
@@ -437,3 +437,20 @@ export class ActionDelegate {
     return false;
   }
 }
+
+/**
+ * @typedef {!{isRecording: boolean, serviceName: !Protocol.BackgroundService.ServiceName}}
+ */
+export let RecordingState;
+
+/**
+ * @typedef {{
+ *    id: number,
+ *    timestamp: string,
+ *    origin: string,
+ *    swScope: string,
+ *    eventName: string,
+ *    instanceId: string,
+ * }}
+ */
+export let EventData;

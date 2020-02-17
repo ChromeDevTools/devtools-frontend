@@ -93,7 +93,7 @@ export class SearchConfig {
       const fileQuery = this._parseFileQuery(queryPart);
       if (fileQuery) {
         this._fileQueries.push(fileQuery);
-        /** @type {!Array.<!Search.SearchConfig.RegexQuery>} */
+        /** @type {!Array.<!RegexQuery>} */
         this._fileRegexQueries = this._fileRegexQueries || [];
         this._fileRegexQueries.push(
             {regex: new RegExp(fileQuery.text, this.ignoreCase ? 'i' : ''), isNegative: fileQuery.isNegative});
@@ -258,3 +258,6 @@ export class SearchScope {
 
   stopSearch() {}
 }
+
+/** @typedef {!{regex: !RegExp, isNegative: boolean}} */
+export let RegexQuery;

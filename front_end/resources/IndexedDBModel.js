@@ -450,7 +450,7 @@ export class IndexedDBModel extends SDK.SDKModel.SDKModel {
   /**
    * @param {!DatabaseId} databaseId
    * @param {!ObjectStore} objectStore
-   * @return {!Promise<?Resources.IndexedDBModel.ObjectStoreMetadata>}
+   * @return {!Promise<?ObjectStoreMetadata>}
    */
   async getMetadata(databaseId, objectStore) {
     const databaseOrigin = databaseId.securityOrigin;
@@ -644,3 +644,11 @@ export class Index {
     return /** @type {string}*/ (IndexedDBModel.keyPathStringFromIDBKeyPath(/** @type {string}*/ (this.keyPath)));
   }
 }
+
+/**
+ * @typedef {{
+ *      entriesCount: number,
+ *      keyGeneratorValue: number
+ * }}
+ */
+export let ObjectStoreMetadata;

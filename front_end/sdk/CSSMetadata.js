@@ -39,7 +39,7 @@ import {generatedProperties, generatedPropertyValues} from '../SupportedCSSPrope
  */
 export class CSSMetadata {
   /**
-   * @param {!Array.<!SDK.CSSMetadata.CSSPropertyDefinition>} properties
+   * @param {!Array.<!CSSPropertyDefinition>} properties
    */
   constructor(properties) {
     this._values = /** !Array.<string> */ ([]);
@@ -1153,3 +1153,8 @@ const Weight = {
 
 // Common keywords to CSS properties
 const CommonKeywords = ['auto', 'none'];
+
+/**
+ * @typedef {{name: string, longhands: !Array.<string>, inherited: boolean, svg: boolean}}
+ */
+export let CSSPropertyDefinition;

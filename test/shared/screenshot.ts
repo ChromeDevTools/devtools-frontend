@@ -26,18 +26,23 @@ const defaultScreenshotOpts: puppeteer.ScreenshotOptions = {
   fullPage: true,
   encoding: 'binary',
 };
-export const assertScreenshotUnchanged = async (page: puppeteer.Page, fileName: string, options: Partial<puppeteer.ScreenshotOptions> = {}) => {
-  const goldensScreenshotPath = join(goldensScreenshotFolder, fileName);
-  const generatedScreenshotPath = join(generatedScreenshotFolder, fileName);
+export const assertScreenshotUnchanged =
+    async (page: puppeteer.Page, fileName: string, options: Partial<puppeteer.ScreenshotOptions> = {}) => {
+  try {
+    const goldensScreenshotPath = join(goldensScreenshotFolder, fileName);
+    const generatedScreenshotPath = join(generatedScreenshotFolder, fileName);
 
-  if (fs.existsSync(generatedScreenshotPath)) {
-    throw new Error(`${generatedScreenshotPath} already exists.`);
+    if (fs.existsSync(generatedScreenshotPath)) {
+      throw new Error(`${generatedScreenshotPath} already exists.`);
+    }
+
+    const opts = {...defaultScreenshotOpts, ...options, path: generatedScreenshotPath};
+    await page.screenshot(opts);
+
+    return compare(goldensScreenshotPath, generatedScreenshotPath, fileName);
+  } catch (e) {
+    throw new Error(`Error occurred when comparing screenhots: ${e.stack}`);
   }
-
-  const opts = {...defaultScreenshotOpts, ...options, path: generatedScreenshotPath};
-  await page.screenshot(opts);
-
-  return compare(goldensScreenshotPath, generatedScreenshotPath, fileName);
 };
 
 interface ImageDiff {
@@ -64,23 +69,27 @@ async function imageDiff(golden: string, generated: string, isInteractive = fals
 
   const imageDiffPath = join(__dirname, '..', 'screenshots', 'image_diff', imageDiffDir, 'image_diff');
   return new Promise<ImageDiff>(async (resolve, reject) => {
-    const imageDiff: ImageDiff = {rawMisMatchPercentage: 0, diffPath: ''};
-    const diffText = await exec(`${imageDiffPath} --histogram ${golden} ${generated}`);
+    try {
+      const imageDiff: ImageDiff = {rawMisMatchPercentage: 0, diffPath: ''};
+      const diffText = await exec(`${imageDiffPath} --histogram ${golden} ${generated}`);
 
-    // Parse out the number from the cmd output, i.e. diff: 48.9% failed => 48.9
-    imageDiff.rawMisMatchPercentage = Number(diffText.replace(/^diff:\s/, '').replace(/%.*/, ''));
+      // Parse out the number from the cmd output, i.e. diff: 48.9% failed => 48.9
+      imageDiff.rawMisMatchPercentage = Number(diffText.replace(/^diff:\s/, '').replace(/%.*/, ''));
 
-    if (Number.isNaN(imageDiff.rawMisMatchPercentage)) {
-      reject('Unable to compare images');
+      if (Number.isNaN(imageDiff.rawMisMatchPercentage)) {
+        reject('Unable to compare images');
+      }
+
+      // Only create a diff image if necessary.
+      if (isInteractive || imageDiff.rawMisMatchPercentage > 0) {
+        imageDiff.diffPath = join(path.dirname(generated), `${path.basename(generated, '.png')}-diff.png`);
+        await exec(`${imageDiffPath} --diff ${golden} ${generated} ${imageDiff.diffPath}`);
+      }
+
+      resolve(imageDiff);
+    } catch (e) {
+      reject(new Error(`Error when running image_diff: ${e.stack}`));
     }
-
-    // Only create a diff image if necessary.
-    if (isInteractive || imageDiff.rawMisMatchPercentage > 0) {
-      imageDiff.diffPath = join(path.dirname(generated), `${path.basename(generated, '.png')}-diff.png`);
-      await exec(`${imageDiffPath} --diff ${golden} ${generated} ${imageDiff.diffPath}`);
-    }
-
-    resolve(imageDiff);
   });
 }
 
@@ -94,8 +103,8 @@ async function exec(cmd: string) {
       // image_diff will exit with a status code of 1 if the diff is too big, so
       // this needs to be caught, but the outcome is the same - we want to send
       // back the string for processing.
-      if (e.stdout.indexOf('diff') === -1) {
-        reject(e.stdout);
+      if (e.stdout && e.stdout.indexOf('diff') === -1) {
+        reject(new Error(`Comparing diff failed. stdout: "${e.stdout}"`));
         return;
       }
 

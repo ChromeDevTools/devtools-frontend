@@ -158,6 +158,7 @@ export class GeolocationsSettingsTab extends UI.Widget.VBox {
 
     cell = fields.createChild('div', 'geolocations-list-text');
     cell.appendChild(editor.createInput('long', 'text', ls`Longitude`, longValidator));
+    fields.createChild('div', 'geolocations-list-separator geolocations-list-separator-invisible');
 
     cell = fields.createChild('div', 'geolocations-list-text');
     cell.appendChild(editor.createInput('timezoneId', 'text', ls`Timezone ID`, timezoneIdValidator));

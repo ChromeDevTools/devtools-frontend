@@ -135,3 +135,23 @@
 .filter-input-field:not(:empty) {
     box-shadow: var(--focus-ring-active-shadow);
 }
+
+@media (forced-colors: active) {
+    .filter-bitset-filter span:hover,
+    .filter-bitset-filter span.selected,
+    .filter-bitset-filter span:active {
+        forced-color-adjust: none;
+        background: Highlight;
+        color: HighlightText;
+    }
+    .filter-input-field {
+        forced-color-adjust: none;
+        background: ButtonFace;
+        box-shadow: var(--focus-ring-inactive-shadow);
+    }
+    .filter-input-field:hover,
+    .filter-input-field:focus,
+    .filter-input-field:not(:empty) {
+        box-shadow: var(--focus-ring-active-shadow);
+    }
+}

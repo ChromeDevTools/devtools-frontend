@@ -69,3 +69,23 @@
     right: 0;
     border-left-style: solid;
 }
+
+@media (forced-colors: active) {
+    .overview-grid-cursor-position {
+        forced-color-adjust: none;
+        background-color: Highlight;
+    }
+    .window-curtain-left, .window-curtain-right {
+        background-color: transparent;
+        border-color: ButtonText;
+    }
+    .overview-grid-window-resizer {
+        background-color: ButtonText;
+    }
+    .overview-grid-window-resizer:hover,
+    .overview-grid-window-resizer:active,
+    .overview-grid-window-resizer[data-keyboard-focus="true"]:focus {
+        forced-color-adjust: none;
+        background-color: Highlight;
+    }
+}

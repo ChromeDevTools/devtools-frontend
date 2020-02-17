@@ -198,6 +198,6 @@ li.small .subtitle {
         text-shadow: unset;
     }
     .tree-outline:not(.hide-selection-when-blurred) li.selected {
-        color: ButtonFace;
+        color: HighlightText;
     }
 }

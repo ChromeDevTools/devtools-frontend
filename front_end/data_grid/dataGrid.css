@@ -271,3 +271,51 @@
     width: 5px;
     z-index: 500;
 }
+
+@media (forced-colors: active) {
+    .sort-order-icon-container [is=ui-icon].icon-mask,
+    .data-grid td.disclosure::before {
+        forced-color-adjust: none;
+        background-color: ButtonText;
+    }
+    .data-grid th.sortable:hover .sort-order-icon-container [is=ui-icon].icon-mask,
+    .data-grid table.data tr.parent.revealed:hover td.disclosure::before,
+    .data-grid:focus tr.parent.selected td.disclosure::before,
+    .data-grid tr.parent.selected td.disclosure::before {
+        background-color: HighlightText;
+    }
+    .data-grid th.sortable:hover,
+    .data-grid table.data tr.revealed:hover,
+    .data-grid table.data tr.revealed.selected,
+    .striped-data-grid .revealed:hover.data-grid-data-grid-node:nth-child(odd),
+    .striped-data-grid-starts-with-odd .revealed:hover.data-grid-data-grid-node:nth-child(even),
+    .request-cookies-view tr.revealed:hover.data-grid-data-grid-node.flagged-cookie-attribute-row:not(.selected):nth-child(2n),
+    .cookies-table tr.revealed:hover.data-grid-data-grid-node.flagged-cookie-attribute-row:not(.selected):nth-child(odd) {
+        forced-color-adjust: none;
+        background-color: Highlight;
+    }
+    .data-grid th.sortable:hover *,
+    .data-grid table.data tr.revealed:hover *,
+    .data-grid table.data tr.revealed.selected *,
+    .data-grid table.data tr.revealed:focus *,
+    .data-grid table.data tr.revealed:hover .heap-object-tag {
+        color: HighlightText;
+    }
+    .data-grid.no-selection[data-keyboard-focus="true"]:focus {
+        forced-color-adjust: none;
+        border-color: Highlight;
+    }
+    .data-grid.no-selection[data-keyboard-focus="true"]:focus * {
+        color: ButtonText;
+    }
+    .data-grid th {
+        background-color: Canvas;
+        border-color: Highlight;
+    }
+    .striped-data-grid .revealed.data-grid-data-grid-node:nth-child(odd),
+    .striped-data-grid-starts-with-odd .revealed.data-grid-data-grid-node:nth-child(even),
+    .request-cookies-view tr.revealed.data-grid-data-grid-node.flagged-cookie-attribute-row:not(.selected):nth-child(2n),
+    .cookies-table tr.revealed.data-grid-data-grid-node.flagged-cookie-attribute-row:not(.selected):nth-child(odd) {
+        background-color: Canvas;
+    }
+}

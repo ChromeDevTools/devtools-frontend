@@ -149,3 +149,25 @@ table.network-timing-table > tr:not(.network-timing-table-header):not(.network-t
     height: 10px;
     margin: auto;
 }
+
+@media (forced-colors: active) {
+    .network-timing-bar.blocking, -theme-preserve,
+    .network-timing-bar.proxy, -theme-preserve,
+    .network-timing-bar.dns, -theme-preserve,
+    .network-timing-bar.connecting,
+    .network-timing-bar.serviceworker,
+    .network-timing-bar.serviceworker-preparation, -theme-preserve,
+    .network-timing-bar.ssl, -theme-preserve,
+    .network-timing-bar.sending, -theme-preserve,
+    .network-timing-bar.waiting, -theme-preserve,
+    .network-timing-bar.receiving, -theme-preserve,
+    .network-timing-bar.receiving-push, -theme-preserve,
+    .network-timing-bar.push, -theme-preserve,
+    .network-timing-bar.server-timing, -theme-preserve {
+        forced-color-adjust: none;
+    }
+    .network-timing-table-header td, .network-timing-footer td {
+        forced-color-adjust: none;
+        color: ButtonText;;
+    }
+}

@@ -21,3 +21,14 @@
 .request-initiator-view-section-content {
     margin-left: 6px;
 }
+
+@media (forced-colors: active) {
+    .request-initiator-view-section-title[data-keyboard-focus="true"]:focus [is=ui-icon].icon-mask {
+        background-color: HighlightText;
+    }
+    .request-initiator-view-section-title[data-keyboard-focus="true"]:focus {
+        forced-color-adjust: none;
+        background-color: Highlight;
+        color: HighlightText;
+    }
+}

@@ -107,3 +107,21 @@
 .header-highlight {
     background-color: #FFFF78
 }
+
+@media (forced-colors: active) {
+    :host-context(.request-headers-tree) ol.tree-outline:not(.hide-selection-when-blurred) li.selected:focus {
+        background: Highlight;
+    }
+    :host-context(.request-headers-tree) ol.tree-outline:not(.hide-selection-when-blurred) li::before {
+        background-color: ButtonText;
+    }
+    :host-context(.request-headers-tree) ol.tree-outline:not(.hide-selection-when-blurred) li.selected.parent::before {
+        background-color: HighlightText;
+    }
+    :host-context(.request-headers-tree) ol.tree-outline:not(.hide-selection-when-blurred) li.selected *,
+    :host-context(.request-headers-tree) ol.tree-outline:not(.hide-selection-when-blurred) li.selected.parent,
+    :host-context(.request-headers-tree) ol.tree-outline:not(.hide-selection-when-blurred) li.selected.parent span,
+    :host-context(.request-headers-tree) ol.tree-outline:not(.hide-selection-when-blurred) li.selected:focus .status-from-cache {
+        color: HighlightText;
+    }
+}

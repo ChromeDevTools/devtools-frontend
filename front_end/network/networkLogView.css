@@ -415,3 +415,44 @@
 .network-frame-group-badge {
     margin-right: 4px;
 }
+
+@media (forced-colors: active) {
+    .network-status-pane > .recording-hint {
+        color: CanvasText;
+    }
+    .network-log-grid.data-grid table.data tr.revealed.selected,
+    .network-log-grid.data-grid:focus table.data tr.revealed.selected,
+    .network-log-grid.data-grid:focus tr.selected .network-dim-cell,
+    .network-log-grid.data-grid tr.selected .network-dim-cell,
+    .network-log-grid.data-grid:focus tr.selected .initiator-column .devtools-link,
+    .network-log-grid.data-grid tr.selected .initiator-column .devtools-link,
+    .network-waterfall-header:hover * {
+        color: HighlightText;
+    }
+    .network-log-grid {
+        --network-grid-default-color: Canvas;
+        --network-grid-stripe-color: Canvas;
+        --network-grid-hovered-color: Highlight;
+        --network-grid-selected-color: ButtonText;
+        --network-grid-focus-selected-color: Highlight;
+    }
+    #network-container.no-node-selected:focus-within,
+    .network-status-pane {
+        forced-color-adjust: none;
+        border-color: Highlight;
+        background-color: Canvas !important;
+    }
+    .network-waterfall-header.small,
+    .network-log-grid.data-grid.small .header-container
+    .network-waterfall-header,
+    .network-log-grid.data-grid .header-container {
+        background-color: Canvas;
+    }
+    .network-waterfall-header:hover {
+        forced-color-adjust: none;
+        background-color: Highlight;
+    }
+    .network-waterfall-header:hover .sort-order-icon-container [is=ui-icon].icon-mask {
+        background-color: HighlightText;
+    }
+}

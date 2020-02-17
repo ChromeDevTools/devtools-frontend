@@ -346,9 +346,6 @@ input[is=history-input]:not(:placeholder-shown) {
 }
 
 @media (forced-colors: active) {
-    select.toolbar-item {
-        border: 1px solid ButtonText;
-    }
     select.toolbar-item:disabled,
     select.toolbar-item:disabled + .toolbar-dropdown-arrow {
         opacity: 1;
@@ -371,9 +368,6 @@ input[is=history-input]:not(:placeholder-shown) {
         forced-color-adjust: none;
         background-color: Highlight !important;
     }
-    .toolbar-button[data-keyboard-focus="true"]:focus {
-        box-shadow: 0 0 0 1px ButtonText inset;
-    }
     .toolbar-button:disabled {
         opacity: 1;
     }
@@ -382,14 +376,21 @@ input[is=history-input]:not(:placeholder-shown) {
         background-color: GrayText !important;
         color: GrayText;
     }
-    .toolbar-has-dropdown:disabled {
-        opacity: 1;
-        border: 1px solid GrayText;
+    .toolbar-text {
+        color: ButtonText !important;
+    }
+    .toolbar-input {
+        forced-color-adjust: none;
+        border-color: ButtonText ;
+        background: Canvas;
     }
     .toolbar-input.focused,
     .toolbar-input:not(.toolbar-input-empty) {
         forced-color-adjust: none;
-        background: Canvas !important;
-        box-shadow: 0 0 0 1px Highlight inset !important;
+        background: Canvas;
+        box-shadow: var(--focus-ring-active-shadow);
+    }
+    .toolbar-input:hover {
+        box-shadow: var(--focus-ring-active-shadow);
     }
 }

@@ -702,7 +702,7 @@ export class TimelinePanel extends UI.Panel {
     this._reset();
     this._setState(State.Recording);
     this._showRecordingStarted();
-    this._statusPane.enableStopButton();
+    this._statusPane.enableAndFocusStopButton();
     this._statusPane.updateStatus(Common.UIString('Profiling\u2026'));
     this._statusPane.updateProgressBar(Common.UIString('Buffer usage'), 0);
     this._statusPane.startTimer();
@@ -1202,11 +1202,11 @@ export class StatusPane extends UI.VBox {
   showPane(parent) {
     this.show(parent);
     parent.classList.add('tinted');
-    this._stopButton.focus();
   }
 
-  enableStopButton() {
+  enableAndFocusStopButton() {
     this._stopButton.disabled = false;
+    this._stopButton.focus();
   }
 
   /**

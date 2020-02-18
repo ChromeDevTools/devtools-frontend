@@ -86,7 +86,7 @@ template("ts_library") {
         } else if (_extension == "js" || _extension == "ts") {
           output_files += [ "$target_gen_dir/$_fileName.js" ]
 
-          _strippedName = string_replace(_fileName, "_bridge.js", "")
+          _strippedName = string_replace(_fileName, "_bridge", "")
 
           # If the stripped name is different, it is a bridge file
           if (_extension == "ts" || _strippedName != _fileName) {

@@ -269,7 +269,7 @@ export class LineDecorator {
         value /= 1e3;
         fractionDigits = value >= 20 ? 0 : 1;
       } else {
-        units = ls`kB`;
+        units = ls`KB`;
         fractionDigits = 0;
       }
       element.textContent = Common.UIString.UIString(`%.${fractionDigits}f`, value);

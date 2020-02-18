@@ -2,11 +2,17 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Bindings from '../bindings/bindings.js';
 import * as SDK from '../sdk/sdk.js';
+import * as Timeline from '../timeline/timeline.js';
 import * as UI from '../ui/ui.js';
 
 import {InputModel} from './InputModel.js';
 
+/**
+ * @implements {Timeline.TimelineLoader.Client}
+ * @unrestricted
+ */
 export class InputTimeline extends UI.Widget.VBox {
   constructor() {
     super(true);
@@ -14,6 +20,7 @@ export class InputTimeline extends UI.Widget.VBox {
     this.element.classList.add('inputs-timeline');
 
     this._tracingClient = null;
+    this._tracingModel = null;
     this._inputModel = null;
 
     this._state = State.Idle;
@@ -38,13 +45,34 @@ export class InputTimeline extends UI.Widget.VBox {
     this._panelToolbar.appendToolbarItem(this._clearButton);
 
     this._panelToolbar.appendSeparator();
+
+    // Load / Save
+    this._loadButton = new UI.Toolbar.ToolbarButton(Common.UIString('Load profile\u2026'), 'largeicon-load');
+    this._loadButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => this._selectFileToLoad());
+    this._saveButton = new UI.Toolbar.ToolbarButton(Common.UIString('Save profile\u2026'), 'largeicon-download');
+    this._saveButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => this._saveToFile());
+    this._panelToolbar.appendSeparator();
+    this._panelToolbar.appendToolbarItem(this._loadButton);
+    this._panelToolbar.appendToolbarItem(this._saveButton);
+    this._panelToolbar.appendSeparator();
+    this._createFileSelector();
+
     this._updateControls();
   }
 
   _reset() {
     this._tracingClient = null;
+    this._tracingModel = null;
     this._inputModel = null;
     this._setState(State.Idle);
+  }
+
+  _createFileSelector() {
+    if (this._fileSelectorElement) {
+      this._fileSelectorElement.remove();
+    }
+    this._fileSelectorElement = UI.UIUtils.createFileSelectorElement(this._loadFromFile.bind(this));
+    this.element.appendChild(this._fileSelectorElement);
   }
 
   /**
@@ -68,20 +96,21 @@ export class InputTimeline extends UI.Widget.VBox {
   }
 
   /**
-   * @param {!State} state
    * @return {boolean}
    */
-  _isAvailableState(state) {
-    return state === State.Idle || state === State.ReplayPaused;
+  _isAvailableState() {
+    return this._state === State.Idle || this._state === State.ReplayPaused;
   }
 
   _updateControls() {
     this._toggleRecordAction.setToggled(this._state === State.Recording);
-    this._toggleRecordAction.setEnabled(this._isAvailableState(this._state) || this._state === State.Recording);
-    this._startReplayAction.setEnabled(this._isAvailableState(this._state) && !!this._inputModel);
+    this._toggleRecordAction.setEnabled(this._isAvailableState() || this._state === State.Recording);
+    this._startReplayAction.setEnabled(this._isAvailableState() && !!this._tracingModel);
     this._togglePauseAction.setEnabled(this._state === State.Replaying || this._state === State.ReplayPaused);
     this._togglePauseAction.setToggled(this._state === State.ReplayPaused);
-    this._clearButton.setEnabled(this._isAvailableState(this._state));
+    this._clearButton.setEnabled(this._isAvailableState());
+    this._loadButton.setEnabled(this._isAvailableState());
+    this._saveButton.setEnabled(this._isAvailableState() && !!this._tracingModel);
   }
 
   _toggleRecording() {
@@ -112,6 +141,43 @@ export class InputTimeline extends UI.Widget.VBox {
         break;
       }
     }
+  }
+
+  /**
+   * Saves all current events in a file (JSON format).
+   */
+  async _saveToFile() {
+    console.assert(this._state === State.Idle && this._tracingModel);
+
+    const fileName = `InputProfile-${new Date().toISO8601Compact()}.json`;
+    const stream = new Bindings.FileUtils.FileOutputStream();
+
+    const accepted = await stream.open(fileName);
+    if (!accepted) {
+      return;
+    }
+
+    const backingStorage =
+        /** @type {!Bindings.TempFile.TempFileBackingStorage} */ (this._tracingModel.backingStorage());
+    await backingStorage.writeToStream(stream);
+    stream.close();
+  }
+
+
+  _selectFileToLoad() {
+    this._fileSelectorElement.click();
+  }
+
+  /**
+   * @param {!File} file
+   */
+  _loadFromFile(file) {
+    console.assert(this._isAvailableState());
+
+    this._setState(State.Loading);
+    this._loader = Timeline.TimelineLoader.TimelineLoader.loadFromFile(file, this);
+
+    this._createFileSelector();
   }
 
   async _startRecording() {
@@ -150,14 +216,36 @@ export class InputTimeline extends UI.Widget.VBox {
   }
 
   /**
+   * @override
+   */
+  loadingStarted() {
+  }
+
+  /**
+   * @override
+   * @param {number=} progress
+   */
+  loadingProgress(progress) {
+  }
+
+
+  /**
+   * @override
+   */
+  processingStarted() {
+  }
+
+  /**
+   * @override
    * @param {?SDK.TracingModel.TracingModel} tracingModel
    */
-  recordingComplete(tracingModel) {
+  loadingComplete(tracingModel) {
     if (!tracingModel) {
       this._reset();
       return;
     }
     this._inputModel = new InputModel(/** @type {!SDK.SDKModel.Target} */ (self.SDK.targetManager.mainTarget()));
+    this._tracingModel = tracingModel;
     this._inputModel.setEvents(tracingModel);
 
     this._setState(State.Idle);
@@ -182,7 +270,8 @@ export const State = {
   Recording: Symbol('Recording'),
   StopPending: Symbol('StopPending'),
   Replaying: Symbol('Replaying'),
-  ReplayPaused: Symbol('ReplayPaused')
+  ReplayPaused: Symbol('ReplayPaused'),
+  Loading: Symbol('Loading')
 };
 
 
@@ -239,7 +328,7 @@ export class TracingClient {
     this._tracingManager = target.model(SDK.TracingManager.TracingManager);
     this._client = client;
 
-    const backingStorage = new Bindings.TempFileBackingStorage();
+    const backingStorage = new Bindings.TempFile.TempFileBackingStorage();
     this._tracingModel = new SDK.TracingModel.TracingModel(backingStorage);
 
     /** @type {?function()} */
@@ -272,7 +361,7 @@ export class TracingClient {
     await this._waitForTracingToStop(true);
     await self.SDK.targetManager.resumeAllTargets();
     this._tracingModel.tracingComplete();
-    this._client.recordingComplete(this._tracingModel);
+    this._client.loadingComplete(this._tracingModel);
   }
   /**
    * @param {!Array.<!SDK.TracingManager.EventPayload>} events

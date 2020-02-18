@@ -619,6 +619,9 @@
   <message name="IDS_DEVTOOLS_f31bbdd1b3e85bccd652680e16935819" desc="Text for the source of something">
     Source
   </message>
+  <message name="IDS_DEVTOOLS_f34ebd9ed4156c54fbd77bb3a5b3107a" desc="Tooltip text that appears when hovering over the largeicon download button">
+    Save profile…
+  </message>
   <message name="IDS_DEVTOOLS_f53944c3a55bdb5ad65c6226e358a626" desc="Text to undock the DevTools">
     Undock into separate window
   </message>
@@ -630,6 +633,9 @@
   </message>
   <message name="IDS_DEVTOOLS_fa6711f918fe2018131a4ad0380b9e56" desc="Name of an item from source map">
     <ph name="DISPLAY_NAME">$1s<ex>compile.html</ex></ph> (from source map)
+  </message>
+  <message name="IDS_DEVTOOLS_fa7c73b6eb5f3c3b77e47d8a4557af3e" desc="Tooltip text that appears when hovering over the largeicon load button">
+    Load profile…
   </message>
   <message name="IDS_DEVTOOLS_fb61758d0f0fda4ba867c3d5a46c16a7" desc="Name of the Sources panel">
     Sources

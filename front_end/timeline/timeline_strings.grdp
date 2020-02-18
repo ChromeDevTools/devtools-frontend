@@ -478,9 +478,6 @@ Click the reload button <ph name="RELOADBUTTON">$3s<ex>reload</ex></ph> or hit <
   <message name="IDS_DEVTOOLS_70bac6f11765f731510b0ac659fd26a1" desc="Text in Timeline Loader of the Performance panel">
     Malformed timeline data: <ph name="E_TOSTRING__">$1s<ex>Unknown JSON format</ex></ph>
   </message>
-  <message name="IDS_DEVTOOLS_70d68501018d9d6496e55cad8a2c3ba1" desc="Tooltip text that appears when hovering over the largeicon load button in the Timeline Panel of the Performance panel">
-    Load profile...
-  </message>
   <message name="IDS_DEVTOOLS_7125f394de382b13a7e7a5a4b6d23364" desc="Text in Timeline Flame Chart Data Provider of the Performance panel">
     Raster
   </message>
@@ -629,9 +626,6 @@ Then, zoom and pan the timeline with the mousewheel or <ph name="NAVIGATENODE">$
   </message>
   <message name="IDS_DEVTOOLS_9669f96ca9d2e20feda07d349d3cac86" desc="Text in Timeline UIUtils of the Performance panel">
     Key Up
-  </message>
-  <message name="IDS_DEVTOOLS_976e665bbff13a2a2a2eb4a83b8bb602" desc="Tooltip text that appears when hovering over the largeicon download button in the Timeline Panel of the Performance panel">
-    Save profile...
   </message>
   <message name="IDS_DEVTOOLS_97c091732895087b8900d81105e54446" desc="Text in Timeline UIUtils of the Performance panel">
     Frame Start (main thread)
@@ -978,9 +972,6 @@ Then, zoom and pan the timeline with the mousewheel or <ph name="NAVIGATENODE">$
   <message name="IDS_DEVTOOLS_f1fef3f490158560a580633887faf5d3" desc="Data grid name for Timeline Stack data grids">
     Timeline Stack
   </message>
-  <message name="IDS_DEVTOOLS_f34ebd9ed4156c54fbd77bb3a5b3107a" desc="Title of an action in the timeline tool to save to file">
-    Save profile…
-  </message>
   <message name="IDS_DEVTOOLS_f466ef0697891303497dfbf951a14b1d" desc="Text in Timeline Flame Chart Data Provider of the Performance panel">
     Idle Frame
   </message>
@@ -995,9 +986,6 @@ Then, zoom and pan the timeline with the mousewheel or <ph name="NAVIGATENODE">$
   </message>
   <message name="IDS_DEVTOOLS_f8dd1d7ea0aea500de367999ebba5c47" desc="Text in UIDevtools Utils of the Performance panel">
     Layer::PaintContentsToDisplayList
-  </message>
-  <message name="IDS_DEVTOOLS_fa7c73b6eb5f3c3b77e47d8a4557af3e" desc="Title of an action in the timeline tool to load from file">
-    Load profile…
   </message>
   <message name="IDS_DEVTOOLS_faa313428f0d69de3acffbd44c3df1ec" desc="Title of capture layers and pictures setting in timeline panel of the performance panel">
     Enable advanced paint instrumentation (slow)

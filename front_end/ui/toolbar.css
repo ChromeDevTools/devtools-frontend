@@ -376,6 +376,7 @@ input[is=history-input]:not(:placeholder-shown) {
         background-color: GrayText !important;
         color: GrayText;
     }
+    .toolbar-item,
     .toolbar-text {
         color: ButtonText !important;
     }
@@ -392,5 +393,8 @@ input[is=history-input]:not(:placeholder-shown) {
     }
     .toolbar-input:hover {
         box-shadow: var(--focus-ring-active-shadow);
+    }
+    .toolbar-item .devtools-link {
+        color: LinkText;
     }
 }

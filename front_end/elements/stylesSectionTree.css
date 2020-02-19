@@ -221,3 +221,9 @@ ol.expanded {
     max-width: 80%;
     vertical-align: bottom;
 }
+
+@media (forced-colors: active) {
+    .tree-outline > li .webkit-css-property {
+        color: HighlightText;
+    }
+}

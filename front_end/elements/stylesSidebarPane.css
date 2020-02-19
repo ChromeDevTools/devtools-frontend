@@ -253,8 +253,10 @@
         background-color: Highlight;
     }
     .styles-section[data-keyboard-focus="true"]:focus *,
-    .styles-section.read-only[data-keyboard-focus="true"]:focus * {
+    .styles-section.read-only[data-keyboard-focus="true"]:focus *,
+    .styles-section[data-keyboard-focus="true"]:focus .styles-section-subtitle .devtools-link {
         color: HighlightText;
+        text-decoration-color: HighlightText;
     }
     .styles-section[data-keyboard-focus="true"]:focus .sidebar-pane-section-toolbar {
         background-color: ButtonFace;
@@ -263,5 +265,9 @@
         forced-color-adjust: none;
         border-color: 1px solid ButtonText;
         background-color: ButtonFace;
+    }
+    .styles-section .styles-section-subtitle .devtools-link {
+        color: LinkText;
+        text-decoration-color: LinkText;
     }
 }

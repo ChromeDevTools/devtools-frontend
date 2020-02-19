@@ -269,6 +269,10 @@ export class TextFilterUI extends Common.ObjectWrapper.ObjectWrapper {
   _valueChanged() {
     this.dispatchEventToListeners(FilterUI.Events.FilterChanged, null);
   }
+
+  clear() {
+    this.setValue('');
+  }
 }
 
 /**

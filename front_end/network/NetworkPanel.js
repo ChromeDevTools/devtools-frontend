@@ -565,7 +565,7 @@ export class NetworkPanel extends UI.Panel.Panel {
      * @this {NetworkPanel}
      */
     function reveal(request) {
-      self.UI.viewManager.showView('network').then(this.revealAndHighlightRequest.bind(this, request));
+      self.UI.viewManager.showView('network').then(this._networkLogView.resetFilter.bind(this._networkLogView)).then(this.revealAndHighlightRequest.bind(this, request));
     }
 
     /**

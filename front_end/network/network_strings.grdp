@@ -378,6 +378,9 @@
   <message name="IDS_DEVTOOLS_82764787c77b4c9e53993b15d31a11c5" desc="Text to announce to screen readers that network data is available.">
     Network Data Available
   </message>
+  <message name="IDS_DEVTOOLS_b23be8e9d2dc9b79c70ec2acd3f174d3" desc="Label for the Server Timing API">
+    the Server Timing API
+  </message>
   <message name="IDS_DEVTOOLS_b67f775562210192587e38f66a6ae380" desc="Label for a filter in the Network panel">
     Has blocked cookies
   </message>
@@ -929,6 +932,9 @@
   </message>
   <message name="IDS_DEVTOOLS_f6068daa29dbb05a7ead1e3b5a48bbee" desc="Text in Event Source Messages View of the Network panel">
     Data
+  </message>
+  <message name="IDS_DEVTOOLS_f6a884486253ccf6c97c1252563acbbc" desc="Text to inform about the ServerTiming API">
+    During development, you can use <ph name="LINK">$1s<ex>https://example.com</ex></ph> to add insights into the server-side timing of this request.
   </message>
   <message name="IDS_DEVTOOLS_f6c804a6be9719c98a260380833bfde7" desc="A context menu item in the Network Log View of the Network panel">
     Block request URL

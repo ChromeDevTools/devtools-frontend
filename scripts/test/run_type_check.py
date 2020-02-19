@@ -326,9 +326,16 @@ def prepare_closure_frontend_compile(temp_devtools_path, descriptors, namespace_
     all_files = descriptors.all_compiled_files() + [WASM_SOURCE_MAP_FILE]
     args = []
     for file in all_files:
+
         args.extend(['--js', file])
         if 'InspectorBackend.js' in file:
             args.extend(['--js', protocol_externs_file])
+
+
+        if file.endswith('_bridge.js'):
+            generated_file = path.join(temp_frontend_path, path.relpath(file, DEVTOOLS_FRONTEND_PATH).replace('_bridge.js', '.js'))
+            modular_build.write_file(generated_file, '')
+            args.extend(['--js', generated_file])
 
     for file in descriptors.all_skipped_compilation_files():
         content = ''

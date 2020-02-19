@@ -4,21 +4,17 @@
 
 import("../../third_party/typescript/typescript.gni")
 
-group("common") {
-  public_deps = [
+ts_library("common") {
+  deps = [
     ":color",
     ":trie",
   ]
 }
 
 ts_library("trie") {
-  sources = [
-    "Trie.js",
-  ]
+  sources = [ "Trie.js" ]
 }
 
 ts_library("color") {
-  sources = [
-    "Color.js",
-  ]
+  sources = [ "Color.js" ]
 }

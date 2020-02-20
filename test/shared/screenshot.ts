@@ -2,6 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable no-console */
+// no-console disabled here as this is a test runner and expects to output to the console
+
 import * as puppeteer from 'puppeteer';
 import {assert} from 'chai';
 import {join} from 'path';
@@ -12,14 +15,45 @@ import * as os from 'os';
 import * as path from 'path';
 import {getBrowserAndPages} from './helper.js';
 
-const goldensScreenshotFolder = join(__dirname, '..', 'screenshots', 'goldens');
-const generatedScreenshotFolder = join(__dirname, '..', 'screenshots', '.generated');
+let platform: string;
+switch (os.platform()) {
+  case 'darwin':
+    platform = 'mac';
+    break;
+
+  case 'win32':
+    platform = 'win32';
+    break;
+
+  default:
+    platform = 'linux';
+    break;
+}
+
+function mkdirp(root: string, parts: string[]) {
+  let target = root;
+  for (const part of parts) {
+    const newTarget = join(target, part);
+    if (!fs.existsSync(newTarget)) {
+      fs.mkdirSync(newTarget);
+    }
+
+    target = newTarget;
+  }
+}
+
+const goldensScreenshotFolderParts = ['..', 'screenshots', 'goldens', platform];
+const goldensScreenshotFolder = join(__dirname, ...goldensScreenshotFolderParts);
+const generatedScreenshotFolderParts = ['..', 'screenshots', '.generated', platform];
+const generatedScreenshotFolder = join(__dirname, ...generatedScreenshotFolderParts);
 
 // Delete and create the generated images.
 if (fs.existsSync(generatedScreenshotFolder)) {
   rimraf.sync(generatedScreenshotFolder);
 }
-fs.mkdirSync(generatedScreenshotFolder);
+
+mkdirp(__dirname, goldensScreenshotFolderParts);
+mkdirp(__dirname, generatedScreenshotFolderParts);
 
 const defaultScreenshotOpts: puppeteer.ScreenshotOptions = {
   type: 'png',
@@ -39,6 +73,12 @@ export const assertScreenshotUnchanged =
     const opts = {...defaultScreenshotOpts, ...options, path: generatedScreenshotPath};
     await page.screenshot(opts);
 
+    // In the event that a golden does not exist, assume the generated screenshot is the new golden.
+    if (!fs.existsSync(goldensScreenshotPath)) {
+      console.log('Golden does not exist, using generated screenshot.');
+      setGoldenToGenerated(goldensScreenshotPath, generatedScreenshotPath);
+    }
+
     return compare(goldensScreenshotPath, generatedScreenshotPath, fileName);
   } catch (e) {
     throw new Error(`Error occurred when comparing screenhots: ${e.stack}`);
@@ -51,23 +91,7 @@ interface ImageDiff {
 }
 
 async function imageDiff(golden: string, generated: string, isInteractive = false) {
-  let imageDiffDir: string;
-
-  switch (os.platform()) {
-    case 'darwin':
-      imageDiffDir = 'mac';
-      break;
-
-    case 'win32':
-      imageDiffDir = 'win32';
-      break;
-
-    default:
-      imageDiffDir = 'linux';
-      break;
-  }
-
-  const imageDiffPath = join(__dirname, '..', 'screenshots', 'image_diff', imageDiffDir, 'image_diff');
+  const imageDiffPath = join(__dirname, '..', 'screenshots', 'image_diff', platform, 'image_diff');
   return new Promise<ImageDiff>(async (resolve, reject) => {
     try {
       const imageDiff: ImageDiff = {rawMisMatchPercentage: 0, diffPath: ''};
@@ -141,9 +165,14 @@ async function compare(golden: string, generated: string, fileName: string) {
 
     // If they choose the test output, copy the generated screenshot over the golden.
     if (choice === 'generated') {
-      fs.copyFileSync(generated, golden);
+      setGoldenToGenerated(golden, generated);
     }
   } else {  // Assert no change.
     assert.isBelow(rawMisMatchPercentage, 1, `There is a ${rawMisMatchPercentage}% difference`);
   }
+}
+
+function setGoldenToGenerated(golden: string, generated: string) {
+  console.log(`Copying ${generated} to ${golden}.`);
+  fs.copyFileSync(generated, golden);
 }

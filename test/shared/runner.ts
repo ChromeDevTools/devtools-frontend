@@ -78,8 +78,7 @@ const pages: puppeteer.Page[] = [];
 
 // 2. Start DevTools hosted mode.
 function handleHostedModeError(data: Error) {
-  console.log('Hosted mode server:');
-  console.log(data.toString());
+  console.log(`Hosted mode server: ${data}`);
   interruptionHandler();
 }
 
@@ -240,6 +239,9 @@ function logHelp() {
   console.log('Running in debug mode.');
   console.log(' - Press any key to run the test suite.');
   console.log(' - Press ctrl + c to quit.');
+  hostedModeServer.stdout.on('data', (message: any) => {
+    console.log(`Hosted mode server: ${message}`);
+  });
 }
 
 function shuffleTestFiles(files: string[]) {

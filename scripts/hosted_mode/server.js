@@ -100,13 +100,18 @@ function requestHandler(request, response) {
     while ((line = lines.shift()) !== undefined) {
       if (line.trim() === '') {
         isHeader = false;
+        if (request.headers['if-none-match'] && response.getHeader('ETag') === request.headers['if-none-match']) {
+          response.writeHead(304);
+          response.end();
+          return;
+        }
         response.writeHead(statusCode);
         continue;
       }
 
       if (isHeader) {
         const firstColon = line.indexOf(':');
-        response.setHeader(line.substring(0, firstColon), line.substring(firstColon + 1));
+        response.setHeader(line.substring(0, firstColon), line.substring(firstColon + 1).trim());
       } else {
         response.write(line);
       }

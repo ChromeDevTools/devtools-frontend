@@ -354,7 +354,7 @@
       physical_group: {
         valid_type: "str",
         valid_values: ["border", "border-color", "border-style", "border-width",
-                       "inset", "contain-intrinsic-size", "margin", "max-size",
+                       "inset", "margin", "max-size",
                        "min-size", "overflow", "padding", "scroll-margin",
                        "scroll-padding", "size", "visited-border-color"],
       }
@@ -1737,49 +1737,17 @@
       typedom_types: ["Keyword"],
     },
     {
-      name: "contain-intrinsic-block-size",
-      property_methods: ["ParseSingleValue"],
-      direction_aware_options: {
-        resolver: "block",
-        physical_group: "contain-intrinsic-size"
-      },
-      runtime_flag: "CSSIntrinsicSize"
-    },
-    {
-      name: "contain-intrinsic-height",
+      name: "contain-intrinsic-size",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
       is_slot: true,
       interpolable: true,
       field_group: "box",
       field_template: "external",
       keywords: ["auto"],
-      default_value: "IntrinsicLength()",
-      type_name: "IntrinsicLength",
-      converter: "ConvertIntrinsicLength",
-      include_paths: ["third_party/blink/renderer/core/style/intrinsic_length.h"],
-      runtime_flag: "CSSIntrinsicSize"
-    },
-    {
-      name: "contain-intrinsic-inline-size",
-      property_methods: ["ParseSingleValue"],
-      direction_aware_options: {
-        resolver: "inline",
-        physical_group: "contain-intrinsic-size"
-      },
-      runtime_flag: "CSSIntrinsicSize"
-    },
-    {
-      name: "contain-intrinsic-width",
-      property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
-      is_slot: true,
-      interpolable: true,
-      field_group: "box",
-      field_template: "external",
-      keywords: ["auto"],
-      default_value: "IntrinsicLength()",
-      type_name: "IntrinsicLength",
-      converter: "ConvertIntrinsicLength",
-      include_paths: ["third_party/blink/renderer/core/style/intrinsic_length.h"],
+      default_value: "LengthSize(Length::Auto(), Length::Auto())",
+      type_name: "LengthSize",
+      converter: "ConvertIntrinsicSize",
+      include_paths: ["third_party/blink/renderer/platform/geometry/length_size.h"],
       runtime_flag: "CSSIntrinsicSize"
     },
     {
@@ -5153,12 +5121,6 @@
         "border-left-width"
       ],
       property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
-    },
-    {
-      name: "contain-intrinsic-size",
-      longhands: ["contain-intrinsic-width", "contain-intrinsic-height"],
-      property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
-      runtime_flag: "CSSIntrinsicSize"
     },
     {
       name: "flex",

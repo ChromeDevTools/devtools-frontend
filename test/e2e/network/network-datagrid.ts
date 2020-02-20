@@ -6,10 +6,10 @@ import {assert} from 'chai';
 import {describe, it} from 'mocha';
 import * as puppeteer from 'puppeteer';
 
-import {click, getBrowserAndPages, resetPages, resourcesPath, waitFor} from '../../shared/helper.js';
+import {$, click, getBrowserAndPages, resetPages, resourcesPath, waitFor} from '../../shared/helper.js';
 
 async function navigateToNetworkTab(target: puppeteer.Page, testName: string) {
-  await target.goto(`${resourcesPath}/network/${testName}.html`);
+  await target.goto(`${resourcesPath}/network/${testName}`);
   await click('#tab-network');
   // Make sure the network tab is shown on the screen
   await waitFor('.network-log-grid');
@@ -22,7 +22,7 @@ describe('The Network Tab', async () => {
 
   it('shows Last-Modified', async () => {
     const {target, frontend} = getBrowserAndPages();
-    await navigateToNetworkTab(target, 'last-modified');
+    await navigateToNetworkTab(target, 'last-modified.html');
 
     // Open the contextmenu for all network column
     await click('.name-column', {clickOptions: {button: 'right'}});
@@ -45,5 +45,32 @@ describe('The Network Tab', async () => {
       ``,
       `Sun, 26 Sep 2010 22:04:35 GMT`,
     ]);
+  });
+
+  it('shows the HTML response including cyrillic characters with utf-8 encoding', async () => {
+    const {target, frontend} = getBrowserAndPages();
+
+    await navigateToNetworkTab(target, 'utf-8.rawresponse');
+
+    // Wait for the column to show up and populate its values
+    await frontend.waitForFunction(() => {
+      return document.querySelectorAll('.name-column').length === 2;
+    });
+
+    // Open the HTML file that was loaded
+    await click('td.name-column');
+    // Wait for the detailed network information pane to show up
+    await waitFor(`[aria-label="Response"]`);
+    // Open the raw response HTML
+    await click(`[aria-label="Response"]`);
+    // Wait for the raw response editor to show up
+    await waitFor('.CodeMirror-code');
+
+    const codeMirrorEditor = await $('.CodeMirror-code');
+    const htmlRawResponse = await codeMirrorEditor.evaluate(editor => editor.textContent);
+
+    assert.equal(
+        htmlRawResponse,
+        `1<html><body>The following word is written using cyrillic letters and should look like "SUCCESS": SU\u0421\u0421\u0415SS.</body></html>`);
   });
 });
